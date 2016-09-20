@@ -329,7 +329,7 @@ static int qtractorAudioEngine_buffer_size ( jack_nframes_t nframes, void *pvArg
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
 	if (pAudioEngine->bufferSize() < (unsigned int) nframes)
-		pAudioEngine->notifyBuffEvent();
+		pAudioEngine->notifyBuffEvent(nframes);
 
 	return 0;
 }
@@ -452,6 +452,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_pMetroBeatBuff  = NULL;
 	m_fMetroBarGain   = 1.0f;
 	m_fMetroBeatGain  = 1.0f;
+	m_iMetroOffset    = 0;
 	m_iMetroBeatStart = 0;
 	m_iMetroBeat      = 0;
 	m_bMetroEnabled   = false;
@@ -496,9 +497,9 @@ void qtractorAudioEngine::notifyPortEvent (void)
 	m_proxy.notifyPortEvent();
 }
 
-void qtractorAudioEngine::notifyBuffEvent (void)
+void qtractorAudioEngine::notifyBuffEvent ( unsigned int iBufferSize )
 {
-	m_proxy.notifyBuffEvent();
+	m_proxy.notifyBuffEvent(iBufferSize);
 }
 
 void qtractorAudioEngine::notifySessEvent ( void *pvSessionArg )
@@ -947,8 +948,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 						= static_cast<qtractorAudioBus *> (pTrack->outputBus());
 					if (pOutputBus) {
 						pOutputBus->buffer_prepare(nframes, pInputBus);
-						if (pPluginList->isActivated())
-							pPluginList->process(pOutputBus->buffer(), nframes);
+						pPluginList->process(pOutputBus->buffer(), nframes);
 						pAudioMonitor->process(pOutputBus->buffer(), nframes);
 						pOutputBus->buffer_commit(nframes);
 						++iOutputBus;
@@ -996,7 +996,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			pMetroBuff->readMix(m_pMetroBus->out(),
 				nframes, m_pMetroBus->channels(), 0, fMetroGain);
 		} else {
-			m_iMetroBeatStart = pNode->frameFromBeat(++m_iMetroBeat);
+			m_iMetroBeatStart = metro_offset(pNode->frameFromBeat(++m_iMetroBeat));
 			pMetroBuff->reset(false);
 		}
 		if (m_bMetroBus && m_pMetroBus)
@@ -1049,7 +1049,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		// Take special care on metronome too...
 		if (m_bMetronome) {
 			m_iMetroBeat = pSession->beatFromFrame(iFrameEnd);
-			m_iMetroBeatStart = pSession->frameFromBeat(m_iMetroBeat);
+			m_iMetroBeatStart = metro_offset(pSession->frameFromBeat(m_iMetroBeat));
 		}
 	}
 
@@ -1618,6 +1618,27 @@ float qtractorAudioEngine::metroBeatGain (void) const
 }
 
 
+// Metronome latency offset (in frames).
+void qtractorAudioEngine::setMetroOffset ( unsigned long iMetroOffset )
+{
+	m_iMetroOffset = iMetroOffset;
+}
+
+unsigned long qtractorAudioEngine::metroOffset (void) const
+{
+	return m_iMetroOffset;
+}
+
+
+// Metronome latency offset compensation.
+unsigned long qtractorAudioEngine::metro_offset ( unsigned long iFrame ) const
+{
+	const unsigned long iOffset = m_iMetroOffset
+		+ (m_pMetroBus ? m_pMetroBus->latency_out() : 0);
+	return (iFrame > iOffset ? iFrame - iOffset : iFrame);
+}
+
+
 // Create audio metronome stuff...
 void qtractorAudioEngine::createMetroBus (void)
 {
@@ -1746,7 +1767,7 @@ void qtractorAudioEngine::resetMetro (void)
 	const unsigned short iNextBeat = pNode->beatFromFrame(iFrame);
 	if (iNextBeat > 0) {
 		m_iMetroBeat = iNextBeat;
-		m_iMetroBeatStart = pNode->frameFromBeat(m_iMetroBeat);
+		m_iMetroBeatStart = metro_offset(pNode->frameFromBeat(m_iMetroBeat));
 		iMaxLength = (m_iMetroBeatStart / m_iMetroBeat);
 	} else {
 		m_iMetroBeat = 0;
@@ -2479,7 +2500,7 @@ void qtractorAudioBus::process_monitor ( unsigned int nframes )
 		= qtractorAudioBus::busMode();
 
 	if (busMode & qtractorBus::Input) {
-		if (m_pIPluginList && m_pIPluginList->isActivated())
+		if (m_pIPluginList)
 			m_pIPluginList->process(m_ppIBuffer, nframes);
 		if (m_pIAudioMonitor)
 			m_pIAudioMonitor->process(m_ppIBuffer, nframes);
@@ -2497,7 +2518,7 @@ void qtractorAudioBus::process_commit ( unsigned int nframes )
 	if (!m_bEnabled)
 		return;
 
-	if (m_pOPluginList && m_pOPluginList->isActivated())
+	if (m_pOPluginList)
 		m_pOPluginList->process(m_ppOBuffer, nframes);
 	if (m_pOAudioMonitor)
 		m_pOAudioMonitor->process(m_ppOBuffer, nframes);
@@ -2569,24 +2590,6 @@ void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 
 	(*m_pfnBufferAdd)(m_ppOBuffer, m_ppXBuffer,
 		nframes, m_iChannels, m_iChannels, pAudioEngine->bufferOffset());
-}
-
-
-float **qtractorAudioBus::buffer (void) const
-{
-	return m_ppYBuffer;
-}
-
-
-// Frame buffer accessors.
-float **qtractorAudioBus::in (void) const
-{
-	return m_ppIBuffer;
-}
-
-float **qtractorAudioBus::out (void) const
-{
-	return m_ppOBuffer;
 }
 
 

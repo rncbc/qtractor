@@ -294,6 +294,9 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	QObject::connect(m_ui.TransposeFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
+	QObject::connect(m_ui.TransposeReverseCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
 
 	QObject::connect(m_ui.NormalizeCheckBox,
 		SIGNAL(toggled(bool)),
@@ -509,6 +512,9 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.TransposeTimeCheckBox->setChecked(vlist[3].toBool());
 			m_ui.TransposeTimeSpinBox->setValue(vlist[4].toUInt());
 		}
+		// Transpose/reverse tool...
+		if (vlist.count() > 5)
+			m_ui.TransposeReverseCheckBox->setChecked(vlist[5].toBool());
 		// Normalize tool...
 		vlist = settings.value("/Normalize").toList();
 		if (vlist.count() > 4) {
@@ -606,6 +612,7 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.TransposeNoteSpinBox->value());
 		vlist.append(m_ui.TransposeTimeCheckBox->isChecked());
 		vlist.append((unsigned int) m_ui.TransposeTimeSpinBox->value());
+		vlist.append(m_ui.TransposeReverseCheckBox->isChecked());
 		settings.setValue("/Transpose", vlist);
 		// Normalize tool...
 		vlist.clear();
@@ -790,6 +797,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	// Seed time range with a value from the list of selected events.
 	long iMinTime = iTimeOffset;
 	long iMaxTime = iTimeOffset;
+	long iMaxTime2 = iTimeOffset;
 	if (pSelect->anchorEvent())
 		iMinTime = iMaxTime = pSelect->anchorEvent()->time() + iTimeOffset;
 
@@ -798,6 +806,8 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	int iMaxValue = 0;
 	int iMinValue = 0;
 	if (m_ui.NormalizeCheckBox->isChecked()
+		|| (m_ui.TransposeCheckBox->isChecked() &&
+			m_ui.TransposeReverseCheckBox->isChecked())
 		|| (m_ui.ResizeCheckBox->isChecked() &&
 			m_ui.ResizeValueCheckBox->isChecked() &&
 			m_ui.ResizeValue2ComboBox->currentIndex() > 0)) {
@@ -805,10 +815,13 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		for (int i = 0 ; iter != iter_end; ++i, ++iter) {
 			qtractorMidiEvent *pEvent = iter.key();
 			const long iTime = pEvent->time() + iTimeOffset;
+			const long iTime2 = iTime + pEvent->duration();
 			if (iMinTime > iTime || i == 0)
 				iMinTime = iTime;
 			if (iMaxTime < iTime)
 				iMaxTime = iTime;
+			if (iMaxTime2 < iTime2)
+				iMaxTime2 = iTime2;
 			const bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
 			int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
 			if (iMinValue > iValue || i == 0)
@@ -914,6 +927,11 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			if (m_ui.TransposeTimeCheckBox->isChecked()) {
 				iTime = pNode->tickFromFrame(pNode->frameFromTick(iTime)
 					+ m_ui.TransposeTimeSpinBox->value());
+				if (iTime < long(iTimeOffset))
+					iTime = long(iTimeOffset);
+			}
+			if (m_ui.TransposeReverseCheckBox->isChecked()) {
+				iTime = iMinTime + iMaxTime2 - iTime - iDuration;
 				if (iTime < long(iTimeOffset))
 					iTime = long(iTimeOffset);
 			}
@@ -1227,6 +1245,9 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 		++iEnabled;
 	m_ui.TransposeTimeSpinBox->setEnabled(bEnabled2);
 	m_ui.TransposeFormatComboBox->setEnabled(bEnabled2);
+	bEnabled2 = bEnabled && m_ui.TransposeReverseCheckBox->isChecked();
+	if (bEnabled2)
+		++iEnabled;
 
 	// Normalize tool...
 

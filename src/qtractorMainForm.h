@@ -295,7 +295,7 @@ protected slots:
 	void audioShutNotify();
 	void audioXrunNotify();
 	void audioPortNotify();
-	void audioBuffNotify();
+	void audioBuffNotify(unsigned int iBufferSize);
 	void audioSessNotify(void *pvSessionArg);
 	void audioSyncNotify(unsigned long iPlayHead);
 	void audioPropNotify();

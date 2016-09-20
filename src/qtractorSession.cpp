@@ -236,8 +236,6 @@ void qtractorSession::clear (void)
 	ATOMIC_SET(&m_locks, 0);
 	ATOMIC_SET(&m_mutex, 0);
 
-	ATOMIC_SET(&m_busy, 0);
-
 	m_pAudioPeakFactory->sync();
 
 	m_pCurrentTrack = NULL;
@@ -1142,8 +1140,6 @@ bool qtractorSession::isActivated (void) const
 // Consolidated session engine start status.
 void qtractorSession::setPlaying ( bool bPlaying )
 {
-	ATOMIC_INC(&m_busy);
-
 	// For all armed tracks...
 	if (bPlaying && isRecording()) {
 		// Take a snapshot on where recording
@@ -1189,8 +1185,6 @@ void qtractorSession::setPlaying ( bool bPlaying )
 	// Do it.
 	m_pAudioEngine->setPlaying(bPlaying);
 	m_pMidiEngine->setPlaying(bPlaying);
-
-	ATOMIC_DEC(&m_busy);
 }
 
 bool qtractorSession::isPlaying() const
@@ -1236,36 +1230,28 @@ void qtractorSession::release (void)
 
 void qtractorSession::lock (void)
 {
-	ATOMIC_INC(&m_busy);
-
 	// Wind up as pending lock...
 	if (ATOMIC_INC(&m_locks) == 1) {
 		// Get lost for a while...
 		while (!acquire())
 			stabilize();
 	}
-
-	ATOMIC_DEC(&m_busy);
 }
 
 void qtractorSession::unlock (void)
 {
-	ATOMIC_INC(&m_busy);
-
 	// Unwind pending locks and force back to business...
 	if (ATOMIC_DEC(&m_locks) < 1) {
 		ATOMIC_SET(&m_locks, 0);
 		release();
 	}
-
-	ATOMIC_DEC(&m_busy);
 }
 
 
 // Re-entrancy check.
 bool qtractorSession::isBusy (void) const
 {
-	return (ATOMIC_GET(&m_busy) > 0 || ATOMIC_GET(&m_locks) > 0);
+	return (ATOMIC_GET(&m_locks) > 0);
 }
 
 

@@ -1217,7 +1217,7 @@ int qtractorAudioBuffer::readBuffer ( unsigned int iFrames )
 					ngen = src_data.output_frames_gen;
 				}
 				if (m_iInputPending > 0 && src_data.input_frames_used > 0) {
-					::memcpy(m_ppFrames[i],
+					::memmove(m_ppFrames[i],
 						m_ppFrames[i] + src_data.input_frames_used,
 						m_iInputPending * sizeof(float));
 				}

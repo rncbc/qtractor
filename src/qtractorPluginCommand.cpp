@@ -463,6 +463,7 @@ bool qtractorPresetPluginCommand::redo (void)
 
 	pPlugin->setPreset(m_sPreset);
 	pPlugin->setValueList(m_vlist);
+	pPlugin->realizeValues();
 	pPlugin->releaseValues();
 
 	// Swap it nice, finally.

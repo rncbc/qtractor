@@ -1141,13 +1141,13 @@
              <number>1</number>
             </property>
             <property name="minimum">
-             <double>-60.000000000000000</double>
+             <double>-60.0</double>
             </property>
             <property name="maximum">
-             <double>12.000000000000000</double>
+             <double>12.0</double>
             </property>
             <property name="value">
-             <double>0.000000000000000</double>
+             <double>0.0</double>
             </property>
            </widget>
           </item>
@@ -1266,13 +1266,13 @@
              <number>1</number>
             </property>
             <property name="minimum">
-             <double>-60.000000000000000</double>
+             <double>-60.0</double>
             </property>
             <property name="maximum">
-             <double>12.000000000000000</double>
+             <double>12.0</double>
             </property>
             <property name="value">
-             <double>0.000000000000000</double>
+             <double>0.0</double>
             </property>
            </widget>
           </item>
@@ -1292,7 +1292,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2" colspan="4">
+          <item row="4" column="2">
            <widget class="QCheckBox" name="AudioMetroAutoConnectCheckBox">
             <property name="font">
              <font>
@@ -1305,6 +1305,38 @@
             </property>
             <property name="text">
              <string>Auto-co&amp;nnect</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="3" colspan="2">
+           <widget class="QLabel" name="AudioMetroOffsetTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>&amp;Offset (latency):</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>AudioMetroOffsetSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="5">
+           <widget class="qtractorTimeSpinBox" name="AudioMetroOffsetSpinBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Metronome Audio offset (latency)</string>
             </property>
            </widget>
           </item>
@@ -1883,7 +1915,20 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="3">
+          <item row="2" column="3" rowspan="2">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>4</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="4">
            <widget class="QLabel" name="MetroBarVelocityTextLabel">
             <property name="font">
              <font>
@@ -1899,7 +1944,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="4">
+          <item row="2" column="5">
            <widget class="QSpinBox" name="MetroBarVelocitySpinBox">
             <property name="font">
              <font>
@@ -1921,7 +1966,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="5" rowspan="2">
+          <item row="2" column="6" rowspan="2">
            <spacer>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -1934,7 +1979,7 @@
             </property>
            </spacer>
           </item>
-          <item row="2" column="6">
+          <item row="2" column="7">
            <widget class="QLabel" name="MetroBarDurationTextLabel">
             <property name="font">
              <font>
@@ -1950,7 +1995,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="7">
+          <item row="2" column="8">
            <widget class="QSpinBox" name="MetroBarDurationSpinBox">
             <property name="font">
              <font>
@@ -1959,7 +2004,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Metronome MIDI velocity (bar)</string>
+             <string>Metronome MIDI duration (bar)</string>
             </property>
             <property name="minimum">
              <number>1</number>
@@ -1971,7 +2016,7 @@
              <number>8</number>
             </property>
             <property name="value">
-             <number>24</number>
+             <number>48</number>
             </property>
            </widget>
           </item>
@@ -2010,7 +2055,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="3">
+          <item row="3" column="4">
            <widget class="QLabel" name="MetroBeatVelocityTextLabel">
             <property name="font">
              <font>
@@ -2026,7 +2071,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="4">
+          <item row="3" column="5">
            <widget class="QSpinBox" name="MetroBeatVelocitySpinBox">
             <property name="font">
              <font>
@@ -2048,7 +2093,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="6">
+          <item row="3" column="7">
            <widget class="QLabel" name="MetroBeatDurationTextLabel">
             <property name="font">
              <font>
@@ -2064,7 +2109,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="7">
+          <item row="3" column="8">
            <widget class="QSpinBox" name="MetroBeatDurationSpinBox">
             <property name="font">
              <font>
@@ -2073,7 +2118,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Metronome MIDI velocity (beat)</string>
+             <string>Metronome MIDI duration (beat)</string>
             </property>
             <property name="minimum">
              <number>1</number>
@@ -2085,11 +2130,11 @@
              <number>8</number>
             </property>
             <property name="value">
-             <number>16</number>
+             <number>24</number>
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="8">
+          <item row="4" column="0" colspan="5">
            <widget class="QCheckBox" name="MidiMetroBusCheckBox">
             <property name="font">
              <font>
@@ -2102,6 +2147,50 @@
             </property>
             <property name="text">
              <string>Dedicated M&amp;IDI metronome output</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="5" colspan="3">
+           <widget class="QLabel" name="MidiMetroOffsetTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>&amp;Offset (latency):</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>AudioMetroOffsetSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="8">
+           <widget class="QSpinBox" name="MidiMetroOffsetSpinBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Metronome MIDI offset (latency)</string>
+            </property>
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>9999</number>
+            </property>
+            <property name="singleStep">
+             <number>8</number>
+            </property>
+            <property name="value">
+             <number>0</number>
             </property>
            </widget>
           </item>
@@ -3530,6 +3619,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="4" margin="8"/>
+ <customwidgets>
+  <customwidget>
+   <class>qtractorTimeSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qtractorSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>OptionsTabWidget</tabstop>
   <tabstop>SessionFormatComboBox</tabstop>
@@ -3570,6 +3666,7 @@
   <tabstop>MetroBeatGainSpinBox</tabstop>
   <tabstop>AudioMetroBusCheckBox</tabstop>
   <tabstop>AudioMetroAutoConnectCheckBox</tabstop>
+  <tabstop>AudioMetroOffsetSpinBox</tabstop>
   <tabstop>MidiCaptureFormatComboBox</tabstop>
   <tabstop>MidiCaptureQuantizeComboBox</tabstop>
   <tabstop>MidiQueueTimerComboBox</tabstop>
@@ -3589,6 +3686,7 @@
   <tabstop>MetroBeatVelocitySpinBox</tabstop>
   <tabstop>MetroBeatDurationSpinBox</tabstop>
   <tabstop>MidiMetroBusCheckBox</tabstop>
+  <tabstop>MidiMetroOffsetSpinBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
   <tabstop>BaseFontSizeComboBox</tabstop>
   <tabstop>SyncViewHoldCheckBox</tabstop>

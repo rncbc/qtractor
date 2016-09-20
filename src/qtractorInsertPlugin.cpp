@@ -515,6 +515,9 @@ void qtractorAudioInsertPlugin::process (
 	if (m_pAudioBus == NULL)
 		return;
 
+	if (!m_pAudioBus->isEnabled())
+		return;
+
 //	m_pAudioBus->process_prepare(nframes);
 
 	float **ppOut = m_pAudioBus->out(); // Sends.
@@ -1268,6 +1271,9 @@ void qtractorAudioAuxSendPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
 	if (m_pAudioBus == NULL)
+		return;
+
+	if (!m_pAudioBus->isEnabled())
 		return;
 
 //	m_pAudioBus->process_prepare(nframes);

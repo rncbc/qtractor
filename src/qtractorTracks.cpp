@@ -3092,7 +3092,7 @@ void qtractorTracks::updateTrackView (void)
 // Overall selection reset.
 void qtractorTracks::clearSelect (void)
 {
-	m_pTrackView->clearSelect();
+	m_pTrackView->clearSelect(true);
 }
 
 

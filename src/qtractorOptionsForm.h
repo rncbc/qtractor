@@ -27,6 +27,7 @@
 
 // Forward declarations...
 class qtractorOptions;
+class qtractorTimeScale;
 
 
 //----------------------------------------------------------------------------
@@ -54,6 +55,7 @@ protected slots:
 	void chooseMetroBarFilename();
 	void chooseMetroBeatFilename();
 	void updateMetroNoteNames();
+	void displayFormatChanged(int iDisplayFormat);
 	void changeAudioMeterLevel(int iColor);
 	void changeMidiMeterLevel(int iColor);
 	void changeAudioMeterColor(const QString& sColor);
@@ -97,6 +99,8 @@ private:
 	// Instance variables...
 	qtractorOptions *m_pOptions;
 	int m_iDirtyCount;
+
+	qtractorTimeScale *m_pTimeScale;
 
 	// Meter colors.
 	enum { AudioMeterColors = 5, MidiMeterColors = 2 };

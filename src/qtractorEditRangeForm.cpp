@@ -1,7 +1,7 @@
 // qtractorEditRangeForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -189,22 +189,22 @@ unsigned long qtractorEditRangeForm::rangeEnd (void) const
 // Retrieve range option flags.
 unsigned int qtractorEditRangeForm::rangeOptions (void) const
 {
-    return m_options;
+	return m_options;
 }
 
 
 // Option flags accessors.
 void qtractorEditRangeForm::setOption ( Option option, bool bOn )
 {
-    if (bOn)
-        m_options |=  (unsigned int) (option);
-    else
-        m_options &= ~(unsigned int) (option);
+	if (bOn)
+		m_options |=  (unsigned int) (option);
+	else
+		m_options &= ~(unsigned int) (option);
 }
 
 bool qtractorEditRangeForm::isOption ( Option option ) const
 {
-    return (m_options & (unsigned int) (option));
+	return (m_options & (unsigned int) (option));
 }
 
 
@@ -212,21 +212,21 @@ bool qtractorEditRangeForm::isOption ( Option option ) const
 void qtractorEditRangeForm::updateOptions (void)
 {
 	++m_iUpdate;
-    m_ui.ClipsCheckBox->setChecked(m_options & Clips);
+	m_ui.ClipsCheckBox->setChecked(m_options & Clips);
 	m_ui.AutomationCheckBox->setChecked(m_options & Automation);
 	m_ui.LoopCheckBox->setChecked((m_options & Loop));
 	m_ui.PunchCheckBox->setChecked(m_options & Punch);
-    m_ui.MarkersCheckBox->setChecked(m_options & Markers);
-    m_ui.TempoMapCheckBox->setChecked(m_options & TempoMap);
-    --m_iUpdate;
+	m_ui.MarkersCheckBox->setChecked(m_options & Markers);
+	m_ui.TempoMapCheckBox->setChecked(m_options & TempoMap);
+	--m_iUpdate;
 }
 
 
 // Options changed.
 void qtractorEditRangeForm::optionsChanged (void)
 {
-    if (m_iUpdate > 0)
-        return;
+	if (m_iUpdate > 0)
+		return;
 
 	setOption(Clips, m_ui.ClipsCheckBox->isChecked());
 	setOption(Automation, m_ui.AutomationCheckBox->isChecked());
@@ -235,7 +235,7 @@ void qtractorEditRangeForm::optionsChanged (void)
 	setOption(Markers, m_ui.MarkersCheckBox->isChecked());
 	setOption(TempoMap, m_ui.TempoMapCheckBox->isChecked());
 
-    stabilizeForm();
+	stabilizeForm();
 }
 
 
@@ -339,12 +339,12 @@ void qtractorEditRangeForm::stabilizeForm (void)
 // Dialog acceptance.
 void qtractorEditRangeForm::accept (void)
 {
-    // Update options check-boxes.
-    qtractorOptions *pOptions = qtractorOptions::getInstance();
-    if (pOptions)
-        pOptions->iEditRangeOptions = m_options;
+	// Update options check-boxes.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		pOptions->iEditRangeOptions = m_options;
 
-    QDialog::accept();
+	QDialog::accept();
 }
 
 

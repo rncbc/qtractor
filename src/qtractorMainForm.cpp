@@ -301,46 +301,52 @@ qtractorMainForm::qtractorMainForm (
 	}
 
 	// Configure the audio engine event handling...
+	const qtractorAudioEngineProxy *pAudioEngineProxy = NULL;
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	if (pAudioEngine) {
-		QObject::connect(pAudioEngine->proxy(),
+	if (pAudioEngine)
+		pAudioEngineProxy = pAudioEngine->proxy();
+	if (pAudioEngineProxy) {
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(shutEvent()),
 			SLOT(audioShutNotify()));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(xrunEvent()),
 			SLOT(audioXrunNotify()));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(portEvent()),
 			SLOT(audioPortNotify()));
-		QObject::connect(pAudioEngine->proxy(),
-			SIGNAL(buffEvent()),
-			SLOT(audioBuffNotify()));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
+			SIGNAL(buffEvent(unsigned int)),
+			SLOT(audioBuffNotify(unsigned int)));
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(sessEvent(void *)),
 			SLOT(audioSessNotify(void *)));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(syncEvent(unsigned long)),
 			SLOT(audioSyncNotify(unsigned long)));
-		QObject::connect(pAudioEngine->proxy(),
+		QObject::connect(pAudioEngineProxy,
 			SIGNAL(propEvent()),
 			SLOT(audioPropNotify()));
 	}
 
 	// Configure the MIDI engine event handling...
+	const qtractorMidiEngineProxy *pMidiEngineProxy = NULL;
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
-	if (pMidiEngine) {
+	if (pMidiEngine)
+		pMidiEngineProxy = pMidiEngine->proxy();
+	if (pMidiEngineProxy) {
 		qRegisterMetaType<qtractorMmcEvent> ("qtractorMmcEvent");
 		qRegisterMetaType<qtractorCtlEvent> ("qtractorCtlEvent");
-		QObject::connect(pMidiEngine->proxy(),
+		QObject::connect(pMidiEngineProxy,
 			SIGNAL(mmcEvent(const qtractorMmcEvent&)),
 			SLOT(midiMmcNotify(const qtractorMmcEvent&)));
-		QObject::connect(pMidiEngine->proxy(),
+		QObject::connect(pMidiEngineProxy,
 			SIGNAL(ctlEvent(const qtractorCtlEvent&)),
 			SLOT(midiCtlNotify(const qtractorCtlEvent&)));
-		QObject::connect(pMidiEngine->proxy(),
+		QObject::connect(pMidiEngineProxy,
 			SIGNAL(sppEvent(int, unsigned short)),
 			SLOT(midiSppNotify(int, unsigned short)));
-		QObject::connect(pMidiEngine->proxy(),
+		QObject::connect(pMidiEngineProxy,
 			SIGNAL(clkEvent(float)),
 			SLOT(midiClkNotify(float)));
 	}
@@ -3323,6 +3329,9 @@ void qtractorMainForm::trackInputs (void)
 	qDebug("qtractorMainForm::trackInputs()");
 #endif
 
+	// Make sure session is activated...
+	checkRestartSession();
+
 	if (m_pConnections)
 		m_pConnections->showBus(pTrack->inputBus(), qtractorBus::Input);
 }
@@ -3342,6 +3351,9 @@ void qtractorMainForm::trackOutputs (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::trackOutputs()");
 #endif
+
+	// Make sure session is activated...
+	checkRestartSession();
 
 	if (m_pConnections)
 		m_pConnections->showBus(pTrack->outputBus(), qtractorBus::Output);
@@ -4801,8 +4813,9 @@ void qtractorMainForm::viewOptions (void)
 	const QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
 	const float   fOldMetroBarGain       = m_pOptions->fMetroBarGain;
 	const float   fOldMetroBeatGain      = m_pOptions->fMetroBeatGain;
-	const bool    bOldAudioMetroAutoConnect = m_pOptions->bAudioMetroAutoConnect;
 	const bool    bOldAudioMetroBus      = m_pOptions->bAudioMetroBus;
+	const bool    bOldAudioMetroAutoConnect = m_pOptions->bAudioMetroAutoConnect;
+	const unsigned long iOldAudioMetroOffset = m_pOptions->iAudioMetroOffset;
 	const bool    bOldMidiControlBus     = m_pOptions->bMidiControlBus;
 	const bool    bOldMidiMetronome      = m_pOptions->bMidiMetronome;
 	const int     iOldMetroChannel       = m_pOptions->iMetroChannel;
@@ -4813,6 +4826,7 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldMetroBeatVelocity  = m_pOptions->iMetroBeatVelocity;
 	const int     iOldMetroBeatDuration  = m_pOptions->iMetroBeatDuration;
 	const bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
+	const int     iOldMidiMetroOffset    = m_pOptions->iMidiMetroOffset;
 	const bool    bOldMixerAutoGridLayout = m_pOptions->bMixerAutoGridLayout;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
@@ -4959,6 +4973,7 @@ void qtractorMainForm::viewOptions (void)
 			(sOldMetroBeatFilename != m_pOptions->sMetroBeatFilename) ||
 			(fOldMetroBarGain      != m_pOptions->fMetroBarGain)      ||
 			(fOldMetroBeatGain     != m_pOptions->fMetroBeatGain)     ||
+			(iOldAudioMetroOffset  != m_pOptions->iAudioMetroOffset)  ||
 			( bOldAudioMetroBus    && !m_pOptions->bAudioMetroBus)    ||
 			(!bOldAudioMetroBus    &&  m_pOptions->bAudioMetroBus)    ||
 			( bOldAudioMetroAutoConnect && !m_pOptions->bAudioMetroAutoConnect) ||
@@ -4974,6 +4989,7 @@ void qtractorMainForm::viewOptions (void)
 			(iOldMetroBeatNote     != m_pOptions->iMetroBeatNote)     ||
 			(iOldMetroBeatVelocity != m_pOptions->iMetroBeatVelocity) ||
 			(iOldMetroBeatDuration != m_pOptions->iMetroBeatDuration) ||
+			(iOldMidiMetroOffset   != m_pOptions->iMidiMetroOffset)   ||
 			( bOldMidiMetroBus     && !m_pOptions->bMidiMetroBus)     ||
 			(!bOldMidiMetroBus     &&  m_pOptions->bMidiMetroBus))
 			updateMidiMetronome();
@@ -6041,8 +6057,18 @@ bool qtractorMainForm::startSession (void)
 	autoSaveReset();
 
 	if (bResult) {
+		// Get on with the special ALSA sequencer notifier...
+		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+		if (pMidiEngine && pMidiEngine->alsaNotifier()) {
+			m_pSession->resetAllMidiControllers(false); // Deferred++
+			QObject::connect(pMidiEngine->alsaNotifier(),
+				SIGNAL(activated(int)),
+				SLOT(alsaNotify()));
+		}
+		// Game on...
 		appendMessages(tr("Session started."));
-	} else {
+	}
+	else {
 		// Uh-oh, we can't go on like this...
 		appendMessagesError(
 			tr("The audio/MIDI engine could not be started.\n\n"
@@ -6095,20 +6121,12 @@ void qtractorMainForm::updateSessionPre (void)
 	qDebug("qtractorMainForm::updateSessionPre()");
 #endif
 
-	//  Actually (re)start session engines...
-	if (startSession()) {
-		// (Re)set playhead...
-		if (m_ui.transportAutoBackwardAction->isChecked())
-			m_pSession->setPlayHead(playHeadBackward());
-		// (Re)initialize MIDI instrument patching...
-		m_pSession->resetAllMidiControllers(false); // Deferred++
-		// Get on with the special ALSA sequencer notifier...
-		if (m_pSession->midiEngine()->alsaNotifier()) {
-			QObject::connect(m_pSession->midiEngine()->alsaNotifier(),
-				SIGNAL(activated(int)),
-				SLOT(alsaNotify()));			
-		}
-	}
+	//  Actually (re)start session engines, no matter what...
+	startSession();
+
+	// (Re)set playhead...
+	if (m_ui.transportAutoBackwardAction->isChecked())
+		m_pSession->setPlayHead(playHeadBackward());
 
 	// Start collection of nested messages...
 	qtractorMessageList::clear();
@@ -6419,6 +6437,8 @@ void qtractorMainForm::updateAudioMetronome (void)
 	pAudioEngine->setMetroBarGain(m_pOptions->fMetroBarGain);
 	pAudioEngine->setMetroBeatGain(m_pOptions->fMetroBeatGain);
 
+	pAudioEngine->setMetroOffset(m_pOptions->iAudioMetroOffset);
+
 	const bool bAudioMetronome = m_pOptions->bAudioMetronome;
 	pAudioEngine->setMetroAutoConnect(m_pOptions->bAudioMetroAutoConnect);
 	pAudioEngine->setMetroEnabled(bAudioMetronome);
@@ -6449,6 +6469,8 @@ void qtractorMainForm::updateMidiMetronome (void)
 		m_pOptions->iMetroBeatNote,
 		m_pOptions->iMetroBeatVelocity,
 		m_pOptions->iMetroBeatDuration);
+
+	pMidiEngine->setMetroOffset(m_pOptions->iMidiMetroOffset);
 
 	const bool bMidiMetronome = m_pOptions->bMidiMetronome;
 	pMidiEngine->setMetroEnabled(bMidiMetronome);
@@ -6643,17 +6665,8 @@ bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 	if (pCurveList == NULL)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return false;
-
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return false;
-
-	qtractorMixerStrip *pMixerStrip
-		= pMixer->trackRack()->findStrip(pTrack->monitor());
-	if (pMixerStrip == NULL)
+	qtractorMonitor *pMonitor = pTrack->monitor();
+	if (pMonitor == NULL)
 		return false;
 
 	qtractorCurve *pCurrentCurve
@@ -6664,9 +6677,9 @@ bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 	trackCurveSelectMenuAction(pMenu,
 		pTrack->monitorObserver(), pCurrentSubject);
 	trackCurveSelectMenuAction(pMenu,
-		pMixerStrip->meter()->panningObserver(), pCurrentSubject);
+		pMonitor->panningObserver(), pCurrentSubject);
 	trackCurveSelectMenuAction(pMenu,
-		pMixerStrip->meter()->gainObserver(), pCurrentSubject);
+		pMonitor->gainObserver(), pCurrentSubject);
 
 	pMenu->addSeparator();
 
@@ -6765,7 +6778,7 @@ void qtractorMainForm::updateClipMenu (void)
 
 	qtractorClip  *pClip  = NULL;
 	qtractorTrack *pTrack = NULL;
-	bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
+	const bool bTracks = (m_pTracks && m_pSession->tracks().count() > 0);
 	if (bTracks) {
 		pClip  = m_pTracks->currentClip();
 		pTrack = (pClip ? pClip->track() : m_pTracks->currentTrack());
@@ -7368,18 +7381,32 @@ void qtractorMainForm::alsaNotify (void)
 // Custom audio shutdown event handler.
 void qtractorMainForm::audioShutNotify (void)
 {
-	// Engine shutdown is on demand...
-	m_pSession->shutdown();
-	m_pConnections->clear();
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMainForm::audioShutNotify()");
+#endif
+
+	// HACK: The audio engine (jackd) most probably
+	// is down, not up and running anymoere, but...
+	m_pSession->lock();
 
 	// Always do auto-save here, hence...
 	autoSaveSession();
+
+	// Engines shutdown is on demand...
+	m_pSession->shutdown();
+	m_pConnections->clear();
+
+	// HACK: Done.
+	m_pSession->unlock();
 
 	// Send an informative message box...
 	appendMessagesError(
 		tr("The audio engine has been shutdown.\n\n"
 		"Make sure the JACK audio server (jackd)\n"
 		"is up and running and then restart session."));
+
+	// Try an immediate restart, though...
+	checkRestartSession();
 
 	// Make things just bearable...
 	stabilizeForm();
@@ -7413,13 +7440,94 @@ void qtractorMainForm::audioPortNotify (void)
 
 
 // Custom audio buffer size change event handler.
-void qtractorMainForm::audioBuffNotify (void)
+void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 {
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::audioBuffNotify()");
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMainForm::audioBuffNotify(%u)", iBufferSize);
 #endif
 
-	audioShutNotify();
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	// HACK: The audio engine (jackd) is still up
+	// and running, just with bigger buffer size...
+	m_pSession->lock();
+
+	// Always do auto-save here, hence...
+	autoSaveSession();
+
+	// Connections snapshot stuff...
+	qtractorBus::Connections audio_connections;
+	qtractorBus::Connections midi_connections;
+
+	// Get all connections snapshot...
+	audio_connections.save(pAudioEngine);
+	midi_connections.save(pMidiEngine);
+
+	// Engines shutdown is on demand...
+	m_pSession->shutdown();
+	m_pConnections->clear();
+
+	// HACK: Done.
+	m_pSession->unlock();
+
+	// Send an informative message box...
+	appendMessagesError(
+		tr("The audio engine buffer size has changed,\n"
+		"increased from %1 to %2 frames/period.\n\n"
+		"Reloading the current session file\n"
+		"is highly recommended.")
+		.arg(pAudioEngine->bufferSize())
+		.arg(iBufferSize));
+#if 0
+	// Reload the previously auto-saved session...
+	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
+	if (!sAutoSavePathname.isEmpty()
+		&& QFileInfo(sAutoSavePathname).exists()) {
+		// Reset (soft) subject/observer queue.
+		qtractorSubject::resetQueue();
+		// Reset all dependables to default.
+		m_pMixer->clear();
+		m_pFiles->clear();
+		// Close session engines.
+		m_pSession->close();
+		m_pSession->clear();
+		m_pTempoCursor->clear();
+		// And last but not least.
+		m_pConnections->clear();
+		m_pTracks->clear();
+		// Clear (hard) subject/observer queue.
+		qtractorSubject::clearQueue();
+		// Reset playhead.
+		m_iPlayHead = 0;
+	#ifdef CONFIG_LV2
+		qtractorLv2PluginType::lv2_close();
+	#endif
+		// Reload the auto-saved session alright...
+		if (loadSessionFileEx(sAutoSavePathname, false, false)) {
+			m_sFilename = m_pOptions->sAutoSaveFilename;
+			++m_iDirtyCount;
+		}
+		// Final view update, just in case...
+		selectionNotifySlot(NULL);
+	}
+	else
+#else
+	// Try an immediate restart, and restore connections snapshot...
+	if (checkRestartSession()) {
+		audio_connections.load(pAudioEngine);
+		midi_connections.load(pMidiEngine);
+	}
+	// Shall make it dirty anyway...
+	updateDirtyCount(true);
+#endif
+	// Make things just bearable...
+	stabilizeForm();
 }
 
 
@@ -7965,8 +8073,8 @@ void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 // Command update helper.
 void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 {
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMainForm::updateNotifySlot(%d)", int(bRefresh));
+#ifdef CONFIG_DEBUG//_0
+	qDebug("qtractorMainForm::updateNotifySlot(0x%02x)", int(flags));
 #endif
 
 	// Always reset any track view selection...

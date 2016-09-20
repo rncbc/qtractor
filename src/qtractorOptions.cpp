@@ -144,6 +144,7 @@ void qtractorOptions::loadOptions (void)
 	bAudioMasterAutoConnect = m_settings.value("/MasterAutoConnect", true).toBool();
 	bAudioPlayerAutoConnect = m_settings.value("/PlayerAutoConnect", true).toBool();
 	bAudioMetroAutoConnect = m_settings.value("/MetroAutoConnect", true).toBool();
+	iAudioMetroOffset  = (unsigned long) m_settings.value("/MetroOffset", 0).toUInt();
 	m_settings.endGroup();
 
 	// MIDI rendering options group.
@@ -156,6 +157,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiControlBus    = m_settings.value("/ControlBus", false).toBool();
 	bMidiMetroBus      = m_settings.value("/MetroBus", false).toBool();
 	bMidiMetronome     = m_settings.value("/Metronome", true).toBool();
+	iMidiMetroOffset   = m_settings.value("/MetroOffset", 0).toInt();
 	iMidiMmcDevice     = m_settings.value("/MmcDevice", 0x7f).toInt();
 	iMidiMmcMode       = m_settings.value("/MmcMode", 3).toInt();
 	iMidiSppMode       = m_settings.value("/SppMode", 3).toInt();
@@ -430,6 +432,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MasterAutoConnect", bAudioMasterAutoConnect);
 	m_settings.setValue("/PlayerAutoConnect", bAudioPlayerAutoConnect);
 	m_settings.setValue("/MetroAutoConnect", bAudioMetroAutoConnect);
+	m_settings.setValue("/MetroOffset", uint(iAudioMetroOffset));
 	m_settings.endGroup();
 
 	// MIDI rendering options group.
@@ -442,6 +445,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ControlBus", bMidiControlBus);
 	m_settings.setValue("/MetroBus", bMidiMetroBus);
 	m_settings.setValue("/Metronome", bMidiMetronome);
+	m_settings.setValue("/MetroOffset", iMidiMetroOffset);
 	m_settings.setValue("/MmcDevice", iMidiMmcDevice);
 	m_settings.setValue("/MmcMode", iMidiMmcMode);
 	m_settings.setValue("/SppMode", iMidiSppMode);
@@ -529,9 +533,9 @@ void qtractorOptions::saveOptions (void)
 	QStringListIterator iter1(instrumentFiles);
     while (iter1.hasNext())
 		m_settings.setValue(sFilePrefix.arg(++iFile), iter1.next());
-    // Cleanup old entries, if any...
-    while (!m_settings.value(sFilePrefix.arg(++iFile)).isNull())
-        m_settings.remove(sFilePrefix.arg(iFile));
+	// Cleanup old entries, if any...
+	while (!m_settings.value(sFilePrefix.arg(++iFile)).isNull())
+		m_settings.remove(sFilePrefix.arg(iFile));
 	m_settings.endGroup();
 
 	// MIDI controller file list.

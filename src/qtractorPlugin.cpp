@@ -900,15 +900,14 @@ void qtractorPlugin::realizeValues (void)
 	for ( ; param != param_end; ++param) {
 		unsigned long iIndex = param.key();
 		qtractorPluginParam *pParam = findParam(iIndex);
-		if (pParam) {
-			const QString& sName = m_values.names.value(iIndex);
-			if (!sName.isEmpty() && sName != pParam->name()) {
-				qtractorPluginParam *pParamEx = findParamName(sName);
-				if (pParamEx) pParam = pParamEx;
-			}
-			if (pParam)
-				pParam->setValue(param.value(), true);
+		const QString& sName = m_values.names.value(iIndex);
+		if (!sName.isEmpty() && !(pParam && sName == pParam->name())) {
+			qtractorPluginParam *pParamEx = findParamName(sName);
+			if (pParamEx)
+				pParam = pParamEx;
 		}
+		if (pParam)
+			pParam->setValue(param.value(), true);
 	}
 }
 
@@ -1380,11 +1379,8 @@ void qtractorPluginList::setChannels (
 	// Go, go, go...
 	m_iFlags = iFlags;
 
-	if (iChannels == 0)
-		return;
-
 	// Allocate new MIDI manager, if applicable...
-	if (m_iFlags & Midi) {
+	if ((iChannels > 0) && (m_iFlags & Midi)) {
 		m_pMidiProgramSubject = new MidiProgramSubject(m_iMidiBank, m_iMidiProg);
 		m_pMidiManager = qtractorMidiManager::createMidiManager(this);
 		qtractorAudioBus *pAudioOutputBus
@@ -1410,9 +1406,11 @@ void qtractorPluginList::setChannels (
 void qtractorPluginList::setChannelsEx (
 	unsigned short iChannels, bool bReset )
 {
+#if 0
 	// Maybe we don't need to change a thing here...
 	if (iChannels == m_iChannels)
 		return;
+#endif
 
 	unsigned short i;
 
@@ -1694,6 +1692,9 @@ void qtractorPluginList::removeView ( qtractorPluginListView *pView )
 void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 {
 	// Sanity checks...
+	if (!isActivated())
+		return;
+
 	if (ppBuffer == NULL || *ppBuffer == NULL || m_pppBuffers[1] == NULL)
 		return;
 

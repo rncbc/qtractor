@@ -401,6 +401,60 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		}
 	}
 
+	// Draw outline highlight on current clip...
+	if (m_pClipDrag && m_pClipDrag->track()) {
+		// Highlight current clip...
+		const QRect& rectView
+			= qtractorScrollView::viewport()->rect().adjusted(-4, -4, +4, +4);
+		const QPen old_pen = pPainter->pen();
+		QPen pen = old_pen;
+		pen.setColor(QColor(60, 120, 255, 120));
+		pen.setStyle(Qt::SolidLine);
+		pen.setWidth(5);
+		pPainter->setPen(pen);
+		QRect rectClip;
+		TrackViewInfo tvi;
+		qtractorClip  *pCurrentClip  = m_pClipDrag;
+		qtractorTrack *pCurrentTrack = pCurrentClip->track();
+		trackInfo(pCurrentTrack, &tvi);
+		clipInfo(pCurrentClip, &rectClip, &tvi);
+		rectClip.moveTopLeft(
+			qtractorScrollView::contentsToViewport(rectClip.topLeft()));
+		rectClip = rectClip.intersected(rectView);
+		if (!rectClip.isEmpty())
+			pPainter->drawRect(rectClip);
+		// Highlight all hash-linked MIDI clips...
+		if (pCurrentClip->track()->trackType() == qtractorTrack::Midi) {
+			qtractorMidiClip *pCurrentMidiClip
+				= static_cast<qtractorMidiClip *> (pCurrentClip);
+			if (pCurrentMidiClip && pCurrentMidiClip->isHashLinked()) {
+				pen.setStyle(Qt::DotLine);
+				pen.setWidth(3);
+				pPainter->setPen(pen);
+				const QList<qtractorMidiClip *>& list
+					= pCurrentMidiClip->linkedClips();
+				QListIterator<qtractorMidiClip *> iter(list);
+				while (iter.hasNext()) {
+					qtractorMidiClip *pLinkedMidiClip = iter.next();
+					if (pCurrentMidiClip == pLinkedMidiClip)
+						continue;
+					if (pCurrentTrack != pLinkedMidiClip->track()) {
+						pCurrentTrack  = pLinkedMidiClip->track();
+						trackInfo(pCurrentTrack, &tvi);
+					}
+					clipInfo(pLinkedMidiClip, &rectClip, &tvi);
+					rectClip.moveTopLeft(
+						qtractorScrollView::contentsToViewport(rectClip.topLeft()));
+					rectClip = rectClip.intersected(rectView);
+					if (!rectClip.isEmpty())
+						pPainter->drawRect(rectClip.adjusted(+2, +2, -2, -2));
+				}
+			}
+		}
+		// Restore previous drawing pen...
+		pPainter->setPen(old_pen);
+	}
+
 	// Common stuff for the job(s) ahead...
 	unsigned long iTrackStart = 0;
 	unsigned long iTrackEnd   = 0;
@@ -905,7 +959,7 @@ void qtractorTrackView::contentsYMovingSlot ( int /*cx*/, int cy )
 
 // Get track from given contents vertical position.
 qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
-	bool bSelectTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
+	bool bSelectTrack, TrackViewInfo *pTrackViewInfo ) const
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL || m_pSessionCursor == NULL)
@@ -948,7 +1002,7 @@ qtractorTrack *qtractorTrackView::trackAt ( const QPoint& pos,
 // Get clip from given contents position.
 qtractorClip *qtractorTrackView::clipAtTrack (
 	const QPoint& pos, QRect *pClipRect,
-	qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
+	qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo ) const
 {
 	if (pTrack == NULL)
 		return NULL;
@@ -985,7 +1039,7 @@ qtractorClip *qtractorTrackView::clipAtTrack (
 qtractorClip *qtractorTrackView::clipAt (
 	const QPoint& pos, bool bSelectTrack, QRect *pClipRect ) const
 {
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, bSelectTrack, &tvi);
 	return clipAtTrack(pos, pClipRect, pTrack, &tvi);
 }
@@ -993,7 +1047,7 @@ qtractorClip *qtractorTrackView::clipAt (
 
 // Get automation curve node from given contents position.
 qtractorCurve::Node *qtractorTrackView::nodeAtTrack ( const QPoint& pos,
-	qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
+	qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo ) const
 {
 	if (pTrack == NULL)
 		return NULL;
@@ -1039,7 +1093,7 @@ qtractorCurve::Node *qtractorTrackView::nodeAtTrack ( const QPoint& pos,
 
 qtractorCurve::Node *qtractorTrackView::nodeAt ( const QPoint& pos ) const
 {
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
 	return nodeAtTrack(pos, pTrack, &tvi);
 }
@@ -1047,7 +1101,7 @@ qtractorCurve::Node *qtractorTrackView::nodeAt ( const QPoint& pos ) const
 
 // Get contents visible rectangle from given track.
 bool qtractorTrackView::trackInfo (
-	qtractorTrack *pTrack, qtractorTrackViewInfo *pTrackViewInfo ) const
+	qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo ) const
 {
 	qtractorSession *pSession = pTrack->session();
 	if (pSession == NULL || m_pSessionCursor == NULL)
@@ -1079,22 +1133,21 @@ bool qtractorTrackView::trackInfo (
 
 // Get contents rectangle from given clip.
 bool qtractorTrackView::clipInfo (
-	qtractorClip *pClip, QRect *pClipRect ) const
+	qtractorClip *pClip, QRect *pClipRect, TrackViewInfo *pTrackViewInfo ) const
 {
 	qtractorTrack *pTrack = pClip->track();
 	if (pTrack == NULL)
 		return false;
 
-	qtractorTrackViewInfo tvi;
-	if (!trackInfo(pTrack, &tvi))
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
 		return false;
 
-	qtractorSession *pSession = pTrack->session();
-	if (pSession) {
-		const int x = pSession->pixelFromFrame(pClip->clipStart());
-		const int w = pSession->pixelFromFrame(pClip->clipLength());
-		pClipRect->setRect(x, tvi.trackRect.y(), w, tvi.trackRect.height());
-	}
+	const int x = pSession->pixelFromFrame(pClip->clipStart());
+	const int w = pSession->pixelFromFrame(pClip->clipLength());
+	pClipRect->setRect(
+		x, pTrackViewInfo->trackRect.y(),
+		w, pTrackViewInfo->trackRect.height());
 
 	return true;
 }
@@ -1109,7 +1162,7 @@ qtractorTrack *qtractorTrackView::dragClipMove (
 		return NULL;
 
 	// Which track we're pointing at?
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 
 	// May change vertically, if we've only one track selected,
@@ -1128,8 +1181,7 @@ qtractorTrack *qtractorTrackView::dragClipMove (
 
 	// Special update on keyboard vertical drag-stepping...
 	if (bKeyStep)
-		m_posStep.setY(m_posStep.y() - pos.y() + tvi.trackRect.y()
-			+ (pTrack ? (tvi.trackRect.height() >> 1) : 0));
+		m_posStep.setY(m_posStep.y() - pos.y() + tvi.trackRect.y());
 
 	// Always change horizontally wise...
 	const int x = m_pClipSelect->rect().x();
@@ -1155,7 +1207,7 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 		return NULL;
 
 	// Find the current pointer track...
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 
 	// Special update on keyboard vertical drag-stepping...
@@ -1654,7 +1706,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		if (m_dragCursor == DragCurveNode
 			|| (m_bCurveEdit && m_dragCursor == DragNone)) {
-			qtractorTrackViewInfo tvi;
+			TrackViewInfo tvi;
 			qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 			if (pTrack && m_dragCursor == DragCurveNode) {
 				qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
@@ -1670,7 +1722,8 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			|| (m_bCurveEdit && m_dragCursor == DragNone)) {
 			m_dragState = DragStart;//DragCurveNode;
 			m_posDrag   = pos;
-			m_pClipDrag = NULL;
+			m_pClipDrag = clipAt(pos, true);
+			qtractorScrollView::viewport()->update();
 		//	qtractorScrollView::mousePressEvent(pMouseEvent);
 			return;
 		}
@@ -1712,6 +1765,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				if (!m_bCurveEdit && !bModifier)
 					clearSelect();
 			}
+			qtractorScrollView::viewport()->update();
 			break;
 		case Qt::MidButton:
 			// Mid-button positioning...
@@ -1741,6 +1795,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 				m_pTracks->selectionChangeNotify();
 			}
 		#endif
+			qtractorScrollView::viewport()->update();
 			// Fall thru...
 		default:
 			break;
@@ -1827,7 +1882,9 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					m_iDragClipX = (pos.x() - m_posDrag.x());
 					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 					moveRubberBand(&m_pRubberBand, m_rectHandle);
-				} else if (m_pClipDrag) {
+				}
+				else
+				if (m_dragState != DragCurveNode && m_pClipDrag) {
 					// DragClipResize...
 					moveRubberBand(&m_pRubberBand, m_rectDrag, 3);
 				}
@@ -1857,6 +1914,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					moveRubberBand(&m_pRubberBand, m_rectDrag);
 				}
 			}
+			qtractorScrollView::viewport()->update();
 		}
 		// Fall thru...
 	case DragClipStep:
@@ -1953,19 +2011,18 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				if (!m_bCurveEdit && m_selectMode != SelectClip)
 					selectClipFile(!bModifier);
 				// Nothing more has been deferred...
-			} else {
-				// As long we're editing curve/automation...
-				if (m_bCurveEdit)
-					dragCurveNode(pos, modifiers);
-				// As long we're not editing anything...
-				if (m_dragCursor == DragNone && bModifier) {
-					// Direct play-head positioning:
-					// first, set actual engine position...
-					pSession->setPlayHead(iFrame);
-					// Play-head positioning...
-					setPlayHead(iFrame);
-					// Done with (deferred) play-head positioning.
-				}
+			}
+			// As long we're editing curve/automation...
+			if (m_bCurveEdit)
+				dragCurveNode(pos, modifiers);
+			// As long we're not editing anything...
+			if (m_dragCursor == DragNone && bModifier) {
+				// Direct play-head positioning:
+				// first, set actual engine position...
+				pSession->setPlayHead(iFrame);
+				// Play-head positioning...
+				setPlayHead(iFrame);
+				// Done with (deferred) play-head positioning.
 			}
 			// Fall thru...
 		case DragCurveNode:
@@ -2000,7 +2057,7 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 	if (pTrack) {
 		qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
@@ -2060,7 +2117,7 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 			if (pHelpEvent) {
 				const QPoint& pos
 					= qtractorScrollView::viewportToContents(pHelpEvent->pos());
-				qtractorTrackViewInfo tvi;
+				TrackViewInfo tvi;
 				qtractorTrack *pTrack = trackAt(pos, false, &tvi);
 				if (pTrack) {
 					qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
@@ -2114,7 +2171,7 @@ void qtractorTrackView::selectClipFile ( bool bReset )
 		m_pClipSelect->selectItem(m_pClipDrag, m_rectDrag, bSelect);
 		++iUpdate;
 	} else if (bSelect || m_selectMode != SelectClip) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		if (bSelect)
 			m_pClipSelect->selectItem(m_pClipDrag, m_rectDrag, true);
 		++iUpdate;
@@ -2217,7 +2274,7 @@ void qtractorTrackView::selectClipRect ( const QRect& rectDrag,
 	int iUpdate = 0;
 	QRect rectUpdate = m_pClipSelect->rect();
 	if ((flags & SelectClear) && (m_pClipSelect->items().count() > 0)) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		++iUpdate;
 	}
 
@@ -2290,7 +2347,7 @@ void qtractorTrackView::selectClipTrackRange (
 	int iUpdate = 0;
 	QRect rectUpdate = m_pClipSelect->rect();
 	if (bReset && m_pClipSelect->items().count() > 0) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		++iUpdate;
 	}
 
@@ -2352,7 +2409,7 @@ void qtractorTrackView::selectClipTrack (
 	QRect rectUpdate = m_pClipSelect->rect();
 	if (bReset && m_pClipSelect->items().count() > 0) {
 	//	&& m_pClipSelect->singleTrack() != pTrackPtr) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		++iUpdate;
 	}
 
@@ -2399,7 +2456,7 @@ void qtractorTrackView::selectClipAll (void)
 	int iUpdate = 0;
 	QRect rectUpdate = m_pClipSelect->rect();
 	if (m_pClipSelect->items().count() > 0) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		++iUpdate;
 	}
 
@@ -2485,7 +2542,7 @@ void qtractorTrackView::selectClipFile ( qtractorTrack::TrackType trackType,
 	if (m_pClipSelect->items().count() > 0
 		&& (QApplication::keyboardModifiers()
 			& (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 		++iUpdate;
 	}
 
@@ -3120,7 +3177,7 @@ qtractorClip *qtractorTrackView::dragClipStart (
 	const QPoint& pos, const Qt::KeyboardModifiers& modifiers,
 	bool bSelectTrack, QRect *pClipRect )
 {
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, bSelectTrack, &tvi);
 	if (pTrack == NULL)
 		return NULL;
@@ -3136,7 +3193,7 @@ qtractorClip *qtractorTrackView::dragClipStart (
 		else
 			m_dragCursor = DragCurveNode;
 		qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
-		return NULL;
+		return clipAt(pos, bSelectTrack);
 	}
 
 	qtractorSession *pSession = pTrack->session();
@@ -3620,7 +3677,7 @@ void qtractorTrackView::dragClipRepeatRight ( const QPoint& pos )
 void qtractorTrackView::dragCurveNode (
 	const QPoint& pos, const Qt::KeyboardModifiers& modifiers )
 {
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
 	if (pTrack == NULL)
 		return;
@@ -3734,7 +3791,7 @@ void qtractorTrackView::resetDragState (void)
 	if (m_dragCursor != DragNone)
 		qtractorScrollView::unsetCursor();
 	if (m_dragState == DragClipStep)
-		m_pClipSelect->clear();
+		m_pClipSelect->reset();
 	if (m_dragState == DragCurveStep)
 		m_pCurveSelect->clear();
 	if (m_dragState == DragClipRepeatLeft  ||
@@ -3976,17 +4033,38 @@ bool qtractorTrackView::keyStep (
 	// Determine vertical step...
 	if (iKey == Qt::Key_Up || iKey == Qt::Key_Down)  {
 		if (bClipStep) {
-			int iVerticalStep = qtractorTrack::HeightMin;
-			qtractorTrack *pTrack = m_pTracks->currentTrack();
-			if (pTrack)
-				iVerticalStep += (pTrack->zoomHeight() >> 1);
-			int y0 = m_posDrag.y();
-			int y1 = y0 + m_posStep.y();
-			if (iKey == Qt::Key_Up)
-				y1 -= iVerticalStep;
-			else
-				y1 += iVerticalStep;
-			m_posStep.setY((y1 < 0 ? 0 : y1) - y0);
+			qtractorTrack *pTrack = m_pClipSelect->singleTrack();
+			if (pTrack) {
+				const qtractorTrack::TrackType trackType = pTrack->trackType();
+				int iVerticalStep = 0;
+				pTrack = m_pTracks->currentTrack();
+				if (iKey == Qt::Key_Up) {
+					if (pTrack)
+						pTrack = pTrack->prev();
+					else
+						pTrack = pSession->tracks().last();
+					while (pTrack && pTrack->trackType() != trackType) {
+						iVerticalStep -= pTrack->zoomHeight();
+						pTrack = pTrack->prev();
+					}
+					if (pTrack && pTrack->trackType() == trackType)
+						iVerticalStep -= pTrack->zoomHeight();
+					else
+						iVerticalStep = 0;
+				} else {
+					if (pTrack) {
+						iVerticalStep += pTrack->zoomHeight();
+						pTrack = pTrack->next();
+					}
+					while (pTrack && pTrack->trackType() != trackType) {
+						iVerticalStep += pTrack->zoomHeight();
+						pTrack = pTrack->next();
+					}
+				}
+				const int y0 = m_posDrag.y();
+				const int y1 = y0 + m_posStep.y() + iVerticalStep;
+				m_posStep.setY((y1 < 0 ? 0 : y1) - y0);
+			}
 		}
 	}
 	else
@@ -4223,24 +4301,28 @@ int qtractorTrackView::editTailX (void) const
 
 
 // Clear current selection (no notify).
-void qtractorTrackView::clearSelect (void)
+void qtractorTrackView::clearSelect ( bool bReset )
 {
 //	g_clipboard.clear();
 
-	int iUpdate = 0;
+	QRect rectUpdate;
 
-	QRect rectUpdate = m_pClipSelect->rect();
-	if (m_pClipSelect->items().count() > 0) {
-		m_pClipSelect->clear();
-		++iUpdate;
+	if (bReset && m_pClipDrag) {
+		rectUpdate = qtractorScrollView::viewport()->rect();
+		m_pClipDrag = NULL;
 	}
+
+	if (m_pClipSelect->items().count() > 0) {
+		rectUpdate = rectUpdate.united(m_pClipSelect->rect());
+		m_pClipSelect->reset();
+	}
+
 	if (m_pCurveSelect->items().count() > 0) {
 		rectUpdate = rectUpdate.united(m_pCurveSelect->rect());
 		m_pCurveSelect->clear();
-		++iUpdate;
 	}
 
-	if (iUpdate > 0)
+	if (!rectUpdate.isEmpty())
 		updateRect(rectUpdate);
 }
 
@@ -4457,13 +4539,16 @@ void qtractorTrackView::executeClipSelect (
 	if (pClipEx) {
 		// -- Single clip...
 		if (bClipboard) {
-			QRect rectClip;
-			clipInfo(pClipEx, &rectClip);
-			g_clipboard.addClip(pClipEx,
-				rectClip,
-				pClipEx->clipStart(),
-				pClipEx->clipOffset(),
-				pClipEx->clipLength());
+			TrackViewInfo tvi;
+			if (trackInfo(pClipEx->track(), &tvi)) {
+				QRect rectClip;
+				clipInfo(pClipEx, &rectClip, &tvi);
+				g_clipboard.addClip(pClipEx,
+					rectClip,
+					pClipEx->clipStart(),
+					pClipEx->clipOffset(),
+					pClipEx->clipLength());
+			}
 		}
 		if (pClipCommand && cmd != Split)
 			pClipCommand->removeClip(pClipEx);
@@ -4692,7 +4777,7 @@ void qtractorTrackView::pasteClipboard (
 
 	// FIXME: While pasting automation/curve nodes
 	// maybe we can only do it over the original...
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorCurve *pCurve = NULL;
 	if (m_bCurveEdit) {
 		if (g_clipboard.nodes.isEmpty())
@@ -4713,7 +4798,7 @@ void qtractorTrackView::pasteClipboard (
 		return;
 
 	// Reset any current selection, whatsoever...
-	m_pClipSelect->clear();
+	m_pClipSelect->reset();
 	m_pCurveSelect->clear();
 
 	resetDragState();
@@ -5052,7 +5137,7 @@ void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 
 	dragCurveMove(pos);
 
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = m_pTracks->currentTrack();
 	if (pTrack == NULL || !trackInfo(pTrack, &tvi))
 		pTrack = trackAt(pos, true, &tvi);
@@ -5141,7 +5226,7 @@ void qtractorTrackView::pasteCurveSelect ( const QPoint& pos )
 
 	dragCurveMove(pos);
 
-	qtractorTrackViewInfo tvi;
+	TrackViewInfo tvi;
 	qtractorTrack *pTrack = m_pTracks->currentTrack();
 	if (pTrack == NULL || !trackInfo(pTrack, &tvi))
 		return;

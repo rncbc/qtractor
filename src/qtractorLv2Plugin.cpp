@@ -609,12 +609,11 @@ static char *qtractor_lv2_state_abstract_path (
 		sDir = pSession->sessionDir();
 
 	const QFileInfo fi(absolute_path);
-	const QString& sAbsolutePath
-		= (fi.exists() ? fi.canonicalFilePath() : fi.absoluteFilePath());
+	const QString& sAbsolutePath = fi.absoluteFilePath();
 
 	QString sAbstractPath = QDir(sDir).relativeFilePath(sAbsolutePath);
 	if (bSessionDir)
-		sAbstractPath = qtractorDocument::addArchiveFile(sAbstractPath);
+		sAbstractPath = qtractorDocument::addArchiveFile(sDir, sAbstractPath);
 	return ::strdup(sAbstractPath.toUtf8().constData());
 }
 
@@ -645,8 +644,7 @@ static char *qtractor_lv2_state_absolute_path (
 	if (fi.isRelative())
 		fi.setFile(QDir(sDir), fi.filePath());
 
-	const QString& sAbsolutePath
-		= (fi.exists() ? fi.canonicalFilePath() : fi.absoluteFilePath());
+	const QString& sAbsolutePath = fi.absoluteFilePath();
 	return ::strdup(sAbsolutePath.toUtf8().constData());
 }
 
@@ -706,7 +704,7 @@ static char *qtractor_lv2_state_make_path (
 	if (!QDir(sMakeDir).exists())
 		dir.mkpath(sMakeDir);
 
-	const QString& sMakePath = fi.canonicalFilePath();
+	const QString& sMakePath = fi.absoluteFilePath();
 	return ::strdup(sMakePath.toUtf8().constData());
 }
 
@@ -1177,8 +1175,9 @@ qtractorLv2Plugin::Property::Property ( const LilvNode *property )
 	m_key = qtractorLv2Plugin::lv2_urid_map(prop_uri);
 	m_uri = prop_uri;
 
-	LilvNode *label = lilv_nodes_get_first(
-		lilv_world_find_nodes(g_lv2_world, property, label_uri, NULL));
+	LilvNodes *nodes = lilv_world_find_nodes(
+		g_lv2_world, property, label_uri, NULL);
+	LilvNode *label = (nodes ? lilv_nodes_get_first(nodes) : label_uri);
 	m_name = (label ? lilv_node_as_string(label) : prop_uri);
 	m_type = 0;
 	for (int i = 0; s_types[i]; ++i) {
@@ -1224,6 +1223,8 @@ qtractorLv2Plugin::Property::Property ( const LilvNode *property )
 	if (prop_min) lilv_node_free(prop_min);
 	if (prop_max) lilv_node_free(prop_max);
 	if (prop_def) lilv_node_free(prop_def);
+
+	if (nodes) lilv_nodes_free(nodes);
 
 	lilv_node_free(label_uri);
 	lilv_node_free(range_uri);
@@ -1498,12 +1499,15 @@ bool qtractorLv2PluginType::open (void)
 	// Query for state interface extension data...
 	LilvNodes *nodes = lilv_plugin_get_value(m_lv2_plugin,
 		g_lv2_extension_data_hint);
-	LILV_FOREACH(nodes, iter, nodes) {
-		const LilvNode *node = lilv_nodes_get(nodes, iter);
-		if (lilv_node_equals(node, g_lv2_state_interface_hint)) {
-			m_bConfigure = true;
-			break;
+	if (nodes) {
+		LILV_FOREACH(nodes, iter, nodes) {
+			const LilvNode *node = lilv_nodes_get(nodes, iter);
+			if (lilv_node_equals(node, g_lv2_state_interface_hint)) {
+				m_bConfigure = true;
+				break;
+			}
 		}
+		lilv_nodes_free(nodes);
 	}
 #endif
 #ifdef CONFIG_LV2_UI
@@ -1872,6 +1876,7 @@ void qtractorLv2PluginType::lv2_close (void)
 
 #ifdef CONFIG_LV2_STATE
 	lilv_node_free(g_lv2_state_interface_hint);
+	lilv_node_free(g_lv2_state_load_default_hint);
 #endif
 
 #ifdef CONFIG_LV2_WORKER
@@ -1934,7 +1939,8 @@ void qtractorLv2PluginType::lv2_close (void)
 #endif
 
 #ifdef CONFIG_LV2_STATE
-	g_lv2_state_interface_hint = NULL;
+	g_lv2_state_interface_hint    = NULL;
+	g_lv2_state_load_default_hint = NULL;
 #endif
 
 #ifdef CONFIG_LV2_WORKER
