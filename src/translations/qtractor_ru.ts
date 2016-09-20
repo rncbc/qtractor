@@ -2638,16 +2638,6 @@ Do you want to crash-recover from it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5508"/>
-        <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5511"/>
-        <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5517"/>
         <source>JACK Session support disabled.</source>
         <translation type="unfinished"></translation>
@@ -3024,6 +3014,16 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5476"/>
         <source>LV2 Plug-in State Files support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5508"/>
+        <source>LV2 Plug-in UI GTK2 native support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5511"/>
+        <source>LV2 Plug-in UI X11 native support disabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

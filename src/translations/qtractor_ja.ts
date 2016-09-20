@@ -5647,16 +5647,6 @@ next time you start this %1.</source>
         <translation>LV2プラグインUIの表示インターフェイスは無効です。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5508"/>
-        <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation>LV2プラグインUIのGTK2ネイティブサポートは有効です。</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5511"/>
-        <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation>LV2プラグインUIのX11ネイティブサポートが有効です。</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5523"/>
         <source>JACK Metadata support disabled.</source>
         <translation>JACK Metadata サポートは無効です。</translation>
@@ -5837,6 +5827,16 @@ ALSAシーケンサーカーネルモジュール (snd-seq-midi) が
         <location filename="../qtractorMainForm.cpp" line="2265"/>
         <source>Don&apos;t ask this again</source>
         <translation>再確認しない</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5508"/>
+        <source>LV2 Plug-in UI GTK2 native support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5511"/>
+        <source>LV2 Plug-in UI X11 native support disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5526"/>

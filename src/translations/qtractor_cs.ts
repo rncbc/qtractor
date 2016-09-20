@@ -2653,16 +2653,6 @@ Jste si jistý?</translation>
         <translation>Podpora pro rozhraní IDLE přídavných modulů LV2 Show byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5508"/>
-        <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 v GTK byla povolena.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5511"/>
-        <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 v X11 byla povolena.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5520"/>
         <source>JACK Latency support disabled.</source>
         <translation>Podpora pro prodlevu JACK byla zakázána.</translation>
@@ -3061,6 +3051,16 @@ až při příštím spuštění %1.</translation>
         <location filename="../qtractorMainForm.cpp" line="5456"/>
         <source>LV2 Plug-in External UI support disabled.</source>
         <translation>Podpora pro rozhraní přídavných modulů LV2 byla zakázána.</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5508"/>
+        <source>LV2 Plug-in UI GTK2 native support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5511"/>
+        <source>LV2 Plug-in UI X11 native support disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5517"/>

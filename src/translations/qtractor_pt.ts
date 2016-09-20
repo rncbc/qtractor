@@ -2623,6 +2623,16 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Suporte a State Make Path de plugins LV2 (PERIGOSO)	ativado.</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="5508"/>
+        <source>LV2 Plug-in UI GTK2 native support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5511"/>
+        <source>LV2 Plug-in UI X11 native support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="7481"/>
         <source>The audio engine buffer size has changed,
 increased from %1 to %2 frames/period.
@@ -4475,16 +4485,6 @@ está rodando e reinicie a sessão.</translation>
         <location filename="../qtractorMainForm.cpp" line="5504"/>
         <source>LV2 Plug-in UI Show interface support disabled.</source>
         <translation>Desabilitar exibição de interfaces de Plug-in LV2.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5508"/>
-        <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation>Suporte nativo GTK2 de interfaces para Plug-in LV2 ativado.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5511"/>
-        <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation>Suporte nativo X11 de interfaces para Plug-in LV2 ativado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5523"/>

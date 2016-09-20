@@ -5649,16 +5649,6 @@ que la prochaine fois que vous démarrerez %1.</translation>
         <translation>Support UI Show interface greffon LV2 désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5508"/>
-        <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation>Support du support du GUI GTK2 natif activé.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5511"/>
-        <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation>Support du support du GUI X11 natif activé.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5523"/>
         <source>JACK Metadata support disabled.</source>
         <translation>Support des métadonnées JACK désactivé.</translation>
@@ -5840,6 +5830,16 @@ est près et en fonctionnement puis redémarrer la session.</translation>
         <location filename="../qtractorMainForm.cpp" line="5473"/>
         <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
         <translation>support de LV2 plug-in State Make Path activé (DANGEREUX)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5508"/>
+        <source>LV2 Plug-in UI GTK2 native support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5511"/>
+        <source>LV2 Plug-in UI X11 native support disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5526"/>

@@ -5715,13 +5715,13 @@ la próxima vez que inicie este %1.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5508"/>
-        <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation>Soporte de Plug In nativo para UI GTK2 habilitado.</translation>
+        <source>LV2 Plug-in UI GTK2 native support disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5511"/>
-        <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation>Soporte de Plug in nativo para UI X11 habilitado.</translation>
+        <source>LV2 Plug-in UI X11 native support disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5517"/>
