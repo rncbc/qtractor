@@ -72,7 +72,7 @@ the personal home-studio.
 %__make %{?_smp_mflags}
 
 %install
-%__make DESTDIR=%{buildroot} install
+%__make DESTDIR="%{buildroot}" install
 
 %post
 %mime_database_post
@@ -83,7 +83,7 @@ the personal home-studio.
 %desktop_database_postun
 
 %clean
-[ -d %{buildroot} -a "%{buildroot}" != "" ] && %__rm -rf %{buildroot}
+[ -d "%{buildroot}" -a "%{buildroot}" != "" ] && %__rm -rf "%{buildroot}"
 
 %files
 %defattr(-,root,root)
@@ -116,6 +116,8 @@ the personal home-studio.
 %{_datadir}/man/man1/%{name}.1.gz
 
 %changelog
+* Wed Sep 21 2016 Rui Nuno Capela <rncbc@rncbc.org> 0.7.9
+- A Snobbier Graviton beta release.
 * Thu Jun 23 2016 Rui Nuno Capela <rncbc@rncbc.org> 0.7.8
 - The Snobby Graviton beta release.
 * Wed Apr 27 2016 Rui Nuno Capela <rncbc@rncbc.org> 0.7.7
