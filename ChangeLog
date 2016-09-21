@@ -4,16 +4,15 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.7.9  2016-09-21  Snobbier Graviton Beta
 
 - JACK buffer-size change handling has been deeeply improved,
   now doing an immediate session restart, while preserving all
-  external connections as much as possible. (EXPERIMENTAL)
+  external connections as much as possible.
 
 - Introducing an audio and MIDI metronome anticipatory offset,
   kind of latency compensation, to respective option settings
   cf. View/Options.../Audio, MIDI/Metronome/Offset (latency).
-  (EXPERIMENTAL)
 
 - Fixed LADSPA plug-in preset switching, incidentally broken
   as NOP, ever since late Haziest Photon's crash-landed.
@@ -22,27 +21,25 @@ GIT HEAD
   broken on Qt5 builds, now fixed.
 
 - MIDI RPN/NRPN running status and RPN NULL reset command
-  are now supported (input only). (EXPERIMENTAL)
+  are now supported (input only).
 
 - Fixed a sure immediate crash on removing audio buses that
   are current targets of any active Aux-send inserts.
 
 - Fixed yet another old bummer that was reaping off assigned
   MIDI controllers on existing track's gain/volume or panning
-  controls, when adding any single new track. (EXPERIMENTAL)
+  controls, when adding any single new track.
 
 - Fixed missing feedback on MIDI controllers assigned to any
   of monitor, record, mute and solo track/bus state buttons. 
-  (EXPERIMENTAL)
 
 - Eye-candy warning: the current clip, not necessarilty the
   one currently selected, is now highligthed with a solid
   outline; linked MIDi clips are also highlighted with an
-  alternate dashed outline. (EXPERIMENTAL)
+  alternate dashed outline.
 
 - SFZ file conversion, and bundling of the respective sample
   files, is now supported when saving as zip/archive (*.qtz).
-  (EXPERIMENTAL)
 
 - Fixed track monitor, record, mute and solo dangling states,
   on Track/Duplicate command.
@@ -57,7 +54,7 @@ GIT HEAD
   clip length still un-quantized to MIDI resolution (BBT).
 
 - A brand new and discrete MIDI clip editor command tool has
-  been added: MIDI Tools/Transpose/Reverse. (EXPERIMENTAL)
+  been added: MIDI Tools/Transpose/Reverse.
 
 - Discretely fixed MIDI Controlllers catch-up algorithm.
 

@@ -2653,16 +2653,6 @@ Jste si jistý?</translation>
         <translation>Podpora pro rozhraní IDLE přídavných modulů LV2 Show byla zakázána.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5508"/>
-        <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 v GTK byla povolena.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5511"/>
-        <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 v X11 byla povolena.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5520"/>
         <source>JACK Latency support disabled.</source>
         <translation>Podpora pro prodlevu JACK byla zakázána.</translation>
@@ -3063,6 +3053,16 @@ až při příštím spuštění %1.</translation>
         <translation>Podpora pro rozhraní přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="5508"/>
+        <source>LV2 Plug-in UI GTK2 native support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5511"/>
+        <source>LV2 Plug-in UI X11 native support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="5517"/>
         <source>JACK Session support disabled.</source>
         <translation>Podpora pro sezení JACK byla zakázána.</translation>
@@ -3185,7 +3185,11 @@ increased from %1 to %2 frames/period.
 
 Reloading the current session file
 is highly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyrovnávací paměť zvukového stroje se
+změnila, zvýšila se z %1 na %2 snímků/perioda.
+
+Velmi se doporučuje nahrát nynější soubor se
+sezením znovu.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7908"/>
@@ -9026,7 +9030,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="521"/>
         <source>&amp;Reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Obrátit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="542"/>
@@ -10431,27 +10435,27 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="1320"/>
         <location filename="../qtractorOptionsForm.ui" line="2162"/>
         <source>&amp;Offset (latency):</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Posun (prodleva):</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1339"/>
         <source>Metronome Audio offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>Posun zvuku metronomu (prodleva)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2007"/>
         <source>Metronome MIDI duration (bar)</source>
-        <translation type="unfinished"></translation>
+        <translation>Doba trvání MIDI pro metronom (takt)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2121"/>
         <source>Metronome MIDI duration (beat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Doba trvání MIDI pro metronom (doba)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2181"/>
         <source>Metronome MIDI offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>Posun MIDI pro metronom (prodleva)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2989"/>

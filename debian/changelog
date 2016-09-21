@@ -1,3 +1,9 @@
+qtractor (0.7.9-27) unstable; urgency=low
+
+  * New release: snobbier graviton beta
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Wed, 21 Sep 2016 18:00:00 +0100
+
 qtractor (0.7.8-26) unstable; urgency=low
 
   * New release: snobby graviton beta

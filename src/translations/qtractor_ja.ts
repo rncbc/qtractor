@@ -5647,16 +5647,6 @@ next time you start this %1.</source>
         <translation>LV2プラグインUIの表示インターフェイスは無効です。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5508"/>
-        <source>LV2 Plug-in UI GTK2 native support enabled.</source>
-        <translation>LV2プラグインUIのGTK2ネイティブサポートは有効です。</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5511"/>
-        <source>LV2 Plug-in UI X11 native support enabled.</source>
-        <translation>LV2プラグインUIのX11ネイティブサポートが有効です。</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5523"/>
         <source>JACK Metadata support disabled.</source>
         <translation>JACK Metadata サポートは無効です。</translation>
@@ -5686,7 +5676,11 @@ increased from %1 to %2 frames/period.
 
 Reloading the current session file
 is highly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>音声エンジンのバッファーサイズが変更され、
+%1 から %2 frame/periodとなりました。
+
+現在のセッションファイルを再ロード
+してください。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="434"/>
@@ -5833,6 +5827,16 @@ ALSAシーケンサーカーネルモジュール (snd-seq-midi) が
         <location filename="../qtractorMainForm.cpp" line="2265"/>
         <source>Don&apos;t ask this again</source>
         <translation>再確認しない</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5508"/>
+        <source>LV2 Plug-in UI GTK2 native support disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5511"/>
+        <source>LV2 Plug-in UI X11 native support disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5526"/>
@@ -8973,7 +8977,7 @@ Sorry.</source>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="521"/>
         <source>&amp;Reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>反転(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="542"/>
@@ -9705,27 +9709,27 @@ Are you sure?</source>
         <location filename="../qtractorOptionsForm.ui" line="1320"/>
         <location filename="../qtractorOptionsForm.ui" line="2162"/>
         <source>&amp;Offset (latency):</source>
-        <translation type="unfinished"></translation>
+        <translation>オフセット(レイテンシ)(&amp;O):</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1339"/>
         <source>Metronome Audio offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>メトロノームの音声オフセット(レイテンシ)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2007"/>
         <source>Metronome MIDI duration (bar)</source>
-        <translation type="unfinished"></translation>
+        <translation>メトロノームのMIDIデュレーション(bar)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2121"/>
         <source>Metronome MIDI duration (beat)</source>
-        <translation type="unfinished"></translation>
+        <translation>メトロノームのMIDIデュレーション(beat)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2181"/>
         <source>Metronome MIDI offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>メトロノームのMIDIオフセット(レイテンシ)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2509"/>
