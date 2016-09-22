@@ -491,7 +491,7 @@ void qtractorLv2Worker::schedule ( uint32_t size, const void *data )
 {
 	const uint32_t request_size = size + sizeof(size);
 
-	if (::jack_ringbuffer_write_space(m_pRequests) < request_size) {
+	if (::jack_ringbuffer_write_space(m_pRequests) >= request_size) {
 		char request_data[request_size];
 		::memcpy(request_data, &size, sizeof(size));
 		::memcpy(request_data + sizeof(size), data, size);
@@ -508,7 +508,7 @@ void qtractorLv2Worker::respond ( uint32_t size, const void *data )
 {
 	const uint32_t response_size = size + sizeof(size);
 
-	if (::jack_ringbuffer_write_space(m_pResponses) < response_size) {
+	if (::jack_ringbuffer_write_space(m_pResponses) >= response_size) {
 		char response_data[response_size];
 		::memcpy(response_data, &size, sizeof(size));
 		::memcpy(response_data + sizeof(size), data, size);
