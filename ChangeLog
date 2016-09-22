@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- LV2 Plugin-in worker/schedule fix: make request/response
+  ringbuffer writes in one go, hopefully atomic (suggested
+  patch by Stefan Westerfeld, while on SpectMorph, thanks).
+
+
 0.7.9  2016-09-21  Snobbier Graviton Beta
 
 - JACK buffer-size change handling has been deeply improved,

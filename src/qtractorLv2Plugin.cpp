@@ -489,8 +489,15 @@ qtractorLv2Worker::~qtractorLv2Worker (void)
 // Schedule work.
 void qtractorLv2Worker::schedule ( uint32_t size, const void *data )
 {
-	::jack_ringbuffer_write(m_pRequests, (const char *) &size, sizeof(size));
-	::jack_ringbuffer_write(m_pRequests, (const char *) data, size);
+	const uint32_t request_size = size + sizeof(size);
+
+	if (::jack_ringbuffer_write_space(m_pRequests) < request_size) {
+		char request_data[request_size];
+		::memcpy(request_data, &size, sizeof(size));
+		::memcpy(request_data + sizeof(size), data, size);
+		::jack_ringbuffer_write(m_pRequests,
+			(const char *) &request_data, request_size);
+	}
 
 	if (g_pWorkerThread)
 		g_pWorkerThread->sync(this);
@@ -499,8 +506,15 @@ void qtractorLv2Worker::schedule ( uint32_t size, const void *data )
 // Response work.
 void qtractorLv2Worker::respond ( uint32_t size, const void *data )
 {
-	::jack_ringbuffer_write(m_pResponses, (const char *) &size, sizeof(size));
-	::jack_ringbuffer_write(m_pResponses, (const char *) data, size);
+	const uint32_t response_size = size + sizeof(size);
+
+	if (::jack_ringbuffer_write_space(m_pResponses) < response_size) {
+		char response_data[response_size];
+		::memcpy(response_data, &size, sizeof(size));
+		::memcpy(response_data + sizeof(size), data, size);
+		::jack_ringbuffer_write(m_pResponses,
+			(const char *) &response_data, response_size);
+	}
 }
 
 // Commit work.
