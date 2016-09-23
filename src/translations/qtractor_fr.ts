@@ -2393,7 +2393,7 @@ Voulez-vous appliquer les changements ?</translation>
         <location filename="../qtractorMainForm.ui" line="938"/>
         <location filename="../qtractorMainForm.ui" line="2146"/>
         <source>&amp;Track</source>
-        <translation>Pis&amp;te</translation>
+        <translation>&amp;Piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="223"/>
@@ -2480,12 +2480,12 @@ Voulez-vous appliquer les changements ?</translation>
         <location filename="../qtractorMainForm.ui" line="520"/>
         <location filename="../qtractorMainForm.ui" line="2197"/>
         <source>T&amp;ransport</source>
-        <translation>T&amp;ransport</translation>
+        <translation>&amp;Transport</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="547"/>
         <source>&amp;Help</source>
-        <translation>&amp;Aide</translation>
+        <translation>A&amp;ide</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="568"/>
