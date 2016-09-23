@@ -400,6 +400,8 @@ AC_PROG_CXXCPP
 # Checks for languages.
 AC_LANG_CPLUSPLUS
 
+# Check for pkg-config.
+PKG_PROG_PKG_CONFIG
 
 # Check for proper flags.
 ac_arch=`uname -m`
@@ -592,15 +594,6 @@ if test "x$ac_sse" = "xyes"; then
 fi
 
 
-# Check for pkg-config utility (needed for LV2 GTK UI support).
-AC_PATH_PROG(ac_pkg_config, pkg-config, [no], $ac_path)
-if test "x$ac_pkg_config" = "xno"; then
-   ac_lv2="no"
-   ac_lilv="no"
-   ac_suil="no"
-fi
-
-
 # Checks for libraries.
 AC_CHECK_LIB(m, main)
 AC_CHECK_LIB(X11, main)
@@ -765,17 +758,14 @@ fi
 
 # Check for optional liblilv library.
 if test "x$ac_lilv" = "xyes"; then
-   AC_CHECK_LIB(lilv-0, main, [ac_lilv="yes"], [ac_lilv="no"])
+   PKG_CHECK_MODULES([LILV], [lilv-0], [ac_lilv="yes"], [ac_lilv="no"])
 fi
 if test "x$ac_lilv" = "xyes"; then
-   ac_lilv_libs=`$ac_pkg_config --libs lilv-0 2>/dev/null`
-   if test -n "$ac_lilv_libs"; then
-      ac_libs="$ac_libs $ac_lilv_libs"
-      AC_DEFINE(CONFIG_LIBLILV, 1, [Define if liblilv is available.])
-   else
-      AC_MSG_WARN([*** lilv library not found.])
-      ac_lilv="no"
-   fi
+   AC_DEFINE(CONFIG_LIBLILV, 1, [Define if liblilv is available.])
+   ac_cflags="$LILV_CFLAGS $ac_cflags"
+   ac_libs="$ac_libs $LILV_LIBS"
+else
+   AC_MSG_WARN([*** lilv library not found.])
 fi
 
 if test "x$ac_lilv" = "xyes"; then
@@ -795,17 +785,14 @@ fi
 
 # Check for LV2 new UI instantiation availability (libsuil).
 if test "x$ac_suil" = "xyes"; then
-   AC_CHECK_LIB(suil-0, main, [ac_suil="yes"], [ac_suil="no"])
+   PKG_CHECK_MODULES([SUIL], [suil-0], [ac_suil="yes"], [ac_suil="no"])
 fi
 if test "x$ac_suil" = "xyes"; then
-   ac_suil_libs=`$ac_pkg_config --libs suil-0 2>/dev/null`
-   if test -n "$ac_suil_libs"; then
-      ac_libs="$ac_libs $ac_suil_libs"
-      AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if libsuil is available.])
-   else
-      AC_MSG_WARN([*** suil library not found.])
-      ac_suil="no"
-   fi
+   AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if libsuil is available.])
+   ac_cflags="$SUIL_CFLAGS $ac_cflags"
+   ac_libs="$ac_libs $SUIL_LIBS"
+else
+   AC_MSG_WARN([*** suil library not found.])
 fi
 
 if test "x$ac_suil" = "xyes"; then
@@ -949,31 +936,21 @@ fi
 
 # Check for lilv headers.
 if test "x$ac_lilv" = "xyes"; then
-   ac_lilv_cflags=`$ac_pkg_config --cflags lilv-0 2>/dev/null`
-   if test -n "$ac_lilv_cflags"; then
-      CFLAGS="$ac_lilv_cflags $CFLAGS"
-      CPPFLAGS="$ac_lilv_cflags $CPPFLAGS"
-   fi
+   CFLAGS=$ac_cflags
+   CPPFLAGS=$ac_cflags
    AC_CHECK_HEADER(lilv/lilv.h, [ac_lilv_h="yes"], [ac_lilv_h="no"])
    if test "x$ac_lilv_h" = "xno"; then
       AC_MSG_ERROR([lilv.h header file not found.])
-   else
-      ac_cflags="$ac_lilv_cflags $ac_cflags"
    fi
 fi
 
 # Check for suil headers.
 if test "x$ac_suil" = "xyes"; then
-   ac_suil_cflags=`$ac_pkg_config --cflags suil-0 2>/dev/null`
-   if test -n "$ac_suil_cflags"; then
-      CFLAGS="$ac_suil_cflags $CFLAGS"
-      CPPFLAGS="$ac_suil_cflags $CPPFLAGS"
-   fi
+   CFLAGS="$ac_cflags"
+   CPPFLAGS="$ac_cflags"
    AC_CHECK_HEADER(suil/suil.h, [ac_suil_h="yes"], [ac_suil_h="no"])
    if test "x$ac_suil_h" = "xno"; then
       AC_MSG_ERROR([suil.h header file not found.])
-   else
-      ac_cflags="$ac_suil_cflags $ac_cflags"
    fi
 fi
 
@@ -1376,16 +1353,14 @@ if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_ui_gtk2" = "xyes"; then
-   ac_gtk2_cflags=`$ac_pkg_config --cflags gtk+-2.0 2>/dev/null`
-   ac_gtk2_libs=`$ac_pkg_config --libs gtk+-2.0 2>/dev/null`
-   if test -n "$ac_gtk2_cflags" -a -n "$ac_gtk2_libs"; then
-      ac_cflags="$ac_cflags $ac_gtk2_cflags"
-      ac_libs="$ac_libs $ac_gtk2_libs"
-      AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
-   else
-      AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
-      ac_lv2_ui_gtk2="no"
-   fi
+   PKG_CHECK_MODULES([GTK2], [gtk+-2.0], [ac_lv2_ui_gtk2="yes"], [ac_lv2_ui_gtk2="no"])
+fi
+if test "x$ac_lv2_ui_gtk2" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
+   ac_cflags="$GTK2_CFLAGS $ac_cflags"
+   ac_libs="$ac_libs $GTK2_LIBS"
+else
+   AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
 fi
 
 if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
