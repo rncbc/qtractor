@@ -5834,12 +5834,12 @@ est près et en fonctionnement puis redémarrer la session.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5508"/>
         <source>LV2 Plug-in UI GTK2 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support natif LV2 Plug-in UI GTK2 désactivé</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5511"/>
         <source>LV2 Plug-in UI X11 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>support natif LV2 Plug-in UI X11 désactivé</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5526"/>
@@ -8212,7 +8212,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1684"/>
         <source>&amp;About...</source>
-        <translation>&amp;A propos...</translation>
+        <translation>À &amp;propos...</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1687"/>
