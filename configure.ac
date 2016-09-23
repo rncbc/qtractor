@@ -1,27 +1,45 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.9.2, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.9.3, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
 AC_CONFIG_FILES(Makefile qtractor.spec src/src.pri src/qtractor.desktop)
 AC_CONFIG_FILES(src/qtractor_vst_scan.pri)
 
+# Sanitize version string.
+ac_version=$(echo $PACKAGE_VERSION | sed -r 's/^([0-9|\.]+).*$/\1/')
+AC_SUBST(ac_version)
+
 # Set default installation prefix.
 AC_PREFIX_DEFAULT(/usr/local)
-ac_prefix=$prefix
-if test "x$ac_prefix" = "xNONE"; then
-   ac_prefix=$ac_default_prefix
+if test "x$prefix" = "xNONE"; then
+   prefix=$ac_default_prefix
 fi
+if test "x$exec_prefix" = "xNONE"; then
+   exec_prefix=$prefix
+fi
+eval ac_prefix=$prefix
 AC_SUBST(ac_prefix)
 AC_DEFINE_UNQUOTED(CONFIG_PREFIX, ["$ac_prefix"], [Default installation prefix.])
 
-# Set default library/plugin prefix.
-if test "x$exec_prefix" = "xNONE"; then
-   exec_prefix=$ac_prefix
-fi
+# Set default installation directories.
+eval ac_bindir=$bindir
+AC_SUBST(ac_bindir)
+AC_DEFINE_UNQUOTED(CONFIG_BINDIR, ["$ac_bindir"], [Default executable binary path.])
+
 eval ac_libdir=$libdir
 AC_SUBST(ac_libdir)
-AC_DEFINE_UNQUOTED(CONFIG_LIBDIR, ["$ac_libdir"], [Default library path.])
+AC_DEFINE_UNQUOTED(CONFIG_LIBDIR, ["$ac_libdir"], [Default object library path.])
+
+eval datarootdir=$datarootdir
+eval ac_datadir=$datadir
+AC_SUBST(ac_datadir)
+AC_DEFINE_UNQUOTED(CONFIG_DATADIR, ["$ac_datadir"], [Default arch-idependent data path.])
+
+eval ac_mandir=$mandir
+AC_SUBST(ac_mandir)
+AC_DEFINE_UNQUOTED(CONFIG_MANDIR, ["$ac_mandir"], [Default man page path.])
+
 
 # Enable debugging argument option.
 AC_ARG_ENABLE(debug,

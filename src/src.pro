@@ -311,10 +311,15 @@ unix {
 		PREFIX = /usr/local
 	}
 
-	BINDIR = $${PREFIX}/bin
-	DATADIR = $$PREFIX/share
+	isEmpty(BINDIR) {
+		BINDIR = $${PREFIX}/bin
+	}
 
-	DEFINES += DATADIR=\"$${DATADIR}\"
+	isEmpty(DATADIR) {
+		DATADIR = $${PREFIX}/share
+	}
+
+	#DEFINES += DATADIR=\"$${DATADIR}\"
 
 	# make install
 	INSTALLS += target desktop icon appdata \

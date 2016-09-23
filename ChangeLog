@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Almost complete overhaul on the configure script command
+  line options, wrt. installation directories specification,
+  eg. --prefix, --bindir, --libdir, --datadir and --mandir.
+  (EXPERIMENTAL)
+
 - LV2 Plugin-in worker/schedule fix: make request/response
   ringbuffer writes in one go, hopefully atomic (suggested
   patch by Stefan Westerfeld, while on SpectMorph, thanks).

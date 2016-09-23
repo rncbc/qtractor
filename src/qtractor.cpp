@@ -33,15 +33,6 @@
 #include <QStyleFactory>
 
 
-#define CONFIG_QUOTE1(x) #x
-#define CONFIG_QUOTED(x) CONFIG_QUOTE1(x)
-
-#if defined(DATADIR)
-#define CONFIG_DATADIR CONFIG_QUOTED(DATADIR)
-#else
-#define CONFIG_DATADIR CONFIG_PREFIX "/share"
-#endif
-
 #ifndef CONFIG_LIBDIR
 #if defined(__x86_64__)
 #define CONFIG_LIBDIR CONFIG_PREFIX "/lib64"
