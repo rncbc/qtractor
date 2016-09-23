@@ -2393,7 +2393,7 @@ Voulez-vous appliquer les changements ?</translation>
         <location filename="../qtractorMainForm.ui" line="938"/>
         <location filename="../qtractorMainForm.ui" line="2146"/>
         <source>&amp;Track</source>
-        <translation>Pis&amp;te</translation>
+        <translation>&amp;Piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="223"/>
@@ -2480,12 +2480,12 @@ Voulez-vous appliquer les changements ?</translation>
         <location filename="../qtractorMainForm.ui" line="520"/>
         <location filename="../qtractorMainForm.ui" line="2197"/>
         <source>T&amp;ransport</source>
-        <translation>T&amp;ransport</translation>
+        <translation>&amp;Transport</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="547"/>
         <source>&amp;Help</source>
-        <translation>&amp;Aide</translation>
+        <translation>A&amp;ide</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="568"/>
@@ -5160,14 +5160,14 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2917"/>
         <source>&amp;About...</source>
-        <translation>&amp;A propos...</translation>
+        <translation>À &amp;propos...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2920"/>
         <location filename="../qtractorMainForm.ui" line="2923"/>
         <location filename="../qtractorMainForm.cpp" line="5552"/>
         <source>About</source>
-        <translation>A propos</translation>
+        <translation>À propos</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2926"/>
@@ -5183,7 +5183,7 @@ Voulez-vous appliquer les changements ?</translation>
         <location filename="../qtractorMainForm.ui" line="2934"/>
         <location filename="../qtractorMainForm.ui" line="2937"/>
         <source>About Qt</source>
-        <translation>A propos de Qt</translation>
+        <translation>À propos de Qt</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2940"/>
@@ -5834,12 +5834,12 @@ est près et en fonctionnement puis redémarrer la session.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5508"/>
         <source>LV2 Plug-in UI GTK2 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support natif LV2 Plug-in UI GTK2 désactivé</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5511"/>
         <source>LV2 Plug-in UI X11 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>support natif LV2 Plug-in UI X11 désactivé</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5526"/>
@@ -8212,13 +8212,13 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1684"/>
         <source>&amp;About...</source>
-        <translation>&amp;A propos...</translation>
+        <translation>À &amp;propos...</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1687"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1690"/>
         <source>About</source>
-        <translation>A propos</translation>
+        <translation>À propos</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1693"/>
@@ -8228,13 +8228,13 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1701"/>
         <source>About &amp;Qt...</source>
-        <translation>A propos de &amp;Qt...</translation>
+        <translation>À propos de &amp;Qt...</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1704"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1707"/>
         <source>About Qt</source>
-        <translation>A propos de Qt</translation>
+        <translation>À propos de Qt</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1710"/>
@@ -10756,7 +10756,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="179"/>
         <source>About</source>
-        <translation>A propos</translation>
+        <translation>À propos</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="241"/>
