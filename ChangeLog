@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed the visual play-head position (vertical red line)
+  while zooming in or out horizontally.
+
 - Almost complete overhaul on the configure script command
   line options, wrt. installation directories specification,
   eg. --prefix, --bindir, --libdir, --datadir and --mandir.

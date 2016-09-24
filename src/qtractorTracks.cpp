@@ -180,6 +180,9 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 	pSession->setHorizontalZoom(iHorizontalZoom);
 	pSession->updateTimeScale();
 	pSession->updateSession();
+
+	// Update visual play-head position...
+	m_pTrackView->setPlayHead(pSession->playHead());
 }
 
 
