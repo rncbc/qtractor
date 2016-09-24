@@ -1,16 +1,20 @@
 language: cpp
 
+sudo: required
+dist: trusty
+
 before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
 - sudo apt-get update -qq
 - sudo apt-get install libqt4-dev libjack-dev libasound2-dev libsndfile1-dev
 - sudo apt-get install libvorbis-dev libmad0-dev libsamplerate-dev zlib1g-dev
 - sudo apt-get install ladspa-sdk dssi-dev liblo-dev librubberband-dev
+- sudo apt-get install lv2-dev liblilv-dev libsuil-dev
 
 before_script:
 - ./autogen.sh
 
 script:
-- ./configure --enable-qt4 --disable-lv2
+- ./configure --enable-qt4
 - make
 - sudo make install
