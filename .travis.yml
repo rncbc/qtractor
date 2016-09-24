@@ -5,8 +5,8 @@ before_install:
 - sudo apt-get update -qq
 - sudo apt-get install libqt4-dev libjack-dev libasound2-dev libsndfile1-dev
 - sudo apt-get install libvorbis-dev libmad0-dev libsamplerate-dev zlib1g-dev
-- sudo apt-get install ladspa-sdk dssi-dev liblo-dev librubberband-dev lv2-extensions-good
-- sudo apt-get install liblilv-dev libsratom-dev libsord-dev libserd-dev libsuil-dev
+- sudo apt-get install ladspa-sdk dssi-dev liblo-dev librubberband-dev
+- sudo apt-get install lv2-extensions-good liblilv-dev libsuil-dev
 
 before_script:
 - ./autogen.sh
