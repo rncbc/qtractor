@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.9.4, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.9.5, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -762,7 +762,7 @@ if test "x$ac_lilv" = "xyes"; then
 fi
 if test "x$ac_lilv" = "xyes"; then
    AC_DEFINE(CONFIG_LIBLILV, 1, [Define if liblilv is available.])
-   ac_cflags="$LILV_CFLAGS $ac_cflags"
+   ac_cflags="$ac_cflags $LILV_CFLAGS"
    ac_libs="$ac_libs $LILV_LIBS"
 else
    AC_MSG_WARN([*** lilv library not found.])
@@ -789,7 +789,7 @@ if test "x$ac_suil" = "xyes"; then
 fi
 if test "x$ac_suil" = "xyes"; then
    AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if libsuil is available.])
-   ac_cflags="$SUIL_CFLAGS $ac_cflags"
+   ac_cflags="$ac_cflags $SUIL_CFLAGS"
    ac_libs="$ac_libs $SUIL_LIBS"
 else
    AC_MSG_WARN([*** suil library not found.])
@@ -854,9 +854,12 @@ else
 fi
 
 # Some recent distros (eg. fedora, debian) require this.
-ac_libs="$ac_libs -lX11"
+if test "x$ac_cv_lib_X11_main" = "xyes"; then
+   ac_libs="$ac_libs -lX11"
+fi
 
 AC_SUBST(ac_libs)
+
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -1357,7 +1360,7 @@ if test "x$ac_lv2_ui_gtk2" = "xyes"; then
 fi
 if test "x$ac_lv2_ui_gtk2" = "xyes"; then
    AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
-   ac_cflags="$GTK2_CFLAGS $ac_cflags"
+   ac_cflags="$ac_cflags $GTK2_CFLAGS"
    ac_libs="$ac_libs $GTK2_LIBS"
 else
    AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
