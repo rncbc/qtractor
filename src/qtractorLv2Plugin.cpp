@@ -3977,9 +3977,7 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 	if (format == g_lv2_urids.atom_eventTransfer) {
 		const LV2_Atom *atom = (const LV2_Atom *) buffer;
 	//	if (lv2_atom_forge_is_object_type(g_lv2_atom_forge, atom->type)) {
-		if (atom->type == g_lv2_atom_forge->Object ||
-			atom->type == g_lv2_atom_forge->Blank  ||
-			atom->type == g_lv2_atom_forge->Resource) {
+		if (atom->type == g_lv2_atom_forge->Object) {
 			const LV2_Atom_Object *obj = (const LV2_Atom_Object *) buffer;
 			if (obj->body.otype == g_lv2_urids.patch_Set) {
 				const LV2_Atom_URID *prop = NULL;
