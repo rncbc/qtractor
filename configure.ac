@@ -1334,6 +1334,9 @@ fi
 # Check for X11 unique/single instance.
 if test "x$ac_xunique" = "xyes"; then
    AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
+fi
+
+if test "x$ac_xunique" = "xyes" -o "x$ac_vst" = "xyes"; then
    # Some recent distros (eg. fedora, debian) require this.
    if test "x$ac_cv_lib_X11_main" = "xyes"; then
       ac_libs="$ac_libs -lX11"
