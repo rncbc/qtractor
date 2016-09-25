@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.9.5, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.9.6, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -606,116 +606,126 @@ if test "x$ac_round" = "xyes"; then
 fi
 
 # Check for JACK libraries.
-AC_CHECK_LIB(jack, main, [ac_libjack="yes"], [ac_libjack="no"])
-if test "x$ac_libjack" = "xno"; then
-   AC_MSG_ERROR([JACK library not found.])
+PKG_CHECK_MODULES([JACK], [jack >= 0.80.0], [ac_libjack="yes"], [ac_libjack="no"])
+if test "x$ac_libjack" = "xyes"; then
+   AC_DEFINE(CONFIG_LIBJACK, 1, [Define if JACK library is available.])
+   ac_cflags="$ac_cflags $JACK_CFLAGS"
+   ac_libs="$ac_libs $JACK_LIBS"
 else
-   ac_libs="$ac_libs -ljack"
+   AC_MSG_ERROR([*** JACK library not found.])
 fi
 
 # Check for ALSA libraries.
-AC_CHECK_LIB(asound, main, [ac_libasound="yes"], [ac_libasound="no"])
-if test "x$ac_libasound" = "xno"; then
-   AC_MSG_ERROR([ALSA library not found.])
+PKG_CHECK_MODULES([ALSA], [alsa], [ac_libasound="yes"], [ac_libasound="no"])
+if test "x$ac_libasound" = "xyes"; then
+   AC_DEFINE(CONFIG_LIBASOUND, 1, [Define if ALSA library is available.])
+   ac_cflags="$ac_cflags $ALSA_CFLAGS"
+   ac_libs="$ac_libs $ALSA_LIBS"
 else
-   ac_libs="$ac_libs -lasound"
+   AC_MSG_ERROR([*** ALSA library not found.])
 fi
 
-# Check for sndfile library.
-AC_CHECK_LIB(sndfile, main, [ac_libsndfile="yes"], [ac_libsndfile="no"])
-if test "x$ac_libsndfile" = "xno"; then
-   AC_MSG_ERROR([sndfile library not found.])
+# Check for SNDFILE library.
+PKG_CHECK_MODULES([SNDFILE], [sndfile], [ac_libsndfile="yes"], [ac_libsndfile="no"])
+if test "x$ac_libsndfile" = "xyes"; then
+   AC_DEFINE(CONFIG_LIBSNDFILE, 1, [Define if SNDFILE library is available.])
+   ac_cflags="$ac_cflags $SNDFILE_CFLAGS"
+   ac_libs="$ac_libs $SNDFILE_LIBS"
 else
-   ac_libs="$ac_libs -lsndfile"
+   AC_MSG_ERROR([*** SNDFILE library not found.])
 fi
 
-# Check for option libvorbis libraries.
+# Check for optional VORBIS libraries.
 if test "x$ac_libvorbis" = "xyes"; then
-   AC_CHECK_LIB(ogg, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   PKG_CHECK_MODULES([VORBIS], [vorbis], [ac_libvorbis="yes"], [ac_libvorbis="no"])
    if test "x$ac_libvorbis" = "xyes"; then
-      ac_libs="$ac_libs -logg"
+      ac_cflags="$ac_cflags $VORBIS_CFLAGS"
+      ac_libs="$ac_libs $VORBIS_LIBS"
    else
-      AC_MSG_WARN([*** ogg library not found.])
+      AC_MSG_WARN([*** VORBIS library not found.])
    fi
 fi
-
 if test "x$ac_libvorbis" = "xyes"; then
-   AC_CHECK_LIB(vorbis, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   PKG_CHECK_MODULES([VORBISENC], [vorbisenc], [ac_libvorbis="yes"], [ac_libvorbis="no"])
    if test "x$ac_libvorbis" = "xyes"; then
-      ac_libs="$ac_libs -lvorbis"
+      ac_cflags="$ac_cflags $VORBISENC_CFLAGS"
+      ac_libs="$ac_libs $VORBISENC_LIBS"
    else
-      AC_MSG_WARN([*** vorbis library not found.])
+      AC_MSG_WARN([*** VORBISENC library not found.])
    fi
 fi
-
 if test "x$ac_libvorbis" = "xyes"; then
-   AC_CHECK_LIB(vorbisenc, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   PKG_CHECK_MODULES([VORBISFILE], [vorbisfile], [ac_libvorbis="yes"], [ac_libvorbis="no"])
    if test "x$ac_libvorbis" = "xyes"; then
-      ac_libs="$ac_libs -lvorbisenc"
+      ac_cflags="$ac_cflags $VORBISFILE_CFLAGS"
+      ac_libs="$ac_libs $VORBISFILE_LIBS"
    else
-      AC_MSG_WARN([*** vorbisenc library not found.])
+      AC_MSG_WARN([*** VORBISFILE library not found.])
    fi
 fi
-
 if test "x$ac_libvorbis" = "xyes"; then
-   AC_CHECK_LIB(vorbisfile, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   PKG_CHECK_MODULES([OGG], [ogg], [ac_libvorbis="yes"], [ac_libvorbis="no"])
    if test "x$ac_libvorbis" = "xyes"; then
-      ac_libs="$ac_libs -lvorbisfile"
+      ac_cflags="$ac_cflags $OGG_CFLAGS"
+      ac_libs="$ac_libs $OGG_LIBS"
    else
-      AC_MSG_WARN([*** vorbisfile library not found.])
+      AC_MSG_WARN([*** OGG library not found.])
    fi
 fi
-
 if test "x$ac_libvorbis" = "xyes"; then
-   AC_DEFINE(CONFIG_LIBVORBIS, 1, [Define if libvorbis is available.])
+   AC_DEFINE(CONFIG_LIBVORBIS, 1, [Define if VORBIS library is available.])
 else
    AC_MSG_WARN([*** Ogg Vorbis audio file support will be disabled.])
 fi
 
-# Check for optional libmad library.
+# Check for optional MAD library.
 if test "x$ac_libmad" = "xyes"; then
-   AC_CHECK_LIB(mad, main, [ac_libmad="yes"], [ac_libmad="no"])
+   PKG_CHECK_MODULES([MAD], [mad], [ac_libmad="yes"], [ac_libmad="no"])
    if test "x$ac_libmad" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBMAD, 1, [Define if libmad is available.])
-      ac_libs="$ac_libs -lmad"
+      AC_DEFINE(CONFIG_LIBMAD, 1, [Define if MAD library is available.])
+      ac_cflags="$ac_cflags $MAD_CFLAGS"
+      ac_libs="$ac_libs $MAD_LIBS"
    else
-      AC_MSG_WARN([*** mad library not found.])
+      AC_MSG_WARN([*** MAD library not found.])
       AC_MSG_WARN([*** MPEG Layer III audio file support will be disabled.])
    fi
 fi
 
-# Check for optional libsamplerate library.
+# Check for optional SAMPLERATE library.
 if test "x$ac_libsamplerate" = "xyes"; then
-   AC_CHECK_LIB(samplerate, main, [ac_libsamplerate="yes"], [ac_libsamplerate="no"])
+   PKG_CHECK_MODULES([SAMPLERATE], [samplerate], [ac_libsamplerate="yes"], [ac_libsamplerate="no"])
    if test "x$ac_libsamplerate" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBSAMPLERATE, 1, [Define if libsamplerate is available.])
-      ac_libs="$ac_libs -lsamplerate"
+      AC_DEFINE(CONFIG_LIBSAMPLERATE, 1, [Define if SAMPLERATE library is available.])
+      ac_cflags="$ac_cflags $SAMPLERATE_CFLAGS"
+      ac_libs="$ac_libs $SAMPLERATE_LIBS"
    else
-      AC_MSG_WARN([*** samplerate library not found.])
+      AC_MSG_WARN([*** SAMPLERATE library not found.])
       AC_MSG_WARN([*** Sample-rate conversion support will be disabled.])
    fi
 fi
 
-# Check for optional librubberband library.
+# Check for optional RUBBERBAND library.
 if test "x$ac_librubberband" = "xyes"; then
-   AC_CHECK_LIB(rubberband, main, [ac_librubberband="yes"], [ac_librubberband="no"])
+   PKG_CHECK_MODULES([RUBBERBAND], [rubberband], [ac_librubberband="yes"], [ac_librubberband="no"])
    if test "x$ac_librubberband" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBRUBBERBAND, 1, [Define if librubberband is available.])
-      ac_libs="$ac_libs -lrubberband"
+      AC_DEFINE(CONFIG_LIBRUBBERBAND, 1, [Define if RUBBERBAND library is available.])
+      ac_cflags="$ac_cflags $RUBBERBAND_CFLAGS"
+      ac_libs="$ac_libs $RUBBERBAND_LIBS"
    else
-      AC_MSG_WARN([*** rubberband library not found.])
+      AC_MSG_WARN([*** RUBBERBAND library not found.])
       AC_MSG_WARN([*** Pitch-shifting support will be disabled.])
    fi
 fi
 
-# Check for optional liblo library.
+# Check for optional LIBLO library.
 if test "x$ac_liblo" = "xyes"; then
-   AC_CHECK_LIB(lo, main, [ac_liblo="yes"], [ac_liblo="no"])
+   PKG_CHECK_MODULES([LIBLO], [liblo], [ac_liblo="yes"], [ac_liblo="no"])
    if test "x$ac_liblo" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBLO, 1, [Define if liblo is available.])
-      ac_libs="$ac_libs -llo"
+      AC_DEFINE(CONFIG_LIBLO, 1, [Define if LIBLO library is available.])
+      ac_cflags="$ac_cflags $LIBLO_CFLAGS"
+      ac_libs="$ac_libs $LIBLO_LIBS"
    else
-      AC_MSG_WARN([*** lo library not found.])
+      AC_MSG_WARN([*** LIBLO library not found.])
       AC_MSG_WARN([*** OSC service support will be disabled.])
       ac_nsm="no"
    fi
@@ -723,14 +733,15 @@ else
    ac_nsm="no"
 fi
 
-# Check for optional libz library.
+# Check for optional ZLIB library.
 if test "x$ac_libz" = "xyes"; then
-   AC_CHECK_LIB(z, main, [ac_libz="yes"], [ac_libz="no"])
+   PKG_CHECK_MODULES([ZLIB], [zlib], [ac_libz="yes"], [ac_libz="no"])
    if test "x$ac_libz" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBZ, 1, [Define if libz is available.])
-      ac_libs="$ac_libs -lz"
+      AC_DEFINE(CONFIG_LIBZ, 1, [Define if ZLIB library is available.])
+      ac_cflags="$ac_cflags $ZLIB_CFLAGS"
+      ac_libs="$ac_libs $ZLIB_LIBS"
    else
-      AC_MSG_WARN([*** z library not found.])
+      AC_MSG_WARN([*** ZLIB library not found.])
       AC_MSG_WARN([*** Archive/Zip file support will be disabled.])
    fi
 fi
@@ -756,16 +767,16 @@ if test "x$ac_qt4" = "xyes"; then
    ac_lv2_ui_x11="no"
 fi
 
-# Check for optional liblilv library.
+# Check for optional LILV library.
 if test "x$ac_lilv" = "xyes"; then
    PKG_CHECK_MODULES([LILV], [lilv-0], [ac_lilv="yes"], [ac_lilv="no"])
 fi
 if test "x$ac_lilv" = "xyes"; then
-   AC_DEFINE(CONFIG_LIBLILV, 1, [Define if liblilv is available.])
+   AC_DEFINE(CONFIG_LIBLILV, 1, [Define if LILV library is available.])
    ac_cflags="$ac_cflags $LILV_CFLAGS"
    ac_libs="$ac_libs $LILV_LIBS"
 else
-   AC_MSG_WARN([*** lilv library not found.])
+   AC_MSG_WARN([*** LILV library not found.])
 fi
 
 if test "x$ac_lilv" = "xyes"; then
@@ -788,11 +799,11 @@ if test "x$ac_suil" = "xyes"; then
    PKG_CHECK_MODULES([SUIL], [suil-0], [ac_suil="yes"], [ac_suil="no"])
 fi
 if test "x$ac_suil" = "xyes"; then
-   AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if libsuil is available.])
+   AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is available.])
    ac_cflags="$ac_cflags $SUIL_CFLAGS"
    ac_libs="$ac_libs $SUIL_LIBS"
 else
-   AC_MSG_WARN([*** suil library not found.])
+   AC_MSG_WARN([*** SUIL library not found.])
 fi
 
 if test "x$ac_suil" = "xyes"; then
@@ -853,109 +864,11 @@ else
    AC_MSG_WARN([*** JACK metadata support will be disabled.])
 fi
 
-# Some recent distros (eg. fedora, debian) require this.
-if test "x$ac_cv_lib_X11_main" = "xyes"; then
-   ac_libs="$ac_libs -lX11"
-fi
-
-AC_SUBST(ac_libs)
-
 
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h sys/stat.h unistd.h signal.h)
-
-# Check for JACK headers.
-AC_CHECK_HEADER(jack/jack.h, [ac_jack_h="yes"], [ac_jack_h="no"])
-if test "x$ac_jack_h" = "xno"; then
-   AC_MSG_ERROR([JACK headers not found.])
-fi
-
-# Check for ALSA headers.
-AC_CHECK_HEADER(alsa/asoundlib.h, [ac_alsa_h="yes"], [ac_alsa_h="no"])
-if test "x$ac_alsa_h" = "xno"; then
-   AC_MSG_ERROR([ALSA headers not found.])
-fi
-
-# Check for sndfile headers.
-AC_CHECK_HEADER(sndfile.h, [ac_sndfile_h="yes"], [ac_sndfile_h="no"])
-if test "x$ac_sndfile_h" = "xno"; then
-   AC_MSG_ERROR([sndfile.h header file not found.])
-fi
-
-# Check for vorbisfile headers.
-if test "x$ac_libvorbis" = "xyes"; then
-   AC_CHECK_HEADER(vorbis/vorbisenc.h, [ac_vorbisenc_h="yes"], [ac_vorbisenc_h="no"])
-   if test "x$ac_vorbisenc_h" = "xno"; then
-      AC_MSG_ERROR([vorbisenc.h header file not found.])
-   fi
-   AC_CHECK_HEADER(vorbis/vorbisfile.h, [ac_vorbisfile_h="yes"], [ac_vorbisfile_h="no"])
-   if test "x$ac_vorbisfile_h" = "xno"; then
-      AC_MSG_ERROR([vorbisfile.h header file not found.])
-   fi
-fi
-
-# Check for mad headers.
-if test "x$ac_libmad" = "xyes"; then
-   AC_CHECK_HEADER(mad.h, [ac_mad_h="yes"], [ac_mad_h="no"])
-   if test "x$ac_mad_h" = "xno"; then
-      AC_MSG_ERROR([mad.h header file not found.])
-   fi
-fi
-
-# Check for samplerate headers.
-if test "x$ac_libsamplerate" = "xyes"; then
-   AC_CHECK_HEADER(samplerate.h, [ac_samplerate_h="yes"], [ac_samplerate_h="no"])
-   if test "x$ac_samplerate_h" = "xno"; then
-      AC_MSG_ERROR([samplerate.h header file not found.])
-   fi
-fi
-
-# Check for rubberband headers.
-if test "x$ac_librubberband" = "xyes"; then
-   AC_CHECK_HEADER(rubberband/RubberBandStretcher.h, [ac_rubberband_h="yes"], [ac_rubberband_h="no"])
-   if test "x$ac_rubberband_h" = "xno"; then
-      AC_MSG_ERROR([RubberBandStretcher.h header file not found.])
-   fi
-fi
-
-# Check for lo headers.
-if test "x$ac_liblo" = "xyes"; then
-   AC_CHECK_HEADER(lo/lo.h, [ac_lo_h="yes"], [ac_lo_h="no"])
-   if test "x$ac_lo_h" = "xno"; then
-      AC_MSG_ERROR([lo.h header file not found.])
-      ac_nsm="no"
-   fi
-fi
-
-# Check for zlib headers.
-if test "x$ac_libz" = "xyes"; then
-   AC_CHECK_HEADER(zlib.h, [ac_zlib_h="yes"], [ac_zlib_h="no"])
-   if test "x$ac_zlib_h" = "xno"; then
-      AC_MSG_ERROR([zlib.h header file not found.])
-   fi
-fi
-
-# Check for lilv headers.
-if test "x$ac_lilv" = "xyes"; then
-   CFLAGS=$ac_cflags
-   CPPFLAGS=$ac_cflags
-   AC_CHECK_HEADER(lilv/lilv.h, [ac_lilv_h="yes"], [ac_lilv_h="no"])
-   if test "x$ac_lilv_h" = "xno"; then
-      AC_MSG_ERROR([lilv.h header file not found.])
-   fi
-fi
-
-# Check for suil headers.
-if test "x$ac_suil" = "xyes"; then
-   CFLAGS="$ac_cflags"
-   CPPFLAGS="$ac_cflags"
-   AC_CHECK_HEADER(suil/suil.h, [ac_suil_h="yes"], [ac_suil_h="no"])
-   if test "x$ac_suil_h" = "xno"; then
-      AC_MSG_ERROR([suil.h header file not found.])
-   fi
-fi
 
 # Check for LADSPA headers.
 if test -n "$ac_with_ladspa"; then
@@ -1421,6 +1334,10 @@ fi
 # Check for X11 unique/single instance.
 if test "x$ac_xunique" = "xyes"; then
    AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
+   # Some recent distros (eg. fedora, debian) require this.
+   if test "x$ac_cv_lib_X11_main" = "xyes"; then
+      ac_libs="$ac_libs -lX11"
+   fi
 fi
 
 # Check for gradient eye-candy.
@@ -1433,9 +1350,10 @@ if test "x$ac_stacktrace" = "xyes"; then
    AC_DEFINE(CONFIG_STACKTRACE, 1, [Define if debugger stack-trace is enabled.])
 fi
 
-AC_SUBST(ac_incpath)
 AC_SUBST(ac_cflags)
 AC_SUBST(ac_ldflags)
+AC_SUBST(ac_incpath)
+AC_SUBST(ac_libs)
 
 
 # Checks for typedefs, structures, and compiler characteristics.
