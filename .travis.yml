@@ -3,9 +3,22 @@ language: cpp
 sudo: required
 dist: trusty
 
+notifications: 
+  email:
+    recipients:
+    - rncbc@rncbc.org
+    on_success: change
+    on_failure: always
+
+branches:
+  only:
+  - master
+
 before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
 - sudo apt-get update -qq
+
+install:
 - sudo apt-get install libqt4-dev libjack-dev libasound2-dev libsndfile1-dev
 - sudo apt-get install libvorbis-dev libmad0-dev libsamplerate-dev zlib1g-dev
 - sudo apt-get install ladspa-sdk dssi-dev liblo-dev librubberband-dev
@@ -16,5 +29,5 @@ before_script:
 
 script:
 - ./configure --enable-qt4 --disable-lv2-patch
-- make
-- sudo make install
+  && make
+  && sudo make install
