@@ -345,11 +345,13 @@ public:
 			if (item.is_any() && item.type() != qtractorMidiRpn::RPN)
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
-				item.set_time(event.time);
-				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::RPN | channel);
 				++m_count;
 			}
+			if (item.time() < event.time)
+				item.set_time(event.time);
+			if (item.port() != event.port)
+				item.set_port(event.port);
 			item.set_param_msb(event.value);
 			return true;
 		}
@@ -366,8 +368,6 @@ public:
 			}
 			if (item.type() == qtractorMidiRpn::NRPN) {
 				item.clear();
-				item.set_time(event.time);
-				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::RPN | channel);
 			}
 			else
@@ -379,17 +379,17 @@ public:
 			}
 			if (item.type() == qtractorMidiRpn::NRPN) {
 				item.clear();
-				item.set_time(event.time);
-				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::RPN | channel);
 			}
 			else
 			if (item.type() == qtractorMidiRpn::None) {
-				item.set_time(event.time);
-				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::RPN | channel);
 				++m_count;
 			}
+			if (item.time() < event.time)
+				item.set_time(event.time);
+			if (item.port() != event.port)
+				item.set_port(event.port);
 			item.set_param_lsb(event.value);
 			return true;
 		}
@@ -400,17 +400,17 @@ public:
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::RPN) {
 				item.clear();
-				item.set_time(event.time);
-				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::NRPN | channel);
 			}
 			else
 			if (item.type() == qtractorMidiRpn::None) {
-				item.set_time(event.time);
-				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::NRPN | channel);
 				++m_count;
 			}
+			if (item.time() < event.time)
+				item.set_time(event.time);
+			if (item.port() != event.port)
+				item.set_port(event.port);
 			item.set_param_msb(event.value);
 			return true;
 		}
@@ -421,17 +421,17 @@ public:
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::RPN) {
 				item.clear();
-				item.set_time(event.time);
-				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::NRPN | channel);
 			}
 			else
 			if (item.type() == qtractorMidiRpn::None) {
-				item.set_time(event.time);
-				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::NRPN | channel);
 				++m_count;
 			}
+			if (item.time() < event.time)
+				item.set_time(event.time);
+			if (item.port() != event.port)
+				item.set_port(event.port);
 			item.set_param_lsb(event.value);
 			return true;
 		}
@@ -475,11 +475,13 @@ public:
 					&& item.param_lsb() != event.param + CC14_LSB_MIN))
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
-				item.set_time(event.time);
-				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::CC14 | channel);
 				++m_count;
 			}
+			if (item.time() < event.time)
+				item.set_time(event.time);
+			if (item.port() != event.port)
+				item.set_port(event.port);
 			item.set_param_msb(event.param);
 			item.set_value_msb(event.value);
 			if (item.is_14bit())
@@ -500,11 +502,13 @@ public:
 					&& item.param_msb() != event.param - CC14_LSB_MIN))
 				enqueue(item);
 			if (item.type() == qtractorMidiRpn::None) {
-				item.set_time(event.time);
-				item.set_port(event.port);
 				item.set_status(qtractorMidiRpn::CC14 | channel);
 				++m_count;
 			}
+			if (item.time() < event.time)
+				item.set_time(event.time);
+			if (item.port() != event.port)
+				item.set_port(event.port);
 			item.set_param_lsb(event.param);
 			item.set_value_lsb(event.value);
 			if (item.is_14bit())
@@ -548,17 +552,18 @@ protected:
 		if (item.is_14bit()) {
 			m_queue.push(time, port, item.status(), item.param(), item.value());
 			item.clear_value();
+			item.set_time(0);
 		//	--m_count;
 		} else {
 			const unsigned char status = qtractorMidiRpn::CC | item.channel();
-			if (item.type() == qtractorMidiRpn::RPN) {
+			if (item.type() == qtractorMidiRpn::RPN && time > 0) {
 				if (item.is_param_msb())
 					m_queue.push(time, port, status, RPN_MSB, item.param_msb());
 				if (item.is_param_lsb())
 					m_queue.push(time, port, status, RPN_LSB, item.param_lsb());
 			}
 			else
-			if (item.type() == qtractorMidiRpn::NRPN) {
+			if (item.type() == qtractorMidiRpn::NRPN && time > 0) {
 				if (item.is_param_msb())
 					m_queue.push(time, port, status, NRPN_MSB, item.param_msb());
 				if (item.is_param_lsb())
