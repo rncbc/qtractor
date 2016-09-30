@@ -413,17 +413,6 @@ qtractorMainForm::qtractorMainForm (
 	// Also the (QAction) MIDI observer map (TESTING)...
 	m_pActionControl = new qtractorActionControl(this);
 
-	// Get edit selection mode action group up...
-//	m_ui.editToolbar->addSeparator();
-	m_pSelectModeActionGroup = new QActionGroup(this);
-	m_pSelectModeActionGroup->setExclusive(true);
-//	m_pSelectModeActionGroup->setUsesDropDown(true);
-	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeClipAction);
-	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRangeAction);
-	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRectAction);
-	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeCurveAction);
-//	m_ui.editToolbar->addActions(m_pSelectModeActionGroup->actions());
-
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
 
@@ -1189,10 +1178,6 @@ qtractorMainForm::~qtractorMainForm (void)
 		delete m_pMessages;
 	if (m_pTracks)
 		delete m_pTracks;
-
-	// Get select mode action group down.
-	if (m_pSelectModeActionGroup)
-		delete m_pSelectModeActionGroup;
 
 	// Reclaim status items palettes...
 	for (int i = 0; i < PaletteItems; ++i)

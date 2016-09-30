@@ -454,7 +454,6 @@ private:
 	int m_iBackupCount;
 	QSocketNotifier *m_pUsr1Notifier;
 	QSocketNotifier *m_pTermNotifier;
-	QActionGroup *m_pSelectModeActionGroup;
 	qtractorTimeSpinBox *m_pTimeSpinBox;
 	qtractorTempoSpinBox *m_pTempoSpinBox;
 	QComboBox *m_pSnapPerBeatComboBox;
