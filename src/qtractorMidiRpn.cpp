@@ -133,7 +133,7 @@ public:
 		{ return m_port; }
 
 	bool is_status () const
-		{ return (m_status & 0x80); }
+		{ return (m_status & 0x80) && (m_status & 0x70); }
 	void set_status(unsigned char status)
 		{ m_status = (status & 0x7f) | 0x80; }
 	unsigned char status() const
@@ -517,7 +517,7 @@ public:
 				|| (item.type() == qtractorMidiRpn::CC14
 					&& item.param_msb() != event.param - CC14_LSB_MIN))
 				enqueue(item);
-			if (item.type() == qtractorMidiRpn::None || !item.is_status()) {
+			if (!item.is_status()) {
 				item.set_status(qtractorMidiRpn::CC14 | channel);
 				++m_count;
 			}
