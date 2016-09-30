@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Do not reset the current clip selection when updating the
+  main track-view extents eg. while zooming in or out.
+
 - Automation curve node editing auto-smoothing revisited;
   also fixed input MIDI RPN/NRPN running status processing,
   which was crippling some plug-in automation curve nodes,

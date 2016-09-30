@@ -2946,9 +2946,9 @@ void qtractorTrackView::updateClipSelect (void)
 	if (pSession == NULL)
 		return;
 
-	// Reset all selected clips, but don't
-	// clear their own selection state...
-	m_pClipSelect->reset();
+	// Clear all selected clips, but don't
+	// reset their own selection state...
+	m_pClipSelect->clear();
 
 	// Now find all the clips/regions
 	// that were currently selected...
