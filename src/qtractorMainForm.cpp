@@ -414,15 +414,25 @@ qtractorMainForm::qtractorMainForm (
 	m_pActionControl = new qtractorActionControl(this);
 
 	// Get edit selection mode action group up...
-//	m_ui.editToolbar->addSeparator();
 	m_pSelectModeActionGroup = new QActionGroup(this);
 	m_pSelectModeActionGroup->setExclusive(true);
-//	m_pSelectModeActionGroup->setUsesDropDown(true);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeClipAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRangeAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRectAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeCurveAction);
-//	m_ui.editToolbar->addActions(m_pSelectModeActionGroup->actions());
+
+	// And the corresponding tool-button drop-down menu...
+	m_pSelectModeToolButton = new QToolButton(this);
+	m_pSelectModeToolButton->setPopupMode(QToolButton::MenuButtonPopup);
+	m_pSelectModeToolButton->setMenu(m_ui.editSelectModeMenu);
+
+	// Add/insert this on its proper place in the edit-toobar...
+	m_ui.editToolbar->insertWidget(m_ui.clipNewAction, m_pSelectModeToolButton);
+	m_ui.editToolbar->insertSeparator(m_ui.clipNewAction);
+
+	QObject::connect(
+		m_pSelectModeToolButton, SIGNAL(triggered(QAction*)),
+		m_pSelectModeToolButton, SLOT(setDefaultAction(QAction*)));
 
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
@@ -1193,6 +1203,8 @@ qtractorMainForm::~qtractorMainForm (void)
 	// Get select mode action group down.
 	if (m_pSelectModeActionGroup)
 		delete m_pSelectModeActionGroup;
+	if (m_pSelectModeToolButton)
+		delete m_pSelectModeToolButton;
 
 	// Reclaim status items palettes...
 	for (int i = 0; i < PaletteItems; ++i)
@@ -1308,6 +1320,10 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	if (pTrackView->isCurveEdit())
 		m_ui.editSelectModeCurveAction->setChecked(true);
+
+	// Set initial select mode...
+	m_pSelectModeToolButton->setDefaultAction(
+		m_pSelectModeActionGroup->checkedAction());
 
 	// Initial zoom mode...
 	m_pTracks->setZoomMode(m_pOptions->iZoomMode);
