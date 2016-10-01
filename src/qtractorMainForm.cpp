@@ -8040,8 +8040,7 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 	if (m_pTracks) {
 		m_pTracks->trackView()->setEditHead(iEditHead);
 		m_pTracks->trackView()->setEditTail(iEditTail);
-		if (pMidiEditor)
-			m_pTracks->clearSelect();
+	//	if (pMidiEditor) m_pTracks->clearSelect();
 	}
 
 	// Update editors edit-head/tails...

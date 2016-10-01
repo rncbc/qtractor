@@ -587,6 +587,9 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 	pMidiClip->updateEditor(true);
 	pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
 
+	// Better update track-view clip high-lighthing...
+	m_pTrackView->update();
+
 	// HACK: This operation is so important that
 	// it surely deserves being in the front page...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
