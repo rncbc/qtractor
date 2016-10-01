@@ -423,7 +423,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// And the corresponding tool-button drop-down menu...
 	m_pSelectModeToolButton = new QToolButton(this);
-	m_pSelectModeToolButton->setPopupMode(QToolButton::MenuButtonPopup);
+	m_pSelectModeToolButton->setPopupMode(QToolButton::InstantPopup);
 	m_pSelectModeToolButton->setMenu(m_ui.editSelectModeMenu);
 
 	// Add/insert this on its proper place in the edit-toobar...
