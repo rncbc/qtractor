@@ -6758,7 +6758,7 @@ Durata:	%3</translation>
     <name>qtractorMidiEditorForm</name>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1798"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1824"/>
         <source>MIDI Editor</source>
         <translation>Editor MIDI</translation>
     </message>
@@ -6769,7 +6769,7 @@ Durata:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="50"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1017"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1002"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
@@ -6800,13 +6800,13 @@ Durata:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="176"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1034"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1019"/>
         <source>&amp;Edit</source>
         <translation>&amp;Modifica</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="84"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1051"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1036"/>
         <source>&amp;View</source>
         <translation>&amp;Vista</translation>
     </message>
@@ -6861,1477 +6861,1477 @@ Durata:	%3</translation>
         <translation>&amp;Aiuto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="405"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="390"/>
         <source>&amp;Save</source>
         <translation>&amp;Salva</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="408"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="411"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="393"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="396"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="414"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="399"/>
         <source>Save current MIDI clip to existing file name</source>
         <translation>Salva il clip MIDI corrente su un file esistente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="419"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="404"/>
         <source>Save &amp;As...</source>
         <translation>S&amp;alva Come...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="422"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="407"/>
         <source>Save As</source>
         <translation>Salva Come</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="425"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="410"/>
         <source>Save as</source>
         <translation>Salva come</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="428"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="413"/>
         <source>Save current MIDI clip with another file name</source>
         <translation>Salva il clip MIDI corrente su un altro file</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="433"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="418"/>
         <source>&amp;Unlink</source>
         <translation>&amp;Disconnetti</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="436"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="439"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="421"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="424"/>
         <source>Unlink</source>
         <translation>Disconnetti</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="442"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="427"/>
         <source>Unlink current MIDI clip</source>
         <translation>Disconnetti il clip MIDI corrente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="453"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="438"/>
         <source>Recor&amp;d</source>
         <translation>Registra</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="462"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="447"/>
         <source>Record current MIDI clip (overdub)</source>
         <translation>Registra sul clip MIDI corrente (overdub)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="467"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="452"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Ingressi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="470"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="455"/>
         <source>Track Inputs</source>
         <translation>Ingressi Traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="473"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="458"/>
         <source>Track inputs</source>
         <translation>Ingressi traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="476"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="461"/>
         <source>Show current MIDI clip/track input bus connections</source>
         <translation>Mostra le connessioni dei bus di ingresso della traccia/clip MIDI corrente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="481"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="466"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Uscite</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="484"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="469"/>
         <source>Track Outputs</source>
         <translation>Uscite Traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="487"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="472"/>
         <source>Track outputs</source>
         <translation>Uscite traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="490"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="475"/>
         <source>Show current MIDI clip/track output bus connections</source>
         <translation>Mostra le connessioni dei bus di uscita della traccia/clip MIDI corrente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="498"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="518"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="483"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="503"/>
         <source>&amp;Properties...</source>
         <translation>&amp;Proprietà...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="501"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="486"/>
         <source>Track Properties</source>
         <translation>Proprietà Traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="504"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="489"/>
         <source>Track properties</source>
         <translation>Proprietà traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="507"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="492"/>
         <source>Edit current MIDI clip/track properties</source>
         <translation>Modifica le proprietà della traccia/clip MIDI corrente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="510"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="495"/>
         <source>Shift+F2</source>
         <translation>Shift+F2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="521"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="524"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="506"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="509"/>
         <source>Properties</source>
         <translation>Proprietà</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="527"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="512"/>
         <source>Edit current MIDI clip properties</source>
         <translation>Modifica le proprietà del clip MIDI corrente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="530"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="515"/>
         <source>F4</source>
         <translation>F4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="535"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="520"/>
         <source>&amp;Range Set</source>
         <translation>Imposta Inte&amp;rvallo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="538"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="523"/>
         <source>Clip Range</source>
         <translation>Intervallo Clip</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="541"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="526"/>
         <source>Clip range</source>
         <translation>Intervallo clip</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="544"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="529"/>
         <source>Set edit-range from clip extents</source>
         <translation>Imposta intervallo di modifica dagli estremi del clip</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="549"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="534"/>
         <source>&amp;Loop Set</source>
         <translation>Imposta &amp;Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="552"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="537"/>
         <source>Clip Loop</source>
         <translation>Loop Clip</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="555"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="540"/>
         <source>Clip loop</source>
         <translation>Loop clip</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="558"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="543"/>
         <source>Set loop-range from clip extents</source>
         <translation>Imposta intervallo del loop dagli estremi del clip</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="563"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="548"/>
         <source>&amp;Close</source>
         <translation>&amp;Chiudi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="566"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="569"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="551"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="554"/>
         <source>Close</source>
         <translation>Chiudi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="572"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="557"/>
         <source>Close this MIDI clip editor</source>
         <translation>Chiudi questo editor di clip MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="580"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="565"/>
         <source>&amp;Undo</source>
         <translation>Ann&amp;ulla</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="583"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="586"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="568"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="571"/>
         <source>Undo</source>
         <translation>Annulla</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="589"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="574"/>
         <source>Undo last edit operation</source>
         <translation>Annulla l&apos;ultima operazione di modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="592"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="577"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="600"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="585"/>
         <source>&amp;Redo</source>
         <translation>&amp;Ripristina</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="603"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="606"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="588"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="591"/>
         <source>Redo</source>
         <translation>Ripristina</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="609"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="594"/>
         <source>Redo last edit operation</source>
         <translation>Ripristina l&apos;ultima operazione di modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="612"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="597"/>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="620"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="605"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Taglia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="623"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="626"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="608"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="611"/>
         <source>Cut</source>
         <translation>Taglia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="629"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="614"/>
         <source>Cut current selection into the local clipboard</source>
         <translation>Taglia la selezione corrente nella clipboard locale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="632"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="617"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="640"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="625"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="643"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="646"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="628"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="631"/>
         <source>Copy</source>
         <translation>Copia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="649"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="634"/>
         <source>Copy current selection to the local clipboard</source>
         <translation>Copia la selezione corrente nella clipboard locale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="652"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="637"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="660"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="645"/>
         <source>&amp;Paste</source>
         <translation>&amp;Incolla</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="663"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="666"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="648"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="651"/>
         <source>Paste</source>
         <translation>Incolla</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="669"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="654"/>
         <source>Paste local clipboard contents into the current MIDI clip</source>
         <translation>Incolla il contenuto della clipboard nel clip MIDI corrente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="672"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="657"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="677"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="662"/>
         <source>Past&amp;e Repeat...</source>
         <translation>Rip&amp;eti Incolla...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="680"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="665"/>
         <source>Paste Repeat</source>
         <translation>Ripeti Incolla</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="683"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="668"/>
         <source>Paste repeat</source>
         <translation>Ripeti incolla</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="686"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="671"/>
         <source>Paste/repeat local clipboard contents into the current MIDI clip</source>
         <translation>Ripeti/incolla il contenuto della clipboard nel clip MIDI corrente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="689"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="674"/>
         <source>Ctrl+Shift+V</source>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="697"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="682"/>
         <source>&amp;Delete</source>
         <translation>&amp;Elimina</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="700"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="703"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="685"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="688"/>
         <source>Delete</source>
         <translation>Cancella</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="706"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="691"/>
         <source>Delete current selection</source>
         <translation>Cancella la selezione corrente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="709"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="694"/>
         <source>Del</source>
         <translation>Canc</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="720"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="705"/>
         <source>Edit Of&amp;f</source>
         <translation>Disabilita Modi&amp;fiche</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="723"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="708"/>
         <source>Edit Off</source>
         <translation>Disabilita Modifiche</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="726"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="711"/>
         <source>Edit off</source>
         <translation>Disabilita modifiche</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="729"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="714"/>
         <source>Set edit mode off</source>
         <translation>Imposta modalità di modifiche disabilitate</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="740"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="725"/>
         <source>Edit &amp;On</source>
         <translation>Abilita M&amp;odifiche</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="743"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="728"/>
         <source>Edit On</source>
         <translation>Abilita Modifiche</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="746"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="731"/>
         <source>Edit on</source>
         <translation>Abilita modifiche</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="749"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="734"/>
         <source>Set edit mode on</source>
         <translation>Imposta modalità di modifiche abilitate</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="760"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="745"/>
         <source>Edit &amp;Draw</source>
         <translation>Modifca &amp;Disegno</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="763"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="748"/>
         <source>Edit draw mode</source>
         <translation>Modalità modifica disegno</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="766"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="751"/>
         <source>Edit draw mode (notes)</source>
         <translation>Modalità modifica disegno (note)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="774"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1336"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="759"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1321"/>
         <source>&amp;All</source>
         <translation>&amp;Tutto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="777"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="762"/>
         <source>Select All</source>
         <translation>Seleziona Tutto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="780"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="783"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="765"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="768"/>
         <source>Select all</source>
         <translation>Seleziona tutto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="786"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="771"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="791"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="776"/>
         <source>&amp;None</source>
         <translation>&amp;Niente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="794"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="779"/>
         <source>Select None</source>
         <translation>Seleziona Niente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="797"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="800"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="782"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="785"/>
         <source>Select none</source>
         <translation>Seleziona niente</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="803"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="788"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="808"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="793"/>
         <source>&amp;Invert</source>
         <translation>&amp;Inverti</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="811"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="796"/>
         <source>Select Invert</source>
         <translation>Selezione Inversa</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="814"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="817"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="799"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="802"/>
         <source>Select invert</source>
         <translation>Selezione inversa</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="820"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="805"/>
         <source>Ctrl+I</source>
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="825"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="842"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="859"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="810"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="827"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="844"/>
         <source>&amp;Range</source>
         <translation>Inte&amp;rvallo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="828"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="813"/>
         <source>Select Range</source>
         <translation>Seleziona Intervallo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="831"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="816"/>
         <source>Select range</source>
         <translation>Seleziona intervallo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="834"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="819"/>
         <source>Mark range as selected</source>
         <translation>Marca intervallo come selezionato</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="837"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="822"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="845"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="830"/>
         <source>Insert Range</source>
         <translation>Inserisci intervallo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="848"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="833"/>
         <source>Insert range</source>
         <translation>Inserisci intervallo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="851"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="836"/>
         <source>Insert range as selected</source>
         <translation>Inserisci intervallo come selezionato</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="854"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="839"/>
         <source>Ctrl+Ins</source>
         <translation>Ctrl+Ins</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="862"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="847"/>
         <source>Remove Range</source>
         <translation>Elimina intervallo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="865"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="850"/>
         <source>Remove range</source>
         <translation>Elimina intervallo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="868"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="853"/>
         <source>Remove range as selected</source>
         <translation>Elimina intervallo come selezionato</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="871"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="856"/>
         <source>Ctrl+Del</source>
         <translation>Ctrl+Canc</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="876"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="861"/>
         <source>&amp;Quantize...</source>
         <translation>&amp;Quantizza...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="879"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="882"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="864"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="867"/>
         <source>Quantize</source>
         <translation>Quantizza</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="885"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="870"/>
         <source>Quantize selection</source>
         <translation>Quantizza selezione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="890"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="875"/>
         <source>&amp;Transpose...</source>
         <translation>&amp;Trasposizione...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="893"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="896"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="878"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="881"/>
         <source>Transpose</source>
         <translation>Trasposizione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="899"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="884"/>
         <source>Transpose selection</source>
         <translation>Trasponi selezione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="904"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="889"/>
         <source>&amp;Normalize...</source>
         <translation>&amp;Normalizza...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="907"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="910"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="892"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="895"/>
         <source>Normalize</source>
         <translation>Normalizza</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="913"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="898"/>
         <source>Normalize selection</source>
         <translation>Normalizza selezione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="918"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="903"/>
         <source>&amp;Randomize...</source>
         <translation>&amp;Randomizza...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="921"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="924"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="906"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="909"/>
         <source>Randomize</source>
         <translation>Randomizza</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="927"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="912"/>
         <source>Randomize selection</source>
         <translation>Randomizza selezione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="932"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="917"/>
         <source>Resi&amp;ze...</source>
         <translation>Ridimensiona...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="935"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="938"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="920"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="923"/>
         <source>Resize</source>
         <translation>Ridimensiona</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="941"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="926"/>
         <source>Resize selection</source>
         <translation>Ridimensiona selezione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="946"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="931"/>
         <source>Re&amp;scale...</source>
         <translation>&amp;Scala...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="949"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="952"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="934"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="937"/>
         <source>Rescale</source>
         <translation>Scala</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="955"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="940"/>
         <source>Rescale selection</source>
         <translation>Scala selezione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="960"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="945"/>
         <source>T&amp;imeshift...</source>
         <translation>T&amp;imeshift...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="963"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="966"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="948"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="951"/>
         <source>Timeshift</source>
         <translation>Timeshift</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="969"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="954"/>
         <source>Timeshift selection</source>
         <translation>Timeshift selezione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="977"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="962"/>
         <source>&amp;Menubar</source>
         <translation>Barra del &amp;Menu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="980"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="983"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="965"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="968"/>
         <source>Menubar</source>
         <translation>Barra del menu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="986"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="971"/>
         <source>Show/hide the menubar</source>
         <translation>Mostra/nascondi barra del menu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="989"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="974"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="997"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="982"/>
         <source>&amp;Statusbar</source>
         <translation>Barra di &amp;Stato</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1000"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1003"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="985"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="988"/>
         <source>Statusbar</source>
         <translation>Barra di Stato</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1006"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="991"/>
         <source>Show/hide the statusbar</source>
         <translation>Mostra/nascondi barra di stato</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1020"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1005"/>
         <source>File Toolbar</source>
         <translation>Barra Strumenti File</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1023"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1008"/>
         <source>File toolbar</source>
         <translation>Barra strumenti file</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1026"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1011"/>
         <source>Show/hide the file toolbar</source>
         <translation>Mostra/nascondi barra strumenti file</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1037"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1022"/>
         <source>Edit Toolbar</source>
         <translation>Barra Strumenti Modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1040"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1025"/>
         <source>Edit toolbar</source>
         <translation>Barra strumenti modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1043"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1028"/>
         <source>Show/hide the edit toolbar</source>
         <translation>Mostra/nascondi barra strumenti modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1054"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1039"/>
         <source>View Toolbar</source>
         <translation>Barra Strumenti Vista</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1057"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1042"/>
         <source>View toolbar</source>
         <translation>Barra strumenti vista</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1060"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1045"/>
         <source>Show/hide the view toolbar</source>
         <translation>Mostra/nascondi barra strumenti vista</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1068"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1053"/>
         <source>&amp;Transport</source>
         <translation>Avanzamen&amp;to</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1071"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1056"/>
         <source>Transport Toolbar</source>
         <translation>Barra Strumenti Avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1074"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1059"/>
         <source>Transport toolbar</source>
         <translation>Barra strumenti avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1077"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1062"/>
         <source>Show/hide the transport toolbar</source>
         <translation>Mostra/nascondi barra strumenti avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1085"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1070"/>
         <source>&amp;Scale</source>
         <translation>&amp;Scalamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1088"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1073"/>
         <source>Scale Toolbar</source>
         <translation>Barra Strumenti Scalamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1091"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1076"/>
         <source>Scale toolbar</source>
         <translation>Barra strumenti scalamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1094"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1079"/>
         <source>Show/hide the scale toolbar</source>
         <translation>Mostra/nascondi barra strumenti scalamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1102"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1087"/>
         <source>Thum&amp;b</source>
         <translation>Antep&amp;rima</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1105"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1090"/>
         <source>Thumb Toolbar</source>
         <translation>Barra Strumenti Anteprima</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1108"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1093"/>
         <source>Thumb toolbar</source>
         <translation>Barra strumenti anteprima</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1111"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1096"/>
         <source>Show/hide the thumb view toolbar</source>
         <translation>Mostra/nascondi barra degli strumenti delle anteprime</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1119"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1104"/>
         <source>Note &amp;Duration</source>
         <translation>&amp;Durata Nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1122"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1107"/>
         <source>Note Duration</source>
         <translation>Durata Nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1125"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1110"/>
         <source>Note duration</source>
         <translation>Durata nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1128"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1113"/>
         <source>Whether note events are shown proportional to duration</source>
         <translation>Se mostrare gli eventi delle note proporzionali alla durata</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1139"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1124"/>
         <source>Note &amp;Color</source>
         <translation>&amp;Colore Nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1142"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1127"/>
         <source>Note Color</source>
         <translation>Colore Nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1145"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1130"/>
         <source>Note color</source>
         <translation>Colore nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1148"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1133"/>
         <source>Whether note events are colored according to pitch</source>
         <translation>Se le note sono colorate in base alla loro altezza</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1159"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1144"/>
         <source>&amp;Value Color</source>
         <translation>Colore &amp;Valore</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1162"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1147"/>
         <source>Value Color</source>
         <translation>Colore Valore</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1165"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1150"/>
         <source>Value color</source>
         <translation>Colore valore</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1168"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1153"/>
         <source>Whether note events are colored according to value (velocity)</source>
         <translation>Se le note sono colorate in base al loro valore (intensit�)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1182"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1167"/>
         <source>&amp;Events</source>
         <translation>&amp;Eventi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1185"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1188"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1170"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1173"/>
         <source>View events</source>
         <translation>Mostra eventi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1191"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1176"/>
         <source>Show/hide the events list</source>
         <translation>Mostra/nascondi la lista degli eventi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1202"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1187"/>
         <source>&amp;Preview Notes</source>
         <translation>Ante&amp;prima Note</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1205"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1190"/>
         <source>Preview Notes</source>
         <translation>Anteprima Note</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1208"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1193"/>
         <source>Preview notes</source>
         <translation>Anteprima note</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1211"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1196"/>
         <source>Preview notes while editing (scrub)</source>
         <translation>Anteprima note durante la modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1225"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1210"/>
         <source>F&amp;ollow Playhead</source>
         <translation>Segui la barra di ripr&amp;oduzione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1228"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1213"/>
         <source>Follow Playhead</source>
         <translation>Segui la barra di riproduzione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1231"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1234"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1216"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1219"/>
         <source>Follow playhead</source>
         <translation>Segui la barra di riproduzione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1245"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1230"/>
         <source>&amp;In</source>
         <translation>&amp;In</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1248"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1233"/>
         <source>Zoom In</source>
         <translation>Ingrandisci</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1251"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1254"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1236"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1239"/>
         <source>Zoom in</source>
         <translation>Ingrandisci</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1257"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1242"/>
         <source>Ctrl++</source>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1265"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1250"/>
         <source>&amp;Out</source>
         <translation>&amp;Out</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1268"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1253"/>
         <source>Zoom Out</source>
         <translation>Rimpicciolisci</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1271"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1274"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1256"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1259"/>
         <source>Zoom out</source>
         <translation>Rimpicciolisci</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1277"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1262"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1282"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1267"/>
         <source>&amp;Reset</source>
         <translation>&amp;Ripristina</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1285"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1270"/>
         <source>Zoom Reset</source>
         <translation>Ripristina Ingrandimento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1288"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1291"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1273"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1276"/>
         <source>Zoom reset</source>
         <translation>Ripristina ingrandimento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1294"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1279"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1302"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1287"/>
         <source>&amp;Horizontal</source>
         <translation>Orizzontale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1305"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1290"/>
         <source>Horizontal Zoom</source>
         <translation>Ingrandimento Orizzontale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1308"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1293"/>
         <source>Horizontal zoom</source>
         <translation>Ingrandimento orizzontale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1311"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1296"/>
         <source>Horizontal zoom mode</source>
         <translation>Modalità ingrandimento orizzontale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1319"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1304"/>
         <source>&amp;Vertical</source>
         <translation>&amp;Verticale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1322"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1307"/>
         <source>Vertical Zoom</source>
         <translation>Ingrandimento Verticale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1325"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1310"/>
         <source>Vertical zoom</source>
         <translation>Ingrandimento verticale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1328"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1313"/>
         <source>Vertical zoom mode</source>
         <translation>Modalità ingrandimento verticale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1339"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1324"/>
         <source>All Zoom</source>
         <translation>Ingrandisci Tutto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1342"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1327"/>
         <source>All zoom</source>
         <translation>Ingrandisci tutto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1345"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1330"/>
         <source>All zoom mode</source>
         <translation>Modalità ingrandisci tutto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1353"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1338"/>
         <source>&amp;Zebra</source>
         <translation>Colonne</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1356"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1359"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1341"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1344"/>
         <source>Zebra</source>
         <translation>Colonne</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1362"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1347"/>
         <source>Bar zebra view mode</source>
         <translation>Modalità vista a colonne</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1370"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1355"/>
         <source>&amp;Grid</source>
         <translation>&amp;Griglia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1373"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1376"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1358"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1361"/>
         <source>Grid</source>
         <translation>Griglia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1379"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1364"/>
         <source>Snap grid view mode</source>
         <translation>Modalità allineamento alla griglia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1387"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1372"/>
         <source>Too&amp;l Tips</source>
         <translation>Suggerimenti</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1390"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1393"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1375"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1378"/>
         <source>Tool tips</source>
         <translation>Suggerimenti</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1396"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1381"/>
         <source>Floating tool tips view mode</source>
         <translation>Modalità vista suggerimenti</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1401"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1386"/>
         <source>&amp;Refresh</source>
         <translation>Aggio&amp;rna</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1404"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1407"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1389"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1392"/>
         <source>Refresh</source>
         <translation>Aggiorna</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1410"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1395"/>
         <source>Refresh views</source>
         <translation>Aggiorna viste</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1413"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1398"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1421"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1406"/>
         <source>&amp;Backward</source>
         <translation>Indietro</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1424"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1427"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1409"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1412"/>
         <source>Backward</source>
         <translation>Indietro</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1430"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1415"/>
         <source>Transport backward</source>
         <translation>Avanzamento indietro</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1433"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1418"/>
         <source>Backspace</source>
         <translation>Backspace</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1444"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1429"/>
         <source>Re&amp;wind</source>
         <translation>Riavvolgi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1447"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1450"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1432"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1435"/>
         <source>Rewind</source>
         <translation>Riavvolgi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1453"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1438"/>
         <source>Transport rewind</source>
         <translation>Riavvolgi Avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1467"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1452"/>
         <source>F&amp;ast Forward</source>
         <translation>&amp;Avanti Veloce</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1470"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1455"/>
         <source>Fast Forward</source>
         <translation>Avanti Veloce</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1473"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1458"/>
         <source>Fast forward</source>
         <translation>Avanti veloce</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1476"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1461"/>
         <source>Transport fast forward</source>
         <translation>Avanti veloce avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1487"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1472"/>
         <source>&amp;Forward</source>
         <translation>Avanti</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1490"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1493"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1475"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1478"/>
         <source>Forward</source>
         <translation>Avanti</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1496"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1481"/>
         <source>Transport forward</source>
         <translation>Avanti avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1510"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1495"/>
         <source>&amp;Loop</source>
         <translation>Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1513"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1516"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1498"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1501"/>
         <source>Loop</source>
         <translation>Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1519"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1504"/>
         <source>Transport loop</source>
         <translation>Loop avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1522"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1507"/>
         <source>Ctrl+Shift+L</source>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1527"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1512"/>
         <source>Loop &amp;Set</source>
         <translation>Impo&amp;sta Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1530"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1515"/>
         <source>Loop Set</source>
         <translation>Imposta Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1533"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1518"/>
         <source>Loop set</source>
         <translation>Imposta loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1536"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1521"/>
         <source>Transport loop set</source>
         <translation>Imposta loop avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1539"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1524"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1547"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1532"/>
         <source>&amp;Stop</source>
         <translation>&amp;Stop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1550"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1553"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1535"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1538"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1556"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1541"/>
         <source>Transport stop</source>
         <translation>Ferma avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1567"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1552"/>
         <source>&amp;Play</source>
         <translation>&amp;Play</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1570"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1573"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1555"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1558"/>
         <source>Play</source>
         <translation>Play</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1576"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1561"/>
         <source>Transport play/pause</source>
         <translation>Avvia avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1579"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1564"/>
         <source>Space</source>
         <translation>Barra spazio</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1590"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1575"/>
         <source>&amp;Record</source>
         <translation>&amp;Registra</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="456"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="459"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1593"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1596"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="441"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="444"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1578"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1581"/>
         <source>Record</source>
         <translation>Registra</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1599"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1584"/>
         <source>Transport record</source>
         <translation>Registra avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1613"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1598"/>
         <source>&amp;Punch</source>
         <translation>Punch</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1616"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1601"/>
         <source>Punch</source>
         <translation>Punch</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1619"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1604"/>
         <source>Punch in/out</source>
         <translation>Punch in/out</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1622"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1607"/>
         <source>Transport punch in/out</source>
         <translation>Punch in/out avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1625"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1610"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1630"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1615"/>
         <source>Punch Se&amp;t</source>
         <translation>Impo&amp;sta Punch</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1633"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1618"/>
         <source>Punch Set</source>
         <translation>Imposta Punch</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1636"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1621"/>
         <source>Punch in/out set</source>
         <translation>Imposta punch in/out</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1639"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1624"/>
         <source>Transport punch in/out set</source>
         <translation>Imposta punch in/out avanzamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1642"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1627"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1650"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1635"/>
         <source>Pa&amp;nic</source>
         <translation>Pa&amp;nico</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1653"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1656"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1638"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1641"/>
         <source>Panic</source>
         <translation>Panico</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1659"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1644"/>
         <source>All MIDI tracks shut off (panic)</source>
         <translation>Spegni tutte le tracce MIDI (panico)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1667"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1652"/>
         <source>&amp;Shortcuts...</source>
         <translation>&amp;Scorciatoie...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1670"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1673"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1655"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1658"/>
         <source>Shortcuts</source>
         <translation>Scorciatoie</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1676"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1661"/>
         <source>Keyboard shortcuts</source>
         <translation>Scorciatoie tastiera</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1684"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1669"/>
         <source>&amp;About...</source>
         <translation>Inform&amp;azioni su...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1687"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1690"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1672"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1675"/>
         <source>About</source>
         <translation>Informazioni su</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1693"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1678"/>
         <source>Show information about this application program</source>
         <translation>Mostra informazioni su questo programma</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1701"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1686"/>
         <source>About &amp;Qt...</source>
         <translation>Informazioni su &amp;Qt...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1704"/>
-        <location filename="../qtractorMidiEditorForm.ui" line="1707"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1689"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1692"/>
         <source>About Qt</source>
         <translation>Informazioni su Qt</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.ui" line="1710"/>
+        <location filename="../qtractorMidiEditorForm.ui" line="1695"/>
         <source>Show information about the Qt toolkit</source>
         <translation>Mostra informazioni su Qt</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="127"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="141"/>
         <source>Set current snap to %1</source>
         <translation>Imposta allineamento corrente a %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="168"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="182"/>
         <source>Note Velocity</source>
         <translation>Intensità Nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="181"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="195"/>
         <source>Snap/beat</source>
         <translation>Allineamento/Battito</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="182"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="196"/>
         <source>Note type</source>
         <translation>Tipo nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="183"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="197"/>
         <source>Value type</source>
         <translation>Tipo valore</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="184"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="198"/>
         <source>Parameter type</source>
         <translation>Tipo di parametro</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="185"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="199"/>
         <source>Scale key</source>
         <translation>Chiave scala</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="186"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="200"/>
         <source>Scale type</source>
         <translation>Tipo scala</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="244"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="258"/>
         <source>MIDI clip name</source>
         <translation>Nome clip MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="251"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="265"/>
         <source>MIDI file name</source>
         <translation>Nome file MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="258"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="272"/>
         <source>MIDI track/channel</source>
         <translation>Traccia/Canale MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="263"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1832"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="277"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1858"/>
         <source>MOD</source>
         <translation>MOD</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="266"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="280"/>
         <source>MIDI modification state</source>
         <translation>Stato modifica MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="271"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1837"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="285"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1863"/>
         <source>REC</source>
         <translation>REC</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="274"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="288"/>
         <source>MIDI clip record state</source>
         <translation>Stato registrazione clip MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="279"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="293"/>
         <source>00:00:00.000</source>
         <translation>00:00:00.000</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="282"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="296"/>
         <source>MIDI clip duration</source>
         <translation>Durata clip MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="746"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="766"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="747"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="767"/>
         <source>The current MIDI clip has been changed:
 
 &quot;%1&quot;
@@ -8344,32 +8344,32 @@ Do you want to save the changes?</source>
 Vuoi salvare i cambiamenti?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1004"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1024"/>
         <source>Save MIDI Clip</source>
         <translation>Salva Clip MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1005"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1025"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>File MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1072"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1092"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Salvataggio file MIDI: &quot;%1&quot;, traccia-canale: %2.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1812"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1838"/>
         <source>Channel %1</source>
         <translation>Canale %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1815"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1841"/>
         <source>Track %1</source>
         <translation>Traccia %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1822"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1848"/>
         <source>[modified]</source>
         <translation>[modificato]</translation>
     </message>
