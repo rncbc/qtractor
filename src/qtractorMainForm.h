@@ -229,7 +229,6 @@ public slots:
 	void viewToolbarFile(bool bOn);
 	void viewToolbarEdit(bool bOn);
 	void viewToolbarTrack(bool bOn);
-	void viewToolbarClip(bool bOn);
 	void viewToolbarView(bool bOn);
 	void viewToolbarOptions(bool bOn);
 	void viewToolbarTransport(bool bOn);
