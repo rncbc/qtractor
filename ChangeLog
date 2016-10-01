@@ -7,7 +7,7 @@ ChangeLog
 GIT HEAD
 
 - Edit/Select Mode tool-buttons moved into single drop-down
-  tool-button on the main application tool-bar.
+  tool-button on the main and MIDI editor's tool-bar.
 
 - Do not reset the current clip selection when updating the
   main track-view extents eg. while zooming in or out.
