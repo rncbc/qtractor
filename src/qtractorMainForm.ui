@@ -81,11 +81,6 @@
    <addaction name="editPasteAction"/>
    <addaction name="separator"/>
    <addaction name="editDeleteAction"/>
-   <addaction name="separator"/>
-   <addaction name="editSelectModeMenu"/>
-   <addaction name="separator"/>
-   <addaction name="clipNewAction"/>
-   <addaction name="clipEditAction"/>
   </widget>
   <widget class="QToolBar" name="trackToolbar">
    <property name="orientation">
@@ -101,6 +96,19 @@
    <addaction name="trackRemoveAction"/>
    <addaction name="separator"/>
    <addaction name="trackPropertiesAction"/>
+  </widget>
+  <widget class="QToolBar" name="clipToolbar">
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="clipNewAction"/>
+   <addaction name="clipEditAction"/>
   </widget>
   <widget class="QToolBar" name="viewToolbar">
    <property name="orientation">
@@ -456,6 +464,7 @@
      <addaction name="viewToolbarFileAction"/>
      <addaction name="viewToolbarEditAction"/>
      <addaction name="viewToolbarTrackAction"/>
+     <addaction name="viewToolbarClipAction"/>
      <addaction name="viewToolbarViewAction"/>
      <addaction name="viewToolbarOptionsAction"/>
      <addaction name="viewToolbarTransportAction"/>
@@ -2149,6 +2158,23 @@
    </property>
    <property name="statusTip">
     <string>Show/hide main program window track toolbar</string>
+   </property>
+  </action>
+  <action name="viewToolbarClipAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Clip</string>
+   </property>
+   <property name="iconText">
+    <string>Clip Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Clip toolbar</string>
+   </property>
+   <property name="statusTip">
+    <string>Show/hide main program window clip toolbar</string>
    </property>
   </action>
   <action name="viewToolbarViewAction">

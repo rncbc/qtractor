@@ -85,6 +85,7 @@ public:
 	bool    bFileToolbar;
 	bool    bEditToolbar;
 	bool    bTrackToolbar;
+	bool    bClipToolbar;
 	bool    bViewToolbar;
 	bool    bOptionsToolbar;
 	bool    bTransportToolbar;

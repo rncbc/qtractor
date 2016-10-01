@@ -63,6 +63,7 @@ class QComboBox;
 class QProgressBar;
 class QSocketNotifier;
 class QActionGroup;
+class QToolButton;
 class QPalette;
 
 
@@ -228,6 +229,7 @@ public slots:
 	void viewToolbarFile(bool bOn);
 	void viewToolbarEdit(bool bOn);
 	void viewToolbarTrack(bool bOn);
+	void viewToolbarClip(bool bOn);
 	void viewToolbarView(bool bOn);
 	void viewToolbarOptions(bool bOn);
 	void viewToolbarTransport(bool bOn);
@@ -454,6 +456,8 @@ private:
 	int m_iBackupCount;
 	QSocketNotifier *m_pUsr1Notifier;
 	QSocketNotifier *m_pTermNotifier;
+	QActionGroup *m_pSelectModeActionGroup;
+	QToolButton *m_pSelectModeToolButton;
 	qtractorTimeSpinBox *m_pTimeSpinBox;
 	qtractorTempoSpinBox *m_pTempoSpinBox;
 	QComboBox *m_pSnapPerBeatComboBox;

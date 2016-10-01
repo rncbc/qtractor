@@ -413,6 +413,25 @@ qtractorMainForm::qtractorMainForm (
 	// Also the (QAction) MIDI observer map (TESTING)...
 	m_pActionControl = new qtractorActionControl(this);
 
+	// Get edit selection mode action group up...
+	m_pSelectModeActionGroup = new QActionGroup(this);
+	m_pSelectModeActionGroup->setExclusive(true);
+	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeClipAction);
+	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRangeAction);
+	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRectAction);
+	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeCurveAction);
+
+	// Andc the corresponding tool-button drop-down menu...
+	m_ui.editToolbar->addSeparator();
+	m_pSelectModeToolButton = new QToolButton(this);
+	m_pSelectModeToolButton->setPopupMode(QToolButton::MenuButtonPopup);
+	m_pSelectModeToolButton->setMenu(m_ui.editSelectModeMenu);
+	m_ui.editToolbar->addWidget(m_pSelectModeToolButton);
+
+	QObject::connect(
+		m_pSelectModeToolButton, SIGNAL(triggered(QAction*)),
+		m_pSelectModeToolButton, SLOT(setDefaultAction(QAction*)));
+
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
 
@@ -978,6 +997,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewToolbarTrackAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarTrack(bool)));
+	QObject::connect(m_ui.viewToolbarClipAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarClip(bool)));
 	QObject::connect(m_ui.viewToolbarViewAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarView(bool)));
@@ -1179,6 +1201,12 @@ qtractorMainForm::~qtractorMainForm (void)
 	if (m_pTracks)
 		delete m_pTracks;
 
+	// Get select mode action group down.
+	if (m_pSelectModeActionGroup)
+		delete m_pSelectModeActionGroup;
+	if (m_pSelectModeToolButton)
+		delete m_pSelectModeToolButton;
+
 	// Reclaim status items palettes...
 	for (int i = 0; i < PaletteItems; ++i)
 		delete m_paletteItems[i];
@@ -1294,6 +1322,10 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	if (pTrackView->isCurveEdit())
 		m_ui.editSelectModeCurveAction->setChecked(true);
 
+	// Set initial select mode...
+	m_pSelectModeToolButton->setDefaultAction(
+		m_pSelectModeActionGroup->checkedAction());
+
 	// Initial zoom mode...
 	m_pTracks->setZoomMode(m_pOptions->iZoomMode);
 
@@ -1307,6 +1339,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.viewToolbarFileAction->setChecked(m_pOptions->bFileToolbar);
 	m_ui.viewToolbarEditAction->setChecked(m_pOptions->bEditToolbar);
 	m_ui.viewToolbarTrackAction->setChecked(m_pOptions->bTrackToolbar);
+	m_ui.viewToolbarClipAction->setChecked(m_pOptions->bClipToolbar);
 	m_ui.viewToolbarViewAction->setChecked(m_pOptions->bViewToolbar);
 	m_ui.viewToolbarOptionsAction->setChecked(m_pOptions->bOptionsToolbar);
 	m_ui.viewToolbarTransportAction->setChecked(m_pOptions->bTransportToolbar);
@@ -1329,6 +1362,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	viewToolbarFile(m_pOptions->bFileToolbar);
 	viewToolbarEdit(m_pOptions->bEditToolbar);
 	viewToolbarTrack(m_pOptions->bTrackToolbar);
+	viewToolbarTrack(m_pOptions->bClipToolbar);
 	viewToolbarView(m_pOptions->bViewToolbar);
 	viewToolbarOptions(m_pOptions->bOptionsToolbar);
 	viewToolbarTransport(m_pOptions->bTransportToolbar);
@@ -1597,6 +1631,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bFileToolbar = m_ui.fileToolbar->isVisible();
 			m_pOptions->bEditToolbar = m_ui.editToolbar->isVisible();
 			m_pOptions->bTrackToolbar = m_ui.trackToolbar->isVisible();
+			m_pOptions->bClipToolbar = m_ui.clipToolbar->isVisible();
 			m_pOptions->bViewToolbar = m_ui.viewToolbar->isVisible();
 			m_pOptions->bOptionsToolbar = m_ui.optionsToolbar->isVisible();
 			m_pOptions->bTransportToolbar = m_ui.transportToolbar->isVisible();
@@ -4516,6 +4551,13 @@ void qtractorMainForm::viewToolbarEdit ( bool bOn )
 void qtractorMainForm::viewToolbarTrack ( bool bOn )
 {
 	m_ui.trackToolbar->setVisible(bOn);
+}
+
+
+// Show/hide the clip-toolbar.
+void qtractorMainForm::viewToolbarClip ( bool bOn )
+{
+	m_ui.clipToolbar->setVisible(bOn);
 }
 
 

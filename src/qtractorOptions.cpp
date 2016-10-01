@@ -110,6 +110,7 @@ void qtractorOptions::loadOptions (void)
 	bFileToolbar    = m_settings.value("/FileToolbar", true).toBool();
 	bEditToolbar    = m_settings.value("/EditToolbar", true).toBool();
 	bTrackToolbar   = m_settings.value("/TrackToolbar", true).toBool();
+	bClipToolbar    = m_settings.value("/ClipToolbar", true).toBool();
 	bViewToolbar    = m_settings.value("/ViewToolbar", true).toBool();
 	bOptionsToolbar = m_settings.value("/OptionsToolbar", true).toBool();
 	bTransportToolbar = m_settings.value("/TransportToolbar", true).toBool();
@@ -398,6 +399,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/FileToolbar", bFileToolbar);
 	m_settings.setValue("/EditToolbar", bEditToolbar);
 	m_settings.setValue("/TrackToolbar", bTrackToolbar);
+	m_settings.setValue("/ClipToolbar", bClipToolbar);
 	m_settings.setValue("/ViewToolbar", bViewToolbar);
 	m_settings.setValue("/OptionsToolbar", bOptionsToolbar);
 	m_settings.setValue("/TransportToolbar", bTransportToolbar);
