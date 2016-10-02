@@ -431,7 +431,7 @@ qtractorMainForm::qtractorMainForm (
 	m_ui.editToolbar->insertSeparator(m_ui.clipNewAction);
 
 	QObject::connect(
-		m_pSelectModeToolButton, SIGNAL(triggered(QAction*)),
+		m_pSelectModeActionGroup, SIGNAL(triggered(QAction*)),
 		m_pSelectModeToolButton, SLOT(setDefaultAction(QAction*)));
 
 	// Additional time-toolbar controls...

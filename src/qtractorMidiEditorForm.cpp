@@ -107,7 +107,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_ui.editToolbar->addWidget(m_pEditModeToolButton);
 
 	QObject::connect(
-		m_pEditModeToolButton, SIGNAL(triggered(QAction*)),
+		m_pEditModeActionGroup, SIGNAL(triggered(QAction*)),
 		m_pEditModeToolButton, SLOT(setDefaultAction(QAction*)));
 
 	// Snap-per-beat combo-box.
