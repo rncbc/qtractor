@@ -1444,26 +1444,6 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 			// Draw the clip...
 			const QRect clipRect(x, y, w - x, h);
 			pClip->drawClip(pPainter, clipRect, iClipOffset);
-		#if 0
-			// Draw the clip selection...
-			if (pClip->isClipSelected()) {
-				const unsigned long iSelectStart = pClip->clipSelectStart();
-				const unsigned long iSelectEnd   = pClip->clipSelectEnd();
-				x = trackRect.x();
-				w = trackRect.width();
-				if (iSelectStart >= iTrackStart) {
-					x += m_pSession->pixelFromFrame(iSelectStart - iTrackStart);
-				} else {
-					--x;	// Give selection some left-border room.
-				}
-				if (iSelectEnd < iTrackEnd) {
-					w -= m_pSession->pixelFromFrame(iTrackEnd - iSelectEnd);
-				} else {
-					++w;	// Give selection some right-border room.
-				}
-				pPainter->fillRect(QRect(x, y, w - x, h), QColor(0, 0, 255, 120));
-			}
-		#endif
 			if (pClip == pClipRecordEx)
 				pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
 		}

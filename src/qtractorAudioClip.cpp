@@ -631,29 +631,35 @@ void qtractorAudioClip::draw (
 	if (!m_pPeak->openRead())
 		return;
 
-	const unsigned short iPeriod = m_pPeak->period();
-	if (iPeriod < 1)
-		return;
-
 	const unsigned short iChannels = m_pPeak->channels();
 	if (iChannels < 1)
 		return;
 
-	const unsigned long iframe
-		= ((iClipOffset + clipOffset()) / iPeriod);
-	const unsigned long nframes
-		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
+	const unsigned short iPeakPeriod = m_pPeak->period();
+	if (iPeakPeriod < 1)
+		return;
+
+	const unsigned long iFrameStart
+		= iClipOffset + clipOffset();
+	const unsigned long iFrameEnd = pSession->frameFromPixel(
+		pSession->pixelFromFrame(iFrameStart) + clipRect.width());
+
+	const unsigned long iPeakOffset
+		= (iFrameStart / iPeakPeriod);
+	const unsigned long iPeakFrames
+		= ((iFrameEnd - iFrameStart) / iPeakPeriod) + 2;
 
 	// Needed an even number of polygon points...
-	const bool bZoomedIn = (clipRect.width() > int(nframes));
+	const bool bZoomedIn = (clipRect.width() > int(iPeakFrames));
 	const unsigned int iPolyPoints
-		= (bZoomedIn ? nframes: (clipRect.width() >> 1)) << 1;
+		= (bZoomedIn ? iPeakFrames : (clipRect.width() >> 1)) << 1;
 	if (iPolyPoints < 2)
 		return;
 
 	// Grab them in...
-	qtractorAudioPeakFile::Frame *pframes = m_pPeak->read(iframe, nframes);
-	if (pframes == NULL)
+	qtractorAudioPeakFile::Frame *pPeakFrames
+		= m_pPeak->read(iPeakOffset, iPeakFrames);
+	if (pPeakFrames == NULL)
 		return;
 
 	// Polygon init...
@@ -679,19 +685,19 @@ void qtractorAudioClip::draw (
 	if (bZoomedIn) {
 		// Zoomed in...
 		// - trade peak-frames for pixels.
-		n2 = nframes - 1;
-		for (n = 0; n < nframes; ++n) {
+		n2 = iPeakFrames - 1;
+		for (n = 0; n < iPeakFrames; ++n) {
 			x = clipRect.x() + (n * clipRect.width()) / n2;
 			y = clipRect.y() + h2;
 			for (i = 0; i < iChannels; ++i) {
-				ymax = (h2gain * pframes->max) >> m_fractGain.den;
-				ymin = (h2gain * pframes->min) >> m_fractGain.den;
-				yrms = (h2gain * pframes->rms) >> m_fractGain.den;
+				ymax = (h2gain * pPeakFrames->max) >> m_fractGain.den;
+				ymin = (h2gain * pPeakFrames->min) >> m_fractGain.den;
+				yrms = (h2gain * pPeakFrames->rms) >> m_fractGain.den;
 				pPolyMax[i]->setPoint(n, x, y - ymax);
 				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y + ymin);
 				pPolyRms[i]->setPoint(n, x, y - yrms);
 				pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y + yrms);
-				y += h1; ++pframes;
+				y += h1; ++pPeakFrames;
 			}
 		}
 	} else {
@@ -703,19 +709,19 @@ void qtractorAudioClip::draw (
 		for (x2 = 0; x2 < clipRect.width(); x2 += 2) {
 			x = clipRect.x() + x2;
 			y = clipRect.y() + h2;
-			n = (iChannels * x2 * nframes) / clipRect.width();
+			n = (iChannels * x2 * iPeakFrames) / clipRect.width();
 			for (i = 0; i < iChannels; ++i) {
-				vmax = pframes[n + i].max;
-				vmin = pframes[n + i].min;
-				vrms = pframes[n + i].rms;;
+				vmax = pPeakFrames[n + i].max;
+				vmin = pPeakFrames[n + i].min;
+				vrms = pPeakFrames[n + i].rms;;
 				for (n2 = n0 + i; n2 < n + i; n2 += iChannels) {
-					v = pframes[n2].max;
+					v = pPeakFrames[n2].max;
 					if (vmax < v)
 						vmax = v;
-					v = pframes[n2].min;
+					v = pPeakFrames[n2].min;
 					if (vmin < v)
 						vmin = v;
-					v = pframes[n2].rms;
+					v = pPeakFrames[n2].rms;
 					if (vrms < v)
 						vrms = v;
 				}
