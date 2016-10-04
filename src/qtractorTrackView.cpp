@@ -549,19 +549,22 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							// Clip recording is rolling within loop range:
 							// -- redraw leading/head clip segment...
 							unsigned long iHeadOffset = 0;
+							unsigned long iHeadLength = 0;
 							if (iClipStart < iTrackStart)
 								iHeadOffset += iTrackStart - iClipStart;
 							x = pSession->pixelFromFrame(iClipStart) - cx;
 							w = 0;
 							if (iClipStart < iLoopStart) {
 								w += pSession->pixelFromFrame(iLoopStart) - cx - x;
-								iClipOffset += iLoopStart - iClipStart;
+								iHeadLength  = iLoopStart - iClipStart;
+								iClipOffset += iHeadLength;
 							}
 							const QRect& headRect
 								= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
 							if (!headRect.isEmpty()) {
 								const QBrush brush(pPainter->brush());
-								pClipRecord->drawClipRecord(pPainter, headRect, iHeadOffset);
+								pClipRecord->drawClipRecord(
+									pPainter, headRect, iHeadOffset, iHeadLength);
 								pPainter->setBrush(brush);
 							}
 							iClipOffset += (iFrameTime - iPlayHead);
@@ -572,16 +575,20 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					if (!bPunching || iTrackStart < iPunchOut) {
 						// Clip recording rolling:
 						// -- redraw current clip segment...
+						unsigned long iClipLength = 0;
 						if (iClipStart < iTrackStart)
 							iClipOffset += iTrackStart - iClipStart;
 						x = pSession->pixelFromFrame(iClipStart) - cx;
 						w = 0;
-						if (iClipStart < iTrackEnd)
+						if (iClipStart < iTrackEnd) {
 							w += pSession->pixelFromFrame(iTrackEnd) - cx - x;
+							iClipLength = iTrackEnd - iClipStart;
+						}
 						const QRect& clipRect
 							= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
 						if (!clipRect.isEmpty())
-							pClipRecord->drawClipRecord(pPainter, clipRect, iClipOffset);
+							pClipRecord->drawClipRecord(
+								pPainter, clipRect, iClipOffset, iClipLength);
 					}
 				}
 				pTrack = pTrack->next();
@@ -1019,14 +1026,16 @@ qtractorClip *qtractorTrackView::clipAtTrack (
 
 	qtractorClip *pClipAt = NULL;
 	while (pClip && pClip->clipStart() < pTrackViewInfo->trackEnd) {
-		const int x = pSession->pixelFromFrame(pClip->clipStart());
-		const int w = pSession->pixelFromFrame(pClip->clipLength());
-		if (pos.x() >= x && x + w >= pos.x()) {
+		const unsigned long iClipStart = pClip->clipStart();
+		const unsigned long iClipEnd = iClipStart + pClip->clipLength();
+		const int x1 = pSession->pixelFromFrame(iClipStart);
+		const int x2 = pSession->pixelFromFrame(iClipEnd);
+		if (pos.x() >= x1 && x2 >= pos.x()) {
 			pClipAt = pClip;
 			if (pClipRect) {
 				pClipRect->setRect(
-					x, pTrackViewInfo->trackRect.y(),
-					w, pTrackViewInfo->trackRect.height());
+					x1, pTrackViewInfo->trackRect.y(),
+					x2 - x1, pTrackViewInfo->trackRect.height());
 			}
 		}
 		pClip = pClip->next();
@@ -1118,8 +1127,7 @@ bool qtractorTrackView::trackInfo (
 			const int w = qtractorScrollView::width(); // View width, not contents.
 			pTrackViewInfo->trackIndex = iTrack;
 			pTrackViewInfo->trackStart = m_pSessionCursor->frame();
-			pTrackViewInfo->trackEnd   = pTrackViewInfo->trackStart
-				+ pSession->frameFromPixel(w);
+			pTrackViewInfo->trackEnd = pSession->frameFromPixel(x + w);
 			pTrackViewInfo->trackRect.setRect(x, y1 + 1, w, y2 - y1 - 2);
 			return true;
 		}
@@ -1143,11 +1151,13 @@ bool qtractorTrackView::clipInfo (
 	if (pSession == NULL)
 		return false;
 
-	const int x = pSession->pixelFromFrame(pClip->clipStart());
-	const int w = pSession->pixelFromFrame(pClip->clipLength());
+	const unsigned long iClipStart = pClip->clipStart();
+	const unsigned long iClipEnd = iClipStart + pClip->clipLength();
+	const int x1 = pSession->pixelFromFrame(iClipStart);
+	const int x2 = pSession->pixelFromFrame(iClipEnd);
 	pClipRect->setRect(
-		x, pTrackViewInfo->trackRect.y(),
-		w, pTrackViewInfo->trackRect.height());
+		x1, pTrackViewInfo->trackRect.y(),
+		x2 - x1, pTrackViewInfo->trackRect.height());
 
 	return true;
 }

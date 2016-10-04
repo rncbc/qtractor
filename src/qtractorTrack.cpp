@@ -1418,32 +1418,29 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 #endif
 
 	qtractorClip *pClipRecordEx = (m_bClipRecordEx ? m_pClipRecord : NULL);
-
+	const int x0 = m_pSession->pixelFromFrame(iTrackStart);
 	while (pClip) {
-		const unsigned long iClipStart = pClip->clipStart();
+		unsigned long iClipStart = pClip->clipStart();
 		if (iClipStart > iTrackEnd)
 			break;
-		const unsigned long iClipEnd = iClipStart + pClip->clipLength();
+		unsigned long iClipEnd = iClipStart + pClip->clipLength();
 		if (iClipStart < iTrackEnd && iClipEnd > iTrackStart) {
-			unsigned long iClipOffset = 0;
-			int x = trackRect.x();
-			int w = trackRect.width();
-			if (iClipStart >= iTrackStart) {
-				x += m_pSession->pixelFromFrame(iClipStart - iTrackStart);
-			} else {
-				iClipOffset = iTrackStart - iClipStart;
-				--x;	// Give some clip left-border room.
+			unsigned long iClipOffset = 0; // pClip->clipOffset();
+			if (iClipStart < iTrackStart) {
+				iClipOffset += (iTrackStart - iClipStart);
+				iClipStart = iTrackStart;
 			}
-			if (iClipEnd < iTrackEnd) {
-				w -= m_pSession->pixelFromFrame(iTrackEnd - iClipEnd);// + 1;
-			} else {
-				++w;	// Give some clip right-border room.
+			if (iClipEnd > iTrackEnd) {
+				iClipEnd = iTrackEnd;
 			}
+			const unsigned long iClipLength = iClipEnd - iClipStart;
+			const int x1 = m_pSession->pixelFromFrame(iClipStart) - x0;
+			const int x2 = m_pSession->pixelFromFrame(iClipEnd) - x0;
 			pPainter->setPen(pen);
 			pPainter->setBrush(brush);
 			// Draw the clip...
-			const QRect clipRect(x, y, w - x, h);
-			pClip->drawClip(pPainter, clipRect, iClipOffset);
+			const QRect clipRect(x1, y, x2 - x1, h);
+			pClip->drawClip(pPainter, clipRect, iClipOffset, iClipLength);
 			if (pClip == pClipRecordEx)
 				pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
 		}

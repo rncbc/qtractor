@@ -618,7 +618,8 @@ void qtractorAudioClip::process_export (
 
 // Audio clip paint method.
 void qtractorAudioClip::draw (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter *pPainter, const QRect& clipRect,
+	unsigned long iClipOffset, unsigned long iClipLength )
 {
 	qtractorSession *pSession = track()->session();
 	if (pSession == NULL)
@@ -641,8 +642,8 @@ void qtractorAudioClip::draw (
 
 	const unsigned long iFrameStart
 		= iClipOffset + clipOffset();
-	const unsigned long iFrameEnd = pSession->frameFromPixel(
-		pSession->pixelFromFrame(iFrameStart) + clipRect.width());
+	const unsigned long iFrameEnd
+		= iFrameStart + iClipLength;
 
 	const unsigned long iPeakOffset
 		= (iFrameStart / iPeakPeriod);
