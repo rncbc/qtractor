@@ -817,6 +817,67 @@ bool qtractorAudioPeakFile::isWaitSync (void) const
 }
 
 
+qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
+	unsigned long iFrameOffset, unsigned long iFrameLength, int width )
+{
+	if (!openRead())
+		return NULL;
+
+	const unsigned short iChannels = channels();
+	if (iChannels < 1)
+		return NULL;
+
+	const unsigned short iPeakPeriod = period();
+	if (iPeakPeriod < 1)
+		return NULL;
+
+	const unsigned long iPeakOffset	= (iFrameOffset / iPeakPeriod);
+	const unsigned long iPeakFrames = (iFrameLength / iPeakPeriod);
+	if (iPeakFrames < 1)
+		return NULL;
+
+	// Grab them in...
+	qtractorAudioPeakFile::Frame *pPeakFrames
+		= read(iPeakOffset, iPeakFrames);
+	if (pPeakFrames == NULL)
+		return NULL;
+
+	// Check if we better aggregate over the farme buffer....
+	const int i2 = int(iPeakFrames);
+	if (width < i2 && width > 1) {
+		if (m_pPeakFrames)
+			delete [] m_pPeakFrames;
+		m_pPeakFrames = new qtractorAudioPeakFile::Frame [iChannels * width];
+		const int j2 = (i2 / width) + 1;
+		unsigned char v, vmax, vmin, vrms;
+		for (int i = 0; i < i2; ++i) {
+			qtractorAudioPeakFile::Frame *pPeakFrame = &pPeakFrames[i];
+			vmax = vmin = vrms = 0.0f;
+			for (int j = 0; j < j2; ++j) {
+				for (unsigned short k = 0; k < iChannels; ++k) {
+					v = pPeakFrame->max;
+					if (vmax < v)
+						vmax = v;
+					v = pPeakFrame->min;
+					if (vmin < v)
+						vmin = v;
+					v = pPeakFrame->rms;
+					if (vrms < v)
+						vrms = v;
+					++pPeakFrame;
+				}
+			}
+			m_pPeakFrames[i].max = vmax;
+			m_pPeakFrames[i].min = vmin;
+			m_pPeakFrames[i].rms = vrms;
+		}
+		pPeakFrames = m_pPeakFrames;
+	}
+
+	return pPeakFrames;
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorAudioPeakFactory -- Audio peak file factory (singleton).
 //

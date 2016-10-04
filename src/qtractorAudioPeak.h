@@ -149,13 +149,14 @@ public:
 
 	// Constructor.
 	qtractorAudioPeak(qtractorAudioPeakFile *pPeakFile)
-		{ m_pPeakFile = pPeakFile; m_pPeakFile->addRef(); }
+		{ m_pPeakFile = pPeakFile; m_pPeakFile->addRef(); m_pPeakFrames = NULL; }
 	// Copy consructor.
 	qtractorAudioPeak(const qtractorAudioPeak& peak)
-		{ m_pPeakFile = peak.m_pPeakFile; m_pPeakFile->addRef(); }
+		{ m_pPeakFile = peak.m_pPeakFile; m_pPeakFile->addRef(); m_pPeakFrames = NULL; }
 
 	// Default destructor.
-	~qtractorAudioPeak() { m_pPeakFile->removeRef(); }
+	~qtractorAudioPeak()
+		{ m_pPeakFile->removeRef(); if (m_pPeakFrames) delete [] m_pPeakFrames; }
 
 	// Reference accessor.
 	qtractorAudioPeakFile *peakFile() const
@@ -178,6 +179,9 @@ public:
 		{ return m_pPeakFile->read(iPeakOffset, iPeakFrames); }
 	void closeRead() { m_pPeakFile->closeRead(); }
 
+	qtractorAudioPeakFile::Frame *peakFrames(
+		unsigned long iFrameOffset, unsigned long iFrameLength, int width);
+
 	// Write peak from audio frame methods.
 	bool openWrite(unsigned short iChannels, unsigned int iSampleRate)
 		{ return m_pPeakFile->openWrite(iChannels, iSampleRate); }
@@ -189,6 +193,9 @@ private:
 
 	// Instance variable (ref'counted).
 	qtractorAudioPeakFile *m_pPeakFile;
+
+	// Interim scaling buffer.
+	qtractorAudioPeakFile::Frame *m_pPeakFrames;
 };
 
 
