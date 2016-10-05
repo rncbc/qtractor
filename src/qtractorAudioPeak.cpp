@@ -823,6 +823,18 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	if (!openRead())
 		return NULL;
 
+	// Check if we have the same previous hash
+	if (m_pPeakFrames) {
+		const unsigned int iPeakFramesHash
+			= qHash(iFrameOffset) ^ qHash(iFrameLength) ^ qHash(width);
+		if (m_iPeakFramesHash == iPeakFramesHash)
+			return m_pPeakFrames;
+		delete [] m_pPeakFrames;
+		m_pPeakFrames = NULL;;
+		m_iPeakFramesHash = iPeakFramesHash;
+	}
+
+	// We'll get a brand new peak frames alright...
 	const unsigned short iChannels = channels();
 	if (iChannels < 1)
 		return NULL;

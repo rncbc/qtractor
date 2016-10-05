@@ -149,10 +149,12 @@ public:
 
 	// Constructor.
 	qtractorAudioPeak(qtractorAudioPeakFile *pPeakFile)
-		{ m_pPeakFile = pPeakFile; m_pPeakFile->addRef(); m_pPeakFrames = NULL; }
+		: m_pPeakFile(pPeakFile), m_pPeakFrames(NULL), m_iPeakFramesHash(0)
+		{ m_pPeakFile->addRef(); }
 	// Copy consructor.
 	qtractorAudioPeak(const qtractorAudioPeak& peak)
-		{ m_pPeakFile = peak.m_pPeakFile; m_pPeakFile->addRef(); m_pPeakFrames = NULL; }
+		: m_pPeakFile(peak.m_pPeakFile), m_pPeakFrames(NULL), m_iPeakFramesHash(0)
+		{ m_pPeakFile->addRef(); }
 
 	// Default destructor.
 	~qtractorAudioPeak()
@@ -194,8 +196,9 @@ private:
 	// Instance variable (ref'counted).
 	qtractorAudioPeakFile *m_pPeakFile;
 
-	// Interim scaling buffer.
+	// Interim scaling buffer and hash.
 	qtractorAudioPeakFile::Frame *m_pPeakFrames;
+	unsigned int m_iPeakFramesHash;
 };
 
 
