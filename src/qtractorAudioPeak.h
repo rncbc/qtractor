@@ -149,11 +149,7 @@ public:
 
 	// Constructor.
 	qtractorAudioPeak(qtractorAudioPeakFile *pPeakFile)
-		: m_pPeakFile(pPeakFile), m_pPeakFrames(NULL), m_iPeakFramesHash(0)
-		{ m_pPeakFile->addRef(); }
-	// Copy consructor.
-	qtractorAudioPeak(const qtractorAudioPeak& peak)
-		: m_pPeakFile(peak.m_pPeakFile), m_pPeakFrames(NULL), m_iPeakFramesHash(0)
+		: m_pPeakFile(pPeakFile), m_pPeakFrames(NULL), m_iPeakLength(0), m_iPeakHash(0)
 		{ m_pPeakFile->addRef(); }
 
 	// Default destructor.
@@ -177,12 +173,9 @@ public:
 	// Peak cache file methods.
 	bool openRead() { return m_pPeakFile->openRead(); }
 	qtractorAudioPeakFile::Frame *read(
-		unsigned long iPeakOffset, unsigned int iPeakFrames)
-		{ return m_pPeakFile->read(iPeakOffset, iPeakFrames); }
+		unsigned long iPeakOffset, unsigned int iPeakLength)
+		{ return m_pPeakFile->read(iPeakOffset, iPeakLength); }
 	void closeRead() { m_pPeakFile->closeRead(); }
-
-	qtractorAudioPeakFile::Frame *peakFrames(
-		unsigned long iFrameOffset, unsigned long iFrameLength, int width);
 
 	// Write peak from audio frame methods.
 	bool openWrite(unsigned short iChannels, unsigned int iSampleRate)
@@ -191,6 +184,13 @@ public:
 		{ m_pPeakFile->write(ppAudioFrames, iAudioFrames); }
 	void closeWrite() { m_pPeakFile->closeWrite(); }
 
+	// Peak frames methods.
+	qtractorAudioPeakFile::Frame *peakFrames(
+		unsigned long iFrameOffset, unsigned long iFrameLength, int width);
+
+	unsigned int peakLength() const
+		{ return m_iPeakLength; }
+
 private:
 
 	// Instance variable (ref'counted).
@@ -198,7 +198,9 @@ private:
 
 	// Interim scaling buffer and hash.
 	qtractorAudioPeakFile::Frame *m_pPeakFrames;
-	unsigned int m_iPeakFramesHash;
+
+	unsigned int m_iPeakLength;
+	unsigned int m_iPeakHash;
 };
 
 

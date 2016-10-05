@@ -636,15 +636,15 @@ void qtractorAudioClip::draw (
 		return;
 
 	// Make some expectations...
-	const unsigned long iPeakFrames	= (iClipLength / m_pPeak->period());
-	if (iPeakFrames < 1)
+	const unsigned int iPeakLength	= m_pPeak->peakLength();
+	if (iPeakLength < 1)
 		return;
 
 
 	// Polygon init...
 	unsigned short k;
 	const unsigned short iChannels = m_pPeak->channels();
-	const unsigned int iPolyPoints = (iPeakFrames << 1);
+	const unsigned int iPolyPoints = (iPeakLength << 1);
 	QPolygon **pPolyMax = new QPolygon* [iChannels];
 	QPolygon **pPolyRms = new QPolygon* [iChannels];
 	for (k = 0; k < iChannels; ++k) {
@@ -661,7 +661,7 @@ void qtractorAudioClip::draw (
 	int x, y, ymax, ymin, yrms;
 
 	// Build polygonal vertexes...
-	const int n2 = int(iPeakFrames);
+	const int n2 = int(iPeakLength);
 	for (int n = 0; n < n2; ++n) {
 		x = clipRect.x() + (n * clipRect.width()) / n2;
 		y = clipRect.y() + h2;

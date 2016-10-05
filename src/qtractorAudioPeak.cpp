@@ -551,7 +551,7 @@ unsigned short qtractorAudioPeakFile::channels (void)
 
 // Read frames from peak file.
 qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
-	unsigned long iPeakOffset, unsigned int iPeakFrames )
+	unsigned long iPeakOffset, unsigned int iPeakLength )
 {
 	// Must be open for something...
 	if (m_openMode == None)
@@ -562,11 +562,11 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioPeakFile[%p]::read(%lu, %u) [%lu, %u, %u]", this,
-		iPeakOffset, iPeakFrames, m_iBuffOffset, m_iBuffLength, m_iBuffSize);
+		iPeakOffset, iPeakLength, m_iBuffOffset, m_iBuffLength, m_iBuffSize);
 #endif
 
 	// Cache effect, only valid if we're really reading...
-	const unsigned long iPeakEnd = iPeakOffset + iPeakFrames;
+	const unsigned long iPeakEnd = iPeakOffset + iPeakLength;
 	if (iPeakOffset >= m_iBuffOffset && m_iBuffOffset < iPeakEnd) {
 		unsigned long iBuffEnd = m_iBuffOffset + m_iBuffLength;
 		if (iBuffEnd >= iPeakEnd)
@@ -581,7 +581,7 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 	}
 
 	// Read peak data as requested...
-	m_iBuffLength = readBuffer(0, iPeakOffset, iPeakFrames);
+	m_iBuffLength = readBuffer(0, iPeakOffset, iPeakLength);
 	m_iBuffOffset = iPeakOffset;
 
 	return m_pBuffer;
@@ -590,12 +590,12 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 
 // Read frames from peak file into local buffer cache.
 unsigned int qtractorAudioPeakFile::readBuffer (
-	unsigned int iBuffOffset, unsigned long iPeakOffset, unsigned int iPeakFrames )
+	unsigned int iBuffOffset, unsigned long iPeakOffset, unsigned int iPeakLength )
 {
 	// Shall we reallocate?
-	if (iBuffOffset + iPeakFrames > m_iBuffSize) {
+	if (iBuffOffset + iPeakLength > m_iBuffSize) {
 		Frame *pOldBuffer = m_pBuffer;
-		m_iBuffSize += (iPeakFrames << 1);
+		m_iBuffSize += (iPeakLength << 1);
 		m_pBuffer = new Frame [m_peakHeader.channels * m_iBuffSize];
 		if (pOldBuffer) {
 			::memcpy(m_pBuffer, pOldBuffer,
@@ -606,7 +606,7 @@ unsigned int qtractorAudioPeakFile::readBuffer (
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorAudioPeakFile[%p]::readBuffer(%u, %lu, %u) [%lu, %u, %u]",
-		this, iBuffOffset, iPeakOffset, iPeakFrames,
+		this, iBuffOffset, iPeakOffset, iPeakLength,
 		m_iBuffOffset, m_iBuffLength, m_iBuffSize);
 #endif
 
@@ -615,7 +615,7 @@ unsigned int qtractorAudioPeakFile::readBuffer (
 	const unsigned long iOffset
 		= iPeakOffset * m_peakHeader.channels * sizeof(Frame);
 	const unsigned int iLength
-		= iPeakFrames * m_peakHeader.channels * sizeof(Frame);
+		= iPeakLength * m_peakHeader.channels * sizeof(Frame);
 
 	int nread = 0;
 	if (m_peakFile.seek(sizeof(Header) + iOffset))
@@ -825,13 +825,14 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 
 	// Check if we have the same previous hash
 	if (m_pPeakFrames) {
-		const unsigned int iPeakFramesHash
+		const unsigned int iPeakHash
 			= qHash(iFrameOffset) ^ qHash(iFrameLength) ^ qHash(width);
-		if (m_iPeakFramesHash == iPeakFramesHash)
+		if (m_iPeakHash == iPeakHash)
 			return m_pPeakFrames;
 		delete [] m_pPeakFrames;
 		m_pPeakFrames = NULL;;
-		m_iPeakFramesHash = iPeakFramesHash;
+		m_iPeakLength = 0;
+		m_iPeakHash = iPeakHash;
 	}
 
 	// We'll get a brand new peak frames alright...
@@ -843,46 +844,48 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	if (iPeakPeriod < 1)
 		return NULL;
 
-	const unsigned long iPeakOffset	= (iFrameOffset / iPeakPeriod);
-	const unsigned long iPeakFrames = (iFrameLength / iPeakPeriod);
-	if (iPeakFrames < 1)
+	// Peak frames length estimation...
+	m_iPeakLength = (iFrameLength / iPeakPeriod);
+	if (m_iPeakLength < 1)
 		return NULL;
 
 	// Grab them in...
 	qtractorAudioPeakFile::Frame *pPeakFrames
-		= read(iPeakOffset, iPeakFrames);
+		= read((iFrameOffset / iPeakPeriod), m_iPeakLength);
 	if (pPeakFrames == NULL)
 		return NULL;
 
-	// Check if we better aggregate over the farme buffer....
-	const int i2 = int(iPeakFrames);
-	if (width < i2 && width > 1) {
+	// Check if we better aggregate over the frame buffer....
+	if (width < int(m_iPeakLength) && width > 1) {
+		const int n2 = iChannels * width;
 		if (m_pPeakFrames)
 			delete [] m_pPeakFrames;
-		m_pPeakFrames = new qtractorAudioPeakFile::Frame [iChannels * width];
-		const int j2 = (i2 / width) + 1;
-		unsigned char v, vmax, vmin, vrms;
-		for (int i = 0; i < i2; ++i) {
-			qtractorAudioPeakFile::Frame *pPeakFrame = &pPeakFrames[i];
-			vmax = vmin = vrms = 0.0f;
-			for (int j = 0; j < j2; ++j) {
-				for (unsigned short k = 0; k < iChannels; ++k) {
-					v = pPeakFrame->max;
-					if (vmax < v)
-						vmax = v;
-					v = pPeakFrame->min;
-					if (vmin < v)
-						vmin = v;
-					v = pPeakFrame->rms;
-					if (vrms < v)
-						vrms = v;
-					++pPeakFrame;
+		m_pPeakFrames = new qtractorAudioPeakFile::Frame [n2];
+		const int i2 = iChannels * int(m_iPeakLength);
+		const int j2 = (int(m_iPeakLength) / width);
+		const int k2 = iChannels * j2;
+		unsigned char vmax, vmin, vrms; int n = 0;
+		for (int i = 0; i < i2 && n < n2; i += k2) {
+			for (unsigned short k = 0; k < iChannels; ++k) {
+				qtractorAudioPeakFile::Frame *pFrame = &pPeakFrames[i + k];
+				vmax = vmin = vrms = 0;
+				for (int j = 0; j < j2; ++j) {
+					if (vmax < pFrame->max)
+						vmax = pFrame->max;
+					if (vmin < pFrame->min)
+						vmin = pFrame->min;
+					if (vrms < pFrame->rms)
+						vrms = pFrame->rms;
+					pFrame += iChannels;
 				}
+				m_pPeakFrames[n].max = vmax;
+				m_pPeakFrames[n].min = vmin;
+				m_pPeakFrames[n].rms = vrms;
+				++n;
 			}
-			m_pPeakFrames[i].max = vmax;
-			m_pPeakFrames[i].min = vmin;
-			m_pPeakFrames[i].rms = vrms;
 		}
+		// Done. New actual buffer...
+		m_iPeakLength = n / iChannels;
 		pPeakFrames = m_pPeakFrames;
 	}
 
