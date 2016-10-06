@@ -170,24 +170,10 @@ public:
 	unsigned short channels() const
 		{ return m_pPeakFile->channels(); }
 
-	// Peak cache file methods.
-	bool openRead() { return m_pPeakFile->openRead(); }
-	qtractorAudioPeakFile::Frame *read(
-		unsigned long iPeakOffset, unsigned int iPeakLength)
-		{ return m_pPeakFile->read(iPeakOffset, iPeakLength); }
-	void closeRead() { m_pPeakFile->closeRead(); }
-
-	// Write peak from audio frame methods.
-	bool openWrite(unsigned short iChannels, unsigned int iSampleRate)
-		{ return m_pPeakFile->openWrite(iChannels, iSampleRate); }
-	void write(float **ppAudioFrames, unsigned int iAudioFrames)
-		{ m_pPeakFile->write(ppAudioFrames, iAudioFrames); }
-	void closeWrite() { m_pPeakFile->closeWrite(); }
-
-	// Peak frames methods.
+	// Peak frame buffer executive.
 	qtractorAudioPeakFile::Frame *peakFrames(
 		unsigned long iFrameOffset, unsigned long iFrameLength, int width);
-
+	// Peak frame buffer length (in frames).
 	unsigned int peakLength() const
 		{ return m_iPeakLength; }
 

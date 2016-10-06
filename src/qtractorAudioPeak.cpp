@@ -87,12 +87,12 @@ protected:
 private:
 
 	// The peak file queue instance reference.
-	unsigned int           m_iSyncSize;
-	unsigned int           m_iSyncMask;
-	qtractorAudioPeak    **m_ppSyncItems;
+	unsigned int            m_iSyncSize;
+	unsigned int            m_iSyncMask;
+	qtractorAudioPeakFile **m_ppSyncItems;
 
-	volatile unsigned int  m_iSyncRead;
-	volatile unsigned int  m_iSyncWrite;
+	volatile unsigned int   m_iSyncRead;
+	volatile unsigned int   m_iSyncWrite;
 
 	// Whether the thread is logically running.
 	volatile bool m_bRunState;
@@ -119,11 +119,11 @@ qtractorAudioPeakThread::qtractorAudioPeakThread ( unsigned int iSyncSize )
 	while (m_iSyncSize < iSyncSize)
 		m_iSyncSize <<= 1;
 	m_iSyncMask = (m_iSyncSize - 1);
-	m_ppSyncItems = new qtractorAudioPeak * [m_iSyncSize];
+	m_ppSyncItems = new qtractorAudioPeakFile * [m_iSyncSize];
 	m_iSyncRead   = 0;
 	m_iSyncWrite  = 0;
 
-	::memset(m_ppSyncItems, 0, m_iSyncSize * sizeof(qtractorAudioPeak *));
+	::memset(m_ppSyncItems, 0, m_iSyncSize * sizeof(qtractorAudioPeakFile *));
 
 	m_bRunState = false;
 
@@ -161,9 +161,9 @@ void qtractorAudioPeakThread::sync ( qtractorAudioPeakFile *pPeakFile )
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;
 		while (r != w) {
-			qtractorAudioPeak *pSyncItem = m_ppSyncItems[r];
+			qtractorAudioPeakFile *pSyncItem = m_ppSyncItems[r];
 			if (pSyncItem)
-				pSyncItem->peakFile()->setWaitSync(false);
+				pSyncItem->setWaitSync(false);
 			++r &= m_iSyncMask;
 			w = m_iSyncWrite;
 		}
@@ -182,7 +182,7 @@ void qtractorAudioPeakThread::sync ( qtractorAudioPeakFile *pPeakFile )
 		}
 		if (n > 0) {
 			pPeakFile->setWaitSync(true);
-			m_ppSyncItems[w] = new qtractorAudioPeak(pPeakFile);
+			m_ppSyncItems[w] = pPeakFile;
 			m_iSyncWrite = (w + 1) & m_iSyncMask;
 		}
 	}
@@ -213,9 +213,8 @@ void qtractorAudioPeakThread::run (void)
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;
 		while (m_bRunState && r != w) {
-			qtractorAudioPeak *pSyncItem = m_ppSyncItems[r];
-			m_pPeakFile = pSyncItem->peakFile();
-			if (m_pPeakFile->isWaitSync()) {
+			m_pPeakFile = m_ppSyncItems[r];
+			if (m_pPeakFile && m_pPeakFile->isWaitSync()) {
 				if (openPeakFile()) {
 					// Go ahead with the whole bunch...
 					while (m_bRunState && writePeakFile())
@@ -224,8 +223,8 @@ void qtractorAudioPeakThread::run (void)
 					closePeakFile();
 				}
 				m_pPeakFile->setWaitSync(false);
+				m_pPeakFile = NULL;
 			}
-			delete pSyncItem;
 			m_ppSyncItems[r] = NULL;
 			++r &= m_iSyncMask;
 			w = m_iSyncWrite;
@@ -817,10 +816,15 @@ bool qtractorAudioPeakFile::isWaitSync (void) const
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorAudioPeak -- Audio Peak file pseudo-cache.
+//
+
+// Peak frame buffer executive.
 qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	unsigned long iFrameOffset, unsigned long iFrameLength, int width )
 {
-	if (!openRead())
+	if (!m_pPeakFile->openRead())
 		return NULL;
 
 	// Check if we have the same previous hash
@@ -836,11 +840,11 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	}
 
 	// We'll get a brand new peak frames alright...
-	const unsigned short iChannels = channels();
+	const unsigned short iChannels = m_pPeakFile->channels();
 	if (iChannels < 1)
 		return NULL;
 
-	const unsigned short iPeakPeriod = period();
+	const unsigned short iPeakPeriod = m_pPeakFile->period();
 	if (iPeakPeriod < 1)
 		return NULL;
 
@@ -851,18 +855,19 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 
 	// Grab them in...
 	qtractorAudioPeakFile::Frame *pPeakFrames
-		= read((iFrameOffset / iPeakPeriod), m_iPeakLength);
+		= m_pPeakFile->read((iFrameOffset / iPeakPeriod), m_iPeakLength);
 	if (pPeakFrames == NULL)
 		return NULL;
 
 	// Check if we better aggregate over the frame buffer....
 	if (width < int(m_iPeakLength) && width > 1) {
-		const int n2 = iChannels * width;
+		const int w2 = (width >> 1);
+		const int n2 = iChannels * w2;
 		if (m_pPeakFrames)
 			delete [] m_pPeakFrames;
 		m_pPeakFrames = new qtractorAudioPeakFile::Frame [n2];
 		const int i2 = iChannels * int(m_iPeakLength);
-		const int j2 = (int(m_iPeakLength) / width);
+		const int j2 = (int(m_iPeakLength) / w2);
 		const int k2 = iChannels * j2;
 		unsigned char vmax, vmin, vrms; int n = 0;
 		for (int i = 0; i < i2 && n < n2; i += k2) {

@@ -330,7 +330,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		m_pPeak = pSession->audioPeakFactory()->createPeak(
 			sFilename, pBuff->timeStretch());
 		if (bWrite)
-			pBuff->setPeak(m_pPeak);
+			pBuff->setPeakFile(m_pPeak->peakFile());
 	}
 
 	// Clip name should be clear about it all.
@@ -539,7 +539,7 @@ void qtractorAudioClip::close (void)
 		else
 		// Shall we ditch the current peak file?
 		// (don't if closing from recording)
-		if (m_pPeak && pBuff->peak() == NULL) {
+		if (m_pPeak && pBuff->peakFile() == NULL) {
 			delete m_pPeak;
 			m_pPeak = NULL;
 		}
