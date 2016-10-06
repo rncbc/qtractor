@@ -640,7 +640,6 @@ void qtractorAudioClip::draw (
 	if (iPeakLength < 1)
 		return;
 
-
 	// Polygon init...
 	unsigned short k;
 	const unsigned short iChannels = m_pPeak->channels();
