@@ -148,13 +148,10 @@ class qtractorAudioPeak
 public:
 
 	// Constructor.
-	qtractorAudioPeak(qtractorAudioPeakFile *pPeakFile)
-		: m_pPeakFile(pPeakFile), m_pPeakFrames(NULL), m_iPeakLength(0), m_iPeakHash(0)
-		{ m_pPeakFile->addRef(); }
+	qtractorAudioPeak(qtractorAudioPeakFile *pPeakFile);
 
 	// Default destructor.
-	~qtractorAudioPeak()
-		{ m_pPeakFile->removeRef(); if (m_pPeakFrames) delete [] m_pPeakFrames; }
+	~qtractorAudioPeak();
 
 	// Reference accessor.
 	qtractorAudioPeakFile *peakFile() const
@@ -187,6 +184,8 @@ private:
 
 	unsigned int m_iPeakLength;
 	unsigned int m_iPeakHash;
+
+	bool m_bAutoDelete;
 };
 
 
