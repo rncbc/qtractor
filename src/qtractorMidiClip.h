@@ -123,7 +123,7 @@ public:
 
 	// Clip paint method.
 	void draw(QPainter *pPainter, const QRect& clipRect,
-		unsigned long iClipOffset);
+		unsigned long iClipOffset, unsigned long iClipLength);
 
 	// Clip editor methods.
 	bool startEditor(QWidget *pParent = NULL);
