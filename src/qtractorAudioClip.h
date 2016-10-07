@@ -91,7 +91,7 @@ public:
 
 	// Clip paint method.
 	void draw(QPainter *pPainter, const QRect& clipRect,
-	    unsigned long iClipOffset);
+	    unsigned long iClipOffset, unsigned long iClipLength);
 
 	// Audio clip tool-tip.
 	QString toolTip() const;

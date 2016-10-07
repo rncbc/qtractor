@@ -618,7 +618,8 @@ void qtractorAudioClip::process_export (
 
 // Audio clip paint method.
 void qtractorAudioClip::draw (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter *pPainter, const QRect& clipRect,
+	unsigned long iClipOffset, unsigned long iClipLength )
 {
 	qtractorSession *pSession = track()->session();
 	if (pSession == NULL)
@@ -642,7 +643,7 @@ void qtractorAudioClip::draw (
 	const unsigned long iframe
 		= ((iClipOffset + clipOffset()) / iPeriod);
 	const unsigned long nframes
-		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
+		= (iClipLength / iPeriod) + 2;
 
 	// Needed an even number of polygon points...
 	const bool bZoomedIn = (clipRect.width() > int(nframes));
