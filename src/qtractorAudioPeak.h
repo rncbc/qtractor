@@ -185,7 +185,7 @@ private:
 	unsigned int m_iPeakLength;
 	unsigned int m_iPeakHash;
 
-	bool m_bAutoDelete;
+	bool m_bPeakDelete;
 };
 
 

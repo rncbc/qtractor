@@ -4729,8 +4729,16 @@ void qtractorMainForm::viewRefresh (void)
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
-	if (m_pTracks)
+	// Read session edit-head/tails...
+	const unsigned long iEditHead = m_pSession->editHead();
+	const unsigned long iEditTail = m_pSession->editTail();
+
+	if (m_pTracks) {
 		m_pTracks->updateContents(true);
+		m_pTracks->trackView()->setEditHead(iEditHead);
+		m_pTracks->trackView()->setEditTail(iEditTail);
+	}
+
 	if (m_pConnections)
 		m_pConnections->refresh();
 	if (m_pMixer) {
@@ -4746,6 +4754,8 @@ void qtractorMainForm::viewRefresh (void)
 		qtractorMidiEditor *pEditor = (iter.next())->editor();
 		pEditor->updateTimeScale();
 		pEditor->updateContents();
+		pEditor->setEditHead(iEditHead, false);
+		pEditor->setEditTail(iEditTail, false);
 	}
 
 	// We're formerly done.

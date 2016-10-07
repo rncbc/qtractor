@@ -823,7 +823,7 @@ bool qtractorAudioPeakFile::isWaitSync (void) const
 // Constructor.
 qtractorAudioPeak::qtractorAudioPeak ( qtractorAudioPeakFile *pPeakFile )
 	: m_pPeakFile(pPeakFile), m_pPeakFrames(NULL),
-		m_iPeakLength(0), m_iPeakHash(0), m_bAutoDelete(false)
+		m_iPeakLength(0), m_iPeakHash(0), m_bPeakDelete(false)
 {
 	m_pPeakFile->addRef();
 }
@@ -834,7 +834,7 @@ qtractorAudioPeak::~qtractorAudioPeak (void)
 {
 	m_pPeakFile->removeRef();
 
-	if (m_pPeakFrames && m_bAutoDelete)
+	if (m_pPeakFrames && m_bPeakDelete)
 		delete [] m_pPeakFrames;
 }
 
@@ -849,15 +849,14 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	// Check if we have the same previous hash
 	if (m_pPeakFrames) {
 		const unsigned int iPeakHash
-			= qHash(iFrameOffset) ^ qHash(iFrameLength) ^ qHash(width);
+			= qHash(iFrameOffset + iFrameLength + width);
 		if (m_iPeakHash == iPeakHash)
 			return m_pPeakFrames;
-		if (m_bAutoDelete)
+		if (m_bPeakDelete)
 			delete [] m_pPeakFrames;
-		m_pPeakFrames = NULL;;
+		m_pPeakFrames = NULL;
 		m_iPeakLength = 0;
-		m_iPeakHash = iPeakHash;
-		m_bAutoDelete = false;
+		m_iPeakHash   = iPeakHash;
 	}
 
 	// We'll get a brand new peak frames alright...
@@ -870,6 +869,7 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 		return NULL;
 
 	// Peak frames length estimation...
+	m_bPeakDelete = false;
 	m_iPeakLength = (iFrameLength / iPeakPeriod);
 	if (m_iPeakLength < 1)
 		return NULL;
@@ -914,9 +914,9 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 		// Done. New actual frame buffer...
 		m_pPeakFrames = pNewFrames;
 		m_iPeakLength = n / iChannels;
-		if (pOldFrames && m_bAutoDelete)
+		if (pOldFrames && m_bPeakDelete)
 			delete [] pOldFrames;
-		m_bAutoDelete = true;
+		m_bPeakDelete = true;
 	}
 
 	return m_pPeakFrames;
