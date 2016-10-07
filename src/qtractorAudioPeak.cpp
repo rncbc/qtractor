@@ -890,27 +890,26 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 		qtractorAudioPeakFile::Frame *pOldFrames = m_pPeakFrames;
 		qtractorAudioPeakFile::Frame *pNewFrames
 			= new qtractorAudioPeakFile::Frame [n2];
-		unsigned char vmax, vmin, vrms;
 		int n = 0; int i = 0;
 		while (n < n2) {
-			const int j2 = ((n + iChannels) * m2) / w2;
+			const int i2 = (n * m2) / w2;
 			for (unsigned short k = 0; k < iChannels; ++k) {
 				qtractorAudioPeakFile::Frame *pNewFrame = &pNewFrames[n++];
-				vmax = vmin = vrms = 0;
-				for (int j = i; j < j2; j += iChannels) {
-					qtractorAudioPeakFile::Frame *pOldFrame = &pOldFrames[j];
-					if (vmax < pOldFrame->max)
-						vmax = pOldFrame->max;
-					if (vmin < pOldFrame->min)
-						vmin = pOldFrame->min;
-					if (vrms < pOldFrame->rms)
-						vrms = pOldFrame->rms;
+				qtractorAudioPeakFile::Frame *pOldFrame = &pOldFrames[i + k];
+				pNewFrame->max = pOldFrame->max;
+				pNewFrame->min = pOldFrame->min;
+				pNewFrame->rms = pOldFrame->rms;
+				for (int j = i + 1; j < i2; j += iChannels) {
+					pOldFrame += iChannels;
+					if (pNewFrame->max < pOldFrame->max)
+						pNewFrame->max = pOldFrame->max;
+					if (pNewFrame->min < pOldFrame->min)
+						pNewFrame->min = pOldFrame->min;
+					if (pNewFrame->rms < pOldFrame->rms)
+						pNewFrame->rms = pOldFrame->rms;
 				}
-				pNewFrame->max = vmax;
-				pNewFrame->min = vmin;
-				pNewFrame->rms = vrms;
 			}
-			i = j2;
+			i = i2;
 		}
 		// Done. New actual frame buffer...
 		m_pPeakFrames = pNewFrames;
