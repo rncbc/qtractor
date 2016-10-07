@@ -549,22 +549,19 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 							// Clip recording is rolling within loop range:
 							// -- redraw leading/head clip segment...
 							unsigned long iHeadOffset = 0;
-							unsigned long iHeadLength = 0;
 							if (iClipStart < iTrackStart)
 								iHeadOffset += iTrackStart - iClipStart;
 							x = pSession->pixelFromFrame(iClipStart) - cx;
 							w = 0;
 							if (iClipStart < iLoopStart) {
 								w += pSession->pixelFromFrame(iLoopStart) - cx - x;
-								iHeadLength  = iLoopStart - iClipStart;
-								iClipOffset += iHeadLength;
+								iClipOffset += iLoopStart - iClipStart;
 							}
 							const QRect& headRect
 								= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
 							if (!headRect.isEmpty()) {
 								const QBrush brush(pPainter->brush());
-								pClipRecord->drawClipRecord(
-									pPainter, headRect, iHeadOffset, iHeadLength);
+								pClipRecord->drawClipRecord(pPainter, headRect, iHeadOffset);
 								pPainter->setBrush(brush);
 							}
 							iClipOffset += (iFrameTime - iPlayHead);
@@ -575,20 +572,16 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					if (!bPunching || iTrackStart < iPunchOut) {
 						// Clip recording rolling:
 						// -- redraw current clip segment...
-						unsigned long iClipLength = 0;
 						if (iClipStart < iTrackStart)
 							iClipOffset += iTrackStart - iClipStart;
 						x = pSession->pixelFromFrame(iClipStart) - cx;
 						w = 0;
-						if (iClipStart < iTrackEnd) {
+						if (iClipStart < iTrackEnd)
 							w += pSession->pixelFromFrame(iTrackEnd) - cx - x;
-							iClipLength = iTrackEnd - iClipStart;
-						}
 						const QRect& clipRect
 							= QRect(x, y1 - cy + 1, w, h).intersected(trackRect);
 						if (!clipRect.isEmpty())
-							pClipRecord->drawClipRecord(
-								pPainter, clipRect, iClipOffset, iClipLength);
+							pClipRecord->drawClipRecord(pPainter, clipRect, iClipOffset);
 					}
 				}
 				pTrack = pTrack->next();
