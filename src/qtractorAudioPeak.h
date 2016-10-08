@@ -150,6 +150,9 @@ public:
 	// Constructor.
 	qtractorAudioPeak(qtractorAudioPeakFile *pPeakFile);
 
+	// Copy onstructor.
+	qtractorAudioPeak(const qtractorAudioPeak& peak);
+
 	// Default destructor.
 	~qtractorAudioPeak();
 
@@ -167,7 +170,7 @@ public:
 	unsigned short channels() const
 		{ return m_pPeakFile->channels(); }
 
-	// Peak frame buffer executive.
+	// Peak frame buffer reader-cache executive.
 	qtractorAudioPeakFile::Frame *peakFrames(
 		unsigned long iFrameOffset, unsigned long iFrameLength, int width);
 	// Peak frame buffer length (in frames).
