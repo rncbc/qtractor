@@ -77,7 +77,8 @@ public:
 
 	// Peak cache file methods.
 	bool openRead();
-	Frame *read(unsigned long iPeakOffset, unsigned int iPeakFrames);
+	unsigned int read(Frame *pPeakFrames,
+		unsigned long iPeakOffset, unsigned int iPeakLength);
 	void closeRead();
 
 	// Write peak from audio frame methods.
@@ -187,8 +188,6 @@ private:
 
 	unsigned int m_iPeakLength;
 	unsigned int m_iPeakHash;
-
-	bool m_bPeakDelete;
 };
 
 

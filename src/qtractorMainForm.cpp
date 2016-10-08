@@ -6850,6 +6850,8 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipToolsMenu->setEnabled(bClipSelected
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
 	m_ui.clipTakeMenu->setEnabled(pClip != NULL);
+
+	updateTakeMenu();
 }
 
 
