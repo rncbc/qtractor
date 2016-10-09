@@ -15,3 +15,11 @@ LIBS += @ac_libs@
 # Extra optimization flags
 QMAKE_CXXFLAGS += @ac_cflags@
 QMAKE_LFLAGS += @ac_ldflags@
+
+unix:!macx {
+	# X11 support
+	QX11EXTRAS = @ac_qx11extras@
+	!isEmpty(QX11EXTRAS) {
+		QT += x11extras
+	}
+}

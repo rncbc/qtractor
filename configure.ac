@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.9.13, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.9.14, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -1335,13 +1335,16 @@ fi
 if test "x$ac_xunique" = "xyes"; then
    AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
 fi
-
 if test "x$ac_xunique" = "xyes" -o "x$ac_vst" = "xyes"; then
+   if test "x$ac_qt4" = "xno"; then
+      ac_qx11extras="x11extras"
+   fi
    # Some recent distros (eg. fedora, debian) require this.
    if test "x$ac_cv_lib_X11_main" = "xyes"; then
       ac_libs="$ac_libs -lX11"
    fi
 fi
+AC_SUBST(ac_qx11extras)
 
 # Check for gradient eye-candy.
 if test "x$ac_gradient" = "xyes"; then
