@@ -4,9 +4,43 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed a potential crash on the singleton/unique application
+  instance setup.
+
+- Audio peak file caching and rendering, as far as audio
+  clip waveforms are concerned, have been refactored and
+  optimized a couple of notches higher, on the ephemeral
+  and rather marginal throughput front ;). (EXPERIMENTAL)
+
+- Edit/Select Mode tool-buttons moved into single drop-down
+  tool-button on the main and MIDI editor's tool-bar.
+
+- Do not reset the current clip selection when updating the
+  main track-view extents eg. while zooming in or out.
+
+- Automation curve node editing auto-smoothing revisited;
+  also fixed input MIDI RPN/NRPN running status processing,
+  which was crippling some plug-in automation curve nodes,
+  when saved in high-resolution 14-bit mode. (EXPERIMENTAL)
+
+- Fixed the visual play-head position (vertical red line)
+  while zooming in or out horizontally.
+
+- Almost complete overhaul on the configure script command
+  line options, wrt. installation directories specification,
+  eg. --prefix, --bindir, --libdir, --datadir and --mandir.
+  (EXPERIMENTAL)
+
+- LV2 Plugin-in worker/schedule fix: make request/response
+  ringbuffer writes in one go, hopefully atomic (suggested
+  patch by Stefan Westerfeld, while on SpectMorph, thanks).
+
+
 0.7.9  2016-09-21  Snobbier Graviton Beta
 
-- JACK buffer-size change handling has been deeeply improved,
+- JACK buffer-size change handling has been deeply improved,
   now doing an immediate session restart, while preserving all
   external connections as much as possible.
 
@@ -33,8 +67,8 @@ ChangeLog
 - Fixed missing feedback on MIDI controllers assigned to any
   of monitor, record, mute and solo track/bus state buttons. 
 
-- Eye-candy warning: the current clip, not necessarilty the
-  one currently selected, is now highligthed with a solid
+- Eye-candy warning: the current clip, not necessarily the
+  one currently selected, is now highlighted with a solid
   outline; linked MIDi clips are also highlighted with an
   alternate dashed outline.
 
@@ -56,7 +90,7 @@ ChangeLog
 - A brand new and discrete MIDI clip editor command tool has
   been added: MIDI Tools/Transpose/Reverse.
 
-- Discretely fixed MIDI Controlllers catch-up algorithm.
+- Discretely fixed MIDI Controllers catch-up algorithm.
 
 - Fixed a borderline mistake on plug-in parameter port index
   mapping to its corresponding symbolic name, especially if

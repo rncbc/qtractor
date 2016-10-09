@@ -180,6 +180,9 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 	pSession->setHorizontalZoom(iHorizontalZoom);
 	pSession->updateTimeScale();
 	pSession->updateSession();
+
+	// Update visual play-head position...
+	m_pTrackView->setPlayHead(pSession->playHead());
 }
 
 
@@ -583,6 +586,9 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 	pMidiClip->unlinkHashData();
 	pMidiClip->updateEditor(true);
 	pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
+
+	// Better update track-view clip high-lighthing...
+	m_pTrackView->update();
 
 	// HACK: This operation is so important that
 	// it surely deserves being in the front page...

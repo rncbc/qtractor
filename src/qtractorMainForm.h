@@ -65,6 +65,7 @@ class QComboBox;
 class QProgressBar;
 class QSocketNotifier;
 class QActionGroup;
+class QToolButton;
 class QPalette;
 
 
@@ -458,6 +459,7 @@ private:
 	QSocketNotifier *m_pUsr1Notifier;
 	QSocketNotifier *m_pTermNotifier;
 	QActionGroup *m_pSelectModeActionGroup;
+	QToolButton *m_pSelectModeToolButton;
 	qtractorTimeSpinBox *m_pTimeSpinBox;
 	qtractorTempoSpinBox *m_pTempoSpinBox;
 	QComboBox *m_pSnapPerBeatComboBox;

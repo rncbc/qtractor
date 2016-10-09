@@ -33,20 +33,19 @@
 #include <QStyleFactory>
 
 
-#define CONFIG_QUOTE1(x) #x
-#define CONFIG_QUOTED(x) CONFIG_QUOTE1(x)
+#ifndef CONFIG_PREFIX
+#define CONFIG_PREFIX	"/usr/local"
+#endif
 
-#if defined(DATADIR)
-#define CONFIG_DATADIR CONFIG_QUOTED(DATADIR)
-#else
-#define CONFIG_DATADIR CONFIG_PREFIX "/share"
+#ifndef CONFIG_DATADIR
+#define CONFIG_DATADIR	CONFIG_PREFIX "/share"
 #endif
 
 #ifndef CONFIG_LIBDIR
 #if defined(__x86_64__)
-#define CONFIG_LIBDIR CONFIG_PREFIX "/lib64"
+#define CONFIG_LIBDIR	CONFIG_PREFIX "/lib64"
 #else
-#define CONFIG_LIBDIR CONFIG_PREFIX "/lib"
+#define CONFIG_LIBDIR	CONFIG_PREFIX "/lib"
 #endif
 #endif
 
@@ -202,10 +201,12 @@ public:
 		m_pWidget = pWidget;
 	#ifdef CONFIG_X11
 	#ifdef CONFIG_XUNIQUE
-		XGrabServer(m_pDisplay);
 		m_wOwner = m_pWidget->winId();
-		XSetSelectionOwner(m_pDisplay, m_aUnique, m_wOwner, CurrentTime);
-		XUngrabServer(m_pDisplay);
+		if (m_pDisplay && m_wOwner) {
+			XGrabServer(m_pDisplay);
+			XSetSelectionOwner(m_pDisplay, m_aUnique, m_wOwner, CurrentTime);
+			XUngrabServer(m_pDisplay);
+		}
 	#endif	// CONFIG_XUNIQUE
 	#endif	// CONFIG_X11
 	}
@@ -218,7 +219,7 @@ public:
 	{
 	#ifdef CONFIG_X11
 	#ifdef CONFIG_XUNIQUE
-		if (m_wOwner != None) {
+		if (m_pDisplay && m_wOwner != None) {
 			// First, notify any freedesktop.org WM
 			// that we're about to show the main widget...
 			Screen *pScreen = XDefaultScreenOfDisplay(m_pDisplay);
@@ -263,7 +264,7 @@ public:
 #ifdef CONFIG_XUNIQUE
 	void x11PropertyNotify(Window w)
 	{
-		if (m_pWidget && m_wOwner == w) {
+		if (m_pDisplay && m_pWidget && m_wOwner == w) {
 			// Always check whether our property-flag is still around...
 			Atom aType;
 			int iFormat = 0;

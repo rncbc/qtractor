@@ -95,6 +95,20 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pEditModeActionGroup->setExclusive(true);
 	m_pEditModeActionGroup->addAction(m_ui.editModeOnAction);
 	m_pEditModeActionGroup->addAction(m_ui.editModeOffAction);
+	m_pEditModeActionGroup->addAction(m_ui.editModeDrawAction);
+
+	// And the corresponding tool-button drop-down menu...
+	m_pEditModeToolButton = new QToolButton(this);
+	m_pEditModeToolButton->setPopupMode(QToolButton::InstantPopup);
+	m_pEditModeToolButton->setMenu(m_ui.editModeMenu);
+
+	// Add/insert this on its proper place in the edit-toobar...
+	m_ui.editToolbar->addSeparator();
+	m_ui.editToolbar->addWidget(m_pEditModeToolButton);
+
+	QObject::connect(
+		m_pEditModeActionGroup, SIGNAL(triggered(QAction*)),
+		m_pEditModeToolButton, SLOT(setDefaultAction(QAction*)));
 
 	// Snap-per-beat combo-box.
 	m_pSnapPerBeatComboBox = new QComboBox(m_ui.viewToolbar);
@@ -570,7 +584,11 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 			m_ui.editModeOnAction->setChecked(true);
 		else
 			m_ui.editModeOffAction->setChecked(true);
-		m_ui.editModeDrawAction->setChecked(pOptions->bMidiEditModeDraw);
+		m_ui.editModeDrawAction->setChecked(
+			pOptions->bMidiEditMode && pOptions->bMidiEditModeDraw);
+		// Set initial edit mode...
+		m_pEditModeToolButton->setDefaultAction(
+			m_pEditModeActionGroup->checkedAction());
 		// Initial decorations visibility state.
 		viewMenubar(pOptions->bMidiMenubar);
 		viewStatusbar(pOptions->bMidiStatusbar);
@@ -702,6 +720,8 @@ qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 	// Get edit-mode action group down.
 	if (m_pEditModeActionGroup)
 		delete m_pEditModeActionGroup;
+	if (m_pEditModeToolButton)
+		delete m_pEditModeToolButton;
 
 	if (m_pEventTypeGroup)
 		delete m_pEventTypeGroup;
@@ -1292,6 +1312,7 @@ void qtractorMidiEditorForm::editDelete (void)
 // Set edit-mode on.
 void qtractorMidiEditorForm::editModeOn (void)
 {
+	m_pMidiEditor->setEditModeDraw(false);
 	m_pMidiEditor->setEditMode(true);
 	m_pMidiEditor->updateContents();
 
@@ -1301,6 +1322,7 @@ void qtractorMidiEditorForm::editModeOn (void)
 // Set edit-mode off.
 void qtractorMidiEditorForm::editModeOff (void)
 {
+	m_pMidiEditor->setEditModeDraw(false);
 	m_pMidiEditor->setEditMode(false);
 	m_pMidiEditor->updateContents();
 
@@ -1312,6 +1334,10 @@ void qtractorMidiEditorForm::editModeOff (void)
 void qtractorMidiEditorForm::editModeDraw ( bool bOn )
 {
 	m_pMidiEditor->setEditModeDraw(bOn);
+	m_pMidiEditor->setEditMode(bOn);
+	m_pMidiEditor->updateContents();
+
+	stabilizeForm();
 }
 
 
@@ -1773,7 +1799,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editPasteAction->setEnabled(bClipboard);
 	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
 	m_ui.editDeleteAction->setEnabled(bSelected);
-	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
+//	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
 	const bool bInsertable = m_pMidiEditor->isInsertable();

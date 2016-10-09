@@ -331,18 +331,18 @@ bool qtractorMidiInputRpn::dequeue ( snd_seq_event_t *ev )
 	snd_seq_ev_set_dest(ev, 0, event.port);
 	snd_seq_ev_set_fixed(ev);
 
-	switch (qtractorMidiRpn::Type(event.status & 0xf0)) {
-	case qtractorMidiRpn::RPN:	// 0x10
+	switch (qtractorMidiRpn::Type(event.status & 0x70)) {
+	case qtractorMidiRpn::CC:	// 0x10
+		ev->type = SND_SEQ_EVENT_CONTROLLER;
+		break;
+	case qtractorMidiRpn::RPN:	// 0x20
 		ev->type = SND_SEQ_EVENT_REGPARAM;
 		break;
-	case qtractorMidiRpn::NRPN:	// 0x20
+	case qtractorMidiRpn::NRPN:	// 0x30
 		ev->type = SND_SEQ_EVENT_NONREGPARAM;
 		break;
-	case qtractorMidiRpn::CC14:	// 0x30
+	case qtractorMidiRpn::CC14:	// 0x40
 		ev->type = SND_SEQ_EVENT_CONTROL14;
-		break;
-	case qtractorMidiRpn::CC:	// 0xb0
-		ev->type = SND_SEQ_EVENT_CONTROLLER;
 		break;
 	default:
 		return false;

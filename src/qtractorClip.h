@@ -143,10 +143,10 @@ public:
 	void updateClipTime();
 
 	// Clip paint methods.
-	void drawClip(QPainter *pPainter,
-		const QRect& clipRect, unsigned long iClipOffset);
-	void drawClipRecord(QPainter *pPainter,
-		const QRect& clipRect, unsigned long iClipOffset);
+	void drawClip(QPainter *pPainter, const QRect& clipRect,
+		unsigned long iClipOffset, unsigned long iClipLength);
+	void drawClipRecord(QPainter *pPainter, const QRect& clipRect,
+		unsigned long iClipOffset, unsigned long iClipLength);
 
 	// Clip (re)open method.
 	virtual void open() = 0;
@@ -173,7 +173,7 @@ public:
 
 	// Clip paint method.
 	virtual void draw(QPainter *pPainter, const QRect& clipRect,
-		unsigned long iClipOffset) = 0;
+		unsigned long iClipOffset, unsigned long iClipLength) = 0;
 
 	// Clip editor methods.
 	virtual bool startEditor(QWidget *pParent = NULL);

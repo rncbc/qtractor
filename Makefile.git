@@ -1,6 +1,7 @@
 all:	configure
 
 configure:	 Makefile.in configure.ac
+	@aclocal
 	@autoheader
 	@autoconf
 	@rm -rf *.cache
@@ -10,4 +11,4 @@ clean:
 	@rm -rvf Makefile configure config.* src/.ui src/.obj src/.moc
 	@rm -rvf src/config.* src/*.pri src/*.desktop
 	@rm -rvf src/Makefile src/Makefile.* src/*.mak src/*.mak.*
-	@rm -rvf *.cache *.log *.status *.spec *.mak
+	@rm -rvf *.cache *.log *.status *.spec *.mak *.m4 .m4

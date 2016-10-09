@@ -37,7 +37,7 @@
 
 
 // Forward declarations.
-class qtractorAudioPeak;
+class qtractorAudioPeakFile;
 class qtractorAudioBuffer;
 class qtractorTimeStretcher;
 
@@ -188,8 +188,8 @@ public:
 	void syncExport();
 
 	// Internal peak descriptor accessors.
-	void setPeak(qtractorAudioPeak *pPeak);
-	qtractorAudioPeak *peak() const;
+	void setPeakFile(qtractorAudioPeakFile *pPeakFile);
+	qtractorAudioPeakFile *peakFile() const;
 
 	// Sample-rate converter type accessor (global option).
 	static void setResampleType(int iResampleType);
@@ -286,7 +286,7 @@ private:
 	SRC_STATE    **m_ppSrcState;
 #endif
 
-	qtractorAudioPeak *m_pPeak;
+	qtractorAudioPeakFile *m_pPeakFile;
 
 	// Sample-rate converter type global option.
 	static int     g_iResampleType;

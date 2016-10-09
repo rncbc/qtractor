@@ -330,7 +330,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		m_pPeak = pSession->audioPeakFactory()->createPeak(
 			sFilename, pBuff->timeStretch());
 		if (bWrite)
-			pBuff->setPeak(m_pPeak);
+			pBuff->setPeakFile(m_pPeak->peakFile());
 	}
 
 	// Clip name should be clear about it all.
@@ -539,7 +539,7 @@ void qtractorAudioClip::close (void)
 		else
 		// Shall we ditch the current peak file?
 		// (don't if closing from recording)
-		if (m_pPeak && pBuff->peak() == NULL) {
+		if (m_pPeak && pBuff->peakFile() == NULL) {
 			delete m_pPeak;
 			m_pPeak = NULL;
 		}
@@ -618,7 +618,8 @@ void qtractorAudioClip::process_export (
 
 // Audio clip paint method.
 void qtractorAudioClip::draw (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter *pPainter, const QRect& clipRect,
+	unsigned long iClipOffset, unsigned long iClipLength )
 {
 	qtractorSession *pSession = track()->session();
 	if (pSession == NULL)
@@ -628,41 +629,26 @@ void qtractorAudioClip::draw (
 	if (m_pPeak == NULL)
 		return;
 
-	if (!m_pPeak->openRead())
-		return;
-
-	const unsigned short iPeriod = m_pPeak->period();
-	if (iPeriod < 1)
-		return;
-
-	const unsigned short iChannels = m_pPeak->channels();
-	if (iChannels < 1)
-		return;
-
-	const unsigned long iframe
-		= ((iClipOffset + clipOffset()) / iPeriod);
-	const unsigned long nframes
-		= (pSession->frameFromPixel(clipRect.width()) / iPeriod) + 2;
-
-	// Needed an even number of polygon points...
-	const bool bZoomedIn = (clipRect.width() > int(nframes));
-	const unsigned int iPolyPoints
-		= (bZoomedIn ? nframes: (clipRect.width() >> 1)) << 1;
-	if (iPolyPoints < 2)
-		return;
-
 	// Grab them in...
-	qtractorAudioPeakFile::Frame *pframes = m_pPeak->read(iframe, nframes);
-	if (pframes == NULL)
+	qtractorAudioPeakFile::Frame *pPeakFrames = m_pPeak->peakFrames(
+		iClipOffset + clipOffset(), iClipLength, clipRect.width());
+	if (pPeakFrames == NULL)
+		return;
+
+	// Make some expectations...
+	const unsigned int iPeakLength	= m_pPeak->peakLength();
+	if (iPeakLength < 1)
 		return;
 
 	// Polygon init...
-	unsigned short i;
+	unsigned short k;
+	const unsigned short iChannels = m_pPeak->channels();
+	const unsigned int iPolyPoints = (iPeakLength << 1);
 	QPolygon **pPolyMax = new QPolygon* [iChannels];
 	QPolygon **pPolyRms = new QPolygon* [iChannels];
-	for (i = 0; i < iChannels; ++i) {
-		pPolyMax[i] = new QPolygon(iPolyPoints);
-		pPolyRms[i] = new QPolygon(iPolyPoints);
+	for (k = 0; k < iChannels; ++k) {
+		pPolyMax[k] = new QPolygon(iPolyPoints);
+		pPolyRms[k] = new QPolygon(iPolyPoints);
 	}
 
 	// Draw peak chart...
@@ -671,77 +657,34 @@ void qtractorAudioClip::draw (
 	const int h2 = (h1 >> 1);
 	const int h2gain = (h2 * m_fractGain.num);
 
-	int ymax, ymin, yrms;
-	unsigned int n, n2;
-	int x, y;
+	int x, y, ymax, ymin, yrms;
 
 	// Build polygonal vertexes...
-	if (bZoomedIn) {
-		// Zoomed in...
-		// - trade peak-frames for pixels.
-		n2 = nframes - 1;
-		for (n = 0; n < nframes; ++n) {
-			x = clipRect.x() + (n * clipRect.width()) / n2;
-			y = clipRect.y() + h2;
-			for (i = 0; i < iChannels; ++i) {
-				ymax = (h2gain * pframes->max) >> m_fractGain.den;
-				ymin = (h2gain * pframes->min) >> m_fractGain.den;
-				yrms = (h2gain * pframes->rms) >> m_fractGain.den;
-				pPolyMax[i]->setPoint(n, x, y - ymax);
-				pPolyMax[i]->setPoint(iPolyPoints - n - 1, x, y + ymin);
-				pPolyRms[i]->setPoint(n, x, y - yrms);
-				pPolyRms[i]->setPoint(iPolyPoints - n - 1, x, y + yrms);
-				y += h1; ++pframes;
-			}
-		}
-	} else {
-		// Zoomed out...
-		// - trade (2) pixels for peak-frames (expensiver).
-		int x2, k = 0;
-		unsigned int n0 = 0;
-		unsigned char v, vmax, vmin, vrms;
-		for (x2 = 0; x2 < clipRect.width(); x2 += 2) {
-			x = clipRect.x() + x2;
-			y = clipRect.y() + h2;
-			n = (iChannels * x2 * nframes) / clipRect.width();
-			for (i = 0; i < iChannels; ++i) {
-				vmax = pframes[n + i].max;
-				vmin = pframes[n + i].min;
-				vrms = pframes[n + i].rms;;
-				for (n2 = n0 + i; n2 < n + i; n2 += iChannels) {
-					v = pframes[n2].max;
-					if (vmax < v)
-						vmax = v;
-					v = pframes[n2].min;
-					if (vmin < v)
-						vmin = v;
-					v = pframes[n2].rms;
-					if (vrms < v)
-						vrms = v;
-				}
-				ymax = (h2gain * vmax) >> m_fractGain.den;
-				ymin = (h2gain * vmin) >> m_fractGain.den;
-				yrms = (h2gain * vrms) >> m_fractGain.den;
-				pPolyMax[i]->setPoint(k, x, y - ymax);
-				pPolyMax[i]->setPoint(iPolyPoints - k - 1, x, y + ymin);
-				pPolyRms[i]->setPoint(k, x, y - yrms);
-				pPolyRms[i]->setPoint(iPolyPoints - k - 1, x, y + yrms);
-				y += h1;
-			}
-			n0 = n + iChannels;
-			++k;
+	const int n2 = int(iPeakLength);
+	for (int n = 0; n < n2; ++n) {
+		x = clipRect.x() + (n * clipRect.width()) / n2;
+		y = clipRect.y() + h2;
+		for (k = 0; k < iChannels; ++k) {
+			ymax = (h2gain * pPeakFrames->max) >> m_fractGain.den;
+			ymin = (h2gain * pPeakFrames->min) >> m_fractGain.den;
+			yrms = (h2gain * pPeakFrames->rms) >> m_fractGain.den;
+			pPolyMax[k]->setPoint(n, x, y - ymax);
+			pPolyMax[k]->setPoint(iPolyPoints - n - 1, x, y + ymin);
+			pPolyRms[k]->setPoint(n, x, y - yrms);
+			pPolyRms[k]->setPoint(iPolyPoints - n - 1, x, y + yrms);
+			y += h1; ++pPeakFrames;
 		}
 	}
 
 	// Close, draw and free the polygons...
 	pPainter->setPen(fg.lighter(140));
-	for (i = 0; i < iChannels; ++i) {
+	for (k = 0; k < iChannels; ++k) {
 		pPainter->setBrush(fg);
-		pPainter->drawPolygon(*pPolyMax[i]);
+		pPainter->drawPolygon(*pPolyMax[k]);
 		pPainter->setBrush(fg.lighter(120));
-		pPainter->drawPolygon(*pPolyRms[i]);
-		delete pPolyMax[i];
-		delete pPolyRms[i];
+		pPainter->drawPolygon(*pPolyRms[k]);
+		delete pPolyMax[k];
+		delete pPolyRms[k];
 	}
 
 	// Done on polygons.

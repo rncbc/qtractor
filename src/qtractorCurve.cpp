@@ -249,48 +249,38 @@ qtractorCurve::Node *qtractorCurve::addNode (
 	Node *pNext = m_cursor.seek(iFrame);
 	Node *pPrev = (pNext ? pNext->prev() : m_nodes.last());
 
-	if (pNext && isMinFrameDist(pNext, iFrame))
+	if (pNext && isMinFrameDist(pNext, iFrame, fValue))
 		pNode = pNext;
 	else
-	if (pPrev && isMinFrameDist(pPrev, iFrame))
+	if (pPrev && isMinFrameDist(pPrev, iFrame, fValue))
 		pNode = pPrev;
-	else {
+	else
+	if (m_mode != Hold && m_observer.isDecimal()) {
 		// Smoothing...
+		const float fThreshold = 0.5f; // (m_bLogarithmic ? 0.1f : 0.5f);
+		float x0 = (pPrev ? float(pPrev->frame) : 0.0f);
+		float x1 = float(iFrame);
+		float x2 = (pNext ? float(pNext->frame) : m_tail.frame);
 		float y0 = (pPrev ? pPrev->value : m_tail.value);
 		float y1 = fValue;
 		float y2 = (pNext ? pNext->value : fValue);
-		if (m_mode == Hold || !m_observer.isDecimal()) {
-			const float fThreshold
-				= (m_bLogarithmic ? 0.1f * ::fabsf(y1) : 0.01f)
-				* (m_observer.maxValue() - m_observer.minValue());
-			if (::fabsf(y2 - y1) < fThreshold)
-				pNode = pNext;
-			else
-			if (::fabsf(y1 - y0) < fThreshold)
-				return NULL;
-		} else {
-			const float fThreshold = 0.5f; // (m_bLogarithmic ? 0.1f : 0.5f);
-			float x0 = (pPrev ? float(pPrev->frame) : 0.0f);
-			float x1 = float(iFrame);
-			float x2 = (pNext ? float(pNext->frame) : m_tail.frame);
-			float s1 = (x1 > x0 ? (y1 - y0) / (x1 - x0) : 0.0f);
-			float y3 = (x2 > x1 ? s1 * (x2 - x1) + y1 : y1);
-			if (::fabsf(y3 - y2) < fThreshold * ::fabsf(y3 - y1))
-				return NULL;
-			if (pPrev) {
-				pNode = pPrev;
-				pPrev = pNode->prev();
-				x0 = (pPrev ? float(pPrev->frame) : 0.0f);
-				y0 = (pPrev ? pPrev->value : m_tail.value);
-				x1 = float(pNode->frame);
-				y1 = pNode->value;
-				x2 = float(iFrame);
-				y2 = fValue;
-				s1 = (y1 - y0) / (x1 - x0);
-				y3 = s1 * (x2 - x1) + y1;
-				if (::fabsf(y3 - y2) > fThreshold * ::fabsf(y3 - y1))
-					pNode = NULL;
-			}
+		float s1 = (x1 > x0 ? (y1 - y0) / (x1 - x0) : 0.0f);
+		float y3 = (x2 > x1 ? s1 * (x2 - x1) + y1 : y1);
+		if (::fabsf(y3 - y2) < fThreshold * ::fabsf(y3 - y1))
+			return NULL;
+		if (pPrev) {
+			pNode = pPrev;
+			pPrev = pNode->prev();
+			x0 = (pPrev ? float(pPrev->frame) : 0.0f);
+			y0 = (pPrev ? pPrev->value : m_tail.value);
+			x1 = float(pNode->frame);
+			y1 = pNode->value;
+			x2 = float(iFrame);
+			y2 = fValue;
+			s1 = (y1 - y0) / (x1 - x0);
+			y3 = s1 * (x2 - x1) + y1;
+			if (::fabsf(y3 - y2) > fThreshold * ::fabsf(y3 - y1))
+				pNode = NULL;
 		}
 	}
 
@@ -392,10 +382,24 @@ void qtractorCurve::removeNode ( Node *pNode )
 
 
 // Whether to snap to minimum distance frame.
-bool qtractorCurve::isMinFrameDist ( Node *pNode, unsigned long iFrame ) const
+bool qtractorCurve::isMinFrameDist (
+	Node *pNode, unsigned long iFrame, float fValue ) const
 {
-	return iFrame > pNode->frame - m_iMinFrameDist
-		&& iFrame < pNode->frame + m_iMinFrameDist;
+	const float fThreshold = 0.025f
+		* (m_observer.maxValue() - m_observer.minValue());
+
+	const bool bMinValueDist
+		= (fValue > pNode->value - fThreshold
+		&& fValue < pNode->value + fThreshold);
+
+	const bool bMinFrameDist
+		= (iFrame > pNode->frame - m_iMinFrameDist
+		&& iFrame < pNode->frame + m_iMinFrameDist);
+
+	if (m_mode == Hold || !m_observer.isDecimal())
+		return bMinFrameDist || bMinValueDist;
+	else
+		return bMinFrameDist && bMinValueDist;
 }
 
 

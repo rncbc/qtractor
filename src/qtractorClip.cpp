@@ -346,7 +346,8 @@ void qtractorClip::updateClipTime (void)
 
 // Base clip drawing method.
 void qtractorClip::drawClip (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter *pPainter, const QRect& clipRect,
+	unsigned long iClipOffset, unsigned long iClipLength )
 {
 	// Draw the framed rectangle and background...
 	pPainter->drawRect(clipRect);
@@ -365,7 +366,7 @@ void qtractorClip::drawClip (
 		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, clipTitle());
 
 	// Draw clip contents (virtual)
-	draw(pPainter, clipRect, iClipOffset);
+	draw(pPainter, clipRect, iClipOffset, iClipLength);
 
 	// Avoid drawing fade in/out handles
 	// on still empty clips (eg. while recording)
@@ -505,13 +506,14 @@ void qtractorClip::drawClip (
 
 // Recording clip drawing method.
 void qtractorClip::drawClipRecord (
-	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
+	QPainter *pPainter, const QRect& clipRect,
+	unsigned long iClipOffset, unsigned long iClipLength )
 {
 	// Draw the framed rectangle and background...
 	pPainter->drawRect(clipRect);
 
 	// Draw clip contents (virtual)...
-	draw(pPainter, clipRect, iClipOffset);
+	draw(pPainter, clipRect, iClipOffset, iClipLength);
 
 	// Draw red shade overlay...
 	pPainter->fillRect(clipRect, QColor(255, 0, 0, 120));

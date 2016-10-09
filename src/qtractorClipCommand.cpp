@@ -238,8 +238,6 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 
 	if (pItem->editCommand == NULL)
 		reopenClip(pClip, fTimeStretch > 0.0f);
-	else
-		setClearSelect(true);
 }
 
 
@@ -312,7 +310,7 @@ void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 	pItem->clipLength = pClip->clipLength();
 	m_items.append(pItem);
 
-	setClearSelect(true);
+//	setClearSelect(true);
 }
 
 
@@ -323,7 +321,7 @@ void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 	if (iter == m_clips.constEnd())
 		m_clips.insert(pClip, bClose);
 
-	setClearSelect(true);
+//	setClearSelect(true);
 }
 
 
