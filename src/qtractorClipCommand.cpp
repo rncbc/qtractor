@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,7 +78,7 @@ void qtractorClipCommand::addClip ( qtractorClip *pClip,
 {
 	m_items.append(new Item(AddClip, pClip, pTrack));
 
-	setClearSelect(true);
+	setClearSelectReset(true);
 }
 
 
@@ -86,7 +86,7 @@ void qtractorClipCommand::removeClip ( qtractorClip *pClip )
 {
 	m_items.append(new Item(RemoveClip, pClip, pClip->track()));
 
-	setClearSelect(true);
+	setClearSelectReset(true);
 }
 
 
@@ -238,6 +238,8 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 
 	if (pItem->editCommand == NULL)
 		reopenClip(pClip, fTimeStretch > 0.0f);
+	else
+		setClearSelect(true);
 }
 
 
@@ -310,7 +312,7 @@ void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 	pItem->clipLength = pClip->clipLength();
 	m_items.append(pItem);
 
-//	setClearSelect(true);
+	setClearSelect(true);
 }
 
 
@@ -321,7 +323,7 @@ void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 	if (iter == m_clips.constEnd())
 		m_clips.insert(pClip, bClose);
 
-//	setClearSelect(true);
+	setClearSelect(true);
 }
 
 

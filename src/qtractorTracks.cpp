@@ -2414,7 +2414,7 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 		return false;
 	}
 
-	clearSelect();
+	clearSelect(true);
 
 	const bool bResult = pSession->execute(pClipRangeCommand);
 	if (bResult) {
@@ -3096,9 +3096,9 @@ void qtractorTracks::updateTrackView (void)
 
 
 // Overall selection reset.
-void qtractorTracks::clearSelect (void)
+void qtractorTracks::clearSelect ( bool bReset )
 {
-	m_pTrackView->clearSelect(true);
+	m_pTrackView->clearSelect(bReset);
 }
 
 

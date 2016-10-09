@@ -1,7 +1,7 @@
 // qtractorCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -51,7 +51,8 @@ public:
 	const QString& name() const { return m_sName; }
 
 	// Command flags.
-	enum Flag { None = 0, AutoDelete = 1, Refresh = 2, ClearSelect = 4 };
+	enum Flag { None = 0, AutoDelete  = 1, Refresh = 2, Reset = 4,
+		ClearSelect = 8, ClearSelectReset = ClearSelect | Reset };
 
 	// Command flags accessor.
 	unsigned int flags() const { return m_flags; }
@@ -73,6 +74,11 @@ public:
 		{ setFlag(ClearSelect, bClearSelect); }
 	bool isClearSelect() const
 		{ return isFlag(ClearSelect); }
+
+	void setClearSelectReset(bool bClearSelectReset)
+		{ setFlag(ClearSelectReset, bClearSelectReset); }
+	bool isClearSelectReset() const
+		{ return isFlag(ClearSelectReset); }
 
 	// Cannonical command methods.
 	virtual bool redo() = 0;

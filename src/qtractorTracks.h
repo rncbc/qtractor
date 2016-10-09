@@ -147,7 +147,7 @@ public:
 	void dirtyChangeNotify();
 
 	// Overall selection reset.
-	void clearSelect();
+	void clearSelect(bool bReset = false);
 
 	// Overall contents reset.
 	void clear();

@@ -8138,7 +8138,7 @@ void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 	// Always reset any track view selection...
 	// (avoid change/update notifications, again)
 	if (m_pTracks && (flags & qtractorCommand::ClearSelect))
-		m_pTracks->clearSelect();
+		m_pTracks->clearSelect(flags & qtractorCommand::Reset);
 
 	// Proceed as usual...
 	updateContents(NULL, (flags & qtractorCommand::Refresh));
