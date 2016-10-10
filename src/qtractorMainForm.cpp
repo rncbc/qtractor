@@ -7192,7 +7192,7 @@ void qtractorMainForm::timerSlot (void)
 						(unsigned short) pos.beats_per_bar,
 						(unsigned short) pos.beat_type);
 				#endif
-					m_pTracks->clearSelect();
+					m_pTracks->clearSelect(true);
 					m_pSession->lock();
 					pNode->tempo = pos.beats_per_minute;
 					pNode->beatsPerBar = pos.beats_per_bar;
@@ -7862,7 +7862,7 @@ void qtractorMainForm::midiClkNotify ( float fTempo )
 	appendMessages(sClkText);
 
 	if (m_pTracks)
-		m_pTracks->clearSelect();
+		m_pTracks->clearSelect(true);
 
 	// Find appropriate node...
 	qtractorTimeScale *pTimeScale = m_pSession->timeScale();

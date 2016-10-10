@@ -3095,10 +3095,17 @@ void qtractorTracks::updateTrackView (void)
 }
 
 
-// Overall selection reset.
+// Overall selection clear/reset.
 void qtractorTracks::clearSelect ( bool bReset )
 {
 	m_pTrackView->clearSelect(bReset);
+}
+
+
+// Overall selection update.
+void qtractorTracks::updateSelect (void)
+{
+	m_pTrackView->updateSelect();
 }
 
 

@@ -146,8 +146,11 @@ public:
 	void contentsChangeNotify();
 	void dirtyChangeNotify();
 
-	// Overall selection reset.
+	// Overall selection clear/reset.
 	void clearSelect(bool bReset = false);
+
+	// Overall selection update.
+	void updateSelect();
 
 	// Overall contents reset.
 	void clear();

@@ -276,10 +276,7 @@ void qtractorTrackView::updateContentsHeight (void)
 		qtractorScrollView::contentsWidth(), iContentsHeight);
 
 	// Keep selection (we'll update all contents anyway)...
-	if (m_bCurveEdit)
-		updateCurveSelect();
-	else
-		updateClipSelect();
+	updateSelect();
 }
 
 
@@ -2971,6 +2968,9 @@ void qtractorTrackView::updateClipSelect (void)
 		const int h = y2 - y1 - 2;
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
+			const unsigned long iClipSelectStart = pClip->clipSelectStart();
+			const unsigned long iClipSelectEnd   = pClip->clipSelectEnd();
+			pClip->setClipSelect(iClipSelectStart, iClipSelectEnd);
 			if (pClip->isClipSelected()) {
 				const int x = pSession->pixelFromFrame(pClip->clipSelectStart());
 				const int w = pSession->pixelFromFrame(pClip->clipSelectEnd()) - x;
@@ -4310,6 +4310,27 @@ int qtractorTrackView::editTailX (void) const
 }
 
 
+// Whether there's any clip currently selected.
+bool qtractorTrackView::isClipSelected (void) const
+{
+	return (m_pClipSelect->items().count() > 0);
+}
+
+
+// Whether there's any curve/automation currently selected.
+bool qtractorTrackView::isCurveSelected (void) const
+{
+	return (m_pCurveSelect->items().count() > 0);
+}
+
+
+// Whether there's a single track selection.
+qtractorTrack *qtractorTrackView::singleTrackSelected (void)
+{
+	return m_pClipSelect->singleTrack();
+}
+
+
 // Clear current selection (no notify).
 void qtractorTrackView::clearSelect ( bool bReset )
 {
@@ -4337,24 +4358,14 @@ void qtractorTrackView::clearSelect ( bool bReset )
 }
 
 
-// Whether there's any clip currently selected.
-bool qtractorTrackView::isClipSelected (void) const
+// Update current selection (no notify).
+void qtractorTrackView::updateSelect (void)
 {
-	return (m_pClipSelect->items().count() > 0);
-}
-
-
-// Whether there's any curve/automation currently selected.
-bool qtractorTrackView::isCurveSelected (void) const
-{
-	return (m_pCurveSelect->items().count() > 0);
-}
-
-
-// Whether there's a single track selection.
-qtractorTrack *qtractorTrackView::singleTrackSelected (void)
-{
-	return m_pClipSelect->singleTrack();
+	// Keep selection (we'll update all contents anyway)...
+	if (m_bCurveEdit)
+		updateCurveSelect();
+	else
+		updateClipSelect();
 }
 
 
