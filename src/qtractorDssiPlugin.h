@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorDsiiPlugin_h
+#ifndef __qtractorDssiPlugin_h
 #define __qtractorDssiPlugin_h
 
 #include "qtractorLadspaPlugin.h"
