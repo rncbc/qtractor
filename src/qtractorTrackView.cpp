@@ -4092,8 +4092,8 @@ bool qtractorTrackView::keyStep (
 			if (iSnapPerBeat > 0)
 				iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
 		}
-		if (iHorizontalStep < 1)
-			iHorizontalStep = 1;
+		if (iHorizontalStep < 4)
+			iHorizontalStep = 4;
 		if (iKey == Qt::Key_Left)
 			x1 -= iHorizontalStep;
 		else
