@@ -51,34 +51,38 @@ public:
 	const QString& name() const { return m_sName; }
 
 	// Command flags.
-	enum Flag { None = 0, AutoDelete  = 1, Refresh = 2, Reset = 4,
-		ClearSelect = 8, ClearSelectReset = ClearSelect | Reset };
+	enum Flag {
+		None = 0, AutoDelete = 1, Refresh = 2,
+		Clear = 4, Select = 8, Reset = 16,
+		ClearSelect = Clear | Select,
+		ClearSelectReset = ClearSelect | Reset
+	};
 
 	// Command flags accessor.
 	unsigned int flags() const { return m_flags; }
 
 	// Auto-removal/deletion flag accessors.
 	void setAutoDelete(bool bAutoDelete)
-		{ setFlag(AutoDelete, bAutoDelete); }
+		{ setFlags(AutoDelete, bAutoDelete); }
 	bool isAutoDelete() const
-		{ return isFlag(AutoDelete); }
+		{ return isFlags(AutoDelete); }
 
 	// Contents-refresh accessors.
 	void setRefresh(bool bRefresh)
-		{ setFlag(Refresh, bRefresh); }
+		{ setFlags(Refresh, bRefresh); }
 	bool isRefresh() const
-		{ return isFlag(Refresh); }
+		{ return isFlags(Refresh); }
 
-	// Selection-reset accessors.
+	// Selection clear/reset accessors.
 	void setClearSelect(bool bClearSelect)
-		{ setFlag(ClearSelect, bClearSelect); }
+		{ setFlags(ClearSelect, bClearSelect); }
 	bool isClearSelect() const
-		{ return isFlag(ClearSelect); }
+		{ return isFlags(ClearSelect); }
 
 	void setClearSelectReset(bool bClearSelectReset)
-		{ setFlag(ClearSelectReset, bClearSelectReset); }
+		{ setFlags(ClearSelectReset, bClearSelectReset); }
 	bool isClearSelectReset() const
-		{ return isFlag(ClearSelectReset); }
+		{ return isFlags(ClearSelectReset); }
 
 	// Cannonical command methods.
 	virtual bool redo() = 0;
@@ -87,16 +91,11 @@ public:
 protected:
 
 	// Discrete flag accessors.
-	void setFlag(Flag flag, bool bOn = true)
-	{
-		if (bOn)
-			m_flags |=  (unsigned int) (flag);
-		else
-			m_flags &= ~(unsigned int) (flag);
-	}
+	void setFlags(unsigned int flags, bool bOn = true)
+		{ if (bOn) m_flags |= flags; else m_flags &= ~flags; }
 
-	bool isFlag(Flag flag) const
-		{ return (m_flags & (unsigned int) (flag)); }
+	bool isFlags(unsigned int flags) const
+		{ return ((m_flags & flags) == flags); }
 
 private:
 

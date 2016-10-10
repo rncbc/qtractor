@@ -145,9 +145,6 @@ public:
 	// Clip selection accessor.
 	qtractorClipSelect *clipSelect() const;
 
-	// Clear current selection (no notify).
-	void clearSelect(bool bReset = false);
-
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 
@@ -156,6 +153,12 @@ public:
 
 	// Whether there's a single track selection.
 	qtractorTrack *singleTrackSelected();
+
+	// Clear current selection (no notify).
+	void clearSelect(bool bReset = false);
+
+	// Update current selection (no notify).
+	void updateSelect();
 
 	// Whether there's anything on clipboard.
 	static bool isClipboard();
