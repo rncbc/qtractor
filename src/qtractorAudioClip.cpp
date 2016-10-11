@@ -677,11 +677,11 @@ void qtractorAudioClip::draw (
 	}
 
 	// Close, draw and free the polygons...
-	pPainter->setPen(fg.lighter(140));
+	pPainter->setPen(fg.lighter(120));
 	for (k = 0; k < iChannels; ++k) {
-		pPainter->setBrush(fg);
+		pPainter->setBrush(fg.lighter(110));
 		pPainter->drawPolygon(*pPolyMax[k]);
-		pPainter->setBrush(fg.lighter(120));
+		pPainter->setBrush(fg);
 		pPainter->drawPolygon(*pPolyRms[k]);
 		delete pPolyMax[k];
 		delete pPolyRms[k];

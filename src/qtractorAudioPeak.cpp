@@ -895,6 +895,7 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 		const int p4 = int(iPeakLength >> 2) + 1;
 		const int q4 = (width / p4);
 		if (q4 >= 8) {
+			m_iPeakHash = 0;
 			m_pPeakFile->closeRead();
 			pPeakFactory->setPeakPeriod(iPeakPeriod >> 3);
 		#ifdef CONFIG_DEBUG
@@ -911,6 +912,7 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 			const int p2 = (p4 << 1);
 			const int q2 = (p2 / width);
 			if (q2 >= 4) {
+				m_iPeakHash = 0;
 				m_pPeakFile->closeRead();
 				pPeakFactory->setPeakPeriod(iPeakPeriod << 3);
 			#ifdef CONFIG_DEBUG
@@ -936,8 +938,8 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 		return NULL;
 
 	// Check if we better aggregate over the frame buffer....
-	const int m2 = int(m_iPeakLength);
-	if (width < m2 && width > 1) {
+	const int p2 = int(m_iPeakLength);
+	if (width < p2 && width > 1) {
 		const int w2 = (width >> 1) + 1;
 		const int n2 = iChannels * w2;
 		qtractorAudioPeakFile::Frame *pOldFrames = m_pPeakFrames;
@@ -945,7 +947,7 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 			= new qtractorAudioPeakFile::Frame [n2];
 		int n = 0; int i = 0;
 		while (n < n2) {
-			const int i2 = (n * m2) / w2;
+			const int i2 = (n * p2) / w2;
 			for (unsigned short k = 0; k < iChannels; ++k) {
 				qtractorAudioPeakFile::Frame *pNewFrame = &pNewFrames[n++];
 				qtractorAudioPeakFile::Frame *pOldFrame = &pOldFrames[i + k];
