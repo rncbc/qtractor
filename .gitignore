@@ -12,6 +12,7 @@ configure
 *.o
 *.so
 *.pro.user
+*.qmake.stash
 qrc_*.cpp
 .moc
 .obj
