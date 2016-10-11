@@ -888,28 +888,43 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	if (iPeakLength < 1)
 		return NULL;
 
-#if 1//--TEST-BEGIN--
+#if 1//--TEST-BEGIN--//
 	qtractorAudioPeakFactory *pPeakFactory
 		= qtractorAudioPeakFactory::getInstance();
 	if (pPeakFactory) {
-		const int m4 = int(iPeakLength >> 2) + 1;
-		const int n4 = width / m4;
-		if (n4 > 8) {
-		#if 0
-			if (m_pPeakFrames)
-				delete [] m_pPeakFrames;
-			m_pPeakFrames = NULL;
-			m_iPeakLength = 0;
-			m_iPeakHash = 0;
-		#endif
+		const int p4 = int(iPeakLength >> 2) + 1;
+		const int q4 = (width / p4);
+		if (q4 >= 8) {
 			m_pPeakFile->closeRead();
 			pPeakFactory->setPeakPeriod(iPeakPeriod >> 3);
-		qDebug("DEBUG> qtarctorAudioPeak[%p]::peakFrames(%lu, %lu, %d) NEW peakPeriod=%u file=(%p, %u, %u) m4=%d n4=%d", this, iFrameOffset, iFrameLength, width, pPeakFactory->peakPeriod(), m_pPeakFile, iPeakPeriod, iChannels, m4, n4);
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorAudioPeak[%p]::peakFrames(%lu, %lu, %d)"
+				" NEW peakPeriod=%u file=(%p, %u, %u) m4=%d n4=%d", this,
+				iFrameOffset, iFrameLength, width, pPeakFactory->peakPeriod(),
+				m_pPeakFile, iPeakPeriod, iChannels, p4, q4);
+		#endif
 			pPeakFactory->sync(m_pPeakFile);
 			return NULL;
 		}
+		else
+		if (q4 < 2 && width > 1) {
+			const int p2 = (p4 << 1);
+			const int q2 = (p2 / width);
+			if (q2 >= 4) {
+				m_pPeakFile->closeRead();
+				pPeakFactory->setPeakPeriod(iPeakPeriod << 3);
+			#ifdef CONFIG_DEBUG
+				qDebug("qtractorAudioPeak[%p]::peakFrames(%lu, %lu, %d)"
+					" NEW peakPeriod=%u file=(%p, %u, %u) p2=%d q2=%d", this,
+					iFrameOffset, iFrameLength, width, pPeakFactory->peakPeriod(),
+					m_pPeakFile, iPeakPeriod, iChannels, p2, q2);
+			#endif
+				pPeakFactory->sync(m_pPeakFile);
+				return NULL;
+			}
+		}
 	}
-#endif//--TEST-END--
+#endif//--TEST-END--//
 
 	// Grab them in...
 	const unsigned long iPeakOffset = (iFrameOffset / iPeakPeriod);
