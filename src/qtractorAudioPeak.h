@@ -97,6 +97,9 @@ public:
 	void setWaitSync(bool bWaitSync);
 	bool isWaitSync() const;
 
+	// Peak filename standard.
+	static QString peakName(const QString& sFilename, float fTimeStretch);
+
 protected:
 
 	// Internal creational methods.
@@ -206,8 +209,11 @@ public:
 	// Default destructor.
 	~qtractorAudioPeakFactory();
 
-	// The peak file factory-method.
-	static QString peakName(const QString& sFilename, float fTimeStretch);
+	// The peak period accessors.
+	void setPeakPeriod(unsigned short iPeakPeriod);
+	unsigned short peakPeriod() const;
+
+	// The peak file factory-methods.
 	qtractorAudioPeak *createPeak(const QString& sFilename, float fTimeStretch);
 	void removePeak(qtractorAudioPeakFile *pPeakFile, bool bAborted);
 
@@ -223,6 +229,9 @@ public:
 
 	// Cleanup method.
 	void cleanup();
+
+	// Singleton instance accessor.
+	static qtractorAudioPeakFactory *getInstance();
 
 signals:
 
@@ -245,6 +254,12 @@ private:
 
 	// The peak file creation detached thread.
 	qtractorAudioPeakThread *m_pPeakThread;
+
+	// The current running peak-period.
+	unsigned short m_iPeakPeriod;
+
+	// The pseudo-singleton instance.
+	static qtractorAudioPeakFactory *g_pPeakFactory;
 };
 
 
