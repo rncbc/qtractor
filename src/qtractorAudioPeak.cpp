@@ -862,10 +862,16 @@ qtractorAudioPeak::~qtractorAudioPeak (void)
 qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	unsigned long iFrameOffset, unsigned long iFrameLength, int width )
 {
+	qtractorAudioPeakFactory *pPeakFactory
+		= qtractorAudioPeakFactory::getInstance();
+	if (pPeakFactory == NULL)
+		return NULL;
+
+	// Try open current peak file as is...
 	if (!m_pPeakFile->openRead())
 		return NULL;
 
-	// Check if we have the same previous hash
+	// Check if we have the same previous hash...
 	if (m_pPeakFrames && !m_pPeakFile->isWaitSync()) {
 		const unsigned int iPeakHash
 			= qHash(iFrameOffset) ^ qHash(iFrameLength) ^ qHash(width);
@@ -888,45 +894,41 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	if (iPeakLength < 1)
 		return NULL;
 
-#if 1//--TEST-BEGIN--//
-	qtractorAudioPeakFactory *pPeakFactory
-		= qtractorAudioPeakFactory::getInstance();
-	if (pPeakFactory) {
-		const int p4 = int(iPeakLength >> 2) + 1;
-		const int q4 = (width / p4);
-		if (q4 >= 8) {
+	// HACK: Try and check whether we need to change
+	// the current (global) peak period resolution...
+	const int p4 = int(iPeakLength >> 2) + 1;
+	const int q4 = (width / p4);
+	if (q4 >= 8) {
+		m_iPeakHash = 0;
+		m_pPeakFile->closeRead();
+		pPeakFactory->setPeakPeriod(iPeakPeriod >> 3);
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorAudioPeak[%p]::peakFrames(%lu, %lu, %d)"
+			" NEW peakPeriod=%u file=(%p, %u, %u) m4=%d n4=%d", this,
+			iFrameOffset, iFrameLength, width, pPeakFactory->peakPeriod(),
+			m_pPeakFile, iPeakPeriod, iChannels, p4, q4);
+	#endif
+		pPeakFactory->sync(m_pPeakFile);
+		return NULL;
+	}
+	else
+	if (q4 < 2 && width > 1) {
+		const int p2 = (p4 << 1);
+		const int q2 = (p2 / width);
+		if (q2 >= 4) {
 			m_iPeakHash = 0;
 			m_pPeakFile->closeRead();
-			pPeakFactory->setPeakPeriod(iPeakPeriod >> 3);
+			pPeakFactory->setPeakPeriod(iPeakPeriod << 3);
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorAudioPeak[%p]::peakFrames(%lu, %lu, %d)"
-				" NEW peakPeriod=%u file=(%p, %u, %u) m4=%d n4=%d", this,
+				" NEW peakPeriod=%u file=(%p, %u, %u) p2=%d q2=%d", this,
 				iFrameOffset, iFrameLength, width, pPeakFactory->peakPeriod(),
-				m_pPeakFile, iPeakPeriod, iChannels, p4, q4);
+				m_pPeakFile, iPeakPeriod, iChannels, p2, q2);
 		#endif
 			pPeakFactory->sync(m_pPeakFile);
 			return NULL;
 		}
-		else
-		if (q4 < 2 && width > 1) {
-			const int p2 = (p4 << 1);
-			const int q2 = (p2 / width);
-			if (q2 >= 4) {
-				m_iPeakHash = 0;
-				m_pPeakFile->closeRead();
-				pPeakFactory->setPeakPeriod(iPeakPeriod << 3);
-			#ifdef CONFIG_DEBUG
-				qDebug("qtractorAudioPeak[%p]::peakFrames(%lu, %lu, %d)"
-					" NEW peakPeriod=%u file=(%p, %u, %u) p2=%d q2=%d", this,
-					iFrameOffset, iFrameLength, width, pPeakFactory->peakPeriod(),
-					m_pPeakFile, iPeakPeriod, iChannels, p2, q2);
-			#endif
-				pPeakFactory->sync(m_pPeakFile);
-				return NULL;
-			}
-		}
 	}
-#endif//--TEST-END--//
 
 	// Grab them in...
 	const unsigned long iPeakOffset = (iFrameOffset / iPeakPeriod);
@@ -938,8 +940,8 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 		return NULL;
 
 	// Check if we better aggregate over the frame buffer....
-	const int p2 = int(m_iPeakLength);
-	if (width < p2 && width > 1) {
+	const int p1 = int(m_iPeakLength);
+	if (width < p1 && width > 1) {
 		const int w2 = (width >> 1) + 1;
 		const int n2 = iChannels * w2;
 		qtractorAudioPeakFile::Frame *pOldFrames = m_pPeakFrames;
@@ -947,7 +949,7 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 			= new qtractorAudioPeakFile::Frame [n2];
 		int n = 0; int i = 0;
 		while (n < n2) {
-			const int i2 = (n * p2) / w2;
+			const int i2 = (n * p1) / w2;
 			for (unsigned short k = 0; k < iChannels; ++k) {
 				qtractorAudioPeakFile::Frame *pNewFrame = &pNewFrames[n++];
 				qtractorAudioPeakFile::Frame *pOldFrame = &pOldFrames[i + k];
