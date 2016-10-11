@@ -6,13 +6,13 @@ ChangeLog
 
 GIT HEAD
 
-- Fixed a potential crash on the singleton/unique application
-  instance setup.
-
 - Audio peak file caching and rendering, as far as audio
   clip waveforms are concerned, have been refactored and
   optimized a couple of notches higher, on the ephemeral
   and rather marginal throughput front ;). (EXPERIMENTAL)
+
+- Fixed a potential crash on the singleton/unique application
+  instance setup.
 
 - Edit/Select Mode tool-buttons moved into single drop-down
   tool-button on the main and MIDI editor's tool-bar.
