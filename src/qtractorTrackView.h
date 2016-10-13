@@ -359,6 +359,9 @@ protected:
 	void dragClipFadeMove(const QPoint& pos);
 	void dragClipFadeDrop(const QPoint& pos);
 
+	// Clip select drag-move and settler method.
+	void dragClipSelectMove(const QPoint& pos);
+
 	// Clip resize drag-move methods.
 	void dragClipResizeMove(const QPoint& pos);
 	void dragClipResizeDrop(const QPoint& pos, bool bTimeStretch = false);
@@ -452,6 +455,7 @@ private:
 		DragClipMove, DragClipStep, DragClipDrop,
 		DragClipPaste, DragClipPasteDrop,
 		DragClipFadeIn, DragClipFadeOut,
+		DragClipSelectLeft, DragClipSelectRight,
 		DragClipResizeLeft, DragClipResizeRight,
 		DragClipRepeatLeft, DragClipRepeatRight,
 		DragCurveMove, DragCurveStep,

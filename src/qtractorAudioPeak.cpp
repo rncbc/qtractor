@@ -896,12 +896,16 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 
 	// HACK: Try and check whether we need to change
 	// the current (global) peak period resolution...
-	//
 	unsigned short iPeakPeriod2 = pPeakFactory->peakPeriod();
-
+	// Should we change resolution?
 	if (iPeakPeriod2 == iPeakPeriod) {
 		const int p2 = int(iPeakLength >> 1) + 1;
 		int q2 = (width / p2);
+		if (q2 >= 4) {
+			iPeakPeriod2 >>= 3;
+			pPeakFactory->setPeakPeriod(iPeakPeriod2);
+		}
+		else
 		if (q2 < 2 && width > 1) {
 			q2 = (p2 / width);
 			if (q2 >= 4) {
@@ -909,19 +913,14 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 				pPeakFactory->setPeakPeriod(iPeakPeriod2);
 			}
 		}
-		else
-		if (q2 >= 4) {
-			iPeakPeriod2 >>= 3;
-			pPeakFactory->setPeakPeriod(iPeakPeriod2);
-		}
 	}
-
+	// Have resolution changed before?
 	if (iPeakPeriod2 != iPeakPeriod) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorAudioPeak[%p]::peakFrames(%lu, %lu, %d)"
-			" file=(%p, %u, %u) New peakPeriod=%u.", this,
-			iFrameOffset, iFrameLength, width, m_pPeakFile,
-			iPeakPeriod, iChannels, iPeakPeriod2);
+		qDebug("qtractorAudioPeak[%p]::peakFrames(%lu, %lu, %d) "
+			"peakFile=(%p, %u) peakPeriod=%u.", this,
+			iFrameOffset, iFrameLength, width,
+			m_pPeakFile, iPeakPeriod, iPeakPeriod2);
 	#endif
 		m_iPeakHash = 0;
 		m_pPeakFile->closeRead();
