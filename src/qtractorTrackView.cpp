@@ -1837,6 +1837,10 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragClipFadeOut:
 		dragClipFadeMove(pos);
 		break;
+	case DragClipSelectLeft:
+	case DragClipSelectRight:
+		dragClipSelectMove(pos);
+		break;
 	case DragClipRepeatLeft:
 	case DragClipRepeatRight:
 	case DragClipResizeLeft:
@@ -1889,6 +1893,14 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					m_iDragClipX = (pos.x() - m_posDrag.x());
 					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 					moveRubberBand(&m_pRubberBand, m_rectHandle);
+				}
+				else
+				if (m_dragState == DragClipSelectLeft  ||
+					m_dragState == DragClipSelectRight) {
+					// DragClipSelect...
+					m_iDragClipX = (pos.x() - m_posDrag.x());
+					qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+				//	moveRubberBand(&m_pRubberBand, m_rectHandle);
 				}
 				else
 				if (m_dragState != DragCurveNode && m_pClipDrag) {
@@ -1983,6 +1995,10 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragClipFadeIn:
 		case DragClipFadeOut:
 			dragClipFadeDrop(pos);
+			break;
+		case DragClipSelectLeft:
+		case DragClipSelectRight:
+			dragClipSelectMove(pos);
 			break;
 		case DragClipRepeatLeft:
 			// HACK: Reaper-like feature shameless plug...
@@ -3283,17 +3299,38 @@ bool qtractorTrackView::dragClipStartEx (
 		return true;
 	}
 
-	// Resize-right check...
-	if (pos.x() >= rectClip.right() - 4) {
-		m_dragCursor = (modifiers & Qt::ControlModifier
-			? DragClipRepeatRight : DragClipResizeRight);
+	int x;
+
+	// Select-left check...
+	x = pSession->pixelFromFrame(pClip->clipSelectStart());
+	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
+		m_dragCursor = DragClipSelectLeft;
 		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
+
+	// Select-right check...
+	x = pSession->pixelFromFrame(pClip->clipSelectEnd());
+	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
+		m_dragCursor = DragClipSelectRight;
+		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+		return true;
+	}
+
 	// Resize-left check...
-	if (pos.x() < rectClip.left() + 4) {
+	x = rectClip.left();
+	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
 		m_dragCursor = (modifiers & Qt::ControlModifier
 			? DragClipRepeatLeft : DragClipResizeLeft);
+		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+		return true;
+	}
+
+	// Resize-right check...
+	x = rectClip.right();
+	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
+		m_dragCursor = (modifiers & Qt::ControlModifier
+			? DragClipRepeatRight : DragClipResizeRight);
 		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
@@ -3373,7 +3410,55 @@ void qtractorTrackView::dragClipFadeDrop ( const QPoint& pos )
 }
 
 
-// Clip resize handle drag-moving parts.
+// Clip select edge drag-moving and setler.
+void qtractorTrackView::dragClipSelectMove ( const QPoint& pos )
+{
+	qtractorClip *pClip = m_pClipDrag;
+	if (pClip == NULL)
+		return;
+
+	if (!pClip->isClipSelected())
+		return;
+
+	qtractorTrack *pTrack = pClip->track();
+	if (pTrack == NULL)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return;
+
+	int iUpdate = 0;
+	int x = pSession->pixelSnap(pos.x());
+
+	if (m_dragState == DragClipSelectLeft) {
+		const unsigned long iClipSelectEnd = pClip->clipSelectEnd();
+		const int x2 = pSession->pixelFromFrame(iClipSelectEnd);
+		if (x < x2) {
+			pClip->setClipSelect(pSession->frameFromPixel(x), iClipSelectEnd);
+			++iUpdate;
+		}
+	}
+	else
+	if (m_dragState == DragClipSelectRight) {
+		const unsigned long iClipSelectStart = pClip->clipSelectStart();
+		const int x1 = pSession->pixelFromFrame(iClipSelectStart);
+		if (x > x1) {
+			pClip->setClipSelect(iClipSelectStart, pSession->frameFromPixel(x));
+			++iUpdate;
+		}
+	}
+
+	if (iUpdate > 0) {
+		updateClipSelect();
+		qtractorScrollView::viewport()->update();
+	}
+
+	ensureVisible(pos.x(), pos.y(), 24, 24);
+}
+
+
+// Clip resize drag-moving handler.
 void qtractorTrackView::dragClipResizeMove ( const QPoint& pos )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -3411,7 +3496,7 @@ void qtractorTrackView::dragClipResizeMove ( const QPoint& pos )
 }
 
 
-// Clip resize handle settler.
+// Clip resize/repeat drag-moving settler.
 void qtractorTrackView::dragClipResizeDrop (
 	const QPoint& pos, bool bTimeStretch )
 {
@@ -3804,7 +3889,9 @@ void qtractorTrackView::resetDragState (void)
 		m_pClipSelect->reset();
 	if (m_dragState == DragCurveStep)
 		m_pCurveSelect->clear();
-	if (m_dragState == DragClipRepeatLeft  ||
+	if (m_dragState == DragClipSelectLeft  ||
+		m_dragState == DragClipSelectRight ||
+		m_dragState == DragClipRepeatLeft  ||
 		m_dragState == DragClipRepeatRight ||
 		m_dragState == DragClipResizeLeft  ||
 		m_dragState == DragClipResizeRight ||
