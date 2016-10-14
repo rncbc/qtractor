@@ -75,6 +75,10 @@ public:
 		unsigned char rms;
 	};
 
+	// Open mode predicates.
+	bool isOpenRead()  const { return (m_openMode == Read);  }
+	bool isOpenWrite() const { return (m_openMode == Write); }
+
 	// Peak cache file methods.
 	bool openRead();
 	unsigned int read(Frame *pPeakFrames,
