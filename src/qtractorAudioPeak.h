@@ -75,13 +75,10 @@ public:
 		unsigned char rms;
 	};
 
-	// Open mode predicates.
-	bool isOpenRead()  const { return (m_openMode == Read);  }
-	bool isOpenWrite() const { return (m_openMode == Write); }
-
 	// Peak cache file methods.
 	bool openRead();
-	Frame *read(unsigned long iPeakOffset, unsigned int iPeakLength);
+	unsigned int read(Frame *pPeakFrames,
+		unsigned long iPeakOffset, unsigned int iPeakLength);
 	void closeRead();
 
 	// Write peak from audio frame methods.
@@ -194,8 +191,6 @@ private:
 
 	unsigned int m_iPeakLength;
 	unsigned int m_iPeakHash;
-
-	bool m_bPeakDelete;
 };
 
 
@@ -249,7 +244,9 @@ private:
 	QMutex m_mutex;
 
 	// The list of managed peak files.
-	QHash<QString, qtractorAudioPeakFile *> m_peaks;
+	typedef QHash<QString, qtractorAudioPeakFile *> PeakFiles;
+
+	PeakFiles m_peaks;
 
 	// Auto-delete property.
 	bool m_bAutoRemove;

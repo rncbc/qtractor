@@ -29,6 +29,7 @@
 
 #include "qtractorAudioClip.h"
 #include "qtractorAudioFile.h"
+#include "qtractorAudioPeak.h"
 #include "qtractorMidiClip.h"
 #include "qtractorMidiFile.h"
 #include "qtractorSessionCursor.h"
@@ -285,14 +286,14 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
-		const int iSessionWidth
-			= pSession->pixelFromFrame(pSession->sessionEnd());
-		if (iContentsWidth < iSessionWidth)
-			iContentsWidth = iSessionWidth;
+		unsigned long iSessionLength = pSession->sessionEnd();
 		qtractorTimeScale::Cursor cursor(pSession->timeScale());
-		qtractorTimeScale::Node *pNode = cursor.seekPixel(iContentsWidth);
-		iContentsWidth += pNode->pixelFromBeat(
-			pNode->beat + (pNode->beatsPerBar << 1)) - pNode->pixel;
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iSessionLength);
+		iSessionLength += pNode->frameFromBeat(
+			pNode->beat + (pNode->beatsPerBar << 1)) - pNode->frame;
+		const int iSessionWidth	= pSession->pixelFromFrame(iSessionLength);
+		if (iContentsWidth  < iSessionWidth)
+			iContentsWidth  = iSessionWidth;
 		if (iContentsWidth  < qtractorScrollView::width())
 			iContentsWidth += qtractorScrollView::width();
 	#if 0
@@ -300,6 +301,40 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 		m_iEditHeadX = pSession->pixelFromFrame(pSession->editHead());
 		m_iEditTailX = pSession->pixelFromFrame(pSession->editTail());
 	#endif
+		// HACK: Try and check whether we need to change
+		// current (global) audio-peak period resolution...
+		qtractorAudioPeakFactory *pPeakFactory
+			= qtractorAudioPeakFactory::getInstance();
+		if (pPeakFactory) {
+			const unsigned short iPeakPeriod = pPeakFactory->peakPeriod();
+			// Should we change resolution?
+			const int p2 = ((iSessionLength / iPeakPeriod) >> 1) + 1;
+			int q2 = (iSessionWidth / p2);
+			if (q2 > 4) {
+				pPeakFactory->setPeakPeriod(iPeakPeriod >> 3);
+			#ifdef CONFIG_DEBUG
+				qDebug("qtractorTrackView::updateContentsWidth() "
+					"iSessionLength=%lu iSessionWidth=%d "
+					"++ peakPeriod=%u (%u) p2=%d q2=%d.",
+					iSessionLength, iSessionWidth,
+					pPeakFactory->peakPeriod(), iPeakPeriod, p2, q2);
+			#endif
+			}
+			else
+			if (q2 < 2 && iSessionWidth > 1) {
+				q2 = (p2 / iSessionWidth);
+				if (q2 > 4) {
+				#ifdef CONFIG_DEBUG
+					pPeakFactory->setPeakPeriod(iPeakPeriod << 3);
+					qDebug("qtractorTrackView::updateContentsWidth() "
+						"iSessionLength=%lu iSessionWidth=%d "
+						"-- peakPeriod=%u (%u) p2=%d q2=%d.",
+						iSessionLength, iSessionWidth,
+						pPeakFactory->peakPeriod(), iPeakPeriod, p2, q2);
+				#endif
+				}
+			}
+		}
 	}
 
 #ifdef CONFIG_DEBUG_0
@@ -344,7 +379,7 @@ void qtractorTrackView::updateContentsRecord (void)
 	const int cx = qtractorScrollView::contentsX();
 	int w = m_iPlayHeadX - cx;
 	if (w > 0 && w < pViewport->width()) {
-		int x = 0, dx = 8;
+		int x = 0, dx = 32;
 		if (m_iPlayHeadX > m_iLastRecordX) {
 			dx += (m_iPlayHeadX - m_iLastRecordX);
 			qtractorSession *pSession = qtractorSession::getInstance();
