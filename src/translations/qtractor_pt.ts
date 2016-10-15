@@ -12358,23 +12358,23 @@ Tamanho:	%3</translation>
 <context>
     <name>qtractorTrackView</name>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4560"/>
-        <location filename="../qtractorTrackView.cpp" line="4633"/>
+        <location filename="../qtractorTrackView.cpp" line="4595"/>
+        <location filename="../qtractorTrackView.cpp" line="4668"/>
         <source>cut</source>
         <translation>recortar</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5350"/>
+        <location filename="../qtractorTrackView.cpp" line="5385"/>
         <source>paste automation</source>
         <translation>colar automação</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4639"/>
+        <location filename="../qtractorTrackView.cpp" line="4674"/>
         <source>split</source>
         <translation>quebrar</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3099"/>
+        <location filename="../qtractorTrackView.cpp" line="3134"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -12383,94 +12383,94 @@ Final:	%2
 Tamanho:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="146"/>
+        <location filename="../qtractorTrackView.cpp" line="147"/>
         <source>Zoom in (vertical)</source>
         <translation>Aumentar Zoom (vertical)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="147"/>
+        <location filename="../qtractorTrackView.cpp" line="148"/>
         <source>Zoom out (vertical)</source>
         <translation>Diminuir Zoom (vertical)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="144"/>
+        <location filename="../qtractorTrackView.cpp" line="145"/>
         <source>Zoom in (horizontal)</source>
         <translation>Aumentar Zoom (horizontal)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4563"/>
-        <location filename="../qtractorTrackView.cpp" line="4636"/>
+        <location filename="../qtractorTrackView.cpp" line="4598"/>
+        <location filename="../qtractorTrackView.cpp" line="4671"/>
         <source>delete</source>
         <translation>apagar</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3389"/>
+        <location filename="../qtractorTrackView.cpp" line="3424"/>
         <source>fade-out</source>
         <translation>fade de saída</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3515"/>
+        <location filename="../qtractorTrackView.cpp" line="3550"/>
         <source>clip resize</source>
         <translation>redimensionar sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3600"/>
-        <location filename="../qtractorTrackView.cpp" line="3708"/>
+        <location filename="../qtractorTrackView.cpp" line="3635"/>
+        <location filename="../qtractorTrackView.cpp" line="3743"/>
         <source>clip repeat</source>
         <translation>repetidor de sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4629"/>
+        <location filename="../qtractorTrackView.cpp" line="4664"/>
         <source>%1 clip</source>
         <translation>%1 sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="145"/>
+        <location filename="../qtractorTrackView.cpp" line="146"/>
         <source>Zoom out (horizontal)</source>
         <translation>Diminuir Zoom (horizontal)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3388"/>
+        <location filename="../qtractorTrackView.cpp" line="3423"/>
         <source>clip %1</source>
         <translation>sequência %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5269"/>
+        <location filename="../qtractorTrackView.cpp" line="5304"/>
         <source>move automation</source>
         <translation>mover automação</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="1585"/>
+        <location filename="../qtractorTrackView.cpp" line="1620"/>
         <source>add clip</source>
         <translation>adicionar sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5131"/>
+        <location filename="../qtractorTrackView.cpp" line="5166"/>
         <source>paste clip</source>
         <translation>colar sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3515"/>
+        <location filename="../qtractorTrackView.cpp" line="3550"/>
         <source>clip stretch</source>
         <translation>mudar tamanho da sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5001"/>
+        <location filename="../qtractorTrackView.cpp" line="5036"/>
         <source>move clip</source>
         <translation>mover sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3389"/>
+        <location filename="../qtractorTrackView.cpp" line="3424"/>
         <source>fade-in</source>
         <translation>fade de entrada</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4556"/>
+        <location filename="../qtractorTrackView.cpp" line="4591"/>
         <source>%1 automation</source>
         <translation>%1 automação</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="148"/>
+        <location filename="../qtractorTrackView.cpp" line="149"/>
         <source>Zoom reset</source>
         <translation>Resetar Zoom</translation>
     </message>
