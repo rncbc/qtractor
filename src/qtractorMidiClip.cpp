@@ -998,8 +998,7 @@ void qtractorMidiClip::process_export (
 
 // MIDI clip paint method.
 void qtractorMidiClip::draw (
-	QPainter *pPainter, const QRect& clipRect,
-	unsigned long iClipOffset, unsigned long iClipLength )
+	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == NULL)
@@ -1025,17 +1024,17 @@ void qtractorMidiClip::draw (
 
 	const unsigned long iClipStart = clipStart();
 	const unsigned long iFrameStart = iClipStart + iClipOffset;
-	const unsigned long iFrameEnd = iFrameStart + iClipLength;
 	const int cx = pSession->pixelFromFrame(iFrameStart);
 
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iClipStart);
 	const unsigned long t0 = pNode->tickFromFrame(iClipStart);
 
+	const int cw = clipRect.width();
 	pNode = cursor.seekFrame(iFrameStart);	
 	const unsigned long iTimeStart = pNode->tickFromFrame(iFrameStart);
-	pNode = cursor.seekFrame(iFrameEnd);
-	const unsigned long iTimeEnd = pNode->tickFromFrame(iFrameEnd);
+	pNode = cursor.seekPixel(cx + cw);
+	const unsigned long iTimeEnd = pNode->tickFromPixel(cx + cw);
 
 	const QColor& fg = pTrack->foreground();
 	pPainter->setPen(fg);

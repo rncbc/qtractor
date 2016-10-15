@@ -866,10 +866,18 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	if (!m_pPeakFile->openRead())
 		return NULL;
 
+	// Just in case resolutions might change...
+	const unsigned short iPeakPeriod = m_pPeakFile->period();
+	if (iPeakPeriod < 1)
+		return NULL;
+
 	// Check if we have the same previous hash...
 	if (m_pPeakFrames && !m_pPeakFile->isWaitSync()) {
 		const unsigned int iPeakHash
-			= qHash(iFrameOffset) ^ qHash(iFrameLength) ^ qHash(width);
+			= qHash(iPeakPeriod)
+			^ qHash(iFrameOffset)
+			^ qHash(iFrameLength)
+			^ qHash(width);
 		if (m_iPeakHash == iPeakHash)
 			return m_pPeakFrames;
 		m_iPeakHash = iPeakHash;
@@ -878,10 +886,6 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	// We'll get a brand new peak frames alright...
 	const unsigned short iChannels = m_pPeakFile->channels();
 	if (iChannels < 1)
-		return NULL;
-
-	const unsigned short iPeakPeriod = m_pPeakFile->period();
-	if (iPeakPeriod < 1)
 		return NULL;
 
 	// Peak frames length estimation...
@@ -999,6 +1003,7 @@ void qtractorAudioPeakFactory::setPeakPeriod ( unsigned short iPeakPeriod )
 		qtractorAudioPeakFile *pPeakFile = iter.value();
 		pPeakFile->closeWrite();
 		pPeakFile->closeRead();
+		pPeakFile->remove();
 		sync(pPeakFile);
 	}
 }

@@ -1433,14 +1433,13 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 			if (iClipEnd > iTrackEnd) {
 				iClipEnd = iTrackEnd;
 			}
-			const unsigned long iClipLength = iClipEnd - iClipStart;
 			const int x1 = m_pSession->pixelFromFrame(iClipStart) - x0;
 			const int x2 = m_pSession->pixelFromFrame(iClipEnd) - x0;
 			pPainter->setPen(pen);
 			pPainter->setBrush(brush);
 			// Draw the clip...
 			const QRect clipRect(x1, y, x2 - x1, h);
-			pClip->drawClip(pPainter, clipRect, iClipOffset, iClipLength);
+			pClip->drawClip(pPainter, clipRect, iClipOffset);
 			if (pClip == pClipRecordEx)
 				pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
 		}
