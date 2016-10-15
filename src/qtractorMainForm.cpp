@@ -5294,6 +5294,10 @@ void qtractorMainForm::transportRecord (void)
 	if (!checkRestartSession())
 		return;
 
+	// Don't hold on anymore...
+	if (m_pTracks)
+		m_pTracks->trackView()->setSyncViewHoldOn(false);
+
 	// Toggle recording...
 	const bool bRecording = !m_pSession->isRecording();
 	if (setRecording(bRecording)) {
