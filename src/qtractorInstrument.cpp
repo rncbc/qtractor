@@ -406,14 +406,6 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 
 	ts << sepl << endl;
 	ts << "; " << QObject::tr("Cakewalk Instrument Definition File") << endl;
-#if 0
-	ts << ";"  << endl;
-	ts << "; " << QTRACTOR_TITLE " - " << QObject::tr(QTRACTOR_SUBTITLE) << endl;
-	ts << "; " << QObject::tr("Version")
-		<< ": " QTRACTOR_VERSION << endl;
-	ts << "; " << QObject::tr("Build")
-		<< ": " __DATE__ " " __TIME__ << endl;
-#endif
 	ts << ";"  << endl;
 	ts << "; " << QObject::tr("File")
 		<< ": " << QFileInfo(sFilename).fileName() << endl;

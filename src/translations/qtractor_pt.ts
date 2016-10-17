@@ -10,21 +10,11 @@
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="412"/>
-        <source>Version</source>
-        <translation>Versão</translation>
-    </message>
-    <message>
-        <location filename="../qtractorInstrument.cpp" line="414"/>
-        <source>Build</source>
-        <translation>Compilação</translation>
-    </message>
-    <message>
-        <location filename="../qtractorInstrument.cpp" line="420"/>
         <source>Date</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="418"/>
+        <location filename="../qtractorInstrument.cpp" line="410"/>
         <source>File</source>
         <translation>Arquivo</translation>
     </message>
@@ -93,6 +83,12 @@ Fim:	%3	Tamanho:	%4 </translation>
         <location filename="../qtractorOptions.cpp" line="711"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>Opção -s requer um argumento (nome da sessão).</translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptions.cpp" line="727"/>
+        <source>%1: %2  (%3)
+</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="106"/>
@@ -475,7 +471,7 @@ MIDI:	</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="642"/>
+        <location filename="../qtractorInstrument.cpp" line="634"/>
         <source>%1 Bank %2</source>
         <translation>%1 Banco %2</translation>
     </message>

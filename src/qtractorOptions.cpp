@@ -732,8 +732,12 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			return false;
 		}
 		else if (sArg == "-v" || sArg == "--version") {
-			out << QObject::tr("Qt: %1\n").arg(qVersion());
-			out << QObject::tr(QTRACTOR_TITLE ": %1\n").arg(QTRACTOR_VERSION);
+			out << QObject::tr("Qt: %1\n")
+				.arg(qVersion());
+			out << QObject::tr("%1: %2  (%3)\n")
+				.arg(QTRACTOR_TITLE)
+				.arg(QTRACTOR_VERSION)
+				.arg(CONFIG_BUILD_DATE);
 			return false;
 		}
 		else {
