@@ -291,27 +291,17 @@ End:	%3	Length:	%4</source>
         <translation>Cakewalkのインストルメント定義ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="412"/>
-        <source>Version</source>
-        <translation>バージョン</translation>
-    </message>
-    <message>
-        <location filename="../qtractorInstrument.cpp" line="414"/>
-        <source>Build</source>
-        <translation>ビルド</translation>
-    </message>
-    <message>
-        <location filename="../qtractorInstrument.cpp" line="418"/>
+        <location filename="../qtractorInstrument.cpp" line="410"/>
         <source>File</source>
         <translation>ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="420"/>
+        <location filename="../qtractorInstrument.cpp" line="412"/>
         <source>Date</source>
         <translation>日付</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="642"/>
+        <location filename="../qtractorInstrument.cpp" line="634"/>
         <source>%1 Bank %2</source>
         <translation>%1 バンク %2</translation>
     </message>
@@ -431,6 +421,12 @@ MIDI:	</translation>
         <source>Qt: %1
 </source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptions.cpp" line="727"/>
+        <source>%1: %2  (%3)
+</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="228"/>

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.9.21, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.9.22, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -9,6 +9,10 @@ AC_CONFIG_FILES(src/qtractor_vst_scan.pri)
 # Sanitize version string.
 ac_version=$(echo $PACKAGE_VERSION | sed -r 's/^([0-9|\.]+).*$/\1/')
 AC_SUBST(ac_version)
+
+# Build date and time.
+AC_CACHE_VAL([ac_cv_build_date], [ac_cv_build_date=$(date +"%b %d %Y %H:%M %z")])
+AC_DEFINE_UNQUOTED(CONFIG_BUILD_DATE, ["$ac_cv_build_date"], [Build date and time.])
 
 # Set default installation prefix.
 AC_PREFIX_DEFAULT(/usr/local)
@@ -404,7 +408,7 @@ AC_LANG_CPLUSPLUS
 PKG_PROG_PKG_CONFIG
 
 # Check for proper flags.
-ac_arch=`uname -m`
+ac_arch=$(uname -m)
 
 # Check for install paths and alternatives...
 ac_libdirs="lib"
@@ -453,7 +457,7 @@ if test "x$ac_qmake" = "xno"; then
 fi
 
 # Check for proper Qt4/5 major version.
-ac_qt_version_major=`$ac_qmake -query QT_VERSION | cut -d. -f1`
+ac_qt_version_major=$($ac_qmake -query QT_VERSION | cut -d. -f1)
 if test "x$ac_qt4" = "xyes"; then
    if test "x$ac_qt_version_major" != "x4"; then
       AC_MSG_ERROR([qmake-qt4 $ac_errmsg (qt4-devel)])
@@ -464,7 +468,7 @@ else
    fi
 fi
 
-ac_qt_install_bins=`$ac_qmake -query QT_INSTALL_BINS`
+ac_qt_install_bins=$($ac_qmake -query QT_INSTALL_BINS)
 if test -d $ac_qt_install_bins; then
    ac_path="$ac_qt_install_bins:$ac_path"
 fi
@@ -478,14 +482,14 @@ fi
 
 AC_SUBST(ac_qmake)
 
-ac_qt_install_headers=`$ac_qmake -query QT_INSTALL_HEADERS`
+ac_qt_install_headers=$($ac_qmake -query QT_INSTALL_HEADERS)
 if test -d $ac_qt_install_headers; then
    CFLAGS="-I$ac_qt_install_headers $CFLAGS "
    CPPFLAGS="-I$ac_qt_install_headers $CPPFLAGS"
    ac_incpath="$ac_qt_install_headers $ac_incpath"
 fi
 
-ac_qt_install_libs=`$ac_qmake -query QT_INSTALL_LIBS`
+ac_qt_install_libs=$($ac_qmake -query QT_INSTALL_LIBS)
 if test -d $ac_qt_install_libs; then
    LIBS="-L$ac_qt_install_libs $LIBS"
    ac_libs="-L$ac_qt_install_libs $ac_libs"
@@ -1376,7 +1380,7 @@ AC_OUTPUT
 # Output summary message
 
 echo
-echo "  $PACKAGE_NAME $PACKAGE_VERSION"
+echo "  $PACKAGE_NAME $PACKAGE_VERSION  ($ac_cv_build_date)"
 echo
 echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_debug"
 echo
