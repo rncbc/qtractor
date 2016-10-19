@@ -316,7 +316,7 @@ MIDI:	</translation>
         <translation>gravador de sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2054"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2084"/>
         <source>Project: </source>
         <translation>Projeto: </translation>
     </message>
@@ -652,7 +652,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2062"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2092"/>
         <source>Author: </source>
         <translation>Autor:</translation>
     </message>
