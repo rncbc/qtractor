@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- LV2_STATE__StateChanged is now recognized as a regular
+  atom notification event and raising the current session
+  dirty flag, as normal behavior. (EXPERIMENTAL)
+
 - Adjusting clip selection edges is now possible and honored
   while on the the main track-view canvas.(EXPERIMENTAL)
 

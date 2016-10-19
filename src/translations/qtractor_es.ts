@@ -314,7 +314,7 @@ Fin:	%3	Duración:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2062"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2092"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
@@ -324,7 +324,7 @@ Fin:	%3	Duración:	%4</translation>
         <translation>Derechos de copia: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2054"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2084"/>
         <source>Project: </source>
         <translation>Proyecto: </translation>
     </message>

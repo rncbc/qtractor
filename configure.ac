@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.9.22, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.9.23, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -1044,6 +1044,43 @@ if test "x$ac_lv2_atom" = "xyes"; then
       [ac_lv2_atom="yes"], [ac_lv2_atom="no"])
    if test "x$ac_lv2_atom" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_ATOM, 1, [Define if LV2 Atom/MIDI aupport is available.])
+      AC_CACHE_CHECK([for lv2_atom_forge_object],
+         ac_cv_lv2_atom_forge_object, [
+         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
+            // Checking for lv2_atom_forge_object...
+            LV2_Atom_Forge *forge;
+            LV2_Atom_Forge_Frame *frame;
+            lv2_atom_forge_object(forge, frame, 0, 101);
+         ], ac_cv_lv2_atom_forge_object="yes", ac_cv_atom_forge_object="no")
+      ])
+      ac_lv2_atom_forge_object=$ac_cv_lv2_atom_forge_object
+      if test "x$ac_lv2_atom_forge_object" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_OBJECT, 1, [Define if lv2_atom_forge_object is available.])
+      fi
+      AC_CACHE_CHECK([for lv2_atom_forge_key],
+         ac_cv_lv2_atom_forge_key, [
+         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
+            // Checking for lv2_atom_forge_key...
+            LV2_Atom_Forge *forge;
+            lv2_atom_forge_key(forge, 102);
+         ], ac_cv_lv2_atom_forge_key="yes", ac_cv_atom_forge_key="no")
+      ])
+      ac_lv2_atom_forge_key=$ac_cv_lv2_atom_forge_key
+      if test "x$ac_lv2_atom_forge_key" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_KEY, 1, [Define if lv2_atom_forge_key is available.])
+      fi
+      AC_CACHE_CHECK([for lv2_atom_forge_is_object_type],
+         ac_cv_lv2_atom_forge_is_object_type, [
+         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
+            // Checking for lv2_atom_forge_is_object_type...
+            LV2_Atom_Forge *forge;
+            lv2_atom_forge_is_object_type(forge, 103);
+         ], ac_cv_lv2_atom_forge_is_object_type="yes", ac_cv_atom_forge_is_object_type="no")
+      ])
+      ac_lv2_atom_forge_is_object_type=$ac_cv_lv2_atom_forge_is_object_type
+      if test "x$ac_lv2_atom_forge_is_object_type" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_IS_OBJECT_TYPE, 1, [Define if lv2_atom_forge_is_object_type is available.])
+      fi
    else
       AC_MSG_WARN([*** LV2 Atom/MIDI support will be disabled.])
       ac_lv2_state="no"
@@ -1173,38 +1210,7 @@ if test "x$ac_lv2_buf_size" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_time_position" = "xyes"; then
-   AC_CHECK_HEADER(lv2/lv2plug.in/ns/ext/atom/forge.h,
-      [ac_lv2_time_position="yes"], [ac_lv2_time_position="no"])
-   if test "x$ac_lv2_time_position" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_TIME_POSITION, 1, [Define if LV2 Time/position support is available.])
-      AC_CACHE_CHECK([for LV2 Time/position support (lv2_atom_forge_object)],
-         ac_cv_lv2_atom_forge_object, [
-         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
-            // Checking for lv2_atom_forge_object...
-            LV2_Atom_Forge *forge;
-            LV2_Atom_Forge_Frame *frame;
-            lv2_atom_forge_object(forge, frame, 0, 101);
-         ], ac_cv_lv2_atom_forge_object="yes", ac_cv_atom_forge_object="no")
-      ])
-      ac_lv2_atom_forge_object=$ac_cv_lv2_atom_forge_object
-      if test "x$ac_lv2_atom_forge_object" = "xyes"; then
-         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_OBJECT, 1, [Define if lv2_atom_forge_object is available.])
-      fi
-      AC_CACHE_CHECK([for LV2 Time/position support (lv2_atom_forge_key)],
-         ac_cv_lv2_atom_forge_key, [
-         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
-            // Checking for lv2_atom_forge_key...
-            LV2_Atom_Forge *forge;
-            lv2_atom_forge_key(forge, 102);
-         ], ac_cv_lv2_atom_forge_key="yes", ac_cv_atom_forge_key="no")
-      ])
-      ac_lv2_atom_forge_key=$ac_cv_lv2_atom_forge_key
-      if test "x$ac_lv2_atom_forge_key" = "xyes"; then
-         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_KEY, 1, [Define if lv2_atom_forge_key is available.])
-      fi
-   else
-      AC_MSG_WARN([*** LV2 Time/position support will be disabled.])
-   fi
+   AC_DEFINE(CONFIG_LV2_TIME_POSITION, 1, [Define if LV2 Time/position support is available.])
 fi
 if test "x$ac_lv2_ui_touch" = "xyes"; then
    AC_CACHE_CHECK([for LV2 UI Touch interface],

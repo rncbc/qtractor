@@ -34,6 +34,8 @@
 #include "qtractorOptions.h"
 
 #ifdef CONFIG_LV2_STATE
+// LV2 State/Dirty (StateChanged) notification.
+#include "qtractorMainForm.h"
 // LV2 State/Presets: standard directory access.
 // For local file vs. URI manipulations.
 #include <QFileInfo>
@@ -108,6 +110,10 @@ static const LV2_Feature g_lv2_uri_map_feature =
 #endif	// CONFIG_LV2_EVENT
 
 #ifdef CONFIG_LV2_STATE
+
+#ifndef LV2_STATE__StateChanged
+#define LV2_STATE__StateChanged LV2_STATE_PREFIX "StateChanged"
+#endif
 
 static const LV2_Feature g_lv2_state_feature =
 	{ LV2_STATE_URI, NULL };
@@ -969,6 +975,10 @@ static LilvNode *g_lv2_logarithmic_prop = NULL;
 
 static LV2_Atom_Forge *g_lv2_atom_forge = NULL;
 
+#ifndef LV2_ATOM__Object
+#define LV2_ATOM__Object LV2_ATOM_PREFIX "Object"
+#endif
+
 #ifndef CONFIG_LV2_ATOM_FORGE_OBJECT
 #define lv2_atom_forge_object(forge, frame, id, otype) \
 		lv2_atom_forge_blank(forge, frame, id, otype)
@@ -1033,8 +1043,24 @@ static struct qtractorLv2Urids
 	LV2_URID ui_windowTitle;
 #endif
 #endif	// CONFIG_LV2_OPTIONS
+#ifdef CONFIG_LV2_STATE
+	LV2_URID state_StateChanged;
+#endif
 
 } g_lv2_urids;
+
+
+#ifdef  CONFIG_LV2_ATOM
+#ifndef CONFIG_LV2_ATOM_FORGE_IS_OBJECT_TYPE
+static inline bool
+lv2_atom_forge_is_object_type(const LV2_Atom_Forge *forge, uint32_t type)
+{
+	return (type == g_lv2_urids.atom_Object ||
+	        type == forge->Blank ||
+	        type == forge->Resource);
+}
+#endif
+#endif	// CONFIG_LV2_ATOM
 
 
 #ifdef CONFIG_LV2_PROGRAMS
@@ -1816,6 +1842,10 @@ void qtractorLv2PluginType::lv2_open (void)
 #ifdef CONFIG_LV2_UI
 	g_lv2_urids.ui_windowTitle
 		= qtractorLv2Plugin::lv2_urid_map(LV2_UI__windowTitle);
+#endif
+#ifdef CONFIG_LV2_STATE
+	g_lv2_urids.state_StateChanged
+		= qtractorLv2Plugin::lv2_urid_map(LV2_STATE__StateChanged);
 #endif
 #endif	// CONFIG_LV2_OPTIONS
 
@@ -3973,11 +4003,12 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 			port_index, buffer_size, format, buffer);
 	}
 
-#ifdef CONFIG_LV2_PATCH
+#ifdef CONFIG_LV2_ATOM
 	if (format == g_lv2_urids.atom_eventTransfer) {
 		const LV2_Atom *atom = (const LV2_Atom *) buffer;
 		if (lv2_atom_forge_is_object_type(g_lv2_atom_forge, atom->type)) {
 			const LV2_Atom_Object *obj = (const LV2_Atom_Object *) buffer;
+		#ifdef CONFIG_LV2_PATCH
 			if (obj->body.otype == g_lv2_urids.patch_Set) {
 				const LV2_Atom_URID *prop = NULL;
 				const LV2_Atom *value = NULL;
@@ -4000,9 +4031,20 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 						lv2_property_changed(prop->key, &prop->value);
 				}
 			}
+		#ifdef CONFIG_LV2_STATE
+			else
+		#endif
+		#endif // CONFIG_LV2_PATCH
+		#ifdef CONFIG_LV2_STATE
+			if (obj->body.otype == g_lv2_urids.state_StateChanged) {
+				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+				if (pMainForm)
+					pMainForm->dirtyNotifySlot();
+			}
+		#endif // CONFIG_LV2_STATE
 		}
 	}
-#endif	// CONFIG_LV2_PATCH
+#endif	// CONFIG_LV2_ATOM
 }
 
 
