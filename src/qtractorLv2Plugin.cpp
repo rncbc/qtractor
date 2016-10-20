@@ -1007,6 +1007,7 @@ static struct qtractorLv2Urids
 	LV2_URID atom_Chunk;
 	LV2_URID atom_Sequence;
 	LV2_URID atom_Object;
+	LV2_URID atom_Blank;
 	LV2_URID atom_Bool;
 	LV2_URID atom_Int;
 	LV2_URID atom_Long;
@@ -1044,19 +1045,6 @@ static struct qtractorLv2Urids
 #endif
 
 } g_lv2_urids;
-
-
-#ifdef  CONFIG_LV2_ATOM
-#ifndef CONFIG_LV2_ATOM_FORGE_IS_OBJECT_TYPE
-static inline bool
-lv2_atom_forge_is_object_type(const LV2_Atom_Forge *forge, uint32_t type)
-{
-	return (type == g_lv2_urids.atom_Object ||
-	        type == forge->Blank ||
-	        type == forge->Resource);
-}
-#endif
-#endif	// CONFIG_LV2_ATOM
 
 
 #ifdef CONFIG_LV2_PROGRAMS
@@ -1789,6 +1777,8 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence);
 	g_lv2_urids.atom_Object
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Object);
+	g_lv2_urids.atom_Blank
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Blank);
 	g_lv2_urids.atom_Bool
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Bool);
 	g_lv2_urids.atom_Int
@@ -4002,7 +3992,8 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 #ifdef CONFIG_LV2_ATOM
 	if (format == g_lv2_urids.atom_eventTransfer) {
 		const LV2_Atom *atom = (const LV2_Atom *) buffer;
-		if (lv2_atom_forge_is_object_type(g_lv2_atom_forge, atom->type)) {
+		if (atom->type == g_lv2_urids.atom_Blank ||
+			atom->type == g_lv2_urids.atom_Object) {
 			const LV2_Atom_Object *obj = (const LV2_Atom_Object *) buffer;
 		#ifdef CONFIG_LV2_PATCH
 			if (obj->body.otype == g_lv2_urids.patch_Set) {
@@ -4021,8 +4012,9 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 					g_lv2_urids.patch_body, (const LV2_Atom *) &body, 0);
 				if (body == NULL) // HACK!
 					body = obj;
-				if (body && lv2_atom_forge_is_object_type(
-						g_lv2_atom_forge, body->atom.type)) {
+				if (body && (
+					body->atom.type == g_lv2_urids.atom_Blank ||
+					body->atom.type == g_lv2_urids.atom_Object)) {
 					LV2_ATOM_OBJECT_FOREACH(body, prop)
 						lv2_property_changed(prop->key, &prop->value);
 				}
@@ -4036,6 +4028,7 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 				if (pMainForm)
 					pMainForm->dirtyNotifySlot();
+				refreshForm();
 			}
 		#endif // CONFIG_LV2_STATE
 		}

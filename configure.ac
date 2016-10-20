@@ -1069,18 +1069,6 @@ if test "x$ac_lv2_atom" = "xyes"; then
       if test "x$ac_lv2_atom_forge_key" = "xyes"; then
          AC_DEFINE(CONFIG_LV2_ATOM_FORGE_KEY, 1, [Define if lv2_atom_forge_key is available.])
       fi
-      AC_CACHE_CHECK([for lv2_atom_forge_is_object_type],
-         ac_cv_lv2_atom_forge_is_object_type, [
-         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
-            // Checking for lv2_atom_forge_is_object_type...
-            LV2_Atom_Forge *forge;
-            lv2_atom_forge_is_object_type(forge, 103);
-         ], ac_cv_lv2_atom_forge_is_object_type="yes", ac_cv_lv2_atom_forge_is_object_type="no")
-      ])
-      ac_lv2_atom_forge_is_object_type=$ac_cv_lv2_atom_forge_is_object_type
-      if test "x$ac_lv2_atom_forge_is_object_type" = "xyes"; then
-         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_IS_OBJECT_TYPE, 1, [Define if lv2_atom_forge_is_object_type is available.])
-      fi
    else
       AC_MSG_WARN([*** LV2 Atom/MIDI support will be disabled.])
       ac_lv2_state="no"
