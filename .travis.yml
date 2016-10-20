@@ -28,6 +28,6 @@ before_script:
 - ./autogen.sh
 
 script:
-- ./configure --enable-qt4 --disable-lv2-patch
+- ./configure --enable-qt4
   && make
   && sudo make install
