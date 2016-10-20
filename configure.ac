@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.9.23, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.9.24, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -1051,7 +1051,7 @@ if test "x$ac_lv2_atom" = "xyes"; then
             LV2_Atom_Forge *forge;
             LV2_Atom_Forge_Frame *frame;
             lv2_atom_forge_object(forge, frame, 0, 101);
-         ], ac_cv_lv2_atom_forge_object="yes", ac_cv_atom_forge_object="no")
+         ], ac_cv_lv2_atom_forge_object="yes", ac_cv_lv2_atom_forge_object="no")
       ])
       ac_lv2_atom_forge_object=$ac_cv_lv2_atom_forge_object
       if test "x$ac_lv2_atom_forge_object" = "xyes"; then
@@ -1063,7 +1063,7 @@ if test "x$ac_lv2_atom" = "xyes"; then
             // Checking for lv2_atom_forge_key...
             LV2_Atom_Forge *forge;
             lv2_atom_forge_key(forge, 102);
-         ], ac_cv_lv2_atom_forge_key="yes", ac_cv_atom_forge_key="no")
+         ], ac_cv_lv2_atom_forge_key="yes", ac_cv_lv2_atom_forge_key="no")
       ])
       ac_lv2_atom_forge_key=$ac_cv_lv2_atom_forge_key
       if test "x$ac_lv2_atom_forge_key" = "xyes"; then
@@ -1075,7 +1075,7 @@ if test "x$ac_lv2_atom" = "xyes"; then
             // Checking for lv2_atom_forge_is_object_type...
             LV2_Atom_Forge *forge;
             lv2_atom_forge_is_object_type(forge, 103);
-         ], ac_cv_lv2_atom_forge_is_object_type="yes", ac_cv_atom_forge_is_object_type="no")
+         ], ac_cv_lv2_atom_forge_is_object_type="yes", ac_cv_lv2_atom_forge_is_object_type="no")
       ])
       ac_lv2_atom_forge_is_object_type=$ac_cv_lv2_atom_forge_is_object_type
       if test "x$ac_lv2_atom_forge_is_object_type" = "xyes"; then
