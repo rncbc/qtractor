@@ -975,10 +975,6 @@ static LilvNode *g_lv2_logarithmic_prop = NULL;
 
 static LV2_Atom_Forge *g_lv2_atom_forge = NULL;
 
-#ifndef LV2_ATOM__Object
-#define LV2_ATOM__Object LV2_ATOM_PREFIX "Object"
-#endif
-
 #ifndef CONFIG_LV2_ATOM_FORGE_OBJECT
 #define lv2_atom_forge_object(forge, frame, id, otype) \
 		lv2_atom_forge_blank(forge, frame, id, otype)
