@@ -502,12 +502,12 @@ MIDI:	</translation>
         <translation>proprietà della plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="733"/>
+        <location filename="../qtractorPluginCommand.cpp" line="791"/>
         <source>dedicated audio outputs</source>
         <translation>uscite audio dedicate</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="778"/>
+        <location filename="../qtractorPluginCommand.cpp" line="836"/>
         <source>direct access param</source>
         <translation>parametro di accesso diretto</translation>
     </message>
@@ -747,6 +747,11 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <location filename="../qtractorLv2Plugin.cpp" line="2070"/>
         <source>Project: </source>
         <translation>Progetto: </translation>
+    </message>
+    <message>
+        <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
+        <source>plugin parameters</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>

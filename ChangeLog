@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 plugin-in parameter optimization: stuff consecutive
+  series of plug-in's parameter value changes, as much as
+  possible into one single undo/redo command. (EXPERIMENTAL)
+
 - LV2_STATE__StateChanged is now recognized as a regular
   atom notification event and raising the current session
   dirty flag, as normal behavior. (EXPERIMENTAL)

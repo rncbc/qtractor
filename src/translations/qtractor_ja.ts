@@ -499,12 +499,12 @@ MIDI:	</translation>
         <translation>プラグインのプロパティ</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="733"/>
+        <location filename="../qtractorPluginCommand.cpp" line="791"/>
         <source>dedicated audio outputs</source>
         <translation>音声出力専用</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="778"/>
+        <location filename="../qtractorPluginCommand.cpp" line="836"/>
         <source>direct access param</source>
         <translation>ダイレクトアクセスパラメーター</translation>
     </message>
@@ -744,6 +744,11 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <location filename="../qtractorLv2Plugin.cpp" line="2070"/>
         <source>Project: </source>
         <translation>プロジェクト:</translation>
+    </message>
+    <message>
+        <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
+        <source>plugin parameters</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>

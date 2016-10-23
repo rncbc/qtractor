@@ -3424,20 +3424,30 @@ void qtractorLv2Plugin::idleEditor (void)
 	}
 #endif
 
+	// Try to make all parameter changes into one single command...
 	if (m_ui_params.count() > 0) {
-		QHash<unsigned long, float>::ConstIterator iter
-			= m_ui_params.constBegin();
-		const QHash<unsigned long, float>::ConstIterator& iter_end
-			= m_ui_params.constEnd();
-		for ( ; iter != iter_end; ++iter) {
-			const unsigned long iIndex = iter.key();
-			const float fValue = iter.value();
-		#if 0//def CONFIG_LV2_TIME
-			const int i = m_lv2_time_ports.value(iIndex, -1);
-			if (i >= 0) g_lv2_time[i].value = fValue;
-		#endif
-			updateParamValue(iIndex, fValue, false);
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			qtractorPluginParamValuesCommand *pParamValuesCommand
+				= new qtractorPluginParamValuesCommand(
+					QObject::tr("plugin parameters"));
+			QHash<unsigned long, float>::ConstIterator iter
+				= m_ui_params.constBegin();
+			const QHash<unsigned long, float>::ConstIterator& iter_end
+				= m_ui_params.constEnd();
+			for ( ; iter != iter_end; ++iter) {
+				const unsigned long iIndex = iter.key();
+				const float fValue = iter.value();
+				qtractorPluginParam *pParam = findParam(iIndex);
+				if (pParam)
+					pParamValuesCommand->updateParamValue(pParam, fValue, false);
+			}
+			if (pParamValuesCommand->isEmpty())
+				delete pParamValuesCommand;
+			else
+				pSession->execute(pParamValuesCommand);
 		}
+		// Done.
 		m_ui_params.clear();
 	}
 

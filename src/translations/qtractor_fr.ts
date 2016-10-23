@@ -501,12 +501,12 @@ MIDI:	</translation>
         <translation>propriété du greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="733"/>
+        <location filename="../qtractorPluginCommand.cpp" line="791"/>
         <source>dedicated audio outputs</source>
         <translation>sorties audio dédiées</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="778"/>
+        <location filename="../qtractorPluginCommand.cpp" line="836"/>
         <source>direct access param</source>
         <translation>paramètre accès direct</translation>
     </message>
@@ -746,6 +746,11 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <location filename="../qtractorLv2Plugin.cpp" line="2070"/>
         <source>Project: </source>
         <translation>Projet: </translation>
+    </message>
+    <message>
+        <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
+        <source>plugin parameters</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
