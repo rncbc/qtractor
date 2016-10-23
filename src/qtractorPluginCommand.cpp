@@ -723,6 +723,64 @@ bool qtractorPluginParamCommand::undo (void)
 
 
 //----------------------------------------------------------------------
+// class qtractorPluginParamValuesCommand - impl.
+//
+
+// Constructor.
+qtractorPluginParamValuesCommand::qtractorPluginParamValuesCommand (
+	const QString& sName ) : qtractorCommand(sName)
+{
+	setRefresh(false);
+}
+
+
+// Destructor.
+qtractorPluginParamValuesCommand::~qtractorPluginParamValuesCommand (void)
+{
+	qDeleteAll(m_paramCommands);
+	m_paramCommands.clear();
+}
+
+
+// Param-values list builder.
+void qtractorPluginParamValuesCommand::updateParamValue (
+	qtractorPluginParam *pParam, float fValue, bool bUpdate )
+{
+	m_paramCommands.append(
+		new qtractorPluginParamCommand(pParam, fValue, bUpdate));
+}
+
+
+// Composite predicate.
+bool qtractorPluginParamValuesCommand::isEmpty (void) const
+{
+	return m_paramCommands.isEmpty();
+}
+
+
+// Plugin-values command methods.
+bool qtractorPluginParamValuesCommand::redo (void)
+{
+	bool bRedo = true;
+	QListIterator<qtractorPluginParamCommand *> iter(m_paramCommands);
+	while (bRedo && iter.hasNext())
+	    bRedo = iter.next()->redo();
+	return bRedo;
+}
+
+
+bool qtractorPluginParamValuesCommand::undo (void)
+{
+	bool bUndo = true;
+	QListIterator<qtractorPluginParamCommand *> iter(m_paramCommands);
+	iter.toBack();
+	while (bUndo && iter.hasPrevious())
+	    bUndo = iter.next()->undo();
+	return bUndo;
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorAudioOutputBusCommand - declaration.
 //
 

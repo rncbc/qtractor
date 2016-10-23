@@ -329,6 +329,11 @@ Fin:	%3	Duración:	%4</translation>
         <translation>Proyecto: </translation>
     </message>
     <message>
+        <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
+        <source>plugin parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMidiManager.cpp" line="1341"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banco %2</translation>
@@ -522,12 +527,12 @@ MIDI:	</translation>
         <translation>propiedad del plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="733"/>
+        <location filename="../qtractorPluginCommand.cpp" line="791"/>
         <source>dedicated audio outputs</source>
         <translation>salidas de audio dedicadas</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="778"/>
+        <location filename="../qtractorPluginCommand.cpp" line="836"/>
         <source>direct access param</source>
         <translation>parametro de acceso directo</translation>
     </message>
