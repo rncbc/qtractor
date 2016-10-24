@@ -411,6 +411,18 @@ AC_LANG_CPLUSPLUS
 # Check for pkg-config.
 PKG_PROG_PKG_CONFIG
 
+# Check whether -std=c++11 support is necessary (4 < g++ version < 6).
+AC_CACHE_CHECK([for g++ version], [ac_cv_gxx_version], [
+   ac_cv_gxx_version=$($CC -dumpversion)
+   if test -n "$ac_cv_gxx_version"; then
+      ac_cv_gxx_version=$(echo $ac_cv_gxx_version | cut -d'.' -f1);
+   fi
+])
+ac_gxx_version=$((ac_cv_gxx_version + 0))
+if test $ac_gxx_version -gt 4 -a $ac_gxx_version -lt 6; then
+   CXXFLAGS="$CXXFLAGS -std=c++11"
+fi
+
 # Check for proper flags.
 ac_arch=$(uname -m)
 
@@ -1378,7 +1390,7 @@ AC_OUTPUT
 # Output summary message
 
 echo
-echo "  $PACKAGE_NAME $PACKAGE_VERSION  ($ac_cv_build_date)"
+echo "  $PACKAGE_NAME $PACKAGE_VERSION  ($ac_build_date)"
 echo
 echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_debug"
 echo
