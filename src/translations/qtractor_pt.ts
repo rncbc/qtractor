@@ -395,7 +395,7 @@ MIDI:	</translation>
 %6</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="791"/>
+        <location filename="../qtractorPluginCommand.cpp" line="795"/>
         <source>dedicated audio outputs</source>
         <translation>saídas de áudio dedicadas</translation>
     </message>
@@ -420,7 +420,7 @@ MIDI:	</translation>
         <translation>resetar controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="836"/>
+        <location filename="../qtractorPluginCommand.cpp" line="840"/>
         <source>direct access param</source>
         <translation>acesso direto a parâmetros</translation>
     </message>

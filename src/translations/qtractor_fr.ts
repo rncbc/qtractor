@@ -501,12 +501,12 @@ MIDI:	</translation>
         <translation>propriété du greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="791"/>
+        <location filename="../qtractorPluginCommand.cpp" line="795"/>
         <source>dedicated audio outputs</source>
         <translation>sorties audio dédiées</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="836"/>
+        <location filename="../qtractorPluginCommand.cpp" line="840"/>
         <source>direct access param</source>
         <translation>paramètre accès direct</translation>
     </message>
