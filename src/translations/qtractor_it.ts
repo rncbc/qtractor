@@ -502,12 +502,12 @@ MIDI:	</translation>
         <translation>proprietà della plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="791"/>
+        <location filename="../qtractorPluginCommand.cpp" line="795"/>
         <source>dedicated audio outputs</source>
         <translation>uscite audio dedicate</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="836"/>
+        <location filename="../qtractorPluginCommand.cpp" line="840"/>
         <source>direct access param</source>
         <translation>parametro di accesso diretto</translation>
     </message>

@@ -762,9 +762,11 @@ bool qtractorPluginParamValuesCommand::isEmpty (void) const
 bool qtractorPluginParamValuesCommand::redo (void)
 {
 	bool bRedo = true;
+
 	QListIterator<qtractorPluginParamCommand *> iter(m_paramCommands);
 	while (bRedo && iter.hasNext())
 	    bRedo = iter.next()->redo();
+
 	return bRedo;
 }
 
@@ -772,10 +774,12 @@ bool qtractorPluginParamValuesCommand::redo (void)
 bool qtractorPluginParamValuesCommand::undo (void)
 {
 	bool bUndo = true;
+
 	QListIterator<qtractorPluginParamCommand *> iter(m_paramCommands);
 	iter.toBack();
 	while (bUndo && iter.hasPrevious())
-	    bUndo = iter.next()->undo();
+	    bUndo = iter.previous()->undo();
+
 	return bUndo;
 }
 
