@@ -1,18 +1,22 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.9.26, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.9.27, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
 AC_CONFIG_FILES(Makefile qtractor.spec src/src.pri src/qtractor.desktop)
 AC_CONFIG_FILES(src/qtractor_vst_scan.pri)
 
-# Sanitize version string.
-ac_version=$(echo $PACKAGE_VERSION | sed -r 's/^([0-9|\.]+).*$/\1/')
-AC_SUBST(ac_version)
-
 # Build date and time.
-AC_CACHE_VAL([ac_cv_build_date], [ac_cv_build_date=$(date +"%b %d %Y %H:%M %z")])
-AC_DEFINE_UNQUOTED(CONFIG_BUILD_DATE, ["$ac_cv_build_date"], [Build date and time.])
+AC_CACHE_VAL([ac_cv_build_date],
+   [ac_cv_build_date=$(date +"%b %d %Y %H:%M %z")])
+ac_build_date="$ac_cv_build_date"
+AC_DEFINE_UNQUOTED(CONFIG_BUILD_DATE, ["$ac_build_date"], [Build date and time.])
+
+# Sanitize version string.
+AC_CACHE_VAL([ac_cv_build_version],
+   [ac_cv_build_version=$(echo $PACKAGE_VERSION | sed -r 's/^([[0-9|\.]]+).*$/\1/')])
+ac_version="$ac_cv_build_version"
+AC_SUBST(ac_version)
 
 # Set default installation prefix.
 AC_PREFIX_DEFAULT(/usr/local)
@@ -406,6 +410,18 @@ AC_LANG_CPLUSPLUS
 
 # Check for pkg-config.
 PKG_PROG_PKG_CONFIG
+
+# Check whether -std=c++11 support is necessary (4 < g++ version < 6).
+AC_CACHE_CHECK([for g++ version], [ac_cv_gxx_version], [
+   ac_cv_gxx_version=$($CC -dumpversion)
+   if test -n "$ac_cv_gxx_version"; then
+      ac_cv_gxx_version=$(echo $ac_cv_gxx_version | cut -d'.' -f1);
+   fi
+])
+ac_gxx_version=$((ac_cv_gxx_version + 0))
+if test $ac_gxx_version -gt 4 -a $ac_gxx_version -lt 6; then
+   CXXFLAGS="$CXXFLAGS -std=c++11"
+fi
 
 # Check for proper flags.
 ac_arch=$(uname -m)
@@ -1374,7 +1390,7 @@ AC_OUTPUT
 # Output summary message
 
 echo
-echo "  $PACKAGE_NAME $PACKAGE_VERSION  ($ac_cv_build_date)"
+echo "  $PACKAGE_NAME $PACKAGE_VERSION  ($ac_build_date)"
 echo
 echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_debug"
 echo
