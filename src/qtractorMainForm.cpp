@@ -2764,8 +2764,8 @@ void qtractorMainForm::autoSaveSession (void)
 		qtractorSession::sanitize(sAutoSaveName)).filePath()
 		+ ".auto-save." + qtractorDocument::defaultExt();
 
-	const QString& sOldAutoSavePathname = m_pOptions->sAutoSavePathname;
-
+	const QString& sOldAutoSavePathname
+		= m_pOptions->sAutoSavePathname;
 	if (!sOldAutoSavePathname.isEmpty()
 		&& sOldAutoSavePathname != sAutoSavePathname
 		&& QFileInfo(sOldAutoSavePathname).exists())
@@ -5680,6 +5680,11 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 
 	// Finally, toggle session record status...
 	m_pSession->setRecording(bRecording);
+
+	// Also force some kind of a checkpoint,
+	// next time, whenever applicable...
+	if (m_iAutoSavePeriod > 0 && !bRecording)
+		m_iAutoSaveTimer += m_iAutoSavePeriod;
 
 	// Done with record switch...
 	return true;
