@@ -215,11 +215,11 @@ void qtractorTrackView::clear (void)
 	m_pClipDrag  = NULL;
 	m_bDragTimer = false;
 
-	m_iPlayHead  = 0;
-
 	m_iPlayHeadX = 0;
 	m_iEditHeadX = 0;
 	m_iEditTailX = 0;
+
+	m_iPlayHeadAutoBackwardX = 0;
 
 	m_iLastRecordX = 0;
 	
@@ -755,6 +755,14 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	x = m_iEditTailX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::blue);
+		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+	}
+
+	// Draw auto-backward play-head line...
+	//m_iPlayHeadAutobackwardX = pSession->pixelFromFrame(pSession->playHeadAutobackward());
+	x = m_iPlayHeadAutoBackwardX - cx;
+	if (x >= rect.left() && x <= rect.right()) {
+		pPainter->setPen(Qt::darkRed);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());
 	}
 
@@ -4368,20 +4376,31 @@ void qtractorTrackView::setPlayHead ( unsigned long iPlayHead, bool bSyncView )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
-		m_iPlayHead = iPlayHead;
 		const int iPlayHeadX = pSession->pixelFromFrame(iPlayHead);
 		drawPositionX(m_iPlayHeadX, iPlayHeadX, bSyncView);
 	}
 }
 
-unsigned long qtractorTrackView::playHead (void) const
-{
-	return m_iPlayHead;
-}
-
 int qtractorTrackView::playHeadX (void) const
 {
 	return m_iPlayHeadX;
+}
+
+
+// Auto-backwatrd interim play-head positioning.
+void qtractorTrackView::setPlayHeadAutoBackward ( unsigned long iPlayHead )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		pSession->setPlayHeadAutoBackward(iPlayHead);
+		const int iPlayHeadX = pSession->pixelFromFrame(iPlayHead);
+		drawPositionX(m_iPlayHeadAutoBackwardX, iPlayHeadX);
+	}
+}
+
+int qtractorTrackView::playHeadAutoBackwardX (void) const
+{
+	return m_iPlayHeadAutoBackwardX;
 }
 
 

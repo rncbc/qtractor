@@ -285,7 +285,9 @@ void qtractorSession::clear (void)
 	m_iPunchInTime   = 0;
 	m_iPunchOutTime  = 0;
 
-	m_bRecording     = false;
+	m_iPlayHeadAutoBackward = 0;
+
+	m_bRecording = false;
 
 	updateTimeScale();
 
@@ -1256,7 +1258,7 @@ bool qtractorSession::isBusy (void) const
 
 
 // Playhead positioning.
-void qtractorSession::setPlayHead ( unsigned long iFrame )
+void qtractorSession::setPlayHead ( unsigned long iPlayHead )
 {
 	const bool bPlaying = isPlaying();
 	if (bPlaying && isRecording())
@@ -1268,14 +1270,14 @@ void qtractorSession::setPlayHead ( unsigned long iFrame )
 	if (m_pAudioEngine->transportMode() & qtractorBus::Output) {
 		jack_client_t *pJackClient = m_pAudioEngine->jackClient();
 		if (pJackClient)
-			jack_transport_locate(pJackClient, iFrame);
+			jack_transport_locate(pJackClient, iPlayHead);
 	}
 
-	seek(iFrame, true);
+	seek(iPlayHead, true);
 
 	// Sync all track automation...
 	if (!bPlaying)
-		process_curve(iFrame);
+		process_curve(iPlayHead);
 
 	setPlaying(bPlaying);
 	unlock();
@@ -1285,6 +1287,19 @@ unsigned long qtractorSession::playHead (void) const
 {
 	return m_pAudioEngine->sessionCursor()->frame();
 }
+
+
+// Auto-backward save play-head frame accessors.
+void qtractorSession::setPlayHeadAutoBackward ( unsigned long iPlayHead )
+{
+	m_iPlayHeadAutoBackward = iPlayHead;
+}
+
+unsigned long qtractorSession::playHeadAutoBackward (void) const
+{
+	return m_iPlayHeadAutoBackward;
+}
+
 
 
 // Session loop points accessors.

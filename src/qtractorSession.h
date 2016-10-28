@@ -245,8 +245,12 @@ public:
 	void seek(unsigned long iFrame, bool bSync = false);
 
 	// Playhead positioning.
-	void setPlayHead(unsigned long iFrame);
+	void setPlayHead(unsigned long iPlayHead);
 	unsigned long playHead() const;
+
+	// Auto-backward play-head positioning.
+	void setPlayHeadAutoBackward(unsigned long iPlayHead);
+	unsigned long playHeadAutoBackward() const;
 
 	// Edit-head positioning.
 	void setEditHead(unsigned long iEditHead);
@@ -441,6 +445,8 @@ private:
 	// Session time-normalized punch points.
 	unsigned long m_iPunchInTime;
 	unsigned long m_iPunchOutTime;
+
+	unsigned long m_iPlayHeadAutoBackward;
 
 	// Consolidated record state.
 	bool m_bRecording;

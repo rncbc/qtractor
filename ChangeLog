@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Auto-backward play-head location, when playback was last
+  started, is now shown on main track-view, as a momentary
+  dark-red vertical line marker. (EXPERIMENTAL)
+
 - LV2 plugin-in parameter optimization: stuff consecutive
   series of plug-in's parameter value changes, as much as
   possible into one single undo/redo command. (EXPERIMENTAL)
