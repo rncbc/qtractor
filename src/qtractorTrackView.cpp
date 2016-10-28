@@ -3339,22 +3339,6 @@ bool qtractorTrackView::dragClipStartEx (
 
 	int x;
 
-	// Select-left check...
-	x = pSession->pixelFromFrame(pClip->clipSelectStart());
-	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
-		m_dragCursor = DragClipSelectLeft;
-		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-		return true;
-	}
-
-	// Select-right check...
-	x = pSession->pixelFromFrame(pClip->clipSelectEnd());
-	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
-		m_dragCursor = DragClipSelectRight;
-		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
-		return true;
-	}
-
 	// Resize-left check...
 	x = rectClip.left();
 	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
@@ -3369,6 +3353,22 @@ bool qtractorTrackView::dragClipStartEx (
 	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
 		m_dragCursor = (modifiers & Qt::ControlModifier
 			? DragClipRepeatRight : DragClipResizeRight);
+		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+		return true;
+	}
+
+	// Select-left check...
+	x = pSession->pixelFromFrame(pClip->clipSelectStart());
+	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
+		m_dragCursor = DragClipSelectLeft;
+		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
+		return true;
+	}
+
+	// Select-right check...
+	x = pSession->pixelFromFrame(pClip->clipSelectEnd());
+	if (pos.x() >= x - 4 && x + 4 >= pos.x()) {
+		m_dragCursor = DragClipSelectRight;
 		qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		return true;
 	}
