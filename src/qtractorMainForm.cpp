@@ -260,7 +260,6 @@ qtractorMainForm::qtractorMainForm (
 
 	// To remember last time we've shown the playhead.
 	m_iPlayHead = 0;
-	m_iPlayHeadAutoBackward = 0;
 
 	// We'll start clean.
 	m_iUntitled   = 0;
@@ -5260,8 +5259,10 @@ void qtractorMainForm::transportPlay (void)
 				: SND_SEQ_EVENT_STOP);
 		}
 		// Save auto-backward return position...
-		if (bPlaying)
-			m_iPlayHeadAutoBackward = m_pSession->playHead();
+		if (bPlaying) {
+			const unsigned long iPlayHead = m_pSession->playHead();
+			m_pTracks->trackView()->setPlayHeadAutoBackward(iPlayHead);
+		}
 	}
 
 	stabilizeForm();
@@ -5791,8 +5792,8 @@ unsigned long qtractorMainForm::playHeadBackward (void) const
 	const unsigned long iPlayHead = m_pSession->playHead();
 	QList<unsigned long> list;
 	list.append(0);
-	if (iPlayHead > m_iPlayHeadAutoBackward)
-		list.append(m_iPlayHeadAutoBackward);
+	if (iPlayHead > m_pSession->playHeadAutoBackward())
+		list.append(m_pSession->playHeadAutoBackward());
 	if (iPlayHead > m_pSession->editHead())
 		list.append(m_pSession->editHead());
 //	if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
@@ -5822,8 +5823,8 @@ unsigned long qtractorMainForm::playHeadForward (void) const
 {
 	const unsigned long iPlayHead = m_pSession->playHead();
 	QList<unsigned long> list;
-	if (iPlayHead < m_iPlayHeadAutoBackward)
-		list.append(m_iPlayHeadAutoBackward);
+	if (iPlayHead < m_pSession->playHeadAutoBackward())
+		list.append(m_pSession->playHeadAutoBackward());
 	if (iPlayHead < m_pSession->editHead())
 		list.append(m_pSession->editHead());
 	if (iPlayHead < m_pSession->editTail())
