@@ -130,7 +130,11 @@ private:
 	float         *m_peakMax;
 	float         *m_peakMin;
 	float         *m_peakRms;
-	unsigned short m_iPeakPeriod;
+
+	float          m_fPeakRatio;
+	unsigned long  m_iPeakFrame;
+	unsigned long  m_iReadFrame;
+	unsigned long  m_iWriteFrame;
 	unsigned short m_iPeak;
 
 	QMutex         m_mutex;

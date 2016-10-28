@@ -379,7 +379,11 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	m_peakMax      = NULL;
 	m_peakMin      = NULL;
 	m_peakRms      = NULL;
-	m_iPeakPeriod  = 0;
+
+	m_fPeakRatio   = 1.0f;
+	m_iPeakFrame   = 0;
+	m_iReadFrame   = 0;
+	m_iWriteFrame  = 0;
 	m_iPeak        = 0;
 
 	m_bWaitSync    = false;
@@ -681,17 +685,22 @@ bool qtractorAudioPeakFile::openWrite (
 	for (unsigned short i = 0; i < m_peakHeader.channels; ++i)
 		m_peakMax[i] = m_peakMin[i] = m_peakRms[i] = 0.0f;
 
-	m_iPeakPeriod = m_peakHeader.period;
-	m_iPeak = 0;
+	m_fPeakRatio  = 1.0f;
+	m_iPeakFrame  = 0;
+	m_iReadFrame  = 0;
+	m_iWriteFrame = 0;
+	m_iPeak       = 0;
 
 	// Get running sample-rate...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// The resample/timestretch-aware internal peak period...
-		m_iPeakPeriod = (unsigned short) ::lroundf(
-			(float(m_iPeakPeriod * iSampleRate)) /
-			(float(pSession->sampleRate()) * m_fTimeStretch));
+		m_fPeakRatio = float(iSampleRate)
+			/ (float(pSession->sampleRate()) * m_fTimeStretch);
 	}
+
+	m_iWriteFrame = (unsigned long) ::lroundf(
+		float(m_iPeakFrame * m_peakHeader.period) * m_fPeakRatio);
 
 	// Its a certain success...
 	return true;
@@ -724,8 +733,11 @@ void qtractorAudioPeakFile::closeWrite (void)
 		delete [] m_peakRms;
 	m_peakRms = NULL;
 
-	m_iPeakPeriod = 0;
-	m_iPeak = 0;
+	m_fPeakRatio  = 1.0f;
+	m_iPeakFrame  = 0;
+	m_iReadFrame  = 0;
+	m_iWriteFrame = 0;
+	m_iPeak       = 0;
 }
 
 
@@ -749,9 +761,18 @@ void qtractorAudioPeakFile::write (
 				m_peakMin[i] = fSample;
 			m_peakRms[i] += (fSample * fSample);
 		}
+		// Count peak frames (incremental).
+		++m_iPeak;
 		// Have we reached the peak accumulative period?
-		if (++m_iPeak >= m_iPeakPeriod)
+		if (++m_iReadFrame >= m_iWriteFrame) {
+			// Estimate next stop...
+			m_iWriteFrame = (unsigned long) ::lroundf(
+				float(++m_iPeakFrame * m_peakHeader.period) * m_fPeakRatio);
+			// Write peak frame.
 			writeFrame();
+			// We'll reset.
+			m_iPeak = 0;
+		}
 	}
 }
 
@@ -775,9 +796,6 @@ void qtractorAudioPeakFile::writeFrame (void)
 		// Bail out?...
 		m_iWriteOffset += m_peakFile.write((const char *) &frame, sizeof(Frame));
 	}
-
-	// We'll reset.
-	m_iPeak = 0;
 }
 
 
