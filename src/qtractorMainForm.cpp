@@ -4746,6 +4746,8 @@ void qtractorMainForm::viewRefresh (void)
 		m_pTracks->updateContents(true);
 		m_pTracks->trackView()->setEditHead(iEditHead);
 		m_pTracks->trackView()->setEditTail(iEditTail);
+		m_pTracks->trackView()->setPlayHeadAutoBackward(
+			m_pSession->playHeadAutoBackward());
 	}
 
 	if (m_pConnections)
@@ -8109,6 +8111,8 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 	if (m_pTracks) {
 		m_pTracks->trackView()->setEditHead(iEditHead);
 		m_pTracks->trackView()->setEditTail(iEditTail);
+		m_pTracks->trackView()->setPlayHeadAutoBackward(
+			m_pSession->playHeadAutoBackward());
 	//	if (pMidiEditor) m_pTracks->clearSelect();
 	}
 

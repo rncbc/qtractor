@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -456,7 +456,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		if (bModifier) {
 			// Play-head positioning...
 			m_pEditor->setPlayHead(iFrame);
-			pSession->setPlayHead(m_pEditor->playHead());
+			pSession->setPlayHead(iFrame);
 		} else {
 			// Edit-head/tail (merged) positioning...
 			m_pEditor->setEditHead(iFrame);
@@ -590,7 +590,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	case DragPlayHead:
 		// Play-head positioning commit...
 		m_pEditor->setPlayHead(iFrame);
-		pSession->setPlayHead(m_pEditor->playHead());
+		pSession->setPlayHead(iFrame);
 		// Fall thru...
 	case DragEditHead:
 	case DragEditTail:
