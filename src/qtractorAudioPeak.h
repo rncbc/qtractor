@@ -125,17 +125,44 @@ private:
 	unsigned int   m_iBuffLength;
 	unsigned long  m_iBuffOffset;
 
-	unsigned long  m_iWriteOffset;
+	// Peak-ratio fractionalizer(tm).
+	class Ratio
+	{
+	public:
 
-	float         *m_peakMax;
-	float         *m_peakMin;
-	float         *m_peakRms;
+		Ratio() { reset(); }
 
-	float          m_fPeakRatio;
-	unsigned long  m_iPeakFrame;
-	unsigned long  m_iReadFrame;
-	unsigned long  m_iWriteFrame;
-	unsigned short m_iPeak;
+		void reset() { m_num = 1; m_den = 8; }
+
+		long get(long x) const
+			{ return (x * m_num) >> m_den; }
+
+		void set(float ratio) {
+			reset();
+			while(ratio != long(ratio) && m_den < 24)
+				{ m_den += 2; ratio *= 4.0f; }
+			m_num = long(ratio) << 8;
+		}
+
+	private:
+
+		long m_num, m_den;
+	};
+
+	// Peak-writer context state.
+	struct Writer
+	{
+		unsigned long  offset;
+		float         *amax;
+		float         *amin;
+		float         *arms;
+		Ratio          ratio;
+		unsigned long  nframe;
+		unsigned long  nread;
+		unsigned long  nwrite;
+		unsigned short npeak;
+
+	} *m_pWriter;
 
 	QMutex         m_mutex;
 
