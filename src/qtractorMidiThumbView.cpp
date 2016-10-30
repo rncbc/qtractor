@@ -367,7 +367,7 @@ void qtractorMidiThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 
 	x2 = int(pTimeScale->tickFromFrame(pSession->playHeadAutoBackward()) - t0) / f2;
 	if (x2 >= rect.left() && x2 <= rect.right()) {
-		painter.setPen(Qt::darkRed);
+		painter.setPen(QColor(240, 0, 0, 60));
 		painter.drawLine(x2, 0, x2, h);
 	}
 
