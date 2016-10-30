@@ -684,12 +684,11 @@ bool qtractorAudioPeakFile::openWrite (
 		fRatio = float(iSampleRate) / (float(pSession->sampleRate()) * m_fTimeStretch);
 
 	// Start counting for peak generator and writer...
-	m_pWriter->ratio  = fRatio;
+	m_pWriter->period = ::lroundf(fRatio * float(m_peakHeader.period << 2));
 	m_pWriter->nframe = 0;
 	m_pWriter->npeak  = 0;
 	m_pWriter->nread  = 0;
-	m_pWriter->nwrite = (unsigned long) (
-		float(++m_pWriter->nframe * m_peakHeader.period) * m_pWriter->ratio);
+	m_pWriter->nwrite = (++m_pWriter->nframe * m_pWriter->period) >> 2;
 
 	// It's a certain success...
 	return true;
@@ -745,8 +744,7 @@ void qtractorAudioPeakFile::write (
 		// Have we reached the peak accumulative period?
 		if (++m_pWriter->nread >= m_pWriter->nwrite) {
 			// Estimate next stop...
-			m_pWriter->nwrite = (unsigned long) (
-				float(++m_pWriter->nframe * m_peakHeader.period) * m_pWriter->ratio);
+			m_pWriter->nwrite = (++m_pWriter->nframe * m_pWriter->period) >> 2;
 			// Write peak frame out.
 			writeFrame();
 			// We'll reset counter.
