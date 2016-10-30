@@ -762,7 +762,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 	//m_iPlayHeadAutobackwardX = pSession->pixelFromFrame(pSession->playHeadAutobackward());
 	x = m_iPlayHeadAutoBackwardX - cx;
 	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::darkRed);
+		pPainter->setPen(QColor(240, 0, 0, 60));
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());
 	}
 
