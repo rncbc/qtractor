@@ -135,6 +135,10 @@ public:
 	int iec_scale(float dB) const;
 	int iec_level(int iIndex) const;
 
+	// For faster scaling when drawing...
+	int scale(float fValue) const
+		{ return int(m_fScale * fValue); }
+
 #ifdef CONFIG_GRADIENT
 	const QPixmap& pixmap() const;
 	void updatePixmap();
