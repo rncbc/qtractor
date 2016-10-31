@@ -52,7 +52,7 @@ static inline float cubef2 ( float x )
 //
 
 // (Sample &)Hold.
-inline void updateNodeHold ( qtractorCurve::Node *pNode, float y0,
+static inline void updateNodeHold ( qtractorCurve::Node *pNode, float y0,
 	const qtractorCurve::Node *pPrev, const qtractorCurve::Node */*pNext*/ )
 {
 	if (pPrev)
@@ -65,7 +65,7 @@ inline void updateNodeHold ( qtractorCurve::Node *pNode, float y0,
 
 
 // Linear.
-inline void updateNodeLinear ( qtractorCurve::Node *pNode, float y0,
+static inline void updateNodeLinear ( qtractorCurve::Node *pNode, float y0,
 	const qtractorCurve::Node *pPrev, const qtractorCurve::Node */*pNext*/ )
 {
 	float y1, x1 = float(pNode->frame);
@@ -89,7 +89,7 @@ inline void updateNodeLinear ( qtractorCurve::Node *pNode, float y0,
 
 
 // Spline.
-inline void updateNodeSpline ( qtractorCurve::Node *pNode, float y0,
+static inline void updateNodeSpline ( qtractorCurve::Node *pNode, float y0,
 	const qtractorCurve::Node *pPrev, const qtractorCurve::Node *pNext )
 {
 	// Shamelessly using the same reference source article as Ardour ;)
@@ -154,21 +154,21 @@ inline void updateNodeSpline ( qtractorCurve::Node *pNode, float y0,
 //
 
 // (Sample &)Hold.
-inline float valueHold ( const qtractorCurve::Node *pNode, float /*x*/ )
+static inline float valueHold ( const qtractorCurve::Node *pNode, float /*x*/ )
 {
 	return pNode->a;
 }
 
 
 // Linear.
-inline float valueLinear ( const qtractorCurve::Node *pNode, float x )
+static inline float valueLinear ( const qtractorCurve::Node *pNode, float x )
 {
 	return pNode->a * x + pNode->b;
 }
 
 
 // Spline.
-inline float valueSpline ( const qtractorCurve::Node *pNode, float x )
+static inline float valueSpline ( const qtractorCurve::Node *pNode, float x )
 {
 	return ((pNode->a * x + pNode->b) * x + pNode->c) * x + pNode->d;
 }

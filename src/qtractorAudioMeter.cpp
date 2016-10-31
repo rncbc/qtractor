@@ -69,12 +69,32 @@ static inline float log10f2_opt ( float x )
 
 static inline float log10f2 ( float x )
 {
-	return (x > 0.0f ? 20.0f * ::log10f(x) : QTRACTOR_AUDIO_METER_MINDB);
+	return (x > 0.0f ? ::log10f2_opt(x) : QTRACTOR_AUDIO_METER_MINDB);
 }
 
 static inline float pow10f2 ( float x )
 {
 	return ::powf(10.0f, 0.05f * x);
+}
+
+
+// Possible cube root optimization.
+static inline float cbrtf2 ( float x )
+{
+#ifdef CONFIG_FLOAT32
+	// Avoid strict-aliasing optimization (gcc -O2).
+	union { float f; int i; } u;
+	u.f = x;
+	u.i = (u.i / 3) + 710235478; // HACK: 709621077 for cbrtf2(1)=1
+	return u.f;
+#else
+	return ::cbrtf(x);
+#endif
+}
+
+static inline float cubef2 ( float x )
+{
+	return x * x * x;
 }
 
 
@@ -217,6 +237,7 @@ void qtractorAudioMeterValue::refresh (void)
 	if (fValue < 0.001f && m_iPeak < 1)
 		return;
 
+#if 0
 	float dB = QTRACTOR_AUDIO_METER_MINDB;
 	if (fValue > 0.0f)
 		dB = log10f2_opt(fValue);
@@ -224,8 +245,10 @@ void qtractorAudioMeterValue::refresh (void)
 		dB = QTRACTOR_AUDIO_METER_MINDB;
 	else if (dB > QTRACTOR_AUDIO_METER_MAXDB)
 		dB = QTRACTOR_AUDIO_METER_MAXDB;
-
 	int iValue = m_pAudioMeter->iec_scale(dB);
+#else
+	int iValue = m_pAudioMeter->scale(::cbrtf2(fValue));
+#endif
 	if (iValue < m_iValue) {
 		iValue = int(m_fValueDecay * float(m_iValue));
 		m_fValueDecay *= m_fValueDecay;

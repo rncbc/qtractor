@@ -810,22 +810,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
 <context>
     <name>qtractorAudioMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="400"/>
+        <location filename="../qtractorAudioMeter.cpp" line="423"/>
         <source>Gain (dB)</source>
         <translation>Zesílení (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="401"/>
+        <location filename="../qtractorAudioMeter.cpp" line="424"/>
         <source> dB</source>
         <translation> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="585"/>
+        <location filename="../qtractorAudioMeter.cpp" line="608"/>
         <source>Pan: %1</source>
         <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="594"/>
+        <location filename="../qtractorAudioMeter.cpp" line="617"/>
         <source>Gain: %1 dB</source>
         <translation>Zesílení: %1 dB</translation>
     </message>
