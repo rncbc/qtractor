@@ -234,7 +234,7 @@ void qtractorAudioMeterValue::refresh (void)
 		return;
 
 	const float fValue = pAudioMonitor->value(m_iChannel);
-	if (fValue < 0.001f && m_iPeak < 1)
+	if (fValue < 1e-9f && m_iPeak < 1)
 		return;
 
 #if 0
