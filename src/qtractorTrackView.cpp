@@ -3859,8 +3859,8 @@ void qtractorTrackView::dragCurveNode (
 
 	if (pNode == NULL) {
 		qtractorCurveEditList edits(pCurve);
-		const unsigned long frame
-			= pSession->frameSnap(pSession->frameFromPixel(pos.x()));
+		const unsigned long frame = pSession->frameSnap(
+			pSession->frameFromPixel(pos.x() < 0 ? 0 : pos.x()));
 		const float value
 			= pCurve->valueFromScale(float(y2 - pos.y()) / float(h));
 		pNode = pCurve->addNode(frame, value, &edits);
