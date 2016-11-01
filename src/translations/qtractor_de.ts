@@ -806,22 +806,22 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
 <context>
     <name>qtractorAudioMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="423"/>
+        <location filename="../qtractorAudioMeter.cpp" line="424"/>
         <source>Gain (dB)</source>
         <translation>Verstärkung (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="424"/>
+        <location filename="../qtractorAudioMeter.cpp" line="425"/>
         <source> dB</source>
         <translation> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="608"/>
+        <location filename="../qtractorAudioMeter.cpp" line="609"/>
         <source>Pan: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="617"/>
+        <location filename="../qtractorAudioMeter.cpp" line="618"/>
         <source>Gain: %1 dB</source>
         <translation>Verstärkung: %1 dB</translation>
     </message>
