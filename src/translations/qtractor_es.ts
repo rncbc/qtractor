@@ -810,22 +810,22 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translatio
 <context>
     <name>qtractorAudioMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="424"/>
+        <location filename="../qtractorAudioMeter.cpp" line="430"/>
         <source>Gain (dB)</source>
         <translation>Ganancia (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="425"/>
+        <location filename="../qtractorAudioMeter.cpp" line="431"/>
         <source> dB</source>
         <translation>dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="609"/>
+        <location filename="../qtractorAudioMeter.cpp" line="615"/>
         <source>Pan: %1</source>
         <translation>Paneo: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="618"/>
+        <location filename="../qtractorAudioMeter.cpp" line="624"/>
         <source>Gain: %1 dB</source>
         <translation>Ganancia: %1 db</translation>
     </message>

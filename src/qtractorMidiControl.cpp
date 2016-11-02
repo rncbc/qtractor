@@ -42,14 +42,19 @@
 
 #include <math.h>
 
-// Possible cube root optimization.
+// Ref. P.448. Approximate cube root of an IEEE float
+// Hacker's Delight (2nd Edition), by Henry S. Warren
+// http://www.hackersdelight.org/hdcodetxt/acbrt.c.txt
+//
 static inline float cbrtf2 ( float x )
 {
-#if 0//ifdef CONFIG_FLOAT32
+#ifdef CONFIG_FLOAT32_NOP
 	// Avoid strict-aliasing optimization (gcc -O2).
 	union { float f; int i; } u;
 	u.f = x;
-	u.i = (u.i / 3) + 710235478; // HACK: 709621077 for cbrtf2(1)=1
+	u.i  = (u.i >> 4) + (u.i >> 2);
+	u.i += (u.i >> 4);
+	u.i += 0x2a6497f8;
 	return u.f;
 #else
 	return ::cbrtf(x);
