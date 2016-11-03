@@ -232,7 +232,7 @@ MIDI:	</translation>
         <location filename="../qtractorOptions.cpp" line="727"/>
         <source>%1: %2  (%3)
 </source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2 (%3</translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="228"/>
@@ -750,7 +750,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
         <source>plugin parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametry přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
@@ -3056,12 +3056,12 @@ až při příštím spuštění %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5541"/>
         <source>LV2 Plug-in UI GTK2 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 GTK2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5544"/>
         <source>LV2 Plug-in UI X11 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 X11 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5550"/>
