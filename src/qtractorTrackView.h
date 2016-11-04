@@ -145,9 +145,6 @@ public:
 	// Clip selection accessor.
 	qtractorClipSelect *clipSelect() const;
 
-	// Clear current selection (no notify).
-	void clearSelect(bool bReset = false);
-
 	// Whether there's any clip currently selected.
 	bool isClipSelected() const;
 
@@ -156,6 +153,12 @@ public:
 
 	// Whether there's a single track selection.
 	qtractorTrack *singleTrackSelected();
+
+	// Clear current selection (no notify).
+	void clearSelect(bool bReset = false);
+
+	// Update current selection (no notify).
+	void updateSelect();
 
 	// Whether there's anything on clipboard.
 	static bool isClipboard();
@@ -192,8 +195,11 @@ public:
 
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = false);
-	unsigned long playHead() const;
 	int playHeadX() const;
+
+	// Auto-backwatrd interim play-head positioning.
+	void setPlayHeadAutoBackward(unsigned long iPlayHead);
+	int playHeadAutoBackwardX() const;
 
 	// Edit-head/tail positioning.
 	void setEditHead(unsigned long iEditHead);
@@ -356,6 +362,9 @@ protected:
 	void dragClipFadeMove(const QPoint& pos);
 	void dragClipFadeDrop(const QPoint& pos);
 
+	// Clip select drag-move and settler method.
+	void dragClipSelectMove(const QPoint& pos);
+
 	// Clip resize drag-move methods.
 	void dragClipResizeMove(const QPoint& pos);
 	void dragClipResizeDrop(const QPoint& pos, bool bTimeStretch = false);
@@ -449,6 +458,7 @@ private:
 		DragClipMove, DragClipStep, DragClipDrop,
 		DragClipPaste, DragClipPasteDrop,
 		DragClipFadeIn, DragClipFadeOut,
+		DragClipSelectLeft, DragClipSelectRight,
 		DragClipResizeLeft, DragClipResizeRight,
 		DragClipRepeatLeft, DragClipRepeatRight,
 		DragCurveMove, DragCurveStep,
@@ -539,13 +549,12 @@ private:
 
 	} g_clipboard;
 
-	// Playhead and edit frame positioning.
-	unsigned long m_iPlayHead;
-
 	// Playhead and edit shadow pixel positioning.
 	int m_iPlayHeadX;
 	int m_iEditHeadX;
 	int m_iEditTailX;
+
+	int m_iPlayHeadAutoBackwardX;
 
 	// Record rolling update width.
 	int m_iLastRecordX;

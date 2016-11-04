@@ -16,10 +16,14 @@ unix {
 		PREFIX = /usr/local
 	}
 
+	isEmpty(BINDIR) {
+		BINDIR = $${BINDIR}/bin
+	}
+
 	# make install
 	INSTALLS += target
 
-	target.path = $${PREFIX}/bin
+	target.path = $${BINDIR}
 }
 
 # No GUI support

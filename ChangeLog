@@ -6,14 +6,62 @@ ChangeLog
 
 GIT HEAD
 
-- JACK buffer-size change handling has been deeeply improved,
+- Auto-backward play-head location, when playback was last
+  started, is now shown on main track-view, as a momentary
+  dark-red vertical line marker. (EXPERIMENTAL)
+
+- LV2 plugin-in parameter optimization: stuff consecutive
+  series of plug-in's parameter value changes, as much as
+  possible into one single undo/redo command. (EXPERIMENTAL)
+
+- LV2_STATE__StateChanged is now recognized as a regular
+  atom notification event and raising the current session
+  dirty flag, as normal behavior. (EXPERIMENTAL)
+
+- Adjusting clip selection edges is now possible and honored
+  while on the the main track-view canvas.(EXPERIMENTAL)
+
+- Audio peak file caching and rendering, as far as audio
+  clip waveforms are concerned, have been refactored and
+  optimized a couple of notches higher, on the ephemeral
+  and rather marginal throughput front ;). (EXPERIMENTAL)
+
+- Fixed a potential crash on the singleton/unique application
+  instance setup.
+
+- Edit/Select Mode tool-buttons moved into single drop-down
+  tool-button on the main and MIDI editor's tool-bar.
+
+- Do not reset the current clip selection when updating the
+  main track-view extents eg. while zooming in or out.
+
+- Automation curve node editing auto-smoothing revisited;
+  also fixed input MIDI RPN/NRPN running status processing,
+  which was crippling some plug-in automation curve nodes,
+  when saved in high-resolution 14-bit mode. (EXPERIMENTAL)
+
+- Fixed the visual play-head position (vertical red line)
+  while zooming in or out horizontally.
+
+- Almost complete overhaul on the configure script command
+  line options, wrt. installation directories specification,
+  eg. --prefix, --bindir, --libdir, --datadir and --mandir.
+  (EXPERIMENTAL)
+
+- LV2 Plugin-in worker/schedule fix: make request/response
+  ringbuffer writes in one go, hopefully atomic (suggested
+  patch by Stefan Westerfeld, while on SpectMorph, thanks).
+
+
+0.7.9  2016-09-21  Snobbier Graviton Beta
+
+- JACK buffer-size change handling has been deeply improved,
   now doing an immediate session restart, while preserving all
-  external connections as much as possible. (EXPERIMENTAL)
+  external connections as much as possible.
 
 - Introducing an audio and MIDI metronome anticipatory offset,
   kind of latency compensation, to respective option settings
   cf. View/Options.../Audio, MIDI/Metronome/Offset (latency).
-  (EXPERIMENTAL)
 
 - Fixed LADSPA plug-in preset switching, incidentally broken
   as NOP, ever since late Haziest Photon's crash-landed.
@@ -22,27 +70,25 @@ GIT HEAD
   broken on Qt5 builds, now fixed.
 
 - MIDI RPN/NRPN running status and RPN NULL reset command
-  are now supported (input only). (EXPERIMENTAL)
+  are now supported (input only).
 
 - Fixed a sure immediate crash on removing audio buses that
   are current targets of any active Aux-send inserts.
 
 - Fixed yet another old bummer that was reaping off assigned
   MIDI controllers on existing track's gain/volume or panning
-  controls, when adding any single new track. (EXPERIMENTAL)
+  controls, when adding any single new track.
 
 - Fixed missing feedback on MIDI controllers assigned to any
   of monitor, record, mute and solo track/bus state buttons. 
-  (EXPERIMENTAL)
 
-- Eye-candy warning: the current clip, not necessarilty the
-  one currently selected, is now highligthed with a solid
+- Eye-candy warning: the current clip, not necessarily the
+  one currently selected, is now highlighted with a solid
   outline; linked MIDi clips are also highlighted with an
-  alternate dashed outline. (EXPERIMENTAL)
+  alternate dashed outline.
 
 - SFZ file conversion, and bundling of the respective sample
   files, is now supported when saving as zip/archive (*.qtz).
-  (EXPERIMENTAL)
 
 - Fixed track monitor, record, mute and solo dangling states,
   on Track/Duplicate command.
@@ -57,9 +103,9 @@ GIT HEAD
   clip length still un-quantized to MIDI resolution (BBT).
 
 - A brand new and discrete MIDI clip editor command tool has
-  been added: MIDI Tools/Transpose/Reverse. (EXPERIMENTAL)
+  been added: MIDI Tools/Transpose/Reverse.
 
-- Discretely fixed MIDI Controlllers catch-up algorithm.
+- Discretely fixed MIDI Controllers catch-up algorithm.
 
 - Fixed a borderline mistake on plug-in parameter port index
   mapping to its corresponding symbolic name, especially if

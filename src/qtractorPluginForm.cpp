@@ -948,7 +948,7 @@ void qtractorPluginForm::refresh (void)
 	else
 		m_ui.PresetComboBox->setEditText(sOldPreset);
 
-	m_pPlugin->idleEditor();
+//	m_pPlugin->idleEditor();
 
 	QListIterator<qtractorPluginPropertyWidget *> prop_iter(m_propWidgets);
 	while (prop_iter.hasNext())

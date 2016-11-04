@@ -172,8 +172,8 @@ public:
 		unsigned long iFrameStart, unsigned long iFrameEnd) = 0;
 
 	// Clip paint method.
-	virtual void draw(QPainter *pPainter, const QRect& clipRect,
-		unsigned long iClipOffset) = 0;
+	virtual void draw(QPainter *pPainter,
+		const QRect& clipRect, unsigned long iClipOffset) = 0;
 
 	// Clip editor methods.
 	virtual bool startEditor(QWidget *pParent = NULL);

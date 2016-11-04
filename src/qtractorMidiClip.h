@@ -122,8 +122,8 @@ public:
 	void process_export(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Clip paint method.
-	void draw(QPainter *pPainter, const QRect& clipRect,
-		unsigned long iClipOffset);
+	void draw(QPainter *pPainter,
+		const QRect& clipRect, unsigned long iClipOffset);
 
 	// Clip editor methods.
 	bool startEditor(QWidget *pParent = NULL);

@@ -1,7 +1,7 @@
 // qtractorCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -51,28 +51,38 @@ public:
 	const QString& name() const { return m_sName; }
 
 	// Command flags.
-	enum Flag { None = 0, AutoDelete = 1, Refresh = 2, ClearSelect = 4 };
+	enum Flag {
+		None = 0, AutoDelete = 1, Refresh = 2,
+		Clear = 4, Select = 8, Reset = 16,
+		ClearSelect = Clear | Select,
+		ClearSelectReset = ClearSelect | Reset
+	};
 
 	// Command flags accessor.
 	unsigned int flags() const { return m_flags; }
 
 	// Auto-removal/deletion flag accessors.
 	void setAutoDelete(bool bAutoDelete)
-		{ setFlag(AutoDelete, bAutoDelete); }
+		{ setFlags(AutoDelete, bAutoDelete); }
 	bool isAutoDelete() const
-		{ return isFlag(AutoDelete); }
+		{ return isFlags(AutoDelete); }
 
 	// Contents-refresh accessors.
 	void setRefresh(bool bRefresh)
-		{ setFlag(Refresh, bRefresh); }
+		{ setFlags(Refresh, bRefresh); }
 	bool isRefresh() const
-		{ return isFlag(Refresh); }
+		{ return isFlags(Refresh); }
 
-	// Selection-reset accessors.
+	// Selection clear/reset accessors.
 	void setClearSelect(bool bClearSelect)
-		{ setFlag(ClearSelect, bClearSelect); }
+		{ setFlags(ClearSelect, bClearSelect); }
 	bool isClearSelect() const
-		{ return isFlag(ClearSelect); }
+		{ return isFlags(ClearSelect); }
+
+	void setClearSelectReset(bool bClearSelectReset)
+		{ setFlags(ClearSelectReset, bClearSelectReset); }
+	bool isClearSelectReset() const
+		{ return isFlags(ClearSelectReset); }
 
 	// Cannonical command methods.
 	virtual bool redo() = 0;
@@ -81,16 +91,11 @@ public:
 protected:
 
 	// Discrete flag accessors.
-	void setFlag(Flag flag, bool bOn = true)
-	{
-		if (bOn)
-			m_flags |=  (unsigned int) (flag);
-		else
-			m_flags &= ~(unsigned int) (flag);
-	}
+	void setFlags(unsigned int flags, bool bOn = true)
+		{ if (bOn) m_flags |= flags; else m_flags &= ~flags; }
 
-	bool isFlag(Flag flag) const
-		{ return (m_flags & (unsigned int) (flag)); }
+	bool isFlags(unsigned int flags) const
+		{ return ((m_flags & flags) == flags); }
 
 private:
 

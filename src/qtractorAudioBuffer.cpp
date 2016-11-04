@@ -250,7 +250,7 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 	m_ppSrcState     = NULL;
 #endif
 
-	m_pPeak          = NULL;
+	m_pPeakFile      = NULL;
 }
 
 // Default destructor.
@@ -446,9 +446,9 @@ void qtractorAudioBuffer::close (void)
 	// Take careof remains, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Write) {
 		// Close on-the-fly peak file, if applicable...
-		if (m_pPeak) {
-			m_pPeak->closeWrite();
-			m_pPeak = NULL;
+		if (m_pPeakFile) {
+			m_pPeakFile->closeWrite();
+			m_pPeakFile = NULL;
 		}
 	}
 
@@ -501,7 +501,7 @@ void qtractorAudioBuffer::close (void)
 	m_fNextGain = 0.0f;
 	m_iRampGain = 1;
 
-	m_pPeak = NULL;
+	m_pPeakFile = NULL;
 }
 
 
@@ -1258,8 +1258,8 @@ int qtractorAudioBuffer::writeBuffer ( unsigned int iFrames )
 	int nwrite = m_pRingBuffer->read(m_ppFrames, iFrames, 0);
 	if (nwrite > 0) {
 		nwrite = m_pFile->write(m_ppFrames, nwrite);
-		if (m_pPeak)
-			m_pPeak->write(m_ppFrames, nwrite);
+		if (m_pPeakFile)
+			m_pPeakFile->write(m_ppFrames, nwrite);
 	}
 
 	return nwrite;
@@ -1544,20 +1544,20 @@ bool qtractorAudioBuffer::isPitchShift (void) const
 
 
 // Internal peak descriptor accessors.
-void qtractorAudioBuffer::setPeak ( qtractorAudioPeak *pPeak )
+void qtractorAudioBuffer::setPeakFile ( qtractorAudioPeakFile *pPeakFile )
 {
-	m_pPeak = pPeak;
+	m_pPeakFile = pPeakFile;
 
  	// Reset for building the peak file on-the-fly...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL
-		|| !m_pPeak->openWrite(m_iChannels, pSession->sampleRate()))
-		m_pPeak = NULL;
+		|| !m_pPeakFile->openWrite(m_iChannels, pSession->sampleRate()))
+		m_pPeakFile = NULL;
 }
 
-qtractorAudioPeak *qtractorAudioBuffer::peak (void) const
+qtractorAudioPeakFile *qtractorAudioBuffer::peakFile (void) const
 {
-	return m_pPeak;
+	return m_pPeakFile;
 }
 
 

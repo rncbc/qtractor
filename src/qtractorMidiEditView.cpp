@@ -469,26 +469,24 @@ void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect 
 
 	m_pEditor->paintDragState(this, pPainter);
 
-	// Draw special play-head line...
+	// Draw special play/edit-head/tail headers...
 	const int cx = qtractorScrollView::contentsX();
 
-	int x = m_pEditor->playHeadX() - cx;
-	if (x >= rect.left() && x <= rect.right()) {
-		pPainter->setPen(Qt::red);
-		pPainter->drawLine(x, rect.top(), x, rect.bottom());
-	}
-
-	// Draw edit-head line...
-	x = m_pEditor->editHeadX() - cx;
+	int x = m_pEditor->editHeadX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::blue);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());
 	}
 
-	// Draw edit-tail line...
 	x = m_pEditor->editTailX() - cx;
 	if (x >= rect.left() && x <= rect.right()) {
 		pPainter->setPen(Qt::blue);
+		pPainter->drawLine(x, rect.top(), x, rect.bottom());
+	}
+
+	x = m_pEditor->playHeadX() - cx;
+	if (x >= rect.left() && x <= rect.right()) {
+		pPainter->setPen(Qt::red);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());
 	}
 }
@@ -564,7 +562,7 @@ void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		if (bModifier) {
 			// Play-head positioning commit...
 			m_pEditor->setPlayHead(iFrame);
-			pSession->setPlayHead(m_pEditor->playHead());
+			pSession->setPlayHead(iFrame);
 		} else {
 			// Edit cursor (merge) positioning...
 			m_pEditor->setEditHead(iFrame);

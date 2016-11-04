@@ -1418,52 +1418,28 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 #endif
 
 	qtractorClip *pClipRecordEx = (m_bClipRecordEx ? m_pClipRecord : NULL);
-
+	const int x0 = m_pSession->pixelFromFrame(iTrackStart);
 	while (pClip) {
-		const unsigned long iClipStart = pClip->clipStart();
+		unsigned long iClipStart = pClip->clipStart();
 		if (iClipStart > iTrackEnd)
 			break;
-		const unsigned long iClipEnd = iClipStart + pClip->clipLength();
+		unsigned long iClipEnd = iClipStart + pClip->clipLength();
 		if (iClipStart < iTrackEnd && iClipEnd > iTrackStart) {
-			unsigned long iClipOffset = 0;
-			int x = trackRect.x();
-			int w = trackRect.width();
-			if (iClipStart >= iTrackStart) {
-				x += m_pSession->pixelFromFrame(iClipStart - iTrackStart);
-			} else {
-				iClipOffset = iTrackStart - iClipStart;
-				--x;	// Give some clip left-border room.
+			unsigned long iClipOffset = 0; // pClip->clipOffset();
+			if (iClipStart < iTrackStart) {
+				iClipOffset += (iTrackStart - iClipStart);
+				iClipStart = iTrackStart;
 			}
-			if (iClipEnd < iTrackEnd) {
-				w -= m_pSession->pixelFromFrame(iTrackEnd - iClipEnd);// + 1;
-			} else {
-				++w;	// Give some clip right-border room.
+			if (iClipEnd > iTrackEnd) {
+				iClipEnd = iTrackEnd;
 			}
+			const int x1 = m_pSession->pixelFromFrame(iClipStart) - x0;
+			const int x2 = m_pSession->pixelFromFrame(iClipEnd) - x0;
 			pPainter->setPen(pen);
 			pPainter->setBrush(brush);
 			// Draw the clip...
-			const QRect clipRect(x, y, w - x, h);
+			const QRect clipRect(x1, y, x2 - x1, h);
 			pClip->drawClip(pPainter, clipRect, iClipOffset);
-		#if 0
-			// Draw the clip selection...
-			if (pClip->isClipSelected()) {
-				const unsigned long iSelectStart = pClip->clipSelectStart();
-				const unsigned long iSelectEnd   = pClip->clipSelectEnd();
-				x = trackRect.x();
-				w = trackRect.width();
-				if (iSelectStart >= iTrackStart) {
-					x += m_pSession->pixelFromFrame(iSelectStart - iTrackStart);
-				} else {
-					--x;	// Give selection some left-border room.
-				}
-				if (iSelectEnd < iTrackEnd) {
-					w -= m_pSession->pixelFromFrame(iTrackEnd - iSelectEnd);
-				} else {
-					++w;	// Give selection some right-border room.
-				}
-				pPainter->fillRect(QRect(x, y, w - x, h), QColor(0, 0, 255, 120));
-			}
-		#endif
 			if (pClip == pClipRecordEx)
 				pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
 		}

@@ -69,12 +69,37 @@ static inline float log10f2_opt ( float x )
 
 static inline float log10f2 ( float x )
 {
-	return (x > 0.0f ? 20.0f * ::log10f(x) : QTRACTOR_AUDIO_METER_MINDB);
+	return (x > 0.0f ? ::log10f2_opt(x) : QTRACTOR_AUDIO_METER_MINDB);
 }
 
 static inline float pow10f2 ( float x )
 {
 	return ::powf(10.0f, 0.05f * x);
+}
+
+
+// Ref. P.448. Approximate cube root of an IEEE float
+// Hacker's Delight (2nd Edition), by Henry S. Warren
+// http://www.hackersdelight.org/hdcodetxt/acbrt.c.txt
+//
+static inline float cbrtf2 ( float x )
+{
+#ifdef CONFIG_FLOAT32
+	// Avoid strict-aliasing optimization (gcc -O2).
+	union { float f; int i; } u;
+	u.f = x;
+	u.i  = (u.i >> 4) + (u.i >> 2);
+	u.i += (u.i >> 4);
+	u.i += 0x2a6497f8;
+	return u.f;
+#else
+	return ::cbrtf(x);
+#endif
+}
+
+static inline float cubef2 ( float x )
+{
+	return x * x * x;
 }
 
 
@@ -216,7 +241,7 @@ void qtractorAudioMeterValue::refresh (void)
 	const float fValue = pAudioMonitor->value(m_iChannel);
 	if (fValue < 0.001f && m_iPeak < 1)
 		return;
-
+#if 0
 	float dB = QTRACTOR_AUDIO_METER_MINDB;
 	if (fValue > 0.0f)
 		dB = log10f2_opt(fValue);
@@ -224,8 +249,12 @@ void qtractorAudioMeterValue::refresh (void)
 		dB = QTRACTOR_AUDIO_METER_MINDB;
 	else if (dB > QTRACTOR_AUDIO_METER_MAXDB)
 		dB = QTRACTOR_AUDIO_METER_MAXDB;
-
 	int iValue = m_pAudioMeter->iec_scale(dB);
+#else
+	int iValue = 0;
+	if (fValue > 0.001f)
+		iValue = m_pAudioMeter->scale(::cbrtf2(fValue));
+#endif
 	if (iValue < m_iValue) {
 		iValue = int(m_fValueDecay * float(m_iValue));
 		m_fValueDecay *= m_fValueDecay;
@@ -274,16 +303,16 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 	if (isEnabled()) {
 		painter.fillRect(0, 0, w, h,
 			m_pAudioMeter->color(qtractorAudioMeter::ColorBack));
-		y = m_pAudioMeter->iec_level(qtractorAudioMeter::Color0dB);
+		y = h - m_pAudioMeter->iec_level(qtractorAudioMeter::Color0dB);
 		painter.setPen(m_pAudioMeter->color(qtractorAudioMeter::ColorFore));
-		painter.drawLine(0, h - y, w, h - y);
+		painter.drawLine(0, y, w, y);
 	} else {
 		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
 #ifdef CONFIG_GRADIENT
-	painter.drawPixmap(0, h - m_iValue,
-		m_pAudioMeter->pixmap(), 0, h - m_iValue, w, m_iValue);
+	y = h - m_iValue;
+	painter.drawPixmap(0, y, m_pAudioMeter->pixmap(), 0, y, w, m_iValue);
 #else
 	y = m_iValue;
 	
@@ -309,8 +338,9 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 	}
 #endif
 
+	y = h - m_iPeak;
 	painter.setPen(m_pAudioMeter->color(m_iPeakColor));
-	painter.drawLine(0, h - m_iPeak, w, h - m_iPeak);
+	painter.drawLine(0, y, w, y);
 }
 
 
@@ -430,7 +460,7 @@ qtractorAudioMeter::~qtractorAudioMeter (void)
 // IEC standard
 int qtractorAudioMeter::iec_scale ( float dB ) const
 {
-	return int(m_fScale * IEC_Scale(dB));
+	return scale(IEC_Scale(dB));
 }
 
 

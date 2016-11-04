@@ -1,11 +1,25 @@
 # qtractor.pri
 #
 PREFIX  = @ac_prefix@
+BINDIR  = @ac_bindir@
 LIBDIR  = @ac_libdir@
+DATADIR = @ac_datadir@
+MANDIR  = @ac_mandir@
+
+VERSION = @ac_version@
 CONFIG += @ac_debug@
+
 INCLUDEPATH += @ac_incpath@
 LIBS += @ac_libs@
 
 # Extra optimization flags
 QMAKE_CXXFLAGS += @ac_cflags@
 QMAKE_LFLAGS += @ac_ldflags@
+
+# X11 support
+unix:!macx {
+	QX11EXTRAS = @ac_qx11extras@
+	!isEmpty(QX11EXTRAS) {
+		QT += x11extras
+	}
+}
