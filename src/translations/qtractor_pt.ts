@@ -88,7 +88,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <location filename="../qtractorOptions.cpp" line="727"/>
         <source>%1: %2  (%3)
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="106"/>
@@ -323,7 +323,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
         <source>plugin parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>parametros do plugin</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="201"/>
@@ -2626,12 +2626,12 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5541"/>
         <source>LV2 Plug-in UI GTK2 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suporte nativo a GTK2 para Interface de Plugin LV2 desativado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5544"/>
         <source>LV2 Plug-in UI X11 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suporte nativo a X11 para Interface de Plugin LV2 desativado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7521"/>
