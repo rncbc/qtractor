@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.9.34, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.9.35, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -412,15 +412,16 @@ AC_LANG_CPLUSPLUS
 PKG_PROG_PKG_CONFIG
 
 # Check whether -std=c++11 support is necessary (4 < g++ version < 6).
-AC_CACHE_CHECK([for g++ version], [ac_cv_gxx_version], [
-   ac_cv_gxx_version=$($CC -dumpversion)
-   if test -n "$ac_cv_gxx_version"; then
-      ac_cv_gxx_version=$(echo $ac_cv_gxx_version | cut -d'.' -f1);
+AC_CACHE_CHECK([for g++ major version], [ac_cv_gxx_version_major], [
+   ac_cv_gxx_version_major=$($CC -dumpversion)
+   if test -n "$ac_cv_gxx_version_major"; then
+      ac_cv_gxx_version_major=$(echo $ac_cv_gxx_version_major | cut -d'.' -f1);
    fi
+   ac_gxx_version_major=$(($ac_cv_gxx_version_major + 0))
 ])
-ac_gxx_version=$((ac_cv_gxx_version + 0))
-if test $ac_gxx_version -gt 4 -a $ac_gxx_version -lt 6; then
-   CXXFLAGS="$CXXFLAGS -std=c++11"
+ac_gxx_version_major=$ac_cv_gxx_version_major
+if test $ac_gxx_version_major -gt 4 -a $ac_gxx_version_major -lt 6; then
+   CXXFLAGS="-std=c++11 $CXXFLAGS"
 fi
 
 # Check for proper flags.
@@ -472,21 +473,29 @@ if test "x$ac_qmake" = "xno"; then
    AC_MSG_ERROR([qmake $ac_errmsg])
 fi
 
-# Check for proper Qt4/5 major version.
-ac_qt_version_major=$($ac_qmake -query QT_VERSION | cut -d. -f1)
+# Check for proper Qt major version.
+AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
+   ac_cv_qt_version_major=$($ac_qmake -query QT_VERSION | cut -d'.' -f1)
+   ac_cv_qt_version_major=$(($ac_cv_qt_version_major + 0))
+])
+ac_qt_version_major=$ac_cv_qt_version_major
 if test "x$ac_qt4" = "xyes"; then
-   if test "x$ac_qt_version_major" != "x4"; then
+   if test $ac_qt_version_major -ne 4; then
       AC_MSG_ERROR([qmake-qt4 $ac_errmsg (qt4-devel)])
    fi
 else
-   if test "x$ac_qt_version_major" != "x5"; then
+   if test $ac_qt_version_major -ne 5; then
       AC_MSG_ERROR([qmake-qt5 $ac_errmsg (qt5-devel)])
    fi
 fi
 
-ac_qt_install_bins=$($ac_qmake -query QT_INSTALL_BINS)
-if test -d $ac_qt_install_bins; then
-   ac_path="$ac_qt_install_bins:$ac_path"
+# Check for proper Qt install path.
+AC_CACHE_CHECK([for Qt install path], [ac_cv_qt_install_path], [
+   ac_cv_qt_install_path=$($ac_qmake -query QT_INSTALL_BINS)
+])
+ac_qt_install_path=$ac_cv_qt_install_path
+if test -d $ac_qt_install_path; then
+   ac_path="$ac_qt_install_path:$ac_path"
 fi
 
 # Check it again, now with updated PATH, just in case...
@@ -498,20 +507,26 @@ fi
 
 AC_SUBST(ac_qmake)
 
-ac_qt_install_headers=$($ac_qmake -query QT_INSTALL_HEADERS)
+AC_CACHE_CHECK([for Qt install headers], [ac_cv_qt_install_headers], [
+   ac_cv_qt_install_headers=$($ac_qmake -query QT_INSTALL_HEADERS)
+])
+ac_qt_install_headers=$ac_cv_qt_install_headers
 if test -d $ac_qt_install_headers; then
    CFLAGS="-I$ac_qt_install_headers $CFLAGS "
    CPPFLAGS="-I$ac_qt_install_headers $CPPFLAGS"
    ac_incpath="$ac_qt_install_headers $ac_incpath"
 fi
 
-ac_qt_install_libs=$($ac_qmake -query QT_INSTALL_LIBS)
+AC_CACHE_CHECK([for Qt install libraries], [ac_cv_qt_install_libs], [
+   ac_cv_qt_install_libs=$($ac_qmake -query QT_INSTALL_LIBS)
+])
+ac_qt_install_libs=$ac_cv_qt_install_libs
 if test -d $ac_qt_install_libs; then
    LIBS="-L$ac_qt_install_libs $LIBS"
    ac_libs="-L$ac_qt_install_libs $ac_libs"
 fi
 
-# Check for proper Qt4/5 version.
+# Finally, check for proper Qt4/5 version.
 if test "x$ac_qt4" = "xyes"; then
    AC_CACHE_CHECK([for Qt library version >= 4.4],
       ac_cv_qtversion, [
