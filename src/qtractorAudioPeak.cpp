@@ -301,9 +301,9 @@ bool qtractorAudioPeakThread::writePeakFile (void)
 #endif
 
 	// Read another bunch of frames from the physical audio file...
-	const int nread = m_pAudioFile->read(m_ppAudioFrames, c_iAudioFrames);
+	int nread = m_pAudioFile->read(m_ppAudioFrames, c_iAudioFrames);
 	if (nread > 0)
-		m_pPeakFile->write(m_ppAudioFrames, nread);
+		nread = m_pPeakFile->write(m_ppAudioFrames, nread);
 
 	return (nread > 0);
 }
@@ -374,11 +374,11 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 	m_iBuffLength  = 0;
 	m_iBuffOffset  = 0;
 
-	m_bWaitSync    = false;
+	m_bWaitSync = false;
 
-	m_iRefCount    = 0;
+	m_iRefCount = 0;
 
-	m_pWriter      = NULL;
+	m_pWriter = NULL;
 
 	// Set (unique) peak filename...
 	QDir dir;
@@ -451,7 +451,7 @@ bool qtractorAudioPeakFile::openRead (void)
 		return false;
 
 	if (m_peakFile.read((char *) &m_peakHeader, sizeof(Header))
-		!= (qint64) sizeof(Header)) {
+			!= qint64(sizeof(Header))) {
 		m_peakFile.close();
 		return false;
 	}
@@ -603,10 +603,10 @@ unsigned int qtractorAudioPeakFile::readBuffer (
 
 	int nread = 0;
 	if (m_peakFile.seek(sizeof(Header) + iOffset))
-		nread = (int) m_peakFile.read(&pBuffer[0], iLength);
+		nread = int(m_peakFile.read(&pBuffer[0], iLength));
 
 	// Zero the remaining...
-	if (nread < (int) iLength)
+	if (nread < int(iLength))
 		::memset(&pBuffer[nread], 0, iLength - nread);
 
 	return nread / (m_peakHeader.channels * sizeof(Frame));
@@ -649,7 +649,7 @@ bool qtractorAudioPeakFile::openWrite (
 
 	// Write peak file header.
 	if (m_peakFile.write((const char *) &m_peakHeader, sizeof(Header))
-		!= (qint64) sizeof(Header)) {
+			!= qint64(sizeof(Header))) {
 		m_peakFile.close();
 		return false;
 	}
@@ -680,8 +680,8 @@ bool qtractorAudioPeakFile::openWrite (
 	// Get resample/timestretch-aware internal peak period ratio...
 	float fRatio = 1.0f;
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		fRatio = float(iSampleRate) / (float(pSession->sampleRate()) * m_fTimeStretch);
+	if (pSession) fRatio = float(iSampleRate)
+		/ (float(pSession->sampleRate()) * m_fTimeStretch);
 
 	// Start counting for peak generator and writer...
 	m_pWriter->ratio  = fRatio;
@@ -721,14 +721,15 @@ void qtractorAudioPeakFile::closeWrite (void)
 
 
 // Write peak from audio frame methods.
-void qtractorAudioPeakFile::write (
+int qtractorAudioPeakFile::write (
 	float **ppAudioFrames, unsigned int iAudioFrames )
 {
-	if (m_openMode != Write || m_pWriter == NULL)
-		return;
-
 	// Make things critical...
 	QMutexLocker locker(&m_mutex);
+
+	// We should be actually open for writing...
+	if (m_openMode != Write || m_pWriter == NULL)
+		return 0;
 
 	for (unsigned int n = 0; n < iAudioFrames; ++n) {
 		// Accumulate for this sample frame...
@@ -753,6 +754,8 @@ void qtractorAudioPeakFile::write (
 			m_pWriter->npeak = 0;
 		}
 	}
+
+	return iAudioFrames;
 }
 
 

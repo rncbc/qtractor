@@ -1259,7 +1259,7 @@ int qtractorAudioBuffer::writeBuffer ( unsigned int iFrames )
 	if (nwrite > 0) {
 		nwrite = m_pFile->write(m_ppFrames, nwrite);
 		if (m_pPeakFile)
-			m_pPeakFile->write(m_ppFrames, nwrite);
+			nwrite = m_pPeakFile->write(m_ppFrames, nwrite);
 	}
 
 	return nwrite;
