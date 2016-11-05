@@ -82,7 +82,7 @@ public:
 
 	// Write peak from audio frame methods.
 	bool openWrite(unsigned short iChannels, unsigned int iSampleRate);
-	void write(float **ppAudioFrames, unsigned int iAudioFrames);
+	int write(float **ppAudioFrames, unsigned int iAudioFrames);
 	void closeWrite();
 
 	// Reference count methods.
