@@ -57,9 +57,6 @@ void qtractorMidiEditSelect::addItem ( qtractorMidiEvent *pEvent,
 
 	m_rectEvent = m_rectEvent.united(rectEvent);
 	m_rectView = m_rectView.united(rectView);
-	
-	if (m_pAnchorEvent == NULL || m_pAnchorEvent->time() > pEvent->time())
-		m_pAnchorEvent = pEvent;
 }
 
 
@@ -90,6 +87,8 @@ void qtractorMidiEditSelect::update ( bool bCommit )
 	// Remove unselected...
 	int iUpdate = 0;
 
+	m_pAnchorEvent = NULL;
+
 	ItemList::Iterator iter = m_items.begin();
 	const ItemList::Iterator& iter_end = m_items.end();
 	while (iter != iter_end) {
@@ -99,6 +98,12 @@ void qtractorMidiEditSelect::update ( bool bCommit )
 				pItem->flags |=  2;
 			else
 				pItem->flags &= ~2;
+		}
+		if (pItem->flags & 1) {
+			qtractorMidiEvent *pEvent = iter.key();
+			if (m_pAnchorEvent == NULL ||
+				m_pAnchorEvent->time() > pEvent->time())
+				m_pAnchorEvent = pEvent;
 		}
 		if ((pItem->flags & 3) == 0) {
 			delete pItem;
@@ -125,8 +130,10 @@ void qtractorMidiEditSelect::commit (void)
 	const ItemList::ConstIterator iter_end = m_items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		Item *pItem = iter.value();
-		m_rectEvent = m_rectEvent.united(pItem->rectEvent);
-		m_rectView = m_rectView.united(pItem->rectView);
+		if (pItem->flags & 1) {
+			m_rectEvent = m_rectEvent.united(pItem->rectEvent);
+			m_rectView = m_rectView.united(pItem->rectView);
+		}
 	}
 }
 
@@ -145,4 +152,3 @@ void qtractorMidiEditSelect::clear (void)
 
 
 // end of qtractorMidiEditSelect.cpp
-
