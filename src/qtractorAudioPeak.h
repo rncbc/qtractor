@@ -139,7 +139,7 @@ private:
 		float         *amax;
 		float         *amin;
 		float         *arms;
-		float          ratio;
+		float          period;
 		unsigned long  nframe;
 		unsigned short npeak;
 		unsigned long  nread;

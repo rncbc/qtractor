@@ -426,7 +426,7 @@ MIDI:	</translation>
         <location filename="../qtractorOptions.cpp" line="727"/>
         <source>%1: %2  (%3)
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="228"/>
@@ -748,7 +748,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
         <source>plugin parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのパラメータ</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
@@ -5832,12 +5832,12 @@ ALSAシーケンサーカーネルモジュール (snd-seq-midi) が
     <message>
         <location filename="../qtractorMainForm.cpp" line="5541"/>
         <source>LV2 Plug-in UI GTK2 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2プラグインUIのGtk2ネイティブサポートは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5544"/>
         <source>LV2 Plug-in UI X11 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>LV2プラグインUIのX11ネイティブサポートは無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5559"/>
