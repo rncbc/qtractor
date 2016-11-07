@@ -124,7 +124,7 @@ Fine:	%3	Lunghezza:	%4</translation>
         <translation>strumento clip %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1124"/>
+        <location filename="../qtractorClipCommand.cpp" line="1131"/>
         <source>clip record</source>
         <translation>registrazione clip</translation>
     </message>

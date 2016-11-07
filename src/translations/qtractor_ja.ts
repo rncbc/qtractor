@@ -122,7 +122,7 @@ End:	%3	Length:	%4</source>
         <translation>クリップツール %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1124"/>
+        <location filename="../qtractorClipCommand.cpp" line="1131"/>
         <source>clip record</source>
         <translation>クリップの録音</translation>
     </message>

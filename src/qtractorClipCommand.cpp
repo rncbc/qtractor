@@ -1050,8 +1050,7 @@ bool qtractorClipToolCommand::isEmpty (void) const
 // Virtual command methods.
 bool qtractorClipToolCommand::redo (void)
 {
-	if (++m_iRedoCount > 1)
-		return undo();
+	++m_iRedoCount;
 
 	QListIterator<qtractorMidiEditCommand *> iter(m_midiEditCommands);
 	while (iter.hasNext()) {
@@ -1059,20 +1058,24 @@ bool qtractorClipToolCommand::redo (void)
 		if (pMidiEditCommand) {
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
 			if (pMidiClip) {
-				// Save if dirty...
-				if (pMidiClip->isDirty())
-					pMidiClip->saveCopyFile(false);
-				// Filename change one-time transaction...
-				MidiClipCtx mctx;
-				mctx.pre.filename = pMidiClip->filename();
-				mctx.pre.length = pMidiClip->clipLength();
+				// Redo as you told...
 				if (!pMidiEditCommand->redo())
 					return false;
-				pMidiClip->setRevision(0);
-				if (pMidiClip->saveCopyFile(true)) {
-					mctx.post.filename = pMidiClip->filename();
-					mctx.post.length = pMidiClip->clipLength();
-					m_midiClipCtxs.insert(pMidiClip, mctx);
+				if (m_iRedoCount == 1) {
+					// Save if dirty...
+					if (pMidiClip->isDirty())
+						pMidiClip->saveCopyFile(false);
+					// Save original filename and length...
+					MidiClipCtx mctx;
+					mctx.pre.filename = pMidiClip->filename();
+					mctx.pre.length = pMidiClip->clipLength();
+					// Filename change one-time transaction...
+					pMidiClip->setRevision(0);
+					if (pMidiClip->saveCopyFile(true)) {
+						mctx.post.filename = pMidiClip->filename();
+						mctx.post.length = pMidiClip->clipLength();
+						m_midiClipCtxs.insert(pMidiClip, mctx);
+					}
 				}
 			}
 		}
@@ -1090,9 +1093,13 @@ bool qtractorClipToolCommand::undo (void)
 		if (pMidiEditCommand) {
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
 			if (pMidiClip) {
-				// Filename swap transaction...
+				// Undo as you told...
+				if (!pMidiEditCommand->undo())
+					return false;
+				// Filename and length swap transaction...
 				MidiClipCtx& mctx = m_midiClipCtxs[pMidiClip];
-				if (mctx.pre.filename.isEmpty() || mctx.post.filename.isEmpty())
+				if (mctx.pre.filename.isEmpty() ||
+					mctx.post.filename.isEmpty())
 					return false;
 				const unsigned long iPreLength = mctx.pre.length;
 				const QString sPreFilename = mctx.pre.filename;

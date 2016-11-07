@@ -668,7 +668,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1124"/>
+        <location filename="../qtractorClipCommand.cpp" line="1131"/>
         <source>clip record</source>
         <translation type="unfinished"></translation>
     </message>
