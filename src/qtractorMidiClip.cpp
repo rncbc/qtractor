@@ -69,7 +69,7 @@ public:
 	void update(qtractorMidiClip *pMidiClip)
 	{
 		qtractorTrack *pTrack = pMidiClip->track();
-		m_sFilename = pMidiClip->filename();;
+		m_sFilename = pMidiClip->filename();
 		m_iClipOffset = pMidiClip->clipOffsetTime();
 		m_iClipLength = pMidiClip->clipLengthTime();
 		m_iTrackChannel = pMidiClip->trackChannel();

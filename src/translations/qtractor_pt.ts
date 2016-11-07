@@ -311,7 +311,7 @@ MIDI:	</translation>
         <translation>resetar tentativas</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1124"/>
+        <location filename="../qtractorClipCommand.cpp" line="1131"/>
         <source>clip record</source>
         <translation>gravador de sequência</translation>
     </message>
