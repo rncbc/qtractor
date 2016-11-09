@@ -769,6 +769,13 @@ bool qtractorMidiClip::isHashLinked (void) const
 }
 
 
+// Check whether a MIDI clip is hash-linked to another.
+bool qtractorMidiClip::isLinkedClip ( qtractorMidiClip *pMidiClip ) const
+{
+	return (m_pData ? m_pData->clips().contains(pMidiClip) : false);
+}
+
+
 // Get all hash-linked clips (including self).
 QList<qtractorMidiClip *> qtractorMidiClip::linkedClips (void) const
 {

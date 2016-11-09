@@ -903,6 +903,9 @@ bool qtractorTracks::executeClipToolCommand (
 	if (pMidiClip == NULL)
 		return false;
 
+	if (pClipToolCommand->isLinkedMidiClip(pMidiClip))
+		return false;
+
 	unsigned long iOffset = 0;
 	unsigned long iLength = pClip->clipLength();
 

@@ -1032,6 +1032,19 @@ qtractorClipToolCommand::~qtractorClipToolCommand (void)
 }
 
 
+// Check if a clip is already part of the iting set.
+bool qtractorClipToolCommand::isLinkedMidiClip ( qtractorMidiClip *pMidiClip ) const
+{
+	QListIterator<qtractorMidiEditCommand *> iter(m_midiEditCommands);
+	while (iter.hasNext()) {
+		qtractorMidiClip *pMidiClipIter = iter.next()->midiClip();
+		if (pMidiClipIter && pMidiClipIter->isLinkedClip(pMidiClip))
+			return true;
+	}
+	return false;
+}
+
+
 // Composite command methods.
 void qtractorClipToolCommand::addMidiEditCommand (
 	qtractorMidiEditCommand *pMidiEditCommand )
