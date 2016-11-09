@@ -236,6 +236,9 @@ public:
 	// Whether local hash is being shared.
 	bool isHashLinked() const;
 
+	// Check whether a MIDI clip is hash-linked to another.
+	bool isLinkedClip (qtractorMidiClip *pMidiClip) const;
+
 	// Get all hash-linked clips (including self).
 	QList<qtractorMidiClip *> linkedClips() const;
 

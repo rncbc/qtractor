@@ -244,6 +244,9 @@ public:
 	// Destructor.
 	virtual ~qtractorClipToolCommand();
 
+	// Check if a clip is already part of the editing set.
+	bool isLinkedMidiClip(qtractorMidiClip *pMidiClip) const;
+
 	// Composite command methods.
 	void addMidiEditCommand(qtractorMidiEditCommand *pMidiEditCommand);
 
