@@ -51,10 +51,9 @@ public:
 	int toolIndex() const;
 
 	// Create edit command based on given selection.
-	qtractorMidiEditCommand *editCommand(
-		qtractorMidiClip *pMidiClip,
-		qtractorMidiEditSelect *pSelect,
-		unsigned long iTimeOffset);
+	qtractorMidiEditCommand *editCommand(qtractorMidiClip *pMidiClip,
+		qtractorMidiEditSelect *pSelect, unsigned long iTimeOffset,
+		unsigned long iTimeStart = 0, unsigned long iTimeEnd = 0);
 
 protected slots:
 

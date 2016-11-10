@@ -257,6 +257,11 @@ public:
 	bool redo();
 	bool undo();
 
+protected:
+
+	// Filename and length swap transaction...
+	void swapMidiClipCtx( qtractorMidiClip *pMidiClip);
+
 private:
 
 	// Instance variables.
