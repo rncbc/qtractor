@@ -12,10 +12,26 @@ AC_CACHE_VAL([ac_cv_build_date],
 ac_build_date="$ac_cv_build_date"
 AC_DEFINE_UNQUOTED(CONFIG_BUILD_DATE, ["$ac_build_date"], [Build date and time.])
 
-# Sanitize version string.
-AC_CACHE_VAL([ac_cv_build_version],
-   [ac_cv_build_version=$(echo $PACKAGE_VERSION | sed -r 's/^([[0-9|\.]]+).*$/\1/')])
-ac_version="$ac_cv_build_version"
+# Build version string.
+AC_CACHE_VAL([ac_cv_build_version], [
+   ac_cv_build_version=$(git describe --tags --abbrev=6 2>/dev/null)
+   if test -n "$ac_cv_build_version"; then
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed -r 's/^[[^_]]+_//')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed -r 's/-g/git./')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed -r 's/[[_|-]]+/./g')
+   else
+      ac_cv_build_version=$PACKAGE_VERSION
+   fi
+])
+ac_build_version="$ac_cv_build_version"
+AC_DEFINE_UNQUOTED(CONFIG_BUILD_VERSION, ["$ac_build_version"], [Build version string.])
+
+# Sanitized version string.
+AC_CACHE_VAL([ac_cv_version], [
+   ac_cv_version=$(echo $ac_cv_build_version | sed -r 's/^([[0-9|\.]]+).*$/\1/')
+])
+ac_version="$ac_cv_version"
+AC_DEFINE_UNQUOTED(CONFIG_VERSION, ["$ac_version"], [Version string.])
 AC_SUBST(ac_version)
 
 # Set default installation prefix.
@@ -1405,7 +1421,7 @@ AC_OUTPUT
 # Output summary message
 
 echo
-echo "  $PACKAGE_NAME $PACKAGE_VERSION  ($ac_build_date)"
+echo "  $PACKAGE_NAME $ac_build_version  ($ac_build_date)"
 echo
 echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_debug"
 echo

@@ -5578,7 +5578,7 @@ void qtractorMainForm::helpAbout (void)
 	QString sText = "<p>\n";
 	sText += "<b>" QTRACTOR_TITLE " - " + tr(QTRACTOR_SUBTITLE) + "</b><br />\n";
 	sText += "<br />\n";
-	sText += tr("Version") + ": <b>" QTRACTOR_VERSION "</b><br />\n";
+	sText += tr("Version") + ": <b>" CONFIG_BUILD_VERSION "</b><br />\n";
 	sText += "<small>" + tr("Build") + ": " CONFIG_BUILD_DATE "</small><br />\n";
 	QStringListIterator iter(list);
 	while (iter.hasNext()) {
