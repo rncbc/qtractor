@@ -766,7 +766,7 @@ void qtractorMidiToolsForm::presetDelete (void)
 // Create edit command based on given selection.
 qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	qtractorMidiClip *pMidiClip, qtractorMidiEditSelect *pSelect,
-	unsigned long iTimeOffset )
+	unsigned long iTimeOffset, unsigned long iTimeStart, unsigned long iTimeEnd )
 {
 	// Create command, it will be handed over...
 	qtractorMidiEditCommand *pEditCommand
@@ -797,9 +797,16 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	// Seed time range with a value from the list of selected events.
 	long iMinTime = iTimeOffset;
 	long iMaxTime = iTimeOffset;
-	long iMaxTime2 = iTimeOffset;
+
 	if (pSelect->anchorEvent())
 		iMinTime = iMaxTime = pSelect->anchorEvent()->time() + iTimeOffset;
+
+	if (iTimeStart < iTimeEnd) {
+		iMinTime += long(iTimeStart);
+		iMaxTime += long(iTimeEnd);
+	}
+
+	long iMaxTime2 = iMaxTime;
 
 	// First scan pass for the normalize and resize value ramp tools:
 	// find maximum and minimum times and values from the selection...

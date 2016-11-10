@@ -1071,31 +1071,19 @@ bool qtractorClipToolCommand::redo (void)
 		if (pMidiEditCommand) {
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
 			if (pMidiClip) {
+				// Save if dirty...
+				if (m_iRedoCount == 1 && pMidiClip->isDirty())
+					pMidiClip->saveCopyFile(false);
 				// Redo as you told...
-				if (!pMidiEditCommand->redo())
-					return false;
-				if (m_iRedoCount == 1) {
-					// Save if dirty...
-					if (pMidiClip->isDirty())
-						pMidiClip->saveCopyFile(false);
-					// Save original filename and length...
-					MidiClipCtx mctx;
-					mctx.pre.filename = pMidiClip->filename();
-					mctx.pre.length = pMidiClip->clipLength();
-					// Filename change one-time transaction...
-					pMidiClip->setRevision(0);
-					if (pMidiClip->saveCopyFile(true)) {
-						mctx.post.filename = pMidiClip->filename();
-						mctx.post.length = pMidiClip->clipLength();
-						m_midiClipCtxs.insert(pMidiClip, mctx);
-					}
-				}
+				if (pMidiEditCommand->redo())
+					swapMidiClipCtx(pMidiClip);
 			}
 		}
 	}
 
 	return true;
 }
+
 
 bool qtractorClipToolCommand::undo (void)
 {
@@ -1107,30 +1095,47 @@ bool qtractorClipToolCommand::undo (void)
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
 			if (pMidiClip) {
 				// Undo as you told...
-				if (!pMidiEditCommand->undo())
-					return false;
-				// Filename and length swap transaction...
-				MidiClipCtx& mctx = m_midiClipCtxs[pMidiClip];
-				if (mctx.pre.filename.isEmpty() ||
-					mctx.post.filename.isEmpty())
-					return false;
-				const unsigned long iPreLength = mctx.pre.length;
-				const QString sPreFilename = mctx.pre.filename;
-				const unsigned long iPostLength = mctx.post.length;
-				const QString sPostFilename = mctx.post.filename;
-			//	pMidiClip->close();
-				pMidiClip->setClipLength(iPreLength);
-				pMidiClip->setFilenameEx(sPreFilename, true);
-				pMidiClip->open();
-				mctx.post.filename = sPreFilename;
-				mctx.post.length = iPreLength;
-				mctx.pre.filename = sPostFilename;
-				mctx.pre.length = iPostLength;
+				if (pMidiEditCommand->undo())
+					swapMidiClipCtx(pMidiClip);
 			}
 		}
 	}
 
 	return (m_iRedoCount > 0);
+}
+
+
+// Filename and length swap transaction...
+void qtractorClipToolCommand::swapMidiClipCtx ( qtractorMidiClip *pMidiClip )
+{
+	// Filename and length swap transaction...
+	MidiClipCtx& mctx = m_midiClipCtxs[pMidiClip];
+
+	if (mctx.pre.filename.isEmpty() || mctx.post.filename.isEmpty()) {
+		// First create transaction...
+		mctx.pre.filename = pMidiClip->filename();
+		mctx.pre.length = pMidiClip->clipLength();
+		pMidiClip->setRevision(0);
+		if (pMidiClip->saveCopyFile(true)) {
+			mctx.post.filename = pMidiClip->filename();
+			mctx.post.length = pMidiClip->clipLength();
+		//	m_midiClipCtxs.insert(pMidiClip, mctx);
+		}
+	} else {
+		// Second+ swap transaction...
+		const unsigned long iPreLength = mctx.pre.length;
+		const QString sPreFilename = mctx.pre.filename;
+		const unsigned long iPostLength = mctx.post.length;
+		const QString sPostFilename = mctx.post.filename;
+	//	pMidiClip->close();
+		pMidiClip->setClipLength(iPreLength);
+		pMidiClip->setFilenameEx(sPreFilename, true);
+	//	pMidiClip->open();
+		mctx.post.filename = sPreFilename;
+		mctx.post.length = iPreLength;
+		mctx.pre.filename = sPostFilename;
+		mctx.pre.length = iPostLength;
+	}
 }
 
 

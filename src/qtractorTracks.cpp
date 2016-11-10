@@ -943,7 +943,8 @@ bool qtractorTracks::executeClipToolCommand (
 	// Add new edit command from tool...
 	pClipToolCommand->addMidiEditCommand(
 		pMidiToolsForm->editCommand(pMidiClip, &select,
-			pSession->tickFromFrame(pClip->clipStart())));
+			pSession->tickFromFrame(pClip->clipStart()),
+			iTimeStart, iTimeEnd));
 			
 	// Must be brand new revision...
 	pMidiClip->setRevision(0);
