@@ -9201,43 +9201,43 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="778"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="855"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="857"/>
         <source>quantize</source>
         <translation>quantifier</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="780"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="923"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="925"/>
         <source>transpose</source>
         <translation>transposer</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="782"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="949"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="951"/>
         <source>normalize</source>
         <translation>normaliser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="784"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="979"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="981"/>
         <source>randomize</source>
         <translation>randomiser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="786"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1041"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1043"/>
         <source>resize</source>
         <translation>redimensionner</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="788"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1065"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1067"/>
         <source>rescale</source>
         <translation>remise à l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="790"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1104"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1106"/>
         <source>timeshift</source>
         <translation>décaler temporellement</translation>
     </message>

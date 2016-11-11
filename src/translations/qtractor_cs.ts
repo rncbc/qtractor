@@ -8826,43 +8826,43 @@ Jste si jistý?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="778"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="855"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="857"/>
         <source>quantize</source>
         <translation>Kvantizovat</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="780"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="923"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="925"/>
         <source>transpose</source>
         <translation>Převést</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="782"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="949"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="951"/>
         <source>normalize</source>
         <translation>Normalizovat</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="784"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="979"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="981"/>
         <source>randomize</source>
         <translation>Náhodně vybrat</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="786"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1041"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1043"/>
         <source>resize</source>
         <translation>Změnit velikost</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="788"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1065"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1067"/>
         <source>rescale</source>
         <translation>Změnit měřítko</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="790"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1104"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1106"/>
         <source>timeshift</source>
         <translation>Časový posun</translation>
     </message>
