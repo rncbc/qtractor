@@ -801,12 +801,12 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	if (pSelect->anchorEvent())
 		iMinTime = iMaxTime = pSelect->anchorEvent()->time() + iTimeOffset;
 
+	long iMaxTime2 = iMaxTime;
+
 	if (iTimeStart < iTimeEnd) {
 		iMinTime += long(iTimeStart);
 		iMaxTime += long(iTimeEnd);
 	}
-
-	long iMaxTime2 = iMaxTime;
 
 	// First scan pass for the normalize and resize value ramp tools:
 	// find maximum and minimum times and values from the selection...
@@ -829,8 +829,10 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				iMaxTime = iTime;
 			if (iMaxTime2 < iTime2)
 				iMaxTime2 = iTime2;
+			if (iMaxTime2 < iTime2)
+				iMaxTime2 = iTime2;
 			const bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
-			int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
+			const int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
 			if (iMinValue > iValue || i == 0)
 				iMinValue = iValue;
 			if (iMaxValue < iValue)
