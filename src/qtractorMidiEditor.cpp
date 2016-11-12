@@ -1780,6 +1780,9 @@ void qtractorMidiEditor::pasteClipboard (
 		t0 -= pNode->tickFromPixel(x1);
 	}
 
+	// Stabilize new floating selection...
+	m_select.update(false);
+
 	// Make sure we've a anchor...
 	if (m_pEventDrag == NULL)
 		m_pEventDrag = m_select.anchorEvent();
@@ -3325,8 +3328,7 @@ void qtractorMidiEditor::updateDragSelect (
 	}
 
 	// Commit selection...
-	const bool bCommit = (flags & SelectCommit);
-	m_select.update(bCommit);
+	m_select.update(flags & SelectCommit);
 
 	rectUpdateView = rectUpdateView.united(m_select.rectView());
 	m_pEditView->viewport()->update(QRect(
@@ -3337,15 +3339,6 @@ void qtractorMidiEditor::updateDragSelect (
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
-
-#if 0
-	if (bEditView) {
-		setEditHead(m_pTimeScale->frameSnap(m_iOffset
-			+ m_pTimeScale->frameFromPixel(rectSelect.left())), bCommit);
-		setEditTail(m_pTimeScale->frameSnap(m_iOffset
-			+ m_pTimeScale->frameFromPixel(rectSelect.right())), bCommit);
-	}
-#endif
 }
 
 
@@ -4167,6 +4160,7 @@ void qtractorMidiEditor::executeDragPaste (
 				m_select.addItem(pEvent, rectEvent, rectView);
 			}
 		}
+		m_select.update(false);
 	}
 }
 

@@ -801,6 +801,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	if (pSelect->anchorEvent())
 		iMinTime = iMaxTime = pSelect->anchorEvent()->time() + iTimeOffset;
 
+	long iMinTime2 = iMinTime;
 	long iMaxTime2 = iMaxTime;
 
 	if (iTimeStart < iTimeEnd) {
@@ -823,12 +824,12 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			qtractorMidiEvent *pEvent = iter.key();
 			const long iTime = pEvent->time() + iTimeOffset;
 			const long iTime2 = iTime + pEvent->duration();
-			if (iMinTime > iTime || i == 0)
-				iMinTime = iTime;
-			if (iMaxTime < iTime)
-				iMaxTime = iTime;
-			if (iMaxTime2 < iTime2)
-				iMaxTime2 = iTime2;
+			if (iMinTime  > iTime)
+				iMinTime  = iTime;
+			if (iMaxTime  < iTime)
+				iMaxTime  = iTime;
+			if (iMinTime2 > iTime || i == 0)
+				iMinTime2 = iTime;
 			if (iMaxTime2 < iTime2)
 				iMaxTime2 = iTime2;
 			const bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
@@ -940,7 +941,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					iTime = long(iTimeOffset);
 			}
 			if (m_ui.TransposeReverseCheckBox->isChecked()) {
-				iTime = iMinTime + iMaxTime2 - iTime - iDuration;
+				iTime = iMinTime2 + iMaxTime2 - iTime - iDuration;
 				if (iTime < long(iTimeOffset))
 					iTime = long(iTimeOffset);
 			}

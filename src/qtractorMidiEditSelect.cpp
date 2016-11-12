@@ -57,9 +57,6 @@ void qtractorMidiEditSelect::addItem ( qtractorMidiEvent *pEvent,
 
 	m_rectEvent = m_rectEvent.united(rectEvent);
 	m_rectView = m_rectView.united(rectView);
-
-	if (m_pAnchorEvent == NULL || m_pAnchorEvent->time() > pEvent->time())
-		m_pAnchorEvent = pEvent;
 }
 
 
