@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip tools redo/undo processing refactored as much to
+  avoid replication over multiple hash-linked clips; MIDI clip
+  editor's floating selection/anchor event stability has been 
+  also improved, in regard to MIDI tools processing range. 
+
 - Auto-backward play-head location, when playback was last
   started, is now shown on main track-view, as a momentary
   dark-red vertical line marker. (EXPERIMENTAL)
@@ -19,12 +24,12 @@ GIT HEAD
   dirty flag, as normal behavior. (EXPERIMENTAL)
 
 - Adjusting clip selection edges is now possible and honored
-  while on the the main track-view canvas.(EXPERIMENTAL)
+  while on the the main track-view canvas.
 
 - Audio peak file caching and rendering, as far as audio
   clip waveforms are concerned, have been refactored and
   optimized a couple of notches higher, on the ephemeral
-  and rather marginal throughput front ;). (EXPERIMENTAL)
+  and rather marginal throughput front ;).
 
 - Fixed a potential crash on the singleton/unique application
   instance setup.
@@ -38,7 +43,7 @@ GIT HEAD
 - Automation curve node editing auto-smoothing revisited;
   also fixed input MIDI RPN/NRPN running status processing,
   which was crippling some plug-in automation curve nodes,
-  when saved in high-resolution 14-bit mode. (EXPERIMENTAL)
+  when saved in high-resolution 14-bit mode.
 
 - Fixed the visual play-head position (vertical red line)
   while zooming in or out horizontally.
@@ -46,7 +51,6 @@ GIT HEAD
 - Almost complete overhaul on the configure script command
   line options, wrt. installation directories specification,
   eg. --prefix, --bindir, --libdir, --datadir and --mandir.
-  (EXPERIMENTAL)
 
 - LV2 Plugin-in worker/schedule fix: make request/response
   ringbuffer writes in one go, hopefully atomic (suggested
