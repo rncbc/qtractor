@@ -80,17 +80,17 @@ public:
 			qtractorMidiRpn::Event event;
 			if (qtractorMidiRpn::dequeue(event)) {
 				qtractorMidiEvent::EventType type;
-				switch (qtractorMidiRpn::Type(event.status & 0xf0)) {
-				case qtractorMidiRpn::CC:
+				switch (qtractorMidiRpn::Type(event.status & 0x70)) {
+				case qtractorMidiRpn::CC:	// 0x10
 					type = qtractorMidiEvent::CONTROLLER;
 					break;
-				case qtractorMidiRpn::RPN:
+				case qtractorMidiRpn::RPN:	// 0x20
 					type = qtractorMidiEvent::REGPARAM;
 					break;
-				case qtractorMidiRpn::NRPN:
+				case qtractorMidiRpn::NRPN:	// 0x30
 					type = qtractorMidiEvent::NONREGPARAM;
 					break;
-				case qtractorMidiRpn::CC14:
+				case qtractorMidiRpn::CC14:	// 0x40
 					type = qtractorMidiEvent::CONTROL14;
 					break;
 				default:

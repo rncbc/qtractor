@@ -37,6 +37,7 @@ class qtractorInstrumentMenu;
 
 class QContextMenuEvent;
 class QActionGroup;
+class QToolButton;
 class QComboBox;
 class QLabel;
 class QPalette;
@@ -221,6 +222,7 @@ private:
 
 	// Edit-mode action group up.
 	QActionGroup *m_pEditModeActionGroup;
+	QToolButton  *m_pEditModeToolButton;
 
 	// Custom track/instrument proxy menu.
 	qtractorInstrumentMenu *m_pInstrumentMenu;

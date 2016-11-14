@@ -279,21 +279,6 @@
    <addaction name="separator"/>
    <addaction name="fileRecordExAction"/>
   </widget>
-  <widget class="QToolBar" name="editModeToolbar">
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="editModeOffAction"/>
-   <addaction name="editModeOnAction"/>
-   <addaction name="separator"/>
-   <addaction name="editModeDrawAction"/>
-  </widget>
   <widget class="QToolBar" name="editToolbar">
    <property name="orientation">
     <enum>Qt::Horizontal</enum>

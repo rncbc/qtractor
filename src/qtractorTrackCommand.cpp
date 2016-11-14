@@ -48,7 +48,7 @@ qtractorTrackCommand::qtractorTrackCommand ( const QString& sName,
 	qtractorTrack *pTrack, qtractorTrack *pAfterTrack )
 	: qtractorCommand(sName), m_pTrack(pTrack), m_pAfterTrack(pAfterTrack)
 {
-	setClearSelect(true);
+	setClearSelectReset(true);
 }
 
 
@@ -630,7 +630,7 @@ qtractorImportTrackCommand::qtractorImportTrackCommand (
 				(name(), pSession->properties(), m_sessionProps);
 	}
 
-	setClearSelect(true);
+	setClearSelectReset(true);
 }
 
 // Destructor.

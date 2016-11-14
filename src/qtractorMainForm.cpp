@@ -260,7 +260,6 @@ qtractorMainForm::qtractorMainForm (
 
 	// To remember last time we've shown the playhead.
 	m_iPlayHead = 0;
-	m_iPlayHeadAutoBackward = 0;
 
 	// We'll start clean.
 	m_iUntitled   = 0;
@@ -414,15 +413,25 @@ qtractorMainForm::qtractorMainForm (
 	m_pActionControl = new qtractorActionControl(this);
 
 	// Get edit selection mode action group up...
-//	m_ui.editToolbar->addSeparator();
 	m_pSelectModeActionGroup = new QActionGroup(this);
 	m_pSelectModeActionGroup->setExclusive(true);
-//	m_pSelectModeActionGroup->setUsesDropDown(true);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeClipAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRangeAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeRectAction);
 	m_pSelectModeActionGroup->addAction(m_ui.editSelectModeCurveAction);
-//	m_ui.editToolbar->addActions(m_pSelectModeActionGroup->actions());
+
+	// And the corresponding tool-button drop-down menu...
+	m_pSelectModeToolButton = new QToolButton(this);
+	m_pSelectModeToolButton->setPopupMode(QToolButton::InstantPopup);
+	m_pSelectModeToolButton->setMenu(m_ui.editSelectModeMenu);
+
+	// Add/insert this on its proper place in the edit-toobar...
+	m_ui.editToolbar->insertWidget(m_ui.clipNewAction, m_pSelectModeToolButton);
+	m_ui.editToolbar->insertSeparator(m_ui.clipNewAction);
+
+	QObject::connect(
+		m_pSelectModeActionGroup, SIGNAL(triggered(QAction*)),
+		m_pSelectModeToolButton, SLOT(setDefaultAction(QAction*)));
 
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
@@ -1193,6 +1202,8 @@ qtractorMainForm::~qtractorMainForm (void)
 	// Get select mode action group down.
 	if (m_pSelectModeActionGroup)
 		delete m_pSelectModeActionGroup;
+	if (m_pSelectModeToolButton)
+		delete m_pSelectModeToolButton;
 
 	// Reclaim status items palettes...
 	for (int i = 0; i < PaletteItems; ++i)
@@ -1308,6 +1319,10 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	if (pTrackView->isCurveEdit())
 		m_ui.editSelectModeCurveAction->setChecked(true);
+
+	// Set initial select mode...
+	m_pSelectModeToolButton->setDefaultAction(
+		m_pSelectModeActionGroup->checkedAction());
 
 	// Initial zoom mode...
 	m_pTracks->setZoomMode(m_pOptions->iZoomMode);
@@ -2440,7 +2455,7 @@ bool qtractorMainForm::saveSessionFileEx (
 	}
 
 	// Soft-house-keeping...
-	m_pSession->files()->cleanup(false);
+	if (bUpdate) m_pSession->files()->cleanup(false);
 
 	// Write the file...
 	QDomDocument doc("qtractorSession");
@@ -2748,8 +2763,8 @@ void qtractorMainForm::autoSaveSession (void)
 		qtractorSession::sanitize(sAutoSaveName)).filePath()
 		+ ".auto-save." + qtractorDocument::defaultExt();
 
-	const QString& sOldAutoSavePathname = m_pOptions->sAutoSavePathname;
-
+	const QString& sOldAutoSavePathname
+		= m_pOptions->sAutoSavePathname;
 	if (!sOldAutoSavePathname.isEmpty()
 		&& sOldAutoSavePathname != sAutoSavePathname
 		&& QFileInfo(sOldAutoSavePathname).exists())
@@ -4713,8 +4728,18 @@ void qtractorMainForm::viewRefresh (void)
 	m_pSnapPerBeatComboBox->setCurrentIndex(
 		qtractorTimeScale::indexFromSnap(m_pSession->snapPerBeat()));
 
-	if (m_pTracks)
+	// Read session edit-head/tails...
+	const unsigned long iEditHead = m_pSession->editHead();
+	const unsigned long iEditTail = m_pSession->editTail();
+
+	if (m_pTracks) {
 		m_pTracks->updateContents(true);
+		m_pTracks->trackView()->setEditHead(iEditHead);
+		m_pTracks->trackView()->setEditTail(iEditTail);
+		m_pTracks->trackView()->setPlayHeadAutoBackward(
+			m_pSession->playHeadAutoBackward());
+	}
+
 	if (m_pConnections)
 		m_pConnections->refresh();
 	if (m_pMixer) {
@@ -4730,6 +4755,8 @@ void qtractorMainForm::viewRefresh (void)
 		qtractorMidiEditor *pEditor = (iter.next())->editor();
 		pEditor->updateTimeScale();
 		pEditor->updateContents();
+		pEditor->setEditHead(iEditHead, false);
+		pEditor->setEditTail(iEditTail, false);
 	}
 
 	// We're formerly done.
@@ -5234,8 +5261,10 @@ void qtractorMainForm::transportPlay (void)
 				: SND_SEQ_EVENT_STOP);
 		}
 		// Save auto-backward return position...
-		if (bPlaying)
-			m_iPlayHeadAutoBackward = m_pSession->playHead();
+		if (bPlaying) {
+			const unsigned long iPlayHead = m_pSession->playHead();
+			m_pTracks->trackView()->setPlayHeadAutoBackward(iPlayHead);
+		}
 	}
 
 	stabilizeForm();
@@ -5252,6 +5281,10 @@ void qtractorMainForm::transportRecord (void)
 	// Make sure session is activated...
 	if (!checkRestartSession())
 		return;
+
+	// Don't hold on anymore...
+	if (m_pTracks)
+		m_pTracks->trackView()->setSyncViewHoldOn(false);
 
 	// Toggle recording...
 	const bool bRecording = !m_pSession->isRecording();
@@ -5504,11 +5537,11 @@ void qtractorMainForm::helpAbout (void)
 	list << tr("LV2 Plug-in UI Show interface support disabled.");
 #endif
 #if QT_VERSION >= 0x050100
-#ifdef CONFIG_LV2_UI_GTK2
-	list << tr("LV2 Plug-in UI GTK2 native support enabled.");
+#ifndef CONFIG_LV2_UI_GTK2
+	list << tr("LV2 Plug-in UI GTK2 native support disabled.");
 #endif
-#ifdef CONFIG_LV2_UI_X11
-	list << tr("LV2 Plug-in UI X11 native support enabled.");
+#ifndef CONFIG_LV2_UI_X11
+	list << tr("LV2 Plug-in UI X11 native support disabled.");
 #endif
 #endif
 #endif // CONFIG_LV2_UI
@@ -5530,8 +5563,8 @@ void qtractorMainForm::helpAbout (void)
 	QString sText = "<p>\n";
 	sText += "<b>" QTRACTOR_TITLE " - " + tr(QTRACTOR_SUBTITLE) + "</b><br />\n";
 	sText += "<br />\n";
-	sText += tr("Version") + ": <b>" QTRACTOR_VERSION "</b><br />\n";
-	sText += "<small>" + tr("Build") + ": " __DATE__ " " __TIME__ "</small><br />\n";
+	sText += tr("Version") + ": <b>" CONFIG_BUILD_VERSION "</b><br />\n";
+	sText += "<small>" + tr("Build") + ": " CONFIG_BUILD_DATE "</small><br />\n";
 	QStringListIterator iter(list);
 	while (iter.hasNext()) {
 		sText += "<small><font color=\"red\">";
@@ -5651,6 +5684,11 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 	// Finally, toggle session record status...
 	m_pSession->setRecording(bRecording);
 
+	// Also force some kind of a checkpoint,
+	// next time, whenever applicable...
+	if (m_iAutoSavePeriod > 0 && !bRecording)
+		m_iAutoSaveTimer += m_iAutoSavePeriod;
+
 	// Done with record switch...
 	return true;
 }
@@ -5756,8 +5794,8 @@ unsigned long qtractorMainForm::playHeadBackward (void) const
 	const unsigned long iPlayHead = m_pSession->playHead();
 	QList<unsigned long> list;
 	list.append(0);
-	if (iPlayHead > m_iPlayHeadAutoBackward)
-		list.append(m_iPlayHeadAutoBackward);
+	if (iPlayHead > m_pSession->playHeadAutoBackward())
+		list.append(m_pSession->playHeadAutoBackward());
 	if (iPlayHead > m_pSession->editHead())
 		list.append(m_pSession->editHead());
 //	if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
@@ -5787,8 +5825,8 @@ unsigned long qtractorMainForm::playHeadForward (void) const
 {
 	const unsigned long iPlayHead = m_pSession->playHead();
 	QList<unsigned long> list;
-	if (iPlayHead < m_iPlayHeadAutoBackward)
-		list.append(m_iPlayHeadAutoBackward);
+	if (iPlayHead < m_pSession->playHeadAutoBackward())
+		list.append(m_pSession->playHeadAutoBackward());
 	if (iPlayHead < m_pSession->editHead())
 		list.append(m_pSession->editHead());
 	if (iPlayHead < m_pSession->editTail())
@@ -6824,6 +6862,8 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipToolsMenu->setEnabled(bClipSelected
 		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
 	m_ui.clipTakeMenu->setEnabled(pClip != NULL);
+
+	updateTakeMenu();
 }
 
 
@@ -7164,7 +7204,7 @@ void qtractorMainForm::timerSlot (void)
 						(unsigned short) pos.beats_per_bar,
 						(unsigned short) pos.beat_type);
 				#endif
-					m_pTracks->clearSelect();
+					m_pTracks->clearSelect(true);
 					m_pSession->lock();
 					pNode->tempo = pos.beats_per_minute;
 					pNode->beatsPerBar = pos.beats_per_bar;
@@ -7834,7 +7874,7 @@ void qtractorMainForm::midiClkNotify ( float fTempo )
 	appendMessages(sClkText);
 
 	if (m_pTracks)
-		m_pTracks->clearSelect();
+		m_pTracks->clearSelect(true);
 
 	// Find appropriate node...
 	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
@@ -8040,8 +8080,9 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 	if (m_pTracks) {
 		m_pTracks->trackView()->setEditHead(iEditHead);
 		m_pTracks->trackView()->setEditTail(iEditTail);
-		if (pMidiEditor)
-			m_pTracks->clearSelect();
+		m_pTracks->trackView()->setPlayHeadAutoBackward(
+			m_pSession->playHeadAutoBackward());
+	//	if (pMidiEditor) m_pTracks->clearSelect();
 	}
 
 	// Update editors edit-head/tails...
@@ -8073,14 +8114,14 @@ void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 // Command update helper.
 void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 {
-#ifdef CONFIG_DEBUG//_0
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::updateNotifySlot(0x%02x)", int(flags));
 #endif
 
 	// Always reset any track view selection...
 	// (avoid change/update notifications, again)
 	if (m_pTracks && (flags & qtractorCommand::ClearSelect))
-		m_pTracks->clearSelect();
+		m_pTracks->clearSelect(flags & qtractorCommand::Reset);
 
 	// Proceed as usual...
 	updateContents(NULL, (flags & qtractorCommand::Refresh));

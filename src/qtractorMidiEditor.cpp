@@ -695,7 +695,7 @@ struct qtractorMidiEditor::DragTimeScale
 
 // Constructor.
 qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
-		: QSplitter(Qt::Vertical, pParent)
+	: QSplitter(Qt::Vertical, pParent)
 {
 	// Initialize instance variables...
 	m_pMidiClip = NULL;
@@ -748,13 +748,10 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_iLength = 0;
 
 	// Local edit-head/tail positioning.
-	m_iEditHead  = 0;
 	m_iEditHeadX = 0;
-	m_iEditTail  = 0;
 	m_iEditTailX = 0;
 
 	// Local play-head positioning.
-	m_iPlayHead  = 0;
 	m_iPlayHeadX = 0;
 	m_bSyncView  = false;
 
@@ -1161,29 +1158,23 @@ bool qtractorMidiEditor::isClipRecord (void) const
 // Edit-head/tail positioning.
 void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSyncView )
 {
-	if (iEditHead > m_iEditTail)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	if (iEditHead > pSession->editTail())
 		setEditTail(iEditHead, bSyncView);
 	else
 		setSyncViewHoldOn(true);
 
-	if (bSyncView) {
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession)
-			pSession->setEditHead(iEditHead);
-	}
-
-	m_iEditHead = iEditHead;
+	if (bSyncView)
+		pSession->setEditHead(iEditHead);
 
 	const int iEditHeadX
 		= m_pTimeScale->pixelFromFrame(iEditHead)
 		- m_pTimeScale->pixelFromFrame(m_iOffset);
 
 	drawPositionX(m_iEditHeadX, iEditHeadX, bSyncView);
-}
-
-unsigned long qtractorMidiEditor::editHead (void) const
-{
-	return m_iEditHead;
 }
 
 int qtractorMidiEditor::editHeadX (void) const
@@ -1194,29 +1185,23 @@ int qtractorMidiEditor::editHeadX (void) const
 
 void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSyncView )
 {
-	if (iEditTail < m_iEditHead)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	if (iEditTail < pSession->editHead())
 		setEditHead(iEditTail, bSyncView);
 	else
 		setSyncViewHoldOn(true);
 
-	if (bSyncView) {
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession)
-			pSession->setEditTail(iEditTail);
-	}
-
-	m_iEditTail = iEditTail;
+	if (bSyncView)
+		pSession->setEditTail(iEditTail);
 
 	const int iEditTailX
 		= m_pTimeScale->pixelFromFrame(iEditTail)
 		- m_pTimeScale->pixelFromFrame(m_iOffset);
 
 	drawPositionX(m_iEditTailX, iEditTailX, bSyncView);
-}
-
-unsigned long qtractorMidiEditor::editTail (void) const
-{
-	return m_iEditTail;
 }
 
 int qtractorMidiEditor::editTailX (void) const
@@ -1231,18 +1216,11 @@ void qtractorMidiEditor::setPlayHead ( unsigned long iPlayHead, bool bSyncView )
 	if (bSyncView)
 		bSyncView = m_bSyncView;
 
-	m_iPlayHead = iPlayHead;
-
 	const int iPlayHeadX
 		= m_pTimeScale->pixelFromFrame(iPlayHead)
 		- m_pTimeScale->pixelFromFrame(m_iOffset);
 
 	drawPositionX(m_iPlayHeadX, iPlayHeadX, bSyncView);
-}
-
-unsigned long qtractorMidiEditor::playHead (void) const
-{
-	return m_iPlayHead;
 }
 
 int qtractorMidiEditor::playHeadX (void) const
@@ -1802,6 +1780,9 @@ void qtractorMidiEditor::pasteClipboard (
 		t0 -= pNode->tickFromPixel(x1);
 	}
 
+	// Stabilize new floating selection...
+	m_select.update(false);
+
 	// Make sure we've a anchor...
 	if (m_pEventDrag == NULL)
 		m_pEventDrag = m_select.anchorEvent();
@@ -2115,7 +2096,11 @@ bool qtractorMidiEditor::isInsertable (void) const
 	if (pSeq == NULL)
 		return false;
 
-	return m_pTimeScale->tickFromFrame(m_iEditHead)
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	return m_pTimeScale->tickFromFrame(pSession->editHead())
 		 < m_pTimeScale->tickFromFrame(m_iOffset) + pSeq->duration();
 }
 
@@ -2123,7 +2108,11 @@ bool qtractorMidiEditor::isInsertable (void) const
 // Whether there's any selected range (edit-head/tail).
 bool qtractorMidiEditor::isSelectable (void) const
 {
-	return (m_iEditHead < m_iEditTail);
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	return (pSession->editHead() < pSession->editTail());
 }
 
 
@@ -2137,14 +2126,21 @@ void qtractorMidiEditor::insertEditRange (void)
 	if (pSeq == NULL)
 		return;
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	const unsigned long iEditHead = pSession->editHead();
+	const unsigned long iEditTail = pSession->editTail();
+
 	const unsigned long iInsertStart
-		= m_pTimeScale->tickFromFrame(m_iEditHead);
+		= m_pTimeScale->tickFromFrame(iEditHead);
 
 	unsigned long iInsertEnd = 0;
-	if (m_iEditHead < m_iEditTail) {
-		iInsertEnd = m_pTimeScale->tickFromFrame(m_iEditTail);
+	if (iEditHead < iEditTail) {
+		iInsertEnd = m_pTimeScale->tickFromFrame(iEditTail);
 	} else {
-		const unsigned short iBar = m_pTimeScale->barFromFrame(m_iEditHead);
+		const unsigned short iBar = m_pTimeScale->barFromFrame(iEditHead);
 		iInsertEnd = m_pTimeScale->tickFromFrame(m_pTimeScale->frameFromBar(iBar + 1));
 	}
 
@@ -2206,14 +2202,21 @@ void qtractorMidiEditor::removeEditRange (void)
 	if (pSeq == NULL)
 		return;
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	const unsigned long iEditHead = pSession->editHead();
+	const unsigned long iEditTail = pSession->editTail();
+
 	const unsigned long iRemoveStart
-		= m_pTimeScale->tickFromFrame(m_iEditHead);
+		= m_pTimeScale->tickFromFrame(iEditHead);
 
 	unsigned long iRemoveEnd   = 0;
-	if (m_iEditHead < m_iEditTail) {
-		iRemoveEnd = m_pTimeScale->tickFromFrame(m_iEditTail);
+	if (iEditHead < iEditTail) {
+		iRemoveEnd = m_pTimeScale->tickFromFrame(iEditTail);
 	} else {
-		unsigned short iBar = m_pTimeScale->barFromFrame(m_iEditHead);
+		unsigned short iBar = m_pTimeScale->barFromFrame(iEditHead);
 		iRemoveEnd = m_pTimeScale->tickFromFrame(m_pTimeScale->frameFromBar(iBar + 1));
 	}
 
@@ -3325,8 +3328,7 @@ void qtractorMidiEditor::updateDragSelect (
 	}
 
 	// Commit selection...
-	const bool bCommit = (flags & SelectCommit);
-	m_select.update(bCommit);
+	m_select.update(flags & SelectCommit);
 
 	rectUpdateView = rectUpdateView.united(m_select.rectView());
 	m_pEditView->viewport()->update(QRect(
@@ -3337,15 +3339,6 @@ void qtractorMidiEditor::updateDragSelect (
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
 		rectUpdateEvent.size()));
-
-#if 0
-	if (bEditView) {
-		setEditHead(m_pTimeScale->frameSnap(m_iOffset
-			+ m_pTimeScale->frameFromPixel(rectSelect.left())), bCommit);
-		setEditTail(m_pTimeScale->frameSnap(m_iOffset
-			+ m_pTimeScale->frameFromPixel(rectSelect.right())), bCommit);
-	}
-#endif
 }
 
 
@@ -4167,6 +4160,7 @@ void qtractorMidiEditor::executeDragPaste (
 				m_select.addItem(pEvent, rectEvent, rectView);
 			}
 		}
+		m_select.update(false);
 	}
 }
 
@@ -5067,8 +5061,8 @@ bool qtractorMidiEditor::keyStep (
 			if (iSnapPerBeat > 0)
 				iHorizontalStep = pNode->pixelsPerBeat() / iSnapPerBeat;
 		}
-		if (iHorizontalStep < 1)
-			iHorizontalStep = 1;
+		if (iHorizontalStep < 4)
+			iHorizontalStep = 4;
 		if (iKey == Qt::Key_Left)
 			x1 -= iHorizontalStep;
 		else

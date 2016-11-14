@@ -369,6 +369,37 @@ private:
 
 
 //----------------------------------------------------------------------
+// class qtractorPluginParamValuesCommand - declaration.
+//
+
+class qtractorPluginParamValuesCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorPluginParamValuesCommand(const QString& sName);
+
+	// Destructor.
+	~qtractorPluginParamValuesCommand();
+
+	// Plugin-value list accessor.
+	void updateParamValue(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+
+	// Composite predicate.
+	bool isEmpty() const;
+
+	// Plugin-values command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	QList<qtractorPluginParamCommand *> m_paramCommands;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorAudioOutputBusCommand - declaration.
 //
 

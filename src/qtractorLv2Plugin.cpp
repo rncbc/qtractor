@@ -34,6 +34,8 @@
 #include "qtractorOptions.h"
 
 #ifdef CONFIG_LV2_STATE
+// LV2 State/Dirty (StateChanged) notification.
+#include "qtractorMainForm.h"
 // LV2 State/Presets: standard directory access.
 // For local file vs. URI manipulations.
 #include <QFileInfo>
@@ -108,6 +110,10 @@ static const LV2_Feature g_lv2_uri_map_feature =
 #endif	// CONFIG_LV2_EVENT
 
 #ifdef CONFIG_LV2_STATE
+
+#ifndef LV2_STATE__StateChanged
+#define LV2_STATE__StateChanged LV2_STATE_PREFIX "StateChanged"
+#endif
 
 static const LV2_Feature g_lv2_state_feature =
 	{ LV2_STATE_URI, NULL };
@@ -489,8 +495,15 @@ qtractorLv2Worker::~qtractorLv2Worker (void)
 // Schedule work.
 void qtractorLv2Worker::schedule ( uint32_t size, const void *data )
 {
-	::jack_ringbuffer_write(m_pRequests, (const char *) &size, sizeof(size));
-	::jack_ringbuffer_write(m_pRequests, (const char *) data, size);
+	const uint32_t request_size = size + sizeof(size);
+
+	if (::jack_ringbuffer_write_space(m_pRequests) >= request_size) {
+		char request_data[request_size];
+		::memcpy(request_data, &size, sizeof(size));
+		::memcpy(request_data + sizeof(size), data, size);
+		::jack_ringbuffer_write(m_pRequests,
+			(const char *) &request_data, request_size);
+	}
 
 	if (g_pWorkerThread)
 		g_pWorkerThread->sync(this);
@@ -499,8 +512,15 @@ void qtractorLv2Worker::schedule ( uint32_t size, const void *data )
 // Response work.
 void qtractorLv2Worker::respond ( uint32_t size, const void *data )
 {
-	::jack_ringbuffer_write(m_pResponses, (const char *) &size, sizeof(size));
-	::jack_ringbuffer_write(m_pResponses, (const char *) data, size);
+	const uint32_t response_size = size + sizeof(size);
+
+	if (::jack_ringbuffer_write_space(m_pResponses) >= response_size) {
+		char response_data[response_size];
+		::memcpy(response_data, &size, sizeof(size));
+		::memcpy(response_data + sizeof(size), data, size);
+		::jack_ringbuffer_write(m_pResponses,
+			(const char *) &response_data, response_size);
+	}
 }
 
 // Commit work.
@@ -770,6 +790,9 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI_HOST_URI	LV2_UI__Qt5UI
 #endif
 
+#ifndef LV2_UI__windowTitle
+#define LV2_UI__windowTitle	LV2_UI_PREFIX "windowTitle"
+#endif
 
 static void qtractor_lv2_ui_port_write (
 	LV2UI_Controller ui_controller,
@@ -984,6 +1007,7 @@ static struct qtractorLv2Urids
 	LV2_URID atom_Chunk;
 	LV2_URID atom_Sequence;
 	LV2_URID atom_Object;
+	LV2_URID atom_Blank;
 	LV2_URID atom_Bool;
 	LV2_URID atom_Int;
 	LV2_URID atom_Long;
@@ -1016,6 +1040,9 @@ static struct qtractorLv2Urids
 	LV2_URID ui_windowTitle;
 #endif
 #endif	// CONFIG_LV2_OPTIONS
+#ifdef CONFIG_LV2_STATE
+	LV2_URID state_StateChanged;
+#endif
 
 } g_lv2_urids;
 
@@ -1750,6 +1777,8 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence);
 	g_lv2_urids.atom_Object
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Object);
+	g_lv2_urids.atom_Blank
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Blank);
 	g_lv2_urids.atom_Bool
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Bool);
 	g_lv2_urids.atom_Int
@@ -1799,6 +1828,10 @@ void qtractorLv2PluginType::lv2_open (void)
 #ifdef CONFIG_LV2_UI
 	g_lv2_urids.ui_windowTitle
 		= qtractorLv2Plugin::lv2_urid_map(LV2_UI__windowTitle);
+#endif
+#ifdef CONFIG_LV2_STATE
+	g_lv2_urids.state_StateChanged
+		= qtractorLv2Plugin::lv2_urid_map(LV2_STATE__StateChanged);
 #endif
 #endif	// CONFIG_LV2_OPTIONS
 
@@ -3391,20 +3424,30 @@ void qtractorLv2Plugin::idleEditor (void)
 	}
 #endif
 
+	// Try to make all parameter changes into one single command...
 	if (m_ui_params.count() > 0) {
-		QHash<unsigned long, float>::ConstIterator iter
-			= m_ui_params.constBegin();
-		const QHash<unsigned long, float>::ConstIterator& iter_end
-			= m_ui_params.constEnd();
-		for ( ; iter != iter_end; ++iter) {
-			const unsigned long iIndex = iter.key();
-			const float fValue = iter.value();
-		#if 0//def CONFIG_LV2_TIME
-			const int i = m_lv2_time_ports.value(iIndex, -1);
-			if (i >= 0) g_lv2_time[i].value = fValue;
-		#endif
-			updateParamValue(iIndex, fValue, false);
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			qtractorPluginParamValuesCommand *pParamValuesCommand
+				= new qtractorPluginParamValuesCommand(
+					QObject::tr("plugin parameters"));
+			QHash<unsigned long, float>::ConstIterator iter
+				= m_ui_params.constBegin();
+			const QHash<unsigned long, float>::ConstIterator& iter_end
+				= m_ui_params.constEnd();
+			for ( ; iter != iter_end; ++iter) {
+				const unsigned long iIndex = iter.key();
+				const float fValue = iter.value();
+				qtractorPluginParam *pParam = findParam(iIndex);
+				if (pParam)
+					pParamValuesCommand->updateParamValue(pParam, fValue, false);
+			}
+			if (pParamValuesCommand->isEmpty())
+				delete pParamValuesCommand;
+			else
+				pSession->execute(pParamValuesCommand);
 		}
+		// Done.
 		m_ui_params.clear();
 	}
 
@@ -3956,11 +3999,13 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 			port_index, buffer_size, format, buffer);
 	}
 
-#ifdef CONFIG_LV2_PATCH
+#ifdef CONFIG_LV2_ATOM
 	if (format == g_lv2_urids.atom_eventTransfer) {
 		const LV2_Atom *atom = (const LV2_Atom *) buffer;
-		if (lv2_atom_forge_is_object_type(g_lv2_atom_forge, atom->type)) {
+		if (atom->type == g_lv2_urids.atom_Blank ||
+			atom->type == g_lv2_urids.atom_Object) {
 			const LV2_Atom_Object *obj = (const LV2_Atom_Object *) buffer;
+		#ifdef CONFIG_LV2_PATCH
 			if (obj->body.otype == g_lv2_urids.patch_Set) {
 				const LV2_Atom_URID *prop = NULL;
 				const LV2_Atom *value = NULL;
@@ -3977,15 +4022,28 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 					g_lv2_urids.patch_body, (const LV2_Atom *) &body, 0);
 				if (body == NULL) // HACK!
 					body = obj;
-				if (body && lv2_atom_forge_is_object_type(
-						g_lv2_atom_forge, body->atom.type)) {
+				if (body && (
+					body->atom.type == g_lv2_urids.atom_Blank ||
+					body->atom.type == g_lv2_urids.atom_Object)) {
 					LV2_ATOM_OBJECT_FOREACH(body, prop)
 						lv2_property_changed(prop->key, &prop->value);
 				}
 			}
+		#ifdef CONFIG_LV2_STATE
+			else
+		#endif
+		#endif // CONFIG_LV2_PATCH
+		#ifdef CONFIG_LV2_STATE
+			if (obj->body.otype == g_lv2_urids.state_StateChanged) {
+				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+				if (pMainForm)
+					pMainForm->dirtyNotifySlot();
+				refreshForm();
+			}
+		#endif // CONFIG_LV2_STATE
 		}
 	}
-#endif	// CONFIG_LV2_PATCH
+#endif	// CONFIG_LV2_ATOM
 }
 
 

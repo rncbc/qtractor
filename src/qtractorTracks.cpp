@@ -180,6 +180,9 @@ void qtractorTracks::horizontalZoomStep ( int iZoomStep )
 	pSession->setHorizontalZoom(iHorizontalZoom);
 	pSession->updateTimeScale();
 	pSession->updateSession();
+
+	// Update visual play-head position...
+	m_pTrackView->setPlayHead(pSession->playHead());
 }
 
 
@@ -584,6 +587,9 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 	pMidiClip->updateEditor(true);
 	pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
 
+	// Better update track-view clip high-lighthing...
+	m_pTrackView->update();
+
 	// HACK: This operation is so important that
 	// it surely deserves being in the front page...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -897,6 +903,9 @@ bool qtractorTracks::executeClipToolCommand (
 	if (pMidiClip == NULL)
 		return false;
 
+	if (pClipToolCommand->isLinkedMidiClip(pMidiClip))
+		return false;
+
 	unsigned long iOffset = 0;
 	unsigned long iLength = pClip->clipLength();
 
@@ -934,7 +943,8 @@ bool qtractorTracks::executeClipToolCommand (
 	// Add new edit command from tool...
 	pClipToolCommand->addMidiEditCommand(
 		pMidiToolsForm->editCommand(pMidiClip, &select,
-			pSession->tickFromFrame(pClip->clipStart())));
+			pSession->tickFromFrame(pClip->clipStart()),
+			iTimeStart, iTimeEnd));
 			
 	// Must be brand new revision...
 	pMidiClip->setRevision(0);
@@ -2408,7 +2418,7 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 		return false;
 	}
 
-	clearSelect();
+	clearSelect(true);
 
 	const bool bResult = pSession->execute(pClipRangeCommand);
 	if (bResult) {
@@ -3089,10 +3099,17 @@ void qtractorTracks::updateTrackView (void)
 }
 
 
-// Overall selection reset.
-void qtractorTracks::clearSelect (void)
+// Overall selection clear/reset.
+void qtractorTracks::clearSelect ( bool bReset )
 {
-	m_pTrackView->clearSelect(true);
+	m_pTrackView->clearSelect(bReset);
+}
+
+
+// Overall selection update.
+void qtractorTracks::updateSelect (void)
+{
+	m_pTrackView->updateSelect();
 }
 
 

@@ -363,7 +363,7 @@ void qtractorOptions::saveOptions (void)
 {
 	// Make program version available in the future.
 	m_settings.beginGroup("/Program");
-	m_settings.setValue("/Version", QTRACTOR_VERSION);
+	m_settings.setValue("/Version", CONFIG_BUILD_VERSION);
 	m_settings.endGroup();
 
 	// And go into general options group.
@@ -722,8 +722,12 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			return false;
 		}
 		else if (sArg == "-v" || sArg == "--version") {
-			out << QObject::tr("Qt: %1\n").arg(qVersion());
-			out << QObject::tr(QTRACTOR_TITLE ": %1\n").arg(QTRACTOR_VERSION);
+			out << QObject::tr("Qt: %1\n")
+				.arg(qVersion());
+			out << QObject::tr("%1: %2  (%3)\n")
+				.arg(QTRACTOR_TITLE)
+				.arg(CONFIG_BUILD_VERSION)
+				.arg(CONFIG_BUILD_DATE);
 			return false;
 		}
 		else {

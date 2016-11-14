@@ -1,27 +1,69 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.7.8.36, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.7.9.40, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
 AC_CONFIG_FILES(Makefile qtractor.spec src/src.pri src/qtractor.desktop)
 AC_CONFIG_FILES(src/qtractor_vst_scan.pri)
 
+# Build date and time.
+AC_CACHE_VAL([ac_cv_build_date],
+   [ac_cv_build_date=$(date +"%b %d %Y %H:%M %z")])
+ac_build_date="$ac_cv_build_date"
+AC_DEFINE_UNQUOTED(CONFIG_BUILD_DATE, ["$ac_build_date"], [Build date and time.])
+
+# Build version string.
+AC_CACHE_VAL([ac_cv_build_version], [
+   ac_cv_build_version=$(git describe --tags --abbrev=6 2>/dev/null)
+   if test -n "$ac_cv_build_version"; then
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed -r 's/^[[^_]]+_//')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed -r 's/-g/git./')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed -r 's/[[_|-]]+/./g')
+   else
+      ac_cv_build_version=$PACKAGE_VERSION
+   fi
+])
+ac_build_version="$ac_cv_build_version"
+AC_DEFINE_UNQUOTED(CONFIG_BUILD_VERSION, ["$ac_build_version"], [Build version string.])
+
+# Sanitized version string.
+AC_CACHE_VAL([ac_cv_version], [
+   ac_cv_version=$(echo $ac_cv_build_version | sed -r 's/^([[0-9|\.]]+).*$/\1/')
+])
+ac_version="$ac_cv_version"
+AC_DEFINE_UNQUOTED(CONFIG_VERSION, ["$ac_version"], [Version string.])
+AC_SUBST(ac_version)
+
 # Set default installation prefix.
 AC_PREFIX_DEFAULT(/usr/local)
-ac_prefix=$prefix
-if test "x$ac_prefix" = "xNONE"; then
-   ac_prefix=$ac_default_prefix
+if test "x$prefix" = "xNONE"; then
+   prefix=$ac_default_prefix
 fi
+if test "x$exec_prefix" = "xNONE"; then
+   exec_prefix=$prefix
+fi
+eval ac_prefix=$prefix
 AC_SUBST(ac_prefix)
 AC_DEFINE_UNQUOTED(CONFIG_PREFIX, ["$ac_prefix"], [Default installation prefix.])
 
-# Set default library/plugin prefix.
-if test "x$exec_prefix" = "xNONE"; then
-   exec_prefix=$ac_prefix
-fi
+# Set default installation directories.
+eval ac_bindir=$bindir
+AC_SUBST(ac_bindir)
+AC_DEFINE_UNQUOTED(CONFIG_BINDIR, ["$ac_bindir"], [Default executable binary path.])
+
 eval ac_libdir=$libdir
 AC_SUBST(ac_libdir)
-AC_DEFINE_UNQUOTED(CONFIG_LIBDIR, ["$ac_libdir"], [Default library path.])
+AC_DEFINE_UNQUOTED(CONFIG_LIBDIR, ["$ac_libdir"], [Default object library path.])
+
+eval datarootdir=$datarootdir
+eval ac_datadir=$datadir
+AC_SUBST(ac_datadir)
+AC_DEFINE_UNQUOTED(CONFIG_DATADIR, ["$ac_datadir"], [Default arch-idependent data path.])
+
+eval ac_mandir=$mandir
+AC_SUBST(ac_mandir)
+AC_DEFINE_UNQUOTED(CONFIG_MANDIR, ["$ac_mandir"], [Default man page path.])
+
 
 # Enable debugging argument option.
 AC_ARG_ENABLE(debug,
@@ -382,9 +424,24 @@ AC_PROG_CXXCPP
 # Checks for languages.
 AC_LANG_CPLUSPLUS
 
+# Check for pkg-config.
+PKG_PROG_PKG_CONFIG
+
+# Check whether -std=c++11 support is necessary (4 < g++ version < 6).
+AC_CACHE_CHECK([for g++ major version], [ac_cv_gxx_version_major], [
+   ac_cv_gxx_version_major=$($CC -dumpversion)
+   if test -n "$ac_cv_gxx_version_major"; then
+      ac_cv_gxx_version_major=$(echo $ac_cv_gxx_version_major | cut -d'.' -f1);
+   fi
+   ac_gxx_version_major=$(($ac_cv_gxx_version_major + 0))
+])
+ac_gxx_version_major=$ac_cv_gxx_version_major
+if test $ac_gxx_version_major -gt 4 -a $ac_gxx_version_major -lt 6; then
+   CXXFLAGS="-std=c++11 $CXXFLAGS"
+fi
 
 # Check for proper flags.
-ac_arch=`uname -m`
+ac_arch=$(uname -m)
 
 # Check for install paths and alternatives...
 ac_libdirs="lib"
@@ -432,21 +489,29 @@ if test "x$ac_qmake" = "xno"; then
    AC_MSG_ERROR([qmake $ac_errmsg])
 fi
 
-# Check for proper Qt4/5 major version.
-ac_qt_version_major=`$ac_qmake -query QT_VERSION | cut -d. -f1`
+# Check for proper Qt major version.
+AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
+   ac_cv_qt_version_major=$($ac_qmake -query QT_VERSION | cut -d'.' -f1)
+   ac_cv_qt_version_major=$(($ac_cv_qt_version_major + 0))
+])
+ac_qt_version_major=$ac_cv_qt_version_major
 if test "x$ac_qt4" = "xyes"; then
-   if test "x$ac_qt_version_major" != "x4"; then
+   if test $ac_qt_version_major -ne 4; then
       AC_MSG_ERROR([qmake-qt4 $ac_errmsg (qt4-devel)])
    fi
 else
-   if test "x$ac_qt_version_major" != "x5"; then
+   if test $ac_qt_version_major -ne 5; then
       AC_MSG_ERROR([qmake-qt5 $ac_errmsg (qt5-devel)])
    fi
 fi
 
-ac_qt_install_bins=`$ac_qmake -query QT_INSTALL_BINS`
-if test -d $ac_qt_install_bins; then
-   ac_path="$ac_qt_install_bins:$ac_path"
+# Check for proper Qt install path.
+AC_CACHE_CHECK([for Qt install path], [ac_cv_qt_install_path], [
+   ac_cv_qt_install_path=$($ac_qmake -query QT_INSTALL_BINS)
+])
+ac_qt_install_path=$ac_cv_qt_install_path
+if test -d $ac_qt_install_path; then
+   ac_path="$ac_qt_install_path:$ac_path"
 fi
 
 # Check it again, now with updated PATH, just in case...
@@ -458,20 +523,26 @@ fi
 
 AC_SUBST(ac_qmake)
 
-ac_qt_install_headers=`$ac_qmake -query QT_INSTALL_HEADERS`
+AC_CACHE_CHECK([for Qt install headers], [ac_cv_qt_install_headers], [
+   ac_cv_qt_install_headers=$($ac_qmake -query QT_INSTALL_HEADERS)
+])
+ac_qt_install_headers=$ac_cv_qt_install_headers
 if test -d $ac_qt_install_headers; then
    CFLAGS="-I$ac_qt_install_headers $CFLAGS "
    CPPFLAGS="-I$ac_qt_install_headers $CPPFLAGS"
    ac_incpath="$ac_qt_install_headers $ac_incpath"
 fi
 
-ac_qt_install_libs=`$ac_qmake -query QT_INSTALL_LIBS`
+AC_CACHE_CHECK([for Qt install libraries], [ac_cv_qt_install_libs], [
+   ac_cv_qt_install_libs=$($ac_qmake -query QT_INSTALL_LIBS)
+])
+ac_qt_install_libs=$ac_cv_qt_install_libs
 if test -d $ac_qt_install_libs; then
    LIBS="-L$ac_qt_install_libs $LIBS"
    ac_libs="-L$ac_qt_install_libs $ac_libs"
 fi
 
-# Check for proper Qt4/5 version.
+# Finally, check for proper Qt4/5 version.
 if test "x$ac_qt4" = "xyes"; then
    AC_CACHE_CHECK([for Qt library version >= 4.4],
       ac_cv_qtversion, [
@@ -574,15 +645,6 @@ if test "x$ac_sse" = "xyes"; then
 fi
 
 
-# Check for pkg-config utility (needed for LV2 GTK UI support).
-AC_PATH_PROG(ac_pkg_config, pkg-config, [no], $ac_path)
-if test "x$ac_pkg_config" = "xno"; then
-   ac_lv2="no"
-   ac_lilv="no"
-   ac_suil="no"
-fi
-
-
 # Checks for libraries.
 AC_CHECK_LIB(m, main)
 AC_CHECK_LIB(X11, main)
@@ -595,116 +657,126 @@ if test "x$ac_round" = "xyes"; then
 fi
 
 # Check for JACK libraries.
-AC_CHECK_LIB(jack, main, [ac_libjack="yes"], [ac_libjack="no"])
-if test "x$ac_libjack" = "xno"; then
-   AC_MSG_ERROR([JACK library not found.])
+PKG_CHECK_MODULES([JACK], [jack >= 0.100.0], [ac_libjack="yes"], [ac_libjack="no"])
+if test "x$ac_libjack" = "xyes"; then
+   AC_DEFINE(CONFIG_LIBJACK, 1, [Define if JACK library is available.])
+   ac_cflags="$ac_cflags $JACK_CFLAGS"
+   ac_libs="$ac_libs $JACK_LIBS"
 else
-   ac_libs="$ac_libs -ljack"
+   AC_MSG_ERROR([*** JACK library not found.])
 fi
 
 # Check for ALSA libraries.
-AC_CHECK_LIB(asound, main, [ac_libasound="yes"], [ac_libasound="no"])
-if test "x$ac_libasound" = "xno"; then
-   AC_MSG_ERROR([ALSA library not found.])
+PKG_CHECK_MODULES([ALSA], [alsa], [ac_libasound="yes"], [ac_libasound="no"])
+if test "x$ac_libasound" = "xyes"; then
+   AC_DEFINE(CONFIG_LIBASOUND, 1, [Define if ALSA library is available.])
+   ac_cflags="$ac_cflags $ALSA_CFLAGS"
+   ac_libs="$ac_libs $ALSA_LIBS"
 else
-   ac_libs="$ac_libs -lasound"
+   AC_MSG_ERROR([*** ALSA library not found.])
 fi
 
-# Check for sndfile library.
-AC_CHECK_LIB(sndfile, main, [ac_libsndfile="yes"], [ac_libsndfile="no"])
-if test "x$ac_libsndfile" = "xno"; then
-   AC_MSG_ERROR([sndfile library not found.])
+# Check for SNDFILE library.
+PKG_CHECK_MODULES([SNDFILE], [sndfile], [ac_libsndfile="yes"], [ac_libsndfile="no"])
+if test "x$ac_libsndfile" = "xyes"; then
+   AC_DEFINE(CONFIG_LIBSNDFILE, 1, [Define if SNDFILE library is available.])
+   ac_cflags="$ac_cflags $SNDFILE_CFLAGS"
+   ac_libs="$ac_libs $SNDFILE_LIBS"
 else
-   ac_libs="$ac_libs -lsndfile"
+   AC_MSG_ERROR([*** SNDFILE library not found.])
 fi
 
-# Check for option libvorbis libraries.
+# Check for optional VORBIS libraries.
 if test "x$ac_libvorbis" = "xyes"; then
-   AC_CHECK_LIB(ogg, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   PKG_CHECK_MODULES([VORBIS], [vorbis], [ac_libvorbis="yes"], [ac_libvorbis="no"])
    if test "x$ac_libvorbis" = "xyes"; then
-      ac_libs="$ac_libs -logg"
+      ac_cflags="$ac_cflags $VORBIS_CFLAGS"
+      ac_libs="$ac_libs $VORBIS_LIBS"
    else
-      AC_MSG_WARN([*** ogg library not found.])
+      AC_MSG_WARN([*** VORBIS library not found.])
    fi
 fi
-
 if test "x$ac_libvorbis" = "xyes"; then
-   AC_CHECK_LIB(vorbis, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   PKG_CHECK_MODULES([VORBISENC], [vorbisenc], [ac_libvorbis="yes"], [ac_libvorbis="no"])
    if test "x$ac_libvorbis" = "xyes"; then
-      ac_libs="$ac_libs -lvorbis"
+      ac_cflags="$ac_cflags $VORBISENC_CFLAGS"
+      ac_libs="$ac_libs $VORBISENC_LIBS"
    else
-      AC_MSG_WARN([*** vorbis library not found.])
+      AC_MSG_WARN([*** VORBISENC library not found.])
    fi
 fi
-
 if test "x$ac_libvorbis" = "xyes"; then
-   AC_CHECK_LIB(vorbisenc, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   PKG_CHECK_MODULES([VORBISFILE], [vorbisfile], [ac_libvorbis="yes"], [ac_libvorbis="no"])
    if test "x$ac_libvorbis" = "xyes"; then
-      ac_libs="$ac_libs -lvorbisenc"
+      ac_cflags="$ac_cflags $VORBISFILE_CFLAGS"
+      ac_libs="$ac_libs $VORBISFILE_LIBS"
    else
-      AC_MSG_WARN([*** vorbisenc library not found.])
+      AC_MSG_WARN([*** VORBISFILE library not found.])
    fi
 fi
-
 if test "x$ac_libvorbis" = "xyes"; then
-   AC_CHECK_LIB(vorbisfile, main, [ac_libvorbis="yes"], [ac_libvorbis="no"])
+   PKG_CHECK_MODULES([OGG], [ogg], [ac_libvorbis="yes"], [ac_libvorbis="no"])
    if test "x$ac_libvorbis" = "xyes"; then
-      ac_libs="$ac_libs -lvorbisfile"
+      ac_cflags="$ac_cflags $OGG_CFLAGS"
+      ac_libs="$ac_libs $OGG_LIBS"
    else
-      AC_MSG_WARN([*** vorbisfile library not found.])
+      AC_MSG_WARN([*** OGG library not found.])
    fi
 fi
-
 if test "x$ac_libvorbis" = "xyes"; then
-   AC_DEFINE(CONFIG_LIBVORBIS, 1, [Define if libvorbis is available.])
+   AC_DEFINE(CONFIG_LIBVORBIS, 1, [Define if VORBIS library is available.])
 else
    AC_MSG_WARN([*** Ogg Vorbis audio file support will be disabled.])
 fi
 
-# Check for optional libmad library.
+# Check for optional MAD library.
 if test "x$ac_libmad" = "xyes"; then
-   AC_CHECK_LIB(mad, main, [ac_libmad="yes"], [ac_libmad="no"])
+   PKG_CHECK_MODULES([MAD], [mad], [ac_libmad="yes"], [ac_libmad="no"])
    if test "x$ac_libmad" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBMAD, 1, [Define if libmad is available.])
-      ac_libs="$ac_libs -lmad"
+      AC_DEFINE(CONFIG_LIBMAD, 1, [Define if MAD library is available.])
+      ac_cflags="$ac_cflags $MAD_CFLAGS"
+      ac_libs="$ac_libs $MAD_LIBS"
    else
-      AC_MSG_WARN([*** mad library not found.])
+      AC_MSG_WARN([*** MAD library not found.])
       AC_MSG_WARN([*** MPEG Layer III audio file support will be disabled.])
    fi
 fi
 
-# Check for optional libsamplerate library.
+# Check for optional SAMPLERATE library.
 if test "x$ac_libsamplerate" = "xyes"; then
-   AC_CHECK_LIB(samplerate, main, [ac_libsamplerate="yes"], [ac_libsamplerate="no"])
+   PKG_CHECK_MODULES([SAMPLERATE], [samplerate], [ac_libsamplerate="yes"], [ac_libsamplerate="no"])
    if test "x$ac_libsamplerate" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBSAMPLERATE, 1, [Define if libsamplerate is available.])
-      ac_libs="$ac_libs -lsamplerate"
+      AC_DEFINE(CONFIG_LIBSAMPLERATE, 1, [Define if SAMPLERATE library is available.])
+      ac_cflags="$ac_cflags $SAMPLERATE_CFLAGS"
+      ac_libs="$ac_libs $SAMPLERATE_LIBS"
    else
-      AC_MSG_WARN([*** samplerate library not found.])
+      AC_MSG_WARN([*** SAMPLERATE library not found.])
       AC_MSG_WARN([*** Sample-rate conversion support will be disabled.])
    fi
 fi
 
-# Check for optional librubberband library.
+# Check for optional RUBBERBAND library.
 if test "x$ac_librubberband" = "xyes"; then
-   AC_CHECK_LIB(rubberband, main, [ac_librubberband="yes"], [ac_librubberband="no"])
+   PKG_CHECK_MODULES([RUBBERBAND], [rubberband], [ac_librubberband="yes"], [ac_librubberband="no"])
    if test "x$ac_librubberband" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBRUBBERBAND, 1, [Define if librubberband is available.])
-      ac_libs="$ac_libs -lrubberband"
+      AC_DEFINE(CONFIG_LIBRUBBERBAND, 1, [Define if RUBBERBAND library is available.])
+      ac_cflags="$ac_cflags $RUBBERBAND_CFLAGS"
+      ac_libs="$ac_libs $RUBBERBAND_LIBS"
    else
-      AC_MSG_WARN([*** rubberband library not found.])
+      AC_MSG_WARN([*** RUBBERBAND library not found.])
       AC_MSG_WARN([*** Pitch-shifting support will be disabled.])
    fi
 fi
 
-# Check for optional liblo library.
+# Check for optional LIBLO library.
 if test "x$ac_liblo" = "xyes"; then
-   AC_CHECK_LIB(lo, main, [ac_liblo="yes"], [ac_liblo="no"])
+   PKG_CHECK_MODULES([LIBLO], [liblo], [ac_liblo="yes"], [ac_liblo="no"])
    if test "x$ac_liblo" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBLO, 1, [Define if liblo is available.])
-      ac_libs="$ac_libs -llo"
+      AC_DEFINE(CONFIG_LIBLO, 1, [Define if LIBLO library is available.])
+      ac_cflags="$ac_cflags $LIBLO_CFLAGS"
+      ac_libs="$ac_libs $LIBLO_LIBS"
    else
-      AC_MSG_WARN([*** lo library not found.])
+      AC_MSG_WARN([*** LIBLO library not found.])
       AC_MSG_WARN([*** OSC service support will be disabled.])
       ac_nsm="no"
    fi
@@ -712,14 +784,15 @@ else
    ac_nsm="no"
 fi
 
-# Check for optional libz library.
+# Check for optional ZLIB library.
 if test "x$ac_libz" = "xyes"; then
-   AC_CHECK_LIB(z, main, [ac_libz="yes"], [ac_libz="no"])
+   PKG_CHECK_MODULES([ZLIB], [zlib], [ac_libz="yes"], [ac_libz="no"])
    if test "x$ac_libz" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBZ, 1, [Define if libz is available.])
-      ac_libs="$ac_libs -lz"
+      AC_DEFINE(CONFIG_LIBZ, 1, [Define if ZLIB library is available.])
+      ac_cflags="$ac_cflags $ZLIB_CFLAGS"
+      ac_libs="$ac_libs $ZLIB_LIBS"
    else
-      AC_MSG_WARN([*** z library not found.])
+      AC_MSG_WARN([*** ZLIB library not found.])
       AC_MSG_WARN([*** Archive/Zip file support will be disabled.])
    fi
 fi
@@ -745,19 +818,16 @@ if test "x$ac_qt4" = "xyes"; then
    ac_lv2_ui_x11="no"
 fi
 
-# Check for optional liblilv library.
+# Check for optional LILV library.
 if test "x$ac_lilv" = "xyes"; then
-   AC_CHECK_LIB(lilv-0, main, [ac_lilv="yes"], [ac_lilv="no"])
+   PKG_CHECK_MODULES([LILV], [lilv-0], [ac_lilv="yes"], [ac_lilv="no"])
 fi
 if test "x$ac_lilv" = "xyes"; then
-   ac_lilv_libs=`$ac_pkg_config --libs lilv-0 2>/dev/null`
-   if test -n "$ac_lilv_libs"; then
-      ac_libs="$ac_libs $ac_lilv_libs"
-      AC_DEFINE(CONFIG_LIBLILV, 1, [Define if liblilv is available.])
-   else
-      AC_MSG_WARN([*** lilv library not found.])
-      ac_lilv="no"
-   fi
+   AC_DEFINE(CONFIG_LIBLILV, 1, [Define if LILV library is available.])
+   ac_cflags="$ac_cflags $LILV_CFLAGS"
+   ac_libs="$ac_libs $LILV_LIBS"
+else
+   AC_MSG_WARN([*** LILV library not found.])
 fi
 
 if test "x$ac_lilv" = "xyes"; then
@@ -777,17 +847,14 @@ fi
 
 # Check for LV2 new UI instantiation availability (libsuil).
 if test "x$ac_suil" = "xyes"; then
-   AC_CHECK_LIB(suil-0, main, [ac_suil="yes"], [ac_suil="no"])
+   PKG_CHECK_MODULES([SUIL], [suil-0], [ac_suil="yes"], [ac_suil="no"])
 fi
 if test "x$ac_suil" = "xyes"; then
-   ac_suil_libs=`$ac_pkg_config --libs suil-0 2>/dev/null`
-   if test -n "$ac_suil_libs"; then
-      ac_libs="$ac_libs $ac_suil_libs"
-      AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if libsuil is available.])
-   else
-      AC_MSG_WARN([*** suil library not found.])
-      ac_suil="no"
-   fi
+   AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is available.])
+   ac_cflags="$ac_cflags $SUIL_CFLAGS"
+   ac_libs="$ac_libs $SUIL_LIBS"
+else
+   AC_MSG_WARN([*** SUIL library not found.])
 fi
 
 if test "x$ac_suil" = "xyes"; then
@@ -848,116 +915,11 @@ else
    AC_MSG_WARN([*** JACK metadata support will be disabled.])
 fi
 
-# Some recent distros (eg. fedora, debian) require this.
-ac_libs="$ac_libs -lX11"
-
-AC_SUBST(ac_libs)
 
 # Checks for header files.
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h sys/stat.h unistd.h signal.h)
-
-# Check for JACK headers.
-AC_CHECK_HEADER(jack/jack.h, [ac_jack_h="yes"], [ac_jack_h="no"])
-if test "x$ac_jack_h" = "xno"; then
-   AC_MSG_ERROR([JACK headers not found.])
-fi
-
-# Check for ALSA headers.
-AC_CHECK_HEADER(alsa/asoundlib.h, [ac_alsa_h="yes"], [ac_alsa_h="no"])
-if test "x$ac_alsa_h" = "xno"; then
-   AC_MSG_ERROR([ALSA headers not found.])
-fi
-
-# Check for sndfile headers.
-AC_CHECK_HEADER(sndfile.h, [ac_sndfile_h="yes"], [ac_sndfile_h="no"])
-if test "x$ac_sndfile_h" = "xno"; then
-   AC_MSG_ERROR([sndfile.h header file not found.])
-fi
-
-# Check for vorbisfile headers.
-if test "x$ac_libvorbis" = "xyes"; then
-   AC_CHECK_HEADER(vorbis/vorbisenc.h, [ac_vorbisenc_h="yes"], [ac_vorbisenc_h="no"])
-   if test "x$ac_vorbisenc_h" = "xno"; then
-      AC_MSG_ERROR([vorbisenc.h header file not found.])
-   fi
-   AC_CHECK_HEADER(vorbis/vorbisfile.h, [ac_vorbisfile_h="yes"], [ac_vorbisfile_h="no"])
-   if test "x$ac_vorbisfile_h" = "xno"; then
-      AC_MSG_ERROR([vorbisfile.h header file not found.])
-   fi
-fi
-
-# Check for mad headers.
-if test "x$ac_libmad" = "xyes"; then
-   AC_CHECK_HEADER(mad.h, [ac_mad_h="yes"], [ac_mad_h="no"])
-   if test "x$ac_mad_h" = "xno"; then
-      AC_MSG_ERROR([mad.h header file not found.])
-   fi
-fi
-
-# Check for samplerate headers.
-if test "x$ac_libsamplerate" = "xyes"; then
-   AC_CHECK_HEADER(samplerate.h, [ac_samplerate_h="yes"], [ac_samplerate_h="no"])
-   if test "x$ac_samplerate_h" = "xno"; then
-      AC_MSG_ERROR([samplerate.h header file not found.])
-   fi
-fi
-
-# Check for rubberband headers.
-if test "x$ac_librubberband" = "xyes"; then
-   AC_CHECK_HEADER(rubberband/RubberBandStretcher.h, [ac_rubberband_h="yes"], [ac_rubberband_h="no"])
-   if test "x$ac_rubberband_h" = "xno"; then
-      AC_MSG_ERROR([RubberBandStretcher.h header file not found.])
-   fi
-fi
-
-# Check for lo headers.
-if test "x$ac_liblo" = "xyes"; then
-   AC_CHECK_HEADER(lo/lo.h, [ac_lo_h="yes"], [ac_lo_h="no"])
-   if test "x$ac_lo_h" = "xno"; then
-      AC_MSG_ERROR([lo.h header file not found.])
-      ac_nsm="no"
-   fi
-fi
-
-# Check for zlib headers.
-if test "x$ac_libz" = "xyes"; then
-   AC_CHECK_HEADER(zlib.h, [ac_zlib_h="yes"], [ac_zlib_h="no"])
-   if test "x$ac_zlib_h" = "xno"; then
-      AC_MSG_ERROR([zlib.h header file not found.])
-   fi
-fi
-
-# Check for lilv headers.
-if test "x$ac_lilv" = "xyes"; then
-   ac_lilv_cflags=`$ac_pkg_config --cflags lilv-0 2>/dev/null`
-   if test -n "$ac_lilv_cflags"; then
-      CFLAGS="$ac_lilv_cflags $CFLAGS"
-      CPPFLAGS="$ac_lilv_cflags $CPPFLAGS"
-   fi
-   AC_CHECK_HEADER(lilv/lilv.h, [ac_lilv_h="yes"], [ac_lilv_h="no"])
-   if test "x$ac_lilv_h" = "xno"; then
-      AC_MSG_ERROR([lilv.h header file not found.])
-   else
-      ac_cflags="$ac_lilv_cflags $ac_cflags"
-   fi
-fi
-
-# Check for suil headers.
-if test "x$ac_suil" = "xyes"; then
-   ac_suil_cflags=`$ac_pkg_config --cflags suil-0 2>/dev/null`
-   if test -n "$ac_suil_cflags"; then
-      CFLAGS="$ac_suil_cflags $CFLAGS"
-      CPPFLAGS="$ac_suil_cflags $CPPFLAGS"
-   fi
-   AC_CHECK_HEADER(suil/suil.h, [ac_suil_h="yes"], [ac_suil_h="no"])
-   if test "x$ac_suil_h" = "xno"; then
-      AC_MSG_ERROR([suil.h header file not found.])
-   else
-      ac_cflags="$ac_suil_cflags $ac_cflags"
-   fi
-fi
 
 # Check for LADSPA headers.
 if test -n "$ac_with_ladspa"; then
@@ -1129,6 +1091,31 @@ if test "x$ac_lv2_atom" = "xyes"; then
       [ac_lv2_atom="yes"], [ac_lv2_atom="no"])
    if test "x$ac_lv2_atom" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_ATOM, 1, [Define if LV2 Atom/MIDI aupport is available.])
+      AC_CACHE_CHECK([for lv2_atom_forge_object],
+         ac_cv_lv2_atom_forge_object, [
+         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
+            // Checking for lv2_atom_forge_object...
+            LV2_Atom_Forge *forge;
+            LV2_Atom_Forge_Frame *frame;
+            lv2_atom_forge_object(forge, frame, 0, 101);
+         ], ac_cv_lv2_atom_forge_object="yes", ac_cv_lv2_atom_forge_object="no")
+      ])
+      ac_lv2_atom_forge_object=$ac_cv_lv2_atom_forge_object
+      if test "x$ac_lv2_atom_forge_object" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_OBJECT, 1, [Define if lv2_atom_forge_object is available.])
+      fi
+      AC_CACHE_CHECK([for lv2_atom_forge_key],
+         ac_cv_lv2_atom_forge_key, [
+         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
+            // Checking for lv2_atom_forge_key...
+            LV2_Atom_Forge *forge;
+            lv2_atom_forge_key(forge, 102);
+         ], ac_cv_lv2_atom_forge_key="yes", ac_cv_lv2_atom_forge_key="no")
+      ])
+      ac_lv2_atom_forge_key=$ac_cv_lv2_atom_forge_key
+      if test "x$ac_lv2_atom_forge_key" = "xyes"; then
+         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_KEY, 1, [Define if lv2_atom_forge_key is available.])
+      fi
    else
       AC_MSG_WARN([*** LV2 Atom/MIDI support will be disabled.])
       ac_lv2_state="no"
@@ -1258,38 +1245,7 @@ if test "x$ac_lv2_buf_size" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_time_position" = "xyes"; then
-   AC_CHECK_HEADER(lv2/lv2plug.in/ns/ext/atom/forge.h,
-      [ac_lv2_time_position="yes"], [ac_lv2_time_position="no"])
-   if test "x$ac_lv2_time_position" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_TIME_POSITION, 1, [Define if LV2 Time/position support is available.])
-      AC_CACHE_CHECK([for LV2 Time/position support (lv2_atom_forge_object)],
-         ac_cv_lv2_atom_forge_object, [
-         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
-            // Checking for lv2_atom_forge_object...
-            LV2_Atom_Forge *forge;
-            LV2_Atom_Forge_Frame *frame;
-            lv2_atom_forge_object(forge, frame, 0, 101);
-         ], ac_cv_lv2_atom_forge_object="yes", ac_cv_atom_forge_object="no")
-      ])
-      ac_lv2_atom_forge_object=$ac_cv_lv2_atom_forge_object
-      if test "x$ac_lv2_atom_forge_object" = "xyes"; then
-         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_OBJECT, 1, [Define if lv2_atom_forge_object is available.])
-      fi
-      AC_CACHE_CHECK([for LV2 Time/position support (lv2_atom_forge_key)],
-         ac_cv_lv2_atom_forge_key, [
-         AC_TRY_LINK([#include "lv2/lv2plug.in/ns/ext/atom/forge.h"], [
-            // Checking for lv2_atom_forge_key...
-            LV2_Atom_Forge *forge;
-            lv2_atom_forge_key(forge, 102);
-         ], ac_cv_lv2_atom_forge_key="yes", ac_cv_atom_forge_key="no")
-      ])
-      ac_lv2_atom_forge_key=$ac_cv_lv2_atom_forge_key
-      if test "x$ac_lv2_atom_forge_key" = "xyes"; then
-         AC_DEFINE(CONFIG_LV2_ATOM_FORGE_KEY, 1, [Define if lv2_atom_forge_key is available.])
-      fi
-   else
-      AC_MSG_WARN([*** LV2 Time/position support will be disabled.])
-   fi
+   AC_DEFINE(CONFIG_LV2_TIME_POSITION, 1, [Define if LV2 Time/position support is available.])
 fi
 if test "x$ac_lv2_ui_touch" = "xyes"; then
    AC_CACHE_CHECK([for LV2 UI Touch interface],
@@ -1358,16 +1314,14 @@ if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
    fi
 fi
 if test "x$ac_lv2_ui_gtk2" = "xyes"; then
-   ac_gtk2_cflags=`$ac_pkg_config --cflags gtk+-2.0 2>/dev/null`
-   ac_gtk2_libs=`$ac_pkg_config --libs gtk+-2.0 2>/dev/null`
-   if test -n "$ac_gtk2_cflags" -a -n "$ac_gtk2_libs"; then
-      ac_cflags="$ac_cflags $ac_gtk2_cflags"
-      ac_libs="$ac_libs $ac_gtk2_libs"
-      AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
-   else
-      AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
-      ac_lv2_ui_gtk2="no"
-   fi
+   PKG_CHECK_MODULES([GTK2], [gtk+-2.0], [ac_lv2_ui_gtk2="yes"], [ac_lv2_ui_gtk2="no"])
+fi
+if test "x$ac_lv2_ui_gtk2" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
+   ac_cflags="$ac_cflags $GTK2_CFLAGS"
+   ac_libs="$ac_libs $GTK2_LIBS"
+else
+   AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
 fi
 
 if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
@@ -1426,6 +1380,16 @@ fi
 if test "x$ac_xunique" = "xyes"; then
    AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
 fi
+if test "x$ac_xunique" = "xyes" -o "x$ac_vst" = "xyes"; then
+   if test "x$ac_qt4" = "xno"; then
+      ac_qx11extras="x11extras"
+   fi
+   # Some recent distros (eg. fedora, debian) require this.
+   if test "x$ac_cv_lib_X11_main" = "xyes"; then
+      ac_libs="$ac_libs -lX11"
+   fi
+fi
+AC_SUBST(ac_qx11extras)
 
 # Check for gradient eye-candy.
 if test "x$ac_gradient" = "xyes"; then
@@ -1437,9 +1401,10 @@ if test "x$ac_stacktrace" = "xyes"; then
    AC_DEFINE(CONFIG_STACKTRACE, 1, [Define if debugger stack-trace is enabled.])
 fi
 
-AC_SUBST(ac_incpath)
 AC_SUBST(ac_cflags)
 AC_SUBST(ac_ldflags)
+AC_SUBST(ac_incpath)
+AC_SUBST(ac_libs)
 
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -1456,7 +1421,7 @@ AC_OUTPUT
 # Output summary message
 
 echo
-echo "  $PACKAGE_NAME $PACKAGE_VERSION"
+echo "  $PACKAGE_NAME $ac_build_version  ($ac_build_date)"
 echo
 echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_debug"
 echo

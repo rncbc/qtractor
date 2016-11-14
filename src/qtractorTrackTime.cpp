@@ -446,7 +446,7 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 			if (bModifier) {
 				// Play-head positioning commit...
 				pTrackView->setPlayHead(iFrame);
-				pSession->setPlayHead(pTrackView->playHead());
+				pSession->setPlayHead(iFrame);
 			} else {
 				// Edit cursor (merge) positioning...
 				pTrackView->setEditHead(iFrame);
@@ -608,7 +608,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragPlayHead:
 			// Play-head positioning commit...
 			pTrackView->setPlayHead(iFrame);
-			pSession->setPlayHead(pTrackView->playHead());
+			pSession->setPlayHead(iFrame);
 			// Not quite a selection, rather just
 			// for immediate visual feedback...
 			m_pTracks->selectionChangeNotify();

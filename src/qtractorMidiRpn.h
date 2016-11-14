@@ -34,7 +34,7 @@ public:
 
 	~qtractorMidiRpn();
 
-	enum Type { None = 0, CC = 0xb0, RPN = 0x10, NRPN = 0x20, CC14 = 0x30 };
+	enum Type { None = 0, CC = 0x10, RPN = 0x20, NRPN = 0x30, CC14 = 0x40 };
 
 	struct Event
 	{

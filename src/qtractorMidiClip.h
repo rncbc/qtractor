@@ -122,8 +122,8 @@ public:
 	void process_export(unsigned long iFrameStart, unsigned long iFrameEnd);
 
 	// Clip paint method.
-	void draw(QPainter *pPainter, const QRect& clipRect,
-		unsigned long iClipOffset);
+	void draw(QPainter *pPainter,
+		const QRect& clipRect, unsigned long iClipOffset);
 
 	// Clip editor methods.
 	bool startEditor(QWidget *pParent = NULL);
@@ -235,6 +235,9 @@ public:
 
 	// Whether local hash is being shared.
 	bool isHashLinked() const;
+
+	// Check whether a MIDI clip is hash-linked to another.
+	bool isLinkedClip (qtractorMidiClip *pMidiClip) const;
 
 	// Get all hash-linked clips (including self).
 	QList<qtractorMidiClip *> linkedClips() const;

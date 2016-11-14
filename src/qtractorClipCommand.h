@@ -1,7 +1,7 @@
 // qtractorClipCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -244,6 +244,9 @@ public:
 	// Destructor.
 	virtual ~qtractorClipToolCommand();
 
+	// Check if a clip is already part of the editing set.
+	bool isLinkedMidiClip(qtractorMidiClip *pMidiClip) const;
+
 	// Composite command methods.
 	void addMidiEditCommand(qtractorMidiEditCommand *pMidiEditCommand);
 
@@ -253,6 +256,11 @@ public:
 	// Virtual command methods.
 	bool redo();
 	bool undo();
+
+protected:
+
+	// Filename and length swap transaction...
+	void swapMidiClipCtx( qtractorMidiClip *pMidiClip);
 
 private:
 

@@ -369,6 +369,12 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	if (x2 >= rect.left() && x2 <= rect.right())
 		painter.drawLine(x2, 0, x2, h);
 
+	x2 = int(pSession->playHeadAutoBackward() / f2);
+	if (x2 >= rect.left() && x2 <= rect.right()) {
+		painter.setPen(QColor(240, 0, 0, 60));
+		painter.drawLine(x2, 0, x2, h);
+	}
+
 	// Draw current play-head as well...
 	x2 = m_iPlayHeadX;
 	if (x2 >= rect.left() && x2 <= rect.right()) {

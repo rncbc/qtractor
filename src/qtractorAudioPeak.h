@@ -1,7 +1,7 @@
 // qtractorAudioPeak.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -77,12 +77,12 @@ public:
 
 	// Peak cache file methods.
 	bool openRead();
-	Frame *read(unsigned long iPeakOffset, unsigned int iPeakFrames);
+	Frame *read(unsigned long iPeakOffset, unsigned int iPeakLength);
 	void closeRead();
 
 	// Write peak from audio frame methods.
 	bool openWrite(unsigned short iChannels, unsigned int iSampleRate);
-	void write(float **ppAudioFrames, unsigned int iAudioFrames);
+	int write(float **ppAudioFrames, unsigned int iAudioFrames);
 	void closeWrite();
 
 	// Reference count methods.
@@ -95,6 +95,9 @@ public:
 	// Sync thread state flags accessors.
 	void setWaitSync(bool bWaitSync);
 	bool isWaitSync() const;
+
+	// Peak filename standard.
+	static QString peakName(const QString& sFilename, float fTimeStretch);
 
 protected:
 
@@ -122,20 +125,27 @@ private:
 	unsigned int   m_iBuffLength;
 	unsigned long  m_iBuffOffset;
 
-	unsigned long  m_iWriteOffset;
-
-	float         *m_peakMax;
-	float         *m_peakMin;
-	float         *m_peakRms;
-	unsigned short m_iPeakPeriod;
-	unsigned short m_iPeak;
-
 	QMutex         m_mutex;
 
 	volatile bool  m_bWaitSync;
 
 	// Current reference count.
 	unsigned int   m_iRefCount;
+
+	// Peak-writer context state.
+	struct Writer
+	{
+		unsigned long  offset;
+		float         *amax;
+		float         *amin;
+		float         *arms;
+		float          period;
+		unsigned long  nframe;
+		unsigned short npeak;
+		unsigned long  nread;
+		unsigned long  nwrite;
+
+	} *m_pWriter;
 };
 
 
@@ -148,14 +158,13 @@ class qtractorAudioPeak
 public:
 
 	// Constructor.
-	qtractorAudioPeak(qtractorAudioPeakFile *pPeakFile)
-		{ m_pPeakFile = pPeakFile; m_pPeakFile->addRef(); }
-	// Copy consructor.
-	qtractorAudioPeak(const qtractorAudioPeak& peak)
-		{ m_pPeakFile = peak.m_pPeakFile; m_pPeakFile->addRef(); }
+	qtractorAudioPeak(qtractorAudioPeakFile *pPeakFile);
+
+	// Copy onstructor.
+	qtractorAudioPeak(const qtractorAudioPeak& peak);
 
 	// Default destructor.
-	~qtractorAudioPeak() { m_pPeakFile->removeRef(); }
+	~qtractorAudioPeak();
 
 	// Reference accessor.
 	qtractorAudioPeakFile *peakFile() const
@@ -171,24 +180,23 @@ public:
 	unsigned short channels() const
 		{ return m_pPeakFile->channels(); }
 
-	// Peak cache file methods.
-	bool openRead() { return m_pPeakFile->openRead(); }
-	qtractorAudioPeakFile::Frame *read(
-		unsigned long iPeakOffset, unsigned int iPeakFrames)
-		{ return m_pPeakFile->read(iPeakOffset, iPeakFrames); }
-	void closeRead() { m_pPeakFile->closeRead(); }
-
-	// Write peak from audio frame methods.
-	bool openWrite(unsigned short iChannels, unsigned int iSampleRate)
-		{ return m_pPeakFile->openWrite(iChannels, iSampleRate); }
-	void write(float **ppAudioFrames, unsigned int iAudioFrames)
-		{ m_pPeakFile->write(ppAudioFrames, iAudioFrames); }
-	void closeWrite() { m_pPeakFile->closeWrite(); }
+	// Peak frame buffer reader-cache executive.
+	qtractorAudioPeakFile::Frame *peakFrames(
+		unsigned long iFrameOffset, unsigned long iFrameLength, int width);
+	// Peak frame buffer length (in frames).
+	unsigned int peakLength() const
+		{ return m_iPeakLength; }
 
 private:
 
 	// Instance variable (ref'counted).
 	qtractorAudioPeakFile *m_pPeakFile;
+
+	// Interim scaling buffer and hash.
+	qtractorAudioPeakFile::Frame *m_pPeakFrames;
+
+	unsigned int m_iPeakLength;
+	unsigned int m_iPeakHash;
 };
 
 
@@ -207,8 +215,11 @@ public:
 	// Default destructor.
 	~qtractorAudioPeakFactory();
 
-	// The peak file factory-method.
-	static QString peakName(const QString& sFilename, float fTimeStretch);
+	// The peak period accessors.
+	void setPeakPeriod(unsigned short iPeakPeriod);
+	unsigned short peakPeriod() const;
+
+	// The peak file factory-methods.
 	qtractorAudioPeak *createPeak(const QString& sFilename, float fTimeStretch);
 	void removePeak(qtractorAudioPeakFile *pPeakFile, bool bAborted);
 
@@ -225,6 +236,9 @@ public:
 	// Cleanup method.
 	void cleanup();
 
+	// Singleton instance accessor.
+	static qtractorAudioPeakFactory *getInstance();
+
 signals:
 
 	// Peak ready signal.
@@ -236,7 +250,9 @@ private:
 	QMutex m_mutex;
 
 	// The list of managed peak files.
-	QHash<QString, qtractorAudioPeakFile *> m_peaks;
+	typedef QHash<QString, qtractorAudioPeakFile *> PeakFiles;
+
+	PeakFiles m_peaks;
 
 	// Auto-delete property.
 	bool m_bAutoRemove;
@@ -246,6 +262,12 @@ private:
 
 	// The peak file creation detached thread.
 	qtractorAudioPeakThread *m_pPeakThread;
+
+	// The current running peak-period.
+	unsigned short m_iPeakPeriod;
+
+	// The pseudo-singleton instance.
+	static qtractorAudioPeakFactory *g_pPeakFactory;
 };
 
 

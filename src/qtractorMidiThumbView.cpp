@@ -203,7 +203,7 @@ void qtractorMidiThumbView::updateContents (void)
 	}
 
 	// Update relative play-head position...
-	const unsigned long iPlayHead = m_pEditor->playHead();
+	const unsigned long iPlayHead = pSession->playHead();
 	m_iPlayHeadX = int(pTimeScale->tickFromFrame(iPlayHead) - t0) / f2;
 
 	// May trigger an update now...
@@ -364,6 +364,12 @@ void qtractorMidiThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	x2 = int(pTimeScale->tickFromFrame(pSession->editTail()) - t0) / f2;
 	if (x2 >= rect.left() && x2 <= rect.right())
 		painter.drawLine(x2, 0, x2, h);
+
+	x2 = int(pTimeScale->tickFromFrame(pSession->playHeadAutoBackward()) - t0) / f2;
+	if (x2 >= rect.left() && x2 <= rect.right()) {
+		painter.setPen(QColor(240, 0, 0, 60));
+		painter.drawLine(x2, 0, x2, h);
+	}
 
 	// Draw current play-head as well...
 	x2 = m_iPlayHeadX;

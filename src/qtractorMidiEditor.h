@@ -158,16 +158,13 @@ public:
 
 	// Edit-head/tail accessors.
 	void setEditHead(unsigned long iEditHead, bool bSyncView = true);
-	unsigned long editHead() const;
 	int editHeadX() const;
 
 	void setEditTail(unsigned long iEditTail, bool bSyncView = true);
-	unsigned long editTail() const;
 	int editTailX() const;
 
 	// Play-head positioning.
 	void setPlayHead(unsigned long iPlayHead, bool bSyncView = true);
-	unsigned long playHead() const;
 	int playHeadX() const;
 
 	// Update time-scale to master session.
@@ -645,15 +642,12 @@ private:
 	qtractorCommandList *m_pCommands;
 
 	// Local edit-head/tail positioning.
-	unsigned long m_iEditHead;
-	int           m_iEditHeadX;
-	unsigned long m_iEditTail;
-	int           m_iEditTailX;
+	int  m_iEditHeadX;
+	int  m_iEditTailX;
 
 	// Local playhead positioning.
-	unsigned long m_iPlayHead;
-	int           m_iPlayHeadX;
-	bool          m_bSyncView;
+	int  m_iPlayHeadX;
+	bool m_bSyncView;
 
 	// Note autition while editing.
 	bool m_bSendNotes;

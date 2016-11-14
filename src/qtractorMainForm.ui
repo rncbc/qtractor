@@ -82,12 +82,6 @@
    <addaction name="separator"/>
    <addaction name="editDeleteAction"/>
    <addaction name="separator"/>
-   <addaction name="editSelectModeClipAction"/>
-   <addaction name="editSelectModeRangeAction"/>
-   <addaction name="editSelectModeRectAction"/>
-   <addaction name="separator"/>
-   <addaction name="editSelectModeCurveAction"/>
-   <addaction name="separator"/>
    <addaction name="clipNewAction"/>
    <addaction name="clipEditAction"/>
   </widget>
