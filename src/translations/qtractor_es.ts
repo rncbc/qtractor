@@ -331,7 +331,7 @@ Fin:	%3	Duración:	%4</translation>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
         <source>plugin parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>parametros del plugin</translation>
     </message>
     <message>
         <location filename="../qtractorMidiManager.cpp" line="1341"/>
@@ -454,7 +454,8 @@ MIDI:	</translation>
         <location filename="../qtractorOptions.cpp" line="727"/>
         <source>%1: %2  (%3)
 </source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2  (%3)
+</translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="228"/>
@@ -5717,12 +5718,12 @@ la próxima vez que inicie este %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5541"/>
         <source>LV2 Plug-in UI GTK2 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soporte de UI de plugin-LV2 en UI GTK2 deshabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5544"/>
         <source>LV2 Plug-in UI X11 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soporte de UI de plugin-LV2 en UI X11 deshabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5550"/>

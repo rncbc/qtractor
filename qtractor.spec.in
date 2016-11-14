@@ -64,7 +64,7 @@ the personal home-studio.
 
 %prep
 %setup
-[ -f Makefile.git ] && %__make -f Makefile.git
+[ -x ./autogen.sh ] && ./autogen.sh
 
 %build
 %configure
