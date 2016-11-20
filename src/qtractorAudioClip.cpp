@@ -656,7 +656,6 @@ void qtractorAudioClip::draw (
 	}
 
 	// Draw peak chart...
-	const QColor& fg = track()->foreground();
 	const int h1 = (clipRect.height() / iChannels);
 	const int h2 = (h1 >> 1);
 	const int h2gain = (h2 * m_fractGain.num);
@@ -681,11 +680,12 @@ void qtractorAudioClip::draw (
 	}
 
 	// Close, draw and free the polygons...
+	QColor fg(track()->foreground());
+	fg.setAlpha(190);
 	pPainter->setPen(fg.lighter(140));
+	pPainter->setBrush(fg);
 	for (k = 0; k < iChannels; ++k) {
-		pPainter->setBrush(fg.lighter(120));
 		pPainter->drawPolygon(*pPolyMax[k]);
-		pPainter->setBrush(fg);
 		pPainter->drawPolygon(*pPolyRms[k]);
 		delete pPolyMax[k];
 		delete pPolyRms[k];
