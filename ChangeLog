@@ -27,7 +27,7 @@ ChangeLog
   while on the the main track-view canvas.
 
 - Audio peak file caching and rendering, as far as audio
-  clip waveforms are concerned, have been refactored and
+  clip wave-forms are concerned, have been refactored and
   optimized a couple of notches higher, on the ephemeral
   and rather marginal throughput front ;).
 
@@ -53,7 +53,7 @@ ChangeLog
   eg. --prefix, --bindir, --libdir, --datadir and --mandir.
 
 - LV2 Plugin-in worker/schedule fix: make request/response
-  ringbuffer writes in one go, hopefully atomic (suggested
+  ring-buffer writes in one go, hopefully atomic (suggested
   patch by Stefan Westerfeld, while on SpectMorph, thanks).
 
 
