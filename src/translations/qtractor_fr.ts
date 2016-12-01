@@ -418,20 +418,6 @@ MIDI:	</translation>
         <translation>Option -s nécessite un argument (session-id).</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="725"/>
-        <source>Qt: %1
-</source>
-        <translation>Qt: %1
-</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptions.cpp" line="727"/>
-        <source>%1: %2  (%3)
-</source>
-        <translation>%1 : %2  (%3)
-</translation>
-    </message>
-    <message>
         <location filename="../qtractorPlugin.cpp" line="228"/>
         <source>(Any)</source>
         <translation>(Tous)</translation>
@@ -5755,11 +5741,6 @@ est hautement recommandé.</translation>
         <location filename="../qtractorMainForm.cpp" line="5566"/>
         <source>Version</source>
         <translation>Version</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5567"/>
-        <source>Build</source>
-        <translation>Compilation</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5575"/>

@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Make builds reproducible byte for byte, by getting rid of
+  the configure build date and time stamps.
+
+
 0.8.0  2016-11-21  Snobbiest Graviton Beta.
 
 - MIDI clip tools redo/undo processing refactored as much to
