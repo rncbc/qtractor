@@ -429,7 +429,7 @@ MIDI:	</translation>
         <location filename="../qtractorOptions.cpp" line="727"/>
         <source>%1: %2  (%3)
 </source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2  (%3)</translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="228"/>
@@ -751,7 +751,7 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3433"/>
         <source>plugin parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>parametri della plugin</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
@@ -5680,7 +5680,11 @@ increased from %1 to %2 frames/period.
 
 Reloading the current session file
 is highly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>La dimensione del buffer del motore audio è cambiata,
+ed è incrementata da %1 a %2 frame per periodo.
+
+E&apos; altamente consigliato ricaricaricare
+il file della sessione corrente.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="443"/>
@@ -5832,12 +5836,12 @@ siano attivi ed in esecuzione, poi riavvia la sessione.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5541"/>
         <source>LV2 Plug-in UI GTK2 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto nativo per UI GTK2 della plugin LV2 disabilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5544"/>
         <source>LV2 Plug-in UI X11 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto nativo per UI X11 della plugin LV2 disabilitato.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5559"/>
@@ -8977,7 +8981,7 @@ Spiacente.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="521"/>
         <source>&amp;Reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>Inve&amp;rtita</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="542"/>
@@ -9970,7 +9974,7 @@ Sei sicuro?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2007"/>
         <source>Metronome MIDI duration (bar)</source>
-        <translation type="unfinished"></translation>
+        <translation>Durata del metronomo MIDI (barra)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2032"/>
@@ -10000,7 +10004,7 @@ Sei sicuro?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2121"/>
         <source>Metronome MIDI duration (beat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Durata del metronomo MIDI (battito)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2146"/>
@@ -10015,7 +10019,7 @@ Sei sicuro?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2181"/>
         <source>Metronome MIDI offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset del metronomo MIDI (latenza)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2204"/>
@@ -10318,12 +10322,12 @@ Sei sicuro?</translation>
         <location filename="../qtractorOptionsForm.ui" line="1320"/>
         <location filename="../qtractorOptionsForm.ui" line="2162"/>
         <source>&amp;Offset (latency):</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Offset (latenza)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1339"/>
         <source>Metronome Audio offset (latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset del metronomo audio (latenza)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1520"/>
