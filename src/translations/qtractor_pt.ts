@@ -85,12 +85,6 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>Opção -s requer um argumento (nome da sessão).</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="727"/>
-        <source>%1: %2  (%3)
-</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiTimer.cpp" line="106"/>
         <source>slave</source>
         <translation>escravo</translation>
@@ -468,12 +462,6 @@ MIDI:	</translation>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Pista %1</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptions.cpp" line="725"/>
-        <source>Qt: %1
-</source>
-        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorInstrument.cpp" line="634"/>
@@ -2885,11 +2873,6 @@ Deseja salvar essas modificações?</translation>
         <location filename="../qtractorMainForm.ui" line="650"/>
         <source>E&amp;xit</source>
         <translation>&amp;Sair</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5567"/>
-        <source>Build</source>
-        <translation>Compilação</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2538"/>
