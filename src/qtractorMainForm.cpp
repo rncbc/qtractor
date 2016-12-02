@@ -5566,7 +5566,6 @@ void qtractorMainForm::helpAbout (void)
 	sText += tr("Version") + ": <b>" CONFIG_BUILD_VERSION "</b><br />\n";
 //	sText += "<small>" + tr("Build") + ": " CONFIG_BUILD_DATE "</small><br />\n";
 	if (!list.isEmpty()) {
-		sText += "<br />\n";
 		sText += "<small><font color=\"red\">";
 		sText += list.join("<br />\n");
 		sText += "</font></small><br />\n";
