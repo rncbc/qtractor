@@ -1004,12 +1004,12 @@ void qtractorFileListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (pMouseEvent->button() == Qt::LeftButton) {
 		m_posDrag   = pMouseEvent->pos();
 		m_pDragItem = QTreeWidget::itemAt(m_posDrag);
-	#if 0
-		if (m_pDragItem && m_pDragItem->isSelected()
-			&& (pMouseEvent->modifiers()
-				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
-			return;
-	#endif
+		if ((pMouseEvent->modifiers()
+			& (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
+			QTreeWidget::clearSelection();
+			QTreeWidget::setSelectionMode(
+				QAbstractItemView::SingleSelection);
+		}
 	}
 
 	QTreeWidget::mousePressEvent(pMouseEvent);
@@ -1085,6 +1085,8 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			pDrag->exec(Qt::LinkAction);
 			// We've dragged and maybe dropped it by now...
 			// QTreeWidget::reset();
+			QTreeWidget::setSelectionMode(
+				QAbstractItemView::ExtendedSelection);
 			dragLeaveEvent(NULL);
 			m_pDragItem = NULL;
 		}
@@ -1095,6 +1097,9 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 void qtractorFileListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	QTreeWidget::mouseReleaseEvent(pMouseEvent);
+
+	QTreeWidget::setSelectionMode(
+		QAbstractItemView::ExtendedSelection);
 
 	dragLeaveEvent(NULL);
 	m_pDragItem = NULL;

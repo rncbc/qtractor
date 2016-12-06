@@ -576,14 +576,15 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 unsigned int qtractorAudioPeakFile::readBuffer (
 	unsigned int iBuffOffset, unsigned long iPeakOffset, unsigned int iPeakLength )
 {
+	const unsigned int nsize = m_peakHeader.channels * sizeof(Frame);
+
 	// Shall we reallocate?
 	if (iBuffOffset + iPeakLength > m_iBuffSize) {
 		Frame *pOldBuffer = m_pBuffer;
 		m_iBuffSize += (iPeakLength << 1);
 		m_pBuffer = new Frame [m_peakHeader.channels * m_iBuffSize];
 		if (pOldBuffer) {
-			::memcpy(m_pBuffer, pOldBuffer,
-				m_peakHeader.channels * m_iBuffLength * sizeof(Frame));
+			::memcpy(m_pBuffer, pOldBuffer, m_iBuffLength * nsize);
 			delete [] pOldBuffer;
 		}
 	}
@@ -596,10 +597,8 @@ unsigned int qtractorAudioPeakFile::readBuffer (
 
 	// Grab new contents from peak file...
 	char *pBuffer = (char *) (m_pBuffer + m_peakHeader.channels * iBuffOffset);
-	const unsigned long iOffset
-		= iPeakOffset * m_peakHeader.channels * sizeof(Frame);
-	const unsigned int iLength
-		= iPeakLength * m_peakHeader.channels * sizeof(Frame);
+	const unsigned long iOffset	= iPeakOffset * nsize;
+	const unsigned int iLength	= iPeakLength * nsize;
 
 	int nread = 0;
 	if (m_peakFile.seek(sizeof(Header) + iOffset))
@@ -609,7 +608,7 @@ unsigned int qtractorAudioPeakFile::readBuffer (
 	if (nread < int(iLength))
 		::memset(&pBuffer[nread], 0, iLength - nread);
 
-	return nread / (m_peakHeader.channels * sizeof(Frame));
+	return nread / nsize;
 }
 
 
