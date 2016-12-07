@@ -859,6 +859,10 @@ qtractorAudioPeak::~qtractorAudioPeak (void)
 qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	unsigned long iFrameOffset, unsigned long iFrameLength, int width )
 {
+	// Skip empty blanks...
+	if (width < 1)
+		return NULL;
+
 	// Try open current peak file as is...
 	if (!m_pPeakFile->openRead())
 		return NULL;
@@ -866,6 +870,16 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	// Just in case resolutions might change...
 	const unsigned short iPeakPeriod = m_pPeakFile->period();
 	if (iPeakPeriod < 1)
+		return NULL;
+
+	// Peak frames length estimation...
+	const unsigned int iPeakLength = (iFrameLength / iPeakPeriod);
+	if (iPeakLength < 1)
+		return NULL;
+
+	// We'll get a brand new peak frames alright...
+	const unsigned short iChannels = m_pPeakFile->channels();
+	if (iChannels < 1)
 		return NULL;
 
 	// Have we been here before?
@@ -886,16 +900,6 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 		m_pPeakFrames = NULL;
 		m_iPeakLength = 0;
 	}
-
-	// We'll get a brand new peak frames alright...
-	const unsigned short iChannels = m_pPeakFile->channels();
-	if (iChannels < 1)
-		return NULL;
-
-	// Peak frames length estimation...
-	const unsigned int iPeakLength = (iFrameLength / iPeakPeriod);
-	if (iPeakLength < 1)
-		return NULL;
 
 	// Grab them in...
 	const unsigned long iPeakOffset = (iFrameOffset / iPeakPeriod);
