@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="es_ES">
+<TS version="2.0" language="es_ES">
 <context>
     <name>QObject</name>
     <message>
@@ -1943,18 +1943,18 @@ falló.</translation>
 <context>
     <name>qtractorFileListView</name>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="551"/>
+        <location filename="../qtractorFileListView.cpp" line="553"/>
         <source>New Group</source>
         <translation>Grupo nuevo</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="662"/>
-        <location filename="../qtractorFileListView.cpp" line="691"/>
+        <location filename="../qtractorFileListView.cpp" line="664"/>
+        <location filename="../qtractorFileListView.cpp" line="693"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="663"/>
+        <location filename="../qtractorFileListView.cpp" line="665"/>
         <source>About to remove %1 file item(s).
 
 Are you sure?</source>
@@ -1963,7 +1963,7 @@ Are you sure?</source>
 ¿Esta seguro?</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="692"/>
+        <location filename="../qtractorFileListView.cpp" line="694"/>
         <source>About to remove %1 item:
 
 &quot;%2&quot;
@@ -1975,12 +1975,12 @@ Are you sure?</source>
 ¿Esta seguro?</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="695"/>
+        <location filename="../qtractorFileListView.cpp" line="697"/>
         <source>group</source>
         <translation>grupo</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="695"/>
+        <location filename="../qtractorFileListView.cpp" line="697"/>
         <source>file</source>
         <translation>archivo</translation>
     </message>

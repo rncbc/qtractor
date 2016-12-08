@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Some sanitary checks have been added to audio clip peak
+  waveform re-generation routine, as much to avoid empty,
+  blank, zero or negative-width faulty renderings.
+
 - Do not reset the Files tree-view widgets anymore, when
   leaving any drag-and-drop operation (annoyingly, all
   groups and sub-groups were being closed without appeal).

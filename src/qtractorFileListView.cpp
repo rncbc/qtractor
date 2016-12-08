@@ -545,8 +545,10 @@ void qtractorFileListView::openFile (void)
 void qtractorFileListView::newGroup (void)
 {
 	qtractorFileGroupItem *pParentItem = currentGroupItem();
+#if 0
 	if (pParentItem && !pParentItem->isOpen())
 		pParentItem = pParentItem->groupItem();
+#endif
 	qtractorFileGroupItem *pGroupItem
 		= addGroupItem(tr("New Group"), pParentItem);
 	if (pGroupItem) {
@@ -999,18 +1001,19 @@ bool qtractorFileListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 void qtractorFileListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	dragLeaveEvent(NULL);
-	m_pDragItem = NULL;
 
-	if (pMouseEvent->button() == Qt::LeftButton) {
-		m_posDrag   = pMouseEvent->pos();
-		m_pDragItem = QTreeWidget::itemAt(m_posDrag);
-		if ((pMouseEvent->modifiers()
+	m_posDrag   = pMouseEvent->pos();
+	m_pDragItem = QTreeWidget::itemAt(m_posDrag);
+
+	if (pMouseEvent->button() == Qt::LeftButton
+		&& (pMouseEvent->modifiers()
 			& (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
-			QTreeWidget::clearSelection();
-			QTreeWidget::setSelectionMode(
-				QAbstractItemView::SingleSelection);
-		}
+		QTreeWidget::clearSelection();
+		QTreeWidget::setSelectionMode(
+			QAbstractItemView::SingleSelection);
 	}
+
+	QTreeWidget::setCurrentItem(m_pDragItem);
 
 	QTreeWidget::mousePressEvent(pMouseEvent);
 }
