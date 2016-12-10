@@ -139,8 +139,10 @@ private:
 		float         *amax;
 		float         *amin;
 		float         *arms;
-		float          period;
-		unsigned long  nframe;
+		unsigned int   period_p;
+		unsigned int   period_q;
+		unsigned int   period_r;
+		unsigned int   nframe;
 		unsigned short npeak;
 		unsigned long  nread;
 		unsigned long  nwrite;
