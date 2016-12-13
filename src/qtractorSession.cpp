@@ -785,7 +785,7 @@ void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 {
 	if (iSampleRate == m_props.timeScale.sampleRate())
 		return;
-
+#if 0
 	// Unfortunatelly we must close all clips first,
 	// so let at least all audio peaks be refreshned...
 	for (qtractorTrack *pTrack = m_tracks.first();
@@ -795,7 +795,7 @@ void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 			pClip->close();
 		}
 	}
-
+#endif
 	// Set the conversion ratio...
 	const float fRatio
 		= float(m_props.timeScale.sampleRate()) / float(iSampleRate);

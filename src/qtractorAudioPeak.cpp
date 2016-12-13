@@ -715,8 +715,8 @@ void qtractorAudioPeakFile::closeWrite (void)
 	QMutexLocker locker(&m_mutex);
 
 	// Flush and close...
-	if (m_openMode == Write && m_pWriter) {
-		if (m_pWriter->npeak > 0)
+	if (m_openMode == Write) {
+		if (m_pWriter && m_pWriter->npeak > 0)
 			writeFrame();
 		m_peakFile.close();
 		m_openMode = None;
@@ -786,17 +786,20 @@ void qtractorAudioPeakFile::writeFrame (void)
 	if (!m_peakFile.seek(sizeof(Header) + m_pWriter->offset))
 		return;
 
+	Frame frame;
 	for (unsigned short i = 0; i < m_peakHeader.channels; ++i) {
-		Frame frame;
 		// Write the denormalized peak values...
-		m_pWriter->amax[i] = 255.0f * ::fabsf(m_pWriter->amax[i]);
-		m_pWriter->amin[i] = 255.0f * ::fabsf(m_pWriter->amin[i]);
-		m_pWriter->arms[i] = 255.0f * ::sqrtf(m_pWriter->arms[i] / float(m_pWriter->npeak));
-		frame.max = (unsigned char) (m_pWriter->amax[i] > 255.0f ? 255 : m_pWriter->amax[i]);
-		frame.min = (unsigned char) (m_pWriter->amin[i] > 255.0f ? 255 : m_pWriter->amin[i]);
-		frame.rms = (unsigned char) (m_pWriter->arms[i] > 255.0f ? 255 : m_pWriter->arms[i]);
+		float& fmax = m_pWriter->amax[i];
+		float& fmin = m_pWriter->amin[i];
+		float& frms = m_pWriter->arms[i];
+		fmax = 255.0f * ::fabsf(fmax);
+		fmin = 255.0f * ::fabsf(fmin);
+		frms = 255.0f * ::sqrtf(frms / float(m_pWriter->npeak));
+		frame.max = (unsigned char) (fmax > 255.0f ? 255 : int(fmax));
+		frame.min = (unsigned char) (fmin > 255.0f ? 255 : int(fmin));
+		frame.rms = (unsigned char) (frms > 255.0f ? 255 : int(frms));
 		// Reset peak period accumulators...
-		m_pWriter->amax[i] = m_pWriter->amin[i] = m_pWriter->arms[i] = 0.0f;
+		fmax = fmin = frms = 0.0f;
 		// Bail out?...
 		m_pWriter->offset += m_peakFile.write((const char *) &frame, sizeof(Frame));
 	}

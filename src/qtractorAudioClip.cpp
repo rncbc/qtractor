@@ -286,12 +286,15 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 				m_pData->attach(this);
 				// Peak files should also be created on-the-fly...
 				qtractorAudioBuffer *pBuff = m_pData->buffer();
-				if ((m_pPeak == NULL || bFilenameChanged)
-					&& pSession->audioPeakFactory()) {
-					if (m_pPeak)
-						delete m_pPeak;
-					m_pPeak = pSession->audioPeakFactory()->createPeak(
-						sFilename, pBuff->timeStretch());
+				if (m_pPeak == NULL || bFilenameChanged) {
+					qtractorAudioPeakFactory *pPeakFactory
+						= pSession->audioPeakFactory();
+					if (pPeakFactory) {
+						if (m_pPeak)
+							delete m_pPeak;
+						m_pPeak = pPeakFactory->createPeak(
+							sFilename, pBuff->timeStretch());
+					}
 				}
 				// Clip name should be clear about it all.
 				if (clipName().isEmpty())
@@ -323,14 +326,17 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		setClipLength(pBuff->length() - pBuff->offset());
 
 	// Peak files should also be created on-the-fly?
-	if ((m_pPeak == NULL || bFilenameChanged)
-		&& pSession->audioPeakFactory()) {
-		if (m_pPeak)
-			delete m_pPeak;
-		m_pPeak = pSession->audioPeakFactory()->createPeak(
-			sFilename, pBuff->timeStretch());
-		if (bWrite)
-			pBuff->setPeakFile(m_pPeak->peakFile());
+	if (m_pPeak == NULL || bFilenameChanged) {
+		qtractorAudioPeakFactory *pPeakFactory
+			= pSession->audioPeakFactory();
+		if (pPeakFactory) {
+			if (m_pPeak)
+				delete m_pPeak;
+			m_pPeak = pPeakFactory->createPeak(
+				sFilename, pBuff->timeStretch());
+			if (bWrite)
+				pBuff->setPeakFile(m_pPeak->peakFile());
+		}
 	}
 
 	// Clip name should be clear about it all.

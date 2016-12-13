@@ -293,8 +293,10 @@ qtractorMainForm::qtractorMainForm (
 	m_iAudioPropertyChange = 0;
 
 	// Configure the audio file peak factory...
-	if (m_pSession->audioPeakFactory()) {
-		QObject::connect(m_pSession->audioPeakFactory(),
+	qtractorAudioPeakFactory *pPeakFactory
+		= m_pSession->audioPeakFactory();
+	if (pPeakFactory) {
+		QObject::connect(pPeakFactory,
 			SIGNAL(peakEvent()),
 			SLOT(peakNotify()));
 	}
@@ -6314,10 +6316,10 @@ void qtractorMainForm::updatePeakAutoRemove (void)
 	if (m_pOptions == NULL)
 		return;
 
-	qtractorAudioPeakFactory *pAudioPeakFactory
+	qtractorAudioPeakFactory *pPeakFactory
 		= m_pSession->audioPeakFactory();
-	if (pAudioPeakFactory)
-		pAudioPeakFactory->setAutoRemove(m_pOptions->bPeakAutoRemove);	
+	if (pPeakFactory)
+		pPeakFactory->setAutoRemove(m_pOptions->bPeakAutoRemove);
 }
 
 
