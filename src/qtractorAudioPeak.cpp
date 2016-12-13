@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioFile.h"
+#include "qtractorAudioEngine.h"
 
 #include "qtractorSession.h"
 
@@ -217,8 +218,7 @@ void qtractorAudioPeakThread::run (void)
 			if (m_pPeakFile && m_pPeakFile->isWaitSync()) {
 				if (openPeakFile()) {
 					// Go ahead with the whole bunch...
-					while (m_bRunState && writePeakFile())
-						/* empty loop */;
+					while (writePeakFile());
 					// We're done.
 					closePeakFile();
 				}
@@ -677,18 +677,31 @@ bool qtractorAudioPeakFile::openWrite (
 		m_pWriter->amax[i] = m_pWriter->amin[i] = m_pWriter->arms[i] = 0.0f;
 
 	// Get resample/timestretch-aware internal peak period ratio...
-	float fPeriod = float(m_peakHeader.period);
+	m_pWriter->period_p = iSampleRate;
+
+	qtractorAudioEngine *pAudioEngine = NULL;
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession) fPeriod *= float(iSampleRate)
-		/ (float(pSession->sampleRate()) * m_fTimeStretch);
+	if (pSession) pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine) {
+		const unsigned int num = (iSampleRate * m_peakHeader.period);
+		const unsigned int den = (unsigned int)
+			::rintf(float(pAudioEngine->sampleRate() * m_fTimeStretch));
+		m_pWriter->period_q = (num / den);
+		m_pWriter->period_r = (num % den);
+		if (m_pWriter->period_r > 0) {
+			m_pWriter->period_r += m_peakHeader.period;
+			m_pWriter->period_r /= m_peakHeader.period;
+		}
+	} else {
+		m_pWriter->period_q = m_peakHeader.period;
+		m_pWriter->period_r = 0;
+	}
 
 	// Start counting for peak generator and writer...
-	m_pWriter->period = fPeriod;
 	m_pWriter->nframe = 0;
 	m_pWriter->npeak  = 0;
 	m_pWriter->nread  = 0;
-	m_pWriter->nwrite = (unsigned long) ::lroundf(
-		m_pWriter->period * float(++m_pWriter->nframe));
+	m_pWriter->nwrite = m_pWriter->period_q;
 
 	// It's a certain success...
 	return true;
@@ -723,12 +736,12 @@ void qtractorAudioPeakFile::closeWrite (void)
 int qtractorAudioPeakFile::write (
 	float **ppAudioFrames, unsigned int iAudioFrames )
 {
-	// Make things critical...
-	QMutexLocker locker(&m_mutex);
-
 	// We should be actually open for writing...
 	if (m_openMode != Write || m_pWriter == NULL)
 		return 0;
+
+	// Make things critical...
+	QMutexLocker locker(&m_mutex);
 
 	for (unsigned int n = 0; n < iAudioFrames; ++n) {
 		// Accumulate for this sample frame...
@@ -745,8 +758,15 @@ int qtractorAudioPeakFile::write (
 		// Have we reached the peak accumulative period?
 		if (++m_pWriter->nread >= m_pWriter->nwrite) {
 			// Estimate next stop...
-			m_pWriter->nwrite = (unsigned long) ::lroundf(
-				m_pWriter->period * float(++m_pWriter->nframe));
+			m_pWriter->nwrite += m_pWriter->period_q;
+			// Apply rounding fraction, if any...
+			if (m_pWriter->period_r > 0) {
+				m_pWriter->nframe += m_pWriter->period_q;
+				if (m_pWriter->nframe >= m_pWriter->period_p) {
+					m_pWriter->nwrite += m_pWriter->period_r;
+					m_pWriter->nframe  = 0;
+				}
+			}
 			// Write peak frame out.
 			writeFrame();
 			// We'll reset counter.
