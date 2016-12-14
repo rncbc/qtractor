@@ -92,6 +92,9 @@ public:
 	// Physical removal.
 	void remove();
 
+	// Clean/close method.
+	void cleanup(bool bAutoRemove = false);
+
 	// Sync thread state flags accessors.
 	void setWaitSync(bool bWaitSync);
 	bool isWaitSync() const;
@@ -222,8 +225,8 @@ public:
 	unsigned short peakPeriod() const;
 
 	// The peak file factory-methods.
-	qtractorAudioPeak *createPeak(const QString& sFilename, float fTimeStretch);
-	void removePeak(qtractorAudioPeakFile *pPeakFile, bool bAborted);
+	qtractorAudioPeak *createPeak(
+		const QString& sFilename, float fTimeStretch = 1.0f);
 
 	// Auto-delete property.
 	void setAutoRemove(bool bAutoRemove);
@@ -258,9 +261,6 @@ private:
 
 	// Auto-delete property.
 	bool m_bAutoRemove;
-
-	// The queue of discardable peak files.
-	QStringList m_files;
 
 	// The peak file creation detached thread.
 	qtractorAudioPeakThread *m_pPeakThread;

@@ -401,19 +401,7 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 // Default destructor.
 qtractorAudioPeakFile::~qtractorAudioPeakFile (void)
 {
-	// Check if it's aborting (ought to be atomic)...
-	const bool bAborted = m_bWaitSync;
-	m_bWaitSync = false;
-
-	// Close the file, anyway now.
-	closeWrite();
-	closeRead();
-
-	// Tell master-factory that we're out immediately (if aborted)...
-	qtractorAudioPeakFactory *pPeakFactory
-		= qtractorAudioPeakFactory::getInstance();
-	if (pPeakFactory)
-		pPeakFactory->removePeak(this, bAborted);
+	cleanup();
 }
 
 
@@ -678,7 +666,6 @@ bool qtractorAudioPeakFile::openWrite (
 
 	// Get resample/timestretch-aware internal peak period ratio...
 	m_pWriter->period_p = iSampleRate;
-
 	qtractorAudioEngine *pAudioEngine = NULL;
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) pAudioEngine = pSession->audioEngine();
@@ -736,12 +723,12 @@ void qtractorAudioPeakFile::closeWrite (void)
 int qtractorAudioPeakFile::write (
 	float **ppAudioFrames, unsigned int iAudioFrames )
 {
+	// Make things critical...
+	QMutexLocker locker(&m_mutex);
+
 	// We should be actually open for writing...
 	if (m_openMode != Write || m_pWriter == NULL)
 		return 0;
-
-	// Make things critical...
-	QMutexLocker locker(&m_mutex);
 
 	for (unsigned int n = 0; n < iAudioFrames; ++n) {
 		// Accumulate for this sample frame...
@@ -815,7 +802,7 @@ void qtractorAudioPeakFile::addRef (void)
 void qtractorAudioPeakFile::removeRef (void)
 {
 	if (--m_iRefCount == 0)
-		delete this;
+		cleanup();
 }
 
 
@@ -823,6 +810,23 @@ void qtractorAudioPeakFile::removeRef (void)
 void qtractorAudioPeakFile::remove (void)
 {
 	m_peakFile.remove();
+}
+
+
+// Clean/close method.
+void qtractorAudioPeakFile::cleanup ( bool bAutoRemove )
+{
+	// Check if it's aborting (ought to be atomic)...
+	const bool bAborted = (m_bWaitSync || bAutoRemove);
+	m_bWaitSync = false;
+
+	// Close the file, anyway now.
+	closeWrite();
+	closeRead();
+
+	// Physically remove the file if aborted...
+	if (bAborted)
+		remove();
 }
 
 
@@ -1014,8 +1018,7 @@ qtractorAudioPeakFactory::~qtractorAudioPeakFactory (void)
 		m_pPeakThread = NULL;
 	}
 
-	qDeleteAll(m_peaks);
-	m_peaks.clear();
+	cleanup();
 
 	// Pseudo-singleton reference shut-down.
 	g_pPeakFactory = NULL;
@@ -1030,6 +1033,8 @@ void qtractorAudioPeakFactory::setPeakPeriod ( unsigned short iPeakPeriod )
 
 	QMutexLocker locker(&m_mutex);
 
+	sync(NULL);
+
 	m_iPeakPeriod = iPeakPeriod;
 
 	// Refresh all current peak files (asynchronously)...
@@ -1037,9 +1042,7 @@ void qtractorAudioPeakFactory::setPeakPeriod ( unsigned short iPeakPeriod )
 	const PeakFiles::ConstIterator& iter_end = m_peaks.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		qtractorAudioPeakFile *pPeakFile = iter.value();
-		pPeakFile->closeWrite();
-		pPeakFile->closeRead();
-		pPeakFile->remove();
+		pPeakFile->cleanup(true);
 		sync(pPeakFile);
 	}
 }
@@ -1074,21 +1077,6 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 }
 
 
-void qtractorAudioPeakFactory::removePeak (
-	qtractorAudioPeakFile *pPeakFile, bool bAborted )
-{
-	QMutexLocker locker(&m_mutex);
-
-	m_peaks.remove(pPeakFile->peakName());
-
-	if (bAborted)
-		pPeakFile->remove();
-	else
-	if (m_bAutoRemove)
-		m_files.append(pPeakFile->name());
-}
-
-
 // Auto-delete property.
 void qtractorAudioPeakFactory::setAutoRemove ( bool bAutoRemove )
 {
@@ -1120,11 +1108,20 @@ void qtractorAudioPeakFactory::cleanup (void)
 {
 	QMutexLocker locker(&m_mutex);
 
-	QStringListIterator iter(m_files);
-	while (iter.hasNext())
-		QFile::remove(iter.next());
-	m_files.clear();
+	sync(NULL);
 
+	// Cleanup all current registered peak files...
+	PeakFiles::ConstIterator iter = m_peaks.constBegin();
+	const PeakFiles::ConstIterator& iter_end = m_peaks.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		qtractorAudioPeakFile *pPeakFile = iter.value();
+		pPeakFile->cleanup(m_bAutoRemove);
+	}
+
+	qDeleteAll(m_peaks);
+	m_peaks.clear();
+
+	// Reset to default resolution...
 	m_iPeakPeriod = c_iPeakPeriod;
 }
 
