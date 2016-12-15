@@ -6,7 +6,11 @@ ChangeLog
 
 GIT HEAD
 
-- Some sanitary checks have been added to audio clip peak
+- Audio clip peak/waveform files re-generation performance,
+  scalability and resilience have been slightly improved.
+  (EXPERIMENTAL)
+
+- Some sanitary checks have been added to audio clip peak/
   waveform re-generation routine, as much to avoid empty,
   blank, zero or negative-width faulty renderings.
 
