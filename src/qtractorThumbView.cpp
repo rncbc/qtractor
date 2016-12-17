@@ -328,6 +328,8 @@ void qtractorThumbView::setPlayHeadX ( int iPlayHeadX )
 
 	const int f2 = 1 + (m_iContentsLength / w);
 	pSession->setPlayHead(f2 * iPlayHeadX);
+
+	pTracks->trackView()->setSyncViewHoldOn(false);
 }
 
 

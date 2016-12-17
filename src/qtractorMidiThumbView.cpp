@@ -321,6 +321,8 @@ void qtractorMidiThumbView::setPlayHeadX ( int iPlayHeadX )
 
 	const unsigned long t0 = pTimeScale->tickFromFrame(pMidiClip->clipStart());
 	pSession->setPlayHead(pTimeScale->frameFromTick(t0 + f2 * iPlayHeadX));
+
+	m_pEditor->setSyncViewHoldOn(false);
 }
 
 
