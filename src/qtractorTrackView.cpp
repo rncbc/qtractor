@@ -298,8 +298,7 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 			iContentsWidth += qtractorScrollView::width();
 		// HACK: Try and check whether we need to change
 		// current (global) audio-peak period resolution...
-		qtractorAudioPeakFactory *pPeakFactory
-			= qtractorAudioPeakFactory::getInstance();
+		qtractorAudioPeakFactory *pPeakFactory = pSession->audioPeakFactory();
 		if (pPeakFactory) {
 			const unsigned short iPeakPeriod = pPeakFactory->peakPeriod();
 			// Should we change resolution?
@@ -319,8 +318,8 @@ void qtractorTrackView::updateContentsWidth ( int iContentsWidth )
 			if (q2 < 2 && iSessionWidth > 1) {
 				q2 = (p2 / iSessionWidth);
 				if (q2 > 4) {
-				#ifdef CONFIG_DEBUG
 					pPeakFactory->setPeakPeriod(iPeakPeriod << 3);
+				#ifdef CONFIG_DEBUG
 					qDebug("qtractorTrackView::updateContentsWidth() "
 						"iSessionLength=%lu iSessionWidth=%d "
 						"-- peakPeriod=%u (%u) p2=%d q2=%d.",

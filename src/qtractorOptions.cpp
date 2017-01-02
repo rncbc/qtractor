@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -766,7 +766,6 @@ void qtractorOptions::loadWidgetGeometry ( QWidget *pWidget, bool bVisible )
 			= m_settings.value("/geometry").toByteArray();
 		if (!geometry.isEmpty())
 			pWidget->restoreGeometry(geometry);
-		else
 	#else//--LOAD_OLD_GEOMETRY
 		QPoint wpos;
 		QSize  wsize;
@@ -778,9 +777,9 @@ void qtractorOptions::loadWidgetGeometry ( QWidget *pWidget, bool bVisible )
 			pWidget->move(wpos);
 		if (wsize.width() > 0 && wsize.height() > 0)
 			pWidget->resize(wsize);
-		else
 	#endif
-		pWidget->adjustSize();
+	//	else
+	//	pWidget->adjustSize();
 		if (!bVisible)
 			bVisible = m_settings.value("/visible", false).toBool();
 		if (bVisible)
@@ -1076,3 +1075,4 @@ void qtractorOptions::saveActionControl ( QObject *pObject )
 
 
 // end of qtractorOptions.cpp
+

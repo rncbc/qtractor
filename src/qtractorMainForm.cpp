@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -295,8 +295,10 @@ qtractorMainForm::qtractorMainForm (
 	m_iAudioPropertyChange = 0;
 
 	// Configure the audio file peak factory...
-	if (m_pSession->audioPeakFactory()) {
-		QObject::connect(m_pSession->audioPeakFactory(),
+	qtractorAudioPeakFactory *pPeakFactory
+		= m_pSession->audioPeakFactory();
+	if (pPeakFactory) {
+		QObject::connect(pPeakFactory,
 			SIGNAL(peakEvent()),
 			SLOT(peakNotify()));
 	}
@@ -3464,8 +3466,8 @@ void qtractorMainForm::trackNavigateFirst (void)
 	qDebug("qtractorMainForm::trackNavigateFirst()");
 #endif
 
-	if (m_pTracks && m_pTracks->trackList())
-		(m_pTracks->trackList())->setCurrentTrackRow(0);
+	if (m_pTracks)
+		m_pTracks->trackList()->setCurrentTrackRow(0);
 }
 
 
@@ -3476,12 +3478,13 @@ void qtractorMainForm::trackNavigatePrev (void)
 	qDebug("qtractorMainForm::trackNavigatePrev()");
 #endif
 
-	if (m_pTracks && m_pTracks->trackList()) {
-		int iTrack = (m_pTracks->trackList())->currentTrackRow();
-		if (iTrack < 0 && (m_pTracks->trackList())->trackRowCount() > 0)
+	if (m_pTracks) {
+		qtractorTrackList *pTrackList = m_pTracks->trackList();
+		int iTrack = pTrackList->currentTrackRow();
+		if (iTrack < 0 && pTrackList->trackRowCount() > 0)
 			iTrack = 1;
 		if (iTrack > 0)
-			(m_pTracks->trackList())->setCurrentTrackRow(iTrack - 1);
+			pTrackList->setCurrentTrackRow(iTrack - 1);
 	}
 }
 
@@ -3493,10 +3496,11 @@ void qtractorMainForm::trackNavigateNext (void)
 	qDebug("qtractorMainForm::trackNavigateNext()");
 #endif
 
-	if (m_pTracks && m_pTracks->trackList()) {
-		int iTrack = (m_pTracks->trackList())->currentTrackRow();
-		if (iTrack < (m_pTracks->trackList())->trackRowCount() - 1)
-			(m_pTracks->trackList())->setCurrentTrackRow(iTrack + 1);
+	if (m_pTracks) {
+		qtractorTrackList *pTrackList = m_pTracks->trackList();
+		const int iTrack = pTrackList->currentTrackRow();
+		if (iTrack < pTrackList->trackRowCount() - 1)
+			pTrackList->setCurrentTrackRow(iTrack + 1);
 	}
 }
 
@@ -3508,10 +3512,11 @@ void qtractorMainForm::trackNavigateLast (void)
 	qDebug("qtractorMainForm::trackNavigateLast()");
 #endif
 
-	if (m_pTracks && m_pTracks->trackList()) {
-		int iLastTrack = (m_pTracks->trackList())->trackRowCount() - 1;
-		if (iLastTrack >= 0)
-			(m_pTracks->trackList())->setCurrentTrackRow(iLastTrack);
+	if (m_pTracks) {
+		qtractorTrackList *pTrackList = m_pTracks->trackList();
+		const int iTrack = pTrackList->trackRowCount() - 1;
+		if (iTrack >= 0)
+			pTrackList->setCurrentTrackRow(iTrack);
 	}
 }
 
@@ -3523,8 +3528,8 @@ void qtractorMainForm::trackNavigateNone (void)
 	qDebug("qtractorMainForm::trackNavigateNone()");
 #endif
 
-	if (m_pTracks && m_pTracks->trackList())
-		(m_pTracks->trackList())->setCurrentTrackRow(-1);
+	if (m_pTracks)
+		m_pTracks->trackList()->setCurrentTrackRow(-1);
 }
 
 
@@ -4743,11 +4748,12 @@ void qtractorMainForm::viewRefresh (void)
 	const unsigned long iEditTail = m_pSession->editTail();
 
 	if (m_pTracks) {
-		m_pTracks->updateContents(true);
-		m_pTracks->trackView()->setEditHead(iEditHead);
-		m_pTracks->trackView()->setEditTail(iEditTail);
-		m_pTracks->trackView()->setPlayHeadAutoBackward(
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
+		pTrackView->setEditHead(iEditHead);
+		pTrackView->setEditTail(iEditTail);
+		pTrackView->setPlayHeadAutoBackward(
 			m_pSession->playHeadAutoBackward());
+		m_pTracks->updateContents(true);
 	}
 
 	if (m_pConnections)
@@ -4762,7 +4768,7 @@ void qtractorMainForm::viewRefresh (void)
 	// Update other editors contents...
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
-		qtractorMidiEditor *pEditor = (iter.next())->editor();
+		qtractorMidiEditor *pEditor = iter.next()->editor();
 		pEditor->updateTimeScale();
 		pEditor->updateContents();
 		pEditor->setEditHead(iEditHead, false);
@@ -5276,9 +5282,11 @@ void qtractorMainForm::transportPlay (void)
 				: SND_SEQ_EVENT_STOP);
 		}
 		// Save auto-backward return position...
-		if (bPlaying) {
+		if (bPlaying && m_pTracks) {
 			const unsigned long iPlayHead = m_pSession->playHead();
-			m_pTracks->trackView()->setPlayHeadAutoBackward(iPlayHead);
+			qtractorTrackView *pTrackView = m_pTracks->trackView();
+			pTrackView->setPlayHeadAutoBackward(iPlayHead);
+			pTrackView->setSyncViewHoldOn(false);
 		}
 	}
 
@@ -6329,10 +6337,10 @@ void qtractorMainForm::updatePeakAutoRemove (void)
 	if (m_pOptions == NULL)
 		return;
 
-	qtractorAudioPeakFactory *pAudioPeakFactory
+	qtractorAudioPeakFactory *pPeakFactory
 		= m_pSession->audioPeakFactory();
-	if (pAudioPeakFactory)
-		pAudioPeakFactory->setAutoRemove(m_pOptions->bPeakAutoRemove);	
+	if (pPeakFactory)
+		pPeakFactory->setAutoRemove(m_pOptions->bPeakAutoRemove);
 }
 
 
@@ -8088,7 +8096,7 @@ void qtractorMainForm::mixerSelectionChanged (void)
 		qtractorMixerStrip *pStrip = (m_pMixer->trackRack())->selectedStrip();
 		if (pStrip)
 			pTrack = pStrip->track();
-		(m_pTracks->trackList())->setCurrentTrack(pTrack);
+		m_pTracks->trackList()->setCurrentTrack(pTrack);
 	}
 
 	stabilizeForm();
@@ -8108,9 +8116,10 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 
 	// Track-view is due...
 	if (m_pTracks) {
-		m_pTracks->trackView()->setEditHead(iEditHead);
-		m_pTracks->trackView()->setEditTail(iEditTail);
-		m_pTracks->trackView()->setPlayHeadAutoBackward(
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
+		pTrackView->setEditHead(iEditHead);
+		pTrackView->setEditTail(iEditTail);
+		pTrackView->setPlayHeadAutoBackward(
 			m_pSession->playHeadAutoBackward());
 	//	if (pMidiEditor) m_pTracks->clearSelect();
 	}
@@ -8273,8 +8282,6 @@ void qtractorMainForm::transportTempoFinished (void)
 
 	const bool bBlockSignals = m_pTempoSpinBox->blockSignals(true);
 	m_pTempoSpinBox->clearFocus();
-//	if (m_pTracks)
-//		m_pTracks->trackView()->setFocus();
 	m_pTempoSpinBox->blockSignals(bBlockSignals);
 }
 
@@ -8341,8 +8348,6 @@ void qtractorMainForm::transportTimeFinished (void)
 
 	++s_iTimeFinished;
 	m_pTimeSpinBox->clearFocus();
-//	if (m_pTracks)
-//		m_pTracks->trackView()->setFocus();
 	--s_iTimeFinished;
 }
 
@@ -8355,3 +8360,4 @@ void qtractorMainForm::transportTempoContextMenu ( const QPoint& /*pos*/ )
 
 
 // end of qtractorMainForm.cpp
+

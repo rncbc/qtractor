@@ -6,6 +6,18 @@ ChangeLog
 
 GIT HEAD
 
+- Audio clip peak/waveform files re-generation performance,
+  scalability and resilience have been slightly improved.
+  (EXPERIMENTAL)
+
+- Some sanitary checks have been added to audio clip peak/
+  waveform re-generation routine, as much to avoid empty,
+  blank, zero or negative-width faulty renderings.
+
+- Do not reset the Files tree-view widgets anymore, when
+  leaving any drag-and-drop operation (annoyingly, all
+  groups and sub-groups were being closed without appeal).
+
 - Make builds reproducible byte for byte, by getting rid of
   the configure build date and time stamps.
 

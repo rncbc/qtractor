@@ -545,8 +545,10 @@ void qtractorFileListView::openFile (void)
 void qtractorFileListView::newGroup (void)
 {
 	qtractorFileGroupItem *pParentItem = currentGroupItem();
+#if 0
 	if (pParentItem && !pParentItem->isOpen())
 		pParentItem = pParentItem->groupItem();
+#endif
 	qtractorFileGroupItem *pGroupItem
 		= addGroupItem(tr("New Group"), pParentItem);
 	if (pGroupItem) {
@@ -999,18 +1001,19 @@ bool qtractorFileListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 void qtractorFileListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	dragLeaveEvent(NULL);
-	m_pDragItem = NULL;
 
-	if (pMouseEvent->button() == Qt::LeftButton) {
-		m_posDrag   = pMouseEvent->pos();
-		m_pDragItem = QTreeWidget::itemAt(m_posDrag);
-	#if 0
-		if (m_pDragItem && m_pDragItem->isSelected()
-			&& (pMouseEvent->modifiers()
-				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
-			return;
-	#endif
+	m_posDrag   = pMouseEvent->pos();
+	m_pDragItem = QTreeWidget::itemAt(m_posDrag);
+
+	if (pMouseEvent->button() == Qt::LeftButton
+		&& (pMouseEvent->modifiers()
+			& (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
+		QTreeWidget::clearSelection();
+		QTreeWidget::setSelectionMode(
+			QAbstractItemView::SingleSelection);
 	}
+
+	QTreeWidget::setCurrentItem(m_pDragItem);
 
 	QTreeWidget::mousePressEvent(pMouseEvent);
 }
@@ -1084,7 +1087,9 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			pDrag->setHotSpot(QPoint(-4, -12));
 			pDrag->exec(Qt::LinkAction);
 			// We've dragged and maybe dropped it by now...
-			QTreeWidget::reset();
+			// QTreeWidget::reset();
+			QTreeWidget::setSelectionMode(
+				QAbstractItemView::ExtendedSelection);
 			dragLeaveEvent(NULL);
 			m_pDragItem = NULL;
 		}
@@ -1095,6 +1100,9 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 void qtractorFileListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 	QTreeWidget::mouseReleaseEvent(pMouseEvent);
+
+	QTreeWidget::setSelectionMode(
+		QAbstractItemView::ExtendedSelection);
 
 	dragLeaveEvent(NULL);
 	m_pDragItem = NULL;
