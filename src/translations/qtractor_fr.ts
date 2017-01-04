@@ -4106,7 +4106,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1892"/>
         <source>&amp;Tempo Adjust...</source>
-        <translation>Ajustement du &amp;Tempo...</translation>
+        <translation>Ajustement du &amp;tempo...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1895"/>
