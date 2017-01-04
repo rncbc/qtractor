@@ -9643,7 +9643,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="831"/>
         <source>Aut&amp;omatic time-stretching</source>
-        <translation>Etirement temporel aut&amp;omatique</translation>
+        <translation>Étirement temporel aut&amp;omatique</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="857"/>
@@ -9688,7 +9688,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="917"/>
         <source>&amp;WSOLA time-stretching</source>
-        <translation>Etirement temporel &amp;WSOLA</translation>
+        <translation>Étirement temporel &amp;WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1320"/>
