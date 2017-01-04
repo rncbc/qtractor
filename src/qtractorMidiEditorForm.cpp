@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -742,15 +742,21 @@ bool qtractorMidiEditorForm::queryClose (void)
 
 	// Are we dirty enough to prompt it?
 	if (m_iDirtyCount > 0) {
-		switch (querySave(filename())) {
-		case QMessageBox::Save:
+		if (isVisible()) {
+			// Currently visible: save conditionally...
+			switch (querySave(filename(), this)) {
+			case QMessageBox::Save:
+				bQueryClose = saveClipFile(false);
+				// Fall thru....
+			case QMessageBox::Discard:
+				break;
+			default:    // Cancel.
+				bQueryClose = false;
+				break;
+			}
+		} else {
+			// Not currently visible: save unconditionally...
 			bQueryClose = saveClipFile(false);
-			// Fall thru....
-		case QMessageBox::Discard:
-			break;
-		default:    // Cancel.
-			bQueryClose = false;
-			break;
 		}
 	}
 
@@ -759,10 +765,13 @@ bool qtractorMidiEditorForm::queryClose (void)
 
 
 // Save(as) warning message box.
-int qtractorMidiEditorForm::querySave ( const QString& sFilename )
+int qtractorMidiEditorForm::querySave (
+	const QString& sFilename, QWidget *pParent )
 {
-	return (QMessageBox::warning(
-		qtractorMainForm::getInstance(),
+	if (pParent == NULL)
+		pParent = qtractorMainForm::getInstance();
+
+	return (QMessageBox::warning(pParent,
 		tr("Warning") + " - " QTRACTOR_TITLE,
 		tr("The current MIDI clip has been changed:\n\n"
 		"\"%1\"\n\n"
@@ -2147,3 +2156,4 @@ void qtractorMidiEditorForm::contentsChanged ( qtractorMidiEditor *pMidiEditor )
 
 
 // end of qtractorMidiEditorForm.cpp
+

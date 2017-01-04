@@ -6800,7 +6800,7 @@ Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="277"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1858"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1867"/>
         <source>MOD</source>
         <translation>REŽIM</translation>
     </message>
@@ -6811,7 +6811,7 @@ Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="285"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1863"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1872"/>
         <source>REC</source>
         <translation>NAHRÁT</translation>
     </message>
@@ -6831,12 +6831,12 @@ Délka:	%3</translation>
         <translation>Doba trvání záběru MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="766"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="775"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="767"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="776"/>
         <source>The current MIDI clip has been changed:
 
 &quot;%1&quot;
@@ -6855,38 +6855,38 @@ Chcete uložit změny?</translation>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1024"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1033"/>
         <source>Save MIDI Clip</source>
         <translation>Uložit záběr MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1025"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1034"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Soubory MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1092"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1101"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Uložit soubor MIDI: &quot;%1&quot;, stopa-kanál: %2.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1824"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1833"/>
         <source>MIDI Editor</source>
         <translation>MIDI Editor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1838"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1847"/>
         <source>Channel %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1841"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1850"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1848"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1857"/>
         <source>[modified]</source>
         <translation>(upraveno)</translation>
     </message>

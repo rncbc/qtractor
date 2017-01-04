@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip changes are now saved unconditionally whenever
+  the editor (piano-roll) is closed or not currently visible.
+  (EXPERIMENTAL)
+
 - Audio clip peak/waveform files re-generation performance,
   scalability and resilience have been slightly improved.
   (EXPERIMENTAL)
