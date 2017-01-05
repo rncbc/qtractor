@@ -1,0 +1,42 @@
+.TH QTRACTOR 1 "Juin 17, 2014"
+.SH NOM
+qtractor \- un séquenceur audio/MIDI multi\-piste
+.SH SYNOPSIS
+.B qtractor
+[\fIoptions\fR] [\fIfichier-sessions\fR]
+.SH DESCRIPTION
+Cette page de manuel décrit rapidement la commande
+.B qtractor
+.
+.PP
+\fBqtractor\fP est une application de séquenceur multi-piste audio/MIDI écrite
+en C++ avec le système Qt. La plateforme cible est Linux, pour laquelle le kit
+de connexion audio Jack (JACK) pour l'audio et l'architecture audio linux
+avancée (ALSA) pour le MIDI sont les principales infrastructures permettant
+l'évolution de l'interface graphique de station de travail audio-numérique audio
+sur un bureau Linux plutôt bien fournie en possibilités, spécialement dédiée au
+home-studio personnel.
+.SH OPTIONS
+.HP
+\fB\-s, \fB\-\-session-id\fR=[\fIuuid\fR]
+.IP
+Paramètre l'identification de session
+.HP
+\fB\-?, \fB\-\-help\fR
+.IP
+Affiche de l'aide à propos des options de ligne de commande
+.HP
+\fB\-v, \fB\-\-version\fR
+.IP
+Affiche des informations de version
+.SH FICHIERS
+Les paramètres de configuration sont stockés dans ~/.config/rncbc.org/Qtractor.conf
+.SH AUTEUR
+Qtractor a été écrit par Rui Nuno Capela.
+.PP
+Cette page de manuel a été écrite par Gürkan Sengün <gurkan@phys.ethz.ch>, pour
+le projet Debian (mais peut être utilisée par d'autres).
+.PP
+Cette page en français a était traduite en français à partir de la version
+anglaise par Olivier Humbert pour le projet LibraZiK (et peut également être
+utilisée par d'autres).
