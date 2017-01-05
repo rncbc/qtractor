@@ -1422,9 +1422,16 @@ void qtractorTrackForm::progChanged (void)
 // Select custom track foreground color.
 void qtractorTrackForm::selectForegroundColor (void)
 {
+	const QString& sTitle
+		= tr("Foreground Color") + " - " QTRACTOR_TITLE;
+
+	QColorDialog::ColorDialogOptions options = 0;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialogs)
+		options |= QColorDialog::DontUseNativeDialog;
+
 	const QColor& color = QColorDialog::getColor(
-		colorItem(m_ui.ForegroundColorComboBox), this,
-		tr("Foreground Color") + " - " QTRACTOR_TITLE);
+		colorItem(m_ui.ForegroundColorComboBox), this, sTitle, options);
 
 	if (color.isValid()) {
 		m_props.foreground = color;
@@ -1437,9 +1444,16 @@ void qtractorTrackForm::selectForegroundColor (void)
 // Select custom track background color.
 void qtractorTrackForm::selectBackgroundColor (void)
 {
+	const QString& sTitle
+		= tr("Background Color") + " - " QTRACTOR_TITLE;
+
+	QColorDialog::ColorDialogOptions options = 0;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialogs)
+		options |= QColorDialog::DontUseNativeDialog;
+
 	const QColor& color = QColorDialog::getColor(
-		colorItem(m_ui.BackgroundColorComboBox), this,
-		tr("Background Color") + " - " QTRACTOR_TITLE);
+		colorItem(m_ui.BackgroundColorComboBox), this, sTitle, options);
 
 	if (color.isValid()) {
 		m_props.background = color;

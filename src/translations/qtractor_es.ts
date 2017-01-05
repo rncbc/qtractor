@@ -10578,42 +10578,42 @@ Do you want to apply the changes?</source>
         <translation>Archivo de audio de pulso del metrónomo</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1047"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1046"/>
         <source>Audio Meter Color</source>
         <translation>Color del Medidor de Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1059"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1064"/>
         <source>MIDI Meter Color</source>
         <translation>Color del Medidor MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1144"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1156"/>
         <source>Plug-in Directory</source>
         <translation>Directorio de Plug-in</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1381"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1393"/>
         <source>LV2 Presets Directory</source>
         <translation>Directorio de Preajustes LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1438"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1450"/>
         <source>Messages Log</source>
         <translation>Registro de Mensajes</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1440"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1452"/>
         <source>Log files (*.%1)</source>
         <translation>Archivos de registro (log) (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1478"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1490"/>
         <source>Session Template</source>
         <translation>Plantilla de Sesión</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1480"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1492"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Archivos de plantilla sesión (*.qtr *.qts *.%1)</translation>
     </message>
@@ -12244,12 +12244,12 @@ Do you want to apply the changes?</source>
         <translation>Icono de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1427"/>
+        <location filename="../qtractorTrackForm.cpp" line="1426"/>
         <source>Foreground Color</source>
         <translation>Color destacado</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1442"/>
+        <location filename="../qtractorTrackForm.cpp" line="1448"/>
         <source>Background Color</source>
         <translation>Color de Fondo</translation>
     </message>

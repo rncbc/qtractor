@@ -1042,9 +1042,15 @@ void qtractorOptionsForm::changeMidiMeterColor ( const QString& sColor )
 // Audio meter color selection.
 void qtractorOptionsForm::chooseAudioMeterColor (void)
 {
+	const QString& sTitle
+		= tr("Audio Meter Color") + " - " QTRACTOR_TITLE;
+
+	QColorDialog::ColorDialogOptions options = 0;
+	if (m_pOptions && m_pOptions->bDontUseNativeDialogs)
+		options |= QColorDialog::DontUseNativeDialog;
+
 	const QColor& color = QColorDialog::getColor(
-		QColor(m_ui.AudioMeterColorLineEdit->text()), this,
-		tr("Audio Meter Color") + " - " QTRACTOR_TITLE);
+		QColor(m_ui.AudioMeterColorLineEdit->text()), this, sTitle, options);
 
 	if (color.isValid())
 		m_ui.AudioMeterColorLineEdit->setText(color.name());
@@ -1054,9 +1060,15 @@ void qtractorOptionsForm::chooseAudioMeterColor (void)
 // Midi meter color selection.
 void qtractorOptionsForm::chooseMidiMeterColor (void)
 {
+	const QString& sTitle
+		= tr("MIDI Meter Color") + " - " QTRACTOR_TITLE;
+
+	QColorDialog::ColorDialogOptions options = 0;
+	if (m_pOptions && m_pOptions->bDontUseNativeDialogs)
+		options |= QColorDialog::DontUseNativeDialog;
+
 	const QColor& color = QColorDialog::getColor(
-		QColor(m_ui.MidiMeterColorLineEdit->text()), this,
-		tr("MIDI Meter Color") + " - " QTRACTOR_TITLE);
+		QColor(m_ui.MidiMeterColorLineEdit->text()), this, sTitle, options);
 
 	if (color.isValid())
 		m_ui.MidiMeterColorLineEdit->setText(color.name());
