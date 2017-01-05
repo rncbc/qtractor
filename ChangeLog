@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Added French man page (by Olivier Humbert, thanks).
+
 - MIDI clip changes are now saved unconditionally whenever
   the editor (piano-roll) is closed or not currently visible.
   (EXPERIMENTAL)
