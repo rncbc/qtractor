@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -547,14 +547,21 @@ void qtractorPluginForm::openPresetSlot (void)
 	// Prompt if file does not currently exist...
 	const QString sExt("qtx");
 	QStringList filters(sExt);
-	if (bVstPlugin) { filters.append("fxp"); filters.append("fxb"); }
-	const QString& sTitle  = tr("Open Preset") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("Preset files (*.%1)").arg(filters.join(" *."));
-#if 1//QT_VERSION < 0x040400
-	// Ask for the filename to save...
+	if (bVstPlugin) {
+		filters.append("fxp");
+		filters.append("fxb");
+	}
+
+	const QString& sTitle
+		= tr("Open Preset") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= tr("Preset files (*.%1)").arg(filters.join(" *."));
+
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to save...
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, pOptions->sPresetDir, sFilter, NULL, options);
 #else
@@ -570,8 +577,7 @@ void qtractorPluginForm::openPresetSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();
@@ -639,13 +645,15 @@ void qtractorPluginForm::savePresetSlot (void)
 		QString sFilename = fi.absoluteFilePath();
 		// Prompt if file does not currently exist...
 		if (!fi.exists()) {
-			const QString& sTitle  = tr("Save Preset") + " - " QTRACTOR_TITLE;
-			const QString& sFilter = tr("Preset files (*.%1)").arg(filters.join(" *."));
-		#if 1//QT_VERSION < 0x040400
-			// Ask for the filename to save...
+			const QString& sTitle
+				= tr("Save Preset") + " - " QTRACTOR_TITLE;
+			const QString& sFilter
+				= tr("Preset files (*.%1)").arg(filters.join(" *."));
 			QFileDialog::Options options = 0;
 			if (pOptions->bDontUseNativeDialogs)
 				options |= QFileDialog::DontUseNativeDialog;
+		#if 1//QT_VERSION < 0x040400
+			// Ask for the filename to save...
 			sFilename = QFileDialog::getSaveFileName(this,
 				sTitle, sFilename, sFilter, NULL, options);
 		#else
@@ -661,8 +669,7 @@ void qtractorPluginForm::savePresetSlot (void)
 			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 			urls.append(QUrl::fromLocalFile(pOptions->sPresetDir));
 			fileDialog.setSidebarUrls(urls);
-			if (pOptions->bDontUseNativeDialogs)
-				fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+			fileDialog.setOptions(options);
 			// Show dialog...
 			if (fileDialog.exec())
 				sFilename = fileDialog.selectedFiles().first();
@@ -1501,11 +1508,13 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 
 	QString sFilename = m_pComboBox->itemData(iIndex).toString();
 
-	const QString& sTitle = tr("Open File") + " - " QTRACTOR_TITLE;
-#if 1//QT_VERSION < 0x040400
+	const QString& sTitle
+		= tr("Open File") + " - " QTRACTOR_TITLE;
+
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, sFilename, QString(), NULL, options);
 #else
@@ -1514,8 +1523,7 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFile);
-	if (pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();

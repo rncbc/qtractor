@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1147,14 +1147,17 @@ void qtractorTrackForm::trackIconClicked (void)
 	filters.append(tr("Image files (%1)").arg("*.png *.xpm *.jpg *.jpeg"));
 	filters.append(tr("All files (*.*)"));
 
-	const QString& sTitle  = tr("Track Icon") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = filters.join(";;");
-#if 1//QT_VERSION < 0x040400
-	// Ask for the filename to open...
+	const QString& sTitle
+		= tr("Track Icon") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= filters.join(";;");
+
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to open...
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, sFilename, sFilter, NULL, options);
 #else
@@ -1163,9 +1166,7 @@ void qtractorTrackForm::trackIconClicked (void)
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::AnyFile);
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();

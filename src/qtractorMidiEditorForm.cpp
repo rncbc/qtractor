@@ -1030,14 +1030,16 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	if (bPrompt) {
 		// If none is given, assume default directory.
 		const QString sExt("mid");
-		const QString& sTitle  = tr("Save MIDI Clip") + " - " QTRACTOR_TITLE;
-		const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
-	#if 1//QT_VERSION < 0x040400
-		// Ask for the filenames to open...
+		const QString& sTitle
+			= tr("Save MIDI Clip") + " - " QTRACTOR_TITLE;
+		const QString& sFilter
+			= tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
 		QFileDialog::Options options = 0;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bDontUseNativeDialogs)
 			options |= QFileDialog::DontUseNativeDialog;
+	#if 1//QT_VERSION < 0x040400
+		// Ask for the filenames to open...
 		sFilename = QFileDialog::getSaveFileName(this,
 			sTitle, sFilename, sFilter, NULL, options);
 	#else
@@ -1049,15 +1051,13 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		fileDialog.setFileMode(QFileDialog::AnyFile);
 		fileDialog.setDefaultSuffix(sExt);
 		// Stuff sidebar...
-		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions) {
 			QList<QUrl> urls(fileDialog.sidebarUrls());
 			urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 			urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
 			fileDialog.setSidebarUrls(urls);
-			if (pOptions->bDontUseNativeDialogs)
-				fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 		}
+		fileDialog.setOptions(options);
 		// Show dialog...
 		if (fileDialog.exec())
 			sFilename = fileDialog.selectedFiles().first();

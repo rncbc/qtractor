@@ -1,7 +1,7 @@
 // qtractorMidiControlForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -227,14 +227,16 @@ void qtractorMidiControlForm::importSlot (void)
 	QStringList files;
 
 	const QString  sExt("qtc");
-	const QString& sTitle  = tr("Import Controller Files") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
+	const QString& sTitle
+		= tr("Import Controller Files") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= tr("Controller files (*.%1)").arg(sExt);
 
-#if 1//QT_VERSION < 0x040400
-	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(this,
 		sTitle, pOptions->sMidiControlDir, sFilter, NULL, options);
 #else
@@ -251,8 +253,7 @@ void qtractorMidiControlForm::importSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiControlDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (fileDialog.exec())
 		files = fileDialog.selectedFiles();
@@ -433,8 +434,10 @@ void qtractorMidiControlForm::exportSlot (void)
 	QString sPath;
 
 	const QString  sExt("qtc");
-	const QString& sTitle  = tr("Export Controller File") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("Controller files (*.%1)").arg(sExt);
+	const QString& sTitle
+		= tr("Export Controller File") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= tr("Controller files (*.%1)").arg(sExt);
 
 	if (pOptions->midiControlFiles.isEmpty()) {
 		sPath =	QFileInfo(pOptions->sMidiControlDir,
@@ -442,11 +445,11 @@ void qtractorMidiControlForm::exportSlot (void)
 	}
 	else sPath = pOptions->midiControlFiles.last();
 
-#if 1//QT_VERSION < 0x040400
-	// Ask for the filename to open...
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to open...
 	sPath = QFileDialog::getSaveFileName(this,
 		sTitle, sPath, sFilter, NULL, options);
 #else
@@ -462,8 +465,7 @@ void qtractorMidiControlForm::exportSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiControlDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (fileDialog.exec())
 		sPath = fileDialog.selectedFiles().first();
