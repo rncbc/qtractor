@@ -10602,22 +10602,27 @@ Vuoi applicare le modifiche?</translation>
         <translation>Directory dei Preset LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1450"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1432"/>
+        <source>Messages Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.cpp" line="1457"/>
         <source>Messages Log</source>
         <translation>Messaggi di Log</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1452"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1459"/>
         <source>Log files (*.%1)</source>
         <translation>File di Log (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1490"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1497"/>
         <source>Session Template</source>
         <translation>Template Sessione</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1492"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1499"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>File Template Sessione (*.qtr *.qts *.%1)</translation>
     </message>

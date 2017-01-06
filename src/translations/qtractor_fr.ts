@@ -10602,22 +10602,27 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>Répertoire des réglages LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1450"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1432"/>
+        <source>Messages Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.cpp" line="1457"/>
         <source>Messages Log</source>
         <translation>Journal des messages</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1452"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1459"/>
         <source>Log files (*.%1)</source>
         <translation>Fichiers journal (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1490"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1497"/>
         <source>Session Template</source>
         <translation>Modèle de session</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1492"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1499"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Fichiers de modèle de session (*.qtr *.qts *.%1)</translation>
     </message>

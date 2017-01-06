@@ -9675,7 +9675,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Formato padrão de arquivo de sessão (extensão)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1492"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1499"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Arquivos de modelo de sessão (*.qtr *.qts *.%1) </translation>
     </message>
@@ -9705,7 +9705,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Sempre utilizar Dummy VST scan quando estiver procurando por plugins VST</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1490"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1497"/>
         <source>Session Template</source>
         <translation>Modelo de Sessão</translation>
     </message>
@@ -9851,6 +9851,11 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>SMF Formato 1</translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.cpp" line="1432"/>
+        <source>Messages Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="1494"/>
         <source>Queue timer (resolution)</source>
         <translation>Tempo de espera (resolução)</translation>
@@ -9906,7 +9911,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Arquivo (pulso):</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1452"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1459"/>
         <source>Log files (*.%1)</source>
         <translation>Arquivos de Diário de Bordo (*.%1)</translation>
     </message>
@@ -10190,7 +10195,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Sempre exibe saídas padrão de captura (stdout/stderr) na janela de mensagens</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1450"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1457"/>
         <source>Messages Log</source>
         <translation>Mensagens do Diário de Bordo</translation>
     </message>

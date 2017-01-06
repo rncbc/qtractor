@@ -1428,13 +1428,20 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 // The messages font selection dialog.
 void qtractorOptionsForm::chooseMessagesFont (void)
 {
-	bool  bOk  = false;
-	QFont font = QFontDialog::getFont(&bOk,
-		m_ui.MessagesFontTextLabel->font(), this);
+	const QString& sTitle
+		= tr("Messages Font") + " - " QTRACTOR_TITLE;
+
+	QFontDialog::FontDialogOptions options = 0;
+	if (m_pOptions->bDontUseNativeDialogs)
+		options |= QFontDialog::DontUseNativeDialog;
+
+	bool bOk = false;
+	const QFont font = QFontDialog::getFont(&bOk,
+		m_ui.MessagesFontTextLabel->font(), this, sTitle, options);
 	if (bOk) {
 		m_ui.MessagesFontTextLabel->setFont(font);
 		m_ui.MessagesFontTextLabel->setText(
-			font.family() + " " + QString::number(font.pointSize()));
+			font.family() + ' ' + QString::number(font.pointSize()));
 		changed();
 	}
 }

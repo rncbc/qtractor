@@ -9331,22 +9331,27 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1450"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1432"/>
+        <source>Messages Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.cpp" line="1457"/>
         <source>Messages Log</source>
         <translation>Журнал сообщений</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1452"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1459"/>
         <source>Log files (*.%1)</source>
         <translation>Файлы журнала  (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1490"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1497"/>
         <source>Session Template</source>
         <translation>Шаблон сеанса</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1492"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1499"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Файлы шаблонов сеанса (*.qtr *.qts *.%1)</translation>
     </message>

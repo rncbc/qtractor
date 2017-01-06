@@ -9418,22 +9418,27 @@ Chcete použít tyto změny?</translation>
         <translation>Adresář s přednastaveními LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1450"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1432"/>
+        <source>Messages Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.cpp" line="1457"/>
         <source>Messages Log</source>
         <translation>Záběr se sděleními</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1452"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1459"/>
         <source>Log files (*.%1)</source>
         <translation>Soubory se záběry (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1490"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1497"/>
         <source>Session Template</source>
         <translation>Předloha pro sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1492"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1499"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Soubory předloh (*.qtr *.qts *.%1) pro sezení</translation>
     </message>
