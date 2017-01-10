@@ -5550,10 +5550,14 @@ void qtractorMainForm::helpAbout (void)
 #endif
 #if QT_VERSION >= 0x050100
 #ifndef CONFIG_LV2_UI_GTK2
+#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
 	list << tr("LV2 Plug-in UI GTK2 native support disabled.");
 #endif
+#endif
 #ifndef CONFIG_LV2_UI_X11
+#ifndef CONFIG_LIBSUIL_X11_IN_QT5
 	list << tr("LV2 Plug-in UI X11 native support disabled.");
+#endif
 #endif
 #endif
 #endif // CONFIG_LV2_UI
@@ -7437,7 +7441,7 @@ void qtractorMainForm::audioShutNotify (void)
 #endif
 
 	// HACK: The audio engine (jackd) most probably
-	// is down, not up and running anymoere, but...
+	// is down, not up and running anymore, anyway...
 	m_pSession->lock();
 
 	// Always do auto-save here, hence...

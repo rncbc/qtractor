@@ -1304,7 +1304,7 @@ if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
    LIBS=$ac_old_libs
    if test "x$ac_cv_suil_gtk2_in_qt5" = "xyes"; then
       AC_DEFINE(CONFIG_LIBSUIL_GTK2_IN_QT5, 1, [Define if libsuil_gtk2_in_qt5 is available.])
-   #  ac_lv2_ui_gtk2="no"
+      ac_lv2_ui_gtk2="no"
    fi
 fi
 if test "x$ac_lv2_ui_gtk2" = "xyes"; then
@@ -1335,7 +1335,7 @@ if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
    LIBS=$ac_old_libs
    if test "x$ac_cv_suil_x11_in_qt5" = "xyes"; then
       AC_DEFINE(CONFIG_LIBSUIL_X11_IN_QT5, 1, [Define if libsuil_x11_in_qt5 is available.])
-   #  ac_lv2_ui_x11="no"
+      ac_lv2_ui_x11="no"
    fi
 fi
 if test "x$ac_lv2_ui_x11" = "xyes"; then
