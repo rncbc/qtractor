@@ -807,7 +807,7 @@ if test "x$ac_lv2_ui" = "xno"; then
    ac_lv2_ui_x11="no"
 fi
 
-if test "x$ac_qt4" = "xyes"; then
+if test "x$ac_qt4" != "xno"; then
    ac_lv2_ui_gtk2="no"
    ac_lv2_ui_x11="no"
 fi

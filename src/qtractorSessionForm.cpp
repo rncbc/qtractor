@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -285,13 +285,15 @@ void qtractorSessionForm::browseSessionDir (void)
 	if (pOptions == NULL)
 		return;
 
-	const QString& sTitle = tr("Session Directory") + " - " QTRACTOR_TITLE;
-#if 1// QT_VERSION < 0x040400
+	const QString& sTitle
+		= tr("Session Directory") + " - " QTRACTOR_TITLE;
+
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
 	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
 	QString sSessionDir = QFileDialog::getExistingDirectory(this,                                  // Parent.
-		sTitle, m_ui.SessionDirComboBox->currentText());
+		sTitle, m_ui.SessionDirComboBox->currentText(), options);
 #else
 	// Construct open-directory dialog...
 	QFileDialog fileDialog(this,
@@ -303,8 +305,7 @@ void qtractorSessionForm::browseSessionDir (void)
 	QList<QUrl> urls(fileDialog.sidebarUrls());
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (!fileDialog.exec())
 		return;

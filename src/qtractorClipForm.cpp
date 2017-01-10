@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -650,12 +650,14 @@ void qtractorClipForm::browseFilename (void)
 	// Browse for file...
 	QString sFilename;
 
-	const QString& sTitle = tr("%1 Clip File").arg(sType) + " - " QTRACTOR_TITLE;
-#if 1//QT_VERSION < 0x040400
+	const QString& sTitle
+		= tr("%1 Clip File").arg(sType) + " - " QTRACTOR_TITLE;
+
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, m_ui.FilenameComboBox->currentText(), sFilter, NULL, options);
 #else
@@ -666,7 +668,6 @@ void qtractorClipForm::browseFilename (void)
 	fileDialog.setFileMode(QFileDialog::ExistingFile);
 	fileDialog.setDefaultSuffix(sExt);
 	// Stuff sidebar...
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		QList<QUrl> urls(fileDialog.sidebarUrls());
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
@@ -682,9 +683,8 @@ void qtractorClipForm::browseFilename (void)
 			break;
 		}
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialogs)
-			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();

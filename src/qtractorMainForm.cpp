@@ -1905,12 +1905,16 @@ bool qtractorMainForm::openSession (void)
 		.arg(qtractorDocument::archiveExt()));
 #endif
 	sExt = m_pOptions->sSessionExt; // Default session  file format...
-	const QString& sTitle  = tr("Open Session") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = filters.join(";;");
-#if 1//QT_VERSION < 0x040400
+
+	const QString& sTitle
+		= tr("Open Session") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= filters.join(";;");
+
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, m_pOptions->sSessionDir, sFilter, NULL, options);
 #else
@@ -1927,12 +1931,11 @@ bool qtractorMainForm::openSession (void)
 	if (sExt == qtractorDocument::archiveExt())
 		fileDialog.setNameFilter(filters.last());
 #endif
-	if (m_pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Stuff sidebar...
 	QList<QUrl> urls(fileDialog.sidebarUrls());
 	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
 	fileDialog.setSidebarUrls(urls);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (!fileDialog.exec())
 		return false;
@@ -1995,14 +1998,16 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			.arg(qtractorDocument::archiveExt()));
 	#endif
 		sExt = m_pOptions->sSessionExt; // Default session  file format...
-		const QString& sTitle  = tr("Save Session") + " - " QTRACTOR_TITLE;
-		const QString& sFilter = filters.join(";;");
-		// Try to rename as if a backup is about...
-		sFilename = sessionBackupPath(sFilename);
-	#if 1//QT_VERSION < 0x040400
+		const QString& sTitle
+			= tr("Save Session") + " - " QTRACTOR_TITLE;
+		const QString& sFilter
+			= filters.join(";;");
 		QFileDialog::Options options = 0;
 		if (m_pOptions->bDontUseNativeDialogs)
 			options |= QFileDialog::DontUseNativeDialog;
+		// Try to rename as if a backup is about...
+		sFilename = sessionBackupPath(sFilename);
+	#if 1//QT_VERSION < 0x040400
 		sFilename = QFileDialog::getSaveFileName(this,
 			sTitle, sFilename, sFilter, NULL, options);
 	#else
@@ -2019,12 +2024,11 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		if (sExt == qtractorDocument::archiveExt())
 			fileDialog.setNameFilter(filters.last());
 	#endif
-		if (m_pOptions->bDontUseNativeDialogs)
-			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 		// Stuff sidebar...
 		QList<QUrl> urls(fileDialog.sidebarUrls());
 		urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
 		fileDialog.setSidebarUrls(urls);
+		fileDialog.setOptions(options);
 		// Show save-file dialog...
 		if (!fileDialog.exec())
 			return false;
@@ -5561,10 +5565,14 @@ void qtractorMainForm::helpAbout (void)
 #endif
 #if QT_VERSION >= 0x050100
 #ifndef CONFIG_LV2_UI_GTK2
+#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
 	list << tr("LV2 Plug-in UI GTK2 native support disabled.");
 #endif
+#endif
 #ifndef CONFIG_LV2_UI_X11
+#ifndef CONFIG_LIBSUIL_X11_IN_QT5
 	list << tr("LV2 Plug-in UI X11 native support disabled.");
+#endif
 #endif
 #endif
 #endif // CONFIG_LV2_UI
@@ -7464,7 +7472,7 @@ void qtractorMainForm::audioShutNotify (void)
 #endif
 
 	// HACK: The audio engine (jackd) most probably
-	// is down, not up and running anymoere, but...
+	// is down, not up and running anymore, anyway...
 	m_pSession->lock();
 
 	// Always do auto-save here, hence...

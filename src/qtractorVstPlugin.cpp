@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1526,10 +1526,11 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 		QWidget *pParentWidget = pVstPlugin->editorWidget();
 		const QString& sTitle = QString("%1 - %2")
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
+		const QFileDialog::Options options
+			= QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog;
 		const QString& sDirectory
 			= QFileDialog::getExistingDirectory(
-				pParentWidget, sTitle, pvfs->initialPath,
-				QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog);
+				pParentWidget, sTitle, pvfs->initialPath, options);
 		if (!sDirectory.isEmpty()) {
 			if (pvfs->returnPath == NULL) {
 				pvfs->returnPath = new char [sDirectory.length() + 1];
