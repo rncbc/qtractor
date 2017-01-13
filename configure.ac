@@ -656,6 +656,9 @@ if test "x$ac_libjack" = "xyes"; then
    AC_DEFINE(CONFIG_LIBJACK, 1, [Define if JACK library is available.])
    ac_cflags="$ac_cflags $JACK_CFLAGS"
    ac_libs="$ac_libs $JACK_LIBS"
+   CFLAGS="$CFLAGS $JACK_CFLAGS"
+   CPPFLAGS="$CPPFLAGS $JACK_CFLAGS"
+   LIBS="$LIBS $JACK_LIBS"
 else
    AC_MSG_ERROR([*** JACK library not found.])
 fi
@@ -820,6 +823,9 @@ if test "x$ac_lilv" = "xyes"; then
    AC_DEFINE(CONFIG_LIBLILV, 1, [Define if LILV library is available.])
    ac_cflags="$ac_cflags $LILV_CFLAGS"
    ac_libs="$ac_libs $LILV_LIBS"
+   CFLAGS="$CFLAGS $LILV_CFLAGS"
+   CPPFLAGS="$CPPFLAGS $LILV_CFLAGS"
+   LIBS="$LIBS $LILV_LIBS"
 else
    AC_MSG_WARN([*** LILV library not found.])
 fi
