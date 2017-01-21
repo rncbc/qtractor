@@ -246,6 +246,7 @@ public:
 
 	// Playhead positioning.
 	void setPlayHead(unsigned long iPlayHead);
+	void setPlayHeadEx(unsigned long iPlayHead);
 	unsigned long playHead() const;
 
 	// Auto-backward play-head positioning.
