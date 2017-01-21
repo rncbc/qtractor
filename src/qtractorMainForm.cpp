@@ -5253,6 +5253,9 @@ void qtractorMainForm::transportStop (void)
 			pMidiEngine->sendMmcCommand(qtractorMmcEvent::STOP);
 			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_STOP);
 		}
+		// Auto-backward reset feature...
+		if (m_ui.transportAutoBackwardAction->isChecked())
+			m_pSession->setPlayHead(playHeadBackward());
 	}
 
 	stabilizeForm();
@@ -5286,12 +5289,16 @@ void qtractorMainForm::transportPlay (void)
 				: SND_SEQ_EVENT_STOP);
 		}
 		// Save auto-backward return position...
-		if (bPlaying && m_pTracks) {
+		if (bPlaying) {
 			const unsigned long iPlayHead = m_pSession->playHead();
 			qtractorTrackView *pTrackView = m_pTracks->trackView();
 			pTrackView->setPlayHeadAutoBackward(iPlayHead);
 			pTrackView->setSyncViewHoldOn(false);
 		}
+		else
+		// Auto-backward reset feature...
+		if (m_ui.transportAutoBackwardAction->isChecked())
+			m_pSession->setPlayHead(playHeadBackward());
 	}
 
 	stabilizeForm();
@@ -5661,9 +5668,6 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 		}
 		if (pCurveCommand)
 			m_pSession->commands()->push(pCurveCommand);
-		// Auto-backward reset feature...
-		if (m_ui.transportAutoBackwardAction->isChecked())
-			m_pSession->setPlayHead(playHeadBackward());
 	}	// Start something... ;)
 	else ++m_iTransportUpdate;
 
@@ -6191,11 +6195,11 @@ void qtractorMainForm::updateSessionPre (void)
 
 	//  Actually (re)start session engines, no matter what...
 	startSession();
-
+#if 0
 	// (Re)set playhead...
 	if (m_ui.transportAutoBackwardAction->isChecked())
 		m_pSession->setPlayHead(playHeadBackward());
-
+#endif
 	// Start collection of nested messages...
 	qtractorMessageList::clear();
 }
@@ -7698,7 +7702,7 @@ void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead )
 	qDebug("qtractorMainForm::audioSyncNotify(%lu)", iPlayHead);
 #endif
 
-	m_pSession->setPlayHead(iPlayHead);
+	m_pSession->setPlayHeadEx(iPlayHead);
 	++m_iTransportUpdate;
 }
 
@@ -7724,7 +7728,9 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 	case qtractorMmcEvent::STOP:
 	case qtractorMmcEvent::PAUSE:
 		sMmcText += tr("STOP");
-		setPlaying(false);
+		if (setPlaying(false) // Auto-backward reset feature...
+			&& m_ui.transportAutoBackwardAction->isChecked())
+			m_pSession->setPlayHead(playHeadBackward());
 		break;
 	case qtractorMmcEvent::PLAY:
 	case qtractorMmcEvent::DEFERRED_PLAY:
@@ -7892,7 +7898,9 @@ void qtractorMainForm::midiSppNotify ( int iSppCmd, unsigned short iSongPos )
 		break;
 	case SND_SEQ_EVENT_STOP:
 		sSppText += tr("STOP");
-		setPlaying(false);
+		if (setPlaying(false) // Auto-backward reset feature...
+			&& m_ui.transportAutoBackwardAction->isChecked())
+			m_pSession->setPlayHead(playHeadBackward());
 		break;
 	case SND_SEQ_EVENT_CONTINUE:
 		sSppText += tr("CONTINUE");

@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed some auto-backward play-head position flip-flopping,
+  when opening a new session while the previous was still on
+  rolling/playing state, hopefully. (EXPERIMENTAL)
+  
 - Added French man page (by Olivier Humbert, thanks).
 
 - MIDI clip changes are now saved unconditionally whenever
