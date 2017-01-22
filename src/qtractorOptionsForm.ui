@@ -536,21 +536,33 @@
              <string>Transport control mode (JACK)</string>
             </property>
             <item>
+             <property name="icon">
+              <iconset resource="qtractor.qrc">:/images/transportModeNone.png</iconset>
+             </property>
              <property name="text">
               <string>None</string>
              </property>
             </item>
             <item>
+             <property name="icon">
+              <iconset resource="qtractor.qrc">:/images/transportModeSlave.png</iconset>
+             </property>
              <property name="text">
               <string>Slave</string>
              </property>
             </item>
             <item>
+             <property name="icon">
+              <iconset resource="qtractor.qrc">:/images/transportModeMaster.png</iconset>
+             </property>
              <property name="text">
               <string>Master</string>
              </property>
             </item>
             <item>
+             <property name="icon">
+              <iconset resource="qtractor.qrc">:/images/transportModeFull.png</iconset>
+             </property>
              <property name="text">
               <string>Full</string>
              </property>
