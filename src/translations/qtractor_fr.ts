@@ -2771,7 +2771,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="518"/>
         <source>Mod&amp;e</source>
-        <translation type="unfinished"></translation>
+        <translation>Mod&amp;e</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="821"/>
@@ -5122,72 +5122,72 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2900"/>
         <source>Transport mode: None</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de transport : aucun</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2903"/>
         <source>Transport mode set to None</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de transport paramétré sur Aucun</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2914"/>
         <source>&amp;Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;sclave</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2917"/>
         <source>Slave</source>
-        <translation type="unfinished">Esclave</translation>
+        <translation>Esclave</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2920"/>
         <source>Transport mode: Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de transport : Esclave</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2923"/>
         <source>Transport mode set to Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de transport paramétré sur Esclave</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2934"/>
         <source>&amp;Master</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Maître</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2937"/>
         <source>Master</source>
-        <translation type="unfinished">Maitre</translation>
+        <translation>Maître</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2940"/>
         <source>Transport mode: Master</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de trasnport : Maître</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2943"/>
         <source>Transport mode set to Master</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de transport paramétré sur Maître</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2954"/>
         <source>&amp;Full</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Complet</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2957"/>
         <source>Full</source>
-        <translation type="unfinished">Complet</translation>
+        <translation>Complet</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2960"/>
         <source>Transport mode: Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de transport : Complet</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2963"/>
         <source>Transport mode set to Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de transport paramétré sur Complet</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2971"/>
@@ -10681,7 +10681,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1432"/>
         <source>Messages Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Police de messages</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1457"/>
