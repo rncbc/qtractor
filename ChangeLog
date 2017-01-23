@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Current session (JACK) transport mode option switching is
+  now being made accessible, from the main menu and drop-down
+  toolbar buttons, as well as user configurable PC-keyboard
+  and/or MIDI controller shortcuts (cf. Transport/Mode/None,
+  Slave, Master, Ful). (EXPERIMENTAL) 
+
 - Fixed some auto-backward play-head position flip-flopping,
   when opening a new session while the previous was still on
   rolling/playing state, hopefully. (EXPERIMENTAL)

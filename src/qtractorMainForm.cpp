@@ -428,12 +428,35 @@ qtractorMainForm::qtractorMainForm (
 	m_pSelectModeToolButton->setMenu(m_ui.editSelectModeMenu);
 
 	// Add/insert this on its proper place in the edit-toobar...
-	m_ui.editToolbar->insertWidget(m_ui.clipNewAction, m_pSelectModeToolButton);
+	m_ui.editToolbar->insertWidget(m_ui.clipNewAction,
+		m_pSelectModeToolButton);
 	m_ui.editToolbar->insertSeparator(m_ui.clipNewAction);
 
 	QObject::connect(
 		m_pSelectModeActionGroup, SIGNAL(triggered(QAction*)),
 		m_pSelectModeToolButton, SLOT(setDefaultAction(QAction*)));
+
+	// Get transport mode action group up...
+	m_pTransportModeActionGroup = new QActionGroup(this);
+	m_pTransportModeActionGroup->setExclusive(true);
+	m_pTransportModeActionGroup->addAction(m_ui.transportModeNoneAction);
+	m_pTransportModeActionGroup->addAction(m_ui.transportModeSlaveAction);
+	m_pTransportModeActionGroup->addAction(m_ui.transportModeMasterAction);
+	m_pTransportModeActionGroup->addAction(m_ui.transportModeFullAction);
+
+	// And the corresponding tool-button drop-down menu...
+	m_pTransportModeToolButton = new QToolButton(this);
+	m_pTransportModeToolButton->setPopupMode(QToolButton::InstantPopup);
+	m_pTransportModeToolButton->setMenu(m_ui.transportModeMenu);
+
+	// Add/insert this on its proper place in the options-toobar...
+	m_ui.optionsToolbar->insertWidget(m_ui.transportPanicAction,
+		m_pTransportModeToolButton);
+	m_ui.optionsToolbar->insertSeparator(m_ui.transportPanicAction);
+
+	QObject::connect(
+		m_pTransportModeActionGroup, SIGNAL(triggered(QAction*)),
+		m_pTransportModeToolButton, SLOT(setDefaultAction(QAction*)));
 
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
@@ -1118,6 +1141,18 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportContinueAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportContinue()));
+	QObject::connect(m_ui.transportModeNoneAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportModeNone()));
+	QObject::connect(m_ui.transportModeSlaveAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportModeSlave()));
+	QObject::connect(m_ui.transportModeMasterAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportModeMaster()));
+	QObject::connect(m_ui.transportModeFullAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportModeFull()));
 	QObject::connect(m_ui.transportPanicAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportPanic()));
@@ -1206,6 +1241,12 @@ qtractorMainForm::~qtractorMainForm (void)
 		delete m_pSelectModeActionGroup;
 	if (m_pSelectModeToolButton)
 		delete m_pSelectModeToolButton;
+
+	// Get transport mode action group down.
+	if (m_pTransportModeActionGroup)
+		delete m_pTransportModeActionGroup;
+	if (m_pTransportModeToolButton)
+		delete m_pTransportModeToolButton;
 
 	// Reclaim status items palettes...
 	for (int i = 0; i < PaletteItems; ++i)
@@ -1347,6 +1388,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.viewSnapZebraAction->setChecked(pOptions->bTrackViewSnapZebra);
 	m_ui.viewSnapGridAction->setChecked(pOptions->bTrackViewSnapGrid);
 	m_ui.viewToolTipsAction->setChecked(pOptions->bTrackViewToolTips);
+
+	// Transport mode pre-update...
+	updateTransportModePre();
 
 	m_ui.transportMetroAction->setChecked(m_pOptions->bMetronome);
 	m_ui.transportFollowAction->setChecked(m_pOptions->bFollowPlayhead);
@@ -2349,6 +2393,7 @@ bool qtractorMainForm::loadSessionFileEx (
 			if (pAudioEngine) {
 				m_pOptions->iTransportMode = int(pAudioEngine->transportMode());
 				m_pOptions->bTimebase = pAudioEngine->isTimebase();
+				updateTransportModePre();
 			}
 			// Save also some MIDI engine hybrid-properties...
 			qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
@@ -4894,6 +4939,7 @@ void qtractorMainForm::viewOptions (void)
 		// Audio engine control modes...
 		if (iOldTransportMode != m_pOptions->iTransportMode) {
 			++m_iDirtyCount; // Fake session properties change.
+			updateTransportModePre();
 			updateTransportMode();
 		//	iNeedRestart |= RestartSession;
 		}
@@ -5409,6 +5455,68 @@ void qtractorMainForm::transportAutoBackward (void)
 
 	// Toggle auto-backward...
 	stabilizeForm();
+}
+
+
+// Set Transport mode option to None.
+void qtractorMainForm::transportModeNone (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportModeNone()");
+#endif
+
+	// Set Transport mode to None...
+	if (m_pOptions) {
+		m_pOptions->iTransportMode = int(qtractorBus::None);
+		updateTransportMode();
+	}
+}
+
+
+// Set Transport mode option to Slave.
+void qtractorMainForm::transportModeSlave (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportModeSlave()");
+#endif
+
+	// Set Transport mode to Slave...
+	if (m_pOptions) {
+		m_pOptions->iTransportMode = int(qtractorBus::Input);
+		updateTransportMode();
+	}
+}
+
+
+// Set Transport mode option to Master.
+void qtractorMainForm::transportModeMaster (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportModeMaster()");
+#endif
+
+	// Set Transport mode to Master...
+	if (m_pOptions) {
+		m_pOptions->iTransportMode = int(qtractorBus::Output);
+		updateTransportMode();
+	}
+
+	stabilizeForm();
+}
+
+
+// Set Transport mode option to Full.
+void qtractorMainForm::transportModeFull (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportModeFull()");
+#endif
+
+	// Set Transport mode to Full...
+	if (m_pOptions) {
+		m_pOptions->iTransportMode = int(qtractorBus::Duplex);
+		updateTransportMode();
+	}
 }
 
 
@@ -6384,6 +6492,33 @@ void qtractorMainForm::updateAudioPlayer (void)
 
 
 // Update Audio engine control mode settings.
+void qtractorMainForm::updateTransportModePre (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	switch (qtractorBus::BusMode(m_pOptions->iTransportMode)) {
+	case qtractorBus::None:   // None
+		m_ui.transportModeNoneAction->setChecked(true);
+		break;
+	case qtractorBus::Input:  // Slave
+		m_ui.transportModeSlaveAction->setChecked(true);
+		break;
+	case qtractorBus::Output: // Master
+		m_ui.transportModeMasterAction->setChecked(true);
+		break;
+	case qtractorBus::Duplex: // Full
+	default:
+		m_ui.transportModeFullAction->setChecked(true);
+		break;
+	}
+
+	// Set initial transport mode...
+	m_pTransportModeToolButton->setDefaultAction(
+		m_pTransportModeActionGroup->checkedAction());
+}
+
+
 void qtractorMainForm::updateTransportMode (void)
 {
 	if (m_pOptions == NULL)

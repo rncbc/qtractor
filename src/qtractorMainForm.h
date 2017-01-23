@@ -270,6 +270,10 @@ public slots:
 	void transportFollow();
 	void transportAutoBackward();
 	void transportContinue();
+	void transportModeNone();
+	void transportModeSlave();
+	void transportModeMaster();
+	void transportModeFull();
 	void transportPanic();
 
 	void helpShortcuts();
@@ -398,6 +402,8 @@ protected:
 	void updateSessionPre();
 	void updateSessionPost();
 
+	void updateTransportModePre();
+
 	void updateRecentFiles(const QString& sFilename);
 	void updatePeakAutoRemove();
 	void updateMessagesFont();
@@ -457,6 +463,8 @@ private:
 	QSocketNotifier *m_pTermNotifier;
 	QActionGroup *m_pSelectModeActionGroup;
 	QToolButton *m_pSelectModeToolButton;
+	QActionGroup *m_pTransportModeActionGroup;
+	QToolButton *m_pTransportModeToolButton;
 	qtractorTimeSpinBox *m_pTimeSpinBox;
 	qtractorTempoSpinBox *m_pTempoSpinBox;
 	QComboBox *m_pSnapPerBeatComboBox;
