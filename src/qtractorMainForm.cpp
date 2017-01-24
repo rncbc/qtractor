@@ -1398,9 +1398,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.viewSnapGridAction->setChecked(pOptions->bTrackViewSnapGrid);
 	m_ui.viewToolTipsAction->setChecked(pOptions->bTrackViewToolTips);
 
-	// Transport mode pre-update...
-	updateTransportModePre();
-
 	m_ui.transportMetroAction->setChecked(m_pOptions->bMetronome);
 	m_ui.transportFollowAction->setChecked(m_pOptions->bFollowPlayhead);
 	m_ui.transportAutoBackwardAction->setChecked(m_pOptions->bAutoBackward);
@@ -1462,7 +1459,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 	updateDisplayFormat();
-	updateTransportMode();
+	updateTransportModePre();
+	updateTransportModePost();
 	updateTimebase();
 	updateAudioPlayer();
 	updateAudioMetronome();
@@ -4952,7 +4950,7 @@ void qtractorMainForm::viewOptions (void)
 		if (iOldTransportMode != m_pOptions->iTransportMode) {
 			++m_iDirtyCount; // Fake session properties change.
 			updateTransportModePre();
-			updateTransportMode();
+			updateTransportModePost();
 		//	iNeedRestart |= RestartSession;
 		}
 		if (( bOldTimebase && !m_pOptions->bTimebase) ||
@@ -5483,7 +5481,7 @@ void qtractorMainForm::transportModeNone (void)
 	// Set Transport mode to None...
 	if (m_pOptions) {
 		m_pOptions->iTransportMode = int(qtractorBus::None);
-		updateTransportMode();
+		updateTransportModePost();
 	}
 }
 
@@ -5498,7 +5496,7 @@ void qtractorMainForm::transportModeSlave (void)
 	// Set Transport mode to Slave...
 	if (m_pOptions) {
 		m_pOptions->iTransportMode = int(qtractorBus::Input);
-		updateTransportMode();
+		updateTransportModePost();
 	}
 }
 
@@ -5513,7 +5511,7 @@ void qtractorMainForm::transportModeMaster (void)
 	// Set Transport mode to Master...
 	if (m_pOptions) {
 		m_pOptions->iTransportMode = int(qtractorBus::Output);
-		updateTransportMode();
+		updateTransportModePost();
 	}
 
 	stabilizeForm();
@@ -5530,7 +5528,7 @@ void qtractorMainForm::transportModeFull (void)
 	// Set Transport mode to Full...
 	if (m_pOptions) {
 		m_pOptions->iTransportMode = int(qtractorBus::Duplex);
-		updateTransportMode();
+		updateTransportModePost();
 	}
 }
 
@@ -6534,7 +6532,7 @@ void qtractorMainForm::updateTransportModePre (void)
 }
 
 
-void qtractorMainForm::updateTransportMode (void)
+void qtractorMainForm::updateTransportModePost (void)
 {
 	if (m_pOptions == NULL)
 		return;

@@ -404,15 +404,14 @@ protected:
 	void updateSessionPre();
 	void updateSessionPost();
 
-	void updateTransportModePre();
-
 	void updateRecentFiles(const QString& sFilename);
 	void updatePeakAutoRemove();
 	void updateMessagesFont();
 	void updateMessagesLimit();
 	void updateMessagesCapture();
 	void updateDisplayFormat();
-	void updateTransportMode();
+	void updateTransportModePre();
+	void updateTransportModePost();
 	void updateTimebase();
 	void updateMidiControlModes();
 	void updateAudioPlayer();
