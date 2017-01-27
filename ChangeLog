@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Track/Navigate/Next and Previous menu commandss, finally
+  fixed to wrap around the current track list.
+
 - Current session (JACK) transport mode option switching is
   now being made accessible, from the main menu and drop-down
   toolbar buttons, as well as user configurable PC-keyboard

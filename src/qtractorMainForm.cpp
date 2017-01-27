@@ -3517,11 +3517,12 @@ void qtractorMainForm::trackNavigatePrev (void)
 
 	if (m_pTracks) {
 		qtractorTrackList *pTrackList = m_pTracks->trackList();
-		int iTrack = pTrackList->currentTrackRow();
-		if (iTrack < 0 && pTrackList->trackRowCount() > 0)
-			iTrack = 1;
-		if (iTrack > 0)
-			pTrackList->setCurrentTrackRow(iTrack - 1);
+		const int iTrackCount = pTrackList->trackRowCount();
+		int iTrack = pTrackList->currentTrackRow() - 1;
+		if (iTrack < 0)
+			iTrack = iTrackCount - 1;
+		if (iTrack >= 0 && iTrackCount >= iTrack)
+			pTrackList->setCurrentTrackRow(iTrack);
 	}
 }
 
@@ -3535,9 +3536,12 @@ void qtractorMainForm::trackNavigateNext (void)
 
 	if (m_pTracks) {
 		qtractorTrackList *pTrackList = m_pTracks->trackList();
-		const int iTrack = pTrackList->currentTrackRow();
-		if (iTrack < pTrackList->trackRowCount() - 1)
-			pTrackList->setCurrentTrackRow(iTrack + 1);
+		const int iTrackCount = pTrackList->trackRowCount();
+		int iTrack = pTrackList->currentTrackRow() + 1;
+		if (iTrack >= iTrackCount)
+			iTrack  = 0;
+		if (iTrack >= 0 && iTrackCount >= iTrack)
+			pTrackList->setCurrentTrackRow(iTrack);
 	}
 }
 
@@ -6719,8 +6723,8 @@ void qtractorMainForm::updateTrackMenu (void)
 	m_ui.trackStateMenu->setEnabled(bEnabled);
 	m_ui.trackNavigateMenu->setEnabled(bTracks);
 	m_ui.trackNavigateFirstAction->setEnabled(bTracks);
-	m_ui.trackNavigatePrevAction->setEnabled(bEnabled && pTrack->prev() != NULL);
-	m_ui.trackNavigateNextAction->setEnabled(bEnabled && pTrack->next() != NULL);
+	m_ui.trackNavigatePrevAction->setEnabled(bTracks);
+	m_ui.trackNavigateNextAction->setEnabled(bTracks);
 	m_ui.trackNavigateLastAction->setEnabled(bTracks);
 	m_ui.trackNavigateNoneAction->setEnabled(bEnabled);
 	m_ui.trackMoveMenu->setEnabled(bEnabled);
