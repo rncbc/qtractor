@@ -1,7 +1,7 @@
 // qtractorAbout.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,14 +25,14 @@
 #include "config.h"
 
 #define QTRACTOR_TITLE        PACKAGE_NAME
-#define QTRACTOR_VERSION      PACKAGE_VERSION
 
 #define QTRACTOR_SUBTITLE     "An Audio/MIDI multi-track sequencer"
 #define QTRACTOR_WEBSITE      "http://qtractor.sourceforge.net"
-#define QTRACTOR_COPYRIGHT    "Copyright (C) 2005-2016 rncbc aka Rui Nuno Capela. All rights reserved."
+#define QTRACTOR_COPYRIGHT    "Copyright (C) 2005-2017 rncbc aka Rui Nuno Capela. All rights reserved."
 
 #define QTRACTOR_DOMAIN       "rncbc.org"
 
 #endif  // __qtractorAbout_h
 
 // end of qtractorAbout.h
+

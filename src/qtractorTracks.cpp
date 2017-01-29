@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -903,6 +903,9 @@ bool qtractorTracks::executeClipToolCommand (
 	if (pMidiClip == NULL)
 		return false;
 
+	if (pClipToolCommand->isLinkedMidiClip(pMidiClip))
+		return false;
+
 	unsigned long iOffset = 0;
 	unsigned long iLength = pClip->clipLength();
 
@@ -940,7 +943,8 @@ bool qtractorTracks::executeClipToolCommand (
 	// Add new edit command from tool...
 	pClipToolCommand->addMidiEditCommand(
 		pMidiToolsForm->editCommand(pMidiClip, &select,
-			pSession->tickFromFrame(pClip->clipStart())));
+			pSession->tickFromFrame(pClip->clipStart()),
+			iTimeStart, iTimeEnd));
 			
 	// Must be brand new revision...
 	pMidiClip->setRevision(0);
@@ -1173,15 +1177,19 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	if (pAudioBus == NULL)
 		return false;
 
-	const QString& sExt = qtractorAudioFileFactory::defaultExt();
-	const QString& sTitle  = tr("Merge/Export Audio Clip") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("Audio files (*.%1)").arg(sExt); 
-#if 1//QT_VERSION < 0x040400
-	// Ask for the filename to save...
+	const QString& sExt
+		= qtractorAudioFileFactory::defaultExt();
+	const QString& sTitle
+		= tr("Merge/Export Audio Clip") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= tr("Audio files (*.%1)").arg(sExt); 
+
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to save...
 	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
 #else
@@ -1193,15 +1201,13 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	fileDialog.setFileMode(QFileDialog::AnyFile);
 	fileDialog.setDefaultSuffix(sExt);
 	// Stuff sidebar...
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		QList<QUrl> urls(fileDialog.sidebarUrls());
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sAudioDir));
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialogs)
-			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (!fileDialog.exec())
 		return false;
@@ -1439,14 +1445,17 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 
 	// Merge MIDI Clip filename requester...
 	const QString  sExt("mid");
-	const QString& sTitle  = tr("Merge/Export MIDI Clip") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt); 
-#if 1//QT_VERSION < 0x040400
-	// Ask for the filename to save...
+	const QString& sTitle
+		= tr("Merge/Export MIDI Clip") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt); 
+
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to save...
 	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
 #else
@@ -1458,15 +1467,13 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	fileDialog.setFileMode(QFileDialog::AnyFile);
 	fileDialog.setDefaultSuffix(sExt);
 	// Stuff sidebar...
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		QList<QUrl> urls(fileDialog.sidebarUrls());
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sMidiDir));
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialogs)
-			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (!fileDialog.exec())
 		return false;

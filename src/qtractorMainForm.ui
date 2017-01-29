@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,8 +29,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1024</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -513,6 +513,15 @@
     <property name="title">
      <string>T&amp;ransport</string>
     </property>
+    <widget class="QMenu" name="transportModeMenu">
+     <property name="title">
+      <string>Mod&amp;e</string>
+     </property>
+     <addaction name="transportModeNoneAction"/>
+     <addaction name="transportModeSlaveAction"/>
+     <addaction name="transportModeMasterAction"/>
+     <addaction name="transportModeFullAction"/>
+    </widget>
     <addaction name="transportBackwardAction"/>
     <addaction name="transportRewindAction"/>
     <addaction name="transportFastForwardAction"/>
@@ -533,6 +542,8 @@
     <addaction name="transportFollowAction"/>
     <addaction name="transportAutoBackwardAction"/>
     <addaction name="transportContinueAction"/>
+    <addaction name="separator"/>
+    <addaction name="transportModeMenu"/>
     <addaction name="separator"/>
     <addaction name="transportPanicAction"/>
    </widget>
@@ -2870,6 +2881,86 @@
    </property>
    <property name="statusTip">
     <string>Continue past end</string>
+   </property>
+  </action>
+  <action name="transportModeNoneAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportModeNone.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;None</string>
+   </property>
+   <property name="iconText">
+    <string>None</string>
+   </property>
+   <property name="toolTip">
+    <string>Transport mode: None</string>
+   </property>
+   <property name="statusTip">
+    <string>Transport mode set to None</string>
+   </property>
+  </action>
+  <action name="transportModeSlaveAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportModeSlave.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Slave</string>
+   </property>
+   <property name="iconText">
+    <string>Slave</string>
+   </property>
+   <property name="toolTip">
+    <string>Transport mode: Slave</string>
+   </property>
+   <property name="statusTip">
+    <string>Transport mode set to Slave</string>
+   </property>
+  </action>
+  <action name="transportModeMasterAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportModeMaster.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Master</string>
+   </property>
+   <property name="iconText">
+    <string>Master</string>
+   </property>
+   <property name="toolTip">
+    <string>Transport mode: Master</string>
+   </property>
+   <property name="statusTip">
+    <string>Transport mode set to Master</string>
+   </property>
+  </action>
+  <action name="transportModeFullAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportModeFull.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Full</string>
+   </property>
+   <property name="iconText">
+    <string>Full</string>
+   </property>
+   <property name="toolTip">
+    <string>Transport mode: Full</string>
+   </property>
+   <property name="statusTip">
+    <string>Transport mode set to Full</string>
    </property>
   </action>
   <action name="transportPanicAction">

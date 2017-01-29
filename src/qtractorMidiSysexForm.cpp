@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -213,13 +213,17 @@ void qtractorMidiSysexForm::importSlot (void)
 	filters.append(tr("SysEx files (*.%1)").arg(sExt));
 	filters.append(tr("MIDI files (*.mid *.smf *.midi)"));
 	filters.append(tr("All files (*.*)"));
-	const QString& sTitle  = tr("Import SysEx Files") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = filters.join(";;");
-#if 1//QT_VERSION < 0x040400
-	// Ask for the filename to open...
+
+	const QString& sTitle
+		= tr("Import SysEx Files") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= filters.join(";;");
+
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(this,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
@@ -235,8 +239,7 @@ void qtractorMidiSysexForm::importSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (fileDialog.exec())
 		files = fileDialog.selectedFiles();
@@ -289,13 +292,16 @@ void qtractorMidiSysexForm::exportSlot (void)
 	QString sPath;
 
 	const QString  sExt("syx");
-	const QString& sTitle  = tr("Export SysEx File") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
-#if 1// QT_VERSION < 0x040400
-	// Ask for the filename to open...
+	const QString& sTitle
+		= tr("Export SysEx File") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= tr("SysEx files (*.%1)").arg(sExt);
+
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1// QT_VERSION < 0x040400
+	// Ask for the filename to open...
 	sPath = QFileDialog::getSaveFileName(this,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
@@ -311,8 +317,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (fileDialog.exec())
 		sPath = fileDialog.selectedFiles().first();
@@ -428,13 +433,16 @@ void qtractorMidiSysexForm::openSlot (void)
 
 	// Prompt if file does not currently exist...
 	const QString  sExt("syx");
-	const QString& sTitle  = tr("Open SysEx") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("SysEx files (*.%1)").arg(sExt);
-#if 1//QT_VERSION < 0x040400
-	// Ask for the filename to save...
+	const QString& sTitle
+		= tr("Open SysEx") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= tr("SysEx files (*.%1)").arg(sExt);
+
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to save...
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
@@ -450,8 +458,7 @@ void qtractorMidiSysexForm::openSlot (void)
 	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 	urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 	fileDialog.setSidebarUrls(urls);
-	if (pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (fileDialog.exec())
 		sFilename = fileDialog.selectedFiles().first();
@@ -498,20 +505,21 @@ void qtractorMidiSysexForm::saveSlot (void)
 	QString sFilename = fi.absoluteFilePath();
 	// Prompt if file does not currently exist...
 	if (!fi.exists()) {
-		const QString& sTitle  = tr("Save SysEx") + " - " QTRACTOR_TITLE;
-		const QString& sFilter = tr("Sysex files (*.%1)").arg(sExt);
-	#if 1//QT_VERSION < 0x040400
-		// Ask for the filename to save...
+		const QString& sTitle
+			= tr("Save SysEx") + " - " QTRACTOR_TITLE;
+		const QString& sFilter
+			= tr("Sysex files (*.%1)").arg(sExt);
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		QFileDialog::Options options = 0;
 		if (pOptions->bDontUseNativeDialogs)
 			options |= QFileDialog::DontUseNativeDialog;
+	#if 1//QT_VERSION < 0x040400
+		// Ask for the filename to save...
 		sFilename = QFileDialog::getSaveFileName(this,
 			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct save-file dialog...
-		QFileDialog fileDialog(this,
-			sTitle, sFilename, sFilter);
+		QFileDialog fileDialog(this, sTitle, sFilename, sFilter);
 		// Set proper open-file modes...
 		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 		fileDialog.setFileMode(QFileDialog::AnyFile);
@@ -521,8 +529,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
 		urls.append(QUrl::fromLocalFile(pOptions->sMidiSysexDir));
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialogs)
-			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
+		fileDialog.setOptions(options);
 		// Show dialog...
 		if (fileDialog.exec())
 			sFilename = fileDialog.selectedFiles().first();

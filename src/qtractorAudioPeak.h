@@ -82,7 +82,7 @@ public:
 
 	// Write peak from audio frame methods.
 	bool openWrite(unsigned short iChannels, unsigned int iSampleRate);
-	void write(float **ppAudioFrames, unsigned int iAudioFrames);
+	int write(float **ppAudioFrames, unsigned int iAudioFrames);
 	void closeWrite();
 
 	// Reference count methods.
@@ -91,6 +91,9 @@ public:
 
 	// Physical removal.
 	void remove();
+
+	// Clean/close method.
+	void cleanup(bool bAutoRemove = false);
 
 	// Sync thread state flags accessors.
 	void setWaitSync(bool bWaitSync);
@@ -139,7 +142,9 @@ private:
 		float         *amax;
 		float         *amin;
 		float         *arms;
-		unsigned long  period;
+		unsigned long  period_p;
+		unsigned int   period_q;
+		unsigned int   period_r;
 		unsigned long  nframe;
 		unsigned short npeak;
 		unsigned long  nread;
@@ -220,8 +225,8 @@ public:
 	unsigned short peakPeriod() const;
 
 	// The peak file factory-methods.
-	qtractorAudioPeak *createPeak(const QString& sFilename, float fTimeStretch);
-	void removePeak(qtractorAudioPeakFile *pPeakFile, bool bAborted);
+	qtractorAudioPeak *createPeak(
+		const QString& sFilename, float fTimeStretch = 1.0f);
 
 	// Auto-delete property.
 	void setAutoRemove(bool bAutoRemove);
@@ -256,9 +261,6 @@ private:
 
 	// Auto-delete property.
 	bool m_bAutoRemove;
-
-	// The queue of discardable peak files.
-	QStringList m_files;
 
 	// The peak file creation detached thread.
 	qtractorAudioPeakThread *m_pPeakThread;

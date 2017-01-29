@@ -69,7 +69,7 @@ public:
 	void update(qtractorMidiClip *pMidiClip)
 	{
 		qtractorTrack *pTrack = pMidiClip->track();
-		m_sFilename = pMidiClip->filename();;
+		m_sFilename = pMidiClip->filename();
 		m_iClipOffset = pMidiClip->clipOffsetTime();
 		m_iClipLength = pMidiClip->clipLengthTime();
 		m_iTrackChannel = pMidiClip->trackChannel();
@@ -766,6 +766,13 @@ void qtractorMidiClip::relinkHashData (void)
 bool qtractorMidiClip::isHashLinked (void) const
 {
 	return (m_pData && m_pData->count() > 1);
+}
+
+
+// Check whether a MIDI clip is hash-linked to another.
+bool qtractorMidiClip::isLinkedClip ( qtractorMidiClip *pMidiClip ) const
+{
+	return (m_pData ? m_pData->clips().contains(pMidiClip) : false);
 }
 
 

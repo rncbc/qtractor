@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -148,8 +148,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 					.arg(pNode->tempo, 0, 'g', 3)
 					.arg(pNode->beatsPerBar)
 					.arg(1 << pNode->beatDivisor);
-				painter.setPen(pal.base().color().value() < 0x7f
-					? pal.light().color() : pal.dark().color());
+				painter.setPen(Qt::darkGray);
 				painter.drawText(x1, y1, sTempo);
 				x1 += fm.width(sTempo) + 2;
 			}

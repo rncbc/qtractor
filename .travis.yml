@@ -25,6 +25,7 @@ install:
 - sudo apt-get install -qq lv2-dev liblilv-dev libsuil-dev
 
 before_script:
+- git fetch --unshallow --tags -q
 - ./autogen.sh
 
 script:

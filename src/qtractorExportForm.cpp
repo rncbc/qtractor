@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -397,13 +397,16 @@ void qtractorExportForm::browseExportPath (void)
 		sExportPath = pSession->sessionDir();
 
 	// Actual browse for the file...
-	const QString& sTitle  = tr("Export %1 File").arg(m_sExportType) + " - " QTRACTOR_TITLE;
-	const QString& sFilter = tr("%1 files (*.%1)").arg(m_sExportExt);
-#if 1//QT_VERSION < 0x040400
+	const QString& sTitle
+		= tr("Export %1 File").arg(m_sExportType) + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= tr("%1 files (*.%1)").arg(m_sExportExt);
+
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
 	sExportPath = QFileDialog::getSaveFileName(this,
 		sTitle, sExportPath, sFilter, NULL, options);
 #else
@@ -414,7 +417,6 @@ void qtractorExportForm::browseExportPath (void)
 	fileDialog.setFileMode(QFileDialog::AnyFile);
 	fileDialog.setDefaultSuffix(m_sExportExt);
 	// Stuff sidebar...
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		QList<QUrl> urls(fileDialog.sidebarUrls());
 		urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
@@ -430,9 +432,8 @@ void qtractorExportForm::browseExportPath (void)
 			break;
 		}
 		fileDialog.setSidebarUrls(urls);
-		if (pOptions->bDontUseNativeDialogs)
-			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	}
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (fileDialog.exec())
 		sExportPath = fileDialog.selectedFiles().first();

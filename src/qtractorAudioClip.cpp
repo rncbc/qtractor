@@ -286,12 +286,15 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 				m_pData->attach(this);
 				// Peak files should also be created on-the-fly...
 				qtractorAudioBuffer *pBuff = m_pData->buffer();
-				if ((m_pPeak == NULL || bFilenameChanged)
-					&& pSession->audioPeakFactory()) {
-					if (m_pPeak)
-						delete m_pPeak;
-					m_pPeak = pSession->audioPeakFactory()->createPeak(
-						sFilename, pBuff->timeStretch());
+				if (m_pPeak == NULL || bFilenameChanged) {
+					qtractorAudioPeakFactory *pPeakFactory
+						= pSession->audioPeakFactory();
+					if (pPeakFactory) {
+						if (m_pPeak)
+							delete m_pPeak;
+						m_pPeak = pPeakFactory->createPeak(
+							sFilename, pBuff->timeStretch());
+					}
 				}
 				// Clip name should be clear about it all.
 				if (clipName().isEmpty())
@@ -323,14 +326,17 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		setClipLength(pBuff->length() - pBuff->offset());
 
 	// Peak files should also be created on-the-fly?
-	if ((m_pPeak == NULL || bFilenameChanged)
-		&& pSession->audioPeakFactory()) {
-		if (m_pPeak)
-			delete m_pPeak;
-		m_pPeak = pSession->audioPeakFactory()->createPeak(
-			sFilename, pBuff->timeStretch());
-		if (bWrite)
-			pBuff->setPeakFile(m_pPeak->peakFile());
+	if (m_pPeak == NULL || bFilenameChanged) {
+		qtractorAudioPeakFactory *pPeakFactory
+			= pSession->audioPeakFactory();
+		if (pPeakFactory) {
+			if (m_pPeak)
+				delete m_pPeak;
+			m_pPeak = pPeakFactory->createPeak(
+				sFilename, pBuff->timeStretch());
+			if (bWrite)
+				pBuff->setPeakFile(m_pPeak->peakFile());
+		}
 	}
 
 	// Clip name should be clear about it all.
@@ -656,7 +662,6 @@ void qtractorAudioClip::draw (
 	}
 
 	// Draw peak chart...
-	const QColor& fg = track()->foreground();
 	const int h1 = (clipRect.height() / iChannels);
 	const int h2 = (h1 >> 1);
 	const int h2gain = (h2 * m_fractGain.num);
@@ -681,19 +686,20 @@ void qtractorAudioClip::draw (
 	}
 
 	// Close, draw and free the polygons...
+	QColor fg(track()->foreground());
+	fg.setAlpha(200);
 	pPainter->setPen(fg.lighter(140));
+	pPainter->setBrush(fg);
 	for (k = 0; k < iChannels; ++k) {
-		pPainter->setBrush(fg.lighter(120));
 		pPainter->drawPolygon(*pPolyMax[k]);
-		pPainter->setBrush(fg);
 		pPainter->drawPolygon(*pPolyRms[k]);
-		delete pPolyMax[k];
 		delete pPolyRms[k];
+		delete pPolyMax[k];
 	}
 
 	// Done on polygons.
-	delete [] pPolyMax;
 	delete [] pPolyRms;
+	delete [] pPolyMax;
 }
 
 

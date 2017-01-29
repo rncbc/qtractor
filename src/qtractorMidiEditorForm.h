@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -90,7 +90,7 @@ public:
 	QMenu *editMenu() const;
 	
 	// Save(as) warning message box.
-	static int querySave(const QString& sFilename);
+	static int querySave(const QString& sFilename, QWidget *pParent = NULL);
 
 	// Update thumb-view play-head...
 	void updatePlayHead(unsigned long iPlayHead);
@@ -260,3 +260,4 @@ private:
 
 
 // end of qtractorMidiEditorForm.h
+

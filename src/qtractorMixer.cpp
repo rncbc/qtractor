@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1273,8 +1273,8 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 	m_pOutputRack = new qtractorMixerRack(this, tr("Outputs"));
 
 	// Some specialties to this kind of dock window...
-	QMainWindow::setMinimumWidth(360);
-	QMainWindow::setMinimumHeight(240);
+	QMainWindow::setMinimumWidth(480);
+	QMainWindow::setMinimumHeight(320);
 
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Mixer") + " - " QTRACTOR_TITLE;
@@ -1547,3 +1547,4 @@ void qtractorMixer::keyPressEvent ( QKeyEvent *pKeyEvent )
 
 
 // end of qtractorMixer.cpp
+

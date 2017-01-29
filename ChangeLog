@@ -6,25 +6,67 @@ ChangeLog
 
 GIT HEAD
 
+- Track/Navigate/Next and Previous menu commandss, finally
+  fixed to wrap around the current track list.
+
+- Current session (JACK) transport mode option switching is
+  now being made accessible, from the main menu and drop-down
+  toolbar buttons, as well as user configurable PC-keyboard
+  and/or MIDI controller shortcuts (cf. Transport/Mode/None,
+  Slave, Master, Ful). (EXPERIMENTAL) 
+
+- Fixed some auto-backward play-head position flip-flopping,
+  when opening a new session while the previous was still on
+  rolling/playing state, hopefully. (EXPERIMENTAL)
+  
+- Added French man page (by Olivier Humbert, thanks).
+
+- MIDI clip changes are now saved unconditionally whenever
+  the editor (piano-roll) is closed or not currently visible.
+  (EXPERIMENTAL)
+
+- Audio clip peak/waveform files re-generation performance,
+  scalability and resilience have been slightly improved.
+  (EXPERIMENTAL)
+
+- Some sanitary checks have been added to audio clip peak/
+  waveform re-generation routine, as much to avoid empty,
+  blank, zero or negative-width faulty renderings.
+
+- Do not reset the Files tree-view widgets anymore, when
+  leaving any drag-and-drop operation (annoyingly, all
+  groups and sub-groups were being closed without appeal).
+
+- Make builds reproducible byte for byte, by getting rid of
+  the configure build date and time stamps.
+
+
+0.8.0  2016-11-21  Snobbiest Graviton Beta.
+
+- MIDI clip tools redo/undo processing refactored as much to
+  avoid replication over multiple hash-linked clips; MIDI clip
+  editor's floating selection/anchor event stability has been 
+  also improved, in regard to MIDI tools processing range. 
+
 - Auto-backward play-head location, when playback was last
   started, is now shown on main track-view, as a momentary
-  dark-red vertical line marker. (EXPERIMENTAL)
+  dark-red vertical line marker.
 
 - LV2 plugin-in parameter optimization: stuff consecutive
   series of plug-in's parameter value changes, as much as
-  possible into one single undo/redo command. (EXPERIMENTAL)
+  possible into one single undo/redo command.
 
 - LV2_STATE__StateChanged is now recognized as a regular
   atom notification event and raising the current session
-  dirty flag, as normal behavior. (EXPERIMENTAL)
+  dirty flag, as normal behavior.
 
 - Adjusting clip selection edges is now possible and honored
-  while on the the main track-view canvas.(EXPERIMENTAL)
+  while on the the main track-view canvas.
 
 - Audio peak file caching and rendering, as far as audio
-  clip waveforms are concerned, have been refactored and
+  clip wave-forms are concerned, have been refactored and
   optimized a couple of notches higher, on the ephemeral
-  and rather marginal throughput front ;). (EXPERIMENTAL)
+  and rather marginal throughput front ;).
 
 - Fixed a potential crash on the singleton/unique application
   instance setup.
@@ -38,7 +80,7 @@ GIT HEAD
 - Automation curve node editing auto-smoothing revisited;
   also fixed input MIDI RPN/NRPN running status processing,
   which was crippling some plug-in automation curve nodes,
-  when saved in high-resolution 14-bit mode. (EXPERIMENTAL)
+  when saved in high-resolution 14-bit mode.
 
 - Fixed the visual play-head position (vertical red line)
   while zooming in or out horizontally.
@@ -46,10 +88,9 @@ GIT HEAD
 - Almost complete overhaul on the configure script command
   line options, wrt. installation directories specification,
   eg. --prefix, --bindir, --libdir, --datadir and --mandir.
-  (EXPERIMENTAL)
 
 - LV2 Plugin-in worker/schedule fix: make request/response
-  ringbuffer writes in one go, hopefully atomic (suggested
+  ring-buffer writes in one go, hopefully atomic (suggested
   patch by Stefan Westerfeld, while on SpectMorph, thanks).
 
 

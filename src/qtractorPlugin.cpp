@@ -682,7 +682,7 @@ bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 	QDomElement ePreset = doc.createElement("preset");
 	ePreset.setAttribute("type", presetPrefix());
 	ePreset.setAttribute("name", fi.baseName());
-	ePreset.setAttribute("version", QTRACTOR_VERSION);
+	ePreset.setAttribute("version", CONFIG_BUILD_VERSION);
 
 	// Save plugin configs...
 	QDomElement eConfigs = doc.createElement("configs");

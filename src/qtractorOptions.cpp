@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -363,7 +363,7 @@ void qtractorOptions::saveOptions (void)
 {
 	// Make program version available in the future.
 	m_settings.beginGroup("/Program");
-	m_settings.setValue("/Version", QTRACTOR_VERSION);
+	m_settings.setValue("/Version", CONFIG_BUILD_VERSION);
 	m_settings.endGroup();
 
 	// And go into general options group.
@@ -722,12 +722,11 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			return false;
 		}
 		else if (sArg == "-v" || sArg == "--version") {
-			out << QObject::tr("Qt: %1\n")
+			out << QString("Qt: %1\n")
 				.arg(qVersion());
-			out << QObject::tr("%1: %2  (%3)\n")
+			out << QString("%1: %2\n")
 				.arg(QTRACTOR_TITLE)
-				.arg(QTRACTOR_VERSION)
-				.arg(CONFIG_BUILD_DATE);
+				.arg(CONFIG_BUILD_VERSION);
 			return false;
 		}
 		else {
@@ -757,7 +756,6 @@ void qtractorOptions::loadWidgetGeometry ( QWidget *pWidget, bool bVisible )
 			= m_settings.value("/geometry").toByteArray();
 		if (!geometry.isEmpty())
 			pWidget->restoreGeometry(geometry);
-		else
 	#else//--LOAD_OLD_GEOMETRY
 		QPoint wpos;
 		QSize  wsize;
@@ -769,9 +767,9 @@ void qtractorOptions::loadWidgetGeometry ( QWidget *pWidget, bool bVisible )
 			pWidget->move(wpos);
 		if (wsize.width() > 0 && wsize.height() > 0)
 			pWidget->resize(wsize);
-		else
 	#endif
-		pWidget->adjustSize();
+	//	else
+	//	pWidget->adjustSize();
 		if (!bVisible)
 			bVisible = m_settings.value("/visible", false).toBool();
 		if (bVisible)
@@ -1067,3 +1065,4 @@ void qtractorOptions::saveActionControl ( QObject *pObject )
 
 
 // end of qtractorOptions.cpp
+

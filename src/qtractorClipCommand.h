@@ -244,6 +244,9 @@ public:
 	// Destructor.
 	virtual ~qtractorClipToolCommand();
 
+	// Check if a clip is already part of the editing set.
+	bool isLinkedMidiClip(qtractorMidiClip *pMidiClip) const;
+
 	// Composite command methods.
 	void addMidiEditCommand(qtractorMidiEditCommand *pMidiEditCommand);
 
@@ -253,6 +256,11 @@ public:
 	// Virtual command methods.
 	bool redo();
 	bool undo();
+
+protected:
+
+	// Filename and length swap transaction...
+	void swapMidiClipCtx( qtractorMidiClip *pMidiClip);
 
 private:
 

@@ -766,7 +766,7 @@ void qtractorMidiToolsForm::presetDelete (void)
 // Create edit command based on given selection.
 qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	qtractorMidiClip *pMidiClip, qtractorMidiEditSelect *pSelect,
-	unsigned long iTimeOffset )
+	unsigned long iTimeOffset, unsigned long iTimeStart, unsigned long iTimeEnd )
 {
 	// Create command, it will be handed over...
 	qtractorMidiEditCommand *pEditCommand
@@ -797,9 +797,17 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	// Seed time range with a value from the list of selected events.
 	long iMinTime = iTimeOffset;
 	long iMaxTime = iTimeOffset;
-	long iMaxTime2 = iTimeOffset;
+
 	if (pSelect->anchorEvent())
 		iMinTime = iMaxTime = pSelect->anchorEvent()->time() + iTimeOffset;
+
+	long iMinTime2 = iMinTime;
+	long iMaxTime2 = iMaxTime;
+
+	if (iTimeStart < iTimeEnd) {
+		iMinTime += long(iTimeStart);
+		iMaxTime += long(iTimeEnd);
+	}
 
 	// First scan pass for the normalize and resize value ramp tools:
 	// find maximum and minimum times and values from the selection...
@@ -816,14 +824,16 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			qtractorMidiEvent *pEvent = iter.key();
 			const long iTime = pEvent->time() + iTimeOffset;
 			const long iTime2 = iTime + pEvent->duration();
-			if (iMinTime > iTime || i == 0)
-				iMinTime = iTime;
-			if (iMaxTime < iTime)
-				iMaxTime = iTime;
+			if (iMinTime  > iTime)
+				iMinTime  = iTime;
+			if (iMaxTime  < iTime)
+				iMaxTime  = iTime;
+			if (iMinTime2 > iTime || i == 0)
+				iMinTime2 = iTime;
 			if (iMaxTime2 < iTime2)
 				iMaxTime2 = iTime2;
 			const bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
-			int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
+			const int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
 			if (iMinValue > iValue || i == 0)
 				iMinValue = iValue;
 			if (iMaxValue < iValue)
@@ -931,7 +941,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					iTime = long(iTimeOffset);
 			}
 			if (m_ui.TransposeReverseCheckBox->isChecked()) {
-				iTime = iMinTime + iMaxTime2 - iTime - iDuration;
+				iTime = iMinTime2 + iMaxTime2 - iTime - iDuration;
 				if (iTime < long(iTimeOffset))
 					iTime = long(iTimeOffset);
 			}

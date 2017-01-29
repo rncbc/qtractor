@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -293,8 +293,10 @@ qtractorMainForm::qtractorMainForm (
 	m_iAudioPropertyChange = 0;
 
 	// Configure the audio file peak factory...
-	if (m_pSession->audioPeakFactory()) {
-		QObject::connect(m_pSession->audioPeakFactory(),
+	qtractorAudioPeakFactory *pPeakFactory
+		= m_pSession->audioPeakFactory();
+	if (pPeakFactory) {
+		QObject::connect(pPeakFactory,
 			SIGNAL(peakEvent()),
 			SLOT(peakNotify()));
 	}
@@ -426,12 +428,35 @@ qtractorMainForm::qtractorMainForm (
 	m_pSelectModeToolButton->setMenu(m_ui.editSelectModeMenu);
 
 	// Add/insert this on its proper place in the edit-toobar...
-	m_ui.editToolbar->insertWidget(m_ui.clipNewAction, m_pSelectModeToolButton);
+	m_ui.editToolbar->insertWidget(m_ui.clipNewAction,
+		m_pSelectModeToolButton);
 	m_ui.editToolbar->insertSeparator(m_ui.clipNewAction);
 
 	QObject::connect(
 		m_pSelectModeActionGroup, SIGNAL(triggered(QAction*)),
 		m_pSelectModeToolButton, SLOT(setDefaultAction(QAction*)));
+
+	// Get transport mode action group up...
+	m_pTransportModeActionGroup = new QActionGroup(this);
+	m_pTransportModeActionGroup->setExclusive(true);
+	m_pTransportModeActionGroup->addAction(m_ui.transportModeNoneAction);
+	m_pTransportModeActionGroup->addAction(m_ui.transportModeSlaveAction);
+	m_pTransportModeActionGroup->addAction(m_ui.transportModeMasterAction);
+	m_pTransportModeActionGroup->addAction(m_ui.transportModeFullAction);
+
+	// And the corresponding tool-button drop-down menu...
+	m_pTransportModeToolButton = new QToolButton(this);
+	m_pTransportModeToolButton->setPopupMode(QToolButton::InstantPopup);
+	m_pTransportModeToolButton->setMenu(m_ui.transportModeMenu);
+
+	// Add/insert this on its proper place in the options-toobar...
+	m_ui.optionsToolbar->insertWidget(m_ui.transportPanicAction,
+		m_pTransportModeToolButton);
+	m_ui.optionsToolbar->insertSeparator(m_ui.transportPanicAction);
+
+	QObject::connect(
+		m_pTransportModeActionGroup, SIGNAL(triggered(QAction*)),
+		m_pTransportModeToolButton, SLOT(setDefaultAction(QAction*)));
 
 	// Additional time-toolbar controls...
 //	m_ui.timeToolbar->addSeparator();
@@ -1116,6 +1141,18 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportContinueAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportContinue()));
+	QObject::connect(m_ui.transportModeNoneAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportModeNone()));
+	QObject::connect(m_ui.transportModeSlaveAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportModeSlave()));
+	QObject::connect(m_ui.transportModeMasterAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportModeMaster()));
+	QObject::connect(m_ui.transportModeFullAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportModeFull()));
 	QObject::connect(m_ui.transportPanicAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportPanic()));
@@ -1204,6 +1241,12 @@ qtractorMainForm::~qtractorMainForm (void)
 		delete m_pSelectModeActionGroup;
 	if (m_pSelectModeToolButton)
 		delete m_pSelectModeToolButton;
+
+	// Get transport mode action group down.
+	if (m_pTransportModeActionGroup)
+		delete m_pTransportModeActionGroup;
+	if (m_pTransportModeToolButton)
+		delete m_pTransportModeToolButton;
 
 	// Reclaim status items palettes...
 	for (int i = 0; i < PaletteItems; ++i)
@@ -1407,7 +1450,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateRecentFilesMenu();
 	updatePeakAutoRemove();
 	updateDisplayFormat();
-	updateTransportMode();
+	updateTransportModePre();
+	updateTransportModePost();
 	updateTimebase();
 	updateAudioPlayer();
 	updateAudioMetronome();
@@ -1893,12 +1937,16 @@ bool qtractorMainForm::openSession (void)
 		.arg(qtractorDocument::archiveExt()));
 #endif
 	sExt = m_pOptions->sSessionExt; // Default session  file format...
-	const QString& sTitle  = tr("Open Session") + " - " QTRACTOR_TITLE;
-	const QString& sFilter = filters.join(";;");
-#if 1//QT_VERSION < 0x040400
+
+	const QString& sTitle
+		= tr("Open Session") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= filters.join(";;");
+
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
+#if 1//QT_VERSION < 0x040400
 	sFilename = QFileDialog::getOpenFileName(this,
 		sTitle, m_pOptions->sSessionDir, sFilter, NULL, options);
 #else
@@ -1915,12 +1963,11 @@ bool qtractorMainForm::openSession (void)
 	if (sExt == qtractorDocument::archiveExt())
 		fileDialog.setNameFilter(filters.last());
 #endif
-	if (m_pOptions->bDontUseNativeDialogs)
-		fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 	// Stuff sidebar...
 	QList<QUrl> urls(fileDialog.sidebarUrls());
 	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
 	fileDialog.setSidebarUrls(urls);
+	fileDialog.setOptions(options);
 	// Show dialog...
 	if (!fileDialog.exec())
 		return false;
@@ -1983,14 +2030,16 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			.arg(qtractorDocument::archiveExt()));
 	#endif
 		sExt = m_pOptions->sSessionExt; // Default session  file format...
-		const QString& sTitle  = tr("Save Session") + " - " QTRACTOR_TITLE;
-		const QString& sFilter = filters.join(";;");
-		// Try to rename as if a backup is about...
-		sFilename = sessionBackupPath(sFilename);
-	#if 1//QT_VERSION < 0x040400
+		const QString& sTitle
+			= tr("Save Session") + " - " QTRACTOR_TITLE;
+		const QString& sFilter
+			= filters.join(";;");
 		QFileDialog::Options options = 0;
 		if (m_pOptions->bDontUseNativeDialogs)
 			options |= QFileDialog::DontUseNativeDialog;
+		// Try to rename as if a backup is about...
+		sFilename = sessionBackupPath(sFilename);
+	#if 1//QT_VERSION < 0x040400
 		sFilename = QFileDialog::getSaveFileName(this,
 			sTitle, sFilename, sFilter, NULL, options);
 	#else
@@ -2007,12 +2056,11 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		if (sExt == qtractorDocument::archiveExt())
 			fileDialog.setNameFilter(filters.last());
 	#endif
-		if (m_pOptions->bDontUseNativeDialogs)
-			fileDialog.setOptions(QFileDialog::DontUseNativeDialog);
 		// Stuff sidebar...
 		QList<QUrl> urls(fileDialog.sidebarUrls());
 		urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
 		fileDialog.setSidebarUrls(urls);
+		fileDialog.setOptions(options);
 		// Show save-file dialog...
 		if (!fileDialog.exec())
 			return false;
@@ -2343,6 +2391,7 @@ bool qtractorMainForm::loadSessionFileEx (
 			if (pAudioEngine) {
 				m_pOptions->iTransportMode = int(pAudioEngine->transportMode());
 				m_pOptions->bTimebase = pAudioEngine->isTimebase();
+				updateTransportModePre();
 			}
 			// Save also some MIDI engine hybrid-properties...
 			qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
@@ -3454,8 +3503,8 @@ void qtractorMainForm::trackNavigateFirst (void)
 	qDebug("qtractorMainForm::trackNavigateFirst()");
 #endif
 
-	if (m_pTracks && m_pTracks->trackList())
-		(m_pTracks->trackList())->setCurrentTrackRow(0);
+	if (m_pTracks)
+		m_pTracks->trackList()->setCurrentTrackRow(0);
 }
 
 
@@ -3466,12 +3515,14 @@ void qtractorMainForm::trackNavigatePrev (void)
 	qDebug("qtractorMainForm::trackNavigatePrev()");
 #endif
 
-	if (m_pTracks && m_pTracks->trackList()) {
-		int iTrack = (m_pTracks->trackList())->currentTrackRow();
-		if (iTrack < 0 && (m_pTracks->trackList())->trackRowCount() > 0)
-			iTrack = 1;
-		if (iTrack > 0)
-			(m_pTracks->trackList())->setCurrentTrackRow(iTrack - 1);
+	if (m_pTracks) {
+		qtractorTrackList *pTrackList = m_pTracks->trackList();
+		const int iTrackCount = pTrackList->trackRowCount();
+		int iTrack = pTrackList->currentTrackRow() - 1;
+		if (iTrack < 0)
+			iTrack = iTrackCount - 1;
+		if (iTrack >= 0 && iTrackCount >= iTrack)
+			pTrackList->setCurrentTrackRow(iTrack);
 	}
 }
 
@@ -3483,10 +3534,14 @@ void qtractorMainForm::trackNavigateNext (void)
 	qDebug("qtractorMainForm::trackNavigateNext()");
 #endif
 
-	if (m_pTracks && m_pTracks->trackList()) {
-		int iTrack = (m_pTracks->trackList())->currentTrackRow();
-		if (iTrack < (m_pTracks->trackList())->trackRowCount() - 1)
-			(m_pTracks->trackList())->setCurrentTrackRow(iTrack + 1);
+	if (m_pTracks) {
+		qtractorTrackList *pTrackList = m_pTracks->trackList();
+		const int iTrackCount = pTrackList->trackRowCount();
+		int iTrack = pTrackList->currentTrackRow() + 1;
+		if (iTrack >= iTrackCount)
+			iTrack  = 0;
+		if (iTrack >= 0 && iTrackCount >= iTrack)
+			pTrackList->setCurrentTrackRow(iTrack);
 	}
 }
 
@@ -3498,10 +3553,11 @@ void qtractorMainForm::trackNavigateLast (void)
 	qDebug("qtractorMainForm::trackNavigateLast()");
 #endif
 
-	if (m_pTracks && m_pTracks->trackList()) {
-		int iLastTrack = (m_pTracks->trackList())->trackRowCount() - 1;
-		if (iLastTrack >= 0)
-			(m_pTracks->trackList())->setCurrentTrackRow(iLastTrack);
+	if (m_pTracks) {
+		qtractorTrackList *pTrackList = m_pTracks->trackList();
+		const int iTrack = pTrackList->trackRowCount() - 1;
+		if (iTrack >= 0)
+			pTrackList->setCurrentTrackRow(iTrack);
 	}
 }
 
@@ -3513,8 +3569,8 @@ void qtractorMainForm::trackNavigateNone (void)
 	qDebug("qtractorMainForm::trackNavigateNone()");
 #endif
 
-	if (m_pTracks && m_pTracks->trackList())
-		(m_pTracks->trackList())->setCurrentTrackRow(-1);
+	if (m_pTracks)
+		m_pTracks->trackList()->setCurrentTrackRow(-1);
 }
 
 
@@ -4733,11 +4789,12 @@ void qtractorMainForm::viewRefresh (void)
 	const unsigned long iEditTail = m_pSession->editTail();
 
 	if (m_pTracks) {
-		m_pTracks->updateContents(true);
-		m_pTracks->trackView()->setEditHead(iEditHead);
-		m_pTracks->trackView()->setEditTail(iEditTail);
-		m_pTracks->trackView()->setPlayHeadAutoBackward(
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
+		pTrackView->setEditHead(iEditHead);
+		pTrackView->setEditTail(iEditTail);
+		pTrackView->setPlayHeadAutoBackward(
 			m_pSession->playHeadAutoBackward());
+		m_pTracks->updateContents(true);
 	}
 
 	if (m_pConnections)
@@ -4752,7 +4809,7 @@ void qtractorMainForm::viewRefresh (void)
 	// Update other editors contents...
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
-		qtractorMidiEditor *pEditor = (iter.next())->editor();
+		qtractorMidiEditor *pEditor = iter.next()->editor();
 		pEditor->updateTimeScale();
 		pEditor->updateContents();
 		pEditor->setEditHead(iEditHead, false);
@@ -4884,7 +4941,8 @@ void qtractorMainForm::viewOptions (void)
 		// Audio engine control modes...
 		if (iOldTransportMode != m_pOptions->iTransportMode) {
 			++m_iDirtyCount; // Fake session properties change.
-			updateTransportMode();
+			updateTransportModePre();
+			updateTransportModePost();
 		//	iNeedRestart |= RestartSession;
 		}
 		if (( bOldTimebase && !m_pOptions->bTimebase) ||
@@ -5228,6 +5286,9 @@ void qtractorMainForm::transportStop (void)
 			pMidiEngine->sendMmcCommand(qtractorMmcEvent::STOP);
 			pMidiEngine->sendSppCommand(SND_SEQ_EVENT_STOP);
 		}
+		// Auto-backward reset feature...
+		if (m_ui.transportAutoBackwardAction->isChecked())
+			m_pSession->setPlayHead(playHeadBackward());
 	}
 
 	stabilizeForm();
@@ -5263,8 +5324,14 @@ void qtractorMainForm::transportPlay (void)
 		// Save auto-backward return position...
 		if (bPlaying) {
 			const unsigned long iPlayHead = m_pSession->playHead();
-			m_pTracks->trackView()->setPlayHeadAutoBackward(iPlayHead);
+			qtractorTrackView *pTrackView = m_pTracks->trackView();
+			pTrackView->setPlayHeadAutoBackward(iPlayHead);
+			pTrackView->setSyncViewHoldOn(false);
 		}
+		else
+		// Auto-backward reset feature...
+		if (m_ui.transportAutoBackwardAction->isChecked())
+			m_pSession->setPlayHead(playHeadBackward());
 	}
 
 	stabilizeForm();
@@ -5390,6 +5457,68 @@ void qtractorMainForm::transportAutoBackward (void)
 
 	// Toggle auto-backward...
 	stabilizeForm();
+}
+
+
+// Set Transport mode option to None.
+void qtractorMainForm::transportModeNone (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportModeNone()");
+#endif
+
+	// Set Transport mode to None...
+	if (m_pOptions) {
+		m_pOptions->iTransportMode = int(qtractorBus::None);
+		updateTransportModePost();
+	}
+}
+
+
+// Set Transport mode option to Slave.
+void qtractorMainForm::transportModeSlave (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportModeSlave()");
+#endif
+
+	// Set Transport mode to Slave...
+	if (m_pOptions) {
+		m_pOptions->iTransportMode = int(qtractorBus::Input);
+		updateTransportModePost();
+	}
+}
+
+
+// Set Transport mode option to Master.
+void qtractorMainForm::transportModeMaster (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportModeMaster()");
+#endif
+
+	// Set Transport mode to Master...
+	if (m_pOptions) {
+		m_pOptions->iTransportMode = int(qtractorBus::Output);
+		updateTransportModePost();
+	}
+
+	stabilizeForm();
+}
+
+
+// Set Transport mode option to Full.
+void qtractorMainForm::transportModeFull (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportModeFull()");
+#endif
+
+	// Set Transport mode to Full...
+	if (m_pOptions) {
+		m_pOptions->iTransportMode = int(qtractorBus::Duplex);
+		updateTransportModePost();
+	}
 }
 
 
@@ -5538,10 +5667,14 @@ void qtractorMainForm::helpAbout (void)
 #endif
 #if QT_VERSION >= 0x050100
 #ifndef CONFIG_LV2_UI_GTK2
+#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
 	list << tr("LV2 Plug-in UI GTK2 native support disabled.");
 #endif
+#endif
 #ifndef CONFIG_LV2_UI_X11
+#ifndef CONFIG_LIBSUIL_X11_IN_QT5
 	list << tr("LV2 Plug-in UI X11 native support disabled.");
+#endif
 #endif
 #endif
 #endif // CONFIG_LV2_UI
@@ -5563,13 +5696,12 @@ void qtractorMainForm::helpAbout (void)
 	QString sText = "<p>\n";
 	sText += "<b>" QTRACTOR_TITLE " - " + tr(QTRACTOR_SUBTITLE) + "</b><br />\n";
 	sText += "<br />\n";
-	sText += tr("Version") + ": <b>" QTRACTOR_VERSION "</b><br />\n";
-	sText += "<small>" + tr("Build") + ": " CONFIG_BUILD_DATE "</small><br />\n";
-	QStringListIterator iter(list);
-	while (iter.hasNext()) {
+	sText += tr("Version") + ": <b>" CONFIG_BUILD_VERSION "</b><br />\n";
+//	sText += "<small>" + tr("Build") + ": " CONFIG_BUILD_DATE "</small><br />\n";
+	if (!list.isEmpty()) {
 		sText += "<small><font color=\"red\">";
-		sText += iter.next();
-		sText += "</font></small><br />";
+		sText += list.join("<br />\n");
+		sText += "</font></small><br />\n";
 	}
 	sText += "<br />\n";
 	sText += tr("Website") + ": <a href=\"" QTRACTOR_WEBSITE "\">" QTRACTOR_WEBSITE "</a><br />\n";
@@ -5631,9 +5763,6 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 		}
 		if (pCurveCommand)
 			m_pSession->commands()->push(pCurveCommand);
-		// Auto-backward reset feature...
-		if (m_ui.transportAutoBackwardAction->isChecked())
-			m_pSession->setPlayHead(playHeadBackward());
 	}	// Start something... ;)
 	else ++m_iTransportUpdate;
 
@@ -6161,11 +6290,11 @@ void qtractorMainForm::updateSessionPre (void)
 
 	//  Actually (re)start session engines, no matter what...
 	startSession();
-
+#if 0
 	// (Re)set playhead...
 	if (m_ui.transportAutoBackwardAction->isChecked())
 		m_pSession->setPlayHead(playHeadBackward());
-
+#endif
 	// Start collection of nested messages...
 	qtractorMessageList::clear();
 }
@@ -6315,10 +6444,10 @@ void qtractorMainForm::updatePeakAutoRemove (void)
 	if (m_pOptions == NULL)
 		return;
 
-	qtractorAudioPeakFactory *pAudioPeakFactory
+	qtractorAudioPeakFactory *pPeakFactory
 		= m_pSession->audioPeakFactory();
-	if (pAudioPeakFactory)
-		pAudioPeakFactory->setAutoRemove(m_pOptions->bPeakAutoRemove);	
+	if (pPeakFactory)
+		pPeakFactory->setAutoRemove(m_pOptions->bPeakAutoRemove);
 }
 
 
@@ -6365,7 +6494,34 @@ void qtractorMainForm::updateAudioPlayer (void)
 
 
 // Update Audio engine control mode settings.
-void qtractorMainForm::updateTransportMode (void)
+void qtractorMainForm::updateTransportModePre (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	switch (qtractorBus::BusMode(m_pOptions->iTransportMode)) {
+	case qtractorBus::None:   // None
+		m_ui.transportModeNoneAction->setChecked(true);
+		break;
+	case qtractorBus::Input:  // Slave
+		m_ui.transportModeSlaveAction->setChecked(true);
+		break;
+	case qtractorBus::Output: // Master
+		m_ui.transportModeMasterAction->setChecked(true);
+		break;
+	case qtractorBus::Duplex: // Full
+	default:
+		m_ui.transportModeFullAction->setChecked(true);
+		break;
+	}
+
+	// Set initial transport mode...
+	m_pTransportModeToolButton->setDefaultAction(
+		m_pTransportModeActionGroup->checkedAction());
+}
+
+
+void qtractorMainForm::updateTransportModePost (void)
 {
 	if (m_pOptions == NULL)
 		return;
@@ -6567,8 +6723,8 @@ void qtractorMainForm::updateTrackMenu (void)
 	m_ui.trackStateMenu->setEnabled(bEnabled);
 	m_ui.trackNavigateMenu->setEnabled(bTracks);
 	m_ui.trackNavigateFirstAction->setEnabled(bTracks);
-	m_ui.trackNavigatePrevAction->setEnabled(bEnabled && pTrack->prev() != NULL);
-	m_ui.trackNavigateNextAction->setEnabled(bEnabled && pTrack->next() != NULL);
+	m_ui.trackNavigatePrevAction->setEnabled(bTracks);
+	m_ui.trackNavigateNextAction->setEnabled(bTracks);
 	m_ui.trackNavigateLastAction->setEnabled(bTracks);
 	m_ui.trackNavigateNoneAction->setEnabled(bEnabled);
 	m_ui.trackMoveMenu->setEnabled(bEnabled);
@@ -7426,7 +7582,7 @@ void qtractorMainForm::audioShutNotify (void)
 #endif
 
 	// HACK: The audio engine (jackd) most probably
-	// is down, not up and running anymoere, but...
+	// is down, not up and running anymore, anyway...
 	m_pSession->lock();
 
 	// Always do auto-save here, hence...
@@ -7652,7 +7808,7 @@ void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead )
 	qDebug("qtractorMainForm::audioSyncNotify(%lu)", iPlayHead);
 #endif
 
-	m_pSession->setPlayHead(iPlayHead);
+	m_pSession->setPlayHeadEx(iPlayHead);
 	++m_iTransportUpdate;
 }
 
@@ -7678,7 +7834,9 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 	case qtractorMmcEvent::STOP:
 	case qtractorMmcEvent::PAUSE:
 		sMmcText += tr("STOP");
-		setPlaying(false);
+		if (setPlaying(false) // Auto-backward reset feature...
+			&& m_ui.transportAutoBackwardAction->isChecked())
+			m_pSession->setPlayHead(playHeadBackward());
 		break;
 	case qtractorMmcEvent::PLAY:
 	case qtractorMmcEvent::DEFERRED_PLAY:
@@ -7846,7 +8004,9 @@ void qtractorMainForm::midiSppNotify ( int iSppCmd, unsigned short iSongPos )
 		break;
 	case SND_SEQ_EVENT_STOP:
 		sSppText += tr("STOP");
-		setPlaying(false);
+		if (setPlaying(false) // Auto-backward reset feature...
+			&& m_ui.transportAutoBackwardAction->isChecked())
+			m_pSession->setPlayHead(playHeadBackward());
 		break;
 	case SND_SEQ_EVENT_CONTINUE:
 		sSppText += tr("CONTINUE");
@@ -8058,7 +8218,7 @@ void qtractorMainForm::mixerSelectionChanged (void)
 		qtractorMixerStrip *pStrip = (m_pMixer->trackRack())->selectedStrip();
 		if (pStrip)
 			pTrack = pStrip->track();
-		(m_pTracks->trackList())->setCurrentTrack(pTrack);
+		m_pTracks->trackList()->setCurrentTrack(pTrack);
 	}
 
 	stabilizeForm();
@@ -8078,9 +8238,10 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 
 	// Track-view is due...
 	if (m_pTracks) {
-		m_pTracks->trackView()->setEditHead(iEditHead);
-		m_pTracks->trackView()->setEditTail(iEditTail);
-		m_pTracks->trackView()->setPlayHeadAutoBackward(
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
+		pTrackView->setEditHead(iEditHead);
+		pTrackView->setEditTail(iEditTail);
+		pTrackView->setPlayHeadAutoBackward(
 			m_pSession->playHeadAutoBackward());
 	//	if (pMidiEditor) m_pTracks->clearSelect();
 	}
@@ -8114,7 +8275,7 @@ void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 // Command update helper.
 void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 {
-#ifdef CONFIG_DEBUG//_0
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMainForm::updateNotifySlot(0x%02x)", int(flags));
 #endif
 
@@ -8243,8 +8404,6 @@ void qtractorMainForm::transportTempoFinished (void)
 
 	const bool bBlockSignals = m_pTempoSpinBox->blockSignals(true);
 	m_pTempoSpinBox->clearFocus();
-//	if (m_pTracks)
-//		m_pTracks->trackView()->setFocus();
 	m_pTempoSpinBox->blockSignals(bBlockSignals);
 }
 
@@ -8311,8 +8470,6 @@ void qtractorMainForm::transportTimeFinished (void)
 
 	++s_iTimeFinished;
 	m_pTimeSpinBox->clearFocus();
-//	if (m_pTracks)
-//		m_pTracks->trackView()->setFocus();
 	--s_iTimeFinished;
 }
 
@@ -8325,3 +8482,4 @@ void qtractorMainForm::transportTempoContextMenu ( const QPoint& /*pos*/ )
 
 
 // end of qtractorMainForm.cpp
+
