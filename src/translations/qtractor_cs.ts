@@ -4150,7 +4150,7 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="518"/>
         <source>Mod&amp;e</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Režim</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1085"/>
@@ -5767,72 +5767,72 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2900"/>
         <source>Transport mode: None</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim přehrávání: Žádný</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2903"/>
         <source>Transport mode set to None</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim přehrávání nastaven na žádný</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2914"/>
         <source>&amp;Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Řízený</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2917"/>
         <source>Slave</source>
-        <translation type="unfinished">Řízený</translation>
+        <translation>Řízený</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2920"/>
         <source>Transport mode: Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim přehrávání: Řízený</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2923"/>
         <source>Transport mode set to Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim přehrávání nastaven na řízený</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2934"/>
         <source>&amp;Master</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Řídící</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2937"/>
         <source>Master</source>
-        <translation type="unfinished">Řídící</translation>
+        <translation>Řídící</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2940"/>
         <source>Transport mode: Master</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim přehrávání: Řídící</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2943"/>
         <source>Transport mode set to Master</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim přehrávání nastaven na řídící</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2954"/>
         <source>&amp;Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Ú&amp;plný</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2957"/>
         <source>Full</source>
-        <translation type="unfinished">Úplný</translation>
+        <translation>Úplný</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2960"/>
         <source>Transport mode: Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim přehrávání: Úplný</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2963"/>
         <source>Transport mode set to Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim přehrávání nastaven na úplný</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2971"/>
@@ -9497,17 +9497,17 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1432"/>
         <source>Messages Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Písmo zpráv</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1457"/>
         <source>Messages Log</source>
-        <translation>Záběr se sděleními</translation>
+        <translation>Záznam zpráv</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1459"/>
         <source>Log files (*.%1)</source>
-        <translation>Soubory se záběry (*.%1)</translation>
+        <translation>Soubory se záznamy (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1497"/>
@@ -10459,32 +10459,32 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2864"/>
         <source>Messages</source>
-        <translation>Sdělení</translation>
+        <translation>Zprávy</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2897"/>
         <source>Sample messages text font display</source>
-        <translation>Font zobrazení textu u ukázkových sdělení</translation>
+        <translation>Font zobrazení textu u ukázkových zpráv</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2922"/>
         <source>Select font for the messages text display</source>
-        <translation>Vybrat font pro zobrazení textu u sdělení</translation>
+        <translation>Vybrat písmo pro zobrazení textu u zpráv</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2925"/>
         <source>&amp;Font...</source>
-        <translation>&amp;Font...</translation>
+        <translation>&amp;Písmo...</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2954"/>
         <source>Whether to keep a maximum number of lines in the messages window</source>
-        <translation>Zda se má podržet nejvyšší počet řádků ve sdělovacím okně</translation>
+        <translation>Zda se má podržet nejvyšší počet řádků v okně se zprávami</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2970"/>
         <source>The maximum number of message lines to keep in view</source>
-        <translation>Nejvyšší počet řádků u sdělení, který se ponechá v náhledu</translation>
+        <translation>Nejvyšší počet řádků zprávy, který se ponechá v náhledu</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2973"/>
@@ -10530,22 +10530,22 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3034"/>
         <source>Messages log file</source>
-        <translation>Soubor se záběry sdělení</translation>
+        <translation>Soubor se záznamy zpráv</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3065"/>
         <source>Browse for the messages log file location</source>
-        <translation>Procházet kvůli umístění souboru se záběry sdělení</translation>
+        <translation>Procházet kvůli umístění souboru se záznamy zpráv</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3081"/>
         <source>Whether to activate a messages logging to file.</source>
-        <translation>Zda se má zapnout zaznamenávání sdělení do souboru.</translation>
+        <translation>Zda se má zapnout zaznamenávání zpráv do souboru.</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3084"/>
         <source>Messages &amp;log file:</source>
-        <translation>Soubor se &amp;záběry sdělení:</translation>
+        <translation>Soubor se &amp;záznamy zpráv:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3095"/>
