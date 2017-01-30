@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1393,6 +1393,8 @@ static void qtractor_lv2_ui_gtk2_on_size_allocate (
 	QWidget *pQtWidget = static_cast<QWidget *> (user_data);
 	pQtWidget->resize(rect->width, rect->height);
 }
+
+static bool g_lv2_ui_gtk2_init = false;
 
 #endif	// CONFIG_LV2_UI_GTK2
 
@@ -3238,6 +3240,11 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 #ifdef CONFIG_LV2_UI_GTK2
 	if (!ui_supported && m_lv2_ui_widget
 		&& m_lv2_ui_type == LV2_UI_TYPE_GTK) {
+		// Initialize GTK+ framework (one time only)...
+		if (!g_lv2_ui_gtk2_init) {
+			gtk_init(NULL, NULL);
+			g_lv2_ui_gtk2_init = true;
+		}
 		// Create embeddable native window...
 		GtkWidget *pGtkWidget = static_cast<GtkWidget *> (m_lv2_ui_widget);
 		GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);

@@ -1,7 +1,7 @@
 // qtractorMainForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -270,6 +270,10 @@ public slots:
 	void transportFollow();
 	void transportAutoBackward();
 	void transportContinue();
+	void transportModeNone();
+	void transportModeSlave();
+	void transportModeMaster();
+	void transportModeFull();
 	void transportPanic();
 
 	void helpShortcuts();
@@ -404,7 +408,8 @@ protected:
 	void updateMessagesLimit();
 	void updateMessagesCapture();
 	void updateDisplayFormat();
-	void updateTransportMode();
+	void updateTransportModePre();
+	void updateTransportModePost();
 	void updateTimebase();
 	void updateMidiControlModes();
 	void updateAudioPlayer();
@@ -457,6 +462,8 @@ private:
 	QSocketNotifier *m_pTermNotifier;
 	QActionGroup *m_pSelectModeActionGroup;
 	QToolButton *m_pSelectModeToolButton;
+	QActionGroup *m_pTransportModeActionGroup;
+	QToolButton *m_pTransportModeToolButton;
 	qtractorTimeSpinBox *m_pTimeSpinBox;
 	qtractorTempoSpinBox *m_pTempoSpinBox;
 	QComboBox *m_pSnapPerBeatComboBox;
@@ -533,3 +540,4 @@ private:
 
 
 // end of qtractorMainForm.h
+

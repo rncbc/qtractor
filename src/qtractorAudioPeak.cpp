@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioFile.h"
+#include "qtractorAudioEngine.h"
 
 #include "qtractorSession.h"
 
@@ -217,8 +218,7 @@ void qtractorAudioPeakThread::run (void)
 			if (m_pPeakFile && m_pPeakFile->isWaitSync()) {
 				if (openPeakFile()) {
 					// Go ahead with the whole bunch...
-					while (m_bRunState && writePeakFile())
-						/* empty loop */;
+					while (writePeakFile());
 					// We're done.
 					closePeakFile();
 				}
@@ -401,19 +401,7 @@ qtractorAudioPeakFile::qtractorAudioPeakFile (
 // Default destructor.
 qtractorAudioPeakFile::~qtractorAudioPeakFile (void)
 {
-	// Check if it's aborting (ought to be atomic)...
-	const bool bAborted = m_bWaitSync;
-	m_bWaitSync = false;
-
-	// Close the file, anyway now.
-	closeWrite();
-	closeRead();
-
-	// Tell master-factory that we're out immediately (if aborted)...
-	qtractorAudioPeakFactory *pPeakFactory
-		= qtractorAudioPeakFactory::getInstance();
-	if (pPeakFactory)
-		pPeakFactory->removePeak(this, bAborted);
+	cleanup();
 }
 
 
@@ -576,14 +564,15 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeakFile::read (
 unsigned int qtractorAudioPeakFile::readBuffer (
 	unsigned int iBuffOffset, unsigned long iPeakOffset, unsigned int iPeakLength )
 {
+	const unsigned int nsize = m_peakHeader.channels * sizeof(Frame);
+
 	// Shall we reallocate?
 	if (iBuffOffset + iPeakLength > m_iBuffSize) {
 		Frame *pOldBuffer = m_pBuffer;
 		m_iBuffSize += (iPeakLength << 1);
 		m_pBuffer = new Frame [m_peakHeader.channels * m_iBuffSize];
 		if (pOldBuffer) {
-			::memcpy(m_pBuffer, pOldBuffer,
-				m_peakHeader.channels * m_iBuffLength * sizeof(Frame));
+			::memcpy(m_pBuffer, pOldBuffer, m_iBuffLength * nsize);
 			delete [] pOldBuffer;
 		}
 	}
@@ -596,10 +585,8 @@ unsigned int qtractorAudioPeakFile::readBuffer (
 
 	// Grab new contents from peak file...
 	char *pBuffer = (char *) (m_pBuffer + m_peakHeader.channels * iBuffOffset);
-	const unsigned long iOffset
-		= iPeakOffset * m_peakHeader.channels * sizeof(Frame);
-	const unsigned int iLength
-		= iPeakLength * m_peakHeader.channels * sizeof(Frame);
+	const unsigned long iOffset	= iPeakOffset * nsize;
+	const unsigned int iLength	= iPeakLength * nsize;
 
 	int nread = 0;
 	if (m_peakFile.seek(sizeof(Header) + iOffset))
@@ -609,7 +596,7 @@ unsigned int qtractorAudioPeakFile::readBuffer (
 	if (nread < int(iLength))
 		::memset(&pBuffer[nread], 0, iLength - nread);
 
-	return nread / (m_peakHeader.channels * sizeof(Frame));
+	return nread / nsize;
 }
 
 
@@ -678,18 +665,30 @@ bool qtractorAudioPeakFile::openWrite (
 		m_pWriter->amax[i] = m_pWriter->amin[i] = m_pWriter->arms[i] = 0.0f;
 
 	// Get resample/timestretch-aware internal peak period ratio...
-	float fPeriod = float(m_peakHeader.period);
+	m_pWriter->period_p = iSampleRate;
+	qtractorAudioEngine *pAudioEngine = NULL;
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession) fPeriod *= float(iSampleRate)
-		/ (float(pSession->sampleRate()) * m_fTimeStretch);
+	if (pSession) pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine) {
+		const unsigned int num = (iSampleRate * m_peakHeader.period);
+		const unsigned int den = (unsigned int)
+			::rintf(float(pAudioEngine->sampleRate() * m_fTimeStretch));
+		m_pWriter->period_q = (num / den);
+		m_pWriter->period_r = (num % den);
+		if (m_pWriter->period_r > 0) {
+			m_pWriter->period_r += m_peakHeader.period;
+			m_pWriter->period_r /= m_peakHeader.period;
+		}
+	} else {
+		m_pWriter->period_q = m_peakHeader.period;
+		m_pWriter->period_r = 0;
+	}
 
 	// Start counting for peak generator and writer...
-	m_pWriter->period = fPeriod;
 	m_pWriter->nframe = 0;
 	m_pWriter->npeak  = 0;
 	m_pWriter->nread  = 0;
-	m_pWriter->nwrite = (unsigned long) ::lroundf(
-		m_pWriter->period * float(++m_pWriter->nframe));
+	m_pWriter->nwrite = m_pWriter->period_q;
 
 	// It's a certain success...
 	return true;
@@ -703,8 +702,8 @@ void qtractorAudioPeakFile::closeWrite (void)
 	QMutexLocker locker(&m_mutex);
 
 	// Flush and close...
-	if (m_openMode == Write && m_pWriter) {
-		if (m_pWriter->npeak > 0)
+	if (m_openMode == Write) {
+		if (m_pWriter && m_pWriter->npeak > 0)
 			writeFrame();
 		m_peakFile.close();
 		m_openMode = None;
@@ -746,8 +745,15 @@ int qtractorAudioPeakFile::write (
 		// Have we reached the peak accumulative period?
 		if (++m_pWriter->nread >= m_pWriter->nwrite) {
 			// Estimate next stop...
-			m_pWriter->nwrite = (unsigned long) ::lroundf(
-				m_pWriter->period * float(++m_pWriter->nframe));
+			m_pWriter->nwrite += m_pWriter->period_q;
+			// Apply rounding fraction, if any...
+			if (m_pWriter->period_r > 0) {
+				m_pWriter->nframe += m_pWriter->period_q;
+				if (m_pWriter->nframe >= m_pWriter->period_p) {
+					m_pWriter->nwrite += m_pWriter->period_r;
+					m_pWriter->nframe  = 0;
+				}
+			}
 			// Write peak frame out.
 			writeFrame();
 			// We'll reset counter.
@@ -767,17 +773,20 @@ void qtractorAudioPeakFile::writeFrame (void)
 	if (!m_peakFile.seek(sizeof(Header) + m_pWriter->offset))
 		return;
 
+	Frame frame;
 	for (unsigned short i = 0; i < m_peakHeader.channels; ++i) {
-		Frame frame;
 		// Write the denormalized peak values...
-		m_pWriter->amax[i] = 255.0f * ::fabsf(m_pWriter->amax[i]);
-		m_pWriter->amin[i] = 255.0f * ::fabsf(m_pWriter->amin[i]);
-		m_pWriter->arms[i] = 255.0f * ::sqrtf(m_pWriter->arms[i] / float(m_pWriter->npeak));
-		frame.max = (unsigned char) (m_pWriter->amax[i] > 255.0f ? 255 : m_pWriter->amax[i]);
-		frame.min = (unsigned char) (m_pWriter->amin[i] > 255.0f ? 255 : m_pWriter->amin[i]);
-		frame.rms = (unsigned char) (m_pWriter->arms[i] > 255.0f ? 255 : m_pWriter->arms[i]);
+		float& fmax = m_pWriter->amax[i];
+		float& fmin = m_pWriter->amin[i];
+		float& frms = m_pWriter->arms[i];
+		fmax = 255.0f * ::fabsf(fmax);
+		fmin = 255.0f * ::fabsf(fmin);
+		frms = 255.0f * ::sqrtf(frms / float(m_pWriter->npeak));
+		frame.max = (unsigned char) (fmax > 255.0f ? 255 : int(fmax));
+		frame.min = (unsigned char) (fmin > 255.0f ? 255 : int(fmin));
+		frame.rms = (unsigned char) (frms > 255.0f ? 255 : int(frms));
 		// Reset peak period accumulators...
-		m_pWriter->amax[i] = m_pWriter->amin[i] = m_pWriter->arms[i] = 0.0f;
+		fmax = fmin = frms = 0.0f;
 		// Bail out?...
 		m_pWriter->offset += m_peakFile.write((const char *) &frame, sizeof(Frame));
 	}
@@ -793,7 +802,7 @@ void qtractorAudioPeakFile::addRef (void)
 void qtractorAudioPeakFile::removeRef (void)
 {
 	if (--m_iRefCount == 0)
-		delete this;
+		cleanup();
 }
 
 
@@ -801,6 +810,23 @@ void qtractorAudioPeakFile::removeRef (void)
 void qtractorAudioPeakFile::remove (void)
 {
 	m_peakFile.remove();
+}
+
+
+// Clean/close method.
+void qtractorAudioPeakFile::cleanup ( bool bAutoRemove )
+{
+	// Check if it's aborting (ought to be atomic)...
+	const bool bAborted = (m_bWaitSync || bAutoRemove);
+	m_bWaitSync = false;
+
+	// Close the file, anyway now.
+	closeWrite();
+	closeRead();
+
+	// Physically remove the file if aborted...
+	if (bAborted)
+		remove();
 }
 
 
@@ -860,6 +886,10 @@ qtractorAudioPeak::~qtractorAudioPeak (void)
 qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	unsigned long iFrameOffset, unsigned long iFrameLength, int width )
 {
+	// Skip empty blanks...
+	if (width < 1)
+		return NULL;
+
 	// Try open current peak file as is...
 	if (!m_pPeakFile->openRead())
 		return NULL;
@@ -867,6 +897,16 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 	// Just in case resolutions might change...
 	const unsigned short iPeakPeriod = m_pPeakFile->period();
 	if (iPeakPeriod < 1)
+		return NULL;
+
+	// Peak frames length estimation...
+	const unsigned int iPeakLength = (iFrameLength / iPeakPeriod);
+	if (iPeakLength < 1)
+		return NULL;
+
+	// We'll get a brand new peak frames alright...
+	const unsigned short iChannels = m_pPeakFile->channels();
+	if (iChannels < 1)
 		return NULL;
 
 	// Have we been here before?
@@ -887,16 +927,6 @@ qtractorAudioPeakFile::Frame *qtractorAudioPeak::peakFrames (
 		m_pPeakFrames = NULL;
 		m_iPeakLength = 0;
 	}
-
-	// We'll get a brand new peak frames alright...
-	const unsigned short iChannels = m_pPeakFile->channels();
-	if (iChannels < 1)
-		return NULL;
-
-	// Peak frames length estimation...
-	const unsigned int iPeakLength = (iFrameLength / iPeakPeriod);
-	if (iPeakLength < 1)
-		return NULL;
 
 	// Grab them in...
 	const unsigned long iPeakOffset = (iFrameOffset / iPeakPeriod);
@@ -988,8 +1018,7 @@ qtractorAudioPeakFactory::~qtractorAudioPeakFactory (void)
 		m_pPeakThread = NULL;
 	}
 
-	qDeleteAll(m_peaks);
-	m_peaks.clear();
+	cleanup();
 
 	// Pseudo-singleton reference shut-down.
 	g_pPeakFactory = NULL;
@@ -1004,6 +1033,8 @@ void qtractorAudioPeakFactory::setPeakPeriod ( unsigned short iPeakPeriod )
 
 	QMutexLocker locker(&m_mutex);
 
+	sync(NULL);
+
 	m_iPeakPeriod = iPeakPeriod;
 
 	// Refresh all current peak files (asynchronously)...
@@ -1011,9 +1042,7 @@ void qtractorAudioPeakFactory::setPeakPeriod ( unsigned short iPeakPeriod )
 	const PeakFiles::ConstIterator& iter_end = m_peaks.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		qtractorAudioPeakFile *pPeakFile = iter.value();
-		pPeakFile->closeWrite();
-		pPeakFile->closeRead();
-		pPeakFile->remove();
+		pPeakFile->cleanup(true);
 		sync(pPeakFile);
 	}
 }
@@ -1048,21 +1077,6 @@ qtractorAudioPeak* qtractorAudioPeakFactory::createPeak (
 }
 
 
-void qtractorAudioPeakFactory::removePeak (
-	qtractorAudioPeakFile *pPeakFile, bool bAborted )
-{
-	QMutexLocker locker(&m_mutex);
-
-	m_peaks.remove(pPeakFile->peakName());
-
-	if (bAborted)
-		pPeakFile->remove();
-	else
-	if (m_bAutoRemove)
-		m_files.append(pPeakFile->name());
-}
-
-
 // Auto-delete property.
 void qtractorAudioPeakFactory::setAutoRemove ( bool bAutoRemove )
 {
@@ -1094,11 +1108,20 @@ void qtractorAudioPeakFactory::cleanup (void)
 {
 	QMutexLocker locker(&m_mutex);
 
-	QStringListIterator iter(m_files);
-	while (iter.hasNext())
-		QFile::remove(iter.next());
-	m_files.clear();
+	sync(NULL);
 
+	// Cleanup all current registered peak files...
+	PeakFiles::ConstIterator iter = m_peaks.constBegin();
+	const PeakFiles::ConstIterator& iter_end = m_peaks.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		qtractorAudioPeakFile *pPeakFile = iter.value();
+		pPeakFile->cleanup(m_bAutoRemove);
+	}
+
+	qDeleteAll(m_peaks);
+	m_peaks.clear();
+
+	// Reset to default resolution...
 	m_iPeakPeriod = c_iPeakPeriod;
 }
 

@@ -785,7 +785,7 @@ void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 {
 	if (iSampleRate == m_props.timeScale.sampleRate())
 		return;
-
+#if 0
 	// Unfortunatelly we must close all clips first,
 	// so let at least all audio peaks be refreshned...
 	for (qtractorTrack *pTrack = m_tracks.first();
@@ -795,7 +795,7 @@ void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 			pClip->close();
 		}
 	}
-
+#endif
 	// Set the conversion ratio...
 	const float fRatio
 		= float(m_props.timeScale.sampleRate()) / float(iSampleRate);
@@ -1264,6 +1264,10 @@ void qtractorSession::setPlayHead ( unsigned long iPlayHead )
 	if (bPlaying && isRecording())
 		return;
 
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorSession::setPlayHead(%lu)", iPlayHead);
+#endif
+
 	lock();
 	setPlaying(false);
 
@@ -1272,6 +1276,29 @@ void qtractorSession::setPlayHead ( unsigned long iPlayHead )
 		if (pJackClient)
 			jack_transport_locate(pJackClient, iPlayHead);
 	}
+
+	seek(iPlayHead, true);
+
+	// Sync all track automation...
+	if (!bPlaying)
+		process_curve(iPlayHead);
+
+	setPlaying(bPlaying);
+	unlock();
+}
+
+void qtractorSession::setPlayHeadEx ( unsigned long iPlayHead )
+{
+	const bool bPlaying = isPlaying();
+	if (bPlaying && isRecording())
+		return;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorSession::setPlayHeadEx(%lu)", iPlayHead);
+#endif
+
+	lock();
+	setPlaying(false);
 
 	seek(iPlayHead, true);
 
@@ -1292,6 +1319,9 @@ unsigned long qtractorSession::playHead (void) const
 // Auto-backward save play-head frame accessors.
 void qtractorSession::setPlayHeadAutoBackward ( unsigned long iPlayHead )
 {
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorSession::setPlayHeadAutoBackward(%lu)", iPlayHead);
+#endif
 	m_iPlayHeadAutoBackward = iPlayHead;
 }
 

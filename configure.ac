@@ -6,15 +6,9 @@ AC_CONFIG_HEADERS(src/config.h)
 AC_CONFIG_FILES(Makefile qtractor.spec src/src.pri src/qtractor.desktop)
 AC_CONFIG_FILES(src/qtractor_vst_scan.pri)
 
-# Build date and time.
-AC_CACHE_VAL([ac_cv_build_date],
-   [ac_cv_build_date=$(date +"%b %d %Y %H:%M %z")])
-ac_build_date="$ac_cv_build_date"
-AC_DEFINE_UNQUOTED(CONFIG_BUILD_DATE, ["$ac_build_date"], [Build date and time.])
-
 # Build version string.
 AC_CACHE_VAL([ac_cv_build_version], [
-   ac_cv_build_version=$(git describe --tags --abbrev=6 2>/dev/null)
+   ac_cv_build_version=$(git describe --tags --dirty --abbrev=6 2>/dev/null)
    if test -n "$ac_cv_build_version"; then
       ac_cv_build_version=$(echo $ac_cv_build_version | sed -r 's/^[[^_]]+_//')
       ac_cv_build_version=$(echo $ac_cv_build_version | sed -r 's/-g/git./')
@@ -662,6 +656,9 @@ if test "x$ac_libjack" = "xyes"; then
    AC_DEFINE(CONFIG_LIBJACK, 1, [Define if JACK library is available.])
    ac_cflags="$ac_cflags $JACK_CFLAGS"
    ac_libs="$ac_libs $JACK_LIBS"
+   CFLAGS="$CFLAGS $JACK_CFLAGS"
+   CPPFLAGS="$CPPFLAGS $JACK_CFLAGS"
+   LIBS="$LIBS $JACK_LIBS"
 else
    AC_MSG_ERROR([*** JACK library not found.])
 fi
@@ -813,7 +810,7 @@ if test "x$ac_lv2_ui" = "xno"; then
    ac_lv2_ui_x11="no"
 fi
 
-if test "x$ac_qt4" = "xyes"; then
+if test "x$ac_qt4" != "xno"; then
    ac_lv2_ui_gtk2="no"
    ac_lv2_ui_x11="no"
 fi
@@ -826,6 +823,9 @@ if test "x$ac_lilv" = "xyes"; then
    AC_DEFINE(CONFIG_LIBLILV, 1, [Define if LILV library is available.])
    ac_cflags="$ac_cflags $LILV_CFLAGS"
    ac_libs="$ac_libs $LILV_LIBS"
+   CFLAGS="$CFLAGS $LILV_CFLAGS"
+   CPPFLAGS="$CPPFLAGS $LILV_CFLAGS"
+   LIBS="$LIBS $LILV_LIBS"
 else
    AC_MSG_WARN([*** LILV library not found.])
 fi
@@ -853,6 +853,9 @@ if test "x$ac_suil" = "xyes"; then
    AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is available.])
    ac_cflags="$ac_cflags $SUIL_CFLAGS"
    ac_libs="$ac_libs $SUIL_LIBS"
+   CFLAGS="$CFLAGS $SUIL_CFLAGS"
+   CPPFLAGS="$CPPFLAGS $SUIL_CFLAGS"
+   LIBS="$LIBS $SUIL_LIBS"
 else
    AC_MSG_WARN([*** SUIL library not found.])
 fi
@@ -1294,8 +1297,6 @@ if test "x$ac_lv2_ui_show" = "xyes"; then
 fi
 
 if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
-   ac_old_libs=$LIBS
-   LIBS=$ac_libs
    AC_CACHE_CHECK([for LV2 UI GTK2 support (libsuil_gtk2_in_qt5)],
       ac_cv_suil_gtk2_in_qt5, [
       AC_TRY_RUN([
@@ -1307,7 +1308,6 @@ if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
          int main() { return !suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__GtkUI); }
       ], ac_cv_suil_gtk2_in_qt5="yes", ac_cv_suil_gtk2_in_qt5="no")
    ])
-   LIBS=$ac_old_libs
    if test "x$ac_cv_suil_gtk2_in_qt5" = "xyes"; then
       AC_DEFINE(CONFIG_LIBSUIL_GTK2_IN_QT5, 1, [Define if libsuil_gtk2_in_qt5 is available.])
    #  ac_lv2_ui_gtk2="no"
@@ -1325,8 +1325,6 @@ else
 fi
 
 if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
-   ac_old_libs=$LIBS
-   LIBS=$ac_libs
    AC_CACHE_CHECK([for LV2 UI X11 support (libsuil_x11_in_qt5)],
       ac_cv_suil_x11_in_qt5, [
       AC_TRY_RUN([
@@ -1338,7 +1336,6 @@ if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
          int main() { return !suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__X11UI); }
       ], ac_cv_suil_x11_in_qt5="yes", ac_cv_suil_x11_in_qt5="no")
    ])
-   LIBS=$ac_old_libs
    if test "x$ac_cv_suil_x11_in_qt5" = "xyes"; then
       AC_DEFINE(CONFIG_LIBSUIL_X11_IN_QT5, 1, [Define if libsuil_x11_in_qt5 is available.])
    #  ac_lv2_ui_x11="no"
@@ -1377,6 +1374,9 @@ if test "x$ac_nsm" = "xyes"; then
 fi
 
 # Check for X11 unique/single instance.
+if test "x$ac_xunique" = "xyes" -a "x$ac_qt4" = "xno"; then
+   PKG_CHECK_MODULES([QT5X11EXTRAS], [Qt5X11Extras], [ac_xunique="yes"], [ac_xunique="no"])
+fi
 if test "x$ac_xunique" = "xyes"; then
    AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
 fi
@@ -1421,7 +1421,7 @@ AC_OUTPUT
 # Output summary message
 
 echo
-echo "  $PACKAGE_NAME $ac_build_version  ($ac_build_date)"
+echo "  $PACKAGE_NAME $ac_build_version"
 echo
 echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_debug"
 echo

@@ -4,6 +4,43 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Track/Navigate/Next and Previous menu commandss, finally
+  fixed to wrap around the current track list.
+
+- Current session (JACK) transport mode option switching is
+  now being made accessible, from the main menu and drop-down
+  toolbar buttons, as well as user configurable PC-keyboard
+  and/or MIDI controller shortcuts (cf. Transport/Mode/None,
+  Slave, Master, Ful). (EXPERIMENTAL) 
+
+- Fixed some auto-backward play-head position flip-flopping,
+  when opening a new session while the previous was still on
+  rolling/playing state, hopefully. (EXPERIMENTAL)
+  
+- Added French man page (by Olivier Humbert, thanks).
+
+- MIDI clip changes are now saved unconditionally whenever
+  the editor (piano-roll) is closed or not currently visible.
+  (EXPERIMENTAL)
+
+- Audio clip peak/waveform files re-generation performance,
+  scalability and resilience have been slightly improved.
+  (EXPERIMENTAL)
+
+- Some sanitary checks have been added to audio clip peak/
+  waveform re-generation routine, as much to avoid empty,
+  blank, zero or negative-width faulty renderings.
+
+- Do not reset the Files tree-view widgets anymore, when
+  leaving any drag-and-drop operation (annoyingly, all
+  groups and sub-groups were being closed without appeal).
+
+- Make builds reproducible byte for byte, by getting rid of
+  the configure build date and time stamps.
+
+
 0.8.0  2016-11-21  Snobbiest Graviton Beta.
 
 - MIDI clip tools redo/undo processing refactored as much to
