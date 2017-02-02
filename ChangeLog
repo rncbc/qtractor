@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- All tempo and time-signature labels are now displayed
+  with one decimal digit, as it was in mostly everywhere
+  else but the time ruler/scale headers.
+
 - JACK transport tempo and time-signature changes are now
   accepted, even though playback is not currently rolling;
   also, changing (JACK) Timebase master setting (cf.View/

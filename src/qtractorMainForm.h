@@ -97,7 +97,6 @@ public:
 	QString untitledName(void) const;
 
 	void updateTransportTime(unsigned long iPlayHead);
-	void updateTransportLater();
 
 	void appendMessages(const QString& s);
 	void appendMessagesColor(const QString& s, const QString& c);
@@ -342,6 +341,8 @@ protected slots:
 	void transportTempoChanged(float fTempo,
 		unsigned short iBeatsPerBar, unsigned short iBeatDivisor);
 	void transportTempoFinished();
+
+	void updateTransportLater();
 
 	void snapPerBeatChanged(int iSnap);
 	void contentsChanged();
