@@ -6,6 +6,13 @@ ChangeLog
 
 GIT HEAD
 
+- JACK transport tempo and time-signature changes are now
+  accepted, even though playback is not currently rolling;
+  also, changing (JACK) Timebase master setting (cf.View/
+  Options.../General/Transport/Timebase) will take effect
+  immediately, not needing nor warning for session restart
+  anymore. (EXPERIMENTAL) 
+ 
 - Track/Navigate/Next and Previous menu commandss, finally
   fixed to wrap around the current track list.
 

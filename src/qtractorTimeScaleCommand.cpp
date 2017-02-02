@@ -1,7 +1,7 @@
 // qtractorTimeScaleCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -74,8 +74,8 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 
 	// If currently playing, we need to do a stop and go...
 	const bool bPlaying = pSession->isPlaying();
-	if (bPlaying)
-		pSession->lock();
+
+	pSession->lock();
 
 	qtractorTimeScale::Node *pNode = m_pTimeScale->addNode(
 		m_iFrame, m_fTempo, m_iBeatType, m_iBeatsPerBar, m_iBeatDivisor);
@@ -117,8 +117,13 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 		// The MIDI engine queue needs a reset...
 		if (pSession->midiEngine())
 			pSession->midiEngine()->resetTempo();
-		pSession->unlock();
+	} else {
+		// Force JACK Timebase state, if applicable...
+		if (pSession->audioEngine())
+			pSession->audioEngine()->resetTimebase();
 	}
+
+	pSession->unlock();
 
 	return true;
 }
@@ -140,8 +145,8 @@ bool qtractorTimeScaleNodeCommand::updateNode (void)
 
 	// If currently playing, we need to do a stop and go...
 	const bool bPlaying = pSession->isPlaying();
-	if (bPlaying)
-		pSession->lock();
+
+	pSession->lock();
 
 	const float          fTempo       = pNode->tempo;
 	const unsigned short iBeatType    = pNode->beatType;
@@ -201,8 +206,13 @@ bool qtractorTimeScaleNodeCommand::updateNode (void)
 		// The MIDI engine queue needs a reset...
 		if (pSession->midiEngine())
 			pSession->midiEngine()->resetTempo();
-		pSession->unlock();
+	} else {
+		// Force JACK Timebase state, if applicable...
+		if (pSession->audioEngine())
+			pSession->audioEngine()->resetTimebase();
 	}
+
+	pSession->unlock();
 
 	return true;
 }
@@ -224,8 +234,8 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 
 	// If currently playing, we need to do a stop and go...
 	const bool bPlaying = pSession->isPlaying();
-	if (bPlaying)
-		pSession->lock();
+
+	pSession->lock();
 
 	qtractorTimeScale::Node *pPrev = pNode->prev();
 	const float fOldTempo = pNode->tempo;
@@ -277,8 +287,13 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 		// The MIDI engine queue needs a reset...
 		if (pSession->midiEngine())
 			pSession->midiEngine()->resetTempo();
-		pSession->unlock();
+	} else {
+		// Force JACK Timebase state, if applicable...
+		if (pSession->audioEngine())
+			pSession->audioEngine()->resetTimebase();
 	}
+
+	pSession->unlock();
 
 	return true;
 }
