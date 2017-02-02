@@ -40,8 +40,8 @@
         <translation>%1 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2444"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2752"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2476"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2784"/>
         <location filename="../qtractorMidiEngine.cpp" line="3972"/>
         <location filename="../qtractorMidiEngine.cpp" line="4521"/>
         <source>%1 In</source>
@@ -125,8 +125,8 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>Mostrar informações da versão</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2448"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2457"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2480"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2489"/>
         <location filename="../qtractorMidiEngine.cpp" line="3976"/>
         <location filename="../qtractorMidiEngine.cpp" line="3985"/>
         <location filename="../qtractorTrack.cpp" line="682"/>
@@ -134,8 +134,8 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>%1 Panorâmico</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2453"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2752"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2485"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2784"/>
         <location filename="../qtractorMidiEngine.cpp" line="3981"/>
         <location filename="../qtractorMidiEngine.cpp" line="4521"/>
         <source>%1 Out</source>
@@ -360,12 +360,12 @@ MIDI:	</translation>
         <translation>propriedades do plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="599"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="614"/>
         <source>add marker</source>
         <translation>adicionar marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="654"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="669"/>
         <source>move marker</source>
         <translation>mover marcador</translation>
     </message>
@@ -429,8 +429,8 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2446"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2455"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2478"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2487"/>
         <location filename="../qtractorTrack.cpp" line="679"/>
         <source>%1 Gain</source>
         <translation>%1 Ganho</translation>
@@ -571,7 +571,7 @@ MIDI:	</translation>
         <translation>%1 - Banco %2</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="442"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="457"/>
         <source>remove tempo node</source>
         <translation>remover nó de tempo</translation>
     </message>
@@ -582,12 +582,12 @@ MIDI:	</translation>
         <translation>Tudo (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="618"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="633"/>
         <source>update marker</source>
         <translation>atualizar marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="459"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="474"/>
         <source>move tempo node</source>
         <translation>mover nó de tempo</translation>
     </message>
@@ -650,7 +650,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>Autor:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="424"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="439"/>
         <source>update tempo node</source>
         <translation>nó de atualização de tempo</translation>
     </message>
@@ -660,7 +660,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>, %1 pistas, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="404"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="419"/>
         <source>add tempo node</source>
         <translation>adicionar nó de tempo</translation>
     </message>
@@ -732,7 +732,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
 %3</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="636"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="651"/>
         <source>remove marker</source>
         <translation>remover marcador</translation>
     </message>
@@ -2471,7 +2471,7 @@ Você quer mesmo manter as modificações?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="629"/>
-        <location filename="../qtractorMainForm.cpp" line="6111"/>
+        <location filename="../qtractorMainForm.cpp" line="6117"/>
         <source>MOD</source>
         <translation>MOD</translation>
     </message>
@@ -2482,12 +2482,12 @@ Você quer mesmo manter as modificações?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="638"/>
-        <location filename="../qtractorMainForm.cpp" line="6116"/>
+        <location filename="../qtractorMainForm.cpp" line="6122"/>
         <source>REC</source>
         <translation>GRAVAR</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7851"/>
+        <location filename="../qtractorMainForm.cpp" line="7857"/>
         <source>REW</source>
         <translation>RETROCEDER</translation>
     </message>
@@ -2534,7 +2534,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>&amp;Recortar</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7847"/>
+        <location filename="../qtractorMainForm.cpp" line="7853"/>
         <source>FFWD</source>
         <translation>ANTERIOR</translation>
     </message>
@@ -2552,13 +2552,13 @@ Você quer mesmo manter as modificações?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="665"/>
-        <location filename="../qtractorMainForm.cpp" line="6131"/>
+        <location filename="../qtractorMainForm.cpp" line="6137"/>
         <source>LOOP</source>
         <translation>LOOP</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="647"/>
-        <location filename="../qtractorMainForm.cpp" line="6121"/>
+        <location filename="../qtractorMainForm.cpp" line="6127"/>
         <source>MUTE</source>
         <translation>MUDO</translation>
     </message>
@@ -2569,13 +2569,13 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7843"/>
+        <location filename="../qtractorMainForm.cpp" line="7849"/>
         <source>PLAY</source>
         <translation>TOCAR</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2897"/>
-        <location filename="../qtractorMainForm.cpp" line="7071"/>
+        <location filename="../qtractorMainForm.cpp" line="7079"/>
         <source>None</source>
         <translation>Nenhuma</translation>
     </message>
@@ -2592,7 +2592,7 @@ Você quer mesmo manter as modificações?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="656"/>
-        <location filename="../qtractorMainForm.cpp" line="6126"/>
+        <location filename="../qtractorMainForm.cpp" line="6132"/>
         <source>SOLO</source>
         <translation>SOLO</translation>
     </message>
@@ -2628,7 +2628,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Suporte nativo a X11 para Interface de Plugin LV2 desativado.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7677"/>
+        <location filename="../qtractorMainForm.cpp" line="7683"/>
         <source>The audio engine buffer size has changed,
 increased from %1 to %2 frames/period.
 
@@ -2640,8 +2640,8 @@ aumente de %1 para %2 amostras/período.
 a sessão atual.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7836"/>
-        <location filename="../qtractorMainForm.cpp" line="8006"/>
+        <location filename="../qtractorMainForm.cpp" line="7842"/>
+        <location filename="../qtractorMainForm.cpp" line="8012"/>
         <source>STOP</source>
         <translation>PARAR</translation>
     </message>
@@ -2705,7 +2705,7 @@ a sessão atual.</translation>
         <translation>Loop da sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6144"/>
+        <location filename="../qtractorMainForm.cpp" line="6150"/>
         <source>%1 Hz</source>
         <translation>%1 Hz</translation>
     </message>
@@ -2748,7 +2748,7 @@ a sessão atual.</translation>
         <translation>&amp;Ajuda</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6936"/>
+        <location filename="../qtractorMainForm.cpp" line="6944"/>
         <source>&amp;Hold</source>
         <translation>&amp;Reter</translation>
     </message>
@@ -2782,7 +2782,7 @@ a sessão atual.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="909"/>
         <location filename="../qtractorMainForm.ui" line="2894"/>
-        <location filename="../qtractorMainForm.cpp" line="6820"/>
+        <location filename="../qtractorMainForm.cpp" line="6828"/>
         <source>&amp;None</source>
         <translation>&amp;Nada</translation>
     </message>
@@ -2958,7 +2958,7 @@ Deseja salvar essas modificações?</translation>
         <translation>Canais Primários</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7161"/>
+        <location filename="../qtractorMainForm.cpp" line="7169"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
@@ -3007,7 +3007,7 @@ Deseja salvar essas modificações?</translation>
         <translation>Colar</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7868"/>
+        <location filename="../qtractorMainForm.cpp" line="7874"/>
         <source>RESET</source>
         <translation>RESETAR</translation>
     </message>
@@ -3027,7 +3027,7 @@ Deseja salvar essas modificações?</translation>
         <translation>Limites</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8001"/>
+        <location filename="../qtractorMainForm.cpp" line="8007"/>
         <source>START</source>
         <translation>COMEÇAR</translation>
     </message>
@@ -3093,7 +3093,7 @@ Deseja salvar essas modificações?</translation>
         <translation>Editar propriedades da sessão atual</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6236"/>
+        <location filename="../qtractorMainForm.cpp" line="6242"/>
         <source>Session started.</source>
         <translation>Sessão iniciada.</translation>
     </message>
@@ -3129,7 +3129,7 @@ Deseja salvar essas modificações?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1862"/>
-        <location filename="../qtractorMainForm.cpp" line="7767"/>
+        <location filename="../qtractorMainForm.cpp" line="7773"/>
         <source>Untitled%1</source>
         <translation>Sem nome%1</translation>
     </message>
@@ -3165,7 +3165,7 @@ Deseja salvar essas modificações?</translation>
         <translation>Barra de Ferramentas para Tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7891"/>
+        <location filename="../qtractorMainForm.cpp" line="7897"/>
         <source>TRACK MUTE %1 %2</source>
         <translation>MUTAR PISTAS %1 %2</translation>
     </message>
@@ -3426,7 +3426,7 @@ Desculpe.</translation>
         <translation>Limites da sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8033"/>
+        <location filename="../qtractorMainForm.cpp" line="8039"/>
         <source>%1 BPM</source>
         <translation>%1 BPM</translation>
     </message>
@@ -3446,7 +3446,7 @@ Desculpe.</translation>
         <translation>&amp;Limpar</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7451"/>
+        <location filename="../qtractorMainForm.cpp" line="7457"/>
         <source>XRUN(%1 skipped)</source>
         <translation>XRUN(%1 ignorado(s))</translation>
     </message>
@@ -3602,7 +3602,7 @@ Desculpe.</translation>
         <translation>Suporte a JACK Latency desabilitado.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6241"/>
+        <location filename="../qtractorMainForm.cpp" line="6247"/>
         <source>The audio/MIDI engine could not be started.
 
 Make sure the JACK audio server (jackd) and/or
@@ -3753,7 +3753,7 @@ Desculpe.</translation>
         <translation>Selecionar a primeira tentativa da sequência atual</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7468"/>
+        <location filename="../qtractorMainForm.cpp" line="7474"/>
         <source>Audio connections change.</source>
         <translation>Conexões de áudio modificadas.</translation>
     </message>
@@ -3809,12 +3809,12 @@ Desculpe.</translation>
         <translation>Diminuir eventos em uma sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7500"/>
+        <location filename="../qtractorMainForm.cpp" line="7506"/>
         <source>Playing ended.</source>
         <translation>Reprodução completada.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8012"/>
+        <location filename="../qtractorMainForm.cpp" line="8018"/>
         <source>CONTINUE</source>
         <translation>CONTINUAR</translation>
     </message>
@@ -4026,7 +4026,7 @@ Desculpe.</translation>
         <translation>Modificar mapa de tempo da sessão / marcadores</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7600"/>
+        <location filename="../qtractorMainForm.cpp" line="7606"/>
         <source>The audio engine has been shutdown.
 
 Make sure the JACK audio server (jackd)
@@ -4072,7 +4072,7 @@ está rodando e reinicie a sessão.</translation>
         <translation>Pâ&amp;nico</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7856"/>
+        <location filename="../qtractorMainForm.cpp" line="7862"/>
         <source>REC ON</source>
         <translation>GRAVAR LIGADO</translation>
     </message>
@@ -4316,7 +4316,7 @@ está rodando e reinicie a sessão.</translation>
         <translation>Quebrar sequência atual no início da reprodução</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7901"/>
+        <location filename="../qtractorMainForm.cpp" line="7907"/>
         <source>Unknown sub-command</source>
         <translation>Sub-comando desconhecido</translation>
     </message>
@@ -4326,7 +4326,7 @@ está rodando e reinicie a sessão.</translation>
         <translation>Suporte a VeSTige header habilitado.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7864"/>
+        <location filename="../qtractorMainForm.cpp" line="7870"/>
         <source>REC OFF</source>
         <translation>GRAVAR DESLIGADO</translation>
     </message>
@@ -4362,7 +4362,7 @@ está rodando e reinicie a sessão.</translation>
         <translation>&amp;Saídas</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7886"/>
+        <location filename="../qtractorMainForm.cpp" line="7892"/>
         <source>TRACK RECORD %1 %2</source>
         <translation>GRAVAR PISTAS %1 %2</translation>
     </message>
@@ -4398,7 +4398,7 @@ está rodando e reinicie a sessão.</translation>
         <translation>Adicionar uma nova pista à sessão</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7896"/>
+        <location filename="../qtractorMainForm.cpp" line="7902"/>
         <source>TRACK SOLO %1 %2</source>
         <translation>PISTAS SOLO %1 %2</translation>
     </message>
@@ -4488,7 +4488,7 @@ está rodando e reinicie a sessão.</translation>
         <translation>Nenhuma Pista</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7872"/>
+        <location filename="../qtractorMainForm.cpp" line="7878"/>
         <source>LOCATE %1</source>
         <translation>LOCALIZAR %1</translation>
     </message>
@@ -4553,12 +4553,12 @@ está rodando e reinicie a sessão.</translation>
         <translation>Suporte a Metadata do JACK desabilitado.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6136"/>
+        <location filename="../qtractorMainForm.cpp" line="6142"/>
         <source>XRUN</source>
         <translation>XRUN</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7984"/>
+        <location filename="../qtractorMainForm.cpp" line="7990"/>
         <source>(track %1, panning %2)</source>
         <translation>(pista %1, panorâmico %2)</translation>
     </message>
@@ -4596,7 +4596,7 @@ Desculpe.</translation>
         <translation>Redimensionar Sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5793"/>
+        <location filename="../qtractorMainForm.cpp" line="5792"/>
         <source>record clip</source>
         <translation>gravar sequência</translation>
     </message>
@@ -4663,7 +4663,7 @@ Desculpe.</translation>
         <translation>Re&amp;troceder</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7880"/>
+        <location filename="../qtractorMainForm.cpp" line="7886"/>
         <source>STEP %1</source>
         <translation>PASSO %1</translation>
     </message>
@@ -4909,7 +4909,7 @@ Deseja subtituí-lo?</translation>
         <translation>Salvar como</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7876"/>
+        <location filename="../qtractorMainForm.cpp" line="7882"/>
         <source>SHUTTLE %1</source>
         <translation>RETRIBUIR %1</translation>
     </message>
@@ -5071,12 +5071,12 @@ Deseja subtituí-lo?</translation>
         <translation>A&amp;uto Retroceder</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7064"/>
+        <location filename="../qtractorMainForm.cpp" line="7072"/>
         <source>Take %1</source>
         <translation>Tentativa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6321"/>
+        <location filename="../qtractorMainForm.cpp" line="6327"/>
         <source>The original session sample rate (%1 Hz)
 is not the same as the current audio engine (%2 Hz).
 
@@ -5114,7 +5114,7 @@ de sessão é altamente recomendado.</translation>
         <translation>Mapa de Tempo / Marcadores</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7965"/>
+        <location filename="../qtractorMainForm.cpp" line="7971"/>
         <source>(track %1, gain %2)</source>
         <translation>(pista %1, ganho %2)</translation>
     </message>
@@ -5134,7 +5134,7 @@ de sessão é altamente recomendado.</translation>
         <translation>&amp;Propriedades da Pista...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6016"/>
+        <location filename="../qtractorMainForm.cpp" line="6022"/>
         <source>[modified]</source>
         <translation>(modificado)</translation>
     </message>
@@ -5164,7 +5164,7 @@ de sessão é altamente recomendado.</translation>
         <translation>Zoom vertical</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6941"/>
+        <location filename="../qtractorMainForm.cpp" line="6949"/>
         <source>&amp;Linear</source>
         <translation>&amp;Linear</translation>
     </message>
@@ -5245,7 +5245,7 @@ de sessão é altamente recomendado.</translation>
         <translation>Copiar seleção para a área de transferência</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6947"/>
+        <location filename="../qtractorMainForm.cpp" line="6955"/>
         <source>&amp;Spline</source>
         <translation>&amp;Spline</translation>
     </message>
@@ -5347,7 +5347,7 @@ de sessão é altamente recomendado.</translation>
         <translation>Marcar pista que estiver selecionada</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8016"/>
+        <location filename="../qtractorMainForm.cpp" line="8022"/>
         <source>SONGPOS %1</source>
         <translation>POSIÇÃO DA MÚSICA %1</translation>
     </message>
@@ -5630,8 +5630,8 @@ Desculpe.</translation>
         <translation>&amp;Propriedades...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8108"/>
-        <location filename="../qtractorMainForm.cpp" line="8167"/>
+        <location filename="../qtractorMainForm.cpp" line="8114"/>
+        <location filename="../qtractorMainForm.cpp" line="8173"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>Tocando &quot;%1&quot;...</translation>
     </message>
@@ -5648,7 +5648,7 @@ Desculpe.</translation>
         <location filename="../qtractorMainForm.cpp" line="2848"/>
         <location filename="../qtractorMainForm.cpp" line="4011"/>
         <location filename="../qtractorMainForm.cpp" line="4113"/>
-        <location filename="../qtractorMainForm.cpp" line="6346"/>
+        <location filename="../qtractorMainForm.cpp" line="6352"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
@@ -5776,7 +5776,7 @@ Posso continuar?</translation>
         <translation>Importar Arquivo MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7484"/>
+        <location filename="../qtractorMainForm.cpp" line="7490"/>
         <source>MIDI connections change.</source>
         <translation>Conexões MIDI modificadas.</translation>
     </message>
@@ -5796,8 +5796,8 @@ Posso continuar?</translation>
         <translation>Log&amp;arítmico</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7907"/>
-        <location filename="../qtractorMainForm.cpp" line="8020"/>
+        <location filename="../qtractorMainForm.cpp" line="7913"/>
+        <location filename="../qtractorMainForm.cpp" line="8026"/>
         <source>Not implemented</source>
         <translation>Não implementado</translation>
     </message>
@@ -5867,7 +5867,7 @@ Posso continuar?</translation>
         <translation>Tempo atual (reprodução)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7919"/>
+        <location filename="../qtractorMainForm.cpp" line="7925"/>
         <source>MIDI CTL: %1, Channel %2, Param %3, Value %4</source>
         <translation>MIDI CTL: %1, Canal %2, Param %3, Valor %4</translation>
     </message>
@@ -6063,7 +6063,7 @@ Posso continuar?</translation>
         <translation>&amp;Instrumentos...</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7456"/>
+        <location filename="../qtractorMainForm.cpp" line="7462"/>
         <source>XRUN(%1): some frames might have been lost.</source>
         <translation>XRUN(%1): algumas amostras podem ter sido perdidas.</translation>
     </message>
@@ -6078,7 +6078,7 @@ Posso continuar?</translation>
         <translation>Editar barra de ferramentas</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6347"/>
+        <location filename="../qtractorMainForm.cpp" line="6353"/>
         <source>The following issues were detected:
 
 %1
