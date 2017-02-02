@@ -617,7 +617,7 @@ bool qtractorAudioEngine::activate (void)
 	jack_set_process_callback(m_pJackClient,
 			qtractorAudioEngine_process, this);
 
-	// Transport timebase callbacks...
+	// Transport timebase callback...
 	resetTimebase();
 
 	// And some other event callbacks...
@@ -2040,10 +2040,6 @@ void qtractorAudioEngine::resetTimebase (void)
 		jack_set_timebase_callback(m_pJackClient,
 			0 /* FIXME: un-conditional! */,
 			qtractorAudioEngine_timebase, this);
-		// Give some slack time for the main form updates itself...
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
-			pMainForm->updateTransportLater();
 	}
 }
 

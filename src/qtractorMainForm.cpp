@@ -6003,13 +6003,6 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 }
 
 
-void qtractorMainForm::updateTransportLater (void)
-{
-	if (m_iTransportTimer  < QTRACTOR_TIMER_DELAY)
-		m_iTransportTimer += QTRACTOR_TIMER_DELAY;
-}
-
-
 void qtractorMainForm::stabilizeForm (void)
 {
 #ifdef CONFIG_DEBUG_0
@@ -8299,6 +8292,9 @@ void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 void qtractorMainForm::updateContents (
 	qtractorMidiEditor *pMidiEditor, bool bRefresh )
 {
+	// First of all give some slack to transport sync'ing...
+	if (bRefresh) updateTransportLater();
+
 	// Maybe, just maybe, we've made things larger...
 	m_pTempoCursor->clear();
 	m_pSession->updateTimeScale();
@@ -8411,6 +8407,14 @@ void qtractorMainForm::transportTempoFinished (void)
 	const bool bBlockSignals = m_pTempoSpinBox->blockSignals(true);
 	m_pTempoSpinBox->clearFocus();
 	m_pTempoSpinBox->blockSignals(bBlockSignals);
+}
+
+
+// Add some delay to (JACK) transport sync'ing stuff...
+void qtractorMainForm::updateTransportLater (void)
+{
+	if (m_iTransportTimer  < QTRACTOR_TIMER_DELAY)
+		m_iTransportTimer += QTRACTOR_TIMER_DELAY;
 }
 
 
