@@ -95,6 +95,7 @@ public:
 	QString untitledName(void) const;
 
 	void updateTransportTime(unsigned long iPlayHead);
+	void updateTransportLater();
 
 	void appendMessages(const QString& s);
 	void appendMessagesColor(const QString& s, const QString& c);

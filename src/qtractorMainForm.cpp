@@ -4949,7 +4949,7 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldTimebase &&  m_pOptions->bTimebase)) {
 			++m_iDirtyCount; // Fake session properties change.
 			updateTimebase();
-			iNeedRestart |= RestartSession;
+		//	iNeedRestart |= RestartSession;
 		}
 		// MIDI engine queue timer...
 		if (iOldMidiQueueTimer != m_pOptions->iMidiQueueTimer) {
@@ -5766,8 +5766,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	}	// Start something... ;)
 	else ++m_iTransportUpdate;
 
-	if (m_iTransportTimer  < QTRACTOR_TIMER_DELAY)
-		m_iTransportTimer += QTRACTOR_TIMER_DELAY;
+	updateTransportLater();
 
 	// Done with playback switch...
 	return true;
@@ -6001,6 +6000,13 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 		m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 		m_pTempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
 	}
+}
+
+
+void qtractorMainForm::updateTransportLater (void)
+{
+	if (m_iTransportTimer  < QTRACTOR_TIMER_DELAY)
+		m_iTransportTimer += QTRACTOR_TIMER_DELAY;
 }
 
 
@@ -6536,6 +6542,7 @@ void qtractorMainForm::updateTransportModePost (void)
 }
 
 
+// Update JACK Timebase master mode.
 void qtractorMainForm::updateTimebase (void)
 {
 	if (m_pOptions == NULL)
@@ -6547,6 +6554,7 @@ void qtractorMainForm::updateTimebase (void)
 		return;
 
 	pAudioEngine->setTimebase(m_pOptions->bTimebase);
+	pAudioEngine->resetTimebase();
 }
 
 
@@ -7344,13 +7352,11 @@ void qtractorMainForm::timerSlot (void)
 			//		m_pSession->seek(iPlayHead, true);
 			}
 			// 2. Watch for temp/time-sig changes on JACK transport...
-			if (bPlaying && (pos.valid & JackPositionBBT)) {
-				const unsigned int iBufferSize
-					= (pAudioEngine->bufferSize() << 1);
+			if (pos.valid & JackPositionBBT) {
 				qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(pos.frame);
-				if (pNode && pos.frame > (pNode->frame + iBufferSize) && (
+				if (pNode && pos.frame >= pNode->frame && (
 					::fabsf(pNode->tempo - pos.beats_per_minute) > 0.01f ||
 					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
 					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {

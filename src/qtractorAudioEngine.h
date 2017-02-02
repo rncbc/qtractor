@@ -1,7 +1,7 @@
 // qtractorAudioEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -115,6 +115,9 @@ public:
 	// Process cycle executive.
 	int process(unsigned int nframes);
 
+	// Timebase master callback.
+	void timebase(jack_position_t *pPos, int iNewPos);
+
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
@@ -215,11 +218,14 @@ public:
 	void setTimebase(bool bTimebase);
 	bool isTimebase() const;
 
-	// Absolute number of frames elapsed since engine start.
-	unsigned long jackFrame() const;
+	// JACK Timebase reset method.
+	void resetTimebase();
 
-    // Reset all audio monitoring...
-    void resetAllMonitors();
+	// Absolute number of frames elapsed since engine start.
+	unsigned long jackFrameTime() const;
+
+	// Reset all audio monitoring...
+	void resetAllMonitors();
 
 protected:
 
@@ -314,8 +320,9 @@ private:
 	// JACK Transport mode.
 	qtractorBus::BusMode m_transportMode;
 
-	// JACK Timebase mode.
-	bool m_bTimebase;
+	// JACK Timebase mode and control.
+	bool                 m_bTimebase;
+	unsigned int         m_iTimebase;
 };
 
 
