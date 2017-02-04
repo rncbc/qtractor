@@ -344,7 +344,7 @@ void qtractorOptions::loadOptions (void)
 
 	// Run-time special semi/non-persistent options.
 	m_settings.beginGroup("/Dialogs");
-	bUseNativeDialogs = m_settings.value("/UseNativeDialogs", true).toBool();
+	bUseNativeDialogs = m_settings.value("/UseNativeDialogs", false).toBool();
 	bDontUseNativeDialogs = !bUseNativeDialogs;
 	m_settings.endGroup();
 

@@ -6269,11 +6269,17 @@ bool qtractorMainForm::checkRestartSession (void)
 		QApplication::restoreOverrideCursor();
 		// Restore previous playhead position...
 		m_pSession->setPlayHead(iPlayHead);
+		// Done restart.
 	} else {
 		// Reset XRUN counters...
 		m_iXrunCount = 0;
 		m_iXrunSkip  = 0;
 		m_iXrunTimer = 0;
+		// HACK: When applicable, make sure we're
+		// always the (JACK) Timebase master...
+		if (m_pSession->audioEngine())
+			m_pSession->audioEngine()->resetTimebase();
+		// Done checking.
 	}
 
 	return true;
