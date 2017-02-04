@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="it_IT">
+<TS version="2.0" language="it_IT">
 <context>
     <name>QObject</name>
     <message>
@@ -2772,7 +2772,7 @@ Vuoi applicare le modifiche?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="518"/>
         <source>Mod&amp;e</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="821"/>
@@ -5123,72 +5123,72 @@ Vuoi applicare le modifiche?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2900"/>
         <source>Transport mode: None</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di avanzamento: Nessuna</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2903"/>
         <source>Transport mode set to None</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di avanzamento impostata su &apos;Nessuna&apos;</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2914"/>
         <source>&amp;Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Slave</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2917"/>
         <source>Slave</source>
-        <translation type="unfinished">Slave</translation>
+        <translation>Slave</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2920"/>
         <source>Transport mode: Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di avanzamento: Slave</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2923"/>
         <source>Transport mode set to Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di avanzamento impostata su &apos;Slave&apos;</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2934"/>
         <source>&amp;Master</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Master</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2937"/>
         <source>Master</source>
-        <translation type="unfinished">Master</translation>
+        <translation>Master</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2940"/>
         <source>Transport mode: Master</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di avanzamento: Master</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2943"/>
         <source>Transport mode set to Master</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di avanzamento impostata su &apos;Master&apos;</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2954"/>
         <source>&amp;Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Completa</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2957"/>
         <source>Full</source>
-        <translation type="unfinished">Full</translation>
+        <translation>Completa</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2960"/>
         <source>Transport mode: Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di avanzamento: Completa</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2963"/>
         <source>Transport mode set to Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di avanzamento impostata su &apos;Completa&apos;</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2971"/>
@@ -10681,7 +10681,7 @@ Vuoi applicare le modifiche?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1432"/>
         <source>Messages Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Font dei messaggi</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1457"/>
