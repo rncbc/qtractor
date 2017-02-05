@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -666,7 +666,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	if (m_pRingBuffer == NULL)
 		return -1;
 
-	int nread;
+	int nread = iFrames;
 
 	unsigned long ro = m_iReadOffset;
 	unsigned long ls = m_iLoopStart;
@@ -674,11 +674,10 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 
 	// Are we off decoded file limits (EoS)?
 	if (ro >= m_iFileLength) {
-		nread = iFrames;
 		if (ls < le) {
 			if (m_bIntegral) {
 				const unsigned int ri = m_pRingBuffer->readIndex();
-				while (ri < le && ri + nread >= le) {
+				while (ri < le && ri + nread >= le && nread > 0) {
 					nread -= le - ri;
 					ro = m_iOffset + ls;
 					m_pRingBuffer->setReadIndex(ls);
@@ -686,7 +685,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 			} else {
 				ls += m_iOffset;
 				le += m_iOffset;
-				while (ro < le && ro + nread >= le) {
+				while (ro < le && ro + nread >= le && nread > 0) {
 					nread -= le - ro;
 					ro = ls;
 				}
@@ -702,7 +701,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	if (ls < le) {
 		if (m_bIntegral) {
 			const unsigned int ri = m_pRingBuffer->readIndex();
-			while (ri < le && ri + iFrames >= le) {
+			while (ri < le && ri + iFrames >= le && nread > 0) {
 				m_iRampGain = -1;
 				nread = readMixFrames(ppFrames, le - ri, iChannels, iOffset, fGain);
 				iFrames -= nread;
@@ -713,7 +712,7 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 		} else {
 			ls += m_iOffset;
 			le += m_iOffset;
-			while (le >= ro && ro + iFrames >= le) {
+			while (le >= ro && ro + iFrames >= le && nread > 0) {
 				m_iRampGain = -1;
 				nread = readMixFrames(ppFrames, le - ro, iChannels, iOffset, fGain);
 				iFrames -= nread;
