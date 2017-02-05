@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- The View/Options.../Display/Dialogs/Use native dialogs
+  option is now set initially off by default.
+
 - All tempo and time-signature labels are now displayed
   with one decimal digit, as it was in mostly everywhere
   else but the time ruler/scale headers.
