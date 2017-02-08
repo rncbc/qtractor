@@ -1298,15 +1298,30 @@ void qtractorSession::setPlayHeadEx ( unsigned long iPlayHead )
 #endif
 
 	lock();
-//	setPlaying(false);
+
+	m_pMidiEngine->setPlaying(false);
 
 	seek(iPlayHead, true);
 
-	// Sync all track automation...
-	if (!bPlaying)
-		process_curve(iPlayHead);
+	// Have all MIDI instrument plugins be shut up
+	// if start playing, otherwise do ramping down...
+	qtractorMidiManager *pMidiManager = m_midiManagers.first();
+	while (pMidiManager) {
+		pMidiManager->reset();
+		pMidiManager = pMidiManager->next();
+	}
 
-//	setPlaying(bPlaying);
+	if (bPlaying) {
+		// Reset all dependables...
+		m_pAudioEngine->resetAllMonitors();
+		// Make sure we have an actual session cursor...
+		m_pAudioEngine->resetMetro();
+	}
+	// Sync all track automation...
+	else process_curve(iPlayHead);
+
+	m_pMidiEngine->setPlaying(bPlaying);
+
 	unlock();
 }
 
