@@ -1298,7 +1298,7 @@ void qtractorSession::setPlayHeadEx ( unsigned long iPlayHead )
 #endif
 
 	lock();
-	setPlaying(false);
+//	setPlaying(false);
 
 	seek(iPlayHead, true);
 
@@ -1306,7 +1306,7 @@ void qtractorSession::setPlayHeadEx ( unsigned long iPlayHead )
 	if (!bPlaying)
 		process_curve(iPlayHead);
 
-	setPlaying(bPlaying);
+//	setPlaying(bPlaying);
 	unlock();
 }
 
