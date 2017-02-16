@@ -20,7 +20,7 @@ ChangeLog
   immediately, not needing nor warning for session restart
   anymore.
  
-- Track/Navigate/Next and Previous menu commandss, finally
+- Track/Navigate/Next and Previous menu commands, finally
   fixed to wrap around the current track list.
 
 - Current session (JACK) transport mode option switching is
