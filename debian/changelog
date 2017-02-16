@@ -1,3 +1,9 @@
+qtractor (0.8.1-29) unstable; urgency=low
+
+  * New release: sticky tauon beta
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Fri, 17 Feb 2017 20:00:00 +0000
+
 qtractor (0.8.0-28) unstable; urgency=low
 
   * New release: snobbiest graviton beta
