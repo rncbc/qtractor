@@ -2346,7 +2346,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="196"/>
         <source>Open &amp;Recent</source>
-        <translation>Ouvrir &amp;Récent</translation>
+        <translation>Ouvrir &amp;récent</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="387"/>
@@ -2513,7 +2513,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="599"/>
         <source>Open session</source>
-        <translation>Ouvrir session</translation>
+        <translation>Ouvrir une session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="602"/>
@@ -2538,12 +2538,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="619"/>
         <source>Save session</source>
-        <translation>Sauvegarder session</translation>
+        <translation>Sauvegarder la session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="622"/>
         <source>Save session to file</source>
-        <translation>Sauvegarder session dans un fichier</translation>
+        <translation>Sauvegarder la session dans un fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="625"/>
@@ -2553,12 +2553,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="630"/>
         <source>Save &amp;As...</source>
-        <translation>Sauveg&amp;arder Sous...</translation>
+        <translation>Sauveg&amp;arder sous...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="633"/>
         <source>Save As</source>
-        <translation>Sauvegarder Sous</translation>
+        <translation>Sauvegarder sous</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="636"/>
