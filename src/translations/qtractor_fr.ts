@@ -3333,13 +3333,13 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1258"/>
         <source>Make current the first track</source>
-        <translation>Rendre la première piste courante</translation>
+        <translation>Rendre courante la première piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1263"/>
         <location filename="../qtractorMainForm.ui" line="2004"/>
         <source>&amp;Previous</source>
-        <translation>&amp;Précédent</translation>
+        <translation>&amp;Précédente</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1266"/>
@@ -3354,28 +3354,28 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1272"/>
         <source>Make current the previous track</source>
-        <translation>Rendre la précédente piste courante</translation>
+        <translation>Rendre courante la piste précédente</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1277"/>
         <location filename="../qtractorMainForm.ui" line="2018"/>
         <source>&amp;Next</source>
-        <translation>&amp;Prochaine</translation>
+        <translation>&amp;Suivante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1280"/>
         <source>Next Track</source>
-        <translation>Prochaine piste</translation>
+        <translation>Piste suivante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1283"/>
         <source>Next track</source>
-        <translation>Prochaine piste</translation>
+        <translation>Piste suivante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1286"/>
         <source>Make current the next track</source>
-        <translation>Rendre la prochaine piste courante</translation>
+        <translation>Rendre courante la piste suivante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1291"/>
@@ -3396,7 +3396,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1300"/>
         <source>Make current the last track</source>
-        <translation>Rendre la dernière piste courante</translation>
+        <translation>Rendre courante la dernière piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1305"/>
