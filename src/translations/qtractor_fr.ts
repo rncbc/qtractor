@@ -9604,7 +9604,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="517"/>
         <source>Transport &amp;mode:</source>
-        <translation>&amp;Mode transport :</translation>
+        <translation>&amp;Mode de transport :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="536"/>
