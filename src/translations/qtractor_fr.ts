@@ -2346,7 +2346,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="196"/>
         <source>Open &amp;Recent</source>
-        <translation>Ouvrir &amp;Récent</translation>
+        <translation>Ouvrir &amp;récent</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="387"/>
@@ -2513,7 +2513,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="599"/>
         <source>Open session</source>
-        <translation>Ouvrir session</translation>
+        <translation>Ouvrir une session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="602"/>
@@ -2538,12 +2538,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="619"/>
         <source>Save session</source>
-        <translation>Sauvegarder session</translation>
+        <translation>Sauvegarder la session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="622"/>
         <source>Save session to file</source>
-        <translation>Sauvegarder session dans un fichier</translation>
+        <translation>Sauvegarder la session dans un fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="625"/>
@@ -2553,12 +2553,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="630"/>
         <source>Save &amp;As...</source>
-        <translation>Sauveg&amp;arder Sous...</translation>
+        <translation>Sauveg&amp;arder sous...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="633"/>
         <source>Save As</source>
-        <translation>Sauvegarder Sous</translation>
+        <translation>Sauvegarder sous</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="636"/>
@@ -3333,13 +3333,13 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1258"/>
         <source>Make current the first track</source>
-        <translation>Rendre la première piste courante</translation>
+        <translation>Rendre courante la première piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1263"/>
         <location filename="../qtractorMainForm.ui" line="2004"/>
         <source>&amp;Previous</source>
-        <translation>&amp;Précédent</translation>
+        <translation>&amp;Précédente</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1266"/>
@@ -3354,28 +3354,28 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1272"/>
         <source>Make current the previous track</source>
-        <translation>Rendre la précédente piste courante</translation>
+        <translation>Rendre courante la piste précédente</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1277"/>
         <location filename="../qtractorMainForm.ui" line="2018"/>
         <source>&amp;Next</source>
-        <translation>&amp;Prochaine</translation>
+        <translation>&amp;Suivante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1280"/>
         <source>Next Track</source>
-        <translation>Prochaine piste</translation>
+        <translation>Piste suivante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1283"/>
         <source>Next track</source>
-        <translation>Prochaine piste</translation>
+        <translation>Piste suivante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1286"/>
         <source>Make current the next track</source>
-        <translation>Rendre la prochaine piste courante</translation>
+        <translation>Rendre courante la piste suivante</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1291"/>
@@ -3396,7 +3396,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1300"/>
         <source>Make current the last track</source>
-        <translation>Rendre la dernière piste courante</translation>
+        <translation>Rendre courante la dernière piste</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1305"/>
@@ -9604,7 +9604,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="517"/>
         <source>Transport &amp;mode:</source>
-        <translation>&amp;Mode transport :</translation>
+        <translation>&amp;Mode de transport :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="536"/>
