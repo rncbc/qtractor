@@ -480,8 +480,9 @@ unsigned long qtractorTimeScale::frameFromTextEx (
 			if (bDelta) {
 				pNode = m_cursor.seekFrame(iFrame);
 				if (pNode) {
-					beats += (bars + 1) * pNode->beatsPerBar;
-					ticks += pNode->tick + beats * pNode->ticksPerBeat;
+					beats += bars  * pNode->beatsPerBar;
+					ticks += beats * pNode->ticksPerBeat;
+					ticks += pNode->tickFromFrame(iFrame);
 					iFrame = pNode->frameFromTick(ticks) - iFrame;
 				}
 			} else {

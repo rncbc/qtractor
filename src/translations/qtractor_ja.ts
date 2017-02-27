@@ -80,7 +80,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="83"/>
-        <location filename="../qtractorTimeScale.cpp" line="677"/>
+        <location filename="../qtractorTimeScale.cpp" line="678"/>
         <source>None</source>
         <translation>なし</translation>
     </message>
@@ -512,7 +512,7 @@ MIDI:	</translation>
         <translation>セッションのプロパティー</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="681"/>
+        <location filename="../qtractorTimeScale.cpp" line="682"/>
         <source>Beat</source>
         <translation></translation>
     </message>

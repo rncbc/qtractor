@@ -333,12 +333,12 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="83"/>
-        <location filename="../qtractorTimeScale.cpp" line="677"/>
+        <location filename="../qtractorTimeScale.cpp" line="678"/>
         <source>None</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="681"/>
+        <location filename="../qtractorTimeScale.cpp" line="682"/>
         <source>Beat</source>
         <translation>Doba</translation>
     </message>

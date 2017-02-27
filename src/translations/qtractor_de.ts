@@ -81,7 +81,7 @@ Audio:	%1 Kanäle, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="83"/>
-        <location filename="../qtractorTimeScale.cpp" line="677"/>
+        <location filename="../qtractorTimeScale.cpp" line="678"/>
         <source>None</source>
         <translation>Keine</translation>
     </message>
@@ -510,7 +510,7 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="681"/>
+        <location filename="../qtractorTimeScale.cpp" line="682"/>
         <source>Beat</source>
         <translation>Takt</translation>
     </message>
