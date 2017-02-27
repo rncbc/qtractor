@@ -3,6 +3,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+- Fixed the time entry spin-boxes when changing time offset
+  or length fields in BBT time format that goes across any
+  tempo/time-signature change nodes.
+
+- French (fr) translation update (by Olivier Humbert, thanks).
+
 
 0.8.1  2017-02-17  Sticky Tauon Beta.
 
