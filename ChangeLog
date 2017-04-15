@@ -3,6 +3,9 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+- More gradient eye-candy on main track-view and piano-roll
+  canvases, now showing left and right edge fake-shadows.
+
 - Fixed the time entry spin-boxes when changing time offset
   or length fields in BBT time format that goes across any
   tempo/time-signature change nodes.

@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -466,6 +466,26 @@ void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect 
 {
 	// Draw viewport canvas...
 	pPainter->drawPixmap(rect, m_pixmap, rect);
+
+#ifdef CONFIG_GRADIENT
+	// Draw canvas border shadows...
+	const int ws = 24;
+	if (rect.left() < ws) {
+		QLinearGradient gradLeft(0, 0, ws, 0);
+		gradLeft.setColorAt(0.0f, QColor(0, 0, 0, 120));
+		gradLeft.setColorAt(0.2f, QColor(0, 0, 0, 30));
+		gradLeft.setColorAt(0.8f, QColor(0, 0, 0, 0));
+		pPainter->fillRect(0, rect.top(), ws, rect.bottom(), gradLeft);
+	}
+	const int xs = qtractorScrollView::viewport()->width() - ws;
+	if (rect.right() > ws) {
+		QLinearGradient gradRight(xs, 0, xs + ws, 0);
+		gradRight.setColorAt(0.2f, QColor(0, 0, 0, 0));
+		gradRight.setColorAt(0.8f, QColor(0, 0, 0, 30));
+		gradRight.setColorAt(1.0f, QColor(0, 0, 0, 120));
+		pPainter->fillRect(xs, rect.top(), xs + ws, rect.bottom(), gradRight);
+	}
+#endif
 
 	m_pEditor->paintDragState(this, pPainter);
 
