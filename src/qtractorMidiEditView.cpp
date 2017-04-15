@@ -468,12 +468,12 @@ void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect 
 	pPainter->drawPixmap(rect, m_pixmap, rect);
 
 #ifdef CONFIG_GRADIENT
-	// Draw canvas border shadows...
+	// Draw canvas edge-border shadows...
 	const int ws = 24;
 	if (rect.left() < ws) {
 		QLinearGradient gradLeft(0, 0, ws, 0);
 		gradLeft.setColorAt(0.0f, QColor(0, 0, 0, 120));
-		gradLeft.setColorAt(0.2f, QColor(0, 0, 0, 30));
+		gradLeft.setColorAt(0.4f, QColor(0, 0, 0, 30));
 		gradLeft.setColorAt(0.8f, QColor(0, 0, 0, 0));
 		pPainter->fillRect(0, rect.top(), ws, rect.bottom(), gradLeft);
 	}
@@ -481,12 +481,11 @@ void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect 
 	if (rect.right() > ws) {
 		QLinearGradient gradRight(xs, 0, xs + ws, 0);
 		gradRight.setColorAt(0.2f, QColor(0, 0, 0, 0));
-		gradRight.setColorAt(0.8f, QColor(0, 0, 0, 30));
+		gradRight.setColorAt(0.6f, QColor(0, 0, 0, 30));
 		gradRight.setColorAt(1.0f, QColor(0, 0, 0, 120));
 		pPainter->fillRect(xs, rect.top(), xs + ws, rect.bottom(), gradRight);
 	}
 #endif
-
 	m_pEditor->paintDragState(this, pPainter);
 
 	// Draw special play/edit-head/tail headers...
