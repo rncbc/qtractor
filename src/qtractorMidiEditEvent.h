@@ -27,6 +27,7 @@
 #include "qtractorMidiEvent.h"
 
 #include <QPixmap>
+#include <QBrush>
 
 
 // Forward declarations.
@@ -151,6 +152,10 @@ private:
 	// Current selection holders.
 	qtractorMidiEvent::EventType m_eventType;
 	unsigned short m_eventParam;
+
+	// Optional edge-shadow gradient brushes.
+	QBrush m_gradLeft;
+	QBrush m_gradRight;
 };
 
 
