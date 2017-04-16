@@ -6505,17 +6505,17 @@ Wollen Sie diese übernehmen?</translation>
 <context>
     <name>qtractorMidiEditEvent</name>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="152"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="156"/>
         <source>Zoom in (horizontal)</source>
         <translation type="unfinished">Vergrößern (horizontal)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="153"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="157"/>
         <source>Zoom out (horizontal)</source>
         <translation type="unfinished">Verkleinern (horizontal)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="154"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="158"/>
         <source>Zoom reset (horizontal)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6578,17 +6578,17 @@ Länge:	%3</translation>
 <context>
     <name>qtractorMidiEditView</name>
     <message>
-        <location filename="../qtractorMidiEditView.cpp" line="70"/>
+        <location filename="../qtractorMidiEditView.cpp" line="74"/>
         <source>Zoom in (vertical)</source>
         <translation>Vergrößern (vertikal)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditView.cpp" line="71"/>
+        <location filename="../qtractorMidiEditView.cpp" line="75"/>
         <source>Zoom out (vertical)</source>
         <translation>Verkleinern (vertikal)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditView.cpp" line="72"/>
+        <location filename="../qtractorMidiEditView.cpp" line="76"/>
         <source>Zoom reset (vertical)</source>
         <translation>Normal (vertikal)</translation>
     </message>
@@ -12279,37 +12279,37 @@ Länge:	%3</translation>
 <context>
     <name>qtractorTrackView</name>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="145"/>
+        <location filename="../qtractorTrackView.cpp" line="149"/>
         <source>Zoom in (horizontal)</source>
         <translation>Vergrößern (horizontal)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="146"/>
+        <location filename="../qtractorTrackView.cpp" line="150"/>
         <source>Zoom out (horizontal)</source>
         <translation>Verkleinern (horizontal)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="147"/>
+        <location filename="../qtractorTrackView.cpp" line="151"/>
         <source>Zoom in (vertical)</source>
         <translation>Vergrößern (vertikal)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="148"/>
+        <location filename="../qtractorTrackView.cpp" line="152"/>
         <source>Zoom out (vertical)</source>
         <translation>Verkleinern (vertikal)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="149"/>
+        <location filename="../qtractorTrackView.cpp" line="153"/>
         <source>Zoom reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="1642"/>
+        <location filename="../qtractorTrackView.cpp" line="1655"/>
         <source>add clip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3156"/>
+        <location filename="../qtractorTrackView.cpp" line="3169"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -12318,80 +12318,80 @@ Ende:	%2
 Länge:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3445"/>
+        <location filename="../qtractorTrackView.cpp" line="3458"/>
         <source>clip %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3446"/>
+        <location filename="../qtractorTrackView.cpp" line="3459"/>
         <source>fade-in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3446"/>
+        <location filename="../qtractorTrackView.cpp" line="3459"/>
         <source>fade-out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3572"/>
+        <location filename="../qtractorTrackView.cpp" line="3585"/>
         <source>clip stretch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3572"/>
+        <location filename="../qtractorTrackView.cpp" line="3585"/>
         <source>clip resize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3657"/>
-        <location filename="../qtractorTrackView.cpp" line="3765"/>
+        <location filename="../qtractorTrackView.cpp" line="3670"/>
+        <location filename="../qtractorTrackView.cpp" line="3778"/>
         <source>clip repeat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4624"/>
+        <location filename="../qtractorTrackView.cpp" line="4637"/>
         <source>%1 automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4697"/>
+        <location filename="../qtractorTrackView.cpp" line="4710"/>
         <source>%1 clip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5337"/>
+        <location filename="../qtractorTrackView.cpp" line="5350"/>
         <source>move automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5418"/>
+        <location filename="../qtractorTrackView.cpp" line="5431"/>
         <source>paste automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4628"/>
-        <location filename="../qtractorTrackView.cpp" line="4701"/>
+        <location filename="../qtractorTrackView.cpp" line="4641"/>
+        <location filename="../qtractorTrackView.cpp" line="4714"/>
         <source>cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4631"/>
-        <location filename="../qtractorTrackView.cpp" line="4704"/>
+        <location filename="../qtractorTrackView.cpp" line="4644"/>
+        <location filename="../qtractorTrackView.cpp" line="4717"/>
         <source>delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4707"/>
+        <location filename="../qtractorTrackView.cpp" line="4720"/>
         <source>split</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5069"/>
+        <location filename="../qtractorTrackView.cpp" line="5082"/>
         <source>move clip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5199"/>
+        <location filename="../qtractorTrackView.cpp" line="5212"/>
         <source>paste clip</source>
         <translation type="unfinished"></translation>
     </message>
