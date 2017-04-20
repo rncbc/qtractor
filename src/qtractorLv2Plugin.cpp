@@ -772,6 +772,12 @@ static const LV2_Feature *g_lv2_features[] =
 
 #include "qtractorPluginForm.h"
 
+#include "qtractorMessageBox.h"
+
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QCheckBox>
+
 #define LV2_UI_TYPE_NONE       0
 #define LV2_UI_TYPE_QT4        1
 #define LV2_UI_TYPE_QT5        2
@@ -2140,6 +2146,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 	#ifdef CONFIG_LV2_UI
 		, m_lv2_ui_type(LV2_UI_TYPE_NONE)
+		, m_lv2_ui_type_preferred(LV2_UI_TYPE_NONE)
 		, m_bEditorVisible(false)
 		, m_bEditorClosed(false)
 		, m_lv2_uis(NULL)
@@ -3132,7 +3139,63 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		return;
 	}
 
-	QMap<int, LilvUI *>::ConstIterator ui_iter = ui_map.constBegin();
+	const QMap<int, LilvUI *>::ConstIterator& ui_begin = ui_map.constBegin();
+	QMap<int, LilvUI *>::ConstIterator ui_iter = ui_begin;
+
+	if (m_lv2_ui_type_preferred != LV2_UI_TYPE_NONE)
+		ui_iter = ui_map.constFind(m_lv2_ui_type_preferred);
+	else
+	if (ui_map.count() > 1) {
+		const QString& sTitle
+			= QObject::tr("Question") + " - " QTRACTOR_TITLE;
+		const QString& sText
+			= QObject::tr("Select the preferred LV2 plug-in UI type:");
+		qtractorMessageBox mbox(qtractorMainForm::getInstance());
+		mbox.setIcon(QMessageBox::Question);
+		mbox.setWindowTitle(sTitle);
+		mbox.setText(sText);
+		mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+		QButtonGroup group;
+		const QMap<int, LilvUI *>::ConstIterator& ui_end = ui_map.constEnd();
+		for ( ; ui_iter != ui_end; ++ui_iter) {
+			const int ui_type = ui_iter.key();
+			QRadioButton *pRadioButton;
+			switch (ui_type) {
+			case LV2_UI_TYPE_EXTERNAL:
+				pRadioButton = new QRadioButton(QObject::tr("External"));
+				break;
+			case LV2_UI_TYPE_X11:
+				pRadioButton = new QRadioButton(QObject::tr("X11"));
+				break;
+			case LV2_UI_TYPE_GTK:
+				pRadioButton = new QRadioButton(QObject::tr("Gtk2"));
+				break;
+			case LV2_UI_TYPE_QT4:
+				pRadioButton = new QRadioButton(QObject::tr("Qt4"));
+				break;
+			case LV2_UI_TYPE_QT5:
+				pRadioButton = new QRadioButton(QObject::tr("Qt5"));
+				break;
+			case LV2_UI_TYPE_OTHER:
+			default:
+				pRadioButton = new QRadioButton(QObject::tr("Other"));
+				break;
+			}
+			pRadioButton->setChecked(ui_iter == ui_begin);
+			group.addButton(pRadioButton, ui_type);
+			mbox.addCustomButton(pRadioButton);
+		}
+		mbox.addCustomSpacer();
+		QCheckBox cbox(QObject::tr("Don't ask this again"));
+		cbox.setChecked(false);
+		cbox.blockSignals(true);
+		mbox.addButton(&cbox, QMessageBox::ActionRole);
+		if (mbox.exec() == QMessageBox::Cancel)
+			return;
+		ui_iter = ui_map.constFind(group.checkedId());
+		if (cbox.isChecked())
+			m_lv2_ui_type_preferred = ui_iter.key();
+	}
 
 	m_lv2_ui_type = ui_iter.key();
 	m_lv2_ui = ui_iter.value();
