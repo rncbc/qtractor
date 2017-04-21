@@ -486,7 +486,6 @@ private:
 #ifdef CONFIG_LV2_UI
 
 	int            m_lv2_ui_type;
-	int            m_lv2_ui_type_preferred;
 
 	QByteArray     m_aEditorTitle;
 	bool           m_bEditorVisible;

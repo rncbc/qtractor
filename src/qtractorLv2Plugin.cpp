@@ -2146,7 +2146,6 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 	#ifdef CONFIG_LV2_UI
 		, m_lv2_ui_type(LV2_UI_TYPE_NONE)
-		, m_lv2_ui_type_preferred(LV2_UI_TYPE_NONE)
 		, m_bEditorVisible(false)
 		, m_bEditorClosed(false)
 		, m_lv2_uis(NULL)
@@ -3133,17 +3132,13 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	#endif
 	}
 
-	if (ui_map.isEmpty()) {
-		lilv_uis_free(m_lv2_uis);
-		m_lv2_uis = NULL;
-		return;
-	}
-
 	const QMap<int, LilvUI *>::ConstIterator& ui_begin = ui_map.constBegin();
+	const QMap<int, LilvUI *>::ConstIterator& ui_end = ui_map.constEnd();
 	QMap<int, LilvUI *>::ConstIterator ui_iter = ui_begin;
 
-	if (m_lv2_ui_type_preferred != LV2_UI_TYPE_NONE)
-		ui_iter = ui_map.constFind(m_lv2_ui_type_preferred);
+	const int iEditorType = editorType();
+	if (iEditorType > 0)
+		ui_iter = ui_map.constFind(iEditorType);
 	else
 	if (ui_map.count() > 1) {
 		const QString& sTitle
@@ -3156,7 +3151,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		mbox.setText(sText);
 		mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
 		QButtonGroup group;
-		const QMap<int, LilvUI *>::ConstIterator& ui_end = ui_map.constEnd();
 		for ( ; ui_iter != ui_end; ++ui_iter) {
 			const int ui_type = ui_iter.key();
 			QRadioButton *pRadioButton;
@@ -3170,12 +3164,15 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			case LV2_UI_TYPE_GTK:
 				pRadioButton = new QRadioButton(QObject::tr("Gtk2"));
 				break;
+		#if QT_VERSION < 0x050000
 			case LV2_UI_TYPE_QT4:
 				pRadioButton = new QRadioButton(QObject::tr("Qt4"));
 				break;
+		#else
 			case LV2_UI_TYPE_QT5:
 				pRadioButton = new QRadioButton(QObject::tr("Qt5"));
 				break;
+		#endif
 			case LV2_UI_TYPE_OTHER:
 			default:
 				pRadioButton = new QRadioButton(QObject::tr("Other"));
@@ -3193,8 +3190,14 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		if (mbox.exec() == QMessageBox::Cancel)
 			return;
 		ui_iter = ui_map.constFind(group.checkedId());
-		if (cbox.isChecked())
-			m_lv2_ui_type_preferred = ui_iter.key();
+		if (ui_iter != ui_end && cbox.isChecked())
+			setEditorType(ui_iter.key());
+	}
+
+	if (ui_iter == ui_end) {
+		lilv_uis_free(m_lv2_uis);
+		m_lv2_uis = NULL;
+		return;
 	}
 
 	m_lv2_ui_type = ui_iter.key();
