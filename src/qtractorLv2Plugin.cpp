@@ -3189,9 +3189,10 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			cbox.setChecked(false);
 			cbox.blockSignals(true);
 			mbox.addButton(&cbox, QMessageBox::ActionRole);
-			if (mbox.exec() == QMessageBox::Cancel)
-				return;
-			ui_iter = ui_map.constFind(group.checkedId());
+			if (mbox.exec() == QMessageBox::Ok)
+				ui_iter = ui_map.constFind(group.checkedId());
+			else
+				ui_iter = ui_end;
 			if (ui_iter != ui_end && cbox.isChecked())
 				setEditorType(ui_iter.key());
 		}
