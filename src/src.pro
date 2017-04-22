@@ -51,6 +51,7 @@ HEADERS += config.h \
 	qtractorLadspaPlugin.h \
 	qtractorList.h \
 	qtractorLv2Plugin.h \
+	qtractorMessageBox.h \
 	qtractorMessageList.h \
 	qtractorMessages.h \
 	qtractorMeter.h \
@@ -179,6 +180,7 @@ SOURCES += \
 	qtractorInstrumentMenu.cpp \
 	qtractorLadspaPlugin.cpp \
 	qtractorLv2Plugin.cpp \
+	qtractorMessageBox.cpp \
 	qtractorMessageList.cpp \
 	qtractorMessages.cpp \
 	qtractorMeter.cpp \

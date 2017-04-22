@@ -47,6 +47,7 @@ headers = \
 	src/qtractorLadspaPlugin.h \
 	src/qtractorList.h \
 	src/qtractorLv2Plugin.h \
+	src/qtractorMessageBox.h \
 	src/qtractorMessageList.h \
 	src/qtractorMessages.h \
 	src/qtractorMeter.h \
@@ -174,7 +175,8 @@ sources = \
 	src/qtractorInstrumentMenu.cpp \
 	src/qtractorLadspaPlugin.cpp \
 	src/qtractorLv2Plugin.cpp \
-	src/qtractorMessageList.h \
+	src/qtractorMessageBox.cpp \
+	src/qtractorMessageList.cpp \
 	src/qtractorMessages.cpp \
 	src/qtractorMeter.cpp \
 	src/qtractorMidiClip.cpp \

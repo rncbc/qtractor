@@ -3,6 +3,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+- A brand new user preference global option is now available:
+  View/Options.../Plugins/Editor/Select plug-in's editor (GUI)
+  if more than one is avaliable. (EXPERIMENTAL)
+
 - More gradient eye-candy on main track-view and piano-roll
   canvases, now showing left and right edge fake-shadows.
 

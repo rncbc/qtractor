@@ -220,6 +220,10 @@ public:
 	// Plug-in GUI options.
 	bool bOpenEditor;
 
+	// Whether to ask for plug-in editor (GUI)
+	// when more than one is available.
+	bool bQueryEditorType;
+
 	// VST dummy plugin scan option.
 	bool bDummyVstScan;
 
