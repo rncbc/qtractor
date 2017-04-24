@@ -3,6 +3,8 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+- Track-height resizing now meets immediate visual feedback.
+
 - A brand new user preference global option is now available:
   View/Options.../Plugins/Editor/Select plug-in's editor (GUI)
   if more than one is avaliable. (EXPERIMENTAL)
