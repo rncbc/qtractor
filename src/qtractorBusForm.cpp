@@ -1,7 +1,7 @@
 // qtractorBusForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,9 +50,11 @@ class qtractorBusListItem : public QTreeWidgetItem
 public:
 
 	// Constructor.
-	qtractorBusListItem(QTreeWidgetItem *pRootItem, qtractorBus *pBus)
-		: QTreeWidgetItem(pRootItem), m_pBus(pBus)
+	qtractorBusListItem(qtractorBus *pBus)
+		: QTreeWidgetItem(), m_pBus(pBus)
 	{
+		QTreeWidgetItem::setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+
 		switch (m_pBus->busType()) {
 		case qtractorTrack::Audio:
 			QTreeWidgetItem::setIcon(0, QIcon(":/images/trackAudio.png"));
@@ -111,8 +113,10 @@ qtractorBusForm::qtractorBusForm (
 
 	// Initialize locals.
 	m_pBus        = NULL;
+
 	m_pAudioRoot  = NULL;
 	m_pMidiRoot   = NULL;
+
 	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
 	m_iDirtyTotal = 0;
@@ -254,6 +258,7 @@ void qtractorBusForm::setBus ( qtractorBus *pBus )
 			break;
 		}
 	}
+
 	// Is the root present?
 	if (pRootItem == NULL) {
 		stabilizeForm();
@@ -382,6 +387,7 @@ void qtractorBusForm::refreshBuses (void)
 	//
 	m_pAudioRoot = NULL;
 	m_pMidiRoot  = NULL;
+
 	m_ui.BusListView->clear();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -391,26 +397,26 @@ void qtractorBusForm::refreshBuses (void)
 	// Audio buses...
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 	if (pAudioEngine) {
-		m_pAudioRoot = new QTreeWidgetItem(m_ui.BusListView);
+		m_pAudioRoot = new QTreeWidgetItem();
 		m_pAudioRoot->setText(0, ' ' + tr("Audio"));
-		m_pAudioRoot->setFlags(	// Audio root item is not selectable...
-			m_pAudioRoot->flags() & ~Qt::ItemIsSelectable);
+		m_pAudioRoot->setFlags(Qt::ItemIsEnabled); // but not selectable...
 		for (qtractorBus *pBus = pAudioEngine->buses().first();
 				pBus; pBus = pBus->next())
-			new qtractorBusListItem(m_pAudioRoot, pBus);
+			m_pAudioRoot->addChild(new qtractorBusListItem(pBus));
+		m_ui.BusListView->addTopLevelItem(m_pAudioRoot);
 		m_pAudioRoot->setExpanded(true);
 	}
 
 	// MIDI buses...
 	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
 	if (pMidiEngine) {
-		m_pMidiRoot = new QTreeWidgetItem(m_ui.BusListView);
+		m_pMidiRoot = new QTreeWidgetItem();
 		m_pMidiRoot->setText(0, ' ' + tr("MIDI"));
-		m_pMidiRoot->setFlags(	// MIDI root item is not selectable...
-			m_pMidiRoot->flags() & ~Qt::ItemIsSelectable);
+		m_pMidiRoot->setFlags(Qt::ItemIsEnabled); // but not selectable...
 		for (qtractorBus *pBus = pMidiEngine->buses().first();
 				pBus; pBus = pBus->next())
-			new qtractorBusListItem(m_pMidiRoot, pBus);
+			m_pMidiRoot->addChild(new qtractorBusListItem(pBus));
+		m_ui.BusListView->addTopLevelItem(m_pMidiRoot);
 		m_pMidiRoot->setExpanded(true);
 	}
 }
@@ -419,6 +425,9 @@ void qtractorBusForm::refreshBuses (void)
 // Bus selection slot.
 void qtractorBusForm::selectBus (void)
 {
+	if (m_iDirtySetup > 0)
+		return;
+
 	// Get current selected item, must not be a root one...
 	QTreeWidgetItem *pItem = m_ui.BusListView->currentItem();
 	if (pItem == NULL)
@@ -433,6 +442,7 @@ void qtractorBusForm::selectBus (void)
 		return;
 
 	// Check if we need an update?...
+	bool bUpdate = false;
 	qtractorBus *pBus = pBusItem->bus();
 	if (m_pBus && m_pBus != pBus && m_iDirtyCount > 0) {
 		QMessageBox::StandardButtons buttons
@@ -445,20 +455,24 @@ void qtractorBusForm::selectBus (void)
 			"Do you want to apply the changes?"),
 			buttons)) {
 		case QMessageBox::Apply:
-			if (updateBus(m_pBus)) {
-				++m_iDirtyTotal;
-				refreshBuses();
-			}
+			bUpdate = updateBus(m_pBus);
 			// Fall thru...
 		case QMessageBox::Discard:
 			break;
-		default:    // Cancel.
+		default: // Cancel.
 			return;
 		}
 	}
 
 	// Get new one into view...
 	showBus(pBus);
+
+	// Reselect as current (only on apply/update)
+	if (bUpdate) {
+		++m_iDirtyTotal;
+		refreshBuses();
+		setBus(m_pBus);
+	}
 }
 
 
@@ -849,7 +863,7 @@ void qtractorBusForm::stabilizeForm (void)
 	m_ui.MonitorCheckBox->setEnabled(
 		m_pBus && m_ui.BusModeComboBox->currentIndex() == 2);
 
-	unsigned int iFlags = flags();
+	const unsigned int iFlags = flags();
 	m_ui.MoveUpPushButton->setEnabled(iFlags & MoveUp);
 	m_ui.MoveDownPushButton->setEnabled(iFlags & MoveDown);
 	m_ui.CreatePushButton->setEnabled(iFlags & Create);
@@ -911,7 +925,7 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 	QMenu menu(this);
 	QAction *pAction;
 
-	unsigned int iFlags = flags();
+	const unsigned int iFlags = flags();
 
 	pAction = menu.addAction(
 		QIcon(":/images/formCreate.png"),
@@ -1049,7 +1063,7 @@ void qtractorBusForm::updateMidiSysex (void)
 		return;
 
 	// Show proper count status...
-	int iSysexCount = (pMidiBus->sysexList())->count();
+	const int iSysexCount = (pMidiBus->sysexList())->count();
 	switch (iSysexCount) {
 	case 0:
 		m_ui.MidiSysexTextLabel->setText(tr("(none)"));
