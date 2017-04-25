@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1026,8 +1026,6 @@ void qtractorMidiClip::draw (
 		iNoteSpan = 6;
 		--iNoteMin;
 	}
-	if (iNoteMin < 0)
-		iNoteMin = 0;
 
 	const unsigned long iClipStart = clipStart();
 	const unsigned long iFrameStart = iClipStart + iClipOffset;
