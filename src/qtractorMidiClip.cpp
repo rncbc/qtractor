@@ -1020,12 +1020,11 @@ void qtractorMidiClip::draw (
 		return;
 
 	// Check min/maximum note span...
-	int iNoteMin  = pSeq->noteMin() - 1;
-	int iNoteSpan = pSeq->noteMax() - iNoteMin;
-	if (iNoteSpan < 6) {
+	const int iNoteMin = pSeq->noteMin() - 2;
+	const int iNoteMax = pSeq->noteMax() + 1;
+	int iNoteSpan = iNoteMax - iNoteMin;
+	if (iNoteSpan < 6)
 		iNoteSpan = 6;
-		--iNoteMin;
-	}
 
 	const unsigned long iClipStart = clipStart();
 	const unsigned long iFrameStart = iClipStart + iClipOffset;

@@ -692,6 +692,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_pEventTypeComboBox->setCurrentIndex(0);
 	//	eventTypeChanged(0);
 	}
+
+	// HACK: Some explicit focus immediately...
+	m_pMidiEditor->editView()->setFocus();
 }
 
 
