@@ -255,6 +255,8 @@ void qtractorSession::clear (void)
 
 	m_pFiles->clear();
 
+	m_filePaths.clear();
+
 	qtractorAudioClip::clearHashTable();
 	qtractorMidiClip::clearHashTable();
 
@@ -1473,6 +1475,14 @@ QString qtractorSession::sanitize ( const QString& s )
 }
 
 
+// Transient file-name registry method as far
+// to avoid duplicates across load/save cycles...
+void qtractorSession::registerFilePath ( const QString& sFilename )
+{
+	m_filePaths.append(sFilename);
+}
+
+
 // Create a brand new filename (absolute file path).
 QString qtractorSession::createFilePath (
 	const QString& sTrackName, const QString& sExt, int iClipNo )
@@ -1485,6 +1495,8 @@ QString qtractorSession::createFilePath (
 	QFileInfo fi;
 	if (iClipNo > 0) {
 		fi.setFile(m_props.sessionDir, sFilename.arg(iClipNo));
+		while (m_filePaths.contains(fi.absoluteFilePath()))
+			fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
 	} else do {
 		fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
 	} while (fi.exists());

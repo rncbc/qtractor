@@ -1,7 +1,7 @@
 // qtractorCurveFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,6 +29,8 @@
 #include "qtractorMidiControl.h"
 
 #include "qtractorMessageList.h"
+
+#include "qtractorSession.h"
 
 #include <QDomDocument>
 #include <QDir>
@@ -205,7 +207,12 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 	if (m_pCurveList == NULL)
 		return;
 
-	const QString& sFilename = QDir(m_sBaseDir).absoluteFilePath(m_sFilename);
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	const QString& sFilename
+		= QDir(m_sBaseDir).absoluteFilePath(m_sFilename);
 
 	qtractorMidiFile file;
 	if (!file.open(sFilename, qtractorMidiFile::Read)) {
@@ -215,6 +222,10 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 		qtractorMessageList::append(sText);
 		return;
 	}
+
+	// Transient curve-file registry method as far
+	// to avoid duplicates across load/save cycles...
+	pSession->registerFilePath(sFilename);
 
 	const unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
 	unsigned short iSeq = 0;

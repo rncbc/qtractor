@@ -283,6 +283,10 @@ public:
 	// Sanitize a given name.
 	static QString sanitize(const QString& s); 
 
+	// Transient file-name registry method as far
+	// to avoid duplicates across load/save cycles...
+	void registerFilePath(const QString& sFilename);
+
 	// Create a brand new filename (absolute file path).
 	QString createFilePath(
 		const QString& sTrackName, const QString& sExt, int iClipNo = 0);
@@ -476,6 +480,9 @@ private:
 
 	// File registry.
 	qtractorFileList *m_pFiles;
+
+	// Transient file-name registry.
+	QStringList m_filePaths;
 
 	// The pseudo-singleton instance.
 	static qtractorSession *g_pSession;
