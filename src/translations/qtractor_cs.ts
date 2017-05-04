@@ -786,7 +786,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Autor: </translation>
     </message>
     <message>
-        <location filename="../qtractorCurveFile.cpp" line="220"/>
+        <location filename="../qtractorCurveFile.cpp" line="222"/>
         <source>%1: Automation/curve file not found.</source>
         <translation>%1:Soubor s automatizací/křivkou nenalezen.</translation>
     </message>

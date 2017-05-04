@@ -190,7 +190,7 @@ Fin:	%3	Duración:	%4</translation>
         <translation>editar lista de automatización</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveFile.cpp" line="220"/>
+        <location filename="../qtractorCurveFile.cpp" line="222"/>
         <source>%1: Automation/curve file not found.</source>
         <translation>%1: Archivo de automatización/curva no encontrado.</translation>
     </message>

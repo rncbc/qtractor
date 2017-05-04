@@ -786,7 +786,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Auteur: </translation>
     </message>
     <message>
-        <location filename="../qtractorCurveFile.cpp" line="220"/>
+        <location filename="../qtractorCurveFile.cpp" line="222"/>
         <source>%1: Automation/curve file not found.</source>
         <translation>%1: Fichier automation/courbe introuvable.</translation>
     </message>

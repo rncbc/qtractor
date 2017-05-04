@@ -782,7 +782,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>Ativar</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveFile.cpp" line="220"/>
+        <location filename="../qtractorCurveFile.cpp" line="222"/>
         <source>%1: Automation/curve file not found.</source>
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>

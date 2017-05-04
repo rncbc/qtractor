@@ -190,10 +190,12 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 		delete ppSeqs[iSeq];
 	delete [] ppSeqs;
 
-	const QString& sFilename
-		= QDir(m_sBaseDir).relativeFilePath(m_sFilename);
-	pDocument->saveTextElement("filename",
-		pDocument->addFile(sFilename), pElement);
+	QString sFilename;
+	if (pDocument->isArchive())
+		sFilename = pDocument->addFile(m_sFilename);
+	else
+		sFilename = QDir(m_sBaseDir).relativeFilePath(m_sFilename);
+	pDocument->saveTextElement("filename", sFilename, pElement);
 
 	if (iCurrent >= 0) {
 		pDocument->saveTextElement("current",
