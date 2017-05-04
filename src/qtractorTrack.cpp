@@ -2249,8 +2249,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		return;
 
 	const QString sBaseName(trackName() + "_curve");
-	const int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", iClipNo));
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid"));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }

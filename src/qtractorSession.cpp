@@ -1485,21 +1485,20 @@ void qtractorSession::registerFilePath ( const QString& sFilename )
 
 // Create a brand new filename (absolute file path).
 QString qtractorSession::createFilePath (
-	const QString& sTrackName, const QString& sExt, int iClipNo )
+	const QString& sBaseName, const QString& sExt )
 {
 	QString sFilename = qtractorSession::sanitize(m_props.sessionName);
 	if (!sFilename.isEmpty())
 		sFilename += '-';
-	sFilename += qtractorSession::sanitize(sTrackName) + "-%1." + sExt;
+	sFilename += qtractorSession::sanitize(sBaseName) + "-%1." + sExt;
 
-	QFileInfo fi;
-	if (iClipNo > 0) {
-		fi.setFile(m_props.sessionDir, sFilename.arg(iClipNo));
-		while (m_filePaths.contains(fi.absoluteFilePath()))
+	QFileInfo fi; int iClipNo = 0;
+	fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
+	if (!m_filePaths.contains(fi.absoluteFilePath())) {
+		 while (fi.exists() || m_filePaths.contains(fi.absoluteFilePath()))
 			fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
-	} else do {
-		fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
-	} while (fi.exists());
+		m_filePaths.append(fi.absoluteFilePath()); // register new name!
+	}
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorSession::createFilePath(\"%s\")",

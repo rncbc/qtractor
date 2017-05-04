@@ -289,7 +289,7 @@ public:
 
 	// Create a brand new filename (absolute file path).
 	QString createFilePath(
-		const QString& sTrackName, const QString& sExt, int iClipNo = 0);
+		const QString& sBaseName, const QString& sExt);
 
 	// Consolidated session record state.
 	void setRecording(bool bRecording);
