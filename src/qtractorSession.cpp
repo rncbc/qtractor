@@ -1475,6 +1475,31 @@ QString qtractorSession::sanitize ( const QString& s )
 }
 
 
+// Provide an unique track-name if applicable,
+// append an incremental numerical suffix...
+QString qtractorSession::uniqueTrackName ( const QString& sTrackName ) const
+{
+	if (!findTrack(sTrackName))
+		return sTrackName;
+
+	QString sOldTrackName = sTrackName;
+	QString sNewTrackName;
+	const QRegExp rxTrackNo("([0-9]+)$");
+	int iTrackNo = 0;
+
+	if (rxTrackNo.indexIn(sOldTrackName) >= 0) {
+		iTrackNo = rxTrackNo.cap(1).toInt();
+		sOldTrackName.remove(rxTrackNo);
+	}
+	else sOldTrackName += ' ';
+
+	do { sNewTrackName = sOldTrackName + QString::number(++iTrackNo); }
+	while (findTrack(sNewTrackName));
+
+	return sNewTrackName;
+}
+
+
 // Transient file-name registry method as far
 // to avoid duplicates across load/save cycles...
 void qtractorSession::registerFilePath ( const QString& sFilename )

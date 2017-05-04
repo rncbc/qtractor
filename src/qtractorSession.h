@@ -283,6 +283,10 @@ public:
 	// Sanitize a given name.
 	static QString sanitize(const QString& s); 
 
+	// Provide an unique track-name if applicable,
+	// append an incremental numerical suffix...
+	QString uniqueTrackName(const QString& sTrackName) const;
+
 	// Transient file-name registry method as far
 	// to avoid duplicates across load/save cycles...
 	void registerFilePath(const QString& sFilename);
