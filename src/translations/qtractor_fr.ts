@@ -8,7 +8,7 @@
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
-Audio:	%1 canaux, %2 Hz</translation>
+Audio :	%1 canaux, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="720"/>
@@ -737,42 +737,42 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3149"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner l&apos;éditeur de greffon (interface graphique) :</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3161"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>Externe</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3164"/>
         <source>X11</source>
-        <translation type="unfinished"></translation>
+        <translation>X11</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3167"/>
         <source>Gtk2</source>
-        <translation type="unfinished"></translation>
+        <translation>Gtk2</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3171"/>
         <source>Qt4</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt4</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3175"/>
         <source>Qt5</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt5</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3180"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Autre</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3188"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished">Ne pas redemander</translation>
+        <translation>Ne pas redemander</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3510"/>
@@ -783,7 +783,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
         <location filename="../qtractorLv2Plugin.cpp" line="2086"/>
         <source>Author: </source>
-        <translation>Auteur: </translation>
+        <translation>Auteur : </translation>
     </message>
     <message>
         <location filename="../qtractorCurveFile.cpp" line="222"/>
@@ -10282,7 +10282,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3551"/>
         <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>Permettre la sélection de l'&apos;éditeur de greffon (interface graphique) si plusieurs sont disponibles</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2431"/>
@@ -10317,7 +10317,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2537"/>
         <source>Custom widget style theme</source>
-        <translation>Style de thème de widget customisée</translation>
+        <translation>Style de thème de widget customisé</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2587"/>
@@ -10607,7 +10607,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3554"/>
         <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sélectionner l&apos;éditeur de greffon si plusieurs sont disponibles</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3570"/>
@@ -10622,7 +10622,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3594"/>
         <source>Dummy &amp;VST plugin scan (RECOMMENDED)</source>
-        <translation>Scan factice des greffons &amp;VST (RECOMMENDE)</translation>
+        <translation>Scan factice des greffons &amp;VST (RECOMMENDÉ)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3607"/>
@@ -12772,7 +12772,7 @@ Longueur:	%3</translation>
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation>Sur le point de supprimer une piste:
+        <translation>Sur le point de supprimer une piste :
 
 &quot;%1&quot;
 
