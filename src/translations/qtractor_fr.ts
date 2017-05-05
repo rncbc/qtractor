@@ -10282,7 +10282,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3551"/>
         <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>Permette la sélection de l'&apos;éditeur de greffon (interface graphique) si plusieurs sont disponibles</translation>
+        <translation>Permettre la sélection de l'&apos;éditeur de greffon (interface graphique) si plusieurs sont disponibles</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2431"/>
@@ -10317,7 +10317,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2537"/>
         <source>Custom widget style theme</source>
-        <translation>Style de thème de widget customisée</translation>
+        <translation>Style de thème de widget customisé</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2587"/>
@@ -12772,7 +12772,7 @@ Longueur:	%3</translation>
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation>Sur le point de supprimer une piste:
+        <translation>Sur le point de supprimer une piste :
 
 &quot;%1&quot;
 
