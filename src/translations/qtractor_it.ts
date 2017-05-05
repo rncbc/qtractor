@@ -10229,6 +10229,11 @@ Sei sicuro?</translation>
         <translation>Layout a&amp;utomatico mixer/griglia (righe multiple)</translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="3551"/>
+        <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="2431"/>
         <source>Whether to allow automatic mixer strip/grid layout (multi-row).</source>
         <translation>Decidi se utilizzare un layout automatico per il mixer/griglia (righe multiple)</translation>
@@ -10598,11 +10603,6 @@ Sei sicuro?</translation>
         <location filename="../qtractorOptionsForm.ui" line="3538"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
         <translation>Apri di default la GUI dell&apos;&amp;editor delle plugin</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="3551"/>
-        <source>Whether to select plugin&apos;s editor (GUI) if more than one sre available</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3554"/>

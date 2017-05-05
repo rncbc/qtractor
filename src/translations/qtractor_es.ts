@@ -10597,7 +10597,7 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3551"/>
-        <source>Whether to select plugin&apos;s editor (GUI) if more than one sre available</source>
+        <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

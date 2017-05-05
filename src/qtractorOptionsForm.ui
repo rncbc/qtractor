@@ -3548,7 +3548,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Whether to select plugin's editor (GUI) if more than one sre available</string>
+             <string>Whether to select plugin's editor (GUI) if more than one are available</string>
             </property>
             <property name="text">
              <string>&amp;Select plugin's editor (GUI) if more than one are available</string>

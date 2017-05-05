@@ -10511,6 +10511,11 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="3551"/>
+        <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="3607"/>
         <source>Whether LV2 Dynamic Manifest plugins are supported</source>
         <translation type="unfinished"></translation>
@@ -10640,11 +10645,6 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorOptionsForm.ui" line="3453"/>
         <source>Whether to have separate audio output ports</source>
         <translation>Создавать ли порты выхода для каждого инструмента</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="3551"/>
-        <source>Whether to select plugin&apos;s editor (GUI) if more than one sre available</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3554"/>

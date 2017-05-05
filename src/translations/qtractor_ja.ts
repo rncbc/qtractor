@@ -10279,6 +10279,11 @@ Are you sure?</source>
         <translation>ミキサーのトリミング表示あるいはグリッドレイアウト表示を自動で選択する</translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="3551"/>
+        <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="2431"/>
         <source>Whether to allow automatic mixer strip/grid layout (multi-row).</source>
         <translation>ミキサーの表示方法を自動でトリミングあるいはグリッドレイアウトから選択するかどうか</translation>
@@ -10597,11 +10602,6 @@ Are you sure?</source>
         <location filename="../qtractorOptionsForm.ui" line="3538"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
         <translation>プラグインのエディター(GUI)をデフォルトで開く(&amp;E)</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="3551"/>
-        <source>Whether to select plugin&apos;s editor (GUI) if more than one sre available</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3554"/>

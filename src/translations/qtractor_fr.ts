@@ -10280,6 +10280,11 @@ existantes :</translation>
         <translation>Disposition a&amp;utomatique en grille des bande de mixer (multi-ligne)</translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="3551"/>
+        <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="2431"/>
         <source>Whether to allow automatic mixer strip/grid layout (multi-row).</source>
         <translation>Si on doit autoriser la disposition automatique en grille des bande de mixer (multi-ligne).</translation>
@@ -10598,11 +10603,6 @@ existantes :</translation>
         <location filename="../qtractorOptionsForm.ui" line="3538"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
         <translation>Ouvrir l&apos;édit&amp;eur (GUI) du greffon par défaut</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="3551"/>
-        <source>Whether to select plugin&apos;s editor (GUI) if more than one sre available</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3554"/>
