@@ -2679,18 +2679,7 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 	qtractorTrack *pNewTrack = new qtractorTrack(pSession, pTrack->trackType());
 	pNewTrack->setProperties(pTrack->properties());
 	// Find an incremental/next track name...
-	QString sTrackName = pTrack->trackName();
-	QString sNewTrackName;
-	const QRegExp rxTrackNo("([0-9]+)$");
-	int iTrackNo = 0;
-	if (rxTrackNo.indexIn(sTrackName) >= 0) {
-		iTrackNo = rxTrackNo.cap(1).toInt();
-		sTrackName.remove(rxTrackNo);
-	}
-	else sTrackName += ' ';
-	do { sNewTrackName = sTrackName + QString::number(++iTrackNo); }
-	while (pSession->findTrack(sNewTrackName));
-	pNewTrack->setTrackName(sNewTrackName);
+	pNewTrack->setTrackName(pSession->uniqueTrackName(pTrack->trackName()));
 	pNewTrack->setBackground(color);
 	pNewTrack->setForeground(color.darker());
 	pNewTrack->setZoomHeight(pTrack->zoomHeight());

@@ -787,7 +787,7 @@ qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 
 qtractorPluginParam *qtractorPlugin::findParamName ( const QString& sName ) const
 {
-	return m_paramNames.value(sName);
+	return m_paramNames.value(sName, NULL);
 }
 
 
@@ -1175,8 +1175,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	sBaseName += '_';
 	sBaseName += QString::number(uniqueID(), 16);
 	sBaseName += "_curve";
-//	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", 1));
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid"));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }

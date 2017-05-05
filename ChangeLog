@@ -3,6 +3,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+- Attempt to raise an internal transient file-name registry
+  to prevent duplicate automation/curve files to proliferate
+  across several session load/save (re)cycles. (EXPERIMENTAL).
+
 - Track-height resizing now meets immediate visual feedback.
 
 - A brand new user preference global option is now available:

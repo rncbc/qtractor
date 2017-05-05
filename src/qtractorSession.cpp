@@ -255,6 +255,8 @@ void qtractorSession::clear (void)
 
 	m_pFiles->clear();
 
+	m_filePaths.clear();
+
 	qtractorAudioClip::clearHashTable();
 	qtractorMidiClip::clearHashTable();
 
@@ -1473,21 +1475,55 @@ QString qtractorSession::sanitize ( const QString& s )
 }
 
 
+// Provide an unique track-name if applicable,
+// append an incremental numerical suffix...
+QString qtractorSession::uniqueTrackName ( const QString& sTrackName ) const
+{
+	if (!findTrack(sTrackName))
+		return sTrackName;
+
+	QString sOldTrackName = sTrackName;
+	QString sNewTrackName;
+	const QRegExp rxTrackNo("([0-9]+)$");
+	int iTrackNo = 0;
+
+	if (rxTrackNo.indexIn(sOldTrackName) >= 0) {
+		iTrackNo = rxTrackNo.cap(1).toInt();
+		sOldTrackName.remove(rxTrackNo);
+	}
+	else sOldTrackName += ' ';
+
+	do { sNewTrackName = sOldTrackName + QString::number(++iTrackNo); }
+	while (findTrack(sNewTrackName));
+
+	return sNewTrackName;
+}
+
+
+// Transient file-name registry method as far
+// to avoid duplicates across load/save cycles...
+void qtractorSession::registerFilePath ( const QString& sFilename )
+{
+	m_filePaths.append(sFilename);
+}
+
+
 // Create a brand new filename (absolute file path).
 QString qtractorSession::createFilePath (
-	const QString& sTrackName, const QString& sExt, int iClipNo )
+	const QString& sBaseName, const QString& sExt )
 {
 	QString sFilename = qtractorSession::sanitize(m_props.sessionName);
 	if (!sFilename.isEmpty())
 		sFilename += '-';
-	sFilename += qtractorSession::sanitize(sTrackName) + "-%1." + sExt;
+	sFilename += qtractorSession::sanitize(sBaseName) + "-%1." + sExt;
 
-	QFileInfo fi;
-	if (iClipNo > 0) {
-		fi.setFile(m_props.sessionDir, sFilename.arg(iClipNo));
-	} else do {
-		fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
-	} while (fi.exists());
+	QFileInfo fi; int iClipNo = 0;
+	fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
+	if (!m_filePaths.contains(fi.absoluteFilePath())) {
+		 while (fi.exists() || m_filePaths.contains(fi.absoluteFilePath()))
+			fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
+		m_filePaths.append(fi.absoluteFilePath()); // register new name!
+	}
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorSession::createFilePath(\"%s\")",
