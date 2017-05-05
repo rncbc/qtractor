@@ -233,6 +233,7 @@ void qtractorOptions::loadOptions (void)
 	bAudioOutputBus = m_settings.value("/AudioOutputBus", false).toBool();
 	bAudioOutputAutoConnect = m_settings.value("/AudioOutputAutoConnect", true).toBool();
 	bOpenEditor = m_settings.value("/OpenEditor", true).toBool();
+	bQueryEditorType = m_settings.value("/QueryEditorType", false).toBool();
 	bDummyVstScan = m_settings.value("/DummyVstScan", true).toBool();
 	bLv2DynManifest = m_settings.value("/Lv2DynManifest", false).toBool();
 	bSaveCurve14bit = m_settings.value("/SaveCurve14bit", false).toBool();
@@ -344,7 +345,7 @@ void qtractorOptions::loadOptions (void)
 
 	// Run-time special semi/non-persistent options.
 	m_settings.beginGroup("/Dialogs");
-	bUseNativeDialogs = m_settings.value("/UseNativeDialogs", true).toBool();
+	bUseNativeDialogs = m_settings.value("/UseNativeDialogs", false).toBool();
 	bDontUseNativeDialogs = !bUseNativeDialogs;
 	m_settings.endGroup();
 
@@ -521,6 +522,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
 	m_settings.setValue("/AudioOutputAutoConnect", bAudioOutputAutoConnect);
 	m_settings.setValue("/OpenEditor", bOpenEditor);
+	m_settings.setValue("/QueryEditorType", bQueryEditorType);
 	m_settings.setValue("/DummyVstScan", bDummyVstScan);
 	m_settings.setValue("/Lv2DynManifest", bLv2DynManifest);
 	m_settings.setValue("/SaveCurve14bit", bSaveCurve14bit);

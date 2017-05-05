@@ -450,6 +450,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.OpenEditorCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.QueryEditorTypeCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.DummyVstScanCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(pluginPathsChanged()));
@@ -708,6 +711,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioOutputBusCheckBox->setChecked(m_pOptions->bAudioOutputBus);
 	m_ui.AudioOutputAutoConnectCheckBox->setChecked(m_pOptions->bAudioOutputAutoConnect);
 	m_ui.OpenEditorCheckBox->setChecked(m_pOptions->bOpenEditor);
+	m_ui.QueryEditorTypeCheckBox->setChecked(m_pOptions->bQueryEditorType);
 	m_ui.DummyVstScanCheckBox->setChecked(m_pOptions->bDummyVstScan);
 	m_ui.Lv2DynManifestCheckBox->setChecked(m_pOptions->bLv2DynManifest);
 	m_ui.SaveCurve14bitCheckBox->setChecked(m_pOptions->bSaveCurve14bit);
@@ -817,6 +821,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bAudioOutputBus      = m_ui.AudioOutputBusCheckBox->isChecked();
 		m_pOptions->bAudioOutputAutoConnect = m_ui.AudioOutputAutoConnectCheckBox->isChecked();
 		m_pOptions->bOpenEditor          = m_ui.OpenEditorCheckBox->isChecked();
+		m_pOptions->bQueryEditorType     = m_ui.QueryEditorTypeCheckBox->isChecked();
 		m_pOptions->bDummyVstScan        = m_ui.DummyVstScanCheckBox->isChecked();
 		m_pOptions->bLv2DynManifest      = m_ui.Lv2DynManifestCheckBox->isChecked();
 		m_pOptions->bSaveCurve14bit      = m_ui.SaveCurve14bitCheckBox->isChecked();

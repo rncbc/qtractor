@@ -340,6 +340,8 @@ protected slots:
 		unsigned short iBeatsPerBar, unsigned short iBeatDivisor);
 	void transportTempoFinished();
 
+	void updateTransportLater();
+
 	void snapPerBeatChanged(int iSnap);
 	void contentsChanged();
 

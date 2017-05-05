@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -231,35 +231,12 @@ static int qtractorAudioEngine_process ( jack_nframes_t nframes, void *pvArg )
 //
 
 static void qtractorAudioEngine_timebase ( jack_transport_state_t,
-	jack_nframes_t, jack_position_t *pPos, int, void *pvArg )
+	jack_nframes_t, jack_position_t *pPos, int iNewPos, void *pvArg )
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	qtractorSession *pSession = pAudioEngine->session();
-	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(pPos->frame);
-	unsigned short bars  = 0;
-	unsigned int   beats = 0;
-	unsigned long  ticks = pNode->tickFromFrame(pPos->frame) - pNode->tick;
-	if (ticks >= (unsigned long) pNode->ticksPerBeat) {
-		beats  = (unsigned int) (ticks / pNode->ticksPerBeat);
-		ticks -= (unsigned long) (beats * pNode->ticksPerBeat);
-	}
-	if (beats >= (unsigned int) pNode->beatsPerBar) {
-		bars   = (unsigned short) (beats / pNode->beatsPerBar);
-		beats -= (unsigned int) (bars * pNode->beatsPerBar);
-	}
-	// Time frame code in bars.beats.ticks ...
-	pPos->valid = JackPositionBBT;
-	pPos->bar   = pNode->bar + bars + 1;
-	pPos->beat  = beats + 1;
-	pPos->tick  = ticks;
-	// Keep current tempo (BPM)...
-	pPos->beats_per_bar    = pNode->beatsPerBar;
-	pPos->ticks_per_beat   = pNode->ticksPerBeat;
-	pPos->beats_per_minute = pNode->tempo;
-	pPos->beat_type        = float(1 << pNode->beatDivisor);
+	pAudioEngine->timebase(pPos, iNewPos);
 }
 
 
@@ -469,8 +446,9 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	// JACK transport mode.
 	m_transportMode = qtractorBus::Duplex;
 
-	// JACK timebase mode.
+	// JACK timebase mode control.
 	m_bTimebase = true;
+	m_iTimebase = 0;
 }
 
 
@@ -639,12 +617,8 @@ bool qtractorAudioEngine::activate (void)
 	jack_set_process_callback(m_pJackClient,
 			qtractorAudioEngine_process, this);
 
-	// Transport timebase callbacks...
-	if (m_bTimebase) {
-		jack_set_timebase_callback(m_pJackClient,
-			0 /* FIXME: un-conditional! */,
-			qtractorAudioEngine_timebase, this);
-	}
+	// Transport timebase callback...
+	resetTimebase();
 
 	// And some other event callbacks...
 	jack_set_xrun_callback(m_pJackClient,
@@ -1184,6 +1158,39 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 		// HACK: Reset all audio monitors...
 		resetAllMonitors();
 	}
+}
+
+
+// JACK timebase master callback.
+void qtractorAudioEngine::timebase ( jack_position_t *pPos, int iNewPos )
+{
+	qtractorSession *pSession = session();
+	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(pPos->frame);
+	unsigned short bars  = 0;
+	unsigned int   beats = 0;
+	unsigned long  ticks = pNode->tickFromFrame(pPos->frame) - pNode->tick;
+	if (ticks >= (unsigned long) pNode->ticksPerBeat) {
+		beats  = (unsigned int) (ticks / pNode->ticksPerBeat);
+		ticks -= (unsigned long) (beats * pNode->ticksPerBeat);
+	}
+	if (beats >= (unsigned int) pNode->beatsPerBar) {
+		bars   = (unsigned short) (beats / pNode->beatsPerBar);
+		beats -= (unsigned int) (bars * pNode->beatsPerBar);
+	}
+	// Time frame code in bars.beats.ticks ...
+	pPos->valid = JackPositionBBT;
+	pPos->bar   = pNode->bar + bars + 1;
+	pPos->beat  = beats + 1;
+	pPos->tick  = ticks;
+	// Keep current tempo (BPM)...
+	pPos->beats_per_bar    = pNode->beatsPerBar;
+	pPos->ticks_per_beat   = pNode->ticksPerBeat;
+	pPos->beats_per_minute = pNode->tempo;
+	pPos->beat_type        = float(1 << pNode->beatDivisor);
+
+	// Tell that we've been here...
+	if (iNewPos) ++m_iTimebase;
 }
 
 
@@ -1753,7 +1760,7 @@ void qtractorAudioEngine::resetMetro (void)
 	if (pAudioCursor == NULL)
 		return;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
+	qtractorSession *pSession = session();
 	if (pSession == NULL)
 		return;
 
@@ -2016,8 +2023,29 @@ bool qtractorAudioEngine::isTimebase (void) const
 }
 
 
+// JACK Timebase reset method.
+void qtractorAudioEngine::resetTimebase (void)
+{
+	if (m_pJackClient == NULL)
+		return;
+
+	if (m_iTimebase > 0) {
+		// Release being a timebase master, if any... 
+		jack_release_timebase(m_pJackClient);
+		m_iTimebase = 0;
+	}
+
+	if (m_bTimebase) {
+		// Just force the timebase callback, maybe once again... 
+		jack_set_timebase_callback(m_pJackClient,
+			0 /* FIXME: un-conditional! */,
+			qtractorAudioEngine_timebase, this);
+	}
+}
+
+
 // Absolute number of frames elapsed since engine start.
-unsigned long qtractorAudioEngine::jackFrame (void) const
+unsigned long qtractorAudioEngine::jackFrameTime (void) const
 {
 	return (m_pJackClient ? jack_frame_time(m_pJackClient) : 0);
 }

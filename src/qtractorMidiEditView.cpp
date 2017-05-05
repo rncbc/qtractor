@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,6 +41,10 @@
 #include <QToolButton>
 
 #include <QStyle>
+
+#ifdef CONFIG_GRADIENT
+#include <QLinearGradient>
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -214,6 +218,25 @@ qtractorMidiEvent::EventType qtractorMidiEditView::eventType (void) const
 void qtractorMidiEditView::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	qtractorScrollView::resizeEvent(pResizeEvent);
+
+#ifdef CONFIG_GRADIENT
+	// Update canvas edge-border shadow gradients...
+	const int ws = 22;
+	const QColor rgba0(0, 0, 0, 0);
+	const QColor rgba1(0, 0, 0, 30);
+	const QColor rgba2(0, 0, 0, 120);
+	QLinearGradient gradLeft(0, 0, ws, 0);
+	gradLeft.setColorAt(0.0f, rgba2);
+	gradLeft.setColorAt(0.5f, rgba1);
+	gradLeft.setColorAt(1.0f, rgba0);
+	m_gradLeft = gradLeft;
+	const int xs = qtractorScrollView::viewport()->width() - ws;
+	QLinearGradient gradRight(xs, 0, xs + ws, 0);
+	gradRight.setColorAt(0.0f, rgba0);
+	gradRight.setColorAt(0.5f, rgba1);
+	gradRight.setColorAt(1.0f, rgba2);
+	m_gradRight = gradRight;
+#endif
 
 	// Scrollbar/tools layout management.
 	const QSize& size = qtractorScrollView::size();
@@ -467,6 +490,15 @@ void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect 
 	// Draw viewport canvas...
 	pPainter->drawPixmap(rect, m_pixmap, rect);
 
+#ifdef CONFIG_GRADIENT
+	// Draw canvas edge-border shadows...
+	const int ws = 22;
+	const int xs = qtractorScrollView::viewport()->width() - ws;
+	if (rect.left() < ws)
+		pPainter->fillRect(0, rect.top(), ws, rect.bottom(), m_gradLeft);
+	if (rect.right() > xs)
+		pPainter->fillRect(xs, rect.top(), xs + ws, rect.bottom(), m_gradRight);
+#endif
 	m_pEditor->paintDragState(this, pPainter);
 
 	// Draw special play/edit-head/tail headers...
