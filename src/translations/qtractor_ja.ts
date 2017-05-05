@@ -736,7 +736,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3149"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのエディター(GUI)を選択:</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3161"/>
@@ -746,32 +746,32 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3164"/>
         <source>X11</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3167"/>
         <source>Gtk2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3171"/>
         <source>Qt4</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3175"/>
         <source>Qt5</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3180"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>その他</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3188"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished">再確認しない</translation>
+        <translation>再確認しない</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3510"/>
@@ -2810,7 +2810,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="518"/>
         <source>Mod&amp;e</source>
-        <translation type="unfinished"></translation>
+        <translation>モード(&amp;E)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="821"/>
@@ -5161,72 +5161,72 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2900"/>
         <source>Transport mode: None</source>
-        <translation type="unfinished"></translation>
+        <translation>トランスポートモード: なし</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2903"/>
         <source>Transport mode set to None</source>
-        <translation type="unfinished"></translation>
+        <translation>トランスポートモードを無効にします</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2914"/>
         <source>&amp;Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>スレーブ(&amp;S)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2917"/>
         <source>Slave</source>
-        <translation type="unfinished">スレーブ</translation>
+        <translation>スレーブ</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2920"/>
         <source>Transport mode: Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>トランスポートモード: スレーブ</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2923"/>
         <source>Transport mode set to Slave</source>
-        <translation type="unfinished"></translation>
+        <translation>トランスポートモードをスレーブにします</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2934"/>
         <source>&amp;Master</source>
-        <translation type="unfinished"></translation>
+        <translation>マスター(&amp;M)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2937"/>
         <source>Master</source>
-        <translation type="unfinished">マスター</translation>
+        <translation>マスター</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2940"/>
         <source>Transport mode: Master</source>
-        <translation type="unfinished"></translation>
+        <translation>トランスポートモード: マスター</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2943"/>
         <source>Transport mode set to Master</source>
-        <translation type="unfinished"></translation>
+        <translation>トランスポートモードをマスターにします</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2954"/>
         <source>&amp;Full</source>
-        <translation type="unfinished"></translation>
+        <translation>フル(&amp;F)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2957"/>
         <source>Full</source>
-        <translation type="unfinished">フル</translation>
+        <translation>フル</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2960"/>
         <source>Transport mode: Full</source>
-        <translation type="unfinished"></translation>
+        <translation>トランスポートモード: フル</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2963"/>
         <source>Transport mode set to Full</source>
-        <translation type="unfinished"></translation>
+        <translation>トランスポートモードをフルにします</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2971"/>
@@ -10730,7 +10730,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1437"/>
         <source>Messages Font</source>
-        <translation type="unfinished"></translation>
+        <translation>メッセージのフォント</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1462"/>
