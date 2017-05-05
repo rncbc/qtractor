@@ -10282,7 +10282,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3551"/>
         <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>Permettre la sélection de l'&apos;éditeur de greffon (interface graphique) si plusieurs sont disponibles</translation>
+        <translation>Permettre la sélection de l&apos;éditeur de greffon (interface graphique) si plusieurs sont disponibles</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2431"/>
