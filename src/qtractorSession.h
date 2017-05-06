@@ -26,6 +26,7 @@
 #include "qtractorTrack.h"
 #include "qtractorTimeScale.h"
 
+#include <QHash>
 
 // Forward declarations.
 class qtractorClip;
@@ -287,6 +288,9 @@ public:
 	// append an incremental numerical suffix...
 	QString uniqueTrackName(const QString& sTrackName) const;
 
+	void acquireTrackName(qtractorTrack *pTrack);
+	void releaseTrackName(qtractorTrack *pTrack);
+
 	// Transient file-name registry method as far
 	// to avoid duplicates across load/save cycles...
 	void registerFilePath(const QString& sFilename);
@@ -487,6 +491,9 @@ private:
 
 	// Transient file-name registry.
 	QStringList m_filePaths;
+
+	// Track-name registry.
+	QHash<QString, qtractorTrack *> m_trackNames;
 
 	// The pseudo-singleton instance.
 	static qtractorSession *g_pSession;
