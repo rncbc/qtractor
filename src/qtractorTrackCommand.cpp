@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -741,11 +741,17 @@ bool qtractorEditTrackCommand::redo (void)
 		}
 	}
 
+	// Release track-name from uniqueness...
+	pSession->releaseTrackName(m_pTrack);
+
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
 	// Reopen to assign a probable new bus...
 	if (bResult)
 		bResult = m_pTrack->open();
+
+	// Re-acquire track-name for uniqueness...
+	pSession->acquireTrackName(m_pTrack);
 
 	if (!bResult) {
 		pMainForm->appendMessagesError(

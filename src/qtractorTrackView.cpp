@@ -1707,8 +1707,11 @@ bool qtractorTrackView::dropClip (
 			break;
 		}
 		// If track's new it will need a name...
-		if (bAddTrack && iTrackClip == 0)
-			pTrack->setTrackName(QFileInfo(pDropItem->path).baseName());
+		if (bAddTrack && iTrackClip == 0) {
+			pTrack->setTrackName(
+				pSession->uniqueTrackName(
+					QFileInfo(pDropItem->path).baseName()));
+		}
 		// If multiple items, just snap/concatenate them...
 		iClipStart = pSession->frameSnap(iClipStart
 			+ pSession->frameFromPixel(pDropItem->rect.width()));
@@ -5172,8 +5175,10 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 				iSelectLength);
 			clips.append(pClip);
 			// If track's new it will need a name...
-			if (bAddTrack && iTrackClip == 0)
-				pTrack->setTrackName(pClip->clipName());
+			if (bAddTrack && iTrackClip == 0) {
+				pTrack->setTrackName(
+					pSession->uniqueTrackName(pClip->clipName()));
+			}
 			++iTrackClip;
 		}
 	}
@@ -5294,8 +5299,10 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 				pClipCommand->addClip(pNewClip, pTrack);
 				clips.append(pNewClip);
 				// If track's new it will need a name...
-				if (bAddTrack && iTrackClip == 0)
-					pTrack->setTrackName(pClip->clipName());
+				if (bAddTrack && iTrackClip == 0) {
+					pTrack->setTrackName(
+						pSession->uniqueTrackName(pClip->clipName()));
+				}
 				++iTrackClip;
 			}
 		}

@@ -353,9 +353,9 @@ void qtractorClipForm::accept (void)
 		// Cache the changed settings (if any)...
 		qtractorClipCommand *pClipCommand = NULL;
 		qtractorTrack::TrackType clipType = trackType();
-		const QString& sFilename  = m_ui.FilenameComboBox->currentText();
+		const QString& sFilename = m_ui.FilenameComboBox->currentText();
 		const unsigned short iTrackChannel = m_ui.TrackChannelSpinBox->value();
-		const QString& sClipName  = m_ui.ClipNameLineEdit->text();
+		const QString& sClipName = m_ui.ClipNameLineEdit->text().trimmed();
 		float fClipGain = 1.0f;
 		float fTimeStretch = 0.0f;
 		float fPitchShift = 0.0f;

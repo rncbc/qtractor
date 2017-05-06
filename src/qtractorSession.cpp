@@ -256,6 +256,7 @@ void qtractorSession::clear (void)
 	m_pFiles->clear();
 
 	m_filePaths.clear();
+	m_trackNames.clear();
 
 	qtractorAudioClip::clearHashTable();
 	qtractorMidiClip::clearHashTable();
@@ -889,6 +890,9 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 		setSoloTracks(true);
 #endif
 
+	// Acquire track-name for uniqueness...
+	acquireTrackName(pTrack);
+
 	if (pTrack->curveList())
 		m_curves.insert(pTrack->curveList(), pTrack);
 
@@ -961,6 +965,9 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 		setMuteTracks(false);
 	if (pTrack->isSolo())
 		setSoloTracks(false);
+
+	// Release track-name from uniqueness...
+	releaseTrackName(pTrack);
 
 	if (pTrack->curveList())
 		m_curves.remove(pTrack->curveList());
@@ -1499,6 +1506,16 @@ QString qtractorSession::uniqueTrackName ( const QString& sTrackName ) const
 	return sNewTrackName;
 }
 
+void qtractorSession::acquireTrackName ( qtractorTrack *pTrack )
+{
+	if (pTrack) m_trackNames.insert(pTrack->trackName(), pTrack);
+}
+
+void qtractorSession::releaseTrackName ( qtractorTrack *pTrack )
+{
+	if (pTrack) m_trackNames.remove(pTrack->trackName());
+}
+
 
 // Transient file-name registry method as far
 // to avoid duplicates across load/save cycles...
@@ -1876,13 +1893,7 @@ qtractorTrack *qtractorSession::findTrack ( qtractorCurveList *pCurveList ) cons
 // Find track of specific name.
 qtractorTrack *qtractorSession::findTrack ( const QString& sTrackName ) const
 {
-	for (qtractorTrack *pTrack = m_tracks.first();
-			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->trackName() == sTrackName)
-			return pTrack;
-	}
-
-	return NULL;
+	return m_trackNames.value(sTrackName, NULL);
 }
 
 
