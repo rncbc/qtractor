@@ -737,42 +737,42 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3149"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat editor (rozhraní) přídavného modulu:</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3161"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>Vnější</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3164"/>
         <source>X11</source>
-        <translation type="unfinished"></translation>
+        <translation>X11</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3167"/>
         <source>Gtk2</source>
-        <translation type="unfinished"></translation>
+        <translation>Gtk2</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3171"/>
         <source>Qt4</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt4</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3175"/>
         <source>Qt5</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt5</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3180"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Jiné</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3188"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished">Neptat se znovu</translation>
+        <translation>Neptat se znovu</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3510"/>
@@ -10712,7 +10712,7 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3554"/>
         <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vybrat editor (rozhraní) přídavného modulu, pokud je dostupný více než jeden</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3607"/>
@@ -10742,7 +10742,7 @@ Zda mít oddělené zvukové výstupní přípojky</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3551"/>
         <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda vybrat editor (rozhraní) přídavného modulu, pokud je dostupný více než jeden</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3591"/>
