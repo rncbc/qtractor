@@ -3,9 +3,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+- Track-name uniqueness is now being enforced, by adding
+  an auto-incremental number suffix whenever necessary.
+  (EXPERIMENTAL).
+
 - Attempt to raise an internal transient file-name registry
-  to prevent duplicate automation/curve files to proliferate
-  across several session load/save (re)cycles. (EXPERIMENTAL).
+  to prevent automation/curve files to proliferate across
+  several session load/save (re)cycles. (EXPERIMENTAL).
 
 - Track-height resizing now meets immediate visual feedback.
 
