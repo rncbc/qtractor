@@ -317,42 +317,42 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3149"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3161"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3164"/>
         <source>X11</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3167"/>
         <source>Gtk2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3171"/>
         <source>Qt4</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt4</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3175"/>
         <source>Qt5</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt5</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3180"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Outro</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3188"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished">Não pergunte novamente</translation>
+        <translation>Não pergunte novamente</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3510"/>
@@ -10395,7 +10395,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3554"/>
         <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Selecionar o editor do plugin (GUI) se houver mais de uma opção</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3607"/>
@@ -10534,7 +10534,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3551"/>
         <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre utiliza o editor do plugin (GUI) se houver mais de uma opção</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3570"/>
