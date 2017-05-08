@@ -223,8 +223,8 @@ void qtractorMidiEditView::resizeEvent ( QResizeEvent *pResizeEvent )
 	// Update canvas edge-border shadow gradients...
 	const int ws = 22;
 	const QColor rgba0(0, 0, 0, 0);
-	const QColor rgba1(0, 0, 0, 30);
-	const QColor rgba2(0, 0, 0, 120);
+	const QColor rgba1(0, 0, 0, 20);
+	const QColor rgba2(0, 0, 0, 80);
 	QLinearGradient gradLeft(0, 0, ws, 0);
 	gradLeft.setColorAt(0.0f, rgba2);
 	gradLeft.setColorAt(0.5f, rgba1);
