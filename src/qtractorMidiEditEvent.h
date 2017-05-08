@@ -1,7 +1,7 @@
 // qtractorMidiEditEvent.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,6 +27,7 @@
 #include "qtractorMidiEvent.h"
 
 #include <QPixmap>
+#include <QBrush>
 
 
 // Forward declarations.
@@ -151,6 +152,10 @@ private:
 	// Current selection holders.
 	qtractorMidiEvent::EventType m_eventType;
 	unsigned short m_eventParam;
+
+	// Optional edge-shadow gradient brushes.
+	QBrush m_gradLeft;
+	QBrush m_gradRight;
 };
 
 

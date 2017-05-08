@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -254,6 +254,9 @@ void qtractorSession::clear (void)
 	m_pCommands->clear();
 
 	m_pFiles->clear();
+
+	m_filePaths.clear();
+	m_trackNames.clear();
 
 	qtractorAudioClip::clearHashTable();
 	qtractorMidiClip::clearHashTable();
@@ -797,8 +800,8 @@ void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 	}
 #endif
 	// Set the conversion ratio...
-	const float fRatio
-		= float(m_props.timeScale.sampleRate()) / float(iSampleRate);
+	const float fRatio = float(iSampleRate)
+		/ float(m_props.timeScale.sampleRate());
 
 	// Set actual sample-rate...
 	m_props.timeScale.setSampleRate(iSampleRate);
@@ -887,6 +890,9 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 		setSoloTracks(true);
 #endif
 
+	// Acquire track-name for uniqueness...
+	acquireTrackName(pTrack);
+
 	if (pTrack->curveList())
 		m_curves.insert(pTrack->curveList(), pTrack);
 
@@ -959,6 +965,9 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 		setMuteTracks(false);
 	if (pTrack->isSolo())
 		setSoloTracks(false);
+
+	// Release track-name from uniqueness...
+	releaseTrackName(pTrack);
 
 	if (pTrack->curveList())
 		m_curves.remove(pTrack->curveList());
@@ -1298,15 +1307,30 @@ void qtractorSession::setPlayHeadEx ( unsigned long iPlayHead )
 #endif
 
 	lock();
-	setPlaying(false);
+
+	m_pMidiEngine->setPlaying(false);
 
 	seek(iPlayHead, true);
 
-	// Sync all track automation...
-	if (!bPlaying)
-		process_curve(iPlayHead);
+	// Have all MIDI instrument plugins be shut up
+	// if start playing, otherwise do ramping down...
+	qtractorMidiManager *pMidiManager = m_midiManagers.first();
+	while (pMidiManager) {
+		pMidiManager->reset();
+		pMidiManager = pMidiManager->next();
+	}
 
-	setPlaying(bPlaying);
+	if (bPlaying) {
+		// Reset all dependables...
+		m_pAudioEngine->resetAllMonitors();
+		// Make sure we have an actual session cursor...
+		m_pAudioEngine->resetMetro();
+	}
+	// Sync all track automation...
+	else process_curve(iPlayHead);
+
+	m_pMidiEngine->setPlaying(bPlaying);
+
 	unlock();
 }
 
@@ -1458,21 +1482,65 @@ QString qtractorSession::sanitize ( const QString& s )
 }
 
 
+// Provide an unique track-name if applicable,
+// append an incremental numerical suffix...
+QString qtractorSession::uniqueTrackName ( const QString& sTrackName ) const
+{
+	if (!findTrack(sTrackName))
+		return sTrackName;
+
+	QString sOldTrackName = sTrackName;
+	QString sNewTrackName;
+	const QRegExp rxTrackNo("([0-9]+)$");
+	int iTrackNo = 0;
+
+	if (rxTrackNo.indexIn(sOldTrackName) >= 0) {
+		iTrackNo = rxTrackNo.cap(1).toInt();
+		sOldTrackName.remove(rxTrackNo);
+	}
+	else sOldTrackName += ' ';
+
+	do { sNewTrackName = sOldTrackName + QString::number(++iTrackNo); }
+	while (findTrack(sNewTrackName));
+
+	return sNewTrackName;
+}
+
+void qtractorSession::acquireTrackName ( qtractorTrack *pTrack )
+{
+	if (pTrack) m_trackNames.insert(pTrack->trackName(), pTrack);
+}
+
+void qtractorSession::releaseTrackName ( qtractorTrack *pTrack )
+{
+	if (pTrack) m_trackNames.remove(pTrack->trackName());
+}
+
+
+// Transient file-name registry method as far
+// to avoid duplicates across load/save cycles...
+void qtractorSession::registerFilePath ( const QString& sFilename )
+{
+	m_filePaths.append(sFilename);
+}
+
+
 // Create a brand new filename (absolute file path).
 QString qtractorSession::createFilePath (
-	const QString& sTrackName, const QString& sExt, int iClipNo )
+	const QString& sBaseName, const QString& sExt )
 {
 	QString sFilename = qtractorSession::sanitize(m_props.sessionName);
 	if (!sFilename.isEmpty())
 		sFilename += '-';
-	sFilename += qtractorSession::sanitize(sTrackName) + "-%1." + sExt;
+	sFilename += qtractorSession::sanitize(sBaseName) + "-%1." + sExt;
 
-	QFileInfo fi;
-	if (iClipNo > 0) {
-		fi.setFile(m_props.sessionDir, sFilename.arg(iClipNo));
-	} else do {
-		fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
-	} while (fi.exists());
+	QFileInfo fi; int iClipNo = 0;
+	fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
+	if (!m_filePaths.contains(fi.absoluteFilePath())) {
+		 while (fi.exists() || m_filePaths.contains(fi.absoluteFilePath()))
+			fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
+		m_filePaths.append(fi.absoluteFilePath()); // register new name!
+	}
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorSession::createFilePath(\"%s\")",
@@ -1825,13 +1893,7 @@ qtractorTrack *qtractorSession::findTrack ( qtractorCurveList *pCurveList ) cons
 // Find track of specific name.
 qtractorTrack *qtractorSession::findTrack ( const QString& sTrackName ) const
 {
-	for (qtractorTrack *pTrack = m_tracks.first();
-			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->trackName() == sTrackName)
-			return pTrack;
-	}
-
-	return NULL;
+	return m_trackNames.value(sTrackName, NULL);
 }
 
 

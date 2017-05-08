@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -493,6 +493,12 @@ public:
 	// Move widget to alleged parent center or else...
 	void moveWidgetPos(QWidget *pWidget, const QPoint& wpos) const;
 
+	// Custom GUI editor type index preference.
+	void setEditorType(int iEditorType)
+		{ m_iEditorType = iEditorType; }
+	int editorType() const
+		{ return m_iEditorType; }
+
 	// An accessible list of observers.
 	const QList<qtractorPluginListItem *>& items() const
 		{ return m_items; }
@@ -712,6 +718,9 @@ private:
 	// GUI editor stuff.
 	QString m_sEditorTitle;
 	QPoint  m_posEditor;
+
+	// Custom GUI editor type index preference.
+	int m_iEditorType;
 
 	// Plugin configuration (CLOB) stuff.
 	Configs m_configs;

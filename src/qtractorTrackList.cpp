@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1235,6 +1235,14 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				y = m_iDragY + qtractorTrack::HeightMin;
 			m_posDrag.setY(y);
 			moveRubberBand(m_posDrag);
+			// Go for it, immediately...
+			qtractorTrack *pTrack = track(m_iDragTrack);
+			if (pTrack) {
+				const int iZoomHeight = y - m_iDragY;
+				pTrack->setZoomHeight(iZoomHeight);
+				m_pTracks->trackView()->updateContents();
+				updateContentsHeight();
+			}
 		}
 		break;
 	case DragSelect: {
@@ -1297,6 +1305,17 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 					qtractorScrollView::setCursor(QCursor(Qt::CrossCursor));
 					m_dragState = DragSelect;
 					moveRubberBand(QRect(m_posDrag, pos));
+				}
+				// Special case if one wishes to undo a track's height...
+				if (m_dragState == DragResize) {
+					qtractorTrack *pTrack = track(m_iDragTrack);
+					qtractorSession *pSession = qtractorSession::getInstance();
+					if (pTrack && pSession) {
+						const int iZoomHeight = pTrack->zoomHeight();
+						pSession->commands()->push(
+							new qtractorResizeTrackCommand(pTrack, iZoomHeight));
+						m_pTracks->dirtyChangeNotify();
+					}
 				}
 			}
 		}
@@ -1374,20 +1393,6 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			}
 		}
 		break;
-	case DragResize:
-		if (m_iDragTrack >= 0) {
-			int iZoomHeight = pos.y() - m_iDragY;
-			// Check for minimum item height.
-			if (iZoomHeight < qtractorTrack::HeightMin)
-				iZoomHeight = qtractorTrack::HeightMin;
-			// Go for it...
-			qtractorTrack *pTrack = track(m_iDragTrack);
-			if (pTrack) {
-				pSession->execute(
-					new qtractorResizeTrackCommand(pTrack, iZoomHeight));
-			}
-		}
-		break;
 	case DragSelect:
 		if (m_iDragTrack >= 0)
 			updateSelect(true);
@@ -1401,6 +1406,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			qtractorScrollView::setFocus(); // Get focus back anyway.
 		}
 		// Fall thru...
+	case DragResize:
 	case DragNone:
 	default:
 		break;

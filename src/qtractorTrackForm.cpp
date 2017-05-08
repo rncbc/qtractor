@@ -416,10 +416,17 @@ qtractorTrack::TrackType qtractorTrackForm::trackType (void) const
 // Accept settings (OK button slot).
 void qtractorTrackForm::accept (void)
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
 	// Save options...
 	if (m_iDirtyCount > 0) {
 		// Make changes permanent...
-		m_props.trackName = m_ui.TrackNameTextEdit->toPlainText();
+		const QString& sNewTrackName
+			= pSession->uniqueTrackName(
+				m_ui.TrackNameTextEdit->toPlainText().trimmed());
+		m_props.trackName = sNewTrackName;
 		m_props.trackType = trackType();
 		m_props.inputBusName  = m_ui.InputBusNameComboBox->currentText();
 		m_props.outputBusName = m_ui.OutputBusNameComboBox->currentText();

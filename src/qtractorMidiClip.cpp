@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1020,14 +1020,11 @@ void qtractorMidiClip::draw (
 		return;
 
 	// Check min/maximum note span...
-	int iNoteMin  = pSeq->noteMin() - 1;
-	int iNoteSpan = pSeq->noteMax() - iNoteMin;
-	if (iNoteSpan < 6) {
+	const int iNoteMin = pSeq->noteMin() - 2;
+	const int iNoteMax = pSeq->noteMax() + 1;
+	int iNoteSpan = iNoteMax - iNoteMin;
+	if (iNoteSpan < 6)
 		iNoteSpan = 6;
-		--iNoteMin;
-	}
-	if (iNoteMin < 0)
-		iNoteMin = 0;
 
 	const unsigned long iClipStart = clipStart();
 	const unsigned long iFrameStart = iClipStart + iClipOffset;

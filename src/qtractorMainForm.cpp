@@ -4949,7 +4949,7 @@ void qtractorMainForm::viewOptions (void)
 			(!bOldTimebase &&  m_pOptions->bTimebase)) {
 			++m_iDirtyCount; // Fake session properties change.
 			updateTimebase();
-			iNeedRestart |= RestartSession;
+		//	iNeedRestart |= RestartSession;
 		}
 		// MIDI engine queue timer...
 		if (iOldMidiQueueTimer != m_pOptions->iMidiQueueTimer) {
@@ -5766,8 +5766,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	}	// Start something... ;)
 	else ++m_iTransportUpdate;
 
-	if (m_iTransportTimer  < QTRACTOR_TIMER_DELAY)
-		m_iTransportTimer += QTRACTOR_TIMER_DELAY;
+	updateTransportLater();
 
 	// Done with playback switch...
 	return true;
@@ -6270,11 +6269,17 @@ bool qtractorMainForm::checkRestartSession (void)
 		QApplication::restoreOverrideCursor();
 		// Restore previous playhead position...
 		m_pSession->setPlayHead(iPlayHead);
+		// Done restart.
 	} else {
 		// Reset XRUN counters...
 		m_iXrunCount = 0;
 		m_iXrunSkip  = 0;
 		m_iXrunTimer = 0;
+		// HACK: When applicable, make sure we're
+		// always the (JACK) Timebase master...
+		if (m_pSession->audioEngine())
+			m_pSession->audioEngine()->resetTimebase();
+		// Done checking.
 	}
 
 	return true;
@@ -6536,6 +6541,7 @@ void qtractorMainForm::updateTransportModePost (void)
 }
 
 
+// Update JACK Timebase master mode.
 void qtractorMainForm::updateTimebase (void)
 {
 	if (m_pOptions == NULL)
@@ -6547,6 +6553,7 @@ void qtractorMainForm::updateTimebase (void)
 		return;
 
 	pAudioEngine->setTimebase(m_pOptions->bTimebase);
+	pAudioEngine->resetTimebase();
 }
 
 
@@ -7344,13 +7351,11 @@ void qtractorMainForm::timerSlot (void)
 			//		m_pSession->seek(iPlayHead, true);
 			}
 			// 2. Watch for temp/time-sig changes on JACK transport...
-			if (bPlaying && (pos.valid & JackPositionBBT)) {
-				const unsigned int iBufferSize
-					= (pAudioEngine->bufferSize() << 1);
+			if (pos.valid & JackPositionBBT) {
 				qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(pos.frame);
-				if (pNode && pos.frame > (pNode->frame + iBufferSize) && (
+				if (pNode && pos.frame >= pNode->frame && (
 					::fabsf(pNode->tempo - pos.beats_per_minute) > 0.01f ||
 					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
 					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {
@@ -8293,6 +8298,9 @@ void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 void qtractorMainForm::updateContents (
 	qtractorMidiEditor *pMidiEditor, bool bRefresh )
 {
+	// First of all give some slack to transport sync'ing...
+	if (bRefresh) updateTransportLater();
+
 	// Maybe, just maybe, we've made things larger...
 	m_pTempoCursor->clear();
 	m_pSession->updateTimeScale();
@@ -8405,6 +8413,14 @@ void qtractorMainForm::transportTempoFinished (void)
 	const bool bBlockSignals = m_pTempoSpinBox->blockSignals(true);
 	m_pTempoSpinBox->clearFocus();
 	m_pTempoSpinBox->blockSignals(bBlockSignals);
+}
+
+
+// Add some delay to (JACK) transport sync'ing stuff...
+void qtractorMainForm::updateTransportLater (void)
+{
+	if (m_iTransportTimer  < QTRACTOR_TIMER_DELAY)
+		m_iTransportTimer += QTRACTOR_TIMER_DELAY;
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2155,7 +2155,7 @@ void qtractorMidiEngine::driftCheck (void)
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
 		const long iAudioFrame
-			= m_iFrameStart	+ pAudioEngine->jackFrame() - m_iFrameStartEx;
+			= m_iFrameStart	+ pAudioEngine->jackFrameTime() - m_iFrameStartEx;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		const long iAudioTime
 			= long(pNode->tickFromFrame(iAudioFrame)) - m_iTimeStart;
@@ -2322,7 +2322,7 @@ bool qtractorMidiEngine::activate (void)
 	m_iFrameStart = 0;
 
 	m_iTimeStartEx = m_iTimeStart;
-	m_iFrameStartEx = pSession->audioEngine()->jackFrame();
+	m_iFrameStartEx = pSession->audioEngine()->jackFrameTime();
 
 	// Reset output queue drift compensator...
 	resetDrift();
@@ -2371,7 +2371,7 @@ bool qtractorMidiEngine::start (void)
 	m_iTimeStart  = long(pSession->tickFromFrame(m_iFrameStart));
 
 	m_iTimeStartEx = m_iTimeStart;
-	m_iFrameStartEx = pSession->audioEngine()->jackFrame();
+	m_iFrameStartEx = pSession->audioEngine()->jackFrameTime();
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);

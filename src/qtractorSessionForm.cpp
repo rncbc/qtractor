@@ -196,9 +196,9 @@ void qtractorSessionForm::accept (void)
 	// Save options...
 	if (m_iDirtyCount > 0) {
 		// Make changes permanent...
-		m_props.sessionName = m_ui.SessionNameLineEdit->text();
+		m_props.sessionName = m_ui.SessionNameLineEdit->text().trimmed();
 		m_props.sessionDir  = m_ui.SessionDirComboBox->currentText();
-		m_props.description = m_ui.DescriptionTextEdit->toPlainText();
+		m_props.description = m_ui.DescriptionTextEdit->toPlainText().trimmed();
 		// Time properties...
 		m_props.timeScale.setSampleRate(
 			m_ui.SampleRateComboBox->currentText().toUInt());

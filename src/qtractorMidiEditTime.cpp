@@ -149,7 +149,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 			if (iBeat == pNode->beat) {
 				iPixelsPerBeat = pNode->pixelsPerBeat();
 				const QString& sTempo = QString("%1 %2/%3")
-					.arg(pNode->tempo, 0, 'g', 3)
+					.arg(pNode->tempo, 0, 'f', 1)
 					.arg(pNode->beatsPerBar)
 					.arg(1 << pNode->beatDivisor);
 				painter.setPen(Qt::darkGray);

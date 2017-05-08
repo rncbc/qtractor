@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -242,7 +242,7 @@ qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
 	: m_pList(pList), m_pType(pType), m_iUniqueID(0), m_iInstances(0),
 		m_bActivated(false), m_activateObserver(this),
-		m_iActivateSubjectIndex(0), m_pForm(NULL),
+		m_iActivateSubjectIndex(0), m_pForm(NULL), m_iEditorType(-1),
 		m_iDirectAccessParamIndex(-1)
 {
 	// Acquire a local unique id in chain...
@@ -787,7 +787,7 @@ qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 
 qtractorPluginParam *qtractorPlugin::findParamName ( const QString& sName ) const
 {
-	return m_paramNames.value(sName);
+	return m_paramNames.value(sName, NULL);
 }
 
 
@@ -1175,8 +1175,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	sBaseName += '_';
 	sBaseName += QString::number(uniqueID(), 16);
 	sBaseName += "_curve";
-//	int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", 1));
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid"));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }
@@ -1773,6 +1772,7 @@ bool qtractorPluginList::loadElement (
 			qtractorCurveFile cfile(qtractorPluginList::curveList());
 			QPoint posEditor;
 			QPoint posForm;
+			int iEditorType = -1;
 			const QString& sTypeHint = ePlugin.attribute("type");
 			qtractorPluginType::Hint typeHint
 				= qtractorPluginType::hintFromText(sTypeHint);
@@ -1841,6 +1841,9 @@ bool qtractorPluginList::loadElement (
 					posForm.setX(sxy.at(0).toInt());
 					posForm.setY(sxy.at(1).toInt());
 				}
+				else
+				if (eParam.tagName() == "editor-type")
+					iEditorType = eParam.text().toInt(); 
 			}
 			// Try to find some alternative, if it doesn't exist...
 			qtractorPlugin *pPlugin = NULL;
@@ -1878,6 +1881,8 @@ bool qtractorPluginList::loadElement (
 				pPlugin->setActivated(bActivated); // Later's better!
 				pPlugin->setEditorPos(posEditor);
 				pPlugin->setFormPos(posForm);
+				if (iEditorType >= 0)
+					pPlugin->setEditorType(iEditorType);
 			} else {
 				qtractorMessageList::append(
 					QObject::tr("%1(%2): %3 plugin not found.")
@@ -2003,7 +2008,11 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 				QString::number(posForm.x()) + ',' +
 				QString::number(posForm.y()), &ePlugin);
 		}
-
+		const int iEditorType = pPlugin->editorType();
+		if (iEditorType >= 0) {
+			pDocument->saveTextElement("editor-type",
+				QString::number(iEditorType), &ePlugin);
+		}
 		// Add this plugin...
 		pElement->appendChild(ePlugin);
 

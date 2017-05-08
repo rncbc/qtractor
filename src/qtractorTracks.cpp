@@ -2544,7 +2544,8 @@ bool qtractorTracks::addTrack (void)
 	const int iTrack = pSession->tracks().count() + 1;
 	const QColor& color = qtractorTrack::trackColor(iTrack);
 	qtractorTrack *pTrack = new qtractorTrack(pSession);
-	pTrack->setTrackName(QString("Track %1").arg(iTrack));
+	pTrack->setTrackName(
+		pSession->uniqueTrackName(QString("Track %1").arg(iTrack)));
 	pTrack->setMidiChannel(pSession->midiTag() % 16);
 	pTrack->setBackground(color);
 	pTrack->setForeground(color.darker());
@@ -2679,18 +2680,8 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 	qtractorTrack *pNewTrack = new qtractorTrack(pSession, pTrack->trackType());
 	pNewTrack->setProperties(pTrack->properties());
 	// Find an incremental/next track name...
-	QString sTrackName = pTrack->trackName();
-	QString sNewTrackName;
-	const QRegExp rxTrackNo("([0-9]+)$");
-	int iTrackNo = 0;
-	if (rxTrackNo.indexIn(sTrackName) >= 0) {
-		iTrackNo = rxTrackNo.cap(1).toInt();
-		sTrackName.remove(rxTrackNo);
-	}
-	else sTrackName += ' ';
-	do { sNewTrackName = sTrackName + QString::number(++iTrackNo); }
-	while (pSession->findTrack(sNewTrackName));
-	pNewTrack->setTrackName(sNewTrackName);
+	pNewTrack->setTrackName(
+		pSession->uniqueTrackName(pTrack->trackName()));
 	pNewTrack->setBackground(color);
 	pNewTrack->setForeground(color.darker());
 	pNewTrack->setZoomHeight(pTrack->zoomHeight());
@@ -2762,8 +2753,10 @@ bool qtractorTracks::addAudioTracks ( const QStringList& files,
 		// Time to add the new track/clip into session;
 		// actuallly, this is when the given audio file gets open...
 		pTrack->addClip(pAudioClip);
-		if (iTrackClip == 0)
-			pTrack->setTrackName(pAudioClip->clipName());
+		if (iTrackClip == 0) {
+			pTrack->setTrackName(
+				pSession->uniqueTrackName(pAudioClip->clipName()));
+		}
 		++iTrackClip;
 		// Add the new track to composite command...
 		if (bDropSpan)
@@ -2876,7 +2869,8 @@ bool qtractorTracks::addMidiTracks ( const QStringList& files,
 			// Time to check whether there is actual data on track...
 			if (pMidiClip->clipLength() > 0) {
 				// Add the new track to composite command...
-				pTrack->setTrackName(pMidiClip->clipName());
+				pTrack->setTrackName(
+					pSession->uniqueTrackName(pMidiClip->clipName()));
 				pTrack->setMidiChannel(pMidiClip->channel());
 				pImportTrackCommand->addTrack(pTrack);
 				++iUpdate;
@@ -2952,7 +2946,8 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	pMidiClip->setClipStart(iClipStart);
 	// Time to add the new track/clip into session...
 	pTrack->addClip(pMidiClip);
-	pTrack->setTrackName(pMidiClip->clipName());
+	pTrack->setTrackName(
+		pSession->uniqueTrackName(pMidiClip->clipName()));
 	pTrack->setMidiChannel(pMidiClip->channel());
 	// Add the new track to composite command...
 	pImportTrackCommand->addTrack(pTrack);

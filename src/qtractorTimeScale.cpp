@@ -1,7 +1,7 @@
 // qtractorTimeScale.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -479,19 +479,23 @@ unsigned long qtractorTimeScale::frameFromTextEx (
 			Node *pNode;
 			if (bDelta) {
 				pNode = m_cursor.seekFrame(iFrame);
-				if (pNode)
-					bars += pNode->bar;
+				if (pNode) {
+					beats += bars  * pNode->beatsPerBar;
+					ticks += beats * pNode->ticksPerBeat;
+					ticks += pNode->tickFromFrame(iFrame);
+					iFrame = pNode->frameFromTick(ticks) - iFrame;
+				}
 			} else {
 				if (bars > 0)
 					--bars;
 				if (beats > 0)
 					--beats;
-			}
-			pNode = m_cursor.seekBar(bars);
-			if (pNode) {
-				beats += (bars - pNode->bar) * pNode->beatsPerBar;
-				ticks += pNode->tick + beats * pNode->ticksPerBeat;
-				iFrame = pNode->frameFromTick(ticks);
+				pNode = m_cursor.seekBar(bars);
+				if (pNode) {
+					beats += (bars - pNode->bar) * pNode->beatsPerBar;
+					ticks += pNode->tick + beats * pNode->ticksPerBeat;
+					iFrame = pNode->frameFromTick(ticks);
+				}
 			}
 			break;
 		}

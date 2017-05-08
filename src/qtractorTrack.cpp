@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1609,7 +1609,11 @@ void qtractorTrack::stateChangeNotify ( ToolType toolType, bool bOn )
 bool qtractorTrack::loadElement (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
-	qtractorTrack::setTrackName(pElement->attribute("name"));
+	if (m_pSession == NULL)
+		return false;
+
+	qtractorTrack::setTrackName(
+		m_pSession->uniqueTrackName(pElement->attribute("name")));
 	qtractorTrack::setTrackType(
 		qtractorTrack::trackTypeFromText(pElement->attribute("type")));
 
@@ -2249,8 +2253,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		return;
 
 	const QString sBaseName(trackName() + "_curve");
-	const int iClipNo = (pCurveFile->filename().isEmpty() ? 0 : 1);
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", iClipNo));
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid"));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }

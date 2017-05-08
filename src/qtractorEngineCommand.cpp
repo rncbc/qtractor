@@ -1,7 +1,7 @@
 // qtractorEngineCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -415,20 +415,22 @@ bool qtractorBusCommand::deleteBus (void)
 		break;
 	}
 
-	// Update mixer (clean old strips...)
+	// (Re)open all tracks... and (reset) mixer strips too ...
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks && pMixer) {
-		QListIterator<qtractorMixerStrip *> iter(strips);
-		while (iter.hasNext()) {
-			qtractorTrack *pTrack = iter.next()->track();
-			if (pTrack) {
-				pTrack->open();
-				// Update track list item...
+	QListIterator<qtractorMixerStrip *> iter(strips);
+	while (iter.hasNext()) {
+		qtractorTrack *pTrack = iter.next()->track();
+		if (pTrack) {
+			pTrack->open();
+			// Update track list item...
+			if (pTracks)
 				(pTracks->trackList())->updateTrack(pTrack);
-			}
 		}
-		pMixer->updateBuses();
 	}
+
+	// Update mixer (clean old strips...)
+	if (pMixer)
+		pMixer->updateBuses();
 
 	// Carry on...
 	pSession->setPlaying(bPlaying);

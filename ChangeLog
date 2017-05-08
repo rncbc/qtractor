@@ -4,30 +4,67 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.8.2  2017-05-10  Stickier Tauon Beta.
 
-- Track/Navigate/Next and Previous menu commandss, finally
+- Track-name uniqueness is now being enforced, by adding
+  an auto-incremental number suffix whenever necessary.
+
+- Attempt to raise an internal transient file-name registry
+  to prevent automation/curve files to proliferate across
+  several session load/save (re)cycles.
+
+- Track-height resizing now meets immediate visual feedback.
+
+- A brand new user preference global option is now available:
+  View/Options.../Plugins/Editor/Select plug-in's editor (GUI)
+  if more than one is available.
+
+- More gradient eye-candy on main track-view and piano-roll
+  canvases, now showing left and right edge fake-shadows.
+
+- Fixed the time entry spin-boxes when changing time offset
+  or length fields in BBT time format that goes across any
+  tempo/time-signature change nodes.
+
+- French (fr) translation update (by Olivier Humbert, thanks).
+
+
+0.8.1  2017-02-17  Sticky Tauon Beta.
+
+- The View/Options.../Display/Dialogs/Use native dialogs
+  option is now set initially off by default.
+
+- All tempo and time-signature labels are now displayed
+  with one decimal digit, as it was in mostly everywhere
+  else but the time ruler/scale headers.
+
+- JACK transport tempo and time-signature changes are now
+  accepted, even though playback is not currently rolling;
+  also, changing (JACK) Timebase master setting (cf.View/
+  Options.../General/Transport/Timebase) will take effect
+  immediately, not needing nor warning for session restart
+  anymore.
+ 
+- Track/Navigate/Next and Previous menu commands, finally
   fixed to wrap around the current track list.
 
 - Current session (JACK) transport mode option switching is
   now being made accessible, from the main menu and drop-down
   toolbar buttons, as well as user configurable PC-keyboard
   and/or MIDI controller shortcuts (cf. Transport/Mode/None,
-  Slave, Master, Ful). (EXPERIMENTAL) 
+  Slave, Master, Full).
 
 - Fixed some auto-backward play-head position flip-flopping,
   when opening a new session while the previous was still on
-  rolling/playing state, hopefully. (EXPERIMENTAL)
+  rolling/playing state, hopefully.
   
 - Added French man page (by Olivier Humbert, thanks).
 
 - MIDI clip changes are now saved unconditionally whenever
   the editor (piano-roll) is closed or not currently visible.
-  (EXPERIMENTAL)
 
 - Audio clip peak/waveform files re-generation performance,
   scalability and resilience have been slightly improved.
-  (EXPERIMENTAL)
 
 - Some sanitary checks have been added to audio clip peak/
   waveform re-generation routine, as much to avoid empty,
