@@ -1,3 +1,9 @@
+qtractor (0.8.2-30) unstable; urgency=low
+
+  * New release: stickier tauon beta
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Wed, 10 May 2017 19:00:00 +0000
+
 qtractor (0.8.1-29) unstable; urgency=low
 
   * New release: sticky tauon beta

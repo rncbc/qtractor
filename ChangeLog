@@ -3,19 +3,21 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+
+0.8.2  2017-05-10  Stickier Tauon Beta.
+
 - Track-name uniqueness is now being enforced, by adding
   an auto-incremental number suffix whenever necessary.
-  (EXPERIMENTAL).
 
 - Attempt to raise an internal transient file-name registry
   to prevent automation/curve files to proliferate across
-  several session load/save (re)cycles. (EXPERIMENTAL).
+  several session load/save (re)cycles.
 
 - Track-height resizing now meets immediate visual feedback.
 
 - A brand new user preference global option is now available:
   View/Options.../Plugins/Editor/Select plug-in's editor (GUI)
-  if more than one is avaliable. (EXPERIMENTAL)
+  if more than one is available.
 
 - More gradient eye-candy on main track-view and piano-roll
   canvases, now showing left and right edge fake-shadows.
