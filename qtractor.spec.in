@@ -115,7 +115,7 @@ the personal home-studio.
 %{_datadir}/man/man1/%{name}*.1.gz
 
 %changelog
-* Thu May 10 2017 Rui Nuno Capela <rncbc@rncbc.org> 0.8.2
+* Wed May 10 2017 Rui Nuno Capela <rncbc@rncbc.org> 0.8.2
 - A Stickier Tauon beta release.
 * Fri Feb 17 2017 Rui Nuno Capela <rncbc@rncbc.org> 0.8.1
 - The Sticky Tauon beta release.
