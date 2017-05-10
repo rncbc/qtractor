@@ -93,19 +93,19 @@ Audio :	%1 canaux, %2 Hz</translation>
     <message>
         <location filename="../qtractorClip.cpp" line="558"/>
         <source>Name:	%1</source>
-        <translation>Nom:	%1</translation>
+        <translation>Nom :	%1</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="566"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
-        <translation>Début:	%1	Décalage:	%2
-Fin:	%3	Longueur:	%4</translation>
+        <translation>Début :	%1	Décalage :	%2
+Fin :	%3	Longueur :	%4</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="574"/>
         <source>File:	%1</source>
-        <translation>Fichier:	%1</translation>
+        <translation>Fichier :	%1</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="834"/>
@@ -6713,7 +6713,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="832"/>
         <source>MIDI Editor</source>
-        <translation>Editeur MIDI</translation>
+        <translation>Éditeur MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="1629"/>
@@ -6863,7 +6863,7 @@ Longueur:	%3</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="1836"/>
         <source>MIDI Editor</source>
-        <translation>Editeur MIDI</translation>
+        <translation>Éditeur MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="54"/>
@@ -10592,7 +10592,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3514"/>
         <source>Editor</source>
-        <translation>Editeur</translation>
+        <translation>Éditeur</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3535"/>
