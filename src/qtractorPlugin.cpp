@@ -1111,6 +1111,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	pCurveFile->setBaseDir(pSession->sessionDir());
 
 	unsigned short iParam = 0;
+	unsigned long iActivateSubjectIndex = 0;
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
@@ -1142,11 +1143,14 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 			pCurveFile->addItem(pCurveItem);
 			++iParam;
 		}
+		if (iActivateSubjectIndex < pParam->index())
+			iActivateSubjectIndex = pParam->index();
 	}
 
-	// Activate subject curve
+	// Activate subject curve...
 	qtractorCurve *pCurve = activateSubject()->curve();
 	if (pCurve) {
+		setActivateSubjectIndex(iActivateSubjectIndex + 1); // hack up!
 		qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 		pCurveItem->name = pCurve->subject()->name();
 		pCurveItem->index = activateSubjectIndex();
@@ -1204,6 +1208,7 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 		qtractorCurveFile::Item *pCurveItem = iter.next();
 		if (pCurveItem->index == activateSubjectIndex()) {
 			pCurveItem->subject = activateSubject();
+			setActivateSubjectIndex(0); // hack down!
 		} else {
 			qtractorPluginParam *pParam = NULL;
 			if (!pCurveItem->name.isEmpty())
@@ -1967,10 +1972,6 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 			QString::number(pPlugin->directAccessParamIndex()), &ePlugin);
 	//	pDocument->saveTextElement("values",
 	//		pPlugin->valueList().join(","), &ePlugin);
-		if (pPlugin->isActivateSubjectIndex()) {
-			pDocument->saveTextElement("activate-subject-index",
-				QString::number(pPlugin->activateSubjectIndex()), &ePlugin);
-		}
 		pDocument->saveTextElement("activated",
 			qtractorDocument::textFromBool(pPlugin->isActivated()), &ePlugin);
 		// Plugin configuration stuff (CLOB)...
@@ -1994,6 +1995,10 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 				= pDocument->document()->createElement("curve-file");
 			pPlugin->saveCurveFile(pDocument, &eCurveFile, &cfile);
 			ePlugin.appendChild(eCurveFile);
+		}
+		if (pPlugin->activateSubjectIndex() > 0) {
+			pDocument->saveTextElement("activate-subject-index",
+				QString::number(pPlugin->activateSubjectIndex()), &ePlugin);
 		}
 		// Save editor position...
 		const QPoint& posEditor = pPlugin->editorPos();

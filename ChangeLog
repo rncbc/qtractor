@@ -4,6 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed a potential Activate automation/curve index clash,
+  or aliasing, for any plug-ins that change upstream their
+  parameter count or index order, on sessions saved with
+  the old plug-in versions and vice-versa. (EXPERIMENTAL)
+
+
 0.8.2  2017-05-10  Stickier Tauon Beta.
 
 - Track-name uniqueness is now being enforced, by adding
