@@ -1206,7 +1206,9 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
 		qtractorCurveFile::Item *pCurveItem = iter.next();
-		if (pCurveItem->index == activateSubjectIndex()) {
+		const unsigned long iActivateSubjectIndex = activateSubjectIndex();
+		if (iActivateSubjectIndex > 0 &&
+			iActivateSubjectIndex == pCurveItem->index) {
 			pCurveItem->subject = activateSubject();
 			setActivateSubjectIndex(0); // hack down!
 		} else {
