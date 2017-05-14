@@ -1997,10 +1997,12 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 				= pDocument->document()->createElement("curve-file");
 			pPlugin->saveCurveFile(pDocument, &eCurveFile, &cfile);
 			ePlugin.appendChild(eCurveFile);
-		}
-		if (pPlugin->activateSubjectIndex() > 0) {
-			pDocument->saveTextElement("activate-subject-index",
-				QString::number(pPlugin->activateSubjectIndex()), &ePlugin);
+			const unsigned long iActivateSubjectIndex
+				= pPlugin->activateSubjectIndex();
+			if (iActivateSubjectIndex > 0) {
+				pDocument->saveTextElement("activate-subject-index",
+					QString::number(iActivateSubjectIndex), &ePlugin);
+			}
 		}
 		// Save editor position...
 		const QPoint& posEditor = pPlugin->editorPos();
