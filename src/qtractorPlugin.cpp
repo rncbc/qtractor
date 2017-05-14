@@ -1203,14 +1203,18 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 
 	pCurveFile->setBaseDir(pSession->sessionDir());
 
+	qtractorSubject *pActivateSubject = activateSubject();
+	unsigned long iActivateSubjectIndex = activateSubjectIndex();
+
 	QListIterator<qtractorCurveFile::Item *> iter(pCurveFile->items());
 	while (iter.hasNext()) {
 		qtractorCurveFile::Item *pCurveItem = iter.next();
-		const unsigned long iActivateSubjectIndex = activateSubjectIndex();
-		if (iActivateSubjectIndex > 0 &&
-			iActivateSubjectIndex == pCurveItem->index) {
-			pCurveItem->subject = activateSubject();
+		if ((iActivateSubjectIndex > 0 &&
+			 iActivateSubjectIndex == pCurveItem->index) ||
+			(pActivateSubject->name() == pCurveItem->name)) {
+			pCurveItem->subject = pActivateSubject;
 			setActivateSubjectIndex(0); // hack down!
+			iActivateSubjectIndex = 0;
 		} else {
 			qtractorPluginParam *pParam = NULL;
 			if (!pCurveItem->name.isEmpty())
