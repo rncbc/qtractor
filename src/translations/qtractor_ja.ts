@@ -517,42 +517,42 @@ MIDI:	</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="419"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="429"/>
         <source>add tempo node</source>
         <translation>テンポノードを追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="439"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="449"/>
         <source>update tempo node</source>
         <translation>テンポノードを更新</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="457"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="467"/>
         <source>remove tempo node</source>
         <translation>テンポノードを除去</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="474"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="484"/>
         <source>move tempo node</source>
         <translation>テンポノードを移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="614"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="624"/>
         <source>add marker</source>
         <translation>マーカーの追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="633"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="643"/>
         <source>update marker</source>
         <translation>マーカーの更新</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="651"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="661"/>
         <source>remove marker</source>
         <translation>マーカーの除去</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="669"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="679"/>
         <source>move marker</source>
         <translation>マーカーの異動</translation>
     </message>

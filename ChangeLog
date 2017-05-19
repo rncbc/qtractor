@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a tempo-map node add/update/remove rescaling with
+  regard to clip-lengths and automation/curve undo/redo.
+
 - Fixed a potential Activate automation/curve index clash,
   or aliasing, for any plug-ins that change upstream their
   parameter count or index order, on sessions saved with
