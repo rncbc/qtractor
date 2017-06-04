@@ -93,19 +93,19 @@ Audio :	%1 canaux, %2 Hz</translation>
     <message>
         <location filename="../qtractorClip.cpp" line="558"/>
         <source>Name:	%1</source>
-        <translation>Nom:	%1</translation>
+        <translation>Nom :	%1</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="566"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
-        <translation>Début:	%1	Décalage:	%2
-Fin:	%3	Longueur:	%4</translation>
+        <translation>Début :	%1	Décalage :	%2
+Fin :	%3	Longueur :	%4</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="574"/>
         <source>File:	%1</source>
-        <translation>Fichier:	%1</translation>
+        <translation>Fichier :	%1</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="834"/>
@@ -428,7 +428,7 @@ MIDI:	</translation>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="1888"/>
+        <location filename="../qtractorPlugin.cpp" line="1899"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>
@@ -518,42 +518,42 @@ MIDI:	</translation>
         <translation>Battement</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="419"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="429"/>
         <source>add tempo node</source>
         <translation>ajouter un noeud tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="439"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="449"/>
         <source>update tempo node</source>
         <translation>mise à jour du noeud tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="457"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="467"/>
         <source>remove tempo node</source>
         <translation>enlever le noeud tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="474"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="484"/>
         <source>move tempo node</source>
         <translation>déplacer le noeud tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="614"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="624"/>
         <source>add marker</source>
         <translation>ajouter un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="633"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="643"/>
         <source>update marker</source>
         <translation>mettre à jour un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="651"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="661"/>
         <source>remove marker</source>
         <translation>enlever un marqueur</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="669"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="679"/>
         <source>move marker</source>
         <translation>déplacer un marqueur</translation>
     </message>
@@ -6713,7 +6713,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="832"/>
         <source>MIDI Editor</source>
-        <translation>Editeur MIDI</translation>
+        <translation>Éditeur MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="1629"/>
@@ -6863,7 +6863,7 @@ Longueur:	%3</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="1836"/>
         <source>MIDI Editor</source>
-        <translation>Editeur MIDI</translation>
+        <translation>Éditeur MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="54"/>
@@ -10592,7 +10592,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3514"/>
         <source>Editor</source>
-        <translation>Editeur</translation>
+        <translation>Éditeur</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3535"/>
