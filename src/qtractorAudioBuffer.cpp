@@ -251,6 +251,11 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 #endif
 
 	m_pPeakFile      = NULL;
+
+	// Time-stretch mode local options.
+	m_bWsolaTimeStretch = g_bDefaultWsolaTimeStretch;
+	m_bWsolaQuickSeek   = g_bDefaultWsolaQuickSeek;
+
 }
 
 // Default destructor.
@@ -387,9 +392,9 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Allocate time-stretch engine whether needed...
 	if (m_bTimeStretch || m_bPitchShift) {
 		unsigned int iFlags = qtractorTimeStretcher::None;
-		if (g_bWsolaTimeStretch)
+		if (m_bWsolaTimeStretch)
 			iFlags |= qtractorTimeStretcher::WsolaTimeStretch;
-		if (g_bWsolaQuickSeek)
+		if (m_bWsolaQuickSeek)
 			iFlags |= qtractorTimeStretcher::WsolaQuickSeek;
 		m_pTimeStretcher = new qtractorTimeStretcher(iBuffers, iSampleRate,
 			m_fTimeStretch, m_fPitchShift, iFlags, m_iBufferSize);
@@ -402,7 +407,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 		for (i = 0; i < iBuffers; ++i) {
 			m_ppInBuffer[i]  = m_ppFrames[i];
 			m_ppOutBuffer[i] = new float [m_iBufferSize];
-			m_ppSrcState[i]  = src_new(g_iResampleType, 1, &err);
+			m_ppSrcState[i]  = src_new(g_iDefaultResampleType, 1, &err);
 		}
 	}
 #endif
@@ -1560,43 +1565,66 @@ qtractorAudioPeakFile *qtractorAudioBuffer::peakFile (void) const
 }
 
 
-// Sample-rate converter type (global option).
-int qtractorAudioBuffer::g_iResampleType = 2;	// SRC_SINC_FASTEST;
-
-void qtractorAudioBuffer::setResampleType ( int iResampleType )
-{
-	g_iResampleType = iResampleType;
-}
-
-int qtractorAudioBuffer::resampleType (void)
-{
-	return g_iResampleType;
-}
-
-
-// WSOLA time-stretch modes (global options).
-bool qtractorAudioBuffer::g_bWsolaTimeStretch = true;
-bool qtractorAudioBuffer::g_bWsolaQuickSeek   = false;
-
+// WSOLA time-stretch modes (local options).
 void qtractorAudioBuffer::setWsolaTimeStretch ( bool bWsolaTimeStretch )
 {
-	g_bWsolaTimeStretch = bWsolaTimeStretch;
+	m_bWsolaTimeStretch = bWsolaTimeStretch;
 }
 
-bool qtractorAudioBuffer::isWsolaTimeStretch (void)
+bool qtractorAudioBuffer::isWsolaTimeStretch (void) const
 {
-	return g_bWsolaTimeStretch;
+	return m_bWsolaTimeStretch;
 }
 
 
 void qtractorAudioBuffer::setWsolaQuickSeek ( bool bWsolaQuickSeek )
 {
-	g_bWsolaQuickSeek = bWsolaQuickSeek;
+	m_bWsolaQuickSeek = bWsolaQuickSeek;
 }
 
-bool qtractorAudioBuffer::isWsolaQuickSeek (void)
+bool qtractorAudioBuffer::isWsolaQuickSeek (void) const
 {
-	return g_bWsolaQuickSeek;
+	return m_bWsolaQuickSeek;
+}
+
+
+// Sample-rate converter type (global option).
+int qtractorAudioBuffer::g_iDefaultResampleType = 2;	// SRC_SINC_FASTEST;
+
+void qtractorAudioBuffer::setDefaultResampleType ( int iResampleType )
+{
+	g_iDefaultResampleType = iResampleType;
+}
+
+int qtractorAudioBuffer::defaultResampleType (void)
+{
+	return g_iDefaultResampleType;
+}
+
+
+// WSOLA time-stretch modes (global options).
+bool qtractorAudioBuffer::g_bDefaultWsolaTimeStretch = true;
+bool qtractorAudioBuffer::g_bDefaultWsolaQuickSeek   = false;
+
+void qtractorAudioBuffer::setDefaultWsolaTimeStretch ( bool bWsolaTimeStretch )
+{
+	g_bDefaultWsolaTimeStretch = bWsolaTimeStretch;
+}
+
+bool qtractorAudioBuffer::isDefaultWsolaTimeStretch (void)
+{
+	return g_bDefaultWsolaTimeStretch;
+}
+
+
+void qtractorAudioBuffer::setDefaultWsolaQuickSeek ( bool bWsolaQuickSeek )
+{
+	g_bDefaultWsolaQuickSeek = bWsolaQuickSeek;
+}
+
+bool qtractorAudioBuffer::isDefaultWsolaQuickSeek (void)
+{
+	return g_bDefaultWsolaQuickSeek;
 }
 
 

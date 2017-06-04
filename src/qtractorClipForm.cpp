@@ -191,6 +191,12 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.PitchShiftSpinBox,
 		SIGNAL(valueChanged(double)),
 		SLOT(changed()));
+	QObject::connect(m_ui.WsolaTimeStretchCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.WsolaQuickSeekCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -278,10 +284,15 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		m_ui.TrackChannelTextLabel->setVisible(false);
 		m_ui.TrackChannelSpinBox->setVisible(false);
 		m_ui.AudioClipGroupBox->setVisible(true);
-	#ifndef CONFIG_LIBRUBBERBAND
+	#ifdef CONFIG_LIBRUBBERBAND
+		m_ui.WsolaTimeStretchCheckBox->setChecked(pAudioClip->isWsolaTimeStretch());
+	#else
 		m_ui.PitchShiftTextLabel->setEnabled(false);
 		m_ui.PitchShiftSpinBox->setEnabled(false);	
+		m_ui.WsolaTimeStretchCheckBox->setEnabled(false);
+		m_ui.WsolaTimeStretchCheckBox->setChecked(true);
 	#endif
+		m_ui.WsolaQuickSeekCheckBox->setChecked(pAudioClip->isWsolaQuickSeek());
 		break;
 	}
 	case qtractorTrack::Midi: {
@@ -359,11 +370,15 @@ void qtractorClipForm::accept (void)
 		float fClipGain = 1.0f;
 		float fTimeStretch = 0.0f;
 		float fPitchShift = 0.0f;
+		bool bWsolaTimeStretch = qtractorAudioBuffer::isDefaultWsolaTimeStretch();
+		bool bWsolaQuickSeek = qtractorAudioBuffer::isDefaultWsolaQuickSeek();
 		switch (clipType) {
 		case qtractorTrack::Audio:
 			fClipGain = pow10f2(m_ui.ClipGainSpinBox->value());
 			fTimeStretch = 0.01f * m_ui.TimeStretchSpinBox->value();
 			fPitchShift = ::powf(2.0f, m_ui.PitchShiftSpinBox->value() / 12.0f);
+			bWsolaTimeStretch = m_ui.WsolaTimeStretchCheckBox->isChecked();
+			bWsolaQuickSeek = m_ui.WsolaQuickSeekCheckBox->isChecked();
 			break;
 		case qtractorTrack::Midi:
 			fClipGain = 0.01f * m_ui.ClipGainSpinBox->value();
@@ -381,6 +396,7 @@ void qtractorClipForm::accept (void)
 		qtractorClip::FadeType fadeOutType
 			= fadeTypeFromIndex(m_ui.FadeOutTypeComboBox->currentIndex());
 		int iFileChange = 0;
+		int iWsolaChange = 0;
 		// It depends whether we're adding a new clip or not...
 		if (m_bClipNew) {
 			// Just set new clip properties...
@@ -396,6 +412,8 @@ void qtractorClipForm::accept (void)
 				if (pAudioClip) {
 					pAudioClip->setTimeStretch(fTimeStretch);
 					pAudioClip->setPitchShift(fPitchShift);
+					pAudioClip->setWsolaTimeStretch(bWsolaTimeStretch);
+					pAudioClip->setWsolaQuickSeek(bWsolaQuickSeek);
 					++iFileChange;
 				}
 				break;
@@ -445,6 +463,14 @@ void qtractorClipForm::accept (void)
 						fTimeStretch = 0.0f;
 					if (::fabsf(fPitchShift - pAudioClip->pitchShift()) < 0.001f)
 						fPitchShift = 0.0f;
+					const bool bOldWsolaTimeStretch = pAudioClip->isWsolaTimeStretch();
+					if (( bOldWsolaTimeStretch && !bWsolaTimeStretch) ||
+						(!bOldWsolaTimeStretch &&  bWsolaTimeStretch))
+						++iWsolaChange;
+					const bool bOldWsolaQuickSeek = pAudioClip->isWsolaQuickSeek();
+					if (( bOldWsolaQuickSeek   && !bWsolaQuickSeek  ) ||
+						(!bOldWsolaQuickSeek   &&  bWsolaQuickSeek  ))
+						++iWsolaChange;
 				}
 				break;
 			}
@@ -484,6 +510,9 @@ void qtractorClipForm::accept (void)
 			if (iFadeOutLength != m_pClip->fadeOutLength()
 				|| fadeOutType != m_pClip->fadeOutType())
 				pClipCommand->fadeOutClip(m_pClip, iFadeOutLength, fadeOutType);
+			// WSOLA audio clip options...
+			if (iWsolaChange > 0)
+				pClipCommand->wsolaClip(m_pClip, bWsolaTimeStretch, bWsolaQuickSeek);
 			// Ready edit.
 		}
 		// Do it (by making it undoable)...
@@ -591,6 +620,8 @@ void qtractorClipForm::stabilizeForm (void)
 	m_ui.FadeOutTypeComboBox->setEnabled(
 		m_ui.FadeOutLengthSpinBox->value() > 0);
 	m_ui.FadeOutLengthSpinBox->setMaximum(iClipLength);
+	m_ui.WsolaQuickSeekCheckBox->setEnabled(
+		m_ui.WsolaTimeStretchCheckBox->isChecked());
 
 	bool bValid = (m_iDirtyCount > 0);
 	bValid = bValid && !m_ui.ClipNameLineEdit->text().isEmpty();
