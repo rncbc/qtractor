@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Long overdue, some brand new and fundamental icons revamp.
+
 - Fixed a tempo-map node add/update/remove rescaling with
   regard to clip-lengths and automation/curve undo/redo.
 
