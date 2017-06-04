@@ -1,7 +1,7 @@
 // qtractorAudioClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -52,6 +52,13 @@ public:
 	// Pitch-shifting.
 	void setPitchShift(float fPitchShift);
 	float pitchShift() const;
+
+	// WSOLA time-stretch modes (local options).
+	void setWsolaTimeStretch(bool bWsolaTimeStretch);
+	bool isWsolaTimeStretch() const;
+
+	void setWsolaQuickSeek(bool bWsolaQuickSeek);
+	bool isWsolaQuickSeek() const;
 
 	// Alternating overlap tag.
 	unsigned int overlap() const;
@@ -202,6 +209,9 @@ private:
 
 	float m_fTimeStretch;
 	float m_fPitchShift;
+
+	bool  m_bWsolaTimeStretch;
+	bool  m_bWsolaQuickSeek;
 
 	// Alternate overlap tag.
 	unsigned int m_iOverlap;
