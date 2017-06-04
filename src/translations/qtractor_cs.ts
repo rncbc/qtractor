@@ -705,22 +705,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace Upravit seznam</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="834"/>
+        <location filename="../qtractorClipCommand.cpp" line="860"/>
         <source>take %1</source>
         <translation>Záběr %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="836"/>
+        <location filename="../qtractorClipCommand.cpp" line="862"/>
         <source>reset takes</source>
         <translation>Nastavit záběry znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1022"/>
+        <location filename="../qtractorClipCommand.cpp" line="1048"/>
         <source>clip tool %1</source>
         <translation>Nástroj na záběry %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1149"/>
+        <location filename="../qtractorClipCommand.cpp" line="1175"/>
         <source>clip record</source>
         <translation>Nahrávání záběru</translation>
     </message>
@@ -1246,22 +1246,22 @@ Chcete zahodit tyto změny?</translation>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="402"/>
+        <location filename="../qtractorClipForm.cpp" line="403"/>
         <source>new clip</source>
         <translation>Nový záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="450"/>
+        <location filename="../qtractorClipForm.cpp" line="451"/>
         <source>edit clip</source>
         <translation>Upravit záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="551"/>
+        <location filename="../qtractorClipForm.cpp" line="561"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="552"/>
+        <location filename="../qtractorClipForm.cpp" line="562"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -1271,22 +1271,22 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="409"/>
-        <location filename="../qtractorClipForm.cpp" line="657"/>
+        <location filename="../qtractorClipForm.cpp" line="667"/>
         <source>Audio</source>
         <translation>Zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="662"/>
+        <location filename="../qtractorClipForm.cpp" line="672"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="664"/>
+        <location filename="../qtractorClipForm.cpp" line="674"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Soubory MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="675"/>
+        <location filename="../qtractorClipForm.cpp" line="685"/>
         <source>%1 Clip File</source>
         <translation>%1 Soubor se záběrem</translation>
     </message>

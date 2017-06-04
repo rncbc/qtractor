@@ -109,22 +109,22 @@ Fine:	%3	Lunghezza:	%4</translation>
         <translation>File:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="834"/>
+        <location filename="../qtractorClipCommand.cpp" line="860"/>
         <source>take %1</source>
         <translation>ripresa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="836"/>
+        <location filename="../qtractorClipCommand.cpp" line="862"/>
         <source>reset takes</source>
         <translation>reset riprese</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1022"/>
+        <location filename="../qtractorClipCommand.cpp" line="1048"/>
         <source>clip tool %1</source>
         <translation>strumento clip %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1149"/>
+        <location filename="../qtractorClipCommand.cpp" line="1175"/>
         <source>clip record</source>
         <translation>registrazione clip</translation>
     </message>
@@ -1371,7 +1371,7 @@ Vuoi annullare le modifiche?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="409"/>
-        <location filename="../qtractorClipForm.cpp" line="657"/>
+        <location filename="../qtractorClipForm.cpp" line="667"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
@@ -1442,22 +1442,22 @@ Vuoi annullare le modifiche?</translation>
         <translation>&amp;Volume:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="402"/>
+        <location filename="../qtractorClipForm.cpp" line="403"/>
         <source>new clip</source>
         <translation>nuovo clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="450"/>
+        <location filename="../qtractorClipForm.cpp" line="451"/>
         <source>edit clip</source>
         <translation>modifica clip</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="551"/>
+        <location filename="../qtractorClipForm.cpp" line="561"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="552"/>
+        <location filename="../qtractorClipForm.cpp" line="562"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -1466,17 +1466,17 @@ Do you want to apply the changes?</source>
 Vuoi applicare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="662"/>
+        <location filename="../qtractorClipForm.cpp" line="672"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="664"/>
+        <location filename="../qtractorClipForm.cpp" line="674"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>File MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="675"/>
+        <location filename="../qtractorClipForm.cpp" line="685"/>
         <source>%1 Clip File</source>
         <translation>%1 File di Clip</translation>
     </message>

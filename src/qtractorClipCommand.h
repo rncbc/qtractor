@@ -1,7 +1,7 @@
 // qtractorClipCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -74,6 +74,8 @@ public:
 	void pitchShiftClip(qtractorClip *pClip, float fPitchShift);
 	void takeInfoClip(qtractorClip *pClip, qtractorClip::TakeInfo *pTakeInfo);
 	void resetClip(qtractorClip *pClip);
+	void wsolaClip(qtractorClip *pClip,
+		bool bWsolaTimeStretch, bool bWsolaQuickSeek);
 
 	void reopenClip(qtractorClip *pClip, bool bClose = false);
 
@@ -110,7 +112,7 @@ private:
 		RenameClip, MoveClip, ResizeClip,
 		GainClip, FadeInClip, FadeOutClip,
 		TimeStretchClip, PitchShiftClip,
-		TakeInfoClip, ResetClip
+		TakeInfoClip, ResetClip, WsolaClip
 	};
 
 	// Clip item struct.
@@ -124,6 +126,7 @@ private:
 				fadeInLength(0), fadeInType(qtractorClip::InQuad), 
 				fadeOutLength(0), fadeOutType(qtractorClip::OutQuad),
 				timeStretch(0.0f), pitchShift(0.0f),
+				wsolaTimeStretch(false), wsolaQuickSeek(false),
 				editCommand(NULL), takeInfo(NULL) {}
 		// Item members.
 		CommandType    command;
@@ -143,6 +146,8 @@ private:
 		qtractorClip::FadeType fadeOutType;
 		float          timeStretch;
 		float          pitchShift;
+		bool           wsolaTimeStretch;
+		bool           wsolaQuickSeek;
 		// When MIDI clips are time-stretched...
 		qtractorMidiEditCommand *editCommand;
 		// When clips have take(record) descriptors...

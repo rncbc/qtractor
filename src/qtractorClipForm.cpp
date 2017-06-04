@@ -396,6 +396,7 @@ void qtractorClipForm::accept (void)
 		qtractorClip::FadeType fadeOutType
 			= fadeTypeFromIndex(m_ui.FadeOutTypeComboBox->currentIndex());
 		int iFileChange = 0;
+		int iWsolaChange = 0;
 		// It depends whether we're adding a new clip or not...
 		if (m_bClipNew) {
 			// Just set new clip properties...
@@ -462,8 +463,14 @@ void qtractorClipForm::accept (void)
 						fTimeStretch = 0.0f;
 					if (::fabsf(fPitchShift - pAudioClip->pitchShift()) < 0.001f)
 						fPitchShift = 0.0f;
-					pAudioClip->setWsolaTimeStretch(bWsolaTimeStretch);
-					pAudioClip->setWsolaQuickSeek(bWsolaQuickSeek);
+					const bool bOldWsolaTimeStretch = pAudioClip->isWsolaTimeStretch();
+					if (( bOldWsolaTimeStretch && !bWsolaTimeStretch) ||
+						(!bOldWsolaTimeStretch &&  bWsolaTimeStretch))
+						++iWsolaChange;
+					const bool bOldWsolaQuickSeek = pAudioClip->isWsolaQuickSeek();
+					if (( bOldWsolaQuickSeek   && !bWsolaQuickSeek  ) ||
+						(!bOldWsolaQuickSeek   &&  bWsolaQuickSeek  ))
+						++iWsolaChange;
 				}
 				break;
 			}
@@ -503,6 +510,9 @@ void qtractorClipForm::accept (void)
 			if (iFadeOutLength != m_pClip->fadeOutLength()
 				|| fadeOutType != m_pClip->fadeOutType())
 				pClipCommand->fadeOutClip(m_pClip, iFadeOutLength, fadeOutType);
+			// WSOLA audio clip options...
+			if (iWsolaChange > 0)
+				pClipCommand->wsolaClip(m_pClip, bWsolaTimeStretch, bWsolaQuickSeek);
 			// Ready edit.
 		}
 		// Do it (by making it undoable)...

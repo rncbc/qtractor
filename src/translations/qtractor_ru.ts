@@ -640,22 +640,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="834"/>
+        <location filename="../qtractorClipCommand.cpp" line="860"/>
         <source>take %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="836"/>
+        <location filename="../qtractorClipCommand.cpp" line="862"/>
         <source>reset takes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1022"/>
+        <location filename="../qtractorClipCommand.cpp" line="1048"/>
         <source>clip tool %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1149"/>
+        <location filename="../qtractorClipCommand.cpp" line="1175"/>
         <source>clip record</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1241,22 +1241,22 @@ Do you want to discard the changes?</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="402"/>
+        <location filename="../qtractorClipForm.cpp" line="403"/>
         <source>new clip</source>
         <translation>создание клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="450"/>
+        <location filename="../qtractorClipForm.cpp" line="451"/>
         <source>edit clip</source>
         <translation>правка клипа</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="551"/>
+        <location filename="../qtractorClipForm.cpp" line="561"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="552"/>
+        <location filename="../qtractorClipForm.cpp" line="562"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -1266,22 +1266,22 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="409"/>
-        <location filename="../qtractorClipForm.cpp" line="657"/>
+        <location filename="../qtractorClipForm.cpp" line="667"/>
         <source>Audio</source>
         <translation>Звук</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="662"/>
+        <location filename="../qtractorClipForm.cpp" line="672"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="664"/>
+        <location filename="../qtractorClipForm.cpp" line="674"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Файлы MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="675"/>
+        <location filename="../qtractorClipForm.cpp" line="685"/>
         <source>%1 Clip File</source>
         <translation type="unfinished"></translation>
     </message>
