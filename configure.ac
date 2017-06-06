@@ -434,7 +434,7 @@ AC_CACHE_CHECK([for g++ major version], [ac_cv_gxx_version_major], [
    ac_gxx_version_major=$(($ac_cv_gxx_version_major + 0))
 ])
 ac_gxx_version_major=$ac_cv_gxx_version_major
-if test $ac_gxx_version_major -gt 4 -a $ac_gxx_version_major -lt 6; then
+if test $ac_gxx_version_major -ge 4 -a $ac_gxx_version_major -lt 6; then
    CXXFLAGS="-std=c++11 $CXXFLAGS"
 fi
 

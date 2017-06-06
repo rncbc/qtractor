@@ -9322,37 +9322,37 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="780"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="926"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="921"/>
         <source>transpose</source>
         <translation>transponer</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="782"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="952"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="947"/>
         <source>normalize</source>
         <translation>normalizar</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="784"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="982"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="977"/>
         <source>randomize</source>
         <translation>aleatorio</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="786"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1044"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1039"/>
         <source>resize</source>
         <translation>redimensionar</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="788"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1068"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1063"/>
         <source>rescale</source>
         <translation>reescalar</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="790"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1107"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1102"/>
         <source>timeshift</source>
         <translation>desplazamiento de tiempo</translation>
     </message>
