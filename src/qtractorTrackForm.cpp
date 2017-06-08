@@ -422,11 +422,14 @@ void qtractorTrackForm::accept (void)
 
 	// Save options...
 	if (m_iDirtyCount > 0) {
-		// Make changes permanent...
-		const QString& sNewTrackName
+		// Make sure one has unque track names...
+		pSession->releaseTrackName(m_pTrack);
+		const QString& sTrackName
 			= pSession->uniqueTrackName(
 				m_ui.TrackNameTextEdit->toPlainText().trimmed());
-		m_props.trackName = sNewTrackName;
+		pSession->acquireTrackName(m_pTrack);
+		// Make changes permanent...
+		m_props.trackName = sTrackName;
 		m_props.trackType = trackType();
 		m_props.inputBusName  = m_ui.InputBusNameComboBox->currentText();
 		m_props.outputBusName = m_ui.OutputBusNameComboBox->currentText();

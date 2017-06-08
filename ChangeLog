@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed track-name auto-incremental numbering suffix when
+  modifying any other track property.
+
 - WSOLA vs. (lib)Rubberband time-stretching options are now
   individualized on a per audio clip basis. (EXPERIMENTAL)
   
