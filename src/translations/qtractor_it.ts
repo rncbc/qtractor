@@ -12354,12 +12354,12 @@ Vuoi scartare le modifiche?</translation>
         <translation>&amp;Violino</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="466"/>
+        <location filename="../qtractorTrackForm.cpp" line="469"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="467"/>
+        <location filename="../qtractorTrackForm.cpp" line="470"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12368,14 +12368,14 @@ Do you want to apply the changes?</source>
 Vuoi applicare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="602"/>
+        <location filename="../qtractorTrackForm.cpp" line="605"/>
         <source>(No instrument)</source>
         <translation>(Nessuno strumento)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="205"/>
-        <location filename="../qtractorTrackForm.cpp" line="797"/>
-        <location filename="../qtractorTrackForm.cpp" line="909"/>
+        <location filename="../qtractorTrackForm.cpp" line="800"/>
+        <location filename="../qtractorTrackForm.cpp" line="912"/>
         <source>(None)</source>
         <translation>(Nessuno)</translation>
     </message>
@@ -12385,27 +12385,27 @@ Vuoi applicare le modifiche?</translation>
         <translation>&amp;Icona personalizzata...</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1154"/>
+        <location filename="../qtractorTrackForm.cpp" line="1157"/>
         <source>Image files (%1)</source>
         <translation>File di immagini (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1155"/>
+        <location filename="../qtractorTrackForm.cpp" line="1158"/>
         <source>All files (*.*)</source>
         <translation>Tutti i file (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1158"/>
+        <location filename="../qtractorTrackForm.cpp" line="1161"/>
         <source>Track Icon</source>
         <translation>Icona della traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1433"/>
+        <location filename="../qtractorTrackForm.cpp" line="1436"/>
         <source>Foreground Color</source>
         <translation>Colore primo piano</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1455"/>
+        <location filename="../qtractorTrackForm.cpp" line="1458"/>
         <source>Background Color</source>
         <translation>Colore di sfondo</translation>
     </message>
