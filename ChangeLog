@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 Plug-in worker/schedule interface ring-buffer sizes
+  have been increased to 4KB. (EXPERIMENTAL)
+
 - Fixed track-name auto-incremental numbering suffix when
   modifying any other track property.
 
@@ -108,7 +111,7 @@ GIT HEAD
   started, is now shown on main track-view, as a momentary
   dark-red vertical line marker.
 
-- LV2 plugin-in parameter optimization: stuff consecutive
+- LV2 plug-in parameter optimization: stuff consecutive
   series of plug-in's parameter value changes, as much as
   possible into one single undo/redo command.
 
@@ -145,7 +148,7 @@ GIT HEAD
   line options, wrt. installation directories specification,
   eg. --prefix, --bindir, --libdir, --datadir and --mandir.
 
-- LV2 Plugin-in worker/schedule fix: make request/response
+- LV2 Plug-in worker/schedule fix: make request/response
   ring-buffer writes in one go, hopefully atomic (suggested
   patch by Stefan Westerfeld, while on SpectMorph, thanks).
 

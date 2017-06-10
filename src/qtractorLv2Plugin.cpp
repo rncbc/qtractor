@@ -221,12 +221,6 @@ public:
 	// Process work.
 	void process();
 
-	// Sync thread state flags accessors.
-	void setWaitSync(bool bWaitSync)
-		{ m_bWaitSync = bWaitSync; }
-	bool isWaitSync() const
-		{ return m_bWaitSync; }
-
 private:
 
 	// Instance members.
@@ -236,8 +230,6 @@ private:
 
 	LV2_Feature         m_lv2_schedule_feature;
 	LV2_Worker_Schedule m_lv2_schedule;
-
-	volatile bool       m_bWaitSync;
 
 	jack_ringbuffer_t  *m_pRequests;
 	jack_ringbuffer_t  *m_pResponses;
@@ -359,19 +351,7 @@ bool qtractorLv2WorkerThread::runState (void) const
 // Wake from executive wait condition.
 void qtractorLv2WorkerThread::sync ( qtractorLv2Worker *pLv2Worker )
 {
-	if (pLv2Worker == NULL) {
-		unsigned int r = m_iSyncRead;
-		unsigned int w = m_iSyncWrite;
-		while (r != w) {
-			qtractorLv2Worker *pSyncItem = m_ppSyncItems[r];
-			if (pSyncItem)
-				pSyncItem->setWaitSync(false);
-			++r &= m_iSyncMask;
-			w = m_iSyncWrite;
-		}
-	//	m_iSyncRead = r;
-	} else {
-		// !pLv2Worker->isWaitSync()
+	if (pLv2Worker) {
 		unsigned int n;
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;
@@ -383,7 +363,6 @@ void qtractorLv2WorkerThread::sync ( qtractorLv2Worker *pLv2Worker )
 			n = m_iSyncSize - 1;
 		}
 		if (n > 0) {
-			pLv2Worker->setWaitSync(true);
 			m_ppSyncItems[w] = pLv2Worker;
 			m_iSyncWrite = (w + 1) & m_iSyncMask;
 		}
@@ -458,11 +437,9 @@ qtractorLv2Worker::qtractorLv2Worker (
 
 	m_lv2_features[iFeatures] = NULL;
 
-	m_bWaitSync  = false;
-
-	m_pRequests  = ::jack_ringbuffer_create(1024);
-	m_pResponses = ::jack_ringbuffer_create(1024);
-	m_pResponse  = (void *) ::malloc(1024);
+	m_pRequests  = ::jack_ringbuffer_create(4096);
+	m_pResponses = ::jack_ringbuffer_create(4096);
+	m_pResponse  = (void *) ::malloc(4096);
 
 	if (++g_iWorkerRefCount == 1) {
 		g_pWorkerThread = new qtractorLv2WorkerThread();
@@ -473,8 +450,6 @@ qtractorLv2Worker::qtractorLv2Worker (
 // Destructor.
 qtractorLv2Worker::~qtractorLv2Worker (void)
 {
-	m_bWaitSync = false;
-
 	if (--g_iWorkerRefCount == 0) {
 		if (g_pWorkerThread->isRunning()) do {
 			g_pWorkerThread->setRunState(false);
@@ -561,9 +536,6 @@ void qtractorLv2Worker::commit (void)
 // Process work.
 void qtractorLv2Worker::process (void)
 {
-	if (!m_bWaitSync)
-		return;
-
 	const LV2_Worker_Interface *worker
 		= m_pLv2Plugin->lv2_worker_interface(0);
 	if (worker == NULL)
@@ -594,8 +566,6 @@ void qtractorLv2Worker::process (void)
 	}
 
 	if (buf) ::free(buf);
-
-	m_bWaitSync = false;
 }
 
 #endif	// CONFIG_LV2_WORKER
