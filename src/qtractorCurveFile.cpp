@@ -225,9 +225,9 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 		return;
 	}
 
-	// Transient curve-file registry method as far
-	// to avoid duplicates across load/save cycles...
-	pSession->registerFilePath(sFilename);
+	// Transient curve-file registry method as far to
+	// avoid duplicates across load/save/record cycles...
+	pSession->acquireFilePath(sFilename);
 
 	const unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
 	unsigned short iSeq = 0;

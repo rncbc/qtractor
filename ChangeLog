@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Make sure any just recorded clip filename is not reused
+  while over the same track and session. (CRITICAL)
+
 - LV2 Plug-in worker/schedule interface ring-buffer sizes
   have been increased to 4KB. (EXPERIMENTAL)
 

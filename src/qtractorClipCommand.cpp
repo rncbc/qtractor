@@ -451,6 +451,10 @@ bool qtractorClipCommand::addClipRecord (
 	else
 	addClipRecordTake(pTrack, pClip, iClipStart, iClipOffset, iClipLength);
 
+	// Make sure this brand new filename is not reused!
+	// (see qtractroSession::createFilePath()...)
+	pSession->releaseFilePath(pClip->filename());
+
 	// Can get rid of the recorded clip.
 	pTrack->setClipRecord(NULL);
 
