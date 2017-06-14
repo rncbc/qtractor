@@ -109,22 +109,22 @@ Fine:	%3	Lunghezza:	%4</translation>
         <translation>File:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="860"/>
+        <location filename="../qtractorClipCommand.cpp" line="864"/>
         <source>take %1</source>
         <translation>ripresa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="862"/>
+        <location filename="../qtractorClipCommand.cpp" line="866"/>
         <source>reset takes</source>
         <translation>reset riprese</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1048"/>
+        <location filename="../qtractorClipCommand.cpp" line="1052"/>
         <source>clip tool %1</source>
         <translation>strumento clip %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1175"/>
+        <location filename="../qtractorClipCommand.cpp" line="1179"/>
         <source>clip record</source>
         <translation>registrazione clip</translation>
     </message>
