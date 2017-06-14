@@ -1408,22 +1408,22 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="531"/>
         <source>Whether to use WSOLA time-stretching</source>
-        <translation type="unfinished">Si on doit utiliser l&apos;étirement temporel WSOLA</translation>
+        <translation>Si on doit utiliser l&apos;étirement temporel WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="534"/>
         <source>&amp;WSOLA time-stretching</source>
-        <translation type="unfinished">Étirement temporel &amp;WSOLA</translation>
+        <translation>Étirement temporel &amp;WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="547"/>
         <source>Whether to apply WSOLA quick seek time-stretching</source>
-        <translation type="unfinished">Si on doit appliquer la recherche rapide WSOLA pour l&apos;étirement temporel</translation>
+        <translation>Si on doit appliquer la recherche rapide WSOLA pour l&apos;étirement temporel</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="550"/>
         <source>WSOLA quic&amp;k seek</source>
-        <translation type="unfinished">Rec&amp;herche rapide WSOLA</translation>
+        <translation>Rec&amp;herche rapide WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="272"/>
