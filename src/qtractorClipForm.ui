@@ -519,6 +519,38 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0" colspan="4">
+       <widget class="QCheckBox" name="WsolaTimeStretchCheckBox">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>Whether to use WSOLA time-stretching</string>
+        </property>
+        <property name="text">
+         <string>&amp;WSOLA time-stretching</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="4">
+       <widget class="QCheckBox" name="WsolaQuickSeekCheckBox">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>Whether to apply WSOLA quick seek time-stretching</string>
+        </property>
+        <property name="text">
+         <string>WSOLA quic&amp;k seek</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -558,6 +590,8 @@
   <tabstop>FadeOutTypeComboBox</tabstop>
   <tabstop>TimeStretchSpinBox</tabstop>
   <tabstop>PitchShiftSpinBox</tabstop>
+  <tabstop>WsolaTimeStretchCheckBox</tabstop>
+  <tabstop>WsolaQuickSeekCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

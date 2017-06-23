@@ -1479,9 +1479,12 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	qtractorMidiManager::setDefaultAudioOutputAutoConnect(
 		m_pOptions->bAudioOutputAutoConnect);
 	// Set default audio-buffer quality...
-	qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
-	qtractorAudioBuffer::setWsolaTimeStretch(m_pOptions->bAudioWsolaTimeStretch);
-	qtractorAudioBuffer::setWsolaQuickSeek(m_pOptions->bAudioWsolaQuickSeek);
+	qtractorAudioBuffer::setDefaultResampleType(
+		m_pOptions->iAudioResampleType);
+	qtractorAudioBuffer::setDefaultWsolaTimeStretch(
+		m_pOptions->bAudioWsolaTimeStretch);
+	qtractorAudioBuffer::setDefaultWsolaQuickSeek(
+		m_pOptions->bAudioWsolaQuickSeek);
 
 	// Load (action) keyboard shortcuts...
 	m_pOptions->loadActionShortcuts(this);
@@ -4929,13 +4932,20 @@ void qtractorMainForm::viewOptions (void)
 		int iNeedRestart = 0;
 		// Check wheather something immediate has changed.
 		if (iOldResampleType != m_pOptions->iAudioResampleType) {
-			qtractorAudioBuffer::setResampleType(m_pOptions->iAudioResampleType);
+			qtractorAudioBuffer::setDefaultResampleType(
+				m_pOptions->iAudioResampleType);
 			iNeedRestart |= RestartSession;
 		}
 		if (( bOldWsolaTimeStretch && !m_pOptions->bAudioWsolaTimeStretch) ||
 			(!bOldWsolaTimeStretch &&  m_pOptions->bAudioWsolaTimeStretch)) {
-			qtractorAudioBuffer::setWsolaTimeStretch(
+			qtractorAudioBuffer::setDefaultWsolaTimeStretch(
 				m_pOptions->bAudioWsolaTimeStretch);
+			iNeedRestart |= RestartSession;
+		}
+		if (( bOldWsolaQuickSeek && !m_pOptions->bAudioWsolaQuickSeek) ||
+			(!bOldWsolaQuickSeek &&  m_pOptions->bAudioWsolaQuickSeek)) {
+			qtractorAudioBuffer::setDefaultWsolaQuickSeek(
+				m_pOptions->bAudioWsolaQuickSeek);
 			iNeedRestart |= RestartSession;
 		}
 		// Audio engine control modes...
@@ -4954,12 +4964,6 @@ void qtractorMainForm::viewOptions (void)
 		// MIDI engine queue timer...
 		if (iOldMidiQueueTimer != m_pOptions->iMidiQueueTimer) {
 			updateMidiQueueTimer();
-			iNeedRestart |= RestartSession;
-		}
-		if (( bOldWsolaQuickSeek && !m_pOptions->bAudioWsolaQuickSeek) ||
-			(!bOldWsolaQuickSeek &&  m_pOptions->bAudioWsolaQuickSeek)) {
-			qtractorAudioBuffer::setWsolaQuickSeek(
-				m_pOptions->bAudioWsolaQuickSeek);
 			iNeedRestart |= RestartSession;
 		}
 	#ifdef CONFIG_LV2
