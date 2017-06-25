@@ -1378,22 +1378,22 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="531"/>
         <source>Whether to use WSOLA time-stretching</source>
-        <translation type="unfinished">Sempre utilizar &quot;distorcer-tempo&quot; do tipo WSOLA</translation>
+        <translation>Utilizar ou não &quot;distorcer tempo&quot; do tipo WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="534"/>
         <source>&amp;WSOLA time-stretching</source>
-        <translation type="unfinished">&quot;Distorcer-tempo&quot; do tipo &amp;WSOLA</translation>
+        <translation>&quot;Distorcer-tempo&quot; do tipo &amp;WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="547"/>
         <source>Whether to apply WSOLA quick seek time-stretching</source>
-        <translation type="unfinished">Se for usar WSOLA mudança rápida para distorcer-tempo</translation>
+        <translation>Se for usar WSOLA mudança rápida para distorcer-tempo</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="550"/>
         <source>WSOLA quic&amp;k seek</source>
-        <translation type="unfinished">WSOLA mudança &amp;rápida</translation>
+        <translation>WSOLA mudança &amp;rápida</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="182"/>
