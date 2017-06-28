@@ -738,42 +738,42 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3119"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezione editor (GUI) per la plugin:</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3131"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>Esterna</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3134"/>
         <source>X11</source>
-        <translation type="unfinished"></translation>
+        <translation>X11</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3137"/>
         <source>Gtk2</source>
-        <translation type="unfinished"></translation>
+        <translation>Gtk2</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3141"/>
         <source>Qt4</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt4</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3145"/>
         <source>Qt5</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt5</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3150"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Altra</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3158"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished">Non chiederlo di nuovo</translation>
+        <translation>Non chiederlo di nuovo</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3480"/>
@@ -1409,17 +1409,17 @@ Vuoi annullare le modifiche?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="531"/>
         <source>Whether to use WSOLA time-stretching</source>
-        <translation type="unfinished">Usa adattamento tempo WSOLA</translation>
+        <translation>Usa adattamento tempo WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="534"/>
         <source>&amp;WSOLA time-stretching</source>
-        <translation type="unfinished">Adattamento tempo &amp;WSOLA</translation>
+        <translation>Adattamento tempo &amp;WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="547"/>
         <source>Whether to apply WSOLA quick seek time-stretching</source>
-        <translation type="unfinished">Applica ricerca veloce adattamento tempo WSOLA</translation>
+        <translation>Applica ricerca veloce adattamento tempo WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="550"/>
@@ -10251,7 +10251,7 @@ Sei sicuro?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3551"/>
         <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezione dell&apos;editor (GUI) per la plugin se più di uno è disponibile.</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2431"/>
@@ -10627,7 +10627,7 @@ Sei sicuro?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3554"/>
         <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Seleziona l&apos;editor (GUI) per la plugin se più di uno è disponibile</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3570"/>
