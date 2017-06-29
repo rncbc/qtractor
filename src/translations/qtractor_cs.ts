@@ -1463,22 +1463,22 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="531"/>
         <source>Whether to use WSOLA time-stretching</source>
-        <translation type="unfinished">Zda se má použít WSOLA natahování času</translation>
+        <translation>Zda se má použít WSOLA natahování času</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="534"/>
         <source>&amp;WSOLA time-stretching</source>
-        <translation type="unfinished">&amp;WSOLA natahování času</translation>
+        <translation>&amp;WSOLA natahování času</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="547"/>
         <source>Whether to apply WSOLA quick seek time-stretching</source>
-        <translation type="unfinished">Zda se má použít WSOLA rychlé vyhledání natahování času</translation>
+        <translation>Zda se má použít WSOLA rychlé vyhledání natahování času</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="550"/>
         <source>WSOLA quic&amp;k seek</source>
-        <translation type="unfinished">WSOLA rych&amp;lé vyhledání</translation>
+        <translation>WSOLA rych&amp;lé vyhledání</translation>
     </message>
 </context>
 <context>
