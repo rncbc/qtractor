@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Slightly slower but better approximation to IEEE 32bit
+  floating point cubic root ie. cbrtf(). (EXPERIMENTAL)
+
+
 0.8.3  2017-06-30  Stickiest Tauon Beta.
 
 - Make sure any just recorded clip filename is not reused

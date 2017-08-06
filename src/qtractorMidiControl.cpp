@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -51,11 +51,11 @@ static inline float cbrtf2 ( float x )
 #ifdef CONFIG_FLOAT32_NOP
 	// Avoid strict-aliasing optimization (gcc -O2).
 	union { float f; int i; } u;
-	u.f = x;
+	u.f  = x;
 	u.i  = (u.i >> 4) + (u.i >> 2);
-	u.i += (u.i >> 4);
-	u.i += 0x2a6497f8;
-	return u.f;
+	u.i += (u.i >> 4) + 0x2a6497f8;
+	return 0.33333333f * (2.0f * u.f + x / (u.f * u.f));
+//	return u.f;
 #else
 	return ::cbrtf(x);
 #endif
