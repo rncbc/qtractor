@@ -130,6 +130,8 @@
 #include <QCloseEvent>
 #include <QDropEvent>
 
+#include <QStyleFactory>
+
 #if QT_VERSION >= 0x050000
 #include <QMimeData>
 #endif
@@ -4980,9 +4982,16 @@ void qtractorMainForm::viewOptions (void)
 			iNeedRestart |= RestartProgram;
 		}
 		if ((iOldBaseFontSize != m_pOptions->iBaseFontSize) ||
-			(sOldCustomColorTheme != m_pOptions->sCustomColorTheme) ||
-			(sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme))
+			(sOldCustomColorTheme != m_pOptions->sCustomColorTheme))
 			iNeedRestart |= RestartProgram;
+		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
+			if (m_pOptions->sCustomStyleTheme.isEmpty()) {
+				iNeedRestart |= RestartProgram;
+			} else {
+				QApplication::setStyle(
+					QStyleFactory::create(m_pOptions->sCustomStyleTheme));
+			}
+		}
 		if (( bOldCompletePath && !m_pOptions->bCompletePath) ||
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||
 			(iOldMaxRecentFiles != m_pOptions->iMaxRecentFiles))

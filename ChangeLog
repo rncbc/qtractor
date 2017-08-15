@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Changing the View/Options.../Display/Custom/Style theme
+  takes effect immediately unless it's back to "(default)".
+
 - Slightly slower but better approximation to IEEE 32bit
   floating point cubic root ie. cbrtf(). (EXPERIMENTAL)
 
