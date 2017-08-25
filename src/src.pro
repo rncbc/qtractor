@@ -340,7 +340,7 @@ unix {
 	icon_scalable.path = $${DATADIR}/icons/hicolor/scalable/apps
 	icon_scalable.files += images/$${NAME}.svg
 
-	appdata.path = $${DATADIR}/appdata
+	appdata.path = $${DATADIR}/metainfo
 	appdata.files += appdata/$${NAME}.appdata.xml
 
 	mimeinfo.path = $${DATADIR}/mime/packages

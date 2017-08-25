@@ -4,6 +4,21 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Desktop entry specification file is now finally independent
+  from build/configure template chains.
+
+- Updated target path for freedesktop.org's AppStream metainfo
+  file (formerly AppData).
+
+- Changing the View/Options.../Display/Custom/Style theme
+  takes effect immediately unless it's back to "(default)".
+
+- Slightly slower but better approximation to IEEE 32bit
+  floating point cubic root ie. cbrtf(). (EXPERIMENTAL)
+
+
 0.8.3  2017-06-30  Stickiest Tauon Beta.
 
 - Make sure any just recorded clip filename is not reused
