@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Desktop entry specification file is now finally independent
+  from build/configure template chains.
+
+- Updated target path for freedesktop.org's AppStream metainfo
+  file (formerly AppData).
+
 - Changing the View/Options.../Display/Custom/Style theme
   takes effect immediately unless it's back to "(default)".
 
