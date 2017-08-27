@@ -1,7 +1,7 @@
 // qtractorPluginFactory.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -285,7 +285,7 @@ void qtractorPluginFactory::scan (void)
 	if (m_pProxy) {
 		m_pProxy->closeWriteChannel();
 		for (iFile = 0; iFile < iFileCount; ++iFile) {
-			if (m_pProxy->waitForFinished(200))
+			if (m_pProxy->waitForFinished(200) || m_pProxy->exitStatus() >= 0)
 				break;
 			QApplication::processEvents(
 				QEventLoop::ExcludeUserInputEvents);
@@ -574,7 +574,7 @@ bool qtractorPluginFactory::addTypes (
 // Constructor.
 qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
 	qtractorPluginFactory *pPluginFactory )
-	: QProcess(pPluginFactory)
+	: QProcess(pPluginFactory), m_iExitStatus(-1)
 {
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
@@ -582,6 +582,9 @@ qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
 	QObject::connect(this,
 		SIGNAL(readyReadStandardError()),
 		SLOT(stderr_slot()));
+	QObject::connect(this,
+		SIGNAL(finished(int, QProcess::ExitStatus)),
+		SLOT(exit_slot(int, QProcess::ExitStatus)));
 }
 
 
@@ -590,6 +593,8 @@ bool qtractorPluginFactoryProxy::start (void)
 {
 	if (QProcess::state() != QProcess::NotRunning)
 		return false;
+
+	m_iExitStatus = -1;
 
 	const QDir dir(QApplication::applicationDirPath());
 	const QFileInfo fi(dir, "qtractor_vst_scan");
@@ -629,17 +634,39 @@ void qtractorPluginFactoryProxy::stderr_slot (void)
 }
 
 
+void qtractorPluginFactoryProxy::exit_slot (
+	int exitCode, QProcess::ExitStatus exitStatus )
+{
+	if (m_iExitStatus < 0)
+		m_iExitStatus = 0;
+
+	if (exitCode || exitStatus != QProcess::NormalExit)
+		++m_iExitStatus;
+}
+
+
 // Service methods.
 bool qtractorPluginFactoryProxy::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
+	if (m_iExitStatus > 0) {
+		QProcess::waitForFinished(200);
+		start(); // Restart the crashed scan...
+		QProcess::waitForStarted(200);
+	}
+
 	const QString& sHint = qtractorPluginType::textFromHint(typeHint);
 	const QString& sLine = sHint + ':' + sFilename + '\n';
 	const QByteArray& data = sLine.toUtf8();
 	const bool bResult = (QProcess::write(data) == data.size());
 	QProcess::waitForReadyRead(200);
 	return bResult;
+}
 
+
+int qtractorPluginFactoryProxy::exitStatus (void) const
+{
+	return m_iExitStatus;
 }
 
 

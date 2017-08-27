@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Out-of-process (aka. dummy) VST plug-in inventory scanning
+  now restarts automatically and resumes processing in case
+  of a premature exit/crash. (EXPERIMENTAL)
+
 - Desktop entry specification file is now finally independent
   from build/configure template chains.
 

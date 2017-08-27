@@ -12,4 +12,6 @@ MimeType=application/x-qtractor-session;application/x-qtractor-template;applicat
 Keywords=Audio;MIDI;Multitrack;Sequencer;DAW;ALSA;JACK;LADSPA;DSSI;VST;LV2;Qt;
 Terminal=false
 Type=Application
+StartupWMClass=qtractor
+X-Window-Icon=qtractor
 X-SuSE-translate=true
