@@ -649,17 +649,19 @@ void qtractorPluginFactoryProxy::exit_slot (
 bool qtractorPluginFactoryProxy::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
-	if (m_iExitStatus > 0) {
-		QProcess::waitForFinished(200);
-		start(); // Restart the crashed scan...
-		QProcess::waitForStarted(200);
-	}
-
 	const QString& sHint = qtractorPluginType::textFromHint(typeHint);
 	const QString& sLine = sHint + ':' + sFilename + '\n';
 	const QByteArray& data = sLine.toUtf8();
 	const bool bResult = (QProcess::write(data) == data.size());
-	QProcess::waitForReadyRead(200);
+
+	if (!QProcess::waitForReadyRead(3000)) {
+		if (m_iExitStatus > 0) {
+			QProcess::waitForFinished(200);
+			start(); // Restart the crashed scan...
+			QProcess::waitForStarted(200);
+		}
+	}
+
 	return bResult;
 }
 
