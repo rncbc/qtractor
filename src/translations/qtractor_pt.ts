@@ -80,7 +80,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>Entrada</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="713"/>
+        <location filename="../qtractorOptions.cpp" line="715"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>Opção -s requer um argumento (nome da sessão).</translation>
     </message>
@@ -120,7 +120,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>importar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="676"/>
+        <location filename="../qtractorOptions.cpp" line="678"/>
         <source>Show version information</source>
         <translation>Mostrar informações da versão</translation>
     </message>
@@ -147,7 +147,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>%1 (*.%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="674"/>
+        <location filename="../qtractorOptions.cpp" line="676"/>
         <source>Show help about command line options</source>
         <translation>Mostrar ajuda sobre opções em linha de comando</translation>
     </message>
@@ -246,7 +246,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>Duplex</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="665"/>
+        <location filename="../qtractorOptions.cpp" line="667"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Uso: %1 [opções] [arquivo-da-sessão]</translation>
     </message>
@@ -439,7 +439,7 @@ MIDI:	</translation>
         <translation>panorâmico da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="668"/>
+        <location filename="../qtractorOptions.cpp" line="670"/>
         <source>Options:</source>
         <translation>Opções:</translation>
     </message>
@@ -529,7 +529,7 @@ MIDI:	</translation>
         <translation>Direitos: </translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="671"/>
+        <location filename="../qtractorOptions.cpp" line="673"/>
         <source>Set session identification (uuid)</source>
         <translation>Nomear sessão (uuid)</translation>
     </message>

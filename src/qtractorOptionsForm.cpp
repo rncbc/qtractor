@@ -878,7 +878,7 @@ void qtractorOptionsForm::accept (void)
 				= qtractorPluginFactory::getInstance();
 			if (pPluginFactory) {
 				pPluginFactory->updatePluginPaths();
-				pPluginFactory->clear();
+				pPluginFactory->clearAll();
 			}
 		}
 		m_iDirtyCount = 0;
