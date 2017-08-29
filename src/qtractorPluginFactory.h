@@ -25,6 +25,7 @@
 #include "qtractorPlugin.h"
 
 #include <QProcess>
+#include <QFile>
 
 
 // Forward decls.
