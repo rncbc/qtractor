@@ -251,7 +251,7 @@ void qtractorPluginFactory::scan (void)
 			qtractorOptions *pOptions = qtractorOptions::getInstance();
 			if (pOptions && pOptions->bDummyVstScan) {
 				m_pProxy = new qtractorPluginFactoryProxy(this);
-				m_pProxy->start();
+				m_pProxy->open();
 			}
 		}
 	}
@@ -282,15 +282,8 @@ void qtractorPluginFactory::scan (void)
 	}
 
 	// Check the proxy (out-of-process) client closure...
-	if (m_pProxy) {
-		m_pProxy->closeWriteChannel();
-		for (iFile = 0; iFile < iFileCount; ++iFile) {
-			if (m_pProxy->waitForFinished(200) || m_pProxy->exitStatus() >= 0)
-				break;
-			QApplication::processEvents(
-				QEventLoop::ExcludeUserInputEvents);
-		}
-	}
+	if (m_pProxy)
+		m_pProxy->close();
 
 	// Done.
 	reset();
@@ -574,7 +567,7 @@ bool qtractorPluginFactory::addTypes (
 // Constructor.
 qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
 	qtractorPluginFactory *pPluginFactory )
-	: QProcess(pPluginFactory), m_iExitStatus(-1)
+	: QProcess(pPluginFactory), m_iFileCount(0), m_iExitStatus(-1)
 {
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
@@ -588,12 +581,13 @@ qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
 }
 
 
-// Start method.
-bool qtractorPluginFactoryProxy::start (void)
+// Open/start method.
+bool qtractorPluginFactoryProxy::open (void)
 {
 	if (QProcess::state() != QProcess::NotRunning)
 		return false;
 
+	m_iFileCount = 0;
 	m_iExitStatus = -1;
 
 	const QDir dir(QApplication::applicationDirPath());
@@ -606,6 +600,21 @@ bool qtractorPluginFactoryProxy::start (void)
 }
 
 
+// Close/stop method.
+void qtractorPluginFactoryProxy::close (void)
+{
+	if (QProcess::state() != QProcess::NotRunning) {
+		QProcess::closeWriteChannel();
+		for (int iFile = 0; iFile < m_iFileCount; ++iFile) {
+			if (QProcess::waitForFinished(200) || m_iExitStatus >= 0)
+				break;
+			QApplication::processEvents(
+				QEventLoop::ExcludeUserInputEvents);
+		}
+	}
+}
+
+
 void qtractorPluginFactoryProxy::stdout_slot (void)
 {
 	qtractorPluginFactory *pPluginFactory
@@ -614,17 +623,7 @@ void qtractorPluginFactoryProxy::stdout_slot (void)
 		return;
 
 	const QString sData(QProcess::readAllStandardOutput());
-	QStringListIterator iter = sData.split("\n");
-	while (iter.hasNext()) {
-		const QString& sText = iter.next().simplified();
-		if (sText.isEmpty())
-			continue;
-		qtractorPluginType *pType = qtractorDummyPluginType::createType(sText);
-		if (pType)
-			pPluginFactory->addType(pType);
-		else
-			QTextStream(stderr) << sText + '\n';
-	}
+	addTypes(sData.split('\n'));
 }
 
 
@@ -649,6 +648,8 @@ void qtractorPluginFactoryProxy::exit_slot (
 bool qtractorPluginFactoryProxy::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
+	++m_iFileCount;
+
 	const QString& sHint = qtractorPluginType::textFromHint(typeHint);
 	const QString& sLine = sHint + ':' + sFilename + '\n';
 	const QByteArray& data = sLine.toUtf8();
@@ -666,9 +667,26 @@ bool qtractorPluginFactoryProxy::addTypes (
 }
 
 
-int qtractorPluginFactoryProxy::exitStatus (void) const
+bool qtractorPluginFactoryProxy::addTypes ( const QStringList& list )
 {
-	return m_iExitStatus;
+	qtractorPluginFactory *pPluginFactory
+		= static_cast<qtractorPluginFactory *> (QObject::parent());
+	if (pPluginFactory == NULL)
+		return false;
+
+	QStringListIterator iter(list);
+	while (iter.hasNext()) {
+		const QString& sText = iter.next().simplified();
+		if (sText.isEmpty())
+			continue;
+		qtractorPluginType *pType = qtractorDummyPluginType::createType(sText);
+		if (pType)
+			pPluginFactory->addType(pType);
+		else
+			QTextStream(stderr) << sText + '\n';
+	}
+
+	return true;
 }
 
 
@@ -708,7 +726,6 @@ qtractorDummyPluginType::qtractorDummyPluginType (
 	bool bOk = false;
 	QString sUniqueID = props.at(8);
 	m_iUniqueID = qHash(sUniqueID.remove("0x").toULong(&bOk, 16));
-
 }
 
 
@@ -730,13 +747,15 @@ qtractorDummyPluginType *qtractorDummyPluginType::createType (
 {
 	// Sanity check...
 	const QStringList& props = sText.split('|');
-
-	const Hint typeHint = qtractorPluginType::hintFromText(props.at(0));
-	if (typeHint != Vst)
+	if (props.count() < 7)
 		return NULL;
 
-	// Yep, most probably it's a dummy VST plugin effect...
+	const Hint typeHint = qtractorPluginType::hintFromText(props.at(0));
 	const unsigned long iIndex = props.at(7).toULong();
+
+	// FIXME: Yep, most probably it's a dummy VST plugin effect...
+	if (typeHint != Vst)
+		return NULL;
 
 	return new qtractorDummyPluginType(sText, iIndex, typeHint);
 }

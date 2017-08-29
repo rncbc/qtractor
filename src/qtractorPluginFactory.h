@@ -133,13 +133,12 @@ public:
 	// ctor.
 	qtractorPluginFactoryProxy(qtractorPluginFactory *pPluginFactory);
 
-	// Start method.
-	bool start();
+	// Open/close method.
+	bool open();
+	void close();
 
 	// Service methods.
 	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
-
-	int exitStatus() const;
 
 protected slots:
 
@@ -149,9 +148,16 @@ protected slots:
 
 	void exit_slot(int exitCode, QProcess::ExitStatus exitStatus);
 
+protected:
+
+	// Service methods (internal)
+	bool addTypes(const QStringList& list);
+
 private:
 
 	// Instance state.
+	int m_iFileCount;
+
 	volatile int m_iExitStatus;
 };
 
