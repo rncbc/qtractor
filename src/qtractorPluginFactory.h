@@ -65,8 +65,9 @@ public:
 	// Type register method.
 	void addType(qtractorPluginType *pType) { m_types.append(pType); }
 
-	// Type list reset method.
+	// Type list reset methods.
 	void clear();
+	void clearAll();
 
 	// Global plugin-paths executive methods.
 	QStringList pluginPaths(qtractorPluginType::Hint typeHint);
@@ -134,11 +135,14 @@ public:
 	qtractorPluginFactoryProxy(qtractorPluginFactory *pPluginFactory);
 
 	// Open/close method.
-	bool open();
+	bool open(bool bReset = false);
 	void close();
 
 	// Service methods.
 	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
+
+	// Absolute cache file path.
+	static QString cacheFilePath();
 
 protected slots:
 
@@ -159,6 +163,12 @@ private:
 	int m_iFileCount;
 
 	volatile int m_iExitStatus;
+
+	// Cache file object.
+	QFile m_file;
+
+	// Cache hash list.
+	QHash<QString, QStringList> m_list;
 };
 
 

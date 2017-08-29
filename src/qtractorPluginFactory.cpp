@@ -45,6 +45,12 @@
 #include <QFileInfo>
 #include <QDir>
 
+#if QT_VERSION < 0x050000
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorPluginFactory -- Plugin path helper.
@@ -306,6 +312,14 @@ void qtractorPluginFactory::clear (void)
 {
 	qDeleteAll(m_types);
 	m_types.clear();
+}
+
+
+void qtractorPluginFactory::clearAll (void)
+{
+	QFile::remove(qtractorPluginFactoryProxy::cacheFilePath());
+
+	clear();
 }
 
 
@@ -582,19 +596,56 @@ qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
 
 
 // Open/start method.
-bool qtractorPluginFactoryProxy::open (void)
+bool qtractorPluginFactoryProxy::open ( bool bReset )
 {
+	// Maybe we're still running, doh!
 	if (QProcess::state() != QProcess::NotRunning)
 		return false;
 
+	// Start from scrach...
 	m_iFileCount = 0;
 	m_iExitStatus = -1;
 
+	// Cache file setup...
+	m_file.setFileName(cacheFilePath());
+	m_list.clear();
+
+	// Open and read cache file, whether applicable...
+	if (!bReset && m_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorPluginFactoryProxy::open(%d) file=\"%s\" -- START READ --",
+			int(bReset), m_file.fileName().toUtf8().constData());
+	#endif
+		// Read from cache...
+		QTextStream sin(&m_file);
+		while (!sin.atEnd()) {
+			const QString& sText = sin.readLine();
+			if (sText.isEmpty())
+				continue;
+			const QStringList& props = sText.split('|');
+			if (props.count() >= 6) // get filename...
+				m_list[props.at(6)].append(sText);
+		}
+		// May close the file.
+		m_file.close();
+		return true;
+	}
+
+	// Get the main scanner executable...
 	const QDir dir(QApplication::applicationDirPath());
 	const QFileInfo fi(dir, "qtractor_vst_scan");
 	if (!fi.isExecutable())
 		return false;
 
+	// Make sure cache file location do exists...
+	if (!dir.mkpath(QFileInfo(m_file.fileName()).path()))
+		return false;
+
+	// Open cache file for writing...
+	if (!m_file.open(QIODevice::Append | QIODevice::Text | QIODevice::Truncate))
+		return false;
+
+	// Go go go...
 	QProcess::start(fi.filePath());
 	return true;
 }
@@ -603,6 +654,7 @@ bool qtractorPluginFactoryProxy::open (void)
 // Close/stop method.
 void qtractorPluginFactoryProxy::close (void)
 {
+	// We're we scanning hard?...
 	if (QProcess::state() != QProcess::NotRunning) {
 		QProcess::closeWriteChannel();
 		for (int iFile = 0; iFile < m_iFileCount; ++iFile) {
@@ -612,6 +664,13 @@ void qtractorPluginFactoryProxy::close (void)
 				QEventLoop::ExcludeUserInputEvents);
 		}
 	}
+
+	// Close cache file...
+	if (m_file.isOpen())
+		m_file.close();
+
+	// Cleanup cache...
+	m_list.clear();
 }
 
 
@@ -648,6 +707,12 @@ void qtractorPluginFactoryProxy::exit_slot (
 bool qtractorPluginFactoryProxy::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
+	// See if it's already cached in...
+	const QStringList& list = m_list.value(sFilename);
+	if (!list.isEmpty())
+		return addTypes(list);
+
+	// Not cached, yet...
 	++m_iFileCount;
 
 	const QString& sHint = qtractorPluginType::textFromHint(typeHint);
@@ -655,6 +720,7 @@ bool qtractorPluginFactoryProxy::addTypes (
 	const QByteArray& data = sLine.toUtf8();
 	const bool bResult = (QProcess::write(data) == data.size());
 
+	// Check for hideous scan crashes...
 	if (!QProcess::waitForReadyRead(3000)) {
 		if (m_iExitStatus > 0) {
 			QProcess::waitForFinished(200);
@@ -680,13 +746,33 @@ bool qtractorPluginFactoryProxy::addTypes ( const QStringList& list )
 		if (sText.isEmpty())
 			continue;
 		qtractorPluginType *pType = qtractorDummyPluginType::createType(sText);
-		if (pType)
+		if (pType) {
+			// Brand new type, add to inventory...
 			pPluginFactory->addType(pType);
-		else
+			// Cache in...
+			if (m_file.isOpen())
+				QTextStream(&m_file) << sText << "\n";
+			// Done.
+		} else {
+			// Possibly some mistake occurred...
 			QTextStream(stderr) << sText + '\n';
+		}
 	}
 
 	return true;
+}
+
+
+// Absolute cache file path.
+QString qtractorPluginFactoryProxy::cacheFilePath (void)
+{
+	const QString& sCacheDir
+#if QT_VERSION < 0x050000
+		= QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+#else
+		= QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+#endif
+	return QFileInfo(sCacheDir, "qtractor_vst_scan.cache").absoluteFilePath();
 }
 
 

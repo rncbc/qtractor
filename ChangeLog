@@ -8,7 +8,8 @@ GIT HEAD
 
 - Out-of-process (aka. dummy) VST plug-in inventory scanning
   now restarts automatically and resumes processing in case
-  of a premature exit/crash. (EXPERIMENTAL)
+  of a premature exit/crash; VST plug-in inventory scan/cache
+  persistency is now in place. (EXPERIMENTAL)
 
 - Desktop entry specification file is now finally independent
   from build/configure template chains.
