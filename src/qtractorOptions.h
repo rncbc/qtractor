@@ -226,6 +226,7 @@ public:
 
 	// VST dummy plugin scan option.
 	bool bDummyVstScan;
+	int  iDummyVstHash;
 
 	// LV2 plugin specific options.
 	bool bLv2DynManifest;

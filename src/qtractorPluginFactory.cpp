@@ -256,8 +256,11 @@ void qtractorPluginFactory::scan (void)
 			iFileCount += addFiles(qtractorPluginType::Vst, paths);
 			qtractorOptions *pOptions = qtractorOptions::getInstance();
 			if (pOptions && pOptions->bDummyVstScan) {
+				const int iDummyVstHash
+					= m_files.value(qtractorPluginType::Vst).count();
 				m_pProxy = new qtractorPluginFactoryProxy(this);
-				m_pProxy->open();
+				m_pProxy->open(iDummyVstHash != pOptions->iDummyVstHash);
+				pOptions->iDummyVstHash = iDummyVstHash;
 			}
 		}
 	}
@@ -598,24 +601,12 @@ qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
 // Open/start method.
 bool qtractorPluginFactoryProxy::open ( bool bReset )
 {
-	// Maybe we're still running, doh!
-	if (QProcess::state() != QProcess::NotRunning)
-		return false;
-
-	// Start from scrach...
-	m_iFileCount = 0;
-	m_iExitStatus = -1;
-
 	// Cache file setup...
 	m_file.setFileName(cacheFilePath());
 	m_list.clear();
 
 	// Open and read cache file, whether applicable...
 	if (!bReset && m_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-	#ifdef CONFIG_DEBUG
-		qDebug("qtractorPluginFactoryProxy::open(%d) file=\"%s\" -- START READ --",
-			int(bReset), m_file.fileName().toUtf8().constData());
-	#endif
 		// Read from cache...
 		QTextStream sin(&m_file);
 		while (!sin.atEnd()) {
@@ -631,14 +622,9 @@ bool qtractorPluginFactoryProxy::open ( bool bReset )
 		return true;
 	}
 
-	// Get the main scanner executable...
-	const QDir dir(QApplication::applicationDirPath());
-	const QFileInfo fi(dir, "qtractor_vst_scan");
-	if (!fi.isExecutable())
-		return false;
-
 	// Make sure cache file location do exists...
-	if (!dir.mkpath(QFileInfo(m_file.fileName()).path()))
+	const QFileInfo fi(m_file);
+	if (!fi.dir().mkpath(fi.absolutePath()))
 		return false;
 
 	// Open cache file for writing...
@@ -646,8 +632,7 @@ bool qtractorPluginFactoryProxy::open ( bool bReset )
 		return false;
 
 	// Go go go...
-	QProcess::start(fi.filePath());
-	return true;
+	return start();
 }
 
 
@@ -674,6 +659,30 @@ void qtractorPluginFactoryProxy::close (void)
 }
 
 
+// Scan start method.
+bool qtractorPluginFactoryProxy::start (void)
+{
+	// Maybe we're still running, doh!
+	if (QProcess::state() != QProcess::NotRunning)
+		return false;
+
+	// Start from scratch...
+	m_iFileCount = 0;
+	m_iExitStatus = -1;
+
+	// Get the main scanner executable...
+	const QDir dir(QApplication::applicationDirPath());
+	const QFileInfo fi(dir, "qtractor_vst_scan");
+	if (!fi.isExecutable())
+		return false;
+
+	// Go go go!
+	QProcess::start(fi.filePath());
+	return true;
+}
+
+
+// Service slots.
 void qtractorPluginFactoryProxy::stdout_slot (void)
 {
 	qtractorPluginFactory *pPluginFactory
@@ -708,9 +717,13 @@ bool qtractorPluginFactoryProxy::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
 	// See if it's already cached in...
-	const QStringList& list = m_list.value(sFilename);
-	if (!list.isEmpty())
-		return addTypes(list);
+	if (!m_list.isEmpty()) {
+		const QStringList& list = m_list.value(sFilename);
+		if (list.isEmpty())
+			return false;
+		else
+			return addTypes(list);
+	}
 
 	// Not cached, yet...
 	++m_iFileCount;

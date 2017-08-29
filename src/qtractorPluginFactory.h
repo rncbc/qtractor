@@ -154,6 +154,9 @@ protected slots:
 
 protected:
 
+	// Scan start method.
+	bool start();
+
 	// Service methods (internal)
 	bool addTypes(const QStringList& list);
 
