@@ -2542,6 +2542,9 @@
    </property>
   </action>
   <action name="viewBusesAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/qtractorTracks.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Buses...</string>
    </property>
