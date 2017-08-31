@@ -7271,13 +7271,14 @@ void qtractorMainForm::removeEditorForm ( qtractorMidiEditorForm *pEditorForm )
 // Fast-timer slot funtion.
 void qtractorMainForm::fastTimerSlot (void)
 {
+#if 0
 	// Avoid stabilize re-entrancy...
 	if (m_pSession->isBusy()) {
 		// Register the next timer slot.
 		QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(fastTimerSlot()));
 		return;
 	}
-
+#endif
 	// Currrent state...
 	const bool bPlaying = m_pSession->isPlaying();
 	long iPlayHead = long(m_pSession->playHead());
@@ -7393,7 +7394,7 @@ void qtractorMainForm::slowTimerSlot (void)
 {
 	// Currrent state...
 	const bool bPlaying = m_pSession->isPlaying();
-	long iPlayHead = long(m_pSession->playHead());
+	unsigned long iPlayHead = m_pSession->playHead();
 
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	qtractorMidiEngine  *pMidiEngine  = m_pSession->midiEngine();
@@ -7414,11 +7415,9 @@ void qtractorMainForm::slowTimerSlot (void)
 					int(bPlaying), int(state == JackTransportRolling));
 			#endif
 				iPlayHead = pos.frame;
+				transportPlay(); // Toggle playing!
 				if (!bPlaying)
 					m_pSession->seek(iPlayHead, true);
-				transportPlay(); // Toggle playing!
-			//	if (bPlaying)
-			//		m_pSession->seek(iPlayHead, true);
 			}
 			// 2. Watch for temp/time-sig changes on JACK transport...
 			if (pos.valid & JackPositionBBT) {
@@ -7499,7 +7498,7 @@ void qtractorMainForm::slowTimerSlot (void)
 				if (iSessionEnd < iLoopEnd)
 					iSessionEnd = iLoopEnd;
 			}
-			if (m_iPlayHead > iSessionEnd)
+			if (iPlayHead > iSessionEnd)
 				transportPlay(); // Stop at once!
 		}
 	}
