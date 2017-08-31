@@ -146,7 +146,7 @@
 
 #include <math.h>
 
-// Timer constant (magic) stuff.
+// Timer constants (magic) stuff.
 #define QTRACTOR_TIMER_MSECS    66
 #define QTRACTOR_TIMER_DELAY    233
 
@@ -271,11 +271,6 @@ qtractorMainForm::qtractorMainForm (
 
 	m_iBackupCount = 0;
 
-	m_iPeakTimer = 0;
-	m_iPlayTimer = 0;
-	m_iIdleTimer = 0;
-
-	m_iTransportTimer   = 0;
 	m_iTransportUpdate  = 0;
 	m_iTransportRolling = 0;
 	m_bTransportPlaying = false;
@@ -285,6 +280,8 @@ qtractorMainForm::qtractorMainForm (
 	m_iXrunCount = 0;
 	m_iXrunSkip  = 0;
 	m_iXrunTimer = 0;
+
+	m_iAudioPeakTimer = 0;
 
 	m_iAudioRefreshTimer = 0;
 	m_iMidiRefreshTimer  = 0;
@@ -297,12 +294,12 @@ qtractorMainForm::qtractorMainForm (
 	m_iAudioPropertyChange = 0;
 
 	// Configure the audio file peak factory...
-	qtractorAudioPeakFactory *pPeakFactory
+	qtractorAudioPeakFactory *pAudioPeakFactory
 		= m_pSession->audioPeakFactory();
-	if (pPeakFactory) {
-		QObject::connect(pPeakFactory,
+	if (pAudioPeakFactory) {
+		QObject::connect(pAudioPeakFactory,
 			SIGNAL(peakEvent()),
-			SLOT(peakNotify()));
+			SLOT(audioPeakNotify()));
 	}
 
 	// Configure the audio engine event handling...
@@ -1625,8 +1622,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 
 	autoSaveReset();
 
-	// Register the first timer slot.
-	QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(timerSlot()));
+	// Register the first timer slots.
+	QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(slowTimerSlot()));
+	QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(fastTimerSlot()));
 }
 
 
@@ -5794,8 +5792,6 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 	}	// Start something... ;)
 	else ++m_iTransportUpdate;
 
-	updateTransportLater();
-
 	// Done with playback switch...
 	return true;
 }
@@ -5832,8 +5828,7 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 			// The allocated command is unhelpful...
 			delete pClipCommand;
 			// Try to postpone an overall refresh...
-			if (m_iPeakTimer  < QTRACTOR_TIMER_DELAY)
-				m_iPeakTimer += QTRACTOR_TIMER_DELAY;
+			++m_iAudioPeakTimer;
 		}
 	}
 
@@ -7273,13 +7268,13 @@ void qtractorMainForm::removeEditorForm ( qtractorMidiEditorForm *pEditorForm )
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Timer stuff.
 
-// Timer slot funtion.
-void qtractorMainForm::timerSlot (void)
+// Fast-timer slot funtion.
+void qtractorMainForm::fastTimerSlot (void)
 {
 	// Avoid stabilize re-entrancy...
 	if (m_pSession->isBusy()) {
 		// Register the next timer slot.
-		QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(timerSlot()));
+		QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(fastTimerSlot()));
 		return;
 	}
 
@@ -7366,14 +7361,45 @@ void qtractorMainForm::timerSlot (void)
 		// Done with transport tricks.
 	}
 
+	// Always update mixer monitoring...
+	if (m_pMixer)
+		m_pMixer->refresh();
+
+	// Asynchronous observer update...
+	qtractorSubject::flushQueue(true);
+
+#ifdef CONFIG_LV2
+#ifdef CONFIG_LV2_TIME
+	// Update plugin LV2 Time designated ports, if any...
+	qtractorLv2Plugin::updateTimePost();
+#endif
+#ifdef CONFIG_LV2_UI
+	// Crispy plugin LV2 UI idle-updates...
+	qtractorLv2Plugin::idleEditorAll();
+#endif
+#endif
+#ifdef CONFIG_VST
+	// Crispy plugin VST UI idle-updates...
+	qtractorVstPlugin::idleEditorAll();
+#endif
+
+	// Register the next fast-timer slot.
+	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(fastTimerSlot()));
+}
+
+
+// Slow-timer slot funtion.
+void qtractorMainForm::slowTimerSlot (void)
+{
+	// Currrent state...
+	const bool bPlaying = m_pSession->isPlaying();
+	long iPlayHead = long(m_pSession->playHead());
+
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	qtractorMidiEngine  *pMidiEngine  = m_pSession->midiEngine();
+
 	// Read JACK transport state...
 	jack_client_t *pJackClient = pAudioEngine->jackClient();
-	if (m_iTransportTimer  > 0) {
-		m_iTransportTimer -= QTRACTOR_TIMER_MSECS;
-		if (m_iTransportTimer < 0)
-			m_iTransportTimer = 0;
-	}
-	else
 	if (pJackClient && !pAudioEngine->isFreewheel()) {
 		jack_position_t pos;
 		jack_transport_state_t state
@@ -7430,9 +7456,7 @@ void qtractorMainForm::timerSlot (void)
 	}
 
 	// Check if its time to refresh playhead timer...
-	if (bPlaying &&
-		(m_iPlayTimer -= QTRACTOR_TIMER_MSECS) < 0) {
-		 m_iPlayTimer  = QTRACTOR_TIMER_DELAY;
+	if (bPlaying) {
 		updateTransportTime(iPlayHead);
 		// If recording update track view and session length, anyway...
 		if (m_pSession->isRecording()) {
@@ -7480,17 +7504,9 @@ void qtractorMainForm::timerSlot (void)
 		}
 	}
 
-	// Check if its time to refresh some tracks...
-	if ( m_iPeakTimer  > 0 &&
-		(m_iPeakTimer -= QTRACTOR_TIMER_MSECS) < 0) {
-		 m_iPeakTimer  = 0;
-		m_pTracks->trackView()->updateContents();
-	}
-
 	// Check if we've got some XRUN callbacks...
-	if ( m_iXrunTimer  > 0 &&
-		(m_iXrunTimer -= QTRACTOR_TIMER_MSECS) < 0) {
-		 m_iXrunTimer  = 0;
+	if (m_iXrunTimer > 0 && --m_iXrunTimer < 1) {
+		m_iXrunTimer = 0;
 		// Reset audio/MIDI drift correction...
 		if (bPlaying)
 			pMidiEngine->resetDrift();
@@ -7508,10 +7524,15 @@ void qtractorMainForm::timerSlot (void)
 		stabilizeForm();
 	}
 
+	// Check if its time to refresh some tracks...
+	if (m_iAudioPeakTimer > 0 && --m_iAudioPeakTimer < 1) {
+		m_iAudioPeakTimer = 0;
+		m_pTracks->trackView()->updateContents();
+	}
+
 	// Check if its time to refresh Audio connections...
-	if ( m_iAudioRefreshTimer  > 0 &&
-		(m_iAudioRefreshTimer -= QTRACTOR_TIMER_MSECS) < 0) {
-		 m_iAudioRefreshTimer  = 0;
+	if (m_iAudioRefreshTimer > 0 && --m_iAudioRefreshTimer < 1) {
+		m_iAudioRefreshTimer = 0;
 		if (pAudioEngine->updateConnects() == 0) {
 			appendMessagesColor(
 				tr("Audio connections change."), "#cc9966");
@@ -7525,9 +7546,8 @@ void qtractorMainForm::timerSlot (void)
 	}
 
 	// MIDI connections should be checked too...
-	if ( m_iMidiRefreshTimer  > 0 &&
-		(m_iMidiRefreshTimer -= QTRACTOR_TIMER_MSECS) < 0) {
-		 m_iMidiRefreshTimer  = 0;
+	if (m_iMidiRefreshTimer > 0 && --m_iMidiRefreshTimer < 1) {
+		m_iMidiRefreshTimer = 0;
 		if (pMidiEngine->updateConnects() == 0) {
 			appendMessagesColor(
 				tr("MIDI connections change."), "#66cc99");
@@ -7536,14 +7556,13 @@ void qtractorMainForm::timerSlot (void)
 	}
 
 	// Check if its time to refresh audition/pre-listening status...
-	if ( m_iPlayerTimer  > 0 &&
-		(m_iPlayerTimer -= QTRACTOR_TIMER_MSECS) < 0) {
-		 m_iPlayerTimer  = 0;
+	if (m_iPlayerTimer > 0 && --m_iPlayerTimer < 1) {
+		m_iPlayerTimer = 0;
 		if (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen()) {
 			if (m_pFiles && m_pFiles->isPlayState())
-				m_iPlayerTimer += (QTRACTOR_TIMER_DELAY << 2);
+				++m_iPlayerTimer;
 		}
-		if (m_iPlayerTimer < QTRACTOR_TIMER_MSECS) {
+		if (m_iPlayerTimer < 1) {
 			if (m_pFiles && m_pFiles->isPlayState())
 				m_pFiles->setPlayState(false);
 			appendMessages(tr("Playing ended."));
@@ -7552,63 +7571,29 @@ void qtractorMainForm::timerSlot (void)
 		}
 	}
 
-	// Always update mixer monitoring...
-	if (m_pMixer)
-		m_pMixer->refresh();
-
-	// Asynchronous observer update...
-	qtractorSubject::flushQueue(true);
-
-#ifdef CONFIG_LV2
-#ifdef CONFIG_LV2_TIME
-	// Update plugin LV2 Time designated ports, if any...
-	qtractorLv2Plugin::updateTimePost();
-#endif
-#ifdef CONFIG_LV2_UI
-	// Crispy plugin LV2 UI idle-updates...
-	qtractorLv2Plugin::idleEditorAll();
-#endif
-#endif
-#ifdef CONFIG_VST
-	// Crispy plugin VST UI idle-updates...
-	qtractorVstPlugin::idleEditorAll();
-#endif
-
 	// Slower plugin UI idle cycle...
-	if ((m_iIdleTimer -= QTRACTOR_TIMER_MSECS) < 0) {
-		 m_iIdleTimer  = QTRACTOR_TIMER_DELAY;
-	#ifdef CONFIG_DSSI
-	#ifdef CONFIG_LIBLO
-		qtractorDssiPlugin::idleEditorAll();
-	#endif
-	#endif
-		// Auto-save option routine...
-		if (m_iAutoSavePeriod > 0 && m_iDirtyCount > 0) {
-			m_iAutoSaveTimer += QTRACTOR_TIMER_DELAY;
-			if (m_iAutoSaveTimer > m_iAutoSavePeriod && !bPlaying) {
-				m_iAutoSaveTimer = 0;
-				autoSaveSession();
-			}
+#ifdef CONFIG_DSSI
+#ifdef CONFIG_LIBLO
+	qtractorDssiPlugin::idleEditorAll();
+#endif
+#endif
+
+	// Auto-save option routine...
+	if (m_iAutoSavePeriod > 0 && m_iDirtyCount > 0) {
+		m_iAutoSaveTimer += QTRACTOR_TIMER_DELAY;
+		if (m_iAutoSaveTimer > m_iAutoSavePeriod && !bPlaying) {
+			m_iAutoSaveTimer = 0;
+			autoSaveSession();
 		}
 	}
 
-	// Register the next timer slot.
-	QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(timerSlot()));
+	// Register the next slow-timer slot.
+	QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(slowTimerSlot()));
 }
 
 
 //-------------------------------------------------------------------------
 // qtractorMainForm -- MIDI engine notifications.
-
-// Audio file peak notification slot.
-void qtractorMainForm::peakNotify (void)
-{
-	// A peak file has just been (re)created;
-	// try to postpone the event effect a little more...
-	if (m_iPeakTimer  < QTRACTOR_TIMER_DELAY)
-		m_iPeakTimer += QTRACTOR_TIMER_DELAY;
-}
-
 
 // ALSA sequencer notification slot.
 void qtractorMainForm::alsaNotify (void)
@@ -7618,8 +7603,16 @@ void qtractorMainForm::alsaNotify (void)
 
 	// A MIDI graph change has just been occurred;
 	// try to postpone the event effect a little more...
-	if (m_iMidiRefreshTimer  < QTRACTOR_TIMER_DELAY)
-		m_iMidiRefreshTimer += QTRACTOR_TIMER_DELAY;
+	++m_iMidiRefreshTimer;
+}
+
+
+// Audio file peak notification slot.
+void qtractorMainForm::audioPeakNotify (void)
+{
+	// An audio peak file has just been (re)created;
+	// try to postpone the event effect a little more...
+	++m_iAudioPeakTimer;
 }
 
 
@@ -7669,8 +7662,7 @@ void qtractorMainForm::audioXrunNotify (void)
 		++m_iXrunSkip;
 
 	// Defer the informative effect...
-	if (m_iXrunTimer  < QTRACTOR_TIMER_DELAY)
-		m_iXrunTimer += QTRACTOR_TIMER_DELAY;
+	++m_iXrunTimer;
 }
 
 
@@ -7679,8 +7671,7 @@ void qtractorMainForm::audioPortNotify (void)
 {
 	// An Audio graph change has just been issued;
 	// try to postpone the event effect a little more...
-	if (m_iAudioRefreshTimer  < QTRACTOR_TIMER_DELAY)
-		m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
+	++m_iAudioRefreshTimer;
 }
 
 
@@ -7867,8 +7858,7 @@ void qtractorMainForm::audioPropNotify (void)
 {
 	// An Audio property change has just been issued;
 	// try to postpone the event effect a little more...
-	if (m_iAudioRefreshTimer  < QTRACTOR_TIMER_DELAY)
-		m_iAudioRefreshTimer += QTRACTOR_TIMER_DELAY;
+	++m_iAudioRefreshTimer;
 
 	// Mark that a complete refresh is needed...
 	++m_iAudioPropertyChange;
@@ -8159,8 +8149,7 @@ void qtractorMainForm::activateAudioFile (
 	}
 
 	// Try updating player status anyway...
-	if (m_iPlayerTimer  < QTRACTOR_TIMER_DELAY)
-		m_iPlayerTimer += QTRACTOR_TIMER_DELAY;
+	++m_iPlayerTimer;
 
 	stabilizeForm();
 }
@@ -8218,8 +8207,7 @@ void qtractorMainForm::activateMidiFile (
 	}
 
 	// Try updating player status anyway...
-	if (m_iPlayerTimer  < QTRACTOR_TIMER_DELAY)
-		m_iPlayerTimer += QTRACTOR_TIMER_DELAY;
+	++m_iPlayerTimer;
 
 	stabilizeForm();
 }
@@ -8342,9 +8330,6 @@ void qtractorMainForm::updateNotifySlot ( unsigned int flags )
 void qtractorMainForm::updateContents (
 	qtractorMidiEditor *pMidiEditor, bool bRefresh )
 {
-	// First of all give some slack to transport sync'ing...
-	if (bRefresh) updateTransportLater();
-
 	// Maybe, just maybe, we've made things larger...
 	m_pTempoCursor->clear();
 	m_pSession->updateTimeScale();
@@ -8457,14 +8442,6 @@ void qtractorMainForm::transportTempoFinished (void)
 	const bool bBlockSignals = m_pTempoSpinBox->blockSignals(true);
 	m_pTempoSpinBox->clearFocus();
 	m_pTempoSpinBox->blockSignals(bBlockSignals);
-}
-
-
-// Add some delay to (JACK) transport sync'ing stuff...
-void qtractorMainForm::updateTransportLater (void)
-{
-	if (m_iTransportTimer  < QTRACTOR_TIMER_DELAY)
-		m_iTransportTimer += QTRACTOR_TIMER_DELAY;
 }
 
 
