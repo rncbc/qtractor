@@ -584,7 +584,7 @@ bool qtractorPluginFactory::addTypes (
 // Constructor.
 qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
 	qtractorPluginFactory *pPluginFactory )
-	: QProcess(pPluginFactory), m_iFileCount(0), m_iExitStatus(-1)
+	: QProcess(pPluginFactory), m_iExitStatus(-1)
 {
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
@@ -640,14 +640,9 @@ bool qtractorPluginFactoryProxy::open ( bool bReset )
 void qtractorPluginFactoryProxy::close (void)
 {
 	// We're we scanning hard?...
-	if (QProcess::state() != QProcess::NotRunning) {
+	if (QProcess::state() != QProcess::NotRunning || m_iExitStatus < 0) {
 		QProcess::closeWriteChannel();
-		for (int iFile = 0; iFile < m_iFileCount; ++iFile) {
-			if (QProcess::waitForFinished(200) || m_iExitStatus >= 0)
-				break;
-			QApplication::processEvents(
-				QEventLoop::ExcludeUserInputEvents);
-		}
+		QProcess::waitForFinished(200);
 	}
 
 	// Close cache file...
@@ -667,7 +662,6 @@ bool qtractorPluginFactoryProxy::start (void)
 		return false;
 
 	// Start from scratch...
-	m_iFileCount = 0;
 	m_iExitStatus = -1;
 
 	// Get the main scanner executable...
@@ -726,8 +720,6 @@ bool qtractorPluginFactoryProxy::addTypes (
 	}
 
 	// Not cached, yet...
-	++m_iFileCount;
-
 	const QString& sHint = qtractorPluginType::textFromHint(typeHint);
 	const QString& sLine = sHint + ':' + sFilename + '\n';
 	const QByteArray& data = sLine.toUtf8();

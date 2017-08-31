@@ -164,8 +164,6 @@ protected:
 private:
 
 	// Instance state.
-	int m_iFileCount;
-
 	volatile int m_iExitStatus;
 
 	// Cache file object.
