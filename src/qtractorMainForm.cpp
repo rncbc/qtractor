@@ -5828,7 +5828,7 @@ bool qtractorMainForm::setRecording ( bool bRecording )
 			// The allocated command is unhelpful...
 			delete pClipCommand;
 			// Try to postpone an overall refresh...
-			++m_iAudioPeakTimer;
+			if (m_iAudioPeakTimer < 2) ++m_iAudioPeakTimer;
 		}
 	}
 
@@ -7602,7 +7602,7 @@ void qtractorMainForm::alsaNotify (void)
 
 	// A MIDI graph change has just been occurred;
 	// try to postpone the event effect a little more...
-	++m_iMidiRefreshTimer;
+	if (m_iMidiRefreshTimer < 2) ++m_iMidiRefreshTimer;
 }
 
 
@@ -7611,7 +7611,7 @@ void qtractorMainForm::audioPeakNotify (void)
 {
 	// An audio peak file has just been (re)created;
 	// try to postpone the event effect a little more...
-	++m_iAudioPeakTimer;
+	if (m_iAudioPeakTimer < 2) ++m_iAudioPeakTimer;
 }
 
 
@@ -7670,7 +7670,7 @@ void qtractorMainForm::audioPortNotify (void)
 {
 	// An Audio graph change has just been issued;
 	// try to postpone the event effect a little more...
-	++m_iAudioRefreshTimer;
+	if (m_iAudioRefreshTimer < 2) ++m_iAudioRefreshTimer;
 }
 
 
@@ -7857,7 +7857,7 @@ void qtractorMainForm::audioPropNotify (void)
 {
 	// An Audio property change has just been issued;
 	// try to postpone the event effect a little more...
-	++m_iAudioRefreshTimer;
+	if (m_iAudioRefreshTimer < 2) ++m_iAudioRefreshTimer;
 
 	// Mark that a complete refresh is needed...
 	++m_iAudioPropertyChange;
