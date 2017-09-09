@@ -1,7 +1,7 @@
 // qtractorClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -99,10 +99,16 @@ public:
 	unsigned long clipSelectEnd() const
 		{ return m_iSelectEnd; }
 
-	// Clip gain/volume accessors.
-	void setClipGain(float fGain);
+	// Clip gain/panning accessors.
+	void setClipGain(float fGain)
+		{ m_fGain = fGain; }
 	float clipGain() const
 		{ return m_fGain; }
+
+	void setClipPanning(float fPanning)
+		{ m_fPanning = fPanning; }
+	float clipPanning() const
+		{ return m_fPanning; }
 
 	// Fade modes.
 	enum FadeMode {
@@ -351,9 +357,6 @@ protected:
 	virtual bool saveClipElement(
 		qtractorDocument *pDocument, QDomElement *pElement) = 0;
 
-	// Gain fractionalizer(tm)...
-	struct { int num, den; } m_fractGain;
-
 private:
 
 	qtractorTrack *m_pTrack;            // Track reference.
@@ -372,8 +375,8 @@ private:
 	unsigned long m_iSelectStart;       // Clip loop start frame-offset.
 	unsigned long m_iSelectEnd;         // Clip loop end frame-offset.
 
-	// Clip gain/volume.
-	float m_fGain;
+	float m_fGain;                      // Clip gain/volume;
+	float m_fPanning;                   // Clip panning;
 
 	// Take(record) descriptor.
 	TakeInfo *m_pTakeInfo;

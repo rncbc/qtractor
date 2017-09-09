@@ -612,7 +612,7 @@ void qtractorAudioMeter::updatePanning (void)
 //	setPanning(m_pAudioMonitor->panning());
 
 	panSlider()->setToolTip(
-		tr("Pan: %1").arg(panning(), 0, 'g', 2));
+		tr("Pan: %1").arg(panning(), 0, 'g', 1));
 }
 
 // Gain-slider value change method.

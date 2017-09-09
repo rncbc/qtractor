@@ -49,13 +49,13 @@ protected slots:
 	void accept();
 	void reject();
 	void changed();
+
 	void formatChanged(int);
 	void stabilizeForm();
     void browseFilename();
 
 	void filenameChanged(const QString& sFilename);
 	void trackChannelChanged(int iTrackChannel);
-
 	void clipStartChanged(unsigned long iClipStart);
 
 protected:

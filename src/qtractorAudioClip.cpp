@@ -136,6 +136,8 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 	m_bWsolaQuickSeek = qtractorAudioBuffer::isDefaultWsolaQuickSeek();
 
 	m_iOverlap = 0;
+
+	m_pFractGains = NULL;
 }
 
 // Copy constructor.
@@ -154,9 +156,12 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 
 	m_iOverlap = clip.overlap();
 
+	m_pFractGains = NULL;
+
 	setFilename(clip.filename());
-	setClipGain(clip.clipGain());
 	setClipName(clip.clipName());
+	setClipGain(clip.clipGain());
+	setClipPanning(clip.clipPanning());
 
 	// Clone the audio peak, if any...
 	if (clip.m_pPeak)
@@ -171,60 +176,6 @@ qtractorAudioClip::~qtractorAudioClip (void)
 
 	if (m_pPeak)
 		delete m_pPeak;
-}
-
-
-// Time-stretch factor.
-void qtractorAudioClip::setTimeStretch ( float fTimeStretch )
-{
-	m_fTimeStretch = fTimeStretch;
-}
-
-float qtractorAudioClip::timeStretch (void) const
-{
-	return m_fTimeStretch;
-}
-
-
-// Pitch-shift factor.
-void qtractorAudioClip::setPitchShift ( float fPitchShift )
-{
-	m_fPitchShift = fPitchShift;
-}
-
-float qtractorAudioClip::pitchShift (void) const
-{
-	return m_fPitchShift;
-}
-
-
-// WSOLA time-stretch modes (local options).
-void qtractorAudioClip::setWsolaTimeStretch ( bool bWsolaTimeStretch )
-{
-	m_bWsolaTimeStretch = bWsolaTimeStretch;
-}
-
-bool qtractorAudioClip::isWsolaTimeStretch (void) const
-{
-	return m_bWsolaTimeStretch;
-}
-
-
-void qtractorAudioClip::setWsolaQuickSeek ( bool bWsolaQuickSeek )
-{
-	m_bWsolaQuickSeek = bWsolaQuickSeek;
-}
-
-bool qtractorAudioClip::isWsolaQuickSeek (void) const
-{
-	return m_bWsolaQuickSeek;
-}
-
-
-// Alternate overlap tag.
-unsigned int qtractorAudioClip::overlap (void) const
-{
-	return m_iOverlap;
 }
 
 
@@ -325,6 +276,8 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 							sFilename, pBuff->timeStretch());
 					}
 				}
+				// Gain/panning fractionalizer(tm)...
+				updateFractGains(pBuff);
 				// Clip name should be clear about it all.
 				if (clipName().isEmpty())
 					setClipName(shortClipName(QFileInfo(filename()).baseName()));
@@ -341,6 +294,8 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 
 	pBuff->setOffset(clipOffset());
 	pBuff->setLength(clipLength());
+	pBuff->setGain(clipGain());
+	pBuff->setPanning(clipPanning());
 	pBuff->setTimeStretch(m_fTimeStretch);
 	pBuff->setPitchShift(m_fPitchShift);
 	pBuff->setWsolaTimeStretch(m_bWsolaTimeStretch);
@@ -351,6 +306,9 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		m_pData = NULL;
 		return false;
 	}
+
+	// Gain/panning fractionalizer(tm)...
+	updateFractGains(pBuff);
 
 	// Default clip length will be the whole file length.
 	if (clipLength() == 0)
@@ -406,6 +364,11 @@ void qtractorAudioClip::closeAudioFile (void)
 	if (m_pKey) {
 		delete m_pKey;
 		m_pKey = NULL;
+	}
+
+	if (m_pFractGains) {
+		delete [] m_pFractGains;
+		m_pFractGains = NULL;
 	}
 }
 
@@ -502,6 +465,30 @@ bool qtractorAudioClip::isHashLinked (void) const
 void qtractorAudioClip::clearHashTable (void)
 {
 	g_hashTable.clear();
+}
+
+
+// Gain/panning fractionalizer(tm)...
+void qtractorAudioClip::updateFractGains ( qtractorAudioBuffer *pBuff )
+{
+	if (m_pFractGains) {
+		delete [] m_pFractGains;
+		m_pFractGains = NULL;
+	}
+
+	const unsigned short iChannels = pBuff->channels();
+	m_pFractGains = new FractGain [iChannels];
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		FractGain& fractGain = m_pFractGains[i];
+		fractGain.num = 1;
+		fractGain.den = 8;
+		float fGain = clipGain() * pBuff->channelGain(i);
+		while(fGain != int(fGain) && fractGain.den < 20) {
+			fractGain.den += 2;
+			fGain *= 4.0f;
+		}
+		fractGain.num = int(fGain);
+	}
 }
 
 
@@ -695,7 +682,6 @@ void qtractorAudioClip::draw (
 	// Draw peak chart...
 	const int h1 = (clipRect.height() / iChannels);
 	const int h2 = (h1 >> 1);
-	const int h2gain = (h2 * m_fractGain.num);
 
 	int x, y, ymax, ymin, yrms;
 
@@ -705,9 +691,11 @@ void qtractorAudioClip::draw (
 		x = clipRect.x() + (n * clipRect.width()) / n2;
 		y = clipRect.y() + h2;
 		for (k = 0; k < iChannels; ++k) {
-			ymax = (h2gain * pPeakFrames->max) >> m_fractGain.den;
-			ymin = (h2gain * pPeakFrames->min) >> m_fractGain.den;
-			yrms = (h2gain * pPeakFrames->rms) >> m_fractGain.den;
+			const FractGain& fractGain = m_pFractGains[k];
+			const int h2gain = (h2 * fractGain.num);
+			ymax = (h2gain * pPeakFrames->max) >> fractGain.den;
+			ymin = (h2gain * pPeakFrames->min) >> fractGain.den;
+			yrms = (h2gain * pPeakFrames->rms) >> fractGain.den;
 			pPolyMax[k]->setPoint(n, x, y - ymax);
 			pPolyMax[k]->setPoint(iPolyPoints - n - 1, x, y + ymin);
 			pPolyRms[k]->setPoint(n, x, y - yrms);
@@ -746,10 +734,14 @@ QString qtractorAudioClip::toolTip (void) const
 			sToolTip += QObject::tr("\nAudio:\t%1 channels, %2 Hz")
 				.arg(pFile->channels())
 				.arg(pFile->sampleRate());
-			float fGain = clipGain();
+			const float fGain = clipGain();
 			if (fGain < 0.999f || fGain > 1.001f)
 				sToolTip += QObject::tr(" (%1 dB)")
 					.arg(20.0f * ::log10f(fGain), 0, 'g', 2);
+			const float fPanning = clipPanning();
+			if (fPanning < -0.001f || fPanning > +0.001f)
+				sToolTip += QObject::tr(" (%1 pan)")
+					.arg(fPanning, 0, 'g', 1);
 			if (pBuff->isTimeStretch())
 				sToolTip += QObject::tr("\n\t(%1% time stretch)")
 					.arg(100.0f * pBuff->timeStretch(), 0, 'g', 3);
@@ -863,7 +855,6 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 		::memset(ppFrames[i], 0, iFrames * sizeof(float));
 	}
 
-	const float fGain = clipGain();
 	unsigned long iFrameStart = 0;
 	while (iFrameStart < iLength) {
 		pBuff->syncExport();
@@ -872,6 +863,7 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 			if (nread < 1)
 				break;
 			for (i = 0; i < iChannels; ++i) {
+				const float fGain = clipGain() * pBuff->channelGain(i);
 				float *pFrames = ppFrames[i];
 				for (int n = 0; n < nread; ++n)
 					*pFrames++ *= fGain;

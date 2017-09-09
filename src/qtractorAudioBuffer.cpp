@@ -28,6 +28,8 @@
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
 
+#include <math.h>
+
 
 // Glitch, click, pop-free ramp length (in frames).
 #define QTRACTOR_RAMP_LENGTH	32
@@ -238,6 +240,11 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 
 	m_pTimeStretcher = NULL;
 
+	m_fGain          = 1.0f;
+	m_fPanning       = 0.0f;
+
+	m_pfGains        = NULL;
+
 	m_fNextGain      = 0.0f;
 	m_iRampGain      = 1;
 
@@ -426,6 +433,24 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 			m_ppBuffer[i] = new float [iBufferSize];
 	}
 
+	// Rebuild the whole panning-gain array...
+	m_pfGains = new float [iBuffers];
+
+	// (Re)compute stereo-panning/balance gains...
+	float afGains[2] = { 1.0f, 1.0f };
+	const float fPan = 0.5f * (1.0f + m_fPanning);
+	if (fPan < 0.499f || fPan > 0.501f) {
+		afGains[0] = ::cosf(fPan * M_PI_2);
+		afGains[1] = ::sinf(fPan * M_PI_2);
+    }
+
+	// Apply to multi-channel gain array (paired fashion)...
+	const unsigned short k = (iBuffers - (iBuffers & 1));
+	for (i = 0 ; i < k; ++i)
+		m_pfGains[i] = afGains[i & 1];
+	for ( ; i < iBuffers; ++i)
+		m_pfGains[i] = m_fGain;
+
 	// Make it sync-managed...
 	if (m_pSyncThread)
 		m_pSyncThread->sync(this);
@@ -448,6 +473,12 @@ void qtractorAudioBuffer::close (void)
 		while (isSyncFlag(CloseSync));
 	}
 
+	// Delete old panning-gains holders...
+	if (m_pfGains) {
+		delete [] m_pfGains;
+		m_pfGains = NULL;
+	}
+
 	// Take careof remains, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Write) {
 		// Close on-the-fly peak file, if applicable...
@@ -456,6 +487,7 @@ void qtractorAudioBuffer::close (void)
 			m_pPeakFile = NULL;
 		}
 	}
+
 
 	// Deallocate any buffer stuff...
 	if (m_pTimeStretcher) {
@@ -1308,15 +1340,16 @@ int qtractorAudioBuffer::readMixFrames (
 
 	// Reset running gain...
 	const float fPrevGain = m_fNextGain;
-	m_fNextGain = fGain;
+	m_fNextGain = fGain * m_fGain;
 	fGainStep = (m_fNextGain - fPrevGain) / float(nread);
 
 	if (iChannels == iBuffers) {
 		for (i = 0; i < iBuffers; ++i) {
 			pFrames = ppFrames[i] + iOffset;
 			pBuffer = m_ppBuffer[i];
-			fGainIter = fPrevGain;
-			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
+			fGainIter = fPrevGain * m_pfGains[i];
+			const float fGainStep2 = fGainStep * m_pfGains[i];
+			for (n = 0; n < nread; ++n, fGainIter += fGainStep2)
 				*pFrames++ += fGainIter * *pBuffer++;
 		}
 	}
@@ -1326,7 +1359,9 @@ int qtractorAudioBuffer::readMixFrames (
 			pFrames = ppFrames[i] + iOffset;
 			pBuffer = m_ppBuffer[j];
 			fGainIter = fPrevGain;
-			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
+			fGainIter = fPrevGain * m_pfGains[j];
+			const float fGainStep2 = fGainStep * m_pfGains[j];
+			for (n = 0; n < nread; ++n, fGainIter += fGainStep2)
 				*pFrames++ += fGainIter * *pBuffer++;
 			if (++j >= iBuffers)
 				j = 0;
@@ -1337,8 +1372,9 @@ int qtractorAudioBuffer::readMixFrames (
 		for (j = 0; j < iBuffers; ++j) {
 			pFrames = ppFrames[i] + iOffset;
 			pBuffer = m_ppBuffer[j];
-			fGainIter = fPrevGain;
-			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
+			fGainIter = fPrevGain * m_pfGains[j];
+			const float fGainStep2 = fGainStep * m_pfGains[j];
+			for (n = 0; n < nread; ++n, fGainIter += fGainStep2)
 				*pFrames++ += fGainIter * *pBuffer++;
 			if (++i >= iChannels)
 				i = 0;
@@ -1472,6 +1508,35 @@ unsigned long qtractorAudioBuffer::length (void) const
 unsigned long qtractorAudioBuffer::fileLength (void) const
 {
 	return m_iFileLength;
+}
+
+
+// Local gain/panning accessors.
+void qtractorAudioBuffer::setGain ( float fGain )
+{
+	m_fGain = fGain;
+}
+
+float qtractorAudioBuffer::gain (void) const
+{
+	return m_fGain;
+}
+
+
+void qtractorAudioBuffer::setPanning ( float fPanning )
+{
+	m_fPanning = fPanning;
+}
+
+float qtractorAudioBuffer::panning (void) const
+{
+	return m_fPanning;
+}
+
+
+float qtractorAudioBuffer::channelGain ( unsigned short i ) const
+{
+	return m_pfGains[i];
 }
 
 

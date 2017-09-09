@@ -198,6 +198,7 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
 	setClipGain(clip.clipGain());
+	setClipPanning(clip.clipPanning());
 	setClipName(clip.clipName());
 
 	m_iFormat = clip.format();
@@ -1222,9 +1223,11 @@ QString qtractorMidiClip::toolTip (void) const
 			.arg(m_pFile->ticksPerBeat());
 	}
 
-	if (clipGain() > 1.0f)
+	const float fVolume = clipGain();
+	if (fVolume < 0.999f || fVolume > 1.001f) {
 		sToolTip += QObject::tr(" (%1% vol)")
-			.arg(100.0f * clipGain(), 0, 'g', 3);
+			.arg(100.0f * fVolume, 0, 'g', 3);
+	}
 
 	return sToolTip;
 }

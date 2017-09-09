@@ -3560,7 +3560,7 @@ bool qtractorMidiEngine::fileExport (
 					if (pNewEvent->type() == qtractorMidiEvent::NOTEON) {
 						const unsigned long iTimeEvent
 							= iTimeClip + pEvent->time();
-						float fGain = pMidiClip->gain(
+						const float fGain = pMidiClip->gain(
 							pSession->frameFromTick(iTimeEvent)
 							- pClip->clipStart());
 						pNewEvent->setVelocity((unsigned char)

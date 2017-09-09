@@ -153,6 +153,15 @@ public:
 	// Current (last known) file length accessor.
 	unsigned long fileLength() const;
 
+	// Local gain/panning accessors.
+	void setGain(float fGain);
+	float gain() const;
+
+	void setPanning(float fPanning);
+	float panning() const;
+
+	float channelGain(unsigned short i) const;
+
 	// Loop points accessors.
 	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
 	unsigned long loopStart() const;
@@ -280,6 +289,11 @@ private:
 	float          m_fPitchShift;
 
 	qtractorTimeStretcher *m_pTimeStretcher;
+
+	float          m_fGain;
+	float          m_fPanning;
+
+	float         *m_pfGains;
 
 	float          m_fNextGain;
 	int            m_iRampGain;

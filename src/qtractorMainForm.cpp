@@ -4897,8 +4897,8 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldMidiDriftCorrect   = m_pOptions->bMidiDriftCorrect;
 	const bool    bOldMidiPlayerBus      = m_pOptions->bMidiPlayerBus;
 	const QString sOldMetroBarFilename   = m_pOptions->sMetroBarFilename;
-	const QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
 	const float   fOldMetroBarGain       = m_pOptions->fMetroBarGain;
+	const QString sOldMetroBeatFilename  = m_pOptions->sMetroBeatFilename;
 	const float   fOldMetroBeatGain      = m_pOptions->fMetroBeatGain;
 	const bool    bOldAudioMetroBus      = m_pOptions->bAudioMetroBus;
 	const bool    bOldAudioMetroAutoConnect = m_pOptions->bAudioMetroAutoConnect;
@@ -5066,8 +5066,8 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldAudioMetronome   && !m_pOptions->bAudioMetronome)   ||
 			(!bOldAudioMetronome   &&  m_pOptions->bAudioMetronome)   ||
 			(sOldMetroBarFilename  != m_pOptions->sMetroBarFilename)  ||
-			(sOldMetroBeatFilename != m_pOptions->sMetroBeatFilename) ||
 			(fOldMetroBarGain      != m_pOptions->fMetroBarGain)      ||
+			(sOldMetroBeatFilename != m_pOptions->sMetroBeatFilename) ||
 			(fOldMetroBeatGain     != m_pOptions->fMetroBeatGain)     ||
 			(iOldAudioMetroOffset  != m_pOptions->iAudioMetroOffset)  ||
 			( bOldAudioMetroBus    && !m_pOptions->bAudioMetroBus)    ||
@@ -6641,9 +6641,9 @@ void qtractorMainForm::updateAudioMetronome (void)
 		return;
 
 	pAudioEngine->setMetroBarFilename(m_pOptions->sMetroBarFilename);
-	pAudioEngine->setMetroBeatFilename(m_pOptions->sMetroBeatFilename);
-
 	pAudioEngine->setMetroBarGain(m_pOptions->fMetroBarGain);
+
+	pAudioEngine->setMetroBeatFilename(m_pOptions->sMetroBeatFilename);
 	pAudioEngine->setMetroBeatGain(m_pOptions->fMetroBeatGain);
 
 	pAudioEngine->setMetroOffset(m_pOptions->iAudioMetroOffset);
@@ -7240,14 +7240,6 @@ void qtractorMainForm::removeEditorForm ( qtractorMidiEditorForm *pEditorForm )
 // Fast-timer slot funtion.
 void qtractorMainForm::fastTimerSlot (void)
 {
-#if 0
-	// Avoid stabilize re-entrancy...
-	if (m_pSession->isBusy()) {
-		// Register the next timer slot.
-		QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(fastTimerSlot()));
-		return;
-	}
-#endif
 	// Currrent state...
 	const bool bPlaying = m_pSession->isPlaying();
 	long iPlayHead = long(m_pSession->playHead());
@@ -7361,6 +7353,13 @@ void qtractorMainForm::fastTimerSlot (void)
 // Slow-timer slot funtion.
 void qtractorMainForm::slowTimerSlot (void)
 {
+	// Avoid stabilize re-entrancy...
+	if (m_pSession->isBusy()) {
+		// Register the next timer slot.
+		QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(slowTimerSlot()));
+		return;
+	}
+
 	// Currrent state...
 	const bool bPlaying = m_pSession->isPlaying();
 	unsigned long iPlayHead = m_pSession->playHead();
