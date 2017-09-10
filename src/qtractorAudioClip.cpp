@@ -613,7 +613,7 @@ void qtractorAudioClip::process (
 				iOffset,
 				pAudioBus->channels(),
 				iClipStart - iFrameStart,
-				gain(iOffset));
+				fadeInOutGain(iOffset));
 		}
 	} else {
 		if (pBuff->inSync(iFrameStart - iClipStart, iOffset)) {
@@ -622,7 +622,7 @@ void qtractorAudioClip::process (
 				(iFrameEnd < iClipEnd ? iFrameEnd : iClipEnd) - iFrameStart,
 				pAudioBus->channels(),
 				0,
-				gain(iOffset));
+				fadeInOutGain(iOffset));
 		}
 	}
 }

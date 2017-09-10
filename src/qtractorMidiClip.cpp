@@ -947,6 +947,7 @@ void qtractorMidiClip::process (
 	const unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
 
 	// Enqueue the requested events...
+	const float fGain = clipGain();
 	qtractorMidiEvent *pEvent
 		= m_playCursor.seek(pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
 	while (pEvent) {
@@ -955,8 +956,8 @@ void qtractorMidiClip::process (
 			break;
 		if (t1 >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON))
-			pMidiEngine->enqueue(pTrack, pEvent, t1,
-				gain(pSession->frameFromTick(t1) - clipStart()));
+			pMidiEngine->enqueue(pTrack, pEvent, t1, fGain
+				* fadeInOutGain(pSession->frameFromTick(t1) - clipStart()));
 		pEvent = pEvent->next();
 	}
 }
@@ -988,6 +989,7 @@ void qtractorMidiClip::process_export (
 	const unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
 
 	// Enqueue the requested events...
+	const float fGain = clipGain();
 	qtractorMidiEvent *pEvent
 		= m_playCursor.seek(pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
 	while (pEvent) {
@@ -996,8 +998,8 @@ void qtractorMidiClip::process_export (
 			break;
 		if (t1 >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON)) {
-			enqueue_export(pTrack, pEvent, t1,
-				gain(pSession->frameFromTick(t1) - clipStart()));
+			enqueue_export(pTrack, pEvent, t1, fGain
+				* fadeInOutGain(pSession->frameFromTick(t1) - clipStart()));
 		}
 		pEvent = pEvent->next();
 	}

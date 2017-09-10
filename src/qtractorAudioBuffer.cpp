@@ -1317,7 +1317,7 @@ int qtractorAudioBuffer::readMixFrames (
 	const unsigned short iBuffers = m_pRingBuffer->channels();
 
 	unsigned short i, j; int n;
-	float fGainIter, fGainStep;
+	float fGainIter, fGainStep1, fGainStep2;
 	float *pFrames, *pBuffer;
 
 	// HACK: Case of clip ramp in/out-set in this run...
@@ -1327,11 +1327,11 @@ int qtractorAudioBuffer::readMixFrames (
 		const int n0 = (m_iRampGain < 0 ? nread - nramp : nramp);
 		const int n1 = (m_iRampGain < 0 ? n0 : 0);
 		const int n2 = (m_iRampGain < 0 ? nread : n0);
-		fGainStep = float(m_iRampGain) / float(nramp);
+		fGainStep1 = float(m_iRampGain) / float(nramp);
 		for (i = 0; i < iBuffers; ++i) {
 			fGainIter = (m_iRampGain < 0 ? 1.0f : 0.0f);
 			pBuffer = m_ppBuffer[i] + n1;
-			for (n = n1; n < n2; ++n, fGainIter += fGainStep)
+			for (n = n1; n < n2; ++n, fGainIter += fGainStep1)
 				*pBuffer++ *= fGainIter;
 		}
 		m_iRampGain = (m_iRampGain < 0 ? 1 : 0);
@@ -1341,14 +1341,14 @@ int qtractorAudioBuffer::readMixFrames (
 	// Reset running gain...
 	const float fPrevGain = m_fNextGain;
 	m_fNextGain = fGain * m_fGain;
-	fGainStep = (m_fNextGain - fPrevGain) / float(nread);
+	fGainStep1 = (m_fNextGain - fPrevGain) / float(nread);
 
 	if (iChannels == iBuffers) {
 		for (i = 0; i < iBuffers; ++i) {
 			pFrames = ppFrames[i] + iOffset;
 			pBuffer = m_ppBuffer[i];
 			fGainIter = fPrevGain * m_pfGains[i];
-			const float fGainStep2 = fGainStep * m_pfGains[i];
+			fGainStep2 = fGainStep1 * m_pfGains[i];
 			for (n = 0; n < nread; ++n, fGainIter += fGainStep2)
 				*pFrames++ += fGainIter * *pBuffer++;
 		}
@@ -1358,9 +1358,8 @@ int qtractorAudioBuffer::readMixFrames (
 		for (i = 0; i < iChannels; ++i) {
 			pFrames = ppFrames[i] + iOffset;
 			pBuffer = m_ppBuffer[j];
-			fGainIter = fPrevGain;
 			fGainIter = fPrevGain * m_pfGains[j];
-			const float fGainStep2 = fGainStep * m_pfGains[j];
+			fGainStep2 = fGainStep1 * m_pfGains[j];
 			for (n = 0; n < nread; ++n, fGainIter += fGainStep2)
 				*pFrames++ += fGainIter * *pBuffer++;
 			if (++j >= iBuffers)
@@ -1373,7 +1372,7 @@ int qtractorAudioBuffer::readMixFrames (
 			pFrames = ppFrames[i] + iOffset;
 			pBuffer = m_ppBuffer[j];
 			fGainIter = fPrevGain * m_pfGains[j];
-			const float fGainStep2 = fGainStep * m_pfGains[j];
+			fGainStep2 = fGainStep1 * m_pfGains[j];
 			for (n = 0; n < nread; ++n, fGainIter += fGainStep2)
 				*pFrames++ += fGainIter * *pBuffer++;
 			if (++i >= iChannels)

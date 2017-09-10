@@ -280,25 +280,20 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 
 
 // Compute clip gain, given current fade-in/out slopes.
-float qtractorClip::gain ( unsigned long iOffset ) const
+float qtractorClip::fadeInOutGain ( unsigned long iOffset ) const
 {
-	if (iOffset >= m_iClipLength)
-		return 0.0f;
-
-	float fGain = m_fGain;
-
 	if (m_iFadeInLength > 0 && iOffset < m_iFadeInLength) {
-		fGain *= (*m_pFadeInFunctor)(
+		return (*m_pFadeInFunctor)(
 			float(iOffset) / float(m_iFadeInLength));
 	}
 
 	if (m_iFadeOutLength > 0 && iOffset > m_iClipLength - m_iFadeOutLength) {
-		fGain *= (*m_pFadeOutFunctor)(
+		return (*m_pFadeOutFunctor)(
 			float(iOffset - (m_iClipLength - m_iFadeOutLength))
 				/ float(m_iFadeOutLength));
 	}
 
-	return fGain;
+	return (iOffset < m_iClipLength ? 1.0f : 0.0f);
 }
 
 

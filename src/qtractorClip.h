@@ -145,6 +145,9 @@ public:
 	unsigned long fadeOutLength() const
 		{ return m_iFadeOutLength; }
 
+	// Compute clip gain, given current fade-in/out slopes.
+	float fadeInOutGain(unsigned long iOffset) const;
+
 	// Clip time reference settler method.
 	void updateClipTime();
 
@@ -196,9 +199,6 @@ public:
 		{ m_bDirty = bDirty; }
 	bool isDirty() const
 		{ return m_bDirty; }
-
-	// Compute clip gain, given current fade-in/out slopes.
-	float gain(unsigned long iOffset) const;
 
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
