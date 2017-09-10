@@ -449,7 +449,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	for (i = 0 ; i < k; ++i)
 		m_pfGains[i] = afGains[i & 1];
 	for ( ; i < iBuffers; ++i)
-		m_pfGains[i] = m_fGain;
+		m_pfGains[i] = 1.0f;
 
 	// Make it sync-managed...
 	if (m_pSyncThread)
