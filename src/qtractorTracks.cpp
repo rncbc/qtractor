@@ -1330,15 +1330,16 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 				while (!pBuff->inSync(0, 0))
 					pBuff->syncExport();
 				pBuff->readMix(ppFrames, iOffset,
-					iChannels, iClipStart - iFrameStart, pClip->gain(iOffset));
+					iChannels, iClipStart - iFrameStart,
+					pClip->fadeInOutGain(iOffset));
 			}
 			else
 			if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
 				const unsigned long iFrame = iFrameStart - iClipStart;
 				while (!pBuff->inSync(iFrame, iFrame))
 					pBuff->syncExport();
-				pBuff->readMix(ppFrames, iBufferSize,
-					iChannels, 0, pClip->gain(iFrameEnd - iClipStart));
+				pBuff->readMix(ppFrames, iBufferSize, iChannels, 0,
+					pClip->fadeInOutGain(iFrameEnd - iClipStart));
 			}
 		}
 		// Actually write to merge audio file;
@@ -1593,6 +1594,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 				const unsigned long iTimeClip
 					= pSession->tickFromFrame(pClip->clipStart());
 				const unsigned long iTimeOffset = iTimeClip - iTimeStart;
+				const float fGain = pMidiClip->clipGain();
 				// For each event...
 				qtractorMidiEvent *pEvent
 					= pMidiClip->sequence()->events().first();
@@ -1604,11 +1606,12 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 					pNewEvent->setTime(iTimeOffset + pEvent->time());
 					if (pNewEvent->type() == qtractorMidiEvent::NOTEON) {
 						const unsigned long iTimeEvent = iTimeClip + pEvent->time();
-						const float fGain = pMidiClip->gain(
-							pSession->frameFromTick(iTimeEvent)
-							- pClip->clipStart());
+						const float fVolume = fGain
+							* pMidiClip->fadeInOutGain(
+								pSession->frameFromTick(iTimeEvent)
+								- pClip->clipStart());
 						pNewEvent->setVelocity((unsigned char)
-							(fGain * float(pEvent->velocity())) & 0x7f);
+							(fVolume * float(pEvent->velocity())) & 0x7f);
 						if (iTimeEvent + pEvent->duration() > iTimeEnd)
 							pNewEvent->setDuration(iTimeEnd - iTimeEvent);
 					}

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Audio clip panning option property is now being introduced.
+  (EXPERIMENTAL)
+  
 - Out-of-process (aka. dummy) VST plug-in inventory scanning
   now restarts automatically and resumes processing in case
   of a premature exit/crash; VST plug-in inventory scan/cache

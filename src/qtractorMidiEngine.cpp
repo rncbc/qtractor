@@ -3548,6 +3548,7 @@ bool qtractorMidiEngine::fileExport (
 					= pSession->tickFromFrame(pClip->clipStart());
 				const unsigned long iTimeOffset
 					= iTimeClip - iTimeStart;
+				const float fGain = pMidiClip->clipGain();
 				// For each event...
 				qtractorMidiEvent *pEvent
 					= pMidiClip->sequence()->events().first();
@@ -3560,11 +3561,12 @@ bool qtractorMidiEngine::fileExport (
 					if (pNewEvent->type() == qtractorMidiEvent::NOTEON) {
 						const unsigned long iTimeEvent
 							= iTimeClip + pEvent->time();
-						float fGain = pMidiClip->gain(
-							pSession->frameFromTick(iTimeEvent)
-							- pClip->clipStart());
+						const float fVolume = fGain
+							* pMidiClip->fadeInOutGain(
+								pSession->frameFromTick(iTimeEvent)
+								- pClip->clipStart());
 						pNewEvent->setVelocity((unsigned char)
-							(fGain * float(pEvent->velocity())) & 0x7f);
+							(fVolume * float(pEvent->velocity())) & 0x7f);
 						if (iTimeEvent + pEvent->duration() > iTimeEnd)
 							pNewEvent->setDuration(iTimeEnd - iTimeEvent);
 					}

@@ -46,22 +46,31 @@ public:
 	~qtractorAudioClip();
 
 	// Time-stretching.
-	void setTimeStretch(float fTimeStretch);
-	float timeStretch() const;
+	void setTimeStretch(float fTimeStretch)
+		 { m_fTimeStretch = fTimeStretch; }
+	float timeStretch() const
+		 { return m_fTimeStretch; }
 
 	// Pitch-shifting.
-	void setPitchShift(float fPitchShift);
-	float pitchShift() const;
+	void setPitchShift(float fPitchShift)
+		{ m_fPitchShift = fPitchShift; }
+	float pitchShift() const
+		{ return m_fPitchShift; }
 
 	// WSOLA time-stretch modes (local options).
-	void setWsolaTimeStretch(bool bWsolaTimeStretch);
-	bool isWsolaTimeStretch() const;
+	void setWsolaTimeStretch(bool bWsolaTimeStretch)
+		 { m_bWsolaTimeStretch = bWsolaTimeStretch; }
+	bool isWsolaTimeStretch() const
+		 { return m_bWsolaTimeStretch; }
 
-	void setWsolaQuickSeek(bool bWsolaQuickSeek);
-	bool isWsolaQuickSeek() const;
+	void setWsolaQuickSeek(bool bWsolaQuickSeek)
+		 { m_bWsolaQuickSeek = bWsolaQuickSeek; }
+	bool isWsolaQuickSeek() const
+		 { return m_bWsolaQuickSeek; }
 
 	// Alternating overlap tag.
-	unsigned int overlap() const;
+	unsigned int overlap() const
+		 { return m_iOverlap; }
 
 	// Clip (re)open method.
 	void open();
@@ -202,6 +211,9 @@ protected:
 	// Alternating overlap test.
 	bool isOverlap(unsigned int iOverlapSize) const;
 
+	// Gain/panning fractionalizer(tm)...
+	void updateFractGains(qtractorAudioBuffer *pBuff);
+
 private:
 
 	// Instance variables.
@@ -215,6 +227,11 @@ private:
 
 	// Alternate overlap tag.
 	unsigned int m_iOverlap;
+
+	// Gain fractionalizers(tm)...
+	typedef struct { int num, den; } FractGain;
+
+	FractGain *m_pFractGains;
 
 	// Most interesting key/data (ref-counted?)...
 	Key  *m_pKey;

@@ -298,10 +298,10 @@ private:
 	qtractorAudioBus    *m_pMetroBus;
 	bool                 m_bMetroAutoConnect;
 	qtractorAudioBuffer *m_pMetroBarBuff;
-	qtractorAudioBuffer *m_pMetroBeatBuff;
 	QString              m_sMetroBarFilename;
-	QString              m_sMetroBeatFilename;
 	float                m_fMetroBarGain;
+	qtractorAudioBuffer *m_pMetroBeatBuff;
+	QString              m_sMetroBeatFilename;
 	float                m_fMetroBeatGain;
 	unsigned long        m_iMetroOffset;
 	unsigned long        m_iMetroBeatStart;

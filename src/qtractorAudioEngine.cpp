@@ -421,18 +421,18 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_bExportDone  = true;
 
 	// Audio metronome stuff.
-	m_bMetronome      = false;
-	m_bMetroBus       = false;
-	m_pMetroBus       = NULL;
+	m_bMetronome        = false;
+	m_bMetroBus         = false;
+	m_pMetroBus         = NULL;
 	m_bMetroAutoConnect = true;
-	m_pMetroBarBuff   = NULL;
-	m_pMetroBeatBuff  = NULL;
-	m_fMetroBarGain   = 1.0f;
-	m_fMetroBeatGain  = 1.0f;
-	m_iMetroOffset    = 0;
-	m_iMetroBeatStart = 0;
-	m_iMetroBeat      = 0;
-	m_bMetroEnabled   = false;
+	m_pMetroBarBuff     = NULL;
+	m_fMetroBarGain     = 1.0f;
+	m_pMetroBeatBuff    = NULL;
+	m_fMetroBeatGain    = 1.0f;
+	m_iMetroOffset      = 0;
+	m_iMetroBeatStart   = 0;
+	m_iMetroBeat        = 0;
+	m_bMetroEnabled     = false;
 
 	// Audition/pre-listening player stuff.
 	ATOMIC_SET(&m_playerLock, 0);
@@ -954,21 +954,17 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameStart);
 		qtractorAudioBuffer *pMetroBuff = NULL;
-		float fMetroGain = 1.0f;
-		if (pNode->beatIsBar(m_iMetroBeat)) {
+		if (pNode->beatIsBar(m_iMetroBeat))
 			pMetroBuff = m_pMetroBarBuff;
-			fMetroGain = m_fMetroBarGain;
-		} else {
+		else
 			pMetroBuff = m_pMetroBeatBuff;
-			fMetroGain = m_fMetroBeatGain;
-		}
 		if (iFrameStart < m_iMetroBeatStart) {
 			pMetroBuff->readMix(m_pMetroBus->out(),
 				iFrameEnd - m_iMetroBeatStart, m_pMetroBus->channels(),
-				m_iMetroBeatStart - iFrameStart, fMetroGain);
+				m_iMetroBeatStart - iFrameStart, 1.0f);
 		} else if (iFrameStart < m_iMetroBeatStart + pMetroBuff->length()) {
 			pMetroBuff->readMix(m_pMetroBus->out(),
-				nframes, m_pMetroBus->channels(), 0, fMetroGain);
+				nframes, m_pMetroBus->channels(), 0, 1.0f);
 		} else {
 			m_iMetroBeatStart = metro_offset(pNode->frameFromBeat(++m_iMetroBeat));
 			pMetroBuff->reset(false);
@@ -1701,9 +1697,11 @@ bool qtractorAudioEngine::openMetroBus (void)
 
 	// We got it...
 	m_pMetroBarBuff = new qtractorAudioBuffer(m_pSyncThread, iChannels);
+	m_pMetroBarBuff->setGain(m_fMetroBarGain);
 	m_pMetroBarBuff->open(m_sMetroBarFilename);
 
 	m_pMetroBeatBuff = new qtractorAudioBuffer(m_pSyncThread, iChannels);
+	m_pMetroBeatBuff->setGain(m_fMetroBeatGain);
 	m_pMetroBeatBuff->open(m_sMetroBeatFilename);
 
 	return true;
