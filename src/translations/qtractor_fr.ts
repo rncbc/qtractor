@@ -1292,7 +1292,7 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="262"/>
         <source>&amp;Panning:</source>
-        <translation>&amp;Panormisation</translation>
+        <translation>&amp;Panoramisation : </translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="322"/>
@@ -1383,7 +1383,7 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="486"/>
         <source>Ti&amp;me Stretch:</source>
-        <translation>Étire&amp;ment temporel</translation>
+        <translation>Étire&amp;ment temporel : </translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="502"/>
