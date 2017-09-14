@@ -7,7 +7,7 @@
         <location filename="../qtractorAudioClip.cpp" line="734"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
-        <translation>Audio:	%1 kanály, %2 Hz</translation>
+        <translation>Zvuk:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="739"/>
@@ -17,14 +17,14 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="743"/>
         <source> (%1 pan)</source>
-        <translation type="unfinished"></translation>
+        <translation> (%1 Vyvážení (Pan)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="746"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
-	(%1% natažení času)</translation>
+	(%1% protažení času)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="749"/>
@@ -1329,7 +1329,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="121"/>
         <source>Track/&amp;Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stopa/&amp;Kanál:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="140"/>
@@ -1360,7 +1360,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="262"/>
         <source>&amp;Panning:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vyvažování:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="322"/>
@@ -1385,7 +1385,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="329"/>
         <source>Forma&amp;t:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Formát:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="342"/>
@@ -1445,7 +1445,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="486"/>
         <source>Ti&amp;me Stretch:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Protažení času:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="502"/>
@@ -10703,8 +10703,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3453"/>
         <source>Whether to have separate audio output ports</source>
-        <translation>
-Zda mít oddělené zvukové výstupní přípojky</translation>
+        <translation>Zda mít oddělené zvukové výstupní přípojky</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3456"/>
