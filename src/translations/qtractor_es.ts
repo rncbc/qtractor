@@ -18,7 +18,7 @@ Audio:	%1 canales, %2 Hz</translation>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="743"/>
         <source> (%1 pan)</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1 pan)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="746"/>
@@ -1282,7 +1282,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="262"/>
         <source>&amp;Panning:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Paneo:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="322"/>
@@ -1297,7 +1297,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="121"/>
         <source>Track/&amp;Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pista/&amp;Canal:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="306"/>
@@ -1318,7 +1318,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="329"/>
         <source>Forma&amp;t:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma&amp;to:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="342"/>
@@ -1384,7 +1384,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="486"/>
         <source>Ti&amp;me Stretch:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ti&amp;me Stretch:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="502"/>
@@ -1415,22 +1415,22 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="583"/>
         <source>Whether to use WSOLA time-stretching</source>
-        <translation type="unfinished">Si se usa estiramiento de tiempo WSOLA</translation>
+        <translation>Si se usa estiramiento de tiempo WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="586"/>
         <source>&amp;WSOLA time-stretching</source>
-        <translation type="unfinished">Estiramiento de tiempo &amp;WSOLA</translation>
+        <translation>Estiramiento de tiempo &amp;WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="599"/>
         <source>Whether to apply WSOLA quick seek time-stretching</source>
-        <translation type="unfinished">Si se aplica estiramiento de tiempo de busqueda rápida WSOLA</translation>
+        <translation>Si se aplica estiramiento de tiempo de busqueda rápida WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="602"/>
         <source>WSOLA quic&amp;k seek</source>
-        <translation type="unfinished">Bús&amp;queda rápida WSOLA</translation>
+        <translation>Bús&amp;queda rápida WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="195"/>
