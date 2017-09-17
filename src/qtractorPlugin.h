@@ -378,9 +378,6 @@ public:
 	unsigned long activateSubjectIndex() const
 		{ return m_iActivateSubjectIndex; }
 
-	bool isActivateSubjectIndex() const
-		{ return int(m_iActivateSubjectIndex) > m_params.count(); }
-
 	// An accessible list of parameters.
 	typedef QMap<unsigned long, qtractorPluginParam *> Params;
 	const Params& params() const
@@ -398,8 +395,6 @@ public:
 			pParam->observer()->setLogarithmic(true);
 		m_params.insert(pParam->index(), pParam);
 		m_paramNames.insert(pParam->name(), pParam);
-		if (pParam->index() >= m_iActivateSubjectIndex)
-			m_iActivateSubjectIndex = pParam->index() + 1;
 	}
 
 	// Instance capped number of audio ports.

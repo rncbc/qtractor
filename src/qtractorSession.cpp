@@ -1517,11 +1517,16 @@ void qtractorSession::releaseTrackName ( qtractorTrack *pTrack )
 }
 
 
-// Transient file-name registry method as far
-// to avoid duplicates across load/save cycles...
-void qtractorSession::registerFilePath ( const QString& sFilename )
+// Transient file-name registry methods as far to
+// avoid duplicates across load/save/record cycles...
+void qtractorSession::acquireFilePath ( const QString& sFilename )
 {
 	m_filePaths.append(sFilename);
+}
+
+void qtractorSession::releaseFilePath ( const QString& sFilename )
+{
+	m_filePaths.removeAll(sFilename);
 }
 
 

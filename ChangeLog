@@ -4,6 +4,54 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Audio clip panning option property is now being introduced.
+  (EXPERIMENTAL)
+  
+- Out-of-process (aka. dummy) VST plug-in inventory scanning
+  now restarts automatically and resumes processing in case
+  of a premature exit/crash; VST plug-in inventory scan/cache
+  persistency is now in place. (EXPERIMENTAL)
+
+- Desktop entry specification file is now finally independent
+  from build/configure template chains.
+
+- Updated target path for freedesktop.org's AppStream metainfo
+  file (formerly AppData).
+
+- Changing the View/Options.../Display/Custom/Style theme
+  takes effect immediately unless it's back to "(default)".
+
+- Slightly slower but better approximation to IEEE 32bit
+  floating point cubic root ie. cbrtf(). (EXPERIMENTAL)
+
+
+0.8.3  2017-06-30  Stickiest Tauon Beta.
+
+- Make sure any just recorded clip filename is not reused
+  while over the same track and session. (CRITICAL)
+
+- LV2 Plug-in worker/schedule interface ring-buffer sizes
+  have been increased to 4KB.
+
+- Fixed track-name auto-incremental numbering suffix when
+  modifying any other track property.
+
+- WSOLA vs. (lib)Rubberband time-stretching options are now
+  individualized on a per audio clip basis.
+  
+- Long overdue, some brand new and fundamental icons revamp.
+
+- Fixed a tempo-map node add/update/remove rescaling with
+  regard to clip-lengths and automation/curve undo/redo.
+
+- Fixed a potential Activate automation/curve index clash,
+  or aliasing, for any plug-ins that change upstream their
+  parameter count or index order, on sessions saved with
+  the old plug-in versions and vice-versa.
+
+
 0.8.2  2017-05-10  Stickier Tauon Beta.
 
 - Track-name uniqueness is now being enforced, by adding
@@ -89,7 +137,7 @@ ChangeLog
   started, is now shown on main track-view, as a momentary
   dark-red vertical line marker.
 
-- LV2 plugin-in parameter optimization: stuff consecutive
+- LV2 plug-in parameter optimization: stuff consecutive
   series of plug-in's parameter value changes, as much as
   possible into one single undo/redo command.
 
@@ -126,7 +174,7 @@ ChangeLog
   line options, wrt. installation directories specification,
   eg. --prefix, --bindir, --libdir, --datadir and --mandir.
 
-- LV2 Plugin-in worker/schedule fix: make request/response
+- LV2 Plug-in worker/schedule fix: make request/response
   ring-buffer writes in one go, hopefully atomic (suggested
   patch by Stefan Westerfeld, while on SpectMorph, thanks).
 

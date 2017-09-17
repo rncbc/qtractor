@@ -28,6 +28,8 @@
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
 
+#include <math.h>
+
 
 // Glitch, click, pop-free ramp length (in frames).
 #define QTRACTOR_RAMP_LENGTH	32
@@ -238,6 +240,11 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 
 	m_pTimeStretcher = NULL;
 
+	m_fGain          = 1.0f;
+	m_fPanning       = 0.0f;
+
+	m_pfGains        = NULL;
+
 	m_fNextGain      = 0.0f;
 	m_iRampGain      = 1;
 
@@ -251,6 +258,11 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 #endif
 
 	m_pPeakFile      = NULL;
+
+	// Time-stretch mode local options.
+	m_bWsolaTimeStretch = g_bDefaultWsolaTimeStretch;
+	m_bWsolaQuickSeek   = g_bDefaultWsolaQuickSeek;
+
 }
 
 // Default destructor.
@@ -387,9 +399,9 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Allocate time-stretch engine whether needed...
 	if (m_bTimeStretch || m_bPitchShift) {
 		unsigned int iFlags = qtractorTimeStretcher::None;
-		if (g_bWsolaTimeStretch)
+		if (m_bWsolaTimeStretch)
 			iFlags |= qtractorTimeStretcher::WsolaTimeStretch;
-		if (g_bWsolaQuickSeek)
+		if (m_bWsolaQuickSeek)
 			iFlags |= qtractorTimeStretcher::WsolaQuickSeek;
 		m_pTimeStretcher = new qtractorTimeStretcher(iBuffers, iSampleRate,
 			m_fTimeStretch, m_fPitchShift, iFlags, m_iBufferSize);
@@ -402,7 +414,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 		for (i = 0; i < iBuffers; ++i) {
 			m_ppInBuffer[i]  = m_ppFrames[i];
 			m_ppOutBuffer[i] = new float [m_iBufferSize];
-			m_ppSrcState[i]  = src_new(g_iResampleType, 1, &err);
+			m_ppSrcState[i]  = src_new(g_iDefaultResampleType, 1, &err);
 		}
 	}
 #endif
@@ -420,6 +432,24 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 		for (i = 0; i < iBuffers; ++i)
 			m_ppBuffer[i] = new float [iBufferSize];
 	}
+
+	// Rebuild the whole panning-gain array...
+	m_pfGains = new float [iBuffers];
+
+	// (Re)compute stereo-panning/balance gains...
+	float afGains[2] = { 1.0f, 1.0f };
+	const float fPan = 0.5f * (1.0f + m_fPanning);
+	if (fPan < 0.499f || fPan > 0.501f) {
+		afGains[0] = ::cosf(fPan * M_PI_2);
+		afGains[1] = ::sinf(fPan * M_PI_2);
+    }
+
+	// Apply to multi-channel gain array (paired fashion)...
+	const unsigned short k = (iBuffers - (iBuffers & 1));
+	for (i = 0 ; i < k; ++i)
+		m_pfGains[i] = afGains[i & 1];
+	for ( ; i < iBuffers; ++i)
+		m_pfGains[i] = 1.0f;
 
 	// Make it sync-managed...
 	if (m_pSyncThread)
@@ -443,6 +473,12 @@ void qtractorAudioBuffer::close (void)
 		while (isSyncFlag(CloseSync));
 	}
 
+	// Delete old panning-gains holders...
+	if (m_pfGains) {
+		delete [] m_pfGains;
+		m_pfGains = NULL;
+	}
+
 	// Take careof remains, if applicable...
 	if (m_pFile->mode() & qtractorAudioFile::Write) {
 		// Close on-the-fly peak file, if applicable...
@@ -451,6 +487,7 @@ void qtractorAudioBuffer::close (void)
 			m_pPeakFile = NULL;
 		}
 	}
+
 
 	// Deallocate any buffer stuff...
 	if (m_pTimeStretcher) {
@@ -1280,7 +1317,7 @@ int qtractorAudioBuffer::readMixFrames (
 	const unsigned short iBuffers = m_pRingBuffer->channels();
 
 	unsigned short i, j; int n;
-	float fGainIter, fGainStep;
+	float fGainIter, fGainStep1, fGainStep2;
 	float *pFrames, *pBuffer;
 
 	// HACK: Case of clip ramp in/out-set in this run...
@@ -1290,11 +1327,11 @@ int qtractorAudioBuffer::readMixFrames (
 		const int n0 = (m_iRampGain < 0 ? nread - nramp : nramp);
 		const int n1 = (m_iRampGain < 0 ? n0 : 0);
 		const int n2 = (m_iRampGain < 0 ? nread : n0);
-		fGainStep = float(m_iRampGain) / float(nramp);
+		fGainStep1 = float(m_iRampGain) / float(nramp);
 		for (i = 0; i < iBuffers; ++i) {
 			fGainIter = (m_iRampGain < 0 ? 1.0f : 0.0f);
 			pBuffer = m_ppBuffer[i] + n1;
-			for (n = n1; n < n2; ++n, fGainIter += fGainStep)
+			for (n = n1; n < n2; ++n, fGainIter += fGainStep1)
 				*pBuffer++ *= fGainIter;
 		}
 		m_iRampGain = (m_iRampGain < 0 ? 1 : 0);
@@ -1303,15 +1340,16 @@ int qtractorAudioBuffer::readMixFrames (
 
 	// Reset running gain...
 	const float fPrevGain = m_fNextGain;
-	m_fNextGain = fGain;
-	fGainStep = (m_fNextGain - fPrevGain) / float(nread);
+	m_fNextGain = fGain * m_fGain;
+	fGainStep1 = (m_fNextGain - fPrevGain) / float(nread);
 
 	if (iChannels == iBuffers) {
 		for (i = 0; i < iBuffers; ++i) {
 			pFrames = ppFrames[i] + iOffset;
 			pBuffer = m_ppBuffer[i];
-			fGainIter = fPrevGain;
-			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
+			fGainIter = fPrevGain * m_pfGains[i];
+			fGainStep2 = fGainStep1 * m_pfGains[i];
+			for (n = 0; n < nread; ++n, fGainIter += fGainStep2)
 				*pFrames++ += fGainIter * *pBuffer++;
 		}
 	}
@@ -1320,8 +1358,9 @@ int qtractorAudioBuffer::readMixFrames (
 		for (i = 0; i < iChannels; ++i) {
 			pFrames = ppFrames[i] + iOffset;
 			pBuffer = m_ppBuffer[j];
-			fGainIter = fPrevGain;
-			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
+			fGainIter = fPrevGain * m_pfGains[j];
+			fGainStep2 = fGainStep1 * m_pfGains[j];
+			for (n = 0; n < nread; ++n, fGainIter += fGainStep2)
 				*pFrames++ += fGainIter * *pBuffer++;
 			if (++j >= iBuffers)
 				j = 0;
@@ -1332,8 +1371,9 @@ int qtractorAudioBuffer::readMixFrames (
 		for (j = 0; j < iBuffers; ++j) {
 			pFrames = ppFrames[i] + iOffset;
 			pBuffer = m_ppBuffer[j];
-			fGainIter = fPrevGain;
-			for (n = 0; n < nread; ++n, fGainIter += fGainStep)
+			fGainIter = fPrevGain * m_pfGains[j];
+			fGainStep2 = fGainStep1 * m_pfGains[j];
+			for (n = 0; n < nread; ++n, fGainIter += fGainStep2)
 				*pFrames++ += fGainIter * *pBuffer++;
 			if (++i >= iChannels)
 				i = 0;
@@ -1470,6 +1510,35 @@ unsigned long qtractorAudioBuffer::fileLength (void) const
 }
 
 
+// Local gain/panning accessors.
+void qtractorAudioBuffer::setGain ( float fGain )
+{
+	m_fGain = fGain;
+}
+
+float qtractorAudioBuffer::gain (void) const
+{
+	return m_fGain;
+}
+
+
+void qtractorAudioBuffer::setPanning ( float fPanning )
+{
+	m_fPanning = fPanning;
+}
+
+float qtractorAudioBuffer::panning (void) const
+{
+	return m_fPanning;
+}
+
+
+float qtractorAudioBuffer::channelGain ( unsigned short i ) const
+{
+	return m_pfGains[i];
+}
+
+
 // Loop points accessors.
 void qtractorAudioBuffer::setLoop (
 	unsigned long iLoopStart, unsigned long iLoopEnd )
@@ -1560,43 +1629,66 @@ qtractorAudioPeakFile *qtractorAudioBuffer::peakFile (void) const
 }
 
 
-// Sample-rate converter type (global option).
-int qtractorAudioBuffer::g_iResampleType = 2;	// SRC_SINC_FASTEST;
-
-void qtractorAudioBuffer::setResampleType ( int iResampleType )
-{
-	g_iResampleType = iResampleType;
-}
-
-int qtractorAudioBuffer::resampleType (void)
-{
-	return g_iResampleType;
-}
-
-
-// WSOLA time-stretch modes (global options).
-bool qtractorAudioBuffer::g_bWsolaTimeStretch = true;
-bool qtractorAudioBuffer::g_bWsolaQuickSeek   = false;
-
+// WSOLA time-stretch modes (local options).
 void qtractorAudioBuffer::setWsolaTimeStretch ( bool bWsolaTimeStretch )
 {
-	g_bWsolaTimeStretch = bWsolaTimeStretch;
+	m_bWsolaTimeStretch = bWsolaTimeStretch;
 }
 
-bool qtractorAudioBuffer::isWsolaTimeStretch (void)
+bool qtractorAudioBuffer::isWsolaTimeStretch (void) const
 {
-	return g_bWsolaTimeStretch;
+	return m_bWsolaTimeStretch;
 }
 
 
 void qtractorAudioBuffer::setWsolaQuickSeek ( bool bWsolaQuickSeek )
 {
-	g_bWsolaQuickSeek = bWsolaQuickSeek;
+	m_bWsolaQuickSeek = bWsolaQuickSeek;
 }
 
-bool qtractorAudioBuffer::isWsolaQuickSeek (void)
+bool qtractorAudioBuffer::isWsolaQuickSeek (void) const
 {
-	return g_bWsolaQuickSeek;
+	return m_bWsolaQuickSeek;
+}
+
+
+// Sample-rate converter type (global option).
+int qtractorAudioBuffer::g_iDefaultResampleType = 2;	// SRC_SINC_FASTEST;
+
+void qtractorAudioBuffer::setDefaultResampleType ( int iResampleType )
+{
+	g_iDefaultResampleType = iResampleType;
+}
+
+int qtractorAudioBuffer::defaultResampleType (void)
+{
+	return g_iDefaultResampleType;
+}
+
+
+// WSOLA time-stretch modes (global options).
+bool qtractorAudioBuffer::g_bDefaultWsolaTimeStretch = true;
+bool qtractorAudioBuffer::g_bDefaultWsolaQuickSeek   = false;
+
+void qtractorAudioBuffer::setDefaultWsolaTimeStretch ( bool bWsolaTimeStretch )
+{
+	g_bDefaultWsolaTimeStretch = bWsolaTimeStretch;
+}
+
+bool qtractorAudioBuffer::isDefaultWsolaTimeStretch (void)
+{
+	return g_bDefaultWsolaTimeStretch;
+}
+
+
+void qtractorAudioBuffer::setDefaultWsolaQuickSeek ( bool bWsolaQuickSeek )
+{
+	g_bDefaultWsolaQuickSeek = bWsolaQuickSeek;
+}
+
+bool qtractorAudioBuffer::isDefaultWsolaQuickSeek (void)
+{
+	return g_bDefaultWsolaQuickSeek;
 }
 
 

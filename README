@@ -71,7 +71,7 @@ Features
 - Audio clip time-stretching (WSOLA-like or via librubberband [9]),
   pitch-shifting (via librubberband [9]) and seamless sample-rate
   conversion (via libsamplerate [8]).
-- Audio/MIDI track export (mix-down, render, merge).
+- Audio/MIDI track export (mix-down, render, merge, freeze).
 - Audio/MIDI metronome bar/beat clicks.
 - Unlimited tempo/time-signature map.
 - Unlimited location/bar markers.
@@ -84,8 +84,8 @@ Features
 - JACK session support.
 - NSM (Non Session Management) support [15].
 - MMC control surface enabled.
-- MIDI Clock, Song Position cueing support.
-- Configurable keyboard and MIDI controller shortcuts.
+- MIDI Clock, Song Position Pointer (SPP) support.
+- Configurable PC-keyboard and MIDI controller shortcuts.
 
 
 Requirements

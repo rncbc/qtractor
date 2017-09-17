@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -248,6 +248,18 @@ void qtractorClipCommand::gainClip ( qtractorClip *pClip, float fGain )
 	Item *pItem = new Item(GainClip, pClip, pClip->track());
 	pItem->clipGain = fGain;
 	m_items.append(pItem);
+
+	reopenClip(pClip);
+}
+
+
+void qtractorClipCommand::panningClip ( qtractorClip *pClip, float fPanning )
+{
+	Item *pItem = new Item(PanningClip, pClip, pClip->track());
+	pItem->clipPanning = fPanning;
+	m_items.append(pItem);
+
+	reopenClip(pClip);
 }
 
 
@@ -313,6 +325,18 @@ void qtractorClipCommand::resetClip ( qtractorClip *pClip )
 	m_items.append(pItem);
 
 //	setClearSelect(true);
+}
+
+
+void qtractorClipCommand::wsolaClip ( qtractorClip *pClip,
+	bool bWsolaTimeStretch, bool bWsolaQuickSeek )
+{
+	Item *pItem = new Item(WsolaClip, pClip, pClip->track());
+	pItem->wsolaTimeStretch = bWsolaTimeStretch;
+	pItem->wsolaQuickSeek = bWsolaQuickSeek;
+	m_items.append(pItem);
+
+	reopenClip(pClip, true);
 }
 
 
@@ -438,6 +462,10 @@ bool qtractorClipCommand::addClipRecord (
 	}
 	else
 	addClipRecordTake(pTrack, pClip, iClipStart, iClipOffset, iClipLength);
+
+	// Make sure this brand new filename is not reused!
+	// (see qtractroSession::createFilePath()...)
+	pSession->releaseFilePath(pClip->filename());
 
 	// Can get rid of the recorded clip.
 	pTrack->setClipRecord(NULL);
@@ -730,6 +758,12 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pItem->clipGain = fOldGain;
 			break;
 		}
+		case PanningClip: {
+			const float fOldPanning = pClip->clipPanning();
+			pClip->setClipPanning(pItem->clipPanning);
+			pItem->clipPanning = fOldPanning;
+			break;
+		}
 		case FadeInClip: {
 			const unsigned long iOldFadeIn = pClip->fadeInLength();
 			qtractorClip::FadeType oldFadeInType = pClip->fadeInType();
@@ -791,6 +825,20 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				iClipStartTime, iClipStartTime + iClipOffsetTime, true);
 			pItem->clipLength =	pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipLengthTime);
+			break;
+		}
+		case WsolaClip: {
+			qtractorAudioClip *pAudioClip = NULL;
+			if (pTrack->trackType() == qtractorTrack::Audio)
+				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
+			if (pAudioClip) {
+				const bool bOldWsolaTimeStretch = pAudioClip->isWsolaTimeStretch();
+				const bool bOldWsolaQuickSeek = pAudioClip->isWsolaQuickSeek();
+				pAudioClip->setWsolaTimeStretch(pItem->wsolaTimeStretch);
+				pAudioClip->setWsolaQuickSeek(pItem->wsolaQuickSeek);
+				pItem->wsolaTimeStretch = bOldWsolaTimeStretch;
+				pItem->wsolaQuickSeek = bOldWsolaQuickSeek;
+			}
 			break;
 		}
 		default:

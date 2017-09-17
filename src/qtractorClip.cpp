@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,6 +50,9 @@ qtractorClip::qtractorClip ( qtractorTrack *pTrack )
 {
 	m_pTrack = pTrack;
 
+	m_fGain    = 1.0f;
+	m_fPanning = 0.0f;
+
 	m_pTakeInfo = NULL;
 
 	m_pFadeInFunctor  = NULL;
@@ -87,12 +90,6 @@ void qtractorClip::clear (void)
 
 	m_iSelectStart    = 0;
 	m_iSelectEnd      = 0;
-
-	m_fGain           = 1.0f;
-
-	// Gain fractionalizer(tm)...
-	m_fractGain.num   = 1;
-	m_fractGain.den   = 8;
 
 	m_iFadeInLength   = 0;
 	m_iFadeOutLength  = 0;
@@ -233,21 +230,6 @@ void qtractorClip::setClipSelect (
 }
 
 
-// Clip-loop points accessors.
-void qtractorClip::setClipGain ( float fGain )
-{
-	m_fGain = fGain;
-
-	// Gain fractionalizer(tm)...
-	m_fractGain.den = 8;
-	while(fGain != int(fGain) && m_fractGain.den < 20) {
-		m_fractGain.den += 2;
-		fGain *= 4.0f;
-	}
-	m_fractGain.num = int(fGain);
-}
-
-
 // Clip fade-in accessors
 void qtractorClip::setFadeInType ( qtractorClip::FadeType fadeType )
 {
@@ -298,25 +280,20 @@ void qtractorClip::setFadeOutLength ( unsigned long iFadeOutLength )
 
 
 // Compute clip gain, given current fade-in/out slopes.
-float qtractorClip::gain ( unsigned long iOffset ) const
+float qtractorClip::fadeInOutGain ( unsigned long iOffset ) const
 {
-	if (iOffset >= m_iClipLength)
-		return 0.0f;
-
-	float fGain = m_fGain;
-
 	if (m_iFadeInLength > 0 && iOffset < m_iFadeInLength) {
-		fGain *= (*m_pFadeInFunctor)(
+		return (*m_pFadeInFunctor)(
 			float(iOffset) / float(m_iFadeInLength));
 	}
 
 	if (m_iFadeOutLength > 0 && iOffset > m_iClipLength - m_iFadeOutLength) {
-		fGain *= (*m_pFadeOutFunctor)(
+		return (*m_pFadeOutFunctor)(
 			float(iOffset - (m_iClipLength - m_iFadeOutLength))
 				/ float(m_iFadeOutLength));
 	}
 
-	return fGain;
+	return (iOffset < m_iClipLength ? 1.0f : 0.0f);
 }
 
 
@@ -612,6 +589,8 @@ bool qtractorClip::loadElement (
 					qtractorClip::setClipLength(eProp.text().toULong());
 				else if (eProp.tagName() == "gain")
 					qtractorClip::setClipGain(eProp.text().toFloat());
+				else if (eProp.tagName() == "panning")
+					qtractorClip::setClipPanning(eProp.text().toFloat());
 				else if (eProp.tagName() == "fade-in") {
 					qtractorClip::setFadeInType(
 						qtractorClip::fadeInTypeFromText(eProp.attribute("type")));
@@ -715,7 +694,8 @@ bool qtractorClip::saveElement (
 		QString::number(qtractorClip::clipLength()), &eProps);
 	pDocument->saveTextElement("gain",
 		QString::number(qtractorClip::clipGain()), &eProps);
-
+	pDocument->saveTextElement("panning",
+		QString::number(qtractorClip::clipPanning()), &eProps);
     QDomElement eFadeIn = pDocument->document()->createElement("fade-in");
 	eFadeIn.setAttribute("type",
 		qtractorClip::textFromFadeType(qtractorClip::fadeInType()));

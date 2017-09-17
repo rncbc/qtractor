@@ -402,6 +402,7 @@ bool qtractorBusCommand::deleteBus (void)
 			pAudioEngine->resetPlayerBus();
 			pAudioEngine->resetMetroBus();
 		}
+		break;
 	}
 	case qtractorTrack::Midi: {
 		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();

@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -391,8 +391,9 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 								const QString& sDefaultPath
 									= fi.absoluteFilePath();
 								dir.setPath(sDefaultPath);
-								sTemp.remove(rxDefaultPath).simplified();
+								sTemp.remove(rxDefaultPath);
 								sLine.remove(rxDefaultPath);
+								sTemp = sTemp.simplified();
 							}
 							else
 							if (rxSample.indexIn(sTemp) >= 0) {
@@ -402,8 +403,9 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 								const QString& sSampleAlias
 									= m_pZipFile->alias(sSamplePath, alias.path());
 								m_pZipFile->addFile(sSamplePath, sSampleAlias);
-								sTemp.remove(rxSample).simplified();
+								sTemp.remove(rxSample);
 								sLine.replace(rxSample, "sample=" + fi.fileName());
+								sTemp = sTemp.simplified();
 							}
 							else sTemp.clear();
 						}

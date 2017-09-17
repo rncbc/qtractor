@@ -9,7 +9,7 @@ configure:	 Makefile.in configure.ac
 clean:
 	@if [ -f Makefile ]; then make clean; fi
 	@rm -rvf Makefile configure config.* src/.ui src/.obj src/.moc
-	@rm -rvf src/config.* src/*.pri src/*.desktop
+	@rm -rvf src/config.* src/*.pri
 	@rm -rvf src/Makefile src/Makefile.* src/*.mak src/*.mak.*
 	@rm -rvf *.cache *.log *.status *.spec *.mak *.m4 .m4
 	@rm -rvf .qmake.stash src/.qmake.stash

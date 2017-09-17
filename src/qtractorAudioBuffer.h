@@ -153,6 +153,15 @@ public:
 	// Current (last known) file length accessor.
 	unsigned long fileLength() const;
 
+	// Local gain/panning accessors.
+	void setGain(float fGain);
+	float gain() const;
+
+	void setPanning(float fPanning);
+	float panning() const;
+
+	float channelGain(unsigned short i) const;
+
 	// Loop points accessors.
 	void setLoop(unsigned long iLoopStart, unsigned long iLoopEnd);
 	unsigned long loopStart() const;
@@ -191,16 +200,23 @@ public:
 	void setPeakFile(qtractorAudioPeakFile *pPeakFile);
 	qtractorAudioPeakFile *peakFile() const;
 
-	// Sample-rate converter type accessor (global option).
-	static void setResampleType(int iResampleType);
-	static int resampleType();
+	// WSOLA time-stretch modes (local options).
+	void setWsolaTimeStretch(bool bWsolaTimeStretch);
+	bool isWsolaTimeStretch() const;
+
+	void setWsolaQuickSeek(bool bWsolaQuickSeek);
+	bool isWsolaQuickSeek() const;
 
 	// WSOLA time-stretch modes (global options).
-	static void setWsolaTimeStretch(bool bWsolaTimeStretch);
-	static bool isWsolaTimeStretch();
+	static void setDefaultWsolaTimeStretch(bool bWsolaTimeStretch);
+	static bool isDefaultWsolaTimeStretch();
 
-	static void setWsolaQuickSeek(bool bWsolaQuickSeek);
-	static bool isWsolaQuickSeek();
+	static void setDefaultWsolaQuickSeek(bool bWsolaQuickSeek);
+	static bool isDefaultWsolaQuickSeek();
+
+	// Sample-rate converter type accessor (global option).
+	static void setDefaultResampleType(int iResampleType);
+	static int defaultResampleType();
 
 protected:
 
@@ -274,6 +290,11 @@ private:
 
 	qtractorTimeStretcher *m_pTimeStretcher;
 
+	float          m_fGain;
+	float          m_fPanning;
+
+	float         *m_pfGains;
+
 	float          m_fNextGain;
 	int            m_iRampGain;
 
@@ -288,12 +309,16 @@ private:
 
 	qtractorAudioPeakFile *m_pPeakFile;
 
-	// Sample-rate converter type global option.
-	static int     g_iResampleType;
+	// Time-stretch mode local options.
+	bool           m_bWsolaTimeStretch;
+	bool           m_bWsolaQuickSeek;
 
 	// Time-stretch mode global options.
-	static bool    g_bWsolaTimeStretch;
-	static bool    g_bWsolaQuickSeek;
+	static bool    g_bDefaultWsolaTimeStretch;
+	static bool    g_bDefaultWsolaQuickSeek;
+
+	// Sample-rate converter type global option.
+	static int     g_iDefaultResampleType;
 };
 
 

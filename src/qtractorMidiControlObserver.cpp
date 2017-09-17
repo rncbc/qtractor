@@ -34,11 +34,11 @@ static inline float cbrtf2 ( float x )
 #ifdef CONFIG_FLOAT32_NOP
 	// Avoid strict-aliasing optimization (gcc -O2).
 	union { float f; int i; } u;
-	u.f = x;
+	u.f  = x;
 	u.i  = (u.i >> 4) + (u.i >> 2);
-	u.i += (u.i >> 4);
-	u.i += 0x2a6497f8;
-	return u.f;
+	u.i += (u.i >> 4) + 0x2a6497f8;
+	return 0.33333333f * (2.0f * u.f + x / (u.f * u.f));
+//	return u.f;
 #else
 	return ::cbrtf(x);
 #endif

@@ -1,7 +1,7 @@
 // qtractorClipCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,6 +66,7 @@ public:
 		unsigned long iClipOffset, unsigned long iClipLength,
 		float fTimeStretch = 0.0f, float fPitchShift = 0.0f);
 	void gainClip(qtractorClip *pClip, float fGain);
+	void panningClip(qtractorClip *pClip, float fPanning);
 	void fadeInClip(qtractorClip *pClip, unsigned long iFadeInLength,
 		qtractorClip::FadeType fadeInType);
 	void fadeOutClip(qtractorClip *pClip, unsigned long iFadeOutLength,
@@ -74,6 +75,8 @@ public:
 	void pitchShiftClip(qtractorClip *pClip, float fPitchShift);
 	void takeInfoClip(qtractorClip *pClip, qtractorClip::TakeInfo *pTakeInfo);
 	void resetClip(qtractorClip *pClip);
+	void wsolaClip(qtractorClip *pClip,
+		bool bWsolaTimeStretch, bool bWsolaQuickSeek);
 
 	void reopenClip(qtractorClip *pClip, bool bClose = false);
 
@@ -108,9 +111,9 @@ private:
 	enum CommandType {
 		AddClip, RemoveClip, FileClip,
 		RenameClip, MoveClip, ResizeClip,
-		GainClip, FadeInClip, FadeOutClip,
+		GainClip, PanningClip, FadeInClip, FadeOutClip,
 		TimeStretchClip, PitchShiftClip,
-		TakeInfoClip, ResetClip
+		TakeInfoClip, ResetClip, WsolaClip
 	};
 
 	// Clip item struct.
@@ -120,10 +123,12 @@ private:
 		Item(CommandType cmd, qtractorClip *pClip, qtractorTrack *pTrack)
 			: command(cmd), clip(pClip), track(pTrack),
 				autoDelete(false), trackChannel(0),
-				clipStart(0), clipOffset(0), clipLength(0), clipGain(0.0f),
+				clipStart(0), clipOffset(0), clipLength(0),
+				clipGain(0.0f), clipPanning(0.0f),
 				fadeInLength(0), fadeInType(qtractorClip::InQuad), 
 				fadeOutLength(0), fadeOutType(qtractorClip::OutQuad),
 				timeStretch(0.0f), pitchShift(0.0f),
+				wsolaTimeStretch(false), wsolaQuickSeek(false),
 				editCommand(NULL), takeInfo(NULL) {}
 		// Item members.
 		CommandType    command;
@@ -137,12 +142,15 @@ private:
 		unsigned long  clipOffset;
 		unsigned long  clipLength;
 		float          clipGain;
+		float          clipPanning;
 		unsigned long  fadeInLength;
 		qtractorClip::FadeType fadeInType;
 		unsigned long  fadeOutLength;
 		qtractorClip::FadeType fadeOutType;
 		float          timeStretch;
 		float          pitchShift;
+		bool           wsolaTimeStretch;
+		bool           wsolaQuickSeek;
 		// When MIDI clips are time-stretched...
 		qtractorMidiEditCommand *editCommand;
 		// When clips have take(record) descriptors...

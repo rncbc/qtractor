@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -870,17 +870,12 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 						d0 = float(long(iTime) - long(t0));
 					float ds = 0.01f * float(m_ui.QuantizeSwingSpinBox->value());
 					ds = ds * d0;
-					switch (m_ui.QuantizeSwingTypeComboBox->currentIndex()) {
-					case 2: // Cubic...
+					const int n = m_ui.QuantizeSwingTypeComboBox->currentIndex();
+					for (int i = 0; i < n; ++i) // 0=Linear; 1=Quadratic; 2=Cubic.
 						ds = (ds * d0) / float(q);
-					case 1: // Quadratic...
-						ds = (ds * d0) / float(q);
-					case 0: // Linear...
-						iTime += long(ds);
-						if (iTime < long(iTimeOffset))
-							iTime = long(iTimeOffset);
-						break;
-					}
+					iTime += long(ds);
+					if (iTime < long(iTimeOffset))
+						iTime = long(iTimeOffset);
 				}
 			}
 			// Time quantize...

@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -259,7 +259,7 @@ void qtractorPluginSelectForm::rescan (void)
 	qtractorPluginFactory *pPluginFactory
 		= qtractorPluginFactory::getInstance();
 	if (pPluginFactory)
-		pPluginFactory->clear();
+		pPluginFactory->clearAll();
 
 	refresh();
 }
@@ -281,9 +281,11 @@ void qtractorPluginSelectForm::refresh (void)
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		const bool bRescan = m_ui.PluginRescanPushButton->isVisible();
 		if (bRescan) m_ui.PluginRescanPushButton->hide();
+		m_ui.DialogButtonBox->button(QDialogButtonBox::Cancel)->setEnabled(false);
 		m_ui.PluginScanProgressBar->show();
 		pPluginFactory->scan();
 		m_ui.PluginScanProgressBar->hide();
+		m_ui.DialogButtonBox->button(QDialogButtonBox::Cancel)->setEnabled(true);
 		if (bRescan) m_ui.PluginRescanPushButton->show();
 		// We're formerly done.
 		QApplication::restoreOverrideCursor();
