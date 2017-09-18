@@ -1163,7 +1163,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" rowspan="2">
+          <item row="2" column="0">
            <widget class="QLabel" name="MetroBeatFilenameTextLabel">
             <property name="font">
              <font>
@@ -1179,7 +1179,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1" colspan="2">
+          <item row="2" column="1" colspan="2">
            <widget class="QComboBox" name="MetroBeatFilenameComboBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1207,7 +1207,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="3" rowspan="2">
+          <item row="2" column="3">
            <widget class="QToolButton" name="MetroBeatFilenameToolButton">
             <property name="minimumSize">
              <size>
@@ -1238,7 +1238,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="4" rowspan="2" colspan="2">
+          <item row="2" column="4" colspan="2">
            <widget class="QLabel" name="MetroBeatGainTextLabel">
             <property name="font">
              <font>
@@ -1254,7 +1254,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="5">
+          <item row="2" column="5">
            <widget class="QDoubleSpinBox" name="MetroBeatGainSpinBox">
             <property name="minimumSize">
              <size>
@@ -1288,7 +1288,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="3" column="0" colspan="2">
            <widget class="QCheckBox" name="AudioMetroBusCheckBox">
             <property name="font">
              <font>
@@ -1304,7 +1304,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
+          <item row="3" column="2">
            <widget class="QCheckBox" name="AudioMetroAutoConnectCheckBox">
             <property name="font">
              <font>
@@ -1320,7 +1320,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="3" colspan="2">
+          <item row="3" column="3" colspan="2">
            <widget class="QLabel" name="AudioMetroOffsetTextLabel">
             <property name="font">
              <font>
@@ -1339,7 +1339,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="5">
+          <item row="3" column="5">
            <widget class="qtractorTimeSpinBox" name="AudioMetroOffsetSpinBox">
             <property name="font">
              <font>

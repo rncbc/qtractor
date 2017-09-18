@@ -248,6 +248,18 @@ void qtractorClipCommand::gainClip ( qtractorClip *pClip, float fGain )
 	Item *pItem = new Item(GainClip, pClip, pClip->track());
 	pItem->clipGain = fGain;
 	m_items.append(pItem);
+
+	reopenClip(pClip);
+}
+
+
+void qtractorClipCommand::panningClip ( qtractorClip *pClip, float fPanning )
+{
+	Item *pItem = new Item(PanningClip, pClip, pClip->track());
+	pItem->clipPanning = fPanning;
+	m_items.append(pItem);
+
+	reopenClip(pClip);
 }
 
 
@@ -744,6 +756,12 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			const float fOldGain = pClip->clipGain();
 			pClip->setClipGain(pItem->clipGain);
 			pItem->clipGain = fOldGain;
+			break;
+		}
+		case PanningClip: {
+			const float fOldPanning = pClip->clipPanning();
+			pClip->setClipPanning(pItem->clipPanning);
+			pItem->clipPanning = fOldPanning;
 			break;
 		}
 		case FadeInClip: {

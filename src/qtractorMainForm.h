@@ -292,11 +292,12 @@ public slots:
 
 protected slots:
 
-	void timerSlot();
+	void fastTimerSlot();
+	void slowTimerSlot();
 
-	void peakNotify();
 	void alsaNotify();
 
+	void audioPeakNotify();
 	void audioShutNotify();
 	void audioXrunNotify();
 	void audioPortNotify();
@@ -339,8 +340,6 @@ protected slots:
 	void transportTempoChanged(float fTempo,
 		unsigned short iBeatsPerBar, unsigned short iBeatDivisor);
 	void transportTempoFinished();
-
-	void updateTransportLater();
 
 	void snapPerBeatChanged(int iSnap);
 	void contentsChanged();
@@ -480,10 +479,6 @@ private:
 	QString m_sNsmExt;
 	bool m_bNsmDirty;
 	unsigned long m_iPlayHead;
-	int m_iPeakTimer;
-	int m_iPlayTimer;
-	int m_iIdleTimer;
-	int m_iTransportTimer;
 	int m_iTransportUpdate;
 	int m_iTransportRolling;
 	bool m_bTransportPlaying;
@@ -492,6 +487,7 @@ private:
 	int m_iXrunCount;
 	int m_iXrunSkip;
 	int m_iXrunTimer;
+	int m_iAudioPeakTimer;
 	int m_iAudioRefreshTimer;
 	int m_iMidiRefreshTimer;
 	int m_iPlayerTimer;

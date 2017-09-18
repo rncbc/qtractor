@@ -140,12 +140,15 @@ qtractorClipForm::qtractorClipForm (
 	QObject::connect(m_ui.FilenameToolButton,
 		SIGNAL(clicked()),
 		SLOT(browseFilename()));
-	QObject::connect(m_ui.ClipGainSpinBox,
-		SIGNAL(valueChanged(double)),
-		SLOT(changed()));
 	QObject::connect(m_ui.TrackChannelSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(trackChannelChanged(int)));
+	QObject::connect(m_ui.ClipGainSpinBox,
+		SIGNAL(valueChanged(double)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ClipPanningSpinBox,
+		SIGNAL(valueChanged(double)),
+		SLOT(changed()));
 	QObject::connect(m_ui.FormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
@@ -269,10 +272,12 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	switch (trackType()) {
 	case qtractorTrack::Audio: {
 		m_ui.FilenameComboBox->setObjectName("Audio" + sSuffix);
-		m_ui.GainVolumeGroupBox->setTitle(tr("&Gain:"));
+		m_ui.ClipGainTextLabel->setText(tr("&Gain:"));
 		m_ui.ClipGainSpinBox->setSuffix(tr(" dB"));
 		m_ui.ClipGainSpinBox->setRange(-60.0f, +24.0f);
 		m_ui.ClipGainSpinBox->setValue(log10f2(m_pClip->clipGain()));
+		m_ui.ClipPanningSpinBox->setRange(-1.0f, +1.0f);
+		m_ui.ClipPanningSpinBox->setValue(pClip->clipPanning());
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClip);
 		if (pAudioClip) {
@@ -283,6 +288,8 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		}
 		m_ui.TrackChannelTextLabel->setVisible(false);
 		m_ui.TrackChannelSpinBox->setVisible(false);
+		m_ui.ClipPanningTextLabel->setVisible(true);
+		m_ui.ClipPanningSpinBox->setVisible(true);
 		m_ui.AudioClipGroupBox->setVisible(true);
 	#ifdef CONFIG_LIBRUBBERBAND
 		m_ui.WsolaTimeStretchCheckBox->setChecked(pAudioClip->isWsolaTimeStretch());
@@ -297,7 +304,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	}
 	case qtractorTrack::Midi: {
 		m_ui.FilenameComboBox->setObjectName("Midi" + sSuffix);
-		m_ui.GainVolumeGroupBox->setTitle(tr("&Volume:"));
+		m_ui.ClipGainTextLabel->setText(tr("&Volume:"));
 		m_ui.ClipGainSpinBox->setSuffix(tr(" %"));
 		m_ui.ClipGainSpinBox->setRange(0.0f, 1200.0f);
 		m_ui.ClipGainSpinBox->setValue(100.0f * m_pClip->clipGain());
@@ -307,6 +314,8 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 			m_ui.TrackChannelSpinBox->setValue(pMidiClip->trackChannel());
 		m_ui.TrackChannelTextLabel->setVisible(true);
 		m_ui.TrackChannelSpinBox->setVisible(true);
+		m_ui.ClipPanningTextLabel->setVisible(false);
+		m_ui.ClipPanningSpinBox->setVisible(false);
 		m_ui.AudioClipGroupBox->setVisible(false);
 		break;
 	}
@@ -368,6 +377,7 @@ void qtractorClipForm::accept (void)
 		const unsigned short iTrackChannel = m_ui.TrackChannelSpinBox->value();
 		const QString& sClipName = m_ui.ClipNameLineEdit->text().trimmed();
 		float fClipGain = 1.0f;
+		float fClipPanning = 0.0f;
 		float fTimeStretch = 0.0f;
 		float fPitchShift = 0.0f;
 		bool bWsolaTimeStretch = qtractorAudioBuffer::isDefaultWsolaTimeStretch();
@@ -375,6 +385,7 @@ void qtractorClipForm::accept (void)
 		switch (clipType) {
 		case qtractorTrack::Audio:
 			fClipGain = pow10f2(m_ui.ClipGainSpinBox->value());
+			fClipPanning = m_ui.ClipPanningSpinBox->value();
 			fTimeStretch = 0.01f * m_ui.TimeStretchSpinBox->value();
 			fPitchShift = ::powf(2.0f, m_ui.PitchShiftSpinBox->value() / 12.0f);
 			bWsolaTimeStretch = m_ui.WsolaTimeStretchCheckBox->isChecked();
@@ -386,7 +397,7 @@ void qtractorClipForm::accept (void)
 		default:
 			break;
 		}
-		const unsigned long iClipStart  = m_ui.ClipStartSpinBox->value();
+		const unsigned long iClipStart = m_ui.ClipStartSpinBox->value();
 		const unsigned long iClipOffset = m_ui.ClipOffsetSpinBox->value();
 		const unsigned long iClipLength = m_ui.ClipLengthSpinBox->value();
 		const unsigned long iFadeInLength = m_ui.FadeInLengthSpinBox->value();
@@ -431,8 +442,9 @@ void qtractorClipForm::accept (void)
 			default:
 				break;
 			}
-			// Gain/volume...
+			// Gain/panning...
 			m_pClip->setClipGain(fClipGain);
+			m_pClip->setClipPanning(fClipPanning);
 			// Parameters...
 			m_pClip->setClipStart(iClipStart);
 			m_pClip->setClipOffset(iClipOffset);
@@ -490,9 +502,11 @@ void qtractorClipForm::accept (void)
 			// Filename and/or track-channel changes...
 			if (iFileChange > 0)
 				pClipCommand->fileClip(m_pClip, sFilename, iTrackChannel);
-			// Gain/volume...
+			// Gain/nning...
 			if (::fabsf(fClipGain - m_pClip->clipGain()) > 0.001f)
 				pClipCommand->gainClip(m_pClip, fClipGain);
+			if (::fabsf(fClipPanning - m_pClip->clipPanning()) > 0.001f)
+				pClipCommand->panningClip(m_pClip, fClipPanning);
 			// Parameters and/or time-stretching changes...
 			if (iClipStart  != m_pClip->clipStart()  ||
 				iClipOffset != m_pClip->clipOffset() ||

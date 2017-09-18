@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -220,13 +220,13 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 	// Set new value holders...
 	m_iChannels = iChannels;
 	if (m_iChannels > 0) {
-        m_pfValues = new float [m_iChannels];
-        m_pfGains = new float [m_iChannels];
-        m_pfPrevGains = new float [m_iChannels];
-        for (unsigned short i = 0; i < m_iChannels; ++i)
-            m_pfValues[i] = m_pfGains[i] = m_pfPrevGains[i] = 0.0f;
-        // Initial population...
-        update();
+		m_pfValues = new float [m_iChannels];
+		m_pfGains = new float [m_iChannels];
+		m_pfPrevGains = new float [m_iChannels];
+		for (unsigned short i = 0; i < m_iChannels; ++i)
+			m_pfValues[i] = m_pfGains[i] = m_pfPrevGains[i] = 0.0f;
+		// Initial population...
+		update();
     }
 }
 
@@ -362,21 +362,21 @@ void qtractorAudioMonitor::update (void)
 
 	// (Re)compute equal-power stereo-panning gains...
 	if (fPan < 0.499f || fPan > 0.501f) {
-#ifdef QTRACTOR_MONITOR_PANNING_SQRT
+	#ifdef QTRACTOR_MONITOR_PANNING_SQRT
 		afGains[0] *= M_SQRT2 * ::sqrtf(1.0f - fPan);
 		afGains[1] *= M_SQRT2 * ::sqrtf(fPan);
-#else
+	#else
 		afGains[0] *= M_SQRT2 * ::cosf(fPan * M_PI_2);
 		afGains[1] *= M_SQRT2 * ::sinf(fPan * M_PI_2);
-#endif
+	#endif
     }
 
 	// Apply to multi-channel gain array (paired fashion)...
-	const unsigned short iChannels = (m_iChannels - (m_iChannels % 2));
+	const unsigned short k = (m_iChannels - (m_iChannels & 1));
 	unsigned short i = 0;
-	for ( ; i < iChannels; ++i) {
+	for ( ; i < k; ++i) {
 		m_pfPrevGains[i] = m_pfGains[i];
-		m_pfGains[i] = afGains[i % 2];
+		m_pfGains[i] = afGains[i & 1];
 	}
 	for ( ; i < m_iChannels; ++i) {
 		m_pfPrevGains[i] = m_pfGains[i];

@@ -1,7 +1,7 @@
 // qtractorPluginFactory.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@
 #include "qtractorPlugin.h"
 
 #include <QProcess>
+#include <QFile>
 
 
 // Forward decls.
@@ -65,8 +66,9 @@ public:
 	// Type register method.
 	void addType(qtractorPluginType *pType) { m_types.append(pType); }
 
-	// Type list reset method.
+	// Type list reset methods.
 	void clear();
+	void clearAll();
 
 	// Global plugin-paths executive methods.
 	QStringList pluginPaths(qtractorPluginType::Hint typeHint);
@@ -133,17 +135,42 @@ public:
 	// ctor.
 	qtractorPluginFactoryProxy(qtractorPluginFactory *pPluginFactory);
 
-	// Start method.
-	bool start();
+	// Open/close method.
+	bool open(bool bReset = false);
+	void close();
 
 	// Service methods.
 	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
+
+	// Absolute cache file path.
+	static QString cacheFilePath();
 
 protected slots:
 
 	// Service slots.
 	void stdout_slot();
 	void stderr_slot();
+
+	void exit_slot(int exitCode, QProcess::ExitStatus exitStatus);
+
+protected:
+
+	// Scan start method.
+	bool start();
+
+	// Service methods (internal)
+	bool addTypes(const QStringList& list);
+
+private:
+
+	// Instance state.
+	volatile int m_iExitStatus;
+
+	// Cache file object.
+	QFile m_file;
+
+	// Cache hash list.
+	QHash<QString, QStringList> m_list;
 };
 
 

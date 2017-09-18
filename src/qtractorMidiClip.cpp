@@ -198,6 +198,7 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	setFilename(clip.filename());
 	setTrackChannel(clip.trackChannel());
 	setClipGain(clip.clipGain());
+	setClipPanning(clip.clipPanning());
 	setClipName(clip.clipName());
 
 	m_iFormat = clip.format();
@@ -946,6 +947,7 @@ void qtractorMidiClip::process (
 	const unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
 
 	// Enqueue the requested events...
+	const float fGain = clipGain();
 	qtractorMidiEvent *pEvent
 		= m_playCursor.seek(pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
 	while (pEvent) {
@@ -954,8 +956,8 @@ void qtractorMidiClip::process (
 			break;
 		if (t1 >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON))
-			pMidiEngine->enqueue(pTrack, pEvent, t1,
-				gain(pSession->frameFromTick(t1) - clipStart()));
+			pMidiEngine->enqueue(pTrack, pEvent, t1, fGain
+				* fadeInOutGain(pSession->frameFromTick(t1) - clipStart()));
 		pEvent = pEvent->next();
 	}
 }
@@ -987,6 +989,7 @@ void qtractorMidiClip::process_export (
 	const unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
 
 	// Enqueue the requested events...
+	const float fGain = clipGain();
 	qtractorMidiEvent *pEvent
 		= m_playCursor.seek(pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
 	while (pEvent) {
@@ -995,8 +998,8 @@ void qtractorMidiClip::process_export (
 			break;
 		if (t1 >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON)) {
-			enqueue_export(pTrack, pEvent, t1,
-				gain(pSession->frameFromTick(t1) - clipStart()));
+			enqueue_export(pTrack, pEvent, t1, fGain
+				* fadeInOutGain(pSession->frameFromTick(t1) - clipStart()));
 		}
 		pEvent = pEvent->next();
 	}
@@ -1222,9 +1225,11 @@ QString qtractorMidiClip::toolTip (void) const
 			.arg(m_pFile->ticksPerBeat());
 	}
 
-	if (clipGain() > 1.0f)
+	const float fVolume = clipGain();
+	if (fVolume < 0.999f || fVolume > 1.001f) {
 		sToolTip += QObject::tr(" (%1% vol)")
-			.arg(100.0f * clipGain(), 0, 'g', 3);
+			.arg(100.0f * fVolume, 0, 'g', 3);
+	}
 
 	return sToolTip;
 }
