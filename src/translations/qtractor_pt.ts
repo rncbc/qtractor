@@ -596,7 +596,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="743"/>
         <source> (%1 pan)</source>
-        <translation type="unfinished"></translation>
+        <translation> (%1 panorâmico)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="746"/>
@@ -1365,17 +1365,17 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="262"/>
         <source>&amp;Panning:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Panorâmico:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="329"/>
         <source>Forma&amp;t:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Formato:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="486"/>
         <source>Ti&amp;me Stretch:</source>
-        <translation type="unfinished"></translation>
+        <translation>Time-&amp;stretch:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="502"/>
@@ -1430,7 +1430,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="121"/>
         <source>Track/&amp;Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pista/&amp;Canal:</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="379"/>
