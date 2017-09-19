@@ -1019,12 +1019,13 @@ void qtractorPlugin::loadControllers (
 
 // Save plugin parameter controllers (MIDI).
 void qtractorPlugin::saveControllers (
-	qtractorDocument *pDocument, QDomElement *pElement ) const
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl == NULL)
 		return;
 
+	unsigned long iActivateSubjectIndex = activateSubjectIndex();
 	qtractorMidiControl::Controllers controllers;
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
@@ -1046,6 +1047,26 @@ void qtractorPlugin::saveControllers (
 			pController->latch = pObserver->isLatch();
 			controllers.append(pController);
 		}
+		if (iActivateSubjectIndex < pParam->index())
+			iActivateSubjectIndex = pParam->index();
+	}
+
+	qtractorMidiControlObserver *pActivateObserver = activateObserver();
+	if (pMidiControl->isMidiObserverMapped(pActivateObserver)) {
+		setActivateSubjectIndex(iActivateSubjectIndex + 1); // hack up!
+		qtractorMidiControl::Controller *pController
+			= new qtractorMidiControl::Controller;
+		pController->name = pActivateObserver->subject()->name();
+		pController->index = activateSubjectIndex();
+		pController->ctype = pActivateObserver->type();
+		pController->channel = pActivateObserver->channel();
+		pController->param = pActivateObserver->param();
+		pController->logarithmic = pActivateObserver->isLogarithmic();
+		pController->feedback = pActivateObserver->isFeedback();
+		pController->invert = pActivateObserver->isInvert();
+		pController->hook = pActivateObserver->isHook();
+		pController->latch = pActivateObserver->isLatch();
+		controllers.append(pController);
 	}
 
 	pMidiControl->saveControllers(pDocument, pElement, controllers);
@@ -1059,14 +1080,30 @@ void qtractorPlugin::mapControllers (
 	const qtractorMidiControl::Controllers& controllers )
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl) {
-		QListIterator<qtractorMidiControl::Controller *> iter(controllers);
-		while (iter.hasNext()) {
-			qtractorMidiControl::Controller *pController = iter.next();
-			qtractorPluginParam *pParam = findParam(pController->index);
+	if (pMidiControl == NULL)
+		return;
+
+	const unsigned long iActivateSubjectIndex = activateSubjectIndex();
+	QListIterator<qtractorMidiControl::Controller *> iter(controllers);
+	while (iter.hasNext()) {
+		qtractorMidiControl::Controller *pController = iter.next();
+		qtractorMidiControlObserver *pObserver = NULL;
+		if ((iActivateSubjectIndex > 0 &&
+			 iActivateSubjectIndex == pController->index) ||
+			(activateSubject()->name() == pController->name)) {
+			pObserver = activateObserver();
+		//	setActivateSubjectIndex(0); // hack down!
+		//	iActivateSubjectIndex = 0;
+		} else {
+			qtractorPluginParam *pParam = NULL;
+			if (!pController->name.isEmpty())
+				pParam = findParamName(pController->name);
 			if (pParam == NULL)
-				continue;
-			qtractorMidiControlObserver *pObserver = pParam->observer();
+				pParam = findParam(pController->index);
+			if (pParam)
+				pObserver = pParam->observer();
+		}
+		if (pObserver) {
 			pObserver->setType(pController->ctype);
 			pObserver->setChannel(pController->channel);
 			pObserver->setParam(pController->param);
@@ -1111,7 +1148,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	pCurveFile->setBaseDir(pSession->sessionDir());
 
 	unsigned short iParam = 0;
-	unsigned long iActivateSubjectIndex = 0;
+	unsigned long iActivateSubjectIndex = activateSubjectIndex();
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {

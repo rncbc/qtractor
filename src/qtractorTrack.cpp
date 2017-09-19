@@ -1957,7 +1957,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(pGainObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->name = m_pMonitorObserver->subject()->name();
+		pController->name = pGainObserver->subject()->name();
 		pController->index = 2; // 2=GainObserver
 		pController->ctype = pGainObserver->type();
 		pController->channel = pGainObserver->channel();
@@ -1973,7 +1973,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pRecordObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->name = m_pMonitorObserver->subject()->name();
+		pController->name = m_pRecordObserver->subject()->name();
 		pController->index = 3; // 3=RecordObserver
 		pController->ctype = m_pRecordObserver->type();
 		pController->channel = m_pRecordObserver->channel();
@@ -1989,7 +1989,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pMuteObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->name = m_pMonitorObserver->subject()->name();
+		pController->name = m_pMuteObserver->subject()->name();
 		pController->index = 4; // 4=MuteObserver
 		pController->ctype = m_pMuteObserver->type();
 		pController->channel = m_pMuteObserver->channel();
@@ -2005,7 +2005,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pSoloObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->name = m_pMonitorObserver->subject()->name();
+		pController->name = m_pSoloObserver->subject()->name();
 		pController->index = 5; // 5=SoloObserver
 		pController->ctype = m_pSoloObserver->type();
 		pController->channel = m_pSoloObserver->channel();
