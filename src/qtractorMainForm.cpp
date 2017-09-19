@@ -2507,7 +2507,7 @@ bool qtractorMainForm::saveSessionFileEx (
 	}
 
 	// Soft-house-keeping...
-	if (bUpdate) m_pSession->files()->cleanup(false);
+	m_pSession->files()->cleanup(false);
 
 	// Write the file...
 	QDomDocument doc("qtractorSession");
