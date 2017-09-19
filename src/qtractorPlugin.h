@@ -623,7 +623,7 @@ public:
 	static void loadControllers(
 		QDomElement *pElement, qtractorMidiControl::Controllers& controllers);
 	void saveControllers(
-		qtractorDocument *pDocument, QDomElement *pElement) const;
+		qtractorDocument *pDocument, QDomElement *pElement);
 
 	// Map/realize plugin parameter controllers (MIDI).
 	void mapControllers(const qtractorMidiControl::Controllers& controllers);

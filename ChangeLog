@@ -6,13 +6,15 @@ ChangeLog
 
 GIT HEAD
 
+- Assigned MIDI Controllers to plug-in's Activate switch are
+  now finally saved and (re)loaded properly across sessions.
+
 - Audio clip panning option property is now being introduced.
-  (EXPERIMENTAL)
   
 - Out-of-process (aka. dummy) VST plug-in inventory scanning
   now restarts automatically and resumes processing in case
   of a premature exit/crash; VST plug-in inventory scan/cache
-  persistency is now in place. (EXPERIMENTAL)
+  persistency is now in place.
 
 - Desktop entry specification file is now finally independent
   from build/configure template chains.
@@ -24,7 +26,7 @@ GIT HEAD
   takes effect immediately unless it's back to "(default)".
 
 - Slightly slower but better approximation to IEEE 32bit
-  floating point cubic root ie. cbrtf(). (EXPERIMENTAL)
+  floating point cubic root ie. cbrtf().
 
 
 0.8.3  2017-06-30  Stickiest Tauon Beta.
