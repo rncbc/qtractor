@@ -8334,7 +8334,9 @@ void qtractorMainForm::updateDirtyCount ( bool bDirtyCount )
 		if (!m_bNsmDirty && bDirtyCount) {
 			m_pNsmClient->dirty(true);
 			m_bNsmDirty = true;
-		} else {
+		}
+		else
+		if (m_bNsmDirty && !bDirtyCount) {
 			m_pNsmClient->dirty(false);
 			m_bNsmDirty = false;
 		}
