@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 31
+%define release 32
 
 %define _prefix	@ac_prefix@
 
@@ -115,6 +115,8 @@ the personal home-studio.
 %{_datadir}/man/man1/%{name}*.1.gz
 
 %changelog
+* Wed Sep 20 2017 Rui Nuno Capela <rncbc@rncbc.org> 0.8.4
+- End of Summer'17 beta release.
 * Fri Jun 30 2017 Rui Nuno Capela <rncbc@rncbc.org> 0.8.3
 - The Stickiest Tauon beta release.
 * Wed May 10 2017 Rui Nuno Capela <rncbc@rncbc.org> 0.8.2
