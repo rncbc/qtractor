@@ -94,6 +94,44 @@ private:
 
 
 //----------------------------------------------------------------------------
+// qtractorMidiMeterLed -- MIDI meter bridge LED widget.
+
+class qtractorMidiMeterLed : public qtractorMeterValue
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMidiMeterLed(qtractorMidiMeter *pMidiMeter,
+		QWidget *pParent = 0);
+
+	// Default destructor.
+	~qtractorMidiMeterLed();
+
+	// Reset peak holder.
+	void peakReset() { m_iMidiCount = 0; }
+
+	// Value refreshment.
+	void refresh();
+
+private:
+
+	// Local instance variables.
+	QLabel *m_pMidiLabel;
+
+	// Running variables.
+	unsigned int m_iMidiCount;
+
+	// MIDI I/O LED pixmap stuff.
+	enum { LedOff = 0, LedOn = 1, LedCount = 2 };
+
+	static int      g_iLedRefCount;
+	static QPixmap *g_pLedPixmap[LedCount];
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorMidiMeter -- MIDI meter bridge slot widget.
 
 class qtractorMidiMeter : public qtractorMeter
@@ -122,9 +160,6 @@ public:
 
 	// Monitor reset.
 	void reset();
-
-	// Slot refreshment.
-	void refresh();
 
 	// Reset peak holder.
 	void peakReset();
@@ -161,21 +196,14 @@ private:
 
 	// Local instance variables.
 	qtractorMidiMonitor    *m_pMidiMonitor;
+
+	qtractorMidiMeterLed   *m_pMidiLed;
 	qtractorMidiMeterScale *m_pMidiScale;
 	qtractorMidiMeterValue *m_pMidiValue;
-
-	QLabel      *m_pMidiLabel;
-	unsigned int m_iMidiCount;
 
 #ifdef CONFIG_GRADIENT
 	QPixmap *m_pPixmap;
 #endif
-
-	// MIDI I/O LED pixmap stuff.
-	enum { LedOff = 0, LedOn = 1, LedCount = 2 };
-
-	static int      g_iLedRefCount;
-	static QPixmap *g_pLedPixmap[LedCount];
 
 	static QColor g_defaultColors[ColorCount];
 	static QColor g_currentColors[ColorCount];

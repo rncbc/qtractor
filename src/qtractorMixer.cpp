@@ -1086,12 +1086,12 @@ void qtractorMixerRack::addStrip ( qtractorMixerStrip *pStrip )
 // Remove a mixer strip from rack list.
 void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 {
-	// Remove this from the workspace layout...
-	m_pRackWidget->removeStrip(pStrip);
-
 	// Don't let current selection hanging...
 	if (m_pSelectedStrip == pStrip)
 		m_pSelectedStrip = NULL;
+
+	// Remove this from the workspace layout...
+	m_pRackWidget->removeStrip(pStrip);
 
 	pStrip->hide();
 

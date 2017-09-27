@@ -114,12 +114,6 @@ qtractorMeterValue::qtractorMeterValue (
 	qtractorMeter *pMeter, QWidget *pParent )
 	: QWidget(pParent), m_pMeter(pMeter)
 {
-	// Avoid intensively annoying repaints...
-	QWidget::setAttribute(Qt::WA_StaticContents);
-	QWidget::setAttribute(Qt::WA_OpaquePaintEvent);
-
-	QWidget::setBackgroundRole(QPalette::NoRole);
-
 	g_values.append(this);
 }
 

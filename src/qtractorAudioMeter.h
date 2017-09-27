@@ -124,9 +124,6 @@ public:
 	// Monitor reset.
 	void reset();
 
-	// Slot refreshment.
-	void refresh();
-
 	// Reset peak holder.
 	void peakReset();
 

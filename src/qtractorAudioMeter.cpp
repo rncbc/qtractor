@@ -212,6 +212,12 @@ qtractorAudioMeterValue::qtractorAudioMeterValue (
 	qtractorAudioMeter *pAudioMeter, unsigned short iChannel, QWidget *pParent )
 	: qtractorMeterValue(pAudioMeter, pParent), m_iChannel(iChannel)
 {
+	// Avoid intensively annoying repaints...
+	QWidget::setAttribute(Qt::WA_StaticContents);
+	QWidget::setAttribute(Qt::WA_OpaquePaintEvent);
+
+	QWidget::setBackgroundRole(QPalette::NoRole);
+
 	m_iValue      = 0;
 	m_fValueDecay = QTRACTOR_AUDIO_METER_DECAY_RATE1;
 
@@ -542,14 +548,6 @@ void qtractorAudioMeter::updatePixmap (void)
 	QPainter(m_pPixmap).fillRect(0, 0, w, h, grad);
 }
 #endif
-
-
-// Slot refreshment.
-void qtractorAudioMeter::refresh (void)
-{
-	for (unsigned short i = 0; i < m_iChannels; ++i)
-		m_ppAudioValues[i]->refresh();
-}
 
 
 // Resize event handler.

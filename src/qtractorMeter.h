@@ -181,9 +181,6 @@ public:
 	virtual void updatePanning() = 0;
 	virtual void updateGain() = 0;
 
-	// Slot refreshment.
-	virtual void refresh() = 0;
-
 	// Meter reset.
 	virtual void reset() = 0;
 
