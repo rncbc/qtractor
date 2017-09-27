@@ -106,6 +106,9 @@ void qtractorMeterScale::paintEvent ( QPaintEvent * )
 //----------------------------------------------------------------------------
 // qtractorMeterValue -- Meter bridge value widget.
 
+// List of meter-values (global obviously)
+QList<qtractorMeterValue *> qtractorMeterValue::g_values;
+
 // Constructor.
 qtractorMeterValue::qtractorMeterValue (
 	qtractorMeter *pMeter, QWidget *pParent )
@@ -116,6 +119,24 @@ qtractorMeterValue::qtractorMeterValue (
 	QWidget::setAttribute(Qt::WA_OpaquePaintEvent);
 
 	QWidget::setBackgroundRole(QPalette::NoRole);
+
+	g_values.append(this);
+}
+
+
+// Destructor (virtual).
+qtractorMeterValue::~qtractorMeterValue (void)
+{
+	g_values.removeAll(this);
+}
+
+
+// Global refreshment (static).
+void qtractorMeterValue::refreshAll (void)
+{
+	QListIterator<qtractorMeterValue *> iter(g_values);
+	while (iter.hasNext())
+		iter.next()->refresh();
 }
 
 

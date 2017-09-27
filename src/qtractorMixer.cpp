@@ -719,13 +719,6 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 }
 
 
-// Strip refreshment.
-void qtractorMixerStrip::refresh (void)
-{
-	if (m_pMeter) m_pMeter->refresh();
-}
-
-
 // Mouse selection event handlers.
 void qtractorMixerStrip::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
@@ -1134,16 +1127,6 @@ void qtractorMixerRack::updateStrip (
 }
 
 
-// Complete rack refreshment.
-void qtractorMixerRack::refresh (void)
-{
-	Strips::ConstIterator strip = m_strips.constBegin();
-	const Strips::ConstIterator& strip_end = m_strips.constEnd();
-	for ( ; strip != strip_end; ++strip)
-		strip.value()->refresh();
-}
-
-
 // Complete rack recycle.
 void qtractorMixerRack::clear (void)
 {
@@ -1498,15 +1481,6 @@ void qtractorMixer::updateTracks ( bool bReset )
 	}
 
 	m_pTrackRack->cleanStrips(1);
-}
-
-
-// Complete mixer refreshment.
-void qtractorMixer::refresh (void)
-{
-	m_pInputRack->refresh();
-	m_pTrackRack->refresh();
-	m_pOutputRack->refresh();
 }
 
 

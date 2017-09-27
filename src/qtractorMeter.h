@@ -95,6 +95,9 @@ public:
 	// Constructor.
 	qtractorMeterValue(qtractorMeter *pMeter, QWidget *pParent = 0);
 
+	// Default destructor.
+	virtual ~qtractorMeterValue();
+
 	// Meter bridge accessor.
 	qtractorMeter *meter() const
 		{ return m_pMeter; }
@@ -102,10 +105,16 @@ public:
 	// Value refreshment.
 	virtual void refresh() = 0;
 
+	// Global refreshment.
+	static void refreshAll();
+
 private:
 
 	// Local instance variables.
 	qtractorMeter *m_pMeter;
+
+	// List of meter-values (global obviously)
+	static QList<qtractorMeterValue *> g_values;
 };
 
 

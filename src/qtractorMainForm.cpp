@@ -7323,9 +7323,8 @@ void qtractorMainForm::fastTimerSlot (void)
 		// Done with transport tricks.
 	}
 
-	// Always update mixer monitoring...
-	if (m_pMixer)
-		m_pMixer->refresh();
+	// Always update meter values...
+	qtractorMeterValue::refreshAll();
 
 	// Asynchronous observer update...
 	qtractorSubject::flushQueue(true);

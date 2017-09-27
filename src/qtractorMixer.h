@@ -143,9 +143,6 @@ public:
 	bool isSelected() const
 		{ return m_bSelected; }
 
-	// Strip refreshment.
-	void refresh();
-
 	// Hacko-list-management marking...
 	void setMark(int iMark)
 		{ m_iMark = iMark; }
@@ -305,9 +302,6 @@ public:
 	int stripCount() const
 		{ return m_strips.count(); }
 
-	// Complete rack refreshment.
-	void refresh();
-
 	// Complete rack recycle.
 	void clear();
 
@@ -389,9 +383,6 @@ public:
 	void updateBusStrip(qtractorMixerRack *pRack, qtractorBus *pBus,
 		qtractorBus::BusMode busMode, bool bReset = false);
 	void updateTrackStrip(qtractorTrack *pTrack, bool bReset = false);
-
-	// Complete mixer refreshment.
-	void refresh();
 
 	// Complete mixer recycle.
 	void clear();
