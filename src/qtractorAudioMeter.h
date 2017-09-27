@@ -57,7 +57,7 @@ protected:
 //----------------------------------------------------------------------------
 // qtractorAudioMeterValue -- Audio meter bridge value widget.
 
-class qtractorAudioMeterValue : public QWidget
+class qtractorAudioMeterValue : public qtractorMeterValue
 {
 	Q_OBJECT
 
@@ -82,8 +82,7 @@ protected:
 private:
 
 	// Local instance variables.
-	qtractorAudioMeter *m_pAudioMeter;
-	unsigned short      m_iChannel;
+	unsigned short m_iChannel;
 
 	// Running variables.
 	int   m_iValue;

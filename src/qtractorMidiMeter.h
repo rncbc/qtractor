@@ -59,7 +59,7 @@ protected:
 //----------------------------------------------------------------------------
 // qtractorMidiMeterValue -- MIDI meter bridge value widget.
 
-class qtractorMidiMeterValue : public QWidget
+class qtractorMidiMeterValue : public qtractorMeterValue
 {
 	Q_OBJECT
 
@@ -82,9 +82,6 @@ protected:
 	void resizeEvent(QResizeEvent *);
 
 private:
-
-	// Local instance variables.
-	qtractorMidiMeter *m_pMidiMeter;
 
 	// Running variables.
 	int   m_iValue;

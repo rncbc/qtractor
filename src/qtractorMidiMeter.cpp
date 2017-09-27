@@ -104,12 +104,8 @@ void qtractorMidiMeterScale::paintScale ( QPainter *pPainter )
 // Constructor.
 qtractorMidiMeterValue::qtractorMidiMeterValue (
 	qtractorMidiMeter *pMidiMeter, QWidget *pParent )
-	: QWidget(pParent), m_pMidiMeter(pMidiMeter)
+	: qtractorMeterValue(pMidiMeter, pParent)
 {
-	// Avoid intensively annoying repaints...
-	QWidget::setAttribute(Qt::WA_StaticContents);
-	QWidget::setAttribute(Qt::WA_OpaquePaintEvent);
-
 	m_iValue      = 0;
 	m_fValueDecay = QTRACTOR_MIDI_METER_DECAY_RATE1;
 
@@ -118,7 +114,6 @@ qtractorMidiMeterValue::qtractorMidiMeterValue (
 	m_fPeakDecay  = QTRACTOR_MIDI_METER_DECAY_RATE2;
 
 	QWidget::setFixedWidth(14);
-	QWidget::setBackgroundRole(QPalette::NoRole);
 
 	pMidiMeter->boxLayout()->addWidget(this);
 }
@@ -127,7 +122,12 @@ qtractorMidiMeterValue::qtractorMidiMeterValue (
 // Value refreshment.
 void qtractorMidiMeterValue::refresh (void)
 {
-	qtractorMidiMonitor *pMidiMonitor = m_pMidiMeter->midiMonitor();
+	qtractorMidiMeter *pMidiMeter
+		= static_cast<qtractorMidiMeter *> (meter());
+	if (pMidiMeter == NULL)
+		return;
+
+	qtractorMidiMonitor *pMidiMonitor = pMidiMeter->midiMonitor();
 	if (pMidiMonitor == NULL)
 		return;
 
@@ -148,7 +148,7 @@ void qtractorMidiMeterValue::refresh (void)
 		iPeak = iValue;
 		m_iPeakHold = 0;
 		m_fPeakDecay = QTRACTOR_MIDI_METER_DECAY_RATE2;
-	} else if (++m_iPeakHold > m_pMidiMeter->peakFalloff()) {
+	} else if (++m_iPeakHold > pMidiMeter->peakFalloff()) {
 		iPeak = int(m_fPeakDecay * float(iPeak));
 		if (iPeak < iValue) {
 			iPeak = iValue;
@@ -170,6 +170,11 @@ void qtractorMidiMeterValue::refresh (void)
 // Paint event handler.
 void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 {
+	qtractorMidiMeter *pMidiMeter
+		= static_cast<qtractorMidiMeter *> (meter());
+	if (pMidiMeter == NULL)
+		return;
+
 	QPainter painter(this);
 
 	const int w = QWidget::width();
@@ -177,20 +182,20 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 
 	if (isEnabled()) {
 		painter.fillRect(0, 0, w, h,
-			m_pMidiMeter->color(qtractorMidiMeter::ColorBack));
+			pMidiMeter->color(qtractorMidiMeter::ColorBack));
 	} else {
 		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
 #ifdef CONFIG_GRADIENT
 	painter.drawPixmap(0, h - m_iValue,
-		m_pMidiMeter->pixmap(), 0, h - m_iValue, w, m_iValue);
+		pMidiMeter->pixmap(), 0, h - m_iValue, w, m_iValue);
 #else
 	painter.fillRect(0, h - m_iValue, w, m_iValue,
-		m_pMidiMeter->color(qtractorMidiMeter::ColorOver));
+		MidiMeter->color(qtractorMidiMeter::ColorOver));
 #endif
 
-	painter.setPen(m_pMidiMeter->color(qtractorMidiMeter::ColorPeak));
+	painter.setPen(pMidiMeter->color(qtractorMidiMeter::ColorPeak));
 	painter.drawLine(0, h - m_iPeak, w, h - m_iPeak);
 }
 

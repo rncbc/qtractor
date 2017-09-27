@@ -1,7 +1,7 @@
 // qtractorMeter.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -80,6 +80,32 @@ private:
 
 	// Running variables.
 	int m_iLastY;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMeterValue -- Meter bridge value widget.
+
+class qtractorMeterValue : public QWidget
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMeterValue(qtractorMeter *pMeter, QWidget *pParent = 0);
+
+	// Meter bridge accessor.
+	qtractorMeter *meter() const
+		{ return m_pMeter; }
+
+	// Value refreshment.
+	virtual void refresh() = 0;
+
+private:
+
+	// Local instance variables.
+	qtractorMeter *m_pMeter;
 };
 
 
