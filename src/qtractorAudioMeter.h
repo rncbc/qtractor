@@ -39,8 +39,6 @@ class QPaintEvent;
 
 class qtractorAudioMeterScale : public qtractorMeterScale
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -59,8 +57,6 @@ protected:
 
 class qtractorAudioMeterValue : public qtractorMeterValue
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -99,8 +95,6 @@ private:
 
 class qtractorAudioMeter : public qtractorMeter
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.

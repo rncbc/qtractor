@@ -60,22 +60,22 @@ public:
 		qtractorTrackList *pTrackList, qtractorTrack *pTrack);
 
 	// Local child widgets accessors.
-	qtractorCurveButton *curveButton() const
-		{ return m_pCurveButton; }
 	qtractorTrackButton *recordButton() const
 		{ return m_pRecordButton; }
 	qtractorTrackButton *muteButton() const
 		{ return m_pMuteButton; }
 	qtractorTrackButton *soloButton() const
 		{ return m_pSoloButton; }
+	qtractorCurveButton *curveButton() const
+		{ return m_pCurveButton; }
 
 private:
 
 	// The local child widgets.
-	qtractorCurveButton *m_pCurveButton;
 	qtractorTrackButton *m_pRecordButton;
 	qtractorTrackButton *m_pMuteButton;
 	qtractorTrackButton *m_pSoloButton;
+	qtractorCurveButton *m_pCurveButton;
 };
 
 

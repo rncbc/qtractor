@@ -41,8 +41,6 @@ class QPaintEvent;
 
 class qtractorMidiMeterScale : public qtractorMeterScale
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -61,8 +59,6 @@ protected:
 
 class qtractorMidiMeterValue : public qtractorMeterValue
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -98,8 +94,6 @@ private:
 
 class qtractorMidiMeterLed : public qtractorMeterValue
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -136,8 +130,6 @@ private:
 
 class qtractorMidiMeter : public qtractorMeter
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.

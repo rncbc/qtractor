@@ -52,8 +52,6 @@ class QResizeEvent;
 
 class qtractorMeterScale : public QFrame
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -88,8 +86,6 @@ private:
 
 class qtractorMeterValue : public QWidget
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.

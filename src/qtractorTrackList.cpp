@@ -204,7 +204,7 @@ qtractorTrackItemWidget::qtractorTrackItemWidget (
 	if (pMainForm)
 		m_pCurveButton->setMenu(pMainForm->trackCurveMenu());
 
-//	pHBoxLayout->addStretch();
+	pHBoxLayout->addStretch();
 	pHBoxLayout->addWidget(m_pRecordButton);
 	pHBoxLayout->addWidget(m_pMuteButton);
 	pHBoxLayout->addWidget(m_pSoloButton);
@@ -370,7 +370,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 
 	if (widget == NULL) {
 		widget = new qtractorTrackItemWidget(pTrackList, track);
-		widget->lower();
+	//	widget->lower();
 	}
 
 	update_icon(pTrackList);
