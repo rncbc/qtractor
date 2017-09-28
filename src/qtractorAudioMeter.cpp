@@ -226,7 +226,8 @@ qtractorAudioMeterValue::qtractorAudioMeterValue (
 	m_fPeakDecay  = QTRACTOR_AUDIO_METER_DECAY_RATE2;
 	m_iPeakColor  = qtractorAudioMeter::Color6dB;
 
-	QWidget::setFixedWidth(10);
+//	QWidget::setFixedWidth(10);
+	QWidget::setMaximumWidth(10);
 
 	pAudioMeter->boxLayout()->addWidget(this);
 }

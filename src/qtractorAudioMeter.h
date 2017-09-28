@@ -27,7 +27,6 @@
 
 // Forward declarations.
 class qtractorAudioMeter;
-class qtractorAudioMeterValue;
 class qtractorAudioMonitor;
 
 class QResizeEvent;

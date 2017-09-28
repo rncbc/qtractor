@@ -27,7 +27,6 @@
 
 // Forward declarations.
 class qtractorMidiMeter;
-class qtractorMidiMeterValue;
 class qtractorMidiMonitor;
 
 class QLabel;
