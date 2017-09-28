@@ -46,8 +46,8 @@ public:
 		unsigned char val, unsigned long tick = 0);
 
 	// Monitor dequeue methods.
-	float value();
-	int   count();
+	float value_stamp(unsigned long iStamp);
+	int   count_stamp(unsigned long iStamp);
 
 	// Clear monitor.
 	void clear();
@@ -86,6 +86,9 @@ private:
 	unsigned long m_iFrameStart;
 	unsigned long m_iTimeStart;
 	QueueItem     m_item;
+
+	unsigned long m_iValueStamp;
+	unsigned long m_iCountStamp;
 
 	// Singleton variables.
 	static unsigned int  g_iFrameSlot;

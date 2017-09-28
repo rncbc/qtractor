@@ -162,8 +162,8 @@ static inline void std_process_meter (
 // Constructor.
 qtractorAudioMonitor::qtractorAudioMonitor ( unsigned short iChannels,
 	float fGain, float fPanning ) : qtractorMonitor(fGain, fPanning),
-	m_iChannels(0), m_pfValues(NULL), m_pfGains(NULL), m_pfPrevGains(NULL),
-	m_iProcessRamp(0)
+	m_iChannels(0), m_piStamps(NULL), m_pfValues(NULL),
+	m_pfGains(NULL), m_pfPrevGains(NULL), m_iProcessRamp(0)
 {
 	qtractorMonitor::gainSubject()->setMaxValue(2.0f);	// +6dB
 	qtractorMonitor::gainObserver()->setLogarithmic(true);
@@ -201,6 +201,11 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 		return;
 
 	// Delete old value holders...
+	if (m_piStamps) {
+		delete [] m_piStamps;
+		m_piStamps = NULL;
+	}
+
 	if (m_pfValues) {
 		delete [] m_pfValues;
 		m_pfValues = NULL;
@@ -220,11 +225,15 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 	// Set new value holders...
 	m_iChannels = iChannels;
 	if (m_iChannels > 0) {
+		m_piStamps = new unsigned long [m_iChannels];
 		m_pfValues = new float [m_iChannels];
 		m_pfGains = new float [m_iChannels];
 		m_pfPrevGains = new float [m_iChannels];
-		for (unsigned short i = 0; i < m_iChannels; ++i)
-			m_pfValues[i] = m_pfGains[i] = m_pfPrevGains[i] = 0.0f;
+		for (unsigned short i = 0; i < m_iChannels; ++i) {
+			m_piStamps[i] = 0;
+			m_pfValues[i] = 0.0f;
+			m_pfGains[i] = m_pfPrevGains[i] = 0.0f;
+		}
 		// Initial population...
 		update();
     }
@@ -237,10 +246,14 @@ unsigned short qtractorAudioMonitor::channels (void) const
 
 
 // Value holder accessor.
-float qtractorAudioMonitor::value ( unsigned short iChannel ) const
+float qtractorAudioMonitor::value_stamp (
+	unsigned short iChannel, unsigned long iStamp ) const
 {
 	const float fValue = m_pfValues[iChannel];
-	m_pfValues[iChannel] = 0.0f;
+	if (m_piStamps[iChannel] != iStamp) {
+		m_piStamps[iChannel] = iStamp;
+		m_pfValues[iChannel] = 0.0f;
+	}
 	return fValue;
 }
 
@@ -248,8 +261,11 @@ float qtractorAudioMonitor::value ( unsigned short iChannel ) const
 // Reset channel gain trackers.
 void qtractorAudioMonitor::reset (void)
 {
-	for (unsigned short i = 0; i < m_iChannels; ++i)
-		m_pfPrevGains[i] = m_pfValues[i] = 0.0f;
+	for (unsigned short i = 0; i < m_iChannels; ++i) {
+		m_piStamps[i] = 0;
+		m_pfValues[i] = 0.0f;
+		m_pfPrevGains[i] = 0.0f;
+	}
 
 	++m_iProcessRamp;
 }

@@ -91,40 +91,46 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 
 
 // Monitor value dequeue method.
-float qtractorMidiMonitor::value (void)
+float qtractorMidiMonitor::value_stamp ( unsigned long iStamp )
 {
 	// Grab-and-reset current direct value...
 	unsigned char val = m_item.value;
-	m_item.value = 0;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && g_iFrameSlot > 0) {
-		// Sweep the queue until current time...
-		const unsigned long iFrameTime = pSession->frameTimeEx();
-		while (m_iFrameStart < iFrameTime) {
-			QueueItem& item = m_pQueue[m_iQueueIndex];
-			if (val < item.value)
-				val = item.value;
-			m_item.count += item.count;
-			item.value = 0;
-			item.count = 0;
-			++m_iQueueIndex &= c_iQueueMask;
-			m_iFrameStart += g_iFrameSlot;
-			m_iTimeStart += timeSlot(m_iTimeStart);
+	if (m_iValueStamp != iStamp) {
+	    m_iValueStamp  = iStamp;
+		m_item.value   = 0;
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession && g_iFrameSlot > 0) {
+			// Sweep the queue until current time...
+			const unsigned long iFrameTime = pSession->frameTimeEx();
+			while (m_iFrameStart < iFrameTime) {
+				QueueItem& item = m_pQueue[m_iQueueIndex];
+				if (val < item.value)
+					val = item.value;
+				m_item.count += item.count;
+				item.value = 0;
+				item.count = 0;
+				++m_iQueueIndex &= c_iQueueMask;
+				m_iFrameStart += g_iFrameSlot;
+				m_iTimeStart += timeSlot(m_iTimeStart);
+			}
 		}
 	}
 
 	// Dequeue done.
-	return (gain() * val) * 0.007874f; // same as / 127.0f
+	return (gain() * val) * 0.007874f; // same as divide by 127.0f
 }
 
 
 // Monitor count dequeue method.
-int qtractorMidiMonitor::count (void)
+int qtractorMidiMonitor::count_stamp ( unsigned long iStamp )
 {
 	// Grab latest direct/dequeued count...
 	const int iCount = int(m_item.count);
-	m_item.count = 0;
+	if (m_iCountStamp != iStamp) {
+		m_iCountStamp  = iStamp;
+		m_item.count   = 0;
+	}
 	return iCount;
 }
 
@@ -143,6 +149,10 @@ void qtractorMidiMonitor::clear (void)
 		m_pQueue[i].value = 0;
 		m_pQueue[i].count = 0;
 	}
+
+	// Reset metering stamps as well...
+	m_iValueStamp = 0;
+	m_iCountStamp = 0;
 }
 
 

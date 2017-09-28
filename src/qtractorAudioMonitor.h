@@ -44,7 +44,7 @@ public:
 	unsigned short channels() const;
 
 	// Value holder accessor.
-	float value(unsigned short iChannel) const;
+	float value_stamp(unsigned short iChannel, unsigned long iStamp) const;
 
 	// Batch processors.
 	void process(float **ppFrames,
@@ -64,6 +64,7 @@ private:
 
 	// Instance variables.
 	unsigned short m_iChannels;
+	unsigned long *m_piStamps;
 	float         *m_pfValues;
 	float         *m_pfGains;
 	float         *m_pfPrevGains;

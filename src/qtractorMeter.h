@@ -103,7 +103,7 @@ public:
 		{ return m_pMeter; }
 
 	// Value refreshment.
-	virtual void refresh() = 0;
+	virtual void refresh(unsigned long iStamp) = 0;
 
 	// Global refreshment.
 	static void refreshAll();
@@ -115,6 +115,7 @@ private:
 
 	// List of meter-values (global obviously)
 	static QList<qtractorMeterValue *> g_values;
+	static unsigned long g_iStamp;
 };
 
 

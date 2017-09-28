@@ -73,7 +73,7 @@ public:
 	void peakReset() { m_iPeak = 0; }
 
 	// Value refreshment.
-	void refresh();
+	void refresh(unsigned long iStamp);
 
 protected:
 
@@ -113,7 +113,7 @@ public:
 	void peakReset() { m_iMidiCount = 0; }
 
 	// Value refreshment.
-	void refresh();
+	void refresh(unsigned long iStamp);
 
 private:
 

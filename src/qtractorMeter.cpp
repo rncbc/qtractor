@@ -108,6 +108,7 @@ void qtractorMeterScale::paintEvent ( QPaintEvent * )
 
 // List of meter-values (global obviously)
 QList<qtractorMeterValue *> qtractorMeterValue::g_values;
+unsigned long qtractorMeterValue::g_iStamp = 0;
 
 // Constructor.
 qtractorMeterValue::qtractorMeterValue (
@@ -128,9 +129,11 @@ qtractorMeterValue::~qtractorMeterValue (void)
 // Global refreshment (static).
 void qtractorMeterValue::refreshAll (void)
 {
+	++g_iStamp;
+
 	QListIterator<qtractorMeterValue *> iter(g_values);
 	while (iter.hasNext())
-		iter.next()->refresh();
+		iter.next()->refresh(g_iStamp);
 }
 
 

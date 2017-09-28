@@ -126,7 +126,7 @@ qtractorMidiMeterValue::qtractorMidiMeterValue (
 
 
 // Value refreshment.
-void qtractorMidiMeterValue::refresh (void)
+void qtractorMidiMeterValue::refresh ( unsigned long iStamp )
 {
 	qtractorMidiMeter *pMidiMeter
 		= static_cast<qtractorMidiMeter *> (meter());
@@ -137,7 +137,7 @@ void qtractorMidiMeterValue::refresh (void)
 	if (pMidiMonitor == NULL)
 		return;
 
-	const float fValue = pMidiMonitor->value();
+	const float fValue = pMidiMonitor->value_stamp(iStamp);
 	if (fValue < 0.001f && m_iPeak < 1)
 		return;
 
@@ -255,7 +255,7 @@ qtractorMidiMeterLed::~qtractorMidiMeterLed (void)
 
 
 // Value refreshment.
-void qtractorMidiMeterLed::refresh (void)
+void qtractorMidiMeterLed::refresh ( unsigned long iStamp )
 {
 	qtractorMidiMeter *pMidiMeter
 		= static_cast<qtractorMidiMeter *> (meter());
@@ -267,7 +267,7 @@ void qtractorMidiMeterLed::refresh (void)
 		return;
 
 	// Take care of the MIDI LED status...
-	const bool bMidiOn = (pMidiMonitor->count() > 0);
+	const bool bMidiOn = (pMidiMonitor->count_stamp(iStamp) > 0);
 	if (bMidiOn) {
 		if (m_iMidiCount == 0)
 			m_pMidiLabel->setPixmap(*g_pLedPixmap[LedOn]);

@@ -233,7 +233,7 @@ qtractorAudioMeterValue::qtractorAudioMeterValue (
 
 
 // Value refreshment.
-void qtractorAudioMeterValue::refresh (void)
+void qtractorAudioMeterValue::refresh ( unsigned long iStamp )
 {
 	qtractorAudioMeter *pAudioMeter
 		= static_cast<qtractorAudioMeter *> (meter());
@@ -244,7 +244,7 @@ void qtractorAudioMeterValue::refresh (void)
 	if (pAudioMonitor == NULL)
 		return;
 
-	const float fValue = pAudioMonitor->value(m_iChannel);
+	const float fValue = pAudioMonitor->value_stamp(m_iChannel, iStamp);
 	if (fValue < 0.001f && m_iPeak < 1)
 		return;
 #if 0
