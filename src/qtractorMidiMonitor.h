@@ -87,6 +87,8 @@ private:
 	unsigned long m_iTimeStart;
 	QueueItem     m_item;
 
+	float m_fValue;
+
 	unsigned long m_iValueStamp;
 	unsigned long m_iCountStamp;
 

@@ -94,11 +94,10 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 float qtractorMidiMonitor::value_stamp ( unsigned long iStamp )
 {
 	// Grab-and-reset current direct value...
-	unsigned char val = m_item.value;
-
 	if (m_iValueStamp != iStamp) {
-	    m_iValueStamp  = iStamp;
-		m_item.value   = 0;
+		unsigned char val = m_item.value;
+	    m_iValueStamp = iStamp;
+		m_item.value = 0;
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession && g_iFrameSlot > 0) {
 			// Sweep the queue until current time...
@@ -115,10 +114,12 @@ float qtractorMidiMonitor::value_stamp ( unsigned long iStamp )
 				m_iTimeStart += timeSlot(m_iTimeStart);
 			}
 		}
+		// New state: same as division by 127.0f...
+		m_fValue = (gain() * val) * 0.007874f;
 	}
 
 	// Dequeue done.
-	return (gain() * val) * 0.007874f; // same as divide by 127.0f
+	return m_fValue;
 }
 
 
@@ -151,6 +152,8 @@ void qtractorMidiMonitor::clear (void)
 	}
 
 	// Reset metering stamps as well...
+	m_fValue = 0.0f;
+
 	m_iValueStamp = 0;
 	m_iCountStamp = 0;
 }
