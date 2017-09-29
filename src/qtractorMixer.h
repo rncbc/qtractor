@@ -39,7 +39,7 @@ class qtractorMixerStrip;
 class qtractorMixerRack;
 class qtractorMixerRackWidget;
 class qtractorMixer;
-class qtractorMeter;
+class qtractorMixerMeter;
 
 class qtractorPluginListView;
 
@@ -125,8 +125,8 @@ public:
 	// Child accessors.
 	qtractorPluginListView *pluginListView() const
 		{ return m_pPluginListView; }
-	qtractorMeter *meter() const
-		{ return m_pMeter; }
+	qtractorMixerMeter *meter() const
+		{ return m_pMixerMeter; }
 
 	// Bus property accessors.
 	void setBus(qtractorBus *pBus);
@@ -200,7 +200,7 @@ private:
 	qtractorTrackButton    *m_pRecordButton;
 	qtractorTrackButton    *m_pMuteButton;
 	qtractorTrackButton    *m_pSoloButton;
-	qtractorMeter          *m_pMeter;
+	qtractorMixerMeter     *m_pMixerMeter;
 	QPushButton            *m_pBusButton;
 	QLabel                 *m_pMidiLabel;
 

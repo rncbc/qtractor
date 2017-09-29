@@ -357,7 +357,7 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 
 
 // Resize event handler.
-void qtractorAudioMeterValue::resizeEvent (QResizeEvent *pResizeEvent)
+void qtractorAudioMeterValue::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	m_iPeak = 0;
 
@@ -366,81 +366,23 @@ void qtractorAudioMeterValue::resizeEvent (QResizeEvent *pResizeEvent)
 }
 
 
-//----------------------------------------------------------------------
-// class qtractorAudioMeter::GainSpinBoxInterface -- Observer interface.
-//
-
-// Local converter interface.
-class qtractorAudioMeter::GainSpinBoxInterface
-	: public qtractorObserverSpinBox::Interface
-{
-public:
-
-	// Constructor.
-	GainSpinBoxInterface ( qtractorObserverSpinBox *pSpinBox )
-		: qtractorObserverSpinBox::Interface(pSpinBox) {}
-
-	// Formerly Pure virtuals.
-	float scaleFromValue ( float fValue ) const
-		{ return log10f2(fValue); }
-
-	float valueFromScale ( float fScale ) const
-		{ return pow10f2(fScale); }
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorAudioMeter::GainSliderInterface -- Observer interface.
-//
-
-// Local converter interface.
-class qtractorAudioMeter::GainSliderInterface
-	: public qtractorObserverSlider::Interface
-{
-public:
-
-	// Constructor.
-	GainSliderInterface ( qtractorObserverSlider *pSlider )
-		: qtractorObserverSlider::Interface(pSlider) {}
-
-	// Formerly Pure virtuals.
-	float scaleFromValue ( float fValue ) const
-		{ return 10000.0f * IEC_Scale(log10f2(fValue)); }
-
-	float valueFromScale ( float fScale ) const
-		{ return pow10f2(IEC_dB(fScale / 10000.0f)); }
-};
-
-
 //----------------------------------------------------------------------------
 // qtractorAudioMeter -- Audio meter bridge slot widget.
 
 // Constructor.
-qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
-	QWidget *pParent ) : qtractorMeter(pParent)
+qtractorAudioMeter::qtractorAudioMeter (
+	qtractorAudioMonitor *pAudioMonitor, QWidget *pParent )
+	: qtractorMeter(pParent)
 {
 	m_pAudioMonitor = pAudioMonitor;
 
 	m_iChannels     = 0;
-	m_pAudioScale   = new qtractorAudioMeterScale(this/*, boxWidget()*/);
-	m_fScale        = 0.0f;
+	m_pAudioScale   = new qtractorAudioMeterScale(this);
 	m_ppAudioValues = NULL;
 
 #ifdef CONFIG_GRADIENT
 	m_pPixmap = new QPixmap();
 #endif
-
-	topWidget()->hide();
-
-	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
-	gainSpinBox()->setInterface(new GainSpinBoxInterface(gainSpinBox()));
-
-	gainSlider()->setMaximum(11500);
-
-	gainSpinBox()->setMinimum(QTRACTOR_AUDIO_METER_MINDB);
-	gainSpinBox()->setMaximum(QTRACTOR_AUDIO_METER_MAXDB);
-	gainSpinBox()->setToolTip(tr("Gain (dB)"));
-	gainSpinBox()->setSuffix(tr(" dB"));
 
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
 
@@ -448,9 +390,6 @@ qtractorAudioMeter::qtractorAudioMeter ( qtractorAudioMonitor *pAudioMonitor,
 		m_levels[i] = 0;
 
 	reset();
-
-	updatePanning();
-	updateGain();
 }
 
 
@@ -460,10 +399,10 @@ qtractorAudioMeter::~qtractorAudioMeter (void)
 #ifdef CONFIG_GRADIENT
 	delete m_pPixmap;
 #endif
+
 	// No need to delete child widgets, Qt does it all for us
 	for (unsigned short i = 0; i < m_iChannels; ++i)
 		delete m_ppAudioValues[i];
-
 	delete [] m_ppAudioValues;
 	delete m_pAudioScale;
 }
@@ -488,9 +427,6 @@ void qtractorAudioMeter::reset (void)
 	if (m_pAudioMonitor == NULL)
 		return;
 
-	setPanningSubject(m_pAudioMonitor->panningSubject());
-	setGainSubject(m_pAudioMonitor->gainSubject());
-
 	const unsigned short iChannels = m_pAudioMonitor->channels();
 
 	if (m_iChannels == iChannels)
@@ -504,6 +440,7 @@ void qtractorAudioMeter::reset (void)
 	}
 
 	m_iChannels = iChannels;
+
 	if (m_iChannels > 0) {
 		m_ppAudioValues = new qtractorAudioMeterValue *[m_iChannels];
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
@@ -511,9 +448,6 @@ void qtractorAudioMeter::reset (void)
 			m_ppAudioValues[i]->show();
 		}
 	}
-
-	panSlider()->setEnabled(m_iChannels > 1);
-	panSpinBox()->setEnabled(m_iChannels > 1);
 }
 
 
@@ -534,8 +468,8 @@ const QPixmap& qtractorAudioMeter::pixmap (void) const
 
 void qtractorAudioMeter::updatePixmap (void)
 {
-	const int w = boxWidget()->width();
-	const int h = boxWidget()->height();
+	const int w = QWidget::width();
+	const int h = QWidget::height();
 
 	QLinearGradient grad(0, 0, 0, h);
 	grad.setColorAt(0.1f, color(ColorOver));
@@ -554,7 +488,7 @@ void qtractorAudioMeter::updatePixmap (void)
 // Resize event handler.
 void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 {
-	m_fScale = 0.85f * float(boxWidget()->height());
+	qtractorMeter::setScale(0.85f * float(QWidget::height()));
 
 	m_levels[Color0dB]  = iec_scale(  0.0f);
 	m_levels[Color3dB]  = iec_scale( -3.0f);
@@ -610,8 +544,146 @@ const QColor& qtractorAudioMeter::defaultColor ( int iIndex )
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorAudioMixerMeter::GainSpinBoxInterface -- Observer interface.
+//
+
+// Local converter interface.
+class qtractorAudioMixerMeter::GainSpinBoxInterface
+	: public qtractorObserverSpinBox::Interface
+{
+public:
+
+	// Constructor.
+	GainSpinBoxInterface ( qtractorObserverSpinBox *pSpinBox )
+		: qtractorObserverSpinBox::Interface(pSpinBox) {}
+
+	// Formerly Pure virtuals.
+	float scaleFromValue ( float fValue ) const
+		{ return log10f2(fValue); }
+
+	float valueFromScale ( float fScale ) const
+		{ return pow10f2(fScale); }
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorAudioMixerMeter::GainSliderInterface -- Observer interface.
+//
+
+// Local converter interface.
+class qtractorAudioMixerMeter::GainSliderInterface
+	: public qtractorObserverSlider::Interface
+{
+public:
+
+	// Constructor.
+	GainSliderInterface ( qtractorObserverSlider *pSlider )
+		: qtractorObserverSlider::Interface(pSlider) {}
+
+	// Formerly Pure virtuals.
+	float scaleFromValue ( float fValue ) const
+		{ return 10000.0f * IEC_Scale(log10f2(fValue)); }
+
+	float valueFromScale ( float fScale ) const
+		{ return pow10f2(IEC_dB(fScale / 10000.0f)); }
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorAudioMeter -- Audio meter bridge slot widget.
+
+// Constructor.
+qtractorAudioMixerMeter::qtractorAudioMixerMeter (
+	qtractorAudioMonitor *pAudioMonitor, QWidget *pParent )
+	: qtractorMixerMeter(pParent)
+{
+	m_pAudioMeter = new qtractorAudioMeter(pAudioMonitor);
+
+	topWidget()->hide();
+
+	boxLayout()->addWidget(m_pAudioMeter);
+
+	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
+	gainSpinBox()->setInterface(new GainSpinBoxInterface(gainSpinBox()));
+
+	gainSlider()->setMaximum(11500);
+
+	gainSpinBox()->setMinimum(QTRACTOR_AUDIO_METER_MINDB);
+	gainSpinBox()->setMaximum(QTRACTOR_AUDIO_METER_MAXDB);
+	gainSpinBox()->setToolTip(tr("Gain (dB)"));
+	gainSpinBox()->setSuffix(tr(" dB"));
+
+	reset();
+
+	updatePanning();
+	updateGain();
+}
+
+
+// Default destructor.
+qtractorAudioMixerMeter::~qtractorAudioMixerMeter (void)
+{
+	delete m_pAudioMeter;
+
+	// No need to delete child widgets, Qt does it all for us
+}
+
+
+// Audio monitor reset
+void qtractorAudioMixerMeter::reset (void)
+{
+	qtractorAudioMonitor *pAudioMonitor = m_pAudioMeter->audioMonitor();
+	if (pAudioMonitor == NULL)
+		return;
+
+	m_pAudioMeter->reset();
+
+	setPanningSubject(pAudioMonitor->panningSubject());
+	setGainSubject(pAudioMonitor->gainSubject());
+
+	const unsigned short iChannels = pAudioMonitor->channels();
+
+	panSlider()->setEnabled(iChannels > 1);
+	panSpinBox()->setEnabled(iChannels > 1);
+}
+
+
+// Reset peak holder.
+void qtractorAudioMixerMeter::peakReset (void)
+{
+	m_pAudioMeter->peakReset();
+}
+
+
+// Virtual monitor accessor.
+void qtractorAudioMixerMeter::setMonitor ( qtractorMonitor *pMonitor )
+{
+	m_pAudioMeter->setMonitor(pMonitor);
+}
+
+qtractorMonitor *qtractorAudioMixerMeter::monitor (void) const
+{
+	return m_pAudioMeter->monitor();
+}
+
+
+// Audio monitor accessor.
+void qtractorAudioMixerMeter::setAudioMonitor ( qtractorAudioMonitor *pAudioMonitor )
+{
+	m_pAudioMeter->setAudioMonitor(pAudioMonitor);
+
+	reset();
+}
+
+qtractorAudioMonitor *qtractorAudioMixerMeter::audioMonitor (void) const
+{
+	return m_pAudioMeter->audioMonitor();
+}
+
+
 // Pan-slider value change method.
-void qtractorAudioMeter::updatePanning (void)
+void qtractorAudioMixerMeter::updatePanning (void)
 {
 //	setPanning(m_pAudioMonitor->panning());
 
@@ -620,7 +692,7 @@ void qtractorAudioMeter::updatePanning (void)
 }
 
 // Gain-slider value change method.
-void qtractorAudioMeter::updateGain (void)
+void qtractorAudioMixerMeter::updateGain (void)
 {
 //	setGain(m_pAudioMonitor->gain());
 

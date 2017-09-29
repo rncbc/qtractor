@@ -145,10 +145,6 @@ public:
 	void setMidiMonitor(qtractorMidiMonitor *pMidiMonitor);
 	qtractorMidiMonitor *midiMonitor() const;
 
-	// Local slider update methods.
-	void updatePanning();
-	void updateGain();
-
 	// Monitor reset.
 	void reset();
 
@@ -181,14 +177,9 @@ protected:
 
 private:
 
-	// Local forward declarations.
-	class GainSliderInterface;
-	class GainSpinBoxInterface;
-
 	// Local instance variables.
 	qtractorMidiMonitor    *m_pMidiMonitor;
 
-	qtractorMidiMeterLed   *m_pMidiLed;
 	qtractorMidiMeterScale *m_pMidiScale;
 	qtractorMidiMeterValue *m_pMidiValue;
 
@@ -200,7 +191,50 @@ private:
 	static QColor g_currentColors[ColorCount];
 };
 
-	
+
+//----------------------------------------------------------------------------
+// qtractorMidiMixerMeter -- MIDI mixer-strip meter bridge widget.
+
+class qtractorMidiMixerMeter : public qtractorMixerMeter
+{
+public:
+
+	// Constructor.
+	qtractorMidiMixerMeter(qtractorMidiMonitor *pMidiMonitor,
+		QWidget *pParent = 0);
+	// Default destructor.
+	~qtractorMidiMixerMeter();
+
+	// Virtual monitor accessor.
+	void setMonitor(qtractorMonitor *pMonitor);
+	qtractorMonitor *monitor() const;
+
+	// MIDI monitor accessor.
+	void setMidiMonitor(qtractorMidiMonitor *pMidiMonitor);
+	qtractorMidiMonitor *midiMonitor() const;
+
+	// Local slider update methods.
+	void updatePanning();
+	void updateGain();
+
+	// Monitor reset.
+	void reset();
+
+	// Reset peak holder.
+	void peakReset();
+
+private:
+
+	// Local forward declarations.
+	class GainSliderInterface;
+	class GainSpinBoxInterface;
+
+	// Local instance variables.
+	qtractorMidiMeter    *m_pMidiMeter;
+	qtractorMidiMeterLed *m_pMidiLed;
+};
+
+
 #endif  // __qtractorMidiMeter_h
 
 // end of qtractorMidiMeter.h

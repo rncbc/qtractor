@@ -142,7 +142,7 @@ void qtractorMidiMeterValue::refresh ( unsigned long iStamp )
 	if (fValue < 0.001f && m_iPeak < 1)
 		return;
 
-	int iValue = int(fValue * float(QWidget::height()));
+	int iValue = pMidiMeter->scale(fValue);
 	if (iValue < m_iValue) {
 		iValue = int(m_fValueDecay * float(m_iValue));
 		m_fValueDecay *= m_fValueDecay;
@@ -232,12 +232,12 @@ qtractorMidiMeterLed::qtractorMidiMeterLed (
 
 	m_iMidiCount = 0;
 
-	m_pMidiLabel = new QLabel(this);
+	m_pMidiLabel = new QLabel();
 	m_pMidiLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 	m_pMidiLabel->setPixmap(*g_pLedPixmap[LedOff]);
 
 	QHBoxLayout *pHBoxLayout = new QHBoxLayout();
-	pHBoxLayout->setMargin(0);
+	pHBoxLayout->setMargin(2);
 	pHBoxLayout->addWidget(m_pMidiLabel);
 	qtractorMeterValue::setLayout(pHBoxLayout);
 }
@@ -280,58 +280,13 @@ void qtractorMidiMeterLed::refresh ( unsigned long iStamp )
 }
 
 
-//----------------------------------------------------------------------
-// class qtractorMidiMeter::GainSpinBoxInterface -- Observer interface.
-//
-
-// Local converter interface.
-class qtractorMidiMeter::GainSpinBoxInterface
-	: public qtractorObserverSpinBox::Interface
-{
-public:
-
-	// Constructor.
-	GainSpinBoxInterface ( qtractorObserverSpinBox *pSpinBox )
-		: qtractorObserverSpinBox::Interface(pSpinBox) {}
-
-	// Formerly Pure virtuals.
-	float scaleFromValue ( float fValue ) const
-		{ return 100.0f * fValue; }
-
-	float valueFromScale ( float fScale ) const
-		{ return 0.01f * fScale; }
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorMidiMeter::GainSliderInterface -- Observer interface.
-//
-
-// Local converter interface.
-class qtractorMidiMeter::GainSliderInterface
-	: public qtractorObserverSlider::Interface
-{
-public:
-
-	// Constructor.
-	GainSliderInterface ( qtractorObserverSlider *pSlider )
-		: qtractorObserverSlider::Interface(pSlider) {}
-
-	// Formerly Pure virtuals.
-	float scaleFromValue ( float fValue ) const
-		{ return 10000.0f * fValue; }
-
-	float valueFromScale ( float fScale ) const
-		{ return 0.0001f * fScale; }
-};
-
-
 //----------------------------------------------------------------------------
 // qtractorMidiMeter -- Audio meter bridge slot widget.
 
 // Constructor.
-qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
-	QWidget *pParent ) : qtractorMeter(pParent)
+qtractorMidiMeter::qtractorMidiMeter (
+	qtractorMidiMonitor *pMidiMonitor, QWidget *pParent )
+	: qtractorMeter(pParent)
 {
 	m_pMidiMonitor = pMidiMonitor;
 
@@ -339,27 +294,12 @@ qtractorMidiMeter::qtractorMidiMeter ( qtractorMidiMonitor *pMidiMonitor,
 	m_pPixmap = new QPixmap();
 #endif
 
-	m_pMidiLed   = new qtractorMidiMeterLed(this);
 	m_pMidiScale = new qtractorMidiMeterScale(this);
 	m_pMidiValue = new qtractorMidiMeterValue(this);
-
-	topLayout()->addStretch();
-	topLayout()->addWidget(m_pMidiLed);
-
-	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
-	gainSpinBox()->setInterface(new GainSpinBoxInterface(gainSpinBox()));
-
-	gainSpinBox()->setMinimum(0.0f);
-	gainSpinBox()->setMaximum(100.0f);
-	gainSpinBox()->setToolTip(tr("Volume (%)"));
-	gainSpinBox()->setSuffix(tr(" %"));
 
 	setPeakFalloff(QTRACTOR_MIDI_METER_PEAK_FALLOFF);
 
 	reset();
-
-	updatePanning();
-	updateGain();
 }
 
 
@@ -373,18 +313,13 @@ qtractorMidiMeter::~qtractorMidiMeter (void)
 	// No need to delete child widgets, Qt does it all for us
 	delete m_pMidiValue;
 	delete m_pMidiScale;
-	delete m_pMidiLed;
 }
 
 
 // MIDI monitor reset
 void qtractorMidiMeter::reset (void)
 {
-	if (m_pMidiMonitor == NULL)
-		return;
-
-	setPanningSubject(m_pMidiMonitor->panningSubject());
-	setGainSubject(m_pMidiMonitor->gainSubject());
+	// Nothing really to do?
 }
 
 
@@ -392,7 +327,6 @@ void qtractorMidiMeter::reset (void)
 void qtractorMidiMeter::peakReset (void)
 {
 	m_pMidiValue->peakReset();
-	m_pMidiLed->peakReset();
 }
 
 
@@ -405,8 +339,8 @@ const QPixmap& qtractorMidiMeter::pixmap (void) const
 
 void qtractorMidiMeter::updatePixmap (void)
 {
-	const int w = boxWidget()->width();
-	const int h = boxWidget()->height();
+	const int w = QWidget::width();
+	const int h = QWidget::height();
 
 	QLinearGradient grad(0, 0, 0, h);
 	grad.setColorAt(0.0f, color(ColorPeak));
@@ -422,12 +356,7 @@ void qtractorMidiMeter::updatePixmap (void)
 // Resize event handler.
 void qtractorMidiMeter::resizeEvent ( QResizeEvent * )
 {
-	// HACK: make so that the MIDI gain slider (volume)
-	// aligns its top at the Audio 0 dB gain level...
-	int iFixedHeight = int(0.15f * float(boxWidget()->height())) - 4;
-	if (iFixedHeight < 16)
-		iFixedHeight = 16;
-	topWidget()->setFixedHeight(iFixedHeight);
+	qtractorMeter::setScale(float(QWidget::height()));
 
 #ifdef CONFIG_GRADIENT
 	updatePixmap();
@@ -477,8 +406,142 @@ const QColor& qtractorMidiMeter::defaultColor ( int iIndex )
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorMidiMixerMeter::GainSpinBoxInterface -- Observer interface.
+//
+
+// Local converter interface.
+class qtractorMidiMixerMeter::GainSpinBoxInterface
+	: public qtractorObserverSpinBox::Interface
+{
+public:
+
+	// Constructor.
+	GainSpinBoxInterface ( qtractorObserverSpinBox *pSpinBox )
+		: qtractorObserverSpinBox::Interface(pSpinBox) {}
+
+	// Formerly Pure virtuals.
+	float scaleFromValue ( float fValue ) const
+		{ return 100.0f * fValue; }
+
+	float valueFromScale ( float fScale ) const
+		{ return 0.01f * fScale; }
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorMidiMixerMeter::GainSliderInterface -- Observer interface.
+//
+
+// Local converter interface.
+class qtractorMidiMixerMeter::GainSliderInterface
+	: public qtractorObserverSlider::Interface
+{
+public:
+
+	// Constructor.
+	GainSliderInterface ( qtractorObserverSlider *pSlider )
+		: qtractorObserverSlider::Interface(pSlider) {}
+
+	// Formerly Pure virtuals.
+	float scaleFromValue ( float fValue ) const
+		{ return 10000.0f * fValue; }
+
+	float valueFromScale ( float fScale ) const
+		{ return 0.0001f * fScale; }
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiMixerMeter -- MIDI mixer-strip meter bridge widget.
+
+// Constructor.
+qtractorMidiMixerMeter::qtractorMidiMixerMeter (
+	qtractorMidiMonitor *pMidiMonitor, QWidget *pParent )
+	: qtractorMixerMeter(pParent)
+{
+	m_pMidiMeter = new qtractorMidiMeter(pMidiMonitor);
+	m_pMidiLed = new qtractorMidiMeterLed(m_pMidiMeter);
+
+	topLayout()->addStretch();
+	topLayout()->addWidget(m_pMidiLed);
+
+	boxLayout()->addWidget(m_pMidiMeter);
+
+	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
+	gainSpinBox()->setInterface(new GainSpinBoxInterface(gainSpinBox()));
+
+	gainSpinBox()->setMinimum(0.0f);
+	gainSpinBox()->setMaximum(100.0f);
+	gainSpinBox()->setToolTip(tr("Volume (%)"));
+	gainSpinBox()->setSuffix(tr(" %"));
+
+	reset();
+
+	updatePanning();
+	updateGain();
+}
+
+
+// Default destructor.
+qtractorMidiMixerMeter::~qtractorMidiMixerMeter (void)
+{
+	delete m_pMidiLed;
+	delete m_pMidiMeter;
+
+	// No need to delete child widgets, Qt does it all for us
+}
+
+
+// MIDI monitor reset
+void qtractorMidiMixerMeter::reset (void)
+{
+	qtractorMidiMonitor *pMidiMonitor = m_pMidiMeter->midiMonitor();
+	if (pMidiMonitor == NULL)
+		return;
+
+	m_pMidiMeter->reset();
+
+	setPanningSubject(pMidiMonitor->panningSubject());
+	setGainSubject(pMidiMonitor->gainSubject());
+}
+
+
+// Reset peak holder.
+void qtractorMidiMixerMeter::peakReset (void)
+{
+	m_pMidiMeter->peakReset();
+	m_pMidiLed->peakReset();
+}
+
+
+// Virtual monitor accessor.
+void qtractorMidiMixerMeter::setMonitor ( qtractorMonitor *pMonitor )
+{
+	m_pMidiMeter->setMonitor(pMonitor);
+}
+
+qtractorMonitor *qtractorMidiMixerMeter::monitor (void) const
+{
+	return m_pMidiMeter->monitor();
+}
+
+// MIDI monitor accessor.
+void qtractorMidiMixerMeter::setMidiMonitor ( qtractorMidiMonitor *pMidiMonitor )
+{
+	m_pMidiMeter->setMidiMonitor(pMidiMonitor);
+
+	reset();
+}
+
+qtractorMidiMonitor *qtractorMidiMixerMeter::midiMonitor (void) const
+{
+	return m_pMidiMeter->midiMonitor();
+}
+
+
 // Pan-slider value change method.
-void qtractorMidiMeter::updatePanning (void)
+void qtractorMidiMixerMeter::updatePanning (void)
 {
 //	setPanning(m_pMidiMonitor->panning());
 
@@ -488,7 +551,7 @@ void qtractorMidiMeter::updatePanning (void)
 
 
 // Gain-slider value change method.
-void qtractorMidiMeter::updateGain (void)
+void qtractorMidiMixerMeter::updateGain (void)
 {
 //	setGain(m_pMidiMonitor->gain());
 

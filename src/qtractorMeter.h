@@ -120,8 +120,6 @@ private:
 
 class qtractorMeter : public QWidget
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -131,6 +129,65 @@ public:
 	virtual ~qtractorMeter();
 
 	// Dynamic layout accessors.
+	QHBoxLayout *boxLayout() const
+		{ return m_pBoxLayout; }
+
+	// Monitor accessors.
+	virtual void setMonitor(qtractorMonitor *pMonitor) = 0;
+	virtual qtractorMonitor *monitor() const = 0;
+
+
+	// Meter reset.
+	virtual void reset() = 0;
+
+	// Reset peak holder.
+	virtual void peakReset() = 0;
+
+	// For faster scaling when drawing...
+	int scale(float fValue) const
+		{ return int(m_fScale * fValue); }
+
+	// Peak falloff mode setting.
+	void setPeakFalloff(int iPeakFalloff)
+		{ m_iPeakFalloff = iPeakFalloff; }
+	int peakFalloff() const
+		{ return m_iPeakFalloff; }
+
+protected:
+
+	// Scale accessor.
+	void setScale(float fScale)
+		{ m_fScale = fScale; }
+
+private:
+
+	// Local instance variables.
+	QHBoxLayout *m_pBoxLayout;
+
+	// Meter width/height scale.
+	float m_fScale;
+
+	// Peak falloff mode setting (0=no peak falloff).
+	int m_iPeakFalloff;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMixerMeter -- Mixer-strip meter bridge widget.
+
+class qtractorMixerMeter : public QWidget
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMixerMeter(QWidget *pParent = 0);
+
+	// Default destructor.
+	virtual ~qtractorMixerMeter();
+
+	// Dynamic layout accessors.
 	QHBoxLayout *topLayout() const
 		{ return m_pTopLayout; }
 	QWidget *topWidget() const
@@ -138,8 +195,6 @@ public:
 
 	QHBoxLayout *boxLayout() const
 		{ return m_pBoxLayout; }
-	QWidget *boxWidget() const
-		{ return m_pBoxWidget; }
 
 	// Common slider/spin-box accessors.
 	qtractorObserverSlider *panSlider() const
@@ -184,12 +239,6 @@ public:
 	// Reset peak holder.
 	virtual void peakReset() = 0;
 
-	// Peak falloff mode setting.
-	void setPeakFalloff(int iPeakFalloff)
-		{ m_iPeakFalloff = iPeakFalloff; }
-	int peakFalloff() const
-		{ return m_iPeakFalloff; }
-
 	// MIDI controller/observer attachment (context menu) activator.
 	void addMidiControlAction(
 		QWidget *pWidget, qtractorMidiControlObserver *pObserver);
@@ -206,10 +255,8 @@ private:
 	class PanSliderInterface;
 
 	// Local instance variables.
-	QVBoxLayout *m_pVBoxLayout;
 	QWidget     *m_pTopWidget;
 	QHBoxLayout *m_pTopLayout;
-	QWidget     *m_pBoxWidget;
 	QHBoxLayout *m_pBoxLayout;
 
 	qtractorObserverSlider  *m_pPanSlider;
@@ -222,12 +269,9 @@ private:
 
 	PanObserver  *m_pPanObserver;
 	GainObserver *m_pGainObserver;
-
-	// Peak falloff mode setting (0=no peak falloff).
-	int m_iPeakFalloff;
 };
 
-	
+
 #endif  // __qtractorMeter_h
 
 // end of qtractorMeter.h

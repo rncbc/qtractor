@@ -89,6 +89,7 @@ private:
 };
 
 
+
 //----------------------------------------------------------------------------
 // qtractorAudioMeter -- Audio meter bridge slot widget.
 
@@ -110,10 +111,6 @@ public:
 	void setAudioMonitor(qtractorAudioMonitor *pAudioMonitor);
 	qtractorAudioMonitor *audioMonitor() const;
 
-	// Local slider update methods.
-	void updatePanning();
-	void updateGain();
-
 	// Monitor reset.
 	void reset();
 
@@ -123,10 +120,6 @@ public:
 	// IEC scale accessors.
 	int iec_scale(float dB) const;
 	int iec_level(int iIndex) const;
-
-	// For faster scaling when drawing...
-	int scale(float fValue) const
-		{ return int(m_fScale * fValue); }
 
 #ifdef CONFIG_GRADIENT
 	const QPixmap& pixmap() const;
@@ -158,18 +151,13 @@ protected:
 
 private:
 
-	// Local forward declarations.
-	class GainSliderInterface;
-	class GainSpinBoxInterface;
-
 	// Local instance variables.
 	qtractorAudioMonitor     *m_pAudioMonitor;
 	unsigned short            m_iChannels;
 	qtractorAudioMeterScale  *m_pAudioScale;
 	qtractorAudioMeterValue **m_ppAudioValues;
 
-	float  m_fScale;
-	int    m_levels[LevelCount];
+	int m_levels[LevelCount];
 
 #ifdef CONFIG_GRADIENT
 	QPixmap *m_pPixmap;
@@ -179,7 +167,49 @@ private:
 	static QColor g_currentColors[ColorCount];
 };
 
-	
+
+//----------------------------------------------------------------------------
+// qtractorAudioMixerMeter -- Audio mixer-strip meter bridge widget.
+
+class qtractorAudioMixerMeter : public qtractorMixerMeter
+{
+public:
+
+	// Constructor.
+	qtractorAudioMixerMeter(qtractorAudioMonitor *pAudioMonitor,
+		QWidget *pParent = 0);
+	// Default destructor.
+	~qtractorAudioMixerMeter();
+
+	// Virtual monitor accessor.
+	void setMonitor(qtractorMonitor *pMonitor);
+	qtractorMonitor *monitor() const;
+
+	// Audio monitor accessor.
+	void setAudioMonitor(qtractorAudioMonitor *pAudioMonitor);
+	qtractorAudioMonitor *audioMonitor() const;
+
+	// Local slider update methods.
+	void updatePanning();
+	void updateGain();
+
+	// Monitor reset.
+	void reset();
+
+	// Reset peak holder.
+	void peakReset();
+
+private:
+
+	// Local forward declarations.
+	class GainSliderInterface;
+	class GainSpinBoxInterface;
+
+	// Local instance variables.
+	qtractorAudioMeter *m_pAudioMeter;
+};
+
+
 #endif  // __qtractorAudioMeter_h
 
 // end of qtractorAudioMeter.h
