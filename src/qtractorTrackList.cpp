@@ -314,10 +314,12 @@ QHeaderView *qtractorTrackList::header (void) const
 
 
 // Track-list model item constructor
-qtractorTrackList::Item::Item ( qtractorTrackList *pTrackList,
-	qtractorTrack *pTrack ) : track(pTrack), flags(0), widget(NULL)
+qtractorTrackList::Item::Item ( qtractorTrack *pTrack )
+	: track(pTrack), flags(0), widget(NULL)
 {
-	update(pTrackList);
+	const QString s;
+
+	text << track->trackName() << s << s << s << s;
 }
 
 
@@ -585,7 +587,7 @@ int qtractorTrackList::insertTrack ( int iTrack, qtractorTrack *pTrack )
 	if (iTrack < 0)
 		iTrack = m_items.count();
 
-	m_items.insert(iTrack, new Item(this, pTrack));
+	m_items.insert(iTrack, new Item(pTrack));
 
 	return iTrack;
 }

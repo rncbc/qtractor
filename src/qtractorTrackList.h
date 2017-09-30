@@ -235,7 +235,7 @@ private:
 	struct Item
 	{
 		// Constructor
-		Item(qtractorTrackList *pTrackList, qtractorTrack *pTrack);
+		Item(qtractorTrack *pTrack);
 		// Destructor.
 		~Item();
 		// Bank/program names helper.
