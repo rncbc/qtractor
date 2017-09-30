@@ -73,7 +73,7 @@ qtractorMidiMeterScale::qtractorMidiMeterScale (
 	qtractorMidiMeter *pMidiMeter, QWidget *pParent )
 	: qtractorMeterScale(pMidiMeter, pParent)
 {
-	pMidiMeter->boxLayout()->addWidget(this);
+	// Nothing much to do...
 }
 
 
@@ -121,8 +121,6 @@ qtractorMidiMeterValue::qtractorMidiMeterValue (
 
 //	QWidget::setFixedWidth(14);
 	QWidget::setMaximumWidth(14);
-
-	pMidiMeter->boxLayout()->addWidget(this);
 }
 
 
@@ -294,8 +292,9 @@ qtractorMidiMeter::qtractorMidiMeter (
 	m_pPixmap = new QPixmap();
 #endif
 
-	m_pMidiScale = new qtractorMidiMeterScale(this);
 	m_pMidiValue = new qtractorMidiMeterValue(this);
+
+	boxLayout()->addWidget(m_pMidiValue);
 
 	setPeakFalloff(QTRACTOR_MIDI_METER_PEAK_FALLOFF);
 
@@ -312,7 +311,6 @@ qtractorMidiMeter::~qtractorMidiMeter (void)
 
 	// No need to delete child widgets, Qt does it all for us
 	delete m_pMidiValue;
-	delete m_pMidiScale;
 }
 
 
@@ -454,11 +452,13 @@ qtractorMidiMixerMeter::qtractorMidiMixerMeter (
 	: qtractorMixerMeter(pParent)
 {
 	m_pMidiMeter = new qtractorMidiMeter(pMidiMonitor);
-	m_pMidiLed = new qtractorMidiMeterLed(m_pMidiMeter);
+	m_pMidiScale = new qtractorMidiMeterScale(m_pMidiMeter);
+	m_pMidiLed   = new qtractorMidiMeterLed(m_pMidiMeter);
 
 	topLayout()->addStretch();
 	topLayout()->addWidget(m_pMidiLed);
 
+	boxLayout()->addWidget(m_pMidiScale);
 	boxLayout()->addWidget(m_pMidiMeter);
 
 	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
@@ -480,6 +480,7 @@ qtractorMidiMixerMeter::qtractorMidiMixerMeter (
 qtractorMidiMixerMeter::~qtractorMidiMixerMeter (void)
 {
 	delete m_pMidiLed;
+	delete m_pMidiScale;
 	delete m_pMidiMeter;
 
 	// No need to delete child widgets, Qt does it all for us

@@ -170,8 +170,6 @@ private:
 
 	// Local instance variables.
 	qtractorMidiMonitor    *m_pMidiMonitor;
-
-	qtractorMidiMeterScale *m_pMidiScale;
 	qtractorMidiMeterValue *m_pMidiValue;
 
 #ifdef CONFIG_GRADIENT
@@ -218,8 +216,9 @@ private:
 	class GainSpinBoxInterface;
 
 	// Local instance variables.
-	qtractorMidiMeter    *m_pMidiMeter;
-	qtractorMidiMeterLed *m_pMidiLed;
+	qtractorMidiMeter      *m_pMidiMeter;
+	qtractorMidiMeterScale *m_pMidiScale;
+	qtractorMidiMeterLed   *m_pMidiLed;
 };
 
 

@@ -145,7 +145,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	: QWidget(pParent)
 {
 	m_pBoxLayout = new QHBoxLayout();
-	m_pBoxLayout->setMargin(2);
+	m_pBoxLayout->setMargin(0);
 	m_pBoxLayout->setSpacing(2);
 
 	QWidget::setLayout(m_pBoxLayout);
@@ -278,7 +278,7 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 
 	m_pBoxLayout = new QHBoxLayout();
 	m_pBoxLayout->setMargin(2);
-	m_pBoxLayout->setSpacing(2);
+	m_pBoxLayout->setSpacing(1);
 	pVBoxLayout->addLayout(m_pBoxLayout);
 
 	m_pGainSlider = new qtractorObserverSlider(/*, m_pBoxWidget*/);

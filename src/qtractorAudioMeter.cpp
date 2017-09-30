@@ -180,7 +180,7 @@ qtractorAudioMeterScale::qtractorAudioMeterScale (
 	qtractorAudioMeter *pAudioMeter, QWidget *pParent )
 	: qtractorMeterScale(pAudioMeter, pParent)
 {
-	pAudioMeter->boxLayout()->addWidget(this);
+	// Nothing much to do...
 }
 
 
@@ -226,10 +226,8 @@ qtractorAudioMeterValue::qtractorAudioMeterValue (
 	m_fPeakDecay  = QTRACTOR_AUDIO_METER_DECAY_RATE2;
 	m_iPeakColor  = qtractorAudioMeter::Color6dB;
 
-//	QWidget::setFixedWidth(10);
-	QWidget::setMaximumWidth(10);
-
-	pAudioMeter->boxLayout()->addWidget(this);
+//	QWidget::setFixedWidth(14);
+	QWidget::setMaximumWidth(14);
 }
 
 
@@ -377,7 +375,6 @@ qtractorAudioMeter::qtractorAudioMeter (
 	m_pAudioMonitor = pAudioMonitor;
 
 	m_iChannels     = 0;
-	m_pAudioScale   = new qtractorAudioMeterScale(this);
 	m_ppAudioValues = NULL;
 
 #ifdef CONFIG_GRADIENT
@@ -404,7 +401,6 @@ qtractorAudioMeter::~qtractorAudioMeter (void)
 	for (unsigned short i = 0; i < m_iChannels; ++i)
 		delete m_ppAudioValues[i];
 	delete [] m_ppAudioValues;
-	delete m_pAudioScale;
 }
 
 
@@ -445,7 +441,8 @@ void qtractorAudioMeter::reset (void)
 		m_ppAudioValues = new qtractorAudioMeterValue *[m_iChannels];
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i);
-			m_ppAudioValues[i]->show();
+			boxLayout()->addWidget(m_ppAudioValues[i]);
+		//	m_ppAudioValues[i]->show();
 		}
 	}
 }
@@ -591,9 +588,11 @@ qtractorAudioMixerMeter::qtractorAudioMixerMeter (
 	: qtractorMixerMeter(pParent)
 {
 	m_pAudioMeter = new qtractorAudioMeter(pAudioMonitor);
+	m_pAudioScale = new qtractorAudioMeterScale(m_pAudioMeter);
 
 	topWidget()->hide();
 
+	boxLayout()->addWidget(m_pAudioScale);
 	boxLayout()->addWidget(m_pAudioMeter);
 
 	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
@@ -616,6 +615,7 @@ qtractorAudioMixerMeter::qtractorAudioMixerMeter (
 // Default destructor.
 qtractorAudioMixerMeter::~qtractorAudioMixerMeter (void)
 {
+	delete m_pAudioScale;
 	delete m_pAudioMeter;
 
 	// No need to delete child widgets, Qt does it all for us

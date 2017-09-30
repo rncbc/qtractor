@@ -148,7 +148,6 @@ private:
 	// Local instance variables.
 	qtractorAudioMonitor     *m_pAudioMonitor;
 	unsigned short            m_iChannels;
-	qtractorAudioMeterScale  *m_pAudioScale;
 	qtractorAudioMeterValue **m_ppAudioValues;
 
 	int m_levels[LevelCount];
@@ -197,7 +196,8 @@ private:
 	class GainSpinBoxInterface;
 
 	// Local instance variables.
-	qtractorAudioMeter *m_pAudioMeter;
+	qtractorAudioMeter       *m_pAudioMeter;
+	qtractorAudioMeterScale  *m_pAudioScale;
 };
 
 
