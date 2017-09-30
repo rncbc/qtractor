@@ -451,14 +451,6 @@ void qtractorAudioMeter::reset (void)
 }
 
 
-// Reset peak holder.
-void qtractorAudioMeter::peakReset (void)
-{
-	for (unsigned short i = 0; i < m_iChannels; ++i)
-		m_ppAudioValues[i]->peakReset();
-}
-
-
 #ifdef CONFIG_GRADIENT
 // Gradient pixmap accessor.
 const QPixmap& qtractorAudioMeter::pixmap (void) const
@@ -646,13 +638,6 @@ void qtractorAudioMixerMeter::reset (void)
 
 	panSlider()->setEnabled(iChannels > 1);
 	panSpinBox()->setEnabled(iChannels > 1);
-}
-
-
-// Reset peak holder.
-void qtractorAudioMixerMeter::peakReset (void)
-{
-	m_pAudioMeter->peakReset();
 }
 
 

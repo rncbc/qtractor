@@ -64,9 +64,6 @@ public:
 	qtractorMidiMeterValue(qtractorMidiMeter *pMidiMeter,
 		QWidget *pParent = 0);
 
-	// Reset peak holder.
-	void peakReset() { m_iPeak = 0; }
-
 	// Value refreshment.
 	void refresh(unsigned long iStamp);
 
@@ -101,9 +98,6 @@ public:
 
 	// Default destructor.
 	~qtractorMidiMeterLed();
-
-	// Reset peak holder.
-	void peakReset() { m_iMidiCount = 0; }
 
 	// Value refreshment.
 	void refresh(unsigned long iStamp);
@@ -147,9 +141,6 @@ public:
 
 	// Monitor reset.
 	void reset();
-
-	// Reset peak holder.
-	void peakReset();
 
 #ifdef CONFIG_GRADIENT
 	const QPixmap& pixmap() const;
@@ -219,9 +210,6 @@ public:
 
 	// Monitor reset.
 	void reset();
-
-	// Reset peak holder.
-	void peakReset();
 
 private:
 

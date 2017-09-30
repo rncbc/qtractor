@@ -323,13 +323,6 @@ void qtractorMidiMeter::reset (void)
 }
 
 
-// Reset peak holder.
-void qtractorMidiMeter::peakReset (void)
-{
-	m_pMidiValue->peakReset();
-}
-
-
 #ifdef CONFIG_GRADIENT
 // Gradient pixmap accessor.
 const QPixmap& qtractorMidiMeter::pixmap (void) const
@@ -504,14 +497,6 @@ void qtractorMidiMixerMeter::reset (void)
 
 	setPanningSubject(pMidiMonitor->panningSubject());
 	setGainSubject(pMidiMonitor->gainSubject());
-}
-
-
-// Reset peak holder.
-void qtractorMidiMixerMeter::peakReset (void)
-{
-	m_pMidiMeter->peakReset();
-	m_pMidiLed->peakReset();
 }
 
 

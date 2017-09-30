@@ -140,9 +140,6 @@ public:
 	// Meter reset.
 	virtual void reset() = 0;
 
-	// Reset peak holder.
-	virtual void peakReset() = 0;
-
 	// For faster scaling when drawing...
 	int scale(float fValue) const
 		{ return int(m_fScale * fValue); }
@@ -235,9 +232,6 @@ public:
 
 	// Meter reset.
 	virtual void reset() = 0;
-
-	// Reset peak holder.
-	virtual void peakReset() = 0;
 
 	// MIDI controller/observer attachment (context menu) activator.
 	void addMidiControlAction(

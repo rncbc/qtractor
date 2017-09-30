@@ -2401,6 +2401,9 @@ void qtractorMidiEngine::stop (void)
 
 	// Shut-off all MIDI buses...
 	shutOffAllBuses();
+
+	// Reset all monitors...
+	resetAllMonitors();
 }
 
 
