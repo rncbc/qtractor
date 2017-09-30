@@ -154,7 +154,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 
 	m_iPeakFalloff = 0;
 
-	QWidget::setMinimumHeight(160);
+//	QWidget::setMinimumHeight(160);
 //	QWidget::setMaximumHeight(480);
 	QWidget::setSizePolicy(
 		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
@@ -271,8 +271,8 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 
 	m_pTopWidget = new QWidget(/*this*/);
 	m_pTopLayout = new QHBoxLayout();
-	m_pTopLayout->setMargin(0);
-	m_pTopLayout->setSpacing(2);
+	m_pTopLayout->setMargin(2);
+	m_pTopLayout->setSpacing(0);
 	m_pTopWidget->setLayout(m_pTopLayout);
 	pVBoxLayout->addWidget(m_pTopWidget);
 

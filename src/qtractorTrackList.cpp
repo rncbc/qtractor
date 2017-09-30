@@ -42,6 +42,11 @@
 
 #include "qtractorCurve.h"
 
+#include "qtractorAudioMonitor.h"
+#include "qtractorMidiMonitor.h"
+#include "qtractorAudioMeter.h"
+#include "qtractorMidiMeter.h"
+
 #include "qtractorOptions.h"
 
 #include <QHeaderView>
@@ -315,7 +320,7 @@ QHeaderView *qtractorTrackList::header (void) const
 
 // Track-list model item constructor
 qtractorTrackList::Item::Item ( qtractorTrack *pTrack )
-	: track(pTrack), flags(0), widget(NULL)
+	: track(pTrack), flags(0), widget(NULL), meter(NULL)
 {
 	const QString s;
 
@@ -326,6 +331,7 @@ qtractorTrackList::Item::Item ( qtractorTrack *pTrack )
 // Track-list model item destructor
 qtractorTrackList::Item::~Item (void)
 {
+	if (meter) delete meter;
 	if (widget) delete widget;
 }
 
@@ -375,6 +381,11 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 	//	widget->lower();
 	}
 
+	if (meter) {
+		delete meter;
+		meter = NULL;
+	}
+
 	update_icon(pTrackList);
 
 	text << track->trackName();
@@ -397,6 +408,13 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 				QString::number(pAudioBus->channels()) : s.right(1));
 			// Fillers...
 			text << s << s;
+			// Re-create the audio meter...
+			if (meter == NULL) {
+				qtractorAudioMonitor *pAudioMonitor
+					= static_cast<qtractorAudioMonitor *> (track->monitor());
+				if (pAudioMonitor)
+					meter = new qtractorAudioMeter(pAudioMonitor, pTrackList);
+			}
 			break;
 		}
 
@@ -456,6 +474,13 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			}
 			// This is it, MIDI Patch/Bank...
 			text << sProgName + '\n' + sBankName << sInstrumentName;
+			// Re-create the MIDI meter...
+			if (meter == NULL) {
+				qtractorMidiMonitor *pMidiMonitor
+					= static_cast<qtractorMidiMonitor *> (track->monitor());
+				if (pMidiMonitor)
+					meter = new qtractorMidiMeter(pMidiMonitor, pTrackList);
+			}
 			break;
 		}
 
@@ -1079,9 +1104,17 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 							(pItem->widget)->hide();
 						}
 					}
+					else
+					if (iCol == Channel && pItem->meter) {
+						const QRect rectMeter = rect.adjusted(+4, +22, 0, -2);
+						(pItem->meter)->setGeometry(rectMeter);
+						(pItem->meter)->show();
+					}
 				}
 				else if (iCol == Name && pItem->widget)
 					(pItem->widget)->hide();
+				else if (iCol == Channel && pItem->meter)
+					(pItem->meter)->hide();
 				x += dx;
 			}
 		}
