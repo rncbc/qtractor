@@ -136,7 +136,6 @@ public:
 	virtual void setMonitor(qtractorMonitor *pMonitor) = 0;
 	virtual qtractorMonitor *monitor() const = 0;
 
-
 	// Meter reset.
 	virtual void reset() = 0;
 

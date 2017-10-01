@@ -86,6 +86,7 @@ private:
 	unsigned long m_iFrameStart;
 	unsigned long m_iTimeStart;
 	QueueItem     m_item;
+	QueueItem     m_prev;
 
 	float m_fValue;
 

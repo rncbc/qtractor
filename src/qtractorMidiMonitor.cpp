@@ -127,12 +127,13 @@ float qtractorMidiMonitor::value_stamp ( unsigned long iStamp )
 int qtractorMidiMonitor::count_stamp ( unsigned long iStamp )
 {
 	// Grab latest direct/dequeued count...
-	const int iCount = int(m_item.count);
 	if (m_iCountStamp != iStamp) {
 		m_iCountStamp  = iStamp;
+		m_prev.count   = m_item.count;
 		m_item.count   = 0;
 	}
-	return iCount;
+
+	return int(m_prev.count);
 }
 
 
@@ -140,8 +141,8 @@ int qtractorMidiMonitor::count_stamp ( unsigned long iStamp )
 void qtractorMidiMonitor::clear (void)
 {
 	// (Re)initialize all...
-	m_item.value  = 0;
-	m_item.count  = 0;
+	m_item.value = m_prev.value = 0;
+	m_item.count = m_prev.count = 0;
 
 	m_iQueueIndex = 0;
 

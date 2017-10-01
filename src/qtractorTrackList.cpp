@@ -413,7 +413,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 				qtractorAudioMonitor *pAudioMonitor
 					= static_cast<qtractorAudioMonitor *> (track->monitor());
 				if (pAudioMonitor)
-					meter = new qtractorAudioMeter(pAudioMonitor, pTrackList);
+					meter = new qtractorAudioTrackMeter(pAudioMonitor, pTrackList);
 			}
 			break;
 		}
@@ -479,7 +479,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 				qtractorMidiMonitor *pMidiMonitor
 					= static_cast<qtractorMidiMonitor *> (track->monitor());
 				if (pMidiMonitor)
-					meter = new qtractorMidiMeter(pMidiMonitor, pTrackList);
+					meter = new qtractorMidiTrackMeter(pMidiMonitor, pTrackList);
 			}
 			break;
 		}

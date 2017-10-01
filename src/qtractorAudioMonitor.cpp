@@ -256,11 +256,9 @@ float qtractorAudioMonitor::value_stamp (
 	unsigned short iChannel, unsigned long iStamp ) const
 {
 	if (m_piStamps[iChannel] != iStamp) {
-		m_piStamps[iChannel] = iStamp;
-		const float fValue = m_pfValues[iChannel];
-		m_pfPrevValues[iChannel] = fValue;
+		m_piStamps[iChannel]  = iStamp;
+		m_pfPrevValues[iChannel] = m_pfValues[iChannel];
 		m_pfValues[iChannel]  = 0.0f;
-		return fValue;
 	}
 
 	return m_pfPrevValues[iChannel];

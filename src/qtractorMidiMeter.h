@@ -222,6 +222,27 @@ private:
 };
 
 
+//----------------------------------------------------------------------------
+// qtractorMidiTrackMeter -- MIDI track meter bridge widget.
+
+class qtractorMidiTrackMeter : public QWidget
+{
+public:
+
+	// Constructor.
+	qtractorMidiTrackMeter(qtractorMidiMonitor *pMidiMonitor,
+		QWidget *pParent = 0);
+	// Default destructor.
+	~qtractorMidiTrackMeter();
+
+private:
+
+	// Local instance variables.
+	qtractorMidiMeter    *m_pMidiMeter;
+	qtractorMidiMeterLed *m_pMidiLed;
+};
+
+
 #endif  // __qtractorMidiMeter_h
 
 // end of qtractorMidiMeter.h

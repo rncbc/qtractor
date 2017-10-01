@@ -39,8 +39,6 @@ class qtractorMidiManager;
 
 class qtractorCurveButton;
 
-class qtractorMeter;
-
 class QHeaderView;
 
 class QResizeEvent;
@@ -254,7 +252,7 @@ private:
 		unsigned int   flags;
 		// Track-list item widget.
 		qtractorTrackItemWidget *widget;
-		qtractorMeter *meter;
+		QWidget       *meter;
 	};
 
 	// Model cache item list.

@@ -99,7 +99,7 @@ void qtractorMidiMeterScale::paintScale ( QPainter *pPainter )
 
 
 //----------------------------------------------------------------------------
-// qtractorMidiMeterValue -- Meter bridge value widget.
+// qtractorMidiMeterValue -- MIDI meter bridge value widget.
 
 // Constructor.
 qtractorMidiMeterValue::qtractorMidiMeterValue (
@@ -216,7 +216,7 @@ void qtractorMidiMeterValue::resizeEvent ( QResizeEvent *pResizeEvent )
 
 
 //----------------------------------------------------------------------------
-// qtractorMidiMeterLed -- Meter bridge LED widget.
+// qtractorMidiMeterLed -- MIDI meter bridge LED widget.
 
 // Constructor.
 qtractorMidiMeterLed::qtractorMidiMeterLed (
@@ -279,7 +279,7 @@ void qtractorMidiMeterLed::refresh ( unsigned long iStamp )
 
 
 //----------------------------------------------------------------------------
-// qtractorMidiMeter -- Audio meter bridge slot widget.
+// qtractorMidiMeter -- MIDI meter bridge slot widget.
 
 // Constructor.
 qtractorMidiMeter::qtractorMidiMeter (
@@ -543,6 +543,36 @@ void qtractorMidiMixerMeter::updateGain (void)
 
 	gainSlider()->setToolTip(
 		tr("Volume: %1%").arg(gainSpinBox()->value(), 0, 'g', 3));
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiTrackMeter -- MIDI track meter bridge widget.
+
+// Constructor.
+qtractorMidiTrackMeter::qtractorMidiTrackMeter (
+	qtractorMidiMonitor *pMidiMonitor, QWidget *pParent )
+	: QWidget(pParent)
+{
+	m_pMidiMeter = new qtractorMidiMeter(pMidiMonitor);
+	m_pMidiLed = new qtractorMidiMeterLed(m_pMidiMeter);
+
+	QVBoxLayout *pVBoxLayout = new QVBoxLayout();
+	pVBoxLayout->setMargin(0);
+	pVBoxLayout->setSpacing(2);
+	pVBoxLayout->addWidget(m_pMidiLed);
+	pVBoxLayout->addWidget(m_pMidiMeter);
+	QWidget::setLayout(pVBoxLayout);
+}
+
+
+// Default destructor.
+qtractorMidiTrackMeter::~qtractorMidiTrackMeter (void)
+{
+	delete m_pMidiLed;
+	delete m_pMidiMeter;
+
+	// No need to delete child widgets, Qt does it all for us
 }
 
 
