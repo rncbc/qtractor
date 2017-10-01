@@ -512,15 +512,7 @@ void qtractorTrackList::Item::update_icon ( qtractorTrackList *pTrackList )
 // Find the list view item from track pointer reference.
 int qtractorTrackList::trackRow ( qtractorTrack *pTrack ) const
 {
-	int iTrack = 0;
-	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext()) {
-		if (pTrack == iter.next()->track)
-			return iTrack;
-		++iTrack;
-	}
-
-	return -1;
+	return m_rows.value(pTrack, -1);
 }
 
 
@@ -612,7 +604,10 @@ int qtractorTrackList::insertTrack ( int iTrack, qtractorTrack *pTrack )
 	if (iTrack < 0)
 		iTrack = m_items.count();
 
-	m_items.insert(iTrack, new Item(pTrack));
+	Item *pItem = new Item(pTrack);
+	m_items.insert(iTrack, pItem);
+	m_tracks.insert(pTrack, pItem);
+	m_rows.insert(pTrack, iTrack);
 
 	return iTrack;
 }
@@ -629,8 +624,12 @@ int qtractorTrackList::removeTrack ( int iTrack )
 	if (m_select.contains(iTrack))
 		m_select.remove(iTrack);
 
-	delete m_items.at(iTrack);
+	Item *pItem = m_items.at(iTrack);
+	qtractorTrack *pTrack = pItem->track;
 	m_items.removeAt(iTrack);
+	m_tracks.remove(pTrack);
+	m_rows.remove(pTrack);
+	delete pItem;
 
 	if (m_iCurrentTrack >= m_items.count())
 		m_iCurrentTrack  = m_items.count() - 1;
@@ -695,17 +694,9 @@ qtractorTrack *qtractorTrackList::currentTrack (void) const
 // Find the list view item from track pointer reference.
 void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 {
-	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext()) {
-		Item *pItem = iter.next();
-		if (pTrack == NULL || pTrack == pItem->track) {
-			// Force update the data...
-			pItem->update(this);
-			// Specific bail out...
-			if (pTrack)
-				break;
-		}
-	}
+	Item *pItem = m_tracks.value(pTrack, NULL);
+	if (pItem)
+		pItem->update(this);
 
 	updateContents();
 }
@@ -728,6 +719,8 @@ void qtractorTrackList::clear (void)
 
 	qDeleteAll(m_items);
 	m_items.clear();
+	m_tracks.clear();
+	m_rows.clear();
 }
 
 
@@ -923,7 +916,7 @@ void qtractorTrackList::clearSelect (void)
 
 
 // Retrieve all current seleceted tracks but one.
-QList<qtractorTrack *> qtractorTrackList::selectedTracks(
+QList<qtractorTrack *> qtractorTrackList::selectedTracks (
 	qtractorTrack *pTrackEx, bool bAllTracks ) const
 {
 	QList<qtractorTrack *> tracks;

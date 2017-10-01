@@ -260,6 +260,9 @@ private:
 	// Model cache item list.
 	QList<Item *> m_items;
 
+	QHash<qtractorTrack *, Item *> m_tracks;
+	QHash<qtractorTrack *, int> m_rows;
+
 	// Current selection map.
 	QHash<int, Item *> m_select;
 
