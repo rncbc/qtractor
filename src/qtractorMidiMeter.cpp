@@ -546,34 +546,4 @@ void qtractorMidiMixerMeter::updateGain (void)
 }
 
 
-//----------------------------------------------------------------------------
-// qtractorMidiTrackMeter -- MIDI track meter bridge widget.
-
-// Constructor.
-qtractorMidiTrackMeter::qtractorMidiTrackMeter (
-	qtractorMidiMonitor *pMidiMonitor, QWidget *pParent )
-	: QWidget(pParent)
-{
-	m_pMidiMeter = new qtractorMidiMeter(pMidiMonitor);
-	m_pMidiLed = new qtractorMidiMeterLed(m_pMidiMeter);
-
-	QVBoxLayout *pVBoxLayout = new QVBoxLayout();
-	pVBoxLayout->setMargin(0);
-	pVBoxLayout->setSpacing(2);
-	pVBoxLayout->addWidget(m_pMidiLed);
-	pVBoxLayout->addWidget(m_pMidiMeter);
-	QWidget::setLayout(pVBoxLayout);
-}
-
-
-// Default destructor.
-qtractorMidiTrackMeter::~qtractorMidiTrackMeter (void)
-{
-	delete m_pMidiLed;
-	delete m_pMidiMeter;
-
-	// No need to delete child widgets, Qt does it all for us
-}
-
-
 // end of qtractorMidiMeter.cpp

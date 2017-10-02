@@ -413,7 +413,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 				qtractorAudioMonitor *pAudioMonitor
 					= static_cast<qtractorAudioMonitor *> (track->monitor());
 				if (pAudioMonitor)
-					meter = new qtractorAudioTrackMeter(pAudioMonitor, pTrackList);
+					meter = new qtractorAudioMeter(pAudioMonitor, pTrackList);
 			}
 			break;
 		}
@@ -479,7 +479,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 				qtractorMidiMonitor *pMidiMonitor
 					= static_cast<qtractorMidiMonitor *> (track->monitor());
 				if (pMidiMonitor)
-					meter = new qtractorMidiTrackMeter(pMidiMonitor, pTrackList);
+					meter = new qtractorMidiMeter(pMidiMonitor, pTrackList);
 			}
 			break;
 		}
@@ -1001,9 +1001,11 @@ void qtractorTrackList::drawCell (
 			pPainter->drawPixmap(x, y, pItem->icon) ;
 		}
 	} else if (iCol == Channel) {
-		pPainter->drawText(rectText,
-			Qt::AlignHCenter | Qt::AlignTop,
-			pItem->text.at(iCol - 1));
+		if ((pItem->track)->trackType() == qtractorTrack::Midi) {
+			pPainter->drawText(rectText,
+				Qt::AlignHCenter | Qt::AlignTop,
+				pItem->text.at(iCol - 1));
+		}
 	} else {
 		if (iCol == Bus) {
 			const QPixmap *pPixmap = NULL;
@@ -1099,8 +1101,8 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					}
 					else
 					if (iCol == Channel && pItem->meter) {
-						const QRect rectMeter = rect.adjusted(+4, +22, 0, -2);
-						(pItem->meter)->setGeometry(rectMeter);
+						const int dy1 = ((pItem->track)->trackType() == qtractorTrack::Midi ? 20 : 4);
+						(pItem->meter)->setGeometry(rect.adjusted(+4, dy1, -2, -2));
 						(pItem->meter)->show();
 					}
 				}

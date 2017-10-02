@@ -201,19 +201,6 @@ private:
 };
 
 
-//----------------------------------------------------------------------------
-// qtractorAudioTrackMeter -- Audio track meter bridge widget.
-
-class qtractorAudioTrackMeter : public qtractorAudioMeter
-{
-public:
-
-	// Constructor.
-	qtractorAudioTrackMeter(qtractorAudioMonitor *pAudioMonitor,
-		QWidget *pParent = 0) : qtractorAudioMeter(pAudioMonitor, pParent) {}
-};
-
-
 #endif  // __qtractorAudioMeter_h
 
 // end of qtractorAudioMeter.h
