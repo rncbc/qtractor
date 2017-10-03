@@ -493,6 +493,26 @@ void qtractorMixerStrip::initMixerStrip (void)
 // Child properties accessors.
 void qtractorMixerStrip::setMonitor ( qtractorMonitor *pMonitor )
 {
+	qtractorTrack::TrackType meterType = qtractorTrack::None;
+	if (m_pTrack)
+		meterType = m_pTrack->trackType();
+	else if (m_pBus)
+		meterType = m_pBus->busType();
+	if (meterType == qtractorTrack::Audio) {
+		qtractorAudioMonitor *pAudioMonitor
+			= static_cast<qtractorAudioMonitor *> (pMonitor);
+		if (pAudioMonitor) {
+			const int iOldWidth = QFrame::width();
+			const int iAudioChannels = pAudioMonitor->channels();
+			const int iFixedWidth = 54
+				+ 12 * (iAudioChannels < 2 ? 2 : iAudioChannels);
+			if (iFixedWidth != iOldWidth) {
+				QFrame::setFixedWidth(iFixedWidth);
+				m_pRack->updateWorkspace();
+			}
+		}
+	}
+
 	if (m_pMixerMeter)
 		m_pMixerMeter->setMonitor(pMonitor);
 }
