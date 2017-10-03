@@ -116,9 +116,11 @@ static inline void sse_buffer_add (
 	}
 }
 
-#endif
+#endif // __SSE__
+
 
 #if defined(__ARM_NEON__)
+
 #include "arm_neon.h"
 
 // NEON enabled mix-down processor version.
@@ -149,7 +151,8 @@ static inline void neon_buffer_add (
 	}
 }
 
-#endif
+#endif // __ARM_NEON__
+
 
 // Standard mix-down processor version.
 static inline void std_buffer_add (
@@ -194,11 +197,11 @@ public:
 			m_pfnBufferAdd = sse_buffer_add;
 		else
 	#endif
-#if defined(__ARM_NEON__)
+	#if defined(__ARM_NEON__)
 		m_pfnBufferAdd = neon_buffer_add;
-		if(false)
-#endif
-		m_pfnBufferAdd = std_buffer_add;
+		if (false)
+	#endif
+			m_pfnBufferAdd = std_buffer_add;
 	}
 
 	// Destructor.
@@ -2171,9 +2174,9 @@ qtractorAudioBus::qtractorAudioBus (
 #endif
 #if defined(__ARM_NEON__)
 	m_pfnBufferAdd = neon_buffer_add;
-	if(false)
+	if (false)
 #endif
-	m_pfnBufferAdd = std_buffer_add;
+		m_pfnBufferAdd = std_buffer_add;
 }
 
 

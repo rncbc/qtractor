@@ -118,10 +118,11 @@ static inline void sse_process_meter (
 	*pfValue = *(float *) &v1; // CHEAT: take 1st of 4 possible values.
 }
 
-#endif
+#endif // __SSE__
 
 
 #if defined(__ARM_NEON__)
+
 #include "arm_neon.h"
 
 // NEON enabled processor versions.
@@ -202,7 +203,8 @@ static inline void neon_process_meter (
 	vst1q_lane_f32(pfValue, v1, 0); // CHEAT: take 1st of 4 possible values.
 }
 
-#endif
+#endif // __ARM_NEON__
+
 
 // Standard processor versions.
 static inline void std_process (
@@ -261,12 +263,12 @@ qtractorAudioMonitor::qtractorAudioMonitor ( unsigned short iChannels,
 	m_pfnProcess = neon_process;
 	m_pfnProcessRamp = neon_process_ramp;
 	m_pfnProcessMeter = neon_process_meter;
-	if(false)
+	if (false)
 #endif
 	{
-	m_pfnProcess = std_process;
-	m_pfnProcessRamp = std_process_ramp;
-	m_pfnProcessMeter = std_process_meter;
+		m_pfnProcess = std_process;
+		m_pfnProcessRamp = std_process_ramp;
+		m_pfnProcessMeter = std_process_meter;
 	}
 
 	setChannels(iChannels);

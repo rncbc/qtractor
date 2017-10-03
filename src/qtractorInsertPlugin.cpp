@@ -153,9 +153,11 @@ static inline void sse_process_add (
 	}
 }
 
-#endif
+#endif // __SSE__
+
 
 #if defined(__ARM_NEON__)
+
 #include "arm_neon.h"
 
 // NEON enabled processor versions.
@@ -241,7 +243,7 @@ static inline void neon_process_add (
 	}
 }
 
-#endif
+#endif // __ARM_NEON__
 
 
 // Standard processor versions.
@@ -460,7 +462,7 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 #if defined(__ARM_NEON__)
 	m_pfnProcessGain = neon_process_gain;
 	m_pfnProcessDryWet = neon_process_dry_wet;
-	if(false)
+	if (false)
 #endif
 	{
 		m_pfnProcessGain = std_process_gain;
@@ -1216,7 +1218,7 @@ qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 #endif
 #if defined(__ARM_NEON__)
 	m_pfnProcessAdd = neon_process_add;
-	if(false)
+	if (false)
 #endif
     {
 		m_pfnProcessAdd = std_process_add;
