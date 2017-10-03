@@ -487,6 +487,17 @@ void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 #ifdef CONFIG_GRADIENT
 	updatePixmap();
 #endif
+
+	if (m_iChannels > 0) {
+		const int dx = (m_iChannels < 5 ? 2 : 1);
+		const int iMaxWidth = QWidget::width() / m_iChannels - dx + 1;
+		for (unsigned short i = 0; i < m_iChannels; ++i) {
+			m_ppAudioValues[i]->setMinimumWidth(2);
+			m_ppAudioValues[i]->setMaximumWidth(iMaxWidth < 2 ? 2 : iMaxWidth);
+		}
+		boxLayout()->setSpacing(dx);
+	//	boxLayout()->update();
+	}
 }
 
 
