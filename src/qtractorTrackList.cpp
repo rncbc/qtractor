@@ -412,7 +412,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			if (meter == NULL) {
 				qtractorAudioMonitor *pAudioMonitor
 					= static_cast<qtractorAudioMonitor *> (track->monitor());
-				if (pAudioMonitor)
+				if (pAudioMonitor && pAudioMonitor->channels() < 6)
 					meter = new qtractorAudioMeter(pAudioMonitor, pTrackList);
 			}
 			break;
@@ -1001,7 +1001,8 @@ void qtractorTrackList::drawCell (
 			pPainter->drawPixmap(x, y, pItem->icon) ;
 		}
 	} else if (iCol == Channel) {
-		if ((pItem->track)->trackType() == qtractorTrack::Midi) {
+		if ((pItem->track)->trackType() == qtractorTrack::Midi
+			|| pItem->meter == NULL) {
 			pPainter->drawText(rectText,
 				Qt::AlignHCenter | Qt::AlignTop,
 				pItem->text.at(iCol - 1));
