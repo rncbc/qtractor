@@ -53,7 +53,6 @@ static inline bool sse_enabled (void)
 #endif
 }
 
-
 // SSE enabled processor versions.
 static inline void sse_process (
 	float *pFrames, unsigned int iFrames, float fGain, float *pfValue )
@@ -122,6 +121,89 @@ static inline void sse_process_meter (
 #endif
 
 
+#if defined(__ARM_NEON__)
+#include "arm_neon.h"
+
+// NEON enabled processor versions.
+static inline void neon_process (
+	float *pFrames, unsigned int iFrames, float fGain, float *pfValue )
+{
+	float32x4_t v0 = vld1q_dup_f32(&fGain);
+	float32x4_t v1 = vld1q_dup_f32(pfValue);
+	float32x4_t v2;
+
+	for (; (long(pFrames) & 15) && (iFrames > 0); --iFrames)
+		*pFrames++ *= fGain;
+
+	for (; iFrames >= 4; iFrames -= 4) {
+		v2 = vmulq_f32(vld1q_f32(pFrames), v0);
+		v1 = vmaxq_f32(v2, v1);
+		vst1q_f32(pFrames, v2);
+		pFrames += 4;
+	}
+
+	for (; iFrames > 0; --iFrames)
+		*pFrames++ *= fGain;
+
+	vst1q_lane_f32(pfValue, v1, 0); // CHEAT: take 1st of 4 possible values.
+}
+
+static inline void neon_process_ramp ( float *pFrames, unsigned int iFrames,
+	float fGainIter, float fGainLast, float *pfValue )
+{
+	const float fGainStepSingle = (fGainLast - fGainIter) / float(iFrames);
+
+	for (; (long(pFrames) & 15) && (iFrames > 0); --iFrames) {
+		*pFrames++ *= fGainIter;
+		fGainIter += fGainStepSingle;
+	}
+
+	float __attribute__ ((aligned (16))) fInitGainIter[4] = {
+		fGainIter,
+		fGainIter + fGainStepSingle,
+		fGainIter + 2.0 * fGainStepSingle,
+		fGainIter + 3.0 * fGainStepSingle };
+
+	const float fGainStep = 4.0f * fGainStepSingle;
+	float32x4_t vGainIter = vld1q_f32(fInitGainIter);
+	float32x4_t vGainStep = vld1q_dup_f32(&fGainStep);
+	float32x4_t v1 = vld1q_dup_f32(pfValue);
+	float32x4_t v2;
+
+	for (; iFrames >= 4; iFrames -= 4) {
+		v2 = vmulq_f32(vld1q_f32(pFrames), vGainIter);
+		v1 = vmaxq_f32(v2, v1);
+		vst1q_f32(pFrames, v2);
+		vGainIter += vGainStep;
+		pFrames += 4;
+	}
+
+	for (; iFrames > 0; --iFrames) {
+		*pFrames++ *= fGainIter;
+		fGainIter += fGainStepSingle;
+	}
+
+	vst1q_lane_f32(pfValue, v1, 3); // CHEAT: take 4th of 4 possible values.
+}
+
+static inline void neon_process_meter (
+	float *pFrames, unsigned int iFrames, float *pfValue )
+{
+	float32x4_t v1 = vld1q_dup_f32(pfValue);
+
+	for (; (long(pFrames) & 15) && (iFrames > 0); --iFrames)
+		++pFrames;
+
+	for (; iFrames >= 4; iFrames -= 4) {
+		v1 = vmaxq_f32(vld1q_f32(pFrames), v1);
+		pFrames += 4;
+	}
+
+	vst1q_lane_f32(pfValue, v1, 0); // CHEAT: take 1st of 4 possible values.
+}
+
+#endif
+
 // Standard processor versions.
 static inline void std_process (
 	float *pFrames, unsigned int iFrames, float fGain, float *pfValue )
@@ -173,14 +255,19 @@ qtractorAudioMonitor::qtractorAudioMonitor ( unsigned short iChannels,
 		m_pfnProcess = sse_process;
 		m_pfnProcessRamp = sse_process_ramp;
 		m_pfnProcessMeter = sse_process_meter;
-	} else {
+	} else
 #endif
+#if defined(__ARM_NEON__)
+	m_pfnProcess = neon_process;
+	m_pfnProcessRamp = neon_process_ramp;
+	m_pfnProcessMeter = neon_process_meter;
+	if(false)
+#endif
+	{
 	m_pfnProcess = std_process;
 	m_pfnProcessRamp = std_process_ramp;
 	m_pfnProcessMeter = std_process_meter;
-#if defined(__SSE__)
 	}
-#endif
 
 	setChannels(iChannels);
 }

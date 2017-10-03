@@ -118,6 +118,38 @@ static inline void sse_buffer_add (
 
 #endif
 
+#if defined(__ARM_NEON__)
+#include "arm_neon.h"
+
+// NEON enabled mix-down processor version.
+static inline void neon_buffer_add (
+	float **ppBuffer, float **ppFrames, unsigned int iFrames,
+	unsigned short iBuffers, unsigned short iChannels, unsigned int iOffset )
+{
+	unsigned short j = 0;
+
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pBuffer = ppBuffer[j] + iOffset;
+		float *pFrames = ppFrames[i] + iOffset;
+		unsigned int nframes = iFrames;
+		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
+			*pBuffer++ += *pFrames++;
+		for (; nframes >= 4; nframes -= 4) {
+			vst1q_f32(pBuffer,
+				vaddq_f32(
+					vld1q_f32(pBuffer),
+					vld1q_f32(pFrames)));
+			pFrames += 4;
+			pBuffer += 4;
+		}
+		for (; nframes > 0; --nframes)
+			*pBuffer++ += *pFrames++;
+		if (++j >= iBuffers)
+			j = 0;
+	}
+}
+
+#endif
 
 // Standard mix-down processor version.
 static inline void std_buffer_add (
@@ -162,6 +194,10 @@ public:
 			m_pfnBufferAdd = sse_buffer_add;
 		else
 	#endif
+#if defined(__ARM_NEON__)
+		m_pfnBufferAdd = neon_buffer_add;
+		if(false)
+#endif
 		m_pfnBufferAdd = std_buffer_add;
 	}
 
@@ -2132,6 +2168,10 @@ qtractorAudioBus::qtractorAudioBus (
 	if (sse_enabled())
 		m_pfnBufferAdd = sse_buffer_add;
 	else
+#endif
+#if defined(__ARM_NEON__)
+	m_pfnBufferAdd = neon_buffer_add;
+	if(false)
 #endif
 	m_pfnBufferAdd = std_buffer_add;
 }
