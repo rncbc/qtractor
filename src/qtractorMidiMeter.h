@@ -209,6 +209,11 @@ public:
 	// Monitor reset.
 	void reset();
 
+protected:
+
+	// Resize event handler.
+	void resizeEvent(QResizeEvent *);
+
 private:
 
 	// Local forward declarations.

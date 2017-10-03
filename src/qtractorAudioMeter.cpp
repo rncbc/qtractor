@@ -359,8 +359,7 @@ void qtractorAudioMeterValue::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	m_iPeak = 0;
 
-	QWidget::resizeEvent(pResizeEvent);
-//	QWidget::repaint();
+	qtractorMeterValue::resizeEvent(pResizeEvent);
 }
 
 
@@ -475,7 +474,7 @@ void qtractorAudioMeter::updatePixmap (void)
 
 
 // Resize event handler.
-void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
+void qtractorAudioMeter::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	qtractorMeter::setScale(0.85f * float(QWidget::height()));
 
@@ -495,6 +494,8 @@ void qtractorAudioMeter::resizeEvent ( QResizeEvent * )
 			m_ppAudioValues[i]->setMaximumWidth(iMaxWidth < 2 ? 2 : iMaxWidth);
 		}
 	}
+
+	qtractorMeter::resizeEvent(pResizeEvent);
 }
 
 

@@ -184,11 +184,10 @@ public:
 	virtual ~qtractorMixerMeter();
 
 	// Dynamic layout accessors.
-	QHBoxLayout *topLayout() const
-		{ return m_pTopLayout; }
 	QWidget *topWidget() const
 		{ return m_pTopWidget; }
-
+	QHBoxLayout *topLayout() const
+		{ return m_pTopLayout; }
 	QHBoxLayout *boxLayout() const
 		{ return m_pBoxLayout; }
 

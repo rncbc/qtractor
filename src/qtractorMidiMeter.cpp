@@ -210,8 +210,7 @@ void qtractorMidiMeterValue::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	m_iPeak = 0;
 
-	QWidget::resizeEvent(pResizeEvent);
-//	QWidget::repaint();
+	qtractorMeterValue::resizeEvent(pResizeEvent);
 }
 
 
@@ -345,13 +344,15 @@ void qtractorMidiMeter::updatePixmap (void)
 
 
 // Resize event handler.
-void qtractorMidiMeter::resizeEvent ( QResizeEvent * )
+void qtractorMidiMeter::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	qtractorMeter::setScale(float(QWidget::height()));
 
 #ifdef CONFIG_GRADIENT
 	updatePixmap();
 #endif
+
+	qtractorMeter::resizeEvent(pResizeEvent);
 }
 
 
@@ -543,6 +544,20 @@ void qtractorMidiMixerMeter::updateGain (void)
 
 	gainSlider()->setToolTip(
 		tr("Volume: %1%").arg(gainSpinBox()->value(), 0, 'g', 3));
+}
+
+
+// Resize event handler.
+void qtractorMidiMixerMeter::resizeEvent ( QResizeEvent *pResizeEvent )
+{
+	// HACK: make so that the MIDI gain slider (volume)
+	// aligns its top at the Audio 0 dB gain level...
+	int iFixedHeight = int(0.15f * float(m_pMidiMeter->height())) - 4;
+	if (iFixedHeight < 16)
+		iFixedHeight = 16;
+	topWidget()->setFixedHeight(iFixedHeight);
+
+	qtractorMixerMeter::resizeEvent(pResizeEvent);
 }
 
 

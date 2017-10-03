@@ -274,7 +274,6 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 	m_pTopLayout = new QHBoxLayout();
 	m_pTopLayout->setMargin(2);
 	m_pTopLayout->setSpacing(0);
-	m_pTopWidget->setFixedHeight(22);
 	m_pTopWidget->setLayout(m_pTopLayout);
 	pVBoxLayout->addWidget(m_pTopWidget);
 
