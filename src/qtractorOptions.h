@@ -252,6 +252,9 @@ public:
 	bool bTrackViewToolTips;
 	bool bTrackViewCurveEdit;
 
+	// Tracks list options.
+	bool bTrackListMeters;
+
 	// MIDI Editor options...
 	bool bMidiMenubar;
 	bool bMidiStatusbar;

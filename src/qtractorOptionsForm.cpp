@@ -411,6 +411,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.ResetMeterColorsPushButton,
 		SIGNAL(clicked()),
 		SLOT(resetMeterColors()));
+	QObject::connect(m_ui.TrackListMetersCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.PluginTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(choosePluginType(int)));
@@ -680,6 +683,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.PeakAutoRemoveCheckBox->setChecked(m_pOptions->bPeakAutoRemove);
 	m_ui.KeepToolsOnTopCheckBox->setChecked(m_pOptions->bKeepToolsOnTop);
 	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
+	m_ui.TrackListMetersCheckBox->setChecked(m_pOptions->bTrackListMeters);
 	m_ui.MidButtonModifierCheckBox->setChecked(m_pOptions->bMidButtonModifier);
 	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
 	m_ui.LoopRecordingModeComboBox->setCurrentIndex(m_pOptions->iLoopRecordingMode);
@@ -805,6 +809,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bPeakAutoRemove      = m_ui.PeakAutoRemoveCheckBox->isChecked();
 		m_pOptions->bKeepToolsOnTop      = m_ui.KeepToolsOnTopCheckBox->isChecked();
 		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
+		m_pOptions->bTrackListMeters     = m_ui.TrackListMetersCheckBox->isChecked();
 		m_pOptions->bMidButtonModifier   = m_ui.MidButtonModifierCheckBox->isChecked();
 		m_pOptions->iMaxRecentFiles      = m_ui.MaxRecentFilesSpinBox->value();
 		m_pOptions->iLoopRecordingMode   = m_ui.LoopRecordingModeComboBox->currentIndex();
