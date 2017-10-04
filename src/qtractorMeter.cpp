@@ -54,7 +54,7 @@ qtractorMeterScale::qtractorMeterScale ( qtractorMeter *pMeter,
 	QFrame::setFrameShadow(QFrame::Sunken);
 
 //	QFrame::setMinimumWidth(16);
-	QFrame::setMaximumWidth(32);
+	QFrame::setMaximumWidth(24);
 //	QFrame::setBackgroundRole(QPalette::Mid);
 
 	const QFont& font = QFrame::font();
@@ -279,7 +279,7 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 
 	m_pBoxLayout = new QHBoxLayout();
 	m_pBoxLayout->setMargin(2);
-	m_pBoxLayout->setSpacing(1);
+	m_pBoxLayout->setSpacing(2);
 	pVBoxLayout->addLayout(m_pBoxLayout);
 
 	m_pGainSlider = new qtractorObserverSlider(/*, m_pBoxWidget*/);

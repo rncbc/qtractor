@@ -2850,6 +2850,19 @@
            </widget>
           </item>
           <item row="1" column="0" colspan="11">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>4</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="0" colspan="11">
            <widget class="QCheckBox" name="TrackListMetersCheckBox">
             <property name="font">
              <font>
