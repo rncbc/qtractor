@@ -1224,8 +1224,6 @@ void qtractorTrackForm::trackTypeChanged (void)
 
 	updateTrackType(trackType);
 
-	if (trackType == qtractorTrack::Midi)
-		m_pTrack->open(); // re-open...
 //	inputBusNameChanged(m_ui.InputBusNameComboBox->currentText());
 	outputBusNameChanged(m_ui.OutputBusNameComboBox->currentText());
 }
@@ -1264,6 +1262,8 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 		break;
 	}
 	case qtractorTrack::Midi:
+		// Re-open MIDI track and output bus properly...
+		m_pTrack->open();
 		// Recache the applicable MIDI output bus ...
 		m_pMidiBus = midiBus();
 		updateInstruments();

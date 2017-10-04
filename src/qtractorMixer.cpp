@@ -354,7 +354,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pLayout->addLayout(m_pButtonLayout);
 	
 	// Now, there's whether we are Audio or MIDI related...
-	m_pMeter = NULL;
+	m_pMixerMeter = NULL;
 	m_pMidiLabel = NULL;
 	int iFixedWidth = 54;
 	switch (meterType) {
@@ -384,7 +384,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		if (pAudioMonitor) {
 			const int iAudioChannels = pAudioMonitor->channels();
 			iFixedWidth += 12 * (iAudioChannels < 2	? 2 : iAudioChannels);
-			m_pMeter = new qtractorAudioMeter(pAudioMonitor, this);
+			m_pMixerMeter = new qtractorAudioMixerMeter(pAudioMonitor, this);
 		}
 		m_pPluginListView->setEnabled(true);
 		break;
@@ -416,7 +416,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		// Have we a MIDI monitor/meter?...
 		if (pMidiMonitor) {
 			iFixedWidth += 24;
-			m_pMeter = new qtractorMidiMeter(pMidiMonitor, this);
+			m_pMixerMeter = new qtractorMidiMixerMeter(pMidiMonitor, this);
 			// MIDI Tracks might need to show something,
 			// like proper MIDI channel settings...
 			if (m_pTrack) {
@@ -424,7 +424,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		//		m_pMidiLabel->setFont(font2);
 				m_pMidiLabel->setAlignment(
 					Qt::AlignHCenter | Qt::AlignVCenter);
-				m_pMeter->topLayout()->insertWidget(1, m_pMidiLabel);
+				m_pMixerMeter->topLayout()->insertWidget(1, m_pMidiLabel);
 				updateMidiLabel();
 			}
 			// No panning on MIDI bus monitors and on duplex ones
@@ -432,10 +432,10 @@ void qtractorMixerStrip::initMixerStrip (void)
 			if (pMidiBus) {
 				if ((m_busMode & qtractorBus::Input) &&
 					(m_pBus->busMode() & qtractorBus::Output)) {
-					m_pMeter->panSlider()->setEnabled(false);
-					m_pMeter->panSpinBox()->setEnabled(false);
-					m_pMeter->gainSlider()->setEnabled(false);
-					m_pMeter->gainSpinBox()->setEnabled(false);
+					m_pMixerMeter->panSlider()->setEnabled(false);
+					m_pMixerMeter->panSpinBox()->setEnabled(false);
+					m_pMixerMeter->gainSlider()->setEnabled(false);
+					m_pMixerMeter->gainSpinBox()->setEnabled(false);
 				}
 			}
 		}
@@ -447,29 +447,29 @@ void qtractorMixerStrip::initMixerStrip (void)
 	}
 
 	// Eventually the right one...
-	if (m_pMeter) {
+	if (m_pMixerMeter) {
 		// Set MIDI controller & automation hooks...
 		qtractorMidiControlObserver *pMidiObserver;
-		pMidiObserver = m_pMeter->monitor()->panningObserver();
+		pMidiObserver = m_pMixerMeter->monitor()->panningObserver();
 		if (m_pTrack)
 			pMidiObserver->setCurveList(m_pTrack->curveList());
-		m_pMeter->addMidiControlAction(m_pMeter->panSlider(), pMidiObserver);
-		pMidiObserver = m_pMeter->monitor()->gainObserver();
+		m_pMixerMeter->addMidiControlAction(m_pMixerMeter->panSlider(), pMidiObserver);
+		pMidiObserver = m_pMixerMeter->monitor()->gainObserver();
 		if (m_pTrack)
 			pMidiObserver->setCurveList(m_pTrack->curveList());
-		m_pMeter->addMidiControlAction(m_pMeter->gainSlider(), pMidiObserver);
+		m_pMixerMeter->addMidiControlAction(m_pMixerMeter->gainSlider(), pMidiObserver);
 		// Finally, add to layout...	
-		m_pLayout->addWidget(m_pMeter, 4);
-		QObject::connect(m_pMeter->panSlider(),
+		m_pLayout->addWidget(m_pMixerMeter, 4);
+		QObject::connect(m_pMixerMeter->panSlider(),
 			SIGNAL(valueChanged(float)),
 			SLOT(panningChangedSlot(float)));
-		QObject::connect(m_pMeter->panSpinBox(),
+		QObject::connect(m_pMixerMeter->panSpinBox(),
 			SIGNAL(valueChanged(float)),
 			SLOT(panningChangedSlot(float)));
-		QObject::connect(m_pMeter->gainSlider(),
+		QObject::connect(m_pMixerMeter->gainSlider(),
 			SIGNAL(valueChanged(float)),
 			SLOT(gainChangedSlot(float)));
-		QObject::connect(m_pMeter->gainSpinBox(),
+		QObject::connect(m_pMixerMeter->gainSpinBox(),
 			SIGNAL(valueChanged(float)),
 			SLOT(gainChangedSlot(float)));
 	}
@@ -493,13 +493,33 @@ void qtractorMixerStrip::initMixerStrip (void)
 // Child properties accessors.
 void qtractorMixerStrip::setMonitor ( qtractorMonitor *pMonitor )
 {
-	if (m_pMeter)
-		m_pMeter->setMonitor(pMonitor);
+	qtractorTrack::TrackType meterType = qtractorTrack::None;
+	if (m_pTrack)
+		meterType = m_pTrack->trackType();
+	else if (m_pBus)
+		meterType = m_pBus->busType();
+	if (meterType == qtractorTrack::Audio) {
+		qtractorAudioMonitor *pAudioMonitor
+			= static_cast<qtractorAudioMonitor *> (pMonitor);
+		if (pAudioMonitor) {
+			const int iOldWidth = QFrame::width();
+			const int iAudioChannels = pAudioMonitor->channels();
+			const int iFixedWidth = 54
+				+ 12 * (iAudioChannels < 2 ? 2 : iAudioChannels);
+			if (iFixedWidth != iOldWidth) {
+				QFrame::setFixedWidth(iFixedWidth);
+				m_pRack->updateWorkspace();
+			}
+		}
+	}
+
+	if (m_pMixerMeter)
+		m_pMixerMeter->setMonitor(pMonitor);
 }
 
 qtractorMonitor *qtractorMixerStrip::monitor (void) const
 {
-	return (m_pMeter ? m_pMeter->monitor() : NULL);
+	return (m_pMixerMeter ? m_pMixerMeter->monitor() : NULL);
 }
 
 
@@ -694,7 +714,7 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 		m_pMuteButton->setPalette(pal);
 	if (m_pSoloButton)
 		m_pSoloButton->setPalette(pal);
-	m_pMeter->setPalette(pal);
+	m_pMixerMeter->setPalette(pal);
 	pal.setBrush(QPalette::Window, grad);
 #else
 	if (m_bSelected) {
@@ -716,13 +736,6 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	if (m_pSoloButton)
 		m_pSoloButton->observer()->update(true);
 #endif
-}
-
-
-// Strip refreshment.
-void qtractorMixerStrip::refresh (void)
-{
-	if (m_pMeter) m_pMeter->refresh();
 }
 
 
@@ -807,7 +820,7 @@ void qtractorMixerStrip::busButtonSlot (void)
 // Pan-meter slider value change slot.
 void qtractorMixerStrip::panningChangedSlot ( float fPanning )
 {
-	if (m_pMeter == NULL)
+	if (m_pMixerMeter == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -832,7 +845,7 @@ void qtractorMixerStrip::panningChangedSlot ( float fPanning )
 // Gain-meter slider value change slot.
 void qtractorMixerStrip::gainChangedSlot ( float fGain )
 {
-	if (m_pMeter == NULL)
+	if (m_pMixerMeter == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -1093,12 +1106,12 @@ void qtractorMixerRack::addStrip ( qtractorMixerStrip *pStrip )
 // Remove a mixer strip from rack list.
 void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 {
-	// Remove this from the workspace layout...
-	m_pRackWidget->removeStrip(pStrip);
-
 	// Don't let current selection hanging...
 	if (m_pSelectedStrip == pStrip)
 		m_pSelectedStrip = NULL;
+
+	// Remove this from the workspace layout...
+	m_pRackWidget->removeStrip(pStrip);
 
 	pStrip->hide();
 
@@ -1131,16 +1144,6 @@ void qtractorMixerRack::updateStrip (
 
 	if (pMonitor)
 		m_strips.insert(pMonitor, pStrip);
-}
-
-
-// Complete rack refreshment.
-void qtractorMixerRack::refresh (void)
-{
-	Strips::ConstIterator strip = m_strips.constBegin();
-	const Strips::ConstIterator& strip_end = m_strips.constEnd();
-	for ( ; strip != strip_end; ++strip)
-		strip.value()->refresh();
 }
 
 
@@ -1498,15 +1501,6 @@ void qtractorMixer::updateTracks ( bool bReset )
 	}
 
 	m_pTrackRack->cleanStrips(1);
-}
-
-
-// Complete mixer refreshment.
-void qtractorMixer::refresh (void)
-{
-	m_pInputRack->refresh();
-	m_pTrackRack->refresh();
-	m_pOutputRack->refresh();
 }
 
 

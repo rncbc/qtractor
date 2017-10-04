@@ -1,7 +1,7 @@
 // qtractorMidiMonitor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,8 +46,8 @@ public:
 		unsigned char val, unsigned long tick = 0);
 
 	// Monitor dequeue methods.
-	float value();
-	int   count();
+	float value_stamp(unsigned long iStamp);
+	int   count_stamp(unsigned long iStamp);
 
 	// Clear monitor.
 	void clear();
@@ -86,6 +86,12 @@ private:
 	unsigned long m_iFrameStart;
 	unsigned long m_iTimeStart;
 	QueueItem     m_item;
+	QueueItem     m_prev;
+
+	float m_fValue;
+
+	unsigned long m_iValueStamp;
+	unsigned long m_iCountStamp;
 
 	// Singleton variables.
 	static unsigned int  g_iFrameSlot;

@@ -44,6 +44,7 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorTracks.h"
+#include "qtractorTrackList.h"
 
 #include <QPainter>
 
@@ -192,7 +193,7 @@ protected:
 		m_pTrack->setMidiBank(iBank);
 		m_pTrack->setMidiProg(iProg);
 		// Refresh track item, at least the names...
-		if (bUpdate) m_pTrack->updateTracks();
+		if (bUpdate) m_pTrack->updateTrack();
 	}
 
 private:
@@ -551,10 +552,11 @@ bool qtractorTrack::open (void)
 		break;
 	}
 
-	// Mixer turn, before we get rid of old monitor...
+	// Before we get rid of old monitor...
 	if (pMonitor) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
+			// Update mixer strip...
 			qtractorMixer *pMixer = pMainForm->mixer();
 			if (pMixer) {
 				qtractorMixerStrip *pStrip
@@ -562,6 +564,10 @@ bool qtractorTrack::open (void)
 				if (pStrip)
 					pStrip->setTrack(this);
 			}
+			// Update track-list as well...
+			qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
+			if (pTrackList)
+				pTrackList->updateTrack(this);
 		}
 		// Update gain and panning curve new subjects...
 	#if 0
@@ -2314,7 +2320,7 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 
 
 // Update tracks/list-view.
-void qtractorTrack::updateTracks (void)
+void qtractorTrack::updateTrack (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -2327,5 +2333,18 @@ void qtractorTrack::updateTracks (void)
 	pTracks->updateTrack(this);
 }
 
+
+void qtractorTrack::updateMidiTrack (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorTracks *pTracks = pMainForm->tracks();
+	if (pTracks == NULL)
+		return;
+
+	pTracks->updateMidiTrack(this);
+}
 
 // end of qtractorTrack.cpp

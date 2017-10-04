@@ -26,7 +26,7 @@
 #include "qtractorEngine.h"
 
 // Forward declarations.
-class qtractorMeter;
+class qtractorMixerMeter;
 
 
 //----------------------------------------------------------------------
@@ -93,7 +93,7 @@ protected:
 	bool deleteBus();
 
 	// Monitor meter accessor.
-	qtractorMeter *meter() const;
+	qtractorMixerMeter *meter() const;
 
 private:
 

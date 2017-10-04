@@ -1,7 +1,7 @@
 // qtractorMidiMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -91,41 +91,49 @@ void qtractorMidiMonitor::enqueue ( qtractorMidiEvent::EventType type,
 
 
 // Monitor value dequeue method.
-float qtractorMidiMonitor::value (void)
+float qtractorMidiMonitor::value_stamp ( unsigned long iStamp )
 {
 	// Grab-and-reset current direct value...
-	unsigned char val = m_item.value;
-	m_item.value = 0;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && g_iFrameSlot > 0) {
-		// Sweep the queue until current time...
-		const unsigned long iFrameTime = pSession->frameTimeEx();
-		while (m_iFrameStart < iFrameTime) {
-			QueueItem& item = m_pQueue[m_iQueueIndex];
-			if (val < item.value)
-				val = item.value;
-			m_item.count += item.count;
-			item.value = 0;
-			item.count = 0;
-			++m_iQueueIndex &= c_iQueueMask;
-			m_iFrameStart += g_iFrameSlot;
-			m_iTimeStart += timeSlot(m_iTimeStart);
+	if (m_iValueStamp != iStamp) {
+		unsigned char val = m_item.value;
+	    m_iValueStamp = iStamp;
+		m_item.value = 0;
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession && g_iFrameSlot > 0) {
+			// Sweep the queue until current time...
+			const unsigned long iFrameTime = pSession->frameTimeEx();
+			while (m_iFrameStart < iFrameTime) {
+				QueueItem& item = m_pQueue[m_iQueueIndex];
+				if (val < item.value)
+					val = item.value;
+				m_item.count += item.count;
+				item.value = 0;
+				item.count = 0;
+				++m_iQueueIndex &= c_iQueueMask;
+				m_iFrameStart += g_iFrameSlot;
+				m_iTimeStart += timeSlot(m_iTimeStart);
+			}
 		}
+		// New state: same as division by 127.0f...
+		m_fValue = (gain() * val) * 0.007874f;
 	}
 
 	// Dequeue done.
-	return (gain() * val) / 127.0f;
+	return m_fValue;
 }
 
 
 // Monitor count dequeue method.
-int qtractorMidiMonitor::count (void)
+int qtractorMidiMonitor::count_stamp ( unsigned long iStamp )
 {
 	// Grab latest direct/dequeued count...
-	const int iCount = int(m_item.count);
-	m_item.count = 0;
-	return iCount;
+	if (m_iCountStamp != iStamp) {
+		m_iCountStamp  = iStamp;
+		m_prev.count   = m_item.count;
+		m_item.count   = 0;
+	}
+
+	return int(m_prev.count);
 }
 
 
@@ -133,8 +141,8 @@ int qtractorMidiMonitor::count (void)
 void qtractorMidiMonitor::clear (void)
 {
 	// (Re)initialize all...
-	m_item.value  = 0;
-	m_item.count  = 0;
+	m_item.value = m_prev.value = 0;
+	m_item.count = m_prev.count = 0;
 
 	m_iQueueIndex = 0;
 
@@ -143,6 +151,12 @@ void qtractorMidiMonitor::clear (void)
 		m_pQueue[i].value = 0;
 		m_pQueue[i].count = 0;
 	}
+
+	// Reset metering stamps as well...
+	m_fValue = 0.0f;
+
+	m_iValueStamp = 0;
+	m_iCountStamp = 0;
 }
 
 
