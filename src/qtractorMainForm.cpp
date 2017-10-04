@@ -4918,6 +4918,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
+	const bool    bOldTrackListMeters    = m_pOptions->bTrackListMeters;
 #ifdef CONFIG_LV2
 	const QString sep(':'); 
 	const bool    bOldLv2DynManifest     = m_pOptions->bLv2DynManifest;
@@ -5097,6 +5098,11 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
 			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
 			updateSyncViewHold();
+		if (( bOldTrackListMeters && !m_pOptions->bTrackListMeters) ||
+			(!bOldTrackListMeters &&  m_pOptions->bTrackListMeters)) {
+			if (m_pTracks)
+				m_pTracks->trackList()->updateItems();
+		}
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;

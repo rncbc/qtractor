@@ -370,6 +370,10 @@ bool qtractorTrackList::Item::updateBankProgNames (
 // Track-list model item cache updater.
 void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 {
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return;
+
 	text.clear();
 
 	// Default initialization?
@@ -409,7 +413,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			// Fillers...
 			text << s << s;
 			// Re-create the audio meter...
-			if (meter == NULL) {
+			if (pOptions->bTrackListMeters && meter == NULL) {
 				qtractorAudioMonitor *pAudioMonitor
 					= static_cast<qtractorAudioMonitor *> (track->monitor());
 				if (pAudioMonitor) {
@@ -483,7 +487,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			// This is it, MIDI Patch/Bank...
 			text << sProgName + '\n' + sBankName << sInstrumentName;
 			// Re-create the MIDI meter...
-			if (meter == NULL) {
+			if (pOptions->bTrackListMeters && meter == NULL) {
 				qtractorMidiMonitor *pMidiMonitor
 					= static_cast<qtractorMidiMonitor *> (track->monitor());
 				if (pMidiMonitor)
@@ -710,6 +714,27 @@ void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 }
 
 
+// Update all track-items/icons methods.
+void qtractorTrackList::updateItems (void)
+{
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext())
+		iter.next()->update(this);
+
+	updateContents();
+}
+
+
+void qtractorTrackList::updateIcons (void)
+{
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext())
+		iter.next()->update_icon(this);
+
+	updateContents();
+}
+
+
 // Main table cleaner.
 void qtractorTrackList::clear (void)
 {
@@ -804,21 +829,19 @@ void qtractorTrackList::resizeEvent ( QResizeEvent *pResizeEvent )
 void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
 {
 	const bool bBlockSignals = m_pHeader->blockSignals(true);
-	if (iCol == Name && iColSize < 110)
+	if (iCol == Name && iColSize < 110) {
+		// Make sure this column stays legible...
 		m_pHeader->resizeSection(iCol, 110);
+	}
 	else
 	if (iCol == Number) {
 		// Resize all icons anyway...
-		QListIterator<Item *> iter(m_items);
-		while (iter.hasNext())
-			iter.next()->update_icon(this);
+		updateIcons();
 	}
 	else
 	if (iCol == Channel) {
 		// Reset all meter sizes anyway...
-		QListIterator<Item *> iter(m_items);
-		while (iter.hasNext())
-			iter.next()->update(this);
+		updateItems();
 	}
 	m_pHeader->blockSignals(bBlockSignals);
 

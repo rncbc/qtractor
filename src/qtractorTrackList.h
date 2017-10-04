@@ -135,6 +135,10 @@ public:
 	// Update the list view item from track pointer reference.
 	void updateTrack(qtractorTrack *pTrack);
 
+	// Update all track-items/icons methods.
+	void updateItems();
+	void updateIcons();
+
 	// Main table cleaner.
 	void clear();
 
