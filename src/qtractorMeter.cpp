@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -53,7 +53,8 @@ qtractorMeterScale::qtractorMeterScale ( qtractorMeter *pMeter,
 	QFrame::setFrameShape(QFrame::Panel);
 	QFrame::setFrameShadow(QFrame::Sunken);
 
-	QFrame::setMinimumWidth(16);
+//	QFrame::setMinimumWidth(16);
+	QFrame::setMaximumWidth(24);
 //	QFrame::setBackgroundRole(QPalette::Mid);
 
 	const QFont& font = QFrame::font();
@@ -103,12 +104,77 @@ void qtractorMeterScale::paintEvent ( QPaintEvent * )
 }
 
 
+//----------------------------------------------------------------------------
+// qtractorMeterValue -- Meter bridge value widget.
+
+// List of meter-values (global obviously)
+QList<qtractorMeterValue *> qtractorMeterValue::g_values;
+unsigned long qtractorMeterValue::g_iStamp = 0;
+
+// Constructor.
+qtractorMeterValue::qtractorMeterValue (
+	qtractorMeter *pMeter, QWidget *pParent )
+	: QWidget(pParent), m_pMeter(pMeter)
+{
+	g_values.append(this);
+}
+
+
+// Destructor (virtual).
+qtractorMeterValue::~qtractorMeterValue (void)
+{
+	g_values.removeAll(this);
+}
+
+
+// Global refreshment (static).
+void qtractorMeterValue::refreshAll (void)
+{
+	++g_iStamp;
+
+	QListIterator<qtractorMeterValue *> iter(g_values);
+	while (iter.hasNext())
+		iter.next()->refresh(g_iStamp);
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorMeter -- Meter bridge slot widget.
+
+// Constructor.
+qtractorMeter::qtractorMeter ( QWidget *pParent )
+	: QWidget(pParent)
+{
+	m_pBoxLayout = new QHBoxLayout();
+	m_pBoxLayout->setMargin(0);
+	m_pBoxLayout->setSpacing(2);
+
+	QWidget::setLayout(m_pBoxLayout);
+
+	m_fScale = 0.0f;
+
+	m_iPeakFalloff = 0;
+
+//	QWidget::setMinimumHeight(160);
+//	QWidget::setMaximumHeight(480);
+	QWidget::setSizePolicy(
+		QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding));
+}
+
+
+// Default destructor.
+qtractorMeter::~qtractorMeter (void)
+{
+	// No need to delete child widgets, Qt does it all for us
+}
+
+
 //----------------------------------------------------------------------
-// class qtractorMeter::PanSliderInterface -- Observer interface.
+// class qtractorMixerMeter::PanSliderInterface -- Observer interface.
 //
 
 // Local converter interface.
-class qtractorMeter::PanSliderInterface
+class qtractorMixerMeter::PanSliderInterface
 	: public qtractorObserverSlider::Interface
 {
 public:
@@ -128,64 +194,58 @@ public:
 
 
 //----------------------------------------------------------------------------
-// qtractorMeter::PanObserver -- Local dedicated observer.
+// qtractorMixerMeter::PanObserver -- Local dedicated observer.
 
-class qtractorMeter::PanObserver : public qtractorObserver
+class qtractorMixerMeter::PanObserver : public qtractorObserver
 {
 public:
 
 	// Constructor.
-	PanObserver(qtractorMeter *pMeter)
-		: qtractorObserver(NULL), m_pMeter(pMeter) {}
+	PanObserver(qtractorMixerMeter *pMixerMeter)
+		: qtractorObserver(NULL), m_pMixerMeter(pMixerMeter) {}
 
 protected:
 
 	// Update feedback.
 	void update(bool bUpdate)
-	{
-		if (bUpdate)
-			m_pMeter->updatePanning();
-	}
+		{ if (bUpdate) m_pMixerMeter->updatePanning(); }
 
 private:
 
 	// Members.
-	qtractorMeter *m_pMeter;
+	qtractorMixerMeter *m_pMixerMeter;
 };
 
 
 //----------------------------------------------------------------------------
-// qtractorMeter::GainObserver -- Local dedicated observer.
+// qtractorMixerMeter::GainObserver -- Local dedicated observer.
 
-class qtractorMeter::GainObserver : public qtractorObserver
+class qtractorMixerMeter::GainObserver : public qtractorObserver
 {
 public:
 
 	// Constructor.
-	GainObserver(qtractorMeter *pMeter)
-		: qtractorObserver(NULL), m_pMeter(pMeter) {}
+	GainObserver(qtractorMixerMeter *pMixerMeter)
+		: qtractorObserver(NULL), m_pMixerMeter(pMixerMeter) {}
 
 protected:
 
 	// Update feedback.
 	void update(bool bUpdate)
-	{
-		if (bUpdate)
-			m_pMeter->updateGain();
-	}
+		{ if (bUpdate) m_pMixerMeter->updateGain(); }
 
 private:
 
 	// Members.
-	qtractorMeter *m_pMeter;
+	qtractorMixerMeter *m_pMixerMeter;
 };
 
 
 //----------------------------------------------------------------------------
-// qtractorMeter -- Meter bridge slot widget.
+// qtractorMixerMeter -- Mixer-strip meter bridge widget.
 
 // Constructor.
-qtractorMeter::qtractorMeter ( QWidget *pParent )
+qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 	: QWidget(pParent)
 {
 	const QFont& font = QWidget::font();
@@ -194,35 +254,33 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 
 //	QWidget::setFont(font2);
 
-	m_pVBoxLayout = new QVBoxLayout();
-	m_pVBoxLayout->setMargin(0);
-	m_pVBoxLayout->setSpacing(2);
-	QWidget::setLayout(m_pVBoxLayout);
+	QVBoxLayout *pVBoxLayout = new QVBoxLayout();
+	pVBoxLayout->setMargin(0);
+	pVBoxLayout->setSpacing(2);
+	QWidget::setLayout(pVBoxLayout);
 
 	m_pPanSlider = new qtractorObserverSlider(/*this*/);
 	m_pPanSlider->setOrientation(Qt::Horizontal);
 	m_pPanSlider->setFixedHeight(20);
-	m_pVBoxLayout->addWidget(m_pPanSlider);
+	pVBoxLayout->addWidget(m_pPanSlider);
 
 	m_pPanSpinBox = new qtractorObserverSpinBox(/*this*/);
 //	m_pPanSpinBox->setFont(font2);
 	m_pPanSpinBox->setFixedHeight(iFixedHeight);
 	m_pPanSpinBox->setKeyboardTracking(false);
-	m_pVBoxLayout->addWidget(m_pPanSpinBox);
+	pVBoxLayout->addWidget(m_pPanSpinBox);
 
 	m_pTopWidget = new QWidget(/*this*/);
 	m_pTopLayout = new QHBoxLayout();
-	m_pTopLayout->setMargin(0);
-	m_pTopLayout->setSpacing(2);
+	m_pTopLayout->setMargin(2);
+	m_pTopLayout->setSpacing(0);
 	m_pTopWidget->setLayout(m_pTopLayout);
-	m_pVBoxLayout->addWidget(m_pTopWidget);
+	pVBoxLayout->addWidget(m_pTopWidget);
 
-	m_pBoxWidget = new QWidget(/*this*/);
 	m_pBoxLayout = new QHBoxLayout();
 	m_pBoxLayout->setMargin(2);
 	m_pBoxLayout->setSpacing(2);
-	m_pBoxWidget->setLayout(m_pBoxLayout);
-	m_pVBoxLayout->addWidget(m_pBoxWidget);
+	pVBoxLayout->addLayout(m_pBoxLayout);
 
 	m_pGainSlider = new qtractorObserverSlider(/*, m_pBoxWidget*/);
 	m_pGainSlider->setOrientation(Qt::Vertical);
@@ -233,12 +291,10 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 //	m_pGainSpinBox->setFont(font2);
 	m_pGainSpinBox->setFixedHeight(iFixedHeight);
 	m_pGainSpinBox->setKeyboardTracking(false);
-	m_pVBoxLayout->addWidget(m_pGainSpinBox);
+	pVBoxLayout->addWidget(m_pGainSpinBox);
 
 	m_pPanObserver  = new PanObserver(this);
 	m_pGainObserver = new GainObserver(this);
-	
-	m_iPeakFalloff = 0;
 
 	m_pPanSlider->setInterface(new PanSliderInterface(m_pPanSlider));
 
@@ -276,7 +332,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 
 
 // Default destructor.
-qtractorMeter::~qtractorMeter (void)
+qtractorMixerMeter::~qtractorMixerMeter (void)
 {
 	delete m_pGainObserver;
 	delete m_pPanObserver;
@@ -286,7 +342,7 @@ qtractorMeter::~qtractorMeter (void)
 
 
 // Panning subject accessors.
-void qtractorMeter::setPanningSubject ( qtractorSubject *pSubject )
+void qtractorMixerMeter::setPanningSubject ( qtractorSubject *pSubject )
 {
 	m_pPanSlider->setSubject(pSubject);
 	m_pPanSpinBox->setSubject(pSubject);
@@ -297,33 +353,33 @@ void qtractorMeter::setPanningSubject ( qtractorSubject *pSubject )
 	m_pPanSlider->observer()->update(true);
 }
 
-qtractorSubject *qtractorMeter::panningSubject (void) const
+qtractorSubject *qtractorMixerMeter::panningSubject (void) const
 {
 	return m_pPanObserver->subject();
 }
 
 
 // Stereo panning accessors.
-void qtractorMeter::setPanning ( float fPanning )
+void qtractorMixerMeter::setPanning ( float fPanning )
 {
 	m_pPanObserver->setValue(fPanning);
 	monitor()->update();
 	updatePanning();
 }
 
-float qtractorMeter::panning (void) const
+float qtractorMixerMeter::panning (void) const
 {
 	return m_pPanObserver->value();
 }
 
-float qtractorMeter::prevPanning (void) const
+float qtractorMixerMeter::prevPanning (void) const
 {
 	return m_pPanObserver->prevValue();
 }
 
 
 // Gain subject accessors.
-void qtractorMeter::setGainSubject ( qtractorSubject *pSubject )
+void qtractorMixerMeter::setGainSubject ( qtractorSubject *pSubject )
 {
 	m_pGainSlider->setSubject(pSubject);
 	m_pGainSpinBox->setSubject(pSubject);
@@ -334,26 +390,26 @@ void qtractorMeter::setGainSubject ( qtractorSubject *pSubject )
 	m_pGainSlider->observer()->update(true);
 }
 
-qtractorSubject *qtractorMeter::gainSubject (void) const
+qtractorSubject *qtractorMixerMeter::gainSubject (void) const
 {
 	return m_pGainObserver->subject();
 }
 
 
 // Gain accessors.
-void qtractorMeter::setGain ( float fGain )
+void qtractorMixerMeter::setGain ( float fGain )
 {
 	m_pGainObserver->setValue(fGain);
 	monitor()->update();
 	updateGain();
 }
 
-float qtractorMeter::gain (void) const
+float qtractorMixerMeter::gain (void) const
 {
 	return m_pGainObserver->value();
 }
 
-float qtractorMeter::prevGain (void) const
+float qtractorMixerMeter::prevGain (void) const
 {
 	return m_pGainObserver->prevValue();
 }
@@ -362,7 +418,7 @@ float qtractorMeter::prevGain (void) const
 // MIDI controller/observer attachment (context menu) activator.
 //
 
-void qtractorMeter::addMidiControlAction (
+void qtractorMixerMeter::addMidiControlAction (
 	QWidget *pWidget, qtractorMidiControlObserver *pMidiObserver )
 {
 	qtractorMidiControlObserverForm::addMidiControlAction(
@@ -370,14 +426,14 @@ void qtractorMeter::addMidiControlAction (
 }
 
 
-void qtractorMeter::midiControlActionSlot (void)
+void qtractorMixerMeter::midiControlActionSlot (void)
 {
 	qtractorMidiControlObserverForm::midiControlAction(
 		this, qobject_cast<QAction *> (sender()));
 }
 
 
-void qtractorMeter::midiControlMenuSlot ( const QPoint& pos )
+void qtractorMixerMeter::midiControlMenuSlot ( const QPoint& pos )
 {
 	qtractorMidiControlObserverForm::midiControlMenu(
 		qobject_cast<QWidget *> (sender()), pos);

@@ -4928,6 +4928,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
+	const bool    bOldTrackListMeters    = m_pOptions->bTrackListMeters;
 	const int     iOldOscServerPort      = m_pOptions->iOscServerPort;
 #ifdef CONFIG_LV2
 	const QString sep(':'); 
@@ -5109,6 +5110,11 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
 			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
 			updateSyncViewHold();
+		if (( bOldTrackListMeters && !m_pOptions->bTrackListMeters) ||
+			(!bOldTrackListMeters &&  m_pOptions->bTrackListMeters)) {
+			if (m_pTracks)
+				m_pTracks->trackList()->updateItems();
+		}
 		// OSC service options...
 		if (iOldOscServerPort != m_pOptions->iOscServerPort)
 			updateOscControl();
@@ -7354,9 +7360,8 @@ void qtractorMainForm::fastTimerSlot (void)
 		// Done with transport tricks.
 	}
 
-	// Always update mixer monitoring...
-	if (m_pMixer)
-		m_pMixer->refresh();
+	// Always update meter values...
+	qtractorMeterValue::refreshAll();
 
 	// Asynchronous observer update...
 	qtractorSubject::flushQueue(true);

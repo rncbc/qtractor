@@ -338,7 +338,8 @@ public:
 	void clearTakeInfo() const;
 
 	// Update tracks/list-view.
-	void updateTracks();
+	void updateTrack();
+	void updateMidiTrack();
 
 private:
 
