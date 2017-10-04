@@ -234,7 +234,8 @@ qtractorMidiMeterLed::qtractorMidiMeterLed (
 	m_pMidiLabel->setPixmap(*g_pLedPixmap[LedOff]);
 
 	QHBoxLayout *pHBoxLayout = new QHBoxLayout();
-	pHBoxLayout->setMargin(2);
+	pHBoxLayout->setMargin(0);
+	pHBoxLayout->setSpacing(0);
 	pHBoxLayout->addWidget(m_pMidiLabel);
 	qtractorMeterValue::setLayout(pHBoxLayout);
 }
@@ -458,6 +459,7 @@ qtractorMidiMixerMeter::qtractorMidiMixerMeter (
 
 	topLayout()->addStretch();
 	topLayout()->addWidget(m_pMidiLed);
+	topLayout()->addSpacing(2);
 
 	boxLayout()->addWidget(m_pMidiScale);
 	boxLayout()->addWidget(m_pMidiMeter);
@@ -552,10 +554,10 @@ void qtractorMidiMixerMeter::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	// HACK: make so that the MIDI gain slider (volume)
 	// aligns its top at the Audio 0 dB gain level...
-	int iFixedHeight = int(0.15f * float(m_pMidiMeter->height())) - 4;
-	if (iFixedHeight < 16)
-		iFixedHeight = 16;
-	topWidget()->setFixedHeight(iFixedHeight);
+	int iMinHeight = int(0.15f * float(m_pMidiMeter->height())) - 4;
+	if (iMinHeight < 16)
+		iMinHeight = 16;
+	topWidget()->setMinimumHeight(iMinHeight);
 
 	qtractorMixerMeter::resizeEvent(pResizeEvent);
 }
