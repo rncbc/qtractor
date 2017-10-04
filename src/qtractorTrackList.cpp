@@ -412,8 +412,16 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			if (meter == NULL) {
 				qtractorAudioMonitor *pAudioMonitor
 					= static_cast<qtractorAudioMonitor *> (track->monitor());
-				if (pAudioMonitor && pAudioMonitor->channels() < 6)
-					meter = new qtractorAudioMeter(pAudioMonitor, pTrackList);
+				if (pAudioMonitor) {
+					const int iAudioChannels = pAudioMonitor->channels();
+					if (iAudioChannels > 0) {
+						const int iColWidth
+							= pTrackList->header()->sectionSize(Channel);
+						const int iMinWidth = iColWidth / iAudioChannels - 1;
+						if (iMinWidth > 3)
+							meter = new qtractorAudioMeter(pAudioMonitor, pTrackList);
+					}
+				}
 			}
 			break;
 		}
@@ -804,6 +812,13 @@ void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
 		QListIterator<Item *> iter(m_items);
 		while (iter.hasNext())
 			iter.next()->update_icon(this);
+	}
+	else
+	if (iCol == Channel) {
+		// Reset all meter sizes anyway...
+		QListIterator<Item *> iter(m_items);
+		while (iter.hasNext())
+			iter.next()->update(this);
 	}
 	m_pHeader->blockSignals(bBlockSignals);
 

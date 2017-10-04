@@ -226,7 +226,7 @@ qtractorAudioMeterValue::qtractorAudioMeterValue (
 	m_fPeakDecay  = QTRACTOR_AUDIO_METER_DECAY_RATE2;
 	m_iPeakColor  = qtractorAudioMeter::Color6dB;
 
-//	QWidget::setFixedWidth(14);
+	QWidget::setMinimumWidth(2);
 	QWidget::setMaximumWidth(14);
 }
 
@@ -488,11 +488,13 @@ void qtractorAudioMeter::resizeEvent ( QResizeEvent *pResizeEvent )
 #endif
 
 	if (m_iChannels > 0) {
-		const int iMaxWidth = QWidget::width() / m_iChannels - 1;
-		for (unsigned short i = 0; i < m_iChannels; ++i) {
-			m_ppAudioValues[i]->setMinimumWidth(2);
-			m_ppAudioValues[i]->setMaximumWidth(iMaxWidth < 2 ? 2 : iMaxWidth);
-		}
+		int iMaxWidth = QWidget::width() / m_iChannels - 1;
+		if (iMaxWidth < 2)
+			iMaxWidth = 2;
+		if (iMaxWidth > 14)
+			iMaxWidth = 14;
+		for (unsigned short i = 0; i < m_iChannels; ++i)
+			m_ppAudioValues[i]->setMaximumWidth(iMaxWidth);
 	}
 
 	qtractorMeter::resizeEvent(pResizeEvent);

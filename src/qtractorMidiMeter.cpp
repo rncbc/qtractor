@@ -119,7 +119,7 @@ qtractorMidiMeterValue::qtractorMidiMeterValue (
 	m_iPeakHold   = 0;
 	m_fPeakDecay  = QTRACTOR_MIDI_METER_DECAY_RATE2;
 
-//	QWidget::setFixedWidth(14);
+	QWidget::setMinimumWidth(2);
 	QWidget::setMaximumWidth(14);
 }
 
