@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- A brand new View/Options.../Display/Meters/Show meters on
+  track list/left pane option has been added. (EXPERIMENTAL)
+
+
 0.8.4  2017-09-20  End of Summer'17 Beta.
 
 - Assigned MIDI Controllers to plug-in's Activate switch are
