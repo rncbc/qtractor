@@ -187,7 +187,7 @@ void qtractorMidiMonitor::update (void)
 void qtractorMidiMonitor::resetTime (
 	qtractorTimeScale *pTimeScale, unsigned long iFrame )
 {
-	g_iFrameSlot = pTimeScale->sampleRate() / c_iQueueSize;
+	g_iFrameSlot = (pTimeScale->sampleRate() >> 2); // ~250ms
 
 	splitTime(pTimeScale, iFrame, 0);
 }
