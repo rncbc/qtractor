@@ -524,7 +524,14 @@ void qtractorTrackList::Item::update_icon ( qtractorTrackList *pTrackList )
 // Find the list view item from track pointer reference.
 int qtractorTrackList::trackRow ( qtractorTrack *pTrack ) const
 {
-	return m_rows.value(pTrack, -1);
+	int iTrack = 0;
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext()) {
+		if (iter.next()->track == pTrack)
+			return iTrack;
+		++iTrack;
+	}
+	return -1;
 }
 
 
@@ -619,7 +626,6 @@ int qtractorTrackList::insertTrack ( int iTrack, qtractorTrack *pTrack )
 	Item *pItem = new Item(pTrack);
 	m_items.insert(iTrack, pItem);
 	m_tracks.insert(pTrack, pItem);
-	m_rows.insert(pTrack, iTrack);
 
 	return iTrack;
 }
@@ -640,7 +646,6 @@ int qtractorTrackList::removeTrack ( int iTrack )
 	qtractorTrack *pTrack = pItem->track;
 	m_items.removeAt(iTrack);
 	m_tracks.remove(pTrack);
-	m_rows.remove(pTrack);
 	delete pItem;
 
 	if (m_iCurrentTrack >= m_items.count())
@@ -753,7 +758,6 @@ void qtractorTrackList::clear (void)
 	qDeleteAll(m_items);
 	m_items.clear();
 	m_tracks.clear();
-	m_rows.clear();
 }
 
 
