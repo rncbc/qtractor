@@ -188,11 +188,11 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filenames to open...
-	files = QFileDialog::getOpenFileNames(this,
+	files = QFileDialog::getOpenFileNames(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, recentDir(), sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, recentDir(), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);

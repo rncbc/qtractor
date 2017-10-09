@@ -237,11 +237,11 @@ void qtractorMidiControlForm::importSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	files = QFileDialog::getOpenFileNames(this,
+	files = QFileDialog::getOpenFileNames(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, pOptions->sMidiControlDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, pOptions->sMidiControlDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -450,11 +450,11 @@ void qtractorMidiControlForm::exportSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sPath = QFileDialog::getSaveFileName(this,
+	sPath = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, sPath, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(this, sTitle, sPath, sFilter);
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL, sTitle, sPath, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 	fileDialog.setFileMode(QFileDialog::AnyFile);

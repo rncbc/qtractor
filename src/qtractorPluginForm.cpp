@@ -562,11 +562,11 @@ void qtractorPluginForm::openPresetSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, pOptions->sPresetDir, sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, pOptions->sPresetDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -654,11 +654,11 @@ void qtractorPluginForm::savePresetSlot (void)
 				options |= QFileDialog::DontUseNativeDialog;
 		#if 1//QT_VERSION < 0x040400
 			// Ask for the filename to save...
-			sFilename = QFileDialog::getSaveFileName(this,
+			sFilename = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 				sTitle, sFilename, sFilter, NULL, options);
 		#else
 			// Construct save-file dialog...
-			QFileDialog fileDialog(this,
+			QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 				sTitle, sFilename, sFilter);
 			// Set proper open-file modes...
 			fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -1515,11 +1515,11 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, sFilename, QString(), NULL, options);
 #else
 	// Construct open-file dialog...
-	QFileDialog fileDialog(this, sTitle, sFilename);
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL, sTitle, sFilename);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFile);

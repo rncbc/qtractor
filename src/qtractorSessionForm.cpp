@@ -292,11 +292,11 @@ void qtractorSessionForm::browseSessionDir (void)
 	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
-	QString sSessionDir = QFileDialog::getExistingDirectory(this,                                  // Parent.
+	QString sSessionDir = QFileDialog::getExistingDirectory(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_ui.SessionDirComboBox->currentText(), options);
 #else
 	// Construct open-directory dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_ui.SessionDirComboBox->currentText());
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);

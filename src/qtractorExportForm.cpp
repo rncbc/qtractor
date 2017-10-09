@@ -407,10 +407,10 @@ void qtractorExportForm::browseExportPath (void)
 	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
-	sExportPath = QFileDialog::getSaveFileName(this,
+	sExportPath = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, sExportPath, sFilter, NULL, options);
 #else
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, sExportPath, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
