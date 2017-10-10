@@ -1041,7 +1041,12 @@ void qtractorSession::setCurrentTrack ( qtractorTrack *pTrack )
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorSession::setCurrentTrack(%p)", pTrack);
 #endif
+	qtractorTrack *pOldCurrentTrack = m_pCurrentTrack;
+
 	m_pCurrentTrack = pTrack;
+
+	if(m_pCurrentTrack != pOldCurrentTrack)
+		deactivatePluginsForPerformance();
 }
 
 qtractorTrack *qtractorSession::currentTrack (void) const
@@ -1196,6 +1201,9 @@ void qtractorSession::setPlaying ( bool bPlaying )
 	// Do it.
 	m_pAudioEngine->setPlaying(bPlaying);
 	m_pMidiEngine->setPlaying(bPlaying);
+
+	// we need to inform performance deactivator
+	deactivatePluginsForPerformance();
 }
 
 bool qtractorSession::isPlaying() const
@@ -1749,6 +1757,31 @@ void qtractorSession::trackSolo ( qtractorTrack *pTrack, bool bSolo )
 	}
 }
 
+void qtractorSession::deactivatePluginsForPerformance()
+{
+	// For session load deactivation of plugins would be too early
+	if(!isBusy()) {
+		for (qtractorTrack *pTrack = m_tracks.first();
+				pTrack; pTrack = pTrack->next()) {
+			// Pluginlist knows what to do...
+			pTrack->pluginList()->deactivateForPerformance(!canTrackMakeSound(pTrack));
+		}
+	}
+}
+
+bool qtractorSession::canTrackMakeSound(qtractorTrack *pTrack)
+{
+	bool bProduceSound = false;
+	if(isPlaying())	{
+		// TBD: We know when clips start/end. So if 'just' need a
+		// clever song pos synced call of deactivatePluginsForPerformance
+		bProduceSound = isTrackMonitor(pTrack) || !pTrack->isMute();
+	}
+	else {
+		bProduceSound = isTrackMonitor(pTrack);
+	}
+	return bProduceSound;
+}
 
 // Track recording specifics.
 unsigned short qtractorSession::audioRecord (void) const

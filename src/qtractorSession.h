@@ -318,6 +318,9 @@ public:
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 	void trackSolo(qtractorTrack *pTrack, bool bSolo);
 
+	// Special performance optimized plugin activation
+	void deactivatePluginsForPerformance();
+
 	// Audio peak factory accessor.
 	qtractorAudioPeakFactory *audioPeakFactory() const;
 
@@ -403,6 +406,9 @@ public:
 	static qtractorSession *getInstance();
 
 private:
+
+	// check if plugin is not to deactivate for performance
+	bool canTrackMakeSound(qtractorTrack *pTrack); // for now private - maybe helpful for others?
 
 	Properties     m_props;             // Session properties.
 

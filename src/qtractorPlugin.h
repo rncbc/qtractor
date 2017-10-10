@@ -364,7 +364,7 @@ public:
 	// Activation methods.
 	void setActivated(bool bActivated);
 	void setActivatedEx(bool bActivated);
-	bool isActivated() const;
+	bool isActivated(bool bSaveSession = false) const;
 
 	// Activate subject accessors.
 	qtractorSubject *activateSubject()
@@ -645,6 +645,8 @@ public:
 	// Parameter update executive.
 	void updateParamValue(unsigned long iIndex, float fValue, bool bUpdate);
 
+	// Performance activation
+	void deactivateForPerformance(bool bDeactivated);
 protected:
 
 	// Instance number settler.
@@ -668,6 +670,12 @@ private:
 
 	// Activation flag.
 	bool m_bActivated;
+
+	// Performance deactivation flag
+	bool m_bDeactivatedForPerformance;
+
+	// Detect first activation
+	bool m_bInitActivationDone;
 
 	// Activate subject value.
 	qtractorSubject m_activateSubject;
@@ -914,6 +922,10 @@ public:
 	bool isAudioInsertActivated() const
 		{ return (m_iAudioInsertActivated > 0); }
 
+	// Special performance deactivate methods
+	void deactivateForPerformance(bool bDeactivated);
+	bool isDeactivatedForPerformance();
+
 protected:
 
 	// Check/sanitize plugin file-path.
@@ -961,6 +973,9 @@ private:
 
 	// Plugin registry (chain unique ids.)
 	QHash<unsigned long, unsigned int> m_uniqueIDs;
+
+	// Performance deactivation
+	bool m_bDeactivateForPerformance;
 };
 
 
