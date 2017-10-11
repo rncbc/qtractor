@@ -232,16 +232,19 @@ void qtractorMidiControlForm::importSlot (void)
 	const QString& sFilter
 		= tr("Controller files (*.%1)").arg(sExt);
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	files = QFileDialog::getOpenFileNames(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	files = QFileDialog::getOpenFileNames(pParentWidget,
 		sTitle, pOptions->sMidiControlDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, pOptions->sMidiControlDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -445,16 +448,19 @@ void qtractorMidiControlForm::exportSlot (void)
 	}
 	else sPath = pOptions->midiControlFiles.last();
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sPath = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	sPath = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, sPath, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL, sTitle, sPath, sFilter);
+	QFileDialog fileDialog(pParentWidget, sTitle, sPath, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 	fileDialog.setFileMode(QFileDialog::AnyFile);

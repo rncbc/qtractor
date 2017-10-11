@@ -1055,12 +1055,16 @@ void qtractorOptionsForm::chooseAudioMeterColor (void)
 	const QString& sTitle
 		= tr("Audio Meter Color") + " - " QTRACTOR_TITLE;
 
+	QWidget *pParentWidget = NULL;
 	QColorDialog::ColorDialogOptions options = 0;
-	if (m_pOptions && m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 
 	const QColor& color = QColorDialog::getColor(
-		QColor(m_ui.AudioMeterColorLineEdit->text()), this, sTitle, options);
+		QColor(m_ui.AudioMeterColorLineEdit->text()),
+		pParentWidget, sTitle, options);
 
 	if (color.isValid())
 		m_ui.AudioMeterColorLineEdit->setText(color.name());
@@ -1073,12 +1077,16 @@ void qtractorOptionsForm::chooseMidiMeterColor (void)
 	const QString& sTitle
 		= tr("MIDI Meter Color") + " - " QTRACTOR_TITLE;
 
+	QWidget *pParentWidget = NULL;
 	QColorDialog::ColorDialogOptions options = 0;
-	if (m_pOptions && m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 
 	const QColor& color = QColorDialog::getColor(
-		QColor(m_ui.MidiMeterColorLineEdit->text()), this, sTitle, options);
+		QColor(m_ui.MidiMeterColorLineEdit->text()),
+		pParentWidget, sTitle, options);
 
 	if (color.isValid())
 		m_ui.MidiMeterColorLineEdit->setText(color.name());
@@ -1165,16 +1173,19 @@ void qtractorOptionsForm::choosePluginPath (void)
 	const QString& sTitle
 		= tr("Plug-in Directory") + " - " QTRACTOR_TITLE;
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
-	if (m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the directory...
-	sPluginPath = QFileDialog::getExistingDirectory(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	sPluginPath = QFileDialog::getExistingDirectory(pParentWidget,
 		sTitle, m_ui.PluginPathComboBox->currentText(), options);
 #else
 	// Construct open-directory dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, m_ui.PluginPathComboBox->currentText());
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -1402,17 +1413,19 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 	const QString& sTitle
 		= tr("LV2 Presets Directory") + " - " QTRACTOR_TITLE;
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
-	if (m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1// QT_VERSION < 0x040400
 	// Ask for the directory...
-	sLv2PresetDir = QFileDialog::getExistingDirectory(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	sLv2PresetDir = QFileDialog::getExistingDirectory(pParentWidget,
 		sTitle, sLv2PresetDir, options);
 #else
 	// Construct open-directory dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
-		sTitle, sLv2PresetDir);
+	QFileDialog fileDialog(pParentWidget, sTitle, sLv2PresetDir);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::DirectoryOnly);
@@ -1441,13 +1454,16 @@ void qtractorOptionsForm::chooseMessagesFont (void)
 	const QString& sTitle
 		= tr("Messages Font") + " - " QTRACTOR_TITLE;
 
+	QWidget *pParentWidget = NULL;
 	QFontDialog::FontDialogOptions options = 0;
-	if (m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFontDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 
 	bool bOk = false;
 	const QFont font = QFontDialog::getFont(&bOk,
-		m_ui.MessagesFontTextLabel->font(), this, sTitle, options);
+		m_ui.MessagesFontTextLabel->font(), pParentWidget, sTitle, options);
 	if (bOk) {
 		m_ui.MessagesFontTextLabel->setFont(font);
 		m_ui.MessagesFontTextLabel->setText(
@@ -1468,16 +1484,19 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	const QString& sFilter
 		= tr("Log files (*.%1)").arg(sExt); 
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sFilename = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	sFilename = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter, NULL, options);
 #else
 	// Construct open-file dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);

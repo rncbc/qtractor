@@ -223,16 +223,19 @@ void qtractorInstrumentForm::importSlot (void)
 	const QString& sFilter
 		= tr("Instrument files (*.%1 *.sf2 *.midnam)").arg(sExt);
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	files = QFileDialog::getOpenFileNames(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	files = QFileDialog::getOpenFileNames(pParentWidget,
 		sTitle, pOptions->sInstrumentDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, pOptions->sInstrumentDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -383,9 +386,12 @@ void qtractorInstrumentForm::exportSlot (void)
 	const QString& sFilter
 		= tr("Instrument files (*.%1)").arg(sExt);
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sPath = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,

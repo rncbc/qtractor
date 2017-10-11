@@ -698,15 +698,18 @@ void qtractorClipForm::browseFilename (void)
 	const QString& sTitle
 		= tr("%1 Clip File").arg(sType) + " - " QTRACTOR_TITLE;
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs)
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
-	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, m_ui.FilenameComboBox->currentText(), sFilter, NULL, options);
 #else
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, m_ui.FilenameComboBox->currentText(), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);

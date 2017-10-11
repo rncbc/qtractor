@@ -1507,10 +1507,10 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 		const QFileDialog::Options options = QFileDialog::DontUseNativeDialog;
 		if (pvfs->command == kVstFileLoad) {
 			sFilename = QFileDialog::getOpenFileName(
-				NULL, sTitle, sDirectory, sFilter, NULL, options);
+				pParentWidget, sTitle, sDirectory, sFilter, NULL, options);
 		} else {
 			sFilename = QFileDialog::getSaveFileName(
-				options & QFileDialog::DontUseNativeDialog ? pParentWidget, sTitle, sDirectory, sFilter, NULL, options);
+				pParentWidget, sTitle, sDirectory, sFilter, NULL, options);
 		}
 		if (!sFilename.isEmpty()) {
 			if (pvfs->returnPath == NULL) {
@@ -1530,7 +1530,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 			= QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog;
 		const QString& sDirectory
 			= QFileDialog::getExistingDirectory(
-				options & QFileDialog::DontUseNativeDialog ? pParentWidget, sTitle, pvfs->initialPath, options);
+				pParentWidget, sTitle, pvfs->initialPath, options);
 		if (!sDirectory.isEmpty()) {
 			if (pvfs->returnPath == NULL) {
 				pvfs->returnPath = new char [sDirectory.length() + 1];

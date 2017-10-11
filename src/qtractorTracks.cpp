@@ -1184,17 +1184,20 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	const QString& sFilter
 		= tr("Audio files (*.%1)").arg(sExt); 
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs)
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	QString sFilename = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL, sTitle,
+	QString sFilename = QFileDialog::getSaveFileName(pParentWidget, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL, sTitle,
+	QFileDialog fileDialog(pParentWidget, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -1451,17 +1454,20 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	const QString& sFilter
 		= tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt); 
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs)
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	QString sFilename = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL, sTitle,
+	QString sFilename = QFileDialog::getSaveFileName(pParentWidget, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL, sTitle,
+	QFileDialog fileDialog(pParentWidget, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);

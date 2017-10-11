@@ -557,16 +557,19 @@ void qtractorPluginForm::openPresetSlot (void)
 	const QString& sFilter
 		= tr("Preset files (*.%1)").arg(filters.join(" *."));
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, pOptions->sPresetDir, sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, pOptions->sPresetDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -649,16 +652,19 @@ void qtractorPluginForm::savePresetSlot (void)
 				= tr("Save Preset") + " - " QTRACTOR_TITLE;
 			const QString& sFilter
 				= tr("Preset files (*.%1)").arg(filters.join(" *."));
+			QWidget *pParentWidget = NULL;
 			QFileDialog::Options options = 0;
-			if (pOptions->bDontUseNativeDialogs)
+			if (pOptions->bDontUseNativeDialogs) {
 				options |= QFileDialog::DontUseNativeDialog;
+				pParentWidget = this;
+			}
 		#if 1//QT_VERSION < 0x040400
 			// Ask for the filename to save...
-			sFilename = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+			sFilename = QFileDialog::getSaveFileName(pParentWidget,
 				sTitle, sFilename, sFilter, NULL, options);
 		#else
 			// Construct save-file dialog...
-			QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+			QFileDialog fileDialog(pParentWidget,
 				sTitle, sFilename, sFilter);
 			// Set proper open-file modes...
 			fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -1511,15 +1517,18 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 	const QString& sTitle
 		= tr("Open File") + " - " QTRACTOR_TITLE;
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
-	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, sFilename, QString(), NULL, options);
 #else
 	// Construct open-file dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL, sTitle, sFilename);
+	QFileDialog fileDialog(pParentWidget, sTitle, sFilename);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFile);
