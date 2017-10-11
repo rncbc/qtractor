@@ -1043,11 +1043,11 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 			options |= QFileDialog::DontUseNativeDialog;
 	#if 1//QT_VERSION < 0x040400
 		// Ask for the filenames to open...
-		sFilename = QFileDialog::getSaveFileName(this,
+		sFilename = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct open-files dialog...
-		QFileDialog fileDialog(this,
+		QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 			sTitle, sFilename, sFilter);
 		// Set proper open-file modes...
 		fileDialog.setAcceptMode(QFileDialog::AcceptSave);

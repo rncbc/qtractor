@@ -703,10 +703,10 @@ void qtractorClipForm::browseFilename (void)
 	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_ui.FilenameComboBox->currentText(), sFilter, NULL, options);
 #else
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_ui.FilenameComboBox->currentText(), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
