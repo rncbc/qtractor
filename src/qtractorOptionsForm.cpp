@@ -1170,11 +1170,11 @@ void qtractorOptionsForm::choosePluginPath (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the directory...
-	sPluginPath = QFileDialog::getExistingDirectory(this,
+	sPluginPath = QFileDialog::getExistingDirectory(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_ui.PluginPathComboBox->currentText(), options);
 #else
 	// Construct open-directory dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_ui.PluginPathComboBox->currentText());
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -1407,11 +1407,11 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1// QT_VERSION < 0x040400
 	// Ask for the directory...
-	sLv2PresetDir = QFileDialog::getExistingDirectory(this,
+	sLv2PresetDir = QFileDialog::getExistingDirectory(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, sLv2PresetDir, options);
 #else
 	// Construct open-directory dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, sLv2PresetDir);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -1473,11 +1473,11 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sFilename = QFileDialog::getSaveFileName(this,
+	sFilename = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter, NULL, options);
 #else
 	// Construct open-file dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -1513,11 +1513,11 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -1668,11 +1668,11 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sAudioFile = QFileDialog::getOpenFileName(this,
+	sAudioFile = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, sFilename, qtractorAudioFileFactory::filters(), NULL, options);
 #else
 	// Construct open-file dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, sFilename, qtractorAudioFileFactory::filters());
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);

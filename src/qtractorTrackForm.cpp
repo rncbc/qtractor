@@ -1168,11 +1168,11 @@ void qtractorTrackForm::trackIconClicked (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, sFilename, sFilter, NULL, options);
 #else
 	// Construct open-file dialog...
-	QFileDialog fileDialog(this, sTitle, sFilename, sFilter);
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL, sTitle, sFilename, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::AnyFile);

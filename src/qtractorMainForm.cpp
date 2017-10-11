@@ -1950,11 +1950,11 @@ bool qtractorMainForm::openSession (void)
 	if (m_pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_pOptions->sSessionDir, sFilter, NULL, options);
 #else
 	// Construct open-file session/template dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, m_pOptions->sSessionDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -2043,11 +2043,11 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		// Try to rename as if a backup is about...
 		sFilename = sessionBackupPath(sFilename);
 	#if 1//QT_VERSION < 0x040400
-		sFilename = QFileDialog::getSaveFileName(this,
+		sFilename = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct save-file session/template dialog...
-		QFileDialog fileDialog(this,
+		QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 			sTitle, sFilename, sFilter);
 		// Set proper save-file modes...
 		fileDialog.setAcceptMode(QFileDialog::AcceptSave);

@@ -224,11 +224,11 @@ void qtractorMidiSysexForm::importSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	files = QFileDialog::getOpenFileNames(this,
+	files = QFileDialog::getOpenFileNames(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, pOptions->sMidiSysexDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -302,11 +302,11 @@ void qtractorMidiSysexForm::exportSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1// QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sPath = QFileDialog::getSaveFileName(this,
+	sPath = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, pOptions->sMidiSysexDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -443,11 +443,11 @@ void qtractorMidiSysexForm::openSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 		sTitle, pOptions->sMidiSysexDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -515,11 +515,11 @@ void qtractorMidiSysexForm::saveSlot (void)
 			options |= QFileDialog::DontUseNativeDialog;
 	#if 1//QT_VERSION < 0x040400
 		// Ask for the filename to save...
-		sFilename = QFileDialog::getSaveFileName(this,
+		sFilename = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
 			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct save-file dialog...
-		QFileDialog fileDialog(this, sTitle, sFilename, sFilter);
+		QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL, sTitle, sFilename, sFilter);
 		// Set proper open-file modes...
 		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 		fileDialog.setFileMode(QFileDialog::AnyFile);
