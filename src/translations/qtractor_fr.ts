@@ -690,22 +690,22 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>rien</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="206"/>
+        <location filename="../qtractorTrackList.cpp" line="205"/>
         <source>Automation</source>
         <translation>Automation</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="407"/>
+        <location filename="../qtractorTrackList.cpp" line="406"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="435"/>
+        <location filename="../qtractorTrackList.cpp" line="437"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="501"/>
+        <location filename="../qtractorTrackList.cpp" line="506"/>
         <source>Unknown</source>
         <translation>Inconnu</translation>
     </message>
@@ -842,22 +842,22 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
 <context>
     <name>qtractorAudioMixerMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="616"/>
+        <location filename="../qtractorAudioMeter.cpp" line="615"/>
         <source>Gain (dB)</source>
         <translation type="unfinished">Gain (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="617"/>
+        <location filename="../qtractorAudioMeter.cpp" line="616"/>
         <source> dB</source>
         <translation type="unfinished"> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="687"/>
+        <location filename="../qtractorAudioMeter.cpp" line="686"/>
         <source>Pan: %1</source>
         <translation type="unfinished">Pan: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="696"/>
+        <location filename="../qtractorAudioMeter.cpp" line="695"/>
         <source>Gain: %1 dB</source>
         <translation type="unfinished">Gain: %1 dB</translation>
     </message>
@@ -8657,22 +8657,22 @@ Voulez-vous sauvegarder les changements ?</translation>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="472"/>
+        <location filename="../qtractorMidiMeter.cpp" line="469"/>
         <source>Volume (%)</source>
         <translation type="unfinished">Volume (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="473"/>
+        <location filename="../qtractorMidiMeter.cpp" line="470"/>
         <source> %</source>
         <translation type="unfinished"> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="538"/>
+        <location filename="../qtractorMidiMeter.cpp" line="535"/>
         <source>Pan: %1</source>
         <translation type="unfinished">Pan: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="548"/>
+        <location filename="../qtractorMidiMeter.cpp" line="545"/>
         <source>Volume: %1%</source>
         <translation type="unfinished">Volume: %1%</translation>
     </message>
@@ -9380,12 +9380,12 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerMeter</name>
     <message>
-        <location filename="../qtractorMeter.cpp" line="313"/>
+        <location filename="../qtractorMeter.cpp" line="312"/>
         <source>Pan</source>
         <translation type="unfinished">Pan</translation>
     </message>
     <message>
-        <location filename="../qtractorMeter.cpp" line="325"/>
+        <location filename="../qtractorMeter.cpp" line="324"/>
         <source>Gain</source>
         <translation type="unfinished">Gain</translation>
     </message>

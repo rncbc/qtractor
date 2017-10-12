@@ -44,8 +44,8 @@
 // qtractorMeterScale -- Meter bridge scale widget.
 
 // Constructor.
-qtractorMeterScale::qtractorMeterScale ( qtractorMeter *pMeter,
-	QWidget *pParent ) : QFrame(pParent)
+qtractorMeterScale::qtractorMeterScale (
+	qtractorMeter *pMeter ) : QFrame(pMeter)
 {
 	m_pMeter = pMeter;
 	m_iLastY = 0;
@@ -113,8 +113,7 @@ unsigned long qtractorMeterValue::g_iStamp = 0;
 
 // Constructor.
 qtractorMeterValue::qtractorMeterValue (
-	qtractorMeter *pMeter, QWidget *pParent )
-	: QWidget(pParent), m_pMeter(pMeter)
+	qtractorMeter *pMeter )	: QWidget(pMeter), m_pMeter(pMeter)
 {
 	g_values.append(this);
 }

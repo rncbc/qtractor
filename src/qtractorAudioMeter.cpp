@@ -177,8 +177,7 @@ static inline float IEC_dB ( float fScale )
 
 // Constructor.
 qtractorAudioMeterScale::qtractorAudioMeterScale (
-	qtractorAudioMeter *pAudioMeter, QWidget *pParent )
-	: qtractorMeterScale(pAudioMeter, pParent)
+	qtractorAudioMeter *pAudioMeter ) : qtractorMeterScale(pAudioMeter)
 {
 	// Nothing much to do...
 }
@@ -209,8 +208,8 @@ void qtractorAudioMeterScale::paintScale ( QPainter *p )
 
 // Constructor.
 qtractorAudioMeterValue::qtractorAudioMeterValue (
-	qtractorAudioMeter *pAudioMeter, unsigned short iChannel, QWidget *pParent )
-	: qtractorMeterValue(pAudioMeter, pParent), m_iChannel(iChannel)
+	qtractorAudioMeter *pAudioMeter, unsigned short iChannel )
+	: qtractorMeterValue(pAudioMeter), m_iChannel(iChannel)
 {
 	// Avoid intensively annoying repaints...
 	QWidget::setAttribute(Qt::WA_StaticContents);

@@ -41,8 +41,7 @@ class qtractorAudioMeterScale : public qtractorMeterScale
 public:
 
 	// Constructor.
-	qtractorAudioMeterScale(qtractorAudioMeter *pAudioMeter,
-		QWidget *pParent = 0);
+	qtractorAudioMeterScale(qtractorAudioMeter *pAudioMeter);
 
 protected:
 
@@ -60,7 +59,7 @@ public:
 
 	// Constructor.
 	qtractorAudioMeterValue(qtractorAudioMeter *pAudioMeter,
-		unsigned short iChannel, QWidget *pParent = 0);
+		unsigned short iChannel);
 
 	// Value refreshment.
 	void refresh(unsigned long iStamp);
