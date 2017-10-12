@@ -57,7 +57,7 @@ public:
 
 	// Constructor.
 	qtractorTrackItemWidget(
-		qtractorTrackList *pTrackList, qtractorTrack *pTrack);
+		qtractorTrack *pTrack, QWidget *pParent = 0);
 
 	// Local child widgets accessors.
 	qtractorTrackButton *recordButton() const

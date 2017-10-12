@@ -55,7 +55,7 @@ class qtractorMeterScale : public QFrame
 public:
 
 	// Constructor.
-	qtractorMeterScale(qtractorMeter *pMeter, QWidget *pParent = 0);
+	qtractorMeterScale(qtractorMeter *pMeter);
 
 	// Meter accessor.
 	qtractorMeter *meter() const;
@@ -89,7 +89,7 @@ class qtractorMeterValue : public QWidget
 public:
 
 	// Constructor.
-	qtractorMeterValue(qtractorMeter *pMeter, QWidget *pParent = 0);
+	qtractorMeterValue(qtractorMeter *pMeter);
 
 	// Default destructor.
 	virtual ~qtractorMeterValue();

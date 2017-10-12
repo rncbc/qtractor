@@ -43,8 +43,7 @@ class qtractorMidiMeterScale : public qtractorMeterScale
 public:
 
 	// Constructor.
-	qtractorMidiMeterScale(qtractorMidiMeter *pMidiMeter,
-		QWidget *pParent = 0);
+	qtractorMidiMeterScale(qtractorMidiMeter *pMidiMeter);
 
 protected:
 
@@ -61,8 +60,7 @@ class qtractorMidiMeterValue : public qtractorMeterValue
 public:
 
 	// Constructor.
-	qtractorMidiMeterValue(qtractorMidiMeter *pMidiMeter,
-		QWidget *pParent = 0);
+	qtractorMidiMeterValue(qtractorMidiMeter *pMidiMeter);
 
 	// Value refreshment.
 	void refresh(unsigned long iStamp);
@@ -93,8 +91,7 @@ class qtractorMidiMeterLed : public qtractorMeterValue
 public:
 
 	// Constructor.
-	qtractorMidiMeterLed(qtractorMidiMeter *pMidiMeter,
-		QWidget *pParent = 0);
+	qtractorMidiMeterLed(qtractorMidiMeter *pMidiMeter);
 
 	// Default destructor.
 	~qtractorMidiMeterLed();

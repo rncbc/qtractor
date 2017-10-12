@@ -70,8 +70,7 @@ QColor qtractorMidiMeter::g_currentColors[ColorCount] = {
 
 // Constructor.
 qtractorMidiMeterScale::qtractorMidiMeterScale (
-	qtractorMidiMeter *pMidiMeter, QWidget *pParent )
-	: qtractorMeterScale(pMidiMeter, pParent)
+	qtractorMidiMeter *pMidiMeter ) : qtractorMeterScale(pMidiMeter)
 {
 	// Nothing much to do...
 }
@@ -103,8 +102,7 @@ void qtractorMidiMeterScale::paintScale ( QPainter *pPainter )
 
 // Constructor.
 qtractorMidiMeterValue::qtractorMidiMeterValue (
-	qtractorMidiMeter *pMidiMeter, QWidget *pParent )
-	: qtractorMeterValue(pMidiMeter, pParent)
+	qtractorMidiMeter *pMidiMeter )	: qtractorMeterValue(pMidiMeter)
 {
 	// Avoid intensively annoying repaints...
 	QWidget::setAttribute(Qt::WA_StaticContents);
@@ -219,8 +217,7 @@ void qtractorMidiMeterValue::resizeEvent ( QResizeEvent *pResizeEvent )
 
 // Constructor.
 qtractorMidiMeterLed::qtractorMidiMeterLed (
-	qtractorMidiMeter *pMidiMeter, QWidget *pParent )
-	: qtractorMeterValue(pMidiMeter, pParent)
+	qtractorMidiMeter *pMidiMeter )	: qtractorMeterValue(pMidiMeter)
 {
 	if (++g_iLedRefCount == 1) {
 		g_pLedPixmap[LedOff] = new QPixmap(":/images/trackMidiOff.png");

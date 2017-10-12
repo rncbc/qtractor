@@ -428,22 +428,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished">нет</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="206"/>
+        <location filename="../qtractorTrackList.cpp" line="205"/>
         <source>Automation</source>
         <translation type="unfinished">Автоматизация</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="407"/>
+        <location filename="../qtractorTrackList.cpp" line="406"/>
         <source>Audio</source>
         <translation>Звук</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="435"/>
+        <location filename="../qtractorTrackList.cpp" line="437"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="501"/>
+        <location filename="../qtractorTrackList.cpp" line="506"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
@@ -838,22 +838,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 <context>
     <name>qtractorAudioMixerMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="616"/>
+        <location filename="../qtractorAudioMeter.cpp" line="615"/>
         <source>Gain (dB)</source>
         <translation type="unfinished">Усиление (Дб)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="617"/>
+        <location filename="../qtractorAudioMeter.cpp" line="616"/>
         <source> dB</source>
         <translation type="unfinished">Дб</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="687"/>
+        <location filename="../qtractorAudioMeter.cpp" line="686"/>
         <source>Pan: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="696"/>
+        <location filename="../qtractorAudioMeter.cpp" line="695"/>
         <source>Gain: %1 dB</source>
         <translation type="unfinished">Усиление: %1 Дб</translation>
     </message>
@@ -8592,22 +8592,22 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="472"/>
+        <location filename="../qtractorMidiMeter.cpp" line="469"/>
         <source>Volume (%)</source>
         <translation type="unfinished">Громкость (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="473"/>
+        <location filename="../qtractorMidiMeter.cpp" line="470"/>
         <source> %</source>
         <translation type="unfinished"> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="538"/>
+        <location filename="../qtractorMidiMeter.cpp" line="535"/>
         <source>Pan: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="548"/>
+        <location filename="../qtractorMidiMeter.cpp" line="545"/>
         <source>Volume: %1%</source>
         <translation type="unfinished">Громкость: %1%</translation>
     </message>
@@ -9294,12 +9294,12 @@ Edit head/tail (blue) markers define the shift range.</source>
 <context>
     <name>qtractorMixerMeter</name>
     <message>
-        <location filename="../qtractorMeter.cpp" line="313"/>
+        <location filename="../qtractorMeter.cpp" line="312"/>
         <source>Pan</source>
         <translation type="unfinished">Панорама</translation>
     </message>
     <message>
-        <location filename="../qtractorMeter.cpp" line="325"/>
+        <location filename="../qtractorMeter.cpp" line="324"/>
         <source>Gain</source>
         <translation type="unfinished">Усиление</translation>
     </message>

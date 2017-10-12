@@ -19,7 +19,7 @@
         <translation>Arquivo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="435"/>
+        <location filename="../qtractorTrackList.cpp" line="437"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
@@ -70,7 +70,7 @@ Fim:	%3	Tamanho:	%4 </translation>
         <translation>gravação da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="407"/>
+        <location filename="../qtractorTrackList.cpp" line="406"/>
         <source>Audio</source>
         <translation>Áudio</translation>
     </message>
@@ -360,7 +360,7 @@ MIDI:	</translation>
         <translation>parametros do plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="206"/>
+        <location filename="../qtractorTrackList.cpp" line="205"/>
         <source>Automation</source>
         <translation>Automação</translation>
     </message>
@@ -660,7 +660,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Fornecedor: </translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="501"/>
+        <location filename="../qtractorTrackList.cpp" line="506"/>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
     </message>
@@ -843,22 +843,22 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
 <context>
     <name>qtractorAudioMixerMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="616"/>
+        <location filename="../qtractorAudioMeter.cpp" line="615"/>
         <source>Gain (dB)</source>
         <translation type="unfinished">Volume (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="617"/>
+        <location filename="../qtractorAudioMeter.cpp" line="616"/>
         <source> dB</source>
         <translation type="unfinished"> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="687"/>
+        <location filename="../qtractorAudioMeter.cpp" line="686"/>
         <source>Pan: %1</source>
         <translation type="unfinished">Panorâmico: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="696"/>
+        <location filename="../qtractorAudioMeter.cpp" line="695"/>
         <source>Gain: %1 dB</source>
         <translation type="unfinished">Volume: %1 dB</translation>
     </message>
@@ -8657,22 +8657,22 @@ Deseja salvar essas alterações?</translation>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="472"/>
+        <location filename="../qtractorMidiMeter.cpp" line="469"/>
         <source>Volume (%)</source>
         <translation type="unfinished">Volume (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="473"/>
+        <location filename="../qtractorMidiMeter.cpp" line="470"/>
         <source> %</source>
         <translation type="unfinished"> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="538"/>
+        <location filename="../qtractorMidiMeter.cpp" line="535"/>
         <source>Pan: %1</source>
         <translation type="unfinished">Panorâmico: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="548"/>
+        <location filename="../qtractorMidiMeter.cpp" line="545"/>
         <source>Volume: %1%</source>
         <translation type="unfinished">Volume: %1%</translation>
     </message>
@@ -9380,12 +9380,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixerMeter</name>
     <message>
-        <location filename="../qtractorMeter.cpp" line="313"/>
+        <location filename="../qtractorMeter.cpp" line="312"/>
         <source>Pan</source>
         <translation type="unfinished">Panorâmico</translation>
     </message>
     <message>
-        <location filename="../qtractorMeter.cpp" line="325"/>
+        <location filename="../qtractorMeter.cpp" line="324"/>
         <source>Gain</source>
         <translation type="unfinished">Ganho</translation>
     </message>
