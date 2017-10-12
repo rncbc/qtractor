@@ -119,6 +119,8 @@ qtractorSession::qtractorSession (void)
 
 	m_bAutoTimeStretch  = false;
 
+	m_bDeactivatePluginsForPerformance = false;
+
 	m_iLoopRecordingMode = 0;
 
 	clear();
@@ -1757,31 +1759,53 @@ void qtractorSession::trackSolo ( qtractorTrack *pTrack, bool bSolo )
 	}
 }
 
+// Auto plugin deactivation specifics
 void qtractorSession::deactivatePluginsForPerformance()
 {
-	// For session load deactivation of plugins would be too early
-	if(!isBusy()) {
+	// Enabled && not if busy (e.g loading session)
+	if(m_bDeactivatePluginsForPerformance && !isBusy()) {
 		for (qtractorTrack *pTrack = m_tracks.first();
 				pTrack; pTrack = pTrack->next()) {
-			// Pluginlist knows what to do...
 			pTrack->pluginList()->deactivateForPerformance(!canTrackMakeSound(pTrack));
 		}
 	}
 }
 
+void qtractorSession::undoDeactivatePluginsForPerformance()
+{
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		pTrack->pluginList()->deactivateForPerformance(false);
+	}
+}
+
+void qtractorSession::setAutoDeactivatePlugins( bool bOn )
+{
+	m_bDeactivatePluginsForPerformance = bOn;
+
+	if(bOn)
+		deactivatePluginsForPerformance();
+	else
+		undoDeactivatePluginsForPerformance();
+}
+
 bool qtractorSession::canTrackMakeSound(qtractorTrack *pTrack)
 {
-	bool bProduceSound = false;
-	if(isPlaying())	{
-		// TBD: We know when clips start/end. So if 'just' need a
-		// clever song pos synced call of deactivatePluginsForPerformance
-		bProduceSound = isTrackMonitor(pTrack) || !pTrack->isMute();
-	}
-	else {
-		bProduceSound = isTrackMonitor(pTrack);
+	bool bProduceSound = true;
+	// No deactivation for freewheeling
+	if(!m_pAudioEngine->isFreewheel()) {
+		if(isPlaying())	{
+			// TBD: We know when clips start/end. So if 'just' need a
+			// clever song pos synced call of deactivatePluginsForPerformance
+			bProduceSound = isTrackMonitor(pTrack) || !pTrack->isMute();
+		}
+		else {
+			bProduceSound = isTrackMonitor(pTrack);
+		}
 	}
 	return bProduceSound;
 }
+
 
 // Track recording specifics.
 unsigned short qtractorSession::audioRecord (void) const

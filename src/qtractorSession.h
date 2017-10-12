@@ -320,6 +320,7 @@ public:
 
 	// Special performance optimized plugin activation
 	void deactivatePluginsForPerformance();
+	void setAutoDeactivatePlugins(bool bOn);
 
 	// Audio peak factory accessor.
 	qtractorAudioPeakFactory *audioPeakFactory() const;
@@ -409,6 +410,8 @@ private:
 
 	// check if plugin is not to deactivate for performance
 	bool canTrackMakeSound(qtractorTrack *pTrack); // for now private - maybe helpful for others?
+	// Restore activation state
+	void undoDeactivatePluginsForPerformance();
 
 	Properties     m_props;             // Session properties.
 
@@ -476,6 +479,9 @@ private:
 
 	// Auto time-stretching global flag (when tempo changes)
 	bool m_bAutoTimeStretch;
+
+	// Auto disable plugins flag
+	bool m_bDeactivatePluginsForPerformance;
 
 	// MIDI plugin manager list.
 	qtractorList<qtractorMidiManager> m_midiManagers;
