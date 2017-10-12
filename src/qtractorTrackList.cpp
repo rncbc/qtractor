@@ -172,8 +172,7 @@ QVariant qtractorTrackListHeaderModel::headerData (
 
 // Constructor.
 qtractorTrackItemWidget::qtractorTrackItemWidget (
-	qtractorTrackList *pTrackList, qtractorTrack *pTrack )
-	: QWidget(pTrackList->viewport())
+	qtractorTrack *pTrack, QWidget *pParent ) : QWidget(pParent)
 {
 	QWidget::setBackgroundRole(QPalette::Window);
 
@@ -381,8 +380,8 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 		return;
 
 	if (widget == NULL) {
-		widget = new qtractorTrackItemWidget(pTrackList, track);
-	//	widget->lower();
+		widget = new qtractorTrackItemWidget(track, pTrackList->viewport());
+		widget->lower();
 	}
 
 	if (meter) {
@@ -422,8 +421,11 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 						const int iColWidth
 							= pTrackList->header()->sectionSize(Channel);
 						const int iMinWidth = iColWidth / iAudioChannels - 1;
-						if (iMinWidth > 3)
-							meter = new qtractorAudioMeter(pAudioMonitor, pTrackList);
+						if (iMinWidth > 3) {
+							meter = new qtractorAudioMeter(
+								pAudioMonitor, pTrackList->viewport());
+							meter->lower();
+						}
 					}
 				}
 			}
@@ -490,8 +492,11 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			if (pOptions->bTrackListMeters && meter == NULL) {
 				qtractorMidiMonitor *pMidiMonitor
 					= static_cast<qtractorMidiMonitor *> (track->monitor());
-				if (pMidiMonitor)
-					meter = new qtractorMidiMeter(pMidiMonitor, pTrackList);
+				if (pMidiMonitor) {
+					meter = new qtractorMidiMeter(
+						pMidiMonitor, pTrackList->viewport());
+					meter->lower();
+				}
 			}
 			break;
 		}
@@ -1144,7 +1149,9 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					}
 					else
 					if (iCol == Channel && pItem->meter) {
-						const int dy1 = ((pItem->track)->trackType() == qtractorTrack::Midi ? 20 : 4);
+						const int dy1
+							= ((pItem->track)->trackType()
+								== qtractorTrack::Midi ? 20 : 4);
 						(pItem->meter)->setGeometry(rect.adjusted(+4, dy1, -2, -2));
 						(pItem->meter)->show();
 					}
@@ -1156,7 +1163,12 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 				x += dx;
 			}
 		}
-		else if (pItem->widget) (pItem->widget)->hide();
+		else {
+			 if (pItem->widget)
+				(pItem->widget)->hide();
+			 if (pItem->meter)
+				(pItem->meter)->hide();
+		}
 		++iTrack;
 	}
 
