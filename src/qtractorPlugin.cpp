@@ -241,7 +241,8 @@ QString qtractorPlugin::g_sDefPreset = QObject::tr("(default)");
 qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
 	: m_pList(pList), m_pType(pType), m_iUniqueID(0), m_iInstances(0),
-		m_bActivated(false), m_activateObserver(this),
+		m_bActivated(false), m_bDeactivatedForPerformance(false), m_bInitActivationDone(false),
+		m_activateObserver(this),
 		m_iActivateSubjectIndex(0), m_pForm(NULL), m_iEditorType(-1),
 		m_iDirectAccessParamIndex(-1)
 {
@@ -296,36 +297,97 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 
 
 // Activation methods.
+
+// immediate
 void qtractorPlugin::setActivated ( bool bActivated )
 {
+	// auto deactivation for performance requires a certain init detection
+	// to ensure a plugin created in a performance deactivated area will be
+	// switched on when leaving that area
+	if(!m_bInitActivationDone)
+	{
+		// for a new plugin there is no notification so take care for our own
+		m_bDeactivatedForPerformance = m_pList->isDeactivatedForPerformance();
+
+		// A (hopefully) valid assumption:
+		// During creation setActivated can be called sereral times.
+		// If a new plugin shall be in activated state after creation, the last
+		// activation MUST be true - otherwise it will not be on after creation
+
+		// ensure plugins deactivated for perfomance keep initial activation
+		if(m_bDeactivatedForPerformance)
+			// unconditionally is good enough here..
+			m_bActivated = bActivated;
+
+		// if init-activatoion done or not performace optimized handling
+		// -> terminante init detection
+		if(m_bActivated || !m_bDeactivatedForPerformance)
+			m_bInitActivationDone = true;
+	}
+
 	updateActivated(bActivated);
 
 	m_activateObserver.setValue(bActivated ? 1.0f : 0.0f);
 }
 
+// delayed (GUI invocation)
 void qtractorPlugin::setActivatedEx ( bool bActivated )
 {
+	// init phase is definetely over here...
+	m_bInitActivationDone = true;
+
 	m_activateSubject.setValue(bActivated ? 1.0f : 0.0f);
 }
 
-bool qtractorPlugin::isActivated (void) const
+bool qtractorPlugin::isActivated ( bool bSaveSession ) const
 {
-	return m_bActivated;
+	if(!bSaveSession)
+		return m_bActivated && !m_bDeactivatedForPerformance;
+	// avoid save deacitvated which were auto-deactivated
+	else
+		return m_bActivated;
+}
+
+void qtractorPlugin::deactivateForPerformance ( bool bDeactivated )
+{
+	if(bDeactivated != m_bDeactivatedForPerformance) {
+		// deactivate
+		if(bDeactivated) {
+			// was activated?
+			if(m_bActivated) {
+				deactivate();
+				m_pList->updateActivated(false);
+			}
+		}
+		// reactivate?
+		else if(m_bActivated) {
+			activate();
+			m_pList->updateActivated(true);
+		}
+
+		m_bDeactivatedForPerformance = bDeactivated;
+
+		// init phase is over
+		m_bInitActivationDone = true;
+	}
 }
 
 
 // Activation stabilizers.
 void qtractorPlugin::updateActivated ( bool bActivated )
 {
-	if (bActivated && !m_bActivated) {
-		activate();
-		m_pList->updateActivated(true);
-	} else if (!bActivated && m_bActivated) {
-		deactivate();
-		m_pList->updateActivated(false);
+	// performance-activation overrides standard-activation - otherwise user
+	// could (de)activate plugin without getting feedback
+	if(!m_bDeactivatedForPerformance) {
+		if (bActivated && !m_bActivated) {
+			activate();
+			m_pList->updateActivated(true);
+		} else if (!bActivated && m_bActivated) {
+			deactivate();
+			m_pList->updateActivated(false);
+		}
+		m_bActivated = bActivated;
 	}
-
-	m_bActivated = bActivated;
 }
 
 
@@ -1358,7 +1420,7 @@ qtractorPluginList::qtractorPluginList (
 	: m_iChannels(iChannels), m_iFlags(iFlags),
 		m_iActivated(0), m_pMidiManager(NULL),
 		m_iMidiBank(-1), m_iMidiProg(-1),
-		m_pMidiProgramSubject(NULL)
+		m_pMidiProgramSubject(NULL), m_bDeactivateForPerformance(false)
 {
 	setAutoDelete(true);
 
@@ -2016,7 +2078,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 	//	pDocument->saveTextElement("values",
 	//		pPlugin->valueList().join(","), &ePlugin);
 		pDocument->saveTextElement("activated",
-			qtractorDocument::textFromBool(pPlugin->isActivated()), &ePlugin);
+			qtractorDocument::textFromBool(pPlugin->isActivated(true)), &ePlugin);
 		// Plugin configuration stuff (CLOB)...
 		QDomElement eConfigs = pDocument->document()->createElement("configs");
 		pPlugin->saveConfigs(pDocument->document(), &eConfigs);
@@ -2113,6 +2175,31 @@ bool qtractorPluginList::isUniqueID ( qtractorPluginType *pType ) const
 	return (m_uniqueIDs.value(pType->uniqueID(), 0) > 1);
 }
 
+void qtractorPluginList::deactivateForPerformance(bool bDeactivated)
+{
+	if(m_bDeactivateForPerformance != bDeactivated)
+	{
+		m_bDeactivateForPerformance = bDeactivated;
+
+		// pass to all plugins
+		for (qtractorPlugin *pPlugin = first();
+				pPlugin; pPlugin = pPlugin->next()) {
+			pPlugin->deactivateForPerformance(bDeactivated);
+		}
+
+		// inform all views
+		QListIterator<qtractorPluginListView *> iter(m_views);
+		while (iter.hasNext()) {
+			qtractorPluginListView *pListView = iter.next();
+			pListView->refresh();
+		}
+	}
+}
+
+bool qtractorPluginList::isDeactivatedForPerformance()
+{
+	return m_bDeactivateForPerformance;
+}
 
 // Check/sanitize plugin file-path;
 bool qtractorPluginList::checkPluginFile (

@@ -178,6 +178,7 @@ public slots:
 	void trackHeightDown();
 	void trackHeightReset();
 	void trackAutoMonitor(bool bOn);
+	void trackAutoDeactivatePlugins(bool bOn);
 	void trackImportAudio();
 	void trackImportMidi();
 	void trackExportAudio();

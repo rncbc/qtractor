@@ -1631,25 +1631,26 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setEnabled(bMidiInsertPlugin);
 	menu.addSeparator();
 
+	const bool bDeactivatedForPerformance = m_pPluginList->isDeactivatedForPerformance();
 	pAction = menu.addAction(
 		tr("Ac&tivate"), this, SLOT(activatePlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isActivated());
-	pAction->setEnabled(pPlugin != NULL);
+	pAction->setEnabled(pPlugin && !bDeactivatedForPerformance);
 
 	const bool bActivatedAll = m_pPluginList->isActivatedAll();
 	pAction = menu.addAction(
 		tr("Acti&vate All"), this, SLOT(activateAllPlugins()));
 	pAction->setCheckable(true);
 	pAction->setChecked(bActivatedAll);
-	pAction->setEnabled(bEnabled && !bActivatedAll);
+	pAction->setEnabled(bEnabled && !bActivatedAll && !bDeactivatedForPerformance);
 
 	const bool bDeactivatedAll = !m_pPluginList->isActivated();
 	pAction = menu.addAction(
 		tr("Deactivate Al&l"), this, SLOT(deactivateAllPlugins()));
 	pAction->setCheckable(true);
 	pAction->setChecked(bDeactivatedAll);
-	pAction->setEnabled(bEnabled && !bDeactivatedAll);
+	pAction->setEnabled(bEnabled && !bDeactivatedAll && !bDeactivatedForPerformance);
 
 	menu.addSeparator();
 
