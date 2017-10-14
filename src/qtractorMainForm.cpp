@@ -876,6 +876,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackAutoMonitorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackAutoMonitor(bool)));
+	QObject::connect(m_ui.trackAutoDeactivatePluginsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackAutoDeactivatePlugins(bool)));
 	QObject::connect(m_ui.trackImportAudioAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackImportAudio()));
@@ -1373,6 +1376,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
 	m_pSession->setLoopRecordingMode(m_pOptions->iLoopRecordingMode);
 
+	// Initial auto plugin deactivation
+	m_pSession->setAutoDeactivatePlugins(m_pOptions->bAutoDeactivatePlugins);
+
 	// Initial decorations toggle state.
 	m_ui.viewMenubarAction->setChecked(m_pOptions->bMenubar);
 	m_ui.viewStatusbarAction->setChecked(m_pOptions->bStatusbar);
@@ -1394,6 +1400,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.transportContinueAction->setChecked(m_pOptions->bContinuePastEnd);
 
 	m_ui.trackAutoMonitorAction->setChecked(m_pOptions->bAutoMonitor);
+	m_ui.trackAutoDeactivatePluginsAction->setChecked(m_pOptions->bAutoDeactivatePlugins);
 
 	// Initial decorations visibility state.
 	viewMenubar(m_pOptions->bMenubar);
@@ -1688,6 +1695,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bAutoBackward = m_ui.transportAutoBackwardAction->isChecked();
 			m_pOptions->bContinuePastEnd = m_ui.transportContinueAction->isChecked();
 			m_pOptions->bAutoMonitor = m_ui.trackAutoMonitorAction->isChecked();
+			m_pOptions->bAutoDeactivatePlugins = m_ui.trackAutoDeactivatePluginsAction->isChecked();
 			// Final zoom mode...
 			if (m_pTracks)
 				m_pOptions->iZoomMode = m_pTracks->zoomMode();
@@ -3732,6 +3740,17 @@ void qtractorMainForm::trackAutoMonitor ( bool bOn )
 }
 
 
+// Auto-deactivate plugins not producing sound.
+void qtractorMainForm::trackAutoDeactivatePlugins ( bool bOn )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackAutoDeactivatePlugins(%d)", int(bOn));
+#endif
+
+	m_pSession->setAutoDeactivatePlugins(bOn);
+}
+
+
 // Import some tracks from Audio file.
 void qtractorMainForm::trackImportAudio (void)
 {
@@ -3775,9 +3794,19 @@ void qtractorMainForm::trackExportAudio (void)
 	qDebug("qtractorMainForm::trackExportAudio()");
 #endif
 
+	// Disable auto-deactivation during export. Disabling here has a nice side
+	// effect: While the user makes the selections in the export dialog, the
+	// reactivated plugins have time to finish sounds which were active when
+	// plugins were deactivated and those remnants don't make it into exported
+	// file.
+	bool bAutoDeactivatePlugins = m_pSession->getAutoDeactivatePlugins();
+	m_pSession->setAutoDeactivatePlugins(false);
+
 	qtractorExportForm exportForm(this);
 	exportForm.setExportType(qtractorTrack::Audio);
 	exportForm.exec();
+
+	m_pSession->setAutoDeactivatePlugins(bAutoDeactivatePlugins);
 }
 
 

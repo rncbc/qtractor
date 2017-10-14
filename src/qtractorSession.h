@@ -318,6 +318,11 @@ public:
 	void trackMute(qtractorTrack *pTrack, bool bMute);
 	void trackSolo(qtractorTrack *pTrack, bool bSolo);
 
+	// Special auto-plugin-deactivation
+	void autoPluginsDeactivate(bool bForce = false);
+	void setAutoDeactivatePlugins(bool bOn);
+	bool getAutoDeactivatePlugins();
+
 	// Audio peak factory accessor.
 	qtractorAudioPeakFactory *audioPeakFactory() const;
 
@@ -404,6 +409,11 @@ public:
 
 private:
 
+	// check if plugin can be auto deactivated
+	bool canTrackBeAutoDeactivated(qtractorTrack *pTrack); // for now private - maybe helpful for others?
+	// Restore activation state
+	void undoAutoPluginsDeactivate();
+
 	Properties     m_props;             // Session properties.
 
 	unsigned long  m_iSessionStart;     // Session start in frames.
@@ -470,6 +480,9 @@ private:
 
 	// Auto time-stretching global flag (when tempo changes)
 	bool m_bAutoTimeStretch;
+
+	// Auto disable plugins flag
+	bool m_bAutoDeactivatePlugins;
 
 	// MIDI plugin manager list.
 	qtractorList<qtractorMidiManager> m_midiManagers;
