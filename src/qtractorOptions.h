@@ -169,6 +169,7 @@ public:
 	bool    bSessionBackup;
 	int     iSessionBackupMode;
 	bool	bAutoMonitor;
+	bool	bAutoDeactivatePlugins;
 	int     iSnapPerBeat;
 	float   fTempo;
 	int     iBeatsPerBar;

@@ -540,7 +540,7 @@ void qtractorPluginListView::addPlugin (void)
 				selectForm.pluginIndex(i),
 				selectForm.pluginTypeHint(i));
 		if (pPlugin) {
-			pPlugin->setActivated(selectForm.isPluginActivated());
+			pPlugin->setActivated(selectForm.isPluginActivated(), qtractorPlugin::Create);
 			pAddPluginCommand->addPlugin(pPlugin);
 		}
 	}
@@ -1631,25 +1631,26 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setEnabled(bMidiInsertPlugin);
 	menu.addSeparator();
 
+	const bool bAutoDeactivated = m_pPluginList->isAutoDeactivated();
 	pAction = menu.addAction(
 		tr("Ac&tivate"), this, SLOT(activatePlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isActivated());
-	pAction->setEnabled(pPlugin != NULL);
+	pAction->setEnabled(pPlugin && !bAutoDeactivated);
 
 	const bool bActivatedAll = m_pPluginList->isActivatedAll();
 	pAction = menu.addAction(
 		tr("Acti&vate All"), this, SLOT(activateAllPlugins()));
 	pAction->setCheckable(true);
 	pAction->setChecked(bActivatedAll);
-	pAction->setEnabled(bEnabled && !bActivatedAll);
+	pAction->setEnabled(bEnabled && !bActivatedAll && !bAutoDeactivated);
 
 	const bool bDeactivatedAll = !m_pPluginList->isActivated();
 	pAction = menu.addAction(
 		tr("Deactivate Al&l"), this, SLOT(deactivateAllPlugins()));
 	pAction->setCheckable(true);
 	pAction->setChecked(bDeactivatedAll);
-	pAction->setEnabled(bEnabled && !bDeactivatedAll);
+	pAction->setEnabled(bEnabled && !bDeactivatedAll && !bAutoDeactivated);
 
 	menu.addSeparator();
 
