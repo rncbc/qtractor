@@ -394,7 +394,7 @@ void qtractorInstrumentForm::exportSlot (void)
 	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sPath = QFileDialog::getSaveFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	sPath = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, pOptions->sInstrumentDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
