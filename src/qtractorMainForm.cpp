@@ -3980,9 +3980,14 @@ void qtractorMainForm::trackCurveColor (void)
 	qDebug("qtractorMainForm::trackCurveColor()");
 #endif
 
+	QColorDialog::ColorDialogOptions options = 0;
+	if (m_pOptions && m_pOptions->bDontUseNativeDialogs)
+		options |= QColorDialog::DontUseNativeDialog;
+
 	const QString& sTitle = pCurrentCurve->subject()->name();
 	const QColor& color = QColorDialog::getColor(
-		pCurrentCurve->color(), this, sTitle + " - " QTRACTOR_TITLE);
+		pCurrentCurve->color(), this,
+		sTitle + " - " QTRACTOR_TITLE, options);
 	if (!color.isValid())
 		return;
 
