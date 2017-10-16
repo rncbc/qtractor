@@ -876,9 +876,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackAutoMonitorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackAutoMonitor(bool)));
-	QObject::connect(m_ui.trackAutoDeactivatePluginsAction,
+	QObject::connect(m_ui.trackAutoDeactivateAction,
 		SIGNAL(triggered(bool)),
-		SLOT(trackAutoDeactivatePlugins(bool)));
+		SLOT(trackAutoDeactivate(bool)));
 	QObject::connect(m_ui.trackImportAudioAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackImportAudio()));
@@ -1400,7 +1400,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.transportContinueAction->setChecked(m_pOptions->bContinuePastEnd);
 
 	m_ui.trackAutoMonitorAction->setChecked(m_pOptions->bAutoMonitor);
-	m_ui.trackAutoDeactivatePluginsAction->setChecked(m_pOptions->bAutoDeactivatePlugins);
+	m_ui.trackAutoDeactivateAction->setChecked(m_pOptions->bAutoDeactivatePlugins);
 
 	// Initial decorations visibility state.
 	viewMenubar(m_pOptions->bMenubar);
@@ -1695,7 +1695,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bAutoBackward = m_ui.transportAutoBackwardAction->isChecked();
 			m_pOptions->bContinuePastEnd = m_ui.transportContinueAction->isChecked();
 			m_pOptions->bAutoMonitor = m_ui.trackAutoMonitorAction->isChecked();
-			m_pOptions->bAutoDeactivatePlugins = m_ui.trackAutoDeactivatePluginsAction->isChecked();
+			m_pOptions->bAutoDeactivatePlugins = m_ui.trackAutoDeactivateAction->isChecked();
 			// Final zoom mode...
 			if (m_pTracks)
 				m_pOptions->iZoomMode = m_pTracks->zoomMode();
@@ -3747,10 +3747,10 @@ void qtractorMainForm::trackAutoMonitor ( bool bOn )
 
 
 // Auto-deactivate plugins not producing sound.
-void qtractorMainForm::trackAutoDeactivatePlugins ( bool bOn )
+void qtractorMainForm::trackAutoDeactivate ( bool bOn )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::trackAutoDeactivatePlugins(%d)", int(bOn));
+	qDebug("qtractorMainForm::trackAutoDeactivate(%d)", int(bOn));
 #endif
 
 	m_pSession->setAutoDeactivatePlugins(bOn);

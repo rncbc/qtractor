@@ -318,7 +318,7 @@
     <addaction name="trackHeightMenu"/>
     <addaction name="separator"/>
     <addaction name="trackAutoMonitorAction"/>
-    <addaction name="trackAutoDeactivatePluginsAction"/>
+    <addaction name="trackAutoDeactivateAction"/>
     <addaction name="separator"/>
     <addaction name="trackImportMenu"/>
     <addaction name="trackExportMenu"/>
@@ -1442,12 +1442,12 @@
     <string>F6</string>
    </property>
   </action>
-  <action name="trackAutoDeactivatePluginsAction">
+  <action name="trackAutoDeactivateAction">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Auto Deactivate</string>
+    <string>Auto Dea&amp;ctivate</string>
    </property>
    <property name="iconText">
     <string>Auto Deactivate</string>
