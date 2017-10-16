@@ -3805,7 +3805,7 @@ void qtractorMainForm::trackExportAudio (void)
 	// reactivated plugins have time to finish sounds which were active when
 	// plugins were deactivated and those remnants don't make it into exported
 	// file.
-	bool bAutoDeactivatePlugins = m_pSession->getAutoDeactivatePlugins();
+	const bool bAutoDeactivatePlugins = m_pSession->isAutoDeactivatePlugins();
 	m_pSession->setAutoDeactivatePlugins(false);
 
 	qtractorExportForm exportForm(this);

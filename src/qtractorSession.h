@@ -319,9 +319,9 @@ public:
 	void trackSolo(qtractorTrack *pTrack, bool bSolo);
 
 	// Special auto-plugin-deactivation
-	void autoPluginsDeactivate(bool bForce = false);
+	void autoDeactivatePlugins(bool bForce = false);
 	void setAutoDeactivatePlugins(bool bOn);
-	bool getAutoDeactivatePlugins();
+	bool isAutoDeactivatePlugins() const;
 
 	// Audio peak factory accessor.
 	qtractorAudioPeakFactory *audioPeakFactory() const;
@@ -410,9 +410,10 @@ public:
 private:
 
 	// check if plugin can be auto deactivated
-	bool canTrackBeAutoDeactivated(qtractorTrack *pTrack); // for now private - maybe helpful for others?
+	// for now private - maybe helpful for others?
+	bool canTrackBeAutoDeactivated(qtractorTrack *pTrack) const;
 	// Restore activation state
-	void undoAutoPluginsDeactivate();
+	void undoAutoDeactivatePlugins();
 
 	Properties     m_props;             // Session properties.
 

@@ -1048,8 +1048,8 @@ void qtractorSession::setCurrentTrack ( qtractorTrack *pTrack )
 	m_pCurrentTrack = pTrack;
 
 	// notify auto-plugin-deactivate
-	if(m_pCurrentTrack != pOldCurrentTrack)
-		autoPluginsDeactivate();
+	if (m_pCurrentTrack != pOldCurrentTrack)
+		autoDeactivatePlugins();
 }
 
 qtractorTrack *qtractorSession::currentTrack (void) const
@@ -1206,7 +1206,7 @@ void qtractorSession::setPlaying ( bool bPlaying )
 	m_pMidiEngine->setPlaying(bPlaying);
 
 	// notify auto-plugin-deactivate
-	autoPluginsDeactivate();
+	autoDeactivatePlugins();
 }
 
 bool qtractorSession::isPlaying() const
@@ -1762,46 +1762,46 @@ void qtractorSession::trackSolo ( qtractorTrack *pTrack, bool bSolo )
 
 
 // Auto plugin deactivation specifics
-void qtractorSession::autoPluginsDeactivate( bool bForce )
+void qtractorSession::autoDeactivatePlugins ( bool bForce )
 {
 	// Enabled && not if busy (e.g loading session)
-	if(m_bAutoDeactivatePlugins && !isBusy()) {
+	if (m_bAutoDeactivatePlugins && !isBusy()) {
 		for (qtractorTrack *pTrack = m_tracks.first();
 				pTrack; pTrack = pTrack->next()) {
-			pTrack->pluginList()->autoPluginDeactivate(
-						canTrackBeAutoDeactivated(pTrack), bForce);
+			pTrack->pluginList()->autoDeactivatePlugins(
+				canTrackBeAutoDeactivated(pTrack), bForce);
 		}
 	}
 }
 
 
-void qtractorSession::undoAutoPluginsDeactivate()
+void qtractorSession::undoAutoDeactivatePlugins (void)
 {
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
-		pTrack->pluginList()->autoPluginDeactivate(false);
+		pTrack->pluginList()->autoDeactivatePlugins(false);
 	}
 }
 
 
-void qtractorSession::setAutoDeactivatePlugins( bool bOn )
+void qtractorSession::setAutoDeactivatePlugins ( bool bOn )
 {
 	m_bAutoDeactivatePlugins = bOn;
 
-	if(bOn)
-		autoPluginsDeactivate();
+	if (bOn)
+		autoDeactivatePlugins();
 	else
-		undoAutoPluginsDeactivate();
+		undoAutoDeactivatePlugins();
 }
 
 
-bool qtractorSession::getAutoDeactivatePlugins()
+bool qtractorSession::isAutoDeactivatePlugins (void) const
 {
 	return m_bAutoDeactivatePlugins;
 }
 
 
-bool qtractorSession::canTrackBeAutoDeactivated( qtractorTrack *pTrack )
+bool qtractorSession::canTrackBeAutoDeactivated ( qtractorTrack *pTrack ) const
 {
 	bool bCanBeDeactivated = false;
 
@@ -1814,16 +1814,16 @@ bool qtractorSession::canTrackBeAutoDeactivated( qtractorTrack *pTrack )
 	// No Auto-plugin-deactivation active automation
 	// Note: freewheeling case is done the hard way by disabling
 	// auto-deactivate as whole - see qtractorMainForm::trackExportAudio
-	if(!bAutomationActive) {
-		if(isPlaying())	{
+	if (!bAutomationActive) {
+		if (isPlaying()) {
 			// TBD: We know when clips start/end. So if 'just' need a
 			// clever song pos synced call of autoPluginsDeactivate
 			bCanBeDeactivated = !isTrackMonitor(pTrack) && pTrack->isMute();
-		}
-		else {
+		} else {
 			bCanBeDeactivated = !isTrackMonitor(pTrack);
 		}
 	}
+
 	return bCanBeDeactivated;
 }
 

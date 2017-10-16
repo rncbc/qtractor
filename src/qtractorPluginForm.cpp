@@ -1594,7 +1594,7 @@ bool qtractorPluginPropertyWidget::eventFilter (
 	QObject *pObject, QEvent *pEvent )
 {
 	if (qobject_cast<QTextEdit *> (pObject) == m_pTextEdit) {
-		if(pEvent->type() == QEvent::KeyPress) {
+		if (pEvent->type() == QEvent::KeyPress) {
 			QKeyEvent *pKeyEvent = static_cast<QKeyEvent*> (pEvent);
 			if (pKeyEvent->key() == Qt::Key_Return
 				&& (pKeyEvent->modifiers() &
@@ -1604,7 +1604,7 @@ bool qtractorPluginPropertyWidget::eventFilter (
 			}
 		}
 		else
-		if(pEvent->type() == QEvent::FocusOut)
+		if (pEvent->type() == QEvent::FocusOut)
 			propertyChanged();
 	}
 

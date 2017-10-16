@@ -748,11 +748,10 @@ void qtractorCurve::setCapture ( bool bCapture )
 	m_state = State(bCapture ? (m_state | Capture) : (m_state & ~Capture));
 	if ((bCapture && !bOldCapture) || (!bCapture && bOldCapture)) {
 		m_pList->updateCapture(bCapture);
-
 		// notify auto-plugin-deactivate
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession != NULL)
-			pSession->autoPluginsDeactivate();
+			pSession->autoDeactivatePlugins();
 	}
 }
 
@@ -770,11 +769,10 @@ void qtractorCurve::setProcess ( bool bProcess )
 	m_state = State(bProcess ? (m_state | Process) : (m_state & ~Process));
 	if ((bProcess && !bOldProcess) || (!bProcess && bOldProcess)) {
 		m_pList->updateProcess(bProcess);
-
 		// notify auto-plugin-deactivate
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession != NULL)
-			pSession->autoPluginsDeactivate();
+			pSession->autoDeactivatePlugins();
 	}
 }
 

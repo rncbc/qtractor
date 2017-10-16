@@ -362,12 +362,12 @@ public:
 		{ return m_iUniqueID; }
 
 	// Activation additional info sender supplies.
-	enum ActivationInfoType { Default, Create, Copy, SaveSession };
+	enum ActivationInfo { Default = 0, Create, Copy, Save };
 
 	// Activation methods.
-	void setActivated(bool bActivated, ActivationInfoType info = Default);
+	void setActivated(bool bActivated, ActivationInfo info = Default);
 	void setActivatedEx(bool bActivated);
-	bool isActivated(ActivationInfoType info = Default) const;
+	bool isActivated(ActivationInfo info = Default) const;
 
 	// Activate subject accessors.
 	qtractorSubject *activateSubject()
@@ -649,8 +649,9 @@ public:
 	void updateParamValue(unsigned long iIndex, float fValue, bool bUpdate);
 
 	// Auto-plugin-deactivation
-	void autoPluginDeactivate(bool bDeactivated);
-	bool canBeConnectedToOtherTracks();
+	void autoDeactivatePlugin(bool bDeactivated);
+	bool canBeConnectedToOtherTracks() const;
+
 protected:
 
 	// Instance number settler.
@@ -924,8 +925,8 @@ public:
 		{ return (m_iAudioInsertActivated > 0); }
 
 	// Special auto-deactivate methods
-	void autoPluginDeactivate(bool bDeactivated, bool bForce = false);
-	bool isAutoDeactivated();
+	void autoDeactivatePlugins(bool bDeactivated, bool bForce = false);
+	bool isAutoDeactivated() const;
 
 protected:
 
@@ -976,7 +977,7 @@ private:
 	QHash<unsigned long, unsigned int> m_uniqueIDs;
 
 	// Auto-plugin-deactivation
-	bool m_bAutoDeactivate;
+	bool m_bAutoDeactivated;
 };
 
 
