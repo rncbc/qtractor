@@ -318,6 +318,7 @@
     <addaction name="trackHeightMenu"/>
     <addaction name="separator"/>
     <addaction name="trackAutoMonitorAction"/>
+    <addaction name="trackAutoDeactivatePluginsAction"/>
     <addaction name="separator"/>
     <addaction name="trackImportMenu"/>
     <addaction name="trackExportMenu"/>
@@ -1439,6 +1440,26 @@
    </property>
    <property name="shortcut">
     <string>F6</string>
+   </property>
+  </action>
+  <action name="trackAutoDeactivatePluginsAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto Deactivate</string>
+   </property>
+   <property name="iconText">
+    <string>Auto Deactivate</string>
+   </property>
+   <property name="toolTip">
+    <string>Auto-deactivate plugins</string>
+   </property>
+   <property name="statusTip">
+    <string>Auto-deactivate plugins not producing sound</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F6</string>
    </property>
   </action>
   <action name="trackImportAudioAction">

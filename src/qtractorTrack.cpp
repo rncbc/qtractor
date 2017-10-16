@@ -749,6 +749,8 @@ void qtractorTrack::setMonitor ( bool bMonitor )
 	m_props.monitor = bMonitor;
 
 	m_pMonitorSubject->setValue(bMonitor ? 1.0f : 0.0f);
+
+	m_pSession->autoPluginsDeactivate();
 }
 
 
@@ -797,6 +799,8 @@ void qtractorTrack::setMute ( bool bMute )
 
 	if (m_pSession->isPlaying() && !bMute)
 		m_pSession->trackMute(this, bMute);
+
+	m_pSession->autoPluginsDeactivate();
 }
 
 bool qtractorTrack::isMute (void) const
@@ -821,6 +825,8 @@ void qtractorTrack::setSolo ( bool bSolo )
 
 	if (m_pSession->isPlaying() && !bSolo)
 		m_pSession->trackSolo(this, bSolo);
+
+	m_pSession->autoPluginsDeactivate();
 }
 
 bool qtractorTrack::isSolo (void) const
