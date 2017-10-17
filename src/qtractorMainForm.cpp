@@ -154,7 +154,7 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
 #endif
 
-#if defined(WIN32)
+#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
 #undef HAVE_SIGNAL_H
 #endif
 
