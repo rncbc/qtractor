@@ -154,7 +154,7 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
 #endif
 
-#if defined(WIN32)
+#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
 #undef HAVE_SIGNAL_H
 #endif
 
@@ -876,6 +876,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackAutoMonitorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackAutoMonitor(bool)));
+	QObject::connect(m_ui.trackAutoDeactivateAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackAutoDeactivate(bool)));
 	QObject::connect(m_ui.trackImportAudioAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackImportAudio()));
@@ -1373,6 +1376,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
 	m_pSession->setLoopRecordingMode(m_pOptions->iLoopRecordingMode);
 
+	// Initial auto plugin deactivation
+	m_pSession->setAutoDeactivatePlugins(m_pOptions->bAutoDeactivatePlugins);
+
 	// Initial decorations toggle state.
 	m_ui.viewMenubarAction->setChecked(m_pOptions->bMenubar);
 	m_ui.viewStatusbarAction->setChecked(m_pOptions->bStatusbar);
@@ -1394,6 +1400,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_ui.transportContinueAction->setChecked(m_pOptions->bContinuePastEnd);
 
 	m_ui.trackAutoMonitorAction->setChecked(m_pOptions->bAutoMonitor);
+	m_ui.trackAutoDeactivateAction->setChecked(m_pOptions->bAutoDeactivatePlugins);
 
 	// Initial decorations visibility state.
 	viewMenubar(m_pOptions->bMenubar);
@@ -1688,6 +1695,7 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bAutoBackward = m_ui.transportAutoBackwardAction->isChecked();
 			m_pOptions->bContinuePastEnd = m_ui.transportContinueAction->isChecked();
 			m_pOptions->bAutoMonitor = m_ui.trackAutoMonitorAction->isChecked();
+			m_pOptions->bAutoDeactivatePlugins = m_ui.trackAutoDeactivateAction->isChecked();
 			// Final zoom mode...
 			if (m_pTracks)
 				m_pOptions->iZoomMode = m_pTracks->zoomMode();
@@ -1946,15 +1954,18 @@ bool qtractorMainForm::openSession (void)
 	const QString& sFilter
 		= filters.join(";;");
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, m_pOptions->sSessionDir, sFilter, NULL, options);
 #else
 	// Construct open-file session/template dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, m_pOptions->sSessionDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -2037,17 +2048,20 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			= tr("Save Session") + " - " QTRACTOR_TITLE;
 		const QString& sFilter
 			= filters.join(";;");
+		QWidget *pParentWidget = NULL;
 		QFileDialog::Options options = 0;
-		if (m_pOptions->bDontUseNativeDialogs)
+		if (m_pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
+			pParentWidget = this;
+		}
 		// Try to rename as if a backup is about...
 		sFilename = sessionBackupPath(sFilename);
 	#if 1//QT_VERSION < 0x040400
-		sFilename = QFileDialog::getSaveFileName(this,
+		sFilename = QFileDialog::getSaveFileName(pParentWidget,
 			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct save-file session/template dialog...
-		QFileDialog fileDialog(this,
+		QFileDialog fileDialog(pParentWidget,
 			sTitle, sFilename, sFilter);
 		// Set proper save-file modes...
 		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -3732,6 +3746,17 @@ void qtractorMainForm::trackAutoMonitor ( bool bOn )
 }
 
 
+// Auto-deactivate plugins not producing sound.
+void qtractorMainForm::trackAutoDeactivate ( bool bOn )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackAutoDeactivate(%d)", int(bOn));
+#endif
+
+	m_pSession->setAutoDeactivatePlugins(bOn);
+}
+
+
 // Import some tracks from Audio file.
 void qtractorMainForm::trackImportAudio (void)
 {
@@ -3775,9 +3800,19 @@ void qtractorMainForm::trackExportAudio (void)
 	qDebug("qtractorMainForm::trackExportAudio()");
 #endif
 
+	// Disable auto-deactivation during export. Disabling here has a nice side
+	// effect: While the user makes the selections in the export dialog, the
+	// reactivated plugins have time to finish sounds which were active when
+	// plugins were deactivated and those remnants don't make it into exported
+	// file.
+	const bool bAutoDeactivatePlugins = m_pSession->isAutoDeactivatePlugins();
+	m_pSession->setAutoDeactivatePlugins(false);
+
 	qtractorExportForm exportForm(this);
 	exportForm.setExportType(qtractorTrack::Audio);
 	exportForm.exec();
+
+	m_pSession->setAutoDeactivatePlugins(bAutoDeactivatePlugins);
 }
 
 
@@ -3980,13 +4015,15 @@ void qtractorMainForm::trackCurveColor (void)
 	qDebug("qtractorMainForm::trackCurveColor()");
 #endif
 
+	QWidget *pParentWidget = NULL;
 	QColorDialog::ColorDialogOptions options = 0;
-	if (m_pOptions && m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
-
+		pParentWidget = this;
+	}
 	const QString& sTitle = pCurrentCurve->subject()->name();
 	const QColor& color = QColorDialog::getColor(
-		pCurrentCurve->color(), this,
+		pCurrentCurve->color(), pParentWidget,
 		sTitle + " - " QTRACTOR_TITLE, options);
 	if (!color.isValid())
 		return;
