@@ -2803,7 +2803,7 @@ bool qtractorTracks::addAudioTracks ( const QStringList& files,
 
 // Import MIDI files into new tracks...
 bool qtractorTracks::addMidiTracks ( const QStringList& files,
-	unsigned long iClipStart, qtractorTrack *pAfterTrack )
+	unsigned long iClipStart, qtractorTrack *pAfterTrack, bool bEnhancedTrackNames )
 {
 	// Have we some?
 	if (files.isEmpty())
@@ -2877,10 +2877,27 @@ bool qtractorTracks::addMidiTracks ( const QStringList& files,
 			}
 			// Time to check whether there is actual data on track...
 			if (pMidiClip->clipLength() > 0) {
+				int iChannel = pMidiClip->channel();
+				// create track name
+				QString sTrackName;
+				if (bEnhancedTrackNames) {
+					// try track name from MIDI import
+					sTrackName = pMidiClip->getTrackName();
+					// no track name set try GM names
+					if (sTrackName.isEmpty()) {
+						QString sGMName = getGMName(iChannel, pMidiClip->prog());
+						if (!sGMName.isEmpty())
+							sTrackName = sGMName;
+					}
+				}
+				// default: shortened clip name
+				if (sTrackName.isEmpty())
+					sTrackName = pSession->uniqueTrackName(pMidiClip->clipName());
+
 				// Add the new track to composite command...
-				pTrack->setTrackName(
-					pSession->uniqueTrackName(pMidiClip->clipName()));
-				pTrack->setMidiChannel(pMidiClip->channel());
+				pTrack->setTrackName(sTrackName);
+				pTrack->setMidiChannel(iChannel);
+
 				pImportTrackCommand->addTrack(pTrack);
 				++iUpdate;
 				// Don't forget to add this one to local repository.
@@ -2981,6 +2998,162 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 
 	// Put it in the form of an undoable command...
 	return pSession->execute(pImportTrackCommand);
+}
+
+
+// MIDI specific: Get a GM name for channel/prog
+QString qtractorTracks::getGMName( int iChannel, int iProg )
+{
+	QString sName;
+	// static GM prog names
+	// no need to use numbers for multiple insstuments with same name
+	static const QStringList instrumentNamesGM = (
+				QStringList()
+				// 0-31
+				<< QObject::tr("Acoustic Grand Piano")
+				<< QObject::tr("Bright Acoustic Piano")
+				<< QObject::tr("Electric Grand Piano")
+				<< QObject::tr("Honky-tonk Piano")
+				<< QObject::tr("Electric Piano")
+				<< QObject::tr("Electric Piano")
+				<< QObject::tr("Harpsichord")
+				<< QObject::tr("Clavi")
+				<< QObject::tr("Celesta")
+				<< QObject::tr("Glockenspiel")
+				<< QObject::tr("Music Box")
+				<< QObject::tr("Vibraphone")
+				<< QObject::tr("Marimba")
+				<< QObject::tr("Xylophone")
+				<< QObject::tr("Tubular Bells")
+				<< QObject::tr("Dulcimer")
+				<< QObject::tr("Organ")
+				<< QObject::tr("Organ")
+				<< QObject::tr("Rock Organ")
+				<< QObject::tr("Church Organ")
+				<< QObject::tr("Reed Organ")
+				<< QObject::tr("Accordion")
+				<< QObject::tr("Harmonica")
+				<< QObject::tr("Tango Accordion")
+				<< QObject::tr("Nylon Guitar")
+				<< QObject::tr("Steel Guitar")
+				<< QObject::tr("Jazz E-Guitar")
+				<< QObject::tr("Clean E-Guitar")
+				<< QObject::tr("Muted E-Guitar")
+				<< QObject::tr("Overdrive Guitar")
+				<< QObject::tr("Distorted Guitar")
+				<< QObject::tr("Harmonic Guitar")
+				// 32-63
+				<< QObject::tr("Acoustic Bass")
+				<< QObject::tr("Fingered E-Bass")
+				<< QObject::tr("Picked E-Bass")
+				<< QObject::tr("Fretless Bass")
+				<< QObject::tr("Slap Bass")
+				<< QObject::tr("Slap Bass")
+				<< QObject::tr("Synth Bass")
+				<< QObject::tr("Synth Bass")
+				<< QObject::tr("Violin")
+				<< QObject::tr("Viola")
+				<< QObject::tr("Cello")
+				<< QObject::tr("Contrabass")
+				<< QObject::tr("Tremolo")
+				<< QObject::tr("Pizicato")
+				<< QObject::tr("Harp")
+				<< QObject::tr("Timpani")
+				<< QObject::tr("Strings")
+				<< QObject::tr("Strings")
+				<< QObject::tr("Synth Strings")
+				<< QObject::tr("Synth Strings")
+				<< QObject::tr("Choir Aah")
+				<< QObject::tr("Voice Ooh")
+				<< QObject::tr("Synth Voice")
+				<< QObject::tr("Hit Orchestra")
+				<< QObject::tr("Trumpet")
+				<< QObject::tr("Trombone")
+				<< QObject::tr("Tuba")
+				<< QObject::tr("Trumpet Muted")
+				<< QObject::tr("French Horn")
+				<< QObject::tr("Brass")
+				<< QObject::tr("Synth Brass")
+				<< QObject::tr("SynthBrass")
+				// 64-95
+				<< QObject::tr("Soprano Sax")
+				<< QObject::tr("Alto Sax")
+				<< QObject::tr("Tenor Sax")
+				<< QObject::tr("Baritone Sax")
+				<< QObject::tr("Oboe")
+				<< QObject::tr("Horn")
+				<< QObject::tr("Bassoon")
+				<< QObject::tr("Clarinet")
+				<< QObject::tr("Piccolo")
+				<< QObject::tr("Flute")
+				<< QObject::tr("Recorder")
+				<< QObject::tr("Pan Flute")
+				<< QObject::tr("Smashing Bottle")
+				<< QObject::tr("Shakuhachi")
+				<< QObject::tr("Whistle")
+				<< QObject::tr("Ocarina")
+				<< QObject::tr("Square Lead")
+				<< QObject::tr("Saw Lead")
+				<< QObject::tr("Callilope Lead")
+				<< QObject::tr("Chiffer Lead")
+				<< QObject::tr("Charang Lead")
+				<< QObject::tr("Voice Lead")
+				<< QObject::tr("5th Lead")
+				<< QObject::tr("Lead And Bass")
+				<< QObject::tr("New Age Pad")
+				<< QObject::tr("Warm Pad")
+				<< QObject::tr("Polysynth Pad")
+				<< QObject::tr("Choir Pad")
+				<< QObject::tr("Bowed Pad")
+				<< QObject::tr("Metallic Pad")
+				<< QObject::tr("Halo Pad")
+				<< QObject::tr("Sweep Pad")
+				// 96-127
+				<< QObject::tr("Rain")
+				<< QObject::tr("Soundtrack")
+				<< QObject::tr("Crystal")
+				<< QObject::tr("Atmosphere")
+				<< QObject::tr("Brightness")
+				<< QObject::tr("Goblins")
+				<< QObject::tr("Echoes")
+				<< QObject::tr("Sci-Fi")
+				<< QObject::tr("Sitar")
+				<< QObject::tr("Banjo")
+				<< QObject::tr("Shamisen")
+				<< QObject::tr("Koto")
+				<< QObject::tr("Kalimba")
+				<< QObject::tr("Bagpipe")
+				<< QObject::tr("Fiddle")
+				<< QObject::tr("Shanai")
+				<< QObject::tr("Tinkle Bell")
+				<< QObject::tr("Agogo")
+				<< QObject::tr("Steel Drums")
+				<< QObject::tr("Wood Block")
+				<< QObject::tr("Taiko Drum")
+				<< QObject::tr("Melodic Drum")
+				<< QObject::tr("Synth Drum")
+				<< QObject::tr("Reverse Cymbal")
+				<< QObject::tr("Fretless Noise")
+				<< QObject::tr("Breath Noise")
+				<< QObject::tr("Seashore")
+				<< QObject::tr("Birds")
+				<< QObject::tr("Oldschool Telephone")
+				<< QObject::tr("Helicopter")
+				<< QObject::tr("Applause")
+				<< QObject::tr("Gun Shot")
+	);
+
+	int iNameCount = instrumentNamesGM.size();
+	Q_ASSERT(iNameCount == 128);
+
+	// Drums (channel 10 - we keep data zero based)
+	if (iChannel == 9)
+		sName = QObject::tr("Drums");
+	// Instruments program name
+	else if (iProg >= 0 && iProg < iNameCount)
+		sName = instrumentNamesGM[iProg];
+
+	return sName;
 }
 
 

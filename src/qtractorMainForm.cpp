@@ -3787,7 +3787,7 @@ void qtractorMainForm::trackImportMidi (void)
 		const unsigned long iClipStart = m_pSession->editHead();
 		qtractorTrack *pTrack = m_pTracks->currentTrack();
 		m_pTracks->addMidiTracks(
-			m_pFiles->midiListView()->openFileNames(), iClipStart, pTrack);
+			m_pFiles->midiListView()->openFileNames(), iClipStart, pTrack, true);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
 }

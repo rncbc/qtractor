@@ -346,6 +346,7 @@ bool qtractorMidiClip::openMidiFile (
 	// Set local properties...
 	setFilename(sFilename);
 	setDirty(false);
+	m_sTrackNameRead.clear();
 
 	// Register file path...
 	pSession->files()->addClipItem(qtractorFileList::Midi, this, bWrite);
@@ -476,6 +477,10 @@ bool qtractorMidiClip::openMidiFile (
 		// We should have events, otherwise this clip is of no use...
 		//if (m_pSeq->events().count() < 1)
 		//	return false;
+
+		// If MIDI file sets track name: keep it
+		m_sTrackNameRead = pSeq->name();
+
 		// And initial clip name...
 		pSeq->setName(shortClipName(QFileInfo(m_pFile->filename()).baseName()));
 	}
@@ -511,6 +516,12 @@ bool qtractorMidiClip::openMidiFile (
 		m_pMidiEditorForm->setup(this);
 
 	return true;
+}
+
+
+QString qtractorMidiClip::getTrackName (void)
+{
+	return m_sTrackNameRead;
 }
 
 

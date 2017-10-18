@@ -71,9 +71,13 @@ public:
 	bool addAudioTracks(const QStringList& files,
 		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
 	bool addMidiTracks(const QStringList& files,
-		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
+		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL,
+		bool bEnhancedTrackNames = false);
 	bool addMidiTrackChannel(const QString& sPath, int iTrackChannel,
 		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
+
+	// MIDI specific: GM instrument names
+	static QString getGMName(int iChannel, int iProg);
 
 	// Track-list active maintenance update.
 	void updateTrack(qtractorTrack *pTrack = NULL);
