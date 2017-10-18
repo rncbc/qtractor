@@ -60,6 +60,9 @@ public:
 	bool openMidiFile(const QString& sFilename, int iTrackChannel = 0,
 		int iMode = qtractorMidiFile::Read);
 
+	// Track name a read MIDI file has set
+	QString getTrackName();
+
 	// MIDI file properties accessors.
 	void setTrackChannel(unsigned short iTrackChannel)
 		{ m_iTrackChannel = iTrackChannel; }
@@ -305,6 +308,9 @@ private:
 	// And for geometry it was last seen...
 	QPoint m_posEditor;
 	QSize m_sizeEditor;
+
+	// Track name read from MIDI
+	QString m_sTrackNameRead;
 
 	// Default MIDI file format (for capture/record)
 	static unsigned short g_iDefaultFormat;
