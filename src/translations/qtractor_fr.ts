@@ -844,22 +844,22 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="615"/>
         <source>Gain (dB)</source>
-        <translation type="unfinished">Gain (dB)</translation>
+        <translation>Gain (dB)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="616"/>
         <source> dB</source>
-        <translation type="unfinished"> dB</translation>
+        <translation> dB</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="686"/>
         <source>Pan: %1</source>
-        <translation type="unfinished">Pan: %1</translation>
+        <translation>Pan : %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="695"/>
         <source>Gain: %1 dB</source>
-        <translation type="unfinished">Gain: %1 dB</translation>
+        <translation>Gain : %1 dB</translation>
     </message>
 </context>
 <context>
@@ -8659,22 +8659,22 @@ Voulez-vous sauvegarder les changements ?</translation>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="469"/>
         <source>Volume (%)</source>
-        <translation type="unfinished">Volume (%)</translation>
+        <translation>Volume (%)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="470"/>
         <source> %</source>
-        <translation type="unfinished"> %</translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="535"/>
         <source>Pan: %1</source>
-        <translation type="unfinished">Pan: %1</translation>
+        <translation>Pan : %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="545"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished">Volume: %1%</translation>
+        <translation>Volume : %1%</translation>
     </message>
 </context>
 <context>
@@ -9382,12 +9382,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMeter.cpp" line="312"/>
         <source>Pan</source>
-        <translation type="unfinished">Pan</translation>
+        <translation>Pan</translation>
     </message>
     <message>
         <location filename="../qtractorMeter.cpp" line="324"/>
         <source>Gain</source>
-        <translation type="unfinished">Gain</translation>
+        <translation>Gain</translation>
     </message>
 </context>
 <context>
@@ -10309,12 +10309,12 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2874"/>
         <source>Whether to show meters on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Si l&apos;on affiche ou non les mesureurs sur le panneau de gauche/liste de piste</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2877"/>
         <source>Sho&amp;w meters on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche les mesureurs sur le panneau de gauche/liste de piste</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3580"/>
