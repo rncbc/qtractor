@@ -9379,12 +9379,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMeter.cpp" line="312"/>
         <source>Pan</source>
-        <translation type="unfinished">Panorámica</translation>
+        <translation>Panorámica</translation>
     </message>
     <message>
         <location filename="../qtractorMeter.cpp" line="324"/>
         <source>Gain</source>
-        <translation type="unfinished">Ganancia</translation>
+        <translation>Ganancia</translation>
     </message>
 </context>
 <context>
