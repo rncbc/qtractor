@@ -27,7 +27,6 @@
 
 // Forward declarations.
 class qtractorMidiMeter;
-class qtractorMidiMeterValue;
 class qtractorMidiMonitor;
 
 class QLabel;
@@ -41,13 +40,10 @@ class QPaintEvent;
 
 class qtractorMidiMeterScale : public qtractorMeterScale
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
-	qtractorMidiMeterScale(qtractorMidiMeter *pMidiMeter,
-		QWidget *pParent = 0);
+	qtractorMidiMeterScale(qtractorMidiMeter *pMidiMeter);
 
 protected:
 
@@ -59,21 +55,15 @@ protected:
 //----------------------------------------------------------------------------
 // qtractorMidiMeterValue -- MIDI meter bridge value widget.
 
-class qtractorMidiMeterValue : public QWidget
+class qtractorMidiMeterValue : public qtractorMeterValue
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
-	qtractorMidiMeterValue(qtractorMidiMeter *pMidiMeter,
-		QWidget *pParent = 0);
-
-	// Reset peak holder.
-	void peakReset() { m_iPeak = 0; }
+	qtractorMidiMeterValue(qtractorMidiMeter *pMidiMeter);
 
 	// Value refreshment.
-	void refresh();
+	void refresh(unsigned long iStamp);
 
 protected:
 
@@ -82,9 +72,6 @@ protected:
 	void resizeEvent(QResizeEvent *);
 
 private:
-
-	// Local instance variables.
-	qtractorMidiMeter *m_pMidiMeter;
 
 	// Running variables.
 	int   m_iValue;
@@ -97,12 +84,42 @@ private:
 
 
 //----------------------------------------------------------------------------
+// qtractorMidiMeterLed -- MIDI meter bridge LED widget.
+
+class qtractorMidiMeterLed : public qtractorMeterValue
+{
+public:
+
+	// Constructor.
+	qtractorMidiMeterLed(qtractorMidiMeter *pMidiMeter);
+
+	// Default destructor.
+	~qtractorMidiMeterLed();
+
+	// Value refreshment.
+	void refresh(unsigned long iStamp);
+
+private:
+
+	// Local instance variables.
+	QLabel *m_pMidiLabel;
+
+	// Running variables.
+	unsigned int m_iMidiCount;
+
+	// MIDI I/O LED pixmap stuff.
+	enum { LedOff = 0, LedOn = 1, LedCount = 2 };
+
+	static int      g_iLedRefCount;
+	static QPixmap *g_pLedPixmap[LedCount];
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorMidiMeter -- MIDI meter bridge slot widget.
 
 class qtractorMidiMeter : public qtractorMeter
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -119,18 +136,8 @@ public:
 	void setMidiMonitor(qtractorMidiMonitor *pMidiMonitor);
 	qtractorMidiMonitor *midiMonitor() const;
 
-	// Local slider update methods.
-	void updatePanning();
-	void updateGain();
-
 	// Monitor reset.
 	void reset();
-
-	// Slot refreshment.
-	void refresh();
-
-	// Reset peak holder.
-	void peakReset();
 
 #ifdef CONFIG_GRADIENT
 	const QPixmap& pixmap() const;
@@ -158,33 +165,65 @@ protected:
 
 private:
 
-	// Local forward declarations.
-	class GainSliderInterface;
-	class GainSpinBoxInterface;
-
 	// Local instance variables.
 	qtractorMidiMonitor    *m_pMidiMonitor;
-	qtractorMidiMeterScale *m_pMidiScale;
 	qtractorMidiMeterValue *m_pMidiValue;
-
-	QLabel      *m_pMidiLabel;
-	unsigned int m_iMidiCount;
 
 #ifdef CONFIG_GRADIENT
 	QPixmap *m_pPixmap;
 #endif
 
-	// MIDI I/O LED pixmap stuff.
-	enum { LedOff = 0, LedOn = 1, LedCount = 2 };
-
-	static int      g_iLedRefCount;
-	static QPixmap *g_pLedPixmap[LedCount];
-
 	static QColor g_defaultColors[ColorCount];
 	static QColor g_currentColors[ColorCount];
 };
 
-	
+
+//----------------------------------------------------------------------------
+// qtractorMidiMixerMeter -- MIDI mixer-strip meter bridge widget.
+
+class qtractorMidiMixerMeter : public qtractorMixerMeter
+{
+public:
+
+	// Constructor.
+	qtractorMidiMixerMeter(qtractorMidiMonitor *pMidiMonitor,
+		QWidget *pParent = 0);
+	// Default destructor.
+	~qtractorMidiMixerMeter();
+
+	// Virtual monitor accessor.
+	void setMonitor(qtractorMonitor *pMonitor);
+	qtractorMonitor *monitor() const;
+
+	// MIDI monitor accessor.
+	void setMidiMonitor(qtractorMidiMonitor *pMidiMonitor);
+	qtractorMidiMonitor *midiMonitor() const;
+
+	// Local slider update methods.
+	void updatePanning();
+	void updateGain();
+
+	// Monitor reset.
+	void reset();
+
+protected:
+
+	// Resize event handler.
+	void resizeEvent(QResizeEvent *);
+
+private:
+
+	// Local forward declarations.
+	class GainSliderInterface;
+	class GainSpinBoxInterface;
+
+	// Local instance variables.
+	qtractorMidiMeter      *m_pMidiMeter;
+	qtractorMidiMeterScale *m_pMidiScale;
+	qtractorMidiMeterLed   *m_pMidiLed;
+};
+
+
 #endif  // __qtractorMidiMeter_h
 
 // end of qtractorMidiMeter.h

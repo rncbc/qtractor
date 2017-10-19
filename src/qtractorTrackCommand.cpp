@@ -773,8 +773,9 @@ bool qtractorEditTrackCommand::redo (void)
 		pSession->trackRecord(m_pTrack, true, iClipStart, iFrameTime);
 	}
 
-	// Refresh track item, at least the names...
-	m_pTrack->updateTracks();
+	// Refresh MIDI track item, at least the names...
+	if (m_pTrack->trackType() == qtractorTrack::Midi)
+		m_pTrack->updateMidiTrack();
 
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi) {

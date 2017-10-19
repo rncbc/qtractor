@@ -1,3 +1,9 @@
+qtractor (0.8.4-32) unstable; urgency=low
+
+  * New release: end of summer'17 beta
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Wed, 20 Sep 2017 19:00:00 +0000
+
 qtractor (0.8.3-31) unstable; urgency=low
 
   * New release: stickiest tauon beta

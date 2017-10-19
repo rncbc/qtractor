@@ -39,7 +39,7 @@ class qtractorMixerStrip;
 class qtractorMixerRack;
 class qtractorMixerRackWidget;
 class qtractorMixer;
-class qtractorMeter;
+class qtractorMixerMeter;
 
 class qtractorPluginListView;
 
@@ -125,8 +125,8 @@ public:
 	// Child accessors.
 	qtractorPluginListView *pluginListView() const
 		{ return m_pPluginListView; }
-	qtractorMeter *meter() const
-		{ return m_pMeter; }
+	qtractorMixerMeter *meter() const
+		{ return m_pMixerMeter; }
 
 	// Bus property accessors.
 	void setBus(qtractorBus *pBus);
@@ -142,9 +142,6 @@ public:
 	void setSelected(bool bSelected);
 	bool isSelected() const
 		{ return m_bSelected; }
-
-	// Strip refreshment.
-	void refresh();
 
 	// Hacko-list-management marking...
 	void setMark(int iMark)
@@ -203,7 +200,7 @@ private:
 	qtractorTrackButton    *m_pRecordButton;
 	qtractorTrackButton    *m_pMuteButton;
 	qtractorTrackButton    *m_pSoloButton;
-	qtractorMeter          *m_pMeter;
+	qtractorMixerMeter     *m_pMixerMeter;
 	QPushButton            *m_pBusButton;
 	QLabel                 *m_pMidiLabel;
 
@@ -305,9 +302,6 @@ public:
 	int stripCount() const
 		{ return m_strips.count(); }
 
-	// Complete rack refreshment.
-	void refresh();
-
 	// Complete rack recycle.
 	void clear();
 
@@ -389,9 +383,6 @@ public:
 	void updateBusStrip(qtractorMixerRack *pRack, qtractorBus *pBus,
 		qtractorBus::BusMode busMode, bool bReset = false);
 	void updateTrackStrip(qtractorTrack *pTrack, bool bReset = false);
-
-	// Complete mixer refreshment.
-	void refresh();
 
 	// Complete mixer recycle.
 	void clear();

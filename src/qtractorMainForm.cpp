@@ -154,7 +154,7 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
 #endif
 
-#if defined(WIN32)
+#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
 #undef HAVE_SIGNAL_H
 #endif
 
@@ -2507,7 +2507,7 @@ bool qtractorMainForm::saveSessionFileEx (
 	}
 
 	// Soft-house-keeping...
-	if (bUpdate) m_pSession->files()->cleanup(false);
+	m_pSession->files()->cleanup(false);
 
 	// Write the file...
 	QDomDocument doc("qtractorSession");
@@ -3980,9 +3980,14 @@ void qtractorMainForm::trackCurveColor (void)
 	qDebug("qtractorMainForm::trackCurveColor()");
 #endif
 
+	QColorDialog::ColorDialogOptions options = 0;
+	if (m_pOptions && m_pOptions->bDontUseNativeDialogs)
+		options |= QColorDialog::DontUseNativeDialog;
+
 	const QString& sTitle = pCurrentCurve->subject()->name();
 	const QColor& color = QColorDialog::getColor(
-		pCurrentCurve->color(), this, sTitle + " - " QTRACTOR_TITLE);
+		pCurrentCurve->color(), this,
+		sTitle + " - " QTRACTOR_TITLE, options);
 	if (!color.isValid())
 		return;
 
@@ -4918,6 +4923,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
+	const bool    bOldTrackListMeters    = m_pOptions->bTrackListMeters;
 #ifdef CONFIG_LV2
 	const QString sep(':'); 
 	const bool    bOldLv2DynManifest     = m_pOptions->bLv2DynManifest;
@@ -5097,6 +5103,11 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
 			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
 			updateSyncViewHold();
+		if (( bOldTrackListMeters && !m_pOptions->bTrackListMeters) ||
+			(!bOldTrackListMeters &&  m_pOptions->bTrackListMeters)) {
+			if (m_pTracks)
+				m_pTracks->trackList()->updateItems();
+		}
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
@@ -7323,9 +7334,8 @@ void qtractorMainForm::fastTimerSlot (void)
 		// Done with transport tricks.
 	}
 
-	// Always update mixer monitoring...
-	if (m_pMixer)
-		m_pMixer->refresh();
+	// Always update meter values...
+	qtractorMeterValue::refreshAll();
 
 	// Asynchronous observer update...
 	qtractorSubject::flushQueue(true);
@@ -8334,7 +8344,9 @@ void qtractorMainForm::updateDirtyCount ( bool bDirtyCount )
 		if (!m_bNsmDirty && bDirtyCount) {
 			m_pNsmClient->dirty(true);
 			m_bNsmDirty = true;
-		} else {
+		}
+		else
+		if (m_bNsmDirty && !bDirtyCount) {
 			m_pNsmClient->dirty(false);
 			m_bNsmDirty = false;
 		}

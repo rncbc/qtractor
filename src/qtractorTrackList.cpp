@@ -42,6 +42,11 @@
 
 #include "qtractorCurve.h"
 
+#include "qtractorAudioMonitor.h"
+#include "qtractorMidiMonitor.h"
+#include "qtractorAudioMeter.h"
+#include "qtractorMidiMeter.h"
+
 #include "qtractorOptions.h"
 
 #include <QHeaderView>
@@ -167,8 +172,7 @@ QVariant qtractorTrackListHeaderModel::headerData (
 
 // Constructor.
 qtractorTrackItemWidget::qtractorTrackItemWidget (
-	qtractorTrackList *pTrackList, qtractorTrack *pTrack )
-	: QWidget(pTrackList->viewport())
+	qtractorTrack *pTrack, QWidget *pParent ) : QWidget(pParent)
 {
 	QWidget::setBackgroundRole(QPalette::Window);
 
@@ -204,7 +208,7 @@ qtractorTrackItemWidget::qtractorTrackItemWidget (
 	if (pMainForm)
 		m_pCurveButton->setMenu(pMainForm->trackCurveMenu());
 
-//	pHBoxLayout->addStretch();
+	pHBoxLayout->addStretch();
 	pHBoxLayout->addWidget(m_pRecordButton);
 	pHBoxLayout->addWidget(m_pMuteButton);
 	pHBoxLayout->addWidget(m_pSoloButton);
@@ -314,16 +318,19 @@ QHeaderView *qtractorTrackList::header (void) const
 
 
 // Track-list model item constructor
-qtractorTrackList::Item::Item ( qtractorTrackList *pTrackList,
-	qtractorTrack *pTrack ) : track(pTrack), flags(0), widget(NULL)
+qtractorTrackList::Item::Item ( qtractorTrack *pTrack )
+	: track(pTrack), flags(0), widget(NULL), meter(NULL)
 {
-	update(pTrackList);
+	const QString s;
+
+	text << track->trackName() << s << s << s << s;
 }
 
 
 // Track-list model item destructor
 qtractorTrackList::Item::~Item (void)
 {
+	if (meter) delete meter;
 	if (widget) delete widget;
 }
 
@@ -362,6 +369,10 @@ bool qtractorTrackList::Item::updateBankProgNames (
 // Track-list model item cache updater.
 void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 {
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return;
+
 	text.clear();
 
 	// Default initialization?
@@ -369,8 +380,13 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 		return;
 
 	if (widget == NULL) {
-		widget = new qtractorTrackItemWidget(pTrackList, track);
+		widget = new qtractorTrackItemWidget(track, pTrackList->viewport());
 		widget->lower();
+	}
+
+	if (meter) {
+		delete meter;
+		meter = NULL;
 	}
 
 	update_icon(pTrackList);
@@ -395,6 +411,24 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 				QString::number(pAudioBus->channels()) : s.right(1));
 			// Fillers...
 			text << s << s;
+			// Re-create the audio meter...
+			if (pOptions->bTrackListMeters && meter == NULL) {
+				qtractorAudioMonitor *pAudioMonitor
+					= static_cast<qtractorAudioMonitor *> (track->monitor());
+				if (pAudioMonitor) {
+					const int iAudioChannels = pAudioMonitor->channels();
+					if (iAudioChannels > 0) {
+						const int iColWidth
+							= pTrackList->header()->sectionSize(Channel);
+						const int iMinWidth = iColWidth / iAudioChannels - 1;
+						if (iMinWidth > 3) {
+							meter = new qtractorAudioMeter(
+								pAudioMonitor, pTrackList->viewport());
+							meter->lower();
+						}
+					}
+				}
+			}
 			break;
 		}
 
@@ -454,6 +488,16 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 			}
 			// This is it, MIDI Patch/Bank...
 			text << sProgName + '\n' + sBankName << sInstrumentName;
+			// Re-create the MIDI meter...
+			if (pOptions->bTrackListMeters && meter == NULL) {
+				qtractorMidiMonitor *pMidiMonitor
+					= static_cast<qtractorMidiMonitor *> (track->monitor());
+				if (pMidiMonitor) {
+					meter = new qtractorMidiMeter(
+						pMidiMonitor, pTrackList->viewport());
+					meter->lower();
+				}
+			}
 			break;
 		}
 
@@ -488,11 +532,10 @@ int qtractorTrackList::trackRow ( qtractorTrack *pTrack ) const
 	int iTrack = 0;
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
-		if (pTrack == iter.next()->track)
+		if (iter.next()->track == pTrack)
 			return iTrack;
 		++iTrack;
 	}
-
 	return -1;
 }
 
@@ -585,7 +628,9 @@ int qtractorTrackList::insertTrack ( int iTrack, qtractorTrack *pTrack )
 	if (iTrack < 0)
 		iTrack = m_items.count();
 
-	m_items.insert(iTrack, new Item(this, pTrack));
+	Item *pItem = new Item(pTrack);
+	m_items.insert(iTrack, pItem);
+	m_tracks.insert(pTrack, pItem);
 
 	return iTrack;
 }
@@ -602,8 +647,11 @@ int qtractorTrackList::removeTrack ( int iTrack )
 	if (m_select.contains(iTrack))
 		m_select.remove(iTrack);
 
-	delete m_items.at(iTrack);
+	Item *pItem = m_items.at(iTrack);
+	qtractorTrack *pTrack = pItem->track;
 	m_items.removeAt(iTrack);
+	m_tracks.remove(pTrack);
+	delete pItem;
 
 	if (m_iCurrentTrack >= m_items.count())
 		m_iCurrentTrack  = m_items.count() - 1;
@@ -668,17 +716,30 @@ qtractorTrack *qtractorTrackList::currentTrack (void) const
 // Find the list view item from track pointer reference.
 void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 {
+	Item *pItem = m_tracks.value(pTrack, NULL);
+	if (pItem)
+		pItem->update(this);
+
+	updateContents();
+}
+
+
+// Update all track-items/icons methods.
+void qtractorTrackList::updateItems (void)
+{
 	QListIterator<Item *> iter(m_items);
-	while (iter.hasNext()) {
-		Item *pItem = iter.next();
-		if (pTrack == NULL || pTrack == pItem->track) {
-			// Force update the data...
-			pItem->update(this);
-			// Specific bail out...
-			if (pTrack)
-				break;
-		}
-	}
+	while (iter.hasNext())
+		iter.next()->update(this);
+
+	updateContents();
+}
+
+
+void qtractorTrackList::updateIcons (void)
+{
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext())
+		iter.next()->update_icon(this);
 
 	updateContents();
 }
@@ -701,6 +762,7 @@ void qtractorTrackList::clear (void)
 
 	qDeleteAll(m_items);
 	m_items.clear();
+	m_tracks.clear();
 }
 
 
@@ -776,14 +838,19 @@ void qtractorTrackList::resizeEvent ( QResizeEvent *pResizeEvent )
 void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
 {
 	const bool bBlockSignals = m_pHeader->blockSignals(true);
-	if (iCol == Name && iColSize < 110)
+	if (iCol == Name && iColSize < 110) {
+		// Make sure this column stays legible...
 		m_pHeader->resizeSection(iCol, 110);
+	}
 	else
 	if (iCol == Number) {
 		// Resize all icons anyway...
-		QListIterator<Item *> iter(m_items);
-		while (iter.hasNext())
-			iter.next()->update_icon(this);
+		updateIcons();
+	}
+	else
+	if (iCol == Channel) {
+		// Reset all meter sizes anyway...
+		updateItems();
 	}
 	m_pHeader->blockSignals(bBlockSignals);
 
@@ -896,7 +963,7 @@ void qtractorTrackList::clearSelect (void)
 
 
 // Retrieve all current seleceted tracks but one.
-QList<qtractorTrack *> qtractorTrackList::selectedTracks(
+QList<qtractorTrack *> qtractorTrackList::selectedTracks (
 	qtractorTrack *pTrackEx, bool bAllTracks ) const
 {
 	QList<qtractorTrack *> tracks;
@@ -981,9 +1048,12 @@ void qtractorTrackList::drawCell (
 			pPainter->drawPixmap(x, y, pItem->icon) ;
 		}
 	} else if (iCol == Channel) {
-		pPainter->drawText(rectText,
-			Qt::AlignHCenter | Qt::AlignTop,
-			pItem->text.at(iCol - 1));
+		if ((pItem->track)->trackType() == qtractorTrack::Midi
+			|| pItem->meter == NULL) {
+			pPainter->drawText(rectText,
+				Qt::AlignHCenter | Qt::AlignTop,
+				pItem->text.at(iCol - 1));
+		}
 	} else {
 		if (iCol == Bus) {
 			const QPixmap *pPixmap = NULL;
@@ -1077,13 +1147,28 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 							(pItem->widget)->hide();
 						}
 					}
+					else
+					if (iCol == Channel && pItem->meter) {
+						const int dy1
+							= ((pItem->track)->trackType()
+								== qtractorTrack::Midi ? 20 : 4);
+						(pItem->meter)->setGeometry(rect.adjusted(+4, dy1, -2, -2));
+						(pItem->meter)->show();
+					}
 				}
 				else if (iCol == Name && pItem->widget)
 					(pItem->widget)->hide();
+				else if (iCol == Channel && pItem->meter)
+					(pItem->meter)->hide();
 				x += dx;
 			}
 		}
-		else if (pItem->widget) (pItem->widget)->hide();
+		else {
+			 if (pItem->widget)
+				(pItem->widget)->hide();
+			 if (pItem->meter)
+				(pItem->meter)->hide();
+		}
 		++iTrack;
 	}
 

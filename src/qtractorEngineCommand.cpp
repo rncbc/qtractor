@@ -444,7 +444,7 @@ bool qtractorBusCommand::deleteBus (void)
 
 
 // Monitor meter accessor.
-qtractorMeter *qtractorBusCommand::meter (void) const
+qtractorMixerMeter *qtractorBusCommand::meter (void) const
 {
 	qtractorBus *pBus = bus();
 	if (pBus == NULL)
@@ -642,9 +642,9 @@ qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 	m_fGain = fGain;
 	m_fPrevGain = 1.0f;
 
-	qtractorMeter *pMeter = meter();
-	if (pMeter)
-		m_fPrevGain = pMeter->prevGain();
+	qtractorMixerMeter *pMixerMeter = meter();
+	if (pMixerMeter)
+		m_fPrevGain = pMixerMeter->prevGain();
 
 	// Try replacing an previously equivalent command...
 	static qtractorBusGainCommand *s_pPrevGainCommand = NULL;
@@ -686,9 +686,9 @@ bool qtractorBusGainCommand::redo (void)
 	// Set Bus gain (repective monitor gets set too...)
 	const float fGain = m_fPrevGain;
 
-	qtractorMeter *pMeter = meter();
-	if (pMeter)
-		pMeter->setGain(m_fGain);
+	qtractorMixerMeter *pMixerMeter = meter();
+	if (pMixerMeter)
+		pMixerMeter->setGain(m_fGain);
 
 	// MIDI buses are special...
 	if (pBus->busType() == qtractorTrack::Midi) {
@@ -719,9 +719,9 @@ qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 	m_fPanning = fPanning;
 	m_fPrevPanning = 0.0f;
 	
-	qtractorMeter *pMeter = meter();
-	if (pMeter)
-		m_fPrevPanning = pMeter->prevPanning();
+	qtractorMixerMeter *pMixerMeter = meter();
+	if (pMixerMeter)
+		m_fPrevPanning = pMixerMeter->prevPanning();
 
 	// Try replacing an previously equivalent command...
 	static qtractorBusPanningCommand *s_pPrevPanningCommand = NULL;
@@ -763,9 +763,9 @@ bool qtractorBusPanningCommand::redo (void)
 	// Set Bus panning (repective monitor gets set too...)
 	const float fPanning = m_fPrevPanning;
 
-	qtractorMeter *pMeter = meter();
-	if (pMeter)
-		pMeter->setPanning(m_fPanning);
+	qtractorMixerMeter *pMixerMeter = meter();
+	if (pMixerMeter)
+		pMixerMeter->setPanning(m_fPanning);
 
 	// MIDI buses are special...
 	if (pBus->busType() == qtractorTrack::Midi) {
