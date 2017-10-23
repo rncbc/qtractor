@@ -2150,6 +2150,11 @@ Are you sure?</source>
         <translation>Импортировать файлы инструментов</translation>
     </message>
     <message>
+        <location filename="../qtractorInstrumentForm.cpp" line="224"/>
+        <source>Instrument files (*.%1 *.sf2 *.midnam)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorInstrumentForm.cpp" line="384"/>
         <source>Instrument files (*.%1)</source>
         <translation>Файлы инструментов (*.%1)</translation>
@@ -2158,11 +2163,6 @@ Are you sure?</source>
         <location filename="../qtractorInstrumentForm.cpp" line="382"/>
         <source>Export Instrument File</source>
         <translation>Экспортировать файлы инструментов</translation>
-    </message>
-    <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="224"/>
-        <source>Instrument files (*.%1 *.sf2 *.sf3 *.midnam)</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="421"/>

@@ -2159,6 +2159,11 @@ Jste si jistý?</translation>
         <translation>Zavést soubory s nástroji</translation>
     </message>
     <message>
+        <location filename="../qtractorInstrumentForm.cpp" line="224"/>
+        <source>Instrument files (*.%1 *.sf2 *.midnam)</source>
+        <translation>Soubory nástrojů (*.%1 *.sf2 *.midnam))</translation>
+    </message>
+    <message>
         <location filename="../qtractorInstrumentForm.cpp" line="384"/>
         <source>Instrument files (*.%1)</source>
         <translation>Soubory s nástroji (*.%1)</translation>
@@ -2167,11 +2172,6 @@ Jste si jistý?</translation>
         <location filename="../qtractorInstrumentForm.cpp" line="382"/>
         <source>Export Instrument File</source>
         <translation>Vyvést soubor s nástrojem</translation>
-    </message>
-    <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="224"/>
-        <source>Instrument files (*.%1 *.sf2 *.sf3 *.midnam)</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="421"/>

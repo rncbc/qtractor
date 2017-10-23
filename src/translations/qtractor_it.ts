@@ -2255,8 +2255,8 @@ Sei sicuro?</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="224"/>
-        <source>Instrument files (*.%1 *.sf2 *.sf3 *.midnam)</source>
-        <translation type="unfinished"></translation>
+        <source>Instrument files (*.%1 *.sf2 *.midnam)</source>
+        <translation>File strumenti (*.%1 *.sf2 *.midnam)</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="382"/>
