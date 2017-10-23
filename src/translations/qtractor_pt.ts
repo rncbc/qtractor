@@ -2227,6 +2227,11 @@ Você quer substituí-lo?</translation>
         <translation>Importar Arquivo de Instrumento</translation>
     </message>
     <message>
+        <location filename="../qtractorInstrumentForm.cpp" line="224"/>
+        <source>Instrument files (*.%1 *.sf2 *.sf3 *.midnam)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorInstrumentForm.cpp" line="736"/>
         <source>Normal</source>
         <translation>Normal</translation>
@@ -2265,11 +2270,6 @@ Você quer substituí-lo?</translation>
         <location filename="../qtractorInstrumentForm.ui" line="220"/>
         <source>E&amp;xport...</source>
         <translation>E&amp;xportar...</translation>
-    </message>
-    <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="224"/>
-        <source>Instrument files (*.%1 *.sf2 *.midnam)</source>
-        <translation>Arquivos de instrumento (*.%1 *.sf2 *.midnam)</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="663"/>
