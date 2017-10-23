@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Added *.SF3 to soundfont instrument files filter, on View 
+  > Instruments... > Import... file dialog.
+
 - A brand new View/Options.../Display/Meters/Show meters on
   track list/left pane option has been added. (EXPERIMENTAL)
 

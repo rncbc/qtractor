@@ -2160,8 +2160,8 @@ Jste si jistý?</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="224"/>
-        <source>Instrument files (*.%1 *.sf2 *.midnam)</source>
-        <translation>Soubory nástrojů (*.%1 *.sf2 *.midnam))</translation>
+        <source>Instrument files (*.%1 *.sf2 *.sf3 *.midnam)</source>
+        <translation>Soubory nástrojů (*.%1 *.sf2 *.sf3 *.midnam))</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="384"/>
