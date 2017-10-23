@@ -5229,7 +5229,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2943"/>
         <source>Transport mode: Master</source>
-        <translation>Mode de trasnport : Maître</translation>
+        <translation>Mode de transport : Maître</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2946"/>
