@@ -10439,12 +10439,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2874"/>
         <source>Whether to show meters on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se muestran los medidores en la lista de pistas/panel izquierdo</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2877"/>
         <source>Sho&amp;w meters on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>M&amp;ostrar medidores en la lista de pistas/panel izquierdo</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2893"/>
