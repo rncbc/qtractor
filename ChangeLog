@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 Time/Transport speed information is now set on rolling
+  when in audio export aka freewheeling mode. (EXPERIMENTAL)
+
 - Added *.SF3 to soundfont instrument files filter, on View 
   > Instruments... > Import... file dialog.
 
