@@ -1686,7 +1686,7 @@ void qtractorSession::trackRecord (
 		// iif armed while already playing ...
 		if (bPlaying) {
 			const unsigned long iTime = pMidiClip->clipStartTime();
-			const unsigned long iTimeStart = m_pMidiEngine->timeStart();
+			const unsigned long iTimeStart = m_pMidiEngine->timeStartEx();
 			if (iTime > iTimeStart)
 				pMidiClip->sequence()->setTimeOffset(iTime - iTimeStart);
 		}

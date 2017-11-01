@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI input/capture time-stamping has been fixed as much
+  to avoid missing inbound events, when play-head is near
+  the loop-end point and the loop-start is set below the
+  absolute first half-a-second (<0.5sec). (EXPERIMENTAL)
+  
 - LV2 Time/Transport speed information is now set on rolling
   when in audio export aka freewheeling mode. (EXPERIMENTAL)
 

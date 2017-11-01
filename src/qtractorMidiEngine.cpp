@@ -1214,6 +1214,8 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iTimeStartEx  = 0;
 	m_iFrameStartEx = 0;
 
+	m_iAudioFrameStart = 0;
+
 	m_bControlBus   = false;
 	m_pIControlBus  = NULL;
 	m_pOControlBus  = NULL;
@@ -1727,39 +1729,29 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	qtractorTimeScale::Node *pNode;
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
 
-	const unsigned long iTime = m_iTimeStart + tick;
+	unsigned long iTime = m_iTimeStartEx + tick;
 
-	// Wrap in recording, if any...
-	unsigned long iTimeEx = 0;
-	bool bRecording = (pSession->isRecording() && isPlaying());
-	if (bRecording ) {
-		iTimeEx = m_iTimeStartEx + tick;
-		// Take care of recording loop-range...
-		if (pSession->isLooping()) {
-			const unsigned long iLoopEnd = pSession->loopEnd();
-			pNode = cursor.seekFrame(iLoopEnd);
-			const unsigned long iLoopEndTime
-				= pNode->tickFromFrame(iLoopEnd);
-			if (iTime < iLoopEndTime && iTimeEx > iLoopEndTime) {
-				const unsigned long iLoopStart = pSession->loopStart();
-				pNode = cursor.seekFrame(iLoopStart);
-				const unsigned long iLoopStartTime
-					= pNode->tickFromFrame(iLoopStart);
-				iTimeEx = iLoopStartTime
-					+ (iTimeEx - iLoopEndTime)
-					% (iLoopEndTime - iLoopStartTime);
-			}
+	// Take care of loop-range...
+	if (pSession->isLooping()) {
+		const unsigned long iLoopEnd = pSession->loopEnd();
+		pNode = cursor.seekFrame(iLoopEnd);
+		const unsigned long iLoopEndTime
+			= pNode->tickFromFrame(iLoopEnd);
+		if (iTime > iLoopEndTime) {
+			const unsigned long iLoopStart = pSession->loopStart();
+			pNode = cursor.seekFrame(iLoopStart);
+			const unsigned long iLoopStartTime
+				= pNode->tickFromFrame(iLoopStart);
+			iTime = iLoopStartTime
+				+ (iTime - iLoopEndTime)
+				% (iLoopEndTime - iLoopStartTime);
 		}
-		// Take care of punch-in/out-range...
-		bRecording = (!pSession->isPunching() ||
-			(iTimeEx >= pSession->punchInTime() &&
-			 iTimeEx <  pSession->punchOutTime()));
 	}
 
-	const long f0 = m_iFrameStart;
+	const unsigned long f0 = m_iFrameStartEx;
 	pNode = cursor.seekTick(iTime);
 	const unsigned long t0 = pNode->frameFromTick(iTime);
-	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
+	const unsigned long t1 = (t0 < f0 ? t0 : t0 - f0);
 #if 0//-- Unlikely real-time input.
 	unsigned long t2 = t1;
 	if (type == qtractorMidiEvent::NOTEON && duration > 0) {
@@ -1768,6 +1760,16 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		t2 += (pNode->frameFromTick(iTimeOff) - t0);
 	}
 #endif
+
+	// Wrap in recording, if any...
+	bool bRecording = (pSession->isRecording() && isPlaying());
+	if (bRecording) {
+		// Take care of punch-in/out-range...
+		bRecording = (!pSession->isPunching() ||
+			(iTime >= pSession->punchInTime() &&
+			 iTime <  pSession->punchOutTime()));
+	}
+
 	// Now check which bus and track we're into...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -1798,8 +1800,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							= pMidiClip->clipStartTime();
 						const unsigned long iClipEndTime
 							= iClipStartTime + pMidiClip->clipLengthTime();
-						if (iTimeEx >= iClipStartTime && iTimeEx < iClipEndTime)
-							tick = iTimeEx - iClipStartTime;
+						if (iTime >= iClipStartTime && iTime < iClipEndTime)
+							tick = iTime - iClipStartTime;
 						else
 						if (type != qtractorMidiEvent::NOTEOFF)
 							pSeq = NULL;
@@ -2154,8 +2156,8 @@ void qtractorMidiEngine::driftCheck (void)
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
-		const long iAudioFrame
-			= m_iFrameStart	+ pAudioEngine->jackFrameTime() - m_iFrameStartEx;
+		const long iAudioFrame = m_iFrameStart
+			+ pAudioEngine->jackFrameTime() - m_iAudioFrameStart;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		const long iAudioTime
 			= long(pNode->tickFromFrame(iAudioFrame)) - m_iTimeStart;
@@ -2321,8 +2323,10 @@ bool qtractorMidiEngine::activate (void)
 	m_iTimeStart  = 0;
 	m_iFrameStart = 0;
 
-	m_iTimeStartEx = m_iTimeStart;
-	m_iFrameStartEx = pSession->audioEngine()->jackFrameTime();
+	m_iTimeStartEx  = m_iTimeStart;
+	m_iFrameStartEx = m_iFrameStart;
+
+	m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
 
 	// Reset output queue drift compensator...
 	resetDrift();
@@ -2370,8 +2374,10 @@ bool qtractorMidiEngine::start (void)
 	m_iFrameStart = long(pMidiCursor->frame());
 	m_iTimeStart  = long(pSession->tickFromFrame(m_iFrameStart));
 
-	m_iTimeStartEx = m_iTimeStart;
-	m_iFrameStartEx = pSession->audioEngine()->jackFrameTime();
+	m_iTimeStartEx  = m_iTimeStart;
+	m_iFrameStartEx = m_iFrameStart;
+
+	m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
@@ -2487,12 +2493,14 @@ void qtractorMidiEngine::clean (void)
 	clearSysexCache();
 
 	// And all other timing tracers.
-	m_iTimeStart = 0;
-	m_iTimeDrift = 0;
+	m_iTimeStart  = 0;
+	m_iTimeDrift  = 0;
 	m_iFrameStart = 0;
 
-	m_iTimeStartEx = 0;
+	m_iTimeStartEx  = 0;
 	m_iFrameStartEx = 0;
+
+	m_iAudioFrameStart = 0;
 }
 
 
