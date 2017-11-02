@@ -1818,7 +1818,10 @@ bool qtractorSession::canTrackBeAutoDeactivated ( qtractorTrack *pTrack ) const
 		if (isPlaying()) {
 			// TBD: We know when clips start/end. So if 'just' need a
 			// clever song pos synced call of autoPluginsDeactivate
-			bCanBeDeactivated = !isTrackMonitor(pTrack) && pTrack->isMute();
+			bool bMute = pTrack->isMute();
+			if(!bMute)
+				bMute = m_iSoloTracks > 0 && !pTrack->isSolo();
+			bCanBeDeactivated = !isTrackMonitor(pTrack) && bMute;
 		} else {
 			bCanBeDeactivated = !isTrackMonitor(pTrack);
 		}
