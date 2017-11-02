@@ -1415,6 +1415,17 @@ bool qtractorSession::isLooping (void) const
 }
 
 
+unsigned long qtractorSession::loopStartTime (void) const
+{
+	return m_iLoopStartTime;
+}
+
+unsigned long qtractorSession::loopEndTime (void) const
+{
+	return m_iLoopEndTime;
+}
+
+
 // Session punch points accessors.
 void qtractorSession::setPunch (
 	unsigned long iPunchIn, unsigned long iPunchOut )
@@ -1686,7 +1697,7 @@ void qtractorSession::trackRecord (
 		// iif armed while already playing ...
 		if (bPlaying) {
 			const unsigned long iTime = pMidiClip->clipStartTime();
-			const unsigned long iTimeStart = m_pMidiEngine->timeStart();
+			const unsigned long iTimeStart = m_pMidiEngine->timeStartEx();
 			if (iTime > iTimeStart)
 				pMidiClip->sequence()->setTimeOffset(iTime - iTimeStart);
 		}

@@ -345,6 +345,8 @@ private:
 	unsigned long m_iTimeStartEx;
 	unsigned long m_iFrameStartEx;
 
+	unsigned long m_iAudioFrameStart;
+
 	// The assigned control buses.
 	bool             m_bControlBus;
 	qtractorMidiBus *m_pIControlBus;
