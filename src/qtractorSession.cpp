@@ -1415,6 +1415,17 @@ bool qtractorSession::isLooping (void) const
 }
 
 
+unsigned long qtractorSession::loopStartTime (void) const
+{
+	return m_iLoopStartTime;
+}
+
+unsigned long qtractorSession::loopEndTime (void) const
+{
+	return m_iLoopEndTime;
+}
+
+
 // Session punch points accessors.
 void qtractorSession::setPunch (
 	unsigned long iPunchIn, unsigned long iPunchOut )

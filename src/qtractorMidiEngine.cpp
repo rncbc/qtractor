@@ -1725,32 +1725,32 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		return;
 	}
 
-	qtractorMidiManager *pMidiManager;
-	qtractorTimeScale::Node *pNode;
-	qtractorTimeScale::Cursor cursor(pSession->timeScale());
-
 	unsigned long iTime = m_iTimeStartEx + tick;
 
-	// Take care of loop-range...
+	// Wrap in loop-range, if any...
 	if (pSession->isLooping()) {
-		const unsigned long iLoopEnd = pSession->loopEnd();
-		pNode = cursor.seekFrame(iLoopEnd);
-		const unsigned long iLoopEndTime
-			= pNode->tickFromFrame(iLoopEnd);
+		const unsigned long iLoopEndTime = pSession->loopEndTime();
 		if (iTime > iLoopEndTime) {
-			const unsigned long iLoopStart = pSession->loopStart();
-			pNode = cursor.seekFrame(iLoopStart);
-			const unsigned long iLoopStartTime
-				= pNode->tickFromFrame(iLoopStart);
+			const unsigned long iLoopStartTime = pSession->loopStartTime();
 			iTime = iLoopStartTime
 				+ (iTime - iLoopEndTime)
 				% (iLoopEndTime - iLoopStartTime);
 		}
 	}
 
-	const unsigned long f0 = m_iFrameStartEx;
-	pNode = cursor.seekTick(iTime);
+	// Take care of recording, if any...
+	bool bRecording = (pSession->isRecording() && isPlaying());
+	if (bRecording) {
+		// Take care of punch-in/out-range...
+		bRecording = (!pSession->isPunching() ||
+			(iTime >= pSession->punchInTime() &&
+			 iTime <  pSession->punchOutTime()));
+	}
+
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
 	const unsigned long t0 = pNode->frameFromTick(iTime);
+	const unsigned long f0 = m_iFrameStartEx;
 	const unsigned long t1 = (t0 < f0 ? t0 : t0 - f0);
 #if 0//-- Unlikely real-time input.
 	unsigned long t2 = t1;
@@ -1761,14 +1761,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	}
 #endif
 
-	// Wrap in recording, if any...
-	bool bRecording = (pSession->isRecording() && isPlaying());
-	if (bRecording) {
-		// Take care of punch-in/out-range...
-		bRecording = (!pSession->isPunching() ||
-			(iTime >= pSession->punchInTime() &&
-			 iTime <  pSession->punchOutTime()));
-	}
+	qtractorMidiManager *pMidiManager;
 
 	// Now check which bus and track we're into...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
@@ -2509,11 +2502,10 @@ void qtractorMidiEngine::restartLoop (void)
 {
 	qtractorSession *pSession = session();
 	if (pSession && pSession->isLooping()) {
-		const unsigned long iLoopStart = pSession->loopStart();
-		const unsigned long iLoopEnd = pSession->loopEnd();
-		m_iFrameStart -= long(iLoopEnd - iLoopStart);
-		m_iTimeStart  -= pSession->tickFromFrame(iLoopEnd);
-		m_iTimeStart  += pSession->tickFromFrame(iLoopStart);
+		m_iFrameStart -= pSession->loopEnd();
+		m_iFrameStart += pSession->loopStart();
+		m_iTimeStart  -= pSession->loopEndTime();
+		m_iTimeStart  += pSession->loopStartTime();
 	//	m_iTimeDrift = 0; -- Drift correction?
 	//	resetDrift();
 	}
