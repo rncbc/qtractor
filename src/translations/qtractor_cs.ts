@@ -34,16 +34,16 @@ Audio:	%1 channels, %2 Hz</source>
 	(posunutí výšky tónu v půltónech %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2470"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2778"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2475"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2783"/>
         <location filename="../qtractorMidiEngine.cpp" line="3977"/>
         <location filename="../qtractorMidiEngine.cpp" line="4526"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2479"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2778"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2484"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2783"/>
         <location filename="../qtractorMidiEngine.cpp" line="3986"/>
         <location filename="../qtractorMidiEngine.cpp" line="4526"/>
         <source>%1 Out</source>
@@ -147,7 +147,7 @@ Konec:	%2	Délka:	%3</translation>
         <translation>%1 Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1341"/>
+        <location filename="../qtractorMidiManager.cpp" line="1328"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banka %2</translation>
     </message>
@@ -633,15 +633,15 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1 Hlasitost</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2472"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2481"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2477"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2486"/>
         <location filename="../qtractorTrack.cpp" line="685"/>
         <source>%1 Gain</source>
         <translation>%1 Zesílení</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2474"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2483"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2479"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2488"/>
         <location filename="../qtractorMidiEngine.cpp" line="3981"/>
         <location filename="../qtractorMidiEngine.cpp" line="3990"/>
         <location filename="../qtractorTrack.cpp" line="688"/>
@@ -735,58 +735,58 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Autorské právo: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2048"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2051"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3119"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3122"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation>Vybrat editor (rozhraní) přídavného modulu:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3131"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3134"/>
         <source>External</source>
         <translation>Vnější</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3134"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3137"/>
         <source>X11</source>
         <translation>X11</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3137"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3140"/>
         <source>Gtk2</source>
         <translation>Gtk2</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3141"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3144"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3145"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3148"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3150"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3153"/>
         <source>Other</source>
         <translation>Jiné</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3158"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3161"/>
         <source>Don&apos;t ask this again</source>
         <translation>Neptat se znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3480"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
         <source>plugin parameters</source>
         <translation>Parametry přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2056"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2059"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
@@ -2160,8 +2160,8 @@ Jste si jistý?</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="224"/>
-        <source>Instrument files (*.%1 *.sf2 *.midnam)</source>
-        <translation>Soubory nástrojů (*.%1 *.sf2 *.midnam))</translation>
+        <source>Instrument files (*.%1 *.sf2 *.sf3 *.midnam)</source>
+        <translation>Soubory nástrojů (*.%1 *.sf2 *.sf3 *.midnam))</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="384"/>

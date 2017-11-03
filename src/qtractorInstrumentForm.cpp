@@ -221,7 +221,7 @@ void qtractorInstrumentForm::importSlot (void)
 	const QString& sTitle
 		= tr("Import Instrument Files") + " - " QTRACTOR_TITLE;
 	const QString& sFilter
-		= tr("Instrument files (*.%1 *.sf2 *.midnam)").arg(sExt);
+		= tr("Instrument files (*.%1 *.sf2 *.sf3 *.midnam)").arg(sExt);
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;

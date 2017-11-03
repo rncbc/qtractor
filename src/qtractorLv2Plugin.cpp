@@ -1250,6 +1250,9 @@ bool qtractorLv2Plugin::Property::isPath (void) const
 
 #ifdef CONFIG_LV2_TIME
 
+// JACK Transport position support.
+#include <jack/transport.h>
+
 // LV2 Time-position control structure.
 static struct qtractorLv2Time
 {
@@ -4687,7 +4690,7 @@ inline void qtractor_lv2_time_update ( int i, float fValue )
 	}
 }
 
-void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
+void qtractorLv2Plugin::updateTime ( qtractorAudioEngine *pAudioEngine )
 {
 	if (g_lv2_time_refcount < 1)
 		return;
@@ -4698,7 +4701,7 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 
 	jack_position_t pos;
 	jack_transport_state_t state
-		= jack_transport_query(pJackClient, &pos);
+		= jack_transport_query(pAudioEngine->jackClient(), &pos);
 
 #if 0//QTRACTOR_LV2_TIME_POSITION_FRAME
 	qtractor_lv2_time_update(
@@ -4710,7 +4713,8 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 		float(pos.frame_rate));
 	qtractor_lv2_time_update(
 		qtractorLv2Time::speed,
-		(state == JackTransportRolling ? 1.0f : 0.0f));
+		(state == JackTransportRolling
+		|| pAudioEngine->isFreewheel() ? 1.0f : 0.0f));
 
 	if (pos.valid & JackPositionBBT) {
 		qtractor_lv2_time_update(
@@ -4810,6 +4814,7 @@ void qtractorLv2Plugin::updateTimePost (void)
 		}
 	}
 }
+
 
 #ifdef CONFIG_LV2_TIME_POSITION
 // Make ready LV2 Time position.

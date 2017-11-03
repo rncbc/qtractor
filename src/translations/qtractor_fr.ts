@@ -34,16 +34,16 @@ Audio :	%1 canaux, %2 Hz</translation>
         <translation>	(%1 demi-tons de décalage de la tonalité)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2470"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2778"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2475"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2783"/>
         <location filename="../qtractorMidiEngine.cpp" line="3977"/>
         <location filename="../qtractorMidiEngine.cpp" line="4526"/>
         <source>%1 In</source>
         <translation>%1 Entrée</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2479"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2778"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2484"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2783"/>
         <location filename="../qtractorMidiEngine.cpp" line="3986"/>
         <location filename="../qtractorMidiEngine.cpp" line="4526"/>
         <source>%1 Out</source>
@@ -312,7 +312,7 @@ Fin :	%3	Longueur :	%4</translation>
         <translation>%1 Banque %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1341"/>
+        <location filename="../qtractorMidiManager.cpp" line="1328"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banque %2</translation>
     </message>
@@ -585,15 +585,15 @@ MIDI:	</translation>
         <translation>%1 Volume</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2472"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2481"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2477"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2486"/>
         <location filename="../qtractorTrack.cpp" line="685"/>
         <source>%1 Gain</source>
         <translation>%1 Gain</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2474"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2483"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2479"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2488"/>
         <location filename="../qtractorMidiEngine.cpp" line="3981"/>
         <location filename="../qtractorMidiEngine.cpp" line="3990"/>
         <location filename="../qtractorTrack.cpp" line="688"/>
@@ -735,58 +735,58 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Copyright :</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2048"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2051"/>
         <source>Project: </source>
         <translation>Projet: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3119"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3122"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation>Sélectionner l&apos;éditeur de greffon (interface graphique) :</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3131"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3134"/>
         <source>External</source>
         <translation>Externe</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3134"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3137"/>
         <source>X11</source>
         <translation>X11</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3137"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3140"/>
         <source>Gtk2</source>
         <translation>Gtk2</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3141"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3144"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3145"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3148"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3150"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3153"/>
         <source>Other</source>
         <translation>Autre</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3158"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3161"/>
         <source>Don&apos;t ask this again</source>
         <translation>Ne pas redemander</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3480"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
         <source>plugin parameters</source>
         <translation>paramètres du greffon</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2056"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2059"/>
         <source>Author: </source>
         <translation>Auteur : </translation>
     </message>
@@ -844,22 +844,22 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="615"/>
         <source>Gain (dB)</source>
-        <translation type="unfinished">Gain (dB)</translation>
+        <translation>Gain (dB)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="616"/>
         <source> dB</source>
-        <translation type="unfinished"> dB</translation>
+        <translation> dB</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="686"/>
         <source>Pan: %1</source>
-        <translation type="unfinished">Pan: %1</translation>
+        <translation>Pan : %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="695"/>
         <source>Gain: %1 dB</source>
-        <translation type="unfinished">Gain: %1 dB</translation>
+        <translation>Gain : %1 dB</translation>
     </message>
 </context>
 <context>
@@ -2254,8 +2254,8 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="224"/>
-        <source>Instrument files (*.%1 *.sf2 *.midnam)</source>
-        <translation>Fichiers instrument (*.%1 *.sf2 *.midnam)</translation>
+        <source>Instrument files (*.%1 *.sf2 *.sf3 *.midnam)</source>
+        <translation>Fichiers instrument (*.%1 *.sf2 *.sf3 *.midnam)</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="382"/>
@@ -5229,7 +5229,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2943"/>
         <source>Transport mode: Master</source>
-        <translation>Mode de trasnport : Maître</translation>
+        <translation>Mode de transport : Maître</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2946"/>
@@ -8659,22 +8659,22 @@ Voulez-vous sauvegarder les changements ?</translation>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="469"/>
         <source>Volume (%)</source>
-        <translation type="unfinished">Volume (%)</translation>
+        <translation>Volume (%)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="470"/>
         <source> %</source>
-        <translation type="unfinished"> %</translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="535"/>
         <source>Pan: %1</source>
-        <translation type="unfinished">Pan: %1</translation>
+        <translation>Pan : %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="545"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished">Volume: %1%</translation>
+        <translation>Volume : %1%</translation>
     </message>
 </context>
 <context>
@@ -9382,12 +9382,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMeter.cpp" line="312"/>
         <source>Pan</source>
-        <translation type="unfinished">Pan</translation>
+        <translation>Pan</translation>
     </message>
     <message>
         <location filename="../qtractorMeter.cpp" line="324"/>
         <source>Gain</source>
-        <translation type="unfinished">Gain</translation>
+        <translation>Gain</translation>
     </message>
 </context>
 <context>
@@ -10309,12 +10309,12 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2874"/>
         <source>Whether to show meters on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Si l&apos;on affiche ou non les mesureurs sur le panneau de gauche/liste de piste</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2877"/>
         <source>Sho&amp;w meters on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche les mesureurs sur le panneau de gauche/liste de piste</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3580"/>

@@ -915,7 +915,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 #ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_TIME
-	qtractorLv2Plugin::updateTime(m_pJackClient);
+	qtractorLv2Plugin::updateTime(this);
 #endif
 #endif
 
@@ -1121,7 +1121,7 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 		// Force/sync every audio clip approaching...
 	#ifdef CONFIG_LV2
 	#ifdef CONFIG_LV2_TIME
-		qtractorLv2Plugin::updateTime(m_pJackClient);
+		qtractorLv2Plugin::updateTime(this);
 	#endif
 	#endif
 		// MIDI plugin manager processing...
@@ -1481,6 +1481,11 @@ bool qtractorAudioEngine::fileExport (
 
 	while (m_bExporting && !m_bExportDone) {
 		qtractorSession::stabilize(200);
+	#ifdef CONFIG_LV2
+	#ifdef CONFIG_LV2_TIME
+		qtractorLv2Plugin::updateTimePost();
+	#endif
+	#endif
 		::nanosleep(&ts, NULL); // Ain't that enough?
 		pProgressBar->setValue(pSession->playHead());
 	}
