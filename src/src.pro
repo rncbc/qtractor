@@ -94,6 +94,7 @@ HEADERS += config.h \
 	qtractorPlugin.h \
 	qtractorPluginFactory.h \
 	qtractorPluginCommand.h \
+	qtractorPluginListDocument.h \
 	qtractorPluginListView.h \
 	qtractorPropertyCommand.h \
 	qtractorRingBuffer.h \
@@ -218,6 +219,7 @@ SOURCES += \
 	qtractorPlugin.cpp \
 	qtractorPluginFactory.cpp \
 	qtractorPluginCommand.cpp \
+	qtractorPluginListDocument.cpp \
 	qtractorPluginListView.cpp \
 	qtractorRubberBand.cpp \
 	qtractorScrollView.cpp \
