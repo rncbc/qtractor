@@ -65,8 +65,6 @@ bool qtractorPluginCommand::addPlugins (void)
 	if (pSession == NULL)
 		return false;
 
-//	pSession->lock();
-
 	// Add all listed plugins, in order...
 	QListIterator<qtractorPlugin *> iter(m_plugins);
 	while (iter.hasNext()) {
@@ -77,8 +75,6 @@ bool qtractorPluginCommand::addPlugins (void)
 	}
 	// Avoid the disposal of the plugin reference(s).
 	setAutoDelete(false);
-
-//	pSession->unlock();
 
 	return true;
 }
@@ -91,8 +87,6 @@ bool qtractorPluginCommand::removePlugins (void)
 	if (pSession == NULL)
 		return false;
 
-//	pSession->lock();
-
 	// Unlink all listed plugins, in order...
 	QListIterator<qtractorPlugin *> iter(m_plugins);
 	iter.toBack();
@@ -104,8 +98,6 @@ bool qtractorPluginCommand::removePlugins (void)
 	}
 	// Allow the disposal of the plugin reference(s).
 	setAutoDelete(true);
-
-//	pSession->unlock();
 
 	return true;
 }
@@ -284,8 +276,6 @@ bool qtractorInsertPluginCommand::redo (void)
 	if (pPluginList == NULL)
 		return false;
 
-//	pSession->lock();
-
 	qtractorPlugin *pNextPlugin = pPlugin->next();
 
 	// Insert it...
@@ -296,8 +286,6 @@ bool qtractorInsertPluginCommand::redo (void)
 
 	// Whether to allow the disposal of the plugin reference.
 	setAutoDelete(false);
-
-//	pSession->unlock();
 
 	return true;
 }
@@ -317,8 +305,6 @@ bool qtractorInsertPluginCommand::undo (void)
 	if (pPluginList == NULL)
 		return false;
 
-//	pSession->lock();
-
 	qtractorPlugin *pNextPlugin = pPlugin->next();
 
 	// Insert it...
@@ -329,8 +315,6 @@ bool qtractorInsertPluginCommand::undo (void)
 
 	// Whether to allow the disposal of the plugin reference.
 	setAutoDelete(true);
-
-//	pSession->unlock();
 
 	return true;
 }

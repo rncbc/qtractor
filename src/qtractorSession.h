@@ -229,7 +229,7 @@ public:
 	// Session RT-safe pseudo-locking primitives.
 	bool acquire();
 	void release();
-	void lock();
+	void lock(bool bStabilize = false);
 	void unlock();
 
 	// Re-entrancy check.

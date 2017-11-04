@@ -1620,10 +1620,17 @@ void qtractorPluginList::insertPlugin (
 	// We'll get prepared before plugging it in...
 	pPlugin->setChannels(m_iChannels);
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Do not perform events while locking - list views are not yet updated.
+	pSession->lock(false);
 	if (pNextPlugin)
 		insertBefore(pPlugin, pNextPlugin);
 	else
 		append(pPlugin);
+	pSession->unlock();
 
 	// Now update each observer list-view...
 	QListIterator<qtractorPluginListView *> iter(m_views);
@@ -1654,13 +1661,15 @@ void qtractorPluginList::movePlugin (
 	if (pPluginList == NULL)
 		return;
 
-	// Remove and insert back again...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Do not perform events while locking - list views are not yet updated.
+	pSession->lock(false);
+	// Remove it -> it is no more processed by worker thread.
 	pPluginList->unlink(pPlugin);
-	if (pNextPlugin) {
-		insertBefore(pPlugin, pNextPlugin);
-	} else {
-		append(pPlugin);
-	}
+	pSession->unlock();
 
 	// DANGER: Gasp, we might be not the same...
 	if (pPluginList != this) {
@@ -1713,6 +1722,16 @@ void qtractorPluginList::movePlugin (
 		pListView->setCurrentItem(pNextItem);
 	}
 
+	// Views are updated so perform events during lock.
+	pSession->lock();
+	// Insert back again -> processing continues.
+	if (pNextPlugin) {
+		insertBefore(pPlugin, pNextPlugin);
+	} else {
+		append(pPlugin);
+	}
+	pSession->unlock();
+
 	// update (both) lists for Auto-plugin-deactivation
 	autoDeactivatePlugins(m_bAutoDeactivated, true);
 	if (pPluginList != this)
@@ -1723,8 +1742,15 @@ void qtractorPluginList::movePlugin (
 // Remove-guarded plugin method.
 void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 {
-	// Just unlink the plugin from the list...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// Views are not touched here so perform events.
+	pSession->lock();
+	// Remove it -> it is no more processed by worker thread.
 	unlink(pPlugin);
+	pSession->unlock();
 
 	if (pPlugin->isActivated())
 		updateActivated(false);
