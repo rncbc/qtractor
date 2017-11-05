@@ -45,6 +45,8 @@ HEADERS += config.h \
 	qtractorFileList.h \
 	qtractorFileListView.h \
 	qtractorFiles.h \
+	qtractorMidiImportExtender.h \
+	qtractorMidiImportForm.h \
 	qtractorInsertPlugin.h \
 	qtractorInstrument.h \
 	qtractorInstrumentMenu.h \
@@ -202,6 +204,8 @@ SOURCES += \
 	qtractorMidiEventList.cpp \
 	qtractorMidiFile.cpp \
 	qtractorMidiFileTempo.cpp \
+	qtractorMidiImportExtender.cpp \
+	qtractorMidiImportForm.cpp \
 	qtractorMidiListView.cpp \
 	qtractorMidiManager.cpp \
 	qtractorMidiMeter.cpp \
@@ -276,6 +280,7 @@ FORMS += \
 	qtractorMidiControlForm.ui \
 	qtractorMidiControlObserverForm.ui \
 	qtractorMidiEditorForm.ui \
+	qtractorMidiImportForm.ui \
 	qtractorMidiSysexForm.ui \
 	qtractorMidiToolsForm.ui \
 	qtractorOptionsForm.ui \

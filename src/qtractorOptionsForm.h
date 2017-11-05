@@ -28,6 +28,7 @@
 // Forward declarations...
 class qtractorOptions;
 class qtractorTimeScale;
+class qtractorMidiImportExtender;
 
 
 //----------------------------------------------------------------------------
@@ -76,6 +77,7 @@ protected slots:
 	void chooseMessagesFont();
 	void chooseMessagesLogPath();
 	void chooseSessionTemplatePath();
+	void showMidiImportDialog();
 	void stabilizeForm();
 
 protected:
@@ -114,6 +116,9 @@ private:
 	QStringList m_vstPaths;
 
 	int m_iDirtyPluginPaths;
+
+	// Midi import settings handler.
+	qtractorMidiImportExtender *m_pMidiImportExtender;
 };
 
 
