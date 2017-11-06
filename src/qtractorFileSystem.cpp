@@ -322,7 +322,7 @@ void qtractorFileSystem::updateFilter (void)
 
 	QStringList filters;
 	if (m_pAudioFilesAction->isChecked()) {
-		const qtractorAudioFileFactory::FileTypes types
+		const qtractorAudioFileFactory::FileTypes& types
 			= qtractorAudioFileFactory::types();
 		qtractorAudioFileFactory::FileTypes::ConstIterator iter
 			= types.constBegin();
