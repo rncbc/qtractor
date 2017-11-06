@@ -1669,11 +1669,11 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sAudioFile = QFileDialog::getOpenFileName(this,
-		sTitle, sFilename, qtractorAudioFileFactory::filters(), NULL, options);
+		sTitle, sFilename, qtractorAudioFileFactory::filter(), NULL, options);
 #else
 	// Construct open-file dialog...
 	QFileDialog fileDialog(this,
-		sTitle, sFilename, qtractorAudioFileFactory::filters());
+		sTitle, sFilename, qtractorAudioFileFactory::filter());
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFile);

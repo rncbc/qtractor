@@ -101,8 +101,12 @@ public:
 
 	static const FileTypes& types();
 
+	// The supported file types/names format lists.
+	static const QStringList& filters();
+	static const QStringList& exts();
+
 	// Retrieve supported filters (suitable for QFileDialog usage).
-	static QString filters();
+	static QString filter();
 
 	// Default audio file format accessors
 	// (specific to capture/recording)
@@ -141,14 +145,15 @@ protected:
 private:
 
 	// The singleton instance.
-	static qtractorAudioFileFactory* g_pInstance;
+	static qtractorAudioFileFactory *g_pInstance;
 
 	FileFormats m_formats;
 	FileTypes   m_types;
 
 	// Supported filter strings.
 	QStringList m_filters;
-	
+	QStringList m_exts;
+
 	// Default file format/type (for capture/record)
 	FileFormat *m_pDefaultFormat;
 	int m_iDefaultFormat;

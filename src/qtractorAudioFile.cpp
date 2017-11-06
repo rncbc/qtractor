@@ -99,7 +99,7 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 			// specially regarding filename extensions...
 			if (sExt.length() > 3) {
 				sExt = sExt.left(3);
-				if (m_types.find(sExt) == m_types.end()) {
+				if (m_types.constFind(sExt) == m_types.constEnd()) {
 					sExts = sExtMask.arg(sExt) + ' ' + sExts;
 					m_types[sExt] = pFormat;
 				}
@@ -147,10 +147,12 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	const FileTypes::ConstIterator& iter_end = m_types.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		const QString& sExt = iter.key();
+		const QString& sExtWild = sExtMask.arg(sExt);
 		if (rx.exactMatch(sExt))
-			exts.append(sExtMask.arg(sExt));
+			exts.append(sExtWild);
+		m_exts.append(sExtWild);
 	}
-	m_filters.prepend(QObject::tr("Audio files (%1)").arg(exts.join(" ")));
+	m_filters.prepend(QObject::tr("Audio files (%1)").arg(exts.join(' ')));
 	m_filters.append(QObject::tr("All files (*.*)"));
 }
 
@@ -163,6 +165,7 @@ qtractorAudioFileFactory::~qtractorAudioFileFactory (void)
 	m_formats.clear();
 	m_filters.clear();
 	m_types.clear();
+	m_exts.clear();
 }
 
 
@@ -188,9 +191,8 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	const QString& sFilename, unsigned short iChannels,
 	unsigned int iSampleRate, unsigned int iBufferSize )
 {
-	const QString sExt = QFileInfo(sFilename).suffix().toLower();
-	
-	FileTypes::ConstIterator iter = m_types.constFind(sExt);
+	const QString& sExt = QFileInfo(sFilename).suffix().toLower();
+	const FileTypes::ConstIterator& iter = m_types.constFind(sExt);
 	if (iter == m_types.constEnd())
 		return NULL;
 
@@ -226,8 +228,21 @@ const qtractorAudioFileFactory::FileTypes& qtractorAudioFileFactory::types (void
 }
 
 
+// The supported file types/names format lists.
+const QStringList& qtractorAudioFileFactory::filters (void)
+{
+	return getInstance().m_filters;
+}
+
+
+const QStringList& qtractorAudioFileFactory::exts (void)
+{
+	return getInstance().m_exts;
+}
+
+
 // Retrieve supported filters (suitable for QFileDialog usage).
-QString qtractorAudioFileFactory::filters (void)
+QString qtractorAudioFileFactory::filter (void)
 {
 	return getInstance().m_filters.join(";;");
 }
