@@ -191,41 +191,6 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorInportTracksCommand - declaration.
-//
-
-class qtractorImportTrackCommand : public qtractorCommand
-{
-public:
-
-	// Constructor.
-	qtractorImportTrackCommand(qtractorTrack *pAfterTrack);
-
-	// Destructor.
-	~qtractorImportTrackCommand();
-
-	// Add track to command list.
-	void addTrack(qtractorTrack *pTrack);
-
-	// Track-import command methods.
-	bool redo();
-	bool undo();
-
-private:
-
-	// Instance variables.
-	qtractorTrack *m_pAfterTrack;
-
-	QList<qtractorAddTrackCommand *> m_trackCommands;
-
-	// Session properties backup stuff.
-    qtractorSession::Properties m_sessionProps;
-	qtractorPropertyCommand<qtractorSession::Properties> *m_pSaveCommand;
-	int m_iSaveCount;
-};
-
-
-//----------------------------------------------------------------------
 // class qtractorEditTrackCommand - declaration.
 //
 
@@ -246,6 +211,42 @@ private:
 
 	// Instance variables.
 	qtractorTrack *m_pTrack;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorInportTracksCommand - declaration.
+//
+
+class qtractorImportTrackCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorImportTrackCommand(qtractorTrack *pAfterTrack);
+
+	// Destructor.
+	~qtractorImportTrackCommand();
+
+	// Add track to command list.
+	void addTrack(qtractorTrack *pTrack);
+	// Add track edit command to command list.
+	void addTrackEditCommand(qtractorEditTrackCommand* pEditTrackCommand);
+
+	// Track-import command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorTrack *m_pAfterTrack;
+	QList<qtractorCommand *> m_trackCommands;
+
+	// Session properties backup stuff.
+    qtractorSession::Properties m_sessionProps;
+	qtractorPropertyCommand<qtractorSession::Properties> *m_pSaveCommand;
+	int m_iSaveCount;
 };
 
 

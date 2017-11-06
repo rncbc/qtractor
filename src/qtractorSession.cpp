@@ -33,6 +33,7 @@
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
 #include "qtractorMidiManager.h"
+#include "qtractorMidiImportExtender.h"
 
 #include "qtractorPlugin.h"
 #include "qtractorCurve.h"
@@ -262,6 +263,7 @@ void qtractorSession::clear (void)
 
 	qtractorAudioClip::clearHashTable();
 	qtractorMidiClip::clearHashTable();
+	qtractorMidiImportExtender::clearPluginList();
 
 	m_iSessionStart  = 0;
 	m_iSessionEnd    = 0;
@@ -1250,13 +1252,17 @@ void qtractorSession::release (void)
 }
 
 
-void qtractorSession::lock (void)
+void qtractorSession::lock (bool bStabilize)
 {
 	// Wind up as pending lock...
 	if (ATOMIC_INC(&m_locks) == 1) {
 		// Get lost for a while...
-		while (!acquire())
-			stabilize();
+		while (!acquire()) {
+			if (bStabilize)
+				stabilize();
+			else
+				QThread::yieldCurrentThread();
+		}
 	}
 }
 
@@ -1901,12 +1907,16 @@ void qtractorSession::resetAllMidiControllers ( bool bForceImmediate )
 // MIDI manager list accessors.
 void qtractorSession::addMidiManager ( qtractorMidiManager *pMidiManager )
 {
+	lock();
 	m_midiManagers.append(pMidiManager);
+	unlock();
 }
 
 void qtractorSession::removeMidiManager ( qtractorMidiManager *pMidiManager )
 {
+	lock();
 	m_midiManagers.remove(pMidiManager);
+	unlock();
 }
 
 

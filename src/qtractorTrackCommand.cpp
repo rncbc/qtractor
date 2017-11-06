@@ -653,6 +653,13 @@ void qtractorImportTrackCommand::addTrack ( qtractorTrack *pTrack )
 	m_pAfterTrack = pTrack;
 }
 
+void qtractorImportTrackCommand::addTrackEditCommand(
+		qtractorEditTrackCommand *pEditTrackCommand)
+{
+	if (pEditTrackCommand)
+		m_trackCommands.append(pEditTrackCommand);
+}
+
 
 // Track-import command methods.
 bool qtractorImportTrackCommand::redo (void)
@@ -665,9 +672,9 @@ bool qtractorImportTrackCommand::redo (void)
 	}
 	++m_iSaveCount;
 
-	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
+	QListIterator<qtractorCommand *> iter(m_trackCommands);
 	while (iter.hasNext()) {
-	    qtractorAddTrackCommand *pTrackCommand = iter.next();
+		qtractorCommand *pTrackCommand = iter.next();
 		if (!pTrackCommand->redo())
 		    bResult = false;
 	}
@@ -679,10 +686,10 @@ bool qtractorImportTrackCommand::undo (void)
 {
 	bool bResult = true;
 
-	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
+	QListIterator<qtractorCommand *> iter(m_trackCommands);
 	iter.toBack();
 	while (iter.hasPrevious()) {
-		qtractorAddTrackCommand *pTrackCommand = iter.previous();
+		qtractorCommand *pTrackCommand = iter.previous();
 		if (!pTrackCommand->undo())
 		    bResult = false;
 	}
