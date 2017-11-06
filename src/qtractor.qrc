@@ -50,11 +50,13 @@
 		<file>images/itemAudioPortPhysIn.png</file>
 		<file>images/itemAudioPortPhysOut.png</file>
 		<file>images/itemBeat.png</file>
+		<file>images/itemCdUp.png</file>
 		<file>images/itemChannel.png</file>
 		<file>images/itemControllers.png</file>
 		<file>images/itemFile.png</file>
 		<file>images/itemGroup.png</file>
 		<file>images/itemGroupOpen.png</file>
+		<file>images/itemHome.png</file>
 		<file>images/itemInstrument.png</file>
 		<file>images/itemLedOff.png</file>
 		<file>images/itemLedOn.png</file>
@@ -115,6 +117,7 @@
 		<file>images/viewConnections.png</file>
 		<file>images/viewEvents.png</file>
 		<file>images/viewFiles.png</file>
+		<file>images/viewFileSystem.png</file>
 		<file>images/viewMessages.png</file>
 		<file>images/viewMixer.png</file>
 		<file>images/viewPreview.png</file>

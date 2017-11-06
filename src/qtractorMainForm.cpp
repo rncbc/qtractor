@@ -26,6 +26,7 @@
 #include "qtractorInstrument.h"
 #include "qtractorInstrumentMenu.h"
 #include "qtractorMessages.h"
+#include "qtractorFileSystem.h"
 #include "qtractorFiles.h"
 #include "qtractorConnections.h"
 #include "qtractorMixer.h"
@@ -255,6 +256,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages    = NULL;
+	m_pFileSystem  = NULL;
 	m_pFiles       = NULL;
 	m_pMixer       = NULL;
 	m_pConnections = NULL;
@@ -712,6 +714,7 @@ qtractorMainForm::qtractorMainForm (
 	while (iter.hasNext())
 		iter.next()->setShortcutContext(Qt::ApplicationShortcut);
 #else
+	m_ui.viewFileSystemAction->setShortcutContext(Qt::ApplicationShortcut);
 	m_ui.viewFilesAction->setShortcutContext(Qt::ApplicationShortcut);
 	m_ui.viewConnectionsAction->setShortcutContext(Qt::ApplicationShortcut);
 	m_ui.viewMixerAction->setShortcutContext(Qt::ApplicationShortcut);
@@ -1037,6 +1040,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewToolbarThumbAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarThumb(bool)));
+	QObject::connect(m_ui.viewFileSystemAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewFileSystem(bool)));
 	QObject::connect(m_ui.viewFilesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewFiles(bool)));
@@ -1230,6 +1236,8 @@ qtractorMainForm::~qtractorMainForm (void)
 		delete m_pConnections;
 	if (m_pFiles)
 		delete m_pFiles;
+	if (m_pFileSystem)
+		delete m_pFileSystem;
 	if (m_pMessages)
 		delete m_pMessages;
 	if (m_pTracks)
@@ -1298,6 +1306,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pOptions = pOptions;
 
 	// Some child/dockable forms are to be created right now.
+	m_pFileSystem = new qtractorFileSystem(this);
 	m_pFiles = new qtractorFiles(this);
 	m_pFiles->audioListView()->setRecentDir(m_pOptions->sAudioDir);
 	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
@@ -1320,6 +1329,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pMixer = new qtractorMixer(pParent, wflags);
 
 	// Make those primordially docked...
+	addDockWidget(Qt::LeftDockWidgetArea, m_pFileSystem, Qt::Vertical);
 	addDockWidget(Qt::RightDockWidgetArea, m_pFiles, Qt::Vertical);
 	addDockWidget(Qt::BottomDockWidgetArea, m_pMessages, Qt::Horizontal);
 
@@ -1406,6 +1416,12 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	viewToolbarTransport(m_pOptions->bTransportToolbar);
 	viewToolbarTime(m_pOptions->bTimeToolbar);
 	viewToolbarThumb(m_pOptions->bThumbToolbar);
+
+	// Restore file-system window state.
+	if (m_pFileSystem) {
+		m_pFileSystem->restoreState(
+			m_pOptions->settings().value("/FileSystem/State").toByteArray());
+	}
 
 	// Restore whole dock windows state.
 	QByteArray aDockables = m_pOptions->settings().value(
@@ -1498,6 +1514,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		pAudioEngine->setMasterAutoConnect(m_pOptions->bAudioMasterAutoConnect);
 	
 	// Final widget slot connections....
+	QObject::connect(m_pFileSystem->toggleViewAction(),
+		SIGNAL(triggered(bool)),
+		SLOT(stabilizeForm()));
 	QObject::connect(m_pFiles->toggleViewAction(),
 		SIGNAL(triggered(bool)),
 		SLOT(stabilizeForm()));
@@ -1712,6 +1731,11 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->bMidiControlSync = qtractorMidiControl::isSync();
 			// Save the dock windows state.
 			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
+			// Save the file-system window state.
+			if (m_pFileSystem) {
+				m_pOptions->settings().setValue(
+					"/FileSystem/State", m_pFileSystem->saveState());
+			}
 			// Audio master bus auto-connection option...
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 			if (pAudioEngine)
@@ -1809,6 +1833,12 @@ void qtractorMainForm::hideEvent ( QHideEvent *pHideEvent )
 qtractorTracks *qtractorMainForm::tracks (void) const
 {
 	return m_pTracks;
+}
+
+// The global file-system reference.
+qtractorFileSystem *qtractorMainForm::fileSystem (void) const
+{
+	return m_pFileSystem;
 }
 
 // The global session file(lists) reference.
@@ -4648,6 +4678,13 @@ void qtractorMainForm::viewToolbarThumb ( bool bOn )
 }
 
 
+// Show/hide the file-system window view.
+void qtractorMainForm::viewFileSystem ( bool bOn )
+{
+	m_pFileSystem->setVisible(bOn);
+}
+
+
 // Show/hide the files window view.
 void qtractorMainForm::viewFiles ( bool bOn )
 {
@@ -6101,6 +6138,8 @@ void qtractorMainForm::stabilizeForm (void)
 	updateClipMenu();
 
 	// Update view menu state...
+	m_ui.viewFileSystemAction->setChecked(
+		m_pFileSystem && m_pFileSystem->isVisible());
 	m_ui.viewFilesAction->setChecked(
 		m_pFiles && m_pFiles->isVisible());
 	m_ui.viewMessagesAction->setChecked(
