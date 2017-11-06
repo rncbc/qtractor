@@ -159,6 +159,7 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #undef HAVE_SIGNAL_H
 #endif
 
+
 //-------------------------------------------------------------------------
 // LADISH Level 1 support stuff.
 
@@ -1417,21 +1418,28 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	viewToolbarTime(m_pOptions->bTimeToolbar);
 	viewToolbarThumb(m_pOptions->bThumbToolbar);
 
-	// Restore file-system window state.
-	if (m_pFileSystem) {
-		m_pFileSystem->restoreState(
-			m_pOptions->settings().value("/FileSystem/State").toByteArray());
-	}
-
 	// Restore whole dock windows state.
-	QByteArray aDockables = m_pOptions->settings().value(
-		"/Layout/DockWindows").toByteArray();
+	const QByteArray aDockables
+		= m_pOptions->settings().value("/Layout/DockWindows").toByteArray();
 	if (aDockables.isEmpty()) {
 		// Some windows are forced initially as is...
 		insertToolBarBreak(m_ui.transportToolbar);
 	} else {
 		// Make it as the last time.
 		restoreState(aDockables);
+	}
+
+	// Restore file-system dock-window state.
+	if (m_pFileSystem) {
+		const QByteArray aFileSystem
+			= m_pOptions->settings().value("/FileSystem/State").toByteArray();
+		if (aFileSystem.isEmpty()) {
+			// Should be hidden first time...
+			viewFileSystem(false);
+		} else {
+			// Make it as the last time visible.
+			m_pFileSystem->restoreState(aFileSystem);
+		}
 	}
 
 	// Try to restore old window positioning.
@@ -1729,13 +1737,13 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->iBeatDivisor = m_pTempoSpinBox->beatDivisor();
 			// Save MIDI control non catch-up/hook global option...
 			m_pOptions->bMidiControlSync = qtractorMidiControl::isSync();
-			// Save the dock windows state.
-			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
-			// Save the file-system window state.
-			if (m_pFileSystem) {
+			// Save the file-system dock-window state...
+			if (m_pFileSystem && m_pFileSystem->isVisible()) {
 				m_pOptions->settings().setValue(
 					"/FileSystem/State", m_pFileSystem->saveState());
 			}
+			// Save the dock windows state...
+			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
 			// Audio master bus auto-connection option...
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 			if (pAudioEngine)

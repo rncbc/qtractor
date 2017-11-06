@@ -1,7 +1,7 @@
 // qtractorAudioFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -217,6 +217,12 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 const qtractorAudioFileFactory::FileFormats& qtractorAudioFileFactory::formats (void)
 {
 	return getInstance().m_formats;
+}
+
+
+const qtractorAudioFileFactory::FileTypes& qtractorAudioFileFactory::types (void)
+{
+	return getInstance().m_types;
 }
 
 

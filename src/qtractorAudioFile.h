@@ -1,7 +1,7 @@
 // qtractorAudioFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -91,10 +91,15 @@ public:
 		int      data;
 	};
 
+	// The supported file types/format global map.
 	typedef QList<FileFormat *> FileFormats;
 
-	// File type/format global accessors.
 	static const FileFormats& formats();
+
+	// The supported file types/extension map.
+	typedef QHash<QString, FileFormat *> FileTypes;
+
+	static const FileTypes& types();
 
 	// Retrieve supported filters (suitable for QFileDialog usage).
 	static QString filters();
@@ -137,9 +142,6 @@ private:
 
 	// The singleton instance.
 	static qtractorAudioFileFactory* g_pInstance;
-
-	// The supported file types/extension map.
-	typedef QHash<QString, FileFormat *> FileTypes;
 
 	FileFormats m_formats;
 	FileTypes   m_types;

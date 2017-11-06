@@ -322,17 +322,14 @@ void qtractorFileSystem::updateFilter (void)
 
 	QStringList filters;
 	if (m_pAudioFilesAction->isChecked()) {
-		const qtractorAudioFileFactory::FileFormats formats
-			= qtractorAudioFileFactory::formats();
-		qtractorAudioFileFactory::FileFormats::ConstIterator iter
-			= formats.constBegin();
-		const qtractorAudioFileFactory::FileFormats::ConstIterator& iter_end
-			= formats.constEnd();
-		for ( ; iter != iter_end; ++iter) {
-			const qtractorAudioFileFactory::FileFormat *pFormat = *iter;
-			if (pFormat)
-				filters.append("*." + pFormat->ext);
-		}
+		const qtractorAudioFileFactory::FileTypes types
+			= qtractorAudioFileFactory::types();
+		qtractorAudioFileFactory::FileTypes::ConstIterator iter
+			= types.constBegin();
+		const qtractorAudioFileFactory::FileTypes::ConstIterator& iter_end
+			= types.constEnd();
+		for ( ; iter != iter_end; ++iter)
+			filters.append("*." + iter.key());
 	}
 	if (m_pMidiFilesAction->isChecked()) {
 		filters.append("*.midi");
