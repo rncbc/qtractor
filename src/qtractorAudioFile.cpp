@@ -28,8 +28,6 @@
 #include <QFileInfo>
 #include <QRegExp>
 
-#include <stdlib.h>
-
 
 //----------------------------------------------------------------------
 // class qtractorAudioFileFactory -- Audio file factory (singleton).
@@ -38,28 +36,10 @@
 // Initialize singleton instance pointer.
 qtractorAudioFileFactory *qtractorAudioFileFactory::g_pInstance = NULL;
 
-
 // Singleton instance accessor.
-qtractorAudioFileFactory& qtractorAudioFileFactory::getInstance (void)
+qtractorAudioFileFactory *qtractorAudioFileFactory::getInstance (void)
 {
-	// Create the singleton instance, if not already...
-	if (g_pInstance == NULL) {
-		g_pInstance = new qtractorAudioFileFactory();
-		::atexit(Destroy);
-	}
-
-	return *g_pInstance;
-}
-
-
-// Singleton instance destroyer.
-void qtractorAudioFileFactory::Destroy (void)
-{
-	// OK. We're done with ourselves.
-	if (g_pInstance) {
-		delete g_pInstance;
-		g_pInstance = NULL;
-	}
+	return g_pInstance;
 }
 
 
@@ -154,12 +134,16 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	}
 	m_filters.prepend(QObject::tr("Audio files (%1)").arg(exts.join(' ')));
 	m_filters.append(QObject::tr("All files (*.*)"));
+
+	g_pInstance = this;
 }
 
 
 // Destructor.
 qtractorAudioFileFactory::~qtractorAudioFileFactory (void)
 {
+	g_pInstance = NULL;
+
 	qDeleteAll(m_formats);
 
 	m_formats.clear();
@@ -174,7 +158,7 @@ qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
 	const QString& sFilename, unsigned short iChannels,
 	unsigned int iSampleRate, unsigned int iBufferSize )
 {
-	return getInstance().newAudioFile(
+	return g_pInstance->newAudioFile(
 		sFilename, iChannels, iSampleRate, iBufferSize);
 }
 
@@ -182,7 +166,8 @@ qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
 	FileType type, unsigned short iChannels,
 	unsigned int iSampleRate, unsigned int iBufferSize )
 {
-	return getInstance().newAudioFile(type, iChannels, iSampleRate, iBufferSize);
+	return g_pInstance->newAudioFile(
+		type, iChannels, iSampleRate, iBufferSize);
 }
 
 
@@ -198,6 +183,7 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 
 	return newAudioFile(iter.value()->type, iChannels, iSampleRate, iBufferSize);
 }
+
 
 qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	FileType type, unsigned short iChannels,
@@ -218,62 +204,62 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 
 const qtractorAudioFileFactory::FileFormats& qtractorAudioFileFactory::formats (void)
 {
-	return getInstance().m_formats;
+	return g_pInstance->m_formats;
 }
 
 
 const qtractorAudioFileFactory::FileTypes& qtractorAudioFileFactory::types (void)
 {
-	return getInstance().m_types;
+	return g_pInstance->m_types;
 }
 
 
 // The supported file types/names format lists.
 const QStringList& qtractorAudioFileFactory::filters (void)
 {
-	return getInstance().m_filters;
+	return g_pInstance->m_filters;
 }
 
 
 const QStringList& qtractorAudioFileFactory::exts (void)
 {
-	return getInstance().m_exts;
+	return g_pInstance->m_exts;
 }
 
 
 // Retrieve supported filters (suitable for QFileDialog usage).
 QString qtractorAudioFileFactory::filter (void)
 {
-	return getInstance().m_filters.join(";;");
+	return g_pInstance->m_filters.join(";;");
 }
 
 
 // Default audio file format accessors
 // (specific to capture/recording)
-void qtractorAudioFileFactory::setDefaultType(const QString& sExt, int iType,
-	int iFormat, int iQuality )
+void qtractorAudioFileFactory::setDefaultType (
+	const QString& sExt, int iType, int iFormat, int iQuality )
 {
 	// Search for type-format first...
 	int iDefaultFormat = 0;
-	QListIterator<FileFormat *> iter(getInstance().m_formats);
+	QListIterator<FileFormat *> iter(g_pInstance->m_formats);
 	while (iter.hasNext()) {
 		FileFormat *pFormat = iter.next();
 		if (sExt == pFormat->ext && (iType == 0 || iType == pFormat->data)) {
-			getInstance().m_pDefaultFormat = pFormat;
+			g_pInstance->m_pDefaultFormat = pFormat;
 			iDefaultFormat = format(pFormat, iFormat);
 			break;
 		}
 	}
 
 	// Rest is not so obviously trivial...
-	getInstance().m_iDefaultFormat  = iDefaultFormat;
-	getInstance().m_iDefaultQuality = iQuality;
+	g_pInstance->m_iDefaultFormat  = iDefaultFormat;
+	g_pInstance->m_iDefaultQuality = iQuality;
 }
 
 
 QString qtractorAudioFileFactory::defaultExt (void)
 {
-	FileFormat *pFormat = getInstance().m_pDefaultFormat;
+	FileFormat *pFormat = g_pInstance->m_pDefaultFormat;
 	if (pFormat)
 		return pFormat->ext;
 
@@ -284,10 +270,11 @@ QString qtractorAudioFileFactory::defaultExt (void)
 #endif
 }
 
+
 int qtractorAudioFileFactory::defaultFormat (void)
 {
-	int  iDefaultFormat = getInstance().m_iDefaultFormat;
-	FileFormat *pFormat = getInstance().m_pDefaultFormat;
+	int  iDefaultFormat = g_pInstance->m_iDefaultFormat;
+	FileFormat *pFormat = g_pInstance->m_pDefaultFormat;
 	if (pFormat)
 		iDefaultFormat |= pFormat->data;
 #ifndef CONFIG_LIBVORBIS_0
@@ -301,7 +288,7 @@ int qtractorAudioFileFactory::defaultFormat (void)
 
 int qtractorAudioFileFactory::defaultQuality (void)
 {
-	return getInstance().m_iDefaultQuality;
+	return g_pInstance->m_iDefaultQuality;
 }
 
 

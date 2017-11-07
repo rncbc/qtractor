@@ -68,8 +68,14 @@ class qtractorAudioFileFactory
 {
 public:
 
+	// Constructor.
+	qtractorAudioFileFactory();
+
 	// Destructor.
 	~qtractorAudioFileFactory();
+
+	// Singleton instance accessor.
+	static qtractorAudioFileFactory *getInstance();
 
 	// Supported file types.
 	enum FileType { SndFile, VorbisFile, MadFile };
@@ -110,7 +116,8 @@ public:
 
 	// Default audio file format accessors
 	// (specific to capture/recording)
-	static void setDefaultType(const QString& sExt, int iType,
+	static void setDefaultType(
+		const QString& sExt, int iType,
 		int iFormat = 0, int iQuality = 4);
 
 	static QString defaultExt();
@@ -120,16 +127,7 @@ public:
 	// Check whether given file type/format is valid.
 	static bool isValidFormat(const FileFormat *pFormat, int iFormat);
 
-	// Singleton destroyer.
-	static void Destroy();
-
 protected:
-
-	// Constructor.
-	qtractorAudioFileFactory();
-
-	// Singleton instance accessor.
-	static qtractorAudioFileFactory& getInstance();
 
 	// Instance factory methods.
 	qtractorAudioFile *newAudioFile (
@@ -144,9 +142,7 @@ protected:
 
 private:
 
-	// The singleton instance.
-	static qtractorAudioFileFactory *g_pInstance;
-
+	// Instance members.
 	FileFormats m_formats;
 	FileTypes   m_types;
 
@@ -158,6 +154,9 @@ private:
 	FileFormat *m_pDefaultFormat;
 	int m_iDefaultFormat;
 	int m_iDefaultQuality;
+
+	// The singleton instance.
+	static qtractorAudioFileFactory *g_pInstance;
 };
 
 

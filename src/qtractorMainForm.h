@@ -51,6 +51,7 @@ class qtractorMidiEditorForm;
 class qtractorMidiEditor;
 class qtractorMidiManager;
 
+class qtractorAudioFileFactory;
 class qtractorPluginFactory;
 
 class qtractorActionControl;
@@ -458,6 +459,7 @@ private:
 	qtractorMixer *m_pMixer;
 	qtractorTracks *m_pTracks;
 	qtractorMessageList *m_pMessageList;
+	qtractorAudioFileFactory *m_pAudioFileFactory;
 	qtractorPluginFactory *m_pPluginFactory;
 	QString m_sFilename;
 	int m_iUntitled;

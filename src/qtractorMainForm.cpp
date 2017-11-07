@@ -250,6 +250,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pSession = new qtractorSession();
 	m_pTempoCursor = new qtractorTempoCursor();
 	m_pMessageList = new qtractorMessageList();;
+	m_pAudioFileFactory = new qtractorAudioFileFactory();
 	m_pPluginFactory = new qtractorPluginFactory();
 
 	// Custom track/instrument proxy menu.
@@ -1279,6 +1280,10 @@ qtractorMainForm::~qtractorMainForm (void)
 	// Remove plugin path/files registry.
 	if (m_pPluginFactory)
 		delete m_pPluginFactory;
+
+	// Remove audio file formats registry.
+	if (m_pAudioFileFactory)
+		delete m_pAudioFileFactory;
 
 	// Remove message list buffer.
 	if (m_pMessageList)
