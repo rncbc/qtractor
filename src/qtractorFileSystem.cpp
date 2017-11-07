@@ -563,4 +563,14 @@ bool qtractorFileSystem::restoreState ( const QByteArray& state )
 }
 
 
+// view stabilizer.
+void qtractorFileSystem::stabilize (void)
+{
+	const QModelIndex& index
+		= m_pFileSystemTreeView->currentIndex();
+	if (index.isValid())
+		m_pFileSystemTreeView->scrollTo(index);
+}
+
+
 // end of qtractorFileSystem.cpp

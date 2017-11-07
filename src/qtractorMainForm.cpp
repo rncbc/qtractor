@@ -4865,7 +4865,8 @@ void qtractorMainForm::viewRefresh (void)
 		m_pMixer->updateTracks();
 	}
 
-	m_pThumbView->updateContents();
+	if (m_pThumbView)
+		m_pThumbView->updateContents();
 
 	// Update other editors contents...
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
@@ -4876,6 +4877,10 @@ void qtractorMainForm::viewRefresh (void)
 		pEditor->setEditHead(iEditHead, false);
 		pEditor->setEditTail(iEditTail, false);
 	}
+
+	// Finally...
+	if (m_pFileSystem)
+		m_pFileSystem->stabilize();
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();

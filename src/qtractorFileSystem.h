@@ -68,6 +68,9 @@ public:
 	QByteArray saveState() const;
 	bool restoreState(const QByteArray& state);
 
+	// view stabilizer.
+	void stabilize();
+
 protected slots:
 
 	// chdir slots.
