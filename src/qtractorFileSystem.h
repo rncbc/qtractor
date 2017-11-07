@@ -60,6 +60,10 @@ public:
 	void setFlags(Flags flags, bool on = true);
 	Flags flags() const;
 
+	// Audition/pre-listening player methods.
+	void setPlayState(bool bOn);
+	bool isPlayState() const;
+
 	// state saver/loader.
 	QByteArray saveState() const;
 	bool restoreState(const QByteArray& state);
@@ -76,6 +80,14 @@ protected slots:
 	// filter slots.
 	void filterChanged();
 
+	// Audition/pre-listening player slots.
+	void playFile(bool bOn);
+
+signals:
+
+	// File entry activated.
+	void activated(const QString& sFilename);
+
 protected:
 
 	// model factory method.
@@ -91,6 +103,9 @@ protected:
 	// context-menu event handler.
 	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
 
+	// Audition/pre-listening player method.
+	void activateFile(const QString& sFilename);
+
 private:
 
 	// Member actions...
@@ -100,6 +115,7 @@ private:
 	QAction     *m_pAudioFilesAction;
 	QAction     *m_pMidiFilesAction;
 	QAction     *m_pHiddenFilesAction;
+	QAction     *m_pPlayFileAction;
 
 	// Member widgets...
 	QToolButton *m_pCdUpToolButton;

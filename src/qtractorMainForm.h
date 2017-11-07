@@ -334,6 +334,8 @@ protected slots:
 	void selectMidiFile(const QString& sFilename, int iTrackChannel, bool bSelect);
 	void activateMidiFile(const QString& sFilename, int iTrackChannel = -1);
 
+	void activateFile(const QString& sFilename);
+
 	void trackSelectionChanged();
 	void mixerSelectionChanged();
 

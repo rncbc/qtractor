@@ -93,6 +93,10 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	m_pHiddenFilesAction = new QAction(tr("H&idden"), this);
 	m_pHiddenFilesAction->setCheckable(true);
 
+	m_pPlayFileAction = new QAction(
+		QIcon(":/images/transportPlay.png"), tr("Pla&y"), this);
+	m_pPlayFileAction->setCheckable(true);
+
 	// Setup member widgets...
 	m_pCdUpToolButton = new QToolButton();
 	m_pCdUpToolButton->setDefaultAction(m_pCdUpAction);
@@ -183,6 +187,9 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	QObject::connect(m_pHiddenFilesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(filterChanged()));
+	QObject::connect(m_pPlayFileAction,
+		SIGNAL(triggered(bool)),
+		SLOT(playFile(bool)));
 
 	QObject::connect(m_pRootPathComboBox,
 		SIGNAL(activated(const QString&)),
@@ -204,6 +211,7 @@ qtractorFileSystem::~qtractorFileSystem (void)
 	if (m_pFileSystemModel)
 		delete m_pFileSystemModel;
 
+	delete m_pPlayFileAction;
 	delete m_pHiddenFilesAction;
 	delete m_pMidiFilesAction;
 	delete m_pAudioFilesAction;
@@ -376,10 +384,12 @@ void qtractorFileSystem::rootPathActivated ( const QString& sRootPath )
 void qtractorFileSystem::treeViewActivated ( const QModelIndex& index )
 {
 	if (m_pFileSystemModel) {
-		const QFileInfo& info
-			= m_pFileSystemModel->fileInfo(index);
-		if (info.isDir())
-			updateRootPath(info.absoluteFilePath());
+		const QString& sFilename
+			= m_pFileSystemModel->filePath(index);
+		if (m_pFileSystemModel->isDir(index))
+			updateRootPath(sFilename);
+		else
+			activateFile(sFilename);
 	}
 }
 
@@ -413,10 +423,52 @@ void qtractorFileSystem::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent
 	menu.addAction(m_pAllFilesAction);
 	menu.addAction(m_pAudioFilesAction);
 	menu.addAction(m_pMidiFilesAction);
-	menu.addSeparator();
 	menu.addAction(m_pHiddenFilesAction);
+	menu.addSeparator();
+	menu.addAction(m_pPlayFileAction);
 
 	menu.exec(pContextMenuEvent->globalPos());
+}
+
+
+// Audition/pre-listening player methods.
+void qtractorFileSystem::setPlayState ( bool bOn )
+{
+	const bool bBlockSignals = m_pPlayFileAction->blockSignals(true);
+	m_pPlayFileAction->setChecked(bOn);
+	m_pPlayFileAction->blockSignals(bBlockSignals);
+}
+
+
+bool qtractorFileSystem::isPlayState (void) const
+{
+	return m_pPlayFileAction->isChecked();
+}
+
+
+// Audition/pre-listening player slot.
+void qtractorFileSystem::playFile ( bool bOn )
+{
+	if (m_pFileSystemModel && bOn) {
+		const QModelIndex& index = m_pFileSystemTreeView->currentIndex();
+		if (index.isValid())
+			activateFile(m_pFileSystemModel->filePath(index));
+		else
+			setPlayState(false);
+	}
+	else setPlayState(false);
+}
+
+
+void qtractorFileSystem::activateFile ( const QString& sFilename )
+{
+	const QFileInfo info(sFilename);
+	if (info.isFile() && info.isReadable()) {
+		setPlayState(true);
+		emit activated(info.absoluteFilePath());
+	} else {
+		setPlayState(false);
+	}
 }
 
 

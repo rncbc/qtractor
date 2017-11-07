@@ -1560,6 +1560,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	QObject::connect(m_pFiles->midiListView(),
 		SIGNAL(contentsChanged()),
 		SLOT(contentsChanged()));
+	QObject::connect(m_pFileSystem,
+		SIGNAL(activated(const QString&)),
+		SLOT(activateFile(const QString&)));
 	QObject::connect(m_pTracks->trackList(),
 		SIGNAL(selectionChanged()),
 		SLOT(trackSelectionChanged()));
@@ -7590,10 +7593,14 @@ void qtractorMainForm::slowTimerSlot (void)
 		if (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen()) {
 			if (m_pFiles && m_pFiles->isPlayState())
 				++m_iPlayerTimer;
+			if (m_pFileSystem && m_pFileSystem->isPlayState())
+				++m_iPlayerTimer;
 		}
 		if (m_iPlayerTimer < 1) {
 			if (m_pFiles && m_pFiles->isPlayState())
 				m_pFiles->setPlayState(false);
+			if (m_pFileSystem && m_pFileSystem->isPlayState())
+				m_pFileSystem->setPlayState(false);
 			appendMessages(tr("Playing ended."));
 			pAudioEngine->closePlayer();
 			pMidiEngine->closePlayer();
@@ -8172,7 +8179,6 @@ void qtractorMainForm::activateAudioFile (
 	// the player is stopped (eg. empty filename)...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine && pAudioEngine->openPlayer(sFilename)) {
-		if (m_pFiles) m_pFiles->setPlayState(true);
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
 	}
@@ -8230,7 +8236,6 @@ void qtractorMainForm::activateMidiFile (
 	// the player is stopped (eg. empty filename)...
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine && pMidiEngine->openPlayer(sFilename, iTrackChannel)) {
-		if (m_pFiles) m_pFiles->setPlayState(true);
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
 	}
@@ -8239,6 +8244,40 @@ void qtractorMainForm::activateMidiFile (
 	++m_iPlayerTimer;
 
 	stabilizeForm();
+}
+
+
+// Generic file activation slot funtion.
+void qtractorMainForm::activateFile ( const QString& sFilename )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::activateFile(\"%s\")",
+		sFilename.toUtf8().constData());
+#endif
+
+	// Make sure session is activated...
+	checkRestartSession();
+
+	// First test if it's an audio file ?
+	qtractorAudioFile *pFile
+		= qtractorAudioFileFactory::createAudioFile(sFilename);
+	if (pFile) {
+		if (pFile->open(sFilename)) {
+			pFile->close();
+			delete pFile;
+			activateAudioFile(sFilename);
+		} else {
+			delete pFile;
+		}
+		return;
+	}
+
+	// Then whether it's a MIDI file...
+	qtractorMidiFile file;
+	if (file.open(sFilename)) {
+		file.close();
+		activateMidiFile(sFilename);
+	}
 }
 
 
