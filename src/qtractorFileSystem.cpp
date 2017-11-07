@@ -79,23 +79,23 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	m_pHomeAction = new QAction(
 		QIcon(":images/itemHome.png"), tr("&Home"), this);
 
-	m_pAllFilesAction = new QAction(tr("Al&l"), this);
+	m_pAllFilesAction = new QAction(tr("Al&l Files"), this);
 	m_pAllFilesAction->setCheckable(true);
 
 	m_pAudioFilesAction = new QAction(
-		QIcon(":images/trackAudio.png"), tr("&Audio"), this);
+		QIcon(":images/trackAudio.png"), tr("&Audio Files"), this);
 	m_pAudioFilesAction->setCheckable(true);
 
 	m_pMidiFilesAction = new QAction(
-		QIcon(":images/trackMidi.png"), tr("&MIDI"), this);
+		QIcon(":images/trackMidi.png"), tr("&MIDI Files"), this);
 	m_pMidiFilesAction->setCheckable(true);
 
 	m_pHiddenFilesAction = new QAction(tr("H&idden"), this);
 	m_pHiddenFilesAction->setCheckable(true);
 
-	m_pPlayFileAction = new QAction(
-		QIcon(":/images/transportPlay.png"), tr("Pla&y"), this);
-	m_pPlayFileAction->setCheckable(true);
+	m_pPlayAction = new QAction(
+		QIcon(":/images/transportPlay.png"), tr("&Play"), this);
+	m_pPlayAction->setCheckable(true);
 
 	// Setup member widgets...
 	m_pCdUpToolButton = new QToolButton();
@@ -187,9 +187,9 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	QObject::connect(m_pHiddenFilesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(filterChanged()));
-	QObject::connect(m_pPlayFileAction,
+	QObject::connect(m_pPlayAction,
 		SIGNAL(triggered(bool)),
-		SLOT(playFile(bool)));
+		SLOT(playSlot(bool)));
 
 	QObject::connect(m_pRootPathComboBox,
 		SIGNAL(activated(const QString&)),
@@ -211,7 +211,7 @@ qtractorFileSystem::~qtractorFileSystem (void)
 	if (m_pFileSystemModel)
 		delete m_pFileSystemModel;
 
-	delete m_pPlayFileAction;
+	delete m_pPlayAction;
 	delete m_pHiddenFilesAction;
 	delete m_pMidiFilesAction;
 	delete m_pAudioFilesAction;
@@ -417,15 +417,16 @@ void qtractorFileSystem::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent
 {
 	QMenu menu(this);
 
+	menu.addAction(m_pPlayAction);
+	menu.addSeparator();
 	menu.addAction(m_pCdUpAction);
 	menu.addAction(m_pHomeAction);
 	menu.addSeparator();
 	menu.addAction(m_pAllFilesAction);
 	menu.addAction(m_pAudioFilesAction);
 	menu.addAction(m_pMidiFilesAction);
-	menu.addAction(m_pHiddenFilesAction);
 	menu.addSeparator();
-	menu.addAction(m_pPlayFileAction);
+	menu.addAction(m_pHiddenFilesAction);
 
 	menu.exec(pContextMenuEvent->globalPos());
 }
@@ -434,20 +435,20 @@ void qtractorFileSystem::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent
 // Audition/pre-listening player methods.
 void qtractorFileSystem::setPlayState ( bool bOn )
 {
-	const bool bBlockSignals = m_pPlayFileAction->blockSignals(true);
-	m_pPlayFileAction->setChecked(bOn);
-	m_pPlayFileAction->blockSignals(bBlockSignals);
+	const bool bBlockSignals = m_pPlayAction->blockSignals(true);
+	m_pPlayAction->setChecked(bOn);
+	m_pPlayAction->blockSignals(bBlockSignals);
 }
 
 
 bool qtractorFileSystem::isPlayState (void) const
 {
-	return m_pPlayFileAction->isChecked();
+	return m_pPlayAction->isChecked();
 }
 
 
 // Audition/pre-listening player slot.
-void qtractorFileSystem::playFile ( bool bOn )
+void qtractorFileSystem::playSlot ( bool bOn )
 {
 	if (m_pFileSystemModel && bOn) {
 		const QModelIndex& index = m_pFileSystemTreeView->currentIndex();

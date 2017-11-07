@@ -81,7 +81,7 @@ protected slots:
 	void filterChanged();
 
 	// Audition/pre-listening player slots.
-	void playFile(bool bOn);
+	void playSlot(bool bOn);
 
 signals:
 
@@ -115,7 +115,7 @@ private:
 	QAction     *m_pAudioFilesAction;
 	QAction     *m_pMidiFilesAction;
 	QAction     *m_pHiddenFilesAction;
-	QAction     *m_pPlayFileAction;
+	QAction     *m_pPlayAction;
 
 	// Member widgets...
 	QToolButton *m_pCdUpToolButton;

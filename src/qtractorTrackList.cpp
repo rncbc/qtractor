@@ -49,6 +49,9 @@
 
 #include "qtractorOptions.h"
 
+#include "qtractorAudioFile.h"
+#include "qtractorMidiFile.h"
+
 #include <QHeaderView>
 
 #include <QApplication>
@@ -56,8 +59,17 @@
 
 #include <QResizeEvent>
 #include <QMouseEvent>
+#include <QWheelEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <QKeyEvent>
 #include <QPainter>
+#include <QUrl>
+
+#if QT_VERSION >= 0x050000
+#include <QMimeData>
+#endif
+
 
 #ifdef CONFIG_GRADIENT
 #include <QLinearGradient>
@@ -255,7 +267,7 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 
 	qtractorScrollView::viewport()->setFocusPolicy(Qt::ClickFocus);
 //	qtractorScrollView::viewport()->setFocusProxy(this);
-//	qtractorScrollView::viewport()->setAcceptDrops(true);
+	qtractorScrollView::viewport()->setAcceptDrops(true);
 //	qtractorScrollView::setDragAutoScroll(false);
 	qtractorScrollView::setMouseTracking(true);
 
@@ -1513,6 +1525,87 @@ void qtractorTrackList::wheelEvent ( QWheelEvent *pWheelEvent )
 			m_pTracks->zoomOut();
 	}
 	else qtractorScrollView::wheelEvent(pWheelEvent);
+}
+
+
+// Drag-n-drop event handlers.
+void qtractorTrackList::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
+{
+	const QMimeData *pMimeData = pDragEnterEvent->mimeData();
+	if (pMimeData && pMimeData->hasUrls())
+		pDragEnterEvent->accept();
+	else
+		pDragEnterEvent->ignore();
+}
+
+
+void qtractorTrackList::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
+{
+	// Now set ready for drag something...
+	const QPoint& pos
+		= qtractorScrollView::viewportToContents(pDragMoveEvent->pos());
+
+	// Select current track...
+	const int iTrack = trackRowAt(pos);
+
+	// Make it current anyway...
+	setCurrentTrackRow(iTrack);
+}
+
+
+void qtractorTrackList::dropEvent ( QDropEvent *pDropEvent )
+{
+	// Can we decode it as Audio/MIDI files?
+	const QMimeData *pMimeData = pDropEvent->mimeData();
+	if (pMimeData == NULL || !pMimeData->hasUrls())
+		return;
+
+	// Let's see how many files there are
+	// to split between audio/MIDI files...
+	QStringList audio_files;
+	QStringList midi_files;
+
+	QListIterator<QUrl> iter(pMimeData->urls());
+	while (iter.hasNext()) {
+		const QString& sPath = iter.next().toLocalFile();
+		if (sPath.isEmpty())
+			continue;
+		// Try first as a MIDI file...
+		qtractorMidiFile file;
+		if (file.open(sPath)) {
+			midi_files.append(sPath);
+			file.close();
+			continue;
+		}
+		// Then as an audio file ?
+		qtractorAudioFile *pFile
+			= qtractorAudioFileFactory::createAudioFile(sPath);
+		if (pFile) {
+			if (pFile->open(sPath)) {
+				audio_files.append(sPath);
+				pFile->close();
+			}
+			delete pFile;
+			continue;
+		}
+	}
+
+
+	// Depending on import type...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	const unsigned long iClipStart = (pSession ? pSession->editHead() : 0);
+	qtractorTrack *pAfterTrack = currentTrack();
+
+	if (!midi_files.isEmpty())
+		m_pTracks->addMidiTracks(midi_files, iClipStart, pAfterTrack);
+	if (!audio_files.isEmpty())
+		m_pTracks->addAudioTracks(audio_files, iClipStart, pAfterTrack);
+
+	if (midi_files.isEmpty() && audio_files.isEmpty()) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->dropEvent(pDropEvent);
+	}
 }
 
 
