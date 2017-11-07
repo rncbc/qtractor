@@ -1295,20 +1295,29 @@ void qtractorMidiManager::createAudioOutputBus (void)
 // Destroy audio Outputnome stuff.
 void qtractorMidiManager::deleteAudioOutputBus (void)
 {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	bool bDelete = false;
 	// Owned, not part of audio engine...
 	if (m_bAudioOutputBus && m_pAudioOutputBus) {
 		m_pAudioOutputBus->close();
-		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession) {
 			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 			if (pAudioEngine)
 				pAudioEngine->removeBusEx(m_pAudioOutputBus);
 		}
-		delete m_pAudioOutputBus;
+		bDelete = true;
 	}
 
+	// See qtractorMidiManager::process: m_pAudioOutputBus is checked
+	// and used later. Meanwhile we could have deleted or set to NULL.
+	if (pSession)
+		pSession->lock();
+	if (bDelete)
+		delete m_pAudioOutputBus;
 	// Done.
 	m_pAudioOutputBus = NULL;
+	if (pSession)
+		pSession->unlock();
 }
 
 
