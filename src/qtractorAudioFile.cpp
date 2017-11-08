@@ -127,10 +127,9 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	const FileTypes::ConstIterator& iter_end = m_types.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		const QString& sExt = iter.key();
-		const QString& sExtWild = sExtMask.arg(sExt);
 		if (rx.exactMatch(sExt))
-			exts.append(sExtWild);
-		m_exts.append(sExtWild);
+			exts.append(sExtMask.arg(sExt));
+		m_exts.append(sExt);
 	}
 	m_filters.prepend(QObject::tr("Audio files (%1)").arg(exts.join(" ")));
 	m_filters.append(QObject::tr("All files (*.*)"));

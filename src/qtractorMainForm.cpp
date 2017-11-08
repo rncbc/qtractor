@@ -1794,13 +1794,14 @@ void qtractorMainForm::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
 
 void qtractorMainForm::dropEvent ( QDropEvent *pDropEvent )
 {
+#if 0
 	// Accept externally originated drops only...
 	if (pDropEvent->source())
 		return;
-
+#endif
 	const QMimeData *pMimeData = pDropEvent->mimeData();
 	if (pMimeData->hasUrls()) {
-		QString sFilename = pMimeData->urls().first().toLocalFile();
+		const QString sFilename = pMimeData->urls().first().toLocalFile();
 		// Close current session and try to load the new one...
 		if (!sFilename.isEmpty() && closeSession())
 			loadSessionFile(sFilename);
@@ -4877,10 +4878,6 @@ void qtractorMainForm::viewRefresh (void)
 		pEditor->setEditHead(iEditHead, false);
 		pEditor->setEditTail(iEditTail, false);
 	}
-
-	// Finally...
-	if (m_pFileSystem)
-		m_pFileSystem->stabilize();
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -8274,15 +8271,17 @@ void qtractorMainForm::activateFile ( const QString& sFilename )
 		} else {
 			delete pFile;
 		}
-		return;
+	} else {
+		// Then whether it's a MIDI file...
+		qtractorMidiFile file;
+		if (file.open(sFilename)) {
+			file.close();
+			activateMidiFile(sFilename);
+		}
 	}
 
-	// Then whether it's a MIDI file...
-	qtractorMidiFile file;
-	if (file.open(sFilename)) {
-		file.close();
-		activateMidiFile(sFilename);
-	}
+	// Try updating player status anyway...
+	++m_iPlayerTimer;
 }
 
 

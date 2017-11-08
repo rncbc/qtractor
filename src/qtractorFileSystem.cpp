@@ -23,7 +23,7 @@
 #include "qtractorFileSystem.h"
 
 #include "qtractorAudioFile.h"
-
+#include "qtractorDocument.h"
 #include "qtractorMainForm.h"
 
 #include <QToolButton>
@@ -36,6 +36,8 @@
 #include <QHeaderView>
 
 #include <QContextMenuEvent>
+
+#include <QTimer>
 
 
 //----------------------------------------------------------------------------
@@ -82,6 +84,10 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	m_pAllFilesAction = new QAction(tr("Al&l Files"), this);
 	m_pAllFilesAction->setCheckable(true);
 
+	m_pSessionFilesAction = new QAction(
+		QIcon(":images/qtractor.png"), tr("&Session Files"), this);
+	m_pSessionFilesAction->setCheckable(true);
+
 	m_pAudioFilesAction = new QAction(
 		QIcon(":images/trackAudio.png"), tr("&Audio Files"), this);
 	m_pAudioFilesAction->setCheckable(true);
@@ -123,6 +129,9 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 		QAbstractItemView::ExtendedSelection);
 
 	m_pFileSystemModel = NULL;
+
+	m_bRestoreState = false;
+	m_iRestoreState = 0;
 
 	QHeaderView *pHeaderView = m_pFileSystemTreeView->header();
 #if 0
@@ -178,6 +187,9 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	QObject::connect(m_pAllFilesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(filterChanged()));
+	QObject::connect(m_pSessionFilesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(filterChanged()));
 	QObject::connect(m_pAudioFilesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(filterChanged()));
@@ -215,13 +227,14 @@ qtractorFileSystem::~qtractorFileSystem (void)
 	delete m_pHiddenFilesAction;
 	delete m_pMidiFilesAction;
 	delete m_pAudioFilesAction;
+	delete m_pSessionFilesAction;
 	delete m_pAllFilesAction;
 	delete m_pHomeAction;
 	delete m_pCdUpAction;
 }
 
 
-// accessors.
+// Accessors.
 void qtractorFileSystem::setRootPath ( const QString& sRootPath )
 {
 	updateRootPath(sRootPath);
@@ -245,8 +258,10 @@ void qtractorFileSystem::setFlags ( Flags flags, bool on )
 	if (flags & AllFiles)
 		m_pAllFilesAction->setChecked(on);
 	else
-	if (flags & (AudioFiles | MidiFiles))
+	if (flags & (SessionFiles | AudioFiles | MidiFiles))
 		m_pAllFilesAction->setChecked(!on);
+	if (flags & SessionFiles)
+		m_pSessionFilesAction->setChecked(on);
 	if (flags & AudioFiles)
 		m_pAudioFilesAction->setChecked(on);
 	if (flags & MidiFiles)
@@ -262,6 +277,8 @@ qtractorFileSystem::Flags qtractorFileSystem::flags (void) const
 
 	if (m_pAllFilesAction->isChecked())
 		flags |= AllFiles;
+	if (m_pSessionFilesAction->isChecked())
+		flags |= SessionFiles;
 	if (m_pAudioFilesAction->isChecked())
 		flags |= AudioFiles;
 	if (m_pMidiFilesAction->isChecked())
@@ -273,7 +290,7 @@ qtractorFileSystem::Flags qtractorFileSystem::flags (void) const
 }
 
 
-// model factory method.
+// Model factory method.
 void qtractorFileSystem::updateRootPath ( const QString& sRootPath )
 {
 	QString sCurrentPath;
@@ -284,6 +301,9 @@ void qtractorFileSystem::updateRootPath ( const QString& sRootPath )
 	const QFileInfo info(sRootPath);
 	if (info.isDir() && info.isReadable()) {
 		FileSystemModel *pFileSystemModel = new FileSystemModel(this);
+		QObject::connect(pFileSystemModel,
+			SIGNAL(directoryLoaded(const QString&)),
+			SLOT(restoreStateLoading(const QString&)));
 		pFileSystemModel->setReadOnly(true);
 		pFileSystemModel->setRootPath(sRootPath);
 		m_pFileSystemTreeView->setModel(pFileSystemModel);
@@ -304,7 +324,7 @@ void qtractorFileSystem::updateRootPath ( const QString& sRootPath )
 }
 
 
-// model stabilizers.
+// Model stabilizers.
 void qtractorFileSystem::updateRootPath (void)
 {
 	m_pRootPathComboBox->clear();
@@ -329,12 +349,24 @@ void qtractorFileSystem::updateFilter (void)
 		return;
 
 	QStringList filters;
-	if (m_pAudioFilesAction->isChecked())
-		filters.append(qtractorAudioFileFactory::exts());
+	const QString sExtMask("*.%1");
+	if (m_pSessionFilesAction->isChecked()) {
+		filters.append(sExtMask.arg("qtr"));
+		filters.append(sExtMask.arg(qtractorDocument::defaultExt()));
+		filters.append(sExtMask.arg(qtractorDocument::templateExt()));
+	#ifdef CONFIG_LIBZ
+		filters.append(sExtMask.arg(qtractorDocument::archiveExt()));
+	#endif
+	}
+	if (m_pAudioFilesAction->isChecked()) {
+		QStringListIterator iter(qtractorAudioFileFactory::exts());
+		while (iter.hasNext())
+			filters.append(sExtMask.arg(iter.next()));
+	}
 	if (m_pMidiFilesAction->isChecked()) {
-		filters.append("*.midi");
-		filters.append("*.mid");
-		filters.append("*.smf");
+		filters.append(sExtMask.arg("midi"));
+		filters.append(sExtMask.arg("mid"));
+		filters.append(sExtMask.arg("smf"));
 	}
 	m_pFileSystemModel->setNameFilters(filters);
 
@@ -356,7 +388,7 @@ void qtractorFileSystem::updateFilter (void)
 }
 
 
-// chdir slots.
+// Chdir slots.
 void qtractorFileSystem::cdUpClicked (void)
 {
 	if (m_pFileSystemModel) {
@@ -394,7 +426,7 @@ void qtractorFileSystem::treeViewActivated ( const QModelIndex& index )
 }
 
 
-// filter slots.
+// Filter slots.
 void qtractorFileSystem::filterChanged (void)
 {
 	updateFilter();
@@ -412,7 +444,7 @@ void qtractorFileSystem::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 }
 
 
-// context-menu event handler.
+// Context-menu event handler.
 void qtractorFileSystem::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent )
 {
 	QMenu menu(this);
@@ -423,6 +455,7 @@ void qtractorFileSystem::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent
 	menu.addAction(m_pHomeAction);
 	menu.addSeparator();
 	menu.addAction(m_pAllFilesAction);
+	menu.addAction(m_pSessionFilesAction);
 	menu.addAction(m_pAudioFilesAction);
 	menu.addAction(m_pMidiFilesAction);
 	menu.addSeparator();
@@ -473,7 +506,7 @@ void qtractorFileSystem::activateFile ( const QString& sFilename )
 }
 
 
-// state saver.
+// State saver.
 QByteArray qtractorFileSystem::saveState (void) const
 {
 #if QT_VERSION < 0x050400
@@ -517,10 +550,13 @@ QByteArray qtractorFileSystem::saveState (void) const
 }
 
 
-// state loader.
+// State loader.
 bool qtractorFileSystem::restoreState ( const QByteArray& state )
 {
 	int i = 0;
+	QString sCurrentPath;
+
+	m_bRestoreState = true;
 
 #if QT_VERSION < 0x050400
 	QListIterator<QByteArray> iter(state.split(':'));
@@ -537,12 +573,7 @@ bool qtractorFileSystem::restoreState ( const QByteArray& state )
 			setFlags(Flags(data.toInt()));
 			break;
 		case 3: // current-path...
-			if (m_pFileSystemModel) {
-				const QModelIndex& index
-					= m_pFileSystemModel->index(QString::fromUtf8(data));
-				if (index.isValid())
-					m_pFileSystemTreeView->setCurrentIndex(index);
-			}
+			sCurrentPath = QString::fromUtf8(data);
 			break;
 		case 4: // root-path...
 			updateRootPath(QString::fromUtf8(data));
@@ -559,17 +590,42 @@ bool qtractorFileSystem::restoreState ( const QByteArray& state )
 		}
 	}
 
+	if (m_pFileSystemModel && !sCurrentPath.isEmpty()) {
+		const QModelIndex& index
+			= m_pFileSystemModel->index(sCurrentPath);
+		if (index.isValid())
+			m_pFileSystemTreeView->setCurrentIndex(index);
+	}
+
 	return (i > 0);
 }
 
 
-// view stabilizer.
-void qtractorFileSystem::stabilize (void)
+// Directory gathering thread doing sth...
+void qtractorFileSystem::restoreStateLoading ( const QString& /*sPath*/ )
 {
-	const QModelIndex& index
-		= m_pFileSystemTreeView->currentIndex();
-	if (index.isValid())
-		m_pFileSystemTreeView->scrollTo(index);
+	if (!m_bRestoreState)
+		return;
+
+	if (++m_iRestoreState == 1)
+		QTimer::singleShot(66, this, SLOT(restoreStateTimeout()));
+}
+
+
+void qtractorFileSystem::restoreStateTimeout (void)
+{
+	if (!m_bRestoreState)
+		return;
+
+	if (--m_iRestoreState > 0) {
+		QTimer::singleShot(33, this, SLOT(restoreStateTimeout()));
+	} else {
+		const QModelIndex& index
+			= m_pFileSystemTreeView->currentIndex();
+		if (index.isValid())
+			m_pFileSystemTreeView->scrollTo(index);
+		m_bRestoreState = false;
+	}
 }
 
 

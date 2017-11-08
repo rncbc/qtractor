@@ -51,11 +51,17 @@ public:
 	// dtor.
 	~qtractorFileSystem();
 
-	// accessors.
+	// Accessors.
 	void setRootPath(const QString& sRootPath);
 	QString rootPath() const;
 
-	enum Flags { AllFiles = 1, AudioFiles = 2, MidiFiles = 4, HiddenFiles = 8 };
+	enum Flags {
+		AllFiles     = 1,
+		SessionFiles = 2,
+		AudioFiles   = 4,
+		MidiFiles    = 8,
+		HiddenFiles  = 0x10
+	};
 
 	void setFlags(Flags flags, bool on = true);
 	Flags flags() const;
@@ -64,24 +70,25 @@ public:
 	void setPlayState(bool bOn);
 	bool isPlayState() const;
 
-	// state saver/loader.
+	// State saver/loader.
 	QByteArray saveState() const;
 	bool restoreState(const QByteArray& state);
 
-	// view stabilizer.
-	void stabilize();
-
 protected slots:
 
-	// chdir slots.
+	// Chdir slots.
 	void cdUpClicked();
 	void homeClicked();
 
 	void rootPathActivated(const QString& sRootPath);
 	void treeViewActivated(const QModelIndex& index);
 
-	// filter slots.
+	// Filter slots.
 	void filterChanged();
+
+	// Directory gathering thread doing sth...
+	void restoreStateLoading(const QString& sPath);
+	void restoreStateTimeout();
 
 	// Audition/pre-listening player slots.
 	void playSlot(bool bOn);
@@ -93,10 +100,10 @@ signals:
 
 protected:
 
-	// model factory method.
+	// Model factory method.
 	void updateRootPath(const QString& sRootPath);
 
-	// model stabilizers.
+	// Model stabilizers.
 	void updateRootPath();
 	void updateFilter();
 
@@ -115,6 +122,7 @@ private:
 	QAction     *m_pCdUpAction;
 	QAction     *m_pHomeAction;
 	QAction     *m_pAllFilesAction;
+	QAction     *m_pSessionFilesAction;
 	QAction     *m_pAudioFilesAction;
 	QAction     *m_pMidiFilesAction;
 	QAction     *m_pHiddenFilesAction;
@@ -129,6 +137,9 @@ private:
 	class FileSystemModel;
 
 	FileSystemModel *m_pFileSystemModel;
+
+	bool m_bRestoreState;
+	int  m_iRestoreState;
 };
 
 
