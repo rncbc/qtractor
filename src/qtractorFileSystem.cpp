@@ -76,10 +76,10 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	QDockWidget::setObjectName("qtractorFileSystem");
 
 	// Setup member widgets...
-	m_pCdUpAction = new QAction(
-		QIcon(":images/itemCdUp.png"), tr("&Up"), this);
 	m_pHomeAction = new QAction(
 		QIcon(":images/itemHome.png"), tr("&Home"), this);
+	m_pCdUpAction = new QAction(
+		QIcon(":images/itemCdUp.png"), tr("&Up"), this);
 
 	m_pAllFilesAction = new QAction(tr("Al&l Files"), this);
 	m_pAllFilesAction->setCheckable(true);
@@ -104,13 +104,13 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	m_pPlayAction->setCheckable(true);
 
 	// Setup member widgets...
-	m_pCdUpToolButton = new QToolButton();
-	m_pCdUpToolButton->setDefaultAction(m_pCdUpAction);
-	m_pCdUpToolButton->setFocusPolicy(Qt::NoFocus);
-
 	m_pHomeToolButton = new QToolButton();
 	m_pHomeToolButton->setDefaultAction(m_pHomeAction);
 	m_pHomeToolButton->setFocusPolicy(Qt::NoFocus);
+
+	m_pCdUpToolButton = new QToolButton();
+	m_pCdUpToolButton->setDefaultAction(m_pCdUpAction);
+	m_pCdUpToolButton->setFocusPolicy(Qt::NoFocus);
 
 	m_pRootPathComboBox = new QComboBox();
 	m_pRootPathComboBox->setEditable(true);
@@ -151,8 +151,8 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	QGridLayout *pGridLayout = new QGridLayout();
 	pGridLayout->setMargin(0);
 	pGridLayout->setSpacing(2);
-	pGridLayout->addWidget(m_pCdUpToolButton, 0, 0);
-	pGridLayout->addWidget(m_pHomeToolButton, 0, 1);
+	pGridLayout->addWidget(m_pHomeToolButton, 0, 0);
+	pGridLayout->addWidget(m_pCdUpToolButton, 0, 1);
 	pGridLayout->addWidget(m_pRootPathComboBox, 0, 2);
 	pGridLayout->addWidget(m_pFileSystemTreeView, 1, 0, 1, 3);
 	pGridLayout->setColumnStretch(2, 2);
@@ -174,12 +174,12 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	QDockWidget::setToolTip(sCaption);
 
 	// Setup signal/slot connections...
-	QObject::connect(m_pCdUpAction,
-		SIGNAL(triggered(bool)),
-		SLOT(cdUpClicked()));
 	QObject::connect(m_pHomeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(homeClicked()));
+	QObject::connect(m_pCdUpAction,
+		SIGNAL(triggered(bool)),
+		SLOT(cdUpClicked()));
 
 	QObject::connect(m_pAllFilesAction,
 		SIGNAL(triggered(bool)),
@@ -226,8 +226,8 @@ qtractorFileSystem::~qtractorFileSystem (void)
 	delete m_pAudioFilesAction;
 	delete m_pSessionFilesAction;
 	delete m_pAllFilesAction;
-	delete m_pHomeAction;
 	delete m_pCdUpAction;
+	delete m_pHomeAction;
 }
 
 
@@ -446,17 +446,16 @@ void qtractorFileSystem::contextMenuEvent ( QContextMenuEvent *pContextMenuEvent
 {
 	QMenu menu(this);
 
-	menu.addAction(m_pPlayAction);
-	menu.addSeparator();
-	menu.addAction(m_pCdUpAction);
 	menu.addAction(m_pHomeAction);
+	menu.addAction(m_pCdUpAction);
 	menu.addSeparator();
 	menu.addAction(m_pAllFilesAction);
 	menu.addAction(m_pSessionFilesAction);
 	menu.addAction(m_pAudioFilesAction);
 	menu.addAction(m_pMidiFilesAction);
-	menu.addSeparator();
 	menu.addAction(m_pHiddenFilesAction);
+	menu.addSeparator();
+	menu.addAction(m_pPlayAction);
 
 	menu.exec(pContextMenuEvent->globalPos());
 }

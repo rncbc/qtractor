@@ -77,8 +77,8 @@ public:
 protected slots:
 
 	// Chdir slots.
-	void cdUpClicked();
 	void homeClicked();
+	void cdUpClicked();
 
 	void rootPathActivated(const QString& sRootPath);
 	void treeViewActivated(const QModelIndex& index);
@@ -119,8 +119,8 @@ protected:
 private:
 
 	// Member actions...
-	QAction     *m_pCdUpAction;
 	QAction     *m_pHomeAction;
+	QAction     *m_pCdUpAction;
 	QAction     *m_pAllFilesAction;
 	QAction     *m_pSessionFilesAction;
 	QAction     *m_pAudioFilesAction;
@@ -129,8 +129,8 @@ private:
 	QAction     *m_pPlayAction;
 
 	// Member widgets...
-	QToolButton *m_pCdUpToolButton;
 	QToolButton *m_pHomeToolButton;
+	QToolButton *m_pCdUpToolButton;
 	QComboBox   *m_pRootPathComboBox;
 	QTreeView   *m_pFileSystemTreeView;
 

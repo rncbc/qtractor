@@ -7592,7 +7592,9 @@ void qtractorMainForm::slowTimerSlot (void)
 	// Check if its time to refresh audition/pre-listening status...
 	if (m_iPlayerTimer > 0 && --m_iPlayerTimer < 1) {
 		m_iPlayerTimer = 0;
-		if (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen()) {
+		const bool bPlayerOpen
+			= (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen());
+		if (bPlayerOpen) {
 			if (m_pFiles && m_pFiles->isPlayState())
 				++m_iPlayerTimer;
 			if (m_pFileSystem && m_pFileSystem->isPlayState())
@@ -7603,9 +7605,11 @@ void qtractorMainForm::slowTimerSlot (void)
 				m_pFiles->setPlayState(false);
 			if (m_pFileSystem && m_pFileSystem->isPlayState())
 				m_pFileSystem->setPlayState(false);
-			appendMessages(tr("Playing ended."));
-			pAudioEngine->closePlayer();
-			pMidiEngine->closePlayer();
+			if (bPlayerOpen) {
+				appendMessages(tr("Playing ended."));
+				pAudioEngine->closePlayer();
+				pMidiEngine->closePlayer();
+			}
 		}
 	}
 
