@@ -8257,9 +8257,6 @@ void qtractorMainForm::activateFile ( const QString& sFilename )
 		sFilename.toUtf8().constData());
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
-
 	// First test if it's an audio file ?
 	qtractorAudioFile *pFile
 		= qtractorAudioFileFactory::createAudioFile(sFilename);
@@ -8278,6 +8275,10 @@ void qtractorMainForm::activateFile ( const QString& sFilename )
 			file.close();
 			activateMidiFile(sFilename);
 		}
+		else
+		// Maybe a session file?...
+		if (closeSession())
+			loadSessionFile(sFilename);
 	}
 
 	// Try updating player status anyway...
