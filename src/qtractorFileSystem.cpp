@@ -130,9 +130,6 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 
 	m_pFileSystemModel = NULL;
 
-	m_bRestoreState = false;
-	m_iRestoreState = 0;
-
 	QHeaderView *pHeaderView = m_pFileSystemTreeView->header();
 #if 0
 #if QT_VERSION < 0x050000
@@ -555,9 +552,7 @@ bool qtractorFileSystem::restoreState ( const QByteArray& state )
 {
 	int i = 0;
 	QString sCurrentPath;
-
-	m_bRestoreState = true;
-
+	m_sRestoreStatePath.clear();
 #if QT_VERSION < 0x050400
 	QListIterator<QByteArray> iter(state.split(':'));
 #else
@@ -593,8 +588,10 @@ bool qtractorFileSystem::restoreState ( const QByteArray& state )
 	if (m_pFileSystemModel && !sCurrentPath.isEmpty()) {
 		const QModelIndex& index
 			= m_pFileSystemModel->index(sCurrentPath);
-		if (index.isValid())
+		if (index.isValid()) {
+			m_sRestoreStatePath = QFileInfo(sCurrentPath).absolutePath();
 			m_pFileSystemTreeView->setCurrentIndex(index);
+		}
 	}
 
 	return (i > 0);
@@ -602,30 +599,27 @@ bool qtractorFileSystem::restoreState ( const QByteArray& state )
 
 
 // Directory gathering thread doing sth...
-void qtractorFileSystem::restoreStateLoading ( const QString& /*sPath*/ )
+void qtractorFileSystem::restoreStateLoading ( const QString& sPath )
 {
-	if (!m_bRestoreState)
+	if (m_sRestoreStatePath.isEmpty())
 		return;
 
-	if (++m_iRestoreState == 1)
-		QTimer::singleShot(66, this, SLOT(restoreStateTimeout()));
+	if (sPath == m_sRestoreStatePath)
+		QTimer::singleShot(200, this, SLOT(restoreStateTimeout()));
 }
 
 
 void qtractorFileSystem::restoreStateTimeout (void)
 {
-	if (!m_bRestoreState)
+	if (m_sRestoreStatePath.isEmpty())
 		return;
 
-	if (--m_iRestoreState > 0) {
-		QTimer::singleShot(33, this, SLOT(restoreStateTimeout()));
-	} else {
-		const QModelIndex& index
-			= m_pFileSystemTreeView->currentIndex();
-		if (index.isValid())
-			m_pFileSystemTreeView->scrollTo(index);
-		m_bRestoreState = false;
-	}
+	const QModelIndex& index
+		= m_pFileSystemTreeView->currentIndex();
+	if (index.isValid())
+		m_pFileSystemTreeView->scrollTo(index);
+
+	m_sRestoreStatePath.clear();
 }
 
 

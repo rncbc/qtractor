@@ -138,8 +138,8 @@ private:
 
 	FileSystemModel *m_pFileSystemModel;
 
-	bool m_bRestoreState;
-	int  m_iRestoreState;
+	// Restore state current-path.
+	QString m_sRestoreStatePath;
 };
 
 
