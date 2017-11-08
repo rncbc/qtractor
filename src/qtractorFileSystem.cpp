@@ -328,13 +328,14 @@ void qtractorFileSystem::updateRootPath (void)
 
 	if (m_pFileSystemModel) {
 		const QString& sRootPath = m_pFileSystemModel->rootPath();
+		m_pHomeAction->setEnabled(sRootPath != QDir::homePath());
 		m_pRootPathComboBox->addItem(sRootPath);
 		QDir dir(sRootPath);
 		while (dir.cdUp())
 			m_pRootPathComboBox->addItem(dir.absolutePath());
 	}
 
-	m_pCdUpToolButton->setEnabled(m_pRootPathComboBox->count() > 1);
+	m_pCdUpAction->setEnabled(m_pRootPathComboBox->count() > 1);
 
 	updateFilter();
 }
