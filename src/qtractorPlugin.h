@@ -928,6 +928,9 @@ public:
 	void autoDeactivatePlugins(bool bDeactivated, bool bForce = false);
 	bool isAutoDeactivated() const;
 
+	// Force no sound processing.
+	void forceNoProcessing(bool bForce);
+
 protected:
 
 	// Check/sanitize plugin file-path.
@@ -978,6 +981,9 @@ private:
 
 	// Auto-plugin-deactivation
 	bool m_bAutoDeactivated;
+
+	// Force no sound processing.
+	int m_iForceNoProcessing;
 };
 
 
