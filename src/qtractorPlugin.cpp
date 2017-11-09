@@ -1409,7 +1409,8 @@ qtractorPluginList::qtractorPluginList (
 	: m_iChannels(iChannels), m_iFlags(iFlags),
 		m_iActivated(0), m_pMidiManager(NULL),
 		m_iMidiBank(-1), m_iMidiProg(-1),
-		m_pMidiProgramSubject(NULL), m_bAutoDeactivated(false)
+		m_pMidiProgramSubject(NULL), m_bAutoDeactivated(false),
+		m_iForceNoProcessing(0)
 {
 	setAutoDelete(true);
 
@@ -1800,6 +1801,10 @@ void qtractorPluginList::removeView ( qtractorPluginListView *pView )
 // The meta-main audio-processing plugin-chain procedure.
 void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 {
+	// Forced not to process data?
+	if (m_iForceNoProcessing)
+		return;
+
 	// Sanity checks...
 	if (!isActivated())
 		return;
@@ -2217,6 +2222,14 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 bool qtractorPluginList::isAutoDeactivated (void) const
 {
 	return m_bAutoDeactivated;
+}
+
+void qtractorPluginList::forceNoProcessing(bool bForce)
+{
+	if (bForce)
+		++m_iForceNoProcessing;
+	else if (m_iForceNoProcessing > 0)
+		--m_iForceNoProcessing;
 }
 
 

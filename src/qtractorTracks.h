@@ -35,6 +35,7 @@ class qtractorClipRangeCommand;
 class qtractorClipToolCommand;
 
 class qtractorMidiToolsForm;
+class qtractorMidiImportExtender;
 
 
 //----------------------------------------------------------------------------
@@ -71,7 +72,8 @@ public:
 	bool addAudioTracks(const QStringList& files,
 		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
 	bool addMidiTracks(const QStringList& files,
-		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
+		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL,
+		qtractorMidiImportExtender *pMidiImportExtender = NULL);
 	bool addMidiTrackChannel(const QString& sPath, int iTrackChannel,
 		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
 

@@ -76,6 +76,8 @@
 #include "qtractorMidiEditorForm.h"
 #include "qtractorMidiEditor.h"
 
+#include "qtractorMidiImportExtender.h"
+
 #include "qtractorTrackCommand.h"
 #include "qtractorCurveCommand.h"
 
@@ -3845,9 +3847,15 @@ void qtractorMainForm::trackImportMidi (void)
 	if (m_pTracks) {
 		const unsigned long iClipStart = m_pSession->editHead();
 		qtractorTrack *pTrack = m_pTracks->currentTrack();
-		m_pTracks->addMidiTracks(
-			m_pFiles->midiListView()->openFileNames(), iClipStart, pTrack);
-		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
+
+		QStringList files;
+		files = m_pFiles->midiListView()->openFileNames();
+		if (!files.isEmpty()) {
+			qtractorMidiImportExtender midiImportExtenter;
+			m_pTracks->addMidiTracks(
+				files, iClipStart, pTrack, &midiImportExtenter);
+			m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
+		}
 	}
 }
 
