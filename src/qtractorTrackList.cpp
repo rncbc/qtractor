@@ -47,6 +47,7 @@
 #include "qtractorMidiMonitor.h"
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"
+#include "qtractorMidiImportExtender.h"
 
 #include "qtractorOptions.h"
 
@@ -1648,8 +1649,11 @@ void qtractorTrackList::dropEvent ( QDropEvent *pDropEvent )
 	const unsigned long iClipStart = (pSession ? pSession->editHead() : 0);
 	qtractorTrack *pAfterTrack = currentTrack();
 
-	if (!midi_files.isEmpty())
-		m_pTracks->addMidiTracks(midi_files, iClipStart, pAfterTrack);
+	if (!midi_files.isEmpty()) {
+		qtractorMidiImportExtender midiImportExtenter;
+		m_pTracks->addMidiTracks(
+					midi_files, iClipStart, pAfterTrack, &midiImportExtenter);
+	}
 	if (!audio_files.isEmpty())
 		m_pTracks->addAudioTracks(audio_files, iClipStart, pAfterTrack);
 

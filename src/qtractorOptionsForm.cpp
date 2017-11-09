@@ -36,6 +36,8 @@
 #include "qtractorMidiMeter.h"
 
 #include "qtractorPluginSelectForm.h"
+#include "qtractorMidiImportForm.h"
+#include "qtractorMidiImportExtender.h"
 
 #include <QFileDialog>
 #include <QFontDialog>
@@ -97,6 +99,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 
 	// Have some deafult time-scale for instance...
 	m_pTimeScale = NULL;
+
+	// Enhanced MIDI import - created on demand
+	m_pMidiImportExtender = NULL;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -262,6 +267,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.MidiCaptureFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MidiImportPushButton,
+		SIGNAL(clicked()),
+		SLOT(showMidiImportDialog()));
 	QObject::connect(m_ui.MidiCaptureQuantizeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -505,6 +513,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 qtractorOptionsForm::~qtractorOptionsForm (void)
 {
 	if (m_pTimeScale) delete m_pTimeScale;
+	if (m_pMidiImportExtender) delete m_pMidiImportExtender;
 }
 
 
@@ -806,6 +815,9 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iMetroBeatDuration   = m_ui.MetroBeatDurationSpinBox->value();
 		m_pOptions->bMidiMetroBus        = m_ui.MidiMetroBusCheckBox->isChecked();
 		m_pOptions->iMidiMetroOffset     = m_ui.MidiMetroOffsetSpinBox->value();
+		// MIDI import options.
+		if (m_pMidiImportExtender)
+			m_pMidiImportExtender->saveSettings();
 		// Display options...
 		m_pOptions->bConfirmRemove       = m_ui.ConfirmRemoveCheckBox->isChecked();
 		m_pOptions->bConfirmArchive      = m_ui.ConfirmArchiveCheckBox->isChecked();
@@ -899,6 +911,10 @@ void qtractorOptionsForm::accept (void)
 	// Save/commit to disk.
 	m_pOptions->saveOptions();
 
+	// Remove plugin list commands from undo menu.
+	if (m_pMidiImportExtender)
+		m_pMidiImportExtender->restoreCommandList();
+
 	// Just go with dialog acceptance
 	QDialog::accept();
 }
@@ -924,6 +940,11 @@ void qtractorOptionsForm::reject (void)
 			accept();
 			return;
 		case QMessageBox::Discard:
+			// In case Midi-Import dialog was closed with OK but changes
+			// shall be discarded, the plugin list's changes must be discarded
+			// too.
+			if (m_pMidiImportExtender)
+				m_pMidiImportExtender->backoutCommandList();
 			break;
 		default:    // Cancel.
 			bReject = false;
@@ -1574,6 +1595,20 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	m_ui.SessionTemplatePathComboBox->setEditText(sFilename);
 	m_ui.SessionTemplatePathComboBox->setFocus();
 	changed();
+}
+
+
+// Open dialog to change MIDI import settings
+void qtractorOptionsForm::showMidiImportDialog()
+{
+	// First time here: create import extender
+	if (!m_pMidiImportExtender)
+		m_pMidiImportExtender = new qtractorMidiImportExtender();
+	// Show dialog
+	qtractorMidiImportForm midiImportForm(
+				m_pMidiImportExtender, this);
+	if (midiImportForm.exec())
+		changed();
 }
 
 

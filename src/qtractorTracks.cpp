@@ -61,8 +61,11 @@
 
 #include "qtractorMidiToolsForm.h"
 #include "qtractorMidiEditSelect.h"
+#include "qtractorMidiImportExtender.h"
 
 #include "qtractorFileList.h"
+
+#include "qtractorMixer.h"
 
 #include <QVBoxLayout>
 #include <QProgressBar>
@@ -2806,8 +2809,9 @@ bool qtractorTracks::addAudioTracks ( const QStringList& files,
 
 
 // Import MIDI files into new tracks...
-bool qtractorTracks::addMidiTracks ( const QStringList& files,
-	unsigned long iClipStart, qtractorTrack *pAfterTrack )
+bool qtractorTracks::addMidiTracks (const QStringList& files,
+	unsigned long iClipStart, qtractorTrack *pAfterTrack,
+	qtractorMidiImportExtender *pMidiImportExtender)
 {
 	// Have we some?
 	if (files.isEmpty())
@@ -2817,10 +2821,13 @@ bool qtractorTracks::addMidiTracks ( const QStringList& files,
 	if (pSession == NULL)
 		return false;
 
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 //	pSession->lock();
 
-	// Account for actual updates...
-	int iUpdate = 0;
+	// Collect tracks added.
+	QList<qtractorTrack *> addedTracks;
 
 	// We'll build a composite command...
 	qtractorImportTrackCommand *pImportTrackCommand
@@ -2881,12 +2888,14 @@ bool qtractorTracks::addMidiTracks ( const QStringList& files,
 			}
 			// Time to check whether there is actual data on track...
 			if (pMidiClip->clipLength() > 0) {
+				addedTracks.append(pTrack);
 				// Add the new track to composite command...
 				pTrack->setTrackName(
 					pSession->uniqueTrackName(pMidiClip->clipName()));
 				pTrack->setMidiChannel(pMidiClip->channel());
+				if (pMidiImportExtender)
+					pMidiImportExtender->prepareTrackForExtension(pTrack);
 				pImportTrackCommand->addTrack(pTrack);
-				++iUpdate;
 				// Don't forget to add this one to local repository.
 				if (pMainForm)
 					pMainForm->addMidiFile(sPath);
@@ -2898,7 +2907,7 @@ bool qtractorTracks::addMidiTracks ( const QStringList& files,
 			}
 		}
 		// Log this successful import operation...
-		if (iUpdate > 0 && pMainForm) {
+		if (addedTracks.count() && pMainForm) {
 			sDescription += tr("MIDI file import \"%1\" on %2 %3.\n")
 				.arg(QFileInfo(sPath).fileName())
 				.arg(QDate::currentDate().toString("MMM dd yyyy"))
@@ -2910,16 +2919,28 @@ bool qtractorTracks::addMidiTracks ( const QStringList& files,
 
 	// Have we changed anything?
 	bool bResult = false;
-	if (iUpdate > 0) {
+	if (addedTracks.count()) {
 		// Log to session (undoable by import-track command)...
 		pSession->setDescription(sDescription);	
 		// Put it in the form of an undoable command...
 		bResult = pSession->execute(pImportTrackCommand);
+		// Tracks are complete now: instrument and track-name (based on
+		// patch name are depending on instrument) can be set.
+		if (bResult &&
+				pMidiImportExtender &&
+				pMidiImportExtender->finishTracksForExtension(&addedTracks)) {
+			// Mixer needs extra invitation...
+			qtractorMixer *pMixer = pMainForm->mixer();
+			if (pMixer)
+				pMixer->updateTracks(true);
+		}
 	} else {
 		delete pImportTrackCommand;
 	}
 
 //	pSession->unlock();
+
+	QApplication::restoreOverrideCursor();
 
 	return bResult;
 }
