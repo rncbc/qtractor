@@ -6,6 +6,15 @@ ChangeLog
 
 GIT HEAD
 
+- A File System browser and tree-view is finally integrated
+  as a dockable-widget on the main application window (cf.
+  main menu View / Window / File System). (EXPERIMENTAL)
+
+- Drag-and-dropping of session, audio and MIDI files over
+  the main track-list (left pane) is now possible, allowing
+  for yet another quick means to open a new session or add
+  new tracks to the current session. (EXPERIMENTAL)
+
 - MIDI input/capture time-stamping has been fixed as much
   to avoid missing inbound events, when play-head is near
   the loop-end point and the loop-start is set below the

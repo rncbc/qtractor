@@ -110,6 +110,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="viewFileSystemAction"/>
    <addaction name="viewFilesAction"/>
    <addaction name="viewMessagesAction"/>
    <addaction name="viewConnectionsAction"/>
@@ -465,6 +466,7 @@
      <property name="title">
       <string>&amp;Windows</string>
      </property>
+     <addaction name="viewFileSystemAction"/>
      <addaction name="viewFilesAction"/>
      <addaction name="viewMessagesAction"/>
      <addaction name="viewConnectionsAction"/>
@@ -2264,6 +2266,26 @@
    </property>
    <property name="statusTip">
     <string>Show/hide main program window thumb toolbar</string>
+   </property>
+  </action>
+  <action name="viewFileSystemAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/viewFileSystem.png</iconset>
+   </property>
+   <property name="text">
+    <string>File &amp;System</string>
+   </property>
+   <property name="iconText">
+    <string>File System</string>
+   </property>
+   <property name="toolTip">
+    <string>File system</string>
+   </property>
+   <property name="statusTip">
+    <string>Show/hide the file system window</string>
    </property>
   </action>
   <action name="viewFilesAction">

@@ -41,6 +41,7 @@ headers = \
 	src/qtractorFileList.h \
 	src/qtractorFileListView.h \
 	src/qtractorFiles.h \
+	src/qtractorFileSystem.h \
 	src/qtractorInsertPlugin.h \
 	src/qtractorInstrument.h \
 	src/qtractorInstrumentMenu.h \
@@ -169,6 +170,7 @@ sources = \
 	src/qtractorFileList.cpp \
 	src/qtractorFileListView.cpp \
 	src/qtractorFiles.cpp \
+	src/qtractorFileSystem.cpp \
 	src/qtractorInsertPlugin.cpp \
 	src/qtractorInstrument.cpp \
 	src/qtractorInstrumentMenu.cpp \
