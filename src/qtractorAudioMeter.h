@@ -165,6 +165,8 @@ private:
 
 class qtractorAudioMixerMeter : public qtractorMixerMeter
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
