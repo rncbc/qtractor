@@ -183,6 +183,8 @@ private:
 
 class qtractorMidiMixerMeter : public qtractorMixerMeter
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
