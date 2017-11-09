@@ -26,6 +26,7 @@
 #include "qtractorInstrument.h"
 #include "qtractorInstrumentMenu.h"
 #include "qtractorMessages.h"
+#include "qtractorFileSystem.h"
 #include "qtractorFiles.h"
 #include "qtractorConnections.h"
 #include "qtractorMixer.h"
@@ -160,6 +161,7 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #undef HAVE_SIGNAL_H
 #endif
 
+
 //-------------------------------------------------------------------------
 // LADISH Level 1 support stuff.
 
@@ -250,6 +252,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pSession = new qtractorSession();
 	m_pTempoCursor = new qtractorTempoCursor();
 	m_pMessageList = new qtractorMessageList();;
+	m_pAudioFileFactory = new qtractorAudioFileFactory();
 	m_pPluginFactory = new qtractorPluginFactory();
 
 	// Custom track/instrument proxy menu.
@@ -257,6 +260,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// All child forms are to be created later, not earlier than setup.
 	m_pMessages    = NULL;
+	m_pFileSystem  = NULL;
 	m_pFiles       = NULL;
 	m_pMixer       = NULL;
 	m_pConnections = NULL;
@@ -717,6 +721,7 @@ qtractorMainForm::qtractorMainForm (
 	while (iter.hasNext())
 		iter.next()->setShortcutContext(Qt::ApplicationShortcut);
 #else
+	m_ui.viewFileSystemAction->setShortcutContext(Qt::ApplicationShortcut);
 	m_ui.viewFilesAction->setShortcutContext(Qt::ApplicationShortcut);
 	m_ui.viewConnectionsAction->setShortcutContext(Qt::ApplicationShortcut);
 	m_ui.viewMixerAction->setShortcutContext(Qt::ApplicationShortcut);
@@ -1042,6 +1047,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.viewToolbarThumbAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarThumb(bool)));
+	QObject::connect(m_ui.viewFileSystemAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewFileSystem(bool)));
 	QObject::connect(m_ui.viewFilesAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewFiles(bool)));
@@ -1235,6 +1243,8 @@ qtractorMainForm::~qtractorMainForm (void)
 		delete m_pConnections;
 	if (m_pFiles)
 		delete m_pFiles;
+	if (m_pFileSystem)
+		delete m_pFileSystem;
 	if (m_pMessages)
 		delete m_pMessages;
 	if (m_pTracks)
@@ -1280,6 +1290,10 @@ qtractorMainForm::~qtractorMainForm (void)
 	if (m_pPluginFactory)
 		delete m_pPluginFactory;
 
+	// Remove audio file formats registry.
+	if (m_pAudioFileFactory)
+		delete m_pAudioFileFactory;
+
 	// Remove message list buffer.
 	if (m_pMessageList)
 		delete m_pMessageList;
@@ -1307,6 +1321,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pOptions = pOptions;
 
 	// Some child/dockable forms are to be created right now.
+	m_pFileSystem = new qtractorFileSystem(this);
 	m_pFiles = new qtractorFiles(this);
 	m_pFiles->audioListView()->setRecentDir(m_pOptions->sAudioDir);
 	m_pFiles->midiListView()->setRecentDir(m_pOptions->sMidiDir);
@@ -1329,6 +1344,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	m_pMixer = new qtractorMixer(pParent, wflags);
 
 	// Make those primordially docked...
+	addDockWidget(Qt::LeftDockWidgetArea, m_pFileSystem, Qt::Vertical);
 	addDockWidget(Qt::RightDockWidgetArea, m_pFiles, Qt::Vertical);
 	addDockWidget(Qt::BottomDockWidgetArea, m_pMessages, Qt::Horizontal);
 
@@ -1417,14 +1433,27 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	viewToolbarThumb(m_pOptions->bThumbToolbar);
 
 	// Restore whole dock windows state.
-	QByteArray aDockables = m_pOptions->settings().value(
-		"/Layout/DockWindows").toByteArray();
+	const QByteArray aDockables
+		= m_pOptions->settings().value("/Layout/DockWindows").toByteArray();
 	if (aDockables.isEmpty()) {
 		// Some windows are forced initially as is...
 		insertToolBarBreak(m_ui.transportToolbar);
 	} else {
 		// Make it as the last time.
 		restoreState(aDockables);
+	}
+
+	// Restore file-system dock-window state.
+	if (m_pFileSystem) {
+		const QByteArray aFileSystem
+			= m_pOptions->settings().value("/FileSystem/State").toByteArray();
+		if (aFileSystem.isEmpty()) {
+			// Should be hidden first time...
+			viewFileSystem(false);
+		} else {
+			// Make it as the last time visible.
+			m_pFileSystem->restoreState(aFileSystem);
+		}
 	}
 
 	// Try to restore old window positioning.
@@ -1508,6 +1537,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		pAudioEngine->setMasterAutoConnect(m_pOptions->bAudioMasterAutoConnect);
 	
 	// Final widget slot connections....
+	QObject::connect(m_pFileSystem->toggleViewAction(),
+		SIGNAL(triggered(bool)),
+		SLOT(stabilizeForm()));
 	QObject::connect(m_pFiles->toggleViewAction(),
 		SIGNAL(triggered(bool)),
 		SLOT(stabilizeForm()));
@@ -1538,6 +1570,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	QObject::connect(m_pFiles->midiListView(),
 		SIGNAL(contentsChanged()),
 		SLOT(contentsChanged()));
+	QObject::connect(m_pFileSystem,
+		SIGNAL(activated(const QString&)),
+		SLOT(activateFile(const QString&)));
 	QObject::connect(m_pTracks->trackList(),
 		SIGNAL(selectionChanged()),
 		SLOT(trackSelectionChanged()));
@@ -1720,7 +1755,12 @@ bool qtractorMainForm::queryClose (void)
 			m_pOptions->iBeatDivisor = m_pTempoSpinBox->beatDivisor();
 			// Save MIDI control non catch-up/hook global option...
 			m_pOptions->bMidiControlSync = qtractorMidiControl::isSync();
-			// Save the dock windows state.
+			// Save the file-system dock-window state...
+			if (m_pFileSystem && m_pFileSystem->isVisible()) {
+				m_pOptions->settings().setValue(
+					"/FileSystem/State", m_pFileSystem->saveState());
+			}
+			// Save the dock windows state...
 			m_pOptions->settings().setValue("/Layout/DockWindows", saveState());
 			// Audio master bus auto-connection option...
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
@@ -1764,13 +1804,14 @@ void qtractorMainForm::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
 
 void qtractorMainForm::dropEvent ( QDropEvent *pDropEvent )
 {
+#if 0
 	// Accept externally originated drops only...
 	if (pDropEvent->source())
 		return;
-
+#endif
 	const QMimeData *pMimeData = pDropEvent->mimeData();
 	if (pMimeData->hasUrls()) {
-		QString sFilename = pMimeData->urls().first().toLocalFile();
+		const QString sFilename = pMimeData->urls().first().toLocalFile();
 		// Close current session and try to load the new one...
 		if (!sFilename.isEmpty() && closeSession())
 			loadSessionFile(sFilename);
@@ -1819,6 +1860,12 @@ void qtractorMainForm::hideEvent ( QHideEvent *pHideEvent )
 qtractorTracks *qtractorMainForm::tracks (void) const
 {
 	return m_pTracks;
+}
+
+// The global file-system reference.
+qtractorFileSystem *qtractorMainForm::fileSystem (void) const
+{
+	return m_pFileSystem;
 }
 
 // The global session file(lists) reference.
@@ -4658,6 +4705,13 @@ void qtractorMainForm::viewToolbarThumb ( bool bOn )
 }
 
 
+// Show/hide the file-system window view.
+void qtractorMainForm::viewFileSystem ( bool bOn )
+{
+	m_pFileSystem->setVisible(bOn);
+}
+
+
 // Show/hide the files window view.
 void qtractorMainForm::viewFiles ( bool bOn )
 {
@@ -4822,7 +4876,8 @@ void qtractorMainForm::viewRefresh (void)
 		m_pMixer->updateTracks();
 	}
 
-	m_pThumbView->updateContents();
+	if (m_pThumbView)
+		m_pThumbView->updateContents();
 
 	// Update other editors contents...
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
@@ -6116,6 +6171,8 @@ void qtractorMainForm::stabilizeForm (void)
 	updateClipMenu();
 
 	// Update view menu state...
+	m_ui.viewFileSystemAction->setChecked(
+		m_pFileSystem && m_pFileSystem->isVisible());
 	m_ui.viewFilesAction->setChecked(
 		m_pFiles && m_pFiles->isVisible());
 	m_ui.viewMessagesAction->setChecked(
@@ -7566,16 +7623,24 @@ void qtractorMainForm::slowTimerSlot (void)
 	// Check if its time to refresh audition/pre-listening status...
 	if (m_iPlayerTimer > 0 && --m_iPlayerTimer < 1) {
 		m_iPlayerTimer = 0;
-		if (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen()) {
+		const bool bPlayerOpen
+			= (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen());
+		if (bPlayerOpen) {
 			if (m_pFiles && m_pFiles->isPlayState())
+				++m_iPlayerTimer;
+			if (m_pFileSystem && m_pFileSystem->isPlayState())
 				++m_iPlayerTimer;
 		}
 		if (m_iPlayerTimer < 1) {
 			if (m_pFiles && m_pFiles->isPlayState())
 				m_pFiles->setPlayState(false);
-			appendMessages(tr("Playing ended."));
-			pAudioEngine->closePlayer();
-			pMidiEngine->closePlayer();
+			if (m_pFileSystem && m_pFileSystem->isPlayState())
+				m_pFileSystem->setPlayState(false);
+			if (bPlayerOpen) {
+				appendMessages(tr("Playing ended."));
+				pAudioEngine->closePlayer();
+				pMidiEngine->closePlayer();
+			}
 		}
 	}
 
@@ -8151,7 +8216,6 @@ void qtractorMainForm::activateAudioFile (
 	// the player is stopped (eg. empty filename)...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine && pAudioEngine->openPlayer(sFilename)) {
-		if (m_pFiles) m_pFiles->setPlayState(true);
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
 	}
@@ -8209,7 +8273,6 @@ void qtractorMainForm::activateMidiFile (
 	// the player is stopped (eg. empty filename)...
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine && pMidiEngine->openPlayer(sFilename, iTrackChannel)) {
-		if (m_pFiles) m_pFiles->setPlayState(true);
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
 	}
@@ -8218,6 +8281,43 @@ void qtractorMainForm::activateMidiFile (
 	++m_iPlayerTimer;
 
 	stabilizeForm();
+}
+
+
+// Generic file activation slot funtion.
+void qtractorMainForm::activateFile ( const QString& sFilename )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::activateFile(\"%s\")",
+		sFilename.toUtf8().constData());
+#endif
+
+	// First test if it's an audio file ?
+	qtractorAudioFile *pFile
+		= qtractorAudioFileFactory::createAudioFile(sFilename);
+	if (pFile) {
+		if (pFile->open(sFilename)) {
+			pFile->close();
+			delete pFile;
+			activateAudioFile(sFilename);
+		} else {
+			delete pFile;
+		}
+	} else {
+		// Then whether it's a MIDI file...
+		qtractorMidiFile file;
+		if (file.open(sFilename)) {
+			file.close();
+			activateMidiFile(sFilename);
+		}
+		else
+		// Maybe a session file?...
+		if (closeSession())
+			loadSessionFile(sFilename);
+	}
+
+	// Try updating player status anyway...
+	++m_iPlayerTimer;
 }
 
 

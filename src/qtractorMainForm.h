@@ -33,6 +33,7 @@ class qtractorSyncEvent;
 class qtractorTracks;
 class qtractorThumbView;
 class qtractorMessageList;
+class qtractorFileSystem;
 class qtractorFiles;
 class qtractorMessages;
 class qtractorConnections;
@@ -50,6 +51,7 @@ class qtractorMidiEditorForm;
 class qtractorMidiEditor;
 class qtractorMidiManager;
 
+class qtractorAudioFileFactory;
 class qtractorPluginFactory;
 
 class qtractorActionControl;
@@ -88,6 +90,7 @@ public:
 	void setup(qtractorOptions *pOptions);
 
 	qtractorTracks *tracks() const;
+	qtractorFileSystem *fileSystem() const;
 	qtractorFiles *files() const;
 	qtractorConnections *connections() const;
 	qtractorMixer *mixer() const;
@@ -236,6 +239,7 @@ public slots:
 	void viewToolbarTransport(bool bOn);
 	void viewToolbarTime(bool bOn);
 	void viewToolbarThumb(bool bOn);
+	void viewFileSystem(bool bOn);
 	void viewFiles(bool bOn);
 	void viewMessages(bool bOn);
 	void viewConnections(bool bOn);
@@ -331,6 +335,8 @@ protected slots:
 
 	void selectMidiFile(const QString& sFilename, int iTrackChannel, bool bSelect);
 	void activateMidiFile(const QString& sFilename, int iTrackChannel = -1);
+
+	void activateFile(const QString& sFilename);
 
 	void trackSelectionChanged();
 	void mixerSelectionChanged();
@@ -451,12 +457,14 @@ private:
 	// Instance variables...
 	qtractorOptions *m_pOptions;
 	qtractorSession *m_pSession;
+	qtractorFileSystem *m_pFileSystem;
 	qtractorFiles *m_pFiles;
 	qtractorMessages *m_pMessages;
 	qtractorConnections *m_pConnections;
 	qtractorMixer *m_pMixer;
 	qtractorTracks *m_pTracks;
 	qtractorMessageList *m_pMessageList;
+	qtractorAudioFileFactory *m_pAudioFileFactory;
 	qtractorPluginFactory *m_pPluginFactory;
 	QString m_sFilename;
 	int m_iUntitled;
