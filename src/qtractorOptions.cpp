@@ -162,6 +162,13 @@ void qtractorOptions::loadOptions (void)
 	iMidiMmcMode       = m_settings.value("/MmcMode", 3).toInt();
 	iMidiSppMode       = m_settings.value("/SppMode", 3).toInt();
 	iMidiClockMode     = m_settings.value("/ClockMode", 0).toInt();
+	sMidiImportPlugins = m_settings.value("/ImportPlugins").toString();
+	sMidiImportInstInst = m_settings.value("/ImportInstInst").toString();
+	sMidiImportDrumInst = m_settings.value("/ImportDrumInst").toString();
+	iMidiImportInstBank = m_settings.value("/ImportInstBank", -1).toInt();
+	iMidiImportDrumBank = m_settings.value("/ImportDrumBank", -1).toInt();
+	iMidiImportTrackName = m_settings.value("/ImportTrackName", 0).toInt();
+
 	m_settings.endGroup();
 
 	// Metronome options group.
@@ -444,7 +451,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MetroOffset", uint(iAudioMetroOffset));
 	m_settings.endGroup();
 
-	// MIDI rendering options group.
+	// MIDI rendering and import options group.
 	m_settings.beginGroup("/Midi");
 	m_settings.setValue("/CaptureFormat", iMidiCaptureFormat);
 	m_settings.setValue("/CaptureQuantize", iMidiCaptureQuantize);
@@ -459,6 +466,13 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MmcMode", iMidiMmcMode);
 	m_settings.setValue("/SppMode", iMidiSppMode);
 	m_settings.setValue("/ClockMode", iMidiClockMode);
+	m_settings.setValue("/ImportPlugins", sMidiImportPlugins);
+	m_settings.setValue("/ImportInstInst", sMidiImportInstInst);
+	m_settings.setValue("/ImportDrumInst", sMidiImportDrumInst);
+	m_settings.setValue("/ImportInstBank", iMidiImportInstBank);
+	m_settings.setValue("/ImportDrumBank", iMidiImportDrumBank);
+	m_settings.setValue("/ImportTrackName", iMidiImportTrackName);
+
 	m_settings.endGroup();
 
 	// Metronome options group.
