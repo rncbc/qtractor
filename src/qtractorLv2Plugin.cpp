@@ -3822,7 +3822,7 @@ void qtractorLv2Plugin::lv2_ui_touch ( uint32_t port_index, bool grabbed )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_touch(%u, %d)",
-		this, port_index, int(grabbed);
+		this, port_index, int(grabbed));
 #endif
 
 	m_ui_params_touch[port_index] = grabbed;
