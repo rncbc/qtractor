@@ -85,15 +85,15 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	m_pAllFilesAction->setCheckable(true);
 
 	m_pSessionFilesAction = new QAction(
-		QIcon(":images/qtractor.png"), tr("&Session Files"), this);
+		QIcon(":images/itemSessionFile.png"), tr("&Session"), this);
 	m_pSessionFilesAction->setCheckable(true);
 
 	m_pAudioFilesAction = new QAction(
-		QIcon(":images/trackAudio.png"), tr("&Audio Files"), this);
+		QIcon(":images/itemAudioFile.png"), tr("&Audio"), this);
 	m_pAudioFilesAction->setCheckable(true);
 
 	m_pMidiFilesAction = new QAction(
-		QIcon(":images/trackMidi.png"), tr("&MIDI Files"), this);
+		QIcon(":images/itemMidiFile.png"), tr("&MIDI"), this);
 	m_pMidiFilesAction->setCheckable(true);
 
 	m_pHiddenFilesAction = new QAction(tr("H&idden"), this);
