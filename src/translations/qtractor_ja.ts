@@ -779,7 +779,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>再確認しない</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3482"/>
         <source>plugin parameters</source>
         <translation>プラグインのパラメータ</translation>
     </message>

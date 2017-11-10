@@ -780,7 +780,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Neptat se znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3482"/>
         <source>plugin parameters</source>
         <translation>Parametry přídavného modulu</translation>
     </message>

@@ -780,7 +780,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Ne pas redemander</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3482"/>
         <source>plugin parameters</source>
         <translation>paramètres du greffon</translation>
     </message>

@@ -355,7 +355,7 @@ MIDI:	</translation>
         <translation>Não pergunte novamente</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3482"/>
         <source>plugin parameters</source>
         <translation>parametros do plugin</translation>
     </message>

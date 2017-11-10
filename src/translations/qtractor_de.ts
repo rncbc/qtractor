@@ -777,7 +777,7 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation type="unfinished">Nicht mehr nachfragen</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3482"/>
         <source>plugin parameters</source>
         <translation type="unfinished"></translation>
     </message>

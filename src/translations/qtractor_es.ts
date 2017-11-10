@@ -374,7 +374,7 @@ Fin:	%3	Duración:	%4</translation>
         <translation>No preguntar esto de nuevo</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3482"/>
         <source>plugin parameters</source>
         <translation>parametros del plugin</translation>
     </message>
