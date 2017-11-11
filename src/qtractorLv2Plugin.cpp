@@ -3180,8 +3180,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	m_lv2_ui_type = ui_iter.key();
 	m_lv2_ui = ui_iter.value();
 
-	updateEditorTitle();
-
 	const char *ui_type_uri = NULL;
 	switch (m_lv2_ui_type) {
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -3360,8 +3358,9 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	}
 #endif	// CONFIG_LV2_UI_SHOW
 
+	updateEditorTitle();
+
 	setEditorVisible(true);
-	updateEditorTitleEx();
 	loadEditorPos();
 //	idleEditor();
 }

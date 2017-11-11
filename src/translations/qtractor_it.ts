@@ -313,7 +313,7 @@ Fine:	%3	Lunghezza:	%4</translation>
         <translation>%1 Banco %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1328"/>
+        <location filename="../qtractorMidiManager.cpp" line="1329"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banco %2</translation>
     </message>
@@ -781,7 +781,7 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>Non chiederlo di nuovo</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3482"/>
         <source>plugin parameters</source>
         <translation>parametri della plugin</translation>
     </message>

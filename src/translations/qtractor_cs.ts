@@ -147,7 +147,7 @@ Konec:	%2	Délka:	%3</translation>
         <translation>%1 Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1328"/>
+        <location filename="../qtractorMidiManager.cpp" line="1329"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banka %2</translation>
     </message>
@@ -780,7 +780,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Neptat se znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3483"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3482"/>
         <source>plugin parameters</source>
         <translation>Parametry přídavného modulu</translation>
     </message>
