@@ -58,8 +58,8 @@ class qtractorAudioMeterValue : public qtractorMeterValue
 public:
 
 	// Constructor.
-	qtractorAudioMeterValue(qtractorAudioMeter *pAudioMeter,
-		unsigned short iChannel);
+	qtractorAudioMeterValue(
+		qtractorAudioMeter *pAudioMeter, unsigned short iChannel);
 
 	// Value refreshment.
 	void refresh(unsigned long iStamp);
@@ -94,8 +94,9 @@ class qtractorAudioMeter : public qtractorMeter
 public:
 
 	// Constructor.
-	qtractorAudioMeter(qtractorAudioMonitor *pAudioMonitor,
-		QWidget *pParent = 0);
+	qtractorAudioMeter(
+		qtractorAudioMonitor *pAudioMonitor, QWidget *pParent = 0);
+
 	// Default destructor.
 	~qtractorAudioMeter();
 
@@ -170,8 +171,9 @@ class qtractorAudioMixerMeter : public qtractorMixerMeter
 public:
 
 	// Constructor.
-	qtractorAudioMixerMeter(qtractorAudioMonitor *pAudioMonitor,
-		QWidget *pParent = 0);
+	qtractorAudioMixerMeter(
+		qtractorAudioMonitor *pAudioMonitor, QWidget *pParent = 0);
+
 	// Default destructor.
 	~qtractorAudioMixerMeter();
 
