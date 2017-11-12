@@ -491,7 +491,7 @@ MIDI:	</translation>
         <translation>Nome:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="749"/>
+        <location filename="../qtractorAudioClip.cpp" line="750"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
@@ -589,17 +589,17 @@ MIDI:	</translation>
         <translation>tentativa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="739"/>
+        <location filename="../qtractorAudioClip.cpp" line="740"/>
         <source> (%1 dB)</source>
         <translation> (%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="743"/>
+        <location filename="../qtractorAudioClip.cpp" line="744"/>
         <source> (%1 pan)</source>
         <translation> (%1 panorâmico)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="746"/>
+        <location filename="../qtractorAudioClip.cpp" line="747"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
@@ -637,7 +637,7 @@ MIDI:	</translation>
         <translation>mover nó de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="734"/>
+        <location filename="../qtractorAudioClip.cpp" line="735"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>

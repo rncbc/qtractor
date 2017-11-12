@@ -169,7 +169,7 @@ public:
 	~qtractorAudioExportBuffer()
 	{
 		for (unsigned short i = 0; i < m_iChannels; ++i)
-			delete m_ppBuffer[i];
+			delete [] m_ppBuffer[i];
 
 		delete [] m_ppBuffer;
 	}
