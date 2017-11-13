@@ -117,8 +117,10 @@ private:
 	// Internal plugin types list.
 	Types m_types;
 
-	// Proxy (out-of-process) client.
-	qtractorPluginFactoryProxy *m_pProxy;
+	// Proxy (out-of-process) clients.
+	typedef QHash<qtractorPluginType::Hint, qtractorPluginFactoryProxy *> Proxies;
+
+	Proxies m_proxies;
 
 	// List of active cache scan results.
 	QStringList m_cacheFilePaths;

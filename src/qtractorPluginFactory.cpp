@@ -69,9 +69,6 @@ qtractorPluginFactory *qtractorPluginFactory::getInstance (void)
 // Contructor.
 qtractorPluginFactory::qtractorPluginFactory ( QObject *pParent )
 	: QObject(pParent), m_typeHint(qtractorPluginType::Any)
-#ifdef CONFIG_VST
-	, m_pProxy(NULL)
-#endif
 {
 	g_pPluginFactory = this;
 }
@@ -270,9 +267,11 @@ void qtractorPluginFactory::scan (void)
 			qtractorOptions *pOptions = qtractorOptions::getInstance();
 			if (pOptions && pOptions->bDummyVstScan) {
 				const int iDummyVstHash = m_files.value(typeHint).count();
-				m_pProxy = new qtractorPluginFactoryProxy(this, typeHint);
-				m_pProxy->open(iDummyVstHash != pOptions->iDummyVstHash);
+				qtractorPluginFactoryProxy *pProxy
+					= new qtractorPluginFactoryProxy(this, typeHint);
+				pProxy->open(iDummyVstHash != pOptions->iDummyVstHash);
 				pOptions->iDummyVstHash = iDummyVstHash;
+				m_proxies.insert(typeHint, pProxy);
 			}
 		}
 	}
@@ -309,16 +308,19 @@ void qtractorPluginFactory::scan (void)
 
 void qtractorPluginFactory::reset (void)
 {
-#ifdef CONFIG_VST
 	// Check the proxy (out-of-process) client closure...
-	if (m_pProxy) {
-		addCacheFilePath(m_pProxy->cacheFilePath());
-		m_pProxy->close();
-		m_pProxy->terminate();
-		delete m_pProxy;
-		m_pProxy = NULL;
+	Proxies::ConstIterator iter = m_proxies.constBegin();
+	const Proxies::ConstIterator& iter_end = m_proxies.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		qtractorPluginFactoryProxy *pProxy = iter.value();
+		if (pProxy) {
+			addCacheFilePath(pProxy->cacheFilePath());
+			pProxy->close();
+			pProxy->terminate();
+		}
 	}
-#endif
+	qDeleteAll(m_proxies);
+	m_proxies.clear();
 
 	m_files.clear();
 }
@@ -500,8 +502,12 @@ bool qtractorPluginFactory::addTypes (
 
 #ifdef CONFIG_VST
 	// Try VST plugin types (out-of-process scan)...
-	if (typeHint == qtractorPluginType::Vst && m_pProxy)
-		return m_pProxy->addTypes(typeHint, sFilename);
+	if (typeHint == qtractorPluginType::Vst) {
+		qtractorPluginFactoryProxy *pProxy
+			= m_proxies.value(typeHint, NULL);
+		if (pProxy)
+			return pProxy->addTypes(typeHint, sFilename);
+	}
 #endif
 
 	qtractorPluginFile *pFile = qtractorPluginFile::addFile(sFilename);
