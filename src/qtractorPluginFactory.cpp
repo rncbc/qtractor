@@ -68,7 +68,10 @@ qtractorPluginFactory *qtractorPluginFactory::getInstance (void)
 
 // Contructor.
 qtractorPluginFactory::qtractorPluginFactory ( QObject *pParent )
-	: QObject(pParent), m_typeHint(qtractorPluginType::Any), m_pProxy(NULL)
+	: QObject(pParent), m_typeHint(qtractorPluginType::Any)
+#ifdef CONFIG_VST
+	, m_pProxy(NULL)
+#endif
 {
 	g_pPluginFactory = this;
 }
@@ -217,6 +220,15 @@ QStringList qtractorPluginFactory::pluginPaths (
 }
 
 
+// Local cache-paths management methods.
+void qtractorPluginFactory::addCacheFilePath ( const QString& sCacheFilePath )
+{
+	if (!m_cacheFilePaths.contains(sCacheFilePath))
+		m_cacheFilePaths.append(sCacheFilePath);
+}
+
+
+
 // Executive methods.
 void qtractorPluginFactory::scan (void)
 {
@@ -251,14 +263,14 @@ void qtractorPluginFactory::scan (void)
 	// VST default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Vst) {
-		const QStringList& paths = m_paths.value(qtractorPluginType::Vst);
+		const qtractorPluginType::Hint typeHint = qtractorPluginType::Vst;
+		const QStringList& paths = m_paths.value(typeHint);
 		if (!paths.isEmpty()) {
-			iFileCount += addFiles(qtractorPluginType::Vst, paths);
+			iFileCount += addFiles(typeHint, paths);
 			qtractorOptions *pOptions = qtractorOptions::getInstance();
 			if (pOptions && pOptions->bDummyVstScan) {
-				const int iDummyVstHash
-					= m_files.value(qtractorPluginType::Vst).count();
-				m_pProxy = new qtractorPluginFactoryProxy(this);
+				const int iDummyVstHash = m_files.value(typeHint).count();
+				m_pProxy = new qtractorPluginFactoryProxy(this, typeHint);
 				m_pProxy->open(iDummyVstHash != pOptions->iDummyVstHash);
 				pOptions->iDummyVstHash = iDummyVstHash;
 			}
@@ -290,10 +302,6 @@ void qtractorPluginFactory::scan (void)
 		}
 	}
 
-	// Check the proxy (out-of-process) client closure...
-	if (m_pProxy)
-		m_pProxy->close();
-
 	// Done.
 	reset();
 }
@@ -301,11 +309,16 @@ void qtractorPluginFactory::scan (void)
 
 void qtractorPluginFactory::reset (void)
 {
+#ifdef CONFIG_VST
+	// Check the proxy (out-of-process) client closure...
 	if (m_pProxy) {
+		addCacheFilePath(m_pProxy->cacheFilePath());
+		m_pProxy->close();
 		m_pProxy->terminate();
 		delete m_pProxy;
 		m_pProxy = NULL;
 	}
+#endif
 
 	m_files.clear();
 }
@@ -320,7 +333,9 @@ void qtractorPluginFactory::clear (void)
 
 void qtractorPluginFactory::clearAll (void)
 {
-	QFile::remove(qtractorPluginFactoryProxy::cacheFilePath());
+	QStringListIterator iter(m_cacheFilePaths);
+	while (iter.hasNext())
+		QFile::remove(iter.next());
 
 	clear();
 }
@@ -583,9 +598,16 @@ bool qtractorPluginFactory::addTypes (
 
 // Constructor.
 qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
-	qtractorPluginFactory *pPluginFactory )
+	qtractorPluginFactory *pPluginFactory, qtractorPluginType::Hint typeHint )
 	: QProcess(pPluginFactory), m_iExitStatus(-1)
 {
+	switch (typeHint) {
+	case qtractorPluginType::Vst:
+	default:
+		m_sScanner = "qtractor_vst_scan";
+		break;
+	}
+
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
 		SLOT(stdout_slot()));
@@ -666,7 +688,7 @@ bool qtractorPluginFactoryProxy::start (void)
 
 	// Get the main scanner executable...
 	const QDir dir(QApplication::applicationDirPath());
-	const QFileInfo fi(dir, "qtractor_vst_scan");
+	const QFileInfo fi(dir, m_sScanner);
 	if (!fi.isExecutable())
 		return false;
 
@@ -769,7 +791,7 @@ bool qtractorPluginFactoryProxy::addTypes ( const QStringList& list )
 
 
 // Absolute cache file path.
-QString qtractorPluginFactoryProxy::cacheFilePath (void)
+QString qtractorPluginFactoryProxy::cacheFilePath (void) const
 {
 	const QString& sCacheDir
 #if QT_VERSION < 0x050000
@@ -777,7 +799,7 @@ QString qtractorPluginFactoryProxy::cacheFilePath (void)
 #else
 		= QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
 #endif
-	return QFileInfo(sCacheDir, "qtractor_vst_scan.cache").absoluteFilePath();
+	return QFileInfo(sCacheDir, m_sScanner + ".cache").absoluteFilePath();
 }
 
 

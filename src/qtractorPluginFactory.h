@@ -97,6 +97,9 @@ protected:
 	// Plugin type listing.
 	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
 
+	// Local cache-paths management methods.
+	void addCacheFilePath(const QString& sCacheFilePath);
+
 	// Plugin scan reset method.
 	void reset();
 
@@ -117,6 +120,9 @@ private:
 	// Proxy (out-of-process) client.
 	qtractorPluginFactoryProxy *m_pProxy;
 
+	// List of active cache scan results.
+	QStringList m_cacheFilePaths;
+
 	// Pseudo-singleton instance.
 	static qtractorPluginFactory *g_pPluginFactory;
 };
@@ -133,7 +139,9 @@ class qtractorPluginFactoryProxy : public QProcess
 public:
 
 	// ctor.
-	qtractorPluginFactoryProxy(qtractorPluginFactory *pPluginFactory);
+	qtractorPluginFactoryProxy(
+		qtractorPluginFactory *pPluginFactory,
+		qtractorPluginType::Hint typeHint);
 
 	// Open/close method.
 	bool open(bool bReset = false);
@@ -143,7 +151,7 @@ public:
 	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
 
 	// Absolute cache file path.
-	static QString cacheFilePath();
+	QString cacheFilePath() const;
 
 protected slots:
 
@@ -162,6 +170,9 @@ protected:
 	bool addTypes(const QStringList& list);
 
 private:
+
+	// Instance scanner name.
+	QString m_sScanner;
 
 	// Instance state.
 	volatile int m_iExitStatus;
