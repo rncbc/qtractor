@@ -234,6 +234,8 @@ void qtractorOptions::loadOptions (void)
 	bAudioOutputAutoConnect = m_settings.value("/AudioOutputAutoConnect", true).toBool();
 	bOpenEditor = m_settings.value("/OpenEditor", true).toBool();
 	bQueryEditorType = m_settings.value("/QueryEditorType", false).toBool();
+	bDummyLadspaScan = m_settings.value("/DummyLadspaScan", false).toBool();
+	iDummyLadspaHash = m_settings.value("/DummyLadspaHash", 0).toInt();
 	bDummyVstScan = m_settings.value("/DummyVstScan", true).toBool();
 	iDummyVstHash = m_settings.value("/DummyVstHash", 0).toInt();
 	bLv2DynManifest = m_settings.value("/Lv2DynManifest", false).toBool();
@@ -525,6 +527,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/AudioOutputAutoConnect", bAudioOutputAutoConnect);
 	m_settings.setValue("/OpenEditor", bOpenEditor);
 	m_settings.setValue("/QueryEditorType", bQueryEditorType);
+	m_settings.setValue("/DummyLadspaScan", bDummyLadspaScan);
+	m_settings.setValue("/DummyLadspaHash", iDummyLadspaHash);
 	m_settings.setValue("/DummyVstScan", bDummyVstScan);
 	m_settings.setValue("/DummyVstHash", iDummyVstHash);
 	m_settings.setValue("/Lv2DynManifest", bLv2DynManifest);

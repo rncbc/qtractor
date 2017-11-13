@@ -4,6 +4,7 @@ AC_INIT(Qtractor, 0.8.5, rncbc@rncbc.org, qtractor)
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
 AC_CONFIG_FILES(Makefile qtractor.spec src/src.pri)
+AC_CONFIG_FILES(src/qtractor_ladspa_scan.pri)
 AC_CONFIG_FILES(src/qtractor_vst_scan.pri)
 
 # Build version string.

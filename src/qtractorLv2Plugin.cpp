@@ -905,7 +905,7 @@ static LilvNode *g_lv2_event_class = NULL;
 #endif
 
 #ifdef CONFIG_LV2_ATOM
-static LilvNode *g_lv2_atom_class         = NULL;
+static LilvNode *g_lv2_atom_class = NULL;
 #endif
 
 #ifdef CONFIG_LV2_UI

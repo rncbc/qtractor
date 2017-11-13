@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Out-of-process (aka. dummy) LADSPA plug-in scanning is
+  now in place and cached for persistency. (EXPERIMENTAL)
+
 - A File System browser and tree-view is finally integrated
   as a dockable-widget on the main application window (cf.
   main menu View / Window / File System). (EXPERIMENTAL)
