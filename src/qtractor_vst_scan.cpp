@@ -92,7 +92,7 @@ const int effFlagsProgramChunks = 32;
 
 // Constructor.
 qtractor_vst_scan::qtractor_vst_scan (void)
-	: m_pLibrary(NULL), m_pEffect(NULL), m_iFlagsEx(0)
+	: m_pLibrary(NULL), m_pEffect(NULL), m_iFlagsEx(0), m_bEditor(false)
 {
 }
 
@@ -105,7 +105,7 @@ qtractor_vst_scan::~qtractor_vst_scan (void)
 
 
 // File loader.
-bool qtractor_vst_scan::open ( const QString& sFilename, unsigned long iIndex )
+bool qtractor_vst_scan::open ( const QString& sFilename )
 {
 	close();
 
@@ -114,10 +114,28 @@ bool qtractor_vst_scan::open ( const QString& sFilename, unsigned long iIndex )
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractor_vst_scan[%p]::open(\"%s\", %lu)", this,
-		sFilename.toUtf8().constData(), iIndex);
+		sFilename.toUtf8().constData());
 #endif
 
 	m_pLibrary = new QLibrary(sFilename);
+
+	m_sName = QFileInfo(sFilename).baseName();
+
+	return true;
+}
+
+
+// Plugin loader.
+bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
+{
+	if (m_pLibrary == NULL)
+		return false;
+
+	close_descriptor();
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractor_vst_scan[%p]::open_descriptor(%lu)", this, iIndex);
+#endif
 
 	VST_GetPluginInstance pfnGetPluginInstance
 		= (VST_GetPluginInstance) m_pLibrary->resolve("VSTPluginMain");
@@ -222,8 +240,6 @@ bool qtractor_vst_scan::open ( const QString& sFilename, unsigned long iIndex )
 	char szName[256]; ::memset(szName, 0, sizeof(szName));
 	if (vst_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f))
 		m_sName = szName;
-	else
-		m_sName = QFileInfo(sFilename).baseName();
 
 	// Specific inquiries...
 	m_iFlagsEx = 0;
@@ -240,7 +256,28 @@ bool qtractor_vst_scan::open ( const QString& sFilename, unsigned long iIndex )
 	if (canDo("mixDryWet"))           m_iFlagsEx |= effFlagsExCanMixDryWet;
 	if (canDo("midiProgramNames"))    m_iFlagsEx |= effFlagsExCanMidiProgramNames;
 
+	m_bEditor = (m_pEffect->flags & effFlagsHasEditor);
+
 	return true;
+}
+
+
+// Plugin unloader.
+void qtractor_vst_scan::close_descriptor (void)
+{
+	if (m_pEffect == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractor_vst_scan[%p]::close_descriptor()", this);
+#endif
+
+	vst_dispatch(effClose, 0, 0, 0, 0.0f);
+
+	m_pEffect  = NULL;
+	m_iFlagsEx = 0;
+//	m_bEditor  = false;
+	m_sName.clear();
 }
 
 
@@ -254,19 +291,16 @@ void qtractor_vst_scan::close (void)
 	qDebug("qtractor_vst_scan[%p]::close()", this);
 #endif
 
-	const bool bAutoUnload = !hasEditor();
-
 	vst_dispatch(effClose, 0, 0, 0, 0.0f);
 
-	if (m_pLibrary->isLoaded() && bAutoUnload)
+	if (m_pLibrary->isLoaded() && !m_bEditor)
 		m_pLibrary->unload();
 
 	delete m_pLibrary;
 
 	m_pLibrary = NULL;
-	m_pEffect  = NULL;
-	m_iFlagsEx = 0;
-	m_sName.clear();
+
+	m_bEditor = false;
 }
 
 
@@ -300,7 +334,7 @@ int qtractor_vst_scan::numMidiOutputs() const
 	{ return ((m_iFlagsEx & effFlagsExCanSendVstMidiEvents) ? 1 : 0); }
 
 bool qtractor_vst_scan::hasEditor() const
-	{ return (m_pEffect && (m_pEffect->flags & effFlagsHasEditor)); }
+	{ return m_bEditor; }
 bool qtractor_vst_scan::hasProgramChunks() const
 	{ return (m_pEffect && (m_pEffect->flags & effFlagsProgramChunks)); }
 
@@ -375,10 +409,14 @@ static void qtractor_vst_scan_file ( const QString& sFilename )
 #ifdef CONFIG_DEBUG
 	qDebug("qtractor_vst_scan_file(\"%s\")", sFilename.toUtf8().constData());
 #endif
+	qtractor_vst_scan plugin;
+
+	if (!plugin.open(sFilename))
+		return;
+
 	QTextStream sout(stdout);
 	unsigned long i = 0;
-	qtractor_vst_scan plugin;
-	while (plugin.open(sFilename, i)) {
+	while (plugin.open_descriptor(i)) {
 		sout << "VST|";
 		sout << plugin.name() << '|';
 		sout << plugin.numInputs()     << ':' << plugin.numOutputs()     << '|';
@@ -393,11 +431,13 @@ static void qtractor_vst_scan_file ( const QString& sFilename )
 		sout << flags.join(",") << '|';
 		sout << sFilename << '|' << i << '|';
 		sout << "0x" << QString::number(plugin.uniqueID(), 16) << '\n';
-		plugin.close();
+		plugin.close_descriptor();
 		++i;
 	}
 
-	// Must always give an answer, even if it's wrong...
+	plugin.close();
+
+	// Must always give an answer, even if it's a wrong one...
 	if (i == 0)
 		sout << "qtractor_vst_scan: " << sFilename << ": plugin file error.\n";
 }
@@ -415,7 +455,7 @@ int main ( int argc, char **argv )
 {
 	QCoreApplication app(argc, argv);
 #ifdef CONFIG_DEBUG
-	qDebug("%s: hello.", argv[0]);
+	qDebug("%s: hello. (version %s)", argv[0], CONFIG_BUILD_VERSION);
 #endif
 	QTextStream sin(stdin);
 	while (!sin.atEnd()) {

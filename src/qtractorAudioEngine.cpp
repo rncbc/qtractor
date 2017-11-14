@@ -208,7 +208,7 @@ public:
 	~qtractorAudioExportBuffer()
 	{
 		for (unsigned short i = 0; i < m_iChannels; ++i)
-			delete m_ppBuffer[i];
+			delete [] m_ppBuffer[i];
 
 		delete [] m_ppBuffer;
 	}
@@ -2142,21 +2142,17 @@ qtractorAudioBus::qtractorAudioBus (
 	if ((busMode & qtractorBus::Input) && !(busMode & qtractorBus::Ex)) {
 		m_pIAudioMonitor = new qtractorAudioMonitor(iChannels);
 		m_pIPluginList   = createPluginList(qtractorPluginList::AudioInBus);
-		m_pICurveFile    = new qtractorCurveFile(m_pIPluginList->curveList());
 	} else {
 		m_pIAudioMonitor = NULL;
 		m_pIPluginList   = NULL;
-		m_pICurveFile    = NULL;
 	}
 
 	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
 		m_pOAudioMonitor = new qtractorAudioMonitor(iChannels);
 		m_pOPluginList   = createPluginList(qtractorPluginList::AudioOutBus);
-		m_pOCurveFile    = new qtractorCurveFile(m_pOPluginList->curveList());
 	} else {
 		m_pOAudioMonitor = NULL;
 		m_pOPluginList   = NULL;
-		m_pOCurveFile    = NULL;
 	}
 
 	m_bAutoConnect = false;
@@ -2194,11 +2190,6 @@ qtractorAudioBus::~qtractorAudioBus (void)
 		delete m_pIAudioMonitor;
 	if (m_pOAudioMonitor)
 		delete m_pOAudioMonitor;
-
-	if (m_pICurveFile)
-		delete m_pICurveFile;
-	if (m_pOCurveFile)
-		delete m_pOCurveFile;
 
 	if (m_pIPluginList)
 		delete m_pIPluginList;
@@ -2465,16 +2456,10 @@ void qtractorAudioBus::updateBusMode (void)
 			m_pIAudioMonitor = new qtractorAudioMonitor(m_iChannels);
 		if (m_pIPluginList == NULL)
 			m_pIPluginList = createPluginList(qtractorPluginList::AudioInBus);
-		if (m_pICurveFile == NULL)
-			m_pICurveFile = new qtractorCurveFile(m_pIPluginList->curveList());
 	} else {
 		if (m_pIAudioMonitor) {
 			delete m_pIAudioMonitor;
 			m_pIAudioMonitor = NULL;
-		}
-		if (m_pICurveFile) {
-			delete m_pICurveFile;
-			m_pICurveFile = NULL;
 		}
 		if (m_pIPluginList) {
 			delete m_pIPluginList;
@@ -2488,16 +2473,10 @@ void qtractorAudioBus::updateBusMode (void)
 			m_pOAudioMonitor = new qtractorAudioMonitor(m_iChannels);
 		if (m_pOPluginList == NULL)
 			m_pOPluginList = createPluginList(qtractorPluginList::AudioOutBus);
-		if (m_pOCurveFile == NULL)
-			m_pOCurveFile = new qtractorCurveFile(m_pOPluginList->curveList());
 	} else {
 		if (m_pOAudioMonitor) {
 			delete m_pOAudioMonitor;
 			m_pOAudioMonitor = NULL;
-		}
-		if (m_pOCurveFile) {
-			delete m_pOCurveFile;
-			m_pOCurveFile = NULL;
 		}
 		if (m_pOPluginList) {
 			delete m_pOPluginList;
@@ -2700,30 +2679,6 @@ qtractorPluginList *qtractorAudioBus::pluginList_in (void) const
 qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
 {
 	return m_pOPluginList;
-}
-
-
-// Automation curve list accessors.
-qtractorCurveList *qtractorAudioBus::curveList_in (void) const
-{
-	return (m_pIPluginList ? m_pIPluginList->curveList() : NULL);
-}
-
-qtractorCurveList *qtractorAudioBus::curveList_out (void) const
-{
-	return (m_pOPluginList ? m_pOPluginList->curveList() : NULL);
-}
-
-
-// Automation curve serializer accessors.
-qtractorCurveFile *qtractorAudioBus::curveFile_in (void) const
-{
-	return m_pICurveFile;
-}
-
-qtractorCurveFile *qtractorAudioBus::curveFile_out (void) const
-{
-	return m_pOCurveFile;
 }
 
 
@@ -2978,9 +2933,6 @@ bool qtractorAudioBus::loadElement (
 					eProp.text().toFloat());
 		} else if (eProp.tagName() == "input-controllers") {
 			qtractorAudioBus::loadControllers(&eProp, qtractorBus::Input);
-		} else if (eProp.tagName() == "input-curve-file") {
-			qtractorAudioBus::loadCurveFile(&eProp, qtractorBus::Input,
-				qtractorAudioBus::curveFile_in());
 		} else if (eProp.tagName() == "input-plugins") {
 			if (qtractorAudioBus::pluginList_in())
 				qtractorAudioBus::pluginList_in()->loadElement(
@@ -2998,9 +2950,6 @@ bool qtractorAudioBus::loadElement (
 					eProp.text().toFloat());
 		} else if (eProp.tagName() == "output-controllers") {
 			qtractorAudioBus::loadControllers(&eProp, qtractorBus::Output);
-		} else if (eProp.tagName() == "output-curve-file") {
-			qtractorAudioBus::loadCurveFile(&eProp, qtractorBus::Output,
-				qtractorAudioBus::curveFile_out());
 		} else if (eProp.tagName() == "output-plugins") {
 			if (qtractorAudioBus::pluginList_out())
 				qtractorAudioBus::pluginList_out()->loadElement(
@@ -3050,16 +2999,6 @@ bool qtractorAudioBus::saveElement (
 		qtractorAudioBus::saveControllers(pDocument,
 			&eInputControllers, qtractorBus::Input);
 		pElement->appendChild(eInputControllers);
-		// Save input bus automation curves...
-		qtractorCurveList *pInputCurveList = qtractorAudioBus::curveList_in();
-		if (pInputCurveList && !pInputCurveList->isEmpty()) {
-			qtractorCurveFile cfile(pInputCurveList);
-			QDomElement eInputCurveFile
-				= pDocument->document()->createElement("input-curve-file");
-			qtractorAudioBus::saveCurveFile(pDocument,
-				&eInputCurveFile, qtractorBus::Input, &cfile);
-			pElement->appendChild(eInputCurveFile);
-		}
 		// Save input bus plugins...
 		if (qtractorAudioBus::pluginList_in()) {
 			QDomElement eInputPlugins
@@ -3092,16 +3031,6 @@ bool qtractorAudioBus::saveElement (
 		qtractorAudioBus::saveControllers(pDocument,
 			&eOutputControllers, qtractorBus::Output);
 		pElement->appendChild(eOutputControllers);
-		// Save output bus automation curves...
-		qtractorCurveList *pOutputCurveList = qtractorAudioBus::curveList_out();
-		if (pOutputCurveList && !pOutputCurveList->isEmpty()) {
-			qtractorCurveFile cfile(pOutputCurveList);
-			QDomElement eOutputCurveFile
-				= pDocument->document()->createElement("output-curve-file");
-			qtractorAudioBus::saveCurveFile(pDocument,
-				&eOutputCurveFile, qtractorBus::Output, &cfile);
-			pElement->appendChild(eOutputCurveFile);
-		}
 		// Save output bus plugins...
 		if (qtractorAudioBus::pluginList_out()) {
 			QDomElement eOutputPlugins

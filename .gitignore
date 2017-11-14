@@ -1,10 +1,10 @@
 Makefile
-Makefile.qtractor_vst_scan
+Makefile.qtractor_*_scan
 config.*
 configure
 *.m4
 *.mak
-*.mak.qtractor_vst_scan
+*.mak.qtractor_*_scan
 *.spec
 *.desktop
 *.pri
@@ -18,4 +18,4 @@ qrc_*.cpp
 .obj
 .ui
 qtractor
-qtractor_vst_scan
+qtractor_*_scan
