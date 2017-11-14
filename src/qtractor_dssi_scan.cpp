@@ -1,4 +1,4 @@
-// qtractor_ladspa_scan.cpp
+// qtractor_dssi_scan.cpp
 //
 /****************************************************************************
    Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -20,7 +20,7 @@
 *****************************************************************************/
 #include "config.h"
 
-#include "qtractor_ladspa_scan.h"
+#include "qtractor_dssi_scan.h"
 
 #include <QLibrary>
 #include <QTextStream>
@@ -30,30 +30,31 @@
 #include <stdint.h>
 
 
-#ifdef CONFIG_LADSPA
+#ifdef CONFIG_DSSI
 
 //----------------------------------------------------------------------
-// class qtractor_ladspa_scan -- LADSPA plugin re bones) interface
+// class qtractor_dssi_scan -- LADSPA plugin re bones) interface
 //
 
 // Constructor.
-qtractor_ladspa_scan::qtractor_ladspa_scan (void)
+qtractor_dssi_scan::qtractor_dssi_scan (void)
 	: m_pLibrary(NULL), m_pLadspaDescriptor(NULL),
 		m_iControlIns(0), m_iControlOuts(0),
-		m_iAudioIns(0), m_iAudioOuts(0)
+		m_iAudioIns(0), m_iAudioOuts(0),
+		m_bEditor(false)
 {
 }
 
 
 // destructor.
-qtractor_ladspa_scan::~qtractor_ladspa_scan (void)
+qtractor_dssi_scan::~qtractor_dssi_scan (void)
 {
 	close();
 }
 
 
 // File loader.
-bool qtractor_ladspa_scan::open ( const QString& sFilename )
+bool qtractor_dssi_scan::open ( const QString& sFilename )
 {
 	close();
 
@@ -61,7 +62,7 @@ bool qtractor_ladspa_scan::open ( const QString& sFilename )
 		return false;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractor_ladspa_scan[%p]::open(\"%s\")", this,
+	qDebug("qtractor_dssi_scan[%p]::open(\"%s\")", this,
 		sFilename.toUtf8().constData());
 #endif
 
@@ -72,7 +73,7 @@ bool qtractor_ladspa_scan::open ( const QString& sFilename )
 
 
 // Plugin loader.
-bool qtractor_ladspa_scan::open_descriptor ( unsigned long iIndex )
+bool qtractor_dssi_scan::open_descriptor ( unsigned long iIndex )
 {
 	if (m_pLibrary == NULL)
 		return false;
@@ -80,21 +81,28 @@ bool qtractor_ladspa_scan::open_descriptor ( unsigned long iIndex )
 	close_descriptor();
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractor_ladspa_scan[%p]::open_descriptor(%lu)", this, iIndex);
+	qDebug("qtractor_dssi_scan[%p]::open_descriptor(%lu)", this, iIndex);
 #endif
 
-	// Retrieve the LADSPA descriptor function, if any...
-	LADSPA_Descriptor_Function pfnLadspaDescriptor
-		= (LADSPA_Descriptor_Function) m_pLibrary->resolve("ladspa_descriptor");
-	if (pfnLadspaDescriptor == NULL) {
+	// Retrieve the DSSI descriptor function, if any...
+	DSSI_Descriptor_Function pfnDssiDescriptor
+		= (DSSI_Descriptor_Function) m_pLibrary->resolve("dssi_descriptor");
+	if (pfnDssiDescriptor == NULL)
+		return NULL;
+	if (pfnDssiDescriptor == NULL) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractor_ladspa_scan[%p]: plugin does not have DSSI descriptor.", this);
+		qDebug("qtractor_dssi_scan[%p]: plugin does not have DSSI descriptor.", this);
 	#endif
 		return false;
 	}
 
-	// Retrieve LADSPA descriptor if any...
-	m_pLadspaDescriptor = (*pfnLadspaDescriptor)(iIndex);
+	// Retrieve the DSSI descriptor if any...
+	m_pDssiDescriptor = (*pfnDssiDescriptor)(iIndex);
+	if (m_pDssiDescriptor == NULL)
+		return false;
+
+	// We're also a LADSPA one...
+	m_pLadspaDescriptor = m_pDssiDescriptor->LADSPA_Plugin;
 	if (m_pLadspaDescriptor == NULL)
 		return false;
 
@@ -128,18 +136,34 @@ bool qtractor_ladspa_scan::open_descriptor ( unsigned long iIndex )
 		}
 	}
 
+	m_bEditor = false;
+
+	// Check for GUI editor exacutable...
+	const QFileInfo fi(m_pLibrary->fileName());
+	const QFileInfo gi(fi.dir(), fi.baseName());
+	if (gi.isDir()) {
+		QDir dir(gi.absoluteFilePath());
+		const QString sMask("%1_*");
+		QStringList names;
+		names.append(sMask.arg(fi.baseName()));
+		names.append(sMask.arg(m_pLadspaDescriptor->Label));
+		dir.setNameFilters(names);
+		m_bEditor = !dir.entryList(QDir::Files | QDir::Executable).isEmpty();
+	}
+
+
 	return true;
 }
 
 
 // Plugin uloader.
-void qtractor_ladspa_scan::close_descriptor (void)
+void qtractor_dssi_scan::close_descriptor (void)
 {
 	if (m_pLadspaDescriptor == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractor_ladspa_scan[%p]::close_descriptor()", this);
+	qDebug("qtractor_dssi_scan[%p]::close_descriptor()", this);
 #endif
 
 	m_pLadspaDescriptor = NULL;
@@ -151,11 +175,13 @@ void qtractor_ladspa_scan::close_descriptor (void)
 
 	m_iAudioIns    = 0;
 	m_iAudioOuts   = 0;
+
+	m_bEditor = false;
 }
 
 
 // File unloader.
-void qtractor_ladspa_scan::close (void)
+void qtractor_dssi_scan::close (void)
 {
 	close_descriptor();
 
@@ -163,7 +189,7 @@ void qtractor_ladspa_scan::close (void)
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractor_ladspa_scan[%p]::close()", this);
+	qDebug("qtractor_dssi_scan[%p]::close()", this);
 #endif
 #if 0
 	if (m_pLibrary->isLoaded())
@@ -176,7 +202,7 @@ void qtractor_ladspa_scan::close (void)
 
 
 // Check wether plugin is loaded.
-bool qtractor_ladspa_scan::isOpen (void) const
+bool qtractor_dssi_scan::isOpen (void) const
 {
 	if (m_pLibrary == NULL)
 		return false;
@@ -185,10 +211,10 @@ bool qtractor_ladspa_scan::isOpen (void) const
 }
 
 
-unsigned int qtractor_ladspa_scan::uniqueID() const
+unsigned int qtractor_dssi_scan::uniqueID() const
 	{ return (m_pLadspaDescriptor ? m_pLadspaDescriptor->UniqueID : 0); }
 
-bool qtractor_ladspa_scan::isRealtime() const
+bool qtractor_dssi_scan::isRealtime() const
 {
 	if (m_pLadspaDescriptor == NULL)
 		return false;
@@ -197,16 +223,25 @@ bool qtractor_ladspa_scan::isRealtime() const
 }
 
 
+bool qtractor_dssi_scan::isConfigure() const
+{
+	if (m_pDssiDescriptor == NULL)
+		return false;
+
+	return (m_pDssiDescriptor->configure != NULL);
+}
+
+
 //-------------------------------------------------------------------------
-// The LADSPA plugin stance scan method.
+// The DSSI plugin stance scan method.
 //
 
-static void qtractor_ladspa_scan_file ( const QString& sFilename )
+static void qtractor_dssi_scan_file ( const QString& sFilename )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_ladspa_scan_file(\"%s\")", sFilename.toUtf8().constData());
+	qDebug("qtractor_dssi_scan_file(\"%s\")", sFilename.toUtf8().constData());
 #endif
-	qtractor_ladspa_scan plugin;
+	qtractor_dssi_scan plugin;
 
 	if (!plugin.open(sFilename))
 		return;
@@ -215,12 +250,16 @@ static void qtractor_ladspa_scan_file ( const QString& sFilename )
 	unsigned long i = 0;
 
 	while (plugin.open_descriptor(i)) {
-		sout << "LADSPA|";
+		sout << "DSSI|";
 		sout << plugin.name() << '|';
 		sout << plugin.audioIns()   << ':' << plugin.audioOuts()   << '|';
-		sout << 0                   << ':' << 0                    << '|';
+		sout << 1                   << ':' << 0                    << '|';
 		sout << plugin.controlIns() << ':' << plugin.controlOuts() << '|';
 		QStringList flags;
+		if (plugin.isEditor())
+			flags.append("GUI");
+		if (plugin.isConfigure())
+			flags.append("EXT");
 		if (plugin.isRealtime())
 			flags.append("RT");
 		sout << flags.join(",") << '|';
@@ -234,10 +273,10 @@ static void qtractor_ladspa_scan_file ( const QString& sFilename )
 
 	// Must always give an answer, even if it's a wrong one...
 	if (i == 0)
-		sout << "qtractor_ladspa_scan: " << sFilename << ": plugin file error.\n";
+		sout << "qtractor_dssi_scan: " << sFilename << ": plugin file error.\n";
 }
 
-#endif	// CONFIG_LADSPA
+#endif	// CONFIG_DSSI
 
 
 //-------------------------------------------------------------------------
@@ -260,9 +299,9 @@ int main ( int argc, char **argv )
 		const QStringList& req = sLine.split(':');
 		const QString& sHint = req.at(0).toUpper();
 		const QString& sFilename = req.at(1);
-	#ifdef CONFIG_LADSPA
-		if (sHint == "LADSPA")
-			qtractor_ladspa_scan_file(sFilename);
+	#ifdef CONFIG_DSSI
+		if (sHint == "DSSI")
+			qtractor_dssi_scan_file(sFilename);
 	#endif
 	}
 #ifdef CONFIG_DEBUG
@@ -272,4 +311,4 @@ int main ( int argc, char **argv )
 }
 
 
-// end of qtractor_ladspa_scan.cpp
+// end of qtractor_dssi_scan.cpp

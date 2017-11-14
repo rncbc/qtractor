@@ -232,6 +232,10 @@ bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 		bDummyPluginScan = pOptions->bDummyLadspaScan;
 		iDummyPluginHash = pOptions->iDummyLadspaHash;
 		break;
+	case qtractorPluginType::Dssi:
+		bDummyPluginScan = pOptions->bDummyDssiScan;
+		iDummyPluginHash = pOptions->iDummyDssiHash;
+		break;
 	case qtractorPluginType::Vst:
 		bDummyPluginScan = pOptions->bDummyVstScan;
 		iDummyPluginHash = pOptions->iDummyVstHash;
@@ -248,6 +252,9 @@ bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 			m_scanners.insert(typeHint, pScanner);
 			if (typeHint == qtractorPluginType::Ladspa)
 				pOptions->iDummyLadspaHash = iNewDummyPluginHash;
+			else
+			if (typeHint == qtractorPluginType::Dssi)
+				pOptions->iDummyDssiHash = iNewDummyPluginHash;
 			else
 			if (typeHint == qtractorPluginType::Vst)
 				pOptions->iDummyVstHash = iNewDummyPluginHash;
@@ -296,8 +303,10 @@ void qtractorPluginFactory::scan (void)
 		const qtractorPluginType::Hint typeHint
 			= qtractorPluginType::Dssi;
 		const QStringList& paths = m_paths.value(typeHint);
-		if (!paths.isEmpty())
+		if (!paths.isEmpty()) {
 			iFileCount += addFiles(typeHint, paths);
+			startScan(typeHint);
+		}
 	}
 #endif
 #ifdef CONFIG_VST
@@ -642,8 +651,12 @@ qtractorPluginFactory::Scanner::Scanner (
 	case qtractorPluginType::Ladspa:
 		m_sScanner = "qtractor_ladspa_scan";
 		break;
+	case qtractorPluginType::Dssi:
+		m_sScanner = "qtractor_dssi_scan";
+		break;
 	case qtractorPluginType::Vst:
 		m_sScanner = "qtractor_vst_scan";
+		break;
 	default:
 		break;
 	}

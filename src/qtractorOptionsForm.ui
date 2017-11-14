@@ -3608,7 +3608,7 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <item row="0" column="0" colspan="3">
+          <item row="0" column="0">
            <widget class="QCheckBox" name="DummyLadspaScanCheckBox">
             <property name="font">
              <font>
@@ -3617,14 +3617,30 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Whether to use a dummy plugin type when scanning for LADSPA plugins</string>
+             <string>Whether to use out-of-process scanning for LADSPA plugins</string>
             </property>
             <property name="text">
              <string>Dumm&amp;y LADSPA plugin scan</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="3">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="DummyDssiScanCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to use out-of-process scanning for DSSI plugins</string>
+            </property>
+            <property name="text">
+             <string>Dummy DSS&amp;I plugin scan</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
            <widget class="QCheckBox" name="DummyVstScanCheckBox">
             <property name="font">
              <font>
@@ -3633,14 +3649,14 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Whether to use a dummy plugin type when scanning for VST plugins</string>
+             <string>Whether to use out-of-process scanning for VST plugins</string>
             </property>
             <property name="text">
              <string>Dummy &amp;VST plugin scan (RECOMMENDED)</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="3">
+          <item row="0" column="2">
            <widget class="QCheckBox" name="Lv2DynManifestCheckBox">
             <property name="font">
              <font>
@@ -3656,7 +3672,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="3">
+          <item row="1" column="2">
            <widget class="QCheckBox" name="SaveCurve14bitCheckBox">
             <property name="font">
              <font>
@@ -3795,6 +3811,7 @@
   <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>QueryEditorTypeCheckBox</tabstop>
   <tabstop>DummyLadspaScanCheckBox</tabstop>
+  <tabstop>DummyDssiScanCheckBox</tabstop>
   <tabstop>DummyVstScanCheckBox</tabstop>
   <tabstop>Lv2DynManifestCheckBox</tabstop>
   <tabstop>SaveCurve14bitCheckBox</tabstop>

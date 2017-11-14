@@ -236,6 +236,8 @@ void qtractorOptions::loadOptions (void)
 	bQueryEditorType = m_settings.value("/QueryEditorType", false).toBool();
 	bDummyLadspaScan = m_settings.value("/DummyLadspaScan", false).toBool();
 	iDummyLadspaHash = m_settings.value("/DummyLadspaHash", 0).toInt();
+	bDummyDssiScan = m_settings.value("/DummyDssiScan", false).toBool();
+	iDummyDssiHash = m_settings.value("/DummyDssiHash", 0).toInt();
 	bDummyVstScan = m_settings.value("/DummyVstScan", true).toBool();
 	iDummyVstHash = m_settings.value("/DummyVstHash", 0).toInt();
 	bLv2DynManifest = m_settings.value("/Lv2DynManifest", false).toBool();
@@ -529,6 +531,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/QueryEditorType", bQueryEditorType);
 	m_settings.setValue("/DummyLadspaScan", bDummyLadspaScan);
 	m_settings.setValue("/DummyLadspaHash", iDummyLadspaHash);
+	m_settings.setValue("/DummyDssiScan", bDummyDssiScan);
+	m_settings.setValue("/DummyDssiHash", iDummyDssiHash);
 	m_settings.setValue("/DummyVstScan", bDummyVstScan);
 	m_settings.setValue("/DummyVstHash", iDummyVstHash);
 	m_settings.setValue("/Lv2DynManifest", bLv2DynManifest);

@@ -1,0 +1,14 @@
+# qtractor_dssi_scan.pri
+#
+PREFIX  = @ac_prefix@
+BINDIR  = @ac_bindir@
+LIBDIR  = @ac_libdir@
+DATADIR = @ac_datadir@
+MANDIR  = @ac_mandir@
+
+VERSION = @ac_version@
+CONFIG += @ac_debug@
+
+INCLUDEPATH += @ac_incpath@
+LIBS += @ac_libs@
+

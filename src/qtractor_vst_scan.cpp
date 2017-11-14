@@ -437,7 +437,7 @@ static void qtractor_vst_scan_file ( const QString& sFilename )
 
 	plugin.close();
 
-	// Must always give an answer, even if it's wrong...
+	// Must always give an answer, even if it's a wrong one...
 	if (i == 0)
 		sout << "qtractor_vst_scan: " << sFilename << ": plugin file error.\n";
 }
