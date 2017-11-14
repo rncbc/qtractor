@@ -170,7 +170,7 @@ protected:
 private:
 
 	// Instance scanner name.
-	QString m_sScanner;
+	qtractorPluginType::Hint m_typeHint;
 
 	// Instance state.
 	volatile int m_iExitStatus;

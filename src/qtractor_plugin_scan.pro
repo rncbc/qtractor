@@ -1,14 +1,14 @@
-# qtractor_dssi_scan.pro
+# qtractor_plugin_scan.pro
 #
-NAME = qtractor_dssi_scan
+NAME = qtractor_plugin_scan
 
 TARGET = $${NAME}
 TEMPLATE = app
 
-include(qtractor_dssi_scan.pri)
+include(qtractor_plugin_scan.pri)
 
-HEADERS += qtractor_dssi_scan.h config.h
-SOURCES += qtractor_dssi_scan.cpp
+HEADERS += qtractor_plugin_scan.h config.h
+SOURCES += qtractor_plugin_scan.cpp
 
 unix {
 
