@@ -237,6 +237,10 @@ public:
 	bool bDummyVstScan;
 	int  iDummyVstHash;
 
+	// LV2 dummy plugin scan option.
+	bool bDummyLv2Scan;
+	int  iDummyLv2Hash;
+
 	// LV2 plugin specific options.
 	bool bLv2DynManifest;
 

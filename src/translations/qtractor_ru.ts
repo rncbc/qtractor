@@ -195,32 +195,32 @@ MIDI:	</translation>
 %3</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="677"/>
+        <location filename="../qtractorOptions.cpp" line="681"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="680"/>
+        <location filename="../qtractorOptions.cpp" line="684"/>
         <source>Options:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="683"/>
+        <location filename="../qtractorOptions.cpp" line="687"/>
         <source>Set session identification (uuid)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="686"/>
+        <location filename="../qtractorOptions.cpp" line="690"/>
         <source>Show help about command line options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="688"/>
+        <location filename="../qtractorOptions.cpp" line="692"/>
         <source>Show version information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="725"/>
+        <location filename="../qtractorOptions.cpp" line="729"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9499,12 +9499,12 @@ Edit head/tail (blue) markers define the shift range.</source>
         <translation type="unfinished">Любой)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="936"/>
+        <location filename="../qtractorOptionsForm.cpp" line="942"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="937"/>
+        <location filename="../qtractorOptionsForm.cpp" line="943"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -9513,57 +9513,57 @@ Do you want to apply the changes?</source>
 Вы хотите применить изменения?</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="967"/>
+        <location filename="../qtractorOptionsForm.cpp" line="973"/>
         <source>Metronome Bar Audio File</source>
         <translation>Звуковой файл такта для метронома</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="981"/>
+        <location filename="../qtractorOptionsForm.cpp" line="987"/>
         <source>Metronome Beat Audio File</source>
         <translation>Звуковой файл доли для метронома</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1080"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1086"/>
         <source>Audio Meter Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1098"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1104"/>
         <source>MIDI Meter Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1190"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1196"/>
         <source>Plug-in Directory</source>
         <translation>Каталог с эффектами</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1427"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1433"/>
         <source>LV2 Presets Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1466"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1472"/>
         <source>Messages Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1491"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1497"/>
         <source>Messages Log</source>
         <translation>Журнал сообщений</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1493"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1499"/>
         <source>Log files (*.%1)</source>
         <translation>Файлы журнала  (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1531"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1537"/>
         <source>Session Template</source>
         <translation>Шаблон сеанса</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1533"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1539"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Файлы шаблонов сеанса (*.qtr *.qts *.%1)</translation>
     </message>
@@ -10121,7 +10121,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorOptionsForm.ui" line="2326"/>
         <location filename="../qtractorOptionsForm.ui" line="2497"/>
         <location filename="../qtractorOptionsForm.ui" line="2544"/>
-        <location filename="../qtractorOptionsForm.cpp" line="648"/>
+        <location filename="../qtractorOptionsForm.cpp" line="652"/>
         <source>(default)</source>
         <translation>(по умолчанию)</translation>
     </message>
@@ -10647,21 +10647,31 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3668"/>
-        <source>Whether LV2 Dynamic Manifest plugins are supported</source>
+        <source>Whether to use out-of-process scanning for LV2 plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3671"/>
-        <source>LV2 Dy&amp;namic Manifest support</source>
+        <source>Dummy &amp;LV2 plugin scan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3684"/>
-        <source>Whether to save plugin automation with higher resolution (14-bit)</source>
+        <source>Whether LV2 Dynamic Manifest plugins are supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3687"/>
+        <source>LV2 Dy&amp;namic Manifest support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="3700"/>
+        <source>Whether to save plugin automation with higher resolution (14-bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="3703"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
         <translation type="unfinished"></translation>
     </message>
