@@ -68,7 +68,7 @@ qtractorPluginFactory *qtractorPluginFactory::getInstance (void)
 
 // Contructor.
 qtractorPluginFactory::qtractorPluginFactory ( QObject *pParent )
-	: QObject(pParent), m_typeHint(qtractorPluginType::Any), m_pProxy(NULL)
+	: QObject(pParent), m_typeHint(qtractorPluginType::Any)
 {
 	g_pPluginFactory = this;
 }
@@ -217,6 +217,60 @@ QStringList qtractorPluginFactory::pluginPaths (
 }
 
 
+// Generic plugin-scan factory method.
+bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
+{
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return false;
+
+	bool bDummyPluginScan = false;
+	int  iDummyPluginHash = 0;
+
+	switch (typeHint) {
+	case qtractorPluginType::Ladspa:
+		bDummyPluginScan = pOptions->bDummyLadspaScan;
+		iDummyPluginHash = pOptions->iDummyLadspaHash;
+		break;
+	case qtractorPluginType::Dssi:
+		bDummyPluginScan = pOptions->bDummyDssiScan;
+		iDummyPluginHash = pOptions->iDummyDssiHash;
+		break;
+	case qtractorPluginType::Vst:
+		bDummyPluginScan = pOptions->bDummyVstScan;
+		iDummyPluginHash = pOptions->iDummyVstHash;
+		break;
+	default:
+		break;
+	}
+
+	if (bDummyPluginScan) {
+		const int iNewDummyPluginHash
+			= m_files.value(typeHint).count();
+		Scanner *pScanner = new Scanner(typeHint, this);
+		if (pScanner->open(iDummyPluginHash != iNewDummyPluginHash)) {
+			m_scanners.insert(typeHint, pScanner);
+			if (typeHint == qtractorPluginType::Ladspa)
+				pOptions->iDummyLadspaHash = iNewDummyPluginHash;
+			else
+			if (typeHint == qtractorPluginType::Dssi)
+				pOptions->iDummyDssiHash = iNewDummyPluginHash;
+			else
+			if (typeHint == qtractorPluginType::Vst)
+				pOptions->iDummyVstHash = iNewDummyPluginHash;
+			// Remember to cleanup cache later, when applicable...
+			const QString& sCacheFilePath = pScanner->cacheFilePath();
+			if (!m_cacheFilePaths.contains(sCacheFilePath))
+				m_cacheFilePaths.append(sCacheFilePath);
+			// Done.
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
 // Executive methods.
 void qtractorPluginFactory::scan (void)
 {
@@ -233,35 +287,38 @@ void qtractorPluginFactory::scan (void)
 	// LADSPA default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Ladspa) {
-		const QStringList& paths = m_paths.value(qtractorPluginType::Ladspa);
-		if (!paths.isEmpty())
-			iFileCount += addFiles(qtractorPluginType::Ladspa, paths);
+		const qtractorPluginType::Hint typeHint
+			= qtractorPluginType::Ladspa;
+		const QStringList& paths = m_paths.value(typeHint);
+		if (!paths.isEmpty()) {
+			iFileCount += addFiles(typeHint, paths);
+			startScan(typeHint);
+		}
 	}
 #endif
 #ifdef CONFIG_DSSI
 	// DSSI default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Dssi) {
-		const QStringList& paths = m_paths.value(qtractorPluginType::Dssi);
-		if (!paths.isEmpty())
-			iFileCount += addFiles(qtractorPluginType::Dssi, paths);
+		const qtractorPluginType::Hint typeHint
+			= qtractorPluginType::Dssi;
+		const QStringList& paths = m_paths.value(typeHint);
+		if (!paths.isEmpty()) {
+			iFileCount += addFiles(typeHint, paths);
+			startScan(typeHint);
+		}
 	}
 #endif
 #ifdef CONFIG_VST
 	// VST default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Vst) {
-		const QStringList& paths = m_paths.value(qtractorPluginType::Vst);
+		const qtractorPluginType::Hint typeHint
+			= qtractorPluginType::Vst;
+		const QStringList& paths = m_paths.value(typeHint);
 		if (!paths.isEmpty()) {
-			iFileCount += addFiles(qtractorPluginType::Vst, paths);
-			qtractorOptions *pOptions = qtractorOptions::getInstance();
-			if (pOptions && pOptions->bDummyVstScan) {
-				const int iDummyVstHash
-					= m_files.value(qtractorPluginType::Vst).count();
-				m_pProxy = new qtractorPluginFactoryProxy(this);
-				m_pProxy->open(iDummyVstHash != pOptions->iDummyVstHash);
-				pOptions->iDummyVstHash = iDummyVstHash;
-			}
+			iFileCount += addFiles(typeHint, paths);
+			startScan(typeHint);
 		}
 	}
 #endif
@@ -290,10 +347,6 @@ void qtractorPluginFactory::scan (void)
 		}
 	}
 
-	// Check the proxy (out-of-process) client closure...
-	if (m_pProxy)
-		m_pProxy->close();
-
 	// Done.
 	reset();
 }
@@ -301,11 +354,18 @@ void qtractorPluginFactory::scan (void)
 
 void qtractorPluginFactory::reset (void)
 {
-	if (m_pProxy) {
-		m_pProxy->terminate();
-		delete m_pProxy;
-		m_pProxy = NULL;
+	// Check the proxy (out-of-process) client closure...
+	Scanners::ConstIterator iter = m_scanners.constBegin();
+	const Scanners::ConstIterator& iter_end = m_scanners.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		Scanner *pScanner = iter.value();
+		if (pScanner) {
+			pScanner->close();
+			pScanner->terminate();
+		}
 	}
+	qDeleteAll(m_scanners);
+	m_scanners.clear();
 
 	m_files.clear();
 }
@@ -320,7 +380,9 @@ void qtractorPluginFactory::clear (void)
 
 void qtractorPluginFactory::clearAll (void)
 {
-	QFile::remove(qtractorPluginFactoryProxy::cacheFilePath());
+	QStringListIterator iter(m_cacheFilePaths);
+	while (iter.hasNext())
+		QFile::remove(iter.next());
 
 	clear();
 }
@@ -483,11 +545,10 @@ bool qtractorPluginFactory::addTypes (
 	}
 #endif
 
-#ifdef CONFIG_VST
-	// Try VST plugin types (out-of-process scan)...
-	if (typeHint == qtractorPluginType::Vst && m_pProxy)
-		return m_pProxy->addTypes(typeHint, sFilename);
-#endif
+	// Try of some out-of-process scans, if any...
+	Scanner *pScanner = m_scanners.value(typeHint, NULL);
+	if (pScanner)
+		return pScanner->addTypes(typeHint, sFilename);
 
 	qtractorPluginFile *pFile = qtractorPluginFile::addFile(sFilename);
 	if (pFile == NULL)
@@ -578,14 +639,28 @@ bool qtractorPluginFactory::addTypes (
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginFactoryProxy -- Plugin path proxy (out-of-process client).
+// qtractorPluginFactory::Scanner -- Plugin path proxy (out-of-process client).
 //
 
 // Constructor.
-qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
-	qtractorPluginFactory *pPluginFactory )
-	: QProcess(pPluginFactory), m_iExitStatus(-1)
+qtractorPluginFactory::Scanner::Scanner (
+	qtractorPluginType::Hint typeHint, QObject *pParent )
+	: QProcess(pParent), m_iExitStatus(-1)
 {
+	switch (typeHint) {
+	case qtractorPluginType::Ladspa:
+		m_sScanner = "qtractor_ladspa_scan";
+		break;
+	case qtractorPluginType::Dssi:
+		m_sScanner = "qtractor_dssi_scan";
+		break;
+	case qtractorPluginType::Vst:
+		m_sScanner = "qtractor_vst_scan";
+		break;
+	default:
+		break;
+	}
+
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
 		SLOT(stdout_slot()));
@@ -599,7 +674,7 @@ qtractorPluginFactoryProxy::qtractorPluginFactoryProxy (
 
 
 // Open/start method.
-bool qtractorPluginFactoryProxy::open ( bool bReset )
+bool qtractorPluginFactory::Scanner::open ( bool bReset )
 {
 	// Cache file setup...
 	m_file.setFileName(cacheFilePath());
@@ -637,7 +712,7 @@ bool qtractorPluginFactoryProxy::open ( bool bReset )
 
 
 // Close/stop method.
-void qtractorPluginFactoryProxy::close (void)
+void qtractorPluginFactory::Scanner::close (void)
 {
 	// We're we scanning hard?...
 	if (QProcess::state() != QProcess::NotRunning || m_iExitStatus < 0) {
@@ -655,7 +730,7 @@ void qtractorPluginFactoryProxy::close (void)
 
 
 // Scan start method.
-bool qtractorPluginFactoryProxy::start (void)
+bool qtractorPluginFactory::Scanner::start (void)
 {
 	// Maybe we're still running, doh!
 	if (QProcess::state() != QProcess::NotRunning)
@@ -666,7 +741,7 @@ bool qtractorPluginFactoryProxy::start (void)
 
 	// Get the main scanner executable...
 	const QDir dir(QApplication::applicationDirPath());
-	const QFileInfo fi(dir, "qtractor_vst_scan");
+	const QFileInfo fi(dir, m_sScanner);
 	if (!fi.isExecutable())
 		return false;
 
@@ -677,7 +752,7 @@ bool qtractorPluginFactoryProxy::start (void)
 
 
 // Service slots.
-void qtractorPluginFactoryProxy::stdout_slot (void)
+void qtractorPluginFactory::Scanner::stdout_slot (void)
 {
 	qtractorPluginFactory *pPluginFactory
 		= static_cast<qtractorPluginFactory *> (QObject::parent());
@@ -689,13 +764,13 @@ void qtractorPluginFactoryProxy::stdout_slot (void)
 }
 
 
-void qtractorPluginFactoryProxy::stderr_slot (void)
+void qtractorPluginFactory::Scanner::stderr_slot (void)
 {
 	QTextStream(stderr) << QProcess::readAllStandardError();
 }
 
 
-void qtractorPluginFactoryProxy::exit_slot (
+void qtractorPluginFactory::Scanner::exit_slot (
 	int exitCode, QProcess::ExitStatus exitStatus )
 {
 	if (m_iExitStatus < 0)
@@ -707,7 +782,7 @@ void qtractorPluginFactoryProxy::exit_slot (
 
 
 // Service methods.
-bool qtractorPluginFactoryProxy::addTypes (
+bool qtractorPluginFactory::Scanner::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
 	// See if it's already cached in...
@@ -738,7 +813,7 @@ bool qtractorPluginFactoryProxy::addTypes (
 }
 
 
-bool qtractorPluginFactoryProxy::addTypes ( const QStringList& list )
+bool qtractorPluginFactory::Scanner::addTypes ( const QStringList& list )
 {
 	qtractorPluginFactory *pPluginFactory
 		= static_cast<qtractorPluginFactory *> (QObject::parent());
@@ -769,7 +844,7 @@ bool qtractorPluginFactoryProxy::addTypes ( const QStringList& list )
 
 
 // Absolute cache file path.
-QString qtractorPluginFactoryProxy::cacheFilePath (void)
+QString qtractorPluginFactory::Scanner::cacheFilePath (void) const
 {
 	const QString& sCacheDir
 #if QT_VERSION < 0x050000
@@ -777,7 +852,7 @@ QString qtractorPluginFactoryProxy::cacheFilePath (void)
 #else
 		= QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
 #endif
-	return QFileInfo(sCacheDir, "qtractor_vst_scan.cache").absoluteFilePath();
+	return QFileInfo(sCacheDir, m_sScanner + ".cache").absoluteFilePath();
 }
 
 
@@ -843,11 +918,10 @@ qtractorDummyPluginType *qtractorDummyPluginType::createType (
 
 	const Hint typeHint = qtractorPluginType::hintFromText(props.at(0));
 	const unsigned long iIndex = props.at(7).toULong();
-
-	// FIXME: Yep, most probably it's a dummy VST plugin effect...
+#if 0// FIXME: Yep, most probably it used to be a dummy VST plugin effect...
 	if (typeHint != Vst)
 		return NULL;
-
+#endif
 	return new qtractorDummyPluginType(sText, iIndex, typeHint);
 }
 

@@ -3767,22 +3767,18 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 	if ((busMode & qtractorBus::Input) && !(busMode & qtractorBus::Ex)) {
 		m_pIMidiMonitor = new qtractorMidiMonitor();
 		m_pIPluginList  = createPluginList(qtractorPluginList::MidiInBus);
-		m_pICurveFile   = new qtractorCurveFile(m_pIPluginList->curveList());
 	} else {
 		m_pIMidiMonitor = NULL;
 		m_pIPluginList  = NULL;
-		m_pICurveFile   = NULL;
 	}
 
 	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
 		m_pOMidiMonitor = new qtractorMidiMonitor();
 		m_pOPluginList  = createPluginList(qtractorPluginList::MidiOutBus);
-		m_pOCurveFile   = new qtractorCurveFile(m_pOPluginList->curveList());
 		m_pSysexList    = new qtractorMidiSysexList();
 	} else {
 		m_pOMidiMonitor = NULL;
 		m_pOPluginList  = NULL;
-		m_pOCurveFile   = NULL;
 		m_pSysexList    = NULL;
 	}
 }
@@ -3796,11 +3792,6 @@ qtractorMidiBus::~qtractorMidiBus (void)
 		delete m_pIMidiMonitor;
 	if (m_pOMidiMonitor)
 		delete m_pOMidiMonitor;
-
-	if (m_pICurveFile)
-		delete m_pICurveFile;
-	if (m_pOCurveFile)
-		delete m_pOCurveFile;
 
 	if (m_pIPluginList)
 		delete m_pIPluginList;
@@ -3918,16 +3909,10 @@ void qtractorMidiBus::updateBusMode (void)
 			m_pIMidiMonitor = new qtractorMidiMonitor();
 		if (m_pIPluginList == NULL)
 			m_pIPluginList = createPluginList(qtractorPluginList::MidiInBus);
-		if (m_pICurveFile == NULL)
-			m_pICurveFile = new qtractorCurveFile(m_pIPluginList->curveList());
 	} else {
 		if (m_pIMidiMonitor) {
 			delete m_pIMidiMonitor;
 			m_pIMidiMonitor = NULL;
-		}
-		if (m_pICurveFile) {
-			delete m_pICurveFile;
-			m_pICurveFile = NULL;
 		}
 		if (m_pIPluginList) {
 			delete m_pIPluginList;
@@ -3941,18 +3926,12 @@ void qtractorMidiBus::updateBusMode (void)
 			m_pOMidiMonitor = new qtractorMidiMonitor();
 		if (m_pOPluginList == NULL)
 			m_pOPluginList = createPluginList(qtractorPluginList::MidiOutBus);
-		if (m_pOCurveFile == NULL)
-			m_pOCurveFile = new qtractorCurveFile(m_pOPluginList->curveList());
 		if (m_pSysexList == NULL)
 			m_pSysexList = new qtractorMidiSysexList();
 	} else {
 		if (m_pOMidiMonitor) {
 			delete m_pOMidiMonitor;
 			m_pOMidiMonitor = NULL;
-		}
-		if (m_pOCurveFile) {
-			delete m_pOCurveFile;
-			m_pOCurveFile = NULL;
 		}
 		if (m_pOPluginList) {
 			delete m_pOPluginList;
@@ -4564,30 +4543,6 @@ void qtractorMidiBus::updatePluginList (
 }
 
 
-// Automation curve list accessors.
-qtractorCurveList *qtractorMidiBus::curveList_in (void) const
-{
-	return (m_pIPluginList ? m_pIPluginList->curveList() : NULL);
-}
-
-qtractorCurveList *qtractorMidiBus::curveList_out (void) const
-{
-	return (m_pOPluginList ? m_pOPluginList->curveList() : NULL);
-}
-
-
-// Automation curve serializer accessors.
-qtractorCurveFile *qtractorMidiBus::curveFile_in (void) const
-{
-	return m_pICurveFile;
-}
-
-qtractorCurveFile *qtractorMidiBus::curveFile_out (void) const
-{
-	return m_pOCurveFile;
-}
-
-
 // Retrieve all current ALSA connections for a given bus mode interface;
 // return the effective number of connection attempts...
 int qtractorMidiBus::updateConnects (
@@ -4835,9 +4790,6 @@ bool qtractorMidiBus::loadElement (
 					eProp.text().toFloat());
 		} else if (eProp.tagName() == "input-controllers") {
 			qtractorMidiBus::loadControllers(&eProp, qtractorBus::Input);
-		} else if (eProp.tagName() == "input-curve-file") {
-			qtractorMidiBus::loadCurveFile(&eProp, qtractorBus::Input,
-				qtractorMidiBus::curveFile_in());
 		} else if (eProp.tagName() == "input-plugins") {
 			if (qtractorMidiBus::pluginList_in())
 				qtractorMidiBus::pluginList_in()->loadElement(
@@ -4855,9 +4807,6 @@ bool qtractorMidiBus::loadElement (
 					eProp.text().toFloat());
 		} else if (eProp.tagName() == "output-controllers") {
 			qtractorMidiBus::loadControllers(&eProp, qtractorBus::Output);
-		} else if (eProp.tagName() == "output-curve-file") {
-			qtractorMidiBus::loadCurveFile(&eProp, qtractorBus::Output,
-				qtractorMidiBus::curveFile_out());
 		} else if (eProp.tagName() == "output-plugins") {
 			if (qtractorMidiBus::pluginList_out())
 				qtractorMidiBus::pluginList_out()->loadElement(
@@ -4900,16 +4849,6 @@ bool qtractorMidiBus::saveElement (
 		qtractorMidiBus::saveControllers(pDocument,
 			&eInputControllers, qtractorBus::Input);
 		pElement->appendChild(eInputControllers);
-		// Save input bus automation curves...
-		qtractorCurveList *pInputCurveList = qtractorMidiBus::curveList_in();
-		if (pInputCurveList && !pInputCurveList->isEmpty()) {
-			qtractorCurveFile cfile(pInputCurveList);
-			QDomElement eInputCurveFile
-				= pDocument->document()->createElement("input-curve-file");
-			qtractorMidiBus::saveCurveFile(pDocument,
-				&eInputCurveFile, qtractorBus::Input, &cfile);
-			pElement->appendChild(eInputCurveFile);
-		}
 		// Save input bus plugins...
 		if (qtractorMidiBus::pluginList_in()) {
 			QDomElement eInputPlugins
@@ -4940,16 +4879,6 @@ bool qtractorMidiBus::saveElement (
 		qtractorMidiBus::saveControllers(pDocument,
 			&eOutputControllers, qtractorBus::Output);
 		pElement->appendChild(eOutputControllers);
-		// Save output bus automation curves...
-		qtractorCurveList *pOutputCurveList = qtractorMidiBus::curveList_out();
-		if (pOutputCurveList && !pOutputCurveList->isEmpty()) {
-			qtractorCurveFile cfile(pOutputCurveList);
-			QDomElement eOutputCurveFile
-				= pDocument->document()->createElement("output-curve-file");
-			qtractorMidiBus::saveCurveFile(pDocument,
-				&eOutputCurveFile, qtractorBus::Output, &cfile);
-			pElement->appendChild(eOutputCurveFile);
-		}
 		// Save output bus plugins...
 		if (qtractorMidiBus::pluginList_out()) {
 			QDomElement eOutputPlugins
