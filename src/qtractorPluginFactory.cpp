@@ -645,22 +645,8 @@ bool qtractorPluginFactory::addTypes (
 // Constructor.
 qtractorPluginFactory::Scanner::Scanner (
 	qtractorPluginType::Hint typeHint, QObject *pParent )
-	: QProcess(pParent), m_iExitStatus(-1)
+	: QProcess(pParent), m_typeHint(typeHint), m_iExitStatus(-1)
 {
-	switch (typeHint) {
-	case qtractorPluginType::Ladspa:
-		m_sScanner = "qtractor_ladspa_scan";
-		break;
-	case qtractorPluginType::Dssi:
-		m_sScanner = "qtractor_dssi_scan";
-		break;
-	case qtractorPluginType::Vst:
-		m_sScanner = "qtractor_vst_scan";
-		break;
-	default:
-		break;
-	}
-
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
 		SLOT(stdout_slot()));
@@ -741,7 +727,7 @@ bool qtractorPluginFactory::Scanner::start (void)
 
 	// Get the main scanner executable...
 	const QDir dir(QApplication::applicationDirPath());
-	const QFileInfo fi(dir, m_sScanner);
+	const QFileInfo fi(dir, "qtractor_plugin_scan");
 	if (!fi.isExecutable())
 		return false;
 
@@ -846,13 +832,16 @@ bool qtractorPluginFactory::Scanner::addTypes ( const QStringList& list )
 // Absolute cache file path.
 QString qtractorPluginFactory::Scanner::cacheFilePath (void) const
 {
+	const QString& sCacheName = "qtractor_"
+		+ qtractorPluginType::textFromHint(m_typeHint).toLower()
+		+ "_scan.cache";
 	const QString& sCacheDir
 #if QT_VERSION < 0x050000
 		= QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
 #else
 		= QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
 #endif
-	return QFileInfo(sCacheDir, m_sScanner + ".cache").absoluteFilePath();
+	return QFileInfo(sCacheDir, sCacheName).absoluteFilePath();
 }
 
 

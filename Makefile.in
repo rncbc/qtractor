@@ -135,7 +135,7 @@ headers = \
 	src/qtractorTempoAdjustForm.h \
 	src/qtractorTimeScaleForm.h \
 	src/qtractorTrackForm.h \
-	src/qtractor_vst_scan.h
+	src/qtractor_plugin_scan.h
 
 sources = \
 	src/qtractor.cpp \
@@ -257,7 +257,7 @@ sources = \
 	src/qtractorTempoAdjustForm.cpp \
 	src/qtractorTimeScaleForm.cpp \
 	src/qtractorTrackForm.cpp \
-	src/qtractor_vst_scan.cpp
+	src/qtractor_plugin_scan.cpp
 
 forms = \
 	src/qtractorBusForm.ui \
