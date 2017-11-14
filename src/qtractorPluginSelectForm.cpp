@@ -229,11 +229,11 @@ void qtractorPluginSelectForm::typeHintChanged ( int iTypeHint )
 	qtractorPluginType::Hint typeHint
 		= qtractorPluginType::hintFromText(
 			m_ui.PluginTypeComboBox->itemText(iTypeHint));
-
+#if 0
 	// Rescan not applicable to LV2 plug-in world.
 	m_ui.PluginRescanPushButton->setVisible(
 		typeHint != qtractorPluginType::Lv2);
-
+#endif
 	qtractorPluginFactory *pPluginFactory
 		= qtractorPluginFactory::getInstance();
 	if (pPluginFactory && pPluginFactory->typeHint() != typeHint) {

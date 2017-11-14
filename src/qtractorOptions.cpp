@@ -240,6 +240,8 @@ void qtractorOptions::loadOptions (void)
 	iDummyDssiHash = m_settings.value("/DummyDssiHash", 0).toInt();
 	bDummyVstScan = m_settings.value("/DummyVstScan", true).toBool();
 	iDummyVstHash = m_settings.value("/DummyVstHash", 0).toInt();
+	bDummyLv2Scan = m_settings.value("/DummyLv2Scan", false).toBool();
+	iDummyLv2Hash = m_settings.value("/DummyLv2Hash", 0).toInt();
 	bLv2DynManifest = m_settings.value("/Lv2DynManifest", false).toBool();
 	bSaveCurve14bit = m_settings.value("/SaveCurve14bit", false).toBool();
 	m_settings.endGroup();
@@ -535,6 +537,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/DummyDssiHash", iDummyDssiHash);
 	m_settings.setValue("/DummyVstScan", bDummyVstScan);
 	m_settings.setValue("/DummyVstHash", iDummyVstHash);
+	m_settings.setValue("/DummyLv2Scan", bDummyLv2Scan);
+	m_settings.setValue("/DummyLv2Hash", iDummyLv2Hash);
 	m_settings.setValue("/Lv2DynManifest", bLv2DynManifest);
 	m_settings.setValue("/SaveCurve14bit", bSaveCurve14bit);
 	m_settings.endGroup();
