@@ -59,6 +59,7 @@ public:
 	// Plugin types registry.
 	typedef QList<qtractorPluginType *> Types;
 	const Types& types() const { return m_types; }
+
 	// Type register method.
 	void addType(qtractorPluginType *pType) { m_types.append(pType); }
 
@@ -90,8 +91,11 @@ protected:
 	int addFiles(qtractorPluginType::Hint typeHint, const QStringList& paths);
 	int addFiles(qtractorPluginType::Hint typeHint, const QString& sPath);
 
-	// Plugin type listing.
-	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
+	// Plugin type listing methods.
+	bool addTypes(qtractorPluginType::Hint typeHint,
+		const QString& sFilename);
+	bool addTypes(qtractorPluginType::Hint typeHint,
+		qtractorPluginFile *pFile, unsigned long iIndex);
 
 	// Generic plugin-scan factory method.
 	bool startScan(qtractorPluginType::Hint typeHint);

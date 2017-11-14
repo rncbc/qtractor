@@ -3657,6 +3657,22 @@
            </widget>
           </item>
           <item row="0" column="2">
+           <widget class="QCheckBox" name="DummyLv2ScanCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to use out-of-process scanning for LV2 plugins</string>
+            </property>
+            <property name="text">
+             <string>Dummy &amp;LV2 plugin scan</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
            <widget class="QCheckBox" name="Lv2DynManifestCheckBox">
             <property name="font">
              <font>
@@ -3672,7 +3688,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+          <item row="2" column="2">
            <widget class="QCheckBox" name="SaveCurve14bitCheckBox">
             <property name="font">
              <font>
@@ -3914,6 +3930,7 @@
   <tabstop>DummyLadspaScanCheckBox</tabstop>
   <tabstop>DummyDssiScanCheckBox</tabstop>
   <tabstop>DummyVstScanCheckBox</tabstop>
+  <tabstop>DummyLv2ScanCheckBox</tabstop>
   <tabstop>Lv2DynManifestCheckBox</tabstop>
   <tabstop>SaveCurve14bitCheckBox</tabstop>
   <tabstop>OscServerPortSpinBox</tabstop>
