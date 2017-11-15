@@ -225,20 +225,11 @@ public:
 	// when more than one is available.
 	bool bQueryEditorType;
 
-	// LADSPA dummy plugin scan option.
-	bool bDummyLadspaScan;
+	// Out-of-process plugin scanning and cache option.
+	bool bDummyPluginScan;
 	int  iDummyLadspaHash;
-
-	// DSSI dummy plugin scan option.
-	bool bDummyDssiScan;
 	int  iDummyDssiHash;
-
-	// VST dummy plugin scan option.
-	bool bDummyVstScan;
 	int  iDummyVstHash;
-
-	// LV2 dummy plugin scan option.
-	bool bDummyLv2Scan;
 	int  iDummyLv2Hash;
 
 	// LV2 plugin specific options.
