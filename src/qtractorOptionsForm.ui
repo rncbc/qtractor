@@ -3608,8 +3608,8 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="DummyLadspaScanCheckBox">
+          <item row="0" column="0" colspan="3">
+           <widget class="QCheckBox" name="DummyPluginScanCheckBox">
             <property name="font">
              <font>
               <weight>50</weight>
@@ -3617,62 +3617,14 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Whether to use out-of-process scanning for LADSPA plugins</string>
+             <string>Whether to use out-of-process plugin inventory scan and cache for persistence</string>
             </property>
             <property name="text">
-             <string>Dumm&amp;y LADSPA plugin scan</string>
+             <string>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="DummyDssiScanCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to use out-of-process scanning for DSSI plugins</string>
-            </property>
-            <property name="text">
-             <string>Dummy DSS&amp;I plugin scan</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="DummyVstScanCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to use out-of-process scanning for VST plugins</string>
-            </property>
-            <property name="text">
-             <string>Dummy &amp;VST plugin scan (RECOMMENDED)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QCheckBox" name="DummyLv2ScanCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to use out-of-process scanning for LV2 plugins</string>
-            </property>
-            <property name="text">
-             <string>Dummy &amp;LV2 plugin scan</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
+          <item row="1" column="0" colspan="3">
            <widget class="QCheckBox" name="Lv2DynManifestCheckBox">
             <property name="font">
              <font>
@@ -3688,7 +3640,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
+          <item row="2" column="0" colspan="3">
            <widget class="QCheckBox" name="SaveCurve14bitCheckBox">
             <property name="font">
              <font>
@@ -3927,10 +3879,7 @@
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
   <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>QueryEditorTypeCheckBox</tabstop>
-  <tabstop>DummyLadspaScanCheckBox</tabstop>
-  <tabstop>DummyDssiScanCheckBox</tabstop>
-  <tabstop>DummyVstScanCheckBox</tabstop>
-  <tabstop>DummyLv2ScanCheckBox</tabstop>
+  <tabstop>DummyPluginScanCheckBox</tabstop>
   <tabstop>Lv2DynManifestCheckBox</tabstop>
   <tabstop>SaveCurve14bitCheckBox</tabstop>
   <tabstop>OscServerPortSpinBox</tabstop>
