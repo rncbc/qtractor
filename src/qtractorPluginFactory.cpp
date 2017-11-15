@@ -224,24 +224,20 @@ bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 	if (pOptions == NULL)
 		return false;
 
-	bool bDummyPluginScan = false;
+	bool bDummyPluginScan = pOptions->bDummyPluginScan;
 	int  iDummyPluginHash = 0;
 
 	switch (typeHint) {
 	case qtractorPluginType::Ladspa:
-		bDummyPluginScan = pOptions->bDummyLadspaScan;
 		iDummyPluginHash = pOptions->iDummyLadspaHash;
 		break;
 	case qtractorPluginType::Dssi:
-		bDummyPluginScan = pOptions->bDummyDssiScan;
 		iDummyPluginHash = pOptions->iDummyDssiHash;
 		break;
 	case qtractorPluginType::Vst:
-		bDummyPluginScan = pOptions->bDummyVstScan;
 		iDummyPluginHash = pOptions->iDummyVstHash;
 		break;
 	case qtractorPluginType::Lv2:
-		bDummyPluginScan = pOptions->bDummyLv2Scan;
 		iDummyPluginHash = pOptions->iDummyLv2Hash;
 		break;
 	default:
@@ -374,10 +370,8 @@ void qtractorPluginFactory::reset (void)
 	const Scanners::ConstIterator& iter_end = m_scanners.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		Scanner *pScanner = iter.value();
-		if (pScanner) {
+		if (pScanner)
 			pScanner->close();
-			pScanner->terminate();
-		}
 	}
 
 	qDeleteAll(m_scanners);
@@ -682,6 +676,13 @@ bool qtractorPluginFactory::Scanner::open ( bool bReset )
 	if (!m_file.open(QIODevice::Append | QIODevice::Text | QIODevice::Truncate))
 		return false;
 
+	// LV2 plugins are dang special,
+	// need no out-of-process scanning whatsoever...
+	if (m_typeHint == qtractorPluginType::Lv2) {
+		m_iExitStatus = 0;
+		return true;
+	}
+
 	// Go go go...
 	return start();
 }
@@ -695,6 +696,9 @@ void qtractorPluginFactory::Scanner::close (void)
 		QProcess::closeWriteChannel();
 		QProcess::waitForFinished(200);
 	}
+
+	// Done anyway.
+	QProcess::terminate();
 
 	// Close cache file...
 	if (m_file.isOpen())
