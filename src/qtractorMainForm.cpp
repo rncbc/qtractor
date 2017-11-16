@@ -7483,7 +7483,7 @@ void qtractorMainForm::slowTimerSlot (void)
 			if ((state == JackTransportStopped &&  bPlaying) ||
 				(state == JackTransportRolling && !bPlaying)) {
 			#ifdef CONFIG_DEBUG
-				qDebug("qtractorMainForm::timerSlot() playing=%d state=%d",
+				qDebug("qtractorMainForm::slowTimerSlot() playing=%d state=%d",
 					int(bPlaying), int(state == JackTransportRolling));
 			#endif
 				iPlayHead = pos.frame;
@@ -7501,7 +7501,7 @@ void qtractorMainForm::slowTimerSlot (void)
 					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
 					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {
 				#ifdef CONFIG_DEBUG
-					qDebug("qtractorMainForm::timerSlot() tempo=%g %u/%u",
+					qDebug("qtractorMainForm::slowTimerSlot() tempo=%g %u/%u",
 						pos.beats_per_minute,
 						(unsigned short) pos.beats_per_bar,
 						(unsigned short) pos.beat_type);

@@ -743,6 +743,9 @@ void qtractorSession::updateTimeScale (void)
 	// Do not forget those edit points too...
 	m_iEditHead = frameFromTick(m_iEditHeadTime);
 	m_iEditTail = frameFromTick(m_iEditTailTime);
+
+	// Get timebase up to date immediately...
+	m_pAudioEngine->resetTimebase();
 }
 
 
