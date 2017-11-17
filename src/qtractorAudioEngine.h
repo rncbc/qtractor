@@ -218,8 +218,12 @@ public:
 	void setTimebase(bool bTimebase);
 	bool isTimebase() const;
 
-	// JACK Timebase reset method.
+	// JACK Timebase reset methods.
 	void resetTimebase();
+	void resetTimebaseHold();
+
+	// JACK Timebase sync flagging.
+	bool isTimebaseHold() const;
 
 	// Absolute number of frames elapsed since engine start.
 	unsigned long jackFrameTime() const;
@@ -323,6 +327,9 @@ private:
 	// JACK Timebase mode and control.
 	bool                 m_bTimebase;
 	unsigned int         m_iTimebase;
+
+	// JACK Timebase sync flag.
+	unsigned int         m_iTimebaseHold;
 };
 
 
