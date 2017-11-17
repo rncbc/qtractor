@@ -449,6 +449,9 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	// JACK timebase mode control.
 	m_bTimebase = true;
 	m_iTimebase = 0;
+
+	// JACK Timebase sync flag.
+	m_iTimebaseHold = 0;
 }
 
 
@@ -1186,7 +1189,11 @@ void qtractorAudioEngine::timebase ( jack_position_t *pPos, int iNewPos )
 	pPos->beat_type        = float(1 << pNode->beatDivisor);
 
 	// Tell that we've been here...
-	if (iNewPos) ++m_iTimebase;
+	if (iNewPos) {
+		++m_iTimebase;
+		if (m_iTimebaseHold > 0)
+			m_iTimebaseHold = 0;
+	}
 }
 
 
@@ -2044,6 +2051,22 @@ void qtractorAudioEngine::resetTimebase (void)
 			0 /* FIXME: un-conditional! */,
 			qtractorAudioEngine_timebase, this);
 	}
+}
+
+
+// JACK Timebase/transport sync flagging.
+void qtractorAudioEngine::setTimebaseHold ( bool bTimebaseHold )
+{
+	if (m_bTimebase && bTimebaseHold)
+		++m_iTimebaseHold;
+	else
+		m_iTimebaseHold = 0;
+}
+
+
+bool qtractorAudioEngine::isTimebaseHold (void) const
+{
+	return (m_iTimebaseHold > 0);
 }
 
 
