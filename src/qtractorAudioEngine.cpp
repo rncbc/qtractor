@@ -1191,8 +1191,7 @@ void qtractorAudioEngine::timebase ( jack_position_t *pPos, int iNewPos )
 	// Tell that we've been here...
 	if (iNewPos) {
 		++m_iTimebase;
-		if (m_iTimebaseHold > 0)
-			m_iTimebaseHold = 0;
+		m_iTimebaseHold = 0;
 	}
 }
 
@@ -2055,9 +2054,9 @@ void qtractorAudioEngine::resetTimebase (void)
 
 
 // JACK Timebase/transport sync flagging.
-void qtractorAudioEngine::setTimebaseHold ( bool bTimebaseHold )
+void qtractorAudioEngine::resetTimebaseHold (void)
 {
-	if (m_bTimebase && bTimebaseHold)
+	if (m_bTimebase)
 		++m_iTimebaseHold;
 	else
 		m_iTimebaseHold = 0;
