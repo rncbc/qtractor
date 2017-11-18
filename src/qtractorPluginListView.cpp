@@ -540,7 +540,7 @@ void qtractorPluginListView::addPlugin (void)
 				selectForm.pluginIndex(i),
 				selectForm.pluginTypeHint(i));
 		if (pPlugin) {
-			pPlugin->setActivated(selectForm.isPluginActivated(), qtractorPlugin::Create);
+			pPlugin->setActivated(selectForm.isPluginActivated());
 			pAddPluginCommand->addPlugin(pPlugin);
 		}
 	}
