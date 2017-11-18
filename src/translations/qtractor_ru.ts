@@ -645,22 +645,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="882"/>
+        <location filename="../qtractorClipCommand.cpp" line="877"/>
         <source>take %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="884"/>
+        <location filename="../qtractorClipCommand.cpp" line="879"/>
         <source>reset takes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1070"/>
+        <location filename="../qtractorClipCommand.cpp" line="1065"/>
         <source>clip tool %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1197"/>
+        <location filename="../qtractorClipCommand.cpp" line="1192"/>
         <source>clip record</source>
         <translation type="unfinished"></translation>
     </message>

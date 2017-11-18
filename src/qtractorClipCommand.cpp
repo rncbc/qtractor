@@ -369,13 +369,11 @@ bool qtractorClipCommand::addClipRecord (
 	if (iClipStart >= iClipEnd)
 		return false;
 
-	// Recorded clip length and offset...
-	const unsigned long iClipLength = iClipEnd - iClipStart;
-	const unsigned long iClipOffset = pClip->clipOffset();
+	const qtractorTrack::TrackType trackType = pTrack->trackType();
 
 	// HACK: Exclusive MIDI clip recording/overdub...
 	if (pTrack->isClipRecordEx()) {
-		if (pTrack->trackType() == qtractorTrack::Midi) {
+		if (trackType == qtractorTrack::Midi) {
 			qtractorMidiClip *pMidiClip
 				= static_cast<qtractorMidiClip *> (pClip);
 			if (pMidiClip) {
@@ -393,23 +391,8 @@ bool qtractorClipCommand::addClipRecord (
 					pMidiClip->sequence(),
 					pSession->timeScale(),
 					pSession->tickFromFrame(iClipStart));
-			#if 0
-				// Original clip length stays put...
-				const unsigned long iClipLengthEx = pMidiClip->clipLength();
-				// Remove original clip anyway...
-				removeClip(pMidiClip);
-				// Clone into a new one...
-				pMidiClip = new qtractorMidiClip(*pMidiClip);
-				pMidiClip->setClipStart(iClipStart);
-				pMidiClip->setClipOffset(iClipOffset);
-				pMidiClip->setClipLength(iClipLengthEx);
-				pMidiClip->setFilename(sFilename);
-				pMidiClip->setDirty(true);
-				addClip(pMidiClip, pTrack);
-			#else
 				// Just change filename/track-channel...
 				fileClip(pMidiClip, sFilename, pMidiClip->trackChannel());
-			#endif
 				// Post-commit dirty changes...
 				pSession->files()->addClipItem(qtractorFileList::Midi, sFilename, true);
 				// Add the new file version to the roster...
@@ -429,6 +412,18 @@ bool qtractorClipCommand::addClipRecord (
 	// Actual clip length might have changed on close.
 	if (pClip->clipLength() < 1)
 		return false;
+
+	// Recorded clip length and offset...
+	const unsigned long iClipLength = iClipEnd - iClipStart;
+
+	unsigned long iClipOffset = pClip->clipOffset();
+	// Audio clips may need some record latency compensation...
+	if (trackType == qtractorTrack::Audio) {
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
+		if (pAudioBus)
+			iClipOffset += pAudioBus->latency_in();
+	}
 
 	// Check whether in loop-recording/takes mode...
 	const unsigned long iLoopStart = pSession->loopStart();
