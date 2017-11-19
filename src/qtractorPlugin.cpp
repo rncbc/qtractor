@@ -299,19 +299,14 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 // Activation methods.
 
 // immediate
-void qtractorPlugin::setActivated (bool bActivated, ActivationInfo info )
+void qtractorPlugin::setActivated (bool bActivated)
 {
-	// ensure not to forget initial activation
-	// if created as auto-deactivated...
-	if (info == Create)
-		m_bActivated = bActivated;
-
 	updateActivated(bActivated);
 
 	m_activateObserver.setValue(bActivated ? 1.0f : 0.0f);
 }
 
-// queed (GUI invocation)
+// queued (GUI invocation)
 void qtractorPlugin::setActivatedEx ( bool bActivated )
 {
 	m_activateSubject.setValue(bActivated ? 1.0f : 0.0f);
@@ -358,6 +353,7 @@ bool qtractorPlugin::canBeConnectedToOtherTracks (void) const
 void qtractorPlugin::updateActivated ( bool bActivated )
 {
 	if (bActivated != m_bActivated) {
+		m_bActivated = bActivated;
 		const bool bIsConnectedToOtherTracks = canBeConnectedToOtherTracks();
 		// Auto-plugin-deactivation overrides standard-activation for plugins
 		// without connections to other tracks (Inserts/AuxSends)
@@ -367,7 +363,6 @@ void qtractorPlugin::updateActivated ( bool bActivated )
 				activate();
 			else
 				deactivate();
-			m_bActivated = bActivated;
 			m_pList->updateActivated(bActivated);
 		}
 		// Plugins connected to other tracks activation change
