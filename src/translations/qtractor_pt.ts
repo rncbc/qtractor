@@ -9802,7 +9802,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Locais</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1407"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1400"/>
         <source>LV2 Presets Directory</source>
         <translation>Pasta de pré configurações LV2</translation>
     </message>
@@ -9857,7 +9857,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Qualidade da conversão de taxa de amostragem</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="961"/>
+        <location filename="../qtractorOptionsForm.cpp" line="954"/>
         <source>Metronome Beat Audio File</source>
         <translation>Arquivo de áudio do pulso do metrônomo</translation>
     </message>
@@ -9887,7 +9887,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Formato padrão de arquivo de sessão (extensão)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1513"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1506"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Arquivos de modelo de sessão (*.qtr *.qts *.%1) </translation>
     </message>
@@ -9912,7 +9912,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Para habilitar o salvamento automático da sessão (recuperação de dados)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1511"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1504"/>
         <source>Session Template</source>
         <translation>Modelo de Sessão</translation>
     </message>
@@ -10068,7 +10068,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>SMF Formato 1</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1446"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1439"/>
         <source>Messages Font</source>
         <translation>Fonte das Mensagens</translation>
     </message>
@@ -10128,7 +10128,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Arquivo (pulso):</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1473"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1466"/>
         <source>Log files (*.%1)</source>
         <translation>Arquivos de Diário de Bordo (*.%1)</translation>
     </message>
@@ -10175,7 +10175,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Número de Amostras</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="917"/>
+        <location filename="../qtractorOptionsForm.cpp" line="910"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -10271,7 +10271,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Se for usar WSOLA mudança rápida para distorcer-tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="947"/>
+        <location filename="../qtractorOptionsForm.cpp" line="940"/>
         <source>Metronome Bar Audio File</source>
         <translation>Arquivo de áudio do compasso do metrônomo</translation>
     </message>
@@ -10412,7 +10412,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Sempre exibe saídas padrão de captura (stdout/stderr) na janela de mensagens</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1471"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1464"/>
         <source>Messages Log</source>
         <translation>Mensagens do Diário de Bordo</translation>
     </message>
@@ -10563,7 +10563,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>&amp;Exibição</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1170"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1163"/>
         <source>Plug-in Directory</source>
         <translation>Pasta de Efeitos</translation>
     </message>
@@ -10602,7 +10602,7 @@ Você quer mesmo manter as alterações?</translation>
         <location filename="../qtractorOptionsForm.ui" line="2326"/>
         <location filename="../qtractorOptionsForm.ui" line="2497"/>
         <location filename="../qtractorOptionsForm.ui" line="2544"/>
-        <location filename="../qtractorOptionsForm.cpp" line="632"/>
+        <location filename="../qtractorOptionsForm.cpp" line="625"/>
         <source>(default)</source>
         <translation>(padrão)</translation>
     </message>
@@ -10677,7 +10677,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Formato de exibição do tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="916"/>
+        <location filename="../qtractorOptionsForm.cpp" line="909"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
@@ -10843,12 +10843,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>WSOLA mudança &amp;rápida</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1060"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1053"/>
         <source>Audio Meter Color</source>
         <translation>Cor do medidor de áudio</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1078"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1071"/>
         <source>MIDI Meter Color</source>
         <translation>Cor dos medidores MIDI</translation>
     </message>
