@@ -166,26 +166,19 @@ qtractorOptionsForm::qtractorOptionsForm (
 #ifdef CONFIG_LADSPA
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Ladspa));
-#else
-	m_ui.DummyLadspaScanCheckBox->hide();
 #endif
 #ifdef CONFIG_DSSI
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Dssi));
-#else
-	m_ui.DummyDssiScanCheckBox->hide();
 #endif
 #ifdef CONFIG_VST
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
-#else
-	m_ui.DummyVstScanCheckBox->hide();
 #endif
 #ifdef CONFIG_LV2
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Lv2));
 #else
-	m_ui.DummyLv2ScanCheckBox->hide();
 	m_ui.Lv2DynManifestCheckBox->hide();
 #endif
 
