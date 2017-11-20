@@ -2057,47 +2057,47 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="80"/>
         <source>&amp;Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier personnel</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="82"/>
         <source>&amp;Up</source>
-        <translation type="unfinished">&amp;Haut</translation>
+        <translation>Ha&amp;ut</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="84"/>
         <source>Al&amp;l Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Tous &amp;les fichiers</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="88"/>
         <source>&amp;Session</source>
-        <translation type="unfinished">&amp;Session</translation>
+        <translation>&amp;Session</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="92"/>
         <source>&amp;Audio</source>
-        <translation type="unfinished">&amp;Audio</translation>
+        <translation>&amp;Audio</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="96"/>
         <source>&amp;MIDI</source>
-        <translation type="unfinished">&amp;MIDI</translation>
+        <translation>&amp;MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="99"/>
         <source>H&amp;idden</source>
-        <translation type="unfinished"></translation>
+        <translation>Caché</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="103"/>
         <source>&amp;Play</source>
-        <translation type="unfinished">&amp;Jouer</translation>
+        <translation>&amp;Jouer</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="171"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Système de fichier</translation>
     </message>
 </context>
 <context>
@@ -4620,22 +4620,22 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2258"/>
         <source>File &amp;System</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Système de fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2261"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Système de fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2264"/>
         <source>File system</source>
-        <translation type="unfinished"></translation>
+        <translation>Système de fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2267"/>
         <source>Show/hide the file system window</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher/cacher la fenêtre de système de fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2278"/>
@@ -10392,12 +10392,12 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3620"/>
         <source>Whether to use out-of-process plugin inventory scan and cache for persistence</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit utiliser le cache et le scannage d&apos;inventaire de greffon en dehors du traitement</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3623"/>
         <source>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</source>
-        <translation type="unfinished"></translation>
+        <translation>Scanner l&apos;inventaire de greffon en dehors du traitement (RECOMMENDÉ)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2431"/>
