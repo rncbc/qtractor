@@ -31,6 +31,8 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
 
+#include "qtractorSessionCursor.h"
+
 #include "qtractorOptions.h"
 
 #ifdef CONFIG_LV2_STATE
@@ -4699,8 +4701,15 @@ void qtractorLv2Plugin::updateTime ( qtractorAudioEngine *pAudioEngine )
 #endif
 
 	jack_position_t pos;
-	jack_transport_state_t state
-		= jack_transport_query(pAudioEngine->jackClient(), &pos);
+	jack_transport_state_t state;
+
+	if (pAudioEngine->isFreewheel()) {
+		pos.frame = pAudioEngine->sessionCursor()->frame();
+		pAudioEngine->timebase(&pos, 0);
+		state = JackTransportRolling; // Fake transport rolling...
+	} else {
+		state = jack_transport_query(pAudioEngine->jackClient(), &pos);
+	}
 
 #if 0//QTRACTOR_LV2_TIME_POSITION_FRAME_0
 	qtractor_lv2_time_update(
@@ -4712,8 +4721,7 @@ void qtractorLv2Plugin::updateTime ( qtractorAudioEngine *pAudioEngine )
 		float(pos.frame_rate));
 	qtractor_lv2_time_update(
 		qtractorLv2Time::speed,
-		(state == JackTransportRolling
-		|| pAudioEngine->isFreewheel() ? 1.0f : 0.0f));
+		(state == JackTransportRolling ? 1.0f : 0.0f));
 
 	if (pos.valid & JackPositionBBT) {
 		qtractor_lv2_time_update(

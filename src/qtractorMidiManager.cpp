@@ -783,7 +783,7 @@ void qtractorMidiManager::deleteMidiManager (
 
 	pSession->removeMidiManager(pMidiManager);
 
-//	delete pMidiManager;
+	delete pMidiManager;
 }
 
 // Process specific MIDI input buffer (eg. insert/merge).

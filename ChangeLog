@@ -9,30 +9,30 @@ GIT HEAD
 - New out-of-process plug-in inventory scan and cache option,
   replacing the old (aka. dummy) VST plug-in scan option and
   extending its function to all other plug-in types: LADSPA,
-  DSSI and also LV2 (cache only). (EXPERIMENTAL)
+  DSSI and also LV2 (cache only).
 
 - A File System browser and tree-view is finally integrated
   as a dockable-widget on the main application window (cf.
-  main menu View / Window / File System). (EXPERIMENTAL)
+  main menu View / Window / File System).
 
 - Drag-and-dropping of session, audio and MIDI files over
   the main track-list (left pane) is now possible, allowing
   for yet another quick means to open a new session or add
-  new tracks to the current session. (EXPERIMENTAL)
+  new tracks to the current session.
 
 - MIDI input/capture time-stamping has been fixed as much
   to avoid missing inbound events, when play-head is near
   the loop-end point and the loop-start is set below the
-  absolute first half-a-second (<0.5sec). (EXPERIMENTAL)
+  absolute first half-a-second (<0.5sec).
   
 - LV2 Time/Transport speed information is now set on rolling
-  when in audio export aka freewheeling mode. (EXPERIMENTAL)
+  when in audio export aka freewheeling mode.
 
 - Added *.SF3 to soundfont instrument files filter, on View 
   > Instruments... > Import... file dialog.
 
 - A brand new View/Options.../Display/Meters/Show meters on
-  track list/left pane option has been added. (EXPERIMENTAL)
+  track list/left pane option has been added.
 
 
 0.8.4  2017-09-20  End of Summer'17 Beta.

@@ -735,58 +735,58 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Copyright :</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2051"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2053"/>
         <source>Project: </source>
         <translation>Projet: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3122"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3124"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation>Sélectionner l&apos;éditeur de greffon (interface graphique) :</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3134"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3136"/>
         <source>External</source>
         <translation>Externe</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3137"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3139"/>
         <source>X11</source>
         <translation>X11</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3140"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3142"/>
         <source>Gtk2</source>
         <translation>Gtk2</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3144"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3146"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3148"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3150"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3153"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3155"/>
         <source>Other</source>
         <translation>Autre</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3161"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3163"/>
         <source>Don&apos;t ask this again</source>
         <translation>Ne pas redemander</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3482"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3484"/>
         <source>plugin parameters</source>
         <translation>paramètres du greffon</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2059"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2061"/>
         <source>Author: </source>
         <translation>Auteur : </translation>
     </message>
@@ -2057,47 +2057,47 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="80"/>
         <source>&amp;Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier personnel</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="82"/>
         <source>&amp;Up</source>
-        <translation type="unfinished">&amp;Haut</translation>
+        <translation>Ha&amp;ut</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="84"/>
         <source>Al&amp;l Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Tous &amp;les fichiers</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="88"/>
         <source>&amp;Session</source>
-        <translation type="unfinished">&amp;Session</translation>
+        <translation>&amp;Session</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="92"/>
         <source>&amp;Audio</source>
-        <translation type="unfinished">&amp;Audio</translation>
+        <translation>&amp;Audio</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="96"/>
         <source>&amp;MIDI</source>
-        <translation type="unfinished">&amp;MIDI</translation>
+        <translation>&amp;MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="99"/>
         <source>H&amp;idden</source>
-        <translation type="unfinished"></translation>
+        <translation>Caché</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="103"/>
         <source>&amp;Play</source>
-        <translation type="unfinished">&amp;Jouer</translation>
+        <translation>&amp;Jouer</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="171"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Système de fichier</translation>
     </message>
 </context>
 <context>
@@ -4620,22 +4620,22 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2258"/>
         <source>File &amp;System</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Système de fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2261"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Système de fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2264"/>
         <source>File system</source>
-        <translation type="unfinished"></translation>
+        <translation>Système de fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2267"/>
         <source>Show/hide the file system window</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher/cacher la fenêtre de système de fichier</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2278"/>
@@ -10392,12 +10392,12 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3620"/>
         <source>Whether to use out-of-process plugin inventory scan and cache for persistence</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit utiliser le cache et le scannage d&apos;inventaire de greffon en dehors du traitement</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3623"/>
         <source>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</source>
-        <translation type="unfinished"></translation>
+        <translation>Scanner l&apos;inventaire de greffon en dehors du traitement (RECOMMENDÉ)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2431"/>
