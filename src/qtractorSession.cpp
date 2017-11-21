@@ -102,7 +102,7 @@ qtractorSession::qtractorSession (void)
 	m_tracks.setAutoDelete(true);
 	m_cursors.setAutoDelete(false);
 
-	m_midiManagers.setAutoDelete(true);
+	m_midiManagers.setAutoDelete(false);
 
 	// Initial comon client name.
 	m_sClientName = QTRACTOR_TITLE;
