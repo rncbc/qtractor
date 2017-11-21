@@ -1214,6 +1214,8 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iTimeStartEx  = 0;
 	m_iFrameStartEx = 0;
 
+	m_iAudioFrameStart = 0;
+
 	m_bControlBus   = false;
 	m_pIControlBus  = NULL;
 	m_pOControlBus  = NULL;
@@ -1723,43 +1725,33 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		return;
 	}
 
-	qtractorMidiManager *pMidiManager;
-	qtractorTimeScale::Node *pNode;
-	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	unsigned long iTime = m_iTimeStartEx + tick;
 
-	const unsigned long iTime = m_iTimeStart + tick;
-
-	// Wrap in recording, if any...
-	unsigned long iTimeEx = 0;
-	bool bRecording = (pSession->isRecording() && isPlaying());
-	if (bRecording ) {
-		iTimeEx = m_iTimeStartEx + tick;
-		// Take care of recording loop-range...
-		if (pSession->isLooping()) {
-			const unsigned long iLoopEnd = pSession->loopEnd();
-			pNode = cursor.seekFrame(iLoopEnd);
-			const unsigned long iLoopEndTime
-				= pNode->tickFromFrame(iLoopEnd);
-			if (iTime < iLoopEndTime && iTimeEx > iLoopEndTime) {
-				const unsigned long iLoopStart = pSession->loopStart();
-				pNode = cursor.seekFrame(iLoopStart);
-				const unsigned long iLoopStartTime
-					= pNode->tickFromFrame(iLoopStart);
-				iTimeEx = iLoopStartTime
-					+ (iTimeEx - iLoopEndTime)
-					% (iLoopEndTime - iLoopStartTime);
-			}
+	// Wrap in loop-range, if any...
+	if (pSession->isLooping()) {
+		const unsigned long iLoopEndTime = pSession->loopEndTime();
+		if (iTime > iLoopEndTime) {
+			const unsigned long iLoopStartTime = pSession->loopStartTime();
+			iTime = iLoopStartTime
+				+ (iTime - iLoopEndTime)
+				% (iLoopEndTime - iLoopStartTime);
 		}
-		// Take care of punch-in/out-range...
-		bRecording = (!pSession->isPunching() ||
-			(iTimeEx >= pSession->punchInTime() &&
-			 iTimeEx <  pSession->punchOutTime()));
 	}
 
-	const long f0 = m_iFrameStart;
-	pNode = cursor.seekTick(iTime);
+	// Take care of recording, if any...
+	bool bRecording = (pSession->isRecording() && isPlaying());
+	if (bRecording) {
+		// Take care of punch-in/out-range...
+		bRecording = (!pSession->isPunching() ||
+			(iTime >= pSession->punchInTime() &&
+			 iTime <  pSession->punchOutTime()));
+	}
+
+	qtractorTimeScale::Cursor cursor(pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
 	const unsigned long t0 = pNode->frameFromTick(iTime);
-	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
+	const unsigned long f0 = m_iFrameStartEx;
+	const unsigned long t1 = (t0 < f0 ? t0 : t0 - f0);
 #if 0//-- Unlikely real-time input.
 	unsigned long t2 = t1;
 	if (type == qtractorMidiEvent::NOTEON && duration > 0) {
@@ -1768,6 +1760,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		t2 += (pNode->frameFromTick(iTimeOff) - t0);
 	}
 #endif
+
+	qtractorMidiManager *pMidiManager;
+
 	// Now check which bus and track we're into...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -1798,8 +1793,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							= pMidiClip->clipStartTime();
 						const unsigned long iClipEndTime
 							= iClipStartTime + pMidiClip->clipLengthTime();
-						if (iTimeEx >= iClipStartTime && iTimeEx < iClipEndTime)
-							tick = iTimeEx - iClipStartTime;
+						if (iTime >= iClipStartTime && iTime < iClipEndTime)
+							tick = iTime - iClipStartTime;
 						else
 						if (type != qtractorMidiEvent::NOTEOFF)
 							pSeq = NULL;
@@ -2154,8 +2149,8 @@ void qtractorMidiEngine::driftCheck (void)
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
-		const long iAudioFrame
-			= m_iFrameStart	+ pAudioEngine->jackFrameTime() - m_iFrameStartEx;
+		const long iAudioFrame = m_iFrameStart
+			+ pAudioEngine->jackFrameTime() - m_iAudioFrameStart;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		const long iAudioTime
 			= long(pNode->tickFromFrame(iAudioFrame)) - m_iTimeStart;
@@ -2321,8 +2316,10 @@ bool qtractorMidiEngine::activate (void)
 	m_iTimeStart  = 0;
 	m_iFrameStart = 0;
 
-	m_iTimeStartEx = m_iTimeStart;
-	m_iFrameStartEx = pSession->audioEngine()->jackFrameTime();
+	m_iTimeStartEx  = m_iTimeStart;
+	m_iFrameStartEx = m_iFrameStart;
+
+	m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
 
 	// Reset output queue drift compensator...
 	resetDrift();
@@ -2370,8 +2367,10 @@ bool qtractorMidiEngine::start (void)
 	m_iFrameStart = long(pMidiCursor->frame());
 	m_iTimeStart  = long(pSession->tickFromFrame(m_iFrameStart));
 
-	m_iTimeStartEx = m_iTimeStart;
-	m_iFrameStartEx = pSession->audioEngine()->jackFrameTime();
+	m_iTimeStartEx  = m_iTimeStart;
+	m_iFrameStartEx = m_iFrameStart;
+
+	m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
@@ -2401,6 +2400,9 @@ void qtractorMidiEngine::stop (void)
 
 	// Shut-off all MIDI buses...
 	shutOffAllBuses();
+
+	// Reset all monitors...
+	resetAllMonitors();
 }
 
 
@@ -2484,12 +2486,14 @@ void qtractorMidiEngine::clean (void)
 	clearSysexCache();
 
 	// And all other timing tracers.
-	m_iTimeStart = 0;
-	m_iTimeDrift = 0;
+	m_iTimeStart  = 0;
+	m_iTimeDrift  = 0;
 	m_iFrameStart = 0;
 
-	m_iTimeStartEx = 0;
+	m_iTimeStartEx  = 0;
 	m_iFrameStartEx = 0;
+
+	m_iAudioFrameStart = 0;
 }
 
 
@@ -2498,11 +2502,10 @@ void qtractorMidiEngine::restartLoop (void)
 {
 	qtractorSession *pSession = session();
 	if (pSession && pSession->isLooping()) {
-		const unsigned long iLoopStart = pSession->loopStart();
-		const unsigned long iLoopEnd = pSession->loopEnd();
-		m_iFrameStart -= long(iLoopEnd - iLoopStart);
-		m_iTimeStart  -= pSession->tickFromFrame(iLoopEnd);
-		m_iTimeStart  += pSession->tickFromFrame(iLoopStart);
+		m_iFrameStart -= pSession->loopEnd();
+		m_iFrameStart += pSession->loopStart();
+		m_iTimeStart  -= pSession->loopEndTime();
+		m_iTimeStart  += pSession->loopStartTime();
 	//	m_iTimeDrift = 0; -- Drift correction?
 	//	resetDrift();
 	}
@@ -3764,22 +3767,18 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 	if ((busMode & qtractorBus::Input) && !(busMode & qtractorBus::Ex)) {
 		m_pIMidiMonitor = new qtractorMidiMonitor();
 		m_pIPluginList  = createPluginList(qtractorPluginList::MidiInBus);
-		m_pICurveFile   = new qtractorCurveFile(m_pIPluginList->curveList());
 	} else {
 		m_pIMidiMonitor = NULL;
 		m_pIPluginList  = NULL;
-		m_pICurveFile   = NULL;
 	}
 
 	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
 		m_pOMidiMonitor = new qtractorMidiMonitor();
 		m_pOPluginList  = createPluginList(qtractorPluginList::MidiOutBus);
-		m_pOCurveFile   = new qtractorCurveFile(m_pOPluginList->curveList());
 		m_pSysexList    = new qtractorMidiSysexList();
 	} else {
 		m_pOMidiMonitor = NULL;
 		m_pOPluginList  = NULL;
-		m_pOCurveFile   = NULL;
 		m_pSysexList    = NULL;
 	}
 }
@@ -3793,11 +3792,6 @@ qtractorMidiBus::~qtractorMidiBus (void)
 		delete m_pIMidiMonitor;
 	if (m_pOMidiMonitor)
 		delete m_pOMidiMonitor;
-
-	if (m_pICurveFile)
-		delete m_pICurveFile;
-	if (m_pOCurveFile)
-		delete m_pOCurveFile;
 
 	if (m_pIPluginList)
 		delete m_pIPluginList;
@@ -3915,16 +3909,10 @@ void qtractorMidiBus::updateBusMode (void)
 			m_pIMidiMonitor = new qtractorMidiMonitor();
 		if (m_pIPluginList == NULL)
 			m_pIPluginList = createPluginList(qtractorPluginList::MidiInBus);
-		if (m_pICurveFile == NULL)
-			m_pICurveFile = new qtractorCurveFile(m_pIPluginList->curveList());
 	} else {
 		if (m_pIMidiMonitor) {
 			delete m_pIMidiMonitor;
 			m_pIMidiMonitor = NULL;
-		}
-		if (m_pICurveFile) {
-			delete m_pICurveFile;
-			m_pICurveFile = NULL;
 		}
 		if (m_pIPluginList) {
 			delete m_pIPluginList;
@@ -3938,18 +3926,12 @@ void qtractorMidiBus::updateBusMode (void)
 			m_pOMidiMonitor = new qtractorMidiMonitor();
 		if (m_pOPluginList == NULL)
 			m_pOPluginList = createPluginList(qtractorPluginList::MidiOutBus);
-		if (m_pOCurveFile == NULL)
-			m_pOCurveFile = new qtractorCurveFile(m_pOPluginList->curveList());
 		if (m_pSysexList == NULL)
 			m_pSysexList = new qtractorMidiSysexList();
 	} else {
 		if (m_pOMidiMonitor) {
 			delete m_pOMidiMonitor;
 			m_pOMidiMonitor = NULL;
-		}
-		if (m_pOCurveFile) {
-			delete m_pOCurveFile;
-			m_pOCurveFile = NULL;
 		}
 		if (m_pOPluginList) {
 			delete m_pOPluginList;
@@ -4561,30 +4543,6 @@ void qtractorMidiBus::updatePluginList (
 }
 
 
-// Automation curve list accessors.
-qtractorCurveList *qtractorMidiBus::curveList_in (void) const
-{
-	return (m_pIPluginList ? m_pIPluginList->curveList() : NULL);
-}
-
-qtractorCurveList *qtractorMidiBus::curveList_out (void) const
-{
-	return (m_pOPluginList ? m_pOPluginList->curveList() : NULL);
-}
-
-
-// Automation curve serializer accessors.
-qtractorCurveFile *qtractorMidiBus::curveFile_in (void) const
-{
-	return m_pICurveFile;
-}
-
-qtractorCurveFile *qtractorMidiBus::curveFile_out (void) const
-{
-	return m_pOCurveFile;
-}
-
-
 // Retrieve all current ALSA connections for a given bus mode interface;
 // return the effective number of connection attempts...
 int qtractorMidiBus::updateConnects (
@@ -4832,9 +4790,6 @@ bool qtractorMidiBus::loadElement (
 					eProp.text().toFloat());
 		} else if (eProp.tagName() == "input-controllers") {
 			qtractorMidiBus::loadControllers(&eProp, qtractorBus::Input);
-		} else if (eProp.tagName() == "input-curve-file") {
-			qtractorMidiBus::loadCurveFile(&eProp, qtractorBus::Input,
-				qtractorMidiBus::curveFile_in());
 		} else if (eProp.tagName() == "input-plugins") {
 			if (qtractorMidiBus::pluginList_in())
 				qtractorMidiBus::pluginList_in()->loadElement(
@@ -4852,9 +4807,6 @@ bool qtractorMidiBus::loadElement (
 					eProp.text().toFloat());
 		} else if (eProp.tagName() == "output-controllers") {
 			qtractorMidiBus::loadControllers(&eProp, qtractorBus::Output);
-		} else if (eProp.tagName() == "output-curve-file") {
-			qtractorMidiBus::loadCurveFile(&eProp, qtractorBus::Output,
-				qtractorMidiBus::curveFile_out());
 		} else if (eProp.tagName() == "output-plugins") {
 			if (qtractorMidiBus::pluginList_out())
 				qtractorMidiBus::pluginList_out()->loadElement(
@@ -4897,16 +4849,6 @@ bool qtractorMidiBus::saveElement (
 		qtractorMidiBus::saveControllers(pDocument,
 			&eInputControllers, qtractorBus::Input);
 		pElement->appendChild(eInputControllers);
-		// Save input bus automation curves...
-		qtractorCurveList *pInputCurveList = qtractorMidiBus::curveList_in();
-		if (pInputCurveList && !pInputCurveList->isEmpty()) {
-			qtractorCurveFile cfile(pInputCurveList);
-			QDomElement eInputCurveFile
-				= pDocument->document()->createElement("input-curve-file");
-			qtractorMidiBus::saveCurveFile(pDocument,
-				&eInputCurveFile, qtractorBus::Input, &cfile);
-			pElement->appendChild(eInputCurveFile);
-		}
 		// Save input bus plugins...
 		if (qtractorMidiBus::pluginList_in()) {
 			QDomElement eInputPlugins
@@ -4937,16 +4879,6 @@ bool qtractorMidiBus::saveElement (
 		qtractorMidiBus::saveControllers(pDocument,
 			&eOutputControllers, qtractorBus::Output);
 		pElement->appendChild(eOutputControllers);
-		// Save output bus automation curves...
-		qtractorCurveList *pOutputCurveList = qtractorMidiBus::curveList_out();
-		if (pOutputCurveList && !pOutputCurveList->isEmpty()) {
-			qtractorCurveFile cfile(pOutputCurveList);
-			QDomElement eOutputCurveFile
-				= pDocument->document()->createElement("output-curve-file");
-			qtractorMidiBus::saveCurveFile(pDocument,
-				&eOutputCurveFile, qtractorBus::Output, &cfile);
-			pElement->appendChild(eOutputCurveFile);
-		}
 		// Save output bus plugins...
 		if (qtractorMidiBus::pluginList_out()) {
 			QDomElement eOutputPlugins

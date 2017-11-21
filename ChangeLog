@@ -6,13 +6,46 @@ ChangeLog
 
 GIT HEAD
 
-- Audio clip panning option property is now being introduced.
-  (EXPERIMENTAL)
+- New out-of-process plug-in inventory scan and cache option,
+  replacing the old (aka. dummy) VST plug-in scan option and
+  extending its function to all other plug-in types: LADSPA,
+  DSSI and also LV2 (cache only).
+
+- A File System browser and tree-view is finally integrated
+  as a dockable-widget on the main application window (cf.
+  main menu View / Window / File System).
+
+- Drag-and-dropping of session, audio and MIDI files over
+  the main track-list (left pane) is now possible, allowing
+  for yet another quick means to open a new session or add
+  new tracks to the current session.
+
+- MIDI input/capture time-stamping has been fixed as much
+  to avoid missing inbound events, when play-head is near
+  the loop-end point and the loop-start is set below the
+  absolute first half-a-second (<0.5sec).
   
+- LV2 Time/Transport speed information is now set on rolling
+  when in audio export aka freewheeling mode.
+
+- Added *.SF3 to soundfont instrument files filter, on View 
+  > Instruments... > Import... file dialog.
+
+- A brand new View/Options.../Display/Meters/Show meters on
+  track list/left pane option has been added.
+
+
+0.8.4  2017-09-20  End of Summer'17 Beta.
+
+- Assigned MIDI Controllers to plug-in's Activate switch are
+  now finally saved and (re)loaded properly across sessions.
+
+- Audio clip panning option property is now being introduced.
+
 - Out-of-process (aka. dummy) VST plug-in inventory scanning
   now restarts automatically and resumes processing in case
   of a premature exit/crash; VST plug-in inventory scan/cache
-  persistency is now in place. (EXPERIMENTAL)
+  persistency is now in place.
 
 - Desktop entry specification file is now finally independent
   from build/configure template chains.
@@ -24,7 +57,7 @@ GIT HEAD
   takes effect immediately unless it's back to "(default)".
 
 - Slightly slower but better approximation to IEEE 32bit
-  floating point cubic root ie. cbrtf(). (EXPERIMENTAL)
+  floating point cubic root ie. cbrtf().
 
 
 0.8.3  2017-06-30  Stickiest Tauon Beta.

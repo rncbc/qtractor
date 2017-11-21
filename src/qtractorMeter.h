@@ -1,7 +1,7 @@
 // qtractorMeter.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -52,12 +52,10 @@ class QResizeEvent;
 
 class qtractorMeterScale : public QFrame
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
-	qtractorMeterScale(qtractorMeter *pMeter, QWidget *pParent = 0);
+	qtractorMeterScale(qtractorMeter *pMeter);
 
 	// Meter accessor.
 	qtractorMeter *meter() const;
@@ -84,12 +82,44 @@ private:
 
 
 //----------------------------------------------------------------------------
+// qtractorMeterValue -- Meter bridge value widget.
+
+class qtractorMeterValue : public QWidget
+{
+public:
+
+	// Constructor.
+	qtractorMeterValue(qtractorMeter *pMeter);
+
+	// Default destructor.
+	virtual ~qtractorMeterValue();
+
+	// Meter bridge accessor.
+	qtractorMeter *meter() const
+		{ return m_pMeter; }
+
+	// Value refreshment.
+	virtual void refresh(unsigned long iStamp) = 0;
+
+	// Global refreshment.
+	static void refreshAll();
+
+private:
+
+	// Local instance variables.
+	qtractorMeter *m_pMeter;
+
+	// List of meter-values (global obviously)
+	static QList<qtractorMeterValue *> g_values;
+	static unsigned long g_iStamp;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorMeter -- Meter bridge slot widget.
 
 class qtractorMeter : public QWidget
 {
-	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -99,15 +129,67 @@ public:
 	virtual ~qtractorMeter();
 
 	// Dynamic layout accessors.
-	QHBoxLayout *topLayout() const
-		{ return m_pTopLayout; }
-	QWidget *topWidget() const
-		{ return m_pTopWidget; }
-
 	QHBoxLayout *boxLayout() const
 		{ return m_pBoxLayout; }
-	QWidget *boxWidget() const
-		{ return m_pBoxWidget; }
+
+	// Monitor accessors.
+	virtual void setMonitor(qtractorMonitor *pMonitor) = 0;
+	virtual qtractorMonitor *monitor() const = 0;
+
+	// Meter reset.
+	virtual void reset() = 0;
+
+	// For faster scaling when drawing...
+	int scale(float fValue) const
+		{ return int(m_fScale * fValue); }
+
+	// Peak falloff mode setting.
+	void setPeakFalloff(int iPeakFalloff)
+		{ m_iPeakFalloff = iPeakFalloff; }
+	int peakFalloff() const
+		{ return m_iPeakFalloff; }
+
+protected:
+
+	// Scale accessor.
+	void setScale(float fScale)
+		{ m_fScale = fScale; }
+
+private:
+
+	// Local instance variables.
+	QHBoxLayout *m_pBoxLayout;
+
+	// Meter width/height scale.
+	float m_fScale;
+
+	// Peak falloff mode setting (0=no peak falloff).
+	int m_iPeakFalloff;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMixerMeter -- Mixer-strip meter bridge widget.
+
+class qtractorMixerMeter : public QWidget
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMixerMeter(QWidget *pParent = 0);
+
+	// Default destructor.
+	virtual ~qtractorMixerMeter();
+
+	// Dynamic layout accessors.
+	QWidget *topWidget() const
+		{ return m_pTopWidget; }
+	QHBoxLayout *topLayout() const
+		{ return m_pTopLayout; }
+	QHBoxLayout *boxLayout() const
+		{ return m_pBoxLayout; }
 
 	// Common slider/spin-box accessors.
 	qtractorObserverSlider *panSlider() const
@@ -146,20 +228,8 @@ public:
 	virtual void updatePanning() = 0;
 	virtual void updateGain() = 0;
 
-	// Slot refreshment.
-	virtual void refresh() = 0;
-
 	// Meter reset.
 	virtual void reset() = 0;
-
-	// Reset peak holder.
-	virtual void peakReset() = 0;
-
-	// Peak falloff mode setting.
-	void setPeakFalloff(int iPeakFalloff)
-		{ m_iPeakFalloff = iPeakFalloff; }
-	int peakFalloff() const
-		{ return m_iPeakFalloff; }
 
 	// MIDI controller/observer attachment (context menu) activator.
 	void addMidiControlAction(
@@ -177,10 +247,8 @@ private:
 	class PanSliderInterface;
 
 	// Local instance variables.
-	QVBoxLayout *m_pVBoxLayout;
 	QWidget     *m_pTopWidget;
 	QHBoxLayout *m_pTopLayout;
-	QWidget     *m_pBoxWidget;
 	QHBoxLayout *m_pBoxLayout;
 
 	qtractorObserverSlider  *m_pPanSlider;
@@ -193,12 +261,9 @@ private:
 
 	PanObserver  *m_pPanObserver;
 	GainObserver *m_pGainObserver;
-
-	// Peak falloff mode setting (0=no peak falloff).
-	int m_iPeakFalloff;
 };
 
-	
+
 #endif  // __qtractorMeter_h
 
 // end of qtractorMeter.h

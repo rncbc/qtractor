@@ -43,6 +43,10 @@ class QHeaderView;
 
 class QResizeEvent;
 class QMouseEvent;
+class QWheelEvent;
+class QDragEnterEvent;
+class QDragMoveEvent;
+class QDropEvent;
 class QKeyEvent;
 
 
@@ -51,31 +55,29 @@ class QKeyEvent;
 
 class qtractorTrackItemWidget : public QWidget
 {
-//	Q_OBJECT
-
 public:
 
 	// Constructor.
 	qtractorTrackItemWidget(
-		qtractorTrackList *pTrackList, qtractorTrack *pTrack);
+		qtractorTrack *pTrack, QWidget *pParent = 0);
 
 	// Local child widgets accessors.
-	qtractorCurveButton *curveButton() const
-		{ return m_pCurveButton; }
 	qtractorTrackButton *recordButton() const
 		{ return m_pRecordButton; }
 	qtractorTrackButton *muteButton() const
 		{ return m_pMuteButton; }
 	qtractorTrackButton *soloButton() const
 		{ return m_pSoloButton; }
+	qtractorCurveButton *curveButton() const
+		{ return m_pCurveButton; }
 
 private:
 
 	// The local child widgets.
-	qtractorCurveButton *m_pCurveButton;
 	qtractorTrackButton *m_pRecordButton;
 	qtractorTrackButton *m_pMuteButton;
 	qtractorTrackButton *m_pSoloButton;
+	qtractorCurveButton *m_pCurveButton;
 };
 
 
@@ -135,6 +137,10 @@ public:
 	// Update the list view item from track pointer reference.
 	void updateTrack(qtractorTrack *pTrack);
 
+	// Update all track-items/icons methods.
+	void updateItems();
+	void updateIcons();
+
 	// Main table cleaner.
 	void clear();
 
@@ -178,6 +184,11 @@ protected:
 
 	// Handle zoom with mouse wheel.
 	void wheelEvent(QWheelEvent *pWheelEvent);
+
+	// Drag-n-drop event handlers.
+	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
+	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
+	void dropEvent(QDropEvent *pDropEvent);
 
 	// Show and move rubber-band item.
 	void moveRubberBand(const QPoint& posDrag);
@@ -235,7 +246,7 @@ private:
 	struct Item
 	{
 		// Constructor
-		Item(qtractorTrackList *pTrackList, qtractorTrack *pTrack);
+		Item(qtractorTrack *pTrack);
 		// Destructor.
 		~Item();
 		// Bank/program names helper.
@@ -252,10 +263,14 @@ private:
 		unsigned int   flags;
 		// Track-list item widget.
 		qtractorTrackItemWidget *widget;
+		QWidget       *meter;
 	};
 
 	// Model cache item list.
 	QList<Item *> m_items;
+
+	// Model cache track map.
+	QHash<qtractorTrack *, Item *> m_tracks;
 
 	// Current selection map.
 	QHash<int, Item *> m_select;

@@ -680,7 +680,7 @@ void qtractorClipForm::browseFilename (void)
 	case qtractorTrack::Audio:
 		sType   = tr("Audio");
 		sExt    = qtractorAudioFileFactory::defaultExt();
-		sFilter = qtractorAudioFileFactory::filters();
+		sFilter = qtractorAudioFileFactory::filter();
 		break;
 	case qtractorTrack::Midi:
 		sType   = tr("MIDI");

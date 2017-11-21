@@ -741,6 +741,9 @@ void qtractorSession::updateTimeScale (void)
 	// Do not forget those edit points too...
 	m_iEditHead = frameFromTick(m_iEditHeadTime);
 	m_iEditTail = frameFromTick(m_iEditTailTime);
+
+	// Get timebase up to date immediately...
+	m_pAudioEngine->resetTimebaseHold();
 }
 
 
@@ -1415,6 +1418,17 @@ bool qtractorSession::isLooping (void) const
 }
 
 
+unsigned long qtractorSession::loopStartTime (void) const
+{
+	return m_iLoopStartTime;
+}
+
+unsigned long qtractorSession::loopEndTime (void) const
+{
+	return m_iLoopEndTime;
+}
+
+
 // Session punch points accessors.
 void qtractorSession::setPunch (
 	unsigned long iPunchIn, unsigned long iPunchOut )
@@ -1659,11 +1673,6 @@ void qtractorSession::trackRecord (
 	{
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setClipStart(iClipStart);
-		// Attend to audio clip record latency compensation...
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
-		if (pAudioBus)
-			pAudioClip->setClipOffset(pAudioBus->latency_in());
 		pAudioClip->openAudioFile(
 			createFilePath(pTrack->trackName(),
 				qtractorAudioFileFactory::defaultExt()),
@@ -1686,7 +1695,7 @@ void qtractorSession::trackRecord (
 		// iif armed while already playing ...
 		if (bPlaying) {
 			const unsigned long iTime = pMidiClip->clipStartTime();
-			const unsigned long iTimeStart = m_pMidiEngine->timeStart();
+			const unsigned long iTimeStart = m_pMidiEngine->timeStartEx();
 			if (iTime > iTimeStart)
 				pMidiClip->sequence()->setTimeOffset(iTime - iTimeStart);
 		}

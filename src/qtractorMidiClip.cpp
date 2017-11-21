@@ -907,8 +907,8 @@ void qtractorMidiClip::close (void)
 // MIDI clip (re)open method.
 void qtractorMidiClip::open (void)
 {
-	// Go open the proper file...
-	openMidiFile(filename(), m_iTrackChannel);
+	const QString sFilename(filename());
+	openMidiFile(sFilename, m_iTrackChannel);
 }
 
 

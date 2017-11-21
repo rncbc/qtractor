@@ -28,10 +28,6 @@
 #include <QFile>
 
 
-// Forward decls.
-class qtractorPluginFactoryProxy;
-
-
 //----------------------------------------------------------------------------
 // qtractorPluginFactory -- Plugin path helper.
 //
@@ -63,6 +59,7 @@ public:
 	// Plugin types registry.
 	typedef QList<qtractorPluginType *> Types;
 	const Types& types() const { return m_types; }
+
 	// Type register method.
 	void addType(qtractorPluginType *pType) { m_types.append(pType); }
 
@@ -94,8 +91,14 @@ protected:
 	int addFiles(qtractorPluginType::Hint typeHint, const QStringList& paths);
 	int addFiles(qtractorPluginType::Hint typeHint, const QString& sPath);
 
-	// Plugin type listing.
-	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
+	// Plugin type listing methods.
+	bool addTypes(qtractorPluginType::Hint typeHint,
+		const QString& sFilename);
+	bool addTypes(qtractorPluginType::Hint typeHint,
+		qtractorPluginFile *pFile, unsigned long iIndex);
+
+	// Generic plugin-scan factory method.
+	bool startScan(qtractorPluginType::Hint typeHint);
 
 	// Plugin scan reset method.
 	void reset();
@@ -114,8 +117,15 @@ private:
 	// Internal plugin types list.
 	Types m_types;
 
-	// Proxy (out-of-process) client.
-	qtractorPluginFactoryProxy *m_pProxy;
+	// Scan (out-of-process) clients.
+	class Scanner;
+
+	typedef QHash<qtractorPluginType::Hint, Scanner *> Scanners;
+
+	Scanners m_scanners;
+
+	// List of active cache scan results.
+	QStringList m_cacheFilePaths;
 
 	// Pseudo-singleton instance.
 	static qtractorPluginFactory *g_pPluginFactory;
@@ -123,17 +133,17 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginFactoryProxy -- Plugin path proxy (out-of-process client).
+// qtractorPluginFactory::Scanner -- Plugin scan proxy (out-of-process client).
 //
 
-class qtractorPluginFactoryProxy : public QProcess
+class qtractorPluginFactory::Scanner : public QProcess
 {
 	Q_OBJECT
 
 public:
 
 	// ctor.
-	qtractorPluginFactoryProxy(qtractorPluginFactory *pPluginFactory);
+	Scanner(qtractorPluginType::Hint typeHint, QObject *pParent = NULL);
 
 	// Open/close method.
 	bool open(bool bReset = false);
@@ -143,7 +153,7 @@ public:
 	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
 
 	// Absolute cache file path.
-	static QString cacheFilePath();
+	QString cacheFilePath() const;
 
 protected slots:
 
@@ -162,6 +172,9 @@ protected:
 	bool addTypes(const QStringList& list);
 
 private:
+
+	// Instance scanner name.
+	qtractorPluginType::Hint m_typeHint;
 
 	// Instance state.
 	volatile int m_iExitStatus;

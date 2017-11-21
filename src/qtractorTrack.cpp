@@ -44,6 +44,7 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorTracks.h"
+#include "qtractorTrackList.h"
 
 #include <QPainter>
 
@@ -192,7 +193,7 @@ protected:
 		m_pTrack->setMidiBank(iBank);
 		m_pTrack->setMidiProg(iProg);
 		// Refresh track item, at least the names...
-		if (bUpdate) m_pTrack->updateTracks();
+		if (bUpdate) m_pTrack->updateTrack();
 	}
 
 private:
@@ -551,10 +552,11 @@ bool qtractorTrack::open (void)
 		break;
 	}
 
-	// Mixer turn, before we get rid of old monitor...
+	// Before we get rid of old monitor...
 	if (pMonitor) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
+			// Update mixer strip...
 			qtractorMixer *pMixer = pMainForm->mixer();
 			if (pMixer) {
 				qtractorMixerStrip *pStrip
@@ -562,6 +564,10 @@ bool qtractorTrack::open (void)
 				if (pStrip)
 					pStrip->setTrack(this);
 			}
+			// Update track-list as well...
+			qtractorTrackList *pTrackList = pMainForm->tracks()->trackList();
+			if (pTrackList)
+				pTrackList->updateTrack(this);
 		}
 		// Update gain and panning curve new subjects...
 	#if 0
@@ -1957,7 +1963,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(pGainObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->name = m_pMonitorObserver->subject()->name();
+		pController->name = pGainObserver->subject()->name();
 		pController->index = 2; // 2=GainObserver
 		pController->ctype = pGainObserver->type();
 		pController->channel = pGainObserver->channel();
@@ -1973,7 +1979,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pRecordObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->name = m_pMonitorObserver->subject()->name();
+		pController->name = m_pRecordObserver->subject()->name();
 		pController->index = 3; // 3=RecordObserver
 		pController->ctype = m_pRecordObserver->type();
 		pController->channel = m_pRecordObserver->channel();
@@ -1989,7 +1995,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pMuteObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->name = m_pMonitorObserver->subject()->name();
+		pController->name = m_pMuteObserver->subject()->name();
 		pController->index = 4; // 4=MuteObserver
 		pController->ctype = m_pMuteObserver->type();
 		pController->channel = m_pMuteObserver->channel();
@@ -2005,7 +2011,7 @@ void qtractorTrack::saveControllers (
 	if (pMidiControl->isMidiObserverMapped(m_pSoloObserver)) {
 		qtractorMidiControl::Controller *pController
 			= new qtractorMidiControl::Controller;
-		pController->name = m_pMonitorObserver->subject()->name();
+		pController->name = m_pSoloObserver->subject()->name();
 		pController->index = 5; // 5=SoloObserver
 		pController->ctype = m_pSoloObserver->type();
 		pController->channel = m_pSoloObserver->channel();
@@ -2314,7 +2320,7 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 
 
 // Update tracks/list-view.
-void qtractorTrack::updateTracks (void)
+void qtractorTrack::updateTrack (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == NULL)
@@ -2327,5 +2333,18 @@ void qtractorTrack::updateTracks (void)
 	pTracks->updateTrack(this);
 }
 
+
+void qtractorTrack::updateMidiTrack (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == NULL)
+		return;
+
+	qtractorTracks *pTracks = pMainForm->tracks();
+	if (pTracks == NULL)
+		return;
+
+	pTracks->updateMidiTrack(this);
+}
 
 // end of qtractorTrack.cpp

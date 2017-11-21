@@ -1,4 +1,4 @@
-# qtractor_vst_scan.pri
+# qtractor_plugin_scan.pri
 #
 PREFIX  = @ac_prefix@
 BINDIR  = @ac_bindir@

@@ -1,7 +1,7 @@
 // qtractorAudioFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -68,8 +68,14 @@ class qtractorAudioFileFactory
 {
 public:
 
+	// Constructor.
+	qtractorAudioFileFactory();
+
 	// Destructor.
 	~qtractorAudioFileFactory();
+
+	// Singleton instance accessor.
+	static qtractorAudioFileFactory *getInstance();
 
 	// Supported file types.
 	enum FileType { SndFile, VorbisFile, MadFile };
@@ -91,17 +97,27 @@ public:
 		int      data;
 	};
 
+	// The supported file types/format global map.
 	typedef QList<FileFormat *> FileFormats;
 
-	// File type/format global accessors.
 	static const FileFormats& formats();
 
+	// The supported file types/extension map.
+	typedef QHash<QString, FileFormat *> FileTypes;
+
+	static const FileTypes& types();
+
+	// The supported file types/names format lists.
+	static const QStringList& filters();
+	static const QStringList& exts();
+
 	// Retrieve supported filters (suitable for QFileDialog usage).
-	static QString filters();
+	static QString filter();
 
 	// Default audio file format accessors
 	// (specific to capture/recording)
-	static void setDefaultType(const QString& sExt, int iType,
+	static void setDefaultType(
+		const QString& sExt, int iType,
 		int iFormat = 0, int iQuality = 4);
 
 	static QString defaultExt();
@@ -111,16 +127,7 @@ public:
 	// Check whether given file type/format is valid.
 	static bool isValidFormat(const FileFormat *pFormat, int iFormat);
 
-	// Singleton destroyer.
-	static void Destroy();
-
 protected:
-
-	// Constructor.
-	qtractorAudioFileFactory();
-
-	// Singleton instance accessor.
-	static qtractorAudioFileFactory& getInstance();
 
 	// Instance factory methods.
 	qtractorAudioFile *newAudioFile (
@@ -135,22 +142,21 @@ protected:
 
 private:
 
-	// The singleton instance.
-	static qtractorAudioFileFactory* g_pInstance;
-
-	// The supported file types/extension map.
-	typedef QHash<QString, FileFormat *> FileTypes;
-
+	// Instance members.
 	FileFormats m_formats;
 	FileTypes   m_types;
 
 	// Supported filter strings.
 	QStringList m_filters;
-	
+	QStringList m_exts;
+
 	// Default file format/type (for capture/record)
 	FileFormat *m_pDefaultFormat;
 	int m_iDefaultFormat;
 	int m_iDefaultQuality;
+
+	// The singleton instance.
+	static qtractorAudioFileFactory *g_pInstance;
 };
 
 

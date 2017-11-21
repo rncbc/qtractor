@@ -577,7 +577,8 @@ void qtractorAudioClip::close (void)
 // Audio clip (re)open method.
 void qtractorAudioClip::open (void)
 {
-	openAudioFile(filename());
+	const QString sFilename(filename());
+	openAudioFile(sFilename);
 }
 
 

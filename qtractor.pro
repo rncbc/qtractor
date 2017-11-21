@@ -1,8 +1,8 @@
 # qtractor.pro
 #
 TEMPLATE = subdirs
-SUBDIRS = src qtractor_vst_scan
+SUBDIRS = src plugin_scan
 
-qtractor_vst_scan.file = src/qtractor_vst_scan.pro
+plugin_scan.file = src/qtractor_plugin_scan.pro
 
-src.depends = qtractor_vst_scan
+src.depends = plugin_scan

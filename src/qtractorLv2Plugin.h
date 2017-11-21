@@ -90,8 +90,8 @@ class qtractorLv2Worker;
 #ifdef CONFIG_LV2_TIME
 // LV2 Time support.
 #include "lv2/lv2plug.in/ns/ext/time/time.h"
-// JACK Transport position support.
-#include <jack/transport.h>
+// Forward decl.
+class qtractorAudioEngine;
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS
@@ -407,7 +407,7 @@ public:
 
 #ifdef CONFIG_LV2_TIME
 	// Update LV2 Time from JACK transport position.
-	static void updateTime(jack_client_t *pJackClient);
+	static void updateTime(qtractorAudioEngine *pAudioEngine);
 	static void updateTimePost();
 #ifdef CONFIG_LV2_TIME_POSITION
 	// Make ready LV2 Time position.

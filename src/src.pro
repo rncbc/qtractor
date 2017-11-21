@@ -45,6 +45,7 @@ HEADERS += config.h \
 	qtractorFileList.h \
 	qtractorFileListView.h \
 	qtractorFiles.h \
+	qtractorFileSystem.h \
 	qtractorInsertPlugin.h \
 	qtractorInstrument.h \
 	qtractorInstrumentMenu.h \
@@ -174,6 +175,7 @@ SOURCES += \
 	qtractorFileList.cpp \
 	qtractorFileListView.cpp \
 	qtractorFiles.cpp \
+	qtractorFileSystem.cpp \
 	qtractorInsertPlugin.cpp \
 	qtractorInstrument.cpp \
 	qtractorInstrumentMenu.cpp \

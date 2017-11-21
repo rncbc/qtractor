@@ -2589,8 +2589,8 @@
          <property name="flat">
           <bool>true</bool>
          </property>
-         <layout class="QHBoxLayout">
-          <item>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
            <widget class="QLabel" name="AudioMeterLevelTextLabel">
             <property name="font">
              <font>
@@ -2606,7 +2606,7 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="0" column="1">
            <widget class="QComboBox" name="AudioMeterLevelComboBox">
             <property name="minimumSize">
              <size>
@@ -2650,7 +2650,7 @@
             </item>
            </widget>
           </item>
-          <item>
+          <item row="0" column="2">
            <widget class="QLineEdit" name="AudioMeterColorLineEdit">
             <property name="maximumSize">
              <size>
@@ -2669,7 +2669,7 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="0" column="3">
            <widget class="QToolButton" name="AudioMeterColorToolButton">
             <property name="minimumSize">
              <size>
@@ -2703,7 +2703,7 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="0" column="4">
            <spacer>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -2716,7 +2716,7 @@
             </property>
            </spacer>
           </item>
-          <item>
+          <item row="0" column="5">
            <widget class="QLabel" name="MidiMeterLevelTextLabel">
             <property name="font">
              <font>
@@ -2735,7 +2735,7 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="0" column="6">
            <widget class="QComboBox" name="MidiMeterLevelComboBox">
             <property name="minimumSize">
              <size>
@@ -2764,7 +2764,7 @@
             </item>
            </widget>
           </item>
-          <item>
+          <item row="0" column="7">
            <widget class="QLineEdit" name="MidiMeterColorLineEdit">
             <property name="maximumSize">
              <size>
@@ -2783,7 +2783,7 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="0" column="8">
            <widget class="QToolButton" name="MidiMeterColorToolButton">
             <property name="minimumSize">
              <size>
@@ -2817,7 +2817,7 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="0" column="9">
            <spacer>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -2830,7 +2830,7 @@
             </property>
            </spacer>
           </item>
-          <item>
+          <item row="0" column="10">
            <widget class="QPushButton" name="ResetMeterColorsPushButton">
             <property name="font">
              <font>
@@ -2846,6 +2846,35 @@
             </property>
             <property name="autoDefault">
              <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="11">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>4</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="0" colspan="11">
+           <widget class="QCheckBox" name="TrackListMetersCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to show meters on track list/left pane</string>
+            </property>
+            <property name="text">
+             <string>Sho&amp;w meters on track list/left pane</string>
             </property>
            </widget>
           </item>
@@ -3580,7 +3609,7 @@
            <number>4</number>
           </property>
           <item row="0" column="0" colspan="3">
-           <widget class="QCheckBox" name="DummyVstScanCheckBox">
+           <widget class="QCheckBox" name="DummyPluginScanCheckBox">
             <property name="font">
              <font>
               <weight>50</weight>
@@ -3588,10 +3617,10 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Whether to use a dummy plugin type when scanning for VST plugins</string>
+             <string>Whether to use out-of-process plugin inventory scan and cache for persistence</string>
             </property>
             <property name="text">
-             <string>Dummy &amp;VST plugin scan (RECOMMENDED)</string>
+             <string>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</string>
             </property>
            </widget>
           </item>
@@ -3749,7 +3778,7 @@
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
   <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>QueryEditorTypeCheckBox</tabstop>
-  <tabstop>DummyVstScanCheckBox</tabstop>
+  <tabstop>DummyPluginScanCheckBox</tabstop>
   <tabstop>Lv2DynManifestCheckBox</tabstop>
   <tabstop>SaveCurve14bitCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
