@@ -844,22 +844,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="615"/>
         <source>Gain (dB)</source>
-        <translation type="unfinished">Zesílení (dB)</translation>
+        <translation>Zesílení (dB)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="616"/>
         <source> dB</source>
-        <translation type="unfinished"> dB</translation>
+        <translation> dB</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="686"/>
         <source>Pan: %1</source>
-        <translation type="unfinished">Vyvážení (Pan): %1</translation>
+        <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="695"/>
         <source>Gain: %1 dB</source>
-        <translation type="unfinished">Zesílení: %1 dB</translation>
+        <translation>Zesílení: %1 dB</translation>
     </message>
 </context>
 <context>
@@ -2058,47 +2058,47 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="80"/>
         <source>&amp;Home</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Domovská složka</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="82"/>
         <source>&amp;Up</source>
-        <translation type="unfinished">&amp;Nahoru</translation>
+        <translation>&amp;Nahoru</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="84"/>
         <source>Al&amp;l Files</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Všechny soubory</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="88"/>
         <source>&amp;Session</source>
-        <translation type="unfinished">&amp;Sezení</translation>
+        <translation>&amp;Sezení</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="92"/>
         <source>&amp;Audio</source>
-        <translation type="unfinished">&amp;Zvuk</translation>
+        <translation>&amp;Zvuk</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="96"/>
         <source>&amp;MIDI</source>
-        <translation type="unfinished">&amp;MIDI</translation>
+        <translation>&amp;MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="99"/>
         <source>H&amp;idden</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Skryto</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="103"/>
         <source>&amp;Play</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Přehrát</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="171"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Souborový systém</translation>
     </message>
 </context>
 <context>
@@ -5035,22 +5035,22 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2258"/>
         <source>File &amp;System</source>
-        <translation type="unfinished"></translation>
+        <translation>Souborový &amp;systém</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2261"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Souborový systém</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2264"/>
         <source>File system</source>
-        <translation type="unfinished"></translation>
+        <translation>Souborový systém</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2267"/>
         <source>Show/hide the file system window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukázat/Skrýt okno se souborovým systémem</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2278"/>
@@ -8728,22 +8728,22 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="469"/>
         <source>Volume (%)</source>
-        <translation type="unfinished">Hlasitost (%)</translation>
+        <translation>Hlasitost (%)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="470"/>
         <source> %</source>
-        <translation type="unfinished"></translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="535"/>
         <source>Pan: %1</source>
-        <translation type="unfinished">Vyvážení (Pan): %1</translation>
+        <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="545"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished">Hlasitost: %1%</translation>
+        <translation>Hlasitost: %1%</translation>
     </message>
 </context>
 <context>
@@ -9451,12 +9451,12 @@ P &lt; 0 : zpomalení posunu.
     <message>
         <location filename="../qtractorMeter.cpp" line="312"/>
         <source>Pan</source>
-        <translation type="unfinished">Vyvážení</translation>
+        <translation>Vyvážení</translation>
     </message>
     <message>
         <location filename="../qtractorMeter.cpp" line="324"/>
         <source>Gain</source>
-        <translation type="unfinished">Zesílení</translation>
+        <translation>Zesílení</translation>
     </message>
 </context>
 <context>
@@ -10629,12 +10629,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3620"/>
         <source>Whether to use out-of-process plugin inventory scan and cache for persistence</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda používat prohlédnutí soupisu přídavného modulu mimo proces a vyrovnávací paměť pro vytrvalost</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3623"/>
         <source>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</source>
-        <translation type="unfinished"></translation>
+        <translation>Prohlédnutí soupisu přídavného modulu &amp;mimo proces (DOPORUČENO)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2399"/>
@@ -10670,12 +10670,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2874"/>
         <source>Whether to show meters on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda ukázat měřidla v seznamu stop/levém okně</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2877"/>
         <source>Sho&amp;w meters on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ukázat měřidla v seznamu stop/levém okně</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3030"/>
