@@ -174,8 +174,6 @@ qtractorOptionsForm::qtractorOptionsForm (
 #ifdef CONFIG_VST
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
-#else
-	m_ui.PluginsExperimentalGroupBox->hide();
 #endif
 #ifdef CONFIG_LV2
 	m_ui.PluginTypeComboBox->addItem(
@@ -438,9 +436,11 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.PluginPathDownToolButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownPluginPath()));
+#ifndef CONFIG_LV2_PRESETS
 	QObject::connect(m_ui.Lv2PresetDirComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(pluginPathsChanged()));
+#endif
 	QObject::connect(m_ui.Lv2PresetDirToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseLv2PresetDir()));
@@ -456,10 +456,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.QueryEditorTypeCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.DummyVstScanCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(pluginPathsChanged()));
-	QObject::connect(m_ui.Lv2DynManifestCheckBox,
+	QObject::connect(m_ui.DummyPluginScanCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(pluginPathsChanged()));
 	QObject::connect(m_ui.SaveCurve14bitCheckBox,
@@ -716,7 +713,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioOutputAutoConnectCheckBox->setChecked(m_pOptions->bAudioOutputAutoConnect);
 	m_ui.OpenEditorCheckBox->setChecked(m_pOptions->bOpenEditor);
 	m_ui.QueryEditorTypeCheckBox->setChecked(m_pOptions->bQueryEditorType);
-	m_ui.DummyVstScanCheckBox->setChecked(m_pOptions->bDummyVstScan);
+	m_ui.DummyPluginScanCheckBox->setChecked(m_pOptions->bDummyPluginScan);
 	m_ui.Lv2DynManifestCheckBox->setChecked(m_pOptions->bLv2DynManifest);
 	m_ui.SaveCurve14bitCheckBox->setChecked(m_pOptions->bSaveCurve14bit);
 
@@ -827,7 +824,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bAudioOutputAutoConnect = m_ui.AudioOutputAutoConnectCheckBox->isChecked();
 		m_pOptions->bOpenEditor          = m_ui.OpenEditorCheckBox->isChecked();
 		m_pOptions->bQueryEditorType     = m_ui.QueryEditorTypeCheckBox->isChecked();
-		m_pOptions->bDummyVstScan        = m_ui.DummyVstScanCheckBox->isChecked();
+		m_pOptions->bDummyPluginScan     = m_ui.DummyPluginScanCheckBox->isChecked();
 		m_pOptions->bLv2DynManifest      = m_ui.Lv2DynManifestCheckBox->isChecked();
 		m_pOptions->bSaveCurve14bit      = m_ui.SaveCurve14bitCheckBox->isChecked();
 		// Messages options...
@@ -1669,11 +1666,11 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sAudioFile = QFileDialog::getOpenFileName(this,
-		sTitle, sFilename, qtractorAudioFileFactory::filters(), NULL, options);
+		sTitle, sFilename, qtractorAudioFileFactory::filter(), NULL, options);
 #else
 	// Construct open-file dialog...
 	QFileDialog fileDialog(this,
-		sTitle, sFilename, qtractorAudioFileFactory::filters());
+		sTitle, sFilename, qtractorAudioFileFactory::filter());
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFile);

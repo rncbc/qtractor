@@ -43,6 +43,10 @@ class QHeaderView;
 
 class QResizeEvent;
 class QMouseEvent;
+class QWheelEvent;
+class QDragEnterEvent;
+class QDragMoveEvent;
+class QDropEvent;
 class QKeyEvent;
 
 
@@ -51,8 +55,6 @@ class QKeyEvent;
 
 class qtractorTrackItemWidget : public QWidget
 {
-//	Q_OBJECT
-
 public:
 
 	// Constructor.
@@ -182,6 +184,11 @@ protected:
 
 	// Handle zoom with mouse wheel.
 	void wheelEvent(QWheelEvent *pWheelEvent);
+
+	// Drag-n-drop event handlers.
+	void dragEnterEvent(QDragEnterEvent *pDragEnterEvent);
+	void dragMoveEvent(QDragMoveEvent *pDragMoveEvent);
+	void dropEvent(QDropEvent *pDropEvent);
 
 	// Show and move rubber-band item.
 	void moveRubberBand(const QPoint& posDrag);

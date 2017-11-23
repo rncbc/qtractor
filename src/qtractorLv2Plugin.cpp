@@ -31,6 +31,8 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
 
+#include "qtractorSessionCursor.h"
+
 #include "qtractorOptions.h"
 
 #ifdef CONFIG_LV2_STATE
@@ -905,7 +907,7 @@ static LilvNode *g_lv2_event_class = NULL;
 #endif
 
 #ifdef CONFIG_LV2_ATOM
-static LilvNode *g_lv2_atom_class         = NULL;
+static LilvNode *g_lv2_atom_class = NULL;
 #endif
 
 #ifdef CONFIG_LV2_UI
@@ -1249,6 +1251,9 @@ bool qtractorLv2Plugin::Property::isPath (void) const
 
 
 #ifdef CONFIG_LV2_TIME
+
+// JACK Transport position support.
+#include <jack/transport.h>
 
 // LV2 Time-position control structure.
 static struct qtractorLv2Time
@@ -3177,8 +3182,6 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	m_lv2_ui_type = ui_iter.key();
 	m_lv2_ui = ui_iter.value();
 
-	updateEditorTitle();
-
 	const char *ui_type_uri = NULL;
 	switch (m_lv2_ui_type) {
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -3357,8 +3360,9 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	}
 #endif	// CONFIG_LV2_UI_SHOW
 
+	updateEditorTitle();
+
 	setEditorVisible(true);
-	updateEditorTitleEx();
 	loadEditorPos();
 //	idleEditor();
 }
@@ -3819,7 +3823,7 @@ void qtractorLv2Plugin::lv2_ui_touch ( uint32_t port_index, bool grabbed )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_touch(%u, %d)",
-		this, port_index, int(grabbed);
+		this, port_index, int(grabbed));
 #endif
 
 	m_ui_params_touch[port_index] = grabbed;
@@ -4687,7 +4691,7 @@ inline void qtractor_lv2_time_update ( int i, float fValue )
 	}
 }
 
-void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
+void qtractorLv2Plugin::updateTime ( qtractorAudioEngine *pAudioEngine )
 {
 	if (g_lv2_time_refcount < 1)
 		return;
@@ -4697,10 +4701,17 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 #endif
 
 	jack_position_t pos;
-	jack_transport_state_t state
-		= jack_transport_query(pJackClient, &pos);
+	jack_transport_state_t state;
 
-#if 0//QTRACTOR_LV2_TIME_POSITION_FRAME
+	if (pAudioEngine->isFreewheel()) {
+		pos.frame = pAudioEngine->sessionCursor()->frame();
+		pAudioEngine->timebase(&pos, 0);
+		state = JackTransportRolling; // Fake transport rolling...
+	} else {
+		state = jack_transport_query(pAudioEngine->jackClient(), &pos);
+	}
+
+#if 0//QTRACTOR_LV2_TIME_POSITION_FRAME_0
 	qtractor_lv2_time_update(
 		qtractorLv2Time::frame,
 		float(pos.frame));
@@ -4719,7 +4730,7 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 		qtractor_lv2_time_update(
 			qtractorLv2Time::beat,
 			float(pos.beat));
-	#if 0//QTRACTOR_LV2_TIME_POSITION_BARBEAT
+	#if 0//QTRACTOR_LV2_TIME_POSITION_BARBEAT_0
 		qtractor_lv2_time_update(
 			qtractorLv2Time::barBeat,
 			float(pos.beat + (pos.tick / pos.ticks_per_beat) - 1));
@@ -4747,7 +4758,7 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 		lv2_atom_forge_object(forge, &frame, 0, g_lv2_urids.time_Position);
 		qtractorLv2Time& time_frame
 			= g_lv2_time[qtractorLv2Time::frame];
-	#if 1//QTRACTOR_LV2_TIME_POSITION_FRAME
+	#if 1//QTRACTOR_LV2_TIME_POSITION_FRAME_1
 		time_frame.value = float(pos.frame);
 	#endif
 		lv2_atom_forge_key(forge, time_frame.urid);
@@ -4767,7 +4778,7 @@ void qtractorLv2Plugin::updateTime ( jack_client_t *pJackClient )
 			lv2_atom_forge_double(forge, double(time_beat.value));
 			qtractorLv2Time& time_barBeat
 				= g_lv2_time[qtractorLv2Time::barBeat];
-		#if 1//QTRACTOR_LV2_TIME_POSITION_BARBEAT
+		#if 1//QTRACTOR_LV2_TIME_POSITION_BARBEAT_1
 			time_barBeat.value = float(pos.beat + (pos.tick / pos.ticks_per_beat) - 1);
 		#endif
 			lv2_atom_forge_key(forge, time_barBeat.urid);
@@ -4810,6 +4821,7 @@ void qtractorLv2Plugin::updateTimePost (void)
 		}
 	}
 }
+
 
 #ifdef CONFIG_LV2_TIME_POSITION
 // Make ready LV2 Time position.

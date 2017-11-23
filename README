@@ -12,6 +12,7 @@ Website:
 
   http://qtractor.org
   http://qtractor.sourceforge.net
+  https://qtractor.sourceforge.io
 
 Project page:
 
@@ -28,12 +29,21 @@ Wiki:
 
   http://sourceforge.net/p/qtractor/wiki/
 
+- static rendering:
+  http://qtractor.org/doc
+  http://qtractor.sourceforge.net/doc
+  https://qtractor.sourceforge.io/doc
+
+- user manual & how-to's:
+  http://download.sf.net/qtractor/qtractor-manual-and-howtos.epub
+  http://download.sf.net/qtractor/qtractor-manual-and-howtos.pdf
+
 Weblog:
 
   http://www.rncbc.org
 
 Qtractor is free, open-source software, distributed under the terms of
-the GNU General Public License (GPL) [17] version 2 or later.
+the GNU General Public License (GPL) [18] version 2 or later.
 
 
 Features
@@ -57,7 +67,7 @@ Features
 - Unlimited undo/redo.
 - Built-in mixer and monitor controls.
 - Built-in connection patchbay control and persistence
-  (a-la QjackCtl [16]).
+  (a-la QjackCtl [17]).
 - LADSPA [5], DSSI [11], native VST [12] and LV2 [13] plug-ins support.
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support, including
@@ -76,7 +86,7 @@ Features
 - Unlimited tempo/time-signature map.
 - Unlimited location/bar markers.
 - MIDI clip editor (matrix/piano roll).
-- MIDI instrument definitions (a-la Cakewalk(tm) (*.ins) [18]);
+- MIDI instrument definitions (a-la Cakewalk(tm) (*.ins) [19]);
   SoundFont (*.sf2) and MIDI Names XML (*.midnam) files also supported.
 - MIDI controller mapping/learn/assignment (mixer and plug-in parameters).
 - MIDI system exclusive (SysEx) setups.
@@ -96,60 +106,62 @@ The software requirements for build and runtime are listed as follows:
   Mandatory:
 
   [1] Qt framework, C++ class library and tools for
-        cross-platform application and UI development
-        http://qt.io/
+       cross-platform application and UI development
+       http://qt.io/
 
   [2] JACK Audio Connection Kit
-        http://jackaudio.org/
+       http://jackaudio.org/
 
   [3] ALSA, Advanced Linux Sound Architecture
-        http://www.alsa-project.org/
+       http://www.alsa-project.org/
 
   [4] libsndfile, C library for reading and writing
-        files containing sampled sound
-        http://www.mega-nerd.com/libsndfile/
+       files containing sampled sound
+       http://www.mega-nerd.com/libsndfile/
 
   [5] LADSPA, Linux Audio Developer's Simple Plugin API
-        http://www.ladspa.org/
+       http://www.ladspa.org/
 
   Optional (opted-in at build time):
 
   [6] libvorbis (enc, file), Ogg Vorbis audio compression
-        http://xiph.org/vorbis/
+       http://xiph.org/vorbis/
 
   [7] libmad, High-quality MPEG audio decoder
-        http://www.underbit.com/products/mad/
+       http://www.underbit.com/products/mad/
 
   [8] libsamplerate, The secret rabbit code, C library
-        for audio sample rate conversion
-        http://www.mega-nerd.com/SRC/
+       for audio sample rate conversion
+       http://www.mega-nerd.com/SRC/
 
   [9] librubberband, Rubber Band Audio Time Stretcher,
-        an audio time-stretching and pitch-shifting library
-        http://breakfastquay.com/rubberband/
+       an audio time-stretching and pitch-shifting library
+       http://breakfastquay.com/rubberband/
 
   [10] liblo, Lightweight OSC implementation
-        (needed for DSSI GUI [11] and/or NSM support [15])
-        http://liblo.sourceforge.net/
+       (needed for DSSI GUI [11] and/or NSM support [16])
+       http://liblo.sourceforge.net/
 
   [11] DSSI, An API for soft synth plugins with custom user interfaces
-        http://dssi.sourceforge.net/
+       http://dssi.sourceforge.net/
 
   [12] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
-        http://www.steinberg.net/
+       http://www.steinberg.net/
 
   [13] LV2, Audio Plugin Standard, the extensible successor of LADSPA
-        http://lv2plug.in/
+       http://lv2plug.in/
 
   [14] liblilv, Lightweight LV2 host implementation stack
-        http://drobilla.net/software/lilv/
-        http://drobilla.net/software/suil/
-        http://drobilla.net/software/sratom/
-        http://drobilla.net/software/sord/
-        http://drobilla.net/software/serd/
+       http://drobilla.net/software/lilv/
+       http://drobilla.net/software/sratom/
+       http://drobilla.net/software/sord/
+       http://drobilla.net/software/serd/
 
-  [15] Non Session Management (NSM)
-        http://non.tuxfamily.org/nsm/
+  [15] libsuil, Lightweight C library for loading and wrapping LV2 plugin UIs
+       http://drobilla.net/software/suil/
+
+  [16] Non Session Management (NSM)
+       http://non.tuxfamily.org/nsm/
 
 
 Installation
@@ -281,21 +293,24 @@ References
 [14] liblilv, Lightweight LV2 host implementation stack
      (needed for LV2 support)
      http://drobilla.net/software/lilv/
-     http://drobilla.net/software/suil/
      http://drobilla.net/software/sratom/
      http://drobilla.net/software/sord/
      http://drobilla.net/software/serd/
 
-[15] Non Session Management (NSM)
+[15] libsuil, Lightweight C library for loading and wrapping LV2 plugin UIs
+     (needed for LV2 UI support)
+     http://drobilla.net/software/suil/
+
+[16] Non Session Management (NSM)
      http://non.tuxfamily.org/nsm/
 
-[16] QjackCtl - JACK Qt GUI Interface
+[17] QjackCtl - JACK Qt GUI Interface
      http://qjackctl.sourceforge.net
 
-[17] GNU General Public License
+[18] GNU General Public License
      http://www.gnu.org/copyleft/gpl.html
 
-[18] Cakewalk, powerful and easy-to-use tools
+[19] Cakewalk, powerful and easy-to-use tools
      for Windows-based music and sound production
      http://www.cakewalk.com/
 

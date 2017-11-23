@@ -345,6 +345,8 @@ private:
 	unsigned long m_iTimeStartEx;
 	unsigned long m_iFrameStartEx;
 
+	unsigned long m_iAudioFrameStart;
+
 	// The assigned control buses.
 	bool             m_bControlBus;
 	qtractorMidiBus *m_pIControlBus;
@@ -492,14 +494,6 @@ public:
 	qtractorPluginList *pluginList_in()  const;
 	qtractorPluginList *pluginList_out() const;
 
-	// Automation curve list accessors.
-	qtractorCurveList *curveList_in()  const;
-	qtractorCurveList *curveList_out() const;
-
-	// Automation curve serializer accessors.
-	qtractorCurveFile *curveFile_in()  const;
-	qtractorCurveFile *curveFile_out() const;
-
 	// Retrieve/restore client:port connections.
 	// return the effective number of connection attempts.
 	int updateConnects(BusMode busMode,
@@ -559,10 +553,6 @@ private:
 	// Plugin-chain instances.
 	qtractorPluginList *m_pIPluginList;
 	qtractorPluginList *m_pOPluginList;
-
-	// Automation curve serializer instances.
-	qtractorCurveFile  *m_pICurveFile;
-	qtractorCurveFile  *m_pOCurveFile;
 
 	// SysEx setup list.
 	qtractorMidiSysexList *m_pSysexList;

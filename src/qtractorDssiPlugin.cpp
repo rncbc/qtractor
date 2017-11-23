@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -867,13 +867,14 @@ bool qtractorDssiPluginType::open (void)
 		names.append(sMask.arg(fi.baseName()));
 		names.append(sMask.arg(m_pLadspaDescriptor->Label));
 		dir.setNameFilters(names);
-		QStringList guis = dir.entryList(QDir::Files | QDir::Executable);
+		const QStringList& guis
+			= dir.entryList(QDir::Files | QDir::Executable);
 		if (!guis.isEmpty()) {
 			gi.setFile(dir, guis.first()); // FIXME: Only the first?
 			m_sDssiEditor = gi.absoluteFilePath();
 			m_bEditor = gi.isExecutable();
 		}
-    }
+	}
 #endif
 
 	return true;

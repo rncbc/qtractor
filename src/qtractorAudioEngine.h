@@ -218,8 +218,12 @@ public:
 	void setTimebase(bool bTimebase);
 	bool isTimebase() const;
 
-	// JACK Timebase reset method.
+	// JACK Timebase reset methods.
 	void resetTimebase();
+	void resetTimebaseHold();
+
+	// JACK Timebase sync flagging.
+	bool isTimebaseHold() const;
 
 	// Absolute number of frames elapsed since engine start.
 	unsigned long jackFrameTime() const;
@@ -323,6 +327,9 @@ private:
 	// JACK Timebase mode and control.
 	bool                 m_bTimebase;
 	unsigned int         m_iTimebase;
+
+	// JACK Timebase sync flag.
+	unsigned int         m_iTimebaseHold;
 };
 
 
@@ -388,14 +395,6 @@ public:
 	qtractorPluginList *pluginList_in()  const;
 	qtractorPluginList *pluginList_out() const;
 
-	// Automation curve list accessors.
-	qtractorCurveList *curveList_in()  const;
-	qtractorCurveList *curveList_out() const;
-
-	// Automation curve serializer accessors.
-	qtractorCurveFile *curveFile_in()  const;
-	qtractorCurveFile *curveFile_out() const;
-
 	// Audio I/O port latency accessors.
 	unsigned int latency_in()  const;
 	unsigned int latency_out() const;
@@ -439,10 +438,6 @@ private:
 	// Plugin-chain instances.
 	qtractorPluginList *m_pIPluginList;
 	qtractorPluginList *m_pOPluginList;
-
-	// Automation curve serializer instances.
-	qtractorCurveFile  *m_pICurveFile;
-	qtractorCurveFile  *m_pOCurveFile;
 
 	// Specific JACK ports stuff.
 	jack_port_t **m_ppIPorts;

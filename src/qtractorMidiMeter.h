@@ -123,8 +123,9 @@ class qtractorMidiMeter : public qtractorMeter
 public:
 
 	// Constructor.
-	qtractorMidiMeter(qtractorMidiMonitor *pMidiMonitor,
-		QWidget *pParent = 0);
+	qtractorMidiMeter(
+		qtractorMidiMonitor *pMidiMonitor, QWidget *pParent = 0);
+
 	// Default destructor.
 	~qtractorMidiMeter();
 
@@ -183,11 +184,14 @@ private:
 
 class qtractorMidiMixerMeter : public qtractorMixerMeter
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
-	qtractorMidiMixerMeter(qtractorMidiMonitor *pMidiMonitor,
-		QWidget *pParent = 0);
+	qtractorMidiMixerMeter(
+		qtractorMidiMonitor *pMidiMonitor, QWidget *pParent = 0);
+
 	// Default destructor.
 	~qtractorMidiMixerMeter();
 

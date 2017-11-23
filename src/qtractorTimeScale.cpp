@@ -37,12 +37,19 @@ void qtractorTimeScale::reset (void)
 	m_markers.clear();
 	m_markerCursor.reset();
 
+	// Try to preserve previous tempo/time-sig, if any...
+	Node *pNode = m_nodes.first();
+	const float fTempo = (pNode ? pNode->tempo : 120.0f);
+	const unsigned short iBeatType = (pNode ? pNode->beatType : 2);
+	const unsigned short iBeatsPerBar = (pNode ? pNode->beatsPerBar : 4);
+	const unsigned short iBeatDivisor = (pNode ? pNode->beatDivisor : 2);
+
 	// Clear/reset tempo-map...
 	m_nodes.clear();
 	m_cursor.reset();
 
-	// There must always be one node, always.
-	addNode(0);
+	// There must always be one node, always at zero-frame...
+	addNode(0, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
 
 	// Commit new scale...
 	updateScale();

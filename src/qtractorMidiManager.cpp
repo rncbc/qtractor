@@ -1,7 +1,7 @@
 // qtractorMidiManager.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -317,21 +317,8 @@ void qtractorMidiOutputBuffer::processSync (void)
 	if (pMidiEngine == NULL)
 		return;
 
-	const bool bPlaying = pSession->isPlaying();
-	const unsigned long t0 = (bPlaying ? pSession->playHead() : 0);
-
-	long iTimeDelta = 0;
-
-	if (bPlaying && pSession->isLooping()
-		&& t0 > pMidiEngine->sessionCursor()->frame()) {
-		iTimeDelta += long(pSession->tickFromFrame(pSession->loopEnd()));
-		iTimeDelta -= long(pSession->tickFromFrame(pSession->loopStart()));
-	}
-
-	const long iTimeStart = pMidiEngine->timeStart() + iTimeDelta;
-
+	const unsigned long iTimeStart = pMidiEngine->timeStartEx();
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(t0);
 
 	qtractorMidiManager *pMidiManager = NULL;
 	if (m_pMidiBus->pluginList_out())
@@ -340,8 +327,8 @@ void qtractorMidiOutputBuffer::processSync (void)
 
 	snd_seq_event_t *pEv = m_outputBuffer.peek();
 	while (pEv) {
-		pNode = cursor.seekFrame(pEv->time.tick);
-		const long iTime = long(pNode->tickFromFrame(pEv->time.tick));
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(pEv->time.tick);
+		const unsigned long iTime = pNode->tickFromFrame(pEv->time.tick);
 		const unsigned long tick = (iTime > iTimeStart ? iTime - iTimeStart : 0);
 		qtractorMidiEvent::EventType type = qtractorMidiEvent::EventType(0);
 		unsigned short val = 0;
@@ -780,7 +767,8 @@ qtractorMidiManager *qtractorMidiManager::createMidiManager (
 }
 
 
-void qtractorMidiManager::deleteMidiManager ( qtractorMidiManager *pMidiManager )
+void qtractorMidiManager::deleteMidiManager (
+	qtractorMidiManager *pMidiManager )
 {
 	if (pMidiManager == NULL)
 		return;

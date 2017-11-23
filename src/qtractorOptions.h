@@ -224,9 +224,12 @@ public:
 	// when more than one is available.
 	bool bQueryEditorType;
 
-	// VST dummy plugin scan option.
-	bool bDummyVstScan;
+	// Out-of-process plugin scanning and cache option.
+	bool bDummyPluginScan;
+	int  iDummyLadspaHash;
+	int  iDummyDssiHash;
 	int  iDummyVstHash;
+	int  iDummyLv2Hash;
 
 	// LV2 plugin specific options.
 	bool bLv2DynManifest;

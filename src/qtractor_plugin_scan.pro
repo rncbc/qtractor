@@ -1,14 +1,14 @@
-# qtractor_vst_scan.pro
+# qtractor_plugin_scan.pro
 #
-NAME = qtractor_vst_scan
+NAME = qtractor_plugin_scan
 
 TARGET = $${NAME}
 TEMPLATE = app
 
-include(qtractor_vst_scan.pri)
+include(qtractor_plugin_scan.pri)
 
-HEADERS += qtractor_vst_scan.h config.h
-SOURCES += qtractor_vst_scan.cpp
+HEADERS += qtractor_plugin_scan.h config.h
+SOURCES += qtractor_plugin_scan.cpp
 
 unix {
 

@@ -268,6 +268,9 @@ public:
 	unsigned long loopEnd() const;
 	bool isLooping() const;
 
+	unsigned long loopStartTime() const;
+	unsigned long loopEndTime() const;
+
 	// Session punch points accessors.
 	void setPunch(unsigned long iPunchIn, unsigned long iPunchOut);
 	unsigned long punchIn() const;

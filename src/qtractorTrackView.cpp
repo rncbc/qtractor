@@ -55,6 +55,7 @@
 #include <QDragMoveEvent>
 #include <QDropEvent>
 #include <QMouseEvent>
+#include <QWheelEvent>
 #include <QResizeEvent>
 #include <QKeyEvent>
 
@@ -68,7 +69,6 @@
 
 #if QT_VERSION >= 0x050000
 #include <QMimeData>
-#include <QDrag>
 #endif
 
 #ifdef CONFIG_GRADIENT
