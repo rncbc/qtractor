@@ -118,10 +118,10 @@ uint qHash ( const qtractorAudioClip::Key& key )
 		 ^ qHash(key.filename())
 		 ^ qHash(key.clipOffset())
 		 ^ qHash(key.clipLength())
-		 ^ qHash(key.clipGain())
-		 ^ qHash(key.clipPanning())
-		 ^ qHash(key.timeStretch())
-		 ^ qHash(key.pitchShift())
+		 ^ qHash(long(1000.0f * key.clipGain()))
+		 ^ qHash(long(1000.0f * key.clipPanning()))
+		 ^ qHash(long(1000.0f * key.timeStretch()))
+		 ^ qHash(long(1000.0f * key.pitchShift()))
 		 ^ qHash(key.overlap());
 }
 
