@@ -56,6 +56,8 @@ public:
 		m_sFilename = pAudioClip->filename();;
 		m_iClipOffset = pAudioClip->clipOffset();
 		m_iClipLength = pAudioClip->clipLength();
+		m_fClipGain = pAudioClip->clipGain();
+		m_fClipPanning = pAudioClip->clipPanning();
 		m_fTimeStretch = pAudioClip->timeStretch();
 		m_fPitchShift = pAudioClip->pitchShift();
 		m_iOverlap = pAudioClip->overlap();
@@ -70,6 +72,10 @@ public:
 		{ return m_iClipOffset; }
 	unsigned long clipLength() const
 		{ return m_iClipLength; }
+	float clipGain() const
+		{ return m_fClipGain; }
+	float clipPanning() const
+		{ return m_fClipPanning; }
 	float timeStretch() const
 		{ return m_fTimeStretch; }
 	float pitchShift() const
@@ -84,6 +90,8 @@ public:
 			&& m_sFilename    == other.filename()
 			&& m_iClipOffset  == other.clipOffset()
 			&& m_iClipLength  == other.clipLength()
+			&& m_fClipGain    == other.clipGain()
+			&& m_fClipPanning == other.clipPanning()
 			&& m_fTimeStretch == other.timeStretch()
 			&& m_fPitchShift  == other.pitchShift()
 			&& m_iOverlap     == other.overlap();
@@ -96,6 +104,8 @@ private:
 	QString        m_sFilename;
 	unsigned long  m_iClipOffset;
 	unsigned long  m_iClipLength;
+	float          m_fClipGain;
+	float          m_fClipPanning;
 	float          m_fTimeStretch;
 	float          m_fPitchShift;
 	unsigned int   m_iOverlap;
@@ -108,8 +118,10 @@ uint qHash ( const qtractorAudioClip::Key& key )
 		 ^ qHash(key.filename())
 		 ^ qHash(key.clipOffset())
 		 ^ qHash(key.clipLength())
-		 ^ qHash(long(100.0f * key.timeStretch()))
-		 ^ qHash(long(100.0f * key.pitchShift()))
+		 ^ qHash(key.clipGain())
+		 ^ qHash(key.clipPanning())
+		 ^ qHash(key.timeStretch())
+		 ^ qHash(key.pitchShift())
 		 ^ qHash(key.overlap());
 }
 
