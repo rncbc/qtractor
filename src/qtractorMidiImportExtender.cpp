@@ -369,7 +369,7 @@ bool qtractorMidiImportExtender::finishTracksForExtension(
 		// import. This indicates from first glance that track is special or
 		// broken or...
 		QString sTrackName;
-		if (pTrack->midiBank() >= 0 && pTrack->midiProg() >= 0) {
+		if (properties.midiBank >= 0 && properties.midiProg >= 0) {
 			// Set track name based upon type set up.
 			switch (m_extendedSettings.eMidiImportTrackNameType) {
 			case Midifile:
@@ -395,12 +395,12 @@ bool qtractorMidiImportExtender::finishTracksForExtension(
 
 					const qtractorMidiManager::Banks& banks
 						= list[sInstrumentName];
-					if (!banks.contains(pTrack->midiBank()))
+					if (!banks.contains(properties.midiBank))
 						break;
 
 					// A patch name was found!
-					const qtractorMidiManager::Progs& progs = banks[pTrack->midiBank()].progs;
-					sTrackName = progs[pTrack->midiProg()];
+					const qtractorMidiManager::Progs& progs = banks[properties.midiBank].progs;
+					sTrackName = progs[properties.midiProg];
 				}
 
 				// Drum track's name is fixed - patch names are not really useful at drums.
