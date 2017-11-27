@@ -338,11 +338,12 @@ bool qtractorMidiImportExtender::finishTracksForExtension(
 		// Midi prog.
 		// Special case for drum-tracks program: Some MIDI files out in the wild do
 		// not set program for drum tracks. Give those a reasonable default.
-		if (bIsDrumTrack && properties.midiProg < 0) {
+		if (bIsDrumTrack && properties.midiProg < 0)
 			// Set standard drums.
 			properties.midiProg = 0;
+		// Initial program change was missed likely (plugins did not process).
+		if (properties.midiProg >= 0)
 			bOneOrMoreTracksChanged = true;
-		}
 
 		// Instrument.
 		QString strInstrumentNew = bIsDrumTrack ?
