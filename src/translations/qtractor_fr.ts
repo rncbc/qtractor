@@ -10437,7 +10437,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2587"/>
         <source>Meters</source>
-        <translation>Mètres</translation>
+        <translation>Mesureurs</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2602"/>
