@@ -491,7 +491,7 @@ MIDI:	</translation>
         <translation>Nome:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="750"/>
+        <location filename="../qtractorAudioClip.cpp" line="762"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
@@ -589,17 +589,17 @@ MIDI:	</translation>
         <translation>tentativa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="740"/>
+        <location filename="../qtractorAudioClip.cpp" line="752"/>
         <source> (%1 dB)</source>
         <translation> (%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="744"/>
+        <location filename="../qtractorAudioClip.cpp" line="756"/>
         <source> (%1 pan)</source>
         <translation> (%1 panorâmico)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="747"/>
+        <location filename="../qtractorAudioClip.cpp" line="759"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
@@ -637,7 +637,7 @@ MIDI:	</translation>
         <translation>mover nó de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="735"/>
+        <location filename="../qtractorAudioClip.cpp" line="747"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
@@ -845,22 +845,22 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="615"/>
         <source>Gain (dB)</source>
-        <translation type="unfinished">Volume (dB)</translation>
+        <translation>Volume (dB)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="616"/>
         <source> dB</source>
-        <translation type="unfinished"> dB</translation>
+        <translation> dB</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="686"/>
         <source>Pan: %1</source>
-        <translation type="unfinished">Panorâmico: %1</translation>
+        <translation>Panorâmico: %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="695"/>
         <source>Gain: %1 dB</source>
-        <translation type="unfinished">Volume: %1 dB</translation>
+        <translation>Volume: %1 dB</translation>
     </message>
 </context>
 <context>
@@ -2058,47 +2058,47 @@ Posso continuar?</translation>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="80"/>
         <source>&amp;Home</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Raiz</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="82"/>
         <source>&amp;Up</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Acima</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="84"/>
         <source>Al&amp;l Files</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Todos os Arquivos</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="88"/>
         <source>&amp;Session</source>
-        <translation type="unfinished">&amp;Sessão</translation>
+        <translation>&amp;Sessão</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="92"/>
         <source>&amp;Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Áudio</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="96"/>
         <source>&amp;MIDI</source>
-        <translation type="unfinished">&amp;MIDI</translation>
+        <translation>&amp;MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="99"/>
         <source>H&amp;idden</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Esconder</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="103"/>
         <source>&amp;Play</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tocar</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="171"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema de Arquivos</translation>
     </message>
 </context>
 <context>
@@ -2551,22 +2551,22 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2258"/>
         <source>File &amp;System</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sistema de Arquivos</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2261"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema de Arquivos</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2264"/>
         <source>File system</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema de arquivos</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2267"/>
         <source>Show/hide the file system window</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mostrar/esconter a janela do sistema de arquivos</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2330"/>
@@ -8727,22 +8727,22 @@ Deseja salvar essas alterações?</translation>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="469"/>
         <source>Volume (%)</source>
-        <translation type="unfinished">Volume (%)</translation>
+        <translation>Volume (%)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="470"/>
         <source> %</source>
-        <translation type="unfinished"> %</translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="535"/>
         <source>Pan: %1</source>
-        <translation type="unfinished">Panorâmico: %1</translation>
+        <translation>Panorâmico: %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="545"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished">Volume: %1%</translation>
+        <translation>Volume: %1%</translation>
     </message>
 </context>
 <context>
@@ -9450,12 +9450,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorMeter.cpp" line="312"/>
         <source>Pan</source>
-        <translation type="unfinished">Panorâmico</translation>
+        <translation>Panorâmico</translation>
     </message>
     <message>
         <location filename="../qtractorMeter.cpp" line="324"/>
         <source>Gain</source>
-        <translation type="unfinished">Ganho</translation>
+        <translation>Ganho</translation>
     </message>
 </context>
 <context>
@@ -9989,12 +9989,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2874"/>
         <source>Whether to show meters on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Se serão exibidos os medidores na lista de Pistas/painel da esquerda</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2877"/>
         <source>Sho&amp;w meters on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mostrar medidores na lista de pistas/painel da esquerda</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3002"/>
@@ -10500,12 +10500,12 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3620"/>
         <source>Whether to use out-of-process plugin inventory scan and cache for persistence</source>
-        <translation type="unfinished"></translation>
+        <translation>Se realiza escaneamento de plugins fora-de-uso memória cache para persistência</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3623"/>
         <source>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Escaneamento de plugins fora-de-uso (RECOMENDADO)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3636"/>

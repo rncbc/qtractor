@@ -245,7 +245,7 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 
 	m_pfGains        = NULL;
 
-	m_fNextGain      = m_fGain;
+	m_fNextGain      = 0.0f;
 	m_iRampGain      = 1;
 
 #ifdef CONFIG_LIBSAMPLERATE
@@ -535,7 +535,7 @@ void qtractorAudioBuffer::close (void)
 
 	ATOMIC_SET(&m_seekPending, 0);
 
-	m_fNextGain = m_fGain;
+	m_fNextGain = 0.0f;
 	m_iRampGain = 1;
 
 	m_pPeakFile = NULL;
@@ -798,7 +798,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 		return false;
 
 	// Reset running gain...
-	m_fNextGain = m_fGain;
+	m_fNextGain = 0.0f;
 	m_iRampGain = 1;
 
 	// Are we off-limits?
@@ -903,7 +903,7 @@ void qtractorAudioBuffer::initSync (void)
 	ATOMIC_SET(&m_seekPending, 0);
 
 	// Reset running gain...
-	m_fNextGain = m_fGain;
+	m_fNextGain = 0.0f;
 	m_iRampGain = 1;
 
 	// Set to initial offset...
@@ -1339,8 +1339,9 @@ int qtractorAudioBuffer::readMixFrames (
 	}
 
 	// Reset running gain...
-	const float fPrevGain = m_fNextGain;
-	m_fNextGain = fGain * m_fGain;
+	const float fNextGain = m_fGain * fGain;
+	const float fPrevGain = (m_fNextGain < 1E-9f ? fNextGain : m_fNextGain);
+	m_fNextGain = fNextGain;
 	fGainStep1 = (m_fNextGain - fPrevGain) / float(nread);
 
 	if (iChannels == iBuffers) {
