@@ -4,31 +4,31 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="735"/>
+        <location filename="../qtractorAudioClip.cpp" line="747"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
 Audio:	%1 canales, %2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="740"/>
+        <location filename="../qtractorAudioClip.cpp" line="752"/>
         <source> (%1 dB)</source>
         <translation> (%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="744"/>
+        <location filename="../qtractorAudioClip.cpp" line="756"/>
         <source> (%1 pan)</source>
         <translation>(%1 pan)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="747"/>
+        <location filename="../qtractorAudioClip.cpp" line="759"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% time stretch)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="750"/>
+        <location filename="../qtractorAudioClip.cpp" line="762"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>
@@ -2057,47 +2057,47 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="80"/>
         <source>&amp;Home</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Inicio</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="82"/>
         <source>&amp;Up</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Arriba</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="84"/>
         <source>Al&amp;l Files</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Todos los archivos</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="88"/>
         <source>&amp;Session</source>
-        <translation type="unfinished">&amp;Session</translation>
+        <translation>&amp;Sesión</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="92"/>
         <source>&amp;Audio</source>
-        <translation type="unfinished">&amp;Audio</translation>
+        <translation>&amp;Audio</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="96"/>
         <source>&amp;MIDI</source>
-        <translation type="unfinished">&amp;MIDI</translation>
+        <translation>&amp;MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="99"/>
         <source>H&amp;idden</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Oculto</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="103"/>
         <source>&amp;Play</source>
-        <translation type="unfinished">&amp;Reproducir</translation>
+        <translation>&amp;Reproducir</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="171"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema de archivos</translation>
     </message>
 </context>
 <context>
@@ -4620,22 +4620,22 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2258"/>
         <source>File &amp;System</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sistema de Archivos</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2261"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema de Archivos</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2264"/>
         <source>File system</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema de archivos</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2267"/>
         <source>Show/hide the file system window</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar/ocultar la ventana de sistema de archivos</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2278"/>
@@ -10718,12 +10718,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3620"/>
         <source>Whether to use out-of-process plugin inventory scan and cache for persistence</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se debe usar escaneo de inventario de plugins fuera de proceso y persistencia para caché </translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3623"/>
         <source>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Escaneo de inventario de plugins fuera de proceso (RECOMENDADO)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3636"/>
