@@ -20,7 +20,7 @@ env:
 
 before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-- if [[ "$QT_SELECT" = "5" ]]; then sudo add-apt-repository --yes ppa:beineri/opt-qt591-trusty; fi
+- if [[ "$QT_SELECT" = "5" ]]; then sudo add-apt-repository --yes ppa:beineri/opt-qt592-trusty; fi
 - sudo apt-get update -qq
 
 install:

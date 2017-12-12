@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.8.5  2017-12-04  Autumn'17 Beta.
 
 - Audio clip gain and panning properties are now taken into
   consideration when hash-linking (aka. ref-counting) their
