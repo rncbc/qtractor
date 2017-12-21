@@ -172,7 +172,9 @@ void qtractorPluginFactory::updatePluginPaths (void)
 	if (pOptions)
 		vst_paths = pOptions->vstPaths;
 	if (vst_paths.isEmpty()) {
-		QString sVstPaths = ::getenv("VST_PATH");
+		QString sVstPaths = ::getenv("LXVST_PATH");
+		if (sVstPaths.isEmpty())
+			sVstPaths = ::getenv("VST_PATH");
 		if (sVstPaths.isEmpty())
 			sVstPaths = default_paths("vst");
 		vst_paths = sVstPaths.split(PATH_SEP);
