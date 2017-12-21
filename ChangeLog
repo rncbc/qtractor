@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- MIDI Controller mapped shortcuts now working as one-shot,
+  latched/toggled trigger, independent of MIDI event value.
+
+
 0.8.5  2017-12-04  Autumn'17 Beta.
 
 - Audio clip gain and panning properties are now taken into

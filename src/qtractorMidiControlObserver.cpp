@@ -79,6 +79,7 @@ qtractorMidiControlObserver::~qtractorMidiControlObserver (void)
 unsigned short qtractorMidiControlObserver::midiScale (void) const
 {
 	if (m_ctype == qtractorMidiEvent::PITCHBEND ||
+
 		m_ctype == qtractorMidiEvent::CONTROL14 ||
 		m_ctype == qtractorMidiEvent::REGPARAM  ||
 		m_ctype == qtractorMidiEvent::NONREGPARAM)
@@ -100,7 +101,10 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 		= float(m_bInvert ? iScale - iValue : iValue) / float(iScale);
 	float fValue = valueFromScale(fScale, m_bLogarithmic);
 
-	if (!m_bLatch && qtractorObserver::isToggled()) {
+	const bool bDecimal = qtractorObserver::isDecimal();
+	const bool bToggled = qtractorObserver::isToggled();
+
+	if ((m_bLatch && !bDecimal) || (!m_bLatch && bToggled)) {
 		const float vmax = qtractorObserver::maxValue();
 		const float vmin = qtractorObserver::minValue();
 		const float vmid = 0.5f * (vmax + vmin);
@@ -110,7 +114,7 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 			fValue = (m_fMidiValue < vmid ? vmax : vmin);
 	}
 
-	bool bSync = (m_bHook || !qtractorObserver::isDecimal());
+	bool bSync = (m_bHook || !bDecimal);
 	if (!bSync)
 		bSync = m_bMidiSync;
 	if (!bSync) {
