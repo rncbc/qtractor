@@ -678,7 +678,7 @@ bool qtractorPluginFactory::Scanner::open ( bool bReset )
 		return false;
 
 	// Open cache file for writing...
-	if (!m_file.open(QIODevice::Append | QIODevice::Text | QIODevice::Truncate))
+	if (!m_file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
 		return false;
 
 	// LV2 plugins are dang special,
