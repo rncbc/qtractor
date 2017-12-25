@@ -40,7 +40,10 @@ qtractorActionControl::MidiObserver::MidiObserver ( QAction *pAction )
 
 	qtractorMidiControlObserver::setSubject(&m_subject);
 	qtractorMidiControlObserver::setHook(true);
-	qtractorMidiControlObserver::setLatch(true);
+	// Enable Latch by default for toggled actions
+	if (m_subject.isToggled()) {
+		qtractorMidiControlObserver::setLatch(true);
+	}
 }
 
 

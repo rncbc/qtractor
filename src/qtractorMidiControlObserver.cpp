@@ -60,7 +60,7 @@ qtractorMidiControlObserver::qtractorMidiControlObserver (
 	qtractorSubject *pSubject ) : qtractorObserver(pSubject),
 		m_ctype(qtractorMidiEvent::CONTROLLER), m_iChannel(0), m_iParam(0),
 		m_bLogarithmic(false), m_bFeedback(false),
-		m_bInvert(false), m_bHook(false), m_bLatch(true),
+		m_bInvert(false), m_bHook(false), m_bLatch(false),
 		m_fMidiValue(0.0f), m_bMidiSync(false), m_pCurveList(NULL)
 {
 }
@@ -104,14 +104,18 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 	const bool bDecimal = qtractorObserver::isDecimal();
 	const bool bToggled = qtractorObserver::isToggled();
 
-	if ((m_bLatch && !bDecimal) || (!m_bLatch && bToggled)) {
-		const float vmax = qtractorObserver::maxValue();
-		const float vmin = qtractorObserver::minValue();
-		const float vmid = 0.5f * (vmax + vmin);
-		if (fValue > vmid)
-			fValue = (m_fMidiValue > vmid ? vmin : vmax);
-		else
-			fValue = (m_fMidiValue < vmid ? vmax : vmin);
+	if (bToggled || !bDecimal) {
+		if (m_bLatch) {
+			// Convert values 0-127/2 to 0 and values 127/2-127 to 1
+			const float vmax = qtractorObserver::maxValue();
+			const float vmin = qtractorObserver::minValue();
+			const float vmid = 0.5f * (vmax + vmin);
+			fValue = (fValue > vmid ? vmax : vmin);
+		}
+		else {
+			// Toggle current value
+			fValue = (qtractorObserver::value() == 1 ? 0 : 1);
+		}
 	}
 
 	bool bSync = (m_bHook || !bDecimal);
