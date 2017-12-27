@@ -107,22 +107,20 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 		const float vmax = qtractorObserver::maxValue();
 		const float vmin = qtractorObserver::minValue();
 		const float vmid = 0.5f * (vmax + vmin);
-		if (m_bLatch) {
-			// Latched / non-momentary...
-			if (bToggled)
+		if (bToggled) {
+			if (m_bLatch) // latched / non-momentary...
 				fValue = (fValue > vmid ? vmax : vmin);
-			else
-			if (fValue > vmid)
-				fValue = (m_fMidiValue > vmid ? vmin : vmax);
-			else
-				fValue = (m_fMidiValue < vmid ? vmax : vmin);
-		} else {
-			// Momentary / non-latched...
+			else // momentary / non-latched...
 			if (fValue > vmid)
 				fValue = (m_fMidiValue > vmid ? vmin : vmax);
 			else
 				fValue = m_fMidiValue;
 		}
+		else // triggered / one-shot...
+		if (fValue > vmid)
+			fValue = (m_fMidiValue > vmid ? vmin : vmax);
+		else
+			fValue = (m_fMidiValue < vmid ? vmax : vmin);
 	}
 
 	bool bSync = (m_bHook || !qtractorObserver::isDecimal());
