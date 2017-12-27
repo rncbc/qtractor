@@ -5203,8 +5203,11 @@ void qtractorMainForm::transportBackward (void)
 	checkRestartSession();
 
 	// Move playhead to edit-tail, head or full session-start.
-	if (QApplication::keyboardModifiers()
-		& (Qt::ShiftModifier | Qt::ControlModifier)) {
+	bool bShiftKeyModifier = QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier);
+	if (m_pOptions && m_pOptions->bShiftKeyModifier)
+		bShiftKeyModifier = !bShiftKeyModifier;
+	if (bShiftKeyModifier) {
 		m_pSession->setPlayHead(0);
 	} else {
 		m_pSession->setPlayHead(playHeadBackward());
@@ -5227,10 +5230,11 @@ void qtractorMainForm::transportRewind (void)
 		return;
 
 	// Rolling direction and speed (negative)...
-	int iRolling = -1;
-	if (QApplication::keyboardModifiers()
-		& (Qt::ShiftModifier | Qt::ControlModifier))
-		iRolling -= 2;
+	bool bShiftKeyModifier = QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier);
+	if (m_pOptions && m_pOptions->bShiftKeyModifier)
+		bShiftKeyModifier = !bShiftKeyModifier;
+	const int iRolling = (bShiftKeyModifier ? -3 : -1);
 
 	// Toggle rolling backward...
 	if (setRolling(iRolling) < 0) {
@@ -5259,10 +5263,11 @@ void qtractorMainForm::transportFastForward (void)
 		return;
 
 	// Rolling direction and speed (positive)...
-	int iRolling = +1;
-	if (QApplication::keyboardModifiers()
-		& (Qt::ShiftModifier | Qt::ControlModifier))
-		iRolling += 2;
+	bool bShiftKeyModifier = QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier);
+	if (m_pOptions && m_pOptions->bShiftKeyModifier)
+		bShiftKeyModifier = !bShiftKeyModifier;
+	const int iRolling = (bShiftKeyModifier ? +3 : +1);
 
 	// Toggle rolling backward...
 	if (setRolling(iRolling) > 0) {
@@ -5290,8 +5295,11 @@ void qtractorMainForm::transportForward (void)
 	checkRestartSession();
 
 	// Move playhead to edit-head, tail or full session-end.
-	if (QApplication::keyboardModifiers()
-		& (Qt::ShiftModifier | Qt::ControlModifier)) {
+	bool bShiftKeyModifier = QApplication::keyboardModifiers()
+		& (Qt::ShiftModifier | Qt::ControlModifier);
+	if (m_pOptions && m_pOptions->bShiftKeyModifier)
+		bShiftKeyModifier = !bShiftKeyModifier;
+	if (bShiftKeyModifier) {
 		m_pSession->setPlayHead(m_pSession->sessionEnd());
 	} else {
 		m_pSession->setPlayHead(playHeadForward());

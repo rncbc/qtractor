@@ -210,6 +210,7 @@ void qtractorOptions::loadOptions (void)
 	bPluginActivate = m_settings.value("/PluginActivate", false).toBool();
 	iCurveMode      = m_settings.value("/CurveMode", 0).toInt();
 	iEditRangeOptions = m_settings.value("/EditRangeOptions", 3).toInt();
+	bShiftKeyModifier = m_settings.value("/ShiftKeyModifier", false).toBool();
 	bMidButtonModifier = m_settings.value("/MidButtonModifier", false).toBool();
 	bMidiControlSync = m_settings.value("/MidiControlSync", false).toBool();
 	bExportAddTrack = m_settings.value("/ExportAddTrack", false).toBool();
@@ -504,6 +505,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/PluginActivate", bPluginActivate);
 	m_settings.setValue("/CurveMode", iCurveMode);
 	m_settings.setValue("/EditRangeOptions", iEditRangeOptions);
+	m_settings.setValue("/ShiftKeyModifier", bShiftKeyModifier);
 	m_settings.setValue("/MidButtonModifier", bMidButtonModifier);
 	m_settings.setValue("/MidiControlSync", bMidiControlSync);
 	m_settings.setValue("/ExportAddTrack", bExportAddTrack);
