@@ -383,37 +383,37 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="837"/>
+        <location filename="../qtractorTrackCommand.cpp" line="842"/>
         <source>track record</source>
         <translation>запись дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="840"/>
+        <location filename="../qtractorTrackCommand.cpp" line="845"/>
         <source>track mute</source>
         <translation>приглушение дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="843"/>
+        <location filename="../qtractorTrackCommand.cpp" line="848"/>
         <source>track solo</source>
         <translation>солирование дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1017"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1022"/>
         <source>track monitor</source>
         <translation>мониторинг дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1118"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1123"/>
         <source>track gain</source>
         <translation>усиление дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1207"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1212"/>
         <source>track pan</source>
         <translation>панорама дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1294"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1299"/>
         <source>track instrument</source>
         <translation type="unfinished"></translation>
     </message>
