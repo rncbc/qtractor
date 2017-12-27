@@ -9712,6 +9712,11 @@ Sei sicuro?</translation>
         <translation>Caricare file audio multipli nella stessa traccia</translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="470"/>
+        <source>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="486"/>
         <source>Whether to reverse mouse middle-button role on keyboard modifiers (Shift/Ctrl)</source>
         <translation>Se invertire il comportamento del bottone centrale del mouse tramite modificatori da tastiera (Shift/Ctrl)</translation>
@@ -10526,11 +10531,6 @@ Sei sicuro?</translation>
         <location filename="../qtractorOptionsForm.ui" line="330"/>
         <source>C&amp;onfirm archive removals</source>
         <translation>C&amp;onferma rimozione di archivi</translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="470"/>
-        <source>Whether to reverse keyboard modifiers role on play-head positioning (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="473"/>

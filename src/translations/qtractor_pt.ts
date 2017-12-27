@@ -9699,11 +9699,6 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Vol.:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="470"/>
-        <source>Whether to reverse keyboard modifiers role on play-head positioning (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="473"/>
         <source>Reverse &amp;keyboard modifiers role (Shift/Ctrl)</source>
         <translation type="unfinished"></translation>
@@ -9945,6 +9940,11 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <location filename="../qtractorOptionsForm.ui" line="330"/>
         <source>C&amp;onfirm archive removals</source>
         <translation>&amp;Confirmar a remoção de pastas</translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="470"/>
+        <source>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="597"/>

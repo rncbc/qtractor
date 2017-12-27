@@ -9594,6 +9594,11 @@ Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="470"/>
+        <source>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="486"/>
         <source>Whether to reverse mouse middle-button role on keyboard modifiers (Shift/Ctrl)</source>
         <translation type="unfinished"></translation>
@@ -10407,11 +10412,6 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="330"/>
         <source>C&amp;onfirm archive removals</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.ui" line="470"/>
-        <source>Whether to reverse keyboard modifiers role on play-head positioning (Shift/Ctrl)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

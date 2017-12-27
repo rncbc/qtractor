@@ -9719,7 +9719,7 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="470"/>
-        <source>Whether to reverse keyboard modifiers role on play-head positioning (Shift/Ctrl)</source>
+        <source>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

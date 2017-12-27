@@ -10453,11 +10453,6 @@ Chcete použít tyto změny?</translation>
         <translation>Zda se mají uložit zálohovací verze stávajících sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="470"/>
-        <source>Whether to reverse keyboard modifiers role on play-head positioning (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="473"/>
         <source>Reverse &amp;keyboard modifiers role (Shift/Ctrl)</source>
         <translation type="unfinished"></translation>
@@ -10650,6 +10645,11 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="2415"/>
         <source>Whether to hold auto-scrolling (follow play-head) on edits.</source>
         <translation>Zda při úpravách podržet automatické projíždění (sledovat polohu přehrávání).</translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="470"/>
+        <source>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1348"/>

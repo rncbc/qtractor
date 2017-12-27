@@ -9721,11 +9721,6 @@ Are you sure?</source>
         <translation>複数の音声ファイルを同じトラックにドロップ(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="470"/>
-        <source>Whether to reverse keyboard modifiers role on play-head positioning (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="473"/>
         <source>Reverse &amp;keyboard modifiers role (Shift/Ctrl)</source>
         <translation type="unfinished"></translation>
@@ -9946,6 +9941,11 @@ Are you sure?</source>
         <location filename="../qtractorOptionsForm.ui" line="958"/>
         <source>Whether to apply WSOLA quick seek time-stretching</source>
         <translation>WSOLAクイックシークタイムストレッチングを適用するかどうか</translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="470"/>
+        <source>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="961"/>

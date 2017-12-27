@@ -9722,11 +9722,6 @@ existantes :</translation>
         <translation>C&amp;onfirmer les suppressions d&apos;archives</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="470"/>
-        <source>Whether to reverse keyboard modifiers role on play-head positioning (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="473"/>
         <source>Reverse &amp;keyboard modifiers role (Shift/Ctrl)</source>
         <translation type="unfinished"></translation>
@@ -9932,6 +9927,11 @@ existantes :</translation>
         <location filename="../qtractorOptionsForm.ui" line="958"/>
         <source>Whether to apply WSOLA quick seek time-stretching</source>
         <translation>Si on doit appliquer la recherche rapide WSOLA pour l&apos;étirement temporel</translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="470"/>
+        <source>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="961"/>
