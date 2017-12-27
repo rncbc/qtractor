@@ -206,11 +206,11 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 	m_ui.InvertCheckBox->setChecked(m_pMidiObserver->isInvert());
 	m_ui.InvertCheckBox->setEnabled(true);
 
-	m_ui.HookCheckBox->setChecked(m_pMidiObserver->isHook() && bDecimal);
+	m_ui.HookCheckBox->setChecked(m_pMidiObserver->isHook());
 	m_ui.HookCheckBox->setEnabled(bDecimal);
 
-	m_ui.LatchCheckBox->setChecked(m_pMidiObserver->isLatch() && bToggled);
-	m_ui.LatchCheckBox->setEnabled(bToggled && !m_pMidiObserver->isInteger());
+	m_ui.LatchCheckBox->setChecked(m_pMidiObserver->isLatch());
+	m_ui.LatchCheckBox->setEnabled(bToggled);
 
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();

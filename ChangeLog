@@ -12,8 +12,8 @@ GIT HEAD
 - LXVST_PATH environment variable now takes precedence over
   VST_PATH as Linux-native VST plug-ins search path.
 
-- MIDI Controller mapped shortcuts now working as one-shot,
-  latched/toggled trigger, independent of MIDI event value.
+- MIDI Controllers mapped to non-toggling shortcuts now work
+  as one-shot triggers, independent of MIDI event value.
 
 
 0.8.5  2017-12-04  Autumn'17 Beta.

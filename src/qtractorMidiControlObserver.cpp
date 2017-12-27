@@ -1,7 +1,7 @@
 // qtractorMidiControlObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -60,7 +60,7 @@ qtractorMidiControlObserver::qtractorMidiControlObserver (
 	qtractorSubject *pSubject ) : qtractorObserver(pSubject),
 		m_ctype(qtractorMidiEvent::CONTROLLER), m_iChannel(0), m_iParam(0),
 		m_bLogarithmic(false), m_bFeedback(false),
-		m_bInvert(false), m_bHook(false), m_bLatch(true),
+		m_bInvert(false), m_bHook(false), m_bLatch(true), m_bTriggered(false),
 		m_fMidiValue(0.0f), m_bMidiSync(false), m_pCurveList(NULL)
 {
 }
@@ -101,20 +101,31 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 		= float(m_bInvert ? iScale - iValue : iValue) / float(iScale);
 	float fValue = valueFromScale(fScale, m_bLogarithmic);
 
-	const bool bDecimal = qtractorObserver::isDecimal();
 	const bool bToggled = qtractorObserver::isToggled();
 
-	if ((m_bLatch && !bDecimal) || (!m_bLatch && bToggled)) {
+	if (bToggled || m_bTriggered) {
 		const float vmax = qtractorObserver::maxValue();
 		const float vmin = qtractorObserver::minValue();
 		const float vmid = 0.5f * (vmax + vmin);
-		if (fValue > vmid)
-			fValue = (m_fMidiValue > vmid ? vmin : vmax);
-		else
-			fValue = (m_fMidiValue < vmid ? vmax : vmin);
+		if (m_bLatch) {
+			// Latched / non-momentary...
+			if (bToggled)
+				fValue = (fValue > vmid ? vmax : vmin);
+			else
+			if (fValue > vmid)
+				fValue = (m_fMidiValue > vmid ? vmin : vmax);
+			else
+				fValue = (m_fMidiValue < vmid ? vmax : vmin);
+		} else {
+			// Momentary / non-latched...
+			if (fValue > vmid)
+				fValue = (m_fMidiValue > vmid ? vmin : vmax);
+			else
+				fValue = m_fMidiValue;
+		}
 	}
 
-	bool bSync = (m_bHook || !bDecimal);
+	bool bSync = (m_bHook || !qtractorObserver::isDecimal());
 	if (!bSync)
 		bSync = m_bMidiSync;
 	if (!bSync) {

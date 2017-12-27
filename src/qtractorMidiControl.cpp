@@ -712,7 +712,7 @@ void qtractorMidiControl::loadControllers (
 			pController->feedback = false;
 			pController->invert = false;
 			pController->hook = false;
-			pController->latch = true;
+			pController->latch = false;
 			for (QDomNode nProp = eController.firstChild();
 					!nProp.isNull(); nProp = nProp.nextSibling()) {
 				// Convert node to element, if any.
