@@ -1820,17 +1820,23 @@ bool qtractorSession::canTrackBeAutoDeactivated ( qtractorTrack *pTrack ) const
 	if (pCurveList)
 		bAutomationActive = pCurveList->isProcess() || pCurveList->isCapture();
 
-	// No Auto-plugin-deactivation active automation
+	// No Auto-plugin-deactivation when automation active
 	// Note: freewheeling case is done the hard way by disabling
 	// auto-deactivate as whole - see qtractorMainForm::trackExportAudio
 	if (!bAutomationActive) {
 		if (isPlaying()) {
-			// TBD: We know when clips start/end. So if 'just' need a
-			// clever song pos synced call of autoPluginsDeactivate
-			bool bMute = pTrack->isMute();
-			if(!bMute)
-				bMute = m_iSoloTracks > 0 && !pTrack->isSolo();
-			bCanBeDeactivated = !isTrackMonitor(pTrack) && bMute;
+			// Monitored and recording tracks cannot be deactivated
+			if(!isTrackMonitor(pTrack) && !pTrack->isRecord()) {
+				bool bMute = pTrack->isMute();
+				if(!bMute)
+					bMute = m_iSoloTracks > 0 && !pTrack->isSolo();
+				// TBD: We know when clips start/end. So we 'just' need a
+				// clever song pos synced call of autoPluginsDeactivate
+				// For now only check if track contains clips.
+				bool bHasClips = pTrack->clips().count() > 0;
+				if (bMute || !bHasClips)
+					bCanBeDeactivated = true;
+			}
 		} else {
 			bCanBeDeactivated = !isTrackMonitor(pTrack);
 		}

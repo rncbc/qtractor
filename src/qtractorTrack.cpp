@@ -765,6 +765,8 @@ void qtractorTrack::setRecord ( bool bRecord )
 
 	m_pRecordSubject->setValue(bRecord ? 1.0f : 0.0f);
 
+	m_pSession->autoDeactivatePlugins();
+
 	if (m_pSession->isRecording()) {
 		unsigned long iClipStart = m_pSession->playHead();
 		if (m_pSession->isPunching()) {
