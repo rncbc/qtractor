@@ -785,6 +785,11 @@ bool qtractorEditTrackCommand::redo (void)
 			pClip->open();
 	}
 
+	// Mixer turn...
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer)
+		pMixer->updateTracks(true);
+
 	// Finally update any outstanding clip editors...
 	m_pTrack->updateClipEditors();
 

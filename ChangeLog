@@ -4,6 +4,18 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- VST Time/Transport information is now also updated as on
+  playing when in audio export aka. freewheeling mode.
+
+- LXVST_PATH environment variable now takes precedence over
+  VST_PATH as Linux-native VST plug-ins search path.
+
+- MIDI Controllers mapped to non-toggling shortcuts now work
+  as one-shot triggers, independent of MIDI event value.
+
+
 0.8.5  2017-12-04  Autumn'17 Beta.
 
 - Audio clip gain and panning properties are now taken into
@@ -30,7 +42,7 @@ ChangeLog
   absolute first half-a-second (<0.5sec).
   
 - LV2 Time/Transport speed information is now set on rolling
-  when in audio export aka freewheeling mode.
+  when in audio export aka. freewheeling mode.
 
 - Added *.SF3 to soundfont instrument files filter, on View 
   > Instruments... > Import... file dialog.

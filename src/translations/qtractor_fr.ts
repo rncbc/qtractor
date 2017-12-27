@@ -645,37 +645,37 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="837"/>
+        <location filename="../qtractorTrackCommand.cpp" line="842"/>
         <source>track record</source>
         <translation>piste enregistrer</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="840"/>
+        <location filename="../qtractorTrackCommand.cpp" line="845"/>
         <source>track mute</source>
         <translation>piste muet</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="843"/>
+        <location filename="../qtractorTrackCommand.cpp" line="848"/>
         <source>track solo</source>
         <translation>piste solo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1017"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1022"/>
         <source>track monitor</source>
         <translation>piste contrôler</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1118"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1123"/>
         <source>track gain</source>
         <translation>piste gain</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1207"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1212"/>
         <source>track pan</source>
         <translation>piste panoramique</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1294"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1299"/>
         <source>track instrument</source>
         <translation>piste instrument</translation>
     </message>
@@ -10437,7 +10437,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2587"/>
         <source>Meters</source>
-        <translation>Mètres</translation>
+        <translation>Mesureurs</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2602"/>

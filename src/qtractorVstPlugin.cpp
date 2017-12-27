@@ -1628,13 +1628,14 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	//	VST_HC_DEBUG("audioMasterGetTime");
 		if (pSession) {
 			::memset(&s_vstTimeInfo, 0, sizeof(s_vstTimeInfo));
-			unsigned long iPlayHead = pSession->playHead();
+			const unsigned long iPlayHead = pSession->playHead();
 			qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 			qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
 			s_vstTimeInfo.samplePos = double(iPlayHead);
 			s_vstTimeInfo.sampleRate = double(pSession->sampleRate());
 			s_vstTimeInfo.flags = 0;
-			if (pSession->isPlaying())
+			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+			if (pSession->isPlaying() || (pAudioEngine && pAudioEngine->isFreewheel()))
 				s_vstTimeInfo.flags |= (kVstTransportChanged | kVstTransportPlaying);
 			if (pNode) {
 				unsigned short bars  = 0;

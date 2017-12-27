@@ -172,9 +172,14 @@ void qtractorPluginFactory::updatePluginPaths (void)
 	if (pOptions)
 		vst_paths = pOptions->vstPaths;
 	if (vst_paths.isEmpty()) {
-		QString sVstPaths = ::getenv("VST_PATH");
+		QString sVstPaths = ::getenv("LXVST_PATH");
 		if (sVstPaths.isEmpty())
-			sVstPaths = default_paths("vst");
+			sVstPaths = ::getenv("VST_PATH");
+		if (sVstPaths.isEmpty()) {
+			sVstPaths  = default_paths("lxvst");
+			sVstPaths += PATH_SEP;
+			sVstPaths += default_paths("vst");
+		}
 		vst_paths = sVstPaths.split(PATH_SEP);
 	}
 	m_paths.insert(qtractorPluginType::Vst, vst_paths);
@@ -673,7 +678,7 @@ bool qtractorPluginFactory::Scanner::open ( bool bReset )
 		return false;
 
 	// Open cache file for writing...
-	if (!m_file.open(QIODevice::Append | QIODevice::Text | QIODevice::Truncate))
+	if (!m_file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
 		return false;
 
 	// LV2 plugins are dang special,
