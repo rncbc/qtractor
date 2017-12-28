@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Add MMC Track input monitor support. (EXPERIMENTAL)
+
 - New user preference option: View/Options.../General/Options
   /Reverse keyboard modifiers role (Shift/Ctrl), applied to
   main transport re-positioning commands: Trasnport/Backward,

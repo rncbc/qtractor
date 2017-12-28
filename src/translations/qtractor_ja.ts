@@ -2989,7 +2989,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="911"/>
         <location filename="../qtractorMainForm.ui" line="2919"/>
-        <location filename="../qtractorMainForm.cpp" line="6911"/>
+        <location filename="../qtractorMainForm.cpp" line="6914"/>
         <source>&amp;None</source>
         <translation>なし(&amp;N)</translation>
     </message>
@@ -5410,7 +5410,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="632"/>
-        <location filename="../qtractorMainForm.cpp" line="6194"/>
+        <location filename="../qtractorMainForm.cpp" line="6197"/>
         <source>MOD</source>
         <translation>変更</translation>
     </message>
@@ -5421,7 +5421,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="641"/>
-        <location filename="../qtractorMainForm.cpp" line="6199"/>
+        <location filename="../qtractorMainForm.cpp" line="6202"/>
         <source>REC</source>
         <translation>記録</translation>
     </message>
@@ -5432,7 +5432,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="650"/>
-        <location filename="../qtractorMainForm.cpp" line="6204"/>
+        <location filename="../qtractorMainForm.cpp" line="6207"/>
         <source>MUTE</source>
         <translation>ミュート</translation>
     </message>
@@ -5443,7 +5443,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="659"/>
-        <location filename="../qtractorMainForm.cpp" line="6209"/>
+        <location filename="../qtractorMainForm.cpp" line="6212"/>
         <source>SOLO</source>
         <translation>ソロ</translation>
     </message>
@@ -5454,7 +5454,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="668"/>
-        <location filename="../qtractorMainForm.cpp" line="6214"/>
+        <location filename="../qtractorMainForm.cpp" line="6217"/>
         <source>LOOP</source>
         <translation>ループ</translation>
     </message>
@@ -5498,7 +5498,7 @@ Sorry.</source>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1912"/>
-        <location filename="../qtractorMainForm.cpp" line="7858"/>
+        <location filename="../qtractorMainForm.cpp" line="7861"/>
         <source>Untitled%1</source>
         <translation>タイトルなし%1</translation>
     </message>
@@ -5550,7 +5550,7 @@ Sorry.</source>
         <location filename="../qtractorMainForm.cpp" line="2898"/>
         <location filename="../qtractorMainForm.cpp" line="4066"/>
         <location filename="../qtractorMainForm.cpp" line="4168"/>
-        <location filename="../qtractorMainForm.cpp" line="6435"/>
+        <location filename="../qtractorMainForm.cpp" line="6438"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
@@ -5852,12 +5852,12 @@ next time you start this %1.</source>
         <translation>JACK Metadata サポートは無効です。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6219"/>
+        <location filename="../qtractorMainForm.cpp" line="6222"/>
         <source>XRUN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6436"/>
+        <location filename="../qtractorMainForm.cpp" line="6439"/>
         <source>The following issues were detected:
 
 %1
@@ -5870,7 +5870,7 @@ Saving into another session file is highly recommended.</source>
 別なセッションファイルに保存してください。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7768"/>
+        <location filename="../qtractorMainForm.cpp" line="7771"/>
         <source>The audio engine buffer size has changed,
 increased from %1 to %2 frames/period.
 
@@ -5978,22 +5978,22 @@ is highly recommended.</source>
         <translation>クリップの録音</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6097"/>
+        <location filename="../qtractorMainForm.cpp" line="6100"/>
         <source>[modified]</source>
         <translation>[変更されています]</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6227"/>
+        <location filename="../qtractorMainForm.cpp" line="6230"/>
         <source>%1 Hz</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6319"/>
+        <location filename="../qtractorMainForm.cpp" line="6322"/>
         <source>Session started.</source>
         <translation>セッションは開始しました。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6410"/>
+        <location filename="../qtractorMainForm.cpp" line="6413"/>
         <source>The original session sample rate (%1 Hz)
 is not the same as the current audio engine (%2 Hz).
 
@@ -6005,7 +6005,7 @@ is highly recommended.</source>
 セッションを保存し、再度起動することをおすすめします。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6324"/>
+        <location filename="../qtractorMainForm.cpp" line="6327"/>
         <source>The audio/MIDI engine could not be started.
 
 Make sure the JACK audio server (jackd) and/or
@@ -6039,63 +6039,63 @@ ALSAシーケンサーカーネルモジュール (snd-seq-midi) が
         <translation>NSMサポートは無効です。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7027"/>
+        <location filename="../qtractorMainForm.cpp" line="7030"/>
         <source>&amp;Hold</source>
         <translation>ホールド(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7032"/>
+        <location filename="../qtractorMainForm.cpp" line="7035"/>
         <source>&amp;Linear</source>
         <translation>リニア(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7038"/>
+        <location filename="../qtractorMainForm.cpp" line="7041"/>
         <source>&amp;Spline</source>
         <translation>スプライン(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7155"/>
+        <location filename="../qtractorMainForm.cpp" line="7158"/>
         <source>Take %1</source>
         <translation>テイク %1</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2922"/>
-        <location filename="../qtractorMainForm.cpp" line="7162"/>
+        <location filename="../qtractorMainForm.cpp" line="7165"/>
         <source>None</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7252"/>
+        <location filename="../qtractorMainForm.cpp" line="7255"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7559"/>
+        <location filename="../qtractorMainForm.cpp" line="7562"/>
         <source>XRUN(%1 skipped)</source>
         <translation>XRUN(%1スキップ)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7564"/>
+        <location filename="../qtractorMainForm.cpp" line="7567"/>
         <source>XRUN(%1): some frames might have been lost.</source>
         <translation>XRUN(%1): いくつかのフレームが失われました。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7581"/>
+        <location filename="../qtractorMainForm.cpp" line="7584"/>
         <source>Audio connections change.</source>
         <translation>音声接続が変更されました。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7596"/>
+        <location filename="../qtractorMainForm.cpp" line="7599"/>
         <source>MIDI connections change.</source>
         <translation>MIDI接続が変更されました。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7618"/>
+        <location filename="../qtractorMainForm.cpp" line="7621"/>
         <source>Playing ended.</source>
         <translation>再生が終了しました。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7693"/>
+        <location filename="../qtractorMainForm.cpp" line="7696"/>
         <source>The audio engine has been shutdown.
 
 Make sure the JACK audio server (jackd)
@@ -6106,120 +6106,120 @@ JACK音声サーバー(jackd)が起動し実行されているなら
 セッションを再始動してください。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7926"/>
-        <location filename="../qtractorMainForm.cpp" line="8096"/>
+        <location filename="../qtractorMainForm.cpp" line="7929"/>
+        <location filename="../qtractorMainForm.cpp" line="8099"/>
         <source>STOP</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7933"/>
+        <location filename="../qtractorMainForm.cpp" line="7936"/>
         <source>PLAY</source>
         <translation>再生</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7937"/>
+        <location filename="../qtractorMainForm.cpp" line="7940"/>
         <source>FFWD</source>
         <translation>進む</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7941"/>
+        <location filename="../qtractorMainForm.cpp" line="7944"/>
         <source>REW</source>
         <translation>戻る</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7946"/>
+        <location filename="../qtractorMainForm.cpp" line="7949"/>
         <source>REC ON</source>
         <translation>録音オン</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7954"/>
+        <location filename="../qtractorMainForm.cpp" line="7957"/>
         <source>REC OFF</source>
         <translation>録音オフ</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7958"/>
+        <location filename="../qtractorMainForm.cpp" line="7961"/>
         <source>RESET</source>
         <translation>リセット</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7962"/>
+        <location filename="../qtractorMainForm.cpp" line="7965"/>
         <source>LOCATE %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7966"/>
+        <location filename="../qtractorMainForm.cpp" line="7969"/>
         <source>SHUTTLE %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7970"/>
+        <location filename="../qtractorMainForm.cpp" line="7973"/>
         <source>STEP %1</source>
         <translation>ステップ %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7976"/>
+        <location filename="../qtractorMainForm.cpp" line="7979"/>
         <source>TRACK RECORD %1 %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7981"/>
+        <location filename="../qtractorMainForm.cpp" line="7984"/>
         <source>TRACK MUTE %1 %2</source>
         <translation>トラック ミュート %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7986"/>
+        <location filename="../qtractorMainForm.cpp" line="7989"/>
         <source>TRACK SOLO %1 %2</source>
         <translation>トラック ソロ %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7991"/>
+        <location filename="../qtractorMainForm.cpp" line="7994"/>
         <source>Unknown sub-command</source>
         <translation>不明なサブコマンドです</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7997"/>
-        <location filename="../qtractorMainForm.cpp" line="8110"/>
+        <location filename="../qtractorMainForm.cpp" line="8000"/>
+        <location filename="../qtractorMainForm.cpp" line="8113"/>
         <source>Not implemented</source>
         <translation>実装されていません</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8009"/>
+        <location filename="../qtractorMainForm.cpp" line="8012"/>
         <source>MIDI CTL: %1, Channel %2, Param %3, Value %4</source>
         <translation>MIDI コントロール: %1, チャンネル %2, パラメーター %3, 値 %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8055"/>
+        <location filename="../qtractorMainForm.cpp" line="8058"/>
         <source>(track %1, gain %2)</source>
         <translation>(トラック %1, ゲイン %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8074"/>
+        <location filename="../qtractorMainForm.cpp" line="8077"/>
         <source>(track %1, panning %2)</source>
         <translation>(トラック %1, パン %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8091"/>
+        <location filename="../qtractorMainForm.cpp" line="8094"/>
         <source>START</source>
         <translation>開始</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8102"/>
+        <location filename="../qtractorMainForm.cpp" line="8105"/>
         <source>CONTINUE</source>
         <translation>継続</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8106"/>
+        <location filename="../qtractorMainForm.cpp" line="8109"/>
         <source>SONGPOS %1</source>
         <translation>ソングポジション %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8123"/>
+        <location filename="../qtractorMainForm.cpp" line="8126"/>
         <source>%1 BPM</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8197"/>
-        <location filename="../qtractorMainForm.cpp" line="8254"/>
+        <location filename="../qtractorMainForm.cpp" line="8200"/>
+        <location filename="../qtractorMainForm.cpp" line="8257"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>&quot;%1&quot;を再生...</translation>
     </message>
