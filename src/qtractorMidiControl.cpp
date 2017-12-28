@@ -132,43 +132,44 @@ void qtractorMidiControl::clearControlMap (void)
 // Insert new controller mappings.
 void qtractorMidiControl::mapChannelParam (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	unsigned short iParamLimit, Command command, int iTrack, bool bFeedback )
 {
 	m_controlMap.insert(
-		MapKey(ctype, iChannel, iParam),
+		MapKey(ctype, iChannel, iParam, iParamLimit),
 		MapVal(command, iTrack, bFeedback));
 }
 
 void qtractorMidiControl::mapChannelTrack (
 	ControlType ctype, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	unsigned short iParamLimit, Command command,
+	int iTrack, bool bFeedback )
 {
 	mapChannelParam(
-		ctype, TrackParam, iParam, command, iTrack, bFeedback);
+		ctype, TrackParam, iParam, iParamLimit, command, iTrack, bFeedback);
 }
 
 void qtractorMidiControl::mapChannelParamTrack (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	unsigned short iParamLimit, Command command, int iTrack, bool bFeedback )
 {
 	mapChannelParam(
-		ctype, iChannel, iParam | TrackParam, command, iTrack, bFeedback);
+		ctype, iChannel, iParam | TrackParam, iParamLimit, command, iTrack, bFeedback);
 }
 
 
 // Remove existing controller mapping.
 void qtractorMidiControl::unmapChannelParam (
-	ControlType ctype, unsigned short iChannel, unsigned short iParam )
+	ControlType ctype, unsigned short iChannel, unsigned short iParam, unsigned short iParamLimit )
 {
-	m_controlMap.remove(MapKey(ctype, iChannel, iParam));
+	m_controlMap.remove(MapKey(ctype, iChannel, iParam, iParamLimit));
 }
 
 
 // Check if given channel, param triplet is currently mapped.
 bool qtractorMidiControl::isChannelParamMapped (
-	ControlType ctype, unsigned short iChannel, unsigned short iParam ) const
+	ControlType ctype, unsigned short iChannel, unsigned short iParam, unsigned short iParamLimit ) const
 {
-	return m_controlMap.contains(MapKey(ctype, iChannel, iParam));
+	return m_controlMap.contains(MapKey(ctype, iChannel, iParam, iParamLimit));
 }
 
 
@@ -577,6 +578,7 @@ bool qtractorMidiControl::loadElement (
 			const unsigned short iChannel
 				= keyFromText(eItem.attribute("channel"));
 			unsigned short iParam = 0;
+			unsigned short iParamLimit = 0;
 			const bool bOldMap = (ctype == ControlType(0));
 			bool bOldTrackParam = false;
 			if (bOldMap) {
@@ -587,6 +589,7 @@ bool qtractorMidiControl::loadElement (
 				iParam = eItem.attribute("param").toUShort();
 				if (qtractorDocument::boolFromText(eItem.attribute("track")))
 					iParam |= TrackParam;
+				iParamLimit = eItem.attribute("paramLimit").toUShort();
 			}
 			Command command = Command(0);
 			int iTrack = 0;
@@ -616,7 +619,7 @@ bool qtractorMidiControl::loadElement (
 				}
 			}
 			m_controlMap.insert(
-				MapKey(ctype, iChannel, iParam),
+				MapKey(ctype, iChannel, iParam, iParamLimit),
 				MapVal(command, iTrack, bFeedback));
 		}
 	}
@@ -641,6 +644,8 @@ bool qtractorMidiControl::saveElement (
 			textFromKey(key.channel()));
 		eItem.setAttribute("param",
 			QString::number(key.param() & TrackParamMask));
+		eItem.setAttribute("paramLimit",
+			QString::number(key.paramLimit()));
 		eItem.setAttribute("track",
 			qtractorDocument::textFromBool(key.isParamTrack()));
 		pDocument->saveTextElement("command",

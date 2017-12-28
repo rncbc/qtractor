@@ -69,8 +69,8 @@ public:
 
 		// Constructor.
 		MapKey(ControlType ctype = qtractorMidiEvent::CONTROLLER,
-			unsigned short iChannel = 0, unsigned short iParam = 0)
-			: m_ctype(ctype), m_iChannel(iChannel), m_iParam(iParam) {}
+			unsigned short iChannel = 0, unsigned short iParam = 0, unsigned short iParamLimit = USHRT_MAX)
+			: m_ctype(ctype), m_iChannel(iChannel), m_iParam(iParam), m_iParamLimit(iParamLimit) {}
 
 		// Type accessors.
 		void setType(ControlType ctype)
@@ -95,18 +95,27 @@ public:
 		unsigned short param() const
 			{ return m_iParam; }
 
+		void setParamLimit(unsigned short iParamLimit)
+			{ m_iParamLimit = iParamLimit; }
+		unsigned short paramLimit() const
+			{ return m_iParamLimit; }
+
 		bool isParam() const
 			{ return ((m_iParam & TrackParamMask ) == m_iParam); }
 		bool isParamTrack() const
 			{ return (m_iParam & TrackParam); }
 
 		// Generic key matcher.
-		bool match(ControlType ctype,
-			unsigned short iChannel, unsigned short iParam) const
+		bool match(ControlType ctype, unsigned short iChannel,
+			unsigned short iParam ) const
 		{
+			// make sure, the parameter is between the base value and the limit
+			const unsigned short iParamBase = (param() & TrackParamMask);
+
 			return (type() == ctype 
 				&& (isChannelTrack() || channel() == iChannel)
-				&& (isParamTrack() || param() == iParam));
+				&& ((isParamTrack() && iParam >= iParamBase && iParam <= paramLimit() )
+					|| param() == iParam ));
 		}
 
 		// Hash/map key comparator.
@@ -114,7 +123,8 @@ public:
 		{
 			return (key.m_ctype == m_ctype)
 				&& (key.m_iChannel == m_iChannel)
-				&& (key.m_iParam == m_iParam);
+				&& (key.m_iParam == m_iParam)
+				&& (key.m_iParamLimit == m_iParamLimit);
 		}
 
 	private:
@@ -123,6 +133,7 @@ public:
 		ControlType    m_ctype;
 		unsigned short m_iChannel;
 		unsigned short m_iParam;
+		unsigned short m_iParamLimit;
 	};
 
 	// MIDI control map data value.
@@ -239,20 +250,25 @@ public:
 	// Insert new controller mappings.
 	void mapChannelParam(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		unsigned short iParamLimit, Command command,
+		int iTrack = 0, bool bFeedback = false);
 	void mapChannelTrack(ControlType ctype, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		unsigned short iParamLimit, Command command,
+		int iTrack = 0, bool bFeedback = false);
 	void mapChannelParamTrack(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		unsigned short iParamLimit, Command command,
+		int iTrack = 0, bool bFeedback = false);
 
 	// Remove existing controller mapping.
 	void unmapChannelParam(ControlType ctype,
-		unsigned short iChannel, unsigned short iParam);
+		unsigned short iChannel, unsigned short iParam,
+		unsigned short iParamLimit);
 
 	// Check if given channel, param triplet is currently mapped.
 	bool isChannelParamMapped(ControlType ctype,
-		unsigned short iChannel, unsigned short iParam) const;
+		unsigned short iChannel, unsigned short iParam,
+		unsigned short iParamLimit) const;
 
 	// Re-send all (track) controllers.
 	void sendAllControllers(int iFirstTrack = 0) const;
