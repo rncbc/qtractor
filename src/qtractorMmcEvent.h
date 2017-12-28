@@ -80,6 +80,7 @@ public:
 	enum SubCommand {
 		TRACK_NONE              = 0x00,
 		TRACK_RECORD            = 0x4f,
+		TRACK_INPUT_MONITOR     = 0x53,
 		TRACK_MUTE              = 0x62,
 		TRACK_SOLO              = 0x66 // Custom-implementation ;)
 	};

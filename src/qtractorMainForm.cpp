@@ -5981,6 +5981,9 @@ void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
 			case qtractorMmcEvent::TRACK_SOLO:
 				pTrack->setSolo(bOn);
 				break;
+			case qtractorMmcEvent::TRACK_INPUT_MONITOR:
+				pTrack->setMonitor(bOn);
+				break;
 			default:
 				break;
 			}
