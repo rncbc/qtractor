@@ -5884,6 +5884,11 @@ Le rechargement du fichier de session courant
 est hautement recommandé.</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="7994"/>
+        <source>TRACK MONITOR %1 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="471"/>
         <source>Set current snap to %1</source>
         <translation>Placer l&apos;accroche courante sur %1</translation>
@@ -6172,11 +6177,6 @@ est près et en fonctionnement puis redémarrez la session.</translation>
         <location filename="../qtractorMainForm.cpp" line="7989"/>
         <source>TRACK SOLO %1 %2</source>
         <translation>PISTE SOLO %1 %2</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="7994"/>
-        <source>TRACK INPUT MONITOR %1 %2</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7999"/>

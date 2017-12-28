@@ -5885,6 +5885,11 @@ E&apos; altamente consigliato ricaricaricare
 il file della sessione corrente.</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="7994"/>
+        <source>TRACK MONITOR %1 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="471"/>
         <source>Set current snap to %1</source>
         <translation>Imposta allineamento corrente a %1</translation>
@@ -6173,11 +6178,6 @@ sia avviato ed in esecuzione, poi riavvia la sessione.</translation>
         <location filename="../qtractorMainForm.cpp" line="7989"/>
         <source>TRACK SOLO %1 %2</source>
         <translation>SOLO TRACCIA %1 %2</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="7994"/>
-        <source>TRACK INPUT MONITOR %1 %2</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7999"/>

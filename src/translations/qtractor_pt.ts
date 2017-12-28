@@ -3949,6 +3949,11 @@ Desculpe.</translation>
         <translation>Reprodução completada.</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="7994"/>
+        <source>TRACK MONITOR %1 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="8110"/>
         <source>CONTINUE</source>
         <translation>CONTINUAR</translation>
@@ -4691,11 +4696,6 @@ está rodando e reinicie a sessão.</translation>
         <location filename="../qtractorMainForm.cpp" line="6222"/>
         <source>XRUN</source>
         <translation>XRUN</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="7994"/>
-        <source>TRACK INPUT MONITOR %1 %2</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8082"/>

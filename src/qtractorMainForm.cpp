@@ -5981,7 +5981,7 @@ void qtractorMainForm::setTrack ( int scmd, int iTrack, bool bOn )
 			case qtractorMmcEvent::TRACK_SOLO:
 				pTrack->setSolo(bOn);
 				break;
-			case qtractorMmcEvent::TRACK_INPUT_MONITOR:
+			case qtractorMmcEvent::TRACK_MONITOR:
 				pTrack->setMonitor(bOn);
 				break;
 			default:
@@ -7990,8 +7990,8 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 				.arg(mmce.track())
 				.arg(mmce.isOn());
 			break;
-		case qtractorMmcEvent::TRACK_INPUT_MONITOR:
-			sMmcText += tr("TRACK INPUT MONITOR %1 %2")
+		case qtractorMmcEvent::TRACK_MONITOR:
+			sMmcText += tr("TRACK MONITOR %1 %2")
 				.arg(mmce.track())
 				.arg(mmce.isOn());
 			break;

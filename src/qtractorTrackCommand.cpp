@@ -1079,7 +1079,7 @@ bool qtractorTrackMonitorCommand::redo (void)
 	const int iTrack = pSession->tracks().find(pTrack);
 	if (pMidiEngine) {
 		pMidiEngine->sendMmcMaskedWrite(
-			qtractorMmcEvent::TRACK_INPUT_MONITOR, iTrack, m_bMonitor);
+			qtractorMmcEvent::TRACK_MONITOR, iTrack, m_bMonitor);
 	}
 
 	// Send MIDI controller command(s)...

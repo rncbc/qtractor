@@ -6048,6 +6048,11 @@ Guardar en otro archivo de sesión es muy recomendable.</translation>
         <translation>Toma %1</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="7994"/>
+        <source>TRACK MONITOR %1 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.ui" line="2922"/>
         <location filename="../qtractorMainForm.cpp" line="7165"/>
         <source>None</source>
@@ -6172,11 +6177,6 @@ el archivo de sesión actual.</translation>
         <location filename="../qtractorMainForm.cpp" line="7989"/>
         <source>TRACK SOLO %1 %2</source>
         <translation>TRACK SOLO %1 %2</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="7994"/>
-        <source>TRACK INPUT MONITOR %1 %2</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7999"/>

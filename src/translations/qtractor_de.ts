@@ -5990,6 +5990,11 @@ Saving into another session file is highly recommended.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="7994"/>
+        <source>TRACK MONITOR %1 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.ui" line="2922"/>
         <location filename="../qtractorMainForm.cpp" line="7165"/>
         <source>None</source>
@@ -6106,11 +6111,6 @@ is highly recommended.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7989"/>
         <source>TRACK SOLO %1 %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="7994"/>
-        <source>TRACK INPUT MONITOR %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

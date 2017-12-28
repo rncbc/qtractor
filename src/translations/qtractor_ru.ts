@@ -2870,11 +2870,6 @@ JACK (jackd) запущен и функционирует,
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7994"/>
-        <source>TRACK INPUT MONITOR %1 %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="7999"/>
         <source>Unknown sub-command</source>
         <translation type="unfinished"></translation>
@@ -3244,6 +3239,11 @@ increased from %1 to %2 frames/period.
 
 Reloading the current session file
 is highly recommended.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="7994"/>
+        <source>TRACK MONITOR %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

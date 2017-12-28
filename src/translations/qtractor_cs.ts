@@ -2879,11 +2879,6 @@ spuštěn a běží, a potom sezení začněte znovu.</translation>
         <translation>SÓLO PRO STOPU %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7994"/>
-        <source>TRACK INPUT MONITOR %1 %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="7999"/>
         <source>Unknown sub-command</source>
         <translation>Neznámý pod-příkaz</translation>
@@ -3294,6 +3289,11 @@ změnila, zvýšila se z %1 na %2 snímků/perioda.
 
 Velmi se doporučuje nahrát nynější soubor se
 sezením znovu.</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="7994"/>
+        <source>TRACK MONITOR %1 %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8205"/>
