@@ -130,6 +130,11 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	m_ui.CommandComboBox->addItem(iconCommand,
 		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_SOLO));
 
+	m_ui.CommandModeComboBox->addItem(
+		qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::SWITCH_BUTTON), qtractorMidiControl::SWITCH_BUTTON);
+	m_ui.CommandModeComboBox->addItem(
+		qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::PUSH_BUTTON), qtractorMidiControl::PUSH_BUTTON);
+
 	m_ui.SyncCheckBox->setChecked(qtractorMidiControl::isSync());
 
 	stabilizeTypeChange();

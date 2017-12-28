@@ -876,6 +876,84 @@ const QString& qtractorMidiControl::nameFromType (
 	return g_controlTypeNames[ctype];
 }
 
+//----------------------------------------------------------------------------
+// MIDI Controller Command Modes Text/Names - Default command mode names
+
+static struct
+{
+	qtractorMidiControl::CommandMode command;
+	const char *text;
+	const char *name;
+} g_aCommandModes[] = {
+
+	{ qtractorMidiControl::SWITCH_BUTTON,  "SWITCH_BUTTON", _TR("Switch Button")    },
+	{ qtractorMidiControl::PUSH_BUTTON,    "PUSH_BUTTON",   _TR("Push Button") },
+	{ qtractorMidiControl::CommandMode(0), NULL,            NULL }
+};
+
+static QHash<qtractorMidiControl::CommandMode, QString> g_commandModeTexts;
+static QHash<QString, qtractorMidiControl::CommandMode> g_textCommandModes;
+
+
+static void initCommandModeTexts (void)
+{
+	if (g_commandModeTexts.isEmpty()) {
+		// Pre-load command-names hash table...
+		for (int i = 0; g_aCommandModes[i].name; ++i) {
+			qtractorMidiControl::CommandMode commandMode = g_aCommandModes[i].command;
+			const QString& sText = QString(g_aCommandModes[i].text);
+			g_commandModeTexts.insert(commandMode, sText);
+			g_textCommandModes.insert(sText, commandMode);
+		}
+	}
+}
+
+static QHash<qtractorMidiControl::CommandMode, QString> g_commandModeNames;
+static QHash<QString, qtractorMidiControl::CommandMode> g_nameCommandModes;
+
+static void initCommandModeNames (void)
+{
+	if (g_commandModeNames.isEmpty()) {
+		// Pre-load command-names hash table...
+		for (int i = 0; g_aCommandModes[i].name; ++i) {
+			qtractorMidiControl::CommandMode commandMode = g_aCommandModes[i].command;
+			const QString& sName = QObject::tr(g_aCommandModes[i].name, "commandModeName");
+			g_commandModeNames.insert(commandMode, sName);
+			g_nameCommandModes.insert(sName, commandMode);
+		}
+	}
+}
+
+qtractorMidiControl::CommandMode qtractorMidiControl::commandModeFromText (
+	const QString& sText )
+{
+	initCommandModeTexts();
+	return g_textCommandModes[sText];
+}
+
+
+const QString& qtractorMidiControl::textFromCommandMode( CommandMode commandMode )
+{
+	initCommandModeTexts();
+
+	return g_commandModeTexts[commandMode];
+}
+
+
+qtractorMidiControl::CommandMode qtractorMidiControl::commandModeFromName (
+	const QString& sName )
+{
+	initCommandModeNames();
+
+	return g_nameCommandModes[sName];
+}
+
+const QString& qtractorMidiControl::nameFromCommandMode ( CommandMode commandMode )
+{
+	initCommandModeNames();
+
+	return g_commandModeNames[commandMode];
+}
 
 //----------------------------------------------------------------------------
 // MIDI Controller Command Text/Names - Default command names hash map.
@@ -960,6 +1038,7 @@ qtractorMidiControl::Command qtractorMidiControl::commandFromText (
 		return Command(0);
 #endif
 }
+
 
 const QString& qtractorMidiControl::textFromCommand ( Command command )
 {

@@ -59,6 +59,12 @@ public:
 		TRACK_SOLO    = 6
 	};
 
+	// Controller command modes.
+	enum CommandMode {
+		SWITCH_BUTTON = 1,
+		PUSH_BUTTON   = 2
+	};
+
 	// Key param masks (wildcard flags).
 	enum { TrackParam = 0x4000, TrackParamMask = 0x3fff };
 
@@ -345,6 +351,12 @@ public:
 
 	static unsigned short keyFromText(const QString& sText);
 	static QString textFromKey(unsigned short iKey);
+
+	static CommandMode commandModeFromText(const QString& sText);
+	static const QString& textFromCommandMode(CommandMode commandMode);
+
+	static CommandMode commandModeFromName(const QString& sName);
+	static const QString& nameFromCommandMode(CommandMode commandMode);
 
 	static Command commandFromText(const QString& sText);
 	static const QString& textFromCommand(Command command);
