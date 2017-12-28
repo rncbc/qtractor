@@ -412,7 +412,7 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 	if (iOldParam >= 0 && iOldParam < m_pControlParamComboBox->count())
 		m_pControlParamComboBox->setCurrentIndex(iOldParam);
 
-	if (m_pControlParamLimitComboBox && iOldParamLimit >= 0 && iOldParamLimit < m_pControlParamLimitComboBox->count())
+	if (m_pControlParamLimitComboBox && iOldParamLimit < m_pControlParamLimitComboBox->count())
 		m_pControlParamLimitComboBox->setCurrentIndex(iOldParamLimit);
 
 	if (m_pControlParamComboBox->isEditable()) {
