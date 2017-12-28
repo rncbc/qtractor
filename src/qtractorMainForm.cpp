@@ -7990,6 +7990,11 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 				.arg(mmce.track())
 				.arg(mmce.isOn());
 			break;
+		case qtractorMmcEvent::TRACK_INPUT_MONITOR:
+			sMmcText += tr("TRACK INPUT MONITOR %1 %2")
+				.arg(mmce.track())
+				.arg(mmce.isOn());
+			break;
 		default:
 			sMmcText += tr("Unknown sub-command");
 			break;
