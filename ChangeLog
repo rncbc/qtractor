@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- An anti-flooding timer is now in place in MIDI Controller
+  assignment (aka. MIDI learn) dialog. (EXPERIMENTAL)
+
 - Add MMC Track input monitor support. (EXPERIMENTAL)
 
 - New user preference option: View/Options.../General/Options
