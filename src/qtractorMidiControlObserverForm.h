@@ -34,6 +34,7 @@ class qtractorCtlEvent;
 
 class QCloseEvent;
 class QAction;
+class QTime;
 
 
 //----------------------------------------------------------------------------
@@ -116,6 +117,9 @@ private:
 	int m_iDirtySetup;
 
 	qtractorMidiControlTypeGroup *m_pControlTypeGroup;
+
+	// Anti-flooding guard timer.
+	QTime *m_pEventTimer;
 
 	// Pseudo-singleton instance.
 	static qtractorMidiControlObserverForm *g_pMidiObserverForm;

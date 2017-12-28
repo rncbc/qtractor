@@ -6,6 +6,16 @@ ChangeLog
 
 GIT HEAD
 
+- An anti-flooding timer is now in place in MIDI Controller
+  assignment (aka. MIDI learn) dialog. (EXPERIMENTAL)
+
+- Add MMC Track input monitor support. (EXPERIMENTAL)
+
+- New user preference option: View/Options.../General/Options
+  /Reverse keyboard modifiers role (Shift/Ctrl), applied to
+  main transport re-positioning commands: Trasnport/Backward,
+  Forward, etc. (EXPERIMENTAL)
+
 - VST Time/Transport information is now also updated as on
   playing when in audio export aka. freewheeling mode.
 

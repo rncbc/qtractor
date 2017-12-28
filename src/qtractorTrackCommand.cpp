@@ -1074,11 +1074,18 @@ bool qtractorTrackMonitorCommand::redo (void)
 	// Set track monitoring...
 	pTrack->setMonitor(m_bMonitor);
 
+	// Send MMC MASKED_WRITE command...
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	const int iTrack = pSession->tracks().find(pTrack);
+	if (pMidiEngine) {
+		pMidiEngine->sendMmcMaskedWrite(
+			qtractorMmcEvent::TRACK_MONITOR, iTrack, m_bMonitor);
+	}
+
 	// Send MIDI controller command(s)...
 	if (midiControlFeedback()) {
 		qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 		if (pMidiControl) {
-			const int iTrack = pSession->tracks().find(pTrack);
 			pMidiControl->processTrackCommand(
 				qtractorMidiControl::TRACK_MONITOR, iTrack, m_bMonitor);
 		}
