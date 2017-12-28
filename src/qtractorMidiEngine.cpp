@@ -2916,7 +2916,7 @@ void qtractorMidiEngine::sendMmcCommand (
 	pSysex[iSysex++] = 0xf0;				// Sysex header.
 	pSysex[iSysex++] = 0x7f;				// Realtime sysex.
 	pSysex[iSysex++] = m_mmcDevice;			// MMC device id.
-	pSysex[iSysex++] = 0x06;				// MMC command mode.
+	pSysex[iSysex++] = 0x07;				// MMC Response.
 	pSysex[iSysex++] = (unsigned char) cmd;	// MMC command code.
 	if (pMmcData && iMmcData > 0) {
 		pSysex[iSysex++] = iMmcData;
