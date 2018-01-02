@@ -130,14 +130,10 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	m_ui.CommandComboBox->addItem(iconCommand,
 		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_SOLO));
 
-	m_ui.CommandModeComboBox->addItem(
-		qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::SWITCH_BUTTON), qtractorMidiControl::SWITCH_BUTTON);
-	m_ui.CommandModeComboBox->addItem(
-		qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::PUSH_BUTTON), qtractorMidiControl::PUSH_BUTTON);
-
 	m_ui.SyncCheckBox->setChecked(qtractorMidiControl::isSync());
 
 	stabilizeTypeChange();
+	stabilizeControlChange();
 
 	refreshFiles();
 	adjustSize();
@@ -180,6 +176,9 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 		SIGNAL(valueChanged(int)),
 		SLOT(valueChangedSlot()));
 	QObject::connect(m_ui.CommandComboBox,
+		SIGNAL(activated(int)),
+		SLOT(commandChangedSlot()));
+	QObject::connect(m_ui.CommandModeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(valueChangedSlot()));
 	QObject::connect(m_ui.FeedbackCheckBox,
@@ -390,11 +389,14 @@ void qtractorMidiControlForm::mapSlot (void)
 	const qtractorMidiControl::Command command
 		= qtractorMidiControl::commandFromName(
 			m_ui.CommandComboBox->currentText());
+	const qtractorMidiControl::CommandMode commandMode
+		= qtractorMidiControl::commandModeFromName(
+			m_ui.CommandModeComboBox->currentText());
 	const int iTrack = m_ui.TrackSpinBox->value();
 	const bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 
 	pMidiControl->mapChannelParam(
-		ctype, iChannel, iParam, iParamLimit, command, iTrack, bFeedback);
+		ctype, iChannel, iParam, iParamLimit, command, commandMode, iTrack, bFeedback);
 
 	m_iDirtyCount = 0;
 	++m_iDirtyMap;
@@ -602,6 +604,46 @@ void qtractorMidiControlForm::stabilizeTypeChange (void)
 	m_pControlTypeGroup->updateControlType();
 }
 
+void qtractorMidiControlForm::commandChangedSlot (){
+	stabilizeControlChange();
+}
+
+void qtractorMidiControlForm::stabilizeControlChange(){
+	QString cName = m_ui.CommandComboBox->currentText();
+	qtractorMidiControl::Command command =
+			qtractorMidiControl::commandFromName( cName);
+	refreshCommandModeComboBox(command);
+
+}
+
+void qtractorMidiControlForm::refreshCommandModeComboBox( qtractorMidiControl::Command command ){
+	m_ui.CommandModeComboBox->clear();
+	switch (command) {
+	case qtractorMidiControl::TRACK_MONITOR:
+	case qtractorMidiControl::TRACK_RECORD:
+	case qtractorMidiControl::TRACK_MUTE:
+	case qtractorMidiControl::TRACK_SOLO:
+		m_ui.CommandModeComboBox->addItem(
+			qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::VALUE), qtractorMidiControl::VALUE);
+		m_ui.CommandModeComboBox->addItem(
+			qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::SWITCH_BUTTON), qtractorMidiControl::SWITCH_BUTTON);
+		m_ui.CommandModeComboBox->addItem(
+			qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::PUSH_BUTTON), qtractorMidiControl::PUSH_BUTTON);
+
+		break;
+	case qtractorMidiControl::TRACK_GAIN:
+	case qtractorMidiControl::TRACK_PANNING:
+		m_ui.CommandModeComboBox->addItem(
+			qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::VALUE), qtractorMidiControl::VALUE);
+		break;
+	default:
+		m_ui.CommandModeComboBox->addItem(
+			qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::VALUE), qtractorMidiControl::VALUE);
+		break;
+	}
+	valueChangedSlot();
+
+}
 
 // Mapping key fields have changed..
 void qtractorMidiControlForm::keyChangedSlot (void)
@@ -704,10 +746,13 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 		qtractorMidiControl::Command command
 			= qtractorMidiControl::commandFromName(
 				m_ui.CommandComboBox->currentText());
+		const qtractorMidiControl::CommandMode commandMode
+			= qtractorMidiControl::commandModeFromName(
+				m_ui.CommandModeComboBox->currentText());
 		int iTrack = m_ui.TrackSpinBox->value();
 		bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 		pMidiControl->mapChannelParam(
-			ctype, iChannel, iParam, iParamLimit, command, iTrack, bFeedback);
+			ctype, iChannel, iParam, iParamLimit, command, commandMode, iTrack, bFeedback);
 		m_iDirtyCount = 0;
 		++m_iDirtyMap;
 		refreshControlMap();
@@ -751,7 +796,10 @@ void qtractorMidiControlForm::stabilizeForm (void)
 			sText.remove(QRegExp("[\\D]*")).toInt());
 		m_ui.CommandComboBox->setCurrentIndex(
 			m_ui.CommandComboBox->findText(pItem->text(5)));
-		m_ui.FeedbackCheckBox->setChecked(pItem->text(6) == tr("Yes"));
+		stabilizeControlChange();
+		m_ui.CommandModeComboBox->setCurrentIndex(
+			m_ui.CommandModeComboBox->findText(pItem->text(6)));
+		m_ui.FeedbackCheckBox->setChecked(pItem->text(7) == tr("Yes"));
 		--m_iUpdating;
 	}
 
@@ -838,7 +886,8 @@ void qtractorMidiControlForm::refreshControlMap (void)
 		pItem->setText(4, sText + QString::number(val.track()));
 		pItem->setIcon(5, iconCommand);
 		pItem->setText(5, qtractorMidiControl::nameFromCommand(val.command()));
-		pItem->setText(6, val.isFeedback() ? tr("Yes") : tr("No"));
+		pItem->setText(6, qtractorMidiControl::nameFromCommandMode(val.commandMode()));
+		pItem->setText(7, val.isFeedback() ? tr("Yes") : tr("No"));
 		items.append(pItem);
 	}
 	m_ui.ControlMapListView->addTopLevelItems(items);

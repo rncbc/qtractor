@@ -63,6 +63,8 @@ protected slots:
 	void keyChangedSlot();
 	void valueChangedSlot();
 
+	void commandChangedSlot();
+
 	void stabilizeForm();
 
 protected:
@@ -70,9 +72,12 @@ protected:
 	void stabilizeTypeChange();
 	void stabilizeKeyChange();
 	void stabilizeValueChange();
+	void stabilizeControlChange();
 
 	void refreshFiles();
 	void refreshControlMap();
+
+	void refreshCommandModeComboBox( qtractorMidiControl::Command command);
 
 	unsigned short channelFromText(const QString& sText) const;
 	QString textFromChannel(unsigned short iChannel) const;

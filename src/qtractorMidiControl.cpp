@@ -132,28 +132,28 @@ void qtractorMidiControl::clearControlMap (void)
 // Insert new controller mappings.
 void qtractorMidiControl::mapChannelParam (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	unsigned short iParamLimit, Command command, int iTrack, bool bFeedback )
+	unsigned short iParamLimit, Command command, CommandMode commandMode, int iTrack, bool bFeedback )
 {
 	m_controlMap.insert(
 		MapKey(ctype, iChannel, iParam, iParamLimit),
-		MapVal(command, iTrack, bFeedback));
+		MapVal(command, commandMode, iTrack, bFeedback));
 }
 
 void qtractorMidiControl::mapChannelTrack (
 	ControlType ctype, unsigned short iParam,
 	unsigned short iParamLimit, Command command,
-	int iTrack, bool bFeedback )
+	CommandMode commandMode, int iTrack, bool bFeedback )
 {
 	mapChannelParam(
-		ctype, TrackParam, iParam, iParamLimit, command, iTrack, bFeedback);
+		ctype, TrackParam, iParam, iParamLimit, command, commandMode, iTrack, bFeedback);
 }
 
 void qtractorMidiControl::mapChannelParamTrack (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	unsigned short iParamLimit, Command command, int iTrack, bool bFeedback )
+	unsigned short iParamLimit, Command command, CommandMode commandMode, int iTrack, bool bFeedback )
 {
 	mapChannelParam(
-		ctype, iChannel, iParam | TrackParam, iParamLimit, command, iTrack, bFeedback);
+		ctype, iChannel, iParam | TrackParam, iParamLimit, command, commandMode, iTrack, bFeedback);
 }
 
 
@@ -592,6 +592,7 @@ bool qtractorMidiControl::loadElement (
 				iParamLimit = eItem.attribute("paramLimit").toUShort();
 			}
 			Command command = Command(0);
+			CommandMode commandMode = CommandMode(0);
 			int iTrack = 0;
 			bool bFeedback = false;
 			for (QDomNode nVal = eItem.firstChild();
@@ -601,8 +602,10 @@ bool qtractorMidiControl::loadElement (
 				QDomElement eVal = nVal.toElement();
 				if (eVal.isNull())
 					continue;
-				if (eVal.tagName() == "command")
+				if (eVal.tagName() == "command"){
 					command = commandFromText(eVal.text());
+					commandMode = commandModeFromText(eVal.attribute("commandMode"));
+				}
 				else
 				if (eVal.tagName() == "track")
 					iTrack = eVal.text().toInt();
@@ -620,7 +623,7 @@ bool qtractorMidiControl::loadElement (
 			}
 			m_controlMap.insert(
 				MapKey(ctype, iChannel, iParam, iParamLimit),
-				MapVal(command, iTrack, bFeedback));
+				MapVal(command, commandMode, iTrack, bFeedback));
 		}
 	}
 
@@ -648,8 +651,11 @@ bool qtractorMidiControl::saveElement (
 			QString::number(key.paramLimit()));
 		eItem.setAttribute("track",
 			qtractorDocument::textFromBool(key.isParamTrack()));
-		pDocument->saveTextElement("command",
-			textFromCommand(val.command()), &eItem);
+		QDomElement eCommand = pDocument->document()->createElement("command");
+		QDomText eCommandName = pDocument->document()->createTextNode(textFromCommand(val.command()));
+		eCommand.setAttribute("commandMode", textFromCommandMode(val.commandMode()));
+		eCommand.appendChild(eCommandName);
+		eItem.appendChild(eCommand);
 		pDocument->saveTextElement("track",
 			QString::number(val.track()), &eItem);
 		pDocument->saveTextElement("feedback",
@@ -886,6 +892,7 @@ static struct
 	const char *name;
 } g_aCommandModes[] = {
 
+	{ qtractorMidiControl::VALUE,          "VALUE",         _TR("Value")    },
 	{ qtractorMidiControl::SWITCH_BUTTON,  "SWITCH_BUTTON", _TR("Switch Button")    },
 	{ qtractorMidiControl::PUSH_BUTTON,    "PUSH_BUTTON",   _TR("Push Button") },
 	{ qtractorMidiControl::CommandMode(0), NULL,            NULL }

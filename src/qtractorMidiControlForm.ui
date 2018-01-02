@@ -344,6 +344,11 @@
      </column>
      <column>
       <property name="text">
+       <string>Command Mode</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Feedback</string>
       </property>
      </column>

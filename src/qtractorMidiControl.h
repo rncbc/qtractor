@@ -61,8 +61,9 @@ public:
 
 	// Controller command modes.
 	enum CommandMode {
-		SWITCH_BUTTON = 1,
-		PUSH_BUTTON   = 2
+		VALUE         = 1,
+		SWITCH_BUTTON = 2,
+		PUSH_BUTTON   = 3
 	};
 
 	// Key param masks (wildcard flags).
@@ -148,14 +149,20 @@ public:
 	public:
 
 		// Constructor.
-		MapVal(Command command = Command(0), int iTrack = 0, bool bFeedback = false)
-			: m_command(command), m_iTrack(iTrack), m_bFeedback(bFeedback) {}
+		MapVal(Command command = Command(0), CommandMode commandMode = PUSH_BUTTON, int iTrack = 0, bool bFeedback = false)
+			: m_command(command), m_commandMode(commandMode), m_iTrack(iTrack), m_bFeedback(bFeedback) {}
 
 		// Command accessors
 		void setCommand(Command command)
 			{ m_command = command; }
 		Command command() const
 			{ return m_command; }
+
+		// CommandMode accessors
+		void setCommandMode(CommandMode commandMode)
+			{ m_commandMode = commandMode; }
+		CommandMode commandMode() const
+			{ return m_commandMode; }
 
 		// Track offset accessor.
 		void setTrack(int iTrack)
@@ -229,9 +236,10 @@ public:
 	private:
 
 		// Instance (value) member variables.
-		Command m_command;
-		int     m_iTrack;
-		bool    m_bFeedback;
+		Command     m_command;
+		CommandMode m_commandMode;
+		int         m_iTrack;
+		bool        m_bFeedback;
 
 		QHash<int, Track> m_trackMap;
 	};
@@ -256,14 +264,14 @@ public:
 	// Insert new controller mappings.
 	void mapChannelParam(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		unsigned short iParamLimit, Command command,
+		unsigned short iParamLimit, Command command, CommandMode commandMode,
 		int iTrack = 0, bool bFeedback = false);
 	void mapChannelTrack(ControlType ctype, unsigned short iParam,
-		unsigned short iParamLimit, Command command,
+		unsigned short iParamLimit, Command command, CommandMode commandMode,
 		int iTrack = 0, bool bFeedback = false);
 	void mapChannelParamTrack(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		unsigned short iParamLimit, Command command,
+		unsigned short iParamLimit, Command command, CommandMode commandMode,
 		int iTrack = 0, bool bFeedback = false);
 
 	// Remove existing controller mapping.
