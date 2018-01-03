@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Pinned current/hi-lighted track dangling after removal.
+
 - An anti-flooding timer is now in place in MIDI Controller
   assignment (aka. MIDI learn) dialog. (EXPERIMENTAL)
 
