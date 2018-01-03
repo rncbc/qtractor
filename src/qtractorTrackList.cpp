@@ -660,14 +660,14 @@ int qtractorTrackList::removeTrack ( int iTrack )
 		m_select.remove(iTrack);
 
 	Item *pItem = m_items.at(iTrack);
-	qtractorTrack *pTrack = pItem->track;
+	m_tracks.remove(pItem->track);
 	m_items.removeAt(iTrack);
-	m_tracks.remove(pTrack);
 	delete pItem;
 
 	m_iCurrentTrack = -1;
 
-	return (iTrack < m_items.count() ? iTrack : -1);
+	const int iTrackCount = m_items.count();
+	return (iTrack < iTrackCount ? iTrack : iTrackCount - 1);
 }
 
 

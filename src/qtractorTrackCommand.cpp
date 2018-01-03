@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -82,6 +82,10 @@ bool qtractorTrackCommand::addTrack (void)
 	if (pTracks == NULL)
 		return false;
 
+	qtractorTrackList *pTrackList = pTracks->trackList();
+	if (pTrackList == NULL)
+		return false;
+
 	// Guess which item we're adding after...
 #if 0
 	if (m_pAfterTrack == NULL)
@@ -93,9 +97,10 @@ bool qtractorTrackCommand::addTrack (void)
 	int iTrack = pSession->tracks().find(m_pAfterTrack) + 1;
 	// Link the track into session...
 	pSession->insertTrack(m_pTrack, m_pAfterTrack);
+
 	// And the new track list view item too...
-	qtractorTrackList *pTrackList = pTracks->trackList();
 	iTrack = pTrackList->insertTrack(iTrack, m_pTrack);
+
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
 	    pTracks->updateMidiTrack(m_pTrack);
@@ -146,6 +151,10 @@ bool qtractorTrackCommand::removeTrack (void)
 	if (pTracks == NULL)
 		return false;
 
+	qtractorTrackList *pTrackList = pTracks->trackList();
+	if (pTrackList == NULL)
+		return false;
+
 	// Save which item we're adding after...
 	if (m_pAfterTrack == NULL)
 		m_pAfterTrack = m_pTrack->prev();
@@ -167,15 +176,15 @@ bool qtractorTrackCommand::removeTrack (void)
 	pSession->unlinkTrack(m_pTrack);
 
 	// Third, remove track from list view...
-	qtractorTrackList *pTrackList = pTracks->trackList();
 	iTrack = pTrackList->removeTrack(iTrack);
-	if (iTrack >= 0)
-		pTrackList->setCurrentTrackRow(iTrack);
 
 	// Mixer turn...
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
 		pMixer->updateTracks();
+
+	// Let the change get visible.
+	pTrackList->setCurrentTrackRow(iTrack);
 
 	// ATTN: MIDI controller map feedback.
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
