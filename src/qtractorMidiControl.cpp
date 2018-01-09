@@ -304,11 +304,12 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	if (pTrack == NULL)
 		return bResult;
 
-	ControlScale scale(ctle.type());
+	ControlScale scale(ctle.type(), val.commandMode());
 
 	MapVal::Track& ctlv = val.track(iTrack);
 
 	float fValue;
+	float fCurrentValue;
 	switch (val.command()) {
 	case TRACK_GAIN:
 		fValue = scale.valueFromMidi(ctle.value());
@@ -327,14 +328,16 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		}
 		break;
 	case TRACK_MONITOR:
-		fValue = scale.valueToggledFromMidi(ctle.value());
+		fCurrentValue = pTrack->isMonitor()?1.0f:0.0f;
+		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
 		if (ctlv.sync(fValue, (pTrack->isMonitor() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackMonitorCommand(pTrack, ctlv.value(), true));
 		}
 		break;
 	case TRACK_RECORD:
-		fValue = scale.valueToggledFromMidi(ctle.value());
+		fCurrentValue = pTrack->isRecord()?1.0f:0.0f;
+		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
 		if (ctlv.sync(fValue, (pTrack->isRecord() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
@@ -342,7 +345,8 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		}
 		break;
 	case TRACK_MUTE:
-		fValue = scale.valueToggledFromMidi(ctle.value());
+		fCurrentValue = pTrack->isMute()?1.0f:0.0f;
+		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
 		if (ctlv.sync(fValue, (pTrack->isMute() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
@@ -350,7 +354,8 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		}
 		break;
 	case TRACK_SOLO:
-		fValue = scale.valueToggledFromMidi(ctle.value());
+		fCurrentValue = pTrack->isSolo()?1.0f:0.0f;
+		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
 		if (ctlv.sync(fValue, (pTrack->isSolo() ? 1.0f : 0.0f))) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
@@ -396,7 +401,7 @@ void qtractorMidiControl::sendTrackController (
 				continue;
 			// Convert/normalize value...
 			const ControlType ctype = key.type();
-			const ControlScale scale(ctype);
+			const ControlScale scale(ctype, val.commandMode());
 			unsigned short iValue = 0;
 			switch (command) {
 			case TRACK_GAIN:
@@ -434,7 +439,7 @@ void qtractorMidiControl::sendTrackController (
 	ControlType ctype, qtractorTrack *pTrack,
 	Command command, unsigned short iChannel, unsigned short iParam ) const
 {
-	const ControlScale scale(ctype);
+	const ControlScale scale(ctype, CommandMode(0));
 	unsigned short iValue = 0;
 
 	switch (command) {

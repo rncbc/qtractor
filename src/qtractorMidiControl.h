@@ -394,7 +394,7 @@ protected:
 	public:
 
 		// Constructor
-		ControlScale(ControlType ctype)
+		ControlScale(ControlType ctype, CommandMode commandMode)
 		{
 			m_iMaxScale = (
 				ctype == qtractorMidiEvent::PITCHBEND   ||
@@ -406,6 +406,7 @@ protected:
 			const unsigned short mid = (m_iMaxScale >> 1);
 			m_fMidScale = float(mid);
 			m_iMidScale = int(mid + 1);
+			m_commandMode = commandMode;
 		}
 
 		// Scale value converters (unsigned).
@@ -421,8 +422,21 @@ protected:
 			{ return m_iMidScale + int(m_fMidScale * fValue); }
 
 		// Scale value converters (toggled).
-		float valueToggledFromMidi(unsigned short iValue) const
-			{ return (iValue > m_iMidScale ? 1.0f : 0.0f); }
+		float valueToggledFromMidi(unsigned short iValue, float fCurrentValue = 0.0f ) const
+		{
+			switch(m_commandMode){
+			case PUSH_BUTTON:
+				// do nohing if value lower than max
+				if( iValue < m_iMaxScale)
+					return fCurrentValue;
+				// else toggle current state
+				return( fCurrentValue == 0.0f ? 1.0f : 0.0f );
+			case SWITCH_BUTTON:
+			case VALUE:
+			default:
+				return (iValue > m_iMidScale ? 1.0f : 0.0f);
+			}
+		}
 		unsigned short midiFromValueToggled(float fValue) const
 			{ return (fValue > 0.5f ? m_iMaxScale : 0); }
 
@@ -433,6 +447,10 @@ protected:
 		float m_fMidScale;
 		int   m_iMaxScale;
 		int   m_iMidScale;
+
+		// Threshold for buttons
+		float m_fThreshold;
+		CommandMode m_commandMode;
 	};
 
 private:
