@@ -98,7 +98,7 @@ bool qtractorTrackCommand::addTrack (void)
 	iTrack = pTrackList->insertTrack(iTrack, m_pTrack);
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
-	    pTracks->updateMidiTrack(m_pTrack);
+		pTracks->updateMidiTrack(m_pTrack);
 
 	// (Re)open all clips...
 	qtractorClip *pClip = m_pTrack->clips().first();
@@ -517,7 +517,7 @@ bool qtractorMoveTrackCommand::redo (void)
 
 	int iTrack = pSession->tracks().find(pTrack);
 	if (iTrack < 0)
-	    return false;
+		return false;
 
 	// Save the next track alright...
 	qtractorTrack *pNextTrack = pTrack->next();
@@ -637,7 +637,7 @@ qtractorImportTrackCommand::qtractorImportTrackCommand (
 qtractorImportTrackCommand::~qtractorImportTrackCommand (void)
 {
 	if (m_pSaveCommand)
-	    delete m_pSaveCommand;
+		delete m_pSaveCommand;
 
 	qDeleteAll(m_trackCommands);
 	m_trackCommands.clear();
@@ -661,15 +661,15 @@ bool qtractorImportTrackCommand::redo (void)
 
 	if (m_pSaveCommand && m_iSaveCount > 0) {
 		if (!m_pSaveCommand->redo())
-		    bResult = false;
+			bResult = false;
 	}
 	++m_iSaveCount;
 
 	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
 	while (iter.hasNext()) {
-	    qtractorAddTrackCommand *pTrackCommand = iter.next();
+		qtractorAddTrackCommand *pTrackCommand = iter.next();
 		if (!pTrackCommand->redo())
-		    bResult = false;
+			bResult = false;
 	}
 
 	return bResult;
@@ -684,7 +684,7 @@ bool qtractorImportTrackCommand::undo (void)
 	while (iter.hasPrevious()) {
 		qtractorAddTrackCommand *pTrackCommand = iter.previous();
 		if (!pTrackCommand->undo())
-		    bResult = false;
+			bResult = false;
 	}
 
 	if (m_pSaveCommand && !m_pSaveCommand->undo())
@@ -803,9 +803,9 @@ bool qtractorEditTrackCommand::undo (void)
 
 // Constructor.
 qtractorTrackControlCommand::qtractorTrackControlCommand (
-	const QString& sName, qtractorTrack *pTrack, bool bMidiControl )
+	const QString& sName, qtractorTrack *pTrack, bool bMidiControl, int iMidiControlFeedback )
 	: qtractorTrackCommand(sName, pTrack),
-		m_bMidiControl(bMidiControl), m_iMidiControlFeedback(0)
+		m_bMidiControl(bMidiControl), m_iMidiControlFeedback(iMidiControlFeedback)
 {
 }
 
@@ -823,8 +823,8 @@ bool qtractorTrackControlCommand::midiControlFeedback (void)
 
 // Constructor.
 qtractorTrackStateCommand::qtractorTrackStateCommand ( qtractorTrack *pTrack,
-	qtractorTrack::ToolType toolType, bool bOn, bool bMidiControl )
-	: qtractorTrackControlCommand(QString(), pTrack, bMidiControl)
+	qtractorTrack::ToolType toolType, bool bOn, bool bMidiControl, int iMidiControlFeedback )
+	: qtractorTrackControlCommand(QString(), pTrack, bMidiControl, iMidiControlFeedback)
 {
 	m_toolType = toolType;
 	m_bOn = bOn;
@@ -1011,10 +1011,9 @@ bool qtractorTrackStateCommand::undo (void)
 //
 
 // Constructor.
-qtractorTrackMonitorCommand::qtractorTrackMonitorCommand (
-	qtractorTrack *pTrack, bool bMonitor, bool bMidiControl )
+qtractorTrackMonitorCommand::qtractorTrackMonitorCommand (qtractorTrack *pTrack, bool bMonitor, bool bMidiControl ,int iMidiControlFeedback)
 	: qtractorTrackControlCommand(
-		QObject::tr("track monitor"), pTrack, bMidiControl)
+		QObject::tr("track monitor"), pTrack, bMidiControl, iMidiControlFeedback)
 {
 	m_bMonitor = bMonitor;
 

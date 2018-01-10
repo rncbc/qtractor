@@ -332,7 +332,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
 		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
-				new qtractorTrackMonitorCommand(pTrack, ctlv.value(), true));
+				new qtractorTrackMonitorCommand(pTrack, ctlv.value(), true, val.isFeedback()?1:0));
 		}
 		break;
 	case TRACK_RECORD:
@@ -341,7 +341,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
-					qtractorTrack::Record, ctlv.value(), true));
+					qtractorTrack::Record, ctlv.value(), true, val.isFeedback()?1:0));
 		}
 		break;
 	case TRACK_MUTE:
@@ -350,7 +350,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
-					qtractorTrack::Mute, ctlv.value(), true));
+					qtractorTrack::Mute, ctlv.value(), true, val.isFeedback()?1:0));
 		}
 		break;
 	case TRACK_SOLO:
@@ -359,7 +359,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
-					qtractorTrack::Solo, ctlv.value(), true));
+					qtractorTrack::Solo, ctlv.value(), true, val.isFeedback()?1:0));
 		}
 		break;
 	default:
