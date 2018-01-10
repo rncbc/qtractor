@@ -475,17 +475,17 @@ done
 # A common error message:
 ac_errmsg="not found in current PATH. Maybe QT development environment isn't available."
 
-if test "x$ac_qt4" = "xyes"; then
-   AC_PATH_TOOL(ac_qmake, qmake-qt4, [no], $ac_path)
-else
-   AC_PATH_TOOL(ac_qmake, qmake-qt5, [no], $ac_path)
-fi
+# Check for proper qmake path/version alternatives.
+AC_PATH_TOOL(ac_qmake, qmake, [no], $ac_path)
+
 if test "x$ac_qmake" = "xno"; then
-   AC_PATH_TOOL(ac_cv_qmake, qmake, [no], $ac_path)
-   ac_qmake=$ac_cv_qmake
-fi
-if test "x$ac_qmake" = "xno"; then
-   AC_MSG_ERROR([qmake $ac_errmsg])
+   if test "x$ac_qt4" = "xyes"; then
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt4, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
+   else
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
+   fi
 fi
 
 # Check for proper Qt major version.
@@ -496,10 +496,20 @@ AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
 ac_qt_version_major=$ac_cv_qt_version_major
 if test "x$ac_qt4" = "xyes"; then
    if test $ac_qt_version_major -ne 4; then
-      AC_MSG_ERROR([qmake-qt4 $ac_errmsg (qt4-devel)])
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt4, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
    fi
 else
    if test $ac_qt_version_major -ne 5; then
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
+   fi
+fi
+
+if test "x$ac_qmake" = "xno"; then
+   if test "x$ac_qt4" = "xyes"; then
+      AC_MSG_ERROR([qmake-qt4 $ac_errmsg (qt4-devel)])
+   else
       AC_MSG_ERROR([qmake-qt5 $ac_errmsg (qt5-devel)])
    fi
 fi
