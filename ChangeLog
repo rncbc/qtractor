@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- A little hardening on the configure (autoconf) macro side.
+
 - Pinned current/hi-lighted track dangling after removal.
 
 - An anti-flooding timer is now in place in MIDI Controller
