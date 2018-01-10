@@ -1133,9 +1133,9 @@ bool qtractorTrackMonitorCommand::redo (void)
 //
 // Constructor.
 qtractorTrackGainCommand::qtractorTrackGainCommand (
-	qtractorTrack *pTrack, float fGain, bool bMidiControl )
+	qtractorTrack *pTrack, float fGain, bool bMidiControl, int iMidiControlFeedback )
 	: qtractorTrackControlCommand(
-		QObject::tr("track gain"), pTrack, bMidiControl)
+		QObject::tr("track gain"), pTrack, bMidiControl, iMidiControlFeedback)
 {
 	m_fGain = fGain;
 	m_fPrevGain = pTrack->prevGain();

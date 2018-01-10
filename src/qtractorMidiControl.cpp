@@ -317,7 +317,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 			fValue = ::cubef2(fValue);
 		if (ctlv.sync(fValue, pTrack->gain())) {
 			bResult = pSession->execute(
-				new qtractorTrackGainCommand(pTrack, ctlv.value(), true));
+				new qtractorTrackGainCommand(pTrack, ctlv.value(), true, 1));
 		}
 		break;
 	case TRACK_PANNING:

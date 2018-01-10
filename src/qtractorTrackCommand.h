@@ -348,7 +348,7 @@ public:
 
 	// Constructor.
 	qtractorTrackGainCommand(qtractorTrack *pTrack,
-		float fGain, bool bMidiControl = false);
+		float fGain, bool bMidiControl = false, int iMidiControlFeedback = 0);
 
 	// Track-gain command methods.
 	bool redo();
