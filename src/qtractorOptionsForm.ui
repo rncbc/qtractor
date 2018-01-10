@@ -442,7 +442,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2" colspan="2">
+          <item row="3" column="2" colspan="2">
            <widget class="QCheckBox" name="TrackViewDropSpanCheckBox">
             <property name="font">
              <font>
@@ -455,6 +455,22 @@
             </property>
             <property name="text">
              <string>&amp;Drop multiple audio files into the same track</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2" colspan="2">
+           <widget class="QCheckBox" name="ShiftKeyModifierCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</string>
+            </property>
+            <property name="text">
+             <string>Reverse &amp;keyboard modifiers role (Shift/Ctrl)</string>
             </property>
            </widget>
           </item>

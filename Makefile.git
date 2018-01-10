@@ -7,7 +7,7 @@ configure:	 Makefile.in configure.ac
 	@rm -rf *.cache
 
 clean:
-	@if [ -f Makefile ]; then make clean; fi
+	@if [ -f Makefile ]; then make clean; fi || true
 	@rm -rvf Makefile configure config.* src/.ui src/.obj src/.moc
 	@rm -rvf src/config.* src/*.pri
 	@rm -rvf src/Makefile src/Makefile.* src/*.mak src/*.mak.*

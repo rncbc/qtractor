@@ -41,6 +41,7 @@ qtractorActionControl::MidiObserver::MidiObserver ( QAction *pAction )
 	qtractorMidiControlObserver::setSubject(&m_subject);
 	qtractorMidiControlObserver::setHook(true);
 	qtractorMidiControlObserver::setLatch(true);
+	qtractorMidiControlObserver::setTriggered(true);
 }
 
 

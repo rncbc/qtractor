@@ -187,8 +187,11 @@ public:
 	// Automation curve mode default.
 	int     iCurveMode;
 
-    // Edit-range options.
-    int     iEditRangeOptions;
+	// Edit-range options.
+	int     iEditRangeOptions;
+
+	// Keyboard modifier options.
+	bool    bShiftKeyModifier;
 
 	// Mouse modifier options.
 	bool    bMidButtonModifier;
