@@ -2,7 +2,7 @@
 //
 /****************************************************************************
    Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
-   Copyright (C) 2009, gizzmo aka Mathias Krause. 
+   Copyright (C) 2009, gizzmo aka Mathias Krause.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -330,7 +330,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	case TRACK_MONITOR:
 		fCurrentValue = pTrack->isMonitor()?1.0f:0.0f;
 		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
-		if (ctlv.sync(fValue, (pTrack->isMonitor() ? 1.0f : 0.0f))) {
+		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
 				new qtractorTrackMonitorCommand(pTrack, ctlv.value(), true));
 		}
@@ -338,7 +338,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	case TRACK_RECORD:
 		fCurrentValue = pTrack->isRecord()?1.0f:0.0f;
 		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
-		if (ctlv.sync(fValue, (pTrack->isRecord() ? 1.0f : 0.0f))) {
+		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
 					qtractorTrack::Record, ctlv.value(), true));
@@ -347,7 +347,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	case TRACK_MUTE:
 		fCurrentValue = pTrack->isMute()?1.0f:0.0f;
 		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
-		if (ctlv.sync(fValue, (pTrack->isMute() ? 1.0f : 0.0f))) {
+		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
 					qtractorTrack::Mute, ctlv.value(), true));
@@ -356,7 +356,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	case TRACK_SOLO:
 		fCurrentValue = pTrack->isSolo()?1.0f:0.0f;
 		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
-		if (ctlv.sync(fValue, (pTrack->isSolo() ? 1.0f : 0.0f))) {
+		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
 					qtractorTrack::Solo, ctlv.value(), true));
