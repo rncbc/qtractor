@@ -428,6 +428,9 @@ AC_PROG_CPP
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
+# Checks for languages.
+AC_LANG_CPLUSPLUS
+
 # Check for pkg-config.
 PKG_PROG_PKG_CONFIG
 
@@ -454,21 +457,24 @@ if test "x$ac_arch" = "xx86_64"; then
    ac_libdirs="$ac_libdirs lib64"
 fi
 
+CFLAGS="-fPIC $CFLAGS"
+CPPFLAGS="-fPIC $CPPFLAGS"
+
 # Prepend alternate dependencies paths.
 for X in $ac_with_paths; do
   if test -d $X/bin; then
-    ac_path="$X/bin:$ac_path"
+     ac_path="$X/bin:$ac_path"
   fi
   if test -d $X/include; then
-    CFLAGS="-I$X/include $CFLAGS "
-    CPPFLAGS="-I$X/include $CPPFLAGS"
-    ac_incpath="$X/include $ac_incpath"
+     CFLAGS="-I$X/include $CFLAGS "
+     CPPFLAGS="-I$X/include $CPPFLAGS"
+     ac_incpath="$X/include $ac_incpath"
   fi
   for Y in $ac_libdirs; do
-    if test -d $X/$Y; then
-      LIBS="-L$X/$Y $LIBS"
-      ac_libs="-L$X/$Y $ac_libs"
-    fi
+     if test -d $X/$Y; then
+        LIBS="-L$X/$Y $LIBS"
+        ac_libs="-L$X/$Y $ac_libs"
+     fi
   done
 done
 
