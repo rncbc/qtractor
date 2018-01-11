@@ -314,7 +314,12 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	case TRACK_GAIN:
 		fValue = scale.valueFromMidi(ctle.value());
 		if (pTrack->trackType() == qtractorTrack::Audio)
-			fValue = ::cubef2(fValue);
+			/*
+			** For some reason the gain value of audio tracks has a range from
+			** nearly 0 to 2.
+			** This hack 'translates' the incoming controller data to this behaviour.
+			*/
+			fValue = ::cubef2(fValue) * 2;
 		if (ctlv.sync(fValue, pTrack->gain())) {
 			bResult = pSession->execute(
 				new qtractorTrackGainCommand(pTrack, ctlv.value(), true, 1));
@@ -405,7 +410,13 @@ void qtractorMidiControl::sendTrackController (
 			unsigned short iValue = 0;
 			switch (command) {
 			case TRACK_GAIN:
-				if (bCubic) fValue = ::cbrtf2(fValue);
+				/*
+				** For some reason the gain value of audio tracks has a range from
+				** nearly 0 (there is some kind of offset) to 2.
+				** This hack 'translates' the outgoing controller data to this behaviour.
+				** Otherwise the value range of common controllers is exceeded.
+				*/
+				if (bCubic) fValue = ::cbrtf2(fValue/2);
 				iValue = scale.midiFromValue(fValue);
 				break;
 			case TRACK_PANNING:
@@ -441,11 +452,19 @@ void qtractorMidiControl::sendTrackController (
 {
 	const ControlScale scale(ctype, CommandMode(0));
 	unsigned short iValue = 0;
+	float fValue = 0.0f;
 
 	switch (command) {
 	case TRACK_GAIN:
+		fValue = pTrack->gain();
 		if (pTrack->trackType() == qtractorTrack::Audio)
-			iValue = scale.midiFromValue(::cbrtf2(pTrack->gain()));
+			/*
+			** For some reason the gain value of audio tracks has a range from
+			** nearly 0 (there is some kind of offset) to 2.
+			** This hack 'translates' the outgoing controller data to this behaviour.
+			** Otherwise the value range of common controllers is exceeded.
+			*/
+			iValue = scale.midiFromValue(::cbrtf2(pTrack->gain()/2));
 		else
 			iValue = scale.midiFromValue(pTrack->gain());
 		break;
