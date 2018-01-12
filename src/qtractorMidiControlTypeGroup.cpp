@@ -81,7 +81,8 @@ qtractorMidiControlTypeGroup::qtractorMidiControlTypeGroup (
 		int(qtractorMidiEvent::CONTROL14));
 
 	m_pControlParamComboBox->setInsertPolicy(QComboBox::NoInsert);
-	m_pControlParamLimitComboBox->setInsertPolicy(QComboBox::NoInsert);
+	if( m_pControlParamLimitComboBox )
+		m_pControlParamLimitComboBox->setInsertPolicy(QComboBox::NoInsert);
 
 	QObject::connect(m_pControlTypeComboBox,
 		SIGNAL(activated(int)),
@@ -422,7 +423,7 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		if (bOldEditable)
 			m_pControlParamComboBox->setEditText(sOldParam);
 	}
-	if (m_pControlParamLimitComboBox->isEditable()) {
+	if (m_pControlParamLimitComboBox && m_pControlParamLimitComboBox->isEditable()) {
 		QObject::connect(m_pControlParamLimitComboBox->lineEdit(),
 			SIGNAL(editingFinished()),
 			SLOT(editControlParamLimitFinished()));
@@ -440,7 +441,8 @@ void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
 	emit controlTypeChanged(iControlType);
 
 	activateControlParam(m_pControlParamComboBox->currentIndex());
-	activateControlParamLimit(m_pControlParamLimitComboBox->currentIndex());
+	if( m_pControlParamLimitComboBox )
+		activateControlParamLimit(m_pControlParamLimitComboBox->currentIndex());
 }
 
 
