@@ -2,7 +2,7 @@
 //
 /****************************************************************************
    Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
-   Copyright (C) 2009, gizzmo aka Mathias Krause. 
+   Copyright (C) 2009, gizzmo aka Mathias Krause.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,7 +63,8 @@ public:
 	enum CommandMode {
 		VALUE         = 1,
 		SWITCH_BUTTON = 2,
-		PUSH_BUTTON   = 3
+		PUSH_BUTTON   = 3,
+		ENCODER		  = 4
 	};
 
 	// Key param masks (wildcard flags).
@@ -119,7 +120,7 @@ public:
 			// make sure, the parameter is between the base value and the limit
 			const unsigned short iParamBase = (param() & TrackParamMask);
 
-			return (type() == ctype 
+			return (type() == ctype
 				&& (isChannelTrack() || channel() == iChannel)
 				&& ((isParamTrack() && iParam >= iParamBase && iParam <= paramLimit() )
 					|| param() == iParam ));
@@ -416,8 +417,25 @@ protected:
 			{ return m_fMaxScale * fValue; }
 
 		// Scale value converters (signed).
-		float valueSignedFromMidi(unsigned short iValue) const
-			{ return float(int(iValue) - m_iMidScale) / m_fMidScale; }
+		float valueSignedFromMidi(unsigned short iValue, float fCurrentValue = 0.0f) const
+			{
+			float fValue = 0.0f;
+			switch(m_commandMode){
+			case ENCODER:
+				if( iValue == m_iMidScale) return 0.0f;
+				fValue = iValue > m_iMidScale ? fCurrentValue - 0.1f : fCurrentValue + 0.1f;
+				if( ( fValue >=  -1 ) && ( fValue <= 1 ) )
+					return fValue;
+				else
+					return fCurrentValue;
+			case VALUE:
+			case SWITCH_BUTTON:
+			case PUSH_BUTTON:
+			default:
+				return float(int(iValue) - m_iMidScale) / m_fMidScale;
+			}
+		}
+
 		unsigned short midiFromValueSigned(float fValue) const
 			{ return m_iMidScale + int(m_fMidScale * fValue); }
 
@@ -433,6 +451,7 @@ protected:
 				return( fCurrentValue == 0.0f ? 1.0f : 0.0f );
 			case SWITCH_BUTTON:
 			case VALUE:
+			case ENCODER:
 			default:
 				return (iValue > m_iMidScale ? 1.0f : 0.0f);
 			}

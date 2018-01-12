@@ -270,7 +270,7 @@ void qtractorMidiControlForm::importSlot (void)
 		return;
 
 	// Remember this last directory...
-	
+
 	// For avery selected controller file to load...
 	QTreeWidgetItem *pItem = NULL;
 	QStringListIterator iter(files);
@@ -629,13 +629,11 @@ void qtractorMidiControlForm::refreshCommandModeComboBox( qtractorMidiControl::C
 			qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::SWITCH_BUTTON), qtractorMidiControl::SWITCH_BUTTON);
 		m_ui.CommandModeComboBox->addItem(
 			qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::PUSH_BUTTON), qtractorMidiControl::PUSH_BUTTON);
-
 		break;
-	case qtractorMidiControl::TRACK_GAIN:
 	case qtractorMidiControl::TRACK_PANNING:
 		m_ui.CommandModeComboBox->addItem(
-			qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::VALUE), qtractorMidiControl::VALUE);
-		break;
+			qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::ENCODER), qtractorMidiControl::ENCODER);
+	case qtractorMidiControl::TRACK_GAIN:
 	default:
 		m_ui.CommandModeComboBox->addItem(
 			qtractorMidiControl::nameFromCommandMode(qtractorMidiControl::VALUE), qtractorMidiControl::VALUE);
@@ -923,7 +921,7 @@ QString qtractorMidiControlForm::textFromChannel (
 unsigned short qtractorMidiControlForm::paramFromText (
 	qtractorMidiControl::ControlType /*ctype*/, const QString& sText ) const
 {
-	return sText.section(' ', 0, 0).toUShort();	
+	return sText.section(' ', 0, 0).toUShort();
 }
 
 QString qtractorMidiControlForm::textFromParam (

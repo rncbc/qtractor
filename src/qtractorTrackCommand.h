@@ -378,7 +378,7 @@ public:
 
 	// Constructor.
 	qtractorTrackPanningCommand(qtractorTrack *pTrack,
-		float fPanning, bool bMidiControl = false);
+		float fPanning, bool bMidiControl = false, int iMidiControlFeedback = 0);
 
 	// Track-panning command methods.
 	bool redo();

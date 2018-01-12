@@ -326,10 +326,12 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		}
 		break;
 	case TRACK_PANNING:
-		fValue = scale.valueSignedFromMidi(ctle.value());
-		if (ctlv.sync(fValue, pTrack->panning())) {
+		fCurrentValue = pTrack->panning();
+		fValue = scale.valueSignedFromMidi(ctle.value(), fCurrentValue);
+		qDebug("Old value %f with c-value %d translated to %f", fCurrentValue, ctle.value(), fValue );
+		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
-				new qtractorTrackPanningCommand(pTrack, ctlv.value(), true));
+				new qtractorTrackPanningCommand(pTrack, ctlv.value(), true, val.isFeedback()?1:0));
 		}
 		break;
 	case TRACK_MONITOR:
@@ -452,11 +454,9 @@ void qtractorMidiControl::sendTrackController (
 {
 	const ControlScale scale(ctype, CommandMode(0));
 	unsigned short iValue = 0;
-	float fValue = 0.0f;
 
 	switch (command) {
 	case TRACK_GAIN:
-		fValue = pTrack->gain();
 		if (pTrack->trackType() == qtractorTrack::Audio)
 			/*
 			** For some reason the gain value of audio tracks has a range from
@@ -919,6 +919,7 @@ static struct
 	{ qtractorMidiControl::VALUE,          "VALUE",         _TR("Value")    },
 	{ qtractorMidiControl::SWITCH_BUTTON,  "SWITCH_BUTTON", _TR("Switch Button")    },
 	{ qtractorMidiControl::PUSH_BUTTON,    "PUSH_BUTTON",   _TR("Push Button") },
+	{ qtractorMidiControl::ENCODER,        "ENCODER",       _TR("Encoder") },
 	{ qtractorMidiControl::CommandMode(0), NULL,            NULL }
 };
 

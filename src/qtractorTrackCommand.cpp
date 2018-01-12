@@ -1222,9 +1222,9 @@ bool qtractorTrackGainCommand::redo (void)
 
 // Constructor.
 qtractorTrackPanningCommand::qtractorTrackPanningCommand (
-	qtractorTrack *pTrack, float fPanning, bool bMidiControl )
+	qtractorTrack *pTrack, float fPanning, bool bMidiControl, int iMidiControlFeedback)
 	: qtractorTrackControlCommand(
-		QObject::tr("track pan"), pTrack, bMidiControl)
+		QObject::tr("track pan"), pTrack, bMidiControl, iMidiControlFeedback)
 {
 	m_fPanning = fPanning;
 	m_fPrevPanning = pTrack->prevPanning();
