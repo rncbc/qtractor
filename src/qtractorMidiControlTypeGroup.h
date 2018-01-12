@@ -45,7 +45,10 @@ public:
 		qtractorMidiEditor *pMidiEditor,
 		QComboBox *pControlTypeComboBox,
 		QComboBox *pControlParamComboBox,
-		QLabel *pControlParamTextLabel = NULL);
+		QLabel *pControlParamTextLabel = NULL,
+		QComboBox * pControlParamLimitComboBox = NULL,
+		QLabel *pControlParamLimitTextLabel = NULL
+	);
 
 	// Accessors.
 	void setControlType(qtractorMidiControl::ControlType ctype);
@@ -56,6 +59,10 @@ public:
 	unsigned short controlParam() const;
 	unsigned short controlParamFromIndex(int iIndex) const;
 
+	void setControlParamLimit(unsigned short iParamLimit);
+	unsigned short controlParamLimit() const;
+	unsigned short controlParamLimitFromIndex(int iIndex) const;
+
 	// Stabilizers.
 	void updateControlType(int iControlType = -1);
 
@@ -63,19 +70,23 @@ signals:
 
 	void controlTypeChanged(int);
 	void controlParamChanged(int);
+	void controlParamLimitChanged(int);
 
 protected slots:
 
 	void activateControlType(int);
 	void activateControlParam(int);
+	void activateControlParamLimit(int);
 
 	void editControlParamFinished();
+	void editControlParamLimitFinished();
 
 protected:
 
 	// Find combo-box indexes.
 	int indexFromControlType(qtractorMidiControl::ControlType ctype) const;
 	int indexFromControlParam(unsigned short iParam) const;
+	int indexFromControlParamLimit(unsigned short iParam) const;
 
 private:
 
@@ -85,8 +96,11 @@ private:
 	QComboBox *m_pControlTypeComboBox;
 	QComboBox *m_pControlParamComboBox;
 	QLabel    *m_pControlParamTextLabel;
+	QComboBox *m_pControlParamLimitComboBox;
+	QLabel    *m_pControlParamLimitTextLabel;
 
 	unsigned int m_iControlParamUpdate;
+	unsigned int m_iControlParamLimitUpdate;
 };
 
 

@@ -26,18 +26,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
-    <height>380</height>
+    <width>702</width>
+    <height>453</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Controllers - Qtractor</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/itemControllers.png</iconset>
+   <iconset resource="qtractor.qrc">
+    <normaloff>:/images/itemControllers.png</normaloff>:/images/itemControllers.png</iconset>
   </property>
   <layout class="QGridLayout">
-   <item row="0" column="0" rowspan="4" colspan="7">
+   <item row="1" column="9" colspan="2">
+    <widget class="QPushButton" name="RemovePushButton">
+     <property name="toolTip">
+      <string>Remove controller file</string>
+     </property>
+     <property name="text">
+      <string>&amp;Remove</string>
+     </property>
+     <property name="icon">
+      <iconset resource="qtractor.qrc">
+       <normaloff>:/images/formRemove.png</normaloff>:/images/formRemove.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="4" colspan="9">
     <widget class="QTreeWidget" name="FilesListView">
      <property name="toolTip">
       <string>Controller files</string>
@@ -66,7 +81,7 @@
      </column>
     </widget>
    </item>
-   <item row="0" column="7" colspan="2">
+   <item row="0" column="9" colspan="2">
     <widget class="QPushButton" name="ImportPushButton">
      <property name="toolTip">
       <string>Import controller files</string>
@@ -75,46 +90,8 @@
       <string>&amp;Import...</string>
      </property>
      <property name="icon">
-      <iconset resource="qtractor.qrc">:/images/formOpen.png</iconset>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="7" colspan="2">
-    <widget class="QPushButton" name="RemovePushButton">
-     <property name="toolTip">
-      <string>Remove controller file</string>
-     </property>
-     <property name="text">
-      <string>&amp;Remove</string>
-     </property>
-     <property name="icon">
-      <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="7" colspan="2">
-    <widget class="QPushButton" name="MoveUpPushButton">
-     <property name="toolTip">
-      <string>Move controller file up on list order</string>
-     </property>
-     <property name="text">
-      <string>&amp;Up</string>
-     </property>
-     <property name="icon">
-      <iconset resource="qtractor.qrc">:/images/formMoveUp.png</iconset>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="7" colspan="2">
-    <widget class="QPushButton" name="MoveDownPushButton">
-     <property name="toolTip">
-      <string>Move controller file down on list order</string>
-     </property>
-     <property name="text">
-      <string>&amp;Down</string>
-     </property>
-     <property name="icon">
-      <iconset resource="qtractor.qrc">:/images/formMoveDown.png</iconset>
+      <iconset resource="qtractor.qrc">
+       <normaloff>:/images/formOpen.png</normaloff>:/images/formOpen.png</iconset>
      </property>
     </widget>
    </item>
@@ -128,6 +105,34 @@
      </property>
      <property name="buddy">
       <cstring>ControlTypeComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="9" colspan="2">
+    <widget class="QPushButton" name="MoveDownPushButton">
+     <property name="toolTip">
+      <string>Move controller file down on list order</string>
+     </property>
+     <property name="text">
+      <string>&amp;Down</string>
+     </property>
+     <property name="icon">
+      <iconset resource="qtractor.qrc">
+       <normaloff>:/images/formMoveDown.png</normaloff>:/images/formMoveDown.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="9" colspan="2">
+    <widget class="QPushButton" name="MoveUpPushButton">
+     <property name="toolTip">
+      <string>Move controller file up on list order</string>
+     </property>
+     <property name="text">
+      <string>&amp;Up</string>
+     </property>
+     <property name="icon">
+      <iconset resource="qtractor.qrc">
+       <normaloff>:/images/formMoveUp.png</normaloff>:/images/formMoveUp.png</iconset>
      </property>
     </widget>
    </item>
@@ -157,7 +162,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="3" colspan="2">
+   <item row="4" column="4" colspan="2">
     <widget class="QLabel" name="TrackTextLabel">
      <property name="text">
       <string>Trac&amp;k Offset</string>
@@ -170,7 +175,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="5">
+   <item row="4" column="6">
     <widget class="QLabel" name="CommandTextLabel">
      <property name="text">
       <string>C&amp;ommand</string>
@@ -183,12 +188,12 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="6">
+   <item row="4" column="8">
     <spacer>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeHint">
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>8</height>
@@ -196,12 +201,12 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="7" colspan="2">
+   <item row="4" column="9" colspan="2">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint">
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>8</height>
@@ -230,17 +235,14 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="3">
-    <widget class="QCheckBox" name="TrackCheckBox">
+   <item row="5" column="6">
+    <widget class="QComboBox" name="CommandComboBox">
      <property name="toolTip">
-      <string>MIDI parameter (track offset)</string>
-     </property>
-     <property name="text">
-      <string>+</string>
+      <string>Command action</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="4">
+   <item row="5" column="5">
     <widget class="QSpinBox" name="TrackSpinBox">
      <property name="toolTip">
       <string>Track offset</string>
@@ -250,14 +252,17 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="5">
-    <widget class="QComboBox" name="CommandComboBox">
+   <item row="5" column="4">
+    <widget class="QCheckBox" name="TrackCheckBox">
      <property name="toolTip">
-      <string>Command action</string>
+      <string>MIDI parameter (track offset)</string>
+     </property>
+     <property name="text">
+      <string>+</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="6">
+   <item row="5" column="8">
     <widget class="QCheckBox" name="FeedbackCheckBox">
      <property name="toolTip">
       <string>Command feedback</string>
@@ -267,7 +272,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="7" colspan="2">
+   <item row="5" column="9" colspan="2">
     <widget class="QPushButton" name="MapPushButton">
      <property name="toolTip">
       <string>Map/update controller command</string>
@@ -276,11 +281,12 @@
       <string>&amp;Map</string>
      </property>
      <property name="icon">
-      <iconset resource="qtractor.qrc">:/images/formAccept.png</iconset>
+      <iconset resource="qtractor.qrc">
+       <normaloff>:/images/formAccept.png</normaloff>:/images/formAccept.png</iconset>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" rowspan="7" colspan="7">
+   <item row="8" column="0" rowspan="7" colspan="9">
     <widget class="QTreeWidget" name="ControlMapListView">
      <property name="minimumSize">
       <size>
@@ -323,6 +329,11 @@
      </column>
      <column>
       <property name="text">
+       <string>Limit</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Track</string>
       </property>
      </column>
@@ -333,12 +344,17 @@
      </column>
      <column>
       <property name="text">
+       <string>Command Mode</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Feedback</string>
       </property>
      </column>
     </widget>
    </item>
-   <item row="6" column="7" colspan="2">
+   <item row="8" column="9" colspan="2">
     <widget class="QPushButton" name="UnmapPushButton">
      <property name="toolTip">
       <string>Unmap/remove controller command</string>
@@ -347,16 +363,17 @@
       <string>U&amp;nmap</string>
      </property>
      <property name="icon">
-      <iconset resource="qtractor.qrc">:/images/formReject.png</iconset>
+      <iconset resource="qtractor.qrc">
+       <normaloff>:/images/formReject.png</normaloff>:/images/formReject.png</iconset>
      </property>
     </widget>
    </item>
-   <item row="7" column="7" colspan="2">
+   <item row="11" column="9" colspan="2">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint">
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>8</height>
@@ -364,7 +381,34 @@
      </property>
     </spacer>
    </item>
-   <item row="8" column="8">
+   <item row="13" column="9" colspan="2">
+    <widget class="QPushButton" name="ExportPushButton">
+     <property name="toolTip">
+      <string>Export to controller file</string>
+     </property>
+     <property name="text">
+      <string>E&amp;xport...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="qtractor.qrc">
+       <normaloff>:/images/formSave.png</normaloff>:/images/formSave.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="9" colspan="2">
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>8</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="10" column="10">
     <widget class="QCheckBox" name="SyncCheckBox">
      <property name="toolTip">
       <string>Enable all controllers immediate sync (hook)</string>
@@ -374,20 +418,7 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="7" colspan="2">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint">
-      <size>
-       <width>20</width>
-       <height>8</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="10" column="7" colspan="2">
+   <item row="12" column="9" colspan="2">
     <widget class="QPushButton" name="ReloadPushButton">
      <property name="toolTip">
       <string>Reload/apply all controller files</string>
@@ -396,30 +427,44 @@
       <string>Relo&amp;ad</string>
      </property>
      <property name="icon">
-      <iconset resource="qtractor.qrc">:/images/formRefresh.png</iconset>
+      <iconset resource="qtractor.qrc">
+       <normaloff>:/images/formRefresh.png</normaloff>:/images/formRefresh.png</iconset>
      </property>
     </widget>
    </item>
-   <item row="11" column="7" colspan="2">
-    <widget class="QPushButton" name="ExportPushButton">
-     <property name="toolTip">
-      <string>Export to controller file</string>
-     </property>
-     <property name="text">
-      <string>E&amp;xport...</string>
-     </property>
-     <property name="icon">
-      <iconset resource="qtractor.qrc">:/images/formSave.png</iconset>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="7" colspan="2">
+   <item row="14" column="9" colspan="2">
     <widget class="QPushButton" name="ClosePushButton">
      <property name="toolTip">
       <string>Close this dialog</string>
      </property>
      <property name="text">
       <string>Close</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QLabel" name="ParamLimitTextLabel">
+     <property name="text">
+      <string>- &amp;Limit</string>
+     </property>
+     <property name="buddy">
+      <cstring>ParamLimitComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <widget class="QComboBox" name="ParamLimitComboBox"/>
+   </item>
+   <item row="7" column="6">
+    <widget class="QComboBox" name="CommandModeComboBox"/>
+   </item>
+   <item row="6" column="6">
+    <widget class="QLabel" name="CommandModeTextLabel">
+     <property name="text">
+      <string>Command Mode</string>
+     </property>
+     <property name="buddy">
+      <cstring>CommandModeComboBox</cstring>
      </property>
     </widget>
    </item>

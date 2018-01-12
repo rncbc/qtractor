@@ -35,12 +35,17 @@ qtractorMidiControlTypeGroup::qtractorMidiControlTypeGroup (
 	qtractorMidiEditor *pMidiEditor,
 	QComboBox *pControlTypeComboBox,
 	QComboBox *pControlParamComboBox,
-	QLabel *pControlParamTextLabel ) : QObject(),
+	QLabel *pControlParamTextLabel,
+	QComboBox *pControlParamLimitComboBox,
+	QLabel *pControlParamLimitTextLabel) : QObject(),
 		m_pMidiEditor(pMidiEditor),
 		m_pControlTypeComboBox(pControlTypeComboBox),
 		m_pControlParamComboBox(pControlParamComboBox),
 		m_pControlParamTextLabel(pControlParamTextLabel),
-		m_iControlParamUpdate(0)
+		m_pControlParamLimitComboBox(pControlParamLimitComboBox),
+		m_pControlParamLimitTextLabel(pControlParamLimitTextLabel),
+		m_iControlParamUpdate(0),
+		m_iControlParamLimitUpdate(0)
 {
 	const QIcon iconControlType(":/images/itemProperty.png");
 	m_pControlTypeComboBox->clear();
@@ -76,6 +81,8 @@ qtractorMidiControlTypeGroup::qtractorMidiControlTypeGroup (
 		int(qtractorMidiEvent::CONTROL14));
 
 	m_pControlParamComboBox->setInsertPolicy(QComboBox::NoInsert);
+	if( m_pControlParamLimitComboBox )
+		m_pControlParamLimitComboBox->setInsertPolicy(QComboBox::NoInsert);
 
 	QObject::connect(m_pControlTypeComboBox,
 		SIGNAL(activated(int)),
@@ -83,6 +90,10 @@ qtractorMidiControlTypeGroup::qtractorMidiControlTypeGroup (
 	QObject::connect(m_pControlParamComboBox,
 		SIGNAL(activated(int)),
 		SLOT(activateControlParam(int)));
+	QObject::connect(m_pControlParamLimitComboBox,
+		SIGNAL(activated(int)),
+		SLOT(activateControlParamLimit(int)));
+
 }
 
 
@@ -141,11 +152,48 @@ unsigned short qtractorMidiControlTypeGroup::controlParam (void) const
 
 }
 
+void qtractorMidiControlTypeGroup::setControlParamLimit (
+	unsigned short iParamLimit )
+{
+	const int iControlParamLimit = indexFromControlParamLimit(iParamLimit);
+	if (iControlParamLimit >= 0) {
+		m_pControlParamLimitComboBox->setCurrentIndex(iControlParamLimit);
+		activateControlParamLimit(iControlParamLimit);
+	} else {
+		const QString& sControlParamLimit = QString::number(iParamLimit);
+		m_pControlParamLimitComboBox->setEditText(sControlParamLimit);
+		editControlParamLimitFinished();
+	}
+}
+
+unsigned short qtractorMidiControlTypeGroup::controlParamLimit (void) const
+{
+	if (m_pControlParamLimitComboBox->isEditable()) {
+		unsigned short iParamLimit = 0;
+		const QString& sControlParamLimit
+			= m_pControlParamLimitComboBox->currentText();
+		bool bOk = false;
+		iParamLimit = sControlParamLimit.toInt(&bOk);
+		if (bOk) return iParamLimit;
+	}
+
+	return controlParamLimitFromIndex(m_pControlParamLimitComboBox->currentIndex());
+
+}
+
 
 unsigned short qtractorMidiControlTypeGroup::controlParamFromIndex ( int iIndex ) const
 {
 	if (iIndex >= 0 && iIndex < m_pControlParamComboBox->count())
 		return m_pControlParamComboBox->itemData(iIndex).toInt();
+	else
+		return 0;
+}
+
+unsigned short qtractorMidiControlTypeGroup::controlParamLimitFromIndex ( int iIndex ) const
+{
+	if (iIndex >= 0 && iIndex < m_pControlParamLimitComboBox->count())
+		return m_pControlParamLimitComboBox->itemData(iIndex).toInt();
 	else
 		return 0;
 }
@@ -174,6 +222,17 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 
 	m_pControlParamComboBox->clear();
 
+	bool bOldLimitEditable = false;
+	unsigned short iOldParamLimit = USHRT_MAX;
+	QString sOldParamLimit;
+
+	if( m_pControlParamLimitComboBox != NULL ){
+		bOldLimitEditable = m_pControlParamLimitComboBox->isEditable();
+		iOldParamLimit = m_pControlParamLimitComboBox->currentIndex();
+		sOldParamLimit = m_pControlParamLimitComboBox->currentText();
+		m_pControlParamLimitComboBox->clear();
+	}
+
 	const QString sTextMask("%1 - %2");
 
 	switch (ctype) {
@@ -185,12 +244,26 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
 		m_pControlParamComboBox->setEditable(false);
+		if( m_pControlParamLimitComboBox ){
+			if( m_pControlParamLimitTextLabel )
+				m_pControlParamLimitTextLabel->setEnabled(true);
+			m_pControlParamLimitComboBox->setEnabled(true);
+			m_pControlParamLimitComboBox->setEditable(false);
+			m_pControlParamLimitComboBox->addItem(iconNotes,
+				"(None)", int(USHRT_MAX));
+		}
 		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
 			m_pControlParamComboBox->addItem(iconNotes,
 				sTextMask.arg(iParam).arg(
 					m_pMidiEditor ? m_pMidiEditor->noteName(iParam)
 					: qtractorMidiEditor::defaultNoteName(iParam)),
 				int(iParam));
+			if(m_pControlParamLimitComboBox != NULL )
+				m_pControlParamLimitComboBox->addItem(iconNotes,
+					sTextMask.arg(iParam).arg(
+					m_pMidiEditor ? m_pMidiEditor->noteName(iParam)
+					: qtractorMidiEditor::defaultNoteName(iParam)),
+					int(iParam));
 		}
 		break;
 	}
@@ -200,12 +273,26 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
 		m_pControlParamComboBox->setEditable(false);
+		if( m_pControlParamLimitComboBox){
+			if( m_pControlParamLimitTextLabel )
+				m_pControlParamLimitTextLabel->setEnabled(true);
+			m_pControlParamLimitComboBox->setEnabled(true);
+			m_pControlParamLimitComboBox->setEditable(false);
+			m_pControlParamLimitComboBox->addItem(iconControllers,
+				"(None)", int(USHRT_MAX));
+		}
 		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
 			m_pControlParamComboBox->addItem(iconControllers,
 				sTextMask.arg(iParam).arg(
 					m_pMidiEditor ? m_pMidiEditor->controllerName(iParam)
 					: qtractorMidiEditor::defaultControllerName(iParam)),
 				int(iParam));
+			if( m_pControlParamLimitComboBox != NULL)
+				m_pControlParamLimitComboBox->addItem(iconControllers,
+					sTextMask.arg(iParam).arg(
+					m_pMidiEditor ? m_pMidiEditor->controllerName(iParam)
+					: qtractorMidiEditor::defaultControllerName(iParam)),
+					int(iParam));
 		}
 		break;
 	}
@@ -215,9 +302,20 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
 		m_pControlParamComboBox->setEditable(false);
+		if( m_pControlParamLimitComboBox ){
+			if( m_pControlParamLimitTextLabel )
+				m_pControlParamLimitTextLabel->setEnabled(true);
+			m_pControlParamLimitComboBox->setEnabled(true);
+			m_pControlParamLimitComboBox->setEditable(false);
+			m_pControlParamLimitComboBox->addItem(iconPatches,
+				"(None)", int(USHRT_MAX));
+		}
 		for (unsigned short iParam = 0; iParam < 128; ++iParam) {
 			m_pControlParamComboBox->addItem(iconPatches,
 				sTextMask.arg(iParam).arg('-'), int(iParam));
+			if( m_pControlParamLimitComboBox != NULL)
+				m_pControlParamLimitComboBox->addItem(iconPatches,
+					sTextMask.arg(iParam).arg('-'), int(iParam));
 		}
 		break;
 	}
@@ -227,6 +325,12 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
 		m_pControlParamComboBox->setEditable(true);
+		if( m_pControlParamLimitComboBox){
+			if( m_pControlParamLimitTextLabel )
+				m_pControlParamLimitTextLabel->setEnabled(false);
+			m_pControlParamLimitComboBox->setEnabled(false);
+			m_pControlParamLimitComboBox->setEditable(false);
+		}
 		const QMap<unsigned short, QString>& rpns
 			= (m_pMidiEditor ? m_pMidiEditor->rpnNames()
 			: qtractorMidiEditor::defaultRpnNames());
@@ -248,6 +352,12 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
 		m_pControlParamComboBox->setEditable(true);
+		if( m_pControlParamLimitComboBox){
+			if( m_pControlParamLimitTextLabel )
+				m_pControlParamLimitTextLabel->setEnabled(false);
+			m_pControlParamLimitComboBox->setEnabled(false);
+			m_pControlParamLimitComboBox->setEditable(false);
+		}
 		const QMap<unsigned short, QString>& nrpns
 			= (m_pMidiEditor ? m_pMidiEditor->nrpnNames()
 			: qtractorMidiEditor::defaultNrpnNames());
@@ -269,6 +379,12 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
 		m_pControlParamComboBox->setEditable(false);
+		if( m_pControlParamLimitComboBox){
+			if( m_pControlParamLimitTextLabel )
+				m_pControlParamLimitTextLabel->setEnabled(false);
+			m_pControlParamLimitComboBox->setEnabled(false);
+			m_pControlParamLimitComboBox->setEditable(false);
+		}
 		for (unsigned short iParam = 1; iParam < 32; ++iParam) {
 			m_pControlParamComboBox->addItem(iconControllers,
 				sTextMask.arg(iParam).arg(
@@ -285,11 +401,20 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 			m_pControlParamTextLabel->setEnabled(false);
 		m_pControlParamComboBox->setEnabled(false);
 		m_pControlParamComboBox->setEditable(false);
+		if( m_pControlParamLimitComboBox){
+			if( m_pControlParamLimitTextLabel )
+				m_pControlParamLimitTextLabel->setEnabled(false);
+			m_pControlParamLimitComboBox->setEnabled(false);
+			m_pControlParamLimitComboBox->setEditable(false);
+		}
 		break;
 	}
 
 	if (iOldParam >= 0 && iOldParam < m_pControlParamComboBox->count())
 		m_pControlParamComboBox->setCurrentIndex(iOldParam);
+
+	if (m_pControlParamLimitComboBox && iOldParamLimit < m_pControlParamLimitComboBox->count())
+		m_pControlParamLimitComboBox->setCurrentIndex(iOldParamLimit);
 
 	if (m_pControlParamComboBox->isEditable()) {
 		QObject::connect(m_pControlParamComboBox->lineEdit(),
@@ -297,6 +422,13 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 			SLOT(editControlParamFinished()));
 		if (bOldEditable)
 			m_pControlParamComboBox->setEditText(sOldParam);
+	}
+	if (m_pControlParamLimitComboBox && m_pControlParamLimitComboBox->isEditable()) {
+		QObject::connect(m_pControlParamLimitComboBox->lineEdit(),
+			SIGNAL(editingFinished()),
+			SLOT(editControlParamLimitFinished()));
+		if (bOldLimitEditable)
+			m_pControlParamLimitComboBox->setEditText(sOldParamLimit);
 	}
 }
 
@@ -309,6 +441,8 @@ void qtractorMidiControlTypeGroup::activateControlType ( int iControlType )
 	emit controlTypeChanged(iControlType);
 
 	activateControlParam(m_pControlParamComboBox->currentIndex());
+	if( m_pControlParamLimitComboBox )
+		activateControlParamLimit(m_pControlParamLimitComboBox->currentIndex());
 }
 
 
@@ -319,6 +453,15 @@ void qtractorMidiControlTypeGroup::activateControlParam ( int iControlParam )
 
 	emit controlParamChanged(int(iParam));
 }
+
+void qtractorMidiControlTypeGroup::activateControlParamLimit ( int iControlParamLimit )
+{
+	const unsigned short iParamLimit
+		= m_pControlParamLimitComboBox->itemData(iControlParamLimit).toInt();
+
+	emit controlParamLimitChanged(int(iParamLimit));
+}
+
 
 
 void qtractorMidiControlTypeGroup::editControlParamFinished (void)
@@ -336,6 +479,23 @@ void qtractorMidiControlTypeGroup::editControlParamFinished (void)
 	if (bOk) emit controlParamChanged(int(iParam));
 
 	--m_iControlParamUpdate;
+}
+
+void qtractorMidiControlTypeGroup::editControlParamLimitFinished (void)
+{
+	if (m_iControlParamLimitUpdate > 0)
+		return;
+
+	++m_iControlParamLimitUpdate;
+
+	const QString& sControlParamLimit
+		= m_pControlParamLimitComboBox->currentText();
+
+	bool bOk = false;
+	const unsigned short iParam = sControlParamLimit.toInt(&bOk);
+	if (bOk) emit controlParamLimitChanged(int(iParam));
+
+	--m_iControlParamLimitUpdate;
 }
 
 
@@ -365,5 +525,15 @@ int qtractorMidiControlTypeGroup::indexFromControlParam (
 	return (-1);
 }
 
+int qtractorMidiControlTypeGroup::indexFromControlParamLimit (
+	unsigned short iParam ) const
+{
+	const int iItemCount = m_pControlParamLimitComboBox->count();
+	for (int iIndex = 0; iIndex < iItemCount; ++iIndex) {
+		if (m_pControlParamLimitComboBox->itemData(iIndex).toInt() == int(iParam))
+			return iIndex;
+	}
+	return (-1);
+}
 
 // end of qtractorMidiControlTypeGroup.cpp

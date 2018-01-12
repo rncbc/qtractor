@@ -2,7 +2,7 @@
 //
 /****************************************************************************
    Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
-   Copyright (C) 2009, gizzmo aka Mathias Krause. 
+   Copyright (C) 2009, gizzmo aka Mathias Krause.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -59,6 +59,14 @@ public:
 		TRACK_SOLO    = 6
 	};
 
+	// Controller command modes.
+	enum CommandMode {
+		VALUE         = 1,
+		SWITCH_BUTTON = 2,
+		PUSH_BUTTON   = 3,
+		ENCODER		  = 4
+	};
+
 	// Key param masks (wildcard flags).
 	enum { TrackParam = 0x4000, TrackParamMask = 0x3fff };
 
@@ -69,8 +77,8 @@ public:
 
 		// Constructor.
 		MapKey(ControlType ctype = qtractorMidiEvent::CONTROLLER,
-			unsigned short iChannel = 0, unsigned short iParam = 0)
-			: m_ctype(ctype), m_iChannel(iChannel), m_iParam(iParam) {}
+			unsigned short iChannel = 0, unsigned short iParam = 0, unsigned short iParamLimit = USHRT_MAX)
+			: m_ctype(ctype), m_iChannel(iChannel), m_iParam(iParam), m_iParamLimit(iParamLimit) {}
 
 		// Type accessors.
 		void setType(ControlType ctype)
@@ -95,18 +103,27 @@ public:
 		unsigned short param() const
 			{ return m_iParam; }
 
+		void setParamLimit(unsigned short iParamLimit)
+			{ m_iParamLimit = iParamLimit; }
+		unsigned short paramLimit() const
+			{ return m_iParamLimit; }
+
 		bool isParam() const
 			{ return ((m_iParam & TrackParamMask ) == m_iParam); }
 		bool isParamTrack() const
 			{ return (m_iParam & TrackParam); }
 
 		// Generic key matcher.
-		bool match(ControlType ctype,
-			unsigned short iChannel, unsigned short iParam) const
+		bool match(ControlType ctype, unsigned short iChannel,
+			unsigned short iParam ) const
 		{
-			return (type() == ctype 
+			// make sure, the parameter is between the base value and the limit
+			const unsigned short iParamBase = (param() & TrackParamMask);
+
+			return (type() == ctype
 				&& (isChannelTrack() || channel() == iChannel)
-				&& (isParamTrack() || param() == iParam));
+				&& ((isParamTrack() && iParam >= iParamBase && iParam <= paramLimit() )
+					|| param() == iParam ));
 		}
 
 		// Hash/map key comparator.
@@ -114,7 +131,8 @@ public:
 		{
 			return (key.m_ctype == m_ctype)
 				&& (key.m_iChannel == m_iChannel)
-				&& (key.m_iParam == m_iParam);
+				&& (key.m_iParam == m_iParam)
+				&& (key.m_iParamLimit == m_iParamLimit);
 		}
 
 	private:
@@ -123,6 +141,7 @@ public:
 		ControlType    m_ctype;
 		unsigned short m_iChannel;
 		unsigned short m_iParam;
+		unsigned short m_iParamLimit;
 	};
 
 	// MIDI control map data value.
@@ -131,14 +150,20 @@ public:
 	public:
 
 		// Constructor.
-		MapVal(Command command = Command(0), int iTrack = 0, bool bFeedback = false)
-			: m_command(command), m_iTrack(iTrack), m_bFeedback(bFeedback) {}
+		MapVal(Command command = Command(0), CommandMode commandMode = PUSH_BUTTON, int iTrack = 0, bool bFeedback = false)
+			: m_command(command), m_commandMode(commandMode), m_iTrack(iTrack), m_bFeedback(bFeedback) {}
 
 		// Command accessors
 		void setCommand(Command command)
 			{ m_command = command; }
 		Command command() const
 			{ return m_command; }
+
+		// CommandMode accessors
+		void setCommandMode(CommandMode commandMode)
+			{ m_commandMode = commandMode; }
+		CommandMode commandMode() const
+			{ return m_commandMode; }
 
 		// Track offset accessor.
 		void setTrack(int iTrack)
@@ -212,9 +237,10 @@ public:
 	private:
 
 		// Instance (value) member variables.
-		Command m_command;
-		int     m_iTrack;
-		bool    m_bFeedback;
+		Command     m_command;
+		CommandMode m_commandMode;
+		int         m_iTrack;
+		bool        m_bFeedback;
 
 		QHash<int, Track> m_trackMap;
 	};
@@ -239,20 +265,25 @@ public:
 	// Insert new controller mappings.
 	void mapChannelParam(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		unsigned short iParamLimit, Command command, CommandMode commandMode,
+		int iTrack = 0, bool bFeedback = false);
 	void mapChannelTrack(ControlType ctype, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		unsigned short iParamLimit, Command command, CommandMode commandMode,
+		int iTrack = 0, bool bFeedback = false);
 	void mapChannelParamTrack(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		unsigned short iParamLimit, Command command, CommandMode commandMode,
+		int iTrack = 0, bool bFeedback = false);
 
 	// Remove existing controller mapping.
 	void unmapChannelParam(ControlType ctype,
-		unsigned short iChannel, unsigned short iParam);
+		unsigned short iChannel, unsigned short iParam,
+		unsigned short iParamLimit);
 
 	// Check if given channel, param triplet is currently mapped.
 	bool isChannelParamMapped(ControlType ctype,
-		unsigned short iChannel, unsigned short iParam) const;
+		unsigned short iChannel, unsigned short iParam,
+		unsigned short iParamLimit) const;
 
 	// Re-send all (track) controllers.
 	void sendAllControllers(int iFirstTrack = 0) const;
@@ -330,6 +361,12 @@ public:
 	static unsigned short keyFromText(const QString& sText);
 	static QString textFromKey(unsigned short iKey);
 
+	static CommandMode commandModeFromText(const QString& sText);
+	static const QString& textFromCommandMode(CommandMode commandMode);
+
+	static CommandMode commandModeFromName(const QString& sName);
+	static const QString& nameFromCommandMode(CommandMode commandMode);
+
 	static Command commandFromText(const QString& sText);
 	static const QString& textFromCommand(Command command);
 
@@ -358,7 +395,7 @@ protected:
 	public:
 
 		// Constructor
-		ControlScale(ControlType ctype)
+		ControlScale(ControlType ctype, CommandMode commandMode)
 		{
 			m_iMaxScale = (
 				ctype == qtractorMidiEvent::PITCHBEND   ||
@@ -370,6 +407,7 @@ protected:
 			const unsigned short mid = (m_iMaxScale >> 1);
 			m_fMidScale = float(mid);
 			m_iMidScale = int(mid + 1);
+			m_commandMode = commandMode;
 		}
 
 		// Scale value converters (unsigned).
@@ -379,14 +417,45 @@ protected:
 			{ return m_fMaxScale * fValue; }
 
 		// Scale value converters (signed).
-		float valueSignedFromMidi(unsigned short iValue) const
-			{ return float(int(iValue) - m_iMidScale) / m_fMidScale; }
+		float valueSignedFromMidi(unsigned short iValue, float fCurrentValue = 0.0f) const
+			{
+			float fValue = 0.0f;
+			switch(m_commandMode){
+			case ENCODER:
+				if( iValue == m_iMidScale) return 0.0f;
+				fValue = iValue > m_iMidScale ? fCurrentValue - 0.1f : fCurrentValue + 0.1f;
+				if( ( fValue >=  -1 ) && ( fValue <= 1 ) )
+					return fValue;
+				else
+					return fCurrentValue;
+			case VALUE:
+			case SWITCH_BUTTON:
+			case PUSH_BUTTON:
+			default:
+				return float(int(iValue) - m_iMidScale) / m_fMidScale;
+			}
+		}
+
 		unsigned short midiFromValueSigned(float fValue) const
 			{ return m_iMidScale + int(m_fMidScale * fValue); }
 
 		// Scale value converters (toggled).
-		float valueToggledFromMidi(unsigned short iValue) const
-			{ return (iValue > m_iMidScale ? 1.0f : 0.0f); }
+		float valueToggledFromMidi(unsigned short iValue, float fCurrentValue = 0.0f ) const
+		{
+			switch(m_commandMode){
+			case PUSH_BUTTON:
+				// do nohing if value lower than max
+				if( iValue < m_iMaxScale)
+					return fCurrentValue;
+				// else toggle current state
+				return( fCurrentValue == 0.0f ? 1.0f : 0.0f );
+			case SWITCH_BUTTON:
+			case VALUE:
+			case ENCODER:
+			default:
+				return (iValue > m_iMidScale ? 1.0f : 0.0f);
+			}
+		}
 		unsigned short midiFromValueToggled(float fValue) const
 			{ return (fValue > 0.5f ? m_iMaxScale : 0); }
 
@@ -397,6 +466,10 @@ protected:
 		float m_fMidScale;
 		int   m_iMaxScale;
 		int   m_iMidScale;
+
+		// Threshold for buttons
+		float m_fThreshold;
+		CommandMode m_commandMode;
 	};
 
 private:

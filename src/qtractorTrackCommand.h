@@ -219,7 +219,7 @@ private:
 	QList<qtractorAddTrackCommand *> m_trackCommands;
 
 	// Session properties backup stuff.
-    qtractorSession::Properties m_sessionProps;
+	qtractorSession::Properties m_sessionProps;
 	qtractorPropertyCommand<qtractorSession::Properties> *m_pSaveCommand;
 	int m_iSaveCount;
 };
@@ -259,7 +259,7 @@ public:
 
 	// Constructor.
 	qtractorTrackControlCommand(const QString& sName,
-		qtractorTrack *pTrack, bool bMidiControl = false);
+		qtractorTrack *pTrack, bool bMidiControl = false, int iMidiControlFeedback = 0);
 
 protected:
 
@@ -270,7 +270,7 @@ private:
 
 	// Instance variables.
 	bool m_bMidiControl;
-	int  m_iMidiControlFeedback; 
+	int  m_iMidiControlFeedback;
 };
 
 
@@ -285,7 +285,7 @@ public:
 	// Constructor.
 	qtractorTrackStateCommand(qtractorTrack *pTrack,
 		qtractorTrack::ToolType toolType, bool bOn,
-		bool bMidiControl = false);
+		bool bMidiControl = false, int iMidiControlFeedback = 0);
 
 	// Destructor.
 	~qtractorTrackStateCommand();
@@ -319,7 +319,7 @@ public:
 
 	// Constructor.
 	qtractorTrackMonitorCommand(qtractorTrack *pTrack,
-		bool bMonitor, bool bMidiControl = false);
+		bool bMonitor, bool bMidiControl = false, int iMidiControlFeedback = 0);
 
 	// Destructor.
 	~qtractorTrackMonitorCommand();
@@ -348,7 +348,7 @@ public:
 
 	// Constructor.
 	qtractorTrackGainCommand(qtractorTrack *pTrack,
-		float fGain, bool bMidiControl = false);
+		float fGain, bool bMidiControl = false, int iMidiControlFeedback = 0);
 
 	// Track-gain command methods.
 	bool redo();
@@ -378,7 +378,7 @@ public:
 
 	// Constructor.
 	qtractorTrackPanningCommand(qtractorTrack *pTrack,
-		float fPanning, bool bMidiControl = false);
+		float fPanning, bool bMidiControl = false, int iMidiControlFeedback = 0);
 
 	// Track-panning command methods.
 	bool redo();

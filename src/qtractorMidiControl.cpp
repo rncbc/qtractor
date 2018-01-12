@@ -2,7 +2,7 @@
 //
 /****************************************************************************
    Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
-   Copyright (C) 2009, gizzmo aka Mathias Krause. 
+   Copyright (C) 2009, gizzmo aka Mathias Krause.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -132,43 +132,44 @@ void qtractorMidiControl::clearControlMap (void)
 // Insert new controller mappings.
 void qtractorMidiControl::mapChannelParam (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	unsigned short iParamLimit, Command command, CommandMode commandMode, int iTrack, bool bFeedback )
 {
 	m_controlMap.insert(
-		MapKey(ctype, iChannel, iParam),
-		MapVal(command, iTrack, bFeedback));
+		MapKey(ctype, iChannel, iParam, iParamLimit),
+		MapVal(command, commandMode, iTrack, bFeedback));
 }
 
 void qtractorMidiControl::mapChannelTrack (
 	ControlType ctype, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	unsigned short iParamLimit, Command command,
+	CommandMode commandMode, int iTrack, bool bFeedback )
 {
 	mapChannelParam(
-		ctype, TrackParam, iParam, command, iTrack, bFeedback);
+		ctype, TrackParam, iParam, iParamLimit, command, commandMode, iTrack, bFeedback);
 }
 
 void qtractorMidiControl::mapChannelParamTrack (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	unsigned short iParamLimit, Command command, CommandMode commandMode, int iTrack, bool bFeedback )
 {
 	mapChannelParam(
-		ctype, iChannel, iParam | TrackParam, command, iTrack, bFeedback);
+		ctype, iChannel, iParam | TrackParam, iParamLimit, command, commandMode, iTrack, bFeedback);
 }
 
 
 // Remove existing controller mapping.
 void qtractorMidiControl::unmapChannelParam (
-	ControlType ctype, unsigned short iChannel, unsigned short iParam )
+	ControlType ctype, unsigned short iChannel, unsigned short iParam, unsigned short iParamLimit )
 {
-	m_controlMap.remove(MapKey(ctype, iChannel, iParam));
+	m_controlMap.remove(MapKey(ctype, iChannel, iParam, iParamLimit));
 }
 
 
 // Check if given channel, param triplet is currently mapped.
 bool qtractorMidiControl::isChannelParamMapped (
-	ControlType ctype, unsigned short iChannel, unsigned short iParam ) const
+	ControlType ctype, unsigned short iChannel, unsigned short iParam, unsigned short iParamLimit ) const
 {
-	return m_controlMap.contains(MapKey(ctype, iChannel, iParam));
+	return m_controlMap.contains(MapKey(ctype, iChannel, iParam, iParamLimit));
 }
 
 
@@ -303,57 +304,69 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	if (pTrack == NULL)
 		return bResult;
 
-	ControlScale scale(ctle.type());
+	ControlScale scale(ctle.type(), val.commandMode());
 
 	MapVal::Track& ctlv = val.track(iTrack);
 
 	float fValue;
+	float fCurrentValue;
 	switch (val.command()) {
 	case TRACK_GAIN:
 		fValue = scale.valueFromMidi(ctle.value());
 		if (pTrack->trackType() == qtractorTrack::Audio)
-			fValue = ::cubef2(fValue);
+			/*
+			** For some reason the gain value of audio tracks has a range from
+			** nearly 0 to 2.
+			** This hack 'translates' the incoming controller data to this behaviour.
+			*/
+			fValue = ::cubef2(fValue) * 2;
 		if (ctlv.sync(fValue, pTrack->gain())) {
 			bResult = pSession->execute(
-				new qtractorTrackGainCommand(pTrack, ctlv.value(), true));
+				new qtractorTrackGainCommand(pTrack, ctlv.value(), true, 1));
 		}
 		break;
 	case TRACK_PANNING:
-		fValue = scale.valueSignedFromMidi(ctle.value());
-		if (ctlv.sync(fValue, pTrack->panning())) {
+		fCurrentValue = pTrack->panning();
+		fValue = scale.valueSignedFromMidi(ctle.value(), fCurrentValue);
+		qDebug("Old value %f with c-value %d translated to %f", fCurrentValue, ctle.value(), fValue );
+		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
-				new qtractorTrackPanningCommand(pTrack, ctlv.value(), true));
+				new qtractorTrackPanningCommand(pTrack, ctlv.value(), true, val.isFeedback()?1:0));
 		}
 		break;
 	case TRACK_MONITOR:
-		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isMonitor() ? 1.0f : 0.0f))) {
+		fCurrentValue = pTrack->isMonitor()?1.0f:0.0f;
+		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
+		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
-				new qtractorTrackMonitorCommand(pTrack, ctlv.value(), true));
+				new qtractorTrackMonitorCommand(pTrack, ctlv.value(), true, val.isFeedback()?1:0));
 		}
 		break;
 	case TRACK_RECORD:
-		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isRecord() ? 1.0f : 0.0f))) {
+		fCurrentValue = pTrack->isRecord()?1.0f:0.0f;
+		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
+		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
-					qtractorTrack::Record, ctlv.value(), true));
+					qtractorTrack::Record, ctlv.value(), true, val.isFeedback()?1:0));
 		}
 		break;
 	case TRACK_MUTE:
-		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isMute() ? 1.0f : 0.0f))) {
+		fCurrentValue = pTrack->isMute()?1.0f:0.0f;
+		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
+		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
-					qtractorTrack::Mute, ctlv.value(), true));
+					qtractorTrack::Mute, ctlv.value(), true, val.isFeedback()?1:0));
 		}
 		break;
 	case TRACK_SOLO:
-		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isSolo() ? 1.0f : 0.0f))) {
+		fCurrentValue = pTrack->isSolo()?1.0f:0.0f;
+		fValue = scale.valueToggledFromMidi(ctle.value(), fCurrentValue);
+		if (ctlv.sync(fValue, fCurrentValue)) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
-					qtractorTrack::Solo, ctlv.value(), true));
+					qtractorTrack::Solo, ctlv.value(), true, val.isFeedback()?1:0));
 		}
 		break;
 	default:
@@ -395,11 +408,17 @@ void qtractorMidiControl::sendTrackController (
 				continue;
 			// Convert/normalize value...
 			const ControlType ctype = key.type();
-			const ControlScale scale(ctype);
+			const ControlScale scale(ctype, val.commandMode());
 			unsigned short iValue = 0;
 			switch (command) {
 			case TRACK_GAIN:
-				if (bCubic) fValue = ::cbrtf2(fValue);
+				/*
+				** For some reason the gain value of audio tracks has a range from
+				** nearly 0 (there is some kind of offset) to 2.
+				** This hack 'translates' the outgoing controller data to this behaviour.
+				** Otherwise the value range of common controllers is exceeded.
+				*/
+				if (bCubic) fValue = ::cbrtf2(fValue/2);
 				iValue = scale.midiFromValue(fValue);
 				break;
 			case TRACK_PANNING:
@@ -433,13 +452,19 @@ void qtractorMidiControl::sendTrackController (
 	ControlType ctype, qtractorTrack *pTrack,
 	Command command, unsigned short iChannel, unsigned short iParam ) const
 {
-	const ControlScale scale(ctype);
+	const ControlScale scale(ctype, CommandMode(0));
 	unsigned short iValue = 0;
 
 	switch (command) {
 	case TRACK_GAIN:
 		if (pTrack->trackType() == qtractorTrack::Audio)
-			iValue = scale.midiFromValue(::cbrtf2(pTrack->gain()));
+			/*
+			** For some reason the gain value of audio tracks has a range from
+			** nearly 0 (there is some kind of offset) to 2.
+			** This hack 'translates' the outgoing controller data to this behaviour.
+			** Otherwise the value range of common controllers is exceeded.
+			*/
+			iValue = scale.midiFromValue(::cbrtf2(pTrack->gain()/2));
 		else
 			iValue = scale.midiFromValue(pTrack->gain());
 		break;
@@ -577,6 +602,7 @@ bool qtractorMidiControl::loadElement (
 			const unsigned short iChannel
 				= keyFromText(eItem.attribute("channel"));
 			unsigned short iParam = 0;
+			unsigned short iParamLimit = 0;
 			const bool bOldMap = (ctype == ControlType(0));
 			bool bOldTrackParam = false;
 			if (bOldMap) {
@@ -587,8 +613,10 @@ bool qtractorMidiControl::loadElement (
 				iParam = eItem.attribute("param").toUShort();
 				if (qtractorDocument::boolFromText(eItem.attribute("track")))
 					iParam |= TrackParam;
+				iParamLimit = eItem.attribute("paramLimit").toUShort();
 			}
 			Command command = Command(0);
+			CommandMode commandMode = CommandMode(0);
 			int iTrack = 0;
 			bool bFeedback = false;
 			for (QDomNode nVal = eItem.firstChild();
@@ -598,8 +626,10 @@ bool qtractorMidiControl::loadElement (
 				QDomElement eVal = nVal.toElement();
 				if (eVal.isNull())
 					continue;
-				if (eVal.tagName() == "command")
+				if (eVal.tagName() == "command"){
 					command = commandFromText(eVal.text());
+					commandMode = commandModeFromText(eVal.attribute("commandMode"));
+				}
 				else
 				if (eVal.tagName() == "track")
 					iTrack = eVal.text().toInt();
@@ -616,8 +646,8 @@ bool qtractorMidiControl::loadElement (
 				}
 			}
 			m_controlMap.insert(
-				MapKey(ctype, iChannel, iParam),
-				MapVal(command, iTrack, bFeedback));
+				MapKey(ctype, iChannel, iParam, iParamLimit),
+				MapVal(command, commandMode, iTrack, bFeedback));
 		}
 	}
 
@@ -641,10 +671,15 @@ bool qtractorMidiControl::saveElement (
 			textFromKey(key.channel()));
 		eItem.setAttribute("param",
 			QString::number(key.param() & TrackParamMask));
+		eItem.setAttribute("paramLimit",
+			QString::number(key.paramLimit()));
 		eItem.setAttribute("track",
 			qtractorDocument::textFromBool(key.isParamTrack()));
-		pDocument->saveTextElement("command",
-			textFromCommand(val.command()), &eItem);
+		QDomElement eCommand = pDocument->document()->createElement("command");
+		QDomText eCommandName = pDocument->document()->createTextNode(textFromCommand(val.command()));
+		eCommand.setAttribute("commandMode", textFromCommandMode(val.commandMode()));
+		eCommand.appendChild(eCommandName);
+		eItem.appendChild(eCommand);
 		pDocument->saveTextElement("track",
 			QString::number(val.track()), &eItem);
 		pDocument->saveTextElement("feedback",
@@ -871,6 +906,86 @@ const QString& qtractorMidiControl::nameFromType (
 	return g_controlTypeNames[ctype];
 }
 
+//----------------------------------------------------------------------------
+// MIDI Controller Command Modes Text/Names - Default command mode names
+
+static struct
+{
+	qtractorMidiControl::CommandMode command;
+	const char *text;
+	const char *name;
+} g_aCommandModes[] = {
+
+	{ qtractorMidiControl::VALUE,          "VALUE",         _TR("Value")    },
+	{ qtractorMidiControl::SWITCH_BUTTON,  "SWITCH_BUTTON", _TR("Switch Button")    },
+	{ qtractorMidiControl::PUSH_BUTTON,    "PUSH_BUTTON",   _TR("Push Button") },
+	{ qtractorMidiControl::ENCODER,        "ENCODER",       _TR("Encoder") },
+	{ qtractorMidiControl::CommandMode(0), NULL,            NULL }
+};
+
+static QHash<qtractorMidiControl::CommandMode, QString> g_commandModeTexts;
+static QHash<QString, qtractorMidiControl::CommandMode> g_textCommandModes;
+
+
+static void initCommandModeTexts (void)
+{
+	if (g_commandModeTexts.isEmpty()) {
+		// Pre-load command-names hash table...
+		for (int i = 0; g_aCommandModes[i].name; ++i) {
+			qtractorMidiControl::CommandMode commandMode = g_aCommandModes[i].command;
+			const QString& sText = QString(g_aCommandModes[i].text);
+			g_commandModeTexts.insert(commandMode, sText);
+			g_textCommandModes.insert(sText, commandMode);
+		}
+	}
+}
+
+static QHash<qtractorMidiControl::CommandMode, QString> g_commandModeNames;
+static QHash<QString, qtractorMidiControl::CommandMode> g_nameCommandModes;
+
+static void initCommandModeNames (void)
+{
+	if (g_commandModeNames.isEmpty()) {
+		// Pre-load command-names hash table...
+		for (int i = 0; g_aCommandModes[i].name; ++i) {
+			qtractorMidiControl::CommandMode commandMode = g_aCommandModes[i].command;
+			const QString& sName = QObject::tr(g_aCommandModes[i].name, "commandModeName");
+			g_commandModeNames.insert(commandMode, sName);
+			g_nameCommandModes.insert(sName, commandMode);
+		}
+	}
+}
+
+qtractorMidiControl::CommandMode qtractorMidiControl::commandModeFromText (
+	const QString& sText )
+{
+	initCommandModeTexts();
+	return g_textCommandModes[sText];
+}
+
+
+const QString& qtractorMidiControl::textFromCommandMode( CommandMode commandMode )
+{
+	initCommandModeTexts();
+
+	return g_commandModeTexts[commandMode];
+}
+
+
+qtractorMidiControl::CommandMode qtractorMidiControl::commandModeFromName (
+	const QString& sName )
+{
+	initCommandModeNames();
+
+	return g_nameCommandModes[sName];
+}
+
+const QString& qtractorMidiControl::nameFromCommandMode ( CommandMode commandMode )
+{
+	initCommandModeNames();
+
+	return g_commandModeNames[commandMode];
+}
 
 //----------------------------------------------------------------------------
 // MIDI Controller Command Text/Names - Default command names hash map.
@@ -955,6 +1070,7 @@ qtractorMidiControl::Command qtractorMidiControl::commandFromText (
 		return Command(0);
 #endif
 }
+
 
 const QString& qtractorMidiControl::textFromCommand ( Command command )
 {
