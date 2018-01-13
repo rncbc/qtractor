@@ -172,14 +172,46 @@ public:
 
 			// Constructor.
 			Track(float fValue = 0.0f)
-				: m_fValue(fValue), m_bValueSync(false) {}
+				: m_fValue(fValue), m_bSync(false) {}
+
+			// Toggled sync methods.
+			bool syncToggled(float fValue, float fOldValue, bool bDelta)
+			{
+				if (bDelta) { // aka. momentary/non-latched...
+					if (fValue > 0.0f)
+						fValue = (fOldValue > 0.0f ? 0.0f : 1.0f);
+					else
+						fValue = fOldValue;
+				}
+				return sync(fValue, fOldValue);
+			}
+
+			// Scalar sync methods.
+			bool syncDecimal(float fValue, float fOldValue, bool bDelta)
+			{
+				if (bDelta) { // aka. encoded...
+					if (fValue > 0.0f)
+						fValue = fOldValue + fValue;
+					else
+						fValue = fOldValue - fValue;
+				}
+				return sync(fValue, fOldValue);
+			}
 
 			// Tracking/catch-up methods.
+			void syncReset()
+				{ m_bSync = false; }
+
+			float value() const
+				{ return m_fValue; }
+
+		protected:
+
 			bool sync(float fValue, float fOldValue)
 			{
 				bool bSync = qtractorMidiControl::isSync();
 				if (!bSync)
-					bSync = m_bValueSync;
+					bSync = m_bSync;
 				if (!bSync) {
 					const float v0 = m_fValue;
 					const float v1 = fOldValue;
@@ -195,22 +227,16 @@ public:
 				}
 				if (bSync) {
 					m_fValue = fValue;
-					m_bValueSync = true;
+					m_bSync  = true;
 				}
 				return bSync;
 			}
-
-			void syncReset()
-				{ m_bValueSync = false; }
-
-			float value() const
-				{ return m_fValue; }
 
 		private:
 
 			// Tracking/catch-up members.
 			float m_fValue;
-			bool  m_bValueSync;
+			bool  m_bSync;
 		};
 
 		Track& track(int iTrack)

@@ -314,34 +314,38 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 
 	MapVal::Track& ctlv = val.track(iTrack);
 
-	float fValue;
+	float fValue, fOldValue;
 	switch (val.command()) {
 	case TRACK_GAIN:
 		fValue = scale.valueFromMidi(ctle.value());
-		if (pTrack->trackType() == qtractorTrack::Audio)
+		fOldValue = pTrack->gain();
+		if (pTrack->trackType() == qtractorTrack::Audio && !val.isDelta())
 			fValue = ::cubef2(fValue);
-		if (ctlv.sync(fValue, pTrack->gain())) {
+		if (ctlv.syncDecimal(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackGainCommand(pTrack, ctlv.value(), true));
 		}
 		break;
 	case TRACK_PANNING:
 		fValue = scale.valueSignedFromMidi(ctle.value());
-		if (ctlv.sync(fValue, pTrack->panning())) {
+		fOldValue = pTrack->panning();
+		if (ctlv.syncDecimal(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackPanningCommand(pTrack, ctlv.value(), true));
 		}
 		break;
 	case TRACK_MONITOR:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isMonitor() ? 1.0f : 0.0f))) {
+		fOldValue = (pTrack->isMonitor() ? 1.0f : 0.0f);
+		if (ctlv.syncToggled(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackMonitorCommand(pTrack, ctlv.value(), true));
 		}
 		break;
 	case TRACK_RECORD:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isRecord() ? 1.0f : 0.0f))) {
+		fOldValue = (pTrack->isRecord() ? 1.0f : 0.0f);
+		if (ctlv.syncToggled(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
 					qtractorTrack::Record, ctlv.value(), true));
@@ -349,7 +353,8 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		break;
 	case TRACK_MUTE:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isMute() ? 1.0f : 0.0f))) {
+		fOldValue = (pTrack->isMute() ? 1.0f : 0.0f);
+		if (ctlv.syncToggled(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
 					qtractorTrack::Mute, ctlv.value(), true));
@@ -357,7 +362,8 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		break;
 	case TRACK_SOLO:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isSolo() ? 1.0f : 0.0f))) {
+		fOldValue = (pTrack->isSolo() ? 1.0f : 0.0f);
+		if (ctlv.syncToggled(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
 					qtractorTrack::Solo, ctlv.value(), true));

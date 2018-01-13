@@ -658,7 +658,7 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 		(iChannel & qtractorMidiControl::TrackParam) == 0);
 
 	const bool bTrackParam = (iParam & qtractorMidiControl::TrackParam);
-	m_ui.TrackLimitLabel->setEnabled(bTrackParam);
+	m_ui.TrackLimitTextLabel->setEnabled(bTrackParam);
 	m_ui.TrackLimitSpinBox->setEnabled(bTrackParam);
 
 	m_ui.MapPushButton->setEnabled(!bMapped && m_iDirtyCount > 0);

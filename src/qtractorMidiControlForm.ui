@@ -158,7 +158,7 @@
     </widget>
    </item>
    <item row="4" column="3">
-    <widget class="QLabel" name="TrackParamLabel">
+    <widget class="QLabel" name="TrackParamTextLabel">
      <property name="text">
       <string>Trac&amp;k</string>
      </property>
@@ -171,9 +171,9 @@
     </widget>
    </item>
    <item row="4" column="4">
-    <widget class="QLabel" name="TrackOffsetLabel">
+    <widget class="QLabel" name="TrackOffsetTextLabel">
      <property name="text">
-      <string>Offse&amp;t</string>
+      <string>offse&amp;t</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -184,9 +184,9 @@
     </widget>
    </item>
    <item row="4" column="5">
-    <widget class="QLabel" name="TrackLimitLabel">
+    <widget class="QLabel" name="TrackLimitTextLabel">
      <property name="text">
-      <string>&amp;Limit</string>
+      <string>&amp;limit</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -210,17 +210,14 @@
     </widget>
    </item>
    <item row="4" column="7" colspan="2">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+    <widget class="QLabel" name="FlagsTextLabel">
+     <property name="text">
+      <string>Flags</string>
      </property>
-     <property name="sizeHint">
-      <size>
-       <width>20</width>
-       <height>8</height>
-      </size>
+     <property name="alignment">
+      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
      </property>
-    </spacer>
+    </widget>
    </item>
    <item row="4" column="9" colspan="2">
     <spacer>
