@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -132,27 +132,27 @@ void qtractorMidiControl::clearControlMap (void)
 // Insert new controller mappings.
 void qtractorMidiControl::mapChannelParam (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	Command command, int iTrack, int iFlags )
 {
 	m_controlMap.insert(
 		MapKey(ctype, iChannel, iParam),
-		MapVal(command, iTrack, bFeedback));
+		MapVal(command, iTrack, iFlags));
 }
 
 void qtractorMidiControl::mapChannelTrack (
 	ControlType ctype, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	Command command, int iTrack, int iFlags )
 {
 	mapChannelParam(
-		ctype, TrackParam, iParam, command, iTrack, bFeedback);
+		ctype, TrackParam, iParam, command, iTrack, iFlags);
 }
 
 void qtractorMidiControl::mapChannelParamTrack (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	Command command, int iTrack, int iFlags )
 {
 	mapChannelParam(
-		ctype, iChannel, iParam | TrackParam, command, iTrack, bFeedback);
+		ctype, iChannel, iParam | TrackParam, command, iTrack, iFlags);
 }
 
 
@@ -366,9 +366,9 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 
 // Process incoming command.
 void qtractorMidiControl::processTrackCommand (
-	Command command, int iTrack, float fValue, bool bCubic )
+	Command command, int iTrack, float fValue, bool bLogarithmic )
 {
-	sendTrackController(iTrack, command, fValue, bCubic);
+	sendTrackController(iTrack, command, fValue, bLogarithmic);
 }
 
 
@@ -381,7 +381,7 @@ void qtractorMidiControl::processTrackCommand (
 
 // Further processing of outgoing midi controller messages
 void qtractorMidiControl::sendTrackController (
-	int iTrack, Command command, float fValue, bool bCubic )
+	int iTrack, Command command, float fValue, bool bLogarithmic )
 {
 	// Search for the command and parameter in controller map...
 	ControlMap::Iterator it = m_controlMap.begin();
@@ -399,7 +399,7 @@ void qtractorMidiControl::sendTrackController (
 			unsigned short iValue = 0;
 			switch (command) {
 			case TRACK_GAIN:
-				if (bCubic) fValue = ::cbrtf2(fValue);
+				if (bLogarithmic) fValue = ::cbrtf2(fValue);
 				iValue = scale.midiFromValue(fValue);
 				break;
 			case TRACK_PANNING:
@@ -590,6 +590,7 @@ bool qtractorMidiControl::loadElement (
 			}
 			Command command = Command(0);
 			int iTrack = 0;
+			bool bDelta = false;
 			bool bFeedback = false;
 			for (QDomNode nVal = eItem.firstChild();
 					!nVal.isNull();
@@ -602,7 +603,13 @@ bool qtractorMidiControl::loadElement (
 					command = commandFromText(eVal.text());
 				else
 				if (eVal.tagName() == "track")
-					iTrack = eVal.text().toInt();
+					iTrack |= (eVal.text().toInt() & 0x7f);
+				else
+				if (eVal.tagName() == "limit")
+					iTrack |= (eVal.text().toInt() << 7) & 0x3fc0;
+				else
+				if (eVal.tagName() == "delta")
+					bDelta = qtractorDocument::boolFromText(eVal.text());
 				else
 				if (eVal.tagName() == "feedback")
 					bFeedback = qtractorDocument::boolFromText(eVal.text());
@@ -615,9 +622,14 @@ bool qtractorMidiControl::loadElement (
 					}
 				}
 			}
+			int iFlags = 0;
+			if (bDelta)
+				iFlags |= MapVal::Delta;
+			if (bFeedback)
+				iFlags |= MapVal::Feedback;
 			m_controlMap.insert(
 				MapKey(ctype, iChannel, iParam),
-				MapVal(command, iTrack, bFeedback));
+				MapVal(command, iTrack, iFlags));
 		}
 	}
 
@@ -646,7 +658,11 @@ bool qtractorMidiControl::saveElement (
 		pDocument->saveTextElement("command",
 			textFromCommand(val.command()), &eItem);
 		pDocument->saveTextElement("track",
-			QString::number(val.track()), &eItem);
+			QString::number(val.trackOffset()), &eItem);
+		pDocument->saveTextElement("limit",
+			QString::number(val.trackLimit()), &eItem);
+		pDocument->saveTextElement("delta",
+			qtractorDocument::textFromBool(val.isDelta()), &eItem);
 		pDocument->saveTextElement("feedback",
 			qtractorDocument::textFromBool(val.isFeedback()), &eItem);
 		pElement->appendChild(eItem);

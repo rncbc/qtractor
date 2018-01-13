@@ -1,7 +1,7 @@
 // qtractorMidiControl.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -130,9 +130,12 @@ public:
 	{
 	public:
 
+		// Bit-wise mode flags.
+		enum Flags { Feedback = 1, Delta = 2 };
+
 		// Constructor.
-		MapVal(Command command = Command(0), int iTrack = 0, bool bFeedback = false)
-			: m_command(command), m_iTrack(iTrack), m_bFeedback(bFeedback) {}
+		MapVal(Command command = Command(0), int iTrack = 0, int iFlags = 0)
+			: m_command(command), m_iTrack(iTrack), m_iFlags(iFlags) {}
 
 		// Command accessors
 		void setCommand(Command command)
@@ -140,17 +143,27 @@ public:
 		Command command() const
 			{ return m_command; }
 
-		// Track offset accessor.
+		// Track offset/limit accessors.
 		void setTrack(int iTrack)
 			{ m_iTrack = iTrack; }
 		int track() const
 			{ return m_iTrack; }
+		int trackOffset() const
+			{ return (m_iTrack & 0x007f); }
+		int trackLimit() const
+			{ return (m_iTrack & 0x3fc0) >> 7; }
 
 		// Feedback flag accessor.
 		void setFeedback(bool bFeedback)
-			{ m_bFeedback = bFeedback; }
+			{ if (bFeedback) m_iFlags |= Feedback; else m_iFlags &= ~Feedback; }
 		int isFeedback() const
-			{ return m_bFeedback; }
+			{ return (m_iFlags & Feedback); }
+
+		// Delta/momentary flag accessor.
+		void setDelta(bool bDelta)
+			{ if (bDelta) m_iFlags |= Delta; else m_iFlags &= ~Delta; }
+		int isDelta() const
+			{ return (m_iFlags & Delta); }
 
 		// MIDI control track (catch-up) value.
 		class Track
@@ -214,7 +227,7 @@ public:
 		// Instance (value) member variables.
 		Command m_command;
 		int     m_iTrack;
-		bool    m_bFeedback;
+		int     m_iFlags;
 
 		QHash<int, Track> m_trackMap;
 	};
@@ -239,12 +252,12 @@ public:
 	// Insert new controller mappings.
 	void mapChannelParam(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		Command command, int iTrack = 0, int iFlags = 0);
 	void mapChannelTrack(ControlType ctype, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		Command command, int iTrack = 0, int iFlags = 0);
 	void mapChannelParamTrack(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		Command command, int iTrack = 0, int iFlags = 0);
 
 	// Remove existing controller mapping.
 	void unmapChannelParam(ControlType ctype,
@@ -266,7 +279,7 @@ public:
 
 	// Process incoming command.
 	void processTrackCommand(
-		Command command, int iTrack, float fValue, bool bCubic = false);
+		Command command, int iTrack, float fValue, bool bLogarithmic = false);
 	void processTrackCommand(
 		Command command, int iTrack, bool bValue);
 
@@ -350,7 +363,7 @@ protected:
 		ControlType ctype, qtractorTrack *pTrack, Command command,
 		unsigned short iChannel, unsigned short iParam) const;
 	void sendTrackController(
-		int iTrack, Command command, float fValue, bool bCubic);
+		int iTrack, Command command, float fValue, bool bLogarithmic);
 
 	// MIDI control scale (7bit vs. 14bit).
 	class ControlScale
