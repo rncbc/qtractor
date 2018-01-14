@@ -253,9 +253,27 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle )
 	const ControlMap::Iterator& it_end = m_controlMap.end();
 	for ( ; it != it_end; ++it) {
 		const MapKey& key = it.key();
-		if (key.match(ctle.type(), ctle.channel(), ctle.param()))
+		// Generic key matcher.
+		if (key.type() != ctle.type())
+			continue;
+		if (!key.isChannelTrack() && key.channel() != ctle.channel())
+			continue;
+		if (key.isParamTrack()) {
+			const MapVal& val = it.value();
+			const unsigned short iKeyParam
+				= (key.param() & TrackParamMask) + val.trackOffset();
+			const unsigned short iKeyParamLimit
+				= iKeyParam + val.trackLimit();
+			const unsigned short iCtlParam = ctle.param();
+			if (iCtlParam >= iKeyParam
+				&& (iKeyParam >= iKeyParamLimit || iCtlParam < iKeyParamLimit))
+				break;
+		}
+		else
+		if (key.param() == ctle.param())
 			break;
 	}
+
 	return it;
 }
 
@@ -301,7 +319,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 			= iKeyParam + val.trackLimit();
 		const unsigned short iCtlParam = ctle.param();
 		if (iCtlParam >= iKeyParam
-			&& (iKeyParam >= iKeyParamLimit || iCtlParam >= iKeyParamLimit))
+			&& (iKeyParam >= iKeyParamLimit || iCtlParam < iKeyParamLimit))
 			iTrack += (iCtlParam - iKeyParam);
 		else
 			return bResult;

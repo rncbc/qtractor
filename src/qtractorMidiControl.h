@@ -100,15 +100,6 @@ public:
 		bool isParamTrack() const
 			{ return (m_iParam & TrackParam); }
 
-		// Generic key matcher.
-		bool match(ControlType ctype,
-			unsigned short iChannel, unsigned short iParam) const
-		{
-			return (type() == ctype 
-				&& (isChannelTrack() || channel() == iChannel)
-				&& (isParamTrack() || param() == iParam));
-		}
-
 		// Hash/map key comparator.
 		bool operator== (const MapKey& key) const
 		{
