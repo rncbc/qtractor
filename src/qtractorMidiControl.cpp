@@ -200,7 +200,7 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 			int iLastTrack = iFirstTrack;
 			if (key.isParamTrack()) {
 				iParam &= TrackParamMask;
-				iTrack += val.trackOffset();
+				iParam += val.trackOffset();
 				iLastTrack += val.trackLimit();
 			}
 			for (qtractorTrack *pTrack = pSession->tracks().first();
@@ -210,10 +210,10 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 						sendTrackController(key.type(),
 							pTrack, val.command(), iTrack, iParam);
 					else if (key.isParamTrack()) {
-						sendTrackController(key.type(),
-							pTrack, val.command(), iChannel, iParam + iTrack);
 						if (iFirstTrack < iLastTrack && iTrack >= iLastTrack)
 							break; // Bail out from inner track loop.
+						sendTrackController(key.type(),
+							pTrack, val.command(), iChannel, iParam + iTrack);
 					}
 					else if (val.track() == iTrack) {
 						sendTrackController(key.type(),
@@ -288,19 +288,25 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	const MapKey& key = it.key();
 	MapVal& val = it.value();
 
-	int iTrack = val.trackOffset();
+	int iTrack = 0;
 	if (key.isChannelTrack()) {
+		iTrack += val.track();
 		iTrack += int(ctle.channel());
 	}
 	else
 	if (key.isParamTrack()) {
-		const unsigned short iKeyParam = key.param() & TrackParamMask;
+		const unsigned short iKeyParam
+			= (key.param() & TrackParamMask) + val.trackOffset();
+		const unsigned short iKeyParamLimit
+			= iKeyParam + val.trackLimit();
 		const unsigned short iCtlParam = ctle.param();
-		if (iCtlParam >= iKeyParam)
-			iTrack += iCtlParam - iKeyParam;
+		if (iCtlParam >= iKeyParam
+			&& (iKeyParam >= iKeyParamLimit || iCtlParam >= iKeyParamLimit))
+			iTrack += (iCtlParam - iKeyParam);
 		else
 			return bResult;
 	}
+	else iTrack = val.track();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
