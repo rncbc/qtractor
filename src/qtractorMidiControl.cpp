@@ -195,14 +195,11 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 		if (val.isFeedback()) {
 			const MapKey& key = it.key();
 			const unsigned short iChannel = key.channel();
-			unsigned short iParam = key.param();
+			const unsigned short iParam = (key.param() & TrackParamMask);
 			int iTrack = 0;
 			int iLastTrack = iFirstTrack;
-			if (key.isParamTrack()) {
-				iParam &= TrackParamMask;
-				iParam += val.trackOffset();
+			if (key.isParamTrack())
 				iLastTrack += val.trackLimit();
-			}
 			for (qtractorTrack *pTrack = pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (iTrack >= iFirstTrack) {
@@ -212,8 +209,10 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 					else if (key.isParamTrack()) {
 						if (iFirstTrack < iLastTrack && iTrack >= iLastTrack)
 							break; // Bail out from inner track loop.
+						const unsigned short iParamTrack
+							= iParam + val.trackOffset() + iTrack;
 						sendTrackController(key.type(),
-							pTrack, val.command(), iChannel, iParam + iTrack);
+							pTrack, val.command(), iChannel, iParamTrack);
 					}
 					else if (val.track() == iTrack) {
 						sendTrackController(key.type(),
@@ -258,10 +257,11 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle )
 			continue;
 		if (!key.isChannelTrack() && key.channel() != ctle.channel())
 			continue;
+		const unsigned short iParam = (key.param() & TrackParamMask);
 		if (key.isParamTrack()) {
 			const MapVal& val = it.value();
 			const unsigned short iKeyParam
-				= (key.param() & TrackParamMask) + val.trackOffset();
+				= iParam + val.trackOffset();
 			const unsigned short iKeyParamLimit
 				= iKeyParam + val.trackLimit();
 			const unsigned short iCtlParam = ctle.param();
@@ -270,7 +270,7 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle )
 				break;
 		}
 		else
-		if (key.param() == ctle.param())
+		if (iParam == ctle.param())
 			break;
 	}
 
@@ -456,8 +456,11 @@ void qtractorMidiControl::sendTrackController (
 			if (key.isChannelTrack())
 				sendController(key.type(), iTrack, iParam, iValue);
 			else
-			if (key.isParamTrack())
-				sendController(key.type(), key.channel(), iParam + iTrack, iValue);
+			if (key.isParamTrack()) {
+				const unsigned short iParamTrack
+					= iParam + val.trackOffset() + iTrack;
+				sendController(key.type(), key.channel(), iParamTrack, iValue);
+			}
 			else
 			if (val.track() == iTrack)
 				sendController(key.type(), key.channel(), iParam, iValue);
