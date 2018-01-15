@@ -404,21 +404,51 @@ protected:
 
 		// Scale value converters (unsigned).
 		float valueFromMidi(unsigned short iValue) const
-			{ return float(iValue) / m_fMaxScale; }
+			{ return float(safeFromMidi(iValue)) / m_fMaxScale; }
 		unsigned short midiFromValue(float fValue) const
-			{ return m_fMaxScale * fValue; }
+			{ return m_fMaxScale * safeFromValue(fValue); }
 
 		// Scale value converters (signed).
 		float valueSignedFromMidi(unsigned short iValue) const
-			{ return float(int(iValue) - m_iMidScale) / m_fMidScale; }
+			{ return float(safeFromMidi(iValue) - m_iMidScale) / m_fMidScale; }
 		unsigned short midiFromValueSigned(float fValue) const
-			{ return m_iMidScale + int(m_fMidScale * fValue); }
+			{ return m_iMidScale + int(m_fMidScale * safeFromValueSigned(fValue)); }
 
 		// Scale value converters (toggled).
 		float valueToggledFromMidi(unsigned short iValue) const
 			{ return (iValue > m_iMidScale ? 1.0f : 0.0f); }
 		unsigned short midiFromValueToggled(float fValue) const
 			{ return (fValue > 0.5f ? m_iMaxScale : 0); }
+
+	protected:
+
+		// Safe/sanity value cappers.
+		int safeFromMidi(int iValue) const
+		{
+			if (iValue > 0)
+				return (iValue < m_iMaxScale ? iValue : m_iMaxScale);
+			else
+				return 0;
+		}
+
+		float safeFromValue(float fValue) const
+		{
+			if (fValue > 0.0f)
+				return (fValue <  1.0f ? fValue :  1.0f);
+			else
+				return 0.0f;
+		}
+
+		float safeFromValueSigned(float fValue) const
+		{
+			if (fValue > 0.0f)
+				return (fValue <  1.0f ? fValue :  1.0f);
+			else
+			if (fValue < 0.0f)
+				return (fValue > -1.0f ? fValue : -1.0f);
+			else
+				return 0.0f;
+		}
 
 	private:
 
