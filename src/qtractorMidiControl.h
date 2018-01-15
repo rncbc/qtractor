@@ -182,9 +182,10 @@ public:
 			{
 				if (bDelta) { // aka. encoded...
 					if (fValue > 0.0f)
-						fValue = fOldValue + fValue;
+						fValue = fOldValue + 0.1f;
 					else
-						fValue = fOldValue - fValue;
+					if (fValue < 0.0f)
+						fValue = fOldValue - 0.1f;
 				}
 				return sync(fValue, fOldValue);
 			}
