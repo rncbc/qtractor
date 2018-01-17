@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -198,7 +198,7 @@ void qtractorOptions::loadOptions (void)
 	sMidiControlDir = m_settings.value("/MidiControlDir").toString();
 	sMidiSysexDir   = m_settings.value("/MidiSysexDir").toString();
 	bAutoMonitor    = m_settings.value("/AutoMonitor", true).toBool();
-	bAutoDeactivatePlugins = m_settings.value("/AutoDeactivatePlugins", false).toBool();
+	bAutoDeactivate = m_settings.value("/AutoDeactivate", false).toBool();
 	iSnapPerBeat    = m_settings.value("/SnapPerBeat", 4).toInt();
 	fTempo    = float(m_settings.value("/Tempo", 120.0).toDouble());
 	iBeatsPerBar    = m_settings.value("/BeatsPerBar", 4).toInt();
@@ -494,7 +494,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MidiControlDir", sMidiControlDir);
 	m_settings.setValue("/MidiSysexDir", sMidiSysexDir);
 	m_settings.setValue("/AutoMonitor", bAutoMonitor);
-	m_settings.setValue("/AutoDeactivatePlugins", bAutoDeactivatePlugins);
+	m_settings.setValue("/AutoDeactivate", bAutoDeactivate);
 	m_settings.setValue("/SnapPerBeat", iSnapPerBeat);
 	m_settings.setValue("/Tempo", double(fTempo));
 	m_settings.setValue("/BeatsPerBar", iBeatsPerBar);

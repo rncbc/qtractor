@@ -1,7 +1,7 @@
 // qtractorMidiListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -195,7 +195,7 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 		sTitle, recentDir(), sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, recentDir(), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);

@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1529,16 +1529,19 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	const QString& sFilter
 		= tr("Session template files (*.qtr *.qts *.%1)").arg(sExt);
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sFilename = QFileDialog::getOpenFileName(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(options & QFileDialog::DontUseNativeDialog ? this : NULL,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);

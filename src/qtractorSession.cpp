@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -119,7 +119,7 @@ qtractorSession::qtractorSession (void)
 
 	m_bAutoTimeStretch  = false;
 
-	m_bAutoDeactivatePlugins = false;
+	m_bAutoDeactivate   = false;
 
 	m_iLoopRecordingMode = 0;
 
@@ -1774,7 +1774,7 @@ void qtractorSession::trackSolo ( qtractorTrack *pTrack, bool bSolo )
 void qtractorSession::autoDeactivatePlugins ( bool bForce )
 {
 	// Enabled && not if busy (e.g loading session)
-	if (m_bAutoDeactivatePlugins && !isBusy()) {
+	if (m_bAutoDeactivate && !isBusy()) {
 		for (qtractorTrack *pTrack = m_tracks.first();
 				pTrack; pTrack = pTrack->next()) {
 			pTrack->pluginList()->autoDeactivatePlugins(
@@ -1793,9 +1793,9 @@ void qtractorSession::undoAutoDeactivatePlugins (void)
 }
 
 
-void qtractorSession::setAutoDeactivatePlugins ( bool bOn )
+void qtractorSession::setAutoDeactivate ( bool bOn )
 {
-	m_bAutoDeactivatePlugins = bOn;
+	m_bAutoDeactivate = bOn;
 
 	if (bOn)
 		autoDeactivatePlugins();
@@ -1804,9 +1804,9 @@ void qtractorSession::setAutoDeactivatePlugins ( bool bOn )
 }
 
 
-bool qtractorSession::isAutoDeactivatePlugins (void) const
+bool qtractorSession::isAutoDeactivate (void) const
 {
-	return m_bAutoDeactivatePlugins;
+	return m_bAutoDeactivate;
 }
 
 
