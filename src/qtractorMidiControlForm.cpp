@@ -1,7 +1,7 @@
 // qtractorMidiControlForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -165,14 +165,20 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	QObject::connect(m_ui.ChannelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(keyChangedSlot()));
-	QObject::connect(m_ui.TrackCheckBox,
+	QObject::connect(m_ui.TrackParamCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(keyChangedSlot()));
-	QObject::connect(m_ui.TrackSpinBox,
+	QObject::connect(m_ui.TrackOffsetSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(valueChangedSlot()));
+	QObject::connect(m_ui.TrackLimitSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(valueChangedSlot()));
 	QObject::connect(m_ui.CommandComboBox,
 		SIGNAL(activated(int)),
+		SLOT(valueChangedSlot()));
+	QObject::connect(m_ui.DeltaCheckBox,
+		SIGNAL(toggled(bool)),
 		SLOT(valueChangedSlot()));
 	QObject::connect(m_ui.FeedbackCheckBox,
 		SIGNAL(toggled(bool)),
@@ -376,18 +382,23 @@ void qtractorMidiControlForm::mapSlot (void)
 		= channelFromText(m_ui.ChannelComboBox->currentText());
 
 	unsigned short iParam = m_pControlTypeGroup->controlParam();
-	if (m_ui.TrackCheckBox->isChecked()
+	if (m_ui.TrackParamCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
 
 	const qtractorMidiControl::Command command
 		= qtractorMidiControl::commandFromName(
 			m_ui.CommandComboBox->currentText());
-	const int iTrack = m_ui.TrackSpinBox->value();
-	const bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
+	const int iTrack = (m_ui.TrackOffsetSpinBox->value() & 0x07f)
+		| ((m_ui.TrackLimitSpinBox->value() << 7) & 0x3fc0);
+	int iFlags = 0;
+	if (m_ui.DeltaCheckBox->isChecked())
+		iFlags |= qtractorMidiControl::MapVal::Delta;
+	if (m_ui.FeedbackCheckBox->isChecked())
+		iFlags |= qtractorMidiControl::MapVal::Feedback;
 
 	pMidiControl->mapChannelParam(
-		ctype, iChannel, iParam, command, iTrack, bFeedback);
+		ctype, iChannel, iParam, command, iTrack, iFlags);
 
 	m_iDirtyCount = 0;
 	++m_iDirtyMap;
@@ -410,7 +421,7 @@ void qtractorMidiControlForm::unmapSlot (void)
 		= channelFromText(m_ui.ChannelComboBox->currentText());
 
 	unsigned short iParam = m_pControlTypeGroup->controlParam();
-	if (m_ui.TrackCheckBox->isChecked()
+	if (m_ui.TrackParamCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
 
@@ -624,7 +635,7 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 	const unsigned short iChannel = channelFromText(sChannel);
 
 	unsigned short iParam = m_pControlTypeGroup->controlParam();
-	if (m_ui.TrackCheckBox->isChecked()
+	if (m_ui.TrackParamCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
 
@@ -649,8 +660,12 @@ void qtractorMidiControlForm::stabilizeKeyChange (void)
 		}
 	}
 
-	m_ui.TrackCheckBox->setEnabled(
+	m_ui.TrackParamCheckBox->setEnabled(
 		(iChannel & qtractorMidiControl::TrackParam) == 0);
+
+	const bool bTrackParam = (iParam & qtractorMidiControl::TrackParam);
+	m_ui.TrackLimitTextLabel->setEnabled(bTrackParam);
+	m_ui.TrackLimitSpinBox->setEnabled(bTrackParam);
 
 	m_ui.MapPushButton->setEnabled(!bMapped && m_iDirtyCount > 0);
 	m_ui.UnmapPushButton->setEnabled(bMapped);
@@ -681,7 +696,7 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 		= channelFromText(m_ui.ChannelComboBox->currentText());
 
 	unsigned short iParam = m_pControlTypeGroup->controlParam();
-	if (m_ui.TrackCheckBox->isChecked()
+	if (m_ui.TrackParamCheckBox->isChecked()
 		&& (iChannel & qtractorMidiControl::TrackParam) == 0)
 		iParam |= qtractorMidiControl::TrackParam;
 
@@ -692,10 +707,15 @@ void qtractorMidiControlForm::stabilizeValueChange (void)
 		qtractorMidiControl::Command command
 			= qtractorMidiControl::commandFromName(
 				m_ui.CommandComboBox->currentText());
-		int iTrack = m_ui.TrackSpinBox->value();
-		bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
+		const int iTrack = (m_ui.TrackOffsetSpinBox->value() & 0x07f)
+			| ((m_ui.TrackLimitSpinBox->value() << 7) & 0x3fc0);
+		int iFlags = 0;
+		if (m_ui.DeltaCheckBox->isChecked())
+			iFlags |= qtractorMidiControl::MapVal::Delta;
+		if (m_ui.FeedbackCheckBox->isChecked())
+			iFlags |= qtractorMidiControl::MapVal::Feedback;
 		pMidiControl->mapChannelParam(
-			ctype, iChannel, iParam, command, iTrack, bFeedback);
+			ctype, iChannel, iParam, command, iTrack, iFlags);
 		m_iDirtyCount = 0;
 		++m_iDirtyMap;
 		refreshControlMap();
@@ -732,12 +752,21 @@ void qtractorMidiControlForm::stabilizeForm (void)
 		m_ui.ChannelComboBox->setCurrentIndex(
 			m_ui.ChannelComboBox->findText(pItem->text(1)));
 		QString sText = pItem->text(3);
-		m_ui.TrackCheckBox->setChecked(sText[0] == '+');
-		m_ui.TrackSpinBox->setValue( // remove non-digits any...
-			sText.remove(QRegExp("[\\D]*")).toInt());
+		QRegExp rx("\\+[\\D]+([\\d]+)[\\D]+([\\d]+)");
+		if (rx.indexIn(sText) >= 0) {
+			m_ui.TrackParamCheckBox->setChecked(true);
+			m_ui.TrackOffsetSpinBox->setValue(rx.cap(1).toInt());
+			m_ui.TrackLimitSpinBox->setValue(rx.cap(2).toInt());
+		} else {
+			m_ui.TrackParamCheckBox->setChecked(false);
+			m_ui.TrackOffsetSpinBox->setValue(sText.toInt());
+			m_ui.TrackLimitSpinBox->setValue(0);
+		}
 		m_ui.CommandComboBox->setCurrentIndex(
 			m_ui.CommandComboBox->findText(pItem->text(4)));
-		m_ui.FeedbackCheckBox->setChecked(pItem->text(5) == tr("Yes"));
+		sText = pItem->text(5);
+		m_ui.DeltaCheckBox->setChecked(sText.contains(tr("Delta")));
+		m_ui.FeedbackCheckBox->setChecked(sText.contains(tr("Feedback")));
 		--m_iUpdating;
 	}
 
@@ -817,12 +846,21 @@ void qtractorMidiControlForm::refreshControlMap (void)
 		pItem->setIcon(2, iconParam);
 		pItem->setText(2, textFromParam(key.type(), key.param()));
 		QString sText;
-		if (key.isParamTrack())
-			sText += "+ ";
-		pItem->setText(3, sText + QString::number(val.track()));
+		if (key.isParamTrack()) {
+			sText = QString("+ %1, %2")
+				.arg(val.trackOffset())
+				.arg(val.trackLimit());
+		}
+		else sText = QString::number(val.track());
+		pItem->setText(3, sText);
 		pItem->setIcon(4, iconCommand);
 		pItem->setText(4, qtractorMidiControl::nameFromCommand(val.command()));
-		pItem->setText(5, val.isFeedback() ? tr("Yes") : tr("No"));
+		QStringList flags;
+		if (val.isDelta())
+			flags.append(tr("Delta"));
+		if (val.isFeedback())
+			flags.append(tr("Feedback"));
+		pItem->setText(5, flags.join(", "));
 		items.append(pItem);
 	}
 	m_ui.ControlMapListView->addTopLevelItems(items);

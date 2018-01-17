@@ -65,7 +65,7 @@ AC_DEFINE_UNQUOTED(CONFIG_MANDIR, ["$ac_mandir"], [Default man page path.])
 
 # Enable debugging argument option.
 AC_ARG_ENABLE(debug,
-  AC_HELP_STRING([--enable-debug], [enable debugging (default=no)]),
+  AS_HELP_STRING([--enable-debug], [enable debugging (default=no)]),
   [ac_debug="$enableval"])
 
 if test "x$ac_debug" = "xyes"; then
@@ -82,330 +82,339 @@ AC_SUBST(ac_debug)
 
 # Enable Qt4/5 availability.
 AC_ARG_ENABLE(qt4,
-  AC_HELP_STRING([--enable-qt4], [enable Qt4 build (default=no)]),
+  AS_HELP_STRING([--enable-qt4], [enable Qt4 build (default=no)]),
   [ac_qt4="$enableval"],
   [ac_qt4="no"])
 
 # Enable libvorbis(file) availability.
 AC_ARG_ENABLE(libvorbis,
-  AC_HELP_STRING([--enable-libvorbis], [enable libvorbis interface (default=yes)]),
+  AS_HELP_STRING([--enable-libvorbis], [enable libvorbis interface (default=yes)]),
   [ac_libvorbis="$enableval"],
   [ac_libvorbis="yes"])
 
 # Enable libmad availability.
 AC_ARG_ENABLE(libmad,
-  AC_HELP_STRING([--enable-libmad], [enable libmad interface (default=yes)]),
+  AS_HELP_STRING([--enable-libmad], [enable libmad interface (default=yes)]),
   [ac_libmad="$enableval"],
   [ac_libmad="yes"])
 
 # Enable libsamplerate availability.
 AC_ARG_ENABLE(libsamplerate,
-  AC_HELP_STRING([--enable-libsamplerate], [enable libsamplerate interface (default=yes)]),
+  AS_HELP_STRING([--enable-libsamplerate], [enable libsamplerate interface (default=yes)]),
   [ac_libsamplerate="$enableval"],
   [ac_libsamplerate="yes"])
 
 # Enable librubberband availability.
 AC_ARG_ENABLE(librubberband,
-  AC_HELP_STRING([--enable-librubberband], [enable librubberband interface (default=yes)]),
+  AS_HELP_STRING([--enable-librubberband], [enable librubberband interface (default=yes)]),
   [ac_librubberband="$enableval"],
   [ac_librubberband="yes"])
 
 # Enable liblo availability.
 AC_ARG_ENABLE(liblo,
-  AC_HELP_STRING([--enable-liblo], [enable liblo interface (default=yes)]),
+  AS_HELP_STRING([--enable-liblo], [enable liblo interface (default=yes)]),
   [ac_liblo="$enableval"],
   [ac_liblo="yes"])
 
 # Enable libz availability.
 AC_ARG_ENABLE(libz,
-  AC_HELP_STRING([--enable-libz], [enable libz interface (default=yes)]),
+  AS_HELP_STRING([--enable-libz], [enable libz interface (default=yes)]),
   [ac_libz="$enableval"],
   [ac_libz="yes"])
 
 # Enable LILV support.
 AC_ARG_ENABLE(lilv,
-  AC_HELP_STRING([--enable-lilv], [enable LILV interface support (default=yes)]),
+  AS_HELP_STRING([--enable-lilv], [enable LILV interface support (default=yes)]),
   [ac_lilv="$enableval"],
   [ac_lilv="yes"])
 
 # Enable SUIL support.
 AC_ARG_ENABLE(suil,
-  AC_HELP_STRING([--enable-suil], [enable SUIL interface support (default=yes)]),
+  AS_HELP_STRING([--enable-suil], [enable SUIL interface support (default=yes)]),
   [ac_suil="$enableval"],
   [ac_suil="yes"])
 
 # Enable SSE optimization.
 AC_ARG_ENABLE(sse,
-  AC_HELP_STRING([--enable-sse], [enable SSE optimization (default=yes)]),
+  AS_HELP_STRING([--enable-sse], [enable SSE optimization (default=yes)]),
   [ac_sse="$enableval"],
   [ac_sse="yes"])
 
 # Enable LADSPA support.
 AC_ARG_ENABLE(ladspa,
-  AC_HELP_STRING([--enable-ladspa], [enable LADSPA plug-in support (default=yes)]),
+  AS_HELP_STRING([--enable-ladspa], [enable LADSPA plug-in support (default=yes)]),
   [ac_ladspa="$enableval"],
   [ac_ladspa="yes"])
 
 # Enable DSSI support.
 AC_ARG_ENABLE(dssi,
-  AC_HELP_STRING([--enable-dssi], [enable DSSI plug-in support (default=yes)]),
+  AS_HELP_STRING([--enable-dssi], [enable DSSI plug-in support (default=yes)]),
   [ac_dssi="$enableval"],
   [ac_dssi="yes"])
 
 # Enable VST support.
 AC_ARG_ENABLE(vst,
-  AC_HELP_STRING([--enable-vst], [enable VST plug-in support (default=yes)]),
+  AS_HELP_STRING([--enable-vst], [enable VST plug-in support (default=yes)]),
   [ac_vst="$enableval"],
   [ac_vst="yes"])
 
 AC_ARG_ENABLE(vestige,
-  AC_HELP_STRING([--enable-vestige], [enable VeSTige header support (default=yes)]),
+  AS_HELP_STRING([--enable-vestige], [enable VeSTige header support (default=yes)]),
   [ac_vestige="$enableval"],
   [ac_vestige="yes"])
 
 # Enable LV2 support.
 AC_ARG_ENABLE(lv2,
-  AC_HELP_STRING([--enable-lv2], [enable LV2 plug-in support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2], [enable LV2 plug-in support (default=yes)]),
   [ac_lv2="$enableval"],
   [ac_lv2="yes"])
 
 AC_ARG_ENABLE(lv2-event,
-  AC_HELP_STRING([--enable-lv2-event], [enable LV2 plug-in MIDI/Event support (default=no)]),
+  AS_HELP_STRING([--enable-lv2-event], [enable LV2 plug-in MIDI/Event support (default=no)]),
   [ac_lv2_event="$enableval"],
   [ac_lv2_event="no"])
 
 AC_ARG_ENABLE(lv2-atom,
-  AC_HELP_STRING([--enable-lv2-atom], [enable LV2 plug-in MIDI/Atom support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-atom], [enable LV2 plug-in MIDI/Atom support (default=yes)]),
   [ac_lv2_atom="$enableval"],
   [ac_lv2_atom="yes"])
 
 AC_ARG_ENABLE(lv2-worker,
-  AC_HELP_STRING([--enable-lv2-worker], [enable LV2 plug-in Worker/schedule support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-worker], [enable LV2 plug-in Worker/schedule support (default=yes)]),
   [ac_lv2_worker="$enableval"],
   [ac_lv2_worker="yes"])
 
 AC_ARG_ENABLE(lv2-ui,
-  AC_HELP_STRING([--enable-lv2-ui], [enable LV2 plug-in UI support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-ui], [enable LV2 plug-in UI support (default=yes)]),
   [ac_lv2_ui="$enableval"],
   [ac_lv2_ui="yes"])
 
 AC_ARG_ENABLE(lv2-external-ui,
-  AC_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in External UI support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-external-ui], [enable LV2 plug-in External UI support (default=yes)]),
   [ac_lv2_external_ui="$enableval"],
   [ac_lv2_external_ui="yes"])
 
 AC_ARG_ENABLE(lv2-state,
-  AC_HELP_STRING([--enable-lv2-state], [enable LV2 plug-in State support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-state], [enable LV2 plug-in State support (default=yes)]),
   [ac_lv2_state="$enableval"],
   [ac_lv2_state="yes"])
 
 AC_ARG_ENABLE(lv2-state-files,
-  AC_HELP_STRING([--enable-lv2-state-files], [enable LV2 plug-in State Files support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-state-files], [enable LV2 plug-in State Files support (default=yes)]),
   [ac_lv2_state_files="$enableval"],
   [ac_lv2_state_files="yes"])
 
 AC_ARG_ENABLE(lv2-state-make-path,
-  AC_HELP_STRING([--enable-lv2-state-make-path], [enable LV2 plug-in State Make Path support (default=no)]),
+  AS_HELP_STRING([--enable-lv2-state-make-path], [enable LV2 plug-in State Make Path support (default=no)]),
   [ac_lv2_state_make_path="$enableval"],
   [ac_lv2_state_make_path="no"])
 
 AC_ARG_ENABLE(lv2-programs,
-  AC_HELP_STRING([--enable-lv2-programs], [enable LV2 plug-in Programs support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-programs], [enable LV2 plug-in Programs support (default=yes)]),
   [ac_lv2_programs="$enableval"],
   [ac_lv2_programs="yes"])
 
 AC_ARG_ENABLE(lv2-presets,
-  AC_HELP_STRING([--enable-lv2-presets], [enable LV2 plug-in Presets support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-presets], [enable LV2 plug-in Presets support (default=yes)]),
   [ac_lv2_presets="$enableval"],
   [ac_lv2_presets="yes"])
 
 AC_ARG_ENABLE(lv2-patch,
-  AC_HELP_STRING([--enable-lv2-patch], [enable LV2 plug-in Patch support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-patch], [enable LV2 plug-in Patch support (default=yes)]),
   [ac_lv2_patch="$enableval"],
   [ac_lv2_patch="yes"])
 
 AC_ARG_ENABLE(lv2-time,
-  AC_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in Time support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in Time support (default=yes)]),
   [ac_lv2_time="$enableval"],
   [ac_lv2_time="yes"])
 
 AC_ARG_ENABLE(lv2-time-position,
-  AC_HELP_STRING([--enable-lv2-time-position], [enable LV2 plug-in Time/position support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-time-position], [enable LV2 plug-in Time/position support (default=yes)]),
   [ac_lv2_time_position="$enableval"],
   [ac_lv2_time_position="yes"])
 
 AC_ARG_ENABLE(lv2-options,
-  AC_HELP_STRING([--enable-lv2-options], [enable LV2 plug-in Options support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-options], [enable LV2 plug-in Options support (default=yes)]),
   [ac_lv2_options="$enableval"],
   [ac_lv2_options="yes"])
 
 AC_ARG_ENABLE(lv2-buf-size,
-  AC_HELP_STRING([--enable-lv2-buf-size], [enable LV2 plug-in Buf-size support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-buf-size], [enable LV2 plug-in Buf-size support (default=yes)]),
   [ac_lv2_buf_size="$enableval"],
   [ac_lv2_buf_size="yes"])
 
 AC_ARG_ENABLE(lv2-ui-touch,
-  AC_HELP_STRING([--enable-lv2-ui-touch], [enable LV2 plug-in UI Touch interface support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-ui-touch], [enable LV2 plug-in UI Touch interface support (default=yes)]),
   [ac_lv2_ui_touch="$enableval"],
   [ac_lv2_ui_touch="yes"])
 
 AC_ARG_ENABLE(lv2-ui-idle,
-  AC_HELP_STRING([--enable-lv2-ui-idle], [enable LV2 plug-in UI Idle interface support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-ui-idle], [enable LV2 plug-in UI Idle interface support (default=yes)]),
   [ac_lv2_ui_idle="$enableval"],
   [ac_lv2_ui_idle="yes"])
 
 AC_ARG_ENABLE(lv2-ui-show,
-  AC_HELP_STRING([--enable-lv2-ui-show], [enable LV2 plug-in UI Show interface support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-ui-show], [enable LV2 plug-in UI Show interface support (default=yes)]),
   [ac_lv2_ui_show="$enableval"],
   [ac_lv2_ui_show="yes"])
 
 AC_ARG_ENABLE(lv2-ui-gtk2,
-  AC_HELP_STRING([--enable-lv2-ui-gtk2], [enable LV2 plug-in UI GTK2 native support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-ui-gtk2], [enable LV2 plug-in UI GTK2 native support (default=yes)]),
   [ac_lv2_ui_gtk2="$enableval"],
   [ac_lv2_ui_gtk2="yes"])
 
 AC_ARG_ENABLE(lv2-ui-x11,
-  AC_HELP_STRING([--enable-lv2-ui-x11], [enable LV2 plug-in UI X11 native support (default=yes)]),
+  AS_HELP_STRING([--enable-lv2-ui-x11], [enable LV2 plug-in UI X11 native support (default=yes)]),
   [ac_lv2_ui_x11="$enableval"],
   [ac_lv2_ui_x11="yes"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
-  AC_HELP_STRING([--enable-jack-session], [enable JACK session support (default=yes)]),
+  AS_HELP_STRING([--enable-jack-session], [enable JACK session support (default=yes)]),
   [ac_jack_session="$enableval"],
   [ac_jack_session="yes"])
 
 # Enable JACK latency support.
 AC_ARG_ENABLE(jack-latency,
-  AC_HELP_STRING([--enable-jack-latency], [enable JACK latency support (default=yes)]),
+  AS_HELP_STRING([--enable-jack-latency], [enable JACK latency support (default=yes)]),
   [ac_jack_latency="$enableval"],
   [ac_jack_latency="yes"])
 
 # Enable JACK metadata support.
 AC_ARG_ENABLE(jack_metadata,
-  AC_HELP_STRING([--enable-jack-metadata], [enable JACK metadata support (default=yes)]),
+  AS_HELP_STRING([--enable-jack-metadata], [enable JACK metadata support (default=yes)]),
   [ac_jack_metadata="$enableval"],
   [ac_jack_metadata="yes"])
 
 # Enable NSM support.
 AC_ARG_ENABLE(nsm,
-  AC_HELP_STRING([--enable-nsm], [enable NSM support (default=yes)]),
+  AS_HELP_STRING([--enable-nsm], [enable NSM support (default=yes)]),
   [ac_nsm="$enableval"],
   [ac_nsm="yes"])
 
 # Enable X11 unique/single instance.
 AC_ARG_ENABLE(xunique,
-  AC_HELP_STRING([--enable-xunique], [enable X11 unique/single instance (default=no)]),
+  AS_HELP_STRING([--enable-xunique], [enable X11 unique/single instance (default=no)]),
   [ac_xunique="$enableval"],
   [ac_xunique="no"])
 
 # Enable gradient eye-candy.
 AC_ARG_ENABLE(gradient,
-  AC_HELP_STRING([--enable-gradient], [enable gradient eye-candy (default=yes)]),
+  AS_HELP_STRING([--enable-gradient], [enable gradient eye-candy (default=yes)]),
   [ac_gradient="$enableval"],
   [ac_gradient="yes"])
 
 # Enable debugger stack-trace option (assumes --enable-debug).
 AC_ARG_ENABLE(stacktrace,
-  AC_HELP_STRING([--enable-stacktrace], [enable debugger stack-trace (default=no)]),
+  AS_HELP_STRING([--enable-stacktrace], [enable debugger stack-trace (default=no)]),
   [ac_stacktrace="$enableval"])
 
 
 # Standard installation base dirs.
+ac_path=$PATH
 ac_with_paths=""
 
 # Set for alternate Qt4/5 installation dir.
+AC_ARG_WITH(qt,
+  AS_HELP_STRING([--with-qt=PATH], [use alternate Qt install path]),
+  [ac_qt_path="$withval"], [ac_qt_path="no"])
+
 AC_ARG_WITH(qt4,
-  AC_HELP_STRING([--with-qt4=PATH], [use alternate Qt4 install path]),
+  AS_HELP_STRING([--with-qt4=PATH], [use alternate Qt4 install path]),
   [ac_qt4_path="$withval"], [ac_qt4_path="no"])
 
 AC_ARG_WITH(qt5,
-  AC_HELP_STRING([--with-qt5=PATH], [use alternate Qt5 install path]),
+  AS_HELP_STRING([--with-qt5=PATH], [use alternate Qt5 install path]),
   [ac_qt5_path="$withval"], [ac_qt5_path="no"])
 
+if test "x$ac_qt_path" != "xno"; then
+   ac_path="$ac_qt_path/bin:$ac_path"
+fi
+
 if test "x$ac_qt4_path" != "xno"; then
-   ac_with_paths="$ac_with_paths $ac_qt4_path"
+   ac_path="$ac_qt4_path/bin:$ac_path"
    ac_qt4="yes"
 fi
 
 if test "x$ac_qt5_path" != "xno"; then
-   ac_with_paths="$ac_with_paths $ac_qt5_path"
+   ac_path="$ac_qt5_path/bin:$ac_path"
    ac_qt4="no"
 fi
 
 # Set for alternate JACK installation dir.
 AC_ARG_WITH(jack,
-  AC_HELP_STRING([--with-jack=PATH], [use alternate JACK install path]),
+  AS_HELP_STRING([--with-jack=PATH], [use alternate JACK install path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate ALSA installation dir.
 AC_ARG_WITH(alsa,
-  AC_HELP_STRING([--with-alsa=PATH], [use alternate ALSA install path]),
+  AS_HELP_STRING([--with-alsa=PATH], [use alternate ALSA install path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate libsndfile installation dir.
 AC_ARG_WITH(libsndfile,
-  AC_HELP_STRING([--with-libsndfile=PATH], [use alternate libsndfile path]),
+  AS_HELP_STRING([--with-libsndfile=PATH], [use alternate libsndfile path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate libvorbis installation dir.
 AC_ARG_WITH(libvorbis,
-  AC_HELP_STRING([--with-libvorbis=PATH], [use alternate libvorbis path]),
+  AS_HELP_STRING([--with-libvorbis=PATH], [use alternate libvorbis path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate libmad installation dir.
 AC_ARG_WITH(libmad,
-  AC_HELP_STRING([--with-libmad=PATH], [use alternate libmad path]),
+  AS_HELP_STRING([--with-libmad=PATH], [use alternate libmad path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate libsamplerate installation dir.
 AC_ARG_WITH(libsamplerate,
-  AC_HELP_STRING([--with-libsamplerate=PATH], [use alternate libsamplerate path]),
+  AS_HELP_STRING([--with-libsamplerate=PATH], [use alternate libsamplerate path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate librubberband installation dir.
 AC_ARG_WITH(librubberband,
-  AC_HELP_STRING([--with-librubberband=PATH], [use alternate librubberband path]),
+  AS_HELP_STRING([--with-librubberband=PATH], [use alternate librubberband path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate liblo installation dir.
 AC_ARG_WITH(liblo,
-  AC_HELP_STRING([--with-liblo=PATH], [use alternate liblo path]),
+  AS_HELP_STRING([--with-liblo=PATH], [use alternate liblo path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate libz installation dir.
 AC_ARG_WITH(libz,
-  AC_HELP_STRING([--with-libz=PATH], [use alternate libz path]),
+  AS_HELP_STRING([--with-libz=PATH], [use alternate libz path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate liblilv installation dir.
 AC_ARG_WITH(liblilv,
-  AC_HELP_STRING([--with-liblilv=PATH], [use alternate liblilv path]),
+  AS_HELP_STRING([--with-liblilv=PATH], [use alternate liblilv path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate libsuil installation dir.
 AC_ARG_WITH(libsuil,
-  AC_HELP_STRING([--with-libsuil=PATH], [use alternate libsuil path]),
+  AS_HELP_STRING([--with-libsuil=PATH], [use alternate libsuil path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate LADSPA include dir.
 AC_ARG_WITH(ladspa,
-  AC_HELP_STRING([--with-ladspa=PATH], [use alternate LADSPA header path]),
+  AS_HELP_STRING([--with-ladspa=PATH], [use alternate LADSPA header path]),
   [ac_with_ladspa="$withval"])
 
 # Set for alternate DSSI include dir.
 AC_ARG_WITH(dssi,
-  AC_HELP_STRING([--with-dssi=PATH], [use alternate DSSI header path]),
+  AS_HELP_STRING([--with-dssi=PATH], [use alternate DSSI header path]),
   [ac_with_dssi="$withval"])
 
 # Set for alternate VST include dir.
 AC_ARG_WITH(vst,
-  AC_HELP_STRING([--with-vst=PATH], [use alternate VST header path]),
+  AS_HELP_STRING([--with-vst=PATH], [use alternate VST header path]),
   [ac_with_vst="$withval"])
 
 # Set for alternate LV2 include dir.
 AC_ARG_WITH(lv2,
-  AC_HELP_STRING([--with-lv2=PATH], [use alternate LV2 header path]),
+  AS_HELP_STRING([--with-lv2=PATH], [use alternate LV2 header path]),
   [ac_with_lv2="$withval"])
 
 
@@ -452,39 +461,37 @@ CFLAGS="-fPIC $CFLAGS"
 CPPFLAGS="-fPIC $CPPFLAGS"
 
 # Prepend alternate dependencies paths.
-ac_path=$PATH
-
 for X in $ac_with_paths; do
   if test -d $X/bin; then
-    ac_path="$X/bin:$ac_path"
+     ac_path="$X/bin:$ac_path"
   fi
   if test -d $X/include; then
-    CFLAGS="-I$X/include $CFLAGS "
-    CPPFLAGS="-I$X/include $CPPFLAGS"
-    ac_incpath="$X/include $ac_incpath"
+     CFLAGS="-I$X/include $CFLAGS "
+     CPPFLAGS="-I$X/include $CPPFLAGS"
+     ac_incpath="$X/include $ac_incpath"
   fi
   for Y in $ac_libdirs; do
-    if test -d $X/$Y; then
-       LIBS="-L$X/$Y $LIBS"
-       ac_libs="-L$X/$Y $ac_libs"
-    fi
+     if test -d $X/$Y; then
+        LIBS="-L$X/$Y $LIBS"
+        ac_libs="-L$X/$Y $ac_libs"
+     fi
   done
 done
 
 # A common error message:
 ac_errmsg="not found in current PATH. Maybe QT development environment isn't available."
 
-if test "x$ac_qt4" = "xyes"; then
-   AC_PATH_PROG(ac_qmake, qmake-qt4, [no], $ac_path)
-else
-   AC_PATH_PROG(ac_qmake, qmake-qt5, [no], $ac_path)
-fi
+# Check for proper qmake path/version alternatives.
+AC_PATH_TOOL(ac_qmake, qmake, [no], $ac_path)
+
 if test "x$ac_qmake" = "xno"; then
-   AC_PATH_PROG(ac_cv_qmake, qmake, [no], $ac_path)
-   ac_qmake=$ac_cv_qmake
-fi
-if test "x$ac_qmake" = "xno"; then
-   AC_MSG_ERROR([qmake $ac_errmsg])
+   if test "x$ac_qt4" = "xyes"; then
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt4, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
+   else
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
+   fi
 fi
 
 # Check for proper Qt major version.
@@ -495,10 +502,20 @@ AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
 ac_qt_version_major=$ac_cv_qt_version_major
 if test "x$ac_qt4" = "xyes"; then
    if test $ac_qt_version_major -ne 4; then
-      AC_MSG_ERROR([qmake-qt4 $ac_errmsg (qt4-devel)])
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt4, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
    fi
 else
    if test $ac_qt_version_major -ne 5; then
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
+   fi
+fi
+
+if test "x$ac_qmake" = "xno"; then
+   if test "x$ac_qt4" = "xyes"; then
+      AC_MSG_ERROR([qmake-qt4 $ac_errmsg (qt4-devel)])
+   else
       AC_MSG_ERROR([qmake-qt5 $ac_errmsg (qt5-devel)])
    fi
 fi
@@ -513,7 +530,7 @@ if test -d $ac_qt_install_path; then
 fi
 
 # Check it again, now with updated PATH, just in case...
-AC_PATH_PROG(ac_cv_qmake, qmake, [no], $ac_path)
+AC_PATH_TOOL(ac_cv_qmake, qmake, [no], $ac_path)
 ac_qmake=$ac_cv_qmake
 if test "x$ac_qmake" = "xno"; then
    AC_MSG_ERROR([qmake $ac_errmsg])
@@ -568,28 +585,28 @@ else
 fi
 
 # Check for Qt moc utility.
-AC_PATH_PROG(ac_moc, moc, [no], $ac_path)
+AC_PATH_TOOL(ac_moc, moc, [no], $ac_path)
 if test "x$ac_moc" = "xno"; then
    AC_MSG_ERROR([moc $ac_errmsg])
 fi
 AC_SUBST(ac_moc)
 
 # Check for Qt uic utility.
-AC_PATH_PROG(ac_uic, uic, [no], $ac_path)
+AC_PATH_TOOL(ac_uic, uic, [no], $ac_path)
 if test "x$ac_uic" = "xno"; then
    AC_MSG_ERROR([uic $ac_errmsg])
 fi
 AC_SUBST(ac_uic)
 
 # Check for Qt lupdate utility.
-AC_PATH_PROG(ac_lupdate, lupdate, [no], $ac_path)
+AC_PATH_TOOL(ac_lupdate, lupdate, [no], $ac_path)
 if test "x$ac_lupdate" = "xno"; then
    AC_MSG_ERROR([lupdate $ac_errmsg])
 fi
 AC_SUBST(ac_lupdate)
 
 # Check for Qt lrelease utility.
-AC_PATH_PROG(ac_lrelease, lrelease, [no], $ac_path)
+AC_PATH_TOOL(ac_lrelease, lrelease, [no], $ac_path)
 if test "x$ac_release" = "xno"; then
    AC_MSG_ERROR([lrelease $ac_errmsg])
 fi

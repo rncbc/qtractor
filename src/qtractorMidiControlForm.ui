@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
-    <height>380</height>
+    <width>640</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,7 +37,7 @@
    <iconset resource="qtractor.qrc">:/images/itemControllers.png</iconset>
   </property>
   <layout class="QGridLayout">
-   <item row="0" column="0" rowspan="4" colspan="7">
+   <item row="0" column="0" rowspan="4" colspan="9">
     <widget class="QTreeWidget" name="FilesListView">
      <property name="toolTip">
       <string>Controller files</string>
@@ -66,7 +66,7 @@
      </column>
     </widget>
    </item>
-   <item row="0" column="7" colspan="2">
+   <item row="0" column="9" colspan="3">
     <widget class="QPushButton" name="ImportPushButton">
      <property name="toolTip">
       <string>Import controller files</string>
@@ -79,7 +79,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="7" colspan="2">
+   <item row="1" column="9" colspan="3">
     <widget class="QPushButton" name="RemovePushButton">
      <property name="toolTip">
       <string>Remove controller file</string>
@@ -92,7 +92,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="7" colspan="2">
+   <item row="2" column="9" colspan="3">
     <widget class="QPushButton" name="MoveUpPushButton">
      <property name="toolTip">
       <string>Move controller file up on list order</string>
@@ -105,7 +105,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="7" colspan="2">
+   <item row="3" column="9" colspan="3">
     <widget class="QPushButton" name="MoveDownPushButton">
      <property name="toolTip">
       <string>Move controller file down on list order</string>
@@ -157,20 +157,46 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="3" colspan="2">
-    <widget class="QLabel" name="TrackTextLabel">
+   <item row="4" column="3">
+    <widget class="QLabel" name="TrackParamTextLabel">
      <property name="text">
-      <string>Trac&amp;k Offset</string>
+      <string>Trac&amp;k</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
      </property>
      <property name="buddy">
-      <cstring>TrackSpinBox</cstring>
+      <cstring>TrackOffsetSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="4">
+    <widget class="QLabel" name="TrackOffsetTextLabel">
+     <property name="text">
+      <string>offse&amp;t</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+     </property>
+     <property name="buddy">
+      <cstring>TrackOffsetSpinBox</cstring>
      </property>
     </widget>
    </item>
    <item row="4" column="5">
+    <widget class="QLabel" name="TrackLimitTextLabel">
+     <property name="text">
+      <string>&amp;limit</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+     </property>
+     <property name="buddy">
+      <cstring>TrackLimitSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="6">
     <widget class="QLabel" name="CommandTextLabel">
      <property name="text">
       <string>C&amp;ommand</string>
@@ -183,20 +209,17 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="6">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint">
-      <size>
-       <width>20</width>
-       <height>8</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="4" column="7" colspan="2">
+    <widget class="QLabel" name="FlagsTextLabel">
+     <property name="text">
+      <string>Flags</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="9" colspan="3">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -231,7 +254,7 @@
     </widget>
    </item>
    <item row="5" column="3">
-    <widget class="QCheckBox" name="TrackCheckBox">
+    <widget class="QCheckBox" name="TrackParamCheckBox">
      <property name="toolTip">
       <string>MIDI parameter (track offset)</string>
      </property>
@@ -241,23 +264,49 @@
     </widget>
    </item>
    <item row="5" column="4">
-    <widget class="QSpinBox" name="TrackSpinBox">
+    <widget class="QSpinBox" name="TrackOffsetSpinBox">
      <property name="toolTip">
       <string>Track offset</string>
      </property>
      <property name="minimum">
       <number>0</number>
      </property>
+     <property name="maximum">
+      <number>127</number>
+     </property>
     </widget>
    </item>
    <item row="5" column="5">
+    <widget class="QSpinBox" name="TrackLimitSpinBox">
+     <property name="toolTip">
+      <string>Track limit</string>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>127</number>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="6">
     <widget class="QComboBox" name="CommandComboBox">
      <property name="toolTip">
       <string>Command action</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="6">
+   <item row="5" column="7">
+    <widget class="QCheckBox" name="DeltaCheckBox">
+     <property name="toolTip">
+      <string>Command delta/momentary</string>
+     </property>
+     <property name="text">
+      <string>D&amp;elta</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="8">
     <widget class="QCheckBox" name="FeedbackCheckBox">
      <property name="toolTip">
       <string>Command feedback</string>
@@ -267,7 +316,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="7" colspan="2">
+   <item row="5" column="9" colspan="3">
     <widget class="QPushButton" name="MapPushButton">
      <property name="toolTip">
       <string>Map/update controller command</string>
@@ -280,7 +329,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0" rowspan="7" colspan="7">
+   <item row="6" column="0" rowspan="7" colspan="9">
     <widget class="QTreeWidget" name="ControlMapListView">
      <property name="minimumSize">
       <size>
@@ -333,12 +382,12 @@
      </column>
      <column>
       <property name="text">
-       <string>Feedback</string>
+       <string>Flags</string>
       </property>
      </column>
     </widget>
    </item>
-   <item row="6" column="7" colspan="2">
+   <item row="6" column="9" colspan="3">
     <widget class="QPushButton" name="UnmapPushButton">
      <property name="toolTip">
       <string>Unmap/remove controller command</string>
@@ -351,7 +400,7 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="7" colspan="2">
+   <item row="7" column="9" colspan="3">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -364,7 +413,7 @@
      </property>
     </spacer>
    </item>
-   <item row="8" column="8">
+   <item row="8" column="10">
     <widget class="QCheckBox" name="SyncCheckBox">
      <property name="toolTip">
       <string>Enable all controllers immediate sync (hook)</string>
@@ -374,7 +423,7 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="7" colspan="2">
+   <item row="9" column="9" colspan="3">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -387,7 +436,7 @@
      </property>
     </spacer>
    </item>
-   <item row="10" column="7" colspan="2">
+   <item row="10" column="9" colspan="3">
     <widget class="QPushButton" name="ReloadPushButton">
      <property name="toolTip">
       <string>Reload/apply all controller files</string>
@@ -400,7 +449,7 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="7" colspan="2">
+   <item row="11" column="9" colspan="3">
     <widget class="QPushButton" name="ExportPushButton">
      <property name="toolTip">
       <string>Export to controller file</string>
@@ -413,7 +462,7 @@
      </property>
     </widget>
    </item>
-   <item row="12" column="7" colspan="2">
+   <item row="12" column="9" colspan="3">
     <widget class="QPushButton" name="ClosePushButton">
      <property name="toolTip">
       <string>Close this dialog</string>
@@ -435,9 +484,11 @@
   <tabstop>ControlTypeComboBox</tabstop>
   <tabstop>ChannelComboBox</tabstop>
   <tabstop>ParamComboBox</tabstop>
-  <tabstop>TrackCheckBox</tabstop>
-  <tabstop>TrackSpinBox</tabstop>
+  <tabstop>TrackParamCheckBox</tabstop>
+  <tabstop>TrackOffsetSpinBox</tabstop>
+  <tabstop>TrackLimitSpinBox</tabstop>
   <tabstop>CommandComboBox</tabstop>
+  <tabstop>DeltaCheckBox</tabstop>
   <tabstop>FeedbackCheckBox</tabstop>
   <tabstop>MapPushButton</tabstop>
   <tabstop>ControlMapListView</tabstop>

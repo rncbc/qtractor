@@ -6,6 +6,13 @@ ChangeLog
 
 GIT HEAD
 
+- Track count "limit" and a "Delta" mode flag, for momentary
+  and encoded controllers support, have been added to MIDI
+  Controllers generic mapping (cf. View/Controllers...; after
+  an original pull-request by Holger Dehnhardt, thanks).
+
+- A little hardening on the configure (autoconf) macro side.
+
 - Pinned current/hi-lighted track dangling after removal.
 
 - An anti-flooding timer is now in place in MIDI Controller

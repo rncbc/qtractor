@@ -6313,7 +6313,22 @@ sezením znovu.</translation>
         <translation>&amp;Dolů</translation>
     </message>
     <message>
+        <location filename="../qtractorMidiControlForm.ui" line="163"/>
+        <source>Trac&amp;k</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMidiControlForm.ui" line="176"/>
+        <source>offse&amp;t</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="189"/>
+        <source>&amp;limit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="202"/>
         <source>C&amp;ommand</source>
         <translation>Pří&amp;kaz</translation>
     </message>
@@ -6323,52 +6338,73 @@ sezením znovu.</translation>
         <translation>&amp;Parametr</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="222"/>
+        <location filename="../qtractorMidiControlForm.ui" line="215"/>
+        <location filename="../qtractorMidiControlForm.ui" line="385"/>
+        <source>Flags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="245"/>
         <source>MIDI Channel</source>
         <translation>Kanál MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="256"/>
+        <location filename="../qtractorMidiControlForm.ui" line="282"/>
+        <source>Track limit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="295"/>
         <source>Command action</source>
         <translation>Krok příkazu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="263"/>
+        <location filename="../qtractorMidiControlForm.ui" line="302"/>
+        <source>Command delta/momentary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="305"/>
+        <source>D&amp;elta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControlForm.ui" line="312"/>
         <source>Command feedback</source>
         <translation>Zpětná vazba příkazu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="266"/>
+        <location filename="../qtractorMidiControlForm.ui" line="315"/>
         <source>&amp;Feedback</source>
         <translation>&amp;Zpětná vazba</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="273"/>
+        <location filename="../qtractorMidiControlForm.ui" line="322"/>
         <source>Map/update controller command</source>
         <translation>Přiřadit/Obnovit příkaz pro ovladač</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="276"/>
+        <location filename="../qtractorMidiControlForm.ui" line="325"/>
         <source>&amp;Map</source>
         <translation>&amp;Přiřadit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="292"/>
+        <location filename="../qtractorMidiControlForm.ui" line="341"/>
         <source>Controller map</source>
         <translation>Zobrazení ovladače</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="316"/>
+        <location filename="../qtractorMidiControlForm.ui" line="365"/>
         <source>Channel</source>
         <translation>Kanál</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="331"/>
+        <location filename="../qtractorMidiControlForm.ui" line="380"/>
         <source>Command</source>
         <translation>Příkaz</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="321"/>
+        <location filename="../qtractorMidiControlForm.ui" line="370"/>
         <source>Parameter</source>
         <translation>Parametr</translation>
     </message>
@@ -6383,121 +6419,117 @@ sezením znovu.</translation>
         <translation>&amp;Kanál</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="163"/>
-        <source>Trac&amp;k Offset</source>
-        <translation>Posun &amp;stopy</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiControlForm.ui" line="215"/>
+        <location filename="../qtractorMidiControlForm.ui" line="238"/>
         <source>MIDI Event type</source>
         <translation>Typ události MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="229"/>
+        <location filename="../qtractorMidiControlForm.ui" line="252"/>
         <source>MIDI Controller (parameter)</source>
         <translation>Ovladač MIDI (parametr)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="236"/>
+        <location filename="../qtractorMidiControlForm.ui" line="259"/>
         <source>MIDI parameter (track offset)</source>
         <translation>Parameter MIDI (posun stopy)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="239"/>
+        <location filename="../qtractorMidiControlForm.ui" line="262"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="246"/>
+        <location filename="../qtractorMidiControlForm.ui" line="269"/>
         <source>Track offset</source>
         <translation>Posun stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="311"/>
+        <location filename="../qtractorMidiControlForm.ui" line="360"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="326"/>
+        <location filename="../qtractorMidiControlForm.ui" line="375"/>
         <source>Track</source>
         <translation>Stopa</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="336"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="763"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="856"/>
         <source>Feedback</source>
         <translation>Zpětná vazba</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="344"/>
+        <location filename="../qtractorMidiControlForm.ui" line="393"/>
         <source>Unmap/remove controller command</source>
         <translation>Zrušit přiřazení/Odstranit příkaz pro ovladač</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="347"/>
+        <location filename="../qtractorMidiControlForm.ui" line="396"/>
         <source>U&amp;nmap</source>
         <translation>Zr&amp;ušit přiřazení</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="370"/>
+        <location filename="../qtractorMidiControlForm.ui" line="419"/>
         <source>Enable all controllers immediate sync (hook)</source>
         <translation>Povolit všem ovladačům okamžité seřízení (hák)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="373"/>
+        <location filename="../qtractorMidiControlForm.ui" line="422"/>
         <source>&amp;Sync</source>
         <translation>&amp;Seřídit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="393"/>
+        <location filename="../qtractorMidiControlForm.ui" line="442"/>
         <source>Reload/apply all controller files</source>
         <translation>Nahrát znovu/Použít všechny soubory s ovladači</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="396"/>
+        <location filename="../qtractorMidiControlForm.ui" line="445"/>
         <source>Relo&amp;ad</source>
         <translation>Na&amp;hrát znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="406"/>
+        <location filename="../qtractorMidiControlForm.ui" line="455"/>
         <source>Export to controller file</source>
         <translation>Vyvést do souboru s ovladačem</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="409"/>
+        <location filename="../qtractorMidiControlForm.ui" line="458"/>
         <source>E&amp;xport...</source>
         <translation>V&amp;yvést...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="419"/>
+        <location filename="../qtractorMidiControlForm.ui" line="468"/>
         <source>Close this dialog</source>
         <translation>Zavřít tento dialog</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.ui" line="422"/>
+        <location filename="../qtractorMidiControlForm.ui" line="471"/>
         <source>Close</source>
         <translation>Zavřít</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="231"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="237"/>
         <source>Import Controller Files</source>
         <translation>Zavést soubory s ovladači</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="233"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="440"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="239"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="451"/>
         <source>Controller files (*.%1)</source>
         <translation>Soubory s ovladači (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="310"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="485"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="500"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="538"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="316"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="496"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="511"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="549"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="311"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="317"/>
         <source>About to remove controller file:
 
 &quot;%1&quot;
@@ -6510,17 +6542,17 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="438"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="449"/>
         <source>Export Controller File</source>
         <translation>Vyvést do souboru s ovladačem</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="444"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="455"/>
         <source>controller</source>
         <translation>Ovladač</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="486"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="497"/>
         <source>The controller file already exists:
 
 &quot;%1&quot;
@@ -6533,7 +6565,7 @@ Do you want to replace it?</source>
 Přejete si jej nahradit?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="501"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="512"/>
         <source>Saved controller mappings may not be effective
 the next time you start this program.
 
@@ -6548,25 +6580,20 @@ dokud znovu program nespustíte.
 Chcete použít soubory s ovladači?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="539"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="550"/>
         <source>Controller mappings have been changed.</source>
         <translation>Přiřazení ovladačů byla změněna.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="540"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="551"/>
         <source>Do you want to save the changes?</source>
         <translation>Chcete uložit změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="734"/>
-        <location filename="../qtractorMidiControlForm.cpp" line="819"/>
-        <source>Yes</source>
-        <translation>Ano</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiControlForm.cpp" line="819"/>
-        <source>No</source>
-        <translation>Ne</translation>
+        <location filename="../qtractorMidiControlForm.cpp" line="762"/>
+        <location filename="../qtractorMidiControlForm.cpp" line="854"/>
+        <source>Delta</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

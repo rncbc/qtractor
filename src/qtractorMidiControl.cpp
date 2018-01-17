@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -132,27 +132,27 @@ void qtractorMidiControl::clearControlMap (void)
 // Insert new controller mappings.
 void qtractorMidiControl::mapChannelParam (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	Command command, int iTrack, int iFlags )
 {
 	m_controlMap.insert(
 		MapKey(ctype, iChannel, iParam),
-		MapVal(command, iTrack, bFeedback));
+		MapVal(command, iTrack, iFlags));
 }
 
 void qtractorMidiControl::mapChannelTrack (
 	ControlType ctype, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	Command command, int iTrack, int iFlags )
 {
 	mapChannelParam(
-		ctype, TrackParam, iParam, command, iTrack, bFeedback);
+		ctype, TrackParam, iParam, command, iTrack, iFlags);
 }
 
 void qtractorMidiControl::mapChannelParamTrack (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam,
-	Command command, int iTrack, bool bFeedback )
+	Command command, int iTrack, int iFlags )
 {
 	mapChannelParam(
-		ctype, iChannel, iParam | TrackParam, command, iTrack, bFeedback);
+		ctype, iChannel, iParam | TrackParam, command, iTrack, iFlags);
 }
 
 
@@ -194,20 +194,26 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 		const MapVal& val = it.value();
 		if (val.isFeedback()) {
 			const MapKey& key = it.key();
-			unsigned short iChannel = key.channel();
-			unsigned short iParam = key.param();
-			if (key.isParamTrack())
-				iParam &= TrackParamMask;
+			const unsigned short iChannel = key.channel();
+			const unsigned short iParam = (key.param() & TrackParamMask);
 			int iTrack = 0;
+			int iLastTrack = iFirstTrack;
+			if (key.isParamTrack())
+				iLastTrack += val.trackLimit();
 			for (qtractorTrack *pTrack = pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (iTrack >= iFirstTrack) {
 					if (key.isChannelTrack())
 						sendTrackController(key.type(),
 							pTrack, val.command(), iTrack, iParam);
-					else if (key.isParamTrack())
+					else if (key.isParamTrack()) {
+						if (iFirstTrack < iLastTrack && iTrack >= iLastTrack)
+							break; // Bail out from inner track loop.
+						const unsigned short iParamTrack
+							= iParam + val.trackOffset() + iTrack;
 						sendTrackController(key.type(),
-							pTrack, val.command(), iChannel, iParam + iTrack);
+							pTrack, val.command(), iChannel, iParamTrack);
+					}
 					else if (val.track() == iTrack) {
 						sendTrackController(key.type(),
 							pTrack, val.command(), iChannel, iParam);
@@ -246,9 +252,28 @@ qtractorMidiControl::findEvent ( const qtractorCtlEvent& ctle )
 	const ControlMap::Iterator& it_end = m_controlMap.end();
 	for ( ; it != it_end; ++it) {
 		const MapKey& key = it.key();
-		if (key.match(ctle.type(), ctle.channel(), ctle.param()))
+		// Generic key matcher.
+		if (key.type() != ctle.type())
+			continue;
+		if (!key.isChannelTrack() && key.channel() != ctle.channel())
+			continue;
+		const unsigned short iParam = (key.param() & TrackParamMask);
+		if (key.isParamTrack()) {
+			const MapVal& val = it.value();
+			const unsigned short iKeyParam
+				= iParam + val.trackOffset();
+			const unsigned short iKeyParamLimit
+				= iKeyParam + val.trackLimit();
+			const unsigned short iCtlParam = ctle.param();
+			if (iCtlParam >= iKeyParam
+				&& (iKeyParam >= iKeyParamLimit || iCtlParam < iKeyParamLimit))
+				break;
+		}
+		else
+		if (iParam == ctle.param())
 			break;
 	}
+
 	return it;
 }
 
@@ -281,19 +306,25 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	const MapKey& key = it.key();
 	MapVal& val = it.value();
 
-	int iTrack = val.track();
+	int iTrack = 0;
 	if (key.isChannelTrack()) {
+		iTrack += val.track();
 		iTrack += int(ctle.channel());
 	}
 	else
 	if (key.isParamTrack()) {
-		const unsigned short iKeyParam = key.param() & TrackParamMask;
+		const unsigned short iKeyParam
+			= (key.param() & TrackParamMask) + val.trackOffset();
+		const unsigned short iKeyParamLimit
+			= iKeyParam + val.trackLimit();
 		const unsigned short iCtlParam = ctle.param();
-		if (iCtlParam >= iKeyParam)
-			iTrack += iCtlParam - iKeyParam;
+		if (iCtlParam >= iKeyParam
+			&& (iKeyParam >= iKeyParamLimit || iCtlParam < iKeyParamLimit))
+			iTrack += (iCtlParam - iKeyParam);
 		else
 			return bResult;
 	}
+	else iTrack = val.track();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -307,34 +338,38 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 
 	MapVal::Track& ctlv = val.track(iTrack);
 
-	float fValue;
+	float fValue, fOldValue;
 	switch (val.command()) {
 	case TRACK_GAIN:
 		fValue = scale.valueFromMidi(ctle.value());
-		if (pTrack->trackType() == qtractorTrack::Audio)
+		fOldValue = pTrack->gain();
+		if (pTrack->trackType() == qtractorTrack::Audio && !val.isDelta())
 			fValue = ::cubef2(fValue);
-		if (ctlv.sync(fValue, pTrack->gain())) {
+		if (ctlv.syncDecimal(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackGainCommand(pTrack, ctlv.value(), true));
 		}
 		break;
 	case TRACK_PANNING:
 		fValue = scale.valueSignedFromMidi(ctle.value());
-		if (ctlv.sync(fValue, pTrack->panning())) {
+		fOldValue = pTrack->panning();
+		if (ctlv.syncDecimal(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackPanningCommand(pTrack, ctlv.value(), true));
 		}
 		break;
 	case TRACK_MONITOR:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isMonitor() ? 1.0f : 0.0f))) {
+		fOldValue = (pTrack->isMonitor() ? 1.0f : 0.0f);
+		if (ctlv.syncToggled(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackMonitorCommand(pTrack, ctlv.value(), true));
 		}
 		break;
 	case TRACK_RECORD:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isRecord() ? 1.0f : 0.0f))) {
+		fOldValue = (pTrack->isRecord() ? 1.0f : 0.0f);
+		if (ctlv.syncToggled(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
 					qtractorTrack::Record, ctlv.value(), true));
@@ -342,7 +377,8 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		break;
 	case TRACK_MUTE:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isMute() ? 1.0f : 0.0f))) {
+		fOldValue = (pTrack->isMute() ? 1.0f : 0.0f);
+		if (ctlv.syncToggled(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
 					qtractorTrack::Mute, ctlv.value(), true));
@@ -350,7 +386,8 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 		break;
 	case TRACK_SOLO:
 		fValue = scale.valueToggledFromMidi(ctle.value());
-		if (ctlv.sync(fValue, (pTrack->isSolo() ? 1.0f : 0.0f))) {
+		fOldValue = (pTrack->isSolo() ? 1.0f : 0.0f);
+		if (ctlv.syncToggled(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
 				new qtractorTrackStateCommand(pTrack,
 					qtractorTrack::Solo, ctlv.value(), true));
@@ -366,9 +403,9 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 
 // Process incoming command.
 void qtractorMidiControl::processTrackCommand (
-	Command command, int iTrack, float fValue, bool bCubic )
+	Command command, int iTrack, float fValue, bool bLogarithmic )
 {
-	sendTrackController(iTrack, command, fValue, bCubic);
+	sendTrackController(iTrack, command, fValue, bLogarithmic);
 }
 
 
@@ -381,7 +418,7 @@ void qtractorMidiControl::processTrackCommand (
 
 // Further processing of outgoing midi controller messages
 void qtractorMidiControl::sendTrackController (
-	int iTrack, Command command, float fValue, bool bCubic )
+	int iTrack, Command command, float fValue, bool bLogarithmic )
 {
 	// Search for the command and parameter in controller map...
 	ControlMap::Iterator it = m_controlMap.begin();
@@ -399,7 +436,7 @@ void qtractorMidiControl::sendTrackController (
 			unsigned short iValue = 0;
 			switch (command) {
 			case TRACK_GAIN:
-				if (bCubic) fValue = ::cbrtf2(fValue);
+				if (bLogarithmic) fValue = ::cbrtf2(fValue);
 				iValue = scale.midiFromValue(fValue);
 				break;
 			case TRACK_PANNING:
@@ -419,8 +456,11 @@ void qtractorMidiControl::sendTrackController (
 			if (key.isChannelTrack())
 				sendController(key.type(), iTrack, iParam, iValue);
 			else
-			if (key.isParamTrack())
-				sendController(key.type(), key.channel(), iParam + iTrack, iValue);
+			if (key.isParamTrack()) {
+				const unsigned short iParamTrack
+					= iParam + val.trackOffset() + iTrack;
+				sendController(key.type(), key.channel(), iParamTrack, iValue);
+			}
 			else
 			if (val.track() == iTrack)
 				sendController(key.type(), key.channel(), iParam, iValue);
@@ -590,6 +630,7 @@ bool qtractorMidiControl::loadElement (
 			}
 			Command command = Command(0);
 			int iTrack = 0;
+			bool bDelta = false;
 			bool bFeedback = false;
 			for (QDomNode nVal = eItem.firstChild();
 					!nVal.isNull();
@@ -602,7 +643,13 @@ bool qtractorMidiControl::loadElement (
 					command = commandFromText(eVal.text());
 				else
 				if (eVal.tagName() == "track")
-					iTrack = eVal.text().toInt();
+					iTrack |= (eVal.text().toInt() & 0x7f);
+				else
+				if (eVal.tagName() == "limit")
+					iTrack |= (eVal.text().toInt() << 7) & 0x3fc0;
+				else
+				if (eVal.tagName() == "delta")
+					bDelta = qtractorDocument::boolFromText(eVal.text());
 				else
 				if (eVal.tagName() == "feedback")
 					bFeedback = qtractorDocument::boolFromText(eVal.text());
@@ -615,9 +662,14 @@ bool qtractorMidiControl::loadElement (
 					}
 				}
 			}
+			int iFlags = 0;
+			if (bDelta)
+				iFlags |= MapVal::Delta;
+			if (bFeedback)
+				iFlags |= MapVal::Feedback;
 			m_controlMap.insert(
 				MapKey(ctype, iChannel, iParam),
-				MapVal(command, iTrack, bFeedback));
+				MapVal(command, iTrack, iFlags));
 		}
 	}
 
@@ -646,7 +698,11 @@ bool qtractorMidiControl::saveElement (
 		pDocument->saveTextElement("command",
 			textFromCommand(val.command()), &eItem);
 		pDocument->saveTextElement("track",
-			QString::number(val.track()), &eItem);
+			QString::number(val.trackOffset()), &eItem);
+		pDocument->saveTextElement("limit",
+			QString::number(val.trackLimit()), &eItem);
+		pDocument->saveTextElement("delta",
+			qtractorDocument::textFromBool(val.isDelta()), &eItem);
 		pDocument->saveTextElement("feedback",
 			qtractorDocument::textFromBool(val.isFeedback()), &eItem);
 		pElement->appendChild(eItem);
