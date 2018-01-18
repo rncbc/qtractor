@@ -33,6 +33,7 @@
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
 #include "qtractorMidiManager.h"
+#include "qtractorMidiImportExtender.h"
 
 #include "qtractorPlugin.h"
 #include "qtractorCurve.h"
@@ -262,6 +263,7 @@ void qtractorSession::clear (void)
 
 	qtractorAudioClip::clearHashTable();
 	qtractorMidiClip::clearHashTable();
+	qtractorMidiImportExtender::clearPluginList();
 
 	m_iSessionStart  = 0;
 	m_iSessionEnd    = 0;

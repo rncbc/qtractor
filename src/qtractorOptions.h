@@ -140,6 +140,15 @@ public:
 	int  iMidiSppMode;
 	int  iMidiClockMode;
 
+	// MIDI import options.
+	QString sMidiImportPlugins;
+	QString sMidiImportInstInst;
+	QString sMidiImportDrumInst;
+	int iMidiImportInstBank;
+	int iMidiImportDrumBank;
+	int iMidiImportTrackName;
+
+
 	// MIDI Metronome parameters.
 	int iMetroChannel;
 	int iMetroBarNote;
