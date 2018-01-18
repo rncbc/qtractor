@@ -361,13 +361,11 @@ public:
 	unsigned long uniqueID() const
 		{ return m_iUniqueID; }
 
-	// Activation additional info sender supplies.
-	enum ActivationInfo { Default = 0, Copy, Save };
-
 	// Activation methods.
 	void setActivated(bool bActivated);
 	void setActivatedEx(bool bActivated);
-	bool isActivated(ActivationInfo info = Default) const;
+	bool isActivated() const;
+	bool isActivatedEx() const;
 
 	// Activate subject accessors.
 	qtractorSubject *activateSubject()

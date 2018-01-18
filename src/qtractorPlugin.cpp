@@ -312,14 +312,18 @@ void qtractorPlugin::setActivatedEx ( bool bActivated )
 	m_activateSubject.setValue(bActivated ? 1.0f : 0.0f);
 }
 
-bool qtractorPlugin::isActivated ( ActivationInfo info ) const
+bool qtractorPlugin::isActivated (void) const
 {
-	// avoid save auto-deactivated as deacitvated...
-	if (info == Save || info == Copy)
-		return m_bActivated;
-	else
-		return m_bActivated && !m_bAutoDeactivated;
+	return m_bActivated && !m_bAutoDeactivated;
 }
+
+
+// Avoid save/copy auto-deactivated as deacitvated...
+bool qtractorPlugin::isActivatedEx (void) const
+{
+	return m_bActivated;
+}
+
 
 void qtractorPlugin::autoDeactivatePlugin ( bool bDeactivated )
 {
@@ -1766,7 +1770,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		pNewPlugin->realizeValues();
 		pNewPlugin->releaseConfigs();
 		pNewPlugin->releaseValues();
-		pNewPlugin->setActivated(pPlugin->isActivated(qtractorPlugin::Copy));
+		pNewPlugin->setActivated(pPlugin->isActivatedEx());
 		pNewPlugin->setDirectAccessParamIndex(
 			pPlugin->directAccessParamIndex());
 	}
@@ -2074,7 +2078,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 	//	pDocument->saveTextElement("values",
 	//		pPlugin->valueList().join(","), &ePlugin);
 		pDocument->saveTextElement("activated",
-			qtractorDocument::textFromBool(pPlugin->isActivated(qtractorPlugin::Save)), &ePlugin);
+			qtractorDocument::textFromBool(pPlugin->isActivatedEx()), &ePlugin);
 		// Plugin configuration stuff (CLOB)...
 		QDomElement eConfigs = pDocument->document()->createElement("configs");
 		pPlugin->saveConfigs(pDocument->document(), &eConfigs);
