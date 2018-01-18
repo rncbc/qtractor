@@ -237,8 +237,8 @@ void qtractorMidiImportExtender::prepareTrackForExtension(qtractorTrack *pTrack)
 
 		// Auto deactivation must be disabled to make plugins process program/bank
 		// changes.
-		if (!m_bAutoDeactivateWasDisabled && pSession->isAutoDeactivatePlugins()) {
-			pSession->setAutoDeactivatePlugins(false);
+		if (!m_bAutoDeactivateWasDisabled && pSession->isAutoDeactivate()) {
+			pSession->setAutoDeactivate(false);
 			m_bAutoDeactivateWasDisabled = true;
 		}
 
@@ -426,7 +426,7 @@ bool qtractorMidiImportExtender::finishTracksForExtension(
 
 	// Restore plugin auto deactivation.
 	if (m_bAutoDeactivateWasDisabled) {
-		pSession->setAutoDeactivatePlugins(true);
+		pSession->setAutoDeactivate(true);
 		m_bAutoDeactivateWasDisabled = false;
 	}
 	return bOneOrMoreTracksChanged;
