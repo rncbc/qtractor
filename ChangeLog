@@ -6,6 +6,18 @@ ChangeLog
 
 GIT HEAD
 
+- Added brand new option to deactivate plugins only if they
+  can produce sound cf. main menu Track/Auto Deactivate (by
+  Andreas Müller aka. schnitzeltony, thanks). (EXPERIMENTAL)
+
+- Workaround native file dialogs hang up by setting parent
+  widget to NULL; it should be noted that dialogs now get
+  an own entry in the task-bar (also by Andreas Müller aka.
+  schnitzeltony, thanks).
+
+- Added ARM NEON acceleration support (by Andreas Müller aka.
+  schnitzeltony, thanks).
+
 - Track count "limit" and a "Delta" mode flag, for momentary
   and encoded controllers support, have been added to MIDI
   Controllers generic mapping (cf. View/Controllers...; after
