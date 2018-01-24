@@ -2501,27 +2501,27 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1452"/>
         <source>Auto Dea&amp;ctivate</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Auto Desativar</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1455"/>
         <source>Auto Deactivate</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto Desativar</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1458"/>
         <source>Auto-deactivate plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto desativar plugins</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1461"/>
         <source>Auto-deactivate plugins not producing sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto desativar plugins que não estão produzindo sons</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1464"/>
         <source>Shift+F6</source>
-        <translation type="unfinished">Shift+F6</translation>
+        <translation>Shift+F6</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1772"/>
@@ -2621,7 +2621,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="810"/>
         <source>Del</source>
-        <translation>Del</translation>
+        <translation>Auto Desativar</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="724"/>
@@ -3976,7 +3976,7 @@ Desculpe.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8031"/>
         <source>TRACK MONITOR %1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>MONITOR DA PISTA %1-%2</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8147"/>
@@ -6314,28 +6314,28 @@ Salvar esta sessão em um novo arquivo é altamente recomendável.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="163"/>
         <source>Trac&amp;k</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pista</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="176"/>
         <source>offse&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;deslocamento</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="189"/>
         <source>&amp;limit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;limite</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="215"/>
         <location filename="../qtractorMidiControlForm.ui" line="385"/>
         <source>Flags</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcações</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="282"/>
         <source>Track limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Limite da pista</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="295"/>
@@ -6345,12 +6345,12 @@ Salvar esta sessão em um novo arquivo é altamente recomendável.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="302"/>
         <source>Command delta/momentary</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando de Delta/instantâneo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="305"/>
         <source>D&amp;elta</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Delta</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="419"/>
@@ -6544,7 +6544,7 @@ Você deseja aplicar ao arquivo do controlador?</translation>
         <location filename="../qtractorMidiControlForm.cpp" line="768"/>
         <location filename="../qtractorMidiControlForm.cpp" line="860"/>
         <source>Delta</source>
-        <translation type="unfinished"></translation>
+        <translation>Delta</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="769"/>
@@ -9758,7 +9758,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="473"/>
         <source>Reverse &amp;keyboard modifiers role (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverter regras das &amp;teclas modificadoras (Shift/Ctrl)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1066"/>
@@ -10001,7 +10001,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="470"/>
         <source>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverte a função das regras das teclas (Shift/Ctrl) em relação a barra de controle de reprodução/gravação</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="597"/>
