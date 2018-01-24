@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -402,15 +402,18 @@ void qtractorExportForm::browseExportPath (void)
 	const QString& sFilter
 		= tr("%1 files (*.%1)").arg(m_sExportExt);
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs)
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
-	sExportPath = QFileDialog::getSaveFileName(this,
+	sExportPath = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, sExportPath, sFilter, NULL, options);
 #else
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, sExportPath, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);

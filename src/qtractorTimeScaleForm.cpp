@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -901,13 +901,16 @@ void qtractorTimeScaleForm::markerColor (void)
 
 	QPalette pal(m_ui.MarkerTextLineEdit->palette());
 
+	QWidget *pParentWidget = NULL;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	QColorDialog::ColorDialogOptions options = 0;
-	if (pOptions && pOptions->bDontUseNativeDialogs)
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 
 	const QColor& color	= QColorDialog::getColor(
-		pal.text().color(), this,
+		pal.text().color(), pParentWidget,
 		tr("Marker Color") + " - " QTRACTOR_TITLE, options);
 
 	if (color.isValid()) {

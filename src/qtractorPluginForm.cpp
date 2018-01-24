@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -557,16 +557,19 @@ void qtractorPluginForm::openPresetSlot (void)
 	const QString& sFilter
 		= tr("Preset files (*.%1)").arg(filters.join(" *."));
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, pOptions->sPresetDir, sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, pOptions->sPresetDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -649,16 +652,19 @@ void qtractorPluginForm::savePresetSlot (void)
 				= tr("Save Preset") + " - " QTRACTOR_TITLE;
 			const QString& sFilter
 				= tr("Preset files (*.%1)").arg(filters.join(" *."));
+			QWidget *pParentWidget = NULL;
 			QFileDialog::Options options = 0;
-			if (pOptions->bDontUseNativeDialogs)
+			if (pOptions->bDontUseNativeDialogs) {
 				options |= QFileDialog::DontUseNativeDialog;
+				pParentWidget = this;
+			}
 		#if 1//QT_VERSION < 0x040400
 			// Ask for the filename to save...
-			sFilename = QFileDialog::getSaveFileName(this,
+			sFilename = QFileDialog::getSaveFileName(pParentWidget,
 				sTitle, sFilename, sFilter, NULL, options);
 		#else
 			// Construct save-file dialog...
-			QFileDialog fileDialog(this,
+			QFileDialog fileDialog(pParentWidget,
 				sTitle, sFilename, sFilter);
 			// Set proper open-file modes...
 			fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -1511,15 +1517,18 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 	const QString& sTitle
 		= tr("Open File") + " - " QTRACTOR_TITLE;
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, sFilename, QString(), NULL, options);
 #else
 	// Construct open-file dialog...
-	QFileDialog fileDialog(this, sTitle, sFilename);
+	QFileDialog fileDialog(pParentWidget, sTitle, sFilename);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFile);
@@ -1585,7 +1594,7 @@ bool qtractorPluginPropertyWidget::eventFilter (
 	QObject *pObject, QEvent *pEvent )
 {
 	if (qobject_cast<QTextEdit *> (pObject) == m_pTextEdit) {
-		if(pEvent->type() == QEvent::KeyPress) {
+		if (pEvent->type() == QEvent::KeyPress) {
 			QKeyEvent *pKeyEvent = static_cast<QKeyEvent*> (pEvent);
 			if (pKeyEvent->key() == Qt::Key_Return
 				&& (pKeyEvent->modifiers() &
@@ -1595,7 +1604,7 @@ bool qtractorPluginPropertyWidget::eventFilter (
 			}
 		}
 		else
-		if(pEvent->type() == QEvent::FocusOut)
+		if (pEvent->type() == QEvent::FocusOut)
 			propertyChanged();
 	}
 

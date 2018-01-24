@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -153,7 +153,97 @@ static inline void sse_process_add (
 	}
 }
 
-#endif
+#endif // __SSE__
+
+
+#if defined(__ARM_NEON__)
+
+#include "arm_neon.h"
+
+// NEON enabled processor versions.
+static inline void neon_process_gain (
+	float **ppFrames, unsigned int iFrames,
+	unsigned short iChannels, float fGain )
+{
+	float32x4_t vGain = vdupq_n_f32(fGain);
+
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pFrames = ppFrames[i];
+		unsigned int nframes = iFrames;
+		for (; (long(pFrames) & 15) && (nframes > 0); --nframes)
+			*pFrames++ *= fGain;
+		for (; nframes >= 4; nframes -= 4) {
+			vst1q_f32(pFrames,
+				vmulq_f32(
+					vld1q_f32(pFrames), vGain
+				)
+			);
+			pFrames += 4;
+		}
+		for (; nframes > 0; --nframes)
+			*pFrames++ *= fGain;
+	}
+}
+
+static inline void neon_process_dry_wet (
+	float **ppBuffer, float **ppFrames, unsigned int iFrames,
+	unsigned short iChannels, float fDry, float fWet )
+{
+	float32x4_t vDry = vdupq_n_f32(fDry);
+	float32x4_t vWet = vdupq_n_f32(fWet);
+
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pBuffer = ppBuffer[i];
+		float *pFrames = ppFrames[i];
+		unsigned int nframes = iFrames;
+		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes) {
+			*pBuffer   *= fWet;
+			*pBuffer++ += fDry * *pFrames++;
+		}
+		for (; nframes >= 4; nframes -= 4) {
+			float32x4_t vBuffer = vld1q_f32(pBuffer);
+			vBuffer = vmulq_f32(vBuffer, vWet);
+			float32x4_t vFrames = vld1q_f32(pFrames);
+			// Vr[i] := Va[i] + Vb[i] * Vc[i]
+			vBuffer = vmlaq_f32(vBuffer, vDry, vFrames);
+			vst1q_f32(pBuffer, vBuffer);
+			pFrames += 4;
+			pBuffer += 4;
+		}
+		for (; nframes > 0; --nframes) {
+			*pBuffer   *= fWet;
+			*pBuffer++ += fDry * *pFrames++;
+		}
+	}
+}
+
+static inline void neon_process_add (
+	float **ppBuffer, float **ppFrames, unsigned int iFrames,
+	unsigned short iChannels, float fGain )
+{
+	float32x4_t vGain = vdupq_n_f32(fGain);
+
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pBuffer = ppBuffer[i];
+		float *pFrames = ppFrames[i];
+		unsigned int nframes = iFrames;
+		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
+			*pBuffer++ += fGain * *pFrames++;
+		for (; nframes >= 4; nframes -= 4) {
+			float32x4_t vBuffer = vld1q_f32(pBuffer);
+			float32x4_t vFrames = vld1q_f32(pFrames);
+			//Vr[i] := Va[i] + Vb[i] * Vc[i]
+			vBuffer = vmlaq_f32(vBuffer, vGain, vFrames);
+			vst1q_f32(pBuffer, vBuffer);
+			pFrames += 4;
+			pBuffer += 4;
+		}
+		for (; nframes > 0; --nframes)
+			*pBuffer++ += fGain * *pFrames++;
+	}
+}
+
+#endif // __ARM_NEON__
 
 
 // Standard processor versions.
@@ -367,13 +457,17 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	if (sse_enabled()) {
 		m_pfnProcessGain = sse_process_gain;
 		m_pfnProcessDryWet = sse_process_dry_wet;
-	} else {
+	} else
 #endif
-	m_pfnProcessGain = std_process_gain;
-	m_pfnProcessDryWet = std_process_dry_wet;
-#if defined(__SSE__)
+#if defined(__ARM_NEON__)
+	m_pfnProcessGain = neon_process_gain;
+	m_pfnProcessDryWet = neon_process_dry_wet;
+	if (false)
+#endif
+	{
+		m_pfnProcessGain = std_process_gain;
+		m_pfnProcessDryWet = std_process_dry_wet;
 	}
-#endif
 
 	// Create and attach the custom parameters...
 	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
@@ -1120,12 +1214,15 @@ qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 #if defined(__SSE__)
 	if (sse_enabled()) {
 		m_pfnProcessAdd = sse_process_add;
-	} else {
+	} else
 #endif
+#if defined(__ARM_NEON__)
+	m_pfnProcessAdd = neon_process_add;
+	if (false)
+#endif
+    {
 		m_pfnProcessAdd = std_process_add;
-#if defined(__SSE__)
 	}
-#endif
 
 	// Create and attach the custom parameters...
 	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);

@@ -1,7 +1,7 @@
 // qtractorCurve.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +23,8 @@
 #include "qtractorCurve.h"
 
 #include "qtractorTimeScale.h"
+
+#include "qtractorSession.h"
 
 #include <math.h>
 
@@ -744,8 +746,13 @@ void qtractorCurve::setCapture ( bool bCapture )
 
 	const bool bOldCapture = (m_state & Capture);
 	m_state = State(bCapture ? (m_state | Capture) : (m_state & ~Capture));
-	if ((bCapture && !bOldCapture) || (!bCapture && bOldCapture))
+	if ((bCapture && !bOldCapture) || (!bCapture && bOldCapture)) {
 		m_pList->updateCapture(bCapture);
+		// notify auto-plugin-deactivate
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pSession->autoDeactivatePlugins();
+	}
 }
 
 
@@ -760,8 +767,13 @@ void qtractorCurve::setProcess ( bool bProcess )
 
 	const bool bOldProcess = (m_state & Process);
 	m_state = State(bProcess ? (m_state | Process) : (m_state & ~Process));
-	if ((bProcess && !bOldProcess) || (!bProcess && bOldProcess))
+	if ((bProcess && !bOldProcess) || (!bProcess && bOldProcess)) {
 		m_pList->updateProcess(bProcess);
+		// notify auto-plugin-deactivate
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pSession->autoDeactivatePlugins();
+	}
 }
 
 

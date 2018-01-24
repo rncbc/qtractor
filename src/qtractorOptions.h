@@ -1,7 +1,7 @@
 // qtractorOptions.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -169,6 +169,7 @@ public:
 	bool    bSessionBackup;
 	int     iSessionBackupMode;
 	bool	bAutoMonitor;
+	bool	bAutoDeactivate;
 	int     iSnapPerBeat;
 	float   fTempo;
 	int     iBeatsPerBar;
@@ -187,8 +188,11 @@ public:
 	// Automation curve mode default.
 	int     iCurveMode;
 
-    // Edit-range options.
-    int     iEditRangeOptions;
+	// Edit-range options.
+	int     iEditRangeOptions;
+
+	// Keyboard modifier options.
+	bool    bShiftKeyModifier;
 
 	// Mouse modifier options.
 	bool    bMidButtonModifier;

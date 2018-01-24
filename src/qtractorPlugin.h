@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -365,6 +365,7 @@ public:
 	void setActivated(bool bActivated);
 	void setActivatedEx(bool bActivated);
 	bool isActivated() const;
+	bool isActivatedEx() const;
 
 	// Activate subject accessors.
 	qtractorSubject *activateSubject()
@@ -645,6 +646,10 @@ public:
 	// Parameter update executive.
 	void updateParamValue(unsigned long iIndex, float fValue, bool bUpdate);
 
+	// Auto-plugin-deactivation
+	void autoDeactivatePlugin(bool bDeactivated);
+	bool canBeConnectedToOtherTracks() const;
+
 protected:
 
 	// Instance number settler.
@@ -668,6 +673,9 @@ private:
 
 	// Activation flag.
 	bool m_bActivated;
+
+	// Auto-plugin-deactivation flag
+	bool m_bAutoDeactivated;
 
 	// Activate subject value.
 	qtractorSubject m_activateSubject;
@@ -914,6 +922,10 @@ public:
 	bool isAudioInsertActivated() const
 		{ return (m_iAudioInsertActivated > 0); }
 
+	// Special auto-deactivate methods
+	void autoDeactivatePlugins(bool bDeactivated, bool bForce = false);
+	bool isAutoDeactivated() const;
+
 protected:
 
 	// Check/sanitize plugin file-path.
@@ -961,6 +973,9 @@ private:
 
 	// Plugin registry (chain unique ids.)
 	QHash<unsigned long, unsigned int> m_uniqueIDs;
+
+	// Auto-plugin-deactivation
+	bool m_bAutoDeactivated;
 };
 
 

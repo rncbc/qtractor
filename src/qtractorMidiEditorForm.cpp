@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1037,18 +1037,20 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 			= tr("Save MIDI Clip") + " - " QTRACTOR_TITLE;
 		const QString& sFilter
 			= tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
+		QWidget *pParentWidget = NULL;
 		QFileDialog::Options options = 0;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions && pOptions->bDontUseNativeDialogs)
+		if (pOptions && pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
+			pParentWidget = this;
+		}
 	#if 1//QT_VERSION < 0x040400
 		// Ask for the filenames to open...
-		sFilename = QFileDialog::getSaveFileName(this,
+		sFilename = QFileDialog::getSaveFileName(pParentWidget,
 			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct open-files dialog...
-		QFileDialog fileDialog(this,
-			sTitle, sFilename, sFilter);
+		QFileDialog fileDialog(pParentWidget, sTitle, sFilename, sFilter);
 		// Set proper open-file modes...
 		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 		fileDialog.setFileMode(QFileDialog::AnyFile);

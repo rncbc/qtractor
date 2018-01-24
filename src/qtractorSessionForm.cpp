@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -288,15 +288,18 @@ void qtractorSessionForm::browseSessionDir (void)
 	const QString& sTitle
 		= tr("Session Directory") + " - " QTRACTOR_TITLE;
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
-	QString sSessionDir = QFileDialog::getExistingDirectory(this,                                  // Parent.
+	QString sSessionDir = QFileDialog::getExistingDirectory(pParentWidget,
 		sTitle, m_ui.SessionDirComboBox->currentText(), options);
 #else
 	// Construct open-directory dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, m_ui.SessionDirComboBox->currentText());
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);

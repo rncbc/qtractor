@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -749,6 +749,8 @@ void qtractorTrack::setMonitor ( bool bMonitor )
 	m_props.monitor = bMonitor;
 
 	m_pMonitorSubject->setValue(bMonitor ? 1.0f : 0.0f);
+
+	m_pSession->autoDeactivatePlugins();
 }
 
 
@@ -762,6 +764,8 @@ void qtractorTrack::setRecord ( bool bRecord )
 	m_props.record = bRecord;
 
 	m_pRecordSubject->setValue(bRecord ? 1.0f : 0.0f);
+
+	m_pSession->autoDeactivatePlugins();
 
 	if (m_pSession->isRecording()) {
 		unsigned long iClipStart = m_pSession->playHead();
@@ -797,6 +801,8 @@ void qtractorTrack::setMute ( bool bMute )
 
 	if (m_pSession->isPlaying() && !bMute)
 		m_pSession->trackMute(this, bMute);
+
+	m_pSession->autoDeactivatePlugins();
 }
 
 bool qtractorTrack::isMute (void) const
@@ -821,6 +827,8 @@ void qtractorTrack::setSolo ( bool bSolo )
 
 	if (m_pSession->isPlaying() && !bSolo)
 		m_pSession->trackSolo(this, bSolo);
+
+	m_pSession->autoDeactivatePlugins();
 }
 
 bool qtractorTrack::isSolo (void) const

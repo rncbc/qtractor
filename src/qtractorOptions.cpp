@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -198,6 +198,7 @@ void qtractorOptions::loadOptions (void)
 	sMidiControlDir = m_settings.value("/MidiControlDir").toString();
 	sMidiSysexDir   = m_settings.value("/MidiSysexDir").toString();
 	bAutoMonitor    = m_settings.value("/AutoMonitor", true).toBool();
+	bAutoDeactivate = m_settings.value("/AutoDeactivate", false).toBool();
 	iSnapPerBeat    = m_settings.value("/SnapPerBeat", 4).toInt();
 	fTempo    = float(m_settings.value("/Tempo", 120.0).toDouble());
 	iBeatsPerBar    = m_settings.value("/BeatsPerBar", 4).toInt();
@@ -210,6 +211,7 @@ void qtractorOptions::loadOptions (void)
 	bPluginActivate = m_settings.value("/PluginActivate", false).toBool();
 	iCurveMode      = m_settings.value("/CurveMode", 0).toInt();
 	iEditRangeOptions = m_settings.value("/EditRangeOptions", 3).toInt();
+	bShiftKeyModifier = m_settings.value("/ShiftKeyModifier", false).toBool();
 	bMidButtonModifier = m_settings.value("/MidButtonModifier", false).toBool();
 	bMidiControlSync = m_settings.value("/MidiControlSync", false).toBool();
 	bExportAddTrack = m_settings.value("/ExportAddTrack", false).toBool();
@@ -492,6 +494,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MidiControlDir", sMidiControlDir);
 	m_settings.setValue("/MidiSysexDir", sMidiSysexDir);
 	m_settings.setValue("/AutoMonitor", bAutoMonitor);
+	m_settings.setValue("/AutoDeactivate", bAutoDeactivate);
 	m_settings.setValue("/SnapPerBeat", iSnapPerBeat);
 	m_settings.setValue("/Tempo", double(fTempo));
 	m_settings.setValue("/BeatsPerBar", iBeatsPerBar);
@@ -504,6 +507,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/PluginActivate", bPluginActivate);
 	m_settings.setValue("/CurveMode", iCurveMode);
 	m_settings.setValue("/EditRangeOptions", iEditRangeOptions);
+	m_settings.setValue("/ShiftKeyModifier", bShiftKeyModifier);
 	m_settings.setValue("/MidButtonModifier", bMidButtonModifier);
 	m_settings.setValue("/MidiControlSync", bMidiControlSync);
 	m_settings.setValue("/ExportAddTrack", bExportAddTrack);

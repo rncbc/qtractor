@@ -1,7 +1,7 @@
 // qtractorMidiControlObserver.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -115,6 +115,12 @@ protected:
 	// MIDI scale type (7bit vs. 14bit).
 	unsigned short midiScale() const;
 
+	// Special action/shortcut mode accessors.
+	void setTriggered(bool bTriggered)
+		{ m_bTriggered = bTriggered; }
+	bool isTriggered() const
+		{ return m_bTriggered; }
+
 private:
 
 	// Key members.
@@ -128,6 +134,9 @@ private:
 	bool m_bInvert;
 	bool m_bHook;
 	bool m_bLatch;
+
+	// Special action/shortcut mode property.
+	bool m_bTriggered;
 
 	// Tracking/catch-up members.
 	float m_fMidiValue;

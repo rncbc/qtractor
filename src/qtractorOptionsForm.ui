@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -442,7 +442,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2" colspan="2">
+          <item row="3" column="2" colspan="2">
            <widget class="QCheckBox" name="TrackViewDropSpanCheckBox">
             <property name="font">
              <font>
@@ -455,6 +455,22 @@
             </property>
             <property name="text">
              <string>&amp;Drop multiple audio files into the same track</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2" colspan="2">
+           <widget class="QCheckBox" name="ShiftKeyModifierCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</string>
+            </property>
+            <property name="text">
+             <string>Reverse &amp;keyboard modifiers role (Shift/Ctrl)</string>
             </property>
            </widget>
           </item>

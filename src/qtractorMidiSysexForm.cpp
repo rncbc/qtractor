@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -219,16 +219,19 @@ void qtractorMidiSysexForm::importSlot (void)
 	const QString& sFilter
 		= filters.join(";;");
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	files = QFileDialog::getOpenFileNames(this,
+	files = QFileDialog::getOpenFileNames(pParentWidget,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, pOptions->sMidiSysexDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -297,16 +300,19 @@ void qtractorMidiSysexForm::exportSlot (void)
 	const QString& sFilter
 		= tr("SysEx files (*.%1)").arg(sExt);
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1// QT_VERSION < 0x040400
 	// Ask for the filename to open...
-	sPath = QFileDialog::getSaveFileName(this,
+	sPath = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, pOptions->sMidiSysexDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -438,16 +444,19 @@ void qtractorMidiSysexForm::openSlot (void)
 	const QString& sFilter
 		= tr("SysEx files (*.%1)").arg(sExt);
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = this;
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	sFilename = QFileDialog::getOpenFileName(this,
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
-	QFileDialog fileDialog(this,
+	QFileDialog fileDialog(pParentWidget,
 		sTitle, pOptions->sMidiSysexDir, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -510,16 +519,19 @@ void qtractorMidiSysexForm::saveSlot (void)
 		const QString& sFilter
 			= tr("Sysex files (*.%1)").arg(sExt);
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		QWidget *pParentWidget = NULL;
 		QFileDialog::Options options = 0;
-		if (pOptions->bDontUseNativeDialogs)
+		if (pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
+			pParentWidget = this;
+		}
 	#if 1//QT_VERSION < 0x040400
 		// Ask for the filename to save...
-		sFilename = QFileDialog::getSaveFileName(this,
+		sFilename = QFileDialog::getSaveFileName(pParentWidget,
 			sTitle, sFilename, sFilter, NULL, options);
 	#else
 		// Construct save-file dialog...
-		QFileDialog fileDialog(this, sTitle, sFilename, sFilter);
+		QFileDialog fileDialog(pParentWidget, sTitle, sFilename, sFilter);
 		// Set proper open-file modes...
 		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 		fileDialog.setFileMode(QFileDialog::AnyFile);

@@ -1,7 +1,7 @@
 // qtractorMidiControl.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -100,15 +100,6 @@ public:
 		bool isParamTrack() const
 			{ return (m_iParam & TrackParam); }
 
-		// Generic key matcher.
-		bool match(ControlType ctype,
-			unsigned short iChannel, unsigned short iParam) const
-		{
-			return (type() == ctype 
-				&& (isChannelTrack() || channel() == iChannel)
-				&& (isParamTrack() || param() == iParam));
-		}
-
 		// Hash/map key comparator.
 		bool operator== (const MapKey& key) const
 		{
@@ -130,9 +121,12 @@ public:
 	{
 	public:
 
+		// Bit-wise mode flags.
+		enum Flags { Feedback = 1, Delta = 2 };
+
 		// Constructor.
-		MapVal(Command command = Command(0), int iTrack = 0, bool bFeedback = false)
-			: m_command(command), m_iTrack(iTrack), m_bFeedback(bFeedback) {}
+		MapVal(Command command = Command(0), int iTrack = 0, int iFlags = 0)
+			: m_command(command), m_iTrack(iTrack), m_iFlags(iFlags) {}
 
 		// Command accessors
 		void setCommand(Command command)
@@ -140,17 +134,27 @@ public:
 		Command command() const
 			{ return m_command; }
 
-		// Track offset accessor.
+		// Track offset/limit accessors.
 		void setTrack(int iTrack)
 			{ m_iTrack = iTrack; }
 		int track() const
 			{ return m_iTrack; }
+		int trackOffset() const
+			{ return (m_iTrack & 0x007f); }
+		int trackLimit() const
+			{ return (m_iTrack & 0x3fc0) >> 7; }
 
 		// Feedback flag accessor.
 		void setFeedback(bool bFeedback)
-			{ m_bFeedback = bFeedback; }
+			{ if (bFeedback) m_iFlags |= Feedback; else m_iFlags &= ~Feedback; }
 		int isFeedback() const
-			{ return m_bFeedback; }
+			{ return (m_iFlags & Feedback); }
+
+		// Delta/momentary flag accessor.
+		void setDelta(bool bDelta)
+			{ if (bDelta) m_iFlags |= Delta; else m_iFlags &= ~Delta; }
+		int isDelta() const
+			{ return (m_iFlags & Delta); }
 
 		// MIDI control track (catch-up) value.
 		class Track
@@ -159,14 +163,47 @@ public:
 
 			// Constructor.
 			Track(float fValue = 0.0f)
-				: m_fValue(fValue), m_bValueSync(false) {}
+				: m_fValue(fValue), m_bSync(false) {}
+
+			// Toggled sync methods.
+			bool syncToggled(float fValue, float fOldValue, bool bDelta)
+			{
+				if (bDelta) { // aka. momentary/non-latched...
+					if (fValue > 0.0f)
+						fValue = (fOldValue > 0.0f ? 0.0f : 1.0f);
+					else
+						fValue = fOldValue;
+				}
+				return sync(fValue, fOldValue);
+			}
+
+			// Scalar sync methods.
+			bool syncDecimal(float fValue, float fOldValue, bool bDelta)
+			{
+				if (bDelta) { // aka. encoded...
+					if (fValue > 0.0f)
+						fValue = fOldValue + 0.1f;
+					else
+					if (fValue < 0.0f)
+						fValue = fOldValue - 0.1f;
+				}
+				return sync(fValue, fOldValue);
+			}
 
 			// Tracking/catch-up methods.
+			void syncReset()
+				{ m_bSync = false; }
+
+			float value() const
+				{ return m_fValue; }
+
+		protected:
+
 			bool sync(float fValue, float fOldValue)
 			{
 				bool bSync = qtractorMidiControl::isSync();
 				if (!bSync)
-					bSync = m_bValueSync;
+					bSync = m_bSync;
 				if (!bSync) {
 					const float v0 = m_fValue;
 					const float v1 = fOldValue;
@@ -182,22 +219,16 @@ public:
 				}
 				if (bSync) {
 					m_fValue = fValue;
-					m_bValueSync = true;
+					m_bSync  = true;
 				}
 				return bSync;
 			}
-
-			void syncReset()
-				{ m_bValueSync = false; }
-
-			float value() const
-				{ return m_fValue; }
 
 		private:
 
 			// Tracking/catch-up members.
 			float m_fValue;
-			bool  m_bValueSync;
+			bool  m_bSync;
 		};
 
 		Track& track(int iTrack)
@@ -214,7 +245,7 @@ public:
 		// Instance (value) member variables.
 		Command m_command;
 		int     m_iTrack;
-		bool    m_bFeedback;
+		int     m_iFlags;
 
 		QHash<int, Track> m_trackMap;
 	};
@@ -239,12 +270,12 @@ public:
 	// Insert new controller mappings.
 	void mapChannelParam(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		Command command, int iTrack = 0, int iFlags = 0);
 	void mapChannelTrack(ControlType ctype, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		Command command, int iTrack = 0, int iFlags = 0);
 	void mapChannelParamTrack(ControlType ctype,
 		unsigned short iChannel, unsigned short iParam,
-		Command command, int iTrack = 0, bool bFeedback = false);
+		Command command, int iTrack = 0, int iFlags = 0);
 
 	// Remove existing controller mapping.
 	void unmapChannelParam(ControlType ctype,
@@ -266,7 +297,7 @@ public:
 
 	// Process incoming command.
 	void processTrackCommand(
-		Command command, int iTrack, float fValue, bool bCubic = false);
+		Command command, int iTrack, float fValue, bool bLogarithmic = false);
 	void processTrackCommand(
 		Command command, int iTrack, bool bValue);
 
@@ -350,7 +381,7 @@ protected:
 		ControlType ctype, qtractorTrack *pTrack, Command command,
 		unsigned short iChannel, unsigned short iParam) const;
 	void sendTrackController(
-		int iTrack, Command command, float fValue, bool bCubic);
+		int iTrack, Command command, float fValue, bool bLogarithmic);
 
 	// MIDI control scale (7bit vs. 14bit).
 	class ControlScale
@@ -374,21 +405,51 @@ protected:
 
 		// Scale value converters (unsigned).
 		float valueFromMidi(unsigned short iValue) const
-			{ return float(iValue) / m_fMaxScale; }
+			{ return float(safeFromMidi(iValue)) / m_fMaxScale; }
 		unsigned short midiFromValue(float fValue) const
-			{ return m_fMaxScale * fValue; }
+			{ return m_fMaxScale * safeFromValue(fValue); }
 
 		// Scale value converters (signed).
 		float valueSignedFromMidi(unsigned short iValue) const
-			{ return float(int(iValue) - m_iMidScale) / m_fMidScale; }
+			{ return float(safeFromMidi(iValue) - m_iMidScale) / m_fMidScale; }
 		unsigned short midiFromValueSigned(float fValue) const
-			{ return m_iMidScale + int(m_fMidScale * fValue); }
+			{ return m_iMidScale + int(m_fMidScale * safeFromValueSigned(fValue)); }
 
 		// Scale value converters (toggled).
 		float valueToggledFromMidi(unsigned short iValue) const
 			{ return (iValue > m_iMidScale ? 1.0f : 0.0f); }
 		unsigned short midiFromValueToggled(float fValue) const
 			{ return (fValue > 0.5f ? m_iMaxScale : 0); }
+
+	protected:
+
+		// Safe/sanity value cappers.
+		int safeFromMidi(int iValue) const
+		{
+			if (iValue > 0)
+				return (iValue < m_iMaxScale ? iValue : m_iMaxScale);
+			else
+				return 0;
+		}
+
+		float safeFromValue(float fValue) const
+		{
+			if (fValue > 0.0f)
+				return (fValue <  1.0f ? fValue :  1.0f);
+			else
+				return 0.0f;
+		}
+
+		float safeFromValueSigned(float fValue) const
+		{
+			if (fValue > 0.0f)
+				return (fValue <  1.0f ? fValue :  1.0f);
+			else
+			if (fValue < 0.0f)
+				return (fValue > -1.0f ? fValue : -1.0f);
+			else
+				return 0.0f;
+		}
 
 	private:
 

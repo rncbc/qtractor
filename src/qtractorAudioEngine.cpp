@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -116,7 +116,42 @@ static inline void sse_buffer_add (
 	}
 }
 
-#endif
+#endif // __SSE__
+
+
+#if defined(__ARM_NEON__)
+
+#include "arm_neon.h"
+
+// NEON enabled mix-down processor version.
+static inline void neon_buffer_add (
+	float **ppBuffer, float **ppFrames, unsigned int iFrames,
+	unsigned short iBuffers, unsigned short iChannels, unsigned int iOffset )
+{
+	unsigned short j = 0;
+
+	for (unsigned short i = 0; i < iChannels; ++i) {
+		float *pBuffer = ppBuffer[j] + iOffset;
+		float *pFrames = ppFrames[i] + iOffset;
+		unsigned int nframes = iFrames;
+		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
+			*pBuffer++ += *pFrames++;
+		for (; nframes >= 4; nframes -= 4) {
+			vst1q_f32(pBuffer,
+				vaddq_f32(
+					vld1q_f32(pBuffer),
+					vld1q_f32(pFrames)));
+			pFrames += 4;
+			pBuffer += 4;
+		}
+		for (; nframes > 0; --nframes)
+			*pBuffer++ += *pFrames++;
+		if (++j >= iBuffers)
+			j = 0;
+	}
+}
+
+#endif // __ARM_NEON__
 
 
 // Standard mix-down processor version.
@@ -162,7 +197,11 @@ public:
 			m_pfnBufferAdd = sse_buffer_add;
 		else
 	#endif
-		m_pfnBufferAdd = std_buffer_add;
+	#if defined(__ARM_NEON__)
+		m_pfnBufferAdd = neon_buffer_add;
+		if (false)
+	#endif
+			m_pfnBufferAdd = std_buffer_add;
 	}
 
 	// Destructor.
@@ -2156,7 +2195,11 @@ qtractorAudioBus::qtractorAudioBus (
 		m_pfnBufferAdd = sse_buffer_add;
 	else
 #endif
-	m_pfnBufferAdd = std_buffer_add;
+#if defined(__ARM_NEON__)
+	m_pfnBufferAdd = neon_buffer_add;
+	if (false)
+#endif
+		m_pfnBufferAdd = std_buffer_add;
 }
 
 

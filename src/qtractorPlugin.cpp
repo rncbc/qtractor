@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -241,7 +241,8 @@ QString qtractorPlugin::g_sDefPreset = QObject::tr("(default)");
 qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
 	: m_pList(pList), m_pType(pType), m_iUniqueID(0), m_iInstances(0),
-		m_bActivated(false), m_activateObserver(this),
+		m_bActivated(false), m_bAutoDeactivated(false),
+		m_activateObserver(this),
 		m_iActivateSubjectIndex(0), m_pForm(NULL), m_iEditorType(-1),
 		m_iDirectAccessParamIndex(-1)
 {
@@ -296,13 +297,16 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 
 
 // Activation methods.
-void qtractorPlugin::setActivated ( bool bActivated )
+
+// immediate
+void qtractorPlugin::setActivated (bool bActivated)
 {
 	updateActivated(bActivated);
 
 	m_activateObserver.setValue(bActivated ? 1.0f : 0.0f);
 }
 
+// queued (GUI invocation)
 void qtractorPlugin::setActivatedEx ( bool bActivated )
 {
 	m_activateSubject.setValue(bActivated ? 1.0f : 0.0f);
@@ -310,22 +314,69 @@ void qtractorPlugin::setActivatedEx ( bool bActivated )
 
 bool qtractorPlugin::isActivated (void) const
 {
+	return m_bActivated && !m_bAutoDeactivated;
+}
+
+
+// Avoid save/copy auto-deactivated as deacitvated...
+bool qtractorPlugin::isActivatedEx (void) const
+{
 	return m_bActivated;
+}
+
+
+void qtractorPlugin::autoDeactivatePlugin ( bool bDeactivated )
+{
+	if (bDeactivated != m_bAutoDeactivated) {
+		// deactivate
+		if (bDeactivated) {
+			// was activated?
+			if (m_bActivated) {
+				deactivate();
+				m_pList->updateActivated(false);
+			}
+		}
+		// reactivate?
+		else if (m_bActivated) {
+			activate();
+			m_pList->updateActivated(true);
+		}
+		m_bAutoDeactivated = bDeactivated;
+	}
+}
+
+bool qtractorPlugin::canBeConnectedToOtherTracks (void) const
+{
+	const qtractorPluginType::Hint hint = m_pType->typeHint();
+	return hint == qtractorPluginType::Insert
+		|| hint == qtractorPluginType::AuxSend;
 }
 
 
 // Activation stabilizers.
 void qtractorPlugin::updateActivated ( bool bActivated )
 {
-	if (bActivated && !m_bActivated) {
-		activate();
-		m_pList->updateActivated(true);
-	} else if (!bActivated && m_bActivated) {
-		deactivate();
-		m_pList->updateActivated(false);
+	if (bActivated != m_bActivated) {
+		m_bActivated = bActivated;
+		const bool bIsConnectedToOtherTracks = canBeConnectedToOtherTracks();
+		// Auto-plugin-deactivation overrides standard-activation for plugins
+		// without connections to other tracks (Inserts/AuxSends)
+		// otherwise user could (de)activate plugin without getting feedback
+		if (!m_bAutoDeactivated || bIsConnectedToOtherTracks) {
+			if (bActivated)
+				activate();
+			else
+				deactivate();
+			m_pList->updateActivated(bActivated);
+		}
+		// Plugins connected to other tracks activation change
+		// auto-plugin-deactivate for all tracks
+		if (bIsConnectedToOtherTracks) {
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession)
+				pSession->autoDeactivatePlugins(true);
+		}
 	}
-
-	m_bActivated = bActivated;
 }
 
 
@@ -1358,7 +1409,7 @@ qtractorPluginList::qtractorPluginList (
 	: m_iChannels(iChannels), m_iFlags(iFlags),
 		m_iActivated(0), m_pMidiManager(NULL),
 		m_iMidiBank(-1), m_iMidiProg(-1),
-		m_pMidiProgramSubject(NULL)
+		m_pMidiProgramSubject(NULL), m_bAutoDeactivated(false)
 {
 	setAutoDelete(true);
 
@@ -1584,6 +1635,9 @@ void qtractorPluginList::insertPlugin (
 		pListView->insertItem(iNextItem, pNextItem);
 		pListView->setCurrentItem(pNextItem);
 	}
+
+	// update plugins for auto-plugin-deactivation...
+	autoDeactivatePlugins(m_bAutoDeactivated, true);
 }
 
 
@@ -1657,6 +1711,11 @@ void qtractorPluginList::movePlugin (
 		pListView->insertItem(iNextItem, pNextItem);
 		pListView->setCurrentItem(pNextItem);
 	}
+
+	// update (both) lists for Auto-plugin-deactivation
+	autoDeactivatePlugins(m_bAutoDeactivated, true);
+	if (pPluginList != this)
+		pPluginList->autoDeactivatePlugins(m_bAutoDeactivated, true);
 }
 
 
@@ -1671,6 +1730,9 @@ void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 
 	pPlugin->setChannels(0);
 	pPlugin->clearItems();
+
+	// update Plugins for Auto-plugin-deactivation
+	autoDeactivatePlugins(m_bAutoDeactivated, true);
 }
 
 
@@ -1708,7 +1770,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		pNewPlugin->realizeValues();
 		pNewPlugin->releaseConfigs();
 		pNewPlugin->releaseValues();
-		pNewPlugin->setActivated(pPlugin->isActivated());
+		pNewPlugin->setActivated(pPlugin->isActivatedEx());
 		pNewPlugin->setDirectAccessParamIndex(
 			pPlugin->directAccessParamIndex());
 	}
@@ -2016,7 +2078,7 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 	//	pDocument->saveTextElement("values",
 	//		pPlugin->valueList().join(","), &ePlugin);
 		pDocument->saveTextElement("activated",
-			qtractorDocument::textFromBool(pPlugin->isActivated()), &ePlugin);
+			qtractorDocument::textFromBool(pPlugin->isActivatedEx()), &ePlugin);
 		// Plugin configuration stuff (CLOB)...
 		QDomElement eConfigs = pDocument->document()->createElement("configs");
 		pPlugin->saveConfigs(pDocument->document(), &eConfigs);
@@ -2111,6 +2173,50 @@ unsigned long qtractorPluginList::createUniqueID ( qtractorPluginType *pType )
 bool qtractorPluginList::isUniqueID ( qtractorPluginType *pType ) const
 {
 	return (m_uniqueIDs.value(pType->uniqueID(), 0) > 1);
+}
+
+
+void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce )
+{
+	if (m_bAutoDeactivated != bDeactivated || bForce) {
+		m_bAutoDeactivated  = bDeactivated;
+		if (bDeactivated) {
+			bool bStopDeactivation = false;
+			// pass to all plugins bottom to top / stop for active plugins
+			// possibly connected to other tracks
+			qtractorPlugin *pPlugin = last();
+			for ( ;	pPlugin && !bStopDeactivation; pPlugin = pPlugin->prev()) {
+				if (pPlugin->canBeConnectedToOtherTracks())
+					bStopDeactivation = pPlugin->isActivated();
+				else
+					pPlugin->autoDeactivatePlugin(bDeactivated);
+			}
+			// (re)activate all above stopper
+			if (bStopDeactivation) {
+				for ( ; pPlugin; pPlugin = pPlugin->prev()) {
+					pPlugin->autoDeactivatePlugin(false);
+				}
+			}
+		} else {
+			// pass to all plugins top to to bottom
+			for (qtractorPlugin *pPlugin = first();
+					pPlugin; pPlugin = pPlugin->next()) {
+				pPlugin->autoDeactivatePlugin(bDeactivated);
+			}
+		}
+		// inform all views
+		QListIterator<qtractorPluginListView *> iter(m_views);
+		while (iter.hasNext()) {
+			qtractorPluginListView *pListView = iter.next();
+			pListView->refresh();
+		}
+	}
+}
+
+
+bool qtractorPluginList::isAutoDeactivated (void) const
+{
+	return m_bAutoDeactivated;
 }
 
 
