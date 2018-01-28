@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -772,6 +772,10 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI__windowTitle	LV2_UI_PREFIX "windowTitle"
 #endif
 
+#ifndef LV2_UI__updateRate
+#define LV2_UI__updateRate	LV2_UI_PREFIX "updateRate"
+#endif
+
 static void qtractor_lv2_ui_port_write (
 	LV2UI_Controller ui_controller,
 	uint32_t port_index,
@@ -1016,6 +1020,7 @@ static struct qtractorLv2Urids
 #endif
 #ifdef CONFIG_LV2_UI
 	LV2_URID ui_windowTitle;
+	LV2_URID ui_updateRate;
 #endif
 #endif	// CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_STATE
@@ -1811,6 +1816,8 @@ void qtractorLv2PluginType::lv2_open (void)
 #ifdef CONFIG_LV2_UI
 	g_lv2_urids.ui_windowTitle
 		= qtractorLv2Plugin::lv2_urid_map(LV2_UI__windowTitle);
+	g_lv2_urids.ui_updateRate
+		= qtractorLv2Plugin::lv2_urid_map(LV2_UI__updateRate);
 #endif
 #ifdef CONFIG_LV2_STATE
 	g_lv2_urids.state_StateChanged
@@ -3899,9 +3906,12 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS
+	static float s_fUpdateRate = 15.0f;
 	const LV2_Options_Option ui_options[] = {
-		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_windowTitle, sizeof(char *),
-		  g_lv2_urids.atom_String, m_aEditorTitle.constData() },
+		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_windowTitle,
+		  sizeof(char *), g_lv2_urids.atom_String, m_aEditorTitle.constData() },
+		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_updateRate,
+		  sizeof(float), g_lv2_urids.atom_Float, &s_fUpdateRate },
 		{ LV2_OPTIONS_INSTANCE, 0, 0, 0, 0, NULL }
 	};
 	::memcpy(&m_lv2_ui_options, &ui_options, sizeof(ui_options));

@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Added LV2_UI_updateRate option support. (EXPERIMENTAL)
+
 - Added brand new option to deactivate plugins only if they
   can produce sound cf. main menu Track/Auto Deactivate (by
   Andreas Müller aka. schnitzeltony, thanks). (EXPERIMENTAL)
