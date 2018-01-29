@@ -4,11 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.8.6  2018-01-30  Winter'18 Beta.
+
+- Added LV2_UI_updateRate option support.
 
 - Added brand new option to deactivate plugins only if they
   can produce sound cf. main menu Track/Auto Deactivate (by
-  Andreas Müller aka. schnitzeltony, thanks). (EXPERIMENTAL)
+  Andreas Müller aka. schnitzeltony, thanks).
 
 - Workaround native file dialogs hang up by setting parent
   widget to NULL; it should be noted that dialogs now get
@@ -28,14 +30,14 @@ GIT HEAD
 - Pinned current/hi-lighted track dangling after removal.
 
 - An anti-flooding timer is now in place in MIDI Controller
-  assignment (aka. MIDI learn) dialog. (EXPERIMENTAL)
+  assignment (aka. MIDI learn) dialog.
 
-- Add MMC Track input monitor support. (EXPERIMENTAL)
+- Add MMC Track input monitor support.
 
 - New user preference option: View/Options.../General/Options
   /Reverse keyboard modifiers role (Shift/Ctrl), applied to
-  main transport re-positioning commands: Trasnport/Backward,
-  Forward, etc. (EXPERIMENTAL)
+  main transport re-positioning commands: Transport/Backward,
+  Forward, etc.
 
 - VST Time/Transport information is now also updated as on
   playing when in audio export aka. freewheeling mode.

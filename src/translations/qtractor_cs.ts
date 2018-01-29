@@ -735,58 +735,58 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Autorské právo: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2053"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2060"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3124"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3131"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation>Vybrat editor (rozhraní) přídavného modulu:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3136"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3143"/>
         <source>External</source>
         <translation>Vnější</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3139"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3146"/>
         <source>X11</source>
         <translation>X11</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3142"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3149"/>
         <source>Gtk2</source>
         <translation>Gtk2</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3146"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3153"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3150"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3157"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3155"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3162"/>
         <source>Other</source>
         <translation>Jiné</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3163"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3170"/>
         <source>Don&apos;t ask this again</source>
         <translation>Neptat se znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3484"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3491"/>
         <source>plugin parameters</source>
         <translation>Parametry přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2061"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2068"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
@@ -3293,7 +3293,7 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8031"/>
         <source>TRACK MONITOR %1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>SLEDOVÁNÍ STOPY %1 %2</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8242"/>
@@ -4691,27 +4691,27 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1452"/>
         <source>Auto Dea&amp;ctivate</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vypnout automaticky</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1455"/>
         <source>Auto Deactivate</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypnout automaticky</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1458"/>
         <source>Auto-deactivate plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypnout automaticky přídavné moduly</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1461"/>
         <source>Auto-deactivate plugins not producing sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypnout automaticky zvuk netvořící přídavné moduly</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1464"/>
         <source>Shift+F6</source>
-        <translation type="unfinished">Shift+F6</translation>
+        <translation>Shift+F6</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1472"/>
@@ -6340,17 +6340,17 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="163"/>
         <source>Trac&amp;k</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Stopa</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="176"/>
         <source>offse&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;posun</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="189"/>
         <source>&amp;limit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;omezení</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="202"/>
@@ -6366,7 +6366,7 @@ sezením znovu.</translation>
         <location filename="../qtractorMidiControlForm.ui" line="215"/>
         <location filename="../qtractorMidiControlForm.ui" line="385"/>
         <source>Flags</source>
-        <translation type="unfinished"></translation>
+        <translation>Příznaky</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="245"/>
@@ -6376,7 +6376,7 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="282"/>
         <source>Track limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Omezení stopy</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="295"/>
@@ -6386,12 +6386,12 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="302"/>
         <source>Command delta/momentary</source>
-        <translation type="unfinished"></translation>
+        <translation>Příkaz delta/chvilkový</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="305"/>
         <source>D&amp;elta</source>
-        <translation type="unfinished"></translation>
+        <translation>D&amp;elta</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="312"/>
@@ -6618,7 +6618,7 @@ Chcete použít soubory s ovladači?</translation>
         <location filename="../qtractorMidiControlForm.cpp" line="768"/>
         <location filename="../qtractorMidiControlForm.cpp" line="860"/>
         <source>Delta</source>
-        <translation type="unfinished"></translation>
+        <translation>Delta</translation>
     </message>
 </context>
 <context>
@@ -10148,7 +10148,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="489"/>
         <source>Re&amp;verse middle-button modifier role (Shift/Ctrl)</source>
-        <translation>&amp;Změnit úlohu prostřední tlačítka myši na modifikátor (Shift/Ctrl)</translation>
+        <translation>&amp;Změnit úlohu prostředního tlačítka myši na modifikátor (Shift/Ctrl)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="518"/>
@@ -10512,7 +10512,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="473"/>
         <source>Reverse &amp;keyboard modifiers role (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Změnit úlohu &amp;klávesového modifikátoru (Shift/Ctrl)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2244"/>
@@ -10706,7 +10706,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="470"/>
         <source>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda změnit úlohu klávesového modifikátoru na umístění přehrávání (Shift/Ctrl)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1348"/>
