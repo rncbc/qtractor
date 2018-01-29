@@ -36,7 +36,7 @@ ChangeLog
 
 - New user preference option: View/Options.../General/Options
   /Reverse keyboard modifiers role (Shift/Ctrl), applied to
-  main transport re-positioning commands: Trasnport/Backward,
+  main transport re-positioning commands: Transport/Backward,
   Forward, etc.
 
 - VST Time/Transport information is now also updated as on
