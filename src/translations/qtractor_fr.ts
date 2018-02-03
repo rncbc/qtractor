@@ -9781,7 +9781,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="473"/>
         <source>Reverse &amp;keyboard modifiers role (Shift/Ctrl)</source>
-        <translation>Inverse le rôle des modifieurs de clavier (Maj/Ctrl) (&amp;k)</translation>
+        <translation>Inverse le rôle des modificateurs de clavier (Maj/Ctrl) (&amp;k)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="486"/>
@@ -9988,7 +9988,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="470"/>
         <source>Whether to reverse keyboard modifiers role on transport positioning (Shift/Ctrl)</source>
-        <translation>Si on doit inverser le rôle des modifieurs de clavier sur le positionnement de transport (Maj/Ctrl)</translation>
+        <translation>Si on doit inverser le rôle des modificateurs de clavier sur le positionnement de transport (Maj/Ctrl)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="961"/>
