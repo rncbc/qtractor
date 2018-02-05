@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Trying to get CC14 MSB+LSB (course+fine) running status on,
+  no matter whether each pairing event are under 200ms apart
+  (EXPERIMENTAL)
+
 - Possible VST plug-in GUI reparenting hack/fix on Qt5/Xcb.
   (EXPERIMENTAL)
 
