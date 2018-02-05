@@ -57,7 +57,7 @@ Audio:	%1 canali, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="135"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1501"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1541"/>
         <source>All files (*.*)</source>
         <translation>Tutti i file (*.*)</translation>
     </message>
@@ -711,22 +711,22 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>Sconosciuto</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="618"/>
+        <location filename="../qtractorVstPlugin.cpp" line="653"/>
         <source>Product: </source>
         <translation>Prodotto:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="626"/>
+        <location filename="../qtractorVstPlugin.cpp" line="661"/>
         <source>Vendor: </source>
         <translation>Produttore: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="634"/>
+        <location filename="../qtractorVstPlugin.cpp" line="669"/>
         <source>Version: </source>
         <translation>Versione: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1498"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1538"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
