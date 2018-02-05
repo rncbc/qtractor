@@ -57,6 +57,8 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
+#else
+#include <QWindow>
 #endif
 
 #endif	// CONFIG_VST_X11
