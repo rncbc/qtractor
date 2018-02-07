@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,6 +57,8 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
+#else
+#include <QWindow>
 #endif
 
 #endif	// CONFIG_VST_X11
@@ -113,28 +115,36 @@ const int effFlagsProgramChunks = 32;
 #ifdef CONFIG_VST_X11
 #if QT_VERSION < 0x050000
 
-static bool g_bXError = false;
+static int g_iXError = 0;
 
 static int tempXErrorHandler ( Display *, XErrorEvent * )
 {
-	g_bXError = true;
+	++g_iXError;
 	return 0;
 }
 
 static XEventProc getXEventProc ( Display *pDisplay, Window w )
 {
-	int iSize;
-	unsigned long iBytes, iCount;
-	unsigned char *pData;
+	int iSize = 0;
+	unsigned long iBytes = 0, iCount = 0;
+	unsigned char *pData = NULL;
 	XEventProc eventProc = NULL;
 	Atom aType, aName = XInternAtom(pDisplay, "_XEventProc", false);
+#if defined(__x86_64__)
+	const long length = 2;
+#else
+	const long length = 1;
+#endif
+	g_iXError = 0;
 
-	g_bXError = false;
 	XErrorHandler oldErrorHandler = XSetErrorHandler(tempXErrorHandler);
-	XGetWindowProperty(pDisplay, w, aName, 0, 1, false,
+	XGetWindowProperty(pDisplay, w, aName, 0, length, false,
 		AnyPropertyType, &aType, &iSize, &iCount, &iBytes, &pData);
-	if (g_bXError == false && iCount == 1)
-		eventProc = (XEventProc) (pData);
+	if (g_iXError == 0 && iCount > 0 && pData) {
+		if (iCount == 1)
+			eventProc = (XEventProc) (pData);
+		XFree(pData);
+	}
 	XSetErrorHandler(oldErrorHandler);
 
 	return eventProc;
@@ -142,12 +152,17 @@ static XEventProc getXEventProc ( Display *pDisplay, Window w )
 
 static Window getXChildWindow ( Display *pDisplay, Window w )
 {
-	Window wRoot, wParent, *pwChildren;
+	Window wRoot = 0, wParent = 0, *pwChildren = NULL, wChild = 0;
 	unsigned int iChildren = 0;
 
 	XQueryTree(pDisplay, w, &wRoot, &wParent, &pwChildren, &iChildren);
 
-	return (iChildren > 0 ? pwChildren[0] : 0);
+	if (iChildren > 0) {
+		wChild = pwChildren[0];
+		XFree(pwChildren);
+	}
+
+	return wChild;
 }
 
 #endif
@@ -174,6 +189,8 @@ public:
 		m_wVstEditor(0),
 		m_pVstEventProc(NULL),
 		m_bButtonPress(false),
+	#else
+		m_pWindow(NULL),
 	#endif
 	#endif	// CONFIG_VST_X11
 		m_pVstPlugin(NULL) {}
@@ -188,10 +205,26 @@ public:
 		
 		// Start the proper (child) editor...
 		long  value = 0;
-		void *ptr = (void *) winId();
+		void *ptr = NULL;
 	#ifdef CONFIG_VST_X11
 		value = (long) m_pDisplay;
+	#if QT_VERSION < 0x050000
+		ptr = (void *) QWidget::winId();
+	#else
+		m_pWindow = new QWindow();
+		m_pWindow->create();
+		QWidget *pContainer = QWidget::createWindowContainer(m_pWindow, this);
+		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
+		pVBoxLayout->setMargin(0);
+		pVBoxLayout->setSpacing(0);
+		pVBoxLayout->addWidget(pContainer);
+		QWidget::setLayout(pVBoxLayout);
+		ptr = (void *) m_pWindow->winId();
 	#endif
+	#endif // CONFIG_VST_X11
+
+		// Launch the custom GUI editor...
+		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
 
 		// Make it the right size
 		struct ERect {
@@ -208,22 +241,15 @@ public:
 				QWidget::setFixedSize(w, h);
 		}
 
-		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
-		
 	#ifdef CONFIG_VST_X11
 	#if QT_VERSION < 0x050000
-		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) winId());
+		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) QWidget::winId());
 		if (m_wVstEditor)
 			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
 	#endif
 	#endif	// CONFIG_VST_X11
 
 		g_vstEditors.append(this);
-
-		// Final stabilization...
-		m_pVstPlugin->updateEditorTitle();
-		m_pVstPlugin->setEditorVisible(true);
-		m_pVstPlugin->idleEditor();
 	}
 
 	// Close the editor widget.
@@ -239,6 +265,15 @@ public:
 		const int iIndex = g_vstEditors.indexOf(this);
 		if (iIndex >= 0)
 			g_vstEditors.removeAt(iIndex);
+
+	#ifdef CONFIG_VST_X11
+	#if QT_VERSION >= 0x050000
+		if (m_pWindow) {
+			m_pWindow->destroy();
+			delete m_pWindow;
+		}
+	#endif
+	#endif	// CONFIG_VST_X11
 	}
 
 #ifdef CONFIG_VST_X11
@@ -319,6 +354,8 @@ private:
 	Window     m_wVstEditor;
 	XEventProc m_pVstEventProc;
 	bool       m_bButtonPress;
+#else
+	QWindow   *m_pWindow;
 #endif
 #endif	// CONFIG_VST_X11
 
@@ -1147,6 +1184,11 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 	// Do it...
 	m_pEditorWidget = new EditorWidget(pParent, wflags);
 	m_pEditorWidget->open(this);
+
+	// Final stabilization...
+	updateEditorTitle();
+	setEditorVisible(true);
+	idleEditor();
 }
 
 

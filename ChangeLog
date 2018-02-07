@@ -4,6 +4,16 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Trying to get CC14 MSB+LSB (course+fine) running status on,
+  no matter whether each pairing event are under 200ms apart
+  (EXPERIMENTAL)
+
+- Possible VST plug-in GUI reparenting hack/fix on Qt5/Xcb.
+  (EXPERIMENTAL)
+
+
 0.8.6  2018-01-30  Winter'18 Beta.
 
 - Added LV2_UI_updateRate option support.
