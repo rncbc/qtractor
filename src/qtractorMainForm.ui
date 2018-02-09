@@ -1330,6 +1330,9 @@
    <property name="statusTip">
     <string>Move current track to top</string>
    </property>
+   <property name="shortcut">
+    <string>Shift+Home</string>
+   </property>
   </action>
   <action name="trackMoveUpAction">
    <property name="text">
@@ -1343,6 +1346,9 @@
    </property>
    <property name="statusTip">
     <string>Move current track up</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Up</string>
    </property>
   </action>
   <action name="trackMoveDownAction">
@@ -1358,6 +1364,9 @@
    <property name="statusTip">
     <string>Move current track down</string>
    </property>
+   <property name="shortcut">
+    <string>Shift+Down</string>
+   </property>
   </action>
   <action name="trackMoveBottomAction">
    <property name="text">
@@ -1371,6 +1380,9 @@
    </property>
    <property name="statusTip">
     <string>Move current track to bottom</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+End</string>
    </property>
   </action>
   <action name="trackHeightUpAction">
