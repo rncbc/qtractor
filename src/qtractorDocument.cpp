@@ -345,21 +345,22 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 	if (!isArchive() && !isSymLink())
 		return sFilename;
 
-	QString sAlias;
+	const QDir& cwd = QDir::current();
+	QString sAlias = cwd.relativeFilePath(sFilename);
 
 	QFileInfo info(sFilename);
 	QString sPath = info.absoluteFilePath();
 	const QString sName = info.completeBaseName();
 	const QString sSuffix = info.suffix().toLower();
 
-	if (isSymLink()) {
-		sAlias = sName
+	if (isSymLink() && info.absolutePath() != cwd.absolutePath()) {
+		const QString& sLink = sName
 			+ '-' + QString::number(qHash(sPath), 16)
 			+ '.' + sSuffix;
-		if (QFile::link(sPath, sAlias)) {
-			info.setFile(QDir::current(), sAlias);
-			sPath = info.absoluteFilePath();
-		}
+		QFile(sPath).link(sLink);
+		info.setFile(cwd, sLink);
+		sPath = info.absoluteFilePath();
+		sAlias = sLink;
 	}
 
 #ifdef CONFIG_LIBZ
