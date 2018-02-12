@@ -1,7 +1,7 @@
 // qtractorCurveFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -191,7 +191,7 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 	delete [] ppSeqs;
 
 	QString sFilename;
-	if (pDocument->isArchive())
+	if (pDocument->isArchive() || pDocument->isSymLink())
 		sFilename = pDocument->addFile(m_sFilename);
 	else
 		sFilename = QDir(m_sBaseDir).relativeFilePath(m_sFilename);

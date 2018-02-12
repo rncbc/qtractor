@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Content files are now saved as symlinks when saving to JACK
+  and/or NSM session directories/folders. (EXPERIMENTAL)
+
 - Trying to get CC14 MSB+LSB (course+fine) running status on,
   no matter whether each pairing event are under 200ms apart
   (EXPERIMENTAL)

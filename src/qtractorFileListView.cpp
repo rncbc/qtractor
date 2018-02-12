@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1479,7 +1479,7 @@ bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
 			&& (pFileListItem->clipRefCount() > 0
 			|| !pFileListItem->isAutoRemove())) {
 			// Make it all relative to archive or session directory...
-			if (pDocument->isArchive()) {
+			if (pDocument->isArchive() || pDocument->isSymLink()) {
 				sPath = pDocument->addFile(sPath);
 			} else {
 				const QDir dir(pSession->sessionDir());
