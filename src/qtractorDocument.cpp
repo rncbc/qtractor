@@ -362,6 +362,11 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 		sPath = info.absoluteFilePath();
 		sAlias = sLink;
 	}
+	else
+	if (info.isSymLink()) {
+		info.setFile(info.symLinkTarget());
+		sPath = info.absoluteFilePath();
+	}
 
 #ifdef CONFIG_LIBZ
 	if (isArchive() && m_pZipFile) {
