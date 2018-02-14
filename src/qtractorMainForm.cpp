@@ -2520,6 +2520,13 @@ bool qtractorMainForm::loadSessionFileEx (
 	// Now we'll try to create (update) the whole GUI session.
 	updateSessionPost();
 
+	// Do initial auto-deactivate as late as possible to give tracks/plugins
+	// the chance to perform initial program-change events
+	if (m_pSession->isAutoDeactivate()) {
+		m_pSession->stabilize();
+		m_pSession->autoDeactivatePlugins();
+	}
+
 	return bLoadSessionFileEx;
 }
 
