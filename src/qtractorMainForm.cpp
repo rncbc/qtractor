@@ -8056,20 +8056,22 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 // Custom controller event handler.
 void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 {
+
+#ifdef CONFIG_DEBUG
 	QString sCtlText(tr("MIDI CTL: %1, Channel %2, Param %3, Value %4")
 		.arg(qtractorMidiControl::nameFromType(ctle.type()))
 		.arg(ctle.channel() + 1)
 		.arg(ctle.param())
 		.arg(ctle.value()));
-
-#ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::midiCtlNotify() %s.",
 		sCtlText.toUtf8().constData());
 #endif
 
 	// Check if controller is used as MIDI controller...
 	if (m_pMidiControl->processEvent(ctle)) {
+#ifdef CONFIG_DEBUG
 		appendMessages(sCtlText);
+#endif
 		return;
 	}
 
@@ -8084,10 +8086,12 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 			if (pTrack) {
 				m_pSession->execute(
 					new qtractorTrackGainCommand(pTrack, fGain, true));
+#ifdef CONFIG_DEBUG
 				sCtlText += ' ';
 				sCtlText += tr("(track %1, gain %2)")
 					.arg(iTrack).arg(fGain);
 				appendMessages(sCtlText);
+#endif
 			}
 		}
 		else */
@@ -8101,10 +8105,12 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 					pTrack->midiChannel() == ctle.channel()) {
 					m_pSession->execute(
 						new qtractorTrackGainCommand(pTrack, fGain, true));
+#ifdef CONFIG_DEBUG
 					sCtlText += ' ';
 					sCtlText += tr("(track %1, gain %2)")
 						.arg(iTrack).arg(fGain);
 					appendMessages(sCtlText);
+#endif
 				}
 				++iTrack;
 			}
@@ -8120,10 +8126,12 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 					pTrack->midiChannel() == ctle.channel()) {
 					m_pSession->execute(
 						new qtractorTrackPanningCommand(pTrack, fPanning, true));
+#ifdef CONFIG_DEBUG
 					sCtlText += ' ';
 					sCtlText += tr("(track %1, panning %2)")
 						.arg(iTrack).arg(fPanning);
 					appendMessages(sCtlText);
+#endif
 				}
 				++iTrack;
 			}
