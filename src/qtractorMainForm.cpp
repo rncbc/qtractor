@@ -1602,7 +1602,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		if (m_sNsmExt.isEmpty())
 			m_sNsmExt = qtractorDocument::defaultExt();
 		// Run-time special non-persistent options.
-		m_pOptions->bDontUseNativeDialogs = true;
+		//m_pOptions->bDontUseNativeDialogs = true;
 	}
 #endif
 
@@ -8657,4 +8657,3 @@ void qtractorMainForm::transportTempoContextMenu ( const QPoint& /*pos*/ )
 
 
 // end of qtractorMainForm.cpp
-
