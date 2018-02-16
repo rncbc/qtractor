@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Whether to use native file browser/requester dialogs is
+  now an effective option when launching under NSM session
+  management (was once disabled initially). (EXPERIMENTAL)
+
 - Content files are now saved as symlinks when saving to JACK
   and/or NSM session directories/folders. (EXPERIMENTAL)
 
