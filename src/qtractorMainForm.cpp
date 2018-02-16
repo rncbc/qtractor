@@ -8056,7 +8056,6 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 // Custom controller event handler.
 void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 {
-
 #ifdef CONFIG_DEBUG
 	QString sCtlText(tr("MIDI CTL: %1, Channel %2, Param %3, Value %4")
 		.arg(qtractorMidiControl::nameFromType(ctle.type()))
@@ -8069,9 +8068,9 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 
 	// Check if controller is used as MIDI controller...
 	if (m_pMidiControl->processEvent(ctle)) {
-#ifdef CONFIG_DEBUG
+	#ifdef CONFIG_DEBUG
 		appendMessages(sCtlText);
-#endif
+	#endif
 		return;
 	}
 
@@ -8086,12 +8085,12 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 			if (pTrack) {
 				m_pSession->execute(
 					new qtractorTrackGainCommand(pTrack, fGain, true));
-#ifdef CONFIG_DEBUG
+			#ifdef CONFIG_DEBUG
 				sCtlText += ' ';
 				sCtlText += tr("(track %1, gain %2)")
 					.arg(iTrack).arg(fGain);
 				appendMessages(sCtlText);
-#endif
+			#endif
 			}
 		}
 		else */
@@ -8105,12 +8104,12 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 					pTrack->midiChannel() == ctle.channel()) {
 					m_pSession->execute(
 						new qtractorTrackGainCommand(pTrack, fGain, true));
-#ifdef CONFIG_DEBUG
+				#ifdef CONFIG_DEBUG
 					sCtlText += ' ';
 					sCtlText += tr("(track %1, gain %2)")
 						.arg(iTrack).arg(fGain);
 					appendMessages(sCtlText);
-#endif
+				#endif
 				}
 				++iTrack;
 			}
@@ -8126,12 +8125,12 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 					pTrack->midiChannel() == ctle.channel()) {
 					m_pSession->execute(
 						new qtractorTrackPanningCommand(pTrack, fPanning, true));
-#ifdef CONFIG_DEBUG
+				#ifdef CONFIG_DEBUG
 					sCtlText += ' ';
 					sCtlText += tr("(track %1, panning %2)")
 						.arg(iTrack).arg(fPanning);
 					appendMessages(sCtlText);
-#endif
+				#endif
 				}
 				++iTrack;
 			}
@@ -8143,33 +8142,48 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 // Custom MIDI SPP  event handler.
 void qtractorMainForm::midiSppNotify ( int iSppCmd, unsigned short iSongPos )
 {
+#ifdef CONFIG_DEBUG
 	QString sSppText("MIDI SPP: ");
+#endif
 	switch (iSppCmd) {
 	case SND_SEQ_EVENT_START:
+	#ifdef CONFIG_DEBUG
 		sSppText += tr("START");
+	#endif
 		setSongPos(0);
 		setPlaying(true);
 		break;
 	case SND_SEQ_EVENT_STOP:
+	#ifdef CONFIG_DEBUG
 		sSppText += tr("STOP");
+	#endif
 		if (setPlaying(false) // Auto-backward reset feature...
 			&& m_ui.transportAutoBackwardAction->isChecked())
 			m_pSession->setPlayHead(playHeadBackward());
 		break;
 	case SND_SEQ_EVENT_CONTINUE:
+	#ifdef CONFIG_DEBUG
 		sSppText += tr("CONTINUE");
+	#endif
 		setPlaying(true);
 		break;
 	case SND_SEQ_EVENT_SONGPOS:
+	#ifdef CONFIG_DEBUG
 		sSppText += tr("SONGPOS %1").arg(iSongPos);
+	#endif
 		setSongPos(iSongPos);
 		break;
 	default:
+	#ifdef CONFIG_DEBUG
 		sSppText += tr("Not implemented");
+	#endif
 		break;
 	}
-
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::midiSppNotify() %s.",
+		sSppText.toUtf8().constData());
 	appendMessages(sSppText);
+#endif
 	stabilizeForm();
 }
 
@@ -8177,9 +8191,13 @@ void qtractorMainForm::midiSppNotify ( int iSppCmd, unsigned short iSongPos )
 // Custom MIDI Clock event handler.
 void qtractorMainForm::midiClkNotify ( float fTempo )
 {
+#ifdef CONFIG_DEBUG
 	QString sClkText("MIDI CLK: ");
 	sClkText += tr("%1 BPM").arg(fTempo);
+	qDebug("qtractorMainForm::midiClkNotify() %s.",
+		sClkText.toUtf8().constData());
 	appendMessages(sClkText);
+#endif
 
 	if (m_pTracks)
 		m_pTracks->clearSelect(true);
@@ -8199,6 +8217,7 @@ void qtractorMainForm::midiClkNotify ( float fTempo )
 	++m_iTransportUpdate;
 
 	updateContents(NULL, true);
+
 	stabilizeForm();
 }
 
