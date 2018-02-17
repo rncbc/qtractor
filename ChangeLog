@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Disable singleton/unique application instance setup logic
+  when the display server platform is not X11. (EXPERIMENTAL)
+
 - Whether to use native file browser/requester dialogs is
   now an effective option when launching under NSM session
   management (was once disabled initially). (EXPERIMENTAL)
