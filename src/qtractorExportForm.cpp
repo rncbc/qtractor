@@ -402,13 +402,11 @@ void qtractorExportForm::browseExportPath (void)
 	const QString& sFilter
 		= tr("%1 files (*.%1)").arg(m_sExportExt);
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = QWidget::window();
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs) {
+	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
-	}
 #if 1//QT_VERSION < 0x040400
 	sExportPath = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, sExportPath, sFilter, NULL, options);

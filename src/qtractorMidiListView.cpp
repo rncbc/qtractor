@@ -182,13 +182,11 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 	const QString& sFilter
 		= tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = QWidget::window();
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs) {
+	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
-	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filenames to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,

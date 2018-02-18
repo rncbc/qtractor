@@ -288,12 +288,10 @@ void qtractorSessionForm::browseSessionDir (void)
 	const QString& sTitle
 		= tr("Session Directory") + " - " QTRACTOR_TITLE;
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = QWidget::window();
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
-	if (pOptions->bDontUseNativeDialogs) {
+	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
-	}
 #if 1//QT_VERSION < 0x040400
 	QString sSessionDir = QFileDialog::getExistingDirectory(pParentWidget,
 		sTitle, m_ui.SessionDirComboBox->currentText(), options);

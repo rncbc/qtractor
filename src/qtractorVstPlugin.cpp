@@ -1540,8 +1540,10 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 			filters.append(QObject::tr("%1 (*.%2)")
 				.arg(pvfs->fileTypes[i].name).arg(pvfs->fileTypes[i].dosType));
 		}
-        filters.append(QObject::tr("All files (*.*)"));
+		filters.append(QObject::tr("All files (*.*)"));
 		QWidget *pParentWidget = pVstPlugin->editorWidget();
+		if (pParentWidget)
+			pParentWidget = pParentWidget->window();
 		const QString& sTitle = QString("%1 - %2")
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		const QString& sDirectory = pvfs->initialPath;
@@ -1562,10 +1564,12 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 			::strcpy(pvfs->returnPath, sFilename.toUtf8().constData());
 			pvfs->nbReturnPath = 1;
 		}
-    }
+	}
 	else
 	if (pvfs->command == kVstDirectorySelect) {
 		QWidget *pParentWidget = pVstPlugin->editorWidget();
+		if (pParentWidget)
+			pParentWidget = pParentWidget->window();
 		const QString& sTitle = QString("%1 - %2")
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		const QFileDialog::Options options
