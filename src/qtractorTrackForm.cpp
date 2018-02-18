@@ -1162,13 +1162,11 @@ void qtractorTrackForm::trackIconClicked (void)
 	const QString& sFilter
 		= filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = QWidget::window();
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs) {
+	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
-	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
@@ -1438,13 +1436,11 @@ void qtractorTrackForm::selectForegroundColor (void)
 	const QString& sTitle
 		= tr("Foreground Color") + " - " QTRACTOR_TITLE;
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = QWidget::window();
 	QColorDialog::ColorDialogOptions options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs) {
+	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QColorDialog::DontUseNativeDialog;
-		pParentWidget = this;
-	}
 
 	const QColor& color = QColorDialog::getColor(
 		colorItem(m_ui.ForegroundColorComboBox),
@@ -1464,13 +1460,11 @@ void qtractorTrackForm::selectBackgroundColor (void)
 	const QString& sTitle
 		= tr("Background Color") + " - " QTRACTOR_TITLE;
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = QWidget::window();
 	QColorDialog::ColorDialogOptions options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs) {
+	if (pOptions && pOptions->bDontUseNativeDialogs)
 		options |= QColorDialog::DontUseNativeDialog;
-		pParentWidget = this;
-	}
 
 	const QColor& color = QColorDialog::getColor(
 		colorItem(m_ui.BackgroundColorComboBox),

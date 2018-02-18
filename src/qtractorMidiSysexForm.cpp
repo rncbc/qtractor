@@ -219,12 +219,10 @@ void qtractorMidiSysexForm::importSlot (void)
 	const QString& sFilter
 		= filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = QWidget::window();
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs) {
+	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
-	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
@@ -300,12 +298,10 @@ void qtractorMidiSysexForm::exportSlot (void)
 	const QString& sFilter
 		= tr("SysEx files (*.%1)").arg(sExt);
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = QWidget::window();
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs) {
+	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
-	}
 #if 1// QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sPath = QFileDialog::getSaveFileName(pParentWidget,
@@ -444,12 +440,10 @@ void qtractorMidiSysexForm::openSlot (void)
 	const QString& sFilter
 		= tr("SysEx files (*.%1)").arg(sExt);
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = QWidget::window();
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs) {
+	if (pOptions->bDontUseNativeDialogs)
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
-	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
@@ -519,12 +513,10 @@ void qtractorMidiSysexForm::saveSlot (void)
 		const QString& sFilter
 			= tr("Sysex files (*.%1)").arg(sExt);
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		QWidget *pParentWidget = NULL;
+		QWidget *pParentWidget = QWidget::window();
 		QFileDialog::Options options = 0;
-		if (pOptions->bDontUseNativeDialogs) {
+		if (pOptions->bDontUseNativeDialogs)
 			options |= QFileDialog::DontUseNativeDialog;
-			pParentWidget = this;
-		}
 	#if 1//QT_VERSION < 0x040400
 		// Ask for the filename to save...
 		sFilename = QFileDialog::getSaveFileName(pParentWidget,
