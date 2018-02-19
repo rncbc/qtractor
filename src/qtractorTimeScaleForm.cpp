@@ -901,11 +901,13 @@ void qtractorTimeScaleForm::markerColor (void)
 
 	QPalette pal(m_ui.MarkerTextLineEdit->palette());
 
-	QWidget *pParentWidget = QWidget::window();
+	QWidget *pParentWidget = NULL;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	QColorDialog::ColorDialogOptions options = 0;
-	if (pOptions && pOptions->bDontUseNativeDialogs)
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
 
 	const QColor& color	= QColorDialog::getColor(
 		pal.text().color(), pParentWidget,

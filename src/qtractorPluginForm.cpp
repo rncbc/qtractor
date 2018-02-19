@@ -557,10 +557,12 @@ void qtractorPluginForm::openPresetSlot (void)
 	const QString& sFilter
 		= tr("Preset files (*.%1)").arg(filters.join(" *."));
 
-	QWidget *pParentWidget = QWidget::window();
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
@@ -650,10 +652,12 @@ void qtractorPluginForm::savePresetSlot (void)
 				= tr("Save Preset") + " - " QTRACTOR_TITLE;
 			const QString& sFilter
 				= tr("Preset files (*.%1)").arg(filters.join(" *."));
-			QWidget *pParentWidget = QWidget::window();
+			QWidget *pParentWidget = NULL;
 			QFileDialog::Options options = 0;
-			if (pOptions->bDontUseNativeDialogs)
+			if (pOptions->bDontUseNativeDialogs) {
 				options |= QFileDialog::DontUseNativeDialog;
+				pParentWidget = QWidget::window();
+			}
 		#if 1//QT_VERSION < 0x040400
 			// Ask for the filename to save...
 			sFilename = QFileDialog::getSaveFileName(pParentWidget,
@@ -1513,10 +1517,12 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 	const QString& sTitle
 		= tr("Open File") + " - " QTRACTOR_TITLE;
 
-	QWidget *pParentWidget = QWidget::window();
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs)
+	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
 #if 1//QT_VERSION < 0x040400
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, sFilename, QString(), NULL, options);
