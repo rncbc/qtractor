@@ -2003,10 +2003,12 @@ bool qtractorMainForm::openSession (void)
 	const QString& sFilter
 		= filters.join(";;");
 
-	QWidget *pParentWidget = QWidget::window();
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
-	if (m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
 #if 1//QT_VERSION < 0x040400
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, m_pOptions->sSessionDir, sFilter, NULL, options);
@@ -2095,10 +2097,12 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			= tr("Save Session") + " - " QTRACTOR_TITLE;
 		const QString& sFilter
 			= filters.join(";;");
-		QWidget *pParentWidget = QWidget::window();
+		QWidget *pParentWidget = NULL;
 		QFileDialog::Options options = 0;
-		if (m_pOptions->bDontUseNativeDialogs)
+		if (m_pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
+			pParentWidget = QWidget::window();
+		}
 		// Try to rename as if a backup is about...
 		sFilename = sessionBackupPath(sFilename);
 	#if 1//QT_VERSION < 0x040400
@@ -4060,10 +4064,12 @@ void qtractorMainForm::trackCurveColor (void)
 	qDebug("qtractorMainForm::trackCurveColor()");
 #endif
 
-	QWidget *pParentWidget = QWidget::window();
+	QWidget *pParentWidget = NULL;
 	QColorDialog::ColorDialogOptions options = 0;
-	if (m_pOptions && m_pOptions->bDontUseNativeDialogs)
+	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
 	const QString& sTitle = pCurrentCurve->subject()->name();
 	const QColor& color = QColorDialog::getColor(
 		pCurrentCurve->color(), pParentWidget,
