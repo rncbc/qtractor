@@ -8068,9 +8068,9 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 
 	// Check if controller is used as MIDI controller...
 	if (m_pMidiControl->processEvent(ctle)) {
-	#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG
 		appendMessages(sCtlText);
-	#endif
+#endif
 		return;
 	}
 
@@ -8130,7 +8130,6 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 					sCtlText += tr("(track %1, panning %2)")
 						.arg(iTrack).arg(fPanning);
 					appendMessages(sCtlText);
-				#endif
 				}
 				++iTrack;
 			}
