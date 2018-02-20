@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -476,8 +476,12 @@ bool qtractorMidiClip::openMidiFile (
 		// We should have events, otherwise this clip is of no use...
 		//if (m_pSeq->events().count() < 1)
 		//	return false;
-		// And initial clip name...
-		pSeq->setName(shortClipName(QFileInfo(m_pFile->filename()).baseName()));
+		// And initial clip name,
+		// if not already set from SMF TRACKNAME meta-event...
+		if (pSeq->name().isEmpty()) {
+			pSeq->setName(shortClipName(
+				QFileInfo(m_pFile->filename()).baseName()));
+		}
 	}
 
 	// Actual track-channel is set by now...

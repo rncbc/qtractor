@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- When importing from standard MIDI files (SMF), set track
+  names from Mtrk TRACKNAME meta-events instead of filename.
+
+- Avoid asking to save as to existing or just newly created
+  clip file-names, whenever possible. (EXPERIMENTAL)
+
 - Disable singleton/unique application instance setup logic
   when the display server platform is not X11. (EXPERIMENTAL)
 
