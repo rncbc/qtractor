@@ -6137,7 +6137,7 @@ JACK音声サーバー(jackd)が起動し実行されているなら
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7971"/>
-        <location filename="../qtractorMainForm.cpp" line="8157"/>
+        <location filename="../qtractorMainForm.cpp" line="8158"/>
         <source>STOP</source>
         <translation>停止</translation>
     </message>
@@ -6208,7 +6208,7 @@ JACK音声サーバー(jackd)が起動し実行されているなら
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8047"/>
-        <location filename="../qtractorMainForm.cpp" line="8177"/>
+        <location filename="../qtractorMainForm.cpp" line="8178"/>
         <source>Not implemented</source>
         <translation>実装されていません</translation>
     </message>
@@ -6228,28 +6228,28 @@ JACK音声サーバー(jackd)が起動し実行されているなら
         <translation>(トラック %1, パン %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8150"/>
+        <location filename="../qtractorMainForm.cpp" line="8151"/>
         <source>START</source>
         <translation>開始</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8165"/>
+        <location filename="../qtractorMainForm.cpp" line="8166"/>
         <source>CONTINUE</source>
         <translation>継続</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8171"/>
+        <location filename="../qtractorMainForm.cpp" line="8172"/>
         <source>SONGPOS %1</source>
         <translation>ソングポジション %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8195"/>
+        <location filename="../qtractorMainForm.cpp" line="8196"/>
         <source>%1 BPM</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8273"/>
-        <location filename="../qtractorMainForm.cpp" line="8330"/>
+        <location filename="../qtractorMainForm.cpp" line="8274"/>
+        <location filename="../qtractorMainForm.cpp" line="8331"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>&quot;%1&quot;を再生...</translation>
     </message>
