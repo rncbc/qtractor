@@ -1553,7 +1553,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		file.writeTrack(NULL);
 
 	// Setup merge sequence...
-	qtractorMidiSequence seq(pTrack->trackName(), 1, iTicksPerBeat);
+	qtractorMidiSequence seq(pTrack->trackName(), 0, iTicksPerBeat);
 	seq.setChannel(pTrack->midiChannel());
 	seq.setBank(pTrack->midiBank());
 	seq.setProg(pTrack->midiProg());
@@ -1646,7 +1646,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		pNewClip->setClipStart(iSelectStart);
 		pNewClip->setClipLength(iSelectEnd - iSelectStart);
 		pNewClip->setFilename(sFilename);
-		pNewClip->setTrackChannel(1);
+		pNewClip->setTrackChannel(iFormat == 0 ? seq.channel() : 1);
 		pClipCommand->addClip(pNewClip, pTrack);
 	}
 
