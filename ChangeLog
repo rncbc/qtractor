@@ -6,6 +6,14 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI Program Change events (PC) now have their proper
+  program number as parameter, instead of value, on the
+  internal MIDI event representation. (EXPERIMENTAL)
+
+- Merging MIDI clips while on SMF Format 0 has been fixed:
+  was merging always onto the same MIDI channel (2), most
+  often the wrong one, resulting in an empty or blank clip.
+
 - When importing from standard MIDI files (SMF), set track
   names from Mtrk TRACKNAME meta-events instead of filename.
 

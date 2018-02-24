@@ -362,11 +362,12 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::NOTEOFF:
 			case qtractorMidiEvent::KEYPRESS:
 				return QString::number(pEvent->velocity());
+			case qtractorMidiEvent::PGMCHANGE:
+				return QString::number(pEvent->param());
 			case qtractorMidiEvent::CONTROLLER:
 			case qtractorMidiEvent::REGPARAM:
 			case qtractorMidiEvent::NONREGPARAM:
 			case qtractorMidiEvent::CONTROL14:
-			case qtractorMidiEvent::PGMCHANGE:
 			case qtractorMidiEvent::CHANPRESS:
 				return QString::number(pEvent->value());
 			case qtractorMidiEvent::PITCHBEND:

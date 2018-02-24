@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -406,8 +406,8 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				}
 				break;
 			case qtractorMidiEvent::PGMCHANGE:
-				data1 = 0;
-				data2 = readInt(1);
+				data1 = readInt(1);
+				data2 = 0;
 				// Check if its channel filtered...
 				if (bChannelEvent) {
 					// Create the new event...
@@ -416,7 +416,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 					pSeq->setChannel(iChannel);
 					// Set the primordial program patch...
 					if (pSeq->prog() < 0)
-						pSeq->setProg(data2);
+						pSeq->setProg(data1);
 				}
 				break;
 			case qtractorMidiEvent::CHANPRESS:
@@ -1019,6 +1019,8 @@ bool qtractorMidiFile::writeTracks (
 					writeInt((pEvent->value() & 0x007f), 1);
 					break;
 				case qtractorMidiEvent::PGMCHANGE:
+					writeInt(pEvent->param(), 1);
+					break;
 				case qtractorMidiEvent::CHANPRESS:
 					writeInt(pEvent->value(), 1);
 					break;

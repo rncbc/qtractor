@@ -8618,7 +8618,7 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiEventItemDelegate</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="637"/>
+        <location filename="../qtractorMidiEventList.cpp" line="638"/>
         <source>edit %1</source>
         <translation>編集 %1</translation>
     </message>
@@ -8626,7 +8626,7 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiEventList</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="876"/>
+        <location filename="../qtractorMidiEventList.cpp" line="877"/>
         <source>Events</source>
         <translation>イベント</translation>
     </message>
