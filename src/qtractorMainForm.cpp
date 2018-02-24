@@ -1996,7 +1996,7 @@ bool qtractorMainForm::openSession (void)
 	filters.append(tr("Archive files (*.%1)")
 		.arg(qtractorDocument::archiveExt()));
 #endif
-	sExt = m_pOptions->sSessionExt; // Default session  file format...
+	sExt = m_pOptions->sSessionExt; // Default session file format...
 
 	const QString& sTitle
 		= tr("Open Session") + " - " QTRACTOR_TITLE;
@@ -2480,7 +2480,9 @@ bool qtractorMainForm::loadSessionFileEx (
 		}
 		// Save as default session directory...
 		if (m_pOptions && bUpdate) {
-			m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+			// Do not set (next) default session directory on zip/archives...
+			if ((iFlags & qtractorDocument::Archive) == 0)
+				m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
 			// Save also some Audio engine hybrid-properties...
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 			if (pAudioEngine) {
@@ -2609,7 +2611,10 @@ bool qtractorMainForm::saveSessionFileEx (
 				m_pOptions->iMidiSppMode   = int(pMidiEngine->sppMode());
 				m_pOptions->iMidiClockMode = int(pMidiEngine->clockMode());
 			}
-			m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+			// Do not set (next) default session directory on zip/archives...
+			if ((iFlags & qtractorDocument::Archive) == 0)
+				m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+			// Sync
 			m_pOptions->saveOptions();
 		}
 	} else {
