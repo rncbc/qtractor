@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -4855,7 +4855,7 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 		break;
 	case qtractorMidiEvent::PGMCHANGE:
 		sToolTip += tr("Pgm Change (%1)")
-			.arg(safeValue(pEvent->value() + iValueDelta));
+			.arg(safeValue(pEvent->param() + iValueDelta));
 		break;
 	case qtractorMidiEvent::CHANPRESS:
 		sToolTip += tr("Chan Press (%1)")

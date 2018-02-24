@@ -1433,7 +1433,7 @@ void qtractorMidiClip::enqueue_export ( qtractorTrack *pTrack,
 	case qtractorMidiEvent::PGMCHANGE:
 		ev.type = SND_SEQ_EVENT_PGMCHANGE;
 		ev.data.control.channel = pTrack->midiChannel();
-		ev.data.control.value   = pEvent->value();
+		ev.data.control.value   = pEvent->param();
 		break;
 	case qtractorMidiEvent::CHANPRESS:
 		ev.type = SND_SEQ_EVENT_CHANPRESS;
