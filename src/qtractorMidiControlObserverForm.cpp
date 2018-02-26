@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,8 +43,6 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-#include <QTime>
-
 
 //----------------------------------------------------------------------------
 // qtractorMidiControlObserverForm -- UI wrapper form.
@@ -67,9 +65,6 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 
 	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(NULL,
 		m_ui.ControlTypeComboBox, m_ui.ParamComboBox, m_ui.ParamTextLabel);
-
-	// Anti-flooding guard timer.
-	m_pEventTimer = new QTime();
 
 	// Target object.
 	m_pMidiObserver = NULL;
@@ -136,7 +131,6 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 // Destructor.
 qtractorMidiControlObserverForm::~qtractorMidiControlObserverForm (void)
 {
-	delete m_pEventTimer;
 	delete m_pControlTypeGroup;
 }
 
@@ -226,8 +220,6 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 		pResetButton->setEnabled(
 			pMidiControl->isMidiObserverMapped(m_pMidiObserver));
 
-	m_pEventTimer->start();
-
 	--m_iDirtySetup;
 	m_iDirtyCount = 0;
 
@@ -281,16 +273,10 @@ void qtractorMidiControlObserverForm::closeEvent ( QCloseEvent *pCloseEvent )
 // Process incoming controller event.
 void qtractorMidiControlObserverForm::processEvent ( const qtractorCtlEvent& ctle )
 {
-	// Anti-flooding guard timer < 3sec...
-	if (m_pEventTimer->elapsed() < 3000)
-		return;
-
 	m_pControlTypeGroup->setControlType(ctle.type());
 	m_pControlTypeGroup->setControlParam(ctle.param());
 
 	m_ui.ChannelSpinBox->setValue(ctle.channel() + 1);
-
-	m_pEventTimer->restart();
 }
 
 
@@ -303,8 +289,6 @@ void qtractorMidiControlObserverForm::change (void)
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiControlObserverForm::change()");
 #endif
-
-	m_pEventTimer->restart();
 
 	++m_iDirtyCount;
 	stabilizeForm();
