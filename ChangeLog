@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI track and clip note min/max range display now fixed.
+
 - MIDI Program Change events (PC) now have their proper
   program number as parameter, instead of value, on the
   internal MIDI event representation. (EXPERIMENTAL)

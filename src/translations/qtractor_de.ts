@@ -194,7 +194,7 @@ End:	%3	Length:	%4</source>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="428"/>
-        <location filename="../qtractorTrack.cpp" line="674"/>
+        <location filename="../qtractorTrack.cpp" line="677"/>
         <source>%1 Monitor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -316,31 +316,31 @@ End:	%3	Length:	%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1220"/>
+        <location filename="../qtractorMidiClip.cpp" line="1214"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(Format %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1222"/>
+        <location filename="../qtractorMidiClip.cpp" line="1216"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Kanal %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1224"/>
+        <location filename="../qtractorMidiClip.cpp" line="1218"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Spur %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1227"/>
+        <location filename="../qtractorMidiClip.cpp" line="1221"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1234"/>
+        <location filename="../qtractorMidiClip.cpp" line="1228"/>
         <source> (%1% vol)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -560,31 +560,31 @@ MIDI:	</translation>
         <translation>Markierung verschieben</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="675"/>
+        <location filename="../qtractorTrack.cpp" line="678"/>
         <source>%1 Record</source>
         <translation>%1 Aufnahme</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="676"/>
+        <location filename="../qtractorTrack.cpp" line="679"/>
         <source>%1 Mute</source>
         <translation>%1 Stumm</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="677"/>
+        <location filename="../qtractorTrack.cpp" line="680"/>
         <source>%1 Solo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="3958"/>
         <location filename="../qtractorMidiEngine.cpp" line="3967"/>
-        <location filename="../qtractorTrack.cpp" line="682"/>
+        <location filename="../qtractorTrack.cpp" line="685"/>
         <source>%1 Volume</source>
         <translation>%1 Lautstärke</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2521"/>
         <location filename="../qtractorAudioEngine.cpp" line="2530"/>
-        <location filename="../qtractorTrack.cpp" line="685"/>
+        <location filename="../qtractorTrack.cpp" line="688"/>
         <source>%1 Gain</source>
         <translation type="unfinished"></translation>
     </message>
@@ -593,7 +593,7 @@ MIDI:	</translation>
         <location filename="../qtractorAudioEngine.cpp" line="2532"/>
         <location filename="../qtractorMidiEngine.cpp" line="3960"/>
         <location filename="../qtractorMidiEngine.cpp" line="3969"/>
-        <location filename="../qtractorTrack.cpp" line="688"/>
+        <location filename="../qtractorTrack.cpp" line="691"/>
         <source>%1 Pan</source>
         <translation type="unfinished"></translation>
     </message>

@@ -97,12 +97,6 @@ public:
 	int prog() const
 		{ return (m_pData ? m_pData->prog() : -1); }
 
-	// Statistical cached accessors.
-	unsigned char noteMin() const
-		{ return m_pData ? m_pData->noteMin() : m_noteMin; }
-	unsigned char noteMax() const
-		{ return m_pData ? m_pData->noteMax() : m_noteMax; }
-
 	// Intra-clip frame positioning.
 	void seek(unsigned long iFrame);
 
@@ -178,11 +172,6 @@ public:
 			{ return m_pSeq->bank(); }
 		int prog() const
 			{ return m_pSeq->prog(); }
-
-		unsigned char noteMin() const
-		   { return m_pSeq->noteMin(); }
-		unsigned char noteMax() const
-		   { return m_pSeq->noteMax(); }
 
 		// Ref-counting related methods.
 		void attach(qtractorMidiClip *pMidiClip)
@@ -280,10 +269,6 @@ private:
 
 	// Revisionist count.
 	unsigned short m_iRevision;
-
-	// Statistical cached variables.
-	unsigned char  m_noteMin;
-	unsigned char  m_noteMax;
 
 	// Most interesting key/data (ref-counted?)...
 	Key  *m_pKey;
