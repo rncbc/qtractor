@@ -317,31 +317,31 @@ Fin :	%3	Longueur :	%4</translation>
         <translation>%1 - Banque %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1216"/>
+        <location filename="../qtractorMidiClip.cpp" line="1214"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(format %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1218"/>
+        <location filename="../qtractorMidiClip.cpp" line="1216"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Canal %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1220"/>
+        <location filename="../qtractorMidiClip.cpp" line="1218"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Piste %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1223"/>
+        <location filename="../qtractorMidiClip.cpp" line="1221"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 pistes, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1230"/>
+        <location filename="../qtractorMidiClip.cpp" line="1228"/>
         <source> (%1% vol)</source>
         <translation> (%1% vol)</translation>
     </message>

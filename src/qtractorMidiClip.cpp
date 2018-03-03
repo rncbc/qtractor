@@ -866,8 +866,6 @@ void qtractorMidiClip::close (void)
 		// Final read/write statistics...
 		pTrack->setMidiNoteMin(pSeq->noteMin());
 		pTrack->setMidiNoteMax(pSeq->noteMax());
-		pSeq->setNoteMax(pTrack->midiNoteMax());
-		pSeq->setNoteMin(pTrack->midiNoteMin());
 		// Actual sequence closure...
 		pSeq->close();
 		// Commit the final clip length...
@@ -1023,8 +1021,8 @@ void qtractorMidiClip::draw (
 		return;
 
 	// Check min/maximum note span...
-	const int iNoteMin = pSeq->noteMin() - 2;
-	const int iNoteMax = pSeq->noteMax() + 1;
+	const int iNoteMin = pTrack->midiNoteMin() - 2;
+	const int iNoteMax = pTrack->midiNoteMax() + 1;
 	int iNoteSpan = iNoteMax - iNoteMin;
 	if (iNoteSpan < 6)
 		iNoteSpan = 6;
