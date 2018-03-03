@@ -181,9 +181,6 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_bSessionFlag = false;
 	m_iRevision = 0;
 
-	m_noteMin = 0;
-	m_noteMax = 0;
-
 	m_pMidiEditorForm = NULL;
 }
 
@@ -204,9 +201,6 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	m_iFormat = clip.format();
 	m_bSessionFlag = false;
 	m_iRevision = clip.revision();
-
-	m_noteMin = clip.noteMin();
-	m_noteMax = clip.noteMax();
 
 	m_pMidiEditorForm = NULL;
 }
@@ -402,8 +396,8 @@ bool qtractorMidiClip::openMidiFile (
 	pSeq->setTimeLength(pNode->tickFromFrame(iClipEnd) - t0);
 
 	// Initial statistics...
-	pSeq->setNoteMin(m_noteMin);
-	pSeq->setNoteMax(m_noteMax);
+	pSeq->setNoteMin(pTrack->midiNoteMin());
+	pSeq->setNoteMax(pTrack->midiNoteMax());
 
 	// Are we on a pre-writing status?
 	if (bWrite) {
@@ -437,8 +431,8 @@ bool qtractorMidiClip::openMidiFile (
 		// Read the event sequence in...
 		m_pFile->readTrack(pSeq, iTrackChannel);
 		// For immediate feedback, once...
-		m_noteMin = pSeq->noteMin();
-		m_noteMax = pSeq->noteMax();
+		pTrack->setMidiNoteMin(pSeq->noteMin());
+		pTrack->setMidiNoteMax(pSeq->noteMax());
 		// FIXME: On demand, set session time properties from MIDI file...
 		if (m_bSessionFlag) {
 		#if 0
@@ -869,9 +863,11 @@ void qtractorMidiClip::close (void)
 	if (pSeq) {
 		if (iClipLength > 0)
 			pSeq->setTimeLength(pSession->tickFromFrame(iClipLength));
-		// Final read statistics...
-		m_noteMin = pSeq->noteMin();
-		m_noteMax = pSeq->noteMax();
+		// Final read/write statistics...
+		pTrack->setMidiNoteMin(pSeq->noteMin());
+		pTrack->setMidiNoteMax(pSeq->noteMax());
+		pSeq->setNoteMax(pTrack->midiNoteMax());
+		pSeq->setNoteMin(pTrack->midiNoteMin());
 		// Actual sequence closure...
 		pSeq->close();
 		// Commit the final clip length...

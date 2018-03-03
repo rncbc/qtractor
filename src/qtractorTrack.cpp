@@ -314,6 +314,9 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pMonitor   = NULL;
 	m_iMidiTag   = 0;
 
+	m_midiNoteMin = 0;
+	m_midiNoteMax = 0;
+
 	m_pClipRecord = NULL;
 	m_iClipRecordStart = 0;
 
@@ -961,6 +964,31 @@ void qtractorTrack::setMidiProg ( int iMidiProg )
 int qtractorTrack::midiProg (void) const
 {
 	return m_props.midiProg;
+}
+
+
+// MIDI specific: note minimum/maximum range.
+void qtractorTrack::setMidiNoteMin ( unsigned char note )
+{
+	if (m_midiNoteMin > note || m_midiNoteMin == 0)
+		m_midiNoteMin = note;
+}
+
+unsigned char qtractorTrack::midiNoteMin (void) const
+{
+	return m_midiNoteMin;
+}
+
+
+void qtractorTrack::setMidiNoteMax ( unsigned char note )
+{
+	if (m_midiNoteMax < note || m_midiNoteMax == 0)
+		m_midiNoteMax = note;
+}
+
+unsigned char qtractorTrack::midiNoteMax (void) const
+{
+	return m_midiNoteMax;
 }
 
 
