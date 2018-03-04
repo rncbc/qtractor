@@ -1,7 +1,7 @@
 // qtractorMidiControlObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -107,20 +107,16 @@ void qtractorMidiControlObserver::setMidiValue ( unsigned short iValue )
 		const float vmax = qtractorObserver::maxValue();
 		const float vmin = qtractorObserver::minValue();
 		const float vmid = 0.5f * (vmax + vmin);
-		if (bToggled) {
-			if (m_bLatch) // latched / non-momentary...
-				fValue = (fValue > vmid ? vmax : vmin);
-			else // momentary / non-latched...
-			if (fValue > vmid)
-				fValue = (m_fMidiValue > vmid ? vmin : vmax);
-			else
-				fValue = m_fMidiValue;
-		}
-		else // triggered / one-shot...
+		if (bToggled && m_bLatch) // latched / non-momentary...
+			fValue = (fValue > vmid ? vmax : vmin);
+		else // momentary / non-latched...
 		if (fValue > vmid)
 			fValue = (m_fMidiValue > vmid ? vmin : vmax);
 		else
+		if (fValue > vmin)
 			fValue = (m_fMidiValue < vmid ? vmax : vmin);
+		else
+			fValue = m_fMidiValue;
 	}
 
 	bool bSync = (m_bHook || !qtractorObserver::isDecimal());
