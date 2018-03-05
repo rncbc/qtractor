@@ -1660,7 +1660,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		type     = qtractorMidiEvent::PGMCHANGE;
 		channel  = pEv->data.control.channel;
 		param    = pEv->data.control.value;
-		value    = 0;
+		value    = 0x7f;
 		break;
 	case SND_SEQ_EVENT_CHANPRESS:
 		type     = qtractorMidiEvent::CHANPRESS;
@@ -2019,10 +2019,11 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		case qtractorMidiEvent::PGMCHANGE:
 			ev.type = SND_SEQ_EVENT_PGMCHANGE;
 			ev.data.control.channel = pTrack->midiChannel();
-			ev.data.control.value = pEvent->param();
 			// HACK: Track properties override...
 			if (pTrack->midiProg() >= 0)
 				ev.data.control.value = pTrack->midiProg();
+			else
+				ev.data.control.value = pEvent->param();
 			break;
 		case qtractorMidiEvent::CHANPRESS:
 			ev.type = SND_SEQ_EVENT_CHANPRESS;
@@ -4267,19 +4268,19 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 	case qtractorMidiEvent::PGMCHANGE:
 		ev.type = SND_SEQ_EVENT_PGMCHANGE;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0;
+	//	ev.data.control.param   = 0;
 		ev.data.control.value   = iParam;
 		break;
 	case qtractorMidiEvent::CHANPRESS:
 		ev.type = SND_SEQ_EVENT_CHANPRESS;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0;
+	//	ev.data.control.param   = 0;
 		ev.data.control.value   = iValue;
 		break;
 	case qtractorMidiEvent::PITCHBEND:
 		ev.type = SND_SEQ_EVENT_PITCHBEND;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0;
+	//	ev.data.control.param   = 0;
 		ev.data.control.value   = int(iValue) - 0x2000;
 		break;
 	}

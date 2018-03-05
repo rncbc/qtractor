@@ -407,7 +407,7 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 				break;
 			case qtractorMidiEvent::PGMCHANGE:
 				data1 = readInt(1);
-				data2 = 0;
+				data2 = 0x7f;
 				// Check if its channel filtered...
 				if (bChannelEvent) {
 					// Create the new event...
