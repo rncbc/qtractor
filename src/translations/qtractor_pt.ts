@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pt_BR">
+<TS version="2.1" language="pt_BR">
 <context>
     <name>QObject</name>
     <message>
@@ -2591,7 +2591,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2288"/>
         <source>Show/hide the file system window</source>
-        <translation>&amp;Mostrar/esconter a janela do sistema de arquivos</translation>
+        <translation>Mostrar/Esconder a janela do sistema de arquivos</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2351"/>
