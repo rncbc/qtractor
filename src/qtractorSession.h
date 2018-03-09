@@ -301,7 +301,7 @@ public:
 
 	// Create a brand new filename (absolute file path).
 	QString createFilePath(
-		const QString& sBaseName, const QString& sExt);
+		const QString& sBaseName, const QString& sExt, bool bAcquire = false);
 
 	// Consolidated session record state.
 	void setRecording(bool bRecording);

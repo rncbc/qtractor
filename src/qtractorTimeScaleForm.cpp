@@ -906,7 +906,7 @@ void qtractorTimeScaleForm::markerColor (void)
 	QColorDialog::ColorDialogOptions options = 0;
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 
 	const QColor& color	= QColorDialog::getColor(

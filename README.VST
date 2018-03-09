@@ -9,24 +9,28 @@ from its site:
   Steinberg Media Technologies GmbH
   http://www.steinberg.net
 
-It doesn't really matter much whether you pick the VST 2.3 or VST 2.4
-version, you need to pick one and just one only. Do not try for the
-more recent VST 3.0 or later. It won't work and I won't care :) but
-still, you may need to download the later anyway, as the former are
-probably included and distributed in that way only nowadays.
+  Steinberg 3rd Party Developers
+  https://www.steinberg.net/en/company/developers.html
+
+It doesn't really matter much whether you pick the older VST 2.x
+or the latest VST 3.x version of the VST SDK, you need to pick one
+and just one only. Do not try to build for the more recent VST 3.x
+or later. It won't work and I won't care :) but still, you may need
+to download the later anyway, as the former are probably included
+and distributed in that way only nowadays.
 
 Once you have downloaded the VST SDK zip-archive, for which you'll
 have to accept their license and supply some personal data, you'll
 have to unpack the pertinent header files, which are found under
 the respective folder:
 
-  - VST SDK 2.3:
-    vstsdk2.3/source/common/
-      aeffectx.h
-      AEffect.h
-
   - VST SDK 2.4:
     vstsdk2.4/pluginterfaces/vst2.x/
+      aeffectx.h
+      aeffect.h
+
+  - VST SDK 3.x:
+    VST_SDK/VST2_SDK/pluginterfaces/vst2.x/
       aeffectx.h
       aeffect.h
 
@@ -36,7 +40,7 @@ directories (eg. /usr/local/include or /usr/include). That way, all
 will be handled automagically by the usual build steps. Otherwise,
 you'll need do supply the include path yourself, as in the following:
 
-  ./configure --with-vst=/path/to/vstsdk2.x/include
+  ./configure --with-vst=/path/to/pluginterfaces/vst2.x
 
 Next step, once properly built, you'll need to tell where the actual
 native VST plug-ins can be found in your file system. The directories

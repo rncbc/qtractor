@@ -223,7 +223,7 @@ void qtractorMidiSysexForm::importSlot (void)
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
@@ -304,7 +304,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1// QT_VERSION < 0x040400
 	// Ask for the filename to open...
@@ -448,7 +448,7 @@ void qtractorMidiSysexForm::openSlot (void)
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
@@ -523,7 +523,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 		QFileDialog::Options options = 0;
 		if (pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
-			pParentWidget = this;
+			pParentWidget = QWidget::window();
 		}
 	#if 1//QT_VERSION < 0x040400
 		// Ask for the filename to save...

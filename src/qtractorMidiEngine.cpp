@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1091,7 +1091,7 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 	case qtractorMidiEvent::PGMCHANGE:
 		ev.type = SND_SEQ_EVENT_PGMCHANGE;
 		ev.data.control.channel = iMidiChannel;
-		ev.data.control.value   = pEvent->value();
+		ev.data.control.value   = pEvent->param();
 		break;
 	case qtractorMidiEvent::CHANPRESS:
 		ev.type = SND_SEQ_EVENT_CHANPRESS;
@@ -1659,8 +1659,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	case SND_SEQ_EVENT_PGMCHANGE:
 		type     = qtractorMidiEvent::PGMCHANGE;
 		channel  = pEv->data.control.channel;
-	//	param    = 0;
-		value    = pEv->data.control.value;
+		param    = pEv->data.control.value;
+		value    = 0x7f;
 		break;
 	case SND_SEQ_EVENT_CHANPRESS:
 		type     = qtractorMidiEvent::CHANPRESS;
@@ -2019,10 +2019,11 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		case qtractorMidiEvent::PGMCHANGE:
 			ev.type = SND_SEQ_EVENT_PGMCHANGE;
 			ev.data.control.channel = pTrack->midiChannel();
-			ev.data.control.value = pEvent->value();
 			// HACK: Track properties override...
 			if (pTrack->midiProg() >= 0)
 				ev.data.control.value = pTrack->midiProg();
+			else
+				ev.data.control.value = pEvent->param();
 			break;
 		case qtractorMidiEvent::CHANPRESS:
 			ev.type = SND_SEQ_EVENT_CHANPRESS;
@@ -4267,19 +4268,19 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 	case qtractorMidiEvent::PGMCHANGE:
 		ev.type = SND_SEQ_EVENT_PGMCHANGE;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0;
-		ev.data.control.value   = iValue;
+	//	ev.data.control.param   = 0;
+		ev.data.control.value   = iParam;
 		break;
 	case qtractorMidiEvent::CHANPRESS:
 		ev.type = SND_SEQ_EVENT_CHANPRESS;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0;
+	//	ev.data.control.param   = 0;
 		ev.data.control.value   = iValue;
 		break;
 	case qtractorMidiEvent::PITCHBEND:
 		ev.type = SND_SEQ_EVENT_PITCHBEND;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0;
+	//	ev.data.control.param   = 0;
 		ev.data.control.value   = int(iValue) - 0x2000;
 		break;
 	}

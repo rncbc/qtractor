@@ -703,7 +703,7 @@ void qtractorClipForm::browseFilename (void)
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1//QT_VERSION < 0x040400
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,

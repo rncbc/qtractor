@@ -227,7 +227,7 @@ void qtractorInstrumentForm::importSlot (void)
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
@@ -390,7 +390,7 @@ void qtractorInstrumentForm::exportSlot (void)
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...

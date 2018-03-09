@@ -1061,7 +1061,7 @@ void qtractorOptionsForm::chooseAudioMeterColor (void)
 	QColorDialog::ColorDialogOptions options = 0;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 
 	const QColor& color = QColorDialog::getColor(
@@ -1083,7 +1083,7 @@ void qtractorOptionsForm::chooseMidiMeterColor (void)
 	QColorDialog::ColorDialogOptions options = 0;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 
 	const QColor& color = QColorDialog::getColor(
@@ -1179,7 +1179,7 @@ void qtractorOptionsForm::choosePluginPath (void)
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the directory...
@@ -1419,7 +1419,7 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1// QT_VERSION < 0x040400
 	// Ask for the directory...
@@ -1460,7 +1460,7 @@ void qtractorOptionsForm::chooseMessagesFont (void)
 	QFontDialog::FontDialogOptions options = 0;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFontDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 
 	bool bOk = false;
@@ -1490,7 +1490,7 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
@@ -1533,7 +1533,7 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
@@ -1691,7 +1691,7 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...

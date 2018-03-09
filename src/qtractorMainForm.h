@@ -378,13 +378,10 @@ protected:
 	bool editSession();
 	bool closeSession();
 
-	bool loadSessionFileEx(
-		const QString& sFilename, bool bTemplate, bool bUpdate);
 	bool loadSessionFile(const QString& sFilename);
 
-	bool saveSessionFileEx(
-		const QString& sFilename, bool bTemplate, bool bUpdate);
-	bool saveSessionFile(const QString& sFilename);
+	bool loadSessionFileEx(const QString& sFilename, int iFlags, bool bUpdate);
+	bool saveSessionFileEx(const QString& sFilename, int iFlags, bool bUpdate);
 
 	QString sessionBackupPath(const QString& sFilename);
 

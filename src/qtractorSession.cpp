@@ -1557,7 +1557,7 @@ void qtractorSession::releaseFilePath ( const QString& sFilename )
 
 // Create a brand new filename (absolute file path).
 QString qtractorSession::createFilePath (
-	const QString& sBaseName, const QString& sExt )
+	const QString& sBaseName, const QString& sExt, bool bAcquire )
 {
 	QString sFilename = qtractorSession::sanitize(m_props.sessionName);
 	if (!sFilename.isEmpty())
@@ -1567,9 +1567,10 @@ QString qtractorSession::createFilePath (
 	QFileInfo fi; int iClipNo = 0;
 	fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
 	if (!m_filePaths.contains(fi.absoluteFilePath())) {
-		 while (fi.exists() || m_filePaths.contains(fi.absoluteFilePath()))
+		while (fi.exists() || m_filePaths.contains(fi.absoluteFilePath()))
 			fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
-		m_filePaths.append(fi.absoluteFilePath()); // register new name!
+		if (bAcquire)
+			m_filePaths.append(fi.absoluteFilePath()); // register new name!
 	}
 
 #ifdef CONFIG_DEBUG
@@ -1686,7 +1687,7 @@ void qtractorSession::trackRecord (
 		pAudioClip->setClipStart(iClipStart);
 		pAudioClip->openAudioFile(
 			createFilePath(pTrack->trackName(),
-				qtractorAudioFileFactory::defaultExt()),
+				qtractorAudioFileFactory::defaultExt(), true),
 			qtractorAudioFile::Write);
 		pTrack->setClipRecord(pAudioClip);
 		// One-up audio tracks in record mode.
@@ -1698,7 +1699,7 @@ void qtractorSession::trackRecord (
 		qtractorMidiClip *pMidiClip = new qtractorMidiClip(pTrack);
 		pMidiClip->setClipStart(iClipStart);
 		pMidiClip->openMidiFile(
-			createFilePath(pTrack->trackName(), "mid"),
+			createFilePath(pTrack->trackName(), "mid", true),
 			pTrack->midiChannel(),
 			qtractorMidiFile::Write);
 		pTrack->setClipRecord(pMidiClip);

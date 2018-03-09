@@ -1167,7 +1167,7 @@ void qtractorTrackForm::trackIconClicked (void)
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
@@ -1443,7 +1443,7 @@ void qtractorTrackForm::selectForegroundColor (void)
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 
 	const QColor& color = QColorDialog::getColor(
@@ -1469,7 +1469,7 @@ void qtractorTrackForm::selectBackgroundColor (void)
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
-		pParentWidget = this;
+		pParentWidget = QWidget::window();
 	}
 
 	const QColor& color = QColorDialog::getColor(
