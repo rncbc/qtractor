@@ -1,7 +1,7 @@
 // qtractorMmcEvent.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -80,6 +80,7 @@ public:
 	enum SubCommand {
 		TRACK_NONE              = 0x00,
 		TRACK_RECORD            = 0x4f,
+		TRACK_MONITOR           = 0x53,
 		TRACK_MUTE              = 0x62,
 		TRACK_SOLO              = 0x66 // Custom-implementation ;)
 	};

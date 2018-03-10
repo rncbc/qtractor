@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -660,15 +660,14 @@ int qtractorTrackList::removeTrack ( int iTrack )
 		m_select.remove(iTrack);
 
 	Item *pItem = m_items.at(iTrack);
-	qtractorTrack *pTrack = pItem->track;
+	m_tracks.remove(pItem->track);
 	m_items.removeAt(iTrack);
-	m_tracks.remove(pTrack);
 	delete pItem;
 
-	if (m_iCurrentTrack >= m_items.count())
-		m_iCurrentTrack  = m_items.count() - 1;
+	m_iCurrentTrack = -1;
 
-	return (iTrack < m_items.count() ? iTrack : -1);
+	const int iTrackCount = m_items.count();
+	return (iTrack < iTrackCount ? iTrack : iTrackCount - 1);
 }
 
 
@@ -680,6 +679,7 @@ void qtractorTrackList::setCurrentTrackRow ( int iTrack )
 		iCurrentTrack = -1;
 	else
 		iCurrentTrack = iTrack;
+
 	if (iCurrentTrack == m_iCurrentTrack)
 		return;
 

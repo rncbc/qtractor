@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -319,6 +319,7 @@
     <addaction name="trackHeightMenu"/>
     <addaction name="separator"/>
     <addaction name="trackAutoMonitorAction"/>
+    <addaction name="trackAutoDeactivateAction"/>
     <addaction name="separator"/>
     <addaction name="trackImportMenu"/>
     <addaction name="trackExportMenu"/>
@@ -1441,6 +1442,26 @@
    </property>
    <property name="shortcut">
     <string>F6</string>
+   </property>
+  </action>
+  <action name="trackAutoDeactivateAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto Dea&amp;ctivate</string>
+   </property>
+   <property name="iconText">
+    <string>Auto Deactivate</string>
+   </property>
+   <property name="toolTip">
+    <string>Auto-deactivate plugins</string>
+   </property>
+   <property name="statusTip">
+    <string>Auto-deactivate plugins not producing sound</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F6</string>
    </property>
   </action>
   <action name="trackImportAudioAction">

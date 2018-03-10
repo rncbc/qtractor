@@ -6,6 +6,91 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI track and clip note min/max range display now fixed.
+
+- MIDI Program Change events (PC) now have their proper
+  program number as parameter, instead of value, on the
+  internal MIDI event representation. (EXPERIMENTAL)
+
+- Merging MIDI clips while on SMF Format 0 has been fixed:
+  was merging always onto the same MIDI channel (2), most
+  often the wrong one, resulting in an empty or blank clip.
+
+- When importing from standard MIDI files (SMF), set track
+  names from Mtrk TRACKNAME meta-events instead of filename.
+
+- Avoid asking to save as to existing or just newly created
+  clip file-names, whenever possible. (EXPERIMENTAL)
+
+- Disable singleton/unique application instance setup logic
+  when the display server platform is not X11. (EXPERIMENTAL)
+
+- Whether to use native file browser/requester dialogs is
+  now an effective option when launching under NSM session
+  management (was once disabled initially). (EXPERIMENTAL)
+
+- Content files are now saved as symlinks when saving to JACK
+  and/or NSM session directories/folders. (EXPERIMENTAL)
+
+- Trying to get CC14 MSB+LSB (course+fine) running status on,
+  no matter whether each pairing event are under 200ms apart
+  (EXPERIMENTAL)
+
+- Possible VST plug-in GUI reparenting hack/fix on Qt5/Xcb.
+  (EXPERIMENTAL)
+
+
+0.8.6  2018-01-30  Winter'18 Beta.
+
+- Added LV2_UI_updateRate option support.
+
+- Added brand new option to deactivate plugins only if they
+  can produce sound cf. main menu Track/Auto Deactivate (by
+  Andreas Müller aka. schnitzeltony, thanks).
+
+- Workaround native file dialogs hang up by setting parent
+  widget to NULL; it should be noted that dialogs now get
+  an own entry in the task-bar (also by Andreas Müller aka.
+  schnitzeltony, thanks).
+
+- Added ARM NEON acceleration support (by Andreas Müller aka.
+  schnitzeltony, thanks).
+
+- Track count "limit" and a "Delta" mode flag, for momentary
+  and encoded controllers support, have been added to MIDI
+  Controllers generic mapping (cf. View/Controllers...; after
+  an original pull-request by Holger Dehnhardt, thanks).
+
+- A little hardening on the configure (autoconf) macro side.
+
+- Pinned current/hi-lighted track dangling after removal.
+
+- An anti-flooding timer is now in place in MIDI Controller
+  assignment (aka. MIDI learn) dialog.
+
+- Add MMC Track input monitor support.
+
+- New user preference option: View/Options.../General/Options
+  /Reverse keyboard modifiers role (Shift/Ctrl), applied to
+  main transport re-positioning commands: Transport/Backward,
+  Forward, etc.
+
+- VST Time/Transport information is now also updated as on
+  playing when in audio export aka. freewheeling mode.
+
+- LXVST_PATH environment variable now takes precedence over
+  VST_PATH as Linux-native VST plug-ins search path.
+
+- MIDI Controllers mapped to non-toggling shortcuts now work
+  as one-shot triggers, independent of MIDI event value.
+
+
+0.8.5  2017-12-04  Autumn'17 Beta.
+
+- Audio clip gain and panning properties are now taken into
+  consideration when hash-linking (aka. ref-counting) their
+  back-end buffers.
+
 - New out-of-process plug-in inventory scan and cache option,
   replacing the old (aka. dummy) VST plug-in scan option and
   extending its function to all other plug-in types: LADSPA,
@@ -26,7 +111,7 @@ GIT HEAD
   absolute first half-a-second (<0.5sec).
   
 - LV2 Time/Transport speed information is now set on rolling
-  when in audio export aka freewheeling mode.
+  when in audio export aka. freewheeling mode.
 
 - Added *.SF3 to soundfont instrument files filter, on View 
   > Instruments... > Import... file dialog.

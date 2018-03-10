@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1631,25 +1631,26 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setEnabled(bMidiInsertPlugin);
 	menu.addSeparator();
 
+	const bool bAutoDeactivated = m_pPluginList->isAutoDeactivated();
 	pAction = menu.addAction(
 		tr("Ac&tivate"), this, SLOT(activatePlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isActivated());
-	pAction->setEnabled(pPlugin != NULL);
+	pAction->setEnabled(pPlugin && !bAutoDeactivated);
 
 	const bool bActivatedAll = m_pPluginList->isActivatedAll();
 	pAction = menu.addAction(
 		tr("Acti&vate All"), this, SLOT(activateAllPlugins()));
 	pAction->setCheckable(true);
 	pAction->setChecked(bActivatedAll);
-	pAction->setEnabled(bEnabled && !bActivatedAll);
+	pAction->setEnabled(bEnabled && !bActivatedAll && !bAutoDeactivated);
 
 	const bool bDeactivatedAll = !m_pPluginList->isActivated();
 	pAction = menu.addAction(
 		tr("Deactivate Al&l"), this, SLOT(deactivateAllPlugins()));
 	pAction->setCheckable(true);
 	pAction->setChecked(bDeactivatedAll);
-	pAction->setEnabled(bEnabled && !bDeactivatedAll);
+	pAction->setEnabled(bEnabled && !bDeactivatedAll && !bAutoDeactivated);
 
 	menu.addSeparator();
 

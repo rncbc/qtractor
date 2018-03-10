@@ -1,7 +1,7 @@
 // qtractorMainForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -181,6 +181,7 @@ public slots:
 	void trackHeightDown();
 	void trackHeightReset();
 	void trackAutoMonitor(bool bOn);
+	void trackAutoDeactivate(bool bOn);
 	void trackImportAudio();
 	void trackImportMidi();
 	void trackExportAudio();
@@ -377,13 +378,10 @@ protected:
 	bool editSession();
 	bool closeSession();
 
-	bool loadSessionFileEx(
-		const QString& sFilename, bool bTemplate, bool bUpdate);
 	bool loadSessionFile(const QString& sFilename);
 
-	bool saveSessionFileEx(
-		const QString& sFilename, bool bTemplate, bool bUpdate);
-	bool saveSessionFile(const QString& sFilename);
+	bool loadSessionFileEx(const QString& sFilename, int iFlags, bool bUpdate);
+	bool saveSessionFileEx(const QString& sFilename, int iFlags, bool bUpdate);
 
 	QString sessionBackupPath(const QString& sFilename);
 

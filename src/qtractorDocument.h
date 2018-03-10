@@ -1,7 +1,7 @@
 // qtractorDocument.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -40,7 +40,13 @@ class qtractorDocument
 public:
 
 	// Document flags.
-	enum Flags { Default = 0, Template = 1, Archive = 2, Temporary = 4 };
+	enum Flags {
+		Default   = 0,
+		Template  = 1,
+		Archive   = 2,
+		SymLink   = 4,
+		Temporary = 8
+	};
 
 	// Constructor.
 	qtractorDocument(QDomDocument *pDocument,
@@ -56,13 +62,11 @@ public:
 	void saveTextElement (const QString& sTagName, const QString& sText,
 		QDomElement *pElement);
 
-	// Document flags property.
-	void setFlags(Flags flags);
-	Flags flags() const;
-
+	// Document flags property accessors.
 	bool isTemplate() const;
 	bool isArchive() const;
 	bool isTemporary() const;
+	bool isSymLink() const;
 
 	// Archive filename filter.
 	QString addFile (const QString& sFilename);
@@ -93,8 +97,13 @@ public:
 	static void clearExtractedArchives(bool bRemove = false);
 
 	// Extra-ordinary archive files management.
-	static QString addArchiveFile(
-		const QString& sDir, const QString& sFilename);
+	static QString addFile(const QString& sDir, const QString& sFilename);
+
+protected:
+
+	// Document flags property.
+	void setFlags(Flags flags);
+	Flags flags() const;
 
 private:
 
@@ -121,7 +130,7 @@ private:
 	static QStringList g_extractedArchives;
 
 	// Extra-ordinary archive files.
-	static qtractorDocument *g_pArchive;
+	static qtractorDocument *g_pDocument;
 };
 
 

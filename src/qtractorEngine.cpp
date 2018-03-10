@@ -615,6 +615,7 @@ void qtractorBus::mapControllers ( BusMode busMode )
 			pObserver->setFeedback(pController->feedback);
 			pObserver->setInvert(pController->invert);
 			pObserver->setHook(pController->hook);
+			pObserver->setLatch(pController->latch);
 			pMidiControl->mapMidiObserver(pObserver);
 		}
 	}
@@ -727,7 +728,7 @@ void qtractorBus::saveCurveFile ( qtractorDocument *pDocument,
 		return;
 
 	const QString sBaseName(sBusName + "_curve");
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid"));
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", true));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }

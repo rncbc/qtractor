@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1184,17 +1184,20 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	const QString& sFilter
 		= tr("Audio files (*.%1)").arg(sExt); 
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs)
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
+	QString sFilename = QFileDialog::getSaveFileName(pParentWidget, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
-	QFileDialog fileDialog(this, sTitle,
+	QFileDialog fileDialog(pParentWidget, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -1451,17 +1454,20 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	const QString& sFilter
 		= tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt); 
 
+	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bDontUseNativeDialogs)
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to save...
-	QString sFilename = QFileDialog::getSaveFileName(this, sTitle,
+	QString sFilename = QFileDialog::getSaveFileName(pParentWidget, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
 #else
 	// Construct save-file dialog...
-	QFileDialog fileDialog(this, sTitle,
+	QFileDialog fileDialog(pParentWidget, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -1547,7 +1553,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		file.writeTrack(NULL);
 
 	// Setup merge sequence...
-	qtractorMidiSequence seq(pTrack->trackName(), 1, iTicksPerBeat);
+	qtractorMidiSequence seq(pTrack->trackName(), 0, iTicksPerBeat);
 	seq.setChannel(pTrack->midiChannel());
 	seq.setBank(pTrack->midiBank());
 	seq.setProg(pTrack->midiProg());
@@ -1640,7 +1646,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		pNewClip->setClipStart(iSelectStart);
 		pNewClip->setClipLength(iSelectEnd - iSelectStart);
 		pNewClip->setFilename(sFilename);
-		pNewClip->setTrackChannel(1);
+		pNewClip->setTrackChannel(iFormat == 0 ? seq.channel() : 1);
 		pClipCommand->addClip(pNewClip, pTrack);
 	}
 

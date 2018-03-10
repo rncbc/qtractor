@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -313,6 +313,9 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pOutputBus = NULL;
 	m_pMonitor   = NULL;
 	m_iMidiTag   = 0;
+
+	m_midiNoteMin = 0;
+	m_midiNoteMax = 0;
 
 	m_pClipRecord = NULL;
 	m_iClipRecordStart = 0;
@@ -749,6 +752,8 @@ void qtractorTrack::setMonitor ( bool bMonitor )
 	m_props.monitor = bMonitor;
 
 	m_pMonitorSubject->setValue(bMonitor ? 1.0f : 0.0f);
+
+	m_pSession->autoDeactivatePlugins();
 }
 
 
@@ -762,6 +767,8 @@ void qtractorTrack::setRecord ( bool bRecord )
 	m_props.record = bRecord;
 
 	m_pRecordSubject->setValue(bRecord ? 1.0f : 0.0f);
+
+	m_pSession->autoDeactivatePlugins();
 
 	if (m_pSession->isRecording()) {
 		unsigned long iClipStart = m_pSession->playHead();
@@ -797,6 +804,8 @@ void qtractorTrack::setMute ( bool bMute )
 
 	if (m_pSession->isPlaying() && !bMute)
 		m_pSession->trackMute(this, bMute);
+
+	m_pSession->autoDeactivatePlugins();
 }
 
 bool qtractorTrack::isMute (void) const
@@ -821,6 +830,8 @@ void qtractorTrack::setSolo ( bool bSolo )
 
 	if (m_pSession->isPlaying() && !bSolo)
 		m_pSession->trackSolo(this, bSolo);
+
+	m_pSession->autoDeactivatePlugins();
 }
 
 bool qtractorTrack::isSolo (void) const
@@ -953,6 +964,31 @@ void qtractorTrack::setMidiProg ( int iMidiProg )
 int qtractorTrack::midiProg (void) const
 {
 	return m_props.midiProg;
+}
+
+
+// MIDI specific: note minimum/maximum range.
+void qtractorTrack::setMidiNoteMin ( unsigned char note )
+{
+	if (m_midiNoteMin > note || m_midiNoteMin == 0)
+		m_midiNoteMin = note;
+}
+
+unsigned char qtractorTrack::midiNoteMin (void) const
+{
+	return m_midiNoteMin;
+}
+
+
+void qtractorTrack::setMidiNoteMax ( unsigned char note )
+{
+	if (m_midiNoteMax < note || m_midiNoteMax == 0)
+		m_midiNoteMax = note;
+}
+
+unsigned char qtractorTrack::midiNoteMax (void) const
+{
+	return m_midiNoteMax;
 }
 
 
@@ -2259,7 +2295,7 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		return;
 
 	const QString sBaseName(trackName() + "_curve");
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid"));
+	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", true));
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }

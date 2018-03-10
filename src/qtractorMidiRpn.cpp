@@ -1,7 +1,7 @@
 // qtractorMidiRpn.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -486,8 +486,8 @@ public:
 				--m_count;
 			}
 			else
-			if (item.is_param_msb() || item.is_value_msb()
-				|| (item.type() == qtractorMidiRpn::CC14
+			if ((item.is_param_msb() && item.is_value_msb())
+				|| (item.type() == qtractorMidiRpn::CC14 && item.is_param_lsb()
 					&& item.param_lsb() != event.param + CC14_LSB_MIN))
 				enqueue(item);
 			if (!item.is_status()) {
@@ -498,6 +498,7 @@ public:
 				item.set_time(event.time);
 			if (item.port() != event.port)
 				item.set_port(event.port);
+			item.set_param_lsb(event.param + CC14_LSB_MIN);
 			item.set_param_msb(event.param);
 			item.set_value_msb(event.value);
 			if (item.is_14bit())
@@ -513,8 +514,8 @@ public:
 				--m_count;
 			}
 			else
-			if (item.is_param_lsb() || item.is_value_lsb()
-				|| (item.type() == qtractorMidiRpn::CC14
+			if ((item.is_param_lsb() && item.is_value_lsb())
+				|| (item.type() == qtractorMidiRpn::CC14 && item.is_param_msb()
 					&& item.param_msb() != event.param - CC14_LSB_MIN))
 				enqueue(item);
 			if (!item.is_status()) {
@@ -525,6 +526,7 @@ public:
 				item.set_time(event.time);
 			if (item.port() != event.port)
 				item.set_port(event.port);
+			item.set_param_msb(event.param - CC14_LSB_MIN);
 			item.set_param_lsb(event.param);
 			item.set_value_lsb(event.value);
 			if (item.is_14bit())
@@ -552,17 +554,22 @@ protected:
 			if (item.is_14bit()) {
 				m_queue.push(time, port, item.status(),
 					item.param_msb(), item.value());
+				const unsigned char value_msb = item.value_msb();
+				item.clear_value();
+				item.set_value_msb(value_msb);
+				item.set_time(0);
+			//	--m_count;
 			} else  {
 				const unsigned char status = qtractorMidiRpn::CC | item.channel();
-				if (item.is_value_msb())
+				if (item.is_param_msb() && item.is_value_msb())
 					m_queue.push(time, port, status,
 						item.param_msb(), item.value_msb());
-				if (item.is_value_lsb())
+				if (item.is_param_lsb() && item.is_value_lsb())
 					m_queue.push(time, port, status,
 						item.param_lsb(), item.value_lsb());
+				item.clear();
+				--m_count;
 			}
-			item.clear();
-			--m_count;
 		}
 		else
 		if (item.is_14bit()) {

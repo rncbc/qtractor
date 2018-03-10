@@ -1,7 +1,7 @@
 // qtractorTrack.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -140,6 +140,14 @@ public:
 	// MIDI specific: program acessors (optional).
 	void setMidiProg(int iMidiProg);
 	int midiProg() const;
+
+	// MIDI specific: track-minimum note.
+	void setMidiNoteMin(unsigned char note);
+	unsigned char midiNoteMin() const;
+
+	// MIDI specific: track-maximum note.
+	void setMidiNoteMax(unsigned char note);
+	unsigned char midiNoteMax() const;
 
 	// Assigned bus name accessors.
 	void setInputBusName(const QString& sBusName);
@@ -353,6 +361,9 @@ private:
 	qtractorMonitor *m_pMonitor;    // Track monitor.
 
 	unsigned short   m_iMidiTag;    // MIDI specific: track-tag;
+
+	unsigned char    m_midiNoteMax; // MIDI specific: track-maximum note;
+	unsigned char    m_midiNoteMin; // MIDI specific: track-minimum note.
 
 	int              m_iHeight;     // View height (normalized).
 	int              m_iZoomHeight; // View height (zoomed).

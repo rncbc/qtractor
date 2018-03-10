@@ -1,7 +1,7 @@
 // qtractor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -167,14 +167,21 @@ public:
 		}
 	#ifdef CONFIG_X11
 	#ifdef CONFIG_XUNIQUE
-		m_pDisplay = QX11Info::display();
-		m_aUnique  = XInternAtom(m_pDisplay, QTRACTOR_XUNIQUE, false);
-		XGrabServer(m_pDisplay);
-		m_wOwner = XGetSelectionOwner(m_pDisplay, m_aUnique);
-		XUngrabServer(m_pDisplay);
+		m_pDisplay = NULL;
+		m_aUnique = 0;
+		m_wOwner = 0;
 	#if QT_VERSION >= 0x050100
 		m_pXcbEventFilter = new qtractorXcbEventFilter(this);
 		installNativeEventFilter(m_pXcbEventFilter);
+		if (QX11Info::isPlatformX11()) {
+	#endif
+			m_pDisplay = QX11Info::display();
+			m_aUnique  = XInternAtom(m_pDisplay, QTRACTOR_XUNIQUE, false);
+			XGrabServer(m_pDisplay);
+			m_wOwner = XGetSelectionOwner(m_pDisplay, m_aUnique);
+			XUngrabServer(m_pDisplay);
+	#if QT_VERSION >= 0x050100
+		}
 	#endif
 	#endif	// CONFIG_XUNIQUE
 	#endif	// CONFIG_X11

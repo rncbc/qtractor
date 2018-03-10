@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1091,7 +1091,7 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 	case qtractorMidiEvent::PGMCHANGE:
 		ev.type = SND_SEQ_EVENT_PGMCHANGE;
 		ev.data.control.channel = iMidiChannel;
-		ev.data.control.value   = pEvent->value();
+		ev.data.control.value   = pEvent->param();
 		break;
 	case qtractorMidiEvent::CHANPRESS:
 		ev.type = SND_SEQ_EVENT_CHANPRESS;
@@ -1659,8 +1659,8 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	case SND_SEQ_EVENT_PGMCHANGE:
 		type     = qtractorMidiEvent::PGMCHANGE;
 		channel  = pEv->data.control.channel;
-	//	param    = 0;
-		value    = pEv->data.control.value;
+		param    = pEv->data.control.value;
+		value    = 0x7f;
 		break;
 	case SND_SEQ_EVENT_CHANPRESS:
 		type     = qtractorMidiEvent::CHANPRESS;
@@ -1747,12 +1747,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			 iTime <  pSession->punchOutTime()));
 	}
 
+#if 0//-- Unlikely real-time input.
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long f0 = m_iFrameStartEx;
 	const unsigned long t1 = (t0 < f0 ? t0 : t0 - f0);
-#if 0//-- Unlikely real-time input.
 	unsigned long t2 = t1;
 	if (type == qtractorMidiEvent::NOTEON && duration > 0) {
 		const unsigned long iTimeOff = iTime + (duration - 1);
@@ -1831,12 +1831,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Do it for the MIDI plugins too...
 						pMidiManager = (pTrack->pluginList())->midiManager();
 						if (pMidiManager)
-							pMidiManager->queued(pEv, t1); //..t2
+							pMidiManager->direct(pEv); //queued(pEv,t1[,t2]);
 						if (!pMidiBus->isMonitor()
 							&& pMidiBus->pluginList_out()) {
 							pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 							if (pMidiManager)
-								pMidiManager->queued(pEv, t1); //..t2
+								pMidiManager->direct(pEv); //queued(pEv,t1[,t2]);
 						}
 						// FIXME: MIDI-thru channel filtering epilog...
 						pEv->data.note.channel = iOldChannel;
@@ -1856,7 +1856,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if (pMidiBus->pluginList_in()) {
 			pMidiManager = (pMidiBus->pluginList_in())->midiManager();
 			if (pMidiManager)
-				pMidiManager->queued(pEv, t1); //..t2
+				pMidiManager->direct(pEv); //queued(pEv,t1[,t2]);
 		}
 		// Output monitoring on passthru...
 		if (pMidiBus->isMonitor()) {
@@ -1864,7 +1864,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (pMidiBus->pluginList_out()) {
 				pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 				if (pMidiManager)
-					pMidiManager->queued(pEv, t1); //..t2
+					pMidiManager->direct(pEv); //queued(pEv,t1[,t2]);
 			}
 			if (pMidiBus->midiMonitor_out()) {
 				// MIDI-thru: same event redirected...
@@ -1881,7 +1881,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		qtractorMidiInputBuffer *pMidiInputBuffer
 			= m_inputBuffers.value(iAlsaPort, NULL);
 		if (pMidiInputBuffer)
-			pMidiInputBuffer->enqueue(pEv); //..t0
+			pMidiInputBuffer->enqueue(pEv);
 	}
 
 	// Trap controller commands...
@@ -2019,10 +2019,11 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 		case qtractorMidiEvent::PGMCHANGE:
 			ev.type = SND_SEQ_EVENT_PGMCHANGE;
 			ev.data.control.channel = pTrack->midiChannel();
-			ev.data.control.value = pEvent->value();
 			// HACK: Track properties override...
 			if (pTrack->midiProg() >= 0)
 				ev.data.control.value = pTrack->midiProg();
+			else
+				ev.data.control.value = pEvent->param();
 			break;
 		case qtractorMidiEvent::CHANPRESS:
 			ev.type = SND_SEQ_EVENT_CHANPRESS;
@@ -4267,19 +4268,19 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 	case qtractorMidiEvent::PGMCHANGE:
 		ev.type = SND_SEQ_EVENT_PGMCHANGE;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0;
-		ev.data.control.value   = iValue;
+	//	ev.data.control.param   = 0;
+		ev.data.control.value   = iParam;
 		break;
 	case qtractorMidiEvent::CHANPRESS:
 		ev.type = SND_SEQ_EVENT_CHANPRESS;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0;
+	//	ev.data.control.param   = 0;
 		ev.data.control.value   = iValue;
 		break;
 	case qtractorMidiEvent::PITCHBEND:
 		ev.type = SND_SEQ_EVENT_PITCHBEND;
 		ev.data.control.channel = iChannel;
-		ev.data.control.param   = 0;
+	//	ev.data.control.param   = 0;
 		ev.data.control.value   = int(iValue) - 0x2000;
 		break;
 	}
