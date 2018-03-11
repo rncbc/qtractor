@@ -379,7 +379,7 @@ Fin:	%3	Duración:	%4</translation>
         <translation>parametros del plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1329"/>
+        <location filename="../qtractorMidiManager.cpp" line="1347"/>
         <source>%1 - Bank %2</source>
         <translation>%1 - Banco %2</translation>
     </message>

@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a day-zero bug over the MIDI Insert (Send/Return)
+  pseudo-plugin, which was duplicating MIDI events onto
+  the next LV2 plugin in chain, causing strange hanging
+  notes, mutes, retriggerings and what not.
+
 - MIDI track and clip note min/max range display now fixed.
 
 - MIDI Program Change events (PC) now have their proper
