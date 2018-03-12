@@ -1148,8 +1148,9 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					rect.setWidth(dx);
 					drawCell(&painter, iTrack, iCol, rect);
 					if (iCol == Name && pItem->widget) {
+						const QSize sizeWidget
+							= (pItem->widget)->sizeHint();
 						QRect rectWidget = rect;
-						QSize sizeWidget = (pItem->widget)->sizeHint();
 						rectWidget.setTop(rect.bottom() - sizeWidget.height());
 						rectWidget.setLeft(rect.right() - sizeWidget.width());
 						if (rectWidget.height() < h1) {
@@ -1164,7 +1165,8 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 						const int dy1
 							= ((pItem->track)->trackType()
 								== qtractorTrack::Midi ? 20 : 4);
-						(pItem->meter)->setGeometry(rect.adjusted(+4, dy1, -2, -2));
+						(pItem->meter)->setGeometry(
+							rect.adjusted(+4, dy1, -3, -2));
 						(pItem->meter)->show();
 					}
 				}
