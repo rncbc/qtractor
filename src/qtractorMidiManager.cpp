@@ -909,6 +909,9 @@ void qtractorMidiManager::processEventBuffers (void)
 // Reset event buffers (in for out and vice-versa)
 void qtractorMidiManager::resetEventBuffers (void)
 {
+	if (m_iEventCount == 0)
+		return;
+
 #ifdef CONFIG_VST
 	::memset(m_ppVstBuffers[m_iEventBuffer & 1], 0, sizeof(VstEvents));
 #endif

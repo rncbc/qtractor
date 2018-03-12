@@ -414,7 +414,7 @@ qtractorMainForm::qtractorMainForm (
 	
 #endif	// !HAVE_SIGNAL_H
 
-	// Also the (QAction) MIDI observer map (TESTING)...
+	// Also the (QAction) MIDI observer map...
 	m_pActionControl = new qtractorActionControl(this);
 
 	// Get edit selection mode action group up...
@@ -1276,7 +1276,7 @@ qtractorMainForm::~qtractorMainForm (void)
 	if (m_pMidiControl)
 		delete m_pMidiControl;
 
-	// Remove (QAction) MIDI observer ma TESTING).
+	// Remove (QAction) MIDI observer map.
 	if (m_pActionControl)
 		delete m_pActionControl;
 
