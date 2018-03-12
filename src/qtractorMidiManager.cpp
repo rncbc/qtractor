@@ -543,8 +543,7 @@ void qtractorMidiManager::clear (void)
 	// Reset event buffers...
 	for (unsigned short i = 0; i < 2; ++i) {
 	#ifdef CONFIG_VST
-		VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[i];
-		::memset(pVstEvents, 0, sizeof(VstEvents));
+		::memset(m_ppVstBuffers[i], 0, sizeof(VstEvents));
 	#endif
 	#ifdef CONFIG_LV2_EVENT
 		LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[i];
