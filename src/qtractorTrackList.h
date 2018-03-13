@@ -38,6 +38,8 @@ class qtractorRubberBand;
 class qtractorMidiManager;
 
 class qtractorCurveButton;
+class qtractorPluginListView;
+class qtractorMeter;
 
 class QHeaderView;
 
@@ -51,14 +53,14 @@ class QKeyEvent;
 
 
 //----------------------------------------------------------------------------
-// qtractorTrackItemWidget -- Track button layout widget.
+// qtractorTrackListButtons -- Track button layout widget.
 
-class qtractorTrackItemWidget : public QWidget
+class qtractorTrackListButtons : public QWidget
 {
 public:
 
 	// Constructor.
-	qtractorTrackItemWidget(
+	qtractorTrackListButtons(
 		qtractorTrack *pTrack, QWidget *pParent = 0);
 
 	// Local child widgets accessors.
@@ -261,9 +263,10 @@ private:
 		QPixmap        icon;
 		QStringList    text;
 		unsigned int   flags;
-		// Track-list item widget.
-		qtractorTrackItemWidget *widget;
-		QWidget       *meter;
+		// Track-list item widgets.
+		qtractorTrackListButtons *buttons;
+		qtractorPluginListView *plugins;
+		qtractorMeter *meters;
 	};
 
 	// Model cache item list.

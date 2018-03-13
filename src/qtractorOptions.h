@@ -260,6 +260,7 @@ public:
 	bool bTrackViewCurveEdit;
 
 	// Tracks list options.
+	bool bTrackListPlugins;
 	bool bTrackListMeters;
 
 	// MIDI Editor options...

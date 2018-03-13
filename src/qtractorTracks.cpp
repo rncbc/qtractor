@@ -3123,8 +3123,8 @@ void qtractorTracks::updateSelect (void)
 // Overall contents reset.
 void qtractorTracks::clear (void)
 {
-	m_pTrackList->clear();
 	m_pTrackView->clear();
+	m_pTrackList->clear();
 
 	updateContents(true);
 }
