@@ -10468,12 +10468,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3684"/>
         <source>Whether to show plugins on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグイン一覧を左ペインのトラックリストに表示するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3687"/>
         <source>Sho&amp;w plugins on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグイン一覧を左ペインのトラックリストに表示(&amp;W)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2447"/>
