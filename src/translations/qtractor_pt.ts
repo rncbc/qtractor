@@ -1385,17 +1385,17 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="583"/>
         <source>Whether to use WSOLA time-stretching</source>
-        <translation>Utilizar ou não &quot;distorcer tempo&quot; do tipo WSOLA</translation>
+        <translation>Utilizar ou não &quot;esticar tempo&quot; (time-stretching) do tipo WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="586"/>
         <source>&amp;WSOLA time-stretching</source>
-        <translation>&quot;Distorcer-tempo&quot; do tipo &amp;WSOLA</translation>
+        <translation>&quot;Esticar-tempo&quot; do tipo &amp;WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="599"/>
         <source>Whether to apply WSOLA quick seek time-stretching</source>
-        <translation>Se for usar WSOLA mudança rápida para distorcer-tempo</translation>
+        <translation>Se for usar WSOLA mudança rápida para esticar-tempo (time-stretching)</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="602"/>
@@ -10071,12 +10071,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3684"/>
         <source>Whether to show plugins on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Se serão exibidos os plugins na lista de pistas/painel esquerdo</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3687"/>
         <source>Sho&amp;w plugins on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mostrar os plugins na lista de pistas/painel esquerdo</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2942"/>
@@ -10345,7 +10345,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="958"/>
         <source>Whether to apply WSOLA quick seek time-stretching</source>
-        <translation>Se for usar WSOLA mudança rápida para distorcer-tempo</translation>
+        <translation>Se usa WSOLA para mudança rápida de esticar-tempo (time-stretching)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="950"/>
@@ -10441,7 +10441,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="942"/>
         <source>Whether to use WSOLA time-stretching</source>
-        <translation>Sempre utilizar &quot;distorcer-tempo&quot; do tipo WSOLA</translation>
+        <translation>Sempre utilizar &quot;esticar-tempo&quot; do tipo WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3514"/>
@@ -10516,7 +10516,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="859"/>
         <source>Aut&amp;omatic time-stretching</source>
-        <translation>&quot;Distorcer-tempo&quot; au&amp;tomático</translation>
+        <translation>&quot;Esticar-tempo&quot; au&amp;tomático</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="311"/>
@@ -10562,7 +10562,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="856"/>
         <source>Whether to apply time-stretching when tempo changes</source>
-        <translation>Sempre aplicar &quot;distorcer-tempo&quot; quando o tempo mudar</translation>
+        <translation>Sempre aplicar &quot;esticar-tempo&quot; (time-stretching) quando o tempo mudar</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1250"/>
@@ -10647,7 +10647,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="945"/>
         <source>&amp;WSOLA time-stretching</source>
-        <translation>&quot;Distorcer-tempo&quot; do tipo &amp;WSOLA</translation>
+        <translation>&quot;Esticar-tempo&quot; do tipo &amp;WSOLA</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2095"/>
