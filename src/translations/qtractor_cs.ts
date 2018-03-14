@@ -11211,126 +11211,126 @@ Jste si jistý?</translation>
         <translation>Odstranit všechny přídavné moduly</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1477"/>
+        <location filename="../qtractorPluginListView.cpp" line="1481"/>
         <source>&amp;Move Here</source>
         <translation>&amp;Přesunout na toto místo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1478"/>
+        <location filename="../qtractorPluginListView.cpp" line="1482"/>
         <source>&amp;Copy Here</source>
         <translation>&amp;Kopírovat na toto místo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1481"/>
+        <location filename="../qtractorPluginListView.cpp" line="1485"/>
         <source>C&amp;ancel</source>
         <translation>Z&amp;rušit</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1580"/>
+        <location filename="../qtractorPluginListView.cpp" line="1584"/>
         <source>&amp;Add Plugin...</source>
         <translation>&amp;Přidat přídavný modul...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1583"/>
+        <location filename="../qtractorPluginListView.cpp" line="1587"/>
         <source>&amp;Inserts</source>
         <translation>&amp;Vložky</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1586"/>
+        <location filename="../qtractorPluginListView.cpp" line="1590"/>
         <source>&amp;Audio</source>
         <translation>&amp;Zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1590"/>
-        <location filename="../qtractorPluginListView.cpp" line="1614"/>
+        <location filename="../qtractorPluginListView.cpp" line="1594"/>
+        <location filename="../qtractorPluginListView.cpp" line="1618"/>
         <source>Add &amp;Insert</source>
         <translation>Přidat &amp;vložku</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1593"/>
-        <location filename="../qtractorPluginListView.cpp" line="1617"/>
+        <location filename="../qtractorPluginListView.cpp" line="1597"/>
+        <location filename="../qtractorPluginListView.cpp" line="1621"/>
         <source>Add &amp;Aux Send</source>
         <translation>Přidat &amp;aux-send</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1602"/>
-        <location filename="../qtractorPluginListView.cpp" line="1626"/>
+        <location filename="../qtractorPluginListView.cpp" line="1606"/>
+        <location filename="../qtractorPluginListView.cpp" line="1630"/>
         <source>&amp;Sends</source>
         <translation>&amp;Poslání</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1606"/>
-        <location filename="../qtractorPluginListView.cpp" line="1630"/>
+        <location filename="../qtractorPluginListView.cpp" line="1610"/>
+        <location filename="../qtractorPluginListView.cpp" line="1634"/>
         <source>&amp;Returns</source>
         <translation>&amp;Navrácení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1610"/>
+        <location filename="../qtractorPluginListView.cpp" line="1614"/>
         <source>&amp;MIDI</source>
         <translation>&amp;MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1636"/>
+        <location filename="../qtractorPluginListView.cpp" line="1640"/>
         <source>Ac&amp;tivate</source>
         <translation>&amp;Zapnout</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1659"/>
+        <location filename="../qtractorPluginListView.cpp" line="1663"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1718"/>
+        <location filename="../qtractorPluginListView.cpp" line="1722"/>
         <source>&amp;None</source>
         <translation>&amp;Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1731"/>
+        <location filename="../qtractorPluginListView.cpp" line="1735"/>
         <source>&amp;Properties...</source>
         <translation>Vlastnosti&amp;...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1738"/>
+        <location filename="../qtractorPluginListView.cpp" line="1742"/>
         <source>&amp;Edit</source>
         <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1773"/>
+        <location filename="../qtractorPluginListView.cpp" line="1777"/>
         <source>&amp;Auto-connect</source>
         <translation>&amp;Připojit automaticky</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1643"/>
+        <location filename="../qtractorPluginListView.cpp" line="1647"/>
         <source>Acti&amp;vate All</source>
         <translation>Z&amp;apnout vše</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1650"/>
+        <location filename="../qtractorPluginListView.cpp" line="1654"/>
         <source>Deactivate Al&amp;l</source>
         <translation>Vypnout v&amp;še</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1663"/>
+        <location filename="../qtractorPluginListView.cpp" line="1667"/>
         <source>Re&amp;move All</source>
         <translation>Od&amp;stranit vše</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1670"/>
+        <location filename="../qtractorPluginListView.cpp" line="1674"/>
         <source>Move &amp;Up</source>
         <translation>Posunout &amp;nahoru</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1675"/>
+        <location filename="../qtractorPluginListView.cpp" line="1679"/>
         <source>Move &amp;Down</source>
         <translation>Posunout &amp;dolů</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1752"/>
+        <location filename="../qtractorPluginListView.cpp" line="1756"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginListView.cpp" line="1769"/>
+        <location filename="../qtractorPluginListView.cpp" line="1773"/>
         <source>&amp;Dedicated</source>
         <translation>&amp;Jednoúčelové</translation>
     </message>

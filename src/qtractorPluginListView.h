@@ -217,6 +217,9 @@ protected:
 	// Direct access parameter handle.
 	void dragDirectAccess(const QPoint& pos);
 
+	// Direct access parameter reset (to default value).
+	void resetDirectAccess(const QPoint& pos);
+
 	// Initial size-policy hints.
 	QSize sizeHint() const;
 

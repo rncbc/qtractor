@@ -1263,6 +1263,10 @@ void qtractorPluginListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_pDragItem = pItem;
 		dragDirectAccess(pos);
 	}
+	else // Reset to default value...
+	if (pMouseEvent->button() == Qt::MidButton) {
+		resetDirectAccess(pos);
+	}
 
 	QListWidget::mousePressEvent(pMouseEvent);
 }
@@ -1874,6 +1878,35 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 				.arg(pDirectAccessParam->name())
 				.arg(pDirectAccessParam->display()), pViewport);
 	}
+}
+
+
+
+// Direct access parameter reset (to default value).
+void qtractorPluginListView::resetDirectAccess ( const QPoint& pos )
+{
+	qtractorPluginListItem *pItem
+		= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
+	if (pItem == NULL)
+		return;
+
+	qtractorPlugin *pPlugin = pItem->plugin();
+	if (pPlugin == NULL)
+		return;
+
+	qtractorPluginParam *pDirectAccessParam
+		= pPlugin->directAccessParam();
+	if (pDirectAccessParam == NULL)
+		return;
+
+	qtractorMidiControlObserver *pDirectAccessObserver
+		= pDirectAccessParam->observer();
+	if (pDirectAccessObserver == NULL)
+		return;
+
+	const float fDefaultValue
+		= pDirectAccessObserver->defaultValue();
+	pDirectAccessParam->updateValue(fDefaultValue, true);
 }
 
 
