@@ -403,7 +403,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 		plugins = NULL;
 	}
 
-	if (!pOptions->bTrackListMeters && meters) {
+	if (meters) {
 		delete meters;
 		meters = NULL;
 	}
@@ -1197,9 +1197,9 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					else
 					if (iCol == Bus && pItem->plugins) {
 						if (rect.height() > qtractorTrack::HeightBase) {
-							const int dy1 = qtractorTrack::HeightBase >> 1;
+							const int dy1 = qtractorTrack::HeightBase;
 							(pItem->plugins)->setGeometry(
-								rect.adjusted(+4, dy1 + 4, -3, -2));
+								rect.adjusted(+4, dy1, -3, -2));
 							(pItem->plugins)->show();
 						} else {
 							(pItem->plugins)->hide();
