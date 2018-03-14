@@ -414,7 +414,7 @@ qtractorMainForm::qtractorMainForm (
 	
 #endif	// !HAVE_SIGNAL_H
 
-	// Also the (QAction) MIDI observer map (TESTING)...
+	// Also the (QAction) MIDI observer map...
 	m_pActionControl = new qtractorActionControl(this);
 
 	// Get edit selection mode action group up...
@@ -1276,7 +1276,7 @@ qtractorMainForm::~qtractorMainForm (void)
 	if (m_pMidiControl)
 		delete m_pMidiControl;
 
-	// Remove (QAction) MIDI observer ma TESTING).
+	// Remove (QAction) MIDI observer map.
 	if (m_pActionControl)
 		delete m_pActionControl;
 
@@ -2271,6 +2271,7 @@ bool qtractorMainForm::closeSession (void)
 		// Reset (soft) subject/observer queue.
 		qtractorSubject::resetQueue();
 		// Reset all dependables to default.
+		m_pTracks->trackList()->clear();
 		m_pMixer->clear();
 		m_pFiles->clear();
 		// Close session engines.
@@ -5022,6 +5023,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
+	const bool    bOldTrackListPlugins   = m_pOptions->bTrackListPlugins;
 	const bool    bOldTrackListMeters    = m_pOptions->bTrackListMeters;
 #ifdef CONFIG_LV2
 	const QString sep(':'); 
@@ -5202,8 +5204,10 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
 			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
 			updateSyncViewHold();
-		if (( bOldTrackListMeters && !m_pOptions->bTrackListMeters) ||
-			(!bOldTrackListMeters &&  m_pOptions->bTrackListMeters)) {
+		if (( bOldTrackListPlugins && !m_pOptions->bTrackListPlugins) ||
+			(!bOldTrackListPlugins &&  m_pOptions->bTrackListPlugins) ||
+			( bOldTrackListMeters  && !m_pOptions->bTrackListMeters)  ||
+			(!bOldTrackListMeters  &&  m_pOptions->bTrackListMeters)) {
 			if (m_pTracks)
 				m_pTracks->trackList()->updateItems();
 		}

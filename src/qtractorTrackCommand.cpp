@@ -541,8 +541,6 @@ bool qtractorMoveTrackCommand::redo (void)
 	// Just insert under the track list position...
 	// We'll renumber all items now...
 	iNextTrack = pTrackList->insertTrack(iNextTrack, pTrack);
-	if (iNextTrack >= 0)
-		pTrackList->setCurrentTrackRow(iNextTrack);
 
 	// Swap it nice, finally.
 	m_pNextTrack = pNextTrack;
@@ -551,6 +549,9 @@ bool qtractorMoveTrackCommand::redo (void)
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
 		pMixer->updateTracks(true);
+
+	// Make it new current track (updates mixer too)...
+	pTrackList->setCurrentTrackRow(iNextTrack);
 
 	// ATTN: MIDI controller map feedback.
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();

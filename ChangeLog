@@ -6,6 +6,16 @@ ChangeLog
 
 GIT HEAD
 
+- New View/Options.../Plugins/Experimental/Show plugins
+  on track list/left pane option is in effect on tracks
+  that are tall enough in height for their plugins list
+  to fit on the Bus column. (EXPERIMENTAL)
+
+- Fixed a day-zero bug over the MIDI Insert (Send/Return)
+  pseudo-plugin, which was duplicating MIDI events onto
+  the next LV2 plugin in chain, causing strange hanging
+  notes, mutes, retriggerings and what not.
+
 - MIDI track and clip note min/max range display now fixed.
 
 - MIDI Program Change events (PC) now have their proper

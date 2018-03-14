@@ -362,7 +362,7 @@ void qtractorTracks::zoomCenterPre ( ZoomCenter& zc ) const
 	#endif
 	}
 
-	int cx = m_pTrackView->contentsX();
+	const int cx = m_pTrackView->contentsX();
 	zc.frame = pSession->frameFromPixel(cx + zc.x);
 }
 
