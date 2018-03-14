@@ -2270,8 +2270,9 @@ bool qtractorMainForm::closeSession (void)
 		setPlaying(false);
 		// Reset (soft) subject/observer queue.
 		qtractorSubject::resetQueue();
-		// Reset all dependables to default.
+		// HACK: Track-list plugins-view must get wiped first...
 		m_pTracks->trackList()->clear();
+		// Reset all dependables to default.
 		m_pMixer->clear();
 		m_pFiles->clear();
 		// Close session engines.
