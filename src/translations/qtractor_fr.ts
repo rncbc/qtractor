@@ -10469,12 +10469,12 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3684"/>
         <source>Whether to show plugins on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Si on doit afficher les greffons sur la liste de piste / panneau de gauche</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3687"/>
         <source>Sho&amp;w plugins on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les greffon sur la liste de piste / panneau de gauche (&amp;w)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2447"/>
