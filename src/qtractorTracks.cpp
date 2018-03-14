@@ -362,7 +362,7 @@ void qtractorTracks::zoomCenterPre ( ZoomCenter& zc ) const
 	#endif
 	}
 
-	int cx = m_pTrackView->contentsX();
+	const int cx = m_pTrackView->contentsX();
 	zc.frame = pSession->frameFromPixel(cx + zc.x);
 }
 
@@ -3123,8 +3123,8 @@ void qtractorTracks::updateSelect (void)
 // Overall contents reset.
 void qtractorTracks::clear (void)
 {
-	m_pTrackView->clear();
 	m_pTrackList->clear();
+	m_pTrackView->clear();
 
 	updateContents(true);
 }

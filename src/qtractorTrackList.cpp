@@ -776,7 +776,7 @@ void qtractorTrackList::updateIcons (void)
 // Main table cleaner.
 void qtractorTrackList::clear (void)
 {
-	clearSelect();
+	m_select.clear();
 
 	m_iCurrentTrack = -1;
 

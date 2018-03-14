@@ -2271,6 +2271,7 @@ bool qtractorMainForm::closeSession (void)
 		// Reset (soft) subject/observer queue.
 		qtractorSubject::resetQueue();
 		// Reset all dependables to default.
+		m_pTracks->trackList()->clear();
 		m_pMixer->clear();
 		m_pFiles->clear();
 		// Close session engines.
