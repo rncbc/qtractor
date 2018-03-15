@@ -10918,12 +10918,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3684"/>
         <source>Whether to show plugins on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda ukázat přídavné moduly v seznamu stop/levém okně</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3687"/>
         <source>Sho&amp;w plugins on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ukázat přídavné moduly v seznamu stop/levém okně</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3615"/>
