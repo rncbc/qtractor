@@ -5830,12 +5830,12 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5746"/>
         <source>LV2 Plug-in UI support disabled.</source>
-        <translation>Support du GUI des greffons LV2 désactivé.</translation>
+        <translation>Support de l&apos;interface graphique des greffons LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5749"/>
         <source>LV2 Plug-in UI support (libsuil) disabled.</source>
-        <translation>Support du GUI des greffons (libsuil) LV2 désactivé.</translation>
+        <translation>Support de l&apos;interface graphique des greffons (libsuil) LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5756"/>
@@ -6380,22 +6380,22 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="238"/>
         <source>MIDI Event type</source>
-        <translation>MIDI Type d&apos;évènement</translation>
+        <translation>Type d&apos;évènement MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="245"/>
         <source>MIDI Channel</source>
-        <translation>MIDI Canal</translation>
+        <translation>Canal MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="252"/>
         <source>MIDI Controller (parameter)</source>
-        <translation>MIDI Contrôleur (paramètre)</translation>
+        <translation>Contrôleur MIDI (paramètre)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="259"/>
         <source>MIDI parameter (track offset)</source>
-        <translation>MIDI Paramètre (décalage de la piste)</translation>
+        <translation>Paramètre MIDI (décalage de piste)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="262"/>
@@ -6405,7 +6405,7 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="269"/>
         <source>Track offset</source>
-        <translation>Décalage de la piste</translation>
+        <translation>Décalage de piste</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="282"/>
@@ -6496,7 +6496,7 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="419"/>
         <source>Enable all controllers immediate sync (hook)</source>
-        <translation>Activer la sync immédiate de tous les contrôleUrs (hook)</translation>
+        <translation>Activer la synchro immédiate de tous les contrôleurs (hook)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="422"/>
@@ -10439,7 +10439,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2450"/>
         <source>A&amp;utomatic mixer strip/grid layout (multi-row)</source>
-        <translation>Disposition a&amp;utomatique en grille des bande de mixer (multi-ligne)</translation>
+        <translation>Disposition a&amp;utomatique en grille des bandes du mixeur (multi-lignes)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2890"/>
@@ -10789,17 +10789,17 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3580"/>
         <source>Whether to open plugin&apos;s editor (GUI) by default</source>
-        <translation>Si on doit ouvrir l&apos;éditeur (GUI) du greffon par défaut</translation>
+        <translation>Si on doit ouvrir l&apos;éditeur (interface graphique) du greffon par défaut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3583"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation>Ouvrir l&apos;édit&amp;eur (GUI) du greffon par défaut</translation>
+        <translation>Ouvrir l&apos;édit&amp;eur (interface graphique) du greffon par défaut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3599"/>
         <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>&amp;Sélectionner l&apos;éditeur de greffon si plusieurs sont disponibles</translation>
+        <translation>&amp;Sélectionner l&apos;éditeur (interface graphique) du greffon si plusieurs sont disponibles</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3615"/>
@@ -10814,7 +10814,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3655"/>
         <source>LV2 Dy&amp;namic Manifest support</source>
-        <translation>Support du Manifeste Dy&amp;namique LV2</translation>
+        <translation>Support du manifeste dy&amp;namique LV2</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3668"/>
@@ -11448,7 +11448,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginSelectForm.cpp" line="332"/>
         <source>GUI</source>
-        <translation>GUI</translation>
+        <translation>IGU</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.cpp" line="334"/>
