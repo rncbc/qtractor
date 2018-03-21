@@ -44,6 +44,7 @@ class qtractorAudioBufferThread;
 class qtractorCurveList;
 class qtractorCurveFile;
 class qtractorCurve;
+class qtractorTempoCurve;
 
 // Special forward declarations.
 class QDomElement;
@@ -59,7 +60,7 @@ class qtractorTrack : public qtractorList<qtractorTrack>::Link
 public:
 
 	// Track type symbology.
-	enum TrackType { None = 0, Audio, Midi };
+	enum TrackType { None = 0, Audio, Midi, Tempo };
 	// Tool button specific types:
 	enum ToolType  { Record, Mute, Solo };
 
@@ -105,6 +106,7 @@ public:
 
 	// Solo status accessors.
 	void setSolo(bool bSolo);
+	void setTempoSolo(bool bSolo);
 	bool isSolo() const;
 
 	// Track gain (volume) accessor.
@@ -246,11 +248,13 @@ public:
 	qtractorAudioBufferThread *syncThread();
 
 	// Track state (monitor, record, mute, solo) button setup.
+	qtractorSubject *tempoSubject() const;
 	qtractorSubject *monitorSubject() const;
 	qtractorSubject *recordSubject() const;
 	qtractorSubject *muteSubject() const;
 	qtractorSubject *soloSubject() const;
 
+	qtractorMidiControlObserver *tempoObserver() const;
 	qtractorMidiControlObserver *monitorObserver() const;
 	qtractorMidiControlObserver *recordObserver() const;
 	qtractorMidiControlObserver *muteObserver() const;
@@ -282,6 +286,11 @@ public:
 	// Track automation current curve accessor.
 	void setCurrentCurve(qtractorCurve *pCurrentCurve);
 	qtractorCurve *currentCurve() const;
+
+	// Track tempo curve accessor.
+	void setTrackTempoCurve(qtractorTempoCurve *pTempoCurve);
+	qtractorTempoCurve *trackTempoCurve() const
+		{ return m_pTempoCurve; }
 
 	// Track automation curve serialization methods.
 	static void loadCurveFile(
@@ -393,6 +402,7 @@ private:
 	MidiPanningObserver *m_pMidiPanningObserver;
 
 	// State (monitor, record, mute, solo) observer stuff.
+	qtractorMidiControlObserver *m_pTempoObserver;
 	qtractorMidiControlObserver *m_pMonitorObserver;
 
 	class StateObserver;
@@ -401,6 +411,7 @@ private:
 	StateObserver   *m_pMuteObserver;
 	StateObserver   *m_pSoloObserver;
 
+	qtractorSubject *m_pTempoSubject;
 	qtractorSubject *m_pMonitorSubject;
 	qtractorSubject *m_pRecordSubject;
 	qtractorSubject *m_pMuteSubject;
@@ -409,6 +420,8 @@ private:
 	qtractorMidiControl::Controllers m_controllers;
 
 	qtractorCurveFile *m_pCurveFile;
+
+	qtractorTempoCurve *m_pTempoCurve;
 
 	// Take(record) descriptor/id registry.
 	mutable QHash<int, TakeInfo *> m_idtakes;

@@ -40,7 +40,7 @@ public:
 	enum DisplayFormat { Frames = 0, Time, BBT };
 
 	// Default constructor.
-	qtractorTimeScale() : m_displayFormat(Frames),
+	qtractorTimeScale() : m_displayFormat(Frames), /*m_pTempoCurve(NULL),*/
 		m_cursor(this), m_markerCursor(this) { clear(); }
 
 	// Copy constructor.
@@ -129,6 +129,18 @@ public:
 
 		// Update node position metrics.
 		void reset(Node *pNode);
+
+		// Node Tempo accessors.
+		float currTempo() const {
+			return tempo;
+		}
+
+		float prevTempo() const {
+			if (this->prev())
+				return this->prev()->tempo;
+			else
+				return tempo;
+		}
 
 		// Tempo accessor/convertors.
 		void setTempoEx(float fTempo, unsigned short iBeatType = 2);

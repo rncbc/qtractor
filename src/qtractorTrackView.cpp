@@ -36,14 +36,18 @@
 #include "qtractorFileListView.h"
 #include "qtractorClipSelect.h"
 #include "qtractorCurveSelect.h"
+#include "qtractorTempoCurveSelect.h"
 
 #include "qtractorOptions.h"
 
 #include "qtractorClipCommand.h"
 #include "qtractorCurveCommand.h"
+#include "qtractorTempoCurveCommand.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorThumbView.h"
+
+#include "qtractorMidiControlObserver.h"
 
 #include <QToolButton>
 #include <QDoubleSpinBox>
@@ -100,6 +104,7 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 
 	m_pClipSelect    = new qtractorClipSelect();
 	m_pCurveSelect   = new qtractorCurveSelect();
+	m_pTempoCurveSelect   = new qtractorTempoCurveSelect();
 
 	m_pSessionCursor = NULL;
 	m_pRubberBand    = NULL;
@@ -121,6 +126,11 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_pEditCurveNode = NULL;
 	m_pEditCurveNodeSpinBox = NULL;
 	m_iEditCurveNodeDirty = 0;
+
+	m_pEditTempoCurve = NULL;
+	m_pEditTimeScaleNode = NULL;
+	m_pEditTempoCurveNodeSpinBox = NULL;
+	m_iEditTempoCurveNodeDirty = 0;
 
 	clear();
 
@@ -200,6 +210,7 @@ qtractorTrackView::~qtractorTrackView (void)
 	clear();
 
 	delete m_pCurveSelect;
+	delete m_pTempoCurveSelect;
 	delete m_pClipSelect;
 }
 
@@ -211,6 +222,7 @@ void qtractorTrackView::clear (void)
 
 	m_pClipSelect->clear();
 	m_pCurveSelect->clear();
+	m_pTempoCurveSelect->clear();
 
 	m_dropType   = qtractorTrack::None;
 	m_dragState  = DragNone;
@@ -255,6 +267,38 @@ void qtractorTrackView::clear (void)
 	qtractorScrollView::setContentsPos(0, 0);
 }
 
+void qtractorTrackView::trackTempoCurveShow(qtractorSession *pSession, qtractorTrack *pTrack)
+{
+	qtractorSubject *pSubject = NULL;
+//	qtractorCurveList *pCurveList = NULL;
+	qtractorMidiControlObserver *pMidiObserver;
+
+	if (pSession == NULL || pTrack == NULL)
+		return;
+
+	if (pTrack->trackType() != qtractorTrack::Tempo)
+		return;
+
+	pMidiObserver = pTrack->tempoObserver();
+	if (pMidiObserver) {
+		pSubject = pMidiObserver->subject();
+	}
+
+	qtractorTempoCurve *pTempoCurve = NULL;
+	if (pSubject) {
+		pTempoCurve = pSubject->tempoCurve();
+
+		if (pTempoCurve == NULL) {
+			pTempoCurve = new qtractorTempoCurve(pSession->timeScale(), pSubject);
+			if (pTempoCurve != NULL) {
+				pTrack->setTrackTempoCurve(pTempoCurve);
+				pTrack->setCurrentCurve(NULL);
+
+				pSession->execute(new qtractorTempoCurveEditCommand(pTempoCurve));
+			}
+		}
+	}
+}
 
 // Update track view content height.
 void qtractorTrackView::updateContentsHeight (void)
@@ -642,9 +686,11 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack && y2 < ch) {
+		trackTempoCurveShow(pSession, pTrack);
 		y1  = y2;
 		y2 += pTrack->zoomHeight();
 		qtractorCurve *pCurve = pTrack->currentCurve();
+		qtractorTempoCurve *pTempoCurve = pTrack->trackTempoCurve();
 		if (pCurve && y2 > cy) {
 			const int h = y2 - y1 - 2;
 			const QRect trackRect(x, y1 - cy + 1, w, h);
@@ -731,6 +777,70 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					= items.constEnd();
 				for ( ; iter != iter_end; ++iter) {
 					qtractorCurveSelect::Item *pItem = iter.value();
+					if (pItem->flags & 1) {
+						QRect rectNode(pItem->rectNode);
+						rectNode.moveTopLeft(contentsToViewport(
+							rectNode.topLeft() + QPoint(m_iDragCurveX, 0)));
+						pPainter->fillRect(rectNode, QColor(0, 0, 255, 80));
+					}
+				}
+			}
+		}
+		else
+		if (pTempoCurve && y2 > cy) {
+			const int h = y2 - y1 - 2;
+			const QRect trackRect(x, y1 - cy + 1, w, h);
+			if (iTrackStart == 0)
+				iTrackStart = pSession->frameFromPixel(cx + x);
+			if (iTrackEnd == 0)
+				iTrackEnd = pSession->frameFromPixel(cx + x + w);
+			unsigned long frame = iTrackStart;
+			qtractorTimeScale::Cursor cursor(pTempoCurve->timeScale());
+			qtractorTimeScale::Node *pNode = cursor.seekFrame(frame);
+			const bool bLocked = pTempoCurve->isLocked();
+			int xc2, xc1 = trackRect.x();
+//			int yc2, yc1 = y2 - int(cursor.scale(pNode, frame) * float(h)) - cy;
+			int yc2, yc1 = y2 - int(pTempoCurve->scale(pNode, frame) * float(h)) - cy;
+			int yc3, xc3 = xc1 + 4;
+			QColor rgbCurve(pTempoCurve->color());
+			QPen pen(rgbCurve);
+			pPainter->setPen(pen);
+			QPainterPath path;
+			path.moveTo(xc1, yc1);
+			while (pNode && pNode->frame < iTrackEnd) {
+				xc2 = pSession->pixelFromFrame(pNode->frame) - cx;
+//				yc2 = y2 - int(cursor.scale(pNode) * float(h)) - cy;
+				yc2 = y2 - int(pTempoCurve->scale(pNode) * float(h)) - cy;
+				if (!bLocked)
+					pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
+				path.lineTo(xc2, yc1);
+				yc1 = yc2;
+				path.lineTo(xc2, yc2);
+				pNode = pNode->next();
+			}
+			xc2 = rect.right();
+			frame = pSession->frameFromPixel(cx + xc2);
+//			yc2 = y2 - int(cursor.scale(frame) * float(h)) - cy;
+			yc2 = y2 - int(pTempoCurve->scale(frame) * float(h)) - cy;
+			path.lineTo(xc2, yc1);
+			path.lineTo(xc2, yc2);
+			// Draw line...
+			//pen.setWidth(2);
+			pPainter->strokePath(path, pen);	
+			// Fill semi-transparent area...
+			rgbCurve.setAlpha(60);
+			path.lineTo(xc2, y2 - cy);
+			path.lineTo(xc1, y2 - cy);
+			pPainter->fillPath(path, rgbCurve);
+			if (m_bCurveEdit && m_pTempoCurveSelect->isCurrentCurve(pTempoCurve)) {
+				const qtractorTempoCurveSelect::ItemList& items
+					= m_pTempoCurveSelect->items();
+				qtractorTempoCurveSelect::ItemList::ConstIterator iter
+					= items.constBegin();
+				const qtractorTempoCurveSelect::ItemList::ConstIterator iter_end
+					= items.constEnd();
+				for ( ; iter != iter_end; ++iter) {
+					qtractorTempoCurveSelect::Item *pItem = iter.value();
 					if (pItem->flags & 1) {
 						QRect rectNode(pItem->rectNode);
 						rectNode.moveTopLeft(contentsToViewport(
@@ -1167,11 +1277,64 @@ qtractorCurve::Node *qtractorTrackView::nodeAtTrack ( const QPoint& pos,
 }
 
 
+// Get tempo curve node from given contents position.
+qtractorTimeScale::Node *qtractorTrackView::tempoNodeAtTrack ( const QPoint& pos,
+	qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo ) const
+{
+	if (pTrack == NULL)
+		return NULL;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL || m_pSessionCursor == NULL)
+		return NULL;
+
+	qtractorTempoCurve *pTempoCurve = pTrack->trackTempoCurve();
+	if (pTempoCurve == NULL)
+		return NULL;
+
+	const int w  = pTrackViewInfo->trackRect.width();
+	const int h  = pTrackViewInfo->trackRect.height();
+	const int y2 = pTrackViewInfo->trackRect.bottom() + 1;
+	const int cx = qtractorScrollView::contentsX();
+
+	qtractorTimeScale::Node *pNode = pTempoCurve->timeScale()->nodes().first();
+	qtractorTimeScale::Node *pNode_next;
+
+	while (pNode) {
+		pNode_next = pNode->next();
+		if (pNode_next == NULL)
+			break;
+
+		const int x1 = pSession->pixelFromFrame(pNode->frame);
+		const int x2 = pSession->pixelFromFrame(pNode_next->frame);
+		if (x1 < cx) {
+			if (QRect(cx, (y2 - h), (x2 - cx), h).contains(pos))
+				break;
+		} else {
+			if (QRect((x1 - cx), (y2 - h), (x2 - x1 + cx), h).contains(pos))
+				break;
+		}
+		// Test next...
+		pNode = pNode->next();
+	}
+
+	return pNode;
+}
+
+
 qtractorCurve::Node *qtractorTrackView::nodeAt ( const QPoint& pos ) const
 {
 	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
 	return nodeAtTrack(pos, pTrack, &tvi);
+}
+
+
+qtractorTimeScale::Node *qtractorTrackView::tempoNodeAt ( const QPoint& pos ) const
+{
+	TrackViewInfo tvi;
+	qtractorTrack *pTrack = trackAt(pos, false, &tvi);
+	return tempoNodeAtTrack(pos, pTrack, &tvi);
 }
 
 
@@ -1410,7 +1573,7 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 		}
 		// Then as an Audio file ?
 		if (m_dropType == qtractorTrack::None
-			|| m_dropType == qtractorTrack::Audio) {
+			|| m_dropType == qtractorTrack::Audio || m_dropType == qtractorTrack::Tempo) {
 			qtractorAudioFile *pFile
 				= qtractorAudioFileFactory::createAudioFile(pDropItem->path);
 			if (pFile) {
@@ -1427,13 +1590,13 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 					m_rectDrag.translate(0, m_rectDrag.height() + 4);
 					if (m_dropType == qtractorTrack::None)
 						m_dropType = qtractorTrack::Audio;
-				} else if (m_dropType == qtractorTrack::Audio) {
+				} else if ((m_dropType == qtractorTrack::Audio) || (m_dropType == qtractorTrack::Tempo)) {
 					iter.remove();
 					delete pDropItem;
 				}
 				delete pFile;
 				continue;
-			} else if (m_dropType == qtractorTrack::Audio) {
+			} else if ((m_dropType == qtractorTrack::Audio) || (m_dropType == qtractorTrack::Tempo)) {
 				iter.remove();
 				delete pDropItem;
 			}
@@ -1625,6 +1788,7 @@ bool qtractorTrackView::dropClip (
 			// Depending on import type...
 			if (!files.isEmpty()) {
 				switch (m_dropType) {
+				case qtractorTrack::Tempo:
 				case qtractorTrack::Audio:
 					m_pTracks->addAudioTracks(files, iClipStart);
 					++iAddTrack;
@@ -1675,6 +1839,7 @@ bool qtractorTrackView::dropClip (
 	while (iter.hasNext()) {
 		DropItem *pDropItem = iter.next();
 		switch (pTrack->trackType()) {
+		case qtractorTrack::Tempo:
 		case qtractorTrack::Audio: {
 			qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 			if (pAudioClip) {
@@ -1788,11 +1953,17 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			|| (m_bCurveEdit && m_dragCursor == DragNone)) {
 			TrackViewInfo tvi;
 			qtractorTrack *pTrack = trackAt(pos, true, &tvi);
-			if (pTrack && m_dragCursor == DragCurveNode) {
+			if (pTrack && pTrack->currentCurve() && m_dragCursor == DragCurveNode) {
 				qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
 				if (pNode) {
 					m_pDragCurve = pTrack->currentCurve();
 					m_pDragCurveNode = pNode;
+				}
+			} else if (pTrack && pTrack->trackTempoCurve() && m_dragCursor == DragCurveNode) {
+				qtractorTimeScale::Node *pNode = tempoNodeAtTrack(pos, pTrack, &tvi);
+				if (pNode) {
+					m_pDragTempoCurve = pTrack->trackTempoCurve();
+					m_pDragTimeScaleNode = pNode;
 				}
 			}
 		}
@@ -2137,6 +2308,11 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		case DragClipDrop:
 		case DragNone:
 		default:
+			TrackViewInfo tvi;
+			qtractorTrack *pTrack = trackAt(pos, true, &tvi);
+			if (pTrack && pTrack->trackTempoCurve()) {
+				qtractorTimeScale::Node *pNode = tempoNodeAtTrack(pos, pTrack, &tvi);
+			}
 			break;
 		}
 	}
@@ -2155,10 +2331,16 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 
 	TrackViewInfo tvi;
 	qtractorTrack *pTrack = trackAt(pos, true, &tvi);
-	if (pTrack) {
+	if (pTrack && pTrack->currentCurve()) {
 		qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
 		if (pNode) {
 			openEditCurveNode(pTrack->currentCurve(), pNode);
+			return;
+		}
+	} else if (pTrack && pTrack->trackTempoCurve()) {
+		qtractorTimeScale::Node *pNode = tempoNodeAtTrack(pos, pTrack, &tvi);
+		if (pNode) {
+			openEditCurveNode(pTrack->trackTempoCurve(), pNode);
 			return;
 		}
 	}
@@ -2215,7 +2397,7 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 					= qtractorScrollView::viewportToContents(pHelpEvent->pos());
 				TrackViewInfo tvi;
 				qtractorTrack *pTrack = trackAt(pos, false, &tvi);
-				if (pTrack) {
+				if (pTrack && pTrack->currentCurve()) {
 					qtractorCurve::Node *pNode = nodeAtTrack(pos, pTrack, &tvi);
 					if (pNode) {
 						qtractorCurve *pCurve = pTrack->currentCurve();
@@ -2223,6 +2405,16 @@ bool qtractorTrackView::eventFilter ( QObject *pObject, QEvent *pEvent )
 							nodeToolTip(pCurve, pNode), pViewport);
 						return true;
 					}
+				} else if (pTrack && pTrack->trackTempoCurve()) {
+					qtractorTimeScale::Node *pNode = tempoNodeAtTrack(pos, pTrack, &tvi);
+					if (pNode) {
+						qtractorTempoCurve *pTempoCurve = pTrack->trackTempoCurve();
+						QToolTip::showText(pHelpEvent->globalPos(),
+							nodeToolTip(pTempoCurve, pNode), pViewport);
+						return true;
+					}
+				}
+				if (pTrack) {
 					qtractorClip *pClip = clipAtTrack(pos, NULL, pTrack, &tvi);
 					if (pClip) {
 						QToolTip::showText(pHelpEvent->globalPos(),
@@ -2292,6 +2484,7 @@ void qtractorTrackView::selectClipFile ( bool bReset )
 		return;
 
 	switch (pTrack->trackType()) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio: {
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (m_pClipDrag);
@@ -3632,7 +3825,7 @@ void qtractorTrackView::dragClipResizeDrop (
 	float fTimeStretch = 0.0f;
 	if (bTimeStretch && m_pClipDrag->track()) {
 		float fOldTimeStretch = 1.0f;
-		if ((m_pClipDrag->track())->trackType() == qtractorTrack::Audio) {
+		if (((m_pClipDrag->track())->trackType() == qtractorTrack::Audio) || ((m_pClipDrag->track())->trackType() == qtractorTrack::Tempo)) {
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (m_pClipDrag);
 			if (pAudioClip)
@@ -3936,6 +4129,34 @@ QString qtractorTrackView::nodeToolTip (
 				.arg(pNode->value);
 			if (pCurve) {
 				qtractorSubject *pSubject = pCurve->subject();
+				if (pSubject) {
+					sToolTip = QString("%1\n%2")
+						.arg(pSubject->name())
+						.arg(sToolTip);
+				}
+			}
+		}
+	}
+
+	return sToolTip;
+}
+
+
+// Common tool-tip builder for tempo nodes.
+QString qtractorTrackView::nodeToolTip (
+	qtractorTempoCurve *pTempoCurve, qtractorTimeScale::Node *pNode) const
+{
+	QString sToolTip;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		qtractorTimeScale *pTimeScale = pSession->timeScale();
+		if (pTimeScale) {
+			sToolTip = QString("(%2, %3)")
+				.arg(pTimeScale->textFromFrame(pNode->frame))
+				.arg(pNode->tempo);
+			if (pTempoCurve) {
+				qtractorSubject *pSubject = pTempoCurve->subject();
 				if (pSubject) {
 					sToolTip = QString("%1\n%2")
 						.arg(pSubject->name())
@@ -4569,6 +4790,13 @@ void qtractorTrackView::ClipBoard::addNode ( qtractorCurve::Node *pNode,
 }
 
 
+void qtractorTrackView::ClipBoard::addNode ( qtractorTimeScale::Node *pNode,
+	const QRect& nodeRect, unsigned long iFrame, float fValue )
+{
+	nodes.append(new NodeItem(pNode, nodeRect, iFrame, fValue));
+}
+
+
 // Clipboard reset method.
 void qtractorTrackView::ClipBoard::clear (void)
 {
@@ -4971,6 +5199,7 @@ void qtractorTrackView::pasteClipboard (
 	// maybe we can only do it over the original...
 	TrackViewInfo tvi;
 	qtractorCurve *pCurve = NULL;
+	qtractorTempoCurve *pTempoCurve = NULL;
 	if (m_bCurveEdit) {
 		if (g_clipboard.nodes.isEmpty())
 			return;
@@ -4980,9 +5209,10 @@ void qtractorTrackView::pasteClipboard (
 		if (pTrack == NULL)
 			return;
 		pCurve = pTrack->currentCurve();
-		if (pCurve == NULL)
+		pTempoCurve = pTrack->trackTempoCurve();
+		if (pCurve == NULL && pTempoCurve)
 			return;
-		if (pCurve->isLocked())
+		if (pCurve && pCurve->isLocked())
 			return;
 	}
 	else
@@ -4992,6 +5222,7 @@ void qtractorTrackView::pasteClipboard (
 	// Reset any current selection, whatsoever...
 	m_pClipSelect->reset();
 	m_pCurveSelect->clear();
+	m_pTempoCurveSelect->clear();
 
 	resetDragState();
 
@@ -5008,29 +5239,55 @@ void qtractorTrackView::pasteClipboard (
 	if (m_bCurveEdit) {
 		// Flag this as target current curve,
 		// otherwise nothing will be displayed...
-		m_pCurveSelect->setCurve(pCurve);
-		const int h = tvi.trackRect.height();
-		const int y2 = tvi.trackRect.bottom() + 1;
-		QListIterator<NodeItem *> iter(g_clipboard.nodes);
-		for (unsigned short i = 0; i < m_iPasteCount; ++i) {
-			iter.toFront();
-			while (iter.hasNext()) {
-				NodeItem *pNodeItem = iter.next();
-				const int x
-					= pSession->pixelFromFrame(pNodeItem->frame + iPasteDelta);
-				const float s = pCurve->scaleFromValue(pNodeItem->value);
-				const int y = y2 - int(s * float(h));
-				m_pCurveSelect->addItem(pNodeItem->node,
-					QRect(x - 4, y - 4, 8, 8));
+		if (pCurve) {
+			m_pCurveSelect->setCurve(pCurve);
+			const int h = tvi.trackRect.height();
+			const int y2 = tvi.trackRect.bottom() + 1;
+			QListIterator<NodeItem *> iter(g_clipboard.nodes);
+			for (unsigned short i = 0; i < m_iPasteCount; ++i) {
+				iter.toFront();
+				while (iter.hasNext()) {
+					NodeItem *pNodeItem = iter.next();
+					const int x
+						= pSession->pixelFromFrame(pNodeItem->frame + iPasteDelta);
+					const float s = pCurve->scaleFromValue(pNodeItem->value);
+					const int y = y2 - int(s * float(h));
+					m_pCurveSelect->addItem(pNodeItem->node,
+						QRect(x - 4, y - 4, 8, 8));
+				}
+				iPasteDelta += m_iPastePeriod;
 			}
-			iPasteDelta += m_iPastePeriod;
+			m_pCurveSelect->update(true);
+			// We'll start a brand new floating state...
+			m_dragState = m_dragCursor = DragCurvePaste;
+			m_rectDrag  = m_pCurveSelect->rect();
+			m_posDrag   = m_rectDrag.topLeft();
+			m_posStep   = QPoint(0, 0);
+		} else if (pTempoCurve) {
+			m_pTempoCurveSelect->setTempoCurve(pTempoCurve);
+			const int h = tvi.trackRect.height();
+			const int y2 = tvi.trackRect.bottom() + 1;
+			QListIterator<NodeItem *> iter(g_clipboard.nodes);
+			for (unsigned short i = 0; i < m_iPasteCount; ++i) {
+				iter.toFront();
+				while (iter.hasNext()) {
+					NodeItem *pNodeItem = iter.next();
+					const int x
+						= pSession->pixelFromFrame(pNodeItem->frame + iPasteDelta);
+					const float s = pTempoCurve->scaleFromValue(pNodeItem->value);
+					const int y = y2 - int(s * float(h));
+					m_pTempoCurveSelect->addItem((qtractorTimeScale::Node *)pNodeItem->node,
+						QRect(x - 4, y - 4, 8, 8));
+				}
+				iPasteDelta += m_iPastePeriod;
+			}
+			m_pTempoCurveSelect->update(true);
+			// We'll start a brand new floating state...
+			m_dragState = m_dragCursor = DragCurvePaste;
+			m_rectDrag  = m_pTempoCurveSelect->rect();
+			m_posDrag   = m_rectDrag.topLeft();
+			m_posStep   = QPoint(0, 0);
 		}
-		m_pCurveSelect->update(true);
-		// We'll start a brand new floating state...
-		m_dragState = m_dragCursor = DragCurvePaste;
-		m_rectDrag  = m_pCurveSelect->rect();
-		m_posDrag   = m_rectDrag.topLeft();
-		m_posStep   = QPoint(0, 0);
 	} else {
 		// Copy clipboard items to floating selection;
 		// adjust clip widths/lengths just in case time
@@ -5522,6 +5779,7 @@ qtractorClip *qtractorTrackView::cloneClip ( qtractorClip *pClip )
 
 	qtractorClip *pNewClip = NULL;
 	switch (pTrack->trackType()) {
+		case qtractorTrack::Tempo:
 		case qtractorTrack::Audio: {
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (pClip);
@@ -5718,44 +5976,165 @@ void qtractorTrackView::openEditCurveNode (
 }
 
 
+// Tempo/curve node editor methods.
+void qtractorTrackView::openEditCurveNode (
+	qtractorTempoCurve *pTempoCurve, qtractorTimeScale::Node *pNode )
+{
+	closeEditCurveNode();
+
+	if (pTempoCurve == NULL || pNode == NULL)
+		return;
+
+	qtractorSubject *pSubject = pTempoCurve->subject();
+	if (pSubject == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTrackView::openEditTempoCurveNode(%p, %p)", pTempoCurve, pNode);
+#endif
+
+	m_pEditTempoCurve = pTempoCurve;
+	m_pEditTimeScaleNode = pNode;
+
+	const float fMaxValue = pSubject->maxValue();
+	const float fMinValue = pSubject->minValue();
+
+	int iDecimals = 0;
+	if (pSubject->isDecimal()) {
+		const float fDecs
+			= ::log10f(fMaxValue - fMinValue);
+		if (fDecs < 0.0f)
+			iDecimals = 6;
+		else if (fDecs < 3.0f)
+			iDecimals = 3;
+		else if (fDecs < 6.0f)
+			iDecimals = 1;
+	#if 0
+		if (m_pEditTempoCurve->isLogarithmic())
+			++iDecimals;
+	#endif
+	}
+
+	// Tempo spin-box.
+	const QSize  pad(4, 0);
+	const QFont& font0 = qtractorScrollView::font();
+	const QFont  font(font0.family(), font0.pointSize() + 2);
+	const QFontMetrics fm(font);
+	const int d = fm.height() + fm.leading() + 8;
+	const QString sTempo("999.9 9/9");
+	m_pEditTempoCurveNodeSpinBox = new qtractorTempoSpinBox(this);
+	m_pEditTempoCurveNodeSpinBox->setTempo(pNode->tempo, false);
+	m_pEditTempoCurveNodeSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
+	m_pEditTempoCurveNodeSpinBox->setBeatDivisor(pNode->beatDivisor, false);
+	m_pEditTempoCurveNodeSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	m_pEditTempoCurveNodeSpinBox->setMinimumSize(QSize(fm.width(sTempo) + d, d) + pad);
+	m_pEditTempoCurveNodeSpinBox->setToolTip(tr("Curve tempo (BPM)"));
+	m_pEditTempoCurveNodeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
+	m_pEditTempoCurveNodeSpinBox->setAccelerated(true);
+//	m_pEditTempoCurveNodeSpinBox->setToolTip(pSubject->name());
+//	m_pEditTempoCurveNodeSpinBox->setMinimumWidth(42);
+
+	QWidget *pViewport = qtractorScrollView::viewport();
+	const int w = pViewport->width();
+	const int h = pViewport->height();
+	const QPoint& vpos = pViewport->mapFromGlobal(QCursor::pos());
+	const QSize& size = m_pEditTempoCurveNodeSpinBox->sizeHint();
+	int x = vpos.x() + 4;
+	int y = vpos.y();
+	if (x +  size.width()  > w)
+		x -= size.width()  + 8;
+	if (y +  size.height() > h)
+		y -= size.height();
+	m_pEditTempoCurveNodeSpinBox->move(x, y);
+	m_pEditTempoCurveNodeSpinBox->show();
+
+	m_pEditTempoCurveNodeSpinBox->setFocus();
+
+	QObject::connect(m_pEditTempoCurveNodeSpinBox,
+		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
+		SLOT(editTempoCurveNodeChanged()));
+	QObject::connect(m_pEditTempoCurveNodeSpinBox,
+		SIGNAL(editingFinished()),
+		SLOT(editTempoCurveNodeFinished()));
+
+	// We'll start clean...
+	m_iEditTempoCurveNodeDirty = 0;
+
+	setSyncViewHoldOn(true);
+}
+
+
 void qtractorTrackView::closeEditCurveNode (void)
 {
-	if (m_pEditCurveNodeSpinBox == NULL)
+	if (m_pEditCurveNodeSpinBox == NULL && m_pEditTempoCurveNodeSpinBox == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorTrackView::closeEditCurveNode()");
 #endif
 
-	// Have we changed anything?
-	if (m_iEditCurveNodeDirty > 0 && m_pEditCurveNode && m_pEditCurve) {
-		// Make it an undoable command...
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession) {
-			const float fOldValue = m_pEditCurveNode->value;
-			const float fNewValue = m_pEditCurveNodeSpinBox->value();
-			if (::fabsf(fNewValue - fOldValue)
-				> float(m_pEditCurveNodeSpinBox->singleStep())) {
-				qtractorCurveEditCommand *pEditCurveNodeCommand
-					= new qtractorCurveEditCommand(m_pEditCurve);
-				pEditCurveNodeCommand->moveNode(m_pEditCurveNode,
-					m_pEditCurveNode->frame, fNewValue);
-				pSession->execute(pEditCurveNodeCommand);
+	if (m_pEditCurveNodeSpinBox != NULL) {
+		// Have we changed anything?
+		if (m_iEditCurveNodeDirty > 0 && m_pEditCurveNode && m_pEditCurve) {
+			// Make it an undoable command...
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				const float fOldValue = m_pEditCurveNode->value;
+				const float fNewValue = m_pEditCurveNodeSpinBox->value();
+				if (::fabsf(fNewValue - fOldValue)
+					> float(m_pEditCurveNodeSpinBox->singleStep())) {
+					qtractorCurveEditCommand *pEditCurveNodeCommand
+						= new qtractorCurveEditCommand(m_pEditCurve);
+					pEditCurveNodeCommand->moveNode(m_pEditCurveNode,
+						m_pEditCurveNode->frame, fNewValue);
+					pSession->execute(pEditCurveNodeCommand);
+				}
 			}
+			// Reset editing references...
+			m_iEditCurveNodeDirty = 0;
+			m_pEditCurveNode = NULL;
+			m_pEditCurve = NULL;
 		}
-		// Reset editing references...
-		m_iEditCurveNodeDirty = 0;
-		m_pEditCurveNode = NULL;
-		m_pEditCurve = NULL;
+
+		// Time to close...
+		m_pEditCurveNodeSpinBox->blockSignals(true);
+		m_pEditCurveNodeSpinBox->clearFocus();
+		m_pEditCurveNodeSpinBox->close();
+
+		m_pEditCurveNodeSpinBox->deleteLater();
+		m_pEditCurveNodeSpinBox = NULL;
 	}
+	else
+	if (m_pEditTempoCurveNodeSpinBox != NULL) {
+		// Have we changed anything?
+		if (m_iEditTempoCurveNodeDirty > 0 && m_pEditTimeScaleNode && m_pEditTempoCurve) {
+			// Make it an undoable command...
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				const float fOldTempo = m_pEditTimeScaleNode->tempo;
+				const float fNewTempo = m_pEditTempoCurveNodeSpinBox->tempo();
+				const unsigned short iNewBeatsPerBar = m_pEditTempoCurveNodeSpinBox->beatsPerBar();
+				const unsigned short iNewBeatDivisor = m_pEditTempoCurveNodeSpinBox->beatDivisor();
+					qtractorTempoCurveEditCommand *pEditTempoCurveNodeCommand
+						= new qtractorTempoCurveEditCommand(m_pEditTempoCurve);
+					pEditTempoCurveNodeCommand->moveNode(m_pEditTimeScaleNode,
+						fNewTempo, iNewBeatsPerBar, iNewBeatDivisor);
+					pSession->execute(pEditTempoCurveNodeCommand);
+			}
+			// Reset editing references...
+			m_iEditTempoCurveNodeDirty = 0;
+			m_pEditTimeScaleNode = NULL;
+			m_pEditTempoCurve = NULL;
+		}
 
-	// Time to close...
-	m_pEditCurveNodeSpinBox->blockSignals(true);
-	m_pEditCurveNodeSpinBox->clearFocus();
-	m_pEditCurveNodeSpinBox->close();
+		// Time to close...
+		m_pEditTempoCurveNodeSpinBox->blockSignals(true);
+		m_pEditTempoCurveNodeSpinBox->clearFocus();
+		m_pEditTempoCurveNodeSpinBox->close();
 
-	m_pEditCurveNodeSpinBox->deleteLater();
-	m_pEditCurveNodeSpinBox = NULL;
+		m_pEditTempoCurveNodeSpinBox->deleteLater();
+		m_pEditTempoCurveNodeSpinBox = NULL;
+	}
 
 	qtractorScrollView::setFocus();
 }
@@ -5774,10 +6153,50 @@ void qtractorTrackView::editCurveNodeChanged (void)
 }
 
 
+void qtractorTrackView::editTempoCurveNodeChanged (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTrackView::editTempoCurveNodeChanged()");
+#endif
+
+	if (m_pEditTempoCurveNodeSpinBox && m_pEditTimeScaleNode && m_pEditTempoCurve) {
+		++m_iEditTempoCurveNodeDirty;
+		setSyncViewHoldOn(true);
+		if (m_iEditTempoCurveNodeDirty > 0 && m_pEditTimeScaleNode && m_pEditTempoCurve) {
+			// Make it an undoable command...
+			qtractorSession *pSession = qtractorSession::getInstance();
+			if (pSession) {
+				const float fOldTempo = m_pEditTimeScaleNode->tempo;
+				const float fNewTempo = m_pEditTempoCurveNodeSpinBox->tempo();
+				const unsigned short iNewBeatsPerBar = m_pEditTempoCurveNodeSpinBox->beatsPerBar();
+				const unsigned short iNewBeatDivisor = m_pEditTempoCurveNodeSpinBox->beatDivisor();
+					qtractorTempoCurveEditCommand *pEditTempoCurveNodeCommand
+						= new qtractorTempoCurveEditCommand(m_pEditTempoCurve);
+					pEditTempoCurveNodeCommand->moveNode(m_pEditTimeScaleNode,
+						fNewTempo, iNewBeatsPerBar, iNewBeatDivisor);
+					pSession->execute(pEditTempoCurveNodeCommand);
+			}
+			// Reset editing references...
+			m_iEditTempoCurveNodeDirty = 0;
+		}
+	}
+}
+
+
 void qtractorTrackView::editCurveNodeFinished (void)
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorTrackView::editCurveNodeFinished()");
+#endif
+
+	closeEditCurveNode();
+}
+
+
+void qtractorTrackView::editTempoCurveNodeFinished (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTrackView::editTempoCurveNodeFinished()");
 #endif
 
 	closeEditCurveNode();

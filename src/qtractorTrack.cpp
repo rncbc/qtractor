@@ -331,6 +331,10 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pMidiVolumeObserver  = NULL;
 	m_pMidiPanningObserver = NULL;
 
+	m_pTempoSubject = new qtractorSubject();
+	m_pTempoSubject->setInteger(true);
+	m_pTempoSubject->setMaxValue(400.0f);
+
 	m_pMonitorSubject = new qtractorSubject();
 	m_pMonitorSubject->setToggled(true);
 
@@ -341,6 +345,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pRecordSubject->setToggled(true);
 	m_pMuteSubject->setToggled(true);
 	m_pSoloSubject->setToggled(true);
+
+	m_pTempoObserver = new qtractorMidiControlObserver(m_pTempoSubject);
 
 	m_pMonitorObserver = new qtractorMidiControlObserver(m_pMonitorSubject);
 
@@ -355,6 +361,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pPluginList = new qtractorPluginList(0, iFlags);
 
 	m_pCurveFile = new qtractorCurveFile(m_pPluginList->curveList());
+
+	m_pTempoCurve = NULL;
 
 	m_pMidiProgramObserver = NULL;
 
@@ -377,6 +385,8 @@ qtractorTrack::~qtractorTrack (void)
 		delete m_pRecordObserver;
 	if (m_pMonitorObserver)
 		delete m_pMonitorObserver;
+	if (m_pTempoObserver)
+		delete m_pTempoObserver;
 
 	if (m_pSoloSubject)
 		delete m_pSoloSubject;
@@ -386,6 +396,8 @@ qtractorTrack::~qtractorTrack (void)
 		delete m_pRecordSubject;
 	if (m_pMonitorSubject)
 		delete m_pMonitorSubject;
+	if (m_pTempoSubject)
+		delete m_pTempoSubject;
 
 	qDeleteAll(m_controllers);
 	m_controllers.clear();
@@ -446,6 +458,7 @@ bool qtractorTrack::open (void)
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	qtractorMidiEngine  *pMidiEngine  = m_pSession->midiEngine();
 	switch (m_props.trackType) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio:
 		pEngine = pAudioEngine;
 		break;
@@ -504,6 +517,7 @@ bool qtractorTrack::open (void)
 
 	// (Re)allocate (output) monitor...
 	switch (m_props.trackType) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio: {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (m_pOutputBus);
@@ -676,6 +690,8 @@ void qtractorTrack::updateTrackName (void)
 {
 	const QString& sTrackName = m_props.trackName;
 
+	if (m_props.trackType == qtractorTrack::Tempo)
+		m_pTempoSubject->setName(QObject::tr("%1 Tempo").arg(sTrackName));
 	m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(sTrackName));
 	m_pRecordSubject->setName(QObject::tr("%1 Record").arg(sTrackName));
 	m_pMuteSubject->setName(QObject::tr("%1 Mute").arg(sTrackName));
@@ -730,6 +746,20 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 
 	// Set new track type, now...
 	m_props.trackType = trackType;
+
+	if (m_props.trackType == qtractorTrack::Tempo) {
+		if (!m_pTempoCurve) {
+			qtractorTempoCurve *pTempoCurve = new qtractorTempoCurve(m_pSession->timeScale(), tempoObserver()->subject());
+			setTrackTempoCurve(pTempoCurve);
+		}
+	} else {
+		if (m_pTempoCurve) {
+			if (m_pSession->sessionTempoCurve() == m_pTempoCurve)
+				m_pSession->setSessionTempoCurve(NULL);
+			delete(m_pTempoCurve);
+		}
+		setTrackTempoCurve(NULL);
+	}
 
 	// Acquire a new midi-tag and setup new plugin-list flags...
 	unsigned int iFlags = qtractorPluginList::Track;
@@ -804,6 +834,8 @@ void qtractorTrack::setMute ( bool bMute )
 
 	m_pMuteSubject->setValue(bMute ? 1.0f : 0.0f);
 
+	if (this->trackType() == qtractorTrack::Tempo)
+		m_pSession->updateTempoTrackMute(this, bMute);
 	if (m_pSession->isPlaying() && !bMute)
 		m_pSession->trackMute(this, bMute);
 
@@ -824,7 +856,28 @@ void qtractorTrack::setSolo ( bool bSolo )
 
 	const bool bOldSolo = m_props.solo; // isSolo();
 	if ((bOldSolo && !bSolo) || (!bOldSolo && bSolo))
-		m_pSession->setSoloTracks(bSolo);
+		if (this->trackType() != qtractorTrack::Tempo)
+			m_pSession->setSoloTracks(bSolo);
+
+	m_props.solo = bSolo;
+
+	m_pSoloSubject->setValue(bSolo ? 1.0f : 0.0f);
+
+	if (bSolo && (this->trackType() == qtractorTrack::Tempo))
+		m_pSession->updateTempoTrackSolo(this, true);
+	if (m_pSession->isPlaying() && !bSolo)
+		m_pSession->trackSolo(this, bSolo);
+
+	m_pSession->autoDeactivatePlugins();
+}
+
+void qtractorTrack::setTempoSolo ( bool bSolo )
+{
+	if (this->trackType() != qtractorTrack::Tempo)
+		return;
+
+	if (m_pSession->isPlaying() && bSolo)
+		m_pSession->trackSolo(this, bSolo);
 
 	m_props.solo = bSolo;
 
@@ -833,6 +886,7 @@ void qtractorTrack::setSolo ( bool bSolo )
 	if (m_pSession->isPlaying() && !bSolo)
 		m_pSession->trackSolo(this, bSolo);
 
+	m_pSession->execute(new qtractorTrackMonitorCommand(this, bSolo));;
 	m_pSession->autoDeactivatePlugins();
 }
 
@@ -1324,7 +1378,7 @@ void qtractorTrack::process ( qtractorClip *pClip,
 	const unsigned int nframes = iFrameEnd - iFrameStart;
 	qtractorAudioMonitor *pAudioMonitor = NULL;
 	qtractorAudioBus *pOutputBus = NULL;
-	if (m_props.trackType == qtractorTrack::Audio) {
+	if ((m_props.trackType == qtractorTrack::Audio) || (m_props.trackType == qtractorTrack::Tempo)) {
 		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
 		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
 		// Prepare this track buffer...
@@ -1370,7 +1424,7 @@ void qtractorTrack::process_export ( qtractorClip *pClip,
 	const unsigned int nframes = iFrameEnd - iFrameStart;
 	qtractorAudioMonitor *pAudioMonitor = NULL;
 	qtractorAudioBus *pOutputBus = NULL;
-	if (m_props.trackType == qtractorTrack::Audio) {
+	if ((m_props.trackType == qtractorTrack::Audio) || (m_props.trackType == qtractorTrack::Tempo)) {
 		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
 		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
 		if (pOutputBus)
@@ -1504,7 +1558,9 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 		pClip = pClip->next();
 	}
 
-	if (m_props.mute || (!m_props.solo && m_pSession->soloTracks()))
+	if (m_props.mute || ((this->trackType() != qtractorTrack::Tempo) && !m_props.solo && m_pSession->soloTracks()))
+		pPainter->fillRect(trackRect, QColor(0, 0, 0, 60));
+	else if ((this->trackType() == qtractorTrack::Tempo) && !m_props.solo)
 		pPainter->fillRect(trackRect, QColor(0, 0, 0, 60));
 }
 
@@ -1589,6 +1645,19 @@ qtractorAudioBufferThread *qtractorTrack::syncThread (void)
 
 	return m_pSyncThread;
 }
+
+// Track tempo.
+qtractorSubject *qtractorTrack::tempoSubject (void) const
+{
+	return m_pTempoSubject;
+}
+
+qtractorMidiControlObserver *qtractorTrack::tempoObserver (void) const
+{
+//	return m_pTempoObserver;
+	return static_cast<qtractorMidiControlObserver *> (m_pTempoObserver);
+}
+
 
 
 // Track state (monitor record, mute, solo) button setup.
@@ -1768,6 +1837,50 @@ bool qtractorTrack::loadElement (
 			}
 		}
 		else
+		if ((qtractorTrack::trackType() == qtractorTrack::Tempo) && (eChild.tagName() == "tempo-map")) {
+			// Load tempo/time-signature of a tempo-track...
+			qtractorTempoCurve *pTempoCurve = new qtractorTempoCurve(NULL, tempoObserver()->subject());
+			setTrackTempoCurve(pTempoCurve);
+			qtractorTimeScale *pTimeScale = m_pTempoCurve->timeScale();
+
+			for (QDomNode nNode = eChild.firstChild();
+					!nNode.isNull();
+						nNode = nNode.nextSibling()) {
+				// Convert tempo node to element...
+				QDomElement eNode = nNode.toElement();
+				if (eNode.isNull())
+					continue;
+				// Load tempo-map...
+				if (eNode.tagName() == "tempo-node") {
+					const unsigned long iFrame
+						= eNode.attribute("frame").toULong();
+					float fTempo = 120.0f;
+					unsigned short iBeatType = 2;
+					unsigned short iBeatsPerBar = 4;
+					unsigned short iBeatDivisor = 2;
+					for (QDomNode nItem = eNode.firstChild();
+							!nItem.isNull();
+								nItem = nItem.nextSibling()) {
+						// Convert node to element...
+						QDomElement eItem = nItem.toElement();
+						if (eItem.isNull())
+							continue;
+						if (eItem.tagName() == "tempo")
+							fTempo = eItem.text().toFloat();
+						else if (eItem.tagName() == "beat-type")
+							iBeatType = eItem.text().toUShort();
+						else if (eItem.tagName() == "beats-per-bar")
+							iBeatsPerBar = eItem.text().toUShort();
+						else if (eItem.tagName() == "beat-divisor")
+							iBeatDivisor = eItem.text().toUShort();
+					}
+					// Add new node to tempo/time-signature map...
+					pTimeScale->addNode(iFrame,
+						fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
+				}
+			}
+		}
+		else
 		if (eChild.tagName() == "controllers") {
 			// Load track controllers...
 			qtractorTrack::loadControllers(&eChild);
@@ -1790,6 +1903,7 @@ bool qtractorTrack::loadElement (
 				if (eClip.tagName() == "clip") {
 					qtractorClip *pClip = NULL;
 					switch (qtractorTrack::trackType()) {
+						case qtractorTrack::Tempo:
 						case qtractorTrack::Audio:
 							pClip = new qtractorAudioClip(this);
 							break;
@@ -1888,6 +2002,32 @@ bool qtractorTrack::saveElement (
 		qtractorTrack::foreground().name(), &eView);
 	pElement->appendChild(eView);
 
+	if (qtractorTrack::trackType() == qtractorTrack::Tempo) {
+		// Save tempo/time-signature of a tempo-track...
+		qtractorTimeScale *pTimeScale = m_pTempoCurve->timeScale();
+		qtractorTimeScale::Node *pNode = pTimeScale->nodes().first();
+
+		if (pNode) {
+			QDomElement eTempoMap = pDocument->document()->createElement("tempo-map");
+			while (pNode) {
+				QDomElement eNode = pDocument->document()->createElement("tempo-node");
+				eNode.setAttribute("bar", QString::number(pNode->bar));
+				eNode.setAttribute("frame", QString::number(pNode->frame));
+				pDocument->saveTextElement("tempo",
+					QString::number(pNode->tempo), &eNode);
+				pDocument->saveTextElement("beat-type",
+					QString::number(pNode->beatType), &eNode);
+				pDocument->saveTextElement("beats-per-bar",
+					QString::number(pNode->beatsPerBar), &eNode);
+				pDocument->saveTextElement("beat-divisor",
+					QString::number(pNode->beatDivisor), &eNode);
+				eTempoMap.appendChild(eNode);
+				pNode = pNode->next();
+			}
+			pElement->appendChild(eTempoMap);
+		}
+	}
+
 	// Save track controllers...
 	QDomElement eControllers
 		= pDocument->document()->createElement("controllers");
@@ -1939,6 +2079,8 @@ qtractorTrack::TrackType qtractorTrack::trackTypeFromText (
 	TrackType trackType = None;
 	if (sText == "audio")
 		trackType = Audio;
+	else if (sText == "tempo")
+		trackType = Tempo;
 	else if (sText == "midi")
 		trackType = Midi;
 	return trackType;
@@ -1948,6 +2090,9 @@ QString qtractorTrack::textFromTrackType ( TrackType trackType )
 {
 	QString sText;
 	switch (trackType) {
+	case Tempo:
+		sText = "tempo";
+		break;
 	case Audio:
 		sText = "audio";
 		break;
@@ -2121,6 +2266,9 @@ void qtractorTrack::mapControllers (void)
 		case 5: // 5=SoloObserver
 			pObserver = soloObserver();
 			break;
+		case 6: // 6=TempoObserver
+			pObserver = tempoObserver();
+			break;
 		}
 		if (pObserver) {
 			pObserver->setType(pController->ctype);
@@ -2157,8 +2305,11 @@ qtractorCurveFile *qtractorTrack::curveFile (void) const
 void qtractorTrack::setCurrentCurve ( qtractorCurve *pCurrentCurve )
 {
 	qtractorCurveList *pCurveList = curveList();
-	if (pCurveList)
+	if (pCurveList) {
 		pCurveList->setCurrentCurve(pCurrentCurve);
+		if (pCurrentCurve)
+			m_pTempoCurve=NULL; //deselect TempoCurve
+	}
 }
 
 
@@ -2166,6 +2317,16 @@ qtractorCurve *qtractorTrack::currentCurve (void) const
 {
 	qtractorCurveList *pCurveList = curveList();
 	return (pCurveList ? pCurveList->currentCurve() : NULL);
+}
+
+
+// Track tempo current curve accessors.
+void qtractorTrack::setTrackTempoCurve ( qtractorTempoCurve *pTempoCurve )
+{
+	m_pTempoCurve = pTempoCurve; //select TempoCurve
+
+	if (pTempoCurve)
+		setCurrentCurve(NULL); //deselect automation curve
 }
 
 
