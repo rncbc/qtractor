@@ -93,7 +93,10 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 		// Update cursor track clip...
 		m_ppClips[iTrack] = pClip;
 		// Now something fulcral for clips around...
-		if (pTrack->trackType() == m_syncType) {
+		if (
+			(pTrack->trackType() == m_syncType) ||
+			((m_syncType == qtractorTrack::Audio) && (pTrack->trackType() == qtractorTrack::Tempo))
+		) {
 			// Tell whether play-head is after loop-start position...
 			const bool bLooping = (iFrame >= m_pSession->loopStart());
 			// Care for old/previous clip...
@@ -210,7 +213,8 @@ void qtractorSessionCursor::updateTrack ( qtractorTrack *pTrack )
 	const int iTrack = m_pSession->tracks().find(pTrack);
 	if (iTrack >= 0) {
 		qtractorClip *pClip = seekClip(pTrack, NULL, m_iFrame);
-		if (pClip && pTrack->trackType() == m_syncType
+		if (pClip
+			&& ((pTrack->trackType() == m_syncType) || ((m_syncType == qtractorTrack::Audio) && (pTrack->trackType() == qtractorTrack::Tempo)))
 			&& m_iFrame >= pClip->clipStart()
 			&& m_iFrame <  pClip->clipStart() + pClip->clipLength()) {
 			pClip->seek(m_iFrame - pClip->clipStart());
@@ -243,7 +247,8 @@ void qtractorSessionCursor::updateTrackClip ( qtractorTrack *pTrack )
 	const int iTrack = m_pSession->tracks().find(pTrack);
 	if (iTrack >= 0) {
 		qtractorClip *pClip = m_ppClips[iTrack];
-		if (pClip && pTrack->trackType() == m_syncType) {
+		if (pClip
+			&& ((pTrack->trackType() == m_syncType) || ((m_syncType == qtractorTrack::Audio) && (pTrack->trackType() == qtractorTrack::Tempo)))) {
 			if (m_iFrame >= pClip->clipStart() &&
 				m_iFrame <  pClip->clipStart() + pClip->clipLength()) {
 				pClip->seek(m_iFrame - pClip->clipStart());
@@ -264,7 +269,8 @@ void qtractorSessionCursor::updateClips ( qtractorClip **ppClips,
 	qtractorTrack *pTrack = m_pSession->tracks().first();
 	while (pTrack && iTrack < iTracks) {
 		qtractorClip *pClip = seekClip(pTrack, NULL, m_iFrame);
-		if (pClip && pTrack->trackType() == m_syncType
+		if (pClip
+			&& ((pTrack->trackType() == m_syncType) || ((m_syncType == qtractorTrack::Audio) && (pTrack->trackType() == qtractorTrack::Tempo)))
 			&& m_iFrame >= pClip->clipStart()
 			&& m_iFrame <  pClip->clipStart() + pClip->clipLength()) {
 			pClip->seek(m_iFrame - pClip->clipStart());

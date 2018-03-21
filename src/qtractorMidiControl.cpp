@@ -343,7 +343,7 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	case TRACK_GAIN:
 		fValue = scale.valueFromMidi(ctle.value());
 		fOldValue = pTrack->gain();
-		if (pTrack->trackType() == qtractorTrack::Audio && !val.isDelta())
+		if ((pTrack->trackType() == qtractorTrack::Audio && !val.isDelta()) || (pTrack->trackType() == qtractorTrack::Tempo && !val.isDelta()))
 			fValue = ::cubef2(fValue);
 		if (ctlv.syncDecimal(fValue, fOldValue, val.isDelta())) {
 			bResult = pSession->execute(
@@ -478,7 +478,7 @@ void qtractorMidiControl::sendTrackController (
 
 	switch (command) {
 	case TRACK_GAIN:
-		if (pTrack->trackType() == qtractorTrack::Audio)
+		if ((pTrack->trackType() == qtractorTrack::Audio) || (pTrack->trackType() == qtractorTrack::Tempo))
 			iValue = scale.midiFromValue(::cbrtf2(pTrack->gain()));
 		else
 			iValue = scale.midiFromValue(pTrack->gain());

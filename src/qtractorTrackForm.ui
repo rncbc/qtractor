@@ -144,6 +144,16 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QRadioButton" name="TempoRadioButton" >
+              <property name="toolTip" >
+               <string>Tempo track type</string>
+              </property>
+              <property name="text" >
+               <string>&amp;Tempo</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>

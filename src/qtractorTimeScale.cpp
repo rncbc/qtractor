@@ -22,6 +22,7 @@
 #include "qtractorTimeScale.h"
 #include <QObject>
 
+#include "qtractorSession.h"
 
 //----------------------------------------------------------------------
 // class qtractorTimeScale -- Time scale conversion helper class.
@@ -59,18 +60,35 @@ void qtractorTimeScale::reset (void)
 // (Re)nitializer method.
 void qtractorTimeScale::clear (void)
 {
-	m_iSnapPerBeat    = 4;
-	m_iHorizontalZoom = 100;
-	m_iVerticalZoom   = 100;
+	qtractorTimeScale *pTimeScale;
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession && (pTimeScale = pSession->timeScale())) {
+		m_iSnapPerBeat    = pTimeScale->m_iSnapPerBeat;
+		m_iHorizontalZoom = pTimeScale->m_iHorizontalZoom;
+		m_iVerticalZoom   = pTimeScale->m_iVerticalZoom;
 
-//	m_displayFormat   = Frames;
+//		m_displayFormat   = pTimeScale->m_displayFormat;
 
-	m_iSampleRate     = 44100;
-	m_iTicksPerBeat   = 960;
-	m_iPixelsPerBeat  = 32;
+		m_iSampleRate     = pTimeScale->m_iSampleRate;
+		m_iTicksPerBeat   = pTimeScale->m_iTicksPerBeat;
+		m_iPixelsPerBeat  = pTimeScale->m_iPixelsPerBeat;
 
-	// Clear/reset tempo-map...
-	reset();
+		// Clear/reset tempo-map...
+		reset();
+	} else {
+		m_iSnapPerBeat    = 4;
+		m_iHorizontalZoom = 100;
+		m_iVerticalZoom   = 100;
+
+//		m_displayFormat   = Frames;
+
+		m_iSampleRate     = 44100;
+		m_iTicksPerBeat   = 960;
+		m_iPixelsPerBeat  = 32;
+
+		// Clear/reset tempo-map...
+		reset();
+	}
 }
 
 
@@ -368,20 +386,6 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		pNode->beatType = iBeatType;
 		pNode->beatsPerBar = iBeatsPerBar;
 		pNode->beatDivisor = iBeatDivisor;
-	} else if (pPrev && pPrev->tempo == fTempo
-		&& pPrev->beatType == iBeatType
-		&& pPrev->beatsPerBar == iBeatsPerBar
-		&& pPrev->beatDivisor == iBeatDivisor) {
-		// No need for a new node...
-		return pPrev;
-	} else if (pNext && pNext->tempo == fTempo
-		&& pNext->beatType == iBeatType
-		&& pNext->beatsPerBar == iBeatsPerBar
-		&& pNext->beatDivisor == iBeatDivisor) {
-		// Update next exact matching node...
-		pNode = pNext;
-		pNode->frame = iFrame;
-		pNode->bar = 0;
 	} else {
 		// Add/insert a new node...
 		pNode = new Node(this,

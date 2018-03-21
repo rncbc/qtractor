@@ -335,7 +335,7 @@ qtractorClipCommand *qtractorTimeScaleNodeCommand::createClipCommand (
 			if (pClip->clipStart() <  iFrameStart ||
 				pClip->clipStart() >= iFrameEnd)
 				continue;
-			if (pTrack->trackType() == qtractorTrack::Audio) {
+			if ((pTrack->trackType() == qtractorTrack::Audio) || (pTrack->trackType() == qtractorTrack::Tempo)) {
 				qtractorAudioClip *pAudioClip
 					= static_cast<qtractorAudioClip *> (pClip);
 				if (pAudioClip) {

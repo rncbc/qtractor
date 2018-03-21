@@ -152,9 +152,9 @@ qtractorSessionEditCommand::qtractorSessionEditCommand (
 			name(), pSession->properties(), properties);
 
 	// Append tempo/time-siganture changes...
-	const float fTempo = properties.timeScale.tempo();
-	const unsigned short iBeatsPerBar = properties.timeScale.beatsPerBar();
-	const unsigned short iBeatDivisor = properties.timeScale.beatDivisor();
+	const float fTempo = properties.timeScale()->tempo();
+	const unsigned short iBeatsPerBar = properties.timeScale()->beatsPerBar();
+	const unsigned short iBeatDivisor = properties.timeScale()->beatDivisor();
 	if (pSession->tempo() != fTempo ||
 		pSession->beatsPerBar() != iBeatsPerBar ||
 		pSession->beatDivisor() != iBeatDivisor) {
@@ -166,7 +166,7 @@ qtractorSessionEditCommand::qtractorSessionEditCommand (
 	}
 
 	// Append time resolution changes too...
-	const unsigned short iTicksPerBeat = properties.timeScale.ticksPerBeat();
+	const unsigned short iTicksPerBeat = properties.timeScale()->ticksPerBeat();
 	if (pSession->ticksPerBeat() != iTicksPerBeat)
 		m_iTicksPerBeat = iTicksPerBeat;
 }

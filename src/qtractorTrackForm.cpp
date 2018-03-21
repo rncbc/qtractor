@@ -24,6 +24,7 @@
 #include "qtractorAbout.h"
 #include "qtractorTrack.h"
 #include "qtractorSession.h"
+#include "qtractorSessionCursor.h"
 #include "qtractorInstrument.h"
 
 #include "qtractorAudioEngine.h"
@@ -214,10 +215,13 @@ qtractorTrackForm::qtractorTrackForm (
 		SLOT(trackIconClicked()));
 	QObject::connect(m_ui.AudioRadioButton,
 		SIGNAL(toggled(bool)),
-		SLOT(trackTypeChanged()));
+		SLOT(trackTypeAudio(bool)));
 	QObject::connect(m_ui.MidiRadioButton,
 		SIGNAL(toggled(bool)),
-		SLOT(trackTypeChanged()));
+		SLOT(trackTypeMidi(bool)));
+	QObject::connect(m_ui.TempoRadioButton,
+		SIGNAL(toggled(bool)),
+		SLOT(trackTypeTempo(bool)));
 	QObject::connect(m_ui.InputBusNameComboBox,
 		SIGNAL(activated(const QString &)),
 		SLOT(inputBusNameChanged(const QString&)));
@@ -324,6 +328,10 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	m_ui.TrackNameTextEdit->setPlainText(m_props.trackName);
 	qtractorEngine *pEngine = NULL;
 	switch (m_props.trackType) {
+	case qtractorTrack::Tempo:
+		pEngine = (m_pTrack->session())->audioEngine();
+		m_ui.TempoRadioButton->setChecked(true);
+		break;
 	case qtractorTrack::Audio:
 		pEngine = (m_pTrack->session())->audioEngine();
 		m_ui.AudioRadioButton->setChecked(true);
@@ -373,6 +381,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	// Cannot change track type, if track is already chained in session..
 	m_ui.AudioRadioButton->setEnabled(m_props.trackType != qtractorTrack::Midi);
 	m_ui.MidiRadioButton->setEnabled(m_props.trackType != qtractorTrack::Audio);
+	m_ui.TempoRadioButton->setEnabled(m_props.trackType != qtractorTrack::Tempo);
 
 	// A bit of parental control...
 	QObject::connect(pCommands,
@@ -405,15 +414,16 @@ const qtractorTrack::Properties& qtractorTrackForm::properties (void) const
 // Selected track type determinator.
 qtractorTrack::TrackType qtractorTrackForm::trackType (void) const
 {
-	qtractorTrack::TrackType trackType = qtractorTrack::None;
-
 	if (m_ui.AudioRadioButton->isChecked())
-		trackType = qtractorTrack::Audio;
+		return qtractorTrack::Audio;
 	else
 	if (m_ui.MidiRadioButton->isChecked())
-		trackType = qtractorTrack::Midi;
+		return qtractorTrack::Midi;
+	else
+	if (m_ui.TempoRadioButton->isChecked())
+		return qtractorTrack::Tempo;
 
-	return trackType;
+	return qtractorTrack::None;
 }
 
 
@@ -664,8 +674,13 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 	qtractorEngine *pEngine = NULL;
 	QIcon icon;
 	switch (trackType) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio:
 		pEngine = m_pTrack->session()->audioEngine();
+		if (pEngine) {
+			qtractorSessionCursor *pAudioCursor = pEngine->sessionCursor();
+			pAudioCursor->setSyncType(qtractorTrack::Audio);
+		}
 		icon = QIcon(":/images/trackAudio.png");
 		m_ui.MidiGroupBox->hide();
 		m_ui.MidiGroupBox->setEnabled(false);
@@ -1196,6 +1211,28 @@ void qtractorTrackForm::trackIconClicked (void)
 }
 
 
+// Track type radio-button handlers/filters.
+void qtractorTrackForm::trackTypeAudio (bool enabled)
+{
+	if (enabled)
+		trackTypeChanged();
+}
+
+
+void qtractorTrackForm::trackTypeTempo (bool enabled)
+{
+	if (enabled)
+		trackTypeChanged();
+}
+
+
+void qtractorTrackForm::trackTypeMidi (bool enabled)
+{
+	if (enabled)
+		trackTypeChanged();
+}
+
+
 // Make changes due to track type.
 void qtractorTrackForm::trackTypeChanged (void)
 {
@@ -1257,6 +1294,7 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 		= qtractorTrackForm::trackType();
 
 	switch (trackType) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio: {
 		// (Re)initialize plugin-list audio output bus properly...
 		const QString& sOutputBusName = m_pTrack->outputBusName();
@@ -1292,6 +1330,7 @@ void qtractorTrackForm::busNameClicked (void)
 	// Depending on track type...
 	qtractorEngine *pEngine = NULL;
 	switch (trackType()) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio:
 		pEngine = m_pTrack->session()->audioEngine();
 		break;
@@ -1558,6 +1597,7 @@ void qtractorTrackForm::loadDefaultBusNames (
 	QString sOutputBusName;
 
 	switch (trackType) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio:
 		sInputBusName  = g_sAudioInputBusName;;
 		sOutputBusName = g_sAudioOutputBusName;
@@ -1590,6 +1630,7 @@ void qtractorTrackForm::saveDefaultBusNames (
 	const int iOutputBusIndex = m_ui.OutputBusNameComboBox->currentIndex();
 
 	switch (trackType) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio:
 		if (iInputBusIndex > 0)
 			g_sAudioInputBusName  = m_ui.InputBusNameComboBox->currentText();
