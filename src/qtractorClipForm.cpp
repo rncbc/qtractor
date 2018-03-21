@@ -270,6 +270,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	// Now those things specific on track type...
 	const QString sSuffix = m_ui.FilenameComboBox->objectName();
 	switch (trackType()) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio: {
 		m_ui.FilenameComboBox->setObjectName("Audio" + sSuffix);
 		m_ui.ClipGainTextLabel->setText(tr("&Gain:"));
@@ -677,6 +678,7 @@ void qtractorClipForm::browseFilename (void)
 
 	qtractorTrack::TrackType clipType = trackType();
 	switch (clipType) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio:
 		sType = tr("Audio");
 		sExt = qtractorAudioFileFactory::defaultExt();
@@ -793,6 +795,7 @@ void qtractorClipForm::fileChanged (
 		}
 		break;
 	}
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio: {
 		qtractorAudioFile *pFile
 			= qtractorAudioFileFactory::createAudioFile(sFilename);

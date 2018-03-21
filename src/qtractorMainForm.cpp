@@ -78,6 +78,7 @@
 
 #include "qtractorTrackCommand.h"
 #include "qtractorCurveCommand.h"
+#include "qtractorTempoCurveCommand.h"
 
 #include "qtractorMessageList.h"
 
@@ -896,6 +897,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.trackExportMidiAction,
 		SIGNAL(triggered(bool)),
 		SLOT(trackExportMidi()));
+	QObject::connect(m_ui.trackTempoCurveShowAction,
+		SIGNAL(triggered(bool)),
+		SLOT(trackTempoCurveShow()));
 	QObject::connect(m_ui.trackCurveSelectMenu,
 		SIGNAL(triggered(QAction *)),
 		SLOT(trackCurveSelect(QAction *)));
@@ -2483,6 +2487,8 @@ bool qtractorMainForm::loadSessionFileEx (
 			updateRecentFiles(sFilename);
 		//	m_iDirtyCount = 0;
 		}
+		if (bUpdate)
+			m_iDirtyCount = 0;
 		// Save as default session directory...
 		if (m_pOptions && bUpdate) {
 			// Do not set (next) default session directory on zip/archives...
@@ -3885,6 +3891,38 @@ void qtractorMainForm::trackExportMidi (void)
 	qtractorExportForm exportForm(this);
 	exportForm.setExportType(qtractorTrack::Midi);
 	exportForm.exec();
+}
+
+void qtractorMainForm::trackTempoCurveShow(void)
+{
+	qtractorSubject *pSubject = NULL;
+//	qtractorCurveList *pCurveList = NULL;
+	qtractorMidiControlObserver *pMidiObserver;
+	qtractorTrack *pTrack = NULL;
+	if (m_pTracks)
+		pTrack = m_pTracks->currentTrack();
+
+	pMidiObserver = pTrack->tempoObserver();
+	if (pMidiObserver) {
+		pSubject = pMidiObserver->subject();
+	}
+
+	qtractorTempoCurve *pTempoCurve = NULL;
+	if (pSubject) {
+		pTempoCurve = pSubject->tempoCurve();
+
+		if (pTempoCurve == NULL) {
+			pTempoCurve = new qtractorTempoCurve(m_pSession->timeScale(), pSubject);
+		}
+		pTrack->setTrackTempoCurve(pTempoCurve);
+		pTrack->setCurrentCurve(NULL);
+
+		m_pSession->execute(new qtractorTempoCurveEditCommand(pTempoCurve));
+	}
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::trackTempoCurveShow(%p)", pTempoCurve);
+#endif
 }
 
 
@@ -6519,6 +6557,7 @@ void qtractorMainForm::updateExportMenu (void)
 				pTrack; pTrack = pTrack->next()) {
 			const int iClips = pTrack->clips().count();
 			switch (pTrack->trackType()) {
+			case qtractorTrack::Tempo:
 			case qtractorTrack::Audio:
 				iAudioClips += iClips;
 				break;
@@ -6906,6 +6945,10 @@ void qtractorMainForm::updateCurveMenu (void)
 	qtractorCurve *pCurrentCurve
 		= (pCurveList ? pCurveList->currentCurve() : NULL);
 
+	if (pTrack->trackType() == qtractorTrack::Tempo) {
+		m_ui.trackTempoCurveShowAction->setEnabled(true);
+	} else
+		m_ui.trackTempoCurveShowAction->setEnabled(false);
 	bool bEnabled = trackCurveSelectMenuReset(m_ui.trackCurveSelectMenu);
 	m_ui.trackCurveMenu->setEnabled(bEnabled);
 	m_ui.trackCurveSelectMenu->setEnabled(bEnabled);

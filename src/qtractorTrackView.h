@@ -27,6 +27,8 @@
 
 #include "qtractorTrack.h"
 #include "qtractorCurve.h"
+#include "qtractorTempoCurve.h"
+#include "qtractorSpinBox.h"
 
 #include <QPixmap>
 #include <QBrush>
@@ -36,11 +38,13 @@
 class qtractorTracks;
 class qtractorClipSelect;
 class qtractorCurveSelect;
+class qtractorTempoCurveSelect;
 class qtractorMidiSequence;
 class qtractorSessionCursor;
 class qtractorTrackListItem;
 
 class qtractorCurveEditCommand;
+class qtractorTempoCurveEditCommand;
 
 class QToolButton;
 class QDoubleSpinBox;
@@ -73,6 +77,8 @@ public:
 
 	// Track view state reset.
 	void clear();
+
+	void trackTempoCurveShow(qtractorSession *pSession, qtractorTrack *pTrack);
 
 	// Update track view content height.
 	void updateContentsHeight();
@@ -280,6 +286,11 @@ protected:
 		qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo) const;
 	qtractorCurve::Node *nodeAt(const QPoint& pos) const;
 
+	// Get tempo curve time-scale node from given contents position.
+	qtractorTimeScale::Node *tempoNodeAtTrack(const QPoint& pos,
+		qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo) const;
+	qtractorTimeScale::Node *tempoNodeAt(const QPoint& pos) const;
+
 	// Get contents visible rectangle from given track.
 	bool trackInfo(qtractorTrack *pTrack,
 		TrackViewInfo *pTrackViewInfo) const;
@@ -380,6 +391,7 @@ protected:
 
 	// Common tool-tip builder for automation nodes.
 	QString nodeToolTip(qtractorCurve *pCurve, qtractorCurve::Node *pNode) const;
+	QString nodeToolTip(qtractorTempoCurve *pCurve, qtractorTimeScale::Node *pNode) const;
 
 	// Reset drag/select/move state.
 	void resetDragState();
@@ -393,8 +405,9 @@ protected:
 	// Vertical line positioning.
 	void drawPositionX(int& iPositionX, int x, bool bSyncView = false);
 
-	// Automation/curve node editor methods.
+	// Automation/Tempo/curve node editor methods.
 	void openEditCurveNode(qtractorCurve *pCurve, qtractorCurve::Node *pNode);
+	void openEditCurveNode(qtractorTempoCurve *pCurve, qtractorTimeScale::Node *pNode);
 	void closeEditCurveNode();
 
 protected slots:
@@ -411,6 +424,10 @@ protected slots:
 	// Automatio/curve node editor slots.
 	void editCurveNodeChanged();
 	void editCurveNodeFinished();
+
+	// Tempo/curve node editor slots.
+	void editTempoCurveNodeChanged();
+	void editTempoCurveNodeFinished();
 
 private:
 
@@ -477,6 +494,7 @@ private:
 	qtractorRubberBand  *m_pRubberBand;
 	qtractorClipSelect  *m_pClipSelect;
 	qtractorCurveSelect *m_pCurveSelect;
+	qtractorTempoCurveSelect *m_pTempoCurveSelect;
 
 	// The clip select mode.
 	SelectMode m_selectMode;
@@ -520,8 +538,12 @@ private:
 		NodeItem(qtractorCurve::Node *pNode, const QRect& nodeRect,
 			unsigned long iFrame, float fValue)
 			: node(pNode), rect(nodeRect), frame(iFrame), value(fValue) {}
+		NodeItem(qtractorTimeScale::Node *pNode, const QRect& nodeRect,
+			unsigned long iFrame, float fValue)
+			: tempoNode(pNode), rect(nodeRect), frame(iFrame), value(fValue) {}
 		// Clipboard item members.
 		qtractorCurve::Node *node;
+		qtractorTimeScale::Node *tempoNode;
 		QRect rect;
 		unsigned long frame;
 		float value;
@@ -539,6 +561,8 @@ private:
 			unsigned long iClipStart, unsigned long iClipOffset,
 			unsigned long iClipLength);
 		void addNode(qtractorCurve::Node *pNode, const QRect& nodeRect,
+			unsigned long iFrame, float fValue);
+		void addNode(qtractorTimeScale::Node *pNode, const QRect& nodeRect,
 			unsigned long iFrame, float fValue);
 		// Clipboard reset method.
 		void clear();
@@ -573,9 +597,15 @@ private:
 	qtractorCurve       *m_pDragCurve;
 	qtractorCurve::Node *m_pDragCurveNode;
 
+	// Tempo curve editing node.
+	qtractorTempoCurve       *m_pDragTempoCurve;
+	qtractorTimeScale::Node  *m_pDragTimeScaleNode;
+
 	int m_iDragCurveX;
 
 	qtractorCurveEditCommand *m_pCurveEditCommand;
+
+	qtractorTempoCurveEditCommand *m_pTempoCurveEditCommand;
 
 	// Temporary sync-view/follow-playhead hold state.
 	bool m_bSyncViewHold;
@@ -586,6 +616,12 @@ private:
 	qtractorCurve::Node *m_pEditCurveNode;
 	QDoubleSpinBox      *m_pEditCurveNodeSpinBox;
 	int                  m_iEditCurveNodeDirty;
+
+	// Tempo curve node editor widget.
+	qtractorTempoCurve       *m_pEditTempoCurve;
+	qtractorTimeScale::Node  *m_pEditTimeScaleNode;
+	qtractorTempoSpinBox *m_pEditTempoCurveNodeSpinBox;
+	int                  m_iEditTempoCurveNodeDirty;
 
 	// Optional edge-shadow gradient brushes.
 	QBrush m_gradLeft;
