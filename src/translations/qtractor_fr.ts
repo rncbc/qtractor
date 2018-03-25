@@ -1156,7 +1156,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation>Des réglages ont changé.
+        <translation>Certains réglages ont été modifiés.
 
 Voulez vous appliquer les changements ?</translation>
     </message>
@@ -1178,7 +1178,7 @@ Are you sure?</source>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
-        <translation>Des réglages ont changé.
+        <translation>Certains réglages ont été modifiés.
 
 Voulez-vous abandonner les changements ?</translation>
     </message>
@@ -1467,7 +1467,7 @@ Voulez-vous abandonner les changements ?</translation>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation>Des réglages ont changé.
+        <translation>Certains réglages ont été modifiés.
 
 Voulez vous appliquer les changements ?</translation>
     </message>
@@ -2339,7 +2339,7 @@ Voulez-vous le remplacer ?</translation>
         <source>Instrument settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation>Les réglages de l&apos;instrument ont été changés.
+        <translation>Les réglages de l&apos;instrument ont été modifiés.
 
 Voulez-vous appliquer les changements ?</translation>
     </message>
@@ -5119,7 +5119,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2746"/>
         <source>Transport loop set</source>
-        <translation>Transport réglage boucle</translation>
+        <translation>Paramètre de la boucle de transport</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2749"/>
@@ -5212,7 +5212,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2846"/>
         <source>Transport punch in/out set</source>
-        <translation>Transport réglage punch in/out</translation>
+        <translation>Paramètre du punch in/out du transport</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2849"/>
@@ -5605,7 +5605,7 @@ Voulez-vous le remplacer ?</translation>
 %1 as %2
 
 Sorry.</source>
-        <translation>Ne peut pas sauvegarder la session existante:
+        <translation>Ne peut pas sauvegarder la session existante :
 
 %1 en %2
 
@@ -5618,7 +5618,7 @@ Désolé.</translation>
 &quot;%1&quot;
 
 Do you want to save the changes?</source>
-        <translation>La session courante a été changée:
+        <translation>La session courante a été modifiée :
 
 &quot;%1&quot;
 
@@ -5631,7 +5631,7 @@ Voulez-vous sauvegarder les changements ?</translation>
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation>Sur le point de supprimer le répertoire archive:
+        <translation>Sur le point de supprimer le répertoire archive :
 
 &quot;%1&quot;
 
@@ -5687,7 +5687,7 @@ Désolé.</translation>
 to &quot;%1&quot;.
 
 Sorry.</source>
-        <translation>La session n&apos;a pas pu être sauvée
+        <translation>La session n&apos;a pas pu être sauvegardée
 vers &quot;%1&quot;.
 
 Désolé.</translation>
@@ -5695,7 +5695,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2634"/>
         <source>Save session: &quot;%1&quot;.</source>
-        <translation>Sauvegarde la session: &quot;%1&quot;.</translation>
+        <translation>Sauvegarde la session : &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2921"/>
@@ -5708,7 +5708,7 @@ Looks like it crashed or did not close properly last time it was run... however,
 Do you want to crash-recover from it?</source>
         <translation>Oups!
 
-Il semblerait qu&apos;il y ait eu un crash ou que l&apos;application n&apos;est pas été correctement fermé la dernière fois... cependant un fichier de sauvegarde automatique existe:
+Il semblerait qu&apos;il y ait eu un crash ou que l&apos;application n&apos;est pas été correctement fermé la dernière fois... cependant un fichier de sauvegarde automatique existe :
 
 &quot;%1&quot;
 
@@ -5830,12 +5830,12 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5746"/>
         <source>LV2 Plug-in UI support disabled.</source>
-        <translation>Support du GUI des greffons LV2 désactivé.</translation>
+        <translation>Support de l&apos;interface graphique des greffons LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5749"/>
         <source>LV2 Plug-in UI support (libsuil) disabled.</source>
-        <translation>Support du GUI des greffons (libsuil) LV2 désactivé.</translation>
+        <translation>Support de l&apos;interface graphique des greffons (libsuil) LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5756"/>
@@ -5951,7 +5951,7 @@ est hautement recommandé.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5778"/>
         <source>LV2 Plug-in Presets support disabled.</source>
-        <translation>Support réglages greffon LV2 désactivé.</translation>
+        <translation>Support des préréglages des greffos LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5784"/>
@@ -6380,22 +6380,22 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="238"/>
         <source>MIDI Event type</source>
-        <translation>MIDI Type d&apos;évènement</translation>
+        <translation>Type d&apos;évènement MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="245"/>
         <source>MIDI Channel</source>
-        <translation>MIDI Canal</translation>
+        <translation>Canal MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="252"/>
         <source>MIDI Controller (parameter)</source>
-        <translation>MIDI Contrôleur (paramètre)</translation>
+        <translation>Contrôleur MIDI (paramètre)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="259"/>
         <source>MIDI parameter (track offset)</source>
-        <translation>MIDI Paramètre (décalage de la piste)</translation>
+        <translation>Paramètre MIDI (décalage de piste)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="262"/>
@@ -6405,7 +6405,7 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="269"/>
         <source>Track offset</source>
-        <translation>Décalage de la piste</translation>
+        <translation>Décalage de piste</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="282"/>
@@ -6496,7 +6496,7 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="419"/>
         <source>Enable all controllers immediate sync (hook)</source>
-        <translation>Activer la sync immédiate de tous les contrôleUrs (hook)</translation>
+        <translation>Activer la synchro immédiate de tous les contrôleurs (hook)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="422"/>
@@ -6596,8 +6596,8 @@ the next time you start this program.
 &quot;%1&quot;
 
 Do you want to apply to controller files?</source>
-        <translation>L&apos;association des contrôleur ne sera pas effective
-la prochaine fois que vous démarrerez ce programme.
+        <translation>L&apos;assignation des contrôleurs sauvegardée pourrait
+ne pas être effective la prochaine fois que vous démarrerez ce programme.
 
 &quot;%1&quot;
 
@@ -6606,7 +6606,7 @@ Voulez-vous mettre à jour les fichiers contrôleur ?</translation>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="556"/>
         <source>Controller mappings have been changed.</source>
-        <translation>L&apos;association des contrôleur a été changée.</translation>
+        <translation>L&apos;association des contrôleurs a été modifiée.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="557"/>
@@ -6721,7 +6721,7 @@ Voulez-vous remplacer l&apos;association ?</translation>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation>Des réglages ont été changés.
+        <translation>Certains réglages ont été modifiés.
 
 Voulez-vous appliquer les changements ?</translation>
     </message>
@@ -8304,7 +8304,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1521"/>
         <source>Transport loop set</source>
-        <translation>Transport réglage boucle</translation>
+        <translation>Paramètre de la boucle de transport</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1524"/>
@@ -8409,7 +8409,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1624"/>
         <source>Transport punch in/out set</source>
-        <translation>Transport réglage punch in/out</translation>
+        <translation>Paramètre du punch in/out du transport</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1627"/>
@@ -8579,7 +8579,7 @@ Longueur:	%3</translation>
 &quot;%1&quot;
 
 Do you want to save the changes?</source>
-        <translation>Le clip MIDI courant a été changé:
+        <translation>Le clip MIDI courant a été modifié :
 
 &quot;%1&quot;
 
@@ -8598,7 +8598,7 @@ Voulez-vous sauvegarder les changements ?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="1106"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
-        <translation>Sauvegarde fichier MIDI: &quot;%1&quot;, piste-canal: %2.</translation>
+        <translation>Sauvegarde fichier MIDI : &quot;%1&quot;, piste-canal : %2.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="1852"/>
@@ -9000,7 +9000,7 @@ Are you sure?</source>
         <source>SysEx settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation>Les réglages SysEx ont été changés.
+        <translation>Les réglages SysEx ont été modifiés.
 
 Voulez-vous appliquer les changements ?</translation>
     </message>
@@ -9041,17 +9041,17 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="63"/>
         <source>Preset name</source>
-        <translation>Nom réglage</translation>
+        <translation>Nom du préréglage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="76"/>
         <source>Save preset</source>
-        <translation>Sauvegarder réglage</translation>
+        <translation>Sauvegarder le préréglage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="92"/>
         <source>Delete preset</source>
-        <translation>Supprimer réglage</translation>
+        <translation>Supprimer le préréglage</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="124"/>
@@ -9425,7 +9425,7 @@ P &lt; 0 : décalage ralenti.
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation>Sur le point de supprimé un réglage:
+        <translation>Sur le point de supprimé un préréglage :
 
 &quot;%1&quot;
 
@@ -9649,12 +9649,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="213"/>
         <source>Whether to save backup versions of existing sessions</source>
-        <translation>S&apos;il faut sauvegarder des versions de sessions existantes</translation>
+        <translation>S&apos;il faut sauvegarder des versions de sauvegarde des sessions existantes</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="216"/>
         <source>Save &amp;backup versions of existing sessions:</source>
-        <translation>Sauver &amp;des versions de sauvegarde de sessions
+        <translation>Sauvegarder &amp;des versions de sauvegarde de sessions
 existantes :</translation>
     </message>
     <message>
@@ -9675,12 +9675,12 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="252"/>
         <source>Whether to enable session auto-save (crash-recovery)</source>
-        <translation>S&apos;il faut activer la sauvegarde automatique de session (récupération de crash)</translation>
+        <translation>S&apos;il faut activer la sauvegarde automatique de session (récupération de plantage)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="255"/>
         <source>Auto-save current working session every:</source>
-        <translation>Sauvegarder automatiquement la session courante toute les :</translation>
+        <translation>Sauvegarder automatiquement la session courante toutes les :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="268"/>
@@ -9690,7 +9690,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="271"/>
         <source> minutes</source>
-        <translation>. minutes</translation>
+        <translation> minutes</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="296"/>
@@ -10439,7 +10439,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2450"/>
         <source>A&amp;utomatic mixer strip/grid layout (multi-row)</source>
-        <translation>Disposition a&amp;utomatique en grille des bande de mixer (multi-ligne)</translation>
+        <translation>Disposition a&amp;utomatique en grille des bandes du mixeur (multi-lignes)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2890"/>
@@ -10464,7 +10464,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3639"/>
         <source>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</source>
-        <translation>Scanner l&apos;inventaire de greffon en dehors du traitement (RECOMMENDÉ)</translation>
+        <translation>Faire l&apos;inventaire des greffons en dehors du traitement (RECOMMANDÉ)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3684"/>
@@ -10474,7 +10474,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3687"/>
         <source>Sho&amp;w plugins on track list/left pane</source>
-        <translation>Afficher les greffon sur la liste de piste / panneau de gauche (&amp;w)</translation>
+        <translation>Afficher les &amp;greffons sur la liste de piste / panneau de gauche</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2447"/>
@@ -10744,17 +10744,17 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3403"/>
         <source>&amp;LV2 Presets directory:</source>
-        <translation>Répertoire des réglages &amp;LV2 :</translation>
+        <translation>Répertoire des préréglages &amp;LV2 :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3425"/>
         <source>LV2 Presets directory (default: ~/.lv2)</source>
-        <translation>Répertoire des réglages LV2 (défaut: ~/.lv2)</translation>
+        <translation>Répertoire des préréglages LV2 (défaut: ~/.lv2)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3453"/>
         <source>Browse LV2 Presets directory</source>
-        <translation>Parcourir le répertoire des réglages LV2</translation>
+        <translation>Parcourir le répertoire des préréglages LV2</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3477"/>
@@ -10789,17 +10789,17 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3580"/>
         <source>Whether to open plugin&apos;s editor (GUI) by default</source>
-        <translation>Si on doit ouvrir l&apos;éditeur (GUI) du greffon par défaut</translation>
+        <translation>Si on doit ouvrir l&apos;éditeur (interface graphique) du greffon par défaut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3583"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
-        <translation>Ouvrir l&apos;édit&amp;eur (GUI) du greffon par défaut</translation>
+        <translation>Ouvrir l&apos;édit&amp;eur (interface graphique) du greffon par défaut</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3599"/>
         <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
-        <translation>&amp;Sélectionner l&apos;éditeur de greffon si plusieurs sont disponibles</translation>
+        <translation>&amp;Sélectionner l&apos;éditeur (interface graphique) du greffon si plusieurs sont disponibles</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3615"/>
@@ -10809,22 +10809,22 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3652"/>
         <source>Whether LV2 Dynamic Manifest plugins are supported</source>
-        <translation>Si les greffons Manifestes dynamiques LV2 sont supportés</translation>
+        <translation>Si les manifestes dynamiques des greffons LV2 sont supportés</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3655"/>
         <source>LV2 Dy&amp;namic Manifest support</source>
-        <translation>Support du Manifeste Dy&amp;namique LV2</translation>
+        <translation>Support du manifeste dy&amp;namique LV2</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3668"/>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
-        <translation>Si on doit sauver les automations des greffons avec une haute résolution (14-bit)</translation>
+        <translation>Si on doit sauvegarder les automations des greffons de haute résolution (14 bits)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3671"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
-        <translation>Automation de greffon &amp;haute résolution (14-bit)</translation>
+        <translation>Automation de greffon &amp;haute résolution (14 bits)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="131"/>
@@ -10876,7 +10876,7 @@ existantes :</translation>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation>Des réglages ont été changés.
+        <translation>Certains réglages ont été modifiés.
 
 Voulez-vous appliquer les changements ?</translation>
     </message>
@@ -10908,7 +10908,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1421"/>
         <source>LV2 Presets Directory</source>
-        <translation>Répertoire des réglages LV2</translation>
+        <translation>Répertoire des préréglage LV2</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1462"/>
@@ -10998,7 +10998,7 @@ Voulez-vous appliquer les changements ?</translation>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation>Certains réglages ont été changés.
+        <translation>Certains réglages ont été modifiés.
 
 Voulez-vous appliquer les changements ?</translation>
     </message>
@@ -11013,22 +11013,22 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="55"/>
         <source>Open preset</source>
-        <translation>Ouvrir réglages</translation>
+        <translation>Ouvrir un préréglage</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="74"/>
         <source>Preset name</source>
-        <translation>Nom du réglage</translation>
+        <translation>Nom du préréglage</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="87"/>
         <source>Save preset</source>
-        <translation>Savegarder réglages</translation>
+        <translation>Sauvegarder le préréglage</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="103"/>
         <source>Delete preset</source>
-        <translation>Supprimer réglages</translation>
+        <translation>Supprimer le préréglage</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="135"/>
@@ -11119,13 +11119,13 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="556"/>
         <source>Open Preset</source>
-        <translation>Ouvrir réglage</translation>
+        <translation>Ouvrir le préréglage</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="558"/>
         <location filename="../qtractorPluginForm.cpp" line="654"/>
         <source>Preset files (*.%1)</source>
-        <translation>Fichiers réglages (*.%1)</translation>
+        <translation>Fichiers de préréglages (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="598"/>
@@ -11149,7 +11149,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="652"/>
         <source>Save Preset</source>
-        <translation>Sauvegarder réglage</translation>
+        <translation>Sauvegarder le préréglage</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="698"/>
@@ -11158,7 +11158,7 @@ Désolé.</translation>
 &quot;%1&quot;.
 
 Sorry.</source>
-        <translation>Le préréglage n&apos;a pas pu être sauvegardé dans le fichier:
+        <translation>Le préréglage n&apos;a pas pu être sauvegardé dans le fichier :
 
 &quot;%1&quot;.
 
@@ -11176,7 +11176,7 @@ Désolé.</translation>
 &quot;%1&quot; (%2)
 
 Are you sure?</source>
-        <translation>Sur le point de supprimer le réglage:
+        <translation>Sur le point de supprimer le préréglage :
 
 &quot;%1&quot; (%2)
 
@@ -11448,7 +11448,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginSelectForm.cpp" line="332"/>
         <source>GUI</source>
-        <translation>GUI</translation>
+        <translation>IGU</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.cpp" line="334"/>
@@ -12530,7 +12530,7 @@ Voulez-vous abandonner ces changements ?</translation>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
-        <translation>Des réglages ont été modifiés.
+        <translation>Certains réglages ont été modifiés.
 
 Voulez-vous appliquer les changements ?</translation>
     </message>
