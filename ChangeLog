@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- The tiny zoom-magnifier icons have been revamped.
+
+
 0.9.0  2018-03-22  Early Spring'18 Beta.
 
 - New View/Options.../Plugins/Experimental/Show plugins on
