@@ -1035,8 +1035,10 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		const QString sExt("mid");
 		const QString& sTitle
 			= tr("Save MIDI Clip") + " - " QTRACTOR_TITLE;
-		const QString& sFilter
-			= tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
+		QStringList filters;
+		filters.append(tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt));
+		filters.append(tr("All files (*.*)"));
+		const QString& sFilter = filters.join(";;");
 		QWidget *pParentWidget = NULL;
 		QFileDialog::Options options = 0;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();

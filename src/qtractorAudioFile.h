@@ -1,7 +1,7 @@
 // qtractorAudioFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -110,9 +110,6 @@ public:
 	// The supported file types/names format lists.
 	static const QStringList& filters();
 	static const QStringList& exts();
-
-	// Retrieve supported filters (suitable for QFileDialog usage).
-	static QString filter();
 
 	// Default audio file format accessors
 	// (specific to capture/recording)

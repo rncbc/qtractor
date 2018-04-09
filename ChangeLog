@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Added "All files (*.*)" filter to every file requestor
+  dialog, wherever missing. (EXPERIMENTAL)
+
 - The tiny zoom-magnifier icons have been revamped.
 
 

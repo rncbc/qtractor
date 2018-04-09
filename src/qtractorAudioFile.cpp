@@ -1,7 +1,7 @@
 // qtractorAudioFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -223,13 +223,6 @@ const QStringList& qtractorAudioFileFactory::filters (void)
 const QStringList& qtractorAudioFileFactory::exts (void)
 {
 	return g_pInstance->m_exts;
-}
-
-
-// Retrieve supported filters (suitable for QFileDialog usage).
-QString qtractorAudioFileFactory::filter (void)
-{
-	return g_pInstance->m_filters.join(";;");
 }
 
 
