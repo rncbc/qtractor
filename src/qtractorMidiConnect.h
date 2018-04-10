@@ -1,7 +1,7 @@
 // qtractorMidiConnect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,19 +43,13 @@ class qtractorMidiPortItem : public qtractorPortListItem
 public:
 
 	// Constructor.
-	qtractorMidiPortItem(
-		qtractorMidiClientItem *pClientItem, int iAlsaPort);
+	qtractorMidiPortItem(qtractorMidiClientItem *pClientItem);
 	// Default destructor.
 	~qtractorMidiPortItem();
 
 	// Jack handles accessors.
 	int alsaClient() const;
 	int alsaPort()   const;
-
-private:
-
-	// Instance variables.
-	int m_iAlsaPort;
 };
 
 
@@ -68,8 +62,7 @@ class qtractorMidiClientItem : public qtractorClientListItem
 public:
 
 	// Constructor.
-	qtractorMidiClientItem(
-		qtractorMidiClientListView *pClientListView, int iAlsaClient);
+	qtractorMidiClientItem(qtractorMidiClientListView *pClientListView);
 	// Default destructor.
 	~qtractorMidiClientItem();
 
@@ -78,11 +71,6 @@ public:
 
 	// Port finder by id.
 	qtractorMidiPortItem *findPortItem(int iAlsaPort);
-
-private:
-
-	// Instance variables.
-	int m_iAlsaClient;
 };
 
 

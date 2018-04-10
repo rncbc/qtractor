@@ -1,7 +1,7 @@
 // qtractorAudioConnect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,20 +43,12 @@ public:
 
 	// Constructor.
 	qtractorAudioPortItem(
-		qtractorAudioClientItem *pClientItem, jack_port_t *pJackPort);
+		qtractorAudioClientItem *pClientItem, unsigned long uiPortFlags);
 	// Default destructor.
 	~qtractorAudioPortItem();
 
-	// Jack handles accessors.
-	jack_port_t *jackPort() const;
-
 	// Proto-pretty/display name accessors (virtual override).
 	void updatePortName();
-
-private:
-
-	// Instance variables.
-	jack_port_t *m_pJackPort;
 };
 
 
