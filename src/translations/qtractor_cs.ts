@@ -34,16 +34,16 @@ Audio:	%1 channels, %2 Hz</source>
 	(posunutí výšky tónu v půltónech %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2568"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2852"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2574"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2858"/>
         <location filename="../qtractorMidiEngine.cpp" line="3959"/>
         <location filename="../qtractorMidiEngine.cpp" line="4508"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2577"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2852"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2583"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2858"/>
         <location filename="../qtractorMidiEngine.cpp" line="3968"/>
         <location filename="../qtractorMidiEngine.cpp" line="4508"/>
         <source>%1 Out</source>
@@ -633,15 +633,15 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1 Hlasitost</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2570"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2579"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2576"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2585"/>
         <location filename="../qtractorTrack.cpp" line="688"/>
         <source>%1 Gain</source>
         <translation>%1 Zesílení</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2572"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2581"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2578"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2587"/>
         <location filename="../qtractorMidiEngine.cpp" line="3963"/>
         <location filename="../qtractorMidiEngine.cpp" line="3972"/>
         <location filename="../qtractorTrack.cpp" line="691"/>

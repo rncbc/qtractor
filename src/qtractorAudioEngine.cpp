@@ -364,6 +364,8 @@ static void qtractorAudioEngine_port_connect (
 }
 
 
+#ifdef CONFIG_JACK_PORT_RENAME
+
 //----------------------------------------------------------------------
 // qtractorAudioEngine_port_rename -- JACK port rename callback.
 //
@@ -376,6 +378,8 @@ static void qtractorAudioEngine_port_rename (
 
 	pAudioEngine->notifyPortEvent();
 }
+
+#endif
 
 
 //----------------------------------------------------------------------
@@ -718,8 +722,10 @@ bool qtractorAudioEngine::activate (void)
 		qtractorAudioEngine_port_registration, this);
 	jack_set_port_connect_callback(m_pJackClient,
 		qtractorAudioEngine_port_connect, this);
+#ifdef CONFIG_JACK_PORT_RENAME
 	jack_set_port_rename_callback(m_pJackClient,
 		qtractorAudioEngine_port_rename, this);
+#endif
 	jack_set_buffer_size_callback(m_pJackClient,
 		qtractorAudioEngine_buffer_size, this);
 
