@@ -5099,6 +5099,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			pTrack->setForeground(color.darker());
 			if (pSingleTrack->trackType() == qtractorTrack::Midi) {
 				pTrack->setMidiChannel(pSingleTrack->midiChannel());
+				pTrack->setMidiBankSelMethod(pSingleTrack->midiBankSelMethod());
 				pTrack->setMidiBank(pSingleTrack->midiBank());
 				pTrack->setMidiProg(pSingleTrack->midiProg());
 			}

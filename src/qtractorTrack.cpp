@@ -1111,6 +1111,8 @@ void qtractorTrack::addClip ( qtractorClip *pClip )
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip) {
+			if (midiBankSelMethod() < 0)
+				setMidiBankSelMethod(pMidiClip->bankSelMethod());
 			if (midiBank() < 0)
 				setMidiBank(pMidiClip->bank());
 			if (midiProg() < 0)

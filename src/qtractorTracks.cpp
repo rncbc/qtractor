@@ -1558,6 +1558,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	// Setup merge sequence...
 	qtractorMidiSequence seq(pTrack->trackName(), 0, iTicksPerBeat);
 	seq.setChannel(pTrack->midiChannel());
+	seq.setBankSelMethod(pTrack->midiBankSelMethod());
 	seq.setBank(pTrack->midiBank());
 	seq.setProg(pTrack->midiProg());
 

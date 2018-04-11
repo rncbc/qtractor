@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Fix, detect and preserve MIDI Bank-select method across
+  MIDI track/clips editing operations. (EXPERIMENTAL)
+
+- Fixed MIDI track and clip note min/max display range
+  while recording and also when duplicating tracks.
+
 - Added "All files (*.*)" filter to every file requestor
   dialog, wherever missing. (EXPERIMENTAL)
 
