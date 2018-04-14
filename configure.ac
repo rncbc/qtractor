@@ -1391,6 +1391,12 @@ fi
 # Check for jack_set_port_rename_callback
 AC_CHECK_LIB(jack, jack_set_port_rename_callback, [ac_jack_port_rename="yes"], [ac_jack_port_rename="no"])
 if test "x$ac_jack_port_rename" = "xyes"; then
+   AC_TRY_COMPILE([#include <jack/jack.h>], [
+      void port_rename(jack_port_id_t, const char *, const char *, void *);
+      jack_set_port_rename_callback(0, port_rename, 0);
+   ], ac_jack_port_rename="yes", ac_jack_port_rename="no")
+fi
+if test "x$ac_jack_port_rename" = "xyes"; then
    AC_DEFINE(CONFIG_JACK_PORT_RENAME, 1, [Define if jack_set_port_rename_callback is available.])
 fi
 
