@@ -1791,7 +1791,7 @@ void qtractorPluginList::addView ( qtractorPluginListView *pView )
 
 void qtractorPluginList::removeView ( qtractorPluginListView *pView )
 {
-	int iView = m_views.indexOf(pView);
+	const int iView = m_views.indexOf(pView);
 	if (iView >= 0)
 		m_views.removeAt(iView);
 }

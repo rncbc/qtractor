@@ -415,6 +415,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.TrackListMetersCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.TrackListPluginsCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.PluginTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(choosePluginType(int)));
@@ -684,6 +687,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.KeepToolsOnTopCheckBox->setChecked(m_pOptions->bKeepToolsOnTop);
 	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
 	m_ui.TrackListMetersCheckBox->setChecked(m_pOptions->bTrackListMeters);
+	m_ui.TrackListPluginsCheckBox->setChecked(m_pOptions->bTrackListPlugins);
 	m_ui.ShiftKeyModifierCheckBox->setChecked(m_pOptions->bShiftKeyModifier);
 	m_ui.MidButtonModifierCheckBox->setChecked(m_pOptions->bMidButtonModifier);
 	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
@@ -811,6 +815,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bKeepToolsOnTop      = m_ui.KeepToolsOnTopCheckBox->isChecked();
 		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
 		m_pOptions->bTrackListMeters     = m_ui.TrackListMetersCheckBox->isChecked();
+		m_pOptions->bTrackListPlugins    = m_ui.TrackListPluginsCheckBox->isChecked();
 		m_pOptions->bShiftKeyModifier    = m_ui.ShiftKeyModifierCheckBox->isChecked();
 		m_pOptions->bMidButtonModifier   = m_ui.MidButtonModifierCheckBox->isChecked();
 		m_pOptions->iMaxRecentFiles      = m_ui.MaxRecentFilesSpinBox->value();
@@ -1483,8 +1488,11 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	const QString  sExt("log");
 	const QString& sTitle
 		= tr("Messages Log") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("Log files (*.%1)").arg(sExt); 
+
+	QStringList filters;
+	filters.append(tr("Log files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -1526,8 +1534,11 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	const QString  sExt("qtt");
 	const QString& sTitle
 		= tr("Session Template") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("Session template files (*.qtr *.qts *.%1)").arg(sExt);
+
+	QStringList filters;
+	filters.append(tr("Session template files (*.qtr *.qts *.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -1685,6 +1696,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 QString qtractorOptionsForm::getOpenAudioFileName (
 	const QString& sTitle, const QString& sFilename )
 {
+	const QString& sFilter
+		= qtractorAudioFileFactory::filters().join(";;");
+
 	QString sAudioFile;
 
 	QWidget *pParentWidget = NULL;
@@ -1696,11 +1710,10 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sAudioFile = QFileDialog::getOpenFileName(pParentWidget,
-		sTitle, sFilename, qtractorAudioFileFactory::filter(), NULL, options);
+		sTitle, sFilename, sFilter, NULL, options);
 #else
 	// Construct open-file dialog...
-	QFileDialog fileDialog(pParentWidget,
-		sTitle, sFilename, qtractorAudioFileFactory::filter());
+	QFileDialog fileDialog(pParentWidget, sTitle, sFilename, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFile);

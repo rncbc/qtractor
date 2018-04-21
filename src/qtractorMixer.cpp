@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -692,7 +692,7 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	if (m_bSelected) {
 		const QColor& rgbBase = pal.midlight().color();
 		pal.setColor(QPalette::WindowText, pal.highlightedText().color());
-		pal.setColor(QPalette::Window, rgbBase.darker(160));
+		pal.setColor(QPalette::Window, rgbBase.darker(150));
 		grad.setColorAt(0.4, rgbBase.darker(150));
 		grad.setColorAt(0.6, rgbBase.darker(130));
 		grad.setColorAt(1.0, rgbBase.darker());

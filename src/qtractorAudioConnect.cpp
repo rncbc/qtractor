@@ -1,7 +1,7 @@
 // qtractorAudioConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -62,12 +62,9 @@ static QString prettyName (	jack_uuid_t uuid, const QString& sDefaultName )
 
 // Constructor.
 qtractorAudioPortItem::qtractorAudioPortItem (
-	qtractorAudioClientItem *pClientItem, jack_port_t *pJackPort )
+	qtractorAudioClientItem *pClientItem, unsigned long ulPortFlags )
 	: qtractorPortListItem(pClientItem)
 {
-	m_pJackPort = pJackPort;
-
-	const unsigned long ulPortFlags = jack_port_flags(m_pJackPort);
 	if (ulPortFlags & JackPortIsInput) {
 		QTreeWidgetItem::setIcon(0,
 			qtractorAudioConnect::icon(ulPortFlags & JackPortIsPhysical ?
@@ -85,13 +82,6 @@ qtractorAudioPortItem::~qtractorAudioPortItem (void)
 }
 
 
-// Jack handle accessor.
-jack_port_t *qtractorAudioPortItem::jackPort (void) const
-{
-	return m_pJackPort;
-}
-
-
 // Proto-pretty/alias display name method (virtual override).
 void qtractorAudioPortItem::updatePortName (void)
 {
@@ -104,9 +94,15 @@ void qtractorAudioPortItem::updatePortName (void)
 		pJackClient = pAudioClientListView->jackClient();
 	if (pJackClient) {
 		const QString& sPortName = portName();
-		jack_uuid_t port_uuid = ::jack_port_uuid(m_pJackPort);
-		setPortText(prettyName(port_uuid, sPortName));
-		return;
+		const QString& sClientPort = clientName() + ':' + sPortName;
+		const QByteArray& aClientPort = sClientPort.toUtf8();
+		const char *pszClientPort = aClientPort.constData();
+		jack_port_t *pJackPort = jack_port_by_name(pJackClient, pszClientPort);
+		if (pJackPort) {
+			jack_uuid_t port_uuid = ::jack_port_uuid(pJackPort);
+			setPortText(prettyName(port_uuid, sPortName));
+			return;
+		}
 	}
 #endif
 	qtractorPortListItem::updatePortName();
@@ -237,7 +233,7 @@ int qtractorAudioClientListView::updateClientPorts (void)
 								pJackClient, ppszClientPorts[iClientPort]);
 							if (pJackPort) {
 								pPortItem = new qtractorAudioPortItem(
-									pClientItem, pJackPort);
+									pClientItem, jack_port_flags(pJackPort));
 								pPortItem->setPortName(sPortName);
 								++iDirtyCount;
 							}
@@ -454,22 +450,30 @@ void qtractorAudioConnect::updateConnections (void)
 			if (pOPort->connects().count() > 0)
 				continue;
 			// Get port connections...
-			const char **ppszClientPorts = jack_port_get_all_connections(
-				pJackClient, pOPort->jackPort());
-			if (ppszClientPorts) {
-				// Now, for each input client port...
-				int iClientPort = 0;
-				while (ppszClientPorts[iClientPort]) {
-					qtractorPortListItem *pIPort
-						= IListView()->findClientPortItem(
-							ppszClientPorts[iClientPort]);
-					if (pIPort) {
-						pOPort->addConnect(pIPort);
-						pIPort->addConnect(pOPort);
+			const QString& sClientPort
+				= pOPort->clientName() + ':' + pOPort->portName();
+			const QByteArray& aClientPort = sClientPort.toUtf8();
+			const char *pszClientPort = aClientPort.constData();
+			const jack_port_t *pJackPort
+				= jack_port_by_name(pJackClient, pszClientPort);
+			if (pJackPort) {
+				const char **ppszClientPorts
+					= jack_port_get_all_connections(pJackClient, pJackPort);
+				if (ppszClientPorts) {
+					// Now, for each input client port...
+					int iClientPort = 0;
+					while (ppszClientPorts[iClientPort]) {
+						qtractorPortListItem *pIPort
+							= IListView()->findClientPortItem(
+								ppszClientPorts[iClientPort]);
+						if (pIPort) {
+							pOPort->addConnect(pIPort);
+							pIPort->addConnect(pOPort);
+						}
+						++iClientPort;
 					}
-					++iClientPort;
+					::free(ppszClientPorts);
 				}
-				::free(ppszClientPorts);
 			}
 		}
 	}

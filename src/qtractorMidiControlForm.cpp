@@ -235,8 +235,11 @@ void qtractorMidiControlForm::importSlot (void)
 	const QString  sExt("qtc");
 	const QString& sTitle
 		= tr("Import Controller Files") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("Controller files (*.%1)").arg(sExt);
+
+	QStringList filters;
+	filters.append(tr("Controller files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -450,8 +453,11 @@ void qtractorMidiControlForm::exportSlot (void)
 	const QString  sExt("qtc");
 	const QString& sTitle
 		= tr("Export Controller File") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("Controller files (*.%1)").arg(sExt);
+
+	QStringList filters;
+	filters.append(tr("Controller files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	if (pOptions->midiControlFiles.isEmpty()) {
 		sPath =	QFileInfo(pOptions->sMidiControlDir,

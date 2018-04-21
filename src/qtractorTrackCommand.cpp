@@ -317,6 +317,10 @@ bool qtractorCopyTrackCommand::redo (void)
 		}
 	}
 
+	// Let same old statistics prevail...
+	pNewTrack->setMidiNoteMax(pTrack->midiNoteMax());
+	pNewTrack->setMidiNoteMin(pTrack->midiNoteMin());
+
 	// About to copy all automation/curves...
 	qtractorCurveList *pCurveList = pTrack->curveList();
 	qtractorCurveList *pNewCurveList = pNewTrack->curveList();
@@ -541,8 +545,6 @@ bool qtractorMoveTrackCommand::redo (void)
 	// Just insert under the track list position...
 	// We'll renumber all items now...
 	iNextTrack = pTrackList->insertTrack(iNextTrack, pTrack);
-	if (iNextTrack >= 0)
-		pTrackList->setCurrentTrackRow(iNextTrack);
 
 	// Swap it nice, finally.
 	m_pNextTrack = pNextTrack;
@@ -551,6 +553,9 @@ bool qtractorMoveTrackCommand::redo (void)
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
 		pMixer->updateTracks(true);
+
+	// Make it new current track (updates mixer too)...
+	pTrackList->setCurrentTrackRow(iNextTrack);
 
 	// ATTN: MIDI controller map feedback.
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
@@ -1357,6 +1362,7 @@ bool qtractorTrackInstrumentCommand::redo (void)
 		iBankSelMethod, m_iBank, m_iProg, pTrack);
 
 	// Set track instrument...
+	pTrack->setMidiBankSelMethod(iBankSelMethod);
 	pTrack->setMidiBank(m_iBank);
 	pTrack->setMidiProg(m_iProg);
 

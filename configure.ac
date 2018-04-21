@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.8.7, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.9.1, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -1388,6 +1388,17 @@ if test "x$ac_jack_metadata" = "xyes"; then
    fi
 fi
 
+# Check for jack_set_port_rename_callback
+AC_CHECK_LIB(jack, jack_set_port_rename_callback, [ac_jack_port_rename="yes"], [ac_jack_port_rename="no"])
+if test "x$ac_jack_port_rename" = "xyes"; then
+   AC_TRY_COMPILE([#include <jack/jack.h>], [
+      void port_rename(jack_port_id_t, const char *, const char *, void *);
+      jack_set_port_rename_callback(0, port_rename, 0);
+   ], ac_jack_port_rename="yes", ac_jack_port_rename="no")
+fi
+if test "x$ac_jack_port_rename" = "xyes"; then
+   AC_DEFINE(CONFIG_JACK_PORT_RENAME, 1, [Define if jack_set_port_rename_callback is available.])
+fi
 
 # Check for NSM support.
 if test "x$ac_nsm" = "xyes"; then

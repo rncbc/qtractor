@@ -1,7 +1,7 @@
 // qtractorMidiManager.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -543,8 +543,7 @@ void qtractorMidiManager::clear (void)
 	// Reset event buffers...
 	for (unsigned short i = 0; i < 2; ++i) {
 	#ifdef CONFIG_VST
-		VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[i];
-		::memset(pVstEvents, 0, sizeof(VstEvents));
+		::memset(m_ppVstBuffers[i], 0, sizeof(VstEvents));
 	#endif
 	#ifdef CONFIG_LV2_EVENT
 		LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[i];
@@ -814,7 +813,7 @@ void qtractorMidiManager::processInputBuffer (
 			break;
 	}
 
-	m_iEventCount = 0;
+	resetEventBuffers();
 
 	pEv = pMidiInputBuffer->peek();
 	while (pEv) {
@@ -869,8 +868,7 @@ void qtractorMidiManager::processEventBuffers (void)
 			break;
 	#ifdef CONFIG_DEBUG_0
 		// - show event for debug purposes...
-		unsigned long iTime = pEv->time.tick;
-		fprintf(stderr, "MIDI Raw %06lu {", iTime);
+		fprintf(stderr, "MIDI Raw %06u {", pEv->time.tick);
 		for (long i = 0; i < iMidiData; ++i)
 			fprintf(stderr, " %02x", pMidiData[i]);
 		fprintf(stderr, " }\n");
@@ -904,6 +902,28 @@ void qtractorMidiManager::processEventBuffers (void)
 #endif
 
 #endif	// CONFIG_MIDI_PARSER
+}
+
+
+// Reset event buffers (in for out and vice-versa)
+void qtractorMidiManager::resetEventBuffers (void)
+{
+	if (m_iEventCount == 0)
+		return;
+
+#ifdef CONFIG_VST
+	::memset(m_ppVstBuffers[m_iEventBuffer & 1], 0, sizeof(VstEvents));
+#endif
+#ifdef CONFIG_LV2_EVENT
+	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[m_iEventBuffer & 1];
+	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
+		(unsigned char *) (pLv2EventBuffer + 1));
+#endif
+#ifdef CONFIG_LV2_ATOM
+	lv2_atom_buffer_reset(m_ppLv2AtomBuffers[m_iEventBuffer & 1], true);
+#endif
+
+	m_iEventCount = 0;
 }
 
 

@@ -3535,6 +3535,8 @@ bool qtractorMidiEngine::fileExport (
 			seqs.append(pSeq);
 		}
 		// Make this track setup...
+		if (pSeq->bankSelMethod() < 0)
+			pSeq->setBankSelMethod(pTrack->midiBankSelMethod());
 		if (pSeq->bank() < 0)
 			pSeq->setBank(pTrack->midiBank());
 		if (pSeq->prog() < 0)

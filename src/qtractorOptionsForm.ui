@@ -3672,6 +3672,22 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0" colspan="3">
+           <widget class="QCheckBox" name="TrackListPluginsCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to show plugins on track list/left pane</string>
+            </property>
+            <property name="text">
+             <string>Sho&amp;w plugins on track list/left pane</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -3797,6 +3813,7 @@
   <tabstop>DummyPluginScanCheckBox</tabstop>
   <tabstop>Lv2DynManifestCheckBox</tabstop>
   <tabstop>SaveCurve14bitCheckBox</tabstop>
+  <tabstop>TrackListPluginsCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

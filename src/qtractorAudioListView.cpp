@@ -139,6 +139,8 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 
 	const QString& sTitle
 		= tr("Open Audio Files") + " - " QTRACTOR_TITLE;
+	const QString& sFilter
+		= qtractorAudioFileFactory::filters().join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -150,11 +152,10 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
-		sTitle, recentDir(), qtractorAudioFileFactory::filter(), NULL, options);
+		sTitle, recentDir(), sFilter, NULL, options);
 #else
 	// Construct open-files dialog...
-	QFileDialog fileDialog(pParentWidget,
-		sTitle, recentDir(), qtractorAudioFileFactory::filter());
+	QFileDialog fileDialog(pParentWidget, sTitle, recentDir(), sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFiles);

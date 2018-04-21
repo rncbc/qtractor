@@ -717,6 +717,7 @@ void qtractorMidiClip::unlinkHashData (void)
 
 	pNewSeq->setName(pOldSeq->name());
 	pNewSeq->setChannel(pOldSeq->channel());
+	pNewSeq->setBankSelMethod(pOldSeq->bankSelMethod());
 	pNewSeq->setBank(pOldSeq->bank());
 	pNewSeq->setProg(pOldSeq->prog());
 	pNewSeq->setTicksPerBeat(pOldSeq->ticksPerBeat());
@@ -1084,6 +1085,20 @@ void qtractorMidiClip::draw (
 }
 
 
+// Clip update method. (rolling stats)
+void qtractorMidiClip::update (void)
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack) {
+		qtractorMidiSequence *pSeq = sequence();
+		if (pSeq) {
+			pTrack->setMidiNoteMax(pSeq->noteMax());
+			pTrack->setMidiNoteMin(pSeq->noteMin());
+		}
+	}
+}
+
+
 // Clip editor method.
 bool qtractorMidiClip::startEditor ( QWidget *pParent )
 {
@@ -1365,6 +1380,7 @@ bool qtractorMidiClip::clipExport (
 
 	qtractorMidiSequence seq(pSeq->name(), pSeq->channel(), iTicksPerBeat);
 
+	seq.setBankSelMethod(pTrack->midiBankSelMethod());
 	seq.setBank(pTrack->midiBank());
 	seq.setProg(pTrack->midiProg());
 

@@ -546,16 +546,19 @@ void qtractorPluginForm::openPresetSlot (void)
 
 	// Prompt if file does not currently exist...
 	const QString sExt("qtx");
-	QStringList filters(sExt);
+	QStringList exts(sExt);
 	if (bVstPlugin) {
-		filters.append("fxp");
-		filters.append("fxb");
+		exts.append("fxp");
+		exts.append("fxb");
 	}
 
 	const QString& sTitle
 		= tr("Open Preset") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("Preset files (*.%1)").arg(filters.join(" *."));
+
+	QStringList filters;
+	filters.append(tr("Preset files (*.%1)").arg(exts.join(" *.")));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -639,8 +642,8 @@ void qtractorPluginForm::savePresetSlot (void)
 		// Sure, we'll have something complex enough
 		// to make it save into an external file...
 		const QString sExt("qtx");
-		QStringList filters(sExt);
-		if (bVstPlugin) { filters.append("fxp"); filters.append("fxb"); }
+		QStringList exts(sExt);
+		if (bVstPlugin) { exts.append("fxp"); exts.append("fxb"); }
 		QFileInfo fi(settings.value(sPreset).toString());
 		if (!fi.exists() || !fi.isFile())
 			fi.setFile(QDir(pOptions->sPresetDir),
@@ -650,8 +653,10 @@ void qtractorPluginForm::savePresetSlot (void)
 		if (!fi.exists()) {
 			const QString& sTitle
 				= tr("Save Preset") + " - " QTRACTOR_TITLE;
-			const QString& sFilter
-				= tr("Preset files (*.%1)").arg(filters.join(" *."));
+			QStringList filters;
+			filters.append(tr("Preset files (*.%1)").arg(exts.join(" *.")));
+			filters.append(tr("All files (*.*)"));
+			const QString& sFilter = filters.join(";;");
 			QWidget *pParentWidget = NULL;
 			QFileDialog::Options options = 0;
 			if (pOptions->bDontUseNativeDialogs) {
