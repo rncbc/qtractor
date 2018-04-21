@@ -1485,7 +1485,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorClipForm.cpp" line="689"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="702"/>
@@ -2014,7 +2014,7 @@ falló.</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="405"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
 </context>
 <context>
@@ -2319,7 +2319,7 @@ Are you sure?</source>
         <location filename="../qtractorInstrumentForm.cpp" line="226"/>
         <location filename="../qtractorInstrumentForm.cpp" line="392"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="388"/>
@@ -5588,7 +5588,7 @@ Lo siento.</translation>
         <location filename="../qtractorMainForm.cpp" line="1999"/>
         <location filename="../qtractorMainForm.cpp" line="2097"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2004"/>
@@ -6570,7 +6570,7 @@ el archivo de sesión actual.</translation>
         <location filename="../qtractorMidiControlForm.cpp" line="241"/>
         <location filename="../qtractorMidiControlForm.cpp" line="459"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="322"/>
@@ -8623,7 +8623,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="1040"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="1108"/>
@@ -8811,7 +8811,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="185"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
 </context>
 <context>
@@ -10852,12 +10852,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3684"/>
         <source>Whether to show plugins on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se muestran los plugins en la lista de pistas/panel izquierdo</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3687"/>
         <source>Sho&amp;w plugins on track list/left pane</source>
-        <translation type="unfinished"></translation>
+        <translation>M&amp;ostrar plugins en la lista de pistas/panel izquierdo</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="131"/>
@@ -10962,7 +10962,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorOptionsForm.cpp" line="1494"/>
         <location filename="../qtractorOptionsForm.cpp" line="1540"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1536"/>
@@ -11170,7 +11170,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorPluginForm.cpp" line="560"/>
         <location filename="../qtractorPluginForm.cpp" line="658"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="601"/>
@@ -12918,12 +12918,12 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="1456"/>
         <source>MIDI files (*.mid *.smf *.midi)</source>
-        <translation type="unfinished">Archivos MIDI (*.mid *.smf *.midi)</translation>
+        <translation>Archivos MIDI (*.mid *.smf *.midi)</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1457"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1246"/>
