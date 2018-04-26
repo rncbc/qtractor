@@ -42,8 +42,8 @@
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2574"/>
         <location filename="../qtractorAudioEngine.cpp" line="2858"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3959"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4508"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3961"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4510"/>
         <source>%1 In</source>
         <translation>%1 Entrada</translation>
     </message>
@@ -127,8 +127,8 @@ Fim:	%3	Tamanho:	%4 </translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2578"/>
         <location filename="../qtractorAudioEngine.cpp" line="2587"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3963"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3972"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3965"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3974"/>
         <location filename="../qtractorTrack.cpp" line="691"/>
         <source>%1 Pan</source>
         <translation>%1 Panorâmico</translation>
@@ -136,8 +136,8 @@ Fim:	%3	Tamanho:	%4 </translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2583"/>
         <location filename="../qtractorAudioEngine.cpp" line="2858"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3968"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4508"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3970"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4510"/>
         <source>%1 Out</source>
         <translation>%1 Saída</translation>
     </message>
@@ -293,8 +293,8 @@ MIDI:	</translation>
         <translation>Produto:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="3961"/>
-        <location filename="../qtractorMidiEngine.cpp" line="3970"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3963"/>
+        <location filename="../qtractorMidiEngine.cpp" line="3972"/>
         <location filename="../qtractorTrack.cpp" line="685"/>
         <source>%1 Volume</source>
         <translation>%1 Volume</translation>
@@ -1836,7 +1836,7 @@ Você quer substituí-lo?</translation>
         <translation>Limites</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="344"/>
+        <location filename="../qtractorExportForm.cpp" line="348"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -1884,12 +1884,12 @@ falhou.</translation>
         <translation>A Renderização do arquivo de áudio: &quot;%1&quot; terminou.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="404"/>
+        <location filename="../qtractorExportForm.cpp" line="408"/>
         <source>%1 files (*.%1)</source>
         <translation>%1 arquivos (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="405"/>
+        <location filename="../qtractorExportForm.cpp" line="409"/>
         <source>All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1914,7 +1914,7 @@ falhou.</translation>
         <translation>A Renderização do arquivo de áudio: &quot;%1&quot; começou...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="339"/>
+        <location filename="../qtractorExportForm.cpp" line="343"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>A Renderização do arquivo MIDI: &quot;%1&quot; terminou.</translation>
     </message>
@@ -1947,7 +1947,7 @@ failed.</source>
 falhou.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="401"/>
+        <location filename="../qtractorExportForm.cpp" line="405"/>
         <source>Export %1 File</source>
         <translation>Renderizando %1 do Arquivo</translation>
     </message>
@@ -1997,7 +1997,7 @@ falhou.</translation>
         <translation>Limites da Personalização</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="318"/>
+        <location filename="../qtractorExportForm.cpp" line="322"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>A Renderização do arquivo MIDI: &quot;%1&quot; começou...</translation>
     </message>

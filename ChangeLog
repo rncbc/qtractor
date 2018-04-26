@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Always reset all internal dedicated MIDI controllers,
+  eg. MIDI track volume (CC#7) and panning (CC#10), on
+  Transport/Panic and after rendering export to audio
+  (ie. Track/Export Tracks/Audio...) as needed to reset
+  MIDI instrument plugins to nominal session state.
+
 - Fix, detect and preserve MIDI Bank-select method across
   MIDI track/clips editing operations. (EXPERIMENTAL)
 
