@@ -1509,8 +1509,11 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	const QString  sExt("log");
 	const QString& sTitle
 		= tr("Messages Log") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("Log files (*.%1)").arg(sExt); 
+
+	QStringList filters;
+	filters.append(tr("Log files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -1552,8 +1555,11 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	const QString  sExt("qtt");
 	const QString& sTitle
 		= tr("Session Template") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("Session template files (*.qtr *.qts *.%1)").arg(sExt);
+
+	QStringList filters;
+	filters.append(tr("Session template files (*.qtr *.qts *.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -1725,6 +1731,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 QString qtractorOptionsForm::getOpenAudioFileName (
 	const QString& sTitle, const QString& sFilename )
 {
+	const QString& sFilter
+		= qtractorAudioFileFactory::filters().join(";;");
+
 	QString sAudioFile;
 
 	QWidget *pParentWidget = NULL;
@@ -1736,11 +1745,10 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 #if 1//QT_VERSION < 0x040400
 	// Ask for the filename to open...
 	sAudioFile = QFileDialog::getOpenFileName(pParentWidget,
-		sTitle, sFilename, qtractorAudioFileFactory::filter(), NULL, options);
+		sTitle, sFilename, sFilter, NULL, options);
 #else
 	// Construct open-file dialog...
-	QFileDialog fileDialog(pParentWidget,
-		sTitle, sFilename, qtractorAudioFileFactory::filter());
+	QFileDialog fileDialog(pParentWidget, sTitle, sFilename, sFilter);
 	// Set proper open-file modes...
 	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
 	fileDialog.setFileMode(QFileDialog::ExistingFile);

@@ -1489,7 +1489,7 @@ bool qtractorMidiEngine::isResetAllControllers (void) const
 
 
 // Shut-off all MIDI buses (stop)...
-void qtractorMidiEngine::shutOffAllBuses ( bool bClose ) const
+void qtractorMidiEngine::shutOffAllBuses ( bool bClose )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiEngine::shutOffAllBuses(%d)", int(bClose));
@@ -1506,7 +1506,7 @@ void qtractorMidiEngine::shutOffAllBuses ( bool bClose ) const
 
 
 // Shut-off all MIDI tracks (panic)...
-void qtractorMidiEngine::shutOffAllTracks (void) const
+void qtractorMidiEngine::shutOffAllTracks (void)
 {
 	qtractorSession *pSession = session();
 	if (pSession == NULL)
@@ -1536,6 +1536,8 @@ void qtractorMidiEngine::shutOffAllTracks (void) const
 			}
 		}
 	}
+
+	resetAllControllers(true); // Force immediate!
 }
 
 
@@ -3535,6 +3537,8 @@ bool qtractorMidiEngine::fileExport (
 			seqs.append(pSeq);
 		}
 		// Make this track setup...
+		if (pSeq->bankSelMethod() < 0)
+			pSeq->setBankSelMethod(pTrack->midiBankSelMethod());
 		if (pSeq->bank() < 0)
 			pSeq->setBank(pTrack->midiBank());
 		if (pSeq->prog() < 0)
@@ -4156,8 +4160,8 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiBus[%p]::setController(%d, %d, %d)",
-		this, iChannel, iController, iValue);
+	qDebug("qtractorMidiBus[%p]::setControllerEx(%d, %d, %d, %p)",
+		this, iChannel, iController, iValue, pTrack);
 #endif
 
 	// Initialize sequencer event...

@@ -323,16 +323,63 @@ static int qtractorAudioEngine_graph_order ( void *pvArg )
 
 
 //----------------------------------------------------------------------
-// qtractorAudioEngine_graph_port -- JACK port registration callback.
+// qtractorAudioEngine_client_registration -- JACK client reg. callback.
 //
 
-static void qtractorAudioEngine_graph_port ( jack_port_id_t, int, void *pvArg )
+static void qtractorAudioEngine_client_registration (
+	const char *, int, void *pvArg )
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
 	pAudioEngine->notifyPortEvent();
 }
+
+
+//----------------------------------------------------------------------
+// qtractorAudioEngine_port_registration -- JACK port reg. callback.
+//
+
+static void qtractorAudioEngine_port_registration (
+	jack_port_id_t, int, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	pAudioEngine->notifyPortEvent();
+}
+
+
+//----------------------------------------------------------------------
+// qtractorAudioEngine_port_connect -- JACK port conn. callback.
+//
+
+static void qtractorAudioEngine_port_connect (
+	jack_port_id_t, jack_port_id_t, int, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	pAudioEngine->notifyPortEvent();
+}
+
+
+#ifdef CONFIG_JACK_PORT_RENAME
+
+//----------------------------------------------------------------------
+// qtractorAudioEngine_port_rename -- JACK port rename callback.
+//
+
+static void qtractorAudioEngine_port_rename (
+	jack_port_id_t, const char *, const char *, void *pvArg )
+{
+	qtractorAudioEngine *pAudioEngine
+		= static_cast<qtractorAudioEngine *> (pvArg);
+
+	pAudioEngine->notifyPortEvent();
+}
+
+#endif
 
 
 //----------------------------------------------------------------------
@@ -669,8 +716,16 @@ bool qtractorAudioEngine::activate (void)
 		qtractorAudioEngine_shutdown, this);
 	jack_set_graph_order_callback(m_pJackClient,
 		qtractorAudioEngine_graph_order, this);
+	jack_set_client_registration_callback(m_pJackClient,
+		qtractorAudioEngine_client_registration, this);
 	jack_set_port_registration_callback(m_pJackClient,
-		qtractorAudioEngine_graph_port, this);
+		qtractorAudioEngine_port_registration, this);
+	jack_set_port_connect_callback(m_pJackClient,
+		qtractorAudioEngine_port_connect, this);
+#ifdef CONFIG_JACK_PORT_RENAME
+	jack_set_port_rename_callback(m_pJackClient,
+		qtractorAudioEngine_port_rename, this);
+#endif
 	jack_set_buffer_size_callback(m_pJackClient,
 		qtractorAudioEngine_buffer_size, this);
 

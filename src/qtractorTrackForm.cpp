@@ -1153,14 +1153,13 @@ void qtractorTrackForm::trackIconClicked (void)
 	if (sFilename.at(0) == ':')
 		sFilename.clear();
 
+	const QString& sTitle
+		= tr("Track Icon") + " - " QTRACTOR_TITLE;
+
 	QStringList filters;
 	filters.append(tr("Image files (%1)").arg("*.png *.xpm *.jpg *.jpeg"));
 	filters.append(tr("All files (*.*)"));
-
-	const QString& sTitle
-		= tr("Track Icon") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= filters.join(";;");
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;

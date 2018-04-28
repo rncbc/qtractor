@@ -1998,6 +1998,8 @@ bool qtractorMainForm::openSession (void)
 	filters.append(tr("Archive files (*.%1)")
 		.arg(qtractorDocument::archiveExt()));
 #endif
+	filters.append(tr("All files (*.*)"));
+
 	sExt = m_pOptions->sSessionExt; // Default session file format...
 
 	const QString& sTitle
@@ -2094,6 +2096,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		filters.append(tr("Archive files (*.%1)")
 			.arg(qtractorDocument::archiveExt()));
 	#endif
+		filters.append(tr("All files (*.*)"));
 		sExt = m_pOptions->sSessionExt; // Default session  file format...
 		const QString& sTitle
 			= tr("Save Session") + " - " QTRACTOR_TITLE;

@@ -6,10 +6,30 @@ ChangeLog
 
 GIT HEAD
 
-- New View/Options.../Plugins/Experimental/Show plugins
-  on track list/left pane option is in effect on tracks
-  that are tall enough in height for their plugins list
-  to fit on the Bus column. (EXPERIMENTAL)
+- Always reset all internal dedicated MIDI controllers,
+  eg. MIDI track volume (CC#7) and panning (CC#10), on
+  Transport/Panic and after rendering export to audio
+  (ie. Track/Export Tracks/Audio...) as needed to reset
+  MIDI instrument plugins to nominal session state.
+
+- Fix, detect and preserve MIDI Bank-select method across
+  MIDI track/clips editing operations. (EXPERIMENTAL)
+
+- Fixed MIDI track and clip note min/max display range
+  while recording and also when duplicating tracks.
+
+- Added "All files (*.*)" filter to every file requestor
+  dialog, wherever missing. (EXPERIMENTAL)
+
+- The tiny zoom-magnifier icons have been revamped.
+
+
+0.9.0  2018-03-22  Early Spring'18 Beta.
+
+- New View/Options.../Plugins/Experimental/Show plugins on
+  track list/left pane option is in effect on tracks that
+  are tall enough in height for their plugins list to fit
+  on the Bus column.
 
 - Fixed a day-zero bug over the MIDI Insert (Send/Return)
   pseudo-plugin, which was duplicating MIDI events onto
@@ -20,7 +40,7 @@ GIT HEAD
 
 - MIDI Program Change events (PC) now have their proper
   program number as parameter, instead of value, on the
-  internal MIDI event representation. (EXPERIMENTAL)
+  internal MIDI event representation.
 
 - Merging MIDI clips while on SMF Format 0 has been fixed:
   was merging always onto the same MIDI channel (2), most
@@ -30,24 +50,23 @@ GIT HEAD
   names from Mtrk TRACKNAME meta-events instead of filename.
 
 - Avoid asking to save as to existing or just newly created
-  clip file-names, whenever possible. (EXPERIMENTAL)
+  clip file-names, whenever possible.
 
 - Disable singleton/unique application instance setup logic
-  when the display server platform is not X11. (EXPERIMENTAL)
+  when the display server platform is not X11.
 
 - Whether to use native file browser/requester dialogs is
   now an effective option when launching under NSM session
-  management (was once disabled initially). (EXPERIMENTAL)
+  management (was once disabled initially).
 
-- Content files are now saved as symlinks when saving to JACK
-  and/or NSM session directories/folders. (EXPERIMENTAL)
+- Content files are now saved as symlinks when saving to
+  JACK and/or NSM session directories/folders.
 
-- Trying to get CC14 MSB+LSB (course+fine) running status on,
-  no matter whether each pairing event are under 200ms apart
-  (EXPERIMENTAL)
+- Trying to get CC14 MSB+LSB (course+fine) running status
+  on, no matter whether each pairing event are under 200ms
+  apart.
 
 - Possible VST plug-in GUI reparenting hack/fix on Qt5/Xcb.
-  (EXPERIMENTAL)
 
 
 0.8.6  2018-01-30  Winter'18 Beta.

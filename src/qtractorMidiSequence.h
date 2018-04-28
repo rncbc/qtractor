@@ -1,7 +1,7 @@
 // qtractorMidiSequence.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -56,6 +56,11 @@ public:
 	// Sequence/track channel accessors.
 	void setChannel(unsigned short iChannel) { m_iChannel = (iChannel & 0x0f); }
 	unsigned short channel() const { return m_iChannel; }
+
+	// Sequence/track ban-select-method accessors (optional).
+	void setBankSelMethod(int iBankSelMethod)
+		{ m_iBankSelMethod = iBankSelMethod; }
+	int bankSelMethod() const { return m_iBankSelMethod; }
 
 	// Sequence/track bank accessors (optional).
 	void setBank(int iBank) { m_iBank = iBank; }
@@ -133,6 +138,7 @@ private:
 	unsigned long  m_iTimeLength;
 
 	// Sequence/track optional properties.
+	int            m_iBankSelMethod;
 	int            m_iBank;
 	int            m_iProg;
 

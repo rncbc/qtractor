@@ -1,7 +1,7 @@
 // qtractorMidiConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,11 +34,9 @@
 
 // Constructor.
 qtractorMidiPortItem::qtractorMidiPortItem (
-	qtractorMidiClientItem *pClientItem, int iAlsaPort )
+	qtractorMidiClientItem *pClientItem )
 	: qtractorPortListItem(pClientItem)
 {
-	m_iAlsaPort = iAlsaPort;
-
 	if (pClientItem->isReadable()) {
 		QTreeWidgetItem::setIcon(0,
 			qtractorMidiConnect::icon(qtractorMidiConnect::PortOut));
@@ -64,7 +62,7 @@ int qtractorMidiPortItem::alsaClient (void) const
 
 int qtractorMidiPortItem::alsaPort (void) const
 {
-	return m_iAlsaPort;
+	return portName().section(':', 0, 0).toInt();
 }
 
 
@@ -74,11 +72,9 @@ int qtractorMidiPortItem::alsaPort (void) const
 
 // Constructor.
 qtractorMidiClientItem::qtractorMidiClientItem (
-	qtractorMidiClientListView *pClientListView, int iAlsaClient )
+	qtractorMidiClientListView *pClientListView )
 	: qtractorClientListItem(pClientListView)
 {
-	m_iAlsaClient = iAlsaClient;
-
 	if (pClientListView->isReadable()) {
 		QTreeWidgetItem::setIcon(0,
 			qtractorMidiConnect::icon(qtractorMidiConnect::ClientOut));
@@ -97,7 +93,7 @@ qtractorMidiClientItem::~qtractorMidiClientItem (void)
 // Jack client accessor.
 int qtractorMidiClientItem::alsaClient (void) const
 {
-	return m_iAlsaClient;
+	return clientName().section(':', 0, 0).toInt();
 }
 
 
@@ -223,8 +219,7 @@ int qtractorMidiClientListView::updateClientPorts (void)
 						if (isPortName(sPortName)) {
 							qtractorMidiPortItem *pPortItem = NULL;
 							if (pClientItem == NULL) {
-								pClientItem = new qtractorMidiClientItem(this,
-									iAlsaClient);
+								pClientItem = new qtractorMidiClientItem(this);
 								pClientItem->setClientName(sClientName);
 								++iDirtyCount;
 							} else {
@@ -236,8 +231,7 @@ int qtractorMidiClientListView::updateClientPorts (void)
 							}
 							if (pClientItem) {
 								if (pPortItem == NULL) {
-									pPortItem = new qtractorMidiPortItem(
-										pClientItem, iAlsaPort);
+									pPortItem = new qtractorMidiPortItem(pClientItem);
 									pPortItem->setPortName(sPortName);
 									++iDirtyCount;
 								} else if (sPortName != pPortItem->portName()) {

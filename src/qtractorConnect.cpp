@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -937,52 +937,52 @@ void qtractorClientListView::contextMenuEvent (
 
 // Natural decimal sorting comparator.
 bool qtractorClientListView::lessThan (
-	const QTreeWidgetItem& i1, const QTreeWidgetItem& i2, int col )
+	const QTreeWidgetItem& item1, const QTreeWidgetItem& item2, int col )
 {
-	const QString& s1 = i1.text(col);
-	const QString& s2 = i2.text(col);
+	const QString& s1 = item1.text(col);
+	const QString& s2 = item2.text(col);
 
-	const int cch1 = s1.length();
-	const int cch2 = s2.length();
+	const int n1 = s1.length();
+	const int n2 = s2.length();
 
-	int ich1, ich2;
+	int i1, i2;
 
-	for (ich1 = ich2 = 0; ich1 < cch1 && ich2 < cch2; ++ich1, ++ich2) {
+	for (i1 = i2 = 0; i1 < n1 && i2 < n2; ++i1, ++i2) {
 
-		// Skip (white)spaces...
-		while (s1.at(ich1).isSpace())
-			++ich1;
-		while (s2.at(ich2).isSpace())
-			++ich2;
+		// skip (white)spaces...
+		while (s1.at(i1).isSpace())
+			++i1;
+		while (s2.at(i2).isSpace())
+			++i2;
 
 		// Normalize (to uppercase) the next characters...
-		QChar ch1 = s1.at(ich1).toUpper();
-		QChar ch2 = s2.at(ich2).toUpper();
+		QChar c1 = s1.at(i1).toUpper();
+		QChar c2 = s2.at(i2).toUpper();
 
-		if (ch1.isDigit() && ch2.isDigit()) {
+		if (c1.isDigit() && c2.isDigit()) {
 			// Find the whole length numbers...
-			int iDigits1 = ich1++;
-			while (ich1 < cch1 && s1.at(ich1).isDigit())
-				++ich1;
-			int iDigits2 = ich2++;
-			while (ich2 < cch2 && s2.at(ich2).isDigit())
-				++ich2;
+			int j1 = i1++;
+			while (i1 < n1 && s1.at(i1).isDigit())
+				++i1;
+			int j2 = i2++;
+			while (i2 < n2 && s2.at(i2).isDigit())
+				++i2;
 			// Compare as natural decimal-numbers...
-			int n1 = s1.mid(iDigits1, ich1 - iDigits1).toInt();
-			int n2 = s2.mid(iDigits2, ich2 - iDigits2).toInt();
-			if (n1 != n2)
-				return (n1 < n2);
+			j1 = s1.mid(j1, i1 - j1).toInt();
+			j2 = s2.mid(j2, i2 - j2).toInt();
+			if (j1 != j2)
+				return (j1 < j2);
 			// Never go out of bounds...
-			if (ich1 >= cch1 || ich1 >= cch2)
+			if (i1 >= n1 || i2 >= n2)
 				break;
 			// Go on with this next char...
-			ch1 = s1.at(ich1).toUpper();
-			ch2 = s2.at(ich2).toUpper();
+			c1 = s1.at(i1).toUpper();
+			c2 = s2.at(i2).toUpper();
 		}
 
 		// Compare this char...
-		if (ch1 != ch2)
-			return (ch1 < ch2);
+		if (c1 != c2)
+			return (c1 < c2);
 	}
 
 	// Probable exact match.

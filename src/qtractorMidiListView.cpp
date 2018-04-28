@@ -179,8 +179,11 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 	const QString  sExt("mid");
 	const QString& sTitle
 		= tr("Open MIDI Files") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
+
+	QStringList filters;
+	filters.append(tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
