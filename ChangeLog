@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Added LV2 UI sample-rate option support.
+
 - Always reset all internal dedicated MIDI controllers,
   eg. MIDI track volume (CC#7) and panning (CC#10), on
   Transport/Panic and after rendering export to audio
