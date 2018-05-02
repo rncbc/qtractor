@@ -1593,7 +1593,7 @@ Voulez vous appliquer les changements ?</translation>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.cpp" line="366"/>
+        <location filename="../qtractorConnectForm.cpp" line="379"/>
         <source>(All)</source>
         <translation>(Tout)</translation>
     </message>

@@ -1519,7 +1519,7 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorConnectForm</name>
     <message>
-        <location filename="../qtractorConnectForm.cpp" line="366"/>
+        <location filename="../qtractorConnectForm.cpp" line="379"/>
         <source>(All)</source>
         <translation>(vše)</translation>
     </message>

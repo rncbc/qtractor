@@ -1587,7 +1587,7 @@ Wollen Sie diese übernehmen?</translation>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.cpp" line="366"/>
+        <location filename="../qtractorConnectForm.cpp" line="379"/>
         <source>(All)</source>
         <translation>(Alle)</translation>
     </message>
