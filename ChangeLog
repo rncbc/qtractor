@@ -6,11 +6,15 @@ ChangeLog
 
 GIT HEAD
 
+- Extended multi-selection is now supported on all the
+  Connections client/port lists, allowing for multiple
+  (dis)connections at once. (EXPERIMENTAL)
+
 - Added LV2 UI sample-rate option support.
 
 - Always reset all internal dedicated MIDI controllers,
   eg. MIDI track volume (CC#7) and panning (CC#10), on
-  Transport/Panic and after rendering export to audio
+  Transport/Panic and after rendering export to aud1io
   (ie. Track/Export Tracks/Audio...) as needed to reset
   MIDI instrument plugins to nominal session state.
 
