@@ -4288,7 +4288,7 @@ void qtractorMidiEditor::paintDragState (
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
 			continue;
-		int c = (pEvent == m_pEventDrag ? 64 : 0);
+		const int c = (pEvent == m_pEventDrag ? 64 : 0);
 		QRect rect = (bEditView ? pItem->rectView : pItem->rectEvent);
 		if (!m_bEventDragEdit || pEvent == m_pEventDrag) {
 			if (m_dragState == DragRescale) {
@@ -4428,6 +4428,23 @@ void qtractorMidiEditor::paintDragState (
 				rect.translate(m_posDelta.x(), 0);
 		}
 		// Paint the damn bastard...
+	#if 1//QTRACTOR_DRUM_MODE_TEST
+		if (bEditView) {
+			const int h1 = m_pEditList->itemHeight();
+			const QColor rgb(c, 0, 255 - c, 120);
+			const int h2 = (h1 >> 1);
+			QVector<QPoint> diamond;
+			diamond.append(QPoint(-h1, h2));
+			diamond.append(QPoint(0, -h2));
+			diamond.append(QPoint(h1, h2));
+			diamond.append(QPoint(0, h1 + h2));
+			pPainter->setPen(rgb);
+			pPainter->setBrush(rgb);
+			pPainter->drawPolygon(QPolygon(diamond).translated(
+				pScrollView->contentsToViewport(rect.topLeft()))); // diamond
+		}
+		else
+	#endif
 		pPainter->fillRect(QRect(
 			pScrollView->contentsToViewport(rect.topLeft()),
 			rect.size()), QColor(c, 0, 255 - c, 120));

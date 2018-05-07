@@ -430,9 +430,24 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 					hue = (128 - int(pEvent->value())) << 1;
 					rgbNote.setHsv(hue, sat, val);
 				}
+			#if 1//QTRACTOR_DRUM_MODE_TEST
+				const int h2 = (h1 >> 1);
+				QVector<QPoint> diamond;
+				diamond.append(QPoint(-h1, h2));
+				diamond.append(QPoint(0, -h2));
+				diamond.append(QPoint(h1, h2));
+				diamond.append(QPoint(0, h1 + h2));
+				painter.setPen(rgbFore);
+				painter.setBrush(rgbNote);
+				const QPolygon& polyg
+					= QPolygon(diamond).translated(x, y);
+				painter.drawPolygon(polyg.translated(1, 0)); // shadow
+				painter.drawPolygon(polyg); // diamond
+			#else
 				painter.fillRect(x, y, w1, h1, rgbFore);
 				if (h1 > 3)
 					painter.fillRect(x + 1, y + 1, w1 - 4, h1 - 3, rgbNote);
+			#endif
 			}
 		}
 		pEvent = pEvent->next();
