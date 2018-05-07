@@ -735,58 +735,58 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Copyright :</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2060"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2063"/>
         <source>Project: </source>
         <translation>Projet: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3131"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3134"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation>Sélectionner l&apos;éditeur de greffon (interface graphique) :</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3143"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3146"/>
         <source>External</source>
         <translation>Externe</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3146"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3149"/>
         <source>X11</source>
         <translation>X11</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3149"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3152"/>
         <source>Gtk2</source>
         <translation>Gtk2</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3153"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3156"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3157"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3160"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3162"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3165"/>
         <source>Other</source>
         <translation>Autre</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3170"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3173"/>
         <source>Don&apos;t ask this again</source>
         <translation>Ne pas redemander</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3491"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3494"/>
         <source>plugin parameters</source>
         <translation>paramètres du greffon</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2068"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2071"/>
         <source>Author: </source>
         <translation>Auteur : </translation>
     </message>
@@ -1495,22 +1495,22 @@ Voulez vous appliquer les changements ?</translation>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1806"/>
+        <location filename="../qtractorConnect.cpp" line="1862"/>
         <source>Connect</source>
         <translation>Connecter</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1811"/>
+        <location filename="../qtractorConnect.cpp" line="1867"/>
         <source>Disconnect</source>
         <translation>Déconnecter</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1816"/>
+        <location filename="../qtractorConnect.cpp" line="1872"/>
         <source>Disconnect All</source>
         <translation>Tout déconnecter</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1823"/>
+        <location filename="../qtractorConnect.cpp" line="1879"/>
         <source>Refresh</source>
         <translation>Rafraîchir</translation>
     </message>
@@ -1593,7 +1593,7 @@ Voulez vous appliquer les changements ?</translation>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.cpp" line="366"/>
+        <location filename="../qtractorConnectForm.cpp" line="379"/>
         <source>(All)</source>
         <translation>(Tout)</translation>
     </message>

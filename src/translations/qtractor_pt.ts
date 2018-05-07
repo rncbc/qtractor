@@ -310,52 +310,52 @@ MIDI:	</translation>
         <translation>gravador de sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2060"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2063"/>
         <source>Project: </source>
         <translation>Projeto: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3131"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3134"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3143"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3146"/>
         <source>External</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3146"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3149"/>
         <source>X11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3149"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3152"/>
         <source>Gtk2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3153"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3156"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3157"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3160"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3162"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3165"/>
         <source>Other</source>
         <translation>Outro</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3170"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3173"/>
         <source>Don&apos;t ask this again</source>
         <translation>Não pergunte novamente</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3491"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3494"/>
         <source>plugin parameters</source>
         <translation>parametros do plugin</translation>
     </message>
@@ -690,7 +690,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2068"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2071"/>
         <source>Author: </source>
         <translation>Autor:</translation>
     </message>
@@ -1496,22 +1496,22 @@ Você quer mesmo manter as modificações?</translation>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1823"/>
+        <location filename="../qtractorConnect.cpp" line="1879"/>
         <source>Refresh</source>
         <translation>Atualizar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1811"/>
+        <location filename="../qtractorConnect.cpp" line="1867"/>
         <source>Disconnect</source>
         <translation>Desconectar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1806"/>
+        <location filename="../qtractorConnect.cpp" line="1862"/>
         <source>Connect</source>
         <translation>Conectar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1816"/>
+        <location filename="../qtractorConnect.cpp" line="1872"/>
         <source>Disconnect All</source>
         <translation>Desconectar Tudo</translation>
     </message>
@@ -1524,7 +1524,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.cpp" line="366"/>
+        <location filename="../qtractorConnectForm.cpp" line="379"/>
         <source>(All)</source>
         <translation>(Todas)</translation>
     </message>
