@@ -2515,7 +2515,13 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			if (bEditView) {
 				// View item...
 				y = ch - h1 * (pEvent->note() + 1);
+			#if 1//QTRACTOR_DRUM_MODE_TEST
+				const int h2 = (h1 >> 1);
+				const int h4 = (h1 << 1);
+				rect.setRect(x - x0 - h1, y - h2, h4, h4);
+			#else
 				rect.setRect(x - x0, y, w1, h1);
+			#endif
 			} else {
 				// Event item...
 				const qtractorMidiEvent::EventType etype = pEvent->type();
