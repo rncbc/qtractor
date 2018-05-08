@@ -2049,7 +2049,13 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 		const qtractorMidiEvent::EventType etype = pEvent->type();
 		if (etype == m_pEditView->eventType()) {
 			y = ch - h1 * (pEvent->note() + 1);
+		#if 1//QTRACTOR_DRUM_MODE_TEST
+			const int h2 = (h1 >> 1);
+			const int h4 = (h1 << 1);
+			pItem->rectView.setRect(x - x0 - h1, y - h2, h4, h4);
+		#else
 			pItem->rectView.setRect(x - x0, y, w1, h1);
+		#endif
 		}
 		else pItem->rectView.setRect(0, 0, 0, 0);
 		// Event item...
@@ -3279,7 +3285,13 @@ void qtractorMidiEditor::updateDragSelect (
 			QRect rectView;
 			if (pEvent->type() == m_pEditView->eventType()) {
 				y = ch - h1 * (pEvent->note() + 1);
+			#if 1//QTRACTOR_DRUM_MODE_TEST
+				const int h2 = (h1 >> 1);
+				const int h4 = (h1 << 1);
+				rectView.setRect(x - x0 - h1, y - h2, h4, h4);
+			#else
 				rectView.setRect(x - x0, y, w1, h1);
+			#endif
 				if (bEditView)
 					bSelect = rectSelect.intersects(rectView);
 			}
@@ -3568,7 +3580,13 @@ void qtractorMidiEditor::updateEventRects (
 	int y;
 	if (pEvent->type() == m_pEditView->eventType()) {
 		y = ch - h1 * (pEvent->note() + 1);
+	#if 1//QTRACTOR_DRUM_MODE_TEST
+		const int h2 = (h1 >> 1);
+		const int h4 = (h1 << 1);
+		rectView.setRect(x - x0 - h1, y - h2, h4, h4);
+	#else
 		rectView.setRect(x - x0, y, w1, h1);
+	#endif
 	}
 	else rectView.setRect(0, 0, 0, 0);
 
@@ -3612,23 +3630,31 @@ void qtractorMidiEditor::updateDragMove (
 	const QPoint delta(pos - m_posDrag);
 	QRect rect(bEditView ? m_select.rectView() : m_select.rectEvent());
 
+	const int h1 = m_pEditList->itemHeight();
 	const int cw = pScrollView->contentsWidth();
 
 	int dx = delta.x();
+	int x1 = rect.x();
+#if 1//QTRACTOR_DRUM_MODE_TEST
+	if (bEditView) x1 += h1;
+#endif
+	const int x2 = x1 + dx;
+	if (x2 < 0)
+		dx = -x1;
+	if (x2 + rect.width() > cw)
+		dx = cw - rect.right();
 
 	const int x0 = m_rectDrag.x() + m_pTimeScale->pixelFromFrame(m_iOffset);
-	const int x1 = rect.x() + dx;
-	if (x1 < 0)
-		dx = -(rect.x());
-	if (x1 + rect.width() > cw)
-		dx = cw - rect.right();
 	m_posDelta.setX(m_pTimeScale->pixelSnap(x0 + dx) - x0);
-
-	const int h1 = m_pEditList->itemHeight();
 
 	if (bEditView && h1 > 0) {
 		const int ch = m_pEditView->contentsHeight();
+	#if 1//QTRACTOR_DRUM_MODE_TEST
+		const int h2 = (h1 >> 1);
+		const int y0 = rect.y() + h2;
+	#else
 		const int y0 = rect.y();
+	#endif
 		int y1 = y0 + delta.y();
 		if (y1 < 0)
 			y1 = 0;
@@ -4428,26 +4454,25 @@ void qtractorMidiEditor::paintDragState (
 				rect.translate(m_posDelta.x(), 0);
 		}
 		// Paint the damn bastard...
+		const QColor rgba(c, 0, 255 - c, 120);
 	#if 1//QTRACTOR_DRUM_MODE_TEST
 		if (bEditView) {
 			const int h1 = m_pEditList->itemHeight();
-			const QColor rgb(c, 0, 255 - c, 120);
-			const int h2 = (h1 >> 1);
 			QVector<QPoint> diamond;
-			diamond.append(QPoint(-h1, h2));
-			diamond.append(QPoint(0, -h2));
-			diamond.append(QPoint(h1, h2));
-			diamond.append(QPoint(0, h1 + h2));
-			pPainter->setPen(rgb);
-			pPainter->setBrush(rgb);
+			diamond.append(QPoint(-h1,   0));
+			diamond.append(QPoint(  0, -h1));
+			diamond.append(QPoint(+h1,   0));
+			diamond.append(QPoint(  0, +h1));
+			pPainter->setPen(rgba);
+			pPainter->setBrush(rgba);
 			pPainter->drawPolygon(QPolygon(diamond).translated(
-				pScrollView->contentsToViewport(rect.topLeft()))); // diamond
+				pScrollView->contentsToViewport(rect.center()))); // diamond
 		}
 		else
 	#endif
 		pPainter->fillRect(QRect(
 			pScrollView->contentsToViewport(rect.topLeft()),
-			rect.size()), QColor(c, 0, 255 - c, 120));
+			rect.size()), rgba);
 	}
 
 	// Local cleanup.
@@ -5036,6 +5061,11 @@ bool qtractorMidiEditor::keyStep (
 	if (m_dragState == DragNone) {
 		m_dragState = m_dragCursor = DragStep;
 		m_rectDrag  = m_select.rectView();
+	#if 1//QTRACTOR_DRUM_MODE_TEST
+		const int h1 = m_pEditList->itemHeight();
+		const int h2 = (h1 >> 1);
+		m_rectDrag.translate(+h1, +h2);
+	#endif
 		m_posDrag   = m_rectDrag.topLeft();
 		m_posStep   = QPoint(0, 0);
 		m_pEditView->setCursor(Qt::SizeAllCursor);
