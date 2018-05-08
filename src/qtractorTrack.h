@@ -149,6 +149,10 @@ public:
 	void setMidiNoteMax(unsigned char note);
 	unsigned char midiNoteMax() const;
 
+	// MIDI drum mode (UI).
+	void setMidiDrumMode(bool bMidiDrumMode);
+	bool isMidiDrumMode() const;
+
 	// Assigned bus name accessors.
 	void setInputBusName(const QString& sBusName);
 	const QString& inputBusName() const;
@@ -364,6 +368,8 @@ private:
 
 	unsigned char    m_midiNoteMax; // MIDI specific: track-maximum note;
 	unsigned char    m_midiNoteMin; // MIDI specific: track-minimum note.
+
+	bool             m_bMidiDrumMode;   // MIDI drum mode (UI).
 
 	int              m_iHeight;     // View height (normalized).
 	int              m_iZoomHeight; // View height (zoomed).

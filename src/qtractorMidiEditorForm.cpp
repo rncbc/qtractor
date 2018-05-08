@@ -458,6 +458,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewValueColorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewValueColor(bool)));
+	QObject::connect(m_ui.viewDrumModeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewDrumMode(bool)));
 	QObject::connect(m_ui.viewEventsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewEvents(bool)));
@@ -957,6 +960,9 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 			SLOT(sendNote(int,int)));
 	}   // Reset MIDI clip length alright...
 	else m_pMidiEditor->resetClipLength();
+
+	// Drum mode visuals....
+	m_ui.viewDrumModeAction->setChecked(m_pMidiEditor->isDrumMode());
 
 	// Reset local dirty flag.
 	resetDirtyCount();
@@ -1576,6 +1582,14 @@ void qtractorMidiEditorForm::viewValueType (void)
 		// Commit the change as usual...
 		// eventTypeChanged(iIndex);
 	}
+}
+
+
+// View drum note of notes (diamods)
+void qtractorMidiEditorForm::viewDrumMode ( bool bOn )
+{
+	m_pMidiEditor->setDrumMode(bOn);
+	m_pMidiEditor->updateContents();
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorMidiThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -137,6 +137,16 @@ void qtractorMidiThumbView::updateContents (void)
 
 	const int h2 = 1 + (h / iNoteSpan);
 
+	const bool bDrumMode = m_pEditor->isDrumMode();
+	QVector<QPoint> diamond;
+	if (bDrumMode) {
+		const int h4 = (h2 >> 1);
+		diamond.append(QPoint(-h2,  h4));
+		diamond.append(QPoint(  0, -h4));
+		diamond.append(QPoint( h2,  h4));
+		diamond.append(QPoint(  0,  h4 + h2));
+	}
+
 	const QColor& fg = pTrack->foreground();
 	painter.setPen(fg);
 	painter.setBrush(fg.lighter());
@@ -147,9 +157,15 @@ void qtractorMidiThumbView::updateContents (void)
 			x2 = pEvent->time() / f2;
 			const int y2 = h - h2
 				- (h * (pEvent->note() - pSeq->noteMin())) / iNoteSpan;
-			const int w2 = 1 + (pEvent->duration() / f2);
-		//	painter.fillRect(x2, y2, w2, h2, fg);
-			painter.drawRect(x2, y2, w2, h2);
+			if (bDrumMode) {
+				const QPolygon& polyg
+					= QPolygon(diamond).translated(x2, y2);
+				painter.drawPolygon(polyg); // diamond
+			} else {
+				const int w2 = 1 + (pEvent->duration() / f2);
+			//	painter.fillRect(x2, y2, w2, h2, fg);
+				painter.drawRect(x2, y2, w2, h2);
+			}
 		}
 		pEvent = pEvent->next();
 	}
