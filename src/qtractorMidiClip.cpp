@@ -1068,6 +1068,19 @@ void qtractorMidiClip::draw (
 				const int y = clipRect.bottom()
 					- (h1 * (pEvent->note() - iNoteMin)) / iNoteSpan;
 				pNode = cursor.seekTick(t2);
+			#if 1//QTRACTOR_DRUM_MODE_TEST
+				const int h2 = (h >> 1);
+				QVector<QPoint> diamond;
+				diamond.append(QPoint(-h, h2));
+				diamond.append(QPoint(0, -h2));
+				diamond.append(QPoint(h, h2));
+				diamond.append(QPoint(0, h + h2));
+				const QPolygon& polyg
+					= QPolygon(diamond).translated(x, y);
+				if (h > 2)
+					pPainter->drawPolygon(polyg.translated(1, 0)); // shadow
+				pPainter->drawPolygon(polyg); // diamond
+			#else
 				int w = (t1 < t2 || !bClipRecord
 					? clipRect.x() + pNode->pixelFromTick(t2) - cx
 					: clipRect.right()) - x; // Pending note-off? (while recording)
@@ -1078,6 +1091,7 @@ void qtractorMidiClip::draw (
 				else
 				if (w > 3 && h > 2)
 					pPainter->fillRect(x + 1, y + 1, w - 3, h - 2, fg.lighter());
+			#endif
 			}
 		}
 		pEvent = pEvent->next();
