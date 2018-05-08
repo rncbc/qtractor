@@ -124,6 +124,7 @@
         <file>images/viewPreview.png</file>
         <file>images/viewZoomIn.png</file>
         <file>images/viewZoomOut.png</file>
+        <file>images/viewZoomReset.png</file>
         <file>images/viewZoomTool.png</file>
     </qresource>
 </RCC>

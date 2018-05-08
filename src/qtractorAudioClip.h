@@ -1,7 +1,7 @@
 // qtractorAudioClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -108,6 +108,9 @@ public:
 	// Clip paint method.
 	void draw(QPainter *pPainter,
 		const QRect& clipRect, unsigned long iClipOffset);
+
+	// Clip update method (no-op).
+	void update() {}
 
 	// Audio clip tool-tip.
 	QString toolTip() const;

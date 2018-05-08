@@ -391,14 +391,44 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 					// Set the primordial bank patch...
 					switch (data1) {
 					case BANK_MSB:
-						// Bank MSB...
-						bank = (pSeq->bank() < 0 ? 0 : (pSeq->bank() & 0x007f));
-						pSeq->setBank(bank | (data2 << 7));
+						// Bank MSB
+						if (pSeq->bankSelMethod() < 0)
+							pSeq->setBankSelMethod(1);
+						// Bank-select method (MSB)...
+						switch (pSeq->bankSelMethod()) {
+						case 1: // Bank MSB (current)
+							pSeq->setBank(data2);
+							break;
+						case 2: // Bank LSB (previous)
+							pSeq->setBankSelMethod(0);
+							// Fall thru...
+						case 0:
+						default:
+							bank = (pSeq->bank() < 0 ? 0 : (pSeq->bank() & 0x007f));
+							pSeq->setBank(bank | (data2 << 7));
+							break;
+						}
 						break;
 					case BANK_LSB:
-						// Bank LSB...
-						bank = (pSeq->bank() < 0 ? 0 : (pSeq->bank() & 0x3f80));
-						pSeq->setBank(bank | data2);
+						// Bank LSB
+						if (pSeq->bankSelMethod() < 0)
+							pSeq->setBankSelMethod(2);
+						// Bank-select method (LSB)...
+						switch (pSeq->bankSelMethod()) {
+						case 1: // Bank MSB (previous)
+							bank = (pSeq->bank() < 0 ? 0 : (pSeq->bank() & 0x007f));
+							pSeq->setBank((bank << 7) | data2);
+							pSeq->setBankSelMethod(0);
+							break;
+						case 2: // Bank LSB (current)
+							pSeq->setBank(data2);
+							break;
+						case 0: // Normal
+						default:
+							bank = (pSeq->bank() < 0 ? 0 : (pSeq->bank() & 0x3f80));
+							pSeq->setBank(bank | data2);
+							break;
+						}
 						break;
 					default:
 						break;
@@ -809,14 +839,21 @@ bool qtractorMidiFile::writeTracks (
 			if (pSeq->bank() >= 0) {
 				iChannel = pSeq->channel();
 				iStatus  = (qtractorMidiEvent::CONTROLLER | iChannel) & 0xff;
-				writeInt(0); // delta-time=0
-				writeInt(iStatus, 1);
-				writeInt(BANK_MSB, 1);	// Bank MSB.
-				writeInt((pSeq->bank() & 0x3f80) >> 7, 1);
-				writeInt(0); // delta-time=0
-			//	writeInt(iStatus, 1);
-				writeInt(BANK_LSB, 1);	// Bank LSB.
-				writeInt((pSeq->bank() & 0x007f), 1);
+				if (0 >= pSeq->bankSelMethod() || pSeq->bankSelMethod() == 1) {
+					writeInt(0); // delta-time=0
+					writeInt(iStatus, 1);
+					writeInt(BANK_MSB, 1);	// Bank MSB.
+					if (pSeq->bankSelMethod() == 1)
+						writeInt((pSeq->bank() & 0x007f), 1);
+					else
+						writeInt((pSeq->bank() & 0x3f80) >> 7, 1);
+				}
+				if (0 >= pSeq->bankSelMethod() || pSeq->bankSelMethod() == 2) {
+					writeInt(0); // delta-time=0
+					writeInt(iStatus, 1);
+					writeInt(BANK_LSB, 1);	// Bank LSB.
+					writeInt((pSeq->bank() & 0x007f), 1);
+				}
 			}
 
 			// Track/channel program change...

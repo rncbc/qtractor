@@ -2415,6 +2415,9 @@
    </property>
   </action>
   <action name="viewZoomResetAction">
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/viewZoomReset.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Reset</string>
    </property>

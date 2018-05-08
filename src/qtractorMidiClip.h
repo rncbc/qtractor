@@ -92,6 +92,8 @@ public:
 
 	unsigned short channel() const
 		{ return (m_pData ? m_pData->channel() : 0); }
+	int bankSelMethod() const
+		{ return (m_pData ? m_pData->bankSelMethod() : -1); }
 	int bank() const
 		{ return (m_pData ? m_pData->bank() : -1); }
 	int prog() const
@@ -118,6 +120,9 @@ public:
 	// Clip paint method.
 	void draw(QPainter *pPainter,
 		const QRect& clipRect, unsigned long iClipOffset);
+
+	// Clip update method (rolling stats).
+	void update();
 
 	// Clip editor methods.
 	bool startEditor(QWidget *pParent = NULL);
@@ -168,6 +173,8 @@ public:
 		unsigned short channel() const
 			{ return m_pSeq->channel(); }
 
+		int bankSelMethod() const
+			{ return m_pSeq->bankSelMethod(); }
 		int bank() const
 			{ return m_pSeq->bank(); }
 		int prog() const

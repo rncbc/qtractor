@@ -220,8 +220,11 @@ void qtractorInstrumentForm::importSlot (void)
 	const QString  sExt("ins");
 	const QString& sTitle
 		= tr("Import Instrument Files") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("Instrument files (*.%1 *.sf2 *.sf3 *.midnam)").arg(sExt);
+
+	QStringList filters;
+	filters.append(tr("Instrument files (*.%1 *.sf2 *.sf3 *.midnam)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -383,8 +386,11 @@ void qtractorInstrumentForm::exportSlot (void)
 	const QString  sExt("ins");
 	const QString& sTitle
 		= tr("Export Instrument File") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("Instrument files (*.%1)").arg(sExt);
+
+	QStringList filters;
+	filters.append(tr("Instrument files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;

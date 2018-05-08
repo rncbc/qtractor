@@ -184,6 +184,9 @@ public:
 	virtual void draw(QPainter *pPainter,
 		const QRect& clipRect, unsigned long iClipOffset) = 0;
 
+	// Clip update method.
+	virtual void update() = 0;
+
 	// Clip editor methods.
 	virtual bool startEditor(QWidget *pParent = NULL);
 	virtual void resetEditor(bool bSelectClear);

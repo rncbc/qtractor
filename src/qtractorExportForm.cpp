@@ -296,6 +296,10 @@ void qtractorExportForm::accept (void)
 						tr("Audio file export:\n\n\"%1\"\n\nfailed.")
 						.arg(sExportPath));
 				}
+				// HACK: Reset all (internal) MIDI controllers...
+				qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+				if (pMidiEngine)
+					pMidiEngine->resetAllControllers(true); // Force immediate.
 			}
 		}
 		else
@@ -399,8 +403,11 @@ void qtractorExportForm::browseExportPath (void)
 	// Actual browse for the file...
 	const QString& sTitle
 		= tr("Export %1 File").arg(m_sExportType) + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("%1 files (*.%1)").arg(m_sExportExt);
+
+	QStringList filters;
+	filters.append(tr("%1 files (*.%1)").arg(m_sExportExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;

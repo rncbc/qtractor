@@ -126,10 +126,10 @@ public:
 	bool isResetAllControllers() const;
 
 	// Shut-off all MIDI buses (stop)...
-	void shutOffAllBuses(bool bClose = false) const;
+	void shutOffAllBuses(bool bClose = false);
 
 	// Shut-off all MIDI tracks (panic)...
-	void shutOffAllTracks() const;
+	void shutOffAllTracks();
 
 	// ALSA port input registry methods.
 	void addInputBus(qtractorMidiBus *pMidiBus);

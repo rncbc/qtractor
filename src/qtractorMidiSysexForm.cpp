@@ -209,15 +209,14 @@ void qtractorMidiSysexForm::importSlot (void)
 	QStringList files;
 
 	const QString  sExt("syx");
+	const QString& sTitle
+		= tr("Import SysEx Files") + " - " QTRACTOR_TITLE;
+
 	QStringList filters;
 	filters.append(tr("SysEx files (*.%1)").arg(sExt));
 	filters.append(tr("MIDI files (*.mid *.smf *.midi)"));
 	filters.append(tr("All files (*.*)"));
-
-	const QString& sTitle
-		= tr("Import SysEx Files") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= filters.join(";;");
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -297,8 +296,11 @@ void qtractorMidiSysexForm::exportSlot (void)
 	const QString  sExt("syx");
 	const QString& sTitle
 		= tr("Export SysEx File") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("SysEx files (*.%1)").arg(sExt);
+
+	QStringList filters;
+	filters.append(tr("SysEx files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -441,8 +443,11 @@ void qtractorMidiSysexForm::openSlot (void)
 	const QString  sExt("syx");
 	const QString& sTitle
 		= tr("Open SysEx") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("SysEx files (*.%1)").arg(sExt);
+
+	QStringList filters;
+	filters.append(tr("SysEx files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -516,8 +521,10 @@ void qtractorMidiSysexForm::saveSlot (void)
 	if (!fi.exists()) {
 		const QString& sTitle
 			= tr("Save SysEx") + " - " QTRACTOR_TITLE;
-		const QString& sFilter
-			= tr("Sysex files (*.%1)").arg(sExt);
+		QStringList filters;
+		filters.append(tr("SysEx files (*.%1)").arg(sExt));
+		filters.append(tr("All files (*.*)"));
+		const QString& sFilter = filters.join(";;");
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		QWidget *pParentWidget = NULL;
 		QFileDialog::Options options = 0;

@@ -1021,6 +1021,7 @@ static struct qtractorLv2Urids
 #ifdef CONFIG_LV2_UI
 	LV2_URID ui_windowTitle;
 	LV2_URID ui_updateRate;
+	LV2_URID ui_sampleRate;
 #endif
 #endif	// CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_STATE
@@ -1818,6 +1819,8 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_UI__windowTitle);
 	g_lv2_urids.ui_updateRate
 		= qtractorLv2Plugin::lv2_urid_map(LV2_UI__updateRate);
+	g_lv2_urids.ui_sampleRate
+		= qtractorLv2Plugin::lv2_urid_map(LV2_CORE__sampleRate);
 #endif
 #ifdef CONFIG_LV2_STATE
 	g_lv2_urids.state_StateChanged
@@ -3906,12 +3909,21 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS
-	static float s_fUpdateRate = 15.0f;
+	m_fUpdateRate = 15.0f;
+	m_dSampleRate = 44100.0;
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine)
+			m_dSampleRate = double(pAudioEngine->sampleRate());
+	}
 	const LV2_Options_Option ui_options[] = {
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_windowTitle,
 		  sizeof(char *), g_lv2_urids.atom_String, m_aEditorTitle.constData() },
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_updateRate,
-		  sizeof(float), g_lv2_urids.atom_Float, &s_fUpdateRate },
+		  sizeof(float), g_lv2_urids.atom_Float, &m_fUpdateRate },
+		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_sampleRate,
+		  sizeof(double), g_lv2_urids.atom_Double, &m_dSampleRate },
 		{ LV2_OPTIONS_INSTANCE, 0, 0, 0, 0, NULL }
 	};
 	::memcpy(&m_lv2_ui_options, &ui_options, sizeof(ui_options));
