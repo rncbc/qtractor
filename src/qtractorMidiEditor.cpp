@@ -1745,7 +1745,13 @@ void qtractorMidiEditor::pasteClipboard (
 			QRect rectView;
 			if (pEvent->type() == m_pEditView->eventType()) {
 				y = ch - h1 * (pEvent->note() + 1);
+			#if 1//QTRACTOR_DRUM_MODE_TEST
+				const int h2 = (h1 >> 1);
+				const int h4 = (h1 << 1);
+				rectView.setRect(x - x0 - h1, y + h2, h4, h4);
+			#else
 				rectView.setRect(x - x0, y, w1, h1);
+			#endif
 			}
 			// Event item...
 			QRect rectEvent;
@@ -2645,8 +2651,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 				#if 1//QTRACTOR_DRUM_MODE_EVENT
 					else {
 						pEvent->setTime(t1);
-						pItem->rectView.moveLeft(x0 + x1 - h1);
-						pItem->rectEvent.moveLeft(x0 + x1);
+						pItem->rectView.moveLeft(x1 - x0 - h1);
+						pItem->rectEvent.moveLeft(x1 - x0);
 						m_select.updateItem(pItem);
 						m_rectDrag = pItem->rectView;
 						m_posDrag = m_rectDrag.center();
@@ -4305,18 +4311,18 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 void qtractorMidiEditor::paintDragState (
 	qtractorScrollView *pScrollView, QPainter *pPainter )
 {
+	const bool bEditView
+		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
+
 #ifdef CONFIG_DEBUG_0
 	const QRect& rectSelect = (bEditView
 		? m_select.rectView() : m_select.rectEvent());
 	if (!rectSelect.isEmpty()) {
 		pPainter->fillRect(QRect(
 			pScrollView->contentsToViewport(rectSelect.topLeft()),
-			rectSelect.size()), QColor(0, 0, 255, 40));
+			rectSelect.size()), QColor(255, 0, 255, 40));
 	}
 #endif
-
-	const bool bEditView
-		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
 
 	int x1, y1;
 
