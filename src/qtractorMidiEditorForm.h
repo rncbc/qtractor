@@ -151,6 +151,7 @@ protected slots:
 	void viewNoteType();
 	void viewValueColor(bool bOn);
 	void viewValueType();
+	void viewDrumMode(bool bOn);
 	void viewEvents(bool bOn);
 	void viewPreview(bool bOn);
 	void viewFollow(bool bOn);
