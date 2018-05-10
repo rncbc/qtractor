@@ -2643,6 +2643,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	pNode = cursor.seekPixel(x1);
 	const unsigned short p = (bEditView && m_bDrumMode ? 1 : 8);
 	const unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1), p) - t0;
+	x1 = pNode->pixelFromTick(t0 + t1);
 
 	// Check for time/onset changes and whether it's already drawn...
 	if (m_bEventDragEdit && m_pEventDrag) {
@@ -2711,7 +2712,6 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 
 	// Create a brand new event...
 	qtractorMidiEvent *pEvent = new qtractorMidiEvent(t1, eventType);
-	x1 = pNode->pixelFromTick(t0 + t1);
 
 	switch (pEvent->type()) {
 	case qtractorMidiEvent::NOTEON:
