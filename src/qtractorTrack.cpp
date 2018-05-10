@@ -317,6 +317,8 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_midiNoteMin = 0;
 	m_midiNoteMax = 0;
 
+	m_bMidiDrumMode = false;
+
 	m_pClipRecord = NULL;
 	m_iClipRecordStart = 0;
 
@@ -989,6 +991,18 @@ void qtractorTrack::setMidiNoteMax ( unsigned char note )
 unsigned char qtractorTrack::midiNoteMax (void) const
 {
 	return m_midiNoteMax;
+}
+
+
+// MIDI drum mode (UI).
+void qtractorTrack::setMidiDrumMode ( bool bMidiDrumMode )
+{
+	m_bMidiDrumMode = bMidiDrumMode;
+}
+
+bool qtractorTrack::isMidiDrumMode (void) const
+{
+	return m_bMidiDrumMode;
 }
 
 
@@ -1698,6 +1712,9 @@ bool qtractorTrack::loadElement (
 					qtractorTrack::setMidiBank(eProp.text().toInt());
 				else if (eProp.tagName() == "midi-program")
 					qtractorTrack::setMidiProg(eProp.text().toInt());
+				else if (eProp.tagName() == "midi-drum-mode")
+					qtractorTrack::setMidiDrumMode(
+						qtractorDocument::boolFromText(eProp.text()));
 				else if (eProp.tagName() == "icon")
 					qtractorTrack::setTrackIcon(eProp.text());
 			}
@@ -1840,6 +1857,8 @@ bool qtractorTrack::saveElement (
 			pDocument->saveTextElement("midi-program",
 				QString::number(qtractorTrack::midiProg()), &eProps);
 		}
+		pDocument->saveTextElement("midi-drum-mode",
+			qtractorDocument::textFromBool(qtractorTrack::isMidiDrumMode()), &eProps);
 	}
 	pElement->appendChild(eProps);
 
