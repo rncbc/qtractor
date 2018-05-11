@@ -2676,7 +2676,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 					}
 				}
 				else
-				if (!m_bEditModeDraw && pEvent == m_pEventDrag) {
+				if (/*!m_bEditModeDraw && */pEvent == m_pEventDrag) {
 					// Bump pitch...
 					pEvent->setNote(note);
 					y1 = ch - h1 * (note + 1);
@@ -2691,23 +2691,22 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 						m_posDrag = pos; // m_rectDrag.topLeft();
 						resizeEvent(pEvent, timeDelta(pScrollView), 0);
 					}
-				//	m_posDelta = QPoint(0, 0);
 					if (m_bSendNotes)
 						m_pEditList->dragNoteOn(note, pEvent->velocity());
 					// Bumped.
-					return NULL;
+					return pEvent;
 				}
 			}
 			else
 			if (t1 == pEvent->time()) {
-				m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
-				m_posDrag = (m_bDrumMode && bEditView ? m_rectDrag.center() : pos);
+			//	m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
+			//	m_posDrag = (m_bDrumMode && bEditView ? m_rectDrag.center() : pos);
 				return pEvent;
 			}
 		}
 		// No new events if ain't drawing...
-		if (!m_bEditModeDraw)
-			return NULL;
+		//if (!m_bEditModeDraw)
+		//	return NULL;
 	}
 
 	// Create a brand new event...
