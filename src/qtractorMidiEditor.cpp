@@ -2664,7 +2664,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 						return pEvent;
 					}
 					else
-					if (m_bDrumMode) {
+					if (!m_bEditModeDraw && m_bDrumMode) {
 						pEvent->setTime(t1);
 						pItem->rectView.moveLeft(x1 - x0 - h1);
 						pItem->rectEvent.moveLeft(x1 - x0);
@@ -2874,7 +2874,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 		Qt::CursorShape shape = Qt::PointingHandCursor;
 		const qtractorMidiEvent::EventType etype = pEvent->type();
 		if (bEditView) {
-			if (etype == qtractorMidiEvent::NOTEON) {
+			if (etype == qtractorMidiEvent::NOTEON && !m_bDrumMode) {
 				if (pos.x() > m_rectDrag.right() - 4) {
 					m_resizeMode = ResizeNoteRight;
 					shape = Qt::SplitHCursor;
@@ -3857,6 +3857,10 @@ void qtractorMidiEditor::updateDragResize (
 		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
 		break;
 	case ResizeValue:
+		if (m_bDrumMode && m_bEventDragEdit // HACK: Fake note resizes...
+			&& static_cast<qtractorScrollView *> (m_pEditView) == pScrollView)
+			break;
+		// Fall thru...
 	case ResizeValue14:
 	case ResizePitchBend:
 		dy = delta.y();
@@ -3931,7 +3935,7 @@ void qtractorMidiEditor::updateDragEventResize ( const QPoint& pos )
 	m_pEditEvent->ensureVisible(pos.x(), 0, 16, 0);
 
 	const QPoint delta(pos - m_posDrag);
-	if (delta.manhattanLength() < 4)
+	if (delta.manhattanLength() < QApplication::startDragDistance())
 		return;
 
 	const qtractorMidiEvent::EventType eventType = m_pEditEvent->eventType();
