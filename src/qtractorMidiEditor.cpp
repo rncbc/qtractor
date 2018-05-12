@@ -2705,8 +2705,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			}
 		}
 		// No new events if ain't drawing...
-		//if (!m_bEditModeDraw)
-		//	return NULL;
+		if (!m_bEditModeDraw)
+			return NULL;
 	}
 
 	// Create a brand new event...
@@ -3085,10 +3085,12 @@ void qtractorMidiEditor::dragMoveUpdate (
 			qtractorMidiEvent *pEvent
 				= dragEditEvent(pScrollView, pos, modifiers);
 			if (pEvent && pEvent != m_pEventDrag) {
-				resizeEvent(m_pEventDrag,
-					timeDelta(pScrollView),
-					valueDelta(pScrollView));
-				m_posDelta = QPoint(0, 0);
+				if (!m_bDrumMode) {
+					resizeEvent(m_pEventDrag,
+						timeDelta(pScrollView),
+						valueDelta(pScrollView));
+					m_posDelta = QPoint(0, 0);
+				}
 				m_pEventDrag = pEvent;
 			}
 		}
