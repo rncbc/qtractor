@@ -2622,13 +2622,6 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	const int h0 = ((m_pEditEvent->viewport())->height() & ~1);	// even.
 	const int y0 = (eventType == qtractorMidiEvent::PITCHBEND ? h0 >> 1 : h0);
 
-	const int ymin = 1;
-	const int ymax = h0;
-
-	int y = pos.y();
-
-	if (y < ymin) y = ymin; else if (y > ymax) y = ymax;
-
 	// Compute onset time from given horizontal position...
 	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
 
@@ -2676,7 +2669,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 					}
 				}
 				else
-				if (/*!m_bEditModeDraw && */pEvent == m_pEventDrag) {
+				if (pEvent == m_pEventDrag
+					&& (!m_bEditModeDraw || m_bDrumMode)) {
 					// Bump pitch...
 					pEvent->setNote(note);
 					y1 = ch - h1 * (note + 1);
@@ -2712,6 +2706,9 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	// Create a brand new event...
 	qtractorMidiEvent *pEvent = new qtractorMidiEvent(t1, eventType);
 
+	// Compute value from given vertical position...
+	y1 = pos.y(); if (y1 < 1) y1 = 1; else if (y1 > h0) y1 = h0;
+
 	switch (pEvent->type()) {
 	case qtractorMidiEvent::NOTEON:
 	case qtractorMidiEvent::KEYPRESS:
@@ -2722,7 +2719,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		} else {
 			pEvent->setNote(m_last.note);
 			if (y0 > 0)
-				pEvent->setVelocity((128 * (y0 - y)) / y0);
+				pEvent->setVelocity((128 * (y0 - y1)) / y0);
 			else
 				pEvent->setVelocity(m_last.value);
 		}
@@ -2742,7 +2739,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		// Set RPN/NRPN event...
 		pEvent->setParam(m_pEditEvent->eventParam());
 		if (y0 > 0)
-			pEvent->setValue((16384 * (y0 - y)) / y0);
+			pEvent->setValue((16384 * (y0 - y1)) / y0);
 		else
 			pEvent->setValue(m_last.value);
 		break;
@@ -2750,14 +2747,14 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		// Set Control-14 event...
 		pEvent->setController(m_pEditEvent->eventParam());
 		if (y0 > 0)
-			pEvent->setValue((16384 * (y0 - y)) / y0);
+			pEvent->setValue((16384 * (y0 - y1)) / y0);
 		else
 			pEvent->setValue(m_last.value);
 		break;
 	case qtractorMidiEvent::PITCHBEND:
 		// Set pitchbend event value...
 		if (y0 > 0)
-			pEvent->setPitchBend((8192 * (y0 - y)) / y0);
+			pEvent->setPitchBend((8192 * (y0 - y1)) / y0);
 		else
 			pEvent->setPitchBend(m_last.pitchBend);
 		break;
@@ -2768,7 +2765,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	default:
 		// Set generic event value...
 		if (y0 > 0)
-			pEvent->setValue((128 * (y0 - y)) / y0);
+			pEvent->setValue((128 * (y0 - y1)) / y0);
 		else
 			pEvent->setValue(m_last.value);
 		break;
@@ -3003,8 +3000,11 @@ void qtractorMidiEditor::dragMoveUpdate (
 	qtractorScrollView *pScrollView, const QPoint& pos,
 	const Qt::KeyboardModifiers& modifiers )
 {
+	const bool bEditView
+		= (static_cast<qtractorScrollView *> (m_pEditView) == pScrollView);
+
 	int flags = SelectNone;
-	
+
 	switch (m_dragState) {
 	case DragStart:
 		// Did we moved enough around?
@@ -3046,8 +3046,7 @@ void qtractorMidiEditor::dragMoveUpdate (
 			break;
 		}
 		// About to drag(draw) event-value resizing...
-		if (static_cast<qtractorMidiEditEvent *> (pScrollView) == m_pEditEvent
-			&& isDragEventResize(modifiers)) {
+		if (!bEditView && isDragEventResize(modifiers)) {
 			m_dragState = DragEventResize;
 			updateDragEventResize(pos);
 			break;
@@ -3085,7 +3084,7 @@ void qtractorMidiEditor::dragMoveUpdate (
 			qtractorMidiEvent *pEvent
 				= dragEditEvent(pScrollView, pos, modifiers);
 			if (pEvent && pEvent != m_pEventDrag) {
-				if (!m_bDrumMode) {
+				if (!m_bDrumMode || !bEditView) {
 					resizeEvent(m_pEventDrag,
 						timeDelta(pScrollView),
 						valueDelta(pScrollView));
