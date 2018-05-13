@@ -2647,17 +2647,20 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		for ( ; iter != iter_end; ++iter) {
 			qtractorMidiEvent *pEvent = iter.key();
 			qtractorMidiEditSelect::Item *pItem = iter.value();
-			if (bEditView && pEvent->type() == qtractorMidiEvent::NOTEON) {
+			if (bEditView) {
 				if (pEvent->note() == note) {
-					if (t1 >= pEvent->time() &&
-						t1 <  pEvent->time() + pEvent->duration()) {
+					if ((pEvent->type() == qtractorMidiEvent::NOTEON
+							&& t1 >= pEvent->time()
+							&& t1 <  pEvent->time() + pEvent->duration()) ||
+						(pEvent->type() == qtractorMidiEvent::KEYPRESS
+							&& t1 == pEvent->time())) {
 						m_rectDrag = pItem->rectView;
 						m_posDrag = (m_bDrumMode ? m_rectDrag.center() : pos);
 						// Stayed.
 						return pEvent;
 					}
 					else
-					if (!m_bEditModeDraw && m_bDrumMode) {
+					if (!m_bEditModeDraw) {
 						pEvent->setTime(t1);
 						pItem->rectView.moveLeft(x1 - x0 - h1);
 						pItem->rectEvent.moveLeft(x1 - x0);
@@ -2709,7 +2712,9 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	// Compute value from given vertical position...
 	y1 = pos.y(); if (y1 < 1) y1 = 1; else if (y1 > h0) y1 = h0;
 
-	switch (pEvent->type()) {
+	const qtractorMidiEvent::EventType etype = pEvent->type();
+
+	switch (etype) {
 	case qtractorMidiEvent::NOTEON:
 	case qtractorMidiEvent::KEYPRESS:
 		// Set note event value...
@@ -2779,9 +2784,9 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 
 	// View item...
 	QRect rectView;
-	if (pEvent->type() == m_pEditView->eventType() &&
-		(pEvent->type() == qtractorMidiEvent::NOTEON ||
-			pEvent->type() == qtractorMidiEvent::KEYPRESS)) {
+	if (etype == m_pEditView->eventType()
+		&& (etype == qtractorMidiEvent::NOTEON ||
+			etype == qtractorMidiEvent::KEYPRESS)) {
 		y1 = ch - h1 * (pEvent->note() + 1);
 		if (m_bDrumMode) {
 			const int h2 = (h1 >> 1);
@@ -2794,7 +2799,6 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 
 	// Event item...
 	QRect rectEvent;
-	const qtractorMidiEvent::EventType etype = pEvent->type();
 	if (etype == m_pEditEvent->eventType()) {
 		if (etype == qtractorMidiEvent::REGPARAM    ||
 			etype == qtractorMidiEvent::NONREGPARAM ||
@@ -2835,9 +2839,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	m_select.selectItem(pEvent, rectEvent, rectView, true, false);
 
 	// Set the proper resize-mode...
-	if (bEditView) {
-		if (etype == qtractorMidiEvent::NOTEON && !m_bDrumMode)
-			m_resizeMode = ResizeNoteRight;
+	if (bEditView && etype == qtractorMidiEvent::NOTEON && !m_bDrumMode) {
+		m_resizeMode = ResizeNoteRight;
 	} else {
 		if (etype == qtractorMidiEvent::REGPARAM    ||
 			etype == qtractorMidiEvent::NONREGPARAM ||
@@ -3084,7 +3087,7 @@ void qtractorMidiEditor::dragMoveUpdate (
 			qtractorMidiEvent *pEvent
 				= dragEditEvent(pScrollView, pos, modifiers);
 			if (pEvent && pEvent != m_pEventDrag) {
-				if (!m_bDrumMode || !bEditView) {
+				if (!bEditView || !m_bDrumMode) {
 					resizeEvent(m_pEventDrag,
 						timeDelta(pScrollView),
 						valueDelta(pScrollView));
