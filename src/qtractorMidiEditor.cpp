@@ -2647,58 +2647,61 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		for ( ; iter != iter_end; ++iter) {
 			qtractorMidiEvent *pEvent = iter.key();
 			qtractorMidiEditSelect::Item *pItem = iter.value();
+			if ((pItem->flags & 1) == 0)
+				continue;
+			const unsigned long t2 = pEvent->time();
+			const unsigned long t3 = t2
+				+ (pEvent->type() == qtractorMidiEvent::NOTEON
+					? pEvent->duration() : 1);
 			if (bEditView) {
-				if (pEvent->note() == note) {
-					if ((pEvent->type() == qtractorMidiEvent::NOTEON
-							&& t1 >= pEvent->time()
-							&& t1 <  pEvent->time() + pEvent->duration()) ||
-						(pEvent->type() == qtractorMidiEvent::KEYPRESS
-							&& t1 == pEvent->time())) {
-						m_rectDrag = pItem->rectView;
-						m_posDrag = (m_bDrumMode ? m_rectDrag.center() : pos);
-						// Stayed.
-						return pEvent;
-					}
-					else
-					if (!m_bEditModeDraw) {
+				if (pEvent == m_pEventDrag)
+					continue;
+				if (pEvent->note() == note && t1 >= t2 && t1 < t3)
+					pItem->flags &= ~3; // Remove...
+			}
+			else
+			if (t1 >= t2 && t1 < t3)
+				return pEvent;
+		}
+		// Current note events bumping up or down...
+		if (bEditView && (!m_bEditModeDraw || m_bDrumMode)) {
+			qtractorMidiEvent *pEvent = m_pEventDrag;
+			qtractorMidiEditSelect::Item *pItem = m_select.findItem(pEvent);
+			if (pItem && (pItem->flags & 1)) {
+				const unsigned long t2 = pEvent->time();
+				const unsigned long t3 = t2
+					+ (pEvent->type() == qtractorMidiEvent::NOTEON
+						? pEvent->duration() : 1);
+				if ((t1 >= t2 && t1 < t3) || !m_bEditModeDraw) {
+					if (pEvent->note() == note) {
+						// Move in time....
 						pEvent->setTime(t1);
 						pItem->rectView.moveLeft(x1 - x0 - h1);
 						pItem->rectEvent.moveLeft(x1 - x0);
 						m_select.updateItem(pItem);
 						m_rectDrag = pItem->rectView;
 						m_posDrag = m_rectDrag.center();
-						// Moved.
-						return pEvent;
-					}
-				}
-				else
-				if (pEvent == m_pEventDrag
-					&& (!m_bEditModeDraw || m_bDrumMode)) {
-					// Bump pitch...
-					pEvent->setNote(note);
-					y1 = ch - h1 * (note + 1);
-					if (m_bDrumMode)
-						y1 -= (h1 >> 1);
-					pItem->rectView.moveTop(y1);
-					m_select.updateItem(pItem);
-					m_rectDrag = pItem->rectView;
-					if (m_bDrumMode) {
-						m_posDrag = m_rectDrag.center();
 					} else {
-						m_posDrag = pos; // m_rectDrag.topLeft();
-						resizeEvent(pEvent, timeDelta(pScrollView), 0);
+						// Bump in pitch...
+						pEvent->setNote(note);
+						y1 = ch - h1 * (note + 1);
+						if (m_bDrumMode)
+							y1 -= (h1 >> 1);
+						pItem->rectView.moveTop(y1);
+						m_select.updateItem(pItem);
+						m_rectDrag = pItem->rectView;
+						if (m_bDrumMode) {
+							m_posDrag = m_rectDrag.center();
+						} else {
+							m_posDrag = pos; // m_rectDrag.topLeft();
+							resizeEvent(pEvent, timeDelta(pScrollView), 0);
+						}
+						if (m_bSendNotes)
+							m_pEditList->dragNoteOn(note, pEvent->velocity());
 					}
-					if (m_bSendNotes)
-						m_pEditList->dragNoteOn(note, pEvent->velocity());
-					// Bumped.
-					return pEvent;
+					// Done.
+					return NULL;
 				}
-			}
-			else
-			if (t1 == pEvent->time()) {
-			//	m_rectDrag = (bEditView ? pItem->rectView : pItem->rectEvent);
-			//	m_posDrag = (m_bDrumMode && bEditView ? m_rectDrag.center() : pos);
-				return pEvent;
 			}
 		}
 		// No new events if ain't drawing...
