@@ -1050,7 +1050,7 @@ void qtractorMidiClip::draw (
 	const int h1 = clipRect.height() - 2;
 	const int h2 = (h1 / iNoteSpan) + 1;
 
-	const bool bDrumMode = pTrack->isMidiDrumMode();
+	const bool bDrumMode = pTrack->isMidiDrums();
 	QVector<QPoint> diamond;
 	if (bDrumMode) {
 		const int h4 = (h2 >> 1);

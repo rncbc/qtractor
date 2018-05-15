@@ -889,7 +889,7 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 		// Set its most outstanding properties...
 		qtractorTrack *pTrack = m_pMidiClip->track();
 		if (pTrack) {
-			setDrumMode(pTrack->isMidiDrumMode());
+			setDrumMode(pTrack->isMidiDrums());
 			setForeground(pTrack->foreground());
 			setBackground(pTrack->background());
 		}
