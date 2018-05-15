@@ -7,7 +7,8 @@
         <location filename="../qtractorAudioClip.cpp" line="747"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
-        <translation>音声:	%1 チャンネル、%2 Hz</translation>
+        <translation>
+音声:	%1 チャンネル、%2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="752"/>
@@ -1483,7 +1484,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorClipForm.cpp" line="689"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="702"/>
@@ -2012,7 +2013,7 @@ failed.</source>
     <message>
         <location filename="../qtractorExportForm.cpp" line="409"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
 </context>
 <context>
@@ -2318,7 +2319,7 @@ Are you sure?</source>
         <location filename="../qtractorInstrumentForm.cpp" line="226"/>
         <location filename="../qtractorInstrumentForm.cpp" line="392"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="388"/>
@@ -5202,7 +5203,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2832"/>
         <source>Transport punch in/out</source>
-        <translation></translation>
+        <translation>トランスポートにパンチイン/アウトを設定します</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2835"/>
@@ -5222,12 +5223,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2846"/>
         <source>Punch in/out set</source>
-        <translation>パンチイン/アウトセット</translation>
+        <translation>パンチイン/アウト設定</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2849"/>
         <source>Transport punch in/out set</source>
-        <translation></translation>
+        <translation>トランスポートにパンチイン/アウトを設定します</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2852"/>
@@ -5577,7 +5578,7 @@ Sorry.</source>
         <location filename="../qtractorMainForm.cpp" line="1999"/>
         <location filename="../qtractorMainForm.cpp" line="2097"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2004"/>
@@ -6568,7 +6569,7 @@ JACK音声サーバー(jackd)が起動し実行されているなら
         <location filename="../qtractorMidiControlForm.cpp" line="241"/>
         <location filename="../qtractorMidiControlForm.cpp" line="459"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="322"/>
@@ -7982,22 +7983,22 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1169"/>
         <source>&amp;Drum Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ドラムモード(&amp;D)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1172"/>
         <source>Drum Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ドラムモード</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1175"/>
         <source>Drum mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ドラムモード</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1178"/>
         <source>Whether note onset events are displayed as diamonds</source>
-        <translation type="unfinished"></translation>
+        <translation>ノートのオンセットイベントをひし形記号で表示するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1192"/>
@@ -8455,8 +8456,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1649"/>
         <source>Transport punch in/out set</source>
-        <translation>
-</translation>
+        <translation>トランスポートのパンチイン/アウトを設定します</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1652"/>
@@ -8645,7 +8645,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="1046"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="1114"/>
@@ -8833,7 +8833,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="185"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
 </context>
 <context>
@@ -10985,7 +10985,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorOptionsForm.cpp" line="1494"/>
         <location filename="../qtractorOptionsForm.cpp" line="1540"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1536"/>
@@ -11193,7 +11193,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorPluginForm.cpp" line="560"/>
         <location filename="../qtractorPluginForm.cpp" line="658"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="601"/>
@@ -12406,7 +12406,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.ui" line="343"/>
         <source>MIDI Patch: Drum Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI パッチ: ドラムモード</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="350"/>
@@ -12913,7 +12913,8 @@ Length:	%3</source>
         <location filename="../qtractorTracks.cpp" line="2782"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
-        <translation>音声ファイル &quot;%1&quot; を %2 %3 へインポート。</translation>
+        <translation>音声ファイル &quot;%1&quot; を %2 %3 へインポート。
+</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1014"/>
@@ -12926,7 +12927,8 @@ Length:	%3</source>
         <location filename="../qtractorTracks.cpp" line="2973"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
-        <translation>MIDIファイル &quot;%1&quot; をトラックチャンネル %2 の%3 %4 へインポート。</translation>
+        <translation>MIDIファイル &quot;%1&quot; をトラックチャンネル %2 の%3 %4 へインポート。
+</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1050"/>
@@ -12947,12 +12949,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="1456"/>
         <source>MIDI files (*.mid *.smf *.midi)</source>
-        <translation type="unfinished">MIDIファイル (*.mid *.smf *.midi)</translation>
+        <translation>MIDIファイル (*.mid *.smf *.midi)</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1457"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1246"/>
@@ -13036,7 +13038,8 @@ Are you sure?</source>
         <location filename="../qtractorTracks.cpp" line="2902"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
-        <translation>MIDIファイル &quot;%1&quot; を %2 %3 へインポート。</translation>
+        <translation>MIDIファイル &quot;%1&quot; を %2 %3 へインポート。
+</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2907"/>
