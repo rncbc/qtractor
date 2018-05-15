@@ -32,6 +32,7 @@
 class qtractorSubject;
 class qtractorObserver;
 class qtractorCurve;
+class qtractorTempoCurve;
 
 
 //---------------------------------------------------------------------------
@@ -150,6 +151,12 @@ public:
 	qtractorCurve *curve() const
 		{ return m_pCurve; }
 
+	// Tempo curve association.
+	void setTempoCurve(qtractorTempoCurve *pTempoCurve)
+		{ m_pTempoCurve = pTempoCurve; }
+	qtractorTempoCurve *tempoCurve() const
+		{ return m_pTempoCurve; }
+
 	// Queue flush (singleton) -- notify all pending observers.
 	static void flushQueue(bool bUpdate);
 	
@@ -183,6 +190,9 @@ private:
 
 	// Automation curve association.
 	qtractorCurve *m_pCurve;
+
+	// Tempo curve association.
+	qtractorTempoCurve *m_pTempoCurve;
 
 	// List of observers (obviously)
 	QList<qtractorObserver *> m_observers;
@@ -274,6 +284,12 @@ public:
 		{ if (m_pSubject) m_pSubject->setCurve(pCurve); }
 	qtractorCurve *curve() const
 		{ return (m_pSubject ? m_pSubject->curve() : NULL); }
+
+	// Tempo curve association.
+	void setTempoCurve(qtractorTempoCurve *pTempoCurve)
+		{ if (m_pSubject) m_pSubject->setTempoCurve(pTempoCurve); }
+	qtractorTempoCurve *tempoCurve() const
+		{ return (m_pSubject ? m_pSubject->tempoCurve() : NULL); }
 
 	// Pure virtual view updater.
 	virtual void update(bool bUpdate) = 0;
