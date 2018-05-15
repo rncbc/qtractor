@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Displaying MIDI note(on) events as diamonds instead
+  of simple rectangles (aka. Drum Mode) is now being
+  introduced as an optional MIDI track property (Drums)
+  and as a MIDI clip editor (piano-roll) visual option
+  (cf. View/Drum Mode). (EXPERIMENTAL)
+
 - Extended multi-selection is now supported on all the
   Connections client/port lists, allowing for multiple
   (dis)connections at once. (EXPERIMENTAL)

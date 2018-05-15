@@ -4528,7 +4528,8 @@ void qtractorMidiEditor::paintDragState (
 		pPainter->setBrush(rgba);
 		if (bEditView && m_bDrumMode) {
 			pPainter->drawPolygon(QPolygon(diamond).translated(
-				pScrollView->contentsToViewport(rect.center()))); // diamond
+				pScrollView->contentsToViewport(rect.center()
+				+ QPoint(1, 1)))); // diamond++
 		} else {
 			pPainter->drawRect(QRect(
 				pScrollView->contentsToViewport(rect.topLeft()),
