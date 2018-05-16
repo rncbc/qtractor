@@ -1294,7 +1294,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorClipForm.cpp" line="689"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="702"/>
@@ -1874,7 +1874,7 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="409"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="37"/>
@@ -2235,7 +2235,7 @@ Jste si jistý?</translation>
         <location filename="../qtractorInstrumentForm.cpp" line="226"/>
         <location filename="../qtractorInstrumentForm.cpp" line="392"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.cpp" line="433"/>
@@ -2583,7 +2583,7 @@ Promiňte.</translation>
         <location filename="../qtractorMainForm.cpp" line="1999"/>
         <location filename="../qtractorMainForm.cpp" line="2097"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2189"/>
@@ -6571,7 +6571,7 @@ sezením znovu.</translation>
         <location filename="../qtractorMidiControlForm.cpp" line="241"/>
         <location filename="../qtractorMidiControlForm.cpp" line="459"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="322"/>
@@ -7151,7 +7151,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="1046"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="1114"/>
@@ -8140,22 +8140,22 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1169"/>
         <source>&amp;Drum Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim &amp;bicích</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1172"/>
         <source>Drum Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim bicích</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1175"/>
         <source>Drum mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim bicích</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1178"/>
         <source>Whether note onset events are displayed as diamonds</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda jsou události vztahující se k začátkům not zobrazeny jako diamanty</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1192"/>
@@ -8835,7 +8835,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="185"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
 </context>
 <context>
@@ -9762,7 +9762,7 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.cpp" line="1494"/>
         <location filename="../qtractorOptionsForm.cpp" line="1540"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1536"/>
@@ -11099,7 +11099,7 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorPluginForm.cpp" line="560"/>
         <location filename="../qtractorPluginForm.cpp" line="658"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="601"/>
@@ -12550,7 +12550,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="343"/>
         <source>MIDI Patch: Drum Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI políčko: režim bicích</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="350"/>
@@ -12978,12 +12978,12 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="1456"/>
         <source>MIDI files (*.mid *.smf *.midi)</source>
-        <translation type="unfinished">Soubory MIDI (*.mid *.smf *.midi)</translation>
+        <translation>Soubory MIDI (*.mid *.smf *.midi)</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1457"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1520"/>
