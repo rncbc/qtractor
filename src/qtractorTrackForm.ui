@@ -319,7 +319,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2" colspan="4" >
+          <item row="1" column="2" colspan="3" >
            <widget class="QComboBox" name="BankSelMethodComboBox" >
             <property name="sizePolicy" >
              <sizepolicy>
@@ -331,6 +331,16 @@
             </property>
             <property name="toolTip" >
              <string>MIDI Patch: Bank Select Method</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="5" >
+           <widget class="QCheckBox" name="DrumsCheckBox" >
+            <property name="text" >
+             <string>&amp;Drums</string>
+            </property>
+            <property name="toolTip" >
+             <string>MIDI Patch: Drum Mode</string>
             </property>
            </widget>
           </item>
@@ -657,6 +667,7 @@
   <tabstop>ChannelSpinBox</tabstop>
   <tabstop>InstrumentComboBox</tabstop>
   <tabstop>BankSelMethodComboBox</tabstop>
+  <tabstop>DrumsCheckBox</tabstop>
   <tabstop>BankComboBox</tabstop>
   <tabstop>ProgComboBox</tabstop>
   <tabstop>ForegroundColorComboBox</tabstop>

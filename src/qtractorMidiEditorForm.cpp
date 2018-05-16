@@ -458,6 +458,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewValueColorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewValueColor(bool)));
+	QObject::connect(m_ui.viewDrumModeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewDrumMode(bool)));
 	QObject::connect(m_ui.viewEventsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewEvents(bool)));
@@ -958,6 +961,9 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	}   // Reset MIDI clip length alright...
 	else m_pMidiEditor->resetClipLength();
 
+	// Drum mode visuals....
+	m_ui.viewDrumModeAction->setChecked(m_pMidiEditor->isDrumMode());
+
 	// Reset local dirty flag.
 	resetDirtyCount();
 
@@ -1035,8 +1041,10 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		const QString sExt("mid");
 		const QString& sTitle
 			= tr("Save MIDI Clip") + " - " QTRACTOR_TITLE;
-		const QString& sFilter
-			= tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
+		QStringList filters;
+		filters.append(tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt));
+		filters.append(tr("All files (*.*)"));
+		const QString& sFilter = filters.join(";;");
 		QWidget *pParentWidget = NULL;
 		QFileDialog::Options options = 0;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
@@ -1574,6 +1582,14 @@ void qtractorMidiEditorForm::viewValueType (void)
 		// Commit the change as usual...
 		// eventTypeChanged(iIndex);
 	}
+}
+
+
+// View drum note of notes (diamods)
+void qtractorMidiEditorForm::viewDrumMode ( bool bOn )
+{
+	m_pMidiEditor->setDrumMode(bOn);
+	m_pMidiEditor->updateContents();
 }
 
 

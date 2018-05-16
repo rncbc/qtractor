@@ -1182,7 +1182,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	const QString& sTitle
 		= tr("Merge/Export Audio Clip") + " - " QTRACTOR_TITLE;
 	const QString& sFilter
-		= tr("Audio files (*.%1)").arg(sExt); 
+		= qtractorAudioFileFactory::filters().join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -1451,8 +1451,11 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	const QString  sExt("mid");
 	const QString& sTitle
 		= tr("Merge/Export MIDI Clip") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt); 
+
+	QStringList filters;
+	filters.append(tr("MIDI files (*.mid *.smf *.midi)"));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -1555,6 +1558,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	// Setup merge sequence...
 	qtractorMidiSequence seq(pTrack->trackName(), 0, iTicksPerBeat);
 	seq.setChannel(pTrack->midiChannel());
+	seq.setBankSelMethod(pTrack->midiBankSelMethod());
 	seq.setBank(pTrack->midiBank());
 	seq.setProg(pTrack->midiProg());
 

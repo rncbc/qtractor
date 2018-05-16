@@ -225,6 +225,7 @@ void qtractorTrack::Properties::clear (void)
 	midiBankSelMethod = -1;
 	midiBank    = -1;
 	midiProg    = -1;
+	midiDrums   = false;
 	foreground  = Qt::yellow;
 	background  = Qt::darkBlue;
 }
@@ -250,6 +251,7 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 		midiBankSelMethod = props.midiBankSelMethod;
 		midiBank    = props.midiBank;
 		midiProg    = props.midiProg;
+		midiDrums   = props.midiDrums;
 		foreground  = props.foreground;
 		background  = props.background;
 	}
@@ -967,6 +969,18 @@ int qtractorTrack::midiProg (void) const
 }
 
 
+// MIDI drum mode (UI).
+void qtractorTrack::setMidiDrums ( bool bMidiDrums )
+{
+	m_props.midiDrums = bMidiDrums;
+}
+
+bool qtractorTrack::isMidiDrums (void) const
+{
+	return m_props.midiDrums;
+}
+
+
 // MIDI specific: note minimum/maximum range.
 void qtractorTrack::setMidiNoteMin ( unsigned char note )
 {
@@ -1111,6 +1125,8 @@ void qtractorTrack::addClip ( qtractorClip *pClip )
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip) {
+			if (midiBankSelMethod() < 0)
+				setMidiBankSelMethod(pMidiClip->bankSelMethod());
 			if (midiBank() < 0)
 				setMidiBank(pMidiClip->bank());
 			if (midiProg() < 0)
@@ -1696,6 +1712,9 @@ bool qtractorTrack::loadElement (
 					qtractorTrack::setMidiBank(eProp.text().toInt());
 				else if (eProp.tagName() == "midi-program")
 					qtractorTrack::setMidiProg(eProp.text().toInt());
+				else if (eProp.tagName() == "midi-drums")
+					qtractorTrack::setMidiDrums(
+						qtractorDocument::boolFromText(eProp.text()));
 				else if (eProp.tagName() == "icon")
 					qtractorTrack::setTrackIcon(eProp.text());
 			}
@@ -1838,6 +1857,8 @@ bool qtractorTrack::saveElement (
 			pDocument->saveTextElement("midi-program",
 				QString::number(qtractorTrack::midiProg()), &eProps);
 		}
+		pDocument->saveTextElement("midi-drums",
+			qtractorDocument::textFromBool(qtractorTrack::isMidiDrums()), &eProps);
 	}
 	pElement->appendChild(eProps);
 

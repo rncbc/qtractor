@@ -1996,6 +1996,8 @@ bool qtractorMainForm::openSession (void)
 	filters.append(tr("Archive files (*.%1)")
 		.arg(qtractorDocument::archiveExt()));
 #endif
+	filters.append(tr("All files (*.*)"));
+
 	sExt = m_pOptions->sSessionExt; // Default session file format...
 
 	const QString& sTitle
@@ -2092,6 +2094,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		filters.append(tr("Archive files (*.%1)")
 			.arg(qtractorDocument::archiveExt()));
 	#endif
+		filters.append(tr("All files (*.*)"));
 		sExt = m_pOptions->sSessionExt; // Default session  file format...
 		const QString& sTitle
 			= tr("Save Session") + " - " QTRACTOR_TITLE;
@@ -2270,8 +2273,9 @@ bool qtractorMainForm::closeSession (void)
 		setPlaying(false);
 		// Reset (soft) subject/observer queue.
 		qtractorSubject::resetQueue();
-		// Reset all dependables to default.
+		// HACK: Track-list plugins-view must get wiped first...
 		m_pTracks->trackList()->clear();
+		// Reset all dependables to default.
 		m_pMixer->clear();
 		m_pFiles->clear();
 		// Close session engines.

@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,7 +66,7 @@ qtractorMidiEditView::qtractorMidiEditView (
 
 	m_pVzoomIn->setIcon(QIcon(":/images/viewZoomIn.png"));
 	m_pVzoomOut->setIcon(QIcon(":/images/viewZoomOut.png"));
-	m_pVzoomReset->setIcon(QIcon(":/images/viewZoomTool.png"));
+	m_pVzoomReset->setIcon(QIcon(":/images/viewZoomReset.png"));
 
 	m_pVzoomIn->setAutoRepeat(true);
 	m_pVzoomOut->setAutoRepeat(true);
@@ -397,6 +397,16 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 //	p.setPen(rgbFore);
 //	p.setBrush(rgbBack);
 
+	const bool bDrumMode = m_pEditor->isDrumMode();
+	QVector<QPoint> diamond;
+	if (bDrumMode) {
+		const int h2 = (h1 >> 1);
+		diamond.append(QPoint(-h1,  h2));
+		diamond.append(QPoint(  0, -h2));
+		diamond.append(QPoint( h1,  h2));
+		diamond.append(QPoint(  0,  h2 + h1));
+	}
+
 	QColor rgbNote(rgbBack);
 	int hue, sat, val;
 	rgbNote.getHsv(&hue, &sat, &val); sat = 86;
@@ -430,9 +440,18 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 					hue = (128 - int(pEvent->value())) << 1;
 					rgbNote.setHsv(hue, sat, val);
 				}
-				painter.fillRect(x, y, w1, h1, rgbFore);
-				if (h1 > 3)
-					painter.fillRect(x + 1, y + 1, w1 - 4, h1 - 3, rgbNote);
+				if (bDrumMode) {
+					painter.setPen(rgbFore);
+					painter.setBrush(rgbNote);
+					const QPolygon& polyg
+						= QPolygon(diamond).translated(x, y);
+					painter.drawPolygon(polyg.translated(1, 0)); // shadow
+					painter.drawPolygon(polyg); // diamond
+				} else {
+					painter.fillRect(x, y, w1, h1, rgbFore);
+					if (h1 > 3)
+						painter.fillRect(x + 1, y + 1, w1 - 4, h1 - 3, rgbNote);
+				}
 			}
 		}
 		pEvent = pEvent->next();

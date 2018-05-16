@@ -239,6 +239,9 @@ qtractorTrackForm::qtractorTrackForm (
 	QObject::connect(m_ui.BankSelMethodComboBox,
 		SIGNAL(activated(int)),
 		SLOT(bankSelMethodChanged(int)));
+	QObject::connect(m_ui.DrumsCheckBox,
+		SIGNAL(clicked()),
+		SLOT(changed()));
 	QObject::connect(m_ui.BankComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(bankChanged()));
@@ -359,6 +362,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	m_ui.ChannelSpinBox->setValue(m_props.midiChannel + 1);
 	updateChannel(m_ui.ChannelSpinBox->value(),
 		m_props.midiBankSelMethod, m_props.midiBank, m_props.midiProg);
+	m_ui.DrumsCheckBox->setChecked(m_props.midiDrums);
 
 	// Update colors...
 	updateColorItem(m_ui.ForegroundColorComboBox, m_props.foreground);
@@ -439,6 +443,7 @@ void qtractorTrackForm::accept (void)
 		m_props.midiBankSelMethod = m_ui.BankSelMethodComboBox->currentIndex();
 		m_props.midiBank = midiBank();
 		m_props.midiProg = midiProg();
+		m_props.midiDrums = m_ui.DrumsCheckBox->isChecked();
 		// View colors...
 		m_props.foreground = colorItem(m_ui.ForegroundColorComboBox);
 		m_props.background = colorItem(m_ui.BackgroundColorComboBox);
@@ -1153,14 +1158,13 @@ void qtractorTrackForm::trackIconClicked (void)
 	if (sFilename.at(0) == ':')
 		sFilename.clear();
 
+	const QString& sTitle
+		= tr("Track Icon") + " - " QTRACTOR_TITLE;
+
 	QStringList filters;
 	filters.append(tr("Image files (%1)").arg("*.png *.xpm *.jpg *.jpeg"));
 	filters.append(tr("All files (*.*)"));
-
-	const QString& sTitle
-		= tr("Track Icon") + " - " QTRACTOR_TITLE;
-	const QString& sFilter
-		= filters.join(";;");
+	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = NULL;
 	QFileDialog::Options options = 0;
@@ -1394,7 +1398,8 @@ void qtractorTrackForm::progChanged (void)
 	// Of course, only applicable on MIDI tracks...
 	if (m_pMidiBus) {
 		// Patch parameters...
-		const unsigned short iChannel = m_ui.ChannelSpinBox->value() - 1;
+		const unsigned short iChannel
+			= m_ui.ChannelSpinBox->value() - 1;
 		QString sInstrumentName;
 		if (m_ui.InstrumentComboBox->currentIndex() > 0)
 			sInstrumentName = m_ui.InstrumentComboBox->currentText();
@@ -1423,6 +1428,17 @@ void qtractorTrackForm::progChanged (void)
 		// Patch it directly...
 		m_pMidiBus->setPatch(iChannel, sInstrumentName,
 			iBankSelMethod, iBank, iProg, m_pTrack);
+		// Whether in drum-mode auto-magically...
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession) {
+			qtractorInstrumentList *pInstruments = pSession->instruments();
+			if (pInstruments) {
+				const qtractorInstrument& instr
+					= pInstruments->value(sInstrumentName);
+				m_ui.DrumsCheckBox->setChecked(
+					iChannel == 9 || instr.isDrum(iBank, iProg));
+			}
+		}
 		// Make it dirty.
 		++m_iDirtyPatch;
 	}

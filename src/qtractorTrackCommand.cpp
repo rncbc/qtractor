@@ -317,6 +317,10 @@ bool qtractorCopyTrackCommand::redo (void)
 		}
 	}
 
+	// Let same old statistics prevail...
+	pNewTrack->setMidiNoteMax(pTrack->midiNoteMax());
+	pNewTrack->setMidiNoteMin(pTrack->midiNoteMin());
+
 	// About to copy all automation/curves...
 	qtractorCurveList *pCurveList = pTrack->curveList();
 	qtractorCurveList *pNewCurveList = pNewTrack->curveList();
@@ -1358,6 +1362,7 @@ bool qtractorTrackInstrumentCommand::redo (void)
 		iBankSelMethod, m_iBank, m_iProg, pTrack);
 
 	// Set track instrument...
+	pTrack->setMidiBankSelMethod(iBankSelMethod);
 	pTrack->setMidiBank(m_iBank);
 	pTrack->setMidiProg(m_iProg);
 

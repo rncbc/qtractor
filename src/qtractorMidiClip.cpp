@@ -717,6 +717,7 @@ void qtractorMidiClip::unlinkHashData (void)
 
 	pNewSeq->setName(pOldSeq->name());
 	pNewSeq->setChannel(pOldSeq->channel());
+	pNewSeq->setBankSelMethod(pOldSeq->bankSelMethod());
 	pNewSeq->setBank(pOldSeq->bank());
 	pNewSeq->setProg(pOldSeq->prog());
 	pNewSeq->setTicksPerBeat(pOldSeq->ticksPerBeat());
@@ -1047,7 +1048,17 @@ void qtractorMidiClip::draw (
 
 	const bool bClipRecord = (pTrack->clipRecord() == this);
 	const int h1 = clipRect.height() - 2;
-	const int h = (h1 / iNoteSpan) + 1;
+	const int h2 = (h1 / iNoteSpan) + 1;
+
+	const bool bDrumMode = pTrack->isMidiDrums();
+	QVector<QPoint> diamond;
+	if (bDrumMode) {
+		const int h4 = (h2 >> 1);
+		diamond.append(QPoint(-h2,  h4));
+		diamond.append(QPoint(  0, -h4));
+		diamond.append(QPoint( h2,  h4));
+		diamond.append(QPoint(  0,  h4 + h2));
+	}
 
 	qtractorMidiEvent *pEvent
 		= m_drawCursor.reset(pSeq, iTimeStart > t0 ? iTimeStart - t0 : 0);
@@ -1067,19 +1078,41 @@ void qtractorMidiClip::draw (
 				const int y = clipRect.bottom()
 					- (h1 * (pEvent->note() - iNoteMin)) / iNoteSpan;
 				pNode = cursor.seekTick(t2);
-				int w = (t1 < t2 || !bClipRecord
-					? clipRect.x() + pNode->pixelFromTick(t2) - cx
-					: clipRect.right()) - x; // Pending note-off? (while recording)
-				if (w < 3) w = 3;
-				pPainter->fillRect(x, y, w, h, fg);
-				if (w > 4 && h > 3)
-					pPainter->fillRect(x + 1, y + 1, w - 4, h - 3, fg.lighter());
-				else
-				if (w > 3 && h > 2)
-					pPainter->fillRect(x + 1, y + 1, w - 3, h - 2, fg.lighter());
+				if (bDrumMode) {
+					const QPolygon& polyg
+						= QPolygon(diamond).translated(x, y);
+					if (h2 > 2)
+						pPainter->drawPolygon(polyg.translated(1, 0)); // shadow
+					pPainter->drawPolygon(polyg); // diamond
+				} else {
+					int w = (t1 < t2 || !bClipRecord
+						? clipRect.x() + pNode->pixelFromTick(t2) - cx
+						: clipRect.right()) - x; // Pending note-off? (while recording)
+					if (w < 3) w = 3;
+					pPainter->fillRect(x, y, w, h2, fg);
+					if (w > 4 && h2 > 3)
+						pPainter->fillRect(x + 1, y + 1, w - 4, h2 - 3, fg.lighter());
+					else
+					if (w > 3 && h2 > 2)
+						pPainter->fillRect(x + 1, y + 1, w - 3, h2 - 2, fg.lighter());
+				}
 			}
 		}
 		pEvent = pEvent->next();
+	}
+}
+
+
+// Clip update method. (rolling stats)
+void qtractorMidiClip::update (void)
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack) {
+		qtractorMidiSequence *pSeq = sequence();
+		if (pSeq) {
+			pTrack->setMidiNoteMax(pSeq->noteMax());
+			pTrack->setMidiNoteMin(pSeq->noteMin());
+		}
 	}
 }
 
@@ -1365,6 +1398,7 @@ bool qtractorMidiClip::clipExport (
 
 	qtractorMidiSequence seq(pSeq->name(), pSeq->channel(), iTicksPerBeat);
 
+	seq.setBankSelMethod(pTrack->midiBankSelMethod());
 	seq.setBank(pTrack->midiBank());
 	seq.setProg(pTrack->midiProg());
 

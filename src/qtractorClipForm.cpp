@@ -673,24 +673,27 @@ void qtractorClipForm::browseFilename (void)
 {
 	QString sType;
 	QString sExt;
-	QString sFilter;
+	QStringList filters;
 
 	qtractorTrack::TrackType clipType = trackType();
 	switch (clipType) {
 	case qtractorTrack::Audio:
-		sType   = tr("Audio");
-		sExt    = qtractorAudioFileFactory::defaultExt();
-		sFilter = qtractorAudioFileFactory::filter();
+		sType = tr("Audio");
+		sExt = qtractorAudioFileFactory::defaultExt();
+		filters = qtractorAudioFileFactory::filters();
 		break;
 	case qtractorTrack::Midi:
-		sType   = tr("MIDI");
-		sExt    = "mid";
-		sFilter = tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt);
+		sType = tr("MIDI");
+		sExt = "mid";
+		filters.append(tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt));
+		filters.append(tr("All files (*.*)"));
 		break;
 	case qtractorTrack::None:
 	default:
 		return;
 	}
+
+	const QString& sFilter = filters.join(";;");
 
 	// Browse for file...
 	QString sFilename;

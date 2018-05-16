@@ -116,6 +116,7 @@
         <file>images/transportRewind.png</file>
         <file>images/transportStop.png</file>
         <file>images/viewConnections.png</file>
+        <file>images/viewDrumMode.png</file>
         <file>images/viewEvents.png</file>
         <file>images/viewFiles.png</file>
         <file>images/viewFileSystem.png</file>
@@ -124,6 +125,7 @@
         <file>images/viewPreview.png</file>
         <file>images/viewZoomIn.png</file>
         <file>images/viewZoomOut.png</file>
+        <file>images/viewZoomReset.png</file>
         <file>images/viewZoomTool.png</file>
     </qresource>
 </RCC>

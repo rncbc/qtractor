@@ -1,7 +1,7 @@
 // qtractorConnect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -250,7 +250,7 @@ public:
 
 	// Natural decimal sorting comparator.
 	static bool lessThan(
-		const QTreeWidgetItem& i1, const QTreeWidgetItem& i2, int col = 0);
+		const QTreeWidgetItem& item1, const QTreeWidgetItem& item2, int col = 0);
 
 protected slots:
 

@@ -1197,7 +1197,8 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					else
 					if (iCol == Bus && pItem->plugins) {
 						if (rect.height() > qtractorTrack::HeightBase) {
-							const int dy1 = qtractorTrack::HeightBase;
+							const int dy1 = qtractorTrack::HeightBase
+								- qtractorTrack::HeightMin;
 							(pItem->plugins)->setGeometry(
 								rect.adjusted(+4, dy1, -3, -2));
 							(pItem->plugins)->show();

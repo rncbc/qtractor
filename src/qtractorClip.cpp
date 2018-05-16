@@ -28,6 +28,8 @@
 
 #include "qtractorClipCommand.h"
 
+#include "qtractorMidiClip.h"
+
 #include "qtractorClipForm.h"
 
 #include <QFileInfo>
@@ -486,6 +488,9 @@ void qtractorClip::drawClipRecord (
 {
 	// Draw the framed rectangle and background...
 	pPainter->drawRect(clipRect);
+
+	// Update clip rolling stats, if any...
+	update();
 
 	// Draw clip contents (virtual)...
 	draw(pPainter, clipRect, iClipOffset);
