@@ -1024,6 +1024,7 @@ void qtractorMidiEditor::setDrumMode ( bool bDrumMode )
 {
 	m_bDrumMode = bDrumMode;
 
+	updateInstrumentNames();
 //	updateContents();
 }
 
@@ -4715,7 +4716,7 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 		|| !pInstruments->contains(sInstrumentName)) {
 		// Default drumk-key note names:
 		// at least have a GM Drums (Channel 10) help...
-		if (pTrack->midiChannel() == 9)
+		if (m_bDrumMode || pTrack->midiChannel() == 9)
 			updateDefaultDrumNoteNames();
 		// No instrument definition...
 		return;
@@ -4730,7 +4731,7 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 
 	// Default drumk-key note names:
 	// at least have a GM Drums (Channel 10) help...
-	if (pTrack->midiChannel() == 9 || instr.isDrum(iBank, iProg))
+	if (m_bDrumMode || pTrack->midiChannel() == 9 || instr.isDrum(iBank, iProg))
 		updateDefaultDrumNoteNames();
 
 	// Key note names...
