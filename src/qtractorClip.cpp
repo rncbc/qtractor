@@ -509,11 +509,6 @@ bool qtractorClip::startEditor ( QWidget *pParent )
 	return clipForm.exec();
 }
 
-// Clip editor reset.
-void qtractorClip::resetEditor ( bool /*bSelectClear*/ )
-{
-	// Do nothing here.
-}
 
 // Clip editor update.
 void qtractorClip::updateEditor ( bool /*bSelectClear*/ )
@@ -521,11 +516,13 @@ void qtractorClip::updateEditor ( bool /*bSelectClear*/ )
 	// Do nothing here.
 }
 
+
 // Clip editor contents update.
 void qtractorClip::updateEditorContents (void)
 {
 	// Do nothing here.
 }
+
 
 // Clip query-close method (return true if editing is done).
 bool qtractorClip::queryEditor (void)

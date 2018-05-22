@@ -74,18 +74,18 @@ Audio:	%1 channels, %2 Hz</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="540"/>
+        <location filename="../qtractorClip.cpp" line="537"/>
         <source>Name:	%1</source>
         <translation>Название:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="548"/>
+        <location filename="../qtractorClip.cpp" line="545"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="556"/>
+        <location filename="../qtractorClip.cpp" line="553"/>
         <source>File:	%1</source>
         <translation>Файл:	%1</translation>
     </message>
@@ -150,31 +150,31 @@ End:	%3	Length:	%4</source>
         <translation>%1 - Банк %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1247"/>
+        <location filename="../qtractorMidiClip.cpp" line="1230"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(формат %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1249"/>
+        <location filename="../qtractorMidiClip.cpp" line="1232"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Канал %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1251"/>
+        <location filename="../qtractorMidiClip.cpp" line="1234"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Дорожка %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1254"/>
+        <location filename="../qtractorMidiClip.cpp" line="1237"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 дорожек, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1261"/>
+        <location filename="../qtractorMidiClip.cpp" line="1244"/>
         <source> (%1% vol)</source>
         <translation> (%1% громк)</translation>
     </message>

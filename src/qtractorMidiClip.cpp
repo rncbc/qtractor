@@ -351,6 +351,9 @@ bool qtractorMidiClip::openMidiFile (
 		if (m_pData) {
 			m_pData->attach(this);
 			qtractorMidiSequence *pSeq = m_pData->sequence();
+			// Initial statistics...
+			pTrack->setMidiNoteMin(pSeq->noteMin());
+			pTrack->setMidiNoteMax(pSeq->noteMax());
 			// Clip name should be clear about it all.
 			if (clipName().isEmpty())
 				setClipName(pSeq->name());
@@ -634,16 +637,6 @@ void qtractorMidiClip::updateEditorEx ( bool bSelectClear )
 	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->updateEditor(bSelectClear);
-}
-
-void qtractorMidiClip::resetEditorEx ( bool bSelectClear )
-{
-	if (m_pData == NULL)
-		return;
-
-	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
-	while (iter.hasNext())
-		iter.next()->resetEditor(bSelectClear);
 }
 
 
@@ -1162,21 +1155,11 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 }
 
 
-// Clip editor reset.
-void qtractorMidiClip::resetEditor ( bool bSelectClear )
-{
-	if (m_pMidiEditorForm) {
-		qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
-		if (pMidiEditor)
-			pMidiEditor->reset(bSelectClear);
-		m_pMidiEditorForm->resetDirtyCount();
-	}
-}
-
-
 // Clip editor update.
 void qtractorMidiClip::updateEditor ( bool bSelectClear )
 {
+	update();
+
 	if (m_pMidiEditorForm == NULL)
 		return;
 
