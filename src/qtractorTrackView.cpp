@@ -6119,7 +6119,6 @@ void qtractorTrackView::closeEditCurveNode (void)
 						= new qtractorTempoCurveEditCommand(m_pEditTempoCurve);
 					pEditTempoCurveNodeCommand->moveNode(m_pEditTimeScaleNode,
 						fNewTempo, iNewBeatsPerBar, iNewBeatDivisor);
-					pSession->execute(pEditTempoCurveNodeCommand);
 			}
 			// Reset editing references...
 			m_iEditTempoCurveNodeDirty = 0;
@@ -6174,7 +6173,6 @@ void qtractorTrackView::editTempoCurveNodeChanged (void)
 						= new qtractorTempoCurveEditCommand(m_pEditTempoCurve);
 					pEditTempoCurveNodeCommand->moveNode(m_pEditTimeScaleNode,
 						fNewTempo, iNewBeatsPerBar, iNewBeatDivisor);
-					pSession->execute(pEditTempoCurveNodeCommand);
 			}
 			// Reset editing references...
 			m_iEditTempoCurveNodeDirty = 0;

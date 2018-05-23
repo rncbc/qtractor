@@ -26,6 +26,7 @@
 #include "qtractorMainForm.h"
 #include "qtractorTracks.h"
 
+#include "qtractorTimeScaleCommand.h"
 #include "qtractorTempoCurveCommand.h"
 
 //----------------------------------------------------------------------
@@ -172,7 +173,24 @@ void qtractorTempoCurveEditCommand::addNode ( qtractorTimeScale::Node *pNode )
 void qtractorTempoCurveEditCommand::moveNode ( qtractorTimeScale::Node *pNode,
 	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoCurveEditCommand::%s@%d: (%g, %u, %u)", __func__, __LINE__,
+		fTempo, iBeatsPerBar, iBeatDivisor);
+#endif
+#if 0
 	m_edits.moveNode(pNode, fTempo, iBeatsPerBar, iBeatDivisor);
+#endif
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	qtractorTimeScale *pTimeScale = NULL;
+	if (pSession)
+		pTimeScale = pSession->timeScale();
+
+	if (pNode->getTs() == pTimeScale) {
+		// Now, express the change as a undoable command...
+		pSession->execute(new qtractorTimeScaleUpdateNodeCommand(
+			pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
+	}
 }
 
 
