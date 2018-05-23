@@ -2358,6 +2358,9 @@ bool qtractorSession::loadElement (
 					if (!pTrack->loadElement(pDocument, &eTrack))
 						return false;
 					qtractorSession::addTrack(pTrack);
+					if ((pTrack->trackType() == qtractorTrack::Tempo) && (pTrack->isSolo())) {
+						updateTempoTrackSolo(pTrack, true);
+					}
 				}
 			}
 			// Stabilize things a bit...
