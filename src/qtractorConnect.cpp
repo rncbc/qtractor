@@ -586,7 +586,10 @@ void qtractorClientListView::clear (void)
 	m_pHiliteItem = NULL;
 	m_clientNames.clear();	
 
+	const bool bBlockSignals
+		= QTreeWidget::blockSignals(true);
 	QTreeWidget::clear();
+	QTreeWidget::blockSignals(bBlockSignals);
 }
 
 
@@ -1067,21 +1070,17 @@ void qtractorConnectorView::drawConnectionLine ( QPainter *pPainter,
 	if (y1 > h1)
 		pPainter->drawLine(x1, y1, x1 + 4, y1);
 
-	// How do we'll draw it?
-	if (m_pConnect->isBezierLines()) {
-		// Setup control points
-		QPolygon spline(4);
-		int cp = int(float(x2 - x1 - 8) * 0.4f);
-		spline.putPoints(0, 4,
-			x1 + 4, y1, x1 + 4 + cp, y1, 
-			x2 - 4 - cp, y2, x2 - 4, y2);
-		// The connection line, it self.
-		QPainterPath path;
-		path.moveTo(spline.at(0));
-		path.cubicTo(spline.at(1), spline.at(2), spline.at(3));
-		pPainter->strokePath(path, pen);
-	}
-	else pPainter->drawLine(x1 + 4, y1, x2 - 4, y2);
+	// Setup control points
+	QPolygon spline(4);
+	int cp = int(float(x2 - x1 - 8) * 0.4f);
+	spline.putPoints(0, 4,
+		x1 + 4, y1, x1 + 4 + cp, y1,
+		x2 - 4 - cp, y2, x2 - 4, y2);
+	// The connection line, it self.
+	QPainterPath path;
+	path.moveTo(spline.at(0));
+	path.cubicTo(spline.at(1), spline.at(2), spline.at(3));
+	pPainter->strokePath(path, pen);
 
 	// Invisible input ports don't get a connecting dot.
 	if (y2 > h2)
@@ -1195,8 +1194,6 @@ qtractorConnect::qtractorConnect (
 	m_pIListView = pIListView;
 	m_pConnectorView = pConnectorView;
 
-	m_bBezierLines = false;
-
 	m_pOListView->setBinding(this);
 	m_pOListView->setReadable(true);
 	m_pIListView->setBinding(this);
@@ -1230,18 +1227,6 @@ qtractorConnect::~qtractorConnect (void)
 	m_pOListView->setBinding(NULL);
 	m_pIListView->setBinding(NULL);
 	m_pConnectorView->setBinding(NULL);
-}
-
-
-// Connector line style accessors.
-void qtractorConnect::setBezierLines ( bool bBezierLines )
-{
-	m_bBezierLines = bBezierLines;
-}
-
-bool qtractorConnect::isBezierLines (void) const
-{
-	return m_bBezierLines;
 }
 
 
@@ -1392,7 +1377,7 @@ bool qtractorConnect::canConnectSelected (void)
 // Connect current selected ports.
 bool qtractorConnect::connectSelected (void)
 {
-	bool bResult = connectSelectedEx();
+	const bool bResult = connectSelectedEx();
 
 	m_pConnectorView->update();
 	if (bResult)
@@ -1621,7 +1606,7 @@ bool qtractorConnect::canDisconnectSelected (void)
 // Disconnect current selected ports.
 bool qtractorConnect::disconnectSelected (void)
 {
-	bool bResult = disconnectSelectedEx();
+	const bool bResult = disconnectSelectedEx();
 
 	m_pConnectorView->update();
 	if (bResult)
@@ -1768,7 +1753,7 @@ bool qtractorConnect::canDisconnectAll (void)
 // Disconnect all ports.
 bool qtractorConnect::disconnectAll (void)
 {
-	bool bResult = disconnectAllEx();
+	const bool bResult = disconnectAllEx();
 
 	m_pConnectorView->update();
 	if (bResult)

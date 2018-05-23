@@ -382,10 +382,6 @@ public:
 	qtractorClientListView *IListView() const     { return m_pIListView; }
 	qtractorConnectorView  *ConnectorView() const { return m_pConnectorView; }
 
-	// Connector line style accessors.
-	void setBezierLines(bool bBezierLines);
-	bool isBezierLines() const;
-
 	// Explicit connection tests.
 	bool canConnectSelected();
 	bool canDisconnectSelected();

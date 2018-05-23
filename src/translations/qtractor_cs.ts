@@ -1496,22 +1496,22 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1862"/>
+        <location filename="../qtractorConnect.cpp" line="1847"/>
         <source>Connect</source>
         <translation>Připojit</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1867"/>
+        <location filename="../qtractorConnect.cpp" line="1852"/>
         <source>Disconnect</source>
         <translation>Odpojit</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1872"/>
+        <location filename="../qtractorConnect.cpp" line="1857"/>
         <source>Disconnect All</source>
         <translation>Odpojit vše</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1879"/>
+        <location filename="../qtractorConnect.cpp" line="1864"/>
         <source>Refresh</source>
         <translation>Obnovit</translation>
     </message>
@@ -1519,7 +1519,7 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorConnectForm</name>
     <message>
-        <location filename="../qtractorConnectForm.cpp" line="379"/>
+        <location filename="../qtractorConnectForm.cpp" line="376"/>
         <source>(All)</source>
         <translation>(vše)</translation>
     </message>

@@ -1496,22 +1496,22 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1862"/>
+        <location filename="../qtractorConnect.cpp" line="1847"/>
         <source>Connect</source>
         <translation>Conectar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1867"/>
+        <location filename="../qtractorConnect.cpp" line="1852"/>
         <source>Disconnect</source>
         <translation>Desconectar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1872"/>
+        <location filename="../qtractorConnect.cpp" line="1857"/>
         <source>Disconnect All</source>
         <translation>Desconectar Todo</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1879"/>
+        <location filename="../qtractorConnect.cpp" line="1864"/>
         <source>Refresh</source>
         <translation>Actualizar</translation>
     </message>
@@ -1594,7 +1594,7 @@ Do you want to apply the changes?</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorConnectForm.cpp" line="379"/>
+        <location filename="../qtractorConnectForm.cpp" line="376"/>
         <source>(All)</source>
         <translation>(Todo)</translation>
     </message>
