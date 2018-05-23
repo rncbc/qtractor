@@ -67,7 +67,7 @@ void qtractorTimeScale::clear (void)
 		m_iHorizontalZoom = pTimeScale->m_iHorizontalZoom;
 		m_iVerticalZoom   = pTimeScale->m_iVerticalZoom;
 
-//		m_displayFormat   = pTimeScale->m_displayFormat;
+		m_displayFormat   = pTimeScale->m_displayFormat;
 
 		m_iSampleRate     = pTimeScale->m_iSampleRate;
 		m_iTicksPerBeat   = pTimeScale->m_iTicksPerBeat;
