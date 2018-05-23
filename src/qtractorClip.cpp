@@ -309,11 +309,9 @@ void qtractorClip::updateClipTime (void)
 	if (pSession == NULL)
 		return;
 
-	m_iClipStart = pSession->frameFromTick(m_iClipStartTime);
-	m_iClipLength = pSession->frameFromTickRange(
-		m_iClipStartTime, m_iClipStartTime + m_iClipLengthTime);
-	m_iClipOffset = pSession->frameFromTickRange(
-		m_iClipStartTime, m_iClipStartTime + m_iClipOffsetTime, true);
+	setClipStart(m_iClipStart);
+	setClipLength(m_iClipLength);
+	setClipOffset(m_iClipOffset);
 
 	m_iFadeInLength = pSession->frameFromTickRange(
 		m_iClipStartTime, m_iClipStartTime + m_iFadeInTime);

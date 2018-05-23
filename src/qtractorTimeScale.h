@@ -130,6 +130,11 @@ public:
 		// Update node position metrics.
 		void reset(Node *pNode);
 
+		// Return Nodes owner
+		qtractorTimeScale *getTs() const {
+			return ts;
+		}
+
 		// Node Tempo accessors.
 		float currTempo() const {
 			return tempo;

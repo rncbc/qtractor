@@ -62,12 +62,12 @@ void qtractorTimeScale::clear (void)
 {
 	qtractorTimeScale *pTimeScale;
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && (pTimeScale = pSession->timeScale())) {
+	if (pSession && (pTimeScale = pSession->timeScale()) && (pTimeScale != this)) {
 		m_iSnapPerBeat    = pTimeScale->m_iSnapPerBeat;
 		m_iHorizontalZoom = pTimeScale->m_iHorizontalZoom;
 		m_iVerticalZoom   = pTimeScale->m_iVerticalZoom;
 
-//		m_displayFormat   = pTimeScale->m_displayFormat;
+		m_displayFormat   = pTimeScale->m_displayFormat;
 
 		m_iSampleRate     = pTimeScale->m_iSampleRate;
 		m_iTicksPerBeat   = pTimeScale->m_iTicksPerBeat;
