@@ -167,7 +167,11 @@ private:
 // class qtractor_vst_scan -- VST plugin (bare bones) interface.
 //
 
-class AEffect;
+#ifdef CONFIG_VESTIGE
+typedef struct _AEffect AEffect;
+#else
+struct AEffect;
+#endif
 
 class qtractor_vst_scan
 {
