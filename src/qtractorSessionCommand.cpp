@@ -162,7 +162,7 @@ qtractorSessionEditCommand::qtractorSessionEditCommand (
 		qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(0);
 		m_pTempoCommand = new qtractorTimeScaleUpdateNodeCommand(
-			pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor);
+			pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor, pNode->attached);
 	}
 
 	// Append time resolution changes too...

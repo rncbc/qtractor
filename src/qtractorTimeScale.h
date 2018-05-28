@@ -115,12 +115,12 @@ public:
 			float fTempo = 120.0f,
 			unsigned short iBeatType = 2,
 			unsigned short iBeatsPerBar = 4,
-			unsigned short iBeatDivisor = 2)
+			unsigned short iBeatDivisor = 2, bool bAttached = false)
 			: frame(iFrame),
 				bar(0), beat(0), tick(0), pixel(0),
 				tempo(fTempo), beatType(iBeatType),
 				beatsPerBar(iBeatsPerBar),
-				beatDivisor(iBeatDivisor),
+				beatDivisor(iBeatDivisor), attached(bAttached),
 				ticksPerBeat(0), ts(pTimeScale),
 				tickRate(1.0f), beatRate(1.0f) {}
 
@@ -236,6 +236,10 @@ public:
 		int pixelSnap(int x) const
 			{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
 
+		// Node attachment accessor
+		bool getAttached() const
+			{ return attached; }
+
 		// Node keys.
 		unsigned long  frame;
 		unsigned short bar;
@@ -248,6 +252,7 @@ public:
 		unsigned short beatType;
 		unsigned short beatsPerBar;
 		unsigned short beatDivisor;
+		bool           attached;
 
 		unsigned short ticksPerBeat;
 
@@ -303,7 +308,9 @@ public:
 		float fTempo = 120.0f,
 		unsigned short iBeatType = 2,
 		unsigned short iBeatsPerBar = 4,
-		unsigned short iBeatDivisor = 2);
+		unsigned short iBeatDivisor = 2,
+		bool bAttached = false
+	);
 	void updateNode(Node *pNode);
 	void removeNode(Node *pNode);
 

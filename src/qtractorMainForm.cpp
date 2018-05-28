@@ -8649,7 +8649,7 @@ void qtractorMainForm::transportTempoChanged (
 
 	// Now, express the change as a undoable command...
 	m_pSession->execute(new qtractorTimeScaleUpdateNodeCommand(
-		pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
+		pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor, pNode->attached));
 
 	++m_iTransportUpdate;
 }

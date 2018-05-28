@@ -1858,6 +1858,7 @@ bool qtractorTrack::loadElement (
 					unsigned short iBeatType = 2;
 					unsigned short iBeatsPerBar = 4;
 					unsigned short iBeatDivisor = 2;
+					bool bAttached = false;
 					for (QDomNode nItem = eNode.firstChild();
 							!nItem.isNull();
 								nItem = nItem.nextSibling()) {
@@ -1873,10 +1874,12 @@ bool qtractorTrack::loadElement (
 							iBeatsPerBar = eItem.text().toUShort();
 						else if (eItem.tagName() == "beat-divisor")
 							iBeatDivisor = eItem.text().toUShort();
+						else if (eItem.tagName() == "attached")
+							bAttached = qtractorDocument::boolFromText(eItem.text());
 					}
 					// Add new node to tempo/time-signature map...
 					pTimeScale->addNode(iFrame,
-						fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
+						fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, bAttached);
 				}
 			}
 		}
@@ -2021,6 +2024,8 @@ bool qtractorTrack::saveElement (
 					QString::number(pNode->beatsPerBar), &eNode);
 				pDocument->saveTextElement("beat-divisor",
 					QString::number(pNode->beatDivisor), &eNode);
+				pDocument->saveTextElement("attached",
+					qtractorDocument::textFromBool(pNode->attached), &eNode);
 				eTempoMap.appendChild(eNode);
 				pNode = pNode->next();
 			}
