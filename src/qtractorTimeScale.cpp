@@ -44,13 +44,14 @@ void qtractorTimeScale::reset (void)
 	const unsigned short iBeatType = (pNode ? pNode->beatType : 2);
 	const unsigned short iBeatsPerBar = (pNode ? pNode->beatsPerBar : 4);
 	const unsigned short iBeatDivisor = (pNode ? pNode->beatDivisor : 2);
+	const bool bAttached = (pNode ? pNode->attached : false);
 
 	// Clear/reset tempo-map...
 	m_nodes.clear();
 	m_cursor.reset();
 
 	// There must always be one node, always at zero-frame...
-	addNode(0, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
+	addNode(0, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, bAttached);
 
 	// Commit new scale...
 	updateScale();
@@ -366,7 +367,7 @@ qtractorTimeScale::Node *qtractorTimeScale::Cursor::seekPixel ( int x )
 // Node list specifics.
 qtractorTimeScale::Node *qtractorTimeScale::addNode (
 	unsigned long iFrame, float fTempo, unsigned short iBeatType,
-	unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+	unsigned short iBeatsPerBar, unsigned short iBeatDivisor, bool bAttached )
 {
 	Node *pNode	= 0;
 
@@ -386,10 +387,11 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		pNode->beatType = iBeatType;
 		pNode->beatsPerBar = iBeatsPerBar;
 		pNode->beatDivisor = iBeatDivisor;
+		pNode->attached = bAttached;
 	} else {
 		// Add/insert a new node...
 		pNode = new Node(this,
-			iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
+			iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, bAttached);
 		if (pPrev)
 			m_nodes.insertAfter(pNode, pPrev);
 		else

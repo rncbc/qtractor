@@ -288,7 +288,7 @@ protected:
 
 	// Get tempo curve time-scale node from given contents position.
 	qtractorTimeScale::Node *tempoNodeAtTrack(const QPoint& pos,
-		qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo) const;
+		qtractorTrack *pTrack, TrackViewInfo *pTrackViewInfo, bool *atBorder) const;
 	qtractorTimeScale::Node *tempoNodeAt(const QPoint& pos) const;
 
 	// Get contents visible rectangle from given track.
@@ -407,6 +407,7 @@ protected:
 
 	// Automation/Tempo/curve node editor methods.
 	void openEditCurveNode(qtractorCurve *pCurve, qtractorCurve::Node *pNode);
+	void toggleTempoNodeAttached(qtractorTempoCurve *pTempoCurve, qtractorTimeScale::Node *pNode);
 	void openEditCurveNode(qtractorTempoCurve *pCurve, qtractorTimeScale::Node *pNode);
 	void closeEditCurveNode();
 

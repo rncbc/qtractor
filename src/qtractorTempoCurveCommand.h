@@ -136,7 +136,7 @@ public:
 	// Primitive command methods.
 	void addNode(qtractorTimeScale::Node *pNode);
 	void moveNode(qtractorTimeScale::Node *pNode,
-		float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor);
+		float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor, bool bAttached);
 	void removeNode(qtractorTimeScale::Node *pNode);
 
 	// Composite predicate.

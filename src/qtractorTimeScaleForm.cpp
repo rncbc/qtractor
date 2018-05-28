@@ -633,7 +633,7 @@ void qtractorTimeScaleForm::updateItem (void)
 					m_pTimeScale, iFrame,
 					m_ui.TempoSpinBox->tempo(), 2,
 					m_ui.TempoSpinBox->beatsPerBar(),
-					m_ui.TempoSpinBox->beatDivisor()));
+					m_ui.TempoSpinBox->beatDivisor(), pNode->attached));
 			++m_iDirtyTotal;
 		}
 	}
@@ -862,7 +862,7 @@ void qtractorTimeScaleForm::tempoFactor (void)
 				m_pTimeScale, pNode->frame,
 				fTempoFactor * pNode->tempo,
 				pNode->beatType, pNode->beatsPerBar,
-				pNode->beatDivisor));
+				pNode->beatDivisor, pNode->attached));
 	}
 
 	if (pSession->execute(pTimeScaleCommand))
