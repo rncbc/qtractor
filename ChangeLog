@@ -10,11 +10,11 @@ GIT HEAD
   of simple rectangles (aka. Drum Mode) is now being
   introduced as an optional MIDI track property (Drums)
   and as a MIDI clip editor (piano-roll) visual option
-  (cf. View/Drum Mode). (EXPERIMENTAL)
+  (cf. View/Drum Mode).
 
 - Extended multi-selection is now supported on all the
   Connections client/port lists, allowing for multiple
-  (dis)connections at once. (EXPERIMENTAL)
+  (dis)connections at once.
 
 - Added LV2 UI sample-rate option support.
 
@@ -25,13 +25,13 @@ GIT HEAD
   MIDI instrument plugins to nominal session state.
 
 - Fix, detect and preserve MIDI Bank-select method across
-  MIDI track/clips editing operations. (EXPERIMENTAL)
+  MIDI track/clips editing operations.
 
 - Fixed MIDI track and clip note min/max display range
   while recording and also when duplicating tracks.
 
 - Added "All files (*.*)" filter to every file requestor
-  dialog, wherever missing. (EXPERIMENTAL)
+  dialog, wherever missing.
 
 - The tiny zoom-magnifier icons have been revamped.
 
