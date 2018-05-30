@@ -26,6 +26,8 @@
 
 #include "qtractorMidiControlObserver.h"
 
+#include <QAction>
+
 
 
 //----------------------------------------------------------------------------
