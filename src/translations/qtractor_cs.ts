@@ -9563,12 +9563,12 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixerMeter</name>
     <message>
-        <location filename="../qtractorMeter.cpp" line="312"/>
+        <location filename="../qtractorMeter.cpp" line="313"/>
         <source>Pan</source>
         <translation>Vyvážení</translation>
     </message>
     <message>
-        <location filename="../qtractorMeter.cpp" line="324"/>
+        <location filename="../qtractorMeter.cpp" line="325"/>
         <source>Gain</source>
         <translation>Zesílení</translation>
     </message>
@@ -12261,17 +12261,17 @@ Chcete zahodit tyto změny?</translation>
 <context>
     <name>qtractorTrackButton</name>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="89"/>
+        <location filename="../qtractorTrackButton.cpp" line="91"/>
         <source>Record</source>
         <translation>Nahrát</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="94"/>
+        <location filename="../qtractorTrackButton.cpp" line="96"/>
         <source>Mute</source>
         <translation>Ztlumit</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="99"/>
+        <location filename="../qtractorTrackButton.cpp" line="101"/>
         <source>Solo</source>
         <translation>Sólo</translation>
     </message>

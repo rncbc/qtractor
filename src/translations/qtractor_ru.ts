@@ -9476,12 +9476,12 @@ Edit head/tail (blue) markers define the shift range.</source>
 <context>
     <name>qtractorMixerMeter</name>
     <message>
-        <location filename="../qtractorMeter.cpp" line="312"/>
+        <location filename="../qtractorMeter.cpp" line="313"/>
         <source>Pan</source>
         <translation type="unfinished">Панорама</translation>
     </message>
     <message>
-        <location filename="../qtractorMeter.cpp" line="324"/>
+        <location filename="../qtractorMeter.cpp" line="325"/>
         <source>Gain</source>
         <translation type="unfinished">Усиление</translation>
     </message>
@@ -12153,17 +12153,17 @@ Do you want to discard the changes?</source>
 <context>
     <name>qtractorTrackButton</name>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="89"/>
+        <location filename="../qtractorTrackButton.cpp" line="91"/>
         <source>Record</source>
         <translation>Включить режим записи</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="94"/>
+        <location filename="../qtractorTrackButton.cpp" line="96"/>
         <source>Mute</source>
         <translation>Приглушить</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="99"/>
+        <location filename="../qtractorTrackButton.cpp" line="101"/>
         <source>Solo</source>
         <translation>Сделать солирующей</translation>
     </message>

@@ -9563,12 +9563,12 @@ Sei sicuro?</translation>
 <context>
     <name>qtractorMixerMeter</name>
     <message>
-        <location filename="../qtractorMeter.cpp" line="312"/>
+        <location filename="../qtractorMeter.cpp" line="313"/>
         <source>Pan</source>
         <translation type="unfinished">Bilanciamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMeter.cpp" line="324"/>
+        <location filename="../qtractorMeter.cpp" line="325"/>
         <source>Gain</source>
         <translation type="unfinished">Guadagno</translation>
     </message>
@@ -12260,17 +12260,17 @@ Vuoi scartare le modifiche?</translation>
 <context>
     <name>qtractorTrackButton</name>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="89"/>
+        <location filename="../qtractorTrackButton.cpp" line="91"/>
         <source>Record</source>
         <translation>Registra</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="94"/>
+        <location filename="../qtractorTrackButton.cpp" line="96"/>
         <source>Mute</source>
         <translation>Mute</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="99"/>
+        <location filename="../qtractorTrackButton.cpp" line="101"/>
         <source>Solo</source>
         <translation>Solo</translation>
     </message>

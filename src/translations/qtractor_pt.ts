@@ -9562,12 +9562,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixerMeter</name>
     <message>
-        <location filename="../qtractorMeter.cpp" line="312"/>
+        <location filename="../qtractorMeter.cpp" line="313"/>
         <source>Pan</source>
         <translation>Panorâmico</translation>
     </message>
     <message>
-        <location filename="../qtractorMeter.cpp" line="324"/>
+        <location filename="../qtractorMeter.cpp" line="325"/>
         <source>Gain</source>
         <translation>Ganho</translation>
     </message>
@@ -12261,17 +12261,17 @@ Você deseja descartar essas alterações?</translation>
 <context>
     <name>qtractorTrackButton</name>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="94"/>
+        <location filename="../qtractorTrackButton.cpp" line="96"/>
         <source>Mute</source>
         <translation>Mudo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="99"/>
+        <location filename="../qtractorTrackButton.cpp" line="101"/>
         <source>Solo</source>
         <translation>Solo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackButton.cpp" line="89"/>
+        <location filename="../qtractorTrackButton.cpp" line="91"/>
         <source>Record</source>
         <translation>Gravar</translation>
     </message>

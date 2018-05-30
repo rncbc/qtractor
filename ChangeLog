@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Fix build for Qt >= 5.11.0 (by David Geiger, thanks).
+
+
+0.9.1  2018-05-29  Pre-LAC2018 Release Frenzy.
+
 - Displaying MIDI note(on) events as diamonds instead
   of simple rectangles (aka. Drum Mode) is now being
   introduced as an optional MIDI track property (Drums)
