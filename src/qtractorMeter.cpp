@@ -29,6 +29,7 @@
 
 #include "qtractorObserverWidget.h"
 
+#include <QAction>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPainter>
