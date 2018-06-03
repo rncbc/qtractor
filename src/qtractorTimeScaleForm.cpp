@@ -21,6 +21,7 @@
 
 #include "qtractorTimeScaleForm.h"
 #include "qtractorTimeScaleCommand.h"
+#include "qtractorTempoCurve.h"
 
 #include "qtractorAbout.h"
 #include "qtractorOptions.h"
@@ -156,6 +157,7 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 
 	// Initialize locals.
 	m_pTimeScale  = NULL;
+	m_pTempoCurve = NULL;
 
 	m_pTempoTap   = new QTime();
 	m_iTempoTap   = 0;
@@ -189,8 +191,10 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	// (Re)initial contents.
 	// Default is main session time-scale of course...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
+	if (pSession) {
 		setTimeScale(pSession->timeScale());
+		setTempoCurve(pSession->sessionTempoCurve());
+	}
 
 	// Try to restore normal window positioning.
 	adjustSize();
@@ -266,6 +270,18 @@ void qtractorTimeScaleForm::setTimeScale ( qtractorTimeScale *pTimeScale )
 qtractorTimeScale *qtractorTimeScaleForm::timeScale (void) const
 {
 	return m_pTimeScale;
+}
+
+
+// Tempo-curve accessor.
+void qtractorTimeScaleForm::setTempoCurve ( qtractorTempoCurve *pTempoCurve )
+{
+	m_pTempoCurve = pTempoCurve;
+}
+
+qtractorTempoCurve *qtractorTimeScaleForm::tempoCurve (void) const
+{
+	return m_pTempoCurve;
 }
 
 
@@ -525,24 +541,10 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 		iFlags |= UpdateNode;
 		if (pNode->prev())
 			iFlags |= RemoveNode;
+		iFlags &= ~AddNode;
 	}
-	if (pNode
-		&& ::fabsf(pNode->tempo - fTempo) < 0.05f
-	//	&& pNode->beatType == iBeatType
-		&& pNode->beatsPerBar == iBeatsPerBar
-		&& pNode->beatDivisor == iBeatDivisor)
-		iFlags &= ~UpdateNode;
 	else
 		iFlags |=  AddNode;
-	if (pNode && pNode->bar == iBar)
-		iFlags &= ~AddNode;
-	if (pNode
-		&& (pNode = pNode->next())	// real assignment
-		&& ::fabsf(pNode->tempo - fTempo) < 0.05f
-	//	&& pNode->beatType == iBeatType
-		&& pNode->beatsPerBar == iBeatsPerBar
-		&& pNode->beatDivisor == iBeatDivisor)
-		iFlags &= ~AddNode;
 
 	const unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
 	qtractorTimeScale::Marker *pMarker
