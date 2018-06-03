@@ -537,13 +537,18 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
 
-	if (pNode && pNode->bar == iBar) {
-		iFlags |= UpdateNode;
-		if (pNode->prev())
-			iFlags |= RemoveNode;
-		iFlags &= ~AddNode;
-	}
-	else
+	if (pNode) {
+		if (pNode->allowChange() && pNode->bar == iBar) {
+			iFlags |= UpdateNode;
+			if (pNode->prev())
+				iFlags |= RemoveNode;
+			iFlags &= ~AddNode;
+		}
+		else if (pNode->allowChange())
+			iFlags |=  AddNode;
+		else
+			iFlags =  0;
+	} else
 		iFlags |=  AddNode;
 
 	const unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
@@ -592,7 +597,7 @@ void qtractorTimeScaleForm::addItem (void)
 				m_pTimeScale, iFrame,
 				m_ui.TempoSpinBox->tempo(), 2,
 				m_ui.TempoSpinBox->beatsPerBar(),
-				m_ui.TempoSpinBox->beatDivisor()));
+				m_ui.TempoSpinBox->beatDivisor(), false));
 		++m_iDirtyTotal;
 	}
 
@@ -633,7 +638,7 @@ void qtractorTimeScaleForm::updateItem (void)
 					m_pTimeScale, iFrame,
 					m_ui.TempoSpinBox->tempo(), 2,
 					m_ui.TempoSpinBox->beatsPerBar(),
-					m_ui.TempoSpinBox->beatDivisor()));
+					m_ui.TempoSpinBox->beatDivisor(), pNode->attached));
 			++m_iDirtyTotal;
 		}
 	}
@@ -862,7 +867,7 @@ void qtractorTimeScaleForm::tempoFactor (void)
 				m_pTimeScale, pNode->frame,
 				fTempoFactor * pNode->tempo,
 				pNode->beatType, pNode->beatsPerBar,
-				pNode->beatDivisor));
+				pNode->beatDivisor, pNode->attached));
 	}
 
 	if (pSession->execute(pTimeScaleCommand))

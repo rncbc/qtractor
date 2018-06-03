@@ -44,13 +44,14 @@ void qtractorTimeScale::reset (void)
 	const unsigned short iBeatType = (pNode ? pNode->beatType : 2);
 	const unsigned short iBeatsPerBar = (pNode ? pNode->beatsPerBar : 4);
 	const unsigned short iBeatDivisor = (pNode ? pNode->beatDivisor : 2);
+	const bool bAttached = (pNode ? pNode->attached : false);
 
 	// Clear/reset tempo-map...
 	m_nodes.clear();
 	m_cursor.reset();
 
 	// There must always be one node, always at zero-frame...
-	addNode(0, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
+	addNode(0, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, bAttached);
 
 	// Commit new scale...
 	updateScale();
@@ -366,7 +367,7 @@ qtractorTimeScale::Node *qtractorTimeScale::Cursor::seekPixel ( int x )
 // Node list specifics.
 qtractorTimeScale::Node *qtractorTimeScale::addNode (
 	unsigned long iFrame, float fTempo, unsigned short iBeatType,
-	unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+	unsigned short iBeatsPerBar, unsigned short iBeatDivisor, bool bAttached )
 {
 	Node *pNode	= 0;
 
@@ -386,10 +387,11 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		pNode->beatType = iBeatType;
 		pNode->beatsPerBar = iBeatsPerBar;
 		pNode->beatDivisor = iBeatDivisor;
+		pNode->attached = bAttached;
 	} else {
 		// Add/insert a new node...
 		pNode = new Node(this,
-			iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
+			iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, bAttached);
 		if (pPrev)
 			m_nodes.insertAfter(pNode, pPrev);
 		else
@@ -415,7 +417,12 @@ void qtractorTimeScale::updateNode ( qtractorTimeScale::Node *pNode )
 	Node *pNext = pNode;
 	Node *pPrev = pNext->prev();
 	while (pNext) {
+		long iFrame = pNext->frame;
 		if (pPrev) pNext->reset(pPrev);
+		if (pNext != pNode) {
+			if ((m_iFramesDiff == 0) && (pNext->attached))
+				m_iFramesDiff = pNext->frame - iFrame;
+		}
 		pPrev = pNext;
 		pNext = pNext->next();
 	}
@@ -449,6 +456,53 @@ void qtractorTimeScale::removeNode ( qtractorTimeScale::Node *pNode )
 
 	// Then update marker/bar positions too...
 	updateMarkers(pNodePrev);
+}
+
+
+void qtractorTimeScale::updateAllowChanges ( qtractorTimeScale::Node *pNode )
+{
+	// Update allowChange on all nodes thereafter...
+	Node *pPrev = NULL;
+	Node *pNext = m_nodes.first();
+	Node *pMark = NULL;
+	bool bAttach = pNode->attached;
+	bool bAllowChange = true;
+	// First dis-allow changes for all nodes from the first attached node to the last!
+	while (pNext) {
+		if (pNext->attached) {
+			bAllowChange = false;
+			pMark = pNext;
+		}
+		pNext->setAllowChange(bAllowChange);
+
+		pPrev = pNext;
+		pNext = pNext->next();
+	}
+	// Then allow changes for all nodes from the last node to the last node attached!
+	while (pPrev) {
+		pPrev->setAllowChange(true);
+		if (pPrev == pMark)
+			break;
+		pPrev = pPrev->prev();
+	}
+	// Final updates to maintain packed attached nodes!
+	pNext = m_nodes.first();
+	pMark = pNode;
+	while (pNext) {
+		if (bAttach) {
+			if (!pNext->allowChange() && !pNext->attached)
+				pNext->attached = true;
+		} else {
+			if ((pNext == pMark) && pNode->prev() &&pNode->prev()->attached) {
+				pMark = pNext->next();
+				pPrev = pNext->prev();
+				if (pPrev)
+					pPrev->setAllowChange(true);
+				pNext->attached = false;
+			}
+		}
+		pNext = pNext->next();
+	}
 }
 
 

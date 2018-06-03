@@ -171,11 +171,11 @@ void qtractorTempoCurveEditCommand::addNode ( qtractorTimeScale::Node *pNode )
 
 
 void qtractorTempoCurveEditCommand::moveNode ( qtractorTimeScale::Node *pNode,
-	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor, bool bAttached )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoCurveEditCommand::%s@%d: (%g, %u, %u)", __func__, __LINE__,
-		fTempo, iBeatsPerBar, iBeatDivisor);
+	qDebug("qtractorTempoCurveEditCommand::%s@%d: (%g, %u, %u, %d)", __func__, __LINE__,
+		fTempo, iBeatsPerBar, iBeatDivisor, bAttached);
 #endif
 #if 0
 	m_edits.moveNode(pNode, fTempo, iBeatsPerBar, iBeatDivisor);
@@ -186,10 +186,10 @@ void qtractorTempoCurveEditCommand::moveNode ( qtractorTimeScale::Node *pNode,
 	if (pSession)
 		pTimeScale = pSession->timeScale();
 
-	if (pNode->getTs() == pTimeScale) {
+	if (((pNode->attached != bAttached) || pNode->allowChange()) && (pNode->getTs() == pTimeScale)) {
 		// Now, express the change as a undoable command...
 		pSession->execute(new qtractorTimeScaleUpdateNodeCommand(
-			pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
+			pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor, bAttached));
 	}
 }
 
