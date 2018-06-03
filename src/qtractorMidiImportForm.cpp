@@ -28,7 +28,8 @@
 #include "qtractorFiles.h"
 #include "qtractorCommand.h"
 #include "qtractorInstrument.h"
-#include "QPushButton"
+#include <QPushButton>
+#include <QButtonGroup>
 
 
 //----------------------------------------------------------------------
