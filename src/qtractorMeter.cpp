@@ -34,6 +34,7 @@
 #include <QVBoxLayout>
 #include <QPainter>
 #include <QLabel>
+#include <QAction>
 
 #include <QPaintEvent>
 #include <QResizeEvent>

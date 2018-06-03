@@ -27,6 +27,7 @@
 #include "qtractorObserverWidget.h"
 
 #include <QPushButton>
+#include <QAction>
 
 
 //----------------------------------------------------------------------------
