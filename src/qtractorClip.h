@@ -149,7 +149,7 @@ public:
 	float fadeInOutGain(unsigned long iOffset) const;
 
 	// Clip time reference settler method.
-	void updateClipTime();
+	void updateClipTime(long iFramesDiff = 0);
 
 	// Clip paint methods.
 	void drawClip(QPainter *pPainter,

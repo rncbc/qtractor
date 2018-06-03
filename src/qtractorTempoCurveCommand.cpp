@@ -186,7 +186,7 @@ void qtractorTempoCurveEditCommand::moveNode ( qtractorTimeScale::Node *pNode,
 	if (pSession)
 		pTimeScale = pSession->timeScale();
 
-	if (pNode->getTs() == pTimeScale) {
+	if (((pNode->attached != bAttached) || pNode->allowChange()) && (pNode->getTs() == pTimeScale)) {
 		// Now, express the change as a undoable command...
 		pSession->execute(new qtractorTimeScaleUpdateNodeCommand(
 			pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor, bAttached));

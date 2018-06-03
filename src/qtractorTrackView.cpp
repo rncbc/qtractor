@@ -2361,7 +2361,8 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 			if (atTempoBorder) {
 				toggleTempoNodeAttached(pTrack->trackTempoCurve(), pNode);
 			} else {
-				openEditCurveNode(pTrack->trackTempoCurve(), pNode);
+				if (pNode->allowChange())
+					openEditCurveNode(pTrack->trackTempoCurve(), pNode);
 			}
 			return;
 		}
@@ -6020,6 +6021,9 @@ void qtractorTrackView::toggleTempoNodeAttached (
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorTrackView::%s@%d(%p, %p) pNode->getAttached()=%d", __func__, __LINE__, pTempoCurve, pNode, pNode->getAttached());
 #endif
+
+	pTempoCurve->timeScale()->updateAllowChanges(pNode);
+
 	updateContents();
 
 	// Reset editing references...

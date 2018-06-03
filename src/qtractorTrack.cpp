@@ -1878,8 +1878,10 @@ bool qtractorTrack::loadElement (
 							bAttached = qtractorDocument::boolFromText(eItem.text());
 					}
 					// Add new node to tempo/time-signature map...
-					pTimeScale->addNode(iFrame,
+					qtractorTimeScale::Node *pNode;
+					pNode = pTimeScale->addNode(iFrame,
 						fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, bAttached);
+					pTimeScale->updateAllowChanges(pNode);
 				}
 			}
 		}
