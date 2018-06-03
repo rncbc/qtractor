@@ -417,7 +417,12 @@ void qtractorTimeScale::updateNode ( qtractorTimeScale::Node *pNode )
 	Node *pNext = pNode;
 	Node *pPrev = pNext->prev();
 	while (pNext) {
+		long iFrame = pNext->frame;
 		if (pPrev) pNext->reset(pPrev);
+		if (pNext != pNode) {
+			if ((m_iFramesDiff == 0) && (pNext->attached))
+				m_iFramesDiff = pNext->frame - iFrame;
+		}
 		pPrev = pNext;
 		pNext = pNext->next();
 	}
@@ -451,6 +456,53 @@ void qtractorTimeScale::removeNode ( qtractorTimeScale::Node *pNode )
 
 	// Then update marker/bar positions too...
 	updateMarkers(pNodePrev);
+}
+
+
+void qtractorTimeScale::updateAllowChanges ( qtractorTimeScale::Node *pNode )
+{
+	// Update allowChange on all nodes thereafter...
+	Node *pPrev = NULL;
+	Node *pNext = m_nodes.first();
+	Node *pMark = NULL;
+	bool bAttach = pNode->attached;
+	bool bAllowChange = true;
+	// First dis-allow changes for all nodes from the first attached node to the last!
+	while (pNext) {
+		if (pNext->attached) {
+			bAllowChange = false;
+			pMark = pNext;
+		}
+		pNext->setAllowChange(bAllowChange);
+
+		pPrev = pNext;
+		pNext = pNext->next();
+	}
+	// Then allow changes for all nodes from the last node to the last node attached!
+	while (pPrev) {
+		pPrev->setAllowChange(true);
+		if (pPrev == pMark)
+			break;
+		pPrev = pPrev->prev();
+	}
+	// Final updates to maintain packed attached nodes!
+	pNext = m_nodes.first();
+	pMark = pNode;
+	while (pNext) {
+		if (bAttach) {
+			if (!pNext->allowChange() && !pNext->attached)
+				pNext->attached = true;
+		} else {
+			if ((pNext == pMark) && pNode->prev() &&pNode->prev()->attached) {
+				pMark = pNext->next();
+				pPrev = pNext->prev();
+				if (pPrev)
+					pPrev->setAllowChange(true);
+				pNext->attached = false;
+			}
+		}
+		pNext = pNext->next();
+	}
 }
 
 

@@ -800,14 +800,16 @@ void qtractorSession::updateTimeScale (void)
 	// Recompute scale divisor factors...
 	timeScale()->updateScale();
 
+	long iFramesDiff = timeScale()->framesDiff();
 	// Just (re)synchronize all clips to new tempo state, if any;
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
-			pClip->updateClipTime();
+			pClip->updateClipTime(iFramesDiff);
 		}
 	}
+	timeScale()->framesDiffReset();
 
 	// Update loop points...
 	if (m_iLoopStart < m_iLoopEnd) {

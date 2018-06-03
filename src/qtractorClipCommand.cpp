@@ -786,7 +786,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pAudioClip) {
 				const float fOldTimeStretch = pAudioClip->timeStretch();
 				pAudioClip->setTimeStretch(pItem->timeStretch);
-				pAudioClip->updateClipTime();	// Care of tempo change.
+				pAudioClip->updateClipTime(0);	// Care of tempo change.
 				pItem->timeStretch = fOldTimeStretch;
 			}
 			break;
