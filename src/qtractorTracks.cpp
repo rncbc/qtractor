@@ -1773,7 +1773,7 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	// Now, express the change as a undoable command...
 	pSession->execute(
 		new qtractorTimeScaleUpdateNodeCommand(pTimeScale, pNode->frame,
-			form.tempo(), 2, form.beatsPerBar(), form.beatDivisor(), pNode->attached));
+			form.tempo(), 2, form.beatsPerBar(), form.beatDivisor(), pNode->bars, pNode->attached));
 
 	// Done.
 	pSession->setAutoTimeStretch(bAutoTimeStretch);	

@@ -171,6 +171,8 @@ void qtractorTimeScale::Node::update (void)
 // Update time-scale node position metrics.
 void qtractorTimeScale::Node::reset ( qtractorTimeScale::Node *pNode )
 {
+	bar = pNode->bar + pNode->bars;
+
 	if (bar > pNode->bar)
 		frame = pNode->frameFromBar(bar);
 	else
@@ -367,7 +369,7 @@ qtractorTimeScale::Node *qtractorTimeScale::Cursor::seekPixel ( int x )
 // Node list specifics.
 qtractorTimeScale::Node *qtractorTimeScale::addNode (
 	unsigned long iFrame, float fTempo, unsigned short iBeatType,
-	unsigned short iBeatsPerBar, unsigned short iBeatDivisor, bool bAttached )
+	unsigned short iBeatsPerBar, unsigned short iBeatDivisor, unsigned short iBars, bool bAttached )
 {
 	Node *pNode	= 0;
 
@@ -387,14 +389,17 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		pNode->beatType = iBeatType;
 		pNode->beatsPerBar = iBeatsPerBar;
 		pNode->beatDivisor = iBeatDivisor;
+		pNode->bars = iBars;
 		pNode->attached = bAttached;
 	} else {
 		// Add/insert a new node...
 		pNode = new Node(this,
-			iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, bAttached);
-		if (pPrev)
+			iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, iBars, bAttached);
+		if (pPrev) {
 			m_nodes.insertAfter(pNode, pPrev);
-		else
+			pNode->bar = pPrev->barFromFrame(iFrame);
+			pPrev->bars = pNode->bar - pPrev->bar;
+		} else
 			m_nodes.append(pNode);
 	}
 
@@ -429,6 +434,9 @@ void qtractorTimeScale::updateNode ( qtractorTimeScale::Node *pNode )
 
 	// And update marker/bar positions too...
 	updateMarkers(pNode->prev());
+
+	// Then update allowed changes...
+	updateAllowChanges(pNode);
 }
 
 
@@ -446,7 +454,12 @@ void qtractorTimeScale::removeNode ( qtractorTimeScale::Node *pNode )
 	Node *pPrev = pNodePrev;
 	Node *pNext = pNode->next();
 	while (pNext) {
+		long iFrame = pNext->frame;
 		if (pPrev) pNext->reset(pPrev);
+		if (pNext != pNode) {
+			if ((m_iFramesDiff == 0) && (pNext->attached))
+				m_iFramesDiff = pNext->frame - iFrame;
+		}
 		pPrev = pNext;
 		pNext = pNext->next();
 	}
@@ -456,11 +469,19 @@ void qtractorTimeScale::removeNode ( qtractorTimeScale::Node *pNode )
 
 	// Then update marker/bar positions too...
 	updateMarkers(pNodePrev);
+
+	// Then update allowed changes...
+	updateAllowChanges(pNodePrev);
 }
 
 
 void qtractorTimeScale::updateAllowChanges ( qtractorTimeScale::Node *pNode )
 {
+	if (pNode == 0)
+		pNode = m_nodes.first();
+	if (pNode == 0)
+		return;
+
 	// Update allowChange on all nodes thereafter...
 	Node *pPrev = NULL;
 	Node *pNext = m_nodes.first();

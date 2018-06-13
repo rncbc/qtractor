@@ -115,12 +115,15 @@ public:
 			float fTempo = 120.0f,
 			unsigned short iBeatType = 2,
 			unsigned short iBeatsPerBar = 4,
-			unsigned short iBeatDivisor = 2, bool bAttached = false)
+			unsigned short iBeatDivisor = 2,
+			unsigned short iBars = 0,
+			bool bAttached = false)
 			: frame(iFrame),
 				bar(0), beat(0), tick(0), pixel(0),
 				tempo(fTempo), beatType(iBeatType),
 				beatsPerBar(iBeatsPerBar),
-				beatDivisor(iBeatDivisor), attached(bAttached),
+				beatDivisor(iBeatDivisor),
+				bars(iBars), attached(bAttached),
 				ticksPerBeat(0), ts(pTimeScale),
 				tickRate(1.0f), beatRate(1.0f), bAllowChange(true) {}
 
@@ -258,6 +261,7 @@ public:
 		unsigned short beatType;
 		unsigned short beatsPerBar;
 		unsigned short beatDivisor;
+		unsigned short bars;
 		bool           attached;
 
 		unsigned short ticksPerBeat;
@@ -317,6 +321,7 @@ public:
 		unsigned short iBeatType = 2,
 		unsigned short iBeatsPerBar = 4,
 		unsigned short iBeatDivisor = 2,
+		unsigned short iBars = 0,
 		bool bAttached = false
 	);
 	void updateNode(Node *pNode);

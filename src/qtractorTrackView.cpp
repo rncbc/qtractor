@@ -6022,8 +6022,6 @@ void qtractorTrackView::toggleTempoNodeAttached (
 	qDebug("qtractorTrackView::%s@%d(%p, %p) pNode->getAttached()=%d", __func__, __LINE__, pTempoCurve, pNode, pNode->getAttached());
 #endif
 
-	pTempoCurve->timeScale()->updateAllowChanges(pNode);
-
 	updateContents();
 
 	// Reset editing references...

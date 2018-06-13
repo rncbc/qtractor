@@ -74,6 +74,7 @@ protected slots:
 	void timeChanged(unsigned long);
 	void tempoChanged();
 	void changed();
+	void barsChanged(int);
 
 	void tempoTap();
 	void tempoFactor();

@@ -44,7 +44,7 @@ public:
 	qtractorTimeScaleNodeCommand(const QString& sName,
 		qtractorTimeScale *pTimeScale, unsigned long iFrame = 0,
 		float fTempo = 120.0f, unsigned short iBeatType = 2,
-		unsigned short iBeatsPerBar = 4, unsigned short iBeatDivisor = 2, bool bAttached = false);
+		unsigned short iBeatsPerBar = 4, unsigned short iBeatDivisor = 2, unsigned int iBars = 0, bool bAttached = false);
 
 	// Destructor.
 	virtual ~qtractorTimeScaleNodeCommand();
@@ -92,6 +92,7 @@ private:
 	unsigned short m_iBeatType;
 	unsigned short m_iBeatsPerBar;
 	unsigned short m_iBeatDivisor;
+	unsigned short m_iBars;
 	bool           m_bAttached;
 
 	bool m_bAutoTimeStretch;
@@ -114,7 +115,7 @@ public:
 	qtractorTimeScaleAddNodeCommand(
 		qtractorTimeScale *pTimeScale, unsigned long iFrame,
 		float fTempo = 120.0f, unsigned short iBeatType = 2,
-		unsigned short iBeatsPerBar = 4, unsigned short iBeatDivisor = 2, bool bAttached = false);
+		unsigned short iBeatsPerBar = 4, unsigned short iBeatDivisor = 2, unsigned short iBars = 0, bool bAttached = false);
 
 	// Time-scale command methods.
 	bool redo();
@@ -133,7 +134,7 @@ public:
 	// Constructor.
 	qtractorTimeScaleUpdateNodeCommand(qtractorTimeScale *pTimeScale,
 		unsigned long iFrame, float fTempo, unsigned short iBeatType,
-		unsigned short iBeatsPerBar, unsigned short iBeatDivisor, bool bAttached);
+		unsigned short iBeatsPerBar, unsigned short iBeatDivisor, unsigned short iBars, bool bAttached);
 	
 	// Time-scale command methods.
 	bool redo();

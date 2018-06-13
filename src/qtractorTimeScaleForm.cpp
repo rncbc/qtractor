@@ -229,6 +229,9 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	QObject::connect(m_ui.TempoFactorPushButton,
 		SIGNAL(clicked()),
 		SLOT(tempoFactor()));
+	QObject::connect(m_ui.BarsSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(barsChanged(int)));
 
 	QObject::connect(m_ui.MarkerTextLineEdit,
 		SIGNAL(textChanged(const QString&)),
@@ -307,6 +310,12 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 		m_ui.TempoSpinBox->setTempo(pNode->tempo, false);
 		m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 		m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, true);
+		if (!pNode->next())
+			m_ui.BarsSpinBox->setValue(9999);
+		else {
+			int iBars = pNode->next()->bar - pNode->barFromFrame(iFrame);
+			m_ui.BarsSpinBox->setValue(iBars);
+		}
 	}
 
 	qtractorTimeScale::Marker *pMarker
@@ -502,6 +511,12 @@ void qtractorTimeScaleForm::selectItem (void)
 		m_ui.TempoSpinBox->setTempo(pNode->tempo, false);
 		m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
 		m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, true);
+		if (!pNode->next())
+			m_ui.BarsSpinBox->setValue(9999);
+		else {
+			int iBars = pNode->next()->bar - pNode->bar;
+			m_ui.BarsSpinBox->setValue(iBars);
+		}
 		ensureVisibleFrame(pNode->frame);
 	}
 
@@ -532,6 +547,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 	const float fTempo = m_ui.TempoSpinBox->tempo();
 	const unsigned short iBeatsPerBar = m_ui.TempoSpinBox->beatsPerBar();
 	const unsigned short iBeatDivisor = m_ui.TempoSpinBox->beatDivisor();
+	const unsigned short iBars = (unsigned short)m_ui.BarsSpinBox->value();
 
 	const unsigned short iBar = bar();
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
@@ -546,6 +562,8 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 		}
 		else if (pNode->allowChange())
 			iFlags |=  AddNode;
+		else if ((pNode->bar == iBar) && (pNode->bars != iBars))
+			iFlags |= UpdateNode;
 		else
 			iFlags =  0;
 	} else
@@ -597,7 +615,9 @@ void qtractorTimeScaleForm::addItem (void)
 				m_pTimeScale, iFrame,
 				m_ui.TempoSpinBox->tempo(), 2,
 				m_ui.TempoSpinBox->beatsPerBar(),
-				m_ui.TempoSpinBox->beatDivisor(), false));
+				m_ui.TempoSpinBox->beatDivisor(),
+				(unsigned short)m_ui.BarsSpinBox->value(),
+				false));
 		++m_iDirtyTotal;
 	}
 
@@ -638,7 +658,9 @@ void qtractorTimeScaleForm::updateItem (void)
 					m_pTimeScale, iFrame,
 					m_ui.TempoSpinBox->tempo(), 2,
 					m_ui.TempoSpinBox->beatsPerBar(),
-					m_ui.TempoSpinBox->beatDivisor(), pNode->attached));
+					m_ui.TempoSpinBox->beatDivisor(),
+					(unsigned short)m_ui.BarsSpinBox->value(),
+					pNode->attached));
 			++m_iDirtyTotal;
 		}
 	}
@@ -704,8 +726,8 @@ void qtractorTimeScaleForm::removeItem (void)
 		}
 	}
 
+	const unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
 	if (iFlags & RemoveMarker) {
-		const unsigned long iFrame = m_pTimeScale->frameFromBar(iBar);
 		qtractorTimeScale::Marker *pMarker
 			= m_pTimeScale->markers().seekFrame(iFrame);
 		if (pMarker && pMarker->frame == iFrame) {
@@ -717,6 +739,7 @@ void qtractorTimeScaleForm::removeItem (void)
 		}
 	}
 
+	setFrame(iFrame);
 	refresh();
 }
 
@@ -729,8 +752,6 @@ void qtractorTimeScaleForm::barChanged ( int iBar )
 	if (m_iDirtySetup > 0)
 		return;
 
-	++m_iDirtySetup;
-
 	if (iBar > 0) --iBar;
 
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
@@ -738,23 +759,79 @@ void qtractorTimeScaleForm::barChanged ( int iBar )
 
 	const unsigned long iFrame = (pNode ? pNode->frameFromBar(iBar) : 0);
 
-	m_ui.TimeSpinBox->setValue(iFrame);
-
 	qtractorTimeScale::Marker *pMarker
 		= m_pTimeScale->markers().seekFrame(iFrame);
-	if (pMarker && pMarker->frame == iFrame)
-		setCurrentMarker(pMarker);
-	else
-		setCurrentMarker(NULL);
 
-	m_iDirtySetup = 0;
+	if (pNode->bar == iBar) {
+		if (m_iDirtyCount > 0) {
+			QMessageBox::StandardButtons buttons
+				= QMessageBox::Discard | QMessageBox::Cancel;
+			if (m_ui.UpdatePushButton->isEnabled())
+				buttons |= QMessageBox::Apply;
+			switch (QMessageBox::warning(this,
+				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Some settings have been changed.\n\n"
+				"Do you want to apply the changes?"),
+				buttons)) {
+			case QMessageBox::Apply:
+				updateItem();
+				// Fall thru...
+			case QMessageBox::Discard:
+				break;;
+			default:    // Cancel.
+				return;
+			}
+		}
+
+		// Get new one into view...
+		++m_iDirtySetup;
+
+		if (pNode) {
+			m_ui.BarSpinBox->setValue(pNode->bar + 1);
+			m_ui.TimeSpinBox->setValue(pNode->frame);
+			m_ui.TempoSpinBox->setTempo(pNode->tempo, false);
+			m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
+			m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, true);
+			if (!pNode->next())
+				m_ui.BarsSpinBox->setValue(9999);
+			else {
+				int iBars = pNode->next()->bar - pNode->bar;
+				m_ui.BarsSpinBox->setValue(iBars);
+			}
+			ensureVisibleFrame(pNode->frame);
+		}
+
+		if (pMarker && pNode == NULL) {
+			const unsigned int iBar = m_pTimeScale->barFromFrame(pMarker->frame);
+			m_ui.BarSpinBox->setValue(iBar + 1);
+			m_ui.TimeSpinBox->setValue(pMarker->frame);
+			ensureVisibleFrame(pMarker->frame);
+		}
+
+		setCurrentMarker(pMarker);
+
+		m_iDirtySetup = 0;
+		m_iDirtyCount = 0;
+	} else {
+		++m_iDirtySetup;
+
+		m_ui.TimeSpinBox->setValue(iFrame);
+
+		if (pMarker && pMarker->frame == iFrame)
+			setCurrentMarker(pMarker);
+		else
+			setCurrentMarker(NULL);
+
+		m_iDirtySetup = 0;
+
+		++m_iDirtyCount;
+	}
 
 	// Locate nearest list item...
 	if (pNode)
 		setCurrentItem(pNode, iFrame);
 	ensureVisibleFrame(iFrame);
 
-	++m_iDirtyCount;
 	stabilizeForm();
 }
 
@@ -826,6 +903,46 @@ void qtractorTimeScaleForm::changed (void)
 }
 
 
+// Make changes due.
+void qtractorTimeScaleForm::barsChanged ( int iBars )
+{
+	if (m_pTimeScale == NULL)
+		return;
+	if (m_iDirtySetup > 0)
+		return;
+
+	const unsigned short iBar   = bar();
+	++m_iDirtySetup;
+
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
+
+	const unsigned long iFrame = (pNode ? pNode->frameFromBar(iBar) : 0);
+
+	if (pNode->attached && pNode->next() && pNode->next()->attached) {
+		const float fNodeTempo = pNode->tempo;
+		const unsigned short iNodeBeatsPerBar = pNode->beatsPerBar;
+		const unsigned short iNodeBars = pNode->bars;
+		const float fDeltaTime = (iNodeBars * iNodeBeatsPerBar) / fNodeTempo;
+		const unsigned short iBeatsPerBar = m_ui.TempoSpinBox->beatsPerBar();
+		const unsigned short iBeatDivisor = m_ui.TempoSpinBox->beatDivisor();
+		const float fTempo = (iBeatsPerBar * iBars) / fDeltaTime;
+
+		m_ui.TempoSpinBox->setTempo(fTempo, false);
+	}
+
+	m_iDirtySetup = 0;
+
+	// Locate nearest list item...
+	if (pNode)
+		setCurrentItem(pNode, iFrame);
+	ensureVisibleFrame(iFrame);
+
+	++m_iDirtyCount;
+	stabilizeForm();
+}
+
+
 // Reject settings (Close button slot).
 void qtractorTimeScaleForm::reject (void)
 {
@@ -867,7 +984,7 @@ void qtractorTimeScaleForm::tempoFactor (void)
 				m_pTimeScale, pNode->frame,
 				fTempoFactor * pNode->tempo,
 				pNode->beatType, pNode->beatsPerBar,
-				pNode->beatDivisor, pNode->attached));
+				pNode->beatDivisor, pNode->bars, pNode->attached));
 	}
 
 	if (pSession->execute(pTimeScaleCommand))
