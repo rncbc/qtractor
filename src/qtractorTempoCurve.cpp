@@ -137,17 +137,6 @@ void qtractorTempoCurve::setProcess ( bool bProcess )
 }
 
 
-void qtractorTempoCurve::setLocked ( bool bLocked )
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorTempoCurve[%p]::setLocked(%d)", this, int(bLocked));
-#endif
-
-	const bool bOldLocked = (m_state & Locked);
-	m_state = State(bLocked ? (m_state | Locked) : (m_state & ~Locked));
-}
-
-
 //----------------------------------------------------------------------
 // qtractorTempoCurveEditList -- Curve node edit list.
 
@@ -170,9 +159,6 @@ bool qtractorTempoCurveEditList::execute ( bool bRedo )
 		}
 		case MoveNode: {
 			qtractorTimeScale::Node *pNode = pItem->node;
-			const float fValue = pNode->tempo;
-			const unsigned short iBeatsPerBar = pNode->beatsPerBar;
-			const unsigned short iBeatDivisor = pNode->beatDivisor;
 			pNode->tempo = pItem->tempo;
 			pNode->beatsPerBar = pItem->beatsPerBar;
 			pNode->beatDivisor = pItem->beatDivisor;

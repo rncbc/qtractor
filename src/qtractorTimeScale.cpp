@@ -381,7 +381,6 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		pPrev = m_cursor.seekFrame(iFrame);
 	}
 	// Either update existing node or add new one...
-	Node *pNext = (pPrev ? pPrev->next() : 0);
 	if (pPrev && pPrev->frame == iFrame) {
 		// Update exact matching node...
 		pNode = pPrev;

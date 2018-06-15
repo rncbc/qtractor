@@ -544,12 +544,9 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 
 	unsigned int iFlags = 0;
 
-	const float fTempo = m_ui.TempoSpinBox->tempo();
-	const unsigned short iBeatsPerBar = m_ui.TempoSpinBox->beatsPerBar();
-	const unsigned short iBeatDivisor = m_ui.TempoSpinBox->beatDivisor();
 	const unsigned short iBars = (unsigned short)m_ui.BarsSpinBox->value();
-
 	const unsigned short iBar = bar();
+
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
 
@@ -925,7 +922,6 @@ void qtractorTimeScaleForm::barsChanged ( int iBars )
 		const unsigned short iNodeBars = pNode->bars;
 		const float fDeltaTime = (iNodeBars * iNodeBeatsPerBar) / fNodeTempo;
 		const unsigned short iBeatsPerBar = m_ui.TempoSpinBox->beatsPerBar();
-		const unsigned short iBeatDivisor = m_ui.TempoSpinBox->beatDivisor();
 		const float fTempo = (iBeatsPerBar * iBars) / fDeltaTime;
 
 		m_ui.TempoSpinBox->setTempo(fTempo, false);

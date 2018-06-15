@@ -797,11 +797,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			unsigned long frame = iTrackStart;
 			qtractorTimeScale::Cursor cursor(pTempoCurve->timeScale());
 			qtractorTimeScale::Node *pNode = cursor.seekFrame(frame);
-			const bool bLocked = pTempoCurve->isLocked();
 			int xc2, xc1 = trackRect.x();
-//			int yc2, yc1 = y2 - int(cursor.scale(pNode, frame) * float(h)) - cy;
 			int yc2, yc1 = y2 - int(pTempoCurve->scale(pNode, frame) * float(h)) - cy;
-			int yc3, xc3 = xc1 + 4;
 			QColor rgbCurve(pTempoCurve->color());
 			QPen pen(rgbCurve);
 			pPainter->setPen(pen);
@@ -824,7 +821,6 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			}
 			xc2 = rect.right();
 			frame = pSession->frameFromPixel(cx + xc2);
-//			yc2 = y2 - int(cursor.scale(frame) * float(h)) - cy;
 			yc2 = y2 - int(pTempoCurve->scale(frame) * float(h)) - cy;
 			path.lineTo(xc2, yc1);
 			path.lineTo(xc2, yc2);
@@ -1296,7 +1292,6 @@ qtractorTimeScale::Node *qtractorTrackView::tempoNodeAtTrack ( const QPoint& pos
 	if (pTempoCurve == NULL)
 		return NULL;
 
-	const int w  = pTrackViewInfo->trackRect.width();
 	const int h  = pTrackViewInfo->trackRect.height();
 	const int y2 = pTrackViewInfo->trackRect.bottom() + 1;
 	const int cx = qtractorScrollView::contentsX();
@@ -2328,7 +2323,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			TrackViewInfo tvi;
 			qtractorTrack *pTrack = trackAt(pos, true, &tvi);
 			if (pTrack && pTrack->trackTempoCurve()) {
-				qtractorTimeScale::Node *pNode = tempoNodeAtTrack(pos, pTrack, &tvi, NULL);
+				tempoNodeAtTrack(pos, pTrack, &tvi, NULL);
 			}
 			break;
 		}
@@ -6048,25 +6043,6 @@ void qtractorTrackView::openEditCurveNode (
 	m_pEditTempoCurve = pTempoCurve;
 	m_pEditTimeScaleNode = pNode;
 
-	const float fMaxValue = pSubject->maxValue();
-	const float fMinValue = pSubject->minValue();
-
-	int iDecimals = 0;
-	if (pSubject->isDecimal()) {
-		const float fDecs
-			= ::log10f(fMaxValue - fMinValue);
-		if (fDecs < 0.0f)
-			iDecimals = 6;
-		else if (fDecs < 3.0f)
-			iDecimals = 3;
-		else if (fDecs < 6.0f)
-			iDecimals = 1;
-	#if 0
-		if (m_pEditTempoCurve->isLogarithmic())
-			++iDecimals;
-	#endif
-	}
-
 	// Tempo spin-box.
 	const QSize  pad(4, 0);
 	const QFont& font0 = qtractorScrollView::font();
@@ -6083,8 +6059,6 @@ void qtractorTrackView::openEditCurveNode (
 	m_pEditTempoCurveNodeSpinBox->setToolTip(tr("Curve tempo (BPM)"));
 	m_pEditTempoCurveNodeSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_pEditTempoCurveNodeSpinBox->setAccelerated(true);
-//	m_pEditTempoCurveNodeSpinBox->setToolTip(pSubject->name());
-//	m_pEditTempoCurveNodeSpinBox->setMinimumWidth(42);
 
 	QWidget *pViewport = qtractorScrollView::viewport();
 	const int w = pViewport->width();
@@ -6161,7 +6135,6 @@ void qtractorTrackView::closeEditCurveNode (void)
 		// Have we changed anything?
 		if (m_iEditTempoCurveNodeDirty > 0 && m_pEditTimeScaleNode && m_pEditTempoCurve) {
 			// Make it an undoable command...
-			const float fOldTempo = m_pEditTimeScaleNode->tempo;
 			const float fNewTempo = m_pEditTempoCurveNodeSpinBox->tempo();
 			const unsigned short iNewBeatsPerBar = m_pEditTempoCurveNodeSpinBox->beatsPerBar();
 			const unsigned short iNewBeatDivisor = m_pEditTempoCurveNodeSpinBox->beatDivisor();
@@ -6213,7 +6186,6 @@ void qtractorTrackView::editTempoCurveNodeChanged (void)
 		setSyncViewHoldOn(true);
 		if (m_iEditTempoCurveNodeDirty > 0 && m_pEditTimeScaleNode && m_pEditTempoCurve) {
 			// Make it an undoable command...
-			const float fOldTempo = m_pEditTimeScaleNode->tempo;
 			const float fNewTempo = m_pEditTempoCurveNodeSpinBox->tempo();
 			const unsigned short iNewBeatsPerBar = m_pEditTempoCurveNodeSpinBox->beatsPerBar();
 			const unsigned short iNewBeatDivisor = m_pEditTempoCurveNodeSpinBox->beatDivisor();
