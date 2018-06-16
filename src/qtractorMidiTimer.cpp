@@ -1,7 +1,7 @@
 // qtractorMidiTimer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -86,7 +86,7 @@ qtractorMidiTimer::qtractorMidiTimer (void)
 			int iSubDev = snd_timer_id_get_subdevice(pTimerID);
 			if (iSubDev < 0)
 				iSubDev = 0;
-			char szTimer[64];
+			char szTimer[88];
 			snprintf(szTimer, sizeof(szTimer) - 1,
 				"hw:CLASS=%i,SCLASS=%i,CARD=%i,DEV=%i,SUBDEV=%i",
 				iClass, iSClass, iCard, iDevice, iSubDev);

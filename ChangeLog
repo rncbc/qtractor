@@ -6,7 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- Fix build for Qt >= 5.11.0 (by David Geiger, thanks).
+- Fix build for Qt >= 5.11.0 (by David Geiger, thanks);
+  also for some g++ >= 8.1.1 warnings and quietness.
 
 
 0.9.1  2018-05-29  Pre-LAC2018 Release Frenzy.
