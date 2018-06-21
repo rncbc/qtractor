@@ -120,6 +120,19 @@ float qtractorTempoCurve::scaleFromValue ( float fValue ) const
 }
 
 
+// Focused scale converters.
+float qtractorTempoCurve::valueFromScaleFocused ( float fScale ) const
+{
+	return m_observer.valueFromScaleFocused(fScale);
+}
+
+
+float qtractorTempoCurve::scaleFromValueFocused ( float fValue ) const
+{
+	return m_observer.scaleFromValueFocused(fValue);
+}
+
+
 void qtractorTempoCurve::setProcess ( bool bProcess )
 {
 #ifdef CONFIG_DEBUG_0

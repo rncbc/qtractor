@@ -332,8 +332,10 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pMidiPanningObserver = NULL;
 
 	m_pTempoSubject = new qtractorSubject();
-	m_pTempoSubject->setInteger(true);
-	m_pTempoSubject->setMaxValue(400.0f);
+	m_pTempoSubject->setInteger(false);
+	m_pTempoSubject->setDefaultValue(120.0f);
+	m_pTempoSubject->setMinValue(1.0f);
+	m_pTempoSubject->setMaxValue(1000.0f);
 
 	m_pMonitorSubject = new qtractorSubject();
 	m_pMonitorSubject->setToggled(true);

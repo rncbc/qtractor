@@ -798,7 +798,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			qtractorTimeScale::Cursor cursor(pTempoCurve->timeScale());
 			qtractorTimeScale::Node *pNode = cursor.seekFrame(frame);
 			int xc2, xc1 = trackRect.x();
-			int yc2, yc1 = y2 - int(pTempoCurve->scale(pNode, frame) * float(h)) - cy;
+			int yc2, yc1 = y2 - int(pTempoCurve->scaleFocused(pNode, frame) * float(h)) - cy;
 			QColor rgbCurve(pTempoCurve->color());
 			QPen pen(rgbCurve);
 			pPainter->setPen(pen);
@@ -806,7 +806,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			path.moveTo(xc1, yc1);
 			while (pNode && pNode->frame < iTrackEnd) {
 				xc2 = pSession->pixelFromFrame(pNode->frame) - cx;
-				yc2 = y2 - int(pTempoCurve->scale(pNode) * float(h)) - cy;
+				yc2 = y2 - int(pTempoCurve->scaleFocused(pNode) * float(h)) - cy;
 				if (pNode->getAttached()) { /* draw and fill the node ;-) */
 					pPainter->drawRect(QRect(xc2 - 4, yc2 - 4, 8, 8));
 					pPainter->drawRect(QRect(xc2 - 3, yc2 - 3, 6, 6));
@@ -821,7 +821,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 			}
 			xc2 = rect.right();
 			frame = pSession->frameFromPixel(cx + xc2);
-			yc2 = y2 - int(pTempoCurve->scale(frame) * float(h)) - cy;
+			yc2 = y2 - int(pTempoCurve->scaleFocused(frame) * float(h)) - cy;
 			path.lineTo(xc2, yc1);
 			path.lineTo(xc2, yc2);
 			// Draw line...
@@ -5292,7 +5292,7 @@ void qtractorTrackView::pasteClipboard (
 					NodeItem *pNodeItem = iter.next();
 					const int x
 						= pSession->pixelFromFrame(pNodeItem->frame + iPasteDelta);
-					const float s = pTempoCurve->scaleFromValue(pNodeItem->value);
+					const float s = pTempoCurve->scaleFromValueFocused(pNodeItem->value);
 					const int y = y2 - int(s * float(h));
 					m_pTempoCurveSelect->addItem((qtractorTimeScale::Node *)pNodeItem->node,
 						QRect(x - 4, y - 4, 8, 8));

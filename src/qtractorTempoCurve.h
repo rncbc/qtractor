@@ -76,14 +76,25 @@ public:
 	float valueFromScale(float fScale) const;
 	float scaleFromValue(float fValue) const;
 
+	// Focused scale converters.
+	float valueFromScaleFocused(float fScale) const;
+	float scaleFromValueFocused(float fValue) const;
+
 	// Common normalized methods.
 	float scale(const qtractorTimeScale::Node *pNode, unsigned long iFrame) const
 		{ return scaleFromValue(value(pNode, iFrame)); }
 	float scale(unsigned long iFrame)
 		{ return scaleFromValue(value(iFrame)); }
-
 	float scale(const qtractorTimeScale::Node *pNode) const
 		{ return scaleFromValue(pNode->tempo); }
+
+	// Focused normalized methods.
+	float scaleFocused(const qtractorTimeScale::Node *pNode, unsigned long iFrame) const
+		{ return scaleFromValueFocused(value(pNode, iFrame)); }
+	float scaleFocused(unsigned long iFrame)
+		{ return scaleFromValueFocused(value(iFrame)); }
+	float scaleFocused(const qtractorTimeScale::Node *pNode) const
+		{ return scaleFromValueFocused(pNode->tempo); }
 
 	// Refresh all coefficients.
 	void update();

@@ -120,6 +120,7 @@ qtractorSubject::qtractorSubject ( float fValue, float fDefaultValue )
 		m_fMinValue(0.0f), m_fMaxValue(1.0f), m_fDefaultValue(fDefaultValue),
 		m_bToggled(false), m_bInteger(false), m_pCurve(NULL), m_pTempoCurve(NULL)
 {
+	resetFocus();
 }
 
 // Destructor.
@@ -130,6 +131,14 @@ qtractorSubject::~qtractorSubject (void)
 		iter.next()->setSubject(NULL);
 
 	m_observers.clear();
+}
+
+
+// Recalculate focus parameters.
+void qtractorSubject::resetFocus (void)
+{
+	m_fFocus1 = ::cbrt(m_fDefaultValue - m_fMinValue);
+	m_fFocus2 = m_fFocus1 + ::cbrt(m_fMaxValue - m_fDefaultValue);
 }
 
 
@@ -179,5 +188,16 @@ void qtractorSubject::clearQueue (void)
 	g_subjectQueue.clear();
 }
 
+
+float qtractorSubject::valueFromScaleFocused ( float fScale ) const
+{
+	return ::pow(fScale * m_fFocus2 - m_fFocus1, 3) + m_fDefaultValue;
+}
+
+
+float qtractorSubject::scaleFromValueFocused ( float fValue ) const
+{
+	return (m_fFocus1 + ::cbrt(fValue - m_fDefaultValue)) / m_fFocus2;
+}
 
 // end of qtractorObserver.cpp

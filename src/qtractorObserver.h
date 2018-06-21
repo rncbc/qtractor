@@ -48,6 +48,9 @@ public:
 	// Destructor.
 	~qtractorSubject();
 
+	// Recalculate focus parameters.
+	void resetFocus();
+
 	// Direct value accessors.
 	void setValue(float fValue, qtractorObserver *pSender = NULL);
 	float value() const
@@ -85,18 +88,18 @@ public:
 
 	// Value limits accessors.
 	void setMaxValue(float fMaxValue)
-		{ m_fMaxValue = fMaxValue; }
+		{ m_fMaxValue = fMaxValue; resetFocus(); }
 	float maxValue() const
 		{ return m_fMaxValue; }
 
 	void setMinValue(float fMinValue)
-		{ m_fMinValue = fMinValue; }
+		{ m_fMinValue = fMinValue; resetFocus(); }
 	float minValue() const
 		{ return m_fMinValue; }
 
 	// Default value accessor.
 	void setDefaultValue(float fDefaultValue)
-		{ m_fDefaultValue = fDefaultValue; }
+		{ m_fDefaultValue = fDefaultValue; resetFocus(); }
 	float defaultValue() const
 		{ return m_fDefaultValue; }
 
@@ -145,6 +148,10 @@ public:
 	float scaleFromValue ( float fValue ) const
 		{ return (fValue - m_fMinValue) / (m_fMaxValue - m_fMinValue); }
 
+	// Focused scale converters.
+	float valueFromScaleFocused(float fScale) const;
+	float scaleFromValueFocused(float fValue) const;
+
 	// Automation curve association.
 	void setCurve(qtractorCurve *pCurve)
 		{ m_pCurve = pCurve; }
@@ -181,6 +188,10 @@ private:
 
 	// Default value.
 	float   m_fDefaultValue;
+
+	// Focus parameters.
+	float   m_fFocus1;
+	float   m_fFocus2;
 
 	// Toggled value mode (max or min).
 	bool    m_bToggled;
@@ -278,6 +289,12 @@ public:
 		{ return (m_pSubject ? m_pSubject->valueFromScale(fScale) : 0.0f); }
 	float scaleFromValue ( float fValue ) const
 		{ return (m_pSubject ? m_pSubject->scaleFromValue(fValue) : 0.0f); }
+
+	// Focused scale converters.
+	float valueFromScaleFocused ( float fScale ) const
+		{ return (m_pSubject ? m_pSubject->valueFromScaleFocused(fScale) : 0.0f); }
+	float scaleFromValueFocused ( float fValue ) const
+		{ return (m_pSubject ? m_pSubject->scaleFromValueFocused(fValue) : 0.0f); }
 
 	// Automation curve association.
 	void setCurve(qtractorCurve *pCurve)
