@@ -8647,11 +8647,19 @@ void qtractorMainForm::transportTempoChanged (
 	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_pSession->playHead());
 
-	// Now, express the change as a undoable command...
-	m_pSession->execute(new qtractorTimeScaleUpdateNodeCommand(
-		pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor, pNode->bars, pNode->attached));
+	if (pNode) {
+		if (pNode->allowChange()) {
+			// Now, express the change as a undoable command...
+			m_pSession->execute(new qtractorTimeScaleUpdateNodeCommand(
+				pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor, pNode->bars, pNode->attached));
 
-	++m_iTransportUpdate;
+			++m_iTransportUpdate;
+		} else {
+			m_pTempoSpinBox->setTempo(pNode->tempo, false);
+			m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
+			m_pTempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
+		}
+	}
 }
 
 void qtractorMainForm::transportTempoFinished (void)

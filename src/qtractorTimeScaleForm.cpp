@@ -885,7 +885,21 @@ void qtractorTimeScaleForm::tempoChanged (void)
 	m_iTempoTap = 0;
 	m_fTempoTap = 0.0f;
 
-	changed();
+	if (m_pTimeScale == NULL)
+		return;
+
+	const unsigned short iBar   = bar();
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekBar(iBar);
+	if (pNode && pNode->bar == iBar) {
+		if (pNode->allowChange())
+			changed();
+		else {
+			m_ui.TempoSpinBox->setTempo(pNode->tempo, false);
+			m_ui.TempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
+			m_ui.TempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
+		}
+	}
 }
 
 
@@ -896,6 +910,7 @@ void qtractorTimeScaleForm::changed (void)
 		return;
 
 	++m_iDirtyCount;
+	updateItem();
 	stabilizeForm();
 }
 
@@ -924,7 +939,10 @@ void qtractorTimeScaleForm::barsChanged ( int iBars )
 		const unsigned short iBeatsPerBar = m_ui.TempoSpinBox->beatsPerBar();
 		const float fTempo = (iBeatsPerBar * iBars) / fDeltaTime;
 
-		m_ui.TempoSpinBox->setTempo(fTempo, false);
+		if ((fTempo >= 1.0f) && (fTempo <= 1000.0f))
+			m_ui.TempoSpinBox->setTempo(fTempo, false);
+		else
+			m_ui.BarsSpinBox->setValue(iNodeBars);
 	}
 
 	m_iDirtySetup = 0;
@@ -935,6 +953,7 @@ void qtractorTimeScaleForm::barsChanged ( int iBars )
 	ensureVisibleFrame(iFrame);
 
 	++m_iDirtyCount;
+	updateItem();
 	stabilizeForm();
 }
 
