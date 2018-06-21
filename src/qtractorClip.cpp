@@ -300,8 +300,11 @@ float qtractorClip::fadeInOutGain ( unsigned long iOffset ) const
 
 
 // Clip time reference settler method.
-void qtractorClip::updateClipTime (void)
+void qtractorClip::updateClipTime ( long iFramesDiff )
 {
+#ifdef CONFIG_DEBUG
+	qDebug("%s@%d: iFramesDiff=%ld", __func__, __LINE__, iFramesDiff);
+#endif
 	if (m_pTrack == NULL)
 		return;
 
@@ -309,11 +312,14 @@ void qtractorClip::updateClipTime (void)
 	if (pSession == NULL)
 		return;
 
-	m_iClipStart = pSession->frameFromTick(m_iClipStartTime);
-	m_iClipLength = pSession->frameFromTickRange(
-		m_iClipStartTime, m_iClipStartTime + m_iClipLengthTime);
-	m_iClipOffset = pSession->frameFromTickRange(
-		m_iClipStartTime, m_iClipStartTime + m_iClipOffsetTime, true);
+	long iClipStart = m_iClipStart + iFramesDiff;
+	if (iClipStart >= 0)
+		setClipStart(iClipStart);
+	else
+		setClipStart(0);
+
+	setClipLength(m_iClipLength);
+	setClipOffset(m_iClipOffset);
 
 	m_iFadeInLength = pSession->frameFromTickRange(
 		m_iClipStartTime, m_iClipStartTime + m_iFadeInTime);

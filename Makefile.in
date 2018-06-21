@@ -99,6 +99,9 @@ headers = \
 	src/qtractorSessionCursor.h \
 	src/qtractorSessionDocument.h \
 	src/qtractorSpinBox.h \
+	src/qtractorTempoCurve.h \
+	src/qtractorTempoCurveCommand.h \
+	src/qtractorTempoCurveSelect.h \
 	src/qtractorThumbView.h \
 	src/qtractorTimeScale.h \
 	src/qtractorTimeScaleCommand.h \
@@ -221,6 +224,9 @@ sources = \
 	src/qtractorSessionCursor.cpp \
 	src/qtractorSessionDocument.cpp \
 	src/qtractorSpinBox.cpp \
+	src/qtractorTempoCurve.cpp \
+	src/qtractorTempoCurveCommand.cpp \
+	src/qtractorTempoCurveSelect.cpp \
 	src/qtractorThumbView.cpp \
 	src/qtractorTimeScale.cpp \
 	src/qtractorTimeScaleCommand.cpp \
