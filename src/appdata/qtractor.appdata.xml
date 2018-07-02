@@ -2,7 +2,7 @@
 <!-- Copyright 2005-2015 Rui Nuno Capela <rncbc@rncbc.org> -->
 <component type="desktop">
  <id>qtractor.desktop</id>
- <metadata_license>GPL-2.0+</metadata_license>
+ <metadata_license>FSFAP</metadata_license>
  <project_license>GPL-2.0+</project_license>
  <name>Qtractor</name>
  <summary>An Audio/MIDI multi-track sequencer</summary>
@@ -35,7 +35,7 @@
   <keyword>LV2</keyword>
   <keyword>Qt</keyword>
  </keywords>
- <url type="homepage">http://qtractor.sourceforge.net</url>
+ <url type="homepage">http://qtractor.org</url>
  <updatecontact>rncbc@rncbc.org</updatecontact>
  <project_group>rncbc.org</project_group>
  <kudos>
