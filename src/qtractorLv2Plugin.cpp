@@ -874,7 +874,7 @@ public:
 					= static_cast<QResizeEvent *> (pEvent);
 				if (pResizeEvent)
 					m_pLv2Plugin->lv2_ui_resize(pResizeEvent->size());
-				// Fall thru...
+				break;
 			}
 			default:
 				break;
@@ -1391,8 +1391,12 @@ static int qtractor_lv2_ui_resize (
 	LV2UI_Feature_Handle handle, int width, int height )
 {
 	QWidget *pQtWidget = static_cast<QWidget *> (handle);
-	pQtWidget->resize(width, height);
-	return 0;
+	if (pQtWidget) {
+		pQtWidget->resize(width, height);
+		return 0;
+	} else {
+		return 1;
+	}
 }
 
 #endif	// CONFIG_LV2_UI_X11
@@ -3252,7 +3256,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	lilv_free((void *) ui_bundle_path);
 #endif
 
-	// dit we failed miserably?
+	// Did we failed miserably?
 	if (!ui_instantiate)
 		return;
 
@@ -3286,6 +3290,14 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		m_lv2_ui_widget = static_cast<LV2UI_Widget> (m_pQtWidget);
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 	//	m_bQtDelete = true;
+		// LV2 UI resize control...
+		QSize size = m_pQtWidget->sizeHint();
+		if (!size.isValid() || size.isNull())
+			size = m_pQtWidget->size();
+		if (size.isValid() && !size.isNull()) {
+			m_pQtWidget->setMinimumSize(size);
+			lv2_ui_resize(size);
+		}
 	//	m_pQtWidget->show();
 	}
 	else
@@ -3346,7 +3358,13 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 		m_bQtDelete = false;
 		// LV2 UI resize control...
-		lv2_ui_resize(m_pQtWidget->sizeHint());
+		QSize size = m_pQtWidget->sizeHint();
+		if (!size.isValid() || size.isNull())
+			size = m_pQtWidget->size();
+		if (size.isValid() && !size.isNull()) {
+			m_pQtWidget->setMinimumSize(size);
+			lv2_ui_resize(size);
+		}
 	//	m_pQtWidget->show();
 	} else {
 		m_pQtWidget = NULL;

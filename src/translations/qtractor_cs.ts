@@ -735,58 +735,58 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Autorské právo: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2063"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2067"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3134"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3138"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation>Vybrat editor (rozhraní) přídavného modulu:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3146"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3150"/>
         <source>External</source>
         <translation>Vnější</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3149"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3153"/>
         <source>X11</source>
         <translation>X11</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3152"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3156"/>
         <source>Gtk2</source>
         <translation>Gtk2</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3156"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3160"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3160"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3164"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3165"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3169"/>
         <source>Other</source>
         <translation>Jiné</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3173"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3177"/>
         <source>Don&apos;t ask this again</source>
         <translation>Neptat se znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3494"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3512"/>
         <source>plugin parameters</source>
         <translation>Parametry přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2071"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2075"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
