@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -91,9 +91,6 @@ void qtractorThumbView::updateContents (void)
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.dark().color());
 
-	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
@@ -109,6 +106,9 @@ void qtractorThumbView::updateContents (void)
 	qtractorTracks *pTracks = pMainForm->tracks();
 	if (pTracks == NULL)
 		return;
+
+	QPainter painter(&m_pixmap);
+	painter.initFrom(this);
 
 	// Local contents length (in frames).
 	m_iContentsLength = pSession->sessionEnd();
@@ -128,12 +128,10 @@ void qtractorThumbView::updateContents (void)
 	int x2, w2;
 
 	if (ch > 0) {
-		int y2 = 1;
+		int y2 = 0;
 		qtractorTrack *pTrack = pSession->tracks().first();
 		while (pTrack && y2 < h) {
-			int h2 = ((h * pTrack->zoomHeight()) / ch);
-			if (h2 < 2)
-				h2 = 2;
+			const int h2 = 1 + ((h * pTrack->zoomHeight()) / ch);
 			QColor bg(pTrack->background());
 			if (pTrack->isMute() || (!pTrack->isSolo() && pSession->soloTracks()))
 				bg = bg.darker();
@@ -141,10 +139,11 @@ void qtractorThumbView::updateContents (void)
 			while (pClip) {
 				x2 = int(pClip->clipStart()  / f2);
 				w2 = int(pClip->clipLength() / f2);
-				painter.fillRect(x2, y2, w2, h2 - 1, bg);
+				painter.fillRect(x2, y2, w2, h2, bg);
 				pClip = pClip->next();
 			}
 			y2 += h2;
+			++y2;
 			pTrack = pTrack->next();
 		}
 	}

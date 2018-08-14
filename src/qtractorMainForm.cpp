@@ -194,7 +194,7 @@ static void qtractor_sigterm_handler ( int /* signo */ )
 	(::write(g_fdTerm[0], &c, sizeof(c)) > 0);
 }
 
-#endif	// HANDLE_SIGNAL_H
+#endif	// HAVE_SIGNAL_H
 
 
 //-------------------------------------------------------------------------
