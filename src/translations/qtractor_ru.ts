@@ -418,32 +418,32 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="110"/>
+        <location filename="../qtractorTrackList.cpp" line="111"/>
         <source>Automation (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="118"/>
+        <location filename="../qtractorTrackList.cpp" line="119"/>
         <source>none</source>
         <translation type="unfinished">нет</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="218"/>
+        <location filename="../qtractorTrackList.cpp" line="219"/>
         <source>Automation</source>
         <translation type="unfinished">Автоматизация</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="425"/>
+        <location filename="../qtractorTrackList.cpp" line="426"/>
         <source>Audio</source>
         <translation>Звук</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="456"/>
+        <location filename="../qtractorTrackList.cpp" line="457"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="525"/>
+        <location filename="../qtractorTrackList.cpp" line="526"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
@@ -12543,32 +12543,32 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorTrackListHeaderModel</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="153"/>
+        <location filename="../qtractorTrackList.cpp" line="154"/>
         <source>Nr</source>
         <translation>№</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="154"/>
+        <location filename="../qtractorTrackList.cpp" line="155"/>
         <source>Track Name</source>
         <translation>Название</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="155"/>
+        <location filename="../qtractorTrackList.cpp" line="156"/>
         <source>Bus</source>
         <translation>Шина</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="156"/>
+        <location filename="../qtractorTrackList.cpp" line="157"/>
         <source>Ch</source>
         <translation>К</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="157"/>
+        <location filename="../qtractorTrackList.cpp" line="158"/>
         <source>Patch</source>
         <translation>Патч</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="158"/>
+        <location filename="../qtractorTrackList.cpp" line="159"/>
         <source>Instrument</source>
         <translation>Инструмент</translation>
     </message>

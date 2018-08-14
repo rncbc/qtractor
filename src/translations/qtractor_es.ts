@@ -747,32 +747,32 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translatio
         <translation>pista instrumento</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="110"/>
+        <location filename="../qtractorTrackList.cpp" line="111"/>
         <source>Automation (%1)</source>
         <translation>Automatización (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="118"/>
+        <location filename="../qtractorTrackList.cpp" line="119"/>
         <source>none</source>
         <translation>ninguno</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="218"/>
+        <location filename="../qtractorTrackList.cpp" line="219"/>
         <source>Automation</source>
         <translation>Automatización</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="425"/>
+        <location filename="../qtractorTrackList.cpp" line="426"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="456"/>
+        <location filename="../qtractorTrackList.cpp" line="457"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="525"/>
+        <location filename="../qtractorTrackList.cpp" line="526"/>
         <source>Unknown</source>
         <translation>Desconocido</translation>
     </message>
@@ -12646,32 +12646,32 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorTrackListHeaderModel</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="153"/>
+        <location filename="../qtractorTrackList.cpp" line="154"/>
         <source>Nr</source>
         <translation>Nr</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="154"/>
+        <location filename="../qtractorTrackList.cpp" line="155"/>
         <source>Track Name</source>
         <translation>Nombre de Pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="155"/>
+        <location filename="../qtractorTrackList.cpp" line="156"/>
         <source>Bus</source>
         <translation>Bus</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="156"/>
+        <location filename="../qtractorTrackList.cpp" line="157"/>
         <source>Ch</source>
         <translation>Cn</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="157"/>
+        <location filename="../qtractorTrackList.cpp" line="158"/>
         <source>Patch</source>
         <translation>Programa</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="158"/>
+        <location filename="../qtractorTrackList.cpp" line="159"/>
         <source>Instrument</source>
         <translation>Instrumento</translation>
     </message>

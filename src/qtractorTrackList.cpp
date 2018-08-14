@@ -39,6 +39,7 @@
 #include "qtractorRubberBand.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorThumbView.h"
 #include "qtractorMixer.h"
 
 #include "qtractorCurve.h"
@@ -1554,8 +1555,13 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 				& (Qt::ShiftModifier | Qt::ControlModifier)) == 0);
 			qtractorScrollView::setFocus(); // Get focus back anyway.
 		}
-		// Fall thru...
-	case DragResize:
+		break;
+	case DragResize: {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm)
+			pMainForm->thumbView()->updateContents();
+		break;
+	}
 	case DragNone:
 	default:
 		break;
