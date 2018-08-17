@@ -6,8 +6,10 @@ ChangeLog
 
 GIT HEAD
 
-- AppData/AppStream metadata is now settled under an
-  all permisssive license (FSFAP).
+- AppData/AppStream metadata is now settled under an all
+  permisssive license (FSFAP); also updated to be the most
+  compliant with latest freedesktop.org specification and
+  recommendation.
 
 - Fix build for Qt >= 5.11.0 (by David Geiger, thanks);
   also for some g++ >= 8.1.1 warnings and quietness.
