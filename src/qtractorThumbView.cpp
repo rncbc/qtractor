@@ -107,6 +107,10 @@ void qtractorThumbView::updateContents (void)
 	if (pTracks == NULL)
 		return;
 
+	const int n1 = pSession->tracks().count();
+	if (n1 < 1)
+		return;
+
 	QPainter painter(&m_pixmap);
 	painter.initFrom(this);
 
@@ -124,6 +128,7 @@ void qtractorThumbView::updateContents (void)
 
 	const int ch = pTracks->trackView()->contentsHeight();
 	const int f2 = 1 + (m_iContentsLength / w);
+	const int h1 = (h / n1) - 1;
 
 	int x2, w2;
 
@@ -143,7 +148,8 @@ void qtractorThumbView::updateContents (void)
 				pClip = pClip->next();
 			}
 			y2 += h2;
-			++y2;
+			if (h1 > 1)
+				++y2;
 			pTrack = pTrack->next();
 		}
 	}
