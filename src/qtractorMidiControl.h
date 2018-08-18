@@ -28,6 +28,8 @@
 #include <QString>
 #include <QHash>
 
+#include <math.h>
+
 
 // Forward declarations.
 class qtractorTrack;
@@ -212,8 +214,8 @@ public:
 						(fValue < v0 && v0 >= v1 && v1 >= fValue))
 						 bSync = true;
 				#else
-					const float d1 = (v1 - fValue);
-					const float d2 = (v1 - v0) * d1;
+					const float d1 = ::fabsf(v1 - fValue);
+					const float d2 = ::fabsf(v1 - v0) * d1;
 					bSync = (d2 < 0.001f);
 				#endif
 				}
