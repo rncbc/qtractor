@@ -1266,8 +1266,10 @@ void qtractorTrackList::contextMenuEvent (
 {
 	// We'll need a reference for issuing commands...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
+	if (pMainForm) {
+		pMainForm->stabilizeForm();
 		pMainForm->trackMenu()->exec(pContextMenuEvent->globalPos());
+	}
 }
 
 
