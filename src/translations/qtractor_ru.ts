@@ -2582,7 +2582,7 @@ Are you sure?</source>
         <location filename="../qtractorMainForm.cpp" line="2321"/>
         <location filename="../qtractorMainForm.cpp" line="2428"/>
         <source>Don&apos;t ask this again</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Больше не спрашивать</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2414"/>
@@ -5917,7 +5917,7 @@ is highly recommended.</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2966"/>
         <source>Slave</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ведомый</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2969"/>
@@ -5937,7 +5937,7 @@ is highly recommended.</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2986"/>
         <source>Master</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ведущий</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2989"/>
@@ -5957,7 +5957,7 @@ is highly recommended.</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="3006"/>
         <source>Full</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Полный</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="3009"/>
@@ -8118,7 +8118,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1304"/>
         <source>Ctrl+1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1312"/>
