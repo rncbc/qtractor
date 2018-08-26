@@ -358,6 +358,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pMidiLabel = NULL;
 	int iFixedWidth = 54;
 	switch (meterType) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio: {
 		// Type cast for proper audio monitor...
 		qtractorAudioMonitor *pAudioMonitor = NULL;
@@ -498,7 +499,7 @@ void qtractorMixerStrip::setMonitor ( qtractorMonitor *pMonitor )
 		meterType = m_pTrack->trackType();
 	else if (m_pBus)
 		meterType = m_pBus->busType();
-	if (meterType == qtractorTrack::Audio) {
+	if ((meterType == qtractorTrack::Audio) || (meterType == qtractorTrack::Tempo)) {
 		qtractorAudioMonitor *pAudioMonitor
 			= static_cast<qtractorAudioMonitor *> (pMonitor);
 		if (pAudioMonitor) {
@@ -551,6 +552,7 @@ void qtractorMixerStrip::updateName (void)
 
 	QString sType;
 	switch (meterType) {
+	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio:
 		if (icon.isNull())
 			icon.load(":/images/trackAudio.png");

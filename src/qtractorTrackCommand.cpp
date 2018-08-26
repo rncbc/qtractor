@@ -110,6 +110,10 @@ bool qtractorTrackCommand::addTrack (void)
 	for ( ; pClip; pClip = pClip->next())
 		pClip->open();
 
+	// Special TEMPO track cases...
+	if (m_pTrack->trackType() == qtractorTrack::Tempo)
+		pSession->updateTempoTrackSolo(m_pTrack);
+
 	// Mixer turn...
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
@@ -171,6 +175,14 @@ bool qtractorTrackCommand::removeTrack (void)
 	qtractorClip *pClip = m_pTrack->clips().last();
 	for ( ; pClip; pClip = pClip->prev())
 		pClip->close();
+
+	// Special TEMPO track cases...
+	if (m_pTrack->trackType() == qtractorTrack::Tempo) {
+		qtractorTempoCurve *pTempoCurve = m_pTrack->trackTempoCurve();
+		if (pSession->sessionTempoCurve() == pTempoCurve)
+			pSession->setSessionTempoCurve(NULL);
+		delete(pTempoCurve);
+	}
 
 	// Second, remove from session...
 	pSession->unlinkTrack(m_pTrack);
@@ -280,6 +292,7 @@ bool qtractorCopyTrackCommand::redo (void)
 	for (qtractorClip *pClip = pTrack->clips().first();
 			pClip; pClip = pClip->next()) {
 		switch (trackType) {
+		case qtractorTrack::Tempo:
 		case qtractorTrack::Audio: {
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (pClip);
@@ -718,7 +731,22 @@ qtractorEditTrackCommand::qtractorEditTrackCommand (
 	: qtractorPropertyCommand<qtractorTrack::Properties> (
 		QObject::tr("track properties"), pTrack->properties(), props)
 {
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorEditTrackCommand::qtractorEditTrackCommand(%p)", pTrack);
+#endif
+
 	m_pTrack = pTrack;
+
+	if (m_pTrack == NULL)
+		return;
+
+	qtractorSession *pSession = m_pTrack->session();
+	if (pSession == NULL)
+		return;
+
+	// Special TEMPO track cases...
+	if (m_pTrack->trackType() == qtractorTrack::Tempo)
+	    pSession->updateTempoTrackSolo(m_pTrack);
 }
 
 
@@ -1210,7 +1238,7 @@ bool qtractorTrackGainCommand::redo (void)
 			const int iTrack = pSession->tracks().find(pTrack);
 			pMidiControl->processTrackCommand(
 				qtractorMidiControl::TRACK_GAIN, iTrack, m_fGain,
-				pTrack->trackType() == qtractorTrack::Audio);
+				((pTrack->trackType() == qtractorTrack::Audio) || (pTrack->trackType() == qtractorTrack::Tempo)));
 		}
 	}
 

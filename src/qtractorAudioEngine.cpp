@@ -997,7 +997,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		for (qtractorTrack *pTrack = pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
 			// Audio-buffers needs some preparation...
-			if (pTrack->trackType() == qtractorTrack::Audio) {
+			if ((pTrack->trackType() == qtractorTrack::Audio) || (pTrack->trackType() == qtractorTrack::Tempo)) {
 				qtractorAudioBus *pInputBus
 					= static_cast<qtractorAudioBus *> (pTrack->inputBus());
 				qtractorAudioMonitor *pAudioMonitor
@@ -2194,7 +2194,7 @@ void qtractorAudioEngine::resetAllMonitors (void)
 	// Reset all audio track channel monitors...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->trackType() == qtractorTrack::Audio) {
+		if ((pTrack->trackType() == qtractorTrack::Audio) ||(pTrack->trackType() == qtractorTrack::Tempo)) {
 			qtractorAudioMonitor *pAudioMonitor
 				= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
 			if (pAudioMonitor)

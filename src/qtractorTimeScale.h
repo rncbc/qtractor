@@ -40,12 +40,12 @@ public:
 	enum DisplayFormat { Frames = 0, Time, BBT };
 
 	// Default constructor.
-	qtractorTimeScale() : m_displayFormat(Frames),
-		m_cursor(this), m_markerCursor(this) { clear(); }
+	qtractorTimeScale() : m_displayFormat(Frames), /*m_pTempoCurve(NULL),*/
+		m_cursor(this), m_markerCursor(this), m_iFramesDiff(0) { clear(); }
 
 	// Copy constructor.
 	qtractorTimeScale(const qtractorTimeScale& ts)
-		: m_cursor(this), m_markerCursor(this) { copy(ts); }
+		: m_cursor(this), m_markerCursor(this), m_iFramesDiff(0) { copy(ts); }
 
 	// Assignment operator,
 	qtractorTimeScale& operator=(const qtractorTimeScale& ts)
@@ -115,20 +115,40 @@ public:
 			float fTempo = 120.0f,
 			unsigned short iBeatType = 2,
 			unsigned short iBeatsPerBar = 4,
-			unsigned short iBeatDivisor = 2)
+			unsigned short iBeatDivisor = 2,
+			unsigned short iBars = 0,
+			bool bAttached = false)
 			: frame(iFrame),
 				bar(0), beat(0), tick(0), pixel(0),
 				tempo(fTempo), beatType(iBeatType),
 				beatsPerBar(iBeatsPerBar),
 				beatDivisor(iBeatDivisor),
+				bars(iBars), attached(bAttached),
 				ticksPerBeat(0), ts(pTimeScale),
-				tickRate(1.0f), beatRate(1.0f) {}
+				tickRate(1.0f), beatRate(1.0f), bAllowChange(true) {}
 
 		// Update node scale coefficients.
 		void update();
 
 		// Update node position metrics.
 		void reset(Node *pNode);
+
+		// Return Nodes owner
+		qtractorTimeScale *getTs() const {
+			return ts;
+		}
+
+		// Node Tempo accessors.
+		float currTempo() const {
+			return tempo;
+		}
+
+		float prevTempo() const {
+			if (this->prev())
+				return this->prev()->tempo;
+			else
+				return tempo;
+		}
 
 		// Tempo accessor/convertors.
 		void setTempoEx(float fTempo, unsigned short iBeatType = 2);
@@ -219,6 +239,16 @@ public:
 		int pixelSnap(int x) const
 			{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
 
+		// Node attachment accessor
+		bool getAttached() const
+			{ return attached; }
+
+		// Node allow changes accessor
+		bool allowChange() const
+			{ return bAllowChange; }
+		void setAllowChange(bool allowChange)
+			{ bAllowChange = allowChange; }
+
 		// Node keys.
 		unsigned long  frame;
 		unsigned short bar;
@@ -231,6 +261,8 @@ public:
 		unsigned short beatType;
 		unsigned short beatsPerBar;
 		unsigned short beatDivisor;
+		unsigned short bars;
+		bool           attached;
 
 		unsigned short ticksPerBeat;
 
@@ -242,6 +274,8 @@ public:
 		// Node cached coefficients.
 		float tickRate;
 		float beatRate;
+
+		bool bAllowChange;
 	};
 
 	// Node list accessor.
@@ -286,9 +320,15 @@ public:
 		float fTempo = 120.0f,
 		unsigned short iBeatType = 2,
 		unsigned short iBeatsPerBar = 4,
-		unsigned short iBeatDivisor = 2);
+		unsigned short iBeatDivisor = 2,
+		unsigned short iBars = 0,
+		bool bAttached = false
+	);
 	void updateNode(Node *pNode);
 	void removeNode(Node *pNode);
+
+	// All nodes allowChanges update method.
+	void updateAllowChanges(Node *pNode);
 
 	// Complete time-scale update method.
 	void updateScale();
@@ -555,6 +595,9 @@ public:
 	// Update markers from given node position.
 	void updateMarkers(Node *pNode);
 
+	void framesDiffReset() { m_iFramesDiff = 0; }
+	long framesDiff() const { return m_iFramesDiff; }
+
 protected:
 
 	// Tempo-map independent coefficients.
@@ -588,6 +631,8 @@ private:
 
 	// Internal node cursor.
 	MarkerCursor m_markerCursor;
+
+	long m_iFramesDiff;
 };
 
 #endif	// __qtractorTimeScale_h
