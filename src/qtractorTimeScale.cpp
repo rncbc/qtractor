@@ -22,7 +22,6 @@
 #include "qtractorTimeScale.h"
 #include <QObject>
 
-#include "qtractorSession.h"
 
 //----------------------------------------------------------------------
 // class qtractorTimeScale -- Time scale conversion helper class.
@@ -44,14 +43,13 @@ void qtractorTimeScale::reset (void)
 	const unsigned short iBeatType = (pNode ? pNode->beatType : 2);
 	const unsigned short iBeatsPerBar = (pNode ? pNode->beatsPerBar : 4);
 	const unsigned short iBeatDivisor = (pNode ? pNode->beatDivisor : 2);
-	const bool bAttached = (pNode ? pNode->attached : false);
 
 	// Clear/reset tempo-map...
 	m_nodes.clear();
 	m_cursor.reset();
 
 	// There must always be one node, always at zero-frame...
-	addNode(0, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, bAttached);
+	addNode(0, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
 
 	// Commit new scale...
 	updateScale();
@@ -61,35 +59,18 @@ void qtractorTimeScale::reset (void)
 // (Re)nitializer method.
 void qtractorTimeScale::clear (void)
 {
-	qtractorTimeScale *pTimeScale;
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession && (pTimeScale = pSession->timeScale()) && (pTimeScale != this)) {
-		m_iSnapPerBeat    = pTimeScale->m_iSnapPerBeat;
-		m_iHorizontalZoom = pTimeScale->m_iHorizontalZoom;
-		m_iVerticalZoom   = pTimeScale->m_iVerticalZoom;
+	m_iSnapPerBeat    = 4;
+	m_iHorizontalZoom = 100;
+	m_iVerticalZoom   = 100;
 
-		m_displayFormat   = pTimeScale->m_displayFormat;
+//	m_displayFormat   = Frames;
 
-		m_iSampleRate     = pTimeScale->m_iSampleRate;
-		m_iTicksPerBeat   = pTimeScale->m_iTicksPerBeat;
-		m_iPixelsPerBeat  = pTimeScale->m_iPixelsPerBeat;
+	m_iSampleRate     = 44100;
+	m_iTicksPerBeat   = 960;
+	m_iPixelsPerBeat  = 32;
 
-		// Clear/reset tempo-map...
-		reset();
-	} else {
-		m_iSnapPerBeat    = 4;
-		m_iHorizontalZoom = 100;
-		m_iVerticalZoom   = 100;
-
-//		m_displayFormat   = Frames;
-
-		m_iSampleRate     = 44100;
-		m_iTicksPerBeat   = 960;
-		m_iPixelsPerBeat  = 32;
-
-		// Clear/reset tempo-map...
-		reset();
-	}
+	// Clear/reset tempo-map...
+	reset();
 }
 
 
@@ -171,8 +152,6 @@ void qtractorTimeScale::Node::update (void)
 // Update time-scale node position metrics.
 void qtractorTimeScale::Node::reset ( qtractorTimeScale::Node *pNode )
 {
-	bar = pNode->bar + pNode->bars;
-
 	if (bar > pNode->bar)
 		frame = pNode->frameFromBar(bar);
 	else
@@ -369,7 +348,7 @@ qtractorTimeScale::Node *qtractorTimeScale::Cursor::seekPixel ( int x )
 // Node list specifics.
 qtractorTimeScale::Node *qtractorTimeScale::addNode (
 	unsigned long iFrame, float fTempo, unsigned short iBeatType,
-	unsigned short iBeatsPerBar, unsigned short iBeatDivisor, unsigned short iBars, bool bAttached )
+	unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
 {
 	Node *pNode	= 0;
 
@@ -381,6 +360,7 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		pPrev = m_cursor.seekFrame(iFrame);
 	}
 	// Either update existing node or add new one...
+	Node *pNext = (pPrev ? pPrev->next() : 0);
 	if (pPrev && pPrev->frame == iFrame) {
 		// Update exact matching node...
 		pNode = pPrev;
@@ -388,17 +368,27 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		pNode->beatType = iBeatType;
 		pNode->beatsPerBar = iBeatsPerBar;
 		pNode->beatDivisor = iBeatDivisor;
-		pNode->bars = iBars;
-		pNode->attached = bAttached;
+	} else if (pPrev && pPrev->tempo == fTempo
+		&& pPrev->beatType == iBeatType
+		&& pPrev->beatsPerBar == iBeatsPerBar
+		&& pPrev->beatDivisor == iBeatDivisor) {
+		// No need for a new node...
+		return pPrev;
+	} else if (pNext && pNext->tempo == fTempo
+		&& pNext->beatType == iBeatType
+		&& pNext->beatsPerBar == iBeatsPerBar
+		&& pNext->beatDivisor == iBeatDivisor) {
+		// Update next exact matching node...
+		pNode = pNext;
+		pNode->frame = iFrame;
+		pNode->bar = 0;
 	} else {
 		// Add/insert a new node...
 		pNode = new Node(this,
-			iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor, iBars, bAttached);
-		if (pPrev) {
+			iFrame, fTempo, iBeatType, iBeatsPerBar, iBeatDivisor);
+		if (pPrev)
 			m_nodes.insertAfter(pNode, pPrev);
-			pNode->bar = pPrev->barFromFrame(iFrame);
-			pPrev->bars = pNode->bar - pPrev->bar;
-		} else
+		else
 			m_nodes.append(pNode);
 	}
 
@@ -421,21 +411,13 @@ void qtractorTimeScale::updateNode ( qtractorTimeScale::Node *pNode )
 	Node *pNext = pNode;
 	Node *pPrev = pNext->prev();
 	while (pNext) {
-		long iFrame = pNext->frame;
 		if (pPrev) pNext->reset(pPrev);
-		if (pNext != pNode) {
-			if ((m_iFramesDiff == 0) && (pNext->attached))
-				m_iFramesDiff = pNext->frame - iFrame;
-		}
 		pPrev = pNext;
 		pNext = pNext->next();
 	}
 
 	// And update marker/bar positions too...
 	updateMarkers(pNode->prev());
-
-	// Then update allowed changes...
-	updateAllowChanges(pNode);
 }
 
 
@@ -453,12 +435,7 @@ void qtractorTimeScale::removeNode ( qtractorTimeScale::Node *pNode )
 	Node *pPrev = pNodePrev;
 	Node *pNext = pNode->next();
 	while (pNext) {
-		long iFrame = pNext->frame;
 		if (pPrev) pNext->reset(pPrev);
-		if (pNext != pNode) {
-			if ((m_iFramesDiff == 0) && (pNext->attached))
-				m_iFramesDiff = pNext->frame - iFrame;
-		}
 		pPrev = pNext;
 		pNext = pNext->next();
 	}
@@ -468,61 +445,6 @@ void qtractorTimeScale::removeNode ( qtractorTimeScale::Node *pNode )
 
 	// Then update marker/bar positions too...
 	updateMarkers(pNodePrev);
-
-	// Then update allowed changes...
-	updateAllowChanges(pNodePrev);
-}
-
-
-void qtractorTimeScale::updateAllowChanges ( qtractorTimeScale::Node *pNode )
-{
-	if (pNode == 0)
-		pNode = m_nodes.first();
-	if (pNode == 0)
-		return;
-
-	// Update allowChange on all nodes thereafter...
-	Node *pPrev = NULL;
-	Node *pNext = m_nodes.first();
-	Node *pMark = NULL;
-	bool bAttach = pNode->attached;
-	bool bAllowChange = true;
-	// First dis-allow changes for all nodes from the first attached node to the last!
-	while (pNext) {
-		if (pNext->attached) {
-			bAllowChange = false;
-			pMark = pNext;
-		}
-		pNext->setAllowChange(bAllowChange);
-
-		pPrev = pNext;
-		pNext = pNext->next();
-	}
-	// Then allow changes for all nodes from the last node to the last node attached!
-	while (pPrev) {
-		pPrev->setAllowChange(true);
-		if (pPrev == pMark)
-			break;
-		pPrev = pPrev->prev();
-	}
-	// Final updates to maintain packed attached nodes!
-	pNext = m_nodes.first();
-	pMark = pNode;
-	while (pNext) {
-		if (bAttach) {
-			if (!pNext->allowChange() && !pNext->attached)
-				pNext->attached = true;
-		} else {
-			if ((pNext == pMark) && pNode->prev() &&pNode->prev()->attached) {
-				pMark = pNext->next();
-				pPrev = pNext->prev();
-				if (pPrev)
-					pPrev->setAllowChange(true);
-				pNext->attached = false;
-			}
-		}
-		pNext = pNext->next();
-	}
 }
 
 

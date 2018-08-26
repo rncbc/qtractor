@@ -99,7 +99,7 @@ void qtractorClipCommand::fileClip ( qtractorClip *pClip,
 	pItem->trackChannel = iTrackChannel;
 	m_items.append(pItem);
 
-	reopenClip(pClip, (((pClip->track())->trackType() == qtractorTrack::Audio) || ((pClip->track())->trackType() == qtractorTrack::Tempo)));
+	reopenClip(pClip, (pClip->track())->trackType() == qtractorTrack::Audio);
 }
 
 
@@ -214,7 +214,6 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 	if (fTimeStretch > 0.0f) {
 		pItem->timeStretch = fTimeStretch;
 		switch ((pClip->track())->trackType()) {
-		case qtractorTrack::Tempo:
 		case qtractorTrack::Audio: {
 			qtractorAudioClip *pAudioClip
 				= static_cast<qtractorAudioClip *> (pClip);
@@ -419,7 +418,7 @@ bool qtractorClipCommand::addClipRecord (
 
 	unsigned long iClipOffset = pClip->clipOffset();
 	// Audio clips may need some record latency compensation...
-	if ((trackType == qtractorTrack::Audio) || (trackType == qtractorTrack::Tempo)) {
+	if (trackType == qtractorTrack::Audio) {
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
 		if (pAudioBus)
@@ -487,7 +486,6 @@ bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 
 	switch (pTrack->trackType()) {
-	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio: {
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (pClip);
@@ -705,7 +703,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			float fOldTimeStretch = 0.0f;
 			float fOldPitchShift  = 0.0f;
 			qtractorAudioClip *pAudioClip = NULL;
-			if ((pTrack->trackType() == qtractorTrack::Audio) || (pTrack->trackType() == qtractorTrack::Tempo)) {
+			if (pTrack->trackType() == qtractorTrack::Audio) {
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 				if (pAudioClip) {
 					if (pItem->timeStretch > 0.0f) {
@@ -781,19 +779,19 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		}
 		case TimeStretchClip: {
 			qtractorAudioClip *pAudioClip = NULL;
-			if ((pTrack->trackType() == qtractorTrack::Audio) || (pTrack->trackType() == qtractorTrack::Tempo))
+			if (pTrack->trackType() == qtractorTrack::Audio)
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 			if (pAudioClip) {
 				const float fOldTimeStretch = pAudioClip->timeStretch();
 				pAudioClip->setTimeStretch(pItem->timeStretch);
-				pAudioClip->updateClipTime(0);	// Care of tempo change.
+				pAudioClip->updateClipTime();	// Care of tempo change.
 				pItem->timeStretch = fOldTimeStretch;
 			}
 			break;
 		}
 		case PitchShiftClip: {
 			qtractorAudioClip *pAudioClip = NULL;
-			if ((pTrack->trackType() == qtractorTrack::Audio) || (pTrack->trackType() == qtractorTrack::Audio))
+			if (pTrack->trackType() == qtractorTrack::Audio)
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 			if (pAudioClip) {
 				const float fOldPitchShift = pAudioClip->pitchShift();
@@ -826,7 +824,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		}
 		case WsolaClip: {
 			qtractorAudioClip *pAudioClip = NULL;
-			if ((pTrack->trackType() == qtractorTrack::Audio) || (pTrack->trackType() == qtractorTrack::Audio))
+			if (pTrack->trackType() == qtractorTrack::Audio)
 				pAudioClip = static_cast<qtractorAudioClip *> (pClip);
 			if (pAudioClip) {
 				const bool bOldWsolaTimeStretch = pAudioClip->isWsolaTimeStretch();

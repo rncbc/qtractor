@@ -107,12 +107,6 @@ public:
 	qtractorCurveList *curveList() const
 		{ return m_pCurveList; }
 
-	// Special indirect tempo curve accessors.
-	void setTempoCurve(qtractorTempoCurve *pTempoCurve)
-		{ m_pTempoCurve = pTempoCurve; }
-	qtractorTempoCurve *tempoCurve() const
-		{ return m_pTempoCurve; }
-
 protected:
 
 	// Updater.
@@ -150,9 +144,6 @@ private:
 
 	// Special indirect automation relatives.
 	qtractorCurveList *m_pCurveList;
-
-	// Special indirect tempo curve.
-	qtractorTempoCurve *m_pTempoCurve;
 };
 
 

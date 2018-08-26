@@ -70,9 +70,6 @@ protected slots:
 
 	void pluginListChanged();
 
-	void trackTypeAudio(bool enabled);
-	void trackTypeTempo(bool enabled);
-	void trackTypeMidi(bool enabled);
 	void trackTypeChanged();
 	void inputBusNameChanged(const QString& sBusName);
 	void outputBusNameChanged(const QString& sBusName);

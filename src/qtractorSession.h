@@ -25,7 +25,6 @@
 #include "qtractorAtomic.h"
 #include "qtractorTrack.h"
 #include "qtractorTimeScale.h"
-#include "qtractorTempoCurve.h"
 
 #include <QHash>
 
@@ -86,18 +85,8 @@ public:
 	unsigned long sessionStart() const;
 	unsigned long sessionEnd() const;
 
-	// Time-scale accessor.
-	qtractorTimeScale *timeScale() const;
-
-	// Tempo-curve helper accessors.
-	void setSessionTempoCurve(qtractorTempoCurve *pTempoCurve);
-	qtractorTempoCurve *sessionTempoCurve();
-
-	// TEMPO track muting maintenance method.
-	void updateTempoTrackMute(qtractorTrack *pTempoTrack, bool bMute);
-
-	// TEMPO track soloing maintenance method.
-	void updateTempoTrackSolo(qtractorTrack *pTempoTrack, bool bForceSolo = false);
+	// Time-scale helper accessors.
+	qtractorTimeScale *timeScale();
 
 	// Device engine common client name accessors.
 	void setClientName(const QString& sClientName);
@@ -378,7 +367,7 @@ public:
 	{
 		// Default constructor.
 		Properties()
-			{ m_pTempoCurve = NULL; clear(); }
+			{ clear(); }
 		// Copy constructor.
 		Properties(const Properties& props)
 			{ copy(props); }
@@ -389,15 +378,12 @@ public:
 		Properties& copy(const Properties& props);
 		// Helper clear/reset method.
 		void clear();
-		// Time-scale accessor.
-		qtractorTimeScale *timeScale() const;
 		// Members.
 		QString sessionDir;
 		QString sessionName;
 		QString description;
 		// Intrinsic time scale.
-		qtractorTimeScale m_timeScale;
-		qtractorTempoCurve *m_pTempoCurve;
+		qtractorTimeScale timeScale;
 	};
 
 	// Alternate properties accessor.

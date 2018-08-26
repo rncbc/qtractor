@@ -32,7 +32,6 @@
 class qtractorSubject;
 class qtractorObserver;
 class qtractorCurve;
-class qtractorTempoCurve;
 
 
 //---------------------------------------------------------------------------
@@ -47,9 +46,6 @@ public:
 
 	// Destructor.
 	~qtractorSubject();
-
-	// Recalculate focus parameters.
-	void resetFocus();
 
 	// Direct value accessors.
 	void setValue(float fValue, qtractorObserver *pSender = NULL);
@@ -88,18 +84,18 @@ public:
 
 	// Value limits accessors.
 	void setMaxValue(float fMaxValue)
-		{ m_fMaxValue = fMaxValue; resetFocus(); }
+		{ m_fMaxValue = fMaxValue; }
 	float maxValue() const
 		{ return m_fMaxValue; }
 
 	void setMinValue(float fMinValue)
-		{ m_fMinValue = fMinValue; resetFocus(); }
+		{ m_fMinValue = fMinValue; }
 	float minValue() const
 		{ return m_fMinValue; }
 
 	// Default value accessor.
 	void setDefaultValue(float fDefaultValue)
-		{ m_fDefaultValue = fDefaultValue; resetFocus(); }
+		{ m_fDefaultValue = fDefaultValue; }
 	float defaultValue() const
 		{ return m_fDefaultValue; }
 
@@ -148,21 +144,11 @@ public:
 	float scaleFromValue ( float fValue ) const
 		{ return (fValue - m_fMinValue) / (m_fMaxValue - m_fMinValue); }
 
-	// Focused scale converters.
-	float valueFromScaleFocused(float fScale) const;
-	float scaleFromValueFocused(float fValue) const;
-
 	// Automation curve association.
 	void setCurve(qtractorCurve *pCurve)
 		{ m_pCurve = pCurve; }
 	qtractorCurve *curve() const
 		{ return m_pCurve; }
-
-	// Tempo curve association.
-	void setTempoCurve(qtractorTempoCurve *pTempoCurve)
-		{ m_pTempoCurve = pTempoCurve; }
-	qtractorTempoCurve *tempoCurve() const
-		{ return m_pTempoCurve; }
 
 	// Queue flush (singleton) -- notify all pending observers.
 	static void flushQueue(bool bUpdate);
@@ -189,10 +175,6 @@ private:
 	// Default value.
 	float   m_fDefaultValue;
 
-	// Focus parameters.
-	float   m_fFocus1;
-	float   m_fFocus2;
-
 	// Toggled value mode (max or min).
 	bool    m_bToggled;
 
@@ -201,9 +183,6 @@ private:
 
 	// Automation curve association.
 	qtractorCurve *m_pCurve;
-
-	// Tempo curve association.
-	qtractorTempoCurve *m_pTempoCurve;
 
 	// List of observers (obviously)
 	QList<qtractorObserver *> m_observers;
@@ -290,23 +269,11 @@ public:
 	float scaleFromValue ( float fValue ) const
 		{ return (m_pSubject ? m_pSubject->scaleFromValue(fValue) : 0.0f); }
 
-	// Focused scale converters.
-	float valueFromScaleFocused ( float fScale ) const
-		{ return (m_pSubject ? m_pSubject->valueFromScaleFocused(fScale) : 0.0f); }
-	float scaleFromValueFocused ( float fValue ) const
-		{ return (m_pSubject ? m_pSubject->scaleFromValueFocused(fValue) : 0.0f); }
-
 	// Automation curve association.
 	void setCurve(qtractorCurve *pCurve)
 		{ if (m_pSubject) m_pSubject->setCurve(pCurve); }
 	qtractorCurve *curve() const
 		{ return (m_pSubject ? m_pSubject->curve() : NULL); }
-
-	// Tempo curve association.
-	void setTempoCurve(qtractorTempoCurve *pTempoCurve)
-		{ if (m_pSubject) m_pSubject->setTempoCurve(pTempoCurve); }
-	qtractorTempoCurve *tempoCurve() const
-		{ return (m_pSubject ? m_pSubject->tempoCurve() : NULL); }
 
 	// Pure virtual view updater.
 	virtual void update(bool bUpdate) = 0;

@@ -105,9 +105,6 @@ HEADERS += config.h \
 	qtractorSessionCursor.h \
 	qtractorSessionDocument.h \
 	qtractorSpinBox.h \
-	qtractorTempoCurve.h \
-	qtractorTempoCurveCommand.h \
-	qtractorTempoCurveSelect.h \
 	qtractorThumbView.h \
 	qtractorTimeScale.h \
 	qtractorTimeScaleCommand.h \
@@ -231,9 +228,6 @@ SOURCES += \
 	qtractorSessionCursor.cpp \
 	qtractorSessionDocument.cpp \
 	qtractorSpinBox.cpp \
-	qtractorTempoCurve.cpp \
-	qtractorTempoCurveCommand.cpp \
-	qtractorTempoCurveSelect.cpp \
 	qtractorThumbView.cpp \
 	qtractorTimeScale.cpp \
 	qtractorTimeScaleCommand.cpp \

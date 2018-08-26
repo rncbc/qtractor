@@ -27,7 +27,6 @@
 
 // Forward declarations...
 class qtractorTimeScaleListItem;
-class qtractorTempoCurve;
 
 class QTime;
 
@@ -46,9 +45,6 @@ public:
 
 	void setTimeScale(qtractorTimeScale *pTimeScale);
 	qtractorTimeScale *timeScale() const;
-
-	void setTempoCurve(qtractorTempoCurve *pTempoCurve);
-	qtractorTempoCurve *tempoCurve() const;
 
 	void setFrame(unsigned long iFrame);
 	unsigned long frame() const;
@@ -74,7 +70,6 @@ protected slots:
 	void timeChanged(unsigned long);
 	void tempoChanged();
 	void changed();
-	void barsChanged(int);
 
 	void tempoTap();
 	void tempoFactor();
@@ -112,7 +107,6 @@ private:
 
 	// Instance variables...
 	qtractorTimeScale *m_pTimeScale;
-	qtractorTempoCurve *m_pTempoCurve;
 
 	QTime *m_pTempoTap;
 	int    m_iTempoTap;

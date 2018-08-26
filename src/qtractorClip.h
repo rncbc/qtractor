@@ -69,9 +69,6 @@ public:
 	QString clipTitle() const;
 
 	// Clip start frame accessors.
-	void setClipStart0(unsigned long iClipStart0);
-	unsigned long clipStart0() const
-		{ return m_iClipStart0; }
 	void setClipStart(unsigned long iClipStart);
 	unsigned long clipStart() const
 		{ return m_iClipStart; }
@@ -79,9 +76,6 @@ public:
 		{ return m_iClipStartTime; }
 
 	// Clip frame length accessors.
-	void setClipLength0(unsigned long iClipLength0);
-	unsigned long clipLength0() const
-		{ return m_iClipLength0; }
 	void setClipLength(unsigned long iClipLength);
 	unsigned long clipLength() const
 		{ return m_iClipLength; }
@@ -89,9 +83,6 @@ public:
 		{ return m_iClipLengthTime; }
 
 	// Clip offset frame accessors.
-	void setClipOffset0(unsigned long iClipOffset0);
-	unsigned long clipOffset0() const
-		{ return m_iClipOffset0; }
 	void setClipOffset(unsigned long iClipOffset);
 	unsigned long clipOffset() const
 		{ return m_iClipOffset; }
@@ -158,7 +149,7 @@ public:
 	float fadeInOutGain(unsigned long iOffset) const;
 
 	// Clip time reference settler method.
-	void updateClipTime(long iFramesDiff = 0);
+	void updateClipTime();
 
 	// Clip paint methods.
 	void drawClip(QPainter *pPainter,
@@ -378,9 +369,6 @@ private:
 	unsigned long m_iClipStart;         // Clip frame start.
 	unsigned long m_iClipLength;        // Clip frame length.
 	unsigned long m_iClipOffset;        // Clip frame offset.
-	unsigned long m_iClipStart0;
-	unsigned long m_iClipOffset0;
-	unsigned long m_iClipLength0;
 
 	unsigned long m_iClipStartTime;     // Clip time (tick) start.
 	unsigned long m_iClipLengthTime;    // Clip time (tick) length.

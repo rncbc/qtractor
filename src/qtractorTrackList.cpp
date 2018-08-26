@@ -421,13 +421,9 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 
 	switch (track->trackType()) {
 
-		case qtractorTrack::Tempo:
 		case qtractorTrack::Audio: {
 			// Audio Bus name...
-			if (track->trackType() == qtractorTrack::Tempo)
-				text << sBusText + '\n' + QObject::tr("Tempo");
-			else
-				text << sBusText + '\n' + QObject::tr("Audio");
+			text << sBusText + '\n' + QObject::tr("Audio");
 			// Audio channels...
 			qtractorAudioBus *pAudioBus
 				= static_cast<qtractorAudioBus *> (track->outputBus());
@@ -1091,7 +1087,6 @@ void qtractorTrackList::drawCell (
 		if (iCol == Bus) {
 			const QPixmap *pPixmap = NULL;
 			switch ((pItem->track)->trackType()) {
-			case qtractorTrack::Tempo:
 			case qtractorTrack::Audio:
 				pPixmap = m_pPixmap[IconAudio];
 				break;

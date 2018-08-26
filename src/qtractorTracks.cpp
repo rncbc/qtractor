@@ -463,7 +463,6 @@ bool qtractorTracks::newClip (void)
 	// Create the clip prototype...
 	qtractorClip *pClip = NULL;
 	switch (pTrack->trackType()) {
-	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio:
 		pClip = new qtractorAudioClip(pTrack);
 		break;
@@ -778,7 +777,7 @@ bool qtractorTracks::normalizeClipCommand (
 	// Default non-normalized setting...
 	float fGain = pClip->clipGain();
 
-	if ((pTrack->trackType() == qtractorTrack::Audio) || (pTrack->trackType() == qtractorTrack::Tempo)) {
+	if (pTrack->trackType() == qtractorTrack::Audio) {
 		// Normalize audio clip...
 		qtractorAudioClip *pAudioClip
 			= static_cast<qtractorAudioClip *> (pClip);
@@ -989,7 +988,6 @@ bool qtractorTracks::importClips (
 		// This is one of the selected filenames....
 		const QString& sPath = iter.next();
 		switch (pTrack->trackType()) {
-		case qtractorTrack::Tempo:
 		case qtractorTrack::Audio: {
 			// Add the audio clip at once...
 			qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
@@ -1115,7 +1113,6 @@ bool qtractorTracks::mergeExportClips ( qtractorClipCommand *pClipCommand )
 	// Dispatch to specialized method...
 	bool bResult = false;
 	switch (pTrack->trackType()) {
-	case qtractorTrack::Tempo:
 	case qtractorTrack::Audio:
 		bResult = mergeExportAudioClips(pClipCommand);
 		break;
@@ -1773,7 +1770,7 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	// Now, express the change as a undoable command...
 	pSession->execute(
 		new qtractorTimeScaleUpdateNodeCommand(pTimeScale, pNode->frame,
-			form.tempo(), 2, form.beatsPerBar(), form.beatDivisor(), pNode->bars, pNode->attached));
+			form.tempo(), 2, form.beatsPerBar(), form.beatDivisor()));
 
 	// Done.
 	pSession->setAutoTimeStretch(bAutoTimeStretch);	
