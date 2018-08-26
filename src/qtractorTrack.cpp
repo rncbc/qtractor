@@ -1538,7 +1538,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 		if (iClipStart > iTrackEnd)
 			break;
 		unsigned long iClipEnd = iClipStart + pClip->clipLength();
-		if (iClipStart < iTrackEnd && iClipEnd > iTrackStart) {
+		if (iClipStart < iTrackEnd && iClipEnd >= iTrackStart) {
 			unsigned long iClipOffset = 0; // pClip->clipOffset();
 			if (iClipStart < iTrackStart) {
 				iClipOffset += (iTrackStart - iClipStart);
@@ -1547,8 +1547,15 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 			if (iClipEnd > iTrackEnd) {
 				iClipEnd = iTrackEnd;
 			}
-			const int x1 = m_pSession->pixelFromFrame(iClipStart) - x0;
-			const int x2 = m_pSession->pixelFromFrame(iClipEnd) - x0;
+			int x1, x2;
+			if (pClip->clipStart0() > 0) {
+				x1 = 0;
+				x2 = m_pSession->pixelFromFrame(iClipEnd) - x0;
+			} else {
+				x1 = m_pSession->pixelFromFrame(iClipStart) - x0;
+				x2 = m_pSession->pixelFromFrame(iClipEnd) - x0;
+			}
+			qDebug("%s@%d: x0=%d, x1=%d, x2=%d", __func__, __LINE__, x0, x1, x2);
 			pPainter->setPen(pen);
 			pPainter->setBrush(brush);
 			// Draw the clip...

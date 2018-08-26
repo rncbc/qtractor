@@ -86,6 +86,10 @@ void qtractorClip::clear (void)
 	m_iClipLength     = 0;
 	m_iClipOffset     = 0;
 
+	m_iClipStart0     = 0;
+	m_iClipLength0    = 0;
+	m_iClipOffset0    = 0;
+
 	m_iClipStartTime  = 0;
 	m_iClipLengthTime = 0;
 	m_iClipOffsetTime = 0;
@@ -165,6 +169,13 @@ QString qtractorClip::clipTitle (void) const
 }
 
 
+// Clip start0 frame accessor.
+void qtractorClip::setClipStart0 ( unsigned long iClipStart0 )
+{
+	m_iClipStart0 = iClipStart0;
+}
+
+
 // Clip start frame accessor.
 void qtractorClip::setClipStart ( unsigned long iClipStart )
 {
@@ -172,6 +183,13 @@ void qtractorClip::setClipStart ( unsigned long iClipStart )
 
 	if (m_pTrack && m_pTrack->session())
 		m_iClipStartTime = m_pTrack->session()->tickFromFrame(iClipStart);
+}
+
+
+// Clip frame length0 accessor.
+void qtractorClip::setClipLength0 ( unsigned long iClipLength0 )
+{
+	m_iClipLength0 = iClipLength0;
 }
 
 
@@ -183,6 +201,13 @@ void qtractorClip::setClipLength ( unsigned long iClipLength )
 	if (m_pTrack && m_pTrack->session())
 		m_iClipLengthTime = m_pTrack->session()->tickFromFrameRange(
 			m_iClipStart, m_iClipStart + m_iClipLength);
+}
+
+
+// Clip frame offset0 accessor.
+void qtractorClip::setClipOffset0 ( unsigned long iClipOffset0 )
+{
+	m_iClipOffset0 = iClipOffset0;
 }
 
 
@@ -200,7 +225,7 @@ void qtractorClip::setClipOffset ( unsigned long iClipOffset )
 // Clip selection accessors.
 void qtractorClip::setClipSelected ( bool bClipSelected )
 {
-	if (bClipSelected) {
+	if (m_iClipStart0 == 0 && bClipSelected) {
 		setClipSelect(m_iClipStart, m_iClipStart + m_iClipLength);
 	} else {
 		setClipSelect(0, 0);
@@ -217,6 +242,9 @@ bool qtractorClip::isClipSelected (void) const
 void qtractorClip::setClipSelect (
 	unsigned long iSelectStart, unsigned long iSelectEnd )
 {
+	if (m_iClipStart0 > 0)
+		return;
+
 	if (iSelectStart < m_iClipStart)
 		iSelectStart = m_iClipStart;
 	if (iSelectEnd > m_iClipStart + m_iClipLength)
@@ -312,20 +340,110 @@ void qtractorClip::updateClipTime ( long iFramesDiff )
 	if (pSession == NULL)
 		return;
 
-	long iClipStart = m_iClipStart + iFramesDiff;
-	if (iClipStart >= 0)
-		setClipStart(iClipStart);
-	else
-		setClipStart(0);
+	/* Sanity check */
+	if (m_iClipStart0 > 0) {
+		m_iClipStart = 0;
+		if (m_iClipLength0 == 0)
+			m_iClipLength0 = m_iClipLength;
+	} else {
+		m_iClipStart0 = 0;
+		m_iClipLength0 = m_iClipLength;
+		m_iClipOffset0 = m_iClipOffset;
+	}
 
-	setClipLength(m_iClipLength);
-	setClipOffset(m_iClipOffset);
+	bool b_doReopen = false;
+	unsigned long iFramesFwd = 0;
+	unsigned long iFramesBwd = 0;
+	if (iFramesDiff > 0)
+		iFramesFwd = iFramesDiff;
+	else
+		iFramesBwd = (unsigned long) (-iFramesDiff);
+
+	if (iFramesFwd > 0) {
+		/* Move Clip start frames forward. */
+		if (m_iClipStart0 > 0) {
+			/* Current start is before 0. */
+			if (m_iClipStart0 >= iFramesFwd) {
+				/* Next start remains before 0. */
+				m_iClipStart0 -= iFramesFwd;
+				m_iClipStart = 0;
+				if (m_iClipOffset > iFramesFwd)
+					m_iClipOffset -= iFramesFwd;
+				else
+					m_iClipOffset = 0;
+				if (m_iClipStart0 < m_iClipLength0) {
+					if (m_iClipLength == 0)
+						m_iClipLength = (m_iClipLength0 - m_iClipStart0);
+					else
+						m_iClipLength += iFramesFwd;
+					b_doReopen = true;
+				} else
+					m_iClipLength = 0;
+			} else {
+				/* Next start is after 0. */
+				m_iClipStart = iFramesFwd - m_iClipStart0;
+				m_iClipOffset = m_iClipOffset0;
+				m_iClipLength = m_iClipLength0;
+				m_iClipStart0 = 0;
+				b_doReopen = true;
+			}
+		} else {
+			/* Current start is after 0. */
+			m_iClipStart += iFramesFwd;
+		}
+	} else if (iFramesBwd > 0) {
+		/* Move Clip start frames backward. */
+		if (m_iClipStart > 0) {
+			/* Current start is after 0. */
+			if (m_iClipStart >= iFramesBwd) {
+				/* Next start remains after 0. */
+				m_iClipStart -= iFramesBwd;
+				m_iClipOffset0 = m_iClipOffset;
+				m_iClipLength0 = m_iClipLength;
+			} else {
+				/* Next start is before 0. */
+				m_iClipStart0 = iFramesBwd - m_iClipStart;
+				m_iClipOffset0 = m_iClipOffset;
+				m_iClipLength0 = m_iClipLength;
+				m_iClipStart = 0;
+				m_iClipOffset += m_iClipStart0;
+				if (m_iClipLength > m_iClipStart0)
+					m_iClipLength -= m_iClipStart0;
+				else
+					m_iClipLength = 0;
+				b_doReopen = true;
+			}
+		} else {
+			/* Current start is before 0. */
+			m_iClipStart0 += iFramesBwd;
+			m_iClipOffset += iFramesBwd;
+			if (m_iClipLength > iFramesBwd) {
+				m_iClipLength -= iFramesBwd;
+				b_doReopen = true;
+			} else
+				m_iClipLength = 0;
+		}
+	}
+
+	/* setClipStart(iClipStart); */
+	m_iClipStartTime = pSession->tickFromFrame(m_iClipStart);
+	/* setClipLength(m_iClipLength); */
+	m_iClipLengthTime = pSession->tickFromFrameRange(
+		m_iClipStart, m_iClipStart + m_iClipLength);
+	/* setClipOffset(m_iClipOffset); */
+	m_iClipOffsetTime = pSession->tickFromFrameRange(
+		m_iClipStart, m_iClipStart + m_iClipOffset, true);
 
 	m_iFadeInLength = pSession->frameFromTickRange(
 		m_iClipStartTime, m_iClipStartTime + m_iFadeInTime);
 	m_iFadeOutLength = pSession->frameFromTickRange(
 		m_iClipStartTime + m_iClipLengthTime - m_iFadeOutTime,
 		m_iClipStartTime + m_iClipLengthTime);
+
+	if (b_doReopen) {
+		close();
+		open();
+	}
 }
 
 
@@ -334,7 +452,28 @@ void qtractorClip::drawClip (
 	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
 {
 	// Draw the framed rectangle and background...
-	pPainter->drawRect(clipRect);
+	if (m_iClipStart0 > 0) {
+		QPen pen =  pPainter->pen();
+		QPen *newPen =  new QPen(pen);
+		int newPenWidth = 6 * newPen->width();
+		int minRectWidth = /*2*//* * */newPenWidth / 2;
+
+		/* Draw a fat frame in red. */
+		newPen->setColor(QColor(255, 0, 0, 120));
+		newPen->setWidth(newPenWidth);
+		pPainter->setPen(*newPen);
+
+		qDebug("%s@%d: clipRect.width()=%d", __func__, __LINE__, clipRect.width());
+		if (clipRect.width() < minRectWidth) {
+			QRect *minRect = new QRect(clipRect.topLeft(), clipRect.bottomRight());
+			minRect->setWidth(minRectWidth);
+			pPainter->drawRect(*minRect);
+		} else
+			pPainter->drawRect(clipRect);
+
+		pPainter->setPen(pen);
+	} else
+		pPainter->drawRect(clipRect);
 
 	qtractorSession *pSession = m_pTrack->session();
 	if (pSession == NULL)
@@ -370,7 +509,7 @@ void qtractorClip::drawClip (
 	int x = rect.left();
 	int w = pSession->pixelFromFrame(m_iFadeInLength);
 	const QRect rectFadeIn(x + w, y, 8, 8);
-	if (w > 0 && x + w > clipRect.left()) {
+	if (m_iClipStart0 == 0 && w > 0 && x + w > clipRect.left()) {
 	#if 0
 		QPolygon polyg(3);
 		polyg.setPoint(0, x, y);
@@ -481,9 +620,9 @@ void qtractorClip::drawClip (
 	}
 
 	// Fade in/out handles...
-	if (rectFadeIn.intersects(clipRect))
+	if (m_iClipStart0 == 0 && rectFadeIn.intersects(clipRect))
 		pPainter->fillRect(rectFadeIn, rgbFade.darker(120));
-	if (rectFadeOut.intersects(clipRect))
+	if (m_iClipStart0 == 0 && rectFadeOut.intersects(clipRect))
 		pPainter->fillRect(rectFadeOut, rgbFade.darker(120));
 }
 
@@ -589,10 +728,16 @@ bool qtractorClip::loadElement (
 					continue;
 				if (eProp.tagName() == "name")
 					qtractorClip::setClipName(eProp.text());
+				else if (eProp.tagName() == "start0")
+					qtractorClip::setClipStart0(eProp.text().toULong());
 				else if (eProp.tagName() == "start")
 					qtractorClip::setClipStart(eProp.text().toULong());
+				else if (eProp.tagName() == "offset0")
+					qtractorClip::setClipOffset0(eProp.text().toULong());
 				else if (eProp.tagName() == "offset")
 					qtractorClip::setClipOffset(eProp.text().toULong());
+				else if (eProp.tagName() == "length0")
+					qtractorClip::setClipLength0(eProp.text().toULong());
 				else if (eProp.tagName() == "length")
 					qtractorClip::setClipLength(eProp.text().toULong());
 				else if (eProp.tagName() == "gain")
@@ -682,6 +827,8 @@ bool qtractorClip::loadElement (
 		}
 	}
 
+	qtractorClip::updateClipTime(0);
+
 	return true;
 }
 
@@ -694,10 +841,16 @@ bool qtractorClip::saveElement (
 	// Save clip properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
 	pDocument->saveTextElement("name", qtractorClip::clipName(), &eProps);
+	pDocument->saveTextElement("start0",
+		QString::number(qtractorClip::clipStart0()), &eProps);
 	pDocument->saveTextElement("start",
 		QString::number(qtractorClip::clipStart()), &eProps);
+	pDocument->saveTextElement("offset0",
+		QString::number(qtractorClip::clipOffset0()), &eProps);
 	pDocument->saveTextElement("offset",
 		QString::number(qtractorClip::clipOffset()), &eProps);
+	pDocument->saveTextElement("length0",
+		QString::number(qtractorClip::clipLength0()), &eProps);
 	pDocument->saveTextElement("length",
 		QString::number(qtractorClip::clipLength()), &eProps);
 	pDocument->saveTextElement("gain",

@@ -2013,7 +2013,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			m_posDrag   = pos;
 			m_pClipDrag = dragClipStart(pos, modifiers, true, &m_rectDrag);
 			// Should it be selected(toggled)?
-			if (m_pClipDrag && m_dragCursor == DragNone) {
+			if (m_pClipDrag && m_pClipDrag->clipStart0() > 0 && m_dragCursor == DragNone) {
 				// Show that we're about to something...
 				m_dragCursor = m_dragState;
 				qtractorScrollView::setCursor(QCursor(Qt::PointingHandCursor));
@@ -2368,7 +2368,7 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 	if (pClip == NULL)
 		pClip = clipAt(pos, true);
 
-	if (pClip)
+	if (pClip && pClip->clipStart0() == 0)
 		m_pTracks->editClip(pClip);
 	else
 		m_pTracks->selectCurrentTrack();
@@ -3555,6 +3555,9 @@ bool qtractorTrackView::dragClipStartEx (
 	const QPoint& pos, const Qt::KeyboardModifiers& modifiers,
 	qtractorClip *pClip, const QRect& rectClip )
 {
+	if (pClip && pClip->clipStart0() > 0)
+		return false;
+
 	qtractorTrack *pTrack = pClip->track();
 	if (pTrack == NULL)
 		return false;
@@ -3699,6 +3702,8 @@ void qtractorTrackView::dragClipSelectMove ( const QPoint& pos )
 {
 	qtractorClip *pClip = m_pClipDrag;
 	if (pClip == NULL)
+		return;
+	if (pClip->clipStart0() > 0)
 		return;
 
 	if (!pClip->isClipSelected())
