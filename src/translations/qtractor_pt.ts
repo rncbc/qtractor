@@ -11648,7 +11648,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Pasta da sessão</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="289"/>
+        <location filename="../qtractorSessionForm.cpp" line="292"/>
         <source>Session Directory</source>
         <translation>Pasta da Sessão</translation>
     </message>

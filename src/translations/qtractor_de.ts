@@ -11589,7 +11589,7 @@ Do you want to apply the changes?</source>
 Wollen Sie diese übernehmen?</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="289"/>
+        <location filename="../qtractorSessionForm.cpp" line="292"/>
         <source>Session Directory</source>
         <translation>Sitzungsverzeichnis</translation>
     </message>

@@ -11462,7 +11462,7 @@ Do you want to apply the changes?</source>
 Вы хотите применить изменения?</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="289"/>
+        <location filename="../qtractorSessionForm.cpp" line="292"/>
         <source>Session Directory</source>
         <translation>Каталог файлов сеанса</translation>
     </message>

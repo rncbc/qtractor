@@ -11721,7 +11721,7 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="289"/>
+        <location filename="../qtractorSessionForm.cpp" line="292"/>
         <source>Session Directory</source>
         <translation>セッションディレクトリ</translation>
     </message>
