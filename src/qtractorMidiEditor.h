@@ -102,6 +102,10 @@ public:
 	void setToolTips(bool bToolTips);
 	bool isToolTips() const;
 
+	// Drum mode (UI).
+	void setDrumMode(bool bDrumMode);
+	bool isDrumMode() const;
+
 	// Edit (creational) mode.
 	void setEditMode(bool bEditMode);
 	bool isEditMode() const;
@@ -616,6 +620,9 @@ private:
 
 	// Zoom mode flag.
 	int m_iZoomMode;
+
+	// Drum mode (UI).
+	bool m_bDrumMode;
 
 	// Edit mode flags.
 	bool m_bEditMode;

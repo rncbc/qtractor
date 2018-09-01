@@ -6,14 +6,43 @@ ChangeLog
 
 GIT HEAD
 
+- AppData/AppStream metadata is now settled under an all
+  permisssive license (FSFAP); also updated to be the most
+  compliant with latest freedesktop.org specification and
+  recommendation.
+
+- Fix build for Qt >= 5.11.0 (by David Geiger, thanks);
+  also for some g++ >= 8.1.1 warnings and quietness.
+
+
+0.9.1  2018-05-29  Pre-LAC2018 Release Frenzy.
+
+- Displaying MIDI note(on) events as diamonds instead
+  of simple rectangles (aka. Drum Mode) is now being
+  introduced as an optional MIDI track property (Drums)
+  and as a MIDI clip editor (piano-roll) visual option
+  (cf. View/Drum Mode).
+
+- Extended multi-selection is now supported on all the
+  Connections client/port lists, allowing for multiple
+  (dis)connections at once.
+
+- Added LV2 UI sample-rate option support.
+
+- Always reset all internal dedicated MIDI controllers,
+  eg. MIDI track volume (CC#7) and panning (CC#10), on
+  Transport/Panic and after rendering export to aud1io
+  (ie. Track/Export Tracks/Audio...) as needed to reset
+  MIDI instrument plugins to nominal session state.
+
 - Fix, detect and preserve MIDI Bank-select method across
-  MIDI track/clips editing operations. (EXPERIMENTAL)
+  MIDI track/clips editing operations.
 
 - Fixed MIDI track and clip note min/max display range
   while recording and also when duplicating tracks.
 
 - Added "All files (*.*)" filter to every file requestor
-  dialog, wherever missing. (EXPERIMENTAL)
+  dialog, wherever missing.
 
 - The tiny zoom-magnifier icons have been revamped.
 

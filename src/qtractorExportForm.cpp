@@ -296,6 +296,10 @@ void qtractorExportForm::accept (void)
 						tr("Audio file export:\n\n\"%1\"\n\nfailed.")
 						.arg(sExportPath));
 				}
+				// HACK: Reset all (internal) MIDI controllers...
+				qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+				if (pMidiEngine)
+					pMidiEngine->resetAllControllers(true); // Force immediate.
 			}
 		}
 		else

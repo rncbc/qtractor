@@ -1,7 +1,7 @@
 // qtractorConnectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,11 +42,8 @@ qtractorConnectForm::qtractorConnectForm (
 
 	m_pAudioConnect = new qtractorAudioConnect(
 		m_ui.AudioOListView, m_ui.AudioIListView, m_ui.AudioConnectorView);
-	m_pAudioConnect->setBezierLines(true);
-
 	m_pMidiConnect = new qtractorMidiConnect(
 		m_ui.MidiOListView, m_ui.MidiIListView, m_ui.MidiConnectorView);
-	m_pMidiConnect->setBezierLines(true);
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.AudioIClientsComboBox,
@@ -87,6 +84,19 @@ qtractorConnectForm::qtractorConnectForm (
 		SLOT(midiRefresh()));
 
 	// Connect it to some UI feedback slots.
+	QObject::connect(m_ui.AudioOListView,
+		SIGNAL(itemSelectionChanged()),
+		SLOT(audioStabilize()));
+	QObject::connect(m_ui.AudioIListView,
+		SIGNAL(itemSelectionChanged()),
+		SLOT(audioStabilize()));
+	QObject::connect(m_ui.MidiOListView,
+		SIGNAL(itemSelectionChanged()),
+		SLOT(midiStabilize()));
+	QObject::connect(m_ui.MidiIListView,
+		SIGNAL(itemSelectionChanged()),
+		SLOT(midiStabilize()));
+
 	QObject::connect(m_ui.AudioOListView,
 		SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
 		SLOT(audioStabilize()));

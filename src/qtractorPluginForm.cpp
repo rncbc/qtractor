@@ -1395,12 +1395,12 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 				m_pToolButton->setIcon(QIcon(":/images/fileOpen.png"));
 				pGridLayout->addWidget(m_pToolButton, 1, 2);
 			} else {
-				pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 			//	pLabel->setMinimumWidth(120);
 				pGridLayout->addWidget(pLabel, 0, 0);
 				const bool bIsInteger = pLv2Prop->isInteger();
 				m_pSpinBox = new QDoubleSpinBox(/*this*/);
-				m_pSpinBox->setMaximumWidth(64);
+				m_pSpinBox->setMinimumWidth(64);
 				m_pSpinBox->setDecimals(bIsInteger ? 0 : 3);
 				m_pSpinBox->setMinimum(pLv2Prop->minValue());
 				m_pSpinBox->setMaximum(pLv2Prop->maxValue());

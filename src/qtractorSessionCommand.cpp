@@ -1,7 +1,7 @@
 // qtractorSessionCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -186,14 +186,18 @@ bool qtractorSessionEditCommand::redo (void)
 {
 	bool bResult = false;
 
-	if (m_pPropertiesCommand)
+	qtractorSession *pSession = session();
+	if (pSession)
+		bResult = true;
+
+	if (bResult && m_pPropertiesCommand)
 		bResult = m_pPropertiesCommand->redo();
 
 	if (bResult && m_pTempoCommand)
 		bResult = m_pTempoCommand->redo();
 
 	if (bResult && m_iTicksPerBeat > 0)
-		session()->updateTimeResolution();
+		pSession->updateTimeResolution();
 
 	return bResult;
 }
@@ -202,14 +206,18 @@ bool qtractorSessionEditCommand::undo (void)
 {
 	bool bResult = false;
 
-	if (m_pPropertiesCommand)
+	qtractorSession *pSession = session();
+	if (pSession)
+		bResult = true;
+
+	if (bResult && m_pPropertiesCommand)
 		bResult = m_pPropertiesCommand->undo();
 
 	if (bResult && m_pTempoCommand)
 		bResult = m_pTempoCommand->undo();
 
 	if (bResult && m_iTicksPerBeat > 0)
-		session()->updateTimeResolution();
+		pSession->updateTimeResolution();
 
 	return bResult;
 }

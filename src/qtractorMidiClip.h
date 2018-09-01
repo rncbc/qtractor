@@ -126,7 +126,6 @@ public:
 
 	// Clip editor methods.
 	bool startEditor(QWidget *pParent = NULL);
-	void resetEditor(bool bSelectClear);
 	void updateEditor(bool bSelectClear);
 	void updateEditorContents();
 	bool queryEditor();
@@ -215,7 +214,6 @@ public:
 
 	// Sync all ref-counted clip editors.
 	void updateEditorEx(bool bSelectClear);
-	void resetEditorEx(bool bSelectClear);
 
 	// Sync all ref-counted clip-dirtyness.
 	void setDirtyEx(bool bDirty);

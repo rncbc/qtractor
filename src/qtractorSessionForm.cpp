@@ -269,7 +269,10 @@ void qtractorSessionForm::changed (void)
 // Stabilize current form state.
 void qtractorSessionForm::stabilizeForm (void)
 {
-	QFileInfo fi(QFileInfo(m_ui.SessionDirComboBox->currentText()).path());
+	QFileInfo fi(m_ui.SessionDirComboBox->currentText());
+	if (fi.fileName().isEmpty())
+		fi.setFile(fi.path());
+	fi.setFile(fi.path());
 
 	bool bValid = !m_ui.SessionNameLineEdit->text().isEmpty();
 	bValid = bValid && fi.isDir() && fi.isReadable() && fi.isWritable();

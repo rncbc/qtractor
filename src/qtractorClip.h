@@ -189,7 +189,6 @@ public:
 
 	// Clip editor methods.
 	virtual bool startEditor(QWidget *pParent = NULL);
-	virtual void resetEditor(bool bSelectClear);
 	virtual void updateEditor(bool bSelectClear);
 	virtual void updateEditorContents();
 	virtual bool queryEditor();

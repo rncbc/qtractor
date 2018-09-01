@@ -1,7 +1,7 @@
 // qtractorTrackButton.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,9 +24,9 @@
 
 #include "qtractorTrack.h"
 
-#include <QPushButton>
-
 #include "qtractorObserverWidget.h"
+
+#include <QPushButton>
 
 
 //----------------------------------------------------------------------------

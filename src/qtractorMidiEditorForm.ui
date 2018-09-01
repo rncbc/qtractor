@@ -150,6 +150,8 @@
     <addaction name="viewValueColorAction"/>
     <addaction name="viewValueTypeMenu"/>
     <addaction name="separator"/>
+    <addaction name="viewDrumModeAction"/>
+    <addaction name="separator"/>
     <addaction name="viewZoomMenu"/>
     <addaction name="viewSnapMenu"/>
     <addaction name="viewScaleMenu"/>
@@ -1151,6 +1153,29 @@
    </property>
    <property name="statusTip">
     <string>Whether note events are colored according to value (velocity)</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewDrumModeAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/viewDrumMode.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Drum Mode</string>
+   </property>
+   <property name="iconText">
+    <string>Drum Mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Drum mode</string>
+   </property>
+   <property name="statusTip">
+    <string>Whether note onset events are displayed as diamonds</string>
    </property>
    <property name="shortcut">
     <string/>

@@ -753,9 +753,9 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI_TYPE_NONE       0
 #define LV2_UI_TYPE_QT4        1
 #define LV2_UI_TYPE_QT5        2
-#define LV2_UI_TYPE_EXTERNAL   3
-#define LV2_UI_TYPE_GTK        4
-#define LV2_UI_TYPE_X11        5
+#define LV2_UI_TYPE_GTK        3
+#define LV2_UI_TYPE_X11        4
+#define LV2_UI_TYPE_EXTERNAL   5
 #define LV2_UI_TYPE_OTHER      6
 
 #ifndef LV2_UI__Qt5UI
@@ -874,7 +874,7 @@ public:
 					= static_cast<QResizeEvent *> (pEvent);
 				if (pResizeEvent)
 					m_pLv2Plugin->lv2_ui_resize(pResizeEvent->size());
-				// Fall thru...
+				break;
 			}
 			default:
 				break;
@@ -1021,6 +1021,7 @@ static struct qtractorLv2Urids
 #ifdef CONFIG_LV2_UI
 	LV2_URID ui_windowTitle;
 	LV2_URID ui_updateRate;
+	LV2_URID ui_sampleRate;
 #endif
 #endif	// CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_STATE
@@ -1390,8 +1391,12 @@ static int qtractor_lv2_ui_resize (
 	LV2UI_Feature_Handle handle, int width, int height )
 {
 	QWidget *pQtWidget = static_cast<QWidget *> (handle);
-	pQtWidget->resize(width, height);
-	return 0;
+	if (pQtWidget) {
+		pQtWidget->resize(width, height);
+		return 0;
+	} else {
+		return 1;
+	}
 }
 
 #endif	// CONFIG_LV2_UI_X11
@@ -1818,6 +1823,8 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_UI__windowTitle);
 	g_lv2_urids.ui_updateRate
 		= qtractorLv2Plugin::lv2_urid_map(LV2_UI__updateRate);
+	g_lv2_urids.ui_sampleRate
+		= qtractorLv2Plugin::lv2_urid_map(LV2_CORE__sampleRate);
 #endif
 #ifdef CONFIG_LV2_STATE
 	g_lv2_urids.state_StateChanged
@@ -3249,7 +3256,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	lilv_free((void *) ui_bundle_path);
 #endif
 
-	// dit we failed miserably?
+	// Did we failed miserably?
 	if (!ui_instantiate)
 		return;
 
@@ -3283,6 +3290,14 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		m_lv2_ui_widget = static_cast<LV2UI_Widget> (m_pQtWidget);
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 	//	m_bQtDelete = true;
+		// LV2 UI resize control...
+		QSize size = m_pQtWidget->sizeHint();
+		if (!size.isValid() || size.isNull())
+			size = m_pQtWidget->size();
+		if (size.isValid() && !size.isNull()) {
+			m_pQtWidget->setMinimumSize(size);
+			lv2_ui_resize(size);
+		}
 	//	m_pQtWidget->show();
 	}
 	else
@@ -3343,7 +3358,13 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 		m_bQtDelete = false;
 		// LV2 UI resize control...
-		lv2_ui_resize(m_pQtWidget->sizeHint());
+		QSize size = m_pQtWidget->sizeHint();
+		if (!size.isValid() || size.isNull())
+			size = m_pQtWidget->size();
+		if (size.isValid() && !size.isNull()) {
+			m_pQtWidget->setMinimumSize(size);
+			lv2_ui_resize(size);
+		}
 	//	m_pQtWidget->show();
 	} else {
 		m_pQtWidget = NULL;
@@ -3906,12 +3927,21 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS
-	static float s_fUpdateRate = 15.0f;
+	m_fUpdateRate = 15.0f;
+	m_dSampleRate = 44100.0;
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine)
+			m_dSampleRate = double(pAudioEngine->sampleRate());
+	}
 	const LV2_Options_Option ui_options[] = {
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_windowTitle,
 		  sizeof(char *), g_lv2_urids.atom_String, m_aEditorTitle.constData() },
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_updateRate,
-		  sizeof(float), g_lv2_urids.atom_Float, &s_fUpdateRate },
+		  sizeof(float), g_lv2_urids.atom_Float, &m_fUpdateRate },
+		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_sampleRate,
+		  sizeof(double), g_lv2_urids.atom_Double, &m_dSampleRate },
 		{ LV2_OPTIONS_INSTANCE, 0, 0, 0, 0, NULL }
 	};
 	::memcpy(&m_lv2_ui_options, &ui_options, sizeof(ui_options));

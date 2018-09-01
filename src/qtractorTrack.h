@@ -141,6 +141,10 @@ public:
 	void setMidiProg(int iMidiProg);
 	int midiProg() const;
 
+	// MIDI drum mode (UI).
+	void setMidiDrums(bool bMidiDrums);
+	bool isMidiDrums() const;
+
 	// MIDI specific: track-minimum note.
 	void setMidiNoteMin(unsigned char note);
 	unsigned char midiNoteMin() const;
@@ -319,6 +323,7 @@ public:
 		int            midiBankSelMethod;
 		int            midiBank;
 		int            midiProg;
+		bool           midiDrums;
 		QColor         foreground;
 		QColor         background;
 	};
