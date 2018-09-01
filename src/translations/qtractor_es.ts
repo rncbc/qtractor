@@ -7989,22 +7989,22 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1169"/>
         <source>&amp;Drum Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Modo Batería</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1172"/>
         <source>Drum Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo Batería</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1175"/>
         <source>Drum mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo Batería</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1178"/>
         <source>Whether note onset events are displayed as diamonds</source>
-        <translation type="unfinished"></translation>
+        <translation>Si los eventos de inicio de nota se muestran como diamantes</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1192"/>
@@ -12403,7 +12403,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.ui" line="343"/>
         <source>MIDI Patch: Drum Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Patch MIDI: Batería</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="350"/>
