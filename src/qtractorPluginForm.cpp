@@ -1401,12 +1401,13 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 				const bool bIsInteger = pLv2Prop->isInteger();
 				m_pSpinBox = new QDoubleSpinBox(/*this*/);
 				m_pSpinBox->setMinimumWidth(64);
+				m_pSpinBox->setMaximumWidth(96);
 				m_pSpinBox->setDecimals(bIsInteger ? 0 : 3);
 				m_pSpinBox->setMinimum(pLv2Prop->minValue());
 				m_pSpinBox->setMaximum(pLv2Prop->maxValue());
-				m_pSpinBox->setAlignment(Qt::AlignHCenter);
+				m_pSpinBox->setAlignment(Qt::AlignRight);
 				m_pSpinBox->setSingleStep(bIsInteger ? 1.0f : 0.001f);
-				m_pSpinBox->setAccelerated(!bIsInteger);
+				m_pSpinBox->setAccelerated(true);
 			//	m_pSpinBox->setValue(pLv2Prop->value().toDouble());
 				pGridLayout->addWidget(m_pSpinBox, 0, 1);
 			}
