@@ -236,7 +236,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			qtractorPluginPropertyWidget *pPropWidget
 				= new qtractorPluginPropertyWidget(pLv2Plugin, pProp->key());
 			m_propWidgets.append(pPropWidget);
-			widgets.prepend(pPropWidget);
+			widgets.append(pPropWidget);
 		}
 	}
 #endif
@@ -250,7 +250,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		qtractorMidiControlObserver *pMidiObserver = pParam->observer();
 		if (pMidiObserver)
 			addMidiControlAction(pParamWidget, pMidiObserver);
-		m_paramWidgets.insert(pParam->index(), pParamWidget);
+		m_paramWidgets.append(pParamWidget);
 		widgets.append(pParamWidget);
 	}
 
