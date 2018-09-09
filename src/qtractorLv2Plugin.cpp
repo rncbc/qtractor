@@ -249,7 +249,7 @@ static LV2_Worker_Status qtractor_lv2_worker_schedule (
 	if (pLv2Worker == NULL)
 		return LV2_WORKER_ERR_UNKNOWN;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractor_lv2_worker_schedule(%p, %u, %p)", pLv2Worker, size, data);
 #endif
 
@@ -265,7 +265,7 @@ static LV2_Worker_Status qtractor_lv2_worker_respond (
 	if (pLv2Worker == NULL)
 		return LV2_WORKER_ERR_UNKNOWN;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractor_lv2_worker_respond(%p, %u, %p)", pLv2Worker, size, data);
 #endif
 
@@ -4183,7 +4183,7 @@ void qtractorLv2Plugin::lv2_property_changed (
 	if (type != pProp->type())
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_property_changed(\"%s\") [%s]",
 		this, pszKey, pProp->name().toUtf8().constData());
 #endif
@@ -4232,7 +4232,7 @@ void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )
 	LV2_URID type = pProp->type();
 	const QVariant& value = pProp->value();
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_property_update(\"%s\") [%s]",
 		this, pszKey, pProp->name().toUtf8().constData());
 #endif
