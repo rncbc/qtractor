@@ -1,7 +1,7 @@
 // qtractorPluginFactory.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,6 +43,7 @@
 
 #include <QTextStream>
 #include <QFileInfo>
+#include <QDateTime>
 #include <QDir>
 
 #if QT_VERSION < 0x050000
@@ -725,8 +726,17 @@ bool qtractorPluginFactory::Scanner::start (void)
 	m_iExitStatus = -1;
 
 	// Get the main scanner executable...
-	const QDir dir(QApplication::applicationDirPath());
-	const QFileInfo fi(dir, "qtractor_plugin_scan");
+	const QString sName("qtractor_plugin_scan");
+	const QString sLibdir(CONFIG_LIBDIR);
+	QFileInfo fi(sLibdir + QDir::separator() + PACKAGE_TARNAME, sName);
+	const QFileInfo fi2(QApplication::applicationDirPath(), sName);
+	if (!fi.isExecutable()
+		|| (fi.isExecutable() && fi2.isExecutable()
+			&& fi.fileTime(QFileDevice::FileModificationTime)
+			< fi2.fileTime(QFileDevice::FileModificationTime))) {
+		fi = fi2;
+	}
+
 	if (!fi.isExecutable())
 		return false;
 
