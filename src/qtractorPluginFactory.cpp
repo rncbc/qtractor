@@ -732,8 +732,7 @@ bool qtractorPluginFactory::Scanner::start (void)
 	const QFileInfo fi2(QApplication::applicationDirPath(), sName);
 	if (!fi.isExecutable()
 		|| (fi.isExecutable() && fi2.isExecutable()
-			&& fi.fileTime(QFileDevice::FileModificationTime)
-			< fi2.fileTime(QFileDevice::FileModificationTime))) {
+			&& fi.lastModified() < fi2.lastModified())) {
 		fi = fi2;
 	}
 
