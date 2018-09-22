@@ -43,18 +43,13 @@ public:
 	class Interface
 	{
 	public:
-		
+
 		// Virtual destructor.
 		virtual ~Interface() {}
 
 		// Pure virtuals.
 		virtual float scaleFromValue(float fValue) const = 0;
 		virtual float valueFromScale(float fScale) const = 0;
-
-	private:
-
-		// Members.
-		qtractorObserverWidget<Widget> *m_pWidget;
 	};
 	
 	// Local observer.
