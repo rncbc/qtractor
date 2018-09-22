@@ -1,7 +1,7 @@
 // qtractorMidiMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -406,10 +406,6 @@ class qtractorMidiMixerMeter::GainSpinBoxInterface
 {
 public:
 
-	// Constructor.
-	GainSpinBoxInterface ( qtractorObserverSpinBox *pSpinBox )
-		: qtractorObserverSpinBox::Interface(pSpinBox) {}
-
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const
 		{ return 100.0f * fValue; }
@@ -428,10 +424,6 @@ class qtractorMidiMixerMeter::GainSliderInterface
 	: public qtractorObserverSlider::Interface
 {
 public:
-
-	// Constructor.
-	GainSliderInterface ( qtractorObserverSlider *pSlider )
-		: qtractorObserverSlider::Interface(pSlider) {}
 
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const
@@ -461,8 +453,8 @@ qtractorMidiMixerMeter::qtractorMidiMixerMeter (
 	boxLayout()->addWidget(m_pMidiScale);
 	boxLayout()->addWidget(m_pMidiMeter);
 
-	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
-	gainSpinBox()->setInterface(new GainSpinBoxInterface(gainSpinBox()));
+	gainSlider()->setInterface(new GainSliderInterface());
+	gainSpinBox()->setInterface(new GainSpinBoxInterface());
 
 	gainSpinBox()->setMinimum(0.0f);
 	gainSpinBox()->setMaximum(100.0f);

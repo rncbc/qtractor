@@ -179,11 +179,6 @@ class qtractorMixerMeter::PanSliderInterface
 {
 public:
 
-	// Constructor.
-	PanSliderInterface (
-		qtractorObserverSlider *pSlider )
-		: qtractorObserverSlider::Interface(pSlider) {}
-
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const
 		{ return 100.0f * fValue; }
@@ -296,7 +291,7 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 	m_pPanObserver  = new PanObserver(this);
 	m_pGainObserver = new GainObserver(this);
 
-	m_pPanSlider->setInterface(new PanSliderInterface(m_pPanSlider));
+	m_pPanSlider->setInterface(new PanSliderInterface());
 
 	m_pPanSlider->setTickPosition(QSlider::NoTicks);
 	m_pPanSlider->setMinimum(-100);

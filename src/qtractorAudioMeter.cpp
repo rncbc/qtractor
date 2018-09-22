@@ -1,7 +1,7 @@
 // qtractorAudioMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -553,10 +553,6 @@ class qtractorAudioMixerMeter::GainSpinBoxInterface
 {
 public:
 
-	// Constructor.
-	GainSpinBoxInterface ( qtractorObserverSpinBox *pSpinBox )
-		: qtractorObserverSpinBox::Interface(pSpinBox) {}
-
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const
 		{ return log10f2(fValue); }
@@ -575,10 +571,6 @@ class qtractorAudioMixerMeter::GainSliderInterface
 	: public qtractorObserverSlider::Interface
 {
 public:
-
-	// Constructor.
-	GainSliderInterface ( qtractorObserverSlider *pSlider )
-		: qtractorObserverSlider::Interface(pSlider) {}
 
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const
@@ -605,8 +597,8 @@ qtractorAudioMixerMeter::qtractorAudioMixerMeter (
 	boxLayout()->addWidget(m_pAudioScale);
 	boxLayout()->addWidget(m_pAudioMeter);
 
-	gainSlider()->setInterface(new GainSliderInterface(gainSlider()));
-	gainSpinBox()->setInterface(new GainSpinBoxInterface(gainSpinBox()));
+	gainSlider()->setInterface(new GainSliderInterface());
+	gainSpinBox()->setInterface(new GainSpinBoxInterface());
 
 	gainSlider()->setMaximum(11500);
 
