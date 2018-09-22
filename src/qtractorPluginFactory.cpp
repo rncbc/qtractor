@@ -129,7 +129,20 @@ static QString default_paths ( const QString& suffix )
 	paths << lib2 + sep + suffix;
 	paths << lib1 + sep + suffix;
 
-	return paths.join(PATH_SEP);
+	// Get rid of duplicate symlinks (canonical paths)...
+	QStringList list;
+	QStringListIterator iter(paths);
+	while (iter.hasNext()) {
+		const QFileInfo info(iter.next());
+		if (info.exists() && info.isDir()) {
+			const QString& path
+				= info.canonicalFilePath();
+			if (!list.contains(path))
+				list.append(path);
+		}
+	}
+
+	return list.join(PATH_SEP);
 }
 
 

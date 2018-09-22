@@ -5,6 +5,9 @@ ChangeLog
 
 GIT HEAD
 
+- Get rid of symlink duplicates on the default plugin
+  search paths. (EXPERIMENTAL)
+
 - According to Debian policy and guidelines, the out-of
   process plugin scanner (qtractor_plugin_scan) is now
   installed to $LIBDIR/qtractor. (EXPERIMENTAL)
