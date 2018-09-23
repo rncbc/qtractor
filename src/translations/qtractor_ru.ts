@@ -838,22 +838,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 <context>
     <name>qtractorAudioMixerMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="615"/>
+        <location filename="../qtractorAudioMeter.cpp" line="607"/>
         <source>Gain (dB)</source>
         <translation>Усиление (Дб)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="616"/>
+        <location filename="../qtractorAudioMeter.cpp" line="608"/>
         <source> dB</source>
         <translation> Дб</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="686"/>
+        <location filename="../qtractorAudioMeter.cpp" line="678"/>
         <source>Pan: %1</source>
         <translation>Пан: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="695"/>
+        <location filename="../qtractorAudioMeter.cpp" line="687"/>
         <source>Gain: %1 dB</source>
         <translation>Усиление: %1 Дб</translation>
     </message>
@@ -8775,22 +8775,22 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="469"/>
+        <location filename="../qtractorMidiMeter.cpp" line="461"/>
         <source>Volume (%)</source>
         <translation>Громкость (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="470"/>
+        <location filename="../qtractorMidiMeter.cpp" line="462"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="535"/>
+        <location filename="../qtractorMidiMeter.cpp" line="527"/>
         <source>Pan: %1</source>
         <translation>Пан: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="545"/>
+        <location filename="../qtractorMidiMeter.cpp" line="537"/>
         <source>Volume: %1%</source>
         <translation>Громкость: %1%</translation>
     </message>
@@ -9476,12 +9476,12 @@ Edit head/tail (blue) markers define the shift range.</source>
 <context>
     <name>qtractorMixerMeter</name>
     <message>
-        <location filename="../qtractorMeter.cpp" line="313"/>
+        <location filename="../qtractorMeter.cpp" line="308"/>
         <source>Pan</source>
         <translation>Пан.</translation>
     </message>
     <message>
-        <location filename="../qtractorMeter.cpp" line="325"/>
+        <location filename="../qtractorMeter.cpp" line="320"/>
         <source>Gain</source>
         <translation>Усил.</translation>
     </message>
@@ -11312,7 +11312,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1524"/>
+        <location filename="../qtractorPluginForm.cpp" line="1523"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>
