@@ -1172,7 +1172,7 @@ public:
 			m_pParam->isLogarithmic()); }
 
 	float valueFromScale ( float fScale ) const
-		{ return m_pParam->observer()->valueFromScale((fScale / 10000.0f),
+		{ return m_pParam->observer()->valueFromScale(0.0001f * fScale,
 			m_pParam->isLogarithmic()); }
 
 private:

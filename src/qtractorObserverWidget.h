@@ -78,10 +78,7 @@ public:
 
 	// Destructor.
 	~qtractorObserverWidget()
-	{
-		if (m_pInterface)
-			delete m_pInterface;
-	}
+		{ setInterface(NULL); }
 
 	// Setup.
 	void setSubject(qtractorSubject *pSubject)
