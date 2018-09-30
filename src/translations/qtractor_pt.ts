@@ -11306,6 +11306,16 @@ Posso continuar?</translation>
         <translation>Mover Para &amp;Cima</translation>
     </message>
     <message>
+        <location filename="../qtractorPluginListView.cpp" line="1684"/>
+        <source>Pre&amp;set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginListView.cpp" line="1703"/>
+        <source>Dire&amp;ct Access</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorPluginListView.cpp" line="1756"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Saídas</translation>
