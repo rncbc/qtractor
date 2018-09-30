@@ -11376,12 +11376,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1684"/>
         <source>Pre&amp;set</source>
-        <translation type="unfinished"></translation>
+        <translation>Préréglage&amp;s</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1703"/>
         <source>Dire&amp;ct Access</source>
-        <translation type="unfinished"></translation>
+        <translation>Accès dire&amp;ct</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1722"/>
