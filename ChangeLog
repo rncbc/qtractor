@@ -5,6 +5,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 plug-in UI GTK2 and X11 in Qt5 host native support
+  are now disabled on default configure. (EXPERIMENTAL)
+
 - Get rid of symlink duplicates on the default plugin
   search paths. (EXPERIMENTAL)
 
