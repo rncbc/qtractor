@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.9.2, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.9.3, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -262,12 +262,12 @@ AC_ARG_ENABLE(lv2-ui-show,
 AC_ARG_ENABLE(lv2-ui-gtk2,
   AS_HELP_STRING([--enable-lv2-ui-gtk2], [enable LV2 plug-in UI GTK2 native support (default=yes)]),
   [ac_lv2_ui_gtk2="$enableval"],
-  [ac_lv2_ui_gtk2="yes"])
+  [ac_lv2_ui_gtk2="no"])
 
 AC_ARG_ENABLE(lv2-ui-x11,
   AS_HELP_STRING([--enable-lv2-ui-x11], [enable LV2 plug-in UI X11 native support (default=yes)]),
   [ac_lv2_ui_x11="$enableval"],
-  [ac_lv2_ui_x11="yes"])
+  [ac_lv2_ui_x11="no"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
@@ -871,14 +871,14 @@ if test "x$ac_suil" = "xyes"; then
    PKG_CHECK_MODULES([SUIL], [suil-0], [ac_suil="yes"], [ac_suil="no"])
 fi
 if test "x$ac_suil" = "xyes"; then
-   AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is available.])
+   AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is enabled.])
    ac_cflags="$ac_cflags $SUIL_CFLAGS"
    ac_libs="$ac_libs $SUIL_LIBS"
    CFLAGS="$CFLAGS $SUIL_CFLAGS"
    CPPFLAGS="$CPPFLAGS $SUIL_CFLAGS"
    LIBS="$LIBS $SUIL_LIBS"
 else
-   AC_MSG_WARN([*** SUIL library not found.])
+   AC_MSG_WARN([*** SUIL library will be disabled.])
 fi
 
 if test "x$ac_suil" = "xyes"; then
@@ -1334,15 +1334,15 @@ if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
    #  ac_lv2_ui_gtk2="no"
    fi
 fi
-if test "x$ac_lv2_ui_gtk2" = "xyes"; then
+if test "x$ac_qt4" = "xno" -a "x$ac_lv2_ui_gtk2" = "xyes"; then
    PKG_CHECK_MODULES([GTK2], [gtk+-2.0], [ac_lv2_ui_gtk2="yes"], [ac_lv2_ui_gtk2="no"])
-fi
-if test "x$ac_lv2_ui_gtk2" = "xyes"; then
-   AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
-   ac_cflags="$ac_cflags $GTK2_CFLAGS"
-   ac_libs="$ac_libs $GTK2_LIBS"
-else
-   AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
+   if test "x$ac_lv2_ui_gtk2" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
+      ac_cflags="$ac_cflags $GTK2_CFLAGS"
+      ac_libs="$ac_libs $GTK2_LIBS"
+   else
+      AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
+   fi
 fi
 
 if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
@@ -1362,7 +1362,7 @@ if test "x$ac_qt4" = "xno" -a "x$ac_suil" = "xyes"; then
    #  ac_lv2_ui_x11="no"
    fi
 fi
-if test "x$ac_lv2_ui_x11" = "xyes"; then
+if test "x$ac_qt4" = "xno" -a "x$ac_lv2_ui_x11" = "xyes"; then
    AC_DEFINE(CONFIG_LV2_UI_X11, 1, [Define if LV2 UI X11 native support is available.])
 fi
 
@@ -1472,7 +1472,9 @@ echo "  LADSPA plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  LV2 plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
+echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_lilv"
 echo "  LV2 plug-in UI support . . . . . . . . . . . . . .: $ac_lv2_ui"
+echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_suil"
 echo "  LV2 plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 plug-in MIDI/Event support (DEPRECATED)  . . .: $ac_lv2_event"
 echo "  LV2 plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"

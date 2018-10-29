@@ -236,7 +236,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 			qtractorPluginPropertyWidget *pPropWidget
 				= new qtractorPluginPropertyWidget(pLv2Plugin, pProp->key());
 			m_propWidgets.append(pPropWidget);
-			widgets.prepend(pPropWidget);
+			widgets.append(pPropWidget);
 		}
 	}
 #endif
@@ -250,7 +250,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		qtractorMidiControlObserver *pMidiObserver = pParam->observer();
 		if (pMidiObserver)
 			addMidiControlAction(pParamWidget, pMidiObserver);
-		m_paramWidgets.insert(pParam->index(), pParamWidget);
+		m_paramWidgets.append(pParamWidget);
 		widgets.append(pParamWidget);
 	}
 
@@ -1163,9 +1163,8 @@ class qtractorPluginParamWidget::SliderInterface
 public:
 
 	// Constructor.
-	SliderInterface (
-		qtractorObserverSlider *pSlider, qtractorPluginParam *pParam )
-		: qtractorObserverSlider::Interface(pSlider), m_pParam(pParam) {}
+	SliderInterface ( qtractorPluginParam *pParam )
+		: m_pParam(pParam) {}
 
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const
@@ -1173,7 +1172,7 @@ public:
 			m_pParam->isLogarithmic()); }
 
 	float valueFromScale ( float fScale ) const
-		{ return m_pParam->observer()->valueFromScale((fScale / 10000.0f),
+		{ return m_pParam->observer()->valueFromScale(0.0001f * fScale,
 			m_pParam->isLogarithmic()); }
 
 private:
@@ -1241,7 +1240,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
 		}
 		m_pSlider = new qtractorObserverSlider(/*this*/);
-		m_pSlider->setInterface(new SliderInterface(m_pSlider, m_pParam));
+		m_pSlider->setInterface(new SliderInterface(m_pParam));
 		m_pSlider->setOrientation(Qt::Horizontal);
 		m_pSlider->setTickPosition(QSlider::NoTicks);
 		m_pSlider->setMinimumWidth(120);
@@ -1401,12 +1400,13 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 				const bool bIsInteger = pLv2Prop->isInteger();
 				m_pSpinBox = new QDoubleSpinBox(/*this*/);
 				m_pSpinBox->setMinimumWidth(64);
+				m_pSpinBox->setMaximumWidth(96);
 				m_pSpinBox->setDecimals(bIsInteger ? 0 : 3);
 				m_pSpinBox->setMinimum(pLv2Prop->minValue());
 				m_pSpinBox->setMaximum(pLv2Prop->maxValue());
-				m_pSpinBox->setAlignment(Qt::AlignHCenter);
+				m_pSpinBox->setAlignment(Qt::AlignRight);
 				m_pSpinBox->setSingleStep(bIsInteger ? 1.0f : 0.001f);
-				m_pSpinBox->setAccelerated(!bIsInteger);
+				m_pSpinBox->setAccelerated(true);
 			//	m_pSpinBox->setValue(pLv2Prop->value().toDouble());
 				pGridLayout->addWidget(m_pSpinBox, 0, 1);
 			}

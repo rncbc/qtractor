@@ -5678,8 +5678,28 @@ void qtractorMainForm::transportPanic (void)
 	qDebug("qtractorMainForm::transportPanic()");
 #endif
 
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+	if (pMidiEngine == NULL)
+		return;
+
+	// All players must end now...
+	if (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen()) {
+		m_iPlayerTimer = 0;
+		if (m_pFiles && m_pFiles->isPlayState())
+			m_pFiles->setPlayState(false);
+		if (m_pFileSystem && m_pFileSystem->isPlayState())
+			m_pFileSystem->setPlayState(false);
+		appendMessages(tr("Player panic!"));
+		pAudioEngine->closePlayer();
+		pMidiEngine->closePlayer();
+	}
+
 	// All (MIDI) tracks shut-off (panic)...
-	m_pSession->midiEngine()->shutOffAllTracks();
+	pMidiEngine->shutOffAllTracks();
 
 	stabilizeForm();
 }
@@ -6311,7 +6331,9 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportPunchSetAction->setEnabled(bSelectable);
 	m_ui.transportMetroAction->setEnabled(
 		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);
-	m_ui.transportPanicAction->setEnabled(bTracks);
+	m_ui.transportPanicAction->setEnabled(bTracks
+		|| (m_pFiles && m_pFiles->isPlayState())
+		|| (m_pFileSystem && m_pFileSystem->isPlayState()));
 
 	m_ui.transportRewindAction->setChecked(m_iTransportRolling < 0);
 	m_ui.transportFastForwardAction->setChecked(m_iTransportRolling > 0);
