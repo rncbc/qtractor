@@ -87,6 +87,7 @@ the personal home-studio.
 %files
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog README TODO
+%dir %{_libdir}/%{name}
 #dir %{_datadir}/mime
 #dir %{_datadir}/mime/packages
 #dir %{_datadir}/applications
