@@ -5,6 +5,9 @@ ChangeLog
 
 GIT HEAD
 
+- Anti-glitch micro-fade-in is disabled on audio clips
+  with zero offset. (EXPERIMENTAL)
+
 - Audio and MIDI file players also stopped on Transport
   / Panic command. (EXPERIMENTAL)
 
