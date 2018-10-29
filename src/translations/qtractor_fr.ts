@@ -5797,7 +5797,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5696"/>
         <source>Player panic!</source>
-        <translation type="unfinished"></translation>
+        <translation>Panique du lecteur !</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5733"/>
