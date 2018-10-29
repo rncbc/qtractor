@@ -5813,7 +5813,7 @@ la próxima vez que inicie este %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5696"/>
         <source>Player panic!</source>
-        <translation type="unfinished"></translation>
+        <translation>Pánico en la reproducción!</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5733"/>
@@ -11377,12 +11377,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1684"/>
         <source>Pre&amp;set</source>
-        <translation type="unfinished"></translation>
+        <translation>Pree&amp;stablecido</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1703"/>
         <source>Dire&amp;ct Access</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;cceso Directo</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1722"/>
