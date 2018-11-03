@@ -5,6 +5,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fix MIDI track (and bus) bank/program reset to none.
+
 - Anti-glitch micro-fade-in is disabled on audio clips
   with zero offset. (EXPERIMENTAL)
 
