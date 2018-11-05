@@ -439,9 +439,6 @@ private:
 	qtractorClientListView *m_pOListView;
 	qtractorClientListView *m_pIListView;
 	qtractorConnectorView  *m_pConnectorView;
-
-	// How we'll draw connector lines.
-	bool m_bBezierLines;
 };
 
 
