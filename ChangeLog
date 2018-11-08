@@ -5,6 +5,8 @@ ChangeLog
 
 GIT HEAD
 
+- Old deprecated Qt4 build support is no more.
+
 - Recover audio and MIDI dedicated port connections when
   changing any of the Metronome, Player and/or Control
   option settings. (EXEPERIMENTAL)
