@@ -945,7 +945,7 @@ if test "x$ac_vst" = "xyes"; then
       CFLAGS="$CFLAGS -Isrc/vestige"
       CPPFLAGS="$CPPFLAGS -Isrc/vestige"
       ac_incpath="$ac_incpath vestige"
-      AC_CHECK_HEADER(aeffectx.h, [ac_vst="yes"], [ac_vst="no"])
+      AC_CHECK_HEADER(vestige.h, [ac_vst="yes"], [ac_vst="no"])
    else
       ac_vestige="no"
    fi
