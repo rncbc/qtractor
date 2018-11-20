@@ -465,42 +465,8 @@ int main ( int argc, char **argv )
 
 	// Custom color theme (eg. "KXStudio")...
 	QPalette pal(app.palette());
-	int iUpdatePalette = 0;
 	if (qtractorPaletteForm::namedPalette(
 			&options.settings(), options.sCustomColorTheme, pal))
-		++iUpdatePalette;
-	// Dark themes grayed/disabled color group fix...
-	if (pal.base().color().value() < 0x7f) {
-		const QColor& color = pal.window().color();
-		const int iGroups = int(QPalette::Active | QPalette::Inactive) + 1;
-		for (int i = 0; i < iGroups; ++i) {
-			const QPalette::ColorGroup group = QPalette::ColorGroup(i);
-			pal.setBrush(group, QPalette::Light,    color.lighter(140));
-			pal.setBrush(group, QPalette::Midlight, color.lighter(100));
-			pal.setBrush(group, QPalette::Mid,      color.lighter(90));
-			pal.setBrush(group, QPalette::Dark,     color.darker(160));
-			pal.setBrush(group, QPalette::Shadow,   color.darker(180));
-		}
-		pal.setColorGroup(QPalette::Disabled,
-			pal.windowText().color().darker(),
-			pal.button(),
-			pal.light(),
-			pal.dark(),
-			pal.mid(),
-			pal.text().color().darker(),
-			pal.text().color().lighter(),
-			pal.base(),
-			pal.window());
-	#if QT_VERSION >= 0x050000
-		pal.setColor(QPalette::Disabled,
-			QPalette::Highlight, pal.mid().color());
-		pal.setColor(QPalette::Disabled,
-			QPalette::ButtonText, pal.mid().color());
-	#endif
-		++iUpdatePalette;
-	}
-	// New palette update?
-	if (iUpdatePalette > 0)
 		app.setPalette(pal);
 
 	// Set default base font...

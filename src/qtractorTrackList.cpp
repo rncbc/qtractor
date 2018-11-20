@@ -200,15 +200,15 @@ qtractorTrackListButtons::qtractorTrackListButtons (
 
 	const QSize buttonSize(22, iFixedHeight);
 
-	m_pRecordButton = new qtractorTrackButton(pTrack, qtractorTrack::Record);
+	m_pRecordButton = new qtractorTrackButton(pTrack, qtractorTrack::Record, this);
 	m_pRecordButton->setFixedSize(buttonSize);
 	m_pRecordButton->setFont(font2);
 
-	m_pMuteButton = new qtractorTrackButton(pTrack, qtractorTrack::Mute);
+	m_pMuteButton = new qtractorTrackButton(pTrack, qtractorTrack::Mute, this);
 	m_pMuteButton->setFixedSize(buttonSize);
 	m_pMuteButton->setFont(font2);
 
-	m_pSoloButton = new qtractorTrackButton(pTrack, qtractorTrack::Solo);
+	m_pSoloButton = new qtractorTrackButton(pTrack, qtractorTrack::Solo, this);
 	m_pSoloButton->setFixedSize(buttonSize);
 	m_pSoloButton->setFont(font2);
 

@@ -382,9 +382,6 @@ bool qtractorPaletteForm::namedPalette ( const QString& name, QPalette& pal )
 bool qtractorPaletteForm::namedPalette (
 	QSettings *settings, const QString& name, QPalette& pal )
 {
-	if (name.isEmpty())
-		return false;
-
 	int result = 0;
 	uint mask = pal.resolve();
 
@@ -536,6 +533,37 @@ bool qtractorPaletteForm::namedPalette (
 	}
 
 	pal.resolve(mask);
+
+	// Dark themes grayed/disabled color group fix...
+	if (pal.base().color().value() < 0x7f) {
+		const QColor& color = pal.window().color();
+		const int groups = int(QPalette::Active | QPalette::Inactive) + 1;
+		for (int i = 0; i < groups; ++i) {
+			const QPalette::ColorGroup cg = QPalette::ColorGroup(i);
+			pal.setBrush(cg, QPalette::Light,    color.lighter(140));
+			pal.setBrush(cg, QPalette::Midlight, color.lighter(100));
+			pal.setBrush(cg, QPalette::Mid,      color.lighter(90));
+			pal.setBrush(cg, QPalette::Dark,     color.darker(160));
+			pal.setBrush(cg, QPalette::Shadow,   color.darker(180));
+		}
+		pal.setColorGroup(QPalette::Disabled,
+			pal.windowText().color().darker(),
+			pal.button(),
+			pal.light(),
+			pal.dark(),
+			pal.mid(),
+			pal.text().color().darker(),
+			pal.text().color().lighter(),
+			pal.base(),
+			pal.window());
+	#if QT_VERSION >= 0x050000
+		pal.setColor(QPalette::Disabled,
+			QPalette::Highlight, pal.mid().color());
+		pal.setColor(QPalette::Disabled,
+			QPalette::ButtonText, pal.mid().color());
+	#endif
+		++result;
+	}
 
 	return (result > 0);
 }

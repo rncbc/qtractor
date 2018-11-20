@@ -83,6 +83,8 @@
 
 #include "qtractorPluginFactory.h"
 
+#include "qtractorPaletteForm.h"
+
 #ifdef CONFIG_DSSI
 #include "qtractorDssiPlugin.h"
 #endif
@@ -5090,9 +5092,26 @@ void qtractorMainForm::viewOptions (void)
 			updateMessagesCapture();
 			iNeedRestart |= RestartProgram;
 		}
-		if ((iOldBaseFontSize != m_pOptions->iBaseFontSize) ||
-			(sOldCustomColorTheme != m_pOptions->sCustomColorTheme))
+		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
 			iNeedRestart |= RestartProgram;
+		if (sOldCustomColorTheme != m_pOptions->sCustomColorTheme) {
+			if (m_pOptions->sCustomColorTheme.isEmpty()) {
+				iNeedRestart |= RestartProgram;
+			} else {
+				QPalette pal(QApplication::palette());
+				if (qtractorPaletteForm::namedPalette(
+						&m_pOptions->settings(),
+						m_pOptions->sCustomColorTheme, pal)) {
+					QApplication::setPalette(pal);
+					if (m_pTracks)
+						m_pTracks->updateContents(true);
+					if (m_pMixer) {
+						m_pMixer->updateTracks(true);
+						m_pMixer->updateBuses(true);
+					}
+				}
+			}
+		}
 		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
 			if (m_pOptions->sCustomStyleTheme.isEmpty()) {
 				iNeedRestart |= RestartProgram;
