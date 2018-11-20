@@ -56,6 +56,7 @@ protected slots:
 	void chooseMetroBeatFilename();
 	void updateMetroNoteNames();
 	void displayFormatChanged(int iDisplayFormat);
+	void editCustomColorThemes();
 	void changeAudioMeterLevel(int iColor);
 	void changeMidiMeterLevel(int iColor);
 	void changeAudioMeterColor(const QString& sColor);
@@ -90,6 +91,10 @@ protected:
 	// Session format ext/suffix helpers.
 	int sessionFormatFromExt(const QString& sSessionExt) const;
 	QString sessionExtFromFormat(int iSessionFormat) const;
+
+	// Custom color/style themes settlers.
+	void resetCustomColorThemes(const QString& sCustomColorTheme);
+	void resetCustomStyleThemes(const QString& sCustomStyleTheme);
 
 private:
 
