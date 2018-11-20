@@ -10935,37 +10935,62 @@ Do you want to apply the changes?</source>
         <translation type="unfinished">Название</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="67"/>
+        <location filename="../qtractorPaletteForm.ui" line="63"/>
+        <source>Current color palette name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="70"/>
         <source>Save</source>
         <translation type="unfinished">Сохранить</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="74"/>
+        <location filename="../qtractorPaletteForm.ui" line="73"/>
+        <source>Save current color palette name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="80"/>
         <source>Delete</source>
         <translation type="unfinished">Удалить</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="84"/>
+        <location filename="../qtractorPaletteForm.ui" line="83"/>
+        <source>Delete current color palette name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="93"/>
         <source>Palette</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="103"/>
+        <location filename="../qtractorPaletteForm.ui" line="108"/>
+        <source>Current color palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="115"/>
         <source>Generate:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="119"/>
+        <location filename="../qtractorPaletteForm.ui" line="131"/>
         <source>Base color to generate palette</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="126"/>
+        <location filename="../qtractorPaletteForm.ui" line="138"/>
         <source> Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="149"/>
+        <location filename="../qtractorPaletteForm.ui" line="144"/>
+        <source>Reset all current palette colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="164"/>
         <source>Show Details</source>
         <translation type="unfinished"></translation>
     </message>

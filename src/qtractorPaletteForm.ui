@@ -59,6 +59,9 @@
         <property name="insertPolicy">
          <enum>QComboBox::NoInsert</enum>
         </property>
+        <property name="toolTip">
+         <string>Current color palette name</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -66,12 +69,18 @@
         <property name="text">
          <string>Save</string>
         </property>
+        <property name="toolTip">
+         <string>Save current color palette name</string>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="deleteButton">
         <property name="text">
          <string>Delete</string>
+        </property>
+        <property name="toolTip">
+         <string>Delete current color palette name</string>
         </property>
        </widget>
       </item>
@@ -94,6 +103,9 @@
         </property>
         <property name="alternatingRowColors">
          <bool>true</bool>
+        </property>
+        <property name="toolTip">
+         <string>Current color palette</string>
         </property>
        </widget>
       </item>
@@ -127,6 +139,9 @@
         </property>
         <property name="icon">
          <iconset resource="qtractor.qrc">:/images/itemReset.png</iconset>
+        </property>
+        <property name="toolTip">
+         <string>Reset all current palette colors</string>
         </property>
        </widget>
       </item>
