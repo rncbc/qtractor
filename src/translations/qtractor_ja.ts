@@ -10052,7 +10052,7 @@ Are you sure?</source>
         <translation>メトロノームのMIDIオフセット(レイテンシ)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2537"/>
+        <location filename="../qtractorOptionsForm.ui" line="2581"/>
         <source>&amp;Style theme:</source>
         <translation>スタイルテーマ(&amp;S):</translation>
     </message>
@@ -10442,8 +10442,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2342"/>
         <location filename="../qtractorOptionsForm.ui" line="2513"/>
-        <location filename="../qtractorOptionsForm.ui" line="2560"/>
-        <location filename="../qtractorOptionsForm.cpp" line="631"/>
+        <location filename="../qtractorOptionsForm.ui" line="2604"/>
         <source>(default)</source>
         <translation>(デフォルト)</translation>
     </message>
@@ -10503,37 +10502,42 @@ Are you sure?</source>
         <translation>ミキサーのトリミング表示あるいはグリッドレイアウト表示を自動で選択する(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2890"/>
+        <location filename="../qtractorOptionsForm.ui" line="2552"/>
+        <source>Manage custom color palette themes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="2921"/>
         <source>Whether to show meters on track list/left pane</source>
         <translation>トラックリストの左ペインにメーターを表示するかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2893"/>
+        <location filename="../qtractorOptionsForm.ui" line="2924"/>
         <source>Sho&amp;w meters on track list/left pane</source>
         <translation>トラックリストの左ペインにメーターを表示する(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3596"/>
+        <location filename="../qtractorOptionsForm.ui" line="3627"/>
         <source>Whether to select plugin&apos;s editor (GUI) if more than one are available</source>
         <translation>プラグインに対して一つ以上のエディター(GUI)が利用可能な場合に選択するかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3636"/>
+        <location filename="../qtractorOptionsForm.ui" line="3667"/>
         <source>Whether to use out-of-process plugin inventory scan and cache for persistence</source>
         <translation>プラグインのリストをプロセス外でスキャンし永続キャッシュを作成するかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3639"/>
+        <location filename="../qtractorOptionsForm.ui" line="3670"/>
         <source>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</source>
         <translation>プラグインリストのプロセス外スキャン (推奨) (&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3684"/>
+        <location filename="../qtractorOptionsForm.ui" line="3715"/>
         <source>Whether to show plugins on track list/left pane</source>
         <translation>プラグイン一覧を左ペインのトラックリストに表示するかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3687"/>
+        <location filename="../qtractorOptionsForm.ui" line="3718"/>
         <source>Sho&amp;w plugins on track list/left pane</source>
         <translation>プラグイン一覧を左ペインのトラックリストに表示(&amp;W)</translation>
     </message>
@@ -10568,141 +10572,142 @@ Are you sure?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2553"/>
+        <location filename="../qtractorOptionsForm.ui" line="2597"/>
         <source>Custom widget style theme</source>
         <translation>ウィジェットスタイルテーマのカスタマイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2603"/>
+        <location filename="../qtractorOptionsForm.ui" line="2634"/>
         <source>Meters</source>
         <translation>メーター</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2618"/>
+        <location filename="../qtractorOptionsForm.ui" line="2649"/>
         <source>&amp;Audio:</source>
         <translation>音声(&amp;A):</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2640"/>
+        <location filename="../qtractorOptionsForm.ui" line="2671"/>
         <source>Audio meter level</source>
         <translation>音声メーターレベル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2644"/>
-        <location filename="../qtractorOptionsForm.ui" line="2778"/>
+        <location filename="../qtractorOptionsForm.ui" line="2675"/>
+        <location filename="../qtractorOptionsForm.ui" line="2809"/>
         <source>Over</source>
         <translation>オーバー</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2649"/>
+        <location filename="../qtractorOptionsForm.ui" line="2680"/>
         <source>0 dB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2654"/>
+        <location filename="../qtractorOptionsForm.ui" line="2685"/>
         <source>3 dB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2659"/>
+        <location filename="../qtractorOptionsForm.ui" line="2690"/>
         <source>6 dB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2664"/>
+        <location filename="../qtractorOptionsForm.ui" line="2695"/>
         <source>10 dB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2684"/>
+        <location filename="../qtractorOptionsForm.ui" line="2715"/>
         <source>Audio meter color</source>
         <translation>音声メーターの配色</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2712"/>
+        <location filename="../qtractorOptionsForm.ui" line="2743"/>
         <source>Select custom audio meter color</source>
         <translation>音声メーターに任意の配色を選択</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2718"/>
-        <location filename="../qtractorOptionsForm.ui" line="2832"/>
-        <location filename="../qtractorOptionsForm.ui" line="3231"/>
-        <location filename="../qtractorOptionsForm.ui" line="3456"/>
+        <location filename="../qtractorOptionsForm.ui" line="2555"/>
+        <location filename="../qtractorOptionsForm.ui" line="2749"/>
+        <location filename="../qtractorOptionsForm.ui" line="2863"/>
+        <location filename="../qtractorOptionsForm.ui" line="3262"/>
+        <location filename="../qtractorOptionsForm.ui" line="3487"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2744"/>
+        <location filename="../qtractorOptionsForm.ui" line="2775"/>
         <source>&amp;MIDI:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2769"/>
+        <location filename="../qtractorOptionsForm.ui" line="2800"/>
         <source>MIDI meter level</source>
         <translation>MIDIメーターレベル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2773"/>
+        <location filename="../qtractorOptionsForm.ui" line="2804"/>
         <source>Peak</source>
         <translation>ピーク</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2798"/>
+        <location filename="../qtractorOptionsForm.ui" line="2829"/>
         <source>MIDI meter color</source>
         <translation>MIDIメーター配色</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2826"/>
+        <location filename="../qtractorOptionsForm.ui" line="2857"/>
         <source>Select custom MIDI meter color</source>
         <translation>MIDIメーターに任意の配色を選択</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2858"/>
+        <location filename="../qtractorOptionsForm.ui" line="2889"/>
         <source>Reset meter colors to default</source>
         <translation>メーターの配色をデフォルトにリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2861"/>
+        <location filename="../qtractorOptionsForm.ui" line="2892"/>
         <source>&amp;Reset</source>
         <translation>リセット(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2909"/>
+        <location filename="../qtractorOptionsForm.ui" line="2940"/>
         <source>Messages</source>
         <translation>メッセージ</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2942"/>
+        <location filename="../qtractorOptionsForm.ui" line="2973"/>
         <source>Sample messages text font display</source>
         <translation>テキストフォントのサンプル表示</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2967"/>
+        <location filename="../qtractorOptionsForm.ui" line="2998"/>
         <source>Select font for the messages text display</source>
         <translation>メッセージテキストのフォントを選択</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2970"/>
+        <location filename="../qtractorOptionsForm.ui" line="3001"/>
         <source>&amp;Font...</source>
         <translation>フォント(&amp;F)...</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2999"/>
+        <location filename="../qtractorOptionsForm.ui" line="3030"/>
         <source>Whether to keep a maximum number of lines in the messages window</source>
         <translation>メッセージウィンドウの最大行数を維持するかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3002"/>
+        <location filename="../qtractorOptionsForm.ui" line="3033"/>
         <source>M&amp;essages limit:</source>
         <translation>メッセージリミット(&amp;E):</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3015"/>
+        <location filename="../qtractorOptionsForm.ui" line="3046"/>
         <source>The maximum number of message lines to keep in view</source>
         <translation>ビューに表示されるメッセージの最大数</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3018"/>
+        <location filename="../qtractorOptionsForm.ui" line="3049"/>
         <source> lines</source>
         <translation>行</translation>
     </message>
@@ -10712,228 +10717,228 @@ Are you sure?</source>
         <translation>編集中に自動スクロール (再生位置に追随) するかどうか。</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3046"/>
+        <location filename="../qtractorOptionsForm.ui" line="3077"/>
         <source>Logging</source>
         <translation>ログ</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3079"/>
+        <location filename="../qtractorOptionsForm.ui" line="3110"/>
         <source>Messages log file</source>
         <translation>メッセージログファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3110"/>
+        <location filename="../qtractorOptionsForm.ui" line="3141"/>
         <source>Browse for the messages log file location</source>
         <translation>メッセージログファイルの場所を選択</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3126"/>
+        <location filename="../qtractorOptionsForm.ui" line="3157"/>
         <source>Whether to activate a messages logging to file.</source>
         <translation>メッセージのログをファイルに残すかどうか。</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3129"/>
+        <location filename="../qtractorOptionsForm.ui" line="3160"/>
         <source>Messages &amp;log file:</source>
         <translation>メッセージログファイル(&amp;L):</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3140"/>
+        <location filename="../qtractorOptionsForm.ui" line="3171"/>
         <source>&amp;Plugins</source>
         <translation>プラグイン(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3158"/>
+        <location filename="../qtractorOptionsForm.ui" line="3189"/>
         <source>Paths</source>
         <translation>パス</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3181"/>
+        <location filename="../qtractorOptionsForm.ui" line="3212"/>
         <source>Plugin type</source>
         <translation>プラグインの種類</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3200"/>
+        <location filename="../qtractorOptionsForm.ui" line="3231"/>
         <source>Plugin path</source>
         <translation>プラグインのパス</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3228"/>
+        <location filename="../qtractorOptionsForm.ui" line="3259"/>
         <source>Browse plugin path</source>
         <translation>プラグインパスを選択</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3259"/>
+        <location filename="../qtractorOptionsForm.ui" line="3290"/>
         <source>Add plugin path</source>
         <translation>プラグインパスの追加</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3262"/>
+        <location filename="../qtractorOptionsForm.ui" line="3293"/>
         <source>&amp;Add</source>
         <translation>追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3286"/>
+        <location filename="../qtractorOptionsForm.ui" line="3317"/>
         <source>Plugin paths</source>
         <translation>プラグインパス</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3320"/>
+        <location filename="../qtractorOptionsForm.ui" line="3351"/>
         <source>Remove plugin path</source>
         <translation>プラグインパスの除去</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3323"/>
+        <location filename="../qtractorOptionsForm.ui" line="3354"/>
         <source>&amp;Remove</source>
         <translation>除去(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3351"/>
         <location filename="../qtractorOptionsForm.ui" line="3382"/>
+        <location filename="../qtractorOptionsForm.ui" line="3413"/>
         <source>Move up path</source>
         <translation>パスを上に移動</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3354"/>
+        <location filename="../qtractorOptionsForm.ui" line="3385"/>
         <source>&amp;Up</source>
         <translation>上へ(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3385"/>
+        <location filename="../qtractorOptionsForm.ui" line="3416"/>
         <source>&amp;Down</source>
         <translation>下へ(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3403"/>
+        <location filename="../qtractorOptionsForm.ui" line="3434"/>
         <source>&amp;LV2 Presets directory:</source>
         <translation>LV2プリセットディレクトリー(&amp;L):</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3425"/>
+        <location filename="../qtractorOptionsForm.ui" line="3456"/>
         <source>LV2 Presets directory (default: ~/.lv2)</source>
         <translation>LV2プリセットディレクトリー(デフォルト: ~/.lv2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3453"/>
+        <location filename="../qtractorOptionsForm.ui" line="3484"/>
         <source>Browse LV2 Presets directory</source>
         <translation>LV2プリセットディレクトリーの選択</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3477"/>
+        <location filename="../qtractorOptionsForm.ui" line="3508"/>
         <source>Instruments</source>
         <translation>インストルメント</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3498"/>
+        <location filename="../qtractorOptionsForm.ui" line="3529"/>
         <source>Whether to have separate audio output ports</source>
         <translation>音声出力用に別なポートを設けるかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3501"/>
+        <location filename="../qtractorOptionsForm.ui" line="3532"/>
         <source>Dedicated audi&amp;o outputs:</source>
         <translation>音声専用出力(&amp;O):</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3514"/>
+        <location filename="../qtractorOptionsForm.ui" line="3545"/>
         <source>Whether to auto-connect dedicated audio output ports</source>
         <translation>音声専用出力に自動接続するかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3517"/>
+        <location filename="../qtractorOptionsForm.ui" line="3548"/>
         <source>Au&amp;to-connect</source>
         <translation>自動接続(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3559"/>
+        <location filename="../qtractorOptionsForm.ui" line="3590"/>
         <source>Editor</source>
         <translation>エディター</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3580"/>
+        <location filename="../qtractorOptionsForm.ui" line="3611"/>
         <source>Whether to open plugin&apos;s editor (GUI) by default</source>
         <translation>デフォルトでプラグインのエディター(GUI)を開くかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3583"/>
+        <location filename="../qtractorOptionsForm.ui" line="3614"/>
         <source>Open plugin&apos;s &amp;editor (GUI) by default</source>
         <translation>プラグインのエディター(GUI)をデフォルトで開く(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3599"/>
+        <location filename="../qtractorOptionsForm.ui" line="3630"/>
         <source>&amp;Select plugin&apos;s editor (GUI) if more than one are available</source>
         <translation>プラグインのエディタが複数利用可能なら選択する(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3615"/>
+        <location filename="../qtractorOptionsForm.ui" line="3646"/>
         <source>Experimental</source>
         <translation>エクスペリメンタル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3652"/>
+        <location filename="../qtractorOptionsForm.ui" line="3683"/>
         <source>Whether LV2 Dynamic Manifest plugins are supported</source>
         <translation>LV2ダイナミックマニフェストプラグインをサポートするかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3655"/>
+        <location filename="../qtractorOptionsForm.ui" line="3686"/>
         <source>LV2 Dy&amp;namic Manifest support</source>
         <translation>LV2ダイナミックマニフェストのサポート (&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3668"/>
+        <location filename="../qtractorOptionsForm.ui" line="3699"/>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
         <translation>プラグインのオートメーションをより高い解像度 (14ビット) で保存するかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3671"/>
+        <location filename="../qtractorOptionsForm.ui" line="3702"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
         <translation>プラグインオートメーションを高解像度 (14ビット) で保存 (&amp;H)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="131"/>
+        <location filename="../qtractorOptionsForm.cpp" line="137"/>
         <source>Signed 16-Bit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="132"/>
+        <location filename="../qtractorOptionsForm.cpp" line="138"/>
         <source>Signed 24-Bit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="133"/>
+        <location filename="../qtractorOptionsForm.cpp" line="139"/>
         <source>Signed 32-Bit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="134"/>
+        <location filename="../qtractorOptionsForm.cpp" line="140"/>
         <source>Float  32-Bit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="135"/>
+        <location filename="../qtractorOptionsForm.cpp" line="141"/>
         <source>Float  64-Bit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="139"/>
+        <location filename="../qtractorOptionsForm.cpp" line="145"/>
         <source>SMF Format 0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="140"/>
+        <location filename="../qtractorOptionsForm.cpp" line="146"/>
         <source>SMF Format 1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="160"/>
+        <location filename="../qtractorOptionsForm.cpp" line="166"/>
         <source>(Any)</source>
         <translation>(任意)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="919"/>
+        <location filename="../qtractorOptionsForm.cpp" line="908"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="920"/>
+        <location filename="../qtractorOptionsForm.cpp" line="909"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -10942,65 +10947,158 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="950"/>
+        <location filename="../qtractorOptionsForm.cpp" line="939"/>
         <source>Metronome Bar Audio File</source>
         <translation>メトロノームのbar用音声ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="964"/>
+        <location filename="../qtractorOptionsForm.cpp" line="953"/>
         <source>Metronome Beat Audio File</source>
         <translation>メトロノームのBeat用の音声ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1063"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1109"/>
         <source>Audio Meter Color</source>
         <translation>オーディオメーターの色</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1085"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1131"/>
         <source>MIDI Meter Color</source>
         <translation>MIDIメーターの色</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1181"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1227"/>
         <source>Plug-in Directory</source>
         <translation>プラグインディレクトリー</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1421"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1467"/>
         <source>LV2 Presets Directory</source>
         <translation>LV2プリセットディレクトリー</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1462"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1508"/>
         <source>Messages Font</source>
         <translation>メッセージのフォント</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1490"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1536"/>
         <source>Messages Log</source>
         <translation>メッセージログ</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1493"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1539"/>
         <source>Log files (*.%1)</source>
         <translation>ログファイル (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1494"/>
         <location filename="../qtractorOptionsForm.cpp" line="1540"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1586"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1536"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1582"/>
         <source>Session Template</source>
         <translation>セッションのテンプレート</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1539"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1585"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>セッションのテンプレートファイル(*.qtr *.qts *.%1)</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorPaletteForm</name>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="39"/>
+        <source>Color Themes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="45"/>
+        <source>Name</source>
+        <translation type="unfinished">名前</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="67"/>
+        <source>Save</source>
+        <translation type="unfinished">保存</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="74"/>
+        <source>Delete</source>
+        <translation type="unfinished">削除</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="84"/>
+        <source>Palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="103"/>
+        <source>Generate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="119"/>
+        <source>Base color to generate palette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="126"/>
+        <source> Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="149"/>
+        <source>Show Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="632"/>
+        <location filename="../qtractorPaletteForm.cpp" line="640"/>
+        <source>Warning - %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="633"/>
+        <source>Some settings have been changed.
+
+Do you want to discard the changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="641"/>
+        <source>Some settings have been changed:
+
+&quot;%1&quot;.
+
+Do you want to save the changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>qtractorPaletteForm::PaletteModel</name>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="808"/>
+        <source>Color Role</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="811"/>
+        <source>Active</source>
+        <translation type="unfinished">アクティベート</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="814"/>
+        <source>Inactive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="817"/>
+        <source>Disabled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
