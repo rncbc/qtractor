@@ -5103,8 +5103,10 @@ void qtractorMainForm::viewOptions (void)
 						&m_pOptions->settings(),
 						m_pOptions->sCustomColorTheme, pal)) {
 					QApplication::setPalette(pal);
-					if (m_pTracks)
+					if (m_pTracks) {
+						m_pTracks->trackList()->updateTrackButtons();
 						m_pTracks->updateContents(true);
+					}
 					if (m_pMixer) {
 						m_pMixer->updateTracks(true);
 						m_pMixer->updateBuses(true);

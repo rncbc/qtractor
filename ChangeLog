@@ -6,8 +6,9 @@ ChangeLog
 
 GIT HEAD
 
-- Custom color (palette) theme manager is introduced.
-  (EXPERIMENTAL)
+- Custom color (palette) theme editor introduced; color
+  (palette) theme changes are now effective immediately,
+  except on default. (EXPERIMENTAL)
 
 - Old deprecated Qt4 build support is no more.
 
