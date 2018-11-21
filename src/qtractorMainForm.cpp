@@ -64,6 +64,7 @@
 #include "qtractorExportForm.h"
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
+#include "qtractorPaletteForm.h"
 #include "qtractorConnectForm.h"
 #include "qtractorShortcutForm.h"
 #include "qtractorMidiControlForm.h"
@@ -82,8 +83,6 @@
 #include "qtractorMessageList.h"
 
 #include "qtractorPluginFactory.h"
-
-#include "qtractorPaletteForm.h"
 
 #ifdef CONFIG_DSSI
 #include "qtractorDssiPlugin.h"
@@ -5095,32 +5094,16 @@ void qtractorMainForm::viewOptions (void)
 		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
 			iNeedRestart |= RestartProgram;
 		if (sOldCustomColorTheme != m_pOptions->sCustomColorTheme) {
-			if (m_pOptions->sCustomColorTheme.isEmpty()) {
+			if (m_pOptions->sCustomColorTheme.isEmpty())
 				iNeedRestart |= RestartProgram;
-			} else {
-				QPalette pal(QApplication::palette());
-				if (qtractorPaletteForm::namedPalette(
-						&m_pOptions->settings(),
-						m_pOptions->sCustomColorTheme, pal)) {
-					QApplication::setPalette(pal);
-					if (m_pTracks) {
-						m_pTracks->trackList()->updateTrackButtons();
-						m_pTracks->updateContents(true);
-					}
-					if (m_pMixer) {
-						m_pMixer->updateTracks(true);
-						m_pMixer->updateBuses(true);
-					}
-				}
-			}
+			else
+				updateCustomColorTheme();
 		}
 		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
-			if (m_pOptions->sCustomStyleTheme.isEmpty()) {
+			if (m_pOptions->sCustomStyleTheme.isEmpty())
 				iNeedRestart |= RestartProgram;
-			} else {
-				QApplication::setStyle(
-					QStyleFactory::create(m_pOptions->sCustomStyleTheme));
-			}
+			else
+				updateCustomStyleTheme();
 		}
 		if (( bOldCompletePath && !m_pOptions->bCompletePath) ||
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||
@@ -7388,6 +7371,54 @@ void qtractorMainForm::updateMessagesCapture (void)
 
 	if (m_pMessages)
 		m_pMessages->setCaptureEnabled(m_pOptions->bStdoutCapture);
+}
+
+
+// Update/reset custome color (palette) theme..
+void qtractorMainForm::updateCustomColorTheme (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	if (m_pOptions->sCustomColorTheme.isEmpty())
+		return;
+
+	QPalette pal(QApplication::palette());
+
+	if (qtractorPaletteForm::namedPalette(
+			&m_pOptions->settings(), m_pOptions->sCustomColorTheme, pal)) {
+
+		QApplication::setPalette(pal);
+
+		if (m_pThumbView)
+			m_pThumbView->updateContents();
+		if (m_pTracks) {
+			m_pTracks->trackList()->updateTrackButtons();
+			m_pTracks->updateContents(true);
+		}
+		if (m_pMixer) {
+			m_pMixer->updateTracks(true);
+			m_pMixer->updateBuses(true);
+		}
+
+		QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+		while (iter.hasNext())
+			iter.next()->editor()->updateContents();
+	}
+}
+
+
+// Update/reset custom (widget) style theme..
+void qtractorMainForm::updateCustomStyleTheme (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	if (m_pOptions->sCustomStyleTheme.isEmpty())
+		return;
+
+	QApplication::setStyle(
+		QStyleFactory::create(m_pOptions->sCustomStyleTheme));
 }
 
 
