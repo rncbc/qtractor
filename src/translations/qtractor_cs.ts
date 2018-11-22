@@ -9729,53 +9729,53 @@ Chcete použít tyto změny?</translation>
         <translation>Zvukový soubor s dobou pro přístroj sloužící k stanovení tempa v hudbě (metronom)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1109"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1113"/>
         <source>Audio Meter Color</source>
         <translation>Barva měřiče zvuku</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1131"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1135"/>
         <source>MIDI Meter Color</source>
         <translation>Barva měřiče MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1227"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1231"/>
         <source>Plug-in Directory</source>
         <translation>Adresář s přídavnými moduly</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1467"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1471"/>
         <source>LV2 Presets Directory</source>
         <translation>Adresář s přednastaveními LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1508"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1512"/>
         <source>Messages Font</source>
         <translation>Písmo zpráv</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1536"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1540"/>
         <source>Messages Log</source>
         <translation>Záznam zpráv</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1539"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1543"/>
         <source>Log files (*.%1)</source>
         <translation>Soubory se záznamy (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1540"/>
-        <location filename="../qtractorOptionsForm.cpp" line="1586"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1544"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1590"/>
         <source>All files (*.*)</source>
         <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1582"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1586"/>
         <source>Session Template</source>
         <translation>Předloha pro sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1585"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1589"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Soubory předloh (*.qtr *.qts *.%1) pro sezení</translation>
     </message>
@@ -11082,13 +11082,13 @@ Chcete použít tyto změny?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="660"/>
-        <location filename="../qtractorPaletteForm.cpp" line="668"/>
+        <location filename="../qtractorPaletteForm.cpp" line="669"/>
+        <location filename="../qtractorPaletteForm.cpp" line="677"/>
         <source>Warning - %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="661"/>
+        <location filename="../qtractorPaletteForm.cpp" line="670"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -11097,7 +11097,7 @@ Do you want to discard the changes?</source>
 Chcete zahodit tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="669"/>
+        <location filename="../qtractorPaletteForm.cpp" line="678"/>
         <source>Some settings have been changed:
 
 &quot;%1&quot;.
@@ -11109,22 +11109,22 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorPaletteForm::PaletteModel</name>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="836"/>
+        <location filename="../qtractorPaletteForm.cpp" line="845"/>
         <source>Color Role</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="839"/>
+        <location filename="../qtractorPaletteForm.cpp" line="848"/>
         <source>Active</source>
         <translation type="unfinished">Aktivní</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="842"/>
+        <location filename="../qtractorPaletteForm.cpp" line="851"/>
         <source>Inactive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="845"/>
+        <location filename="../qtractorPaletteForm.cpp" line="854"/>
         <source>Disabled</source>
         <translation type="unfinished"></translation>
     </message>

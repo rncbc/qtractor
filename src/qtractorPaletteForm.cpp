@@ -89,6 +89,7 @@ qtractorPaletteForm::qtractorPaletteForm ( QWidget *parent, const QPalette& pal 
 	m_modelUpdated = false;
 	m_paletteUpdated = false;
 	m_dirtyCount = 0;
+	m_dirtyTotal = 0;
 
 	updateGenerateButton();
 
@@ -588,6 +589,7 @@ void qtractorPaletteForm::saveNamedPalette (
 		}
 		m_settings->endGroup();
 		m_settings->endGroup();
+		++m_dirtyTotal;
 	}
 }
 
@@ -598,6 +600,7 @@ void qtractorPaletteForm::deleteNamedPalette ( const QString& name )
 		m_settings->beginGroup(ColorThemesGroup);
 		m_settings->remove(name);
 		m_settings->endGroup();
+		++m_dirtyTotal;
 	}
 }
 
@@ -639,6 +642,12 @@ QPalette::ColorRole qtractorPaletteForm::colorRole ( const QString& name )
 	}
 
 	return s_colorRoles.value(name, QPalette::NoRole);
+}
+
+
+bool qtractorPaletteForm::isDirty (void) const
+{
+	return (m_dirtyTotal > 0);
 }
 
 

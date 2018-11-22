@@ -1011,16 +1011,20 @@ void qtractorOptionsForm::editCustomColorThemes (void)
 	qtractorPaletteForm form(this);
 	form.setSettings(&m_pOptions->settings());
 
+	QString sCustomColorTheme;
+
 	const int iCustomColorTheme
 		= m_ui.CustomColorThemeComboBox->currentIndex();
 	if (iCustomColorTheme > 0) {
-		const QString& sCustomColorTheme
-			= m_ui.CustomColorThemeComboBox->itemText(iCustomColorTheme);
+		sCustomColorTheme = m_ui.CustomColorThemeComboBox->itemText(iCustomColorTheme);
 		form.setNamedPalette(sCustomColorTheme);
 	}
 
-	if (form.exec() == QDialog::Accepted) {
-		resetCustomColorThemes(form.namedPalette());
+	if (form.exec() == QDialog::Accepted)
+		sCustomColorTheme = form.namedPalette();
+
+	if (form.isDirty()) {
+		resetCustomColorThemes(sCustomColorTheme);
 		changed();
 	}
 }

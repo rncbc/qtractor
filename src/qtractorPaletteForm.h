@@ -62,6 +62,8 @@ public:
 	void setNamedPalette(const QString& name);
 	QString namedPalette() const;
 
+	bool isDirty() const;
+
 	static QStringList namedPaletteList(QSettings *settings);
 	static bool namedPalette(QSettings *settings,
 		const QString& name, QPalette& pal);
@@ -117,6 +119,7 @@ private:
 	bool m_modelUpdated;
 	bool m_paletteUpdated;
 	int m_dirtyCount;
+	int m_dirtyTotal;
 };
 
 
