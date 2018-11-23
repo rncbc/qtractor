@@ -765,7 +765,7 @@ int qtractorAudioPeakFile::write (
 }
 
 
-static inline unsigned char uceilf ( const float x )
+static inline unsigned char unormf ( const float x )
 {
 	const int i = int(255.0f * x);
 	return (i > 255 ? 255 : i);
@@ -786,9 +786,9 @@ void qtractorAudioPeakFile::writeFrame (void)
 		float& fmax = m_pWriter->amax[k];
 		float& fmin = m_pWriter->amin[k];
 		float& frms = m_pWriter->arms[k];
-		frame.max = uceilf(::fabsf(fmax));
-		frame.min = uceilf(::fabsf(fmax));
-		frame.rms = uceilf(::sqrtf(frms / float(m_pWriter->npeak)));
+		frame.max = unormf(::fabsf(fmax));
+		frame.min = unormf(::fabsf(fmin));
+		frame.rms = unormf(::sqrtf(frms / float(m_pWriter->npeak)));
 		// Reset peak period accumulators...
 		fmax = fmin = frms = 0.0f;
 		// Bail out?...
