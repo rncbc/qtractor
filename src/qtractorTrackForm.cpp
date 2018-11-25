@@ -859,11 +859,13 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 		iBankSelMethod = 0;
 	m_ui.BankSelMethodComboBox->setCurrentIndex(iBankSelMethod);
 
+#if 0
 	// If there's banks we must choose at least one...
 	if (iBank < 0 && m_banks.count() > 1) {
 		iBankIndex = 1;
 		iBank = m_banks[iBankIndex];
 	}
+#endif
 
 	// Do the proper bank selection...
 	if (iBank < 0) {

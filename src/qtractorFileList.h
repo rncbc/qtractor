@@ -1,7 +1,7 @@
 // qtractorFileList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@
 #define __qtractorFileList_h
 
 #include <QString>
+#include <QFileInfo>
 #include <QHash>
 
 
@@ -55,28 +56,29 @@ public:
 
 		// Constructors.
 		Key(Type iType, const QString& sPath)
-			: m_iType(iType), m_sPath(sPath) {}
+			: m_iType(iType), m_info(sPath) {}
 		Key(const Key& key)
-			: m_iType(key.type()), m_sPath(key.path()) {}
+			: m_iType(key.type()), m_info(key.info()) {}
 
 		// Key accessors.
 		Type type() const
 			{ return m_iType; }
-		const QString& path() const
-			{ return m_sPath; }
+		const QFileInfo& info() const
+			{ return m_info; }
+
+		// Key helpers.
+		QString path() const
+			{ return m_info.absoluteFilePath(); }
 
 		// Match descriminator.
-		bool operator== (const Key& other) const
-		{
-			return m_iType == other.type()
-				&& m_sPath == other.path();
-		}
+		bool operator== (const Key& key) const
+			{ return m_iType == key.type() && m_info == key.info(); }
 
 	private:
 
 		// Interesting variables.
-		Type    m_iType;
-		QString m_sPath;
+		Type m_iType;
+		QFileInfo m_info;
 	};
 
 	// File hash item.
@@ -87,13 +89,17 @@ public:
 
 		// Constructor.
 		Item(const Key& key, bool bAutoRemove = false)
-			: m_key(key), m_bAutoRemove(bAutoRemove), m_pFileItem(0),
+			: m_key(key), m_bAutoRemove(bAutoRemove), m_pFileItem(NULL),
 				m_iClipRefCount(0), m_iRefCount(0) {}
 
 		// Key accessors.
 		Type type() const
 			{ return m_key.type(); }
-		const QString& path() const
+		const QFileInfo& info() const
+			{ return m_key.info(); }
+
+		// Key helpers.
+		QString path() const
 			{ return m_key.path(); }
 
 		// Auto-destruction flag accessor.

@@ -351,6 +351,9 @@ bool qtractorMidiClip::openMidiFile (
 		if (m_pData) {
 			m_pData->attach(this);
 			qtractorMidiSequence *pSeq = m_pData->sequence();
+			// Initial statistics...
+			pTrack->setMidiNoteMin(pSeq->noteMin());
+			pTrack->setMidiNoteMax(pSeq->noteMax());
 			// Clip name should be clear about it all.
 			if (clipName().isEmpty())
 				setClipName(pSeq->name());
@@ -634,16 +637,6 @@ void qtractorMidiClip::updateEditorEx ( bool bSelectClear )
 	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
 	while (iter.hasNext())
 		iter.next()->updateEditor(bSelectClear);
-}
-
-void qtractorMidiClip::resetEditorEx ( bool bSelectClear )
-{
-	if (m_pData == NULL)
-		return;
-
-	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
-	while (iter.hasNext())
-		iter.next()->resetEditor(bSelectClear);
 }
 
 
@@ -1044,7 +1037,7 @@ void qtractorMidiClip::draw (
 
 	const QColor& fg = pTrack->foreground();
 	pPainter->setPen(fg);
-	pPainter->setBrush(fg.lighter());
+	pPainter->setBrush(fg.lighter(120));
 
 	const bool bClipRecord = (pTrack->clipRecord() == this);
 	const int h1 = clipRect.height() - 2;
@@ -1081,7 +1074,7 @@ void qtractorMidiClip::draw (
 				if (bDrumMode) {
 					const QPolygon& polyg
 						= QPolygon(diamond).translated(x, y);
-					if (h2 > 2)
+					if (h2 > 3)
 						pPainter->drawPolygon(polyg.translated(1, 0)); // shadow
 					pPainter->drawPolygon(polyg); // diamond
 				} else {
@@ -1091,10 +1084,7 @@ void qtractorMidiClip::draw (
 					if (w < 3) w = 3;
 					pPainter->fillRect(x, y, w, h2, fg);
 					if (w > 4 && h2 > 3)
-						pPainter->fillRect(x + 1, y + 1, w - 4, h2 - 3, fg.lighter());
-					else
-					if (w > 3 && h2 > 2)
-						pPainter->fillRect(x + 1, y + 1, w - 3, h2 - 2, fg.lighter());
+						pPainter->fillRect(x + 1, y + 1, w - 4, h2 - 3, fg.lighter(140));
 				}
 			}
 		}
@@ -1162,21 +1152,11 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 }
 
 
-// Clip editor reset.
-void qtractorMidiClip::resetEditor ( bool bSelectClear )
-{
-	if (m_pMidiEditorForm) {
-		qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
-		if (pMidiEditor)
-			pMidiEditor->reset(bSelectClear);
-		m_pMidiEditorForm->resetDirtyCount();
-	}
-}
-
-
 // Clip editor update.
 void qtractorMidiClip::updateEditor ( bool bSelectClear )
 {
+	update();
+
 	if (m_pMidiEditorForm == NULL)
 		return;
 

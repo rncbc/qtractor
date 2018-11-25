@@ -1,7 +1,7 @@
 // qtractor_plugin_scan.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -167,7 +167,11 @@ private:
 // class qtractor_vst_scan -- VST plugin (bare bones) interface.
 //
 
-class AEffect;
+#ifdef CONFIG_VESTIGE
+typedef struct _AEffect AEffect;
+#else
+struct AEffect;
+#endif
 
 class qtractor_vst_scan
 {

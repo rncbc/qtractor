@@ -132,6 +132,7 @@ HEADERS += config.h \
 	qtractorMidiSysexForm.h \
 	qtractorMidiToolsForm.h \
 	qtractorOptionsForm.h \
+	qtractorPaletteForm.h \
 	qtractorPasteRepeatForm.h \
 	qtractorPluginForm.h \
 	qtractorPluginSelectForm.h \
@@ -255,6 +256,7 @@ SOURCES += \
 	qtractorMidiSysexForm.cpp \
 	qtractorMidiToolsForm.cpp \
 	qtractorOptionsForm.cpp \
+	qtractorPaletteForm.cpp \
 	qtractorPasteRepeatForm.cpp \
 	qtractorPluginForm.cpp \
 	qtractorPluginSelectForm.cpp \
@@ -279,6 +281,7 @@ FORMS += \
 	qtractorMidiSysexForm.ui \
 	qtractorMidiToolsForm.ui \
 	qtractorOptionsForm.ui \
+	qtractorPaletteForm.ui \
 	qtractorPasteRepeatForm.ui \
 	qtractorPluginForm.ui \
 	qtractorPluginSelectForm.ui \
@@ -359,10 +362,4 @@ unix {
 		mimetypes/application-x-$${NAME}-archive.svg
 }
 
-# XML/DOM support
-QT += xml
-
-# QT5 support
-!lessThan(QT_MAJOR_VERSION, 5) {
-	QT += widgets
-}
+QT += widgets xml

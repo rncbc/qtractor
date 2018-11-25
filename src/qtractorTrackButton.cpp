@@ -1,7 +1,7 @@
 // qtractorTrackButton.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,10 +22,10 @@
 #include "qtractorAbout.h"
 #include "qtractorTrackButton.h"
 
+#include "qtractorMidiControlObserver.h"
 #include "qtractorMidiControlObserverForm.h"
 
-#include "qtractorMidiControlObserver.h"
-
+#include <QAction>
 
 
 //----------------------------------------------------------------------------
@@ -80,9 +80,6 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	m_pTrack   = pTrack;
 	m_toolType = toolType;
 
-	const QPalette pal(QPushButton::palette());
-	m_rgbText = pal.buttonText().color();
-	m_rgbOff  = pal.button().color();
 	switch (m_toolType) {
 	case qtractorTrack::Record:
 		QPushButton::setText("R");
@@ -112,10 +109,12 @@ void qtractorTrackButton::updateValue ( float fValue )
 {
 	const bool bBlockSignals = QPushButton::blockSignals(true);
 
+	QPalette pal;
+	const QColor rgbText = pal.buttonText().color();
+	const QColor rgbOff = pal.button().color();
 	const bool bOn = (fValue > 0.0f);
-	QPalette pal(QPushButton::palette());
-	pal.setColor(QPalette::ButtonText, bOn ? m_rgbOn.darker() : m_rgbText);
-	pal.setColor(QPalette::Button, bOn ? m_rgbOn : m_rgbOff);
+	pal.setColor(QPalette::ButtonText, bOn ? m_rgbOn.darker() : rgbText);
+	pal.setColor(QPalette::Button, bOn ? m_rgbOn : rgbOff);
 	QPushButton::setPalette(pal);
 	QPushButton::setChecked(bOn);
 
@@ -184,6 +183,13 @@ void qtractorTrackButton::updateTrack (void)
 	}
 
 	observer()->update(true);
+}
+
+
+// Refresh color (palette) state buttons
+void qtractorTrackButton::updateTrackButton (void)
+{
+	updateValue(isChecked() ? 1.0f : 0.0f);
 }
 
 

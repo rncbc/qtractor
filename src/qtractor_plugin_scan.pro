@@ -1,8 +1,8 @@
 # qtractor_plugin_scan.pro
 #
-NAME = qtractor_plugin_scan
+NAME = qtractor
 
-TARGET = $${NAME}
+TARGET = $${NAME}_plugin_scan
 TEMPLATE = app
 
 include(qtractor_plugin_scan.pri)
@@ -16,14 +16,25 @@ unix {
 		PREFIX = /usr/local
 	}
 
-	isEmpty(BINDIR) {
-		BINDIR = $${BINDIR}/bin
+	isEmpty(LIBDIR) {
+		TARGET_ARCH = $$system(uname -m)
+		contains(TARGET_ARCH, x86_64) {
+			LIBDIR = $${PREFIX}/lib64
+		} else {
+			LIBDIR = $${PREFIX}/lib
+		}
+	}
+
+	TARGET_PATH = $${LIBDIR}/$${NAME}
+
+	!exists($${TARGET_PATH}) {
+		system(mkdir -p $${TARGET_PATH})
 	}
 
 	# make install
 	INSTALLS += target
 
-	target.path = $${BINDIR}
+	target.path = $${TARGET_PATH}
 }
 
 # No GUI support

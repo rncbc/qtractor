@@ -1,7 +1,7 @@
 // qtractorMidiEventList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -957,8 +957,10 @@ void qtractorMidiEventList::contextMenuEvent (
 {
 	qtractorMidiEditorForm *pMidiEditorForm
 		= static_cast<qtractorMidiEditorForm *> (QDockWidget::parentWidget());
-	if (pMidiEditorForm)
+	if (pMidiEditorForm) {
+		pMidiEditorForm->stabilizeForm();
 		pMidiEditorForm->editMenu()->exec(pContextMenuEvent->globalPos());
+	}
 }
 
 

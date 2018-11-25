@@ -931,8 +931,10 @@ void qtractorMixerRackWidget::contextMenuEvent (
 		pBus = pSelectedStrip->bus();
 	if (pBus == NULL) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm)
+		if (pMainForm) {
+			pMainForm->stabilizeForm();
 			pMainForm->trackMenu()->exec(pContextMenuEvent->globalPos());
+		}
 		// Bail out...
 		return;
 	}

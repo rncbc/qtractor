@@ -218,9 +218,10 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 					m_pMidiClip->clipStart()) + pSeq->duration())
 				- m_pMidiClip->clipStart());
 		}
-		m_pMidiClip->updateEditorEx(iSelectClear > 0);
-	}	// Just reset editor internals...
-	else m_pMidiClip->resetEditorEx(iSelectClear > 0);
+	}
+
+	// Just reset/update editor internals...
+	m_pMidiClip->updateEditorEx(iSelectClear > 0);
 
 	// Re-enqueue dropped events...
 	if (pSession && pSession->isPlaying()) {

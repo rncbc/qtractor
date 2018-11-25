@@ -15,17 +15,15 @@ branches:
   - master
 
 env:
-- QT_SELECT=4
 - QT_SELECT=5
 
 before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-- if [[ "$QT_SELECT" = "5" ]]; then sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty; fi
+- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
 - sudo apt-get update -qq
 
 install:
-- if [[ "$QT_SELECT" = "4" ]]; then sudo apt-get install -qq libqt4-dev; fi
-- if [[ "$QT_SELECT" = "5" ]]; then sudo apt-get install -qq qt510base qt510tools qt510x11extras; source /opt/qt510/bin/qt510-env.sh; fi
+- sudo apt-get install -qq qt510base qt510tools qt510x11extras; source /opt/qt510/bin/qt510-env.sh
 - sudo apt-get install -qq libjack-dev libasound2-dev libsndfile1-dev
 - sudo apt-get install -qq libvorbis-dev libmad0-dev libsamplerate-dev zlib1g-dev
 - sudo apt-get install -qq ladspa-sdk dssi-dev liblo-dev librubberband-dev
@@ -36,6 +34,6 @@ before_script:
 - ./autogen.sh
 
 script:
-- if [ "$QT_SELECT" = "4" ]; then ./configure --enable-qt4; fi
-- if [ "$QT_SELECT" = "5" ]; then ./configure; fi
-- make && sudo make install
+- ./configure
+- make
+- sudo make install

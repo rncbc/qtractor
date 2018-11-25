@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2005-2015 Rui Nuno Capela <rncbc@rncbc.org> -->
+<!-- Copyright 2005-2018 Rui Nuno Capela <rncbc@rncbc.org> -->
 <component type="desktop">
- <id>qtractor.desktop</id>
- <metadata_license>GPL-2.0+</metadata_license>
+ <id>org.rncbc.qtractor</id>
+ <metadata_license>FSFAP</metadata_license>
  <project_license>GPL-2.0+</project_license>
  <name>Qtractor</name>
  <summary>An Audio/MIDI multi-track sequencer</summary>
@@ -15,9 +15,14 @@
   evolve as a fairly-featured Linux Desktop Audio Workstation GUI,
   specially dedicated to the personal home-studio.</p>
  </description>
+ <launchable type="desktop-id">qtractor.desktop</launchable>
+ <provides>
+​  <binary>qtractor</binary>
+​  <binary>qtractor_plugin_scan</binary>
+​ </provides>
  <screenshots>
   <screenshot type="default">
-   <image>http://qtractor.sourceforge.net/image/qtractor-screenshot11.png</image>
+   <image>http://qtractor.sourceforge.net/image/qtractor-screenshot16.png</image>
    <caption>The main window showing the application in action</caption>
   </screenshot>
  </screenshots>
@@ -35,12 +40,8 @@
   <keyword>LV2</keyword>
   <keyword>Qt</keyword>
  </keywords>
- <url type="homepage">http://qtractor.sourceforge.net</url>
- <updatecontact>rncbc@rncbc.org</updatecontact>
+ <url type="homepage">http://qtractor.org</url>
  <project_group>rncbc.org</project_group>
- <kudos>
-  <kudo>AppMenu</kudo>
-  <kudo>HiDpiIcon</kudo>
-  <kudo>ModernToolkit</kudo>
- </kudos>
+ <developer_name>rncbc aka. Rui Nuno Capela</developer_name>
+ <update_contact>rncbc@rncbc.org</update_contact>
 </component>

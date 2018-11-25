@@ -249,7 +249,7 @@ static LV2_Worker_Status qtractor_lv2_worker_schedule (
 	if (pLv2Worker == NULL)
 		return LV2_WORKER_ERR_UNKNOWN;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractor_lv2_worker_schedule(%p, %u, %p)", pLv2Worker, size, data);
 #endif
 
@@ -265,7 +265,7 @@ static LV2_Worker_Status qtractor_lv2_worker_respond (
 	if (pLv2Worker == NULL)
 		return LV2_WORKER_ERR_UNKNOWN;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractor_lv2_worker_respond(%p, %u, %p)", pLv2Worker, size, data);
 #endif
 
@@ -753,9 +753,9 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI_TYPE_NONE       0
 #define LV2_UI_TYPE_QT4        1
 #define LV2_UI_TYPE_QT5        2
-#define LV2_UI_TYPE_EXTERNAL   3
-#define LV2_UI_TYPE_GTK        4
-#define LV2_UI_TYPE_X11        5
+#define LV2_UI_TYPE_GTK        3
+#define LV2_UI_TYPE_X11        4
+#define LV2_UI_TYPE_EXTERNAL   5
 #define LV2_UI_TYPE_OTHER      6
 
 #ifndef LV2_UI__Qt5UI
@@ -874,7 +874,7 @@ public:
 					= static_cast<QResizeEvent *> (pEvent);
 				if (pResizeEvent)
 					m_pLv2Plugin->lv2_ui_resize(pResizeEvent->size());
-				// Fall thru...
+				break;
 			}
 			default:
 				break;
@@ -1391,8 +1391,12 @@ static int qtractor_lv2_ui_resize (
 	LV2UI_Feature_Handle handle, int width, int height )
 {
 	QWidget *pQtWidget = static_cast<QWidget *> (handle);
-	pQtWidget->resize(width, height);
-	return 0;
+	if (pQtWidget) {
+		pQtWidget->resize(width, height);
+		return 0;
+	} else {
+		return 1;
+	}
 }
 
 #endif	// CONFIG_LV2_UI_X11
@@ -3252,7 +3256,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	lilv_free((void *) ui_bundle_path);
 #endif
 
-	// dit we failed miserably?
+	// Did we failed miserably?
 	if (!ui_instantiate)
 		return;
 
@@ -3286,6 +3290,14 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		m_lv2_ui_widget = static_cast<LV2UI_Widget> (m_pQtWidget);
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 	//	m_bQtDelete = true;
+		// LV2 UI resize control...
+		QSize size = m_pQtWidget->sizeHint();
+		if (!size.isValid() || size.isNull())
+			size = m_pQtWidget->size();
+		if (size.isValid() && !size.isNull()) {
+			m_pQtWidget->setMinimumSize(size);
+			lv2_ui_resize(size);
+		}
 	//	m_pQtWidget->show();
 	}
 	else
@@ -3346,7 +3358,13 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 		m_bQtDelete = false;
 		// LV2 UI resize control...
-		lv2_ui_resize(m_pQtWidget->sizeHint());
+		QSize size = m_pQtWidget->sizeHint();
+		if (!size.isValid() || size.isNull())
+			size = m_pQtWidget->size();
+		if (size.isValid() && !size.isNull()) {
+			m_pQtWidget->setMinimumSize(size);
+			lv2_ui_resize(size);
+		}
 	//	m_pQtWidget->show();
 	} else {
 		m_pQtWidget = NULL;
@@ -4165,7 +4183,7 @@ void qtractorLv2Plugin::lv2_property_changed (
 	if (type != pProp->type())
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_property_changed(\"%s\") [%s]",
 		this, pszKey, pProp->name().toUtf8().constData());
 #endif
@@ -4214,7 +4232,7 @@ void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )
 	LV2_URID type = pProp->type();
 	const QVariant& value = pProp->value();
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_property_update(\"%s\") [%s]",
 		this, pszKey, pProp->name().toUtf8().constData());
 #endif

@@ -73,6 +73,9 @@ public:
 	qtractorCurveButton *curveButton() const
 		{ return m_pCurveButton; }
 
+	// Refresh color (palette) state buttons
+	void updateTrackButtons();
+
 private:
 
 	// The local child widgets.
@@ -138,6 +141,9 @@ public:
 
 	// Update the list view item from track pointer reference.
 	void updateTrack(qtractorTrack *pTrack);
+
+	// Track-button colors (palette) update.
+	void updateTrackButtons();
 
 	// Update all track-items/icons methods.
 	void updateItems();
@@ -256,8 +262,8 @@ private:
 			const QString& sInstrumentName,
 			QString& sBankName, QString& sProgName) const;
 		// Item updaters.
-		void update(qtractorTrackList *pTrackList);
-		void update_icon(qtractorTrackList *pTrackList);
+		void updateItem(qtractorTrackList *pTrackList);
+		void updateIcon(qtractorTrackList *pTrackList);
 		// Item members.
 		qtractorTrack *track;
 		QPixmap        icon;

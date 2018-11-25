@@ -86,6 +86,7 @@ headers = \
 	src/qtractorObserver.h \
 	src/qtractorObserverWidget.h \
 	src/qtractorOptions.h \
+	src/qtractorPaletteForm.h \
 	src/qtractorPlugin.h \
 	src/qtractorPluginFactory.h \
 	src/qtractorPluginCommand.h \
@@ -248,6 +249,7 @@ sources = \
 	src/qtractorMidiSysexForm.cpp \
 	src/qtractorMidiToolsForm.cpp \
 	src/qtractorOptionsForm.cpp \
+	src/qtractorPaletteForm.cpp \
 	src/qtractorPasteRepeatForm.cpp \
 	src/qtractorPluginForm.cpp \
 	src/qtractorPluginSelectForm.cpp \
@@ -273,6 +275,7 @@ forms = \
 	src/qtractorMidiSysexForm.ui \
 	src/qtractorMidiToolsForm.ui \
 	src/qtractorOptionsForm.ui \
+	src/qtractorPaletteForm.ui \
 	src/qtractorPasteRepeatForm.ui \
 	src/qtractorPluginForm.ui \
 	src/qtractorPluginSelectForm.ui \

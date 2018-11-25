@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@
 
 #include "qtractorObserverWidget.h"
 
+#include <QAction>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPainter>
@@ -178,11 +179,6 @@ class qtractorMixerMeter::PanSliderInterface
 {
 public:
 
-	// Constructor.
-	PanSliderInterface (
-		qtractorObserverSlider *pSlider )
-		: qtractorObserverSlider::Interface(pSlider) {}
-
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const
 		{ return 100.0f * fValue; }
@@ -295,7 +291,7 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 	m_pPanObserver  = new PanObserver(this);
 	m_pGainObserver = new GainObserver(this);
 
-	m_pPanSlider->setInterface(new PanSliderInterface(m_pPanSlider));
+	m_pPanSlider->setInterface(new PanSliderInterface());
 
 	m_pPanSlider->setTickPosition(QSlider::NoTicks);
 	m_pPanSlider->setMinimum(-100);

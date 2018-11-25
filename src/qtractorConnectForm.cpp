@@ -42,11 +42,8 @@ qtractorConnectForm::qtractorConnectForm (
 
 	m_pAudioConnect = new qtractorAudioConnect(
 		m_ui.AudioOListView, m_ui.AudioIListView, m_ui.AudioConnectorView);
-	m_pAudioConnect->setBezierLines(true);
-
 	m_pMidiConnect = new qtractorMidiConnect(
 		m_ui.MidiOListView, m_ui.MidiIListView, m_ui.MidiConnectorView);
-	m_pMidiConnect->setBezierLines(true);
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.AudioIClientsComboBox,

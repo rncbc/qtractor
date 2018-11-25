@@ -93,9 +93,6 @@ void qtractorMidiThumbView::updateContents (void)
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.dark().color());
 
-	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
 		return;
@@ -115,6 +112,9 @@ void qtractorMidiThumbView::updateContents (void)
 	qtractorMidiSequence *pSeq = pMidiClip->sequence();
 	if (pSeq == NULL)
 		return;
+
+	QPainter painter(&m_pixmap);
+	painter.initFrom(this);
 
 	// Local contents length (in ticks).
 	const int cw = m_pEditor->editView()->contentsWidth() + 1;
