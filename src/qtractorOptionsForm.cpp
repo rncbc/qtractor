@@ -1024,6 +1024,7 @@ void qtractorOptionsForm::editCustomColorThemes (void)
 		sCustomColorTheme = form.namedPalette();
 
 	if (form.isDirty()) {
+		++m_pOptions->iCustomColorTheme;
 		resetCustomColorThemes(sCustomColorTheme);
 		changed();
 	}

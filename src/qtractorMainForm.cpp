@@ -5026,6 +5026,7 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldMidiMetroOffset    = m_pOptions->iMidiMetroOffset;
 	const bool    bOldMixerAutoGridLayout = m_pOptions->bMixerAutoGridLayout;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
+	const int     iOldCustomColorTheme   = m_pOptions->iCustomColorTheme;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 	const bool    bOldTrackListPlugins   = m_pOptions->bTrackListPlugins;
@@ -5093,7 +5094,8 @@ void qtractorMainForm::viewOptions (void)
 		}
 		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
 			iNeedRestart |= RestartProgram;
-		if (sOldCustomColorTheme != m_pOptions->sCustomColorTheme) {
+		if ((sOldCustomColorTheme != m_pOptions->sCustomColorTheme) ||
+			(iOldCustomColorTheme <  m_pOptions->iCustomColorTheme)) {
 			if (m_pOptions->sCustomColorTheme.isEmpty())
 				iNeedRestart |= RestartProgram;
 			else
@@ -5101,7 +5103,7 @@ void qtractorMainForm::viewOptions (void)
 		}
 		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
 			if (m_pOptions->sCustomStyleTheme.isEmpty())
-				iNeedRestart |= RestartProgram;
+					iNeedRestart |= RestartProgram;
 			else
 				updateCustomStyleTheme();
 		}
