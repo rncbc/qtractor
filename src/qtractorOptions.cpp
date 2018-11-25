@@ -361,7 +361,6 @@ void qtractorOptions::loadOptions (void)
 	m_settings.beginGroup("/Custom");
 	sCustomColorTheme = m_settings.value("/ColorTheme").toString();
 	sCustomStyleTheme = m_settings.value("/StyleTheme").toString();
-	iCustomColorTheme = 0;
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Preferences

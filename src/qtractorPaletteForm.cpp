@@ -533,8 +533,6 @@ bool qtractorPaletteForm::namedPalette (
 		settings->endGroup();
 	}
 
-	pal.resolve(mask);
-
 	// Dark themes grayed/disabled color group fix...
 	if (pal.base().color().value() < 0x7f) {
 		const QColor& color = pal.window().color();
@@ -566,6 +564,7 @@ bool qtractorPaletteForm::namedPalette (
 		++result;
 	}
 
+	pal.resolve(mask);
 	return (result > 0);
 }
 

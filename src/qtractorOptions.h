@@ -312,9 +312,6 @@ public:
 	QString sCustomColorTheme;
 	QString sCustomStyleTheme;
 
-	// Run-time special non-persistent flags.
-	int iCustomColorTheme;
-
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget, bool bVisible = false);
 	void loadWidgetGeometry(QWidget *pWidget, bool bVisible = false);

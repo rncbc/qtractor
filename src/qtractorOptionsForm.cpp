@@ -196,6 +196,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
+	m_iDirtyCustomColorThemes = 0;
 	m_iDirtyPluginPaths = 0;
 
 	// Try to restore old window positioning.
@@ -741,6 +742,12 @@ qtractorOptions *qtractorOptionsForm::options (void) const
 }
 
 
+// Special custom color themes dirty flag.
+bool qtractorOptionsForm::isDirtyCustomColorThemes (void) const
+{
+	return (m_iDirtyCustomColorThemes > 0);
+}
+
 // Accept settings (OK button slot).
 void qtractorOptionsForm::accept (void)
 {
@@ -1024,7 +1031,7 @@ void qtractorOptionsForm::editCustomColorThemes (void)
 		sCustomColorTheme = form.namedPalette();
 
 	if (form.isDirty()) {
-		++m_pOptions->iCustomColorTheme;
+		++m_iDirtyCustomColorThemes;
 		resetCustomColorThemes(sCustomColorTheme);
 		changed();
 	}
