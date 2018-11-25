@@ -2685,7 +2685,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5700"/>
         <source>Player panic!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouzové zastavení přehrávače!</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5764"/>
@@ -10805,7 +10805,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2552"/>
         <source>Manage custom color palette themes</source>
-        <translation type="unfinished"></translation>
+        <translation>Spravovat vlastní témata barevné palety</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2921"/>
@@ -11014,85 +11014,85 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="39"/>
         <source>Color Themes</source>
-        <translation type="unfinished"></translation>
+        <translation>Barevná témata</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="45"/>
         <source>Name</source>
-        <translation type="unfinished">Název</translation>
+        <translation>Název</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="63"/>
         <source>Current color palette name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nynější název barevné palety</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="70"/>
         <source>Save</source>
-        <translation type="unfinished">Uložit</translation>
+        <translation>Uložit</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="73"/>
         <source>Save current color palette name</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit nynější název barevné palety</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="80"/>
         <source>Delete</source>
-        <translation type="unfinished">Smazat</translation>
+        <translation>Smazat</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="83"/>
         <source>Delete current color palette name</source>
-        <translation type="unfinished"></translation>
+        <translation>Smazat nynější název barevné palety</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="93"/>
         <source>Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="108"/>
         <source>Current color palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Nynější barevná paleta</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="115"/>
         <source>Generate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvořit:</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="131"/>
         <source>Base color to generate palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Základní barva pro vytvoření palety</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="138"/>
         <source> Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit znovu</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="144"/>
         <source>Reset all current palette colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit znovu všechny barvy nynější palety</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="164"/>
         <source>Show Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukázat podrobnosti</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="669"/>
         <location filename="../qtractorPaletteForm.cpp" line="677"/>
         <source>Warning - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Varování - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="670"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
-        <translation type="unfinished">Některá nastavení byla změněna.
+        <translation>Některá nastavení byla změněna.
 
 Chcete zahodit tyto změny?</translation>
     </message>
@@ -11103,7 +11103,11 @@ Chcete zahodit tyto změny?</translation>
 &quot;%1&quot;.
 
 Do you want to save the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Některá nastavení byla změněna.
+
+&quot;%1&quot;.
+
+Chcete uložit tyto změny?</translation>
     </message>
 </context>
 <context>
@@ -11111,22 +11115,22 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="845"/>
         <source>Color Role</source>
-        <translation type="unfinished"></translation>
+        <translation>Úloha barvy</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="848"/>
         <source>Active</source>
-        <translation type="unfinished">Aktivní</translation>
+        <translation>Činná</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="851"/>
         <source>Inactive</source>
-        <translation type="unfinished"></translation>
+        <translation>Nečinná</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="854"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakázáno</translation>
     </message>
 </context>
 <context>
@@ -11481,12 +11485,12 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1684"/>
         <source>Pre&amp;set</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Přednastavení</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1703"/>
         <source>Dire&amp;ct Access</source>
-        <translation type="unfinished"></translation>
+        <translation>Pří&amp;mý přístup</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1722"/>
