@@ -66,7 +66,7 @@ public:
 
 	static QStringList namedPaletteList(QSettings *settings);
 	static bool namedPalette(QSettings *settings,
-		const QString& name, QPalette& pal);
+		const QString& name, QPalette& pal, bool fixup = false);
 
 	static QPalette::ColorRole colorRole(const QString& name);
 

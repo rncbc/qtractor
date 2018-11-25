@@ -316,8 +316,7 @@ void qtractorPaletteForm::setNamedPalette ( const QString& name )
 	m_ui.nameCombo->setEditText(name);
 
 	QPalette pal;
-
-	if (namedPalette(name, pal))
+	if (namedPalette(m_settings, name, pal, true))
 		setPalette(pal, pal);
 
 	m_dirtyCount = 0;
@@ -381,7 +380,7 @@ bool qtractorPaletteForm::namedPalette ( const QString& name, QPalette& pal )
 
 
 bool qtractorPaletteForm::namedPalette (
-	QSettings *settings, const QString& name, QPalette& pal )
+	QSettings *settings, const QString& name, QPalette& pal, bool fixup )
 {
 	int result = 0;
 	uint mask = pal.resolve();
@@ -534,7 +533,7 @@ bool qtractorPaletteForm::namedPalette (
 	}
 
 	// Dark themes grayed/disabled color group fix...
-	if (pal.base().color().value() < 0x7f) {
+	if (!fixup && pal.base().color().value() < 0x7f) {
 		const QColor& color = pal.window().color();
 		const int groups = int(QPalette::Active | QPalette::Inactive) + 1;
 		for (int i = 0; i < groups; ++i) {
