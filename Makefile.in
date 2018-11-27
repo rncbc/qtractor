@@ -103,7 +103,7 @@ headers = \
 	src/qtractorThumbView.h \
 	src/qtractorTimeScale.h \
 	src/qtractorTimeScaleCommand.h \
-	src/qtractorTimeStretch.h \
+	src/qtractorWsolaTimeStretcher.h \
 	src/qtractorTimeStretcher.h \
 	src/qtractorTrack.h \
 	src/qtractorTrackButton.h \
@@ -225,7 +225,7 @@ sources = \
 	src/qtractorThumbView.cpp \
 	src/qtractorTimeScale.cpp \
 	src/qtractorTimeScaleCommand.cpp \
-	src/qtractorTimeStretch.cpp \
+	src/qtractorWsolaTimeStretcher.cpp \
 	src/qtractorTimeStretcher.cpp \
 	src/qtractorTrack.cpp \
 	src/qtractorTrackButton.cpp \
