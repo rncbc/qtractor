@@ -42,22 +42,39 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	, m_bRubberBandFlush(false)
 #endif
 {
-	if ((fTimeStretch >= 0.1f && fTimeStretch < 1.0f - 1e-3f) ||
-		(fTimeStretch > 1.0f + 1e-3f && 4.0f >= fTimeStretch)) {
-		if (iFlags & WsolaTimeStretch) {
-			m_pWsolaTimeStretcher = new qtractorWsolaTimeStretcher(iChannels, iSampleRate);
-			m_pWsolaTimeStretcher->setTempo(1.0f / fTimeStretch);
-			m_pWsolaTimeStretcher->setQuickSeek(iFlags & WsolaQuickSeek);
-			fTimeStretch = 0.0f;
-		}
-	}
-	else fTimeStretch = 0.0f;
-#ifdef CONFIG_LIBRUBBERBAND
-	if (fTimeStretch > 0.0f ||
-		(fPitchShift >= 0.1f && fPitchShift < 1.0f - 1e-3f) ||
-		(fPitchShift > 1.0f + 1e-3f && 4.0f >= fPitchShift)) {
+	if (fTimeStretch > 0.0f) {
 		if (fTimeStretch < 0.1f)
-			fTimeStretch = 1.0f;
+			fTimeStretch = 0.1f;
+		else
+		if (fTimeStretch > 10.0f)
+			fTimeStretch = 10.0f;
+		else
+		if (fTimeStretch > 1.0f - 1e-3f &&
+			fTimeStretch < 1.0f + 1e-3f)
+			fTimeStretch = 0.0f; // Disable time-stretcher.
+	}
+
+	if (fPitchShift > 0.0f) {
+		if (fPitchShift < 0.1f)
+			fPitchShift = 0.1f;
+		else
+		if (fPitchShift > 10.0f)
+			fPitchShift = 10.0f;
+		else
+		if (fPitchShift > 1.0f - 1e-3f &&
+			fPitchShift < 1.0f + 1e-3f)
+			fPitchShift = 0.0f; // Disable pitch-shifter.
+	}
+
+	if (fTimeStretch > 0.0f && (iFlags & WsolaTimeStretch)) {
+		m_pWsolaTimeStretcher = new qtractorWsolaTimeStretcher(iChannels, iSampleRate);
+		m_pWsolaTimeStretcher->setTempo(1.0f / fTimeStretch);
+		m_pWsolaTimeStretcher->setQuickSeek(iFlags & WsolaQuickSeek);
+		fTimeStretch = 0.0f; // Avoid RubberBandStretcher...
+	}
+
+#ifdef CONFIG_LIBRUBBERBAND
+	if (fTimeStretch > 0.0f || fPitchShift > 0.0f) {
 		m_pRubberBandStretcher
 			= new RubberBand::RubberBandStretcher(
 				iSampleRate, iChannels,

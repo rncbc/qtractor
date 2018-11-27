@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Audio clip time-stretching and pitch-shifting limits
+  are now 10-fold in either direction. (EXPERIMENTAL)
+
 - Custom color (palette) theme editor introduced; color
   (palette) theme changes are now effective immediately,
   except on default. (EXPERIMENTAL)
