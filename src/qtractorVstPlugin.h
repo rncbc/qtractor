@@ -34,7 +34,11 @@
 #define __cdecl
 #endif
 
+#ifdef CONFIG_VESTIGE
+#include <vestige.h>
+#else
 #include <aeffectx.h>
+#endif
 
 #if QT_VERSION < 0x050000
 #if defined(Q_WS_X11)

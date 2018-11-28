@@ -427,6 +427,9 @@ protected:
 	void updateMixerAutoGridLayout();
 	void updateSyncViewHold();
 
+	void updateCustomColorTheme();
+	void updateCustomStyleTheme();
+
 	void updateContents(qtractorMidiEditor *pMidiEditor, bool bRefresh);
 	void updateDirtyCount(bool bDirtyCount);
 

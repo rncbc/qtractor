@@ -1163,9 +1163,8 @@ class qtractorPluginParamWidget::SliderInterface
 public:
 
 	// Constructor.
-	SliderInterface (
-		qtractorObserverSlider *pSlider, qtractorPluginParam *pParam )
-		: qtractorObserverSlider::Interface(pSlider), m_pParam(pParam) {}
+	SliderInterface ( qtractorPluginParam *pParam )
+		: m_pParam(pParam) {}
 
 	// Formerly Pure virtuals.
 	float scaleFromValue ( float fValue ) const
@@ -1173,7 +1172,7 @@ public:
 			m_pParam->isLogarithmic()); }
 
 	float valueFromScale ( float fScale ) const
-		{ return m_pParam->observer()->valueFromScale((fScale / 10000.0f),
+		{ return m_pParam->observer()->valueFromScale(0.0001f * fScale,
 			m_pParam->isLogarithmic()); }
 
 private:
@@ -1241,7 +1240,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
 		}
 		m_pSlider = new qtractorObserverSlider(/*this*/);
-		m_pSlider->setInterface(new SliderInterface(m_pSlider, m_pParam));
+		m_pSlider->setInterface(new SliderInterface(m_pParam));
 		m_pSlider->setOrientation(Qt::Horizontal);
 		m_pSlider->setTickPosition(QSlider::NoTicks);
 		m_pSlider->setMinimumWidth(120);

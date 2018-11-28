@@ -514,7 +514,7 @@
          <double>1.0</double>
         </property>
         <property name="maximum">
-         <double>400.0</double>
+         <double>1000.0</double>
         </property>
         <property name="singleStep">
          <double>0.1</double>
@@ -558,10 +558,10 @@
          <number>2</number>
         </property>
         <property name="minimum">
-         <double>-24.0</double>
+         <double>-40.0</double>
         </property>
         <property name="maximum">
-         <double>24.0</double>
+         <double>40.0</double>
         </property>
         <property name="singleStep">
          <double>0.01</double>

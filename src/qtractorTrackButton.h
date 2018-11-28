@@ -78,6 +78,9 @@ public:
 
 	qtractorTrack::ToolType toolType() const;
 
+	// Refresh color (palette) state buttons
+	void updateTrackButton();
+
 protected slots:
 
 	// Special toggle slot.
@@ -97,10 +100,8 @@ private:
 	qtractorTrack *m_pTrack;
 	qtractorTrack::ToolType m_toolType;
 
-	// Special background colors.
-	QColor m_rgbText;
+	// Special background color.
 	QColor m_rgbOn;
-	QColor m_rgbOff;
 };
 
 

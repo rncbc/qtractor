@@ -48,7 +48,7 @@ BuildRequires:	libsratom-devel
 BuildRequires:	liblilv-devel
 BuildRequires:	libsuil-devel
 BuildRequires:	zlib-devel
-BuildRequires:  gtk2-devel
+#BuildRequires:	 gtk2-devel
 
 Requires(post):		desktop-file-utils, shared-mime-info
 Requires(postun):	desktop-file-utils, shared-mime-info
@@ -87,6 +87,7 @@ the personal home-studio.
 %files
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog README TODO
+%dir %{_libdir}/%{name}
 #dir %{_datadir}/mime
 #dir %{_datadir}/mime/packages
 #dir %{_datadir}/applications
@@ -103,7 +104,7 @@ the personal home-studio.
 #dir %{_datadir}/man
 #dir %{_datadir}/man/man1
 %{_bindir}/%{name}
-%{_bindir}/%{name}_plugin_scan
+%{_libdir}/%{name}/%{name}_plugin_scan
 %{_datadir}/mime/packages/%{name}.xml
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png

@@ -23,6 +23,8 @@
 #include "qtractorOptions.h"
 #include "qtractorMainForm.h"
 
+#include "qtractorPaletteForm.h"
+
 #include <QApplication>
 #include <QLibraryInfo>
 #include <QTranslator>
@@ -423,141 +425,6 @@ void stacktrace ( int signo )
 
 
 //-------------------------------------------------------------------------
-// update_palette() - Application palette settler.
-//
-
-static bool update_palette ( QPalette& pal, const QString& sCustomColorTheme )
-{
-	if (sCustomColorTheme.isEmpty())
-		return false;
-
-	if (sCustomColorTheme == "Wonton Soup") {
-		pal.setColor(QPalette::Active,   QPalette::Window, QColor(73, 78, 88));
-		pal.setColor(QPalette::Inactive, QPalette::Window, QColor(73, 78, 88));
-		pal.setColor(QPalette::Disabled, QPalette::Window, QColor(64, 68, 77));
-		pal.setColor(QPalette::Active,   QPalette::WindowText, QColor(182, 193, 208));
-		pal.setColor(QPalette::Inactive, QPalette::WindowText, QColor(182, 193, 208));
-		pal.setColor(QPalette::Disabled, QPalette::WindowText, QColor(97, 104, 114));
-		pal.setColor(QPalette::Active,   QPalette::Base, QColor(60, 64, 72));
-		pal.setColor(QPalette::Inactive, QPalette::Base, QColor(60, 64, 72));
-		pal.setColor(QPalette::Disabled, QPalette::Base, QColor(52, 56, 63));
-		pal.setColor(QPalette::Active,   QPalette::AlternateBase, QColor(67, 71, 80));
-		pal.setColor(QPalette::Inactive, QPalette::AlternateBase, QColor(67, 71, 80));
-		pal.setColor(QPalette::Disabled, QPalette::AlternateBase, QColor(59, 62, 70));
-		pal.setColor(QPalette::Active,   QPalette::ToolTipBase, QColor(182, 193, 208));
-		pal.setColor(QPalette::Inactive, QPalette::ToolTipBase, QColor(182, 193, 208));
-		pal.setColor(QPalette::Disabled, QPalette::ToolTipBase, QColor(182, 193, 208));
-		pal.setColor(QPalette::Active,   QPalette::ToolTipText, QColor(42, 44, 48));
-		pal.setColor(QPalette::Inactive, QPalette::ToolTipText, QColor(42, 44, 48));
-		pal.setColor(QPalette::Disabled, QPalette::ToolTipText, QColor(42, 44, 48));
-		pal.setColor(QPalette::Active,   QPalette::Text, QColor(210, 222, 240));
-		pal.setColor(QPalette::Inactive, QPalette::Text, QColor(210, 222, 240));
-		pal.setColor(QPalette::Disabled, QPalette::Text, QColor(99, 105, 115));
-		pal.setColor(QPalette::Active,   QPalette::Button, QColor(82, 88, 99));
-		pal.setColor(QPalette::Inactive, QPalette::Button, QColor(82, 88, 99));
-		pal.setColor(QPalette::Disabled, QPalette::Button, QColor(72, 77, 87));
-		pal.setColor(QPalette::Active,   QPalette::ButtonText, QColor(210, 222, 240));
-		pal.setColor(QPalette::Inactive, QPalette::ButtonText, QColor(210, 222, 240));
-		pal.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(111, 118, 130));
-		pal.setColor(QPalette::Active,   QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Inactive, QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Disabled, QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Active,   QPalette::Light, QColor(95, 101, 114));
-		pal.setColor(QPalette::Inactive, QPalette::Light, QColor(95, 101, 114));
-		pal.setColor(QPalette::Disabled, QPalette::Light, QColor(86, 92, 104));
-		pal.setColor(QPalette::Active,   QPalette::Midlight, QColor(84, 90, 101));
-		pal.setColor(QPalette::Inactive, QPalette::Midlight, QColor(84, 90, 101));
-		pal.setColor(QPalette::Disabled, QPalette::Midlight, QColor(75, 81, 91));
-		pal.setColor(QPalette::Active,   QPalette::Dark, QColor(40, 43, 49));
-		pal.setColor(QPalette::Inactive, QPalette::Dark, QColor(40, 43, 49));
-		pal.setColor(QPalette::Disabled, QPalette::Dark, QColor(35, 38, 43));
-		pal.setColor(QPalette::Active,   QPalette::Mid, QColor(63, 68, 76));
-		pal.setColor(QPalette::Inactive, QPalette::Mid, QColor(63, 68, 76));
-		pal.setColor(QPalette::Disabled, QPalette::Mid, QColor(56, 59, 67));
-		pal.setColor(QPalette::Active,   QPalette::Shadow, QColor(29, 31, 35));
-		pal.setColor(QPalette::Inactive, QPalette::Shadow, QColor(29, 31, 35));
-		pal.setColor(QPalette::Disabled, QPalette::Shadow, QColor(25, 27, 30));
-		pal.setColor(QPalette::Active,   QPalette::Highlight, QColor(120, 136, 156));
-		pal.setColor(QPalette::Inactive, QPalette::Highlight, QColor(81, 90, 103));
-		pal.setColor(QPalette::Disabled, QPalette::Highlight, QColor(64, 68, 77));
-		pal.setColor(QPalette::Active,   QPalette::HighlightedText, QColor(209, 225, 244));
-		pal.setColor(QPalette::Inactive, QPalette::HighlightedText, QColor(182, 193, 208));
-		pal.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(97, 104, 114));
-		pal.setColor(QPalette::Active,   QPalette::Link, QColor(156, 212, 255));
-		pal.setColor(QPalette::Inactive, QPalette::Link, QColor(156, 212, 255));
-		pal.setColor(QPalette::Disabled, QPalette::Link, QColor(82, 102, 119));
-		pal.setColor(QPalette::Active,   QPalette::LinkVisited, QColor(64, 128, 255));
-		pal.setColor(QPalette::Inactive, QPalette::LinkVisited, QColor(64, 128, 255));
-		pal.setColor(QPalette::Disabled, QPalette::LinkVisited, QColor(54, 76, 119));
-		return true;
-	}
-	else
-	if (sCustomColorTheme == "KXStudio") {
-		pal.setColor(QPalette::Active,   QPalette::Window, QColor(17, 17, 17));
-		pal.setColor(QPalette::Inactive, QPalette::Window, QColor(17, 17, 17));
-		pal.setColor(QPalette::Disabled, QPalette::Window, QColor(14, 14, 14));
-		pal.setColor(QPalette::Active,   QPalette::WindowText, QColor(240, 240, 240));
-		pal.setColor(QPalette::Inactive, QPalette::WindowText, QColor(240, 240, 240));
-		pal.setColor(QPalette::Disabled, QPalette::WindowText, QColor(83, 83, 83));
-		pal.setColor(QPalette::Active,   QPalette::Base, QColor(7, 7, 7));
-		pal.setColor(QPalette::Inactive, QPalette::Base, QColor(7, 7, 7));
-		pal.setColor(QPalette::Disabled, QPalette::Base, QColor(6, 6, 6));
-		pal.setColor(QPalette::Active,   QPalette::AlternateBase, QColor(14, 14, 14));
-		pal.setColor(QPalette::Inactive, QPalette::AlternateBase, QColor(14, 14, 14));
-		pal.setColor(QPalette::Disabled, QPalette::AlternateBase, QColor(12, 12, 12));
-		pal.setColor(QPalette::Active,   QPalette::ToolTipBase, QColor(4, 4, 4));
-		pal.setColor(QPalette::Inactive, QPalette::ToolTipBase, QColor(4, 4, 4));
-		pal.setColor(QPalette::Disabled, QPalette::ToolTipBase, QColor(4, 4, 4));
-		pal.setColor(QPalette::Active,   QPalette::ToolTipText, QColor(230, 230, 230));
-		pal.setColor(QPalette::Inactive, QPalette::ToolTipText, QColor(230, 230, 230));
-		pal.setColor(QPalette::Disabled, QPalette::ToolTipText, QColor(230, 230, 230));
-		pal.setColor(QPalette::Active,   QPalette::Text, QColor(230, 230, 230));
-		pal.setColor(QPalette::Inactive, QPalette::Text, QColor(230, 230, 230));
-		pal.setColor(QPalette::Disabled, QPalette::Text, QColor(74, 74, 74));
-		pal.setColor(QPalette::Active,   QPalette::Button, QColor(28, 28, 28));
-		pal.setColor(QPalette::Inactive, QPalette::Button, QColor(28, 28, 28));
-		pal.setColor(QPalette::Disabled, QPalette::Button, QColor(24, 24, 24));
-		pal.setColor(QPalette::Active,   QPalette::ButtonText, QColor(240, 240, 240));
-		pal.setColor(QPalette::Inactive, QPalette::ButtonText, QColor(240, 240, 240));
-		pal.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(90, 90, 90));
-		pal.setColor(QPalette::Active,   QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Inactive, QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Disabled, QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Active,   QPalette::Light, QColor(191, 191, 191));
-		pal.setColor(QPalette::Inactive, QPalette::Light, QColor(191, 191, 191));
-		pal.setColor(QPalette::Disabled, QPalette::Light, QColor(191, 191, 191));
-		pal.setColor(QPalette::Active,   QPalette::Midlight, QColor(155, 155, 155));
-		pal.setColor(QPalette::Inactive, QPalette::Midlight, QColor(155, 155, 155));
-		pal.setColor(QPalette::Disabled, QPalette::Midlight, QColor(155, 155, 155));
-		pal.setColor(QPalette::Active,   QPalette::Dark, QColor(129, 129, 129));
-		pal.setColor(QPalette::Inactive, QPalette::Dark, QColor(129, 129, 129));
-		pal.setColor(QPalette::Disabled, QPalette::Dark, QColor(129, 129, 129));
-		pal.setColor(QPalette::Active,   QPalette::Mid, QColor(94, 94, 94));
-		pal.setColor(QPalette::Inactive, QPalette::Mid, QColor(94, 94, 94));
-		pal.setColor(QPalette::Disabled, QPalette::Mid, QColor(94, 94, 94));
-		pal.setColor(QPalette::Active,   QPalette::Shadow, QColor(155, 155, 155));
-		pal.setColor(QPalette::Inactive, QPalette::Shadow, QColor(155, 155, 155));
-		pal.setColor(QPalette::Disabled, QPalette::Shadow, QColor(155, 155, 155));
-		pal.setColor(QPalette::Active,   QPalette::Highlight, QColor(60, 60, 60));
-		pal.setColor(QPalette::Inactive, QPalette::Highlight, QColor(34, 34, 34));
-		pal.setColor(QPalette::Disabled, QPalette::Highlight, QColor(14, 14, 14));
-		pal.setColor(QPalette::Active,   QPalette::HighlightedText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Inactive, QPalette::HighlightedText, QColor(240, 240, 240));
-		pal.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(83, 83, 83));
-		pal.setColor(QPalette::Active,   QPalette::Link, QColor(100, 100, 230));
-		pal.setColor(QPalette::Inactive, QPalette::Link, QColor(100, 100, 230));
-		pal.setColor(QPalette::Disabled, QPalette::Link, QColor(34, 34, 74));
-		pal.setColor(QPalette::Active,   QPalette::LinkVisited, QColor(230, 100, 230));
-		pal.setColor(QPalette::Inactive, QPalette::LinkVisited, QColor(230, 100, 230));
-		pal.setColor(QPalette::Disabled, QPalette::LinkVisited, QColor(74, 34, 74));
-		return true;
-	}
-
-	return false;
-}
-
-
-//-------------------------------------------------------------------------
 // main - The main program trunk.
 //
 
@@ -598,41 +465,8 @@ int main ( int argc, char **argv )
 
 	// Custom color theme (eg. "KXStudio")...
 	QPalette pal(app.palette());
-	unsigned int iUpdatePalette = 0;
-	if (update_palette(pal, options.sCustomColorTheme))
-		++iUpdatePalette;
-	// Dark themes grayed/disabled color group fix...
-	if (pal.base().color().value() < 0x7f) {
-		const QColor& color = pal.window().color();
-		const int iGroups = int(QPalette::Active | QPalette::Inactive) + 1;
-		for (int i = 0; i < iGroups; ++i) {
-			const QPalette::ColorGroup group = QPalette::ColorGroup(i);
-			pal.setBrush(group, QPalette::Light,    color.lighter(140));
-			pal.setBrush(group, QPalette::Midlight, color.lighter(100));
-			pal.setBrush(group, QPalette::Mid,      color.lighter(90));
-			pal.setBrush(group, QPalette::Dark,     color.darker(160));
-			pal.setBrush(group, QPalette::Shadow,   color.darker(180));
-		}
-		pal.setColorGroup(QPalette::Disabled,
-			pal.windowText().color().darker(),
-			pal.button(),
-			pal.light(),
-			pal.dark(),
-			pal.mid(),
-			pal.text().color().darker(),
-			pal.text().color().lighter(),
-			pal.base(),
-			pal.window());
-	#if QT_VERSION >= 0x050000
-		pal.setColor(QPalette::Disabled,
-			QPalette::Highlight, pal.mid().color());
-		pal.setColor(QPalette::Disabled,
-			QPalette::ButtonText, pal.mid().color());
-	#endif
-		++iUpdatePalette;
-	}
-	// New palette update?
-	if (iUpdatePalette > 0)
+	if (qtractorPaletteForm::namedPalette(
+			&options.settings(), options.sCustomColorTheme, pal))
 		app.setPalette(pal);
 
 	// Set default base font...

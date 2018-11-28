@@ -1681,7 +1681,7 @@ void qtractorPluginListView::contextMenuEvent (
 
 	menu.addSeparator();
 
-	QMenu *pPresetMenu = menu.addMenu("Preset");
+	QMenu *pPresetMenu = menu.addMenu(tr("Pre&set"));
 	if (pPlugin) {
 		const QStringList& presets = pPlugin->presetList();
 		QStringListIterator iter(presets);
@@ -1700,7 +1700,7 @@ void qtractorPluginListView::contextMenuEvent (
 	}
 	pPresetMenu->setEnabled(pPlugin != NULL);
 
-	QMenu *pDirectAccessParamMenu = menu.addMenu("Dire&ct Access");
+	QMenu *pDirectAccessParamMenu = menu.addMenu(tr("Dire&ct Access"));
 	if (pPlugin) {
 		const int iDirectAccessParamIndex = pPlugin->directAccessParamIndex();
 		const qtractorPlugin::Params& params = pPlugin->params();

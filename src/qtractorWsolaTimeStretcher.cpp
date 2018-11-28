@@ -1,7 +1,7 @@
-// qtractorTimeStretch.cpp
+// qtractorWsolaTimeStretcher.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2012, Olli Parviainen.
@@ -22,7 +22,7 @@
 
 *****************************************************************************/
 
-#include "qtractorTimeStretch.h"
+#include "qtractorWsolaTimeStretcher.h"
 
 #include <math.h>
 
@@ -141,11 +141,11 @@ static inline float std_cross_corr (
 
 
 //---------------------------------------------------------------------------
-// qtractorTimeStretch - Time-stretch (tempo change) effect for processed sound.
+// qtractorWsolaTimeStretcher - Time-stretch (tempo change) effect for processed sound.
 //
 
 // Constructor.
-qtractorTimeStretch::qtractorTimeStretch (
+qtractorWsolaTimeStretcher::qtractorWsolaTimeStretcher (
 	unsigned short iChannels, unsigned int iSampleRate )
 	: m_iChannels(0)
 {
@@ -174,7 +174,7 @@ qtractorTimeStretch::qtractorTimeStretch (
 
 
 // Destructor.
-qtractorTimeStretch::~qtractorTimeStretch (void)
+qtractorWsolaTimeStretcher::~qtractorWsolaTimeStretcher (void)
 {
 	if (m_ppFrames) {
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
@@ -191,7 +191,7 @@ qtractorTimeStretch::~qtractorTimeStretch (void)
 
 
 // Sets the number of channels, 1=mono, 2=stereo.
-void qtractorTimeStretch::setChannels ( unsigned short iChannels )
+void qtractorWsolaTimeStretcher::setChannels ( unsigned short iChannels )
 {
 	if (m_iChannels == iChannels)
 		return;
@@ -203,7 +203,7 @@ void qtractorTimeStretch::setChannels ( unsigned short iChannels )
 
 
 // Get the assigne number of channels, 1=mono, 2=stereo.
-unsigned short qtractorTimeStretch::channels (void) const
+unsigned short qtractorWsolaTimeStretcher::channels (void) const
 {
 	return m_iChannels;
 }
@@ -211,7 +211,7 @@ unsigned short qtractorTimeStretch::channels (void) const
 
 // Sets new target tempo; less than 1.0 values represent
 // slower tempo, greater than 1.0 represents faster tempo.
-void qtractorTimeStretch::setTempo ( float fTempo )
+void qtractorWsolaTimeStretcher::setTempo ( float fTempo )
 {
 	// Set new is tempo scaling.
 	m_fTempo = fTempo;
@@ -239,20 +239,20 @@ void qtractorTimeStretch::setTempo ( float fTempo )
 }
 
 // Get assigned target tempo.
-float qtractorTimeStretch::tempo (void) const
+float qtractorWsolaTimeStretcher::tempo (void) const
 {
 	return m_fTempo;
 }
 
 
 // Set quick-seek mode (hierachical search).
-void qtractorTimeStretch::setQuickSeek ( bool bQuickSeek )
+void qtractorWsolaTimeStretcher::setQuickSeek ( bool bQuickSeek )
 {
 	m_bQuickSeek = bQuickSeek;
 }
 
 // Get quick-seek mode.
-bool qtractorTimeStretch::isQuickSeek (void) const
+bool qtractorWsolaTimeStretcher::isQuickSeek (void) const
 {
 	return m_bQuickSeek;
 }
@@ -267,7 +267,7 @@ bool qtractorTimeStretch::isQuickSeek (void) const
 // iSeekWindowMs = seeking window length for scanning the best
 //      overlapping position.
 // iOverlapMs = overlapping length.
-void qtractorTimeStretch::setParameters (
+void qtractorWsolaTimeStretcher::setParameters (
 	unsigned int iSampleRate,
 	unsigned int iSequenceMs,
 	unsigned int iSeekWindowMs,
@@ -290,7 +290,7 @@ void qtractorTimeStretch::setParameters (
 // Get routine control parameters, see setParameters() function.
 // Any of the parameters to this function can be NULL, in such case
 // corresponding parameter value isn't returned.
-void qtractorTimeStretch::getParameters (
+void qtractorWsolaTimeStretcher::getParameters (
 	unsigned int *piSampleRate,
 	unsigned int *piSequenceMs,
 	unsigned int *piSeekWindowMs,
@@ -311,7 +311,7 @@ void qtractorTimeStretch::getParameters (
 
 
 // Clears mid sample frame buffer.
-void qtractorTimeStretch::clearMidBuffer (void)
+void qtractorWsolaTimeStretcher::clearMidBuffer (void)
 {
 	if (m_bMidBufferDirty) {
 		for (unsigned short i = 0; i < m_iChannels; ++i)
@@ -322,7 +322,7 @@ void qtractorTimeStretch::clearMidBuffer (void)
 
 
 // Clears input and mid sample frame buffers.
-void qtractorTimeStretch::clearInput (void)
+void qtractorWsolaTimeStretcher::clearInput (void)
 {
 	m_inputBuffer.clear();
 	clearMidBuffer();
@@ -330,7 +330,7 @@ void qtractorTimeStretch::clearInput (void)
 
 
 // Clears all sample frame buffers.
-void qtractorTimeStretch::clear (void)
+void qtractorWsolaTimeStretcher::clear (void)
 {
 	m_outputBuffer.clear();
 	m_inputBuffer.clear();
@@ -346,7 +346,7 @@ void qtractorTimeStretch::clear (void)
 // the two overlapped sample sequences are 'most alike',
 // in terms of the highest cross-correlation value over
 // the overlapping period.
-unsigned int qtractorTimeStretch::seekBestOverlapPosition (void) 
+unsigned int qtractorWsolaTimeStretcher::seekBestOverlapPosition (void)
 {
 	float fBestCorr, fCorr;
 	unsigned int iBestOffs, iPrevBestOffs;
@@ -412,7 +412,7 @@ unsigned int qtractorTimeStretch::seekBestOverlapPosition (void)
 
 // Processes as many processing frames of the samples
 // from input-buffer, store the result into output-buffer.
-void qtractorTimeStretch::processFrames (void)
+void qtractorWsolaTimeStretcher::processFrames (void)
 {
 	unsigned short i;
 	unsigned int j, k;
@@ -488,7 +488,7 @@ void qtractorTimeStretch::processFrames (void)
 
 
 // Adds frames of samples into the input of the object.
-void qtractorTimeStretch::putFrames ( float **ppFrames, unsigned int iFrames )
+void qtractorWsolaTimeStretcher::putFrames ( float **ppFrames, unsigned int iFrames )
 {
 	// Add the frames into the input buffer.
 	m_inputBuffer.putFrames(ppFrames, iFrames);
@@ -501,21 +501,21 @@ void qtractorTimeStretch::putFrames ( float **ppFrames, unsigned int iFrames )
 // Copies requested frames output buffer and removes them
 // from the sample buffer. If there are less than frames()
 // samples in the buffer, returns all that available.
-unsigned int qtractorTimeStretch::receiveFrames ( float **ppFrames, unsigned int iFrames )
+unsigned int qtractorWsolaTimeStretcher::receiveFrames ( float **ppFrames, unsigned int iFrames )
 {
 	return m_outputBuffer.receiveFrames(ppFrames, iFrames);
 }
 
 
 // Returns number of frames currently available.
-unsigned int qtractorTimeStretch::frames() const
+unsigned int qtractorWsolaTimeStretcher::frames() const
 {
 	return m_outputBuffer.frames();
 }
 
 
 // Flush any last samples that are hiding in the internal processing pipeline.
-void qtractorTimeStretch::flushInput (void)
+void qtractorWsolaTimeStretcher::flushInput (void)
 {
 	if (m_bMidBufferDirty) {
 		// Prepare a dummy empty buffer...
@@ -546,7 +546,7 @@ void qtractorTimeStretch::flushInput (void)
 
 // Slopes the amplitude of the mid-buffer samples
 // so that cross correlation is faster to calculate
-void qtractorTimeStretch::calcCrossCorrReference (void)
+void qtractorWsolaTimeStretcher::calcCrossCorrReference (void)
 {
 	for (unsigned int j = 0 ; j < m_iOverlapLength ; ++j) {
 		const float fTemp = (float) j * (float) (m_iOverlapLength - j);
@@ -557,7 +557,7 @@ void qtractorTimeStretch::calcCrossCorrReference (void)
 
 
 // Calculates overlap period length in frames and reallocate ref-mid-buffer.
-void qtractorTimeStretch::calcOverlapLength (void)
+void qtractorWsolaTimeStretcher::calcOverlapLength (void)
 {
 	// Must be divisible by 8...
 	unsigned int iNewOverlapLength = (m_iSampleRate * m_iOverlapMs) / 1000;
@@ -599,7 +599,7 @@ void qtractorTimeStretch::calcOverlapLength (void)
 
 
 // Calculates processing sequence length according to tempo setting.
-void qtractorTimeStretch::calcSeekWindowLength (void)
+void qtractorWsolaTimeStretcher::calcSeekWindowLength (void)
 {
 	// Adjust tempo param according to tempo,
 	// so that variating processing sequence length is used...
@@ -642,4 +642,4 @@ void qtractorTimeStretch::calcSeekWindowLength (void)
 }
 
 
-// end of qtractorTimeStretch.cpp
+// end of qtractorWsolaTimeStretcher.cpp

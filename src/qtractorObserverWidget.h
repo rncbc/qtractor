@@ -1,7 +1,7 @@
 // qtractorObserverWidget.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,13 +43,6 @@ public:
 	class Interface
 	{
 	public:
-		
-		// Constructor.
-		Interface(qtractorObserverWidget<Widget> *pWidget)
-			: m_pWidget(pWidget) {}
-
-		qtractorObserverWidget<Widget> *widget() const
-			{ return m_pWidget; }
 
 		// Virtual destructor.
 		virtual ~Interface() {}
@@ -57,11 +50,6 @@ public:
 		// Pure virtuals.
 		virtual float scaleFromValue(float fValue) const = 0;
 		virtual float valueFromScale(float fScale) const = 0;
-	
-	private:
-
-		// Members.
-		qtractorObserverWidget<Widget> *m_pWidget;
 	};
 	
 	// Local observer.
@@ -90,10 +78,7 @@ public:
 
 	// Destructor.
 	~qtractorObserverWidget()
-	{
-		if (m_pInterface)
-			delete m_pInterface;
-	}
+		{ setInterface(NULL); }
 
 	// Setup.
 	void setSubject(qtractorSubject *pSubject)

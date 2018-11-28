@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -246,7 +246,7 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 	m_pfGains        = NULL;
 
 	m_fNextGain      = 0.0f;
-	m_iRampGain      = 1;
+	m_iRampGain      = 0;
 
 #ifdef CONFIG_LIBSAMPLERATE
 	m_bResample      = false;
@@ -536,7 +536,7 @@ void qtractorAudioBuffer::close (void)
 	ATOMIC_SET(&m_seekPending, 0);
 
 	m_fNextGain = 0.0f;
-	m_iRampGain = 1;
+	m_iRampGain = 0;
 
 	m_pPeakFile = NULL;
 }
@@ -799,7 +799,7 @@ bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 
 	// Reset running gain...
 	m_fNextGain = 0.0f;
-	m_iRampGain = 1;
+	m_iRampGain = (m_iOffset == 0 && iFrame == 0 ? 0 : 1);
 
 	// Are we off-limits?
 	if (iFrame >= m_iLength)
@@ -904,7 +904,7 @@ void qtractorAudioBuffer::initSync (void)
 
 	// Reset running gain...
 	m_fNextGain = 0.0f;
-	m_iRampGain = 1;
+	m_iRampGain = (m_iOffset == 0 ? 0 : 1);
 
 	// Set to initial offset...
 	m_iSeekOffset = m_iOffset;
@@ -1573,10 +1573,13 @@ unsigned long qtractorAudioBuffer::loopEnd (void) const
 // Time-stretch factor.
 void qtractorAudioBuffer::setTimeStretch ( float fTimeStretch )
 {
-	m_bTimeStretch =
-		(fTimeStretch > 0.1f && fTimeStretch < 1.0f - 1e-3f) ||
-		(fTimeStretch > 1.0f + 1e-3f && fTimeStretch < 4.0f);
+	if (fTimeStretch < 0.1f)
+		fTimeStretch = 0.1f;
+	else
+	if (fTimeStretch > 10.0f)
+		fTimeStretch = 10.0f;
 
+	m_bTimeStretch = (fTimeStretch < 1.0f - 1e-3f || fTimeStretch > 1.0f + 1e-3f);
 	m_fTimeStretch = (m_bTimeStretch ? fTimeStretch : 1.0f);
 }
 
@@ -1594,10 +1597,13 @@ bool qtractorAudioBuffer::isTimeStretch (void) const
 // Pitch-shift factor.
 void qtractorAudioBuffer::setPitchShift ( float fPitchShift )
 {
-	m_bPitchShift =
-		(fPitchShift > 0.1f && fPitchShift < 1.0f - 1e-3f) ||
-		(fPitchShift > 1.0f + 1e-3f && fPitchShift < 4.0f);
+	if (fPitchShift < 0.1f)
+		fPitchShift = 0.1f;
+	else
+	if (fPitchShift > 10.0f)
+		fPitchShift = 10.0f;
 
+	m_bPitchShift = (fPitchShift < 1.0f - 1e-3f || fPitchShift > 1.0f + 1e-3f);
 	m_fPitchShift = (m_bPitchShift ? fPitchShift : 1.0f);
 }
 

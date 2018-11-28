@@ -4,6 +4,42 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Auto-backward now skips the end-of-session location.
+
+- Audio clip time-stretching and pitch-shifting limits
+  are now 10-fold in either direction. (EXPERIMENTAL)
+
+- Custom color (palette) theme editor introduced; color
+  (palette) theme changes are now effective immediately,
+  except on default. (EXPERIMENTAL)
+
+- Old deprecated Qt4 build support is no more.
+
+- Recover audio and MIDI dedicated port connections when
+  changing any of the Metronome, Player and/or Control
+  option settings.
+  
+- Fix MIDI track (and bus) bank/program reset to none.
+
+- Anti-glitch micro-fade-in is disabled on audio clips
+  with zero offset.
+
+- Audio and MIDI file players also stopped on Transport
+  / Panic command.
+
+- LV2 plug-in UI GTK2 and X11 in Qt5 host native support
+  are now disabled on default configure.
+
+- Get rid of symlink duplicates on the default plugin
+  search paths.
+
+- According to Debian policy and guidelines, the out-of
+  process plugin scanner (qtractor_plugin_scan) is now
+  installed to $LIBDIR/qtractor.
+
+  
 0.9.2  2018-09-09  Summer'18 Beta.
 
 - AppData/AppStream metadata is now settled under an all
