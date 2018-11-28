@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Auto-backward now skips the end-of-session location.
+
 - Audio clip time-stretching and pitch-shifting limits
   are now 10-fold in either direction. (EXPERIMENTAL)
 

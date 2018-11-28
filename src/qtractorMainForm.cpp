@@ -5467,7 +5467,8 @@ void qtractorMainForm::transportPlay (void)
 		if (bPlaying) {
 			const unsigned long iPlayHead = m_pSession->playHead();
 			qtractorTrackView *pTrackView = m_pTracks->trackView();
-			pTrackView->setPlayHeadAutoBackward(iPlayHead);
+			if (iPlayHead < m_pSession->sessionEnd())
+				pTrackView->setPlayHeadAutoBackward(iPlayHead);
 			pTrackView->setSyncViewHoldOn(false);
 		}
 		else
@@ -6098,8 +6099,8 @@ unsigned long qtractorMainForm::playHeadBackward (void) const
 	}
 	if (iPlayHead > m_pSession->sessionStart())
 		list.append(m_pSession->sessionStart());
-	if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
-		list.append(m_pSession->sessionEnd());
+//	if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
+//		list.append(m_pSession->sessionEnd());
 	qtractorTimeScale::Marker *pMarker
 		= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
 	while (pMarker && pMarker->frame >= iPlayHead)
