@@ -1,7 +1,7 @@
-// qtractorTimeStretch.h
+// qtractorWsolaTimeStretcher.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2012, Olli Parviainen.
@@ -22,27 +22,27 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorTimeStretch_h
-#define __qtractorTimeStretch_h
+#ifndef __qtractorWsolaTimeStretcher_h
+#define __qtractorWsolaTimeStretcher_h
 
 #include "qtractorFifoBuffer.h"
 
 
 //---------------------------------------------------------------------------
-// qtractorTimeStretch - Time-stretch (tempo change) processed sound.
+// qtractorWsolaTimeStretcher - Time-stretch (tempo change) processed sound.
 //
 
-class qtractorTimeStretch
+class qtractorWsolaTimeStretcher
 {
 public:
 
 	// Constructor.
-	qtractorTimeStretch(
+	qtractorWsolaTimeStretcher(
 		unsigned short iChannels = 2,
 		unsigned int iSampleRate = 44100);
 	
 	// Destructor.
-	~qtractorTimeStretch();
+	~qtractorWsolaTimeStretcher();
 
 	// Sets the number of channels, 1=mono, 2=stereo.
 	void setChannels(unsigned short iChannels);
@@ -211,7 +211,7 @@ private:
 };
 
 
-#endif  // __qtractorTimeStretch_h
+#endif  // __qtractorWsolaTimeStretcher_h
 
 
-// end of qtractorTimeStretch.h
+// end of qtractorWsolaTimeStretcher.h

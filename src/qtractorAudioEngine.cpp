@@ -1622,8 +1622,6 @@ bool qtractorAudioEngine::isMetronome (void) const
 void qtractorAudioEngine::setMetroEnabled ( bool bMetroEnabled )
 {
 	m_bMetroEnabled = bMetroEnabled;
-
-	openMetroBus();
 }
 
 bool qtractorAudioEngine::isMetroEnabled (void) const
@@ -1635,6 +1633,11 @@ bool qtractorAudioEngine::isMetroEnabled (void) const
 // Metronome bus mode accessors.
 void qtractorAudioEngine::setMetroBus ( bool bMetroBus )
 {
+	qtractorBus::ConnectList outs;
+
+	if (isActivated() && m_bMetroBus && m_pMetroBus)
+		m_pMetroBus->updateConnects(qtractorBus::Output, outs);
+
 	deleteMetroBus();
 
 	m_bMetroBus = bMetroBus;
@@ -1643,8 +1646,12 @@ void qtractorAudioEngine::setMetroBus ( bool bMetroBus )
 
 	if (isActivated()) {
 		openMetroBus();
-		if (m_bMetroBus && m_pMetroBus)
-			m_pMetroBus->autoConnect();
+		if (m_bMetroBus && m_pMetroBus) {
+			if (!outs.isEmpty())
+				m_pMetroBus->updateConnects(qtractorBus::Output, outs, true);
+			else
+				m_pMetroBus->autoConnect();
+		}
 	}
 }
 
@@ -1906,6 +1913,11 @@ void qtractorAudioEngine::resetMetro (void)
 // Audition/pre-listening bus mode accessors.
 void qtractorAudioEngine::setPlayerBus ( bool bPlayerBus )
 {
+	qtractorBus::ConnectList outs;
+
+	if (isActivated() && m_bPlayerBus && m_pPlayerBus)
+		m_pPlayerBus->updateConnects(qtractorBus::Output, outs);
+
 	deletePlayerBus();
 
 	m_bPlayerBus = bPlayerBus;
@@ -1914,8 +1926,12 @@ void qtractorAudioEngine::setPlayerBus ( bool bPlayerBus )
 
 	if (isActivated()) {
 		openPlayerBus();
-		if (m_bPlayerBus && m_pPlayerBus)
-			m_pPlayerBus->autoConnect();
+		if (m_bPlayerBus && m_pPlayerBus) {
+			if (!outs.isEmpty())
+				m_pPlayerBus->updateConnects(qtractorBus::Output, outs, true);
+			else
+				m_pPlayerBus->autoConnect();
+		}
 	}
 }
 

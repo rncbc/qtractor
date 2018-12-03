@@ -64,6 +64,7 @@
 #include "qtractorExportForm.h"
 #include "qtractorSessionForm.h"
 #include "qtractorOptionsForm.h"
+#include "qtractorPaletteForm.h"
 #include "qtractorConnectForm.h"
 #include "qtractorShortcutForm.h"
 #include "qtractorMidiControlForm.h"
@@ -5090,16 +5091,20 @@ void qtractorMainForm::viewOptions (void)
 			updateMessagesCapture();
 			iNeedRestart |= RestartProgram;
 		}
-		if ((iOldBaseFontSize != m_pOptions->iBaseFontSize) ||
-			(sOldCustomColorTheme != m_pOptions->sCustomColorTheme))
+		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
 			iNeedRestart |= RestartProgram;
-		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
-			if (m_pOptions->sCustomStyleTheme.isEmpty()) {
+		if ((sOldCustomColorTheme != m_pOptions->sCustomColorTheme) ||
+			(optionsForm.isDirtyCustomColorThemes())) {
+			if (m_pOptions->sCustomColorTheme.isEmpty())
 				iNeedRestart |= RestartProgram;
-			} else {
-				QApplication::setStyle(
-					QStyleFactory::create(m_pOptions->sCustomStyleTheme));
-			}
+			else
+				updateCustomColorTheme();
+		}
+		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
+			if (m_pOptions->sCustomStyleTheme.isEmpty())
+					iNeedRestart |= RestartProgram;
+			else
+				updateCustomStyleTheme();
 		}
 		if (( bOldCompletePath && !m_pOptions->bCompletePath) ||
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||
@@ -5462,7 +5467,8 @@ void qtractorMainForm::transportPlay (void)
 		if (bPlaying) {
 			const unsigned long iPlayHead = m_pSession->playHead();
 			qtractorTrackView *pTrackView = m_pTracks->trackView();
-			pTrackView->setPlayHeadAutoBackward(iPlayHead);
+			if (iPlayHead < m_pSession->sessionEnd())
+				pTrackView->setPlayHeadAutoBackward(iPlayHead);
 			pTrackView->setSyncViewHoldOn(false);
 		}
 		else
@@ -6093,8 +6099,8 @@ unsigned long qtractorMainForm::playHeadBackward (void) const
 	}
 	if (iPlayHead > m_pSession->sessionStart())
 		list.append(m_pSession->sessionStart());
-	if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
-		list.append(m_pSession->sessionEnd());
+//	if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
+//		list.append(m_pSession->sessionEnd());
 	qtractorTimeScale::Marker *pMarker
 		= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
 	while (pMarker && pMarker->frame >= iPlayHead)
@@ -7367,6 +7373,54 @@ void qtractorMainForm::updateMessagesCapture (void)
 
 	if (m_pMessages)
 		m_pMessages->setCaptureEnabled(m_pOptions->bStdoutCapture);
+}
+
+
+// Update/reset custome color (palette) theme..
+void qtractorMainForm::updateCustomColorTheme (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	if (m_pOptions->sCustomColorTheme.isEmpty())
+		return;
+
+	QPalette pal(QApplication::palette());
+
+	if (qtractorPaletteForm::namedPalette(
+			&m_pOptions->settings(), m_pOptions->sCustomColorTheme, pal)) {
+
+		QApplication::setPalette(pal);
+
+		if (m_pThumbView)
+			m_pThumbView->updateContents();
+		if (m_pTracks) {
+			m_pTracks->trackList()->updateTrackButtons();
+			m_pTracks->updateContents(true);
+		}
+		if (m_pMixer) {
+			m_pMixer->updateTracks(true);
+			m_pMixer->updateBuses(true);
+		}
+
+		QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+		while (iter.hasNext())
+			iter.next()->editor()->updateContents();
+	}
+}
+
+
+// Update/reset custom (widget) style theme..
+void qtractorMainForm::updateCustomStyleTheme (void)
+{
+	if (m_pOptions == NULL)
+		return;
+
+	if (m_pOptions->sCustomStyleTheme.isEmpty())
+		return;
+
+	QApplication::setStyle(
+		QStyleFactory::create(m_pOptions->sCustomStyleTheme));
 }
 
 

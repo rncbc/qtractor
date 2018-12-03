@@ -200,15 +200,15 @@ qtractorTrackListButtons::qtractorTrackListButtons (
 
 	const QSize buttonSize(22, iFixedHeight);
 
-	m_pRecordButton = new qtractorTrackButton(pTrack, qtractorTrack::Record);
+	m_pRecordButton = new qtractorTrackButton(pTrack, qtractorTrack::Record, this);
 	m_pRecordButton->setFixedSize(buttonSize);
 	m_pRecordButton->setFont(font2);
 
-	m_pMuteButton = new qtractorTrackButton(pTrack, qtractorTrack::Mute);
+	m_pMuteButton = new qtractorTrackButton(pTrack, qtractorTrack::Mute, this);
 	m_pMuteButton->setFixedSize(buttonSize);
 	m_pMuteButton->setFont(font2);
 
-	m_pSoloButton = new qtractorTrackButton(pTrack, qtractorTrack::Solo);
+	m_pSoloButton = new qtractorTrackButton(pTrack, qtractorTrack::Solo, this);
 	m_pSoloButton->setFixedSize(buttonSize);
 	m_pSoloButton->setFont(font2);
 
@@ -228,6 +228,15 @@ qtractorTrackListButtons::qtractorTrackListButtons (
 	pHBoxLayout->addWidget(m_pSoloButton);
 	pHBoxLayout->addWidget(m_pCurveButton);
 	QWidget::setLayout(pHBoxLayout);
+}
+
+
+// Refresh color (palette) state buttons
+void qtractorTrackListButtons::updateTrackButtons (void)
+{
+	m_pRecordButton->updateTrackButton();
+	m_pMuteButton->updateTrackButton();
+	m_pSoloButton->updateTrackButton();
 }
 
 
@@ -382,7 +391,7 @@ bool qtractorTrackList::Item::updateBankProgNames (
 
 
 // Track-list model item cache updater.
-void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
+void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 {
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == NULL)
@@ -409,7 +418,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 		meters = NULL;
 	}
 
-	update_icon(pTrackList);
+	updateIcon(pTrackList);
 
 	text << track->trackName();
 
@@ -541,7 +550,7 @@ void qtractorTrackList::Item::update ( qtractorTrackList *pTrackList )
 }
 
 
-void qtractorTrackList::Item::update_icon ( qtractorTrackList *pTrackList )
+void qtractorTrackList::Item::updateIcon ( qtractorTrackList *pTrackList )
 {
 	const QPixmap pm(track->trackIcon());
 	if (!pm.isNull()) {
@@ -747,9 +756,21 @@ void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 {
 	Item *pItem = m_tracks.value(pTrack, NULL);
 	if (pItem)
-		pItem->update(this);
+		pItem->updateItem(this);
 
 	updateContents();
+}
+
+
+// Track-button colors (palette) update.
+void qtractorTrackList::updateTrackButtons (void)
+{
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext()) {
+		const Item *pItem = iter.next();
+		if (pItem->buttons)
+			pItem->buttons->updateTrackButtons();
+	}
 }
 
 
@@ -758,7 +779,7 @@ void qtractorTrackList::updateItems (void)
 {
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext())
-		iter.next()->update(this);
+		iter.next()->updateItem(this);
 
 	updateContents();
 }
@@ -768,7 +789,7 @@ void qtractorTrackList::updateIcons (void)
 {
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext())
-		iter.next()->update_icon(this);
+		iter.next()->updateIcon(this);
 
 	updateContents();
 }
@@ -898,7 +919,7 @@ void qtractorTrackList::resetHeaderSize ( int iCol )
 		// Resize all icons anyway...
 		QListIterator<Item *> iter(m_items);
 		while (iter.hasNext())
-			iter.next()->update_icon(this);
+			iter.next()->updateIcon(this);
 	}
 	m_pHeader->blockSignals(bBlockSignals);
 

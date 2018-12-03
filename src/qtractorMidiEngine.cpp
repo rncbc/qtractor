@@ -2631,14 +2631,26 @@ void qtractorMidiEngine::metroMute ( bool bMute )
 // Control bus accessors.
 void qtractorMidiEngine::setControlBus ( bool bControlBus )
 {
+	qtractorBus::ConnectList ins, outs;
+
+	if (isActivated() && m_bControlBus && m_pIControlBus && m_pOControlBus) {
+		m_pIControlBus->updateConnects(qtractorBus::Input, ins);
+		m_pOControlBus->updateConnects(qtractorBus::Output, outs);
+	}
+
 	deleteControlBus();
 
 	m_bControlBus = bControlBus;
 
 	createControlBus();
 
-	if (isActivated())
+	if (isActivated()) {
 		openControlBus();
+		if (m_bControlBus && m_pIControlBus && m_pOControlBus) {
+			m_pIControlBus->updateConnects(qtractorBus::Input, ins, true);
+			m_pOControlBus->updateConnects(qtractorBus::Output, outs, true);
+		}
+	}
 }
 
 bool qtractorMidiEngine::isControlBus (void) const
@@ -2741,14 +2753,22 @@ qtractorMidiBus *qtractorMidiEngine::controlBus_out() const
 // Player bus accessors.
 void qtractorMidiEngine::setPlayerBus ( bool bPlayerBus )
 {
+	qtractorBus::ConnectList outs;
+
+	if (isActivated() && m_bPlayerBus && m_pPlayerBus)
+		m_pPlayerBus->updateConnects(qtractorBus::Output, outs);
+
 	deletePlayerBus();
 
 	m_bPlayerBus = bPlayerBus;
 
 	createPlayerBus();
 
-	if (isActivated())
+	if (isActivated()) {
 		openPlayerBus();
+		if (m_bPlayerBus && m_pPlayerBus)
+			m_pPlayerBus->updateConnects(qtractorBus::Output, outs, true);
+	}
 }
 
 bool qtractorMidiEngine::isPlayerBus (void) const
@@ -3002,14 +3022,22 @@ bool qtractorMidiEngine::isMetroEnabled (void) const
 // Metronome bus accessors.
 void qtractorMidiEngine::setMetroBus ( bool bMetroBus )
 {
+	qtractorBus::ConnectList outs;
+
+	if (isActivated() && m_bMetroBus && m_pMetroBus)
+		m_pMetroBus->updateConnects(qtractorBus::Output, outs);
+
 	deleteMetroBus();
 
 	m_bMetroBus = bMetroBus;
 
 	createMetroBus();
 
-	if (isActivated())
+	if (isActivated()) {
 		openMetroBus();
+		if (m_bMetroBus && m_pMetroBus)
+			m_pMetroBus->updateConnects(qtractorBus::Output, outs, true);
+	}
 }
 
 bool qtractorMidiEngine::isMetroBus (void) const
@@ -4123,6 +4151,18 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 			pTrackMidiManager->direct(&ev);
 		if (pBusMidiManager)
 			pBusMidiManager->direct(&ev);
+	}
+
+	// Bank reset to none...
+	if (iBank < 0) {
+		pTrackMidiManager->setCurrentBank(-1);
+		pBusMidiManager->setCurrentBank(-1);
+	}
+
+	// Program reset to none...
+	if (iProg < 0) {
+		pTrackMidiManager->setCurrentProg(-1);
+		pBusMidiManager->setCurrentProg(-1);
 	}
 
 //	pMidiEngine->flush();

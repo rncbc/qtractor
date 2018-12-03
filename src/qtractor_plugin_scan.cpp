@@ -1,7 +1,7 @@
 // qtractor_plugin_scan.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -495,7 +495,11 @@ static void qtractor_dssi_scan_file ( const QString& sFilename )
 #define __cdecl
 #endif
 
+#ifdef CONFIG_VESTIGE
+#include <vestige.h>
+#else
 #include <aeffectx.h>
+#endif
 
 #if !defined(VST_2_3_EXTENSIONS)
 #ifdef CONFIG_VESTIGE

@@ -47,6 +47,9 @@ public:
 	void setOptions(qtractorOptions *pOptions);
 	qtractorOptions *options() const;
 
+	// Spacial custom color themes dirty flag.
+	bool isDirtyCustomColorThemes() const;
+
 protected slots:
 
 	void accept();
@@ -56,6 +59,7 @@ protected slots:
 	void chooseMetroBeatFilename();
 	void updateMetroNoteNames();
 	void displayFormatChanged(int iDisplayFormat);
+	void editCustomColorThemes();
 	void changeAudioMeterLevel(int iColor);
 	void changeMidiMeterLevel(int iColor);
 	void changeAudioMeterColor(const QString& sColor);
@@ -91,6 +95,10 @@ protected:
 	int sessionFormatFromExt(const QString& sSessionExt) const;
 	QString sessionExtFromFormat(int iSessionFormat) const;
 
+	// Custom color/style themes settlers.
+	void resetCustomColorThemes(const QString& sCustomColorTheme);
+	void resetCustomStyleThemes(const QString& sCustomStyleTheme);
+
 private:
 
 	// The Qt-designer UI struct...
@@ -106,6 +114,9 @@ private:
 	enum { AudioMeterColors = 5, MidiMeterColors = 2 };
 	QColor m_audioMeterColors[AudioMeterColors];
 	QColor m_midiMeterColors[MidiMeterColors];
+
+	// Custom color themes flag.
+	int m_iDirtyCustomColorThemes;
 
 	// Plug-ins path cache.
 	QStringList m_ladspaPaths;

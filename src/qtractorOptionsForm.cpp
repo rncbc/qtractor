@@ -37,6 +37,8 @@
 
 #include "qtractorPluginSelectForm.h"
 
+#include "qtractorPaletteForm.h"
+
 #include <QFileDialog>
 #include <QFontDialog>
 #include <QColorDialog>
@@ -76,6 +78,10 @@ static struct
 
 	{ NULL, NULL }
 };
+
+
+// Default (empty/blank) name.
+static const char *g_pszDefName = _TR("(default)");
 
 
 //----------------------------------------------------------------------------
@@ -190,6 +196,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
+	m_iDirtyCustomColorThemes = 0;
 	m_iDirtyPluginPaths = 0;
 
 	// Try to restore old window positioning.
@@ -388,6 +395,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.CustomColorThemeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.CustomColorThemeToolButton,
+		SIGNAL(clicked()),
+		SLOT(editCustomColorThemes()));
 	QObject::connect(m_ui.CustomStyleThemeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -628,28 +638,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	changeMidiMeterLevel(m_ui.MidiMeterLevelComboBox->currentIndex());
 
 	// Custom display options...
-	const QString& sDefName = tr("(default)");
-
-	m_ui.CustomColorThemeComboBox->clear();
-	m_ui.CustomColorThemeComboBox->addItem(sDefName);
-	m_ui.CustomColorThemeComboBox->addItem("Wonton Soup");
-	m_ui.CustomColorThemeComboBox->addItem("KXStudio");
-
-	int iCustomColorTheme = 0;
-	if (!m_pOptions->sCustomColorTheme.isEmpty())
-		iCustomColorTheme = m_ui.CustomColorThemeComboBox->findText(
-			m_pOptions->sCustomColorTheme);
-	m_ui.CustomColorThemeComboBox->setCurrentIndex(iCustomColorTheme);
-
-	m_ui.CustomStyleThemeComboBox->clear();
-	m_ui.CustomStyleThemeComboBox->addItem(sDefName);
-	m_ui.CustomStyleThemeComboBox->addItems(QStyleFactory::keys());
-
-	int iCustomStyleTheme = 0;
-	if (!m_pOptions->sCustomStyleTheme.isEmpty())
-		iCustomStyleTheme = m_ui.CustomStyleThemeComboBox->findText(
-			m_pOptions->sCustomStyleTheme);
-	m_ui.CustomStyleThemeComboBox->setCurrentIndex(iCustomStyleTheme);
+	resetCustomColorThemes(m_pOptions->sCustomColorTheme);
+	resetCustomStyleThemes(m_pOptions->sCustomStyleTheme);
 
 	// Load Display options...
 	QFont font;
@@ -751,6 +741,12 @@ qtractorOptions *qtractorOptionsForm::options (void) const
 	return m_pOptions;
 }
 
+
+// Special custom color themes dirty flag.
+bool qtractorOptionsForm::isDirtyCustomColorThemes (void) const
+{
+	return (m_iDirtyCustomColorThemes > 0);
+}
 
 // Accept settings (OK button slot).
 void qtractorOptionsForm::accept (void)
@@ -1013,6 +1009,68 @@ void qtractorOptionsForm::displayFormatChanged ( int iDisplayFormat )
 		m_pTimeScale->setDisplayFormat(displayFormat);
 
 	changed();
+}
+
+
+// Custom color palette theme manager.
+void qtractorOptionsForm::editCustomColorThemes (void)
+{
+	qtractorPaletteForm form(this);
+	form.setSettings(&m_pOptions->settings());
+
+	QString sCustomColorTheme;
+
+	const int iCustomColorTheme
+		= m_ui.CustomColorThemeComboBox->currentIndex();
+	if (iCustomColorTheme > 0) {
+		sCustomColorTheme = m_ui.CustomColorThemeComboBox->itemText(iCustomColorTheme);
+		form.setNamedPalette(sCustomColorTheme);
+	}
+
+	if (form.exec() == QDialog::Accepted)
+		sCustomColorTheme = form.namedPalette();
+
+	if (form.isDirty()) {
+		++m_iDirtyCustomColorThemes;
+		resetCustomColorThemes(sCustomColorTheme);
+		changed();
+	}
+}
+
+
+// Custom color palette themes settler.
+void qtractorOptionsForm::resetCustomColorThemes (
+	const QString& sCustomColorTheme )
+{
+	m_ui.CustomColorThemeComboBox->clear();
+	m_ui.CustomColorThemeComboBox->addItem(
+		QString::fromLatin1(g_pszDefName));
+	m_ui.CustomColorThemeComboBox->addItems(
+		qtractorPaletteForm::namedPaletteList(&m_pOptions->settings()));
+
+	int iCustomColorTheme = 0;
+	if (!sCustomColorTheme.isEmpty())
+		iCustomColorTheme = m_ui.CustomColorThemeComboBox->findText(
+			sCustomColorTheme);
+	m_ui.CustomColorThemeComboBox->setCurrentIndex(iCustomColorTheme);
+}
+
+
+// Custom widget style themes settler.
+void qtractorOptionsForm::resetCustomStyleThemes (
+	const QString& sCustomStyleTheme )
+{
+	m_ui.CustomStyleThemeComboBox->clear();
+	m_ui.CustomStyleThemeComboBox->addItem(
+		QString::fromLatin1(g_pszDefName));
+	m_ui.CustomStyleThemeComboBox->addItems(
+		QStyleFactory::keys());
+
+	int iCustomStyleTheme = 0;
+	if (!sCustomStyleTheme.isEmpty())
+		iCustomStyleTheme = m_ui.CustomStyleThemeComboBox->findText(
+			sCustomStyleTheme);
+	m_ui.CustomStyleThemeComboBox->setCurrentIndex(iCustomStyleTheme);
 }
 
 
