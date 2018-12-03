@@ -72,6 +72,9 @@
         <property name="toolTip">
          <string>Save current color palette name</string>
         </property>
+        <property name="icon">
+         <iconset resource="qtractor.qrc">:/images/formSave.png</iconset>
+        </property>
        </widget>
       </item>
       <item>
@@ -81,6 +84,9 @@
         </property>
         <property name="toolTip">
          <string>Delete current color palette name</string>
+        </property>
+        <property name="icon">
+         <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
         </property>
        </widget>
       </item>
