@@ -4,23 +4,23 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.3  2018-12-07  End of Autumn'18 Beta.
 
 - Auto-backward now skips the end-of-session location.
 
 - Audio clip time-stretching and pitch-shifting limits
-  are now 10-fold in either direction. (EXPERIMENTAL)
+  are now 10-fold in either direction.
 
 - Custom color (palette) theme editor introduced; color
   (palette) theme changes are now effective immediately,
-  except on default. (EXPERIMENTAL)
+  except on default.
 
 - Old deprecated Qt4 build support is no more.
 
 - Recover audio and MIDI dedicated port connections when
   changing any of the Metronome, Player and/or Control
   option settings.
-  
+
 - Fix MIDI track (and bus) bank/program reset to none.
 
 - Anti-glitch micro-fade-in is disabled on audio clips

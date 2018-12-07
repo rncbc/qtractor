@@ -10531,7 +10531,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2552"/>
         <source>Manage custom color palette themes</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestionar los temas de las paletas de colores personalizados</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2581"/>
@@ -11010,85 +11010,86 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="39"/>
         <source>Color Themes</source>
-        <translation type="unfinished"></translation>
+        <translation>Temas de Colores</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="45"/>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="63"/>
         <source>Current color palette name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de la paleta de colores actual</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="70"/>
         <source>Save</source>
-        <translation type="unfinished">Guardar</translation>
+        <translation>Guardar</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="73"/>
         <source>Save current color palette name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorPaletteForm.ui" line="80"/>
-        <source>Delete</source>
-        <translation type="unfinished">Borrar</translation>
+        <translation>Guardar el nombre de la paleta de colores actual</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="83"/>
+        <source>Delete</source>
+        <translation>Borrar</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="86"/>
         <source>Delete current color palette name</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar nombre de la paleta de colores actual</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="93"/>
+        <location filename="../qtractorPaletteForm.ui" line="99"/>
         <source>Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="108"/>
+        <location filename="../qtractorPaletteForm.ui" line="114"/>
         <source>Current color palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleta de colores actual</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="115"/>
+        <location filename="../qtractorPaletteForm.ui" line="121"/>
         <source>Generate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Generar:</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="131"/>
+        <location filename="../qtractorPaletteForm.ui" line="137"/>
         <source>Base color to generate palette</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorPaletteForm.ui" line="138"/>
-        <source> Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Color base para generar la paleta</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="144"/>
-        <source>Reset all current palette colors</source>
-        <translation type="unfinished"></translation>
+        <source> Reset</source>
+        <translation> Reset</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="164"/>
+        <location filename="../qtractorPaletteForm.ui" line="150"/>
+        <source>Reset all current palette colors</source>
+        <translatorcomment>Reiniciar todas las paletas de colores actuales</translatorcomment>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="170"/>
         <source>Show Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar Detalles</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="667"/>
         <location filename="../qtractorPaletteForm.cpp" line="675"/>
         <source>Warning - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="668"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
-        <translation type="unfinished">Algunas configuraciones han cambiado.
+        <translation>Algunas configuraciones han cambiado.
 
 ¿Desea descartar los cambios?</translation>
     </message>
@@ -11099,7 +11100,11 @@ Do you want to discard the changes?</source>
 &quot;%1&quot;.
 
 Do you want to save the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Algunas configuraciones han cambiado:
+
+&quot;%1&quot; 
+
+¿Desea descartar los cambios?</translation>
     </message>
 </context>
 <context>
@@ -11107,22 +11112,22 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="843"/>
         <source>Color Role</source>
-        <translation type="unfinished"></translation>
+        <translation>Rol del Color</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="846"/>
         <source>Active</source>
-        <translation type="unfinished">Activar</translation>
+        <translation>Activo</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="849"/>
         <source>Inactive</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactivo</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="852"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Desactivado</translation>
     </message>
 </context>
 <context>
