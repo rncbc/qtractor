@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed minimum input value as 10% (was 1%) for audio
+  clip time-stretching in the Clip / Edit... dialog.
+
+  
 0.9.3  2018-12-07  End of Autumn'18 Beta.
 
 - Auto-backward now skips the end-of-session location.
