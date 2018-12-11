@@ -59,8 +59,8 @@ public:
 	void setSettings(QSettings *settings, bool owner = false);
 	QSettings *settings() const;
 
-	void setNamedPalette(const QString& name);
-	QString namedPalette() const;
+	void setPaletteName(const QString& name);
+	QString paletteName() const;
 
 	bool isDirty() const;
 

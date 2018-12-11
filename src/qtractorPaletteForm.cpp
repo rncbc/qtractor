@@ -213,7 +213,7 @@ QSettings *qtractorPaletteForm::settings (void) const
 
 void qtractorPaletteForm::nameComboActivated ( const QString& name )
 {
-	setNamedPalette(name);
+	setPaletteName(name);
 }
 
 
@@ -222,7 +222,7 @@ void qtractorPaletteForm::nameComboChanged ( const QString& name )
 	if (m_dirtyCount > 0 || m_ui.nameCombo->findText(name) < 0)
 		updateDialogButtons();
 	else
-		setNamedPalette(name);
+		setPaletteName(name);
 }
 
 
@@ -309,13 +309,14 @@ void qtractorPaletteForm::paletteChanged ( const QPalette& pal )
 }
 
 
-void qtractorPaletteForm::setNamedPalette ( const QString& name )
+void qtractorPaletteForm::setPaletteName ( const QString& name )
 {
 	const bool blocked = m_ui.nameCombo->blockSignals(true);
 
 	m_ui.nameCombo->setEditText(name);
 
 	QPalette pal;
+
 	if (namedPalette(m_settings, name, pal, true))
 		setPalette(pal, pal);
 
@@ -326,7 +327,7 @@ void qtractorPaletteForm::setNamedPalette ( const QString& name )
 }
 
 
-QString qtractorPaletteForm::namedPalette (void) const
+QString qtractorPaletteForm::paletteName (void) const
 {
 	return m_ui.nameCombo->currentText();
 }
@@ -661,7 +662,7 @@ void qtractorPaletteForm::accept (void)
 void qtractorPaletteForm::reject (void)
 {
 	if (m_dirtyCount > 0) {
-		const QString& name = namedPalette();
+		const QString& name = paletteName();
 		if (name.isEmpty()) {
 			if (QMessageBox::warning(this,
 				tr("Warning - %1").arg(QDialog::windowTitle()),

@@ -1024,11 +1024,11 @@ void qtractorOptionsForm::editCustomColorThemes (void)
 		= m_ui.CustomColorThemeComboBox->currentIndex();
 	if (iCustomColorTheme > 0) {
 		sCustomColorTheme = m_ui.CustomColorThemeComboBox->itemText(iCustomColorTheme);
-		form.setNamedPalette(sCustomColorTheme);
+		form.setPaletteName(sCustomColorTheme);
 	}
 
 	if (form.exec() == QDialog::Accepted)
-		sCustomColorTheme = form.namedPalette();
+		sCustomColorTheme = form.paletteName();
 
 	if (form.isDirty()) {
 		++m_iDirtyCustomColorThemes;
