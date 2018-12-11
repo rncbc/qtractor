@@ -888,6 +888,27 @@ void qtractorPlugin::updateDirectAccessParam (void)
 }
 
 
+// Plugin configuration/state snapshot.
+void qtractorPlugin::freezeConfigs (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorPlugin[%p]::freezeConfigs()", this);
+#endif
+
+	// Do nothing...
+}
+
+
+void qtractorPlugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorPlugin[%p]::releaseConfigs()", this);
+#endif
+
+	clearConfigs();
+}
+
+
 // Plugin parameter/state snapshot.
 void qtractorPlugin::freezeValues (void)
 {

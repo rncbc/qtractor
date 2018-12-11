@@ -4316,6 +4316,10 @@ void qtractorLv2Plugin::freezeConfigs (void)
 	if (!type()->isConfigure())
 		return;
 
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2Plugin[%p]::freezeConfigs()", this);
+#endif
+
 #ifdef CONFIG_LV2_STATE
 
 	const unsigned short iInstances = instances();
@@ -4338,6 +4342,10 @@ void qtractorLv2Plugin::realizeConfigs (void)
 {
 	if (!type()->isConfigure())
 		return;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2Plugin[%p]::realizeConfigs()", this);
+#endif
 
 #ifdef CONFIG_LV2_STATE
 
@@ -4415,6 +4423,10 @@ void qtractorLv2Plugin::releaseConfigs (void)
 {
 	if (!type()->isConfigure())
 		return;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2Plugin[%p]::releaseConfigs()", this);
+#endif
 
 #ifdef CONFIG_LV2_STATE
 	m_lv2_state_configs.clear();
