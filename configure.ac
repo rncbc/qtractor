@@ -256,12 +256,12 @@ AC_ARG_ENABLE(lv2-ui-show,
 AC_ARG_ENABLE(lv2-ui-gtk2,
   AS_HELP_STRING([--enable-lv2-ui-gtk2], [enable LV2 plug-in UI GTK2 native support (default=yes)]),
   [ac_lv2_ui_gtk2="$enableval"],
-  [ac_lv2_ui_gtk2="no"])
+  [ac_lv2_ui_gtk2="yes"])
 
 AC_ARG_ENABLE(lv2-ui-x11,
   AS_HELP_STRING([--enable-lv2-ui-x11], [enable LV2 plug-in UI X11 native support (default=yes)]),
   [ac_lv2_ui_x11="$enableval"],
-  [ac_lv2_ui_x11="no"])
+  [ac_lv2_ui_x11="yes"])
 
 # Enable JACK session support.
 AC_ARG_ENABLE(jack-session,
@@ -1016,18 +1016,11 @@ if test "x$ac_lv2_ui" = "xyes"; then
    AC_CHECK_HEADER(
       lv2/lv2plug.in/ns/extensions/ui/ui.h,
       [ac_lv2_ui="yes"], [ac_lv2_ui="no"])
-   if test "x$ac_lv2_ui" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_UI, 1, [Define if LV2 UI support is available.])
-   else
-      AC_MSG_WARN([*** LV2 UI support will be disabled.])
-      ac_lv2_external_ui="no"
-      ac_lv2_ui_touch="no"
-      ac_lv2_ui_idle="no"
-      ac_lv2_ui_show="no"
-      ac_lv2_ui_gtk2="no"
-      ac_lv2_ui_x11="no"
-   fi
+fi
+if test "x$ac_lv2_ui" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2_UI, 1, [Define if LV2 UI support is available.])
 else
+   AC_MSG_WARN([*** LV2 UI support will be disabled.])
    ac_lv2_external_ui="no"
    ac_lv2_ui_touch="no"
    ac_lv2_ui_idle="no"
@@ -1276,13 +1269,13 @@ if test "x$ac_suil" = "xyes"; then
 fi
 if test "x$ac_lv2_ui_gtk2" = "xyes"; then
    PKG_CHECK_MODULES([GTK2], [gtk+-2.0], [ac_lv2_ui_gtk2="yes"], [ac_lv2_ui_gtk2="no"])
-   if test "x$ac_lv2_ui_gtk2" = "xyes"; then
-      AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
-      ac_cflags="$ac_cflags $GTK2_CFLAGS"
-      ac_libs="$ac_libs $GTK2_LIBS"
-   else
-      AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
-   fi
+fi
+if test "x$ac_lv2_ui_gtk2" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2_UI_GTK2, 1, [Define if LV2 UI GTK2 native support is available.])
+   ac_cflags="$ac_cflags $GTK2_CFLAGS"
+   ac_libs="$ac_libs $GTK2_LIBS"
+else
+   AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
 fi
 
 if test "x$ac_suil" = "xyes"; then

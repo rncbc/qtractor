@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 plug-in UI GTK2 and X11 in Qt5 host native support
+  are now enabled on configure by default. (REGRESSION)
+
 - Fixed minimum input value as 10% (was 1%) for audio
   clip time-stretching in the Clip / Edit... dialog.
 
