@@ -4025,10 +4025,10 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_port_map_feature;
 
 #ifdef CONFIG_LV2_UI_TOUCH
-	m_lv2_ui_touch.handle = this;
-	m_lv2_ui_touch.touch = qtractor_lv2_ui_touch;
-	m_lv2_ui_touch_feature.URI = LV2_UI__touch;
-	m_lv2_ui_touch_feature.data = &m_lv2_ui_touch;
+	m_lv2_ui_touch.handle          = this;
+	m_lv2_ui_touch.touch           = qtractor_lv2_ui_touch;
+	m_lv2_ui_touch_feature.URI     = LV2_UI__touch;
+	m_lv2_ui_touch_feature.data    = &m_lv2_ui_touch;
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_touch_feature;
 #endif
 

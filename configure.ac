@@ -974,11 +974,10 @@ if test "x$ac_lv2" = "xyes"; then
       CFLAGS="-I$ac_with_lv2 $CFLAGS"
       CPPFLAGS="-I$ac_with_lv2 $CPPFLAGS"
       ac_incpath="$ac_with_lv2 $ac_incpath"
-   else
-      CFLAGS="$CFLAGS -Isrc/lv2"
-      CPPFLAGS="$CPPFLAGS -Isrc/lv2"
-      ac_incpath="$ac_incpath lv2"
    fi
+   CFLAGS="$CFLAGS -Isrc/lv2"
+   CPPFLAGS="$CPPFLAGS -Isrc/lv2"
+   ac_incpath="$ac_incpath lv2"
    AC_CHECK_HEADER(lv2.h, [ac_lv2="yes"], [ac_lv2="no"])
    if test "x$ac_lv2" = "xyes"; then
       AC_CHECK_HEADERS(
