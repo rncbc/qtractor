@@ -10954,53 +10954,53 @@ Do you want to apply the changes?</source>
         <translation>Archivo de audio de pulso del metrónomo</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1121"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1124"/>
         <source>Audio Meter Color</source>
         <translation>Color del Medidor de Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1143"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1146"/>
         <source>MIDI Meter Color</source>
         <translation>Color del Medidor MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1239"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1242"/>
         <source>Plug-in Directory</source>
         <translation>Directorio de Plug-in</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1479"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1482"/>
         <source>LV2 Presets Directory</source>
         <translation>Directorio de Preajustes LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1520"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1523"/>
         <source>Messages Font</source>
         <translation>Fuente de Mensajes</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1548"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1551"/>
         <source>Messages Log</source>
         <translation>Registro de Mensajes</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1551"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1554"/>
         <source>Log files (*.%1)</source>
         <translation>Archivos de registro (log) (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1552"/>
-        <location filename="../qtractorOptionsForm.cpp" line="1598"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1555"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1601"/>
         <source>All files (*.*)</source>
         <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1594"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1597"/>
         <source>Session Template</source>
         <translation>Plantilla de Sesión</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1597"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1600"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Archivos de plantilla sesión (*.qtr *.qts *.%1)</translation>
     </message>
@@ -11023,47 +11023,47 @@ Do you want to apply the changes?</source>
         <translation>Nombre de la paleta de colores actual</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="70"/>
+        <location filename="../qtractorPaletteForm.ui" line="79"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="73"/>
+        <location filename="../qtractorPaletteForm.ui" line="76"/>
         <source>Save current color palette name</source>
         <translation>Guardar el nombre de la paleta de colores actual</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="83"/>
+        <location filename="../qtractorPaletteForm.ui" line="92"/>
         <source>Delete</source>
         <translation>Borrar</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="86"/>
+        <location filename="../qtractorPaletteForm.ui" line="89"/>
         <source>Delete current color palette name</source>
         <translation>Borrar nombre de la paleta de colores actual</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="99"/>
+        <location filename="../qtractorPaletteForm.ui" line="105"/>
         <source>Palette</source>
         <translation>Paleta</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="114"/>
+        <location filename="../qtractorPaletteForm.ui" line="117"/>
         <source>Current color palette</source>
         <translation>Paleta de colores actual</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="121"/>
+        <location filename="../qtractorPaletteForm.ui" line="127"/>
         <source>Generate:</source>
         <translation>Generar:</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="137"/>
+        <location filename="../qtractorPaletteForm.ui" line="143"/>
         <source>Base color to generate palette</source>
         <translation>Color base para generar la paleta</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="144"/>
+        <location filename="../qtractorPaletteForm.ui" line="153"/>
         <source> Reset</source>
         <translation> Reset</translation>
     </message>
@@ -11074,18 +11074,70 @@ Do you want to apply the changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.ui" line="170"/>
+        <location filename="../qtractorPaletteForm.ui" line="176"/>
+        <source>Import a custom color theme (palette) from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="179"/>
+        <source>Import...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="189"/>
+        <source>Export a custom color theme (palette) to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="192"/>
+        <source>Export...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.ui" line="215"/>
         <source>Show Details</source>
         <translation>Mostrar Detalles</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="668"/>
-        <location filename="../qtractorPaletteForm.cpp" line="676"/>
+        <location filename="../qtractorPaletteForm.cpp" line="320"/>
+        <source>Import File - %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="323"/>
+        <location filename="../qtractorPaletteForm.cpp" line="389"/>
+        <source>Palette files (*.%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="324"/>
+        <location filename="../qtractorPaletteForm.cpp" line="390"/>
+        <source>All files (*.*)</source>
+        <translation type="unfinished">Todos los archivos (*.*)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="376"/>
+        <location filename="../qtractorPaletteForm.cpp" line="801"/>
+        <location filename="../qtractorPaletteForm.cpp" line="809"/>
         <source>Warning - %1</source>
         <translation>Advertencia - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="669"/>
+        <location filename="../qtractorPaletteForm.cpp" line="377"/>
+        <source>Could not import from file:
+
+%1
+
+Sorry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="386"/>
+        <source>Export File - %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="802"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -11094,7 +11146,7 @@ Do you want to discard the changes?</source>
 ¿Desea descartar los cambios?</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="677"/>
+        <location filename="../qtractorPaletteForm.cpp" line="810"/>
         <source>Some settings have been changed:
 
 &quot;%1&quot;.
@@ -11110,22 +11162,22 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorPaletteForm::PaletteModel</name>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="844"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1041"/>
         <source>Color Role</source>
         <translation>Rol del Color</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="847"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1044"/>
         <source>Active</source>
         <translation>Activo</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="850"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1047"/>
         <source>Inactive</source>
         <translation>Inactivo</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="853"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1050"/>
         <source>Disabled</source>
         <translation>Desactivado</translation>
     </message>
