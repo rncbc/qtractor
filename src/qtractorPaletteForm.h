@@ -86,6 +86,8 @@ protected slots:
 	void generateButtonChanged();
 	void resetButtonClicked();
 	void detailsCheckClicked();
+	void importButtonClicked();
+	void exportButtonClicked();
 
 	void paletteChanged(const QPalette& pal);
 
@@ -104,6 +106,15 @@ protected:
 	void updateNamedPaletteList();
 	void updateGenerateButton();
 	void updateDialogButtons();
+
+	void setDefaultDir(const QString& dir);
+	QString defaultDir() const;
+
+	void setShowDetails(bool on);
+	bool isShowDetails() const;
+
+	void showEvent(QShowEvent *event);
+	void resizeEvent(QResizeEvent *event);
 
 private:
 

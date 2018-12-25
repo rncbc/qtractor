@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Custom color (palette) themes can be exported to and
+  imported from external files. (EXPERIMENTAL)
+
 - LV2 plug-in UI GTK2 and X11 in Qt5 host native support
   are now enabled on configure by default. (REGRESSION)
 
