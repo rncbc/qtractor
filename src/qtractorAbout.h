@@ -28,7 +28,7 @@
 
 #define QTRACTOR_SUBTITLE     "An Audio/MIDI multi-track sequencer"
 #define QTRACTOR_WEBSITE      "http://qtractor.org"
-#define QTRACTOR_COPYRIGHT    "Copyright (C) 2005-2018 rncbc aka Rui Nuno Capela. All rights reserved."
+#define QTRACTOR_COPYRIGHT    "Copyright (C) 2005-2019 rncbc aka Rui Nuno Capela. All rights reserved."
 
 #define QTRACTOR_DOMAIN       "rncbc.org"
 
