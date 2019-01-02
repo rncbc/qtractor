@@ -6809,7 +6809,7 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorMidiEditList</name>
     <message>
-        <location filename="../qtractorMidiEditList.cpp" line="209"/>
+        <location filename="../qtractorMidiEditList.cpp" line="210"/>
         <source>C%1</source>
         <translation>C%1</translation>
     </message>
