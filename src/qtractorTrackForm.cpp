@@ -1322,12 +1322,15 @@ void qtractorTrackForm::busNameClicked (void)
 		// Update the comboboxes...
 		trackTypeChanged();
 		// Restore old current selected ones...
-		if (pEngine->findInputBus(sInputBusName))
-			m_ui.InputBusNameComboBox->setCurrentIndex(
-				m_ui.InputBusNameComboBox->findText(sInputBusName));
-		if (pEngine->findOutputBus(sOutputBusName))
-			m_ui.OutputBusNameComboBox->setCurrentIndex(
-				m_ui.OutputBusNameComboBox->findText(sOutputBusName));
+		if (pEngine)
+		{
+			if (pEngine->findInputBus(sInputBusName))
+				m_ui.InputBusNameComboBox->setCurrentIndex(
+							m_ui.InputBusNameComboBox->findText(sInputBusName));
+			if (pEngine->findOutputBus(sOutputBusName))
+				m_ui.OutputBusNameComboBox->setCurrentIndex(
+							m_ui.OutputBusNameComboBox->findText(sOutputBusName));
+		}
 	}
 }
 
