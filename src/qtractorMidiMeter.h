@@ -1,7 +1,7 @@
 // qtractorMidiMeter.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,6 +28,9 @@
 // Forward declarations.
 class qtractorMidiMeter;
 class qtractorMidiMonitor;
+
+class qtractorAudioMeter;
+class qtractorAudioMonitor;
 
 class QLabel;
 
@@ -180,6 +183,56 @@ private:
 
 
 //----------------------------------------------------------------------------
+// qtractorMidiComboMeter -- MIDI meter combo widget.
+
+class qtractorMidiComboMeter : public QWidget
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorMidiComboMeter(
+		qtractorMidiMonitor *pMidiMonitor, QWidget *pParent = 0);
+
+	// Default destructor.
+	~qtractorMidiComboMeter();
+
+	// Regular MIDI meter accessor.
+	qtractorMidiMeter *midiMeter() const;
+
+	// Combined audio-output meter accessor.
+	qtractorAudioMeter *audioOutputMeter() const;
+
+	// Virtual monitor accessor.
+	void setMonitor(qtractorMonitor *pMonitor);
+	qtractorMonitor *monitor() const;
+
+	// MIDI monitor accessor.
+	void setMidiMonitor(qtractorMidiMonitor *pMidiMonitor);
+	qtractorMidiMonitor *midiMonitor() const;
+
+	// Audio-output monitor accessor.
+	void setAudioOutputMonitor(qtractorAudioMonitor *pAudioOutputMonitor);
+	qtractorAudioMonitor *audioOutputMonitor() const;
+
+	// Monitor reset.
+	void reset();
+
+protected:
+
+	// Resize event handler.
+	void resizeEvent(QResizeEvent *);
+
+private:
+
+	// Local instance variables.
+	qtractorMidiMeter  *m_pMidiMeter;
+	qtractorAudioMeter *m_pAudioOutputMeter;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorMidiMixerMeter -- MIDI mixer-strip meter bridge widget.
 
 class qtractorMidiMixerMeter : public qtractorMixerMeter
@@ -203,6 +256,10 @@ public:
 	void setMidiMonitor(qtractorMidiMonitor *pMidiMonitor);
 	qtractorMidiMonitor *midiMonitor() const;
 
+	// Audio-output monitor accessor.
+	void setAudioOutputMonitor(qtractorAudioMonitor *pAudioOutputMonitor);
+	qtractorAudioMonitor *audioOutputMonitor() const;
+
 	// Local slider update methods.
 	void updatePanning();
 	void updateGain();
@@ -222,7 +279,7 @@ private:
 	class GainSpinBoxInterface;
 
 	// Local instance variables.
-	qtractorMidiMeter      *m_pMidiMeter;
+	qtractorMidiComboMeter *m_pMidiMeter;
 	qtractorMidiMeterScale *m_pMidiScale;
 	qtractorMidiMeterLed   *m_pMidiLed;
 };

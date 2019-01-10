@@ -29,6 +29,8 @@
 #include "qtractorAudioMonitor.h"
 #include "qtractorMidiMonitor.h"
 
+#include "qtractorMidiManager.h"
+
 #include "qtractorObserverWidget.h"
 
 #include "qtractorOptions.h"
@@ -416,7 +418,8 @@ void qtractorMixerStrip::initMixerStrip (void)
 		// Have we a MIDI monitor/meter?...
 		if (pMidiMonitor) {
 			iFixedWidth += 24;
-			m_pMixerMeter = new qtractorMidiMixerMeter(pMidiMonitor, this);
+			qtractorMidiMixerMeter *pMidiMixerMeter
+				= new qtractorMidiMixerMeter(pMidiMonitor, this);
 			// MIDI Tracks might need to show something,
 			// like proper MIDI channel settings...
 			if (m_pTrack) {
@@ -424,20 +427,31 @@ void qtractorMixerStrip::initMixerStrip (void)
 		//		m_pMidiLabel->setFont(font2);
 				m_pMidiLabel->setAlignment(
 					Qt::AlignHCenter | Qt::AlignVCenter);
-				m_pMixerMeter->topLayout()->insertWidget(1, m_pMidiLabel);
+				pMidiMixerMeter->topLayout()->insertWidget(1, m_pMidiLabel);
 				updateMidiLabel();
 			}
 			// No panning on MIDI bus monitors and on duplex ones
 			// only on the output buses should be enabled...
 			if (pMidiBus) {
-				if ((m_busMode & qtractorBus::Input) &&
-					(m_pBus->busMode() & qtractorBus::Output)) {
-					m_pMixerMeter->panSlider()->setEnabled(false);
-					m_pMixerMeter->panSpinBox()->setEnabled(false);
-					m_pMixerMeter->gainSlider()->setEnabled(false);
-					m_pMixerMeter->gainSpinBox()->setEnabled(false);
+				if ((m_busMode & qtractorBus::Input)
+					&& (m_pBus->busMode() & qtractorBus::Output)) {
+					pMidiMixerMeter->panSlider()->setEnabled(false);
+					pMidiMixerMeter->panSpinBox()->setEnabled(false);
+					pMidiMixerMeter->gainSlider()->setEnabled(false);
+					pMidiMixerMeter->gainSpinBox()->setEnabled(false);
 				}
 			}
+			// Apply the combo-meter posssibility...
+			qtractorMidiManager *pMidiManager = NULL;
+			qtractorPluginList *pPluginList = m_pPluginListView->pluginList();
+			if (pPluginList)
+				pMidiManager = pPluginList->midiManager();
+			if (pMidiManager && pMidiManager->isAudioOutputMonitor()) {
+				pMidiMixerMeter->setAudioOutputMonitor(
+					pMidiManager->audioOutputMonitor());
+			}
+			// Ready.
+			m_pMixerMeter = pMidiMixerMeter;
 		}
 		break;
 	}

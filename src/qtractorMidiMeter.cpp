@@ -1,7 +1,7 @@
 // qtractorMidiMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,6 +22,9 @@
 #include "qtractorAbout.h"
 #include "qtractorMidiMeter.h"
 #include "qtractorMidiMonitor.h"
+
+#include "qtractorAudioMeter.h"
+#include "qtractorAudioMonitor.h"
 
 #include "qtractorObserverWidget.h"
 
@@ -396,6 +399,121 @@ const QColor& qtractorMidiMeter::defaultColor ( int iIndex )
 }
 
 
+//----------------------------------------------------------------------------
+// qtractorMidiComboMeter -- MIDI meter combo widget.
+
+// Constructor.
+qtractorMidiComboMeter::qtractorMidiComboMeter (
+	qtractorMidiMonitor *pMidiMonitor, QWidget *pParent )
+	: QWidget(pParent)
+{
+	m_pMidiMeter = new qtractorMidiMeter(pMidiMonitor);
+	m_pAudioOutputMeter = NULL;
+
+	QHBoxLayout *pHBoxLayout = new QHBoxLayout();
+	pHBoxLayout->setMargin(0);
+	pHBoxLayout->setSpacing(2);
+	pHBoxLayout->addWidget(m_pMidiMeter);
+	QWidget::setLayout(pHBoxLayout);
+
+	reset();
+}
+
+
+// Default destructor.
+qtractorMidiComboMeter::~qtractorMidiComboMeter (void)
+{
+	if (m_pAudioOutputMeter)
+		delete m_pAudioOutputMeter;
+
+	delete m_pMidiMeter;
+
+	// No need to delete child widgets, Qt does it all for us
+}
+
+
+// Regular MIDI meter accessor.
+qtractorMidiMeter *qtractorMidiComboMeter::midiMeter (void) const
+{
+	return m_pMidiMeter;
+}
+
+
+// Combined audio-output meter accessor.
+qtractorAudioMeter *qtractorMidiComboMeter::audioOutputMeter (void) const
+{
+	return m_pAudioOutputMeter;
+}
+
+
+// MIDI monitor reset
+void qtractorMidiComboMeter::reset (void)
+{
+	qtractorMidiMonitor *pMidiMonitor = m_pMidiMeter->midiMonitor();
+	if (pMidiMonitor == NULL)
+		return;
+
+	m_pMidiMeter->reset();
+
+	if (m_pAudioOutputMeter && m_pAudioOutputMeter->audioMonitor())
+		m_pAudioOutputMeter->reset();
+}
+
+
+// Virtual monitor accessor.
+void qtractorMidiComboMeter::setMonitor ( qtractorMonitor *pMonitor )
+{
+	m_pMidiMeter->setMonitor(pMonitor);
+}
+
+qtractorMonitor *qtractorMidiComboMeter::monitor (void) const
+{
+	return m_pMidiMeter->monitor();
+}
+
+// Audio-output monitor accessor.
+void qtractorMidiComboMeter::setAudioOutputMonitor (
+	qtractorAudioMonitor *pAudioOutputMonitor )
+{
+	if (m_pAudioOutputMeter)
+		m_pAudioOutputMeter->setAudioMonitor(pAudioOutputMonitor);
+	else
+	if (pAudioOutputMonitor) {
+		m_pAudioOutputMeter = new qtractorAudioMeter(pAudioOutputMonitor, parentWidget());
+		QWidget::layout()->addWidget(m_pAudioOutputMeter);
+		m_pAudioOutputMeter->show();
+	}
+
+	reset();
+}
+
+qtractorAudioMonitor *qtractorMidiComboMeter::audioOutputMonitor (void) const
+{
+	return (m_pAudioOutputMeter ? m_pAudioOutputMeter->audioMonitor() : NULL);
+}
+
+
+// MIDI monitor accessor.
+void qtractorMidiComboMeter::setMidiMonitor ( qtractorMidiMonitor *pMidiMonitor )
+{
+	m_pMidiMeter->setMidiMonitor(pMidiMonitor);
+
+	reset();
+}
+
+qtractorMidiMonitor *qtractorMidiComboMeter::midiMonitor (void) const
+{
+	return m_pMidiMeter->midiMonitor();
+}
+
+
+// Resize event handler.
+void qtractorMidiComboMeter::resizeEvent ( QResizeEvent *pResizeEvent )
+{
+	QWidget::resizeEvent(pResizeEvent);
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorMidiMixerMeter::GainSpinBoxInterface -- Observer interface.
 //
@@ -442,9 +560,9 @@ qtractorMidiMixerMeter::qtractorMidiMixerMeter (
 	qtractorMidiMonitor *pMidiMonitor, QWidget *pParent )
 	: qtractorMixerMeter(pParent)
 {
-	m_pMidiMeter = new qtractorMidiMeter(pMidiMonitor);
-	m_pMidiScale = new qtractorMidiMeterScale(m_pMidiMeter);
-	m_pMidiLed   = new qtractorMidiMeterLed(m_pMidiMeter);
+	m_pMidiMeter = new qtractorMidiComboMeter(pMidiMonitor);
+	m_pMidiScale = new qtractorMidiMeterScale(m_pMidiMeter->midiMeter());
+	m_pMidiLed   = new qtractorMidiMeterLed(m_pMidiMeter->midiMeter());
 
 	topLayout()->addStretch();
 	topLayout()->addWidget(m_pMidiLed);
@@ -504,6 +622,7 @@ qtractorMonitor *qtractorMidiMixerMeter::monitor (void) const
 	return m_pMidiMeter->monitor();
 }
 
+
 // MIDI monitor accessor.
 void qtractorMidiMixerMeter::setMidiMonitor ( qtractorMidiMonitor *pMidiMonitor )
 {
@@ -515,6 +634,21 @@ void qtractorMidiMixerMeter::setMidiMonitor ( qtractorMidiMonitor *pMidiMonitor 
 qtractorMidiMonitor *qtractorMidiMixerMeter::midiMonitor (void) const
 {
 	return m_pMidiMeter->midiMonitor();
+}
+
+
+// Audio-output monitor accessor.
+void qtractorMidiMixerMeter::setAudioOutputMonitor (
+	qtractorAudioMonitor *pAudioOutputMonitor )
+{
+	m_pMidiMeter->setAudioOutputMonitor(pAudioOutputMonitor);
+
+	reset();
+}
+
+qtractorAudioMonitor *qtractorMidiMixerMeter::audioOutputMonitor (void) const
+{
+	return m_pMidiMeter->audioOutputMonitor();
 }
 
 

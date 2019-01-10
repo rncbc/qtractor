@@ -1335,7 +1335,7 @@ void qtractorMidiManager::createAudioOutputBus (void)
 	if (m_bAudioOutputMonitor && m_pAudioOutputBus) {
 		// Owned, not part of audio engine...
 		m_pAudioOutputMonitor
-			= new qtractorAudioMonitor(m_pAudioOutputMonitor->channels());
+			= new qtractorAudioMonitor(m_pAudioOutputBus->channels());
 	}
 }
 
