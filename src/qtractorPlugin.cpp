@@ -2039,6 +2039,10 @@ bool qtractorPluginList::loadElement (
 		if (ePlugin.tagName() == "audio-output-auto-connect") {
 			m_bAudioOutputAutoConnect = qtractorDocument::boolFromText(ePlugin.text());
 		}
+		// Load audio output monitor flag...
+		if (ePlugin.tagName() == "audio-output-monitor") {
+			m_bAudioOutputMonitor = qtractorDocument::boolFromText(ePlugin.text());
+		}
 		else
 		// Load audio output connections...
 		if (ePlugin.tagName() == "audio-outputs") {
@@ -2165,6 +2169,9 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		pDocument->saveTextElement("audio-output-auto-connect",
 			qtractorDocument::textFromBool(
 				m_pMidiManager->isAudioOutputAutoConnect()), pElement);
+		pDocument->saveTextElement("audio-output-monitor",
+			qtractorDocument::textFromBool(
+				m_pMidiManager->isAudioOutputMonitor()), pElement);
 		if (m_pMidiManager->isAudioOutputBus()) {
 			qtractorAudioBus *pAudioBus = m_pMidiManager->audioOutputBus();
 			if (pAudioBus) {
