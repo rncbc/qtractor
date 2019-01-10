@@ -1,7 +1,7 @@
 // qtractorMidiManager.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -44,6 +44,7 @@
 class qtractorTimeScale;
 class qtractorPluginList;
 class qtractorPlugin;
+class qtractorAudioMonitor;
 class qtractorAudioBus;
 class qtractorMidiBus;
 class qtractorSubject;
@@ -225,6 +226,9 @@ public:
 	static void setDefaultAudioOutputAutoConnect(bool bAudioOutputAutoConnect);
 	static bool isDefaultAudioOutputAutoConnect();
 
+	static void setDefaultAudioOutputMonitor(bool bAudioOutputMonitor);
+	static bool isDefaultAudioOutputMonitor();
+
 #ifdef CONFIG_VST
 	// VST event buffer accessors...
 	VstEvents *vst_events_in() const
@@ -276,6 +280,14 @@ public:
 		{ m_bAudioOutputAutoConnect = bAudioOutputAutoConnect; }
 	bool isAudioOutputAutoConnect() const
 		{ return m_bAudioOutputAutoConnect; }
+
+	// Audio output bus monitor accessors.
+	void setAudioOutputMonitor(bool bAudioOutputMonitor)
+		{ m_bAudioOutputMonitor = bAudioOutputMonitor; }
+	bool isAudioOutputMonitor() const
+		{ return m_bAudioOutputMonitor; }
+	qtractorAudioMonitor *audioOutputMonitor() const
+		{ return m_pAudioOutputMonitor; }
 
 	// Current bank selection accessors.
 	void setCurrentBank(int iBank)
@@ -387,6 +399,9 @@ private:
 	bool                m_bAudioOutputAutoConnect;
 	qtractorAudioBus   *m_pAudioOutputBus;
 
+	bool                  m_bAudioOutputMonitor;
+	qtractorAudioMonitor *m_pAudioOutputMonitor;
+
 	int m_iCurrentBank;
 	int m_iCurrentProg;
 
@@ -399,6 +414,7 @@ private:
 	// Global factory options.
 	static bool g_bAudioOutputBus;
 	static bool g_bAudioOutputAutoConnect;
+	static bool g_bAudioOutputMonitor;
 };
 
 

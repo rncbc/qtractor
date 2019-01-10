@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1443,6 +1443,8 @@ qtractorPluginList::qtractorPluginList (
 		= qtractorMidiManager::isDefaultAudioOutputBus();
 	m_bAudioOutputAutoConnect
 		= qtractorMidiManager::isDefaultAudioOutputAutoConnect();
+	m_bAudioOutputMonitor
+		= qtractorMidiManager::isDefaultAudioOutputMonitor();
 
 	m_iAudioInsertActivated = 0;
 

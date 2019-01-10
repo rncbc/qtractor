@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -864,6 +864,11 @@ public:
 	const QString& audioOutputBusName() const
 		{ return m_sAudioOutputBusName; }
 
+	void setAudioOutputMonitor(bool bAudioOutputMonitor)
+		{ m_bAudioOutputMonitor = bAudioOutputMonitor; }
+	bool isAudioOutputMonitor() const
+		{ return m_bAudioOutputMonitor; }
+
 	// MIDI bank/program observable subject.
 	class MidiProgramSubject : public qtractorSubject
 	{
@@ -957,6 +962,8 @@ private:
 	bool m_bAudioOutputBus;
 	bool m_bAudioOutputAutoConnect;
 	QString m_sAudioOutputBusName;
+
+	bool m_bAudioOutputMonitor;
 
 	qtractorBus::ConnectList m_audioOutputs;
 
