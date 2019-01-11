@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +23,9 @@
 #define __qtractorAudioMonitor_h
 
 #include "qtractorMonitor.h"
+
+// Forward decls.
+class qtractorAudioMeter;
 
 
 //----------------------------------------------------------------------------
@@ -75,6 +78,31 @@ private:
 	void (*m_pfnProcess)(float *, unsigned int, float, float *);
 	void (*m_pfnProcessRamp)(float *, unsigned int, float, float, float *);
 	void (*m_pfnProcessMeter)(float *, unsigned int, float *);
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorAudioOutputMonitor -- Audio-output monitor bridge value processor.
+
+class qtractorAudioOutputMonitor : public qtractorAudioMonitor
+{
+public:
+
+	// Constructor.
+	qtractorAudioOutputMonitor(unsigned short iChannels,
+		float fGain = 1.0f, float fPanning = 0.0f);
+
+	// Channel property accessors.
+	void setChannels(unsigned short iChannels);
+
+	// Associated meters (kinda observers) managament methods.
+	void addAudioMeter(qtractorAudioMeter *pAudioMeter);
+	void removeAudioMeter(qtractorAudioMeter *pAudioMeter);
+
+private:
+
+	// Instance variables.
+	QList<qtractorAudioMeter *> m_meters;
 };
 
 

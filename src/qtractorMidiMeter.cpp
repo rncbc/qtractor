@@ -408,7 +408,7 @@ qtractorMidiComboMeter::qtractorMidiComboMeter (
 	: QWidget(pParent)
 {
 	m_pMidiMeter = new qtractorMidiMeter(pMidiMonitor);
-	m_pAudioOutputMeter = NULL;
+	m_pAudioMeter = NULL;
 
 	QHBoxLayout *pHBoxLayout = new QHBoxLayout();
 	pHBoxLayout->setMargin(0);
@@ -423,8 +423,8 @@ qtractorMidiComboMeter::qtractorMidiComboMeter (
 // Default destructor.
 qtractorMidiComboMeter::~qtractorMidiComboMeter (void)
 {
-	if (m_pAudioOutputMeter)
-		delete m_pAudioOutputMeter;
+	if (m_pAudioMeter)
+		delete m_pAudioMeter;
 
 	delete m_pMidiMeter;
 
@@ -440,9 +440,9 @@ qtractorMidiMeter *qtractorMidiComboMeter::midiMeter (void) const
 
 
 // Combined audio-output meter accessor.
-qtractorAudioMeter *qtractorMidiComboMeter::audioOutputMeter (void) const
+qtractorAudioMeter *qtractorMidiComboMeter::audioMeter (void) const
 {
-	return m_pAudioOutputMeter;
+	return m_pAudioMeter;
 }
 
 
@@ -455,8 +455,8 @@ void qtractorMidiComboMeter::reset (void)
 
 	m_pMidiMeter->reset();
 
-	if (m_pAudioOutputMeter && m_pAudioOutputMeter->audioMonitor())
-		m_pAudioOutputMeter->reset();
+	if (m_pAudioMeter && m_pAudioMeter->audioMonitor())
+		m_pAudioMeter->reset();
 }
 
 
@@ -471,27 +471,6 @@ qtractorMonitor *qtractorMidiComboMeter::monitor (void) const
 	return m_pMidiMeter->monitor();
 }
 
-// Audio-output monitor accessor.
-void qtractorMidiComboMeter::setAudioOutputMonitor (
-	qtractorAudioMonitor *pAudioOutputMonitor )
-{
-	if (m_pAudioOutputMeter)
-		m_pAudioOutputMeter->setAudioMonitor(pAudioOutputMonitor);
-	else
-	if (pAudioOutputMonitor) {
-		m_pAudioOutputMeter = new qtractorAudioMeter(pAudioOutputMonitor, parentWidget());
-		QWidget::layout()->addWidget(m_pAudioOutputMeter);
-		m_pAudioOutputMeter->show();
-	}
-
-	reset();
-}
-
-qtractorAudioMonitor *qtractorMidiComboMeter::audioOutputMonitor (void) const
-{
-	return (m_pAudioOutputMeter ? m_pAudioOutputMeter->audioMonitor() : NULL);
-}
-
 
 // MIDI monitor accessor.
 void qtractorMidiComboMeter::setMidiMonitor ( qtractorMidiMonitor *pMidiMonitor )
@@ -504,6 +483,39 @@ void qtractorMidiComboMeter::setMidiMonitor ( qtractorMidiMonitor *pMidiMonitor 
 qtractorMidiMonitor *qtractorMidiComboMeter::midiMonitor (void) const
 {
 	return m_pMidiMeter->midiMonitor();
+}
+
+
+// Audio-output monitor accessor.
+void qtractorMidiComboMeter::setAudioOutputMonitor (
+	qtractorAudioOutputMonitor *pAudioOutputMonitor )
+{
+	if (m_pAudioMeter) {
+		qtractorAudioOutputMonitor *pOldAudioOutputMonitor
+			= static_cast<qtractorAudioOutputMonitor *> (m_pAudioMeter->audioMonitor());
+		if (pOldAudioOutputMonitor)
+			pOldAudioOutputMonitor->removeAudioMeter(m_pAudioMeter);
+		m_pAudioMeter->setAudioMonitor(pAudioOutputMonitor);
+		if (pAudioOutputMonitor)
+			pAudioOutputMonitor->addAudioMeter(m_pAudioMeter);
+	}
+	else
+	if (pAudioOutputMonitor) {
+		m_pAudioMeter = new qtractorAudioMeter(pAudioOutputMonitor, parentWidget());
+		pAudioOutputMonitor->addAudioMeter(m_pAudioMeter);
+		QWidget::layout()->addWidget(m_pAudioMeter);
+		m_pAudioMeter->show();
+	}
+
+	reset();
+}
+
+qtractorAudioOutputMonitor *qtractorMidiComboMeter::audioOutputMonitor (void) const
+{
+	if (m_pAudioMeter)
+		return static_cast<qtractorAudioOutputMonitor *> (m_pAudioMeter->audioMonitor());
+	else
+		return NULL;
 }
 
 
@@ -639,14 +651,14 @@ qtractorMidiMonitor *qtractorMidiMixerMeter::midiMonitor (void) const
 
 // Audio-output monitor accessor.
 void qtractorMidiMixerMeter::setAudioOutputMonitor (
-	qtractorAudioMonitor *pAudioOutputMonitor )
+	qtractorAudioOutputMonitor *pAudioOutputMonitor )
 {
 	m_pMidiMeter->setAudioOutputMonitor(pAudioOutputMonitor);
 
 	reset();
 }
 
-qtractorAudioMonitor *qtractorMidiMixerMeter::audioOutputMonitor (void) const
+qtractorAudioOutputMonitor *qtractorMidiMixerMeter::audioOutputMonitor (void) const
 {
 	return m_pMidiMeter->audioOutputMonitor();
 }

@@ -30,7 +30,7 @@ class qtractorMidiMeter;
 class qtractorMidiMonitor;
 
 class qtractorAudioMeter;
-class qtractorAudioMonitor;
+class qtractorAudioOutputMonitor;
 
 class QLabel;
 
@@ -202,7 +202,7 @@ public:
 	qtractorMidiMeter *midiMeter() const;
 
 	// Combined audio-output meter accessor.
-	qtractorAudioMeter *audioOutputMeter() const;
+	qtractorAudioMeter *audioMeter() const;
 
 	// Virtual monitor accessor.
 	void setMonitor(qtractorMonitor *pMonitor);
@@ -213,8 +213,8 @@ public:
 	qtractorMidiMonitor *midiMonitor() const;
 
 	// Audio-output monitor accessor.
-	void setAudioOutputMonitor(qtractorAudioMonitor *pAudioOutputMonitor);
-	qtractorAudioMonitor *audioOutputMonitor() const;
+	void setAudioOutputMonitor(qtractorAudioOutputMonitor *pAudioOutputMonitor);
+	qtractorAudioOutputMonitor *audioOutputMonitor() const;
 
 	// Monitor reset.
 	void reset();
@@ -228,7 +228,7 @@ private:
 
 	// Local instance variables.
 	qtractorMidiMeter  *m_pMidiMeter;
-	qtractorAudioMeter *m_pAudioOutputMeter;
+	qtractorAudioMeter *m_pAudioMeter;
 };
 
 
@@ -257,8 +257,8 @@ public:
 	qtractorMidiMonitor *midiMonitor() const;
 
 	// Audio-output monitor accessor.
-	void setAudioOutputMonitor(qtractorAudioMonitor *pAudioOutputMonitor);
-	qtractorAudioMonitor *audioOutputMonitor() const;
+	void setAudioOutputMonitor(qtractorAudioOutputMonitor *pAudioOutputMonitor);
+	qtractorAudioOutputMonitor *audioOutputMonitor() const;
 
 	// Local slider update methods.
 	void updatePanning();

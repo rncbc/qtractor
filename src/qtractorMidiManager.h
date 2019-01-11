@@ -45,6 +45,7 @@ class qtractorTimeScale;
 class qtractorPluginList;
 class qtractorPlugin;
 class qtractorAudioMonitor;
+class qtractorAudioOutputMonitor;
 class qtractorAudioBus;
 class qtractorMidiBus;
 class qtractorSubject;
@@ -285,7 +286,7 @@ public:
 	void setAudioOutputMonitor(bool bAudioOutputMonitor);
 	bool isAudioOutputMonitor() const
 		{ return m_bAudioOutputMonitor; }
-	qtractorAudioMonitor *audioOutputMonitor() const
+	qtractorAudioOutputMonitor *audioOutputMonitor() const
 		{ return m_pAudioOutputMonitor; }
 
 	// Current bank selection accessors.
@@ -395,11 +396,11 @@ private:
 
 	bool                m_bAudioOutputBus;
 	QString             m_sAudioOutputBusName;
-	bool                m_bAudioOutputAutoConnect;
 	qtractorAudioBus   *m_pAudioOutputBus;
+	bool                m_bAudioOutputAutoConnect;
+	bool                m_bAudioOutputMonitor;
 
-	bool                  m_bAudioOutputMonitor;
-	qtractorAudioMonitor *m_pAudioOutputMonitor;
+	qtractorAudioOutputMonitor *m_pAudioOutputMonitor;
 
 	int m_iCurrentBank;
 	int m_iCurrentProg;

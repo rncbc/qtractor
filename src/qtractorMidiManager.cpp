@@ -465,6 +465,9 @@ qtractorMidiManager::~qtractorMidiManager (void)
 {
 	deleteAudioOutputBus();
 
+	if (m_pAudioOutputMonitor)
+		delete m_pAudioOutputMonitor;
+
 	// Destroy event_buffers...
 	for (unsigned short i = 0; i < 2; ++i) {
 	#ifdef CONFIG_VST
@@ -1334,8 +1337,12 @@ void qtractorMidiManager::createAudioOutputBus (void)
 	// Whether audio output bus monitoring is on...
 	if (m_bAudioOutputMonitor && m_pAudioOutputBus) {
 		// Owned, not part of audio engine...
-		m_pAudioOutputMonitor
-			= new qtractorAudioMonitor(m_pAudioOutputBus->channels());
+		if (m_pAudioOutputMonitor) {
+			m_pAudioOutputMonitor->setChannels(m_pAudioOutputBus->channels());
+		} else {
+			m_pAudioOutputMonitor
+				= new qtractorAudioOutputMonitor(m_pAudioOutputBus->channels());
+		}
 	}
 }
 
@@ -1343,10 +1350,6 @@ void qtractorMidiManager::createAudioOutputBus (void)
 // Destroy audio Outputnome stuff.
 void qtractorMidiManager::deleteAudioOutputBus (void)
 {
-	// Owned, not part of audio engine...
-	if (m_bAudioOutputMonitor && m_pAudioOutputMonitor)
-		delete m_pAudioOutputMonitor;
-
 	if (m_bAudioOutputBus && m_pAudioOutputBus) {
 		m_pAudioOutputBus->close();
 		qtractorSession *pSession = qtractorSession::getInstance();
@@ -1359,7 +1362,6 @@ void qtractorMidiManager::deleteAudioOutputBus (void)
 	}
 
 	// Done.
-	m_pAudioOutputMonitor = NULL;
 	m_pAudioOutputBus = NULL;
 }
 
@@ -1381,8 +1383,13 @@ void qtractorMidiManager::setAudioOutputMonitor ( bool bAudioOutputMonitor )
 	m_bAudioOutputMonitor = bAudioOutputMonitor;
 
 	if (m_bAudioOutputMonitor && m_pAudioOutputBus) {
-		m_pAudioOutputMonitor
-			= new qtractorAudioMonitor(m_pAudioOutputBus->channels());
+		// Owned, not part of audio engine...
+		if (m_pAudioOutputMonitor) {
+			m_pAudioOutputMonitor->setChannels(m_pAudioOutputBus->channels());
+		} else {
+			m_pAudioOutputMonitor
+				= new qtractorAudioOutputMonitor(m_pAudioOutputBus->channels());
+		}
 	}
 
 	pSession->unlock();
