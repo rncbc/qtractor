@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -825,6 +825,41 @@ bool qtractorAudioOutputBusCommand::redo (void)
 }
 
 bool qtractorAudioOutputBusCommand::undo (void)
+{
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorAudioOutputMonitorCommand - declaration.
+//
+
+// Constructor.
+qtractorAudioOutputMonitorCommand::qtractorAudioOutputMonitorCommand (
+	qtractorMidiManager *pMidiManager, bool bAudioOutputMonitor )
+	: qtractorCommand(QObject::tr("audio output meters")),
+		m_pMidiManager(pMidiManager), m_bAudioOutputMonitor(bAudioOutputMonitor)
+{
+}
+
+
+// Plugin audio ouput monitor command methods.
+bool qtractorAudioOutputMonitorCommand::redo (void)
+{
+	if (m_pMidiManager == NULL)
+		return false;
+
+	const bool bAudioOutputMonitor
+		= m_pMidiManager->isAudioOutputMonitor();
+
+	m_pMidiManager->setAudioOutputMonitor(m_bAudioOutputMonitor);
+
+	m_bAudioOutputMonitor = bAudioOutputMonitor;
+
+	return true;
+}
+
+bool qtractorAudioOutputMonitorCommand::undo (void)
 {
 	return redo();
 }

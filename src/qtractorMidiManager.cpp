@@ -1364,6 +1364,31 @@ void qtractorMidiManager::deleteAudioOutputBus (void)
 }
 
 
+// Output monitor mode accessors.
+void qtractorMidiManager::setAudioOutputMonitor ( bool bAudioOutputMonitor )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->lock();
+
+	if (m_bAudioOutputMonitor && m_pAudioOutputMonitor) {
+		delete m_pAudioOutputMonitor;
+		m_pAudioOutputMonitor = NULL;
+	}
+
+	m_bAudioOutputMonitor = bAudioOutputMonitor;
+
+	if (m_bAudioOutputMonitor && m_pAudioOutputBus) {
+		m_pAudioOutputMonitor
+			= new qtractorAudioMonitor(m_pAudioOutputBus->channels());
+	}
+
+	pSession->unlock();
+}
+
+
 // Instrument map builder.
 void qtractorMidiManager::updateInstruments (void)
 {

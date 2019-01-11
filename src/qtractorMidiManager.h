@@ -282,8 +282,7 @@ public:
 		{ return m_bAudioOutputAutoConnect; }
 
 	// Audio output bus monitor accessors.
-	void setAudioOutputMonitor(bool bAudioOutputMonitor)
-		{ m_bAudioOutputMonitor = bAudioOutputMonitor; }
+	void setAudioOutputMonitor(bool bAudioOutputMonitor);
 	bool isAudioOutputMonitor() const
 		{ return m_bAudioOutputMonitor; }
 	qtractorAudioMonitor *audioOutputMonitor() const
