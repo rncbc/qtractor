@@ -32,8 +32,6 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorTracks.h"
-
-#include "qtractorTrackList.h"
 #include "qtractorMixer.h"
 
 
@@ -871,13 +869,11 @@ bool qtractorAudioOutputMonitorCommand::redo (void)
 		// Meters on tracks list...
 		qtractorTracks *pTracks = pMainForm->tracks();
 		if (pTracks)
-			pTracks->trackList()->updateItems();
+			pTracks->updateMidiTrackItem(m_pMidiManager);
 		// Meters on mixer strips...
 		qtractorMixer *pMixer = pMainForm->mixer();
-		if (pMixer) {
-			pMixer->updateTracks(true);
-			pMixer->updateBuses(true);
-		}
+		if (pMixer)
+			pMixer->updateMidiStrip(m_pMidiManager);
 	}
 
 //	pSession->unlock();

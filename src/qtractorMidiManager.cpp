@@ -1375,10 +1375,8 @@ void qtractorMidiManager::setAudioOutputMonitor ( bool bAudioOutputMonitor )
 
 	pSession->lock();
 
-	if (m_bAudioOutputMonitor && m_pAudioOutputMonitor) {
-		delete m_pAudioOutputMonitor;
-		m_pAudioOutputMonitor = NULL;
-	}
+	if (m_pAudioOutputMonitor && !bAudioOutputMonitor)
+		m_pAudioOutputMonitor->setChannels(0);
 
 	m_bAudioOutputMonitor = bAudioOutputMonitor;
 

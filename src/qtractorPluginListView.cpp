@@ -402,14 +402,14 @@ void qtractorPluginListView::refresh (void)
 {
 	clear();
 
-	QListWidget::setUpdatesEnabled(false);
 	if (m_pPluginList) {
+		QListWidget::setUpdatesEnabled(false);
 		for (qtractorPlugin *pPlugin = m_pPluginList->first();
 				pPlugin; pPlugin = pPlugin->next()) {
 			QListWidget::addItem(new qtractorPluginListItem(pPlugin));
 		}
+		QListWidget::setUpdatesEnabled(true);
 	}
-	QListWidget::setUpdatesEnabled(true);
 }
 
 

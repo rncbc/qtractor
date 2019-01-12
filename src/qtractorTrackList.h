@@ -142,6 +142,9 @@ public:
 	// Update the list view item from track pointer reference.
 	void updateTrack(qtractorTrack *pTrack);
 
+	// Update the list view item from MIDI manager pointer reference.
+	void updateMidiTrackItem(qtractorMidiManager *pMidiManager);
+
 	// Track-button colors (palette) update.
 	void updateTrackButtons();
 

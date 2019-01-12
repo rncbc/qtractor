@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -239,8 +239,8 @@ qtractorMixerStrip::~qtractorMixerStrip (void)
 	if (m_pMidiLabel)
 		delete m_pMidiLabel;
 
-	if (m_pMeter)
-		delete m_pMeter;
+	if (m_pMixerMeter)
+		delete m_pMixerMeter;
 
 	if (m_pSoloButton)
 		delete m_pSoloButton;
@@ -881,6 +881,24 @@ void qtractorMixerStrip::gainChangedSlot ( float fGain )
 }
 
 
+// Update a MIDI mixer strip, given its MIDI manager handle.
+void qtractorMixerStrip::updateMidiMeter ( qtractorMidiManager *pMidiManager )
+{
+	qtractorMidiMixerMeter *pMidiMixerMeter
+		= static_cast<qtractorMidiMixerMeter *> (m_pMixerMeter);
+	if (pMidiMixerMeter == NULL)
+		return;
+
+	// Apply the combo-meter posssibility...
+	if (pMidiManager && pMidiManager->isAudioOutputMonitor()) {
+		pMidiMixerMeter->setAudioOutputMonitor(
+			pMidiManager->audioOutputMonitor());
+	} else {
+		pMidiMixerMeter->setAudioOutputMonitor(NULL);
+	}
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorMixerRackWidget -- Meter bridge rack widget impl.
 
@@ -1142,9 +1160,54 @@ void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 
 
 // Find a mixer strip, given its monitor handle.
-qtractorMixerStrip *qtractorMixerRack::findStrip ( qtractorMonitor *pMonitor )
+qtractorMixerStrip *qtractorMixerRack::findStrip ( qtractorMonitor *pMonitor ) const
 {
 	return m_strips.value(pMonitor, NULL);
+}
+
+
+// Find a mixer strip, given its MIDI manager handle.
+qtractorMixerStrip *qtractorMixerRack::findMidiStrip (
+	qtractorMidiManager *pMidiManager ) const
+{
+	if (pMidiManager == NULL)
+		return NULL;
+
+	Strips::ConstIterator strip = m_strips.constBegin();
+	const Strips::ConstIterator& strip_end = m_strips.constEnd();
+	for ( ; strip != strip_end; ++strip) {
+		qtractorMixerStrip *pStrip = strip.value();
+		qtractorPluginList *pPluginList = NULL;
+		if (pStrip->track() &&
+			pStrip->track()->trackType() == qtractorTrack::Midi) {
+			pPluginList = pStrip->track()->pluginList();
+			if (pPluginList && pPluginList->midiManager() == pMidiManager)
+				return pStrip;
+		}
+		else
+		if (pStrip->bus() &&
+			pStrip->bus()->busType() == qtractorTrack::Midi) {
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (pStrip->bus());
+			if (pMidiBus == NULL)
+				continue;
+			if ((pStrip->busMode() & qtractorBus::Input) &&
+				(pMidiBus->busMode() & qtractorBus::Input)) {
+				pPluginList = pMidiBus->pluginList_in();
+				if (pPluginList && pPluginList->midiManager() == pMidiManager)
+					return pStrip;
+			}
+			else
+			if ((pStrip->busMode() & qtractorBus::Output) &&
+				(pMidiBus->busMode() & qtractorBus::Output)) {
+				pPluginList = pMidiBus->pluginList_out();
+				if (pPluginList && pPluginList->midiManager() == pMidiManager)
+					return pStrip;
+			}
+		}
+	}
+
+	return NULL;
 }
 
 
@@ -1416,8 +1479,8 @@ void qtractorMixer::updateBusStrip ( qtractorMixerRack *pRack,
 		if (pAudioBus) {
 			pAudioBus->applyCurveFile(busMode,
 				(busMode == qtractorBus::Input
-			       ? pAudioBus->curveFile_in()
-			       : pAudioBus->curveFile_out()));
+					? pAudioBus->curveFile_in()
+					: pAudioBus->curveFile_out()));
 		}
 		break;
 	case qtractorTrack::Midi:
@@ -1425,8 +1488,8 @@ void qtractorMixer::updateBusStrip ( qtractorMixerRack *pRack,
 		if (pMidiBus) {
 			pMidiBus->applyCurveFile(busMode,
 				(busMode == qtractorBus::Input
-			         ? pMidiBus->curveFile_in()
-			         : pMidiBus->curveFile_out()));
+					? pMidiBus->curveFile_in()
+					: pMidiBus->curveFile_out()));
 		}
 		break;
 	default:
@@ -1517,6 +1580,19 @@ void qtractorMixer::updateTracks ( bool bReset )
 	}
 
 	m_pTrackRack->cleanStrips(1);
+}
+
+
+// Update a MIDI mixer strip, given its MIDI manager handle.
+void qtractorMixer::updateMidiStrip ( qtractorMidiManager *pMidiManager )
+{
+	qtractorMixerStrip *pStrip = m_pTrackRack->findMidiStrip(pMidiManager);
+	if (pStrip == NULL)
+		pStrip = m_pOutputRack->findMidiStrip(pMidiManager);
+	if (pStrip == NULL)
+		pStrip = m_pInputRack->findMidiStrip(pMidiManager);
+	if (pStrip)
+		pStrip->updateMidiMeter(pMidiManager);
 }
 
 

@@ -43,6 +43,8 @@ class qtractorMixerMeter;
 
 class qtractorPluginListView;
 
+class qtractorMidiManager;
+
 class QHBoxLayout;
 class QVBoxLayout;
 class QGridLayout;
@@ -132,6 +134,8 @@ public:
 	void setBus(qtractorBus *pBus);
 	qtractorBus *bus() const
 		{ return m_pBus; }
+	qtractorBus::BusMode busMode() const
+		{ return m_busMode; }
 
 	// Track property accessors.
 	void setTrack(qtractorTrack *pTrack);
@@ -155,6 +159,9 @@ public:
 
 	// Track monitor dispatcher.
 	void trackMonitor(bool bMonitor);
+
+	// Update a MIDI mixer strip, given its MIDI manager handle.
+	void updateMidiMeter(qtractorMidiManager *pMidiManager);
 
 protected slots:
 
@@ -293,7 +300,10 @@ public:
 	void removeStrip(qtractorMixerStrip *pStrip);
 
 	// Find a mixer strip, given its monitor handle.
-	qtractorMixerStrip *findStrip(qtractorMonitor *pMonitor);
+	qtractorMixerStrip *findStrip(qtractorMonitor *pMonitor) const;
+
+	// Find a mixer strip, given its MIDI manager handle.
+	qtractorMixerStrip *findMidiStrip(qtractorMidiManager *pMidiManager) const;
 
 	// Update a mixer strip on rack list.
 	void updateStrip(qtractorMixerStrip *pStrip, qtractorMonitor *pMonitor);
@@ -321,6 +331,7 @@ public:
 	// Multi-row workspace layout method.
 	void updateWorkspace()
 		{ m_pRackWidget->updateWorkspace(); }
+
 
 public slots:
 
@@ -383,6 +394,9 @@ public:
 	void updateBusStrip(qtractorMixerRack *pRack, qtractorBus *pBus,
 		qtractorBus::BusMode busMode, bool bReset = false);
 	void updateTrackStrip(qtractorTrack *pTrack, bool bReset = false);
+
+	// Update a MIDI mixer strip, given its MIDI manager handle.
+	void updateMidiStrip(qtractorMidiManager *pMidiManager);
 
 	// Complete mixer recycle.
 	void clear();

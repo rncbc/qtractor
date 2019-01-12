@@ -770,6 +770,33 @@ void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 }
 
 
+// Update the list view item from MIDI manager pointer reference.
+void qtractorTrackList::updateMidiTrackItem ( qtractorMidiManager *pMidiManager )
+{
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext()) {
+		Item *pItem = iter.next();
+		qtractorTrack *pTrack = pItem->track;
+		if (pTrack && pTrack->trackType() == qtractorTrack::Midi) {
+			qtractorPluginList *pPluginList = pTrack->pluginList();
+			if (pPluginList && pPluginList->midiManager() == pMidiManager) {
+				qtractorMidiComboMeter *pMidiComboMeter
+					= static_cast<qtractorMidiComboMeter *> (pItem->meters);
+				if (pMidiComboMeter) {
+					if (pMidiManager->isAudioOutputMonitor()) {
+						pMidiComboMeter->setAudioOutputMonitor(
+							pMidiManager->audioOutputMonitor());
+					} else {
+						pMidiComboMeter->setAudioOutputMonitor(NULL);
+					}
+				}
+				break;
+			}
+		}
+	}
+}
+
+
 // Track-button colors (palette) update.
 void qtractorTrackList::updateTrackButtons (void)
 {
