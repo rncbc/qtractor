@@ -33,6 +33,9 @@
 #include "qtractorMainForm.h"
 #include "qtractorTracks.h"
 
+#include "qtractorTrackList.h"
+#include "qtractorMixer.h"
+
 
 //----------------------------------------------------------------------
 // class qtractorPluginCommand - implementation
@@ -849,12 +852,35 @@ bool qtractorAudioOutputMonitorCommand::redo (void)
 	if (m_pMidiManager == NULL)
 		return false;
 
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+//	pSession->lock();
+
 	const bool bAudioOutputMonitor
 		= m_pMidiManager->isAudioOutputMonitor();
 
 	m_pMidiManager->setAudioOutputMonitor(m_bAudioOutputMonitor);
 
 	m_bAudioOutputMonitor = bAudioOutputMonitor;
+
+	// Update all tracks anyway...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		// Meters on tracks list...
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks)
+			pTracks->trackList()->updateItems();
+		// Meters on mixer strips...
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer) {
+			pMixer->updateTracks(true);
+			pMixer->updateBuses(true);
+		}
+	}
+
+//	pSession->unlock();
 
 	return true;
 }

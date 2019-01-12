@@ -455,7 +455,7 @@ void qtractorMidiComboMeter::reset (void)
 
 	m_pMidiMeter->reset();
 
-	if (m_pAudioMeter && m_pAudioMeter->audioMonitor())
+	if (m_pAudioMeter)
 		m_pAudioMeter->reset();
 }
 
