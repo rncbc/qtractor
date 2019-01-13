@@ -35,15 +35,16 @@
 
 
 // Forward declarations.
-class qtractorMixerStrip;
+class qtractorMixer;
 class qtractorMixerRack;
 class qtractorMixerRackWidget;
-class qtractorMixer;
+class qtractorMixerStrip;
 class qtractorMixerMeter;
 
 class qtractorPluginListView;
 
 class qtractorMidiManager;
+class qtractorAudioBus;
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -161,7 +162,10 @@ public:
 	void trackMonitor(bool bMonitor);
 
 	// Update a MIDI mixer strip, given its MIDI manager handle.
-	void updateMidiMeter(qtractorMidiManager *pMidiManager);
+	void updateMidiManager(qtractorMidiManager *pMidiManager);
+
+	// Retrieve the MIDI manager from a mixer strip, if any....
+	qtractorMidiManager *midiManager() const;
 
 protected slots:
 
@@ -302,9 +306,6 @@ public:
 	// Find a mixer strip, given its monitor handle.
 	qtractorMixerStrip *findStrip(qtractorMonitor *pMonitor) const;
 
-	// Find a mixer strip, given its MIDI manager handle.
-	qtractorMixerStrip *findMidiStrip(qtractorMidiManager *pMidiManager) const;
-
 	// Update a mixer strip on rack list.
 	void updateStrip(qtractorMixerStrip *pStrip, qtractorMonitor *pMonitor);
 
@@ -332,6 +333,13 @@ public:
 	void updateWorkspace()
 		{ m_pRackWidget->updateWorkspace(); }
 
+	// Find a mixer strip, given its MIDI-manager handle.
+	qtractorMixerStrip *findMidiManagerStrip(
+		qtractorMidiManager *pMidiManager) const;
+
+	// Find all the MIDI mixer strip, given an audio output bus handle.
+	QList<qtractorMixerStrip *> findAudioOutputBusStrips(
+		qtractorAudioBus *pAudioOutputBus) const;
 
 public slots:
 
@@ -396,7 +404,11 @@ public:
 	void updateTrackStrip(qtractorTrack *pTrack, bool bReset = false);
 
 	// Update a MIDI mixer strip, given its MIDI manager handle.
-	void updateMidiStrip(qtractorMidiManager *pMidiManager);
+	void updateMidiManagerStrip(qtractorMidiManager *pMidiManager);
+
+	// Find a MIDI mixer strip, given its MIDI manager handle.
+	QList<qtractorMixerStrip *> findAudioOutputBusStrips(
+		qtractorAudioBus *pAudioOutputBus) const;
 
 	// Complete mixer recycle.
 	void clear();

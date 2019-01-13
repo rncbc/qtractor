@@ -873,7 +873,7 @@ bool qtractorAudioOutputMonitorCommand::redo (void)
 		// Meters on mixer strips...
 		qtractorMixer *pMixer = pMainForm->mixer();
 		if (pMixer)
-			pMixer->updateMidiStrip(m_pMidiManager);
+			pMixer->updateMidiManagerStrip(m_pMidiManager);
 	}
 
 //	pSession->unlock();
