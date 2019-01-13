@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Audio output monitoring meters may now be shown on
+  MIDI tracks and buses as a default user preference
+  option (View/ Options.../Plugins/Instruments/Show
+  audio output monitoring meters) and also in plugin
+  list context sub-memu (Audio/Meters). (EXPERIMENTAL)
+
 - Custom color (palette) themes can be exported to and
   imported from external files. (EXPERIMENTAL)
 
