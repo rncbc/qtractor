@@ -874,9 +874,8 @@ void qtractorMixerStrip::updateMidiManager ( qtractorMidiManager *pMidiManager )
 // Retrieve the MIDI manager from a mixer strip, if any....
 qtractorMidiManager *qtractorMixerStrip::midiManager (void) const
 {
-	qtractorMidiManager *pMidiManager = NULL;
-
 	qtractorPluginList *pPluginList = NULL;
+
 	if (m_pTrack && m_pTrack->trackType() == qtractorTrack::Midi) {
 		pPluginList = m_pTrack->pluginList();
 	}

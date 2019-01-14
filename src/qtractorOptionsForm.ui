@@ -3549,7 +3549,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
+          <item row="0" column="2" rowspan="2">
            <spacer>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -3562,7 +3562,7 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="0">
+          <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="AudioOutputMonitorCheckBox">
             <property name="font">
              <font>
@@ -3577,19 +3577,6 @@
              <string>Show audio outpu&amp;t monitoring meters</string>
             </property>
            </widget>
-          </item>
-          <item row="1" column="1" colspan="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </widget>

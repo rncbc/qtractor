@@ -513,17 +513,6 @@ qtractorAudioOutputMonitor::qtractorAudioOutputMonitor (
 }
 
 
-// Destructor.
-qtractorAudioOutputMonitor::~qtractorAudioOutputMonitor (void)
-{
-#if 0
-	QListIterator<qtractorAudioMeter *> iter(m_meters);
-	while (iter.hasNext())
-		iter.next()->setAudioMonitor(NULL);
-#endif
-}
-
-
 // Channel property accessors.
 void qtractorAudioOutputMonitor::setChannels ( unsigned short iChannels )
 {
