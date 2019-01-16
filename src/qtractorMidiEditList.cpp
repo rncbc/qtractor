@@ -160,8 +160,8 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 	const QPalette& pal = qtractorScrollView::palette();
 
 	const QColor& rgbLine   = pal.mid().color();
-	const QColor& rgbLight  = pal.light().color();
-	const QColor& rgbShadow = pal.shadow().color();
+	const QColor& rgbLight  = pal.light().color().lighter();
+	const QColor& rgbShadow = pal.shadow().color().darker();
 
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());
