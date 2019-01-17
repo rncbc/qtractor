@@ -159,9 +159,9 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	const QPalette& pal = qtractorScrollView::palette();
 
-	const QColor& rgbLine   = pal.mid().color();
-	const QColor& rgbLight  = pal.light().color().lighter(120);
-	const QColor& rgbShadow = pal.shadow().color().darker(120);
+	const QColor& rgbLine  = pal.mid().color();
+	const QColor& rgbLight = QColor(Qt::white).darker();
+	const QColor& rgbDark  = QColor(Qt::black).lighter();
 
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());
@@ -183,7 +183,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	// Draw horizontal key-lines...
 	painter.setPen(rgbLine);
-	painter.setBrush(rgbShadow);
+	painter.setBrush(rgbDark);
 
 #ifdef CONFIG_GRADIENT
 	QLinearGradient gradLight(x, 0, w, 0);
@@ -219,13 +219,13 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 #ifdef CONFIG_GRADIENT
 	QLinearGradient gradDark(x, 0, x + w3, 0);
 	gradDark.setColorAt(0.0, rgbLight);
-	gradDark.setColorAt(0.4, rgbShadow);
-	gradDark.setColorAt(0.96, rgbShadow);
+	gradDark.setColorAt(0.4, rgbDark);
+	gradDark.setColorAt(0.96, rgbDark);
 	gradDark.setColorAt(0.98, rgbLight);
-	gradDark.setColorAt(1.0, rgbShadow);
+	gradDark.setColorAt(1.0, rgbDark);
 	painter.setBrush(gradDark);
 #else
-	painter.setBrush(rgbShadow);
+	painter.setBrush(rgbDark);
 #endif
 
 	y = y0;
