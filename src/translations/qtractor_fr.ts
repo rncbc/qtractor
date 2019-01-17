@@ -11109,7 +11109,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="192"/>
         <source>Export...</source>
-        <translatio>Exporter...</translation>
+        <translation>Exporter...</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="215"/>
