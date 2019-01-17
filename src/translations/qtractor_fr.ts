@@ -500,7 +500,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="841"/>
         <source>audio output meters</source>
-        <translation type="unfinished"></translation>
+        <translation>mesureurs de sortie audio</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="897"/>
@@ -10525,12 +10525,12 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3574"/>
         <source>Whether to show audio output meters on MIDI tracks and buses</source>
-        <translation type="unfinished"></translation>
+        <translation>Si l&apos;on affiche ou non les mesureurs de sortie audio sur les pistes et bus MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3577"/>
         <source>Show audio outpu&amp;t monitoring meters</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les mesureurs de surveillance de la sor&amp;tie audio</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3643"/>
@@ -11094,22 +11094,22 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="176"/>
         <source>Import a custom color theme (palette) from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer un thème de couleur personnalisé (palette) à partir d'un fichier</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="179"/>
         <source>Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer...</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="189"/>
         <source>Export a custom color theme (palette) to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter un thème de couleur personnalisé (palette) vers un fichier</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="192"/>
         <source>Export...</source>
-        <translation type="unfinished"></translation>
+        <translatio>Exporter...</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="215"/>
@@ -11119,19 +11119,19 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="320"/>
         <source>Import File - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer fichier - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="323"/>
         <location filename="../qtractorPaletteForm.cpp" line="389"/>
         <source>Palette files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de palette (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="324"/>
         <location filename="../qtractorPaletteForm.cpp" line="390"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Tous les fichiers (*.*)</translation>
+        <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="376"/>
@@ -11147,12 +11147,16 @@ Voulez-vous appliquer les changements ?</translation>
 %1
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>N&apos;a pas pu importer depuis le fichier :
+
+%1
+
+Navré.</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="386"/>
         <source>Export File - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter fichier - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="802"/>
@@ -11617,7 +11621,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1802"/>
         <source>&amp;Meters</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mesureurs</translation>
     </message>
 </context>
 <context>
