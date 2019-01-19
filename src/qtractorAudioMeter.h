@@ -149,8 +149,10 @@ private:
 	qtractorAudioMonitor     *m_pAudioMonitor;
 	unsigned short            m_iChannels;
 	qtractorAudioMeterValue **m_ppAudioValues;
+	unsigned int              m_iRegenerate;
 
 	int m_levels[LevelCount];
+
 
 #ifdef CONFIG_GRADIENT
 	QPixmap *m_pPixmap;

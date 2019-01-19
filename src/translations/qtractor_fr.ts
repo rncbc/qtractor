@@ -847,22 +847,22 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
 <context>
     <name>qtractorAudioMixerMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="613"/>
+        <location filename="../qtractorAudioMeter.cpp" line="616"/>
         <source>Gain (dB)</source>
         <translation>Gain (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="614"/>
+        <location filename="../qtractorAudioMeter.cpp" line="617"/>
         <source> dB</source>
         <translation> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="684"/>
+        <location filename="../qtractorAudioMeter.cpp" line="687"/>
         <source>Pan: %1</source>
         <translation>Pan : %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="693"/>
+        <location filename="../qtractorAudioMeter.cpp" line="696"/>
         <source>Gain: %1 dB</source>
         <translation>Gain : %1 dB</translation>
     </message>
@@ -9549,22 +9549,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1346"/>
+        <location filename="../qtractorMixer.cpp" line="1347"/>
         <source>Inputs</source>
         <translation>Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1347"/>
+        <location filename="../qtractorMixer.cpp" line="1348"/>
         <source>Tracks</source>
         <translation>Pistes</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1349"/>
+        <location filename="../qtractorMixer.cpp" line="1350"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1356"/>
+        <location filename="../qtractorMixer.cpp" line="1357"/>
         <source>Mixer</source>
         <translation>Mixeur</translation>
     </message>
@@ -9585,22 +9585,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="976"/>
+        <location filename="../qtractorMixer.cpp" line="977"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="980"/>
+        <location filename="../qtractorMixer.cpp" line="981"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="986"/>
+        <location filename="../qtractorMixer.cpp" line="987"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Moniteur</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="995"/>
+        <location filename="../qtractorMixer.cpp" line="996"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Bus...</translation>
     </message>
@@ -11094,7 +11094,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="176"/>
         <source>Import a custom color theme (palette) from file</source>
-        <translation>Importer un thème de couleur personnalisé (palette) à partir d'un fichier</translation>
+        <translation>Importer un thème de couleur personnalisé (palette) à partir d&apos;un fichier</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="179"/>
@@ -11135,8 +11135,8 @@ Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="376"/>
-        <location filename="../qtractorPaletteForm.cpp" line="801"/>
-        <location filename="../qtractorPaletteForm.cpp" line="809"/>
+        <location filename="../qtractorPaletteForm.cpp" line="799"/>
+        <location filename="../qtractorPaletteForm.cpp" line="807"/>
         <source>Warning - %1</source>
         <translation>Attention - %1</translation>
     </message>
@@ -11159,7 +11159,7 @@ Navré.</translation>
         <translation>Exporter fichier - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="802"/>
+        <location filename="../qtractorPaletteForm.cpp" line="800"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -11168,7 +11168,7 @@ Do you want to discard the changes?</source>
 Souhaitez-vous abandonner les modifications ?</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="810"/>
+        <location filename="../qtractorPaletteForm.cpp" line="808"/>
         <source>Some settings have been changed:
 
 &quot;%1&quot;.
@@ -11184,22 +11184,22 @@ Souhaitez-vous sauvegarder les modifications ?</translation>
 <context>
     <name>qtractorPaletteForm::PaletteModel</name>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1041"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1039"/>
         <source>Color Role</source>
         <translation>Rôle de couleur</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1044"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1042"/>
         <source>Active</source>
         <translation>Actif</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1047"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1045"/>
         <source>Inactive</source>
         <translation>Inactif</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1050"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1048"/>
         <source>Disabled</source>
         <translation>Désactivé</translation>
     </message>

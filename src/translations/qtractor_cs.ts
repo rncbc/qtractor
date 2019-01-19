@@ -847,22 +847,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
 <context>
     <name>qtractorAudioMixerMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="613"/>
+        <location filename="../qtractorAudioMeter.cpp" line="616"/>
         <source>Gain (dB)</source>
         <translation>Zesílení (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="614"/>
+        <location filename="../qtractorAudioMeter.cpp" line="617"/>
         <source> dB</source>
         <translation> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="684"/>
+        <location filename="../qtractorAudioMeter.cpp" line="687"/>
         <source>Pan: %1</source>
         <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="693"/>
+        <location filename="../qtractorAudioMeter.cpp" line="696"/>
         <source>Gain: %1 dB</source>
         <translation>Zesílení: %1 dB</translation>
     </message>
@@ -9550,22 +9550,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1346"/>
+        <location filename="../qtractorMixer.cpp" line="1347"/>
         <source>Inputs</source>
         <translation>Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1347"/>
+        <location filename="../qtractorMixer.cpp" line="1348"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1349"/>
+        <location filename="../qtractorMixer.cpp" line="1350"/>
         <source>Outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1356"/>
+        <location filename="../qtractorMixer.cpp" line="1357"/>
         <source>Mixer</source>
         <translation>Mixážní pult</translation>
     </message>
@@ -9586,22 +9586,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="976"/>
+        <location filename="../qtractorMixer.cpp" line="977"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="980"/>
+        <location filename="../qtractorMixer.cpp" line="981"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="986"/>
+        <location filename="../qtractorMixer.cpp" line="987"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Sledování</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="995"/>
+        <location filename="../qtractorMixer.cpp" line="996"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Sběrnice...</translation>
     </message>
@@ -11135,8 +11135,8 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="376"/>
-        <location filename="../qtractorPaletteForm.cpp" line="801"/>
-        <location filename="../qtractorPaletteForm.cpp" line="809"/>
+        <location filename="../qtractorPaletteForm.cpp" line="799"/>
+        <location filename="../qtractorPaletteForm.cpp" line="807"/>
         <source>Warning - %1</source>
         <translation>Varování - %1</translation>
     </message>
@@ -11155,7 +11155,7 @@ Sorry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="802"/>
+        <location filename="../qtractorPaletteForm.cpp" line="800"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -11164,7 +11164,7 @@ Do you want to discard the changes?</source>
 Chcete zahodit tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="810"/>
+        <location filename="../qtractorPaletteForm.cpp" line="808"/>
         <source>Some settings have been changed:
 
 &quot;%1&quot;.
@@ -11180,22 +11180,22 @@ Chcete uložit tyto změny?</translation>
 <context>
     <name>qtractorPaletteForm::PaletteModel</name>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1041"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1039"/>
         <source>Color Role</source>
         <translation>Úloha barvy</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1044"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1042"/>
         <source>Active</source>
         <translation>Činná</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1047"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1045"/>
         <source>Inactive</source>
         <translation>Nečinná</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1050"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1048"/>
         <source>Disabled</source>
         <translation>Zakázáno</translation>
     </message>

@@ -424,7 +424,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 			// like proper MIDI channel settings...
 			if (m_pTrack) {
 				m_pMidiLabel = new QLabel(/*m_pMeter->topWidget()*/);
-		//		m_pMidiLabel->setFont(font2);
+			//	m_pMidiLabel->setFont(font2);
 				m_pMidiLabel->setAlignment(
 					Qt::AlignHCenter | Qt::AlignVCenter);
 				pMidiMixerMeter->topLayout()->insertWidget(1, m_pMidiLabel);
@@ -700,7 +700,8 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 		m_pMuteButton->setPalette(pal);
 	if (m_pSoloButton)
 		m_pSoloButton->setPalette(pal);
-	m_pMixerMeter->setPalette(pal);
+	if (m_pMixerMeter)
+		m_pMixerMeter->setPalette(pal);
 	pal.setBrush(QPalette::Window, grad);
 #else
 	if (m_bSelected) {

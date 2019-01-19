@@ -374,6 +374,7 @@ qtractorAudioMeter::qtractorAudioMeter (
 
 	m_iChannels     = 0;
 	m_ppAudioValues = NULL;
+	m_iRegenerate   = 0;
 
 #ifdef CONFIG_GRADIENT
 	m_pPixmap = new QPixmap();
@@ -436,6 +437,7 @@ void qtractorAudioMeter::reset (void)
 		}
 		delete [] m_ppAudioValues;
 		m_ppAudioValues = NULL;
+		++m_iRegenerate;
 	}
 
 	m_iChannels = iChannels;
@@ -447,7 +449,8 @@ void qtractorAudioMeter::reset (void)
 			boxLayout()->addWidget(m_ppAudioValues[i]);
 		//	m_ppAudioValues[i]->show();
 		}
-		qtractorMeter::show();
+		if (m_iRegenerate > 0)
+			qtractorMeter::show();
 	}
 }
 
