@@ -1053,6 +1053,10 @@ void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
 // Plugin configuration/state snapshot.
 void qtractorVstPlugin::freezeConfigs (void)
 {
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorVstPlugin[%p]::freezeConfigs()", this);
+#endif
+
 	// HACK: Make sure all parameter values are in sync,
 	// provided freezeConfigs() are always called when
 	// saving plugin's state and before parameter values.
@@ -1094,7 +1098,7 @@ void qtractorVstPlugin::releaseConfigs (void)
 	qDebug("qtractorVstPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	clearConfigs();
+	qtractorPlugin::releaseConfigs();
 }
 
 

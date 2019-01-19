@@ -1,7 +1,7 @@
 // qtractorMidiManager.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,6 +28,7 @@
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiMonitor.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorAudioMonitor.h"
 
 #include "qtractorMixer.h"
 
@@ -388,6 +389,7 @@ void qtractorMidiOutputBuffer::processSync (void)
 
 bool qtractorMidiManager::g_bAudioOutputBus = false;
 bool qtractorMidiManager::g_bAudioOutputAutoConnect = true;
+bool qtractorMidiManager::g_bAudioOutputMonitor = false;
 
 // AG: Buffer size large enough to hold some sysex events.
 const long c_iMaxMidiData = 512;
@@ -408,8 +410,10 @@ qtractorMidiManager::qtractorMidiManager (
 	m_iEventBuffer(0),
 	m_bAudioOutputBus(pPluginList->isAudioOutputBus()),
 	m_sAudioOutputBusName(pPluginList->audioOutputBusName()),
-	m_bAudioOutputAutoConnect(pPluginList->isAudioOutputAutoConnect()),
 	m_pAudioOutputBus(NULL),
+	m_bAudioOutputAutoConnect(pPluginList->isAudioOutputAutoConnect()),
+	m_bAudioOutputMonitor(pPluginList->isAudioOutputMonitor()),
+	m_pAudioOutputMonitor(NULL),
 	m_iCurrentBank(pPluginList->midiBank()),
 	m_iCurrentProg(pPluginList->midiProg()),
 	m_iPendingBankMSB(-1),
@@ -460,6 +464,9 @@ qtractorMidiManager::qtractorMidiManager (
 qtractorMidiManager::~qtractorMidiManager (void)
 {
 	deleteAudioOutputBus();
+
+	if (m_pAudioOutputMonitor)
+		delete m_pAudioOutputMonitor;
 
 	// Destroy event_buffers...
 	for (unsigned short i = 0; i < 2; ++i) {
@@ -630,10 +637,16 @@ void qtractorMidiManager::process (
 		if (m_bAudioOutputBus) {
 			m_pAudioOutputBus->process_prepare(nframes);
 			m_pPluginList->process(m_pAudioOutputBus->out(), nframes);
+			if (m_bAudioOutputMonitor)
+				m_pAudioOutputMonitor->process_meter(
+					m_pAudioOutputBus->out(), nframes);
 			m_pAudioOutputBus->process_commit(nframes);
 		} else {
 			m_pAudioOutputBus->buffer_prepare(nframes);
 			m_pPluginList->process(m_pAudioOutputBus->buffer(), nframes);
+			if (m_bAudioOutputMonitor)
+				m_pAudioOutputMonitor->process_meter(
+					m_pAudioOutputBus->buffer(), nframes);
 			m_pAudioOutputBus->buffer_commit(nframes);
 		}
 	}
@@ -1223,6 +1236,16 @@ bool qtractorMidiManager::isDefaultAudioOutputAutoConnect (void)
 	return g_bAudioOutputAutoConnect;
 }
 
+void qtractorMidiManager::setDefaultAudioOutputMonitor ( bool bAudioOutputMonitor )
+{
+	g_bAudioOutputMonitor = bAudioOutputMonitor;
+}
+
+bool qtractorMidiManager::isDefaultAudioOutputMonitor (void)
+{
+	return g_bAudioOutputMonitor;
+}
+
 
 // Output bus mode accessors.
 void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
@@ -1310,13 +1333,23 @@ void qtractorMidiManager::createAudioOutputBus (void)
 			}
 		}
 	}
+
+	// Whether audio output bus monitoring is on...
+	if (m_bAudioOutputMonitor && m_pAudioOutputBus) {
+		// Owned, not part of audio engine...
+		if (m_pAudioOutputMonitor) {
+			m_pAudioOutputMonitor->setChannels(m_pAudioOutputBus->channels());
+		} else {
+			m_pAudioOutputMonitor
+				= new qtractorAudioOutputMonitor(m_pAudioOutputBus->channels());
+		}
+	}
 }
 
 
 // Destroy audio Outputnome stuff.
 void qtractorMidiManager::deleteAudioOutputBus (void)
 {
-	// Owned, not part of audio engine...
 	if (m_bAudioOutputBus && m_pAudioOutputBus) {
 		m_pAudioOutputBus->close();
 		qtractorSession *pSession = qtractorSession::getInstance();
@@ -1330,6 +1363,34 @@ void qtractorMidiManager::deleteAudioOutputBus (void)
 
 	// Done.
 	m_pAudioOutputBus = NULL;
+}
+
+
+// Output monitor mode accessors.
+void qtractorMidiManager::setAudioOutputMonitor ( bool bAudioOutputMonitor )
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	pSession->lock();
+
+	if (m_pAudioOutputMonitor && !bAudioOutputMonitor)
+		m_pAudioOutputMonitor->setChannels(0);
+
+	m_bAudioOutputMonitor = bAudioOutputMonitor;
+
+	if (m_bAudioOutputMonitor && m_pAudioOutputBus) {
+		// Owned, not part of audio engine...
+		if (m_pAudioOutputMonitor) {
+			m_pAudioOutputMonitor->setChannels(m_pAudioOutputBus->channels());
+		} else {
+			m_pAudioOutputMonitor
+				= new qtractorAudioOutputMonitor(m_pAudioOutputBus->channels());
+		}
+	}
+
+	pSession->unlock();
 }
 
 

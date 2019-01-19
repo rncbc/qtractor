@@ -4,6 +4,24 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Audio output monitoring meters may now be shown on
+  MIDI tracks and buses as a default user preference
+  option (View/ Options.../Plugins/Instruments/Show
+  audio output monitoring meters) and also in plugin
+  list context sub-memu (Audio/Meters). (EXPERIMENTAL)
+
+- Custom color (palette) themes can be exported to and
+  imported from external files. (EXPERIMENTAL)
+
+- LV2 plug-in UI GTK2 and X11 in Qt5 host native support
+  are now enabled on configure by default. (REGRESSION)
+
+- Fixed minimum input value as 10% (was 1%) for audio
+  clip time-stretching in the Clip / Edit... dialog.
+
+  
 0.9.3  2018-12-07  End of Autumn'18 Beta.
 
 - Auto-backward now skips the end-of-session location.

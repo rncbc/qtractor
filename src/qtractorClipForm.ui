@@ -511,7 +511,7 @@
          <number>1</number>
         </property>
         <property name="minimum">
-         <double>1.0</double>
+         <double>10.0</double>
         </property>
         <property name="maximum">
          <double>1000.0</double>

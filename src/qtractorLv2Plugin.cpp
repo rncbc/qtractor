@@ -4025,10 +4025,10 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_port_map_feature;
 
 #ifdef CONFIG_LV2_UI_TOUCH
-	m_lv2_ui_touch.handle = this;
-	m_lv2_ui_touch.touch = qtractor_lv2_ui_touch;
-	m_lv2_ui_touch_feature.URI = LV2_UI__touch;
-	m_lv2_ui_touch_feature.data = &m_lv2_ui_touch;
+	m_lv2_ui_touch.handle          = this;
+	m_lv2_ui_touch.touch           = qtractor_lv2_ui_touch;
+	m_lv2_ui_touch_feature.URI     = LV2_UI__touch;
+	m_lv2_ui_touch_feature.data    = &m_lv2_ui_touch;
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_touch_feature;
 #endif
 
@@ -4316,6 +4316,10 @@ void qtractorLv2Plugin::freezeConfigs (void)
 	if (!type()->isConfigure())
 		return;
 
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2Plugin[%p]::freezeConfigs()", this);
+#endif
+
 #ifdef CONFIG_LV2_STATE
 
 	const unsigned short iInstances = instances();
@@ -4338,6 +4342,10 @@ void qtractorLv2Plugin::realizeConfigs (void)
 {
 	if (!type()->isConfigure())
 		return;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2Plugin[%p]::realizeConfigs()", this);
+#endif
 
 #ifdef CONFIG_LV2_STATE
 
@@ -4415,6 +4423,10 @@ void qtractorLv2Plugin::releaseConfigs (void)
 {
 	if (!type()->isConfigure())
 		return;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorLv2Plugin[%p]::releaseConfigs()", this);
+#endif
 
 #ifdef CONFIG_LV2_STATE
 	m_lv2_state_configs.clear();

@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -455,14 +455,11 @@ public:
 		const QString& /*sKey*/, const QString& /*sValue*/) {}
 
 	// Plugin configuration/state snapshot.
-	virtual void freezeConfigs()  {}
-	virtual void releaseConfigs() {}
+	virtual void freezeConfigs();
+	virtual void releaseConfigs();
 
 	// Plugin configure realization.
 	virtual void realizeConfigs();
-
-	// Plugin configure clearance/release.
-	virtual void clearConfigs() { m_configs.clear(); m_ctypes.clear(); }
 
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/= NULL) {}
@@ -608,9 +605,6 @@ public:
 	// Plugin parameter/state realization.
 	void realizeValues();
 
-	// Plugin parameter/state clearance.
-	void clearValues() { m_values.names.clear(); m_values.index.clear(); }
-
 	// Load plugin configuration/parameter values stuff.
 	static void loadConfigs(
 		QDomElement *pElement, Configs& configs, ConfigTypes& ctypes);
@@ -658,6 +652,10 @@ protected:
 	// Activation stabilizers.
 	void updateActivated(bool bActivated);
 	void updateActivatedEx(bool bActivated);
+
+	// Plugin configure and parameter/state clearance.
+	void clearConfigs() { m_configs.clear(); m_ctypes.clear(); }
+	void clearValues()  { m_values.names.clear(); m_values.index.clear(); }
 
 private:
 
@@ -866,6 +864,11 @@ public:
 	const QString& audioOutputBusName() const
 		{ return m_sAudioOutputBusName; }
 
+	void setAudioOutputMonitor(bool bAudioOutputMonitor)
+		{ m_bAudioOutputMonitor = bAudioOutputMonitor; }
+	bool isAudioOutputMonitor() const
+		{ return m_bAudioOutputMonitor; }
+
 	// MIDI bank/program observable subject.
 	class MidiProgramSubject : public qtractorSubject
 	{
@@ -962,6 +965,8 @@ private:
 	bool m_bAudioOutputBus;
 	bool m_bAudioOutputAutoConnect;
 	QString m_sAudioOutputBusName;
+
+	bool m_bAudioOutputMonitor;
 
 	qtractorBus::ConnectList m_audioOutputs;
 

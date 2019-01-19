@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -888,6 +888,27 @@ void qtractorPlugin::updateDirectAccessParam (void)
 }
 
 
+// Plugin configuration/state snapshot.
+void qtractorPlugin::freezeConfigs (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorPlugin[%p]::freezeConfigs()", this);
+#endif
+
+	// Do nothing...
+}
+
+
+void qtractorPlugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorPlugin[%p]::releaseConfigs()", this);
+#endif
+
+	clearConfigs();
+}
+
+
 // Plugin parameter/state snapshot.
 void qtractorPlugin::freezeValues (void)
 {
@@ -1423,6 +1444,8 @@ qtractorPluginList::qtractorPluginList (
 		= qtractorMidiManager::isDefaultAudioOutputBus();
 	m_bAudioOutputAutoConnect
 		= qtractorMidiManager::isDefaultAudioOutputAutoConnect();
+	m_bAudioOutputMonitor
+		= qtractorMidiManager::isDefaultAudioOutputMonitor();
 
 	m_iAudioInsertActivated = 0;
 
@@ -2021,6 +2044,10 @@ bool qtractorPluginList::loadElement (
 		if (ePlugin.tagName() == "audio-output-auto-connect") {
 			m_bAudioOutputAutoConnect = qtractorDocument::boolFromText(ePlugin.text());
 		}
+		// Load audio output monitor flag...
+		if (ePlugin.tagName() == "audio-output-monitor") {
+			m_bAudioOutputMonitor = qtractorDocument::boolFromText(ePlugin.text());
+		}
 		else
 		// Load audio output connections...
 		if (ePlugin.tagName() == "audio-outputs") {
@@ -2147,6 +2174,9 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		pDocument->saveTextElement("audio-output-auto-connect",
 			qtractorDocument::textFromBool(
 				m_pMidiManager->isAudioOutputAutoConnect()), pElement);
+		pDocument->saveTextElement("audio-output-monitor",
+			qtractorDocument::textFromBool(
+				m_pMidiManager->isAudioOutputMonitor()), pElement);
 		if (m_pMidiManager->isAudioOutputBus()) {
 			qtractorAudioBus *pAudioBus = m_pMidiManager->audioOutputBus();
 			if (pAudioBus) {

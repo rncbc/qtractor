@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -523,8 +523,16 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 				qtractorMidiMonitor *pMidiMonitor
 					= static_cast<qtractorMidiMonitor *> (track->monitor());
 				if (pMidiMonitor) {
-					meters = new qtractorMidiMeter(
-						pMidiMonitor, pTrackList->viewport());
+					qtractorMidiComboMeter *pMidiComboMeter
+						= new qtractorMidiComboMeter(
+							pMidiMonitor, pTrackList->viewport());
+					qtractorMidiManager *pMidiManager
+						= (track->pluginList())->midiManager();
+					if (pMidiManager && pMidiManager->isAudioOutputMonitor()) {
+						pMidiComboMeter->setAudioOutputMonitor(
+							pMidiManager->audioOutputMonitor());
+					}
+					meters = pMidiComboMeter;
 					meters->lower();
 				}
 			}
@@ -760,6 +768,33 @@ void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 		pItem->updateItem(this);
 
 	updateContents();
+}
+
+
+// Update the list view item from MIDI manager pointer reference.
+void qtractorTrackList::updateMidiTrackItem ( qtractorMidiManager *pMidiManager )
+{
+	QListIterator<Item *> iter(m_items);
+	while (iter.hasNext()) {
+		Item *pItem = iter.next();
+		qtractorTrack *pTrack = pItem->track;
+		if (pTrack && pTrack->trackType() == qtractorTrack::Midi) {
+			qtractorPluginList *pPluginList = pTrack->pluginList();
+			if (pPluginList && pPluginList->midiManager() == pMidiManager) {
+				qtractorMidiComboMeter *pMidiComboMeter
+					= static_cast<qtractorMidiComboMeter *> (pItem->meters);
+				if (pMidiComboMeter) {
+					if (pMidiManager->isAudioOutputMonitor()) {
+						pMidiComboMeter->setAudioOutputMonitor(
+							pMidiManager->audioOutputMonitor());
+					} else {
+						pMidiComboMeter->setAudioOutputMonitor(NULL);
+					}
+				}
+				break;
+			}
+		}
+	}
 }
 
 

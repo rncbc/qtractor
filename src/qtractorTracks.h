@@ -1,7 +1,7 @@
 // qtractorTracks.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -33,9 +33,9 @@ class qtractorClip;
 class qtractorClipCommand;
 class qtractorClipRangeCommand;
 class qtractorClipToolCommand;
-
 class qtractorMidiToolsForm;
 class qtractorMidiImportExtender;
+class qtractorMidiManager;
 
 
 //----------------------------------------------------------------------------
@@ -82,6 +82,9 @@ public:
 
 	// MIDI track/bus/channel alias active maintenance method.
 	void updateMidiTrack(qtractorTrack *pMidiTrack);
+
+	// MIDI track meters maintenance method.
+	void updateMidiTrackItem(qtractorMidiManager *pMidiManager);
 
 	// Primordial clip management methods.
 	qtractorClip *currentClip() const;

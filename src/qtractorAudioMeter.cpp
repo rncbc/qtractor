@@ -1,7 +1,7 @@
 // qtractorAudioMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -421,14 +421,19 @@ void qtractorAudioMeter::reset (void)
 	if (m_pAudioMonitor == NULL)
 		return;
 
-	const unsigned short iChannels = m_pAudioMonitor->channels();
+	const unsigned short iChannels
+		= m_pAudioMonitor->channels();
 
 	if (m_iChannels == iChannels)
 		return;
 
 	if (m_ppAudioValues) {
-		for (unsigned short i = 0; i < m_iChannels; ++i)
+		qtractorMeter::hide();
+		for (unsigned short i = 0; i < m_iChannels; ++i) {
+		//	m_ppAudioValues[i]->hide();
+			boxLayout()->removeWidget(m_ppAudioValues[i]);
 			delete m_ppAudioValues[i];
+		}
 		delete [] m_ppAudioValues;
 		m_ppAudioValues = NULL;
 	}
@@ -442,6 +447,7 @@ void qtractorAudioMeter::reset (void)
 			boxLayout()->addWidget(m_ppAudioValues[i]);
 		//	m_ppAudioValues[i]->show();
 		}
+		qtractorMeter::show();
 	}
 }
 

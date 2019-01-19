@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1035,7 +1035,8 @@ bool qtractorTrackForm::updateProgramsAdd (
 	const qtractorMidiManager::Banks& banks
 		= list[sInstrumentName];
 	if (banks.contains(iBank)) {
-		const qtractorMidiManager::Progs& progs = banks[iBank].progs;
+		const qtractorMidiManager::Progs& progs
+			= banks[iBank].progs;
 		// Refresh program mapping...
 		const QString sProg("%1 - %2");
 		qtractorMidiManager::Progs::ConstIterator iter = progs.constBegin();
@@ -1068,7 +1069,8 @@ void qtractorTrackForm::updateColorItem (
 	updateColorText(pComboBox, color);
 
 	// Check if already exists...
-	const int iItem = pComboBox->findText(color.name());
+	const int iItem
+		= pComboBox->findText(color.name());
 	if (iItem >= 0) {
 		pComboBox->setCurrentIndex(iItem);
 		return;
@@ -1261,7 +1263,8 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 	switch (trackType) {
 	case qtractorTrack::Audio: {
 		// (Re)initialize plugin-list audio output bus properly...
-		const QString& sOutputBusName = m_pTrack->outputBusName();
+		const QString& sOutputBusName
+			= m_pTrack->outputBusName();
 		if (sOutputBusName != sBusName) {
 			if (m_sOldOutputBusName.isEmpty() && !sOutputBusName.isEmpty())
 				m_sOldOutputBusName = sOutputBusName;
@@ -1308,17 +1311,20 @@ void qtractorTrackForm::busNameClicked (void)
 	// Call here the bus management form.
 	qtractorBusForm busForm(this);
 	// Pre-select bus...
-	const QString& sBusName = m_ui.OutputBusNameComboBox->currentText();
+	const QString& sBusName
+		= m_ui.OutputBusNameComboBox->currentText();
 	if (pEngine && !sBusName.isEmpty())
 		busForm.setBus(pEngine->findBus(sBusName));
 	// Go for it...
 	busForm.exec();
 
 	// Check if any buses have changed...
-	if (busForm.isDirty()) {
+	if (pEngine && busForm.isDirty()) {
 		// Try to preserve current selected names...
-		const QString sInputBusName  = m_ui.InputBusNameComboBox->currentText();
-		const QString sOutputBusName = m_ui.OutputBusNameComboBox->currentText();
+		const QString sInputBusName
+			= m_ui.InputBusNameComboBox->currentText();
+		const QString sOutputBusName
+			= m_ui.OutputBusNameComboBox->currentText();
 		// Update the comboboxes...
 		trackTypeChanged();
 		// Restore old current selected ones...

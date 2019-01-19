@@ -695,7 +695,7 @@ void qtractorAudioInsertPlugin::releaseConfigs (void)
 	qDebug("qtractorAudioInsertPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	clearConfigs();
+	qtractorPlugin::releaseConfigs();
 }
 
 
@@ -1002,7 +1002,7 @@ void qtractorMidiInsertPlugin::releaseConfigs (void)
 	qDebug("qtractorMidiInsertPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	clearConfigs();
+	qtractorPlugin::releaseConfigs();
 }
 
 
@@ -1433,7 +1433,7 @@ void qtractorAudioAuxSendPlugin::releaseConfigs (void)
 	qDebug("qtractorAudioAuxSendPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	clearConfigs();
+	qtractorPlugin::releaseConfigs();
 }
 
 
@@ -1682,7 +1682,7 @@ void qtractorMidiAuxSendPlugin::releaseConfigs (void)
 	qDebug("qtractorMidiAuxSendPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	clearConfigs();
+	qtractorPlugin::releaseConfigs();
 }
 
 
