@@ -1,7 +1,7 @@
 // qtractorMixer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,13 +35,16 @@
 
 
 // Forward declarations.
-class qtractorMixerStrip;
+class qtractorMixer;
 class qtractorMixerRack;
 class qtractorMixerRackWidget;
-class qtractorMixer;
+class qtractorMixerStrip;
 class qtractorMixerMeter;
 
 class qtractorPluginListView;
+
+class qtractorMidiManager;
+class qtractorAudioBus;
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -132,6 +135,8 @@ public:
 	void setBus(qtractorBus *pBus);
 	qtractorBus *bus() const
 		{ return m_pBus; }
+	qtractorBus::BusMode busMode() const
+		{ return m_busMode; }
 
 	// Track property accessors.
 	void setTrack(qtractorTrack *pTrack);
@@ -155,6 +160,12 @@ public:
 
 	// Track monitor dispatcher.
 	void trackMonitor(bool bMonitor);
+
+	// Update a MIDI mixer strip, given its MIDI manager handle.
+	void updateMidiManager(qtractorMidiManager *pMidiManager);
+
+	// Retrieve the MIDI manager from a mixer strip, if any....
+	qtractorMidiManager *midiManager() const;
 
 protected slots:
 
@@ -293,7 +304,7 @@ public:
 	void removeStrip(qtractorMixerStrip *pStrip);
 
 	// Find a mixer strip, given its monitor handle.
-	qtractorMixerStrip *findStrip(qtractorMonitor *pMonitor);
+	qtractorMixerStrip *findStrip(qtractorMonitor *pMonitor) const;
 
 	// Update a mixer strip on rack list.
 	void updateStrip(qtractorMixerStrip *pStrip, qtractorMonitor *pMonitor);
@@ -321,6 +332,14 @@ public:
 	// Multi-row workspace layout method.
 	void updateWorkspace()
 		{ m_pRackWidget->updateWorkspace(); }
+
+	// Find a mixer strip, given its MIDI-manager handle.
+	qtractorMixerStrip *findMidiManagerStrip(
+		qtractorMidiManager *pMidiManager) const;
+
+	// Find all the MIDI mixer strip, given an audio output bus handle.
+	QList<qtractorMixerStrip *> findAudioOutputBusStrips(
+		qtractorAudioBus *pAudioOutputBus) const;
 
 public slots:
 
@@ -383,6 +402,13 @@ public:
 	void updateBusStrip(qtractorMixerRack *pRack, qtractorBus *pBus,
 		qtractorBus::BusMode busMode, bool bReset = false);
 	void updateTrackStrip(qtractorTrack *pTrack, bool bReset = false);
+
+	// Update a MIDI mixer strip, given its MIDI manager handle.
+	void updateMidiManagerStrip(qtractorMidiManager *pMidiManager);
+
+	// Find a MIDI mixer strip, given its MIDI manager handle.
+	QList<qtractorMixerStrip *> findAudioOutputBusStrips(
+		qtractorAudioBus *pAudioOutputBus) const;
 
 	// Complete mixer recycle.
 	void clear();

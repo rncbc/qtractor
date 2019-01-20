@@ -1,7 +1,7 @@
 // qtractorMidiEditList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -159,9 +159,9 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	const QPalette& pal = qtractorScrollView::palette();
 
-	const QColor& rgbLine   = pal.mid().color();
-	const QColor& rgbLight  = pal.light().color();
-	const QColor& rgbShadow = pal.shadow().color();
+	const QColor& rgbLine  = pal.mid().color();
+	const QColor& rgbLight = QColor(Qt::white).darker();
+	const QColor& rgbDark  = QColor(Qt::black).lighter();
 
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());
@@ -173,6 +173,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	const float hk = (12.0f * m_iItemHeight) / 7.0f;	// Key height.
 	const int wk = (w << 1) / 3;						// Key width.
+	const int w3 = (wk * 6) / 10;
 
 	const int q0 = (cy / m_iItemHeight);
 	const int n0 = 127 - q0;
@@ -182,12 +183,12 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	// Draw horizontal key-lines...
 	painter.setPen(rgbLine);
-	painter.setBrush(rgbShadow);
+	painter.setBrush(rgbDark);
 
 #ifdef CONFIG_GRADIENT
 	QLinearGradient gradLight(x, 0, w, 0);
 	gradLight.setColorAt(0.0f, rgbLight);
-	gradLight.setColorAt(0.1f, rgbLight.lighter(180));
+	gradLight.setColorAt(0.1f, rgbLight.lighter());
 	painter.fillRect(x, 0, wk, h, gradLight);
 //	painter.setBrush(gradLight);
 #else
@@ -216,12 +217,15 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 	}
 
 #ifdef CONFIG_GRADIENT
-	QLinearGradient gradDark(x, 0, x + wk, 0);
-	gradDark.setColorAt(0.0f, rgbLight);
-	gradDark.setColorAt(0.3f, rgbShadow);
+	QLinearGradient gradDark(x, 0, x + w3, 0);
+	gradDark.setColorAt(0.0, rgbLight);
+	gradDark.setColorAt(0.4, rgbDark);
+	gradDark.setColorAt(0.96, rgbDark);
+	gradDark.setColorAt(0.98, rgbLight);
+	gradDark.setColorAt(1.0, rgbDark);
 	painter.setBrush(gradDark);
 #else
-	painter.setBrush(rgbShadow);
+	painter.setBrush(rgbDark);
 #endif
 
 	y = y0;
@@ -230,7 +234,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 		k = (n % 12);
 		if (k >= 5) ++k;
 		if (k & 1)
-			painter.drawRect(x, y, (wk * 6) / 10, m_iItemHeight);
+			painter.drawRect(x, y, w3, m_iItemHeight);
 		y += m_iItemHeight;
 		--n;
 	}

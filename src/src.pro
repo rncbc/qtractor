@@ -108,7 +108,6 @@ HEADERS += config.h \
 	qtractorThumbView.h \
 	qtractorTimeScale.h \
 	qtractorTimeScaleCommand.h \
-	qtractorTimeStretch.h \
 	qtractorTimeStretcher.h \
 	qtractorTrack.h \
 	qtractorTrackButton.h \
@@ -119,6 +118,7 @@ HEADERS += config.h \
 	qtractorTracks.h \
 	qtractorVstPlugin.h \
 	qtractorZipFile.h \
+	qtractorWsolaTimeStretcher.h \
 	qtractorBusForm.h \
 	qtractorClipForm.h \
 	qtractorConnectForm.h \
@@ -232,7 +232,6 @@ SOURCES += \
 	qtractorThumbView.cpp \
 	qtractorTimeScale.cpp \
 	qtractorTimeScaleCommand.cpp \
-	qtractorTimeStretch.cpp \
 	qtractorTimeStretcher.cpp \
 	qtractorTrack.cpp \
 	qtractorTrackButton.cpp \
@@ -242,6 +241,7 @@ SOURCES += \
 	qtractorTrackView.cpp \
 	qtractorTracks.cpp \
 	qtractorVstPlugin.cpp \
+	qtractorWsolaTimeStretcher.cpp \
 	qtractorZipFile.cpp \
 	qtractorBusForm.cpp \
 	qtractorClipForm.cpp \

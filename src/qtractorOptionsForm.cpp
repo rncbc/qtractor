@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -196,6 +196,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 
 	// Initialize dirty control state.
 	m_iDirtyCount = 0;
+	m_iDirtyCustomColorThemes = 0;
 	m_iDirtyPluginPaths = 0;
 
 	// Try to restore old window positioning.
@@ -465,6 +466,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.AudioOutputAutoConnectCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.AudioOutputMonitorCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.OpenEditorCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -708,6 +712,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Plugin instruments options.
 	m_ui.AudioOutputBusCheckBox->setChecked(m_pOptions->bAudioOutputBus);
 	m_ui.AudioOutputAutoConnectCheckBox->setChecked(m_pOptions->bAudioOutputAutoConnect);
+	m_ui.AudioOutputMonitorCheckBox->setChecked(m_pOptions->bAudioOutputMonitor);
 	m_ui.OpenEditorCheckBox->setChecked(m_pOptions->bOpenEditor);
 	m_ui.QueryEditorTypeCheckBox->setChecked(m_pOptions->bQueryEditorType);
 	m_ui.DummyPluginScanCheckBox->setChecked(m_pOptions->bDummyPluginScan);
@@ -740,6 +745,12 @@ qtractorOptions *qtractorOptionsForm::options (void) const
 	return m_pOptions;
 }
 
+
+// Special custom color themes dirty flag.
+bool qtractorOptionsForm::isDirtyCustomColorThemes (void) const
+{
+	return (m_iDirtyCustomColorThemes > 0);
+}
 
 // Accept settings (OK button slot).
 void qtractorOptionsForm::accept (void)
@@ -821,6 +832,7 @@ void qtractorOptionsForm::accept (void)
 		// Plugin instruments options.
 		m_pOptions->bAudioOutputBus      = m_ui.AudioOutputBusCheckBox->isChecked();
 		m_pOptions->bAudioOutputAutoConnect = m_ui.AudioOutputAutoConnectCheckBox->isChecked();
+		m_pOptions->bAudioOutputMonitor  = m_ui.AudioOutputMonitorCheckBox->isChecked();
 		m_pOptions->bOpenEditor          = m_ui.OpenEditorCheckBox->isChecked();
 		m_pOptions->bQueryEditorType     = m_ui.QueryEditorTypeCheckBox->isChecked();
 		m_pOptions->bDummyPluginScan     = m_ui.DummyPluginScanCheckBox->isChecked();
@@ -1012,19 +1024,22 @@ void qtractorOptionsForm::editCustomColorThemes (void)
 	form.setSettings(&m_pOptions->settings());
 
 	QString sCustomColorTheme;
+	int iDirtyCustomColorTheme = 0;
 
 	const int iCustomColorTheme
 		= m_ui.CustomColorThemeComboBox->currentIndex();
 	if (iCustomColorTheme > 0) {
 		sCustomColorTheme = m_ui.CustomColorThemeComboBox->itemText(iCustomColorTheme);
-		form.setNamedPalette(sCustomColorTheme);
+		form.setPaletteName(sCustomColorTheme);
 	}
 
-	if (form.exec() == QDialog::Accepted)
-		sCustomColorTheme = form.namedPalette();
+	if (form.exec() == QDialog::Accepted) {
+		sCustomColorTheme = form.paletteName();
+		++iDirtyCustomColorTheme;
+	}
 
-	if (form.isDirty()) {
-		++m_pOptions->iCustomColorTheme;
+	if (iDirtyCustomColorTheme > 0 || form.isDirty()) {
+		++m_iDirtyCustomColorThemes;
 		resetCustomColorThemes(sCustomColorTheme);
 		changed();
 	}

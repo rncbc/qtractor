@@ -1,7 +1,7 @@
 // qtractorTimeStretcher.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@
 #define __qtractorTimeStretcher_h
 
 #include "qtractorAbout.h"
-#include "qtractorTimeStretch.h"
+#include "qtractorWsolaTimeStretcher.h"
 
 #ifdef CONFIG_LIBRUBBERBAND
 #include <rubberband/RubberBandStretcher.h>
@@ -71,7 +71,7 @@ public:
 private:
 
 	// Instance variables.
-	qtractorTimeStretch *m_pTimeStretch;
+	qtractorWsolaTimeStretcher *m_pWsolaTimeStretcher;
 
 #ifdef CONFIG_LIBRUBBERBAND
 	RubberBand::RubberBandStretcher *m_pRubberBandStretcher;

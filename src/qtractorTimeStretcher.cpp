@@ -1,7 +1,7 @@
 // qtractorTimeStretcher.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,7 +31,7 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	unsigned short iChannels, unsigned int iSampleRate,
 	float fTimeStretch, float fPitchShift,
 	unsigned int iFlags, unsigned int iBufferSize )
-	: m_pTimeStretch(NULL)
+	: m_pWsolaTimeStretcher(NULL)
 #ifdef CONFIG_LIBRUBBERBAND
 	, m_pRubberBandStretcher(NULL)
 	, m_iRubberBandChannels(iChannels)
@@ -42,22 +42,39 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	, m_bRubberBandFlush(false)
 #endif
 {
-	if ((fTimeStretch > 0.1f && fTimeStretch < 1.0f - 1e-3f) ||
-		(fTimeStretch > 1.0f + 1e-3f && fTimeStretch < 4.0f)) {
-		if (iFlags & WsolaTimeStretch) {
-			m_pTimeStretch = new qtractorTimeStretch(iChannels, iSampleRate);
-			m_pTimeStretch->setTempo(1.0f / fTimeStretch);
-			m_pTimeStretch->setQuickSeek(iFlags & WsolaQuickSeek);
-			fTimeStretch = 0.0f;
-		}
-	}
-	else fTimeStretch = 0.0f;
-#ifdef CONFIG_LIBRUBBERBAND
-	if (fTimeStretch > 0.0f ||
-		(fPitchShift > 0.1f && fPitchShift < 1.0f - 1e-3f) ||
-		(fPitchShift > 1.0f + 1e-3f && fPitchShift < 4.0f)) {
+	if (fTimeStretch > 0.0f) {
 		if (fTimeStretch < 0.1f)
-			fTimeStretch = 1.0f;
+			fTimeStretch = 0.1f;
+		else
+		if (fTimeStretch > 10.0f)
+			fTimeStretch = 10.0f;
+		else
+		if (fTimeStretch > 1.0f - 1e-3f &&
+			fTimeStretch < 1.0f + 1e-3f)
+			fTimeStretch = 0.0f; // Disable time-stretcher.
+	}
+
+	if (fPitchShift > 0.0f) {
+		if (fPitchShift < 0.1f)
+			fPitchShift = 0.1f;
+		else
+		if (fPitchShift > 10.0f)
+			fPitchShift = 10.0f;
+		else
+		if (fPitchShift > 1.0f - 1e-3f &&
+			fPitchShift < 1.0f + 1e-3f)
+			fPitchShift = 0.0f; // Disable pitch-shifter.
+	}
+
+	if (fTimeStretch > 0.0f && (iFlags & WsolaTimeStretch)) {
+		m_pWsolaTimeStretcher = new qtractorWsolaTimeStretcher(iChannels, iSampleRate);
+		m_pWsolaTimeStretcher->setTempo(1.0f / fTimeStretch);
+		m_pWsolaTimeStretcher->setQuickSeek(iFlags & WsolaQuickSeek);
+		fTimeStretch = 0.0f; // Avoid RubberBandStretcher...
+	}
+
+#ifdef CONFIG_LIBRUBBERBAND
+	if (fTimeStretch > 0.0f || fPitchShift > 0.0f) {
 		m_pRubberBandStretcher
 			= new RubberBand::RubberBandStretcher(
 				iSampleRate, iChannels,
@@ -81,8 +98,8 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 // Destructor.
 qtractorTimeStretcher::~qtractorTimeStretcher()
 {
-	if (m_pTimeStretch)
-		delete m_pTimeStretch;
+	if (m_pWsolaTimeStretcher)
+		delete m_pWsolaTimeStretcher;
 #ifdef CONFIG_LIBRUBBERBAND
 	if (m_ppRubberBandBuffer)
 		delete [] m_ppRubberBandBuffer;
@@ -100,8 +117,8 @@ qtractorTimeStretcher::~qtractorTimeStretcher()
 void qtractorTimeStretcher::process (
 	float **ppFrames, unsigned int iFrames )
 {
-	if (m_pTimeStretch) {
-		m_pTimeStretch->putFrames(ppFrames, iFrames);
+	if (m_pWsolaTimeStretcher) {
+		m_pWsolaTimeStretcher->putFrames(ppFrames, iFrames);
 #ifdef CONFIG_LIBRUBBERBAND
 		if (m_pRubberBandStretcher) {
 			unsigned int noffs = 0;
@@ -109,7 +126,7 @@ void qtractorTimeStretcher::process (
 			while (nread > 0 && noffs < iFrames) {
 				for (unsigned short i = 0; i < m_iRubberBandChannels; ++i)
 					m_ppRubberBandBuffer[i] = ppFrames[i] + noffs;
-				nread = m_pTimeStretch->receiveFrames(
+				nread = m_pWsolaTimeStretcher->receiveFrames(
 					m_ppRubberBandBuffer, iFrames - noffs);
 				noffs += nread;
 			}
@@ -149,7 +166,7 @@ unsigned int qtractorTimeStretcher::retrieve (
 		return nread;
 	}
 #endif
-	return (m_pTimeStretch ? m_pTimeStretch->receiveFrames(ppFrames, iFrames) : 0);
+	return (m_pWsolaTimeStretcher ? m_pWsolaTimeStretcher->receiveFrames(ppFrames, iFrames) : 0);
 }
 
 
@@ -163,8 +180,8 @@ unsigned int qtractorTimeStretcher::available (void) const
 		iAvailable = m_pRubberBandStretcher->available();
 	else
 #endif
-	if (m_pTimeStretch)
-		iAvailable = m_pTimeStretch->frames();
+	if (m_pWsolaTimeStretcher)
+		iAvailable = m_pWsolaTimeStretcher->frames();
 
 	return (iAvailable > 0 ? iAvailable : 0);
 }
@@ -174,8 +191,8 @@ unsigned int qtractorTimeStretcher::available (void) const
 // in the internal processing pipeline.
 void qtractorTimeStretcher::flush (void)
 {
-	if (m_pTimeStretch)
-		m_pTimeStretch->flushInput();
+	if (m_pWsolaTimeStretcher)
+		m_pWsolaTimeStretcher->flushInput();
 #ifdef CONFIG_LIBRUBBERBAND
 	if (m_pRubberBandStretcher && !m_bRubberBandFlush) {
 		// Process a last dummy empty buffer...
@@ -193,8 +210,8 @@ void qtractorTimeStretcher::flush (void)
 // Clears all buffers.
 void qtractorTimeStretcher::reset (void)
 {
-	if (m_pTimeStretch)
-		m_pTimeStretch->clear();
+	if (m_pWsolaTimeStretcher)
+		m_pWsolaTimeStretcher->clear();
 #ifdef CONFIG_LIBRUBBERBAND
 	if (m_pRubberBandStretcher) {
 		m_pRubberBandStretcher->reset();

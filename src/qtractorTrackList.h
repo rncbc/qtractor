@@ -1,7 +1,7 @@
 // qtractorTrackList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -142,6 +142,9 @@ public:
 	// Update the list view item from track pointer reference.
 	void updateTrack(qtractorTrack *pTrack);
 
+	// Update the list view item from MIDI manager pointer reference.
+	void updateMidiTrackItem(qtractorMidiManager *pMidiManager);
+
 	// Track-button colors (palette) update.
 	void updateTrackButtons();
 
@@ -272,7 +275,7 @@ private:
 		// Track-list item widgets.
 		qtractorTrackListButtons *buttons;
 		qtractorPluginListView *plugins;
-		qtractorMeter *meters;
+		QWidget *meters;
 	};
 
 	// Model cache item list.

@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1514,6 +1514,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_pOptions->bAudioOutputBus);
 	qtractorMidiManager::setDefaultAudioOutputAutoConnect(
 		m_pOptions->bAudioOutputAutoConnect);
+	qtractorMidiManager::setDefaultAudioOutputMonitor(
+		m_pOptions->bAudioOutputMonitor);
 	// Set default audio-buffer quality...
 	qtractorAudioBuffer::setDefaultResampleType(
 		m_pOptions->iAudioResampleType);
@@ -5026,7 +5028,6 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldMidiMetroOffset    = m_pOptions->iMidiMetroOffset;
 	const bool    bOldMixerAutoGridLayout = m_pOptions->bMixerAutoGridLayout;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
-	const int     iOldCustomColorTheme   = m_pOptions->iCustomColorTheme;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 	const bool    bOldTrackListPlugins   = m_pOptions->bTrackListPlugins;
@@ -5095,7 +5096,7 @@ void qtractorMainForm::viewOptions (void)
 		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
 			iNeedRestart |= RestartProgram;
 		if ((sOldCustomColorTheme != m_pOptions->sCustomColorTheme) ||
-			(iOldCustomColorTheme <  m_pOptions->iCustomColorTheme)) {
+			(optionsForm.isDirtyCustomColorThemes())) {
 			if (m_pOptions->sCustomColorTheme.isEmpty())
 				iNeedRestart |= RestartProgram;
 			else
@@ -5144,6 +5145,8 @@ void qtractorMainForm::viewOptions (void)
 			m_pOptions->bAudioOutputBus);
 		qtractorMidiManager::setDefaultAudioOutputAutoConnect(
 			m_pOptions->bAudioOutputAutoConnect);
+		qtractorMidiManager::setDefaultAudioOutputMonitor(
+			m_pOptions->bAudioOutputMonitor);
 		// Auto time-stretching, loop-recording global modes...
 		if (m_pSession) {
 			m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
@@ -5468,7 +5471,8 @@ void qtractorMainForm::transportPlay (void)
 		if (bPlaying) {
 			const unsigned long iPlayHead = m_pSession->playHead();
 			qtractorTrackView *pTrackView = m_pTracks->trackView();
-			pTrackView->setPlayHeadAutoBackward(iPlayHead);
+			if (iPlayHead < m_pSession->sessionEnd())
+				pTrackView->setPlayHeadAutoBackward(iPlayHead);
 			pTrackView->setSyncViewHoldOn(false);
 		}
 		else
@@ -6099,8 +6103,8 @@ unsigned long qtractorMainForm::playHeadBackward (void) const
 	}
 	if (iPlayHead > m_pSession->sessionStart())
 		list.append(m_pSession->sessionStart());
-	if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
-		list.append(m_pSession->sessionEnd());
+//	if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
+//		list.append(m_pSession->sessionEnd());
 	qtractorTimeScale::Marker *pMarker
 		= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
 	while (pMarker && pMarker->frame >= iPlayHead)
