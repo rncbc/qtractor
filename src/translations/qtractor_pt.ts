@@ -402,7 +402,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="841"/>
         <source>audio output meters</source>
-        <translation type="unfinished"></translation>
+        <translation>Medidor da saída de áudio</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="624"/>
@@ -10144,12 +10144,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3574"/>
         <source>Whether to show audio output meters on MIDI tracks and buses</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre mostrar os visualizadores (VU) de saída de áudio nas pistas MIDI e nos barramentos de áudio</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3577"/>
         <source>Show audio outpu&amp;t monitoring meters</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar &amp;monitores de saída de áudio</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3731"/>
@@ -11093,22 +11093,22 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="176"/>
         <source>Import a custom color theme (palette) from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar tema de cores (paleta) personalizado de um arquivo</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="179"/>
         <source>Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar...</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="189"/>
         <source>Export a custom color theme (palette) to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar um tema de cores (paleta) para um arquivo</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="192"/>
         <source>Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar...</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="215"/>
@@ -11118,19 +11118,19 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="320"/>
         <source>Import File - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar Arquivo - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="323"/>
         <location filename="../qtractorPaletteForm.cpp" line="389"/>
         <source>Palette files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos de Paleta (* %1)</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="324"/>
         <location filename="../qtractorPaletteForm.cpp" line="390"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Todos os arquivos (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="376"/>
@@ -11146,12 +11146,16 @@ Você quer mesmo manter as alterações?</translation>
 %1
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível importar arquivo:
+
+%1
+
+Desculpe.</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="386"/>
         <source>Export File - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar Arquivo - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="800"/>
@@ -11524,7 +11528,7 @@ Posso continuar?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1802"/>
         <source>&amp;Meters</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Medidores</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="502"/>
