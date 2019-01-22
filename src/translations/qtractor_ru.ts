@@ -71,7 +71,7 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorClip.cpp" line="160"/>
         <source> (take %1)</source>
-        <translation type="unfinished"></translation>
+        <translation> (дубль %1)</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="537"/>
@@ -82,7 +82,8 @@ Audio:	%1 channels, %2 Hz</source>
         <location filename="../qtractorClip.cpp" line="545"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
-        <translation type="unfinished"></translation>
+        <translation>Начало:	%1	Смещение:	%2
+Конец:	%3	Длительность:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="553"/>
@@ -107,7 +108,7 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorEngineCommand.cpp" line="600"/>
         <source>move bus</source>
-        <translation type="unfinished"></translation>
+        <translation>перемещение шины</translation>
     </message>
     <message>
         <location filename="../qtractorEngineCommand.cpp" line="653"/>
@@ -197,27 +198,27 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorOptions.cpp" line="683"/>
         <source>Usage: %1 [options] [session-file]</source>
-        <translation type="unfinished"></translation>
+        <translation>Использование: %1 [параметры] [файл сессии]</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="686"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры:</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="689"/>
         <source>Set session identification (uuid)</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить идентификатор сессии (uuid)</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="692"/>
         <source>Show help about command line options</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать справку о параметрах командной строки</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="694"/>
         <source>Show version information</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать версию программы</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="731"/>
@@ -247,17 +248,17 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="145"/>
         <source>add insert</source>
-        <translation type="unfinished"></translation>
+        <translation>добавление возврата</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="169"/>
         <source>add aux-send</source>
-        <translation type="unfinished"></translation>
+        <translation>добавление внешнего посыла</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="193"/>
         <source>aux-send bus</source>
-        <translation type="unfinished"></translation>
+        <translation>шина внешнего посыла</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="242"/>
@@ -322,17 +323,17 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorBusForm.cpp" line="75"/>
         <source>Duplex</source>
-        <translation type="unfinished">Дуплекс</translation>
+        <translation>Дуплекс</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="78"/>
         <source>Output</source>
-        <translation type="unfinished">Выход</translation>
+        <translation>Выход</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="81"/>
         <source>Input</source>
-        <translation type="unfinished">Вход</translation>
+        <translation>Вход</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="85"/>
@@ -358,7 +359,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="257"/>
         <source>duplicate track</source>
-        <translation type="unfinished"></translation>
+        <translation>дублирование дорожки</translation>
     </message>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="506"/>
@@ -425,7 +426,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorTrackList.cpp" line="111"/>
         <source>Automation (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматизация (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="119"/>
@@ -435,7 +436,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorTrackList.cpp" line="219"/>
         <source>Automation</source>
-        <translation type="unfinished">Автоматизация</translation>
+        <translation>Автоматизация</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="435"/>
@@ -455,17 +456,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="655"/>
         <source>Product: </source>
-        <translation type="unfinished"></translation>
+        <translation>Продукт: </translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="663"/>
         <source>Vendor: </source>
-        <translation type="unfinished"></translation>
+        <translation>Производитель: </translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="671"/>
         <source>Version: </source>
-        <translation type="unfinished"></translation>
+        <translation>Версия: </translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="1544"/>
@@ -929,17 +930,17 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorBusForm.cpp" line="949"/>
         <source>Move &amp;Up</source>
-        <translation type="unfinished">Переместить &amp;выше</translation>
+        <translation>&amp;Выше</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="954"/>
         <source>Move &amp;Down</source>
-        <translation type="unfinished">Переместить &amp;ниже</translation>
+        <translation>&amp;Ниже</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="992"/>
         <source>(No instrument)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Нет инструмента)</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="1069"/>
@@ -1077,7 +1078,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorBusForm.ui" line="291"/>
         <source>MIDI SysEx setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройка MIDI SysEx</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="294"/>
@@ -2064,47 +2065,47 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="80"/>
         <source>&amp;Home</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Домой</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="82"/>
         <source>&amp;Up</source>
-        <translation type="unfinished">&amp;Выше</translation>
+        <translation>&amp;Выше</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="84"/>
         <source>Al&amp;l Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Вс&amp;е файлы</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="88"/>
         <source>&amp;Session</source>
-        <translation type="unfinished">&amp;Сеанс</translation>
+        <translation>&amp;Сессия</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="92"/>
         <source>&amp;Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Аудио</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="96"/>
         <source>&amp;MIDI</source>
-        <translation type="unfinished">&amp;MIDI</translation>
+        <translation>&amp;MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="99"/>
         <source>H&amp;idden</source>
-        <translation type="unfinished"></translation>
+        <translation>С&amp;крытые</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="103"/>
         <source>&amp;Play</source>
-        <translation type="unfinished">В&amp;оспроизведение</translation>
+        <translation>В&amp;оспроизведение</translation>
     </message>
     <message>
         <location filename="../qtractorFileSystem.cpp" line="171"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Файловая система</translation>
     </message>
 </context>
 <context>
@@ -2157,32 +2158,32 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorFiles.cpp" line="105"/>
         <source>New &amp;Group...</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать &amp;группу…</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="113"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">Вст&amp;авить</translation>
+        <translation>Вст&amp;авить</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="115"/>
         <source>Re&amp;name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Переименовать</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="117"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">&amp;Удалить</translation>
+        <translation>&amp;Удалить</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="119"/>
         <source>Pla&amp;y</source>
-        <translation type="unfinished"></translation>
+        <translation>В&amp;оспроизвести</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="121"/>
         <source>Cl&amp;eanup</source>
-        <translation type="unfinished"></translation>
+        <translation>О&amp;чистить</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="131"/>
@@ -2453,7 +2454,7 @@ Do you want to apply the changes?</source>
         <location filename="../qtractorInstrumentMenu.cpp" line="356"/>
         <location filename="../qtractorInstrumentMenu.cpp" line="409"/>
         <source>(None)</source>
-        <translation type="unfinished">(нет)</translation>
+        <translation>(нет)</translation>
     </message>
 </context>
 <context>
@@ -2601,12 +2602,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2459"/>
         <source>Opening &quot;%1&quot;...</source>
-        <translation type="unfinished"></translation>
+        <translation>Открывается &quot;%1&quot;...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2564"/>
         <source>Saving &quot;%1&quot;...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохраняется &quot;%1&quot;...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4119"/>
@@ -2634,7 +2635,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5770"/>
         <source>VeSTige header support enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Включена поддержка заголовка VeSTige.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5773"/>
@@ -2821,7 +2822,7 @@ Do you want to crash-recover from it?</source>
         <location filename="../qtractorMainForm.ui" line="2946"/>
         <location filename="../qtractorMainForm.cpp" line="7249"/>
         <source>None</source>
-        <translation type="unfinished">Нет</translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7828"/>
@@ -3100,42 +3101,42 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5746"/>
         <source>Ogg Vorbis (libvorbis) file support disabled.</source>
-        <translation>Поддержка файлов Ogg Vorbis (libvorbis) отключена</translation>
+        <translation>Поддержка файлов Ogg Vorbis (libvorbis) отключена.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5749"/>
         <source>MPEG-1 Audio Layer 3 (libmad) file support disabled.</source>
-        <translation>Поддержка MPEG-1 Audio Layer 3 (libmad) отключена</translation>
+        <translation>Поддержка MPEG-1 Audio Layer 3 (libmad) отключена.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5752"/>
         <source>Sample-rate conversion (libsamplerate) disabled.</source>
-        <translation>Поддержка преобразования частоты сэмплирования (libsamplerate) отключена</translation>
+        <translation>Поддержка преобразования частоты сэмплирования (libsamplerate) отключена.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5755"/>
         <source>Pitch-shifting support (librubberband) disabled.</source>
-        <translation>Поддержка смена высоты тона (librubberband) отключена</translation>
+        <translation>Поддержка смена высоты тона (librubberband) отключена.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5758"/>
         <source>OSC service support (liblo) disabled.</source>
-        <translation>Поддержка службы OSC (liblo) отключена</translation>
+        <translation>Поддержка службы OSC (liblo) отключена.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5761"/>
         <source>LADSPA Plug-in support disabled.</source>
-        <translation>Поддержка эффектов LADSPA отключена</translation>
+        <translation>Поддержка эффектов LADSPA отключена.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5764"/>
         <source>DSSI Plug-in support disabled.</source>
-        <translation>Поддержка эффектов DSSI отключена</translation>
+        <translation>Поддержка эффектов DSSI отключена.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5767"/>
         <source>VST Plug-in support disabled.</source>
-        <translation>Поддержка эффектов VST отключена</translation>
+        <translation>Поддержка эффектов VST отключена.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5789"/>
@@ -6308,7 +6309,7 @@ is highly recommended.</source>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="464"/>
         <source>controller</source>
-        <translation type="unfinished"></translation>
+        <translation>контроллер</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.cpp" line="509"/>
@@ -6327,7 +6328,7 @@ Do you want to replace it?</source>
         <location filename="../qtractorMidiControlForm.cpp" line="774"/>
         <location filename="../qtractorMidiControlForm.cpp" line="866"/>
         <source>Delta</source>
-        <translation type="unfinished"></translation>
+        <translation>Дельта</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="34"/>
@@ -6387,17 +6388,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="163"/>
         <source>Trac&amp;k</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Дорожка</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="176"/>
         <source>offse&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>сме&amp;щение</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="189"/>
         <source>&amp;limit</source>
-        <translation type="unfinished"></translation>
+        <translation>пре&amp;дел</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="202"/>
@@ -6413,7 +6414,7 @@ Do you want to replace it?</source>
         <location filename="../qtractorMidiControlForm.ui" line="215"/>
         <location filename="../qtractorMidiControlForm.ui" line="385"/>
         <source>Flags</source>
-        <translation type="unfinished"></translation>
+        <translation>Флаги</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="245"/>
@@ -6468,17 +6469,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="238"/>
         <source>MIDI Event type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип MIDI-события</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="252"/>
         <source>MIDI Controller (parameter)</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI-контроллер (параметр)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="259"/>
         <source>MIDI parameter (track offset)</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI-контроллер (смещение дорожки)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="262"/>
@@ -6488,12 +6489,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="269"/>
         <source>Track offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Смещение дорожки</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="282"/>
         <source>Track limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Предел дорожки</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="302"/>
@@ -6503,7 +6504,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="305"/>
         <source>D&amp;elta</source>
-        <translation type="unfinished"></translation>
+        <translation>Д&amp;ельта</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="360"/>
@@ -6529,7 +6530,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="422"/>
         <source>&amp;Sync</source>
-        <translation type="unfinished"></translation>
+        <translation>Син&amp;хр.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="442"/>
@@ -6611,32 +6612,32 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="34"/>
         <source>MIDI Controller - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI-контроллер</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="43"/>
         <source>&amp;Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Т&amp;ип:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="53"/>
         <source>MIDI event type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип MIDI-события</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="60"/>
         <source>Cha&amp;nnel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Канал:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="70"/>
         <source>MIDI channel</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI-канал</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="127"/>
         <source>In&amp;vert</source>
-        <translation type="unfinished"></translation>
+        <translation>И&amp;нвертировать</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="134"/>
@@ -6656,7 +6657,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="153"/>
         <source>&amp;Inputs</source>
-        <translation type="unfinished">&amp;Входы</translation>
+        <translation>&amp;Входы</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="163"/>
@@ -6666,32 +6667,32 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="166"/>
         <source>&amp;Outputs</source>
-        <translation type="unfinished">В&amp;ыходы</translation>
+        <translation>В&amp;ыходы</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="96"/>
         <source>&amp;Parameter:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Параметры:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="106"/>
         <source>MIDI parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI-параметр</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="113"/>
         <source>&amp;Logarithmic</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Логарифмический</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="120"/>
         <source>&amp;Feedback</source>
-        <translation type="unfinished">Отк&amp;лик</translation>
+        <translation>Отк&amp;лик</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="190"/>
         <source>MIDI Controller</source>
-        <translation type="unfinished">Контроллер MIDI</translation>
+        <translation>MIDI-контроллер</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="358"/>
@@ -6712,32 +6713,32 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="541"/>
         <source>&amp;MIDI Controller...</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI-контро&amp;ллер…</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="647"/>
         <source>&amp;Automation</source>
-        <translation type="unfinished">&amp;Автоматизация</translation>
+        <translation>&amp;Автоматизация</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="661"/>
         <source>&amp;Lock</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Заблокировать</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="679"/>
         <source>&amp;Play</source>
-        <translation type="unfinished">В&amp;оспроизведение</translation>
+        <translation>В&amp;оспроизвести</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="695"/>
         <source>&amp;Record</source>
-        <translation type="unfinished">&amp;Запись</translation>
+        <translation>З&amp;аписать</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.cpp" line="705"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>О&amp;чистить</translation>
     </message>
 </context>
 <context>
@@ -10942,22 +10943,22 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="39"/>
         <source>Color Themes</source>
-        <translation type="unfinished"></translation>
+        <translation>Цветовые темы</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="45"/>
         <source>Name</source>
-        <translation type="unfinished">Название</translation>
+        <translation>Название</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="63"/>
         <source>Current color palette name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название текущей цветовой темы</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="79"/>
         <source>Save</source>
-        <translation type="unfinished">Сохранить</translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="76"/>
@@ -10967,7 +10968,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="92"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="89"/>
@@ -10977,7 +10978,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="105"/>
         <source>Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Палитра</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="117"/>
@@ -10987,7 +10988,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="127"/>
         <source>Generate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сгенерировать:</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="143"/>
@@ -10997,7 +10998,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="153"/>
         <source> Reset</source>
-        <translation type="unfinished"></translation>
+        <translation> Сбросить</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="150"/>
@@ -11012,7 +11013,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="179"/>
         <source>Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт…</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="189"/>
@@ -11022,36 +11023,36 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="192"/>
         <source>Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт…</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="215"/>
         <source>Show Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Подробности</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="320"/>
         <source>Import File - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Импортировать файл - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="323"/>
         <location filename="../qtractorPaletteForm.cpp" line="389"/>
         <source>Palette files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлы палитр (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="324"/>
         <location filename="../qtractorPaletteForm.cpp" line="390"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Все файлы (*.*)</translation>
+        <translation>Все файлы (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="376"/>
         <location filename="../qtractorPaletteForm.cpp" line="799"/>
         <location filename="../qtractorPaletteForm.cpp" line="807"/>
         <source>Warning - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Предупреждение - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="377"/>
@@ -11065,7 +11066,7 @@ Sorry.</source>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="386"/>
         <source>Export File - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортировать файл - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="800"/>
@@ -11876,12 +11877,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="34"/>
         <source>Shortcuts</source>
-        <translation type="unfinished">Клавиатурные комбинации</translation>
+        <translation>Клавиатурные комбинации</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="80"/>
         <source>Menu/Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню/Действие</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="85"/>
@@ -11891,12 +11892,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="90"/>
         <source>Keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Клавиатура</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="95"/>
         <source>MIDI Controller</source>
-        <translation type="unfinished">Контроллер MIDI</translation>
+        <translation>MIDI-контроллер</translation>
     </message>
 </context>
 <context>
@@ -11904,112 +11905,112 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="37"/>
         <source>Take - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>Дубль записи</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="47"/>
         <source>Range</source>
-        <translation type="unfinished">Область</translation>
+        <translation>Область</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="63"/>
         <source>Selection range</source>
-        <translation type="unfinished">Область выделения</translation>
+        <translation>Область выделения</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="66"/>
         <source>&amp;Selection</source>
-        <translation type="unfinished">В&amp;ыделение</translation>
+        <translation>В&amp;ыделение</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="118"/>
         <source>Loop range</source>
-        <translation type="unfinished">Всю петлю</translation>
+        <translation>Область петли</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="121"/>
         <source>&amp;Loop</source>
-        <translation type="unfinished">&amp;Петля</translation>
+        <translation>&amp;Петля</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="167"/>
         <source>Punch range</source>
-        <translation type="unfinished">Всю врезку</translation>
+        <translation>Область врезки</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="170"/>
         <source>&amp;Punch</source>
-        <translation type="unfinished">&amp;Врезка</translation>
+        <translation>&amp;Врезка</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="226"/>
         <source>Time</source>
-        <translation type="unfinished">Время</translation>
+        <translation>Время</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="231"/>
         <source>BBT</source>
-        <translation type="unfinished">BBT</translation>
+        <translation>BBT</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="92"/>
         <source>Edit range</source>
-        <translation type="unfinished">Область редактирования</translation>
+        <translation>Область редактирования</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="95"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Редактирование</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="105"/>
         <source>Custom range</source>
-        <translation type="unfinished">Другую область</translation>
+        <translation>Заказная область</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="108"/>
         <source>&amp;Custom</source>
-        <translation type="unfinished">&amp;Другая</translation>
+        <translation>&amp;Другая</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="157"/>
         <source>St&amp;art:</source>
-        <translation type="unfinished">&amp;Начало:</translation>
+        <translation>&amp;Начало:</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="137"/>
         <source>Clip start</source>
-        <translation type="unfinished">Начало клипа</translation>
+        <translation>Начало клипа</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="53"/>
         <source>En&amp;d:</source>
-        <translation type="unfinished">&amp;Конец:</translation>
+        <translation>&amp;Конец:</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="150"/>
         <source>Clip offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Смещение клипа</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="183"/>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="201"/>
         <source>Current take</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущий дубль</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="211"/>
         <source>Format</source>
-        <translation type="unfinished">Формат</translation>
+        <translation>Формат</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="217"/>
         <source>Time display format</source>
-        <translation type="unfinished">Формат отображения времени:</translation>
+        <translation>Формат показа времени</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="221"/>
@@ -12019,7 +12020,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTakeRangeForm.cpp" line="249"/>
         <source>Take %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Дубль %1</translation>
     </message>
 </context>
 <context>
@@ -12027,67 +12028,67 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="37"/>
         <source>Tempo - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>Темп</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="46"/>
         <source>Metronome</source>
-        <translation type="unfinished">Метроном</translation>
+        <translation>Метроном</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="58"/>
         <source>Temp&amp;o:</source>
-        <translation type="unfinished"></translation>
+        <translation>Т&amp;емп:</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="74"/>
         <source>Tempo/Time signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Темп/Тактовый размер</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="94"/>
         <source>T&amp;ap</source>
-        <translation type="unfinished">&amp;Настучать ритм</translation>
+        <translation>&amp;Настучать</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="104"/>
         <source>Range</source>
-        <translation type="unfinished">Область</translation>
+        <translation>Область</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="152"/>
         <source>&amp;Start:</source>
-        <translation type="unfinished">&amp;Начало:</translation>
+        <translation>&amp;Начало:</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="197"/>
         <source>Range start</source>
-        <translation type="unfinished"></translation>
+        <translation>Начало области</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="222"/>
         <source>Time</source>
-        <translation type="unfinished">Время</translation>
+        <translation>Время</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="227"/>
         <source>BBT</source>
-        <translation type="unfinished">BBT</translation>
+        <translation>BBT</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="116"/>
         <source>&amp;Length:</source>
-        <translation type="unfinished">&amp;Длительность:</translation>
+        <translation>&amp;Длительность:</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="184"/>
         <source>Range length</source>
-        <translation type="unfinished"></translation>
+        <translation>Длительность области</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="168"/>
         <source>B&amp;eats:</source>
-        <translation type="unfinished"></translation>
+        <translation>До&amp;лей:</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="126"/>
@@ -12097,17 +12098,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="139"/>
         <source>A&amp;djust</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Поправить</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="207"/>
         <source>Format</source>
-        <translation type="unfinished">Формат</translation>
+        <translation>Формат</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="213"/>
         <source>Time display format</source>
-        <translation type="unfinished">Формат отображения времени:</translation>
+        <translation>Формат показа времени:</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="217"/>
@@ -12117,7 +12118,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.cpp" line="178"/>
         <source>Warning</source>
-        <translation type="unfinished">Предупреждение</translation>
+        <translation>Предупреждение</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.cpp" line="179"/>
