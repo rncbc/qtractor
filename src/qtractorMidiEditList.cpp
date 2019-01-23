@@ -158,10 +158,10 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 		return;
 
 	const QPalette& pal = qtractorScrollView::palette();
-
+	const bool bDark = (pal.base().color().value() < 128);
 	const QColor& rgbLine  = pal.mid().color();
-	const QColor& rgbLight = QColor(Qt::white).darker();
-	const QColor& rgbDark  = QColor(Qt::black).lighter();
+	const QColor& rgbLight = QColor(Qt::white).darker(bDark ? 240 : 160);
+	const QColor& rgbDark  = QColor(Qt::black).lighter(bDark ? 120 : 180);
 
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());
