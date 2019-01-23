@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -20,6 +20,8 @@
 *****************************************************************************/
 
 #include "qtractorAudioMonitor.h"
+
+#include "qtractorAudioMeter.h"
 
 #include <math.h>
 
@@ -331,7 +333,7 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 		}
 		// Initial population...
 		update();
-    }
+	}
 }
 
 unsigned short qtractorAudioMonitor::channels (void) const
@@ -497,6 +499,42 @@ void qtractorAudioMonitor::update (void)
 
 	// Trigger ramp-processing...
 	++m_iProcessRamp;
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorAudioOutputMonitor -- Audio-output monitor bridge value processor.
+
+// Constructor.
+qtractorAudioOutputMonitor::qtractorAudioOutputMonitor (
+	unsigned short iChannels, float fGain, float fPanning )
+	: qtractorAudioMonitor(iChannels, fGain, fPanning)
+{
+}
+
+
+// Channel property accessors.
+void qtractorAudioOutputMonitor::setChannels ( unsigned short iChannels )
+{
+	qtractorAudioMonitor::setChannels(iChannels);
+
+	QListIterator<qtractorAudioMeter *> iter(m_meters);
+	while (iter.hasNext())
+		iter.next()->reset();
+}
+
+
+// Associated meters (kinda observers) managament methods.
+void qtractorAudioOutputMonitor::addAudioMeter (
+	qtractorAudioMeter *pAudioMeter )
+{
+	m_meters.append(pAudioMeter);
+}
+
+void qtractorAudioOutputMonitor::removeAudioMeter (
+	qtractorAudioMeter *pAudioMeter )
+{
+	m_meters.removeAll(pAudioMeter);
 }
 
 

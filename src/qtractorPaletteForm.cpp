@@ -1,7 +1,7 @@
 // qtractorPaletteForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -36,12 +36,18 @@
 #include <QStyleOption>
 
 #include <QColorDialog>
-
+#include <QFileDialog>
 #include <QMessageBox>
 
 
 // Local static consts.
-static const char *ColorThemesGroup = "/ColorThemes/";
+static const char *ColorThemesGroup   = "/ColorThemes/";
+
+static const char *PaletteEditorGroup = "/PaletteEditor/";
+static const char *DefaultDirKey      = "DefaultDir";
+static const char *ShowDetailsKey     = "ShowDetails";
+static const char *DefaultSuffix      = "conf";
+
 
 static struct
 {
@@ -128,6 +134,13 @@ qtractorPaletteForm::qtractorPaletteForm ( QWidget *parent, const QPalette& pal 
 	QObject::connect(m_ui.detailsCheck,
 		SIGNAL(clicked()),
 		SLOT(detailsCheckClicked()));
+	QObject::connect(m_ui.importButton,
+		SIGNAL(clicked()),
+		SLOT(importButtonClicked()));
+	QObject::connect(m_ui.exportButton,
+		SIGNAL(clicked()),
+		SLOT(exportButtonClicked()));
+
 	QObject::connect(m_paletteModel,
 		SIGNAL(paletteChanged(const QPalette&)),
 		SLOT(paletteChanged(const QPalette&)));
@@ -200,6 +213,8 @@ void qtractorPaletteForm::setSettings ( QSettings *settings, bool owner )
 	m_settings = settings;
 	m_owner = owner;
 
+	m_ui.detailsCheck->setChecked(isShowDetails());
+
 	updateNamedPaletteList();
 	updateDialogButtons();
 }
@@ -213,7 +228,7 @@ QSettings *qtractorPaletteForm::settings (void) const
 
 void qtractorPaletteForm::nameComboActivated ( const QString& name )
 {
-	setNamedPalette(name);
+	setPaletteName(name);
 }
 
 
@@ -222,7 +237,7 @@ void qtractorPaletteForm::nameComboChanged ( const QString& name )
 	if (m_dirtyCount > 0 || m_ui.nameCombo->findText(name) < 0)
 		updateDialogButtons();
 	else
-		setNamedPalette(name);
+		setPaletteName(name);
 }
 
 
@@ -280,20 +295,132 @@ void qtractorPaletteForm::resetButtonClicked (void)
 
 void qtractorPaletteForm::detailsCheckClicked (void)
 {
+	const int cw = (m_ui.paletteView->viewport()->width() >> 2);
+	QHeaderView *header = m_ui.paletteView->header();
+	header->resizeSection(0, cw);
 	if (m_ui.detailsCheck->isChecked()) {
-		const int cw = m_ui.paletteView->columnWidth(1);
 		m_ui.paletteView->setColumnHidden(2, false);
 		m_ui.paletteView->setColumnHidden(3, false);
-		QHeaderView *header = m_ui.paletteView->header();
-		header->resizeSection(1, cw / 3);
-		header->resizeSection(2, cw / 3);
-		header->resizeSection(3, cw / 3);
+		header->resizeSection(1, cw);
+		header->resizeSection(2, cw);
+		header->resizeSection(3, cw);
 		m_paletteModel->setGenerate(false);
 	} else {
 		m_ui.paletteView->setColumnHidden(2, true);
 		m_ui.paletteView->setColumnHidden(3, true);
+		header->resizeSection(1, cw * 3);
 		m_paletteModel->setGenerate(true);
 	}
+}
+
+
+void qtractorPaletteForm::importButtonClicked (void)
+{
+	const QString& title
+		= tr("Import File - %1").arg(QDialog::windowTitle());
+
+	QStringList filters;
+	filters.append(tr("Palette files (*.%1)").arg(DefaultSuffix));
+	filters.append(tr("All files (*.*)"));
+
+	const QString& filename
+		= QFileDialog::getOpenFileName(this,
+			title, defaultDir(), filters.join(";;"));
+
+	if (filename.isEmpty())
+		return;
+
+	int imported = 0;
+	QSettings settings(filename, QSettings::IniFormat);
+	settings.beginGroup(ColorThemesGroup);
+	QStringListIterator name_iter(settings.childGroups());
+	while (name_iter.hasNext()) {
+		const QString& name = name_iter.next();
+		if (!name.isEmpty()) {
+			QPalette pal;
+			int result = 0;
+			uint mask = pal.resolve();
+			settings.beginGroup(name + '/');
+			QStringListIterator iter(settings.childKeys());
+			while (iter.hasNext()) {
+				const QString& key = iter.next();
+				const QPalette::ColorRole cr
+					= qtractorPaletteForm::colorRole(key);
+				const QStringList& clist
+					= settings.value(key).toStringList();
+				if (clist.count() == 3) {
+					pal.setColor(QPalette::Active,   cr, QColor(clist.at(0)));
+					pal.setColor(QPalette::Inactive, cr, QColor(clist.at(1)));
+					pal.setColor(QPalette::Disabled, cr, QColor(clist.at(2)));
+					mask &= ~(1 << int(cr));
+					++result;
+				}
+			}
+			pal.resolve(mask);
+			settings.endGroup();
+			if (result > 0) {
+				saveNamedPalette(name, pal);
+				setPaletteName(name);
+				++imported;
+			}
+		}
+	}
+	settings.endGroup();
+
+	if (imported > 0) {
+		updateNamedPaletteList();
+		resetButtonClicked();
+		setDefaultDir(QFileInfo(filename).absolutePath());
+	} else {
+		QMessageBox::warning(this,
+			tr("Warning - %1").arg(QDialog::windowTitle()),
+			tr("Could not import from file:\n\n"
+			"%1\n\nSorry.").arg(filename));
+	}
+}
+
+
+void qtractorPaletteForm::exportButtonClicked (void)
+{
+	const QString& title
+		= tr("Export File - %1").arg(QDialog::windowTitle());
+
+	QStringList filters;
+	filters.append(tr("Palette files (*.%1)").arg(DefaultSuffix));
+	filters.append(tr("All files (*.*)"));
+
+	QString dirname = defaultDir();
+	if (!dirname.isEmpty())
+		dirname.append(QDir::separator());
+	dirname.append(paletteName() + '.' + DefaultSuffix);
+
+	const QString& filename
+		= QFileDialog::getSaveFileName(this,
+			title, dirname, filters.join(";;"));
+
+	if (filename.isEmpty())
+		return;
+
+	const QPalette& pal = m_palette;
+
+	QSettings settings(filename, QSettings::IniFormat);
+	settings.beginGroup(ColorThemesGroup);
+	settings.beginGroup(QFileInfo(filename).baseName() + '/');
+	for (int i = 0; g_colorRoles[i].key; ++i) {
+		const QString& key
+			= QString::fromLatin1(g_colorRoles[i].key);
+		const QPalette::ColorRole cr
+			= g_colorRoles[i].value;
+		QStringList clist;
+		clist.append(pal.color(QPalette::Active,   cr).name());
+		clist.append(pal.color(QPalette::Inactive, cr).name());
+		clist.append(pal.color(QPalette::Disabled, cr).name());
+		settings.setValue(key, clist);
+	}
+	settings.endGroup();
+	settings.endGroup();
+
+	setDefaultDir(QFileInfo(filename).absolutePath());
 }
 
 
@@ -309,13 +436,14 @@ void qtractorPaletteForm::paletteChanged ( const QPalette& pal )
 }
 
 
-void qtractorPaletteForm::setNamedPalette ( const QString& name )
+void qtractorPaletteForm::setPaletteName ( const QString& name )
 {
 	const bool blocked = m_ui.nameCombo->blockSignals(true);
 
 	m_ui.nameCombo->setEditText(name);
 
 	QPalette pal;
+
 	if (namedPalette(m_settings, name, pal, true))
 		setPalette(pal, pal);
 
@@ -326,7 +454,7 @@ void qtractorPaletteForm::setNamedPalette ( const QString& name )
 }
 
 
-QString qtractorPaletteForm::namedPalette (void) const
+QString qtractorPaletteForm::paletteName (void) const
 {
 	return m_ui.nameCombo->currentText();
 }
@@ -364,12 +492,14 @@ void qtractorPaletteForm::updateDialogButtons (void)
 	const int i = m_ui.nameCombo->findText(name);
 	m_ui.saveButton->setEnabled(!name.isEmpty() && (m_dirtyCount > 0 || i < 0));
 	m_ui.deleteButton->setEnabled(i >= 0);
+	m_ui.resetButton->setEnabled(m_dirtyCount > 0);
+	m_ui.exportButton->setEnabled(!name.isEmpty() || i >= 0);
+	m_ui.dialogButtons->button(QDialogButtonBox::Ok)->setEnabled(i >= 0);
 	if (name == "Wonton Soup" || name == "KXStudio") {
 		m_ui.saveButton->setEnabled(false);
 		m_ui.deleteButton->setEnabled(false);
+		m_ui.exportButton->setEnabled(false);
 	}
-	m_ui.resetButton->setEnabled(m_dirtyCount > 0);
-	m_ui.dialogButtons->button(QDialogButtonBox::Ok)->setEnabled(i >= 0);
 }
 
 
@@ -571,7 +701,7 @@ bool qtractorPaletteForm::namedPalette (
 void qtractorPaletteForm::saveNamedPalette (
 	const QString& name, const QPalette& pal )
 {
-	if (m_settings) {
+	if (m_settings && name != "KXStudio" && name != "Wonton Soup") {
 		m_settings->beginGroup(ColorThemesGroup);
 		m_settings->beginGroup(name + '/');
 		for (int i = 0; g_colorRoles[i].key; ++i) {
@@ -651,6 +781,8 @@ bool qtractorPaletteForm::isDirty (void) const
 
 void qtractorPaletteForm::accept (void)
 {
+	setShowDetails(m_ui.detailsCheck->isChecked());
+
 	if (m_dirtyCount > 0)
 		saveButtonClicked();
 
@@ -661,7 +793,7 @@ void qtractorPaletteForm::accept (void)
 void qtractorPaletteForm::reject (void)
 {
 	if (m_dirtyCount > 0) {
-		const QString& name = namedPalette();
+		const QString& name = paletteName();
 		if (name.isEmpty()) {
 			if (QMessageBox::warning(this,
 				tr("Warning - %1").arg(QDialog::windowTitle()),
@@ -691,6 +823,70 @@ void qtractorPaletteForm::reject (void)
 	}
 
 	QDialog::reject();
+}
+
+
+void qtractorPaletteForm::setDefaultDir ( const QString& dir )
+{
+	if (m_settings) {
+		m_settings->beginGroup(PaletteEditorGroup);
+		m_settings->setValue(DefaultDirKey, dir);
+		m_settings->endGroup();
+	}
+}
+
+
+QString qtractorPaletteForm::defaultDir (void) const
+{
+	QString dir;
+
+	if (m_settings) {
+		m_settings->beginGroup(PaletteEditorGroup);
+		dir = m_settings->value(DefaultDirKey).toString();
+		m_settings->endGroup();
+	}
+
+	return dir;
+}
+
+
+void qtractorPaletteForm::setShowDetails ( bool on )
+{
+	if (m_settings) {
+		m_settings->beginGroup(PaletteEditorGroup);
+		m_settings->setValue(ShowDetailsKey, on);
+		m_settings->endGroup();
+	}
+}
+
+
+bool qtractorPaletteForm::isShowDetails (void) const
+{
+	bool on = false;
+
+	if (m_settings) {
+		m_settings->beginGroup(PaletteEditorGroup);
+		on = m_settings->value(ShowDetailsKey).toBool();
+		m_settings->endGroup();
+	}
+
+	return on;
+}
+
+
+void qtractorPaletteForm::showEvent ( QShowEvent *event )
+{
+	QDialog::showEvent(event);
+
+	detailsCheckClicked();
+}
+
+
+void qtractorPaletteForm::resizeEvent ( QResizeEvent *event )
+{
+	QDialog::resizeEvent(event);
+
+	detailsCheckClicked();
 }
 
 
@@ -1005,12 +1201,13 @@ QSize qtractorPaletteForm::ColorDelegate::sizeHint (
 // qtractorPaletteForm::ColorButton
 
 qtractorPaletteForm::ColorButton::ColorButton ( QWidget *parent )
-	: QPushButton(parent)
+	: QPushButton(parent), m_brush(Qt::darkGray)
 {
+	QPushButton::setMinimumWidth(48);
+
 	QObject::connect(this,
 		SIGNAL(clicked()),
 		SLOT(chooseColor()));
-	m_brush = QBrush(Qt::darkGray);
 }
 
 

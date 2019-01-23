@@ -1,7 +1,7 @@
 // qtractorAudioMeter.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -149,8 +149,10 @@ private:
 	qtractorAudioMonitor     *m_pAudioMonitor;
 	unsigned short            m_iChannels;
 	qtractorAudioMeterValue **m_ppAudioValues;
+	unsigned int              m_iRegenerate;
 
 	int m_levels[LevelCount];
+
 
 #ifdef CONFIG_GRADIENT
 	QPixmap *m_pPixmap;

@@ -1,7 +1,7 @@
 // qtractorPaletteForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -59,8 +59,8 @@ public:
 	void setSettings(QSettings *settings, bool owner = false);
 	QSettings *settings() const;
 
-	void setNamedPalette(const QString& name);
-	QString namedPalette() const;
+	void setPaletteName(const QString& name);
+	QString paletteName() const;
 
 	bool isDirty() const;
 
@@ -86,6 +86,8 @@ protected slots:
 	void generateButtonChanged();
 	void resetButtonClicked();
 	void detailsCheckClicked();
+	void importButtonClicked();
+	void exportButtonClicked();
 
 	void paletteChanged(const QPalette& pal);
 
@@ -104,6 +106,15 @@ protected:
 	void updateNamedPaletteList();
 	void updateGenerateButton();
 	void updateDialogButtons();
+
+	void setDefaultDir(const QString& dir);
+	QString defaultDir() const;
+
+	void setShowDetails(bool on);
+	bool isShowDetails() const;
+
+	void showEvent(QShowEvent *event);
+	void resizeEvent(QResizeEvent *event);
 
 private:
 

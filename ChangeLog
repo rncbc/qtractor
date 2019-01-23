@@ -6,21 +6,39 @@ ChangeLog
 
 GIT HEAD
 
+- Audio output monitoring meters may now be shown on
+  MIDI tracks and buses as a default user preference
+  option (View/ Options.../Plugins/Instruments/Show
+  audio output monitoring meters) and also in plugin
+  list context sub-memu (Audio/Meters). (EXPERIMENTAL)
+
+- Custom color (palette) themes can be exported to and
+  imported from external files. (EXPERIMENTAL)
+
+- LV2 plug-in UI GTK2 and X11 in Qt5 host native support
+  are now enabled on configure by default. (REGRESSION)
+
+- Fixed minimum input value as 10% (was 1%) for audio
+  clip time-stretching in the Clip / Edit... dialog.
+
+  
+0.9.3  2018-12-07  End of Autumn'18 Beta.
+
 - Auto-backward now skips the end-of-session location.
 
 - Audio clip time-stretching and pitch-shifting limits
-  are now 10-fold in either direction. (EXPERIMENTAL)
+  are now 10-fold in either direction.
 
 - Custom color (palette) theme editor introduced; color
   (palette) theme changes are now effective immediately,
-  except on default. (EXPERIMENTAL)
+  except on default.
 
 - Old deprecated Qt4 build support is no more.
 
 - Recover audio and MIDI dedicated port connections when
   changing any of the Metronome, Player and/or Control
   option settings.
-  
+
 - Fix MIDI track (and bus) bank/program reset to none.
 
 - Anti-glitch micro-fade-in is disabled on audio clips

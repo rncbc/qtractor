@@ -1,7 +1,7 @@
 // qtractorEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,6 +27,7 @@
 
 // Forward declarations.
 class qtractorBus;
+class qtractorPluginList;
 class qtractorSessionCursor;
 class qtractorCurveFile;
 
@@ -177,6 +178,10 @@ public:
 	// I/O bus-monitor accessors.
 	virtual qtractorMonitor *monitor_in()  const = 0;
 	virtual qtractorMonitor *monitor_out() const = 0;
+
+	// I/O bus-monitor accessors.
+	virtual qtractorPluginList *pluginList_in()  const = 0;
+	virtual qtractorPluginList *pluginList_out() const = 0;
 
 	// State (monitor) button setup.
 	qtractorSubject *monitorSubject() const;
