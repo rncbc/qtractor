@@ -2816,7 +2816,7 @@ Do you want to crash-recover from it?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7242"/>
         <source>Take %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Дубль %1</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2946"/>
@@ -4664,7 +4664,7 @@ is highly recommended.</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1574"/>
         <source>&amp;Lock</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Заблокировать</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1577"/>
@@ -4702,7 +4702,7 @@ is highly recommended.</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1636"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>О&amp;чистить</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1639"/>
@@ -5169,7 +5169,7 @@ is highly recommended.</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2282"/>
         <source>File System</source>
-        <translation type="unfinished"></translation>
+        <translation>Файловая система</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2285"/>
@@ -11872,7 +11872,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorShortcutForm.cpp" line="554"/>
         <source>&amp;MIDI Controller...</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI-контро&amp;ллер…</translation>
     </message>
     <message>
         <location filename="../qtractorShortcutForm.ui" line="34"/>
@@ -12491,7 +12491,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="610"/>
         <source>(No instrument)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Нет инструмента)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1169"/>
