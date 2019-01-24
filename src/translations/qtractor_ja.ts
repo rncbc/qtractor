@@ -18,7 +18,7 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="756"/>
         <source> (%1 pan)</source>
-        <translation>(%1 パン)</translation>
+        <translation> (%1 パン)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="759"/>
@@ -500,7 +500,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="841"/>
         <source>audio output meters</source>
-        <translation type="unfinished"></translation>
+        <translation>音声出力メーター</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="897"/>
@@ -717,17 +717,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="655"/>
         <source>Product: </source>
-        <translation>プロダクト:</translation>
+        <translation>プロダクト: </translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="663"/>
         <source>Vendor: </source>
-        <translation>ベンダー:</translation>
+        <translation>ベンダー: </translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="671"/>
         <source>Version: </source>
-        <translation>バージョン:</translation>
+        <translation>バージョン: </translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="1544"/>
@@ -737,12 +737,12 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="149"/>
         <source>Copyright: </source>
-        <translation>コピーライト:</translation>
+        <translation>コピーライト: </translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="2067"/>
         <source>Project: </source>
-        <translation>プロジェクト:</translation>
+        <translation>プロジェクト: </translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3138"/>
@@ -793,7 +793,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
         <location filename="../qtractorLv2Plugin.cpp" line="2075"/>
         <source>Author: </source>
-        <translation>作者:</translation>
+        <translation>作者: </translation>
     </message>
     <message>
         <location filename="../qtractorCurveFile.cpp" line="222"/>
@@ -5802,7 +5802,7 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5706"/>
         <source>Player panic!</source>
-        <translation type="unfinished"></translation>
+        <translation>プレイヤーのパニック!</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5743"/>
@@ -10509,7 +10509,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2552"/>
         <source>Manage custom color palette themes</source>
-        <translation type="unfinished"></translation>
+        <translation>カスタムカラーパレットテーマの管理</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2921"/>
@@ -10524,12 +10524,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3574"/>
         <source>Whether to show audio output meters on MIDI tracks and buses</source>
-        <translation type="unfinished"></translation>
+        <translation>音声出力メーターをMIDIトラックあるいはバスに表示するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3577"/>
         <source>Show audio outpu&amp;t monitoring meters</source>
-        <translation type="unfinished"></translation>
+        <translation>音声出力のモニタリングメーターの表示(&amp;T)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3643"/>
@@ -10724,7 +10724,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3049"/>
         <source> lines</source>
-        <translation>行</translation>
+        <translation> 行</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2415"/>
@@ -11028,116 +11028,116 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="39"/>
         <source>Color Themes</source>
-        <translation type="unfinished"></translation>
+        <translation>カラーテーマ</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="45"/>
         <source>Name</source>
-        <translation type="unfinished">名前</translation>
+        <translation>名前</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="63"/>
         <source>Current color palette name</source>
-        <translation type="unfinished"></translation>
+        <translation>カスタムカラーパレット名</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="79"/>
         <source>Save</source>
-        <translation type="unfinished">保存</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="76"/>
         <source>Save current color palette name</source>
-        <translation type="unfinished"></translation>
+        <translation>カスタムカラーパレット名を保存します</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="92"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="89"/>
         <source>Delete current color palette name</source>
-        <translation type="unfinished"></translation>
+        <translation>カスタムカラーパレット名を削除します</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="105"/>
         <source>Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>パレット</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="117"/>
         <source>Current color palette</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のカスタムカラーパレット</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="127"/>
         <source>Generate:</source>
-        <translation type="unfinished"></translation>
+        <translation>作成:</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="143"/>
         <source>Base color to generate palette</source>
-        <translation type="unfinished"></translation>
+        <translation>パレットを作成するためのベースカラー</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="153"/>
         <source> Reset</source>
-        <translation type="unfinished"></translation>
+        <translation> リセット</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="150"/>
         <source>Reset all current palette colors</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のカラーパレットをすべてリセットします</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="176"/>
         <source>Import a custom color theme (palette) from file</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルからカスタムカラーテーマ(パレット)をインポートします</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="179"/>
         <source>Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>インポート...</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="189"/>
         <source>Export a custom color theme (palette) to file</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルへカスタムカラーテーマ(パレット)をエクスポートします</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="192"/>
         <source>Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>エクスポート...</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="215"/>
         <source>Show Details</source>
-        <translation type="unfinished"></translation>
+        <translation>詳細の表示</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="320"/>
         <source>Import File - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>インポートファイル    %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="323"/>
         <location filename="../qtractorPaletteForm.cpp" line="389"/>
         <source>Palette files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>パレットファイル (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="324"/>
         <location filename="../qtractorPaletteForm.cpp" line="390"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="376"/>
         <location filename="../qtractorPaletteForm.cpp" line="799"/>
         <location filename="../qtractorPaletteForm.cpp" line="807"/>
         <source>Warning - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>警告 - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="377"/>
@@ -11146,19 +11146,25 @@ Do you want to apply the changes?</source>
 %1
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルからインポートできませんでした:
+
+%1
+
+ごめんなさい.</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="386"/>
         <source>Export File - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>エクスポートファイル - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="800"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>設定が変更になりました.
+
+変更を破棄しますか?</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="808"/>
@@ -11167,7 +11173,11 @@ Do you want to discard the changes?</source>
 &quot;%1&quot;.
 
 Do you want to save the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>設定が変更になりました:
+
+&quot;%1&quot;.
+
+変更を保存しますか?</translation>
     </message>
 </context>
 <context>
@@ -11175,22 +11185,22 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="1039"/>
         <source>Color Role</source>
-        <translation type="unfinished"></translation>
+        <translation>カラーロール</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="1042"/>
         <source>Active</source>
-        <translation type="unfinished">アクティベート</translation>
+        <translation>アクティブ</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="1045"/>
         <source>Inactive</source>
-        <translation type="unfinished"></translation>
+        <translation>インアクティブ</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="1048"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>破棄</translation>
     </message>
 </context>
 <context>
@@ -11570,12 +11580,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1703"/>
         <source>Pre&amp;set</source>
-        <translation type="unfinished"></translation>
+        <translation>プリセット(&amp;S)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1722"/>
         <source>Dire&amp;ct Access</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイレクトアクセス(&amp;C)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1741"/>
@@ -11610,7 +11620,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1802"/>
         <source>&amp;Meters</source>
-        <translation type="unfinished"></translation>
+        <translation>メーター(&amp;M)</translation>
     </message>
 </context>
 <context>
