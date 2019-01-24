@@ -1344,18 +1344,19 @@ fi
 
 # Check for X11 unique/single instance.
 if test "x$ac_xunique" = "xyes" -o "x$ac_vst" = "xyes"; then
-   PKG_CHECK_MODULES([QT5X11EXTRAS], [Qt5X11Extras], [ac_qt5x11extras="yes"], [ac_qt5x11extras="no"])
-   if test "x$ac_qt5x11extras" = "xyes"; then
-      ac_qx11extras="x11extras"
-      if test "x$ac_xunique" = "xyes"; then
-         AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
-      fi
-      # Some recent distros (eg. fedora, debian) require this.
-      if test "x$ac_cv_lib_X11_main" = "xyes"; then
-         ac_libs="$ac_libs -lX11"
-      fi
+   PKG_CHECK_MODULES([QT5X11EXTRAS], [Qt5X11Extras], [ac_x11extras="yes"], [ac_x11extras="no"])
+fi
+if test "x$ac_x11extras" = "xyes"; then
+   ac_qx11extras="x11extras"
+   if test "x$ac_xunique" = "xyes"; then
+      AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
+   fi
+   # Some recent distros (eg. fedora, debian) require this.
+   if test "x$ac_cv_lib_X11_main" = "xyes"; then
+      ac_libs="$ac_libs -lX11"
    fi
 fi
+
 AC_SUBST(ac_qx11extras)
 
 # Check for gradient eye-candy.
