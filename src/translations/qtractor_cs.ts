@@ -304,7 +304,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="841"/>
         <source>audio output meters</source>
-        <translation type="unfinished"></translation>
+        <translation>Měřidla zvukových výstupů</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="897"/>
@@ -9736,12 +9736,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1129"/>
         <source>Audio Meter Color</source>
-        <translation>Barva měřiče zvuku</translation>
+        <translation>Barva měřidla zvuku</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1151"/>
         <source>MIDI Meter Color</source>
-        <translation>Barva měřiče MIDI</translation>
+        <translation>Barva měřidla MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1247"/>
@@ -10644,7 +10644,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2671"/>
         <source>Audio meter level</source>
-        <translation>Úroveň měřiče zvuku</translation>
+        <translation>Úroveň měřidla zvuku</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2675"/>
@@ -10675,12 +10675,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2715"/>
         <source>Audio meter color</source>
-        <translation>Barva měřiče zvuku</translation>
+        <translation>Barva měřidla zvuku</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2743"/>
         <source>Select custom audio meter color</source>
-        <translation>Vybrat vlastní barvu měřiče zvuku</translation>
+        <translation>Vybrat vlastní barvu měřidla zvuku</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2555"/>
@@ -10699,7 +10699,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2800"/>
         <source>MIDI meter level</source>
-        <translation>Úroveň měřiče MIDI</translation>
+        <translation>Úroveň měřidla MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2804"/>
@@ -10709,17 +10709,17 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2829"/>
         <source>MIDI meter color</source>
-        <translation>Barva měřiče MIDI</translation>
+        <translation>Barva měřidla MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2857"/>
         <source>Select custom MIDI meter color</source>
-        <translation>Vybrat vlastní barvu měřiče MIDI</translation>
+        <translation>Vybrat vlastní barvu měřidla MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2889"/>
         <source>Reset meter colors to default</source>
-        <translation>Nastavit barvy měřičů Nastavit znovu na výchozí</translation>
+        <translation>Nastavit barvy měřidel znovu na výchozí</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2892"/>
@@ -10956,12 +10956,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3574"/>
         <source>Whether to show audio output meters on MIDI tracks and buses</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda ukázat měřidla zvukových výstupů na stopách a sběrnicích MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3577"/>
         <source>Show audio outpu&amp;t monitoring meters</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukázat sledovací měřidla zvukových &amp;výstupů</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3606"/>
@@ -11094,22 +11094,22 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="176"/>
         <source>Import a custom color theme (palette) from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavést vlastní barevné téma (paletu) ze souboru</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="179"/>
         <source>Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavést...</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="189"/>
         <source>Export a custom color theme (palette) to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyvést vlastní barevné téma (paletu) do souboru</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="192"/>
         <source>Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyvést...</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.ui" line="215"/>
@@ -11119,19 +11119,19 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="320"/>
         <source>Import File - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavést soubor - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="323"/>
         <location filename="../qtractorPaletteForm.cpp" line="389"/>
         <source>Palette files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory palet (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="324"/>
         <location filename="../qtractorPaletteForm.cpp" line="390"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="376"/>
@@ -11147,12 +11147,16 @@ Chcete použít tyto změny?</translation>
 %1
 
 Sorry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodařilo se zavést ze souboru:
+
+&quot;%1&quot;.
+
+Promiňte.</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="386"/>
         <source>Export File - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyvést soubor - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="800"/>
@@ -11582,7 +11586,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1802"/>
         <source>&amp;Meters</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Měřidla</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1666"/>
