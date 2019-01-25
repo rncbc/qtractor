@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,6 +42,8 @@
 
 #include "qtractorFileList.h"
 #include "qtractorFiles.h"
+
+#include "qtractorMainForm.h"
 
 #include <QApplication>
 #include <QDateTime>
@@ -2437,6 +2439,93 @@ bool qtractorSession::saveElement (
 	pElement->appendChild(eTracks);
 
 	return true;
+}
+
+
+// Rename session files...
+void qtractorSession::renameSession (
+	const QString& sOldSessionName, const QString& sNewSessionName )
+{
+	qtractorFiles *pFiles = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pFiles = pMainForm->files();
+	if (pFiles == NULL)
+		return;
+
+	// Lock it up...
+	lock();
+
+	const QRegExp rx('^' + sOldSessionName);
+
+	// For each and every track...
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		// Refer to a proper files-view...
+		qtractorFileListView *pFileListView = NULL;
+		qtractorFileList::Type iFileType = qtractorFileList::Audio;
+		if (pTrack->trackType() == qtractorTrack::Midi) {
+			pFileListView = pFiles->midiListView();
+			iFileType = qtractorFileList::Midi;
+		} else {
+			pFileListView = pFiles->audioListView();
+		//	iFileType = qtractorFileList::Audio;
+		}
+		// For each and every elligible clip...
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			// Rename clip filename prefix...
+			const QFileInfo info1(pClip->filename());
+			QString sFileName = info1.fileName();
+			sFileName.replace(rx, sNewSessionName);
+			const QFileInfo info2(info1.dir(), sFileName);
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorSession::renameSession: \"%s\" -> \"%s\"",
+				info1.fileName().toUtf8().constData(),
+				info2.fileName().toUtf8().constData());
+		#endif
+			const QString& sOldFilePath
+				= info1.absoluteFilePath();
+			const QString& sNewFilePath
+				= info2.absoluteFilePath();
+			if (QFile::rename(sOldFilePath, sNewFilePath)) {
+				if (iFileType == qtractorFileList::Midi) {
+					qtractorMidiClip *pMidiClip
+						= static_cast<qtractorMidiClip *> (pClip);
+					if (pMidiClip) {
+						pMidiClip->removeHashKey();
+						pMidiClip->setFilename(sNewFilePath);
+						pMidiClip->updateHashKey();
+						pMidiClip->insertHashKey();
+					}
+				} else {
+					qtractorAudioClip *pAudioClip
+						= static_cast<qtractorAudioClip *> (pClip);
+					if (pAudioClip) {
+						pAudioClip->removeHashKey();
+						pAudioClip->setFilename(sNewFilePath);
+						pAudioClip->updateHashKey();
+						pAudioClip->insertHashKey();
+					}
+				}
+				// Manage files-view item...
+				if (pFileListView) {
+					qtractorFileGroupItem *pGroupItem = NULL;
+					qtractorFileListItem *pFileItem
+						= pFileListView->findFileItem(sOldFilePath);
+					if (pFileItem) {
+						pGroupItem = pFileItem->groupItem();
+						m_pFiles->removeFileItem(iFileType, pFileItem);
+						delete pFileItem;
+					}
+					pFileListView->addFileItem(sNewFilePath, pGroupItem);
+				}
+			}
+		}
+	}
+
+	// Done.
+	unlock();
 }
 
 
