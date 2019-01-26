@@ -1925,6 +1925,13 @@ QString qtractorMainForm::untitledName (void) const
 }
 
 
+// Clear current filename; prompt for a new one when saving.
+void qtractorMainForm::clearFilename (void)
+{
+	m_sFilename.clear();
+}
+
+
 // Create a new session file from scratch.
 bool qtractorMainForm::newSession (void)
 {
@@ -2070,11 +2077,8 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	QString sFilename = m_sFilename;
 
 	if (sFilename.isEmpty()) {
-		QString sSessionDir = m_pSession->sessionDir();
-		if (sSessionDir.isEmpty() || !QFileInfo(sSessionDir).exists())
-			sSessionDir = m_pOptions->sSessionDir;
-		sFilename = QFileInfo(sSessionDir,
-			qtractorSession::sanitize(m_pSession->sessionName())).filePath();
+		sFilename = QFileInfo(m_pOptions->sSessionDir,
+			qtractorSession::sanitize(m_pSession->sessionName())).absoluteFilePath();
 		bPrompt = true;
 	}
 
@@ -2224,11 +2228,6 @@ bool qtractorMainForm::editSession (void)
 	// Now, express the change as a undoable command...
 	m_pSession->execute(
 		new qtractorSessionEditCommand(m_pSession, sessionForm.properties()));
-
-	// If session name has changed, we'll prompt
-	// for correct filename when save is triggered...
-	if (m_pSession->sessionName() != sOldSessionName)
-		m_sFilename.clear();
 
 	// Restore playback state, if needed...
 	if (bPlaying)
