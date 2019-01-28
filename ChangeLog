@@ -8,7 +8,7 @@ GIT HEAD
 
 - For good and bad, session name changes now trickle
   down to respective audio/MIDI file names as well.
-  (EXTREMELY EXPERIMENTAL)
+  (EXPERIMENTAL)
 
 - Audio output monitoring meters may now be shown on
   MIDI tracks and buses as a default user preference

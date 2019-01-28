@@ -2482,7 +2482,20 @@ void qtractorSession::renameSession (
 			const QFileInfo info1(pClip->filename());
 			QString sFileName = info1.fileName();
 			sFileName.replace(rx, sNewName);
-			const QFileInfo info2(info1.dir(), sFileName);
+			QFileInfo info2(info1.dir(), sFileName);
+			// Increment filename suffix if exists already...
+			if (info2.exists()) {
+				int iFileNo = 0;
+				const QRegExp rxFileNo("([0-9]+)$");
+				sFileName = info2.completeBaseName();
+				if (rxFileNo.indexIn(sFileName) >= 0) {
+					iFileNo = rxFileNo.cap(1).toInt();
+					sFileName.remove(rxFileNo);
+				}
+				sFileName += "%1." + info1.suffix();
+				do { info2.setFile(info1.dir(), sFileName.arg(++iFileNo)); }
+				while (info2.exists());
+			}
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorSession::renameSession: \"%s\" -> \"%s\"",
 				info1.fileName().toUtf8().constData(),
