@@ -2492,6 +2492,7 @@ void qtractorSession::renameSession (
 					iFileNo = rxFileNo.cap(1).toInt();
 					sFileName.remove(rxFileNo);
 				}
+				else sFileName += '-';
 				sFileName += "%1." + info1.suffix();
 				do { info2.setFile(info1.dir(), sFileName.arg(++iFileNo)); }
 				while (info2.exists());
