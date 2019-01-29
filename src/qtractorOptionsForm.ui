@@ -1435,7 +1435,7 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="0">
+          <item row="0" column="4">
            <widget class="QLabel" name="MidiCaptureQuantizeTextLabel">
             <property name="font">
              <font>
@@ -1446,12 +1446,15 @@
             <property name="text">
              <string>&amp;Quantize:</string>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
             <property name="buddy">
              <cstring>MidiCaptureQuantizeComboBox</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="0" column="5">
            <widget class="QComboBox" name="MidiCaptureQuantizeComboBox">
             <property name="maximumSize">
              <size>
@@ -2435,7 +2438,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="0" column="1">
            <widget class="QCheckBox" name="MixerAutoGridLayoutCheckBox">
             <property name="font">
              <font>
@@ -2448,6 +2451,22 @@
             </property>
             <property name="text">
              <string>A&amp;utomatic mixer strip/grid layout (multi-row)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="TrackListPluginsCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to show plugins on track list/left pane</string>
+            </property>
+            <property name="text">
+             <string>Sho&amp;w plugins on track list/left pane</string>
             </property>
            </widget>
           </item>
@@ -3446,6 +3465,12 @@
                 <height>0</height>
                </size>
               </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="font">
                <font>
                 <weight>50</weight>
@@ -3492,6 +3517,22 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QCheckBox" name="DummyPluginScanCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to use out-of-process plugin inventory scan and cache for persistence</string>
+            </property>
+            <property name="text">
+             <string>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -3672,22 +3713,6 @@
            <number>4</number>
           </property>
           <item row="0" column="0" colspan="3">
-           <widget class="QCheckBox" name="DummyPluginScanCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to use out-of-process plugin inventory scan and cache for persistence</string>
-            </property>
-            <property name="text">
-             <string>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="3">
            <widget class="QCheckBox" name="Lv2DynManifestCheckBox">
             <property name="font">
              <font>
@@ -3703,7 +3728,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="3">
+          <item row="1" column="0" colspan="3">
            <widget class="QCheckBox" name="SaveCurve14bitCheckBox">
             <property name="font">
              <font>
@@ -3716,22 +3741,6 @@
             </property>
             <property name="text">
              <string>&amp;High resolution plugin automation (14-bit)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="3">
-           <widget class="QCheckBox" name="TrackListPluginsCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to show plugins on track list/left pane</string>
-            </property>
-            <property name="text">
-             <string>Sho&amp;w plugins on track list/left pane</string>
             </property>
            </widget>
           </item>
@@ -3828,6 +3837,7 @@
   <tabstop>SyncViewHoldCheckBox</tabstop>
   <tabstop>UseNativeDialogsCheckBox</tabstop>
   <tabstop>MixerAutoGridLayoutCheckBox</tabstop>
+  <tabstop>TrackListPluginsCheckBox</tabstop>
   <tabstop>CustomColorThemeComboBox</tabstop>
   <tabstop>CustomColorThemeToolButton</tabstop>
   <tabstop>CustomStyleThemeComboBox</tabstop>
@@ -3854,15 +3864,14 @@
   <tabstop>PluginPathDownToolButton</tabstop>
   <tabstop>Lv2PresetDirComboBox</tabstop>
   <tabstop>Lv2PresetDirToolButton</tabstop>
+  <tabstop>DummyPluginScanCheckBox</tabstop>
   <tabstop>AudioOutputBusCheckBox</tabstop>
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
   <tabstop>AudioOutputMonitorCheckBox</tabstop>
   <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>QueryEditorTypeCheckBox</tabstop>
-  <tabstop>DummyPluginScanCheckBox</tabstop>
   <tabstop>Lv2DynManifestCheckBox</tabstop>
   <tabstop>SaveCurve14bitCheckBox</tabstop>
-  <tabstop>TrackListPluginsCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
