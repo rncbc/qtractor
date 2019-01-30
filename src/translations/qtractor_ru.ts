@@ -10797,22 +10797,22 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3724"/>
+        <location filename="../qtractorOptionsForm.ui" line="3753"/>
         <source>Whether LV2 Dynamic Manifest plugins are supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3727"/>
+        <location filename="../qtractorOptionsForm.ui" line="3756"/>
         <source>LV2 Dy&amp;namic Manifest support</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3740"/>
+        <location filename="../qtractorOptionsForm.ui" line="3724"/>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3743"/>
+        <location filename="../qtractorOptionsForm.ui" line="3727"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
         <translation type="unfinished"></translation>
     </message>

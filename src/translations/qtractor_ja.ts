@@ -10888,22 +10888,22 @@ Are you sure?</source>
         <translation>エクスペリメンタル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3724"/>
+        <location filename="../qtractorOptionsForm.ui" line="3753"/>
         <source>Whether LV2 Dynamic Manifest plugins are supported</source>
         <translation>LV2ダイナミックマニフェストプラグインをサポートするかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3727"/>
+        <location filename="../qtractorOptionsForm.ui" line="3756"/>
         <source>LV2 Dy&amp;namic Manifest support</source>
         <translation>LV2ダイナミックマニフェストのサポート (&amp;N)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3740"/>
+        <location filename="../qtractorOptionsForm.ui" line="3724"/>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
         <translation>プラグインのオートメーションをより高い解像度 (14ビット) で保存するかどうか</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3743"/>
+        <location filename="../qtractorOptionsForm.ui" line="3727"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
         <translation>プラグインオートメーションを高解像度 (14ビット) で保存 (&amp;H)</translation>
     </message>

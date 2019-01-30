@@ -9997,7 +9997,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Habilitar metrônomo MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3727"/>
+        <location filename="../qtractorOptionsForm.ui" line="3756"/>
         <source>LV2 Dy&amp;namic Manifest support</source>
         <translation>Suporte a LV2 Dy&amp;namic Manifest</translation>
     </message>
@@ -10674,7 +10674,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>&amp;Escaneamento de plugins fora-de-uso (RECOMENDADO)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3724"/>
+        <location filename="../qtractorOptionsForm.ui" line="3753"/>
         <source>Whether LV2 Dynamic Manifest plugins are supported</source>
         <translation>Sempre dar suporte a Plugins LV2 Dynamic Manifest</translation>
     </message>
@@ -10812,7 +10812,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Experimental (em teste)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3743"/>
+        <location filename="../qtractorOptionsForm.ui" line="3727"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
         <translation>&amp;Automação de plugins em alta resolução (14-bits)</translation>
     </message>
@@ -10902,7 +10902,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Sempre abrir o editor do plugin (GUI) por padrão</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3740"/>
+        <location filename="../qtractorOptionsForm.ui" line="3724"/>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
         <translation>Sempre salvar a automação do plugin em alta resolução (14-bits)</translation>
     </message>

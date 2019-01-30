@@ -10984,22 +10984,22 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Vybrat editor (rozhraní) přídavného modulu, pokud je dostupný více než jeden</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3724"/>
+        <location filename="../qtractorOptionsForm.ui" line="3753"/>
         <source>Whether LV2 Dynamic Manifest plugins are supported</source>
         <translation>Zda jsou podporovány přídavné moduly pro dynamické manifesty LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3727"/>
+        <location filename="../qtractorOptionsForm.ui" line="3756"/>
         <source>LV2 Dy&amp;namic Manifest support</source>
         <translation>Podpora pro dy&amp;namické manifesty LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3740"/>
+        <location filename="../qtractorOptionsForm.ui" line="3724"/>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
         <translation>Zda se má uložit automatizace přídavného modulu s vyšším rozlišením (14-bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3743"/>
+        <location filename="../qtractorOptionsForm.ui" line="3727"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
         <translation>Automatizace přídavného modulu s &amp;vysokým rozlišením (14-bit)</translation>
     </message>

@@ -10875,22 +10875,22 @@ Are you sure?</source>
         <translation>&amp;Escaneo de inventario de plugins fuera de proceso (RECOMENDADO)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3724"/>
+        <location filename="../qtractorOptionsForm.ui" line="3753"/>
         <source>Whether LV2 Dynamic Manifest plugins are supported</source>
         <translation>Si se deben soportar plugins LV2 de manifesto dinámico</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3727"/>
+        <location filename="../qtractorOptionsForm.ui" line="3756"/>
         <source>LV2 Dy&amp;namic Manifest support</source>
         <translation>Soporte de &amp;plugins LV2 de manifesto dinámico</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3740"/>
+        <location filename="../qtractorOptionsForm.ui" line="3724"/>
         <source>Whether to save plugin automation with higher resolution (14-bit)</source>
         <translation>Si se debe guardar la automatización del plugin con alta resolución (14-bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="3743"/>
+        <location filename="../qtractorOptionsForm.ui" line="3727"/>
         <source>&amp;High resolution plugin automation (14-bit)</source>
         <translation>&amp;Automatización del plugin en alta resolución (14-bit)</translation>
     </message>

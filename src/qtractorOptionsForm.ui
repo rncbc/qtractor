@@ -3712,23 +3712,7 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <item row="0" column="0" colspan="3">
-           <widget class="QCheckBox" name="Lv2DynManifestCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether LV2 Dynamic Manifest plugins are supported</string>
-            </property>
-            <property name="text">
-             <string>LV2 Dy&amp;namic Manifest support</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="3">
+          <item row="0" column="0">
            <widget class="QCheckBox" name="SaveCurve14bitCheckBox">
             <property name="font">
              <font>
@@ -3741,6 +3725,35 @@
             </property>
             <property name="text">
              <string>&amp;High resolution plugin automation (14-bit)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="2">
+           <widget class="QCheckBox" name="Lv2DynManifestCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether LV2 Dynamic Manifest plugins are supported</string>
+            </property>
+            <property name="text">
+             <string>LV2 Dy&amp;namic Manifest support</string>
             </property>
            </widget>
           </item>
@@ -3870,8 +3883,8 @@
   <tabstop>AudioOutputMonitorCheckBox</tabstop>
   <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>QueryEditorTypeCheckBox</tabstop>
-  <tabstop>Lv2DynManifestCheckBox</tabstop>
   <tabstop>SaveCurve14bitCheckBox</tabstop>
+  <tabstop>Lv2DynManifestCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
