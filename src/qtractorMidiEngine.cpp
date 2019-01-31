@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -4155,17 +4155,17 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 
 	// Bank reset to none...
 	if (iBank < 0) {
-		if(pTrackMidiManager)
+		if (pTrackMidiManager)
 			pTrackMidiManager->setCurrentBank(-1);
-		if(pBusMidiManager)
+		if (pBusMidiManager)
 			pBusMidiManager->setCurrentBank(-1);
 	}
 
 	// Program reset to none...
 	if (iProg < 0) {
-		if(pTrackMidiManager)
+		if (pTrackMidiManager)
 			pTrackMidiManager->setCurrentProg(-1);
-		if(pBusMidiManager)
+		if (pBusMidiManager)
 			pBusMidiManager->setCurrentProg(-1);
 	}
 
