@@ -4155,14 +4155,18 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 
 	// Bank reset to none...
 	if (iBank < 0) {
-		pTrackMidiManager->setCurrentBank(-1);
-		pBusMidiManager->setCurrentBank(-1);
+		if(pTrackMidiManager)
+			pTrackMidiManager->setCurrentBank(-1);
+		if(pBusMidiManager)
+			pBusMidiManager->setCurrentBank(-1);
 	}
 
 	// Program reset to none...
 	if (iProg < 0) {
-		pTrackMidiManager->setCurrentProg(-1);
-		pBusMidiManager->setCurrentProg(-1);
+		if(pTrackMidiManager)
+			pTrackMidiManager->setCurrentProg(-1);
+		if(pBusMidiManager)
+			pBusMidiManager->setCurrentProg(-1);
 	}
 
 //	pMidiEngine->flush();
