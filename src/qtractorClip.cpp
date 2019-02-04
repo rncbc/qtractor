@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -200,11 +200,11 @@ void qtractorClip::setClipOffset ( unsigned long iClipOffset )
 // Clip selection accessors.
 void qtractorClip::setClipSelected ( bool bClipSelected )
 {
-	if (bClipSelected) {
-		setClipSelect(m_iClipStart, m_iClipStart + m_iClipLength);
-	} else {
+	if (!bClipSelected)
 		setClipSelect(0, 0);
-	}
+	else
+	if (!isClipSelected())
+		setClipSelect(m_iClipStart, m_iClipStart + m_iClipLength);
 }
 
 bool qtractorClip::isClipSelected (void) const

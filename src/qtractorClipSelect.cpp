@@ -1,7 +1,7 @@
 // qtractorClipSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,8 +45,8 @@ qtractorClipSelect::~qtractorClipSelect (void)
 
 
 // Clip selection method.
-void qtractorClipSelect::selectItem ( qtractorClip *pClip,
-	const QRect& rect, bool bSelect )
+void qtractorClipSelect::selectItem (
+	qtractorClip *pClip, const QRect& rect, bool bSelect )
 {
 	// Add/remove clip selection...
 	Item *pClipItem = NULL;
@@ -56,7 +56,7 @@ void qtractorClipSelect::selectItem ( qtractorClip *pClip,
 		pClipItem = iter.value();
 
 	if (pClipItem && !bSelect) {
-	    iter = m_items.erase(iter);
+		iter = m_items.erase(iter);
 		delete pClipItem;
 		pClip->setClipSelected(false);
 		m_bTrackSingle = false;
@@ -64,14 +64,19 @@ void qtractorClipSelect::selectItem ( qtractorClip *pClip,
 		m_rect.setRect(0, 0, 0, 0);
 		const ItemList::Iterator& iter_end = m_items.end();
 		for (iter = m_items.begin(); iter != iter_end; ++iter)
-			m_rect = m_rect.united(iter.value()->rectClip);
+			m_rect = m_rect.united(iter.value()->rect);
 		// Done with clip deselection.
 	} else if (bSelect) {
 		pClip->setClipSelected(true);
-		if (pClipItem)
-			pClipItem->rectClip = rect;
-		else
-			m_items.insert(pClip, new Item(rect));
+		unsigned long offset = 0;
+		if (pClip->isClipSelected())
+			offset = pClip->clipSelectStart() - pClip->clipStart();
+		if (pClipItem) {
+			pClipItem->rect = rect;
+			pClipItem->offset = offset;
+		} else {
+			m_items.insert(pClip, new Item(rect, offset));
+		}
 		// Special optimization: no need to recache
 		// our single track reference if we add some outsider clip...
 		if (m_bTrackSingle) {
@@ -88,9 +93,10 @@ void qtractorClipSelect::selectItem ( qtractorClip *pClip,
 
 
 // Clip addition (no actual selection).
-void qtractorClipSelect::addItem ( qtractorClip *pClip, const QRect& rect )
+void qtractorClipSelect::addItem (
+	qtractorClip *pClip, const QRect& rect, unsigned long offset )
 {
-	m_items.insert(pClip, new Item(rect));
+	m_items.insert(pClip, new Item(rect, offset));
 	m_rect = m_rect.united(rect);
 }
 

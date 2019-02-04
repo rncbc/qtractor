@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -423,15 +423,37 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
 		for ( ; iter != iter_end; ++iter) {
 			qtractorClip *pClip = iter.key();
+			if (pClip->track() == NULL)
+				continue;
+			qtractorClipSelect::Item *pClipItem = iter.value();
 			// Make sure it's a legal selection...
-			if (pClip->track() && pClip->isClipSelected()) {
-				qtractorClipSelect::Item *pClipItem = iter.value();
-				QRect rectClip(pClipItem->rectClip);
+			if (pClip->isClipSelected()) {
+				QRect rectClip(pClipItem->rect);
 				rectClip.moveTopLeft(
 					qtractorScrollView::contentsToViewport(rectClip.topLeft()));
 				rectClip = rectClip.intersected(rectView);
 				if (!rectClip.isEmpty())
 					pPainter->fillRect(rectClip, QColor(0, 0, 255, 120));
+			}
+			// Draw clip contents on the fly...
+			if (pClipItem->rubberBand) {
+				pPainter->save();
+				QRect rectClip(pClipItem->rect);
+				if (m_bDragSingleTrack) {
+					rectClip.setY(m_iDragSingleTrackY);
+					rectClip.setHeight(m_iDragSingleTrackHeight);
+				}
+				rectClip.translate(m_iDragClipX, 0);
+				rectClip.moveTopLeft(
+					qtractorScrollView::contentsToViewport(rectClip.topLeft()));
+			//	rectClip = rectClip.intersected(rectView);
+				QColor bg = pClip->track()->background();
+				bg.setAlpha(120); // somewhat-translucent...
+				pPainter->setPen(bg.darker());
+				pPainter->setBrush(bg);
+				pPainter->drawRect(rectClip);
+				pClip->draw(pPainter, rectClip, pClipItem->offset);
+				pPainter->restore();
 			}
 		}
 	}
@@ -1990,7 +2012,7 @@ void qtractorTrackView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				qtractorClipSelect::Item *pClipItem = NULL;
 				if (m_pClipDrag && pSession)
 					pClipItem = m_pClipSelect->findItem(m_pClipDrag);
-				if (pClipItem && pClipItem->rectClip.contains(pos)) {
+				if (pClipItem && pClipItem->rect.contains(pos)) {
 					const int x = pSession->pixelSnap(m_rectDrag.x());
 					m_iDragClipX = (x - m_rectDrag.x());
 					m_dragState = m_dragCursor = DragClipMove;
@@ -2262,7 +2284,7 @@ void qtractorTrackView::selectClipFile ( bool bReset )
 
 	// Do the selection dance, first...
 	qtractorClipSelect::Item *pClipItem = m_pClipSelect->findItem(m_pClipDrag);
-	bool bSelect = !(pClipItem && pClipItem->rectClip.contains(m_posDrag));
+	bool bSelect = !(pClipItem && pClipItem->rect.contains(m_posDrag));
 	if (!bReset) {
 		m_pClipSelect->selectItem(m_pClipDrag, m_rectDrag, bSelect);
 		++iUpdate;
@@ -2396,11 +2418,11 @@ void qtractorTrackView::selectClipRect ( const QRect& rectDrag,
 				// intersects the rubber-band range one...
 				QRect rectClip(x, y, w, h);
 				if (rect.intersects(rectClip)) {
-					if (selectMode != SelectClip)
+					if (selectMode != SelectClip) {
 						rectClip = rectRange.intersected(rectClip);
-					m_pClipSelect->selectItem(pClip, rectClip, true);
-					if (selectMode != SelectClip)
 						pClip->setClipSelect(iSelectStart, iSelectEnd);
+					}
+					m_pClipSelect->selectItem(pClip, rectClip, true);
 					++iUpdate;
 				}
 			}
@@ -2469,9 +2491,9 @@ void qtractorTrackView::selectClipTrackRange (
 				if (rect.intersects(rectClip)) {
 					rectClip = rect.intersected(rectClip);
 					const bool bSelect = !pClip->isClipSelected();
-					m_pClipSelect->selectItem(pClip, rectClip, bSelect);
 					if (bSelect)
 						pClip->setClipSelect(iSelectStart, iSelectEnd);
+					m_pClipSelect->selectItem(pClip, rectClip, bSelect);
 					++iUpdate;
 				}
 			}
@@ -3063,7 +3085,8 @@ void qtractorTrackView::updateClipSelect (void)
 			if (pClip->isClipSelected()) {
 				const int x = pSession->pixelFromFrame(pClip->clipSelectStart());
 				const int w = pSession->pixelFromFrame(pClip->clipSelectEnd()) - x;
-				m_pClipSelect->addItem(pClip, QRect(x, y, w, h));
+				const unsigned long offset = iClipSelectStart - pClip->clipStart();
+				m_pClipSelect->addItem(pClip, QRect(x, y, w, h), offset);
 			}
 		}
 		pTrack = pTrack->next();
@@ -3079,7 +3102,7 @@ void qtractorTrackView::showClipSelect (void) const
 	const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		qtractorClipSelect::Item *pClipItem = iter.value();
-		QRect rectClip = pClipItem->rectClip;
+		QRect rectClip = pClipItem->rect;
 		if (m_bDragSingleTrack) {
 			rectClip.setY(m_iDragSingleTrackY);
 			rectClip.setHeight(m_iDragSingleTrackHeight);
@@ -3088,6 +3111,8 @@ void qtractorTrackView::showClipSelect (void) const
 	}
 
 	showToolTip(m_pClipSelect->rect(), m_iDragClipX);
+
+	qtractorScrollView::viewport()->update();
 }
 
 void qtractorTrackView::hideClipSelect (void) const
@@ -3214,7 +3239,7 @@ void qtractorTrackView::showClipDropRects (void) const
 		moveRubberBand(&(pDropItem->rubberBand), pDropItem->rect, 3);
 		rect = rect.united(pDropItem->rect);
 	}
-	
+
 	showToolTip(rect, m_iDragClipX);
 }
 
@@ -4772,7 +4797,7 @@ void qtractorTrackView::executeClipSelect (
 					// -- Middle region...
 					if (bClipboard) {
 						g_clipboard.addClip(pClip,
-							pClipItem->rectClip,
+							pClipItem->rect,
 							iSelectStart,
 							iClipOffset + iSelectOffset,
 							iSelectLength);
@@ -4815,7 +4840,7 @@ void qtractorTrackView::executeClipSelect (
 					// -- Right region...
 					if (bClipboard) {
 						g_clipboard.addClip(pClip,
-							pClipItem->rectClip,
+							pClipItem->rect,
 							iSelectStart,
 							iClipOffset + iSelectOffset,
 							iSelectLength);
@@ -4851,7 +4876,7 @@ void qtractorTrackView::executeClipSelect (
 				// -- Left region...
 				if (bClipboard) {
 					g_clipboard.addClip(pClip,
-						pClipItem->rectClip,
+						pClipItem->rect,
 						iClipStart,
 						iClipOffset,
 						iSelectLength);
@@ -4884,7 +4909,7 @@ void qtractorTrackView::executeClipSelect (
 				// -- Whole clip...
 				if (bClipboard) {
 					g_clipboard.addClip(pClip,
-						pClipItem->rectClip,
+						pClipItem->rect,
 						iClipStart,
 						iClipOffset,
 						iClipLength);
@@ -4945,7 +4970,7 @@ void qtractorTrackView::pasteClipboard (
 	// Check if anything's really on clipboard...
 	if (g_clipboard.clips.isEmpty() &&
 		g_clipboard.nodes.isEmpty()) {
-    #if QT_VERSION >= 0x0050000
+	#if QT_VERSION >= 0x0050000
 		// System clipboard?
 		const QMimeData *pMimeData
 			= QApplication::clipboard()->mimeData();
@@ -4962,7 +4987,7 @@ void qtractorTrackView::pasteClipboard (
 				showClipDropRects();
 			}
 		}
-    #endif
+	#endif
 		// Woot!
 		return;
 	}
@@ -5043,7 +5068,8 @@ void qtractorTrackView::pasteClipboard (
 				QRect rect(pClipItem->rect);
 				rect.setX(pSession->pixelFromFrame(pClipItem->clipStart + iPasteDelta));
 				rect.setWidth(pSession->pixelFromFrame(pClipItem->clipLength));
-				m_pClipSelect->addItem(pClipItem->clip, rect);
+				m_pClipSelect->addItem(pClipItem->clip, rect,
+					pClipItem->clipOffset - (pClipItem->clip)->clipOffset());
 			}
 			iPasteDelta += m_iPastePeriod;
 		}
@@ -5159,7 +5185,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 			// but only the first clip gets snapped...
 			unsigned long iClipStart2 = iSelectStart;
 			if (iTrackClip == 0) {
-				const int x = (pClipItem->rectClip.x() + m_iDragClipX);
+				const int x = (pClipItem->rect.x() + m_iDragClipX);
 				const unsigned long iFrameStart = pSession->frameSnap(
 					pSession->frameFromPixel(x > 0 ? x : 0));
 				iClipDelta  = long(iFrameStart) - long(iClipStart2);

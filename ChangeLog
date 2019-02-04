@@ -6,18 +6,22 @@ ChangeLog
 
 GIT HEAD
 
+- Drag-moving and copy-pasting existing clips, while
+  over the main track-view, now shows the respective
+  (audio wave-shapes and MIDI piano-rolls) graphical
+  representations, as much as possible. (EXPERIMENTAL)
+
 - For good and bad, session name changes now trickle
   down to respective audio/MIDI file names as well.
-  (EXPERIMENTAL)
 
 - Audio output monitoring meters may now be shown on
   MIDI tracks and buses as a default user preference
   option (View/ Options.../Plugins/Instruments/Show
   audio output monitoring meters) and also in plugin
-  list context sub-memu (Audio/Meters). (EXPERIMENTAL)
+  list context sub-memu (Audio/Meters).
 
 - Custom color (palette) themes can be exported to and
-  imported from external files. (EXPERIMENTAL)
+  imported from external files.
 
 - LV2 plug-in UI GTK2 and X11 in Qt5 host native support
   are now enabled on configure by default. (REGRESSION)
