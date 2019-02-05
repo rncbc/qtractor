@@ -164,6 +164,12 @@ public:
 	// Whether there's anything on clipboard.
 	static bool isClipboard();
 
+	// Whether there's a single track on clipboard.
+	static qtractorTrack *singleTrackClipboard();
+
+	// Clear current clipboard (no notify).
+	static void clearClipboard();
+
 	// Paste from clipboard (start).
 	void pasteClipboard(
 		unsigned short iPasteCount = 1, unsigned long iPastePeriod = 0);

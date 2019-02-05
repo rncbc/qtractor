@@ -446,13 +446,16 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				rectClip.translate(m_iDragClipX, 0);
 				rectClip.moveTopLeft(
 					qtractorScrollView::contentsToViewport(rectClip.topLeft()));
-			//	rectClip = rectClip.intersected(rectView);
+				unsigned long offset = pClipItem->offset;
+				if (rectView.x() > rectClip.x())
+					offset += pSession->frameFromPixel(rectView.x() - rectClip.x());
+				rectClip = rectClip.intersected(rectView);
 				QColor bg = pClip->track()->background();
 				bg.setAlpha(120); // somewhat-translucent...
 				pPainter->setPen(bg.darker());
 				pPainter->setBrush(bg);
 				pPainter->drawRect(rectClip);
-				pClip->draw(pPainter, rectClip, pClipItem->offset);
+				pClip->draw(pPainter, rectClip, offset);
 				pPainter->restore();
 			}
 		}
@@ -4572,6 +4575,20 @@ bool qtractorTrackView::isClipboard (void)
 }
 
 
+// Whether there's a single track on clipboard.
+qtractorTrack *qtractorTrackView::singleTrackClipboard (void)
+{
+	return g_clipboard.singleTrack;
+}
+
+
+// Clear current clipboard (no notify).
+void qtractorTrackView::clearClipboard (void)
+{
+	g_clipboard.clear();
+}
+
+
 // Clipboard stuffer methods.
 void qtractorTrackView::ClipBoard::addClip ( qtractorClip *pClip,
 	const QRect& clipRect, unsigned long iClipStart,
@@ -5086,7 +5103,7 @@ void qtractorTrackView::pasteClipboard (
 		QCursor(QPixmap(":/images/editPaste.png"), 12, 12));
 
 	// Let's-a go...
-	qtractorScrollView::update();
+	qtractorScrollView::viewport()->update();
 
 	if (m_bCurveEdit)
 		dragCurveMove(pos + m_posStep);

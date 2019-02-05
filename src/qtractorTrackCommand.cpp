@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,6 +27,7 @@
 
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
+#include "qtractorTrackView.h"
 #include "qtractorAudioClip.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiControl.h"
@@ -177,6 +178,10 @@ bool qtractorTrackCommand::removeTrack (void)
 
 	// Third, remove track from list view...
 	iTrack = pTrackList->removeTrack(iTrack);
+
+	// Clear track-view clipboard whther applicable...
+	if (qtractorTrackView::singleTrackClipboard() == NULL)
+		qtractorTrackView::clearClipboard();
 
 	// Mixer turn...
 	qtractorMixer *pMixer = pMainForm->mixer();
