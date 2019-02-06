@@ -4,12 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.4  2019-02-07  Winter'19 Beta.
 
 - Drag-moving and copy-pasting existing clips, while
   over the main track-view, now shows the respective
   (audio wave-shapes and MIDI piano-rolls) graphical
-  representations, as much as possible. (EXPERIMENTAL)
+  representations, as much as possible.
 
 - For good and bad, session name changes now trickle
   down to respective audio/MIDI file names as well.

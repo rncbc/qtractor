@@ -1,8 +1,14 @@
+qtractor (0.9.4-39) unstable; urgency=low
+
+  * New release: winter'19 beta
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Thu,  7 Feb 2019 19:00:00 +0000
+
 qtractor (0.9.3-38) unstable; urgency=low
 
   * New release: end of autumn'18 beta
 
- -- Rui Nuno Capela <rncbc@rncbc.org>  Sun,  9 Sep 2018 19:00:00 +0000
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Fri,  7 Dec 2018 19:00:00 +0000
 
 qtractor (0.9.2-37) unstable; urgency=low
 
