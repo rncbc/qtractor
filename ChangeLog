@@ -4,6 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed for NSM (and JACK) sessions not saving the
+  correct file references/symlinks of clips that are
+  recorded or created during the initial and scratch
+  session. (EXPERIMENTAL)
+
+
 0.9.4  2019-02-07  Winter'19 Beta.
 
 - Drag-moving and copy-pasting existing clips, while
