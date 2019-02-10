@@ -905,7 +905,7 @@ void qtractorPlugin::releaseConfigs (void)
 	qDebug("qtractorPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	clearConfigs();
+	// Do nothing...
 }
 
 

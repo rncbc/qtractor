@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -695,7 +695,7 @@ void qtractorAudioInsertPlugin::releaseConfigs (void)
 	qDebug("qtractorAudioInsertPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	qtractorPlugin::releaseConfigs();
+	qtractorPlugin::clearConfigs();
 }
 
 
@@ -1002,7 +1002,7 @@ void qtractorMidiInsertPlugin::releaseConfigs (void)
 	qDebug("qtractorMidiInsertPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	qtractorPlugin::releaseConfigs();
+	qtractorPlugin::clearConfigs();
 }
 
 
@@ -1433,7 +1433,7 @@ void qtractorAudioAuxSendPlugin::releaseConfigs (void)
 	qDebug("qtractorAudioAuxSendPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	qtractorPlugin::releaseConfigs();
+	qtractorPlugin::clearConfigs();
 }
 
 
@@ -1682,7 +1682,7 @@ void qtractorMidiAuxSendPlugin::releaseConfigs (void)
 	qDebug("qtractorMidiAuxSendPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	qtractorPlugin::releaseConfigs();
+	qtractorPlugin::clearConfigs();
 }
 
 

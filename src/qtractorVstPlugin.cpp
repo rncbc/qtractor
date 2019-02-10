@@ -1098,7 +1098,7 @@ void qtractorVstPlugin::releaseConfigs (void)
 	qDebug("qtractorVstPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	qtractorPlugin::releaseConfigs();
+	qtractorPlugin::clearConfigs();
 }
 
 

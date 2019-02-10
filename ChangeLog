@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Clear internal config/state keys on release virtual
+  method. (REGRESSION)
+
 - Fixed for NSM (and JACK) sessions not saving the
   correct file references/symlinks of clips that are
   recorded or created during the initial and scratch
