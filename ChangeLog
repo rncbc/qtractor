@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- HiDPI display screen support (Qt >= 5.6; patch by
+  Hubert Figuiere, thanks). (EXPERIMENTAL)
+
 - Clear internal config/state keys on release virtual
   method. (REGRESSION)
 
