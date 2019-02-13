@@ -9,8 +9,9 @@ ChangeLog
 - HiDPI display screen support (Qt >= 5.6; patch by
   Hubert Figuiere, thanks).
 
-- Clear internal config/state keys on release virtual
-  method. (REGRESSION)
+- Fixed for DSSI plug-ins (eg. fluidsynth-dssi) loss
+  of configuration state: clear internal config/state
+  keys on release virtual method. (REGRESSION)
 
 - Fixed for NSM (and JACK) sessions not saving the
   correct file references/symlinks of clips that are
