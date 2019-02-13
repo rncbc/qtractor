@@ -1988,16 +1988,21 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			case BANK_SELECT_MSB:
 				if (pTrack->midiBank() >= 0)
 					ev.data.control.value = (pTrack->midiBank() & 0x3f80) >> 7;
+				else
+					ev.data.control.value = pEvent->value();
 				break;
 			case BANK_SELECT_LSB:
 				if (pTrack->midiBank() >= 0)
 					ev.data.control.value = (pTrack->midiBank() & 0x7f);
+				else
+					ev.data.control.value = pEvent->value();
 				break;
 			case CHANNEL_VOLUME:
 				ev.data.control.value = int(pTrack->gain() * float(pEvent->value())) & 0x7f;
 				break;
 			default:
 				ev.data.control.value = pEvent->value();
+				break;
 			}
 			break;
 		case qtractorMidiEvent::REGPARAM:
