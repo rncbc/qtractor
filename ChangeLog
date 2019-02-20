@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Maybe just informational but the original MIDI file
+  format is now correctly reported across ref-counted
+  linked MIDI clips. (EXPERIMENTAL)
+
+
 0.9.5  2019-02-14  Venntines'19 Hotfix.
 
 - HiDPI display screen support (Qt >= 5.6; patch by
