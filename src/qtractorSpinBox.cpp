@@ -1,7 +1,7 @@
 // qtractorSpinBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,6 +29,75 @@
 #include <QContextMenuEvent>
 
 #include <math.h>
+
+
+//-------------------------------------------------------------------------
+// qtractorSpinBox - A better QDoubleSpinBox widget.
+
+qtractorSpinBox::EditMode
+qtractorSpinBox::g_editMode = qtractorSpinBox::DefaultMode;
+
+// Set spin-box edit mode behavior.
+void qtractorSpinBox::setEditMode ( EditMode editMode )
+	{ g_editMode = editMode; }
+
+qtractorSpinBox::EditMode qtractorSpinBox::editMode (void)
+	{ return g_editMode; }
+
+
+// Constructor.
+qtractorSpinBox::qtractorSpinBox ( QWidget *pParent )
+	: QDoubleSpinBox(pParent), m_iTextChanged(0)
+{
+	QObject::connect(QDoubleSpinBox::lineEdit(),
+		SIGNAL(textChanged(const QString&)),
+		SLOT(lineEditTextChanged(const QString&)));
+	QObject::connect(this,
+		SIGNAL(editingFinished()),
+		SLOT(spinBoxEditingFinished()));
+	QObject::connect(this,
+		SIGNAL(valueChanged(double)),
+		SLOT(spinBoxValueChanged(double)));
+}
+
+
+// Alternate value change behavior handlers.
+void qtractorSpinBox::lineEditTextChanged ( const QString& )
+{
+	if (g_editMode == DeferredMode)
+		++m_iTextChanged;
+}
+
+
+void qtractorSpinBox::spinBoxEditingFinished (void)
+{
+	if (g_editMode == DeferredMode) {
+		m_iTextChanged = 0;
+		emit valueChangedEx(QDoubleSpinBox::value());
+	}
+}
+
+
+void qtractorSpinBox::spinBoxValueChanged ( double value )
+{
+	if (g_editMode != DeferredMode || m_iTextChanged == 0)
+		emit valueChangedEx(value);
+}
+
+
+// Inherited/override methods.
+QValidator::State qtractorSpinBox::validate ( QString& sText, int& iPos ) const
+{
+	const QValidator::State state
+		= QDoubleSpinBox::validate(sText, iPos);
+
+	if (state == QValidator::Acceptable
+		&& g_editMode == DeferredMode
+		&& m_iTextChanged == 0)
+		return QValidator::Intermediate;
+
+	return state;
+}
 
 
 //----------------------------------------------------------------------------

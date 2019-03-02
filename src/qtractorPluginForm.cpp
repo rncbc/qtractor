@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -37,6 +37,8 @@
 #include "qtractorObserverWidget.h"
 
 #include "qtractorMidiControlObserverForm.h"
+
+#include "qtractorSpinBox.h"
 
 #include "qtractorBusForm.h"
 
@@ -1398,7 +1400,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 			//	pLabel->setMinimumWidth(120);
 				pGridLayout->addWidget(pLabel, 0, 0);
 				const bool bIsInteger = pLv2Prop->isInteger();
-				m_pSpinBox = new QDoubleSpinBox(/*this*/);
+				m_pSpinBox = new qtractorSpinBox(/*this*/);
 				m_pSpinBox->setMinimumWidth(64);
 				m_pSpinBox->setMaximumWidth(96);
 				m_pSpinBox->setDecimals(bIsInteger ? 0 : 3);
@@ -1422,7 +1424,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 
 	if (m_pSpinBox) {
 		QObject::connect(m_pSpinBox,
-			SIGNAL(valueChanged(double)),
+			SIGNAL(valueChangedEx(double)),
 			SLOT(propertyChanged()));
 	}
 

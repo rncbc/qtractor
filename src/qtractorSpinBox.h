@@ -1,7 +1,7 @@
 // qtractorSpinBox.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@
 
 #include <qtractorTimeScale.h>
 
+#include <QDoubleSpinBox>
 #include <QAbstractSpinBox>
 
 // Forward declartions.
@@ -31,12 +32,60 @@ class QLineEdit;
 class QShowEvent;
 
 
+//-------------------------------------------------------------------------
+// qtractorSpinBox - A better QDoubleSpinBox widget.
+
+class qtractorSpinBox : public QDoubleSpinBox
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorSpinBox(QWidget *pParent = 0);
+
+	// Edit mode behavior:
+	// DefaultMode - default (immediate value changes) behavior.
+	// DeferredMode - deferred value changes (to when editing is finished).
+	enum EditMode { DefaultMode = 0, DeferredMode };
+
+	// Set spin-box edit mode behavior.
+	static void setEditMode(EditMode editMode);
+	static EditMode editMode();
+
+protected slots:
+
+	// Alternate value change behavior handlers.
+	void lineEditTextChanged(const QString&);
+	void spinBoxEditingFinished();
+	void spinBoxValueChanged(double);
+
+signals:
+
+	// Alternate value change signal.
+	void valueChangedEx(double);
+
+protected:
+
+	// Inherited/override methods.
+	QValidator::State validate(QString& sText, int& iPos) const;
+
+private:
+
+	// Alternate edit behavior tracking.
+	int m_iTextChanged;
+
+	// Spin-box edit mode behavior.
+	static EditMode g_editMode;
+};
+
+
 //----------------------------------------------------------------------------
 // qtractorTimeSpinBox -- A time-scale formatted spin-box widget.
 
 class qtractorTimeSpinBox : public QAbstractSpinBox
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
 
@@ -87,7 +136,7 @@ protected:
 	void showEvent(QShowEvent *);
 
 	// Inherited/override methods.
-	QValidator::State validate(QString& sText,int& iPos) const;
+	QValidator::State validate(QString& sText, int& iPos) const;
 	void fixup(QString& sText) const;
 	void stepBy(int iSteps);
 	StepEnabled stepEnabled() const;
@@ -130,7 +179,7 @@ private:
 
 class qtractorTempoSpinBox : public QAbstractSpinBox
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
 
@@ -161,7 +210,7 @@ protected:
 	void showEvent(QShowEvent *);
 
 	// Inherited/override methods.
-	QValidator::State validate(QString& sText,int& iPos) const;
+	QValidator::State validate(QString& sText, int& iPos) const;
 	void fixup(QString& sText) const;
 	void stepBy(int iSteps);
 	StepEnabled stepEnabled() const;

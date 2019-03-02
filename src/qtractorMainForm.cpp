@@ -1524,6 +1524,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	qtractorAudioBuffer::setDefaultWsolaQuickSeek(
 		m_pOptions->bAudioWsolaQuickSeek);
 
+	// Set default custom spin-box edit mode (deferred)...
+	qtractorSpinBox::setEditMode(qtractorSpinBox::DeferredMode);
+
 	// Load (action) keyboard shortcuts...
 	m_pOptions->loadActionShortcuts(this);
 	m_pOptions->loadActionControl(this);

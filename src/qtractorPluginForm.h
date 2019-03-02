@@ -1,7 +1,7 @@
 // qtractorPluginForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,8 +41,9 @@ class qtractorObserverSpinBox;
 
 class qtractorPluginParamDisplay;
 
+class qtractorSpinBox;
+
 class QCheckBox;
-class QDoubleSpinBox;
 class QTextEdit;
 class QComboBox;
 class QToolButton;
@@ -221,11 +222,11 @@ private:
 	unsigned long   m_iProperty;
 
 	// Some possible managed widgets.
-	QCheckBox      *m_pCheckBox;
-	QDoubleSpinBox *m_pSpinBox;
-	QTextEdit      *m_pTextEdit;
-	QComboBox      *m_pComboBox;
-	QToolButton    *m_pToolButton;
+	QCheckBox       *m_pCheckBox;
+	qtractorSpinBox *m_pSpinBox;
+	QTextEdit       *m_pTextEdit;
+	QComboBox       *m_pComboBox;
+	QToolButton     *m_pToolButton;
 };
 
 
