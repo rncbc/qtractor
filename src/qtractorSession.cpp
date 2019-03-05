@@ -1566,11 +1566,26 @@ QString qtractorSession::createFilePath (
 		sFilename += '-';
 	sFilename += qtractorSession::sanitize(sBaseName) + "-%1." + sExt;
 
-	QFileInfo fi; int iClipNo = 0;
-	fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
+	// If there are any existing, similar filenames,
+	// take the version suffix from the most recent...
+	int iFileNo = 0;
+	QDir dir(m_props.sessionDir);
+	const QStringList filter(sFilename.arg('*'));
+	const QStringList& files
+		= dir.entryList(filter, QDir::Files, QDir::Time);
+	if (!files.isEmpty()) {
+		QRegExp rx(sFilename.arg("([\\d]+)"));
+		if (rx.lastIndexIn(files.first()) >= 0)
+			iFileNo = rx.cap(1).toInt();
+	}
+
+	// Check whether it's not aquired as our own already,
+	// otherwise increment version suffix until it is.
+	if (iFileNo == 0) ++iFileNo;
+	QFileInfo fi(m_props.sessionDir, sFilename.arg(iFileNo));
 	if (!m_filePaths.contains(fi.absoluteFilePath())) {
 		while (fi.exists() || m_filePaths.contains(fi.absoluteFilePath()))
-			fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
+			fi.setFile(m_props.sessionDir, sFilename.arg(++iFileNo));
 		if (bAcquire)
 			m_filePaths.append(fi.absoluteFilePath()); // register new name!
 	}

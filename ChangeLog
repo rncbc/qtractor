@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- A bit lesser of a naive file-name numbering is now
+  in place to avoid as much as possible, the piling
+  up of internal curve/automation files when saving
+  existing sessions. (EXPERIMENTAL)
+
 - Maybe just informational but the original MIDI file
   format is now correctly reported across ref-counted
   linked MIDI clips. (EXPERIMENTAL)
