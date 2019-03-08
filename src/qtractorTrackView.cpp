@@ -3082,13 +3082,14 @@ void qtractorTrackView::updateClipSelect (void)
 		const int h = y2 - y1 - 2;
 		for (qtractorClip *pClip = pTrack->clips().first();
 				pClip; pClip = pClip->next()) {
-			const unsigned long iClipSelectStart = pClip->clipSelectStart();
-			const unsigned long iClipSelectEnd   = pClip->clipSelectEnd();
-			pClip->setClipSelect(iClipSelectStart, iClipSelectEnd);
+			pClip->setClipSelect(pClip->clipSelectStart(), pClip->clipSelectEnd());
 			if (pClip->isClipSelected()) {
-				const int x = pSession->pixelFromFrame(pClip->clipSelectStart());
-				const int w = pSession->pixelFromFrame(pClip->clipSelectEnd()) - x;
-				const unsigned long offset = iClipSelectStart - pClip->clipStart();
+				const unsigned long iClipStart = pClip->clipStart();
+				const unsigned long iClipSelectStart = pClip->clipSelectStart();
+				const unsigned long iClipSelectEnd = pClip->clipSelectEnd();
+				const int x = pSession->pixelFromFrame(iClipSelectStart);
+				const int w = pSession->pixelFromFrame(iClipSelectEnd) - x;
+				const unsigned long offset = iClipSelectStart - iClipStart;
 				m_pClipSelect->addItem(pClip, QRect(x, y, w, h), offset);
 			}
 		}
