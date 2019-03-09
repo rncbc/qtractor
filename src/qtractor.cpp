@@ -19,13 +19,13 @@
 
 *****************************************************************************/
 
-#include "qtractorAbout.h"
+#include "qtractor.h"
+
 #include "qtractorOptions.h"
 #include "qtractorMainForm.h"
 
 #include "qtractorPaletteForm.h"
 
-#include <QApplication>
 #include <QLibraryInfo>
 #include <QTranslator>
 #include <QLocale>
@@ -62,17 +62,6 @@
 // Singleton application instance stuff (Qt/X11 only atm.)
 //
 
-#if QT_VERSION < 0x050000
-#if defined(Q_WS_X11)
-#define CONFIG_X11
-#endif
-#else
-#if defined(QT_X11EXTRAS_LIB)
-#define CONFIG_X11
-#endif
-#endif
-
-
 #ifdef CONFIG_X11
 
 #ifdef CONFIG_VST
@@ -81,7 +70,7 @@
 
 #ifdef CONFIG_XUNIQUE
 
-#include <QX11Info>
+#include <unistd.h> /* for gethostname() */
 
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
@@ -95,8 +84,6 @@
 
 #include <QAbstractNativeEventFilter>
 
-class qtractorApplication;
-
 class qtractorXcbEventFilter : public QAbstractNativeEventFilter
 {
 public:
@@ -106,7 +93,17 @@ public:
 		: QAbstractNativeEventFilter(), m_pApp(pApp) {}
 
 	// XCB event filter (virtual processor).
-	bool nativeEventFilter(const QByteArray& eventType, void *message, long *);
+	bool nativeEventFilter(const QByteArray& eventType, void *message, long *)
+	{
+		if (eventType == "xcb_generic_event_t") {
+			xcb_property_notify_event_t *pEv
+				= static_cast<xcb_property_notify_event_t *> (message);
+			if ((pEv->response_type & ~0x80) == XCB_PROPERTY_NOTIFY
+				&& pEv->state == XCB_PROPERTY_NEW_VALUE)
+				m_pApp->x11PropertyNotify(pEv->window);
+		}
+		return false;
+	}
 
 private:
 
@@ -119,26 +116,43 @@ private:
 #endif	// CONFIG_XUNIQUE
 #endif	// CONFIG_X11
 
-class qtractorApplication : public QApplication
-{
-public:
 
-	// Constructor.
-	qtractorApplication(int& argc, char **argv) : QApplication(argc, argv),
-		m_pQtTranslator(0), m_pMyTranslator(0), m_pWidget(0)	
-	{
-		// Load translation support.
-		QLocale loc;
-		if (loc.language() != QLocale::C) {
-			// Try own Qt translation...
-			m_pQtTranslator = new QTranslator(this);
-			QString sLocName = "qt_" + loc.name();
-			QString sLocPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
-			if (m_pQtTranslator->load(sLocName, sLocPath)) {
-				QApplication::installTranslator(m_pQtTranslator);
+// Constructor.
+qtractorApplication::qtractorApplication ( int& argc, char **argv )
+	: QApplication(argc, argv),
+		m_pQtTranslator(NULL), m_pMyTranslator(NULL), m_pWidget(NULL)	
+{
+	// Load translation support.
+	QLocale loc;
+	if (loc.language() != QLocale::C) {
+		// Try own Qt translation...
+		m_pQtTranslator = new QTranslator(this);
+		QString sLocName = "qt_" + loc.name();
+		QString sLocPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+		if (m_pQtTranslator->load(sLocName, sLocPath)) {
+			QApplication::installTranslator(m_pQtTranslator);
+		} else {
+			delete m_pQtTranslator;
+			m_pQtTranslator = 0;
+		#ifdef CONFIG_DEBUG
+			qWarning("Warning: no translation found for '%s' locale: %s/%s.qm",
+				loc.name().toUtf8().constData(),
+				sLocPath.toUtf8().constData(),
+				sLocName.toUtf8().constData());
+		#endif
+		}
+		// Try own application translation...
+		m_pMyTranslator = new QTranslator(this);
+		sLocName = "qtractor_" + loc.name();
+		if (m_pMyTranslator->load(sLocName, sLocPath)) {
+			QApplication::installTranslator(m_pMyTranslator);
+		} else {
+			sLocPath = CONFIG_DATADIR "/qtractor/translations";
+			if (m_pMyTranslator->load(sLocName, sLocPath)) {
+				QApplication::installTranslator(m_pMyTranslator);
 			} else {
-				delete m_pQtTranslator;
-				m_pQtTranslator = 0;
+				delete m_pMyTranslator;
+				m_pMyTranslator = 0;
 			#ifdef CONFIG_DEBUG
 				qWarning("Warning: no translation found for '%s' locale: %s/%s.qm",
 					loc.name().toUtf8().constData(),
@@ -146,89 +160,77 @@ public:
 					sLocName.toUtf8().constData());
 			#endif
 			}
-			// Try own application translation...
-			m_pMyTranslator = new QTranslator(this);
-			sLocName = "qtractor_" + loc.name();
-			if (m_pMyTranslator->load(sLocName, sLocPath)) {
-				QApplication::installTranslator(m_pMyTranslator);
-			} else {
-				sLocPath = CONFIG_DATADIR "/qtractor/translations";
-				if (m_pMyTranslator->load(sLocName, sLocPath)) {
-					QApplication::installTranslator(m_pMyTranslator);
-				} else {
-					delete m_pMyTranslator;
-					m_pMyTranslator = 0;
-				#ifdef CONFIG_DEBUG
-					qWarning("Warning: no translation found for '%s' locale: %s/%s.qm",
-						loc.name().toUtf8().constData(),
-						sLocPath.toUtf8().constData(),
-						sLocName.toUtf8().constData());
-				#endif
-				}
-			}
 		}
-	#ifdef CONFIG_X11
-	#ifdef CONFIG_XUNIQUE
-		m_pDisplay = NULL;
-		m_aUnique = 0;
-		m_wOwner = 0;
-	#if QT_VERSION >= 0x050100
-		m_pXcbEventFilter = new qtractorXcbEventFilter(this);
-		installNativeEventFilter(m_pXcbEventFilter);
-		if (QX11Info::isPlatformX11()) {
-	#endif
-			m_pDisplay = QX11Info::display();
-			m_aUnique  = XInternAtom(m_pDisplay, QTRACTOR_XUNIQUE, false);
-			XGrabServer(m_pDisplay);
-			m_wOwner = XGetSelectionOwner(m_pDisplay, m_aUnique);
-			XUngrabServer(m_pDisplay);
-	#if QT_VERSION >= 0x050100
+	}
+#ifdef CONFIG_X11
+#ifdef CONFIG_XUNIQUE
+	m_pDisplay = NULL;
+	m_aUnique = 0;
+	m_wOwner = 0;
+#if QT_VERSION >= 0x050100
+	m_pXcbEventFilter = new qtractorXcbEventFilter(this);
+	installNativeEventFilter(m_pXcbEventFilter);
+#endif
+#endif	// CONFIG_XUNIQUE
+#endif	// CONFIG_X11
+}
+
+
+// Destructor.
+qtractorApplication::~qtractorApplication (void)
+{
+#ifdef CONFIG_X11
+#ifdef CONFIG_XUNIQUE
+#if QT_VERSION >= 0x050100
+	removeNativeEventFilter(m_pXcbEventFilter);
+	delete m_pXcbEventFilter;
+#endif
+#endif	// CONFIG_XUNIQUE
+#endif	// CONFIG_X11
+	if (m_pMyTranslator) delete m_pMyTranslator;
+	if (m_pQtTranslator) delete m_pQtTranslator;
+}
+
+// Main application widget accessors.
+void qtractorApplication::setMainWidget ( QWidget *pWidget )
+{
+	m_pWidget = pWidget;
+#ifdef CONFIG_X11
+#ifdef CONFIG_XUNIQUE
+	m_wOwner = m_pWidget->winId();
+	if (m_pDisplay && m_wOwner) {
+		XGrabServer(m_pDisplay);
+		XSetSelectionOwner(m_pDisplay, m_aUnique, m_wOwner, CurrentTime);
+		XUngrabServer(m_pDisplay);
+	}
+#endif	// CONFIG_XUNIQUE
+#endif	// CONFIG_X11
+}
+
+
+// Check if another instance is running,
+// and raise its proper main widget...
+bool qtractorApplication::setup (void)
+{
+#ifdef CONFIG_X11
+#ifdef CONFIG_XUNIQUE
+#if QT_VERSION >= 0x050100
+	if (!QX11Info::isPlatformX11())
+		return false;
+#endif
+	m_pDisplay = QX11Info::display();
+	if (m_pDisplay) {
+		QString sUnique = QTRACTOR_XUNIQUE;
+		char szHostName[255];
+		if (::gethostname(szHostName, sizeof(szHostName)) == 0) {
+			sUnique += '@';
+			sUnique += szHostName;
 		}
-	#endif
-	#endif	// CONFIG_XUNIQUE
-	#endif	// CONFIG_X11
-	}
-
-	// Destructor.
-	~qtractorApplication()
-	{
-	#ifdef CONFIG_X11
-	#ifdef CONFIG_XUNIQUE
-	#if QT_VERSION >= 0x050100
-		removeNativeEventFilter(m_pXcbEventFilter);
-		delete m_pXcbEventFilter;
-	#endif
-	#endif	// CONFIG_XUNIQUE
-	#endif	// CONFIG_X11
-		if (m_pMyTranslator) delete m_pMyTranslator;
-		if (m_pQtTranslator) delete m_pQtTranslator;
-	}
-
-	// Main application widget accessors.
-	void setMainWidget(QWidget *pWidget)
-	{
-		m_pWidget = pWidget;
-	#ifdef CONFIG_X11
-	#ifdef CONFIG_XUNIQUE
-		m_wOwner = m_pWidget->winId();
-		if (m_pDisplay && m_wOwner) {
-			XGrabServer(m_pDisplay);
-			XSetSelectionOwner(m_pDisplay, m_aUnique, m_wOwner, CurrentTime);
-			XUngrabServer(m_pDisplay);
-		}
-	#endif	// CONFIG_XUNIQUE
-	#endif	// CONFIG_X11
-	}
-
-	QWidget *mainWidget() const { return m_pWidget; }
-
-	// Check if another instance is running,
-    // and raise its proper main widget...
-	bool setup()
-	{
-	#ifdef CONFIG_X11
-	#ifdef CONFIG_XUNIQUE
-		if (m_pDisplay && m_wOwner != None) {
+		m_aUnique = XInternAtom(m_pDisplay, sUnique.toUtf8().constData(), false);
+		XGrabServer(m_pDisplay);
+		m_wOwner = XGetSelectionOwner(m_pDisplay, m_aUnique);
+		XUngrabServer(m_pDisplay);
+		if (m_wOwner != None) {
 			// First, notify any freedesktop.org WM
 			// that we're about to show the main widget...
 			Screen *pScreen = XDefaultScreenOfDisplay(m_pDisplay);
@@ -264,105 +266,68 @@ public:
 			// Done.
 			return true;
 		}
-	#endif	// CONFIG_XUNIQUE
-	#endif	// CONFIG_X11
-		return false;
-	}
-
-#ifdef CONFIG_X11
-#ifdef CONFIG_XUNIQUE
-	void x11PropertyNotify(Window w)
-	{
-		if (m_pDisplay && m_pWidget && m_wOwner == w) {
-			// Always check whether our property-flag is still around...
-			Atom aType;
-			int iFormat = 0;
-			unsigned long iItems = 0;
-			unsigned long iAfter = 0;
-			unsigned char *pData = 0;
-			if (XGetWindowProperty(
-					m_pDisplay,
-					m_wOwner,
-					m_aUnique,
-					0, 1024,
-					false,
-					m_aUnique,
-					&aType,
-					&iFormat,
-					&iItems,
-					&iAfter,
-					&pData) == Success
-				&& aType == m_aUnique && iItems > 0 && iAfter == 0) {
-				// Avoid repeating it-self...
-				XDeleteProperty(m_pDisplay, m_wOwner, m_aUnique);
-				// Just make it always shows up fine...
-				m_pWidget->show();
-				m_pWidget->raise();
-				m_pWidget->activateWindow();
-			}
-			// Free any left-overs...
-			if (iItems > 0 && pData)
-				XFree(pData);
-		}
 	}
 #endif	// CONFIG_XUNIQUE
-#if QT_VERSION < 0x050000
-	bool x11EventFilter(XEvent *pEv)
-	{
-	#ifdef CONFIG_XUNIQUE
-		if (pEv->type == PropertyNotify
-			&& pEv->xproperty.state == PropertyNewValue)
-			x11PropertyNotify(pEv->xproperty.window);
-	#endif
-	#ifdef CONFIG_VST
-		// Let xevents be processed by VST plugin editors...
-		if (qtractorVstPlugin::x11EventFilter(pEv))
-			return true;
-	#endif
-		return QApplication::x11EventFilter(pEv);
-	}
-#endif
 #endif	// CONFIG_X11
-	
-private:
-
-	// Translation support.
-	QTranslator *m_pQtTranslator;
-	QTranslator *m_pMyTranslator;
-
-	// Instance variables.
-	QWidget *m_pWidget;
-
-#ifdef CONFIG_X11
-#ifdef CONFIG_XUNIQUE
-	Display *m_pDisplay;
-	Atom     m_aUnique;
-	Window   m_wOwner;
-#if QT_VERSION >= 0x050100
-	qtractorXcbEventFilter *m_pXcbEventFilter;
-#endif
-#endif	// CONFIG_XUNIQUE
-#endif	// CONFIG_X11
-};
-
-#ifdef CONFIG_X11
-#ifdef CONFIG_XUNIQUE
-#if QT_VERSION >= 0x050100
-// XCB Event filter (virtual processor).
-bool qtractorXcbEventFilter::nativeEventFilter (
-	const QByteArray& eventType, void *message, long * )
-{
-	if (eventType == "xcb_generic_event_t") {
-		xcb_property_notify_event_t *pEv
-			= static_cast<xcb_property_notify_event_t *> (message);
-		if ((pEv->response_type & ~0x80) == XCB_PROPERTY_NOTIFY
-			&& pEv->state == XCB_PROPERTY_NEW_VALUE)
-			m_pApp->x11PropertyNotify(pEv->window);
-	}
 	return false;
 }
-#endif
+
+
+#ifdef CONFIG_X11
+#ifdef CONFIG_XUNIQUE
+void qtractorApplication::x11PropertyNotify ( Window w )
+{
+	if (m_pDisplay && m_pWidget && m_wOwner == w) {
+		// Always check whether our property-flag is still around...
+		Atom aType;
+		int iFormat = 0;
+		unsigned long iItems = 0;
+		unsigned long iAfter = 0;
+		unsigned char *pData = 0;
+		if (XGetWindowProperty(
+				m_pDisplay,
+				m_wOwner,
+				m_aUnique,
+				0, 1024,
+				false,
+				m_aUnique,
+				&aType,
+				&iFormat,
+				&iItems,
+				&iAfter,
+				&pData) == Success
+			&& aType == m_aUnique && iItems > 0 && iAfter == 0) {
+			// Avoid repeating it-self...
+			XDeleteProperty(m_pDisplay, m_wOwner, m_aUnique);
+			// Just make it always shows up fine...
+			m_pWidget->show();
+			m_pWidget->raise();
+			m_pWidget->activateWindow();
+		}
+		// Free any left-overs...
+		if (iItems > 0 && pData)
+			XFree(pData);
+	}
+}
 #endif	// CONFIG_XUNIQUE
+
+#if QT_VERSION < 0x050000
+bool qtractorApplication::x11EventFilter ( XEvent *pEv )
+{
+#ifdef CONFIG_XUNIQUE
+	if (pEv->type == PropertyNotify
+		&& pEv->xproperty.state == PropertyNewValue)
+		x11PropertyNotify(pEv->xproperty.window);
+#endif
+#ifdef CONFIG_VST
+	// Let xevents be processed by VST plugin editors...
+	if (qtractorVstPlugin::x11EventFilter(pEv))
+		return true;
+#endif
+	return QApplication::x11EventFilter(pEv);
+}
+#endif
+
 #endif	// CONFIG_X11
 
 

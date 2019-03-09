@@ -6,6 +6,7 @@ target  = src/$(name)
 
 headers = \
 	src/config.h \
+	src/qtractor.h \
 	src/qtractorAbout.h \
 	src/qtractorAtomic.h \
 	src/qtractorActionControl.h \
