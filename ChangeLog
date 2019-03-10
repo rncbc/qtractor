@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Refactored all singleton/unique application instance
+  setup logic away from X11/Xcb hackery. (EXPERIMENTAL)
+
 - A bit lesser of a naive file-name numbering is now
   in place to avoid as much as possible, the piling
   up of internal curve/automation files when saving

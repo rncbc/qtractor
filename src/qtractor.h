@@ -1,7 +1,7 @@
 // qtractor.h
 //
 /****************************************************************************
-   Copyright (C) 2003-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,19 +41,19 @@
 class QWidget;
 class QTranslator;
 
-#ifdef CONFIG_X11
+#if QT_VERSION < 0x050000
 #ifdef CONFIG_XUNIQUE
-
+#ifdef CONFIG_X11
 #include <QX11Info>
-
 typedef unsigned long Window;
 typedef unsigned long Atom;
-
-#if QT_VERSION >= 0x050100
-class qtractorXcbEventFilter;
-#endif
-
-#endif
+#endif	// CONFIG_X11
+#endif	// CONFIG_XUNIQUE
+#else
+#ifdef CONFIG_XUNIQUE
+class QSharedMemory;
+class QLocalServer;
+#endif	// CONFIG_XUNIQUE
 #endif
 
 
@@ -63,6 +63,8 @@ class qtractorXcbEventFilter;
 
 class qtractorApplication : public QApplication
 {
+	Q_OBJECT
+
 public:
 
 	// Constructor.
@@ -80,11 +82,21 @@ public:
 	// and raise its proper main widget...
 	bool setup();
 
+#if QT_VERSION < 0x050000
 #ifdef CONFIG_X11
 #ifdef CONFIG_XUNIQUE
 	void x11PropertyNotify(Window w);
 #endif	// CONFIG_XUNIQUE
+	bool x11EventFilter(XEvent *pEv);
 #endif	// CONFIG_X11
+#else
+#ifdef CONFIG_XUNIQUE
+protected slots:
+	// Local server slots.
+	void newConnectionSlot();
+	void readyReadSlot();
+#endif	// CONFIG_XUNIQUE
+#endif
 
 private:
 
@@ -95,16 +107,21 @@ private:
 	// Instance variables.
 	QWidget *m_pWidget;
 
-#ifdef CONFIG_X11
+#if QT_VERSION < 0x050000
 #ifdef CONFIG_XUNIQUE
+#ifdef CONFIG_X11
 	Display *m_pDisplay;
 	Atom     m_aUnique;
 	Window   m_wOwner;
-#if QT_VERSION >= 0x050100
-	qtractorXcbEventFilter *m_pXcbEventFilter;
-#endif
-#endif	// CONFIG_XUNIQUE
 #endif	// CONFIG_X11
+#endif	// CONFIG_XUNIQUE
+#else
+#ifdef CONFIG_XUNIQUE
+	QString        m_sUnique;
+	QSharedMemory *m_pMemory;
+	QLocalServer  *m_pServer;
+#endif	// CONFIG_XUNIQUE
+#endif
 };
 
 
