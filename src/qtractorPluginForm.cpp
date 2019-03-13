@@ -319,17 +319,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.TypeHintTextLabel->setText(
 		qtractorPluginType::textFromHint(pType->typeHint()));
 
-	QString sAboutText = pType->aboutText();
-	sAboutText += '\n';
-	sAboutText += '\n';
-	sAboutText += tr("%1 [%2], %3 instance(s), %4 channel(s).")
-		.arg(pType->filename())
-		.arg(pType->index())
-		.arg(m_pPlugin->instances())
-		.arg(m_pPlugin->channels());
-
-	m_ui.AboutTextLabel->setText(sAboutText);
-
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
 	m_ui.DirectAccessParamPushButton->setVisible(iParams > 0);
@@ -1016,6 +1005,21 @@ void qtractorPluginForm::stabilize (void)
 		bEnabled && (!bExists || m_iDirtyCount > 0));
 	m_ui.DeletePresetToolButton->setEnabled(
 		bEnabled && bExists);
+
+	QString sAboutText = pType->aboutText();
+	sAboutText += '\n';
+	sAboutText += '\n';
+	sAboutText += tr("%1 [%2], %3 instance(s), %4 channel(s), ")
+		.arg(pType->filename())
+		.arg(pType->index())
+		.arg(m_pPlugin->instances())
+		.arg(m_pPlugin->channels());
+	const unsigned long iLatency = m_pPlugin->latency();
+	if (iLatency > 0)
+		sAboutText += tr("%1 frames latency.").arg(iLatency);
+	else
+		sAboutText += tr("no latency.");
+	m_ui.AboutTextLabel->setText(sAboutText);
 }
 
 

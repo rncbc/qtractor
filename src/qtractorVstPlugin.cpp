@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1099,6 +1099,21 @@ void qtractorVstPlugin::releaseConfigs (void)
 #endif
 
 	qtractorPlugin::clearConfigs();
+}
+
+
+// Plugin current latency (in frames);
+unsigned long qtractorVstPlugin::latency (void) const
+{
+	AEffect *pVstEffect = vst_effect(0);
+	if (pVstEffect == NULL)
+		return 0;
+
+#ifdef CONFIG_VESTIGE
+	return *(VstInt32 *) &(pVstEffect->empty3[0]);
+#else
+	return pVstEffect->initialDelay;
+#endif
 }
 
 

@@ -461,6 +461,10 @@ public:
 	// Plugin configure realization.
 	virtual void realizeConfigs();
 
+	// Plugin current latency (in frames);
+	virtual unsigned long latency() const
+		{ return 0; }
+
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/= NULL) {}
 	virtual void closeEditor() {};
