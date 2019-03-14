@@ -236,7 +236,7 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2021"/>
+        <location filename="../qtractorPlugin.cpp" line="2026"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11185,6 +11185,11 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qtractorPluginForm.cpp" line="818"/>
+        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorPluginForm.cpp" line="434"/>
         <location filename="../qtractorPluginForm.cpp" line="455"/>
         <source>(none)</source>
@@ -11253,11 +11258,6 @@ Are you sure?</source>
 &quot;%1&quot; (%2)
 
 Вы уверены?</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginForm.cpp" line="818"/>
-        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="832"/>

@@ -237,7 +237,7 @@ MIDI:	</translation>
         <translation>Zapnout</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2021"/>
+        <location filename="../qtractorPlugin.cpp" line="2026"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 přídavný modul nenalezen.</translation>
     </message>
@@ -11279,6 +11279,11 @@ Chcete použít tyto změny?</translation>
         <translation>Strana %1</translation>
     </message>
     <message>
+        <location filename="../qtractorPluginForm.cpp" line="818"/>
+        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
+        <translation>%1 [%2], %3 instance, %4 kanál(y).</translation>
+    </message>
+    <message>
         <location filename="../qtractorPluginForm.cpp" line="434"/>
         <location filename="../qtractorPluginForm.cpp" line="455"/>
         <source>(none)</source>
@@ -11306,11 +11311,6 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorPluginForm.cpp" line="694"/>
         <source>Error</source>
         <translation>Chyba</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginForm.cpp" line="818"/>
-        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="832"/>

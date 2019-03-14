@@ -933,6 +933,12 @@ public:
 	void autoDeactivatePlugins(bool bDeactivated, bool bForce = false);
 	bool isAutoDeactivated() const;
 
+	// Plugin chain total latency (in frames);
+	unsigned long latency() const
+		{ return m_iLatency; }
+
+	void updateLatency();
+
 protected:
 
 	// Check/sanitize plugin file-path.
@@ -985,6 +991,9 @@ private:
 
 	// Auto-plugin-deactivation
 	bool m_bAutoDeactivated;
+
+	// Plugin chain total latency (in frames);
+	unsigned long m_iLatency;
 };
 
 

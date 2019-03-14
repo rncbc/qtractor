@@ -433,7 +433,7 @@ MIDI:	</translation>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2021"/>
+        <location filename="../qtractorPlugin.cpp" line="2026"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 プラグインが見つかりません。</translation>
     </message>
@@ -11373,6 +11373,11 @@ Do you want to apply the changes?</source>
         <translation>ページ %1</translation>
     </message>
     <message>
+        <location filename="../qtractorPluginForm.cpp" line="818"/>
+        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
+        <translation>%1 [%2], %3 インスタンス, %4 チャンネル.</translation>
+    </message>
+    <message>
         <location filename="../qtractorPluginForm.cpp" line="434"/>
         <location filename="../qtractorPluginForm.cpp" line="455"/>
         <source>(none)</source>
@@ -11449,11 +11454,6 @@ Are you sure?</source>
 &quot;%1&quot; (%2)
 
 よろしいですか？</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginForm.cpp" line="818"/>
-        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="832"/>

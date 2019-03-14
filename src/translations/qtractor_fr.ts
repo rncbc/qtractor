@@ -433,7 +433,7 @@ MIDI:	</translation>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2021"/>
+        <location filename="../qtractorPlugin.cpp" line="2026"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): greffon %3 introuvable.</translation>
     </message>
@@ -11374,6 +11374,11 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>Page %1</translation>
     </message>
     <message>
+        <location filename="../qtractorPluginForm.cpp" line="818"/>
+        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
+        <translation>%1 [%2], %3 instance(s), %4 canaux.</translation>
+    </message>
+    <message>
         <location filename="../qtractorPluginForm.cpp" line="434"/>
         <location filename="../qtractorPluginForm.cpp" line="455"/>
         <source>(none)</source>
@@ -11450,11 +11455,6 @@ Are you sure?</source>
 &quot;%1&quot; (%2)
 
 Êtes-vous sûr ?</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginForm.cpp" line="818"/>
-        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="832"/>

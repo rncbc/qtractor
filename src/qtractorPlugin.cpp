@@ -1430,7 +1430,9 @@ qtractorPluginList::qtractorPluginList (
 	: m_iChannels(iChannels), m_iFlags(iFlags),
 		m_iActivated(0), m_pMidiManager(NULL),
 		m_iMidiBank(-1), m_iMidiProg(-1),
-		m_pMidiProgramSubject(NULL), m_bAutoDeactivated(false)
+		m_pMidiProgramSubject(NULL),
+		m_bAutoDeactivated(false),
+		m_iLatency(0)
 {
 	setAutoDelete(true);
 
@@ -1624,6 +1626,9 @@ void qtractorPluginList::resetBuffers (void)
 	// Restore activation count.
 	m_iActivated = iActivated;
 #endif
+
+	// Recalculate total plugin chain latency...
+	updateLatency();
 }
 
 
@@ -2287,6 +2292,19 @@ bool qtractorPluginList::checkPluginFile (
 
 	// No alternative has been found, sorry.
 	return false;
+}
+
+
+// Recalculate plugin chain total latency (in frames).
+void qtractorPluginList::updateLatency (void)
+{
+	m_iLatency = 0;
+
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (pPlugin->isActivated())
+			m_iLatency += pPlugin->latency();
+	}
 }
 
 

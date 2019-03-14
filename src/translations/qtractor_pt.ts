@@ -797,7 +797,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2021"/>
+        <location filename="../qtractorPlugin.cpp" line="2026"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>
@@ -11309,6 +11309,11 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Mandadas</translation>
     </message>
     <message>
+        <location filename="../qtractorPluginForm.cpp" line="818"/>
+        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
+        <translation>%1 [%2], %3 instância(s), %4 canal(s).</translation>
+    </message>
+    <message>
         <location filename="../qtractorPluginForm.ui" line="295"/>
         <source>Manage buses</source>
         <translation>Gerenciar Canais Primários</translation>
@@ -11376,11 +11381,6 @@ Sorry.</source>
 &quot;%1&quot;.
 
 Desculpe.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginForm.cpp" line="818"/>
-        <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="832"/>
