@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1337,10 +1337,13 @@ void qtractorTrack::process ( qtractorClip *pClip,
 
 	// Playback...
 	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+		const unsigned long iLatency = m_pPluginList->latency();
+		const unsigned long iFrameStart2 = iFrameStart + iLatency;
+		const unsigned long iFrameEnd2 = iFrameEnd + iLatency;
 		// Now, for every clip...
-		while (pClip && pClip->clipStart() < iFrameEnd) {
-			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
-				pClip->process(iFrameStart, iFrameEnd);
+		while (pClip && pClip->clipStart() < iFrameEnd2) {
+			if (iFrameStart2 < pClip->clipStart() + pClip->clipLength())
+				pClip->process(iFrameStart2, iFrameEnd2);
 			pClip = pClip->next();
 		}
 	}
@@ -1379,10 +1382,13 @@ void qtractorTrack::process_export ( qtractorClip *pClip,
 
 	// Playback...
 	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+		const unsigned long iLatency = m_pPluginList->latency();
+		const unsigned long iFrameStart2 = iFrameStart + iLatency;
+		const unsigned long iFrameEnd2 = iFrameEnd + iLatency;
 		// Now, for every clip...
-		while (pClip && pClip->clipStart() < iFrameEnd) {
-			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
-				pClip->process_export(iFrameStart, iFrameEnd);
+		while (pClip && pClip->clipStart() < iFrameEnd2) {
+			if (iFrameStart2 < pClip->clipStart() + pClip->clipLength())
+				pClip->process_export(iFrameStart2, iFrameEnd2);
 			pClip = pClip->next();
 		}
 	}
