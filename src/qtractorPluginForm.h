@@ -87,9 +87,12 @@ protected slots:
 	void savePresetSlot();
 	void deletePresetSlot();
 	void editSlot(bool bOn);
+	void activateSlot(bool bOn);
+
+	void currentChangedSlot(int iTab);
+
 	void sendsSlot();
 	void returnsSlot();
-	void activateSlot(bool bOn);
 
 	void midiControlActionSlot();
 	void midiControlMenuSlot(const QPoint& pos);

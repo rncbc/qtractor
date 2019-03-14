@@ -85,7 +85,7 @@ qtractorPluginForm::qtractorPluginForm (
 	m_pDirectAccessParamMenu = new QMenu();
 	m_ui.DirectAccessParamPushButton->setMenu(m_pDirectAccessParamMenu);
 
-    m_ui.PresetComboBox->setValidator(
+	m_ui.PresetComboBox->setValidator(
 		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetComboBox));
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
 	m_ui.PresetComboBox->setCompleter(NULL);
@@ -117,6 +117,14 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.EditToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(editSlot(bool)));
+	QObject::connect(m_ui.ActivateToolButton,
+		SIGNAL(toggled(bool)),
+		SLOT(activateSlot(bool)));
+
+	QObject::connect(m_ui.TabWidget,
+		SIGNAL(currentChanged(int)),
+		SLOT(currentChangedSlot(int)));
+
 	QObject::connect(m_ui.SendsToolButton,
 		SIGNAL(clicked()),
 		SLOT(sendsSlot()));
@@ -129,9 +137,6 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.AuxSendBusNameToolButton,
 		SIGNAL(clicked()),
 		SLOT(clickAuxSendBusNameSlot()));
-	QObject::connect(m_ui.ActivateToolButton,
-		SIGNAL(toggled(bool)),
-		SLOT(activateSlot(bool)));
 
 	QObject::connect(m_pDirectAccessParamMenu,
 		SIGNAL(aboutToShow()),
@@ -314,17 +319,13 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// maybe redundant but necessary...
 	m_pPlugin->updateEditorTitle();
 
-	// About page...
-	m_ui.NameTextLabel->setText(pType->name());
-	m_ui.TypeHintTextLabel->setText(
-		qtractorPluginType::textFromHint(pType->typeHint()));
-
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
 	m_ui.DirectAccessParamPushButton->setVisible(iParams > 0);
 
 	// Always first tab/page selected...
 	m_ui.TabWidget->setCurrentIndex(0);
+	currentChangedSlot(0);
 
 	// Clear any initial param update.
 	qtractorSubject::resetQueue();
@@ -775,6 +776,71 @@ void qtractorPluginForm::editSlot ( bool bOn )
 }
 
 
+// Activation slot.
+void qtractorPluginForm::activateSlot ( bool bOn )
+{
+	if (m_pPlugin == NULL)
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+	++m_iUpdate;
+
+	// Make it a undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pSession->execute(
+			new qtractorActivatePluginCommand(m_pPlugin, bOn));
+
+	--m_iUpdate;
+}
+
+
+// Activation slot.
+void qtractorPluginForm::currentChangedSlot ( int iTab )
+{
+	// Make sure we're in the "About" page...
+	if (iTab < m_ui.TabWidget->count() - 1)
+		return;
+
+	if (m_pPlugin == NULL)
+		return;
+
+	qtractorPluginType *pType = m_pPlugin->type();
+	m_ui.NameTextLabel->setText(pType->name());
+	m_ui.TypeHintTextLabel->setText(
+		qtractorPluginType::textFromHint(pType->typeHint()));
+
+	QString sAboutText = pType->aboutText();
+	sAboutText += '\n';
+	sAboutText += '\n';
+	sAboutText += tr("%1 [%2], %3 instance(s), %4 channel(s).")
+		.arg(pType->filename())
+		.arg(pType->index())
+		.arg(m_pPlugin->instances())
+		.arg(m_pPlugin->channels());
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		sAboutText += '\n';
+		sAboutText += '\n';
+		const unsigned long iLatency = m_pPlugin->latency();
+		if (iLatency > 0) {
+			const float fLatencyMs
+				= 1000.0f * float(iLatency) / float(pSession->sampleRate());
+			sAboutText += tr("Latency: %1 ms (%2 frames)")
+				.arg(QString::number(fLatencyMs, 'f', 1))
+				.arg(iLatency);
+		} else {
+			sAboutText += tr("(no latency)");
+		}
+	}
+
+	m_ui.AboutTextLabel->setText(sAboutText);
+}
+
+
 // Outputs (Sends) slot.
 void qtractorPluginForm::sendsSlot (void)
 {
@@ -906,27 +972,6 @@ void qtractorPluginForm::changeDirectAccessParamSlot (void)
 }
 
 
-// Activation slot.
-void qtractorPluginForm::activateSlot ( bool bOn )
-{
-	if (m_pPlugin == NULL)
-		return;
-
-	if (m_iUpdate > 0)
-		return;
-
-	++m_iUpdate;
-
-	// Make it a undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pSession->execute(
-			new qtractorActivatePluginCommand(m_pPlugin, bOn));
-
-	--m_iUpdate;
-}
-
-
 // Parameter-widget refreshner-loader.
 void qtractorPluginForm::refresh (void)
 {
@@ -1005,21 +1050,6 @@ void qtractorPluginForm::stabilize (void)
 		bEnabled && (!bExists || m_iDirtyCount > 0));
 	m_ui.DeletePresetToolButton->setEnabled(
 		bEnabled && bExists);
-
-	QString sAboutText = pType->aboutText();
-	sAboutText += '\n';
-	sAboutText += '\n';
-	sAboutText += tr("%1 [%2], %3 instance(s), %4 channel(s), ")
-		.arg(pType->filename())
-		.arg(pType->index())
-		.arg(m_pPlugin->instances())
-		.arg(m_pPlugin->channels());
-	const unsigned long iLatency = m_pPlugin->latency();
-	if (iLatency > 0)
-		sAboutText += tr("%1 frames latency.").arg(iLatency);
-	else
-		sAboutText += tr("no latency.");
-	m_ui.AboutTextLabel->setText(sAboutText);
 }
 
 
