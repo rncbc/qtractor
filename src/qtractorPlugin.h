@@ -937,7 +937,7 @@ public:
 	unsigned long latency() const
 		{ return m_iLatency; }
 
-	void updateLatency();
+	void resetLatency();
 
 protected:
 

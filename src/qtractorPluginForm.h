@@ -121,6 +121,9 @@ protected:
 	void showEvent(QShowEvent *);
 	void hideEvent(QHideEvent *);
 
+	// Update the about text label (with some varying meta-data)...
+	void updateAboutTextLabel();
+
 private:
 
 	// The Qt-designer UI struct...

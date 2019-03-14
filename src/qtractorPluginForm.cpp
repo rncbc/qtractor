@@ -311,13 +311,20 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.AuxSendBusNameComboBox->setVisible(bAuxSendPlugin);
 	m_ui.AuxSendBusNameLabel->setVisible(bAuxSendPlugin);
 	m_ui.AuxSendBusNameToolButton->setVisible(bAuxSendPlugin);
-		
+
 	// Set initial plugin preset name...
 	setPreset(m_pPlugin->preset());
-	
+
 	// Set plugin name as title,
 	// maybe redundant but necessary...
 	m_pPlugin->updateEditorTitle();
+
+	// About page...
+	m_ui.NameTextLabel->setText(pType->name());
+	m_ui.TypeHintTextLabel->setText(
+		qtractorPluginType::textFromHint(pType->typeHint()));
+
+	updateAboutTextLabel();
 
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
@@ -325,14 +332,12 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// Always first tab/page selected...
 	m_ui.TabWidget->setCurrentIndex(0);
-	currentChangedSlot(0);
 
 	// Clear any initial param update.
 	qtractorSubject::resetQueue();
 
 	updateActivated();
 	refresh();
-	stabilize();
 }
 
 
@@ -599,7 +604,6 @@ void qtractorPluginForm::openPresetSlot (void)
 	}
 
 	refresh();
-	stabilize();
 }
 
 
@@ -621,7 +625,6 @@ void qtractorPluginForm::savePresetSlot (void)
 	// this is where we'll make it!
 	if (m_pPlugin->savePreset(sPreset)) {
 		refresh();
-		stabilize();
 		return;
 	}
 
@@ -703,7 +706,6 @@ void qtractorPluginForm::savePresetSlot (void)
 	settings.endGroup();
 
 	refresh();
-	stabilize();
 }
 
 
@@ -752,7 +754,6 @@ void qtractorPluginForm::deletePresetSlot (void)
 	}
 
 	refresh();
-	stabilize();
 }
 
 
@@ -797,47 +798,14 @@ void qtractorPluginForm::activateSlot ( bool bOn )
 }
 
 
-// Activation slot.
+// Tab page change slot.
 void qtractorPluginForm::currentChangedSlot ( int iTab )
 {
 	// Make sure we're in the "About" page...
 	if (iTab < m_ui.TabWidget->count() - 1)
 		return;
 
-	if (m_pPlugin == NULL)
-		return;
-
-	qtractorPluginType *pType = m_pPlugin->type();
-	m_ui.NameTextLabel->setText(pType->name());
-	m_ui.TypeHintTextLabel->setText(
-		qtractorPluginType::textFromHint(pType->typeHint()));
-
-	QString sAboutText = pType->aboutText();
-	sAboutText += '\n';
-	sAboutText += '\n';
-	sAboutText += tr("%1 [%2], %3 instance(s), %4 channel(s).")
-		.arg(pType->filename())
-		.arg(pType->index())
-		.arg(m_pPlugin->instances())
-		.arg(m_pPlugin->channels());
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession) {
-		sAboutText += '\n';
-		sAboutText += '\n';
-		const unsigned long iLatency = m_pPlugin->latency();
-		if (iLatency > 0) {
-			const float fLatencyMs
-				= 1000.0f * float(iLatency) / float(pSession->sampleRate());
-			sAboutText += tr("Latency: %1 ms (%2 frames)")
-				.arg(QString::number(fLatencyMs, 'f', 1))
-				.arg(iLatency);
-		} else {
-			sAboutText += tr("(no latency)");
-		}
-	}
-
-	m_ui.AboutTextLabel->setText(sAboutText);
+	updateAboutTextLabel();
 }
 
 
@@ -1016,9 +984,13 @@ void qtractorPluginForm::refresh (void)
 
 	qtractorSubject::resetQueue();
 
+	updateAboutTextLabel();
+
 	m_iDirtyCount = 0;
 	m_ui.PresetComboBox->blockSignals(bBlockSignals);
 	--m_iUpdate;
+
+	stabilize();
 }
 
 
@@ -1098,7 +1070,6 @@ void qtractorPluginForm::showEvent ( QShowEvent *pShowEvent )
 
 	// Make sure all plugin-data is up-to-date...
 	refresh();
-	stabilize();
 }
 
 
@@ -1137,6 +1108,42 @@ void qtractorPluginForm::midiControlMenuSlot ( const QPoint& pos )
 {
 	qtractorMidiControlObserverForm::midiControlMenu(
 		qobject_cast<QWidget *> (sender()), pos);
+}
+
+
+// Update the about text label (with some varying meta-data)...
+void qtractorPluginForm::updateAboutTextLabel (void)
+{
+	if (m_pPlugin == NULL)
+		return;
+
+	qtractorPluginType *pType = m_pPlugin->type();
+	QString sAboutText = pType->aboutText();
+	sAboutText += '\n';
+	sAboutText += '\n';
+	sAboutText += tr("%1 [%2], %3 instance(s), %4 channel(s).")
+		.arg(pType->filename())
+		.arg(pType->index())
+		.arg(m_pPlugin->instances())
+		.arg(m_pPlugin->channels());
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		sAboutText += '\n';
+		sAboutText += '\n';
+		const unsigned long iLatency = m_pPlugin->latency();
+		if (iLatency > 0) {
+			const float fLatencyMs
+				= 1000.0f * float(iLatency) / float(pSession->sampleRate());
+			sAboutText += tr("Latency: %1 ms (%2 frames)")
+				.arg(QString::number(fLatencyMs, 'f', 1))
+				.arg(iLatency);
+		} else {
+			sAboutText += tr("(no latency)");
+		}
+	}
+
+	m_ui.AboutTextLabel->setText(sAboutText);
 }
 
 

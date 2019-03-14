@@ -1626,9 +1626,6 @@ void qtractorPluginList::resetBuffers (void)
 	// Restore activation count.
 	m_iActivated = iActivated;
 #endif
-
-	// Recalculate total plugin chain latency...
-	updateLatency();
 }
 
 
@@ -2296,14 +2293,20 @@ bool qtractorPluginList::checkPluginFile (
 
 
 // Recalculate plugin chain total latency (in frames).
-void qtractorPluginList::updateLatency (void)
+void qtractorPluginList::resetLatency (void)
 {
 	m_iLatency = 0;
 
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
-		if (pPlugin->isActivated())
+		if (pPlugin->isActivated()) {
+			// HACK: Dummy plugin processing for just one single
+			// dummy frame, hopefully updating any output ports...
+			if (m_pppBuffers[1])
+				pPlugin->process(m_pppBuffers[1], m_pppBuffers[1], 1);
+			// Accumulate chain latency...
 			m_iLatency += pPlugin->latency();
+		}
 	}
 }
 
