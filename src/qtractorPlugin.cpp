@@ -2308,18 +2308,24 @@ void qtractorPluginList::resetLatency (void)
 {
 	m_iLatency = 0;
 
-	if (m_bLatency) {
-		qtractorPlugin *pPlugin = first();
-		while (pPlugin) {
-			if (pPlugin->isActivated()) {
-				// HACK: Dummy plugin processing for just one single
-				// dummy frame, hopefully updating any output ports...
-				if (m_pppBuffers[1])
-					pPlugin->process(m_pppBuffers[1], m_pppBuffers[1], 1);
-				// Accumulate chain latency...
-				m_iLatency += pPlugin->latency();
+	if (!m_bLatency)
+		return;
+
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (pPlugin->isActivated()) {
+			// HACK: Dummy plugin processing for just one single
+			// dummy frame, hopefully updating any output ports...
+			if (m_iChannels > 0 && m_pppBuffers[1]) {
+				static float s_fDummy = 0.0f;
+				float *ppIDummy[m_iChannels];
+				for (unsigned short i = 0; i < m_iChannels; ++i)
+					ppIDummy[i] = &s_fDummy;
+				float **ppODummy = m_pppBuffers[1];
+				pPlugin->process(ppIDummy, ppODummy, 1);
 			}
-			pPlugin = pPlugin->next();
+			// Accumulate latency...
+			m_iLatency += pPlugin->latency();
 		}
 	}
 }
