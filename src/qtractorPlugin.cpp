@@ -1432,7 +1432,7 @@ qtractorPluginList::qtractorPluginList (
 		m_iMidiBank(-1), m_iMidiProg(-1),
 		m_pMidiProgramSubject(NULL),
 		m_bAutoDeactivated(false),
-		m_iLatency(0)
+		m_bLatency(false), m_iLatency(0)
 {
 	setAutoDelete(true);
 
@@ -1875,12 +1875,15 @@ bool qtractorPluginList::loadElement (
 	m_sAudioOutputBusName.clear();
 	m_audioOutputs.clear();
 
+	m_bLatency = false;
+	m_iLatency = 0;
+
 	// Load plugin-list children...
 	for (QDomNode nPlugin = pElement->firstChild();
 			!nPlugin.isNull();
 				nPlugin = nPlugin.nextSibling()) {
 
-		// Convert clip node to element...
+		// Convert plugin node to element...
 		QDomElement ePlugin = nPlugin.toElement();
 		if (ePlugin.isNull())
 			continue;
@@ -2050,6 +2053,10 @@ bool qtractorPluginList::loadElement (
 		if (ePlugin.tagName() == "audio-outputs") {
 			qtractorBus::loadConnects(m_audioOutputs, pDocument, &ePlugin);
 		}
+		else
+		if (ePlugin.tagName() == "latency") {
+			m_bLatency = qtractorDocument::boolFromText(ePlugin.text());
+		}
 		// Make up audio output bus ...
 		setAudioOutputBusName(m_sAudioOutputBusName);
 		setAudioOutputAutoConnect(m_bAudioOutputAutoConnect);
@@ -2187,6 +2194,10 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		}
 	}
 
+	// Plugin delay/latency compensation enablement...
+	if (m_bLatency) pDocument->saveTextElement("latency",
+		qtractorDocument::textFromBool(m_bLatency), pElement);
+
 	return true;
 }
 
@@ -2292,20 +2303,23 @@ bool qtractorPluginList::checkPluginFile (
 }
 
 
-// Recalculate plugin chain total latency (in frames).
+// Recalculate plugin chain total latency (in frames)...
 void qtractorPluginList::resetLatency (void)
 {
 	m_iLatency = 0;
 
-	for (qtractorPlugin *pPlugin = first();
-			pPlugin; pPlugin = pPlugin->next()) {
-		if (pPlugin->isActivated()) {
-			// HACK: Dummy plugin processing for just one single
-			// dummy frame, hopefully updating any output ports...
-			if (m_pppBuffers[1])
-				pPlugin->process(m_pppBuffers[1], m_pppBuffers[1], 1);
-			// Accumulate chain latency...
-			m_iLatency += pPlugin->latency();
+	if (m_bLatency) {
+		qtractorPlugin *pPlugin = first();
+		while (pPlugin) {
+			if (pPlugin->isActivated()) {
+				// HACK: Dummy plugin processing for just one single
+				// dummy frame, hopefully updating any output ports...
+				if (m_pppBuffers[1])
+					pPlugin->process(m_pppBuffers[1], m_pppBuffers[1], 1);
+				// Accumulate chain latency...
+				m_iLatency += pPlugin->latency();
+			}
+			pPlugin = pPlugin->next();
 		}
 	}
 }
