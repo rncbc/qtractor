@@ -11459,12 +11459,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1138"/>
         <source>Latency: %1 ms (%2 frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>Latence : %1 ms (%2 trames)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1142"/>
         <source>(no latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>(pas de latence)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="909"/>
