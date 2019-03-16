@@ -3833,7 +3833,7 @@ void qtractorMainForm::trackImportAudio (void)
 		const unsigned long iClipStart = m_pSession->editHead();
 		qtractorTrack *pTrack = m_pTracks->currentTrack();
 		m_pTracks->addAudioTracks(
-			m_pFiles->audioListView()->openFileNames(), iClipStart, pTrack);
+			m_pFiles->audioListView()->openFileNames(), iClipStart, 0, 0, pTrack);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
 }

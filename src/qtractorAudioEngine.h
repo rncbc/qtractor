@@ -145,6 +145,11 @@ public:
 	void setExporting(bool bExporting);
 	bool isExporting() const;
 
+	// Last known export extents accessors.
+	unsigned long exportStart() const;
+	unsigned long exportOffset() const;
+	unsigned long exportLength() const;
+
 	// Audio-export method.
 	bool fileExport(const QString& sExportPath,
 		const QList<qtractorAudioBus *>& exportBuses,
@@ -289,6 +294,7 @@ private:
 	// Audio-export (in)active state.
 	volatile bool        m_bExporting;
 	qtractorAudioFile   *m_pExportFile;
+	unsigned long        m_iExportOffset;
 	unsigned long        m_iExportStart;
 	unsigned long        m_iExportEnd;
 	volatile bool        m_bExportDone;

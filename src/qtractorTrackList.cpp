@@ -1715,7 +1715,7 @@ void qtractorTrackList::dropEvent ( QDropEvent *pDropEvent )
 	if (!midi_files.isEmpty())
 		m_pTracks->addMidiTracks(midi_files, iClipStart, pAfterTrack);
 	if (!audio_files.isEmpty())
-		m_pTracks->addAudioTracks(audio_files, iClipStart, pAfterTrack);
+		m_pTracks->addAudioTracks(audio_files, iClipStart, 0, 0, pAfterTrack);
 
 	if (midi_files.isEmpty() && audio_files.isEmpty()) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

@@ -502,6 +502,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_pExportFile  = NULL;
 	m_pExportBuses = NULL;
 	m_pExportBuffer = NULL;
+	m_iExportOffset = 0;
 	m_iExportStart = 0;
 	m_iExportEnd   = 0;
 	m_bExportDone  = true;
@@ -1173,7 +1174,7 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 	const unsigned long iFrameEnd   = iFrameStart + nframes;
 
 	// Write output bus buffers to export audio file...
-	if (iFrameStart < m_iExportEnd && iFrameEnd > m_iExportStart) {
+	if (iFrameStart < m_iExportEnd) {
 		// Prepare mix-down buffer...
 		m_pExportBuffer->process_prepare(nframes);
 		// Force/sync every audio clip approaching...
@@ -1442,6 +1443,24 @@ bool qtractorAudioEngine::isExporting (void) const
 }
 
 
+// Last known export accessors.
+unsigned long qtractorAudioEngine::exportStart (void) const
+{
+	return m_iExportStart;
+}
+
+unsigned long qtractorAudioEngine::exportOffset (void) const
+{
+	return m_iExportOffset;
+}
+
+unsigned long qtractorAudioEngine::exportLength (void) const
+{
+	return (m_iExportEnd > m_iExportStart ? m_iExportEnd - m_iExportStart : 0);
+}
+
+
+
 // Audio-export method.
 bool qtractorAudioEngine::fileExport (
 	const QString& sExportPath, const QList<qtractorAudioBus *>& exportBuses,
@@ -1525,9 +1544,29 @@ bool qtractorAudioEngine::fileExport (
 		pAudioBus->setMonitor(false);
 	}
 
+	// Make sure all track latencies are reset and
+	// maximum track latency is acquainted as offset...
+	m_iExportOffset = 0;
+
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (!pTrack->isMute() && (!pSession->soloTracks() || pTrack->isSolo())) {
+			qtractorPluginList *pPluginList = pTrack->pluginList();
+			if (pPluginList) {
+				pPluginList->resetLatency();
+				const unsigned long iLatency = pPluginList->latency();
+				if (m_iExportOffset < iLatency)
+					m_iExportOffset = iLatency;
+			}
+		}
+	}
+
+	if (m_iExportOffset > m_iExportStart)
+		m_iExportOffset = m_iExportStart;
+
 	// Because we'll have to set the export conditions...
 	pSession->setLoop(0, 0);
-	pSession->setPlayHead(m_iExportStart);
+	pSession->setPlayHead(m_iExportStart - m_iExportOffset);
 
 	// Special initialization.
 	m_iBufferOffset = 0;
@@ -1582,8 +1621,8 @@ bool qtractorAudioEngine::fileExport (
 	m_pExportBuses = NULL;
 	m_pExportFile  = NULL;
 	m_pExportBuffer = NULL;
-	m_iExportStart = 0;
-	m_iExportEnd   = 0;
+//	m_iExportStart = 0;
+//	m_iExportEnd   = 0;
 	m_bExportDone  = true;
 
 	// Back to business..
