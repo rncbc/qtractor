@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Plugin latency/delay compensation is now intrduced
+  as an option to tracks only. (HIGHLY EXPERIMENTAL)
+
 - Refactored all singleton/unique application instance
   setup logic away from X11/Xcb hackery. (EXPERIMENTAL)
 
