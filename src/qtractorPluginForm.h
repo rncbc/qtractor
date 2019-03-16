@@ -122,7 +122,7 @@ protected:
 	void hideEvent(QHideEvent *);
 
 	// Update the about text label (with some varying meta-data)...
-	void updateAboutTextLabel();
+	void updateLatencyTextLabel();
 
 private:
 

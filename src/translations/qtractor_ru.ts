@@ -11185,41 +11185,41 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1124"/>
+        <location filename="../qtractorPluginForm.cpp" line="329"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="439"/>
-        <location filename="../qtractorPluginForm.cpp" line="460"/>
+        <location filename="../qtractorPluginForm.cpp" line="447"/>
+        <location filename="../qtractorPluginForm.cpp" line="468"/>
         <source>(none)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="553"/>
+        <location filename="../qtractorPluginForm.cpp" line="561"/>
         <source>Open Preset</source>
         <translation>Открыть предустановку</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="556"/>
-        <location filename="../qtractorPluginForm.cpp" line="652"/>
+        <location filename="../qtractorPluginForm.cpp" line="564"/>
+        <location filename="../qtractorPluginForm.cpp" line="660"/>
         <source>Preset files (*.%1)</source>
         <translation>Файлы предустановок (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="557"/>
-        <location filename="../qtractorPluginForm.cpp" line="653"/>
+        <location filename="../qtractorPluginForm.cpp" line="565"/>
+        <location filename="../qtractorPluginForm.cpp" line="661"/>
         <source>All files (*.*)</source>
         <translation type="unfinished">Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="598"/>
-        <location filename="../qtractorPluginForm.cpp" line="697"/>
+        <location filename="../qtractorPluginForm.cpp" line="606"/>
+        <location filename="../qtractorPluginForm.cpp" line="705"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="599"/>
+        <location filename="../qtractorPluginForm.cpp" line="607"/>
         <source>Preset could not be loaded from file:
 
 &quot;%1&quot;.
@@ -11228,12 +11228,12 @@ Sorry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="650"/>
+        <location filename="../qtractorPluginForm.cpp" line="658"/>
         <source>Save Preset</source>
         <translation>Сохранить предустановку</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="698"/>
+        <location filename="../qtractorPluginForm.cpp" line="706"/>
         <source>Preset could not be saved to file:
 
 &quot;%1&quot;.
@@ -11242,12 +11242,12 @@ Sorry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="730"/>
+        <location filename="../qtractorPluginForm.cpp" line="738"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="731"/>
+        <location filename="../qtractorPluginForm.cpp" line="739"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -11260,17 +11260,17 @@ Are you sure?</source>
 Вы уверены?</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1138"/>
+        <location filename="../qtractorPluginForm.cpp" line="1137"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1142"/>
+        <location filename="../qtractorPluginForm.cpp" line="1141"/>
         <source>(no latency)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="909"/>
+        <location filename="../qtractorPluginForm.cpp" line="917"/>
         <source>&amp;None</source>
         <translation type="unfinished">&amp;Снять выделение</translation>
     </message>
@@ -11280,92 +11280,92 @@ Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="55"/>
+        <location filename="../qtractorPluginForm.ui" line="61"/>
         <source>Open preset</source>
         <translation>Открыть предустановку</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="74"/>
+        <location filename="../qtractorPluginForm.ui" line="80"/>
         <source>Preset name</source>
         <translation>Название предустановки</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="87"/>
+        <location filename="../qtractorPluginForm.ui" line="93"/>
         <source>Save preset</source>
         <translation>Сохранить предустановку</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="103"/>
+        <location filename="../qtractorPluginForm.ui" line="109"/>
         <source>Delete preset</source>
         <translation>Удалить предустановку</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="135"/>
+        <location filename="../qtractorPluginForm.ui" line="141"/>
         <source>Edit plugin</source>
         <translation>Изменить параметры эффекта</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="138"/>
+        <location filename="../qtractorPluginForm.ui" line="144"/>
         <source>Edit</source>
         <translation>Изменить</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="157"/>
+        <location filename="../qtractorPluginForm.ui" line="163"/>
         <source>Activate plugin</source>
         <translation>Активировать эффект</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="160"/>
+        <location filename="../qtractorPluginForm.ui" line="166"/>
         <source>Active</source>
         <translation>Активен</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="179"/>
+        <location filename="../qtractorPluginForm.ui" line="185"/>
         <source>About</source>
         <translation type="unfinished">О программе</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="241"/>
+        <location filename="../qtractorPluginForm.ui" line="254"/>
         <source>Outputs (Sends)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="244"/>
+        <location filename="../qtractorPluginForm.ui" line="257"/>
         <source>Sends</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="257"/>
+        <location filename="../qtractorPluginForm.ui" line="270"/>
         <source>Inputs (Returns)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="260"/>
+        <location filename="../qtractorPluginForm.ui" line="273"/>
         <source>Returns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="270"/>
+        <location filename="../qtractorPluginForm.ui" line="283"/>
         <source>Aux Send Bus:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="295"/>
+        <location filename="../qtractorPluginForm.ui" line="308"/>
         <source>Manage buses</source>
         <translation type="unfinished">Настроить шины</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="298"/>
+        <location filename="../qtractorPluginForm.ui" line="311"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="336"/>
+        <location filename="../qtractorPluginForm.ui" line="349"/>
         <source>Direct Access Parameter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="339"/>
+        <location filename="../qtractorPluginForm.ui" line="352"/>
         <source>Direct Access</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11535,7 +11535,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1566"/>
+        <location filename="../qtractorPluginForm.cpp" line="1562"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>

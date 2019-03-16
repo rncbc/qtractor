@@ -1220,7 +1220,7 @@ qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 	m_pfnProcessAdd = neon_process_add;
 	if (false)
 #endif
-    {
+	{
 		m_pfnProcessAdd = std_process_add;
 	}
 

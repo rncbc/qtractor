@@ -323,8 +323,16 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.NameTextLabel->setText(pType->name());
 	m_ui.TypeHintTextLabel->setText(
 		qtractorPluginType::textFromHint(pType->typeHint()));
-
-	updateAboutTextLabel();
+	QString sAboutText = pType->aboutText();
+	sAboutText += '\n';
+	sAboutText += '\n';
+	sAboutText += tr("%1 [%2], %3 instance(s), %4 channel(s).")
+		.arg(pType->filename())
+		.arg(pType->index())
+		.arg(m_pPlugin->instances())
+		.arg(m_pPlugin->channels());
+	m_ui.AboutTextLabel->setText(sAboutText);
+	updateLatencyTextLabel();
 
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
@@ -805,7 +813,7 @@ void qtractorPluginForm::currentChangedSlot ( int iTab )
 	if (iTab < m_ui.TabWidget->count() - 1)
 		return;
 
-	updateAboutTextLabel();
+	updateLatencyTextLabel();
 }
 
 
@@ -984,7 +992,7 @@ void qtractorPluginForm::refresh (void)
 
 	qtractorSubject::resetQueue();
 
-	updateAboutTextLabel();
+	updateLatencyTextLabel();
 
 	m_iDirtyCount = 0;
 	m_ui.PresetComboBox->blockSignals(bBlockSignals);
@@ -1112,38 +1120,26 @@ void qtractorPluginForm::midiControlMenuSlot ( const QPoint& pos )
 
 
 // Update the about text label (with some varying meta-data)...
-void qtractorPluginForm::updateAboutTextLabel (void)
+void qtractorPluginForm::updateLatencyTextLabel (void)
 {
 	if (m_pPlugin == NULL)
 		return;
 
-	qtractorPluginType *pType = m_pPlugin->type();
-	QString sAboutText = pType->aboutText();
-	sAboutText += '\n';
-	sAboutText += '\n';
-	sAboutText += tr("%1 [%2], %3 instance(s), %4 channel(s).")
-		.arg(pType->filename())
-		.arg(pType->index())
-		.arg(m_pPlugin->instances())
-		.arg(m_pPlugin->channels());
-
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession) {
-		sAboutText += '\n';
-		sAboutText += '\n';
-		const unsigned long iLatency = m_pPlugin->latency();
-		if (iLatency > 0) {
-			const float fLatencyMs
-				= 1000.0f * float(iLatency) / float(pSession->sampleRate());
-			sAboutText += tr("Latency: %1 ms (%2 frames)")
-				.arg(QString::number(fLatencyMs, 'f', 1))
-				.arg(iLatency);
-		} else {
-			sAboutText += tr("(no latency)");
-		}
-	}
+	if (pSession == NULL)
+		return;
 
-	m_ui.AboutTextLabel->setText(sAboutText);
+	const unsigned long iLatency = m_pPlugin->latency();
+	if (iLatency > 0) {
+		const float fLatencyMs
+			= 1000.0f * float(iLatency) / float(pSession->sampleRate());
+		m_ui.LatencyTextLabel->setText(
+			tr("Latency: %1 ms (%2 frames)")
+				.arg(QString::number(fLatencyMs, 'f', 1))
+				.arg(iLatency));
+	} else {
+		m_ui.LatencyTextLabel->setText(tr("(no latency)"));
+	}
 }
 
 
