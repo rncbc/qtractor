@@ -169,6 +169,10 @@ public:
 	// Track plugin-chain accessor.
 	qtractorPluginList *pluginList() const;
 
+	// Plugin latency compensation accessors.
+	void setPluginListLatency(bool bPluginListLatency);
+	bool isPluginListLatency() const;
+
 	// Base height (in pixels).
 	enum { HeightMin = 24, HeightBase = 72 };
 
@@ -318,6 +322,7 @@ public:
 		float          panning;
 		QString        inputBusName;
 		QString        outputBusName;
+		bool           pluginListLatency;
 		bool           midiOmni;
 		unsigned short midiChannel;
 		int            midiBankSelMethod;

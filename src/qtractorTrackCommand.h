@@ -246,8 +246,6 @@ private:
 
 	// Instance variables.
 	qtractorTrack *m_pTrack;
-
-	bool m_bPluginListLatency;
 };
 
 

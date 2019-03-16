@@ -724,14 +724,6 @@ qtractorEditTrackCommand::qtractorEditTrackCommand (
 		QObject::tr("track properties"), pTrack->properties(), props)
 {
 	m_pTrack = pTrack;
-
-	m_bPluginListLatency = false;
-
-	qtractorPluginList *pPluginList = NULL;
-	if (m_pTrack)
-		pPluginList = m_pTrack->pluginList();
-	if (pPluginList)
-		m_bPluginListLatency = pPluginList->isLatency();
 }
 
 
@@ -770,14 +762,6 @@ bool qtractorEditTrackCommand::redo (void)
 
 	// Release track-name from uniqueness...
 	pSession->releaseTrackName(m_pTrack);
-
-	qtractorPluginList *pPluginList = m_pTrack->pluginList();
-	const bool bPluginListLatency
-		= (pPluginList ? pPluginList->isLatency() : false);
-	if (pPluginList) {
-		pPluginList->setLatency(m_bPluginListLatency);
-		m_bPluginListLatency = bPluginListLatency;
-	}
 
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();

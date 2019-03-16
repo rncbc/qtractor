@@ -220,6 +220,7 @@ void qtractorTrack::Properties::clear (void)
 	panning     = 0.0f;
 	inputBusName.clear();
 	outputBusName.clear();
+	pluginListLatency = false;
 	midiOmni    = false;
 	midiChannel = 0;
 	midiBankSelMethod = -1;
@@ -246,6 +247,7 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 		panning     = props.panning;
 		inputBusName  = props.inputBusName;
 		outputBusName = props.outputBusName;
+		pluginListLatency = props.pluginListLatency;
 		midiOmni    = props.midiOmni;
 		midiChannel = props.midiChannel;
 		midiBankSelMethod = props.midiBankSelMethod;
@@ -612,6 +614,9 @@ bool qtractorTrack::open (void)
 		// That's it...
 		delete pMonitor;
 	}
+
+	// Set on plug-list latency compensation...
+	m_pPluginList->setLatency(m_props.pluginListLatency);
 
 	// Ah, at least make new name feedback...
 	updateTrackName();
@@ -1053,6 +1058,18 @@ qtractorMonitor *qtractorTrack::monitor (void) const
 qtractorPluginList *qtractorTrack::pluginList (void) const
 {
 	return m_pPluginList;
+}
+
+
+// Plugin latency compensation accessors.
+void qtractorTrack::setPluginListLatency ( bool bPluginListLatency )
+{
+	m_props.pluginListLatency = bPluginListLatency;
+}
+
+bool qtractorTrack::isPluginListLatency (void) const
+{
+	return m_props.pluginListLatency;
 }
 
 
@@ -1707,6 +1724,9 @@ bool qtractorTrack::loadElement (
 					qtractorTrack::setInputBusName(eProp.text());
 				else if (eProp.tagName() == "output-bus")
 					qtractorTrack::setOutputBusName(eProp.text());
+				else if (eProp.tagName() == "plugin-list-latency")
+					qtractorTrack::setPluginListLatency(
+						qtractorDocument::boolFromText(eProp.text()));
 				else if (eProp.tagName() == "midi-omni")
 					qtractorTrack::setMidiOmni(
 						qtractorDocument::boolFromText(eProp.text()));
@@ -1846,6 +1866,9 @@ bool qtractorTrack::saveElement (
 		qtractorTrack::inputBusName(), &eProps);
 	pDocument->saveTextElement("output-bus",
 		qtractorTrack::outputBusName(), &eProps);
+	const bool bPluginListLatency = qtractorTrack::isPluginListLatency();
+	if (bPluginListLatency) pDocument->saveTextElement("plugin-list-latency",
+		qtractorDocument::textFromBool(bPluginListLatency), &eProps);
 	if (qtractorTrack::trackType() == qtractorTrack::Midi) {
 		pDocument->saveTextElement("midi-omni",
 			qtractorDocument::textFromBool(qtractorTrack::isMidiOmni()), &eProps);
