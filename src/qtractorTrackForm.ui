@@ -109,16 +109,7 @@
          <property name="spacing">
           <number>4</number>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
@@ -130,16 +121,7 @@
             <property name="spacing">
              <number>4</number>
             </property>
-            <property name="leftMargin">
-             <number>8</number>
-            </property>
-            <property name="topMargin">
-             <number>8</number>
-            </property>
-            <property name="rightMargin">
-             <number>8</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>8</number>
             </property>
             <item>
@@ -174,16 +156,7 @@
             <property name="spacing">
              <number>4</number>
             </property>
-            <property name="leftMargin">
-             <number>8</number>
-            </property>
-            <property name="topMargin">
-             <number>8</number>
-            </property>
-            <property name="rightMargin">
-             <number>8</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>8</number>
             </property>
             <item>
@@ -260,16 +233,7 @@
           <string>MIDI / Instrument</string>
          </property>
          <layout class="QGridLayout">
-          <property name="leftMargin">
-           <number>8</number>
-          </property>
-          <property name="topMargin">
-           <number>8</number>
-          </property>
-          <property name="rightMargin">
-           <number>8</number>
-          </property>
-          <property name="bottomMargin">
+          <property name="margin">
            <number>8</number>
           </property>
           <property name="spacing">
@@ -406,16 +370,7 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <property name="leftMargin">
-           <number>8</number>
-          </property>
-          <property name="topMargin">
-           <number>8</number>
-          </property>
-          <property name="rightMargin">
-           <number>8</number>
-          </property>
-          <property name="bottomMargin">
+          <property name="margin">
            <number>8</number>
           </property>
           <item>

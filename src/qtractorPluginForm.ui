@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
@@ -34,14 +33,7 @@
    <string>Plugin Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">
-    <normaloff>:/images/trackProperties.png</normaloff>:/images/trackProperties.png</iconset>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>480</width>
-    <height>240</height>
-   </size>
+   <iconset resource="qtractor.qrc">:/images/trackProperties.png</iconset>
   </property>
   <layout class="QVBoxLayout">
    <property name="spacing">
@@ -124,7 +116,7 @@
        <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" stdset="0">
+       <property name="sizeHint">
         <size>
          <width>20</width>
          <height>20</height>
@@ -216,13 +208,22 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" rowspan="2" colspan="2">
+       <item row="1" column="0" colspan="2">
         <widget class="QLabel" name="AboutTextLabel">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>360</width>
+           <height>60</height>
+          </size>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -232,7 +233,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0" colspan="2">
+       <item row="2" column="0" colspan="2">
         <widget class="QLabel" name="LatencyTextLabel">
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -320,7 +321,7 @@
        <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" stdset="0">
+       <property name="sizeHint">
         <size>
          <width>20</width>
          <height>0</height>
