@@ -12737,7 +12737,7 @@ Voulez-vous abandonner ces changements ?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="631"/>
         <source>Whether to enable plugin latency/delay compensation</source>
-        <translation>S'il faut activer la compensation de latence/délai de greffon</translation>
+        <translation>S&apos;il faut activer la compensation de latence/délai de greffon</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="634"/>

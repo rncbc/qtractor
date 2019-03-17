@@ -3817,7 +3817,8 @@ void qtractorLv2Plugin::lv2_ui_port_write ( uint32_t port_index,
 		return;
 
 #ifdef CONFIG_LV2_UI_TOUCH
-	if (m_ui_params_touch.value(port_index, false))
+	if (m_ui_params_touch.contains(port_index)
+		&& !m_ui_params_touch.value(port_index, false))
 		return;
 #endif
 

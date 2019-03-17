@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed LV2 UI Touch feature/interface implementation.
+
 - Plugin latency/delay compensation is now introduced
   as an option to tracks only (cf. Track/Properties...
   /Latency compensation). (HIGHLY EXPERIMENTAL)
