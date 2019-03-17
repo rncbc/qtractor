@@ -11315,12 +11315,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1137"/>
         <source>Latency: %1 ms (%2 frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>Prodleva: %1 ms (%2 snímků)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1141"/>
         <source>(no latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>(bez prodlevy)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="917"/>
@@ -12860,7 +12860,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="591"/>
         <source>Move plugin up</source>
-        <translation>Přesunout přídavný modul nahoru</translation>
+        <translation>Posunout přídavný modul nahoru</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="594"/>
@@ -12870,7 +12870,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="613"/>
         <source>Move plugin down</source>
-        <translation>Přesunout přídavný modul dolů</translation>
+        <translation>Posunout přídavný modul dolů</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="616"/>
@@ -12880,12 +12880,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="631"/>
         <source>Whether to enable plugin latency/delay compensation</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda se má povolit vyrovnání prodlevy/zpoždění přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="634"/>
         <source>&amp;Latency compensation</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vyrovnání prodlevy/zpoždění</translation>
     </message>
 </context>
 <context>
