@@ -18,7 +18,7 @@ Audio:	%1 canales, %2 Hz</translation>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="756"/>
         <source> (%1 pan)</source>
-        <translation>(%1 pan)</translation>
+        <translation> (%1 pan)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="759"/>
@@ -3770,7 +3770,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1475"/>
         <source>Inport Audio File</source>
-        <translation>Importar Archivos de Audio </translation>
+        <translation>Importar Archivos de Audio</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1478"/>
@@ -5021,7 +5021,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2632"/>
         <source>Change general application program options</source>
-        <translation>Cambiar opciones generales de la aplicación </translation>
+        <translation>Cambiar opciones generales de la aplicación</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2635"/>
@@ -5115,7 +5115,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2732"/>
         <source>Transport loop</source>
-        <translation>Bucle de transporte </translation>
+        <translation>Bucle de transporte</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2735"/>
@@ -7014,7 +7014,7 @@ Valor:	%3</translation>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 bytes)
-Datos:</translation>
+Datos: </translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4989"/>
@@ -8342,7 +8342,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1529"/>
         <source>Transport loop</source>
-        <translation>Bucle de transporte </translation>
+        <translation>Bucle de transporte</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1532"/>
@@ -9144,7 +9144,7 @@ Lo siento.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="182"/>
         <source>Quantize time percent</source>
-        <translation>Porcentaje de cuantización de tiempo </translation>
+        <translation>Porcentaje de cuantización de tiempo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="185"/>
@@ -9192,7 +9192,7 @@ Lo siento.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="291"/>
         <source>Swing-quantize percent</source>
-        <translation>Porcentaje de cuantización del swing </translation>
+        <translation>Porcentaje de cuantización del swing</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="319"/>
@@ -9368,7 +9368,7 @@ Lo siento.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="928"/>
         <source>Resize duration format</source>
-        <translation>Formato de duración para redimensionar </translation>
+        <translation>Formato de duración para redimensionar</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="976"/>
@@ -10867,7 +10867,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3530"/>
         <source>Whether to use out-of-process plugin inventory scan and cache for persistence</source>
-        <translation>Si se debe usar escaneo de inventario de plugins fuera de proceso y persistencia para caché </translation>
+        <translation>Si se debe usar escaneo de inventario de plugins fuera de proceso y persistencia para caché</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3533"/>
@@ -11456,12 +11456,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1137"/>
         <source>Latency: %1 ms (%2 frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>Latencia: %1 ms (%2 cuadros)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1141"/>
         <source>(no latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>(sin latencia)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="917"/>
@@ -12734,12 +12734,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.ui" line="631"/>
         <source>Whether to enable plugin latency/delay compensation</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se habilita el plugin de compensación de latencia/retraso</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="634"/>
         <source>&amp;Latency compensation</source>
-        <translation type="unfinished"></translation>
+        <translation>Compensación de &amp;latencia</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="148"/>
@@ -13151,7 +13151,8 @@ Duración:	%3</translation>
         <location filename="../qtractorTracks.cpp" line="2787"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
-        <translation>Importar archivo de audio &quot;%1&quot; en %2 %3.</translation>
+        <translation>Importar archivo de audio &quot;%1&quot; en %2 %3.
+</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1014"/>
@@ -13164,7 +13165,8 @@ Duración:	%3</translation>
         <location filename="../qtractorTracks.cpp" line="2978"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
-        <translation>Importar archivo MIDI &quot;%1&quot; pista/canal %2 en %3 %4.</translation>
+        <translation>Importar archivo MIDI &quot;%1&quot; pista/canal %2 en %3 %4.
+</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1050"/>
@@ -13274,7 +13276,8 @@ Are you sure?</source>
         <location filename="../qtractorTracks.cpp" line="2907"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
-        <translation>Importar archivo MIDI &quot;%1&quot; en %2 %3.</translation>
+        <translation>Importar archivo MIDI &quot;%1&quot; en %2 %3.
+</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2912"/>
