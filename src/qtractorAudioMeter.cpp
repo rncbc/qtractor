@@ -55,7 +55,7 @@
 // (borrowed from musicdsp.org)
 static inline float log10f2_opt ( float x )
 {
-#ifdef CONFIG_FLOAT32
+#ifdef CONFIG_FLOAT32_NOP
 #	define M_LOG10F20 6.0205999132796239042f // (= 20.0f * M_LN2 / M_LN10)
 	// Avoid strict-aliasing optimization (gcc -O2).
 	union { float f; int i; } u;
