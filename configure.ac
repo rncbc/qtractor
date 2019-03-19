@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.9.4, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.9.6, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -287,9 +287,9 @@ AC_ARG_ENABLE(nsm,
   [ac_nsm="$enableval"],
   [ac_nsm="yes"])
 
-# Enable X11 unique/single instance.
+# Enable unique/single instance.
 AC_ARG_ENABLE(xunique,
-  AS_HELP_STRING([--enable-xunique], [enable X11 unique/single instance (default=no)]),
+  AS_HELP_STRING([--enable-xunique], [enable unique/single instance (default=no)]),
   [ac_xunique="$enableval"],
   [ac_xunique="no"])
 
@@ -1342,14 +1342,11 @@ if test "x$ac_nsm" = "xyes"; then
    AC_DEFINE(CONFIG_NSM, 1, [Define if NSM support is available.])
 fi
 
-# Check for X11 unique/single instance.
-if test "x$ac_xunique" = "xyes"; then
-   PKG_CHECK_MODULES([QT5X11EXTRAS], [Qt5X11Extras], [ac_xunique="yes"], [ac_xunique="no"])
+# Check for VST/X11 support.
+if test "x$ac_vst" = "xyes"; then
+   PKG_CHECK_MODULES([QT5X11EXTRAS], [Qt5X11Extras], [ac_qt5x11extras="yes"], [ac_qt5x11extras="no"])
 fi
-if test "x$ac_xunique" = "xyes"; then
-   AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if X11 unique/single instance is enabled.])
-fi
-if test "x$ac_xunique" = "xyes" -o "x$ac_vst" = "xyes"; then
+if test "x$ac_qt5x11extras" = "xyes"; then
    ac_qx11extras="x11extras"
    # Some recent distros (eg. fedora, debian) require this.
    if test "x$ac_cv_lib_X11_main" = "xyes"; then
@@ -1357,6 +1354,16 @@ if test "x$ac_xunique" = "xyes" -o "x$ac_vst" = "xyes"; then
    fi
 fi
 AC_SUBST(ac_qx11extras)
+
+# Check for unique/single instance support.
+if test "x$ac_xunique" = "xyes"; then
+   PKG_CHECK_MODULES([QT5NETWORK], [Qt5Network], [ac_qt5network="yes"], [ac_qt5network="no"])
+   if test "x$ac_qt5network" = "xyes"; then
+      AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if unique/single instance is enabled.])
+      ac_qnetwork="network"
+   fi
+fi
+AC_SUBST(ac_qnetwork)
 
 # Check for gradient eye-candy.
 if test "x$ac_gradient" = "xyes"; then
@@ -1436,8 +1443,8 @@ echo "  JACK Metadata support  . . . . . . . . . . . . . .: $ac_jack_metadata"
 echo
 echo "  Non Session Management (NSM) support . . . . . . .: $ac_nsm"
 echo
-echo "  X11 Unique/Single instance . . . . . . . . . . . .: $ac_xunique"
 echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
+echo "  Unique/Single instance support . . . . . . . . . .: $ac_xunique"
 echo "  Gradient eye-candy . . . . . . . . . . . . . . . .: $ac_gradient"
 echo "  Debugger stack-trace (gdb) . . . . . . . . . . . .: $ac_stacktrace"
 echo

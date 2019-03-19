@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -165,7 +165,7 @@ qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 	: qtractorPlugin(pList, pLadspaType), m_phInstances(NULL),
 		m_piControlOuts(NULL), m_pfControlOuts(NULL),
 		m_piAudioIns(NULL), m_piAudioOuts(NULL),
-		m_pfIDummy(NULL), m_pfODummy(NULL)
+		m_pfIDummy(NULL), m_pfODummy(NULL), m_pfLatency(NULL)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLadspaPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
@@ -207,6 +207,8 @@ qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 				if (LADSPA_IS_PORT_CONTROL(portType)) {
 					m_piControlOuts[iControlOuts] = i;
 					m_pfControlOuts[iControlOuts] = 0.0f;
+					if (::strcmp(pLadspaDescriptor->PortNames[i], "latency") == 0)
+						m_pfLatency = &m_pfControlOuts[iControlOuts];
 					++iControlOuts;
 				}
 			}

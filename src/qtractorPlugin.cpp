@@ -905,7 +905,7 @@ void qtractorPlugin::releaseConfigs (void)
 	qDebug("qtractorPlugin[%p]::releaseConfigs()", this);
 #endif
 
-	clearConfigs();
+	// Do nothing...
 }
 
 
@@ -1430,7 +1430,9 @@ qtractorPluginList::qtractorPluginList (
 	: m_iChannels(iChannels), m_iFlags(iFlags),
 		m_iActivated(0), m_pMidiManager(NULL),
 		m_iMidiBank(-1), m_iMidiProg(-1),
-		m_pMidiProgramSubject(NULL), m_bAutoDeactivated(false)
+		m_pMidiProgramSubject(NULL),
+		m_bAutoDeactivated(false),
+		m_bLatency(false), m_iLatency(0)
 {
 	setAutoDelete(true);
 
@@ -1873,12 +1875,15 @@ bool qtractorPluginList::loadElement (
 	m_sAudioOutputBusName.clear();
 	m_audioOutputs.clear();
 
+	m_bLatency = false;
+	m_iLatency = 0;
+
 	// Load plugin-list children...
 	for (QDomNode nPlugin = pElement->firstChild();
 			!nPlugin.isNull();
 				nPlugin = nPlugin.nextSibling()) {
 
-		// Convert clip node to element...
+		// Convert plugin node to element...
 		QDomElement ePlugin = nPlugin.toElement();
 		if (ePlugin.isNull())
 			continue;
@@ -2287,6 +2292,31 @@ bool qtractorPluginList::checkPluginFile (
 
 	// No alternative has been found, sorry.
 	return false;
+}
+
+
+// Recalculate plugin chain total latency (in frames)...
+void qtractorPluginList::resetLatency (void)
+{
+	m_iLatency = 0;
+
+	if (!m_bLatency)
+		return;
+
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (pPlugin->isActivated()) {
+			// HACK: Dummy plugin processing for no single
+			// frame, hopefully updating any output ports...
+			if (m_iChannels > 0 && m_pppBuffers[1]) {
+				float **ppIDummy = m_pppBuffers[1];
+				float **ppODummy = ppIDummy;
+				pPlugin->process(ppIDummy, ppODummy, 0);
+			}
+			// Accumulate latency...
+			m_iLatency += pPlugin->latency();
+		}
+	}
 }
 
 

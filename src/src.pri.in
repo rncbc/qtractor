@@ -23,3 +23,9 @@ unix:!macx {
 		QT += x11extras
 	}
 }
+
+# Network support
+QNETWORK = @ac_qnetwork@
+!isEmpty(QNETWORK) {
+	QT += network
+}

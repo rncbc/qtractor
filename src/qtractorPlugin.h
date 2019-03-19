@@ -461,6 +461,10 @@ public:
 	// Plugin configure realization.
 	virtual void realizeConfigs();
 
+	// Plugin current latency (in frames);
+	virtual unsigned long latency() const
+		{ return 0; }
+
 	// GUI Editor stuff.
 	virtual void openEditor(QWidget */*pParent*/= NULL) {}
 	virtual void closeEditor() {};
@@ -929,6 +933,17 @@ public:
 	void autoDeactivatePlugins(bool bDeactivated, bool bForce = false);
 	bool isAutoDeactivated() const;
 
+	// Plugin chain total latency (in frames) methods...
+	void setLatency(bool bLatency)
+		{ m_bLatency = bLatency; }
+	bool isLatency() const
+		{ return m_bLatency; }
+
+	unsigned long latency() const
+		{ return m_iLatency; }
+
+	void resetLatency();
+
 protected:
 
 	// Check/sanitize plugin file-path.
@@ -981,6 +996,10 @@ private:
 
 	// Auto-plugin-deactivation
 	bool m_bAutoDeactivated;
+
+	// Plugin chain total latency (in frames);
+	bool          m_bLatency;
+	unsigned long m_iLatency;
 };
 
 

@@ -27,10 +27,6 @@ unix {
 
 	TARGET_PATH = $${LIBDIR}/$${NAME}
 
-	!exists($${TARGET_PATH}) {
-		system(mkdir -p $${TARGET_PATH})
-	}
-
 	# make install
 	INSTALLS += target
 

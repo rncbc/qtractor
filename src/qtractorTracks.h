@@ -69,7 +69,8 @@ public:
 
 	// Import Audio/MIDI files into new tracks...
 	bool addAudioTracks(const QStringList& files,
-		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
+		unsigned long iClipStart, unsigned long iClipOffset = 0,
+		unsigned long iClipLength = 0, qtractorTrack *pAfterTrack = NULL);
 	bool addMidiTracks(const QStringList& files,
 		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
 	bool addMidiTrackChannel(const QString& sPath, int iTrackChannel,

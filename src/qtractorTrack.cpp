@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -220,6 +220,7 @@ void qtractorTrack::Properties::clear (void)
 	panning     = 0.0f;
 	inputBusName.clear();
 	outputBusName.clear();
+	pluginListLatency = false;
 	midiOmni    = false;
 	midiChannel = 0;
 	midiBankSelMethod = -1;
@@ -246,6 +247,7 @@ qtractorTrack::Properties& qtractorTrack::Properties::copy (
 		panning     = props.panning;
 		inputBusName  = props.inputBusName;
 		outputBusName = props.outputBusName;
+		pluginListLatency = props.pluginListLatency;
 		midiOmni    = props.midiOmni;
 		midiChannel = props.midiChannel;
 		midiBankSelMethod = props.midiBankSelMethod;
@@ -612,6 +614,9 @@ bool qtractorTrack::open (void)
 		// That's it...
 		delete pMonitor;
 	}
+
+	// Set on plug-list latency compensation...
+	m_pPluginList->setLatency(m_props.pluginListLatency);
 
 	// Ah, at least make new name feedback...
 	updateTrackName();
@@ -1056,6 +1061,18 @@ qtractorPluginList *qtractorTrack::pluginList (void) const
 }
 
 
+// Plugin latency compensation accessors.
+void qtractorTrack::setPluginListLatency ( bool bPluginListLatency )
+{
+	m_props.pluginListLatency = bPluginListLatency;
+}
+
+bool qtractorTrack::isPluginListLatency (void) const
+{
+	return m_props.pluginListLatency;
+}
+
+
 // Normalized view height accessors.
 int qtractorTrack::height (void) const
 {
@@ -1337,10 +1354,13 @@ void qtractorTrack::process ( qtractorClip *pClip,
 
 	// Playback...
 	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+		const unsigned long iLatency = m_pPluginList->latency();
+		const unsigned long iFrameStart2 = iFrameStart + iLatency;
+		const unsigned long iFrameEnd2 = iFrameEnd + iLatency;
 		// Now, for every clip...
-		while (pClip && pClip->clipStart() < iFrameEnd) {
-			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
-				pClip->process(iFrameStart, iFrameEnd);
+		while (pClip && pClip->clipStart() < iFrameEnd2) {
+			if (iFrameStart2 < pClip->clipStart() + pClip->clipLength())
+				pClip->process(iFrameStart2, iFrameEnd2);
 			pClip = pClip->next();
 		}
 	}
@@ -1379,10 +1399,13 @@ void qtractorTrack::process_export ( qtractorClip *pClip,
 
 	// Playback...
 	if (!isMute() && (!m_pSession->soloTracks() || isSolo())) {
+		const unsigned long iLatency = m_pPluginList->latency();
+		const unsigned long iFrameStart2 = iFrameStart + iLatency;
+		const unsigned long iFrameEnd2 = iFrameEnd + iLatency;
 		// Now, for every clip...
-		while (pClip && pClip->clipStart() < iFrameEnd) {
-			if (iFrameStart < pClip->clipStart() + pClip->clipLength())
-				pClip->process_export(iFrameStart, iFrameEnd);
+		while (pClip && pClip->clipStart() < iFrameEnd2) {
+			if (iFrameStart2 < pClip->clipStart() + pClip->clipLength())
+				pClip->process_export(iFrameStart2, iFrameEnd2);
 			pClip = pClip->next();
 		}
 	}
@@ -1701,6 +1724,9 @@ bool qtractorTrack::loadElement (
 					qtractorTrack::setInputBusName(eProp.text());
 				else if (eProp.tagName() == "output-bus")
 					qtractorTrack::setOutputBusName(eProp.text());
+				else if (eProp.tagName() == "plugin-list-latency")
+					qtractorTrack::setPluginListLatency(
+						qtractorDocument::boolFromText(eProp.text()));
 				else if (eProp.tagName() == "midi-omni")
 					qtractorTrack::setMidiOmni(
 						qtractorDocument::boolFromText(eProp.text()));
@@ -1840,6 +1866,9 @@ bool qtractorTrack::saveElement (
 		qtractorTrack::inputBusName(), &eProps);
 	pDocument->saveTextElement("output-bus",
 		qtractorTrack::outputBusName(), &eProps);
+	const bool bPluginListLatency = qtractorTrack::isPluginListLatency();
+	if (bPluginListLatency) pDocument->saveTextElement("plugin-list-latency",
+		qtractorDocument::textFromBool(bPluginListLatency), &eProps);
 	if (qtractorTrack::trackType() == qtractorTrack::Midi) {
 		pDocument->saveTextElement("midi-omni",
 			qtractorDocument::textFromBool(qtractorTrack::isMidiOmni()), &eProps);

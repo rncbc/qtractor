@@ -8,12 +8,10 @@ a few features that some might find critical in the application field.
 All is not lost though, the following are among the ones planned to be
 worked on in the times to come (not in any particular order or priority):
 
-- MIDI step-recording.
-- Audio clip auto-crossfading.
-- Clip locking, muting and plug-ins.
+- Clip locking, muting.
 - JACK MIDI support.
 - OSC interface.
 - Scripting.
-- etc. etc.
+- etc.
 
 - Any other feature one can think of ;)

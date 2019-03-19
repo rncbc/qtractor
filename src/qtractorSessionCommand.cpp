@@ -1,7 +1,7 @@
 // qtractorSessionCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -169,7 +169,11 @@ qtractorSessionEditCommand::qtractorSessionEditCommand (
 	const unsigned short iTicksPerBeat = properties.timeScale.ticksPerBeat();
 	if (pSession->ticksPerBeat() != iTicksPerBeat)
 		m_iTicksPerBeat = iTicksPerBeat;
+
+	// To track session-name changes...
+	m_sSessionName = pSession->sessionName();
 }
+
 
 // Destructor.
 qtractorSessionEditCommand::~qtractorSessionEditCommand (void)
@@ -199,8 +203,17 @@ bool qtractorSessionEditCommand::redo (void)
 	if (bResult && m_iTicksPerBeat > 0)
 		pSession->updateTimeResolution();
 
+	if (bResult && !m_sSessionName.isEmpty()) {
+		const QString& sSessionName = pSession->sessionName();
+		if (sSessionName != m_sSessionName) {
+			pSession->renameSession(m_sSessionName, sSessionName);
+			m_sSessionName = sSessionName;
+		}
+	}
+
 	return bResult;
 }
+
 
 bool qtractorSessionEditCommand::undo (void)
 {
@@ -218,6 +231,14 @@ bool qtractorSessionEditCommand::undo (void)
 
 	if (bResult && m_iTicksPerBeat > 0)
 		pSession->updateTimeResolution();
+
+	if (bResult && !m_sSessionName.isEmpty()) {
+		const QString& sSessionName = pSession->sessionName();
+		if (sSessionName != m_sSessionName) {
+			pSession->renameSession(m_sSessionName, sSessionName);
+			m_sSessionName = sSessionName;
+		}
+	}
 
 	return bResult;
 }

@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1988,16 +1988,21 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			case BANK_SELECT_MSB:
 				if (pTrack->midiBank() >= 0)
 					ev.data.control.value = (pTrack->midiBank() & 0x3f80) >> 7;
+				else
+					ev.data.control.value = pEvent->value();
 				break;
 			case BANK_SELECT_LSB:
 				if (pTrack->midiBank() >= 0)
 					ev.data.control.value = (pTrack->midiBank() & 0x7f);
+				else
+					ev.data.control.value = pEvent->value();
 				break;
 			case CHANNEL_VOLUME:
 				ev.data.control.value = int(pTrack->gain() * float(pEvent->value())) & 0x7f;
 				break;
 			default:
 				ev.data.control.value = pEvent->value();
+				break;
 			}
 			break;
 		case qtractorMidiEvent::REGPARAM:
@@ -4155,14 +4160,18 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 
 	// Bank reset to none...
 	if (iBank < 0) {
-		pTrackMidiManager->setCurrentBank(-1);
-		pBusMidiManager->setCurrentBank(-1);
+		if (pTrackMidiManager)
+			pTrackMidiManager->setCurrentBank(-1);
+		if (pBusMidiManager)
+			pBusMidiManager->setCurrentBank(-1);
 	}
 
 	// Program reset to none...
 	if (iProg < 0) {
-		pTrackMidiManager->setCurrentProg(-1);
-		pBusMidiManager->setCurrentProg(-1);
+		if (pTrackMidiManager)
+			pTrackMidiManager->setCurrentProg(-1);
+		if (pBusMidiManager)
+			pBusMidiManager->setCurrentProg(-1);
 	}
 
 //	pMidiEngine->flush();

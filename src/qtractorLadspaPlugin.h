@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -107,6 +107,10 @@ public:
 	unsigned long audioOut(unsigned short i)
 		{ return m_piAudioOuts[i]; }
 
+	// Plugin current latency (in frames);
+	unsigned long latency() const
+		{ return (m_pfLatency ? *m_pfLatency : 0.0f); }
+
 protected:
 
 	// Instance variables.
@@ -123,6 +127,9 @@ protected:
 	// Dummy I/O buffers.
 	float *m_pfIDummy;
 	float *m_pfODummy;
+
+	// Plugin current latency output control port;
+	float *m_pfLatency;
 };
 
 
