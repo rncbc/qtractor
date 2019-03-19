@@ -4,25 +4,25 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.6  2019-03-20  Pre-LAC2019 Release Frenzy.
 
 - Fixed LV2 UI Touch feature/interface implementation.
 
 - Plugin latency/delay compensation is now introduced
   as an option to tracks only (cf. Track/Properties...
-  /Latency compensation). (HIGHLY EXPERIMENTAL)
+  /Latency compensation).
 
 - Refactored all singleton/unique application instance
-  setup logic away from X11/Xcb hackery. (EXPERIMENTAL)
+  setup logic away from X11/Xcb hackery.
 
 - A bit lesser of a naive file-name numbering is now
   in place to avoid as much as possible, the piling
   up of internal curve/automation files when saving
-  existing sessions. (EXPERIMENTAL)
+  existing sessions.
 
 - Maybe just informational but the original MIDI file
   format is now correctly reported across ref-counted
-  linked MIDI clips. (EXPERIMENTAL)
+  linked MIDI clips.
 
 
 0.9.5  2019-02-14  Venntines'19 Hotfix.
