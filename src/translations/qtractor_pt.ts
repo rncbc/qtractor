@@ -11385,12 +11385,12 @@ Desculpe.</translation>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1137"/>
         <source>Latency: %1 ms (%2 frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>Latência: %1 ms (%2 amostras)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1141"/>
         <source>(no latency)</source>
-        <translation type="unfinished"></translation>
+        <translation>(sem latência)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="255"/>
@@ -12543,12 +12543,12 @@ Você deseja descartar essas alterações?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="631"/>
         <source>Whether to enable plugin latency/delay compensation</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre ativar o plugin de compensação de latência/atraso</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="634"/>
         <source>&amp;Latency compensation</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Compensação de latência</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="143"/>
