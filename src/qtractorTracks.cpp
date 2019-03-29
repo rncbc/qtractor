@@ -2711,7 +2711,8 @@ bool qtractorTracks::copyTrack ( qtractorTrack *pTrack )
 
 // Import Audio files into new tracks...
 bool qtractorTracks::addAudioTracks ( const QStringList& files,
-	unsigned long iClipStart, qtractorTrack *pAfterTrack )
+	unsigned long iClipStart, unsigned long iClipOffset,
+	unsigned long iClipLength, qtractorTrack *pAfterTrack )
 {
 	// Have we some?
 	if (files.isEmpty())
@@ -2763,6 +2764,10 @@ bool qtractorTracks::addAudioTracks ( const QStringList& files,
 		qtractorAudioClip *pAudioClip = new qtractorAudioClip(pTrack);
 		pAudioClip->setFilename(sPath);
 		pAudioClip->setClipStart(iClipStart);
+		if (iClipOffset > 0)
+			pAudioClip->setClipOffset(iClipOffset);
+		if (iClipLength > 0)
+			pAudioClip->setClipLength(iClipLength);
 		// Time to add the new track/clip into session;
 		// actuallly, this is when the given audio file gets open...
 		pTrack->addClip(pAudioClip);

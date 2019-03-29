@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,6 +42,8 @@
 
 #include "qtractorFileList.h"
 #include "qtractorFiles.h"
+
+#include "qtractorMainForm.h"
 
 #include <QApplication>
 #include <QDateTime>
@@ -1564,11 +1566,26 @@ QString qtractorSession::createFilePath (
 		sFilename += '-';
 	sFilename += qtractorSession::sanitize(sBaseName) + "-%1." + sExt;
 
-	QFileInfo fi; int iClipNo = 0;
-	fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
+	// If there are any existing, similar filenames,
+	// take the version suffix from the most recent...
+	int iFileNo = 0;
+	QDir dir(m_props.sessionDir);
+	const QStringList filter(sFilename.arg('*'));
+	const QStringList& files
+		= dir.entryList(filter, QDir::Files, QDir::Time);
+	if (!files.isEmpty()) {
+		QRegExp rx(sFilename.arg("([\\d]+)"));
+		if (rx.lastIndexIn(files.first()) >= 0)
+			iFileNo = rx.cap(1).toInt();
+	}
+
+	// Check whether it's not aquired as our own already,
+	// otherwise increment version suffix until it is.
+	if (iFileNo == 0) ++iFileNo;
+	QFileInfo fi(m_props.sessionDir, sFilename.arg(iFileNo));
 	if (!m_filePaths.contains(fi.absoluteFilePath())) {
 		while (fi.exists() || m_filePaths.contains(fi.absoluteFilePath()))
-			fi.setFile(m_props.sessionDir, sFilename.arg(++iClipNo));
+			fi.setFile(m_props.sessionDir, sFilename.arg(++iFileNo));
 		if (bAcquire)
 			m_filePaths.append(fi.absoluteFilePath()); // register new name!
 	}
@@ -2437,6 +2454,107 @@ bool qtractorSession::saveElement (
 	pElement->appendChild(eTracks);
 
 	return true;
+}
+
+
+// Rename session files...
+void qtractorSession::renameSession (
+	const QString& sOldName, const QString& sNewName )
+{
+	// Do nothing if names are obviously the same...
+	if (sOldName == sNewName)
+		return;
+
+	qtractorFiles *pFiles = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pFiles = pMainForm->files();
+	if (pFiles == NULL)
+		return;
+
+	// Lock it up...
+	lock();
+
+	const QRegExp rx('^' + sOldName);
+
+	// For each and every track...
+	for (qtractorTrack *pTrack = m_tracks.first();
+			pTrack; pTrack = pTrack->next()) {
+		// Refer to a proper files-view...
+		qtractorFileListView *pFileListView = NULL;
+		qtractorFileList::Type iFileType = qtractorFileList::Audio;
+		if (pTrack->trackType() == qtractorTrack::Midi) {
+			pFileListView = pFiles->midiListView();
+			iFileType = qtractorFileList::Midi;
+		} else {
+			pFileListView = pFiles->audioListView();
+		//	iFileType = qtractorFileList::Audio;
+		}
+		// For each and every elligible clip...
+		for (qtractorClip *pClip = pTrack->clips().first();
+				pClip; pClip = pClip->next()) {
+			// Rename clip filename prefix...
+			const QFileInfo info1(pClip->filename());
+			QString sFileName = info1.fileName();
+			sFileName.replace(rx, sNewName);
+			QFileInfo info2(info1.dir(), sFileName);
+			// Increment filename suffix if exists already...
+			if (info2.exists()) {
+				int iFileNo = 0;
+				const QRegExp rxFileNo("([0-9]+)$");
+				sFileName = info2.completeBaseName();
+				if (rxFileNo.indexIn(sFileName) >= 0) {
+					iFileNo = rxFileNo.cap(1).toInt();
+					sFileName.remove(rxFileNo);
+				}
+				else sFileName += '-';
+				sFileName += "%1." + info1.suffix();
+				do { info2.setFile(info1.dir(), sFileName.arg(++iFileNo)); }
+				while (info2.exists());
+			}
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorSession::renameSession: \"%s\" -> \"%s\"",
+				info1.fileName().toUtf8().constData(),
+				info2.fileName().toUtf8().constData());
+		#endif
+			const QString& sOldFilePath
+				= info1.absoluteFilePath();
+			const QString& sNewFilePath
+				= info2.absoluteFilePath();
+			if (QFile::rename(sOldFilePath, sNewFilePath)) {
+				// Re-hash clip filenames...
+				if (iFileType == qtractorFileList::Midi) {
+					qtractorMidiClip *pMidiClip
+						= static_cast<qtractorMidiClip *> (pClip);
+					if (pMidiClip)
+						pMidiClip->setFilenameEx(sNewFilePath, false);
+				} else {
+					pClip->close();
+					pClip->setFilename(sNewFilePath);
+					pClip->open();
+				}
+				// Manage files-view item...
+				if (pFileListView) {
+					qtractorFileGroupItem *pGroupItem = NULL;
+					qtractorFileListItem *pFileItem
+						= pFileListView->findFileItem(sOldFilePath);
+					if (pFileItem) {
+						pGroupItem = pFileItem->groupItem();
+						m_pFiles->removeFileItem(iFileType, pFileItem);
+						delete pFileItem;
+					}
+					pFileListView->addFileItem(sNewFilePath, pGroupItem);
+				}
+			}
+		}
+	}
+
+	// If session name has changed, we'll prompt
+	// for correct filename when save is triggered...
+	pMainForm->clearFilename();
+
+	// Done.
+	unlock();
 }
 
 

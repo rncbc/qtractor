@@ -1,7 +1,7 @@
 // qtractorClipSelect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,7 +46,8 @@ public:
 	struct Item
 	{
 		// Item constructor.
-		Item(const QRect& rect) : rectClip(rect), rubberBand(NULL) {}
+		Item(const QRect& clipRect, unsigned long iClipOffset)
+			: rect(clipRect), offset(iClipOffset), rubberBand(NULL) {}
 		// Item destructor.
 		~Item() {
 			if (rubberBand) {
@@ -55,7 +56,8 @@ public:
 			}
 		}
 		// Item members.
-		QRect rectClip;
+		QRect rect;
+		unsigned long offset;
 		qtractorRubberBand *rubberBand;
 	};
 
@@ -63,11 +65,12 @@ public:
 	typedef QMultiHash<qtractorClip *, Item *> ItemList;
 
 	// Clip selection method.
-	void selectItem(qtractorClip *pClip,
-		const QRect& rect, bool bSelect = true);
+	void selectItem(
+		qtractorClip *pClip, const QRect& rect, bool bSelect = true);
 
 	// Clip addition (no actual selection).
-	void addItem(qtractorClip *pClip, const QRect& rect);
+	void addItem(
+		qtractorClip *pClip, const QRect& rect, unsigned long offset);
 
 	// The united selection rectangle.
 	const QRect& rect() const;

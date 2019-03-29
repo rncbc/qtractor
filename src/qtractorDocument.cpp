@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -249,7 +249,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 	// Get root element and check for proper taqg name.
 	QDomElement elem = m_pDocument->documentElement();
 	if (elem.tagName() != m_sTagName)
-	    return false;
+		return false;
 
 	return loadElement(&elem);
 }
@@ -280,6 +280,9 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	const QFileInfo info(sFilename);
 	m_sName = info.completeBaseName();
 	QString sDocname = info.filePath();
+
+	QDir cwd = QDir::current();
+	QDir::setCurrent(info.absolutePath());
 
 	const QIODevice::OpenMode mode
 		= QIODevice::WriteOnly | QIODevice::Truncate;
@@ -335,6 +338,8 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 		if (bRemove) file.remove();
 	}
 #endif
+
+	QDir::setCurrent(cwd.absolutePath());
 
 	return true;
 }

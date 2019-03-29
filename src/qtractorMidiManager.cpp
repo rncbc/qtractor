@@ -722,6 +722,7 @@ void qtractorMidiManager::reset (void)
 	}
 #endif
 
+	m_pPluginList->resetLatency();
 	m_pPluginList->resetBuffers();
 
 	m_controllerBuffer.clear();

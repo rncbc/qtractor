@@ -1,7 +1,7 @@
 // qtractorMidiClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,10 +66,8 @@ public:
 	unsigned short trackChannel() const
 		{ return m_iTrackChannel; }
 
-	void setFormat(unsigned short iFormat)
-		{ m_iFormat = iFormat; }
 	unsigned short format() const
-		{ return m_iFormat; }
+		{ return (m_pData ? m_pData->format() : 0); }
 
 	// (Meta)Session flag accessors.
 	void setSessionFlag(bool bSessionFlag)
@@ -159,10 +157,15 @@ public:
 	public:
 
 		// Constructor.
-		Data() : m_pSeq(new qtractorMidiSequence()) {}
+		Data(unsigned short iFormat)
+			: m_iFormat(iFormat), m_pSeq(new qtractorMidiSequence()) {}
 
 		// Destructor.
 		~Data() { clear(); delete m_pSeq; }
+
+		// Originial format accessor.
+		unsigned short format() const
+			{ return m_iFormat; }
 
 		// Sequence accessor.
 		qtractorMidiSequence *sequence() const
@@ -198,6 +201,8 @@ public:
 	private:
 
 		// Interesting variables.
+		unsigned short m_iFormat;
+
 		qtractorMidiSequence *m_pSeq;
 
 		// Ref-counting related stuff.
@@ -269,8 +274,8 @@ private:
 	qtractorMidiFile *m_pFile;
 
 	unsigned short m_iTrackChannel;
-	unsigned short m_iFormat;
-	bool           m_bSessionFlag;
+
+	bool m_bSessionFlag;
 
 	// Revisionist count.
 	unsigned short m_iRevision;

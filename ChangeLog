@@ -4,16 +4,60 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.6  2019-03-20  Pre-LAC2019 Release Frenzy.
+
+- Fixed LV2 UI Touch feature/interface implementation.
+
+- Plugin latency/delay compensation is now introduced
+  as an option to tracks only (cf. Track/Properties...
+  /Latency compensation).
+
+- Refactored all singleton/unique application instance
+  setup logic away from X11/Xcb hackery.
+
+- A bit lesser of a naive file-name numbering is now
+  in place to avoid as much as possible, the piling
+  up of internal curve/automation files when saving
+  existing sessions.
+
+- Maybe just informational but the original MIDI file
+  format is now correctly reported across ref-counted
+  linked MIDI clips.
+
+
+0.9.5  2019-02-14  Venntines'19 Hotfix.
+
+- HiDPI display screen support (Qt >= 5.6; patch by
+  Hubert Figuiere, thanks).
+
+- Fixed for DSSI plug-ins (eg. fluidsynth-dssi) loss
+  of configuration state: clear internal config/state
+  keys on release virtual method. (REGRESSION)
+
+- Fixed for NSM (and JACK) sessions not saving the
+  correct file references/symlinks of clips that are
+  recorded or created during the initial and scratch
+  session.
+
+
+0.9.4  2019-02-07  Winter'19 Beta.
+
+- Drag-moving and copy-pasting existing clips, while
+  over the main track-view, now shows the respective
+  (audio wave-shapes and MIDI piano-rolls) graphical
+  representations, as much as possible.
+
+- For good and bad, session name changes now trickle
+  down to respective audio/MIDI file names as well.
 
 - Audio output monitoring meters may now be shown on
   MIDI tracks and buses as a default user preference
   option (View/ Options.../Plugins/Instruments/Show
   audio output monitoring meters) and also in plugin
-  list context sub-memu (Audio/Meters). (EXPERIMENTAL)
+  list context sub-menu (Audio/Meters).
 
 - Custom color (palette) themes can be exported to and
-  imported from external files. (EXPERIMENTAL)
+  imported from external files.
 
 - LV2 plug-in UI GTK2 and X11 in Qt5 host native support
   are now enabled on configure by default. (REGRESSION)

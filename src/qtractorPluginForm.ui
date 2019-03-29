@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,15 +26,14 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>180</height>
+    <height>240</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Plugin Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">
-    <normaloff>:/images/trackProperties.png</normaloff>:/images/trackProperties.png</iconset>
+   <iconset resource="qtractor.qrc">:/images/trackProperties.png</iconset>
   </property>
   <layout class="QVBoxLayout">
    <property name="spacing">
@@ -118,7 +116,7 @@
        <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" stdset="0">
+       <property name="sizeHint">
         <size>
          <width>20</width>
          <height>20</height>
@@ -212,17 +210,33 @@
        </item>
        <item row="1" column="0" colspan="2">
         <widget class="QLabel" name="AboutTextLabel">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>360</width>
+           <height>60</height>
+          </size>
+         </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QLabel" name="LatencyTextLabel">
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
          </property>
         </widget>
        </item>
@@ -307,7 +321,7 @@
        <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" stdset="0">
+       <property name="sizeHint">
         <size>
          <width>20</width>
          <height>0</height>

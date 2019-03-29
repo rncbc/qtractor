@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2187,6 +2187,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_iSequenceSize(0)
 	#endif
 	#endif	// CONFIG_LV2_OPTIONS
+		, m_pfLatency(NULL)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLv2Plugin[%p] uri=\"%s\"",
@@ -2339,6 +2340,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			m_piAtomOuts = new unsigned long [iAtomOuts];
 		iAtomIns = iAtomOuts = 0;
 	#endif	// CONFIG_LV2_ATOM
+		const bool bLatency = lilv_plugin_has_latency(plugin);
+		const uint32_t iLatencyPort
+			= (bLatency ? lilv_plugin_get_latency_port_index(plugin) : 0);
 		const unsigned long iNumPorts = lilv_plugin_get_num_ports(plugin);
 		for (unsigned long i = 0; i < iNumPorts; ++i) {
 			const LilvPort *port = lilv_plugin_get_port_by_index(plugin, i);
@@ -2381,6 +2385,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						m_piControlOuts[iControlOuts] = i;
 						m_pfControlOuts[iControlOuts] = 0.0f;
 						m_pfControlOutsLast[iControlOuts] = 0.0f;
+						if (bLatency && iLatencyPort == i)
+							m_pfLatency = &m_pfControlOuts[iControlOuts];
 						++iControlOuts;
 					}
 				}
@@ -3811,7 +3817,8 @@ void qtractorLv2Plugin::lv2_ui_port_write ( uint32_t port_index,
 		return;
 
 #ifdef CONFIG_LV2_UI_TOUCH
-	if (m_ui_params_touch.value(port_index, false))
+	if (m_ui_params_touch.contains(port_index)
+		&& !m_ui_params_touch.value(port_index, false))
 		return;
 #endif
 

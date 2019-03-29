@@ -279,6 +279,9 @@ qtractorTrackForm::qtractorTrackForm (
 	QObject::connect(m_ui.MoveDownPluginToolButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownPlugin()));
+	QObject::connect(m_ui.PluginListLatencyCheckBox,
+		SIGNAL(clicked()),
+		SLOT(changed()));
 
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
@@ -317,8 +320,9 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	qtractorCommandList *pCommands = (m_pTrack->session())->commands();
 	m_pLastCommand = pCommands->lastCommand();
 
-	// Set plugin list...
+	// Set plugin list stuff...
 	m_ui.PluginListView->setPluginList(m_pTrack->pluginList());
+	m_ui.PluginListLatencyCheckBox->setChecked(m_props.pluginListLatency);
 
 	// Initialize dialog widgets...
 	m_ui.TrackNameTextEdit->setPlainText(m_props.trackName);
@@ -437,6 +441,8 @@ void qtractorTrackForm::accept (void)
 		m_props.trackType = trackType();
 		m_props.inputBusName  = m_ui.InputBusNameComboBox->currentText();
 		m_props.outputBusName = m_ui.OutputBusNameComboBox->currentText();
+		// Plugin latency compensation stuff...
+		m_props.pluginListLatency = m_ui.PluginListLatencyCheckBox->isChecked();
 		// Special case for MIDI settings...
 		m_props.midiOmni = m_ui.OmniCheckBox->isChecked();
 		m_props.midiChannel = (m_ui.ChannelSpinBox->value() - 1);

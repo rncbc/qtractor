@@ -1,7 +1,7 @@
 // qtractorAudioEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -144,6 +144,11 @@ public:
 	// Audio-export active state.
 	void setExporting(bool bExporting);
 	bool isExporting() const;
+
+	// Last known export extents accessors.
+	unsigned long exportStart() const;
+	unsigned long exportOffset() const;
+	unsigned long exportLength() const;
 
 	// Audio-export method.
 	bool fileExport(const QString& sExportPath,
@@ -289,6 +294,7 @@ private:
 	// Audio-export (in)active state.
 	volatile bool        m_bExporting;
 	qtractorAudioFile   *m_pExportFile;
+	unsigned long        m_iExportOffset;
 	unsigned long        m_iExportStart;
 	unsigned long        m_iExportEnd;
 	volatile bool        m_bExportDone;

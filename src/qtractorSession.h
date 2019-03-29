@@ -1,7 +1,7 @@
 // qtractorSession.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -406,6 +406,9 @@ public:
 
 	// Session files registry accessor.
 	qtractorFileList *files() const;
+
+	// Rename session files...
+	void renameSession(const QString& sOldName, const QString& sNewName);
 
 	// Pseudo-singleton instance accessor.
 	static qtractorSession *getInstance();

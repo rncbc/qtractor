@@ -10,6 +10,7 @@ include(src.pri)
 #DEFINES += DEBUG
 
 HEADERS += config.h \
+	qtractor.h \
 	qtractorAbout.h \
 	qtractorAtomic.h \
 	qtractorActionControl.h \

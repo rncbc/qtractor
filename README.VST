@@ -1,10 +1,10 @@
 Native VST plug-in support
 --------------------------
 
-Building for VST support is not that easy. To say the least, it might
-not work out of the box. First, due to its licensing issues, you'll
-have to go through the nuisance and download yourself the VST SDK,
-from its site:
+Building for native VST support is not that easy. To say the least,
+it might not work out of the box. First, due to licensing issues,
+you'll have to go through the nuisance and download yourself the
+VST SDK, from its site:
 
   Steinberg Media Technologies GmbH
   http://www.steinberg.net
@@ -12,12 +12,14 @@ from its site:
   Steinberg 3rd Party Developers
   https://www.steinberg.net/en/company/developers.html
 
-It doesn't really matter much whether you pick the older VST 2.x
-or the latest VST 3.x version of the VST SDK, you need to pick one
-and just one only. Do not try to build for the more recent VST 3.x
-or later. It won't work and I won't care :) but still, you may need
+It doesn't really matter much whether you pick an older VST 2.x or
+the latest VST 3.x version of the VST SDK, you need to pick one and
+just one only. Do not try to build for the more recent VST 3.x or
+later: it won't work and I won't care :) but still, you may need
 to download the later anyway, as the former are probably included
-and distributed in that way only nowadays.
+and distributed in that way only. Unfortunately, truth must be told,
+the most recent VST 3 Audio Plugins SDK bundle do not include the
+old VST SDK 2.x anymore. So, yet again, you're on your own.
 
 Once you have downloaded the VST SDK zip-archive, for which you'll
 have to accept their license and supply some personal data, you'll

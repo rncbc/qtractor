@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -279,6 +279,10 @@ public:
 
 	// Plugin configuration/state release.
 	void releaseConfigs();
+
+	// Plugin current latency (in frames);
+	unsigned long latency() const
+		{ return (m_pfLatency ? *m_pfLatency : 0.0f); }
 
 #ifdef CONFIG_LV2_WORKER
 	// LV2 Worker/Schedule extension data interface accessor.
@@ -643,6 +647,9 @@ private:
 	double             m_dSampleRate;
 #endif
 #endif
+
+	// Plugin current latency output control port;
+	float *m_pfLatency;
 };
 
 

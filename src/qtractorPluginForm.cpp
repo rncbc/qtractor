@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -37,6 +37,8 @@
 #include "qtractorObserverWidget.h"
 
 #include "qtractorMidiControlObserverForm.h"
+
+#include "qtractorSpinBox.h"
 
 #include "qtractorBusForm.h"
 
@@ -83,7 +85,7 @@ qtractorPluginForm::qtractorPluginForm (
 	m_pDirectAccessParamMenu = new QMenu();
 	m_ui.DirectAccessParamPushButton->setMenu(m_pDirectAccessParamMenu);
 
-    m_ui.PresetComboBox->setValidator(
+	m_ui.PresetComboBox->setValidator(
 		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetComboBox));
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
 	m_ui.PresetComboBox->setCompleter(NULL);
@@ -115,6 +117,14 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.EditToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(editSlot(bool)));
+	QObject::connect(m_ui.ActivateToolButton,
+		SIGNAL(toggled(bool)),
+		SLOT(activateSlot(bool)));
+
+	QObject::connect(m_ui.TabWidget,
+		SIGNAL(currentChanged(int)),
+		SLOT(currentChangedSlot(int)));
+
 	QObject::connect(m_ui.SendsToolButton,
 		SIGNAL(clicked()),
 		SLOT(sendsSlot()));
@@ -127,9 +137,6 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.AuxSendBusNameToolButton,
 		SIGNAL(clicked()),
 		SLOT(clickAuxSendBusNameSlot()));
-	QObject::connect(m_ui.ActivateToolButton,
-		SIGNAL(toggled(bool)),
-		SLOT(activateSlot(bool)));
 
 	QObject::connect(m_pDirectAccessParamMenu,
 		SIGNAL(aboutToShow()),
@@ -304,10 +311,10 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.AuxSendBusNameComboBox->setVisible(bAuxSendPlugin);
 	m_ui.AuxSendBusNameLabel->setVisible(bAuxSendPlugin);
 	m_ui.AuxSendBusNameToolButton->setVisible(bAuxSendPlugin);
-		
+
 	// Set initial plugin preset name...
 	setPreset(m_pPlugin->preset());
-	
+
 	// Set plugin name as title,
 	// maybe redundant but necessary...
 	m_pPlugin->updateEditorTitle();
@@ -316,7 +323,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.NameTextLabel->setText(pType->name());
 	m_ui.TypeHintTextLabel->setText(
 		qtractorPluginType::textFromHint(pType->typeHint()));
-
 	QString sAboutText = pType->aboutText();
 	sAboutText += '\n';
 	sAboutText += '\n';
@@ -325,8 +331,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		.arg(pType->index())
 		.arg(m_pPlugin->instances())
 		.arg(m_pPlugin->channels());
-
 	m_ui.AboutTextLabel->setText(sAboutText);
+	updateLatencyTextLabel();
 
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
@@ -340,7 +346,6 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	updateActivated();
 	refresh();
-	stabilize();
 }
 
 
@@ -607,7 +612,6 @@ void qtractorPluginForm::openPresetSlot (void)
 	}
 
 	refresh();
-	stabilize();
 }
 
 
@@ -629,7 +633,6 @@ void qtractorPluginForm::savePresetSlot (void)
 	// this is where we'll make it!
 	if (m_pPlugin->savePreset(sPreset)) {
 		refresh();
-		stabilize();
 		return;
 	}
 
@@ -711,7 +714,6 @@ void qtractorPluginForm::savePresetSlot (void)
 	settings.endGroup();
 
 	refresh();
-	stabilize();
 }
 
 
@@ -760,7 +762,6 @@ void qtractorPluginForm::deletePresetSlot (void)
 	}
 
 	refresh();
-	stabilize();
 }
 
 
@@ -781,6 +782,38 @@ void qtractorPluginForm::editSlot ( bool bOn )
 		m_pPlugin->closeEditor();
 
 	--m_iUpdate;
+}
+
+
+// Activation slot.
+void qtractorPluginForm::activateSlot ( bool bOn )
+{
+	if (m_pPlugin == NULL)
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+	++m_iUpdate;
+
+	// Make it a undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pSession->execute(
+			new qtractorActivatePluginCommand(m_pPlugin, bOn));
+
+	--m_iUpdate;
+}
+
+
+// Tab page change slot.
+void qtractorPluginForm::currentChangedSlot ( int iTab )
+{
+	// Make sure we're in the "About" page...
+	if (iTab < m_ui.TabWidget->count() - 1)
+		return;
+
+	updateLatencyTextLabel();
 }
 
 
@@ -915,27 +948,6 @@ void qtractorPluginForm::changeDirectAccessParamSlot (void)
 }
 
 
-// Activation slot.
-void qtractorPluginForm::activateSlot ( bool bOn )
-{
-	if (m_pPlugin == NULL)
-		return;
-
-	if (m_iUpdate > 0)
-		return;
-
-	++m_iUpdate;
-
-	// Make it a undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession)
-		pSession->execute(
-			new qtractorActivatePluginCommand(m_pPlugin, bOn));
-
-	--m_iUpdate;
-}
-
-
 // Parameter-widget refreshner-loader.
 void qtractorPluginForm::refresh (void)
 {
@@ -980,9 +992,13 @@ void qtractorPluginForm::refresh (void)
 
 	qtractorSubject::resetQueue();
 
+	updateLatencyTextLabel();
+
 	m_iDirtyCount = 0;
 	m_ui.PresetComboBox->blockSignals(bBlockSignals);
 	--m_iUpdate;
+
+	stabilize();
 }
 
 
@@ -1062,7 +1078,6 @@ void qtractorPluginForm::showEvent ( QShowEvent *pShowEvent )
 
 	// Make sure all plugin-data is up-to-date...
 	refresh();
-	stabilize();
 }
 
 
@@ -1101,6 +1116,30 @@ void qtractorPluginForm::midiControlMenuSlot ( const QPoint& pos )
 {
 	qtractorMidiControlObserverForm::midiControlMenu(
 		qobject_cast<QWidget *> (sender()), pos);
+}
+
+
+// Update the about text label (with some varying meta-data)...
+void qtractorPluginForm::updateLatencyTextLabel (void)
+{
+	if (m_pPlugin == NULL)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	const unsigned long iLatency = m_pPlugin->latency();
+	if (iLatency > 0) {
+		const float fLatencyMs
+			= 1000.0f * float(iLatency) / float(pSession->sampleRate());
+		m_ui.LatencyTextLabel->setText(
+			tr("Latency: %1 ms (%2 frames)")
+				.arg(QString::number(fLatencyMs, 'f', 1))
+				.arg(iLatency));
+	} else {
+		m_ui.LatencyTextLabel->setText(tr("(no latency)"));
+	}
 }
 
 
@@ -1398,7 +1437,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 			//	pLabel->setMinimumWidth(120);
 				pGridLayout->addWidget(pLabel, 0, 0);
 				const bool bIsInteger = pLv2Prop->isInteger();
-				m_pSpinBox = new QDoubleSpinBox(/*this*/);
+				m_pSpinBox = new qtractorSpinBox(/*this*/);
 				m_pSpinBox->setMinimumWidth(64);
 				m_pSpinBox->setMaximumWidth(96);
 				m_pSpinBox->setDecimals(bIsInteger ? 0 : 3);
@@ -1422,7 +1461,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 
 	if (m_pSpinBox) {
 		QObject::connect(m_pSpinBox,
-			SIGNAL(valueChanged(double)),
+			SIGNAL(valueChangedEx(double)),
 			SLOT(propertyChanged()));
 	}
 

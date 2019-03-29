@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -282,7 +282,9 @@ void qtractorExportForm::accept (void)
 					if (pTracks && m_ui.AddTrackCheckBox->isChecked()) {
 						pTracks->addAudioTracks(
 							QStringList(sExportPath),
-							m_ui.ExportStartSpinBox->value(),
+							pAudioEngine->exportStart(),
+							pAudioEngine->exportOffset(),
+							pAudioEngine->exportLength(),
 							pTracks->currentTrack());
 					}
 					else pMainForm->addAudioFile(sExportPath);

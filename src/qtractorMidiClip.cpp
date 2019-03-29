@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -177,7 +177,6 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_pData = NULL;
 
 	m_iTrackChannel = 0;
-	m_iFormat = defaultFormat();
 	m_bSessionFlag = false;
 	m_iRevision = 0;
 
@@ -198,7 +197,6 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	setClipPanning(clip.clipPanning());
 	setClipName(clip.clipName());
 
-	m_iFormat = clip.format();
 	m_bSessionFlag = false;
 	m_iRevision = clip.revision();
 
@@ -266,7 +264,7 @@ bool qtractorMidiClip::createMidiFile (
 
 	// Initialize MIDI event container...
 	m_pKey  = new Key(this);
-	m_pData = new Data();
+	m_pData = new Data(m_pFile->format());
 	m_pData->attach(this);
 
 	// Right on then...
@@ -375,7 +373,7 @@ bool qtractorMidiClip::openMidiFile (
 	}
 
 	// Initialize MIDI event container...
-	m_pData = new Data();
+	m_pData = new Data(m_pFile->format());
 	m_pData->attach(this);
 
 	qtractorMidiSequence *pSeq = m_pData->sequence();
@@ -414,8 +412,6 @@ bool qtractorMidiClip::openMidiFile (
 			iTrackChannel = 1;
 			++iTracks;
 		}
-		// That's it.
-		setFormat(iFormat);
 		// Write SMF header...
 		if (m_pFile->writeHeader(iFormat, iTracks, pSeq->ticksPerBeat())) {
 			// Set initial local properties...
@@ -429,8 +425,6 @@ bool qtractorMidiClip::openMidiFile (
 		pSeq->setChannel(pTrack->midiChannel());
 		// Nothing more as for writing...
 	} else {
-		// On read mode, SMF format is properly given by open file.
-		setFormat(m_pFile->format());
 		// Read the event sequence in...
 		m_pFile->readTrack(pSeq, iTrackChannel);
 		// For immediate feedback, once...
@@ -703,7 +697,7 @@ void qtractorMidiClip::unlinkHashData (void)
 
 	m_pData->detach(this);
 
-	Data *pNewData = new Data();
+	Data *pNewData = new Data(m_pData->format());
 
 	qtractorMidiSequence *pOldSeq = m_pData->sequence();
 	qtractorMidiSequence *pNewSeq = pNewData->sequence();
@@ -874,7 +868,7 @@ void qtractorMidiClip::close (void)
 		= (m_pFile && m_pFile->mode() == qtractorMidiFile::Write);
 	if (bNewFile && iClipLength > 0 && pSeq) {
 		// Write channel tracks...
-		if (m_iFormat == 1)
+		if (m_pFile->format() == 1)
 			m_pFile->writeTrack(NULL);	// Setup track (SMF format 1).
 		m_pFile->writeTrack(pSeq);		// Channel track.
 		m_pFile->close();
@@ -1224,8 +1218,9 @@ QString qtractorMidiClip::toolTip (void) const
 {
 	QString sToolTip = qtractorClip::toolTip() + ' ';
 
-	sToolTip += QObject::tr("(format %1)\nMIDI:\t").arg(m_iFormat);
-	if (m_iFormat == 0)
+	const unsigned short iFormat = format();
+	sToolTip += QObject::tr("(format %1)\nMIDI:\t").arg(iFormat);
+	if (iFormat == 0)
 		sToolTip += QObject::tr("Channel %1").arg(m_iTrackChannel + 1);
 	else
 		sToolTip += QObject::tr("Track %1").arg(m_iTrackChannel);

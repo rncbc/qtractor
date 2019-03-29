@@ -1,7 +1,7 @@
 // qtractorFileListView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,8 +78,8 @@ public:
 	qtractorFileListItem  *findFileItem(const QString& sPath) const;
 
 	// Make as current selection an existing file item.
-	qtractorFileListItem *selectFileItem(const QString& sPath,
-		int iChannel = -1);
+	qtractorFileListItem *selectFileItem(
+		const QString& sPath, int iChannel = -1);
 
 	// Add a new group item below the current one.
 	void newGroup();

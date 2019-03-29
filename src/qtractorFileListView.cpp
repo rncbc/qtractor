@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -218,8 +218,8 @@ const QString qtractorFileChannelItem::path (void) const
 static const char *c_pszFileChannelMimeType = "qtractor/file-channel";
 
 // Encoder method.
-void qtractorFileChannelDrag::encode ( QMimeData *pMimeData,
-	const qtractorFileChannelDrag::List& items )
+void qtractorFileChannelDrag::encode (
+	QMimeData *pMimeData, const qtractorFileChannelDrag::List& items )
 {
 	// First, compute total serialized data size...
 	unsigned int iSize = sizeof(unsigned short);
@@ -473,7 +473,7 @@ qtractorFileListItem *qtractorFileListView::selectFileItem (
 		return NULL;
 
 	// Shall we go deep further intto a channel item?
-	if (iChannel > 0) {
+	if (iChannel >= 0) {
 		// Open file item...
 		pFileItem->setOpen(true);
 		// Select channel item...
@@ -1345,7 +1345,8 @@ QTreeWidgetItem *qtractorFileListView::dropItem (
 }
 
 // Draw a dragging separator line.
-void qtractorFileListView::moveRubberBand ( QTreeWidgetItem *pDropItem, bool bOutdent )
+void qtractorFileListView::moveRubberBand (
+	QTreeWidgetItem *pDropItem, bool bOutdent )
 {
 	// Is there any item upon we migh drop anything?
 	if (pDropItem == NULL) {
@@ -1381,8 +1382,9 @@ void qtractorFileListView::moveRubberBand ( QTreeWidgetItem *pDropItem, bool bOu
 
 
 // Custom file list loaders.
-bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
-	QDomElement *pElement, QTreeWidgetItem *pItem )
+bool qtractorFileListView::loadListElement (
+	qtractorDocument *pDocument, QDomElement *pElement,
+	QTreeWidgetItem *pItem )
 {
 	if (pItem && pItem->type() != GroupItem)
 		return false;
@@ -1437,8 +1439,8 @@ bool qtractorFileListView::loadListElement ( qtractorDocument *pDocument,
 
 
 // The elemental loader implementation.
-bool qtractorFileListView::loadElement ( qtractorDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorFileListView::loadElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	clear();
 
@@ -1447,8 +1449,9 @@ bool qtractorFileListView::loadElement ( qtractorDocument *pDocument,
 
 
 // Custom file list saver.
-bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
-	QDomElement *pElement, QTreeWidgetItem *pItem )
+bool qtractorFileListView::saveListElement (
+	qtractorDocument *pDocument, QDomElement *pElement,
+	QTreeWidgetItem *pItem )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == NULL)
@@ -1502,8 +1505,8 @@ bool qtractorFileListView::saveListElement ( qtractorDocument *pDocument,
 
 
 // The elemental saver implementation.
-bool qtractorFileListView::saveElement ( qtractorDocument *pDocument,
-	QDomElement *pElement )
+bool qtractorFileListView::saveElement (
+	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	const int iItemCount = QTreeWidget::topLevelItemCount();
 	for (int i = 0; i < iItemCount; ++i)
