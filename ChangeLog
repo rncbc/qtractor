@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- MIDI Controller's Latch mode attribute on tracks and
+  plugins are now properly saved/loaded as meant to be.
+
+
 0.9.6  2019-03-20  Pre-LAC2019 Release Frenzy.
 
 - Fixed LV2 UI Touch feature/interface implementation.
