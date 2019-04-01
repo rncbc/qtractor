@@ -470,8 +470,8 @@ private:
 	int m_iUntitled;
 	int m_iDirtyCount;
 	int m_iBackupCount;
-	QSocketNotifier *m_pUsr1Notifier;
-	QSocketNotifier *m_pTermNotifier;
+	QSocketNotifier *m_pSigUsr1Notifier;
+	QSocketNotifier *m_pSigTermNotifier;
 	QActionGroup *m_pSelectModeActionGroup;
 	QToolButton *m_pSelectModeToolButton;
 	QActionGroup *m_pTransportModeActionGroup;

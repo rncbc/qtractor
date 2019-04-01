@@ -416,7 +416,7 @@ void stacktrace ( int signo )
 	char cmd[80];
 
 	// Reinstall default handler; prevent race conditions...
-	signal(signo, SIG_DFL);
+	::signal(signo, SIG_DFL);
 
 	static const char *shell  = "/bin/sh";
 	static const char *format = "gdb -q --batch --pid=%d"
