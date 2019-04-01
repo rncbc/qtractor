@@ -174,25 +174,25 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #include <signal.h>
 
 // File descriptor for SIGUSR1 notifier.
-static int g_fdSigUsr1[2];
+static int g_fdSigusr1[2];
 
 // Unix SIGUSR1 signal handler.
 static void qtractor_sigusr1_handler ( int /* signo */ )
 {
 	char c = 1;
 
-	(::write(g_fdSigUsr1[0], &c, sizeof(c)) > 0);
+	(::write(g_fdSigusr1[0], &c, sizeof(c)) > 0);
 }
 
 // File descriptor for SIGTERM notifier.
-static int g_fdSigTerm[2];
+static int g_fdSigterm[2];
 
 // Unix SIGTERM signal handler.
 static void qtractor_sigterm_handler ( int /* signo */ )
 {
 	char c = 1;
 
-	(::write(g_fdSigTerm[0], &c, sizeof(c)) > 0);
+	(::write(g_fdSigterm[0], &c, sizeof(c)) > 0);
 }
 
 #endif	// HAVE_SIGNAL_H
@@ -368,11 +368,11 @@ qtractorMainForm::qtractorMainForm (
 
 	// LADISH Level 1 suport.
 	// Initialize file descriptors for SIGUSR1 socket notifier.
-	::socketpair(AF_UNIX, SOCK_STREAM, 0, g_fdSigUsr1);
-	m_pSigUsr1Notifier
-		= new QSocketNotifier(g_fdSigUsr1[1], QSocketNotifier::Read, this);
+	::socketpair(AF_UNIX, SOCK_STREAM, 0, g_fdSigusr1);
+	m_pSigusr1Notifier
+		= new QSocketNotifier(g_fdSigusr1[1], QSocketNotifier::Read, this);
 
-	QObject::connect(m_pSigUsr1Notifier,
+	QObject::connect(m_pSigusr1Notifier,
 		SIGNAL(activated(int)),
 		SLOT(handle_sigusr1()));
 
@@ -386,11 +386,11 @@ qtractorMainForm::qtractorMainForm (
 
 	// LADISH termination suport.
 	// Initialize file descriptors for SIGTERM socket notifier.
-	::socketpair(AF_UNIX, SOCK_STREAM, 0, g_fdSigTerm);
-	m_pSigTermNotifier
-		= new QSocketNotifier(g_fdSigTerm[1], QSocketNotifier::Read, this);
+	::socketpair(AF_UNIX, SOCK_STREAM, 0, g_fdSigterm);
+	m_pSigtermNotifier
+		= new QSocketNotifier(g_fdSigterm[1], QSocketNotifier::Read, this);
 
-	QObject::connect(m_pSigTermNotifier,
+	QObject::connect(m_pSigtermNotifier,
 		SIGNAL(activated(int)),
 		SLOT(handle_sigterm()));
 
@@ -409,8 +409,8 @@ qtractorMainForm::qtractorMainForm (
 
 #else	// HAVE_SIGNAL_H
 
-	m_pSigUsr1Notifier = NULL;
-	m_pSigTermNotifier = NULL;
+	m_pSigusr1Notifier = NULL;
+	m_pSigtermNotifier = NULL;
 	
 #endif	// !HAVE_SIGNAL_H
 
@@ -1226,10 +1226,10 @@ qtractorMainForm::qtractorMainForm (
 qtractorMainForm::~qtractorMainForm (void)
 {
 #ifdef HAVE_SIGNAL_H
-	if (m_pSigTermNotifier)
-		delete m_pSigTermNotifier;
-	if (m_pSigUsr1Notifier)
-		delete m_pSigUsr1Notifier;
+	if (m_pSigtermNotifier)
+		delete m_pSigtermNotifier;
+	if (m_pSigusr1Notifier)
+		delete m_pSigusr1Notifier;
 #endif
 
 	// View/Snap-to-beat actions termination...
@@ -1675,7 +1675,7 @@ void qtractorMainForm::handle_sigusr1 (void)
 
 	char c;
 
-	if (::read(g_fdSigUsr1[1], &c, sizeof(c)) > 0)
+	if (::read(g_fdSigusr1[1], &c, sizeof(c)) > 0)
 		saveSession(false);
 
 #endif
@@ -1689,7 +1689,7 @@ void qtractorMainForm::handle_sigterm (void)
 
 	char c;
 
-	if (::read(g_fdSigTerm[1], &c, sizeof(c)) > 0)
+	if (::read(g_fdSigterm[1], &c, sizeof(c)) > 0)
 		close();
 
 #endif

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Re-defined all main application UNIX signal handling.
+  (EXPERIMENTAL)
+
 - Fixed possible crash in drawing clips while rare
   loop-recording/takes situations. (EXPERIMENTAL)
   
