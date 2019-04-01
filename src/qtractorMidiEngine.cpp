@@ -892,7 +892,7 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 	snd_seq_start_queue(pAlsaSeq, iAlsaQueue, NULL);
 	snd_seq_drain_output(pAlsaSeq);
 
-	pAudioCursor->setFrameTime(0);
+	pAudioCursor->reset();
 
 	qtractorMidiMonitor::resetTime(m_pTimeScale, 0);
 

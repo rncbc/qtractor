@@ -1,7 +1,7 @@
 // qtractorSessionCursor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -136,13 +136,6 @@ unsigned long qtractorSessionCursor::frame (void) const
 
 
 // Absolute frame-time position accessors.
-void qtractorSessionCursor::setFrameTime ( unsigned long iFrameTime )
-{
-	m_iFrameTime = iFrameTime;
-	m_iFrameDelta = m_iFrame - iFrameTime;
-}
-
-
 unsigned long qtractorSessionCursor::frameTime (void) const
 {
 	return m_iFrameTime;

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed possible crash in drawing clips while rare
+  loop-recording/takes situations. (EXPERIMENTAL)
+  
 - Main window stabilizing is now kind of asynchronous
   re. menus, tools and status bars. (EXPERIMENTAL)
 

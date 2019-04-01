@@ -156,9 +156,12 @@ QString qtractorClip::clipTitle (void) const
 {
 	QString sClipTitle(m_sClipName);
 
-	if (m_pTakeInfo && m_pTakeInfo->currentTake() >= 0) {
-		sClipTitle += QObject::tr(" (take %1)")
-			.arg(m_pTakeInfo->currentTake() + 1);
+	if (m_pTakeInfo && m_pTakeInfo->partClip(this) != TakeInfo::ClipHead) {
+		const int iCurrentTake = m_pTakeInfo->currentTake();
+		if (iCurrentTake >= 0) {
+			sClipTitle += QObject::tr(" (take %1)")
+				.arg(iCurrentTake + 1);
+		}
 	}
 
 	return sClipTitle;

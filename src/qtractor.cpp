@@ -462,11 +462,11 @@ int main ( int argc, char **argv )
 	Q_INIT_RESOURCE(qtractor);
 #ifdef CONFIG_STACKTRACE
 #if defined(__GNUC__) && defined(Q_OS_LINUX)
-	signal(SIGILL,  stacktrace);
-	signal(SIGFPE,  stacktrace);
-	signal(SIGSEGV, stacktrace);
-	signal(SIGABRT, stacktrace);
-	signal(SIGBUS,  stacktrace);
+	::signal(SIGILL,  stacktrace);
+	::signal(SIGFPE,  stacktrace);
+	::signal(SIGSEGV, stacktrace);
+	::signal(SIGABRT, stacktrace);
+	::signal(SIGBUS,  stacktrace);
 #endif
 #endif
 	qtractorApplication app(argc, argv);
