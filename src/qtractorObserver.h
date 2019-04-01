@@ -1,7 +1,7 @@
 // qtractorObserver.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -151,11 +151,14 @@ public:
 		{ return m_pCurve; }
 
 	// Queue flush (singleton) -- notify all pending observers.
-	static void flushQueue(bool bUpdate);
+	static bool flushQueue(bool bUpdate);
 	
 	// Queue reset (clear).
 	static void resetQueue();
 	static void clearQueue();
+
+	// Queue status (index).
+	static bool isQueueEmpty ();
 
 private:
 

@@ -505,6 +505,7 @@ private:
 	int m_iAutoSaveTimer;
 	int m_iAutoSavePeriod;
 	int m_iAudioPropertyChange;
+	int m_iStabilizeTimer;
 
 	// Status bar item indexes
 	enum {

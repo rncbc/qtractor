@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Main window stabilizing is now kind of asynchronous
+  re. menus, tools and status bars. (EXPERIMENTAL)
+
 - MIDI Controller's Latch mode attribute on tracks and
   plugins are now properly saved/loaded as meant to be.
 
