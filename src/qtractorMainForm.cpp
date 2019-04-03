@@ -168,13 +168,13 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 
 #include <QSocketNotifier>
 
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-
 #include <signal.h>
 
 // File descriptor for SIGUSR1 notifier.
-static int g_fdSigusr1[2];
+static int g_fdSigusr1[2] = { -1, -1 };
 
 // Unix SIGUSR1 signal handler.
 static void qtractor_sigusr1_handler ( int /* signo */ )
@@ -185,7 +185,7 @@ static void qtractor_sigusr1_handler ( int /* signo */ )
 }
 
 // File descriptor for SIGTERM notifier.
-static int g_fdSigterm[2];
+static int g_fdSigterm[2] = { -1, -1 };
 
 // Unix SIGTERM signal handler.
 static void qtractor_sigterm_handler ( int /* signo */ )
