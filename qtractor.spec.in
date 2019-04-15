@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 41
+%define release 42
 
 %define _prefix	@ac_prefix@
 
@@ -116,6 +116,8 @@ the personal home-studio.
 %{_datadir}/man/man1/%{name}*.1.gz
 
 %changelog
+* Tue Apr 16 2019 Rui Nuno Capela <rncbc@rncbc.org> 0.9.7
+- Spring-Break'19 release.
 * Wed Mar 20 2019 Rui Nuno Capela <rncbc@rncbc.org> 0.9.6
 - Pre-LAC2019 release frenzy.
 * Thu Feb 14 2019 Rui Nuno Capela <rncbc@rncbc.org> 0.9.5
