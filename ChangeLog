@@ -4,6 +4,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Minor update to Debian packaging control file.
+
 - Make sure partially selected clips are reset to whole
   when Shift/Ctrl keyboard modifiers are in effect, to
   prevent extraneous clip splits or cutaways afterwards
