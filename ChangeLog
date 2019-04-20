@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+- Make sure partially selected clips are reset to whole
+  when Shift/Ctrl keyboard modifiers are in effect, to
+  prevent extraneous clip splits or cutaways afterwards
+  (hopefully fixes github issue #210).
+
+
 0.9.7  2019-04-16  Spring-Break'19 Release.
 
 - Re-defined all main application UNIX signal handling.
