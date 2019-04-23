@@ -1,7 +1,7 @@
 // qtractorMidiEditor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -274,7 +274,8 @@ public:
 
 	// To optimize and keep track of current (re)draw
 	// position, mostly like an sequence cursor/iterator.
-	qtractorMidiEvent *seekEvent(unsigned long iTime);
+	qtractorMidiEvent *seekEvent(
+		qtractorMidiSequence *pSeq, unsigned long iTime);
 
 	// Get event from given contents position.
 	qtractorMidiEvent *eventAt(qtractorScrollView *pScrollView,

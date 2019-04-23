@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2473,10 +2473,11 @@ void qtractorMidiEditor::clear (void)
 
 
 // Intra-clip tick/time positioning reset.
-qtractorMidiEvent *qtractorMidiEditor::seekEvent ( unsigned long iTime )
+qtractorMidiEvent *qtractorMidiEditor::seekEvent (
+	qtractorMidiSequence *pSeq, unsigned long iTime )
 {
 	// Reset seek-forward...
-	return m_cursor.reset(m_pMidiClip->sequence(), iTime);
+	return m_cursor.reset(pSeq, iTime);
 }
 
 

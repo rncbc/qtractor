@@ -1,7 +1,7 @@
 // qtractorMidiEditEvent.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -405,7 +405,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 
 	const unsigned long f1 = f0 + m_pEditor->length();
 	pNode = cursor.seekFrame(f1);
-	const unsigned long iTimeEnd = pNode->tickFromFrame(f1);
+	const unsigned long iTickEnd2 = pNode->tickFromFrame(f1);
 
 	// This is the zero-line...
 	const int y0 = (m_eventType == qtractorMidiEvent::PITCHBEND ? h >> 1 : h);
@@ -428,14 +428,14 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		|| m_eventType == qtractorMidiEvent::NONREGPARAM
 		|| m_eventType == qtractorMidiEvent::CONTROL14);
 	qtractorMidiEvent *pEvent
-		= m_pEditor->seekEvent(iTickStart > t0 ? iTickStart - t0 : 0);
+		= m_pEditor->seekEvent(pSeq, iTickStart > t0 ? iTickStart - t0 : 0);
 	while (pEvent) {
 		const unsigned long t1 = t0 + pEvent->time();
 		if (t1 >= iTickEnd)
 			break;
 		unsigned long t2 = t1 + pEvent->duration();
-		if (t2 > iTimeEnd)
-			t2 = iTimeEnd;
+		if (t2 > iTickEnd2)
+			t2 = iTickEnd2;
 		// Filter event type!...
 		if (pEvent->type() == m_eventType && t2 >= iTickStart
 			&& (!bEventParam || pEvent->param() == m_eventParam)) {
