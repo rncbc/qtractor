@@ -69,13 +69,13 @@ qtractorMidiEditEventScale::~qtractorMidiEditEventScale (void)
 // Paint event handler.
 void qtractorMidiEditEventScale::paintEvent ( QPaintEvent * )
 {
-	QPainter p(this);
+	QPainter painter(this);
 
-	p.setPen(Qt::darkGray);
+	painter.setPen(Qt::darkGray);
 
 	// Draw scale line labels...
 	qtractorMidiEditEvent *pEditEvent = m_pEditor->editEvent();
-	const QFontMetrics& fm = p.fontMetrics();
+	const QFontMetrics& fm = painter.fontMetrics();
 	int h  = (pEditEvent->viewport())->height();
 	int w  = QWidget::width();
 
@@ -107,9 +107,9 @@ void qtractorMidiEditEventScale::paintEvent ( QPaintEvent * )
 	while (y < h) {
 		const QString& sLabel = QString::number(n);
 		if (fm.width(sLabel) < w - 6)
-			p.drawLine(w - 4, y, w - 1, y);
+			painter.drawLine(w - 4, y, w - 1, y);
 		if (y > y0 + (h2 << 1) && y < h - (h2 << 1)) {
-			p.drawText(2, y - h2, w - 8, fm.height(),
+			painter.drawText(2, y - h2, w - 8, fm.height(),
 				Qt::AlignRight | Qt::AlignVCenter, sLabel);
 			y0 = y + 1;
 		}
@@ -290,8 +290,6 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	const QPalette& pal = qtractorScrollView::palette();
 
 	const QColor& rgbBase  = pal.base().color();
-	const QColor& rgbFore  = m_pEditor->foreground();
-	const QColor& rgbBack  = m_pEditor->background();
 	const QColor& rgbDark  = pal.mid().color();
 	const QColor& rgbLight = pal.midlight().color();
 
@@ -415,72 +413,10 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	painter.setPen(rgbDark);
 	painter.drawLine(0, y0, w, y0);
 
-//	p.setPen(rgbFore);
-//	p.setBrush(rgbBack);
+//	painter.setPen(rgbFore);
+//	painter.setBrush(rgbBack);
 
-	QColor rgbValue(rgbBack);
-	int hue, sat, val;
-	rgbValue.getHsv(&hue, &sat, &val); sat = 86;
-
-	const bool bEventParam
-		= (m_eventType == qtractorMidiEvent::CONTROLLER
-		|| m_eventType == qtractorMidiEvent::REGPARAM
-		|| m_eventType == qtractorMidiEvent::NONREGPARAM
-		|| m_eventType == qtractorMidiEvent::CONTROL14);
-	qtractorMidiEvent *pEvent
-		= m_pEditor->seekEvent(pSeq, iTickStart > t0 ? iTickStart - t0 : 0);
-	while (pEvent) {
-		const unsigned long t1 = t0 + pEvent->time();
-		if (t1 >= iTickEnd)
-			break;
-		unsigned long t2 = t1 + pEvent->duration();
-		if (t2 > iTickEnd2)
-			t2 = iTickEnd2;
-		// Filter event type!...
-		if (pEvent->type() == m_eventType && t2 >= iTickStart
-			&& (!bEventParam || pEvent->param() == m_eventParam)) {
-			if (m_eventType == qtractorMidiEvent::REGPARAM    ||
-				m_eventType == qtractorMidiEvent::NONREGPARAM ||
-				m_eventType == qtractorMidiEvent::CONTROL14)
-				y = y0 - (y0 * pEvent->value()) / 16384;
-			else
-			if (m_eventType == qtractorMidiEvent::PITCHBEND)
-				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
-			else
-				y = y0 - (y0 * pEvent->value()) / 128;
-			pNode = cursor.seekTick(t1);
-			x = pNode->pixelFromTick(t1) - dx;
-			pNode = cursor.seekTick(t2);
-			int w1 = (t1 >= t2 && m_pEditor->isClipRecord()
-				? m_pEditor->playHeadX()
-				: pNode->pixelFromTick(t2) - dx) - x;
-			if (w1 < 5 || !m_pEditor->isNoteDuration())
-				w1 = 5;
-			if (m_eventType == qtractorMidiEvent::NOTEON ||
-				m_eventType == qtractorMidiEvent::KEYPRESS) {
-				if (m_pEditor->isNoteColor()) {
-					hue = (128 - int(pEvent->note())) << 4;
-					if (m_pEditor->isValueColor())
-						sat = 64 + (int(pEvent->velocity()) >> 1);
-					rgbValue.setHsv(hue, sat, val);
-				} else if (m_pEditor->isValueColor()) {
-					hue = (128 - int(pEvent->velocity())) << 1;
-					rgbValue.setHsv(hue, sat, val);
-				}
-			}
-			if (y < y0) {
-				painter.fillRect(x, y, w1, y0 - y, rgbFore);
-				painter.fillRect(x + 1, y + 1, w1 - 4, y0 - y - 2, rgbValue);
-			} else if (y > y0) {
-				painter.fillRect(x, y0, w1, y - y0, rgbFore);
-				painter.fillRect(x + 1, y0 + 1, w1 - 4, y - y0 - 2, rgbValue);
-			} else {
-				painter.fillRect(x, y0 - 2, w1, 4, rgbFore);
-				painter.fillRect(x + 1, y0 - 1, w1 - 4, 2, rgbValue);
-			}
-		}
-		pEvent = pEvent->next();
-	}
+	drawEvents(painter, dx, y0, pSeq, t0, iTickStart, iTickEnd, iTickEnd2);
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
@@ -524,6 +460,86 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 			painter.fillRect(QRect(x, 0, w - x, h), shade);
 			painter.drawLine(x, 0, x, h);
 		}
+	}
+}
+
+
+// Draw the track view events.
+void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
+	int dx, int y0, qtractorMidiSequence *pSeq, unsigned long t0,
+	unsigned long iTickStart, unsigned long iTickEnd,
+	unsigned long iTickEnd2, int alpha )
+{
+	QColor rgbFore(m_pEditor->foreground());
+	rgbFore.setAlpha(alpha);
+
+	QColor rgbValue(m_pEditor->background());
+	int hue, sat, val;
+	rgbValue.getHsv(&hue, &sat, &val); sat = 86;
+
+	int x, y;
+
+	qtractorTimeScale::Cursor cursor(m_pEditor->timeScale());
+	qtractorTimeScale::Node *pNode;
+
+	const bool bEventParam
+		= (m_eventType == qtractorMidiEvent::CONTROLLER
+		|| m_eventType == qtractorMidiEvent::REGPARAM
+		|| m_eventType == qtractorMidiEvent::NONREGPARAM
+		|| m_eventType == qtractorMidiEvent::CONTROL14);
+	qtractorMidiEvent *pEvent
+		= m_pEditor->seekEvent(pSeq, iTickStart > t0 ? iTickStart - t0 : 0);
+	while (pEvent) {
+		const unsigned long t1 = t0 + pEvent->time();
+		if (t1 >= iTickEnd)
+			break;
+		unsigned long t2 = t1 + pEvent->duration();
+		if (t2 > iTickEnd2)
+			t2 = iTickEnd2;
+		// Filter event type!...
+		if (pEvent->type() == m_eventType && t2 >= iTickStart
+			&& (!bEventParam || pEvent->param() == m_eventParam)) {
+			if (m_eventType == qtractorMidiEvent::REGPARAM    ||
+				m_eventType == qtractorMidiEvent::NONREGPARAM ||
+				m_eventType == qtractorMidiEvent::CONTROL14)
+				y = y0 - (y0 * pEvent->value()) / 16384;
+			else
+			if (m_eventType == qtractorMidiEvent::PITCHBEND)
+				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
+			else
+				y = y0 - (y0 * pEvent->value()) / 128;
+			pNode = cursor.seekTick(t1);
+			x = pNode->pixelFromTick(t1) - dx;
+			pNode = cursor.seekTick(t2);
+			int w1 = (t1 >= t2 && m_pEditor->isClipRecord()
+				? m_pEditor->playHeadX()
+				: pNode->pixelFromTick(t2) - dx) - x;
+			if (w1 < 5 || !m_pEditor->isNoteDuration())
+				w1 = 5;
+			if (m_eventType == qtractorMidiEvent::NOTEON ||
+				m_eventType == qtractorMidiEvent::KEYPRESS) {
+				if (m_pEditor->isNoteColor()) {
+					hue = (128 - int(pEvent->note())) << 4;
+					if (m_pEditor->isValueColor())
+						sat = 64 + (int(pEvent->velocity()) >> 1);
+					rgbValue.setHsv(hue, sat, val, alpha);
+				} else if (m_pEditor->isValueColor()) {
+					hue = (128 - int(pEvent->velocity())) << 1;
+					rgbValue.setHsv(hue, sat, val, alpha);
+				}
+			}
+			if (y < y0) {
+				painter.fillRect(x, y, w1, y0 - y, rgbFore);
+				painter.fillRect(x + 1, y + 1, w1 - 4, y0 - y - 2, rgbValue);
+			} else if (y > y0) {
+				painter.fillRect(x, y0, w1, y - y0, rgbFore);
+				painter.fillRect(x + 1, y0 + 1, w1 - 4, y - y0 - 2, rgbValue);
+			} else {
+				painter.fillRect(x, y0 - 2, w1, 4, rgbFore);
+				painter.fillRect(x + 1, y0 - 1, w1 - 4, 2, rgbValue);
+			}
+		}
+		pEvent = pEvent->next();
 	}
 }
 

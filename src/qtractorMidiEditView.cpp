@@ -264,8 +264,6 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	const QPalette& pal = qtractorScrollView::palette();
 
 	const QColor& rgbBase  = pal.base().color();
-	const QColor& rgbFore  = m_pEditor->foreground();
-	const QColor& rgbBack  = m_pEditor->background();
 	const QColor& rgbDark  = pal.mid().color();
 	const QColor& rgbLight = pal.midlight().color();
 	const QColor& rgbSharp = rgbBase.darker(110);
@@ -394,68 +392,10 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	pNode = cursor.seekFrame(f1);
 	const unsigned long iTickEnd2 = pNode->tickFromFrame(f1);
 
-//	p.setPen(rgbFore);
-//	p.setBrush(rgbBack);
+//	painter.setPen(rgbFore);
+//	painter.setBrush(rgbBack);
 
-	const bool bDrumMode = m_pEditor->isDrumMode();
-	QVector<QPoint> diamond;
-	if (bDrumMode) {
-		const int h2 = (h1 >> 1);
-		diamond.append(QPoint(-h1,  h2));
-		diamond.append(QPoint(  0, -h2));
-		diamond.append(QPoint( h1,  h2));
-		diamond.append(QPoint(  0,  h2 + h1));
-	}
-
-	QColor rgbNote(rgbBack);
-	int hue, sat, val;
-	rgbNote.getHsv(&hue, &sat, &val); sat = 86;
-
-	qtractorMidiEvent *pEvent
-		= m_pEditor->seekEvent(pSeq, iTickStart > t0 ? iTickStart - t0 : 0);
-	while (pEvent) {
-		const unsigned long t1 = t0 + pEvent->time();
-		if (t1 >= iTickEnd)
-			break;
-		unsigned long t2 = t1 + pEvent->duration();
-		if (t2 > iTickEnd2)
-			t2 = iTickEnd2;
-		// Filter event type!...
-		if (pEvent->type() == m_eventType && t2 >= iTickStart) {
-			y = ch - h1 * (pEvent->note() + 1);
-			if (y + h1 >= 0 && y < h) {
-				pNode = cursor.seekTick(t1);
-				x = pNode->pixelFromTick(t1) - dx;
-				pNode = cursor.seekTick(t2);
-				int w1 = (t1 >= t2 && m_pEditor->isClipRecord()
-					? m_pEditor->playHeadX()
-					: pNode->pixelFromTick(t2) - dx) - x;
-				if (w1 < 5) w1 = 5;
-				if (m_pEditor->isNoteColor()) {
-					hue = (128 - int(pEvent->note())) << 4;
-					if (m_pEditor->isValueColor())
-						sat = 64 + (int(pEvent->value()) >> 1);
-					rgbNote.setHsv(hue, sat, val);
-				} else if (m_pEditor->isValueColor()) {
-					hue = (128 - int(pEvent->value())) << 1;
-					rgbNote.setHsv(hue, sat, val);
-				}
-				if (bDrumMode) {
-					painter.setPen(rgbFore);
-					painter.setBrush(rgbNote);
-					const QPolygon& polyg
-						= QPolygon(diamond).translated(x, y);
-					painter.drawPolygon(polyg.translated(1, 0)); // shadow
-					painter.drawPolygon(polyg); // diamond
-				} else {
-					painter.fillRect(x, y, w1, h1, rgbFore);
-					if (h1 > 3)
-						painter.fillRect(x + 1, y + 1, w1 - 4, h1 - 3, rgbNote);
-				}
-			}
-		}
-		pEvent = pEvent->next();
-	}
+	drawEvents(painter, dx, cy, pSeq, t0, iTickStart, iTickEnd, iTickEnd2);
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
@@ -499,6 +439,86 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 			painter.fillRect(QRect(x, 0, w - x, h), shade);
 			painter.drawLine(x, 0, x, h);
 		}
+	}
+}
+
+
+// Draw the track view events.
+void qtractorMidiEditView::drawEvents ( QPainter& painter,
+	int dx, int cy, qtractorMidiSequence *pSeq, unsigned long t0,
+	unsigned long iTickStart, unsigned long iTickEnd,
+	unsigned long iTickEnd2, int alpha )
+{
+	const int h  = qtractorScrollView::viewport()->height();
+	const int h1 = m_pEditor->editList()->itemHeight();
+	const int ch = qtractorScrollView::contentsHeight() - cy;
+
+	const bool bDrumMode = m_pEditor->isDrumMode();
+	QVector<QPoint> diamond;
+	if (bDrumMode) {
+		const int h2 = (h1 >> 1);
+		diamond.append(QPoint(-h1,  h2));
+		diamond.append(QPoint(  0, -h2));
+		diamond.append(QPoint( h1,  h2));
+		diamond.append(QPoint(  0,  h2 + h1));
+	}
+
+	QColor rgbFore(m_pEditor->foreground());
+	rgbFore.setAlpha(alpha);
+
+	QColor rgbNote(m_pEditor->background());
+	int hue, sat, val;
+	rgbNote.getHsv(&hue, &sat, &val); sat = 86;
+
+	int x, y;
+
+	qtractorTimeScale::Cursor cursor(m_pEditor->timeScale());
+	qtractorTimeScale::Node *pNode;
+
+	qtractorMidiEvent *pEvent
+		= m_pEditor->seekEvent(pSeq, iTickStart > t0 ? iTickStart - t0 : 0);
+	while (pEvent) {
+		const unsigned long t1 = t0 + pEvent->time();
+		if (t1 >= iTickEnd)
+			break;
+		unsigned long t2 = t1 + pEvent->duration();
+		if (t2 > iTickEnd2)
+			t2 = iTickEnd2;
+		// Filter event type!...
+		if (pEvent->type() == m_eventType && t2 >= iTickStart) {
+			y = ch - h1 * (pEvent->note() + 1);
+			if (y + h1 >= 0 && y < h) {
+				pNode = cursor.seekTick(t1);
+				x = pNode->pixelFromTick(t1) - dx;
+				pNode = cursor.seekTick(t2);
+				int w1 = (t1 >= t2 && m_pEditor->isClipRecord()
+					? m_pEditor->playHeadX()
+					: pNode->pixelFromTick(t2) - dx) - x;
+				if (w1 < 5) w1 = 5;
+				if (m_pEditor->isNoteColor()) {
+					hue = (128 - int(pEvent->note())) << 4;
+					if (m_pEditor->isValueColor())
+						sat = 64 + (int(pEvent->value()) >> 1);
+					rgbNote.setHsv(hue, sat, val, alpha);
+				} else if (m_pEditor->isValueColor()) {
+					hue = (128 - int(pEvent->value())) << 1;
+					rgbNote.setHsv(hue, sat, val, alpha);
+				}
+				if (bDrumMode) {
+					painter.setPen(rgbFore);
+					painter.setBrush(rgbNote);
+					const QPolygon& polyg
+						= QPolygon(diamond).translated(x, y);
+					painter.drawPolygon(polyg.translated(1, 0)); // shadow
+					painter.drawPolygon(polyg); // diamond
+				} else {
+					painter.fillRect(x, y, w1, h1, rgbFore);
+					if (h1 > 3)
+						painter.fillRect(x + 1, y + 1, w1 - 4, h1 - 3, rgbNote);
+				}
+			}
+		}
+		pEvent = pEvent->next();
 	}
 }
 
