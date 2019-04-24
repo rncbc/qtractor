@@ -106,7 +106,7 @@ protected:
 	void resizeEvent(QResizeEvent *pResizeEvent);
 
 	// Draw the track view events.
-	void drawEvents(QPainter& painter, int dx, int y0,
+	void drawEvents(QPainter& painter, int dx, int dy,
 		qtractorMidiSequence *pSeq, unsigned long t0,
 		unsigned long iTickStart, unsigned long iTickEnd,
 		unsigned long iTickEnd2, int alpha = 255);

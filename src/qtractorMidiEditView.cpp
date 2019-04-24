@@ -445,13 +445,13 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 
 // Draw the track view events.
 void qtractorMidiEditView::drawEvents ( QPainter& painter,
-	int dx, int cy, qtractorMidiSequence *pSeq, unsigned long t0,
+	int dx, int dy, qtractorMidiSequence *pSeq, unsigned long t0,
 	unsigned long iTickStart, unsigned long iTickEnd,
 	unsigned long iTickEnd2, int alpha )
 {
 	const int h  = qtractorScrollView::viewport()->height();
 	const int h1 = m_pEditor->editList()->itemHeight();
-	const int ch = qtractorScrollView::contentsHeight() - cy;
+	const int ch = qtractorScrollView::contentsHeight() - dy;
 
 	const bool bDrumMode = m_pEditor->isDrumMode();
 	QVector<QPoint> diamond;
@@ -475,6 +475,8 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 	qtractorTimeScale::Cursor cursor(m_pEditor->timeScale());
 	qtractorTimeScale::Node *pNode;
 
+	const qtractorMidiEvent::EventType eventType = m_eventType;
+
 	qtractorMidiEvent *pEvent
 		= m_pEditor->seekEvent(pSeq, iTickStart > t0 ? iTickStart - t0 : 0);
 	while (pEvent) {
@@ -485,7 +487,7 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 		if (t2 > iTickEnd2)
 			t2 = iTickEnd2;
 		// Filter event type!...
-		if (pEvent->type() == m_eventType && t2 >= iTickStart) {
+		if (pEvent->type() == eventType && t2 >= iTickStart) {
 			y = ch - h1 * (pEvent->note() + 1);
 			if (y + h1 >= 0 && y < h) {
 				pNode = cursor.seekTick(t1);

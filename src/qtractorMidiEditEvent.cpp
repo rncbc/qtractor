@@ -466,10 +466,12 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 
 // Draw the track view events.
 void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
-	int dx, int y0, qtractorMidiSequence *pSeq, unsigned long t0,
+	int dx, int dy, qtractorMidiSequence *pSeq, unsigned long t0,
 	unsigned long iTickStart, unsigned long iTickEnd,
 	unsigned long iTickEnd2, int alpha )
 {
+	const int y0 = dy;	// former nomenclature.
+
 	QColor rgbFore(m_pEditor->foreground());
 	rgbFore.setAlpha(alpha);
 
@@ -482,11 +484,14 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 	qtractorTimeScale::Cursor cursor(m_pEditor->timeScale());
 	qtractorTimeScale::Node *pNode;
 
+	const qtractorMidiEvent::EventType eventType = m_eventType;
+	const unsigned short eventParam = m_eventParam;
 	const bool bEventParam
-		= (m_eventType == qtractorMidiEvent::CONTROLLER
-		|| m_eventType == qtractorMidiEvent::REGPARAM
-		|| m_eventType == qtractorMidiEvent::NONREGPARAM
-		|| m_eventType == qtractorMidiEvent::CONTROL14);
+		= (eventType == qtractorMidiEvent::CONTROLLER
+		|| eventType == qtractorMidiEvent::REGPARAM
+		|| eventType == qtractorMidiEvent::NONREGPARAM
+		|| eventType == qtractorMidiEvent::CONTROL14);
+
 	qtractorMidiEvent *pEvent
 		= m_pEditor->seekEvent(pSeq, iTickStart > t0 ? iTickStart - t0 : 0);
 	while (pEvent) {
@@ -497,14 +502,14 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 		if (t2 > iTickEnd2)
 			t2 = iTickEnd2;
 		// Filter event type!...
-		if (pEvent->type() == m_eventType && t2 >= iTickStart
-			&& (!bEventParam || pEvent->param() == m_eventParam)) {
-			if (m_eventType == qtractorMidiEvent::REGPARAM    ||
-				m_eventType == qtractorMidiEvent::NONREGPARAM ||
-				m_eventType == qtractorMidiEvent::CONTROL14)
+		if (pEvent->type() == eventType && t2 >= iTickStart
+			&& (!bEventParam || pEvent->param() == eventParam)) {
+			if (eventType == qtractorMidiEvent::REGPARAM    ||
+				eventType == qtractorMidiEvent::NONREGPARAM ||
+				eventType == qtractorMidiEvent::CONTROL14)
 				y = y0 - (y0 * pEvent->value()) / 16384;
 			else
-			if (m_eventType == qtractorMidiEvent::PITCHBEND)
+			if (eventType == qtractorMidiEvent::PITCHBEND)
 				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 			else
 				y = y0 - (y0 * pEvent->value()) / 128;
@@ -516,8 +521,8 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 				: pNode->pixelFromTick(t2) - dx) - x;
 			if (w1 < 5 || !m_pEditor->isNoteDuration())
 				w1 = 5;
-			if (m_eventType == qtractorMidiEvent::NOTEON ||
-				m_eventType == qtractorMidiEvent::KEYPRESS) {
+			if (eventType == qtractorMidiEvent::NOTEON ||
+				eventType == qtractorMidiEvent::KEYPRESS) {
 				if (m_pEditor->isNoteColor()) {
 					hue = (128 - int(pEvent->note())) << 4;
 					if (m_pEditor->isValueColor())
