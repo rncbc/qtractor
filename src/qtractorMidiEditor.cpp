@@ -737,9 +737,6 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_last.pitchBend = 0;
 	m_last.duration  = 0;
 
-	// Current ghost track.
-	m_pGhostTrack = NULL;
-
 	// The local mighty command pattern instance.
 	m_pCommands = new qtractorCommandList();
 
@@ -778,6 +775,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Temporary sync-view/follow-playhead hold state.
 	m_bSyncViewHold = false;
 	m_iSyncViewHold = 0;
+
+	// Current ghost-track option.
+	m_pGhostTrack = NULL;
 
 	// Create child frame widgets...
 	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
@@ -881,6 +881,9 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 	// So, this is the brand new object to edit...
 	m_pMidiClip = pMidiClip;
 
+	// Reset ghost-track anyway...
+	m_pGhostTrack = NULL;
+
 	if (m_pMidiClip) {
 		// Now set the editing MIDI sequence alright...
 		setOffset(m_pMidiClip->clipStart());
@@ -903,6 +906,20 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 			if (m_last.note == 0)
 				m_last.note = 0x3c; // Default to middle-C.
 		}
+		// Set ghost-track by name...
+		const QString& sGhostTrackName
+			= m_pMidiClip->ghostTrackName();
+		qtractorSession *pSession = pTrack->session();
+		if (pSession && !sGhostTrackName.isEmpty()) {
+			for (pTrack = pSession->tracks().first();
+					pTrack; pTrack = pTrack->next()) {
+				if (pTrack->trackType() == qtractorTrack::Midi
+					&& pTrack->trackName() == sGhostTrackName) {
+					m_pGhostTrack = pTrack;
+					break;
+				}
+			}
+		}
 		// Got clip!
 	} else {
 		// Reset those little things too..
@@ -910,9 +927,6 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 		setOffset(0);
 		setLength(0);
 	}
-
-	// Reset ghost track to none.
-	setGhostTrack(NULL);
 
 	// All commands reset.
 	m_pCommands->clear();
@@ -1139,23 +1153,30 @@ unsigned long qtractorMidiEditor::length (void) const
 }
 
 
-// Clip recording/overdub status.
-bool qtractorMidiEditor::isClipRecord (void) const
-{
-	qtractorTrack *pTrack = (m_pMidiClip ? m_pMidiClip->track() : NULL);
-	return (pTrack ? pTrack->clipRecord() == m_pMidiClip : false);
-}
-
-
-// Ghost track setting.
+// Ghost track accessors.
 void qtractorMidiEditor::setGhostTrack ( qtractorTrack *pGhostTrack )
 {
 	m_pGhostTrack = pGhostTrack;
+
+	if (m_pMidiClip) {
+		QString sGhostTrackName;
+		if (m_pGhostTrack)
+			sGhostTrackName = m_pGhostTrack->trackName();
+		m_pMidiClip->setGhostTrackName(sGhostTrackName);
+	}
 }
 
 qtractorTrack *qtractorMidiEditor::ghostTrack (void) const
 {
 	return m_pGhostTrack;
+}
+
+
+// Clip recording/overdub status.
+bool qtractorMidiEditor::isClipRecord (void) const
+{
+	qtractorTrack *pTrack = (m_pMidiClip ? m_pMidiClip->track() : NULL);
+	return (pTrack ? pTrack->clipRecord() == m_pMidiClip : false);
 }
 
 

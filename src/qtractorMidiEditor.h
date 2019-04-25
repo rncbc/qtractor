@@ -144,8 +144,8 @@ public:
 	// Clip recording/overdub status.
 	bool isClipRecord() const;
 
-	// Ghost track setting.
-	void setGhostTrack(qtractorTrack *pTrack);
+	// Ghost track accessors.
+	void setGhostTrack(qtractorTrack *pGhostTrack);
 	qtractorTrack *ghostTrack() const;
 
 	// Child widgets accessors.

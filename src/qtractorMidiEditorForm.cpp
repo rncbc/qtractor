@@ -449,27 +449,21 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarThumbAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarThumb(bool)));
+	QObject::connect(m_ui.viewEventsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewEvents(bool)));
 	QObject::connect(m_ui.viewNoteDurationAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewNoteDuration(bool)));
+	QObject::connect(m_ui.viewDrumModeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewDrumMode(bool)));
 	QObject::connect(m_ui.viewNoteColorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewNoteColor(bool)));
 	QObject::connect(m_ui.viewValueColorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewValueColor(bool)));
-	QObject::connect(m_ui.viewDrumModeAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewDrumMode(bool)));
-	QObject::connect(m_ui.viewEventsAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewEvents(bool)));
-	QObject::connect(m_ui.viewPreviewAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewPreview(bool)));
-	QObject::connect(m_ui.viewFollowAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewFollow(bool)));
 	QObject::connect(m_ui.viewZoomInAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomIn()));
@@ -500,6 +494,12 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
+	QObject::connect(m_ui.viewPreviewAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewPreview(bool)));
+	QObject::connect(m_ui.viewFollowAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewFollow(bool)));
 
 	QObject::connect(m_ui.helpShortcutsAction,
 		SIGNAL(triggered(bool)),
@@ -520,6 +520,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewValueTypeMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateValueTypeMenu()));
+	QObject::connect(m_ui.viewGhostTrackMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateGhostTrackMenu()));
 	QObject::connect(m_ui.viewZoomMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateZoomMenu()));
@@ -529,9 +532,6 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewScaleMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateScaleMenu()));
-	QObject::connect(m_ui.viewGhostTrackMenu,
-		SIGNAL(aboutToShow()),
-		SLOT(updateGhostTrackMenu()));
 
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
@@ -1531,6 +1531,13 @@ void qtractorMidiEditorForm::viewToolbarThumb ( bool bOn )
 }
 
 
+// Show/hide the events window view.
+void qtractorMidiEditorForm::viewEvents ( bool bOn )
+{
+	m_pMidiEventList->setVisible(bOn);
+}
+
+
 // View note (pitch) coloring.
 void qtractorMidiEditorForm::viewNoteColor ( bool bOn )
 {
@@ -1570,6 +1577,14 @@ void qtractorMidiEditorForm::viewNoteType (void)
 }
 
 
+// View drum note of notes (diamods)
+void qtractorMidiEditorForm::viewDrumMode ( bool bOn )
+{
+	m_pMidiEditor->setDrumMode(bOn);
+	m_pMidiEditor->updateContents();
+}
+
+
 // Change event/value type setting via menu.
 void qtractorMidiEditorForm::viewValueType (void)
 {
@@ -1587,32 +1602,19 @@ void qtractorMidiEditorForm::viewValueType (void)
 }
 
 
-// View drum note of notes (diamods)
-void qtractorMidiEditorForm::viewDrumMode ( bool bOn )
+// Change ghost-track setting via menu.
+void qtractorMidiEditorForm::viewGhostTrack (void)
 {
-	m_pMidiEditor->setDrumMode(bOn);
-	m_pMidiEditor->updateContents();
-}
-
-
-// Show/hide the events window view.
-void qtractorMidiEditorForm::viewEvents ( bool bOn )
-{
-	m_pMidiEventList->setVisible(bOn);
-}
-
-
-// View preview notes
-void qtractorMidiEditorForm::viewPreview ( bool bOn )
-{
-	m_pMidiEditor->setSendNotes(bOn);
-}
-
-
-// View follow playhead
-void qtractorMidiEditorForm::viewFollow ( bool bOn )
-{
-	m_pMidiEditor->setSyncView(bOn);
+	// Retrieve ghost-track from from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		// Commit the change as usual...
+		qtractorTrack *pGhostTrack
+			= static_cast<qtractorTrack *> (
+				pAction->data().value<void *> ());
+		m_pMidiEditor->setGhostTrack(pGhostTrack);
+		m_pMidiEditor->updateContents();
+	}
 }
 
 
@@ -1728,22 +1730,6 @@ void qtractorMidiEditorForm::viewScaleType (void)
 }
 
 
-// Change ghost-track setting via menu.
-void qtractorMidiEditorForm::viewGhostTrack (void)
-{
-	// Retrieve ghost-track from from action data...
-	QAction *pAction = qobject_cast<QAction *> (sender());
-	if (pAction) {
-		// Commit the change as usual...
-		qtractorTrack *pGhostTrack
-			= static_cast<qtractorTrack *> (
-				pAction->data().value<void *> ());
-		m_pMidiEditor->setGhostTrack(pGhostTrack);
-		m_pMidiEditor->updateContents();
-	}
-}
-
-
 // Refresh view display.
 void qtractorMidiEditorForm::viewRefresh (void)
 {
@@ -1751,6 +1737,20 @@ void qtractorMidiEditorForm::viewRefresh (void)
 	m_pMidiEventList->refresh();
 
 	stabilizeForm();
+}
+
+
+// View preview notes
+void qtractorMidiEditorForm::viewPreview ( bool bOn )
+{
+	m_pMidiEditor->setSendNotes(bOn);
+}
+
+
+// View follow playhead
+void qtractorMidiEditorForm::viewFollow ( bool bOn )
+{
+	m_pMidiEditor->setSyncView(bOn);
 }
 
 
@@ -1898,9 +1898,9 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 
 	m_ui.viewEventsAction->setChecked(m_pMidiEventList->isVisible());
 
+	m_pTrackNameLabel->setText(pTrack->trackName());
 	m_pFileNameLabel->setText(filename());
 	m_pTrackChannelLabel->setText(sTrackChannel.arg(trackChannel() + k));
-	m_pTrackNameLabel->setText(pSeq->name());
 
 	if (m_iDirtyCount > 0)
 		m_pStatusModLabel->setText(tr("MOD"));
@@ -2010,6 +2010,42 @@ void qtractorMidiEditorForm::updateValueTypeMenu (void)
 }
 
 
+// Ghost-track menu builder..
+void qtractorMidiEditorForm::updateGhostTrackMenu (void)
+{
+	m_ui.viewGhostTrackMenu->clear();
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorTrack *pGhostTrack = m_pMidiEditor->ghostTrack();
+
+	QAction *pAction;
+	QVariant data;
+
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Midi) {
+			pAction = m_ui.viewGhostTrackMenu->addAction(
+				pTrack->trackName(), this, SLOT(viewGhostTrack()));
+			pAction->setCheckable(true);
+			pAction->setChecked(pGhostTrack == pTrack);
+			data.setValue(static_cast<void *> (pTrack));
+			pAction->setData(data);
+		}
+	}
+
+	m_ui.viewGhostTrackMenu->addSeparator();
+	pAction = m_ui.viewGhostTrackMenu->addAction(
+		tr("&None"), this, SLOT(viewGhostTrack()));
+	pAction->setCheckable(true);
+	pAction->setChecked(pGhostTrack == NULL);
+	data.setValue(NULL);
+	pAction->setData(data);
+}
+
+
 // Zoom view menu stabilizer.
 void qtractorMidiEditorForm::updateZoomMenu (void)
 {
@@ -2079,43 +2115,6 @@ void qtractorMidiEditorForm::updateScaleMenu (void)
 		pAction->setChecked(iScaleType == iSnapToScaleType);
 		pAction->setData(iScaleType++);
 	}
-}
-
-
-// Ghost-track menu builder..
-void qtractorMidiEditorForm::updateGhostTrackMenu (void)
-{
-	m_ui.viewGhostTrackMenu->clear();
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return;
-
-	qtractorTrack *pGhostTrack = m_pMidiEditor->ghostTrack();
-
-	QAction *pAction;
-	QVariant data;
-
-	qtractorTrack *pTrack = pSession->tracks().first();
-	while (pTrack) {
-		if (pTrack->trackType() == qtractorTrack::Midi) {
-			pAction = m_ui.viewGhostTrackMenu->addAction(
-				pTrack->trackName(), this, SLOT(viewGhostTrack()));
-			pAction->setCheckable(true);
-			pAction->setChecked(pGhostTrack == pTrack);
-			data.setValue(static_cast<void *> (pTrack));
-			pAction->setData(data);
-		}
-		pTrack = pTrack->next();
-	}
-
-	m_ui.viewGhostTrackMenu->addSeparator();
-	pAction = m_ui.viewGhostTrackMenu->addAction(
-		tr("&None"), this, SLOT(viewGhostTrack()));
-	pAction->setCheckable(true);
-	pAction->setChecked(pGhostTrack == NULL);
-	data.setValue(NULL);
-	pAction->setData(data);
 }
 
 

@@ -1298,6 +1298,9 @@ bool qtractorMidiClip::loadClipElement (
 			m_sizeEditor.setWidth(swh.at(0).toInt());
 			m_sizeEditor.setHeight(swh.at(1).toInt());
 		}
+		else if (eChild.tagName() == "ghost-track-name") {
+			m_sGhostTrackName = eChild.text();
+		}
 	}
 
 	return true;
@@ -1329,6 +1332,10 @@ bool qtractorMidiClip::saveClipElement (
 		pDocument->saveTextElement("editor-size",
 			QString::number(m_sizeEditor.width()) + ',' +
 			QString::number(m_sizeEditor.height()), &eMidiClip);
+	}
+	if (!m_sGhostTrackName.isEmpty()) {
+		pDocument->saveTextElement("ghost-track-name",
+			m_sGhostTrackName, &eMidiClip);
 	}
 	pElement->appendChild(eMidiClip);
 

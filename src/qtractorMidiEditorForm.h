@@ -146,15 +146,14 @@ protected slots:
 	void viewToolbarTransport(bool bOn);
 	void viewToolbarScale(bool bOn);
 	void viewToolbarThumb(bool bOn);
+	void viewEvents(bool bOn);
 	void viewNoteDuration(bool bOn);
 	void viewNoteColor(bool bOn);
 	void viewNoteType();
+	void viewDrumMode(bool bOn);
 	void viewValueColor(bool bOn);
 	void viewValueType();
-	void viewDrumMode(bool bOn);
-	void viewEvents(bool bOn);
-	void viewPreview(bool bOn);
-	void viewFollow(bool bOn);
+	void viewGhostTrack();
 	void viewZoomIn();
 	void viewZoomOut();
 	void viewZoomReset();
@@ -167,8 +166,9 @@ protected slots:
 	void viewSnapZebra(bool bOn);
 	void viewSnapGrid(bool bOn);
 	void viewToolTips(bool bOn);
-	void viewGhostTrack();
 	void viewRefresh();
+	void viewPreview(bool bOn);
+	void viewFollow(bool bOn);
 
 	void helpShortcuts();
 	void helpAbout();
@@ -177,11 +177,11 @@ protected slots:
 	void updateNoteTypeMenu();
 	void updateValueTypeMenu();
 
+	void updateGhostTrackMenu();
+
 	void updateZoomMenu();
 	void updateSnapMenu();
 	void updateScaleMenu();
-
-	void updateGhostTrackMenu();
 
 	void updateTrackInstrumentMenu();
 
