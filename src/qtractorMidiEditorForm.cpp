@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -529,6 +529,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewScaleMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateScaleMenu()));
+	QObject::connect(m_ui.viewGhostTrackMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateGhostTrackMenu()));
 
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
@@ -958,8 +961,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		QObject::connect(m_pMidiEditor,
 			SIGNAL(sendNoteSignal(int,int)),
 			SLOT(sendNote(int,int)));
-	}   // Reset MIDI clip length alright...
-	else m_pMidiEditor->resetClipLength();
+	}
 
 	// Drum mode visuals....
 	m_ui.viewDrumModeAction->setChecked(m_pMidiEditor->isDrumMode());
@@ -1711,7 +1713,7 @@ void qtractorMidiEditorForm::viewScaleKey (void)
 }
 
 
-// Change snap-to-scale typesetting via menu.
+// Change snap-to-scale type setting via menu.
 void qtractorMidiEditorForm::viewScaleType (void)
 {
 	// Retrieve snap-to-scale type index from from action data...
@@ -1722,6 +1724,22 @@ void qtractorMidiEditorForm::viewScaleType (void)
 		// Update the other toolbar control...
 		m_pSnapToScaleTypeComboBox->setCurrentIndex(
 			m_pMidiEditor->snapToScaleType());
+	}
+}
+
+
+// Change ghost-track setting via menu.
+void qtractorMidiEditorForm::viewGhostTrack (void)
+{
+	// Retrieve ghost-track from from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		// Commit the change as usual...
+		qtractorTrack *pGhostTrack
+			= static_cast<qtractorTrack *> (
+				pAction->data().value<void *> ());
+		m_pMidiEditor->setGhostTrack(pGhostTrack);
+		m_pMidiEditor->updateContents();
 	}
 }
 
@@ -2061,6 +2079,43 @@ void qtractorMidiEditorForm::updateScaleMenu (void)
 		pAction->setChecked(iScaleType == iSnapToScaleType);
 		pAction->setData(iScaleType++);
 	}
+}
+
+
+// Ghost-track menu builder..
+void qtractorMidiEditorForm::updateGhostTrackMenu (void)
+{
+	m_ui.viewGhostTrackMenu->clear();
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorTrack *pGhostTrack = m_pMidiEditor->ghostTrack();
+
+	QAction *pAction;
+	QVariant data;
+
+	qtractorTrack *pTrack = pSession->tracks().first();
+	while (pTrack) {
+		if (pTrack->trackType() == qtractorTrack::Midi) {
+			pAction = m_ui.viewGhostTrackMenu->addAction(
+				pTrack->trackName(), this, SLOT(viewGhostTrack()));
+			pAction->setCheckable(true);
+			pAction->setChecked(pGhostTrack == pTrack);
+			data.setValue(static_cast<void *> (pTrack));
+			pAction->setData(data);
+		}
+		pTrack = pTrack->next();
+	}
+
+	m_ui.viewGhostTrackMenu->addSeparator();
+	pAction = m_ui.viewGhostTrackMenu->addAction(
+		tr("&None"), this, SLOT(viewGhostTrack()));
+	pAction->setCheckable(true);
+	pAction->setChecked(pGhostTrack == NULL);
+	data.setValue(NULL);
+	pAction->setData(data);
 }
 
 

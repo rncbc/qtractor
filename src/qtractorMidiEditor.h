@@ -51,6 +51,8 @@ class qtractorMidiClip;
 
 class qtractorTimeScale;
 
+class qtractorTrack;
+
 class QFrame;
 class QComboBox;
 class QCloseEvent;
@@ -131,13 +133,6 @@ public:
 	qtractorTimeScale *timeScale() const;
 	unsigned long timeOffset() const;
 
-	// The original clip time-scale length/time.
-	void setClipLength(unsigned long iClipLength);
-	unsigned long clipLength() const;
-
-	// Reset original clip time-scale length/time.
-	void resetClipLength();
-
 	// Time-scale offset (in frames) accessors.
 	void setOffset(unsigned long iOffset);
 	unsigned long offset() const;
@@ -148,6 +143,10 @@ public:
 
 	// Clip recording/overdub status.
 	bool isClipRecord() const;
+
+	// Ghost track setting.
+	void setGhostTrack(qtractorTrack *pTrack);
+	qtractorTrack *ghostTrack() const;
 
 	// Child widgets accessors.
 	QFrame *editListHeader() const;
@@ -561,9 +560,6 @@ private:
 	// The local time scale.
 	qtractorTimeScale *m_pTimeScale;
 
-	// The original clip time-scale length/time.
-	unsigned long m_iClipLengthTime;
-
 	// The local time-scale offset/length.
 	unsigned long m_iOffset;
 	unsigned long m_iLength;
@@ -695,6 +691,9 @@ private:
 	// Temporary sync-view/follow-playhead hold state.
 	bool m_bSyncViewHold;
 	int  m_iSyncViewHold;
+
+	// Ghost track setting.
+	qtractorTrack *m_pGhostTrack;
 };
 
 

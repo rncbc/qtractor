@@ -737,14 +737,14 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_last.pitchBend = 0;
 	m_last.duration  = 0;
 
+	// Current ghost track.
+	m_pGhostTrack = NULL;
+
 	// The local mighty command pattern instance.
 	m_pCommands = new qtractorCommandList();
 
 	// Local time-scale.
 	m_pTimeScale = new qtractorTimeScale();
-
-	// The original clip time-scale length/time.
-	m_iClipLengthTime = 0;
 
 	// The local time-scale offset/length.
 	m_iOffset = 0;
@@ -883,7 +883,6 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 
 	if (m_pMidiClip) {
 		// Now set the editing MIDI sequence alright...
-		setClipLength(m_pMidiClip->clipLength());
 		setOffset(m_pMidiClip->clipStart());
 		setLength(m_pMidiClip->clipLength());
 		// Set its most outstanding properties...
@@ -908,10 +907,12 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 	} else {
 		// Reset those little things too..
 		setDrumMode(false);
-		setClipLength(0);
 		setOffset(0);
 		setLength(0);
 	}
+
+	// Reset ghost track to none.
+	setGhostTrack(NULL);
 
 	// All commands reset.
 	m_pCommands->clear();
@@ -1114,35 +1115,6 @@ unsigned long qtractorMidiEditor::timeOffset (void) const
 }
 
 
-// The original clip time-scale length/time.
-void qtractorMidiEditor::setClipLength ( unsigned long iClipLength )
-{
-	if (m_pTimeScale) {
-		m_iClipLengthTime
-			= m_pTimeScale->tickFromFrame(m_iOffset + iClipLength)
-			- m_pTimeScale->tickFromFrame(m_iOffset);
-	} else {
-		m_iClipLengthTime = 0;
-	}
-}
-
-unsigned long qtractorMidiEditor::clipLength (void) const
-{
-	if (m_pTimeScale == NULL)
-		return 0;
-
-	return m_pTimeScale->frameFromTick(
-		m_pTimeScale->tickFromFrame(m_iOffset) + m_iClipLengthTime) - m_iOffset;
-}
-
-
-// Reset original clip time-scale length/time.
-void qtractorMidiEditor::resetClipLength (void)
-{
-	if (m_pMidiClip) setClipLength(m_pMidiClip->clipLength());
-}
-
-
 // Time-scale offset (in frames) accessors.
 void qtractorMidiEditor::setOffset ( unsigned long iOffset )
 {
@@ -1172,6 +1144,18 @@ bool qtractorMidiEditor::isClipRecord (void) const
 {
 	qtractorTrack *pTrack = (m_pMidiClip ? m_pMidiClip->track() : NULL);
 	return (pTrack ? pTrack->clipRecord() == m_pMidiClip : false);
+}
+
+
+// Ghost track setting.
+void qtractorMidiEditor::setGhostTrack ( qtractorTrack *pGhostTrack )
+{
+	m_pGhostTrack = pGhostTrack;
+}
+
+qtractorTrack *qtractorMidiEditor::ghostTrack (void) const
+{
+	return m_pGhostTrack;
 }
 
 
@@ -2448,13 +2432,8 @@ void qtractorMidiEditor::reset ( bool bSelectClear )
 		m_select.clear();
 
 	// Reset some internal state...
-	if (m_pMidiClip) {
-		qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
-		if (pSeq) {
-			m_cursor.reset(pSeq);
-			m_cursorAt.reset(pSeq);
-		}
-	}
+	m_cursor.clear();
+	m_cursorAt.clear();
 }
 
 
@@ -2529,7 +2508,6 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			 (!bEditView && (pEvent->type() == m_pEditEvent->eventType() &&
 				(!bEventParam || pEvent->param() == eventParam))))) {
 			// Common event coords...
-			int y;
 			const unsigned long t1 = t0 + pEvent->time();
 			const unsigned long t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
@@ -2538,7 +2516,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
 				w1 = 5;
-			QRect rect;
+			QRect rect; int y;
 			if (bEditView) {
 				// View item...
 				y = ch - h1 * (pEvent->note() + 1);
