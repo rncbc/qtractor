@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor's View > Ghost Track menu option is
+  now finally a reality: show any existing MIDI track
+  and its respective clips in the background as dimmed,
+  semi-transparent aka. ghost events. (EXPERIMENTAL)
+
 - Minor update to Debian packaging control file.
 
 - Make sure partially selected clips are reset to whole
