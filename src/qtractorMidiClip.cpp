@@ -1040,11 +1040,11 @@ void qtractorMidiClip::draw (
 	const bool bDrumMode = pTrack->isMidiDrums();
 	QVector<QPoint> diamond;
 	if (bDrumMode) {
-		const int h4 = (h2 >> 1);
-		diamond.append(QPoint(-h2,  h4));
-		diamond.append(QPoint(  0, -h4));
-		diamond.append(QPoint( h2,  h4));
-		diamond.append(QPoint(  0,  h4 + h2));
+		const int h4 = (h2 >> 1) + 1;
+		diamond.append(QPoint(  0, -1));
+		diamond.append(QPoint(-h4, h4));
+		diamond.append(QPoint(  0, h2 + 2));
+		diamond.append(QPoint( h4, h4));
 	}
 
 	qtractorMidiEvent *pEvent

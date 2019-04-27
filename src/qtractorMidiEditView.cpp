@@ -480,15 +480,16 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 	const bool bDrumMode = m_pEditor->isDrumMode();
 	QVector<QPoint> diamond;
 	if (bDrumMode) {
-		const int h2 = (h1 >> 1);
-		diamond.append(QPoint(-h1,  h2));
-		diamond.append(QPoint(  0, -h2));
-		diamond.append(QPoint( h1,  h2));
-		diamond.append(QPoint(  0,  h2 + h1));
+		const int h2 = (h1 >> 1) + 1;
+		diamond.append(QPoint(  0, -1));
+		diamond.append(QPoint(-h2, h2));
+		diamond.append(QPoint(  0, h1 + 2));
+		diamond.append(QPoint( h2, h2));
 	}
 
 	QColor rgbFore(m_pEditor->foreground());
 	rgbFore.setAlpha(alpha);
+	painter.setPen(rgbFore);
 
 	QColor rgbNote(m_pEditor->background());
 	int hue, sat, val;
@@ -532,11 +533,11 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 					rgbNote.setHsv(hue, sat, val, alpha);
 				}
 				if (bDrumMode) {
-					painter.setPen(rgbFore);
 					painter.setBrush(rgbNote);
 					const QPolygon& polyg
 						= QPolygon(diamond).translated(x, y);
-					painter.drawPolygon(polyg.translated(1, 0)); // shadow
+					if (h1 > 3)
+						painter.drawPolygon(polyg.translated(1, 0)); // shadow
 					painter.drawPolygon(polyg); // diamond
 				} else {
 					painter.fillRect(x, y, w1, h1, rgbFore);

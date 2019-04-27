@@ -498,6 +498,7 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 
 	QColor rgbFore(m_pEditor->foreground());
 	rgbFore.setAlpha(alpha);
+	painter.setPen(rgbFore);
 
 	QColor rgbValue(m_pEditor->background());
 	int hue, sat, val;

@@ -1773,7 +1773,7 @@ void qtractorMidiEditor::pasteClipboard (
 			if (pEvent->type() == m_pEditView->eventType()) {
 				y = ch - h1 * (pEvent->note() + 1);
 				if (m_bDrumMode)
-					rectView.setRect(x - x0 - h1, y + h2, h4, h4);
+					rectView.setRect(x - x0 - h1, y - h2, h4, h4);
 				else
 					rectView.setRect(x - x0, y, w1, h1);
 			}
@@ -4369,7 +4369,7 @@ void qtractorMidiEditor::paintDragState (
 
 	QVector<QPoint> diamond;
 	if (m_bDrumMode) {
-		const int h1 = m_pEditList->itemHeight();
+		const int h1 = (m_pEditList->itemHeight() >> 1) + 2;
 		diamond.append(QPoint(-h1,   0));
 		diamond.append(QPoint(  0, -h1));
 		diamond.append(QPoint(+h1,   0));
@@ -4530,7 +4530,7 @@ void qtractorMidiEditor::paintDragState (
 		if (bEditView && m_bDrumMode) {
 			pPainter->drawPolygon(QPolygon(diamond).translated(
 				pScrollView->contentsToViewport(rect.center()
-				+ QPoint(1, 1)))); // diamond++
+				+ QPoint(1, 1)))); // ++diamond;
 		} else {
 			pPainter->drawRect(QRect(
 				pScrollView->contentsToViewport(rect.topLeft()),
