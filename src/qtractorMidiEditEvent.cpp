@@ -390,7 +390,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	}
 
 	//
-	// Draw the sequence events...
+	// Draw the clip(s) events...
 	//
 
 	qtractorMidiSequence *pSeq = m_pEditor->sequence();
@@ -419,6 +419,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	if (pTrack) {
 		// Don't draw beyhond the right-most position (x = dx + w)...
 		const unsigned long f2 = pTimeScale->frameFromPixel(x);
+		const bool bDrumMode = pTrack->isMidiDrums();
 		qtractorClip *pClip = pTrack->clips().first();
 		while (pClip && pClip->clipStart() + pClip->clipLength() < f0)
 			pClip = pClip->next();
@@ -431,7 +432,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 				pNode = cursor.seekFrame(iClipStart);
 				const unsigned long t1 = pNode->tickFromFrame(iClipStart);
 				drawEvents(painter, dx, y0, pMidiClip->sequence(),
-					t1, iTickStart, iTickEnd, iTickEnd, 32);
+					t1, iTickStart, iTickEnd, iTickEnd, bDrumMode,
+					pTrack->foreground(), pTrack->background(), 32);
 			}
 			pClip = pClip->next();
 		}
@@ -440,7 +442,9 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	}
 
 	// Draw actual events in full brightness (alpha=255)...
-	drawEvents(painter, dx, y0, pSeq, t0, iTickStart, iTickEnd, iTickEnd2);
+	drawEvents(painter, dx, y0, pSeq,
+		t0, iTickStart, iTickEnd, iTickEnd2, m_pEditor->isDrumMode(),
+		m_pEditor->foreground(), m_pEditor->background());
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
@@ -492,15 +496,16 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 	int dx, int dy, qtractorMidiSequence *pSeq, unsigned long t0,
 	unsigned long iTickStart, unsigned long iTickEnd,
-	unsigned long iTickEnd2, int alpha )
+	unsigned long iTickEnd2, bool bDrumMode,
+	const QColor& fore, const QColor& back, int alpha )
 {
 	const int y0 = dy;	// former nomenclature.
 
-	QColor rgbFore(m_pEditor->foreground());
+	QColor rgbFore(fore);
 	rgbFore.setAlpha(alpha);
 	painter.setPen(rgbFore);
 
-	QColor rgbValue(m_pEditor->background());
+	QColor rgbValue(back);
 	int hue, sat, val;
 	rgbValue.getHsv(&hue, &sat, &val); sat = 86;
 	rgbValue.setAlpha(alpha);
@@ -545,7 +550,7 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 			int w1 = (t1 >= t2 && m_pEditor->isClipRecord()
 				? m_pEditor->playHeadX()
 				: pNode->pixelFromTick(t2) - dx) - x;
-			if (w1 < 5 || !m_pEditor->isNoteDuration())
+			if (w1 < 5 || !m_pEditor->isNoteDuration() || bDrumMode)
 				w1 = 5;
 			if (eventType == qtractorMidiEvent::NOTEON ||
 				eventType == qtractorMidiEvent::KEYPRESS) {

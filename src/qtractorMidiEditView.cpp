@@ -377,7 +377,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	}
 
 	//
-	// Draw the sequence events...
+	// Draw the clip(s) sequenece events...
 	//
 
 	qtractorMidiSequence *pSeq = m_pEditor->sequence();
@@ -398,6 +398,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	if (pTrack) {
 		// Don't draw beyhond the right-most position (x = dx + w)...
 		const unsigned long f2 = pTimeScale->frameFromPixel(x);
+		const bool bDrumMode = pTrack->isMidiDrums();
 		qtractorClip *pClip = pTrack->clips().first();
 		while (pClip && pClip->clipStart() + pClip->clipLength() < f0)
 			pClip = pClip->next();
@@ -410,7 +411,8 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 				pNode = cursor.seekFrame(iClipStart);
 				const unsigned long t1 = pNode->tickFromFrame(iClipStart);
 				drawEvents(painter, dx, cy, pMidiClip->sequence(),
-					t1, iTickStart, iTickEnd, iTickEnd, 32);
+					t1, iTickStart, iTickEnd, iTickEnd, bDrumMode,
+					pTrack->foreground(), pTrack->background(), 32);
 			}
 			pClip = pClip->next();
 		}
@@ -419,7 +421,9 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	}
 
 	// Draw actual events in full brightness (alpha=255)...
-	drawEvents(painter, dx, cy, pSeq, t0, iTickStart, iTickEnd, iTickEnd2);
+	drawEvents(painter, dx, cy, pSeq,
+		t0, iTickStart, iTickEnd, iTickEnd2, m_pEditor->isDrumMode(),
+		m_pEditor->foreground(), m_pEditor->background());
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
@@ -471,13 +475,13 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 void qtractorMidiEditView::drawEvents ( QPainter& painter,
 	int dx, int dy, qtractorMidiSequence *pSeq, unsigned long t0,
 	unsigned long iTickStart, unsigned long iTickEnd,
-	unsigned long iTickEnd2, int alpha )
+	unsigned long iTickEnd2, bool bDrumMode,
+	const QColor& fore, const QColor& back, int alpha )
 {
 	const int h  = qtractorScrollView::viewport()->height();
 	const int h1 = m_pEditor->editList()->itemHeight();
 	const int ch = qtractorScrollView::contentsHeight() - dy;
 
-	const bool bDrumMode = m_pEditor->isDrumMode();
 	QVector<QPoint> diamond;
 	if (bDrumMode) {
 		const int h2 = (h1 >> 1) + 1;
@@ -487,11 +491,11 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 		diamond.append(QPoint( h2, h2));
 	}
 
-	QColor rgbFore(m_pEditor->foreground());
+	QColor rgbFore(fore);
 	rgbFore.setAlpha(alpha);
 	painter.setPen(rgbFore);
 
-	QColor rgbNote(m_pEditor->background());
+	QColor rgbNote(back);
 	int hue, sat, val;
 	rgbNote.getHsv(&hue, &sat, &val); sat = 86;
 	rgbNote.setAlpha(alpha);

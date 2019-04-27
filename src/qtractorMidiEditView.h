@@ -84,7 +84,8 @@ protected:
 	void drawEvents(QPainter& painter, int dx, int dy,
 		qtractorMidiSequence *pSeq, unsigned long t0,
 		unsigned long iTickStart, unsigned long iTickEnd,
-		unsigned long iTickEnd2, int alpha = 255);
+		unsigned long iTickEnd2, bool bDrumMode,
+		const QColor& fore, const QColor& back, int alpha = 255);
 
 	// Draw the track view
 	void drawContents(QPainter *pPainter, const QRect& rect);
