@@ -410,7 +410,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 				pNode = cursor.seekFrame(iClipStart);
 				const unsigned long t1 = pNode->tickFromFrame(iClipStart);
 				drawEvents(painter, dx, cy, pMidiClip->sequence(),
-					t1, iTickStart, iTickEnd, iTickEnd, 25);
+					t1, iTickStart, iTickEnd, iTickEnd, 32);
 			}
 			pClip = pClip->next();
 		}
@@ -493,6 +493,7 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 	QColor rgbNote(m_pEditor->background());
 	int hue, sat, val;
 	rgbNote.getHsv(&hue, &sat, &val); sat = 86;
+	rgbNote.setAlpha(alpha);
 
 	int x, y;
 
