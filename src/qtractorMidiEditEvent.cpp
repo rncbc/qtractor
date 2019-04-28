@@ -428,11 +428,16 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 				= static_cast<qtractorMidiClip *> (pClip);
 			if (pMidiClip && pMidiClip != m_pEditor->midiClip()) {
 				m_pEditor->reset(false); // FIXME: reset cached cursors...
-				const unsigned long iClipStart = pMidiClip->clipStart();
+				const unsigned long iClipStart
+					= pMidiClip->clipStart();
+				const unsigned long iClipEnd
+					= iClipStart + pMidiClip->clipLength();
 				pNode = cursor.seekFrame(iClipStart);
 				const unsigned long t1 = pNode->tickFromFrame(iClipStart);
+				pNode = cursor.seekFrame(iClipEnd);
+				const unsigned long t2 = pNode->tickFromFrame(iClipEnd);
 				drawEvents(painter, dx, y0, pMidiClip->sequence(),
-					t1, iTickStart, iTickEnd, iTickEnd, bDrumMode,
+					t1, iTickStart, iTickEnd, t2, bDrumMode,
 					pTrack->foreground(), pTrack->background(), 32);
 			}
 			pClip = pClip->next();

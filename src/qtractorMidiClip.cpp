@@ -1045,6 +1045,7 @@ void qtractorMidiClip::draw (
 		diamond.append(QPoint(-h4, h4));
 		diamond.append(QPoint(  0, h2 + 2));
 		diamond.append(QPoint( h4, h4));
+		pPainter->setRenderHint(QPainter::Antialiasing, true);
 	}
 
 	qtractorMidiEvent *pEvent
@@ -1084,6 +1085,9 @@ void qtractorMidiClip::draw (
 		}
 		pEvent = pEvent->next();
 	}
+
+	if (bDrumMode)
+		pPainter->setRenderHint(QPainter::Antialiasing, false);
 }
 
 

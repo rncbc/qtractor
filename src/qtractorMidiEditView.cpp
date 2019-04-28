@@ -407,11 +407,16 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 				= static_cast<qtractorMidiClip *> (pClip);
 			if (pMidiClip && pMidiClip != m_pEditor->midiClip()) {
 				m_pEditor->reset(false); // FIXME: reset cached cursor...
-				const unsigned long iClipStart = pMidiClip->clipStart();
+				const unsigned long iClipStart
+					= pMidiClip->clipStart();
+				const unsigned long iClipEnd
+					= iClipStart + pMidiClip->clipLength();
 				pNode = cursor.seekFrame(iClipStart);
 				const unsigned long t1 = pNode->tickFromFrame(iClipStart);
+				pNode = cursor.seekFrame(iClipEnd);
+				const unsigned long t2 = pNode->tickFromFrame(iClipEnd);
 				drawEvents(painter, dx, cy, pMidiClip->sequence(),
-					t1, iTickStart, iTickEnd, iTickEnd, bDrumMode,
+					t1, iTickStart, iTickEnd, t2, bDrumMode,
 					pTrack->foreground(), pTrack->background(), 32);
 			}
 			pClip = pClip->next();
@@ -489,6 +494,7 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 		diamond.append(QPoint(-h2, h2));
 		diamond.append(QPoint(  0, h1 + 2));
 		diamond.append(QPoint( h2, h2));
+		painter.setRenderHint(QPainter::Antialiasing, true);
 	}
 
 	QColor rgbFore(fore);
@@ -552,6 +558,9 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 		}
 		pEvent = pEvent->next();
 	}
+
+	if (bDrumMode)
+		painter.setRenderHint(QPainter::Antialiasing, false);
 }
 
 
