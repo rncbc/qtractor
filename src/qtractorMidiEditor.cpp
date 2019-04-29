@@ -2604,7 +2604,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	const int ch = m_pEditView->contentsHeight();
 	int h1 = m_pEditList->itemHeight();
 	unsigned char note = (ch - pos.y()) / h1;
-	if (m_iSnapToScaleType > 0)
+	if (m_iSnapToScaleType > 0 && !m_bDrumMode)
 		note = snapToScale(note, m_iSnapToScaleKey, m_iSnapToScaleType);
 
 	// Check for note/pitch changes...
@@ -3718,7 +3718,7 @@ void qtractorMidiEditor::updateDragMove (
 		if (y1 + rect.height() > ch)
 			y1 = ch - rect.height();
 		unsigned char note = 127 - (y1 / h1);
-		if (m_iSnapToScaleType > 0)
+		if (m_iSnapToScaleType > 0 && !m_bDrumMode)
 			note = snapToScale(note, m_iSnapToScaleKey, m_iSnapToScaleType);
 		m_posDelta.setY(h1 * (127 - note) - y0);
 	} else {

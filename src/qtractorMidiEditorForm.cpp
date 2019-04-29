@@ -964,7 +964,10 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	}
 
 	// Drum mode visuals....
-	m_ui.viewDrumModeAction->setChecked(m_pMidiEditor->isDrumMode());
+	const bool bDrumMode = m_pMidiEditor->isDrumMode();
+	m_ui.viewDrumModeAction->setChecked(bDrumMode);
+	m_pSnapToScaleKeyComboBox->setEnabled(!bDrumMode);
+	m_pSnapToScaleTypeComboBox->setEnabled(!bDrumMode);
 
 	// Reset local dirty flag.
 	resetDirtyCount();
@@ -1580,6 +1583,9 @@ void qtractorMidiEditorForm::viewNoteType (void)
 // View drum note of notes (diamods)
 void qtractorMidiEditorForm::viewDrumMode ( bool bOn )
 {
+	m_pSnapToScaleKeyComboBox->setEnabled(!bOn);
+	m_pSnapToScaleTypeComboBox->setEnabled(!bOn);
+
 	m_pMidiEditor->setDrumMode(bOn);
 	m_pMidiEditor->updateContents();
 }

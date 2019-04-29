@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- When in Drum Mode, Key and Scale are meaningless and
+  thus functionally disabled from the MIDI clip editor
+  (aka. piano-roll). (EXPERIMENTAL)
+
 - MIDI clip editor's View > Ghost Track menu option is
   now finally a reality: show any existing MIDI track
   and its respective clips in the background as dimmed,
