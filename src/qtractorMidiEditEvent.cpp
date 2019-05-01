@@ -414,7 +414,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	painter.setPen(rgbDark);
 	painter.drawLine(0, y0, w, y0);
 
-	// Draw ghost-track events in dimmed transparecncy (alpha=25)...
+	// Draw ghost-track events in dimmed transparecncy (alpha=55)...
 	qtractorTrack *pTrack = m_pEditor->ghostTrack();
 	if (pTrack) {
 		// Don't draw beyhond the right-most position (x = dx + w)...
@@ -438,7 +438,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 				const unsigned long t2 = pNode->tickFromFrame(iClipEnd);
 				drawEvents(painter, dx, y0, pMidiClip->sequence(),
 					t1, iTickStart, iTickEnd, t2, bDrumMode,
-					pTrack->foreground(), pTrack->background(), 32);
+					pTrack->foreground(), pTrack->background(), 55);
 			}
 			pClip = pClip->next();
 		}
