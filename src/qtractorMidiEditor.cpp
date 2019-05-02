@@ -1790,7 +1790,7 @@ void qtractorMidiEditor::pasteClipboard (
 					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
-				if (!m_bNoteDuration)
+				if (!m_bNoteDuration || m_bDrumMode)
 					w1 = 5;
 				if (y < y0)
 					rectEvent.setRect(x - x0, y, w1, y0 - y);
@@ -2098,7 +2098,7 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 			else
 				y = y0 - (y0 * pEvent->value()) / 128;
-			if (!m_bNoteDuration)
+			if (!m_bNoteDuration || m_bDrumMode)
 				w1 = 5;
 			if (y < y0)
 				pItem->rectEvent.setRect(x - x0, y, w1, y0 - y);
@@ -2557,7 +2557,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
-				if (!m_bNoteDuration)
+				if (!m_bNoteDuration || m_bDrumMode)
 					w1 = 5;
 				if (y < y0)
 					rect.setRect(x - x0, y, w1, y0 - y);
@@ -2825,7 +2825,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			h1 = y0 - y1;
 			m_resizeMode = ResizeValue;
 		}
-		if (!m_bNoteDuration)
+		if (!m_bNoteDuration || m_bDrumMode)
 			w1 = 5;
 		if (h1 < 3)
 			h1 = 3;
@@ -2891,7 +2891,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 				if (pos.y() < m_rectDrag.top() + 4) {
 					m_resizeMode = ResizeValue;
 					shape = Qt::SplitVCursor;
-				} else if (m_bNoteDuration) {
+				} else if (m_bNoteDuration && !m_bDrumMode) {
 					if (pos.x() > m_rectDrag.right() - 4) {
 						m_resizeMode = ResizeNoteRight;
 						shape = Qt::SplitHCursor;
@@ -3370,7 +3370,7 @@ void qtractorMidiEditor::updateDragSelect (
 					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
-				if (!m_bNoteDuration)
+				if (!m_bNoteDuration || m_bDrumMode)
 					w1 = 5;
 				if (y < y0)
 					rectEvent.setRect(x - x0, y, w1, y0 - y);
@@ -3663,7 +3663,7 @@ void qtractorMidiEditor::updateEventRects (
 			y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 		else
 			y = y0 - (y0 * pEvent->value()) / 128;
-		if (!m_bNoteDuration)
+		if (!m_bNoteDuration || m_bDrumMode)
 			w1 = 5;
 		if (y < y0)
 			rectEvent.setRect(x - x0, y, w1, y0 - y);
@@ -4399,7 +4399,7 @@ void qtractorMidiEditor::paintDragState (
 						pDts->node = pDts->cursor.seekTick(t2);
 						rect.setLeft(
 							pDts->node->pixelFromTick(t2) - pDts->x0);
-						if (bEditView || m_bNoteDuration) {
+						if (bEditView || (m_bNoteDuration && !m_bDrumMode)) {
 							d2 = pEvent->duration() * (d1 + iTimeDelta) / d1;
 							if (d2 < 1)
 								d2 = 1;
@@ -4463,11 +4463,11 @@ void qtractorMidiEditor::paintDragState (
 					if (x1 > rect.right())
 						x1 = rect.right();
 					rect.setLeft(x1);
-					if (!bEditView && !m_bNoteDuration)
+					if (!bEditView && (!m_bNoteDuration || m_bDrumMode))
 						rect.setWidth(5);
 					break;
 				case ResizeNoteRight:
-					if (bEditView || m_bNoteDuration) {
+					if (bEditView || (m_bNoteDuration && !m_bDrumMode)) {
 						x1 = rect.right() + m_posDelta.x();
 						if (x1 < rect.left())
 							x1 = rect.left();
