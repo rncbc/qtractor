@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Plugin-lists and respective plugins state may now be
+  exported and/or imported as XML files. (EXPERIMENTAL)
+
 - When in Drum Mode, Key and Scale are meaningless and
   thus functionally disabled from the MIDI clip editor
   (aka. piano-roll). (EXPERIMENTAL)

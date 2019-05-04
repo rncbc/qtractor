@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -31,9 +31,12 @@
 
 #include "qtractorDocument.h"
 
+#include <QDomDocument>
+#include <QDomElement>
+#include <QTextStream>
+
 #include <QFile>
 
-#include <QDomDocument>
 
 // Translatable macro contextualizer.
 #undef  _TR
@@ -587,6 +590,16 @@ public:
 		: qtractorDocument(pDocument, "midi-control"),
 			m_pMidiControl(pMidiControl) {}
 
+	// Property accessors.
+	qtractorMidiControl *midiControl() const
+		{ return m_pMidiControl; }
+
+	// External storage simple methods.
+	bool load(const QString& sFilename);
+	bool save(const QString& sFilename);
+
+protected:
+
 	// Elemental loader/savers...
 	bool loadElement(QDomElement *pElement)
 		{ return m_pMidiControl->loadElement(this, pElement); }
@@ -598,6 +611,51 @@ private:
 	// Instance variables.
 	qtractorMidiControl *m_pMidiControl;
 };
+
+
+// External storage simple load method.
+bool qtractorMidiControl::Document::load ( const QString& sFilename )
+{
+	QFile file(sFilename);
+	if (!file.open(QIODevice::ReadOnly))
+		return false;
+
+	// Parse it a-la-DOM :-)
+	QDomDocument *pDocument = document();
+	if (!pDocument->setContent(&file)) {
+		file.close();
+		return false;
+	}
+
+	file.close();
+
+	QDomElement elem = pDocument->documentElement();
+	// Get root element and check for proper taq name.
+	if (elem.tagName() != "midi-control")
+		return false;
+
+	return loadElement(&elem);
+}
+
+
+// External storage simple save method.
+bool qtractorMidiControl::Document::save ( const QString& sFilename )
+{
+	QFile file(sFilename);
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+		return false;
+
+	QDomDocument *pDocument = document();
+	QDomElement elem = pDocument->createElement("midi-control");
+	saveElement(&elem);
+	pDocument->appendChild(elem);
+
+	QTextStream ts(&file);
+	ts << pDocument->toString() << endl;
+	file.close();
+
+	return true;
+}
 
 
 // Load controller rules.

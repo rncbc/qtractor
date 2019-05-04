@@ -29,6 +29,7 @@
 #include "qtractorRubberBand.h"
 
 #include "qtractorSession.h"
+#include "qtractorOptions.h"
 
 #include "qtractorMainForm.h"
 
@@ -39,13 +40,15 @@
 
 #include "qtractorInsertPlugin.h"
 
-#include "qtractorOptions.h"
-
 #include <QItemDelegate>
 #include <QPainter>
 #include <QMenu>
 #include <QToolTip>
 #include <QScrollBar>
+
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QDomDocument>
 
 #include <QMouseEvent>
 #include <QDragLeaveEvent>
@@ -861,6 +864,201 @@ void qtractorPluginListView::editPlugin (void)
 }
 
 
+// Import plugin-list slot.
+void qtractorPluginListView::importPlugins (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	// We'll need this, sure.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return;
+
+	// Default file-name extension (suffix)...
+	const QString sExt("xml");
+
+	// We'll assume that there's an external file...
+	QString sFilename;
+
+	// Construct the import-from-file dialog...
+	const QString& sTitle
+		= tr("Import Plugins") + " - " QTRACTOR_TITLE;
+
+	QStringList filters;
+	filters.append(tr("XML files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
+
+	QWidget *pParentWidget = NULL;
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialogs) {
+		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to open...
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
+		sTitle, pOptions->sPluginsDir, sFilter, NULL, options);
+#else
+	// Construct open-file dialog...
+	QFileDialog fileDialog(pParentWidget,
+		sTitle, pOptions->sPluginsDir, sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+	urls.append(QUrl::fromLocalFile(pOptions->sPluginsDir));
+	fileDialog.setSidebarUrls(urls);
+	fileDialog.setOptions(options);
+	// Show dialog...
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+#endif
+
+	// Do we have any?
+	if (sFilename.isEmpty())
+		return;
+
+	// Save chosen directory as default...
+	pOptions->sPluginsDir = QFileInfo(sFilename).absolutePath();
+
+	// Maybe ask whether we may actually reset the current list...
+	if (m_pPluginList->count() > 0 && pOptions->bConfirmRemove) {
+		if (QMessageBox::warning(this,
+			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("About to remove and import all plugins:\n\n"
+			"\"%1\"\n\n"
+			"Are you sure?")
+			.arg(QFileInfo(sFilename).fileName()),
+			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
+			return;
+		}
+	}
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Import plugin-list state from XML document...
+	//
+	QDomDocument doc("qtractorPluginList");
+	qtractorPluginList::Document(&doc, m_pPluginList).load(sFilename);
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+
+	emit contentsChanged();
+}
+
+
+// Export plugin-list slot.
+void qtractorPluginListView::exportPlugins (void)
+{
+	if (m_pPluginList == NULL)
+		return;
+
+	// Check whether there's any...
+	if (m_pPluginList->count() < 1)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	// We'll need this, sure.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == NULL)
+		return;
+
+	// The default file-name suffix/extension...
+	const QString sExt("xml");
+
+	// Suggest a brand new filename ...
+	QString sPluginsName = qtractorSession::sanitize(pSession->sessionName());
+	if (!sPluginsName.isEmpty())
+		sPluginsName += '-';
+	sPluginsName += qtractorSession::sanitize(m_pPluginList->name());
+
+	// If there are any existing, similar file-names,
+	// add and increment a numeric version suffix...
+	QFileInfo fi(pOptions->sPluginsDir, sPluginsName + '.' + sExt);
+	int iFileNo = 0;
+	while (fi.exists()) {
+		fi.setFile(pOptions->sPluginsDir, sPluginsName
+			+ '-' + QString::number(++iFileNo) + '.' + sExt);
+	}
+
+	// Got that...
+	QString sFilename = fi.absoluteFilePath();
+
+	// Construct the export-to-file dialog...
+	const QString& sTitle
+		= tr("Export Plugins") + " - " QTRACTOR_TITLE;
+
+	QStringList filters;
+	filters.append(tr("XML files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
+
+	QWidget *pParentWidget = NULL;
+	QFileDialog::Options options = 0;
+	if (pOptions->bDontUseNativeDialogs) {
+		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
+#if 1//QT_VERSION < 0x040400
+	// Ask for the filename to save...
+	sFilename = QFileDialog::getSaveFileName(pParentWidget,
+		sTitle, sFilename, sFilter, NULL, options);
+#else
+	// Construct save-file dialog...
+	QFileDialog fileDialog(pParentWidget,
+		sTitle, sFilename, sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+	fileDialog.setFileMode(QFileDialog::AnyFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(pOptions->sSessionDir));
+	urls.append(QUrl::fromLocalFile(pOptions->sPluginsDir));
+	fileDialog.setSidebarUrls(urls);
+	fileDialog.setOptions(options);
+	// Show dialog...
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+	else
+		sFilename.clear();
+#endif
+
+	// Do we have any?
+	if (sFilename.isEmpty())
+		return;
+
+	// Save chosen directory as default...
+	pOptions->sPluginsDir = QFileInfo(sFilename).absolutePath();
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorPluginListView::exportPlugins(\"%s\")",
+		sFilename.toUtf8().constData());
+#endif
+
+	// Tell the world we'll take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	// Export plugin-list state to XML document...
+	//
+	QDomDocument doc("qtractorPluginList");
+	qtractorPluginList::Document(&doc, m_pPluginList).save(sFilename);
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+}
+
+
 // Add an audio-insert pseudo-plugin slot.
 void qtractorPluginListView::addAudioInsertPlugin (void)
 {
@@ -1603,7 +1801,7 @@ void qtractorPluginListView::contextMenuEvent (
 		tr("&Add Plugin..."), this, SLOT(addPlugin()));
 //	pAction->setEnabled(true);
 
-	QMenu *pInsertsMenu = menu.addMenu(tr("&Inserts"));
+	QMenu *pInsertsMenu = menu.addMenu(tr("I&nserts"));
 
 	QMenu *pAudioInsertsMenu = pInsertsMenu->addMenu(
 		QIcon(":/images/trackAudio.png"), tr("&Audio"));
@@ -1762,6 +1960,16 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isEditorVisible());
 	pAction->setEnabled(pType && pType->isEditor());
+
+	menu.addSeparator();
+
+	pAction = menu.addAction(
+		tr("&Import..."), this, SLOT(importPlugins()));
+//	pAction->setEnabled(true);
+
+	pAction = menu.addAction(
+		tr("E&xport..."), this, SLOT(exportPlugins()));
+	pAction->setEnabled(bEnabled);
 
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
