@@ -944,15 +944,13 @@ qtractorImportPluginsCommand::~qtractorImportPluginsCommand (void)
 // Import plugins command methods.
 bool qtractorImportPluginsCommand::redo (void)
 {
-	m_pRemoveCommand->redo();
-	m_pAddCommand->redo();
+	return (m_pRemoveCommand->redo() && m_pAddCommand->redo());
 }
 
 
 bool qtractorImportPluginsCommand::undo (void)
 {
-	m_pAddCommand->undo();
-	m_pRemoveCommand->undo();
+	return (m_pAddCommand->undo() && m_pRemoveCommand->undo());
 }
 
 
