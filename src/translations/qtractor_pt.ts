@@ -405,6 +405,11 @@ MIDI:	</translation>
         <translation>Medidor da saída de áudio</translation>
     </message>
     <message>
+        <location filename="../qtractorPluginCommand.cpp" line="929"/>
+        <source>import plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="624"/>
         <source>add marker</source>
         <translation>adicionar marcador</translation>

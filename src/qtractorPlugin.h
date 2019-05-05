@@ -844,7 +844,7 @@ public:
 	class Document;
 
 	// Create/load plugin state.
-	bool loadPlugin(QDomElement *pElement);
+	qtractorPlugin *loadPlugin(QDomElement *pElement);
 
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);

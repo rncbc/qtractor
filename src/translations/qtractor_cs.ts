@@ -312,6 +312,11 @@ MIDI:	</translation>
         <translation>Parametr pro přímý přístup</translation>
     </message>
     <message>
+        <location filename="../qtractorPluginCommand.cpp" line="929"/>
+        <source>import plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorSessionCommand.cpp" line="52"/>
         <source>session loop</source>
         <translation>Smyčka sezení</translation>

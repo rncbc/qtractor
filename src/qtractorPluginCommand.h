@@ -476,6 +476,38 @@ private:
 };
 
 
+//----------------------------------------------------------------------
+// class qtractorImportPluginsCommand - declaration.
+//
+
+class qtractorImportPluginsCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorImportPluginsCommand();
+
+	// Destructor.
+	~qtractorImportPluginsCommand();
+
+	// Plugin lists accessors.
+	void addPlugin(qtractorPlugin *pPlugin)
+		{ m_pAddCommand->addPlugin(pPlugin); }
+	void removePlugin(qtractorPlugin *pPlugin)
+		{ m_pRemoveCommand->addPlugin(pPlugin); }
+
+	// Import plugins command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorAddPluginCommand    *m_pAddCommand;
+	qtractorRemovePluginCommand *m_pRemoveCommand;
+};
+
+
 #endif	// __qtractorPluginCommand_h
 
 // end of qtractorPluginCommand.h

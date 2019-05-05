@@ -1973,7 +1973,7 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 
 
 // Create/load plugin state.
-bool qtractorPluginList::loadPlugin ( QDomElement *pElement )
+qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
 {
 	qtractorPlugin *pPlugin = NULL;
 
@@ -2098,7 +2098,7 @@ bool qtractorPluginList::loadPlugin ( QDomElement *pElement )
 			pPlugin->setValueList(vlist);
 		if (!values.index.isEmpty())
 			pPlugin->setValues(values);
-		append(pPlugin);
+	//	append(pPlugin);
 		pPlugin->mapControllers(controllers);
 		pPlugin->applyCurveFile(&cfile);
 		pPlugin->setDirectAccessParamIndex(iDirectAccessParamIndex);
@@ -2117,7 +2117,7 @@ bool qtractorPluginList::loadPlugin ( QDomElement *pElement )
 	qDeleteAll(controllers);
 	controllers.clear();
 
-	return (pPlugin != NULL);
+	return pPlugin;
 }
 
 
@@ -2151,8 +2151,11 @@ bool qtractorPluginList::loadElement (
 		if (ePlugin.tagName() == "program")
 			setMidiProg(ePlugin.text().toInt());
 		else
-		if (ePlugin.tagName() == "plugin")
-			loadPlugin(&ePlugin);
+		if (ePlugin.tagName() == "plugin") {
+			qtractorPlugin *pPlugin = loadPlugin(&ePlugin);
+			if (pPlugin)
+				append(pPlugin);
+		}
 		else
 		// Load audio output bus name...
 		if (ePlugin.tagName() == "audio-output-bus-name") {
@@ -2419,8 +2422,18 @@ bool qtractorPluginList::Document::load ( const QString& sFilename )
 // Elemental loader...
 bool qtractorPluginList::Document::loadElement ( QDomElement *pElement )
 {
-	// Start clean...
-	m_pPluginList->clear();
+	// Make it an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	qtractorImportPluginsCommand *pImportCommand
+		= new qtractorImportPluginsCommand();
+
+	for (qtractorPlugin *pPlugin = m_pPluginList->first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		pImportCommand->removePlugin(pPlugin);
+	}
 
 	// Load plugin-list children...
 	for (QDomNode nPlugin = pElement->firstChild();
@@ -2430,16 +2443,19 @@ bool qtractorPluginList::Document::loadElement ( QDomElement *pElement )
 		QDomElement ePlugin = nPlugin.toElement();
 		if (ePlugin.isNull())
 			continue;
-		if (ePlugin.tagName() == "plugin")
-			m_pPluginList->loadPlugin(&ePlugin);
+		if (ePlugin.tagName() == "plugin") {
+			qtractorPlugin *pPlugin = m_pPluginList->loadPlugin(&ePlugin);
+			if (pPlugin) {
+				pPlugin->realizeConfigs();
+				pPlugin->realizeValues();
+				pPlugin->releaseConfigs();
+				pPlugin->releaseValues();
+				pImportCommand->addPlugin(pPlugin);
+			}
+		}
 	}
 
-	// Refresh all views...
-	QListIterator<qtractorPluginListView *> iter(m_pPluginList->views());
-	while (iter.hasNext()) {
-		qtractorPluginListView *pListView = iter.next();
-		pListView->refresh();
-	}
+	pSession->execute(pImportCommand);
 
 	return true;
 }
