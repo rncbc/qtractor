@@ -323,8 +323,8 @@ public:
 	class Document;
 
 	// Document element methods.
-	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
-	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement);
+	bool loadElement(Document *pDocument, QDomElement *pElement);
+	bool saveElement(Document *pDocument, QDomElement *pElement);
 
 	// Document file methods.
 	bool loadDocument(const QString& sFilename);

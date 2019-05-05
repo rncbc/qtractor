@@ -43,7 +43,6 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
-#include "qtractorSessionDocument.h"
 #include "qtractorSessionCursor.h"
 
 #include "qtractorSessionCommand.h"
@@ -2476,7 +2475,7 @@ bool qtractorMainForm::loadSessionFileEx (
 	// Read the file.
 	QDomDocument doc("qtractorSession");
 	const bool bLoadSessionFileEx
-		= qtractorSessionDocument(&doc, m_pSession, m_pFiles)
+		= qtractorSession::Document(&doc, m_pSession, m_pFiles)
 			.load(sFilename, qtractorDocument::Flags(iFlags));
 
 	// We're formerly done.
@@ -2589,7 +2588,7 @@ bool qtractorMainForm::saveSessionFileEx (
 
 	// Write the file...
 	QDomDocument doc("qtractorSession");
-	bool bResult = qtractorSessionDocument(&doc, m_pSession, m_pFiles)
+	bool bResult = qtractorSession::Document(&doc, m_pSession, m_pFiles)
 		.save(sFilename, qtractorDocument::Flags(iFlags));
 
 #ifdef CONFIG_LIBZ

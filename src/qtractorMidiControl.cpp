@@ -660,7 +660,7 @@ bool qtractorMidiControl::Document::save ( const QString& sFilename )
 
 // Load controller rules.
 bool qtractorMidiControl::loadElement (
-	qtractorDocument * /*pDocument*/, QDomElement *pElement )
+	Document * /*pDocument*/, QDomElement *pElement )
 {
 	for (QDomNode nItem = pElement->firstChild();
 			!nItem.isNull();
@@ -737,7 +737,7 @@ bool qtractorMidiControl::loadElement (
 
 // Save controller rules.
 bool qtractorMidiControl::saveElement (
-	qtractorDocument *pDocument, QDomElement *pElement )
+	Document *pDocument, QDomElement *pElement )
 {
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
 	const ControlMap::ConstIterator& it_end = m_controlMap.constEnd();

@@ -1973,8 +1973,7 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 
 
 // Create/load plugin state.
-bool qtractorPluginList::loadPlugin (
-	qtractorDocument *pDocument, QDomElement *pElement )
+bool qtractorPluginList::loadPlugin ( QDomElement *pElement )
 {
 	qtractorPlugin *pPlugin = NULL;
 
@@ -2153,7 +2152,7 @@ bool qtractorPluginList::loadElement (
 			setMidiProg(ePlugin.text().toInt());
 		else
 		if (ePlugin.tagName() == "plugin")
-			loadPlugin(pDocument, &ePlugin);
+			loadPlugin(&ePlugin);
 		else
 		// Load audio output bus name...
 		if (ePlugin.tagName() == "audio-output-bus-name") {
@@ -2431,9 +2430,8 @@ bool qtractorPluginList::Document::loadElement ( QDomElement *pElement )
 		QDomElement ePlugin = nPlugin.toElement();
 		if (ePlugin.isNull())
 			continue;
-		if (ePlugin.tagName() == "plugin") {
-			m_pPluginList->loadPlugin(this, &ePlugin);
-		}
+		if (ePlugin.tagName() == "plugin")
+			m_pPluginList->loadPlugin(&ePlugin);
 	}
 
 	// Refresh all views...

@@ -23,8 +23,6 @@
 #include "qtractorSession.h"
 #include "qtractorSessionCursor.h"
 
-#include "qtractorSessionDocument.h"
-
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioClip.h"
@@ -2025,7 +2023,7 @@ qtractorFileList *qtractorSession::files (void) const
 
 // Document element methods.
 bool qtractorSession::loadElement (
-	qtractorSessionDocument *pDocument, QDomElement *pElement )
+	Document *pDocument, QDomElement *pElement )
 {
 	qtractorSession::clear();
 	qtractorSession::lock();
@@ -2300,7 +2298,7 @@ bool qtractorSession::loadElement (
 
 
 bool qtractorSession::saveElement (
-	qtractorSessionDocument *pDocument, QDomElement *pElement )
+	Document *pDocument, QDomElement *pElement )
 {
 	// Templates should have no session name...
 	if (!pDocument->isTemplate())
@@ -2555,6 +2553,54 @@ void qtractorSession::renameSession (
 
 	// Done.
 	unlock();
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorSession::Document -- Session file import/export helper class.
+//
+
+// Constructor.
+qtractorSession::Document::Document ( QDomDocument *pDocument,
+	qtractorSession *pSession, qtractorFiles *pFiles )
+	: qtractorDocument(pDocument, "session")
+{
+	m_pSession = pSession;
+	m_pFiles   = pFiles;
+}
+
+
+// Default destructor.
+qtractorSession::Document::~Document (void)
+{
+}
+
+
+// Session accessor.
+qtractorSession *qtractorSession::Document::session (void) const
+{
+	return m_pSession;
+}
+
+
+// File list accessor.
+qtractorFiles *qtractorSession::Document::files (void) const
+{
+	return m_pFiles;
+}
+
+
+// The elemental loader implementation.
+bool qtractorSession::Document::loadElement ( QDomElement *pElement )
+{
+	return m_pSession->loadElement(this, pElement);
+}
+
+
+// The elemental saver implementation.
+bool qtractorSession::Document::saveElement ( QDomElement *pElement )
+{
+	return m_pSession->saveElement(this, pElement);
 }
 
 
