@@ -739,6 +739,9 @@ bool qtractorMidiControl::loadElement (
 bool qtractorMidiControl::saveElement (
 	Document *pDocument, QDomElement *pElement )
 {
+	// Save this program version (informational)...
+	pElement->setAttribute("version", PACKAGE_STRING);
+
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
 	const ControlMap::ConstIterator& it_end = m_controlMap.constEnd();
 	for ( ; it != it_end; ++it) {

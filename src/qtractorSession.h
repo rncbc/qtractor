@@ -543,6 +543,8 @@ public:
 	qtractorSession *session() const;
 	qtractorFiles   *files() const;
 
+protected:
+
 	// Elemental loader/savers...
 	bool loadElement(QDomElement *pElement);
 	bool saveElement(QDomElement *pElement);

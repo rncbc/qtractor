@@ -2488,6 +2488,9 @@ bool qtractorPluginList::Document::save ( const QString& sFilename )
 // Elemental saver...
 bool qtractorPluginList::Document::saveElement ( QDomElement *pElement )
 {
+	// Save this program version (informational)...
+	pElement->setAttribute("version", PACKAGE_STRING);
+
 	// Save plugins...
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();
 			pPlugin; pPlugin = pPlugin->next()) {

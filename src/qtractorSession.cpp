@@ -2300,11 +2300,12 @@ bool qtractorSession::loadElement (
 bool qtractorSession::saveElement (
 	Document *pDocument, QDomElement *pElement )
 {
+	// Save this program version (informational)...
+	pElement->setAttribute("version", PACKAGE_STRING);
+
 	// Templates should have no session name...
 	if (!pDocument->isTemplate())
 		pElement->setAttribute("name", qtractorSession::sessionName());
-
-	pElement->setAttribute("version", PACKAGE_STRING);
 
 	// Save session properties...
 	QDomElement eProps = pDocument->document()->createElement("properties");
