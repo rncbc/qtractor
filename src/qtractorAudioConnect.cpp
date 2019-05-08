@@ -1,7 +1,7 @@
 // qtractorAudioConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -95,9 +95,9 @@ void qtractorAudioPortItem::updatePortName (void)
 	if (pJackClient) {
 		const QString& sPortName = portName();
 		const QString& sClientPort = clientName() + ':' + sPortName;
-		const QByteArray& aClientPort = sClientPort.toUtf8();
-		const char *pszClientPort = aClientPort.constData();
-		jack_port_t *pJackPort = jack_port_by_name(pJackClient, pszClientPort);
+		const QByteArray aClientPort = sClientPort.toUtf8();
+		jack_port_t *pJackPort
+			= jack_port_by_name(pJackClient, aClientPort.constData());
 		if (pJackPort) {
 			jack_uuid_t port_uuid = ::jack_port_uuid(pJackPort);
 			setPortText(prettyName(port_uuid, sPortName));
@@ -145,10 +145,9 @@ void qtractorAudioClientItem::updateClientName (void)
 		pJackClient = pAudioClientListView->jackClient();
 	if (pJackClient) {
 		const QString& sClientName = clientName();
-		const QByteArray& aClientName = sClientName.toUtf8();
-		const char *pszClientName = aClientName.constData();
+		const QByteArray aClientName = sClientName.toUtf8();
 		const char *pszClientUuid
-			= ::jack_get_uuid_for_client_name(pJackClient, pszClientName);
+			= ::jack_get_uuid_for_client_name(pJackClient, aClientName.constData());
 		if (pszClientUuid) {
 			jack_uuid_t client_uuid = 0;
 			::jack_uuid_parse(pszClientUuid, &client_uuid);
@@ -452,10 +451,9 @@ void qtractorAudioConnect::updateConnections (void)
 			// Get port connections...
 			const QString& sClientPort
 				= pOPort->clientName() + ':' + pOPort->portName();
-			const QByteArray& aClientPort = sClientPort.toUtf8();
-			const char *pszClientPort = aClientPort.constData();
+			const QByteArray aClientPort = sClientPort.toUtf8();
 			const jack_port_t *pJackPort
-				= jack_port_by_name(pJackClient, pszClientPort);
+				= jack_port_by_name(pJackClient, aClientPort.constData());
 			if (pJackPort) {
 				const char **ppszClientPorts
 					= jack_port_get_all_connections(pJackClient, pJackPort);
