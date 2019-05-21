@@ -314,7 +314,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="929"/>
         <source>import plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Přídavné moduly k zavedení</translation>
     </message>
     <message>
         <location filename="../qtractorSessionCommand.cpp" line="52"/>
@@ -7789,7 +7789,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="115"/>
         <source>&amp;Ghost Track</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Stínová stopa</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="426"/>
@@ -11508,24 +11508,24 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="886"/>
         <source>Import Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavést přídavné moduly</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="889"/>
         <location filename="../qtractorPluginListView.cpp" line="1002"/>
         <source>XML files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory XML (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="890"/>
         <location filename="../qtractorPluginListView.cpp" line="1003"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Všechny soubory (*.*)</translation>
+        <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="932"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Varování</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="933"/>
@@ -11534,12 +11534,16 @@ Jste si jistý?</translation>
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Chystáte se odstranit a zavést všechny přídavné moduly:
+
+&quot;%1&quot;)
+
+Jste si jistý?</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="999"/>
         <source>Export Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyvést přídavné moduly</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1698"/>
@@ -11633,12 +11637,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1967"/>
         <source>&amp;Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zavést...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1971"/>
         <source>E&amp;xport...</source>
-        <translation type="unfinished">V&amp;yvést...</translation>
+        <translation>V&amp;yvést...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="2004"/>
@@ -11658,7 +11662,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1804"/>
         <source>I&amp;nserts</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vložky</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1871"/>
