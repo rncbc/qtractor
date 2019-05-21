@@ -1,7 +1,7 @@
 // qtractorMidiControl.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -323,8 +323,8 @@ public:
 	class Document;
 
 	// Document element methods.
-	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
-	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement);
+	bool loadElement(Document *pDocument, QDomElement *pElement);
+	bool saveElement(Document *pDocument, QDomElement *pElement);
 
 	// Document file methods.
 	bool loadDocument(const QString& sFilename);

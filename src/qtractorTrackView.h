@@ -329,7 +329,7 @@ protected:
 	bool eventFilter(QObject *pObject, QEvent *pEvent);
 
 	// Clip file(item) selection convenience method.
-	void selectClipFile(bool bReset);
+	void selectClip(bool bReset);
 
 	// Clip selection sanity check method.
 	bool queryClipSelect(qtractorClip *pClip = NULL);

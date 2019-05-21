@@ -197,6 +197,7 @@ void qtractorOptions::loadOptions (void)
 	sInstrumentDir  = m_settings.value("/InstrumentDir").toString();
 	sMidiControlDir = m_settings.value("/MidiControlDir").toString();
 	sMidiSysexDir   = m_settings.value("/MidiSysexDir").toString();
+	sPluginsDir     = m_settings.value("/PluginsDir").toString();
 	bAutoMonitor    = m_settings.value("/AutoMonitor", true).toBool();
 	bAutoDeactivate = m_settings.value("/AutoDeactivate", false).toBool();
 	iSnapPerBeat    = m_settings.value("/SnapPerBeat", 4).toInt();
@@ -495,6 +496,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/InstrumentDir", sInstrumentDir);
 	m_settings.setValue("/MidiControlDir", sMidiControlDir);
 	m_settings.setValue("/MidiSysexDir", sMidiSysexDir);
+	m_settings.setValue("/PluginsDir", sPluginsDir);
 	m_settings.setValue("/AutoMonitor", bAutoMonitor);
 	m_settings.setValue("/AutoDeactivate", bAutoDeactivate);
 	m_settings.setValue("/SnapPerBeat", iSnapPerBeat);

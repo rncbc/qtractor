@@ -255,6 +255,12 @@ public:
 	const QSize& editorSize() const
 		{ return m_sizeEditor; }
 
+	// Ghost track setting.
+	void setGhostTrackName(const QString& sGhostTrackName)
+		{ m_sGhostTrackName = sGhostTrackName; }
+	const QString& ghostTrackName() const
+		{ return m_sGhostTrackName; }
+
 protected:
 
 	// Virtual document element methods.
@@ -300,6 +306,9 @@ private:
 	// And for geometry it was last seen...
 	QPoint m_posEditor;
 	QSize m_sizeEditor;
+
+	// Ghost track setting.
+	QString m_sGhostTrackName;
 
 	// Default MIDI file format (for capture/record)
 	static unsigned short g_iDefaultFormat;

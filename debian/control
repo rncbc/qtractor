@@ -2,13 +2,14 @@ Source: qtractor
 Section: sound
 Priority: extra
 Maintainer: Rui Nuno Capela <rncbc@rncbc.org>
-Build-Depends: debhelper (>= 5), automake, pkg-config, qtbase5-dev (>= 5.1),
-  qtbase5-dev-tools (>= 5.1), qttools5-dev-tools (>= 5.1), qtchooser,
-  libjack-dev, libasound2-dev, libsndfile-dev, ladspa-sdk, libvorbis-dev,
-  libsamplerate-dev, librubberband-dev, dssi-dev, liblo0-dev, libmad-dev,
-  libz-dev, libx11-dev, x11proto-core-dev, liblilv-dev, libsratom-dev,
-  libsord-dev, libserd-dev, libsuil-dev, lv2-dev, zlib1g-dev, libgtk2.0-dev,
-  libx11-dev, x11proto-core-dev, libqt5x11extras5-dev (>= 5.1)
+Build-Depends: debhelper (>= 5), automake, pkg-config,
+  qtchooser, qtbase5-dev (>= 5.1), qtbase5-dev-tools (>= 5.1),
+  qttools5-dev-tools (>= 5.1), libjack-dev, libasound2-dev,
+  libsndfile-dev, ladspa-sdk, libvorbis-dev, libsamplerate-dev,
+  librubberband-dev, dssi-dev, liblo0-dev, libmad-dev, libz-dev,
+  lv2-dev, liblilv-dev, libsratom-dev, libsord-dev, libserd-dev,
+  libsuil-dev, libgtk2.0-dev, libx11-dev, x11proto-core-dev,
+  libqt5x11extras5-dev (>= 5.1), zlib1g-dev
 Standards-Version: 3.7.2
 
 Package: qtractor

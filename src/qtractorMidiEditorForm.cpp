@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -449,27 +449,21 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarThumbAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarThumb(bool)));
+	QObject::connect(m_ui.viewEventsAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewEvents(bool)));
 	QObject::connect(m_ui.viewNoteDurationAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewNoteDuration(bool)));
+	QObject::connect(m_ui.viewDrumModeAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewDrumMode(bool)));
 	QObject::connect(m_ui.viewNoteColorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewNoteColor(bool)));
 	QObject::connect(m_ui.viewValueColorAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewValueColor(bool)));
-	QObject::connect(m_ui.viewDrumModeAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewDrumMode(bool)));
-	QObject::connect(m_ui.viewEventsAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewEvents(bool)));
-	QObject::connect(m_ui.viewPreviewAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewPreview(bool)));
-	QObject::connect(m_ui.viewFollowAction,
-		SIGNAL(triggered(bool)),
-		SLOT(viewFollow(bool)));
 	QObject::connect(m_ui.viewZoomInAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewZoomIn()));
@@ -500,6 +494,12 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewRefreshAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewRefresh()));
+	QObject::connect(m_ui.viewPreviewAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewPreview(bool)));
+	QObject::connect(m_ui.viewFollowAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewFollow(bool)));
 
 	QObject::connect(m_ui.helpShortcutsAction,
 		SIGNAL(triggered(bool)),
@@ -520,6 +520,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewValueTypeMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateValueTypeMenu()));
+	QObject::connect(m_ui.viewGhostTrackMenu,
+		SIGNAL(aboutToShow()),
+		SLOT(updateGhostTrackMenu()));
 	QObject::connect(m_ui.viewZoomMenu,
 		SIGNAL(aboutToShow()),
 		SLOT(updateZoomMenu()));
@@ -958,11 +961,13 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		QObject::connect(m_pMidiEditor,
 			SIGNAL(sendNoteSignal(int,int)),
 			SLOT(sendNote(int,int)));
-	}   // Reset MIDI clip length alright...
-	else m_pMidiEditor->resetClipLength();
+	}
 
 	// Drum mode visuals....
-	m_ui.viewDrumModeAction->setChecked(m_pMidiEditor->isDrumMode());
+	const bool bDrumMode = m_pMidiEditor->isDrumMode();
+	m_ui.viewDrumModeAction->setChecked(bDrumMode);
+	m_pSnapToScaleKeyComboBox->setEnabled(!bDrumMode);
+	m_pSnapToScaleTypeComboBox->setEnabled(!bDrumMode);
 
 	// Reset local dirty flag.
 	resetDirtyCount();
@@ -1529,6 +1534,13 @@ void qtractorMidiEditorForm::viewToolbarThumb ( bool bOn )
 }
 
 
+// Show/hide the events window view.
+void qtractorMidiEditorForm::viewEvents ( bool bOn )
+{
+	m_pMidiEventList->setVisible(bOn);
+}
+
+
 // View note (pitch) coloring.
 void qtractorMidiEditorForm::viewNoteColor ( bool bOn )
 {
@@ -1568,6 +1580,17 @@ void qtractorMidiEditorForm::viewNoteType (void)
 }
 
 
+// View drum note of notes (diamods)
+void qtractorMidiEditorForm::viewDrumMode ( bool bOn )
+{
+	m_pSnapToScaleKeyComboBox->setEnabled(!bOn);
+	m_pSnapToScaleTypeComboBox->setEnabled(!bOn);
+
+	m_pMidiEditor->setDrumMode(bOn);
+	m_pMidiEditor->updateContents();
+}
+
+
 // Change event/value type setting via menu.
 void qtractorMidiEditorForm::viewValueType (void)
 {
@@ -1585,32 +1608,19 @@ void qtractorMidiEditorForm::viewValueType (void)
 }
 
 
-// View drum note of notes (diamods)
-void qtractorMidiEditorForm::viewDrumMode ( bool bOn )
+// Change ghost-track setting via menu.
+void qtractorMidiEditorForm::viewGhostTrack (void)
 {
-	m_pMidiEditor->setDrumMode(bOn);
-	m_pMidiEditor->updateContents();
-}
-
-
-// Show/hide the events window view.
-void qtractorMidiEditorForm::viewEvents ( bool bOn )
-{
-	m_pMidiEventList->setVisible(bOn);
-}
-
-
-// View preview notes
-void qtractorMidiEditorForm::viewPreview ( bool bOn )
-{
-	m_pMidiEditor->setSendNotes(bOn);
-}
-
-
-// View follow playhead
-void qtractorMidiEditorForm::viewFollow ( bool bOn )
-{
-	m_pMidiEditor->setSyncView(bOn);
+	// Retrieve ghost-track from from action data...
+	QAction *pAction = qobject_cast<QAction *> (sender());
+	if (pAction) {
+		// Commit the change as usual...
+		qtractorTrack *pGhostTrack
+			= static_cast<qtractorTrack *> (
+				pAction->data().value<void *> ());
+		m_pMidiEditor->setGhostTrack(pGhostTrack);
+		m_pMidiEditor->updateContents();
+	}
 }
 
 
@@ -1711,7 +1721,7 @@ void qtractorMidiEditorForm::viewScaleKey (void)
 }
 
 
-// Change snap-to-scale typesetting via menu.
+// Change snap-to-scale type setting via menu.
 void qtractorMidiEditorForm::viewScaleType (void)
 {
 	// Retrieve snap-to-scale type index from from action data...
@@ -1733,6 +1743,20 @@ void qtractorMidiEditorForm::viewRefresh (void)
 	m_pMidiEventList->refresh();
 
 	stabilizeForm();
+}
+
+
+// View preview notes
+void qtractorMidiEditorForm::viewPreview ( bool bOn )
+{
+	m_pMidiEditor->setSendNotes(bOn);
+}
+
+
+// View follow playhead
+void qtractorMidiEditorForm::viewFollow ( bool bOn )
+{
+	m_pMidiEditor->setSyncView(bOn);
 }
 
 
@@ -1880,9 +1904,9 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 
 	m_ui.viewEventsAction->setChecked(m_pMidiEventList->isVisible());
 
+	m_pTrackNameLabel->setText(pTrack->trackName());
 	m_pFileNameLabel->setText(filename());
 	m_pTrackChannelLabel->setText(sTrackChannel.arg(trackChannel() + k));
-	m_pTrackNameLabel->setText(pSeq->name());
 
 	if (m_iDirtyCount > 0)
 		m_pStatusModLabel->setText(tr("MOD"));
@@ -1989,6 +2013,42 @@ void qtractorMidiEditorForm::updateValueTypeMenu (void)
 		QAction *pAction = iter.next();
 		pAction->setChecked(pAction->data().toInt() == iCurrentIndex);
 	}
+}
+
+
+// Ghost-track menu builder..
+void qtractorMidiEditorForm::updateGhostTrackMenu (void)
+{
+	m_ui.viewGhostTrackMenu->clear();
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return;
+
+	qtractorTrack *pGhostTrack = m_pMidiEditor->ghostTrack();
+
+	QAction *pAction;
+	QVariant data;
+
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() == qtractorTrack::Midi) {
+			pAction = m_ui.viewGhostTrackMenu->addAction(
+				pTrack->trackName(), this, SLOT(viewGhostTrack()));
+			pAction->setCheckable(true);
+			pAction->setChecked(pGhostTrack == pTrack);
+			data.setValue(static_cast<void *> (pTrack));
+			pAction->setData(data);
+		}
+	}
+
+	m_ui.viewGhostTrackMenu->addSeparator();
+	pAction = m_ui.viewGhostTrackMenu->addAction(
+		tr("&None"), this, SLOT(viewGhostTrack()));
+	pAction->setCheckable(true);
+	pAction->setChecked(pGhostTrack == NULL);
+	data.setValue(NULL);
+	pAction->setData(data);
 }
 
 

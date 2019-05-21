@@ -6,26 +6,62 @@ ChangeLog
 
 GIT HEAD
 
+- Plugin-lists and respective plugins state may now be
+  exported and/or imported as XML files. (EXPERIMENTAL)
+
+- When in Drum Mode, Key and Scale are meaningless and
+  thus functionally disabled from the MIDI clip editor
+  (aka. piano-roll). (EXPERIMENTAL)
+
+- MIDI clip editor's View > Ghost Track menu option is
+  now finally a reality: show any existing MIDI track
+  and its respective clips in the background as dimmed,
+  semi-transparent aka. ghost events. (EXPERIMENTAL)
+
+- Minor update to Debian packaging control file.
+
+- Make sure partially selected clips are reset to whole
+  when Shift/Ctrl keyboard modifiers are in effect, to
+  prevent extraneous clip splits or cutaways afterwards
+  (hopefully fixes github issue #210).
+
+
+0.9.7  2019-04-16  Spring-Break'19 Release.
+
+- Re-defined all main application UNIX signal handling.
+
+- Fixed possible crash in drawing clips while rare
+  loop-recording/takes situations.
+
+- Main window stabilizing is now kind of asynchronous
+  re. menus, tools and status bars.
+
+- MIDI Controller's Latch mode attribute on tracks and
+  plugins are now properly saved/loaded as meant to be.
+
+
+0.9.6  2019-03-20  Pre-LAC2019 Release Frenzy.
+
 - Fixed LV2 UI Touch feature/interface implementation.
 
 - Plugin latency/delay compensation is now introduced
   as an option to tracks only (cf. Track/Properties...
-  /Latency compensation). (HIGHLY EXPERIMENTAL)
+  /Latency compensation).
 
 - Refactored all singleton/unique application instance
-  setup logic away from X11/Xcb hackery. (EXPERIMENTAL)
+  setup logic away from X11/Xcb hackery.
 
 - A bit lesser of a naive file-name numbering is now
   in place to avoid as much as possible, the piling
   up of internal curve/automation files when saving
-  existing sessions. (EXPERIMENTAL)
+  existing sessions.
 
 - Maybe just informational but the original MIDI file
   format is now correctly reported across ref-counted
-  linked MIDI clips. (EXPERIMENTAL)
+  linked MIDI clips.
 
 
-0.9.5  2019-02-14  Venntines'19 Hotfix.
+0.9.5  2019-02-14  Valentines'19 Hotfix.
 
 - HiDPI display screen support (Qt >= 5.6; patch by
   Hubert Figuiere, thanks).

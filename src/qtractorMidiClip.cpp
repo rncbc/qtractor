@@ -1040,11 +1040,12 @@ void qtractorMidiClip::draw (
 	const bool bDrumMode = pTrack->isMidiDrums();
 	QVector<QPoint> diamond;
 	if (bDrumMode) {
-		const int h4 = (h2 >> 1);
-		diamond.append(QPoint(-h2,  h4));
-		diamond.append(QPoint(  0, -h4));
-		diamond.append(QPoint( h2,  h4));
-		diamond.append(QPoint(  0,  h4 + h2));
+		const int h4 = (h2 >> 1) + 1;
+		diamond.append(QPoint(  0, -1));
+		diamond.append(QPoint(-h4, h4));
+		diamond.append(QPoint(  0, h2 + 2));
+		diamond.append(QPoint( h4, h4));
+		pPainter->setRenderHint(QPainter::Antialiasing, true);
 	}
 
 	qtractorMidiEvent *pEvent
@@ -1084,6 +1085,9 @@ void qtractorMidiClip::draw (
 		}
 		pEvent = pEvent->next();
 	}
+
+	if (bDrumMode)
+		pPainter->setRenderHint(QPainter::Antialiasing, false);
 }
 
 
@@ -1298,6 +1302,9 @@ bool qtractorMidiClip::loadClipElement (
 			m_sizeEditor.setWidth(swh.at(0).toInt());
 			m_sizeEditor.setHeight(swh.at(1).toInt());
 		}
+		else if (eChild.tagName() == "ghost-track-name") {
+			m_sGhostTrackName = eChild.text();
+		}
 	}
 
 	return true;
@@ -1329,6 +1336,10 @@ bool qtractorMidiClip::saveClipElement (
 		pDocument->saveTextElement("editor-size",
 			QString::number(m_sizeEditor.width()) + ',' +
 			QString::number(m_sizeEditor.height()), &eMidiClip);
+	}
+	if (!m_sGhostTrackName.isEmpty()) {
+		pDocument->saveTextElement("ghost-track-name",
+			m_sGhostTrackName, &eMidiClip);
 	}
 	pElement->appendChild(eMidiClip);
 
