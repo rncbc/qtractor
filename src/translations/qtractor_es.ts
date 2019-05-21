@@ -577,7 +577,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="929"/>
         <source>import plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>importar plugins</translation>
     </message>
     <message>
         <location filename="../qtractorSessionCommand.cpp" line="52"/>
@@ -7120,7 +7120,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="115"/>
         <source>&amp;Ghost Track</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pista fantasma</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="120"/>
@@ -11505,24 +11505,24 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="886"/>
         <source>Import Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar Plugins</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="889"/>
         <location filename="../qtractorPluginListView.cpp" line="1002"/>
         <source>XML files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>archivos XML (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="890"/>
         <location filename="../qtractorPluginListView.cpp" line="1003"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">Todos los archivos (*.*)</translation>
+        <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="932"/>
         <source>Warning</source>
-        <translation type="unfinished">Advertencia</translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="933"/>
@@ -11531,12 +11531,16 @@ Are you sure?</source>
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta a punto de quitar e importar todos los plugins:
+
+&quot;%1&quot;
+
+¿Está seguro?</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="999"/>
         <source>Export Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar Plugins</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1698"/>
@@ -11561,7 +11565,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1804"/>
         <source>I&amp;nserts</source>
-        <translation type="unfinished"></translation>
+        <translation>I&amp;nserciones</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1807"/>
@@ -11660,12 +11664,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1967"/>
         <source>&amp;Import...</source>
-        <translation type="unfinished">&amp;Importar...</translation>
+        <translation>&amp;Importar...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1971"/>
         <source>E&amp;xport...</source>
-        <translation type="unfinished">E&amp;xportar...</translation>
+        <translation>E&amp;xportar...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1983"/>
