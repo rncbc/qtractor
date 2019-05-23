@@ -32,12 +32,12 @@ BuildRequires:	libqt5-qtbase-devel >= 5.1, libqt5-linguist
 BuildRequires:	libqt5-qtx11extras-devel >= 5.1
 BuildRequires:	alsa-devel
 %endif
-BuildRequires:	libjack-devel
-BuildRequires:	libsndfile-devel >= 1.0.11
+BuildRequires:	libjack2-devel, libjack2
+BuildRequires:	libsndfile-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libmad-devel
 BuildRequires:	libsamplerate-devel
-BuildRequires:	librubberband-devel >= 1.0.1
+BuildRequires:	librubberband-devel
 BuildRequires:	liblo-devel
 BuildRequires:	ladspa-devel
 BuildRequires:	dssi-devel
