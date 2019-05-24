@@ -1,7 +1,7 @@
 // qtractorMidiMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -96,7 +96,7 @@ float qtractorMidiMonitor::value_stamp ( unsigned long iStamp )
 	// Grab-and-reset current direct value...
 	if (m_iValueStamp != iStamp) {
 		unsigned char val = m_item.value;
-	    m_iValueStamp = iStamp;
+		m_iValueStamp = iStamp;
 		m_item.value = 0;
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession && g_iFrameSlot > 0) {
@@ -127,13 +127,14 @@ float qtractorMidiMonitor::value_stamp ( unsigned long iStamp )
 int qtractorMidiMonitor::count_stamp ( unsigned long iStamp )
 {
 	// Grab latest direct/dequeued count...
+	const int iCount = m_item.count;
+
 	if (m_iCountStamp != iStamp) {
 		m_iCountStamp  = iStamp;
-		m_prev.count   = m_item.count;
 		m_item.count   = 0;
 	}
 
-	return int(m_prev.count);
+	return iCount;
 }
 
 
@@ -141,8 +142,8 @@ int qtractorMidiMonitor::count_stamp ( unsigned long iStamp )
 void qtractorMidiMonitor::clear (void)
 {
 	// (Re)initialize all...
-	m_item.value = m_prev.value = 0;
-	m_item.count = m_prev.count = 0;
+	m_item.value = 0;
+	m_item.count = 0;
 
 	m_iQueueIndex = 0;
 

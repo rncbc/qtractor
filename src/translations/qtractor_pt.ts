@@ -19,7 +19,7 @@
         <translation>Arquivo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="466"/>
+        <location filename="../qtractorTrackList.cpp" line="503"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
@@ -30,7 +30,7 @@
         <translation>Nenhuma</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="119"/>
+        <location filename="../qtractorTrackList.cpp" line="120"/>
         <source>none</source>
         <translation>nenhum</translation>
     </message>
@@ -70,7 +70,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>gravação da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="435"/>
+        <location filename="../qtractorTrackList.cpp" line="472"/>
         <source>Audio</source>
         <translation>Áudio</translation>
     </message>
@@ -360,7 +360,7 @@ MIDI:	</translation>
         <translation>parametros do plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="219"/>
+        <location filename="../qtractorTrackList.cpp" line="254"/>
         <source>Automation</source>
         <translation>Automação</translation>
     </message>
@@ -670,7 +670,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Fornecedor: </translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="543"/>
+        <location filename="../qtractorTrackList.cpp" line="580"/>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
     </message>
@@ -745,7 +745,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>propriedades da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="111"/>
+        <location filename="../qtractorTrackList.cpp" line="112"/>
         <source>Automation (%1)</source>
         <translation>Automação (%1)</translation>
     </message>
@@ -12946,36 +12946,36 @@ Você quer mesmo manter as alterações?</translation>
     </message>
 </context>
 <context>
-    <name>qtractorTrackListHeaderModel</name>
+    <name>qtractorTrackList</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="157"/>
-        <source>Ch</source>
-        <translation>Cnl</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrackList.cpp" line="154"/>
+        <location filename="../qtractorTrackList.cpp" line="180"/>
         <source>Nr</source>
-        <translation>Nº</translation>
+        <translation type="unfinished">Nº</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="156"/>
-        <source>Bus</source>
-        <translation>Canal Primário</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrackList.cpp" line="158"/>
-        <source>Patch</source>
-        <translation>Programação</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrackList.cpp" line="155"/>
+        <location filename="../qtractorTrackList.cpp" line="181"/>
         <source>Track Name</source>
-        <translation>Nome da Pista</translation>
+        <translation type="unfinished">Nome da Pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="159"/>
+        <location filename="../qtractorTrackList.cpp" line="182"/>
+        <source>Bus</source>
+        <translation type="unfinished">Canal Primário</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackList.cpp" line="183"/>
+        <source>Ch</source>
+        <translation type="unfinished">Cnl</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackList.cpp" line="184"/>
+        <source>Patch</source>
+        <translation type="unfinished">Programação</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackList.cpp" line="185"/>
         <source>Instrument</source>
-        <translation>Instrumento</translation>
+        <translation type="unfinished">Instrumento</translation>
     </message>
 </context>
 <context>
