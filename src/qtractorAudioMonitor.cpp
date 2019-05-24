@@ -248,7 +248,7 @@ static inline void std_process_meter (
 // Constructor.
 qtractorAudioMonitor::qtractorAudioMonitor ( unsigned short iChannels,
 	float fGain, float fPanning ) : qtractorMonitor(fGain, fPanning),
-	m_iChannels(0), m_piStamps(NULL), m_pfValues(NULL),
+	m_iChannels(0), m_piStamps(NULL), m_pfValues(NULL), m_pfPrevValues(NULL),
 	m_pfGains(NULL), m_pfPrevGains(NULL), m_iProcessRamp(0)
 {
 	qtractorMonitor::gainSubject()->setMaxValue(2.0f);	// +6dB
@@ -302,6 +302,11 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 		m_pfValues = NULL;
 	}
 
+	if (m_pfPrevValues) {
+		delete [] m_pfPrevValues;
+		m_pfPrevValues = NULL;
+	}
+
 	// Delete old panning-gains holders...
 	if (m_pfGains) {
 		delete [] m_pfGains;
@@ -318,11 +323,12 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 	if (m_iChannels > 0) {
 		m_piStamps = new unsigned long [m_iChannels];
 		m_pfValues = new float [m_iChannels];
+		m_pfPrevValues = new float [m_iChannels];
 		m_pfGains = new float [m_iChannels];
 		m_pfPrevGains = new float [m_iChannels];
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			m_piStamps[i] = 0;
-			m_pfValues[i] = 0.0f;
+			m_pfValues[i] = m_pfPrevValues[i] = 0.0f;
 			m_pfGains[i] = m_pfPrevGains[i] = 0.0f;
 		}
 		// Initial population...
@@ -340,14 +346,13 @@ unsigned short qtractorAudioMonitor::channels (void) const
 float qtractorAudioMonitor::value_stamp (
 	unsigned short iChannel, unsigned long iStamp ) const
 {
-	const float fValue = m_pfValues[iChannel];
-
 	if (m_piStamps[iChannel] != iStamp) {
 		m_piStamps[iChannel]  = iStamp;
+		m_pfPrevValues[iChannel] = m_pfValues[iChannel];
 		m_pfValues[iChannel]  = 0.0f;
 	}
 
-	return fValue;
+	return m_pfPrevValues[iChannel];
 }
 
 
@@ -356,7 +361,7 @@ void qtractorAudioMonitor::reset (void)
 {
 	for (unsigned short i = 0; i < m_iChannels; ++i) {
 		m_piStamps[i] = 0;
-		m_pfValues[i] = 0.0f;
+		m_pfValues[i] = m_pfPrevValues[i] = 0.0f;
 		m_pfPrevGains[i] = 0.0f;
 	}
 

@@ -69,6 +69,7 @@ private:
 	unsigned short m_iChannels;
 	unsigned long *m_piStamps;
 	float         *m_pfValues;
+	float         *m_pfPrevValues;
 	float         *m_pfGains;
 	float         *m_pfPrevGains;
 	volatile int   m_iProcessRamp;
