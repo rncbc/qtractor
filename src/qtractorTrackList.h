@@ -24,6 +24,7 @@
 
 #include "qtractorScrollView.h"
 
+#include <QHash>
 #include <QPixmap>
 
 
