@@ -920,4 +920,38 @@ bool qtractorDirectAccessParamCommand::undo (void)
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorImportPluginsCommand - declaration.
+//
+
+// Constructor.
+qtractorImportPluginsCommand::qtractorImportPluginsCommand (void)
+	: qtractorCommand(QObject::tr("import plugins"))
+{
+	m_pAddCommand    = new qtractorAddPluginCommand();
+	m_pRemoveCommand = new qtractorRemovePluginCommand();
+}
+
+
+// Destructor.
+qtractorImportPluginsCommand::~qtractorImportPluginsCommand (void)
+{
+	delete m_pRemoveCommand;
+	delete m_pAddCommand;
+}
+
+
+// Import plugins command methods.
+bool qtractorImportPluginsCommand::redo (void)
+{
+	return (m_pRemoveCommand->redo() && m_pAddCommand->redo());
+}
+
+
+bool qtractorImportPluginsCommand::undo (void)
+{
+	return (m_pAddCommand->undo() && m_pRemoveCommand->undo());
+}
+
+
 // end of qtractorPluginCommand.cpp

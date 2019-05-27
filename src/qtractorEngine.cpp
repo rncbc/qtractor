@@ -278,7 +278,7 @@ void qtractorEngine::close (void)
 void qtractorEngine::setPlaying ( bool bPlaying )
 {
 	if (bPlaying && !m_bPlaying) {
-		m_pSessionCursor->setFrameTime(0);
+		m_pSessionCursor->reset();
 		m_bPlaying = start();
 	}
 	else

@@ -121,10 +121,10 @@ QDomDocument *qtractorDocument::document (void) const
 	return m_pDocument;
 }
 
-// Base document name (derived from filename).
-const QString& qtractorDocument::name (void) const
+// Document root tag-name.
+const QString& qtractorDocument::tagName (void) const
 {
-	return m_sName;
+	return m_sTagName;
 }
 
 
@@ -259,6 +259,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 // qtractorDocument -- savers.
 //
 
+// External storage simple save method.
 bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 {
 	// Hold template mode.

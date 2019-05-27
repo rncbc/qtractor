@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -743,9 +743,6 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Local time-scale.
 	m_pTimeScale = new qtractorTimeScale();
 
-	// The original clip time-scale length/time.
-	m_iClipLengthTime = 0;
-
 	// The local time-scale offset/length.
 	m_iOffset = 0;
 	m_iLength = 0;
@@ -778,6 +775,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Temporary sync-view/follow-playhead hold state.
 	m_bSyncViewHold = false;
 	m_iSyncViewHold = 0;
+
+	// Current ghost-track option.
+	m_pGhostTrack = NULL;
 
 	// Create child frame widgets...
 	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
@@ -881,9 +881,11 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 	// So, this is the brand new object to edit...
 	m_pMidiClip = pMidiClip;
 
+	// Reset ghost-track anyway...
+	m_pGhostTrack = NULL;
+
 	if (m_pMidiClip) {
 		// Now set the editing MIDI sequence alright...
-		setClipLength(m_pMidiClip->clipLength());
 		setOffset(m_pMidiClip->clipStart());
 		setLength(m_pMidiClip->clipLength());
 		// Set its most outstanding properties...
@@ -904,11 +906,24 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 			if (m_last.note == 0)
 				m_last.note = 0x3c; // Default to middle-C.
 		}
+		// Set ghost-track by name...
+		const QString& sGhostTrackName
+			= m_pMidiClip->ghostTrackName();
+		qtractorSession *pSession = pTrack->session();
+		if (pSession && !sGhostTrackName.isEmpty()) {
+			for (pTrack = pSession->tracks().first();
+					pTrack; pTrack = pTrack->next()) {
+				if (pTrack->trackType() == qtractorTrack::Midi
+					&& pTrack->trackName() == sGhostTrackName) {
+					m_pGhostTrack = pTrack;
+					break;
+				}
+			}
+		}
 		// Got clip!
 	} else {
 		// Reset those little things too..
 		setDrumMode(false);
-		setClipLength(0);
 		setOffset(0);
 		setLength(0);
 	}
@@ -1114,35 +1129,6 @@ unsigned long qtractorMidiEditor::timeOffset (void) const
 }
 
 
-// The original clip time-scale length/time.
-void qtractorMidiEditor::setClipLength ( unsigned long iClipLength )
-{
-	if (m_pTimeScale) {
-		m_iClipLengthTime
-			= m_pTimeScale->tickFromFrame(m_iOffset + iClipLength)
-			- m_pTimeScale->tickFromFrame(m_iOffset);
-	} else {
-		m_iClipLengthTime = 0;
-	}
-}
-
-unsigned long qtractorMidiEditor::clipLength (void) const
-{
-	if (m_pTimeScale == NULL)
-		return 0;
-
-	return m_pTimeScale->frameFromTick(
-		m_pTimeScale->tickFromFrame(m_iOffset) + m_iClipLengthTime) - m_iOffset;
-}
-
-
-// Reset original clip time-scale length/time.
-void qtractorMidiEditor::resetClipLength (void)
-{
-	if (m_pMidiClip) setClipLength(m_pMidiClip->clipLength());
-}
-
-
 // Time-scale offset (in frames) accessors.
 void qtractorMidiEditor::setOffset ( unsigned long iOffset )
 {
@@ -1164,6 +1150,25 @@ void qtractorMidiEditor::setLength ( unsigned long iLength )
 unsigned long qtractorMidiEditor::length (void) const
 {
 	return m_iLength;
+}
+
+
+// Ghost track accessors.
+void qtractorMidiEditor::setGhostTrack ( qtractorTrack *pGhostTrack )
+{
+	m_pGhostTrack = pGhostTrack;
+
+	if (m_pMidiClip) {
+		QString sGhostTrackName;
+		if (m_pGhostTrack)
+			sGhostTrackName = m_pGhostTrack->trackName();
+		m_pMidiClip->setGhostTrackName(sGhostTrackName);
+	}
+}
+
+qtractorTrack *qtractorMidiEditor::ghostTrack (void) const
+{
+	return m_pGhostTrack;
 }
 
 
@@ -1768,7 +1773,7 @@ void qtractorMidiEditor::pasteClipboard (
 			if (pEvent->type() == m_pEditView->eventType()) {
 				y = ch - h1 * (pEvent->note() + 1);
 				if (m_bDrumMode)
-					rectView.setRect(x - x0 - h1, y + h2, h4, h4);
+					rectView.setRect(x - x0 - h1, y - h2, h4, h4);
 				else
 					rectView.setRect(x - x0, y, w1, h1);
 			}
@@ -1785,7 +1790,7 @@ void qtractorMidiEditor::pasteClipboard (
 					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
-				if (!m_bNoteDuration)
+				if (!m_bNoteDuration || m_bDrumMode)
 					w1 = 5;
 				if (y < y0)
 					rectEvent.setRect(x - x0, y, w1, y0 - y);
@@ -2093,7 +2098,7 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 			else
 				y = y0 - (y0 * pEvent->value()) / 128;
-			if (!m_bNoteDuration)
+			if (!m_bNoteDuration || m_bDrumMode)
 				w1 = 5;
 			if (y < y0)
 				pItem->rectEvent.setRect(x - x0, y, w1, y0 - y);
@@ -2448,13 +2453,8 @@ void qtractorMidiEditor::reset ( bool bSelectClear )
 		m_select.clear();
 
 	// Reset some internal state...
-	if (m_pMidiClip) {
-		qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
-		if (pSeq) {
-			m_cursor.reset(pSeq);
-			m_cursorAt.reset(pSeq);
-		}
-	}
+	m_cursor.clear();
+	m_cursorAt.clear();
 }
 
 
@@ -2473,10 +2473,11 @@ void qtractorMidiEditor::clear (void)
 
 
 // Intra-clip tick/time positioning reset.
-qtractorMidiEvent *qtractorMidiEditor::seekEvent ( unsigned long iTime )
+qtractorMidiEvent *qtractorMidiEditor::seekEvent (
+	qtractorMidiSequence *pSeq, unsigned long iTime )
 {
 	// Reset seek-forward...
-	return m_cursor.reset(m_pMidiClip->sequence(), iTime);
+	return m_cursor.reset(pSeq, iTime);
 }
 
 
@@ -2528,7 +2529,6 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			 (!bEditView && (pEvent->type() == m_pEditEvent->eventType() &&
 				(!bEventParam || pEvent->param() == eventParam))))) {
 			// Common event coords...
-			int y;
 			const unsigned long t1 = t0 + pEvent->time();
 			const unsigned long t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
@@ -2537,7 +2537,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
 				w1 = 5;
-			QRect rect;
+			QRect rect; int y;
 			if (bEditView) {
 				// View item...
 				y = ch - h1 * (pEvent->note() + 1);
@@ -2557,7 +2557,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
-				if (!m_bNoteDuration)
+				if (!m_bNoteDuration || m_bDrumMode)
 					w1 = 5;
 				if (y < y0)
 					rect.setRect(x - x0, y, w1, y0 - y);
@@ -2604,7 +2604,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	const int ch = m_pEditView->contentsHeight();
 	int h1 = m_pEditList->itemHeight();
 	unsigned char note = (ch - pos.y()) / h1;
-	if (m_iSnapToScaleType > 0)
+	if (m_iSnapToScaleType > 0 && !m_bDrumMode)
 		note = snapToScale(note, m_iSnapToScaleKey, m_iSnapToScaleType);
 
 	// Check for note/pitch changes...
@@ -2825,7 +2825,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			h1 = y0 - y1;
 			m_resizeMode = ResizeValue;
 		}
-		if (!m_bNoteDuration)
+		if (!m_bNoteDuration || m_bDrumMode)
 			w1 = 5;
 		if (h1 < 3)
 			h1 = 3;
@@ -2891,7 +2891,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragMoveEvent (
 				if (pos.y() < m_rectDrag.top() + 4) {
 					m_resizeMode = ResizeValue;
 					shape = Qt::SplitVCursor;
-				} else if (m_bNoteDuration) {
+				} else if (m_bNoteDuration && !m_bDrumMode) {
 					if (pos.x() > m_rectDrag.right() - 4) {
 						m_resizeMode = ResizeNoteRight;
 						shape = Qt::SplitHCursor;
@@ -3370,7 +3370,7 @@ void qtractorMidiEditor::updateDragSelect (
 					y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
-				if (!m_bNoteDuration)
+				if (!m_bNoteDuration || m_bDrumMode)
 					w1 = 5;
 				if (y < y0)
 					rectEvent.setRect(x - x0, y, w1, y0 - y);
@@ -3663,7 +3663,7 @@ void qtractorMidiEditor::updateEventRects (
 			y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 		else
 			y = y0 - (y0 * pEvent->value()) / 128;
-		if (!m_bNoteDuration)
+		if (!m_bNoteDuration || m_bDrumMode)
 			w1 = 5;
 		if (y < y0)
 			rectEvent.setRect(x - x0, y, w1, y0 - y);
@@ -3718,7 +3718,7 @@ void qtractorMidiEditor::updateDragMove (
 		if (y1 + rect.height() > ch)
 			y1 = ch - rect.height();
 		unsigned char note = 127 - (y1 / h1);
-		if (m_iSnapToScaleType > 0)
+		if (m_iSnapToScaleType > 0 && !m_bDrumMode)
 			note = snapToScale(note, m_iSnapToScaleKey, m_iSnapToScaleType);
 		m_posDelta.setY(h1 * (127 - note) - y0);
 	} else {
@@ -4369,7 +4369,7 @@ void qtractorMidiEditor::paintDragState (
 
 	QVector<QPoint> diamond;
 	if (m_bDrumMode) {
-		const int h1 = m_pEditList->itemHeight();
+		const int h1 = (m_pEditList->itemHeight() >> 1) + 2;
 		diamond.append(QPoint(-h1,   0));
 		diamond.append(QPoint(  0, -h1));
 		diamond.append(QPoint(+h1,   0));
@@ -4399,7 +4399,7 @@ void qtractorMidiEditor::paintDragState (
 						pDts->node = pDts->cursor.seekTick(t2);
 						rect.setLeft(
 							pDts->node->pixelFromTick(t2) - pDts->x0);
-						if (bEditView || m_bNoteDuration) {
+						if (bEditView || (m_bNoteDuration && !m_bDrumMode)) {
 							d2 = pEvent->duration() * (d1 + iTimeDelta) / d1;
 							if (d2 < 1)
 								d2 = 1;
@@ -4463,11 +4463,11 @@ void qtractorMidiEditor::paintDragState (
 					if (x1 > rect.right())
 						x1 = rect.right();
 					rect.setLeft(x1);
-					if (!bEditView && !m_bNoteDuration)
+					if (!bEditView && (!m_bNoteDuration || m_bDrumMode))
 						rect.setWidth(5);
 					break;
 				case ResizeNoteRight:
-					if (bEditView || m_bNoteDuration) {
+					if (bEditView || (m_bNoteDuration && !m_bDrumMode)) {
 						x1 = rect.right() + m_posDelta.x();
 						if (x1 < rect.left())
 							x1 = rect.left();
@@ -4530,7 +4530,7 @@ void qtractorMidiEditor::paintDragState (
 		if (bEditView && m_bDrumMode) {
 			pPainter->drawPolygon(QPolygon(diamond).translated(
 				pScrollView->contentsToViewport(rect.center()
-				+ QPoint(1, 1)))); // diamond++
+				+ QPoint(1, 1)))); // ++diamond;
 		} else {
 			pPainter->drawRect(QRect(
 				pScrollView->contentsToViewport(rect.topLeft()),

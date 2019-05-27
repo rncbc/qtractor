@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -146,15 +146,14 @@ protected slots:
 	void viewToolbarTransport(bool bOn);
 	void viewToolbarScale(bool bOn);
 	void viewToolbarThumb(bool bOn);
+	void viewEvents(bool bOn);
 	void viewNoteDuration(bool bOn);
 	void viewNoteColor(bool bOn);
 	void viewNoteType();
+	void viewDrumMode(bool bOn);
 	void viewValueColor(bool bOn);
 	void viewValueType();
-	void viewDrumMode(bool bOn);
-	void viewEvents(bool bOn);
-	void viewPreview(bool bOn);
-	void viewFollow(bool bOn);
+	void viewGhostTrack();
 	void viewZoomIn();
 	void viewZoomOut();
 	void viewZoomReset();
@@ -168,6 +167,8 @@ protected slots:
 	void viewSnapGrid(bool bOn);
 	void viewToolTips(bool bOn);
 	void viewRefresh();
+	void viewPreview(bool bOn);
+	void viewFollow(bool bOn);
 
 	void helpShortcuts();
 	void helpAbout();
@@ -175,6 +176,8 @@ protected slots:
 
 	void updateNoteTypeMenu();
 	void updateValueTypeMenu();
+
+	void updateGhostTrackMenu();
 
 	void updateZoomMenu();
 	void updateSnapMenu();

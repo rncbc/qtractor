@@ -1,7 +1,7 @@
 // qtractorSessionCursor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -52,7 +52,6 @@ public:
 	unsigned long frame() const;
 
 	// Absolute frame-time posiion accessors.
-	void setFrameTime(unsigned long iFrameTime);
 	unsigned long frameTime() const;
 	unsigned long frameTimeEx() const;
 

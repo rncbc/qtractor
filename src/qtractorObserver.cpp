@@ -1,7 +1,7 @@
 // qtractorObserver.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -68,8 +68,8 @@ public:
 		return true;
 	}
 
-	void flush (bool bUpdate)
-		{ while (pop(bUpdate)) ; }
+	bool flush (bool bUpdate)
+		{ int i = 0; while (pop(bUpdate)) ++i; return (i > 0); }
 
 	void reset ()
 	{
@@ -98,6 +98,9 @@ public:
 			m_pQueueItems = pNewItems;
 		}
 	}
+
+	bool isEmpty() const
+		{ return (m_iQueueIndex == 0); }
 
 private:
 
@@ -162,9 +165,9 @@ void qtractorSubject::notify ( qtractorObserver *pSender, bool bUpdate )
 
 
 // Queue flush (singleton) -- notify all pending observers.
-void qtractorSubject::flushQueue ( bool bUpdate )
+bool qtractorSubject::flushQueue ( bool bUpdate )
 {
-	g_subjectQueue.flush(bUpdate);
+	return g_subjectQueue.flush(bUpdate);
 }
 
 

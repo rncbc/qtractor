@@ -26,7 +26,10 @@
 #include "qtractorTrack.h"
 #include "qtractorTimeScale.h"
 
+#include "qtractorDocument.h"
+
 #include <QHash>
+
 
 // Forward declarations.
 class qtractorClip;
@@ -36,14 +39,12 @@ class qtractorMidiEngine;
 class qtractorAudioEngine;
 class qtractorAudioPeakFactory;
 class qtractorSessionCursor;
-class qtractorSessionDocument;
 class qtractorMidiManager;
 class qtractorInstrumentList;
 class qtractorCommandList;
 class qtractorCommand;
 class qtractorFileList;
-
-class QDomElement;
+class qtractorFiles;
 
 
 //-------------------------------------------------------------------------
@@ -358,9 +359,12 @@ public:
 	// Session special process automation executive.
 	void process_curve(unsigned long iFrame);
 
+	// Forward declaration.
+	class Document;
+
 	// Document element methods.
-	bool loadElement(qtractorSessionDocument *pDocument, QDomElement *pElement);
-	bool saveElement(qtractorSessionDocument *pDocument, QDomElement *pElement);
+	bool loadElement(Document *pDocument, QDomElement *pElement);
+	bool saveElement(Document *pDocument, QDomElement *pElement);
 
 	// Session property structure.
 	struct Properties
@@ -518,6 +522,38 @@ private:
 
 	// The pseudo-singleton instance.
 	static qtractorSession *g_pSession;
+};
+
+
+//-------------------------------------------------------------------------
+// qtractorSession::Document -- Session file import/export helper class.
+//
+
+class qtractorSession::Document : public qtractorDocument
+{
+public:
+
+	// Constructor.
+	Document(QDomDocument *pDocument,
+		qtractorSession *pSession, qtractorFiles *pFiles);
+	// Default destructor.
+	~Document();
+
+	// Property accessors.
+	qtractorSession *session() const;
+	qtractorFiles   *files() const;
+
+protected:
+
+	// Elemental loader/savers...
+	bool loadElement(QDomElement *pElement);
+	bool saveElement(QDomElement *pElement);
+
+private:
+
+	// Instance variables.
+	qtractorSession *m_pSession;
+	qtractorFiles   *m_pFiles;
 };
 
 

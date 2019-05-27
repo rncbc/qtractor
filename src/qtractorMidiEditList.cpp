@@ -165,6 +165,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());
+//	m_pixmap.fill(m_pEditor->background().darker(140));
 
 	QPainter painter(&m_pixmap);
 	painter.initFrom(this);

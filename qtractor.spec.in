@@ -1,6 +1,6 @@
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 41
+%define release 42
 
 %define _prefix	@ac_prefix@
 
@@ -32,12 +32,12 @@ BuildRequires:	libqt5-qtbase-devel >= 5.1, libqt5-linguist
 BuildRequires:	libqt5-qtx11extras-devel >= 5.1
 BuildRequires:	alsa-devel
 %endif
-BuildRequires:	libjack-devel >= 0.100.0
-BuildRequires:	libsndfile-devel >= 1.0.11
+BuildRequires:	libjack2-devel, libjack2
+BuildRequires:	libsndfile-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libmad-devel
 BuildRequires:	libsamplerate-devel
-BuildRequires:	librubberband-devel >= 1.0.1
+BuildRequires:	librubberband-devel
 BuildRequires:	liblo-devel
 BuildRequires:	ladspa-devel
 BuildRequires:	dssi-devel
@@ -116,6 +116,8 @@ the personal home-studio.
 %{_datadir}/man/man1/%{name}*.1.gz
 
 %changelog
+* Tue Apr 16 2019 Rui Nuno Capela <rncbc@rncbc.org> 0.9.7
+- Spring-Break'19 release.
 * Wed Mar 20 2019 Rui Nuno Capela <rncbc@rncbc.org> 0.9.6
 - Pre-LAC2019 release frenzy.
 * Thu Feb 14 2019 Rui Nuno Capela <rncbc@rncbc.org> 0.9.5

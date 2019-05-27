@@ -24,8 +24,7 @@
 
 #include "qtractorScrollView.h"
 
-#include <QAbstractListModel>
-
+#include <QHash>
 #include <QPixmap>
 
 
@@ -223,6 +222,9 @@ protected:
 	void updateSelect(bool bCommit);
 	void clearSelect();
 
+	// Track-list header model pre-decl.
+	class HeaderModel;
+
 signals:
 
 	// More like current row has changed.
@@ -309,36 +311,6 @@ private:
 	enum { IconAudio = 0, IconMidi = 1, IconCount = 2 };
 
 	QPixmap *m_pPixmap[IconCount];
-};
-
-
-//----------------------------------------------------------------------------
-// qtractorTrackListHeaderModel -- Track-list header model.
-
-class qtractorTrackListHeaderModel : public QAbstractListModel
-{
-	Q_OBJECT
-
-public:
-
-	// Constructor.
-	qtractorTrackListHeaderModel(QObject *pParent = 0);
-
-	QVariant headerData(int section, Qt::Orientation orient, int role) const;
-
-	int rowCount(const QModelIndex&) const
-		{ return 0; }
-
-	int columnCount(const QModelIndex&) const
-		{ return m_headerText.count(); }
-
-	QVariant data(const QModelIndex&, int) const
-		{ return QVariant(); }
-
-private:
-
-	// Model variables.
-	QStringList m_headerText;
 };
 
 

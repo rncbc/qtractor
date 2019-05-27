@@ -56,7 +56,7 @@ public:
 
 	// Accessors.
 	QDomDocument *document() const;
-	const QString& name() const;
+	const QString& tagName() const;
 
 	// Regular text element factory method.
 	void saveTextElement (const QString& sTagName, const QString& sText,
@@ -72,12 +72,8 @@ public:
 	QString addFile (const QString& sFilename);
 
 	// External storage simple methods.
-	bool load (const QString& sFilename, Flags flags = Default);
-	bool save (const QString& sFilename, Flags flags = Default);
-
-	// External storage element pure virtual methods.
-	virtual bool loadElement (QDomElement *pElement) = 0;
-	virtual bool saveElement (QDomElement *pElement) = 0;
+	bool load(const QString& sFilename, Flags flags = Default);
+	bool save(const QString& sFilename, Flags flags = Default);
 
 	// Helper methods.
 	static bool    boolFromText (const QString& sText);
@@ -105,14 +101,20 @@ protected:
 	void setFlags(Flags flags);
 	Flags flags() const;
 
+	// External storage element pure virtual methods.
+	virtual bool loadElement (QDomElement *pElement) = 0;
+	virtual bool saveElement (QDomElement *pElement) = 0;
+
 private:
 
 	// Instance variables.
 	QDomDocument *m_pDocument;
-	QString m_sTagName;
+	QString       m_sTagName;
+
+	// Document flags
 	Flags m_flags;
 
-	// Base document name (derived from filename).
+	// Document name (derived from filename).
 	QString m_sName;
 
 	// Archive stuff.

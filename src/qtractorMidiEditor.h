@@ -1,7 +1,7 @@
 // qtractorMidiEditor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,6 +50,8 @@ class qtractorMidiEditCommand;
 class qtractorMidiClip;
 
 class qtractorTimeScale;
+
+class qtractorTrack;
 
 class QFrame;
 class QComboBox;
@@ -131,13 +133,6 @@ public:
 	qtractorTimeScale *timeScale() const;
 	unsigned long timeOffset() const;
 
-	// The original clip time-scale length/time.
-	void setClipLength(unsigned long iClipLength);
-	unsigned long clipLength() const;
-
-	// Reset original clip time-scale length/time.
-	void resetClipLength();
-
 	// Time-scale offset (in frames) accessors.
 	void setOffset(unsigned long iOffset);
 	unsigned long offset() const;
@@ -148,6 +143,10 @@ public:
 
 	// Clip recording/overdub status.
 	bool isClipRecord() const;
+
+	// Ghost track accessors.
+	void setGhostTrack(qtractorTrack *pGhostTrack);
+	qtractorTrack *ghostTrack() const;
 
 	// Child widgets accessors.
 	QFrame *editListHeader() const;
@@ -274,7 +273,8 @@ public:
 
 	// To optimize and keep track of current (re)draw
 	// position, mostly like an sequence cursor/iterator.
-	qtractorMidiEvent *seekEvent(unsigned long iTime);
+	qtractorMidiEvent *seekEvent(
+		qtractorMidiSequence *pSeq, unsigned long iTime);
 
 	// Get event from given contents position.
 	qtractorMidiEvent *eventAt(qtractorScrollView *pScrollView,
@@ -331,8 +331,7 @@ public:
 	void ensureVisibleFrame(qtractorScrollView *pScrollView, unsigned long iFrame);
 
 	// Visualize the event selection drag-move.
-	void paintDragState(qtractorScrollView *pScrollView,
-		QPainter *pPainter);
+	void paintDragState(qtractorScrollView *pScrollView, QPainter *pPainter);
 
 	// Reset drag/select/move state.
 	void resetDragState(qtractorScrollView *pScrollView);
@@ -561,9 +560,6 @@ private:
 	// The local time scale.
 	qtractorTimeScale *m_pTimeScale;
 
-	// The original clip time-scale length/time.
-	unsigned long m_iClipLengthTime;
-
 	// The local time-scale offset/length.
 	unsigned long m_iOffset;
 	unsigned long m_iLength;
@@ -695,6 +691,9 @@ private:
 	// Temporary sync-view/follow-playhead hold state.
 	bool m_bSyncViewHold;
 	int  m_iSyncViewHold;
+
+	// Ghost track setting.
+	qtractorTrack *m_pGhostTrack;
 };
 
 

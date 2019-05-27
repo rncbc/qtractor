@@ -141,10 +141,10 @@ void qtractorMidiThumbView::updateContents (void)
 	QVector<QPoint> diamond;
 	if (bDrumMode) {
 		const int h4 = (h2 >> 1);
-		diamond.append(QPoint(-h2,  h4));
 		diamond.append(QPoint(  0, -h4));
-		diamond.append(QPoint( h2,  h4));
+		diamond.append(QPoint(-h2,  h4));
 		diamond.append(QPoint(  0,  h4 + h2));
+		diamond.append(QPoint( h2,  h4));
 	}
 
 	const QColor& fg = pTrack->foreground();

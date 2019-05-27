@@ -2159,6 +2159,7 @@ void qtractorTrack::mapControllers (void)
 			pObserver->setFeedback(pController->feedback);
 			pObserver->setInvert(pController->invert);
 			pObserver->setHook(pController->hook);
+			pObserver->setLatch(pController->latch);
 			pMidiControl->mapMidiObserver(pObserver);
 		}
 	}

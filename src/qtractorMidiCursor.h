@@ -1,7 +1,7 @@
 // qtractorMidiCursor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,6 +45,9 @@ public:
 	// Intra-sequence tick/time positioning reset (seek forward).
 	qtractorMidiEvent *reset(
 		qtractorMidiSequence *pSeq,	unsigned long iTime = 0);
+
+	// Complete/clear positioning reset.
+	void clear();
 
 private:
 

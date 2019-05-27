@@ -1,7 +1,7 @@
 // qtractorMidiEditView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,6 +32,7 @@
 
 // Forward declarations.
 class qtractorMidiEditor;
+class qtractorMidiSequence;
 
 class QResizeEvent;
 class QMouseEvent;
@@ -78,6 +79,13 @@ protected:
 
 	// Resize event handler.
 	void resizeEvent(QResizeEvent *pResizeEvent);
+
+	// Draw the track view events.
+	void drawEvents(QPainter& painter, int dx, int dy,
+		qtractorMidiSequence *pSeq, unsigned long t0,
+		unsigned long iTickStart, unsigned long iTickEnd,
+		unsigned long iTickEnd2, bool bDrumMode,
+		const QColor& fore, const QColor& back, int alpha = 255);
 
 	// Draw the track view
 	void drawContents(QPainter *pPainter, const QRect& rect);

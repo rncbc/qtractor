@@ -26,6 +26,8 @@
 
 #include "qtractorMidiControlObserver.h"
 
+#include "qtractorDocument.h"
+
 #include <QLibrary>
 
 #include <QStringList>
@@ -46,12 +48,8 @@ class qtractorPluginListItem;
 
 class qtractorMidiManager;
 
-class qtractorDocument;
 class qtractorCurveList;
 class qtractorCurveFile;
-
-class QDomDocument;
-class QDomElement;
 
 
 //----------------------------------------------------------------------------
@@ -609,6 +607,10 @@ public:
 	// Plugin parameter/state realization.
 	void realizeValues();
 
+	// Save partial/complete plugin state...
+	bool savePlugin(qtractorDocument *pDocument, QDomElement *pElement);
+	bool savePluginEx(qtractorDocument *pDocument, QDomElement *pElement);
+
 	// Load plugin configuration/parameter values stuff.
 	static void loadConfigs(
 		QDomElement *pElement, Configs& configs, ConfigTypes& ctypes);
@@ -838,6 +840,12 @@ public:
 	// The meta-main audio-processing plugin-chain procedure.
 	void process(float **ppBuffer, unsigned int nframes);
 
+	// Forward declaration.
+	class Document;
+
+	// Create/load plugin state.
+	qtractorPlugin *loadPlugin(QDomElement *pElement);
+
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement);
@@ -1000,6 +1008,39 @@ private:
 	// Plugin chain total latency (in frames);
 	bool          m_bLatency;
 	unsigned long m_iLatency;
+};
+
+
+//-------------------------------------------------------------------------
+// qtractorPluginList::Document -- Plugins file import/export helper class.
+//
+
+class qtractorPluginList::Document : public qtractorDocument
+{
+public:
+
+	// Constructor.
+	Document(QDomDocument *pDocument, qtractorPluginList *pPluginList);
+	// Default destructor.
+	~Document();
+
+	// Property accessors.
+	qtractorPluginList *pluginList() const;
+
+	// External storage simple methods.
+	bool load(const QString& sFilename);
+	bool save(const QString& sFilename);
+
+protected:
+
+	// Elemental loader/savers...
+	bool loadElement(QDomElement *pElement);
+	bool saveElement(QDomElement *pElement);
+
+private:
+
+	// Instance variables.
+	qtractorPluginList *m_pPluginList;
 };
 
 

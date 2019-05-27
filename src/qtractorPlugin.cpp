@@ -34,16 +34,17 @@
 #include "qtractorOptions.h"
 
 #include "qtractorSession.h"
-#include "qtractorDocument.h"
 #include "qtractorCurveFile.h"
 
 #include "qtractorMessageList.h"
 
-#include <QTextStream>
-#include <QFileInfo>
-#include <QDir>
-
 #include <QDomDocument>
+#include <QDomElement>
+#include <QTextStream>
+
+#include <QFileInfo>
+#include <QFile>
+#include <QDir>
 
 #include <math.h>
 
@@ -1183,6 +1184,7 @@ void qtractorPlugin::mapControllers (
 			pObserver->setFeedback(pController->feedback);
 			pObserver->setInvert(pController->invert);
 			pObserver->setHook(pController->hook);
+			pObserver->setLatch(pController->latch);
 			pMidiControl->mapMidiObserver(pObserver);
 		}
 	}
@@ -1336,6 +1338,113 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 	}
 
 	pCurveFile->apply(pSession->timeScale());
+}
+
+
+// Save partial plugin state...
+bool qtractorPlugin::savePlugin (
+	qtractorDocument *pDocument, QDomElement *pElement )
+{
+	freezeConfigs();
+
+	qtractorPluginType *pType = type();
+	pElement->setAttribute("type",
+		qtractorPluginType::textFromHint(pType->typeHint()));
+
+	// Pseudo-plugins don't have a file...
+	const QString& sFilename = pType->filename();
+	if (!sFilename.isEmpty()) {
+		pDocument->saveTextElement("filename",
+			sFilename, pElement);
+	}
+
+	if (list()->isUniqueID(pType)) {
+		pDocument->saveTextElement("unique-id",
+			QString::number(uniqueID()), pElement);
+	}
+
+	pDocument->saveTextElement("index",
+		QString::number(pType->index()), pElement);
+	pDocument->saveTextElement("label",
+		pType->label(), pElement);
+	pDocument->saveTextElement("preset",
+		preset(), pElement);
+	pDocument->saveTextElement("direct-access-param",
+		QString::number(directAccessParamIndex()), pElement);
+//	pDocument->saveTextElement("values",
+//		valueList().join(","), pElement);
+	pDocument->saveTextElement("activated",
+		qtractorDocument::textFromBool(isActivatedEx()), pElement);
+
+	// Plugin configuration stuff (CLOB)...
+	QDomElement eConfigs = pDocument->document()->createElement("configs");
+	saveConfigs(pDocument->document(), &eConfigs);
+	pElement->appendChild(eConfigs);
+
+	// Plugin parameter values...
+	QDomElement eParams = pDocument->document()->createElement("params");
+	saveValues(pDocument->document(), &eParams);
+	pElement->appendChild(eParams);
+
+	// May release plugin state...
+	releaseConfigs();
+
+	return true;
+}
+
+
+// Save complete plugin state...
+bool qtractorPlugin::savePluginEx (
+	qtractorDocument *pDocument, QDomElement *pElement )
+{
+	// Freeze form position, if currently visible...
+	freezeFormPos();
+
+	// Save partial plugin state first...
+	const bool bResult = savePlugin(pDocument, pElement);
+
+	if (bResult) {
+		// Plugin paramneter controllers...
+		QDomElement eControllers
+			= pDocument->document()->createElement("controllers");
+		saveControllers(pDocument, &eControllers);
+		pElement->appendChild(eControllers);
+		// Save plugin automation...
+		qtractorCurveList *pCurveList = list()->curveList();
+		if (pCurveList && !pCurveList->isEmpty()) {
+			qtractorCurveFile cfile(pCurveList);
+			QDomElement eCurveFile
+				= pDocument->document()->createElement("curve-file");
+			saveCurveFile(pDocument, &eCurveFile, &cfile);
+			pElement->appendChild(eCurveFile);
+			const unsigned long iActivateSubjectIndex
+				= activateSubjectIndex();
+			if (iActivateSubjectIndex > 0) {
+				pDocument->saveTextElement("activate-subject-index",
+					QString::number(iActivateSubjectIndex), pElement);
+			}
+		}
+		// Save editor position...
+		const QPoint& posEditor = editorPos();
+		if (posEditor.x() >= 0 && posEditor.y() >= 0) {
+			pDocument->saveTextElement("editor-pos",
+				QString::number(posEditor.x()) + ',' +
+				QString::number(posEditor.y()), pElement);
+		}
+		const QPoint& posForm = formPos();
+		if (posForm.x() >= 0 && posForm.y() >= 0) {
+			pDocument->saveTextElement("form-pos",
+				QString::number(posForm.x()) + ',' +
+				QString::number(posForm.y()), pElement);
+		}
+		const int iEditorType = editorType();
+		if (iEditorType >= 0) {
+			pDocument->saveTextElement("editor-type",
+				QString::number(iEditorType), pElement);
+		}
+	}
+
+	return bResult;
 }
 
 
@@ -1863,6 +1972,155 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 }
 
 
+// Create/load plugin state.
+qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
+{
+	qtractorPlugin *pPlugin = NULL;
+
+	QString sFilename;
+	QString sLabel;
+	QString sPreset;
+	QStringList vlist;
+	unsigned long iUniqueID = 0;
+	unsigned long iIndex = 0;
+	bool bActivated = false;
+	unsigned long iActivateSubjectIndex = 0;
+	long iDirectAccessParamIndex = -1;
+	qtractorPlugin::Configs configs;
+	qtractorPlugin::ConfigTypes ctypes;
+	qtractorPlugin::Values values;
+	qtractorMidiControl::Controllers controllers;
+	qtractorCurveFile cfile(qtractorPluginList::curveList());
+	QPoint posEditor;
+	QPoint posForm;
+	int iEditorType = -1;
+
+	const QString& sTypeHint = pElement->attribute("type");
+	qtractorPluginType::Hint typeHint
+		= qtractorPluginType::hintFromText(sTypeHint);
+	for (QDomNode nParam = pElement->firstChild();
+			!nParam.isNull();
+				nParam = nParam.nextSibling()) {
+		// Convert buses list node to element...
+		QDomElement eParam = nParam.toElement();
+		if (eParam.isNull())
+			continue;
+		if (eParam.tagName() == "filename")
+			sFilename = eParam.text();
+		else
+		if (eParam.tagName() == "unique-id")
+			iUniqueID = eParam.text().toULong();
+		else
+		if (eParam.tagName() == "index")
+			iIndex = eParam.text().toULong();
+		else
+		if (eParam.tagName() == "label")
+			sLabel = eParam.text();
+		else
+		if (eParam.tagName() == "preset")
+			sPreset = eParam.text();
+		else
+		if (eParam.tagName() == "values")
+			vlist = eParam.text().split(',');
+		else
+		if (eParam.tagName() == "activate-subject-index")
+			iActivateSubjectIndex = eParam.text().toULong();
+		else
+		if (eParam.tagName() == "activated")
+			bActivated = qtractorDocument::boolFromText(eParam.text());
+		else
+		if (eParam.tagName() == "configs") {
+			// Load plugin configuration stuff (CLOB)...
+			qtractorPlugin::loadConfigs(&eParam, configs, ctypes);
+		}
+		else
+		if (eParam.tagName() == "params") {
+			// Load plugin parameter values...
+			qtractorPlugin::loadValues(&eParam, values);
+		}
+		else
+		if (eParam.tagName() == "controllers") {
+			// Load plugin parameter controllers...
+			qtractorPlugin::loadControllers(&eParam, controllers);
+		}
+		else
+		if (eParam.tagName() == "direct-access-param")
+			iDirectAccessParamIndex = eParam.text().toLong();
+		else
+		if (eParam.tagName() == "curve-file") {
+			// Load plugin automation curves...
+			qtractorPlugin::loadCurveFile(&eParam, &cfile);
+		}
+		else
+		if (eParam.tagName() == "editor-pos") {
+			const QStringList& sxy = eParam.text().split(',');
+			posEditor.setX(sxy.at(0).toInt());
+			posEditor.setY(sxy.at(1).toInt());
+		}
+		else
+		if (eParam.tagName() == "form-pos") {
+			const QStringList& sxy = eParam.text().split(',');
+			posForm.setX(sxy.at(0).toInt());
+			posForm.setY(sxy.at(1).toInt());
+		}
+		else
+		if (eParam.tagName() == "editor-type")
+			iEditorType = eParam.text().toInt();
+	}
+
+	// Try to find some alternative, if it doesn't exist...
+	if (checkPluginFile(sFilename, typeHint)) {
+		pPlugin = qtractorPluginFactory::createPlugin(this,
+			sFilename, iIndex, typeHint);
+	}
+
+#if 0
+	if (!sFilename.isEmpty() && !sLabel.isEmpty() &&
+		((pPlugin == NULL) || ((pPlugin->type())->label() != sLabel))) {
+		iIndex = 0;
+		do {
+			if (pPlugin) delete pPlugin;
+			pPlugin = qtractorPluginFile::createPlugin(this,
+				sFilename, iIndex++, typeHint);
+		} while (pPlugin && (pPlugin->type())->label() != sLabel);
+	}
+#endif
+
+	if (pPlugin) {
+		if (iUniqueID > 0)
+			pPlugin->setUniqueID(iUniqueID);
+		if (iActivateSubjectIndex > 0)
+			pPlugin->setActivateSubjectIndex(iActivateSubjectIndex);
+		pPlugin->setPreset(sPreset);
+		pPlugin->setConfigs(configs);
+		pPlugin->setConfigTypes(ctypes);
+		if (!vlist.isEmpty())
+			pPlugin->setValueList(vlist);
+		if (!values.index.isEmpty())
+			pPlugin->setValues(values);
+	//	append(pPlugin);
+		pPlugin->mapControllers(controllers);
+		pPlugin->applyCurveFile(&cfile);
+		pPlugin->setDirectAccessParamIndex(iDirectAccessParamIndex);
+		pPlugin->setActivated(bActivated); // Later's better!
+		pPlugin->setEditorPos(posEditor);
+		pPlugin->setFormPos(posForm);
+		if (iEditorType >= 0)
+			pPlugin->setEditorType(iEditorType);
+	} else {
+		qtractorMessageList::append(
+			QObject::tr("%1(%2): %3 plugin not found.")
+				.arg(sFilename).arg(iIndex).arg(sTypeHint));
+	}
+
+	// Cleanup.
+	qDeleteAll(controllers);
+	controllers.clear();
+
+	return pPlugin;
+}
+
+
 // Document element methods.
 bool qtractorPluginList::loadElement (
 	qtractorDocument *pDocument, QDomElement *pElement )
@@ -1894,141 +2152,9 @@ bool qtractorPluginList::loadElement (
 			setMidiProg(ePlugin.text().toInt());
 		else
 		if (ePlugin.tagName() == "plugin") {
-			QString sFilename;
-			unsigned long iUniqueID = 0;
-			unsigned long iIndex = 0;
-			QString sLabel;
-			QString sPreset;
-			QStringList vlist;
-			bool bActivated = false;
-			unsigned long iActivateSubjectIndex = 0;
-			long iDirectAccessParamIndex = -1;
-			qtractorPlugin::Configs configs;
-			qtractorPlugin::ConfigTypes ctypes;
-			qtractorPlugin::Values values;
-			qtractorMidiControl::Controllers controllers;
-			qtractorCurveFile cfile(qtractorPluginList::curveList());
-			QPoint posEditor;
-			QPoint posForm;
-			int iEditorType = -1;
-			const QString& sTypeHint = ePlugin.attribute("type");
-			qtractorPluginType::Hint typeHint
-				= qtractorPluginType::hintFromText(sTypeHint);
-			for (QDomNode nParam = ePlugin.firstChild();
-					!nParam.isNull();
-						nParam = nParam.nextSibling()) {
-				// Convert buses list node to element...
-				QDomElement eParam = nParam.toElement();
-				if (eParam.isNull())
-					continue;
-				if (eParam.tagName() == "filename")
-					sFilename = eParam.text();
-				else
-				if (eParam.tagName() == "unique-id")
-					iUniqueID = eParam.text().toULong();
-				else
-				if (eParam.tagName() == "index")
-					iIndex = eParam.text().toULong();
-				else
-				if (eParam.tagName() == "label")
-					sLabel = eParam.text();
-				else
-				if (eParam.tagName() == "preset")
-					sPreset = eParam.text();
-				else
-				if (eParam.tagName() == "values")
-					vlist = eParam.text().split(',');
-				else
-				if (eParam.tagName() == "activate-subject-index")
-					iActivateSubjectIndex = eParam.text().toULong();
-				else
-				if (eParam.tagName() == "activated")
-					bActivated = qtractorDocument::boolFromText(eParam.text());
-				else
-				if (eParam.tagName() == "configs") {
-					// Load plugin configuration stuff (CLOB)...
-					qtractorPlugin::loadConfigs(&eParam, configs, ctypes);
-				}
-				else
-				if (eParam.tagName() == "params") {
-					// Load plugin parameter values...
-					qtractorPlugin::loadValues(&eParam, values);
-				}
-				else
-				if (eParam.tagName() == "controllers") {
-					// Load plugin parameter controllers...
-					qtractorPlugin::loadControllers(&eParam, controllers);
-				}
-				else
-				if (eParam.tagName() == "direct-access-param")
-					iDirectAccessParamIndex = eParam.text().toLong();
-				else
-				if (eParam.tagName() == "curve-file") {
-					// Load plugin automation curves...
-					qtractorPlugin::loadCurveFile(&eParam, &cfile);
-				}
-				else
-				if (eParam.tagName() == "editor-pos") {
-					const QStringList& sxy = eParam.text().split(',');
-					posEditor.setX(sxy.at(0).toInt());
-					posEditor.setY(sxy.at(1).toInt());
-				}
-				else
-				if (eParam.tagName() == "form-pos") {
-					const QStringList& sxy = eParam.text().split(',');
-					posForm.setX(sxy.at(0).toInt());
-					posForm.setY(sxy.at(1).toInt());
-				}
-				else
-				if (eParam.tagName() == "editor-type")
-					iEditorType = eParam.text().toInt(); 
-			}
-			// Try to find some alternative, if it doesn't exist...
-			qtractorPlugin *pPlugin = NULL;
-			if (checkPluginFile(sFilename, typeHint)) {
-				pPlugin = qtractorPluginFactory::createPlugin(this,
-					sFilename, iIndex, typeHint);
-			}
-		#if 0
-			if (!sFilename.isEmpty() && !sLabel.isEmpty() &&
-				((pPlugin == NULL) || ((pPlugin->type())->label() != sLabel))) {
-				iIndex = 0;
-				do {
-					if (pPlugin) delete pPlugin;
-					pPlugin = qtractorPluginFile::createPlugin(this,
-						sFilename, iIndex++, typeHint);
-				} while (pPlugin && (pPlugin->type())->label() != sLabel);
-			}
-		#endif
-			if (pPlugin) {
-				if (iUniqueID > 0)
-					pPlugin->setUniqueID(iUniqueID);
-				if (iActivateSubjectIndex > 0)
-					pPlugin->setActivateSubjectIndex(iActivateSubjectIndex);
-				pPlugin->setPreset(sPreset);
-				pPlugin->setConfigs(configs);
-				pPlugin->setConfigTypes(ctypes);
-				if (!vlist.isEmpty())
-					pPlugin->setValueList(vlist);
-				if (!values.index.isEmpty())
-					pPlugin->setValues(values);
+			qtractorPlugin *pPlugin = loadPlugin(&ePlugin);
+			if (pPlugin)
 				append(pPlugin);
-				pPlugin->mapControllers(controllers);
-				pPlugin->applyCurveFile(&cfile);
-				pPlugin->setDirectAccessParamIndex(iDirectAccessParamIndex);
-				pPlugin->setActivated(bActivated); // Later's better!
-				pPlugin->setEditorPos(posEditor);
-				pPlugin->setFormPos(posForm);
-				if (iEditorType >= 0)
-					pPlugin->setEditorType(iEditorType);
-			} else {
-				qtractorMessageList::append(
-					QObject::tr("%1(%2): %3 plugin not found.")
-						.arg(sFilename).arg(iIndex).arg(sTypeHint));
-			}
-			// Cleanup.
-			qDeleteAll(controllers);
-			controllers.clear();
 		}
 		else
 		// Load audio output bus name...
@@ -2077,91 +2203,11 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 	// Save plugins...
 	for (qtractorPlugin *pPlugin = qtractorPluginList::first();
 			pPlugin; pPlugin = pPlugin->next()) {
-
-		// Freeze form position, if currently visible...
-		pPlugin->freezeFormPos();
-
-		// Do freeze plugin state...
-		pPlugin->freezeConfigs();
-
 		// Create the new plugin element...
 		QDomElement ePlugin = pDocument->document()->createElement("plugin");
-		qtractorPluginType *pType = pPlugin->type();
-		ePlugin.setAttribute("type",
-			qtractorPluginType::textFromHint(pType->typeHint()));
-		// Pseudo-plugins don't have a file...
-		const QString& sFilename = pType->filename();
-		if (!sFilename.isEmpty()) {
-			pDocument->saveTextElement("filename",
-				sFilename, &ePlugin);
-		}
-		if (isUniqueID(pType)) {
-			pDocument->saveTextElement("unique-id",
-				QString::number(pPlugin->uniqueID()), &ePlugin);
-		}
-		pDocument->saveTextElement("index",
-			QString::number(pType->index()), &ePlugin);
-		pDocument->saveTextElement("label",
-			pType->label(), &ePlugin);
-		pDocument->saveTextElement("preset",
-			pPlugin->preset(), &ePlugin);
-		pDocument->saveTextElement("direct-access-param",
-			QString::number(pPlugin->directAccessParamIndex()), &ePlugin);
-	//	pDocument->saveTextElement("values",
-	//		pPlugin->valueList().join(","), &ePlugin);
-		pDocument->saveTextElement("activated",
-			qtractorDocument::textFromBool(pPlugin->isActivatedEx()), &ePlugin);
-		// Plugin configuration stuff (CLOB)...
-		QDomElement eConfigs = pDocument->document()->createElement("configs");
-		pPlugin->saveConfigs(pDocument->document(), &eConfigs);
-		ePlugin.appendChild(eConfigs);
-		// Plugin parameter values...
-		QDomElement eParams = pDocument->document()->createElement("params");
-		pPlugin->saveValues(pDocument->document(), &eParams);
-		ePlugin.appendChild(eParams);
-		// Plugin paramneter controllers...
-		QDomElement eControllers
-			= pDocument->document()->createElement("controllers");
-		pPlugin->saveControllers(pDocument, &eControllers);
-		ePlugin.appendChild(eControllers);
-		// Save plugin automation...
-		qtractorCurveList *pCurveList = qtractorPluginList::curveList();
-		if (pCurveList && !pCurveList->isEmpty()) {
-			qtractorCurveFile cfile(pCurveList);
-			QDomElement eCurveFile
-				= pDocument->document()->createElement("curve-file");
-			pPlugin->saveCurveFile(pDocument, &eCurveFile, &cfile);
-			ePlugin.appendChild(eCurveFile);
-			const unsigned long iActivateSubjectIndex
-				= pPlugin->activateSubjectIndex();
-			if (iActivateSubjectIndex > 0) {
-				pDocument->saveTextElement("activate-subject-index",
-					QString::number(iActivateSubjectIndex), &ePlugin);
-			}
-		}
-		// Save editor position...
-		const QPoint& posEditor = pPlugin->editorPos();
-		if (posEditor.x() >= 0 && posEditor.y() >= 0) {
-			pDocument->saveTextElement("editor-pos",
-				QString::number(posEditor.x()) + ',' +
-				QString::number(posEditor.y()), &ePlugin);
-		}
-		const QPoint& posForm = pPlugin->formPos();
-		if (posForm.x() >= 0 && posForm.y() >= 0) {
-			pDocument->saveTextElement("form-pos",
-				QString::number(posForm.x()) + ',' +
-				QString::number(posForm.y()), &ePlugin);
-		}
-		const int iEditorType = pPlugin->editorType();
-		if (iEditorType >= 0) {
-			pDocument->saveTextElement("editor-type",
-				QString::number(iEditorType), &ePlugin);
-		}
+		pPlugin->savePluginEx(pDocument, &ePlugin);
 		// Add this plugin...
 		pElement->appendChild(ePlugin);
-
-		// May release plugin state...
-		pPlugin->releaseConfigs();
 	}
 
 	// Save audio output-bus connects...
@@ -2317,6 +2363,145 @@ void qtractorPluginList::resetLatency (void)
 			m_iLatency += pPlugin->latency();
 		}
 	}
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorPluginList::Document -- Plugins file import/export helper class.
+//
+
+// Constructor.
+qtractorPluginList::Document::Document (
+	QDomDocument *pDocument, qtractorPluginList *pPluginList )
+	: qtractorDocument(pDocument, "plugin-list"), m_pPluginList(pPluginList)
+{
+}
+
+// Default destructor.
+qtractorPluginList::Document::~Document (void)
+{
+}
+
+
+// Property accessors.
+qtractorPluginList *qtractorPluginList::Document::pluginList (void) const
+{
+	return m_pPluginList;
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorPluginList::Document -- loaders.
+//
+
+// External storage simple load method.
+bool qtractorPluginList::Document::load ( const QString& sFilename )
+{
+	QFile file(sFilename);
+	if (!file.open(QIODevice::ReadOnly))
+		return false;
+
+	// Parse it a-la-DOM :-)
+	QDomDocument *pDocument = document();
+	if (!pDocument->setContent(&file)) {
+		file.close();
+		return false;
+	}
+
+	file.close();
+
+	QDomElement elem = pDocument->documentElement();
+	// Get root element and check for proper taq name.
+	if (elem.tagName() != "plugin-list")
+		return false;
+
+	return loadElement(&elem);
+}
+
+
+// Elemental loader...
+bool qtractorPluginList::Document::loadElement ( QDomElement *pElement )
+{
+	// Make it an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == NULL)
+		return false;
+
+	qtractorImportPluginsCommand *pImportCommand
+		= new qtractorImportPluginsCommand();
+
+	for (qtractorPlugin *pPlugin = m_pPluginList->first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		pImportCommand->removePlugin(pPlugin);
+	}
+
+	// Load plugin-list children...
+	for (QDomNode nPlugin = pElement->firstChild();
+			!nPlugin.isNull();
+				nPlugin = nPlugin.nextSibling()) {
+		// Convert plugin node to element...
+		QDomElement ePlugin = nPlugin.toElement();
+		if (ePlugin.isNull())
+			continue;
+		if (ePlugin.tagName() == "plugin") {
+			qtractorPlugin *pPlugin = m_pPluginList->loadPlugin(&ePlugin);
+			if (pPlugin) {
+				pPlugin->realizeConfigs();
+				pPlugin->realizeValues();
+				pPlugin->releaseConfigs();
+				pPlugin->releaseValues();
+				pImportCommand->addPlugin(pPlugin);
+			}
+		}
+	}
+
+	pSession->execute(pImportCommand);
+
+	return true;
+}
+
+
+//-------------------------------------------------------------------------
+// qtractorPluginList::Document -- savers.
+//
+
+// External storage simple save method.
+bool qtractorPluginList::Document::save ( const QString& sFilename )
+{
+	QFile file(sFilename);
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+		return false;
+
+	QDomDocument *pDocument = document();
+	QDomElement elem = pDocument->createElement("plugin-list");
+	saveElement(&elem);
+	pDocument->appendChild(elem);
+
+	QTextStream ts(&file);
+	ts << pDocument->toString() << endl;
+	file.close();
+
+	return true;
+}
+
+
+// Elemental saver...
+bool qtractorPluginList::Document::saveElement ( QDomElement *pElement )
+{
+	// Save this program version (informational)...
+	pElement->setAttribute("version", PACKAGE_STRING);
+
+	// Save plugins...
+	for (qtractorPlugin *pPlugin = m_pPluginList->first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		// Create the new plugin element...
+		QDomElement ePlugin = document()->createElement("plugin");
+		pPlugin->savePlugin(this, &ePlugin);
+		// Add this plugin...
+		pElement->appendChild(ePlugin);
+	}
+
+	return true;
 }
 
 

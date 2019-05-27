@@ -55,6 +55,7 @@
 #include "qtractorMidiFile.h"
 
 #include <QHeaderView>
+#include <QAbstractListModel>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -144,10 +145,35 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorTrackListHeaderModel -- Track-list header model.
+// qtractorTrackList::HeaderModel -- Track-list header model.
+
+class qtractorTrackList::HeaderModel : public QAbstractListModel
+{
+public:
+
+	// Constructor.
+	HeaderModel(QObject *pParent = 0);
+
+	QVariant headerData(int section, Qt::Orientation orient, int role) const;
+
+	int rowCount(const QModelIndex&) const
+		{ return 0; }
+
+	int columnCount(const QModelIndex&) const
+		{ return m_headerText.count(); }
+
+	QVariant data(const QModelIndex&, int) const
+		{ return QVariant(); }
+
+private:
+
+	// Model variables.
+	QStringList m_headerText;
+};
+
 
 // Constructor.
-qtractorTrackListHeaderModel::qtractorTrackListHeaderModel ( QObject *pParent )
+qtractorTrackList::HeaderModel::HeaderModel ( QObject *pParent )
 	: QAbstractListModel(pParent)
 {
 	m_headerText
@@ -159,7 +185,9 @@ qtractorTrackListHeaderModel::qtractorTrackListHeaderModel ( QObject *pParent )
 		<< tr("Instrument");
 };
 
-QVariant qtractorTrackListHeaderModel::headerData (
+
+// Header model data.
+QVariant qtractorTrackList::HeaderModel::headerData (
 	int section, Qt::Orientation orient, int role ) const
 {
 	if (orient == Qt::Horizontal) {
@@ -173,7 +201,14 @@ QVariant qtractorTrackListHeaderModel::headerData (
 			else
 				return int(Qt::AlignLeft | Qt::AlignVCenter);
 		case Qt::SizeHintRole:
-			return QSize(100, 24);
+			if (section == qtractorTrackList::Number ||
+				section == qtractorTrackList::Channel)
+				return QSize(24, 24);
+			else
+			if (section == qtractorTrackList::Name)
+				return QSize(120, 24);
+			else
+				return QSize(100, 24);
 		}
 	}	
 
@@ -264,14 +299,16 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 
 	// Allocate local header.
 	m_pHeader = new QHeaderView(Qt::Horizontal, qtractorScrollView::viewport());
-	m_pHeader->setModel(new qtractorTrackListHeaderModel(this));
+	m_pHeader->setModel(new HeaderModel(this));
 	m_pHeader->setHighlightSections(false);
 	m_pHeader->setStretchLastSection(true);
 	m_pHeader->setSortIndicatorShown(false);
+	m_pHeader->setMinimumSectionSize(24);
+
 	// Default section sizes...
-	m_pHeader->resizeSection(Number, 26);
-	m_pHeader->resizeSection(Name, 120);
-	m_pHeader->resizeSection(Channel, 24);
+	const int iColCount = m_pHeader->count() - 1;
+	for (int iCol = 0; iCol < iColCount; ++iCol)
+		m_pHeader->resizeSection(iCol, m_pHeader->sectionSizeHint(iCol));
 
 //	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -946,10 +983,8 @@ void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
 // Reset header extents.
 void qtractorTrackList::resetHeaderSize ( int iCol )
 {
-	static const int s_aiDefaultHeaderSizes[] = { 26, 120, 100, 24, 100, 100 };
-
 	const bool bBlockSignals = m_pHeader->blockSignals(true);
-	m_pHeader->resizeSection(iCol, s_aiDefaultHeaderSizes[iCol]);
+	m_pHeader->resizeSection(iCol, m_pHeader->sectionSizeHint(iCol));
 	if (iCol == Number) {
 		// Resize all icons anyway...
 		QListIterator<Item *> iter(m_items);
@@ -1448,6 +1483,9 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			if (pTrack) {
 				const int iZoomHeight = y - m_iDragY;
 				pTrack->setZoomHeight(iZoomHeight);
+				Item *pItem = m_tracks.value(pTrack, NULL);
+				if (pItem)
+					pItem->updateIcon(this);
 				m_pTracks->trackView()->updateContents();
 				updateContentsHeight();
 			}

@@ -24,6 +24,7 @@
 
 #include <QListWidget>
 
+
 // Forward declarations.
 class qtractorPlugin;
 class qtractorPluginList;
@@ -128,18 +129,23 @@ public slots:
 	void removePlugin();
 	void moveUpPlugin();
 	void moveDownPlugin();
+
+protected slots:
+
+	// Generic interaction slots.
+	void activatePlugin();
+	void activateAllPlugins();
+	void deactivateAllPlugins();
+	void removeAllPlugins();
+
 	void loadPresetPlugin();
 	void directAccessPlugin();
 	void propertiesPlugin();
 	void editPlugin();
 
-protected slots:
-
-	// User interaction slots.
-	void activatePlugin();
-	void activateAllPlugins();
-	void deactivateAllPlugins();
-	void removeAllPlugins();
+	// Import/export plugin-list slots.
+	void importPlugins();
+	void exportPlugins();
 
 	// Audio inserts specific slots.
 	void addAudioInsertPlugin();

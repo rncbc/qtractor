@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>860</width>
+    <width>900</width>
     <height>600</height>
    </rect>
   </property>
@@ -110,6 +110,11 @@
       <string>Val&amp;ue Type</string>
      </property>
     </widget>
+    <widget class="QMenu" name="viewGhostTrackMenu">
+     <property name="title">
+      <string>&amp;Ghost Track</string>
+     </property>
+    </widget>
     <widget class="QMenu" name="viewZoomMenu">
      <property name="title">
       <string>&amp;Zoom</string>
@@ -146,11 +151,12 @@
     <addaction name="viewNoteDurationAction"/>
     <addaction name="viewNoteColorAction"/>
     <addaction name="viewNoteTypeMenu"/>
+    <addaction name="viewDrumModeAction"/>
     <addaction name="separator"/>
     <addaction name="viewValueColorAction"/>
     <addaction name="viewValueTypeMenu"/>
     <addaction name="separator"/>
-    <addaction name="viewDrumModeAction"/>
+    <addaction name="viewGhostTrackMenu"/>
     <addaction name="separator"/>
     <addaction name="viewZoomMenu"/>
     <addaction name="viewSnapMenu"/>
@@ -1098,6 +1104,26 @@
     <string>Show/hide the thumb view toolbar</string>
    </property>
   </action>
+  <action name="viewEventsAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/viewEvents.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Events</string>
+   </property>
+   <property name="iconText">
+    <string>View events</string>
+   </property>
+   <property name="toolTip">
+    <string>View events</string>
+   </property>
+   <property name="statusTip">
+    <string>Show/hide the events list</string>
+   </property>
+  </action>
   <action name="viewNoteDurationAction">
    <property name="checkable">
     <bool>true</bool>
@@ -1138,26 +1164,6 @@
     <string/>
    </property>
   </action>
-  <action name="viewValueColorAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Value Color</string>
-   </property>
-   <property name="iconText">
-    <string>Value Color</string>
-   </property>
-   <property name="toolTip">
-    <string>Value color</string>
-   </property>
-   <property name="statusTip">
-    <string>Whether note events are colored according to value (velocity)</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-  </action>
   <action name="viewDrumModeAction">
    <property name="checkable">
     <bool>true</bool>
@@ -1181,67 +1187,21 @@
     <string/>
    </property>
   </action>
-  <action name="viewEventsAction">
+  <action name="viewValueColorAction">
    <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon">
-    <iconset resource="qtractor.qrc">:/images/viewEvents.png</iconset>
-   </property>
    <property name="text">
-    <string>&amp;Events</string>
+    <string>&amp;Value Color</string>
    </property>
    <property name="iconText">
-    <string>View events</string>
+    <string>Value Color</string>
    </property>
    <property name="toolTip">
-    <string>View events</string>
+    <string>Value color</string>
    </property>
    <property name="statusTip">
-    <string>Show/hide the events list</string>
-   </property>
-  </action>
-  <action name="viewPreviewAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="qtractor.qrc">:/images/viewPreview.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Preview Notes</string>
-   </property>
-   <property name="iconText">
-    <string>Preview Notes</string>
-   </property>
-   <property name="toolTip">
-    <string>Preview notes</string>
-   </property>
-   <property name="statusTip">
-    <string>Preview notes while editing (scrub)</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-  </action>
-  <action name="viewFollowAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="qtractor.qrc">:/images/transportFollow.png</iconset>
-   </property>
-   <property name="text">
-    <string>F&amp;ollow Playhead</string>
-   </property>
-   <property name="iconText">
-    <string>Follow Playhead</string>
-   </property>
-   <property name="toolTip">
-    <string>Follow playhead</string>
-   </property>
-   <property name="statusTip">
-    <string>Follow playhead</string>
+    <string>Whether note events are colored according to value (velocity)</string>
    </property>
    <property name="shortcut">
     <string/>
@@ -1421,6 +1381,52 @@
    </property>
    <property name="shortcut">
     <string>F5</string>
+   </property>
+  </action>
+  <action name="viewPreviewAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/viewPreview.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Preview Notes</string>
+   </property>
+   <property name="iconText">
+    <string>Preview Notes</string>
+   </property>
+   <property name="toolTip">
+    <string>Preview notes</string>
+   </property>
+   <property name="statusTip">
+    <string>Preview notes while editing (scrub)</string>
+   </property>
+   <property name="shortcut">
+    <string/>
+   </property>
+  </action>
+  <action name="viewFollowAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportFollow.png</iconset>
+   </property>
+   <property name="text">
+    <string>F&amp;ollow Playhead</string>
+   </property>
+   <property name="iconText">
+    <string>Follow Playhead</string>
+   </property>
+   <property name="toolTip">
+    <string>Follow playhead</string>
+   </property>
+   <property name="statusTip">
+    <string>Follow playhead</string>
+   </property>
+   <property name="shortcut">
+    <string/>
    </property>
   </action>
   <action name="transportBackwardAction">
