@@ -4,26 +4,25 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.8  2019-05-31  Spring'19 Beta.
 
 - Plugin-lists and respective plugins state may now be
-  exported and/or imported as XML files. (EXPERIMENTAL)
+  exported and/or imported as XML files.
 
 - When in Drum Mode, Key and Scale are meaningless and
   thus functionally disabled from the MIDI clip editor
-  (aka. piano-roll). (EXPERIMENTAL)
+  (aka. piano-roll).
 
 - MIDI clip editor's View > Ghost Track menu option is
   now finally a reality: show any existing MIDI track
   and its respective clips in the background as dimmed,
-  semi-transparent aka. ghost events. (EXPERIMENTAL)
+  semi-transparent aka. ghost events.
 
 - Minor update to Debian packaging control file.
 
 - Make sure partially selected clips are reset to whole
   when Shift/Ctrl keyboard modifiers are in effect, to
-  prevent extraneous clip splits or cutaways afterwards
-  (hopefully fixes github issue #210).
+  prevent extraneous clip splits or cutaways afterwards.
 
 
 0.9.7  2019-04-16  Spring-Break'19 Release.

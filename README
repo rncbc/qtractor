@@ -11,23 +11,23 @@ specially dedicated to the personal home-studio.
 Website:
 
   http://qtractor.org
-  http://qtractor.sourceforge.net
   https://qtractor.sourceforge.io
+  http://qtractor.sourceforge.net
 
 Project page:
 
-  http://sourceforge.net/projects/qtractor 
+  https://sourceforge.net/projects/qtractor 
 
 Git repos:
 
-  http://git.code.sf.net/p/qtractor/code
+  https://git.code.sf.net/p/qtractor/code
   https://github.com/rncbc/qtractor.git
   https://gitlab.com/rncbc/qtractor.git
   https://bitbucket.org/rncbc/qtractor.git
 
 Wiki:
 
-  http://sourceforge.net/p/qtractor/wiki/
+  https://sourceforge.net/p/qtractor/wiki/
 
 - static rendering:
   http://qtractor.org/doc
@@ -35,12 +35,12 @@ Wiki:
   https://qtractor.sourceforge.io/doc
 
 - user manual & how-to's:
-  http://download.sf.net/qtractor/qtractor-manual-and-howtos.epub
-  http://download.sf.net/qtractor/qtractor-manual-and-howtos.pdf
+  https://download.sf.net/qtractor/qtractor-manual-and-howtos.epub
+  https://download.sf.net/qtractor/qtractor-manual-and-howtos.pdf
 
 Weblog:
 
-  http://www.rncbc.org
+  https://www.rncbc.org
 
 Qtractor is free, open-source software, distributed under the terms of
 the GNU General Public License (GPL) [18] version 2 or later.
@@ -107,13 +107,13 @@ The software requirements for build and runtime are listed as follows:
 
   [1] Qt framework, C++ class library and tools for
        cross-platform application and UI development
-       http://qt.io/
+       https://qt.io/
 
   [2] JACK Audio Connection Kit
        http://jackaudio.org/
 
   [3] ALSA, Advanced Linux Sound Architecture
-       http://www.alsa-project.org/
+       https://www.alsa-project.org/
 
   [4] libsndfile, C library for reading and writing
        files containing sampled sound
@@ -125,10 +125,10 @@ The software requirements for build and runtime are listed as follows:
   Optional (opted-in at build time):
 
   [6] libvorbis (enc, file), Ogg Vorbis audio compression
-       http://xiph.org/vorbis/
+       https://xiph.org/vorbis/
 
   [7] libmad, High-quality MPEG audio decoder
-       http://www.underbit.com/products/mad/
+       https://www.underbit.com/products/mad/
 
   [8] libsamplerate, The secret rabbit code, C library
        for audio sample rate conversion
@@ -136,7 +136,7 @@ The software requirements for build and runtime are listed as follows:
 
   [9] librubberband, Rubber Band Audio Time Stretcher,
        an audio time-stretching and pitch-shifting library
-       http://breakfastquay.com/rubberband/
+       https://breakfastquay.com/rubberband/
 
   [10] liblo, Lightweight OSC implementation
        (needed for DSSI GUI [11] and/or NSM support [16])
@@ -146,19 +146,19 @@ The software requirements for build and runtime are listed as follows:
        http://dssi.sourceforge.net/
 
   [12] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
-       http://www.steinberg.net/
+       https://www.steinberg.net/
 
   [13] LV2, Audio Plugin Standard, the extensible successor of LADSPA
        http://lv2plug.in/
 
   [14] liblilv, Lightweight LV2 host implementation stack
-       http://drobilla.net/software/lilv/
-       http://drobilla.net/software/sratom/
-       http://drobilla.net/software/sord/
-       http://drobilla.net/software/serd/
+       https://drobilla.net/software/lilv/
+       https://drobilla.net/software/sratom/
+       https://drobilla.net/software/sord/
+       https://drobilla.net/software/serd/
 
   [15] libsuil, Lightweight C library for loading and wrapping LV2 plugin UIs
-       http://drobilla.net/software/suil/
+       https://drobilla.net/software/suil/
 
   [16] Non Session Management (NSM)
        http://non.tuxfamily.org/nsm/
@@ -248,13 +248,13 @@ References
 
 [1] Qt framework, C++ class library and tools for
      cross-platform application and UI development
-     http://qt.io/
+     https://qt.io/
 
 [2] JACK Audio Connection Kit
      http://jackaudio.org/
 
 [3] ALSA, Advanced Linux Sound Architecture
-     http://www.alsa-project.org/
+     https://www.alsa-project.org/
 
 [4] libsndfile, C library for reading and writing
      files containing sampled sound
@@ -264,10 +264,10 @@ References
      http://www.ladspa.org/
 
 [6] libvorbis (enc, file), Ogg Vorbis audio compression
-     http://xiph.org/vorbis/
+     https://xiph.org/vorbis/
 
 [7] libmad, High-quality MPEG audio decoder
-     http://www.underbit.com/products/mad/
+     https://www.underbit.com/products/mad/
 
 [8] libsamplerate, The secret rabbit code, C library
      for audio sample rate conversion
@@ -275,7 +275,7 @@ References
 
 [9] librubberband, Rubber Band Audio Time Stretcher,
      an audio time-stretching and pitch-shifting library
-     http://breakfastquay.com/rubberband/
+     https://breakfastquay.com/rubberband/
 
 [10] liblo, Lightweight OSC implementation
      (needed for DSSI GUI support)
@@ -285,21 +285,21 @@ References
      http://dssi.sourceforge.net/
 
 [12] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
-     http://www.steinberg.net/
+     https://www.steinberg.net/
 
 [13] LV2, Audio Plugin Standard, the extensible successor of LADSPA
      http://lv2plug.in/
 
 [14] liblilv, Lightweight LV2 host implementation stack
      (needed for LV2 support)
-     http://drobilla.net/software/lilv/
-     http://drobilla.net/software/sratom/
-     http://drobilla.net/software/sord/
-     http://drobilla.net/software/serd/
+     https://drobilla.net/software/lilv/
+     https://drobilla.net/software/sratom/
+     https://drobilla.net/software/sord/
+     https://drobilla.net/software/serd/
 
 [15] libsuil, Lightweight C library for loading and wrapping LV2 plugin UIs
      (needed for LV2 UI support)
-     http://drobilla.net/software/suil/
+     https://drobilla.net/software/suil/
 
 [16] Non Session Management (NSM)
      http://non.tuxfamily.org/nsm/
@@ -308,7 +308,7 @@ References
      http://qjackctl.sourceforge.net
 
 [18] GNU General Public License
-     http://www.gnu.org/copyleft/gpl.html
+     https://www.gnu.org/copyleft/gpl.html
 
 [19] Cakewalk, powerful and easy-to-use tools
      for Windows-based music and sound production
