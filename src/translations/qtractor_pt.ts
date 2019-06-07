@@ -310,52 +310,52 @@ MIDI:	</translation>
         <translation>gravador de sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2067"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2073"/>
         <source>Project: </source>
         <translation>Projeto: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3146"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3152"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3158"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3164"/>
         <source>External</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3161"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3167"/>
         <source>X11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3164"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3170"/>
         <source>Gtk2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3168"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3174"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3172"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3178"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3177"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3183"/>
         <source>Other</source>
         <translation>Outro</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3185"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3191"/>
         <source>Don&apos;t ask this again</source>
         <translation>Não pergunte novamente</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3520"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3526"/>
         <source>plugin parameters</source>
         <translation>parametros do plugin</translation>
     </message>
@@ -700,7 +700,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2075"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2081"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>

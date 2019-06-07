@@ -1480,36 +1480,42 @@ bool qtractorLv2PluginType::open (void)
 			}
 		#ifdef CONFIG_LV2_EVENT
 			else
-			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_event_class) ||
-				lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class)) {
-				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class))
+			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_event_class)) {
+				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class)) {
 					++m_iEventIns;
+					if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class))
+						++m_iMidiIns;
+				}
 				else
-				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class))
+				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class)) {
 					++m_iEventOuts;
+					if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class))
+						++m_iMidiOuts;
+				}
 			}
 		#endif
 		#ifdef CONFIG_LV2_ATOM
 			else
 			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_atom_class)) {
-				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class))
+				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class)) {
 					++m_iAtomIns;
+					if (lilv_port_supports_event(
+							m_lv2_plugin, port, g_lv2_midi_class) ||
+						lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class))
+						++m_iMidiIns;
+				}
 				else
-				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class))
+				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class)) {
 					++m_iAtomOuts;
+					if (lilv_port_supports_event(
+							m_lv2_plugin, port, g_lv2_midi_class) ||
+						lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class))
+						++m_iMidiOuts;
+				}
 			}
 		#endif
 		}
 	}
-
-#ifdef CONFIG_LV2_EVENT
-	m_iMidiIns  += m_iEventIns;
-	m_iMidiOuts += m_iEventOuts;
-#endif
-#ifdef CONFIG_LV2_ATOM
-	m_iMidiIns  += m_iAtomIns;
-	m_iMidiOuts += m_iAtomOuts;
-#endif
 
 	// Cache flags.
 	m_bRealtime = lilv_plugin_has_feature(m_lv2_plugin, g_lv2_realtime_hint);
