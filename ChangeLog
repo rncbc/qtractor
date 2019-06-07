@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fix MIDI through for LV2 plug-ins that have no MIDI
+  output event/atom ports. (EXPERIMENTAL)
+
+
 0.9.8  2019-05-31  Spring'19 Beta.
 
 - Plugin-lists and respective plugins state may now be

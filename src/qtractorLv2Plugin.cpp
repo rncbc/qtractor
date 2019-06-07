@@ -2878,10 +2878,12 @@ void qtractorLv2Plugin::process (
 
 #if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
 	qtractorMidiManager *pMidiManager = NULL;
+	const unsigned short iMidiIns  = midiIns();
+	const unsigned short iMidiOuts = midiOuts();
+	if (iMidiIns + iMidiOuts > 0)
+		pMidiManager = list()->midiManager();
 	qtractorLv2PluginType *pLv2Type
 		= static_cast<qtractorLv2PluginType *> (type());
-	if (pLv2Type->midiIns() > 0)
-		pMidiManager = list()->midiManager();
 #ifdef CONFIG_LV2_EVENT
 	const unsigned short iEventIns  = pLv2Type->eventIns();
 	const unsigned short iEventOuts = pLv2Type->eventOuts();
@@ -3064,11 +3066,11 @@ void qtractorLv2Plugin::process (
 #endif	// CONFIG_LV2_ATOM
 
 #ifdef CONFIG_LV2_EVENT
-	if (pMidiManager && iEventOuts > 0)
+	if (pMidiManager && iMidiOuts > 0)
 		pMidiManager->lv2_events_swap();
 #endif
 #ifdef CONFIG_LV2_ATOM
-	if (pMidiManager && iAtomOuts > 0)
+	if (pMidiManager && iMidiOuts > 0)
 		pMidiManager->lv2_atom_buffer_swap();
 #endif
 }
