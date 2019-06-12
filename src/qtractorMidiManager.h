@@ -249,7 +249,7 @@ public:
 	LV2_Event_Buffer *lv2_events_out() const
 		{ return m_ppLv2EventBuffers[(m_iEventBuffer + 1) & 1]; }
 	// Swap LV2 event buffers...
-	void lv2_events_swap();
+	void lv2_events_swap(bool bMidiOuts);
 #endif
 
 #ifdef CONFIG_LV2_ATOM
@@ -259,7 +259,7 @@ public:
 	LV2_Atom_Buffer *lv2_atom_buffer_out() const
 		{ return m_ppLv2AtomBuffers[(m_iEventBuffer + 1) & 1]; }
 	// Swap LV2 atom buffers...
-	void lv2_atom_buffer_swap();
+	void lv2_atom_buffer_swap(bool bMidiOuts);
 	// Resize LV2 atom buffers if necessary.
 	void lv2_atom_buffer_resize(unsigned int iMinBufferSize);
 #endif
@@ -339,8 +339,11 @@ protected:
 	// Process/decode into other/plugin event buffers...
 	void processEventBuffers();
 
-	// Reset/swap event buffers (in for out and vice-versa)
-	void resetEventBuffers();
+	// Reset event buffers (input/output only)
+	void resetInputBuffers();
+	void resetOutputBuffers();
+
+	// Swap event buffers (in for out and vice-versa)
 	void swapEventBuffers();
 
 private:
