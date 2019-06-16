@@ -249,7 +249,7 @@ public:
 	LV2_Event_Buffer *lv2_events_out() const
 		{ return m_ppLv2EventBuffers[(m_iEventBuffer + 1) & 1]; }
 	// Swap LV2 event buffers...
-	void lv2_events_swap(bool bMidiOuts);
+	void lv2_events_swap();
 #endif
 
 #ifdef CONFIG_LV2_ATOM
@@ -259,7 +259,7 @@ public:
 	LV2_Atom_Buffer *lv2_atom_buffer_out() const
 		{ return m_ppLv2AtomBuffers[(m_iEventBuffer + 1) & 1]; }
 	// Swap LV2 atom buffers...
-	void lv2_atom_buffer_swap(bool bMidiOuts);
+	void lv2_atom_buffer_swap();
 	// Resize LV2 atom buffers if necessary.
 	void lv2_atom_buffer_resize(unsigned int iMinBufferSize);
 #endif
@@ -330,6 +330,10 @@ public:
 	void processInputBuffer(
 		qtractorMidiInputBuffer *pMidiInputBuffer, unsigned long t0 = 0);
 
+	// Reset event buffers (input/output only)
+	void resetInputBuffers();
+	void resetOutputBuffers();
+
 protected:
 
 	// Audio output (de)activation methods.
@@ -338,10 +342,6 @@ protected:
 
 	// Process/decode into other/plugin event buffers...
 	void processEventBuffers();
-
-	// Reset event buffers (input/output only)
-	void resetInputBuffers();
-	void resetOutputBuffers();
 
 	// Swap event buffers (in for out and vice-versa)
 	void swapEventBuffers();

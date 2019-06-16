@@ -3072,12 +3072,20 @@ void qtractorLv2Plugin::process (
 #endif	// CONFIG_LV2_ATOM
 
 #ifdef CONFIG_LV2_EVENT
-	if (pMidiManager && iEventOuts > 0)
-		pMidiManager->lv2_events_swap(iMidiOuts > 0);
+	if (pMidiManager && iEventOuts > 0) {
+		if (iMidiOuts > 0)
+			pMidiManager->lv2_events_swap();
+		else
+			pMidiManager->resetOutputBuffers();
+	}
 #endif
 #ifdef CONFIG_LV2_ATOM
-	if (pMidiManager && iAtomOuts > 0)
-		pMidiManager->lv2_atom_buffer_swap(iMidiOuts > 0);
+	if (pMidiManager && iAtomOuts > 0) {
+		if (iMidiOuts > 0)
+			pMidiManager->lv2_atom_buffer_swap();
+		else
+			pMidiManager->resetOutputBuffers();
+	}
 #endif
 }
 

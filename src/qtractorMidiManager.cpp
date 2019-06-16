@@ -1061,13 +1061,8 @@ void qtractorMidiManager::vst_events_swap (void)
 #ifdef CONFIG_LV2_EVENT
 
 // Swap LV2 event buffers...
-void qtractorMidiManager::lv2_events_swap ( bool bMidiOuts )
+void qtractorMidiManager::lv2_events_swap (void)
 {
-	if (!bMidiOuts) {
-		resetOutputBuffers();
-		return;
-	}
-
 	const unsigned short iOutputBuffer = (m_iEventBuffer + 1) & 1;
 	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iOutputBuffer];
 #ifdef CONFIG_VST
@@ -1140,13 +1135,8 @@ void qtractorMidiManager::lv2_events_swap ( bool bMidiOuts )
 #ifdef CONFIG_LV2_ATOM
 
 // Swap LV2 atom buffers...
-void qtractorMidiManager::lv2_atom_buffer_swap ( bool bMidiOuts )
+void qtractorMidiManager::lv2_atom_buffer_swap (void)
 {
-	if (!bMidiOuts) {
-		resetOutputBuffers();
-		return;
-	}
-
 	const unsigned short iOutputBuffer = (m_iEventBuffer + 1) & 1;
 	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iOutputBuffer];
 #ifdef CONFIG_VST
