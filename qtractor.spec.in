@@ -31,7 +31,7 @@ BuildRequires:	libqt5-qtbase-devel >= 5.1, libqt5-linguist
 BuildRequires:	libqt5-qtx11extras-devel >= 5.1
 BuildRequires:	alsa-devel
 %endif
-BuildRequires:	libjack2-devel, libjack2
+BuildRequires:	libjack-devel
 BuildRequires:	libsndfile-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libmad-devel
