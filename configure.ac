@@ -457,6 +457,12 @@ done
 # A common error message:
 ac_errmsg="not found in current PATH. Maybe QT development environment isn't available."
 
+# Check for qtchooser availability.
+AC_PATH_TOOL(ac_qtchooser, qtchooser, [no], $ac_path)
+if test -x $ac_qtchooser; then
+   export QT_SELECT=5
+fi
+
 # Check for proper qmake path/version alternatives.
 AC_PATH_TOOL(ac_qmake, qmake, [no], $ac_path)
 if test "x$ac_qmake" = "xno"; then
