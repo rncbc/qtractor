@@ -6508,6 +6508,9 @@ void qtractorMainForm::updateSessionPost (void)
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 		m_pSession->updateSampleRate(iSampleRate);
 		QApplication::restoreOverrideCursor();
+		// Prompt for a brand new filename (ie. Save As...)
+		// whenever session Save is invoked next time.
+		m_sFilename.clear();
 		updateDirtyCount(true);
 	}
 
@@ -6529,8 +6532,12 @@ void qtractorMainForm::updateSessionPost (void)
 			.arg(qtractorMessageList::items().join("\n")),
 			QMessageBox::Save | QMessageBox::Ignore) == QMessageBox::Save) {
 			saveSession(true);
+		} else
+			// Prompt for a brand new filename (ie. Save As...)
+			// whenever session Save is invoked next time.
+			m_sFilename.clear();
+			updateDirtyCount(true);
 		}
-		else updateDirtyCount(true);
 		qtractorMessageList::clear();
 	}
 

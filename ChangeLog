@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Imply asking for a brand new filename (ie. Save As...)
+  whenever the session file original sample-rate differs
+  from the current audio device engine (ie. JACK).
+
 - Configure updated to check for qtchooser availability.
 
 - Fix MIDI through for LV2 plug-ins that have no MIDI
