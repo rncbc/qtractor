@@ -6532,7 +6532,7 @@ void qtractorMainForm::updateSessionPost (void)
 			.arg(qtractorMessageList::items().join("\n")),
 			QMessageBox::Save | QMessageBox::Ignore) == QMessageBox::Save) {
 			saveSession(true);
-		} else
+		} else {
 			// Prompt for a brand new filename (ie. Save As...)
 			// whenever session Save is invoked next time.
 			m_sFilename.clear();
