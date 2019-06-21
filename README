@@ -163,6 +163,9 @@ The software requirements for build and runtime are listed as follows:
   [16] Non Session Management (NSM)
        http://non.tuxfamily.org/nsm/
 
+  [17] libaubio, a library for real time audio labelling
+       https://aubio.org
+
 
 Installation
 ------------

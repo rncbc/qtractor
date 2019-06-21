@@ -104,6 +104,12 @@ AC_ARG_ENABLE(librubberband,
   [ac_librubberband="$enableval"],
   [ac_librubberband="yes"])
 
+# Enable libaudio support.
+AC_ARG_ENABLE(libaubio,
+  AS_HELP_STRING([--enable-libaubio], [enable libaubio interface support (default=yes)]),
+  [ac_libaubio="$enableval"],
+  [ac_libaubio="yes"])
+
 # Enable liblo availability.
 AC_ARG_ENABLE(liblo,
   AS_HELP_STRING([--enable-liblo], [enable liblo interface (default=yes)]),
@@ -351,6 +357,11 @@ AC_ARG_WITH(libsamplerate,
 # Set for alternate librubberband installation dir.
 AC_ARG_WITH(librubberband,
   AS_HELP_STRING([--with-librubberband=PATH], [use alternate librubberband path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
+# Set for alternate libaubio installation dir.
+AC_ARG_WITH(libaubio,
+  AS_HELP_STRING([--with-libaubio=PATH], [use alternate libaubio path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
 # Set for alternate liblo installation dir.
@@ -734,6 +745,19 @@ if test "x$ac_librubberband" = "xyes"; then
    else
       AC_MSG_WARN([*** RUBBERBAND library not found.])
       AC_MSG_WARN([*** Pitch-shifting support will be disabled.])
+   fi
+fi
+
+# Check for optional AUBIO library.
+if test "x$ac_libaubio" = "xyes"; then
+   PKG_CHECK_MODULES([AUBIO], [aubio], [ac_libaubio="yes"], [ac_libaubio="no"])
+   if test "x$ac_libaubio" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBAUBIO, 1, [Define if AUBIO library is available.])
+      ac_cflags="$ac_cflags $AUBIO_CFLAGS"
+      ac_libs="$ac_libs $AUBIO_LIBS"
+   else
+      AC_MSG_WARN([*** AUBIO library not found.])
+      AC_MSG_WARN([*** Beat-detection support will be disabled.])
    fi
 fi
 
@@ -1412,6 +1436,7 @@ echo "  Ogg Vorbis audio file support (libvorbis)  . . . .: $ac_libvorbis"
 echo "  MPEG-1 Audio Layer 3 file support (libmad) . . . .: $ac_libmad"
 echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
 echo "  Pitch-shifting support (librubberband) . . . . . .: $ac_librubberband"
+echo "  Beat-detection support (libaubio)  . . . . . . . .: $ac_libaubio"
 echo "  OSC service support (liblo)  . . . . . . . . . . .: $ac_liblo"
 echo "  Archive/Zip file support (zlib)  . . . . . . . . .: $ac_libz"
 echo "  IEEE 32bit float optimizations . . . . . . . . . .: $ac_float32"

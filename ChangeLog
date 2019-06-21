@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing tempo/beat-detection support (libaudio).
+
 - Imply asking for a brand new filename (ie. Save As...)
   whenever the session file original sample-rate differs
   from the current audio device engine (ie. JACK).
