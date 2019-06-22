@@ -44,9 +44,9 @@
 
 
 // Audio clip beat-detection callback.
-struct audioClipBeatDetectData
+struct audioClipTempoDetectData
 {	// Ctor.
-	audioClipBeatDetectData(unsigned short iChannels,
+	audioClipTempoDetectData(unsigned short iChannels,
 		unsigned int iBlockSize, unsigned iSampleRate)
 		: count(0), channels(iChannels), nstep(iBlockSize >> 2)
 	{
@@ -55,7 +55,7 @@ struct audioClipBeatDetectData
 		obuf = new_fvec(1);
 	}
 	// Dtor.
-	~audioClipBeatDetectData()
+	~audioClipTempoDetectData()
 	{
 		beats.clear();
 		del_fvec(obuf);
@@ -73,11 +73,11 @@ struct audioClipBeatDetectData
 };
 
 
-static void audioClipBeatDetect (
+static void audioClipTempoDetect (
 	float **ppFrames, unsigned int iFrames, void *pvArg )
 {
-	audioClipBeatDetectData *pData
-		= static_cast<audioClipBeatDetectData *> (pvArg);
+	audioClipTempoDetectData *pData
+		= static_cast<audioClipTempoDetectData *> (pvArg);
 
 	unsigned int i = 0;
 
@@ -161,7 +161,10 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
 		SLOT(tempoChanged()));
-	QObject::connect(m_ui.TempoPushButton,
+	QObject::connect(m_ui.TempoDetectPushButton,
+		SIGNAL(clicked()),
+		SLOT(tempoDetect()));
+	QObject::connect(m_ui.TempoTapPushButton,
 		SIGNAL(clicked()),
 		SLOT(tempoTap()));
 
@@ -225,6 +228,13 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		m_pAudioClip = static_cast<qtractorAudioClip *> (m_pClip);
 	else
 		m_pAudioClip = NULL;
+
+#ifdef CONFIG_LIBAUBIO
+	const bool bTempoDetect = (m_pAudioClip != NULL);
+#else
+	const bool bTempoDetect = false;
+#endif
+	m_ui.TempoDetectPushButton->setEnabled(bTempoDetect);
 }
 
 qtractorClip *qtractorTempoAdjustForm::clip (void) const
@@ -442,13 +452,13 @@ void qtractorTempoAdjustForm::adjust (void)
 
 
 // Audio clip beat-detector method .
-void qtractorTempoAdjustForm::detect (void)
+void qtractorTempoAdjustForm::tempoDetect (void)
 {
 	if (m_pAudioClip == NULL)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::detect()");
+	qDebug("qtractorTempoAdjustForm::tempoDetect()");
 #endif
 
 #ifdef CONFIG_LIBAUBIO
@@ -465,6 +475,9 @@ void qtractorTempoAdjustForm::detect (void)
 	= static_cast<qtractorAudioBus *> (pTrack->outputBus());
 	if (pAudioBus == NULL)
 		return;
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	m_ui.TempoDetectPushButton->setEnabled(false);
 
 	const unsigned short iChannels = pAudioBus->channels();
 	const unsigned int iSampleRate = pSession->sampleRate();
@@ -484,8 +497,8 @@ void qtractorTempoAdjustForm::detect (void)
 		pProgressBar->reset();
 		pProgressBar->show();
 	}
-	audioClipBeatDetectData data(iChannels, 1024, iSampleRate);
-	m_pAudioClip->clipExport(audioClipBeatDetect, &data, iOffset, iLength);
+	audioClipTempoDetectData data(iChannels, 1024, iSampleRate);
+	m_pAudioClip->clipExport(audioClipTempoDetect, &data, iOffset, iLength);
 	if (pProgressBar)
 		pProgressBar->hide();
 
@@ -494,6 +507,9 @@ void qtractorTempoAdjustForm::detect (void)
 			= aubio_tempo_get_bpm(data.aubio);
 		m_ui.TempoSpinBox->setTempo(fTempo, true);
 	}
+
+	m_ui.TempoDetectPushButton->setEnabled(true);
+	QApplication::restoreOverrideCursor();
 
 #endif	// CONFIG_LIBAUBIO
 }

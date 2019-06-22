@@ -26,7 +26,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
+    <width>320</width>
     <height>260</height>
    </rect>
   </property>
@@ -82,14 +82,27 @@
         </property>
         <property name="sizeHint">
          <size>
-          <width>20</width>
+          <width>8</width>
           <height>20</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="TempoPushButton">
+       <widget class="QPushButton" name="TempoDetectPushButton">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>&amp;Detect</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="TempoTapPushButton">
         <property name="minimumSize">
          <size>
           <width>80</width>
@@ -166,6 +179,19 @@
          </property>
         </item>
        </widget>
+      </item>
+      <item row="0" column="4" rowspan="3">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint">
+         <size>
+          <width>8</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="RangeLengthTextLabel">
@@ -275,7 +301,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>TempoSpinBox</tabstop>
-  <tabstop>TempoPushButton</tabstop>
+  <tabstop>TempoDetectPushButton</tabstop>
+  <tabstop>TempoTapPushButton</tabstop>
   <tabstop>RangeStartSpinBox</tabstop>
   <tabstop>RangeLengthSpinBox</tabstop>
   <tabstop>RangeBeatsSpinBox</tabstop>

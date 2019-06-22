@@ -69,6 +69,7 @@ public:
 protected slots:
 
 	void tempoChanged();
+	void tempoDetect();
 	void tempoTap();
 
 	void rangeStartChanged(unsigned long);
@@ -76,7 +77,6 @@ protected slots:
 	void rangeBeatsChanged(int);
 	void formatChanged(int);
 	void adjust();
-	void detect();
 	void changed();
 
 	void accept();
