@@ -1750,6 +1750,7 @@ bool qtractorTracks::tempoClip ( qtractorClip *pClip )
 	}
 
 	qtractorTempoAdjustForm form(this);
+	form.setClip(pClip);
 	form.setRangeStart(iRangeStart);
 	form.setRangeLength(iRangeLength);
 	if (!form.exec())

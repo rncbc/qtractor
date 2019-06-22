@@ -25,6 +25,8 @@
 
 #include "qtractorSession.h"
 
+#include "qtractorAudioClip.h"
+
 #include "qtractorMainForm.h"
 
 #include <QMessageBox>
@@ -43,13 +45,18 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
-	m_pTempoTap = new QTime();
-
 	// Initialize local time scale.
 	m_pTimeScale = new qtractorTimeScale();
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		m_pTimeScale->copy(*pSession->timeScale());
+
+	m_pClip = NULL;
+	m_pAudioClip = NULL;
+
+	m_pTempoTap = new QTime();
+	m_iTempoTap = 0;
+	m_fTempoTap = 0.0f;
 
 	m_ui.RangeStartSpinBox->setTimeScale(m_pTimeScale);
 	m_ui.RangeLengthSpinBox->setTimeScale(m_pTimeScale);
@@ -57,9 +64,6 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	m_ui.TempoSpinBox->setTempo(m_pTimeScale->tempo(), false);
 	m_ui.TempoSpinBox->setBeatsPerBar(m_pTimeScale->beatsPerBar(), false);
 	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), true);
-
-	m_iTempoTap = 0;
-	m_fTempoTap = 0.0f;
 
 	// Set proper time scales display format...
 	m_ui.FormatComboBox->setCurrentIndex(int(m_pTimeScale->displayFormat()));
@@ -118,6 +122,37 @@ qtractorTempoAdjustForm::~qtractorTempoAdjustForm (void)
 		delete m_pTimeScale;
 	if (m_pTempoTap)
 		delete m_pTempoTap;
+}
+
+
+// Clip accessors.
+void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
+{
+	m_pClip = pClip;
+
+	if (m_pClip) {
+		const unsigned long	iClipStart  = m_pClip->clipStart();
+		const unsigned long	iClipLength = m_pClip->clipLength();
+		m_ui.RangeStartSpinBox->setMinimum(iClipStart);
+		m_ui.RangeStartSpinBox->setMaximum(iClipStart + iClipLength);
+		m_ui.RangeLengthSpinBox->setMaximum(iClipLength);
+	}
+
+	if (m_pClip && m_pClip->track() &&
+		m_pClip->track()->trackType() == qtractorTrack::Audio)
+		m_pAudioClip = static_cast<qtractorAudioClip *> (m_pClip);
+	else
+		m_pAudioClip = NULL;
+}
+
+qtractorClip *qtractorTempoAdjustForm::clip (void) const
+{
+	return m_pClip;
+}
+
+qtractorAudioClip *qtractorTempoAdjustForm::audioClip (void) const
+{
+	return m_pAudioClip;
 }
 
 

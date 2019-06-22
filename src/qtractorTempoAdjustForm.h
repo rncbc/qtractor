@@ -25,6 +25,9 @@
 #include "ui_qtractorTempoAdjustForm.h"
 
 // Forward declarations.
+class qtractorClip;
+class qtractorAudioClip;
+
 class QTime;
 
 
@@ -41,6 +44,12 @@ public:
 	qtractorTempoAdjustForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
 	// Destructor.
 	~qtractorTempoAdjustForm();
+
+	// Clip accessors.
+	void setClip(qtractorClip *pClip);
+	qtractorClip *clip() const;
+
+	qtractorAudioClip *audioClip() const;
 
 	// Range accessors.
 	void setRangeStart(unsigned long iRangeStart);
@@ -86,6 +95,9 @@ private:
 
 	// Instance variables...
 	qtractorTimeScale *m_pTimeScale;
+
+	qtractorClip      *m_pClip;
+	qtractorAudioClip *m_pAudioClip;
 
 	QTime *m_pTempoTap;
 	int    m_iTempoTap;
