@@ -6,7 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- Introducing tempo/beat-detection support (libaudio).
+- Introducing tempo/beat-detection support (via libaubio)
+  on the Clip / Tempo Adjust... dialog. (EXPERIMENTAL)
 
 - Imply asking for a brand new filename (ie. Save As...)
   whenever the session file original sample-rate differs
