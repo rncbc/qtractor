@@ -25,11 +25,13 @@ BuildRequires:	pkgconfig
 BuildRequires:	qt5-qtbase-devel >= 5.1, qt5-linguist
 BuildRequires:	qt5-qtx11extras-devel >= 5.1
 BuildRequires:	alsa-lib-devel
+BuildRequires:  aubio-devel
 %else
 BuildRequires:	pkg-config
 BuildRequires:	libqt5-qtbase-devel >= 5.1, libqt5-linguist
 BuildRequires:	libqt5-qtx11extras-devel >= 5.1
 BuildRequires:	alsa-devel
+BuildRequires:  libaubio-devel
 %endif
 BuildRequires:	libjack-devel
 BuildRequires:	libsndfile-devel
@@ -48,7 +50,6 @@ BuildRequires:	liblilv-devel
 BuildRequires:	libsuil-devel
 BuildRequires:	zlib-devel
 BuildRequires:  gtk2-devel
-BuildRequires:  libaubio-devel
 
 Requires(post):		desktop-file-utils, shared-mime-info
 Requires(postun):	desktop-file-utils, shared-mime-info
