@@ -74,7 +74,6 @@ protected slots:
 
 	void rangeStartChanged(unsigned long);
 	void rangeLengthChanged(unsigned long);
-	void rangeBeatsChanged(int);
 	void formatChanged(int);
 	void adjust();
 	void changed();

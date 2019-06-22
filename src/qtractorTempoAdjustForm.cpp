@@ -182,7 +182,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.RangeBeatsSpinBox,
 		SIGNAL(valueChanged(int)),
-		SLOT(rangeBeatsChanged(int)));
+		SLOT(changed()));
 	QObject::connect(m_ui.FormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
@@ -385,19 +385,6 @@ void qtractorTempoAdjustForm::rangeLengthChanged ( unsigned long iRangeLength )
 	updateRangeLength(iRangeLength);
 
 	updateRangeSelect();
-	changed();
-}
-
-
-void qtractorTempoAdjustForm::rangeBeatsChanged ( int iRangeBeats )
-{
-	if (m_iDirtySetup > 0)
-		return;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::rangeBeatsChanged(%d)", iRangeBeats);
-#endif
-
 	changed();
 }
 

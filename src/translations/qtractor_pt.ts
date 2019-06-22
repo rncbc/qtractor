@@ -12268,7 +12268,7 @@ Deseja aplicar as modificações?</translation>
         <translation>Amostras</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="550"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="537"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12312,7 +12312,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Formato de exibição do tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="549"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="536"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
