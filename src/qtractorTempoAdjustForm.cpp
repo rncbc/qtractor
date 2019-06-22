@@ -34,6 +34,88 @@
 #include <QTime>
 
 
+#ifdef CONFIG_LIBAUBIO
+
+#include "qtractorAudioEngine.h"
+
+#include <QProgressBar>
+
+#include <aubio/aubio.h>
+
+
+// Audio clip beat-detection callback.
+struct audioClipBeatDetectData
+{	// Ctor.
+	audioClipBeatDetectData(unsigned short iChannels,
+		unsigned int iBlockSize, unsigned iSampleRate)
+		: count(0), channels(iChannels), nstep(iBlockSize >> 2)
+	{
+		aubio = new_aubio_tempo("default", iBlockSize, nstep, iSampleRate);
+		ibuf = new_fvec(nstep);
+		obuf = new_fvec(1);
+	}
+	// Dtor.
+	~audioClipBeatDetectData()
+	{
+		beats.clear();
+		del_fvec(obuf);
+		del_fvec(ibuf);
+		del_aubio_tempo(aubio);
+	}
+	// Members.
+	unsigned int count;
+	unsigned short channels;
+	unsigned int nstep;
+	aubio_tempo_t *aubio;
+	fvec_t *ibuf;
+	fvec_t *obuf;
+	QList<unsigned long> beats;
+};
+
+
+static void audioClipBeatDetect (
+	float **ppFrames, unsigned int iFrames, void *pvArg )
+{
+	audioClipBeatDetectData *pData
+		= static_cast<audioClipBeatDetectData *> (pvArg);
+
+	unsigned int i = 0;
+
+	while (i < iFrames) {
+
+		unsigned int j = 0;
+
+		for (; j < pData->nstep && i < iFrames; ++j, ++i) {
+			float fSum = 0.0f;
+			for (unsigned short n = 0; n < pData->channels; ++n)
+				fSum += ppFrames[n][i];
+			fvec_set_sample(pData->ibuf, fSum / float(pData->channels), j);
+		}
+
+		for (; j < pData->nstep; ++j)
+			fvec_set_sample(pData->ibuf, 0.0f, j);
+
+		aubio_tempo_do(pData->aubio, pData->ibuf, pData->obuf);
+
+		const bool is_beat = bool(fvec_get_sample(pData->obuf, 0));
+		if (is_beat)
+			pData->beats.append(aubio_tempo_get_last(pData->aubio));
+	}
+
+	if (++(pData->count) > 100) {
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			QProgressBar *pProgressBar = pMainForm->progressBar();
+			pProgressBar->setValue(pProgressBar->value() + iFrames);
+		}
+		qtractorSession::stabilize();
+		pData->count = 0;
+	}
+}
+
+#endif	// CONFIG_LIBAUBIO
+
+
 //----------------------------------------------------------------------------
 // qtractorTempoAdjustForm -- UI wrapper form.
 
@@ -255,7 +337,7 @@ void qtractorTempoAdjustForm::tempoTap (void)
 		if (++m_iTempoTap > 2) {
 			m_fTempoTap /= float(m_iTempoTap);
 			m_iTempoTap  = 1; // Median-like averaging...
-			m_ui.TempoSpinBox->setTempo(int(m_fTempoTap), false);
+			m_ui.TempoSpinBox->setTempo(int(m_fTempoTap), true);
 		}
 	} else {
 		m_iTempoTap = 0;
@@ -356,6 +438,64 @@ void qtractorTempoAdjustForm::adjust (void)
 //	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, false);
 	updateRangeSelect();
 	changed();
+}
+
+
+// Audio clip beat-detector method .
+void qtractorTempoAdjustForm::detect (void)
+{
+	if (m_pAudioClip == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::detect()");
+#endif
+
+#ifdef CONFIG_LIBAUBIO
+
+	qtractorTrack *pTrack = m_pAudioClip->track();
+	if (pTrack == NULL)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioBus *pAudioBus
+	= static_cast<qtractorAudioBus *> (pTrack->outputBus());
+	if (pAudioBus == NULL)
+		return;
+
+	const unsigned short iChannels = pAudioBus->channels();
+	const unsigned int iSampleRate = pSession->sampleRate();
+
+	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
+	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+
+	const unsigned long iOffset = iRangeStart - m_pAudioClip->clipStart();;
+	const unsigned long iLength = iRangeLength;
+
+	QProgressBar *pProgressBar = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pProgressBar = pMainForm->progressBar();
+	if (pProgressBar) {
+		pProgressBar->setRange(0, iLength / 100);
+		pProgressBar->reset();
+		pProgressBar->show();
+	}
+	audioClipBeatDetectData data(iChannels, 1024, iSampleRate);
+	m_pAudioClip->clipExport(audioClipBeatDetect, &data, iOffset, iLength);
+	if (pProgressBar)
+		pProgressBar->hide();
+
+	if (!data.beats.isEmpty()) {
+		const float fTempo
+			= aubio_tempo_get_bpm(data.aubio);
+		m_ui.TempoSpinBox->setTempo(fTempo, true);
+	}
+
+#endif	// CONFIG_LIBAUBIO
 }
 
 

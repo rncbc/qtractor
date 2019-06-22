@@ -76,6 +76,7 @@ protected slots:
 	void rangeBeatsChanged(int);
 	void formatChanged(int);
 	void adjust();
+	void detect();
 	void changed();
 
 	void accept();
