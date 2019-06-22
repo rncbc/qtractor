@@ -1,7 +1,7 @@
 // qtractorTempoAdjustForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -75,6 +75,10 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
 		SLOT(tempoChanged()));
+	QObject::connect(m_ui.TempoPushButton,
+		SIGNAL(clicked()),
+		SLOT(tempoTap()));
+
 	QObject::connect(m_ui.RangeStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
 		SLOT(rangeStartChanged(unsigned long)));
@@ -89,16 +93,14 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.RangeBeatsSpinBox,
 		SIGNAL(valueChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.AdjustPushButton,
-		SIGNAL(clicked()),
-		SLOT(adjust()));
+		SLOT(rangeBeatsChanged(int)));
 	QObject::connect(m_ui.FormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
-	QObject::connect(m_ui.TempoPushButton,
+	QObject::connect(m_ui.AdjustPushButton,
 		SIGNAL(clicked()),
-		SLOT(tempoTap()));
+		SLOT(adjust()));
+
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -137,10 +139,7 @@ void qtractorTempoAdjustForm::setRangeLength ( unsigned long iRangeLength )
 {
 	++m_iDirtySetup;
 	m_ui.RangeLengthSpinBox->setValue(iRangeLength, true);
-	unsigned int iRangeBeats = m_pTimeScale->beatFromFrame(iRangeLength);
-	unsigned long q = m_pTimeScale->beatsPerBar();
-	iRangeBeats = q * ((iRangeBeats + (q >> 1)) / q);
-	m_ui.RangeBeatsSpinBox->setValue(iRangeBeats);
+	updateRangeLength(iRangeLength);
 	--m_iDirtySetup;
 }
 
@@ -149,9 +148,190 @@ unsigned long qtractorTempoAdjustForm::rangeLength (void) const
 	return m_ui.RangeLengthSpinBox->value();
 }
 
+
+void qtractorTempoAdjustForm::setRangeBeats ( unsigned short iRangeBeats )
+{
+	++m_iDirtySetup;
+	m_ui.RangeBeatsSpinBox->setValue(iRangeBeats);
+	--m_iDirtySetup;
+}
+
 unsigned short qtractorTempoAdjustForm::rangeBeats (void) const
 {
 	return m_ui.RangeBeatsSpinBox->value();
+}
+
+
+// Accepted results accessors.
+float qtractorTempoAdjustForm::tempo (void) const
+{
+	return m_ui.TempoSpinBox->tempo();
+}
+
+unsigned short qtractorTempoAdjustForm::beatsPerBar (void) const
+{
+	return m_ui.TempoSpinBox->beatsPerBar();
+}
+
+unsigned short qtractorTempoAdjustForm::beatDivisor (void) const
+{
+	return m_ui.TempoSpinBox->beatDivisor();
+}
+
+
+// Tempo signature has changed.
+void qtractorTempoAdjustForm::tempoChanged (void)
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::tempoChanged()");
+#endif
+
+	m_iTempoTap = 0;
+	m_fTempoTap = 0.0f;
+
+	const float fTempo = m_ui.TempoSpinBox->tempo();
+	if (fTempo > 0.0f) {
+		const unsigned long iBeatLength
+			= 60.0f * float(m_pTimeScale->sampleRate()) / fTempo;
+		if (iBeatLength > 0) {
+			const unsigned long iRangeLength
+				= m_ui.RangeLengthSpinBox->value();
+			setRangeBeats(iRangeLength / iBeatLength);
+		}
+	}
+
+	changed();
+}
+
+
+// Tempo tap click.
+void qtractorTempoAdjustForm::tempoTap (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::tempoTap()");
+#endif
+
+	const int iTimeTap = m_pTempoTap->restart();
+	if (iTimeTap > 200 && iTimeTap < 2000) { // Magic!
+		m_fTempoTap += (60000.0f / float(iTimeTap));
+		if (++m_iTempoTap > 2) {
+			m_fTempoTap /= float(m_iTempoTap);
+			m_iTempoTap  = 1; // Median-like averaging...
+			m_ui.TempoSpinBox->setTempo(int(m_fTempoTap), false);
+		}
+	} else {
+		m_iTempoTap = 0;
+		m_fTempoTap = 0.0f;
+	}
+}
+
+
+// Adjust delta-value spin-boxes to new anchor frame.
+void qtractorTempoAdjustForm::rangeStartChanged ( unsigned long iRangeStart )
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::rangeStartChanged(%lu)", iRangeStart);
+#endif
+
+	m_ui.RangeLengthSpinBox->setDeltaValue(true, iRangeStart);
+
+	updateRangeSelect();
+	changed();
+}
+
+
+void qtractorTempoAdjustForm::rangeLengthChanged ( unsigned long iRangeLength )
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::rangeLengthChanged(%lu)", iRangeLength);
+#endif
+
+	updateRangeLength(iRangeLength);
+
+	updateRangeSelect();
+	changed();
+}
+
+
+void qtractorTempoAdjustForm::rangeBeatsChanged ( int iRangeBeats )
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::rangeBeatsChanged(%d)", iRangeBeats);
+#endif
+
+	changed();
+}
+
+
+// Display format has changed.
+void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::formatChanged()");
+#endif
+
+	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
+
+	qtractorTimeScale::DisplayFormat displayFormat
+		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
+
+	m_ui.RangeStartSpinBox->setDisplayFormat(displayFormat);
+	m_ui.RangeLengthSpinBox->setDisplayFormat(displayFormat);
+
+	if (m_pTimeScale)
+		m_pTimeScale->setDisplayFormat(displayFormat);
+
+	m_ui.FormatComboBox->blockSignals(bBlockSignals);
+
+	stabilizeForm();
+}
+
+
+// Adjust as instructed.
+void qtractorTempoAdjustForm::adjust (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::adjust()");
+#endif
+
+	const unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
+	if (iRangeBeats < 1)
+		return;
+
+	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+	const unsigned long iBeatLength = iRangeLength / iRangeBeats;
+
+	const float fTempo
+		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
+	m_ui.TempoSpinBox->setTempo(fTempo, false);
+
+//	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, false);
+	updateRangeSelect();
+	changed();
+}
+
+
+// Dirty up settings.
+void qtractorTempoAdjustForm::changed (void)
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+	++m_iDirtyCount;
+	stabilizeForm();
 }
 
 
@@ -194,95 +374,28 @@ void qtractorTempoAdjustForm::reject (void)
 }
 
 
-// Dirty up settings.
-void qtractorTempoAdjustForm::changed (void)
+// Adjust current range beat count from length.
+void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 {
-	if (m_iDirtySetup > 0)
-		return;
-
-	++m_iDirtyCount;
-	stabilizeForm();
-}
-
-
-// Tempo signature has changed.
-void qtractorTempoAdjustForm::tempoChanged (void)
-{
-	if (m_iDirtySetup > 0)
-		return;
-
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::tempoChanged()");
+	qDebug("qtractorTempoAdjustForm::updateRangeLength(%lu)", iRangeLength);
 #endif
 
-	m_iTempoTap = 0;
-	m_fTempoTap = 0.0f;
-	
-	changed();
-}
-
-
-// Adjust delta-value spin-boxes to new anchor frame.
-void qtractorTempoAdjustForm::rangeStartChanged ( unsigned long iRangeStart )
-{
-	if (m_iDirtySetup > 0)
-		return;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::rangeStartChanged(%lu)", iRangeStart);
-#endif
-
-	m_ui.RangeLengthSpinBox->setDeltaValue(true, iRangeStart);
-
-	selectChanged();
-}
-
-
-void qtractorTempoAdjustForm::rangeLengthChanged ( unsigned long iRangeLength )
-{
-	if (m_iDirtySetup > 0)
-		return;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::rangeLengthChanged(%lu)", iRangeLength);
-#endif
-
-	int iRangeBeatsMax // It follows from max. tempo = 300bpm.
+	const int iRangeBeatsMax // It follows from max. tempo = 300bpm.
 		= int(5.0f * float(iRangeLength) / float(m_pTimeScale->sampleRate()));
 	m_ui.RangeBeatsSpinBox->setMaximum(iRangeBeatsMax);
 
-	selectChanged();
-}
-
-
-// Adjust as instructed.
-void qtractorTempoAdjustForm::adjust (void)
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::adjust()");
-#endif
-
-	const unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
-	if (iRangeBeats < 1)
-		return;
-
-	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
-	const unsigned long iBeatLength = iRangeLength / iRangeBeats;
-	
-	const float fTempo
-		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
-	m_ui.TempoSpinBox->setTempo(fTempo, false);
-
-//	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, false);
-	selectChanged();
+	const unsigned long q = m_pTimeScale->beatsPerBar();
+	const unsigned int iRangeBeats = m_pTimeScale->beatFromFrame(iRangeLength);
+	setRangeBeats(q * ((iRangeBeats + (q >> 1)) / q));
 }
 
 
 // Adjust current selection edit/tail.
-void qtractorTempoAdjustForm::selectChanged (void)
+void qtractorTempoAdjustForm::updateRangeSelect (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::selectChanged()");
+	qDebug("qtractorTempoAdjustForm::updateRangeSelect()");
 #endif
 
 	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
@@ -297,33 +410,6 @@ void qtractorTempoAdjustForm::selectChanged (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->selectionNotifySlot(NULL);
-
-	changed();
-}
-
-
-// Display format has changed.
-void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::formatChanged()");
-#endif
-
-	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
-	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
-
-	qtractorTimeScale::DisplayFormat displayFormat
-		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
-
-	m_ui.RangeStartSpinBox->setDisplayFormat(displayFormat);
-	m_ui.RangeLengthSpinBox->setDisplayFormat(displayFormat);
-
-	if (m_pTimeScale)
-		m_pTimeScale->setDisplayFormat(displayFormat);
-
-	m_ui.FormatComboBox->blockSignals(bBlockSignals);
-
-	stabilizeForm();
 }
 
 
@@ -338,45 +424,6 @@ void qtractorTempoAdjustForm::stabilizeForm (void)
 	bValid = bValid && (iRangeBeats > 0);
 	m_ui.AdjustPushButton->setEnabled(bValid);
 //	m_ui.OkPushButton->setEnabled(bValid);
-}
-
-
-// Tempo tap click.
-void qtractorTempoAdjustForm::tempoTap (void)
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::tempoTap()");
-#endif
-
-	const int iTimeTap = m_pTempoTap->restart();
-	if (iTimeTap > 200 && iTimeTap < 2000) { // Magic!
-		m_fTempoTap += (60000.0f / float(iTimeTap));
-		if (++m_iTempoTap > 2) {
-			m_fTempoTap /= float(m_iTempoTap);
-			m_iTempoTap  = 1; // Median-like averaging...
-			m_ui.TempoSpinBox->setTempo(int(m_fTempoTap), false);
-		}
-	} else {
-		m_iTempoTap = 0;
-		m_fTempoTap = 0.0f;
-	}
-}
-
-
-// Accepted results accessors.
-float qtractorTempoAdjustForm::tempo (void) const
-{
-	return m_ui.TempoSpinBox->tempo();
-}
-
-unsigned short qtractorTempoAdjustForm::beatsPerBar (void) const
-{
-	return m_ui.TempoSpinBox->beatsPerBar();
-}
-
-unsigned short qtractorTempoAdjustForm::beatDivisor (void) const
-{
-	return m_ui.TempoSpinBox->beatDivisor();
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorTempoAdjustForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -49,6 +49,7 @@ public:
 	void setRangeLength(unsigned long iRangeLength);
 	unsigned long rangeLength() const;
 
+	void setRangeBeats(unsigned short iRangeBeats);
 	unsigned short rangeBeats() const;
 	
 	// Accepted results accessors.
@@ -58,16 +59,24 @@ public:
 	
 protected slots:
 
-	void accept();
-	void reject();
-	void changed();
-	void adjust();
-	void tempoTap();
 	void tempoChanged();
+	void tempoTap();
+
 	void rangeStartChanged(unsigned long);
 	void rangeLengthChanged(unsigned long);
-	void selectChanged();
+	void rangeBeatsChanged(int);
 	void formatChanged(int);
+	void adjust();
+	void changed();
+
+	void accept();
+	void reject();
+
+protected:
+
+	void updateRangeLength(unsigned long iRangeLength);
+	void updateRangeSelect();
+
 	void stabilizeForm();
 
 private:
