@@ -12212,97 +12212,97 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="46"/>
-        <source>Metronome</source>
-        <translation>メトロノーム</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="58"/>
-        <source>Temp&amp;o:</source>
-        <translation>テンポ(&amp;O):</translation>
-    </message>
-    <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="74"/>
         <source>Tempo/Time signature</source>
         <translation>テンポ / 拍子記号</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="100"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="103"/>
         <source>&amp;Detect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="113"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="132"/>
         <source>T&amp;ap</source>
         <translation>タップ(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="123"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="158"/>
         <source>Range</source>
         <translation>レンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="135"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="170"/>
         <source>&amp;Start:</source>
         <translation>開始(&amp;S):</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="151"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="186"/>
         <source>Range start</source>
         <translation>レンジの開始</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="173"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="208"/>
         <source>Time</source>
         <translation>時間</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="178"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="213"/>
         <source>BBT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="205"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="243"/>
         <source>&amp;Length:</source>
         <translation>長さ(&amp;L):</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="221"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="259"/>
         <source>Range length</source>
         <translation>レンジの長さ</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="247"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="285"/>
         <source>B&amp;eats:</source>
         <translation>B&amp;eats:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="257"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="295"/>
         <source>Range beats</source>
         <translation>レンジのbeat</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="270"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="308"/>
         <source>A&amp;djust</source>
         <translation>調整(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="164"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="199"/>
         <source>Time display format</source>
         <translation>時間表示フォーマット</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="168"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="46"/>
+        <source>Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="58"/>
+        <source>&amp;Tempo:</source>
+        <translation type="unfinished">テンポ(&amp;T):</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="203"/>
         <source>Frames</source>
         <translation>フレーム</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="536"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="540"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="537"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="541"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
