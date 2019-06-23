@@ -750,7 +750,7 @@ fi
 
 # Check for optional AUBIO library.
 if test "x$ac_libaubio" = "xyes"; then
-   PKG_CHECK_MODULES([AUBIO], [aubio], [ac_libaubio="yes"], [ac_libaubio="no"])
+   PKG_CHECK_MODULES([AUBIO], [aubio >= 0.4.1], [ac_libaubio="yes"], [ac_libaubio="no"])
    if test "x$ac_libaubio" = "xyes"; then
       AC_DEFINE(CONFIG_LIBAUBIO, 1, [Define if AUBIO library is available.])
       ac_cflags="$ac_cflags $AUBIO_CFLAGS"
