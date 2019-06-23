@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
-    <height>260</height>
+    <width>428</width>
+    <height>259</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -43,7 +43,7 @@
    <item>
     <widget class="QGroupBox" name="TempoGroupBox">
      <property name="title">
-      <string>Metronome</string>
+      <string>Set</string>
      </property>
      <layout class="QHBoxLayout">
       <item>
@@ -55,7 +55,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Temp&amp;o:</string>
+         <string>&amp;Tempo:</string>
         </property>
         <property name="buddy">
          <cstring>TempoSpinBox</cstring>
@@ -80,6 +80,9 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Minimum</enum>
+        </property>
         <property name="sizeHint">
          <size>
           <width>8</width>
@@ -102,6 +105,22 @@
        </widget>
       </item>
       <item>
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Minimum</enum>
+        </property>
+        <property name="sizeHint">
+         <size>
+          <width>8</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="QPushButton" name="TempoTapPushButton">
         <property name="minimumSize">
          <size>
@@ -113,6 +132,22 @@
          <string>T&amp;ap</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Minimum</enum>
+        </property>
+        <property name="sizeHint">
+         <size>
+          <width>8</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -184,6 +219,9 @@
        <spacer>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Minimum</enum>
         </property>
         <property name="sizeHint">
          <size>

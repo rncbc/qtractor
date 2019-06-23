@@ -230,11 +230,10 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		m_pAudioClip = NULL;
 
 #ifdef CONFIG_LIBAUBIO
-	const bool bTempoDetect = (m_pAudioClip != NULL);
+	m_ui.TempoDetectPushButton->setEnabled(m_pAudioClip != NULL);
 #else
-	const bool bTempoDetect = false;
+	m_ui.TempoDetectPushButton->hide();
 #endif
-	m_ui.TempoDetectPushButton->setEnabled(bTempoDetect);
 }
 
 qtractorClip *qtractorTempoAdjustForm::clip (void) const
@@ -331,6 +330,75 @@ void qtractorTempoAdjustForm::tempoChanged (void)
 	}
 
 	changed();
+}
+
+
+// Audio clip beat-detector method .
+void qtractorTempoAdjustForm::tempoDetect (void)
+{
+	if (m_pAudioClip == NULL)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::tempoDetect()");
+#endif
+
+#ifdef CONFIG_LIBAUBIO
+
+	qtractorTrack *pTrack = m_pAudioClip->track();
+	if (pTrack == NULL)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == NULL)
+		return;
+
+	qtractorAudioBus *pAudioBus
+		= static_cast<qtractorAudioBus *> (pTrack->outputBus());
+	if (pAudioBus == NULL)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == NULL)
+		return;
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	m_ui.TempoDetectPushButton->setEnabled(false);
+
+	const unsigned short iChannels = pAudioBus->channels();
+	const unsigned int iBlockSize  = pAudioEngine->bufferSize() << 2;
+	const unsigned int iSampleRate = pSession->sampleRate();
+
+	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
+	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+
+	const unsigned long iOffset = iRangeStart - m_pAudioClip->clipStart();;
+	const unsigned long iLength = iRangeLength;
+
+	QProgressBar *pProgressBar = NULL;
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pProgressBar = pMainForm->progressBar();
+	if (pProgressBar) {
+		pProgressBar->setRange(0, iLength / 100);
+		pProgressBar->reset();
+		pProgressBar->show();
+	}
+	audioClipTempoDetectData data(iChannels, iBlockSize, iSampleRate);
+	m_pAudioClip->clipExport(audioClipTempoDetect, &data, iOffset, iLength);
+	if (pProgressBar)
+		pProgressBar->hide();
+
+	if (!data.beats.isEmpty()) {
+		const float fTempo
+			= aubio_tempo_get_bpm(data.aubio);
+		m_ui.TempoSpinBox->setTempo(fTempo, true);
+	}
+
+	m_ui.TempoDetectPushButton->setEnabled(true);
+	QApplication::restoreOverrideCursor();
+
+#endif	// CONFIG_LIBAUBIO
 }
 
 
@@ -435,70 +503,6 @@ void qtractorTempoAdjustForm::adjust (void)
 //	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, false);
 	updateRangeSelect();
 	changed();
-}
-
-
-// Audio clip beat-detector method .
-void qtractorTempoAdjustForm::tempoDetect (void)
-{
-	if (m_pAudioClip == NULL)
-		return;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::tempoDetect()");
-#endif
-
-#ifdef CONFIG_LIBAUBIO
-
-	qtractorTrack *pTrack = m_pAudioClip->track();
-	if (pTrack == NULL)
-		return;
-
-	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
-		return;
-
-	qtractorAudioBus *pAudioBus
-	= static_cast<qtractorAudioBus *> (pTrack->outputBus());
-	if (pAudioBus == NULL)
-		return;
-
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-	m_ui.TempoDetectPushButton->setEnabled(false);
-
-	const unsigned short iChannels = pAudioBus->channels();
-	const unsigned int iSampleRate = pSession->sampleRate();
-
-	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
-	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
-
-	const unsigned long iOffset = iRangeStart - m_pAudioClip->clipStart();;
-	const unsigned long iLength = iRangeLength;
-
-	QProgressBar *pProgressBar = NULL;
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pProgressBar = pMainForm->progressBar();
-	if (pProgressBar) {
-		pProgressBar->setRange(0, iLength / 100);
-		pProgressBar->reset();
-		pProgressBar->show();
-	}
-	audioClipTempoDetectData data(iChannels, 1024, iSampleRate);
-	m_pAudioClip->clipExport(audioClipTempoDetect, &data, iOffset, iLength);
-	if (pProgressBar)
-		pProgressBar->hide();
-
-	if (!data.beats.isEmpty()) {
-		const float fTempo
-			= aubio_tempo_get_bpm(data.aubio);
-		m_ui.TempoSpinBox->setTempo(fTempo, true);
-	}
-
-	m_ui.TempoDetectPushButton->setEnabled(true);
-	QApplication::restoreOverrideCursor();
-
-#endif	// CONFIG_LIBAUBIO
 }
 
 
