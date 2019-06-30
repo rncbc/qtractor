@@ -38,6 +38,10 @@
 
 #include <math.h>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+#define birthTime  created
+#endif
+
 
 // Audio file buffer size in frames per channel.
 static const unsigned int c_iAudioFrames = (32 * 1024);

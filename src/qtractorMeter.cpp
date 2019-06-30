@@ -40,6 +40,10 @@
 
 #include <math.h>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+#define horizontalAdvance  width
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorMeterScale -- Meter bridge scale widget.

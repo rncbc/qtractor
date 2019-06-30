@@ -43,6 +43,10 @@
 
 #include <QToolTip>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+#define horizontalAdvance  width
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorMidiEditTime -- MIDI sequence time scale widget.

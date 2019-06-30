@@ -157,6 +157,10 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+#define horizontalAdvance  width
+#endif
+
 #if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
 #undef HAVE_SIGNAL_H
 #endif
