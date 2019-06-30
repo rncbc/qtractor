@@ -143,6 +143,8 @@
 #endif
 #endif
 
+#include <algorithm>
+
 #include <math.h>
 
 // Timer constants (magic) stuff.
@@ -249,7 +251,7 @@ qtractorMainForm::qtractorMainForm (
 	// FIXME: This gotta go, somwhere in time...
 	m_pSession = new qtractorSession();
 	m_pTempoCursor = new qtractorTempoCursor();
-	m_pMessageList = new qtractorMessageList();;
+	m_pMessageList = new qtractorMessageList();
 	m_pAudioFileFactory = new qtractorAudioFileFactory();
 	m_pPluginFactory = new qtractorPluginFactory();
 
@@ -523,7 +525,7 @@ qtractorMainForm::qtractorMainForm (
 	m_pTimeSpinBox->setTimeScale(m_pSession->timeScale());
 	m_pTimeSpinBox->setFont(font);
 	m_pTimeSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	m_pTimeSpinBox->setMinimumSize(QSize(fm.width(sTime) + d, d) + pad);
+	m_pTimeSpinBox->setMinimumSize(QSize(fm.horizontalAdvance(sTime) + d, d) + pad);
 	m_pTimeSpinBox->setPalette(pal);
 //	m_pTimeSpinBox->setAutoFillBackground(true);
 	m_pTimeSpinBox->setToolTip(tr("Current time (play-head)"));
@@ -538,7 +540,7 @@ qtractorMainForm::qtractorMainForm (
 //	m_pTempoSpinBox->setMinimum(1.0f);
 //	m_pTempoSpinBox->setMaximum(1000.0f);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	m_pTempoSpinBox->setMinimumSize(QSize(fm.width(sTempo) + d, d) + pad);
+	m_pTempoSpinBox->setMinimumSize(QSize(fm.horizontalAdvance(sTempo) + d, d) + pad);
 	m_pTempoSpinBox->setPalette(pal);
 //	m_pTempoSpinBox->setAutoFillBackground(true);
 	m_pTempoSpinBox->setToolTip(tr("Current tempo (BPM)"));
@@ -6116,7 +6118,7 @@ unsigned long qtractorMainForm::playHeadBackward (void) const
 		pMarker = pMarker->prev();
 	if (pMarker && iPlayHead > pMarker->frame)
 		list.append(pMarker->frame);
-	qSort(list.begin(), list.end());
+	std::sort(list.begin(), list.end());
 	return list.last();
 }
 
@@ -6147,7 +6149,7 @@ unsigned long qtractorMainForm::playHeadForward (void) const
 		pMarker = pMarker->next();
 	if (pMarker && iPlayHead < pMarker->frame)
 		list.append(pMarker->frame);
-	qSort(list.begin(), list.end());
+	std::sort(list.begin(), list.end());
 	return list.first();
 }
 

@@ -1,7 +1,7 @@
 // qtractorAudioListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -113,7 +113,7 @@ qtractorAudioListView::qtractorAudioListView ( QWidget *pParent )
 	pHeaderItem->setText(qtractorAudioListView::Rate, tr("Rate"));
 	pHeaderItem->setText(qtractorAudioListView::Time, tr("Time"));
 	pHeaderItem->setText(qtractorAudioListView::Path, tr("Path"));
-	pHeaderItem->setText(qtractorAudioListView::LastColumn, QString::null);
+	pHeaderItem->setText(qtractorAudioListView::LastColumn, QString());
 
 	pHeaderItem->setTextAlignment(
 		qtractorAudioListView::Channels, Qt::AlignRight);

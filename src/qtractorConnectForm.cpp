@@ -1,7 +1,7 @@
 // qtractorConnectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -135,7 +135,7 @@ void qtractorConnectForm::audioIClientChanged (void)
 #endif
 
 	// Reset any port name pattern...
-	m_ui.AudioIListView->setPortName(QString::null);
+	m_ui.AudioIListView->setPortName(QString());
 	audioRefresh();
 }
 
@@ -146,7 +146,7 @@ void qtractorConnectForm::audioOClientChanged (void)
 #endif
 
 	// Reset any port name pattern...
-	m_ui.AudioOListView->setPortName(QString::null);
+	m_ui.AudioOListView->setPortName(QString());
 	audioRefresh();
 }
 
@@ -193,10 +193,10 @@ void qtractorConnectForm::audioUpdate ( bool bClear )
 
 	m_ui.AudioOListView->setClientName(
 		m_ui.AudioOClientsComboBox->currentIndex() > 0 && !bClear
-			? m_ui.AudioOClientsComboBox->currentText() : QString::null);
+			? m_ui.AudioOClientsComboBox->currentText() : QString());
 	m_ui.AudioIListView->setClientName(
 		m_ui.AudioIClientsComboBox->currentIndex() > 0 && !bClear
-			? m_ui.AudioIClientsComboBox->currentText() : QString::null);
+			? m_ui.AudioIClientsComboBox->currentText() : QString());
 
 	m_pAudioConnect->updateContents(bClear);
 
@@ -255,7 +255,7 @@ void qtractorConnectForm::midiIClientChanged (void)
 #endif
 
 	// Reset any port name pattern...
-	m_ui.MidiIListView->setPortName(QString::null);
+	m_ui.MidiIListView->setPortName(QString());
 	midiRefresh();
 }
 
@@ -266,7 +266,7 @@ void qtractorConnectForm::midiOClientChanged (void)
 #endif
 
 	// Reset any port name pattern...
-	m_ui.MidiOListView->setPortName(QString::null);
+	m_ui.MidiOListView->setPortName(QString());
 	midiRefresh();
 }
 
@@ -313,10 +313,10 @@ void qtractorConnectForm::midiUpdate ( bool bClear )
 
 	m_ui.MidiOListView->setClientName(
 		m_ui.MidiOClientsComboBox->currentIndex() > 0 && !bClear
-			? m_ui.MidiOClientsComboBox->currentText() : QString::null);
+			? m_ui.MidiOClientsComboBox->currentText() : QString());
 	m_ui.MidiIListView->setClientName(
 		m_ui.MidiIClientsComboBox->currentIndex() > 0 && !bClear
-			? m_ui.MidiIClientsComboBox->currentText() : QString::null);
+			? m_ui.MidiIClientsComboBox->currentText() : QString());
 
 	m_pMidiConnect->updateContents(bClear);
 	

@@ -717,7 +717,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		QString sArg = args.at(i);
 
 	#ifdef CONFIG_JACK_SESSION
-		QString sVal = QString::null;
+		QString sVal;
 		int iEqual = sArg.indexOf('=');
 		if (iEqual >= 0) {
 			sVal = sArg.right(sArg.length() - iEqual - 1);

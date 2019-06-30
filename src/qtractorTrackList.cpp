@@ -1242,7 +1242,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 	m_pixmap.fill(pal.window().color());
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(pViewport);
+	painter.begin(pViewport);
 
 	// Update actual contents size...
 	m_pHeader->setOffset(cx);

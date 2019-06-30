@@ -1,7 +1,7 @@
 // qtractorAudioPeak.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -421,7 +421,7 @@ bool qtractorAudioPeakFile::openRead (void)
 	QFileInfo peakInfo(m_peakFile.fileName());
 	// Have we a peak file up-to-date,
 	// or must the peak file be (re)created?
-	if (!peakInfo.exists() || peakInfo.created() < fileInfo.created()) {
+	if (!peakInfo.exists() || peakInfo.birthTime() < fileInfo.birthTime()) {
 	//	|| peakInfo.lastModified() < fileInfo.lastModified()) {
 		qtractorAudioPeakFactory *pPeakFactory
 			= qtractorAudioPeakFactory::getInstance();

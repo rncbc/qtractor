@@ -909,7 +909,7 @@ void qtractorTrackView::updatePixmap ( int cx, int cy )
 		return;
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+	painter.begin(this);
 
 	// Update view session cursor location,
 	// so that we'll start drawing clips from there...

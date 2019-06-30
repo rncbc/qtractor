@@ -983,7 +983,7 @@ bool qtractorPaletteForm::PaletteModel::setData (
 					index_begin = PaletteModel::index(QPalette::Base, 0);
 					break;
 				case QPalette::Highlight:
-					m_palette.setBrush(QPalette::Disabled, QPalette::Highlight, color.dark(120));
+					m_palette.setBrush(QPalette::Disabled, QPalette::Highlight, color.darker(120));
 					break;
 				default:
 					m_palette.setBrush(QPalette::Disabled, cr, color);

@@ -1110,7 +1110,9 @@ unsigned long qtractorVstPlugin::latency (void) const
 		return 0;
 
 #ifdef CONFIG_VESTIGE
-	return *(VstInt32 *) &(pVstEffect->empty3[0]);
+	const VstInt32 *pInitialDelay
+		= (VstInt32 *) &(pVstEffect->empty3[0]);
+	return *pInitialDelay;
 #else
 	return pVstEffect->initialDelay;
 #endif

@@ -107,7 +107,7 @@ void qtractorMidiEditEventScale::paintEvent ( QPaintEvent * )
 
 	while (y < h) {
 		const QString& sLabel = QString::number(n);
-		if (fm.width(sLabel) < w - 6)
+		if (fm.horizontalAdvance(sLabel) < w - 6)
 			painter.drawLine(w - 4, y, w - 1, y);
 		if (y > y0 + (h2 << 1) && y < h - (h2 << 1)) {
 			painter.drawText(2, y - h2, w - 8, fm.height(),
@@ -306,7 +306,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		return;
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+	painter.begin(this);
 
 	// Show that we may have clip limits...
 	if (m_pEditor->length() > 0) {
