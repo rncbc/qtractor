@@ -310,7 +310,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		return;
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+//	painter.initFrom(this);
 
 	// Show that we may have clip limits...
 	if (m_pEditor->length() > 0) {

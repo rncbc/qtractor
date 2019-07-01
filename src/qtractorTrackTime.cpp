@@ -111,7 +111,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		return;
 	
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+//	painter.initFrom(this);
 
 	// Draw the time scale...
 	//

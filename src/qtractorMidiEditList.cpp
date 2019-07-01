@@ -168,7 +168,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 //	m_pixmap.fill(m_pEditor->background().darker(140));
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+//	painter.initFrom(this);
 
 	const int ch = qtractorScrollView::contentsHeight() - cy;
 
