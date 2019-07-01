@@ -112,7 +112,7 @@ void qtractorThumbView::updateContents (void)
 		return;
 
 	QPainter painter(&m_pixmap);
-	painter.begin(this);
+	painter.initFrom(this);
 
 	// Local contents length (in frames).
 	m_iContentsLength = pSession->sessionEnd();
