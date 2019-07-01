@@ -762,7 +762,7 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI__Qt5UI	LV2_UI_PREFIX "Qt5UI"
 #endif
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #define LV2_UI_HOST_URI	LV2_UI__Qt4UI
 #else
 #define LV2_UI_HOST_URI	LV2_UI__Qt5UI
@@ -1358,7 +1358,7 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 
 
 #ifdef CONFIG_LV2_UI
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 
 #ifdef CONFIG_LV2_UI_GTK2
 
@@ -1556,7 +1556,7 @@ bool qtractorLv2PluginType::open (void)
 			else
 			if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class))
 				++uis_count;
-		#if QT_VERSION < 0x050000
+		#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 			else
 			if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
 				++uis_count;
@@ -2167,7 +2167,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_UI_SHOW
 		, m_lv2_ui_show_interface(NULL)
 	#endif
-	#if QT_VERSION >= 0x050100
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 	#ifdef CONFIG_LV2_UI_GTK2
 		, m_pGtkWindow(NULL)
 		, m_pQtWindow(NULL)
@@ -3127,7 +3127,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		else
 		if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class))
 			ui_map.insert(LV2_UI_TYPE_GTK, ui);
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		else
 		if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
 			ui_map.insert(LV2_UI_TYPE_QT4, ui);
@@ -3177,7 +3177,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 				case LV2_UI_TYPE_GTK:
 					pRadioButton = new QRadioButton(QObject::tr("Gtk2"));
 					break;
-			#if QT_VERSION < 0x050000
+			#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 				case LV2_UI_TYPE_QT4:
 					pRadioButton = new QRadioButton(QObject::tr("Qt4"));
 					break;
@@ -3236,7 +3236,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	case LV2_UI_TYPE_GTK:
 		ui_type_uri = LV2_UI__GtkUI;
 		break;
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	case LV2_UI_TYPE_QT4:
 		ui_type_uri = LV2_UI__Qt4UI;
 		break;
@@ -3304,7 +3304,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			sizeof(float), 0, &m_pfControlOuts[j]);
 	}
 
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_X11
 	if (!ui_supported && m_pQtWidget
 		&& m_lv2_ui_type == LV2_UI_TYPE_X11) {
@@ -3443,7 +3443,7 @@ void qtractorLv2Plugin::closeEditor (void)
 	m_lv2_ui_idle_interface	= NULL;
 #endif
 
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 	if (m_pQtWindow) {
 		m_pQtWindow->setParent(NULL);
@@ -3705,7 +3705,7 @@ void qtractorLv2Plugin::updateEditorTitleEx (void)
 	if (m_lv2_ui_widget && m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 		m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
 #endif
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 #ifdef CONFIG_LV2_UI_SHOW
 	else
@@ -3733,7 +3733,7 @@ void qtractorLv2Plugin::saveEditorPos (void)
 
 	if (m_pQtWidget && m_pQtWidget->isVisible())
 		posEditor = m_pQtWidget->pos();
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 #ifdef CONFIG_LV2_UI_SHOW
 	else
@@ -3765,7 +3765,7 @@ void qtractorLv2Plugin::loadEditorPos (void)
 
 	if (m_pQtWidget)
 		moveWidgetPos(m_pQtWidget, posEditor);
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 #ifdef CONFIG_LV2_UI_SHOW
 	else
@@ -4055,7 +4055,7 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_touch_feature;
 #endif
 
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_X11
 	if (m_lv2_ui_type == LV2_UI_TYPE_X11) {
 		// Create the new parent frame...

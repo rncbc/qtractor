@@ -26,7 +26,7 @@
 
 #include <QApplication>
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #if defined(Q_WS_X11)
 #define CONFIG_X11
 #endif
@@ -41,7 +41,7 @@
 class QWidget;
 class QTranslator;
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_XUNIQUE
 #ifdef CONFIG_X11
 #include <QX11Info>
@@ -82,7 +82,7 @@ public:
 	// and raise its proper main widget...
 	bool setup();
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
 #ifdef CONFIG_XUNIQUE
 	void x11PropertyNotify(Window w);
@@ -107,7 +107,7 @@ private:
 	// Instance variables.
 	QWidget *m_pWidget;
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_XUNIQUE
 #ifdef CONFIG_X11
 	Display *m_pDisplay;

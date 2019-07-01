@@ -57,7 +57,7 @@
 #include <QDropEvent>
 #include <QContextMenuEvent>
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QMimeData>
 #include <QDrag>
 #endif
@@ -66,7 +66,7 @@
 //----------------------------------------------------------------------------
 // qtractorPluginListView::TinyScrollBarStyle -- Custom tiny scrollbar style.
 //
-#if QT_VERSION < 0x040600
+#if QT_VERSION < QT_VERSION_CHECK(4, 6, 0)
 #include <QCDEStyle>
 #else
 #include <QProxyStyle>
@@ -896,7 +896,7 @@ void qtractorPluginListView::importPlugins (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, pOptions->sPluginsDir, sFilter, NULL, options);
@@ -1009,7 +1009,7 @@ void qtractorPluginListView::exportPlugins (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to save...
 	sFilename = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, sFilename, sFilter, NULL, options);

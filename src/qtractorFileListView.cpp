@@ -47,7 +47,7 @@
 #include <QDragMoveEvent>
 #include <QDropEvent>
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QMimeData>
 #include <QDrag>
 #endif
@@ -321,7 +321,7 @@ qtractorFileListView::qtractorFileListView (
 	QHeaderView *pHeader = QTreeWidget::header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 //	pHeader->setDefaultSectionSize(160);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionsMovable(false);
 #else
@@ -600,7 +600,7 @@ void qtractorFileListView::copyItem ( bool bCut )
 // Paste file items from clipboard.
 void qtractorFileListView::pasteItem (void)
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 
 	const QMimeData *pMimeData = QApplication::clipboard()->mimeData();
 	if (pMimeData == NULL)

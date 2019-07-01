@@ -684,7 +684,7 @@ bool qtractorPaletteForm::namedPalette (
 			pal.text().color().lighter(),
 			pal.base(),
 			pal.window());
-	#if QT_VERSION >= 0x050000
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		pal.setColor(QPalette::Disabled,
 			QPalette::Highlight, pal.mid().color());
 		pal.setColor(QPalette::Disabled,

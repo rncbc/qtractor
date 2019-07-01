@@ -42,7 +42,7 @@
 #include <QFileInfo>
 
 
-#if QT_VERSION < 0x040500
+#if QT_VERSION < QT_VERSION_CHECK(4, 5, 0)
 namespace Qt {
 const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
@@ -53,7 +53,7 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 
 #include <QX11Info>
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
@@ -113,7 +113,7 @@ const int effFlagsProgramChunks = 32;
 // qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 
 static int g_iXError = 0;
 
@@ -185,7 +185,7 @@ public:
 		: QWidget(pParent, wflags),
 	#ifdef CONFIG_VST_X11
 		m_pDisplay(QX11Info::display()),
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		m_wVstEditor(0),
 		m_pVstEventProc(NULL),
 		m_bButtonPress(false),
@@ -208,7 +208,7 @@ public:
 		void *ptr = NULL;
 	#ifdef CONFIG_VST_X11
 		value = (long) m_pDisplay;
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		ptr = (void *) QWidget::winId();
 	#else
 		m_pWindow = new QWindow();
@@ -242,7 +242,7 @@ public:
 		}
 
 	#ifdef CONFIG_VST_X11
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) QWidget::winId());
 		if (m_wVstEditor)
 			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
@@ -267,7 +267,7 @@ public:
 			g_vstEditors.removeAt(iIndex);
 
 	#ifdef CONFIG_VST_X11
-	#if QT_VERSION >= 0x050000
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		if (m_pWindow) {
 			m_pWindow->destroy();
 			delete m_pWindow;
@@ -277,7 +277,7 @@ public:
 	}
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	// Local X11 event filter.
 	bool x11EventFilter(XEvent *pEvent)
 	{
@@ -333,7 +333,7 @@ protected:
 	}
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	void moveEvent(QMoveEvent *pMoveEvent)
 	{
 		QWidget::moveEvent(pMoveEvent);
@@ -350,7 +350,7 @@ private:
 	// Instance variables...
 #ifdef CONFIG_VST_X11
 	Display   *m_pDisplay;
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	Window     m_wVstEditor;
 	XEventProc m_pVstEventProc;
 	bool       m_bButtonPress;
@@ -1315,7 +1315,7 @@ qtractorVstPlugin *qtractorVstPlugin::findPlugin ( AEffect *pVstEffect )
 
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 
 // Global X11 event filter.
 bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )

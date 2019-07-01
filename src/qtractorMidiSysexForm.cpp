@@ -104,7 +104,7 @@ qtractorMidiSysexForm::qtractorMidiSysexForm (
 
 	QHeaderView *pHeader = m_ui.SysexListView->header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 	pHeader->setSectionsMovable(false);
@@ -224,7 +224,7 @@ void qtractorMidiSysexForm::importSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
@@ -308,7 +308,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1// QT_VERSION < 0x040400
+#if 1// QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sPath = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
@@ -455,7 +455,7 @@ void qtractorMidiSysexForm::openSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to save...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
@@ -532,7 +532,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 			options |= QFileDialog::DontUseNativeDialog;
 			pParentWidget = QWidget::window();
 		}
-	#if 1//QT_VERSION < 0x040400
+	#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 		// Ask for the filename to save...
 		sFilename = QFileDialog::getSaveFileName(pParentWidget,
 			sTitle, sFilename, sFilter, NULL, options);

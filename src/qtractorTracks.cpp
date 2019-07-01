@@ -1191,7 +1191,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to save...
 	QString sFilename = QFileDialog::getSaveFileName(pParentWidget, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);
@@ -1464,7 +1464,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to save...
 	QString sFilename = QFileDialog::getSaveFileName(pParentWidget, sTitle,
 		pSession->createFilePath(pTrack->trackName(), sExt), sFilter, NULL, options);

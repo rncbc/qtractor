@@ -77,7 +77,7 @@ qtractorInstrumentForm::qtractorInstrumentForm (
 
 	QHeaderView *pHeader = m_ui.InstrumentsListView->header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setSectionsMovable(false);
@@ -89,7 +89,7 @@ qtractorInstrumentForm::qtractorInstrumentForm (
 
 	pHeader = m_ui.FilesListView->header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setSectionsMovable(false);
@@ -101,7 +101,7 @@ qtractorInstrumentForm::qtractorInstrumentForm (
 
 	pHeader = m_ui.NamesListView->header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setSectionsMovable(false);
@@ -232,7 +232,7 @@ void qtractorInstrumentForm::importSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
 		sTitle, pOptions->sInstrumentDir, sFilter, NULL, options);
@@ -398,7 +398,7 @@ void qtractorInstrumentForm::exportSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sPath = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, pOptions->sInstrumentDir, sFilter, NULL, options);

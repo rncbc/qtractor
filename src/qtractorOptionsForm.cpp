@@ -1252,7 +1252,7 @@ void qtractorOptionsForm::choosePluginPath (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the directory...
 	sPluginPath = QFileDialog::getExistingDirectory(pParentWidget,
 		sTitle, m_ui.PluginPathComboBox->currentText(), options);
@@ -1492,7 +1492,7 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1// QT_VERSION < 0x040400
+#if 1// QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the directory...
 	sLv2PresetDir = QFileDialog::getExistingDirectory(pParentWidget,
 		sTitle, sLv2PresetDir, options);
@@ -1566,7 +1566,7 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sFilename = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter, NULL, options);
@@ -1612,7 +1612,7 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter, NULL, options);
@@ -1773,7 +1773,7 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sAudioFile = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, sFilename, sFilter, NULL, options);

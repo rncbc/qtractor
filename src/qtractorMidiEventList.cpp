@@ -163,7 +163,7 @@ void qtractorMidiEventListModel::reset (void)
 	m_pEvent = NULL;
 	m_iEvent = 0;
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	QAbstractItemModel::beginResetModel();
 	QAbstractItemModel::endResetModel();
 #else
@@ -748,7 +748,7 @@ void qtractorMidiEventListView::setEditor ( qtractorMidiEditor *pEditor )
 	QHeaderView *pHeader = QTreeView::header();
 //	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setDefaultSectionSize(80);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setSectionsMovable(false);

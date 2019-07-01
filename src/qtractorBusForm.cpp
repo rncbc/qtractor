@@ -124,7 +124,7 @@ qtractorBusForm::qtractorBusForm (
 	QHeaderView *pHeader = m_ui.BusListView->header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->resizeSection(0, 140);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 	pHeader->setSectionResizeMode(2, QHeaderView::ResizeToContents);
