@@ -230,8 +230,34 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		m_pAudioClip = NULL;
 
 #ifdef CONFIG_LIBAUBIO
-	m_ui.TempoDetectPushButton->setEnabled(m_pAudioClip != NULL);
+	if (m_pAudioClip) {
+		m_ui.AudioClipFrame->setMinimumHeight(120);
+		m_ui.AudioClipFrame->show();
+	//	const int iTempoGroup
+	//		= m_ui.GroupBoxLayout->indexOf(m_ui.TempoGroupBox);
+		const int iRangeGroup
+			= m_ui.GroupBoxLayout->indexOf(m_ui.RangeGroupBox);
+		const int iFormatGroup
+			= m_ui.GroupBoxLayout->indexOf(m_ui.FormatGroupBox);
+	//	QLayoutItem *pTempoItem = m_ui.GroupBoxLayout->takeAt(iTempoGroup);
+	//	if (pTempoItem)
+	//		delete pTempoItem;
+		QLayoutItem *pRangeItem = m_ui.GroupBoxLayout->takeAt(iRangeGroup);
+		if (pRangeItem)
+			delete pRangeItem;
+		QLayoutItem *pFormatItem = m_ui.GroupBoxLayout->takeAt(iFormatGroup);
+		if (pFormatItem)
+			delete pFormatItem;
+	//	m_ui.GroupBoxLayout->addWidget(m_ui.TempoGroupBox, 0, 1, 1, 3);
+		m_ui.GroupBoxLayout->addWidget(m_ui.RangeGroupBox, 0, 3, 1, 2);
+		m_ui.GroupBoxLayout->addWidget(m_ui.FormatGroupBox, 0, 5, 1, 1);
+		m_ui.TempoDetectPushButton->setEnabled(true);
+	} else {
+		m_ui.AudioClipFrame->hide();
+		m_ui.TempoDetectPushButton->setEnabled(false);
+	}
 #else
+	m_ui.AudioClipFrame->hide();
 	m_ui.TempoDetectPushButton->hide();
 #endif
 }
