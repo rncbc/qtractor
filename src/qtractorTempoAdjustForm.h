@@ -74,6 +74,7 @@ protected slots:
 
 	void rangeStartChanged(unsigned long);
 	void rangeLengthChanged(unsigned long);
+	void rangeBeatsChanged(int);
 	void formatChanged(int);
 	void adjust();
 	void changed();
@@ -84,6 +85,7 @@ protected slots:
 protected:
 
 	void updateRangeLength(unsigned long iRangeLength);
+	void updateRangeBeats(int iRangeBests);
 	void updateRangeSelect();
 
 	void stabilizeForm();
@@ -98,6 +100,10 @@ private:
 
 	qtractorClip      *m_pClip;
 	qtractorAudioClip *m_pAudioClip;
+
+	class AudioClipWidget;
+
+	AudioClipWidget *m_pAudioClipWidget;
 
 	QTime *m_pTempoTap;
 	int    m_iTempoTap;

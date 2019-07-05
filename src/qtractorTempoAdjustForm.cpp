@@ -33,6 +33,8 @@
 #include <QLineEdit>
 #include <QTime>
 
+#include <QPainter>
+
 
 #ifdef CONFIG_LIBAUBIO
 
@@ -117,6 +119,56 @@ static void audioClipTempoDetect (
 
 
 //----------------------------------------------------------------------------
+// qtractorTempoAdjustForm::AudioClipWidget -- Dang simple graphical widget
+
+class qtractorTempoAdjustForm::AudioClipWidget : public QFrame
+{
+public:
+
+	// Constructor.
+	AudioClipWidget(QWidget *pParent = NULL)
+		: QFrame(pParent), m_iRangeBeats(0)
+	{
+		QFrame::setSizePolicy(
+			QSizePolicy::Expanding,
+			QSizePolicy::Expanding);
+		QFrame::setAutoFillBackground(true);
+		QFrame::setFrameShape(QFrame::Panel);
+		QFrame::setFrameShadow(QFrame::Sunken);
+	}
+
+	// Accessors.
+	void setRangeBeats(int iRangeBeats)
+		{ m_iRangeBeats = iRangeBeats; }
+	int rangeBeats() const
+		{ return m_iRangeBeats; }
+
+protected:
+
+	// Paint method...
+	void paintEvent(QPaintEvent *)
+	{
+		QPainter painter(this);
+		if (m_iRangeBeats > 0) {
+			const qreal w = qreal(QFrame::width());
+			const qreal h = qreal(QFrame::height());
+			const qreal dx = w / qreal(m_iRangeBeats);
+			for (qreal x = dx; x < w; x += dx) {
+				const QPointF p1(x, 0);
+				const QPointF p2(x, h);
+				painter.drawLine(p1, p2);
+			}
+		}
+	}
+
+private:
+
+	// Instance variables.
+	int m_iRangeBeats;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorTempoAdjustForm -- UI wrapper form.
 
 // Constructor.
@@ -135,6 +187,8 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 
 	m_pClip = NULL;
 	m_pAudioClip = NULL;
+
+	m_pAudioClipWidget = NULL;
 
 	m_pTempoTap = new QTime();
 	m_iTempoTap = 0;
@@ -182,7 +236,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.RangeBeatsSpinBox,
 		SIGNAL(valueChanged(int)),
-		SLOT(changed()));
+		SLOT(rangeBeatsChanged(int)));
 	QObject::connect(m_ui.FormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
@@ -229,10 +283,25 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 	else
 		m_pAudioClip = NULL;
 
-#ifdef CONFIG_LIBAUBIO
+	if (m_pAudioClipWidget) {
+		delete m_pAudioClipWidget;
+		m_pAudioClipWidget = NULL;
+	}
+
 	if (m_pAudioClip) {
-		m_ui.AudioClipFrame->setMinimumHeight(120);
-		m_ui.AudioClipFrame->show();
+		m_pAudioClipWidget = new AudioClipWidget(this);
+		m_pAudioClipWidget->setMinimumHeight(80);
+		qtractorTrack *pTrack = m_pAudioClip->track();
+		if (pTrack) {
+			const QColor& fg = pTrack->foreground();
+			const QColor& bg = pTrack->background();
+			QPalette pal;
+			pal.setColor(QPalette::Foreground, fg);
+			pal.setColor(QPalette::Background, bg);
+			m_pAudioClipWidget->setPalette(pal);
+		}
+		m_ui.MainBoxLayout->insertWidget(0, m_pAudioClipWidget);
+		m_pAudioClipWidget->show();
 	//	const int iTempoGroup
 	//		= m_ui.GroupBoxLayout->indexOf(m_ui.TempoGroupBox);
 		const int iRangeGroup
@@ -251,13 +320,12 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 	//	m_ui.GroupBoxLayout->addWidget(m_ui.TempoGroupBox, 0, 1, 1, 3);
 		m_ui.GroupBoxLayout->addWidget(m_ui.RangeGroupBox, 0, 3, 1, 2);
 		m_ui.GroupBoxLayout->addWidget(m_ui.FormatGroupBox, 0, 5, 1, 1);
-		m_ui.TempoDetectPushButton->setEnabled(true);
-	} else {
-		m_ui.AudioClipFrame->hide();
-		m_ui.TempoDetectPushButton->setEnabled(false);
 	}
+
+#ifdef CONFIG_LIBAUBIO
+	m_ui.TempoDetectPushButton->setEnabled(m_pAudioClip != NULL);
 #else
-	m_ui.AudioClipFrame->hide();
+	m_ui.TempoDetectPushButton->setEnabled(false);
 	m_ui.TempoDetectPushButton->hide();
 #endif
 }
@@ -349,9 +417,10 @@ void qtractorTempoAdjustForm::tempoChanged (void)
 		const unsigned long iBeatLength
 			= 60.0f * float(m_pTimeScale->sampleRate()) / fTempo;
 		if (iBeatLength > 0) {
-			const unsigned long iRangeLength
+			const int iRangeLength
 				= m_ui.RangeLengthSpinBox->value();
 			setRangeBeats(iRangeLength / iBeatLength);
+			updateRangeBeats(rangeBeats());
 		}
 	}
 
@@ -483,6 +552,20 @@ void qtractorTempoAdjustForm::rangeLengthChanged ( unsigned long iRangeLength )
 }
 
 
+void qtractorTempoAdjustForm::rangeBeatsChanged ( int iRangeBeats )
+{
+	if (m_iDirtySetup > 0)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::rangeBeatsChanged(%d)", iRangeBeats);
+#endif
+
+	updateRangeBeats(iRangeBeats);
+	changed();
+}
+
+
 // Display format has changed.
 void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
 {
@@ -582,6 +665,16 @@ void qtractorTempoAdjustForm::reject (void)
 }
 
 
+// Repaint the graphics...
+void qtractorTempoAdjustForm::updateRangeBeats ( int iRangeBeats )
+{
+	if (m_pAudioClipWidget) {
+		m_pAudioClipWidget->setRangeBeats(iRangeBeats);
+		m_pAudioClipWidget->update();
+	}
+}
+
+
 // Adjust current range beat count from length.
 void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 {
@@ -593,9 +686,11 @@ void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 		= int(5.0f * float(iRangeLength) / float(m_pTimeScale->sampleRate()));
 	m_ui.RangeBeatsSpinBox->setMaximum(iRangeBeatsMax);
 
+	const unsigned int iRangeBeats
+		= m_pTimeScale->beatFromFrame(iRangeLength);
 	const unsigned long q = m_pTimeScale->beatsPerBar();
-	const unsigned int iRangeBeats = m_pTimeScale->beatFromFrame(iRangeLength);
 	setRangeBeats(q * ((iRangeBeats + (q >> 1)) / q));
+	updateRangeBeats(rangeBeats());
 }
 
 
