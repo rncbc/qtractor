@@ -34,6 +34,7 @@
 #include <QTime>
 
 #include <QPainter>
+#include <QPaintEvent>
 
 
 #ifdef CONFIG_LIBAUBIO
@@ -119,22 +120,32 @@ static void audioClipTempoDetect (
 
 
 //----------------------------------------------------------------------------
-// qtractorTempoAdjustForm::AudioClipWidget -- Dang simple graphical widget
+// qtractorTempoAdjustForm::ClipWidget -- Dang simple graphical widget
 
-class qtractorTempoAdjustForm::AudioClipWidget : public QFrame
+class qtractorTempoAdjustForm::ClipWidget : public QFrame
 {
 public:
 
 	// Constructor.
-	AudioClipWidget(QWidget *pParent = NULL)
-		: QFrame(pParent), m_iRangeBeats(0)
+	ClipWidget(qtractorClip *pClip, QWidget *pParent = NULL)
+		: QFrame(pParent), m_pClip(pClip), m_iRangeBeats(0)
 	{
 		QFrame::setSizePolicy(
 			QSizePolicy::Expanding,
 			QSizePolicy::Expanding);
-		QFrame::setAutoFillBackground(true);
+
 		QFrame::setFrameShape(QFrame::Panel);
 		QFrame::setFrameShadow(QFrame::Sunken);
+
+		if (m_pClip) {
+			qtractorTrack *pTrack = m_pClip->track();
+			if (pTrack) {
+				QPalette pal;
+				pal.setColor(QPalette::Foreground, pTrack->foreground());
+				pal.setColor(QPalette::Background, pTrack->background());
+				QFrame::setPalette(pal);
+			}
+		}
 	}
 
 	// Accessors.
@@ -145,23 +156,87 @@ public:
 
 protected:
 
+	// Refresh method.
+	void updatePixmap()
+	{
+		if (m_pClip == NULL)
+			return;
+
+		qtractorTrack *pTrack = m_pClip->track();
+		if (pTrack == NULL)
+			return;
+
+		qtractorSession *pSession = pTrack->session();
+		if (pSession == NULL)
+			return;
+
+		const unsigned long iClipStart  = m_pClip->clipStart();
+		const unsigned long iClipLength = m_pClip->clipLength();
+
+		const int w
+			= pSession->pixelFromFrame(iClipStart + iClipLength)
+			- pSession->pixelFromFrame(iClipStart);
+		const int h = QFrame::height();
+
+		m_pixmap = QPixmap(w, h);
+		m_pixmap.fill(QFrame::palette().base().color());
+
+		// Render the actual clip region...
+		QPainter painter(&m_pixmap);
+		QColor bg = pTrack->background();
+		const QPen pen(bg.darker());
+		bg.setAlpha(192); // translucency...
+	#ifdef CONFIG_GRADIENT
+		QLinearGradient grad(0, 0, 0, h);
+		grad.setColorAt(0.4, bg);
+		grad.setColorAt(1.0, bg.darker(130));
+		const QBrush brush(grad);
+	#else
+		const QBrush brush(bg);
+	#endif
+		painter.setPen(pen);
+		painter.setBrush(brush);
+
+		const QRect rect(0, 0, w, h);
+		painter.drawRect(rect);
+		m_pClip->draw(&painter, rect, 0);
+	}
+
 	// Paint method...
-	void paintEvent(QPaintEvent *)
+	void paintEvent(QPaintEvent *pPaintEvent)
 	{
 		QPainter painter(this);
+
+		// Render the scaled pixmap region...
+		const qreal w = qreal(QFrame::width());
+		const qreal h = qreal(QFrame::height());
+		const qreal dw = qreal(m_pixmap.width()) / w;
+		const qreal dh = qreal(m_pixmap.height()) / h;
+		const QRectF& rect = QRectF(pPaintEvent->rect());
+		painter.drawPixmap(rect, m_pixmap, QRectF(
+			rect.x() * dw, rect.y() * dh,
+			rect.width() * dw, rect.height() * dh));
+
+		// Render the range beat lines...
 		if (m_iRangeBeats > 0) {
-			const qreal w = qreal(QFrame::width());
-			const qreal h = qreal(QFrame::height());
 			const qreal dx = w / qreal(m_iRangeBeats);
 			for (qreal x = dx; x < w; x += dx) {
-				const QPointF p1(x, 0);
-				const QPointF p2(x, h);
-				painter.drawLine(p1, p2);
+				painter.drawLine(QPointF(x, 0), QPointF(x, h));
 			}
 		}
 	}
 
+	// resize method...
+	void resizeEvent(QResizeEvent *)
+		{ updatePixmap(); }
+
 private:
+
+	// Instance variables.
+	qtractorClip *m_pClip;
+
+	// Local double-buffering pixmap.
+	QPixmap m_pixmap;
 
 	// Instance variables.
 	int m_iRangeBeats;
@@ -188,7 +263,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	m_pClip = NULL;
 	m_pAudioClip = NULL;
 
-	m_pAudioClipWidget = NULL;
+	m_pClipWidget = NULL;
 
 	m_pTempoTap = new QTime();
 	m_iTempoTap = 0;
@@ -283,25 +358,16 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 	else
 		m_pAudioClip = NULL;
 
-	if (m_pAudioClipWidget) {
-		delete m_pAudioClipWidget;
-		m_pAudioClipWidget = NULL;
+	if (m_pClipWidget) {
+		delete m_pClipWidget;
+		m_pClipWidget = NULL;
 	}
 
-	if (m_pAudioClip) {
-		m_pAudioClipWidget = new AudioClipWidget(this);
-		m_pAudioClipWidget->setMinimumHeight(80);
-		qtractorTrack *pTrack = m_pAudioClip->track();
-		if (pTrack) {
-			const QColor& fg = pTrack->foreground();
-			const QColor& bg = pTrack->background();
-			QPalette pal;
-			pal.setColor(QPalette::Foreground, fg);
-			pal.setColor(QPalette::Background, bg);
-			m_pAudioClipWidget->setPalette(pal);
-		}
-		m_ui.MainBoxLayout->insertWidget(0, m_pAudioClipWidget);
-		m_pAudioClipWidget->show();
+	if (m_pClip) {
+		m_pClipWidget = new ClipWidget(m_pClip);
+		m_pClipWidget->setMinimumHeight(80);
+		m_ui.MainBoxLayout->insertWidget(0, m_pClipWidget);
+		m_pClipWidget->show();
 	//	const int iTempoGroup
 	//		= m_ui.GroupBoxLayout->indexOf(m_ui.TempoGroupBox);
 		const int iRangeGroup
@@ -668,9 +734,9 @@ void qtractorTempoAdjustForm::reject (void)
 // Repaint the graphics...
 void qtractorTempoAdjustForm::updateRangeBeats ( int iRangeBeats )
 {
-	if (m_pAudioClipWidget) {
-		m_pAudioClipWidget->setRangeBeats(iRangeBeats);
-		m_pAudioClipWidget->update();
+	if (m_pClipWidget) {
+		m_pClipWidget->setRangeBeats(iRangeBeats);
+		m_pClipWidget->update();
 	}
 }
 

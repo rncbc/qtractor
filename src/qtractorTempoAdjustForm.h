@@ -101,9 +101,9 @@ private:
 	qtractorClip      *m_pClip;
 	qtractorAudioClip *m_pAudioClip;
 
-	class AudioClipWidget;
+	class ClipWidget;
 
-	AudioClipWidget *m_pAudioClipWidget;
+	ClipWidget *m_pClipWidget;
 
 	QTime *m_pTempoTap;
 	int    m_iTempoTap;
