@@ -51,11 +51,11 @@ struct audioClipTempoDetectData
 {	// Ctor.
 	audioClipTempoDetectData(unsigned short iChannels,
 		unsigned iSampleRate, unsigned int iBlockSize = 1024)
-		: count(0), channels(iChannels), nstep(iBlockSize >> 3)
+		: count(0), channels(iChannels), nstep(iBlockSize >> 1)
 	{
 		aubio = new_aubio_tempo("default", iBlockSize, nstep, iSampleRate);
 		ibuf = new_fvec(nstep);
-		obuf = new_fvec(1);
+		obuf = new_fvec(2);
 	}
 	// Dtor.
 	~audioClipTempoDetectData()
