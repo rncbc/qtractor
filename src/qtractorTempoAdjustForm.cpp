@@ -50,8 +50,8 @@
 struct audioClipTempoDetectData
 {	// Ctor.
 	audioClipTempoDetectData(unsigned short iChannels,
-		unsigned int iBlockSize, unsigned iSampleRate)
-		: count(0), channels(iChannels), nstep(iBlockSize >> 2)
+		unsigned iSampleRate, unsigned int iBlockSize = 1024)
+		: count(0), channels(iChannels), nstep(iBlockSize >> 3)
 	{
 		aubio = new_aubio_tempo("default", iBlockSize, nstep, iSampleRate);
 		ibuf = new_fvec(nstep);
@@ -587,15 +587,10 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 	if (pAudioBus == NULL)
 		return;
 
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
-		return;
-
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	m_ui.TempoDetectPushButton->setEnabled(false);
 
 	const unsigned short iChannels = pAudioBus->channels();
-	const unsigned int iBlockSize  = pAudioEngine->bufferSize() << 2;
 	const unsigned int iSampleRate = pSession->sampleRate();
 
 	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
@@ -613,7 +608,7 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 		pProgressBar->reset();
 		pProgressBar->show();
 	}
-	audioClipTempoDetectData data(iChannels, iBlockSize, iSampleRate);
+	audioClipTempoDetectData data(iChannels, iSampleRate);
 	m_pAudioClip->clipExport(audioClipTempoDetect, &data, iOffset, iLength);
 	if (pProgressBar)
 		pProgressBar->hide();

@@ -12293,12 +12293,12 @@ Vuoi applicare i cambiamenti ?</translation>
         <translation>Campioni</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="786"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="781"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="787"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="782"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
