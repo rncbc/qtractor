@@ -12308,12 +12308,12 @@ Chcete použít tyto změny?</translation>
         <translation>Snímky</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="715"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="786"/>
         <source>Warning</source>
         <translation>Varování</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="716"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="787"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>

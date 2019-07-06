@@ -84,6 +84,7 @@ protected slots:
 
 protected:
 
+	void updateRangeStart(unsigned long iRangeStart);
 	void updateRangeLength(unsigned long iRangeLength);
 	void updateRangeBeats(int iRangeBests);
 	void updateRangeSelect();
