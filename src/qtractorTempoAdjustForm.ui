@@ -107,13 +107,29 @@
          </widget>
         </item>
         <item row="0" column="4">
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint">
+           <size>
+            <width>8</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="5">
          <widget class="QPushButton" name="TempoTapPushButton">
           <property name="text">
            <string>T&amp;ap</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="5">
+        <item row="1" column="0" colspan="6">
          <spacer>
           <property name="orientation">
            <enum>Qt::Vertical</enum>

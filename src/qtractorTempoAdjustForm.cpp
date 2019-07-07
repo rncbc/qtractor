@@ -51,11 +51,11 @@ struct audioClipTempoDetectData
 {	// Ctor.
 	audioClipTempoDetectData(unsigned short iChannels,
 		unsigned iSampleRate, unsigned int iBlockSize = 1024)
-		: count(0), channels(iChannels), nstep(iBlockSize >> 1)
+		: count(0), offset(0), channels(iChannels), nstep(iBlockSize >> 3)
 	{
 		aubio = new_aubio_tempo("default", iBlockSize, nstep, iSampleRate);
 		ibuf = new_fvec(nstep);
-		obuf = new_fvec(2);
+		obuf = new_fvec(1);
 	}
 	// Dtor.
 	~audioClipTempoDetectData()
@@ -67,6 +67,7 @@ struct audioClipTempoDetectData
 	}
 	// Members.
 	unsigned int count;
+	unsigned long offset;
 	unsigned short channels;
 	unsigned int nstep;
 	aubio_tempo_t *aubio;
@@ -101,8 +102,12 @@ static void audioClipTempoDetect (
 		aubio_tempo_do(pData->aubio, pData->ibuf, pData->obuf);
 
 		const bool is_beat = bool(fvec_get_sample(pData->obuf, 0));
-		if (is_beat)
-			pData->beats.append(aubio_tempo_get_last(pData->aubio));
+		if (is_beat) {
+			unsigned long iOffset = aubio_tempo_get_last(pData->aubio);
+			if (iOffset >= pData->offset)
+				iOffset -= pData->offset;
+			pData->beats.append(iOffset);
+		}
 	}
 
 	if (++(pData->count) > 100) {
@@ -167,7 +172,7 @@ public:
 		{ return m_iRangeLength; }
 
 	void setRangeBeats(int iRangeBeats)
-		{ m_iRangeBeats = iRangeBeats; }
+		{ m_iRangeBeats = iRangeBeats; m_beats.clear(); }
 	int rangeBeats() const
 		{ return m_iRangeBeats; }
 
@@ -192,12 +197,9 @@ protected:
 		if (pSession == NULL)
 			return;
 
-		const unsigned long iClipStart  = m_pClip->clipStart();
-		const unsigned long iClipLength = m_pClip->clipLength();
-
 		const int w
-			= pSession->pixelFromFrame(iClipStart + iClipLength)
-			- pSession->pixelFromFrame(iClipStart);
+			= pSession->pixelFromFrame(m_iRangeStart + m_iRangeLength)
+			- pSession->pixelFromFrame(m_iRangeStart);
 		const int h = QFrame::height();
 
 		m_pixmap = QPixmap(w, h);
@@ -219,9 +221,11 @@ protected:
 		painter.setPen(pen);
 		painter.setBrush(brush);
 
-		const QRect rect(0, 0, w, h);
-		painter.drawRect(rect);
-		m_pClip->draw(&painter, rect, 0);
+		const unsigned long iClipOffset
+			= m_iRangeStart - m_pClip->clipStart();
+		const QRect rectClip(0, 0, w, h);
+		painter.drawRect(rectClip);
+		m_pClip->draw(&painter, rectClip, iClipOffset);
 	}
 
 	// Paint method...
@@ -239,54 +243,26 @@ protected:
 			rect.x() * dw, rect.y() * dh,
 			rect.width() * dw, rect.height() * dh));
 
-		// Render ranges and beat lines...
-		qreal x1 = 0;
-		qreal x2 = w;
-
-		qtractorSession *pSession = NULL;
-		if (m_pClip && m_pClip->track())
-			pSession = (m_pClip->track())->session();
-
-		if (m_pClip && pSession) {
-			const unsigned long iClipStart = m_pClip->clipStart();
-			const unsigned long iClipLength = m_pClip->clipLength();
-			if (iClipStart < m_iRangeStart) {
-				const int w1
-					= pSession->pixelFromFrame(m_iRangeStart)
-					- pSession->pixelFromFrame(iClipStart);
-				x1 += w1 / dw;
-				painter.fillRect(
-					QRectF(0, 0, x1, h), QColor(0, 0, 0, 96));
-			}
-			if (iClipLength > m_iRangeLength) {
-				const int w2
-					= pSession->pixelFromFrame(iClipStart + iClipLength)
-					- pSession->pixelFromFrame(m_iRangeStart + m_iRangeLength);
-				x2 -= w2 / dw;
-				painter.fillRect(
-					QRectF(x2, 0, w - x2, h), QColor(0, 0, 0, 96));
-			}
-		}
-
+		// Render beat lines...
 		if (m_iRangeBeats > 0) {
-			const qreal dx = (x2 - x1) / qreal(m_iRangeBeats);
-			for (qreal x = x1 + dx; x < x2; x += dx) {
+			const qreal dx = w / qreal(m_iRangeBeats);
+			for (qreal x = dx; x < w; x += dx) {
 				painter.drawLine(QPointF(x, 0), QPointF(x, h));
 			}
 		}
 
-		if (m_pClip && pSession && !m_beats.isEmpty()) {
-			const unsigned long iClipStart = m_pClip->clipStart();
-			const QPen old_pen(painter.pen());
-			painter.setPen(Qt::darkRed);
-			foreach (unsigned long i, m_beats) {
-				const int w1
-					= pSession->pixelFromFrame(m_iRangeStart + i)
-					- pSession->pixelFromFrame(iClipStart);
-				const qreal x = x1 + w1 / dw;
-				painter.drawLine(QPointF(x, 0), QPointF(x, h));
+		if (m_pClip && m_pClip->track() && !m_beats.isEmpty()) {
+			qtractorSession *pSession = (m_pClip->track())->session();
+			if (pSession) {
+				painter.setPen(Qt::darkRed);
+				foreach (unsigned long iOffset, m_beats) {
+					const int w1
+						= pSession->pixelFromFrame(m_iRangeStart + iOffset)
+						- pSession->pixelFromFrame(m_iRangeStart);
+					const qreal x = w1 / dw;
+					painter.drawLine(QPointF(x, 0), QPointF(x, h));
+				}
 			}
-			painter.setPen(old_pen);
 		}
 	}
 
@@ -385,7 +361,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 		SLOT(formatChanged(int)));
 	QObject::connect(m_ui.AdjustPushButton,
 		SIGNAL(clicked()),
-		SLOT(adjust()));
+		SLOT(tempoAdjust()));
 
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
@@ -399,6 +375,8 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 // Destructor.
 qtractorTempoAdjustForm::~qtractorTempoAdjustForm (void)
 {
+	setClip(NULL);
+
 	// Don't forget to get rid of local time-scale instance...
 	if (m_pTimeScale)
 		delete m_pTimeScale;
@@ -457,12 +435,18 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 	}
 
 #ifdef CONFIG_LIBAUBIO
-	m_ui.TempoDetectPushButton->setEnabled(m_pAudioClip != NULL);
+	if (m_pAudioClip) {
+		m_ui.TempoDetectPushButton->setEnabled(true);
+	} else {
+		m_ui.TempoDetectPushButton->setEnabled(false);
+		m_ui.TempoDetectPushButton->hide();
+	}
 #else
 	m_ui.TempoDetectPushButton->setEnabled(false);
 	m_ui.TempoDetectPushButton->hide();
 #endif
 }
+
 
 qtractorClip *qtractorTempoAdjustForm::clip (void) const
 {
@@ -578,10 +562,6 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 	if (pTrack == NULL)
 		return;
 
-	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
-		return;
-
 	qtractorAudioBus *pAudioBus
 		= static_cast<qtractorAudioBus *> (pTrack->outputBus());
 	if (pAudioBus == NULL)
@@ -591,7 +571,7 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 	m_ui.TempoDetectPushButton->setEnabled(false);
 
 	const unsigned short iChannels = pAudioBus->channels();
-	const unsigned int iSampleRate = pSession->sampleRate();
+	const unsigned int iSampleRate = m_pTimeScale->sampleRate();
 
 	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
 	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
@@ -608,19 +588,33 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 		pProgressBar->reset();
 		pProgressBar->show();
 	}
+
+	float fTempoDetect = 0.0f;
 	audioClipTempoDetectData data(iChannels, iSampleRate);
-	m_pAudioClip->clipExport(audioClipTempoDetect, &data, iOffset, iLength);
-	if (pProgressBar)
-		pProgressBar->hide();
+	for (int n = 0; n < 5; ++n) { // 5 times at least!...
+		m_pAudioClip->clipExport(audioClipTempoDetect, &data, iOffset, iLength);
+		fTempoDetect = float(aubio_tempo_get_confidence(data.aubio));
+		if (fTempoDetect > 0.1f)
+			break;
+	//	data.beats.clear();
+		data.offset += iLength;
+		if (pProgressBar)
+			pProgressBar->setMaximum(data.offset / 100);
+	}
 
-	if (m_pClipWidget)
-		m_pClipWidget->setBeats(data.beats);
-
-	if (!data.beats.isEmpty()) {
+	if (fTempoDetect > 0.1f) {
 		const float fTempo
 			= aubio_tempo_get_bpm(data.aubio);
 		m_ui.TempoSpinBox->setTempo(fTempo, true);
 	}
+
+	if (m_pClipWidget) {
+		m_pClipWidget->setBeats(data.beats);
+		m_pClipWidget->update();
+	}
+
+	if (pProgressBar)
+		pProgressBar->hide();
 
 	m_ui.TempoDetectPushButton->setEnabled(true);
 	QApplication::restoreOverrideCursor();
@@ -724,7 +718,7 @@ void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
 
 
 // Adjust as instructed.
-void qtractorTempoAdjustForm::adjust (void)
+void qtractorTempoAdjustForm::tempoAdjust (void)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorTempoAdjustForm::adjust()");
@@ -739,9 +733,8 @@ void qtractorTempoAdjustForm::adjust (void)
 
 	const float fTempo
 		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
-	m_ui.TempoSpinBox->setTempo(fTempo, false);
+	m_ui.TempoSpinBox->setTempo(fTempo, true);
 
-//	m_ui.RangeLengthSpinBox->setValue(iRangeBeats * iBeatLength, false);
 	updateRangeSelect();
 	changed();
 }

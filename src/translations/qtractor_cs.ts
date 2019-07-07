@@ -12228,42 +12228,42 @@ Chcete použít tyto změny?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="112"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="128"/>
         <source>T&amp;ap</source>
         <translation>Zaťu&amp;kání</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="135"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="151"/>
         <source>Range</source>
         <translation>Rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="147"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="163"/>
         <source>&amp;Start:</source>
         <translation>&amp;Začátek:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="163"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="179"/>
         <source>Range start</source>
         <translation>Začátek rozsahu</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="205"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="221"/>
         <source>&amp;Beats:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="266"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="282"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="271"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="287"/>
         <source>BBT</source>
         <translation>TDT (takty-doby-tiky)</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="176"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="192"/>
         <source>&amp;Length:</source>
         <translation>&amp;Délka:</translation>
     </message>
@@ -12278,42 +12278,42 @@ Chcete použít tyto změny?</translation>
         <translation type="unfinished">&amp;Tempo:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="192"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="208"/>
         <source>Range length</source>
         <translation>Délka rozsahu</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="215"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="231"/>
         <source>Range beats</source>
         <translation>Doby rozsahu</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="228"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="244"/>
         <source>A&amp;djust</source>
         <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="251"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="267"/>
         <source>Format</source>
         <translation>Formát</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="257"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="273"/>
         <source>Time display format</source>
         <translation>Formát zobrazení času</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="261"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="277"/>
         <source>Frames</source>
         <translation>Snímky</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="781"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="774"/>
         <source>Warning</source>
         <translation>Varování</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="782"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="775"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>

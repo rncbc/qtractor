@@ -12213,22 +12213,22 @@ Deseja aplicar as modificações?</translation>
 <context>
     <name>qtractorTempoAdjustForm</name>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="271"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="287"/>
         <source>BBT</source>
         <translation>CPS (Compasso Pulso Subpulso)</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="112"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="128"/>
         <source>T&amp;ap</source>
         <translation>T&amp;ap</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="266"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="282"/>
         <source>Time</source>
         <translation>Tempo (h:m:s)</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="135"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="151"/>
         <source>Range</source>
         <translation>Limites</translation>
     </message>
@@ -12248,37 +12248,37 @@ Deseja aplicar as modificações?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="176"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="192"/>
         <source>&amp;Length:</source>
         <translation>Com&amp;primento:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="205"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="221"/>
         <source>&amp;Beats:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="228"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="244"/>
         <source>A&amp;djust</source>
         <translation>A&amp;juste</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="192"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="208"/>
         <source>Range length</source>
         <translation>Tamanho dos limites</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="251"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="267"/>
         <source>Format</source>
         <translation>Formato</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="261"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="277"/>
         <source>Frames</source>
         <translation>Amostras</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="782"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="775"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12287,12 +12287,12 @@ Do you want to apply the changes?</source>
 Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="163"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="179"/>
         <source>Range start</source>
         <translation>Começo do limite</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="215"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="231"/>
         <source>Range beats</source>
         <translation>Tamanho do compasso</translation>
     </message>
@@ -12307,17 +12307,17 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Metrônomo</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="147"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="163"/>
         <source>&amp;Start:</source>
         <translation>&amp;Início:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="257"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="273"/>
         <source>Time display format</source>
         <translation>Formato de exibição do tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="781"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="774"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
