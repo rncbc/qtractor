@@ -32,7 +32,6 @@
 #include <QMessageBox>
 #include <QLineEdit>
 #include <QTime>
-
 #include <QPainter>
 #include <QPaintEvent>
 
@@ -165,10 +164,7 @@ public:
 
 	// Refresh method.
 	void refresh()
-	{
-		updatePixmap();
-		QFrame::update();
-	}
+		{ updatePixmap(); QFrame::update(); }
 
 protected:
 
@@ -276,7 +272,7 @@ private:
 	// Local double-buffering pixmap.
 	QPixmap m_pixmap;
 
-	// The extracted beat offsets.
+	// Extracted beat offsets.
 	QList<unsigned long> m_beats;
 };
 
@@ -398,8 +394,8 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		m_ui.RangeLengthSpinBox->setMaximum(iMaxRangeLength);
 	}
 
-	if (m_pClip && m_pClip->track() &&
-		m_pClip->track()->trackType() == qtractorTrack::Audio)
+	if (m_pClip && m_pClip->track()
+		&& (m_pClip->track())->trackType() == qtractorTrack::Audio)
 		m_pAudioClip = static_cast<qtractorAudioClip *> (m_pClip);
 	else
 		m_pAudioClip = NULL;
@@ -413,7 +409,6 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		m_pClipWidget = new ClipWidget(this);
 		m_pClipWidget->setMinimumHeight(80);
 		m_ui.MainBoxLayout->insertWidget(0, m_pClipWidget);
-		m_pClipWidget->show();
 	//	const int iTempoGroup
 	//		= m_ui.GroupBoxLayout->indexOf(m_ui.TempoGroupBox);
 		const int iRangeGroup
@@ -652,6 +647,28 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 }
 
 
+// Adjust as instructed.
+void qtractorTempoAdjustForm::tempoAdjust (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::tempoAdjust()");
+#endif
+
+	const unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
+	if (iRangeBeats < 1)
+		return;
+
+	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
+	const unsigned long iBeatLength = iRangeLength / iRangeBeats;
+
+	const float fTempo
+		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
+	m_ui.TempoSpinBox->setTempo(fTempo, true);
+
+	changed();
+}
+
+
 // Tempo tap click.
 void qtractorTempoAdjustForm::tempoTap (void)
 {
@@ -744,28 +761,6 @@ void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
 }
 
 
-// Adjust as instructed.
-void qtractorTempoAdjustForm::tempoAdjust (void)
-{
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::adjust()");
-#endif
-
-	const unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
-	if (iRangeBeats < 1)
-		return;
-
-	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
-	const unsigned long iBeatLength = iRangeLength / iRangeBeats;
-
-	const float fTempo
-		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
-	m_ui.TempoSpinBox->setTempo(fTempo, true);
-
-	changed();
-}
-
-
 // Dirty up settings.
 void qtractorTempoAdjustForm::changed (void)
 {
@@ -820,9 +815,6 @@ void qtractorTempoAdjustForm::reject (void)
 void qtractorTempoAdjustForm::updateRangeStart ( unsigned long iRangeStart )
 {
 	m_ui.RangeLengthSpinBox->setDeltaValue(true, iRangeStart);
-
-	if (m_pClipWidget)
-		m_pClipWidget->refresh();
 }
 
 
@@ -841,12 +833,10 @@ void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 
 
 // Repaint the graphics...
-void qtractorTempoAdjustForm::updateRangeBeats ( int /*iRangeBeats*/ )
+void qtractorTempoAdjustForm::updateRangeBeats ( unsigned short /*iRangeBeats*/ )
 {
-	if (m_pClipWidget) {
+	if (m_pClipWidget)
 		m_pClipWidget->clearBeats();
-		m_pClipWidget->refresh();
-	}
 }
 
 
@@ -865,6 +855,9 @@ void qtractorTempoAdjustForm::updateRangeSelect (void)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->selectionNotifySlot(NULL);
+
+	if (m_pClipWidget)
+		m_pClipWidget->refresh();
 }
 
 
@@ -878,7 +871,7 @@ void qtractorTempoAdjustForm::stabilizeForm (void)
 	bValid = bValid && (iRangeLength > 0);
 	bValid = bValid && (iRangeBeats > 0);
 	m_ui.AdjustPushButton->setEnabled(bValid);
-//	m_ui.OkPushButton->setEnabled(bValid);
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
 
 

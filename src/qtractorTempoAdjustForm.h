@@ -73,13 +73,13 @@ protected slots:
 
 	void tempoChanged();
 	void tempoDetect();
+	void tempoAdjust();
 	void tempoTap();
 
 	void rangeStartChanged(unsigned long);
 	void rangeLengthChanged(unsigned long);
 	void rangeBeatsChanged(int);
 	void formatChanged(int);
-	void tempoAdjust();
 	void changed();
 
 	void accept();
@@ -89,7 +89,7 @@ protected:
 
 	void updateRangeStart(unsigned long iRangeStart);
 	void updateRangeLength(unsigned long iRangeLength);
-	void updateRangeBeats(int iRangeBests);
+	void updateRangeBeats(unsigned short iRangeBeats);
 	void updateRangeSelect();
 
 	void stabilizeForm();

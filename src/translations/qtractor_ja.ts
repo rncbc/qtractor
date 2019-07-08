@@ -12302,12 +12302,12 @@ Do you want to apply the changes?</source>
         <translation>フレーム</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="800"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="795"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="801"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="796"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
