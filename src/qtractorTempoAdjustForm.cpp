@@ -819,10 +819,6 @@ void qtractorTempoAdjustForm::reject (void)
 // Adjust current range start...
 void qtractorTempoAdjustForm::updateRangeStart ( unsigned long iRangeStart )
 {
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::updateRangeStart(%lu)", iRangeStart);
-#endif
-
 	m_ui.RangeLengthSpinBox->setDeltaValue(true, iRangeStart);
 
 	if (m_pClipWidget)
@@ -833,10 +829,6 @@ void qtractorTempoAdjustForm::updateRangeStart ( unsigned long iRangeStart )
 // Adjust current range beat count from length...
 void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 {
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::updateRangeLength(%lu)", iRangeLength);
-#endif
-
 	const int iMaxRangeBeats // Follows from max. tempo = 300bpm.
 		= int(5.0f * float(iRangeLength) / float(m_pTimeScale->sampleRate()));
 	m_ui.RangeBeatsSpinBox->setMaximum(iMaxRangeBeats);
@@ -849,7 +841,7 @@ void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 
 
 // Repaint the graphics...
-void qtractorTempoAdjustForm::updateRangeBeats ( int iRangeBeats )
+void qtractorTempoAdjustForm::updateRangeBeats ( int /*iRangeBeats*/ )
 {
 	if (m_pClipWidget) {
 		m_pClipWidget->clearBeats();
@@ -861,10 +853,6 @@ void qtractorTempoAdjustForm::updateRangeBeats ( int iRangeBeats )
 // Adjust current selection edit/tail.
 void qtractorTempoAdjustForm::updateRangeSelect (void)
 {
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorTempoAdjustForm::updateRangeSelect()");
-#endif
-
 	const unsigned long iRangeStart  = m_ui.RangeStartSpinBox->value();
 	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
 
