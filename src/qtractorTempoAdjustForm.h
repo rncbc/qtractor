@@ -65,7 +65,10 @@ public:
 	float tempo() const;
 	unsigned short beatsPerBar() const;
 	unsigned short beatDivisor() const;
-	
+
+	// Time-scale accessor.
+	qtractorTimeScale *timeScale() const;
+
 protected slots:
 
 	void tempoChanged();

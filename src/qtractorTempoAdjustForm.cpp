@@ -132,8 +132,8 @@ class qtractorTempoAdjustForm::ClipWidget : public QFrame
 public:
 
 	// Constructor.
-	ClipWidget(qtractorClip *pClip, QWidget *pParent = NULL)
-		: QFrame(pParent), m_pClip(pClip)
+	ClipWidget(qtractorTempoAdjustForm *pForm)
+		: QFrame(pForm), m_pForm(pForm)
 	{
 		QFrame::setSizePolicy(
 			QSizePolicy::Expanding,
@@ -142,64 +142,58 @@ public:
 		QFrame::setFrameShape(QFrame::Panel);
 		QFrame::setFrameShadow(QFrame::Sunken);
 
-		if (m_pClip) {
-			qtractorTrack *pTrack = m_pClip->track();
+		qtractorClip *pClip = m_pForm->clip();
+		if (pClip) {
+			qtractorTrack *pTrack = pClip->track();
 			if (pTrack) {
 				QPalette pal;
 				pal.setColor(QPalette::Foreground, pTrack->foreground());
 				pal.setColor(QPalette::Background, pTrack->background());
 				QFrame::setPalette(pal);
 			}
-			m_iRangeStart  = m_pClip->clipStart();
-			m_iRangeLength = m_pClip->clipLength();
-		} else {
-			m_iRangeStart  = 0;
-			m_iRangeLength = 0;
 		}
-
-		m_iRangeBeats = 0;
 	}
 
 	// Accessors.
-	void setRangeStart(unsigned long iRangeStart)
-		{ m_iRangeStart = iRangeStart; }
-	unsigned long rangeStart() const
-		{ return m_iRangeStart; }
-
-	void setRangeLength(unsigned long iRangeLength)
-		{ m_iRangeLength = iRangeLength; }
-	unsigned long rangeLength() const
-		{ return m_iRangeLength; }
-
-	void setRangeBeats(int iRangeBeats)
-		{ m_iRangeBeats = iRangeBeats; m_beats.clear(); }
-	int rangeBeats() const
-		{ return m_iRangeBeats; }
-
 	void setBeats( const QList<unsigned long>& beats )
 		{ m_beats = beats; }
 	const QList<unsigned long>& beats() const
 		{ return m_beats; }
 
-protected:
+	void clearBeats()
+		{ m_beats.clear(); }
 
 	// Refresh method.
+	void refresh()
+	{
+		updatePixmap();
+		QFrame::update();
+	}
+
+protected:
+
+	// Backing-store method.
 	void updatePixmap()
 	{
-		if (m_pClip == NULL)
+		qtractorClip *pClip = m_pForm->clip();
+		if (pClip == NULL)
 			return;
 
-		qtractorTrack *pTrack = m_pClip->track();
+		qtractorTrack *pTrack = pClip->track();
 		if (pTrack == NULL)
 			return;
 
-		qtractorSession *pSession = pTrack->session();
-		if (pSession == NULL)
+		qtractorTimeScale *pTimeScale = m_pForm->timeScale();
+		if (pTimeScale == NULL)
 			return;
 
+		const unsigned long iRangeStart
+			= m_pForm->rangeStart();
+		const unsigned long iRangeLength
+			= m_pForm->rangeLength();
 		const int w
-			= pSession->pixelFromFrame(m_iRangeStart + m_iRangeLength)
-			- pSession->pixelFromFrame(m_iRangeStart);
+			= pTimeScale->pixelFromFrame(iRangeStart + iRangeLength)
+			- pTimeScale->pixelFromFrame(iRangeStart);
 		const int h = QFrame::height();
 
 		m_pixmap = QPixmap(w, h);
@@ -222,10 +216,10 @@ protected:
 		painter.setBrush(brush);
 
 		const unsigned long iClipOffset
-			= m_iRangeStart - m_pClip->clipStart();
+			= iRangeStart - pClip->clipStart();
 		const QRect rectClip(0, 0, w, h);
 		painter.drawRect(rectClip);
-		m_pClip->draw(&painter, rectClip, iClipOffset);
+		pClip->draw(&painter, rectClip, iClipOffset);
 	}
 
 	// Paint method...
@@ -244,21 +238,25 @@ protected:
 			rect.width() * dw, rect.height() * dh));
 
 		// Render beat lines...
-		if (m_iRangeBeats > 0) {
-			const qreal dx = w / qreal(m_iRangeBeats);
+		const unsigned short iRangeBeats = m_pForm->rangeBeats();
+		if (iRangeBeats > 0) {
+			const qreal dx = w / qreal(iRangeBeats);
 			for (qreal x = dx; x < w; x += dx) {
 				painter.drawLine(QPointF(x, 0), QPointF(x, h));
 			}
 		}
 
-		if (m_pClip && m_pClip->track() && !m_beats.isEmpty()) {
-			qtractorSession *pSession = (m_pClip->track())->session();
-			if (pSession) {
+		if (!m_beats.isEmpty()) {
+			qtractorClip *pClip = m_pForm->clip();
+			qtractorTimeScale *pTimeScale = m_pForm->timeScale();
+			if (pClip && pTimeScale) {
+				const unsigned long iRangeStart
+					= m_pForm->rangeStart();
 				painter.setPen(Qt::darkRed);
 				foreach (unsigned long iOffset, m_beats) {
 					const int w1
-						= pSession->pixelFromFrame(m_iRangeStart + iOffset)
-						- pSession->pixelFromFrame(m_iRangeStart);
+						= pTimeScale->pixelFromFrame(iRangeStart + iOffset)
+						- pTimeScale->pixelFromFrame(iRangeStart);
 					const qreal x = w1 / dw;
 					painter.drawLine(QPointF(x, 0), QPointF(x, h));
 				}
@@ -266,23 +264,19 @@ protected:
 		}
 	}
 
-	// resize method...
+	// Resize method...
 	void resizeEvent(QResizeEvent *)
 		{ updatePixmap(); }
 
 private:
 
 	// Instance variables.
-	qtractorClip *m_pClip;
+	qtractorTempoAdjustForm *m_pForm;
 
 	// Local double-buffering pixmap.
 	QPixmap m_pixmap;
 
-	// Instance variables.
-	unsigned long m_iRangeStart;
-	unsigned long m_iRangeLength;
-	int           m_iRangeBeats;
-
+	// The extracted beat offsets.
 	QList<unsigned long> m_beats;
 };
 
@@ -315,6 +309,9 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 
 	m_ui.RangeStartSpinBox->setTimeScale(m_pTimeScale);
 	m_ui.RangeLengthSpinBox->setTimeScale(m_pTimeScale);
+
+	// FIXME: Set an absolute max. 30 seconds...
+	m_ui.RangeLengthSpinBox->setMaximum(30 * m_pTimeScale->sampleRate());
 
 	m_ui.TempoSpinBox->setTempo(m_pTimeScale->tempo(), false);
 	m_ui.TempoSpinBox->setBeatsPerBar(m_pTimeScale->beatsPerBar(), false);
@@ -393,9 +390,12 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 	if (m_pClip) {
 		const unsigned long	iClipStart  = m_pClip->clipStart();
 		const unsigned long	iClipLength = m_pClip->clipLength();
+		unsigned long iMaxRangeLength = m_ui.RangeLengthSpinBox->maximum();
+		if (iMaxRangeLength > iClipLength)
+			iMaxRangeLength = iClipLength;
 		m_ui.RangeStartSpinBox->setMinimum(iClipStart);
-		m_ui.RangeStartSpinBox->setMaximum(iClipStart + iClipLength);
-		m_ui.RangeLengthSpinBox->setMaximum(iClipLength);
+		m_ui.RangeStartSpinBox->setMaximum(iClipStart + iMaxRangeLength);
+		m_ui.RangeLengthSpinBox->setMaximum(iMaxRangeLength);
 	}
 
 	if (m_pClip && m_pClip->track() &&
@@ -410,7 +410,7 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 	}
 
 	if (m_pClip) {
-		m_pClipWidget = new ClipWidget(m_pClip);
+		m_pClipWidget = new ClipWidget(this);
 		m_pClipWidget->setMinimumHeight(80);
 		m_ui.MainBoxLayout->insertWidget(0, m_pClipWidget);
 		m_pClipWidget->show();
@@ -463,6 +463,15 @@ qtractorAudioClip *qtractorTempoAdjustForm::audioClip (void) const
 void qtractorTempoAdjustForm::setRangeStart ( unsigned long iRangeStart )
 {
 	++m_iDirtySetup;
+	const unsigned long iMinRangeStart
+		= m_ui.RangeStartSpinBox->minimum();
+	const unsigned long iMaxRangeStart
+		= m_ui.RangeStartSpinBox->maximum();
+	if (iRangeStart < iMinRangeStart)
+		iRangeStart = iMinRangeStart;
+	else
+	if (iRangeStart > iMaxRangeStart)
+		iRangeStart = iMaxRangeStart;
 	m_ui.RangeStartSpinBox->setValue(iRangeStart, true);
 	updateRangeStart(iRangeStart);
 	--m_iDirtySetup;
@@ -476,6 +485,10 @@ unsigned long qtractorTempoAdjustForm::rangeStart (void) const
 void qtractorTempoAdjustForm::setRangeLength ( unsigned long iRangeLength )
 {
 	++m_iDirtySetup;
+	const unsigned long iMaxRangeLength
+		= m_ui.RangeLengthSpinBox->maximum();
+	if (iRangeLength > iMaxRangeLength)
+		iRangeLength = iMaxRangeLength;
 	m_ui.RangeLengthSpinBox->setValue(iRangeLength, true);
 	updateRangeLength(iRangeLength);
 	--m_iDirtySetup;
@@ -490,6 +503,15 @@ unsigned long qtractorTempoAdjustForm::rangeLength (void) const
 void qtractorTempoAdjustForm::setRangeBeats ( unsigned short iRangeBeats )
 {
 	++m_iDirtySetup;
+	const unsigned short iMinRangeBeats
+		= m_ui.RangeBeatsSpinBox->minimum();
+	const unsigned short iMaxRangeBeats
+		= m_ui.RangeBeatsSpinBox->maximum();
+	if (iRangeBeats < iMinRangeBeats)
+		iRangeBeats = iMinRangeBeats;
+	else
+	if (iRangeBeats > iMaxRangeBeats)
+		iRangeBeats = iMaxRangeBeats;
 	m_ui.RangeBeatsSpinBox->setValue(iRangeBeats);
 	updateRangeBeats(iRangeBeats);
 	--m_iDirtySetup;
@@ -515,6 +537,13 @@ unsigned short qtractorTempoAdjustForm::beatsPerBar (void) const
 unsigned short qtractorTempoAdjustForm::beatDivisor (void) const
 {
 	return m_ui.TempoSpinBox->beatDivisor();
+}
+
+
+// Time-scale accessor.
+qtractorTimeScale *qtractorTempoAdjustForm::timeScale (void) const
+{
+	return m_pTimeScale;
 }
 
 
@@ -656,7 +685,6 @@ void qtractorTempoAdjustForm::rangeStartChanged ( unsigned long iRangeStart )
 #endif
 
 	updateRangeStart(iRangeStart);
-
 	updateRangeSelect();
 	changed();
 }
@@ -672,7 +700,6 @@ void qtractorTempoAdjustForm::rangeLengthChanged ( unsigned long iRangeLength )
 #endif
 
 	updateRangeLength(iRangeLength);
-
 	updateRangeSelect();
 	changed();
 }
@@ -735,7 +762,6 @@ void qtractorTempoAdjustForm::tempoAdjust (void)
 		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
 	m_ui.TempoSpinBox->setTempo(fTempo, true);
 
-	updateRangeSelect();
 	changed();
 }
 
@@ -799,16 +825,8 @@ void qtractorTempoAdjustForm::updateRangeStart ( unsigned long iRangeStart )
 
 	m_ui.RangeLengthSpinBox->setDeltaValue(true, iRangeStart);
 
-	if (m_pClip) {
-		const unsigned long	iClipStart = m_pClip->clipStart();
-		const unsigned long	iClipEnd = iClipStart + m_pClip->clipLength();
-		m_ui.RangeLengthSpinBox->setMaximum(iClipEnd - iRangeStart);
-	}
-
-	if (m_pClipWidget) {
-		m_pClipWidget->setRangeStart(iRangeStart);
-		m_pClipWidget->update();
-	}
+	if (m_pClipWidget)
+		m_pClipWidget->refresh();
 }
 
 
@@ -819,12 +837,9 @@ void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 	qDebug("qtractorTempoAdjustForm::updateRangeLength(%lu)", iRangeLength);
 #endif
 
-	const int iRangeBeatsMax // It follows from max. tempo = 300bpm.
+	const int iMaxRangeBeats // Follows from max. tempo = 300bpm.
 		= int(5.0f * float(iRangeLength) / float(m_pTimeScale->sampleRate()));
-	m_ui.RangeBeatsSpinBox->setMaximum(iRangeBeatsMax);
-
-	if (m_pClipWidget)
-		m_pClipWidget->setRangeLength(iRangeLength);
+	m_ui.RangeBeatsSpinBox->setMaximum(iMaxRangeBeats);
 
 	const unsigned int iRangeBeats
 		= m_pTimeScale->beatFromFrame(iRangeLength);
@@ -837,8 +852,8 @@ void qtractorTempoAdjustForm::updateRangeLength ( unsigned long iRangeLength )
 void qtractorTempoAdjustForm::updateRangeBeats ( int iRangeBeats )
 {
 	if (m_pClipWidget) {
-		m_pClipWidget->setRangeBeats(iRangeBeats);
-		m_pClipWidget->update();
+		m_pClipWidget->clearBeats();
+		m_pClipWidget->refresh();
 	}
 }
 
