@@ -28,6 +28,7 @@
 #include "qtractorAudioClip.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorTracks.h"
 
 #include <QMessageBox>
 #include <QLineEdit>
@@ -853,8 +854,15 @@ void qtractorTempoAdjustForm::updateRangeSelect (void)
 	}
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks && m_pClip)  {
+			pTracks->clearSelect();
+			m_pClip->setClipSelect(iRangeStart, iRangeStart + iRangeLength);
+			pTracks->updateSelect();
+		}
 		pMainForm->selectionNotifySlot(NULL);
+	}
 
 	if (m_pClipWidget)
 		m_pClipWidget->refresh();

@@ -6,10 +6,12 @@ ChangeLog
 
 GIT HEAD
 
-- Updated for the newer Qt5 development tools (>= 5.13).
+- Introducing tempo/beat-detection support on the Clip
+  / Tempo Adjust... dialog (provided libaubio >= 0.4.1
+  is available); and now also featured with some rough
+  visual clues ;). (EXPERIMENTAL)
 
-- Introducing tempo/beat-detection support (via libaubio)
-  on the Clip / Tempo Adjust... dialog. (EXPERIMENTAL)
+- Updated for the newer Qt5 development tools (>= 5.13).
 
 - Imply asking for a brand new filename (ie. Save As...)
   whenever the session file original sample-rate differs

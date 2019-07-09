@@ -3134,6 +3134,7 @@ void qtractorTracks::clearSelect ( bool bReset )
 void qtractorTracks::updateSelect (void)
 {
 	m_pTrackView->updateSelect();
+	m_pTrackView->update();
 }
 
 
