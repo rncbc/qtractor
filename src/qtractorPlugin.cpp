@@ -30,7 +30,6 @@
 #include "qtractorMidiManager.h"
 
 #include "qtractorMainForm.h"
-
 #include "qtractorOptions.h"
 
 #include "qtractorSession.h"
@@ -516,16 +515,14 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 
 	if (bCreate) {
 		// Build up the plugin form...
+		// Make sure it has a parent...
+		if (pParent == NULL)
+			pParent = qtractorMainForm::getInstance();
 		// What style do we create tool childs?
 		Qt::WindowFlags wflags = Qt::Window;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop) {
 			wflags |= Qt::Tool;
-		#if 0//QTRACTOR_PLUGIN_FORM_TOOL_PARENT
-			// Make sure it has a parent...
-			if (pParent == NULL)
-				pParent = qtractorMainForm::getInstance();
-		#endif
 		}
 		// Do it...
 		m_pForm = new qtractorPluginForm(pParent, wflags);

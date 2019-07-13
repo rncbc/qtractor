@@ -60,7 +60,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>Arquivo:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="229"/>
+        <location filename="../qtractorPlugin.cpp" line="228"/>
         <source>(Any)</source>
         <translation>(Todos)</translation>
     </message>
@@ -152,7 +152,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>Mostrar ajuda sobre opções em linha de comando</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1240"/>
+        <location filename="../qtractorMidiClip.cpp" line="1239"/>
         <source> (%1% vol)</source>
         <translation> (%1% vol)</translation>
     </message>
@@ -251,7 +251,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>Uso: %1 [opções] [arquivo-da-sessão]</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1228"/>
+        <location filename="../qtractorMidiClip.cpp" line="1227"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Canal %1</translation>
@@ -281,14 +281,14 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>%1 Gravar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1226"/>
+        <location filename="../qtractorMidiClip.cpp" line="1225"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(formato %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="655"/>
+        <location filename="../qtractorVstPlugin.cpp" line="654"/>
         <source>Product: </source>
         <translation>Produto: </translation>
     </message>
@@ -508,7 +508,7 @@ MIDI:	</translation>
 	(%1 mudança de altura em semitons)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1230"/>
+        <location filename="../qtractorMidiClip.cpp" line="1229"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Pista %1</translation>
@@ -544,7 +544,7 @@ MIDI:	</translation>
         <translation>Nomear sessão (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="671"/>
+        <location filename="../qtractorVstPlugin.cpp" line="670"/>
         <source>Version: </source>
         <translation>Versão: </translation>
     </message>
@@ -655,7 +655,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="238"/>
+        <location filename="../qtractorPlugin.cpp" line="237"/>
         <source>(default)</source>
         <translation>(padrão)</translation>
     </message>
@@ -665,7 +665,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Arquivos de áudio (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="663"/>
+        <location filename="../qtractorVstPlugin.cpp" line="662"/>
         <source>Vendor: </source>
         <translation>Fornecedor: </translation>
     </message>
@@ -710,7 +710,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>nó de atualização de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1233"/>
+        <location filename="../qtractorMidiClip.cpp" line="1232"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 pistas, %2 tpqn</translation>
     </message>
@@ -792,7 +792,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>remover marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="255"/>
+        <location filename="../qtractorPlugin.cpp" line="254"/>
         <source>Activate</source>
         <translation>Ativar</translation>
     </message>
@@ -802,7 +802,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2112"/>
+        <location filename="../qtractorPlugin.cpp" line="2109"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>

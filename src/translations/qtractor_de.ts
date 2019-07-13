@@ -316,31 +316,31 @@ End:	%3	Length:	%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1226"/>
+        <location filename="../qtractorMidiClip.cpp" line="1225"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(Format %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1228"/>
+        <location filename="../qtractorMidiClip.cpp" line="1227"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Kanal %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1230"/>
+        <location filename="../qtractorMidiClip.cpp" line="1229"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Spur %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1233"/>
+        <location filename="../qtractorMidiClip.cpp" line="1232"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1240"/>
+        <location filename="../qtractorMidiClip.cpp" line="1239"/>
         <source> (%1% vol)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -370,7 +370,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="238"/>
+        <location filename="../qtractorPlugin.cpp" line="237"/>
         <source>(default)</source>
         <translation>(voreingestellt)</translation>
     </message>
@@ -420,17 +420,17 @@ MIDI:	</translation>
         <translation>Option -s benötigt ein Argument (session-id).</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="229"/>
+        <location filename="../qtractorPlugin.cpp" line="228"/>
         <source>(Any)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="255"/>
+        <location filename="../qtractorPlugin.cpp" line="254"/>
         <source>Activate</source>
         <translation>Aktivieren</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2112"/>
+        <location filename="../qtractorPlugin.cpp" line="2109"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 Plugin nicht gefunden.</translation>
     </message>
@@ -717,17 +717,17 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>Unbenannt</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="655"/>
+        <location filename="../qtractorVstPlugin.cpp" line="654"/>
         <source>Product: </source>
         <translation>Produkt:</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="663"/>
+        <location filename="../qtractorVstPlugin.cpp" line="662"/>
         <source>Vendor: </source>
         <translation>Anbieter: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="671"/>
+        <location filename="../qtractorVstPlugin.cpp" line="670"/>
         <source>Version: </source>
         <translation>Version:</translation>
     </message>

@@ -35,7 +35,6 @@
 #include "qtractorMidiEditorForm.h"
 
 #include "qtractorMainForm.h"
-
 #if 0//QTRACTOR_MIDI_EDITOR_TOOL
 #include "qtractorOptions.h"
 #endif
@@ -1114,15 +1113,15 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 
 	if (m_pMidiEditorForm == NULL) {
 		// Build up the editor form...
+		// Make sure it has a parent...
+		if (pParent == NULL)
+			pParent = qtractorMainForm::getInstance();
 		// What style do we create tool childs?
 		Qt::WindowFlags wflags = Qt::Window;
-	#if 0//QTRACTOR_MIDI_EDITOR_PARENT
+	#if 0//QTRACTOR_MIDI_EDITOR_TOOL
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop) {
 			wflags |= Qt::Tool;
-			// Make sure it has a parent...
-			if (pParent == NULL)
-				pParent = qtractorMainForm::getInstance();
 		}
 	#endif
 		// Do it...

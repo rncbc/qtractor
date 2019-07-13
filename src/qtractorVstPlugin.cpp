@@ -32,10 +32,9 @@
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
 
-#if 0//QTRACTOR_VST_EDITOR_TOOL
 #include "qtractorMainForm.h"
+
 #include "qtractorOptions.h"
-#endif
 
 #include <QApplication>
 #include <QFileDialog>
@@ -1190,15 +1189,16 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 	// Make sure it's not closed...
 	m_bEditorClosed = false;
 
+	// Make sure it has a parent...
+	if (pParent == NULL)
+		pParent = qtractorMainForm::getInstance();
+
 	// What style do we create tool childs?
 	Qt::WindowFlags wflags = Qt::Window;
 #if 0//QTRACTOR_VST_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::WindowStaysOnTopHint; // Qt::Tool, formerly.
-		// Make sure it has a parent...
-		if (pParent == NULL)
-			pParent = qtractorMainForm::getInstance();
 	}
 #endif
 
@@ -1554,7 +1554,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 	pvfs->reserved = 0;
 	pvfs->nbReturnPath = 0;
 
-    if (pvfs->command == kVstFileLoad || pvfs->command == kVstFileSave) {
+	if (pvfs->command == kVstFileLoad || pvfs->command == kVstFileSave) {
 		QString sFilename;
 		QStringList filters;
 		for (int i = 0; i < pvfs->nbFileTypes; ++i) {
@@ -1569,7 +1569,10 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		const QString& sDirectory = pvfs->initialPath;
 		const QString& sFilter = filters.join(";;");
-		const QFileDialog::Options options = QFileDialog::DontUseNativeDialog;
+		QFileDialog::Options options = 0;
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions && pOptions->bDontUseNativeDialogs)
+			options |= QFileDialog::DontUseNativeDialog;
 		if (pvfs->command == kVstFileLoad) {
 			sFilename = QFileDialog::getOpenFileName(
 				pParentWidget, sTitle, sDirectory, sFilter, NULL, options);
@@ -1608,7 +1611,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 		}
 	}
 
-    return pvfs->nbReturnPath;
+	return pvfs->nbReturnPath;
 }
 
 
