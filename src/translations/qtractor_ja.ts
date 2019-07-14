@@ -510,7 +510,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="929"/>
         <source>import plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのインポート</translation>
     </message>
     <message>
         <location filename="../qtractorSessionCommand.cpp" line="52"/>
@@ -5837,7 +5837,7 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5766"/>
         <source>Beat-detection support (libaubio) disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>ビート検出サポート (libaubio) は無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5769"/>
@@ -7127,7 +7127,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="115"/>
         <source>&amp;Ghost Track</source>
-        <translation type="unfinished"></translation>
+        <translation>ゴーストトラック(&amp;G)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="120"/>
@@ -11512,24 +11512,24 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="886"/>
         <source>Import Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのインポート</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="889"/>
         <location filename="../qtractorPluginListView.cpp" line="1002"/>
         <source>XML files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>XMLファイル (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="890"/>
         <location filename="../qtractorPluginListView.cpp" line="1003"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished">全ファイル (*.*)</translation>
+        <translation>全ファイル (*.*)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="932"/>
         <source>Warning</source>
-        <translation type="unfinished">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="933"/>
@@ -11538,12 +11538,16 @@ Are you sure?</source>
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>インポートしたプラグインを削除します:
+
+&quot;%1&quot;
+
+よろしいですか?</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="999"/>
         <source>Export Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのエクスポート</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1698"/>
@@ -11568,7 +11572,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1804"/>
         <source>I&amp;nserts</source>
-        <translation type="unfinished"></translation>
+        <translation>挿入(&amp;N)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1807"/>
@@ -11667,12 +11671,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1967"/>
         <source>&amp;Import...</source>
-        <translation type="unfinished">インポート(&amp;I)...</translation>
+        <translation>インポート(&amp;I)...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1971"/>
         <source>E&amp;xport...</source>
-        <translation type="unfinished">エクスポート(&amp;X)...</translation>
+        <translation>エクスポート(&amp;X)...</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1983"/>
@@ -12219,7 +12223,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="105"/>
         <source>&amp;Detect</source>
-        <translation type="unfinished"></translation>
+        <translation>検出(&amp;D)</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="128"/>
@@ -12244,7 +12248,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="221"/>
         <source>&amp;Beats:</source>
-        <translation type="unfinished"></translation>
+        <translation>ビート(&amp;B):</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="282"/>
@@ -12264,12 +12268,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="37"/>
         <source>Tempo Adjust - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>テンポの調整 - Qtractor</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="66"/>
         <source>&amp;Tempo:</source>
-        <translation type="unfinished">テンポ(&amp;T):</translation>
+        <translation>テンポ(&amp;T):</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="208"/>
@@ -12803,12 +12807,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.ui" line="631"/>
         <source>Whether to enable plugin latency/delay compensation</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのレイテンシー/遅延の補償を有効にするかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="634"/>
         <source>&amp;Latency compensation</source>
-        <translation type="unfinished"></translation>
+        <translation>遅延の補償(&amp;L)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="148"/>
@@ -12958,32 +12962,32 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTrackList.cpp" line="180"/>
         <source>Nr</source>
-        <translation type="unfinished">番号</translation>
+        <translation>番号</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="181"/>
         <source>Track Name</source>
-        <translation type="unfinished">トラック名</translation>
+        <translation>トラック名</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="182"/>
         <source>Bus</source>
-        <translation type="unfinished">バス</translation>
+        <translation>バス</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="183"/>
         <source>Ch</source>
-        <translation type="unfinished">チャンネル</translation>
+        <translation>チャンネル</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="184"/>
         <source>Patch</source>
-        <translation type="unfinished">パッチ</translation>
+        <translation>パッチ</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="185"/>
         <source>Instrument</source>
-        <translation type="unfinished">インストルメント</translation>
+        <translation>インストルメント</translation>
     </message>
 </context>
 <context>
