@@ -802,7 +802,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2109"/>
+        <location filename="../qtractorPlugin.cpp" line="2111"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>
