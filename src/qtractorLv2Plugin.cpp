@@ -3346,6 +3346,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		QWindow *pQtWindow = QWindow::fromWinId(wid);
 		// Create the new parent frame...
 		QWidget *pQtWidget = new QWidget(NULL, Qt::Window);
+		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		QWidget *pQtContainer = QWidget::createWindowContainer(pQtWindow, pQtWidget);
 		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
 		pVBoxLayout->setMargin(0);
@@ -4060,6 +4061,7 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	if (m_lv2_ui_type == LV2_UI_TYPE_X11) {
 		// Create the new parent frame...
 		QWidget *pQtWidget = new QWidget(NULL, Qt::Window);
+		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		// Add/prepare some needed features...
 		m_lv2_ui_resize.handle = pQtWidget;
 		m_lv2_ui_resize.ui_resize = qtractor_lv2_ui_resize;

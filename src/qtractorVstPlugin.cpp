@@ -27,14 +27,15 @@
 
 #include "qtractorPluginForm.h"
 
-#include "qtractorMidiManager.h"
-
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
-
-#include "qtractorMainForm.h"
+#include "qtractorMidiManager.h"
 
 #include "qtractorOptions.h"
+
+#if 0//QTRACTOR_VST_EDITOR_TOOL
+#include "qtractorMainForm.h"
+#endif
 
 #include <QApplication>
 #include <QFileDialog>
@@ -192,7 +193,8 @@ public:
 		m_pWindow(NULL),
 	#endif
 	#endif	// CONFIG_VST_X11
-		m_pVstPlugin(NULL) {}
+		m_pVstPlugin(NULL)
+		{ QWidget::setAttribute(Qt::WA_QuitOnClose, false); }
 
 	// Destructor.
 	~EditorWidget() { close(); }
@@ -1189,16 +1191,15 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 	// Make sure it's not closed...
 	m_bEditorClosed = false;
 
-	// Make sure it has a parent...
-	if (pParent == NULL)
-		pParent = qtractorMainForm::getInstance();
-
 	// What style do we create tool childs?
 	Qt::WindowFlags wflags = Qt::Window;
 #if 0//QTRACTOR_VST_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::WindowStaysOnTopHint; // Qt::Tool, formerly.
+		// Make sure it has a parent...
+		if (pParent == NULL)
+			pParent = qtractorMainForm::getInstance();
 	}
 #endif
 

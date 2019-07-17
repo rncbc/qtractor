@@ -75,6 +75,8 @@ qtractorPluginForm::qtractorPluginForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	QWidget::setAttribute(Qt::WA_QuitOnClose, false);
+
 	const QFont& font = QWidget::font();
 	QWidget::setFont(QFont(font.family(), font.pointSize() - 1));
 
