@@ -591,7 +591,8 @@ private:
 		ResizeNoteLeft,
 		ResizeValue,
 		ResizeValue14,
-		ResizePitchBend
+		ResizePitchBend,
+		ResizePgmChange
 	} m_resizeMode;
 
 	// The current selecting/dragging stuff.

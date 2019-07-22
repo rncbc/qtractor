@@ -590,6 +590,9 @@ void qtractorMidiEventItemDelegate::setEditorData ( QWidget *pEditor,
 			if (pEvent->type() == qtractorMidiEvent::PITCHBEND)
 				pSpinBox->setValue(pEvent->pitchBend());
 			else
+			if (pEvent->type() == qtractorMidiEvent::PGMCHANGE)
+				pSpinBox->setValue(pEvent->param());
+			else
 				pSpinBox->setValue(pEvent->value());
 		}
 		break;

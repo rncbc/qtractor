@@ -1,7 +1,7 @@
 // qtractorMidiEditCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -176,6 +176,11 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
 				iOldValue = pEvent->pitchBend();
 				pEvent->setPitchBend(pItem->value);
+			}
+			else
+			if (pEvent->type() == qtractorMidiEvent::PGMCHANGE) {
+				iOldValue = pEvent->param();
+				pEvent->setParam(pItem->value);
 			} else {
 				iOldValue = pEvent->value();
 				pEvent->setValue(pItem->value);

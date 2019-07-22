@@ -552,6 +552,9 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 			if (eventType == qtractorMidiEvent::PITCHBEND)
 				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 			else
+			if (eventType == qtractorMidiEvent::PGMCHANGE)
+				y = y0 - (y0 * pEvent->param()) / 128;
+			else
 				y = y0 - (y0 * pEvent->value()) / 128;
 			pNode = cursor.seekTick(t1);
 			x = pNode->pixelFromTick(t1) - dx;
