@@ -355,6 +355,8 @@ public:
 
 	// Note name map accessor.
 	const QString noteName(unsigned char note) const;
+	// Program name map accessor.
+	const QString& programName(unsigned char prog) const;
 	// Controller name map accessor.
 	const QString& controllerName(unsigned char controller) const;
 
@@ -367,6 +369,8 @@ public:
 
 	// Default note name map accessor.
 	static const QString defaultNoteName(unsigned char note, bool fDrums = false);
+	// Default program name accessor.
+	static const QString& defaultProgramName(unsigned char prog);
 	// Default controller name accessor.
 	static const QString& defaultControllerName(unsigned char controller);
 
@@ -406,6 +410,7 @@ protected:
 
 	// Update instrument default note names (nb. drum key names).
 	void updateDefaultDrumNoteNames();
+	void updateDefaultProgramNames();
 	void updateDefaultControllerNames();
 	void updateDefaultRpnNames();
 	void updateDefaultNrpnNames();
@@ -679,9 +684,9 @@ private:
 	}	g_clipboard;
 
 	// Instrument defined names for current clip/track.
-	QHash<unsigned char,  QString> m_noteNames;
-	QHash<unsigned char,  QString> m_controllerNames;
-
+	QHash<unsigned char, QString> m_noteNames;
+	QHash<unsigned char, QString> m_programNames;
+	QHash<unsigned char, QString> m_controllerNames;
 	QMap<unsigned short, QString> m_rpnNames;
 	QMap<unsigned short, QString> m_nrpnNames;
 

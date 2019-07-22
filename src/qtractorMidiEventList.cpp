@@ -352,6 +352,8 @@ QString qtractorMidiEventListModel::itemDisplay (
 				return m_pEditor->nrpnNames().value(pEvent->param());
 			case qtractorMidiEvent::CONTROL14:
 				return m_pEditor->control14Name(pEvent->controller());
+			case qtractorMidiEvent::PGMCHANGE:
+				return m_pEditor->programName(pEvent->param());
 			default:
 				break;
 			}
@@ -752,16 +754,12 @@ void qtractorMidiEventListView::setEditor ( qtractorMidiEditor *pEditor )
 //	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setDefaultSectionSize(80);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-//	pHeader->setSectionResizeMode(QHeaderView::Custom);
-	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setSectionsMovable(false);
 #else
-//	pHeader->setResizeMode(QHeaderView::Custom);
-	pHeader->setResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setMovable(false);
 #endif
 	pHeader->resizeSection(2, 60); // Name
-	pHeader->resizeSection(3, 40); // Value
+	pHeader->resizeSection(3, 60); // Value
 	pHeader->setStretchLastSection(true);
 }
 
