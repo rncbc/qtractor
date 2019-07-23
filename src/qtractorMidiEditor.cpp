@@ -66,8 +66,8 @@
 #define QTRACTOR_SYNC_VIEW_HOLD 46
 
 
-// An empty blank reference string .
-static QString g_sNoname;
+// An double-dash string reference (formerly empty blank).
+static QString g_sDashes = "--";
 
 
 //----------------------------------------------------------------------------
@@ -173,170 +173,6 @@ const QString qtractorMidiEditor::defaultNoteName (
 
 
 //----------------------------------------------------------------------------
-// MIDI Program Names - Default program names hash map.
-
-static struct
-{
-	unsigned char prog;
-	const char *name;
-
-} g_aProgramNames[] = {
-
-	{  0, _TR("Acoustic Grand Piano") },
-	{  1, _TR("Bright Acoustic Piano") },
-	{  2, _TR("Electric Grand Piano") },
-	{  3, _TR("Honky-tonk Piano") },
-	{  4, _TR("Rhodes Piano") },
-	{  5, _TR("Chorused Piano") },
-	{  6, _TR("Harpsichord") },
-	{  7, _TR("Clavinet") },
-	{  8, _TR("Celesta") },
-	{  9, _TR("Glockenspiel") },
-	{ 10, _TR("Music Box") },
-	{ 11, _TR("Vibraphone") },
-	{ 12, _TR("Marimba") },
-	{ 13, _TR("Xylophone") },
-	{ 14, _TR("Tubular Bells") },
-	{ 15, _TR("Dulcimer") },
-	{ 16, _TR("Hammond Organ") },
-	{ 17, _TR("Percussive Organ") },
-	{ 18, _TR("Rock Organ") },
-	{ 19, _TR("Church Organ") },
-	{ 20, _TR("Reed Organ") },
-	{ 21, _TR("Accordion") },
-	{ 22, _TR("Harmonica") },
-	{ 23, _TR("Tango Accordion") },
-	{ 24, _TR("Acoustic Guitar (nylon)") },
-	{ 25, _TR("Acoustic Guitar (steel)") },
-	{ 26, _TR("Electric Guitar (jazz)") },
-	{ 27, _TR("Electric Guitar (clean)") },
-	{ 28, _TR("Electric Guitar (muted)") },
-	{ 29, _TR("Overdriven Guitar") },
-	{ 30, _TR("Distortion Guitar") },
-	{ 31, _TR("Guitar Harmonics") },
-	{ 32, _TR("Acoustic Bass") },
-	{ 33, _TR("Electric Bass (finger)") },
-	{ 34, _TR("Electric Bass (pick)") },
-	{ 35, _TR("Fretless Bass") },
-	{ 36, _TR("Slap Bass 1") },
-	{ 37, _TR("Slap Bass 2") },
-	{ 38, _TR("Synth Bass 1") },
-	{ 39, _TR("Synth Bass 2") },
-	{ 40, _TR("Violin") },
-	{ 41, _TR("Viola") },
-	{ 42, _TR("Cello") },
-	{ 43, _TR("Contrabass") },
-	{ 44, _TR("Tremolo Strings") },
-	{ 45, _TR("Pizzicato Strings") },
-	{ 46, _TR("Orchestral Harp") },
-	{ 47, _TR("Timpani") },
-	{ 48, _TR("String Ensemble 1") },
-	{ 49, _TR("String Ensemble 2") },
-	{ 50, _TR("SynthStrings 1") },
-	{ 51, _TR("SynthStrings 2") },
-	{ 52, _TR("Choir Aahs") },
-	{ 53, _TR("Voice Oohs") },
-	{ 54, _TR("Synth Voice") },
-	{ 55, _TR("Orchestra Hit") },
-	{ 56, _TR("Trumpet") },
-	{ 57, _TR("Trombone") },
-	{ 58, _TR("Tuba") },
-	{ 59, _TR("Muted Trumpet") },
-	{ 60, _TR("French Horn") },
-	{ 61, _TR("Brass Section") },
-	{ 62, _TR("Synth Brass 1") },
-	{ 63, _TR("Synth Brass 2") },
-	{ 64, _TR("Soprano Sax") },
-	{ 65, _TR("Alto Sax") },
-	{ 66, _TR("Tenor Sax") },
-	{ 67, _TR("Baritone Sax") },
-	{ 68, _TR("Oboe") },
-	{ 69, _TR("English Horn") },
-	{ 70, _TR("Bassoon") },
-	{ 71, _TR("Clarinet") },
-	{ 72, _TR("Piccolo") },
-	{ 73, _TR("Flute") },
-	{ 74, _TR("Recorder") },
-	{ 75, _TR("Pan Flute") },
-	{ 76, _TR("Bottle Blow") },
-	{ 77, _TR("Shakuhachi") },
-	{ 78, _TR("Whistle") },
-	{ 79, _TR("Ocarina") },
-	{ 80, _TR("Lead 1 (square)") },
-	{ 81, _TR("Lead 2 (sawtooth)") },
-	{ 82, _TR("Lead 3 (calliope lead)") },
-	{ 83, _TR("Lead 4 (chiff lead)") },
-	{ 84, _TR("Lead 5 (charang)") },
-	{ 85, _TR("Lead 6 (voice)") },
-	{ 86, _TR("Lead 7 (fifths)") },
-	{ 87, _TR("Lead 8 (bass + lead)") },
-	{ 88, _TR("Pad 1 (new age)") },
-	{ 89, _TR("Pad 2 (warm)") },
-	{ 90, _TR("Pad 3 (polysynth)") },
-	{ 91, _TR("Pad 4 (choir)") },
-	{ 92, _TR("Pad 5 (bowed)") },
-	{ 93, _TR("Pad 6 (metallic)") },
-	{ 94, _TR("Pad 7 (halo)") },
-	{ 95, _TR("Pad 8 (sweep)") },
-	{ 96, _TR("FX 1 (rain)") },
-	{ 97, _TR("FX 2 (soundtrack)") },
-	{ 98, _TR("FX 3 (crystal)") },
-	{ 99, _TR("FX 4 (atmosphere)") },
-	{100, _TR("FX 5 (brightness)") },
-	{101, _TR("FX 6 (goblins)") },
-	{102, _TR("FX 7 (echoes)") },
-	{103, _TR("FX 8 (sci-fi)") },
-	{104, _TR("Sitar") },
-	{105, _TR("Banjo") },
-	{106, _TR("Shamisen") },
-	{107, _TR("Koto") },
-	{108, _TR("Kalimba") },
-	{109, _TR("Bagpipe") },
-	{110, _TR("Fiddle") },
-	{111, _TR("Shanai") },
-	{112, _TR("Tinkle Bell") },
-	{113, _TR("Agogo") },
-	{114, _TR("Steel Drums") },
-	{115, _TR("Woodblock") },
-	{116, _TR("Taiko Drum") },
-	{117, _TR("Melodic Tom") },
-	{118, _TR("Synth Drum") },
-	{119, _TR("Reverse Cymbal") },
-	{120, _TR("Guitar Fret Noise") },
-	{121, _TR("Breath Noise") },
-	{122, _TR("Seashore") },
-	{123, _TR("Bird Tweet") },
-	{124, _TR("Telephone Ring") },
-	{125, _TR("Helicopter") },
-	{126, _TR("Applause") },
-	{127, _TR("Gunshot") },
-
-	{  0, NULL }
-};
-
-static QHash<unsigned char, QString> g_programNames;
-
-// Default controller name accessor.
-const QString& qtractorMidiEditor::defaultProgramName ( unsigned char prog )
-{
-	if (g_programNames.isEmpty()) {
-		// Pre-load program-names hash table...
-		for (int i = 0; g_aProgramNames[i].name; ++i) {
-			g_programNames.insert(g_aProgramNames[i].prog,
-				QObject::tr(g_aProgramNames[i].name, "programName"));
-		}
-	}
-
-	QHash<unsigned char, QString>::ConstIterator iter
-		= g_programNames.constFind(prog);
-	if (iter == g_programNames.constEnd())
-		return g_sNoname;
-	else
-		return iter.value();
-}
-
-
-//----------------------------------------------------------------------------
 // MIDI Controller Names - Default controller names hash map.
 
 static struct
@@ -433,7 +269,7 @@ const QString& qtractorMidiEditor::defaultControllerName ( unsigned char control
 	QHash<unsigned char, QString>::ConstIterator iter
 		= g_controllerNames.constFind(controller);
 	if (iter == g_controllerNames.constEnd())
-		return g_sNoname;
+		return g_sDashes;
 	else
 		return iter.value();
 }
@@ -584,7 +420,7 @@ const QString& qtractorMidiEditor::defaultControl14Name ( unsigned char controll
 	QHash<unsigned char, QString>::ConstIterator iter
 		= g_control14Names.constFind(controller);
 	if (iter == g_control14Names.constEnd())
-		return g_sNoname;
+		return g_sDashes;
 	else
 		return iter.value();
 }
@@ -4871,16 +4707,6 @@ void qtractorMidiEditor::updateDefaultDrumNoteNames (void)
 }
 
 
-// Update instrument default program names.
-void qtractorMidiEditor::updateDefaultProgramNames (void)
-{
-	for (int i = 0; g_aProgramNames[i].name; ++i) {
-		m_programNames.insert(g_aProgramNames[i].prog,
-			tr(g_aProgramNames[i].name, "programName"));
-	}
-}
-
-
 // Update instrument default controller names.
 void qtractorMidiEditor::updateDefaultControllerNames (void)
 {
@@ -4927,7 +4753,6 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 	m_nrpnNames.clear();
 
 	// Update deafault controller names...
-	updateDefaultProgramNames();
 	updateDefaultControllerNames();
 	updateDefaultRpnNames();
 	updateDefaultNrpnNames();
@@ -4985,6 +4810,18 @@ void qtractorMidiEditor::updateInstrumentNames (void)
 	for ( ; notes_iter != notes_end; ++notes_iter)
 		m_noteNames.insert(notes_iter.key(), notes_iter.value());
 
+	// Program names...
+	const qtractorInstrumentData& programs = instr.patch(iBank);
+	qtractorInstrumentData::ConstIterator programs_iter
+		= programs.constBegin();
+	const qtractorInstrumentData::ConstIterator& programs_end
+		= programs.constEnd();
+	for ( ; programs_iter != programs_end; ++programs_iter) {
+		m_programNames.insert(
+			programs_iter.key(),
+			programs_iter.value());
+	}
+
 	// Controller names...
 	const qtractorInstrumentData& controllers = instr.controllers();
 	qtractorInstrumentData::ConstIterator controllers_iter
@@ -5038,7 +4875,12 @@ const QString qtractorMidiEditor::noteName ( unsigned char note ) const
 // Program map accessors.
 const QString& qtractorMidiEditor::programName ( unsigned char prog ) const
 {
-	return defaultProgramName(prog);
+	QHash<unsigned char, QString>::ConstIterator iter
+		= m_programNames.constFind(prog);
+	if (iter == m_programNames.constEnd())
+		return g_sDashes;//defaultProgramName(prog);
+	else
+		return iter.value();
 }
 
 
@@ -5048,7 +4890,7 @@ const QString& qtractorMidiEditor::controllerName ( unsigned char controller ) c
 	QHash<unsigned char, QString>::ConstIterator iter
 		= m_controllerNames.constFind(controller);
 	if (iter == m_controllerNames.constEnd())
-		return g_sNoname;//defaultControllerName(controller);
+		return g_sDashes;//defaultControllerName(controller);
 	else
 		return iter.value();
 }

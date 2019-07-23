@@ -344,6 +344,8 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::NOTEOFF:
 			case qtractorMidiEvent::KEYPRESS:
 				return m_pEditor->noteName(pEvent->note());
+			case qtractorMidiEvent::PGMCHANGE:
+				return m_pEditor->programName(pEvent->param());
 			case qtractorMidiEvent::CONTROLLER:
 				return m_pEditor->controllerName(pEvent->controller());
 			case qtractorMidiEvent::REGPARAM:
@@ -352,8 +354,6 @@ QString qtractorMidiEventListModel::itemDisplay (
 				return m_pEditor->nrpnNames().value(pEvent->param());
 			case qtractorMidiEvent::CONTROL14:
 				return m_pEditor->control14Name(pEvent->controller());
-			case qtractorMidiEvent::PGMCHANGE:
-				return m_pEditor->programName(pEvent->param());
 			default:
 				break;
 			}

@@ -369,8 +369,6 @@ public:
 
 	// Default note name map accessor.
 	static const QString defaultNoteName(unsigned char note, bool fDrums = false);
-	// Default program name accessor.
-	static const QString& defaultProgramName(unsigned char prog);
 	// Default controller name accessor.
 	static const QString& defaultControllerName(unsigned char controller);
 
@@ -410,7 +408,6 @@ protected:
 
 	// Update instrument default note names (nb. drum key names).
 	void updateDefaultDrumNoteNames();
-	void updateDefaultProgramNames();
 	void updateDefaultControllerNames();
 	void updateDefaultRpnNames();
 	void updateDefaultNrpnNames();
