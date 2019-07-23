@@ -43,7 +43,7 @@ Weblog:
   https://www.rncbc.org
 
 Qtractor is free, open-source software, distributed under the terms of
-the GNU General Public License (GPL) [18] version 2 or later.
+the GNU General Public License (GPL) [19] version 2 or later.
 
 
 Features
@@ -67,7 +67,7 @@ Features
 - Unlimited undo/redo.
 - Built-in mixer and monitor controls.
 - Built-in connection patchbay control and persistence
-  (a-la QjackCtl [17]).
+  (a-la QjackCtl [18]).
 - LADSPA [5], DSSI [11], native VST [12] and LV2 [13] plug-ins support.
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support, including
@@ -86,7 +86,7 @@ Features
 - Unlimited tempo/time-signature map.
 - Unlimited location/bar markers.
 - MIDI clip editor (matrix/piano roll).
-- MIDI instrument definitions (a-la Cakewalk(tm) (*.ins) [19]);
+- MIDI instrument definitions (a-la Cakewalk(tm) (*.ins) [20]);
   SoundFont (*.sf2) and MIDI Names XML (*.midnam) files also supported.
 - MIDI controller mapping/learn/assignment (mixer and plug-in parameters).
 - MIDI system exclusive (SysEx) setups.
@@ -307,13 +307,16 @@ References
 [16] Non Session Management (NSM)
      http://non.tuxfamily.org/nsm/
 
-[17] QjackCtl - JACK Qt GUI Interface
+[17] libaubio, a library for real time audio labelling
+     https://aubio.org
+
+[18] QjackCtl - JACK Qt GUI Interface
      http://qjackctl.sourceforge.net
 
-[18] GNU General Public License
+[19] GNU General Public License
      https://www.gnu.org/copyleft/gpl.html
 
-[19] Cakewalk, powerful and easy-to-use tools
+[20] Cakewalk, powerful and easy-to-use tools
      for Windows-based music and sound production
      http://www.cakewalk.com/
 
