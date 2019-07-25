@@ -1334,13 +1334,15 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_pOptions->sMessagesLogPath);
 
 	// What style do we create tool childs?
+	QWidget *pParent = NULL;
 	Qt::WindowFlags wflags = Qt::Window;
-	if (m_pOptions->bKeepToolsOnTop)
+	if (m_pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::Tool;
-
+		pParent = this;
+	}
 	// Other child/tools forms are also created right away...
-	m_pConnections = new qtractorConnections(this, wflags);
-	m_pMixer = new qtractorMixer(this, wflags);
+	m_pConnections = new qtractorConnections(pParent, wflags);
+	m_pMixer = new qtractorMixer(pParent, wflags);
 
 	// Make those primordially docked...
 	addDockWidget(Qt::LeftDockWidgetArea, m_pFileSystem, Qt::Vertical);

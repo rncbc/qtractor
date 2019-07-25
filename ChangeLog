@@ -4,6 +4,15 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Mixer, Connections and MIDI clip editor top-level
+  windows shall have no parent, unless when set as
+  always-on-top tool windows. (REGRESSION)
+
+- Make sure compiler flags comply to c++11 as standard.
+
+
 0.9.9  2019-07-24  Summer'19 Beta.
 
 - Fixed editing and display of 'Pgm Change' events on
