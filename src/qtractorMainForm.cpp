@@ -384,7 +384,7 @@ qtractorMainForm::qtractorMainForm (
 	// Install SIGUSR1 signal handler.
 	struct sigaction sigusr1;
 	sigusr1.sa_handler = qtractor_sigusr1_handler;
-	::sigemptyset(&sigusr1.sa_mask);
+	sigemptyset(&sigusr1.sa_mask);
 	sigusr1.sa_flags = 0;
 	sigusr1.sa_flags |= SA_RESTART;
 	::sigaction(SIGUSR1, &sigusr1, NULL);
@@ -402,7 +402,7 @@ qtractorMainForm::qtractorMainForm (
 	// Install SIGTERM/SIGQUIT signal handlers.
 	struct sigaction sigterm;
 	sigterm.sa_handler = qtractor_sigterm_handler;
-	::sigemptyset(&sigterm.sa_mask);
+	sigemptyset(&sigterm.sa_mask);
 	sigterm.sa_flags = 0;
 	sigterm.sa_flags |= SA_RESTART;
 	::sigaction(SIGTERM, &sigterm, NULL);
