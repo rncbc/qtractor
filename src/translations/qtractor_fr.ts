@@ -5837,7 +5837,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5766"/>
         <source>Beat-detection support (libaubio) disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support de détection de battement (libaubio) désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5769"/>
@@ -12224,7 +12224,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="105"/>
         <source>&amp;Detect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Détecter</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="128"/>
@@ -12249,7 +12249,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="221"/>
         <source>&amp;Beats:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Battements :</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="282"/>
@@ -12269,12 +12269,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="37"/>
         <source>Tempo Adjust - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustement du tempo - Qtractor</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="66"/>
         <source>&amp;Tempo:</source>
-        <translation type="unfinished">&amp;Tempo :</translation>
+        <translation>&amp;Tempo :</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="208"/>
@@ -12963,32 +12963,32 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorTrackList.cpp" line="180"/>
         <source>Nr</source>
-        <translation type="unfinished">Nr</translation>
+        <translation>Nr</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="181"/>
         <source>Track Name</source>
-        <translation type="unfinished">Nom de Piste</translation>
+        <translation>Nom de la piste</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="182"/>
         <source>Bus</source>
-        <translation type="unfinished">Bus</translation>
+        <translation>Bus</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="183"/>
         <source>Ch</source>
-        <translation type="unfinished">Can</translation>
+        <translation>Ch</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="184"/>
         <source>Patch</source>
-        <translation type="unfinished">Patch</translation>
+        <translation>Patch</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="185"/>
         <source>Instrument</source>
-        <translation type="unfinished">Instrument</translation>
+        <translation>Instrument</translation>
     </message>
 </context>
 <context>
