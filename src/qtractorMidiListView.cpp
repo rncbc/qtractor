@@ -1,7 +1,7 @@
 // qtractorMidiListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -134,7 +134,7 @@ qtractorMidiListView::qtractorMidiListView ( QWidget *pParent )
 	pHeaderItem->setText(qtractorMidiListView::Tracks, tr("Tracks"));	
 	pHeaderItem->setText(qtractorMidiListView::Resolution, tr("tpqn"));
 	pHeaderItem->setText(qtractorMidiListView::Path, tr("Path"));	
-	pHeaderItem->setText(qtractorMidiListView::LastColumn, QString::null);
+	pHeaderItem->setText(qtractorMidiListView::LastColumn, QString());
 
 	pHeaderItem->setTextAlignment(
 		qtractorMidiListView::Format, Qt::AlignRight);
@@ -192,7 +192,7 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filenames to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
 		sTitle, recentDir(), sFilter, NULL, options);

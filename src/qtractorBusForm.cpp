@@ -1,7 +1,7 @@
 // qtractorBusForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -124,7 +124,7 @@ qtractorBusForm::qtractorBusForm (
 	QHeaderView *pHeader = m_ui.BusListView->header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->resizeSection(0, 140);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 	pHeader->setSectionResizeMode(2, QHeaderView::ResizeToContents);
@@ -587,7 +587,7 @@ bool qtractorBusForm::updateBus ( qtractorBus *pBus )
 		pUpdateBusCommand->setInstrumentName(
 			m_ui.MidiInstrumentComboBox->currentIndex() > 0
 			? m_ui.MidiInstrumentComboBox->currentText()
-			: QString::null);
+			: QString());
 		// Fall thru...
 	case qtractorTrack::None:
 	default:
@@ -703,7 +703,7 @@ void qtractorBusForm::createBus (void)
 		pCreateBusCommand->setInstrumentName(
 			m_ui.MidiInstrumentComboBox->currentIndex() > 0
 			? m_ui.MidiInstrumentComboBox->currentText()
-			: QString::null);
+			: QString());
 		// Fall thru...
 	case qtractorTrack::None:
 	default:

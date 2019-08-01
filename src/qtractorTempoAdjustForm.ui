@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,226 +26,288 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>340</width>
-    <height>260</height>
+    <width>320</width>
+    <height>120</height>
    </rect>
   </property>
   <property name="focusPolicy">
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Tempo - Qtractor</string>
+   <string>Tempo Adjust - Qtractor</string>
   </property>
   <property name="windowIcon">
    <iconset resource="qtractor.qrc">:/images/transportMetro.png</iconset>
   </property>
-  <layout class="QGridLayout">
-   <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="TempoGroupBox">
-     <property name="title">
-      <string>Metronome</string>
-     </property>
-     <layout class="QGridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="TempoTextLabel">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Temp&amp;o:</string>
-        </property>
-        <property name="buddy">
-         <cstring>TempoSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="qtractorTempoSpinBox" name="TempoSpinBox">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Tempo/Time signature</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="TempoPushButton">
-        <property name="text">
-         <string>T&amp;ap</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QGroupBox" name="RangeGroupBox">
-     <property name="title">
-      <string>Range</string>
-     </property>
-     <layout class="QGridLayout">
-      <item row="1" column="0">
-       <widget class="QLabel" name="RangeLengthTextLabel">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>&amp;Length:</string>
-        </property>
-        <property name="buddy">
-         <cstring>RangeLengthSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="RangeBeatsSpinBox">
-        <property name="toolTip">
-         <string>Range beats</string>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>65536</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QPushButton" name="AdjustPushButton">
-        <property name="text">
-         <string>A&amp;djust</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="RangeStartTextLabel">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>&amp;Start:</string>
-        </property>
-        <property name="buddy">
-         <cstring>RangeStartSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="RangeBeatsTextLabel">
-        <property name="minimumSize">
-         <size>
-          <width>60</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>B&amp;eats:</string>
-        </property>
-        <property name="buddy">
-         <cstring>RangeLengthSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="qtractorTimeSpinBox" name="RangeLengthSpinBox">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Range length</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="qtractorTimeSpinBox" name="RangeStartSpinBox">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Range start</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QGroupBox" name="FormatGroupBox">
-     <property name="title">
-      <string>Format</string>
-     </property>
-    <layout class="QVBoxLayout">
-     <item>
-      <widget class="QComboBox" name="FormatComboBox">
-        <property name="toolTip">
-         <string>Time display format</string>
-        </property>
-        <item>
-        <property name="text">
-         <string>Frames</string>
-        </property>
+  <layout class="QVBoxLayout" name="MainBoxLayout">
+   <property name="spacing">
+    <number>8</number>
+   </property>
+   <property name="margin">
+    <number>8</number>
+   </property>
+   <item>
+    <layout class="QGridLayout" name="GroupBoxLayout">
+     <item row="0" column="0" colspan="3">
+      <widget class="QGroupBox" name="TempoGroupBox">
+       <property name="title">
+        <string>Metronome</string>
+       </property>
+       <layout class="QGridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="TempoTextLabel">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&amp;Tempo:</string>
+          </property>
+          <property name="buddy">
+           <cstring>TempoSpinBox</cstring>
+          </property>
+         </widget>
         </item>
-        <item>
-        <property name="text">
-         <string>Time</string>
-        </property>
+        <item row="0" column="1">
+         <widget class="qtractorTempoSpinBox" name="TempoSpinBox">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Tempo/Time signature</string>
+          </property>
+         </widget>
         </item>
-        <item>
-        <property name="text">
-         <string>BBT</string>
-        </property>
+        <item row="0" column="2">
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint">
+           <size>
+            <width>8</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="TempoDetectPushButton">
+          <property name="text">
+           <string>&amp;Detect</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint">
+           <size>
+            <width>8</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="5">
+         <widget class="QPushButton" name="TempoTapPushButton">
+          <property name="text">
+           <string>T&amp;ap</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="6">
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </widget>
      </item>
-     <item>
-      <spacer>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-        </property>
-      </spacer>
+     <item row="1" column="0" colspan="2">
+      <widget class="QGroupBox" name="RangeGroupBox">
+       <property name="title">
+        <string>Range</string>
+       </property>
+       <layout class="QGridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="RangeStartTextLabel">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&amp;Start:</string>
+          </property>
+          <property name="buddy">
+           <cstring>RangeStartSpinBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="qtractorTimeSpinBox" name="RangeStartSpinBox">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Range start</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="RangeLengthTextLabel">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&amp;Length:</string>
+          </property>
+          <property name="buddy">
+           <cstring>RangeLengthSpinBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" colspan="2">
+         <widget class="qtractorTimeSpinBox" name="RangeLengthSpinBox">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Range length</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="RangeBeatsTextLabel">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&amp;Beats:</string>
+          </property>
+          <property name="buddy">
+           <cstring>RangeLengthSpinBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="RangeBeatsSpinBox">
+          <property name="toolTip">
+           <string>Range beats</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>65536</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QPushButton" name="AdjustPushButton">
+          <property name="text">
+           <string>A&amp;djust</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="3">
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QGroupBox" name="FormatGroupBox">
+       <property name="title">
+        <string>Format</string>
+       </property>
+      <layout class="QVBoxLayout">
+       <item>
+        <widget class="QComboBox" name="FormatComboBox">
+          <property name="toolTip">
+           <string>Time display format</string>
+          </property>
+          <item>
+          <property name="text">
+           <string>Frames</string>
+          </property>
+          </item>
+          <item>
+          <property name="text">
+           <string>Time</string>
+          </property>
+          </item>
+          <item>
+          <property name="text">
+           <string>BBT</string>
+          </property>
+          </item>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+          </property>
+        </spacer>
+       </item>
+      </layout>
+      </widget>
      </item>
     </layout>
-    </widget>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item>
     <widget class="QDialogButtonBox" name="DialogButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -272,7 +334,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>TempoSpinBox</tabstop>
-  <tabstop>TempoPushButton</tabstop>
+  <tabstop>TempoDetectPushButton</tabstop>
+  <tabstop>TempoTapPushButton</tabstop>
   <tabstop>RangeStartSpinBox</tabstop>
   <tabstop>RangeLengthSpinBox</tabstop>
   <tabstop>RangeBeatsSpinBox</tabstop>

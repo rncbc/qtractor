@@ -684,7 +684,7 @@ bool qtractorPaletteForm::namedPalette (
 			pal.text().color().lighter(),
 			pal.base(),
 			pal.window());
-	#if QT_VERSION >= 0x050000
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		pal.setColor(QPalette::Disabled,
 			QPalette::Highlight, pal.mid().color());
 		pal.setColor(QPalette::Disabled,
@@ -983,7 +983,7 @@ bool qtractorPaletteForm::PaletteModel::setData (
 					index_begin = PaletteModel::index(QPalette::Base, 0);
 					break;
 				case QPalette::Highlight:
-					m_palette.setBrush(QPalette::Disabled, QPalette::Highlight, color.dark(120));
+					m_palette.setBrush(QPalette::Disabled, QPalette::Highlight, color.darker(120));
 					break;
 				default:
 					m_palette.setBrush(QPalette::Disabled, cr, color);

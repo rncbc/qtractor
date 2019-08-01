@@ -30,7 +30,6 @@
 #include "qtractorMidiManager.h"
 
 #include "qtractorMainForm.h"
-
 #include "qtractorOptions.h"
 
 #include "qtractorSession.h"
@@ -49,7 +48,7 @@
 #include <math.h>
 
 
-#if QT_VERSION < 0x040500
+#if QT_VERSION < QT_VERSION_CHECK(4, 5, 0)
 namespace Qt {
 const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
@@ -877,7 +876,7 @@ bool qtractorPlugin::isDirectAccessParam (void) const
 // Write the value to the display item.
 void qtractorPlugin::updateDirectAccessParam (void)
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	QListIterator<qtractorPluginListView *> iter(m_pList->views());
 	while (iter.hasNext())
 		iter.next()->viewport()->update();

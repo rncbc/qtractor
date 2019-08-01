@@ -1,7 +1,7 @@
 // qtractorAudioFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,8 +65,8 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 		pFormat->type = SndFile;
 		pFormat->name = QString(sffinfo.name)
 			.replace('/', '-')	// Replace some illegal characters.
-			.replace('(', QString::null)
-			.replace(')', QString::null);
+			.replace('(', QString())
+			.replace(')', QString());
 		pFormat->ext  = sffinfo.extension;
 		pFormat->data = sffinfo.format;
 		m_formats.append(pFormat);

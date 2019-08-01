@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -44,6 +44,10 @@
 #include <QKeyEvent>
 
 #include <QToolTip>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+#define horizontalAdvance  width
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -107,7 +111,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		return;
 	
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+//	painter.initFrom(this);
 
 	// Draw the time scale...
 	//
@@ -139,7 +143,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				const QString& sBeat = QString::number(iBar + 1);
 				painter.setPen(pal.windowText().color());
 				painter.drawText(x1, y1, sBeat);
-				x1 += fm.width(sBeat) + 2;
+				x1 += fm.horizontalAdvance(sBeat) + 2;
 			}
 			x1 += 2;
 			if (iBeat == pNode->beat) {
@@ -150,7 +154,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 					.arg(1 << pNode->beatDivisor);
 				painter.setPen(Qt::darkGray);
 				painter.drawText(x1, y1, sTempo);
-				x1 += fm.width(sTempo) + 2;
+				x1 += fm.horizontalAdvance(sTempo) + 2;
 			}
 		}
 		pNode = cursor.seekBeat(++iBeat);

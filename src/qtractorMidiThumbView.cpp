@@ -114,7 +114,7 @@ void qtractorMidiThumbView::updateContents (void)
 		return;
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+//	painter.initFrom(this);
 
 	// Local contents length (in ticks).
 	const int cw = m_pEditor->editView()->contentsWidth() + 1;

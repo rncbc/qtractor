@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -112,7 +112,7 @@ void qtractorThumbView::updateContents (void)
 		return;
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+//	painter.initFrom(this);
 
 	// Local contents length (in frames).
 	m_iContentsLength = pSession->sessionEnd();

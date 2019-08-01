@@ -163,7 +163,7 @@ void qtractorMidiEventListModel::reset (void)
 	m_pEvent = NULL;
 	m_iEvent = 0;
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	QAbstractItemModel::beginResetModel();
 	QAbstractItemModel::endResetModel();
 #else
@@ -344,6 +344,8 @@ QString qtractorMidiEventListModel::itemDisplay (
 			case qtractorMidiEvent::NOTEOFF:
 			case qtractorMidiEvent::KEYPRESS:
 				return m_pEditor->noteName(pEvent->note());
+			case qtractorMidiEvent::PGMCHANGE:
+				return m_pEditor->programName(pEvent->param());
 			case qtractorMidiEvent::CONTROLLER:
 				return m_pEditor->controllerName(pEvent->controller());
 			case qtractorMidiEvent::REGPARAM:
@@ -590,6 +592,9 @@ void qtractorMidiEventItemDelegate::setEditorData ( QWidget *pEditor,
 			if (pEvent->type() == qtractorMidiEvent::PITCHBEND)
 				pSpinBox->setValue(pEvent->pitchBend());
 			else
+			if (pEvent->type() == qtractorMidiEvent::PGMCHANGE)
+				pSpinBox->setValue(pEvent->param());
+			else
 				pSpinBox->setValue(pEvent->value());
 		}
 		break;
@@ -748,17 +753,13 @@ void qtractorMidiEventListView::setEditor ( qtractorMidiEditor *pEditor )
 	QHeaderView *pHeader = QTreeView::header();
 //	pHeader->setDefaultAlignment(Qt::AlignLeft);
 	pHeader->setDefaultSectionSize(80);
-#if QT_VERSION >= 0x050000
-//	pHeader->setSectionResizeMode(QHeaderView::Custom);
-	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	pHeader->setSectionsMovable(false);
 #else
-//	pHeader->setResizeMode(QHeaderView::Custom);
-	pHeader->setResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setMovable(false);
 #endif
 	pHeader->resizeSection(2, 60); // Name
-	pHeader->resizeSection(3, 40); // Value
+	pHeader->resizeSection(3, 60); // Value
 	pHeader->setStretchLastSection(true);
 }
 

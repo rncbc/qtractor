@@ -717,7 +717,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		QString sArg = args.at(i);
 
 	#ifdef CONFIG_JACK_SESSION
-		QString sVal = QString::null;
+		QString sVal;
 		int iEqual = sArg.indexOf('=');
 		if (iEqual >= 0) {
 			sVal = sArg.right(sArg.length() - iEqual - 1);
@@ -773,7 +773,7 @@ void qtractorOptions::loadWidgetGeometry ( QWidget *pWidget, bool bVisible )
 	if (pWidget) {
 	//	if (bVisible) pWidget->show(); -- force initial exposure?
 		m_settings.beginGroup("/Geometry/" + pWidget->objectName());
-	#if QT_VERSION >= 0x050000
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		const QByteArray& geometry
 			= m_settings.value("/geometry").toByteArray();
 		if (!geometry.isEmpty())
@@ -810,7 +810,7 @@ void qtractorOptions::saveWidgetGeometry ( QWidget *pWidget, bool bVisible )
 	// only save the form geometry while its up and visible)
 	if (pWidget) {
 		m_settings.beginGroup("/Geometry/" + pWidget->objectName());
-	#if QT_VERSION >= 0x050000
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		m_settings.setValue("/geometry", pWidget->saveGeometry());
 	#else//--SAVE_OLD_GEOMETRY
 		const QPoint& wpos  = pWidget->pos();

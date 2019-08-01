@@ -1,20 +1,20 @@
 Source: qtractor
-Section: sound
+Section: contrib/sound
 Priority: extra
 Maintainer: Rui Nuno Capela <rncbc@rncbc.org>
 Build-Depends: debhelper (>= 5), automake, pkg-config,
   qtchooser, qtbase5-dev (>= 5.1), qtbase5-dev-tools (>= 5.1),
-  qttools5-dev-tools (>= 5.1), libjack2-dev, libasound2-dev,
+  qttools5-dev-tools (>= 5.1), libjack-dev, libasound2-dev,
   libsndfile-dev, ladspa-sdk, libvorbis-dev, libsamplerate-dev,
   librubberband-dev, dssi-dev, liblo0-dev, libmad-dev, libz-dev,
   lv2-dev, liblilv-dev, libsratom-dev, libsord-dev, libserd-dev,
   libsuil-dev, libgtk2.0-dev, libx11-dev, x11proto-core-dev,
-  libqt5x11extras5-dev (>= 5.1), zlib1g-dev
-Standards-Version: 3.7.2
+  libqt5x11extras5-dev (>= 5.1)
+Standards-Version: 3.9.7
 
 Package: qtractor
 Architecture: any
-Depends: libjack2, ${shlibs:Depends}, ${misc:Depends}
+Depends: libjack0, ${shlibs:Depends}, ${misc:Depends}
 Description: An Audio/MIDI multi-track sequencer.
   Qtractor is an Audio/MIDI multi-track sequencer application
   written in C++ with the Qt framework. Target platform will be

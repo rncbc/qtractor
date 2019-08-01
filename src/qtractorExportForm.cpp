@@ -418,7 +418,7 @@ void qtractorExportForm::browseExportPath (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	sExportPath = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, sExportPath, sFilter, NULL, options);
 #else

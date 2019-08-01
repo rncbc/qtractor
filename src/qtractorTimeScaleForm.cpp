@@ -167,7 +167,7 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 
 	QHeaderView *pHeader = m_ui.TimeScaleListView->header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setSectionsMovable(false);

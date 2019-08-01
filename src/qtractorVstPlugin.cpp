@@ -27,14 +27,14 @@
 
 #include "qtractorPluginForm.h"
 
-#include "qtractorMidiManager.h"
-
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorMidiManager.h"
+
+#include "qtractorOptions.h"
 
 #if 0//QTRACTOR_VST_EDITOR_TOOL
 #include "qtractorMainForm.h"
-#include "qtractorOptions.h"
 #endif
 
 #include <QApplication>
@@ -42,7 +42,7 @@
 #include <QFileInfo>
 
 
-#if QT_VERSION < 0x040500
+#if QT_VERSION < QT_VERSION_CHECK(4, 5, 0)
 namespace Qt {
 const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
@@ -53,7 +53,7 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 
 #include <QX11Info>
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
@@ -113,7 +113,7 @@ const int effFlagsProgramChunks = 32;
 // qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 
 static int g_iXError = 0;
 
@@ -185,7 +185,7 @@ public:
 		: QWidget(pParent, wflags),
 	#ifdef CONFIG_VST_X11
 		m_pDisplay(QX11Info::display()),
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		m_wVstEditor(0),
 		m_pVstEventProc(NULL),
 		m_bButtonPress(false),
@@ -193,7 +193,8 @@ public:
 		m_pWindow(NULL),
 	#endif
 	#endif	// CONFIG_VST_X11
-		m_pVstPlugin(NULL) {}
+		m_pVstPlugin(NULL)
+		{ QWidget::setAttribute(Qt::WA_QuitOnClose, false); }
 
 	// Destructor.
 	~EditorWidget() { close(); }
@@ -208,7 +209,7 @@ public:
 		void *ptr = NULL;
 	#ifdef CONFIG_VST_X11
 		value = (long) m_pDisplay;
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		ptr = (void *) QWidget::winId();
 	#else
 		m_pWindow = new QWindow();
@@ -242,7 +243,7 @@ public:
 		}
 
 	#ifdef CONFIG_VST_X11
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) QWidget::winId());
 		if (m_wVstEditor)
 			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
@@ -267,7 +268,7 @@ public:
 			g_vstEditors.removeAt(iIndex);
 
 	#ifdef CONFIG_VST_X11
-	#if QT_VERSION >= 0x050000
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		if (m_pWindow) {
 			m_pWindow->destroy();
 			delete m_pWindow;
@@ -277,7 +278,7 @@ public:
 	}
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	// Local X11 event filter.
 	bool x11EventFilter(XEvent *pEvent)
 	{
@@ -333,7 +334,7 @@ protected:
 	}
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	void moveEvent(QMoveEvent *pMoveEvent)
 	{
 		QWidget::moveEvent(pMoveEvent);
@@ -350,7 +351,7 @@ private:
 	// Instance variables...
 #ifdef CONFIG_VST_X11
 	Display   *m_pDisplay;
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	Window     m_wVstEditor;
 	XEventProc m_pVstEventProc;
 	bool       m_bButtonPress;
@@ -1110,7 +1111,9 @@ unsigned long qtractorVstPlugin::latency (void) const
 		return 0;
 
 #ifdef CONFIG_VESTIGE
-	return *(VstInt32 *) &(pVstEffect->empty3[0]);
+	const VstInt32 *pInitialDelay
+		= (VstInt32 *) &(pVstEffect->empty3[0]);
+	return *pInitialDelay;
 #else
 	return pVstEffect->initialDelay;
 #endif
@@ -1313,7 +1316,7 @@ qtractorVstPlugin *qtractorVstPlugin::findPlugin ( AEffect *pVstEffect )
 
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 
 // Global X11 event filter.
 bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
@@ -1552,7 +1555,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 	pvfs->reserved = 0;
 	pvfs->nbReturnPath = 0;
 
-    if (pvfs->command == kVstFileLoad || pvfs->command == kVstFileSave) {
+	if (pvfs->command == kVstFileLoad || pvfs->command == kVstFileSave) {
 		QString sFilename;
 		QStringList filters;
 		for (int i = 0; i < pvfs->nbFileTypes; ++i) {
@@ -1567,7 +1570,10 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		const QString& sDirectory = pvfs->initialPath;
 		const QString& sFilter = filters.join(";;");
-		const QFileDialog::Options options = QFileDialog::DontUseNativeDialog;
+		QFileDialog::Options options = 0;
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions && pOptions->bDontUseNativeDialogs)
+			options |= QFileDialog::DontUseNativeDialog;
 		if (pvfs->command == kVstFileLoad) {
 			sFilename = QFileDialog::getOpenFileName(
 				pParentWidget, sTitle, sDirectory, sFilter, NULL, options);
@@ -1606,7 +1612,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 		}
 	}
 
-    return pvfs->nbReturnPath;
+	return pvfs->nbReturnPath;
 }
 
 

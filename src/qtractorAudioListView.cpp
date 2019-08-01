@@ -1,7 +1,7 @@
 // qtractorAudioListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -113,7 +113,7 @@ qtractorAudioListView::qtractorAudioListView ( QWidget *pParent )
 	pHeaderItem->setText(qtractorAudioListView::Rate, tr("Rate"));
 	pHeaderItem->setText(qtractorAudioListView::Time, tr("Time"));
 	pHeaderItem->setText(qtractorAudioListView::Path, tr("Path"));
-	pHeaderItem->setText(qtractorAudioListView::LastColumn, QString::null);
+	pHeaderItem->setText(qtractorAudioListView::LastColumn, QString());
 
 	pHeaderItem->setTextAlignment(
 		qtractorAudioListView::Channels, Qt::AlignRight);
@@ -149,7 +149,7 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
 		sTitle, recentDir(), sFilter, NULL, options);

@@ -24,7 +24,7 @@
 
 #ifdef CONFIG_LIBZ
 #include "qtractorZipFile.h"
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QTemporaryDir>
 #endif
 #endif
@@ -380,7 +380,7 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 			// SFZ archive conversion...
 			sAlias = m_pZipFile->alias(sPath, sName, true);
 			const QChar sep = QDir::separator();
-		#if QT_VERSION >= 0x050000
+		#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 			QTemporaryDir temp_dir(QDir::tempPath() + sep + m_sName + '.');
 			temp_dir.setAutoRemove(false);
 			const QFileInfo temp(temp_dir.path() + sep + sAlias);

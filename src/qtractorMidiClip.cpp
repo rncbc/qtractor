@@ -47,7 +47,7 @@
 #include <QDomDocument>
 
 
-#if QT_VERSION < 0x040500
+#if QT_VERSION < QT_VERSION_CHECK(4, 5, 0)
 namespace Qt {
 const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
@@ -1116,7 +1116,7 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		// Build up the editor form...
 		// What style do we create tool childs?
 		Qt::WindowFlags wflags = Qt::Window;
-	#if 0//QTRACTOR_MIDI_EDITOR_PARENT
+	#if 0//QTRACTOR_MIDI_EDITOR_TOOL
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop) {
 			wflags |= Qt::Tool;

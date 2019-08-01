@@ -46,7 +46,7 @@
 #include <QDateTime>
 #include <QDir>
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QDesktopServices>
 #else
 #include <QStandardPaths>
@@ -900,7 +900,7 @@ QString qtractorPluginFactory::Scanner::cacheFilePath (void) const
 		+ qtractorPluginType::textFromHint(m_typeHint).toLower()
 		+ "_scan.cache";
 	const QString& sCacheDir
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		= QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
 #else
 		= QStandardPaths::writableLocation(QStandardPaths::CacheLocation);

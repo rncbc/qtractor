@@ -355,6 +355,8 @@ public:
 
 	// Note name map accessor.
 	const QString noteName(unsigned char note) const;
+	// Program name map accessor.
+	const QString& programName(unsigned char prog) const;
 	// Controller name map accessor.
 	const QString& controllerName(unsigned char controller) const;
 
@@ -591,7 +593,8 @@ private:
 		ResizeNoteLeft,
 		ResizeValue,
 		ResizeValue14,
-		ResizePitchBend
+		ResizePitchBend,
+		ResizePgmChange
 	} m_resizeMode;
 
 	// The current selecting/dragging stuff.
@@ -678,9 +681,9 @@ private:
 	}	g_clipboard;
 
 	// Instrument defined names for current clip/track.
-	QHash<unsigned char,  QString> m_noteNames;
-	QHash<unsigned char,  QString> m_controllerNames;
-
+	QHash<unsigned char, QString> m_noteNames;
+	QHash<unsigned char, QString> m_programNames;
+	QHash<unsigned char, QString> m_controllerNames;
 	QMap<unsigned short, QString> m_rpnNames;
 	QMap<unsigned short, QString> m_nrpnNames;
 

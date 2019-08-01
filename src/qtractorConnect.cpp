@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,7 +41,7 @@
 #include <QDropEvent>
 #include <QContextMenuEvent>
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QMimeData>
 #include <QDrag>
 #endif
@@ -436,7 +436,7 @@ qtractorClientListView::qtractorClientListView ( QWidget *pParent )
 	QHeaderView *pHeader = QTreeWidget::header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
 //	pHeader->setDefaultSectionSize(120);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionsMovable(false);
 	pHeader->setSectionsClickable(true);
@@ -552,7 +552,7 @@ void qtractorClientListView::setClientName ( const QString& sClientName )
 	m_rxClientName.setPattern(sClientName);
 
 	if (sClientName.isEmpty())
-		m_rxPortName.setPattern(QString::null);
+		m_rxPortName.setPattern(QString());
 }
 
 QString qtractorClientListView::clientName (void) const

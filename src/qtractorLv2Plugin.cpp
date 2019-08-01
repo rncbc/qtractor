@@ -762,7 +762,7 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI__Qt5UI	LV2_UI_PREFIX "Qt5UI"
 #endif
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #define LV2_UI_HOST_URI	LV2_UI__Qt4UI
 #else
 #define LV2_UI_HOST_URI	LV2_UI__Qt5UI
@@ -1358,7 +1358,7 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 
 
 #ifdef CONFIG_LV2_UI
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 
 #ifdef CONFIG_LV2_UI_GTK2
 
@@ -1480,36 +1480,42 @@ bool qtractorLv2PluginType::open (void)
 			}
 		#ifdef CONFIG_LV2_EVENT
 			else
-			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_event_class) ||
-				lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class)) {
-				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class))
+			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_event_class)) {
+				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class)) {
 					++m_iEventIns;
+					if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class))
+						++m_iMidiIns;
+				}
 				else
-				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class))
+				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class)) {
 					++m_iEventOuts;
+					if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class))
+						++m_iMidiOuts;
+				}
 			}
 		#endif
 		#ifdef CONFIG_LV2_ATOM
 			else
 			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_atom_class)) {
-				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class))
+				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class)) {
 					++m_iAtomIns;
+					if (lilv_port_supports_event(
+							m_lv2_plugin, port, g_lv2_midi_class) ||
+						lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class))
+						++m_iMidiIns;
+				}
 				else
-				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class))
+				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class)) {
 					++m_iAtomOuts;
+					if (lilv_port_supports_event(
+							m_lv2_plugin, port, g_lv2_midi_class) ||
+						lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class))
+						++m_iMidiOuts;
+				}
 			}
 		#endif
 		}
 	}
-
-#ifdef CONFIG_LV2_EVENT
-	m_iMidiIns  += m_iEventIns;
-	m_iMidiOuts += m_iEventOuts;
-#endif
-#ifdef CONFIG_LV2_ATOM
-	m_iMidiIns  += m_iAtomIns;
-	m_iMidiOuts += m_iAtomOuts;
-#endif
 
 	// Cache flags.
 	m_bRealtime = lilv_plugin_has_feature(m_lv2_plugin, g_lv2_realtime_hint);
@@ -1550,7 +1556,7 @@ bool qtractorLv2PluginType::open (void)
 			else
 			if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class))
 				++uis_count;
-		#if QT_VERSION < 0x050000
+		#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 			else
 			if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
 				++uis_count;
@@ -2161,7 +2167,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_UI_SHOW
 		, m_lv2_ui_show_interface(NULL)
 	#endif
-	#if QT_VERSION >= 0x050100
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 	#ifdef CONFIG_LV2_UI_GTK2
 		, m_pGtkWindow(NULL)
 		, m_pQtWindow(NULL)
@@ -2878,10 +2884,12 @@ void qtractorLv2Plugin::process (
 
 #if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
 	qtractorMidiManager *pMidiManager = NULL;
+	const unsigned short iMidiIns  = midiIns();
+	const unsigned short iMidiOuts = midiOuts();
+	if ((iMidiIns + iMidiOuts) > 0)
+		pMidiManager = list()->midiManager();
 	qtractorLv2PluginType *pLv2Type
 		= static_cast<qtractorLv2PluginType *> (type());
-	if (pLv2Type->midiIns() > 0)
-		pMidiManager = list()->midiManager();
 #ifdef CONFIG_LV2_EVENT
 	const unsigned short iEventIns  = pLv2Type->eventIns();
 	const unsigned short iEventOuts = pLv2Type->eventOuts();
@@ -3064,12 +3072,20 @@ void qtractorLv2Plugin::process (
 #endif	// CONFIG_LV2_ATOM
 
 #ifdef CONFIG_LV2_EVENT
-	if (pMidiManager && iEventOuts > 0)
-		pMidiManager->lv2_events_swap();
+	if (pMidiManager && iEventOuts > 0) {
+		if (iMidiOuts > 0)
+			pMidiManager->lv2_events_swap();
+		else
+			pMidiManager->resetOutputBuffers();
+	}
 #endif
 #ifdef CONFIG_LV2_ATOM
-	if (pMidiManager && iAtomOuts > 0)
-		pMidiManager->lv2_atom_buffer_swap();
+	if (pMidiManager && iAtomOuts > 0) {
+		if (iMidiOuts > 0)
+			pMidiManager->lv2_atom_buffer_swap();
+		else
+			pMidiManager->resetOutputBuffers();
+	}
 #endif
 }
 
@@ -3111,7 +3127,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		else
 		if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class))
 			ui_map.insert(LV2_UI_TYPE_GTK, ui);
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		else
 		if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
 			ui_map.insert(LV2_UI_TYPE_QT4, ui);
@@ -3161,7 +3177,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 				case LV2_UI_TYPE_GTK:
 					pRadioButton = new QRadioButton(QObject::tr("Gtk2"));
 					break;
-			#if QT_VERSION < 0x050000
+			#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 				case LV2_UI_TYPE_QT4:
 					pRadioButton = new QRadioButton(QObject::tr("Qt4"));
 					break;
@@ -3220,7 +3236,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	case LV2_UI_TYPE_GTK:
 		ui_type_uri = LV2_UI__GtkUI;
 		break;
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	case LV2_UI_TYPE_QT4:
 		ui_type_uri = LV2_UI__Qt4UI;
 		break;
@@ -3288,7 +3304,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 			sizeof(float), 0, &m_pfControlOuts[j]);
 	}
 
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_X11
 	if (!ui_supported && m_pQtWidget
 		&& m_lv2_ui_type == LV2_UI_TYPE_X11) {
@@ -3330,6 +3346,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		QWindow *pQtWindow = QWindow::fromWinId(wid);
 		// Create the new parent frame...
 		QWidget *pQtWidget = new QWidget(NULL, Qt::Window);
+		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		QWidget *pQtContainer = QWidget::createWindowContainer(pQtWindow, pQtWidget);
 		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
 		pVBoxLayout->setMargin(0);
@@ -3427,7 +3444,7 @@ void qtractorLv2Plugin::closeEditor (void)
 	m_lv2_ui_idle_interface	= NULL;
 #endif
 
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 	if (m_pQtWindow) {
 		m_pQtWindow->setParent(NULL);
@@ -3689,7 +3706,7 @@ void qtractorLv2Plugin::updateEditorTitleEx (void)
 	if (m_lv2_ui_widget && m_lv2_ui_type == LV2_UI_TYPE_EXTERNAL)
 		m_lv2_ui_external_host.plugin_human_id = m_aEditorTitle.constData();
 #endif
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 #ifdef CONFIG_LV2_UI_SHOW
 	else
@@ -3717,7 +3734,7 @@ void qtractorLv2Plugin::saveEditorPos (void)
 
 	if (m_pQtWidget && m_pQtWidget->isVisible())
 		posEditor = m_pQtWidget->pos();
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 #ifdef CONFIG_LV2_UI_SHOW
 	else
@@ -3749,7 +3766,7 @@ void qtractorLv2Plugin::loadEditorPos (void)
 
 	if (m_pQtWidget)
 		moveWidgetPos(m_pQtWidget, posEditor);
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 #ifdef CONFIG_LV2_UI_SHOW
 	else
@@ -4039,11 +4056,12 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_touch_feature;
 #endif
 
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_X11
 	if (m_lv2_ui_type == LV2_UI_TYPE_X11) {
 		// Create the new parent frame...
 		QWidget *pQtWidget = new QWidget(NULL, Qt::Window);
+		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		// Add/prepare some needed features...
 		m_lv2_ui_resize.handle = pQtWidget;
 		m_lv2_ui_resize.ui_resize = qtractor_lv2_ui_resize;

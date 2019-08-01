@@ -330,6 +330,10 @@ public:
 	void processInputBuffer(
 		qtractorMidiInputBuffer *pMidiInputBuffer, unsigned long t0 = 0);
 
+	// Reset event buffers (input/output only)
+	void resetInputBuffers();
+	void resetOutputBuffers();
+
 protected:
 
 	// Audio output (de)activation methods.
@@ -339,8 +343,7 @@ protected:
 	// Process/decode into other/plugin event buffers...
 	void processEventBuffers();
 
-	// Reset/swap event buffers (in for out and vice-versa)
-	void resetEventBuffers();
+	// Swap event buffers (in for out and vice-versa)
 	void swapEventBuffers();
 
 private:

@@ -83,7 +83,7 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 
 	QHeaderView *pHeader = m_ui.FilesListView->header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setSectionsMovable(false);
@@ -95,7 +95,7 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 
 	pHeader = m_ui.ControlMapListView->header();
 	pHeader->setDefaultAlignment(Qt::AlignLeft);
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 //	pHeader->setSectionResizeMode(QHeaderView::Custom);
 	pHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
 	pHeader->setSectionsMovable(false);
@@ -247,7 +247,7 @@ void qtractorMidiControlForm::importSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
 		sTitle, pOptions->sMidiControlDir, sFilter, NULL, options);
@@ -471,7 +471,7 @@ void qtractorMidiControlForm::exportSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sPath = QFileDialog::getSaveFileName(pParentWidget,
 		sTitle, sPath, sFilter, NULL, options);

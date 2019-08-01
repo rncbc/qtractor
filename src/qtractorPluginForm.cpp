@@ -75,6 +75,8 @@ qtractorPluginForm::qtractorPluginForm (
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
+	QWidget::setAttribute(Qt::WA_QuitOnClose, false);
+
 	const QFont& font = QWidget::font();
 	QWidget::setFont(QFont(font.family(), font.pointSize() - 1));
 
@@ -571,7 +573,7 @@ void qtractorPluginForm::openPresetSlot (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to save...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, pOptions->sPresetDir, sFilter, NULL, options);
@@ -666,7 +668,7 @@ void qtractorPluginForm::savePresetSlot (void)
 				options |= QFileDialog::DontUseNativeDialog;
 				pParentWidget = QWidget::window();
 			}
-		#if 1//QT_VERSION < 0x040400
+		#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 			// Ask for the filename to save...
 			sFilename = QFileDialog::getSaveFileName(pParentWidget,
 				sTitle, sFilename, sFilter, NULL, options);
@@ -1567,7 +1569,7 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
 		sTitle, sFilename, QString(), NULL, options);
 #else

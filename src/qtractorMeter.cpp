@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,6 +39,10 @@
 #include <QResizeEvent>
 
 #include <math.h>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+#define horizontalAdvance  width
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -81,7 +85,7 @@ void qtractorMeterScale::drawLineLabel ( QPainter *p,
 	const int iMidHeight = (fm.height() >> 1);
 
 	if (iCurrY < iMidHeight || iCurrY > (m_iLastY + iMidHeight)) {
-		if (fm.width(sLabel) < iWidth - 5)
+		if (fm.horizontalAdvance(sLabel) < iWidth - 5)
 			p->drawLine(iWidth - 3, iCurrY, iWidth - 1, iCurrY);
 		p->drawText(0, iCurrY - iMidHeight, iWidth - 3, fm.height(),
 			Qt::AlignHCenter | Qt::AlignVCenter, sLabel);

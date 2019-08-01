@@ -64,7 +64,7 @@ class qtractorLv2Worker;
 // LV2 External UI support.
 #include "lv2_external_ui.h"
 #endif
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 #include <QWindow>
 #endif	// CONFIG_LV2_UI_GTK2
@@ -572,7 +572,7 @@ private:
 	const LV2UI_Show_Interface *m_lv2_ui_show_interface;
 #endif
 
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_GTK2
 	struct _GtkWidget *m_pGtkWindow;
 	QWindow           *m_pQtWindow;

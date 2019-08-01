@@ -51,7 +51,7 @@
 #endif
 #endif
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #define CONFIG_PLUGINSDIR CONFIG_LIBDIR "/qt4/plugins"
 #else
 #define CONFIG_PLUGINSDIR CONFIG_LIBDIR "/qt5/plugins"
@@ -72,7 +72,7 @@
 
 #define QTRACTOR_XUNIQUE "qtractorApplication"
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
 
 #include <unistd.h> /* for gethostname() */
@@ -137,7 +137,7 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 		}
 	}
 #ifdef CONFIG_XUNIQUE
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
 	m_pDisplay = NULL;
 	m_aUnique = 0;
@@ -155,7 +155,7 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 qtractorApplication::~qtractorApplication (void)
 {
 #ifdef CONFIG_XUNIQUE
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	if (m_pServer) {
 		m_pServer->close();
 		delete m_pServer;
@@ -176,7 +176,7 @@ void qtractorApplication::setMainWidget ( QWidget *pWidget )
 {
 	m_pWidget = pWidget;
 #ifdef CONFIG_XUNIQUE
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
 	m_wOwner = m_pWidget->winId();
 	if (m_pDisplay && m_wOwner) {
@@ -195,7 +195,7 @@ void qtractorApplication::setMainWidget ( QWidget *pWidget )
 bool qtractorApplication::setup (void)
 {
 #ifdef CONFIG_XUNIQUE
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
 	m_pDisplay = QX11Info::display();
 	if (m_pDisplay) {
@@ -304,7 +304,7 @@ bool qtractorApplication::setup (void)
 }
 
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 
 #ifdef CONFIG_X11
 #ifdef CONFIG_XUNIQUE
@@ -470,7 +470,7 @@ int main ( int argc, char **argv )
 #endif
 #endif
 	qtractorApplication app(argc, argv);
-#if QT_VERSION >= 0x050600
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
 	app.setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 	// Construct default settings; override with command line arguments.

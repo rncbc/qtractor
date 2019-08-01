@@ -40,7 +40,7 @@
 #include <aeffectx.h>
 #endif
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #if defined(Q_WS_X11)
 #define CONFIG_VST_X11
 #endif
@@ -191,7 +191,7 @@ public:
 	class EditorWidget;
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	// Global X11 event filter.
 	static bool x11EventFilter(void *pvEvent);
 #endif

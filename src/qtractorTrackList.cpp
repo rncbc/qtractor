@@ -69,7 +69,7 @@
 #include <QPainter>
 #include <QUrl>
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QMimeData>
 #endif
 
@@ -1242,7 +1242,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 	m_pixmap.fill(pal.window().color());
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(pViewport);
+//	painter.initFrom(pViewport);
 
 	// Update actual contents size...
 	m_pHeader->setOffset(cx);
