@@ -2807,7 +2807,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5766"/>
         <source>Beat-detection support (libaubio) disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suporte a Detecção de ritmo (libaudio) desabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5800"/>
@@ -12235,17 +12235,17 @@ Deseja aplicar as modificações?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="37"/>
         <source>Tempo Adjust - Qtractor</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuste de Andamento - Qtractor</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="66"/>
         <source>&amp;Tempo:</source>
-        <translation type="unfinished">&amp;Andamento:</translation>
+        <translation>&amp;Andamento:</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="105"/>
         <source>&amp;Detect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Detectar</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="192"/>
@@ -12255,7 +12255,7 @@ Deseja aplicar as modificações?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="221"/>
         <source>&amp;Beats:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pulsação:</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="244"/>
