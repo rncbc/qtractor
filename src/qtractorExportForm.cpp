@@ -56,7 +56,7 @@ qtractorExportForm::qtractorExportForm (
 
 	// Initialize dirty control state.
 	m_exportType = qtractorTrack::None;
-	m_pTimeScale = NULL;
+	m_pTimeScale = nullptr;
 
 	// Try to restore old window positioning.
 	adjustSize();
@@ -129,7 +129,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	m_exportType = exportType;
 
 	QIcon icon;
-	qtractorEngine  *pEngine  = NULL;
+	qtractorEngine  *pEngine  = nullptr;
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Copy from global time-scale instance...
@@ -395,7 +395,7 @@ void qtractorExportForm::reject (void)
 void qtractorExportForm::browseExportPath (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	QString sExportPath = m_ui.ExportPathComboBox->currentText();
@@ -411,7 +411,7 @@ void qtractorExportForm::browseExportPath (void)
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
@@ -420,7 +420,7 @@ void qtractorExportForm::browseExportPath (void)
 	}
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	sExportPath = QFileDialog::getSaveFileName(pParentWidget,
-		sTitle, sExportPath, sFilter, NULL, options);
+		sTitle, sExportPath, sFilter, nullptr, options);
 #else
 	QFileDialog fileDialog(pParentWidget,
 		sTitle, sExportPath, sFilter);
@@ -473,7 +473,7 @@ void qtractorExportForm::browseExportPath (void)
 void qtractorExportForm::rangeChanged (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	if (m_ui.SessionRangeRadioButton->isChecked()) {
@@ -534,7 +534,7 @@ void qtractorExportForm::formatChanged ( int iDisplayFormat )
 void qtractorExportForm::stabilizeForm (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	m_ui.LoopRangeRadioButton->setEnabled(pSession->isLooping());
@@ -550,7 +550,7 @@ void qtractorExportForm::stabilizeForm (void)
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
 		!m_ui.ExportPathComboBox->currentText().isEmpty() &&
-		m_ui.ExportBusNameListBox->currentItem() != NULL &&
+		m_ui.ExportBusNameListBox->currentItem() != nullptr &&
 		m_ui.ExportStartSpinBox->value() < m_ui.ExportEndSpinBox->value());
 }
 

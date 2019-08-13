@@ -216,7 +216,7 @@ class qtractorAudioPeakFactory : public QObject
 public:
 
 	// Constructor.
-	qtractorAudioPeakFactory(QObject *pParent = NULL);
+	qtractorAudioPeakFactory(QObject *pParent = nullptr);
 	// Default destructor.
 	~qtractorAudioPeakFactory();
 
@@ -236,7 +236,7 @@ public:
 	void notifyPeakEvent();
 
 	// Base sync method.
-	void sync(qtractorAudioPeakFile *pPeakFile = NULL);
+	void sync(qtractorAudioPeakFile *pPeakFile = nullptr);
 
 	// Cleanup method.
 	void cleanup();

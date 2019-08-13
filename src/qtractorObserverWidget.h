@@ -1,7 +1,7 @@
 // qtractorObserverWidget.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -74,11 +74,11 @@ public:
 
 	// Constructor.
 	qtractorObserverWidget(QWidget *pParent = 0)
-		: Widget(pParent), m_pInterface(NULL), m_observer(NULL, this) {}
+		: Widget(pParent), m_pInterface(nullptr), m_observer(nullptr, this) {}
 
 	// Destructor.
 	~qtractorObserverWidget()
-		{ setInterface(NULL); }
+		{ setInterface(nullptr); }
 
 	// Setup.
 	void setSubject(qtractorSubject *pSubject)

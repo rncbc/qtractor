@@ -777,7 +777,7 @@ bool qtractorMidiEditorForm::queryClose (void)
 int qtractorMidiEditorForm::querySave (
 	const QString& sFilename, QWidget *pParent )
 {
-	if (pParent == NULL)
+	if (pParent == nullptr)
 		pParent = qtractorMainForm::getInstance();
 
 	return (QMessageBox::warning(pParent,
@@ -926,11 +926,11 @@ qtractorMidiSequence *qtractorMidiEditorForm::sequence (void) const
 void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	// Get those time-scales in sync,
@@ -1023,15 +1023,15 @@ void qtractorMidiEditorForm::resetDirtyCount (void)
 bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 {
 	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return false;
 
 	qtractorTrack *pTrack = pMidiClip->track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Suggest a brand new filename, if there's none...
@@ -1050,7 +1050,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		filters.append(tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt));
 		filters.append(tr("All files (*.*)"));
 		const QString& sFilter = filters.join(";;");
-		QWidget *pParentWidget = NULL;
+		QWidget *pParentWidget = nullptr;
 		QFileDialog::Options options = 0;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bDontUseNativeDialogs) {
@@ -1060,7 +1060,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 		// Ask for the filenames to open...
 		sFilename = QFileDialog::getSaveFileName(pParentWidget,
-			sTitle, sFilename, sFilter, NULL, options);
+			sTitle, sFilename, sFilter, nullptr, options);
 	#else
 		// Construct open-files dialog...
 		QFileDialog fileDialog(pParentWidget, sTitle, sFilename, sFilter);
@@ -1163,7 +1163,7 @@ void qtractorMidiEditorForm::fileUnlink (void)
 void qtractorMidiEditorForm::fileRecordEx ( bool bOn )
 {
 	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return;
 
 	// Start record/overdub the current clip, if any...
@@ -1177,7 +1177,7 @@ void qtractorMidiEditorForm::fileRecordEx ( bool bOn )
 void qtractorMidiEditorForm::fileProperties (void)
 {
 	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return;
 
 	qtractorClipForm clipForm(parentWidget());
@@ -1190,13 +1190,13 @@ void qtractorMidiEditorForm::fileProperties (void)
 void qtractorMidiEditorForm::fileTrackInputs (void)
 {
 	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return;
 
 	qtractorTrack *pTrack = pMidiClip->track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return;
-	if (pTrack->inputBus() == NULL)
+	if (pTrack->inputBus() == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -1211,13 +1211,13 @@ void qtractorMidiEditorForm::fileTrackInputs (void)
 void qtractorMidiEditorForm::fileTrackOutputs (void)
 {
 	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return;
 
 	qtractorTrack *pTrack = pMidiClip->track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return;
-	if (pTrack->outputBus() == NULL)
+	if (pTrack->outputBus() == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -1232,11 +1232,11 @@ void qtractorMidiEditorForm::fileTrackOutputs (void)
 void qtractorMidiEditorForm::fileTrackProperties (void)
 {
 	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return;
 
 	qtractorTrack *pTrack = pMidiClip->track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -1767,11 +1767,11 @@ void qtractorMidiEditorForm::viewFollow ( bool bOn )
 void qtractorMidiEditorForm::helpShortcuts (void)
 {
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	qtractorShortcutForm shortcutForm(findChildren<QAction *> (), this);
-	shortcutForm.setActionControl(NULL); // Disable MIDI Controllers here!
+	shortcutForm.setActionControl(nullptr); // Disable MIDI Controllers here!
 	if (shortcutForm.exec() && shortcutForm.isDirtyActionShortcuts())
 		pOptions->saveActionShortcuts(this);
 }
@@ -1799,16 +1799,16 @@ void qtractorMidiEditorForm::helpAboutQt (void)
 void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
 {
 	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return;
 
 	qtractorTrack *pTrack = pMidiClip->track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return;
 
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-	if (pMidiBus == NULL)
+	if (pMidiBus == nullptr)
 		return;
 
 	pMidiBus->sendNote(pTrack, iNote, iVelocity);
@@ -1821,7 +1821,7 @@ void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
 void qtractorMidiEditorForm::stabilizeForm (void)
 {
 	// Update the main menu state...
-	qtractorTrack *pTrack = NULL;
+	qtractorTrack *pTrack = nullptr;
 	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
 	if (pMidiClip)
 		pTrack = pMidiClip->track();
@@ -1829,16 +1829,16 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
 	m_ui.fileUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
 
-	m_ui.fileRecordExAction->setEnabled(pMidiClip != NULL);
+	m_ui.fileRecordExAction->setEnabled(pMidiClip != nullptr);
 	m_ui.fileRecordExAction->setChecked(pTrack && pTrack->isClipRecordEx()
 		&& static_cast<qtractorMidiClip *> (pTrack->clipRecord()) == pMidiClip);
 
-	m_ui.fileTrackInputsAction->setEnabled(pTrack && pTrack->inputBus() != NULL);
-	m_ui.fileTrackOutputsAction->setEnabled(pTrack && pTrack->outputBus() != NULL);
-	m_ui.fileTrackInstrumentMenu->setEnabled(pTrack != NULL);
-	m_ui.fileTrackPropertiesAction->setEnabled(pTrack != NULL);
-	m_ui.fileRangeSetAction->setEnabled(pTrack != NULL);
-	m_ui.fileLoopSetAction->setEnabled(pTrack != NULL);
+	m_ui.fileTrackInputsAction->setEnabled(pTrack && pTrack->inputBus() != nullptr);
+	m_ui.fileTrackOutputsAction->setEnabled(pTrack && pTrack->outputBus() != nullptr);
+	m_ui.fileTrackInstrumentMenu->setEnabled(pTrack != nullptr);
+	m_ui.fileTrackPropertiesAction->setEnabled(pTrack != nullptr);
+	m_ui.fileRangeSetAction->setEnabled(pTrack != nullptr);
+	m_ui.fileLoopSetAction->setEnabled(pTrack != nullptr);
 
 	// Update edit menu state...
 	qtractorCommandList *pCommands = m_pMidiEditor->commands();
@@ -1874,7 +1874,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	// Just having a non-null sequence will indicate
 	// that we're editing a legal MIDI clip...
 	qtractorMidiSequence *pSeq = sequence();
-	if (pSeq == NULL) {
+	if (pSeq == nullptr) {
 		setWindowTitle(tr("MIDI Editor") + " - " QTRACTOR_TITLE);
 		m_pFileNameLabel->clear();
 		m_pTrackChannelLabel->clear();
@@ -2022,7 +2022,7 @@ void qtractorMidiEditorForm::updateGhostTrackMenu (void)
 	m_ui.viewGhostTrackMenu->clear();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTrack *pGhostTrack = m_pMidiEditor->ghostTrack();
@@ -2046,8 +2046,8 @@ void qtractorMidiEditorForm::updateGhostTrackMenu (void)
 	pAction = m_ui.viewGhostTrackMenu->addAction(
 		tr("&None"), this, SLOT(viewGhostTrack()));
 	pAction->setCheckable(true);
-	pAction->setChecked(pGhostTrack == NULL);
-	data.setValue(NULL);
+	pAction->setChecked(pGhostTrack == nullptr);
+	data.setValue(nullptr);
 	pAction->setData(data);
 }
 
@@ -2072,7 +2072,7 @@ void qtractorMidiEditorForm::updateSnapMenu (void)
 	m_ui.viewSnapMenu->clear();
 
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	const int iSnapCurrent
@@ -2139,7 +2139,7 @@ void qtractorMidiEditorForm::updateTrackInstrumentMenu (void)
 void qtractorMidiEditorForm::snapPerBeatChanged ( int iSnap )
 {
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	// Avoid bogus changes...

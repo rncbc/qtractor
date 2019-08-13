@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -83,7 +83,7 @@ bool qtractorAudioBufferThread::runState (void) const
 // Wake from executive wait condition (RT-safe).
 void qtractorAudioBufferThread::sync ( qtractorAudioBuffer *pAudioBuffer )
 {
-	if (pAudioBuffer == NULL) {
+	if (pAudioBuffer == nullptr) {
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;
 		while (r != w) {
@@ -205,9 +205,9 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 
 	m_iChannels      = iChannels;
 
-	m_pFile          = NULL;
+	m_pFile          = nullptr;
 
-	m_pRingBuffer    = NULL;
+	m_pRingBuffer    = nullptr;
 
 	m_iThreshold     = 0;
 	m_iBufferSize    = 0;
@@ -229,8 +229,8 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 
 	ATOMIC_SET(&m_seekPending, 0);
 
-	m_ppFrames       = NULL;
-	m_ppBuffer       = NULL;
+	m_ppFrames       = nullptr;
+	m_ppBuffer       = nullptr;
 
 	m_bTimeStretch   = false;
 	m_fTimeStretch   = 1.0f;
@@ -238,12 +238,12 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 	m_bPitchShift    = false;
 	m_fPitchShift    = 1.0f;
 
-	m_pTimeStretcher = NULL;
+	m_pTimeStretcher = nullptr;
 
 	m_fGain          = 1.0f;
 	m_fPanning       = 0.0f;
 
-	m_pfGains        = NULL;
+	m_pfGains        = nullptr;
 
 	m_fNextGain      = 0.0f;
 	m_iRampGain      = 0;
@@ -252,12 +252,12 @@ qtractorAudioBuffer::qtractorAudioBuffer (
 	m_bResample      = false;
 	m_fResampleRatio = 1.0f;
 	m_iInputPending  = 0;
-	m_ppInBuffer     = NULL;
-	m_ppOutBuffer    = NULL;
-	m_ppSrcState     = NULL;
+	m_ppInBuffer     = nullptr;
+	m_ppOutBuffer    = nullptr;
+	m_ppSrcState     = nullptr;
 #endif
 
-	m_pPeakFile      = NULL;
+	m_pPeakFile      = nullptr;
 
 	// Time-stretch mode local options.
 	m_bWsolaTimeStretch = g_bDefaultWsolaTimeStretch;
@@ -318,7 +318,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	close();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	const unsigned int iSampleRate = pSession->sampleRate();
@@ -326,13 +326,13 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Get proper file type class...
 	m_pFile = qtractorAudioFileFactory::createAudioFile(
 		sFilename, m_iChannels, iSampleRate);
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return false;
 
 	// Go open it...
 	if (!m_pFile->open(sFilename, iMode)) {
 		delete m_pFile;
-		m_pFile = NULL;
+		m_pFile = nullptr;
 		return false;
 	}
 
@@ -343,7 +343,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	if (iBuffers < 1 || m_pFile->sampleRate() < 1) {
 		m_pFile->close();
 		delete m_pFile;
-		m_pFile = NULL;
+		m_pFile = nullptr;
 		return false;
 	}
 
@@ -462,7 +462,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 // Operational buffer terminator.
 void qtractorAudioBuffer::close (void)
 {
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return;
 
 	// Wait for regular file close...
@@ -476,7 +476,7 @@ void qtractorAudioBuffer::close (void)
 	// Delete old panning-gains holders...
 	if (m_pfGains) {
 		delete [] m_pfGains;
-		m_pfGains = NULL;
+		m_pfGains = nullptr;
 	}
 
 	// Take careof remains, if applicable...
@@ -484,7 +484,7 @@ void qtractorAudioBuffer::close (void)
 		// Close on-the-fly peak file, if applicable...
 		if (m_pPeakFile) {
 			m_pPeakFile->closeWrite();
-			m_pPeakFile = NULL;
+			m_pPeakFile = nullptr;
 		}
 	}
 
@@ -492,7 +492,7 @@ void qtractorAudioBuffer::close (void)
 	// Deallocate any buffer stuff...
 	if (m_pTimeStretcher) {
 		delete m_pTimeStretcher;
-		m_pTimeStretcher = NULL;
+		m_pTimeStretcher = nullptr;
 	}
 
 	// Release internal I/O buffers.
@@ -501,23 +501,23 @@ void qtractorAudioBuffer::close (void)
 		for (unsigned short i = 0; i < iBuffers; ++i) {
 			if (m_ppBuffer[i]) {
 				delete [] m_ppBuffer[i];
-				m_ppBuffer[i] = NULL;
+				m_ppBuffer[i] = nullptr;
 			}
 		}
 		delete [] m_ppBuffer;
-		m_ppBuffer = NULL;
+		m_ppBuffer = nullptr;
 	}
 
 	if (m_pRingBuffer) {
 		deleteIOBuffers();
 		delete m_pRingBuffer;
-		m_pRingBuffer = NULL;
+		m_pRingBuffer = nullptr;
 	}
 
 	// Finally delete what we still own.
 	if (m_pFile) {
 		delete m_pFile;
-		m_pFile = NULL;
+		m_pFile = nullptr;
 	}
 
 	// Reset all relevant state variables.
@@ -538,7 +538,7 @@ void qtractorAudioBuffer::close (void)
 	m_fNextGain = 0.0f;
 	m_iRampGain = 0;
 
-	m_pPeakFile = NULL;
+	m_pPeakFile = nullptr;
 }
 
 
@@ -546,7 +546,7 @@ void qtractorAudioBuffer::close (void)
 int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 	unsigned int iOffset )
 {
-	if (m_pRingBuffer == NULL)
+	if (m_pRingBuffer == nullptr)
 		return -1;
 
 	int nread;
@@ -625,7 +625,7 @@ int qtractorAudioBuffer::read ( float **ppFrames, unsigned int iFrames,
 int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, unsigned int iOffset )
 {
-	if (m_pRingBuffer == NULL)
+	if (m_pRingBuffer == nullptr)
 		return -1;
 
 	const unsigned short iBuffers = m_pRingBuffer->channels();
@@ -700,7 +700,7 @@ int qtractorAudioBuffer::write ( float **ppFrames, unsigned int iFrames,
 int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	unsigned short iChannels, unsigned int iOffset, float fGain )
 {
-	if (m_pRingBuffer == NULL)
+	if (m_pRingBuffer == nullptr)
 		return -1;
 
 	int nread = iFrames;
@@ -784,11 +784,11 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 // Buffer data seek.
 bool qtractorAudioBuffer::seek ( unsigned long iFrame )
 {
-	if (m_pRingBuffer == NULL)
+	if (m_pRingBuffer == nullptr)
 		return false;
 
 	// Seek is only valid on read-only mode.
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return false;
 	if (m_pFile->mode() & qtractorAudioFile::Write)
 		return false;
@@ -877,11 +877,11 @@ bool qtractorAudioBuffer::isSyncFlag ( SyncFlag flag ) const
 // check whether it can be cache-loaded integrally).
 void qtractorAudioBuffer::initSync (void)
 {
-	if (m_pRingBuffer == NULL)
+	if (m_pRingBuffer == nullptr)
 		return;
 
 	// Initialization is only valid on read-only mode.
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return;
 
 	if (m_pFile->mode() & qtractorAudioFile::Write)
@@ -943,7 +943,7 @@ void qtractorAudioBuffer::initSync (void)
 // Base-mode sync executive.
 void qtractorAudioBuffer::sync (void)
 {
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return;
 
 	if (!isSyncFlag(WaitSync))
@@ -1004,7 +1004,7 @@ void qtractorAudioBuffer::syncExport (void)
 // Read-mode sync executive.
 void qtractorAudioBuffer::readSync (void)
 {
-	if (m_pRingBuffer == NULL)
+	if (m_pRingBuffer == nullptr)
 		return;
 
 	if (isSyncFlag(CloseSync))
@@ -1082,7 +1082,7 @@ void qtractorAudioBuffer::readSync (void)
 // Write-mode sync executive.
 void qtractorAudioBuffer::writeSync (void)
 {
-	if (m_pRingBuffer == NULL)
+	if (m_pRingBuffer == nullptr)
 		return;
 
 	const unsigned int rs = m_pRingBuffer->readable();
@@ -1399,20 +1399,20 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 			m_ppSrcState[i] = src_delete(m_ppSrcState[i]);
 		if (m_ppOutBuffer && m_ppOutBuffer[i]) {
 			delete [] m_ppOutBuffer[i];
-			m_ppOutBuffer[i] = NULL;
+			m_ppOutBuffer[i] = nullptr;
 		}
 	}
 	if (m_ppSrcState) {
 		delete [] m_ppSrcState;
-		m_ppSrcState = NULL;
+		m_ppSrcState = nullptr;
 	}
 	if (m_ppOutBuffer) {
 		delete [] m_ppOutBuffer;
-		m_ppOutBuffer = NULL;
+		m_ppOutBuffer = nullptr;
 	}
 	if (m_ppInBuffer) {
 		delete [] m_ppInBuffer;
-		m_ppInBuffer = NULL;
+		m_ppInBuffer = nullptr;
 	}
 	m_iInputPending = 0;
 #endif
@@ -1421,11 +1421,11 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 		for (i = 0; i < iBuffers; ++i) {
 			if (m_ppFrames[i]) {
 				delete [] m_ppFrames[i];
-				m_ppFrames[i] = NULL;
+				m_ppFrames[i] = nullptr;
 			}
 		}
 		delete [] m_ppFrames;
-		m_ppFrames = NULL;
+		m_ppFrames = nullptr;
 	}
 }
 
@@ -1433,7 +1433,7 @@ void qtractorAudioBuffer::deleteIOBuffers (void)
 // Reset this buffers state.
 void qtractorAudioBuffer::reset ( bool bLooping )
 {
-	if (m_pRingBuffer == NULL)
+	if (m_pRingBuffer == nullptr)
 		return;
 
 	unsigned long iFrame = 0;
@@ -1625,9 +1625,9 @@ void qtractorAudioBuffer::setPeakFile ( qtractorAudioPeakFile *pPeakFile )
 
  	// Reset for building the peak file on-the-fly...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL
+	if (pSession == nullptr
 		|| !m_pPeakFile->openWrite(m_iChannels, pSession->sampleRate()))
-		m_pPeakFile = NULL;
+		m_pPeakFile = nullptr;
 }
 
 qtractorAudioPeakFile *qtractorAudioBuffer::peakFile (void) const

@@ -37,8 +37,8 @@ static QString prettyName (	jack_uuid_t uuid, const QString& sDefaultName )
 {
 	QString sPrettyName = sDefaultName;
 
-	char *pszValue = NULL;
-	char *pszType  = NULL;
+	char *pszValue = nullptr;
+	char *pszType  = nullptr;
 
 	if (::jack_get_property(uuid,
 			JACK_METADATA_PRETTY_NAME, &pszValue, &pszType) == 0) {
@@ -86,7 +86,7 @@ qtractorAudioPortItem::~qtractorAudioPortItem (void)
 void qtractorAudioPortItem::updatePortName (void)
 {
 #ifdef CONFIG_JACK_METADATA
-	jack_client_t *pJackClient = NULL;
+	jack_client_t *pJackClient = nullptr;
 	qtractorAudioClientListView *pAudioClientListView
 		= static_cast<qtractorAudioClientListView *> (
 			QTreeWidgetItem::treeWidget());
@@ -137,7 +137,7 @@ qtractorAudioClientItem::~qtractorAudioClientItem (void)
 void qtractorAudioClientItem::updateClientName (void)
 {
 #ifdef CONFIG_JACK_METADATA
-	jack_client_t *pJackClient = NULL;
+	jack_client_t *pJackClient = nullptr;
 	qtractorAudioClientListView *pAudioClientListView
 		= static_cast<qtractorAudioClientListView *> (
 			QTreeWidgetItem::treeWidget());
@@ -182,7 +182,7 @@ jack_client_t *qtractorAudioClientListView::jackClient (void) const
 {
 	qtractorAudioConnect *pAudioConnect
 		= static_cast<qtractorAudioConnect *> (binding());
-	return (pAudioConnect ? pAudioConnect->jackClient() : NULL);
+	return (pAudioConnect ? pAudioConnect->jackClient() : nullptr);
 }
 
 
@@ -190,7 +190,7 @@ jack_client_t *qtractorAudioClientListView::jackClient (void) const
 int qtractorAudioClientListView::updateClientPorts (void)
 {
 	jack_client_t *pJackClient = jackClient();
-	if (pJackClient == NULL)
+	if (pJackClient == nullptr)
 		return 0;
 
 	int iDirtyCount = 0;
@@ -205,8 +205,8 @@ int qtractorAudioClientListView::updateClientPorts (void)
 		while (ppszClientPorts[iClientPort]) {
 			const QString sClientPort
 				= QString::fromUtf8(ppszClientPorts[iClientPort]);
-			qtractorAudioClientItem *pClientItem = NULL;
-			qtractorAudioPortItem   *pPortItem   = NULL;
+			qtractorAudioClientItem *pClientItem = nullptr;
+			qtractorAudioPortItem   *pPortItem   = nullptr;
 			int iColon = sClientPort.indexOf(':');
 			if (iColon >= 0) {
 				const QString sClientName = sClientPort.left(iColon);
@@ -222,12 +222,12 @@ int qtractorAudioClientListView::updateClientPorts (void)
 								= static_cast<qtractorAudioPortItem *> (
 									pClientItem->findPortItem(sPortName));
 						}
-						if (pClientItem == NULL) {
+						if (pClientItem == nullptr) {
 							pClientItem = new qtractorAudioClientItem(this);
 							pClientItem->setClientName(sClientName);
 							++iDirtyCount;
 						}
-						if (pClientItem && pPortItem == NULL) {
+						if (pClientItem && pPortItem == nullptr) {
 							jack_port_t *pJackPort = jack_port_by_name(
 								pJackClient, ppszClientPorts[iClientPort]);
 							if (pJackPort) {
@@ -303,7 +303,7 @@ void qtractorAudioConnect::deleteIcons (void)
 		for (int i = 0; i < IconCount; ++i) {
 			if (g_apIcons[i])
 				delete g_apIcons[i];
-			g_apIcons[i] = NULL;
+			g_apIcons[i] = nullptr;
 		}
 	}
 }
@@ -319,7 +319,7 @@ const QIcon& qtractorAudioConnect::icon ( int iIcon )
 // JACK client accessor.
 jack_client_t *qtractorAudioConnect::jackClient (void) const
 {
-	jack_client_t *pJackClient = NULL;
+	jack_client_t *pJackClient = nullptr;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && pSession->audioEngine())
@@ -338,11 +338,11 @@ bool qtractorAudioConnect::connectPorts ( qtractorPortListItem *pOPort,
 	qtractorAudioPortItem *pIAudioPort
 		= static_cast<qtractorAudioPortItem *> (pIPort);
 
-	if (pOAudioPort == NULL || pIAudioPort == NULL)
+	if (pOAudioPort == nullptr || pIAudioPort == nullptr)
 		return false;
 
 	jack_client_t *pJackClient = jackClient();
-	if (pJackClient == NULL)
+	if (pJackClient == nullptr)
 		return false;
 
 	return (jack_connect(pJackClient,
@@ -360,11 +360,11 @@ bool qtractorAudioConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 	qtractorAudioPortItem *pIAudioPort
 		= static_cast<qtractorAudioPortItem *> (pIPort);
 
-	if (pOAudioPort == NULL || pIAudioPort == NULL)
+	if (pOAudioPort == nullptr || pIAudioPort == nullptr)
 		return false;
 
 	jack_client_t *pJackClient = jackClient();
-	if (pJackClient == NULL)
+	if (pJackClient == nullptr)
 		return false;
 
 	disconnectPortsUpdate(pOPort, pIPort);
@@ -379,11 +379,11 @@ bool qtractorAudioConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 void qtractorAudioConnect::disconnectPortsUpdate (
 	qtractorPortListItem *pOPort, qtractorPortListItem *pIPort )
 {
-	qtractorAudioEngine *pAudioEngine = NULL;
+	qtractorAudioEngine *pAudioEngine = nullptr;
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	QString sPortName;
@@ -422,7 +422,7 @@ void qtractorAudioConnect::disconnectPortsUpdate (
 void qtractorAudioConnect::updateConnections (void)
 {
 	jack_client_t *pJackClient = jackClient();
-	if (pJackClient == NULL)
+	if (pJackClient == nullptr)
 		return;
 
 	// For each client item...
@@ -433,7 +433,7 @@ void qtractorAudioConnect::updateConnections (void)
 			continue;
 		qtractorAudioClientItem *pOClient
 			= static_cast<qtractorAudioClientItem *> (pItem);
-		if (pOClient == NULL)
+		if (pOClient == nullptr)
 			continue;
 		// For each port item
 		int iChildCount = pOClient->childCount();
@@ -443,7 +443,7 @@ void qtractorAudioConnect::updateConnections (void)
 				continue;
 			qtractorAudioPortItem *pOPort
 				= static_cast<qtractorAudioPortItem *> (pChild);
-			if (pOPort == NULL)
+			if (pOPort == nullptr)
 				continue;
 			// Are there already any connections?
 			if (pOPort->connects().count() > 0)

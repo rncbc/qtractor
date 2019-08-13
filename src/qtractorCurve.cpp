@@ -1,7 +1,7 @@
 // qtractorCurve.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -190,7 +190,7 @@ qtractorCurve::qtractorCurve ( qtractorCurveList *pList,
 	qtractorSubject *pSubject, Mode mode, unsigned int iMinFrameDist )
 	: m_pList(pList), m_mode(mode), m_iMinFrameDist(iMinFrameDist),
 		m_observer(pSubject, this), m_state(Idle), m_cursor(this),
-		m_bLogarithmic(false), m_color(Qt::darkRed), m_pEditList(NULL)
+		m_bLogarithmic(false), m_color(Qt::darkRed), m_pEditList(nullptr)
 {
 	m_nodes.setAutoDelete(true);
 
@@ -213,7 +213,7 @@ qtractorCurve::~qtractorCurve (void)
 //	if (m_pList)
 //		m_pList->remove(this);
 
-	m_observer.setCurve(NULL);
+	m_observer.setCurve(nullptr);
 
 	clear();
 
@@ -235,9 +235,9 @@ void qtractorCurve::clear (void)
 	m_tail.d = 0.0f;
 
 	m_nodes.clear();
-	m_cursor.reset(NULL);
+	m_cursor.reset(nullptr);
 
-	updateNodeEx(NULL);
+	updateNodeEx(nullptr);
 }
 
 
@@ -252,7 +252,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 		iFrame, fValue, pEditList);
 #endif
 
-	Node *pNode = NULL;
+	Node *pNode = nullptr;
 	Node *pNext = m_cursor.seek(iFrame);
 	Node *pPrev = (pNext ? pNext->prev() : m_nodes.last());
 
@@ -274,7 +274,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 		float s1 = (x1 > x0 ? (y1 - y0) / (x1 - x0) : 0.0f);
 		float y3 = (x2 > x1 ? s1 * (x2 - x1) + y1 : y1);
 		if (::fabsf(y3 - y2) < fThreshold * ::fabsf(y3 - y1))
-			return NULL;
+			return nullptr;
 		if (pPrev) {
 			pNode = pPrev;
 			pPrev = pNode->prev();
@@ -287,7 +287,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 			s1 = (y1 - y0) / (x1 - x0);
 			y3 = s1 * (x2 - x1) + y1;
 			if (::fabsf(y3 - y2) > fThreshold * ::fabsf(y3 - y1))
-				pNode = NULL;
+				pNode = nullptr;
 		}
 	}
 
@@ -322,7 +322,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 // Insert curve node in correct frame order.
 void qtractorCurve::insertNode ( Node *pNode )
 {
-	if (pNode == NULL)
+	if (pNode == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -347,7 +347,7 @@ void qtractorCurve::insertNode ( Node *pNode )
 // Unlink an existing node from curve.
 void qtractorCurve::unlinkNode ( Node *pNode )
 {
-	if (pNode == NULL)
+	if (pNode == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -369,7 +369,7 @@ void qtractorCurve::unlinkNode ( Node *pNode )
 // Remove an existing node from curve.
 void qtractorCurve::removeNode ( Node *pNode )
 {
-	if (pNode == NULL)
+	if (pNode == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -421,11 +421,11 @@ void qtractorCurve::updateNode ( qtractorCurve::Node *pNode )
 
 void qtractorCurve::updateNodeEx ( qtractorCurve::Node *pNode )
 {
-	Node *pPrev, *pNext = NULL;
+	Node *pPrev, *pNext = nullptr;
 	if (pNode) {
 		pPrev = pNode->prev();
 		pNext = pNode->next();
-		if (pNext == NULL)
+		if (pNext == nullptr)
 			pNext = &m_tail;
 	} else {
 		pNode = &m_tail;
@@ -459,7 +459,7 @@ void qtractorCurve::update (void)
 	for (Node *pNode = m_nodes.first(); pNode; pNode = pNode->next())
 		updateNodeEx(pNode);
 
-	updateNodeEx(NULL);
+	updateNodeEx(nullptr);
 
 	if (m_pList)
 		m_pList->notify();
@@ -517,13 +517,13 @@ qtractorCurve::Node *qtractorCurve::Cursor::seek ( unsigned long iFrame )
 
 	if (iFrame > m_iFrame) {
 		// Seek forward...
-		if (pNode == NULL)
+		if (pNode == nullptr)
 			pNode = m_pCurve->nodes().first();
 		while (pNode && pNode->frame < iFrame)
 			pNode = pNode->next();
 	} else {
 		// Seek backward...
-		if (pNode == NULL)
+		if (pNode == nullptr)
 			pNode = m_pCurve->nodes().last();
 		while (pNode && pNode->prev() && (pNode->prev())->frame > iFrame)
 			pNode = pNode->prev();
@@ -532,14 +532,14 @@ qtractorCurve::Node *qtractorCurve::Cursor::seek ( unsigned long iFrame )
 	m_iFrame = iFrame;
 	m_pNode = pNode;
 
-	return (pNode && pNode->frame >= iFrame ? pNode : NULL);
+	return (pNode && pNode->frame >= iFrame ? pNode : nullptr);
 }
 
 
 // Intra-curve frame positioning reset.
 void qtractorCurve::Cursor::reset ( qtractorCurve::Node *pNode )
 {
-	m_pNode  = (pNode ? pNode->next() : NULL);
+	m_pNode  = (pNode ? pNode->next() : nullptr);
 	m_iFrame = (m_pNode ? m_pNode->frame : 0);
 }
 
@@ -547,9 +547,9 @@ void qtractorCurve::Cursor::reset ( qtractorCurve::Node *pNode )
 // Common interpolate method.
 float qtractorCurve::value ( const Node *pNode, unsigned long iFrame ) const
 {
-	if (pNode == NULL) {
+	if (pNode == nullptr) {
 		pNode = m_nodes.last();
-		if (pNode == NULL)
+		if (pNode == nullptr)
 			pNode = &m_tail;
 	}
 
@@ -737,7 +737,7 @@ void qtractorCurve::writeMidiSequence ( qtractorMidiSequence *pSeq,
 
 void qtractorCurve::setCapture ( bool bCapture )
 {
-	if (m_pList == NULL)
+	if (m_pList == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -758,7 +758,7 @@ void qtractorCurve::setCapture ( bool bCapture )
 
 void qtractorCurve::setProcess ( bool bProcess )
 {
-	if (m_pList == NULL)
+	if (m_pList == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -779,7 +779,7 @@ void qtractorCurve::setProcess ( bool bProcess )
 
 void qtractorCurve::setLocked ( bool bLocked )
 {
-	if (m_pList == NULL)
+	if (m_pList == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -799,7 +799,7 @@ void qtractorCurve::setLocked ( bool bLocked )
 // Curve edit list command executive.
 bool qtractorCurveEditList::execute ( bool bRedo )
 {
-	if (m_pCurve == NULL)
+	if (m_pCurve == nullptr)
 		return false;
 
 	QListIterator<Item *> iter(m_items);

@@ -38,7 +38,7 @@ qtractorSessionCursor::qtractorSessionCursor ( qtractorSession *pSession,
 	m_syncType = syncType;
 
 	m_iTracks  = 0;
-	m_ppClips  = NULL;
+	m_ppClips  = nullptr;
 	m_iSize    = 0;
 
 	resetClips();
@@ -83,7 +83,7 @@ void qtractorSessionCursor::seek ( unsigned long iFrame, bool bSync )
 	unsigned int iTrack = 0; 
 	qtractorTrack *pTrack = m_pSession->tracks().first();
 	while (pTrack && iTrack < m_iTracks) {
-		qtractorClip *pClip = NULL;
+		qtractorClip *pClip = nullptr;
 		qtractorClip *pClipLast = m_ppClips[iTrack];
 		// Optimize if seeking forward...
 		if (iFrame > m_iFrame)
@@ -151,7 +151,7 @@ unsigned long qtractorSessionCursor::frameTimeEx (void) const
 // Current track clip accessor.
 qtractorClip *qtractorSessionCursor::clip ( unsigned int iTrack ) const
 {
-	return (iTrack < m_iTracks ? m_ppClips[iTrack] : NULL);
+	return (iTrack < m_iTracks ? m_ppClips[iTrack] : nullptr);
 }
 
 
@@ -159,7 +159,7 @@ qtractorClip *qtractorSessionCursor::clip ( unsigned int iTrack ) const
 qtractorClip *qtractorSessionCursor::seekClip (
 	qtractorTrack *pTrack, qtractorClip *pClip, unsigned long iFrame ) const
 {
-	if (pClip == NULL)
+	if (pClip == nullptr)
 		pClip = pTrack->clips().first();
 
 	while (pClip && iFrame > pClip->clipStart() + pClip->clipLength()) {
@@ -168,7 +168,7 @@ qtractorClip *qtractorSessionCursor::seekClip (
 		pClip = pClip->next();
 	}
 
-	if (pClip == NULL)
+	if (pClip == nullptr)
 		pClip = pTrack->clips().last();
 
 	return pClip;
@@ -178,7 +178,7 @@ qtractorClip *qtractorSessionCursor::seekClip (
 // Add a track to cursor.
 void qtractorSessionCursor::addTrack ( qtractorTrack *pTrack )
 {
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		pTrack = m_pSession->tracks().last();
 
 	const unsigned int iTracks = m_iTracks + 1;
@@ -202,7 +202,7 @@ void qtractorSessionCursor::updateTrack ( qtractorTrack *pTrack )
 {
 	const int iTrack = m_pSession->tracks().find(pTrack);
 	if (iTrack >= 0) {
-		qtractorClip *pClip = seekClip(pTrack, NULL, m_iFrame);
+		qtractorClip *pClip = seekClip(pTrack, nullptr, m_iFrame);
 		if (pClip && pTrack->trackType() == m_syncType
 			&& m_iFrame >= pClip->clipStart()
 			&& m_iFrame <  pClip->clipStart() + pClip->clipLength()) {
@@ -226,7 +226,7 @@ void qtractorSessionCursor::removeTrack ( unsigned int iTrack )
 	--m_iTracks;	
 	for ( ; iTrack < m_iTracks; ++iTrack)
 		m_ppClips[iTrack] = m_ppClips[iTrack + 1];
-	m_ppClips[iTrack] = NULL;
+	m_ppClips[iTrack] = nullptr;
 }
 
 
@@ -256,7 +256,7 @@ void qtractorSessionCursor::updateClips ( qtractorClip **ppClips,
 	unsigned int iTrack = 0; 
 	qtractorTrack *pTrack = m_pSession->tracks().first();
 	while (pTrack && iTrack < iTracks) {
-		qtractorClip *pClip = seekClip(pTrack, NULL, m_iFrame);
+		qtractorClip *pClip = seekClip(pTrack, nullptr, m_iFrame);
 		if (pClip && pTrack->trackType() == m_syncType
 			&& m_iFrame >= pClip->clipStart()
 			&& m_iFrame <  pClip->clipStart() + pClip->clipLength()) {
@@ -291,7 +291,7 @@ void qtractorSessionCursor::resetClips (void)
 	// Free existing clip references.
 	if (m_ppClips) {
 		qtractorClip **ppOldClips = m_ppClips;
-		m_ppClips = NULL;
+		m_ppClips = nullptr;
 		delete [] ppOldClips;
 	}
 

@@ -28,7 +28,7 @@
 
 // Constructor.
 qtractorMidiCursor::qtractorMidiCursor (void)
-	: m_pEvent(NULL), m_iTime(0)
+	: m_pEvent(nullptr), m_iTime(0)
 {
 }
 
@@ -44,22 +44,22 @@ qtractorMidiEvent *qtractorMidiCursor::seek (
 	else
 	if (iTime > m_iTime) {
 		// Seek forward...
-		if (m_pEvent == NULL)
+		if (m_pEvent == nullptr)
 			m_pEvent = pSeq->events().first();
 		while (m_pEvent && m_pEvent->next()
 			&& (m_pEvent->next())->time() < iTime)
 			m_pEvent = m_pEvent->next();
-		if (m_pEvent == NULL)
+		if (m_pEvent == nullptr)
 			m_pEvent = pSeq->events().last();
 	}
 	else
 	if (iTime < m_iTime) {
 		// Seek backward...
-		if (m_pEvent == NULL)
+		if (m_pEvent == nullptr)
 			m_pEvent = pSeq->events().last();
 		while (m_pEvent && m_pEvent->time() >= iTime)
 			m_pEvent = m_pEvent->prev();
-		if (m_pEvent == NULL)
+		if (m_pEvent == nullptr)
 			m_pEvent = pSeq->events().first();
 	}
 	// Done.
@@ -74,14 +74,14 @@ qtractorMidiEvent *qtractorMidiCursor::reset (
 {
 	// Reset-seek forward...
 	if (m_iTime >= iTime)
-		m_pEvent = NULL;
-	if (m_pEvent == NULL)
+		m_pEvent = nullptr;
+	if (m_pEvent == nullptr)
 		m_pEvent = pSeq->events().first();
 	while (m_pEvent && m_pEvent->time() + m_pEvent->duration() < iTime)
 		m_pEvent = m_pEvent->next();
 	while (m_pEvent && m_pEvent->time() > iTime)
 		m_pEvent = m_pEvent->prev();
-	if (m_pEvent == NULL)
+	if (m_pEvent == nullptr)
 		m_pEvent = pSeq->events().first();
 	// That was it...
 	m_iTime = iTime;
@@ -92,7 +92,7 @@ qtractorMidiEvent *qtractorMidiCursor::reset (
 // Complete/clear positioning reset.
 void qtractorMidiCursor::clear (void)
 {
-	m_pEvent = NULL;
+	m_pEvent = nullptr;
 	m_iTime = 0;
 }
 

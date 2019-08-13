@@ -63,21 +63,21 @@ public:
 	qtractorTrack *currentTrack() const;
 
 	bool addTrack();
-	bool removeTrack(qtractorTrack *pTrack = NULL);
-	bool editTrack(qtractorTrack *pTrack = NULL);
-	bool copyTrack(qtractorTrack *pTrack = NULL);
+	bool removeTrack(qtractorTrack *pTrack = nullptr);
+	bool editTrack(qtractorTrack *pTrack = nullptr);
+	bool copyTrack(qtractorTrack *pTrack = nullptr);
 
 	// Import Audio/MIDI files into new tracks...
 	bool addAudioTracks(const QStringList& files,
 		unsigned long iClipStart, unsigned long iClipOffset = 0,
-		unsigned long iClipLength = 0, qtractorTrack *pAfterTrack = NULL);
+		unsigned long iClipLength = 0, qtractorTrack *pAfterTrack = nullptr);
 	bool addMidiTracks(const QStringList& files,
-		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
+		unsigned long iClipStart, qtractorTrack *pAfterTrack = nullptr);
 	bool addMidiTrackChannel(const QString& sPath, int iTrackChannel,
-		unsigned long iClipStart, qtractorTrack *pAfterTrack = NULL);
+		unsigned long iClipStart, qtractorTrack *pAfterTrack = nullptr);
 
 	// Track-list active maintenance update.
-	void updateTrack(qtractorTrack *pTrack = NULL);
+	void updateTrack(qtractorTrack *pTrack = nullptr);
 
 	// MIDI track/bus/channel alias active maintenance method.
 	void updateMidiTrack(qtractorTrack *pMidiTrack);
@@ -89,15 +89,15 @@ public:
 	qtractorClip *currentClip() const;
 
 	bool newClip();
-	bool editClip(qtractorClip *pClip = NULL);
-	bool unlinkClip(qtractorClip *pClip = NULL);
-	bool splitClip(qtractorClip *pClip = NULL);
-	bool normalizeClip(qtractorClip *pClip = NULL);
-	bool rangeClip(qtractorClip *pClip = NULL);
-	bool loopClip(qtractorClip *pClip = NULL);
-	bool tempoClip(qtractorClip *pClip = NULL);
-	bool crossFadeClip(qtractorClip *pClip = NULL);
-	bool executeClipTool(int iTool, qtractorClip *pClip = NULL);
+	bool editClip(qtractorClip *pClip = nullptr);
+	bool unlinkClip(qtractorClip *pClip = nullptr);
+	bool splitClip(qtractorClip *pClip = nullptr);
+	bool normalizeClip(qtractorClip *pClip = nullptr);
+	bool rangeClip(qtractorClip *pClip = nullptr);
+	bool loopClip(qtractorClip *pClip = nullptr);
+	bool tempoClip(qtractorClip *pClip = nullptr);
+	bool crossFadeClip(qtractorClip *pClip = nullptr);
+	bool executeClipTool(int iTool, qtractorClip *pClip = nullptr);
 	bool importClips(QStringList files, unsigned long iClipStart = 0);
 	bool exportClips();
 	bool mergeClips();
@@ -142,8 +142,8 @@ public:
 	void selectInvert();
 
 	// Insertion and removal methods.
-	bool insertEditRange(qtractorTrack *pTrack = NULL);
-	bool removeEditRange(qtractorTrack *pTrack = NULL);
+	bool insertEditRange(qtractorTrack *pTrack = nullptr);
+	bool removeEditRange(qtractorTrack *pTrack = nullptr);
 
 	// Simple main-form redirectors.
 	void selectionChangeNotify();
@@ -171,7 +171,7 @@ public:
 	void zoomReset();
 
 	// Track-list update (current track only).
-	void updateTrackList(qtractorTrack *pTrack = NULL);
+	void updateTrackList(qtractorTrack *pTrack = nullptr);
 
 	// Update/sync recording tracks.
 	void updateContentsRecord();

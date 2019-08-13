@@ -1,7 +1,7 @@
 // qtractorMidiControlForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,7 +50,7 @@ protected:
 	bool operator< ( const QTreeWidgetItem& other ) const
 	{
 		QTreeWidget *parent = QTreeWidgetItem::treeWidget();
-		if (parent == NULL)
+		if (parent == nullptr)
 			return false;
 
 		const int col = parent->sortColumn();
@@ -105,7 +105,7 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	pHeader->setMovable(false);
 #endif
 
-	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(NULL,
+	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(nullptr,
 		m_ui.ControlTypeComboBox, m_ui.ParamComboBox, m_ui.ParamTextLabel);
 
 	m_ui.ControlTypeComboBox->setCurrentIndex(3); // Controller (default).
@@ -227,7 +227,7 @@ void qtractorMidiControlForm::reject (void)
 void qtractorMidiControlForm::importSlot (void)
 {
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	QStringList files;
@@ -241,7 +241,7 @@ void qtractorMidiControlForm::importSlot (void)
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
@@ -250,7 +250,7 @@ void qtractorMidiControlForm::importSlot (void)
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
-		sTitle, pOptions->sMidiControlDir, sFilter, NULL, options);
+		sTitle, pOptions->sMidiControlDir, sFilter, nullptr, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(pParentWidget,
@@ -277,15 +277,15 @@ void qtractorMidiControlForm::importSlot (void)
 	// Remember this last directory...
 	
 	// For avery selected controller file to load...
-	QTreeWidgetItem *pItem = NULL;
+	QTreeWidgetItem *pItem = nullptr;
 	QStringListIterator iter(files);
 	while (iter.hasNext()) {
 		// Merge the file contents into global container...
 		const QString& sPath = iter.next();
 		// Start inserting in the current selected or last item...
-		if (pItem == NULL)
+		if (pItem == nullptr)
 			pItem = m_ui.FilesListView->currentItem();
-		if (pItem == NULL) {
+		if (pItem == nullptr) {
 			int iLastItem = m_ui.FilesListView->topLevelItemCount() - 1;
 			if (iLastItem >= 0)
 				pItem = m_ui.FilesListView->topLevelItem(iLastItem);
@@ -311,7 +311,7 @@ void qtractorMidiControlForm::importSlot (void)
 void qtractorMidiControlForm::removeSlot (void)
 {
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	// Prompt user if he/she's sure about this...
@@ -375,7 +375,7 @@ void qtractorMidiControlForm::moveDownSlot (void)
 void qtractorMidiControlForm::mapSlot (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	const qtractorMidiControl::ControlType ctype
@@ -414,7 +414,7 @@ void qtractorMidiControlForm::mapSlot (void)
 void qtractorMidiControlForm::unmapSlot (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	const qtractorMidiControl::ControlType ctype
@@ -441,11 +441,11 @@ void qtractorMidiControlForm::unmapSlot (void)
 void qtractorMidiControlForm::exportSlot (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	QString sPath;
@@ -465,7 +465,7 @@ void qtractorMidiControlForm::exportSlot (void)
 	}
 	else sPath = pOptions->midiControlFiles.last();
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
@@ -474,7 +474,7 @@ void qtractorMidiControlForm::exportSlot (void)
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sPath = QFileDialog::getSaveFileName(pParentWidget,
-		sTitle, sPath, sFilter, NULL, options);
+		sTitle, sPath, sFilter, nullptr, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(pParentWidget, sTitle, sPath, sFilter);
@@ -552,7 +552,7 @@ void qtractorMidiControlForm::syncSlot ( bool bOn )
 void qtractorMidiControlForm::reloadSlot (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	// Check if there's any pending map changes...
@@ -569,7 +569,7 @@ void qtractorMidiControlForm::reloadSlot (void)
 	}
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// Ooops...
@@ -628,7 +628,7 @@ void qtractorMidiControlForm::keyChangedSlot (void)
 void qtractorMidiControlForm::stabilizeKeyChange (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	const QString& sType    = m_ui.ControlTypeComboBox->currentText();
@@ -692,7 +692,7 @@ void qtractorMidiControlForm::valueChangedSlot (void)
 void qtractorMidiControlForm::stabilizeValueChange (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	const qtractorMidiControl::ControlType ctype
@@ -791,11 +791,11 @@ void qtractorMidiControlForm::stabilizeForm (void)
 void qtractorMidiControlForm::refreshFiles (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// Freeze...
@@ -826,7 +826,7 @@ void qtractorMidiControlForm::refreshFiles (void)
 void qtractorMidiControlForm::refreshControlMap (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	// Freeze...

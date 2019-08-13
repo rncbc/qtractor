@@ -272,7 +272,7 @@ void qtractorTrack::clearTakeInfo (void) const
 // Retrieve take(record) descriptor/id from registry.
 qtractorTrack::TakeInfo *qtractorTrack::takeInfo ( int iTakeID ) const
 {
-	return m_idtakes.value(iTakeID, NULL);
+	return m_idtakes.value(iTakeID, nullptr);
 }
 
 int qtractorTrack::takeInfoId ( qtractorTrack::TakeInfo *pTakeInfo ) const
@@ -313,25 +313,25 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_props.trackType = trackType;
 
-	m_pInputBus  = NULL;
-	m_pOutputBus = NULL;
-	m_pMonitor   = NULL;
+	m_pInputBus  = nullptr;
+	m_pOutputBus = nullptr;
+	m_pMonitor   = nullptr;
 	m_iMidiTag   = 0;
 
 	m_midiNoteMin = 0;
 	m_midiNoteMax = 0;
 
-	m_pClipRecord = NULL;
+	m_pClipRecord = nullptr;
 	m_iClipRecordStart = 0;
 
 	m_bClipRecordEx = false;
 
 	m_clips.setAutoDelete(true);
 
-	m_pSyncThread = NULL;
+	m_pSyncThread = nullptr;
 
-	m_pMidiVolumeObserver  = NULL;
-	m_pMidiPanningObserver = NULL;
+	m_pMidiVolumeObserver  = nullptr;
+	m_pMidiPanningObserver = nullptr;
 
 	m_pMonitorSubject = new qtractorSubject();
 	m_pMonitorSubject->setToggled(true);
@@ -358,7 +358,7 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 
 	m_pCurveFile = new qtractorCurveFile(m_pPluginList->curveList());
 
-	m_pMidiProgramObserver = NULL;
+	m_pMidiProgramObserver = nullptr;
 
 	setHeight(HeightBase);	// Default track height.
 	clear();
@@ -404,7 +404,7 @@ qtractorTrack::~qtractorTrack (void)
 // Reset track.
 void qtractorTrack::clear (void)
 {
-	setClipRecord(NULL);
+	setClipRecord(nullptr);
 
 	clearTakeInfo();
 	m_clips.clear();
@@ -430,7 +430,7 @@ void qtractorTrack::clear (void)
 			m_pSyncThread->sync();
 		} while (!m_pSyncThread->wait(100));
 		delete m_pSyncThread;
-		m_pSyncThread = NULL;
+		m_pSyncThread = nullptr;
 	}
 }
 
@@ -440,11 +440,11 @@ bool qtractorTrack::open (void)
 {
 	close();
 
-	if (m_pSession == NULL)
+	if (m_pSession == nullptr)
 		return false;
 
 	// Depending on track type...
-	qtractorEngine *pEngine = NULL;
+	qtractorEngine *pEngine = nullptr;
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	qtractorMidiEngine  *pMidiEngine  = m_pSession->midiEngine();
 	switch (m_props.trackType) {
@@ -459,13 +459,13 @@ bool qtractorTrack::open (void)
 	}
 
 	// Got it?
-	if (pEngine == NULL)
+	if (pEngine == nullptr)
 		return false;
 
 	// (Re)assign the input bus to the track.
 	m_pInputBus = pEngine->findInputBus(inputBusName());
 	// Fallback to first usable one...
-	if (m_pInputBus == NULL) {
+	if (m_pInputBus == nullptr) {
 		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Input) {
@@ -481,7 +481,7 @@ bool qtractorTrack::open (void)
 	// (Re)assign the output bus to the track.
 	m_pOutputBus = pEngine->findOutputBus(outputBusName());
 	// Fallback to first usable one...
-	if (m_pOutputBus == NULL) {
+	if (m_pOutputBus == nullptr) {
 		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Output) {
@@ -496,13 +496,13 @@ bool qtractorTrack::open (void)
 
 #if 0
 	// Check proper bus assignment...
-	if (m_pInputBus == NULL || m_pOutputBus == NULL)
+	if (m_pInputBus == nullptr || m_pOutputBus == nullptr)
 		return false;
 #endif
 
 	// Remember current (output) monitor, for later deletion...
 	qtractorMonitor *pMonitor = m_pMonitor;
-	m_pMonitor = NULL;
+	m_pMonitor = nullptr;
 
 	// (Re)allocate (output) monitor...
 	switch (m_props.trackType) {
@@ -529,11 +529,11 @@ bool qtractorTrack::open (void)
 				this, m_pMonitor->panningSubject());
 		}
 		// Get audio bus as for the plugin list...
-		qtractorAudioBus *pAudioBus = NULL;
+		qtractorAudioBus *pAudioBus = nullptr;
 		qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
 		if (pMidiManager)
 			pAudioBus = pMidiManager->audioOutputBus();
-		if (pAudioBus == NULL) {
+		if (pAudioBus == nullptr) {
 			// Output bus gets to be the first available output bus...
 			for (qtractorBus *pBus = (pAudioEngine->buses()).first();
 					pBus; pBus = pBus->next()) {
@@ -622,7 +622,7 @@ bool qtractorTrack::open (void)
 	updateTrackName();
 
 	// Done.
-	return (m_pMonitor != NULL);
+	return (m_pMonitor != nullptr);
 }
 
 
@@ -631,30 +631,30 @@ void qtractorTrack::close (void)
 {
 	if (m_pMidiVolumeObserver) {
 		delete m_pMidiVolumeObserver;
-		m_pMidiVolumeObserver = NULL;
+		m_pMidiVolumeObserver = nullptr;
 	}
 
 	if (m_pMidiPanningObserver) {
 		delete m_pMidiPanningObserver;
-		m_pMidiPanningObserver = NULL;
+		m_pMidiPanningObserver = nullptr;
 	}
 
 	if (m_pMidiProgramObserver) {
 		delete m_pMidiProgramObserver;
-		m_pMidiProgramObserver = NULL;
+		m_pMidiProgramObserver = nullptr;
 	}
 
 #if 0
 	if (m_pMonitor) {
 		delete m_pMonitor;
-		m_pMonitor = NULL;
+		m_pMonitor = nullptr;
 	}
 #endif
 
-	m_pInputBus  = NULL;
-	m_pOutputBus = NULL;
+	m_pInputBus  = nullptr;
+	m_pOutputBus = nullptr;
 
-	setClipRecord(NULL);
+	setClipRecord(nullptr);
 }
 
 
@@ -1174,7 +1174,7 @@ void qtractorTrack::unlinkClip ( qtractorClip *pClip )
 
 void qtractorTrack::removeClip ( qtractorClip *pClip )
 {
-//	pClip->setTrack(NULL);
+//	pClip->setTrack(nullptr);
 	pClip->close();
 
 	unlinkClip(pClip);
@@ -1189,7 +1189,7 @@ void qtractorTrack::setClipRecord ( qtractorClip *pClipRecord )
 
 	m_pClipRecord = pClipRecord;
 
-	if (m_pClipRecord == NULL) {
+	if (m_pClipRecord == nullptr) {
 		m_iClipRecordStart = 0;
 		if (m_bClipRecordEx) {
 			m_bClipRecordEx = false;
@@ -1339,15 +1339,15 @@ void qtractorTrack::process ( qtractorClip *pClip,
 {
 	// Audio-buffers needs some preparation...
 	const unsigned int nframes = iFrameEnd - iFrameStart;
-	qtractorAudioMonitor *pAudioMonitor = NULL;
-	qtractorAudioBus *pOutputBus = NULL;
+	qtractorAudioMonitor *pAudioMonitor = nullptr;
+	qtractorAudioBus *pOutputBus = nullptr;
 	if (m_props.trackType == qtractorTrack::Audio) {
 		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
 		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
 		// Prepare this track buffer...
 		if (pOutputBus) {
 			qtractorAudioBus *pInputBus = (m_pSession->isTrackMonitor(this)
-				? static_cast<qtractorAudioBus *> (m_pInputBus) : NULL);
+				? static_cast<qtractorAudioBus *> (m_pInputBus) : nullptr);
 			pOutputBus->buffer_prepare(nframes, pInputBus);
 		}
 	}
@@ -1388,8 +1388,8 @@ void qtractorTrack::process_export ( qtractorClip *pClip,
 
 	// Audio-buffers needs some preparation...
 	const unsigned int nframes = iFrameEnd - iFrameStart;
-	qtractorAudioMonitor *pAudioMonitor = NULL;
-	qtractorAudioBus *pOutputBus = NULL;
+	qtractorAudioMonitor *pAudioMonitor = nullptr;
+	qtractorAudioBus *pOutputBus = nullptr;
 	if (m_props.trackType == qtractorTrack::Audio) {
 		pAudioMonitor = static_cast<qtractorAudioMonitor *> (m_pMonitor);
 		pOutputBus = static_cast<qtractorAudioBus *> (m_pOutputBus);
@@ -1482,7 +1482,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 	const int y = trackRect.y();
 	const int h = trackRect.height();
 
-	if (pClip == NULL)
+	if (pClip == nullptr)
 		pClip = m_clips.first();
 
 	// Track/clip background...
@@ -1498,7 +1498,7 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 	const QBrush brush(bg);
 #endif
 
-	qtractorClip *pClipRecordEx = (m_bClipRecordEx ? m_pClipRecord : NULL);
+	qtractorClip *pClipRecordEx = (m_bClipRecordEx ? m_pClipRecord : nullptr);
 	const int x0 = m_pSession->pixelFromFrame(iTrackStart);
 	while (pClip) {
 		unsigned long iClipStart = pClip->clipStart();
@@ -1564,7 +1564,7 @@ void qtractorTrack::setMidiPatch ( qtractorInstrumentList *pInstruments )
 
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (m_pOutputBus);
-	if (pMidiBus == NULL)
+	if (pMidiBus == nullptr)
 		return;
 
 	const unsigned short iChannel = midiChannel();
@@ -1603,7 +1603,7 @@ void qtractorTrack::updateClipEditors (void)
 // Audio buffer ring-cache (playlist) methods.
 qtractorAudioBufferThread *qtractorTrack::syncThread (void)
 {
-	if (m_pSyncThread == NULL) {
+	if (m_pSyncThread == nullptr) {
 		m_pSyncThread = new qtractorAudioBufferThread();
 		m_pSyncThread->start(QThread::HighPriority);
 	} else {
@@ -1690,7 +1690,7 @@ void qtractorTrack::stateChangeNotify ( ToolType toolType, bool bOn )
 bool qtractorTrack::loadElement (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
-	if (m_pSession == NULL)
+	if (m_pSession == nullptr)
 		return false;
 
 	qtractorTrack::setTrackName(
@@ -1814,7 +1814,7 @@ bool qtractorTrack::loadElement (
 				if (eClip.isNull())
 					continue;
 				if (eClip.tagName() == "clip") {
-					qtractorClip *pClip = NULL;
+					qtractorClip *pClip = nullptr;
 					switch (qtractorTrack::trackType()) {
 						case qtractorTrack::Audio:
 							pClip = new qtractorAudioClip(this);
@@ -1826,7 +1826,7 @@ bool qtractorTrack::loadElement (
 						default:
 							break;
 					}
-					if (pClip == NULL)
+					if (pClip == nullptr)
 						return false;
 					if (!pClip->loadElement(pDocument, &eClip))
 						return false;
@@ -2004,10 +2004,10 @@ void qtractorTrack::saveControllers (
 	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
-	if (m_pMonitor == NULL)
+	if (m_pMonitor == nullptr)
 		return;
 
 	qtractorMidiControl::Controllers controllers;
@@ -2121,16 +2121,16 @@ void qtractorTrack::saveControllers (
 void qtractorTrack::mapControllers (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
-	if (m_pMonitor == NULL)
+	if (m_pMonitor == nullptr)
 		return;
 
 	QListIterator<qtractorMidiControl::Controller *> iter(m_controllers);
 	while (iter.hasNext()) {
 		qtractorMidiControl::Controller *pController = iter.next();
-		qtractorMidiControlObserver *pObserver = NULL;
+		qtractorMidiControlObserver *pObserver = nullptr;
 		switch (pController->index) {
 		case 0: // 0=MonitorObserver
 			pObserver = monitorObserver();
@@ -2172,7 +2172,7 @@ void qtractorTrack::mapControllers (void)
 // Track automation curve list accessor.
 qtractorCurveList *qtractorTrack::curveList (void) const
 {
-	return (m_pPluginList ? m_pPluginList->curveList() : NULL);
+	return (m_pPluginList ? m_pPluginList->curveList() : nullptr);
 }
 
 
@@ -2195,7 +2195,7 @@ void qtractorTrack::setCurrentCurve ( qtractorCurve *pCurrentCurve )
 qtractorCurve *qtractorTrack::currentCurve (void) const
 {
 	qtractorCurveList *pCurveList = curveList();
-	return (pCurveList ? pCurveList->currentCurve() : NULL);
+	return (pCurveList ? pCurveList->currentCurve() : nullptr);
 }
 
 
@@ -2211,22 +2211,22 @@ void qtractorTrack::loadCurveFile (
 void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 	QDomElement *pElement, qtractorCurveFile *pCurveFile ) const
 {
-	if (m_pMonitor == NULL)
+	if (m_pMonitor == nullptr)
 		return;
 
-	if (pCurveFile == NULL)
+	if (pCurveFile == nullptr)
 		return;
 
 	qtractorCurveList *pCurveList = pCurveFile->list();
-	if (pCurveList == NULL)
+	if (pCurveList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	pCurveFile->clear();
@@ -2355,24 +2355,24 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 // Apply track automation curves (monitor, gain, pan, record, mute, solo).
 void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 {
-	if (m_pMonitor == NULL)
+	if (m_pMonitor == nullptr)
 		return;
 
-	if (pCurveFile == NULL)
+	if (pCurveFile == nullptr)
 		return;
 	if (pCurveFile->items().isEmpty())
 		return;
 
 	qtractorCurveList *pCurveList = pCurveFile->list();
-	if (pCurveList == NULL)
+	if (pCurveList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	pCurveFile->setBaseDir(pSession->sessionDir());
@@ -2410,11 +2410,11 @@ void qtractorTrack::applyCurveFile ( qtractorCurveFile *pCurveFile ) const
 void qtractorTrack::updateTrack (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return;
 
 	pTracks->updateTrack(this);
@@ -2424,11 +2424,11 @@ void qtractorTrack::updateTrack (void)
 void qtractorTrack::updateMidiTrack (void)
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return;
 
 	pTracks->updateMidiTrack(this);

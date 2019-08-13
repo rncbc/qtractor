@@ -397,7 +397,7 @@ bool qtractorMidiInputThread::runState (void) const
 void qtractorMidiInputThread::run (void)
 {
 	snd_seq_t *pAlsaSeq = m_pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -423,7 +423,7 @@ void qtractorMidiInputThread::run (void)
 		if (iPoll == 0)
 			xrpn.flush();
 		while (iPoll > 0) {
-			snd_seq_event_t *pEv = NULL;
+			snd_seq_event_t *pEv = nullptr;
 			snd_seq_event_input(pAlsaSeq, &pEv);
 			// Process input event - ...
 			// - enqueue to input track mapping;
@@ -507,13 +507,13 @@ qtractorSessionCursor *qtractorMidiOutputThread::midiCursorSync ( bool bStart )
 	// We'll need access to master audio engine...
 	qtractorSessionCursor *pAudioCursor
 		= (m_pMidiEngine->session())->audioEngine()->sessionCursor();
-	if (pAudioCursor == NULL)
-		return NULL;
+	if (pAudioCursor == nullptr)
+		return nullptr;
 
 	// And to our slave MIDI engine too...
 	qtractorSessionCursor *pMidiCursor = m_pMidiEngine->sessionCursor();
-	if (pMidiCursor == NULL)
-		return NULL;
+	if (pMidiCursor == nullptr)
+		return nullptr;
 
 	// Can MIDI be ever behind audio?
 	if (bStart) {
@@ -522,7 +522,7 @@ qtractorSessionCursor *qtractorMidiOutputThread::midiCursorSync ( bool bStart )
 	}
 	else // No, it cannot be behind more than the read-ahead period...
 	if (pMidiCursor->frameTime() > pAudioCursor->frameTime() + m_iReadAhead)
-		return NULL;
+		return nullptr;
 
 	// Nope. OK.
 	return pMidiCursor;
@@ -564,13 +564,13 @@ void qtractorMidiOutputThread::process (void)
 {
 	// Must have a valid session...
 	qtractorSession *pSession = m_pMidiEngine->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 	
 	// Get a handle on our slave MIDI engine...
 	qtractorSessionCursor *pMidiCursor = midiCursorSync();
 	// Isn't MIDI slightly behind audio?
-	if (pMidiCursor == NULL)
+	if (pMidiCursor == nullptr)
 		return;
 
 	// Free overriden SysEx queued events.
@@ -656,12 +656,12 @@ void qtractorMidiOutputThread::trackSync (
 
 	// Must have a valid session...
 	qtractorSession *pSession = m_pMidiEngine->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 	
 	// Pick our actual MIDI sequencer cursor...
 	qtractorSessionCursor *pMidiCursor = m_pMidiEngine->sessionCursor();
-	if (pMidiCursor == NULL)
+	if (pMidiCursor == nullptr)
 		return;
 
 	// This is the last framestamp to be trown out...
@@ -699,7 +699,7 @@ void qtractorMidiOutputThread::metroSync ( unsigned long iFrameStart )
 
 	// Pick our actual MIDI sequencer cursor...
 	qtractorSessionCursor *pMidiCursor = m_pMidiEngine->sessionCursor();
-	if (pMidiCursor == NULL)
+	if (pMidiCursor == nullptr)
 		return;
 
 	// This is the last framestamp to be trown out...
@@ -812,8 +812,8 @@ void qtractorMidiPlayerThread::run (void)
 qtractorMidiPlayer::qtractorMidiPlayer (qtractorMidiBus *pMidiBus )
 	: m_pMidiBus(pMidiBus),
 		m_pMidiEngine(static_cast<qtractorMidiEngine *> (pMidiBus->engine())),
-		m_iSeqs(0), m_ppSeqs(NULL), m_ppSeqCursors(NULL), m_pTimeScale(NULL), 
-		m_pCursor(NULL), m_fTempo(0.0f), m_pPlayerThread(NULL)
+		m_iSeqs(0), m_ppSeqs(nullptr), m_ppSeqCursors(nullptr), m_pTimeScale(nullptr), 
+		m_pCursor(nullptr), m_fTempo(0.0f), m_pPlayerThread(nullptr)
 {
 }
 
@@ -830,24 +830,24 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 {
 	close();
 
-	if (m_pMidiBus == NULL)
+	if (m_pMidiBus == nullptr)
 		return false;
 
 	qtractorSession *pSession = m_pMidiEngine->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorSessionCursor *pAudioCursor
 		= pSession->audioEngine()->sessionCursor();
-	if (pAudioCursor == NULL)
+	if (pAudioCursor == nullptr)
 		return false;
 
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return false;
 
 	snd_seq_t *pAlsaSeq = m_pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return false;
 
 	qtractorMidiFile file;
@@ -889,7 +889,7 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 		(unsigned int) (60000000.0f / m_fTempo));
 	snd_seq_set_queue_tempo(pAlsaSeq, iAlsaQueue, tempo);
 
-	snd_seq_start_queue(pAlsaSeq, iAlsaQueue, NULL);
+	snd_seq_start_queue(pAlsaSeq, iAlsaQueue, nullptr);
 	snd_seq_drain_output(pAlsaSeq);
 
 	pAudioCursor->reset();
@@ -916,7 +916,7 @@ void qtractorMidiPlayer::close (void)
 		//	m_pPayerThread->terminate();
 		} while (!m_pPlayerThread->wait(100));
 		delete m_pPlayerThread;
-		m_pPlayerThread = NULL;
+		m_pPlayerThread = nullptr;
 	}
 
 	if (m_ppSeqs && m_pMidiBus) {
@@ -925,7 +925,7 @@ void qtractorMidiPlayer::close (void)
 			snd_seq_drop_output(pAlsaSeq);
 			const int iAlsaQueue = m_pMidiEngine->alsaQueue();
 			if (iAlsaQueue >= 0)
-				snd_seq_stop_queue(pAlsaSeq, iAlsaQueue, NULL);
+				snd_seq_stop_queue(pAlsaSeq, iAlsaQueue, nullptr);
 			for (unsigned short iSeq = 0; iSeq < m_iSeqs; ++iSeq) {
 				const unsigned short iChannel = m_ppSeqs[iSeq]->channel();
 				m_pMidiBus->setController(iChannel, ALL_SOUND_OFF);
@@ -941,7 +941,7 @@ void qtractorMidiPlayer::close (void)
 	
 	if (m_pCursor) {
 		delete m_pCursor;
-		m_pCursor = NULL;
+		m_pCursor = nullptr;
 	}
 
 	m_fTempo = 0.0f;
@@ -955,19 +955,19 @@ void qtractorMidiPlayer::close (void)
 
 	if (m_ppSeqCursors) {
 		delete [] m_ppSeqCursors;
-		m_ppSeqCursors = NULL;
+		m_ppSeqCursors = nullptr;
 	}
 
 	if (m_ppSeqs) {
 		delete [] m_ppSeqs;
-		m_ppSeqs = NULL;
+		m_ppSeqs = nullptr;
 	}
 
 	m_iSeqs = 0;
 
 	if (m_pTimeScale) {
 		delete m_pTimeScale;
-		m_pTimeScale = NULL;
+		m_pTimeScale = nullptr;
 	}
 }
 
@@ -976,14 +976,14 @@ void qtractorMidiPlayer::close (void)
 bool qtractorMidiPlayer::process (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
-	if (m_pMidiBus == NULL)
+	if (m_pMidiBus == nullptr)
 		return false;
 
-	if (m_pCursor == NULL)
+	if (m_pCursor == nullptr)
 		return false;
 
 	snd_seq_t *pAlsaSeq = m_pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return false;
 
 	const int iAlsaQueue = m_pMidiEngine->alsaQueue();
@@ -1155,7 +1155,7 @@ unsigned int qtractorMidiPlayer::sampleRate (void) const
 unsigned long qtractorMidiPlayer::queueTime (void) const
 {
 	snd_seq_t *pAlsaSeq = m_pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return 0;
 
 	int iAlsaQueue = m_pMidiEngine->alsaQueue();
@@ -1190,17 +1190,17 @@ unsigned long qtractorMidiPlayer::queueFrame (void) const
 qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	: qtractorEngine(pSession, qtractorTrack::Midi)
 {
-	m_pAlsaSeq      = NULL;
+	m_pAlsaSeq      = nullptr;
 	m_iAlsaClient   = -1;
 	m_iAlsaQueue    = -1;
 	m_iAlsaTimer    = 0;
 
-	m_pAlsaSubsSeq  = NULL;
+	m_pAlsaSubsSeq  = nullptr;
 	m_iAlsaSubsPort = -1;
-	m_pAlsaNotifier = NULL;
+	m_pAlsaNotifier = nullptr;
 
-	m_pInputThread  = NULL;
-	m_pOutputThread = NULL;
+	m_pInputThread  = nullptr;
+	m_pOutputThread = nullptr;
 
 	m_bDriftCorrect = true;
 
@@ -1217,12 +1217,12 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iAudioFrameStart = 0;
 
 	m_bControlBus   = false;
-	m_pIControlBus  = NULL;
-	m_pOControlBus  = NULL;
+	m_pIControlBus  = nullptr;
+	m_pOControlBus  = nullptr;
 
 	m_bMetronome         = false;
 	m_bMetroBus          = false;
-	m_pMetroBus          = NULL;
+	m_pMetroBus          = nullptr;
 	m_iMetroChannel      = 9;	// GM Drums channel (10)
 	m_iMetroBarNote      = 76;	// GM High-wood stick
 	m_iMetroBarVelocity  = 96;
@@ -1234,15 +1234,15 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_bMetroEnabled      = false;
 
 	// Time-scale cursor (tempo/time-signature map)
-	m_pMetroCursor = NULL;
+	m_pMetroCursor = nullptr;
 
 	// Track down tempo changes.
 	m_fMetroTempo = 0.0f;
 
 	// SMF player stuff.
 	m_bPlayerBus = false;
-	m_pPlayerBus = NULL;
-	m_pPlayer    = NULL;
+	m_pPlayerBus = nullptr;
+	m_pPlayer    = nullptr;
 
 	// No input/capture quantization (default).
 	m_iCaptureQuantize = 0;
@@ -1298,7 +1298,7 @@ QSocketNotifier *qtractorMidiEngine::alsaNotifier (void) const
 // ALSA subscription notifier acknowledgment.
 void qtractorMidiEngine::alsaNotifyAck (void)
 {
-	if (m_pAlsaSubsSeq == NULL)
+	if (m_pAlsaSubsSeq == nullptr)
 		return;
 
 	do {
@@ -1340,7 +1340,7 @@ void qtractorMidiEngine::resetTempo (void)
 		return;
 
 	// Needs a valid cursor...
-	if (m_pMetroCursor == NULL)
+	if (m_pMetroCursor == nullptr)
 		return;
 
 	// Reset tempo cursor.
@@ -1348,7 +1348,7 @@ void qtractorMidiEngine::resetTempo (void)
 
 	// There must a session reference...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Recache tempo node...
@@ -1381,7 +1381,7 @@ void qtractorMidiEngine::resetAllMonitors (void)
 {
 	// There must a session reference...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Reset common MIDI monitor stuff...
@@ -1429,7 +1429,7 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 
 	// There must a session reference...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Reset all MIDI bus controllers...
@@ -1509,7 +1509,7 @@ void qtractorMidiEngine::shutOffAllBuses ( bool bClose )
 void qtractorMidiEngine::shutOffAllTracks (void)
 {
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -1569,7 +1569,7 @@ void qtractorMidiEngine::removeInputBuffer ( int iAlsaPort )
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	const int iAlsaPort = pEv->dest.port;
@@ -1581,7 +1581,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	unsigned short value    = 0;
 	unsigned long  duration = 0;
 
-	unsigned char *pSysex   = NULL;
+	unsigned char *pSysex   = nullptr;
 	unsigned short iSysex   = 0;
 
 	unsigned long tick = pEv->time.tick;
@@ -1783,7 +1783,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 				// Is it actually recording?...
 				if (bRecord && bRecording) {
-					qtractorMidiSequence *pSeq = NULL;
+					qtractorMidiSequence *pSeq = nullptr;
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
 					if (pMidiClip)
@@ -1799,7 +1799,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							tick = iTime - iClipStartTime;
 						else
 						if (type != qtractorMidiEvent::NOTEOFF)
-							pSeq = NULL;
+							pSeq = nullptr;
 					}
 					// Yep, maybe we have a new MIDI event on record...
 					if (pSeq) {
@@ -1849,7 +1849,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	}
 
 	// MIDI Bus monitoring...
-	qtractorMidiBus *pMidiBus = m_inputBuses.value(iAlsaPort, NULL);
+	qtractorMidiBus *pMidiBus = m_inputBuses.value(iAlsaPort, nullptr);
 	if (pMidiBus) {
 		// Input monitoring...
 		if (pMidiBus->midiMonitor_in())
@@ -1881,7 +1881,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	} else {
 		// Input buffers (eg. insert returns)...
 		qtractorMidiInputBuffer *pMidiInputBuffer
-			= m_inputBuffers.value(iAlsaPort, NULL);
+			= m_inputBuffers.value(iAlsaPort, nullptr);
 		if (pMidiInputBuffer)
 			pMidiInputBuffer->enqueue(pEv);
 	}
@@ -1903,13 +1903,13 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	qtractorMidiEvent *pEvent, unsigned long iTime, float fGain )
 {
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Target MIDI bus...
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-	if (pMidiBus == NULL)
+	if (pMidiBus == nullptr)
 		return;
 #if 0
 	// HACK: Ignore our own mixer-monitor supplied controllers...
@@ -2140,16 +2140,16 @@ void qtractorMidiEngine::driftCheck (void)
 		return;
 
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 //	if (pSession->isRecording())
 //		return;
 
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
-	if (m_pMetroCursor == NULL)
+	if (m_pMetroCursor == nullptr)
 		return;
 
 	// Time to have some corrective approach...?
@@ -2232,14 +2232,14 @@ bool qtractorMidiEngine::init (void)
 {
 	// There must a session reference...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Try open a new client...
 	if (snd_seq_open(&m_pAlsaSeq, "default",
 			SND_SEQ_OPEN_DUPLEX, SND_SEQ_NONBLOCK) < 0)
 		return false;
-	if (m_pAlsaSeq == NULL)
+	if (m_pAlsaSeq == nullptr)
 		return false;
 
 	// Fix client name.
@@ -2301,7 +2301,7 @@ bool qtractorMidiEngine::activate (void)
 {
 	// There must a session reference...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Open SMF player to last...
@@ -2348,11 +2348,11 @@ bool qtractorMidiEngine::start (void)
 
 	// There must a session reference...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Output thread must be around too...
-	if (m_pOutputThread == NULL)
+	if (m_pOutputThread == nullptr)
 		return false;
 
 	// Close any SMF player out there...
@@ -2361,7 +2361,7 @@ bool qtractorMidiEngine::start (void)
 	// Initial output thread bumping...
 	qtractorSessionCursor *pMidiCursor
 		= m_pOutputThread->midiCursorSync(true);
-	if (pMidiCursor == NULL)
+	if (pMidiCursor == nullptr)
 		return false;
 
 	// Reset all dependables...
@@ -2381,7 +2381,7 @@ bool qtractorMidiEngine::start (void)
 	m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
 
 	// Effectively start sequencer queue timer...
-	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
+	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
 	snd_seq_drain_output(m_pAlsaSeq);
 
 	// Carry on...
@@ -2402,7 +2402,7 @@ void qtractorMidiEngine::stop (void)
 	snd_seq_drop_output(m_pAlsaSeq);
 
 	// Stop queue timer...
-	snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, NULL);
+	snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
 
 	flush();
 
@@ -2446,7 +2446,7 @@ void qtractorMidiEngine::clean (void)
 			m_pOutputThread->sync();
 		} while (!m_pOutputThread->wait(100));
 		delete m_pOutputThread;
-		m_pOutputThread = NULL;
+		m_pOutputThread = nullptr;
 	}
 
 	// Last but not least, delete input thread...
@@ -2457,27 +2457,27 @@ void qtractorMidiEngine::clean (void)
 		//	m_pInputThread->terminate();
 		} while (!m_pInputThread->wait(100));
 		delete m_pInputThread;
-		m_pInputThread = NULL;
+		m_pInputThread = nullptr;
 	}
 
 	// Time-scale cursor (tempo/time-signature map)
 	if (m_pMetroCursor) {
 		delete m_pMetroCursor;
-		m_pMetroCursor = NULL;
+		m_pMetroCursor = nullptr;
 	}
 
 	// Drop subscription stuff.
 	if (m_pAlsaSubsSeq) {
 		if (m_pAlsaNotifier) {
 			delete m_pAlsaNotifier;
-			m_pAlsaNotifier = NULL;
+			m_pAlsaNotifier = nullptr;
 		}
 		if (m_iAlsaSubsPort >= 0) {
 			snd_seq_delete_simple_port(m_pAlsaSubsSeq, m_iAlsaSubsPort);
 			m_iAlsaSubsPort = -1;
 		}
 		snd_seq_close(m_pAlsaSubsSeq);
-		m_pAlsaSubsSeq = NULL;
+		m_pAlsaSubsSeq = nullptr;
 	}
 
 	// Drop everything else, finally.
@@ -2487,7 +2487,7 @@ void qtractorMidiEngine::clean (void)
 		snd_seq_close(m_pAlsaSeq);
 		m_iAlsaQueue  = -1;
 		m_iAlsaClient = -1;
-		m_pAlsaSeq    = NULL;
+		m_pAlsaSeq    = nullptr;
 	}
 
 	// Clean any other left-overs...
@@ -2542,7 +2542,7 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 #endif
 
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	const unsigned long iFrame = pSession->playHead();
@@ -2601,7 +2601,7 @@ void qtractorMidiEngine::metroMute ( bool bMute )
 #endif
 
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	const unsigned long iFrame = pSession->playHead();
@@ -2686,10 +2686,10 @@ void qtractorMidiEngine::createControlBus (void)
 		// Find available control buses...
 		for (qtractorBus *pBus = qtractorEngine::buses().first();
 				pBus; pBus = pBus->next()) {
-			if (m_pIControlBus == NULL
+			if (m_pIControlBus == nullptr
 				&& (pBus->busMode() & qtractorBus::Input))
 				m_pIControlBus = static_cast<qtractorMidiBus *> (pBus);
-			if (m_pOControlBus == NULL
+			if (m_pOControlBus == nullptr
 				&& (pBus->busMode() & qtractorBus::Output))
 				m_pOControlBus = static_cast<qtractorMidiBus *> (pBus);
 		}
@@ -2702,9 +2702,9 @@ bool qtractorMidiEngine::openControlBus (void)
 	closeControlBus();
 
 	// Is there any?
-	if (m_pOControlBus == NULL)
+	if (m_pOControlBus == nullptr)
 		createControlBus();
-	if (m_pOControlBus == NULL)
+	if (m_pOControlBus == nullptr)
 		return false;
 
 	// This is it, when dedicated...
@@ -2738,8 +2738,8 @@ void qtractorMidiEngine::deleteControlBus (void)
 		delete m_pOControlBus;
 
 	// Reset both control buses...
-	m_pIControlBus = NULL;
-	m_pOControlBus = NULL;
+	m_pIControlBus = nullptr;
+	m_pOControlBus = nullptr;
 }
 
 
@@ -2810,9 +2810,9 @@ bool qtractorMidiEngine::openPlayerBus (void)
 	closePlayerBus();
 
 	// Is there any?
-	if (m_pPlayerBus == NULL)
+	if (m_pPlayerBus == nullptr)
 		createPlayerBus();
-	if (m_pPlayerBus == NULL)
+	if (m_pPlayerBus == nullptr)
 		return false;
 
 	// This is it, when dedicated...
@@ -2848,13 +2848,13 @@ void qtractorMidiEngine::deletePlayerBus (void)
 
 	if (m_pPlayer) {
 		delete m_pPlayer;
-		m_pPlayer = NULL;
+		m_pPlayer = nullptr;
 	}
 
 	if (m_pPlayerBus && m_bPlayerBus)
 		delete m_pPlayerBus;
 
-	m_pPlayerBus = NULL;
+	m_pPlayerBus = nullptr;
 }
 
 
@@ -2928,7 +2928,7 @@ void qtractorMidiEngine::sendMmcCommand (
 		return;
 
 	// We surely need a output control bus...
-	if (m_pOControlBus == NULL)
+	if (m_pOControlBus == nullptr)
 		return;
 
 	// Build up the MMC sysex message...
@@ -2970,7 +2970,7 @@ void qtractorMidiEngine::sendSppCommand (
 		return;
 
 	// We surely need a output control bus...
-	if (m_pOControlBus == NULL)
+	if (m_pOControlBus == nullptr)
 		return;
 
 	// Initialize sequencer event...
@@ -3093,9 +3093,9 @@ bool qtractorMidiEngine::openMetroBus (void)
 		return false;
 
 	// Is there any?
-	if (m_pMetroBus == NULL)
+	if (m_pMetroBus == nullptr)
 		createMetroBus();
-	if (m_pMetroBus == NULL)
+	if (m_pMetroBus == nullptr)
 		return false;
 
 	// This is it, when dedicated...
@@ -3126,7 +3126,7 @@ void qtractorMidiEngine::deleteMetroBus (void)
 	if (m_pMetroBus && m_bMetroBus)
 		delete m_pMetroBus;
 
-	m_pMetroBus = NULL;
+	m_pMetroBus = nullptr;
 }
 
 
@@ -3207,7 +3207,7 @@ unsigned long qtractorMidiEngine::metroOffset (void) const
 void qtractorMidiEngine::processMetro (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
-	if (m_pMetroCursor == NULL)
+	if (m_pMetroCursor == nullptr)
 		return;
 
 	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrameEnd);
@@ -3490,7 +3490,7 @@ bool qtractorMidiEngine::fileExport (
 
 	// Make sure we have an actual session cursor...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Cannot have exports longer than current session.
@@ -3513,7 +3513,7 @@ bool qtractorMidiEngine::fileExport (
 	unsigned short iSeq;
 	unsigned short iSeqs = 0;
 	QList<qtractorMidiSequence *> seqs;
-	qtractorMidiSequence **ppSeqs = NULL;
+	qtractorMidiSequence **ppSeqs = nullptr;
 	if (iFormat == 0) {
 		iSeqs  = 16;
 		ppSeqs = new qtractorMidiSequence * [iSeqs];
@@ -3536,21 +3536,21 @@ bool qtractorMidiEngine::fileExport (
 			continue;
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-		if (pMidiBus == NULL)
+		if (pMidiBus == nullptr)
 			continue;
 		// Check whether this track makes it
 		// as one of the exported buses....
-		qtractorMidiBus *pExportBus = NULL;
+		qtractorMidiBus *pExportBus = nullptr;
 		bus_iter.toFront();
 		while (bus_iter.hasNext()) {
 			pExportBus = bus_iter.next();
 			if (pExportBus
 				&& pExportBus->alsaPort() == pMidiBus->alsaPort())
 				break;
-			pExportBus = NULL;
+			pExportBus = nullptr;
 		}
 		// Is it not?
-		if (pExportBus == NULL)
+		if (pExportBus == nullptr)
 			continue;
 		// We have a target sequence, maybe reused...
 		qtractorMidiSequence *pSeq;
@@ -3625,7 +3625,7 @@ bool qtractorMidiEngine::fileExport (
 	++iTracks;
 
 	// Special on SMF Format 1...
-	if (ppSeqs == NULL) {
+	if (ppSeqs == nullptr) {
 		// Sanity check...
 		if (iTracks < 1)
 			return false;
@@ -3633,7 +3633,7 @@ bool qtractorMidiEngine::fileExport (
 		iSeqs  = iTracks;
 		ppSeqs = new qtractorMidiSequence * [iSeqs];
 		QListIterator<qtractorMidiSequence *> seq_iter(seqs);
-		ppSeqs[0] = NULL;	// META info track...
+		ppSeqs[0] = nullptr;	// META info track...
 		for (iSeq = 1; iSeq < iSeqs && seq_iter.hasNext(); ++iSeq)
 			ppSeqs[iSeq] = seq_iter.next();
 		// May clear it now.
@@ -3653,7 +3653,7 @@ bool qtractorMidiEngine::fileExport (
 				qtractorMidiBus *pExportBus = bus_iter.next();
 				qtractorMidiSysexList *pSysexList = pExportBus->sysexList();
 				if (pSysexList && pSysexList->count() > 0) {
-					if (ppSeqs[0] == NULL) {
+					if (ppSeqs[0] == nullptr) {
 						ppSeqs[0] = new qtractorMidiSequence(
 							QFileInfo(sExportPath).baseName(), 0, iTicksPerBeat);
 					}
@@ -3806,8 +3806,8 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 		m_pIMidiMonitor = new qtractorMidiMonitor();
 		m_pIPluginList  = createPluginList(qtractorPluginList::MidiInBus);
 	} else {
-		m_pIMidiMonitor = NULL;
-		m_pIPluginList  = NULL;
+		m_pIMidiMonitor = nullptr;
+		m_pIPluginList  = nullptr;
 	}
 
 	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
@@ -3815,9 +3815,9 @@ qtractorMidiBus::qtractorMidiBus ( qtractorMidiEngine *pMidiEngine,
 		m_pOPluginList  = createPluginList(qtractorPluginList::MidiOutBus);
 		m_pSysexList    = new qtractorMidiSysexList();
 	} else {
-		m_pOMidiMonitor = NULL;
-		m_pOPluginList  = NULL;
-		m_pSysexList    = NULL;
+		m_pOMidiMonitor = nullptr;
+		m_pOPluginList  = nullptr;
+		m_pSysexList    = nullptr;
 	}
 }
 
@@ -3855,11 +3855,11 @@ bool qtractorMidiBus::open (void)
 
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return false;
 
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return false;
 
 	const qtractorBus::BusMode busMode
@@ -3917,11 +3917,11 @@ void qtractorMidiBus::close (void)
 {
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return;
 
 	if (m_pIMidiMonitor)
@@ -3943,41 +3943,41 @@ void qtractorMidiBus::updateBusMode (void)
 
 	// Have a new/old input monitor?
 	if ((busMode & qtractorBus::Input) && !(busMode & qtractorBus::Ex)) {
-		if (m_pIMidiMonitor == NULL)
+		if (m_pIMidiMonitor == nullptr)
 			m_pIMidiMonitor = new qtractorMidiMonitor();
-		if (m_pIPluginList == NULL)
+		if (m_pIPluginList == nullptr)
 			m_pIPluginList = createPluginList(qtractorPluginList::MidiInBus);
 	} else {
 		if (m_pIMidiMonitor) {
 			delete m_pIMidiMonitor;
-			m_pIMidiMonitor = NULL;
+			m_pIMidiMonitor = nullptr;
 		}
 		if (m_pIPluginList) {
 			delete m_pIPluginList;
-			m_pIPluginList = NULL;
+			m_pIPluginList = nullptr;
 		}
 	}
 
 	// Have a new/old output monitor?
 	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
-		if (m_pOMidiMonitor == NULL)
+		if (m_pOMidiMonitor == nullptr)
 			m_pOMidiMonitor = new qtractorMidiMonitor();
-		if (m_pOPluginList == NULL)
+		if (m_pOPluginList == nullptr)
 			m_pOPluginList = createPluginList(qtractorPluginList::MidiOutBus);
-		if (m_pSysexList == NULL)
+		if (m_pSysexList == nullptr)
 			m_pSysexList = new qtractorMidiSysexList();
 	} else {
 		if (m_pOMidiMonitor) {
 			delete m_pOMidiMonitor;
-			m_pOMidiMonitor = NULL;
+			m_pOMidiMonitor = nullptr;
 		}
 		if (m_pOPluginList) {
 			delete m_pOPluginList;
-			m_pOPluginList = NULL;
+			m_pOPluginList = nullptr;
 		}
 		if (m_pSysexList) {
 			delete m_pSysexList;
-			m_pSysexList = NULL;
+			m_pSysexList = nullptr;
 		}
 	}
 }
@@ -4016,11 +4016,11 @@ void qtractorMidiBus::shutOff ( bool bClose ) const
 {
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return;
 
 	if ((busMode() & qtractorBus::Output) == 0)
@@ -4071,7 +4071,7 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -4094,15 +4094,15 @@ void qtractorMidiBus::setPatch ( unsigned short iChannel,
 	// Don't do anything else if engine
 	// has not been activated...
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return;
 
 	// Do it for the MIDI plugins if applicable...
-	qtractorMidiManager *pTrackMidiManager = NULL;
+	qtractorMidiManager *pTrackMidiManager = nullptr;
 	if (pTrack)
 		pTrackMidiManager = (pTrack->pluginList())->midiManager();
 
-	qtractorMidiManager *pBusMidiManager = NULL;
+	qtractorMidiManager *pBusMidiManager = nullptr;
 	if (pluginList_out())
 		pBusMidiManager = pluginList_out()->midiManager();
 
@@ -4188,7 +4188,7 @@ void qtractorMidiBus::setController (
 void qtractorMidiBus::setController ( unsigned short iChannel,
 	int iController, int iValue ) const
 {
-	setControllerEx(iChannel, iController, iValue, NULL);
+	setControllerEx(iChannel, iController, iValue, nullptr);
 }
 
 
@@ -4199,13 +4199,13 @@ void qtractorMidiBus::setControllerEx ( unsigned short iChannel,
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	// Don't do anything else if engine
 	// has not been activated...
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -4248,13 +4248,13 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	// Don't do anything else if engine
 	// has not been activated...
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -4349,13 +4349,13 @@ void qtractorMidiBus::sendNote (
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	// Don't do anything else if engine
 	// has not been activated...
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return;
 
 	const unsigned short iChannel = pTrack->midiChannel();
@@ -4412,13 +4412,13 @@ void qtractorMidiBus::sendSysex (
 	// Yet again, we need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	// Don't do anything else if engine
 	// has not been activated...
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -4452,7 +4452,7 @@ void qtractorMidiBus::sendSysex (
 void qtractorMidiBus::sendSysexList (void) const
 {
 	// Check that we have some SysEx for setup...
-	if (m_pSysexList == NULL)
+	if (m_pSysexList == nullptr)
 		return;
 	if (m_pSysexList->count() < 1)
 		return;
@@ -4460,13 +4460,13 @@ void qtractorMidiBus::sendSysexList (void) const
 	// Yet again, we need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	// Don't do anything else if engine
 	// has not been activated...
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return;
 
 	QListIterator<qtractorMidiSysex *> iter(*m_pSysexList);
@@ -4566,21 +4566,21 @@ void qtractorMidiBus::updatePluginList (
 {
 	// Sanity checks...
 	qtractorSession *pSession = engine()->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	// Set plugin-list title name...
 	updatePluginListName(pPluginList, iFlags);
 
 	// Get audio bus as for the plugin list...
-	qtractorAudioBus *pAudioBus = NULL;
+	qtractorAudioBus *pAudioBus = nullptr;
 	if (pPluginList->midiManager())
 		pAudioBus = (pPluginList->midiManager())->audioOutputBus();
-	if (pAudioBus == NULL) {
+	if (pAudioBus == nullptr) {
 		// Output bus gets to be the first available output bus...
 		for (qtractorBus *pBus = (pAudioEngine->buses()).first();
 				pBus; pBus = pBus->next()) {
@@ -4611,11 +4611,11 @@ int qtractorMidiBus::updateConnects (
 
 	qtractorMidiEngine *pMidiEngine
 		= static_cast<qtractorMidiEngine *> (engine());
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return 0;
 
 	snd_seq_t *pAlsaSeq = pMidiEngine->alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return 0;
 
 	// Which kind of subscription?
@@ -5069,7 +5069,7 @@ bool qtractorMidiBus::loadSysexList (
 	qtractorDocument * /*pDocument*/, QDomElement *pElement )
 {
 	// Must have one...
-	if (m_pSysexList == NULL)
+	if (m_pSysexList == nullptr)
 		return false;
 
 	// Crystal clear...
@@ -5105,7 +5105,7 @@ bool qtractorMidiBus::saveSysexList (
 	qtractorDocument *pDocument, QDomElement *pElement ) const
 {
 	// Must have one...
-	if (m_pSysexList == NULL)
+	if (m_pSysexList == nullptr)
 		return false;
 
 	// Save map items...
@@ -5126,7 +5126,7 @@ bool qtractorMidiBus::saveSysexList (
 // Import SysEx setup from event sequence.
 bool qtractorMidiBus::importSysexList ( qtractorMidiSequence *pSeq )  
 {
-	if (m_pSysexList == NULL)
+	if (m_pSysexList == nullptr)
 		return false;
 
 	m_pSysexList->clear();
@@ -5151,7 +5151,7 @@ bool qtractorMidiBus::importSysexList ( qtractorMidiSequence *pSeq )
 // Export SysEx setup to event sequence.
 bool qtractorMidiBus::exportSysexList ( qtractorMidiSequence *pSeq )
 {
-	if (m_pSysexList == NULL)
+	if (m_pSysexList == nullptr)
 		return false;
 
 	QListIterator<qtractorMidiSysex *> iter(*m_pSysexList);

@@ -1,7 +1,7 @@
 // qtractorPasteRepeatForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,7 +45,7 @@ qtractorPasteRepeatForm::qtractorPasteRepeatForm (
 	QDialog::setWindowModality(Qt::WindowModal);
 
 	// Initialize dirty control state.
-	m_pTimeScale  = NULL;
+	m_pTimeScale  = nullptr;
 	m_iDirtyCount = 0;
 
 	// Copy from global time-scale instance...
@@ -214,7 +214,7 @@ void qtractorPasteRepeatForm::stabilizeForm (void)
 	m_ui.RepeatFormatComboBox->setEnabled(bEnabled);
 
 	m_ui.DialogButtonBox->button(
-		QDialogButtonBox::Ok)->setEnabled(m_pTimeScale != NULL);
+		QDialogButtonBox::Ok)->setEnabled(m_pTimeScale != nullptr);
 }
 
 

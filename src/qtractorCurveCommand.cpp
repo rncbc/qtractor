@@ -1,7 +1,7 @@
 // qtractorCurveCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -110,7 +110,7 @@ qtractorCurveSelectCommand::qtractorCurveSelectCommand (
 // Virtual command methods.
 bool qtractorCurveSelectCommand::execute ( bool bRedo )
 {
-	if (m_pCurveList == NULL)
+	if (m_pCurveList == nullptr)
 		return false;
 
 	qtractorCurve *pCurrentCurve = m_pCurveList->currentCurve();
@@ -137,7 +137,7 @@ qtractorCurveModeCommand::qtractorCurveModeCommand (
 // Virtual command methods.
 bool qtractorCurveModeCommand::execute ( bool bRedo )
 {
-	if (m_pCurve == NULL)
+	if (m_pCurve == nullptr)
 		return false;
 
 	qtractorCurve::Mode mode = m_pCurve->mode();
@@ -165,7 +165,7 @@ qtractorCurveProcessCommand::qtractorCurveProcessCommand (
 // Virtual command methods.
 bool qtractorCurveProcessCommand::execute ( bool bRedo )
 {
-	if (m_pCurve == NULL)
+	if (m_pCurve == nullptr)
 		return false;
 
 	const bool bProcess = m_pCurve->isProcess();
@@ -194,7 +194,7 @@ qtractorCurveCaptureCommand::qtractorCurveCaptureCommand (
 // Virtual command methods.
 bool qtractorCurveCaptureCommand::execute ( bool bRedo )
 {
-	if (m_pCurve == NULL)
+	if (m_pCurve == nullptr)
 		return false;
 
 	const bool bCapture = m_pCurve->isCapture();
@@ -223,7 +223,7 @@ qtractorCurveLogarithmicCommand::qtractorCurveLogarithmicCommand (
 // Virtual command methods.
 bool qtractorCurveLogarithmicCommand::execute ( bool /*bRedo*/ )
 {
-	if (m_pCurve == NULL)
+	if (m_pCurve == nullptr)
 		return false;
 
 	const bool bLogarithmic = m_pCurve->isLogarithmic();
@@ -250,7 +250,7 @@ qtractorCurveColorCommand::qtractorCurveColorCommand (
 // Virtual command methods.
 bool qtractorCurveColorCommand::execute ( bool /*bRedo*/ )
 {
-	if (m_pCurve == NULL)
+	if (m_pCurve == nullptr)
 		return false;
 
 	const QColor color = m_pCurve->color();
@@ -277,7 +277,7 @@ qtractorCurveProcessAllCommand::qtractorCurveProcessAllCommand (
 // Virtual command methods.
 bool qtractorCurveProcessAllCommand::execute ( bool bRedo )
 {
-	if (m_pCurveList == NULL)
+	if (m_pCurveList == nullptr)
 		return false;
 
 	const bool bProcessAll = m_pCurveList->isProcessAll();
@@ -306,7 +306,7 @@ qtractorCurveCaptureAllCommand::qtractorCurveCaptureAllCommand (
 // Virtual command methods.
 bool qtractorCurveCaptureAllCommand::execute ( bool bRedo )
 {
-	if (m_pCurveList == NULL)
+	if (m_pCurveList == nullptr)
 		return false;
 
 	const bool bCaptureAll = m_pCurveList->isCaptureAll();
@@ -441,7 +441,7 @@ bool qtractorCurveClearAllCommand::isEmpty (void) const
 // Virtual executive method.
 bool qtractorCurveClearAllCommand::execute ( bool bRedo )
 {
-	if (m_pCurveList == NULL)
+	if (m_pCurveList == nullptr)
 		return false;
 
 	QListIterator<qtractorCurveClearCommand *> iter(m_commands);
@@ -501,7 +501,7 @@ bool qtractorCurveEditListCommand::isEmpty (void) const
 // Virtual executive method.
 bool qtractorCurveEditListCommand::execute ( bool bRedo )
 {
-	if (m_pCurveList == NULL)
+	if (m_pCurveList == nullptr)
 		return false;
 
 	QListIterator<qtractorCurveEditCommand *> iter(m_curveEditCommands);

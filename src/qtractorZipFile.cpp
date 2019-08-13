@@ -1,7 +1,7 @@
 // qtractorZipFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2010-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -308,7 +308,7 @@ public:
 	{
 	#ifdef QTRACTOR_PROGRESS_BAR
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		progress_bar = (pMainForm ? pMainForm->progressBar() : NULL);
+		progress_bar = (pMainForm ? pMainForm->progressBar() : nullptr);
 	#endif
 	}
 
@@ -485,7 +485,7 @@ bool qtractorZipDevice::extractEntry (
 	if (!info.dir().exists())
 		QDir().mkpath(info.dir().path());
 
-	QFile *pFile = NULL;
+	QFile *pFile = nullptr;
 	const unsigned int mode = read_uint(fh.h.external_file_attributes) >> 16;
 	if (S_ISREG(mode)) {
 		pFile = new QFile(info.filePath());
@@ -499,7 +499,7 @@ bool qtractorZipDevice::extractEntry (
 	if (S_ISDIR(mode))
 		return QDir().mkpath(info.filePath());
 	else
-	if (pFile == NULL)
+	if (pFile == nullptr)
 		return false;
 	
 	const unsigned int uncompressed_size = read_uint(fh.h.uncompressed_size);
@@ -756,7 +756,7 @@ bool qtractorZipDevice::processEntry ( const QString& sFilename, FileHeader& fh 
 		return false;
 	}
 
-	QFile *pFile = NULL;
+	QFile *pFile = nullptr;
 	const unsigned int mode = read_uint(fh.h.external_file_attributes) >> 16;
 	if (S_ISREG(mode)) {
 		pFile = new QFile(sFilename);

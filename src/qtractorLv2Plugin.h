@@ -115,8 +115,8 @@ class qtractorLv2PluginType : public qtractorPluginType
 public:
 
 	// Constructor.
-	qtractorLv2PluginType(const QString& sUri, LilvPlugin *plugin = NULL)
-		: qtractorPluginType(NULL, 0, qtractorPluginType::Lv2),
+	qtractorLv2PluginType(const QString& sUri, LilvPlugin *plugin = nullptr)
+		: qtractorPluginType(nullptr, 0, qtractorPluginType::Lv2),
 			m_sUri(sUri), m_lv2_plugin(plugin)	{}
 
 	// Destructor.
@@ -224,7 +224,7 @@ public:
 #ifdef CONFIG_LV2_UI
 
 	// GUI Editor stuff.
-	void openEditor(QWidget *pParent = NULL);
+	void openEditor(QWidget *pParent = nullptr);
 	void closeEditor();
 	void idleEditor();
 

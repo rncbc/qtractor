@@ -1,7 +1,7 @@
 // qtractorMidiSequence.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -83,7 +83,7 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 		NoteMap::Iterator iter = m_notes.find(note);
 		const NoteMap::Iterator& iter_end = m_notes.end();
 		NoteMap::Iterator iter_last;
-		qtractorMidiEvent *pNoteEvent = NULL;
+		qtractorMidiEvent *pNoteEvent = nullptr;
 		for ( ; iter != iter_end && iter.key() == note; ++iter) {
 			pNoteEvent = iter.value();
 			iter_last = iter;

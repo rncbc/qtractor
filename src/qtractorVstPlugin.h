@@ -67,7 +67,7 @@ public:
 
 	// Constructor.
 	qtractorVstPluginType(qtractorPluginFile *pFile,
-		unsigned long iIndex, Effect *pEffect = NULL)
+		unsigned long iIndex, Effect *pEffect = nullptr)
 		: qtractorPluginType(pFile, iIndex, qtractorPluginType::Vst),
 			m_pEffect(pEffect), m_iFlagsEx(0) {}
 
@@ -158,7 +158,7 @@ public:
 	bool savePresetFile(const QString& sFilename);
 
 	// GUI Editor stuff.
-	void openEditor(QWidget *pParent = NULL);
+	void openEditor(QWidget *pParent = nullptr);
 	void closeEditor();
 	void idleEditor();
 

@@ -90,14 +90,14 @@ bool qtractorBusCommand::createBus (void)
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 
 	// Create the bus of proper type...
-	m_pBus = NULL;
-	qtractorAudioBus *pAudioBus = NULL;
-	qtractorMidiBus *pMidiBus = NULL;
+	m_pBus = nullptr;
+	qtractorAudioBus *pAudioBus = nullptr;
+	qtractorMidiBus *pMidiBus = nullptr;
 	switch (m_busType) {
 	case qtractorTrack::Audio: {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
@@ -130,7 +130,7 @@ bool qtractorBusCommand::createBus (void)
 	}
 
 	// Check if we really have a new bus...
-	if (m_pBus == NULL)
+	if (m_pBus == nullptr)
 		return false;
 
 	// Open up the new bus...
@@ -156,15 +156,15 @@ bool qtractorBusCommand::createBus (void)
 // Update bus properties.
 bool qtractorBusCommand::updateBus (void)
 {
-	if (m_pBus == NULL || m_sBusName.isEmpty())
+	if (m_pBus == nullptr || m_sBusName.isEmpty())
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	// We need to hold things for a while...
@@ -188,8 +188,8 @@ bool qtractorBusCommand::updateBus (void)
 		m_pBus->updateConnects(qtractorBus::Output, outputs);
 
 	// Special case typed buses...
-	qtractorAudioBus *pAudioBus = NULL;
-	qtractorMidiBus *pMidiBus = NULL;
+	qtractorAudioBus *pAudioBus = nullptr;
+	qtractorMidiBus *pMidiBus = nullptr;
 	unsigned short iChannels = 0;
 	bool bAutoConnect = false;
 	QString sInstrumentName;
@@ -363,19 +363,19 @@ bool qtractorBusCommand::updateBus (void)
 // Delete bus.
 bool qtractorBusCommand::deleteBus (void)
 {
-	if (m_pBus == NULL)
+	if (m_pBus == nullptr)
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	// Get the device view root item...
-	qtractorEngine *pEngine = NULL;
+	qtractorEngine *pEngine = nullptr;
 	switch (m_pBus->busType()) {
 	case qtractorTrack::Audio:
 		pEngine = pSession->audioEngine();
@@ -387,7 +387,7 @@ bool qtractorBusCommand::deleteBus (void)
 		break;
 	}
 	// Still valid?
-	if (pEngine == NULL)
+	if (pEngine == nullptr)
 		return false;
 
 	// We need to hold things for a while...
@@ -444,7 +444,7 @@ bool qtractorBusCommand::deleteBus (void)
 
 	// And remove it...
 	pEngine->removeBus(m_pBus);
-	m_pBus = NULL;
+	m_pBus = nullptr;
 
 	// Better update special buses anyway...
 	switch (pEngine->syncType()) {
@@ -506,26 +506,26 @@ bool qtractorBusCommand::deleteBus (void)
 qtractorMixerMeter *qtractorBusCommand::meter (void) const
 {
 	qtractorBus *pBus = bus();
-	if (pBus == NULL)
-		return NULL;
+	if (pBus == nullptr)
+		return nullptr;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
-		return NULL;
+	if (pMainForm == nullptr)
+		return nullptr;
 
 	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer == NULL)
-		return NULL;
+	if (pMixer == nullptr)
+		return nullptr;
 
 	// Mixer strip determination...
-	qtractorMixerStrip *pStrip = NULL;
+	qtractorMixerStrip *pStrip = nullptr;
 	if ((busMode() & qtractorBus::Input) && pBus->monitor_in())
 		pStrip = pMixer->inputRack()->findStrip(pBus->monitor_in());
 	else
 	if ((busMode() & qtractorBus::Output) && pBus->monitor_out())
 		pStrip = pMixer->outputRack()->findStrip(pBus->monitor_out());
 
-	return (pStrip ? pStrip->meter() : NULL);
+	return (pStrip ? pStrip->meter() : nullptr);
 }
 
 
@@ -607,15 +607,15 @@ qtractorMoveBusCommand::qtractorMoveBusCommand (
 bool qtractorMoveBusCommand::redo (void)
 {
 	qtractorBus *pBus = bus();
-	if (pBus == NULL)
+	if (pBus == nullptr)
 		return false;
 
 	qtractorEngine *pEngine = pBus->engine();
-	if (pEngine == NULL)
+	if (pEngine == nullptr)
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	pSession->lock();
@@ -660,11 +660,11 @@ qtractorBusMonitorCommand::qtractorBusMonitorCommand (
 bool qtractorBusMonitorCommand::redo (void)
 {
 	qtractorBus *pBus = bus();
-	if (pBus == NULL)
+	if (pBus == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	// Set Bus gain (repective monitor gets set too...)
@@ -706,7 +706,7 @@ qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 		m_fPrevGain = pMixerMeter->prevGain();
 
 	// Try replacing an previously equivalent command...
-	static qtractorBusGainCommand *s_pPrevGainCommand = NULL;
+	static qtractorBusGainCommand *s_pPrevGainCommand = nullptr;
 	if (s_pPrevGainCommand) {
 		qtractorSession *pSession = qtractorSession::getInstance();
 		qtractorCommand *pLastCommand
@@ -739,7 +739,7 @@ qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 bool qtractorBusGainCommand::redo (void)
 {
 	qtractorBus *pBus = bus();
-	if (pBus == NULL)
+	if (pBus == nullptr)
 		return false;
 
 	// Set Bus gain (repective monitor gets set too...)
@@ -783,7 +783,7 @@ qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 		m_fPrevPanning = pMixerMeter->prevPanning();
 
 	// Try replacing an previously equivalent command...
-	static qtractorBusPanningCommand *s_pPrevPanningCommand = NULL;
+	static qtractorBusPanningCommand *s_pPrevPanningCommand = nullptr;
 	if (s_pPrevPanningCommand) {
 		qtractorSession *pSession = qtractorSession::getInstance();
 		qtractorCommand *pLastCommand
@@ -816,7 +816,7 @@ qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 bool qtractorBusPanningCommand::redo (void)
 {
 	qtractorBus *pBus = bus();
-	if (pBus == NULL)
+	if (pBus == nullptr)
 		return false;
 
 	// Set Bus panning (repective monitor gets set too...)

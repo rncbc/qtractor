@@ -61,7 +61,7 @@ qtractorMidiEditTime::qtractorMidiEditTime (
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
 
-	m_pDragMarker = NULL;
+	m_pDragMarker = nullptr;
 
 	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -102,11 +102,11 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	m_pixmap.fill(pal.window().color());
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	QPainter painter(&m_pixmap);
@@ -331,11 +331,11 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 
 	// Check loop and punch points...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return false;
 
 	const int dx = pTimeScale->pixelFromFrame(m_pEditor->offset()) + d;
@@ -417,7 +417,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	m_dragState = DragNone;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Which mouse state?
@@ -486,7 +486,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	// Are we already moving/dragging something?
@@ -567,7 +567,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 //	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Which mouse state?
@@ -672,7 +672,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 void qtractorMidiEditTime::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	// Direct snap positioning...
@@ -737,7 +737,7 @@ void qtractorMidiEditTime::resetDragState (void)
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
 
-	m_pDragMarker = NULL;
+	m_pDragMarker = nullptr;
 
 	// HACK: give focus to track-view... 
 	m_pEditor->editView()->setFocus();
@@ -815,7 +815,7 @@ void qtractorMidiEditTime::showToolTip ( unsigned long iFrame ) const
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	QString sToolTip;
@@ -864,7 +864,7 @@ void qtractorMidiEditTime::showToolTip ( const QRect& rect ) const
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	const unsigned long iFrameStart = pTimeScale->frameSnap(

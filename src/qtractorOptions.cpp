@@ -45,7 +45,7 @@
 //
 
 // Singleton instance pointer.
-qtractorOptions *qtractorOptions::g_pOptions = NULL;
+qtractorOptions *qtractorOptions::g_pOptions = nullptr;
 
 // Singleton instance accessor (static).
 qtractorOptions *qtractorOptions::getInstance (void)
@@ -71,7 +71,7 @@ qtractorOptions::~qtractorOptions (void)
 	saveOptions();
 
 	// Pseudo-singleton reference shut-down.
-	g_pOptions = NULL;
+	g_pOptions = nullptr;
 }
 
 
@@ -992,12 +992,12 @@ void qtractorOptions::loadActionControl ( QObject *pObject )
 {
 	qtractorActionControl *pActionControl
 		= qtractorActionControl::getInstance();
-	if (pActionControl == NULL)
+	if (pActionControl == nullptr)
 		return;
 
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	pActionControl->clear();
@@ -1041,12 +1041,12 @@ void qtractorOptions::saveActionControl ( QObject *pObject )
 {
 	qtractorActionControl *pActionControl
 		= qtractorActionControl::getInstance();
-	if (pActionControl == NULL)
+	if (pActionControl == nullptr)
 		return;
 
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	m_settings.beginGroup("/MidiObservers/" + pObject->objectName());

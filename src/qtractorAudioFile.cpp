@@ -34,7 +34,7 @@
 //
 
 // Initialize singleton instance pointer.
-qtractorAudioFileFactory *qtractorAudioFileFactory::g_pInstance = NULL;
+qtractorAudioFileFactory *qtractorAudioFileFactory::g_pInstance = nullptr;
 
 // Singleton instance accessor.
 qtractorAudioFileFactory *qtractorAudioFileFactory::getInstance (void)
@@ -47,7 +47,7 @@ qtractorAudioFileFactory *qtractorAudioFileFactory::getInstance (void)
 qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 {
 	// Default file format/type (for capture/record)
-	m_pDefaultFormat  = NULL;
+	m_pDefaultFormat  = nullptr;
 	m_iDefaultFormat  = SF_FORMAT_PCM_16;
 	m_iDefaultQuality = 4;
 
@@ -57,10 +57,10 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 	const QString sFilterMask("%1 (%2)");
 	SF_FORMAT_INFO sffinfo;
 	int iCount = 0;
-	::sf_command(NULL, SFC_GET_FORMAT_MAJOR_COUNT, &iCount, sizeof(int));
+	::sf_command(nullptr, SFC_GET_FORMAT_MAJOR_COUNT, &iCount, sizeof(int));
 	for (int i = 0 ; i < iCount; ++i) {
 		sffinfo.format = i;
-		::sf_command(NULL, SFC_GET_FORMAT_MAJOR, &sffinfo, sizeof(sffinfo));
+		::sf_command(nullptr, SFC_GET_FORMAT_MAJOR, &sffinfo, sizeof(sffinfo));
 		pFormat = new FileFormat;
 		pFormat->type = SndFile;
 		pFormat->name = QString(sffinfo.name)
@@ -141,7 +141,7 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 // Destructor.
 qtractorAudioFileFactory::~qtractorAudioFileFactory (void)
 {
-	g_pInstance = NULL;
+	g_pInstance = nullptr;
 
 	qDeleteAll(m_formats);
 
@@ -178,7 +178,7 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	const QString& sExt = QFileInfo(sFilename).suffix().toLower();
 	const FileTypes::ConstIterator& iter = m_types.constFind(sExt);
 	if (iter == m_types.constEnd())
-		return NULL;
+		return nullptr;
 
 	return newAudioFile(iter.value()->type, iChannels, iSampleRate, iBufferSize);
 }
@@ -196,7 +196,7 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	case MadFile:
 		return new qtractorAudioMadFile(iBufferSize);
 	default:
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -288,7 +288,7 @@ int qtractorAudioFileFactory::defaultQuality (void)
 bool qtractorAudioFileFactory::isValidFormat (
 	const qtractorAudioFileFactory::FileFormat *pFormat, int iFormat )
 {
-	if (pFormat == NULL)
+	if (pFormat == nullptr)
 		return false;
 
 	bool bValid = true;

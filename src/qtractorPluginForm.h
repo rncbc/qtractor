@@ -154,7 +154,7 @@ public:
 
 	// Constructor.
 	qtractorPluginParamWidget(qtractorPluginParam *pParam,
-		QWidget *pParent = NULL);
+		QWidget *pParent = nullptr);
 
 	// Main properties accessors.
 	qtractorPluginParam *param() const
@@ -197,7 +197,7 @@ public:
 
 	// Constructor.
 	qtractorPluginPropertyWidget(qtractorPlugin *pPlugin,
-		unsigned long iProperty, QWidget *pParent = NULL);
+		unsigned long iProperty, QWidget *pParent = nullptr);
 
 	// Main properties accessors.
 	qtractorPlugin *plugin() const

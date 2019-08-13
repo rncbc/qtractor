@@ -1,7 +1,7 @@
 // qtractorMidiConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -111,7 +111,7 @@ qtractorMidiPortItem *qtractorMidiClientItem::findPortItem ( int iAlsaPort )
 			return pPortItem;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 
@@ -136,7 +136,7 @@ snd_seq_t *qtractorMidiClientListView::alsaSeq (void) const
 {
 	qtractorMidiConnect *pMidiConnect
 		= static_cast<qtractorMidiConnect *> (binding());
-	return (pMidiConnect ? pMidiConnect->alsaSeq() : NULL);
+	return (pMidiConnect ? pMidiConnect->alsaSeq() : nullptr);
 }
 
 
@@ -155,7 +155,7 @@ qtractorMidiClientItem *qtractorMidiClientListView::findClientItem (
 			return pClientItem;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 
@@ -164,8 +164,8 @@ qtractorMidiPortItem *qtractorMidiClientListView::findClientPortItem (
 	int iAlsaClient, int iAlsaPort )
 {
 	qtractorMidiClientItem *pClientItem = findClientItem(iAlsaClient);
-	if (pClientItem == NULL)
-		return NULL;
+	if (pClientItem == nullptr)
+		return nullptr;
 
 	return pClientItem->findPortItem(iAlsaPort);
 }
@@ -175,7 +175,7 @@ qtractorMidiPortItem *qtractorMidiClientListView::findClientPortItem (
 int qtractorMidiClientListView::updateClientPorts (void)
 {
 	snd_seq_t *pAlsaSeq = alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return 0;
 
 	int iDirtyCount = 0;
@@ -217,8 +217,8 @@ int qtractorMidiClientListView::updateClientPorts (void)
 						sPortName += QString::fromUtf8(
 							snd_seq_port_info_get_name(pPortInfo));
 						if (isPortName(sPortName)) {
-							qtractorMidiPortItem *pPortItem = NULL;
-							if (pClientItem == NULL) {
+							qtractorMidiPortItem *pPortItem = nullptr;
+							if (pClientItem == nullptr) {
 								pClientItem = new qtractorMidiClientItem(this);
 								pClientItem->setClientName(sClientName);
 								++iDirtyCount;
@@ -230,7 +230,7 @@ int qtractorMidiClientListView::updateClientPorts (void)
 								}
 							}
 							if (pClientItem) {
-								if (pPortItem == NULL) {
+								if (pPortItem == nullptr) {
 									pPortItem = new qtractorMidiPortItem(pClientItem);
 									pPortItem->setPortName(sPortName);
 									++iDirtyCount;
@@ -299,7 +299,7 @@ void qtractorMidiConnect::deleteIcons (void)
 		for (int i = 0; i < IconCount; ++i) {
 			if (g_apIcons[i])
 				delete g_apIcons[i];
-			g_apIcons[i] = NULL;
+			g_apIcons[i] = nullptr;
 		}
 	}
 }
@@ -315,7 +315,7 @@ const QIcon& qtractorMidiConnect::icon ( int iIcon )
 // ALSA sequencer accessor.
 snd_seq_t *qtractorMidiConnect::alsaSeq (void) const
 {
-	snd_seq_t *pAlsaSeq = NULL;
+	snd_seq_t *pAlsaSeq = nullptr;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession && pSession->midiEngine())
@@ -334,11 +334,11 @@ bool qtractorMidiConnect::connectPorts ( qtractorPortListItem *pOPort,
 	qtractorMidiPortItem *pIMidiPort
 		= static_cast<qtractorMidiPortItem *> (pIPort);
 
-	if (pOMidiPort == NULL || pIMidiPort == NULL)
+	if (pOMidiPort == nullptr || pIMidiPort == nullptr)
 		return false;
 
 	snd_seq_t *pAlsaSeq = alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return false;
 
 	disconnectPortsUpdate(pOPort, pIPort);
@@ -369,11 +369,11 @@ bool qtractorMidiConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 	qtractorMidiPortItem *pIMidiPort
 		= static_cast<qtractorMidiPortItem *> (pIPort);
 
-	if (pOMidiPort == NULL || pIMidiPort == NULL)
+	if (pOMidiPort == nullptr || pIMidiPort == nullptr)
 		return false;
 
 	snd_seq_t *pAlsaSeq = alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return false;
 
 	disconnectPortsUpdate(pOPort, pIPort);
@@ -399,11 +399,11 @@ bool qtractorMidiConnect::disconnectPorts ( qtractorPortListItem *pOPort,
 void qtractorMidiConnect::disconnectPortsUpdate (
 	qtractorPortListItem *pOPort, qtractorPortListItem *pIPort )
 {
-	qtractorMidiEngine *pMidiEngine = NULL;
+	qtractorMidiEngine *pMidiEngine = nullptr;
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		pMidiEngine = pSession->midiEngine();
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	QString sPortName;
@@ -443,7 +443,7 @@ void qtractorMidiConnect::disconnectPortsUpdate (
 void qtractorMidiConnect::updateConnections (void)
 {
 	snd_seq_t *pAlsaSeq = alsaSeq();
-	if (pAlsaSeq == NULL)
+	if (pAlsaSeq == nullptr)
 		return;
 
 	snd_seq_query_subscribe_t *pAlsaSubs;
@@ -465,7 +465,7 @@ void qtractorMidiConnect::updateConnections (void)
 			continue;
 		qtractorMidiClientItem *pOClient
 			= static_cast<qtractorMidiClientItem *> (pItem);
-		if (pOClient == NULL)
+		if (pOClient == nullptr)
 			continue;
 		// For each port item
 		int iChildCount = pOClient->childCount();
@@ -475,7 +475,7 @@ void qtractorMidiConnect::updateConnections (void)
 				continue;
 			qtractorMidiPortItem *pOPort
 				= static_cast<qtractorMidiPortItem *> (pChild);
-			if (pOPort == NULL)
+			if (pOPort == nullptr)
 				continue;
 			// Are there already any connections?
 			if (pOPort->connects().count() > 0)

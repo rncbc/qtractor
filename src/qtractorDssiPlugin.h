@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@ public:
 
 	// Constructor.
 	qtractorDssiPluginType(qtractorPluginFile *pFile, unsigned long iIndex,
-		const DSSI_Descriptor *pDssiDescriptor = NULL)
+		const DSSI_Descriptor *pDssiDescriptor = nullptr)
 		: qtractorLadspaPluginType(pFile, iIndex, qtractorPluginType::Dssi),
 			m_pDssiDescriptor(pDssiDescriptor) {}
 

@@ -1,7 +1,7 @@
 // qtractorEditRangeForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,7 +45,7 @@ qtractorEditRangeForm::qtractorEditRangeForm (
 	QDialog::setWindowModality(Qt::ApplicationModal);
 
 	// Initialize dirty control state.
-	m_pTimeScale = NULL;
+	m_pTimeScale = nullptr;
 
 	// Initial selection range (empty).
 	m_iSelectStart = 0;
@@ -243,7 +243,7 @@ void qtractorEditRangeForm::optionsChanged (void)
 void qtractorEditRangeForm::rangeChanged (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	if (m_ui.SelectionRangeRadioButton->isChecked()) {
@@ -304,11 +304,11 @@ void qtractorEditRangeForm::formatChanged ( int iDisplayFormat )
 void qtractorEditRangeForm::stabilizeForm (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	const bool bLooping = pSession->isLooping();
@@ -322,7 +322,7 @@ void qtractorEditRangeForm::stabilizeForm (void)
 
 	m_ui.LoopCheckBox->setEnabled(bLooping);
 	m_ui.PunchCheckBox->setEnabled(bPunching);
-	m_ui.MarkersCheckBox->setEnabled(pTimeScale->markers().first() != NULL);
+	m_ui.MarkersCheckBox->setEnabled(pTimeScale->markers().first() != nullptr);
     m_ui.TempoMapCheckBox->setEnabled(pTimeScale->nodes().count() > 1);
 
 	const unsigned long iRangeStart = m_ui.RangeStartSpinBox->value();

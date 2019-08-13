@@ -302,11 +302,11 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	m_pixmap.fill(rgbBase);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	QPainter painter(&m_pixmap);
@@ -398,7 +398,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	//
 
 	qtractorMidiSequence *pSeq = m_pEditor->sequence();
-	if (pSeq == NULL)
+	if (pSeq == nullptr)
 		return;
 
 	pNode = cursor.seekPixel(x = dx);
@@ -663,7 +663,7 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 //	qtractorScrollView::mousePressEvent(pMouseEvent);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Which mouse state?

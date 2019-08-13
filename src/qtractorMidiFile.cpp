@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -116,7 +116,7 @@ qtractorMidiFile::qtractorMidiFile (void)
 {
 	// SMF instance variables.
 	m_iMode         = None;
-	m_pFile         = NULL;
+	m_pFile         = nullptr;
 	m_iOffset       = 0;
 
 	// Header informational data.
@@ -124,10 +124,10 @@ qtractorMidiFile::qtractorMidiFile (void)
 	m_iTracks       = 0;
 	m_iTicksPerBeat = 0;
 
-	m_pTrackInfo    = NULL;
+	m_pTrackInfo    = nullptr;
 
 	// Special tempo/time-signature map.
-	m_pTempoMap     = NULL;
+	m_pTempoMap     = nullptr;
 }
 
 
@@ -148,7 +148,7 @@ bool qtractorMidiFile::open ( const QString& sFilename, int iMode )
 
 	const QByteArray aFilename = sFilename.toUtf8();
 	m_pFile = ::fopen(aFilename.constData(), iMode == Write ? "w+b" : "rb");
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return false;
 
 	m_sFilename = sFilename;
@@ -229,17 +229,17 @@ void qtractorMidiFile::close (void)
 {
 	if (m_pFile) {
 		::fclose(m_pFile);
-		m_pFile = NULL;
+		m_pFile = nullptr;
 	}
 
 	if (m_pTrackInfo) {
 		delete [] m_pTrackInfo;
-		m_pTrackInfo = NULL;
+		m_pTrackInfo = nullptr;
 	}
 
 	if (m_pTempoMap) {
 		delete m_pTempoMap;
-		m_pTempoMap = NULL;
+		m_pTempoMap = nullptr;
 	}
 }
 
@@ -248,9 +248,9 @@ void qtractorMidiFile::close (void)
 bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 	unsigned short iSeqs, unsigned short iTrackChannel )
 {
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return false;
-	if (m_pTempoMap == NULL)
+	if (m_pTempoMap == nullptr)
 		return false;
 	if (m_iMode != Read)
 		return false;
@@ -576,7 +576,7 @@ bool qtractorMidiFile::readTrack ( qtractorMidiSequence *pSeq,
 // Sequence/track/channel duration reader helper.
 unsigned long qtractorMidiFile::readTrackDuration ( unsigned short iTrackChannel )
 {
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return 0;
 	if (m_iMode != Read)
 		return 0;
@@ -669,7 +669,7 @@ unsigned long qtractorMidiFile::readTrackDuration ( unsigned short iTrackChannel
 bool qtractorMidiFile::writeHeader ( unsigned short iFormat,
 	unsigned short iTracks, unsigned short iTicksPerBeat )
 {
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return false;
 	if (m_pTempoMap)
 		return false;
@@ -709,16 +709,16 @@ bool qtractorMidiFile::writeHeader ( unsigned short iFormat,
 bool qtractorMidiFile::writeTracks (
 	qtractorMidiSequence **ppSeqs, unsigned short iSeqs )
 {
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return false;
-	if (m_pTempoMap == NULL)
+	if (m_pTempoMap == nullptr)
 		return false;
 	if (m_iMode != Write)
 		return false;
 
 #ifdef CONFIG_DEBUG_0
-	if (ppSeqs == NULL)
-		qDebug("qtractorMidiFile::writeTrack(NULL,%u)", iSeqs);
+	if (ppSeqs == nullptr)
+		qDebug("qtractorMidiFile::writeTrack(nullptr,%u)", iSeqs);
 	for (unsigned short iSeq = 0; ppSeqs && iSeq < iSeqs; ++iSeq) {
 		qtractorMidiSequence *pSeq = ppSeqs[iSeq];
 		qDebug("qtractorMidiFile::writeTrack([%u]%p,%u)"
@@ -741,7 +741,7 @@ bool qtractorMidiFile::writeTracks (
 			iSeq = iTrack;
 
 		// Which is just good for track labeling...
-		qtractorMidiSequence *pSeq = NULL; 
+		qtractorMidiSequence *pSeq = nullptr; 
 		if (ppSeqs)
 			pSeq = ppSeqs[iSeq];
 
@@ -771,7 +771,7 @@ bool qtractorMidiFile::writeTracks (
 
 		// Tempo/time-signature map (track 0)
 		// - applicable to SMF format 1 files...
-		if (pSeq == NULL) {
+		if (pSeq == nullptr) {
 			unsigned long iNodeTime = 0;
 			while (pNode) {
 				while (pMarker && pMarker->tick < pNode->tick) {
@@ -871,13 +871,13 @@ bool qtractorMidiFile::writeTracks (
 
 				// Find which will be next event to write out,
 				// keeping account onto  sequence merging...
-				pSeq = NULL;
-				pEvent = NULL;
-				pEventItem = NULL;
+				pSeq = nullptr;
+				pEvent = nullptr;
+				pEventItem = nullptr;
 
 				for (iItem = 0; iItem < iItems; ++iItem) {
 					pItem = ppItems[iItem];
-					if (pItem->event &&	(pEventItem == NULL
+					if (pItem->event &&	(pEventItem == nullptr
 						|| iEventTime >= (pItem->event)->time())) {
 						iEventTime = (pItem->event)->time();
 						pEventItem = pItem;
@@ -894,7 +894,7 @@ bool qtractorMidiFile::writeTracks (
 				}
 
 				// Maybe we reached the (partial) end...
-				if (pEvent == NULL)
+				if (pEvent == nullptr)
 					break;
 
 				// Event (absolute) time converted to file resolution...
@@ -905,8 +905,8 @@ bool qtractorMidiFile::writeTracks (
 
 					// Get any a note-off event pending...
 					iTimeOff = iTime;
-					pNoteOff = NULL;
-					pNoteOffItem = NULL;
+					pNoteOff = nullptr;
+					pNoteOffItem = nullptr;
 
 					for (iItem = 0; iItem < iItems; ++iItem) {
 						pItem = ppItems[iItem];
@@ -919,7 +919,7 @@ bool qtractorMidiFile::writeTracks (
 					}
 
 					// Was there any?
-					if (pNoteOff == NULL)
+					if (pNoteOff == nullptr)
 						break;
 
 					// - Delta time...
@@ -1090,12 +1090,12 @@ bool qtractorMidiFile::writeTracks (
 
 				// Find which note-off will be next to write out,
 				// always accounting for sequence merging...
-				pNoteOff = NULL;
-				pNoteOffItem = NULL;
+				pNoteOff = nullptr;
+				pNoteOffItem = nullptr;
 
 				for (iItem = 0; iItem < iItems; ++iItem) {
 					pItem = ppItems[iItem];
-					if (pItem->event &&	(pNoteOffItem == NULL
+					if (pItem->event &&	(pNoteOffItem == nullptr
 						|| iTimeOff >= (pItem->event)->time())) {
 						iTimeOff = (pItem->event)->time();
 						pNoteOffItem = pItem;
@@ -1111,7 +1111,7 @@ bool qtractorMidiFile::writeTracks (
 				}
 
 				// Maybe we reached the (whole) end...
-				if (pNoteOff == NULL)
+				if (pNoteOff == nullptr)
 					break;
 
 				// - Delta time...
@@ -1164,7 +1164,7 @@ bool qtractorMidiFile::writeTracks (
 
 bool qtractorMidiFile::writeTrack ( qtractorMidiSequence *pSeq )
 {
-	return writeTracks((pSeq ? &pSeq : NULL), 1);
+	return writeTracks((pSeq ? &pSeq : nullptr), 1);
 }
 
 
@@ -1264,7 +1264,7 @@ void qtractorMidiFile::writeNode (
 		= (pNode->tick > iLastTime ? pNode->tick - iLastTime : 0);
 	qtractorMidiFileTempo::Node *pPrev = pNode->prev();
 
-	if (pPrev == NULL || (pPrev->tempo != pNode->tempo)) {
+	if (pPrev == nullptr || (pPrev->tempo != pNode->tempo)) {
 	#ifdef CONFIG_DEBUG_0
 		qDebug("qtractorMidiFile::writeNode(%lu) time=%lu TEMPO (%g)",
 			iLastTime, iDeltaTime, pNode->tempo);
@@ -1278,7 +1278,7 @@ void qtractorMidiFile::writeNode (
 		iDeltaTime = 0;
 	}
 
-	if (pPrev == NULL ||
+	if (pPrev == nullptr ||
 		pPrev->beatsPerBar != pNode->beatsPerBar ||
 		pPrev->beatDivisor != pNode->beatDivisor) {
 	#ifdef CONFIG_DEBUG_0
@@ -1362,11 +1362,11 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	qtractorTimeScale ts;
 	unsigned short iTracks;
 	unsigned short iSeq, iSeqs = 0;
-	qtractorMidiSequence **ppSeqs = NULL;
+	qtractorMidiSequence **ppSeqs = nullptr;
 
 	const QString sTrackName("Track %1");
 
-	if (pSeq == NULL)
+	if (pSeq == nullptr)
 		return false;
 
 	if (pTimeScale)
@@ -1391,7 +1391,7 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	if (!file.open(sNewFilename, qtractorMidiFile::Write))
 		return false;
 
-	if (ppSeqs == NULL)
+	if (ppSeqs == nullptr)
 		iSeqs = (iFormat == 0 ? 1 : 2);
 
 	// Write SMF header...
@@ -1414,7 +1414,7 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 	} else {
 		// Most probabley this is a brand new file...
 		if (iFormat == 1)
-			file.writeTrack(NULL);
+			file.writeTrack(nullptr);
 		file.writeTrack(pSeq);
 	}
 

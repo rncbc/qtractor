@@ -201,7 +201,7 @@ public:
 
 	// Constructor.
 	PanObserver(qtractorMixerMeter *pMixerMeter)
-		: qtractorObserver(NULL), m_pMixerMeter(pMixerMeter) {}
+		: qtractorObserver(nullptr), m_pMixerMeter(pMixerMeter) {}
 
 protected:
 
@@ -225,7 +225,7 @@ public:
 
 	// Constructor.
 	GainObserver(qtractorMixerMeter *pMixerMeter)
-		: qtractorObserver(NULL), m_pMixerMeter(pMixerMeter) {}
+		: qtractorObserver(nullptr), m_pMixerMeter(pMixerMeter) {}
 
 protected:
 

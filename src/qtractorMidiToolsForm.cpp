@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -126,7 +126,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	// Window modality (let plugin/tool windows rave around).
 	QDialog::setWindowModality(Qt::WindowModal);
 
-	m_pTimeScale = NULL;
+	m_pTimeScale = nullptr;
 
 	m_iDirtyCount = 0;
 	m_iUpdate = 0;
@@ -151,7 +151,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	m_ui.ResizeDurationSpinBox->setDeltaValue(true);
 
 	// Reinitialize random seed.
-	::srand(::time(NULL));
+	::srand(::time(nullptr));
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {

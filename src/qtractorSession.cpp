@@ -84,7 +84,7 @@ qtractorSession::Properties& qtractorSession::Properties::copy (
 // qtractorSession -- Session container.
 
 // pSeudo-singleton instance pointer.
-qtractorSession *qtractorSession::g_pSession = NULL;
+qtractorSession *qtractorSession::g_pSession = nullptr;
 
 
 // Pseudo-singleton instance accessor (static).
@@ -142,7 +142,7 @@ qtractorSession::~qtractorSession (void)
 
 	delete m_pFiles;
 
-	g_pSession = NULL;
+	g_pSession = nullptr;
 }
 
 
@@ -240,7 +240,7 @@ void qtractorSession::clear (void)
 
 	m_pAudioPeakFactory->sync();
 
-	m_pCurrentTrack = NULL;
+	m_pCurrentTrack = nullptr;
 
 	m_tracks.clear();
 	m_cursors.clear();
@@ -1649,7 +1649,7 @@ void qtractorSession::trackRecord (
 
 	// Just ditch the in-record clip...
 	if (!bRecord) {
-		pTrack->setClipRecord(NULL);
+		pTrack->setClipRecord(nullptr);
 		// Check whether we set recording off...
 		if (recordTracks() < 1)
 			setRecording(false);
@@ -2000,14 +2000,14 @@ void qtractorSession::process_curve ( unsigned long iFrame )
 // Find track of specific curve-list.
 qtractorTrack *qtractorSession::findTrack ( qtractorCurveList *pCurveList ) const
 {
-	return m_curves.value(pCurveList, NULL);
+	return m_curves.value(pCurveList, nullptr);
 }
 
 
 // Find track of specific name.
 qtractorTrack *qtractorSession::findTrack ( const QString& sTrackName ) const
 {
-	return m_trackNames.value(sTrackName, NULL);
+	return m_trackNames.value(sTrackName, nullptr);
 }
 
 
@@ -2103,20 +2103,20 @@ bool qtractorSession::loadElement (
 				if (eList.isNull())
 					continue;
 				if (eList.tagName() == "audio-list") {
-					qtractorAudioListView *pAudioList = NULL;
+					qtractorAudioListView *pAudioList = nullptr;
 					if (pDocument->files())
 						pAudioList = pDocument->files()->audioListView();
-					if (pAudioList == NULL)
+					if (pAudioList == nullptr)
 						return false;
 					if (!pAudioList->loadElement(pDocument, &eList))
 						return false;
 				}
 				else
 				if (eList.tagName() == "midi-list") {
-					qtractorMidiListView *pMidiList = NULL;
+					qtractorMidiListView *pMidiList = nullptr;
 					if (pDocument->files())
 						pMidiList = pDocument->files()->midiListView();
-					if (pMidiList == NULL)
+					if (pMidiList == nullptr)
 						return false;
 					if (!pMidiList->loadElement(pDocument, &eList))
 						return false;
@@ -2343,10 +2343,10 @@ bool qtractorSession::saveElement (
 		// Audio files...
 		QDomElement eAudioList
 			= pDocument->document()->createElement("audio-list");
-		qtractorAudioListView *pAudioList = NULL;
+		qtractorAudioListView *pAudioList = nullptr;
 		if (pDocument->files())
 			pAudioList = pDocument->files()->audioListView();
-		if (pAudioList == NULL)
+		if (pAudioList == nullptr)
 			return false;
 		if (!pAudioList->saveElement(pDocument, &eAudioList))
 			return false;
@@ -2354,10 +2354,10 @@ bool qtractorSession::saveElement (
 		// MIDI files...
 		QDomElement eMidiList
 			= pDocument->document()->createElement("midi-list");
-		qtractorMidiListView *pMidiList = NULL;
+		qtractorMidiListView *pMidiList = nullptr;
 		if (pDocument->files())
 			pMidiList = pDocument->files()->midiListView();
-		if (pMidiList == NULL)
+		if (pMidiList == nullptr)
 			return false;
 		if (!pMidiList->saveElement(pDocument, &eMidiList))
 			return false;
@@ -2461,11 +2461,11 @@ void qtractorSession::renameSession (
 	if (sOldName == sNewName)
 		return;
 
-	qtractorFiles *pFiles = NULL;
+	qtractorFiles *pFiles = nullptr;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pFiles = pMainForm->files();
-	if (pFiles == NULL)
+	if (pFiles == nullptr)
 		return;
 
 	// Lock it up...
@@ -2477,7 +2477,7 @@ void qtractorSession::renameSession (
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		// Refer to a proper files-view...
-		qtractorFileListView *pFileListView = NULL;
+		qtractorFileListView *pFileListView = nullptr;
 		qtractorFileList::Type iFileType = qtractorFileList::Audio;
 		if (pTrack->trackType() == qtractorTrack::Midi) {
 			pFileListView = pFiles->midiListView();
@@ -2531,7 +2531,7 @@ void qtractorSession::renameSession (
 				}
 				// Manage files-view item...
 				if (pFileListView) {
-					qtractorFileGroupItem *pGroupItem = NULL;
+					qtractorFileGroupItem *pGroupItem = nullptr;
 					qtractorFileListItem *pFileItem
 						= pFileListView->findFileItem(sOldFilePath);
 					if (pFileItem) {

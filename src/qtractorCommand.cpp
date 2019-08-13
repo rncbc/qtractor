@@ -1,7 +1,7 @@
 // qtractorCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-20199, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,7 +32,7 @@
 // Constructor.
 qtractorCommandList::qtractorCommandList (void)
 {
-	m_pLastCommand = NULL;
+	m_pLastCommand = nullptr;
 
 	m_commands.setAutoDelete(true);
 }
@@ -49,7 +49,7 @@ void qtractorCommandList::clear (void)
 {
 	m_commands.clear();
 
-	m_pLastCommand = NULL;
+	m_pLastCommand = nullptr;
 }
 
 
@@ -109,14 +109,14 @@ bool qtractorCommandList::push ( qtractorCommand *pCommand )
 		pNextCommand = pLateCommand;
 	}
 
-	if (pCommand == NULL)
+	if (pCommand == nullptr)
 		return false;
 
 	// It must be this last one...
 	m_commands.append(pCommand);
 	m_pLastCommand = m_commands.last();
 
-	return (m_pLastCommand != NULL);
+	return (m_pLastCommand != nullptr);
 }
 
 bool qtractorCommandList::exec ( qtractorCommand *pCommand )
@@ -183,7 +183,7 @@ void qtractorCommandList::updateAction (
 		pAction->setStatusTip(pAction->statusTip() + sBrackets);
 		pAction->setToolTip(pAction->toolTip() + sBrackets);
 	}
-	pAction->setEnabled(pCommand != NULL);
+	pAction->setEnabled(pCommand != nullptr);
 }
 
 

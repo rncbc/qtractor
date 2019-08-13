@@ -86,7 +86,7 @@ public:
 
 	// Sequence properties accessors.
 	qtractorMidiSequence *sequence() const
-		{ return (m_pData ? m_pData->sequence() : NULL); }
+		{ return (m_pData ? m_pData->sequence() : nullptr); }
 
 	unsigned short channel() const
 		{ return (m_pData ? m_pData->channel() : 0); }
@@ -123,7 +123,7 @@ public:
 	void update();
 
 	// Clip editor methods.
-	bool startEditor(QWidget *pParent = NULL);
+	bool startEditor(QWidget *pParent = nullptr);
 	void updateEditor(bool bSelectClear);
 	void updateEditorContents();
 	bool queryEditor();

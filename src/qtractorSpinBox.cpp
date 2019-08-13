@@ -105,7 +105,7 @@ QValidator::State qtractorSpinBox::validate ( QString& sText, int& iPos ) const
 
 // Constructor.
 qtractorTimeSpinBox::qtractorTimeSpinBox ( QWidget *pParent )
-	: QAbstractSpinBox(pParent), m_pTimeScale(NULL),
+	: QAbstractSpinBox(pParent), m_pTimeScale(nullptr),
 		  m_displayFormat(qtractorTimeScale::Frames),
 		  m_iValue(0), m_iMinimumValue(0), m_iMaximumValue(0),
 		  m_iDeltaValue(0), m_bDeltaValue(false), m_iValueChanged(0)
@@ -340,7 +340,7 @@ unsigned long qtractorTimeSpinBox::valueFromText (void) const
 
 unsigned long qtractorTimeSpinBox::valueFromText ( const QString& sText ) const
 {
-	if (m_pTimeScale == NULL)
+	if (m_pTimeScale == nullptr)
 		return sText.toULong();
 
 	return m_pTimeScale->frameFromTextEx(
@@ -349,7 +349,7 @@ unsigned long qtractorTimeSpinBox::valueFromText ( const QString& sText ) const
 
 QString qtractorTimeSpinBox::textFromValue ( unsigned long iValue ) const
 {
-	if (m_pTimeScale == NULL)
+	if (m_pTimeScale == nullptr)
 		return QString::number(iValue);
 
 	if (m_bDeltaValue) {
@@ -408,7 +408,7 @@ void qtractorTimeSpinBox::contextMenuEvent (
 {
 //	QAbstractSpinBox::contextMenuEvent(pContextMenuEvent);
 
-	if (m_pTimeScale == NULL)
+	if (m_pTimeScale == nullptr)
 		return;
 
 	QMenu menu(this);
@@ -430,7 +430,7 @@ void qtractorTimeSpinBox::contextMenuEvent (
 	pAction->setData(int(qtractorTimeScale::BBT));
 
 	pAction = menu.exec(pContextMenuEvent->globalPos());
-	if (pAction == NULL)
+	if (pAction == nullptr)
 		return;
 
 	const qtractorTimeScale::DisplayFormat displayFormat

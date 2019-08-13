@@ -75,7 +75,7 @@ static inline float cubef2 ( float x )
 //
 
 // Kind of singleton reference.
-qtractorMidiControl *qtractorMidiControl::g_pMidiControl = NULL;
+qtractorMidiControl *qtractorMidiControl::g_pMidiControl = nullptr;
 
 // Constructor.
 qtractorMidiControl::qtractorMidiControl (void)
@@ -92,7 +92,7 @@ qtractorMidiControl::qtractorMidiControl (void)
 qtractorMidiControl::~qtractorMidiControl (void)
 {
 	// Pseudo-singleton reference shut-down.
-	g_pMidiControl = NULL;
+	g_pMidiControl = nullptr;
 }
 
 
@@ -183,7 +183,7 @@ void qtractorMidiControl::sendAllControllers ( int iFirstTrack ) const
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -330,11 +330,11 @@ bool qtractorMidiControl::processEvent ( const qtractorCtlEvent& ctle )
 	else iTrack = val.track();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return bResult;
 
 	qtractorTrack *pTrack = pSession->tracks().at(iTrack);
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return bResult;
 
 	ControlScale scale(ctle.type());
@@ -515,15 +515,15 @@ void qtractorMidiControl::sendController (
 	unsigned short iParam, unsigned short iValue ) const
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	qtractorMidiBus *pMidiBus = pMidiEngine->controlBus_out();
-	if (pMidiBus == NULL)
+	if (pMidiBus == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -573,7 +573,7 @@ bool qtractorMidiControl::isMidiObserverMapped (
 qtractorMidiControlObserver *qtractorMidiControl::findMidiObserver (
 	ControlType ctype, unsigned short iChannel, unsigned short iParam) const
 {
-	return m_observerMap.value(MapKey(ctype, iChannel, iParam), NULL);
+	return m_observerMap.value(MapKey(ctype, iChannel, iParam), nullptr);
 }
 
 
@@ -916,7 +916,7 @@ static struct
 	{ qtractorMidiEvent::NONREGPARAM,"NONREGPARAM",_TR("NRPN")       },
 	{ qtractorMidiEvent::CONTROL14,  "CONTROL14",  _TR("Control 14") },
 
-	{ qtractorMidiControl::ControlType(0), NULL, NULL }
+	{ qtractorMidiControl::ControlType(0), nullptr, nullptr }
 };
 
 static QHash<qtractorMidiControl::ControlType, QString> g_controlTypeTexts;
@@ -1007,7 +1007,7 @@ static struct
 	{ qtractorMidiControl::TRACK_MUTE,    "TRACK_MUTE",    _TR("Track Mute")    },
 	{ qtractorMidiControl::TRACK_SOLO,    "TRACK_SOLO",    _TR("Track Solo")    },
 
-	{ qtractorMidiControl::Command(0), NULL, NULL }
+	{ qtractorMidiControl::Command(0), nullptr, nullptr }
 };
 
 static QHash<qtractorMidiControl::Command, QString> g_commandTexts;

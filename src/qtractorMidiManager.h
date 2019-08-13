@@ -100,7 +100,7 @@ public:
 	qtractorMidiInputBuffer(
 		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize)
 		: qtractorMidiBuffer(iBufferSize),
-			m_pDryGainSubject(NULL), m_pWetGainSubject(NULL) {}
+			m_pDryGainSubject(nullptr), m_pWetGainSubject(nullptr) {}
 
 	// Velocity/gain accessors.
 	void setDryGainSubject(qtractorSubject *pDryGainSubject)
@@ -136,7 +136,7 @@ public:
 	qtractorMidiOutputBuffer(qtractorMidiBus *pMidiBus,
 		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize)
 		: qtractorMidiSyncItem(), m_pMidiBus(pMidiBus),
-			m_outputBuffer(iBufferSize), m_pGainSubject(NULL) {}
+			m_outputBuffer(iBufferSize), m_pGainSubject(nullptr) {}
 
 	// Velocity/gain accessors.
 	void setGainSubject(qtractorSubject *pGainSubject)

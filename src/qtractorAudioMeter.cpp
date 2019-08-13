@@ -188,7 +188,7 @@ void qtractorAudioMeterScale::paintScale ( QPainter *p )
 {
 	qtractorAudioMeter *pAudioMeter
 		= static_cast<qtractorAudioMeter *> (meter());
-	if (pAudioMeter == NULL)
+	if (pAudioMeter == nullptr)
 		return;
 
 //	p->setWindow(0, -4, QWidget::width(), QWidget::height() + 8);
@@ -235,11 +235,11 @@ void qtractorAudioMeterValue::refresh ( unsigned long iStamp )
 {
 	qtractorAudioMeter *pAudioMeter
 		= static_cast<qtractorAudioMeter *> (meter());
-	if (pAudioMeter == NULL)
+	if (pAudioMeter == nullptr)
 		return;
 
 	qtractorAudioMonitor *pAudioMonitor = pAudioMeter->audioMonitor();
-	if (pAudioMonitor == NULL)
+	if (pAudioMonitor == nullptr)
 		return;
 
 	const float fValue = pAudioMonitor->value_stamp(m_iChannel, iStamp);
@@ -299,7 +299,7 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 {
 	qtractorAudioMeter *pAudioMeter
 		= static_cast<qtractorAudioMeter *> (meter());
-	if (pAudioMeter == NULL)
+	if (pAudioMeter == nullptr)
 		return;
 
 	QPainter painter(this);
@@ -373,7 +373,7 @@ qtractorAudioMeter::qtractorAudioMeter (
 	m_pAudioMonitor = pAudioMonitor;
 
 	m_iChannels     = 0;
-	m_ppAudioValues = NULL;
+	m_ppAudioValues = nullptr;
 	m_iRegenerate   = 0;
 
 #ifdef CONFIG_GRADIENT
@@ -419,7 +419,7 @@ int qtractorAudioMeter::iec_level ( int iIndex ) const
 // Audio monitor reset
 void qtractorAudioMeter::reset (void)
 {
-	if (m_pAudioMonitor == NULL)
+	if (m_pAudioMonitor == nullptr)
 		return;
 
 	const unsigned short iChannels
@@ -436,7 +436,7 @@ void qtractorAudioMeter::reset (void)
 			delete m_ppAudioValues[i];
 		}
 		delete [] m_ppAudioValues;
-		m_ppAudioValues = NULL;
+		m_ppAudioValues = nullptr;
 		++m_iRegenerate;
 	}
 
@@ -637,7 +637,7 @@ qtractorAudioMixerMeter::~qtractorAudioMixerMeter (void)
 void qtractorAudioMixerMeter::reset (void)
 {
 	qtractorAudioMonitor *pAudioMonitor = m_pAudioMeter->audioMonitor();
-	if (pAudioMonitor == NULL)
+	if (pAudioMonitor == nullptr)
 		return;
 
 	m_pAudioMeter->reset();

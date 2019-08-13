@@ -464,7 +464,7 @@ public:
 		{ return 0; }
 
 	// GUI Editor stuff.
-	virtual void openEditor(QWidget */*pParent*/= NULL) {}
+	virtual void openEditor(QWidget */*pParent*/= nullptr) {}
 	virtual void closeEditor() {};
 	virtual void idleEditor()  {};
 
@@ -504,7 +504,7 @@ public:
 	void clearItems();
 
 	// Special plugin form methods.
-	void openForm(QWidget *pParent = NULL);
+	void openForm(QWidget *pParent = nullptr);
 	void closeForm();
 
 	bool isFormVisible() const;

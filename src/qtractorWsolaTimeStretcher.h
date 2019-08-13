@@ -1,7 +1,7 @@
 // qtractorWsolaTimeStretcher.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2012, Olli Parviainen.
@@ -127,7 +127,7 @@ public:
 			unsigned int iOverlapMs = DEFAULT_OVERLAP_MS);
 
 	// Get routine control parameters, see setParameters() function.
-	// Any of the parameters to this function can be NULL in such
+	// Any of the parameters to this function can be nullptr in such
 	// case corresponding parameter value isn't returned.
 	void getParameters(
 			unsigned int *piSampleRate,

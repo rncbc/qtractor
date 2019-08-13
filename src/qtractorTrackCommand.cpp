@@ -68,31 +68,31 @@ bool qtractorTrackCommand::addTrack (void)
 	qDebug("qtractorTrackCommand::addTrack(%p, %p)", m_pTrack, m_pAfterTrack);
 #endif
 
-	if (m_pTrack == NULL)
+	if (m_pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return false;
 
 	qtractorTrackList *pTrackList = pTracks->trackList();
-	if (pTrackList == NULL)
+	if (pTrackList == nullptr)
 		return false;
 
 	// Guess which item we're adding after...
 #if 0
-	if (m_pAfterTrack == NULL)
+	if (m_pAfterTrack == nullptr)
 		m_pAfterTrack = m_pTrack->prev();
 #else
-	if (m_pAfterTrack == NULL)
+	if (m_pAfterTrack == nullptr)
 		m_pAfterTrack = pSession->tracks().last();
 #endif
 	int iTrack = pSession->tracks().find(m_pAfterTrack) + 1;
@@ -137,30 +137,30 @@ bool qtractorTrackCommand::removeTrack (void)
 	qDebug("qtractorTrackCommand::removeTrack(%p, %p)", m_pTrack, m_pAfterTrack);
 #endif
 
-	if (m_pTrack == NULL)
+	if (m_pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return false;
 
 	qtractorTrackList *pTrackList = pTracks->trackList();
-	if (pTrackList == NULL)
+	if (pTrackList == nullptr)
 		return false;
 
 	// Save which item we're adding after...
-	if (m_pAfterTrack == NULL)
+	if (m_pAfterTrack == nullptr)
 		m_pAfterTrack = m_pTrack->prev();
 #if 0
-	if (m_pAfterTrack == NULL)
+	if (m_pAfterTrack == nullptr)
 		m_pAfterTrack = pSession->tracks().last();
 #endif
 	// Get the list view item reference of the intended track...
@@ -180,7 +180,7 @@ bool qtractorTrackCommand::removeTrack (void)
 	iTrack = pTrackList->removeTrack(iTrack);
 
 	// Clear track-view clipboard whther applicable...
-	if (qtractorTrackView::singleTrackClipboard() == NULL)
+	if (qtractorTrackView::singleTrackClipboard() == nullptr)
 		qtractorTrackView::clearClipboard();
 
 	// Mixer turn...
@@ -332,7 +332,7 @@ bool qtractorCopyTrackCommand::redo (void)
 
 	// About to find and set current automation/curve...
 	qtractorCurve *pCurve, *pCurrentCurve = pTrack->currentCurve();
-	qtractorCurve *pNewCurve, *pNewCurrentCurve = NULL;
+	qtractorCurve *pNewCurve, *pNewCurrentCurve = nullptr;
 
 	// Copy all former plugins and respective automation/curves...
 	qtractorPluginList *pPluginList = pTrack->pluginList();
@@ -342,17 +342,17 @@ bool qtractorCopyTrackCommand::redo (void)
 				pPlugin; pPlugin = pPlugin->next()) {
 			// Copy new plugin...
 			qtractorPlugin *pNewPlugin = pNewPluginList->copyPlugin(pPlugin);
-			if (pNewPlugin == NULL)
+			if (pNewPlugin == nullptr)
 				continue;
-			pNewPluginList->insertPlugin(pNewPlugin, NULL);
+			pNewPluginList->insertPlugin(pNewPlugin, nullptr);
 			// Activation automation/curves...
-			if (pCurveList == NULL || pNewCurveList == NULL)
+			if (pCurveList == nullptr || pNewCurveList == nullptr)
 				continue;
 			pCurve = pPlugin->activateSubject()->curve();
 			if (pCurve && pCurve->list() == pCurveList) {
 				pNewCurve = cloneCurve(pNewCurveList,
 					pNewPlugin->activateSubject(), pCurve);
-				if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+				if (pNewCurrentCurve == nullptr && pCurrentCurve == pCurve)
 					pNewCurrentCurve = pNewCurve;
 			}
 			// Copy plugin parameters automation/curves...
@@ -366,11 +366,11 @@ bool qtractorCopyTrackCommand::redo (void)
 				if (pCurve && pCurve->list() == pCurveList) {
 					qtractorPluginParam *pNewParam
 						= pNewPlugin->findParam(pParam->index());
-					if (pNewParam == NULL)
+					if (pNewParam == nullptr)
 						continue;
 					pNewCurve = cloneCurve(pNewCurveList,
 						pNewParam->subject(), pCurve);
-					if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+					if (pNewCurrentCurve == nullptr && pCurrentCurve == pCurve)
 						pNewCurrentCurve = pNewCurve;
 				}
 			}
@@ -406,42 +406,42 @@ bool qtractorCopyTrackCommand::redo (void)
 		if (pCurve) {
 			pNewCurve = cloneCurve(pNewCurveList,
 				pNewTrack->monitorSubject(), pCurve);
-			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+			if (pNewCurrentCurve == nullptr && pCurrentCurve == pCurve)
 				pNewCurrentCurve = pNewCurve;
 		}
 		pCurve = pTrack->monitor()->panningSubject()->curve();
 		if (pCurve) {
 			pNewCurve = cloneCurve(pNewCurveList,
 				pNewTrack->monitor()->panningSubject(), pCurve);
-			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+			if (pNewCurrentCurve == nullptr && pCurrentCurve == pCurve)
 				pNewCurrentCurve = pNewCurve;
 		}
 		pCurve = pTrack->monitor()->gainSubject()->curve();
 		if (pCurve) {
 			pNewCurve = cloneCurve(pNewCurveList,
 				pNewTrack->monitor()->gainSubject(), pCurve);
-			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+			if (pNewCurrentCurve == nullptr && pCurrentCurve == pCurve)
 				pNewCurrentCurve = pNewCurve;
 		}
 		pCurve = pTrack->recordSubject()->curve();
 		if (pCurve) {
 			pNewCurve = cloneCurve(pNewCurveList,
 				pNewTrack->recordSubject(), pCurve);
-			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+			if (pNewCurrentCurve == nullptr && pCurrentCurve == pCurve)
 				pNewCurrentCurve = pNewCurve;
 		}
 		pCurve = pTrack->muteSubject()->curve();
 		if (pCurve) {
 			pNewCurve = cloneCurve(pNewCurveList,
 				pNewTrack->muteSubject(), pCurve);
-			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+			if (pNewCurrentCurve == nullptr && pCurrentCurve == pCurve)
 				pNewCurrentCurve = pNewCurve;
 		}
 		pCurve = pTrack->soloSubject()->curve();
 		if (pCurve) {
 			pNewCurve = cloneCurve(pNewCurveList,
 				pNewTrack->soloSubject(), pCurve);
-			if (pNewCurrentCurve == NULL && pCurrentCurve == pCurve)
+			if (pNewCurrentCurve == nullptr && pCurrentCurve == pCurve)
 				pNewCurrentCurve = pNewCurve;
 		}
 	}
@@ -518,19 +518,19 @@ qtractorMoveTrackCommand::qtractorMoveTrackCommand (
 bool qtractorMoveTrackCommand::redo (void)
 {
 	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return false;
 
 	int iTrack = pSession->tracks().find(pTrack);
@@ -597,11 +597,11 @@ qtractorResizeTrackCommand::qtractorResizeTrackCommand (
 bool qtractorResizeTrackCommand::redo (void)
 {
 	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	// Save the previous item height alright...
@@ -639,7 +639,7 @@ qtractorImportTrackCommand::qtractorImportTrackCommand (
 {
 	// Session properties backup preparation.
 	m_iSaveCount   = 0;
-	m_pSaveCommand = NULL;
+	m_pSaveCommand = nullptr;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -730,15 +730,15 @@ qtractorEditTrackCommand::qtractorEditTrackCommand (
 // Overridden track-edit command methods.
 bool qtractorEditTrackCommand::redo (void)
 {
-	if (m_pTrack == NULL)
+	if (m_pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	// Howdy, maybe we're already have a name on recording...
@@ -853,7 +853,7 @@ qtractorTrackStateCommand::qtractorTrackStateCommand ( qtractorTrack *pTrack,
 	m_toolType = toolType;
 	m_bOn = bOn;
 
-	m_pClipCommand = NULL;
+	m_pClipCommand = nullptr;
 	m_iRecordCount = 0;
 
 	switch (m_toolType) {
@@ -906,15 +906,15 @@ qtractorTrackStateCommand::~qtractorTrackStateCommand (void)
 bool qtractorTrackStateCommand::redo (void)
 {
 	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	bool bOn = false;
@@ -928,7 +928,7 @@ bool qtractorTrackStateCommand::redo (void)
 		// Special stuffing if currently recording at first place...
 		bOn = pTrack->isRecord();
 		if (bOn && !m_bOn
-			&& m_pClipCommand == NULL && m_iRecordCount == 0) {
+			&& m_pClipCommand == nullptr && m_iRecordCount == 0) {
 			m_pClipCommand = new qtractorClipCommand(QString());
 			// Do all the record stuffing here...
 			const unsigned long iFrameTime = pSession->frameTimeEx();
@@ -938,7 +938,7 @@ bool qtractorTrackStateCommand::redo (void)
 			} else {
 				// nothing was actually recorded...
 				delete m_pClipCommand;
-				m_pClipCommand = NULL;
+				m_pClipCommand = nullptr;
 			}
 		}
 		// Was it before (skip undos)?
@@ -1076,15 +1076,15 @@ qtractorTrackMonitorCommand::~qtractorTrackMonitorCommand (void)
 bool qtractorTrackMonitorCommand::redo (void)
 {
 	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	// Save undo value...
@@ -1154,7 +1154,7 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 	setRefresh(false);
 
 	// Try replacing an previously equivalent command...
-	static qtractorTrackGainCommand *s_pPrevGainCommand = NULL;
+	static qtractorTrackGainCommand *s_pPrevGainCommand = nullptr;
 	if (s_pPrevGainCommand) {
 		qtractorSession *pSession = qtractorSession::getInstance();
 		qtractorCommand *pLastCommand
@@ -1186,11 +1186,11 @@ qtractorTrackGainCommand::qtractorTrackGainCommand (
 bool qtractorTrackGainCommand::redo (void)
 {
 	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Set undo value...
@@ -1243,7 +1243,7 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 	setRefresh(false);
 
 	// Try replacing an previously equivalent command...
-	static qtractorTrackPanningCommand *s_pPrevPanningCommand = NULL;
+	static qtractorTrackPanningCommand *s_pPrevPanningCommand = nullptr;
 	if (s_pPrevPanningCommand) {
 		qtractorSession *pSession = qtractorSession::getInstance();
 		qtractorCommand *pLastCommand
@@ -1275,11 +1275,11 @@ qtractorTrackPanningCommand::qtractorTrackPanningCommand (
 bool qtractorTrackPanningCommand::redo (void)
 {
 	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Set undo value...
@@ -1333,7 +1333,7 @@ qtractorTrackInstrumentCommand::qtractorTrackInstrumentCommand (
 bool qtractorTrackInstrumentCommand::redo (void)
 {
 	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return false;
 
 	if (pTrack->trackType() != qtractorTrack::Midi)
@@ -1342,11 +1342,11 @@ bool qtractorTrackInstrumentCommand::redo (void)
 	// Gotta make sure we've a proper MIDI bus...
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-	if (pMidiBus == NULL)
+	if (pMidiBus == nullptr)
 		return false;
 
 	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Set undo values...

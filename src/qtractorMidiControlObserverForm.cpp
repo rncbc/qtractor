@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -49,7 +49,7 @@
 
 // Kind of singleton reference.
 qtractorMidiControlObserverForm *
-qtractorMidiControlObserverForm::g_pMidiObserverForm = NULL;
+qtractorMidiControlObserverForm::g_pMidiObserverForm = nullptr;
 
 
 // Constructor.
@@ -63,14 +63,14 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 	// Make it auto-modeless dialog...
 	QDialog::setAttribute(Qt::WA_DeleteOnClose);
 
-	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(NULL,
+	m_pControlTypeGroup = new qtractorMidiControlTypeGroup(nullptr,
 		m_ui.ControlTypeComboBox, m_ui.ParamComboBox, m_ui.ParamTextLabel);
 
 	// Target object.
-	m_pMidiObserver = NULL;
+	m_pMidiObserver = nullptr;
 
 	// Proxy object.
-	m_pMidiObserverAction = NULL;
+	m_pMidiObserverAction = nullptr;
 
 	// Start clean.
 	m_iDirtyCount = 0;
@@ -153,9 +153,9 @@ void qtractorMidiControlObserverForm::showInstance (
 	if (pMidiObserverForm)
 		pMidiObserverForm->close();
 
-	if (pMidiObserver == NULL)
+	if (pMidiObserver == nullptr)
 		return;
-	if (pMidiObserver->subject() == NULL)
+	if (pMidiObserver->subject() == nullptr)
 		return;
 
 	pMidiObserverForm = new qtractorMidiControlObserverForm(pParent, wflags);
@@ -238,7 +238,7 @@ void qtractorMidiControlObserverForm::setMidiObserverAction (
 {
 	qtractorActionControl *pActionControl
 		= qtractorActionControl::getInstance();
-	if (pActionControl == NULL)
+	if (pActionControl == nullptr)
 		return;
 
 	qtractorActionControl::MidiObserver *pMidiObserver
@@ -259,11 +259,11 @@ QAction *qtractorMidiControlObserverForm::midiObserverAction (void) const
 void qtractorMidiControlObserverForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
 	// Cleanup.
-	m_pMidiObserverAction = NULL;
-	m_pMidiObserver = NULL;
+	m_pMidiObserverAction = nullptr;
+	m_pMidiObserver = nullptr;
 
 	// Pseudo-singleton reference setup.
-	g_pMidiObserverForm = NULL;
+	g_pMidiObserverForm = nullptr;
 
 	// Sure acceptance and probable destruction (cf. WA_DeleteOnClose).
 	QDialog::closeEvent(pCloseEvent);
@@ -314,7 +314,7 @@ void qtractorMidiControlObserverForm::accept (void)
 {
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -471,11 +471,11 @@ void qtractorMidiControlObserverForm::inputs (void)
 #endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -494,11 +494,11 @@ void qtractorMidiControlObserverForm::outputs (void)
 #endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -512,16 +512,16 @@ void qtractorMidiControlObserverForm::outputs (void)
 // Update control widget state.
 void qtractorMidiControlObserverForm::stabilizeForm (void)
 {
-	qtractorMidiEngine *pMidiEngine = NULL;
+	qtractorMidiEngine *pMidiEngine = nullptr;
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		pMidiEngine = pSession->midiEngine();
 	if (pMidiEngine) {
 		const bool bFeedback = m_ui.FeedbackCheckBox->isChecked();
 		m_ui.InputsPushButton->setEnabled(
-			pMidiEngine->controlBus_in() != NULL);
+			pMidiEngine->controlBus_in() != nullptr);
 		m_ui.OutputsPushButton->setEnabled(
-			bFeedback && pMidiEngine->controlBus_out() != NULL);
+			bFeedback && pMidiEngine->controlBus_out() != nullptr);
 	} else {
 		m_ui.InputsPushButton->setEnabled(false);
 		m_ui.OutputsPushButton->setEnabled(false);
@@ -561,7 +561,7 @@ QAction *qtractorMidiControlObserverForm::addMidiControlAction (
 void qtractorMidiControlObserverForm::midiControlAction (
 	QWidget *pParent, QAction *pAction )
 {
-	if (pAction == NULL)
+	if (pAction == nullptr)
 		return;
 
 	qtractorMidiControlObserver *pMidiObserver
@@ -574,11 +574,11 @@ void qtractorMidiControlObserverForm::midiControlAction (
 void qtractorMidiControlObserverForm::midiControlMenu (
 	QWidget *pWidget, const QPoint& pos )
 {
-	if (pWidget == NULL)
+	if (pWidget == nullptr)
 		return;
 
-	QAction *pMidiControlAction = NULL;
-	qtractorMidiControlObserver *pMidiObserver = NULL;
+	QAction *pMidiControlAction = nullptr;
+	qtractorMidiControlObserver *pMidiObserver = nullptr;
 	QListIterator<QAction *> iter(pWidget->actions());
 	while (iter.hasNext()) {
 		QAction *pAction = iter.next();
@@ -590,9 +590,9 @@ void qtractorMidiControlObserverForm::midiControlMenu (
 		}
 	}
 
-	if (pMidiControlAction == NULL)
+	if (pMidiControlAction == nullptr)
 		return;
-	if (pMidiObserver == NULL)
+	if (pMidiObserver == nullptr)
 		return;
 
 	QMenu menu(pWidget);
@@ -609,26 +609,26 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	QMenu *pMenu, qtractorMidiControlObserver *pMidiObserver )
 {
 	qtractorCurveList *pCurveList = pMidiObserver->curveList();
-	if (pCurveList == NULL)
+	if (pCurveList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTrack *pTrack = pSession->findTrack(pCurveList);
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return;
 
-	qtractorCurve *pCurve = NULL;
+	qtractorCurve *pCurve = nullptr;
 	qtractorSubject *pSubject = pMidiObserver->subject();
 	if (pSubject)
 		pCurve = pSubject->curve();
@@ -655,13 +655,13 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	pMenu->addSeparator();
 
 	QMenu *pTrackCurveModeMenu = pMainForm->trackCurveModeMenu();
-	pTrackCurveModeMenu->setEnabled(pCurve != NULL);
+	pTrackCurveModeMenu->setEnabled(pCurve != nullptr);
 	pMenu->addMenu(pTrackCurveModeMenu);
 
 	pAction = pMenu->addAction(tr("&Lock"));
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurve && pCurve->isLocked());
-	pAction->setEnabled(pCurve != NULL);
+	pAction->setEnabled(pCurve != nullptr);
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveLocked(bool)));
@@ -679,7 +679,7 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	pAction = pMenu->addAction(iconProcess, tr("&Play"));
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurve && pCurve->isProcess());
-	pAction->setEnabled(pCurve != NULL);
+	pAction->setEnabled(pCurve != nullptr);
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveProcess(bool)));
@@ -695,7 +695,7 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	pAction = pMenu->addAction(iconCapture, tr("&Record"));
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurve && pCurve->isCapture());
-	pAction->setEnabled(pCurve != NULL);
+	pAction->setEnabled(pCurve != nullptr);
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveCapture(bool)));
@@ -703,7 +703,7 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	pMenu->addSeparator();
 
 	pAction = pMenu->addAction(tr("&Clear"));
-	pAction->setEnabled(pCurve != NULL);
+	pAction->setEnabled(pCurve != nullptr);
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveClear()));

@@ -1,7 +1,7 @@
 // qtractorInstrumentMenu.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,7 +39,7 @@
 
 // Constructor.
 qtractorInstrumentMenu::qtractorInstrumentMenu ( QObject *pParent )
-	: QObject(pParent), m_pTrack(NULL)
+	: QObject(pParent), m_pTrack(nullptr)
 {
 }
 
@@ -47,7 +47,7 @@ qtractorInstrumentMenu::qtractorInstrumentMenu ( QObject *pParent )
 void qtractorInstrumentMenu::updateTrackMenu (
 	qtractorTrack *pTrack, QMenu *pMenu )
 {
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return;
 
 	m_pTrack = pTrack;
@@ -61,15 +61,15 @@ bool qtractorInstrumentMenu::trackMenuReset ( QMenu *pMenu ) const
 	pMenu->clear();
 //	pMenu->setStyle(scrollableMenuStyle());
 
-	if (m_pTrack == NULL)
+	if (m_pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorInstrumentList *pInstruments = pSession->instruments();
-	if (pInstruments == NULL)
+	if (pInstruments == nullptr)
 		return false;
 
 	QString sCurrentName;
@@ -115,7 +115,7 @@ bool qtractorInstrumentMenu::trackMenuAdd (
 	qtractorMidiManager *pMidiManager,
 	const QString& sCurrentName ) const
 {
-	if (pMidiManager == NULL)
+	if (pMidiManager == nullptr)
 		return false;
 
 	pMidiManager->updateInstruments();
@@ -153,7 +153,7 @@ bool qtractorInstrumentMenu::bankMenuReset ( QMenu *pBankMenu ) const
 	pBankMenu->clear();
 //	pBankMenu->setStyle(scrollableMenuStyle());
 
-	if (m_pTrack == NULL)
+	if (m_pTrack == nullptr)
 		return false;
 
 	const QString sInstrumentName
@@ -178,11 +178,11 @@ bool qtractorInstrumentMenu::bankMenuReset ( QMenu *pBankMenu ) const
 
 	// Instrument bank/patches sub-menu...
 	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorInstrumentList *pInstruments = pSession->instruments();
-	if (pInstruments == NULL)
+	if (pInstruments == nullptr)
 		return false;
 
 	if (pInstruments->contains(sInstrumentName)) {
@@ -228,7 +228,7 @@ bool qtractorInstrumentMenu::bankMenuAdd (
 	const QString& sInstrumentName,
 	int iCurrentBank ) const
 {
-	if (pMidiManager == NULL)
+	if (pMidiManager == nullptr)
 		return false;
 
 	const qtractorMidiManager::Instruments& list
@@ -285,18 +285,18 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 	pProgMenu->clear();
 	pProgMenu->setStyle(scrollableMenuStyle());
 
-	if (m_pTrack == NULL)
+	if (m_pTrack == nullptr)
 		return false;
 
 	QAction *pBankAction = pProgMenu->menuAction();
-	if (pBankAction == NULL)
+	if (pBankAction == nullptr)
 		return false;
 
-	QMenu *pBankMenu = NULL;
+	QMenu *pBankMenu = nullptr;
 	QListIterator<QWidget *> iter(pBankAction->associatedWidgets());
-	while (iter.hasNext() && pBankMenu == NULL)
+	while (iter.hasNext() && pBankMenu == nullptr)
 		pBankMenu = qobject_cast<QMenu *> (iter.next());
-	if (pBankMenu == NULL)
+	if (pBankMenu == nullptr)
 		return false;
 
 	const QString sInstrumentName
@@ -322,11 +322,11 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 
 	// Instrument programs sub-menu...
 	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorInstrumentList *pInstruments = pSession->instruments();
-	if (pInstruments == NULL)
+	if (pInstruments == nullptr)
 		return false;
 
 	if (pInstruments->contains(sInstrumentName)) {
@@ -371,7 +371,7 @@ bool qtractorInstrumentMenu::progMenuAdd (
 	const QString& sInstrumentName,
 	int iBank, int iCurrentProg ) const
 {
-	if (pMidiManager == NULL)
+	if (pMidiManager == nullptr)
 		return false;
 
 	// Instrument plugin programs sub-menu...
@@ -421,11 +421,11 @@ bool qtractorInstrumentMenu::progMenuAdd (
 // Track/Instrument patch selection.
 void qtractorInstrumentMenu::progActionTriggered ( bool /*bOn*/ )
 {
-	if (m_pTrack == NULL)
+	if (m_pTrack == nullptr)
 		return;
 
 	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	QAction *pProgAction = qobject_cast<QAction *> (sender());
@@ -434,7 +434,7 @@ void qtractorInstrumentMenu::progActionTriggered ( bool /*bOn*/ )
 		QListIterator<QWidget *> bank_iter(pProgAction->associatedWidgets());
 		while (bank_iter.hasNext()) {
 			QMenu *pBankMenu = qobject_cast<QMenu *> (bank_iter.next());
-			if (pBankMenu == NULL)
+			if (pBankMenu == nullptr)
 				continue;
 			QAction *pBankAction = pBankMenu->menuAction();
 			if (pBankAction) {
@@ -450,7 +450,7 @@ void qtractorInstrumentMenu::progActionTriggered ( bool /*bOn*/ )
 							new qtractorTrackInstrumentCommand(
 								m_pTrack, sInstrumentName, iBank, iProg));
 						// Done.
-						m_pTrack = NULL;
+						m_pTrack = nullptr;
 						break;
 					}
 				}

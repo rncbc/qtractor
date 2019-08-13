@@ -55,10 +55,10 @@ qtractorClip::qtractorClip ( qtractorTrack *pTrack )
 	m_fGain    = 1.0f;
 	m_fPanning = 0.0f;
 
-	m_pTakeInfo = NULL;
+	m_pTakeInfo = nullptr;
 
-	m_pFadeInFunctor  = NULL;
-	m_pFadeOutFunctor = NULL;
+	m_pFadeInFunctor  = nullptr;
+	m_pFadeOutFunctor = nullptr;
 
 	clear();
 }
@@ -305,11 +305,11 @@ float qtractorClip::fadeInOutGain ( unsigned long iOffset ) const
 // Clip time reference settler method.
 void qtractorClip::updateClipTime (void)
 {
-	if (m_pTrack == NULL)
+	if (m_pTrack == nullptr)
 		return;
 
 	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	m_iClipStart = pSession->frameFromTick(m_iClipStartTime);
@@ -334,7 +334,7 @@ void qtractorClip::drawClip (
 	pPainter->drawRect(clipRect);
 
 	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Adjust the clip rectangle left origin...
@@ -539,7 +539,7 @@ QString qtractorClip::toolTip (void) const
 {
 	QString sToolTip = QObject::tr("Name:\t%1").arg(clipTitle());
 
-	qtractorSession *pSession = NULL;
+	qtractorSession *pSession = nullptr;
 	if (m_pTrack)
 		pSession = m_pTrack->session();
 	if (pSession) {
@@ -658,11 +658,11 @@ bool qtractorClip::loadElement (
 				if (eProp.tagName() == "current-take")
 					iCurrentTake = eProp.text().toInt();
 			}
-			qtractorTrack::TakeInfo *pTakeInfo = NULL;
+			qtractorTrack::TakeInfo *pTakeInfo = nullptr;
 			qtractorTrack *pTrack = qtractorClip::track();
 			if (pTrack && iTakeID >= 0)
 				pTakeInfo = pTrack->takeInfo(iTakeID);
-			if (pTakeInfo == NULL && iTakeStart < iTakeEnd) {
+			if (pTakeInfo == nullptr && iTakeStart < iTakeEnd) {
 				pTakeInfo = static_cast<qtractorTrack::TakeInfo *> (
 					new qtractorClip::TakeInfo(
 						iClipStart, iClipOffset, iClipLength,
@@ -926,10 +926,10 @@ void qtractorClip::TakeInfo::selectClipPart (
 #endif
 
 	// Priority to recording clip...
-	qtractorClip *pClip = (pTrack ? pTrack->clipRecord() : NULL);
+	qtractorClip *pClip = (pTrack ? pTrack->clipRecord() : nullptr);
 
 	// Clip already taken?...
-	if (pClip == NULL) {
+	if (pClip == nullptr) {
 		pClip = clipPart(cpart);
 		if (pClip) {
 			// Don't change what hasn't change...
@@ -971,8 +971,8 @@ void qtractorClip::TakeInfo::reset (
 	qtractorClip *pClip = clipPart(ClipHead);
 	if (pClip) {
 		pClipCommand->removeClip(pClip);
-		pClipCommand->takeInfoClip(pClip, NULL);
-		setClipPart(ClipHead, NULL);
+		pClipCommand->takeInfoClip(pClip, nullptr);
+		setClipPart(ClipHead, nullptr);
 	}
 
 	pClip = clipPart(ClipTake);
@@ -980,8 +980,8 @@ void qtractorClip::TakeInfo::reset (
 		pClipCommand->resizeClip(pClip,
 			iClipStart, iClipOffset, iClipLength);
 		if (bClear) {
-			pClipCommand->takeInfoClip(pClip, NULL);
-		//	setClipPart(ClipTake, NULL);
+			pClipCommand->takeInfoClip(pClip, nullptr);
+		//	setClipPart(ClipTake, nullptr);
 		}
 	}
 
@@ -1232,7 +1232,7 @@ qtractorClip::FadeFunctor *qtractorClip::createFadeFunctor (
 		break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 

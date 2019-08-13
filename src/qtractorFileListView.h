@@ -65,9 +65,9 @@ public:
 
 	// Add a new group/file item, optionally under a given group.
 	qtractorFileGroupItem *addGroupItem(const QString& sName,
-		qtractorFileGroupItem *pParentItem = NULL);
+		qtractorFileGroupItem *pParentItem = nullptr);
 	qtractorFileListItem *addFileItem(const QString& sPath,
-		qtractorFileGroupItem *pParentItem = NULL);
+		qtractorFileGroupItem *pParentItem = nullptr);
 
 	// Current group/file item accessors...
 	qtractorFileGroupItem *currentGroupItem() const;
@@ -99,7 +99,7 @@ public:
 	void cleanup();
 
 	// Emit actiovation signal for given item...
-	void activateItem(QTreeWidgetItem *pItem = NULL);
+	void activateItem(QTreeWidgetItem *pItem = nullptr);
 
 	// Master clean-up.
 	void clear();

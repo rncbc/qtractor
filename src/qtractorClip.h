@@ -188,7 +188,7 @@ public:
 	virtual void update() = 0;
 
 	// Clip editor methods.
-	virtual bool startEditor(QWidget *pParent = NULL);
+	virtual bool startEditor(QWidget *pParent = nullptr);
 	virtual void updateEditor(bool bSelectClear);
 	virtual void updateEditorContents();
 	virtual bool queryEditor();
@@ -233,7 +233,7 @@ public:
 			m_iTakeGap(iTakeGap),
 			m_iCurrentTake(-1),
 			m_iRefCount(0)
-			{ m_apClipParts[ClipHead] = NULL; m_apClipParts[ClipTake] = NULL; }
+			{ m_apClipParts[ClipHead] = nullptr; m_apClipParts[ClipTake] = nullptr; }
 
 		// Brainless accessors (maybe useless).
 		unsigned long clipStart() const

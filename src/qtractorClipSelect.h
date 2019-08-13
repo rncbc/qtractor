@@ -47,7 +47,7 @@ public:
 	{
 		// Item constructor.
 		Item(const QRect& clipRect, unsigned long iClipOffset)
-			: rect(clipRect), offset(iClipOffset), rubberBand(NULL) {}
+			: rect(clipRect), offset(iClipOffset), rubberBand(nullptr) {}
 		// Item destructor.
 		~Item() {
 			if (rubberBand) {

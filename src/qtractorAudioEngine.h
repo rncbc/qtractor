@@ -51,7 +51,7 @@ class qtractorAudioEngineProxy : public QObject
 public:
 
 	// Constructor.
-	qtractorAudioEngineProxy(QObject *pParent = NULL)
+	qtractorAudioEngineProxy(QObject *pParent = nullptr)
 		: QObject(pParent) {}
 
 	// Event notifications.
@@ -370,7 +370,7 @@ public:
 
 	// Bus-buffering methods.
 	void buffer_prepare(unsigned int nframes,
-		qtractorAudioBus *pInputBus = NULL);
+		qtractorAudioBus *pInputBus = nullptr);
 	void buffer_commit(unsigned int nframes);
 
 	// Up-and-running predicate.

@@ -39,15 +39,15 @@ public:
 	// Constructors
 	qtractorMidiSysex(const QString& sName,
 		unsigned char *pSysex, unsigned short iSysex)
-		: m_sName(sName), m_pSysex(NULL), m_iSysex(0)
+		: m_sName(sName), m_pSysex(nullptr), m_iSysex(0)
 		{ setData(pSysex, iSysex); }
 	qtractorMidiSysex(const QString& sName, const QString& sText)
-		: m_sName(sName), m_pSysex(NULL), m_iSysex(0)
+		: m_sName(sName), m_pSysex(nullptr), m_iSysex(0)
 		{ setText(sText); }
 
 	// Copy consructor.
 	qtractorMidiSysex(const qtractorMidiSysex& sysex)
-		: m_sName(sysex.name()), m_pSysex(NULL), m_iSysex(0)
+		: m_sName(sysex.name()), m_pSysex(nullptr), m_iSysex(0)
 		{ setData(sysex.data(), sysex.size()); }
 
 	// Destructors;
@@ -99,7 +99,7 @@ public:
 		m_sName.clear();
 		if (m_pSysex) {
 			delete [] m_pSysex;
-			m_pSysex = NULL;
+			m_pSysex = nullptr;
 			m_iSysex = 0;
 		}
 	}

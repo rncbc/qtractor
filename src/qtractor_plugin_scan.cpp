@@ -1,7 +1,7 @@
 // qtractor_plugin_scan.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,7 +38,7 @@
 
 // Constructor.
 qtractor_ladspa_scan::qtractor_ladspa_scan (void)
-	: m_pLibrary(NULL), m_pLadspaDescriptor(NULL),
+	: m_pLibrary(nullptr), m_pLadspaDescriptor(nullptr),
 		m_iControlIns(0), m_iControlOuts(0),
 		m_iAudioIns(0), m_iAudioOuts(0)
 {
@@ -74,7 +74,7 @@ bool qtractor_ladspa_scan::open ( const QString& sFilename )
 // Plugin loader.
 bool qtractor_ladspa_scan::open_descriptor ( unsigned long iIndex )
 {
-	if (m_pLibrary == NULL)
+	if (m_pLibrary == nullptr)
 		return false;
 
 	close_descriptor();
@@ -86,7 +86,7 @@ bool qtractor_ladspa_scan::open_descriptor ( unsigned long iIndex )
 	// Retrieve the LADSPA descriptor function, if any...
 	LADSPA_Descriptor_Function pfnLadspaDescriptor
 		= (LADSPA_Descriptor_Function) m_pLibrary->resolve("ladspa_descriptor");
-	if (pfnLadspaDescriptor == NULL) {
+	if (pfnLadspaDescriptor == nullptr) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractor_ladspa_scan[%p]: plugin does not have DSSI descriptor.", this);
 	#endif
@@ -95,7 +95,7 @@ bool qtractor_ladspa_scan::open_descriptor ( unsigned long iIndex )
 
 	// Retrieve LADSPA descriptor if any...
 	m_pLadspaDescriptor = (*pfnLadspaDescriptor)(iIndex);
-	if (m_pLadspaDescriptor == NULL)
+	if (m_pLadspaDescriptor == nullptr)
 		return false;
 
 	// Get the official plugin name.
@@ -135,14 +135,14 @@ bool qtractor_ladspa_scan::open_descriptor ( unsigned long iIndex )
 // Plugin uloader.
 void qtractor_ladspa_scan::close_descriptor (void)
 {
-	if (m_pLadspaDescriptor == NULL)
+	if (m_pLadspaDescriptor == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractor_ladspa_scan[%p]::close_descriptor()", this);
 #endif
 
-	m_pLadspaDescriptor = NULL;
+	m_pLadspaDescriptor = nullptr;
 
 	m_sName.clear();
 
@@ -159,7 +159,7 @@ void qtractor_ladspa_scan::close (void)
 {
 	close_descriptor();
 
-	if (m_pLibrary == NULL)
+	if (m_pLibrary == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -171,14 +171,14 @@ void qtractor_ladspa_scan::close (void)
 #endif
 	delete m_pLibrary;
 
-	m_pLibrary = NULL;
+	m_pLibrary = nullptr;
 }
 
 
 // Check wether plugin is loaded.
 bool qtractor_ladspa_scan::isOpen (void) const
 {
-	if (m_pLibrary == NULL)
+	if (m_pLibrary == nullptr)
 		return false;
 
 	return m_pLibrary->isLoaded();
@@ -190,7 +190,7 @@ unsigned int qtractor_ladspa_scan::uniqueID() const
 
 bool qtractor_ladspa_scan::isRealtime() const
 {
-	if (m_pLadspaDescriptor == NULL)
+	if (m_pLadspaDescriptor == nullptr)
 		return false;
 
 	return LADSPA_IS_HARD_RT_CAPABLE(m_pLadspaDescriptor->Properties);
@@ -248,7 +248,7 @@ static void qtractor_ladspa_scan_file ( const QString& sFilename )
 
 // Constructor.
 qtractor_dssi_scan::qtractor_dssi_scan (void)
-	: m_pLibrary(NULL), m_pLadspaDescriptor(NULL),
+	: m_pLibrary(nullptr), m_pLadspaDescriptor(nullptr),
 		m_iControlIns(0), m_iControlOuts(0),
 		m_iAudioIns(0), m_iAudioOuts(0),
 		m_bEditor(false)
@@ -285,7 +285,7 @@ bool qtractor_dssi_scan::open ( const QString& sFilename )
 // Plugin loader.
 bool qtractor_dssi_scan::open_descriptor ( unsigned long iIndex )
 {
-	if (m_pLibrary == NULL)
+	if (m_pLibrary == nullptr)
 		return false;
 
 	close_descriptor();
@@ -297,9 +297,9 @@ bool qtractor_dssi_scan::open_descriptor ( unsigned long iIndex )
 	// Retrieve the DSSI descriptor function, if any...
 	DSSI_Descriptor_Function pfnDssiDescriptor
 		= (DSSI_Descriptor_Function) m_pLibrary->resolve("dssi_descriptor");
-	if (pfnDssiDescriptor == NULL)
-		return NULL;
-	if (pfnDssiDescriptor == NULL) {
+	if (pfnDssiDescriptor == nullptr)
+		return false;
+	if (pfnDssiDescriptor == nullptr) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractor_dssi_scan[%p]: plugin does not have DSSI descriptor.", this);
 	#endif
@@ -308,12 +308,12 @@ bool qtractor_dssi_scan::open_descriptor ( unsigned long iIndex )
 
 	// Retrieve the DSSI descriptor if any...
 	m_pDssiDescriptor = (*pfnDssiDescriptor)(iIndex);
-	if (m_pDssiDescriptor == NULL)
+	if (m_pDssiDescriptor == nullptr)
 		return false;
 
 	// We're also a LADSPA one...
 	m_pLadspaDescriptor = m_pDssiDescriptor->LADSPA_Plugin;
-	if (m_pLadspaDescriptor == NULL)
+	if (m_pLadspaDescriptor == nullptr)
 		return false;
 
 	// Get the official plugin name.
@@ -369,14 +369,14 @@ bool qtractor_dssi_scan::open_descriptor ( unsigned long iIndex )
 // Plugin uloader.
 void qtractor_dssi_scan::close_descriptor (void)
 {
-	if (m_pLadspaDescriptor == NULL)
+	if (m_pLadspaDescriptor == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractor_dssi_scan[%p]::close_descriptor()", this);
 #endif
 
-	m_pLadspaDescriptor = NULL;
+	m_pLadspaDescriptor = nullptr;
 
 	m_sName.clear();
 
@@ -395,7 +395,7 @@ void qtractor_dssi_scan::close (void)
 {
 	close_descriptor();
 
-	if (m_pLibrary == NULL)
+	if (m_pLibrary == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -407,14 +407,14 @@ void qtractor_dssi_scan::close (void)
 #endif
 	delete m_pLibrary;
 
-	m_pLibrary = NULL;
+	m_pLibrary = nullptr;
 }
 
 
 // Check wether plugin is loaded.
 bool qtractor_dssi_scan::isOpen (void) const
 {
-	if (m_pLibrary == NULL)
+	if (m_pLibrary == nullptr)
 		return false;
 
 	return m_pLibrary->isLoaded();
@@ -426,7 +426,7 @@ unsigned int qtractor_dssi_scan::uniqueID() const
 
 bool qtractor_dssi_scan::isRealtime() const
 {
-	if (m_pLadspaDescriptor == NULL)
+	if (m_pLadspaDescriptor == nullptr)
 		return false;
 
 	return LADSPA_IS_HARD_RT_CAPABLE(m_pLadspaDescriptor->Properties);
@@ -435,10 +435,10 @@ bool qtractor_dssi_scan::isRealtime() const
 
 bool qtractor_dssi_scan::isConfigure() const
 {
-	if (m_pDssiDescriptor == NULL)
+	if (m_pDssiDescriptor == nullptr)
 		return false;
 
-	return (m_pDssiDescriptor->configure != NULL);
+	return (m_pDssiDescriptor->configure != nullptr);
 }
 
 
@@ -555,7 +555,7 @@ const int effFlagsProgramChunks = 32;
 
 // Constructor.
 qtractor_vst_scan::qtractor_vst_scan (void)
-	: m_pLibrary(NULL), m_pEffect(NULL), m_iFlagsEx(0), m_bEditor(false)
+	: m_pLibrary(nullptr), m_pEffect(nullptr), m_iFlagsEx(0), m_bEditor(false)
 {
 }
 
@@ -591,7 +591,7 @@ bool qtractor_vst_scan::open ( const QString& sFilename )
 // Plugin loader.
 bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 {
-	if (m_pLibrary == NULL)
+	if (m_pLibrary == nullptr)
 		return false;
 
 	close_descriptor();
@@ -602,9 +602,9 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 
 	VST_GetPluginInstance pfnGetPluginInstance
 		= (VST_GetPluginInstance) m_pLibrary->resolve("VSTPluginMain");
-	if (pfnGetPluginInstance == NULL)
+	if (pfnGetPluginInstance == nullptr)
 		pfnGetPluginInstance = (VST_GetPluginInstance) m_pLibrary->resolve("main");
-	if (pfnGetPluginInstance == NULL) {
+	if (pfnGetPluginInstance == nullptr) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractor_vst_scan[%p]: plugin does not have a main entry point.", this);
 	#endif
@@ -612,7 +612,7 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 	}
 
 	m_pEffect = (*pfnGetPluginInstance)(qtractor_vst_scan_callback);
-	if (m_pEffect == NULL) {
+	if (m_pEffect == nullptr) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractor_vst_scan[%p]: plugin instance could not be created.", this);
 	#endif
@@ -624,12 +624,12 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractor_vst_scan[%p]: plugin is not a valid VST.", this);
 	#endif
-		m_pEffect = NULL;
+		m_pEffect = nullptr;
 		return false;
 	}
 
 	// Check whether it's a VST Shell...
-	const int categ = vst_dispatch(effGetPlugCategory, 0, 0, NULL, 0.0f);
+	const int categ = vst_dispatch(effGetPlugCategory, 0, 0, nullptr, 0.0f);
 	if (categ == kPlugCategShell) {
 		int id = 0;
 		char buf[40];
@@ -646,7 +646,7 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 			qDebug("qtractor_vst_scan[%p]: "
 				"vst_shell(%lu) plugin is not a valid VST.", this, iIndex);
 		#endif
-			m_pEffect = NULL;
+			m_pEffect = nullptr;
 			return false;
 		}
 		// Make it known...
@@ -654,14 +654,14 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 		// Re-allocate the thing all over again...
 		pfnGetPluginInstance
 			= (VST_GetPluginInstance) m_pLibrary->resolve("VSTPluginMain");
-		if (pfnGetPluginInstance == NULL)
+		if (pfnGetPluginInstance == nullptr)
 			pfnGetPluginInstance = (VST_GetPluginInstance) m_pLibrary->resolve("main");
-		if (pfnGetPluginInstance == NULL) {
+		if (pfnGetPluginInstance == nullptr) {
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractor_vst_scan[%p]: "
 				"vst_shell(%lu) plugin does not have a main entry point.", this, iIndex);
 		#endif
-			m_pEffect = NULL;
+			m_pEffect = nullptr;
 			return false;
 		}
 		// Does the VST plugin instantiate OK?
@@ -669,7 +669,7 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 		// Not needed anymore, hopefully...
 		g_iVstShellCurrentId = 0;
 		// Don't go further if failed...
-		if (m_pEffect == NULL) {
+		if (m_pEffect == nullptr) {
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractor_vst_scan[%p]: "
 				"vst_shell(%lu) plugin instance could not be created.", this, iIndex);
@@ -681,7 +681,7 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 			qDebug("qtractor_vst_scan[%p]: "
 				"vst_shell(%lu) plugin is not a valid VST.", this, iIndex);
 		#endif
-			m_pEffect = NULL;
+			m_pEffect = nullptr;
 			return false;
 		}
 	#ifdef CONFIG_DEBUG
@@ -692,12 +692,12 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 	else
 	// Not a VST Shell plugin...
 	if (iIndex > 0) {
-		m_pEffect = NULL;
+		m_pEffect = nullptr;
 		return false;
 	}
 
-//	vst_dispatch(effIdentify, 0, 0, NULL, 0.0f);
-	vst_dispatch(effOpen,     0, 0, NULL, 0.0f);
+//	vst_dispatch(effIdentify, 0, 0, nullptr, 0.0f);
+	vst_dispatch(effOpen,     0, 0, nullptr, 0.0f);
 
 	// Get label name...
 	char szName[256]; ::memset(szName, 0, sizeof(szName));
@@ -728,7 +728,7 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 // Plugin unloader.
 void qtractor_vst_scan::close_descriptor (void)
 {
-	if (m_pEffect == NULL)
+	if (m_pEffect == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -737,7 +737,7 @@ void qtractor_vst_scan::close_descriptor (void)
 
 	vst_dispatch(effClose, 0, 0, 0, 0.0f);
 
-	m_pEffect  = NULL;
+	m_pEffect  = nullptr;
 	m_iFlagsEx = 0;
 //	m_bEditor  = false;
 	m_sName.clear();
@@ -747,7 +747,7 @@ void qtractor_vst_scan::close_descriptor (void)
 // File unloader.
 void qtractor_vst_scan::close (void)
 {
-	if (m_pLibrary == NULL)
+	if (m_pLibrary == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -761,7 +761,7 @@ void qtractor_vst_scan::close (void)
 
 	delete m_pLibrary;
 
-	m_pLibrary = NULL;
+	m_pLibrary = nullptr;
 
 	m_bEditor = false;
 }
@@ -770,7 +770,7 @@ void qtractor_vst_scan::close (void)
 // Check wether plugin is loaded.
 bool qtractor_vst_scan::isOpen (void) const
 {
-	if (m_pLibrary == NULL)
+	if (m_pLibrary == nullptr)
 		return false;
 
 	return m_pLibrary->isLoaded();
@@ -806,7 +806,7 @@ bool qtractor_vst_scan::hasProgramChunks() const
 int qtractor_vst_scan::vst_dispatch (
 	long opcode, long index, long value, void *ptr, float opt ) const
 {
-	if (m_pEffect == NULL)
+	if (m_pEffect == nullptr)
 		return 0;
 
 #ifdef CONFIG_DEBUG_0
@@ -844,10 +844,10 @@ static VstIntPtr VSTCALLBACK qtractor_vst_scan_callback ( AEffect* effect,
 		ret = (VstIntPtr) g_iVstShellCurrentId;
 		break;
 	case audioMasterGetSampleRate:
-		effect->dispatcher(effect, effSetSampleRate, 0, 0, NULL, 44100.0f);
+		effect->dispatcher(effect, effSetSampleRate, 0, 0, nullptr, 44100.0f);
 		break;
 	case audioMasterGetBlockSize:
-		effect->dispatcher(effect, effSetBlockSize, 0, 1024, NULL, 0.0f);
+		effect->dispatcher(effect, effSetBlockSize, 0, 1024, nullptr, 0.0f);
 		break;
 	case audioMasterGetAutomationState:
 		ret = 1; // off

@@ -1,7 +1,7 @@
 // qtractorShortcutForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -273,12 +273,12 @@ qtractorShortcutForm::qtractorShortcutForm (
 	// Window modality (let plugin/tool windows rave around).
 	//QDialog::setWindowModality(Qt::ApplicationModal);
 
-	m_pActionControl = NULL;
+	m_pActionControl = nullptr;
 
 	m_iDirtyActionShortcuts = 0;
 	m_iDirtyActionControl = 0;
 
-	m_pActionControlItem = NULL;
+	m_pActionControlItem = nullptr;
 
 //	m_ui.ShortcutTable->setIconSize(QSize(16, 16));
 	m_ui.ShortcutTable->setItemDelegate(
@@ -416,7 +416,7 @@ bool qtractorShortcutForm::commitEditor (
 		return false;
 
 	if (!sShortcutText.isEmpty()) {
-		QTreeWidgetItem *pItem = m_shortcuts.value(sShortcutText, NULL);
+		QTreeWidgetItem *pItem = m_shortcuts.value(sShortcutText, nullptr);
 		if (pItem) {
 			QMessageBox::warning(this,
 				tr("Warning") + " - " QTRACTOR_TITLE,
@@ -544,7 +544,7 @@ void qtractorShortcutForm::stabilizeForm (void)
 
 void qtractorShortcutForm::actionControlMenuRequested ( const QPoint& pos )
 {
-	if (m_pActionControl == NULL)
+	if (m_pActionControl == nullptr)
 		return;
 
 	QMenu menu(this);
@@ -560,15 +560,15 @@ void qtractorShortcutForm::actionControlMenuRequested ( const QPoint& pos )
 
 void qtractorShortcutForm::actionControlActivated (void)
 {
-	if (m_pActionControl == NULL)
+	if (m_pActionControl == nullptr)
 		return;
 
 	m_pActionControlItem = m_ui.ShortcutTable->currentItem();
-	if (m_pActionControlItem == NULL)
+	if (m_pActionControlItem == nullptr)
 		return;
 
-	QAction *pMidiObserverAction = m_actions.value(m_pActionControlItem, NULL);
-	if (pMidiObserverAction == NULL)
+	QAction *pMidiObserverAction = m_actions.value(m_pActionControlItem, nullptr);
+	if (pMidiObserverAction == nullptr)
 		return;
 
 	qtractorMidiControlObserverForm::showInstance(pMidiObserverAction, this);
@@ -585,17 +585,17 @@ void qtractorShortcutForm::actionControlActivated (void)
 
 void qtractorShortcutForm::actionControlAccepted (void)
 {
-	if (m_pActionControl == NULL)
+	if (m_pActionControl == nullptr)
 		return;
 
 	if (m_pActionControlItem) {
 		QAction *pMidiObserverAction
-			= m_actions.value(m_pActionControlItem, NULL);
+			= m_actions.value(m_pActionControlItem, nullptr);
 		if (pMidiObserverAction) {
 			const QString& sText = actionControlText(pMidiObserverAction);
 			m_pActionControlItem->setText(3, sText);
 		}
-		m_pActionControlItem = NULL;
+		m_pActionControlItem = nullptr;
 		++m_iDirtyActionControl;
 	}
 

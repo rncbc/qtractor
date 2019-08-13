@@ -1,7 +1,7 @@
 // qtractorFileSystem.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -128,7 +128,7 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	m_pFileSystemTreeView->setSelectionMode(
 		QAbstractItemView::ExtendedSelection);
 
-	m_pFileSystemModel = NULL;
+	m_pFileSystemModel = nullptr;
 
 	QHeaderView *pHeaderView = m_pFileSystemTreeView->header();
 #if 0
@@ -215,7 +215,7 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 qtractorFileSystem::~qtractorFileSystem (void)
 {
 	// Setup member widgets...
-	m_pFileSystemTreeView->setModel(NULL);
+	m_pFileSystemTreeView->setModel(nullptr);
 
 	if (m_pFileSystemModel)
 		delete m_pFileSystemModel;
@@ -343,7 +343,7 @@ void qtractorFileSystem::updateRootPath (void)
 
 void qtractorFileSystem::updateFilter (void)
 {
-	if (m_pFileSystemModel == NULL)
+	if (m_pFileSystemModel == nullptr)
 		return;
 
 	QStringList filters;

@@ -1,7 +1,7 @@
 // qtractorAudioVorbisFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@ qtractorAudioVorbisFile::qtractorAudioVorbisFile ( unsigned short iChannels,
 {
 	// Initialize state variables.
 	m_iMode  = qtractorAudioVorbisFile::None;
-	m_pFile  = NULL;
+	m_pFile  = nullptr;
 
 	// Estimate channel and sample-rate (for encoder purposes only).
 	m_iChannels   = iChannels;
@@ -50,7 +50,7 @@ qtractorAudioVorbisFile::qtractorAudioVorbisFile ( unsigned short iChannels,
 	m_iFrames     = 0;
 
 #ifdef CONFIG_LIBVORBIS
-	m_ovinfo = NULL;
+	m_ovinfo = nullptr;
 	m_ovsect = 0;
 #endif	// CONFIG_LIBVORBIS
 
@@ -97,7 +97,7 @@ bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 	// Now open it.
 	QByteArray aFilename = sFilename.toUtf8();
 	m_pFile = ::fopen(aFilename.constData(), pszMode);
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return false;
 
 #ifdef CONFIG_LIBVORBIS
@@ -108,7 +108,7 @@ bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 		case Read:
 		{
 			// Open the Ogg Vorbis file for decoding...
-			if (::ov_open(m_pFile, &m_ovfile, NULL, 0) < 0) {
+			if (::ov_open(m_pFile, &m_ovfile, nullptr, 0) < 0) {
 				close();
 				return false;
 			}
@@ -144,7 +144,7 @@ bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 			// Set up our packet->stream encoder;
 			// pick a random serial number; that way we can more
 			// likely build chained streams just by concatenation...
-			::srand(::time(NULL));
+			::srand(::time(nullptr));
 			ogg_stream_init(&m_ovstate, ::rand());
 			// Vorbis streams begin with three headers; the initial header
 			// (with most of the codec setup parameters) which is mandated
@@ -268,7 +268,7 @@ void qtractorAudioVorbisFile::flush ( bool fEos )
 
 	while (vorbis_analysis_blockout(&m_ovdsp, &m_ovblock) == 1) {
 		// Analysis, assume we want to use bitrate management...
-		vorbis_analysis(&m_ovblock, NULL);
+		vorbis_analysis(&m_ovblock, nullptr);
 		vorbis_bitrate_addblock(&m_ovblock);
 		// Probably we should do this also as left-over processing...
 		while (vorbis_bitrate_flushpacket(&m_ovdsp, &ovpacket)) {
@@ -332,7 +332,7 @@ void qtractorAudioVorbisFile::close (void)
 #else
 		::fclose(m_pFile);
 #endif
-		m_pFile = NULL;
+		m_pFile = nullptr;
 	}
 
 	// Reset all other state relevant variables.
@@ -343,7 +343,7 @@ void qtractorAudioVorbisFile::close (void)
 	::memset(&m_ovblock,   0, sizeof(m_ovblock));
 	::memset(&m_ovdsp,     0, sizeof(m_ovdsp));
 	::memset(&m_ovcomment, 0, sizeof(m_ovcomment));
-	m_ovinfo = NULL;
+	m_ovinfo = nullptr;
 #endif
 
 	m_iMode = qtractorAudioVorbisFile::None;

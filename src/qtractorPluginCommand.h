@@ -45,7 +45,7 @@ public:
 
 	// Constructor.
 	qtractorPluginCommand(const QString& sName,
-		qtractorPlugin *pPlugin = NULL);
+		qtractorPlugin *pPlugin = nullptr);
 
 	// Destructor.
 	virtual ~qtractorPluginCommand();
@@ -80,7 +80,7 @@ class qtractorAddPluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorAddPluginCommand(qtractorPlugin *pPlugin = NULL);
+	qtractorAddPluginCommand(qtractorPlugin *pPlugin = nullptr);
 
 	// Plugin insertion command methods.
 	bool redo();
@@ -97,7 +97,7 @@ class qtractorAddInsertPluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorAddInsertPluginCommand(qtractorPlugin *pPlugin = NULL);
+	qtractorAddInsertPluginCommand(qtractorPlugin *pPlugin = nullptr);
 
 	// Plugin insertion command methods.
 	bool redo();
@@ -114,7 +114,7 @@ class qtractorAddAuxSendPluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorAddAuxSendPluginCommand(qtractorPlugin *pPlugin = NULL);
+	qtractorAddAuxSendPluginCommand(qtractorPlugin *pPlugin = nullptr);
 
 	// Plugin insertion command methods.
 	bool redo();
@@ -154,7 +154,7 @@ class qtractorRemovePluginCommand : public qtractorPluginCommand
 public:
 
 	// Constructor.
-	qtractorRemovePluginCommand(qtractorPlugin *pPlugin = NULL);
+	qtractorRemovePluginCommand(qtractorPlugin *pPlugin = nullptr);
 
 	// Plugin-removal command methods.
 	bool redo();

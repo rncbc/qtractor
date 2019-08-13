@@ -46,7 +46,7 @@ public:
 
 	// Constructor.
 	qtractorTrackCommand(const QString& sName,
-		qtractorTrack *pTrack, qtractorTrack *pAfterTrack = NULL);
+		qtractorTrack *pTrack, qtractorTrack *pAfterTrack = nullptr);
 
 	// Destructor.
 	virtual ~qtractorTrackCommand();
@@ -91,7 +91,7 @@ public:
 
 	// Constructor.
 	qtractorAddTrackCommand(qtractorTrack *pTrack,
-		qtractorTrack *pAfterTrack = NULL);
+		qtractorTrack *pAfterTrack = nullptr);
 
 	// Track insertion command methods.
 	bool redo();
