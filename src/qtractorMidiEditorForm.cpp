@@ -2047,7 +2047,7 @@ void qtractorMidiEditorForm::updateGhostTrackMenu (void)
 		tr("&None"), this, SLOT(viewGhostTrack()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pGhostTrack == nullptr);
-	data.setValue(nullptr);
+	data.setValue(0);
 	pAction->setData(data);
 }
 
