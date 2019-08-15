@@ -702,8 +702,8 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 {
 	QTextStream out(stderr);
 	const QString sEol = "\n\n";
-	int iCmdArgs = 0;
 	const int argc = args.count();
+	int iCmdArgs = 0;
 
 	for (int i = 1; i < argc; ++i) {
 
