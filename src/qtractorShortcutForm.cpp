@@ -116,9 +116,11 @@ qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 	QObject::connect(m_pItemEdit,
 		SIGNAL(editingCanceled()),
 		SLOT(cancel()));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
 	QObject::connect(m_pItemEdit,
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changed(const QString&)));
+#endif
 	QObject::connect(m_pToolButton,
 		SIGNAL(clicked()),
 		SLOT(clear()));
@@ -143,7 +145,9 @@ void qtractorShortcutTableItemEditor::setDefaultText ( const QString& sDefaultTe
 {
 	m_sDefaultText = sDefaultText;
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
 	changed(text());
+#endif
 }
 
 const QString& qtractorShortcutTableItemEditor::defaultText(void) const
@@ -186,10 +190,11 @@ void qtractorShortcutTableItemEditor::cancel (void)
 }
 
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+
 // Shortcut text change notification.
 void qtractorShortcutTableItemEditor::changed ( const QString& sText )
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
 	if (m_sDefaultText.isEmpty()) {
 		m_pToolButton->setVisible(false);
 		m_pToolButton->setEnabled(false);
@@ -197,14 +202,9 @@ void qtractorShortcutTableItemEditor::changed ( const QString& sText )
 		m_pToolButton->setVisible(true);
 		m_pToolButton->setEnabled(m_sDefaultText != sText);
 	}
-#else
-	if (m_sDefaultText.isEmpty()) {
-		m_pToolButton->setEnabled(false);
-	} else {
-		m_pToolButton->setEnabled(m_sDefaultText != sText);
-	}
-#endif
 }
+
+#endif
 
 
 //-------------------------------------------------------------------------
