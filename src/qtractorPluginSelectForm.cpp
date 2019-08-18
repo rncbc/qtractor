@@ -122,9 +122,14 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 		pOptions->loadWidgetGeometry(this, true);
 
 	// UI signal/slot connections...
+#if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
 	QObject::connect(m_ui.PluginResetToolButton,
 		SIGNAL(clicked()),
 		SLOT(reset()));
+#else
+	m_ui.PluginResetToolButton->hide();
+	m_ui.PluginSearchComboBox->lineEdit()->setClearButtonEnabled(true);
+#endif
 	QObject::connect(m_ui.PluginSearchComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(refresh()));
