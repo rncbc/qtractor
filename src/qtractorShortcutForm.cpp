@@ -88,10 +88,17 @@ qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 	QWidget *pParent ) : QWidget(pParent)
 {
 	m_pItemEdit = new qtractorShortcutTableItemEdit(/*this*/);
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	m_pItemEdit->setClearButtonEnabled(true);
+#endif
 	m_pToolButton = new QToolButton(/*this*/);
-	m_pToolButton->setFixedWidth(18);
-	m_pToolButton->setText("X");
+	m_pToolButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+//	m_pToolButton->setIconSize(QSize(18, 18));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	m_pToolButton->setIcon(QPixmap(":/images/itemReset.png"));
+#else
+	m_pToolButton->setIcon(QPixmap(":/images/itemClear.png"));
+#endif
 
 	QHBoxLayout *pLayout = new QHBoxLayout();
 	pLayout->setSpacing(0);
@@ -109,6 +116,9 @@ qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 	QObject::connect(m_pItemEdit,
 		SIGNAL(editingCanceled()),
 		SLOT(cancel()));
+	QObject::connect(m_pItemEdit,
+		SIGNAL(textChanged(const QString&)),
+		SLOT(changed(const QString&)));
 	QObject::connect(m_pToolButton,
 		SIGNAL(clicked()),
 		SLOT(clear()));
@@ -125,6 +135,20 @@ void qtractorShortcutTableItemEditor::setText ( const QString& sText )
 QString qtractorShortcutTableItemEditor::text (void) const
 {
 	return m_pItemEdit->text();
+}
+
+
+// Default (initial) shortcut text accessors.
+void qtractorShortcutTableItemEditor::setDefaultText ( const QString& sDefaultText )
+{
+	m_sDefaultText = sDefaultText;
+
+	changed(text());
+}
+
+const QString& qtractorShortcutTableItemEditor::defaultText(void) const
+{
+	return m_sDefaultText;
 }
 
 
@@ -159,6 +183,27 @@ void qtractorShortcutTableItemEditor::cancel (void)
 	m_sDefaultText.clear();
 	emit editingFinished();
 	m_pItemEdit->blockSignals(bBlockSignals);
+}
+
+
+// Shortcut text change notification.
+void qtractorShortcutTableItemEditor::changed ( const QString& sText )
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	if (m_sDefaultText.isEmpty()) {
+		m_pToolButton->setVisible(false);
+		m_pToolButton->setEnabled(false);
+	} else {
+		m_pToolButton->setVisible(true);
+		m_pToolButton->setEnabled(m_sDefaultText != sText);
+	}
+#else
+	if (m_sDefaultText.isEmpty()) {
+		m_pToolButton->setEnabled(false);
+	} else {
+		m_pToolButton->setEnabled(m_sDefaultText != sText);
+	}
+#endif
 }
 
 

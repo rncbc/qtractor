@@ -12026,13 +12026,13 @@ Deseja criá-la?</translation>
 <context>
     <name>qtractorShortcutForm</name>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="423"/>
+        <location filename="../qtractorShortcutForm.cpp" line="468"/>
         <source>Keyboard shortcut (%1) already assigned (%2).</source>
         <translatorcomment>Atalho de teclado (%1) já utilizado por (%2)</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="499"/>
+        <location filename="../qtractorShortcutForm.cpp" line="544"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -12041,7 +12041,7 @@ Do you want to apply the changes?</source>
 Você quer aplicar essas alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="519"/>
+        <location filename="../qtractorShortcutForm.cpp" line="564"/>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -12050,7 +12050,7 @@ Do you want to apply the changes?</source>
 Deseja aplicar as modificações?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="554"/>
+        <location filename="../qtractorShortcutForm.cpp" line="599"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Controlador &amp;MIDI...</translation>
     </message>
@@ -12080,9 +12080,9 @@ Deseja aplicar as modificações?</translation>
         <translation>Controlador MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="422"/>
-        <location filename="../qtractorShortcutForm.cpp" line="498"/>
-        <location filename="../qtractorShortcutForm.cpp" line="518"/>
+        <location filename="../qtractorShortcutForm.cpp" line="467"/>
+        <location filename="../qtractorShortcutForm.cpp" line="543"/>
+        <location filename="../qtractorShortcutForm.cpp" line="563"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>

@@ -12050,19 +12050,19 @@ Do you want to apply the changes?</source>
         <translation>MIDIコントローラー</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="422"/>
-        <location filename="../qtractorShortcutForm.cpp" line="498"/>
-        <location filename="../qtractorShortcutForm.cpp" line="518"/>
+        <location filename="../qtractorShortcutForm.cpp" line="467"/>
+        <location filename="../qtractorShortcutForm.cpp" line="543"/>
+        <location filename="../qtractorShortcutForm.cpp" line="563"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="423"/>
+        <location filename="../qtractorShortcutForm.cpp" line="468"/>
         <source>Keyboard shortcut (%1) already assigned (%2).</source>
         <translation>キーボードショートカット(%1)は既に割り当てられています(%2)。</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="499"/>
+        <location filename="../qtractorShortcutForm.cpp" line="544"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -12071,7 +12071,7 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="519"/>
+        <location filename="../qtractorShortcutForm.cpp" line="564"/>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -12080,7 +12080,7 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="554"/>
+        <location filename="../qtractorShortcutForm.cpp" line="599"/>
         <source>&amp;MIDI Controller...</source>
         <translation>MIDIコントローラー(&amp;M)...</translation>
     </message>
