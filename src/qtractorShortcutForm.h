@@ -102,9 +102,7 @@ protected slots:
 	void finish();
 	void cancel();
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
-	void changed(const QString& sText);
-#endif
+	void changed(const QString&);
 
 private:
 

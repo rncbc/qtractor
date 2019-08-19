@@ -11905,19 +11905,19 @@ Wollen Sie diese übernehmen?</translation>
         <translation>MIDI Controller</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="467"/>
-        <location filename="../qtractorShortcutForm.cpp" line="543"/>
-        <location filename="../qtractorShortcutForm.cpp" line="563"/>
+        <location filename="../qtractorShortcutForm.cpp" line="463"/>
+        <location filename="../qtractorShortcutForm.cpp" line="539"/>
+        <location filename="../qtractorShortcutForm.cpp" line="559"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="468"/>
+        <location filename="../qtractorShortcutForm.cpp" line="464"/>
         <source>Keyboard shortcut (%1) already assigned (%2).</source>
         <translation>Tastenkürzel (%1) ist bereits zuegeordnet (%2).</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="544"/>
+        <location filename="../qtractorShortcutForm.cpp" line="540"/>
         <source>Keyboard shortcuts have been changed.
 
 Do you want to apply the changes?</source>
@@ -11925,14 +11925,14 @@ Do you want to apply the changes?</source>
 Wollen Sie diese übernehmen?</translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="564"/>
+        <location filename="../qtractorShortcutForm.cpp" line="560"/>
         <source>MIDI Controller shortcuts have been changed.
 
 Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorShortcutForm.cpp" line="599"/>
+        <location filename="../qtractorShortcutForm.cpp" line="595"/>
         <source>&amp;MIDI Controller...</source>
         <translation>&amp;MIDI Controller...</translation>
     </message>

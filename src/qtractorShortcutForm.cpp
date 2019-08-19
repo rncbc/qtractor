@@ -145,9 +145,7 @@ void qtractorShortcutTableItemEditor::setDefaultText ( const QString& sDefaultTe
 {
 	m_sDefaultText = sDefaultText;
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
 	changed(text());
-#endif
 }
 
 const QString& qtractorShortcutTableItemEditor::defaultText(void) const
@@ -190,21 +188,19 @@ void qtractorShortcutTableItemEditor::cancel (void)
 }
 
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
-
 // Shortcut text change notification.
-void qtractorShortcutTableItemEditor::changed ( const QString& sText )
+void qtractorShortcutTableItemEditor::changed ( const QString& )
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
 	if (m_sDefaultText.isEmpty()) {
 		m_pToolButton->setVisible(false);
 		m_pToolButton->setEnabled(false);
 	} else {
 		m_pToolButton->setVisible(true);
-		m_pToolButton->setEnabled(m_sDefaultText != sText);
+		m_pToolButton->setEnabled(m_sDefaultText != text());
 	}
-}
-
 #endif
+}
 
 
 //-------------------------------------------------------------------------
