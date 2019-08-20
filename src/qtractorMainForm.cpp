@@ -1634,7 +1634,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_iDirtyCount = 0;
 		// Just load the prabable startup session...
 		const int iFlags = qtractorDocument::Default;
-		if (loadSessionFileEx(m_pOptions->sSessionFile, iFlags, !bSessionId)) {
+		const QFileInfo info(m_pOptions->sSessionFile);
+		if (loadSessionFileEx(info.absoluteFilePath(), iFlags, !bSessionId)) {
 			m_pOptions->sSessionFile.clear();
 			// Take appropriate action when session is loaded from
 			// some foreign session manager (eg. JACK session)...
@@ -2418,8 +2419,7 @@ bool qtractorMainForm::loadSessionFileEx (
 			info.setFile(info.path() + QDir::separator() + info.completeBaseName());
 			if (info.exists() && info.isDir()) {
 				bool bArchiveRemove = true;
-				bool bConfirmArchive = (m_pOptions && m_pOptions->bConfirmArchive);
-				if (bConfirmArchive) {
+				if  (m_pOptions && m_pOptions->bConfirmArchive) {
 					const QString& sTitle
 						= tr("Warning") + " - " QTRACTOR_TITLE;
 					const QString& sText = tr(
@@ -6620,7 +6620,7 @@ void qtractorMainForm::updateRecentFilesMenu (void)
 	// Rebuild the recent files menu...
 	m_ui.fileOpenRecentMenu->clear();
 	for (int i = 0; i < iRecentFiles; ++i) {
-		const QString& sFilename = m_pOptions->recentFiles[i];
+		const QString& sFilename = m_pOptions->recentFiles.at(i);
 		if (QFileInfo(sFilename).exists()) {
 			QAction *pAction = m_ui.fileOpenRecentMenu->addAction(
 				QString("&%1 %2").arg(i + 1).arg(sessionName(sFilename)),
