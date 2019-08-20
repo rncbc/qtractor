@@ -96,6 +96,11 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 	: QApplication(argc, argv),
 		m_pQtTranslator(nullptr), m_pMyTranslator(nullptr), m_pWidget(nullptr)	
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+	QApplication::setApplicationName(QTRACTOR_TITLE);
+	QApplication::setApplicationDisplayName(
+		QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
+#endif
 	// Load translation support.
 	QLocale loc;
 	if (loc.language() != QLocale::C) {
@@ -469,10 +474,12 @@ int main ( int argc, char **argv )
 	::signal(SIGBUS,  stacktrace);
 #endif
 #endif
-	qtractorApplication app(argc, argv);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
-	app.setAttribute(Qt::AA_EnableHighDpiScaling);
+	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
+
+	qtractorApplication app(argc, argv);
+
 	// Construct default settings; override with command line arguments.
 	qtractorOptions options;
 	if (!options.parse_args(app.arguments())) {

@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fix HiDPI display screen effective support (Qt >= 5.6).
+
 - Mixer, Connections and MIDI clip editor top-level
   windows shall have no parent, unless when set as
   always-on-top tool windows. (REGRESSION)
