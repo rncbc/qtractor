@@ -186,6 +186,10 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 		new qtractorTimeScaleItemDelegate(m_ui.TimeScaleListView));
 	m_ui.TimeScaleListView->setContextMenuPolicy(Qt::CustomContextMenu);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	m_ui.MarkerTextLineEdit->setClearButtonEnabled(true);
+#endif
+
 	// (Re)initial contents.
 	// Default is main session time-scale of course...
 	qtractorSession *pSession = qtractorSession::getInstance();
