@@ -961,9 +961,14 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		// Setup for last known top-level window position...
 		QPoint wpos = pMidiClip->editorPos();
 		if (wpos.isNull() || wpos.x() < 0 || wpos.y() < 0) {
-			QRect wrect(geometry());
-			wrect.moveCenter(pMainForm->geometry().center());
-			wpos = wrect.topLeft();
+			QWidget *pParent = parentWidget();
+			if (pParent == nullptr)
+				pParent = pMainForm;
+			if (pParent) {
+				QRect wrect(geometry());
+				wrect.moveCenter(pParent->geometry().center());
+				wpos = wrect.topLeft();
+			}
 		}
 		move(wpos);
 		// Setup for last known top-level window size...
