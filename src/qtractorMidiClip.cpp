@@ -1135,13 +1135,6 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		m_pMidiEditorForm->show();
 	}
 
-	// Set its most standing properties...
-	if (!m_posEditor.isNull()
-		&& m_posEditor.x() >= 0 && m_posEditor.y() >= 0)
-		m_pMidiEditorForm->move(m_posEditor);
-	if (!m_sizeEditor.isNull() && m_sizeEditor.isValid())
-		m_pMidiEditorForm->resize(m_sizeEditor);
-
 	// Get it up any way...
 	m_pMidiEditorForm->raise();
 	m_pMidiEditorForm->activateWindow();
@@ -1314,12 +1307,6 @@ bool qtractorMidiClip::loadClipElement (
 bool qtractorMidiClip::saveClipElement (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
-	// Freeze current MIDI clip editor, if up and visible...
-	if (m_pMidiEditorForm && m_pMidiEditorForm->isVisible()) {
-		m_posEditor = m_pMidiEditorForm->pos();
-		m_sizeEditor = m_pMidiEditorForm->size();
-	}
-
 	QDomElement eMidiClip = pDocument->document()->createElement("midi-clip");
 	pDocument->saveTextElement("filename",
 		qtractorMidiClip::relativeFilename(pDocument), &eMidiClip);

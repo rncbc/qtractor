@@ -200,6 +200,10 @@ protected slots:
 
 	void snapPerBeatChanged(int iSnapPerBeat);
 
+	// Top-level window geometry related slots.
+	void posChanged();
+	void sizeChanged();
+
 protected:
 
 	// On-close event handler.

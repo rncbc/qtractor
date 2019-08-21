@@ -51,6 +51,8 @@
 
 #include "qtractorClipCommand.h"
 
+#include <QWindow>
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QActionGroup>
@@ -835,11 +837,6 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 			"/MidiEditor/Layout/DockWindows", saveState());
 		// And this main windows state?
 		// pOptions->saveWidgetGeometry(this, true);
-		qtractorMidiClip *pMidiClip = midiClip();
-		if (pMidiClip) {
-			pMidiClip->setEditorPos(pos());
-			pMidiClip->setEditorSize(size());
-		}
 	}
 
 	// Close it good.
@@ -961,6 +958,34 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		QObject::connect(m_pMidiEditor,
 			SIGNAL(sendNoteSignal(int,int)),
 			SLOT(sendNote(int,int)));
+		// Setup for last known top-level window position...
+		QPoint wpos = pMidiClip->editorPos();
+		if (wpos.isNull() || wpos.x() < 0 || wpos.y() < 0) {
+			QRect wrect(geometry());
+			wrect.moveCenter(pMainForm->geometry().center());
+			wpos = wrect.topLeft();
+		}
+		move(wpos);
+		// Setup for last known top-level window size...
+		const QSize& wsize = pMidiClip->editorSize();
+		if (!wsize.isNull() && wsize.isValid())
+			resize(wsize);
+		// Setup for top-level window geometry changes...
+		QWindow *pWindow = windowHandle();
+		if (pWindow) {
+			QObject::connect(pWindow,
+				SIGNAL(xChanged(int)),
+				SLOT(posChanged()));
+			QObject::connect(pWindow,
+				SIGNAL(yChanged(int)),
+				SLOT(posChanged()));
+			QObject::connect(pWindow,
+				SIGNAL(widthChanged(int)),
+				SLOT(sizeChanged()));
+			QObject::connect(pWindow,
+				SIGNAL(heightChanged(int)),
+				SLOT(sizeChanged()));
+		}
 	}
 
 	// Drum mode visuals....
@@ -2233,6 +2258,27 @@ void qtractorMidiEditorForm::contentsChanged ( qtractorMidiEditor *pMidiEditor )
 	++m_iDirtyCount;
 
 	selectionChanged(pMidiEditor);
+}
+
+
+// Top-level window geometry related slots.
+void qtractorMidiEditorForm::posChanged (void)
+{
+	if (isVisible()) {
+		qtractorMidiClip *pMidiClip = midiClip();
+		if (pMidiClip)
+			pMidiClip->setEditorPos(pos());
+	}
+}
+
+
+void qtractorMidiEditorForm::sizeChanged (void)
+{
+	if (isVisible()) {
+		qtractorMidiClip *pMidiClip = midiClip();
+		if (pMidiClip)
+			pMidiClip->setEditorSize(size());
+	}
 }
 
 
