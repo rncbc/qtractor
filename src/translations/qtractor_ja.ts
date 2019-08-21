@@ -1611,7 +1611,7 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorConnections</name>
     <message>
-        <location filename="../qtractorConnections.cpp" line="71"/>
+        <location filename="../qtractorConnections.cpp" line="72"/>
         <source>Connections</source>
         <translation>接続</translation>
     </message>

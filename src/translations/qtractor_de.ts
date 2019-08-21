@@ -1605,7 +1605,7 @@ Wollen Sie diese übernehmen?</translation>
 <context>
     <name>qtractorConnections</name>
     <message>
-        <location filename="../qtractorConnections.cpp" line="71"/>
+        <location filename="../qtractorConnections.cpp" line="72"/>
         <source>Connections</source>
         <translation>Verbindungen</translation>
     </message>

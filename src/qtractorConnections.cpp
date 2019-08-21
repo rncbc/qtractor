@@ -51,6 +51,7 @@ qtractorConnections::qtractorConnections (
 
 	// Create main inner widget.
 	m_pConnectForm = new qtractorConnectForm(this);
+
 	// Set proper tab widget icons...
 	QTabWidget *pTabWidget = m_pConnectForm->connectTabWidget();
 	pTabWidget->setTabIcon(0, QIcon(":/images/trackAudio.png"));
@@ -113,12 +114,13 @@ void qtractorConnections::showEvent ( QShowEvent *pShowEvent )
 	qDebug("qtractorConnections::showEvent()");
 #endif
 
-    qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-    if (pMainForm)
-        pMainForm->stabilizeForm();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 
-    QWidget::showEvent(pShowEvent);
+	QWidget::showEvent(pShowEvent);
 }
+
 
 // Notify the main application widget that we're closing.
 void qtractorConnections::hideEvent ( QHideEvent *pHideEvent )
@@ -127,11 +129,11 @@ void qtractorConnections::hideEvent ( QHideEvent *pHideEvent )
 	qDebug("qtractorConnections::hideEvent()");
 #endif
 
-    QWidget::hideEvent(pHideEvent);
+	QWidget::hideEvent(pHideEvent);
 
-    qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-    if (pMainForm)
-        pMainForm->stabilizeForm();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 }
 
 
