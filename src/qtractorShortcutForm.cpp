@@ -460,7 +460,7 @@ bool qtractorShortcutForm::commitEditor (
 		QTreeWidgetItem *pItem = m_shortcuts.value(sShortcutText, nullptr);
 		if (pItem) {
 			QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("Keyboard shortcut (%1) already assigned (%2).")
 					.arg(sShortcutText)
 					.arg(pItem->text(0).remove('&')),
@@ -536,7 +536,7 @@ void qtractorShortcutForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Keyboard shortcuts have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -556,7 +556,7 @@ void qtractorShortcutForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("MIDI Controller shortcuts have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {

@@ -917,7 +917,7 @@ void qtractorOptionsForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -948,7 +948,7 @@ void qtractorOptionsForm::changed (void)
 void qtractorOptionsForm::chooseMetroBarFilename (void)
 {
 	QString sFilename = getOpenAudioFileName(
-		tr("Metronome Bar Audio File") + " - " QTRACTOR_TITLE,
+		tr("Metronome Bar Audio File"),
 		m_ui.MetroBarFilenameComboBox->currentText());
 
 	if (sFilename.isEmpty())
@@ -962,7 +962,7 @@ void qtractorOptionsForm::chooseMetroBarFilename (void)
 void qtractorOptionsForm::chooseMetroBeatFilename (void)
 {
 	QString sFilename = getOpenAudioFileName(
-		tr("Metronome Beat Audio File") + " - " QTRACTOR_TITLE,
+		tr("Metronome Beat Audio File"),
 		m_ui.MetroBeatFilenameComboBox->currentText());
 
 	if (sFilename.isEmpty())
@@ -1126,7 +1126,7 @@ void qtractorOptionsForm::changeMidiMeterColor ( const QString& sColor )
 void qtractorOptionsForm::chooseAudioMeterColor (void)
 {
 	const QString& sTitle
-		= tr("Audio Meter Color") + " - " QTRACTOR_TITLE;
+		= tr("Audio Meter Color");
 
 	QWidget *pParentWidget = nullptr;
 	QColorDialog::ColorDialogOptions options = 0;
@@ -1148,7 +1148,7 @@ void qtractorOptionsForm::chooseAudioMeterColor (void)
 void qtractorOptionsForm::chooseMidiMeterColor (void)
 {
 	const QString& sTitle
-		= tr("MIDI Meter Color") + " - " QTRACTOR_TITLE;
+		= tr("MIDI Meter Color");
 
 	QWidget *pParentWidget = nullptr;
 	QColorDialog::ColorDialogOptions options = 0;
@@ -1244,7 +1244,7 @@ void qtractorOptionsForm::choosePluginPath (void)
 	QString sPluginPath;
 
 	const QString& sTitle
-		= tr("Plug-in Directory") + " - " QTRACTOR_TITLE;
+		= tr("Plug-in Directory");
 
 	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
@@ -1484,7 +1484,7 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 		sLv2PresetDir = QDir::homePath() + QDir::separator() + ".lv2";
 
 	const QString& sTitle
-		= tr("LV2 Presets Directory") + " - " QTRACTOR_TITLE;
+		= tr("LV2 Presets Directory");
 
 	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
@@ -1525,7 +1525,7 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 void qtractorOptionsForm::chooseMessagesFont (void)
 {
 	const QString& sTitle
-		= tr("Messages Font") + " - " QTRACTOR_TITLE;
+		= tr("Messages Font");
 
 	QWidget *pParentWidget = nullptr;
 	QFontDialog::FontDialogOptions options = 0;
@@ -1553,7 +1553,7 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 
 	const QString  sExt("log");
 	const QString& sTitle
-		= tr("Messages Log") + " - " QTRACTOR_TITLE;
+		= tr("Messages Log");
 
 	QStringList filters;
 	filters.append(tr("Log files (*.%1)").arg(sExt));
@@ -1599,7 +1599,7 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 
 	const QString  sExt("qtt");
 	const QString& sTitle
-		= tr("Session Template") + " - " QTRACTOR_TITLE;
+		= tr("Session Template");
 
 	QStringList filters;
 	filters.append(tr("Session template files (*.qtr *.qts *.%1)").arg(sExt));

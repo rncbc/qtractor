@@ -467,7 +467,7 @@ void qtractorTimeScaleForm::selectItem (void)
 		if (m_ui.UpdatePushButton->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -681,7 +681,7 @@ void qtractorTimeScaleForm::removeItem (void)
 			if (pOptions && pOptions->bConfirmRemove) {
 				// Show the warning...
 				if (QMessageBox::warning(this,
-					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("Warning"),
 					tr("About to remove tempo node:\n\n"
 					"%1 (%2) %3  %4/%5\n\n"
 					"Are you sure?")
@@ -831,7 +831,7 @@ void qtractorTimeScaleForm::reject (void)
 	// Check if there's any pending changes...
 	if (m_iDirtyCount > 0) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to discard the changes?"),
 			QMessageBox::Discard | QMessageBox::Cancel)
@@ -915,7 +915,7 @@ void qtractorTimeScaleForm::markerColor (void)
 
 	const QColor& color	= QColorDialog::getColor(
 		pal.text().color(), pParentWidget,
-		tr("Marker Color") + " - " QTRACTOR_TITLE, options);
+		tr("Marker Color"), options);
 
 	if (color.isValid()) {
 		pal.setColor(QPalette::Text, color);

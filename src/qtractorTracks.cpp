@@ -1180,7 +1180,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	const QString& sExt
 		= qtractorAudioFileFactory::defaultExt();
 	const QString& sTitle
-		= tr("Merge/Export Audio Clip") + " - " QTRACTOR_TITLE;
+		= tr("Merge/Export Audio Clip");
 	const QString& sFilter
 		= qtractorAudioFileFactory::filters().join(";;");
 
@@ -1450,7 +1450,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	// Merge MIDI Clip filename requester...
 	const QString  sExt("mid");
 	const QString& sTitle
-		= tr("Merge/Export MIDI Clip") + " - " QTRACTOR_TITLE;
+		= tr("Merge/Export MIDI Clip");
 
 	QStringList filters;
 	filters.append(tr("MIDI files (*.mid *.smf *.midi)"));
@@ -2066,7 +2066,7 @@ bool qtractorTracks::insertEditRange ( qtractorTrack *pTrack )
 
 	if (pTrack == nullptr) {
 		qtractorEditRangeForm rangeForm(this);
-		rangeForm.setWindowTitle(tr("Insert Range") + " - " QTRACTOR_TITLE);
+		rangeForm.setWindowTitle(tr("Insert Range"));
 		if (isClipSelected())
 			clipSelectedRange(iInsertStart, iInsertEnd);
 		rangeForm.setSelectionRange(iInsertStart, iInsertEnd);
@@ -2291,7 +2291,7 @@ bool qtractorTracks::removeEditRange ( qtractorTrack *pTrack )
 
 	if (pTrack == nullptr) {
 		qtractorEditRangeForm rangeForm(this);
-		rangeForm.setWindowTitle(tr("Remove Range") + " - " QTRACTOR_TITLE);
+		rangeForm.setWindowTitle(tr("Remove Range"));
 		if (isClipSelected())
 			clipSelectedRange(iRemoveStart, iRemoveEnd);
 		rangeForm.setSelectionRange(iRemoveStart, iRemoveEnd);
@@ -2609,7 +2609,7 @@ bool qtractorTracks::removeTrack ( qtractorTrack *pTrack )
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to remove track:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")

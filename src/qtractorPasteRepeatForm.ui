@@ -33,7 +33,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle" >
-   <string>Paste Repeat - Qtractor</string>
+   <string>Paste Repeat</string>
   </property>
   <property name="windowIcon" >
    <iconset resource="qtractor.qrc" >:/images/editPaste.png</iconset>

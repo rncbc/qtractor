@@ -183,7 +183,7 @@ void qtractorSessionForm::accept (void)
 	while (!dir.exists(sSessionDir)) {
 		// Ask user...
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Session directory does not exist:\n\n"
 			"\"%1\"\n\n"
 			"Do you want to create it?").arg(sSessionDir),
@@ -239,7 +239,7 @@ void qtractorSessionForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -289,7 +289,7 @@ void qtractorSessionForm::browseSessionDir (void)
 		return;
 
 	const QString& sTitle
-		= tr("Session Directory") + " - " QTRACTOR_TITLE;
+		= tr("Session Directory");
 
 	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;

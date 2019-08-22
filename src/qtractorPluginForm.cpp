@@ -560,7 +560,7 @@ void qtractorPluginForm::openPresetSlot (void)
 	}
 
 	const QString& sTitle
-		= tr("Open Preset") + " - " QTRACTOR_TITLE;
+		= tr("Open Preset");
 
 	QStringList filters;
 	filters.append(tr("Preset files (*.%1)").arg(exts.join(" *.")));
@@ -605,7 +605,7 @@ void qtractorPluginForm::openPresetSlot (void)
 		} else {
 			// Failure (maybe wrong plugin)...
 			QMessageBox::critical(this,
-				tr("Error") + " - " QTRACTOR_TITLE,
+				tr("Error"),
 				tr("Preset could not be loaded from file:\n\n"
 				"\"%1\".\n\n"
 				"Sorry.").arg(sFilename),
@@ -657,7 +657,7 @@ void qtractorPluginForm::savePresetSlot (void)
 		// Prompt if file does not currently exist...
 		if (!fi.exists()) {
 			const QString& sTitle
-				= tr("Save Preset") + " - " QTRACTOR_TITLE;
+				= tr("Save Preset");
 			QStringList filters;
 			filters.append(tr("Preset files (*.%1)").arg(exts.join(" *.")));
 			filters.append(tr("All files (*.*)"));
@@ -704,7 +704,7 @@ void qtractorPluginForm::savePresetSlot (void)
 			} else {
 				// Failure (maybe wrong suffix)...
 				QMessageBox::critical(this,
-					tr("Error") + " - " QTRACTOR_TITLE,
+					tr("Error"),
 					tr("Preset could not be saved to file:\n\n"
 					"\"%1\".\n\n"
 					"Sorry.").arg(sFilename),
@@ -737,7 +737,7 @@ void qtractorPluginForm::deletePresetSlot (void)
 	// prompt user if he/she's sure about this...
 	if (pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to delete preset:\n\n"
 			"\"%1\" (%2)\n\n"
 			"Are you sure?")
@@ -1561,7 +1561,7 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 	QString sFilename = m_pComboBox->itemData(iIndex).toString();
 
 	const QString& sTitle
-		= tr("Open File") + " - " QTRACTOR_TITLE;
+		= tr("Open File");
 
 	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;

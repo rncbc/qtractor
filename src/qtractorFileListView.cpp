@@ -661,7 +661,7 @@ void qtractorFileListView::removeItem (void)
 		// Prompt user if he/she's sure about this...
 		if (pOptions->bConfirmRemove) {
 			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("About to remove %1 file item(s).\n\n"
 				"Are you sure?")
 				.arg(items.count()),
@@ -690,7 +690,7 @@ void qtractorFileListView::removeItem (void)
 			// Prompt user if he/she's sure about this...
 			if (pOptions->bConfirmRemove) {
 				if (QMessageBox::warning(this,
-					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("Warning"),
 					tr("About to remove %1 item:\n\n"
 					"\"%2\"\n\n"
 					"Are you sure?")

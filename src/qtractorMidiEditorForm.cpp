@@ -783,7 +783,7 @@ int qtractorMidiEditorForm::querySave (
 		pParent = qtractorMainForm::getInstance();
 
 	return (QMessageBox::warning(pParent,
-		tr("Warning") + " - " QTRACTOR_TITLE,
+		tr("Warning"),
 		tr("The current MIDI clip has been changed:\n\n"
 		"\"%1\"\n\n"
 		"Do you want to save the changes?").arg(sFilename),
@@ -1075,7 +1075,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		// If none is given, assume default directory.
 		const QString sExt("mid");
 		const QString& sTitle
-			= tr("Save MIDI Clip") + " - " QTRACTOR_TITLE;
+			= tr("Save MIDI Clip");
 		QStringList filters;
 		filters.append(tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt));
 		filters.append(tr("All files (*.*)"));
@@ -1905,7 +1905,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	// that we're editing a legal MIDI clip...
 	qtractorMidiSequence *pSeq = sequence();
 	if (pSeq == nullptr) {
-		setWindowTitle(tr("MIDI Editor") + " - " QTRACTOR_TITLE);
+		setWindowTitle(tr("MIDI Editor"));
 		m_pFileNameLabel->clear();
 		m_pTrackChannelLabel->clear();
 		m_pTrackNameLabel->clear();
@@ -1930,7 +1930,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	sTitle += '(' + sTrackChannel.arg(trackChannel() + k) + ')';
 	if (m_iDirtyCount > 0)
 		sTitle += ' ' + tr("[modified]");
-	setWindowTitle(sTitle + " - " QTRACTOR_TITLE);
+	setWindowTitle(sTitle);
 
 	m_ui.viewEventsAction->setChecked(m_pMidiEventList->isVisible());
 

@@ -31,7 +31,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MIDI Controller - Qtractor</string>
+   <string>MIDI Controller</string>
   </property>
   <property name="windowIcon">
    <iconset resource="qtractor.qrc">:/images/itemControllers.png</iconset>

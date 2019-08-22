@@ -234,7 +234,7 @@ void qtractorMidiControlForm::importSlot (void)
 
 	const QString  sExt("qtc");
 	const QString& sTitle
-		= tr("Import Controller Files") + " - " QTRACTOR_TITLE;
+		= tr("Import Controller Files");
 
 	QStringList filters;
 	filters.append(tr("Controller files (*.%1)").arg(sExt));
@@ -319,7 +319,7 @@ void qtractorMidiControlForm::removeSlot (void)
 	if (pOptions && pOptions->bConfirmRemove) {
 		// Show the warning...
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to remove controller file:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
@@ -452,7 +452,7 @@ void qtractorMidiControlForm::exportSlot (void)
 
 	const QString  sExt("qtc");
 	const QString& sTitle
-		= tr("Export Controller File") + " - " QTRACTOR_TITLE;
+		= tr("Export Controller File");
 
 	QStringList filters;
 	filters.append(tr("Controller files (*.%1)").arg(sExt));
@@ -505,7 +505,7 @@ void qtractorMidiControlForm::exportSlot (void)
 		// Check if already exists...
 		if (QFileInfo(sPath).exists()) {
 			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("The controller file already exists:\n\n"
 				"\"%1\"\n\n"
 				"Do you want to replace it?")
@@ -520,7 +520,7 @@ void qtractorMidiControlForm::exportSlot (void)
 		pOptions->sMidiControlDir = QFileInfo(sPath).absolutePath();
 		if (m_iDirtyMap > 0 &&
 			QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("Saved controller mappings may not be effective\n"
 				"the next time you start this program.\n\n"
 				"\"%1\"\n\n"
@@ -558,7 +558,7 @@ void qtractorMidiControlForm::reloadSlot (void)
 	// Check if there's any pending map changes...
 	if (m_iDirtyMap > 0 && !pMidiControl->controlMap().isEmpty() &&
 		QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Controller mappings have been changed.") + "\n\n" +
 			tr("Do you want to save the changes?"),
 			QMessageBox::Save |

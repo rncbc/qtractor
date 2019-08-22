@@ -30,7 +30,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Plugins - Qtractor</string>
+   <string>Plugins</string>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>

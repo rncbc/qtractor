@@ -2021,7 +2021,7 @@ bool qtractorMainForm::openSession (void)
 	sExt = m_pOptions->sSessionExt; // Default session file format...
 
 	const QString& sTitle
-		= tr("Open Session") + " - " QTRACTOR_TITLE;
+		= tr("Open Session");
 	const QString& sFilter
 		= filters.join(";;");
 
@@ -2114,7 +2114,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		filters.append(tr("All files (*.*)"));
 		sExt = m_pOptions->sSessionExt; // Default session  file format...
 		const QString& sTitle
-			= tr("Save Session") + " - " QTRACTOR_TITLE;
+			= tr("Save Session");
 		const QString& sFilter
 			= filters.join(";;");
 		QWidget *pParentWidget = nullptr;
@@ -2171,7 +2171,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			// Check if already exists...
 			if (sFilename != m_sFilename && QFileInfo(sFilename).exists()) {
 				if (QMessageBox::warning(this,
-					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("Warning"),
 					tr("The file already exists:\n\n"
 					"\"%1\"\n\n"
 					"Do you want to replace it?")
@@ -2260,7 +2260,7 @@ bool qtractorMainForm::closeSession (void)
 	// Are we dirty enough to prompt it?
 	if (bClose && m_iDirtyCount > 0) {
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("The current session has been changed:\n\n"
 			"\"%1\"\n\n"
 			"Do you want to save the changes?")
@@ -2315,7 +2315,7 @@ bool qtractorMainForm::closeSession (void)
 				bConfirmArchive = false;
 		#endif
 			if (bConfirmArchive) {
-				const QString& sTitle = tr("Warning") + " - " QTRACTOR_TITLE;
+				const QString& sTitle = tr("Warning");
 				const QString& sText = tr(
 					"About to remove archive directory:\n\n"
 					"\"%1\"\n\n"
@@ -2421,7 +2421,7 @@ bool qtractorMainForm::loadSessionFileEx (
 				bool bArchiveRemove = true;
 				if  (m_pOptions && m_pOptions->bConfirmArchive) {
 					const QString& sTitle
-						= tr("Warning") + " - " QTRACTOR_TITLE;
+						= tr("Warning");
 					const QString& sText = tr(
 						"The directory already exists:\n\n"
 						"\"%1\"\n\n"
@@ -2931,7 +2931,7 @@ bool qtractorMainForm::autoSaveOpen (void)
 	if (!sAutoSavePathname.isEmpty()
 		&& QFileInfo(sAutoSavePathname).exists()) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Oops!\n\n"
 			"Looks like it crashed or did not close "
 			"properly last time it was run... however, "
@@ -4094,7 +4094,7 @@ void qtractorMainForm::trackCurveColor (void)
 	const QString& sTitle = pCurrentCurve->subject()->name();
 	const QColor& color = QColorDialog::getColor(
 		pCurrentCurve->color(), pParentWidget,
-		sTitle + " - " QTRACTOR_TITLE, options);
+		sTitle, options);
 	if (!color.isValid())
 		return;
 
@@ -4123,7 +4123,7 @@ void qtractorMainForm::trackCurveClear (void)
 
 	if (m_pOptions && m_pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to clear automation:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
@@ -4225,7 +4225,7 @@ void qtractorMainForm::trackCurveClearAll (void)
 
 	if (m_pOptions && m_pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to clear all automation:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
@@ -5244,7 +5244,7 @@ void qtractorMainForm::viewOptions (void)
 			}
 			// Show restart needed message...
 			QMessageBox::information(this,
-				tr("Information") + " - " QTRACTOR_TITLE,
+				tr("Information"),
 				tr("Some settings may be only effective\n"
 				"next time you start this %1.")
 				.arg(sNeedRestart));
@@ -5892,7 +5892,7 @@ void qtractorMainForm::helpAbout (void)
 	sText += "</small>";
 	sText += "</p>\n";
 
-	QMessageBox::about(this, tr("About") + " " QTRACTOR_TITLE, sText);
+	QMessageBox::about(this, tr("About"), sText);
 }
 
 
@@ -6191,7 +6191,7 @@ void qtractorMainForm::stabilizeForm (void)
 	QString sSessionName = sessionName(m_sFilename);
 	if (m_iDirtyCount > 0)
 		sSessionName += ' ' + tr("[modified]");
-	setWindowTitle(sSessionName + " - " QTRACTOR_TITLE);
+	setWindowTitle(sSessionName);
 
 	// Update the main menu state...
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
@@ -6535,7 +6535,7 @@ void qtractorMainForm::updateSessionPost (void)
 	// Check for any pending nested messages...
 	if (!qtractorMessageList::isEmpty()) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("The following issues were detected:\n\n%1\n\n"
 			"Saving into another session file is highly recommended.")
 			.arg(qtractorMessageList::items().join("\n")),
@@ -7356,7 +7356,7 @@ void qtractorMainForm::appendMessagesError( const QString& s )
 
 	appendMessagesColor(s.simplified(), "#ff0000");
 
-	QMessageBox::critical(this, tr("Error") + " - " QTRACTOR_TITLE, s);
+	QMessageBox::critical(this, tr("Error"), s);
 }
 
 

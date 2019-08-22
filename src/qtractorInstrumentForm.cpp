@@ -219,7 +219,7 @@ void qtractorInstrumentForm::importSlot (void)
 
 	const QString  sExt("ins");
 	const QString& sTitle
-		= tr("Import Instrument Files") + " - " QTRACTOR_TITLE;
+		= tr("Import Instrument Files");
 
 	QStringList filters;
 	filters.append(tr("Instrument files (*.%1 *.sf2 *.sf3 *.midnam)").arg(sExt));
@@ -385,7 +385,7 @@ void qtractorInstrumentForm::exportSlot (void)
 
 	const QString  sExt("ins");
 	const QString& sTitle
-		= tr("Export Instrument File") + " - " QTRACTOR_TITLE;
+		= tr("Export Instrument File");
 
 	QStringList filters;
 	filters.append(tr("Instrument files (*.%1)").arg(sExt));
@@ -430,7 +430,7 @@ void qtractorInstrumentForm::exportSlot (void)
 		// Check if already exists...
 		if (QFileInfo(sPath).exists()) {
 			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("The instrument file already exists:\n\n"
 				"\"%1\"\n\n"
 				"Do you want to replace it?")
@@ -472,7 +472,7 @@ void qtractorInstrumentForm::reject (void)
 	// Check if there's any pending changes...
 	if (m_iDirtyCount > 0) {
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Instrument settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			QMessageBox::Apply |

@@ -1354,10 +1354,10 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 	QMainWindow::setMinimumHeight(320);
 
 	// Finally set the default caption and tooltip.
-	const QString& sCaption = tr("Mixer") + " - " QTRACTOR_TITLE;
-	QMainWindow::setWindowTitle(sCaption);
+	const QString& sTitle = tr("Mixer");
+	QMainWindow::setWindowTitle(sTitle);
 	QMainWindow::setWindowIcon(QIcon(":/images/viewMixer.png"));
-	QMainWindow::setToolTip(sCaption);
+	QMainWindow::setToolTip(sTitle);
 
 	QMainWindow::addDockWidget(Qt::LeftDockWidgetArea,  m_pInputRack);
 	QMainWindow::addDockWidget(Qt::RightDockWidgetArea, m_pOutputRack);

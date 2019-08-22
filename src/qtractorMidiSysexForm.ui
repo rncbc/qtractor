@@ -30,7 +30,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>MIDI SysEx - Qtractor</string>
+   <string>MIDI SysEx</string>
   </property>
   <property name="windowIcon" >
    <iconset resource="qtractor.qrc" >:/images/qtractorTracks.png</iconset>

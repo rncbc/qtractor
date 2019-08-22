@@ -572,7 +572,7 @@ void qtractorClipForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -699,7 +699,7 @@ void qtractorClipForm::browseFilename (void)
 	QString sFilename;
 
 	const QString& sTitle
-		= tr("%1 Clip File").arg(sType) + " - " QTRACTOR_TITLE;
+		= tr("%1 Clip File").arg(sType);
 
 	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;

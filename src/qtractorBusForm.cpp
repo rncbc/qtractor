@@ -450,7 +450,7 @@ void qtractorBusForm::selectBus (void)
 		if (m_ui.UpdatePushButton->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -769,7 +769,7 @@ void qtractorBusForm::deleteBus (void)
 		}
 		// Show the warning...
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to remove bus:\n\n"
 			"\"%1\" (%2)\n\n"
 			"Are you sure?")
@@ -827,7 +827,7 @@ void qtractorBusForm::reject (void)
 	// Check if there's any pending changes...
 	if (m_iDirtyCount > 0) {
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to discard the changes?"),
 			QMessageBox::Discard | QMessageBox::Cancel)) {

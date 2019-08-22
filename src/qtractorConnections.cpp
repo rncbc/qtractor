@@ -69,10 +69,10 @@ qtractorConnections::qtractorConnections (
 	QWidget::setMinimumHeight(240);
 
 	// Finally set the default caption and tooltip.
-	const QString& sCaption = tr("Connections") + " - " QTRACTOR_TITLE;
-	QWidget::setWindowTitle(sCaption);
+	const QString& sTitle = tr("Connections");
+	QWidget::setWindowTitle(sTitle);
 	QWidget::setWindowIcon(QIcon(":/images/viewConnections.png"));
-	QWidget::setToolTip(sCaption);
+	QWidget::setToolTip(sTitle);
 
 	// Get previously saved splitter sizes,
 	// (with fair default...)

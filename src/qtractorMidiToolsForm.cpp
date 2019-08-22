@@ -744,7 +744,7 @@ void qtractorMidiToolsForm::presetDelete (void)
 		// Prompt user if he/she's sure about this...
 		if (pOptions->bConfirmRemove) {
 			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("About to delete preset:\n\n"
 				"\"%1\"\n\n"
 				"Are you sure?")

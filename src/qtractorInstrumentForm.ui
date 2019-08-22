@@ -30,7 +30,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Instruments - Qtractor</string>
+   <string>Instruments</string>
   </property>
   <property name="windowIcon" >
    <iconset resource="qtractor.qrc" >:/images/itemInstrument.png</iconset>

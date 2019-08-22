@@ -883,7 +883,7 @@ void qtractorPluginListView::importPlugins (void)
 
 	// Construct the import-from-file dialog...
 	const QString& sTitle
-		= tr("Import Plugins") + " - " QTRACTOR_TITLE;
+		= tr("Import Plugins");
 
 	QStringList filters;
 	filters.append(tr("XML files (*.%1)").arg(sExt));
@@ -929,7 +929,7 @@ void qtractorPluginListView::importPlugins (void)
 	// Maybe ask whether we may actually reset the current list...
 	if (m_pPluginList->count() > 0 && pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to remove and import all plugins:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
@@ -996,7 +996,7 @@ void qtractorPluginListView::exportPlugins (void)
 
 	// Construct the export-to-file dialog...
 	const QString& sTitle
-		= tr("Export Plugins") + " - " QTRACTOR_TITLE;
+		= tr("Export Plugins");
 
 	QStringList filters;
 	filters.append(tr("XML files (*.%1)").arg(sExt));

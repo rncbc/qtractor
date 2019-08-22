@@ -34,7 +34,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Take - Qtractor</string>
+   <string>Take Range</string>
   </property>
   <property name="windowIcon">
    <iconset resource="qtractor.qrc">

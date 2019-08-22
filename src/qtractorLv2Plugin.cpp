@@ -3155,7 +3155,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		else
 		if (ui_map.count() > 1) {
 			const QString& sTitle
-				= type()->name() + " - " QTRACTOR_TITLE;
+				= type()->name();
 			const QString& sText
 				= QObject::tr("Select plug-in's editor (GUI):");
 			qtractorMessageBox mbox(qtractorMainForm::getInstance());

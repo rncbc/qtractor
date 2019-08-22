@@ -138,7 +138,7 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 	QStringList files;
 
 	const QString& sTitle
-		= tr("Open Audio Files") + " - " QTRACTOR_TITLE;
+		= tr("Open Audio Files");
 	const QString& sFilter
 		= qtractorAudioFileFactory::filters().join(";;");
 

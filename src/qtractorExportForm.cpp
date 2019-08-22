@@ -179,7 +179,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	if (pEngine) {
 		QDialog::setWindowIcon(icon);
 		QDialog::setWindowTitle(
-			tr("Export %1").arg(m_sExportType) + " - " QTRACTOR_TITLE);
+			tr("Export %1").arg(m_sExportType));
 		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Output)
@@ -228,7 +228,7 @@ void qtractorExportForm::accept (void)
 	// Check (again) wether the file already exists...
 	if (QFileInfo(sExportPath).exists()) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("The file already exists:\n\n"
 			"\"%1\"\n\n"
 			"Do you want to replace it?")
@@ -404,7 +404,7 @@ void qtractorExportForm::browseExportPath (void)
 
 	// Actual browse for the file...
 	const QString& sTitle
-		= tr("Export %1 File").arg(m_sExportType) + " - " QTRACTOR_TITLE;
+		= tr("Export %1 File").arg(m_sExportType);
 
 	QStringList filters;
 	filters.append(tr("%1 files (*.%1)").arg(m_sExportExt));

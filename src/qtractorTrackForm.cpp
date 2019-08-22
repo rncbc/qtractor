@@ -477,7 +477,7 @@ void qtractorTrackForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -1169,7 +1169,7 @@ void qtractorTrackForm::trackIconClicked (void)
 		sFilename.clear();
 
 	const QString& sTitle
-		= tr("Track Icon") + " - " QTRACTOR_TITLE;
+		= tr("Track Icon");
 
 	QStringList filters;
 	filters.append(tr("Image files (%1)").arg("*.png *.xpm *.jpg *.jpeg"));
@@ -1466,7 +1466,7 @@ void qtractorTrackForm::progChanged (void)
 void qtractorTrackForm::selectForegroundColor (void)
 {
 	const QString& sTitle
-		= tr("Foreground Color") + " - " QTRACTOR_TITLE;
+		= tr("Foreground Color");
 
 	QWidget *pParentWidget = nullptr;
 	QColorDialog::ColorDialogOptions options = 0;
@@ -1492,7 +1492,7 @@ void qtractorTrackForm::selectForegroundColor (void)
 void qtractorTrackForm::selectBackgroundColor (void)
 {
 	const QString& sTitle
-		= tr("Background Color") + " - " QTRACTOR_TITLE;
+		= tr("Background Color");
 
 	QWidget *pParentWidget = nullptr;
 	QColorDialog::ColorDialogOptions options = 0;

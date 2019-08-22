@@ -34,7 +34,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Clip - Qtractor</string>
+   <string>Clip</string>
   </property>
   <property name="windowIcon">
    <iconset resource="qtractor.qrc">:/images/editClip.png</iconset>

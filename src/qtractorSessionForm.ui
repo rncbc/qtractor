@@ -33,7 +33,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle" >
-   <string>Session - Qtractor</string>
+   <string>Session</string>
   </property>
   <property name="windowIcon" >
    <iconset resource="qtractor.qrc" >:/images/qtractor.png</iconset>

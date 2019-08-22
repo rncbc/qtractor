@@ -42,9 +42,6 @@
   <property name="acceptDrops">
    <bool>true</bool>
   </property>
-  <property name="windowTitle">
-   <string>Qtractor</string>
-  </property>
   <property name="windowIcon">
    <iconset resource="qtractor.qrc">:/images/qtractor.png</iconset>
   </property>

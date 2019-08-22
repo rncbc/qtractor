@@ -210,7 +210,7 @@ void qtractorMidiSysexForm::importSlot (void)
 
 	const QString  sExt("syx");
 	const QString& sTitle
-		= tr("Import SysEx Files") + " - " QTRACTOR_TITLE;
+		= tr("Import SysEx Files");
 
 	QStringList filters;
 	filters.append(tr("SysEx files (*.%1)").arg(sExt));
@@ -295,7 +295,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 
 	const QString  sExt("syx");
 	const QString& sTitle
-		= tr("Export SysEx File") + " - " QTRACTOR_TITLE;
+		= tr("Export SysEx File");
 
 	QStringList filters;
 	filters.append(tr("SysEx files (*.%1)").arg(sExt));
@@ -340,7 +340,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 		// Check if already exists...
 		if (QFileInfo(sPath).exists()) {
 			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("The SysEx file already exists:\n\n"
 				"\"%1\"\n\n"
 				"Do you want to replace it?")
@@ -442,7 +442,7 @@ void qtractorMidiSysexForm::openSlot (void)
 	// Prompt if file does not currently exist...
 	const QString  sExt("syx");
 	const QString& sTitle
-		= tr("Open SysEx") + " - " QTRACTOR_TITLE;
+		= tr("Open SysEx");
 
 	QStringList filters;
 	filters.append(tr("SysEx files (*.%1)").arg(sExt));
@@ -520,7 +520,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 	// Prompt if file does not currently exist...
 	if (!fi.exists()) {
 		const QString& sTitle
-			= tr("Save SysEx") + " - " QTRACTOR_TITLE;
+			= tr("Save SysEx");
 		QStringList filters;
 		filters.append(tr("SysEx files (*.%1)").arg(sExt));
 		filters.append(tr("All files (*.*)"));
@@ -557,7 +557,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 	#endif
 	} else if (pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(parentWidget(),
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to replace SysEx:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
@@ -601,7 +601,7 @@ void qtractorMidiSysexForm::deleteSlot (void)
 	// prompt user if he/she's sure about this...
 	if (pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to delete SysEx:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
@@ -794,7 +794,7 @@ void qtractorMidiSysexForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("SysEx settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -1071,7 +1071,7 @@ void qtractorMidiSysexForm::loadSysexFile ( const QString& sFilename )
 	if (!bResult) {
 		// Failure (maybe wrong preset)...
 		QMessageBox::critical(this,
-			tr("Error") + " - " QTRACTOR_TITLE,
+			tr("Error"),
 			tr("SysEx could not be loaded:\n\n"
 			"\"%1\".\n\n"
 			"Sorry.").arg(sFilename),
