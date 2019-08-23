@@ -98,8 +98,8 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 	QApplication::setApplicationName(QTRACTOR_TITLE);
-	QApplication::setApplicationDisplayName(
-		QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
+	QApplication::setApplicationDisplayName(QTRACTOR_TITLE);
+	//	QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
 #endif
 	// Load translation support.
 	QLocale loc;
