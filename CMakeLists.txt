@@ -40,7 +40,7 @@ else ()
   set (CONFIG_BUILD_TYPE "release")
 endif ()
 
-set (CONFIG_DEBUG)
+set (CONFIG_DEBUG 0)
 if (CONFIG_BUILD_TYPE MATCHES "debug")
   set (CONFIG_DEBUG 1)
 endif ()
