@@ -3,12 +3,6 @@ set(NAME qtractor)
 include_directories (
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${QT_INCLUDES}
-)
-
-link_directories (
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${QT_LIBRARY_DIR}
 )
 
 configure_file (cmake_config.h ${CMAKE_CURRENT_BINARY_DIR}/config.h)
@@ -351,18 +345,18 @@ add_executable (${NAME}
 
 add_executable (${NAME}_plugin_scan qtractor_plugin_scan.cpp)
 
+set_target_properties (${NAME} PROPERTIES CXX_STANDARD 11)
+set_target_properties (${NAME}_plugin_scan PROPERTIES CXX_STANDARD 11)
+
 if (WIN32)
-  set_target_properties ($[NAME} PROPERTIES WIN32_EXECUTABLE true)
-  set_target_properties ($[NAME}_plugin_scan PROPERTIES WIN32_EXECUTABLE true)
+  set_target_properties (${NAME} PROPERTIES WIN32_EXECUTABLE true)
+  set_target_properties (${NAME}_plugin_scan PROPERTIES WIN32_EXECUTABLE true)
 endif ()
 
 if (APPLE)
-  set_target_properties ($[NAME} PROPERTIES MACOSX_BUNDLE true)
-  set_target_properties ($[NAME}_plugin_scan PROPERTIES MACOSX_BUNDLE true)
+  set_target_properties (${NAME} PROPERTIES MACOSX_BUNDLE true)
+  set_target_properties (${NAME}_plugin_scan PROPERTIES MACOSX_BUNDLE true)
 endif ()
-
-target_compile_options (${NAME} PRIVATE -std=c++11)
-target_compile_options (${NAME}_plugin_scan PRIVATE -std=c++11)
 
 target_link_libraries (${NAME} PRIVATE Qt5::Widgets Qt5::Xml)
 target_link_libraries (${NAME}_plugin_scan PRIVATE Qt5::Core)
