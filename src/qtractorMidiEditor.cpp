@@ -4443,12 +4443,12 @@ void qtractorMidiEditor::paintDragState (
 	const qtractorMidiEditSelect::ItemList& items = m_select.items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
 	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	const QColor rgbaSelect(0, 0, 255, 120);
 	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
 		qtractorMidiEditSelect::Item *pItem = iter.value();
 		if ((pItem->flags & 1) == 0)
 			continue;
-		const int c = (pEvent == m_pEventDrag ? 64 : 0);
 		QRect rect = (bEditView ? pItem->rectView : pItem->rectEvent);
 		if (!m_bEventDragEdit || pEvent == m_pEventDrag) {
 			if (m_dragState == DragRescale) {
@@ -4590,9 +4590,11 @@ void qtractorMidiEditor::paintDragState (
 				rect.translate(m_posDelta.x(), 0);
 		}
 		// Paint the damn bastard...
-		const QColor rgba(c, 0, 255 - c, 120);
-		pPainter->setPen(rgba);
-		pPainter->setBrush(rgba);
+		pPainter->setPen(rgbaSelect);
+		if (pEvent == m_pEventDrag)
+			pPainter->setBrush(rgbaSelect.lighter());
+		else
+			pPainter->setBrush(rgbaSelect);
 		if (bEditView && m_bDrumMode) {
 			pPainter->drawPolygon(QPolygon(diamond).translated(
 				pScrollView->contentsToViewport(rect.center()

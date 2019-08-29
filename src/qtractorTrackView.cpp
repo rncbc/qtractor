@@ -417,6 +417,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 
 	// Draw track clip selection...
 	if (isClipSelected()) {
+		const QColor rgbaSelect(0, 0, 255, 120);
 		const QRect& rectView = qtractorScrollView::viewport()->rect();
 		const qtractorClipSelect::ItemList& items = m_pClipSelect->items();
 		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
@@ -433,7 +434,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					qtractorScrollView::contentsToViewport(rectClip.topLeft()));
 				rectClip = rectClip.intersected(rectView);
 				if (!rectClip.isEmpty())
-					pPainter->fillRect(rectClip, QColor(0, 0, 255, 120));
+					pPainter->fillRect(rectClip, rgbaSelect);
 			}
 			// Draw clip contents on the fly...
 			if (pClipItem->rubberBand) {
