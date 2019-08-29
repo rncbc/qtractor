@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Added alternate yet non-official CMake build option.
+  (EXPERIMENTAL)
+
 - Improved MIDI clip editor (aka. piano-roll) position
   and size persistence across session state.
 
