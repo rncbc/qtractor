@@ -51,7 +51,9 @@
 
 #include "qtractorClipCommand.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #include <QWindow>
+#endif
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -975,6 +977,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		const QSize& wsize = pMidiClip->editorSize();
 		if (!wsize.isNull() && wsize.isValid())
 			resize(wsize);
+    #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 		// Setup for top-level window geometry changes...
 		QWindow *pWindow = windowHandle();
 		if (pWindow) {
@@ -991,6 +994,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 				SIGNAL(heightChanged(int)),
 				SLOT(sizeChanged()));
 		}
+    #endif
 	}
 
 	// Drum mode visuals....
