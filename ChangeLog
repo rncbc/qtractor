@@ -6,6 +6,14 @@ ChangeLog
 
 GIT HEAD
 
+- All items in the MIDI clip editor's event list are
+  now enabled, selectable and editable, no matter the
+  filter settings for the event views. (EXPERIMENTAL)
+
+- Changing the main time display format (frames, time
+  or BBT) now takes immediate effect to all MIDI clip
+  editor's event lists. (EXPERIMENTAL)
+
 - Added alternate yet non-official CMake build option.
   (EXPERIMENTAL)
 

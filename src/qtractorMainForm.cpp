@@ -6670,6 +6670,14 @@ void qtractorMainForm::updateDisplayFormat (void)
 
 	m_pSession->timeScale()->setDisplayFormat(displayFormat);
 	m_pTimeSpinBox->setDisplayFormat(displayFormat);
+
+	// Update other open editors as well...
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	while (iter.hasNext()) {
+		qtractorMidiEditorForm *pForm = iter.next();
+		pForm->timeScale()->setDisplayFormat(displayFormat);
+		pForm->updateEventList();
+	}
 }
 
 

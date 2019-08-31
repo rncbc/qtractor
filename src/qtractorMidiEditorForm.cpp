@@ -2023,6 +2023,13 @@ void qtractorMidiEditorForm::updatePlayHead ( unsigned long iPlayHead )
 }
 
 
+// Update event-list display...
+void qtractorMidiEditorForm::updateEventList (void)
+{
+	m_pMidiEventList->refresh();
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Selection widget slots.
 

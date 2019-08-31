@@ -1941,9 +1941,6 @@ void qtractorMidiEditor::selectEvent ( qtractorMidiEvent *pEvent, bool bSelect )
 	if (pEvent == nullptr)
 		return;
 
-	if (!isEventSelectable(pEvent))
-		return;
-
 	QRect rectUpdateView(m_select.rectView());
 	QRect rectUpdateEvent(m_select.rectEvent());
 
@@ -1979,16 +1976,6 @@ QList<qtractorMidiEvent *> qtractorMidiEditor::selectedEvents (void) const
 		list.append(iter.key());
 
 	return list;
-}
-
-
-// Selectable event predicate.
-bool qtractorMidiEditor::isEventSelectable ( qtractorMidiEvent *pEvent ) const
-{
-	return (pEvent->type() == m_pEditView->eventType() ||
-		(pEvent->type() == m_pEditEvent->eventType() &&
-			(m_pEditEvent->eventType() != qtractorMidiEvent::CONTROLLER
-			|| pEvent->param() == m_pEditEvent->eventParam())));
 }
 
 
