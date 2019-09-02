@@ -5,7 +5,7 @@ include_directories (
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-configure_file (cmake_config.h ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file (cmake_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 set (HEADERS
   qtractor.h
