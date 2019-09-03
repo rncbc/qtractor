@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Play-head time and tempo/time-signature controls
+  are now featured in MIDI clip editor toolbars (aka.
+  piano-roll). (EXPERIMENTAL)
+
 - All items in the MIDI clip editor's event list are
   now enabled, selectable and editable, no matter the
   filter settings for the event views. (EXPERIMENTAL)
