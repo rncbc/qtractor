@@ -189,10 +189,10 @@ void qtractorPasteRepeatForm::changed (void)
 // Display format has changed.
 void qtractorPasteRepeatForm::formatChanged ( int iDisplayFormat )
 {
-	bool bBlockSignals = m_ui.RepeatFormatComboBox->blockSignals(true);
+	const bool bBlockSignals = m_ui.RepeatFormatComboBox->blockSignals(true);
 	m_ui.RepeatFormatComboBox->setCurrentIndex(iDisplayFormat);
 
-	qtractorTimeScale::DisplayFormat displayFormat
+	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
 	m_ui.RepeatPeriodSpinBox->setDisplayFormat(displayFormat);

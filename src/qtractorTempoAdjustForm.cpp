@@ -747,7 +747,7 @@ void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
 	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
 	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
-	qtractorTimeScale::DisplayFormat displayFormat
+	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
 	m_ui.RangeStartSpinBox->setDisplayFormat(displayFormat);

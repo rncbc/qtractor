@@ -1,7 +1,7 @@
 // qtractorTimeScale.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -589,6 +589,36 @@ private:
 	// Internal node cursor.
 	MarkerCursor m_markerCursor;
 };
+
+
+//-------------------------------------------------------------------------
+// qtractorTempoCursor -- Custom tempo tracking helper class
+
+class qtractorTempoCursor
+{
+public:
+
+	// Constructor.
+	qtractorTempoCursor() : m_pNode(nullptr) {}
+
+	// Reset method.
+	void clear() { m_pNode = nullptr; }
+
+	// Predicate method.
+	qtractorTimeScale::Node *seek(
+		qtractorTimeScale *pTimeScale, unsigned long iFrame)
+	{
+		qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
+		return (m_pNode == pNode ? nullptr : m_pNode = pNode);
+	}
+
+private:
+
+	// Instance variables.
+	qtractorTimeScale::Node *m_pNode;
+};
+
 
 #endif	// __qtractorTimeScale_h
 

@@ -1167,7 +1167,7 @@ void qtractorMidiToolsForm::reject (void)
 // Display format has changed.
 void qtractorMidiToolsForm::formatChanged ( int iDisplayFormat )
 {
-	qtractorTimeScale::DisplayFormat displayFormat
+	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
 	m_ui.TransposeFormatComboBox->setCurrentIndex(iDisplayFormat);

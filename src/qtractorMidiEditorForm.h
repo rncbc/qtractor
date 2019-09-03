@@ -34,8 +34,9 @@ class qtractorTimeScale;
 class qtractorMidiEventList;
 class qtractorMidiControlTypeGroup;
 class qtractorInstrumentMenu;
-class qtractorTimeSigCursor;
+class qtractorTimeSpinBox;
 class qtractorTempoSpinBox;
+class qtractorTempoCursor;
 
 class QContextMenuEvent;
 class QActionGroup;
@@ -152,7 +153,7 @@ protected slots:
 	void viewToolbarEdit(bool bOn);
 	void viewToolbarView(bool bOn);
 	void viewToolbarTransport(bool bOn);
-	void viewToolbarTimeSig(bool bOn);
+	void viewToolbarTime(bool bOn);
 	void viewToolbarScale(bool bOn);
 	void viewToolbarThumb(bool bOn);
 	void viewEvents(bool bOn);
@@ -207,11 +208,16 @@ protected slots:
 	void snapToScaleKeyChanged(int iSnapToScaleKey);
 	void snapToScaleTypeChanged(int iSnapToScaleType);
 
-	void snapPerBeatChanged(int iSnapPerBeat);
+	void transportTimeFormatChanged(int iDisplayFormat);
+	void transportTimeChanged(unsigned long iPlayHead);
+	void transportTimeFinished();
 
-	void timeSigChanged(float fTempo,
+	void transportTempoChanged(float fTempo,
 		unsigned short iBeatsPerBar, unsigned short iBeatDivisor);
-	void timeSigFinished();
+	void transportTempoFinished();
+	void transportTempoContextMenu(const QPoint& pos);
+
+	void snapPerBeatChanged(int iSnapPerBeat);
 
 	// Top-level window geometry related slots.
 	void posChanged();
@@ -248,12 +254,15 @@ private:
 	// Custom track/instrument proxy menu.
 	qtractorInstrumentMenu *m_pInstrumentMenu;
 
+	// Transport tempo/time-signature tracker.
+	qtractorTempoCursor *m_pTempoCursor;
+
+	// Transport time/tempo widgets.
+	qtractorTimeSpinBox *m_pTimeSpinBox;
+	qtractorTempoSpinBox *m_pTempoSpinBox;
+
 	// View/Snap-to-beat actions (for shortcuts access)
 	QList<QAction *> m_snapPerBeatActions;
-
-	// Local time-signature widget.
-	qtractorTimeSigCursor *m_pTimeSigCursor;
-	qtractorTempoSpinBox *m_pTimeSigSpinBox;
 
 	// Edit snap mode.
 	QComboBox *m_pSnapPerBeatComboBox;

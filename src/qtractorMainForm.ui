@@ -165,7 +165,7 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QToolBar" name="thumbToolbar">
+  <widget class="QToolBar" name="thumbViewToolbar">
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>

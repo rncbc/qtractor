@@ -91,7 +91,7 @@
      <addaction name="viewToolbarEditAction"/>
      <addaction name="viewToolbarViewAction"/>
      <addaction name="viewToolbarTransportAction"/>
-     <addaction name="viewToolbarTimeSigAction"/>
+     <addaction name="viewToolbarTimeAction"/>
      <addaction name="viewToolbarScaleAction"/>
      <addaction name="viewToolbarThumbAction"/>
     </widget>
@@ -347,7 +347,7 @@
    <addaction name="separator"/>
    <addaction name="transportPanicAction"/>
   </widget>
-  <widget class="QToolBar" name="timeSigToolbar">
+  <widget class="QToolBar" name="timeToolbar">
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
@@ -1082,21 +1082,21 @@
     <string>Show/hide the transport toolbar</string>
    </property>
   </action>
-  <action name="viewToolbarTimeSigAction">
+  <action name="viewToolbarTimeAction">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>T&amp;ime Signature</string>
+    <string>T&amp;ime</string>
    </property>
    <property name="iconText">
-    <string>Time Signature Toolbar</string>
+    <string>Time Toolbar</string>
    </property>
    <property name="toolTip">
-    <string>Time signature toolbar</string>
+    <string>Time toolbar</string>
    </property>
    <property name="statusTip">
-    <string>Show/hide the time signature toolbar</string>
+    <string>Show/hide the time toolbar</string>
    </property>
   </action>
   <action name="viewToolbarScaleAction">
