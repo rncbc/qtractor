@@ -65,6 +65,35 @@
 
 
 //-------------------------------------------------------------------------
+// qtractorTimeSigCursor -- Custom time-signature helper class
+
+class qtractorTimeSigCursor
+{
+public:
+
+	// Constructor.
+	qtractorTimeSigCursor() : m_pNode(nullptr) {}
+
+	// Reset method.
+	void clear() { m_pNode = nullptr; }
+
+	// Predicate method.
+	qtractorTimeScale::Node *seek(
+		qtractorTimeScale *pTimeScale, unsigned long iFrame)
+	{
+		qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
+		return (m_pNode == pNode ? nullptr : m_pNode = pNode);
+	}
+
+private:
+
+	// Instance variables.
+	qtractorTimeScale::Node *m_pNode;
+};
+
+
+//-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Main window form implementation.
 
 // Constructor.
@@ -114,8 +143,45 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_pEditModeActionGroup, SIGNAL(triggered(QAction*)),
 		m_pEditModeToolButton, SLOT(setDefaultAction(QAction*)));
 
+	// Editable toolbar widgets special palette.
+	QPalette pal;
+	// Outrageous HACK: GTK+ ppl won't see green on black thing...
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#if !defined(QT_NO_STYLE_GTK)
+	if (qobject_cast<QGtkStyle *> (style()) == nullptr) {
+#endif
+#endif
+	//	pal.setColor(QPalette::Window, Qt::black);
+		pal.setColor(QPalette::Base, Qt::black);
+		pal.setColor(QPalette::Text, Qt::green);
+	//	pal.setColor(QPalette::Button, Qt::darkGray);
+	//	pal.setColor(QPalette::ButtonText, Qt::green);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#if !defined(QT_NO_STYLE_GTK)
+	}
+#endif
+#endif
+
+	// Time-signature tracker...
+	m_pTimeSigCursor = new qtractorTimeSigCursor();
+
+	// Time-signature spin-box.
+	const QString sTimeSig("999.9 9/9");
+	m_pTimeSigSpinBox = new qtractorTempoSpinBox(m_ui.timeSigToolbar);
+//	m_pTimeSigSpinBox->setDecimals(1);
+//	m_pTimeSigSpinBox->setMinimum(1.0f);
+//	m_pTimeSigSpinBox->setMaximum(1000.0f);
+	m_pTimeSigSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	m_pTimeSigSpinBox->setMinimumSize(96, 22);
+	m_pTimeSigSpinBox->setPalette(pal);
+//	m_pTimeSigSpinBox->setAutoFillBackground(true);
+	m_pTimeSigSpinBox->setToolTip(tr("Time Signature"));
+//	m_pTimeSigSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
+	m_ui.timeSigToolbar->addWidget(m_pTimeSigSpinBox);
+	m_ui.timeSigToolbar->addSeparator();
+
 	// Snap-per-beat combo-box.
-	m_pSnapPerBeatComboBox = new QComboBox(m_ui.viewToolbar);
+	m_pSnapPerBeatComboBox = new QComboBox(m_ui.timeSigToolbar);
 	m_pSnapPerBeatComboBox->setEditable(false);
 
 	// Event type selection widgets...
@@ -238,8 +304,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	}
 
 	// Add combo-boxes to toolbars...
-	m_ui.viewToolbar->addSeparator();
-	m_ui.viewToolbar->addWidget(m_pSnapPerBeatComboBox);
+	m_ui.timeSigToolbar->addSeparator();
+	m_ui.timeSigToolbar->addWidget(m_pSnapPerBeatComboBox);
 
 	m_ui.editViewToolbar->addWidget(m_pViewTypeComboBox);
 
@@ -447,6 +513,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewToolbarTransportAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarTransport(bool)));
+	QObject::connect(m_ui.viewToolbarTimeSigAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewToolbarTimeSig(bool)));
 	QObject::connect(m_ui.viewToolbarScaleAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewToolbarScale(bool)));
@@ -537,6 +606,13 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SIGNAL(aboutToShow()),
 		SLOT(updateScaleMenu()));
 
+	QObject::connect(m_pTimeSigSpinBox,
+		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
+		SLOT(timeSigChanged(float, unsigned short, unsigned short)));
+	QObject::connect(m_pTimeSigSpinBox,
+		SIGNAL(editingFinished()),
+		SLOT(timeSigFinished()));
+
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(snapPerBeatChanged(int)));
@@ -580,6 +656,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarEditAction->setChecked(pOptions->bMidiEditToolbar);
 		m_ui.viewToolbarViewAction->setChecked(pOptions->bMidiViewToolbar);
 		m_ui.viewToolbarTransportAction->setChecked(pOptions->bMidiTransportToolbar);
+		m_ui.viewToolbarTimeSigAction->setChecked(pOptions->bMidiTimeSigToolbar);
 		m_ui.viewToolbarScaleAction->setChecked(pOptions->bMidiScaleToolbar);
 		m_ui.viewToolbarThumbAction->setChecked(pOptions->bMidiThumbToolbar);
 		m_ui.viewNoteDurationAction->setChecked(pOptions->bMidiNoteDuration);
@@ -606,6 +683,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		viewToolbarEdit(pOptions->bMidiEditToolbar);
 		viewToolbarView(pOptions->bMidiViewToolbar);
 		viewToolbarTransport(pOptions->bMidiTransportToolbar);
+		viewToolbarTimeSig(pOptions->bMidiTimeSigToolbar);
 		viewToolbarScale(pOptions->bMidiScaleToolbar);
 		viewToolbarThumb(pOptions->bMidiThumbToolbar);
 		m_pMidiEditor->setZoomMode(pOptions->iMidiZoomMode);
@@ -742,6 +820,10 @@ qtractorMidiEditorForm::~qtractorMidiEditorForm (void)
 	// Ditch rec-mode/red palette...
 	if (m_pRedPalette)
 		delete m_pRedPalette;
+
+	// Custom time-signature cursor.
+	if (m_pTimeSigCursor)
+		delete m_pTimeSigCursor;
 }
 
 
@@ -941,6 +1023,9 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	m_pMidiEditor->setHorizontalZoom(iHorizontalZoom);
 	m_pMidiEditor->setVerticalZoom(iVerticalZoom);
 
+	// Reset custom time-sig cursor...
+	m_pTimeSigCursor->clear();
+
 	// Default snap-per-beat setting...
 	pTimeScale->setSnapPerBeat(
 		qtractorTimeScale::snapFromIndex(
@@ -977,7 +1062,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		const QSize& wsize = pMidiClip->editorSize();
 		if (!wsize.isNull() && wsize.isValid())
 			resize(wsize);
-    #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 		// Setup for top-level window geometry changes...
 		QWindow *pWindow = windowHandle();
 		if (pWindow) {
@@ -994,7 +1079,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 				SIGNAL(heightChanged(int)),
 				SLOT(sizeChanged()));
 		}
-    #endif
+	#endif
 	}
 
 	// Drum mode visuals....
@@ -1554,6 +1639,13 @@ void qtractorMidiEditorForm::viewToolbarTransport ( bool bOn )
 }
 
 
+// Show/hide the time-signature toolbar.
+void qtractorMidiEditorForm::viewToolbarTimeSig( bool bOn )
+{
+	m_ui.timeSigToolbar->setVisible(bOn);
+}
+
+
 // Show/hide the snap-to-scale toolbar.
 void qtractorMidiEditorForm::viewToolbarScale ( bool bOn )
 {
@@ -1773,6 +1865,8 @@ void qtractorMidiEditorForm::viewScaleType (void)
 // Refresh view display.
 void qtractorMidiEditorForm::viewRefresh (void)
 {
+	m_pTimeSigCursor->clear();
+
 	m_pMidiEditor->updateContents();
 	m_pMidiEventList->refresh();
 
@@ -1891,8 +1985,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
 	const bool bInsertable = m_pMidiEditor->isInsertable();
-    m_ui.editInsertRangeAction->setEnabled(bInsertable);
-    m_ui.editRemoveRangeAction->setEnabled(bInsertable);
+	m_ui.editInsertRangeAction->setEnabled(bInsertable);
+	m_ui.editRemoveRangeAction->setEnabled(bInsertable);
 
 #if 0
 	m_ui.toolsMenu->setEnabled(bSelected);
@@ -2020,6 +2114,15 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 void qtractorMidiEditorForm::updatePlayHead ( unsigned long iPlayHead )
 {
 	m_pMidiEditor->thumbView()->updatePlayHead(iPlayHead);
+
+	// Tricky stuff: node's non-null iif tempo changes...
+	qtractorTimeScale::Node *pNode
+		= m_pTimeSigCursor->seek(m_pMidiEditor->timeScale(), iPlayHead);
+	if (pNode) {
+		m_pTimeSigSpinBox->setTempo(pNode->tempo, false);
+		m_pTimeSigSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
+		m_pTimeSigSpinBox->setBeatDivisor(pNode->beatDivisor, false);
+	}
 }
 
 
@@ -2027,6 +2130,16 @@ void qtractorMidiEditorForm::updatePlayHead ( unsigned long iPlayHead )
 void qtractorMidiEditorForm::updateEventList (void)
 {
 	m_pMidiEventList->refresh();
+}
+
+
+// Update local time-scale...
+void qtractorMidiEditorForm::updateTimeScale (void)
+{
+	m_pTimeSigCursor->clear();
+
+	m_pMidiEditor->updateTimeScale();
+	m_pMidiEditor->updateContents();
 }
 
 
@@ -2176,6 +2289,31 @@ void qtractorMidiEditorForm::updateTrackInstrumentMenu (void)
 }
 
 
+// Time-signature spin-box change slot.
+void qtractorMidiEditorForm::timeSigChanged (
+	float fTempo, unsigned short iBeatsPerBar, unsigned short iBeatDivisor )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiEditorForm::timeSigChanged(%g, %u, %u)",
+		fTempo, iBeatsPerBar, iBeatDivisor);
+#endif
+
+	// TODO: check whether tempo or time-sig changed...
+	//
+}
+
+void qtractorMidiEditorForm::timeSigFinished (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMidiEditorForm::timeSigFinished()");
+#endif
+
+	const bool bBlockSignals = m_pTimeSigSpinBox->blockSignals(true);
+	m_pTimeSigSpinBox->clearFocus();
+	m_pTimeSigSpinBox->blockSignals(bBlockSignals);
+}
+
+
 // Snap-per-beat spin-box change slot.
 void qtractorMidiEditorForm::snapPerBeatChanged ( int iSnap )
 {
@@ -2272,6 +2410,7 @@ void qtractorMidiEditorForm::selectionChanged ( qtractorMidiEditor *pMidiEditor 
 void qtractorMidiEditorForm::contentsChanged ( qtractorMidiEditor *pMidiEditor )
 {
 	++m_iDirtyCount;
+	m_pTimeSigCursor->clear();
 
 	selectionChanged(pMidiEditor);
 }

@@ -272,6 +272,7 @@ public:
 	bool bMidiEditToolbar;
 	bool bMidiViewToolbar;
 	bool bMidiTransportToolbar;
+	bool bMidiTimeSigToolbar;
 	bool bMidiScaleToolbar;
 	bool bMidiThumbToolbar;
 	bool bMidiNoteDuration;

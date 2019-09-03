@@ -34,6 +34,8 @@ class qtractorTimeScale;
 class qtractorMidiEventList;
 class qtractorMidiControlTypeGroup;
 class qtractorInstrumentMenu;
+class qtractorTimeSigCursor;
+class qtractorTempoSpinBox;
 
 class QContextMenuEvent;
 class QActionGroup;
@@ -96,7 +98,10 @@ public:
 	void updatePlayHead(unsigned long iPlayHead);
 
 	// Update event-list display...
-	void updateEventList(void);
+	void updateEventList();
+
+	// Update local time-scale...
+	void updateTimeScale();
 
 public slots:
 
@@ -147,6 +152,7 @@ protected slots:
 	void viewToolbarEdit(bool bOn);
 	void viewToolbarView(bool bOn);
 	void viewToolbarTransport(bool bOn);
+	void viewToolbarTimeSig(bool bOn);
 	void viewToolbarScale(bool bOn);
 	void viewToolbarThumb(bool bOn);
 	void viewEvents(bool bOn);
@@ -203,6 +209,10 @@ protected slots:
 
 	void snapPerBeatChanged(int iSnapPerBeat);
 
+	void timeSigChanged(float fTempo,
+		unsigned short iBeatsPerBar, unsigned short iBeatDivisor);
+	void timeSigFinished();
+
 	// Top-level window geometry related slots.
 	void posChanged();
 	void sizeChanged();
@@ -240,6 +250,10 @@ private:
 
 	// View/Snap-to-beat actions (for shortcuts access)
 	QList<QAction *> m_snapPerBeatActions;
+
+	// Local time-signature widget.
+	qtractorTimeSigCursor *m_pTimeSigCursor;
+	qtractorTempoSpinBox *m_pTimeSigSpinBox;
 
 	// Edit snap mode.
 	QComboBox *m_pSnapPerBeatComboBox;

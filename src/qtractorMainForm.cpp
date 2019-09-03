@@ -204,7 +204,7 @@ static void qtractor_sigterm_handler ( int /* signo */ )
 
 
 //-------------------------------------------------------------------------
-// qtractorTempoCursor -- Custom session tempo helper class
+// qtractorTempoCursor -- Custom tempo helper class
 
 class qtractorTempoCursor
 {
@@ -218,9 +218,9 @@ public:
 
 	// Predicate method.
 	qtractorTimeScale::Node *seek(
-		qtractorSession *pSession, unsigned long iFrame)
+		qtractorTimeScale *pTimeScale, unsigned long iFrame)
 	{
-		qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+		qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
 		return (m_pNode == pNode ? nullptr : m_pNode = pNode);
 	}
@@ -4932,9 +4932,9 @@ void qtractorMainForm::viewRefresh (void)
 	// Update other editors contents...
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
-		qtractorMidiEditor *pEditor = iter.next()->editor();
-		pEditor->updateTimeScale();
-		pEditor->updateContents();
+		qtractorMidiEditorForm *pForm = iter.next();
+		pForm->updateTimeScale();
+		qtractorMidiEditor *pEditor = pForm->editor();
 		pEditor->setEditHead(iEditHead, false);
 		pEditor->setEditTail(iEditTail, false);
 	}
@@ -6172,7 +6172,8 @@ void qtractorMainForm::updateTransportTime ( unsigned long iPlayHead )
 		iter.next()->updatePlayHead(iPlayHead);
 
 	// Tricky stuff: node's non-null iif tempo changes...
-	qtractorTimeScale::Node *pNode = m_pTempoCursor->seek(m_pSession, iPlayHead);
+	qtractorTimeScale::Node *pNode
+		= m_pTempoCursor->seek(m_pSession->timeScale(), iPlayHead);
 	if (pNode) {
 		m_pTempoSpinBox->setTempo(pNode->tempo, false);
 		m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
@@ -6374,7 +6375,7 @@ void qtractorMainForm::stabilizeForm (void)
 	// Update editors too...
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext())
-		(iter.next())->stabilizeForm();
+		iter.next()->stabilizeForm();
 }
 
 
@@ -6901,7 +6902,7 @@ void qtractorMainForm::updateSyncViewHold (void)
 	// Update editors ...
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext())
-		(iter.next())->editor()->setSyncViewHold(m_pOptions->bSyncViewHold);
+		(iter.next()->editor())->setSyncViewHold(m_pOptions->bSyncViewHold);
 }
 
 
@@ -7437,7 +7438,7 @@ void qtractorMainForm::updateCustomColorTheme (void)
 
 		QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 		while (iter.hasNext())
-			iter.next()->editor()->updateContents();
+			(iter.next()->editor())->updateContents();
 	}
 }
 
@@ -7467,7 +7468,7 @@ void qtractorMainForm::addEditorForm ( qtractorMidiEditorForm *pEditorForm )
 
 void qtractorMainForm::removeEditorForm ( qtractorMidiEditorForm *pEditorForm )
 {
-	int iEditorForm = m_editors.indexOf(pEditorForm);
+	const int iEditorForm = m_editors.indexOf(pEditorForm);
 	if (iEditorForm >= 0)
 		m_editors.removeAt(iEditorForm);
 }
@@ -8631,11 +8632,9 @@ void qtractorMainForm::updateContents (
 	// Update other editors contents...
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {
-		qtractorMidiEditor *pEditor = (iter.next())->editor();
-		if (pEditor != pMidiEditor) {
-			pEditor->updateTimeScale();
-			pEditor->updateContents();
-		}
+		qtractorMidiEditorForm *pForm = iter.next();
+		if (pForm->editor() != pMidiEditor)
+			pForm->updateTimeScale();
 	}
 
 	// Notify who's watching...
