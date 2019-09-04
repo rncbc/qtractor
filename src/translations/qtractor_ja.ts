@@ -6278,8 +6278,8 @@ JACK音声サーバー(jackd)が起動し実行されているなら
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8362"/>
-        <location filename="../qtractorMainForm.cpp" line="8419"/>
+        <location filename="../qtractorMainForm.cpp" line="8365"/>
+        <location filename="../qtractorMainForm.cpp" line="8422"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>&quot;%1&quot;を再生...</translation>
     </message>

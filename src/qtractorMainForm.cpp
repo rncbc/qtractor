@@ -8348,7 +8348,7 @@ void qtractorMainForm::activateAudioFile (
 	const QString& sFilename, int /*iTrackChannel*/ )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::selectAudioFile(\"%s\")",
+	qDebug("qtractorMainForm::activateAudioFile(\"%s\")",
 		sFilename.toUtf8().constData());
 #endif
 
@@ -8359,12 +8359,12 @@ void qtractorMainForm::activateAudioFile (
 	// the player is stopped (eg. empty filename)...
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine && pAudioEngine->openPlayer(sFilename)) {
+		// Try updating player status anyway...
+		m_pFiles->setPlayState(true);
+		++m_iPlayerTimer;
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
 	}
-
-	// Try updating player status anyway...
-	++m_iPlayerTimer;
 
 	++m_iStabilizeTimer;
 }
@@ -8416,12 +8416,12 @@ void qtractorMainForm::activateMidiFile (
 	// the player is stopped (eg. empty filename)...
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine && pMidiEngine->openPlayer(sFilename, iTrackChannel)) {
+		// Try updating player status anyway...
+		m_pFiles->setPlayState(true);
+		++m_iPlayerTimer;
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
 	}
-
-	// Try updating player status anyway...
-	++m_iPlayerTimer;
 
 	++m_iStabilizeTimer;
 }
