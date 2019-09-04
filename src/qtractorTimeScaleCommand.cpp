@@ -102,7 +102,6 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 	if (bRedoCurveEditCommands) {
 		addCurveEditCommands(pNode, fNewTempo, fOldTempo);
 	} else {
-
 		QListIterator<qtractorCurveEditCommand *> undos(m_curveEditCommands);
 		while (undos.hasNext())
 			undos.next()->undo();
@@ -265,7 +264,6 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 	if (bRedoCurveEditCommands) {
 		addCurveEditCommands(pNode, fNewTempo, fOldTempo);
 	} else {
-
 		QListIterator<qtractorCurveEditCommand *> undos(m_curveEditCommands);
 		while (undos.hasNext())
 			undos.next()->undo();

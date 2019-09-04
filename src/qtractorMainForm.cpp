@@ -514,7 +514,7 @@ qtractorMainForm::qtractorMainForm (
 //	m_pTempoSpinBox->setDecimals(1);
 //	m_pTempoSpinBox->setMinimum(1.0f);
 //	m_pTempoSpinBox->setMaximum(1000.0f);
-	m_pTempoSpinBox->setFont(font);
+//	m_pTempoSpinBox->setFont(font);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	m_pTempoSpinBox->setMinimumSize(QSize(fm.horizontalAdvance(sTempo) + d, d) + pad);
 	m_pTempoSpinBox->setPalette(pal);

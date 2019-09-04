@@ -313,7 +313,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiViewToolbar = m_settings.value("/ViewToolbar", true).toBool();
 	bMidiTransportToolbar = m_settings.value("/TransportToolbar", false).toBool();
 	bMidiScaleToolbar = m_settings.value("/ScaleToolbar", false).toBool();
-	bMidiTimeToolbar = m_settings.value("/TimeToolbar", true).toBool();
+	bMidiTimeToolbar = m_settings.value("/TimeToolbar", false).toBool();
 	bMidiThumbToolbar = m_settings.value("/ThumbToolbar", true).toBool();
 	bMidiNoteDuration = m_settings.value("/NoteDuration", true).toBool();
 	bMidiNoteColor   = m_settings.value("/NoteColor", false).toBool();

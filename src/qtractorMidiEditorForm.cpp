@@ -163,7 +163,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 //	m_pTempoSpinBox->setDecimals(1);
 //	m_pTempoSpinBox->setMinimum(1.0f);
 //	m_pTempoSpinBox->setMaximum(1000.0f);
-	m_pTempoSpinBox->setFont(font);
+//	m_pTempoSpinBox->setFont(font);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	m_pTempoSpinBox->setMinimumSize(QSize(fm.horizontalAdvance(sTempo) + d, d) + pad);
 	m_pTempoSpinBox->setPalette(pal);
@@ -171,10 +171,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pTempoSpinBox->setToolTip(tr("Current tempo (BPM)"));
 	m_pTempoSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_ui.timeToolbar->addWidget(m_pTempoSpinBox);
-	m_ui.timeToolbar->addSeparator();
+//	m_ui.timeToolbar->addSeparator();
 
 	// Snap-per-beat combo-box.
-	m_pSnapPerBeatComboBox = new QComboBox(m_ui.timeToolbar);
+	m_pSnapPerBeatComboBox = new QComboBox(m_ui.viewToolbar);
 	m_pSnapPerBeatComboBox->setEditable(false);
 
 	// Event type selection widgets...
@@ -297,8 +297,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	}
 
 	// Add combo-boxes to toolbars...
-	m_ui.timeToolbar->addSeparator();
-	m_ui.timeToolbar->addWidget(m_pSnapPerBeatComboBox);
+	m_ui.viewToolbar->addSeparator();
+	m_ui.viewToolbar->addWidget(m_pSnapPerBeatComboBox);
 
 	m_ui.editViewToolbar->addWidget(m_pViewTypeComboBox);
 
@@ -1124,6 +1124,9 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	m_pMidiEditor->setPlayHead(pSession->playHead(), false);
 	m_pMidiEditor->setEditHead(pSession->editHead(), false);
 	m_pMidiEditor->setEditTail(pSession->editTail(), false);
+
+	// Finally update current time position display...
+	updatePlayHead(pSession->playHead());
 
 	// Done.
 	stabilizeForm();

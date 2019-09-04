@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Escape key may now be used to reset time and tempo
+  /time-sgnature spin-box controls. (EXPERIMENTAL)
+
 - Play-head time and tempo/time-signature controls
   are now featured in MIDI clip editor toolbars (aka.
   piano-roll). (EXPERIMENTAL)
