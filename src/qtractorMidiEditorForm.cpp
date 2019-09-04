@@ -2151,17 +2151,6 @@ void qtractorMidiEditorForm::updatePlayHead ( unsigned long iPlayHead )
 }
 
 
-// Update event-list display...
-void qtractorMidiEditorForm::updateEventList (void)
-{
-	// FIXME: Maybe a clip property option?
-	m_pTimeSpinBox->setDisplayFormat(
-		m_pMidiEditor->timeScale()->displayFormat());
-
-	m_pMidiEventList->refresh();
-}
-
-
 // Update local time-scale...
 void qtractorMidiEditorForm::updateTimeScale (void)
 {
@@ -2327,9 +2316,11 @@ void qtractorMidiEditorForm::transportTimeFormatChanged ( int iDisplayFormat )
 
 	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
-	(m_pMidiEditor->timeScale())->setDisplayFormat(displayFormat);
 
-	updateEventList();
+	(m_pMidiEditor->timeScale())->setDisplayFormat(displayFormat);
+	m_pTimeSpinBox->setDisplayFormat(displayFormat);
+
+	m_pMidiEventList->refresh();
 }
 
 

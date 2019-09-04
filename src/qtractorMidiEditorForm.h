@@ -98,9 +98,6 @@ public:
 	// Update thumb-view play-head...
 	void updatePlayHead(unsigned long iPlayHead);
 
-	// Update event-list display...
-	void updateEventList();
-
 	// Update local time-scale...
 	void updateTimeScale();
 
