@@ -11,7 +11,9 @@ GIT HEAD
 
 - Play-head time and tempo/time-signature controls
   are now featured in MIDI clip editor toolbars (aka.
-  piano-roll). (EXPERIMENTAL)
+  piano-roll); time display format is also separated
+  from the tracks main application view and defaults
+  to BBT as being most convenient. (EXPERIMENTAL)
 
 - All items in the MIDI clip editor's event list are
   now enabled, selectable and editable, no matter the

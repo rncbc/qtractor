@@ -903,6 +903,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->bMidiToolTips = m_pMidiEditor->isToolTips();
 		pOptions->bMidiEditMode = m_pMidiEditor->isEditMode();
 		pOptions->bMidiEditModeDraw = m_pMidiEditor->isEditModeDraw();
+		pOptions->iMidiDisplayFormat = (m_pMidiEditor->timeScale())->displayFormat();
 		pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
 		pOptions->bMidiNoteColor = m_ui.viewNoteColorAction->isChecked();
 		pOptions->bMidiValueColor = m_ui.viewValueColorAction->isChecked();
@@ -1027,8 +1028,14 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	m_pMidiEditor->setHorizontalZoom(iHorizontalZoom);
 	m_pMidiEditor->setVerticalZoom(iVerticalZoom);
 
-	// FIXME: Maybe a clip property option?
-	m_pTimeSpinBox->setDisplayFormat(pTimeScale->displayFormat());
+	// Fix some local options though...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		const qtractorTimeScale::DisplayFormat displayFormat
+			= qtractorTimeScale::DisplayFormat(pOptions->iMidiDisplayFormat);
+		pTimeScale->setDisplayFormat(displayFormat);
+		m_pTimeSpinBox->setDisplayFormat(displayFormat);
+	}
 
 	// Reset custom time-sig cursor...
 	m_pTempoCursor->clear();
