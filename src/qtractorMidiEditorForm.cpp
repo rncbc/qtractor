@@ -2370,7 +2370,7 @@ void qtractorMidiEditorForm::transportTempoChanged (
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(pSession->playHead());
 
 	// Now, express the change as an undoable command...
-	pSession->execute(new qtractorTimeScaleUpdateNodeCommand(
+	(m_pMidiEditor->commands())->exec(new qtractorTimeScaleUpdateNodeCommand(
 		pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
 }
 

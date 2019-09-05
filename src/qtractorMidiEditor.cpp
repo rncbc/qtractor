@@ -4910,7 +4910,10 @@ void qtractorMidiEditor::updateNotifySlot ( unsigned int flags )
 	if (flags & qtractorCommand::Refresh)
 		updateContents();
 
-	contentsChangeNotify();
+	if (flags & qtractorCommand::Reset)
+		emit changeNotifySignal(nullptr);
+	else
+		emit changeNotifySignal(this);
 }
 
 
@@ -4922,11 +4925,6 @@ void qtractorMidiEditor::selectionChangeNotify (void)
 	emit selectNotifySignal(this);
 
 	m_pThumbView->update();
-}
-
-void qtractorMidiEditor::contentsChangeNotify (void)
-{
-	emit changeNotifySignal(this);
 }
 
 

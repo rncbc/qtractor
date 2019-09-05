@@ -8545,7 +8545,7 @@ void qtractorMainForm::selectionNotifySlot ( qtractorMidiEditor *pMidiEditor )
 void qtractorMainForm::changeNotifySlot ( qtractorMidiEditor *pMidiEditor )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMainForm::changeNotifySlot()");
+	qDebug("qtractorMainForm::changeNotifySlot(%p)", pMidiEditor);
 #endif
 
 	updateContents(pMidiEditor, true);
@@ -8575,6 +8575,7 @@ void qtractorMainForm::updateContents (
 {
 	// Maybe, just maybe, we've made things larger...
 	m_pTempoCursor->clear();
+
 	m_pSession->updateTimeScale();
 	m_pSession->updateSession();
 

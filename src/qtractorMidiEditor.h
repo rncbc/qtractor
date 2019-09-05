@@ -384,11 +384,10 @@ public:
 	static unsigned char snapToScale(
 		unsigned char note, int iKey, int iScale);
 
-public slots:
-
-	// Redirect selection/change notification.
+	// Redirect selection notification.
 	void selectionChangeNotify();
-	void contentsChangeNotify();
+
+public slots:
 
 	// Redirect note on/off;
 	void sendNote(int iNote, int iVelocity = 0);

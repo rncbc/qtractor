@@ -50,7 +50,7 @@ qtractorTimeScaleNodeCommand::qtractorTimeScaleNodeCommand (
 	if (pSession)
 		m_bAutoTimeStretch = pSession->isAutoTimeStretch();
 
-	setClearSelect(true);
+	setClearSelectReset(true);
 }
 
 
