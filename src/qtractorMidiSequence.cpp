@@ -197,6 +197,11 @@ void qtractorMidiSequence::replaceEvents ( qtractorMidiSequence *pSeq,
 		iTimeLength = pSeq->timeLength();
 	}
 
+	// Reset bank/prog settings anyway...
+	setBankSelMethod(pSeq->bankSelMethod());
+	setBank(pSeq->bank());
+	setProg(pSeq->prog());
+
 	// Set the given replacement range...
 	const unsigned short iTicksPerBeat
 		= pSeq->ticksPerBeat();

@@ -3025,6 +3025,7 @@ void qtractorTracks::updateMidiTrack ( qtractorTrack *pMidiTrack )
 			pTrack->setMidiBankSelMethod(pMidiTrack->midiBankSelMethod());
 			pTrack->setMidiBank(pMidiTrack->midiBank());
 			pTrack->setMidiProg(pMidiTrack->midiProg());
+			pTrack->updateMidiClips();
 			// Update the track list view, immediately...
 			m_pTrackList->updateTrack(pTrack);
 		}

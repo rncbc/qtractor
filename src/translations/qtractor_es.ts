@@ -713,7 +713,7 @@ MIDI:	</translation>
         <translation>propiedades de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="777"/>
+        <location filename="../qtractorTrackCommand.cpp" line="763"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
@@ -722,37 +722,37 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="861"/>
+        <location filename="../qtractorTrackCommand.cpp" line="843"/>
         <source>track record</source>
         <translation>grabar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="864"/>
+        <location filename="../qtractorTrackCommand.cpp" line="846"/>
         <source>track mute</source>
         <translation>silenciar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="867"/>
+        <location filename="../qtractorTrackCommand.cpp" line="849"/>
         <source>track solo</source>
         <translation>pista a solas</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1041"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1023"/>
         <source>track monitor</source>
         <translation>monitorear pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1149"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1131"/>
         <source>track gain</source>
         <translation>ganacia de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1238"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1220"/>
         <source>track pan</source>
         <translation>panorámica de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1325"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1307"/>
         <source>track instrument</source>
         <translation>pista instrumento</translation>
     </message>

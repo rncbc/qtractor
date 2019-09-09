@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI bank and program settings now propagating to
+  all MIDI track's clips resp. (EXPERIMENTAL)
+
+- Fixed MIDI file format default setting other than
+  SMF Format 0. (EXPERIMENTAL)
+
 - Escape key may now be used to reset time and tempo
   /time-sgnature spin-box controls. (EXPERIMENTAL)
 

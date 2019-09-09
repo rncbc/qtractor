@@ -358,6 +358,7 @@ public:
 	// Update tracks/list-view.
 	void updateTrack();
 	void updateMidiTrack();
+	void updateMidiClips();
 
 private:
 

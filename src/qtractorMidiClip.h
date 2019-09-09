@@ -67,7 +67,7 @@ public:
 		{ return m_iTrackChannel; }
 
 	unsigned short format() const
-		{ return (m_pData ? m_pData->format() : 0); }
+		{ return (m_pData ? m_pData->format() : g_iDefaultFormat); }
 
 	// (Meta)Session flag accessors.
 	void setSessionFlag(bool bSessionFlag)

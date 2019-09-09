@@ -104,7 +104,7 @@ bool qtractorTrackCommand::addTrack (void)
 
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi)
-	    pTracks->updateMidiTrack(m_pTrack);
+		pTracks->updateMidiTrack(m_pTrack);
 
 	// (Re)open all clips...
 	qtractorClip *pClip = m_pTrack->clips().first();
@@ -746,20 +746,6 @@ bool qtractorEditTrackCommand::redo (void)
 	if (bRecord)
 		pSession->trackRecord(m_pTrack, false, 0, 0);
 
-	// Trap dirty clips (only MIDI at this time...)
-	if (m_pTrack->trackType() == qtractorTrack::Midi) {
-		for (qtractorClip *pClip = m_pTrack->clips().first();
-				pClip; pClip = pClip->next()) {
-			// Are any dirty changes pending commit?
-			if (pClip->isDirty()) {
-				qtractorMidiClip *pMidiClip
-					= static_cast<qtractorMidiClip *> (pClip);
-				if (pMidiClip)
-					pMidiClip->saveCopyFile(true);
-			}
-		}
-	}
-
 	// Release track-name from uniqueness...
 	pSession->releaseTrackName(m_pTrack);
 
@@ -792,16 +778,12 @@ bool qtractorEditTrackCommand::redo (void)
 		pSession->trackRecord(m_pTrack, true, iClipStart, iFrameTime);
 	}
 
-	// Refresh MIDI track item, at least the names...
-	if (m_pTrack->trackType() == qtractorTrack::Midi)
-		m_pTrack->updateMidiTrack();
-
 	// Special MIDI track cases...
 	if (m_pTrack->trackType() == qtractorTrack::Midi) {
-		// Re-open all MIDI clips (channel might have changed?)...
-		qtractorClip *pClip = m_pTrack->clips().first();
-		for ( ; pClip; pClip = pClip->next())
-			pClip->open();
+		// Refresh MIDI track item, at least the names...
+		m_pTrack->updateMidiTrack();
+		// Update and trap dirty clips...
+		m_pTrack->updateMidiClips();
 	}
 
 	// Mixer turn...
@@ -1370,6 +1352,9 @@ bool qtractorTrackInstrumentCommand::redo (void)
 	pTrack->setMidiBankSelMethod(iBankSelMethod);
 	pTrack->setMidiBank(m_iBank);
 	pTrack->setMidiProg(m_iProg);
+
+	pTrack->updateMidiTrack();
+	pTrack->updateMidiClips();
 
 	// Reset undo values...
 	m_sInstrumentName = sInstrumentName;
