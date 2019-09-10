@@ -1012,7 +1012,7 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 	if (iIndex < 0 || iIndex >= pVstEffect->numPrograms)
 		return false;
 
-	char szName[24]; ::memset(szName, 0, sizeof(szName));
+	char szName[256]; szName[0] = (char) 0;
 #ifndef CONFIG_VESTIGE
 	if (vst_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
 #endif
@@ -1027,7 +1027,7 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 	// Map this to that...
 	program.bank = 0;
 	program.prog = iIndex;
-	program.name = szName;
+	program.name = QString::fromLocal8Bit(szName);
 
 	return true;
 }

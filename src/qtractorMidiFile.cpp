@@ -898,10 +898,10 @@ bool qtractorMidiFile::writeTracks (
 					break;
 
 				// Strip out all bank-select/program-changes here...
-				if (pEvent->type() == qtractorMidiEvent::PGMCHANGE ||
-					pEvent->type() == qtractorMidiEvent::CONTROLLER
-					&& (pEvent->controller() == BANK_MSB ||
-						pEvent->controller() == BANK_LSB)) {
+				if ((pEvent->type() == qtractorMidiEvent::PGMCHANGE) ||
+					(pEvent->type() == qtractorMidiEvent::CONTROLLER &&
+					(pEvent->controller() == BANK_MSB ||
+					 pEvent->controller() == BANK_LSB))) {
 					continue;
 				}
 
