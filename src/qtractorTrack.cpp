@@ -2446,15 +2446,20 @@ void qtractorTrack::updateMidiClips (void)
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip) {
-			// Force this track's bank/program settings...
+			// Check for MIDI track's bank/program changes...
+			bool bDirty = pMidiClip->isDirty();
 			qtractorMidiSequence *pSeq = pMidiClip->sequence();
-			if (pSeq) {
+			if (pSeq && (
+				pSeq->bankSelMethod() != iMidiBankSelMethod ||
+				pSeq->bank() != iMidiBank ||
+				pSeq->prog() != iMidiProg)) {
 				pSeq->setBankSelMethod(iMidiBankSelMethod);
 				pSeq->setBank(iMidiBank);
 				pSeq->setProg(iMidiProg);
+				bDirty = true;
 			}
 			// Are any dirty changes pending commit?
-			if (pMidiClip->isDirty())
+			if (bDirty)
 				pMidiClip->saveCopyFile(true);
 			// Re-open the MIDI clip anyway...
 			pMidiClip->open();

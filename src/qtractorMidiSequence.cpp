@@ -214,7 +214,7 @@ void qtractorMidiSequence::replaceEvents ( qtractorMidiSequence *pSeq,
 	qtractorMidiEvent *pEvent = m_events.first();
 	while (pEvent) {
 		qtractorMidiEvent *pNextEvent = pEvent->next();
-		if (pEvent->time() >= iTimeStart &&	pEvent->time() < iTimeEnd)
+		if (pEvent->time() >= iTimeStart && pEvent->time() < iTimeEnd)
 			removeEvent(pEvent);
 		pEvent = pNextEvent;
 	}

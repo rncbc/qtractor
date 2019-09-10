@@ -897,6 +897,14 @@ bool qtractorMidiFile::writeTracks (
 				if (pEvent == nullptr)
 					break;
 
+				// Strip out all bank-select/program-changes here...
+				if (pEvent->type() == qtractorMidiEvent::PGMCHANGE ||
+					pEvent->type() == qtractorMidiEvent::CONTROLLER
+					&& (pEvent->controller() == BANK_MSB ||
+						pEvent->controller() == BANK_LSB)) {
+					continue;
+				}
+
 				// Event (absolute) time converted to file resolution...
 				iTime = pSeq->timep(pEvent->time(), m_iTicksPerBeat);
 
