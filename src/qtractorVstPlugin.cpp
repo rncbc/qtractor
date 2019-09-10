@@ -512,10 +512,10 @@ bool qtractorVstPluginType::open (void)
 #endif
 
 	// Retrieve plugin type names.
-	char szName[32]; szName[0] = (char) 0;
+	char szName[256]; szName[0] = (char) 0;
 	vst_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f);
 	if (szName[0])
-		m_sName = szName;
+		m_sName = QString::fromLocal8Bit(szName);
 	else
 		m_sName = QFileInfo(filename()).baseName();
 	// Sanitize plugin label.
@@ -647,14 +647,14 @@ bool qtractorVstPluginType::vst_canDo ( const char *pszCanDo ) const
 const QString& qtractorVstPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		char szTemp[64];
+		char szTemp[256];
 		szTemp[0] = (char) 0;
 		vst_dispatch(effGetProductString, 0, 0, (void *) szTemp, 0.0f);
 		if (szTemp[0]) {
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
 			m_sAboutText += QObject::tr("Product: ");
-			m_sAboutText += szTemp;
+			m_sAboutText += QString::fromLocal8Bit(szTemp);
 		}
 		szTemp[0] = (char) 0;
 		vst_dispatch(effGetVendorString, 0, 0, (void *) szTemp, 0.0f);
@@ -662,7 +662,7 @@ const QString& qtractorVstPluginType::aboutText (void)
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
 			m_sAboutText += QObject::tr("Vendor: ");
-			m_sAboutText += szTemp;
+			m_sAboutText += QString::fromLocal8Bit(szTemp);
 		}
 		const int iVersion
 			= vst_dispatch(effGetVendorVersion, 0, 0, nullptr, 0.0f);
