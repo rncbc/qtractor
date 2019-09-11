@@ -512,7 +512,8 @@ bool qtractorVstPluginType::open (void)
 #endif
 
 	// Retrieve plugin type names.
-	char szName[256]; szName[0] = (char) 0;
+	char szName[256];
+	::memset(szName, 0, sizeof(szName));
 	vst_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f);
 	if (szName[0])
 		m_sName = QString::fromLocal8Bit(szName);
@@ -648,7 +649,7 @@ const QString& qtractorVstPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
 		char szTemp[256];
-		szTemp[0] = (char) 0;
+		::memset(szTemp, 0, sizeof(szTemp));
 		vst_dispatch(effGetProductString, 0, 0, (void *) szTemp, 0.0f);
 		if (szTemp[0]) {
 			if (!m_sAboutText.isEmpty())
@@ -656,7 +657,7 @@ const QString& qtractorVstPluginType::aboutText (void)
 			m_sAboutText += QObject::tr("Product: ");
 			m_sAboutText += QString::fromLocal8Bit(szTemp);
 		}
-		szTemp[0] = (char) 0;
+		::memset(szTemp, 0, sizeof(szTemp));
 		vst_dispatch(effGetVendorString, 0, 0, (void *) szTemp, 0.0f);
 		if (szTemp[0]) {
 			if (!m_sAboutText.isEmpty())
@@ -1012,7 +1013,8 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 	if (iIndex < 0 || iIndex >= pVstEffect->numPrograms)
 		return false;
 
-	char szName[256]; szName[0] = (char) 0;
+	char szName[256];
+	::memset(szName, 0, sizeof(szName));
 #ifndef CONFIG_VESTIGE
 	if (vst_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
 #endif

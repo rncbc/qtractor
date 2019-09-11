@@ -142,7 +142,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>%1 Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1562"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1564"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -288,7 +288,7 @@ MIDI:	</source>
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="656"/>
+        <location filename="../qtractorVstPlugin.cpp" line="657"/>
         <source>Product: </source>
         <translation>Produto: </translation>
     </message>
@@ -544,7 +544,7 @@ MIDI:	</translation>
         <translation>Nomear sessão (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="672"/>
+        <location filename="../qtractorVstPlugin.cpp" line="673"/>
         <source>Version: </source>
         <translation>Versão: </translation>
     </message>
@@ -632,7 +632,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="135"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1565"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1567"/>
         <source>All files (*.*)</source>
         <translation>Tudo (*.*)</translation>
     </message>
@@ -665,7 +665,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Arquivos de áudio (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="664"/>
+        <location filename="../qtractorVstPlugin.cpp" line="665"/>
         <source>Vendor: </source>
         <translation>Fornecedor: </translation>
     </message>
