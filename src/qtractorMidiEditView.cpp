@@ -378,23 +378,23 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		unsigned short iBeatsPerBar2 = 0;//ts->beatsPerBar2();
 		if (iBeatsPerBar2 < 1)
 			iBeatsPerBar2 = pNode->beatsPerBar;
-		const int iPixelsPerBeat2 = (x2 - x) / iBeatsPerBar2;
-		if (iPixelsPerBeat2 > 8) {
+		const float q2 = float(x2 - x) / float(iBeatsPerBar2);
+		if (q2 > 8.0f) {
+			float p2 = float(x);
 			for (int i = 0; i < iBeatsPerBar2; ++i) {
 				if (iSnapPerBeat > 1) {
-					const float q
-						= float(iPixelsPerBeat2) / float(iSnapPerBeat);
-					if (q > 4.0f) {
+					const float q1 = q2 / float(iSnapPerBeat);
+					if (q1 > 4.0f) {
 						painter.setPen(rgbBase.value() < 0x7f
 							? rgbLight.darker(105) : rgbLight.lighter(120));
-						float p = float(x);
+						float p1 = p2;
 						for (int j = 1; j < iSnapPerBeat; ++j) {
-							const int x1 = ::rintf(p += q);
+							const int x1 = ::rintf(p1 += q1);
 							painter.drawLine(x1, 0, x1, h);
 						}
 					}
 				}
-				x += iPixelsPerBeat2;
+				x = ::rintf(p2 += q2);
 				if (x > w)
 					break;
 				if (i < iBeatsPerBar2 - 1) {

@@ -198,10 +198,11 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		unsigned short iBeatsPerBar2 = 0;//ts->beatsPerBar2();
 		if (iBeatsPerBar2 < 1)
 			iBeatsPerBar2 = pNode->beatsPerBar;
-		const int iPixelsPerBeat2 = (x2 - x) / iBeatsPerBar2;
-		if (iPixelsPerBeat2 > 16) {
+		const float q2 = float(x2 - x) / float(iBeatsPerBar2);
+		if (q2 > 8.0f) {
+			float p2 = float(x);
 			for (int i = 1; i < iBeatsPerBar2; ++i) {
-				x += iPixelsPerBeat2;
+				x = ::rintf(p2 += q2);
 				if (x > w)
 					break;
 				if (x > x1) {

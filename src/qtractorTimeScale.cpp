@@ -190,12 +190,41 @@ float qtractorTimeScale::Node::tempoEx ( unsigned short iBeatType ) const
 unsigned long qtractorTimeScale::Node::tickSnap (
 	unsigned long iTick, unsigned short p ) const
 {
+#if 0
 	unsigned long iTickSnap = iTick - tick;
 	if (ts->snapPerBeat() > 0) {
 		const unsigned long q = ticksPerBeat / ts->snapPerBeat();
 		iTickSnap = q * ((iTickSnap + (q >> p)) / q);
 	}
 	return tick + iTickSnap;
+#else
+	const unsigned short iTicksPerBar
+		= ticksPerBeat * beatsPerBar;
+	const unsigned long iTickFromBar
+		= tick + iTicksPerBar * ((iTick - tick) / iTicksPerBar);
+
+	unsigned short iBeatsPerBar2 = 0;//ts->beatsPerBar2();
+	if (iBeatsPerBar2 < 1)
+		iBeatsPerBar2 = beatsPerBar;
+	unsigned short iTicksPerBeat2
+		= iTicksPerBar / iBeatsPerBar2;
+	unsigned short iBeatDivisor2 = 0;//ts->beatDivisor2();
+	if (iBeatDivisor2 > 0) {
+		if (beatDivisor > iBeatDivisor2)
+			iTicksPerBeat2 >>= (beatDivisor - iBeatDivisor2);
+		else
+		if (beatDivisor < iBeatDivisor2)
+			iTicksPerBeat2 <<= (iBeatDivisor2 - beatDivisor);
+	}
+
+	unsigned long iTickSnap = iTick - iTickFromBar;
+	if (ts->snapPerBeat() > 0) {
+		const unsigned long q = iTicksPerBeat2 / ts->snapPerBeat();
+		iTickSnap = q * ((iTickSnap + (q >> p)) / q);
+	}
+
+	return iTickFromBar + iTickSnap;
+#endif
 }
 
 
