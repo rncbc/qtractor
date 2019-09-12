@@ -195,7 +195,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 			x1 += fm.horizontalAdvance(sTempo) + 2;
 		}
 		// Beat lines...
-		unsigned short iBeatsPerBar2 = 0;//ts->beatsPerBar2();
+		unsigned short iBeatsPerBar2 = pTimeScale->beatsPerBar2();
 		if (iBeatsPerBar2 < 1)
 			iBeatsPerBar2 = pNode->beatsPerBar;
 		const float q2 = float(x2 - x) / float(iBeatsPerBar2);

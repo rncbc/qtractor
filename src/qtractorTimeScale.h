@@ -478,6 +478,18 @@ public:
 		return (pNode ? pNode->beatDivisor : 2);
 	}
 
+	// Secondary time signature (numerator)
+	void setBeatPerBar2(unsigned short iBeatsPerBar2)
+		{ m_iBeatsPerBar2 = iBeatsPerBar2; }
+	unsigned short beatsPerBar2() const
+		{ return m_iBeatsPerBar2; }
+
+	// Secondary time signature (denominator)
+	void setBeatDivisor2(unsigned short iBeatDivisor2)
+		{ m_iBeatDivisor2 = iBeatDivisor2; }
+	unsigned short beatDivisor2() const
+		{ return m_iBeatDivisor2; }
+
 	// Tick/Frame range conversion (delta conversion).
 	unsigned long frameFromTickRange(
 		unsigned long iTickStart, unsigned long iTickEnd, bool bOffset);
@@ -582,6 +594,10 @@ private:
 	// Tempo-map independent coefficients.
 	float m_fPixelRate;
 	float m_fFrameRate;
+
+	// Secondary time signature (numerator/denuminator)
+	unsigned short m_iBeatsPerBar2;
+	unsigned short m_iBeatDivisor2;
 
 	// Location marker list.
 	qtractorList<Marker> m_markers;

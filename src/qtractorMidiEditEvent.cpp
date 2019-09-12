@@ -395,7 +395,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		if (m_pEditor->isSnapZebra() && (iBar & 1))
 			painter.fillRect(QRect(x, 0, x2 - x + 1, h), zebra);
 		// Beat lines...
-		unsigned short iBeatsPerBar2 = 0;//ts->beatsPerBar2();
+		unsigned short iBeatsPerBar2 = pTimeScale->beatsPerBar2();
 		if (iBeatsPerBar2 < 1)
 			iBeatsPerBar2 = pNode->beatsPerBar;
 		const float q2 = float(x2 - x) / float(iBeatsPerBar2);

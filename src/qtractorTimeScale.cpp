@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #include "qtractorTimeScale.h"
+
 #include <QObject>
 
 
@@ -69,6 +70,9 @@ void qtractorTimeScale::clear (void)
 	m_iTicksPerBeat   = 960;
 	m_iPixelsPerBeat  = 32;
 
+	m_iBeatsPerBar2   = 0;
+	m_iBeatDivisor2   = 0;
+
 	// Clear/reset tempo-map...
 	reset();
 }
@@ -114,12 +118,14 @@ qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 		m_nodes.setAutoDelete(true);
 		m_markers.setAutoDelete(true);
 
-		m_iSampleRate     = ts.m_iSampleRate;
 		m_iSnapPerBeat    = ts.m_iSnapPerBeat;
 		m_iHorizontalZoom = ts.m_iHorizontalZoom;
 		m_iVerticalZoom   = ts.m_iVerticalZoom;
 
 		m_displayFormat   = ts.m_displayFormat;
+
+		m_iBeatsPerBar2   = ts.m_iBeatsPerBar2;
+		m_iBeatDivisor2   = ts.m_iBeatDivisor2;
 
 		// Sync/copy tempo-map nodes...
 		sync(ts);
@@ -203,12 +209,12 @@ unsigned long qtractorTimeScale::Node::tickSnap (
 	const unsigned long iTickFromBar
 		= tick + iTicksPerBar * ((iTick - tick) / iTicksPerBar);
 
-	unsigned short iBeatsPerBar2 = 0;//ts->beatsPerBar2();
+	unsigned short iBeatsPerBar2 = ts->beatsPerBar2();
 	if (iBeatsPerBar2 < 1)
 		iBeatsPerBar2 = beatsPerBar;
 	unsigned short iTicksPerBeat2
 		= iTicksPerBar / iBeatsPerBar2;
-	unsigned short iBeatDivisor2 = 0;//ts->beatDivisor2();
+	unsigned short iBeatDivisor2 = ts->beatDivisor2();
 	if (iBeatDivisor2 > 0) {
 		if (beatDivisor > iBeatDivisor2)
 			iTicksPerBeat2 >>= (beatDivisor - iBeatDivisor2);
