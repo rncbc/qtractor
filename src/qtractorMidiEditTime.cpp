@@ -111,6 +111,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 
 	QPainter painter(&m_pixmap);
 //	painter.initFrom(this);
+	painter.setFont(qtractorScrollView::font());
 
 	//
 	// Draw the time scale...
@@ -124,7 +125,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekPixel(dx);
-
+#if 0
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(dx);
 	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
@@ -164,6 +165,66 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		pNode = cursor.seekBeat(++iBeat);
 		x = pNode->pixelFromBeat(iBeat) - dx;
 	}
+#else
+	unsigned short iBar = pNode->barFromPixel(dx);
+	if (iBar > 0) --iBar;
+	x = x1 = pNode->pixelFromBar(iBar) - dx;
+	while (x < w) {
+		// Next bar...
+		pNode = cursor.seekPixel(x + dx);
+		const int x2 = pNode->pixelFromBar(++iBar) - dx;
+		// Bar label...
+		if (x >= x1) {
+			const QString& sBar	= QString::number(iBar);
+			x1 = x;
+			y1 = fm.ascent();
+			painter.setPen(pal.windowText().color());
+			painter.drawText(x1 + 2, y1, sBar);
+			x1 += fm.horizontalAdvance(sBar) + 2;
+		}
+		x1 += 2;
+		// Tempo/time-sig label...
+		if (iBar == pNode->bar + 1) {
+			const QString& sTempo = QString("%1 %2/%3")
+				.arg(pNode->tempo, 0, 'f', 1)
+				.arg(pNode->beatsPerBar)
+				.arg(1 << pNode->beatDivisor);
+			y1 = fm.ascent();
+			painter.setPen(Qt::darkGray);
+			painter.drawText(x1 + 2, y1, sTempo);
+			x1 += fm.horizontalAdvance(sTempo) + 2;
+		}
+		// Beat lines...
+		unsigned short iBeatsPerBar2 = 0;//ts->beatsPerBar2();
+		if (iBeatsPerBar2 < 1)
+			iBeatsPerBar2 = pNode->beatsPerBar;
+		const int iPixelsPerBeat2 = (x2 - x) / iBeatsPerBar2;
+		if (iPixelsPerBeat2 > 16) {
+			for (int i = 1; i < iBeatsPerBar2; ++i) {
+				x += iPixelsPerBeat2;
+				if (x > w)
+					break;
+				if (x > x1) {
+					y1 = fm.ascent();
+					painter.setPen(pal.mid().color());
+					painter.drawLine(x, y1, x, y2);
+					painter.setPen(pal.light().color());
+					++x; painter.drawLine(x, y1, x, y2);
+				}
+			}
+		}
+		// Bar line...
+		if (x2 > x1) {
+			y1 = 0;
+			painter.setPen(pal.mid().color());
+			painter.drawLine(x2, y1, x2, y2);
+			painter.setPen(pal.light().color());
+			painter.drawLine(x2 + 1, y1, x2 + 1, y2);
+		}
+		// Move forward...
+		x = x2;
+	}
+#endif
 
 	// Draw location markers, if any...
 	qtractorTimeScale::Marker *pMarker

@@ -168,7 +168,7 @@ public:
 		unsigned short barFromTick(unsigned long iTick) const
 			{ return bar + ((iTick - tick) / (ticksPerBeat * beatsPerBar)); }
 		unsigned long tickFromBar(unsigned short iBar) const
-			{ return tick + (ticksPerBeat * beatsPerBar * (iBar - bar)) ; }
+			{ return tick + (ticksPerBeat * beatsPerBar * (iBar - bar)); }
 
 		// Tick/pixel convertors.
 		unsigned long tickFromPixel(int x) const

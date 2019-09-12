@@ -282,6 +282,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 
 	QPainter painter(&m_pixmap);
 //	painter.initFrom(this);
+	painter.setFont(qtractorScrollView::font());
 
 	// Show that we may have clip limits...
 	if (m_pEditor->length() > 0) {
@@ -323,6 +324,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	pNode = cursor.seekPixel(dx);
 	const unsigned short iSnapPerBeat
 		= (m_pEditor->isSnapGrid() ? pTimeScale->snapPerBeat() : 0);
+#if 0
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(dx);
 	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
@@ -346,7 +348,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 			painter.drawLine(x, 0, x, h);
 		}
 		if (iSnapPerBeat > 1) {
-			int q = iPixelsPerBeat / iSnapPerBeat;
+			const int q = iPixelsPerBeat / iSnapPerBeat;
 			if (q > 4) {  
 				painter.setPen(rgbBase.value() < 0x7f
 					? rgbLight.darker(105) : rgbLight.lighter(120));
@@ -361,6 +363,55 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 	}
 	if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
 		painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
+#else
+	unsigned short iBar = pNode->barFromPixel(dx);
+	if (iBar > 0) --iBar;
+	int x = pNode->pixelFromBar(iBar) - dx;
+	while (x < w) {
+		// Next bar...
+		pNode = cursor.seekPixel(x + dx);
+		const int x2 = pNode->pixelFromBar(++iBar) - dx;
+		// Zebra lines...
+		if (m_pEditor->isSnapZebra() && (iBar & 1))
+			painter.fillRect(QRect(x, 0, x2 - x + 1, h), zebra);
+		// Beat lines...
+		unsigned short iBeatsPerBar2 = 0;//ts->beatsPerBar2();
+		if (iBeatsPerBar2 < 1)
+			iBeatsPerBar2 = pNode->beatsPerBar;
+		const int iPixelsPerBeat2 = (x2 - x) / iBeatsPerBar2;
+		if (iPixelsPerBeat2 > 8) {
+			for (int i = 0; i < iBeatsPerBar2; ++i) {
+				if (iSnapPerBeat > 1) {
+					const float q
+						= float(iPixelsPerBeat2) / float(iSnapPerBeat);
+					if (q > 4.0f) {
+						painter.setPen(rgbBase.value() < 0x7f
+							? rgbLight.darker(105) : rgbLight.lighter(120));
+						float p = float(x);
+						for (int j = 1; j < iSnapPerBeat; ++j) {
+							const int x1 = ::rintf(p += q);
+							painter.drawLine(x1, 0, x1, h);
+						}
+					}
+				}
+				x += iPixelsPerBeat2;
+				if (x > w)
+					break;
+				if (i < iBeatsPerBar2 - 1) {
+					painter.setPen(rgbLight);
+					painter.drawLine(x, 0, x, h);
+				}
+			}
+		}
+		// Bar line...
+		painter.setPen(rgbDark);
+		painter.drawLine(x2 - 1, 0, x2 - 1, h);
+		painter.setPen(rgbLight);
+		painter.drawLine(x2, 0, x2, h);
+		// Move forward...
+		x = x2;
+	}
+#endif
 
 	if (y > ch)
 		painter.fillRect(0, ch, w, h - ch, rgbDark);

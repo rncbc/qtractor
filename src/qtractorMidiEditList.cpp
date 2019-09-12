@@ -65,7 +65,7 @@ qtractorMidiEditList::qtractorMidiEditList (
 	qtractorScrollView::setMouseTracking(true);
 
 	const QFont& font = qtractorScrollView::font();
-	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 2));
+	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 3));
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
@@ -169,6 +169,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	QPainter painter(&m_pixmap);
 //	painter.initFrom(this);
+	painter.setFont(qtractorScrollView::font());
 
 	const int ch = qtractorScrollView::contentsHeight() - cy;
 
