@@ -219,6 +219,10 @@ public:
 		int pixelSnap(int x) const
 			{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
 
+		// Alternate (secondary) time-sig helper methods
+		unsigned short beatsPerBar2() const;
+		unsigned short ticksPerBeat2() const;
+
 		// Node keys.
 		unsigned long  frame;
 		unsigned short bar;

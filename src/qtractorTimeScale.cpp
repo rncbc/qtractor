@@ -209,29 +209,42 @@ unsigned long qtractorTimeScale::Node::tickSnap (
 	const unsigned long iTickFromBar
 		= tick + iTicksPerBar * ((iTick - tick) / iTicksPerBar);
 
-	unsigned short iBeatsPerBar = ts->beatsPerBar2();
-	if (iBeatsPerBar < 1)
-		iBeatsPerBar = beatsPerBar;
-	unsigned short iTicksPerBeat
-		= iTicksPerBar / iBeatsPerBar;
-
-	const unsigned short iBeatDivisor = ts->beatDivisor2();
-	if (iBeatDivisor > 0) {
-		if (iBeatDivisor > beatDivisor)
-			iTicksPerBeat >>= (iBeatDivisor - beatDivisor);
-		else
-		if (iBeatDivisor < beatDivisor)
-			iTicksPerBeat <<= (beatDivisor - iBeatDivisor);
-	}
+	const unsigned short iBeatsPerBar2 = beatsPerBar2();
+	unsigned short iTicksPerBeat2 = iTicksPerBar / iBeatsPerBar2;
 
 	unsigned long iTickSnap = iTick - iTickFromBar;
 	if (ts->snapPerBeat() > 0) {
-		const unsigned long q = iTicksPerBeat / ts->snapPerBeat();
+		const unsigned long q = iTicksPerBeat2 / ts->snapPerBeat();
 		iTickSnap = q * ((iTickSnap + (q >> p)) / q);
 	}
 
 	return iTickFromBar + iTickSnap;
 #endif
+}
+
+
+// Alternate (secondary) time-sig helper methods
+unsigned short qtractorTimeScale::Node::beatsPerBar2 (void) const
+{
+	unsigned short iBeatsPerBar2 = ts->beatsPerBar2();
+	if (iBeatsPerBar2 < 1)
+		iBeatsPerBar2 = beatsPerBar;
+
+	const unsigned short iBeatDivisor2 = ts->beatDivisor2();
+	if (iBeatDivisor2 > 0) {
+		if (beatDivisor > iBeatDivisor2)
+			iBeatsPerBar2 >>= (beatDivisor - iBeatDivisor2);
+		else
+		if (beatDivisor < iBeatDivisor2)
+			iBeatsPerBar2 <<= (iBeatDivisor2 - beatDivisor);
+	}
+
+	return iBeatsPerBar2;
+}
+
+unsigned short qtractorTimeScale::Node::ticksPerBeat2 (void) const
+{
+	return (ticksPerBeat * beatsPerBar) / beatsPerBar2();
 }
 
 
