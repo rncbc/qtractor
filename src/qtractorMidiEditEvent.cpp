@@ -368,7 +368,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 			painter.drawLine(x, 0, x, h);
 		}
 		if (iSnapPerBeat > 1) {
-			int q = iPixelsPerBeat / iSnapPerBeat;
+			const int q = iPixelsPerBeat / iSnapPerBeat;
 			if (q > 4) {  
 				painter.setPen(rgbBase.value() < 0x7f
 					? rgbLight.darker(105) : rgbLight.lighter(120));
@@ -395,37 +395,37 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		if (m_pEditor->isSnapZebra() && (iBar & 1))
 			painter.fillRect(QRect(x, 0, x2 - x + 1, h), zebra);
 		// Beat lines...
-		unsigned short iBeatsPerBar2 = pTimeScale->beatsPerBar2();
-		if (iBeatsPerBar2 < 1)
-			iBeatsPerBar2 = pNode->beatsPerBar;
-		unsigned short iBeatDivisor2 = pTimeScale->beatDivisor2();
-		if (iBeatDivisor2 > 0) {
-			if (pNode->beatDivisor > iBeatDivisor2)
-				iBeatsPerBar2 >>= (pNode->beatDivisor - iBeatDivisor2);
+		unsigned short iBeatsPerBar = pTimeScale->beatsPerBar2();
+		if (iBeatsPerBar < 1)
+			iBeatsPerBar = pNode->beatsPerBar;
+		const unsigned short iBeatDivisor = pTimeScale->beatDivisor2();
+		if (iBeatDivisor > 0) {
+			if (pNode->beatDivisor > iBeatDivisor)
+				iBeatsPerBar >>= (pNode->beatDivisor - iBeatDivisor);
 			else
-			if (pNode->beatDivisor < iBeatDivisor2)
-				iBeatsPerBar2 <<= (iBeatDivisor2 - pNode->beatDivisor);
+			if (pNode->beatDivisor < iBeatDivisor)
+				iBeatsPerBar <<= (iBeatDivisor - pNode->beatDivisor);
 		}
-		const float q2 = float(x2 - x) / float(iBeatsPerBar2);
-		if (q2 > 8.0f) {
-			float p2 = float(x);
-			for (int i = 0; i < iBeatsPerBar2; ++i) {
+		const float q = float(x2 - x) / float(iBeatsPerBar);
+		if (q > 8.0f) {
+			float p = float(x);
+			for (int i = 0; i < iBeatsPerBar; ++i) {
 				if (iSnapPerBeat > 1) {
-					const float q1 = q2 / float(iSnapPerBeat);
+					const float q1 = q / float(iSnapPerBeat);
 					if (q1 > 4.0f) {
 						painter.setPen(rgbBase.value() < 0x7f
 							? rgbLight.darker(105) : rgbLight.lighter(120));
-						float p1 = p2;
+						float p1 = p;
 						for (int j = 1; j < iSnapPerBeat; ++j) {
 							const int x1 = ::rintf(p1 += q1);
 							painter.drawLine(x1, 0, x1, h);
 						}
 					}
 				}
-				x = ::rintf(p2 += q2);
+				x = ::rintf(p += q);
 				if (x > w)
 					break;
-				if (i < iBeatsPerBar2 - 1) {
+				if (i < iBeatsPerBar - 1) {
 					painter.setPen(rgbLight);
 					painter.drawLine(x, 0, x, h);
 				}

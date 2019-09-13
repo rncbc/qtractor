@@ -195,22 +195,22 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 			x1 += fm.horizontalAdvance(sTempo) + 2;
 		}
 		// Beat lines...
-		unsigned short iBeatsPerBar2 = pTimeScale->beatsPerBar2();
-		if (iBeatsPerBar2 < 1)
-			iBeatsPerBar2 = pNode->beatsPerBar;
-		unsigned short iBeatDivisor2 = pTimeScale->beatDivisor2();
-		if (iBeatDivisor2 > 0) {
-			if (pNode->beatDivisor > iBeatDivisor2)
-				iBeatsPerBar2 >>= (pNode->beatDivisor - iBeatDivisor2);
+		unsigned short iBeatsPerBar = pTimeScale->beatsPerBar2();
+		if (iBeatsPerBar < 1)
+			iBeatsPerBar = pNode->beatsPerBar;
+		const unsigned short iBeatDivisor = pTimeScale->beatDivisor2();
+		if (iBeatDivisor > 0) {
+			if (pNode->beatDivisor > iBeatDivisor)
+				iBeatsPerBar >>= (pNode->beatDivisor - iBeatDivisor);
 			else
-			if (pNode->beatDivisor < iBeatDivisor2)
-				iBeatsPerBar2 <<= (iBeatDivisor2 - pNode->beatDivisor);
+			if (pNode->beatDivisor < iBeatDivisor)
+				iBeatsPerBar <<= (iBeatDivisor - pNode->beatDivisor);
 		}
-		const float q2 = float(x2 - x) / float(iBeatsPerBar2);
-		if (q2 > 8.0f) {
-			float p2 = float(x);
-			for (int i = 1; i < iBeatsPerBar2; ++i) {
-				x = ::rintf(p2 += q2);
+		const float q = float(x2 - x) / float(iBeatsPerBar);
+		if (q > 8.0f) {
+			float p = float(x);
+			for (int i = 1; i < iBeatsPerBar; ++i) {
+				x = ::rintf(p += q);
 				if (x > w)
 					break;
 				if (x > x1) {
