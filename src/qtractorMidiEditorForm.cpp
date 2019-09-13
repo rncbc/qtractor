@@ -2141,12 +2141,19 @@ void qtractorMidiEditorForm::updatePlayHead ( unsigned long iPlayHead )
 	m_pMidiEditor->thumbView()->updatePlayHead(iPlayHead);
 
 	// Tricky stuff: node's non-null iif tempo changes...
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
 	qtractorTimeScale::Node *pNode
-		= m_pTempoCursor->seek(m_pMidiEditor->timeScale(), iPlayHead);
+		= m_pTempoCursor->seek(pTimeScale, iPlayHead);
 	if (pNode) {
 		m_pTempoSpinBox->setTempo(pNode->tempo, false);
-		m_pTempoSpinBox->setBeatsPerBar(pNode->beatsPerBar, false);
-		m_pTempoSpinBox->setBeatDivisor(pNode->beatDivisor, false);
+		unsigned short iBeatsPerBar = pTimeScale->beatsPerBar2();
+		if (iBeatsPerBar < 1)
+			iBeatsPerBar = pNode->beatsPerBar;
+		m_pTempoSpinBox->setBeatsPerBar(iBeatsPerBar, false);
+		unsigned short iBeatDivisor = pTimeScale->beatDivisor2();
+		if (iBeatDivisor < 1)
+			iBeatDivisor = pNode->beatDivisor;
+		m_pTempoSpinBox->setBeatDivisor(iBeatDivisor, false);
 	}
 }
 
@@ -2370,7 +2377,27 @@ void qtractorMidiEditorForm::transportTempoChanged (
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(pSession->playHead());
 
 	// Now, express the change as an undoable command...
-	(m_pMidiEditor->commands())->exec(new qtractorTimeScaleUpdateNodeCommand(
+	qtractorTimeScale *pTimeScale2 = m_pMidiEditor->timeScale();
+	if (iBeatsPerBar == pNode->beatsPerBar &&
+		iBeatDivisor == pNode->beatDivisor) {
+		if (pTimeScale2->beatsPerBar2() > 0 ||
+			pTimeScale2->beatDivisor2() > 0) {
+			(m_pMidiEditor->commands())->exec(
+				new qtractorTimeScaleTimeSig2Command(pTimeScale2, 0, 0));
+			return;
+		}
+	}
+	else
+	if (iBeatsPerBar != pTimeScale2->beatsPerBar2() ||
+		iBeatDivisor != pTimeScale2->beatDivisor2()) {
+		(m_pMidiEditor->commands())->exec(
+			new qtractorTimeScaleTimeSig2Command(
+				pTimeScale2, iBeatsPerBar, iBeatDivisor));
+		return;
+	}
+
+	(m_pMidiEditor->commands())->exec(
+		new qtractorTimeScaleUpdateNodeCommand(
 		pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
 }
 

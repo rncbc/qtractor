@@ -216,11 +216,11 @@ unsigned long qtractorTimeScale::Node::tickSnap (
 		= iTicksPerBar / iBeatsPerBar2;
 	unsigned short iBeatDivisor2 = ts->beatDivisor2();
 	if (iBeatDivisor2 > 0) {
-		if (beatDivisor > iBeatDivisor2)
-			iTicksPerBeat2 >>= (beatDivisor - iBeatDivisor2);
+		if (iBeatDivisor2 > beatDivisor)
+			iTicksPerBeat2 >>= (iBeatDivisor2 - beatDivisor);
 		else
-		if (beatDivisor < iBeatDivisor2)
-			iTicksPerBeat2 <<= (iBeatDivisor2 - beatDivisor);
+		if (iBeatDivisor2 < beatDivisor)
+			iTicksPerBeat2 <<= (beatDivisor - iBeatDivisor2);
 	}
 
 	unsigned long iTickSnap = iTick - iTickFromBar;

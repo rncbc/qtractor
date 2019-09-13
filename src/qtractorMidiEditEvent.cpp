@@ -398,6 +398,14 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		unsigned short iBeatsPerBar2 = pTimeScale->beatsPerBar2();
 		if (iBeatsPerBar2 < 1)
 			iBeatsPerBar2 = pNode->beatsPerBar;
+		unsigned short iBeatDivisor2 = pTimeScale->beatDivisor2();
+		if (iBeatDivisor2 > 0) {
+			if (pNode->beatDivisor > iBeatDivisor2)
+				iBeatsPerBar2 >>= (pNode->beatDivisor - iBeatDivisor2);
+			else
+			if (pNode->beatDivisor < iBeatDivisor2)
+				iBeatsPerBar2 <<= (iBeatDivisor2 - pNode->beatDivisor);
+		}
 		const float q2 = float(x2 - x) / float(iBeatsPerBar2);
 		if (q2 > 8.0f) {
 			float p2 = float(x);

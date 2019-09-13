@@ -479,7 +479,7 @@ public:
 	}
 
 	// Secondary time signature (numerator)
-	void setBeatPerBar2(unsigned short iBeatsPerBar2)
+	void setBeatsPerBar2(unsigned short iBeatsPerBar2)
 		{ m_iBeatsPerBar2 = iBeatsPerBar2; }
 	unsigned short beatsPerBar2() const
 		{ return m_iBeatsPerBar2; }

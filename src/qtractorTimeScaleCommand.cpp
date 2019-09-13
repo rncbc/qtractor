@@ -790,4 +790,43 @@ bool qtractorTimeScaleCommand::undo (void)
 }
 
 
+//----------------------------------------------------------------------
+// class qtractorTimeScaleCommand - declaration.
+//
+
+// Constructor.
+qtractorTimeScaleTimeSig2Command::qtractorTimeScaleTimeSig2Command (
+	qtractorTimeScale *pTimeScale, unsigned short iBeatsPerBar2,
+	unsigned short iBeatDivisor2 ) : qtractorCommand(
+		QObject::tr("change time-sig.")), m_pTimeScale(pTimeScale),
+		m_iBeatsPerBar2(iBeatsPerBar2), m_iBeatDivisor2(iBeatDivisor2)
+{
+}
+
+
+// Time-scale command methods.
+bool qtractorTimeScaleTimeSig2Command::redo (void)
+{
+	if (m_pTimeScale == nullptr)
+		return false;
+
+	const unsigned short iBeatsPerBar2 = m_pTimeScale->beatsPerBar2();
+	const unsigned short iBeatDivisor2 = m_pTimeScale->beatDivisor2();
+
+	m_pTimeScale->setBeatsPerBar2(m_iBeatsPerBar2);
+	m_pTimeScale->setBeatDivisor2(m_iBeatDivisor2);
+
+	m_iBeatsPerBar2 = iBeatsPerBar2;
+	m_iBeatDivisor2 = iBeatDivisor2;
+
+	return true;
+}
+
+
+bool qtractorTimeScaleTimeSig2Command::undo (void)
+{
+	return redo();
+}
+
+
 // end of qtractorTimeScaleCommand.cpp
