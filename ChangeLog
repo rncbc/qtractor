@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- An alternate time-signature/meter option is being
+  served to the MIDI clip editor (aka. piano-roll)
+  and allowing for some poly-rythm/meter scenarios
+  on a per MIDI clip basis. (VERY EXPERIMENTAL)
+  
 - MIDI bank and program settings now propagating to
   all MIDI track's clips resp. (EXPERIMENTAL)
 

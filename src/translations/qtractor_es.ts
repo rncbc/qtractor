@@ -87,7 +87,7 @@ Audio:	%1 canales, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="85"/>
-        <location filename="../qtractorTimeScale.cpp" line="685"/>
+        <location filename="../qtractorTimeScale.cpp" line="734"/>
         <source>None</source>
         <translation>Ninguno</translation>
     </message>
@@ -595,7 +595,7 @@ MIDI:	</translation>
         <translation>propiedades de sesión</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="689"/>
+        <location filename="../qtractorTimeScale.cpp" line="738"/>
         <source>Beat</source>
         <translation>Pulso</translation>
     </message>
@@ -638,6 +638,11 @@ MIDI:	</translation>
         <location filename="../qtractorTimeScaleCommand.cpp" line="677"/>
         <source>move marker</source>
         <translation>mover marcador</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="801"/>
+        <source>change time-sig.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="685"/>
@@ -6807,7 +6812,7 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorMidiEditList</name>
     <message>
-        <location filename="../qtractorMidiEditList.cpp" line="211"/>
+        <location filename="../qtractorMidiEditList.cpp" line="212"/>
         <source>C%1</source>
         <translation>C%1</translation>
     </message>
@@ -6815,42 +6820,42 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="828"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="888"/>
         <source>Play-head</source>
         <translation>Cabezal de reproducción</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="831"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="891"/>
         <source>Edit-head</source>
         <translation>Cabezal de edición</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="834"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="894"/>
         <source>Edit-tail</source>
         <translation>Editar cola</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="837"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="897"/>
         <source>Loop-start</source>
         <translation>Inicio de bucle</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="840"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="900"/>
         <source>Loop-end</source>
         <translation>Fin del bucle</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="843"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="903"/>
         <source>Punch-in</source>
         <translation>Punch-in</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="846"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="906"/>
         <source>Punch-out</source>
         <translation>Punch-out</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="876"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="936"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -7573,7 +7578,7 @@ Duración:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="796"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2219"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2226"/>
         <source>&amp;None</source>
         <translation>&amp;Nada</translation>
     </message>
