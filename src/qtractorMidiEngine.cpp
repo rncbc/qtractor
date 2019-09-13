@@ -1796,7 +1796,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						const unsigned long iClipEndTime
 							= iClipStartTime + pMidiClip->clipLengthTime();
 						if (iTime >= iClipStartTime && iTime < iClipEndTime)
-							tick = iTime - iClipStartTime;
+							tick = iTime - iClipStartTime + pMidiClip->clipOffsetTime();
 						else
 						if (type != qtractorMidiEvent::NOTEOFF)
 							pSeq = nullptr;

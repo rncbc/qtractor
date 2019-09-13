@@ -10,7 +10,9 @@ GIT HEAD
   served to the MIDI clip editor (aka. piano-roll)
   and allowing for some poly-rythm/meter scenarios
   on a per MIDI clip basis. (VERY EXPERIMENTAL)
-  
+
+- Fixed MIDI "overdub" recording on offset clips.
+
 - MIDI bank and program settings now propagating to
   all MIDI track's clips resp. (EXPERIMENTAL)
 
