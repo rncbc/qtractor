@@ -152,31 +152,31 @@ Konec:	%2	Délka:	%3</translation>
         <translation>%1 - Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1219"/>
+        <location filename="../qtractorMidiClip.cpp" line="1225"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(formát %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1221"/>
+        <location filename="../qtractorMidiClip.cpp" line="1227"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1223"/>
+        <location filename="../qtractorMidiClip.cpp" line="1229"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1226"/>
+        <location filename="../qtractorMidiClip.cpp" line="1232"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 stopy, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1233"/>
+        <location filename="../qtractorMidiClip.cpp" line="1239"/>
         <source> (%1% vol)</source>
         <translation> (%1% hlasitost)</translation>
     </message>
@@ -348,12 +348,12 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="85"/>
-        <location filename="../qtractorTimeScale.cpp" line="734"/>
+        <location filename="../qtractorTimeScale.cpp" line="742"/>
         <source>None</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="738"/>
+        <location filename="../qtractorTimeScale.cpp" line="746"/>
         <source>Beat</source>
         <translation>Doba</translation>
     </message>
@@ -508,47 +508,47 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="427"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="428"/>
         <source>add tempo node</source>
         <translation>Přidat uzel s tempem</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="447"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="448"/>
         <source>update tempo node</source>
         <translation>Obnovit uzel s tempem</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="465"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="466"/>
         <source>remove tempo node</source>
         <translation>Odstranit uzel s tempem</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="482"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="483"/>
         <source>move tempo node</source>
         <translation>Přesunout uzel s tempem</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="622"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="623"/>
         <source>add marker</source>
         <translation>Přidat značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="641"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="642"/>
         <source>update marker</source>
         <translation>Obnovit značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="659"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="660"/>
         <source>remove marker</source>
         <translation>Odstranit značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="677"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="678"/>
         <source>move marker</source>
         <translation>Přesunout značku</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="801"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="802"/>
         <source>change time-sig.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7102,7 +7102,7 @@ Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="343"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2061"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2069"/>
         <source>MOD</source>
         <translation>REŽIM</translation>
     </message>
@@ -7113,7 +7113,7 @@ Délka:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="351"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2066"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2074"/>
         <source>REC</source>
         <translation>NAHRÁT</translation>
     </message>
@@ -7157,43 +7157,43 @@ Chcete uložit změny?</translation>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1188"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1196"/>
         <source>Save MIDI Clip</source>
         <translation>Uložit záběr MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1190"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1198"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Soubory MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1191"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1199"/>
         <source>All files (*.*)</source>
         <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1259"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1267"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Uložit soubor MIDI: &quot;%1&quot;, stopa-kanál: %2.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2027"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2035"/>
         <source>MIDI Editor</source>
         <translation>MIDI Editor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2041"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2049"/>
         <source>Channel %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2044"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2052"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2051"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2059"/>
         <source>[modified]</source>
         <translation>(upraveno)</translation>
     </message>
@@ -7862,7 +7862,7 @@ Chcete uložit změny?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="796"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2226"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2234"/>
         <source>&amp;None</source>
         <translation>&amp;Žádný</translation>
     </message>

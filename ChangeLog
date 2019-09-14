@@ -9,7 +9,7 @@ GIT HEAD
 - An alternate time-signature/meter option is being
   served to the MIDI clip editor (aka. piano-roll)
   and allowing for some poly-rythm/meter scenarios
-  on a per MIDI clip basis. (VERY EXPERIMENTAL)
+  on a per MIDI clip basis. (EXPERIMENTAL)
 
 - Fixed MIDI "overdub" recording on offset clips.
 

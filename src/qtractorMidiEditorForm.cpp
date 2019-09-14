@@ -2384,27 +2384,28 @@ void qtractorMidiEditorForm::transportTempoChanged (
 	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(pSession->playHead());
 
-	// Now, express the change as an undoable command...
-	qtractorTimeScale *pTimeScale2 = timeScale();
+	// Check for local/secondary time-signature/meter changes...
+	qtractorMidiClip *pMidiClip = midiClip();
 	if (iBeatsPerBar == pNode->beatsPerBar &&
 		iBeatDivisor == pNode->beatDivisor) {
-		if (pTimeScale2->beatsPerBar2() > 0 ||
-			pTimeScale2->beatDivisor2() > 0) {
+		if (pMidiClip->beatsPerBar2() > 0 ||
+			pMidiClip->beatDivisor2() > 0) {
 			(m_pMidiEditor->commands())->exec(
 				new qtractorTimeScaleTimeSig2Command(
-					pTimeScale2, midiClip(), 0, 0));
+					timeScale(), pMidiClip, 0, 0));
 			return;
 		}
 	}
 	else
-	if (iBeatsPerBar != pTimeScale2->beatsPerBar2() ||
-		iBeatDivisor != pTimeScale2->beatDivisor2()) {
+	if (iBeatsPerBar != pMidiClip->beatsPerBar2() ||
+		iBeatDivisor != pMidiClip->beatDivisor2()) {
 		(m_pMidiEditor->commands())->exec(
 			new qtractorTimeScaleTimeSig2Command(
-				pTimeScale2, midiClip(), iBeatsPerBar, iBeatDivisor));
+				timeScale(), pMidiClip, iBeatsPerBar, iBeatDivisor));
 		return;
 	}
 
+	// Now, express the change as an undoable command...
 	(m_pMidiEditor->commands())->exec(
 		new qtractorTimeScaleUpdateNodeCommand(
 		pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
