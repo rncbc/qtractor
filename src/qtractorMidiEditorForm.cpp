@@ -176,6 +176,12 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pTempoSpinBox->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_ui.timeToolbar->addWidget(m_pTempoSpinBox);
 //	m_ui.timeToolbar->addSeparator();
+	m_pTimeSig2ResetButton = new QToolButton(m_ui.timeToolbar);
+	const int h1 = m_pTempoSpinBox->sizeHint().height();
+	m_pTimeSig2ResetButton->setMaximumSize(h1, h1);
+	m_pTimeSig2ResetButton->setIcon(QPixmap(":/images/itemReset.png"));
+	m_pTimeSig2ResetButton->setToolTip(tr("Reset time-sig."));
+	m_ui.timeToolbar->addWidget(m_pTimeSig2ResetButton);
 
 	// Snap-per-beat combo-box.
 	m_pSnapPerBeatComboBox = new QComboBox(m_ui.viewToolbar);
@@ -620,6 +626,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_pTempoSpinBox,
 		SIGNAL(customContextMenuRequested(const QPoint&)),
 		SLOT(transportTempoContextMenu(const QPoint&)));
+
+	QObject::connect(m_pTimeSig2ResetButton,
+		SIGNAL(clicked()),
+		SLOT(timeSig2ResetClicked()));
 
 	QObject::connect(m_pSnapPerBeatComboBox,
 		SIGNAL(activated(int)),
@@ -2119,6 +2129,10 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		m_pTempoSpinBox->setReadOnly(bRecording);
 	}
 
+	// Secondary rtime-signature status...
+	m_pTimeSig2ResetButton->setEnabled(pMidiClip != nullptr
+		&& (pMidiClip->beatsPerBar2() > 0 || pMidiClip->beatDivisor2() > 0));
+
 	// Stabilize thumb-view...
 	m_pMidiEditor->thumbView()->update();
 	m_pMidiEditor->thumbView()->updateThumb();
@@ -2386,30 +2400,29 @@ void qtractorMidiEditorForm::transportTempoChanged (
 
 	// Check for local/secondary time-signature/meter changes...
 	qtractorMidiClip *pMidiClip = midiClip();
-	if (iBeatsPerBar == pNode->beatsPerBar &&
-		iBeatDivisor == pNode->beatDivisor) {
-		if (pMidiClip->beatsPerBar2() > 0 ||
-			pMidiClip->beatDivisor2() > 0) {
-			(m_pMidiEditor->commands())->exec(
-				new qtractorTimeScaleTimeSig2Command(
-					timeScale(), pMidiClip, 0, 0));
+	if (pMidiClip) {
+		if (iBeatsPerBar == pNode->beatsPerBar &&
+			iBeatDivisor == pNode->beatDivisor) {
+			if (pMidiClip->beatsPerBar2() > 0 ||
+				pMidiClip->beatDivisor2() > 0) {
+				resetTimeSig2();
+				return;
+			}
+		}
+		else
+		if (iBeatsPerBar != pMidiClip->beatsPerBar2() ||
+			iBeatDivisor != pMidiClip->beatDivisor2()) {
+			resetTimeSig2(iBeatsPerBar, iBeatDivisor);
 			return;
 		}
-	}
-	else
-	if (iBeatsPerBar != pMidiClip->beatsPerBar2() ||
-		iBeatDivisor != pMidiClip->beatDivisor2()) {
-		(m_pMidiEditor->commands())->exec(
-			new qtractorTimeScaleTimeSig2Command(
-				timeScale(), pMidiClip, iBeatsPerBar, iBeatDivisor));
-		return;
 	}
 
 	// Now, express the change as an undoable command...
 	(m_pMidiEditor->commands())->exec(
 		new qtractorTimeScaleUpdateNodeCommand(
-		pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
+			pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
 }
+
 
 void qtractorMidiEditorForm::transportTempoFinished (void)
 {
@@ -2429,6 +2442,23 @@ void qtractorMidiEditorForm::transportTempoContextMenu ( const QPoint& /*pos*/ )
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pMainForm->viewTempoMap();
+}
+
+
+// Secondary time-signature reset slot.
+void qtractorMidiEditorForm::timeSig2ResetClicked (void)
+{
+	resetTimeSig2();
+}
+
+
+// Secondary time-signature reset slot.
+void qtractorMidiEditorForm::resetTimeSig2 (
+	unsigned short iBeatsPerBar2, unsigned short iBeatDivisor2 )
+{
+	(m_pMidiEditor->commands())->exec(
+		new qtractorTimeScaleTimeSig2Command(
+			timeScale(), midiClip(), iBeatsPerBar2, iBeatDivisor2));
 }
 
 

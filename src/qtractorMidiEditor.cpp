@@ -2372,6 +2372,11 @@ void qtractorMidiEditor::zoomCenterPre ( ZoomCenter& zc ) const
 	if (m_pTimeScale == nullptr)
 		return;
 
+	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
+
+	const int cx = m_pEditView->contentsX();
+	const int cy = m_pEditView->contentsY();
+
 	QWidget *pViewport = m_pEditView->viewport();
 	const QRect& rect = pViewport->rect();
 	const QPoint& pos = pViewport->mapFromGlobal(QCursor::pos());
@@ -2379,20 +2384,15 @@ void qtractorMidiEditor::zoomCenterPre ( ZoomCenter& zc ) const
 		zc.x = pos.x();
 		zc.y = pos.y();
 	} else {
-	#if 0
 		zc.x = 0;
 		zc.y = 0;
-	#else
-		zc.x = (rect.width()  >> 1);
-		zc.y = (rect.height() >> 1);
-	#endif
+		if (cx > rect.width())
+			zc.x += (rect.width() >> 1);
+		if (cy > rect.height())
+			zc.y += (rect.height() >> 1);
 	}
 
-	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
-	const int cx = m_pEditView->contentsX();
 	zc.frame = m_pTimeScale->frameFromPixel(x0 + cx + zc.x);
-
-	const int cy = m_pEditView->contentsY();
 	zc.item = (cy + zc.y) / m_pEditList->itemHeight();
 }
 

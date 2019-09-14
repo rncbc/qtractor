@@ -168,11 +168,11 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 #else
 	unsigned short iBar = pNode->barFromPixel(dx);
 	if (iBar > 0) --iBar;
-	x = x1 = pNode->pixelFromBar(iBar) - dx;
+	x = x1 = pNode->pixelFromBar(iBar) - dx - 1;
 	while (x < w) {
 		// Next bar...
 		pNode = cursor.seekPixel(x + dx);
-		const int x2 = pNode->pixelFromBar(++iBar) - dx;
+		const int x2 = pNode->pixelFromBar(++iBar) - dx - 1;
 		// Bar label...
 		if (x >= x1) {
 			const QString& sBar	= QString::number(iBar);

@@ -8677,6 +8677,7 @@ void qtractorMainForm::transportTempoChanged (
 	++m_iTransportUpdate;
 }
 
+
 void qtractorMainForm::transportTempoFinished (void)
 {
 #ifdef CONFIG_DEBUG

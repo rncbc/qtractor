@@ -346,23 +346,24 @@ void qtractorTracks::zoomCenterPre ( ZoomCenter& zc ) const
 	if (pSession == nullptr)
 		return;
 
+	const int cx = m_pTrackView->contentsX();
+	const int cy = m_pTrackView->contentsY();
+
 	QWidget *pViewport = m_pTrackView->viewport();
 	const QRect& rect = pViewport->rect();
 	const QPoint& pos = pViewport->mapFromGlobal(QCursor::pos());
 	if (rect.contains(pos)) {
 		zc.x = pos.x();
-		zc.y = 0; // pos.y();
+		zc.y = pos.y();
 	} else {
-	#if 0
 		zc.x = 0;
 		zc.y = 0;
-	#else
-		zc.x = (rect.width() >> 1);
-		zc.y = 0; // (rect.height() >> 1);
-	#endif
+		if (cx > rect.width())
+			zc.x += (rect.width() >> 1);
+		if (cy > rect.height())
+			zc.y += (rect.height() >> 1);
 	}
 
-	const int cx = m_pTrackView->contentsX();
 	zc.frame = pSession->frameFromPixel(cx + zc.x);
 }
 

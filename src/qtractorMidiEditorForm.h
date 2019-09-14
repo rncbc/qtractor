@@ -213,6 +213,7 @@ protected slots:
 		unsigned short iBeatsPerBar, unsigned short iBeatDivisor);
 	void transportTempoFinished();
 	void transportTempoContextMenu(const QPoint& pos);
+	void timeSig2ResetClicked();
 
 	void snapPerBeatChanged(int iSnapPerBeat);
 
@@ -230,6 +231,11 @@ protected:
 
 	// Save current clip track-channel sequence.
 	bool saveClipFile(bool bPrompt);
+
+	// Secondary time-signature reset slot.
+	void resetTimeSig2(
+		unsigned short iBeatsPerBar2 = 0,
+		unsigned short iBeatDivisor2 = 0);
 
 private:
 
@@ -257,6 +263,9 @@ private:
 	// Transport time/tempo widgets.
 	qtractorTimeSpinBox *m_pTimeSpinBox;
 	qtractorTempoSpinBox *m_pTempoSpinBox;
+
+	// Secondary time-signature reset button.
+	QToolButton *m_pTimeSig2ResetButton;
 
 	// View/Snap-to-beat actions (for shortcuts access)
 	QList<QAction *> m_snapPerBeatActions;
