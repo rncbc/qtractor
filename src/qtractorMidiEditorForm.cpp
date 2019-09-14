@@ -1100,6 +1100,14 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	#endif
 	}
 
+	// Setup for secondary time-signature, if any...
+	if (pMidiClip == nullptr)
+		pMidiClip = midiClip();
+	if (pMidiClip) {
+		pTimeScale->setBeatsPerBar2(pMidiClip->beatsPerBar2());
+		pTimeScale->setBeatDivisor2(pMidiClip->beatDivisor2());
+	}
+
 	// Drum mode visuals....
 	const bool bDrumMode = m_pMidiEditor->isDrumMode();
 	m_ui.viewDrumModeAction->setChecked(bDrumMode);
@@ -2377,13 +2385,14 @@ void qtractorMidiEditorForm::transportTempoChanged (
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(pSession->playHead());
 
 	// Now, express the change as an undoable command...
-	qtractorTimeScale *pTimeScale2 = m_pMidiEditor->timeScale();
+	qtractorTimeScale *pTimeScale2 = timeScale();
 	if (iBeatsPerBar == pNode->beatsPerBar &&
 		iBeatDivisor == pNode->beatDivisor) {
 		if (pTimeScale2->beatsPerBar2() > 0 ||
 			pTimeScale2->beatDivisor2() > 0) {
 			(m_pMidiEditor->commands())->exec(
-				new qtractorTimeScaleTimeSig2Command(pTimeScale2, 0, 0));
+				new qtractorTimeScaleTimeSig2Command(
+					pTimeScale2, midiClip(), 0, 0));
 			return;
 		}
 	}
@@ -2392,7 +2401,7 @@ void qtractorMidiEditorForm::transportTempoChanged (
 		iBeatDivisor != pTimeScale2->beatDivisor2()) {
 		(m_pMidiEditor->commands())->exec(
 			new qtractorTimeScaleTimeSig2Command(
-				pTimeScale2, iBeatsPerBar, iBeatDivisor));
+				pTimeScale2, midiClip(), iBeatsPerBar, iBeatDivisor));
 		return;
 	}
 

@@ -31,6 +31,8 @@
 class qtractorClipCommand;
 class qtractorCurveEditCommand;
 
+class qtractorMidiClip;
+
 
 //----------------------------------------------------------------------
 // class qtractorTimeScaleNodeCommand - declaration.
@@ -354,7 +356,8 @@ class qtractorTimeScaleTimeSig2Command : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorTimeScaleTimeSig2Command(qtractorTimeScale *pTimeScale,
+	qtractorTimeScaleTimeSig2Command(
+		qtractorTimeScale *pTimeScale, qtractorMidiClip *pMidiClip,
 		unsigned short iBeatsPerBar2, unsigned short iBeatDivisor2);
 
 	// Time-scale command methods.
@@ -365,6 +368,8 @@ private:
 
 	// Instance variables.
 	qtractorTimeScale *m_pTimeScale;
+
+	qtractorMidiClip *m_pMidiClip;
 
 	unsigned short m_iBeatsPerBar2;
 	unsigned short m_iBeatDivisor2;

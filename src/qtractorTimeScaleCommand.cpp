@@ -30,6 +30,7 @@
 #include "qtractorMidiEngine.h"
 
 #include "qtractorAudioClip.h"
+#include "qtractorMidiClip.h"
 
 
 //----------------------------------------------------------------------
@@ -796,10 +797,12 @@ bool qtractorTimeScaleCommand::undo (void)
 
 // Constructor.
 qtractorTimeScaleTimeSig2Command::qtractorTimeScaleTimeSig2Command (
-	qtractorTimeScale *pTimeScale, unsigned short iBeatsPerBar2,
-	unsigned short iBeatDivisor2 ) : qtractorCommand(
-		QObject::tr("change time-sig.")), m_pTimeScale(pTimeScale),
-		m_iBeatsPerBar2(iBeatsPerBar2), m_iBeatDivisor2(iBeatDivisor2)
+	qtractorTimeScale *pTimeScale, qtractorMidiClip *pMidiClip,
+	unsigned short iBeatsPerBar2, unsigned short iBeatDivisor2 )
+	: qtractorCommand(QObject::tr("change time-sig.")),
+		m_pTimeScale(pTimeScale), m_pMidiClip(pMidiClip),
+		m_iBeatsPerBar2(iBeatsPerBar2),
+		m_iBeatDivisor2(iBeatDivisor2)
 {
 }
 
@@ -815,6 +818,11 @@ bool qtractorTimeScaleTimeSig2Command::redo (void)
 
 	m_pTimeScale->setBeatsPerBar2(m_iBeatsPerBar2);
 	m_pTimeScale->setBeatDivisor2(m_iBeatDivisor2);
+
+	if (m_pMidiClip) {
+		m_pMidiClip->setBeatsPerBar2(m_iBeatsPerBar2);
+		m_pMidiClip->setBeatDivisor2(m_iBeatDivisor2);
+	}
 
 	m_iBeatsPerBar2 = iBeatsPerBar2;
 	m_iBeatDivisor2 = iBeatDivisor2;

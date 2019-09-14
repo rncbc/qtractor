@@ -537,7 +537,7 @@ unsigned long qtractorTimeScale::frameFromTextEx (
 				pNode = m_cursor.seekFrame(iFrame);
 				if (pNode) {
 					beats += bars  * pNode->beatsPerBar;
-					ticks += beats * pNode->ticksPerBeat;
+					ticks += beats * pNode->ticksPerBeat2();
 					ticks += pNode->tickFromFrame(iFrame);
 					iFrame = pNode->frameFromTick(ticks) - iFrame;
 				}
@@ -548,8 +548,8 @@ unsigned long qtractorTimeScale::frameFromTextEx (
 					--beats;
 				pNode = m_cursor.seekBar(bars);
 				if (pNode) {
-					beats += (bars - pNode->bar) * pNode->beatsPerBar;
-					ticks += pNode->tick + beats * pNode->ticksPerBeat;
+					beats += (bars - pNode->bar) * pNode->beatsPerBar2();
+					ticks += pNode->tick + beats * pNode->ticksPerBeat2();
 					iFrame = pNode->frameFromTick(ticks);
 				}
 			}
@@ -617,6 +617,14 @@ QString qtractorTimeScale::textFromFrameEx (
 				if (beats >= (unsigned int) pNode->beatsPerBar) {
 					bars   = (unsigned short) (beats / pNode->beatsPerBar);
 					beats -= (unsigned int) (bars * pNode->beatsPerBar);
+				}
+				if (beatsPerBar2() > 0 || beatDivisor2() > 0) {
+					const unsigned short iTicksPerBeat2 = pNode->ticksPerBeat2();
+					ticks += (unsigned long) (beats * pNode->ticksPerBeat);
+					if (ticks >= (unsigned long) iTicksPerBeat2) {
+						beats  = (unsigned int) (ticks / iTicksPerBeat2);
+						ticks -= (unsigned long) (beats * iTicksPerBeat2);
+					}
 				}
 				if (!bDelta)
 					bars += pNode->bar;

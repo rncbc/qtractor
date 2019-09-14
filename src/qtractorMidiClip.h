@@ -261,6 +261,18 @@ public:
 	const QString& ghostTrackName() const
 		{ return m_sGhostTrackName; }
 
+	// Secondary time signature (numerator)
+	void setBeatsPerBar2(unsigned short iBeatsPerBar2)
+		{ m_iBeatsPerBar2 = iBeatsPerBar2; }
+	unsigned short beatsPerBar2() const
+		{ return m_iBeatsPerBar2; }
+
+	// Secondary time signature (denominator)
+	void setBeatDivisor2(unsigned short iBeatDivisor2)
+		{ m_iBeatDivisor2 = iBeatDivisor2; }
+	unsigned short beatDivisor2() const
+		{ return m_iBeatDivisor2; }
+
 protected:
 
 	// Virtual document element methods.
@@ -309,6 +321,10 @@ private:
 
 	// Ghost track setting.
 	QString m_sGhostTrackName;
+
+	// Secondary time signature (numerator/denuminator)
+	unsigned short m_iBeatsPerBar2;
+	unsigned short m_iBeatDivisor2;
 
 	// Default MIDI file format (for capture/record)
 	static unsigned short g_iDefaultFormat;

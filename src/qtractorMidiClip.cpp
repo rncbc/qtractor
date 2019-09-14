@@ -181,6 +181,9 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_iRevision = 0;
 
 	m_pMidiEditorForm = nullptr;
+
+	m_iBeatsPerBar2 = 0;
+	m_iBeatDivisor2 = 0;
 }
 
 // Copy constructor.
@@ -201,6 +204,9 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	m_iRevision = clip.revision();
 
 	m_pMidiEditorForm = nullptr;
+
+	m_iBeatsPerBar2 = clip.beatsPerBar2();
+	m_iBeatDivisor2 = clip.beatDivisor2();
 }
 
 
@@ -1298,6 +1304,12 @@ bool qtractorMidiClip::loadClipElement (
 		else if (eChild.tagName() == "ghost-track-name") {
 			m_sGhostTrackName = eChild.text();
 		}
+		else if (eChild.tagName() == "beats-per-bar-2") {
+			m_iBeatsPerBar2 = eChild.text().toUInt();
+		}
+		else if (eChild.tagName() == "beat-divisor-2") {
+			m_iBeatDivisor2 = eChild.text().toUInt();
+		}
 	}
 
 	return true;
@@ -1327,6 +1339,14 @@ bool qtractorMidiClip::saveClipElement (
 	if (!m_sGhostTrackName.isEmpty()) {
 		pDocument->saveTextElement("ghost-track-name",
 			m_sGhostTrackName, &eMidiClip);
+	}
+	if (m_iBeatsPerBar2 > 0) {
+		pDocument->saveTextElement("beats-per-bar-2",
+			QString::number(m_iBeatsPerBar2), &eMidiClip);
+	}
+	if (m_iBeatDivisor2 > 0) {
+		pDocument->saveTextElement("beat-divisor-2",
+			QString::number(m_iBeatDivisor2), &eMidiClip);
 	}
 	pElement->appendChild(eMidiClip);
 
