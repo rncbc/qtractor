@@ -375,27 +375,27 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		if (m_pEditor->isSnapZebra() && (iBar & 1))
 			painter.fillRect(QRect(x, 0, x2 - x + 1, h), zebra);
 		// Beat lines...
-		const unsigned short iBeatsPerBar = pNode->beatsPerBar2();
-		const float q = float(x2 - x) / float(iBeatsPerBar);
-		if (q > 8.0f) {
-			float p = float(x);
-			for (int i = 0; i < iBeatsPerBar; ++i) {
+		const unsigned short iBeatsPerBar2 = pNode->beatsPerBar2();
+		const float q2 = float(x2 - x) / float(iBeatsPerBar2);
+		if (q2 > 8.0f) {
+			float p2 = float(x);
+			for (int i = 0; i < iBeatsPerBar2; ++i) {
 				if (iSnapPerBeat > 1) {
-					const float q1 = q / float(iSnapPerBeat);
+					const float q1 = q2 / float(iSnapPerBeat);
 					if (q1 > 4.0f) {
 						painter.setPen(rgbBase.value() < 0x7f
 							? rgbLight.darker(105) : rgbLight.lighter(120));
-						float p1 = p;
+						float p1 = p2;
 						for (int j = 1; j < iSnapPerBeat; ++j) {
-							const int x1 = ::rintf(p1 += q1);
+							const int x1 = int(p1 += q1);
 							painter.drawLine(x1, 0, x1, h);
 						}
 					}
 				}
-				x = ::rintf(p += q);
+				x = int(p2 += q2);
 				if (x > w)
 					break;
-				if (i < iBeatsPerBar - 1) {
+				if (i < iBeatsPerBar2 - 1) {
 					painter.setPen(rgbLight);
 					painter.drawLine(x, 0, x, h);
 				}

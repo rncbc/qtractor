@@ -222,8 +222,8 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 	QLinearGradient gradDark(x, 0, x + w3, 0);
 	gradDark.setColorAt(0.0, rgbLight);
 	gradDark.setColorAt(0.4, rgbDark);
-	gradDark.setColorAt(0.96, rgbDark);
-	gradDark.setColorAt(0.98, rgbLight);
+	gradDark.setColorAt(0.92, rgbDark);
+	gradDark.setColorAt(0.96, rgbLight);
 	gradDark.setColorAt(1.0, rgbDark);
 	painter.setBrush(gradDark);
 #else

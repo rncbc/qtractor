@@ -168,11 +168,11 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 #else
 	unsigned short iBar = pNode->barFromPixel(dx);
 	if (iBar > 0) --iBar;
-	x = x1 = pNode->pixelFromBar(iBar) - dx - 1;
+	x = x1 = pNode->pixelFromBar(iBar) - dx;
 	while (x < w) {
 		// Next bar...
 		pNode = cursor.seekPixel(x + dx);
-		const int x2 = pNode->pixelFromBar(++iBar) - dx - 1;
+		const int x2 = pNode->pixelFromBar(++iBar) - dx;
 		// Bar label...
 		if (x >= x1) {
 			const QString& sBar	= QString::number(iBar);
@@ -183,7 +183,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 			x1 += fm.horizontalAdvance(sBar) + 2;
 		}
 		x1 += 2;
-		// Tempo/time-sig label...
+		// Tempo/time-sig. label...
 		if (iBar == pNode->bar + 1) {
 			const QString& sTempo = QString("%1 %2/%3")
 				.arg(pNode->tempo, 0, 'f', 1)
@@ -195,12 +195,12 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 			x1 += fm.horizontalAdvance(sTempo) + 2;
 		}
 		// Beat lines...
-		const unsigned short iBeatsPerBar = pNode->beatsPerBar2();
-		const float q = float(x2 - x) / float(iBeatsPerBar);
-		if (q > 8.0f) {
-			float p = float(x);
-			for (int i = 1; i < iBeatsPerBar; ++i) {
-				x = ::rintf(p += q);
+		const unsigned short iBeatsPerBar2 = pNode->beatsPerBar2();
+		const float q2 = float(x2 - x) / float(iBeatsPerBar2);
+		if (q2 > 8.0f) {
+			float p2 = float(x - 1);
+			for (int i = 1; i < iBeatsPerBar2; ++i) {
+				x = int(p2 += q2);
 				if (x > w)
 					break;
 				if (x > x1) {
@@ -216,9 +216,9 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		if (x2 > x1) {
 			y1 = 0;
 			painter.setPen(pal.mid().color());
-			painter.drawLine(x2, y1, x2, y2);
+			painter.drawLine(x2 - 1, y1, x2 - 1, y2);
 			painter.setPen(pal.light().color());
-			painter.drawLine(x2 + 1, y1, x2 + 1, y2);
+			painter.drawLine(x2, y1, x2, y2);
 		}
 		// Move forward...
 		x = x2;

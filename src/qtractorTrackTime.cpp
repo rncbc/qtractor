@@ -112,6 +112,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	
 	QPainter painter(&m_pixmap);
 //	painter.initFrom(this);
+	painter.setFont(qtractorScrollView::font());
 
 	// Draw the time scale...
 	//
