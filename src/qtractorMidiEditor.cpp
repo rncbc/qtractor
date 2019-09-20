@@ -1952,15 +1952,17 @@ void qtractorMidiEditor::selectEvent ( qtractorMidiEvent *pEvent, bool bSelect )
 	// Commit selection...
 	m_select.update(true);
 
+	const QSize pad(2, 2);
+
 	rectUpdateView = rectUpdateView.united(m_select.rectView());
 	m_pEditView->viewport()->update(QRect(
 		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
-		rectUpdateView.size()));
+		rectUpdateView.size() + pad));
 
 	rectUpdateEvent = rectUpdateEvent.united(m_select.rectEvent());
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
-		rectUpdateEvent.size()));
+		rectUpdateEvent.size() + pad));
 }
 
 
@@ -3421,15 +3423,17 @@ void qtractorMidiEditor::updateDragSelect (
 	// Commit selection...
 	m_select.update(flags & SelectCommit);
 
+	const QSize pad(2, 2);
+
 	rectUpdateView = rectUpdateView.united(m_select.rectView());
 	m_pEditView->viewport()->update(QRect(
 		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
-		rectUpdateView.size()));
+		rectUpdateView.size() + pad));
 
 	rectUpdateEvent = rectUpdateEvent.united(m_select.rectEvent());
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
-		rectUpdateEvent.size()));
+		rectUpdateEvent.size() + pad));
 }
 
 
@@ -3758,17 +3762,19 @@ void qtractorMidiEditor::updateDragMove (
 		m_posDelta.setY(0);
 	}
 
+	const QSize pad(2, 2);
+
 	rectUpdateView = rectUpdateView.united(
 		m_select.rectView().translated(m_posDelta));
 	m_pEditView->viewport()->update(QRect(
 		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
-		rectUpdateView.size()));
+		rectUpdateView.size() + pad));
 
 	rectUpdateEvent = rectUpdateEvent.united(
 		m_select.rectEvent().translated(m_posDelta.x(), 0));
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
-		rectUpdateEvent.size()));
+		rectUpdateEvent.size() + pad));
 
 	// Maybe we've change some note pending...
 	if (m_bSendNotes && m_pEventDrag
@@ -3917,17 +3923,19 @@ void qtractorMidiEditor::updateDragResize (
 	m_posDelta.setX(dx);
 	m_posDelta.setY(dy);
 
+	const QSize pad(2, 2);
+
 	rectUpdateView = rectUpdateView.united(
 		m_select.rectView().translated(m_posDelta.x(), 0));
 	m_pEditView->viewport()->update(QRect(
 		m_pEditView->contentsToViewport(rectUpdateView.topLeft()),
-		rectUpdateView.size()));
+		rectUpdateView.size() + pad));
 
 	rectUpdateEvent = rectUpdateEvent.united(
 		m_select.rectEvent().translated(m_posDelta));
 	m_pEditEvent->viewport()->update(QRect(
 		m_pEditEvent->contentsToViewport(rectUpdateEvent.topLeft()),
-		rectUpdateEvent.size()));
+		rectUpdateEvent.size() + pad));
 
 	// Show anchor event tooltip...
 	if (m_bToolTips) {

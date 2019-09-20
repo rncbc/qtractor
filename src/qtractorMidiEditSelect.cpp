@@ -55,8 +55,8 @@ void qtractorMidiEditSelect::addItem ( qtractorMidiEvent *pEvent,
 {
 	m_items.insert(pEvent, new Item(rectEvent, rectView, iDeltaTime));
 
-	m_rectEvent = m_rectEvent.united(rectEvent.adjusted(0, 0, +1, +1));
-	m_rectView = m_rectView.united(rectView.adjusted(0, 0, +1, +1));
+	m_rectEvent = m_rectEvent.united(rectEvent);
+	m_rectView = m_rectView.united(rectView);
 }
 
 
