@@ -561,17 +561,28 @@ if test "x$ac_uic" = "xno"; then
 fi
 AC_SUBST(ac_uic)
 
+
 # Check for Qt lupdate utility.
 AC_PATH_TOOL(ac_lupdate, lupdate, [no], $ac_path)
 if test "x$ac_lupdate" = "xno"; then
-   AC_MSG_ERROR([lupdate $ac_errmsg])
+   AC_PATH_TOOL(ac_cv_lupdate, lupdate-qt5, [no], $ac_path)
+   if test "x$ac_cv_lupdate" = "xno"; then
+      AC_MSG_ERROR([lupdate $ac_errmsg (qt5-linguist)])
+   else
+      ac_lupdate=$ac_cv_lupdate;
+   fi
 fi
 AC_SUBST(ac_lupdate)
 
 # Check for Qt lrelease utility.
 AC_PATH_TOOL(ac_lrelease, lrelease, [no], $ac_path)
-if test "x$ac_release" = "xno"; then
-   AC_MSG_ERROR([lrelease $ac_errmsg])
+if test "x$ac_lrelease" = "xno"; then
+   AC_PATH_TOOL(ac_cv_lrelease, lrelease-qt5, [no], $ac_path)
+   if test "x$ac_cv_lrelease" = "xno"; then
+      AC_MSG_ERROR([lrelease $ac_errmsg (qt5-linguist)])
+   else
+      ac_lrelease=$ac_cv_lrelease;
+   fi
 fi
 AC_SUBST(ac_lrelease)
 
