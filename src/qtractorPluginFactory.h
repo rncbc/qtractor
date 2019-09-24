@@ -1,7 +1,7 @@
 // qtractorPluginFactory.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,7 +39,7 @@ class qtractorPluginFactory : public QObject
 public:
 
 	// Constructor.
-	qtractorPluginFactory(QObject *pParent = NULL);
+	qtractorPluginFactory(QObject *pParent = nullptr);
 
 	// Destructor.
 	~qtractorPluginFactory();
@@ -143,7 +143,7 @@ class qtractorPluginFactory::Scanner : public QProcess
 public:
 
 	// ctor.
-	Scanner(qtractorPluginType::Hint typeHint, QObject *pParent = NULL);
+	Scanner(qtractorPluginType::Hint typeHint, QObject *pParent = nullptr);
 
 	// Open/close method.
 	bool open(bool bReset = false);

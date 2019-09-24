@@ -34,7 +34,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Tempo Adjust - Qtractor</string>
+   <string>Tempo Adjust</string>
   </property>
   <property name="windowIcon">
    <iconset resource="qtractor.qrc">:/images/transportMetro.png</iconset>

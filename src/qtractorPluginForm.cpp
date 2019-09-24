@@ -80,7 +80,7 @@ qtractorPluginForm::qtractorPluginForm (
 	const QFont& font = QWidget::font();
 	QWidget::setFont(QFont(font.family(), font.pointSize() - 1));
 
-	m_pPlugin     = NULL;
+	m_pPlugin     = nullptr;
 	m_iDirtyCount = 0;
 	m_iUpdate     = 0;
 
@@ -90,7 +90,7 @@ qtractorPluginForm::qtractorPluginForm (
 	m_ui.PresetComboBox->setValidator(
 		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetComboBox));
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
-	m_ui.PresetComboBox->setCompleter(NULL);
+	m_ui.PresetComboBox->setCompleter(nullptr);
 
 	// Have some effective feedback when toggling on/off...
 	QIcon iconActivate;
@@ -163,7 +163,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// Set the new reference...
 	m_pPlugin = pPlugin;
 
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	// Dispatch any pending updates.
@@ -185,7 +185,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	int iItems = iParams;
 #ifdef CONFIG_LV2_PATCH
-	qtractorLv2Plugin *pLv2Plugin = NULL;
+	qtractorLv2Plugin *pLv2Plugin = nullptr;
 	if (pType->typeHint() == qtractorPluginType::Lv2)
 		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
 	if (pLv2Plugin)
@@ -216,9 +216,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	}
 
 	// Maybe we need a tabbed widget...
-	QTabWidget  *pTabWidget  = NULL;
-	QGridLayout *pGridLayout = NULL;
-	QWidget     *pPageWidget = NULL;
+	QTabWidget  *pTabWidget  = nullptr;
+	QGridLayout *pGridLayout = nullptr;
+	QWidget     *pPageWidget = nullptr;
 
 	int iPage = 0;
 	const QString sPage = tr("Page %1");
@@ -394,7 +394,7 @@ QString qtractorPluginForm::preset (void) const
 // Update activation state.
 void qtractorPluginForm::updateActivated (void)
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	if (m_iUpdate > 0)
@@ -423,10 +423,10 @@ void qtractorPluginForm::updateDirtyCount (void)
 void qtractorPluginForm::updateAuxSendBusName (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	m_ui.AuxSendBusNameComboBox->clear();
@@ -440,10 +440,10 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 	if (pType->index() > 0) {
 		qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
 			= static_cast<qtractorAudioAuxSendPlugin *> (m_pPlugin);
-		if (pAudioAuxSendPlugin == NULL)
+		if (pAudioAuxSendPlugin == nullptr)
 			return;
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-		if (pAudioEngine == NULL)
+		if (pAudioEngine == nullptr)
 			return;
 		const QIcon iconAudio(":/images/trackAudio.png");
 		m_ui.AuxSendBusNameComboBox->addItem(iconAudio, tr("(none)"));
@@ -461,10 +461,10 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 	} else {
 		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
 			= static_cast<qtractorMidiAuxSendPlugin *> (m_pPlugin);
-		if (pMidiAuxSendPlugin == NULL)
+		if (pMidiAuxSendPlugin == nullptr)
 			return;
 		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-		if (pMidiEngine == NULL)
+		if (pMidiEngine == nullptr)
 			return;
 		const QIcon iconMidi(":/images/trackMidi.png");
 		m_ui.AuxSendBusNameComboBox->addItem(iconMidi, tr("(none)"));
@@ -491,7 +491,7 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 // Editor widget methods.
 void qtractorPluginForm::toggleEditor ( bool bOn )
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	if (m_iUpdate > 0)
@@ -518,7 +518,7 @@ void qtractorPluginForm::changePresetSlot ( const QString& sPreset )
 
 void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	if (m_iUpdate > 0 || sPreset.isEmpty())
@@ -532,7 +532,7 @@ void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
 
 void qtractorPluginForm::openPresetSlot (void)
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	qtractorPluginType *pType = m_pPlugin->type();
@@ -545,7 +545,7 @@ void qtractorPluginForm::openPresetSlot (void)
 
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// We'll assume that there's an external file...
@@ -560,14 +560,14 @@ void qtractorPluginForm::openPresetSlot (void)
 	}
 
 	const QString& sTitle
-		= tr("Open Preset") + " - " QTRACTOR_TITLE;
+		= tr("Open Preset");
 
 	QStringList filters;
 	filters.append(tr("Preset files (*.%1)").arg(exts.join(" *.")));
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
@@ -576,7 +576,7 @@ void qtractorPluginForm::openPresetSlot (void)
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to save...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
-		sTitle, pOptions->sPresetDir, sFilter, NULL, options);
+		sTitle, pOptions->sPresetDir, sFilter, nullptr, options);
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(pParentWidget,
@@ -605,7 +605,7 @@ void qtractorPluginForm::openPresetSlot (void)
 		} else {
 			// Failure (maybe wrong plugin)...
 			QMessageBox::critical(this,
-				tr("Error") + " - " QTRACTOR_TITLE,
+				tr("Error"),
 				tr("Preset could not be loaded from file:\n\n"
 				"\"%1\".\n\n"
 				"Sorry.").arg(sFilename),
@@ -619,7 +619,7 @@ void qtractorPluginForm::openPresetSlot (void)
 
 void qtractorPluginForm::savePresetSlot (void)
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	const QString& sPreset = m_ui.PresetComboBox->currentText();
@@ -628,7 +628,7 @@ void qtractorPluginForm::savePresetSlot (void)
 
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// The current state preset is about to be saved...
@@ -657,12 +657,12 @@ void qtractorPluginForm::savePresetSlot (void)
 		// Prompt if file does not currently exist...
 		if (!fi.exists()) {
 			const QString& sTitle
-				= tr("Save Preset") + " - " QTRACTOR_TITLE;
+				= tr("Save Preset");
 			QStringList filters;
 			filters.append(tr("Preset files (*.%1)").arg(exts.join(" *.")));
 			filters.append(tr("All files (*.*)"));
 			const QString& sFilter = filters.join(";;");
-			QWidget *pParentWidget = NULL;
+			QWidget *pParentWidget = nullptr;
 			QFileDialog::Options options = 0;
 			if (pOptions->bDontUseNativeDialogs) {
 				options |= QFileDialog::DontUseNativeDialog;
@@ -671,7 +671,7 @@ void qtractorPluginForm::savePresetSlot (void)
 		#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 			// Ask for the filename to save...
 			sFilename = QFileDialog::getSaveFileName(pParentWidget,
-				sTitle, sFilename, sFilter, NULL, options);
+				sTitle, sFilename, sFilter, nullptr, options);
 		#else
 			// Construct save-file dialog...
 			QFileDialog fileDialog(pParentWidget,
@@ -704,7 +704,7 @@ void qtractorPluginForm::savePresetSlot (void)
 			} else {
 				// Failure (maybe wrong suffix)...
 				QMessageBox::critical(this,
-					tr("Error") + " - " QTRACTOR_TITLE,
+					tr("Error"),
 					tr("Preset could not be saved to file:\n\n"
 					"\"%1\".\n\n"
 					"Sorry.").arg(sFilename),
@@ -721,7 +721,7 @@ void qtractorPluginForm::savePresetSlot (void)
 
 void qtractorPluginForm::deletePresetSlot (void)
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	const QString& sPreset =  m_ui.PresetComboBox->currentText();
@@ -730,14 +730,14 @@ void qtractorPluginForm::deletePresetSlot (void)
 
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// A preset entry is about to be deleted;
 	// prompt user if he/she's sure about this...
 	if (pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to delete preset:\n\n"
 			"\"%1\" (%2)\n\n"
 			"Are you sure?")
@@ -770,7 +770,7 @@ void qtractorPluginForm::deletePresetSlot (void)
 // Editor slot.
 void qtractorPluginForm::editSlot ( bool bOn )
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	if (m_iUpdate > 0)
@@ -790,7 +790,7 @@ void qtractorPluginForm::editSlot ( bool bOn )
 // Activation slot.
 void qtractorPluginForm::activateSlot ( bool bOn )
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	if (m_iUpdate > 0)
@@ -837,10 +837,10 @@ void qtractorPluginForm::returnsSlot (void)
 void qtractorPluginForm::changeAuxSendBusNameSlot ( const QString& sAuxSendBusName )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	qtractorPluginType *pType = m_pPlugin->type();
@@ -856,22 +856,22 @@ void qtractorPluginForm::changeAuxSendBusNameSlot ( const QString& sAuxSendBusNa
 void qtractorPluginForm::clickAuxSendBusNameSlot (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	qtractorPluginType *pType = m_pPlugin->type();
 	if (pType->typeHint() != qtractorPluginType::AuxSend)
 		return;
 
-	qtractorEngine *pEngine = NULL;
+	qtractorEngine *pEngine = nullptr;
 	if (pType->index() > 0)
 		pEngine = pSession->audioEngine();
 	else
 		pEngine = pSession->midiEngine();
-	if (pEngine == NULL)
+	if (pEngine == nullptr)
 		return;
 
 	// Call here the bus management form.
@@ -895,7 +895,7 @@ void qtractorPluginForm::updateDirectAccessParamSlot (void)
 {
 	m_pDirectAccessParamMenu->clear();
 
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	QAction *pAction;
@@ -925,7 +925,7 @@ void qtractorPluginForm::updateDirectAccessParamSlot (void)
 
 void qtractorPluginForm::changeDirectAccessParamSlot (void)
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	if (m_iUpdate > 0)
@@ -933,7 +933,7 @@ void qtractorPluginForm::changeDirectAccessParamSlot (void)
 
 	// Retrieve direct access parameter index from action data...
 	QAction *pAction = qobject_cast<QAction *> (sender());
-	if (pAction == NULL)
+	if (pAction == nullptr)
 		return;
 
 	const int iDirectAccessParamIndex = pAction->data().toInt();
@@ -953,7 +953,7 @@ void qtractorPluginForm::changeDirectAccessParamSlot (void)
 // Parameter-widget refreshner-loader.
 void qtractorPluginForm::refresh (void)
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	if (m_iUpdate > 0)
@@ -1011,7 +1011,7 @@ void qtractorPluginForm::stabilize (void)
 	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
 
 	bool bExists  = false;
-	bool bEnabled = (m_pPlugin != NULL);
+	bool bEnabled = (m_pPlugin != nullptr);
 	m_ui.ActivateToolButton->setEnabled(bEnabled);
 	if (bEnabled)
 		bEnabled = (pType->controlIns() > 0	|| pType->isConfigure());
@@ -1124,11 +1124,11 @@ void qtractorPluginForm::midiControlMenuSlot ( const QPoint& pos )
 // Update the about text label (with some varying meta-data)...
 void qtractorPluginForm::updateLatencyTextLabel (void)
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	const unsigned long iLatency = m_pPlugin->latency();
@@ -1232,10 +1232,10 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	qtractorPluginParam *pParam, QWidget *pParent )
 	: QWidget(pParent), m_pParam(pParam)
 {
-	m_pSlider   = NULL;
-	m_pSpinBox  = NULL;
-	m_pCheckBox = NULL;
-	m_pDisplay  = NULL;
+	m_pSlider   = nullptr;
+	m_pSpinBox  = nullptr;
+	m_pCheckBox = nullptr;
+	m_pDisplay  = nullptr;
 
 	QGridLayout *pGridLayout = new QGridLayout();
 	pGridLayout->setMargin(0);
@@ -1372,11 +1372,11 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	qtractorPlugin *pPlugin, unsigned long iProperty, QWidget *pParent )
 	: QWidget(pParent), m_pPlugin(pPlugin), m_iProperty(iProperty)
 {
-	m_pCheckBox   = NULL;
-	m_pSpinBox    = NULL;
-	m_pTextEdit   = NULL;
-	m_pComboBox   = NULL;
-	m_pToolButton = NULL;
+	m_pCheckBox   = nullptr;
+	m_pSpinBox    = nullptr;
+	m_pTextEdit   = nullptr;
+	m_pComboBox   = nullptr;
+	m_pToolButton = nullptr;
 
 	QGridLayout *pGridLayout = new QGridLayout();
 	pGridLayout->setMargin(0);
@@ -1384,15 +1384,15 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 
 #ifdef CONFIG_LV2_PATCH
 	qtractorPluginType *pType = m_pPlugin->type();
-	qtractorLv2Plugin *pLv2Plugin = NULL;
-	qtractorLv2Plugin::Property *pLv2Prop = NULL;
+	qtractorLv2Plugin *pLv2Plugin = nullptr;
+	qtractorLv2Plugin::Property *pLv2Prop = nullptr;
 	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
 		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
 	if (pLv2Plugin) {
 		const LV2_URID key = m_iProperty;
 		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
 		if (pszKey)
-			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, NULL);
+			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, nullptr);
 	}
 #endif
 
@@ -1496,15 +1496,15 @@ void qtractorPluginPropertyWidget::refresh (void)
 
 #ifdef CONFIG_LV2_PATCH
 	qtractorPluginType *pType = m_pPlugin->type();
-	qtractorLv2Plugin *pLv2Plugin = NULL;
+	qtractorLv2Plugin *pLv2Plugin = nullptr;
 	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
 		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
 	if (pLv2Plugin) {
-		qtractorLv2Plugin::Property *pLv2Prop = NULL;
+		qtractorLv2Plugin::Property *pLv2Prop = nullptr;
 		const LV2_URID key = m_iProperty;
 		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
 		if (pszKey)
-			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, NULL);
+			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, nullptr);
 		if (pLv2Prop) {
 			if (m_pCheckBox) {
 				const bool bCheckBox = m_pCheckBox->blockSignals(true);
@@ -1545,12 +1545,12 @@ void qtractorPluginPropertyWidget::refresh (void)
 void qtractorPluginPropertyWidget::buttonClicked (void)
 {
 	// Sure we have this...
-	if (m_pComboBox == NULL)
+	if (m_pComboBox == nullptr)
 		return;
 
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// Ask for the filename to open...
@@ -1561,9 +1561,9 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 	QString sFilename = m_pComboBox->itemData(iIndex).toString();
 
 	const QString& sTitle
-		= tr("Open File") + " - " QTRACTOR_TITLE;
+		= tr("Open File");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
@@ -1571,7 +1571,7 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 	}
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
-		sTitle, sFilename, QString(), NULL, options);
+		sTitle, sFilename, QString(), nullptr, options);
 #else
 	// Construct open-file dialog...
 	QFileDialog fileDialog(pParentWidget, sTitle, sFilename);
@@ -1601,7 +1601,7 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 // Property value change slot.
 void qtractorPluginPropertyWidget::propertyChanged (void)
 {
-	if (m_pPlugin == NULL)
+	if (m_pPlugin == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0

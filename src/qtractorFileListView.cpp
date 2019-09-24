@@ -298,13 +298,13 @@ qtractorFileListView::qtractorFileListView (
 	qtractorFileList::Type iFileType, QWidget *pParent )
 	: QTreeWidget(pParent), m_iFileType(iFileType)
 {
-	m_pAutoOpenTimer   = NULL;
+	m_pAutoOpenTimer   = nullptr;
 	m_iAutoOpenTimeout = 0;
 
-	m_pDragItem = NULL;
-	m_pDropItem = NULL;
+	m_pDragItem = nullptr;
+	m_pDropItem = nullptr;
 
-	m_pRubberBand = NULL;
+	m_pRubberBand = nullptr;
 
 	QTreeWidget::setRootIsDecorated(false);
 	QTreeWidget::setUniformRowHeights(true);
@@ -382,11 +382,11 @@ qtractorFileListItem *qtractorFileListView::addFileItem (
 	const QString& sPath, qtractorFileGroupItem *pParentItem )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return NULL;
+	if (pSession == nullptr)
+		return nullptr;
 
 	qtractorFileListItem *pFileItem = findFileItem(sPath);
-	if (pFileItem == NULL) {
+	if (pFileItem == nullptr) {
 		pFileItem = createFileItem(sPath);
 		if (pFileItem) {
 			// Add to file/path registry...
@@ -431,7 +431,7 @@ qtractorFileGroupItem *qtractorFileListView::addGroupItem (
 	const QString& sName, qtractorFileGroupItem *pParentItem )
 {
 	qtractorFileGroupItem *pGroupItem = findGroupItem(sName);
-	if (pGroupItem == NULL) {
+	if (pGroupItem == nullptr) {
 		pGroupItem = new qtractorFileGroupItem(sName);
 		if (pParentItem)
 			pParentItem->addChild(pGroupItem);
@@ -460,7 +460,7 @@ qtractorFileListItem *qtractorFileListView::currentFileItem (void) const
 	if (pItem && pItem->type() == FileItem)
 		return static_cast<qtractorFileListItem *> (pItem);
 	
-	return NULL;
+	return nullptr;
 }
 
 
@@ -469,8 +469,8 @@ qtractorFileListItem *qtractorFileListView::selectFileItem (
 	const QString& sPath, int iChannel )
 {
 	qtractorFileListItem *pFileItem = findFileItem(sPath);
-	if (pFileItem == NULL)
-		return NULL;
+	if (pFileItem == nullptr)
+		return nullptr;
 
 	// Shall we go deep further intto a channel item?
 	if (iChannel >= 0) {
@@ -514,7 +514,7 @@ void qtractorFileListView::openFile (void)
 		return;
 
 	// Find a proper group parent group item...
-	qtractorFileListItem *pFileItem = NULL;
+	qtractorFileListItem *pFileItem = nullptr;
 	qtractorFileGroupItem *pParentItem = currentGroupItem();
 	// Pick each one of the selected files...
 	int iUpdate = 0;
@@ -603,7 +603,7 @@ void qtractorFileListView::pasteItem (void)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 
 	const QMimeData *pMimeData = QApplication::clipboard()->mimeData();
-	if (pMimeData == NULL)
+	if (pMimeData == nullptr)
 		return;
 
 	if (!pMimeData->hasUrls())
@@ -648,11 +648,11 @@ void qtractorFileListView::renameItem (void)
 void qtractorFileListView::removeItem (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	int iUpdate = 0;
@@ -661,7 +661,7 @@ void qtractorFileListView::removeItem (void)
 		// Prompt user if he/she's sure about this...
 		if (pOptions->bConfirmRemove) {
 			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("About to remove %1 file item(s).\n\n"
 				"Are you sure?")
 				.arg(items.count()),
@@ -690,7 +690,7 @@ void qtractorFileListView::removeItem (void)
 			// Prompt user if he/she's sure about this...
 			if (pOptions->bConfirmRemove) {
 				if (QMessageBox::warning(this,
-					tr("Warning") + " - " QTRACTOR_TITLE,
+					tr("Warning"),
 					tr("About to remove %1 item:\n\n"
 					"\"%2\"\n\n"
 					"Are you sure?")
@@ -723,9 +723,9 @@ void qtractorFileListView::removeItem (void)
 // Emit actiovation signal for given item...
 void qtractorFileListView::activateItem ( QTreeWidgetItem *pItem )
 {
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		pItem = QTreeWidget::currentItem();
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	if (pItem->type() == FileItem) {
@@ -747,7 +747,7 @@ void qtractorFileListView::activateItem ( QTreeWidgetItem *pItem )
 // Clean-up unused file items.
 void qtractorFileListView::cleanupItem ( QTreeWidgetItem *pItem )
 {
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	switch (pItem->type()) {
@@ -778,7 +778,7 @@ void qtractorFileListView::cleanupItem ( QTreeWidgetItem *pItem )
 
 void qtractorFileListView::cleanup (void)
 {
-	QTreeWidget::setCurrentItem(NULL);
+	QTreeWidget::setCurrentItem(nullptr);
 	QTreeWidget::selectionModel()->clearSelection();
 
 	const int iItemCount = QTreeWidget::topLevelItemCount();
@@ -792,8 +792,8 @@ void qtractorFileListView::cleanup (void)
 // Master clean-up.
 void qtractorFileListView::clear (void)
 {
-	dragLeaveEvent(NULL);
-	m_pDragItem = NULL;
+	dragLeaveEvent(nullptr);
+	m_pDragItem = nullptr;
 
 	QTreeWidget::clear();
 }
@@ -833,7 +833,7 @@ QTreeWidgetItem *qtractorFileListView::findItem (
 	}
 
 	// Not found.
-	return NULL;
+	return nullptr;
 }
 
 
@@ -865,7 +865,7 @@ QStringList qtractorFileListView::openFileNames (void)
 // In-place toggle slot.
 void qtractorFileListView::itemClickedSlot ( QTreeWidgetItem *pItem )
 {
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	if (pItem->type() == GroupItem) {
@@ -1000,7 +1000,7 @@ bool qtractorFileListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 // Handle mouse events for drag-and-drop stuff.
 void qtractorFileListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	dragLeaveEvent(NULL);
+	dragLeaveEvent(nullptr);
 
 	m_posDrag   = pMouseEvent->pos();
 	m_pDragItem = QTreeWidget::itemAt(m_posDrag);
@@ -1027,7 +1027,7 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		&& ((pMouseEvent->pos() - m_posDrag).manhattanLength()
 			>= QApplication::startDragDistance())) {
 		// We'll start dragging something alright...
-		QMimeData *pMimeData = NULL;
+		QMimeData *pMimeData = nullptr;
 		switch (m_pDragItem->type()) {
 		case GroupItem: {
 			pMimeData = new QMimeData();
@@ -1090,8 +1090,8 @@ void qtractorFileListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			// QTreeWidget::reset();
 			QTreeWidget::setSelectionMode(
 				QAbstractItemView::ExtendedSelection);
-			dragLeaveEvent(NULL);
-			m_pDragItem = NULL;
+			dragLeaveEvent(nullptr);
+			m_pDragItem = nullptr;
 		}
 	}
 }
@@ -1104,8 +1104,8 @@ void qtractorFileListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	QTreeWidget::setSelectionMode(
 		QAbstractItemView::ExtendedSelection);
 
-	dragLeaveEvent(NULL);
-	m_pDragItem = NULL;
+	dragLeaveEvent(nullptr);
+	m_pDragItem = nullptr;
 }
 
 
@@ -1113,7 +1113,7 @@ void qtractorFileListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 bool qtractorFileListView::canDecodeEvent ( QDropEvent *pDropEvent )
 {
 	if (m_pDragItem && pDropEvent->source() != this)
-		m_pDragItem = NULL;
+		m_pDragItem = nullptr;
 
 	return (pDropEvent->mimeData()->hasText()
 		|| pDropEvent->mimeData()->hasUrls());
@@ -1177,7 +1177,7 @@ QTreeWidgetItem *qtractorFileListView::dragDropItem ( const QPoint& pos )
 				m_pAutoOpenTimer->start(m_iAutoOpenTimeout);
 		}
 	} else {
-		m_pDropItem = NULL;
+		m_pDropItem = nullptr;
 		if (m_pAutoOpenTimer)
 			m_pAutoOpenTimer->stop();
 	}
@@ -1236,9 +1236,9 @@ void qtractorFileListView::dragLeaveEvent ( QDragLeaveEvent */*pDragLeaveEvent*/
 {
 	if (m_pRubberBand)
 		delete m_pRubberBand;
-	m_pRubberBand = NULL;
+	m_pRubberBand = nullptr;
 
-	m_pDropItem = NULL;
+	m_pDropItem = nullptr;
 	if (m_pAutoOpenTimer)
 		m_pAutoOpenTimer->stop();
 }
@@ -1248,8 +1248,8 @@ void qtractorFileListView::dropEvent ( QDropEvent *pDropEvent )
 {
 	QTreeWidgetItem *pDropItem = dragDropItem(pDropEvent->pos());
 	if (!canDropItem(pDropItem)) {
-		dragLeaveEvent(NULL);
-		m_pDragItem = NULL;
+		dragLeaveEvent(nullptr);
+		m_pDragItem = nullptr;
 		return;
 	}
 
@@ -1296,8 +1296,8 @@ void qtractorFileListView::dropEvent ( QDropEvent *pDropEvent )
 		emit contentsChanged();
 	}
 
-	dragLeaveEvent(NULL);
-	m_pDragItem = NULL;
+	dragLeaveEvent(nullptr);
+	m_pDragItem = nullptr;
 }
 
 
@@ -1306,8 +1306,8 @@ QTreeWidgetItem *qtractorFileListView::dropItem (
 	QTreeWidgetItem *pDropItem, QTreeWidgetItem *pDragItem, bool bOutdent )
 {
 	// We must be dropping something...
-	if (pDragItem == NULL)
-		return NULL;
+	if (pDragItem == nullptr)
+		return nullptr;
 
 	// Take the item from list...
 	int iItem;
@@ -1349,14 +1349,14 @@ void qtractorFileListView::moveRubberBand (
 	QTreeWidgetItem *pDropItem, bool bOutdent )
 {
 	// Is there any item upon we migh drop anything?
-	if (pDropItem == NULL) {
+	if (pDropItem == nullptr) {
 		if (m_pRubberBand)
 			m_pRubberBand->hide();
 		return;
 	}
 
 	// Create the rubber-band if there's none...
-	if (m_pRubberBand == NULL) {
+	if (m_pRubberBand == nullptr) {
 		m_pRubberBand = new qtractorRubberBand(
 			QRubberBand::Line, QTreeWidget::viewport());
 	#if 0
@@ -1392,7 +1392,7 @@ bool qtractorFileListView::loadListElement (
 		= static_cast<qtractorFileGroupItem *> (pItem);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Make it all relative to session directory...
@@ -1444,7 +1444,7 @@ bool qtractorFileListView::loadElement (
 {
 	clear();
 
-	return loadListElement(pDocument, pElement, NULL);
+	return loadListElement(pDocument, pElement, nullptr);
 }
 
 
@@ -1454,7 +1454,7 @@ bool qtractorFileListView::saveListElement (
 	QTreeWidgetItem *pItem )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Create the new child element...

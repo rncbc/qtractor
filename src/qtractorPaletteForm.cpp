@@ -77,7 +77,7 @@ static struct
 	{ "ToolTipText",     QPalette::ToolTipText     },
 	{ "NoRole",          QPalette::NoRole          },
 
-	{  NULL,             QPalette::NoRole          }
+	{  nullptr,             QPalette::NoRole          }
 };
 
 
@@ -89,7 +89,7 @@ qtractorPaletteForm::qtractorPaletteForm ( QWidget *parent, const QPalette& pal 
 {
 	m_ui.setupUi(this);
 
-	m_settings = NULL;
+	m_settings = nullptr;
 	m_owner = false;
 
 	m_modelUpdated = false;
@@ -160,7 +160,7 @@ qtractorPaletteForm::qtractorPaletteForm ( QWidget *parent, const QPalette& pal 
 
 qtractorPaletteForm::~qtractorPaletteForm (void)
 {
-	setSettings(NULL);
+	setSettings(nullptr);
 }
 
 
@@ -1100,7 +1100,7 @@ int qtractorPaletteForm::PaletteModel::groupToColumn ( QPalette::ColorGroup grou
 QWidget *qtractorPaletteForm::ColorDelegate::createEditor ( QWidget *parent,
 	const QStyleOptionViewItem&, const QModelIndex& index ) const
 {
-	QWidget *editor = NULL;
+	QWidget *editor = nullptr;
 
 	if (index.column() == 0) {
 		RoleEditor *ed = new RoleEditor(parent);

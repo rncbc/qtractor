@@ -65,7 +65,7 @@ qtractorMidiEditList::qtractorMidiEditList (
 	qtractorScrollView::setMouseTracking(true);
 
 	const QFont& font = qtractorScrollView::font();
-	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 2));
+	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 3));
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
@@ -169,6 +169,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 
 	QPainter painter(&m_pixmap);
 //	painter.initFrom(this);
+	painter.setFont(qtractorScrollView::font());
 
 	const int ch = qtractorScrollView::contentsHeight() - cy;
 
@@ -221,8 +222,8 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 	QLinearGradient gradDark(x, 0, x + w3, 0);
 	gradDark.setColorAt(0.0, rgbLight);
 	gradDark.setColorAt(0.4, rgbDark);
-	gradDark.setColorAt(0.96, rgbDark);
-	gradDark.setColorAt(0.98, rgbLight);
+	gradDark.setColorAt(0.92, rgbDark);
+	gradDark.setColorAt(0.96, rgbLight);
 	gradDark.setColorAt(1.0, rgbDark);
 	painter.setBrush(gradDark);
 #else

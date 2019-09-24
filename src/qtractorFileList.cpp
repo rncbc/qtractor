@@ -1,7 +1,7 @@
 // qtractorFileList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -48,7 +48,7 @@ qtractorFileListItem *qtractorFileList::findFileItem (
 	qtractorFileList::Type iType, const QString& sPath ) const
 {
 	Item *pItem = findItem(iType, sPath);
-	return (pItem ? pItem->fileItem() : NULL);
+	return (pItem ? pItem->fileItem() : nullptr);
 }
 
 
@@ -73,7 +73,7 @@ void qtractorFileList::removeFileItem (
 {
 	Item *pItem = findItem(iType, pFileItem->path());
 	if (pItem) {
-		pItem->setFileItem(NULL);
+		pItem->setFileItem(nullptr);
 	#ifdef CONFIG_DEBUG_0
 		qDebug("qtractorFileList::removeFileItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),
@@ -135,14 +135,14 @@ void qtractorFileList::removeClipItem (
 qtractorFileList::Item *qtractorFileList::findItem (
 	qtractorFileList::Type iType, const QString& sPath ) const
 {
-	return m_items.value(Key(iType, sPath), NULL);
+	return m_items.value(Key(iType, sPath), nullptr);
 }
 
 
 qtractorFileList::Item *qtractorFileList::addItem (
 	qtractorFileList::Type iType, const QString& sPath, bool bAutoRemove )
 {
-	Item *pItem = NULL;
+	Item *pItem = nullptr;
 
 	Key key(iType, sPath);
 	Hash::ConstIterator iter = m_items.constFind(key);

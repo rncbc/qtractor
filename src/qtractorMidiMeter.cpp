@@ -84,7 +84,7 @@ void qtractorMidiMeterScale::paintScale ( QPainter *pPainter )
 {
 	qtractorMidiMeter *pMidiMeter
 		= static_cast<qtractorMidiMeter *> (meter());
-	if (pMidiMeter == NULL)
+	if (pMidiMeter == nullptr)
 		return;
 
 	const int h = QWidget::height() - 4;
@@ -130,11 +130,11 @@ void qtractorMidiMeterValue::refresh ( unsigned long iStamp )
 {
 	qtractorMidiMeter *pMidiMeter
 		= static_cast<qtractorMidiMeter *> (meter());
-	if (pMidiMeter == NULL)
+	if (pMidiMeter == nullptr)
 		return;
 
 	qtractorMidiMonitor *pMidiMonitor = pMidiMeter->midiMonitor();
-	if (pMidiMonitor == NULL)
+	if (pMidiMonitor == nullptr)
 		return;
 
 	const float fValue = pMidiMonitor->value_stamp(iStamp);
@@ -178,7 +178,7 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 {
 	qtractorMidiMeter *pMidiMeter
 		= static_cast<qtractorMidiMeter *> (meter());
-	if (pMidiMeter == NULL)
+	if (pMidiMeter == nullptr)
 		return;
 
 	QPainter painter(this);
@@ -258,11 +258,11 @@ void qtractorMidiMeterLed::refresh ( unsigned long iStamp )
 {
 	qtractorMidiMeter *pMidiMeter
 		= static_cast<qtractorMidiMeter *> (meter());
-	if (pMidiMeter == NULL)
+	if (pMidiMeter == nullptr)
 		return;
 
 	qtractorMidiMonitor *pMidiMonitor = pMidiMeter->midiMonitor();
-	if (pMidiMonitor == NULL)
+	if (pMidiMonitor == nullptr)
 		return;
 
 	// Take care of the MIDI LED status...
@@ -408,7 +408,7 @@ qtractorMidiComboMeter::qtractorMidiComboMeter (
 	: QWidget(pParent)
 {
 	m_pMidiMeter = new qtractorMidiMeter(pMidiMonitor);
-	m_pAudioMeter = NULL;
+	m_pAudioMeter = nullptr;
 
 	QHBoxLayout *pHBoxLayout = new QHBoxLayout();
 	pHBoxLayout->setMargin(0);
@@ -450,7 +450,7 @@ qtractorAudioMeter *qtractorMidiComboMeter::audioMeter (void) const
 void qtractorMidiComboMeter::reset (void)
 {
 	qtractorMidiMonitor *pMidiMonitor = m_pMidiMeter->midiMonitor();
-	if (pMidiMonitor == NULL)
+	if (pMidiMonitor == nullptr)
 		return;
 
 	m_pMidiMeter->reset();
@@ -515,7 +515,7 @@ qtractorAudioOutputMonitor *qtractorMidiComboMeter::audioOutputMonitor (void) co
 	if (m_pAudioMeter)
 		return static_cast<qtractorAudioOutputMonitor *> (m_pAudioMeter->audioMonitor());
 	else
-		return NULL;
+		return nullptr;
 }
 
 
@@ -613,7 +613,7 @@ qtractorMidiMixerMeter::~qtractorMidiMixerMeter (void)
 void qtractorMidiMixerMeter::reset (void)
 {
 	qtractorMidiMonitor *pMidiMonitor = m_pMidiMeter->midiMonitor();
-	if (pMidiMonitor == NULL)
+	if (pMidiMonitor == nullptr)
 		return;
 
 	m_pMidiMeter->reset();

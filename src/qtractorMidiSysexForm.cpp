@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -95,7 +95,7 @@ qtractorMidiSysexForm::qtractorMidiSysexForm (
 	// Window modality (let plugin/tool windows rave around).
 	QDialog::setWindowModality(Qt::WindowModal);
 
-	m_pSysexList = NULL;
+	m_pSysexList = nullptr;
 
 	m_iDirtyCount  = 0;
 	m_iDirtyItem   = 0;
@@ -115,7 +115,7 @@ qtractorMidiSysexForm::qtractorMidiSysexForm (
 #endif
 
 	m_ui.NameComboBox->setInsertPolicy(QComboBox::NoInsert);
-	m_ui.NameComboBox->setCompleter(NULL);
+	m_ui.NameComboBox->setCompleter(nullptr);
 
 	refreshSysex();
 	refreshForm();
@@ -203,14 +203,14 @@ qtractorMidiSysexList *qtractorMidiSysexForm::sysexList (void) const
 void qtractorMidiSysexForm::importSlot (void)
 {
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	QStringList files;
 
 	const QString  sExt("syx");
 	const QString& sTitle
-		= tr("Import SysEx Files") + " - " QTRACTOR_TITLE;
+		= tr("Import SysEx Files");
 
 	QStringList filters;
 	filters.append(tr("SysEx files (*.%1)").arg(sExt));
@@ -218,7 +218,7 @@ void qtractorMidiSysexForm::importSlot (void)
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
@@ -227,7 +227,7 @@ void qtractorMidiSysexForm::importSlot (void)
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
-		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
+		sTitle, pOptions->sMidiSysexDir, sFilter, nullptr, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(pParentWidget,
@@ -256,7 +256,7 @@ void qtractorMidiSysexForm::importSlot (void)
 
 	// Start inserting in the current selected or last item...
 	QTreeWidgetItem *pItem = m_ui.SysexListView->currentItem();
-	if (pItem == NULL) {
+	if (pItem == nullptr) {
 		int iLastItem = m_ui.SysexListView->topLevelItemCount() - 1;
 		if (iLastItem >= 0)
 			pItem = m_ui.SysexListView->topLevelItem(iLastItem);
@@ -288,21 +288,21 @@ void qtractorMidiSysexForm::importSlot (void)
 void qtractorMidiSysexForm::exportSlot (void)
 {
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	QString sPath;
 
 	const QString  sExt("syx");
 	const QString& sTitle
-		= tr("Export SysEx File") + " - " QTRACTOR_TITLE;
+		= tr("Export SysEx File");
 
 	QStringList filters;
 	filters.append(tr("SysEx files (*.%1)").arg(sExt));
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
@@ -311,7 +311,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 #if 1// QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sPath = QFileDialog::getSaveFileName(pParentWidget,
-		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
+		sTitle, pOptions->sMidiSysexDir, sFilter, nullptr, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(pParentWidget,
@@ -340,7 +340,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 		// Check if already exists...
 		if (QFileInfo(sPath).exists()) {
 			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("The SysEx file already exists:\n\n"
 				"\"%1\"\n\n"
 				"Do you want to replace it?")
@@ -411,7 +411,7 @@ void qtractorMidiSysexForm::loadSlot ( const QString& sName )
 
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	++m_iUpdateSysex;
@@ -433,7 +433,7 @@ void qtractorMidiSysexForm::openSlot (void)
 {
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// We'll assume that there's an external file...
@@ -442,14 +442,14 @@ void qtractorMidiSysexForm::openSlot (void)
 	// Prompt if file does not currently exist...
 	const QString  sExt("syx");
 	const QString& sTitle
-		= tr("Open SysEx") + " - " QTRACTOR_TITLE;
+		= tr("Open SysEx");
 
 	QStringList filters;
 	filters.append(tr("SysEx files (*.%1)").arg(sExt));
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
@@ -458,7 +458,7 @@ void qtractorMidiSysexForm::openSlot (void)
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to save...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
-		sTitle, pOptions->sMidiSysexDir, sFilter, NULL, options);
+		sTitle, pOptions->sMidiSysexDir, sFilter, nullptr, options);
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(pParentWidget,
@@ -505,7 +505,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// The current state preset is about to be saved...
@@ -520,13 +520,13 @@ void qtractorMidiSysexForm::saveSlot (void)
 	// Prompt if file does not currently exist...
 	if (!fi.exists()) {
 		const QString& sTitle
-			= tr("Save SysEx") + " - " QTRACTOR_TITLE;
+			= tr("Save SysEx");
 		QStringList filters;
 		filters.append(tr("SysEx files (*.%1)").arg(sExt));
 		filters.append(tr("All files (*.*)"));
 		const QString& sFilter = filters.join(";;");
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		QWidget *pParentWidget = NULL;
+		QWidget *pParentWidget = nullptr;
 		QFileDialog::Options options = 0;
 		if (pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
@@ -535,7 +535,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 	#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 		// Ask for the filename to save...
 		sFilename = QFileDialog::getSaveFileName(pParentWidget,
-			sTitle, sFilename, sFilter, NULL, options);
+			sTitle, sFilename, sFilter, nullptr, options);
 	#else
 		// Construct save-file dialog...
 		QFileDialog fileDialog(pParentWidget, sTitle, sFilename, sFilter);
@@ -557,7 +557,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 	#endif
 	} else if (pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(parentWidget(),
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to replace SysEx:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
@@ -594,14 +594,14 @@ void qtractorMidiSysexForm::deleteSlot (void)
 
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// A preset entry is about to be removed;
 	// prompt user if he/she's sure about this...
 	if (pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to delete SysEx:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
@@ -636,7 +636,7 @@ void qtractorMidiSysexForm::addSlot (void)
 {
 	// Start inserting in the current selected or last item...
 	QTreeWidgetItem *pItem = m_ui.SysexListView->currentItem();
-	if (pItem == NULL) {
+	if (pItem == nullptr) {
 		int iLastItem = m_ui.SysexListView->topLevelItemCount() - 1;
 		if (iLastItem >= 0)
 			pItem = m_ui.SysexListView->topLevelItem(iLastItem);
@@ -663,7 +663,7 @@ void qtractorMidiSysexForm::addSlot (void)
 void qtractorMidiSysexForm::updateSlot (void)
 {
 	QTreeWidgetItem *pItem = m_ui.SysexListView->currentItem();
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	// Update item...
@@ -756,7 +756,7 @@ void qtractorMidiSysexForm::accept (void)
 {
 	if (m_iDirtyCount == 0)
 		return;
-	if (m_pSysexList == NULL)
+	if (m_pSysexList == nullptr)
 		return;
 
 	// Just reload the whole bunch...
@@ -794,7 +794,7 @@ void qtractorMidiSysexForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("SysEx settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -850,7 +850,7 @@ void qtractorMidiSysexForm::stabilizeForm (void)
 	m_ui.SaveButton->setEnabled(bEnabled && (!bExists || m_iDirtySysex > 0));
 	m_ui.DeleteButton->setEnabled(bEnabled && bExists);
 	m_ui.AddButton->setEnabled(bEnabled);
-	m_ui.UpdateButton->setEnabled(bEnabled && pItem != NULL);
+	m_ui.UpdateButton->setEnabled(bEnabled && pItem != nullptr);
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Reset)->setEnabled(
 		bEnabled || iItemCount > 0);
@@ -862,7 +862,7 @@ void qtractorMidiSysexForm::stabilizeForm (void)
 // Refresh all SysEx definition views.
 void qtractorMidiSysexForm::refreshForm (void)
 {
-	if (m_pSysexList == NULL)
+	if (m_pSysexList == nullptr)
 		return;
 
 	// Freeze...
@@ -870,7 +870,7 @@ void qtractorMidiSysexForm::refreshForm (void)
 
 	// Files list view...
 	m_ui.SysexListView->clear();
-	qtractorMidiSysexItem *pItem = NULL;
+	qtractorMidiSysexItem *pItem = nullptr;
 	QListIterator<qtractorMidiSysex *> iter(*m_pSysexList);
 	while (iter.hasNext()) {
 		pItem = new qtractorMidiSysexItem(
@@ -950,7 +950,7 @@ bool qtractorMidiSysexForm::loadSysexItems (
 		return false;
 
 	unsigned short iBuff = 0;
-	unsigned char *pBuff = NULL;
+	unsigned char *pBuff = nullptr;
 	unsigned short i = 0;
 
 	// Read the file....
@@ -1029,7 +1029,7 @@ void qtractorMidiSysexForm::loadSysexFile ( const QString& sFilename )
 	bool bResult = false;
 
 	unsigned short iBuff = 0;
-	unsigned char *pBuff = NULL;
+	unsigned char *pBuff = nullptr;
 	unsigned short i = 0;
 
 	// Read the file....
@@ -1071,7 +1071,7 @@ void qtractorMidiSysexForm::loadSysexFile ( const QString& sFilename )
 	if (!bResult) {
 		// Failure (maybe wrong preset)...
 		QMessageBox::critical(this,
-			tr("Error") + " - " QTRACTOR_TITLE,
+			tr("Error"),
 			tr("SysEx could not be loaded:\n\n"
 			"\"%1\".\n\n"
 			"Sorry.").arg(sFilename),

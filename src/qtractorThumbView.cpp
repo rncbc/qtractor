@@ -92,19 +92,19 @@ void qtractorThumbView::updateContents (void)
 	m_pixmap.fill(pal.dark().color());
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return;
 
 	const int n1 = pSession->tracks().count();
@@ -113,6 +113,7 @@ void qtractorThumbView::updateContents (void)
 
 	QPainter painter(&m_pixmap);
 //	painter.initFrom(this);
+//	painter.setFont(QFrame::font());
 
 	// Local contents length (in frames).
 	m_iContentsLength = pSession->sessionEnd();
@@ -210,15 +211,15 @@ void qtractorThumbView::updateThumb ( int dx )
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return;
 
 	const int cw = pSession->pixelFromFrame(m_iContentsLength) + 1;
@@ -251,15 +252,15 @@ void qtractorThumbView::updatePlayHead ( unsigned long iPlayHead )
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return;
 
 	const int f2 = 1 + (m_iContentsLength / w);
@@ -285,19 +286,19 @@ void qtractorThumbView::updateView ( int dx )
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return;
 
 	qtractorTrackView *pTrackView = pTracks->trackView();
-	if (pTrackView == NULL)
+	if (pTrackView == nullptr)
 		return;
 
 	const int cw = pSession->pixelFromFrame(m_iContentsLength) + 1;
@@ -320,15 +321,15 @@ void qtractorThumbView::setPlayHeadX ( int iPlayHeadX )
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return;
 
 	const int f2 = 1 + (m_iContentsLength / w);
@@ -353,15 +354,15 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 		return;
 	
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == NULL)
+	if (pTracks == nullptr)
 		return;
 
 	const int f2 = 1 + (m_iContentsLength / w);

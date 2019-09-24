@@ -1,7 +1,7 @@
 // qtractorMidiEventList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -44,8 +44,8 @@
 qtractorMidiEventListModel::qtractorMidiEventListModel (
 	qtractorMidiEditor *pEditor, QObject *pParent )
 	: QAbstractItemModel(pParent), m_pEditor(pEditor),
-		m_pSeq(NULL), m_iTimeOffset(0),
-		m_pEvent(NULL), m_iEvent(0)
+		m_pSeq(nullptr), m_iTimeOffset(0),
+		m_pEvent(nullptr), m_iEvent(0)
 {
 	m_headers
 		<< tr("Time")
@@ -122,16 +122,8 @@ QVariant qtractorMidiEventListModel::data (
 Qt::ItemFlags qtractorMidiEventListModel::flags (
 	const QModelIndex& index ) const
 {
-	Qt::ItemFlags ret = Qt::ItemFlags(0);
-
-	qtractorMidiEvent *pEvent = eventOfIndex(index);
-	if (pEvent && m_pEditor->isEventSelectable(pEvent)) {
-		ret = QAbstractItemModel::flags(index)
-			| Qt::ItemIsEnabled
-			| Qt::ItemIsEditable;
-	}
-
-	return ret;
+	const Qt::ItemFlags flags = QAbstractItemModel::flags(index);
+	return flags | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
 
@@ -160,7 +152,7 @@ void qtractorMidiEventListModel::reset (void)
 
 	m_iTimeOffset = m_pEditor->timeOffset();
 
-	m_pEvent = NULL;
+	m_pEvent = nullptr;
 	m_iEvent = 0;
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -174,13 +166,13 @@ void qtractorMidiEventListModel::reset (void)
 
 qtractorMidiEvent *qtractorMidiEventListModel::eventAt ( int i ) const
 {
-	if (m_pSeq == NULL)
-		return NULL;
+	if (m_pSeq == nullptr)
+		return nullptr;
 
 	const int n = m_pSeq->events().count();
 	const int m = (n >> 1);
 
-	if (m_pEvent == NULL || i > m_iEvent + m || i < m_iEvent - m) {
+	if (m_pEvent == nullptr || i > m_iEvent + m || i < m_iEvent - m) {
 		if (i > m) {
 			m_iEvent = n - 1;
 			m_pEvent = m_pSeq->events().last();
@@ -218,7 +210,7 @@ qtractorMidiEvent *qtractorMidiEventListModel::eventOfIndex (
 QModelIndex qtractorMidiEventListModel::indexOfEvent (
 	qtractorMidiEvent *pEvent ) const
 {
-	if (pEvent == NULL)
+	if (pEvent == nullptr)
 		return QModelIndex();
 
 	const unsigned long iTime = pEvent->time();
@@ -238,12 +230,12 @@ QModelIndex qtractorMidiEventListModel::indexOfEvent (
 QModelIndex qtractorMidiEventListModel::indexFromTick (
 	unsigned long iTick ) const
 {
-	if (m_pEvent == NULL && m_pSeq) {
+	if (m_pEvent == nullptr && m_pSeq) {
 		m_iEvent = 0;
 		m_pEvent = m_pSeq->events().first();
 	}
 
-	if (m_pEvent == NULL)
+	if (m_pEvent == nullptr)
 		return QModelIndex();
 
 	const unsigned long iTime
@@ -465,14 +457,14 @@ QWidget *qtractorMidiEventItemDelegate::createEditor ( QWidget *pParent,
 		= static_cast<const qtractorMidiEventListModel *> (index.model());
 
 	qtractorMidiEvent *pEvent = pListModel->eventOfIndex(index);
-	if (pEvent == NULL)
-		return NULL;
+	if (pEvent == nullptr)
+		return nullptr;
 
 	qtractorMidiEditor *pMidiEditor = pListModel->editor();
-	if (pMidiEditor == NULL)
-		return NULL;
+	if (pMidiEditor == nullptr)
+		return nullptr;
 
-	QWidget *pEditor = NULL;
+	QWidget *pEditor = nullptr;
 
 	switch (index.column()) {
 	case 0: // Time.
@@ -551,11 +543,11 @@ void qtractorMidiEventItemDelegate::setEditorData ( QWidget *pEditor,
 		= static_cast<const qtractorMidiEventListModel *> (index.model());
 
 	qtractorMidiEvent *pEvent = pListModel->eventOfIndex(index);
-	if (pEvent == NULL)
+	if (pEvent == nullptr)
 		return;
 
 	qtractorMidiEditor *pMidiEditor = pListModel->editor();
-	if (pMidiEditor == NULL)
+	if (pMidiEditor == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -624,11 +616,11 @@ void qtractorMidiEventItemDelegate::setModelData ( QWidget *pEditor,
 		= static_cast<const qtractorMidiEventListModel *> (pModel);
 
 	qtractorMidiEvent *pEvent = pListModel->eventOfIndex(index);
-	if (pEvent == NULL)
+	if (pEvent == nullptr)
 		return;
 
 	qtractorMidiEditor *pMidiEditor = pListModel->editor();
-	if (pMidiEditor == NULL)
+	if (pMidiEditor == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -712,7 +704,7 @@ void qtractorMidiEventItemDelegate::setModelData ( QWidget *pEditor,
 
 // Constructor.
 qtractorMidiEventListView::qtractorMidiEventListView ( QWidget *pParent )
-	: QTreeView(pParent), m_pListModel(NULL), m_pItemDelegate(NULL)
+	: QTreeView(pParent), m_pListModel(nullptr), m_pItemDelegate(nullptr)
 {
 }
 
@@ -766,14 +758,14 @@ void qtractorMidiEventListView::setEditor ( qtractorMidiEditor *pEditor )
 
 qtractorMidiEditor *qtractorMidiEventListView::editor (void) const
 {
-	return (m_pListModel ? m_pListModel->editor() : NULL);
+	return (m_pListModel ? m_pListModel->editor() : nullptr);
 }
 
 
 // Refreshner.
 void qtractorMidiEventListView::refresh (void)
 {
-	if (m_pListModel == NULL)
+	if (m_pListModel == nullptr)
 		return;
 
 	QItemSelectionModel *pSelectionModel = QTreeView::selectionModel();
@@ -790,7 +782,7 @@ void qtractorMidiEventListView::refresh (void)
 qtractorMidiEvent *qtractorMidiEventListView::eventOfIndex (
 	const QModelIndex& index) const
 {
-	return (m_pListModel ? m_pListModel->eventOfIndex(index) : NULL);
+	return (m_pListModel ? m_pListModel->eventOfIndex(index) : nullptr);
 }
 
 
@@ -832,7 +824,7 @@ unsigned long qtractorMidiEventListView::frameFromIndex (
 void qtractorMidiEventListView::selectEvent (
 	qtractorMidiEvent *pEvent, bool bSelect )
 {
-	if (m_pListModel == NULL)
+	if (m_pListModel == nullptr)
 		return;
 
 	const QModelIndex& index = m_pListModel->indexOfEvent(pEvent);
@@ -970,7 +962,7 @@ void qtractorMidiEventList::currentRowChangedSlot (
 	const QModelIndex& index, const QModelIndex& /*previous*/ )
 {
 	qtractorMidiEditor *pEditor = m_pListView->editor();
-	if (pEditor == NULL)
+	if (pEditor == nullptr)
 		return;
 
 	if (m_iSelectUpdate > 0)
@@ -996,7 +988,7 @@ void qtractorMidiEventList::selectionChangedSlot (
 	const QItemSelection& selected, const QItemSelection& deselected )
 {
 	qtractorMidiEditor *pEditor = m_pListView->editor();
-	if (pEditor == NULL)
+	if (pEditor == nullptr)
 		return;
 
 	if (m_iSelectUpdate > 0)

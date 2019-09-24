@@ -1,7 +1,7 @@
 // qtractorShortcutForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -47,7 +47,7 @@ class qtractorShortcutTableItemEdit : public QLineEdit
 public:
 
 	// Constructor.
-	qtractorShortcutTableItemEdit(QWidget *pParent = NULL)
+	qtractorShortcutTableItemEdit(QWidget *pParent = nullptr)
 		: QLineEdit(pParent) {}
 
 signals:
@@ -72,7 +72,7 @@ class qtractorShortcutTableItemEditor : public QWidget
 public:
 
 	// Constructor.
-	qtractorShortcutTableItemEditor(QWidget *pParent = NULL);
+	qtractorShortcutTableItemEditor(QWidget *pParent = nullptr);
 
 	// Shortcut text accessors.
 	void setText(const QString& sText);
@@ -85,10 +85,8 @@ public:
 		{ return m_index; }
 
 	// Default (initial) shortcut text accessors.
-	void setDefaultText(const QString& sDefaultText)
-		{ m_sDefaultText = sDefaultText; }
-	const QString& defaultText() const
-		{ return m_sDefaultText; }
+	void setDefaultText(const QString& sDefaultText);
+	const QString& defaultText() const;
 
 signals:
 
@@ -103,6 +101,8 @@ protected slots:
 
 	void finish();
 	void cancel();
+
+	void changed(const QString&);
 
 private:
 
@@ -167,7 +167,7 @@ class qtractorShortcutForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorShortcutForm(const QList<QAction *>& actions, QWidget *pParent = NULL);
+	qtractorShortcutForm(const QList<QAction *>& actions, QWidget *pParent = nullptr);
 
 	// Destructor.
 	~qtractorShortcutForm();

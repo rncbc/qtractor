@@ -1,7 +1,7 @@
 // qtractorFifoBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2006, Olli Parviainen.
@@ -109,7 +109,7 @@ private:
 // Constructor.
 template<typename T>
 qtractorFifoBuffer<T>::qtractorFifoBuffer ( unsigned short iChannels ) :
-	m_iChannels(0), m_ppBuffer(NULL), m_ppBufferUnaligned(NULL),
+	m_iChannels(0), m_ppBuffer(nullptr), m_ppBufferUnaligned(nullptr),
 	m_iFrameCount(0), m_iFramePos(0)
 {
 	setChannels(iChannels);

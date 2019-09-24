@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -183,7 +183,7 @@ void qtractorSessionForm::accept (void)
 	while (!dir.exists(sSessionDir)) {
 		// Ask user...
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Session directory does not exist:\n\n"
 			"\"%1\"\n\n"
 			"Do you want to create it?").arg(sSessionDir),
@@ -239,7 +239,7 @@ void qtractorSessionForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -285,13 +285,13 @@ void qtractorSessionForm::stabilizeForm (void)
 void qtractorSessionForm::browseSessionDir (void)
 {
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	const QString& sTitle
-		= tr("Session Directory") + " - " QTRACTOR_TITLE;
+		= tr("Session Directory");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;

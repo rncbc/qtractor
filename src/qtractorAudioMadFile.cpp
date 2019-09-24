@@ -1,7 +1,7 @@
 // qtractorAudioMadFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,7 +38,7 @@ qtractorAudioMadFile::qtractorAudioMadFile ( unsigned int iBufferSize )
 {
 	// Initialize state variables.
 	m_iMode        = qtractorAudioMadFile::None;
-	m_pFile        = NULL;
+	m_pFile        = nullptr;
 	m_iBitRate     = 0;
 	m_iChannels    = 0;
 	m_iSampleRate  = 0;
@@ -47,14 +47,14 @@ qtractorAudioMadFile::qtractorAudioMadFile ( unsigned int iBufferSize )
 
 	// Input buffer stuff.
 	m_iInputBufferSize = iBufferSize;
-	m_pInputBuffer     = NULL;
+	m_pInputBuffer     = nullptr;
 
 	// Output ring-buffer stuff.
 	m_iRingBufferSize  = 0;
 	m_iRingBufferMask  = 0;
 	m_iRingBufferRead  = 0;
 	m_iRingBufferWrite = 0;
-	m_ppRingBuffer     = NULL;
+	m_ppRingBuffer     = nullptr;
 
 	// Frame mapping for sample-accurate seeking.
 	m_iSeekOffset = 0;
@@ -82,12 +82,12 @@ bool qtractorAudioMadFile::open ( const QString& sFilename, int iMode )
 
 	const QByteArray aFilename = sFilename.toUtf8();
 	m_pFile = ::fopen(aFilename.constData(), "rb");
-	if (m_pFile == NULL)
+	if (m_pFile == nullptr)
 		return false;
 
 	// Create the decoded frame list.
 	m_pFrameList = createFrameList(sFilename);
-	if (m_pFrameList == NULL) {
+	if (m_pFrameList == nullptr) {
 		close();
 		return false;
 	}
@@ -171,7 +171,7 @@ bool qtractorAudioMadFile::input (void)
 		return false;
 
 	// Allocate input buffer if not already.
-	if (m_pInputBuffer == NULL) {
+	if (m_pInputBuffer == nullptr) {
 		unsigned int iBufferSize = (4096 << 1);
 		while (iBufferSize < m_iInputBufferSize)
 			iBufferSize <<= 1;
@@ -264,7 +264,7 @@ bool qtractorAudioMadFile::decode (void)
 
 	const unsigned int iFrames = m_madSynth.pcm.length;
 
-	if (m_ppRingBuffer == NULL) {
+	if (m_ppRingBuffer == nullptr) {
 		// Set initial stream parameters.
 		m_iBitRate    = m_madFrame.header.bitrate;
 		m_iChannels   = m_madSynth.pcm.channels;
@@ -456,12 +456,12 @@ void qtractorAudioMadFile::close (void)
 		for (unsigned short i = 0; i < m_iChannels; ++i)
 			delete [] m_ppRingBuffer[i];
 		delete [] m_ppRingBuffer;
-		m_ppRingBuffer = NULL;
+		m_ppRingBuffer = nullptr;
 	}
 
 	if (m_pInputBuffer) {
 		delete [] m_pInputBuffer;
-		m_pInputBuffer = NULL;
+		m_pInputBuffer = nullptr;
 	}
 
 	if (m_pFile) {
@@ -471,12 +471,12 @@ void qtractorAudioMadFile::close (void)
 		mad_stream_finish(&m_madStream);
 #endif  // CONFIG_LIBMAD
 		::fclose(m_pFile);
-		m_pFile = NULL;
+		m_pFile = nullptr;
 	}
 
 	// Frame lists are never destroyed here
 	// (they're cached for whole life-time of the program).
-	m_pFrameList = NULL;
+	m_pFrameList = nullptr;
 
 	// Reset all other state relevant variables.
 	m_bEndOfStream = false;
@@ -566,8 +566,8 @@ qtractorAudioMadFile::FrameList *qtractorAudioMadFile::createFrameList (
 	// Do the factory thing here...
 	static FrameListFactory s_lists;
 
-	FrameList *pFrameList = s_lists.value(sFilename, NULL);
-	if (pFrameList == NULL) {
+	FrameList *pFrameList = s_lists.value(sFilename, nullptr);
+	if (pFrameList == nullptr) {
 		pFrameList = new FrameList();
 		s_lists.insert(sFilename, pFrameList);
 	}

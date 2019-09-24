@@ -43,7 +43,7 @@ public:
 
 	// Constructor.
 	qtractorInsertPluginType(unsigned short iChannels)
-		: qtractorPluginType(NULL, iChannels, qtractorPluginType::Insert) {}
+		: qtractorPluginType(nullptr, iChannels, qtractorPluginType::Insert) {}
 
 	// Factory method (static)
 	static qtractorPlugin *createPlugin(
@@ -251,7 +251,7 @@ public:
 
 	// Constructor.
 	qtractorAuxSendPluginType(unsigned short iChannels)
-		: qtractorPluginType(NULL, iChannels, qtractorPluginType::AuxSend) {}
+		: qtractorPluginType(nullptr, iChannels, qtractorPluginType::AuxSend) {}
 
 	// Factory method (static)
 	static qtractorPlugin *createPlugin(

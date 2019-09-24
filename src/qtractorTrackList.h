@@ -164,7 +164,7 @@ public:
 
 	// Retrieve all current seleceted tracks but one.
 	QList<qtractorTrack *> selectedTracks(
-		qtractorTrack *pTrackEx = NULL, bool bAllTracks = false) const;
+		qtractorTrack *pTrackEx = nullptr, bool bAllTracks = false) const;
 
 protected:
 

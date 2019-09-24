@@ -1,7 +1,7 @@
 // qtractorMidiFileTempo.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -219,7 +219,7 @@ void qtractorMidiFileTempo::removeMarker ( qtractorMidiFileTempo::Marker *pMarke
 void qtractorMidiFileTempo::fromTimeScale (
 	qtractorTimeScale *pTimeScale, unsigned long iTimeOffset )
 {
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	const unsigned short p = m_pMidiFile->ticksPerBeat();
@@ -258,7 +258,7 @@ void qtractorMidiFileTempo::fromTimeScale (
 void qtractorMidiFileTempo::intoTimeScale (
 	qtractorTimeScale *pTimeScale, unsigned long iTimeOffset )
 {
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	const unsigned short p = pTimeScale->ticksPerBeat();

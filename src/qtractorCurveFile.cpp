@@ -1,7 +1,7 @@
 // qtractorCurveFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -105,7 +105,7 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 						if (eProp.tagName() == "color")
 							pItem->color.setNamedColor(eProp.text());
 					}
-					pItem->subject = NULL;
+					pItem->subject = nullptr;
 					addItem(pItem);
 				}
 			}
@@ -117,7 +117,7 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 void qtractorCurveFile::save ( qtractorDocument *pDocument,
 	QDomElement *pElement, qtractorTimeScale *pTimeScale ) const
 {
-	if (m_pCurveList == NULL)
+	if (m_pCurveList == nullptr)
 		return;
 
 	const unsigned short iSeqs = m_items.count();
@@ -206,11 +206,11 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 
 void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 {
-	if (m_pCurveList == NULL)
+	if (m_pCurveList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	const QString& sFilename
@@ -232,14 +232,14 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 	const unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
 	unsigned short iSeq = 0;
 
-	qtractorCurve *pCurrentCurve = NULL;
+	qtractorCurve *pCurrentCurve = nullptr;
 
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		Item *pItem = iter.next();
 		if (pItem->subject) {
 			qtractorCurve *pCurve = (pItem->subject)->curve();
-			if (pCurve == NULL)
+			if (pCurve == nullptr)
 				pCurve = new qtractorCurve(m_pCurveList,
 					pItem->subject, pItem->mode);
 			if (m_iCurrentCurve == int(pItem->index))

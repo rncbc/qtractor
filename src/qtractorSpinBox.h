@@ -30,6 +30,8 @@
 // Forward declartions.
 class QLineEdit;
 class QShowEvent;
+class QContextMenuEvent;
+class QKeyEvent;
 
 
 //-------------------------------------------------------------------------
@@ -152,6 +154,9 @@ protected:
 	// Local context menu handler.
 	void contextMenuEvent(QContextMenuEvent *pContextMenuEvent);
 
+	// Keyboard event handler.
+	void keyPressEvent(QKeyEvent *pKeyEvent);
+
 protected slots:
 
 	// Pseudo-fixup slot.
@@ -165,6 +170,7 @@ private:
 	qtractorTimeScale::DisplayFormat m_displayFormat;
 
 	unsigned long      m_iValue;
+	unsigned long      m_iDefaultValue;
 	unsigned long      m_iMinimumValue;
 	unsigned long      m_iMaximumValue;
 	unsigned long      m_iDeltaValue;
@@ -228,6 +234,9 @@ protected:
 		unsigned short iBeatDivisor, bool bNotifyChange);
 	void updateText();
 
+	// Keyboard event handler.
+	void keyPressEvent(QKeyEvent *pKeyEvent);
+
 protected slots:
 
 	// Pseudo-fixup slot.
@@ -240,6 +249,10 @@ private:
 	float          m_fTempo;
 	unsigned short m_iBeatsPerBar;
 	unsigned short m_iBeatDivisor;
+
+	float          m_fDefaultTempo;
+	unsigned short m_iDefaultBeatsPerBar;
+	unsigned short m_iDefaultBeatDivisor;
 
 	int m_iValueChanged;
 };

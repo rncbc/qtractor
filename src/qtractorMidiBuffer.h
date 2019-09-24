@@ -1,7 +1,7 @@
 // qtractorMidiBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@ public:
 
 	// Constructor.
 	qtractorMidiBuffer(unsigned int iBufferSize = MinBufferSize) :
-		m_pBuffer(NULL), m_iBufferSize(0), m_iBufferMask(0),
+		m_pBuffer(nullptr), m_iBufferSize(0), m_iBufferMask(0),
 		m_iWriteIndex(0), m_iReadIndex(0)
 	{
 		// Adjust size to nearest power-of-two, if necessary.
@@ -65,7 +65,7 @@ public:
 
 	// Returns a pointer to the first of the output events. 
 	snd_seq_event_t *peek() const
-		{ return (isEmpty() ? NULL : &m_pBuffer[m_iReadIndex]); }
+		{ return (isEmpty() ? nullptr : &m_pBuffer[m_iReadIndex]); }
 
 	// Read next event from buffer.
 	snd_seq_event_t *next()
@@ -79,7 +79,7 @@ public:
 	{
 		const unsigned int iReadIndex = m_iReadIndex;
 		if (iReadIndex == m_iWriteIndex)
-			return NULL;
+			return nullptr;
 		m_iReadIndex = (iReadIndex + 1) & m_iBufferMask;
 		return &m_pBuffer[iReadIndex];
 	}

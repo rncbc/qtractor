@@ -1,7 +1,7 @@
 // qtractorMessageList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@
 //
 
 // Pseudo-singleton instance.
-qtractorMessageList *qtractorMessageList::g_pInstance = NULL;
+qtractorMessageList *qtractorMessageList::g_pInstance = nullptr;
 
 
 // Constructor.
@@ -42,7 +42,7 @@ qtractorMessageList::~qtractorMessageList (void)
 {
 	m_items.clear();
 
-	g_pInstance = NULL;
+	g_pInstance = nullptr;
 }
 
 

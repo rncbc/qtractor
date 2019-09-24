@@ -6,6 +6,40 @@ ChangeLog
 
 GIT HEAD
 
+- An alternate time-signature/meter option is being
+  served to the MIDI clip editor (aka. piano-roll)
+  and allowing for some poly-rythm/meter scenarios
+  on a per MIDI clip basis. (EXPERIMENTAL)
+
+- Fixed MIDI "overdub" recording on offset clips.
+
+- MIDI bank and program settings now propagating to
+  all MIDI track's clips resp. (EXPERIMENTAL)
+
+- Fixed MIDI file format default setting other than
+  SMF Format 0. (EXPERIMENTAL)
+
+- Escape key may now be used to reset time and tempo
+  /time-sgnature spin-box controls. (EXPERIMENTAL)
+
+- Play-head time and tempo/time-signature controls
+  are now featured in MIDI clip editor toolbars (aka.
+  piano-roll); time display format is also separated
+  from the tracks main application view and defaults
+  to BBT as being most convenient. (EXPERIMENTAL)
+
+- All items in the MIDI clip editor's event list are
+  now enabled, selectable and editable, no matter the
+  filter settings for the event views. (EXPERIMENTAL)
+
+- Added alternate yet non-official CMake build option.
+  (EXPERIMENTAL)
+
+- Improved MIDI clip editor (aka. piano-roll) position
+  and size persistence across session state.
+
+- Fix HiDPI display screen effective support (Qt >= 5.6).
+
 - Mixer, Connections and MIDI clip editor top-level
   windows shall have no parent, unless when set as
   always-on-top tool windows. (REGRESSION)

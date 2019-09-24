@@ -56,7 +56,7 @@ qtractorExportForm::qtractorExportForm (
 
 	// Initialize dirty control state.
 	m_exportType = qtractorTrack::None;
-	m_pTimeScale = NULL;
+	m_pTimeScale = nullptr;
 
 	// Try to restore old window positioning.
 	adjustSize();
@@ -129,7 +129,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	m_exportType = exportType;
 
 	QIcon icon;
-	qtractorEngine  *pEngine  = NULL;
+	qtractorEngine  *pEngine  = nullptr;
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Copy from global time-scale instance...
@@ -179,7 +179,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	if (pEngine) {
 		QDialog::setWindowIcon(icon);
 		QDialog::setWindowTitle(
-			tr("Export %1").arg(m_sExportType) + " - " QTRACTOR_TITLE);
+			tr("Export %1").arg(m_sExportType));
 		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Output)
@@ -228,7 +228,7 @@ void qtractorExportForm::accept (void)
 	// Check (again) wether the file already exists...
 	if (QFileInfo(sExportPath).exists()) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("The file already exists:\n\n"
 			"\"%1\"\n\n"
 			"Do you want to replace it?")
@@ -395,7 +395,7 @@ void qtractorExportForm::reject (void)
 void qtractorExportForm::browseExportPath (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	QString sExportPath = m_ui.ExportPathComboBox->currentText();
@@ -404,14 +404,14 @@ void qtractorExportForm::browseExportPath (void)
 
 	// Actual browse for the file...
 	const QString& sTitle
-		= tr("Export %1 File").arg(m_sExportType) + " - " QTRACTOR_TITLE;
+		= tr("Export %1 File").arg(m_sExportType);
 
 	QStringList filters;
 	filters.append(tr("%1 files (*.%1)").arg(m_sExportExt));
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
@@ -420,7 +420,7 @@ void qtractorExportForm::browseExportPath (void)
 	}
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	sExportPath = QFileDialog::getSaveFileName(pParentWidget,
-		sTitle, sExportPath, sFilter, NULL, options);
+		sTitle, sExportPath, sFilter, nullptr, options);
 #else
 	QFileDialog fileDialog(pParentWidget,
 		sTitle, sExportPath, sFilter);
@@ -473,7 +473,7 @@ void qtractorExportForm::browseExportPath (void)
 void qtractorExportForm::rangeChanged (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	if (m_ui.SessionRangeRadioButton->isChecked()) {
@@ -534,7 +534,7 @@ void qtractorExportForm::formatChanged ( int iDisplayFormat )
 void qtractorExportForm::stabilizeForm (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	m_ui.LoopRangeRadioButton->setEnabled(pSession->isLooping());
@@ -550,7 +550,7 @@ void qtractorExportForm::stabilizeForm (void)
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
 		!m_ui.ExportPathComboBox->currentText().isEmpty() &&
-		m_ui.ExportBusNameListBox->currentItem() != NULL &&
+		m_ui.ExportBusNameListBox->currentItem() != nullptr &&
 		m_ui.ExportStartSpinBox->value() < m_ui.ExportEndSpinBox->value());
 }
 

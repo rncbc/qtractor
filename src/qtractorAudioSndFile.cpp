@@ -1,7 +1,7 @@
 // qtractorAudioSndFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2011, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -37,9 +37,9 @@ qtractorAudioSndFile::qtractorAudioSndFile ( unsigned short iChannels,
 	m_sfinfo.samplerate = iSampleRate;
 
 	// Initialize other stuff.
-	m_pSndFile    = NULL;
+	m_pSndFile    = nullptr;
 	m_iMode       = qtractorAudioSndFile::None;
-	m_pBuffer     = NULL;
+	m_pBuffer     = nullptr;
 	m_iBufferSize = 1024;
 
 	// Adjust size the next nearest power-of-two.
@@ -86,7 +86,7 @@ bool qtractorAudioSndFile::open ( const QString& sFilename, int iMode )
 	// Now open it.
 	QByteArray aFilename = sFilename.toUtf8();
 	m_pSndFile = ::sf_open(aFilename.constData(), sfmode, &m_sfinfo);
-	if (m_pSndFile == NULL)
+	if (m_pSndFile == nullptr)
 		return false;
 
 	// Set open mode (deterministically).
@@ -155,13 +155,13 @@ void qtractorAudioSndFile::close (void)
 
 	if (m_pSndFile) {
 		::sf_close(m_pSndFile);
-		m_pSndFile = NULL;
+		m_pSndFile = nullptr;
 		m_iMode = qtractorAudioSndFile::None;
 	}
 
 	if (m_pBuffer) {
 		delete [] m_pBuffer;
-		m_pBuffer = NULL;
+		m_pBuffer = nullptr;
 	}
 }
 

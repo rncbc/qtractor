@@ -27,6 +27,7 @@
 #include <QMenu>
 
 #include <QContextMenuEvent>
+#include <QKeyEvent>
 
 #include <math.h>
 
@@ -105,9 +106,9 @@ QValidator::State qtractorSpinBox::validate ( QString& sText, int& iPos ) const
 
 // Constructor.
 qtractorTimeSpinBox::qtractorTimeSpinBox ( QWidget *pParent )
-	: QAbstractSpinBox(pParent), m_pTimeScale(NULL),
-		  m_displayFormat(qtractorTimeScale::Frames),
-		  m_iValue(0), m_iMinimumValue(0), m_iMaximumValue(0),
+	: QAbstractSpinBox(pParent), m_pTimeScale(nullptr),
+		  m_displayFormat(qtractorTimeScale::Frames), m_iValue(0),
+		  m_iDefaultValue(0), m_iMinimumValue(0), m_iMaximumValue(0),
 		  m_iDeltaValue(0), m_bDeltaValue(false), m_iValueChanged(0)
 {
 	QAbstractSpinBox::setAccelerated(true);
@@ -153,6 +154,7 @@ void qtractorTimeSpinBox::setDisplayFormat (
 	qtractorTimeScale::DisplayFormat displayFormat )
 {
 	m_displayFormat = displayFormat;
+
 	updateDisplayFormat();
 }
 
@@ -172,6 +174,8 @@ void qtractorTimeSpinBox::setValue ( unsigned long iValue, bool bNotifyChange )
 {
 	if (updateValue(iValue, bNotifyChange))
 		updateText();
+
+	m_iDefaultValue = m_iValue;
 }
 
 unsigned long qtractorTimeSpinBox::value (void) const
@@ -340,7 +344,7 @@ unsigned long qtractorTimeSpinBox::valueFromText (void) const
 
 unsigned long qtractorTimeSpinBox::valueFromText ( const QString& sText ) const
 {
-	if (m_pTimeScale == NULL)
+	if (m_pTimeScale == nullptr)
 		return sText.toULong();
 
 	return m_pTimeScale->frameFromTextEx(
@@ -349,7 +353,7 @@ unsigned long qtractorTimeSpinBox::valueFromText ( const QString& sText ) const
 
 QString qtractorTimeSpinBox::textFromValue ( unsigned long iValue ) const
 {
-	if (m_pTimeScale == NULL)
+	if (m_pTimeScale == nullptr)
 		return QString::number(iValue);
 
 	if (m_bDeltaValue) {
@@ -408,7 +412,7 @@ void qtractorTimeSpinBox::contextMenuEvent (
 {
 //	QAbstractSpinBox::contextMenuEvent(pContextMenuEvent);
 
-	if (m_pTimeScale == NULL)
+	if (m_pTimeScale == nullptr)
 		return;
 
 	QMenu menu(this);
@@ -430,7 +434,7 @@ void qtractorTimeSpinBox::contextMenuEvent (
 	pAction->setData(int(qtractorTimeScale::BBT));
 
 	pAction = menu.exec(pContextMenuEvent->globalPos());
-	if (pAction == NULL)
+	if (pAction == nullptr)
 		return;
 
 	const qtractorTimeScale::DisplayFormat displayFormat
@@ -439,6 +443,28 @@ void qtractorTimeSpinBox::contextMenuEvent (
 		setDisplayFormat(displayFormat);
 		emit displayFormatChanged(int(displayFormat));
 	}
+}
+
+
+// Keyboard event handler.
+void qtractorTimeSpinBox::keyPressEvent ( QKeyEvent *pKeyEvent )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTimeSpinBox::keyPressEvent(%d)", pKeyEvent->key());
+#endif
+
+	if (pKeyEvent->key() == Qt::Key_Escape) {
+		// Rephrase text display...
+		if (m_iValueChanged > 0) {
+			m_iValueChanged = 0;
+			m_iValue = m_iDefaultValue;
+			updateText();
+		}
+		// Finish editing...
+		//QAbstractSpinBox::clearFocus();
+	}
+
+	QAbstractSpinBox::keyPressEvent(pKeyEvent);
 }
 
 
@@ -455,6 +481,8 @@ void qtractorTimeSpinBox::editingFinishedSlot (void)
 			// Rephrase text display...
 			updateText();
 		}
+		// Reset default value...
+		m_iDefaultValue = m_iValue;
 	}
 }
 
@@ -481,7 +509,9 @@ void qtractorTimeSpinBox::valueChangedSlot ( const QString& sText )
 // Constructor.
 qtractorTempoSpinBox::qtractorTempoSpinBox ( QWidget *pParent )
 	: QAbstractSpinBox(pParent), m_fTempo(120.0f),
-		m_iBeatsPerBar(4), m_iBeatDivisor(2), m_iValueChanged(0)
+		m_iBeatsPerBar(4), m_iBeatDivisor(2),
+		m_fDefaultTempo(120.0f), m_iDefaultBeatsPerBar(4),
+		m_iDefaultBeatDivisor(2), m_iValueChanged(0)
 {
 	QAbstractSpinBox::setAccelerated(true);
 
@@ -511,6 +541,8 @@ void qtractorTempoSpinBox::setTempo (
 {
 	if (updateValue(fTempo, m_iBeatsPerBar, m_iBeatDivisor, bNotifyChange))
 		updateText();
+
+	m_fDefaultTempo = m_fTempo;
 }
 
 
@@ -526,6 +558,8 @@ void qtractorTempoSpinBox::setBeatsPerBar (
 {
 	if (updateValue(m_fTempo, iBeatsPerBar, m_iBeatDivisor, bNotifyChange))
 		updateText();
+
+	m_iDefaultBeatsPerBar = m_iBeatsPerBar;
 }
 
 
@@ -541,6 +575,8 @@ void qtractorTempoSpinBox::setBeatDivisor (
 {
 	if (updateValue(m_fTempo, m_iBeatsPerBar, iBeatDivisor, bNotifyChange))
 		updateText();
+
+	m_iDefaultBeatDivisor = m_iBeatDivisor;
 }
 
 
@@ -733,6 +769,30 @@ void qtractorTempoSpinBox::valueChangedSlot ( const QString& sText )
 }
 
 
+// Keyboard event handler.
+void qtractorTempoSpinBox::keyPressEvent ( QKeyEvent *pKeyEvent )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorTempoSpinBox::keyPressEvent(%d)", pKeyEvent->key());
+#endif
+
+	if (pKeyEvent->key() == Qt::Key_Escape) {
+		// Rephrase text display...
+		if (m_iValueChanged > 0) {
+			m_iValueChanged = 0;
+			m_fTempo = m_fDefaultTempo;
+			m_iBeatsPerBar = m_iDefaultBeatsPerBar;
+			m_iBeatDivisor = m_iDefaultBeatDivisor;
+			updateText();
+		}
+		// Finish editing?
+		//QAbstractSpinBox::clearFocus();
+	}
+
+	QAbstractSpinBox::keyPressEvent(pKeyEvent);
+}
+
+
 // Final pseudo-fixup slot.
 void qtractorTempoSpinBox::editingFinishedSlot (void)
 {
@@ -753,4 +813,4 @@ void qtractorTempoSpinBox::editingFinishedSlot (void)
 }
 
 
-// end of qtractorTimeSpinBox.cpp
+// end of qtractorSpinBox.cpp

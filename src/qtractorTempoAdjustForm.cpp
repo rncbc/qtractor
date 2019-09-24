@@ -173,15 +173,15 @@ protected:
 	void updatePixmap()
 	{
 		qtractorClip *pClip = m_pForm->clip();
-		if (pClip == NULL)
+		if (pClip == nullptr)
 			return;
 
 		qtractorTrack *pTrack = pClip->track();
-		if (pTrack == NULL)
+		if (pTrack == nullptr)
 			return;
 
 		qtractorTimeScale *pTimeScale = m_pForm->timeScale();
-		if (pTimeScale == NULL)
+		if (pTimeScale == nullptr)
 			return;
 
 		const unsigned long iRangeStart
@@ -295,10 +295,10 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 	if (pSession)
 		m_pTimeScale->copy(*pSession->timeScale());
 
-	m_pClip = NULL;
-	m_pAudioClip = NULL;
+	m_pClip = nullptr;
+	m_pAudioClip = nullptr;
 
-	m_pClipWidget = NULL;
+	m_pClipWidget = nullptr;
 
 	m_pTempoTap = new QTime();
 	m_iTempoTap = 0;
@@ -369,7 +369,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 // Destructor.
 qtractorTempoAdjustForm::~qtractorTempoAdjustForm (void)
 {
-	setClip(NULL);
+	setClip(nullptr);
 
 	// Don't forget to get rid of local time-scale instance...
 	if (m_pTimeScale)
@@ -399,11 +399,11 @@ void qtractorTempoAdjustForm::setClip ( qtractorClip *pClip )
 		&& (m_pClip->track())->trackType() == qtractorTrack::Audio)
 		m_pAudioClip = static_cast<qtractorAudioClip *> (m_pClip);
 	else
-		m_pAudioClip = NULL;
+		m_pAudioClip = nullptr;
 
 	if (m_pClipWidget) {
 		delete m_pClipWidget;
-		m_pClipWidget = NULL;
+		m_pClipWidget = nullptr;
 	}
 
 	if (m_pClip) {
@@ -574,7 +574,7 @@ void qtractorTempoAdjustForm::tempoChanged (void)
 // Audio clip beat-detector method .
 void qtractorTempoAdjustForm::tempoDetect (void)
 {
-	if (m_pAudioClip == NULL)
+	if (m_pAudioClip == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -584,12 +584,12 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 #ifdef CONFIG_LIBAUBIO
 
 	qtractorTrack *pTrack = m_pAudioClip->track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return;
 
 	qtractorAudioBus *pAudioBus
 		= static_cast<qtractorAudioBus *> (pTrack->outputBus());
-	if (pAudioBus == NULL)
+	if (pAudioBus == nullptr)
 		return;
 
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -604,7 +604,7 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 	const unsigned long iOffset = iRangeStart - m_pAudioClip->clipStart();
 	const unsigned long iLength = iRangeLength;
 
-	QProgressBar *pProgressBar = NULL;
+	QProgressBar *pProgressBar = nullptr;
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm)
 		pProgressBar = pMainForm->progressBar();
@@ -747,7 +747,7 @@ void qtractorTempoAdjustForm::formatChanged ( int iDisplayFormat )
 	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
 	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
-	qtractorTimeScale::DisplayFormat displayFormat
+	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
 	m_ui.RangeStartSpinBox->setDisplayFormat(displayFormat);
@@ -793,7 +793,7 @@ void qtractorTempoAdjustForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -861,7 +861,7 @@ void qtractorTempoAdjustForm::updateRangeSelect (void)
 			m_pClip->setClipSelect(iRangeStart, iRangeStart + iRangeLength);
 			pTracks->updateSelect();
 		}
-		pMainForm->selectionNotifySlot(NULL);
+		pMainForm->selectionNotifySlot(nullptr);
 	}
 
 	if (m_pClipWidget)

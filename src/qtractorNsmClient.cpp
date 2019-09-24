@@ -1,7 +1,7 @@
 // qtractorNsmClient.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,7 +41,7 @@ int osc_nsm_error ( const char */*path*/, const char */*types*/,
 {
 	qtractorNsmClient *pNsmClient
 		= static_cast<qtractorNsmClient *> (user_data);
-	if (pNsmClient == NULL)
+	if (pNsmClient == nullptr)
 		return -1;
 
 	if (strcmp(&argv[0]->s, "/nsm/server/announce"))
@@ -58,7 +58,7 @@ int osc_nsm_reply ( const char */*path*/, const char */*types*/,
 {
 	qtractorNsmClient *pNsmClient
 		= static_cast<qtractorNsmClient *> (user_data);
-	if (pNsmClient == NULL)
+	if (pNsmClient == nullptr)
 		return -1;
 
 	if (strcmp(&argv[0]->s, "/nsm/server/announce"))
@@ -75,7 +75,7 @@ int osc_nsm_open ( const char */*path*/, const char */*types*/,
 {
 	qtractorNsmClient *pNsmClient
 		= static_cast<qtractorNsmClient *> (user_data);
-	if (pNsmClient == NULL)
+	if (pNsmClient == nullptr)
 		return -1;
 
 	pNsmClient->nsm_open(&argv[0]->s, &argv[1]->s, &argv[2]->s);
@@ -89,7 +89,7 @@ int osc_nsm_save ( const char */*path*/, const char */*types*/,
 {
 	qtractorNsmClient *pNsmClient
 		= static_cast<qtractorNsmClient *> (user_data);
-	if (pNsmClient == NULL)
+	if (pNsmClient == nullptr)
 		return -1;
 
 	pNsmClient->nsm_save();
@@ -103,7 +103,7 @@ int osc_nsm_loaded ( const char */*path*/, const char */*types*/,
 {
 	qtractorNsmClient *pNsmClient
 		= static_cast<qtractorNsmClient *> (user_data);
-	if (pNsmClient == NULL)
+	if (pNsmClient == nullptr)
 		return -1;
 
 	pNsmClient->nsm_loaded();
@@ -117,7 +117,7 @@ int osc_nsm_show ( const char */*path*/, const char */*types*/,
 {
 	qtractorNsmClient *pNsmClient
 		= static_cast<qtractorNsmClient *> (user_data);
-	if (pNsmClient == NULL)
+	if (pNsmClient == nullptr)
 		return -1;
 
 	pNsmClient->nsm_show();
@@ -131,7 +131,7 @@ int osc_nsm_hide ( const char */*path*/, const char */*types*/,
 {
 	qtractorNsmClient *pNsmClient
 		= static_cast<qtractorNsmClient *> (user_data);
-	if (pNsmClient == NULL)
+	if (pNsmClient == nullptr)
 		return -1;
 
 	pNsmClient->nsm_hide();
@@ -149,16 +149,16 @@ qtractorNsmClient::qtractorNsmClient (
 	const QString& nsm_url, QObject *pParent )
 	: QObject(pParent),
 	#ifdef CONFIG_LIBLO
-		m_address(NULL),
-		m_thread(NULL),
-		m_server(NULL),
+		m_address(nullptr),
+		m_thread(nullptr),
+		m_server(nullptr),
 	#endif
 		m_active(false)
 {
 #ifdef CONFIG_LIBLO
 	m_address = lo_address_new_from_url(nsm_url.toUtf8().constData());
 	const int proto = lo_address_get_protocol(m_address);
-	m_thread = lo_server_thread_new_with_proto(NULL, proto, NULL);
+	m_thread = lo_server_thread_new_with_proto(nullptr, proto, nullptr);
 	if (m_thread) {
 		m_server = lo_server_thread_get_server(m_thread);
 		lo_server_thread_add_method(m_thread,

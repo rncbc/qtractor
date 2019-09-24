@@ -39,7 +39,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle" >
-   <string>qtractorConnectTest</string>
+   <string>Connections</string>
   </property>
   <property name="windowIcon" >
    <iconset resource="qtractor.qrc" >:/images/viewConnections.png</iconset>

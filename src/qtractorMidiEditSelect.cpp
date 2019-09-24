@@ -1,7 +1,7 @@
 // qtractorMidiEditSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@
 // Constructor.
 qtractorMidiEditSelect::qtractorMidiEditSelect (void)
 {
-	m_pAnchorEvent = NULL;
+	m_pAnchorEvent = nullptr;
 }
 
 
@@ -45,7 +45,7 @@ qtractorMidiEditSelect::Item *qtractorMidiEditSelect::findItem (
 	qtractorMidiEvent *pEvent )
 {
 	// Check if this very event already exists...
-	return m_items.value(pEvent, NULL);
+	return m_items.value(pEvent, nullptr);
 }
 
 
@@ -87,7 +87,7 @@ void qtractorMidiEditSelect::update ( bool bCommit )
 	// Remove unselected...
 	int iUpdate = 0;
 
-	m_pAnchorEvent = NULL;
+	m_pAnchorEvent = nullptr;
 
 	ItemList::Iterator iter = m_items.begin();
 	const ItemList::Iterator& iter_end = m_items.end();
@@ -101,7 +101,7 @@ void qtractorMidiEditSelect::update ( bool bCommit )
 		}
 		if (pItem->flags & 1) {
 			qtractorMidiEvent *pEvent = iter.key();
-			if (m_pAnchorEvent == NULL ||
+			if (m_pAnchorEvent == nullptr ||
 				m_pAnchorEvent->time() > pEvent->time())
 				m_pAnchorEvent = pEvent;
 		}
@@ -147,7 +147,7 @@ void qtractorMidiEditSelect::clear (void)
 	qDeleteAll(m_items);
 	m_items.clear();
 
-	m_pAnchorEvent = NULL;
+	m_pAnchorEvent = nullptr;
 }
 
 

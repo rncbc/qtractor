@@ -1,7 +1,7 @@
 // qtractorShortcutForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -88,10 +88,17 @@ qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 	QWidget *pParent ) : QWidget(pParent)
 {
 	m_pItemEdit = new qtractorShortcutTableItemEdit(/*this*/);
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	m_pItemEdit->setClearButtonEnabled(true);
+#endif
 	m_pToolButton = new QToolButton(/*this*/);
-	m_pToolButton->setFixedWidth(18);
-	m_pToolButton->setText("X");
+	m_pToolButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+//	m_pToolButton->setIconSize(QSize(18, 18));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	m_pToolButton->setIcon(QPixmap(":/images/itemReset.png"));
+#else
+	m_pToolButton->setIcon(QPixmap(":/images/itemClear.png"));
+#endif
 
 	QHBoxLayout *pLayout = new QHBoxLayout();
 	pLayout->setSpacing(0);
@@ -109,6 +116,11 @@ qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 	QObject::connect(m_pItemEdit,
 		SIGNAL(editingCanceled()),
 		SLOT(cancel()));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	QObject::connect(m_pItemEdit,
+		SIGNAL(textChanged(const QString&)),
+		SLOT(changed(const QString&)));
+#endif
 	QObject::connect(m_pToolButton,
 		SIGNAL(clicked()),
 		SLOT(clear()));
@@ -125,6 +137,20 @@ void qtractorShortcutTableItemEditor::setText ( const QString& sText )
 QString qtractorShortcutTableItemEditor::text (void) const
 {
 	return m_pItemEdit->text();
+}
+
+
+// Default (initial) shortcut text accessors.
+void qtractorShortcutTableItemEditor::setDefaultText ( const QString& sDefaultText )
+{
+	m_sDefaultText = sDefaultText;
+
+	changed(text());
+}
+
+const QString& qtractorShortcutTableItemEditor::defaultText(void) const
+{
+	return m_sDefaultText;
 }
 
 
@@ -159,6 +185,21 @@ void qtractorShortcutTableItemEditor::cancel (void)
 	m_sDefaultText.clear();
 	emit editingFinished();
 	m_pItemEdit->blockSignals(bBlockSignals);
+}
+
+
+// Shortcut text change notification.
+void qtractorShortcutTableItemEditor::changed ( const QString& )
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	if (m_sDefaultText.isEmpty()) {
+		m_pToolButton->setVisible(false);
+		m_pToolButton->setEnabled(false);
+	} else {
+		m_pToolButton->setVisible(true);
+		m_pToolButton->setEnabled(m_sDefaultText != text());
+	}
+#endif
 }
 
 
@@ -273,12 +314,12 @@ qtractorShortcutForm::qtractorShortcutForm (
 	// Window modality (let plugin/tool windows rave around).
 	//QDialog::setWindowModality(Qt::ApplicationModal);
 
-	m_pActionControl = NULL;
+	m_pActionControl = nullptr;
 
 	m_iDirtyActionShortcuts = 0;
 	m_iDirtyActionControl = 0;
 
-	m_pActionControlItem = NULL;
+	m_pActionControlItem = nullptr;
 
 //	m_ui.ShortcutTable->setIconSize(QSize(16, 16));
 	m_ui.ShortcutTable->setItemDelegate(
@@ -416,10 +457,10 @@ bool qtractorShortcutForm::commitEditor (
 		return false;
 
 	if (!sShortcutText.isEmpty()) {
-		QTreeWidgetItem *pItem = m_shortcuts.value(sShortcutText, NULL);
+		QTreeWidgetItem *pItem = m_shortcuts.value(sShortcutText, nullptr);
 		if (pItem) {
 			QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("Keyboard shortcut (%1) already assigned (%2).")
 					.arg(sShortcutText)
 					.arg(pItem->text(0).remove('&')),
@@ -495,7 +536,7 @@ void qtractorShortcutForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Keyboard shortcuts have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -515,7 +556,7 @@ void qtractorShortcutForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("MIDI Controller shortcuts have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -544,7 +585,7 @@ void qtractorShortcutForm::stabilizeForm (void)
 
 void qtractorShortcutForm::actionControlMenuRequested ( const QPoint& pos )
 {
-	if (m_pActionControl == NULL)
+	if (m_pActionControl == nullptr)
 		return;
 
 	QMenu menu(this);
@@ -560,15 +601,15 @@ void qtractorShortcutForm::actionControlMenuRequested ( const QPoint& pos )
 
 void qtractorShortcutForm::actionControlActivated (void)
 {
-	if (m_pActionControl == NULL)
+	if (m_pActionControl == nullptr)
 		return;
 
 	m_pActionControlItem = m_ui.ShortcutTable->currentItem();
-	if (m_pActionControlItem == NULL)
+	if (m_pActionControlItem == nullptr)
 		return;
 
-	QAction *pMidiObserverAction = m_actions.value(m_pActionControlItem, NULL);
-	if (pMidiObserverAction == NULL)
+	QAction *pMidiObserverAction = m_actions.value(m_pActionControlItem, nullptr);
+	if (pMidiObserverAction == nullptr)
 		return;
 
 	qtractorMidiControlObserverForm::showInstance(pMidiObserverAction, this);
@@ -585,17 +626,17 @@ void qtractorShortcutForm::actionControlActivated (void)
 
 void qtractorShortcutForm::actionControlAccepted (void)
 {
-	if (m_pActionControl == NULL)
+	if (m_pActionControl == nullptr)
 		return;
 
 	if (m_pActionControlItem) {
 		QAction *pMidiObserverAction
-			= m_actions.value(m_pActionControlItem, NULL);
+			= m_actions.value(m_pActionControlItem, nullptr);
 		if (pMidiObserverAction) {
 			const QString& sText = actionControlText(pMidiObserverAction);
 			m_pActionControlItem->setText(3, sText);
 		}
-		m_pActionControlItem = NULL;
+		m_pActionControlItem = nullptr;
 		++m_iDirtyActionControl;
 	}
 

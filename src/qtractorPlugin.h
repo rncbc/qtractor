@@ -464,7 +464,7 @@ public:
 		{ return 0; }
 
 	// GUI Editor stuff.
-	virtual void openEditor(QWidget */*pParent*/= NULL) {}
+	virtual void openEditor(QWidget */*pParent*/= nullptr) {}
 	virtual void closeEditor() {};
 	virtual void idleEditor()  {};
 
@@ -486,7 +486,7 @@ public:
 		{ return m_posEditor; }
 
 	// Move widget to alleged parent center or else...
-	void moveWidgetPos(QWidget *pWidget, const QPoint& wpos) const;
+	void moveWidgetPos(QWidget *pWidget, const QPoint& pos) const;
 
 	// Custom GUI editor type index preference.
 	void setEditorType(int iEditorType)
@@ -504,7 +504,7 @@ public:
 	void clearItems();
 
 	// Special plugin form methods.
-	void openForm(QWidget *pParent = NULL);
+	void openForm(QWidget *pParent = nullptr);
 	void closeForm();
 
 	bool isFormVisible() const;

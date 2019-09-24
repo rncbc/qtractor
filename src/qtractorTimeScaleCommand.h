@@ -1,7 +1,7 @@
 // qtractorTimeScaleCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,6 +30,8 @@
 // Forward declarations.
 class qtractorClipCommand;
 class qtractorCurveEditCommand;
+
+class qtractorMidiClip;
 
 
 //----------------------------------------------------------------------
@@ -342,6 +344,35 @@ private:
 
 	// Node commands.
 	QList<qtractorTimeScaleNodeCommand *> m_nodeCommands;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleTimeSig2Command - declaration.
+//
+
+class qtractorTimeScaleTimeSig2Command : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorTimeScaleTimeSig2Command(
+		qtractorTimeScale *pTimeScale, qtractorMidiClip *pMidiClip,
+		unsigned short iBeatsPerBar2, unsigned short iBeatDivisor2);
+
+	// Time-scale command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorTimeScale *m_pTimeScale;
+
+	qtractorMidiClip *m_pMidiClip;
+
+	unsigned short m_iBeatsPerBar2;
+	unsigned short m_iBeatDivisor2;
 };
 
 

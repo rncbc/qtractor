@@ -1,7 +1,7 @@
 // qtractorTimeScale.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -168,7 +168,7 @@ public:
 		unsigned short barFromTick(unsigned long iTick) const
 			{ return bar + ((iTick - tick) / (ticksPerBeat * beatsPerBar)); }
 		unsigned long tickFromBar(unsigned short iBar) const
-			{ return tick + (ticksPerBeat * beatsPerBar * (iBar - bar)) ; }
+			{ return tick + (ticksPerBeat * beatsPerBar * (iBar - bar)); }
 
 		// Tick/pixel convertors.
 		unsigned long tickFromPixel(int x) const
@@ -218,6 +218,10 @@ public:
 			{ return frameFromTick(tickSnap(tickFromFrame(iFrame))); }
 		int pixelSnap(int x) const
 			{ return pixelFromTick(tickSnap(tickFromPixel(x))); }
+
+		// Alternate (secondary) time-sig helper methods
+		unsigned short beatsPerBar2() const;
+		unsigned short ticksPerBeat2() const;
 
 		// Node keys.
 		unsigned long  frame;
@@ -478,6 +482,18 @@ public:
 		return (pNode ? pNode->beatDivisor : 2);
 	}
 
+	// Secondary time signature (numerator)
+	void setBeatsPerBar2(unsigned short iBeatsPerBar2)
+		{ m_iBeatsPerBar2 = iBeatsPerBar2; }
+	unsigned short beatsPerBar2() const
+		{ return m_iBeatsPerBar2; }
+
+	// Secondary time signature (denominator)
+	void setBeatDivisor2(unsigned short iBeatDivisor2)
+		{ m_iBeatDivisor2 = iBeatDivisor2; }
+	unsigned short beatDivisor2() const
+		{ return m_iBeatDivisor2; }
+
 	// Tick/Frame range conversion (delta conversion).
 	unsigned long frameFromTickRange(
 		unsigned long iTickStart, unsigned long iTickEnd, bool bOffset);
@@ -583,12 +599,46 @@ private:
 	float m_fPixelRate;
 	float m_fFrameRate;
 
+	// Secondary time signature (numerator/denuminator)
+	unsigned short m_iBeatsPerBar2;
+	unsigned short m_iBeatDivisor2;
+
 	// Location marker list.
 	qtractorList<Marker> m_markers;
 
 	// Internal node cursor.
 	MarkerCursor m_markerCursor;
 };
+
+
+//-------------------------------------------------------------------------
+// qtractorTempoCursor -- Custom tempo tracking helper class
+
+class qtractorTempoCursor
+{
+public:
+
+	// Constructor.
+	qtractorTempoCursor() : m_pNode(nullptr) {}
+
+	// Reset method.
+	void clear() { m_pNode = nullptr; }
+
+	// Predicate method.
+	qtractorTimeScale::Node *seek(
+		qtractorTimeScale *pTimeScale, unsigned long iFrame)
+	{
+		qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
+		return (m_pNode == pNode ? nullptr : m_pNode = pNode);
+	}
+
+private:
+
+	// Instance variables.
+	qtractorTimeScale::Node *m_pNode;
+};
+
 
 #endif	// __qtractorTimeScale_h
 

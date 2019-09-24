@@ -1,7 +1,7 @@
 // qtractorPluginFactory.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -58,7 +58,7 @@
 //
 
 // Singleton instance pointer.
-qtractorPluginFactory *qtractorPluginFactory::g_pPluginFactory = NULL;
+qtractorPluginFactory *qtractorPluginFactory::g_pPluginFactory = nullptr;
 
 // Singleton instance accessor (static).
 qtractorPluginFactory *qtractorPluginFactory::getInstance (void)
@@ -78,7 +78,7 @@ qtractorPluginFactory::qtractorPluginFactory ( QObject *pParent )
 // Destructor.
 qtractorPluginFactory::~qtractorPluginFactory (void)
 {
-	g_pPluginFactory = NULL;
+	g_pPluginFactory = nullptr;
 
 	reset();
 	clear();
@@ -240,7 +240,7 @@ QStringList qtractorPluginFactory::pluginPaths (
 bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 {
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return false;
 
 	bool bDummyPluginScan = pOptions->bDummyPluginScan;
@@ -477,7 +477,7 @@ qtractorPlugin *qtractorPluginFactory::createPlugin (
 			return qtractorAuxSendPluginType::createPlugin(pList, iIndex);
 		else
 		// Don't bother with anything else.
-		return NULL;
+		return nullptr;
 	}
 
 #ifdef CONFIG_LV2
@@ -491,14 +491,14 @@ qtractorPlugin *qtractorPluginFactory::createPlugin (
 			delete pLv2Type;
 		}
 		// Bail out.
-		return NULL;
+		return nullptr;
 	}
 #endif
 
 	// Try to fill the types list at this moment...
 	qtractorPluginFile *pFile = qtractorPluginFile::addFile(sFilename);
-	if (pFile == NULL)
-		return NULL;
+	if (pFile == nullptr)
+		return nullptr;
 
 #ifdef CONFIG_DSSI
 	// Try DSSI plugin types first...
@@ -545,7 +545,7 @@ qtractorPlugin *qtractorPluginFactory::createPlugin (
 	// Bad luck, no valid plugin found...
 	qtractorPluginFile::removeFile(pFile);
 
-	return NULL;
+	return nullptr;
 }
 
 
@@ -554,7 +554,7 @@ bool qtractorPluginFactory::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
 	// Try first out-of-process scans, if any...
-	Scanner *pScanner = m_scanners.value(typeHint, NULL);
+	Scanner *pScanner = m_scanners.value(typeHint, nullptr);
 	if (pScanner)
 		return pScanner->addTypes(typeHint, sFilename);
 
@@ -563,7 +563,7 @@ bool qtractorPluginFactory::addTypes (
 	if (typeHint == qtractorPluginType::Lv2) {
 		qtractorPluginType *pType
 			= qtractorLv2PluginType::createType(sFilename);
-		if (pType == NULL)
+		if (pType == nullptr)
 			return false;
 		if (pType->open()) {
 			addType(pType);
@@ -578,7 +578,7 @@ bool qtractorPluginFactory::addTypes (
 
 	// Try all other file-based types (LADSPA, DSSI, VST...)
 	qtractorPluginFile *pFile = qtractorPluginFile::addFile(sFilename);
-	if (pFile == NULL)
+	if (pFile == nullptr)
 		return false;
 
 	unsigned long iIndex = 0;
@@ -601,7 +601,7 @@ bool qtractorPluginFactory::addTypes (
 	qtractorPluginType::Hint typeHint,
 	qtractorPluginFile *pFile, unsigned long iIndex )
 {
-	qtractorPluginType *pType = NULL;
+	qtractorPluginType *pType = nullptr;
 
 	switch (typeHint) {
 #ifdef CONFIG_LADSPA
@@ -626,7 +626,7 @@ bool qtractorPluginFactory::addTypes (
 		break;
 	}
 
-	if (pType == NULL)
+	if (pType == nullptr)
 		return false;
 
 	if (pType->open()) {
@@ -763,7 +763,7 @@ void qtractorPluginFactory::Scanner::stdout_slot (void)
 {
 	qtractorPluginFactory *pPluginFactory
 		= static_cast<qtractorPluginFactory *> (QObject::parent());
-	if (pPluginFactory == NULL)
+	if (pPluginFactory == nullptr)
 		return;
 
 	const QString sData(QProcess::readAllStandardOutput());
@@ -806,11 +806,11 @@ bool qtractorPluginFactory::Scanner::addTypes (
 	if (typeHint == qtractorPluginType::Lv2) {
 		qtractorPluginFactory *pPluginFactory
 			= static_cast<qtractorPluginFactory *> (QObject::parent());
-		if (pPluginFactory == NULL)
+		if (pPluginFactory == nullptr)
 			return false;
 		qtractorPluginType *pType
 			= qtractorLv2PluginType::createType(sFilename);
-		if (pType == NULL)
+		if (pType == nullptr)
 			return false;
 		if (pType->open()) {
 			pPluginFactory->addType(pType);
@@ -867,7 +867,7 @@ bool qtractorPluginFactory::Scanner::addTypes ( const QStringList& list )
 {
 	qtractorPluginFactory *pPluginFactory
 		= static_cast<qtractorPluginFactory *> (QObject::parent());
-	if (pPluginFactory == NULL)
+	if (pPluginFactory == nullptr)
 		return false;
 
 	QStringListIterator iter(list);
@@ -916,7 +916,7 @@ QString qtractorPluginFactory::Scanner::cacheFilePath (void) const
 // Constructor.
 qtractorDummyPluginType::qtractorDummyPluginType (
 	const QString& sText, unsigned long iIndex, Hint typeHint )
-	: qtractorPluginType(NULL, iIndex, typeHint)
+	: qtractorPluginType(nullptr, iIndex, typeHint)
 {
 	const QStringList& props = sText.split('|');
 
@@ -967,13 +967,13 @@ qtractorDummyPluginType *qtractorDummyPluginType::createType (
 	// Sanity check...
 	const QStringList& props = sText.split('|');
 	if (props.count() < 7)
-		return NULL;
+		return nullptr;
 
 	const Hint typeHint = qtractorPluginType::hintFromText(props.at(0));
 	const unsigned long iIndex = props.at(7).toULong();
 #if 0// FIXME: Yep, most probably it used to be a dummy VST plugin effect...
 	if (typeHint != Vst)
-		return NULL;
+		return nullptr;
 #endif
 	return new qtractorDummyPluginType(sText, iIndex, typeHint);
 }

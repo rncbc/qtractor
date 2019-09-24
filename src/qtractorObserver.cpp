@@ -37,7 +37,7 @@ public:
 	};
 
 	qtractorSubjectQueue ( unsigned int iQueueSize = 1024 )
-		: m_iQueueIndex(0), m_iQueueSize(0), m_pQueueItems(NULL)
+		: m_iQueueIndex(0), m_iQueueSize(0), m_pQueueItems(nullptr)
 		{ resize(iQueueSize); }
 
 	~qtractorSubjectQueue ()
@@ -121,7 +121,7 @@ static qtractorSubjectQueue g_subjectQueue;
 qtractorSubject::qtractorSubject ( float fValue, float fDefaultValue )
 	: m_fValue(fValue), m_bQueued(false), m_fPrevValue(fValue),
 		m_fMinValue(0.0f), m_fMaxValue(1.0f), m_fDefaultValue(fDefaultValue),
-		m_bToggled(false), m_bInteger(false), m_pCurve(NULL)
+		m_bToggled(false), m_bInteger(false), m_pCurve(nullptr)
 {
 }
 
@@ -130,7 +130,7 @@ qtractorSubject::~qtractorSubject (void)
 {
 	QListIterator<qtractorObserver *> iter(m_observers);
 	while (iter.hasNext())
-		iter.next()->setSubject(NULL);
+		iter.next()->setSubject(nullptr);
 
 	m_observers.clear();
 }

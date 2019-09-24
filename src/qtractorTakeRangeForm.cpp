@@ -1,7 +1,7 @@
 // qtractorTakeRangeForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,8 +45,8 @@ qtractorTakeRangeForm::qtractorTakeRangeForm (
 	QDialog::setWindowModality(Qt::ApplicationModal);
 
 	// Initialize dirty control state.
-	m_pTimeScale = NULL;
-	m_pClip = NULL;
+	m_pTimeScale = nullptr;
+	m_pClip = nullptr;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -174,7 +174,7 @@ int qtractorTakeRangeForm::currentTake (void) const
 void qtractorTakeRangeForm::rangeChanged (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	if (m_ui.SelectionRangeRadioButton->isChecked() && m_pClip) {
@@ -218,7 +218,7 @@ void qtractorTakeRangeForm::formatChanged ( int iDisplayFormat )
 	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
 	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
-	qtractorTimeScale::DisplayFormat displayFormat
+	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
 	m_ui.TakeStartSpinBox->setDisplayFormat(displayFormat);
@@ -262,11 +262,11 @@ void qtractorTakeRangeForm::stabilizeForm (void)
 {
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
-	if (m_pClip == NULL)
+	if (m_pClip == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	m_ui.SelectionRangeRadioButton->setEnabled(

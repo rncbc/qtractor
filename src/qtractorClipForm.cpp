@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,7 +66,7 @@ const char *g_aFadeTypeNames[] = {
 	_TR("Cubic 2"),		// OutCubic
 	_TR("Cubic 3"),		// InOutCubic
 
-	NULL
+	nullptr
 };
 
 struct FadeTypeInfo
@@ -109,9 +109,9 @@ qtractorClipForm::qtractorClipForm (
 	QDialog::setWindowModality(Qt::WindowModal);
 
 	// Initialize dirty control state.
-	m_pClip       = NULL;
+	m_pClip       = nullptr;
 	m_bClipNew    = false;
-	m_pTimeScale  = NULL;
+	m_pTimeScale  = nullptr;
 	m_iDirtyCount = 0;
 	m_iDirtySetup = 0;
 
@@ -223,7 +223,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 {
 	// Initialize conveniency options...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Mark that we're changing thing's here...
@@ -359,19 +359,19 @@ qtractorClip *qtractorClipForm::clip (void) const
 void qtractorClipForm::accept (void)
 {
 	// Sanity check...
-	if (m_pClip == NULL)
+	if (m_pClip == nullptr)
 		return;
 	if (!m_pClip->queryEditor())
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Save settings...
 	if (m_iDirtyCount > 0) {
 		// Cache the changed settings (if any)...
-		qtractorClipCommand *pClipCommand = NULL;
+		qtractorClipCommand *pClipCommand = nullptr;
 		qtractorTrack::TrackType clipType = trackType();
 		const QString& sFilename = m_ui.FilenameComboBox->currentText();
 		const unsigned short iTrackChannel = m_ui.TrackChannelSpinBox->value();
@@ -572,7 +572,7 @@ void qtractorClipForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -660,7 +660,7 @@ int qtractorClipForm::indexFromFadeType ( qtractorClip::FadeType fadeType ) cons
 // Retrieve current clip/track type.
 qtractorTrack::TrackType qtractorClipForm::trackType (void) const
 {
-	qtractorTrack *pTrack = NULL;
+	qtractorTrack *pTrack = nullptr;
 	if (m_pClip)
 		pTrack = m_pClip->track();
 
@@ -699,9 +699,9 @@ void qtractorClipForm::browseFilename (void)
 	QString sFilename;
 
 	const QString& sTitle
-		= tr("%1 Clip File").arg(sType) + " - " QTRACTOR_TITLE;
+		= tr("%1 Clip File").arg(sType);
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
@@ -710,7 +710,7 @@ void qtractorClipForm::browseFilename (void)
 	}
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
-		sTitle, m_ui.FilenameComboBox->currentText(), sFilter, NULL, options);
+		sTitle, m_ui.FilenameComboBox->currentText(), sFilter, nullptr, options);
 #else
 	QFileDialog fileDialog(pParentWidget,
 		sTitle, m_ui.FilenameComboBox->currentText(), sFilter);
@@ -757,7 +757,7 @@ void qtractorClipForm::fileChanged (
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Do nothing else if file is invalid...

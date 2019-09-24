@@ -193,7 +193,7 @@ class qtractorClientListView : public QTreeWidget
 public:
 
 	// Constructor.
-	qtractorClientListView(QWidget *pParent = NULL);
+	qtractorClientListView(QWidget *pParent = nullptr);
 	// Default destructor.
 	virtual ~qtractorClientListView();
 
@@ -320,7 +320,7 @@ class qtractorConnectorView : public QWidget
 public:
 
 	// Constructor.
-	qtractorConnectorView(QWidget *pParent = NULL);
+	qtractorConnectorView(QWidget *pParent = nullptr);
 	// Default destructor.
 	~qtractorConnectorView();
 

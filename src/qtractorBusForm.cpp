@@ -112,10 +112,10 @@ qtractorBusForm::qtractorBusForm (
 	QDialog::setWindowModality(Qt::WindowModal);
 
 	// Initialize locals.
-	m_pBus        = NULL;
+	m_pBus        = nullptr;
 
-	m_pAudioRoot  = NULL;
-	m_pMidiRoot   = NULL;
+	m_pAudioRoot  = nullptr;
+	m_pMidiRoot   = nullptr;
 
 	m_iDirtySetup = 0;
 	m_iDirtyCount = 0;
@@ -241,11 +241,11 @@ qtractorBusForm::qtractorBusForm (
 // Set current bus.
 void qtractorBusForm::setBus ( qtractorBus *pBus )
 {
-	if (pBus == NULL)
+	if (pBus == nullptr)
 		return;
 
 	// Get the device view root item...
-	QTreeWidgetItem *pRootItem = NULL;
+	QTreeWidgetItem *pRootItem = nullptr;
 	if (pBus) {
 		switch (pBus->busType()) {
 		case qtractorTrack::Audio:
@@ -260,7 +260,7 @@ void qtractorBusForm::setBus ( qtractorBus *pBus )
 	}
 
 	// Is the root present?
-	if (pRootItem == NULL) {
+	if (pRootItem == nullptr) {
 		stabilizeForm();
 		return;
 	}
@@ -385,13 +385,13 @@ void qtractorBusForm::refreshBuses (void)
 	//
 	// (Re)Load complete bus listing ...
 	//
-	m_pAudioRoot = NULL;
-	m_pMidiRoot  = NULL;
+	m_pAudioRoot = nullptr;
+	m_pMidiRoot  = nullptr;
 
 	m_ui.BusListView->clear();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Audio buses...
@@ -430,15 +430,15 @@ void qtractorBusForm::selectBus (void)
 
 	// Get current selected item, must not be a root one...
 	QTreeWidgetItem *pItem = m_ui.BusListView->currentItem();
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
-	if (pItem->parent() == NULL)
+	if (pItem->parent() == nullptr)
 		return;
 
 	// Just make it in current view...
 	qtractorBusListItem *pBusItem
 		= static_cast<qtractorBusListItem *> (pItem);
-	if (pBusItem == NULL)
+	if (pBusItem == nullptr)
 		return;
 
 	// Check if we need an update?...
@@ -450,7 +450,7 @@ void qtractorBusForm::selectBus (void)
 		if (m_ui.UpdatePushButton->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -482,10 +482,10 @@ unsigned int qtractorBusForm::flags (void) const
 	unsigned int iFlags = 0;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return iFlags;
 
-	if (m_pBus == NULL)
+	if (m_pBus == nullptr)
 		return iFlags;
 
 	if (m_pBus->prev()) {
@@ -504,7 +504,7 @@ unsigned int qtractorBusForm::flags (void) const
 		return iFlags;
 
 	// Get the device view root item...
-	qtractorEngine *pEngine = NULL;
+	qtractorEngine *pEngine = nullptr;
 	switch (m_pBus->busType()) {
 	case qtractorTrack::Audio:
 		pEngine = pSession->audioEngine();
@@ -516,15 +516,15 @@ unsigned int qtractorBusForm::flags (void) const
 		break;
 	}
 	// Is it still valid?
-	if (pEngine == NULL)
+	if (pEngine == nullptr)
 		return iFlags;
 
 	// Is there one already?
 	qtractorBus *pBus = pEngine->findBus(sBusName);
 	qtractorBus *pBusEx = pEngine->findBusEx(sBusName);
-	if (pBus == NULL && pBusEx == NULL)
+	if (pBus == nullptr && pBusEx == nullptr)
 		iFlags |= Create;
-	if ((pBus == NULL  || pBus == m_pBus) && (pBusEx == NULL)
+	if ((pBus == nullptr  || pBus == m_pBus) && (pBusEx == nullptr)
 		&& (m_pBus->prev() || m_ui.BusModeComboBox->currentIndex() == 2))
 		iFlags |= Update;
 
@@ -535,11 +535,11 @@ unsigned int qtractorBusForm::flags (void) const
 // Update bus method.
 bool qtractorBusForm::updateBus ( qtractorBus *pBus )
 {
-	if (pBus == NULL)
+	if (pBus == nullptr)
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
@@ -602,15 +602,15 @@ bool qtractorBusForm::updateBus ( qtractorBus *pBus )
 // Move current bus up towards the list top.
 void qtractorBusForm::moveUpBus (void)
 {
-	if (m_pBus == NULL)
+	if (m_pBus == nullptr)
 		return;
 
 	qtractorBus *pNextBus = m_pBus->prev();
-	if (pNextBus == NULL)
+	if (pNextBus == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Make it an undoable command...
@@ -627,17 +627,17 @@ void qtractorBusForm::moveUpBus (void)
 // Move current bus down towards the list bottom.
 void qtractorBusForm::moveDownBus (void)
 {
-	if (m_pBus == NULL)
+	if (m_pBus == nullptr)
 		return;
 
 	qtractorBus *pNextBus = m_pBus->next();
-	if (pNextBus == NULL)
+	if (pNextBus == nullptr)
 		return;
 
 	pNextBus = pNextBus->next();
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Make it an undoable command...
@@ -654,11 +654,11 @@ void qtractorBusForm::moveDownBus (void)
 // Create a new bus from current view.
 void qtractorBusForm::createBus (void)
 {
-	if (m_pBus == NULL)
+	if (m_pBus == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 	
 	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
@@ -745,11 +745,11 @@ void qtractorBusForm::updateBus (void)
 // Delete current bus in view.
 void qtractorBusForm::deleteBus (void)
 {
-	if (m_pBus == NULL)
+	if (m_pBus == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Prompt user if he/she's sure about this...
@@ -769,7 +769,7 @@ void qtractorBusForm::deleteBus (void)
 		}
 		// Show the warning...
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to remove bus:\n\n"
 			"\"%1\" (%2)\n\n"
 			"Are you sure?")
@@ -787,7 +787,7 @@ void qtractorBusForm::deleteBus (void)
 		= new qtractorDeleteBusCommand(m_pBus);
 
 	// Invalidade current bus...
-	m_pBus = NULL;
+	m_pBus = nullptr;
 
 	// Execute and refresh form...
 	if (pSession->execute(pDeleteBusCommand)) {
@@ -803,8 +803,8 @@ void qtractorBusForm::deleteBus (void)
 // Reset (stabilize) plugin lists...
 void qtractorBusForm::resetPluginLists (void)
 {
-	m_ui.InputPluginListView->setPluginList(NULL);
-	m_ui.OutputPluginListView->setPluginList(NULL);
+	m_ui.InputPluginListView->setPluginList(nullptr);
+	m_ui.OutputPluginListView->setPluginList(nullptr);
 }
 
 
@@ -827,7 +827,7 @@ void qtractorBusForm::reject (void)
 	// Check if there's any pending changes...
 	if (m_iDirtyCount > 0) {
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to discard the changes?"),
 			QMessageBox::Discard | QMessageBox::Cancel)) {
@@ -873,16 +873,16 @@ void qtractorBusForm::stabilizeForm (void)
 	// Stabilize current plugin lists state.
 	bool bEnabled;
 	int iItem, iItemCount;
-	qtractorPlugin *pPlugin = NULL;
-	qtractorPluginListItem *pItem = NULL;
+	qtractorPlugin *pPlugin = nullptr;
+	qtractorPluginListItem *pItem = nullptr;
 
 	// Input plugin list...
-	bEnabled = (m_ui.InputPluginListView->pluginList() != NULL);
+	bEnabled = (m_ui.InputPluginListView->pluginList() != nullptr);
 	m_ui.BusTabWidget->setTabEnabled(1, bEnabled);
 	if (bEnabled) {
 		iItemCount = m_ui.InputPluginListView->count();
 		iItem = -1;
-		pPlugin = NULL;
+		pPlugin = nullptr;
 		pItem = static_cast<qtractorPluginListItem *> (
 			m_ui.InputPluginListView->currentItem());
 		if (pItem) {
@@ -890,19 +890,19 @@ void qtractorBusForm::stabilizeForm (void)
 			pPlugin = pItem->plugin();
 		}
 	//	m_ui.AddInputPluginToolButton->setEnabled(true);
-		m_ui.RemoveInputPluginToolButton->setEnabled(pPlugin != NULL);
+		m_ui.RemoveInputPluginToolButton->setEnabled(pPlugin != nullptr);
 		m_ui.MoveUpInputPluginToolButton->setEnabled(pItem && iItem > 0);
 		m_ui.MoveDownInputPluginToolButton->setEnabled(
 			pItem && iItem < iItemCount - 1);
 	}
 
 	// Output plugin list...
-	bEnabled = (m_ui.OutputPluginListView->pluginList() != NULL);
+	bEnabled = (m_ui.OutputPluginListView->pluginList() != nullptr);
 	m_ui.BusTabWidget->setTabEnabled(2, bEnabled);
 	if (bEnabled) {
 		iItemCount = m_ui.OutputPluginListView->count();
 		iItem = -1;
-		pPlugin = NULL;
+		pPlugin = nullptr;
 		pItem = static_cast<qtractorPluginListItem *> (
 			m_ui.OutputPluginListView->currentItem());
 		if (pItem) {
@@ -910,7 +910,7 @@ void qtractorBusForm::stabilizeForm (void)
 			pPlugin = pItem->plugin();
 		}
 	//	m_ui.AddOutputPluginToolButton->setEnabled(true);
-		m_ui.RemoveOutputPluginToolButton->setEnabled(pPlugin != NULL);
+		m_ui.RemoveOutputPluginToolButton->setEnabled(pPlugin != nullptr);
 		m_ui.MoveUpOutputPluginToolButton->setEnabled(pItem && iItem > 0);
 		m_ui.MoveDownOutputPluginToolButton->setEnabled(
 			pItem && iItem < iItemCount - 1);
@@ -963,7 +963,7 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 void qtractorBusForm::midiSysex (void)
 {
 	// Care of MIDI output bus...
-	if (m_pBus == NULL)
+	if (m_pBus == nullptr)
 		return;
 	if (m_pBus->busType() != qtractorTrack::Midi)
 		return;
@@ -972,9 +972,9 @@ void qtractorBusForm::midiSysex (void)
 
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (m_pBus);
-	if (pMidiBus == NULL)
+	if (pMidiBus == nullptr)
 		return;
-	if (pMidiBus->sysexList() == NULL)
+	if (pMidiBus->sysexList() == nullptr)
 		return;
 
 	qtractorMidiSysexForm form(this);
@@ -992,7 +992,7 @@ void qtractorBusForm::updateMidiInstruments (void)
 	m_ui.MidiInstrumentComboBox->addItem(tr("(No instrument)"));
 
 	// Care of MIDI output bus...
-	if (m_pBus == NULL)
+	if (m_pBus == nullptr)
 		return;
 	if (m_pBus->busType() != qtractorTrack::Midi)
 		return;
@@ -1001,15 +1001,15 @@ void qtractorBusForm::updateMidiInstruments (void)
 
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (m_pBus);
-	if (pMidiBus == NULL)
+	if (pMidiBus == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorInstrumentList *pInstruments = pSession->instruments();
-	if (pInstruments == NULL)
+	if (pInstruments == nullptr)
 		return;
 
 	// Avoid superfluous change notifications...
@@ -1048,7 +1048,7 @@ void qtractorBusForm::updateMidiSysex (void)
 	m_ui.MidiSysexTextLabel->clear();
 
 	// Care of MIDI output bus...
-	if (m_pBus == NULL)
+	if (m_pBus == nullptr)
 		return;
 	if (m_pBus->busType() != qtractorTrack::Midi)
 		return;
@@ -1057,9 +1057,9 @@ void qtractorBusForm::updateMidiSysex (void)
 
 	qtractorMidiBus *pMidiBus
 		= static_cast<qtractorMidiBus *> (m_pBus);
-	if (pMidiBus == NULL)
+	if (pMidiBus == nullptr)
 		return;
-	if (pMidiBus->sysexList() == NULL)
+	if (pMidiBus->sysexList() == nullptr)
 		return;
 
 	// Show proper count status...

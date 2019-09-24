@@ -1,7 +1,7 @@
 // qtractorFiles.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2016, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -106,15 +106,15 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pOpenFileAction = new QAction(
 		QIcon(":/images/itemFile.png"), tr("Add &Files..."), this);
 	m_pCutItemAction = new QAction(
-		QIcon(":/images/editCut.png"), tr("Cu&t"), NULL);
+		QIcon(":/images/editCut.png"), tr("Cu&t"), nullptr);
 	m_pCopyItemAction = new QAction(
-		QIcon(":/images/editCopy.png"), tr("&Copy"), NULL);
+		QIcon(":/images/editCopy.png"), tr("&Copy"), nullptr);
 	m_pPasteItemAction = new QAction(
-		QIcon(":/images/editPaste.png"), tr("&Paste"), NULL);
+		QIcon(":/images/editPaste.png"), tr("&Paste"), nullptr);
 	m_pRenameItemAction = new QAction(
 		QIcon(":/images/formEdit.png"), tr("Re&name"), this);
 	m_pRemoveItemAction = new QAction(
-		QIcon(":/images/formRemove.png"), tr("&Remove"), NULL);
+		QIcon(":/images/formRemove.png"), tr("&Remove"), nullptr);
 	m_pPlayItemAction = new QAction(
 		QIcon(":/images/transportPlay.png"), tr("Pla&y"), this);
 	m_pPlayItemAction->setCheckable(true);
@@ -355,7 +355,7 @@ qtractorFileListView *qtractorFiles::currentFileListView (void) const
 	case qtractorFiles::Midi:
 		return m_pMidiListView;
 	default:
-		return NULL;
+		return nullptr;
 	}
 }
 

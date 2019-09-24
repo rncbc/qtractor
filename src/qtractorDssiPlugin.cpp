@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ struct DssiEditor
 {
 	// Constructor.
 	DssiEditor(qtractorDssiPlugin *pDssiPlugin)
-		: plugin(pDssiPlugin), target(NULL), source(NULL), path(NULL), busy(0) {}
+		: plugin(pDssiPlugin), target(nullptr), source(nullptr), path(nullptr), busy(0) {}
 
 	// Destructor.
 	~DssiEditor() {
@@ -98,7 +98,7 @@ static DssiEditor *osc_find_editor ( const QString& sOscLabel )
 	qDebug("osc_find_editor(\"%s\")", sOscLabel.toUtf8().constData());
 #endif
 
-	return g_dssiEditors.value(sOscLabel, NULL);
+	return g_dssiEditors.value(sOscLabel, nullptr);
 }
 
 
@@ -113,7 +113,7 @@ static int osc_send_configure ( DssiEditor *pDssiEditor,
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
-	if (pDssiEditor->target == NULL)
+	if (pDssiEditor->target == nullptr)
 		return 1;
 
 #ifdef CONFIG_DEBUG
@@ -135,7 +135,7 @@ static int osc_send_control (
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
-	if (pDssiEditor->target == NULL)
+	if (pDssiEditor->target == nullptr)
 		return 1;
 
 #ifdef CONFIG_DEBUG
@@ -157,7 +157,7 @@ static int osc_send_program (
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
-	if (pDssiEditor->target == NULL)
+	if (pDssiEditor->target == nullptr)
 		return 1;
 
 #ifdef CONFIG_DEBUG
@@ -178,7 +178,7 @@ static int osc_send_show ( DssiEditor *pDssiEditor )
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
-	if (pDssiEditor->target == NULL)
+	if (pDssiEditor->target == nullptr)
 		return 1;
 
 #ifdef CONFIG_DEBUG
@@ -197,7 +197,7 @@ static int osc_send_hide ( DssiEditor *pDssiEditor )
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
-	if (pDssiEditor->target == NULL)
+	if (pDssiEditor->target == nullptr)
 		return 1;
 
 #ifdef CONFIG_DEBUG
@@ -216,7 +216,7 @@ static int osc_send_quit ( DssiEditor *pDssiEditor )
 {
 	if (pDssiEditor->busy > 0)
 		return 1;
-	if (pDssiEditor->target == NULL)
+	if (pDssiEditor->target == nullptr)
 		return 1;
 
 #ifdef CONFIG_DEBUG
@@ -242,7 +242,7 @@ static int osc_update (
 #endif
 
 	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
-	if (pDssiPlugin == NULL)
+	if (pDssiPlugin == nullptr)
 		return 1;
 
 	++(pDssiEditor->busy);
@@ -314,7 +314,7 @@ static int osc_configure ( DssiEditor *pDssiEditor, lo_arg **argv )
 #endif
 
 	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
-	if (pDssiPlugin == NULL)
+	if (pDssiPlugin == nullptr)
 		return 1;
 
 	// Save and send configuration to plugin...
@@ -344,7 +344,7 @@ static int osc_control ( DssiEditor *pDssiEditor, lo_arg **argv )
 #endif
 
 	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
-	if (pDssiPlugin == NULL)
+	if (pDssiPlugin == nullptr)
 		return 1;
 
 	// Plugin parameter lookup.
@@ -367,7 +367,7 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 #endif
 
 	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
-	if (pDssiPlugin == NULL)
+	if (pDssiPlugin == nullptr)
 		return 1;
 
 	// Bank/Program selection pending...
@@ -385,7 +385,7 @@ static int osc_program ( DssiEditor *pDssiEditor, lo_arg **argv )
 
 static int osc_midi ( DssiEditor *pDssiEditor, lo_arg **argv )
 {
-	static snd_midi_event_t *s_pAlsaCoder = NULL;
+	static snd_midi_event_t *s_pAlsaCoder = nullptr;
 	static snd_seq_event_t   s_aAlsaEvent[4];
 
 	const unsigned char *data = argv[0]->m;
@@ -396,14 +396,14 @@ static int osc_midi ( DssiEditor *pDssiEditor, lo_arg **argv )
 #endif
 
 	qtractorDssiPlugin *pDssiPlugin = pDssiEditor->plugin;
-	if (pDssiPlugin == NULL)
+	if (pDssiPlugin == nullptr)
 		return 1;
 
 	qtractorMidiManager *pMidiManager = (pDssiPlugin->list())->midiManager();
-	if (pMidiManager == NULL)
+	if (pMidiManager == nullptr)
 		return 1;
 
-	if (s_pAlsaCoder == NULL && snd_midi_event_new(4, &s_pAlsaCoder))
+	if (s_pAlsaCoder == nullptr && snd_midi_event_new(4, &s_pAlsaCoder))
 		return 1;
 
 	snd_midi_event_reset_encode(s_pAlsaCoder);	
@@ -430,7 +430,7 @@ static int osc_exiting ( DssiEditor *pDssiEditor )
 		pDssiPlugin->clearEditor();
 	}
 
-	pDssiEditor->plugin = NULL;
+	pDssiEditor->plugin = nullptr;
 
 	if (g_dssiEditors.remove(osc_label(pDssiPlugin)) > 0)
 		delete pDssiEditor;
@@ -459,7 +459,7 @@ static int osc_message ( const char *path, const char * /*types*/,
 	const QString sPath = path;
 	const QString& sLabel = sPath.section('/', 2, 2);
 	DssiEditor *pDssiEditor = osc_find_editor(sLabel);
-	if (pDssiEditor == NULL)
+	if (pDssiEditor == nullptr)
 		return 1;
 
 	if (pDssiEditor->busy > 0)
@@ -502,12 +502,12 @@ static void osc_start (void)
 #endif
 
 	// Create OSC thread...
-	g_oscThread = lo_server_thread_new(NULL, osc_error);
+	g_oscThread = lo_server_thread_new(nullptr, osc_error);
 	g_sOscPath  = lo_server_thread_get_url(g_oscThread);
 	g_sOscPath += "dssi";
 
 	lo_server_thread_add_method(g_oscThread,
-		NULL, NULL, osc_message, NULL);
+		nullptr, nullptr, osc_message, nullptr);
 	lo_server_thread_start(g_oscThread);
 }
 
@@ -566,7 +566,7 @@ static void osc_close_editor ( DssiEditor *pDssiEditor )
 // qtractorDssiPlugin::DssiMulti -- DSSI multiple instance pool entry.
 //
 
-static float       *g_pDummyBuffer     = NULL;
+static float       *g_pDummyBuffer     = nullptr;
 static unsigned int g_iDummyBufferSize = 0;
 
 class DssiMulti
@@ -574,9 +574,9 @@ class DssiMulti
 public:
 
 	// Constructor.
-	DssiMulti() : m_iSize(0), m_ppPlugins(NULL), m_iInstances(0),
-		m_piInstances(NULL), m_phInstances(NULL),
-		m_ppEvents(NULL), m_piEvents(NULL),
+	DssiMulti() : m_iSize(0), m_ppPlugins(nullptr), m_iInstances(0),
+		m_piInstances(nullptr), m_phInstances(nullptr),
+		m_ppEvents(nullptr), m_piEvents(nullptr),
 		m_iProcess(0), m_iActivated(0), m_iRefCount(0) {}
 
 	// Destructor.
@@ -611,8 +611,8 @@ public:
 			qtractorDssiPlugin **ppOldPlugins = m_ppPlugins;
 			unsigned long *piOldInstances = m_piInstances;
 			if (ppOldPlugins && piOldInstances) {
-				m_ppPlugins = NULL;
-				m_piInstances = NULL;
+				m_ppPlugins = nullptr;
+				m_piInstances = nullptr;
 				for (unsigned long i = 0; i < m_iInstances; ++i) {
 					ppNewPlugins[i] = ppOldPlugins[i];
 					piNewInstances[i] = piOldInstances[i];
@@ -642,7 +642,7 @@ public:
 		m_iInstances = iNewInstances;
 
 		unsigned int iBufferSize = 0x400; // FIXME: Sane default.
-		qtractorAudioEngine *pAudioEngine = NULL;
+		qtractorAudioEngine *pAudioEngine = nullptr;
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession)
 			pAudioEngine = pSession->audioEngine();
@@ -699,7 +699,7 @@ public:
 				m_ppEvents[iInstances] = pMidiManager->events();
 				m_piEvents[iInstances] = pMidiManager->count();
 			} else {
-				m_ppEvents[iInstances] = NULL;
+				m_ppEvents[iInstances] = nullptr;
 				m_piEvents[iInstances] = 0;
 			}
 			// Count active instances...
@@ -779,12 +779,12 @@ static QString dssi_multi_key ( qtractorDssiPluginType *pDssiType )
 static DssiMulti *dssi_multi_create ( qtractorDssiPluginType *pDssiType )
 {
 	const DSSI_Descriptor *pDssiDescriptor = pDssiType->dssi_descriptor();
-	if (pDssiDescriptor == NULL)
-		return NULL;
-	if (pDssiDescriptor->run_multiple_synths == NULL)
-		return NULL;
+	if (pDssiDescriptor == nullptr)
+		return nullptr;
+	if (pDssiDescriptor->run_multiple_synths == nullptr)
+		return nullptr;
 
-	DssiMulti *pDssiMulti = NULL;
+	DssiMulti *pDssiMulti = nullptr;
 	const QString& sKey = dssi_multi_key(pDssiType);
 	QHash<QString, DssiMulti *>::const_iterator iter
 		= g_dssiHash.constFind(sKey);
@@ -818,7 +818,7 @@ void dssi_multi_destroy ( qtractorDssiPluginType *pDssiType )
 	// On last entry deallocate dummy buffer as well...
 	if (g_dssiHash.isEmpty() && g_pDummyBuffer) {
 		delete [] g_pDummyBuffer;
-		g_pDummyBuffer = NULL;
+		g_pDummyBuffer = nullptr;
 		g_iDummyBufferSize = 0;
 	}
 }
@@ -832,9 +832,9 @@ void dssi_multi_destroy ( qtractorDssiPluginType *pDssiType )
 bool qtractorDssiPluginType::open (void)
 {
 	// Do we have a descriptor already?
-	if (m_pDssiDescriptor == NULL)
+	if (m_pDssiDescriptor == nullptr)
 		m_pDssiDescriptor = dssi_descriptor(file(), index());
-	if (m_pDssiDescriptor == NULL)
+	if (m_pDssiDescriptor == nullptr)
 		return false;
 
 	// We're also a LADSPA one...
@@ -842,8 +842,8 @@ bool qtractorDssiPluginType::open (void)
 
 	// Let's get the it's own LADSPA stuff...
 	if (!qtractorLadspaPluginType::open()) {
-		m_pLadspaDescriptor = NULL;
-		m_pDssiDescriptor = NULL;
+		m_pLadspaDescriptor = nullptr;
+		m_pDssiDescriptor = nullptr;
 		return false;
 	}
 
@@ -853,7 +853,7 @@ bool qtractorDssiPluginType::open (void)
 #endif
 
 	// Things we have now for granted...
-	m_bConfigure = (m_pDssiDescriptor->configure != NULL);
+	m_bConfigure = (m_pDssiDescriptor->configure != nullptr);
 	m_iMidiIns = 1;
 
 #ifdef CONFIG_LIBLO
@@ -883,7 +883,7 @@ bool qtractorDssiPluginType::open (void)
 
 void qtractorDssiPluginType::close (void)
 {
-	m_pDssiDescriptor = NULL;
+	m_pDssiDescriptor = nullptr;
 	qtractorLadspaPluginType::close();
 }
 
@@ -893,13 +893,13 @@ qtractorDssiPluginType *qtractorDssiPluginType::createType (
 	qtractorPluginFile *pFile, unsigned long iIndex )
 {
 	// Sanity check...
-	if (pFile == NULL)
-		return NULL;
+	if (pFile == nullptr)
+		return nullptr;
 
 	// Retrieve DSSI descriptor if any...
 	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor(pFile, iIndex);
-	if (pDssiDescriptor == NULL)
-		return NULL;
+	if (pDssiDescriptor == nullptr)
+		return nullptr;
 
 	// Yep, most probably its a valid plugin descriptor...
 	return new qtractorDssiPluginType(pFile, iIndex, pDssiDescriptor);
@@ -913,8 +913,8 @@ const DSSI_Descriptor *qtractorDssiPluginType::dssi_descriptor (
 	// Retrieve the DSSI descriptor function, if any...
 	DSSI_Descriptor_Function pfnDssiDescriptor
 		= (DSSI_Descriptor_Function) pFile->resolve("dssi_descriptor");
-	if (pfnDssiDescriptor == NULL)
-		return NULL;
+	if (pfnDssiDescriptor == nullptr)
+		return nullptr;
 
 	// Retrieve DSSI descriptor if any...
 	return (*pfnDssiDescriptor)(iIndex);
@@ -929,8 +929,8 @@ const DSSI_Descriptor *qtractorDssiPluginType::dssi_descriptor (
 qtractorDssiPlugin::qtractorDssiPlugin ( qtractorPluginList *pList,
 	qtractorDssiPluginType *pDssiType )
 	: qtractorLadspaPlugin(pList, pDssiType),
-		m_pDssiMulti(NULL), m_pDssiEditor(NULL),
-		m_bEditorVisible(false), m_pfControlOutsLast(NULL)
+		m_pDssiMulti(nullptr), m_pDssiEditor(nullptr),
+		m_bEditorVisible(false), m_pfControlOutsLast(nullptr)
 {
 	// Check whether we're go into a multiple instance pool.
 	m_pDssiMulti = dssi_multi_create(pDssiType);
@@ -1047,20 +1047,20 @@ void qtractorDssiPlugin::process (
 {
 	// Get MIDI manager access...
 	qtractorMidiManager *pMidiManager = list()->midiManager();
-	if (pMidiManager == NULL) {
+	if (pMidiManager == nullptr) {
 		qtractorLadspaPlugin::process(ppIBuffer, ppOBuffer, nframes);
 		return;
 	}
 
-	if (m_phInstances == NULL)
+	if (m_phInstances == nullptr)
 		return;
 
 	const LADSPA_Descriptor *pLadspaDescriptor = ladspa_descriptor();
-	if (pLadspaDescriptor == NULL)
+	if (pLadspaDescriptor == nullptr)
 		return;
 
 	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
-	if (pDssiDescriptor == NULL)
+	if (pDssiDescriptor == nullptr)
 		return;
 	
 	// We'll cross channels over instances...
@@ -1124,7 +1124,7 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 {
 	qtractorDssiPluginType *pDssiType
 		= static_cast<qtractorDssiPluginType *> (type());
-	if (pDssiType == NULL)
+	if (pDssiType == nullptr)
 		return;
 	if (!pDssiType->isEditor())
 		return;
@@ -1189,8 +1189,8 @@ void qtractorDssiPlugin::setEditorVisible ( bool bVisible )
 #ifdef CONFIG_LIBLO
 
 	// Check if still here...
-	if (m_pDssiEditor == NULL) {
-		if (bVisible) openEditor(NULL);
+	if (m_pDssiEditor == nullptr) {
+		if (bVisible) openEditor(nullptr);
 		return;
 	}
 
@@ -1223,14 +1223,14 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 	if (list()->isMidiBus())
 		return;
 
-	if (m_phInstances == NULL)
+	if (m_phInstances == nullptr)
 		return;
 
 	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
-	if (pDssiDescriptor == NULL)
+	if (pDssiDescriptor == nullptr)
 		return;
 
-	if (pDssiDescriptor->select_program == NULL)
+	if (pDssiDescriptor->select_program == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -1262,20 +1262,20 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 // Provisional program/patch accessor.
 bool qtractorDssiPlugin::getProgram ( int iIndex, Program& program ) const
 {
-	if (m_phInstances == NULL)
+	if (m_phInstances == nullptr)
 		return false;
 
 	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
-	if (pDssiDescriptor == NULL)
+	if (pDssiDescriptor == nullptr)
 		return false;
 
-	if (pDssiDescriptor->get_program == NULL)
+	if (pDssiDescriptor->get_program == nullptr)
 		return false;
 
 	// Only first one instance should matter...
 	const DSSI_Program_Descriptor *pDssiProgram
 		= (*pDssiDescriptor->get_program)(m_phInstances[0], iIndex);
-	if (pDssiProgram == NULL)
+	if (pDssiProgram == nullptr)
 		return false;
 
 	// Map this to that...
@@ -1292,7 +1292,7 @@ void qtractorDssiPlugin::setController ( int iController, int iValue )
 {
 	qtractorPluginParam *pParam
 		= m_apControllerMap[DSSI_CC_NUMBER(iController)];
-	if (pParam == NULL)
+	if (pParam == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -1308,14 +1308,14 @@ void qtractorDssiPlugin::setController ( int iController, int iValue )
 // Configuration (CLOB) stuff.
 void qtractorDssiPlugin::configure ( const QString& sKey, const QString& sValue )
 {
-	if (m_phInstances == NULL)
+	if (m_phInstances == nullptr)
 		return;
 
 	const DSSI_Descriptor *pDssiDescriptor = dssi_descriptor();
-	if (pDssiDescriptor == NULL)
+	if (pDssiDescriptor == nullptr)
 		return;
 
-	if (pDssiDescriptor->configure == NULL)
+	if (pDssiDescriptor->configure == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -1346,7 +1346,7 @@ const DSSI_Descriptor *qtractorDssiPlugin::dssi_descriptor (void) const
 {
 	qtractorDssiPluginType *pDssiType
 		= static_cast<qtractorDssiPluginType *> (type());
-	return (pDssiType ? pDssiType->dssi_descriptor() : NULL);
+	return (pDssiType ? pDssiType->dssi_descriptor() : nullptr);
 }
 
 
@@ -1373,7 +1373,7 @@ void qtractorDssiPlugin::updateControlOuts ( bool bForce )
 // Reset(null) internal editor reference.
 void qtractorDssiPlugin::clearEditor (void)
 {
-	m_pDssiEditor = NULL;
+	m_pDssiEditor = nullptr;
 
 	m_bEditorVisible = false;
 	toggleFormEditor(false);

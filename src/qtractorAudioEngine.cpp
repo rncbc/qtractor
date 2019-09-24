@@ -482,7 +482,7 @@ static void qtractorAudioEngine_property_change (
 qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	: qtractorEngine(pSession, qtractorTrack::Audio)
 {
-	m_pJackClient = NULL;
+	m_pJackClient = nullptr;
 
 	m_iSampleRate = 44100;	// A sensible default, always.
 	m_iBufferSize = 0;
@@ -495,13 +495,13 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_bFreewheel = false;
 
 	// Common audio buffer sync thread.
-	m_pSyncThread = NULL;
+	m_pSyncThread = nullptr;
 
 	// Audio-export (in)active state.
 	m_bExporting   = false;
-	m_pExportFile  = NULL;
-	m_pExportBuses = NULL;
-	m_pExportBuffer = NULL;
+	m_pExportFile  = nullptr;
+	m_pExportBuses = nullptr;
+	m_pExportBuffer = nullptr;
 	m_iExportOffset = 0;
 	m_iExportStart = 0;
 	m_iExportEnd   = 0;
@@ -510,11 +510,11 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	// Audio metronome stuff.
 	m_bMetronome        = false;
 	m_bMetroBus         = false;
-	m_pMetroBus         = NULL;
+	m_pMetroBus         = nullptr;
 	m_bMetroAutoConnect = true;
-	m_pMetroBarBuff     = NULL;
+	m_pMetroBarBuff     = nullptr;
 	m_fMetroBarGain     = 1.0f;
-	m_pMetroBeatBuff    = NULL;
+	m_pMetroBeatBuff    = nullptr;
 	m_fMetroBeatGain    = 1.0f;
 	m_iMetroOffset      = 0;
 	m_iMetroBeatStart   = 0;
@@ -526,8 +526,8 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_bPlayerOpen  = false;
 	m_bPlayerBus   = false;
 	m_bPlayerAutoConnect = true;
-	m_pPlayerBus   = NULL;
-	m_pPlayerBuff  = NULL;
+	m_pPlayerBus   = nullptr;
+	m_pPlayerBuff  = nullptr;
 	m_iPlayerFrame = 0;
 
 	// JACK transport mode.
@@ -627,7 +627,7 @@ bool qtractorAudioEngine::init (void)
 {
 	// There must a session reference...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Try open a new client...
@@ -642,7 +642,7 @@ bool qtractorAudioEngine::init (void)
 		const QByteArray aSessionId = m_sSessionId.toLocal8Bit();
 		m_pJackClient = jack_client_open(
 			aClientName.constData(),
-			jack_options_t(opts), NULL,
+			jack_options_t(opts), nullptr,
 			aSessionId.constData());
 		// Reset JACK session UUID.
 		m_sSessionId.clear();
@@ -651,9 +651,9 @@ bool qtractorAudioEngine::init (void)
 #endif
 	m_pJackClient = jack_client_open(
 		aClientName.constData(),
-		jack_options_t(opts), NULL);
+		jack_options_t(opts), nullptr);
 
-	if (m_pJackClient == NULL)
+	if (m_pJackClient == nullptr)
 		return false;
 
 	// ATTN: First thing to remember is initial sample-rate and buffer size.
@@ -680,7 +680,7 @@ bool qtractorAudioEngine::activate (void)
 {
 	// There must a session reference...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Let remaining buses get a life...
@@ -860,29 +860,29 @@ void qtractorAudioEngine::clean (void)
 			m_pSyncThread->sync();
 		} while (!m_pSyncThread->wait(100));
 		delete m_pSyncThread;
-		m_pSyncThread = NULL;
+		m_pSyncThread = nullptr;
 	}
 
 	// Audio-export stilll around? weird...
 	if (m_pExportBuffer) {
 		delete m_pExportBuffer;
-		m_pExportBuffer = NULL;
+		m_pExportBuffer = nullptr;
 	}
 
 	if (m_pExportBuses) {
 		delete m_pExportBuses;
-		m_pExportBuses = NULL;
+		m_pExportBuses = nullptr;
 	}
 
 	if (m_pExportFile) {
 		delete m_pExportFile;
-		m_pExportFile = NULL;
+		m_pExportFile = nullptr;
 	}
 
 	// Close the JACK client, finally.
 	if (m_pJackClient) {
 		jack_client_close(m_pJackClient);
-		m_pJackClient = NULL;
+		m_pJackClient = nullptr;
 	}
 
 	// Null sample-rate/period.
@@ -910,12 +910,12 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 	// Must have a valid session...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return 0;
 
 	// Make sure we have an actual session cursor...
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
-	if (pAudioCursor == NULL)
+	if (pAudioCursor == nullptr)
 		return 0;
 
 	// Session RT-safeness lock...
@@ -1001,7 +1001,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				qtractorAudioMonitor *pAudioMonitor
 					= static_cast<qtractorAudioMonitor *> (pTrack->monitor());
 				// Pre-monitoring...
-				if (pAudioMonitor == NULL)
+				if (pAudioMonitor == nullptr)
 					continue;
 				// Record non-passthru metering...
 				if (pTrack->isRecord() && pInputBus) {
@@ -1048,7 +1048,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	if (m_bMetronome && m_pMetroBus && iFrameEnd > m_iMetroBeatStart) {
 		qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameStart);
-		qtractorAudioBuffer *pMetroBuff = NULL;
+		qtractorAudioBuffer *pMetroBuff = nullptr;
 		if (pNode->beatIsBar(m_iMetroBeat))
 			pMetroBuff = m_pMetroBarBuff;
 		else
@@ -1139,17 +1139,17 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 {
 	if (m_bExportDone)
 		return;
-	if (m_pExportBuses  == NULL ||
-		m_pExportFile   == NULL ||
-		m_pExportBuffer == NULL)
+	if (m_pExportBuses  == nullptr ||
+		m_pExportFile   == nullptr ||
+		m_pExportBuffer == nullptr)
 		return;
 
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
-	if (pAudioCursor == NULL)
+	if (pAudioCursor == nullptr)
 		return;
 
 	// Make sure we're in a valid state...
@@ -1231,7 +1231,7 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 				continue;
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (pTrack->outputBus());
-			if (pMidiBus == NULL)
+			if (pMidiBus == nullptr)
 				continue;
 			const unsigned short iChannel = pTrack->midiChannel();
 			pMidiManager = (pTrack->pluginList())->midiManager();
@@ -1466,16 +1466,16 @@ bool qtractorAudioEngine::fileExport (
 
 	// Make sure we have an actual session cursor...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// About to show some progress bar...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	QProgressBar *pProgressBar = pMainForm->progressBar();
-	if (pProgressBar == NULL)
+	if (pProgressBar == nullptr)
 		return false;
 
 	// Cannot have exports longer than current session.
@@ -1487,7 +1487,7 @@ bool qtractorAudioEngine::fileExport (
 	// We'll grab the first bus around, as reference...
 	qtractorAudioBus *pExportBus
 		= static_cast<qtractorAudioBus *> (buses().first());
-	if (pExportBus == NULL)
+	if (pExportBus == nullptr)
 		return false;
 
 	// Get proper file type class...
@@ -1496,7 +1496,7 @@ bool qtractorAudioEngine::fileExport (
 		= qtractorAudioFileFactory::createAudioFile(
 			sExportPath, iChannels, sampleRate());
 	// No file ready for export?
-	if (pExportFile == NULL)
+	if (pExportFile == nullptr)
 		return false;
 
 	// Go open it, for writeing of course...
@@ -1580,7 +1580,7 @@ bool qtractorAudioEngine::fileExport (
 		qtractorLv2Plugin::updateTimePost();
 	#endif
 	#endif
-		::nanosleep(&ts, NULL); // Ain't that enough?
+		::nanosleep(&ts, nullptr); // Ain't that enough?
 		pProgressBar->setValue(pSession->playHead());
 	}
 
@@ -1612,9 +1612,9 @@ bool qtractorAudioEngine::fileExport (
 	pProgressBar->hide();
 
 	m_bExporting   = false;
-	m_pExportBuses = NULL;
-	m_pExportFile  = NULL;
-	m_pExportBuffer = NULL;
+	m_pExportBuses = nullptr;
+	m_pExportFile  = nullptr;
+	m_pExportBuffer = nullptr;
 //	m_iExportStart = 0;
 //	m_iExportEnd   = 0;
 	m_bExportDone  = true;
@@ -1822,9 +1822,9 @@ bool qtractorAudioEngine::openMetroBus (void)
 		return false;
 
 	// Is there any?
-	if (m_pMetroBus == NULL)
+	if (m_pMetroBus == nullptr)
 		createMetroBus();
-	if (m_pMetroBus == NULL)
+	if (m_pMetroBus == nullptr)
 		return false;
 
 	// This is it, when dedicated...
@@ -1859,13 +1859,13 @@ void qtractorAudioEngine::closeMetroBus (void)
 	if (m_pMetroBeatBuff) {
 		m_pMetroBeatBuff->close();
 		delete m_pMetroBeatBuff;
-		m_pMetroBeatBuff = NULL;
+		m_pMetroBeatBuff = nullptr;
 	}
 
 	if (m_pMetroBarBuff) {
 		m_pMetroBarBuff->close();
 		delete m_pMetroBarBuff;
-		m_pMetroBarBuff = NULL;
+		m_pMetroBarBuff = nullptr;
 	}
 
 	if (m_bMetroBus && m_pMetroBus) {
@@ -1886,7 +1886,7 @@ void qtractorAudioEngine::deleteMetroBus (void)
 	if (m_bMetroBus && m_pMetroBus)
 		delete m_pMetroBus;
 
-	m_pMetroBus = NULL;
+	m_pMetroBus = nullptr;
 }
 
 
@@ -1900,11 +1900,11 @@ void qtractorAudioEngine::resetMetro (void)
 		return;
 
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
-	if (pAudioCursor == NULL)
+	if (pAudioCursor == nullptr)
 		return;
 
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Reset to the next beat position...
@@ -2027,9 +2027,9 @@ bool qtractorAudioEngine::openPlayerBus (void)
 	closePlayerBus();
 
 	// Is there any?
-	if (m_pPlayerBus == NULL)
+	if (m_pPlayerBus == nullptr)
 		createPlayerBus();
-	if (m_pPlayerBus == NULL)
+	if (m_pPlayerBus == nullptr)
 		return false;
 
 	if (m_bPlayerBus) {
@@ -2057,7 +2057,7 @@ void qtractorAudioEngine::closePlayerBus (void)
 	if (m_pPlayerBuff) {
 		m_pPlayerBuff->close();
 		delete m_pPlayerBuff;
-		m_pPlayerBuff = NULL;
+		m_pPlayerBuff = nullptr;
 	}
 
 	if (m_bPlayerBus && m_pPlayerBus) {
@@ -2075,7 +2075,7 @@ void qtractorAudioEngine::deletePlayerBus (void)
 	if (m_bPlayerBus && m_pPlayerBus)
 		delete m_pPlayerBus;
 
-	m_pPlayerBus = NULL;
+	m_pPlayerBus = nullptr;
 }
 
 
@@ -2091,7 +2091,7 @@ bool qtractorAudioEngine::openPlayer ( const QString& sFilename )
 {
 	// Must have a valid session...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Acquire proper locking...
@@ -2122,7 +2122,7 @@ void qtractorAudioEngine::closePlayer (void)
 {
 	// Must have a valid session...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Acquire proper locking...
@@ -2178,7 +2178,7 @@ bool qtractorAudioEngine::isTimebase (void) const
 // JACK Timebase reset method.
 void qtractorAudioEngine::resetTimebase (void)
 {
-	if (m_pJackClient == NULL)
+	if (m_pJackClient == nullptr)
 		return;
 
 	if (m_iTimebase > 0) {
@@ -2208,7 +2208,7 @@ void qtractorAudioEngine::resetAllMonitors (void)
 {
 	// There must a session reference...
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Reset all audio bus monitors...
@@ -2256,28 +2256,28 @@ qtractorAudioBus::qtractorAudioBus (
 		m_pIAudioMonitor = new qtractorAudioMonitor(iChannels);
 		m_pIPluginList   = createPluginList(qtractorPluginList::AudioInBus);
 	} else {
-		m_pIAudioMonitor = NULL;
-		m_pIPluginList   = NULL;
+		m_pIAudioMonitor = nullptr;
+		m_pIPluginList   = nullptr;
 	}
 
 	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
 		m_pOAudioMonitor = new qtractorAudioMonitor(iChannels);
 		m_pOPluginList   = createPluginList(qtractorPluginList::AudioOutBus);
 	} else {
-		m_pOAudioMonitor = NULL;
-		m_pOPluginList   = NULL;
+		m_pOAudioMonitor = nullptr;
+		m_pOPluginList   = nullptr;
 	}
 
 	m_bAutoConnect = false;
 
-	m_ppIPorts  = NULL;
-	m_ppOPorts  = NULL;
+	m_ppIPorts  = nullptr;
+	m_ppOPorts  = nullptr;
 
-	m_ppIBuffer = NULL;
-	m_ppOBuffer = NULL;
+	m_ppIBuffer = nullptr;
+	m_ppOBuffer = nullptr;
 
-	m_ppXBuffer = NULL;
-	m_ppYBuffer = NULL;
+	m_ppXBuffer = nullptr;
+	m_ppYBuffer = nullptr;
 
 	m_bEnabled  = false;
 
@@ -2316,7 +2316,7 @@ void qtractorAudioBus::setChannels ( unsigned short iChannels )
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	m_iChannels = iChannels;
@@ -2359,11 +2359,11 @@ bool qtractorAudioBus::open (void)
 
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return false;
 
 	jack_client_t *pJackClient = pAudioEngine->jackClient();
-	if (pJackClient == NULL)
+	if (pJackClient == nullptr)
 		return false;
 
 	const qtractorBus::BusMode busMode
@@ -2384,8 +2384,8 @@ bool qtractorAudioBus::open (void)
 				sIPortName.arg(i + 1).toUtf8().constData(),
 				JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsInput, 0);
-			m_ppIBuffer[i] = NULL;
-			if (m_ppIPorts[i] == NULL) ++iDisabled;
+			m_ppIBuffer[i] = nullptr;
+			if (m_ppIPorts[i] == nullptr) ++iDisabled;
 		}
 	}
 
@@ -2399,8 +2399,8 @@ bool qtractorAudioBus::open (void)
 				sOPortName.arg(i + 1).toUtf8().constData(),
 				JACK_DEFAULT_AUDIO_TYPE,
 				JackPortIsOutput, 0);
-			m_ppOBuffer[i] = NULL;
-			if (m_ppOPorts[i] == NULL) ++iDisabled;
+			m_ppOBuffer[i] = nullptr;
+			if (m_ppOPorts[i] == nullptr) ++iDisabled;
 		}
 	}
 
@@ -2409,7 +2409,7 @@ bool qtractorAudioBus::open (void)
 	m_ppYBuffer = new float * [m_iChannels];
 	for (i = 0; i < m_iChannels; ++i) {
 		m_ppXBuffer[i] = new float [iBufferSize];
-		m_ppYBuffer[i] = NULL;
+		m_ppYBuffer[i] = nullptr;
 	}
 
 	// Update monitor subject names...
@@ -2436,7 +2436,7 @@ void qtractorAudioBus::close (void)
 
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	jack_client_t *pJackClient = pAudioEngine->jackClient();
@@ -2453,18 +2453,18 @@ void qtractorAudioBus::close (void)
 			for (i = 0; i < m_iChannels; ++i) {
 				if (m_ppIPorts[i]) {
 					jack_port_unregister(pJackClient, m_ppIPorts[i]);
-					m_ppIPorts[i] = NULL;
+					m_ppIPorts[i] = nullptr;
 				}
 			}
 		}
 		// Free input ports.
 		if (m_ppIPorts)
 			delete [] m_ppIPorts;
-		m_ppIPorts = NULL;
+		m_ppIPorts = nullptr;
 		// Free input buffers.
 		if (m_ppIBuffer)
 			delete [] m_ppIBuffer;
-		m_ppIBuffer = NULL;
+		m_ppIBuffer = nullptr;
 	}
 
 	if (busMode & qtractorBus::Output) {
@@ -2474,18 +2474,18 @@ void qtractorAudioBus::close (void)
 			for (i = 0; i < m_iChannels; ++i) {
 				if (m_ppOPorts[i]) {
 					jack_port_unregister(pJackClient, m_ppOPorts[i]);
-					m_ppOPorts[i] = NULL;
+					m_ppOPorts[i] = nullptr;
 				}
 			}
 		}
 		// Free output ports.
 		if (m_ppOPorts)
 			delete [] m_ppOPorts;
-		m_ppOPorts = NULL;
+		m_ppOPorts = nullptr;
 		// Free output buffers.
 		if (m_ppOBuffer)
 			delete [] m_ppOBuffer;
-		m_ppOBuffer = NULL;
+		m_ppOBuffer = nullptr;
 	}
 
 	// Free internal buffers.
@@ -2493,12 +2493,12 @@ void qtractorAudioBus::close (void)
 		for (i = 0; i < m_iChannels; ++i)
 			delete [] m_ppXBuffer[i];
 		delete [] m_ppXBuffer;
-		m_ppXBuffer = NULL;
+		m_ppXBuffer = nullptr;
 	}
 
 	if (m_ppYBuffer) {
 		delete [] m_ppYBuffer;
-		m_ppYBuffer = NULL;
+		m_ppYBuffer = nullptr;
 	}
 }
 
@@ -2511,11 +2511,11 @@ void qtractorAudioBus::autoConnect (void)
 
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	jack_client_t *pJackClient = pAudioEngine->jackClient();
-	if (pJackClient == NULL)
+	if (pJackClient == nullptr)
 		return;
 
 	const qtractorBus::BusMode busMode
@@ -2565,35 +2565,35 @@ void qtractorAudioBus::updateBusMode (void)
 
 	// Have a new/old input monitor?
 	if ((busMode & qtractorBus::Input) && !(busMode & qtractorBus::Ex)) {
-		if (m_pIAudioMonitor == NULL)
+		if (m_pIAudioMonitor == nullptr)
 			m_pIAudioMonitor = new qtractorAudioMonitor(m_iChannels);
-		if (m_pIPluginList == NULL)
+		if (m_pIPluginList == nullptr)
 			m_pIPluginList = createPluginList(qtractorPluginList::AudioInBus);
 	} else {
 		if (m_pIAudioMonitor) {
 			delete m_pIAudioMonitor;
-			m_pIAudioMonitor = NULL;
+			m_pIAudioMonitor = nullptr;
 		}
 		if (m_pIPluginList) {
 			delete m_pIPluginList;
-			m_pIPluginList = NULL;
+			m_pIPluginList = nullptr;
 		}
 	}
 
 	// Have a new/old output monitor?
 	if ((busMode & qtractorBus::Output) && !(busMode & qtractorBus::Ex)) {
-		if (m_pOAudioMonitor == NULL)
+		if (m_pOAudioMonitor == nullptr)
 			m_pOAudioMonitor = new qtractorAudioMonitor(m_iChannels);
-		if (m_pOPluginList == NULL)
+		if (m_pOPluginList == nullptr)
 			m_pOPluginList = createPluginList(qtractorPluginList::AudioOutBus);
 	} else {
 		if (m_pOAudioMonitor) {
 			delete m_pOAudioMonitor;
-			m_pOAudioMonitor = NULL;
+			m_pOAudioMonitor = nullptr;
 		}
 		if (m_pOPluginList) {
 			delete m_pOPluginList;
-			m_pOPluginList = NULL;
+			m_pOPluginList = nullptr;
 		}
 	}
 }
@@ -2700,13 +2700,13 @@ void qtractorAudioBus::buffer_prepare (
 
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	const unsigned int offset = pAudioEngine->bufferOffset();
 	const unsigned int nbytes = nframes * sizeof(float);
 
-	if (pInputBus == NULL) {
+	if (pInputBus == nullptr) {
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			m_ppYBuffer[i] = m_ppXBuffer[i] + offset;
 			::memset(m_ppYBuffer[i], 0, nbytes);
@@ -2751,7 +2751,7 @@ void qtractorAudioBus::buffer_commit ( unsigned int nframes )
 
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	(*m_pfnBufferAdd)(m_ppOBuffer, m_ppXBuffer,
@@ -2798,12 +2798,12 @@ qtractorPluginList *qtractorAudioBus::pluginList_out (void) const
 // Audio I/O port latency accessors.
 unsigned int qtractorAudioBus::latency_in (void) const
 {
-	if (m_ppIPorts == NULL)
+	if (m_ppIPorts == nullptr)
 		return 0;
 
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return 0;
 
 	unsigned int iLatencyIn = pAudioEngine->bufferSize();
@@ -2812,7 +2812,7 @@ unsigned int qtractorAudioBus::latency_in (void) const
 	jack_nframes_t range_min = 0;
 	jack_latency_range_t range;
 	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppIPorts[i] == NULL)
+		if (m_ppIPorts[i] == nullptr)
 			continue;
 		jack_port_get_latency_range(m_ppIPorts[i], JackCaptureLatency, &range);
 		if (range_min > range.min || i == 0)
@@ -2822,7 +2822,7 @@ unsigned int qtractorAudioBus::latency_in (void) const
 #else
 	jack_nframes_t lat, lat_min = 0;
 	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppIPorts[i] == NULL)
+		if (m_ppIPorts[i] == nullptr)
 			continue;
 		lat = jack_port_get_latency(m_ppIPorts[i]);
 		if (lat_min > lat || i == 0)
@@ -2836,12 +2836,12 @@ unsigned int qtractorAudioBus::latency_in (void) const
 
 unsigned int qtractorAudioBus::latency_out (void) const
 {
-	if (m_ppOPorts == NULL)
+	if (m_ppOPorts == nullptr)
 		return 0;
 
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return 0;
 
 	unsigned int iLatencyOut = pAudioEngine->bufferSize();
@@ -2850,7 +2850,7 @@ unsigned int qtractorAudioBus::latency_out (void) const
 	jack_nframes_t range_min = 0;
 	jack_latency_range_t range;
 	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppOPorts[i] == NULL)
+		if (m_ppOPorts[i] == nullptr)
 			continue;
 		jack_port_get_latency_range(m_ppOPorts[i], JackPlaybackLatency, &range);
 		if (range_min > range.min || i == 0)
@@ -2860,7 +2860,7 @@ unsigned int qtractorAudioBus::latency_out (void) const
 #else
 	jack_nframes_t lat, lat_min = 0;
 	for (unsigned int i = 0; i < m_iChannels; ++i) {
-		if (m_ppOPorts[i] == NULL)
+		if (m_ppOPorts[i] == nullptr)
 			continue;
 		lat = jack_port_get_latency(m_ppOPorts[i]);
 		if (lat_min > lat || i == 0)
@@ -2921,17 +2921,17 @@ int qtractorAudioBus::updateConnects (
 
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (engine());
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return 0;
 
 	jack_client_t *pJackClient = pAudioEngine->jackClient();
-	if (pJackClient == NULL)
+	if (pJackClient == nullptr)
 		return 0;
 
 	// Which kind of ports?
 	jack_port_t **ppPorts
 		= (busMode == qtractorBus::Input ? m_ppIPorts : m_ppOPorts);
-	if (ppPorts == NULL)
+	if (ppPorts == nullptr)
 		return 0;
 
 	// For each channel...

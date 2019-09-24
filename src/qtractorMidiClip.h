@@ -67,7 +67,7 @@ public:
 		{ return m_iTrackChannel; }
 
 	unsigned short format() const
-		{ return (m_pData ? m_pData->format() : 0); }
+		{ return (m_pData ? m_pData->format() : g_iDefaultFormat); }
 
 	// (Meta)Session flag accessors.
 	void setSessionFlag(bool bSessionFlag)
@@ -86,7 +86,7 @@ public:
 
 	// Sequence properties accessors.
 	qtractorMidiSequence *sequence() const
-		{ return (m_pData ? m_pData->sequence() : NULL); }
+		{ return (m_pData ? m_pData->sequence() : nullptr); }
 
 	unsigned short channel() const
 		{ return (m_pData ? m_pData->channel() : 0); }
@@ -123,7 +123,7 @@ public:
 	void update();
 
 	// Clip editor methods.
-	bool startEditor(QWidget *pParent = NULL);
+	bool startEditor(QWidget *pParent = nullptr);
 	void updateEditor(bool bSelectClear);
 	void updateEditorContents();
 	bool queryEditor();
@@ -261,6 +261,18 @@ public:
 	const QString& ghostTrackName() const
 		{ return m_sGhostTrackName; }
 
+	// Secondary time signature (numerator)
+	void setBeatsPerBar2(unsigned short iBeatsPerBar2)
+		{ m_iBeatsPerBar2 = iBeatsPerBar2; }
+	unsigned short beatsPerBar2() const
+		{ return m_iBeatsPerBar2; }
+
+	// Secondary time signature (denominator)
+	void setBeatDivisor2(unsigned short iBeatDivisor2)
+		{ m_iBeatDivisor2 = iBeatDivisor2; }
+	unsigned short beatDivisor2() const
+		{ return m_iBeatDivisor2; }
+
 protected:
 
 	// Virtual document element methods.
@@ -309,6 +321,10 @@ private:
 
 	// Ghost track setting.
 	QString m_sGhostTrackName;
+
+	// Secondary time signature (numerator/denuminator)
+	unsigned short m_iBeatsPerBar2;
+	unsigned short m_iBeatDivisor2;
 
 	// Default MIDI file format (for capture/record)
 	static unsigned short g_iDefaultFormat;

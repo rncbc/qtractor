@@ -34,7 +34,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Buses - Qtractor</string>
+   <string>Buses</string>
   </property>
   <property name="windowIcon">
    <iconset resource="qtractor.qrc">:/images/qtractorTracks.png</iconset>

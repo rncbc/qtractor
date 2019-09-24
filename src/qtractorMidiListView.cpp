@@ -108,7 +108,7 @@ QString qtractorMidiChannelItem::toolTip (void) const
 {
 	qtractorMidiFileItem *pFileItem
 	    = static_cast<qtractorMidiFileItem *> (QTreeWidgetItem::parent());
-	if (pFileItem == NULL)
+	if (pFileItem == nullptr)
 	    return qtractorFileChannelItem::toolTip();
 
 	return QObject::tr("%1 (format %2)\n%3")
@@ -156,7 +156,7 @@ qtractorMidiListView::qtractorMidiListView ( QWidget *pParent )
 qtractorFileListItem *qtractorMidiListView::createFileItem (
 	const QString& sPath )
 {
-	qtractorFileListItem *pFileItem = NULL;
+	qtractorFileListItem *pFileItem = nullptr;
 
 	qtractorMidiFile file;
 	if (file.open(sPath)) {
@@ -178,14 +178,14 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 
 	const QString  sExt("mid");
 	const QString& sTitle
-		= tr("Open MIDI Files") + " - " QTRACTOR_TITLE;
+		= tr("Open MIDI Files");
 
 	QStringList filters;
 	filters.append(tr("MIDI files (*.%1 *.smf *.midi)").arg(sExt));
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
@@ -195,7 +195,7 @@ QStringList qtractorMidiListView::getOpenFileNames (void)
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filenames to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
-		sTitle, recentDir(), sFilter, NULL, options);
+		sTitle, recentDir(), sFilter, nullptr, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(pParentWidget,

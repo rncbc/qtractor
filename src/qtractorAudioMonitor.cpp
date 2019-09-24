@@ -248,8 +248,8 @@ static inline void std_process_meter (
 // Constructor.
 qtractorAudioMonitor::qtractorAudioMonitor ( unsigned short iChannels,
 	float fGain, float fPanning ) : qtractorMonitor(fGain, fPanning),
-	m_iChannels(0), m_piStamps(NULL), m_pfValues(NULL), m_pfPrevValues(NULL),
-	m_pfGains(NULL), m_pfPrevGains(NULL), m_iProcessRamp(0)
+	m_iChannels(0), m_piStamps(nullptr), m_pfValues(nullptr), m_pfPrevValues(nullptr),
+	m_pfGains(nullptr), m_pfPrevGains(nullptr), m_iProcessRamp(0)
 {
 	qtractorMonitor::gainSubject()->setMaxValue(2.0f);	// +6dB
 	qtractorMonitor::gainObserver()->setLogarithmic(true);
@@ -294,28 +294,28 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 	// Delete old value holders...
 	if (m_piStamps) {
 		delete [] m_piStamps;
-		m_piStamps = NULL;
+		m_piStamps = nullptr;
 	}
 
 	if (m_pfValues) {
 		delete [] m_pfValues;
-		m_pfValues = NULL;
+		m_pfValues = nullptr;
 	}
 
 	if (m_pfPrevValues) {
 		delete [] m_pfPrevValues;
-		m_pfPrevValues = NULL;
+		m_pfPrevValues = nullptr;
 	}
 
 	// Delete old panning-gains holders...
 	if (m_pfGains) {
 		delete [] m_pfGains;
-		m_pfGains = NULL;
+		m_pfGains = nullptr;
 	}
 
 	if (m_pfPrevGains) {
 		delete [] m_pfPrevGains;
-		m_pfPrevGains = NULL;
+		m_pfPrevGains = nullptr;
 	}
 
 	// Set new value holders...

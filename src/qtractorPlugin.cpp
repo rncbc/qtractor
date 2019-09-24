@@ -122,15 +122,15 @@ qtractorPluginFile::Files qtractorPluginFile::g_files;
 
 qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
 {
-	qtractorPluginFile *pFile = g_files.value(sFilename, NULL);
+	qtractorPluginFile *pFile = g_files.value(sFilename, nullptr);
 
-	if (pFile == NULL && QLibrary::isLibrary(sFilename)) {
+	if (pFile == nullptr && QLibrary::isLibrary(sFilename)) {
 		pFile = new qtractorPluginFile(sFilename);
 		g_files.insert(pFile->filename(), pFile);
 	}
 
 	if (pFile && !pFile->open())
-		pFile = NULL;
+		pFile = nullptr;
 
 	if (pFile)
 		pFile->addRef();
@@ -243,7 +243,7 @@ qtractorPlugin::qtractorPlugin (
 	: m_pList(pList), m_pType(pType), m_iUniqueID(0), m_iInstances(0),
 		m_bActivated(false), m_bAutoDeactivated(false),
 		m_activateObserver(this),
-		m_iActivateSubjectIndex(0), m_pForm(NULL), m_iEditorType(-1),
+		m_iActivateSubjectIndex(0), m_pForm(nullptr), m_iEditorType(-1),
 		m_iDirectAccessParamIndex(-1)
 {
 	// Acquire a local unique id in chain...
@@ -288,7 +288,7 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 		if (m_pForm) {
 			m_pForm->close();
 			delete m_pForm;
-			m_pForm = NULL;
+			m_pForm = nullptr;
 		}
 	}
 
@@ -388,11 +388,11 @@ void qtractorPlugin::updateActivatedEx ( bool bActivated )
 	// iif. we're not exporting/freewheeling...
 	//
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	if (pAudioEngine->isFreewheel())
@@ -511,7 +511,7 @@ void qtractorPlugin::clearItems (void)
 void qtractorPlugin::openForm ( QWidget *pParent )
 {
 	// Take the change and create the form if it doesn't current exist.
-	const bool bCreate = (m_pForm == NULL);
+	const bool bCreate = (m_pForm == nullptr);
 
 	if (bCreate) {
 		// Build up the plugin form...
@@ -522,7 +522,7 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 			wflags |= Qt::Tool;
 		#if 0//QTRACTOR_PLUGIN_FORM_TOOL_PARENT
 			// Make sure it has a parent...
-			if (pParent == NULL)
+			if (pParent == nullptr)
 				pParent = qtractorMainForm::getInstance();
 		#endif
 		}
@@ -595,26 +595,23 @@ void qtractorPlugin::freezeFormPos (void)
 
 // Move widget to alleged parent center or else...
 void qtractorPlugin::moveWidgetPos (
-	QWidget *pWidget, const QPoint& wpos ) const
+	QWidget *pWidget, const QPoint& pos ) const
 {
-	QPoint pos(wpos);
+	QPoint wpos(pos);
 
-	if (pos.isNull() || pos.x() < 0 || pos.y() < 0) {
+	if (wpos.isNull() || wpos.x() < 0 || wpos.y() < 0) {
 		QWidget *pParent = pWidget->parentWidget();
-		if (pParent == NULL)
+		if (pParent == nullptr)
 			pParent = qtractorMainForm::getInstance();
-		if (pParent && pParent->isVisible()) {
-			const QSize& delta = pParent->size() - pWidget->size();
-			if (delta.isValid()) {
-				pos = pParent->pos() + QPoint(
-					delta.width()  >> 1,
-					delta.height() >> 1);
-			}
+		if (pParent) {
+			QRect wrect(pWidget->geometry());
+			wrect.moveCenter(pParent->geometry().center());
+			wpos = wrect.topLeft();
 		}
 	}
 
-	if (!pos.isNull() && pos.x() >= 0 && pos.y() >= 0)
-		pWidget->move(pos);
+	if (!wpos.isNull() && wpos.x() >= 0 && wpos.y() >= 0)
+		pWidget->move(wpos);
 }
 
 
@@ -766,15 +763,15 @@ bool qtractorPlugin::loadPresetEx ( const QString& sPreset )
 {
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return false;
 
 	if (sPreset.isEmpty() || sPreset == g_sDefPreset) {
@@ -833,12 +830,12 @@ bool qtractorPlugin::loadPresetFileEx ( const QString& sFilename )
 // Plugin parameter lookup.
 qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
 {
-	return m_params.value(iIndex, NULL);
+	return m_params.value(iIndex, nullptr);
 }
 
 qtractorPluginParam *qtractorPlugin::findParamName ( const QString& sName ) const
 {
-	return m_paramNames.value(sName, NULL);
+	return m_paramNames.value(sName, nullptr);
 }
 
 
@@ -849,7 +846,7 @@ qtractorPluginParam *qtractorPlugin::directAccessParam (void) const
 	if (isDirectAccessParam())
 		return findParam(m_iDirectAccessParamIndex);
 	else
-		return NULL;
+		return nullptr;
 }
 
 
@@ -1082,7 +1079,7 @@ void qtractorPlugin::loadControllers (
 	QDomElement *pElement, qtractorMidiControl::Controllers& controllers )
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	pMidiControl->loadControllers(pElement, controllers);
@@ -1094,7 +1091,7 @@ void qtractorPlugin::saveControllers (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	unsigned long iActivateSubjectIndex = activateSubjectIndex();
@@ -1152,14 +1149,14 @@ void qtractorPlugin::mapControllers (
 	const qtractorMidiControl::Controllers& controllers )
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	const unsigned long iActivateSubjectIndex = activateSubjectIndex();
 	QListIterator<qtractorMidiControl::Controller *> iter(controllers);
 	while (iter.hasNext()) {
 		qtractorMidiControl::Controller *pController = iter.next();
-		qtractorMidiControlObserver *pObserver = NULL;
+		qtractorMidiControlObserver *pObserver = nullptr;
 		if ((iActivateSubjectIndex > 0 &&
 			 iActivateSubjectIndex == pController->index) ||
 			(activateSubject()->name() == pController->name)) {
@@ -1167,10 +1164,10 @@ void qtractorPlugin::mapControllers (
 		//	setActivateSubjectIndex(0); // hack down!
 		//	iActivateSubjectIndex = 0;
 		} else {
-			qtractorPluginParam *pParam = NULL;
+			qtractorPluginParam *pParam = nullptr;
 			if (!pController->name.isEmpty())
 				pParam = findParamName(pController->name);
-			if (pParam == NULL)
+			if (pParam == nullptr)
 				pParam = findParam(pController->index);
 			if (pParam)
 				pObserver = pParam->observer();
@@ -1202,19 +1199,19 @@ void qtractorPlugin::loadCurveFile (
 void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	QDomElement *pElement, qtractorCurveFile *pCurveFile )
 {
-	if (pCurveFile == NULL)
+	if (pCurveFile == nullptr)
 		return;
 
 	qtractorCurveList *pCurveList = pCurveFile->list();
-	if (pCurveList == NULL)
+	if (pCurveList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	pCurveFile->clear();
@@ -1298,17 +1295,17 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 // Apply plugin automation curves (monitor, gain, pan, record, mute, solo).
 void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 {
-	if (pCurveFile == NULL)
+	if (pCurveFile == nullptr)
 		return;
 	if (pCurveFile->items().isEmpty())
 		return;
 
 	qtractorCurveList *pCurveList = pCurveFile->list();
-	if (pCurveList == NULL)
+	if (pCurveList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pCurveFile->setBaseDir(pSession->sessionDir());
@@ -1326,10 +1323,10 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 			setActivateSubjectIndex(0); // hack down!
 			iActivateSubjectIndex = 0;
 		} else {
-			qtractorPluginParam *pParam = NULL;
+			qtractorPluginParam *pParam = nullptr;
 			if (!pCurveItem->name.isEmpty())
 				pParam = findParamName(pCurveItem->name);
-			if (pParam == NULL)
+			if (pParam == nullptr)
 				pParam = findParam(pCurveItem->index);
 			if (pParam)
 				pCurveItem->subject = pParam->subject();
@@ -1536,16 +1533,16 @@ void qtractorPluginParam::Observer::update ( bool bUpdate )
 qtractorPluginList::qtractorPluginList (
 	unsigned short iChannels, unsigned int iFlags )
 	: m_iChannels(iChannels), m_iFlags(iFlags),
-		m_iActivated(0), m_pMidiManager(NULL),
+		m_iActivated(0), m_pMidiManager(nullptr),
 		m_iMidiBank(-1), m_iMidiProg(-1),
-		m_pMidiProgramSubject(NULL),
+		m_pMidiProgramSubject(nullptr),
 		m_bAutoDeactivated(false),
 		m_bLatency(false), m_iLatency(0)
 {
 	setAutoDelete(true);
 
-	m_pppBuffers[0] = NULL;
-	m_pppBuffers[1] = NULL;
+	m_pppBuffers[0] = nullptr;
+	m_pppBuffers[1] = nullptr;
 
 	m_pCurveList = new qtractorCurveList();
 
@@ -1599,12 +1596,12 @@ void qtractorPluginList::setChannels (
 		m_bAudioOutputAutoConnect = m_pMidiManager->isAudioOutputAutoConnect();
 		m_sAudioOutputBusName = m_pMidiManager->audioOutputBusName();
 		qtractorMidiManager::deleteMidiManager(m_pMidiManager);
-		m_pMidiManager = NULL;
+		m_pMidiManager = nullptr;
 	}
 
 	if (m_pMidiProgramSubject) {
 		delete m_pMidiProgramSubject;
-		m_pMidiProgramSubject = NULL;
+		m_pMidiProgramSubject = nullptr;
 	}
 
 	// Go, go, go...
@@ -1650,18 +1647,18 @@ void qtractorPluginList::setChannelsEx (
 		for (i = 0; i < m_iChannels; ++i)
 			delete [] m_pppBuffers[1][i];
 		delete [] m_pppBuffers[1];
-		m_pppBuffers[1] = NULL;
+		m_pppBuffers[1] = nullptr;
 	}
 
 	// Go, go, go...
 	m_iChannels = iChannels;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
@@ -1697,11 +1694,11 @@ void qtractorPluginList::setChannelsEx (
 void qtractorPluginList::resetBuffers (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
@@ -1779,11 +1776,11 @@ void qtractorPluginList::movePlugin (
 	qtractorPlugin *pPlugin, qtractorPlugin *pNextPlugin )
 {
 	// Source sanity...
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	qtractorPluginList *pPluginList = pPlugin->list();
-	if (pPluginList == NULL)
+	if (pPluginList == nullptr)
 		return;
 
 	// Remove and insert back again...
@@ -1873,8 +1870,8 @@ void qtractorPluginList::removePlugin ( qtractorPlugin *pPlugin )
 qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 {
 	qtractorPluginType *pType = pPlugin->type();
-	if (pType == NULL)
-		return NULL;
+	if (pType == nullptr)
+		return nullptr;
 
 	// Clone the plugin instance...
 	pPlugin->freezeValues();
@@ -1937,7 +1934,7 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 	if (!isActivated())
 		return;
 
-	if (ppBuffer == NULL || *ppBuffer == NULL || m_pppBuffers[1] == NULL)
+	if (ppBuffer == nullptr || *ppBuffer == nullptr || m_pppBuffers[1] == nullptr)
 		return;
 
 	// Start from first input buffer...
@@ -1974,7 +1971,7 @@ void qtractorPluginList::process ( float **ppBuffer, unsigned int nframes )
 // Create/load plugin state.
 qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
 {
-	qtractorPlugin *pPlugin = NULL;
+	qtractorPlugin *pPlugin = nullptr;
 
 	QString sFilename;
 	QString sLabel;
@@ -2075,7 +2072,7 @@ qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
 
 #if 0
 	if (!sFilename.isEmpty() && !sLabel.isEmpty() &&
-		((pPlugin == NULL) || ((pPlugin->type())->label() != sLabel))) {
+		((pPlugin == nullptr) || ((pPlugin->type())->label() != sLabel))) {
 		iIndex = 0;
 		do {
 			if (pPlugin) delete pPlugin;
@@ -2423,7 +2420,7 @@ bool qtractorPluginList::Document::loadElement ( QDomElement *pElement )
 {
 	// Make it an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorImportPluginsCommand *pImportCommand

@@ -1,7 +1,7 @@
 // qtractorClipCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -84,7 +84,7 @@ public:
 	bool addClipRecord(qtractorTrack *pTrack, unsigned long iFrameTime);
 	bool addClipRecordTake(qtractorTrack *pTrack, qtractorClip *pClip,
 		unsigned long iClipStart, unsigned long iClipOffset,
-		unsigned long iClipLength, qtractorClip::TakePart *pTakePart = NULL);
+		unsigned long iClipLength, qtractorClip::TakePart *pTakePart = nullptr);
 
 	// When new tracks are needed.
 	void addTrack(qtractorTrack *pTrack);
@@ -129,7 +129,7 @@ private:
 				fadeOutLength(0), fadeOutType(qtractorClip::OutQuad),
 				timeStretch(0.0f), pitchShift(0.0f),
 				wsolaTimeStretch(false), wsolaQuickSeek(false),
-				editCommand(NULL), takeInfo(NULL) {}
+				editCommand(nullptr), takeInfo(nullptr) {}
 		// Item members.
 		CommandType    command;
 		qtractorClip  *clip;
@@ -178,7 +178,7 @@ public:
 
 	// Constructor.
 	qtractorClipTakeCommand(qtractorClip::TakeInfo *pTakeInfo,
-		qtractorTrack *pTrack = NULL, int iCurrentTake = -1);
+		qtractorTrack *pTrack = nullptr, int iCurrentTake = -1);
 
 protected:
 

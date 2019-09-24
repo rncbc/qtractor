@@ -59,7 +59,7 @@ qtractorSessionLoopCommand::qtractorSessionLoopCommand (
 bool qtractorSessionLoopCommand::redo (void)
 {
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Save the previous session loop state alright...
@@ -106,7 +106,7 @@ qtractorSessionPunchCommand::qtractorSessionPunchCommand (
 bool qtractorSessionPunchCommand::redo (void)
 {
 	qtractorSession *pSession = session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Save the previous session punch state alright...
@@ -144,7 +144,7 @@ bool qtractorSessionPunchCommand::undo (void)
 qtractorSessionEditCommand::qtractorSessionEditCommand (
 	qtractorSession *pSession, const qtractorSession::Properties& properties )
 	: qtractorSessionCommand(QObject::tr("session properties"), pSession),
-	   m_pPropertiesCommand(NULL), m_pTempoCommand(NULL), m_iTicksPerBeat(0)
+	   m_pPropertiesCommand(nullptr), m_pTempoCommand(nullptr), m_iTicksPerBeat(0)
 {
 	// Actual properties command...
 	m_pPropertiesCommand

@@ -63,7 +63,7 @@ qtractorPluginCommand::~qtractorPluginCommand (void)
 bool qtractorPluginCommand::addPlugins (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 //	pSession->lock();
@@ -89,7 +89,7 @@ bool qtractorPluginCommand::addPlugins (void)
 bool qtractorPluginCommand::removePlugins (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 //	pSession->lock();
@@ -200,13 +200,13 @@ qtractorAuxSendPluginCommand::qtractorAuxSendPluginCommand (
 bool qtractorAuxSendPluginCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 
 	if ((pPlugin->type())->index() > 0) {
 		qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
 			= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
-		if (pAudioAuxSendPlugin == NULL)
+		if (pAudioAuxSendPlugin == nullptr)
 			return false;
 		const QString sAudioBusName = pAudioAuxSendPlugin->audioBusName();
 		pAudioAuxSendPlugin->setAudioBusName(m_sAuxSendBusName);
@@ -215,7 +215,7 @@ bool qtractorAuxSendPluginCommand::redo (void)
 	} else {
 		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
 			= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
-		if (pMidiAuxSendPlugin == NULL)
+		if (pMidiAuxSendPlugin == nullptr)
 			return false;
 		const QString sMidiBusName = pMidiAuxSendPlugin->midiBusName();
 		pMidiAuxSendPlugin->setMidiBusName(m_sAuxSendBusName);
@@ -273,16 +273,16 @@ qtractorInsertPluginCommand::qtractorInsertPluginCommand (
 bool qtractorInsertPluginCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Save the previous plugin alright...
 	qtractorPluginList *pPluginList = pPlugin->list();
-	if (pPluginList == NULL)
+	if (pPluginList == nullptr)
 		return false;
 
 //	pSession->lock();
@@ -306,16 +306,16 @@ bool qtractorInsertPluginCommand::redo (void)
 bool qtractorInsertPluginCommand::undo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Save the previous track alright...
 	qtractorPluginList *pPluginList = pPlugin->list();
-	if (pPluginList == NULL)
+	if (pPluginList == nullptr)
 		return false;
 
 //	pSession->lock();
@@ -356,14 +356,14 @@ qtractorMovePluginCommand::qtractorMovePluginCommand (
 bool qtractorMovePluginCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 //	pSession->lock();
@@ -455,7 +455,7 @@ qtractorPresetPluginCommand::qtractorPresetPluginCommand (
 bool qtractorPresetPluginCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 
 	// Save the current toggled state alright...
@@ -500,7 +500,7 @@ qtractorResetPluginCommand::qtractorResetPluginCommand (
 bool qtractorResetPluginCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 
 	// Toggle/swap it nice...
@@ -552,13 +552,13 @@ qtractorPluginProgramCommand::qtractorPluginProgramCommand (
 bool qtractorPluginProgramCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 
 	// Save the current toggled state alright...
 	qtractorPluginList::MidiProgramSubject *pMidiProgramSubject
 		= (pPlugin->list())->midiProgramSubject();
-	if (pMidiProgramSubject == NULL)
+	if (pMidiProgramSubject == nullptr)
 		return false;
 
 
@@ -600,7 +600,7 @@ qtractorPluginPropertyCommand::qtractorPluginPropertyCommand (
 bool qtractorPluginPropertyCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 
 	// Save the current toggled state alright...
@@ -608,15 +608,15 @@ bool qtractorPluginPropertyCommand::redo (void)
 
 #ifdef CONFIG_LV2_PATCH
 	qtractorPluginType *pType = pPlugin->type();
-	qtractorLv2Plugin *pLv2Plugin = NULL;
-	qtractorLv2Plugin::Property *pLv2Prop = NULL;
+	qtractorLv2Plugin *pLv2Plugin = nullptr;
+	qtractorLv2Plugin::Property *pLv2Prop = nullptr;
 	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
 		pLv2Plugin = static_cast<qtractorLv2Plugin *> (pPlugin);
 	if (pLv2Plugin) {
 		const LV2_URID key = m_iProperty;
 		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
 		if (pszKey) {
-			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, NULL);
+			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, nullptr);
 			if (pLv2Prop) {
 				value = pLv2Prop->value();
 				pLv2Prop->setValue(m_value);
@@ -661,7 +661,7 @@ qtractorPluginParamCommand::qtractorPluginParamCommand (
 	setRefresh(false);
 
 	// Try replacing an previously equivalent command...
-	static qtractorPluginParamCommand *s_pPrevParamCommand = NULL;
+	static qtractorPluginParamCommand *s_pPrevParamCommand = nullptr;
 	if (s_pPrevParamCommand) {
 		qtractorSession *pSession = qtractorSession::getInstance();
 		qtractorCommand *pLastCommand
@@ -693,7 +693,7 @@ qtractorPluginParamCommand::qtractorPluginParamCommand (
 bool qtractorPluginParamCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = m_pParam->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 
 	// Set plugin parameter value...
@@ -804,7 +804,7 @@ qtractorAudioOutputBusCommand::qtractorAudioOutputBusCommand (
 // Plugin audio ouput bus command methods.
 bool qtractorAudioOutputBusCommand::redo (void)
 {
-	if (m_pMidiManager == NULL)
+	if (m_pMidiManager == nullptr)
 		return false;
 
 	const bool bAudioOutputBus
@@ -847,11 +847,11 @@ qtractorAudioOutputMonitorCommand::qtractorAudioOutputMonitorCommand (
 // Plugin audio ouput monitor command methods.
 bool qtractorAudioOutputMonitorCommand::redo (void)
 {
-	if (m_pMidiManager == NULL)
+	if (m_pMidiManager == nullptr)
 		return false;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 //	pSession->lock();
@@ -904,7 +904,7 @@ qtractorDirectAccessParamCommand::qtractorDirectAccessParamCommand (
 bool qtractorDirectAccessParamCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 
 	const long iDirectAccessParamIndex = pPlugin->directAccessParamIndex();

@@ -30,6 +30,9 @@
 
 #include <QTextStream>
 
+#include <QApplication>
+#include <QDesktopWidget>
+
 
 // Supposed to be determinant as default audio file type
 // (effective only for capture/record)
@@ -45,7 +48,7 @@
 //
 
 // Singleton instance pointer.
-qtractorOptions *qtractorOptions::g_pOptions = NULL;
+qtractorOptions *qtractorOptions::g_pOptions = nullptr;
 
 // Singleton instance accessor (static).
 qtractorOptions *qtractorOptions::getInstance (void)
@@ -71,7 +74,7 @@ qtractorOptions::~qtractorOptions (void)
 	saveOptions();
 
 	// Pseudo-singleton reference shut-down.
-	g_pOptions = NULL;
+	g_pOptions = nullptr;
 }
 
 
@@ -310,7 +313,9 @@ void qtractorOptions::loadOptions (void)
 	bMidiViewToolbar = m_settings.value("/ViewToolbar", true).toBool();
 	bMidiTransportToolbar = m_settings.value("/TransportToolbar", false).toBool();
 	bMidiScaleToolbar = m_settings.value("/ScaleToolbar", false).toBool();
+	bMidiTimeToolbar = m_settings.value("/TimeToolbar", false).toBool();
 	bMidiThumbToolbar = m_settings.value("/ThumbToolbar", true).toBool();
+	iMidiDisplayFormat = m_settings.value("/DisplayFormat", 2).toInt();
 	bMidiNoteDuration = m_settings.value("/NoteDuration", true).toBool();
 	bMidiNoteColor   = m_settings.value("/NoteColor", false).toBool();
 	bMidiValueColor  = m_settings.value("/ValueColor", false).toBool();
@@ -599,8 +604,10 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/EditToolbar", bMidiEditToolbar);
 	m_settings.setValue("/ViewToolbar", bMidiViewToolbar);
 	m_settings.setValue("/TransportToolbar", bMidiTransportToolbar);
+	m_settings.setValue("/TimeToolbar", bMidiTimeToolbar);
 	m_settings.setValue("/ScaleToolbar", bMidiScaleToolbar);
 	m_settings.setValue("/ThumbToolbar", bMidiThumbToolbar);
+	m_settings.setValue("/DisplayFormat", iMidiDisplayFormat);
 	m_settings.setValue("/NoteDuration", bMidiNoteDuration);
 	m_settings.setValue("/NoteColor", bMidiNoteColor);
 	m_settings.setValue("/ValueColor", bMidiValueColor);
@@ -702,8 +709,8 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 {
 	QTextStream out(stderr);
 	const QString sEol = "\n\n";
-	int iCmdArgs = 0;
 	const int argc = args.count();
+	int iCmdArgs = 0;
 
 	for (int i = 1; i < argc; ++i) {
 
@@ -776,8 +783,20 @@ void qtractorOptions::loadWidgetGeometry ( QWidget *pWidget, bool bVisible )
 	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		const QByteArray& geometry
 			= m_settings.value("/geometry").toByteArray();
-		if (!geometry.isEmpty())
+		if (geometry.isEmpty()) {
+			QWidget *pParent = pWidget->parentWidget();
+			if (pParent)
+				pParent = pParent->window();
+			if (pParent == nullptr)
+				pParent = QApplication::desktop();
+			if (pParent) {
+				QRect wrect(pWidget->geometry());
+				wrect.moveCenter(pParent->geometry().center());
+				pWidget->move(wrect.topLeft());
+			}
+		} else {
 			pWidget->restoreGeometry(geometry);
+		}
 	#else//--LOAD_OLD_GEOMETRY
 		QPoint wpos;
 		QSize  wsize;
@@ -992,12 +1011,12 @@ void qtractorOptions::loadActionControl ( QObject *pObject )
 {
 	qtractorActionControl *pActionControl
 		= qtractorActionControl::getInstance();
-	if (pActionControl == NULL)
+	if (pActionControl == nullptr)
 		return;
 
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	pActionControl->clear();
@@ -1041,12 +1060,12 @@ void qtractorOptions::saveActionControl ( QObject *pObject )
 {
 	qtractorActionControl *pActionControl
 		= qtractorActionControl::getInstance();
-	if (pActionControl == NULL)
+	if (pActionControl == nullptr)
 		return;
 
 	qtractorMidiControl *pMidiControl
 		= qtractorMidiControl::getInstance();
-	if (pMidiControl == NULL)
+	if (pMidiControl == nullptr)
 		return;
 
 	m_settings.beginGroup("/MidiObservers/" + pObject->objectName());

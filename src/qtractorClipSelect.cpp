@@ -33,7 +33,7 @@
 qtractorClipSelect::qtractorClipSelect (void)
 {
 	m_bTrackSingle = false;
-	m_pTrackSingle = NULL;
+	m_pTrackSingle = nullptr;
 }
 
 
@@ -49,7 +49,7 @@ void qtractorClipSelect::selectItem (
 	qtractorClip *pClip, const QRect& rect, bool bSelect )
 {
 	// Add/remove clip selection...
-	Item *pClipItem = NULL;
+	Item *pClipItem = nullptr;
 
 	ItemList::Iterator iter = m_items.find(pClip);
 	if (iter != m_items.end())
@@ -81,8 +81,8 @@ void qtractorClipSelect::selectItem (
 		// our single track reference if we add some outsider clip...
 		if (m_bTrackSingle) {
 			if (m_pTrackSingle && m_pTrackSingle != pClip->track())
-				m_pTrackSingle = NULL;
-		} else if (m_pTrackSingle == NULL) {
+				m_pTrackSingle = nullptr;
+		} else if (m_pTrackSingle == nullptr) {
 			m_pTrackSingle = pClip->track();
 			m_bTrackSingle = true;
 		}
@@ -114,15 +114,15 @@ qtractorTrack *qtractorClipSelect::singleTrack (void)
 {
 	// Check if predicate is already cached...
 	if (!m_bTrackSingle) {
-		m_pTrackSingle = NULL;
+		m_pTrackSingle = nullptr;
 		ItemList::ConstIterator iter = m_items.constBegin();
 		const ItemList::ConstIterator& iter_end = m_items.constEnd();
 		for ( ; iter != iter_end; ++iter) {
 			qtractorClip *pClip = iter.key();
-			if (m_pTrackSingle == NULL)
+			if (m_pTrackSingle == nullptr)
 				m_pTrackSingle = pClip->track();
 			else if (m_pTrackSingle != pClip->track()) {
-				m_pTrackSingle = NULL;
+				m_pTrackSingle = nullptr;
 				break;
 			}
 		}
@@ -144,7 +144,7 @@ const qtractorClipSelect::ItemList& qtractorClipSelect::items (void) const
 // Clip selection item lookup.
 qtractorClipSelect::Item *qtractorClipSelect::findItem ( qtractorClip *pClip ) const
 {
-	return m_items.value(pClip, NULL);
+	return m_items.value(pClip, nullptr);
 }
 
 
@@ -164,7 +164,7 @@ void qtractorClipSelect::reset (void)
 void qtractorClipSelect::clear (void)
 {
 	m_bTrackSingle = false;
-	m_pTrackSingle = NULL;
+	m_pTrackSingle = nullptr;
 
 	m_rect.setRect(0, 0, 0, 0);
 

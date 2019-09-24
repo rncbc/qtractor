@@ -128,8 +128,8 @@ protected:
 			// Draw the direct access parameter value status...
 			QPolygon polyg(3);
 			qtractorPlugin *pPlugin = pItem->plugin();
-			qtractorPluginParam *pDirectAccessParam = NULL;
-			qtractorMidiControlObserver *pDirectAccessObserver = NULL;
+			qtractorPluginParam *pDirectAccessParam = nullptr;
+			qtractorMidiControlObserver *pDirectAccessObserver = nullptr;
 			if (pPlugin)
 				pDirectAccessParam = pPlugin->directAccessParam();
 			if (pDirectAccessParam)
@@ -286,11 +286,11 @@ void qtractorPluginListItem::updateActivated (void)
 // qtractorPluginListView -- Plugin chain list widget instance.
 //
 int    qtractorPluginListView::g_iItemRefCount = 0;
-QIcon *qtractorPluginListView::g_pItemIcons[2] = { NULL, NULL };
+QIcon *qtractorPluginListView::g_pItemIcons[2] = { nullptr, nullptr };
 
 // Construcctor.
 qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
-	: QListWidget(pParent), m_pPluginList(NULL), m_pClickedItem(NULL)
+	: QListWidget(pParent), m_pPluginList(nullptr), m_pClickedItem(nullptr)
 {
 	if (++g_iItemRefCount == 1) {
 		g_pItemIcons[0] = new QIcon(":/images/itemLedOff.png");
@@ -300,12 +300,12 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	// Drag-and-drop stuff.
 	m_dragCursor  = DragNone;
 	m_dragState   = DragNone;
-	m_pDragItem   = NULL;
-	m_pDropItem   = NULL;
-	m_pRubberBand = NULL;
+	m_pDragItem   = nullptr;
+	m_pDropItem   = nullptr;
+	m_pRubberBand = nullptr;
 
 	// Common tiny scrollbar style stuff.
-	m_pTinyScrollBarStyle = NULL;
+	m_pTinyScrollBarStyle = nullptr;
 
 //	QListWidget::setDragEnabled(true);
 	QListWidget::setAcceptDrops(true);
@@ -346,17 +346,17 @@ qtractorPluginListView::~qtractorPluginListView (void)
 	// No need to delete child widgets, Qt does it all for us
 	clear();
 
-	setPluginList(NULL);
+	setPluginList(nullptr);
 
 	if (m_pTinyScrollBarStyle) {
 		delete m_pTinyScrollBarStyle;
-		m_pTinyScrollBarStyle = NULL;
+		m_pTinyScrollBarStyle = nullptr;
 	}
 
 	if (--g_iItemRefCount == 0) {
 		for (int i = 0; i < 2; ++i) {
 			delete g_pItemIcons[i];
-			g_pItemIcons[i] = NULL;
+			g_pItemIcons[i] = nullptr;
 		}
 	}
 }
@@ -390,11 +390,11 @@ void qtractorPluginListView::setTinyScrollBar ( bool bTinyScrollBar )
 		QListWidget::verticalScrollBar()->setStyle(m_pTinyScrollBarStyle);
 		QListWidget::horizontalScrollBar()->setStyle(m_pTinyScrollBarStyle);
 	} else {
-		QListWidget::verticalScrollBar()->setStyle(NULL);
-		QListWidget::horizontalScrollBar()->setStyle(NULL);
+		QListWidget::verticalScrollBar()->setStyle(nullptr);
+		QListWidget::horizontalScrollBar()->setStyle(nullptr);
 		if (m_pTinyScrollBarStyle) {
 			delete m_pTinyScrollBarStyle;
-			m_pTinyScrollBarStyle = NULL;
+			m_pTinyScrollBarStyle = nullptr;
 		}
 	}
 }
@@ -419,7 +419,7 @@ void qtractorPluginListView::refresh (void)
 // Master clean-up.
 void qtractorPluginListView::clear (void)
 {
-	dragLeaveEvent(NULL);
+	dragLeaveEvent(nullptr);
 
 	QListWidget::clear();
 }
@@ -444,25 +444,25 @@ int qtractorPluginListView::pluginItem ( qtractorPlugin *pPlugin )
 void qtractorPluginListView::moveItem (
 	qtractorPluginListItem *pItem, qtractorPluginListItem *pNextItem )
 {
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	// The plugin to be moved...	
 	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	// To be after this one...
-	qtractorPlugin *pNextPlugin = NULL;
+	qtractorPlugin *pNextPlugin = nullptr;
 	if (pNextItem)
 		pNextPlugin = pNextItem->plugin();
 
 	// Make it an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->execute(
@@ -476,10 +476,10 @@ void qtractorPluginListView::moveItem (
 void qtractorPluginListView::copyItem (
 	qtractorPluginListItem *pItem, qtractorPluginListItem *pNextItem )
 {
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	// The plugin to be moved...	
@@ -487,17 +487,17 @@ void qtractorPluginListView::copyItem (
 	// Clone/copy the new plugin here...
 	if (pPlugin)
 		pPlugin = m_pPluginList->copyPlugin(pPlugin);
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	// To be after this one...
-	qtractorPlugin *pNextPlugin = NULL;
+	qtractorPlugin *pNextPlugin = nullptr;
 	if (pNextItem)
 		pNextPlugin = pNextItem->plugin();
 
 	// Make it an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->execute(
@@ -511,7 +511,7 @@ void qtractorPluginListView::copyItem (
 // Add a new plugin slot.
 void qtractorPluginListView::addPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorPluginSelectForm selectForm(this);
@@ -520,7 +520,7 @@ void qtractorPluginListView::addPlugin (void)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	bool bOpenEditor = false;
@@ -571,21 +571,21 @@ void qtractorPluginListView::addPlugin (void)
 // Remove an existing plugin slot.
 void qtractorPluginListView::removePlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	// Make it a undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->execute(new qtractorRemovePluginCommand(pPlugin));
@@ -599,16 +599,16 @@ void qtractorPluginListView::activatePlugin (void)
 {
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	// Make it a undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->execute(
@@ -621,7 +621,7 @@ void qtractorPluginListView::activatePlugin (void)
 // Activate all plugins.
 void qtractorPluginListView::activateAllPlugins (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	// Check whether everyone is already activated...
@@ -630,11 +630,11 @@ void qtractorPluginListView::activateAllPlugins (void)
 
 	// Make it an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorActivatePluginCommand *pActivateAllCommand
-		= new qtractorActivatePluginCommand(NULL, true);
+		= new qtractorActivatePluginCommand(nullptr, true);
 	pActivateAllCommand->setName(tr("activate all plugins"));
 
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();
@@ -652,7 +652,7 @@ void qtractorPluginListView::activateAllPlugins (void)
 // Dectivate all plugins.
 void qtractorPluginListView::deactivateAllPlugins (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	// Check whether everyone is already dectivated...
@@ -661,11 +661,11 @@ void qtractorPluginListView::deactivateAllPlugins (void)
 
 	// Make it an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorActivatePluginCommand *pDeactivateAllCommand
-		= new qtractorActivatePluginCommand(NULL, false);
+		= new qtractorActivatePluginCommand(nullptr, false);
 	pDeactivateAllCommand->setName(tr("deactivate all plugins"));
 
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();
@@ -683,7 +683,7 @@ void qtractorPluginListView::deactivateAllPlugins (void)
 // Remove all plugins.
 void qtractorPluginListView::removeAllPlugins (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	// Check whether there's any...
@@ -692,7 +692,7 @@ void qtractorPluginListView::removeAllPlugins (void)
 
 	// Make it an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorRemovePluginCommand *pRemoveAllCommand
@@ -713,12 +713,12 @@ void qtractorPluginListView::removeAllPlugins (void)
 // Move an existing plugin upward slot.
 void qtractorPluginListView::moveUpPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	const int iNextItem = QListWidget::row(pItem) - 1;
@@ -728,7 +728,7 @@ void qtractorPluginListView::moveUpPlugin (void)
 	qtractorPluginListItem *pNextItem
 		= static_cast<qtractorPluginListItem *> (
 			QListWidget::item(iNextItem));
-	if (pNextItem == NULL)
+	if (pNextItem == nullptr)
 		return;
 
 	moveItem(pItem, pNextItem);
@@ -738,12 +738,12 @@ void qtractorPluginListView::moveUpPlugin (void)
 // Move an existing plugin downward slot.
 void qtractorPluginListView::moveDownPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	const int iNextItem = QListWidget::row(pItem) + 1;
@@ -761,21 +761,21 @@ void qtractorPluginListView::moveDownPlugin (void)
 // Load a plugin preset name.
 void qtractorPluginListView::loadPresetPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	// Retrieve preset-name from action text...
 	QAction *pAction = qobject_cast<QAction *> (sender());
-	if (pAction == NULL)
+	if (pAction == nullptr)
 		return;
 
 	const QString sPreset
@@ -790,28 +790,28 @@ void qtractorPluginListView::loadPresetPlugin (void)
 // Select a direct access parameter index.
 void qtractorPluginListView::directAccessPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	// Retrieve direct access parameter index from action data...
 	QAction *pAction = qobject_cast<QAction *> (sender());
-	if (pAction == NULL)
+	if (pAction == nullptr)
 		return;
 
 	const int iDirectAccessParamIndex = pAction->data().toInt();
 
 	// Make it a undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 	
 	pSession->execute(
@@ -822,16 +822,16 @@ void qtractorPluginListView::directAccessPlugin (void)
 // Show/hide an existing plugin form slot.
 void qtractorPluginListView::propertiesPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	if (pPlugin->isFormVisible())
@@ -844,16 +844,16 @@ void qtractorPluginListView::propertiesPlugin (void)
 // Show/hide an existing plugin editor (GUI) slot.
 void qtractorPluginListView::editPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 
@@ -867,12 +867,12 @@ void qtractorPluginListView::editPlugin (void)
 // Import plugin-list slot.
 void qtractorPluginListView::importPlugins (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// Default file-name extension (suffix)...
@@ -883,14 +883,14 @@ void qtractorPluginListView::importPlugins (void)
 
 	// Construct the import-from-file dialog...
 	const QString& sTitle
-		= tr("Import Plugins") + " - " QTRACTOR_TITLE;
+		= tr("Import Plugins");
 
 	QStringList filters;
 	filters.append(tr("XML files (*.%1)").arg(sExt));
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
@@ -899,7 +899,7 @@ void qtractorPluginListView::importPlugins (void)
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
-		sTitle, pOptions->sPluginsDir, sFilter, NULL, options);
+		sTitle, pOptions->sPluginsDir, sFilter, nullptr, options);
 #else
 	// Construct open-file dialog...
 	QFileDialog fileDialog(pParentWidget,
@@ -929,7 +929,7 @@ void qtractorPluginListView::importPlugins (void)
 	// Maybe ask whether we may actually reset the current list...
 	if (m_pPluginList->count() > 0 && pOptions->bConfirmRemove) {
 		if (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("About to remove and import all plugins:\n\n"
 			"\"%1\"\n\n"
 			"Are you sure?")
@@ -957,7 +957,7 @@ void qtractorPluginListView::importPlugins (void)
 // Export plugin-list slot.
 void qtractorPluginListView::exportPlugins (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	// Check whether there's any...
@@ -965,12 +965,12 @@ void qtractorPluginListView::exportPlugins (void)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// We'll need this, sure.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == NULL)
+	if (pOptions == nullptr)
 		return;
 
 	// The default file-name suffix/extension...
@@ -996,14 +996,14 @@ void qtractorPluginListView::exportPlugins (void)
 
 	// Construct the export-to-file dialog...
 	const QString& sTitle
-		= tr("Export Plugins") + " - " QTRACTOR_TITLE;
+		= tr("Export Plugins");
 
 	QStringList filters;
 	filters.append(tr("XML files (*.%1)").arg(sExt));
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
@@ -1012,7 +1012,7 @@ void qtractorPluginListView::exportPlugins (void)
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to save...
 	sFilename = QFileDialog::getSaveFileName(pParentWidget,
-		sTitle, sFilename, sFilter, NULL, options);
+		sTitle, sFilename, sFilter, nullptr, options);
 #else
 	// Construct save-file dialog...
 	QFileDialog fileDialog(pParentWidget,
@@ -1062,11 +1062,11 @@ void qtractorPluginListView::exportPlugins (void)
 // Add an audio-insert pseudo-plugin slot.
 void qtractorPluginListView::addAudioInsertPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Tell the world we'll take some time...
@@ -1094,11 +1094,11 @@ void qtractorPluginListView::addAudioInsertPlugin (void)
 // Add an audio-insert pseudo-plugin slot.
 void qtractorPluginListView::addAudioAuxSendPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Tell the world we'll take some time...
@@ -1126,11 +1126,11 @@ void qtractorPluginListView::addAudioAuxSendPlugin (void)
 // Add a MIDI-insert pseudo-plugin slot.
 void qtractorPluginListView::addMidiInsertPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Tell the world we'll take some time...
@@ -1157,11 +1157,11 @@ void qtractorPluginListView::addMidiInsertPlugin (void)
 // Add a MIDI-insert pseudo-plugin slot.
 void qtractorPluginListView::addMidiAuxSendPlugin (void)
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Tell the world we'll take some time...
@@ -1202,7 +1202,7 @@ void qtractorPluginListView::insertPluginBus ( int iBusMode )
 {
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	insertPluginBus(pItem->plugin(), iBusMode);
@@ -1213,13 +1213,13 @@ void qtractorPluginListView::insertPluginBus ( int iBusMode )
 void qtractorPluginListView::insertPluginBus (
 	qtractorPlugin *pPlugin, int iBusMode )
 {
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	qtractorPluginType *pType = pPlugin->type();
 	if (pType->typeHint() == qtractorPluginType::Insert) {
 		// Might be either an audio or MIDI insert pseudo-plugin...
-		qtractorBus *pInsertPluginBus = NULL;
+		qtractorBus *pInsertPluginBus = nullptr;
 		if (pType->index() > 0) {
 			qtractorAudioInsertPlugin *pAudioInsertPlugin
 				= static_cast<qtractorAudioInsertPlugin *> (pPlugin);
@@ -1260,12 +1260,12 @@ void qtractorPluginListView::audioOutputs (void)
 void qtractorPluginListView::audioOutputBus (void)
 {
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
-	if (pMidiManager == NULL)
+	if (pMidiManager == nullptr)
 		return;
 
 	// Make it an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->execute(
@@ -1281,7 +1281,7 @@ void qtractorPluginListView::audioOutputBus (void)
 void qtractorPluginListView::audioOutputBusName (void)
 {
 	QAction *pAction = qobject_cast<QAction *> (sender());
-	if (pAction == NULL)
+	if (pAction == nullptr)
 		return;
 
 	const QString sAudioOutputBusName
@@ -1290,12 +1290,12 @@ void qtractorPluginListView::audioOutputBusName (void)
 		return;
 
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
-	if (pMidiManager == NULL)
+	if (pMidiManager == nullptr)
 		return;
 
 	// Make it an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->execute(
@@ -1311,12 +1311,12 @@ void qtractorPluginListView::audioOutputBusName (void)
 void qtractorPluginListView::audioOutputAutoConnect (void)
 {
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
-	if (pMidiManager == NULL)
+	if (pMidiManager == nullptr)
 		return;
 
 	// Make it an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->execute(
@@ -1332,12 +1332,12 @@ void qtractorPluginListView::audioOutputAutoConnect (void)
 void qtractorPluginListView::audioOutputMonitor (void)
 {
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
-	if (pMidiManager == NULL)
+	if (pMidiManager == nullptr)
 		return;
 
 	// Make it an undoable command...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->execute(
@@ -1356,16 +1356,16 @@ void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
 
 void qtractorPluginListView::itemActivatedSlot ( QListWidgetItem *item )
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (item);
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	bool bOpenEditor = false;
@@ -1395,7 +1395,7 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 				qtractorPluginListItem *pItem
 					= static_cast<qtractorPluginListItem *> (
 						QListWidget::itemAt(pHelpEvent->pos()));
-				qtractorPlugin *pPlugin = NULL;
+				qtractorPlugin *pPlugin = nullptr;
 				if (pItem)
 					pPlugin = pItem->plugin();
 				if (pPlugin) {
@@ -1436,8 +1436,8 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 		= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
 	if (pItem) {
 		qtractorPlugin *pPlugin = pItem->plugin();
-		qtractorPluginParam *pDirectAccessParam = NULL;
-		qtractorMidiControlObserver *pDirectAccessObserver = NULL;
+		qtractorPluginParam *pDirectAccessParam = nullptr;
+		qtractorMidiControlObserver *pDirectAccessObserver = nullptr;
 		if (pPlugin)
 			pDirectAccessParam = pPlugin->directAccessParam();
 		if (pDirectAccessParam)
@@ -1466,7 +1466,7 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 // handle mouse events for drag-and-drop stuff.
 void qtractorPluginListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	dragLeaveEvent(NULL);
+	dragLeaveEvent(nullptr);
 
 	const QPoint& pos = pMouseEvent->pos();
 	qtractorPluginListItem *pItem
@@ -1512,7 +1512,7 @@ void qtractorPluginListView::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			pDrag->setHotSpot(QPoint(-4, -12));
 			pDrag->exec(Qt::CopyAction | Qt::MoveAction);
 			// We've dragged and maybe dropped it by now...
-			m_pDragItem = NULL;
+			m_pDragItem = nullptr;
 		}
 	}
 	else
@@ -1543,7 +1543,7 @@ void qtractorPluginListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		}
 	}
 
-	dragLeaveEvent(NULL);
+	dragLeaveEvent(nullptr);
 }
 
 
@@ -1551,15 +1551,15 @@ void qtractorPluginListView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 // track on the current drop item position.
 bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return false;
 
 	if (!canDecodeItem(pDropEvent->mimeData()))
 		return false;
 
-	if (m_pDragItem == NULL)
+	if (m_pDragItem == nullptr)
 		m_pDragItem	= decodeItem(pDropEvent->mimeData());
-	if (m_pDragItem == NULL)
+	if (m_pDragItem == nullptr)
 		return false;
 
 	qtractorPluginListItem *pDropItem
@@ -1570,7 +1570,7 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 
 	// Cannot drop onto itself or over the one below...
 	qtractorPlugin *pPlugin = m_pDragItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return false;
 	if (pDropItem) {
 		if (pDropItem->plugin() == pPlugin
@@ -1658,7 +1658,7 @@ void qtractorPluginListView::dragLeaveEvent ( QDragLeaveEvent * )
 {
 	if (m_pRubberBand) {
 		delete m_pRubberBand;
-		m_pRubberBand = NULL;
+		m_pRubberBand = nullptr;
 	}
 
 	// Should fallback mouse cursor...
@@ -1668,10 +1668,10 @@ void qtractorPluginListView::dragLeaveEvent ( QDragLeaveEvent * )
 	m_dragCursor = DragNone;
 	m_dragState  = DragNone;
 
-	m_pClickedItem = NULL;
+	m_pClickedItem = nullptr;
 
-	m_pDragItem = NULL;
-	m_pDropItem = NULL;
+	m_pDragItem = nullptr;
+	m_pDropItem = nullptr;
 
 }
 
@@ -1679,7 +1679,7 @@ void qtractorPluginListView::dragLeaveEvent ( QDragLeaveEvent * )
 void qtractorPluginListView::dropEvent ( QDropEvent *pDropEvent )
 {
 	if (!canDropItem(pDropEvent)) {
-		dragLeaveEvent(NULL);
+		dragLeaveEvent(nullptr);
 		return;
 	}
 
@@ -1703,7 +1703,7 @@ void qtractorPluginListView::dropEvent ( QDropEvent *pDropEvent )
 		menu.exec(QListWidget::mapToGlobal(pDropEvent->pos()));
 	}
 
-	dragLeaveEvent(NULL);
+	dragLeaveEvent(nullptr);
 }
 
 
@@ -1730,7 +1730,7 @@ void qtractorPluginListView::dropCancel (void)
 void qtractorPluginListView::moveRubberBand ( qtractorPluginListItem *pDropItem )
 {
 	// Create the rubber-band if there's none...
-	if (m_pRubberBand == NULL) {
+	if (m_pRubberBand == nullptr) {
 		m_pRubberBand = new qtractorRubberBand(
 			QRubberBand::Line, QListWidget::viewport());
 	#if 0
@@ -1772,11 +1772,11 @@ void qtractorPluginListView::moveRubberBand ( qtractorPluginListItem *pDropItem 
 void qtractorPluginListView::contextMenuEvent (
 	QContextMenuEvent *pContextMenuEvent )
 {
-	if (m_pPluginList == NULL)
+	if (m_pPluginList == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	QMenu menu(this);
@@ -1786,8 +1786,8 @@ void qtractorPluginListView::contextMenuEvent (
 	const bool bEnabled  = (iItemCount > 0);
 
 	int iItem = -1;
-	qtractorPlugin *pPlugin = NULL;
-	qtractorPluginType *pType = NULL;
+	qtractorPlugin *pPlugin = nullptr;
+	qtractorPluginType *pType = nullptr;
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::currentItem());
 	if (pItem) {
@@ -1878,7 +1878,7 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction = menu.addAction(
 		QIcon(":/images/formRemove.png"),
 		tr("&Remove"), this, SLOT(removePlugin()));
-	pAction->setEnabled(pPlugin != NULL);
+	pAction->setEnabled(pPlugin != nullptr);
 
 	pAction = menu.addAction(
 		tr("Re&move All"), this, SLOT(removeAllPlugins()));
@@ -1915,7 +1915,7 @@ void qtractorPluginListView::contextMenuEvent (
 			qtractorPlugin::defPreset(), this, SLOT(loadPresetPlugin()));
 		pAction->setCheckable(false);
 	}
-	pPresetMenu->setEnabled(pPlugin != NULL);
+	pPresetMenu->setEnabled(pPlugin != nullptr);
 
 	QMenu *pDirectAccessParamMenu = menu.addMenu(tr("Dire&ct Access"));
 	if (pPlugin) {
@@ -1952,7 +1952,7 @@ void qtractorPluginListView::contextMenuEvent (
 		tr("&Properties..."), this, SLOT(propertiesPlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isFormVisible());
-	pAction->setEnabled(pItem != NULL);
+	pAction->setEnabled(pItem != nullptr);
 
 	pAction = menu.addAction(
 		QIcon(":/images/formEdit.png"),
@@ -1981,7 +1981,7 @@ void qtractorPluginListView::contextMenuEvent (
 		QMenu *pAudioMenu = menu.addMenu(iconAudio, "Audi&o");
 		pAction = pAudioMenu->addAction(
 			tr("&Outputs"), this, SLOT(audioOutputs()));
-		pAction->setEnabled(pAudioOutputBus != NULL);
+		pAction->setEnabled(pAudioOutputBus != nullptr);
 		pAudioMenu->addSeparator();
 		for (qtractorBus *pBus = pAudioEngine->buses().first();
 				pBus; pBus = pBus->next()) {
@@ -1990,7 +1990,7 @@ void qtractorPluginListView::contextMenuEvent (
 				pAction = pAudioMenu->addAction(iconAudio,
 					sBusName, this, SLOT(audioOutputBusName()));
 				pAction->setCheckable(true);
-				pAction->setChecked(pAudioOutputBus != NULL
+				pAction->setChecked(pAudioOutputBus != nullptr
 					&& sBusName == pAudioOutputBus->busName());
 				pAction->setEnabled(!bAudioOutputBus);
 			}
@@ -2044,7 +2044,7 @@ bool qtractorPluginListView::canDecodeItem ( const QMimeData *pMimeData )
 qtractorPluginListItem *qtractorPluginListView::decodeItem (
 	const QMimeData *pMimeData )
 {
-	qtractorPluginListItem *pItem = NULL;
+	qtractorPluginListItem *pItem = nullptr;
 
 	QByteArray data = pMimeData->data(c_pszPluginListItemMimeType);
 	if (data.size() == sizeof(qtractorPluginListItem *))
@@ -2058,23 +2058,23 @@ qtractorPluginListItem *qtractorPluginListView::decodeItem (
 void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 {
 	qtractorPluginListItem *pItem = m_pDragItem;
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		pItem = static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	qtractorPluginParam *pDirectAccessParam	
 		= pPlugin->directAccessParam();
-	if (pDirectAccessParam == NULL)
+	if (pDirectAccessParam == nullptr)
 		return;
 
 	qtractorMidiControlObserver *pDirectAccessObserver
 		= pDirectAccessParam->observer();
-	if (pDirectAccessObserver == NULL)
+	if (pDirectAccessObserver == nullptr)
 		return;
 
 	const bool bLogarithmic = pDirectAccessParam->isLogarithmic();
@@ -2119,21 +2119,21 @@ void qtractorPluginListView::resetDirectAccess ( const QPoint& pos )
 {
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
-	if (pItem == NULL)
+	if (pItem == nullptr)
 		return;
 
 	qtractorPlugin *pPlugin = pItem->plugin();
-	if (pPlugin == NULL)
+	if (pPlugin == nullptr)
 		return;
 
 	qtractorPluginParam *pDirectAccessParam
 		= pPlugin->directAccessParam();
-	if (pDirectAccessParam == NULL)
+	if (pDirectAccessParam == nullptr)
 		return;
 
 	qtractorMidiControlObserver *pDirectAccessObserver
 		= pDirectAccessParam->observer();
-	if (pDirectAccessObserver == NULL)
+	if (pDirectAccessObserver == nullptr)
 		return;
 
 	const float fDefaultValue

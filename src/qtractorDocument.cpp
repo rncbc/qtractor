@@ -85,14 +85,14 @@ QString qtractorDocument::g_sArchiveExt  = "qtz";
 QStringList qtractorDocument::g_extractedArchives;
 
 // Extra-ordinary archive files (static).
-qtractorDocument *qtractorDocument::g_pDocument = NULL;
+qtractorDocument *qtractorDocument::g_pDocument = nullptr;
 
 
 // Constructor.
 qtractorDocument::qtractorDocument ( QDomDocument *pDocument,
 	const QString& sTagName, Flags flags )
 	: m_pDocument(pDocument), m_sTagName(sTagName), m_flags(flags),
-		m_pZipFile(NULL)
+		m_pZipFile(nullptr)
 {
 }
 
@@ -184,7 +184,7 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 	// Was it an archive previously?
 	if (m_pZipFile) {
 		delete m_pZipFile;
-		m_pZipFile = NULL;
+		m_pZipFile = nullptr;
 	}
 #endif
 
@@ -210,14 +210,14 @@ bool qtractorDocument::load ( const QString& sFilename, Flags flags )
 		m_pZipFile = new qtractorZipFile(sDocname, mode);
 		if (!m_pZipFile->isReadable()) {
 			delete m_pZipFile;
-			m_pZipFile = NULL;
+			m_pZipFile = nullptr;
 			return false;
 		}
 		m_pZipFile->setPrefix(m_sName);
 		m_pZipFile->extractAll();
 		m_pZipFile->close();
 		delete m_pZipFile;
-		m_pZipFile = NULL;
+		m_pZipFile = nullptr;
 		// ATTN: Archived sub-directory must exist!
 		if (!QDir(m_sName).exists()) {
 			const QStringList& dirs
@@ -273,7 +273,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	// Was it an archive previously?
 	if (m_pZipFile) {
 		delete m_pZipFile;
-		m_pZipFile = NULL;
+		m_pZipFile = nullptr;
 	}
 #endif
 
@@ -293,7 +293,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 		m_pZipFile = new qtractorZipFile(sDocname, mode);
 		if (!m_pZipFile->isWritable()) {
 			delete m_pZipFile;
-			m_pZipFile = NULL;
+			m_pZipFile = nullptr;
 			return false;
 		}
 		sDocname = m_sName + '.' + g_sDefaultExt;
@@ -307,13 +307,13 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	// Save spec...
 	QDomElement elem = m_pDocument->createElement(m_sTagName);
 	if (!saveElement(&elem)) {
-		g_pDocument = NULL;
+		g_pDocument = nullptr;
 		return false;
 	}
 	m_pDocument->appendChild(elem);
 
 	// Not saving anymore...
-	g_pDocument = NULL;
+	g_pDocument = nullptr;
 
 	// Finally, we're ready to save to external file.
 	QFile file(sDocname);
@@ -334,7 +334,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 		m_pZipFile->processAll();
 		m_pZipFile->close();
 		delete m_pZipFile;
-		m_pZipFile = NULL;
+		m_pZipFile = nullptr;
 		// Kill temporary, if didn't exist...
 		if (bRemove) file.remove();
 	}
