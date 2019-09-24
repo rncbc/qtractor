@@ -550,7 +550,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="802"/>
         <source>change time-sig.</source>
-        <translation type="unfinished"></translation>
+        <translation>Změnit taktové označení</translation>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="428"/>
@@ -1396,7 +1396,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="37"/>
         <source>Clip</source>
-        <translation type="unfinished">Záběr</translation>
+        <translation>Záběr</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="329"/>
@@ -1537,7 +1537,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorConnectForm.ui" line="42"/>
         <source>Connections</source>
-        <translation type="unfinished">Připojení</translation>
+        <translation>Připojení</translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.ui" line="58"/>
@@ -1753,7 +1753,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="37"/>
         <source>Edit Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozsah úprav</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="196"/>
@@ -2015,7 +2015,7 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="37"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyvést</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="292"/>
@@ -3702,12 +3702,12 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="778"/>
         <source>Paste Repeat</source>
-        <translation>Opakovat krok vložit</translation>
+        <translation>Opakovat vložení</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="781"/>
         <source>Paste repeat</source>
-        <translation>Opakovat krok vložit</translation>
+        <translation>Opakovat vložení</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="784"/>
@@ -6088,22 +6088,22 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2606"/>
         <source>Tempo M&amp;ap / Markers...</source>
-        <translation>Ro&amp;zvržení tempa/značky...</translation>
+        <translation>Zo&amp;brazení tempa/značky...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2609"/>
         <source>Tempo Map / Markers</source>
-        <translation>Rozvržení tempa/značky</translation>
+        <translation>Zobrazení tempa/značky</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2612"/>
         <source>Tempo map / markers</source>
-        <translation>Rozvržení tempa/značky</translation>
+        <translation>Zobrazení tempa/značky</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2615"/>
         <source>Change session tempo map / markers</source>
-        <translation>Změnit rozvržení tempa sezení/značky</translation>
+        <translation>Změnit zobrazení tempa sezení/značky</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2780"/>
@@ -6394,7 +6394,7 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="34"/>
         <source>Controllers</source>
-        <translation type="unfinished">Ovladače</translation>
+        <translation>Ovladače</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="215"/>
@@ -7048,17 +7048,17 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="159"/>
         <source>Current time (play-head)</source>
-        <translation type="unfinished">Nynější čas (hrací hlava)</translation>
+        <translation>Nynější čas (hrací hlava)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="175"/>
         <source>Current tempo (BPM)</source>
-        <translation type="unfinished">Nynější tempo (ÚZM)</translation>
+        <translation>Nynější tempo (ÚZM)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="183"/>
         <source>Reset time-sig.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obnovit výchozí taktové označení</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="255"/>
@@ -8069,22 +8069,22 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1090"/>
         <source>T&amp;ime</source>
-        <translation type="unfinished">Č&amp;as</translation>
+        <translation>Č&amp;as</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1093"/>
         <source>Time Toolbar</source>
-        <translation type="unfinished">Nástrojový pruh pro čas</translation>
+        <translation>Nástrojový pruh pro čas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1096"/>
         <source>Time toolbar</source>
-        <translation type="unfinished">Nástrojový pruh pro čas</translation>
+        <translation>Nástrojový pruh pro čas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1099"/>
         <source>Show/hide the time toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukázat/Skrýt nástrojový pruh pro čas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1107"/>
@@ -8915,7 +8915,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiSysexForm.ui" line="33"/>
         <source>MIDI SysEx</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI SysEx</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.ui" line="57"/>
@@ -11258,7 +11258,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="36"/>
         <source>Paste Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Opakovat vložení</translation>
     </message>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="45"/>
@@ -11747,7 +11747,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="33"/>
         <source>Plugins</source>
-        <translation type="unfinished">Přídavné moduly</translation>
+        <translation>Přídavné moduly</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="71"/>
@@ -12182,7 +12182,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="37"/>
         <source>Take Range</source>
-        <translation type="unfinished">Rozsah záběru</translation>
+        <translation>Rozsah záběru</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="53"/>
@@ -12230,7 +12230,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="37"/>
         <source>Tempo Adjust</source>
-        <translation type="unfinished">Úprava tempa</translation>
+        <translation>Úprava tempa</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="54"/>
@@ -12370,7 +12370,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="56"/>
         <source>Tempo map / Markers</source>
-        <translation>Rozvržení tempa/Značky</translation>
+        <translation>Zobrazení tempa/Značky</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="87"/>
@@ -12425,17 +12425,17 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="37"/>
         <source>Tempo Map / Markers</source>
-        <translation type="unfinished">Rozvržení tempa/značky</translation>
+        <translation>Zobrazení tempa/značky</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="270"/>
         <source>&amp;Marker:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Značka:</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="322"/>
         <source>Tempo &amp;scale factor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Násobek &amp;změny tempa:</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="351"/>
@@ -12450,7 +12450,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="395"/>
         <source>Refresh tempo map</source>
-        <translation>Obnovit rozvržení tempa</translation>
+        <translation>Obnovit zobrazení tempa</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="398"/>
