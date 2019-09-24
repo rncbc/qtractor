@@ -422,7 +422,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="802"/>
         <source>change time-sig.</source>
-        <translation type="unfinished"></translation>
+        <translation>alterar formula-compasso.</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="121"/>
@@ -1441,7 +1441,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="37"/>
         <source>Clip</source>
-        <translation type="unfinished">Sequência</translation>
+        <translation>Sequência</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="121"/>
@@ -1571,7 +1571,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorConnectForm.ui" line="42"/>
         <source>Connections</source>
-        <translation type="unfinished">Conexões</translation>
+        <translation>Conexões</translation>
     </message>
     <message>
         <location filename="../qtractorConnectForm.ui" line="150"/>
@@ -1643,7 +1643,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="37"/>
         <source>Edit Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Limites da Edição</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="157"/>
@@ -1816,7 +1816,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="37"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="141"/>
@@ -6343,7 +6343,7 @@ Salvar esta sessão em um novo arquivo é altamente recomendável.</translation>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="34"/>
         <source>Controllers</source>
-        <translation type="unfinished">Controladores</translation>
+        <translation>Controladores</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="124"/>
@@ -7063,17 +7063,17 @@ Valor:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="159"/>
         <source>Current time (play-head)</source>
-        <translation type="unfinished">Tempo atual (reprodução)</translation>
+        <translation>Tempo atual (reprodução)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="175"/>
         <source>Current tempo (BPM)</source>
-        <translation type="unfinished">Andamento atual (BPM) e Fórmula de Compasso</translation>
+        <translation>Andamento atual (BPM) e Fórmula de Compasso</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="183"/>
         <source>Reset time-sig.</source>
-        <translation type="unfinished"></translation>
+        <translation>Resetar formula-compasso.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="349"/>
@@ -7383,22 +7383,22 @@ Valor:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1090"/>
         <source>T&amp;ime</source>
-        <translation type="unfinished">T&amp;empo</translation>
+        <translation>T&amp;empo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1093"/>
         <source>Time Toolbar</source>
-        <translation type="unfinished">Barra de Ferramentas para Tempo</translation>
+        <translation>Barra de Ferramentas para Tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1096"/>
         <source>Time toolbar</source>
-        <translation type="unfinished">Barra de Ferramentas para informações de tempo</translation>
+        <translation>Barra de Ferramentas para informações de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1099"/>
         <source>Show/hide the time toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar/esconder barra de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1204"/>
@@ -8929,7 +8929,7 @@ Deseja salvar essas alterações?</translation>
     <message>
         <location filename="../qtractorMidiSysexForm.ui" line="33"/>
         <source>MIDI SysEx</source>
-        <translation type="unfinished"></translation>
+        <translation>Midi SysEx</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.ui" line="62"/>
@@ -11253,7 +11253,7 @@ Você deseja salvar essas alterações?</translation>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="36"/>
         <source>Paste Repeat</source>
-        <translation type="unfinished">Repetir Colar</translation>
+        <translation>Repetir Colar</translation>
     </message>
     <message>
         <location filename="../qtractorPasteRepeatForm.ui" line="61"/>
@@ -11817,7 +11817,7 @@ Posso continuar?</translation>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="33"/>
         <source>Plugins</source>
-        <translation type="unfinished">Plugins</translation>
+        <translation>Plugins</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.ui" line="181"/>
@@ -12162,7 +12162,7 @@ Deseja aplicar as modificações?</translation>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="37"/>
         <source>Take Range</source>
-        <translation type="unfinished">Limites de Gravação por Tentativas</translation>
+        <translation>Limites de Gravação por Tentativas</translation>
     </message>
     <message>
         <location filename="../qtractorTakeRangeForm.ui" line="63"/>
@@ -12314,7 +12314,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="37"/>
         <source>Tempo Adjust</source>
-        <translation type="unfinished">Ajuste de Andamento</translation>
+        <translation>Ajuste de Andamento</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="54"/>
@@ -12371,7 +12371,7 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="37"/>
         <source>Tempo Map / Markers</source>
-        <translation type="unfinished">Mapa de Tempo / Marcadores</translation>
+        <translation>Mapa de Tempo / Marcadores</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="77"/>
@@ -12386,12 +12386,12 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="270"/>
         <source>&amp;Marker:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Marcador:</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="322"/>
         <source>Tempo &amp;scale factor:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fator de Proporção do tempo:</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="466"/>
