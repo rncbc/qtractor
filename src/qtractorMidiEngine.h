@@ -59,7 +59,7 @@ class qtractorMidiEngineProxy : public QObject
 public:
 
 	// Constructor.
-	qtractorMidiEngineProxy(QObject *pParent = NULL)
+	qtractorMidiEngineProxy(QObject *pParent = nullptr)
 		: QObject(pParent) {}
 
 	// Event notifications.
@@ -226,7 +226,7 @@ public:
 	void sendMmcMaskedWrite(qtractorMmcEvent::SubCommand scmd,
 		int iTrack, bool bOn) const;
 	void sendMmcCommand(qtractorMmcEvent::Command cmd,
-		unsigned char *pMmcData = NULL, unsigned short iMmcData = 0) const;
+		unsigned char *pMmcData = nullptr, unsigned short iMmcData = 0) const;
 
 	// SPP dispatch special command.
 	void sendSppCommand(int iCmdType, unsigned short iSongPos = 0) const;
@@ -517,7 +517,7 @@ protected:
 
 	// Direct MIDI controller common helper.
 	void setControllerEx(unsigned short iChannel, int iController,
-		int iValue = 0, qtractorTrack *pTrack = NULL) const;
+		int iValue = 0, qtractorTrack *pTrack = nullptr) const;
 
 	// Bus mode/name change events.
 	void updateBusMode();

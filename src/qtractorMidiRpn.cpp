@@ -1,7 +1,7 @@
 // qtractorMidiRpn.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -346,7 +346,7 @@ public:
 			xrpn_item& item = get_item(event.port, channel);
 			if (item.is_any() && item.type() != qtractorMidiRpn::RPN)
 				enqueue(item);
-			if (item.is_status() // RPN NULL [MSB]
+			if (item.is_status() // RPN nullptr [MSB]
 				&& item.type() == qtractorMidiRpn::RPN && item.is_param_lsb()
 				&& item.param_lsb() == 0x7f && event.value == 0x7f) {
 				item.clear();
@@ -374,7 +374,7 @@ public:
 			xrpn_item& item = get_item(event.port, channel);
 			if (item.is_any() && item.type() != qtractorMidiRpn::RPN)
 				enqueue(item);
-			if (item.is_status() // RPN NULL [LSB]
+			if (item.is_status() // RPN nullptr [LSB]
 				&& item.type() == qtractorMidiRpn::RPN && item.is_param_msb()
 				&& item.param_msb() == 0x7f && event.value == 0x7f) {
 				item.clear();

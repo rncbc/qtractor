@@ -100,7 +100,7 @@ public:
 	qtractorMidiInputBuffer(
 		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize)
 		: qtractorMidiBuffer(iBufferSize),
-			m_pDryGainSubject(NULL), m_pWetGainSubject(NULL) {}
+			m_pDryGainSubject(nullptr), m_pWetGainSubject(nullptr) {}
 
 	// Velocity/gain accessors.
 	void setDryGainSubject(qtractorSubject *pDryGainSubject)
@@ -136,7 +136,7 @@ public:
 	qtractorMidiOutputBuffer(qtractorMidiBus *pMidiBus,
 		unsigned int iBufferSize = qtractorMidiBuffer::MinBufferSize)
 		: qtractorMidiSyncItem(), m_pMidiBus(pMidiBus),
-			m_outputBuffer(iBufferSize), m_pGainSubject(NULL) {}
+			m_outputBuffer(iBufferSize), m_pGainSubject(nullptr) {}
 
 	// Velocity/gain accessors.
 	void setGainSubject(qtractorSubject *pGainSubject)
@@ -330,6 +330,10 @@ public:
 	void processInputBuffer(
 		qtractorMidiInputBuffer *pMidiInputBuffer, unsigned long t0 = 0);
 
+	// Reset event buffers (input/output only)
+	void resetInputBuffers();
+	void resetOutputBuffers();
+
 protected:
 
 	// Audio output (de)activation methods.
@@ -339,8 +343,7 @@ protected:
 	// Process/decode into other/plugin event buffers...
 	void processEventBuffers();
 
-	// Reset/swap event buffers (in for out and vice-versa)
-	void resetEventBuffers();
+	// Swap event buffers (in for out and vice-versa)
 	void swapEventBuffers();
 
 private:

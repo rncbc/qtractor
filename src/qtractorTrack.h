@@ -235,7 +235,7 @@ public:
 	// Track paint method.
 	void drawTrack(QPainter *pPainter, const QRect& trackRect,
 		unsigned long iTrackStart, unsigned long iTrackEnd,
-		qtractorClip *pClip = NULL);
+		qtractorClip *pClip = nullptr);
 
 	// MIDI track instrument patching.
 	void setMidiPatch(qtractorInstrumentList *pInstruments);
@@ -358,6 +358,7 @@ public:
 	// Update tracks/list-view.
 	void updateTrack();
 	void updateMidiTrack();
+	void updateMidiClips();
 
 private:
 

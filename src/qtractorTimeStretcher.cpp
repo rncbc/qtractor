@@ -1,7 +1,7 @@
 // qtractorTimeStretcher.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,14 +31,14 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 	unsigned short iChannels, unsigned int iSampleRate,
 	float fTimeStretch, float fPitchShift,
 	unsigned int iFlags, unsigned int iBufferSize )
-	: m_pWsolaTimeStretcher(NULL)
+	: m_pWsolaTimeStretcher(nullptr)
 #ifdef CONFIG_LIBRUBBERBAND
-	, m_pRubberBandStretcher(NULL)
+	, m_pRubberBandStretcher(nullptr)
 	, m_iRubberBandChannels(iChannels)
 	, m_iRubberBandLatency(0)
 	, m_iRubberBandFrames(0)
-	, m_ppRubberBandFrames(NULL)
-	, m_ppRubberBandBuffer(NULL)
+	, m_ppRubberBandFrames(nullptr)
+	, m_ppRubberBandBuffer(nullptr)
 	, m_bRubberBandFlush(false)
 #endif
 {

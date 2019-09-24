@@ -38,7 +38,7 @@ public:
 	// Constructor.
 	qtractorLadspaPluginType(qtractorPluginFile *pFile, unsigned long iIndex,
 		qtractorPluginType::Hint typeHint = qtractorPluginType::Ladspa,
-		const LADSPA_Descriptor *pLadspaDescriptor = NULL)
+		const LADSPA_Descriptor *pLadspaDescriptor = nullptr)
 		: qtractorPluginType(pFile, iIndex, typeHint),
 			m_pLadspaDescriptor(pLadspaDescriptor) {}
 

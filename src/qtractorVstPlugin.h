@@ -40,7 +40,7 @@
 #include <aeffectx.h>
 #endif
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #if defined(Q_WS_X11)
 #define CONFIG_VST_X11
 #endif
@@ -67,7 +67,7 @@ public:
 
 	// Constructor.
 	qtractorVstPluginType(qtractorPluginFile *pFile,
-		unsigned long iIndex, Effect *pEffect = NULL)
+		unsigned long iIndex, Effect *pEffect = nullptr)
 		: qtractorPluginType(pFile, iIndex, qtractorPluginType::Vst),
 			m_pEffect(pEffect), m_iFlagsEx(0) {}
 
@@ -158,7 +158,7 @@ public:
 	bool savePresetFile(const QString& sFilename);
 
 	// GUI Editor stuff.
-	void openEditor(QWidget *pParent = NULL);
+	void openEditor(QWidget *pParent = nullptr);
 	void closeEditor();
 	void idleEditor();
 
@@ -191,7 +191,7 @@ public:
 	class EditorWidget;
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	// Global X11 event filter.
 	static bool x11EventFilter(void *pvEvent);
 #endif

@@ -65,7 +65,7 @@ public:
 	bool runState() const;
 
 	// Wake from executive wait condition.
-	void sync(qtractorMidiSyncItem *pSyncItem = NULL);
+	void sync(qtractorMidiSyncItem *pSyncItem = nullptr);
 
 protected:
 
@@ -177,7 +177,7 @@ void qtractorMidiSyncThread::run (void)
 // Wake from executive wait condition.
 void qtractorMidiSyncThread::sync ( qtractorMidiSyncItem *pSyncItem )
 {
-	if (pSyncItem == NULL) {
+	if (pSyncItem == nullptr) {
 		unsigned int r = m_iSyncRead;
 		unsigned int w = m_iSyncWrite;
 		while (r != w) {
@@ -220,14 +220,14 @@ void qtractorMidiSyncThread::sync ( qtractorMidiSyncItem *pSyncItem )
 // class qtractorMidiSyncItem -- MIDI sync item impl.
 //
 
-qtractorMidiSyncThread *qtractorMidiSyncItem::g_pSyncThread         = NULL;
+qtractorMidiSyncThread *qtractorMidiSyncItem::g_pSyncThread         = nullptr;
 unsigned int            qtractorMidiSyncItem::g_iSyncThreadRefCount = 0;
 
 // Constructor.
 qtractorMidiSyncItem::qtractorMidiSyncItem (void)
 	: m_bWaitSync(false)
 {
-	if (++g_iSyncThreadRefCount == 1 && g_pSyncThread == NULL) {
+	if (++g_iSyncThreadRefCount == 1 && g_pSyncThread == nullptr) {
 		g_pSyncThread = new qtractorMidiSyncThread();
 		g_pSyncThread->start(QThread::HighestPriority);
 	}
@@ -237,7 +237,7 @@ qtractorMidiSyncItem::qtractorMidiSyncItem (void)
 // Destructor.
 qtractorMidiSyncItem::~qtractorMidiSyncItem (void)
 {
-	if (--g_iSyncThreadRefCount == 0 && g_pSyncThread != NULL) {
+	if (--g_iSyncThreadRefCount == 0 && g_pSyncThread != nullptr) {
 		// Try to wake and terminate executive thread,
 		// but give it a bit of time to cleanup...
 		if (g_pSyncThread->isRunning()) do {
@@ -246,7 +246,7 @@ qtractorMidiSyncItem::~qtractorMidiSyncItem (void)
 			g_pSyncThread->sync();
 		} while (!g_pSyncThread->wait(100));
 		delete g_pSyncThread;
-		g_pSyncThread = NULL;
+		g_pSyncThread = nullptr;
 	}
 }
 
@@ -304,24 +304,24 @@ bool qtractorMidiInputBuffer::enqueue (
 // Process buffer (in asynchronous controller thread).
 void qtractorMidiOutputBuffer::processSync (void)
 {
-	if (m_pMidiBus == NULL)
+	if (m_pMidiBus == nullptr)
 		return;
 
 	if (!(m_pMidiBus->busMode() & qtractorBus::Output))
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-	if (pMidiEngine == NULL)
+	if (pMidiEngine == nullptr)
 		return;
 
 	const unsigned long iTimeStart = pMidiEngine->timeStartEx();
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
 
-	qtractorMidiManager *pMidiManager = NULL;
+	qtractorMidiManager *pMidiManager = nullptr;
 	if (m_pMidiBus->pluginList_out())
 		pMidiManager = (m_pMidiBus->pluginList_out())->midiManager();
 	qtractorMidiMonitor *pMidiMonitor = m_pMidiBus->midiMonitor_out();
@@ -403,17 +403,17 @@ qtractorMidiManager::qtractorMidiManager (
 	m_queuedBuffer(iBufferSize),
 	m_postedBuffer(iBufferSize),
 	m_controllerBuffer(iBufferSize >> 2),
-	m_pEventBuffer(NULL), m_iEventCount(0),
+	m_pEventBuffer(nullptr), m_iEventCount(0),
 #ifdef CONFIG_MIDI_PARSER
-	m_pMidiParser(NULL),
+	m_pMidiParser(nullptr),
 #endif
 	m_iEventBuffer(0),
 	m_bAudioOutputBus(pPluginList->isAudioOutputBus()),
 	m_sAudioOutputBusName(pPluginList->audioOutputBusName()),
-	m_pAudioOutputBus(NULL),
+	m_pAudioOutputBus(nullptr),
 	m_bAudioOutputAutoConnect(pPluginList->isAudioOutputAutoConnect()),
 	m_bAudioOutputMonitor(pPluginList->isAudioOutputMonitor()),
-	m_pAudioOutputMonitor(NULL),
+	m_pAudioOutputMonitor(nullptr),
 	m_iCurrentBank(pPluginList->midiBank()),
 	m_iCurrentProg(pPluginList->midiProg()),
 	m_iPendingBankMSB(-1),
@@ -485,7 +485,7 @@ qtractorMidiManager::~qtractorMidiManager (void)
 #ifdef CONFIG_MIDI_PARSER
 	if (m_pMidiParser) {
 		snd_midi_event_free(m_pMidiParser);
-		m_pMidiParser = NULL;
+		m_pMidiParser = nullptr;
 	}
 #endif
 
@@ -704,7 +704,7 @@ void qtractorMidiManager::processSync (void)
 void qtractorMidiManager::reset (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->lock();
@@ -765,8 +765,8 @@ qtractorMidiManager *qtractorMidiManager::createMidiManager (
 	qtractorPluginList *pPluginList )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
-		return NULL;
+	if (pSession == nullptr)
+		return nullptr;
 
 	qtractorMidiManager *pMidiManager
 		= new qtractorMidiManager(pPluginList);
@@ -783,11 +783,11 @@ qtractorMidiManager *qtractorMidiManager::createMidiManager (
 void qtractorMidiManager::deleteMidiManager (
 	qtractorMidiManager *pMidiManager )
 {
-	if (pMidiManager == NULL)
+	if (pMidiManager == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
@@ -827,7 +827,7 @@ void qtractorMidiManager::processInputBuffer (
 			break;
 	}
 
-	resetEventBuffers();
+	resetInputBuffers();
 
 	pEv = pMidiInputBuffer->peek();
 	while (pEv) {
@@ -846,19 +846,20 @@ void qtractorMidiManager::processEventBuffers (void)
 {
 #ifdef CONFIG_MIDI_PARSER
 
-	if (m_pMidiParser == NULL)
+	if (m_pMidiParser == nullptr)
 		return;
 
+	const unsigned short iInputBuffer = m_iEventBuffer & 1;
 #ifdef CONFIG_VST
-	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[m_iEventBuffer & 1];
+	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iInputBuffer];
 #endif
 #ifdef CONFIG_LV2_EVENT
-	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[m_iEventBuffer & 1];
+	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iInputBuffer];
 	LV2_Event_Iterator eiter;
 	lv2_event_begin(&eiter, pLv2EventBuffer);
 #endif
 #ifdef CONFIG_LV2_ATOM
-	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[m_iEventBuffer & 1];
+	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iInputBuffer];
 	LV2_Atom_Buffer_Iterator aiter;
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
 #endif
@@ -896,7 +897,7 @@ void qtractorMidiManager::processEventBuffers (void)
 			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
 	#endif
 	#ifdef CONFIG_VST
-		VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[m_iEventBuffer & 1];
+		VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iInputBuffer];
 		VstMidiEvent *pVstMidiEvent = &pVstMidiBuffer[iVstMidiEvents];
 		if (iMidiData < long(sizeof(pVstMidiEvent->midiData))) {
 			::memset(pVstMidiEvent, 0, sizeof(VstMidiEvent));
@@ -919,41 +920,61 @@ void qtractorMidiManager::processEventBuffers (void)
 }
 
 
-// Reset event buffers (in for out and vice-versa)
-void qtractorMidiManager::resetEventBuffers (void)
+// Reset event buffers (input only)
+void qtractorMidiManager::resetInputBuffers (void)
 {
 	if (m_iEventCount == 0)
 		return;
 
+	const unsigned short iInputBuffer = m_iEventBuffer & 1;
 #ifdef CONFIG_VST
-	::memset(m_ppVstBuffers[m_iEventBuffer & 1], 0, sizeof(VstEvents));
+	::memset(m_ppVstBuffers[iInputBuffer], 0, sizeof(VstEvents));
 #endif
 #ifdef CONFIG_LV2_EVENT
-	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[m_iEventBuffer & 1];
+	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iInputBuffer];
 	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
 		(unsigned char *) (pLv2EventBuffer + 1));
 #endif
 #ifdef CONFIG_LV2_ATOM
-	lv2_atom_buffer_reset(m_ppLv2AtomBuffers[m_iEventBuffer & 1], true);
+	lv2_atom_buffer_reset(m_ppLv2AtomBuffers[iInputBuffer], true);
 #endif
 
 	m_iEventCount = 0;
 }
 
 
-// Swap event buffers (in for out and vice-versa)
-void qtractorMidiManager::swapEventBuffers (void)
+// Reset event buffers (output only)
+void qtractorMidiManager::resetOutputBuffers (void)
 {
+	const unsigned short iOutputBuffer = (m_iEventBuffer + 1) & 1;
 #ifdef CONFIG_VST
-	::memset(m_ppVstBuffers[m_iEventBuffer & 1], 0, sizeof(VstEvents));
+	::memset(m_ppVstBuffers[iOutputBuffer], 0, sizeof(VstEvents));
 #endif
 #ifdef CONFIG_LV2_EVENT
-	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[m_iEventBuffer & 1];
+	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iOutputBuffer];
 	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
 		(unsigned char *) (pLv2EventBuffer + 1));
 #endif
 #ifdef CONFIG_LV2_ATOM
-	lv2_atom_buffer_reset(m_ppLv2AtomBuffers[m_iEventBuffer & 1], false);
+	lv2_atom_buffer_reset(m_ppLv2AtomBuffers[iOutputBuffer], false);
+#endif
+}
+
+
+// Swap event buffers (in for out and vice-versa)
+void qtractorMidiManager::swapEventBuffers (void)
+{
+	const unsigned short iInputBuffer = m_iEventBuffer & 1;
+#ifdef CONFIG_VST
+	::memset(m_ppVstBuffers[iInputBuffer], 0, sizeof(VstEvents));
+#endif
+#ifdef CONFIG_LV2_EVENT
+	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iInputBuffer];
+	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
+		(unsigned char *) (pLv2EventBuffer + 1));
+#endif
+#ifdef CONFIG_LV2_ATOM
+	lv2_atom_buffer_reset(m_ppLv2AtomBuffers[iInputBuffer], false);
 #endif
 
 	++m_iEventBuffer;
@@ -965,9 +986,9 @@ void qtractorMidiManager::swapEventBuffers (void)
 // Copy VST event buffer (output)...
 void qtractorMidiManager::vst_events_copy ( VstEvents *pVstBuffer )
 {
-	const unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
-	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iEventBuffer];
-	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iEventBuffer];
+	const unsigned short iOutputBuffer = (m_iEventBuffer + 1) & 1;
+	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iOutputBuffer];
+	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iOutputBuffer];
 	::memset(pVstEvents, 0, sizeof(VstEvents));
 	const unsigned int MaxMidiEvents = (bufferSize() << 1);
 	unsigned int iMidiEvents = pVstBuffer->numEvents;
@@ -986,18 +1007,18 @@ void qtractorMidiManager::vst_events_copy ( VstEvents *pVstBuffer )
 // Swap VST event buffers...
 void qtractorMidiManager::vst_events_swap (void)
 {
-	const unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
-	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iEventBuffer];
-	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iEventBuffer];
+	const unsigned short iOutputBuffer = (m_iEventBuffer + 1) & 1;
+	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iOutputBuffer];
+	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iOutputBuffer];
 #ifdef CONFIG_LV2_EVENT
-	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iEventBuffer];
+	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iOutputBuffer];
 	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
 		(unsigned char *) (pLv2EventBuffer + 1));
 	LV2_Event_Iterator eiter;
 	lv2_event_begin(&eiter, pLv2EventBuffer);
 #endif
 #ifdef CONFIG_LV2_ATOM
-	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iEventBuffer];
+	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iOutputBuffer];
 	lv2_atom_buffer_reset(pLv2AtomBuffer, true);
 	LV2_Atom_Buffer_Iterator aiter;
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
@@ -1042,15 +1063,15 @@ void qtractorMidiManager::vst_events_swap (void)
 // Swap LV2 event buffers...
 void qtractorMidiManager::lv2_events_swap (void)
 {
-	const unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
-	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iEventBuffer];
+	const unsigned short iOutputBuffer = (m_iEventBuffer + 1) & 1;
+	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iOutputBuffer];
 #ifdef CONFIG_VST
-	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iEventBuffer];
-	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iEventBuffer];
+	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iOutputBuffer];
+	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iOutputBuffer];
 	::memset(pVstEvents, 0, sizeof(VstEvents));
 #endif
 #ifdef CONFIG_LV2_ATOM
-	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iEventBuffer];
+	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iOutputBuffer];
 	lv2_atom_buffer_reset(pLv2AtomBuffer, true);
 	LV2_Atom_Buffer_Iterator aiter;
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
@@ -1063,7 +1084,7 @@ void qtractorMidiManager::lv2_events_swap (void)
 			&& lv2_event_is_valid(&eiter)) {
 		unsigned char *pMidiData;
 		LV2_Event *pLv2Event = lv2_event_get(&eiter, &pMidiData);
-		if (pLv2Event == NULL)
+		if (pLv2Event == nullptr)
 			break;
 		if (pLv2Event->type == QTRACTOR_LV2_MIDI_EVENT_ID) {
 			long iMidiData = pLv2Event->size;
@@ -1116,15 +1137,15 @@ void qtractorMidiManager::lv2_events_swap (void)
 // Swap LV2 atom buffers...
 void qtractorMidiManager::lv2_atom_buffer_swap (void)
 {
-	const unsigned short iEventBuffer = (m_iEventBuffer + 1) & 1;
-	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iEventBuffer];
+	const unsigned short iOutputBuffer = (m_iEventBuffer + 1) & 1;
+	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iOutputBuffer];
 #ifdef CONFIG_VST
-	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iEventBuffer];
-	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iEventBuffer];
+	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iOutputBuffer];
+	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iOutputBuffer];
 	::memset(pVstEvents, 0, sizeof(VstEvents));
 #endif
 #ifdef CONFIG_LV2_EVENT
-	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iEventBuffer];
+	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iOutputBuffer];
 	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
 		(unsigned char *) (pLv2EventBuffer + 1));
 	LV2_Event_Iterator eiter;
@@ -1137,7 +1158,7 @@ void qtractorMidiManager::lv2_atom_buffer_swap (void)
 	while (iMidiEvents < MaxMidiEvents) {
 		unsigned char *pMidiData;
 		LV2_Atom_Event *pLv2AtomEvent = lv2_atom_buffer_get(&aiter, &pMidiData);
-		if (pLv2AtomEvent == NULL)
+		if (pLv2AtomEvent == nullptr)
 			break;
 		if (pLv2AtomEvent->body.type == QTRACTOR_LV2_MIDI_EVENT_ID) {
 			long iMidiData = pLv2AtomEvent->body.size;
@@ -1190,7 +1211,7 @@ void qtractorMidiManager::lv2_atom_buffer_resize ( unsigned int iMinBufferSize )
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	const bool bPlaying = pSession->isPlaying();
@@ -1252,7 +1273,7 @@ bool qtractorMidiManager::isDefaultAudioOutputMonitor (void)
 void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->lock();
@@ -1273,7 +1294,7 @@ void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
 void qtractorMidiManager::resetAudioOutputBus (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->lock();
@@ -1296,11 +1317,11 @@ void qtractorMidiManager::resetAudioOutputBus (void)
 void qtractorMidiManager::createAudioOutputBus (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	deleteAudioOutputBus();
@@ -1324,7 +1345,7 @@ void qtractorMidiManager::createAudioOutputBus (void)
 			m_pAudioOutputBus = static_cast<qtractorAudioBus *> (
 				pAudioEngine->findOutputBus(m_sAudioOutputBusName));
 		// Otherwise bus gets to be the first available output bus...
-		if (m_pAudioOutputBus == NULL) {
+		if (m_pAudioOutputBus == nullptr) {
 			for (qtractorBus *pBus = (pAudioEngine->buses()).first();
 					pBus; pBus = pBus->next()) {
 				if (pBus->busMode() & qtractorBus::Output) {
@@ -1363,7 +1384,7 @@ void qtractorMidiManager::deleteAudioOutputBus (void)
 	}
 
 	// Done.
-	m_pAudioOutputBus = NULL;
+	m_pAudioOutputBus = nullptr;
 }
 
 
@@ -1371,7 +1392,7 @@ void qtractorMidiManager::deleteAudioOutputBus (void)
 void qtractorMidiManager::setAudioOutputMonitor ( bool bAudioOutputMonitor )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	pSession->lock();

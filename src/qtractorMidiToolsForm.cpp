@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -126,7 +126,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	// Window modality (let plugin/tool windows rave around).
 	QDialog::setWindowModality(Qt::WindowModal);
 
-	m_pTimeScale = NULL;
+	m_pTimeScale = nullptr;
 
 	m_iDirtyCount = 0;
 	m_iUpdate = 0;
@@ -151,7 +151,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	m_ui.ResizeDurationSpinBox->setDeltaValue(true);
 
 	// Reinitialize random seed.
-	::srand(::time(NULL));
+	::srand(::time(nullptr));
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -744,7 +744,7 @@ void qtractorMidiToolsForm::presetDelete (void)
 		// Prompt user if he/she's sure about this...
 		if (pOptions->bConfirmRemove) {
 			if (QMessageBox::warning(this,
-				tr("Warning") + " - " QTRACTOR_TITLE,
+				tr("Warning"),
 				tr("About to delete preset:\n\n"
 				"\"%1\"\n\n"
 				"Are you sure?")
@@ -1167,7 +1167,7 @@ void qtractorMidiToolsForm::reject (void)
 // Display format has changed.
 void qtractorMidiToolsForm::formatChanged ( int iDisplayFormat )
 {
-	qtractorTimeScale::DisplayFormat displayFormat
+	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
 	m_ui.TransposeFormatComboBox->setCurrentIndex(iDisplayFormat);

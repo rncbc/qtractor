@@ -1,7 +1,7 @@
 // qtractorPasteRepeatForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2013, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,7 +45,7 @@ qtractorPasteRepeatForm::qtractorPasteRepeatForm (
 	QDialog::setWindowModality(Qt::WindowModal);
 
 	// Initialize dirty control state.
-	m_pTimeScale  = NULL;
+	m_pTimeScale  = nullptr;
 	m_iDirtyCount = 0;
 
 	// Copy from global time-scale instance...
@@ -159,7 +159,7 @@ void qtractorPasteRepeatForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -189,10 +189,10 @@ void qtractorPasteRepeatForm::changed (void)
 // Display format has changed.
 void qtractorPasteRepeatForm::formatChanged ( int iDisplayFormat )
 {
-	bool bBlockSignals = m_ui.RepeatFormatComboBox->blockSignals(true);
+	const bool bBlockSignals = m_ui.RepeatFormatComboBox->blockSignals(true);
 	m_ui.RepeatFormatComboBox->setCurrentIndex(iDisplayFormat);
 
-	qtractorTimeScale::DisplayFormat displayFormat
+	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
 	m_ui.RepeatPeriodSpinBox->setDisplayFormat(displayFormat);
@@ -214,7 +214,7 @@ void qtractorPasteRepeatForm::stabilizeForm (void)
 	m_ui.RepeatFormatComboBox->setEnabled(bEnabled);
 
 	m_ui.DialogButtonBox->button(
-		QDialogButtonBox::Ok)->setEnabled(m_pTimeScale != NULL);
+		QDialogButtonBox::Ok)->setEnabled(m_pTimeScale != nullptr);
 }
 
 

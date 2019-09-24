@@ -6,24 +6,88 @@ ChangeLog
 
 GIT HEAD
 
+- An alternate time-signature/meter option is being
+  served to the MIDI clip editor (aka. piano-roll)
+  and allowing for some poly-rythm/meter scenarios
+  on a per MIDI clip basis. (EXPERIMENTAL)
+
+- Fixed MIDI "overdub" recording on offset clips.
+
+- MIDI bank and program settings now propagating to
+  all MIDI track's clips resp. (EXPERIMENTAL)
+
+- Fixed MIDI file format default setting other than
+  SMF Format 0. (EXPERIMENTAL)
+
+- Escape key may now be used to reset time and tempo
+  /time-sgnature spin-box controls. (EXPERIMENTAL)
+
+- Play-head time and tempo/time-signature controls
+  are now featured in MIDI clip editor toolbars (aka.
+  piano-roll); time display format is also separated
+  from the tracks main application view and defaults
+  to BBT as being most convenient. (EXPERIMENTAL)
+
+- All items in the MIDI clip editor's event list are
+  now enabled, selectable and editable, no matter the
+  filter settings for the event views. (EXPERIMENTAL)
+
+- Added alternate yet non-official CMake build option.
+  (EXPERIMENTAL)
+
+- Improved MIDI clip editor (aka. piano-roll) position
+  and size persistence across session state.
+
+- Fix HiDPI display screen effective support (Qt >= 5.6).
+
+- Mixer, Connections and MIDI clip editor top-level
+  windows shall have no parent, unless when set as
+  always-on-top tool windows. (REGRESSION)
+
+- Make sure compiler flags comply to c++11 as standard.
+
+
+0.9.9  2019-07-24  Summer'19 Beta.
+
+- Fixed editing and display of 'Pgm Change' events on
+  the MIDI clip editor (aka. piano-roll).
+  
+- Introducing tempo/beat-detection support on the Clip
+  / Tempo Adjust... dialog (provided libaubio >= 0.4.1
+  is available); and now also featured with some rough
+  visual clues ;).
+
+- Updated for the newer Qt5 development tools (>= 5.13).
+
+- Imply asking for a brand new filename (ie. Save As...)
+  whenever the session file original sample-rate differs
+  from the current audio device engine (ie. JACK).
+
+- Configure updated to check for qtchooser availability.
+
+- Fix MIDI through for LV2 plug-ins that have no MIDI
+  output event/atom ports.
+
+
+0.9.8  2019-05-31  Spring'19 Beta.
+
 - Plugin-lists and respective plugins state may now be
-  exported and/or imported as XML files. (EXPERIMENTAL)
+  exported and/or imported as XML files.
 
 - When in Drum Mode, Key and Scale are meaningless and
   thus functionally disabled from the MIDI clip editor
-  (aka. piano-roll). (EXPERIMENTAL)
+  (aka. piano-roll).
 
 - MIDI clip editor's View > Ghost Track menu option is
   now finally a reality: show any existing MIDI track
   and its respective clips in the background as dimmed,
-  semi-transparent aka. ghost events. (EXPERIMENTAL)
+  semi-transparent aka. ghost events.
 
 - Minor update to Debian packaging control file.
 
 - Make sure partially selected clips are reset to whole
   when Shift/Ctrl keyboard modifiers are in effect, to
-  prevent extraneous clip splits or cutaways afterwards
-  (hopefully fixes github issue #210).
+  prevent extraneous clip splits or cutaways afterwards.
 
 
 0.9.7  2019-04-16  Spring-Break'19 Release.

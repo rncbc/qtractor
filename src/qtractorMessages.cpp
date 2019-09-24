@@ -1,7 +1,7 @@
 // qtractorMessages.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -79,7 +79,7 @@ qtractorMessages::qtractorMessages ( QWidget *pParent )
 	QDockWidget::setObjectName("qtractorMessages");
 
 	// Intialize stdout capture stuff.
-	m_pStdoutNotifier = NULL;
+	m_pStdoutNotifier = nullptr;
 	m_fdStdout[QTRACTOR_MESSAGES_FDREAD]  = QTRACTOR_MESSAGES_FDNIL;
 	m_fdStdout[QTRACTOR_MESSAGES_FDWRITE] = QTRACTOR_MESSAGES_FDNIL;
 
@@ -97,7 +97,7 @@ qtractorMessages::qtractorMessages ( QWidget *pParent )
 	m_iMessagesLines = 0;
 	setMessagesLimit(QTRACTOR_MESSAGES_MAXLINES);
 
-	m_pMessagesLog = NULL;
+	m_pMessagesLog = nullptr;
 
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(m_pMessagesTextView);
@@ -209,7 +209,7 @@ void qtractorMessages::flushStdoutBuffer (void)
 // Stdout capture accessors.
 bool qtractorMessages::isCaptureEnabled (void) const
 {
-	return (m_pStdoutNotifier != NULL);
+	return (m_pStdoutNotifier != nullptr);
 }
 
 void qtractorMessages::setCaptureEnabled ( bool bCapture )
@@ -225,7 +225,7 @@ void qtractorMessages::setCaptureEnabled ( bool bCapture )
 	// Destroy if already enabled.
 	if (!bCapture && m_pStdoutNotifier) {
 		delete m_pStdoutNotifier;
-		m_pStdoutNotifier = NULL;
+		m_pStdoutNotifier = nullptr;
 		// Close the notification pipes.
 		if (m_fdStdout[QTRACTOR_MESSAGES_FDREAD] != QTRACTOR_MESSAGES_FDNIL) {
 			::close(m_fdStdout[QTRACTOR_MESSAGES_FDREAD]);
@@ -233,7 +233,7 @@ void qtractorMessages::setCaptureEnabled ( bool bCapture )
 		}
 	}
 	// Are we going to make up the capture?
-	if (bCapture && m_pStdoutNotifier == NULL && ::pipe(m_fdStdout) == 0) {
+	if (bCapture && m_pStdoutNotifier == nullptr && ::pipe(m_fdStdout) == 0) {
 		::dup2(m_fdStdout[QTRACTOR_MESSAGES_FDWRITE], STDOUT_FILENO);
 		::dup2(m_fdStdout[QTRACTOR_MESSAGES_FDWRITE], STDERR_FILENO);
 		stdoutBlock(m_fdStdout[QTRACTOR_MESSAGES_FDWRITE], false);
@@ -275,7 +275,7 @@ void qtractorMessages::setMessagesLimit ( int iMessagesLimit )
 // Messages logging stuff.
 bool qtractorMessages::isLogging (void) const
 {
-	return (m_pMessagesLog != NULL);
+	return (m_pMessagesLog != nullptr);
 }
 
 void qtractorMessages::setLogging ( bool bEnabled, const QString& sFilename )
@@ -285,7 +285,7 @@ void qtractorMessages::setLogging ( bool bEnabled, const QString& sFilename )
 			.arg(QDateTime::currentDateTime().toString()));
 		m_pMessagesLog->close();
 		delete m_pMessagesLog;
-		m_pMessagesLog = NULL;
+		m_pMessagesLog = nullptr;
 	}
 
 	if (bEnabled) {
@@ -295,7 +295,7 @@ void qtractorMessages::setLogging ( bool bEnabled, const QString& sFilename )
 				.arg(QDateTime::currentDateTime().toString()));
 		} else {
 			delete m_pMessagesLog;
-			m_pMessagesLog = NULL;
+			m_pMessagesLog = nullptr;
 		}
 	}
 }

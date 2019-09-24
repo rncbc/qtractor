@@ -48,7 +48,7 @@ class qtractorPaletteForm: public QDialog
 
 public:
 
-	qtractorPaletteForm(QWidget *parent = NULL,
+	qtractorPaletteForm(QWidget *parent = nullptr,
 		const QPalette& pal = QPalette());
 
 	virtual ~qtractorPaletteForm();
@@ -144,7 +144,7 @@ class qtractorPaletteForm::PaletteModel : public QAbstractTableModel
 
 public:
 
-	PaletteModel(QObject *parent = NULL);
+	PaletteModel(QObject *parent = nullptr);
 
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -187,7 +187,7 @@ class qtractorPaletteForm::ColorDelegate : public QItemDelegate
 {
 public:
 
-	ColorDelegate(QObject *parent = NULL)
+	ColorDelegate(QObject *parent = nullptr)
 		: QItemDelegate(parent) {}
 
 	QWidget *createEditor(QWidget *parent,
@@ -223,7 +223,7 @@ class qtractorPaletteForm::ColorButton : public QPushButton
 
 public:
 
-	ColorButton (QWidget *parent = NULL);
+	ColorButton (QWidget *parent = nullptr);
 
 	const QBrush& brush() const;
 	void setBrush(const QBrush& b);
@@ -255,7 +255,7 @@ class qtractorPaletteForm::ColorEditor : public QWidget
 
 public:
 
-	ColorEditor(QWidget *parent = NULL);
+	ColorEditor(QWidget *parent = nullptr);
 
 	void setColor(const QColor &color);
 	QColor color() const;
@@ -285,7 +285,7 @@ class qtractorPaletteForm::RoleEditor : public QWidget
 
 public:
 
-	RoleEditor(QWidget *parent = NULL);
+	RoleEditor(QWidget *parent = nullptr);
 
 	void setLabel(const QString &label);
 	void setEdited(bool on);

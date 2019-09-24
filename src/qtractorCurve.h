@@ -1,7 +1,7 @@
 // qtractorCurve.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -101,7 +101,7 @@ public:
 
 	// Node list management methods.
 	Node *addNode(unsigned long iFrame, float fValue,
-		qtractorCurveEditList *pEditList = NULL);
+		qtractorCurveEditList *pEditList = nullptr);
 
 	void insertNode(Node *pNode);
 	void unlinkNode(Node *pNode);
@@ -146,7 +146,7 @@ public:
 
 		// Constructor.
 		Cursor(qtractorCurve *pCurve)
-			: m_pCurve(pCurve), m_pNode(NULL), m_iFrame(0) {}
+			: m_pCurve(pCurve), m_pNode(nullptr), m_iFrame(0) {}
 		
 		// Accessors.
 		qtractorCurve *curve() const { return m_pCurve; }
@@ -154,7 +154,7 @@ public:
 	
 		// Specific methods.
 		Node *seek(unsigned long iFrame);
-		void reset(Node *pNode = NULL);
+		void reset(Node *pNode = nullptr);
 
 		// Interpolate methods.
 		float value(const Node *pNode, unsigned long iFrame) const
@@ -326,7 +326,7 @@ class qtractorCurveListProxy : public QObject
 
 public:
 
-	qtractorCurveListProxy(QObject *pParent = NULL)
+	qtractorCurveListProxy(QObject *pParent = nullptr)
 		: QObject(pParent) {}
 
 	void notify() { emit update(); }
@@ -444,7 +444,7 @@ public:
 
 	// Constructor.
 	qtractorCurveList() : m_iProcess(0), m_iCapture(0), m_iLocked(0),
-		m_pCurrentCurve(NULL) { setAutoDelete(true); }
+		m_pCurrentCurve(nullptr) { setAutoDelete(true); }
 
 	// ~Destructor.
 	~qtractorCurveList() { clearAll(); }
@@ -467,7 +467,7 @@ public:
 	void removeCurve(qtractorCurve *pCurve)
 	{
 		if (m_pCurrentCurve == pCurve)
-			m_pCurrentCurve =  NULL;
+			m_pCurrentCurve =  nullptr;
 
 		if (pCurve->isProcess())
 			updateProcess(false);
@@ -476,7 +476,7 @@ public:
 		if (pCurve->isLocked())
 			updateLocked(false);
 
-		pCurve->setList(NULL);
+		pCurve->setList(nullptr);
 
 		unlink(pCurve);
 	}
@@ -600,7 +600,7 @@ public:
     // Whole list cleaner.
 	void clearAll()
 	{
-		m_pCurrentCurve = NULL;
+		m_pCurrentCurve = nullptr;
 
 		clear();
 

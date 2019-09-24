@@ -1,7 +1,7 @@
 // qtractorAudioListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -113,7 +113,7 @@ qtractorAudioListView::qtractorAudioListView ( QWidget *pParent )
 	pHeaderItem->setText(qtractorAudioListView::Rate, tr("Rate"));
 	pHeaderItem->setText(qtractorAudioListView::Time, tr("Time"));
 	pHeaderItem->setText(qtractorAudioListView::Path, tr("Path"));
-	pHeaderItem->setText(qtractorAudioListView::LastColumn, QString::null);
+	pHeaderItem->setText(qtractorAudioListView::LastColumn, QString());
 
 	pHeaderItem->setTextAlignment(
 		qtractorAudioListView::Channels, Qt::AlignRight);
@@ -138,21 +138,21 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 	QStringList files;
 
 	const QString& sTitle
-		= tr("Open Audio Files") + " - " QTRACTOR_TITLE;
+		= tr("Open Audio Files");
 	const QString& sFilter
 		= qtractorAudioFileFactory::filters().join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	files = QFileDialog::getOpenFileNames(pParentWidget,
-		sTitle, recentDir(), sFilter, NULL, options);
+		sTitle, recentDir(), sFilter, nullptr, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(pParentWidget, sTitle, recentDir(), sFilter);
@@ -181,12 +181,12 @@ QStringList qtractorAudioListView::getOpenFileNames (void)
 qtractorFileListItem *qtractorAudioListView::createFileItem (
 	const QString& sPath )
 {
-	qtractorFileListItem *pFileItem = NULL;
+	qtractorFileListItem *pFileItem = nullptr;
 
 	qtractorAudioFile *pFile =
 		qtractorAudioFileFactory::createAudioFile(sPath);
-	if (pFile == NULL)
-		return NULL;
+	if (pFile == nullptr)
+		return nullptr;
 
 	if (pFile->open(sPath)) {
 		pFileItem = new qtractorAudioFileItem(sPath, pFile);

@@ -1,7 +1,7 @@
 language: cpp
 
 sudo: required
-dist: trusty
+dist: xenial
 
 notifications: 
   email:
@@ -14,20 +14,17 @@ branches:
   only:
   - master
 
-env:
-- QT_SELECT=5
-
 before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty
+- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.3-xenial
 - sudo apt-get update -qq
 
 install:
-- sudo apt-get install -qq qt510base qt510tools qt510x11extras; source /opt/qt510/bin/qt510-env.sh
+- sudo apt-get install -qq qt512base qt512tools qt512x11extras libgl-dev; source /opt/qt512/bin/qt512-env.sh
 - sudo apt-get install -qq libjack-dev libasound2-dev libsndfile1-dev
 - sudo apt-get install -qq libvorbis-dev libmad0-dev libsamplerate-dev zlib1g-dev
 - sudo apt-get install -qq ladspa-sdk dssi-dev liblo-dev librubberband-dev
-- sudo apt-get install -qq lv2-dev liblilv-dev libsuil-dev
+- sudo apt-get install -qq lv2-dev liblilv-dev libsuil-dev libaubio-dev
 
 before_script:
 - git fetch --unshallow --tags -q

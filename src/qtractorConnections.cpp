@@ -1,7 +1,7 @@
 // qtractorConnections.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2010, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -51,6 +51,7 @@ qtractorConnections::qtractorConnections (
 
 	// Create main inner widget.
 	m_pConnectForm = new qtractorConnectForm(this);
+
 	// Set proper tab widget icons...
 	QTabWidget *pTabWidget = m_pConnectForm->connectTabWidget();
 	pTabWidget->setTabIcon(0, QIcon(":/images/trackAudio.png"));
@@ -68,10 +69,10 @@ qtractorConnections::qtractorConnections (
 	QWidget::setMinimumHeight(240);
 
 	// Finally set the default caption and tooltip.
-	const QString& sCaption = tr("Connections") + " - " QTRACTOR_TITLE;
-	QWidget::setWindowTitle(sCaption);
+	const QString& sTitle = tr("Connections");
+	QWidget::setWindowTitle(sTitle);
 	QWidget::setWindowIcon(QIcon(":/images/viewConnections.png"));
-	QWidget::setToolTip(sCaption);
+	QWidget::setToolTip(sTitle);
 
 	// Get previously saved splitter sizes,
 	// (with fair default...)
@@ -113,12 +114,13 @@ void qtractorConnections::showEvent ( QShowEvent *pShowEvent )
 	qDebug("qtractorConnections::showEvent()");
 #endif
 
-    qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-    if (pMainForm)
-        pMainForm->stabilizeForm();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 
-    QWidget::showEvent(pShowEvent);
+	QWidget::showEvent(pShowEvent);
 }
+
 
 // Notify the main application widget that we're closing.
 void qtractorConnections::hideEvent ( QHideEvent *pHideEvent )
@@ -127,11 +129,11 @@ void qtractorConnections::hideEvent ( QHideEvent *pHideEvent )
 	qDebug("qtractorConnections::hideEvent()");
 #endif
 
-    QWidget::hideEvent(pHideEvent);
+	QWidget::hideEvent(pHideEvent);
 
-    qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-    if (pMainForm)
-        pMainForm->stabilizeForm();
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->stabilizeForm();
 }
 
 
@@ -162,7 +164,7 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 	qtractorBus::BusMode busMode )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	const QString sSuffix = ".*";

@@ -1,7 +1,7 @@
 // qtractorAudioClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,7 +81,7 @@ public:
 
 	// Sequence properties accessors.
 	qtractorAudioBuffer *buffer() const
-		{ return (m_pData ? m_pData->buffer() : NULL); }
+		{ return (m_pData ? m_pData->buffer() : nullptr); }
 
 	// Direct write method.
 	void write(float **ppBuffer, unsigned int iFrames,

@@ -1,7 +1,7 @@
 // qtractorTempoAdjustForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,6 +25,9 @@
 #include "ui_qtractorTempoAdjustForm.h"
 
 // Forward declarations.
+class qtractorClip;
+class qtractorAudioClip;
+
 class QTime;
 
 
@@ -42,6 +45,12 @@ public:
 	// Destructor.
 	~qtractorTempoAdjustForm();
 
+	// Clip accessors.
+	void setClip(qtractorClip *pClip);
+	qtractorClip *clip() const;
+
+	qtractorAudioClip *audioClip() const;
+
 	// Range accessors.
 	void setRangeStart(unsigned long iRangeStart);
 	unsigned long rangeStart() const;
@@ -49,25 +58,40 @@ public:
 	void setRangeLength(unsigned long iRangeLength);
 	unsigned long rangeLength() const;
 
+	void setRangeBeats(unsigned short iRangeBeats);
 	unsigned short rangeBeats() const;
 	
 	// Accepted results accessors.
 	float tempo() const;
 	unsigned short beatsPerBar() const;
 	unsigned short beatDivisor() const;
-	
+
+	// Time-scale accessor.
+	qtractorTimeScale *timeScale() const;
+
 protected slots:
+
+	void tempoChanged();
+	void tempoDetect();
+	void tempoAdjust();
+	void tempoTap();
+
+	void rangeStartChanged(unsigned long);
+	void rangeLengthChanged(unsigned long);
+	void rangeBeatsChanged(int);
+	void formatChanged(int);
+	void changed();
 
 	void accept();
 	void reject();
-	void changed();
-	void adjust();
-	void tempoTap();
-	void tempoChanged();
-	void rangeStartChanged(unsigned long);
-	void rangeLengthChanged(unsigned long);
-	void selectChanged();
-	void formatChanged(int);
+
+protected:
+
+	void updateRangeStart(unsigned long iRangeStart);
+	void updateRangeLength(unsigned long iRangeLength);
+	void updateRangeBeats(unsigned short iRangeBeats);
+	void updateRangeSelect();
+
 	void stabilizeForm();
 
 private:
@@ -77,6 +101,13 @@ private:
 
 	// Instance variables...
 	qtractorTimeScale *m_pTimeScale;
+
+	qtractorClip      *m_pClip;
+	qtractorAudioClip *m_pAudioClip;
+
+	class ClipWidget;
+
+	ClipWidget *m_pClipWidget;
 
 	QTime *m_pTempoTap;
 	int    m_iTempoTap;

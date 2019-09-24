@@ -1,7 +1,7 @@
 // qtractorMidiEditCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -110,15 +110,15 @@ bool qtractorMidiEditCommand::findEvent ( qtractorMidiEvent *pEvent,
 // Common executive method.
 bool qtractorMidiEditCommand::execute ( bool bRedo )
 {
-	if (m_pMidiClip == NULL)
+	if (m_pMidiClip == nullptr)
 		return false;
 
 	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
-	if (pSeq == NULL)
+	if (pSeq == nullptr)
 		return false;
 
 	// Dropped enqueued events...
-	qtractorSession *pSession = NULL;
+	qtractorSession *pSession = nullptr;
 	qtractorTrack *pTrack = m_pMidiClip->track();
 	if (pTrack)
 		pSession = pTrack->session();
@@ -176,6 +176,11 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
 				iOldValue = pEvent->pitchBend();
 				pEvent->setPitchBend(pItem->value);
+			}
+			else
+			if (pEvent->type() == qtractorMidiEvent::PGMCHANGE) {
+				iOldValue = pEvent->param();
+				pEvent->setParam(pItem->value);
 			} else {
 				iOldValue = pEvent->value();
 				pEvent->setValue(pItem->value);
@@ -239,11 +244,11 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 // Adjust edit-command result to prevent event overlapping.
 bool qtractorMidiEditCommand::adjust (void)
 {
-	if (m_pMidiClip == NULL)
+	if (m_pMidiClip == nullptr)
 		return false;
 
 	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
-	if (pSeq == NULL)
+	if (pSeq == nullptr)
 		return false;
 
 	// HACK: What we're going to do here is about checking the
@@ -279,7 +284,7 @@ bool qtractorMidiEditCommand::adjust (void)
 		// Adjustable?
 		if (key) {
 			// Already there?
-			qtractorMidiEvent *pPrevEvent = events.value(key, NULL);
+			qtractorMidiEvent *pPrevEvent = events.value(key, nullptr);
 			if (pPrevEvent) {
 				const unsigned long iTime = pEvent->time();
 				const unsigned long iPrevTime = pPrevEvent->time();

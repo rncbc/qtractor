@@ -39,9 +39,9 @@
 bool qtractorLadspaPluginType::open (void)
 {
 	// Do we have a descriptor already?
-	if (m_pLadspaDescriptor == NULL)
+	if (m_pLadspaDescriptor == nullptr)
 		m_pLadspaDescriptor = ladspa_descriptor(file(), index());
-	if (m_pLadspaDescriptor == NULL)
+	if (m_pLadspaDescriptor == nullptr)
 		return false;
 
 #ifdef CONFIG_DEBUG
@@ -94,7 +94,7 @@ bool qtractorLadspaPluginType::open (void)
 
 void qtractorLadspaPluginType::close (void)
 {
-	m_pLadspaDescriptor = NULL;
+	m_pLadspaDescriptor = nullptr;
 }
 
 
@@ -103,14 +103,14 @@ qtractorLadspaPluginType *qtractorLadspaPluginType::createType (
 	qtractorPluginFile *pFile, unsigned long iIndex )
 {
 	// Sanity check...
-	if (pFile == NULL)
-		return NULL;
+	if (pFile == nullptr)
+		return nullptr;
 
 	// Retrieve descriptor if any...
 	const LADSPA_Descriptor *pLadspaDescriptor
 		= ladspa_descriptor(pFile, iIndex);
-	if (pLadspaDescriptor == NULL)
-		return NULL;
+	if (pLadspaDescriptor == nullptr)
+		return nullptr;
 
 	// Yep, most probably its a valid plugin descriptor...
 	return new qtractorLadspaPluginType(pFile, iIndex,
@@ -125,8 +125,8 @@ const LADSPA_Descriptor *qtractorLadspaPluginType::ladspa_descriptor (
 	// Retrieve the descriptor function, if any...
 	LADSPA_Descriptor_Function pfnLadspaDescriptor
 		= (LADSPA_Descriptor_Function) pFile->resolve("ladspa_descriptor");
-	if (pfnLadspaDescriptor == NULL)
-		return NULL;
+	if (pfnLadspaDescriptor == nullptr)
+		return nullptr;
 
 	// Retrieve descriptor if any...
 	return (*pfnLadspaDescriptor)(iIndex);
@@ -162,10 +162,10 @@ const QString& qtractorLadspaPluginType::aboutText (void)
 // Constructors.
 qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 	qtractorLadspaPluginType *pLadspaType )
-	: qtractorPlugin(pList, pLadspaType), m_phInstances(NULL),
-		m_piControlOuts(NULL), m_pfControlOuts(NULL),
-		m_piAudioIns(NULL), m_piAudioOuts(NULL),
-		m_pfIDummy(NULL), m_pfODummy(NULL), m_pfLatency(NULL)
+	: qtractorPlugin(pList, pLadspaType), m_phInstances(nullptr),
+		m_piControlOuts(nullptr), m_pfControlOuts(nullptr),
+		m_piAudioIns(nullptr), m_piAudioOuts(nullptr),
+		m_pfIDummy(nullptr), m_pfODummy(nullptr), m_pfLatency(nullptr)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLadspaPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
@@ -248,7 +248,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 	// Check our type...
 	qtractorLadspaPluginType *pLadspaType
 		= static_cast<qtractorLadspaPluginType *> (type());
-	if (pLadspaType == NULL)
+	if (pLadspaType == nullptr)
 		return;
 		
 	// Estimate the (new) number of instances...
@@ -261,7 +261,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 
 	const LADSPA_Descriptor *pLadspaDescriptor
 		= pLadspaType->ladspa_descriptor();
-	if (pLadspaDescriptor == NULL)
+	if (pLadspaDescriptor == nullptr)
 		return;
 
 	// Gotta go for a while...
@@ -277,7 +277,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 				(*pLadspaDescriptor->cleanup)(m_phInstances[i]);
 		}
 		delete [] m_phInstances;
-		m_phInstances = NULL;
+		m_phInstances = nullptr;
 	}
 
 	// Bail out, if none are about to be created...
@@ -293,11 +293,11 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 
 	// Allocate the dummy audio I/O buffers...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
@@ -384,13 +384,13 @@ const LADSPA_Descriptor *qtractorLadspaPlugin::ladspa_descriptor (void) const
 {
 	qtractorLadspaPluginType *pLadspaType
 		= static_cast<qtractorLadspaPluginType *> (type());
-	return (pLadspaType ? pLadspaType->ladspa_descriptor() : NULL);
+	return (pLadspaType ? pLadspaType->ladspa_descriptor() : nullptr);
 }
 
 
 LADSPA_Handle qtractorLadspaPlugin::ladspa_handle ( unsigned short iInstance ) const
 {
-	return (m_phInstances ? m_phInstances[iInstance] : NULL);
+	return (m_phInstances ? m_phInstances[iInstance] : nullptr);
 }
 
 
@@ -398,7 +398,7 @@ LADSPA_Handle qtractorLadspaPlugin::ladspa_handle ( unsigned short iInstance ) c
 void qtractorLadspaPlugin::activate (void)
 {
 	const LADSPA_Descriptor *pLadspaDescriptor = ladspa_descriptor();
-	if (pLadspaDescriptor == NULL)
+	if (pLadspaDescriptor == nullptr)
 		return;
 
 	if (m_phInstances && pLadspaDescriptor->activate) {
@@ -412,7 +412,7 @@ void qtractorLadspaPlugin::activate (void)
 void qtractorLadspaPlugin::deactivate (void)
 {
 	const LADSPA_Descriptor *pLadspaDescriptor = ladspa_descriptor();
-	if (pLadspaDescriptor == NULL)
+	if (pLadspaDescriptor == nullptr)
 		return;
 
 	if (m_phInstances && pLadspaDescriptor->deactivate) {
@@ -426,11 +426,11 @@ void qtractorLadspaPlugin::deactivate (void)
 void qtractorLadspaPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
-	if (m_phInstances == NULL)
+	if (m_phInstances == nullptr)
 		return;
 
 	const LADSPA_Descriptor *pLadspaDescriptor = ladspa_descriptor();
-	if (pLadspaDescriptor == NULL)
+	if (pLadspaDescriptor == nullptr)
 		return;
 
 	// We'll cross channels over instances...

@@ -1,7 +1,7 @@
 // qtractorFileList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -89,7 +89,7 @@ public:
 
 		// Constructor.
 		Item(const Key& key, bool bAutoRemove = false)
-			: m_key(key), m_bAutoRemove(bAutoRemove), m_pFileItem(NULL),
+			: m_key(key), m_bAutoRemove(bAutoRemove), m_pFileItem(nullptr),
 				m_iClipRefCount(0), m_iRefCount(0) {}
 
 		// Key accessors.

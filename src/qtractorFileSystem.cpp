@@ -1,7 +1,7 @@
 // qtractorFileSystem.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -128,11 +128,11 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	m_pFileSystemTreeView->setSelectionMode(
 		QAbstractItemView::ExtendedSelection);
 
-	m_pFileSystemModel = NULL;
+	m_pFileSystemModel = nullptr;
 
 	QHeaderView *pHeaderView = m_pFileSystemTreeView->header();
 #if 0
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	pHeaderView->setResizeMode(QHeaderView::ResizeToContents);
 #else
 	pHeaderView->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -215,7 +215,7 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 qtractorFileSystem::~qtractorFileSystem (void)
 {
 	// Setup member widgets...
-	m_pFileSystemTreeView->setModel(NULL);
+	m_pFileSystemTreeView->setModel(nullptr);
 
 	if (m_pFileSystemModel)
 		delete m_pFileSystemModel;
@@ -343,7 +343,7 @@ void qtractorFileSystem::updateRootPath (void)
 
 void qtractorFileSystem::updateFilter (void)
 {
-	if (m_pFileSystemModel == NULL)
+	if (m_pFileSystemModel == nullptr)
 		return;
 
 	QStringList filters;
@@ -506,7 +506,7 @@ void qtractorFileSystem::activateFile ( const QString& sFilename )
 // State saver.
 QByteArray qtractorFileSystem::saveState (void) const
 {
-#if QT_VERSION < 0x050400
+#if QT_VERSION < QT_VERSION_CHECK(5, 4, 0)
 	QList<QByteArray> list;
 #else
 	QByteArrayList list;
@@ -533,7 +533,7 @@ QByteArray qtractorFileSystem::saveState (void) const
 		}
 	}
 
-#if QT_VERSION < 0x050400
+#if QT_VERSION < QT_VERSION_CHECK(5, 4, 0)
 	QByteArray state;
 	QListIterator<QByteArray> iter(list);
 	while (iter.hasNext()) {
@@ -553,7 +553,7 @@ bool qtractorFileSystem::restoreState ( const QByteArray& state )
 	int i = 0;
 	QString sCurrentPath;
 	m_sRestoreStatePath.clear();
-#if QT_VERSION < 0x050400
+#if QT_VERSION < QT_VERSION_CHECK(5, 4, 0)
 	QListIterator<QByteArray> iter(state.split(':'));
 #else
 	QByteArrayListIterator iter(state.split(':'));

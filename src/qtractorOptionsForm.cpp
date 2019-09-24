@@ -76,7 +76,7 @@ static struct
 	{ _TR("XML Regular (*.%1)"), "qts" },
 	{ _TR("ZIP Archive (*.%1)"), "qtz" },
 
-	{ NULL, NULL }
+	{ nullptr, nullptr }
 };
 
 
@@ -99,10 +99,10 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QDialog::setWindowModality(Qt::ApplicationModal);
 
 	// No settings descriptor initially (the caller will set it).
-	m_pOptions = NULL;
+	m_pOptions = nullptr;
 
 	// Have some deafult time-scale for instance...
-	m_pTimeScale = NULL;
+	m_pTimeScale = nullptr;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -536,7 +536,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_pOptions->loadComboBoxHistory(m_ui.Lv2PresetDirComboBox);
 
 	// Time-scale related options...
-	qtractorTimeScale::DisplayFormat displayFormat
+	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(m_pOptions->iDisplayFormat);
 	if (m_pTimeScale)
 		m_pTimeScale->setDisplayFormat(displayFormat);
@@ -917,7 +917,7 @@ void qtractorOptionsForm::reject (void)
 		if (m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->isEnabled())
 			buttons |= QMessageBox::Apply;
 		switch (QMessageBox::warning(this,
-			tr("Warning") + " - " QTRACTOR_TITLE,
+			tr("Warning"),
 			tr("Some settings have been changed.\n\n"
 			"Do you want to apply the changes?"),
 			buttons)) {
@@ -948,7 +948,7 @@ void qtractorOptionsForm::changed (void)
 void qtractorOptionsForm::chooseMetroBarFilename (void)
 {
 	QString sFilename = getOpenAudioFileName(
-		tr("Metronome Bar Audio File") + " - " QTRACTOR_TITLE,
+		tr("Metronome Bar Audio File"),
 		m_ui.MetroBarFilenameComboBox->currentText());
 
 	if (sFilename.isEmpty())
@@ -962,7 +962,7 @@ void qtractorOptionsForm::chooseMetroBarFilename (void)
 void qtractorOptionsForm::chooseMetroBeatFilename (void)
 {
 	QString sFilename = getOpenAudioFileName(
-		tr("Metronome Beat Audio File") + " - " QTRACTOR_TITLE,
+		tr("Metronome Beat Audio File"),
 		m_ui.MetroBeatFilenameComboBox->currentText());
 
 	if (sFilename.isEmpty())
@@ -1005,7 +1005,7 @@ void qtractorOptionsForm::updateMetroNoteNames (void)
 // Display format has changed.
 void qtractorOptionsForm::displayFormatChanged ( int iDisplayFormat )
 {
-	qtractorTimeScale::DisplayFormat displayFormat
+	const qtractorTimeScale::DisplayFormat displayFormat
 		= qtractorTimeScale::DisplayFormat(iDisplayFormat);
 
 	m_ui.AudioMetroOffsetSpinBox->setDisplayFormat(displayFormat);
@@ -1126,9 +1126,9 @@ void qtractorOptionsForm::changeMidiMeterColor ( const QString& sColor )
 void qtractorOptionsForm::chooseAudioMeterColor (void)
 {
 	const QString& sTitle
-		= tr("Audio Meter Color") + " - " QTRACTOR_TITLE;
+		= tr("Audio Meter Color");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QColorDialog::ColorDialogOptions options = 0;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
@@ -1148,9 +1148,9 @@ void qtractorOptionsForm::chooseAudioMeterColor (void)
 void qtractorOptionsForm::chooseMidiMeterColor (void)
 {
 	const QString& sTitle
-		= tr("MIDI Meter Color") + " - " QTRACTOR_TITLE;
+		= tr("MIDI Meter Color");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QColorDialog::ColorDialogOptions options = 0;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
@@ -1195,7 +1195,7 @@ void qtractorOptionsForm::updateColorText (
 // Change plugin type.
 void qtractorOptionsForm::choosePluginType ( int iPluginType )
 {
-	if (m_pOptions == NULL)
+	if (m_pOptions == nullptr)
 		return;
 
 	QStringList paths;
@@ -1244,15 +1244,15 @@ void qtractorOptionsForm::choosePluginPath (void)
 	QString sPluginPath;
 
 	const QString& sTitle
-		= tr("Plug-in Directory") + " - " QTRACTOR_TITLE;
+		= tr("Plug-in Directory");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the directory...
 	sPluginPath = QFileDialog::getExistingDirectory(pParentWidget,
 		sTitle, m_ui.PluginPathComboBox->currentText(), options);
@@ -1484,15 +1484,15 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 		sLv2PresetDir = QDir::homePath() + QDir::separator() + ".lv2";
 
 	const QString& sTitle
-		= tr("LV2 Presets Directory") + " - " QTRACTOR_TITLE;
+		= tr("LV2 Presets Directory");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1// QT_VERSION < 0x040400
+#if 1// QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the directory...
 	sLv2PresetDir = QFileDialog::getExistingDirectory(pParentWidget,
 		sTitle, sLv2PresetDir, options);
@@ -1525,9 +1525,9 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 void qtractorOptionsForm::chooseMessagesFont (void)
 {
 	const QString& sTitle
-		= tr("Messages Font") + " - " QTRACTOR_TITLE;
+		= tr("Messages Font");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFontDialog::FontDialogOptions options = 0;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFontDialog::DontUseNativeDialog;
@@ -1553,23 +1553,23 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 
 	const QString  sExt("log");
 	const QString& sTitle
-		= tr("Messages Log") + " - " QTRACTOR_TITLE;
+		= tr("Messages Log");
 
 	QStringList filters;
 	filters.append(tr("Log files (*.%1)").arg(sExt));
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sFilename = QFileDialog::getSaveFileName(pParentWidget,
-		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter, NULL, options);
+		sTitle, m_ui.MessagesLogPathComboBox->currentText(), sFilter, nullptr, options);
 #else
 	// Construct open-file dialog...
 	QFileDialog fileDialog(pParentWidget,
@@ -1599,23 +1599,23 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 
 	const QString  sExt("qtt");
 	const QString& sTitle
-		= tr("Session Template") + " - " QTRACTOR_TITLE;
+		= tr("Session Template");
 
 	QStringList filters;
 	filters.append(tr("Session template files (*.qtr *.qts *.%1)").arg(sExt));
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
-		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter, NULL, options);
+		sTitle, m_ui.SessionTemplatePathComboBox->currentText(), sFilter, nullptr, options);
 #else
 	// Construct open-files dialog...
 	QFileDialog fileDialog(pParentWidget,
@@ -1767,16 +1767,16 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 
 	QString sAudioFile;
 
-	QWidget *pParentWidget = NULL;
+	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
 	}
-#if 1//QT_VERSION < 0x040400
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	// Ask for the filename to open...
 	sAudioFile = QFileDialog::getOpenFileName(pParentWidget,
-		sTitle, sFilename, sFilter, NULL, options);
+		sTitle, sFilename, sFilter, nullptr, options);
 #else
 	// Construct open-file dialog...
 	QFileDialog fileDialog(pParentWidget, sTitle, sFilename, sFilter);

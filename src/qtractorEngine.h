@@ -260,7 +260,7 @@ public:
 					return pItem;
 				}
 			}
-			return NULL;
+			return nullptr;
 		}
 	};
 

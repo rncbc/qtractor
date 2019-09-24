@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -45,6 +45,10 @@
 
 #include <QToolTip>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+#define horizontalAdvance  width
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorTrackTime -- Track time scale widget.
@@ -58,7 +62,7 @@ qtractorTrackTime::qtractorTrackTime ( qtractorTracks *pTracks,
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
 
-	m_pDragMarker = NULL;
+	m_pDragMarker = nullptr;
 
 	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -99,15 +103,16 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	m_pixmap.fill(pal.window().color());
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 	
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+//	painter.initFrom(this);
+	painter.setFont(qtractorScrollView::font());
 
 	// Draw the time scale...
 	//
@@ -120,7 +125,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(cx);
 	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
-	x = x1 = pNode->pixelFromBeat(iBeat) - cx;
+	x = x1 = pNode->pixelFromBeat(iBeat) - cx - 1;
 
 	while (x < w) {
 		const bool bBeatIsBar = pNode->beatIsBar(iBeat);
@@ -139,7 +144,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				const QString& sBeat = QString::number(iBar + 1);
 				painter.setPen(pal.windowText().color());
 				painter.drawText(x1, y1, sBeat);
-				x1 += fm.width(sBeat) + 2;
+				x1 += fm.horizontalAdvance(sBeat) + 2;
 			}
 			x1 += 2;
 			if (iBeat == pNode->beat) {
@@ -150,11 +155,11 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 					.arg(1 << pNode->beatDivisor);
 				painter.setPen(Qt::darkGray);
 				painter.drawText(x1, y1, sTempo);
-				x1 += fm.width(sTempo) + 2;
+				x1 += fm.horizontalAdvance(sTempo) + 2;
 			}
 		}
 		pNode = cursor.seekBeat(++iBeat);
-		x = pNode->pixelFromBeat(iBeat) - cx;
+		x = pNode->pixelFromBeat(iBeat) - cx - 1;
 	}
 
 	// Draw location markers, if any...
@@ -314,11 +319,11 @@ void qtractorTrackTime::contentsXMovingSlot ( int cx, int /*cy*/ )
 bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return false;
 
 	// Try to catch mouse clicks over the
@@ -699,11 +704,11 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 void qtractorTrackTime::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Direct snap positioning...
@@ -769,7 +774,7 @@ void qtractorTrackTime::resetDragState (void)
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
 
-	m_pDragMarker = NULL;
+	m_pDragMarker = nullptr;
 
 	// HACK: give focus to track-view... 
 	m_pTracks->trackView()->setFocus();
@@ -848,11 +853,11 @@ void qtractorTrackTime::showToolTip ( unsigned long iFrame ) const
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	QString sToolTip;
@@ -901,11 +906,11 @@ void qtractorTrackTime::showToolTip ( const QRect& rect ) const
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	const unsigned long iFrameStart = pTimeScale->frameSnap(

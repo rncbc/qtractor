@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.9.8, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.9.10, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -103,6 +103,12 @@ AC_ARG_ENABLE(librubberband,
   AS_HELP_STRING([--enable-librubberband], [enable librubberband interface (default=yes)]),
   [ac_librubberband="$enableval"],
   [ac_librubberband="yes"])
+
+# Enable libaudio support.
+AC_ARG_ENABLE(libaubio,
+  AS_HELP_STRING([--enable-libaubio], [enable libaubio interface support (default=yes)]),
+  [ac_libaubio="$enableval"],
+  [ac_libaubio="yes"])
 
 # Enable liblo availability.
 AC_ARG_ENABLE(liblo,
@@ -353,6 +359,11 @@ AC_ARG_WITH(librubberband,
   AS_HELP_STRING([--with-librubberband=PATH], [use alternate librubberband path]),
   [ac_with_paths="$ac_with_paths $withval"])
 
+# Set for alternate libaubio installation dir.
+AC_ARG_WITH(libaubio,
+  AS_HELP_STRING([--with-libaubio=PATH], [use alternate libaubio path]),
+  [ac_with_paths="$ac_with_paths $withval"])
+
 # Set for alternate liblo installation dir.
 AC_ARG_WITH(liblo,
   AS_HELP_STRING([--with-liblo=PATH], [use alternate liblo path]),
@@ -420,7 +431,8 @@ AC_CACHE_CHECK([for g++ major version], [ac_cv_gxx_version_major], [
 ])
 ac_gxx_version_major=$ac_cv_gxx_version_major
 if test $ac_gxx_version_major -ge 4 -a $ac_gxx_version_major -lt 6; then
-   CXXFLAGS="-std=c++11 $CXXFLAGS"
+   CPPFLAGS="-std=c++11 $CPPFLAGS"
+   ac_cflags="-std=c++11 $ac_cflags"
 fi
 
 # Check for proper flags.
@@ -456,6 +468,12 @@ done
 
 # A common error message:
 ac_errmsg="not found in current PATH. Maybe QT development environment isn't available."
+
+# Check for qtchooser availability.
+AC_PATH_TOOL(ac_qtchooser, qtchooser, [no], $ac_path)
+if test -x $ac_qtchooser; then
+   export QT_SELECT=5
+fi
 
 # Check for proper qmake path/version alternatives.
 AC_PATH_TOOL(ac_qmake, qmake, [no], $ac_path)
@@ -543,17 +561,28 @@ if test "x$ac_uic" = "xno"; then
 fi
 AC_SUBST(ac_uic)
 
+
 # Check for Qt lupdate utility.
 AC_PATH_TOOL(ac_lupdate, lupdate, [no], $ac_path)
 if test "x$ac_lupdate" = "xno"; then
-   AC_MSG_ERROR([lupdate $ac_errmsg])
+   AC_PATH_TOOL(ac_cv_lupdate, lupdate-qt5, [no], $ac_path)
+   if test "x$ac_cv_lupdate" = "xno"; then
+      AC_MSG_ERROR([lupdate $ac_errmsg (qt5-linguist)])
+   else
+      ac_lupdate=$ac_cv_lupdate;
+   fi
 fi
 AC_SUBST(ac_lupdate)
 
 # Check for Qt lrelease utility.
 AC_PATH_TOOL(ac_lrelease, lrelease, [no], $ac_path)
-if test "x$ac_release" = "xno"; then
-   AC_MSG_ERROR([lrelease $ac_errmsg])
+if test "x$ac_lrelease" = "xno"; then
+   AC_PATH_TOOL(ac_cv_lrelease, lrelease-qt5, [no], $ac_path)
+   if test "x$ac_cv_lrelease" = "xno"; then
+      AC_MSG_ERROR([lrelease $ac_errmsg (qt5-linguist)])
+   else
+      ac_lrelease=$ac_cv_lrelease;
+   fi
 fi
 AC_SUBST(ac_lrelease)
 
@@ -728,6 +757,19 @@ if test "x$ac_librubberband" = "xyes"; then
    else
       AC_MSG_WARN([*** RUBBERBAND library not found.])
       AC_MSG_WARN([*** Pitch-shifting support will be disabled.])
+   fi
+fi
+
+# Check for optional AUBIO library.
+if test "x$ac_libaubio" = "xyes"; then
+   PKG_CHECK_MODULES([AUBIO], [aubio >= 0.4.1], [ac_libaubio="yes"], [ac_libaubio="no"])
+   if test "x$ac_libaubio" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBAUBIO, 1, [Define if AUBIO library is available.])
+      ac_cflags="$ac_cflags $AUBIO_CFLAGS"
+      ac_libs="$ac_libs $AUBIO_LIBS"
+   else
+      AC_MSG_WARN([*** AUBIO library not found.])
+      AC_MSG_WARN([*** Beat-detection support will be disabled.])
    fi
 fi
 
@@ -1406,6 +1448,7 @@ echo "  Ogg Vorbis audio file support (libvorbis)  . . . .: $ac_libvorbis"
 echo "  MPEG-1 Audio Layer 3 file support (libmad) . . . .: $ac_libmad"
 echo "  Sample-rate conversion support (libsamplerate) . .: $ac_libsamplerate"
 echo "  Pitch-shifting support (librubberband) . . . . . .: $ac_librubberband"
+echo "  Beat-detection support (libaubio)  . . . . . . . .: $ac_libaubio"
 echo "  OSC service support (liblo)  . . . . . . . . . . .: $ac_liblo"
 echo "  Archive/Zip file support (zlib)  . . . . . . . . .: $ac_libz"
 echo "  IEEE 32bit float optimizations . . . . . . . . . .: $ac_float32"

@@ -246,9 +246,6 @@ public:
 	// Retrieve current selection.
 	QList<qtractorMidiEvent *> selectedEvents() const;
 
-	// Selectable event predicate.
-	bool isEventSelectable(qtractorMidiEvent *pEvent) const;
-
 	// Whether there's any events beyond the insertion point (edit-tail).
 	bool isInsertable() const;
 
@@ -278,7 +275,7 @@ public:
 
 	// Get event from given contents position.
 	qtractorMidiEvent *eventAt(qtractorScrollView *pScrollView,
-		const QPoint& pos, QRect *pRect = NULL);
+		const QPoint& pos, QRect *pRect = nullptr);
 
 	// Start immediate some drag-edit mode...
 	qtractorMidiEvent *dragEditEvent(qtractorScrollView *pScrollView,
@@ -355,6 +352,8 @@ public:
 
 	// Note name map accessor.
 	const QString noteName(unsigned char note) const;
+	// Program name map accessor.
+	const QString& programName(unsigned char prog) const;
 	// Controller name map accessor.
 	const QString& controllerName(unsigned char controller) const;
 
@@ -385,11 +384,10 @@ public:
 	static unsigned char snapToScale(
 		unsigned char note, int iKey, int iScale);
 
-public slots:
-
-	// Redirect selection/change notification.
+	// Redirect selection notification.
 	void selectionChangeNotify();
-	void contentsChangeNotify();
+
+public slots:
 
 	// Redirect note on/off;
 	void sendNote(int iNote, int iVelocity = 0);
@@ -473,7 +471,7 @@ protected:
 	// Apply the event drag-resize (also editing).
 	void resizeEvent(qtractorMidiEvent *pEvent,
 		long iTimeDelta, int iValueDelta,
-		qtractorMidiEditCommand *pEditCommand = NULL);
+		qtractorMidiEditCommand *pEditCommand = nullptr);
 
 	// Update event selection rectangle.
 	void updateEvent(qtractorMidiEvent *pEvent);
@@ -591,7 +589,8 @@ private:
 		ResizeNoteLeft,
 		ResizeValue,
 		ResizeValue14,
-		ResizePitchBend
+		ResizePitchBend,
+		ResizePgmChange
 	} m_resizeMode;
 
 	// The current selecting/dragging stuff.
@@ -678,9 +677,9 @@ private:
 	}	g_clipboard;
 
 	// Instrument defined names for current clip/track.
-	QHash<unsigned char,  QString> m_noteNames;
-	QHash<unsigned char,  QString> m_controllerNames;
-
+	QHash<unsigned char, QString> m_noteNames;
+	QHash<unsigned char, QString> m_programNames;
+	QHash<unsigned char, QString> m_controllerNames;
 	QMap<unsigned short, QString> m_rpnNames;
 	QMap<unsigned short, QString> m_nrpnNames;
 

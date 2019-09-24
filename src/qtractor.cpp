@@ -51,7 +51,7 @@
 #endif
 #endif
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #define CONFIG_PLUGINSDIR CONFIG_LIBDIR "/qt4/plugins"
 #else
 #define CONFIG_PLUGINSDIR CONFIG_LIBDIR "/qt5/plugins"
@@ -72,7 +72,7 @@
 
 #define QTRACTOR_XUNIQUE "qtractorApplication"
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
 
 #include <unistd.h> /* for gethostname() */
@@ -94,8 +94,13 @@
 // Constructor.
 qtractorApplication::qtractorApplication ( int& argc, char **argv )
 	: QApplication(argc, argv),
-		m_pQtTranslator(NULL), m_pMyTranslator(NULL), m_pWidget(NULL)	
+		m_pQtTranslator(nullptr), m_pMyTranslator(nullptr), m_pWidget(nullptr)	
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+	QApplication::setApplicationName(QTRACTOR_TITLE);
+	QApplication::setApplicationDisplayName(QTRACTOR_TITLE);
+	//	QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
+#endif
 	// Load translation support.
 	QLocale loc;
 	if (loc.language() != QLocale::C) {
@@ -137,15 +142,15 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 		}
 	}
 #ifdef CONFIG_XUNIQUE
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
-	m_pDisplay = NULL;
+	m_pDisplay = nullptr;
 	m_aUnique = 0;
 	m_wOwner = 0;
 #endif	// CONFIG_X11
 #else
-	m_pMemory = NULL;
-	m_pServer = NULL;
+	m_pMemory = nullptr;
+	m_pServer = nullptr;
 #endif
 #endif	// CONFIG_XUNIQUE
 }
@@ -155,15 +160,15 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 qtractorApplication::~qtractorApplication (void)
 {
 #ifdef CONFIG_XUNIQUE
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	if (m_pServer) {
 		m_pServer->close();
 		delete m_pServer;
-		m_pServer = NULL;
+		m_pServer = nullptr;
 	}
 	if (m_pMemory) {
 		delete m_pMemory;
-		m_pMemory = NULL;
+		m_pMemory = nullptr;
 }
 #endif
 #endif	// CONFIG_XUNIQUE
@@ -176,7 +181,7 @@ void qtractorApplication::setMainWidget ( QWidget *pWidget )
 {
 	m_pWidget = pWidget;
 #ifdef CONFIG_XUNIQUE
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
 	m_wOwner = m_pWidget->winId();
 	if (m_pDisplay && m_wOwner) {
@@ -195,7 +200,7 @@ void qtractorApplication::setMainWidget ( QWidget *pWidget )
 bool qtractorApplication::setup (void)
 {
 #ifdef CONFIG_XUNIQUE
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
 	m_pDisplay = QX11Info::display();
 	if (m_pDisplay) {
@@ -304,7 +309,7 @@ bool qtractorApplication::setup (void)
 }
 
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 
 #ifdef CONFIG_X11
 #ifdef CONFIG_XUNIQUE
@@ -381,7 +386,7 @@ void qtractorApplication::readyReadSlot (void)
 	if (pSocket) {
 		const qint64 nread = pSocket->bytesAvailable();
 		if (nread > 0) {
-			QByteArray data = pSocket->read(nread);
+			const QByteArray data = pSocket->read(nread);
 			// Just make it always shows up fine...
 			m_pWidget->hide();
 			m_pWidget->show();
@@ -432,7 +437,7 @@ void stacktrace ( int signo )
 
 	// Fork child...
 	if (pid == 0) {
-		execl(shell, shell, "-c", cmd, NULL);
+		execl(shell, shell, "-c", cmd, nullptr);
 		_exit(1);
 		return;
 	}
@@ -469,10 +474,12 @@ int main ( int argc, char **argv )
 	::signal(SIGBUS,  stacktrace);
 #endif
 #endif
-	qtractorApplication app(argc, argv);
-#if QT_VERSION >= 0x050600
-	app.setAttribute(Qt::AA_EnableHighDpiScaling);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
+
+	qtractorApplication app(argc, argv);
+
 	// Construct default settings; override with command line arguments.
 	qtractorOptions options;
 	if (!options.parse_args(app.arguments())) {

@@ -44,6 +44,10 @@
 #include <QLinearGradient>
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+#define horizontalAdvance  width
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorMidiEditEventScale -- MIDI event scale widget.
@@ -58,7 +62,7 @@ qtractorMidiEditEventScale::qtractorMidiEditEventScale (
 //	QWidget::setBackgroundRole(QPalette::Mid);
 
 	const QFont& font = QWidget::font();
-	QWidget::setFont(QFont(font.family(), font.pointSize() - 2));
+	QWidget::setFont(QFont(font.family(), font.pointSize() - 3));
 }
 
 // Default destructor.
@@ -107,7 +111,7 @@ void qtractorMidiEditEventScale::paintEvent ( QPaintEvent * )
 
 	while (y < h) {
 		const QString& sLabel = QString::number(n);
-		if (fm.width(sLabel) < w - 6)
+		if (fm.horizontalAdvance(sLabel) < w - 6)
 			painter.drawLine(w - 4, y, w - 1, y);
 		if (y > y0 + (h2 << 1) && y < h - (h2 << 1)) {
 			painter.drawText(2, y - h2, w - 8, fm.height(),
@@ -298,15 +302,16 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	m_pixmap.fill(rgbBase);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+//	painter.initFrom(this);
+	painter.setFont(qtractorScrollView::font());
 
 	// Show that we may have clip limits...
 	if (m_pEditor->length() > 0) {
@@ -339,6 +344,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	pNode = cursor.seekPixel(dx);
 	const unsigned short iSnapPerBeat
 		= (m_pEditor->isSnapGrid() ? pTimeScale->snapPerBeat() : 0);
+#if 0
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(dx);
 	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
@@ -362,7 +368,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 			painter.drawLine(x, 0, x, h);
 		}
 		if (iSnapPerBeat > 1) {
-			int q = iPixelsPerBeat / iSnapPerBeat;
+			const int q = iPixelsPerBeat / iSnapPerBeat;
 			if (q > 4) {  
 				painter.setPen(rgbBase.value() < 0x7f
 					? rgbLight.darker(105) : rgbLight.lighter(120));
@@ -377,6 +383,53 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	}
 	if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
 		painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
+#else
+	unsigned short iBar = pNode->barFromPixel(dx);
+	if (iBar > 0) --iBar;
+	int x = pNode->pixelFromBar(iBar) - dx;
+	while (x < w) {
+		// Next bar...
+		pNode = cursor.seekPixel(x + dx);
+		const int x2 = pNode->pixelFromBar(++iBar) - dx;
+		// Zebra lines...
+		if (m_pEditor->isSnapZebra() && (iBar & 1))
+			painter.fillRect(QRect(x, 0, x2 - x + 1, h), zebra);
+		// Beat lines...
+		const unsigned short iBeatsPerBar2 = pNode->beatsPerBar2();
+		const float q2 = float(x2 - x) / float(iBeatsPerBar2);
+		if (q2 > 8.0f) {
+			float p2 = float(x);
+			for (int i = 0; i < iBeatsPerBar2; ++i) {
+				if (iSnapPerBeat > 1) {
+					const float q1 = q2 / float(iSnapPerBeat);
+					if (q1 > 4.0f) {
+						painter.setPen(rgbBase.value() < 0x7f
+							? rgbLight.darker(105) : rgbLight.lighter(120));
+						float p1 = p2;
+						for (int j = 1; j < iSnapPerBeat; ++j) {
+							const int x1 = int(p1 += q1);
+							painter.drawLine(x1, 0, x1, h);
+						}
+					}
+				}
+				x = int(p2 += q2);
+				if (x > w)
+					break;
+				if (i < iBeatsPerBar2 - 1) {
+					painter.setPen(rgbLight);
+					painter.drawLine(x, 0, x, h);
+				}
+			}
+		}
+		// Bar line...
+		painter.setPen(rgbDark);
+		painter.drawLine(x2 - 1, 0, x2 - 1, h);
+		painter.setPen(rgbLight);
+		painter.drawLine(x2, 0, x2, h);
+		// Move forward...
+		x = x2;
+	}
+#endif
 
 	// Draw location marker lines...
 	qtractorTimeScale::Marker *pMarker
@@ -394,7 +447,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	//
 
 	qtractorMidiSequence *pSeq = m_pEditor->sequence();
-	if (pSeq == NULL)
+	if (pSeq == nullptr)
 		return;
 
 	pNode = cursor.seekPixel(x = dx);
@@ -548,6 +601,9 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 			if (eventType == qtractorMidiEvent::PITCHBEND)
 				y = y0 - (y0 * pEvent->pitchBend()) / 8192;
 			else
+			if (eventType == qtractorMidiEvent::PGMCHANGE)
+				y = y0 - (y0 * pEvent->param()) / 128;
+			else
 				y = y0 - (y0 * pEvent->value()) / 128;
 			pNode = cursor.seekTick(t1);
 			x = pNode->pixelFromTick(t1) - dx;
@@ -656,7 +712,7 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 //	qtractorScrollView::mousePressEvent(pMouseEvent);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Which mouse state?

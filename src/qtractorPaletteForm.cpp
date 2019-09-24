@@ -77,7 +77,7 @@ static struct
 	{ "ToolTipText",     QPalette::ToolTipText     },
 	{ "NoRole",          QPalette::NoRole          },
 
-	{  NULL,             QPalette::NoRole          }
+	{  nullptr,             QPalette::NoRole          }
 };
 
 
@@ -89,7 +89,7 @@ qtractorPaletteForm::qtractorPaletteForm ( QWidget *parent, const QPalette& pal 
 {
 	m_ui.setupUi(this);
 
-	m_settings = NULL;
+	m_settings = nullptr;
 	m_owner = false;
 
 	m_modelUpdated = false;
@@ -160,7 +160,7 @@ qtractorPaletteForm::qtractorPaletteForm ( QWidget *parent, const QPalette& pal 
 
 qtractorPaletteForm::~qtractorPaletteForm (void)
 {
-	setSettings(NULL);
+	setSettings(nullptr);
 }
 
 
@@ -684,7 +684,7 @@ bool qtractorPaletteForm::namedPalette (
 			pal.text().color().lighter(),
 			pal.base(),
 			pal.window());
-	#if QT_VERSION >= 0x050000
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		pal.setColor(QPalette::Disabled,
 			QPalette::Highlight, pal.mid().color());
 		pal.setColor(QPalette::Disabled,
@@ -983,7 +983,7 @@ bool qtractorPaletteForm::PaletteModel::setData (
 					index_begin = PaletteModel::index(QPalette::Base, 0);
 					break;
 				case QPalette::Highlight:
-					m_palette.setBrush(QPalette::Disabled, QPalette::Highlight, color.dark(120));
+					m_palette.setBrush(QPalette::Disabled, QPalette::Highlight, color.darker(120));
 					break;
 				default:
 					m_palette.setBrush(QPalette::Disabled, cr, color);
@@ -1100,7 +1100,7 @@ int qtractorPaletteForm::PaletteModel::groupToColumn ( QPalette::ColorGroup grou
 QWidget *qtractorPaletteForm::ColorDelegate::createEditor ( QWidget *parent,
 	const QStyleOptionViewItem&, const QModelIndex& index ) const
 {
-	QWidget *editor = NULL;
+	QWidget *editor = nullptr;
 
 	if (index.column() == 0) {
 		RoleEditor *ed = new RoleEditor(parent);

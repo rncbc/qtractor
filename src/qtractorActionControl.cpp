@@ -1,7 +1,7 @@
 // qtractorActionControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,7 +32,7 @@
 
 // MIDI observer ctor.
 qtractorActionControl::MidiObserver::MidiObserver ( QAction *pAction )
-	: qtractorMidiControlObserver(NULL), m_pAction(pAction)
+	: qtractorMidiControlObserver(nullptr), m_pAction(pAction)
 {
 	m_subject.setName(menuActionText(pAction, pAction->text()).remove('&'));
 	m_subject.setInteger(true);
@@ -69,7 +69,7 @@ void qtractorActionControl::MidiObserver::update ( bool bUpdate )
 //
 
 // Kind of singleton reference.
-qtractorActionControl *qtractorActionControl::g_pActionControl = NULL;
+qtractorActionControl *qtractorActionControl::g_pActionControl = nullptr;
 
 
 // ctor.
@@ -85,7 +85,7 @@ qtractorActionControl::qtractorActionControl ( QObject *pParent )
 qtractorActionControl::~qtractorActionControl (void)
 {
 	// Pseudo-singleton reference shut-down.
-	g_pActionControl = NULL;
+	g_pActionControl = nullptr;
 
 	clear();
 }
@@ -110,7 +110,7 @@ void qtractorActionControl::clear (void)
 qtractorActionControl::MidiObserver *qtractorActionControl::getMidiObserver (
 	QAction *pAction )
 {
-	return m_midiObservers.value(pAction, NULL);
+	return m_midiObservers.value(pAction, nullptr);
 }
 
 
@@ -118,7 +118,7 @@ qtractorActionControl::MidiObserver *qtractorActionControl::addMidiObserver (
 	QAction *pAction )
 {
 	MidiObserver *pMidiObserver = getMidiObserver(pAction);
-	if (pMidiObserver == NULL) {
+	if (pMidiObserver == nullptr) {
 		pMidiObserver = new MidiObserver(pAction);
 		m_midiObservers.insert(pAction, pMidiObserver);
 	}

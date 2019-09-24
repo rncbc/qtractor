@@ -1,7 +1,7 @@
 // qtractorCurveSelect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2014, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,8 +28,8 @@
 // Constructor.
 qtractorCurveSelect::qtractorCurveSelect (void)
 {
-	m_pCurve = NULL;
-	m_pAnchorNode = NULL;
+	m_pCurve = nullptr;
+	m_pAnchorNode = nullptr;
 }
 
 
@@ -45,7 +45,7 @@ qtractorCurveSelect::Item *qtractorCurveSelect::findItem (
 	qtractorCurve::Node *pNode )
 {
 	// Check if this very event already exists...
-	return m_items.value(pNode, NULL);
+	return m_items.value(pNode, nullptr);
 }
 
 
@@ -57,7 +57,7 @@ void qtractorCurveSelect::addItem (
 
 	m_rect = m_rect.united(rectNode);
 	
-	if (m_pAnchorNode == NULL || m_pAnchorNode->frame > pNode->frame)
+	if (m_pAnchorNode == nullptr || m_pAnchorNode->frame > pNode->frame)
 		m_pAnchorNode = pNode;
 }
 
@@ -92,7 +92,7 @@ void qtractorCurveSelect::selectItem ( qtractorCurve *pCurve,
 	}
 	else
 	if (bSelect) {
-		if (m_pCurve == NULL)
+		if (m_pCurve == nullptr)
 			m_pCurve  = pCurve;
 		if (m_pCurve == pCurve)
 			addItem(pNode, rectNode);
@@ -144,8 +144,8 @@ void qtractorCurveSelect::commit (void)
 	}
 
 	if (m_items.isEmpty()) {
-		m_pAnchorNode = NULL;
-		m_pCurve = NULL;
+		m_pAnchorNode = nullptr;
+		m_pCurve = nullptr;
 	}
 }
 
@@ -158,8 +158,8 @@ void qtractorCurveSelect::clear (void)
 	qDeleteAll(m_items);
 	m_items.clear();
 
-	m_pAnchorNode = NULL;
-	m_pCurve = NULL;
+	m_pAnchorNode = nullptr;
+	m_pCurve = nullptr;
 }
 
 

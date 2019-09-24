@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -43,6 +43,10 @@
 
 #include <QToolTip>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+#define horizontalAdvance  width
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorMidiEditTime -- MIDI sequence time scale widget.
@@ -57,7 +61,7 @@ qtractorMidiEditTime::qtractorMidiEditTime (
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
 
-	m_pDragMarker = NULL;
+	m_pDragMarker = nullptr;
 
 	qtractorScrollView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	qtractorScrollView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -98,15 +102,16 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	m_pixmap.fill(pal.window().color());
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+//	painter.initFrom(this);
+	painter.setFont(qtractorScrollView::font());
 
 	//
 	// Draw the time scale...
@@ -120,7 +125,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekPixel(dx);
-
+#if 0
 	unsigned short iPixelsPerBeat = pNode->pixelsPerBeat();
 	unsigned int iBeat = pNode->beatFromPixel(dx);
 	if (iBeat > 0) pNode = cursor.seekBeat(--iBeat);
@@ -143,7 +148,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				const QString& sBeat = QString::number(iBar + 1);
 				painter.setPen(pal.windowText().color());
 				painter.drawText(x1, y1, sBeat);
-				x1 += fm.width(sBeat) + 2;
+				x1 += fm.horizontalAdvance(sBeat) + 2;
 			}
 			x1 += 2;
 			if (iBeat == pNode->beat) {
@@ -154,12 +159,71 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 					.arg(1 << pNode->beatDivisor);
 				painter.setPen(Qt::darkGray);
 				painter.drawText(x1, y1, sTempo);
-				x1 += fm.width(sTempo) + 2;
+				x1 += fm.horizontalAdvance(sTempo) + 2;
 			}
 		}
 		pNode = cursor.seekBeat(++iBeat);
 		x = pNode->pixelFromBeat(iBeat) - dx;
 	}
+#else
+	unsigned short iBar = pNode->barFromPixel(dx);
+	if (iBar > 0) --iBar;
+	x = x1 = pNode->pixelFromBar(iBar) - dx;
+	while (x < w) {
+		// Next bar...
+		pNode = cursor.seekPixel(x + dx);
+		const int x2 = pNode->pixelFromBar(++iBar) - dx;
+		// Bar label...
+		if (x >= x1) {
+			const QString& sBar	= QString::number(iBar);
+			x1 = x;
+			y1 = fm.ascent();
+			painter.setPen(pal.windowText().color());
+			painter.drawText(x1 + 2, y1, sBar);
+			x1 += fm.horizontalAdvance(sBar) + 2;
+		}
+		x1 += 2;
+		// Tempo/time-sig. label...
+		if (iBar == pNode->bar + 1) {
+			const QString& sTempo = QString("%1 %2/%3")
+				.arg(pNode->tempo, 0, 'f', 1)
+				.arg(pNode->beatsPerBar)
+				.arg(1 << pNode->beatDivisor);
+			y1 = fm.ascent();
+			painter.setPen(Qt::darkGray);
+			painter.drawText(x1 + 2, y1, sTempo);
+			x1 += fm.horizontalAdvance(sTempo) + 2;
+		}
+		// Beat lines...
+		const unsigned short iBeatsPerBar2 = pNode->beatsPerBar2();
+		const float q2 = float(x2 - x) / float(iBeatsPerBar2);
+		if (q2 > 8.0f) {
+			float p2 = float(x - 1);
+			for (int i = 1; i < iBeatsPerBar2; ++i) {
+				x = int(p2 += q2);
+				if (x > w)
+					break;
+				if (x > x1) {
+					y1 = fm.ascent();
+					painter.setPen(pal.mid().color());
+					painter.drawLine(x, y1, x, y2);
+					painter.setPen(pal.light().color());
+					++x; painter.drawLine(x, y1, x, y2);
+				}
+			}
+		}
+		// Bar line...
+		if (x2 > x1) {
+			y1 = 0;
+			painter.setPen(pal.mid().color());
+			painter.drawLine(x2 - 1, y1, x2 - 1, y2);
+			painter.setPen(pal.light().color());
+			painter.drawLine(x2, y1, x2, y2);
+		}
+		// Move forward...
+		x = x2;
+	}
+#endif
 
 	// Draw location markers, if any...
 	qtractorTimeScale::Marker *pMarker
@@ -327,11 +391,11 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 
 	// Check loop and punch points...
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return false;
 
 	const int dx = pTimeScale->pixelFromFrame(m_pEditor->offset()) + d;
@@ -413,7 +477,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	m_dragState = DragNone;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Which mouse state?
@@ -482,7 +546,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	// Are we already moving/dragging something?
@@ -563,7 +627,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 //	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Which mouse state?
@@ -668,7 +732,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 void qtractorMidiEditTime::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 {
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == NULL)
+	if (pMainForm == nullptr)
 		return;
 
 	// Direct snap positioning...
@@ -733,7 +797,7 @@ void qtractorMidiEditTime::resetDragState (void)
 	m_dragState  = DragNone;
 	m_dragCursor = DragNone;
 
-	m_pDragMarker = NULL;
+	m_pDragMarker = nullptr;
 
 	// HACK: give focus to track-view... 
 	m_pEditor->editView()->setFocus();
@@ -811,7 +875,7 @@ void qtractorMidiEditTime::showToolTip ( unsigned long iFrame ) const
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	QString sToolTip;
@@ -860,7 +924,7 @@ void qtractorMidiEditTime::showToolTip ( const QRect& rect ) const
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	const unsigned long iFrameStart = pTimeScale->frameSnap(

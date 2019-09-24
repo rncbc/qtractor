@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -137,9 +137,9 @@ qtractorAudioClip::Hash qtractorAudioClip::g_hashTable;
 qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 	: qtractorClip(pTrack)
 {
-	m_pPeak = NULL;
-	m_pKey  = NULL;
-	m_pData = NULL;
+	m_pPeak = nullptr;
+	m_pKey  = nullptr;
+	m_pData = nullptr;
 
 	m_fTimeStretch = 1.0f;
 	m_fPitchShift  = 1.0f;
@@ -149,16 +149,16 @@ qtractorAudioClip::qtractorAudioClip ( qtractorTrack *pTrack )
 
 	m_iOverlap = 0;
 
-	m_pFractGains = NULL;
+	m_pFractGains = nullptr;
 }
 
 // Copy constructor.
 qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	: qtractorClip(clip.track())
 {
-	m_pPeak = NULL;
-	m_pKey  = NULL;
-	m_pData = NULL;
+	m_pPeak = nullptr;
+	m_pKey  = nullptr;
+	m_pData = nullptr;
 
 	m_fTimeStretch = clip.timeStretch();
 	m_fPitchShift  = clip.pitchShift();
@@ -168,7 +168,7 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 
 	m_iOverlap = clip.overlap();
 
-	m_pFractGains = NULL;
+	m_pFractGains = nullptr;
 
 	setFilename(clip.filename());
 	setClipName(clip.clipName());
@@ -194,7 +194,7 @@ qtractorAudioClip::~qtractorAudioClip (void)
 // Alternating overlap test.
 bool qtractorAudioClip::isOverlap ( unsigned int iOverlapSize ) const
 {
-	if (m_pData == NULL)
+	if (m_pData == nullptr)
 		return false;
 
 	const unsigned long iClipStart = clipStart();
@@ -226,11 +226,11 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 #endif
 
 	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	// Check file buffer number of channels...
@@ -261,7 +261,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	// New key-data sequence...
 	if (!bWrite) {
 		m_pKey  = new Key(this);
-		m_pData = g_hashTable.value(*m_pKey, NULL);
+		m_pData = g_hashTable.value(*m_pKey, nullptr);
 		if (m_pData) {
 			// Check if current clip overlaps any other...
 			const unsigned int iOverlapSize
@@ -270,7 +270,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 			while (bOverlap) {
 				++m_iOverlap;
 				m_pKey->update(this);
-				m_pData = g_hashTable.value(*m_pKey, NULL);
+				m_pData = g_hashTable.value(*m_pKey, nullptr);
 				bOverlap = isOverlap(iOverlapSize);
 			}
 			// Only if it doesn't overlap any...
@@ -278,7 +278,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 				m_pData->attach(this);
 				// Peak files should also be created on-the-fly...
 				qtractorAudioBuffer *pBuff = m_pData->buffer();
-				if (m_pPeak == NULL || bFilenameChanged) {
+				if (m_pPeak == nullptr || bFilenameChanged) {
 					qtractorAudioPeakFactory *pPeakFactory
 						= pSession->audioPeakFactory();
 					if (pPeakFactory) {
@@ -315,7 +315,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 
 	if (!pBuff->open(sFilename, iMode)) {
 		delete m_pData;
-		m_pData = NULL;
+		m_pData = nullptr;
 		return false;
 	}
 
@@ -327,7 +327,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 		setClipLength(pBuff->length() - pBuff->offset());
 
 	// Peak files should also be created on-the-fly?
-	if (m_pPeak == NULL || bFilenameChanged) {
+	if (m_pPeak == nullptr || bFilenameChanged) {
 		qtractorAudioPeakFactory *pPeakFactory
 			= pSession->audioPeakFactory();
 		if (pPeakFactory) {
@@ -366,7 +366,7 @@ void qtractorAudioClip::closeAudioFile (void)
 				QFile::remove(filename());
 		#endif
 		}
-		m_pData = NULL;
+		m_pData = nullptr;
 		// Unregister file path...
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession)
@@ -375,12 +375,12 @@ void qtractorAudioClip::closeAudioFile (void)
 
 	if (m_pKey) {
 		delete m_pKey;
-		m_pKey = NULL;
+		m_pKey = nullptr;
 	}
 
 	if (m_pFractGains) {
 		delete [] m_pFractGains;
-		m_pFractGains = NULL;
+		m_pFractGains = nullptr;
 	}
 }
 
@@ -394,7 +394,7 @@ void qtractorAudioClip::insertHashKey (void)
 
 void qtractorAudioClip::updateHashKey (void)
 {
-	if (m_pKey == NULL)
+	if (m_pKey == nullptr)
 		m_pKey = new Key(this);
 	else
 		m_pKey->update(this);
@@ -410,7 +410,7 @@ void qtractorAudioClip::removeHashKey (void)
 // Unlink (clone) local hash data.
 void qtractorAudioClip::unlinkHashData (void)
 {
-	if (m_pData == NULL)
+	if (m_pData == nullptr)
 		return;
 	if (m_pData->count() < 2)
 		return;
@@ -431,7 +431,7 @@ void qtractorAudioClip::unlinkHashData (void)
 		m_pData = pNewData;
 		if (m_pKey) {
 			delete m_pKey;
-			m_pKey = NULL;
+			m_pKey = nullptr;
 		}
 		m_pData->attach(this);
 	} else {
@@ -443,7 +443,7 @@ void qtractorAudioClip::unlinkHashData (void)
 // Relink local hash data.
 void qtractorAudioClip::relinkHashData (void)
 {
-	if (m_pData == NULL)
+	if (m_pData == nullptr)
 		return;
 	if (m_pData->count() > 1)
 		return;
@@ -451,10 +451,10 @@ void qtractorAudioClip::relinkHashData (void)
 	removeHashKey();
 	updateHashKey();
 
-	Data *pNewData = g_hashTable.value(*m_pKey, NULL);
-	if (pNewData == NULL) {
+	Data *pNewData = g_hashTable.value(*m_pKey, nullptr);
+	if (pNewData == nullptr) {
 		delete m_pKey;
-		m_pKey = NULL;
+		m_pKey = nullptr;
 	} else {
 		m_pData->detach(this);
 		delete m_pData;
@@ -485,7 +485,7 @@ void qtractorAudioClip::updateFractGains ( qtractorAudioBuffer *pBuff )
 {
 	if (m_pFractGains) {
 		delete [] m_pFractGains;
-		m_pFractGains = NULL;
+		m_pFractGains = nullptr;
 	}
 
 	const unsigned short iChannels = pBuff->channels();
@@ -530,11 +530,11 @@ void qtractorAudioClip::reset ( bool bLooping )
 void qtractorAudioClip::setLoop (
 	unsigned long iLoopStart, unsigned long iLoopEnd )
 {
-	if (m_pData == NULL)
+	if (m_pData == nullptr)
 		return;
 
 	qtractorAudioBuffer *pBuff = m_pData->buffer();
-	if (pBuff == NULL)
+	if (pBuff == nullptr)
 		return;
 
 	if (iLoopStart == 0 && iLoopEnd >= pBuff->length())
@@ -575,9 +575,9 @@ void qtractorAudioClip::close (void)
 		else
 		// Shall we ditch the current peak file?
 		// (don't if closing from recording)
-		if (m_pPeak && pBuff->peakFile() == NULL) {
+		if (m_pPeak && pBuff->peakFile() == nullptr) {
 			delete m_pPeak;
-			m_pPeak = NULL;
+			m_pPeak = nullptr;
 		}
 	}
 
@@ -599,12 +599,12 @@ void qtractorAudioClip::process (
 	unsigned long iFrameStart, unsigned long iFrameEnd )
 {
 	qtractorAudioBuffer *pBuff = buffer();
-	if (pBuff == NULL)
+	if (pBuff == nullptr)
 		return;
 
 	qtractorAudioBus *pAudioBus
 		= static_cast<qtractorAudioBus *> (track()->outputBus());
-	if (pAudioBus == NULL)
+	if (pAudioBus == nullptr)
 		return;
 
 	// Get the next bunch from the clip...
@@ -658,11 +658,11 @@ void qtractorAudioClip::draw (
 	QPainter *pPainter, const QRect& clipRect, unsigned long iClipOffset )
 {
 	qtractorSession *pSession = track()->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	// Cache some peak data...
-	if (m_pPeak == NULL)
+	if (m_pPeak == nullptr)
 		return;
 
 	const unsigned long iFrameOffset = iClipOffset + clipOffset();
@@ -673,7 +673,7 @@ void qtractorAudioClip::draw (
 	// Grab them in...
 	qtractorAudioPeakFile::Frame *pPeakFrames
 		= m_pPeak->peakFrames(iFrameOffset, iFrameLength, clipRect.width());
-	if (pPeakFrames == NULL)
+	if (pPeakFrames == nullptr)
 		return;
 
 	// Make some expectations...
@@ -827,11 +827,11 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	unsigned long iOffset, unsigned long iLength ) const
 {
 	qtractorTrack *pTrack = track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return false;
 
 	qtractorSession *pSession = pTrack->session();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return false;
 
 	unsigned short iChannels = 0;

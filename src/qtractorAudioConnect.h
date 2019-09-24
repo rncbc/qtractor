@@ -79,7 +79,7 @@ class qtractorAudioClientListView : public qtractorClientListView
 public:
 
 	// Constructor.
-	qtractorAudioClientListView(QWidget *pParent = NULL);
+	qtractorAudioClientListView(QWidget *pParent = nullptr);
 	// Default destructor.
 	~qtractorAudioClientListView();
 

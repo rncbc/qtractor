@@ -1,7 +1,7 @@
 // qtractorTimeScale.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #include "qtractorTimeScale.h"
+
 #include <QObject>
 
 
@@ -69,6 +70,9 @@ void qtractorTimeScale::clear (void)
 	m_iTicksPerBeat   = 960;
 	m_iPixelsPerBeat  = 32;
 
+	m_iBeatsPerBar2   = 0;
+	m_iBeatDivisor2   = 0;
+
 	// Clear/reset tempo-map...
 	reset();
 }
@@ -114,12 +118,14 @@ qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 		m_nodes.setAutoDelete(true);
 		m_markers.setAutoDelete(true);
 
-		m_iSampleRate     = ts.m_iSampleRate;
 		m_iSnapPerBeat    = ts.m_iSnapPerBeat;
 		m_iHorizontalZoom = ts.m_iHorizontalZoom;
 		m_iVerticalZoom   = ts.m_iVerticalZoom;
 
 		m_displayFormat   = ts.m_displayFormat;
+
+		m_iBeatsPerBar2   = ts.m_iBeatsPerBar2;
+		m_iBeatDivisor2   = ts.m_iBeatDivisor2;
 
 		// Sync/copy tempo-map nodes...
 		sync(ts);
@@ -190,12 +196,55 @@ float qtractorTimeScale::Node::tempoEx ( unsigned short iBeatType ) const
 unsigned long qtractorTimeScale::Node::tickSnap (
 	unsigned long iTick, unsigned short p ) const
 {
+#if 0
 	unsigned long iTickSnap = iTick - tick;
 	if (ts->snapPerBeat() > 0) {
 		const unsigned long q = ticksPerBeat / ts->snapPerBeat();
 		iTickSnap = q * ((iTickSnap + (q >> p)) / q);
 	}
 	return tick + iTickSnap;
+#else
+	const unsigned short iTicksPerBar
+		= ticksPerBeat * beatsPerBar;
+	const unsigned long iTickFromBar
+		= tick + iTicksPerBar * ((iTick - tick) / iTicksPerBar);
+
+	const unsigned short iBeatsPerBar2 = beatsPerBar2();
+	unsigned short iTicksPerBeat2 = iTicksPerBar / iBeatsPerBar2;
+
+	unsigned long iTickSnap = iTick - iTickFromBar;
+	if (ts->snapPerBeat() > 0) {
+		const unsigned long q = iTicksPerBeat2 / ts->snapPerBeat();
+		iTickSnap = q * ((iTickSnap + (q >> p)) / q);
+	}
+
+	return iTickFromBar + iTickSnap;
+#endif
+}
+
+
+// Alternate (secondary) time-sig helper methods
+unsigned short qtractorTimeScale::Node::beatsPerBar2 (void) const
+{
+	unsigned short iBeatsPerBar2 = ts->beatsPerBar2();
+	if (iBeatsPerBar2 < 1)
+		iBeatsPerBar2 = beatsPerBar;
+
+	const unsigned short iBeatDivisor2 = ts->beatDivisor2();
+	if (iBeatDivisor2 > 0) {
+		if (beatDivisor > iBeatDivisor2)
+			iBeatsPerBar2 >>= (beatDivisor - iBeatDivisor2);
+		else
+		if (beatDivisor < iBeatDivisor2)
+			iBeatsPerBar2 <<= (iBeatDivisor2 - beatDivisor);
+	}
+
+	return iBeatsPerBar2;
+}
+
+unsigned short qtractorTimeScale::Node::ticksPerBeat2 (void) const
+{
+	return (ticksPerBeat * beatsPerBar) / beatsPerBar2();
 }
 
 
@@ -488,7 +537,7 @@ unsigned long qtractorTimeScale::frameFromTextEx (
 				pNode = m_cursor.seekFrame(iFrame);
 				if (pNode) {
 					beats += bars  * pNode->beatsPerBar;
-					ticks += beats * pNode->ticksPerBeat;
+					ticks += beats * pNode->ticksPerBeat2();
 					ticks += pNode->tickFromFrame(iFrame);
 					iFrame = pNode->frameFromTick(ticks) - iFrame;
 				}
@@ -499,8 +548,8 @@ unsigned long qtractorTimeScale::frameFromTextEx (
 					--beats;
 				pNode = m_cursor.seekBar(bars);
 				if (pNode) {
-					beats += (bars - pNode->bar) * pNode->beatsPerBar;
-					ticks += pNode->tick + beats * pNode->ticksPerBeat;
+					beats += (bars - pNode->bar) * pNode->beatsPerBar2();
+					ticks += pNode->tick + beats * pNode->ticksPerBeat2();
 					iFrame = pNode->frameFromTick(ticks);
 				}
 			}
@@ -568,6 +617,14 @@ QString qtractorTimeScale::textFromFrameEx (
 				if (beats >= (unsigned int) pNode->beatsPerBar) {
 					bars   = (unsigned short) (beats / pNode->beatsPerBar);
 					beats -= (unsigned int) (bars * pNode->beatsPerBar);
+				}
+				if (beatsPerBar2() > 0 || beatDivisor2() > 0) {
+					const unsigned short iTicksPerBeat2 = pNode->ticksPerBeat2();
+					ticks += (unsigned long) (beats * pNode->ticksPerBeat);
+					if (ticks >= (unsigned long) iTicksPerBeat2) {
+						beats  = (unsigned int) (ticks / iTicksPerBeat2);
+						ticks -= (unsigned long) (beats * iTicksPerBeat2);
+					}
 				}
 				if (!bDelta)
 					bars += pNode->bar;

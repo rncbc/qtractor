@@ -1,7 +1,7 @@
 // qtractorConnect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -193,7 +193,7 @@ class qtractorClientListView : public QTreeWidget
 public:
 
 	// Constructor.
-	qtractorClientListView(QWidget *pParent = NULL);
+	qtractorClientListView(QWidget *pParent = nullptr);
 	// Default destructor.
 	virtual ~qtractorClientListView();
 
@@ -320,7 +320,7 @@ class qtractorConnectorView : public QWidget
 public:
 
 	// Constructor.
-	qtractorConnectorView(QWidget *pParent = NULL);
+	qtractorConnectorView(QWidget *pParent = nullptr);
 	// Default destructor.
 	~qtractorConnectorView();
 

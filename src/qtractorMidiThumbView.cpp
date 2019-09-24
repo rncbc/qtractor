@@ -1,7 +1,7 @@
 // qtractorMidiThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -94,27 +94,28 @@ void qtractorMidiThumbView::updateContents (void)
 	m_pixmap.fill(pal.dark().color());
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return;
 
 	qtractorTrack *pTrack = pMidiClip->track();
-	if (pTrack == NULL)
+	if (pTrack == nullptr)
 		return;
 
 	qtractorMidiSequence *pSeq = pMidiClip->sequence();
-	if (pSeq == NULL)
+	if (pSeq == nullptr)
 		return;
 
 	QPainter painter(&m_pixmap);
-	painter.initFrom(this);
+//	painter.initFrom(this);
+//	painter.setFont(QFrame::font());
 
 	// Local contents length (in ticks).
 	const int cw = m_pEditor->editView()->contentsWidth() + 1;
@@ -268,11 +269,11 @@ void qtractorMidiThumbView::updatePlayHead ( unsigned long iPlayHead )
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return;
 
 	const int f2 = 1 + (m_iContentsLength / w);
@@ -322,15 +323,15 @@ void qtractorMidiThumbView::setPlayHeadX ( int iPlayHeadX )
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return;
 
 	const int f2 = 1 + (m_iContentsLength / w);
@@ -357,15 +358,15 @@ void qtractorMidiThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 		return;
 	
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	if (pTimeScale == NULL)
+	if (pTimeScale == nullptr)
 		return;
 
 	qtractorMidiClip *pMidiClip = m_pEditor->midiClip();
-	if (pMidiClip == NULL)
+	if (pMidiClip == nullptr)
 		return;
 
 	const int f2 = 1 + (m_iContentsLength / w);

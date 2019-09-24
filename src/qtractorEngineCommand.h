@@ -38,7 +38,7 @@ class qtractorBusCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorBusCommand(const QString& sName, qtractorBus *pBus = NULL,
+	qtractorBusCommand(const QString& sName, qtractorBus *pBus = nullptr,
 		qtractorBus::BusMode busMode = qtractorBus::None);
 
 	// Bus accessors.

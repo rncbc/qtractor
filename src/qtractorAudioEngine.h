@@ -51,7 +51,7 @@ class qtractorAudioEngineProxy : public QObject
 public:
 
 	// Constructor.
-	qtractorAudioEngineProxy(QObject *pParent = NULL)
+	qtractorAudioEngineProxy(QObject *pParent = nullptr)
 		: QObject(pParent) {}
 
 	// Event notifications.
@@ -225,10 +225,6 @@ public:
 
 	// JACK Timebase reset methods.
 	void resetTimebase();
-	void resetTimebaseHold();
-
-	// JACK Timebase sync flagging.
-	bool isTimebaseHold() const;
 
 	// Absolute number of frames elapsed since engine start.
 	unsigned long jackFrameTime() const;
@@ -333,9 +329,6 @@ private:
 	// JACK Timebase mode and control.
 	bool                 m_bTimebase;
 	unsigned int         m_iTimebase;
-
-	// JACK Timebase sync flag.
-	unsigned int         m_iTimebaseHold;
 };
 
 
@@ -377,7 +370,7 @@ public:
 
 	// Bus-buffering methods.
 	void buffer_prepare(unsigned int nframes,
-		qtractorAudioBus *pInputBus = NULL);
+		qtractorAudioBus *pInputBus = nullptr);
 	void buffer_commit(unsigned int nframes);
 
 	// Up-and-running predicate.

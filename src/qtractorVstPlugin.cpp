@@ -27,14 +27,14 @@
 
 #include "qtractorPluginForm.h"
 
-#include "qtractorMidiManager.h"
-
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
+#include "qtractorMidiManager.h"
+
+#include "qtractorOptions.h"
 
 #if 0//QTRACTOR_VST_EDITOR_TOOL
 #include "qtractorMainForm.h"
-#include "qtractorOptions.h"
 #endif
 
 #include <QApplication>
@@ -42,7 +42,7 @@
 #include <QFileInfo>
 
 
-#if QT_VERSION < 0x040500
+#if QT_VERSION < QT_VERSION_CHECK(4, 5, 0)
 namespace Qt {
 const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
@@ -53,7 +53,7 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 
 #include <QX11Info>
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
@@ -113,7 +113,7 @@ const int effFlagsProgramChunks = 32;
 // qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 
 static int g_iXError = 0;
 
@@ -127,8 +127,8 @@ static XEventProc getXEventProc ( Display *pDisplay, Window w )
 {
 	int iSize = 0;
 	unsigned long iBytes = 0, iCount = 0;
-	unsigned char *pData = NULL;
-	XEventProc eventProc = NULL;
+	unsigned char *pData = nullptr;
+	XEventProc eventProc = nullptr;
 	Atom aType, aName = XInternAtom(pDisplay, "_XEventProc", false);
 #if defined(__x86_64__)
 	const long length = 2;
@@ -152,7 +152,7 @@ static XEventProc getXEventProc ( Display *pDisplay, Window w )
 
 static Window getXChildWindow ( Display *pDisplay, Window w )
 {
-	Window wRoot = 0, wParent = 0, *pwChildren = NULL, wChild = 0;
+	Window wRoot = 0, wParent = 0, *pwChildren = nullptr, wChild = 0;
 	unsigned int iChildren = 0;
 
 	XQueryTree(pDisplay, w, &wRoot, &wParent, &pwChildren, &iChildren);
@@ -185,15 +185,16 @@ public:
 		: QWidget(pParent, wflags),
 	#ifdef CONFIG_VST_X11
 		m_pDisplay(QX11Info::display()),
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		m_wVstEditor(0),
-		m_pVstEventProc(NULL),
+		m_pVstEventProc(nullptr),
 		m_bButtonPress(false),
 	#else
-		m_pWindow(NULL),
+		m_pWindow(nullptr),
 	#endif
 	#endif	// CONFIG_VST_X11
-		m_pVstPlugin(NULL) {}
+		m_pVstPlugin(nullptr)
+		{ QWidget::setAttribute(Qt::WA_QuitOnClose, false); }
 
 	// Destructor.
 	~EditorWidget() { close(); }
@@ -205,10 +206,10 @@ public:
 		
 		// Start the proper (child) editor...
 		long  value = 0;
-		void *ptr = NULL;
+		void *ptr = nullptr;
 	#ifdef CONFIG_VST_X11
 		value = (long) m_pDisplay;
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		ptr = (void *) QWidget::winId();
 	#else
 		m_pWindow = new QWindow();
@@ -242,7 +243,7 @@ public:
 		}
 
 	#ifdef CONFIG_VST_X11
-	#if QT_VERSION < 0x050000
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) QWidget::winId());
 		if (m_wVstEditor)
 			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
@@ -258,8 +259,8 @@ public:
 		QWidget::close();
 
 		if (m_pVstPlugin) {
-			m_pVstPlugin->vst_dispatch(0, effEditClose, 0, 0, NULL, 0.0f);
-			m_pVstPlugin = NULL;
+			m_pVstPlugin->vst_dispatch(0, effEditClose, 0, 0, nullptr, 0.0f);
+			m_pVstPlugin = nullptr;
 		}
 
 		const int iIndex = g_vstEditors.indexOf(this);
@@ -267,7 +268,7 @@ public:
 			g_vstEditors.removeAt(iIndex);
 
 	#ifdef CONFIG_VST_X11
-	#if QT_VERSION >= 0x050000
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		if (m_pWindow) {
 			m_pWindow->destroy();
 			delete m_pWindow;
@@ -277,7 +278,7 @@ public:
 	}
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	// Local X11 event filter.
 	bool x11EventFilter(XEvent *pEvent)
 	{
@@ -333,7 +334,7 @@ protected:
 	}
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	void moveEvent(QMoveEvent *pMoveEvent)
 	{
 		QWidget::moveEvent(pMoveEvent);
@@ -350,7 +351,7 @@ private:
 	// Instance variables...
 #ifdef CONFIG_VST_X11
 	Display   *m_pDisplay;
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	Window     m_wVstEditor;
 	XEventProc m_pVstEventProc;
 	bool       m_bButtonPress;
@@ -372,7 +373,7 @@ class qtractorVstPluginType::Effect
 public:
 
 	// Constructor.
-	Effect(AEffect *pVstEffect = NULL) : m_pVstEffect(pVstEffect) {}
+	Effect(AEffect *pVstEffect = nullptr) : m_pVstEffect(pVstEffect) {}
 
 	// Specific methods.
 	bool open(qtractorPluginFile *pFile, unsigned long iIndex);
@@ -401,13 +402,13 @@ bool qtractorVstPluginType::Effect::open (
 	qtractorPluginFile *pFile, unsigned long iIndex )
 {
 	// Do we have an effect descriptor already?
-	if (m_pVstEffect == NULL)
+	if (m_pVstEffect == nullptr)
 		m_pVstEffect = qtractorVstPluginType::vst_effect(pFile);
-	if (m_pVstEffect == NULL)
+	if (m_pVstEffect == nullptr)
 		return false;
 
 	// Check whether it's a VST Shell...
-	const int categ = vst_dispatch(effGetPlugCategory, 0, 0, NULL, 0.0f);
+	const int categ = vst_dispatch(effGetPlugCategory, 0, 0, nullptr, 0.0f);
 	if (categ == kPlugCategShell) {
 		int id = 0;
 		char buf[40];
@@ -420,7 +421,7 @@ bool qtractorVstPluginType::Effect::open (
 		}
 		// Check if we're actually the intended plugin...
 		if (i < iIndex || id == 0 || !buf[0]) {
-			m_pVstEffect = NULL;
+			m_pVstEffect = nullptr;
 			return false;
 		}
 		// Make it known...
@@ -430,7 +431,7 @@ bool qtractorVstPluginType::Effect::open (
 		// Not needed anymore, hopefully...
 		g_iVstShellCurrentId = 0;
 		// Don't go further if failed...
-		if (m_pVstEffect == NULL)
+		if (m_pVstEffect == nullptr)
 			return false;
 	#ifdef CONFIG_DEBUG//_0
 		qDebug("AEffect[%p]::vst_shell(%lu) id=0x%x name=\"%s\"",
@@ -440,7 +441,7 @@ bool qtractorVstPluginType::Effect::open (
 	else
 	// Not a VST Shell plugin...
 	if (iIndex > 0) {
-		m_pVstEffect = NULL;
+		m_pVstEffect = nullptr;
 		return false;
 	}
 
@@ -448,9 +449,9 @@ bool qtractorVstPluginType::Effect::open (
 	qDebug("AEffect[%p]::open(%p, %lu)", m_pVstEffect, pFile, iIndex);
 #endif
 
-	vst_dispatch(effOpen, 0, 0, NULL, 0.0f);
-//	vst_dispatch(effIdentify, 0, 0, NULL, 0);
-//	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
+	vst_dispatch(effOpen, 0, 0, nullptr, 0.0f);
+//	vst_dispatch(effIdentify, 0, 0, nullptr, 0);
+//	vst_dispatch(effMainsChanged, 0, 0, nullptr, 0.0f);
 
 	return true;
 }
@@ -458,17 +459,17 @@ bool qtractorVstPluginType::Effect::open (
 
 void qtractorVstPluginType::Effect::close (void)
 {
-	if (m_pVstEffect == NULL)
+	if (m_pVstEffect == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("AEffect[%p]::close()", m_pVstEffect);
 #endif
 
-//	vst_dispatch(effMainsChanged, 0, 0, NULL, 0.0f);
-	vst_dispatch(effClose, 0, 0, NULL, 0.0f);
+//	vst_dispatch(effMainsChanged, 0, 0, nullptr, 0.0f);
+	vst_dispatch(effClose, 0, 0, nullptr, 0.0f);
 
-	m_pVstEffect = NULL;
+	m_pVstEffect = nullptr;
 }
 
 
@@ -476,7 +477,7 @@ void qtractorVstPluginType::Effect::close (void)
 int qtractorVstPluginType::Effect::vst_dispatch (
 	long opcode, long index, long value, void *ptr, float opt ) const
 {
-	if (m_pVstEffect == NULL)
+	if (m_pVstEffect == nullptr)
 		return 0;
 
 #ifdef CONFIG_DEBUG_0
@@ -496,13 +497,13 @@ int qtractorVstPluginType::Effect::vst_dispatch (
 bool qtractorVstPluginType::open (void)
 {
 	// Do we have an effect descriptor already?
-	if (m_pEffect == NULL)
+	if (m_pEffect == nullptr)
 		m_pEffect = new Effect();
 	if (!m_pEffect->open(file(), index()))
 		return false;
 
 	AEffect *pVstEffect = m_pEffect->vst_effect();
-	if (pVstEffect == NULL)
+	if (pVstEffect == nullptr)
 		return false;
 
 #ifdef CONFIG_DEBUG
@@ -511,10 +512,11 @@ bool qtractorVstPluginType::open (void)
 #endif
 
 	// Retrieve plugin type names.
-	char szName[32]; szName[0] = (char) 0;
+	char szName[256];
+	::memset(szName, 0, sizeof(szName));
 	vst_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f);
 	if (szName[0])
-		m_sName = szName;
+		m_sName = QString::fromLocal8Bit(szName);
 	else
 		m_sName = QFileInfo(filename()).baseName();
 	// Sanitize plugin label.
@@ -567,7 +569,7 @@ bool qtractorVstPluginType::open (void)
 
 void qtractorVstPluginType::close (void)
 {
-	if (m_pEffect == NULL)
+	if (m_pEffect == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -577,7 +579,7 @@ void qtractorVstPluginType::close (void)
 	m_pEffect->close();
 
 	delete m_pEffect;
-	m_pEffect = NULL;
+	m_pEffect = nullptr;
 }
 
 
@@ -586,13 +588,13 @@ qtractorVstPluginType *qtractorVstPluginType::createType (
 	qtractorPluginFile *pFile, unsigned long iIndex )
 {
 	// Sanity check...
-	if (pFile == NULL)
-		return NULL;
+	if (pFile == nullptr)
+		return nullptr;
 
 	// Retrieve effect instance if any...
 	AEffect *pVstEffect = vst_effect(pFile);
-	if (pVstEffect == NULL)
-		return NULL;
+	if (pVstEffect == nullptr)
+		return nullptr;
 
 	// Yep, most probably its a valid plugin effect...
 	return new qtractorVstPluginType(pFile, iIndex, new Effect(pVstEffect));
@@ -604,18 +606,18 @@ AEffect *qtractorVstPluginType::vst_effect ( qtractorPluginFile *pFile )
 {
 	VST_GetPluginInstance pfnGetPluginInstance
 		= (VST_GetPluginInstance) pFile->resolve("VSTPluginMain");
-	if (pfnGetPluginInstance == NULL)
+	if (pfnGetPluginInstance == nullptr)
 		pfnGetPluginInstance = (VST_GetPluginInstance) pFile->resolve("main");
-	if (pfnGetPluginInstance == NULL)
-		return NULL;
+	if (pfnGetPluginInstance == nullptr)
+		return nullptr;
 
 	// Does the VST plugin instantiate OK?
 	AEffect *pVstEffect
 		= (*pfnGetPluginInstance)(qtractorVstPlugin_HostCallback);
-	if (pVstEffect == NULL)
-		return NULL;
+	if (pVstEffect == nullptr)
+		return nullptr;
 	if (pVstEffect->magic != kEffectMagic)
-		return NULL;
+		return nullptr;
 
 	return pVstEffect;
 }
@@ -625,7 +627,7 @@ AEffect *qtractorVstPluginType::vst_effect ( qtractorPluginFile *pFile )
 int qtractorVstPluginType::vst_dispatch (
 	long opcode, long index, long value, void *ptr, float opt ) const
 {
-	if (m_pEffect == NULL)
+	if (m_pEffect == nullptr)
 		return 0;
 
 	return m_pEffect->vst_dispatch(opcode, index, value, ptr, opt);
@@ -635,7 +637,7 @@ int qtractorVstPluginType::vst_dispatch (
 // VST flag inquirer.
 bool qtractorVstPluginType::vst_canDo ( const char *pszCanDo ) const
 {
-	if (m_pEffect == NULL)
+	if (m_pEffect == nullptr)
 		return false;
 
 	return (m_pEffect->vst_dispatch(effCanDo, 0, 0, (void *) pszCanDo, 0.0f) > 0);
@@ -646,25 +648,25 @@ bool qtractorVstPluginType::vst_canDo ( const char *pszCanDo ) const
 const QString& qtractorVstPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		char szTemp[64];
-		szTemp[0] = (char) 0;
+		char szTemp[256];
+		::memset(szTemp, 0, sizeof(szTemp));
 		vst_dispatch(effGetProductString, 0, 0, (void *) szTemp, 0.0f);
 		if (szTemp[0]) {
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
 			m_sAboutText += QObject::tr("Product: ");
-			m_sAboutText += szTemp;
+			m_sAboutText += QString::fromLocal8Bit(szTemp);
 		}
-		szTemp[0] = (char) 0;
+		::memset(szTemp, 0, sizeof(szTemp));
 		vst_dispatch(effGetVendorString, 0, 0, (void *) szTemp, 0.0f);
 		if (szTemp[0]) {
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
 			m_sAboutText += QObject::tr("Vendor: ");
-			m_sAboutText += szTemp;
+			m_sAboutText += QString::fromLocal8Bit(szTemp);
 		}
 		const int iVersion
-			= vst_dispatch(effGetVendorVersion, 0, 0, NULL, 0.0f);
+			= vst_dispatch(effGetVendorVersion, 0, 0, nullptr, 0.0f);
 		if (iVersion) {
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
@@ -687,10 +689,10 @@ static QHash<AEffect *, qtractorVstPlugin *> g_vstPlugins;
 // Constructors.
 qtractorVstPlugin::qtractorVstPlugin (
 	qtractorPluginList *pList, qtractorVstPluginType *pVstType )
-	: qtractorPlugin(pList, pVstType), m_ppEffects(NULL),
-		m_ppIBuffer(NULL), m_ppOBuffer(NULL),
-		m_pfIDummy(NULL), m_pfODummy(NULL),
-		m_pEditorWidget(NULL), m_bEditorClosed(false)
+	: qtractorPlugin(pList, pVstType), m_ppEffects(nullptr),
+		m_ppIBuffer(nullptr), m_ppOBuffer(nullptr),
+		m_pfIDummy(nullptr), m_pfODummy(nullptr),
+		m_pEditorWidget(nullptr), m_bEditorClosed(false)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
@@ -741,7 +743,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	// Check our type...
 	qtractorVstPluginType *pVstType
 		= static_cast<qtractorVstPluginType *> (type());
-	if (pVstType == NULL)
+	if (pVstType == nullptr)
 		return;
 		
 	// Estimate the (new) number of instances...
@@ -771,7 +773,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		pEffect = m_ppEffects[0];
 		g_vstPlugins.remove(pEffect->vst_effect());
 		delete [] m_ppEffects;
-		m_ppEffects = NULL;
+		m_ppEffects = nullptr;
 	}
 
 	// Bail out, if none are about to be created...
@@ -786,11 +788,11 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 #endif
 
 	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == NULL)
+	if (pSession == nullptr)
 		return;
 
 	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == NULL)
+	if (pAudioEngine == nullptr)
 		return;
 
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
@@ -828,16 +830,16 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// And now all other things as well...
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
-	//	pEffect->vst_dispatch(effOpen, 0, 0, NULL, 0.0f);
-		pEffect->vst_dispatch(effSetSampleRate, 0, 0, NULL, float(iSampleRate));
-		pEffect->vst_dispatch(effSetBlockSize,  0, iBufferSize, NULL, 0.0f);
-	//	pEffect->vst_dispatch(effSetProgram, 0, 0, NULL, 0.0f);
+	//	pEffect->vst_dispatch(effOpen, 0, 0, nullptr, 0.0f);
+		pEffect->vst_dispatch(effSetSampleRate, 0, 0, nullptr, float(iSampleRate));
+		pEffect->vst_dispatch(effSetBlockSize,  0, iBufferSize, nullptr, 0.0f);
+	//	pEffect->vst_dispatch(effSetProgram, 0, 0, nullptr, 0.0f);
 	#if 0 // !VST_FORCE_DEPRECATED
 		unsigned short j;
 		for (j = 0; j < iAudioIns; ++j)
-			pEffect->vst_dispatch(effConnectInput, j, 1, NULL, 0.0f);
+			pEffect->vst_dispatch(effConnectInput, j, 1, nullptr, 0.0f);
 		for (j = 0; j < iAudioOuts; ++j)
-			pEffect->vst_dispatch(effConnectOutput, j, 1, NULL, 0.0f);
+			pEffect->vst_dispatch(effConnectOutput, j, 1, nullptr, 0.0f);
 	#endif
 	}
 
@@ -858,9 +860,9 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 void qtractorVstPlugin::activate (void)
 {
 	for (unsigned short i = 0; i < instances(); ++i) {
-		vst_dispatch(i, effMainsChanged, 0, 1, NULL, 0.0f);
+		vst_dispatch(i, effMainsChanged, 0, 1, nullptr, 0.0f);
 	#ifndef CONFIG_VESTIGE
-		vst_dispatch(i, effStartProcess, 0, 0, NULL, 0.0f);
+		vst_dispatch(i, effStartProcess, 0, 0, nullptr, 0.0f);
 	#endif
 	}
 }
@@ -871,9 +873,9 @@ void qtractorVstPlugin::deactivate (void)
 {
 	for (unsigned short i = 0; i < instances(); ++i) {
 	#ifndef CONFIG_VESTIGE
-		vst_dispatch(i, effStopProcess, 0, 0, NULL, 0.0f);
+		vst_dispatch(i, effStopProcess, 0, 0, nullptr, 0.0f);
 	#endif
-		vst_dispatch(i, effMainsChanged, 0, 0, NULL, 0.0f);
+		vst_dispatch(i, effMainsChanged, 0, 0, nullptr, 0.0f);
 	}
 }
 
@@ -882,11 +884,11 @@ void qtractorVstPlugin::deactivate (void)
 void qtractorVstPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
-	if (m_ppEffects == NULL)
+	if (m_ppEffects == nullptr)
 		return;
 
 	// To process MIDI events, if any...
-	qtractorMidiManager *pMidiManager = NULL;
+	qtractorMidiManager *pMidiManager = nullptr;
 	const unsigned short iMidiIns  = midiIns();
 	const unsigned short iMidiOuts = midiOuts();
 	if (iMidiIns > 0)
@@ -983,7 +985,7 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 		iIndex = (iBank << 7) + iProg;
 
 	for (unsigned short i = 0; i < instances(); ++i)
-		vst_dispatch(i, effSetProgram, 0, iIndex, NULL, 0.0f);
+		vst_dispatch(i, effSetProgram, 0, iIndex, nullptr, 0.0f);
 
 	// Reset parameters default value...
 	AEffect *pVstEffect = vst_effect(0);
@@ -1006,19 +1008,20 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 {
 	// Iteration sanity check...
 	AEffect *pVstEffect = vst_effect(0);
-	if (pVstEffect == NULL)
+	if (pVstEffect == nullptr)
 		return false;
 	if (iIndex < 0 || iIndex >= pVstEffect->numPrograms)
 		return false;
 
-	char szName[24]; ::memset(szName, 0, sizeof(szName));
+	char szName[256];
+	::memset(szName, 0, sizeof(szName));
 #ifndef CONFIG_VESTIGE
 	if (vst_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
 #endif
-		const int iOldIndex = vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
-		vst_dispatch(0, effSetProgram, 0, iIndex, NULL, 0.0f);
+		const int iOldIndex = vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
+		vst_dispatch(0, effSetProgram, 0, iIndex, nullptr, 0.0f);
 		vst_dispatch(0, effGetProgramName, 0, 0, (void *) szName, 0.0f);
-		vst_dispatch(0, effSetProgram, 0, iOldIndex, NULL, 0.0f);
+		vst_dispatch(0, effSetProgram, 0, iOldIndex, nullptr, 0.0f);
 #ifndef CONFIG_VESTIGE
 	}
 #endif
@@ -1026,7 +1029,7 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 	// Map this to that...
 	program.bank = 0;
 	program.prog = iIndex;
-	program.name = szName;
+	program.name = QString::fromLocal8Bit(szName);
 
 	return true;
 }
@@ -1070,14 +1073,14 @@ void qtractorVstPlugin::freezeConfigs (void)
 		return;
 
 	AEffect *pVstEffect = vst_effect(0);
-	if (pVstEffect == NULL)
+	if (pVstEffect == nullptr)
 		return;
 
 	// Save plugin state into chunk configuration...
-	char *pData = NULL;
+	char *pData = nullptr;
 	const int iData
 		= vst_dispatch(0, effGetChunk, 0, 0, (void *) &pData, 0.0f);
-	if (iData < 1 || pData == NULL)
+	if (iData < 1 || pData == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -1106,11 +1109,13 @@ void qtractorVstPlugin::releaseConfigs (void)
 unsigned long qtractorVstPlugin::latency (void) const
 {
 	AEffect *pVstEffect = vst_effect(0);
-	if (pVstEffect == NULL)
+	if (pVstEffect == nullptr)
 		return 0;
 
 #ifdef CONFIG_VESTIGE
-	return *(VstInt32 *) &(pVstEffect->empty3[0]);
+	const VstInt32 *pInitialDelay
+		= (VstInt32 *) &(pVstEffect->empty3[0]);
+	return *pInitialDelay;
 #else
 	return pVstEffect->initialDelay;
 #endif
@@ -1127,10 +1132,10 @@ bool qtractorVstPlugin::loadPresetFile ( const QString& sFilename )
 		bResult = qtractorVstPreset(this).load(sFilename);
 	} else {
 		const int iCurrentProgram
-			= vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+			= vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
 		bResult = qtractorPlugin::loadPresetFile(sFilename);
 		for (unsigned short i = 0; i < instances(); ++i)
-			vst_dispatch(i, effSetProgram, 0, iCurrentProgram, NULL, 0.0f);
+			vst_dispatch(i, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
 	}
 
 	return bResult;
@@ -1149,8 +1154,8 @@ bool qtractorVstPlugin::savePresetFile ( const QString& sFilename )
 // Specific accessors.
 AEffect *qtractorVstPlugin::vst_effect ( unsigned short iInstance ) const
 {
-	if (m_ppEffects == NULL)
-		return NULL;
+	if (m_ppEffects == nullptr)
+		return nullptr;
 
 	return m_ppEffects[iInstance]->vst_effect();
 }
@@ -1160,7 +1165,7 @@ AEffect *qtractorVstPlugin::vst_effect ( unsigned short iInstance ) const
 int qtractorVstPlugin::vst_dispatch( unsigned short iInstance,
 	long opcode, long index, long value, void *ptr, float opt) const
 {
-	if (m_ppEffects == NULL)
+	if (m_ppEffects == nullptr)
 		return 0;
 
 	return m_ppEffects[iInstance]->vst_dispatch(opcode, index, value, ptr, opt);
@@ -1195,7 +1200,7 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 	if (pOptions && pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::WindowStaysOnTopHint; // Qt::Tool, formerly.
 		// Make sure it has a parent...
-		if (pParent == NULL)
+		if (pParent == nullptr)
 			pParent = qtractorMainForm::getInstance();
 	}
 #endif
@@ -1219,7 +1224,7 @@ void qtractorVstPlugin::closeEditor (void)
 
 	m_bEditorClosed = true;
 
-	if (m_pEditorWidget == NULL)
+	if (m_pEditorWidget == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
@@ -1230,21 +1235,21 @@ void qtractorVstPlugin::closeEditor (void)
 
 	// Close the parent widget, if any.
 	delete m_pEditorWidget;
-	m_pEditorWidget = NULL;
+	m_pEditorWidget = nullptr;
 }
 
 
 // Idle editor.
 void qtractorVstPlugin::idleEditor (void)
 {
-	if (m_pEditorWidget == NULL)
+	if (m_pEditorWidget == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorVstPlugin[%p]::idleEditor()", this);
 #endif
 
-	vst_dispatch(0, effEditIdle, 0, 0, NULL, 0.0f);
+	vst_dispatch(0, effEditIdle, 0, 0, nullptr, 0.0f);
 
 	m_pEditorWidget->update();
 }
@@ -1308,12 +1313,12 @@ void qtractorVstPlugin::resizeEditor ( int w, int h )
 // Global VST plugin lookup.
 qtractorVstPlugin *qtractorVstPlugin::findPlugin ( AEffect *pVstEffect )
 {
-	return g_vstPlugins.value(pVstEffect, NULL);
+	return g_vstPlugins.value(pVstEffect, nullptr);
 }
 
 
 #ifdef CONFIG_VST_X11
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 
 // Global X11 event filter.
 bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
@@ -1503,7 +1508,7 @@ bool qtractorVstPluginParam::isDisplay (void) const
 // Current display value.
 QString qtractorVstPluginParam::display (void) const
 {
-	qtractorVstPluginType *pVstType = NULL;
+	qtractorVstPluginType *pVstType = nullptr;
 	if (plugin())
 		pVstType = static_cast<qtractorVstPluginType *> (plugin()->type());
 	if (pVstType) {
@@ -1541,7 +1546,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 	AEffect *effect, VstFileSelect *pvfs )
 {
 	qtractorVstPlugin *pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-	if (pVstPlugin == NULL)
+	if (pVstPlugin == nullptr)
 		return 0;
 
 #ifdef CONFIG_DEBUG
@@ -1552,7 +1557,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 	pvfs->reserved = 0;
 	pvfs->nbReturnPath = 0;
 
-    if (pvfs->command == kVstFileLoad || pvfs->command == kVstFileSave) {
+	if (pvfs->command == kVstFileLoad || pvfs->command == kVstFileSave) {
 		QString sFilename;
 		QStringList filters;
 		for (int i = 0; i < pvfs->nbFileTypes; ++i) {
@@ -1567,16 +1572,19 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		const QString& sDirectory = pvfs->initialPath;
 		const QString& sFilter = filters.join(";;");
-		const QFileDialog::Options options = QFileDialog::DontUseNativeDialog;
+		QFileDialog::Options options = 0;
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions && pOptions->bDontUseNativeDialogs)
+			options |= QFileDialog::DontUseNativeDialog;
 		if (pvfs->command == kVstFileLoad) {
 			sFilename = QFileDialog::getOpenFileName(
-				pParentWidget, sTitle, sDirectory, sFilter, NULL, options);
+				pParentWidget, sTitle, sDirectory, sFilter, nullptr, options);
 		} else {
 			sFilename = QFileDialog::getSaveFileName(
-				pParentWidget, sTitle, sDirectory, sFilter, NULL, options);
+				pParentWidget, sTitle, sDirectory, sFilter, nullptr, options);
 		}
 		if (!sFilename.isEmpty()) {
-			if (pvfs->returnPath == NULL) {
+			if (pvfs->returnPath == nullptr) {
 				pvfs->returnPath = new char [sFilename.length() + 1];
 				pvfs->reserved = 1;
 			}
@@ -1597,7 +1605,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 			= QFileDialog::getExistingDirectory(
 				pParentWidget, sTitle, pvfs->initialPath, options);
 		if (!sDirectory.isEmpty()) {
-			if (pvfs->returnPath == NULL) {
+			if (pvfs->returnPath == nullptr) {
 				pvfs->returnPath = new char [sDirectory.length() + 1];
 				pvfs->reserved = 1;
 			}
@@ -1606,7 +1614,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 		}
 	}
 
-    return pvfs->nbReturnPath;
+	return pvfs->nbReturnPath;
 }
 
 
@@ -1614,7 +1622,7 @@ static VstIntPtr qtractorVstPlugin_closeFileSelector (
 	AEffect *effect, VstFileSelect *pvfs )
 {
 	qtractorVstPlugin *pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-	if (pVstPlugin == NULL)
+	if (pVstPlugin == nullptr)
 		return 0;
 
 #ifdef CONFIG_DEBUG
@@ -1624,7 +1632,7 @@ static VstIntPtr qtractorVstPlugin_closeFileSelector (
 
 	if (pvfs->reserved == 1 && pvfs->returnPath) {
 		delete [] pvfs->returnPath;
-		pvfs->returnPath = NULL;
+		pvfs->returnPath = nullptr;
 		pvfs->reserved = 0;
 	}
 
@@ -1652,7 +1660,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 	VstInt32 opcode, VstInt32 index, VstIntPtr value, void *ptr, float opt )
 {
 	VstIntPtr ret = 0;
-	qtractorVstPlugin *pVstPlugin = NULL;
+	qtractorVstPlugin *pVstPlugin = nullptr;
 	static VstTimeInfo s_vstTimeInfo;
 	qtractorSession *pSession = qtractorSession::getInstance();
 
@@ -1741,7 +1749,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 		VST_HC_DEBUG("audioMasterProcessEvents");
 		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
 		if (pVstPlugin) {
-			qtractorMidiManager *pMidiManager = NULL;
+			qtractorMidiManager *pMidiManager = nullptr;
 			qtractorPluginList *pPluginList = pVstPlugin->list();
 			if (pPluginList)
 				pMidiManager = pPluginList->midiManager();
@@ -2073,7 +2081,7 @@ bool qtractorVstPreset::load_bank_progs ( QFile& file )
 	const int iNumPrograms = int(bank_header.numPrograms);
 //	const int iCurrentProgram = int(bank_header.currentProgram);
 	const int iCurrentProgram
-		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
 
 	for (int iProgram = 0; iProgram < iNumPrograms; ++iProgram) {
 
@@ -2093,7 +2101,7 @@ bool qtractorVstPreset::load_bank_progs ( QFile& file )
 			return false;
 
 		for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
-			m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iProgram, NULL, 0.0f);
+			m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iProgram, nullptr, 0.0f);
 
 		if (fx_is_magic(base_header.fxMagic, fMagic)) {
 			if (!load_prog_params(file))
@@ -2108,7 +2116,7 @@ bool qtractorVstPreset::load_bank_progs ( QFile& file )
 	}
 
 	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
-		m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iCurrentProgram, NULL, 0.0f);
+		m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
 
 	return true;
 }
@@ -2157,12 +2165,12 @@ bool qtractorVstPreset::load_bank_chunk ( QFile& file )
 		return false;
 
 	const int iCurrentProgram
-		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
 
 	const bool bResult = load_chunk(file, 0);
 
 	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
-		m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iCurrentProgram, NULL, 0.0f);
+		m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
 
 	return bResult;
 }
@@ -2209,7 +2217,7 @@ bool qtractorVstPreset::load_chunk ( QFile& file, int preset )
 //
 bool qtractorVstPreset::load ( const QString& sFilename )
 {
-	if (m_pVstPlugin == NULL)
+	if (m_pVstPlugin == nullptr)
 		return false;
 
 	const QFileInfo fi(sFilename);
@@ -2304,7 +2312,7 @@ bool qtractorVstPreset::load ( const QString& sFilename )
 bool qtractorVstPreset::save_bank_progs ( QFile& file )
 {
 	AEffect *pVstEffect = m_pVstPlugin->vst_effect(0);
-	if (pVstEffect == NULL)
+	if (pVstEffect == nullptr)
 		return false;
 
 	const int iNumPrograms = pVstEffect->numPrograms;
@@ -2312,9 +2320,9 @@ bool qtractorVstPreset::save_bank_progs ( QFile& file )
 		return false;
 
 	const int iCurrentProgram
-		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
 	const int iVstVersion
-		= m_pVstPlugin->vst_dispatch(0, effGetVstVersion, 0, 0, NULL, 0.0f);
+		= m_pVstPlugin->vst_dispatch(0, effGetVstVersion, 0, 0, nullptr, 0.0f);
 
 	BankHeader bank_header;
 	::memset(&bank_header, 0, sizeof(bank_header));
@@ -2333,7 +2341,7 @@ bool qtractorVstPreset::save_bank_progs ( QFile& file )
 
 	for (int iProgram = 0; iProgram < iNumPrograms; ++iProgram) {
 
-		m_pVstPlugin->vst_dispatch(0, effSetProgram, 0, iProgram, NULL, 0.0f);
+		m_pVstPlugin->vst_dispatch(0, effSetProgram, 0, iProgram, nullptr, 0.0f);
 
 		BaseHeader base_header;
 		::memset(&base_header, 0, sizeof(base_header));
@@ -2377,7 +2385,7 @@ bool qtractorVstPreset::save_bank_progs ( QFile& file )
 		}
 	}
 
-	m_pVstPlugin->vst_dispatch(0, effSetProgram, 0, iCurrentProgram, NULL, 0.0f);
+	m_pVstPlugin->vst_dispatch(0, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
 
 	return bResult;
 }
@@ -2386,7 +2394,7 @@ bool qtractorVstPreset::save_bank_progs ( QFile& file )
 bool qtractorVstPreset::save_prog_params ( QFile& file )
 {
 	AEffect *pVstEffect = m_pVstPlugin->vst_effect(0);
-	if (pVstEffect == NULL)
+	if (pVstEffect == nullptr)
 		return false;
 
 	const int iNumParams = pVstEffect->numParams;
@@ -2419,12 +2427,12 @@ bool qtractorVstPreset::save_prog_params ( QFile& file )
 bool qtractorVstPreset::save_bank_chunk ( QFile& file, const Chunk& chunk )
 {
 	AEffect *pVstEffect = m_pVstPlugin->vst_effect(0);
-	if (pVstEffect == NULL)
+	if (pVstEffect == nullptr)
 		return false;
 
 	const int iNumPrograms = pVstEffect->numPrograms;
 	const int iCurrentProgram
-		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, NULL, 0.0f);
+		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
 
 	BankHeader bank_header;
 	::memset(&bank_header, 0, sizeof(bank_header));
@@ -2443,7 +2451,7 @@ bool qtractorVstPreset::save_bank_chunk ( QFile& file, const Chunk& chunk )
 bool qtractorVstPreset::save_prog_chunk ( QFile& file, const Chunk& chunk )
 {
 	AEffect *pVstEffect = m_pVstPlugin->vst_effect(0);
-	if (pVstEffect == NULL)
+	if (pVstEffect == nullptr)
 		return false;
 
 	const int iNumParams = pVstEffect->numParams;
@@ -2479,10 +2487,10 @@ bool qtractorVstPreset::save_chunk ( QFile& file, const Chunk& chunk )
 
 bool qtractorVstPreset::get_chunk ( Chunk& chunk, int preset )
 {
-	chunk.data = NULL;
+	chunk.data = nullptr;
 	chunk.size = m_pVstPlugin->vst_dispatch(0,
 		effGetChunk, preset, 0, (void *) &chunk.data, 0.0f);
-	return (chunk.size > 0 && chunk.data != NULL);
+	return (chunk.size > 0 && chunk.data != nullptr);
 }
 
 
@@ -2490,11 +2498,11 @@ bool qtractorVstPreset::get_chunk ( Chunk& chunk, int preset )
 //
 bool qtractorVstPreset::save ( const QString& sFilename )
 {
-	if (m_pVstPlugin == NULL)
+	if (m_pVstPlugin == nullptr)
 		return false;
 
 	AEffect *pVstEffect = m_pVstPlugin->vst_effect(0);
-	if (pVstEffect == NULL)
+	if (pVstEffect == nullptr)
 		return false;
 
 	const QFileInfo fi(sFilename);
@@ -2517,7 +2525,7 @@ bool qtractorVstPreset::save ( const QString& sFilename )
 	const bool bChunked
 		= (m_pVstPlugin->type())->isConfigure();
 	const int iVstVersion
-		= m_pVstPlugin->vst_dispatch(0, effGetVstVersion, 0, 0, NULL, 0.0f);
+		= m_pVstPlugin->vst_dispatch(0, effGetVstVersion, 0, 0, nullptr, 0.0f);
 
 	BaseHeader base_header;
 	::memset(&base_header, 0, sizeof(base_header));

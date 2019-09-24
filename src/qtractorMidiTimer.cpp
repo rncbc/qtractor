@@ -1,7 +1,7 @@
 // qtractorMidiTimer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,9 +65,9 @@ qtractorMidiTimer::qtractorMidiTimer (void)
 	m_keys.append(0);
 	m_names.append(QObject::tr("(default)"));
 
-	snd_timer_query_t *pTimerQuery = NULL;
+	snd_timer_query_t *pTimerQuery = nullptr;
 	if (snd_timer_query_open(&pTimerQuery, "hw", 0) >= 0) {
-		snd_timer_id_t *pTimerID = NULL;
+		snd_timer_id_t *pTimerID = nullptr;
 		snd_timer_id_alloca(&pTimerID);
 		snd_timer_id_set_class(pTimerID, SND_TIMER_CLASS_NONE);
 		while (snd_timer_query_next_device(pTimerQuery, pTimerID) >= 0) {
@@ -90,7 +90,7 @@ qtractorMidiTimer::qtractorMidiTimer (void)
 			snprintf(szTimer, sizeof(szTimer) - 1,
 				"hw:CLASS=%i,SCLASS=%i,CARD=%i,DEV=%i,SUBDEV=%i",
 				iClass, iSClass, iCard, iDevice, iSubDev);
-			snd_timer_t *pTimer = NULL;
+			snd_timer_t *pTimer = nullptr;
 			if (snd_timer_open(&pTimer, szTimer, SND_TIMER_OPEN_NONBLOCK) >= 0) {
 				snd_timer_info_t *pTimerInfo;
 				snd_timer_info_alloca(&pTimerInfo);

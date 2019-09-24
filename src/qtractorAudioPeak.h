@@ -1,7 +1,7 @@
 // qtractorAudioPeak.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2018, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -216,7 +216,7 @@ class qtractorAudioPeakFactory : public QObject
 public:
 
 	// Constructor.
-	qtractorAudioPeakFactory(QObject *pParent = NULL);
+	qtractorAudioPeakFactory(QObject *pParent = nullptr);
 	// Default destructor.
 	~qtractorAudioPeakFactory();
 
@@ -236,7 +236,7 @@ public:
 	void notifyPeakEvent();
 
 	// Base sync method.
-	void sync(qtractorAudioPeakFile *pPeakFile = NULL);
+	void sync(qtractorAudioPeakFile *pPeakFile = nullptr);
 
 	// Cleanup method.
 	void cleanup();
