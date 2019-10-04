@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed initial session tempo override when importing
+  a standard MIDI file (as reported on issue #230).
+
 - An alternate time-signature/meter option is being
   served to the MIDI clip editor (aka. piano-roll)
   and allowing for some poly-rythm/meter scenarios

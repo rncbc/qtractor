@@ -270,6 +270,16 @@ void qtractorMidiFileTempo::intoTimeScale (
 
 	// Copy tempo-map nodes...
 	qtractorMidiFileTempo::Node *pNode = m_nodes.first();
+
+	// Very first node is kinda special...
+	if (pNode) {
+		pTimeScale->setTempo(pNode->tempo);
+		pTimeScale->setBeatsPerBar(pNode->beatsPerBar);
+		pTimeScale->setBeatDivisor(pNode->beatDivisor);
+		pNode = pNode->next();
+	}
+
+	// Now for all the rest...
 	while (pNode) {
 		const unsigned long iTime = uint64_t(pNode->tick) * p / q;
 		pTimeScale->addNode(

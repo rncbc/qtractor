@@ -465,7 +465,7 @@ bool qtractorMidiClip::openMidiFile (
 			qtractorMidiFileTempo *pTempoMap = m_pFile->tempoMap();
 			if (pTempoMap) {
 				pTempoMap->intoTimeScale(pSession->timeScale(), t0);
-				pSession->updateTimeScale();
+				pSession->updateTimeScaleEx();
 			}
 			// Reset session flag now.
 			m_bSessionFlag = false;
