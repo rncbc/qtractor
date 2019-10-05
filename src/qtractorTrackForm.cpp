@@ -1262,32 +1262,19 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 	if (m_pTrack == nullptr)
 		return;
 
-	// It all depends on the track type we're into...
-	const qtractorTrack::TrackType trackType
-		= qtractorTrackForm::trackType();
-
-	switch (trackType) {
-	case qtractorTrack::Audio: {
-		// (Re)initialize plugin-list audio output bus properly...
-		const QString& sOutputBusName
-			= m_pTrack->outputBusName();
-		if (sOutputBusName != sBusName) {
-			if (m_sOldOutputBusName.isEmpty() && !sOutputBusName.isEmpty())
-				m_sOldOutputBusName = sOutputBusName;
-			m_pTrack->setOutputBusName(sBusName);
-			m_pTrack->open(); // re-open...
-		}
-		break;
-	}
-	case qtractorTrack::Midi:
-		// Re-open MIDI track and output bus properly...
-		m_pTrack->open();
+	// (Re)initialize output bus properly...
+	const QString& sOutputBusName
+		= m_pTrack->outputBusName();
+	if (sOutputBusName != sBusName) {
+		if (m_sOldOutputBusName.isEmpty() && !sOutputBusName.isEmpty())
+			m_sOldOutputBusName = sOutputBusName;
+		m_pTrack->setOutputBusName(sBusName);
+		m_pTrack->open(); // Re-open...
 		// Recache the applicable MIDI output bus ...
-		m_pMidiBus = midiBus();
-		updateInstruments();
-		// Fall thru...
-	default:
-		break;
+		if (trackType() == qtractorTrack::Midi) {
+			m_pMidiBus = midiBus();
+			updateInstruments();
+		}
 	}
 
 	channelChanged(m_ui.ChannelSpinBox->value());

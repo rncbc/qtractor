@@ -12956,12 +12956,12 @@ Do you want to apply the changes?</source>
         <translation>トラックアイコン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1469"/>
+        <location filename="../qtractorTrackForm.cpp" line="1456"/>
         <source>Foreground Color</source>
         <translation>全景の色</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1495"/>
+        <location filename="../qtractorTrackForm.cpp" line="1482"/>
         <source>Background Color</source>
         <translation>背景の色</translation>
     </message>
