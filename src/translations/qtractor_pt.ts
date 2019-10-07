@@ -12773,13 +12773,13 @@ Você deseja descartar essas alterações?</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="205"/>
-        <location filename="../qtractorTrackForm.cpp" line="811"/>
-        <location filename="../qtractorTrackForm.cpp" line="925"/>
+        <location filename="../qtractorTrackForm.cpp" line="834"/>
+        <location filename="../qtractorTrackForm.cpp" line="948"/>
         <source>(None)</source>
         <translation>(Nada)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="481"/>
+        <location filename="../qtractorTrackForm.cpp" line="488"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12788,17 +12788,17 @@ Do you want to apply the changes?</source>
 Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1175"/>
+        <location filename="../qtractorTrackForm.cpp" line="1198"/>
         <source>Image files (%1)</source>
         <translation>Arquivos de Imagem (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1176"/>
+        <location filename="../qtractorTrackForm.cpp" line="1199"/>
         <source>All files (*.*)</source>
         <translation>Todos os arquivos (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1172"/>
+        <location filename="../qtractorTrackForm.cpp" line="1195"/>
         <source>Track Icon</source>
         <translation>Figura da Pista</translation>
     </message>
@@ -12858,7 +12858,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Visualização / Cores</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="616"/>
+        <location filename="../qtractorTrackForm.cpp" line="632"/>
         <source>(No instrument)</source>
         <translation>(Sem instumento)</translation>
     </message>
@@ -12933,7 +12933,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Cor do Primeiro Plano</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="480"/>
+        <location filename="../qtractorTrackForm.cpp" line="487"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
@@ -12958,12 +12958,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Remover plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1456"/>
+        <location filename="../qtractorTrackForm.cpp" line="1498"/>
         <source>Foreground Color</source>
         <translation>Cor do Primeiro Plano</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1482"/>
+        <location filename="../qtractorTrackForm.cpp" line="1524"/>
         <source>Background Color</source>
         <translation>Cor do segundo plano</translation>
     </message>
