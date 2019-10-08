@@ -1146,8 +1146,8 @@ void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 
 	pStrip->hide();
 
-	qtractorMonitor *pMonitor = pStrip->meter()->monitor();
-	if (findStrip(pMonitor) == pStrip) {
+	qtractorMonitor *pMonitor = pStrip->monitor();
+	if (pMonitor) {
 		m_strips.remove(pMonitor);
 		delete pStrip;
 	}
@@ -1167,10 +1167,10 @@ qtractorMixerStrip *qtractorMixerRack::findStrip ( qtractorMonitor *pMonitor ) c
 void qtractorMixerRack::updateStrip (
 	qtractorMixerStrip *pStrip, qtractorMonitor *pMonitor )
 {
-	qtractorMonitor *pOldMonitor = pStrip->meter()->monitor();
-	if (findStrip(pOldMonitor) == pStrip)
+	qtractorMonitor *pOldMonitor = pStrip->monitor();
+	if (pOldMonitor)
 		m_strips.remove(pOldMonitor);
-	
+
 	pStrip->setMonitor(pMonitor);
 
 	if (pMonitor)

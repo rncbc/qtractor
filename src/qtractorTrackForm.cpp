@@ -509,10 +509,8 @@ void qtractorTrackForm::reject (void)
 			(pSession->commands())->backout(m_pLastCommand);
 			// Restore old output bus...
 			if (!m_sOldOutputBusName.isEmpty()) {
-				pSession->lock();
 				m_pTrack->setOutputBusName(m_sOldOutputBusName);
 				m_pTrack->open(); // re-open...
-				pSession->unlock();
 				m_sOldOutputBusName.clear();
 			}
 			// Try to restore the previously saved patch...
@@ -1238,15 +1236,9 @@ void qtractorTrackForm::trackTypeChanged (void)
 	if (m_pTrack == nullptr)
 		return;
 
-	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == nullptr)
-		return;
-
 	if (!m_sOldOutputBusName.isEmpty()) {
-		pSession->lock();
 		m_pTrack->setOutputBusName(m_sOldOutputBusName);
 		m_pTrack->open(); // re-open...
-		pSession->unlock();
 		m_sOldOutputBusName.clear();
 	}
 
@@ -1291,20 +1283,14 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 	if (m_pTrack == nullptr)
 		return;
 
-	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == nullptr)
-		return;
-
 	// (Re)initialize output bus properly...
 	const QString& sOutputBusName
 		= m_pTrack->outputBusName();
 	if (sOutputBusName != sBusName) {
 		if (m_sOldOutputBusName.isEmpty() && !sOutputBusName.isEmpty())
 			m_sOldOutputBusName = sOutputBusName;
-		pSession->lock();
 		m_pTrack->setOutputBusName(sBusName);
 		m_pTrack->open(); // Re-open...
-		pSession->unlock();
 		// Recache the applicable MIDI output bus ...
 		if (trackType() == qtractorTrack::Midi) {
 			m_pMidiBus = midiBus();
