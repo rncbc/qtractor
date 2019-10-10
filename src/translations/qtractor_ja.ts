@@ -8888,22 +8888,22 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="591"/>
+        <location filename="../qtractorMidiMeter.cpp" line="598"/>
         <source>Volume (%)</source>
         <translation>ボリューム (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="592"/>
+        <location filename="../qtractorMidiMeter.cpp" line="599"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="673"/>
+        <location filename="../qtractorMidiMeter.cpp" line="680"/>
         <source>Pan: %1</source>
         <translation>パン: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="683"/>
+        <location filename="../qtractorMidiMeter.cpp" line="690"/>
         <source>Volume: %1%</source>
         <translation>ボリューム: %1%</translation>
     </message>

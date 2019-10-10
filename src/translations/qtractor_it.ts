@@ -8890,22 +8890,22 @@ Vuoi salvare i cambiamenti?</translation>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="591"/>
+        <location filename="../qtractorMidiMeter.cpp" line="598"/>
         <source>Volume (%)</source>
         <translation type="unfinished">Volume (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="592"/>
+        <location filename="../qtractorMidiMeter.cpp" line="599"/>
         <source> %</source>
         <translation type="unfinished"> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="673"/>
+        <location filename="../qtractorMidiMeter.cpp" line="680"/>
         <source>Pan: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="683"/>
+        <location filename="../qtractorMidiMeter.cpp" line="690"/>
         <source>Volume: %1%</source>
         <translation type="unfinished">Volume: %1%</translation>
     </message>

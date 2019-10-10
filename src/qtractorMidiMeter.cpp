@@ -423,8 +423,15 @@ qtractorMidiComboMeter::qtractorMidiComboMeter (
 // Default destructor.
 qtractorMidiComboMeter::~qtractorMidiComboMeter (void)
 {
-	if (m_pAudioMeter)
+	if (m_pAudioMeter) {
+		// Take care of those audio meters on MIDI tracks...
+		qtractorAudioOutputMonitor *pAudioOutputMonitor
+			= static_cast<qtractorAudioOutputMonitor *> (m_pAudioMeter->audioMonitor());
+		if (pAudioOutputMonitor)
+			pAudioOutputMonitor->removeAudioMeter(m_pAudioMeter);
+		// We're probably good now...
 		delete m_pAudioMeter;
+	}
 
 	delete m_pMidiMeter;
 
