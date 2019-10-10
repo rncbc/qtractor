@@ -6,9 +6,9 @@ ChangeLog
 
 GIT HEAD
 
-- Mitigate the potential crash-effect on switching
-  MIDI output buses on tracks that are set to show
-  audio output monitoring meters. (EXPERIMENTAL)
+- Fixed the potential crash-effect in switching MIDI
+  output buses on tracks that are set to show audio
+  output monitoring meters. (EXPERIMENTAL)
 
 - Fixed initial session tempo override when importing
   a standard MIDI file (as reported on issue #230).

@@ -484,7 +484,7 @@ void qtractorAudioMonitor::update (void)
 		afGains[0] *= M_SQRT2 * ::cosf(fPan * M_PI_2);
 		afGains[1] *= M_SQRT2 * ::sinf(fPan * M_PI_2);
 	#endif
-    }
+	}
 
 	// Apply to multi-channel gain array (paired fashion)...
 	const unsigned short k = (m_iChannels - (m_iChannels & 1));
@@ -511,6 +511,13 @@ qtractorAudioOutputMonitor::qtractorAudioOutputMonitor (
 	unsigned short iChannels, float fGain, float fPanning )
 	: qtractorAudioMonitor(iChannels, fGain, fPanning)
 {
+}
+
+
+// Destructor.
+qtractorAudioOutputMonitor::~qtractorAudioOutputMonitor (void)
+{
+	setChannels(0);
 }
 
 

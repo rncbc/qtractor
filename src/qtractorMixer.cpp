@@ -234,6 +234,21 @@ qtractorMixerStrip::qtractorMixerStrip (
 // Default destructor.
 qtractorMixerStrip::~qtractorMixerStrip (void)
 {
+	// Take special care to nullify the audio output monitor
+	// on MIDI track or buses, avoid its removal at meter's dtor...
+	qtractorTrack::TrackType meterType = qtractorTrack::None;
+	if (m_pTrack)
+		meterType = m_pTrack->trackType();
+	else
+	if (m_pBus)
+		meterType = m_pBus->busType();
+	if (meterType == qtractorTrack::Midi) {
+		qtractorMidiMixerMeter *pMidiMixerMeter
+			= static_cast<qtractorMidiMixerMeter *> (m_pMixerMeter);
+		if (pMidiMixerMeter)
+			pMidiMixerMeter->setAudioOutputMonitor(nullptr);
+	}
+
 	// No need to delete child widgets, Qt does it all for us
 #if 0
 	if (m_pMidiLabel)

@@ -9589,22 +9589,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1347"/>
+        <location filename="../qtractorMixer.cpp" line="1362"/>
         <source>Inputs</source>
         <translation>Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1348"/>
+        <location filename="../qtractorMixer.cpp" line="1363"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1350"/>
+        <location filename="../qtractorMixer.cpp" line="1365"/>
         <source>Outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1357"/>
+        <location filename="../qtractorMixer.cpp" line="1372"/>
         <source>Mixer</source>
         <translation>Mixážní pult</translation>
     </message>
@@ -9625,22 +9625,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="977"/>
+        <location filename="../qtractorMixer.cpp" line="992"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="981"/>
+        <location filename="../qtractorMixer.cpp" line="996"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="987"/>
+        <location filename="../qtractorMixer.cpp" line="1002"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Sledování</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="996"/>
+        <location filename="../qtractorMixer.cpp" line="1011"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Sběrnice...</translation>
     </message>
@@ -9648,42 +9648,42 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixerStrip</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="344"/>
+        <location filename="../qtractorMixer.cpp" line="359"/>
         <source>inputs</source>
         <translation>Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="344"/>
+        <location filename="../qtractorMixer.cpp" line="359"/>
         <source>outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="345"/>
+        <location filename="../qtractorMixer.cpp" line="360"/>
         <source>Connect %1</source>
         <translation>Připojit %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="559"/>
+        <location filename="../qtractorMixer.cpp" line="574"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="561"/>
+        <location filename="../qtractorMixer.cpp" line="576"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="571"/>
+        <location filename="../qtractorMixer.cpp" line="586"/>
         <source>(Audio)</source>
         <translation>(Zvuk)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="576"/>
+        <location filename="../qtractorMixer.cpp" line="591"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="580"/>
+        <location filename="../qtractorMixer.cpp" line="595"/>
         <source>(None)</source>
         <translation>(Žádný)</translation>
     </message>
