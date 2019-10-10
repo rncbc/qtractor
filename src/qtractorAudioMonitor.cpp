@@ -320,6 +320,7 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 
 	// Set new value holders...
 	m_iChannels = iChannels;
+
 	if (m_iChannels > 0) {
 		m_piStamps = new unsigned long [m_iChannels];
 		m_pfValues = new float [m_iChannels];
@@ -329,7 +330,7 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			m_piStamps[i] = 0;
 			m_pfValues[i] = m_pfPrevValues[i] = 0.0f;
-			m_pfGains[i] = m_pfPrevGains[i] = 0.0f;
+			m_pfGains[i]  = m_pfPrevGains[i] = 0.0f;
 		}
 		// Initial population...
 		update();
