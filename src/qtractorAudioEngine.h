@@ -222,6 +222,7 @@ public:
 	// JACK Timebase mode accessors.
 	void setTimebase(bool bTimebase);
 	bool isTimebase() const;
+	bool isTimebaseEx() const;
 
 	// JACK Timebase reset methods.
 	void resetTimebase();

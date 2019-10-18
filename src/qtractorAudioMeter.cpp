@@ -397,8 +397,8 @@ qtractorAudioMeter::~qtractorAudioMeter (void)
 #endif
 
 	// No need to delete child widgets, Qt does it all for us
-	for (unsigned short i = 0; i < m_iChannels; ++i)
-		delete m_ppAudioValues[i];
+	//for (unsigned short i = 0; i < m_iChannels; ++i)
+	//	delete m_ppAudioValues[i];
 	delete [] m_ppAudioValues;
 }
 
@@ -443,7 +443,7 @@ void qtractorAudioMeter::reset (void)
 	m_iChannels = iChannels;
 
 	if (m_iChannels > 0) {
-		m_ppAudioValues = new qtractorAudioMeterValue *[m_iChannels];
+		m_ppAudioValues = new qtractorAudioMeterValue * [m_iChannels];
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			m_ppAudioValues[i] = new qtractorAudioMeterValue(this, i);
 			boxLayout()->addWidget(m_ppAudioValues[i]);
