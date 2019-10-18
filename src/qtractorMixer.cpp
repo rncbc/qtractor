@@ -44,6 +44,7 @@
 
 #include "qtractorMidiControlObserver.h"
 
+#include "qtractorPlugin.h"
 #include "qtractorCurve.h"
 
 #include "qtractorMainForm.h"
@@ -538,6 +539,33 @@ void qtractorMixerStrip::setMonitor ( qtractorMonitor *pMonitor )
 			if (iFixedWidth != iOldWidth) {
 				QFrame::setFixedWidth(iFixedWidth);
 				m_pRack->updateWorkspace();
+			}
+		}
+	}
+	else
+	if (meterType == qtractorTrack::Midi) {
+		qtractorMidiMixerMeter *pMidiMixerMeter
+			= static_cast<qtractorMidiMixerMeter *> (m_pMixerMeter);
+		if (pMidiMixerMeter) {
+			qtractorPluginList *pPluginList = nullptr;
+			if (m_pBus) {
+				if (m_busMode & qtractorBus::Input)
+					pPluginList = m_pBus->pluginList_in();
+				else
+					pPluginList = m_pBus->pluginList_in();
+			}
+			else
+			if (m_pTrack)
+				pPluginList = m_pTrack->pluginList();
+			if (pPluginList) {
+				qtractorMidiManager *pMidiManager
+					= pPluginList->midiManager();
+				if (pMidiManager && pMidiManager->isAudioOutputMonitor()) {
+					pMidiMixerMeter->setAudioOutputMonitor(
+						pMidiManager->audioOutputMonitor());
+				} else {
+					pMidiMixerMeter->setAudioOutputMonitor(nullptr);
+				}
 			}
 		}
 	}

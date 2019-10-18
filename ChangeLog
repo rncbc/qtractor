@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixing a potential crash-effect in switching MIDI
+  output buses on tracks that are set to show audio
+  output monitoring meters, is on going still.
+
+
 0.9.10  2019-10-12  Autumn'19 Beta.
 
 - Fixed the potential crash-effect in switching MIDI

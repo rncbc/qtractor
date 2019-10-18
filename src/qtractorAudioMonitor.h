@@ -40,7 +40,7 @@ public:
 		float fGain = 1.0f, float fPanning = 0.0f);
 
 	// Destructor.
-	virtual ~qtractorAudioMonitor();
+	~qtractorAudioMonitor();
 
 	// Channel property accessors.
 	void setChannels(unsigned short iChannels);
