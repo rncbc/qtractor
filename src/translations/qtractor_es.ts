@@ -8572,7 +8572,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="183"/>
         <source>Reset time-sig.</source>
-        <translation type="unfinished">Reiniciar compás.</translation>
+        <translation>Reiniciar compás</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="214"/>
