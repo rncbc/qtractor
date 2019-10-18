@@ -423,10 +423,17 @@ qtractorMidiComboMeter::qtractorMidiComboMeter (
 // Default destructor.
 qtractorMidiComboMeter::~qtractorMidiComboMeter (void)
 {
-	if (m_pAudioMeter)
-		delete m_pAudioMeter;
+	if (m_pAudioMeter) {
+		// Take care of those audio meters on MIDI tracks...
+		qtractorAudioOutputMonitor *pAudioOutputMonitor
+			= static_cast<qtractorAudioOutputMonitor *> (m_pAudioMeter->audioMonitor());
+		if (pAudioOutputMonitor)
+			pAudioOutputMonitor->removeAudioMeter(m_pAudioMeter);
+		// We're probably good now...
+		//delete m_pAudioMeter;
+	}
 
-	delete m_pMidiMeter;
+	//delete m_pMidiMeter;
 
 	// No need to delete child widgets, Qt does it all for us
 }
@@ -501,7 +508,7 @@ void qtractorMidiComboMeter::setAudioOutputMonitor (
 	}
 	else
 	if (pAudioOutputMonitor) {
-		m_pAudioMeter = new qtractorAudioMeter(pAudioOutputMonitor, parentWidget());
+		m_pAudioMeter = new qtractorAudioMeter(pAudioOutputMonitor);
 		pAudioOutputMonitor->addAudioMeter(m_pAudioMeter);
 		QWidget::layout()->addWidget(m_pAudioMeter);
 		m_pAudioMeter->show();

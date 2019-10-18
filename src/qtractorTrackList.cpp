@@ -451,6 +451,12 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 	}
 
 	if (meters) {
+		if (track->trackType() == qtractorTrack::Midi) {
+			qtractorMidiComboMeter *pMidiComboMeter
+				= static_cast<qtractorMidiComboMeter *> (meters);
+			if (pMidiComboMeter)
+				pMidiComboMeter->setAudioOutputMonitor(nullptr);
+		}
 		delete meters;
 		meters = nullptr;
 	}

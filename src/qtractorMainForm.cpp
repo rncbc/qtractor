@@ -7511,7 +7511,7 @@ void qtractorMainForm::fastTimerSlot (void)
 			updateTransportTime(iPlayHead);
 			m_pThumbView->updateThumb();
 		}
-		// Ensure the amin form is stable later on...
+		// Ensure the main form is stable later on...
 		++m_iStabilizeTimer;
 		// Done with transport tricks.
 	}
@@ -7581,7 +7581,7 @@ void qtractorMainForm::slowTimerSlot (void)
 					m_pSession->seek(iPlayHead, true);
 			}
 			// 2. Watch for temp/time-sig changes on JACK transport...
-			if (pos.valid & JackPositionBBT) {
+			if ((pos.valid & JackPositionBBT) && pAudioEngine->isTimebaseEx()) {
 				qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(pos.frame);
@@ -8627,9 +8627,8 @@ void qtractorMainForm::contentsChanged (void)
 	qDebug("qtractorMainForm::contentsChanged()");
 #endif
 
-	// HACK: Force play-head position update...
-	// m_iPlayHead = 0;
-	m_pTempoCursor->clear();
+	// HACK: Force immediate stabilization later...
+	m_iStabilizeTimer = 0;
 
 	// Stabilize session toolbar widgets...
 //	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);

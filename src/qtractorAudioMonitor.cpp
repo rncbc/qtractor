@@ -320,6 +320,7 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 
 	// Set new value holders...
 	m_iChannels = iChannels;
+
 	if (m_iChannels > 0) {
 		m_piStamps = new unsigned long [m_iChannels];
 		m_pfValues = new float [m_iChannels];
@@ -329,7 +330,7 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			m_piStamps[i] = 0;
 			m_pfValues[i] = m_pfPrevValues[i] = 0.0f;
-			m_pfGains[i] = m_pfPrevGains[i] = 0.0f;
+			m_pfGains[i]  = m_pfPrevGains[i] = 0.0f;
 		}
 		// Initial population...
 		update();
@@ -483,7 +484,7 @@ void qtractorAudioMonitor::update (void)
 		afGains[0] *= M_SQRT2 * ::cosf(fPan * M_PI_2);
 		afGains[1] *= M_SQRT2 * ::sinf(fPan * M_PI_2);
 	#endif
-    }
+	}
 
 	// Apply to multi-channel gain array (paired fashion)...
 	const unsigned short k = (m_iChannels - (m_iChannels & 1));
@@ -510,6 +511,13 @@ qtractorAudioOutputMonitor::qtractorAudioOutputMonitor (
 	unsigned short iChannels, float fGain, float fPanning )
 	: qtractorAudioMonitor(iChannels, fGain, fPanning)
 {
+}
+
+
+// Destructor.
+qtractorAudioOutputMonitor::~qtractorAudioOutputMonitor (void)
+{
+	setChannels(0);
 }
 
 
