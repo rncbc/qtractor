@@ -157,7 +157,7 @@ Fin:	%3	Duración:	%4</translation>
     <message>
         <location filename="../qtractorCurveCommand.cpp" line="217"/>
         <source>automation logarithmic</source>
-        <translation>automatización logaritmica</translation>
+        <translation>automatización logarítmica</translation>
     </message>
     <message>
         <location filename="../qtractorCurveCommand.cpp" line="244"/>
@@ -572,7 +572,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="897"/>
         <source>direct access param</source>
-        <translation>parametro de acceso directo</translation>
+        <translation>parámetro de acceso directo</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="929"/>
@@ -946,7 +946,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorBusForm.ui" line="196"/>
         <source>Duplex</source>
-        <translation>Duplex</translation>
+        <translation>Dúplex</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="204"/>
@@ -10050,7 +10050,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="923"/>
         <source>Zero Order Hold</source>
-        <translation>Mantenedor Orden Cero</translation>
+        <translation>Retenedor de Orden Cero</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="928"/>
@@ -12870,7 +12870,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="196"/>
         <source>&amp;Electric Guitar</source>
-        <translation>Guitarra &amp;Electrica</translation>
+        <translation>Guitarra &amp;Eléctrica</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="197"/>
@@ -13350,7 +13350,7 @@ Are you sure?</source>
 
 &quot;%1&quot;
 
-¿Esta seguro?</translation>
+¿Está seguro?</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2909"/>
