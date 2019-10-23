@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Avoid adding any extraneous clip replica when Ctrl
+  +dragging on either of its edges. (EXPERIMENTAL)
+
 - When using autotools and ./configure --with-qt=...,
   it is also necessary to adjust the PKG_CONFIG_PATH
   environment variable (after a merge request by plcl

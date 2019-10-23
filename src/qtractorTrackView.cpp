@@ -3835,6 +3835,9 @@ void qtractorTrackView::dragClipRepeatRight ( const QPoint& pos )
 				= pSession->frameSnap(pSession->frameFromPixel(x2));
 			iClipLength = iClipStart2 - iClipStart;
 		}
+		// HACK: Avoid extraneous clip-lengths...
+		if (iClipLength < 1)
+			break;
 		// Now, its imperative to make a proper clone...
 		qtractorClip *pNewClip = cloneClip(m_pClipDrag);
 		// Add the new cloned clip...
