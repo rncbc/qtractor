@@ -11929,7 +11929,7 @@ Posso continuar?</translation>
         <translation>192000</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="243"/>
+        <location filename="../qtractorSessionForm.cpp" line="247"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -11963,7 +11963,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Pasta da sessão</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="292"/>
+        <location filename="../qtractorSessionForm.cpp" line="304"/>
         <source>Session Directory</source>
         <translation>Pasta da Sessão</translation>
     </message>
@@ -12004,8 +12004,8 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Taxa de amostragem (Hz)</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="186"/>
-        <location filename="../qtractorSessionForm.cpp" line="242"/>
+        <location filename="../qtractorSessionForm.cpp" line="190"/>
+        <location filename="../qtractorSessionForm.cpp" line="246"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
@@ -12015,7 +12015,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Procurar por pasta da sessão</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="187"/>
+        <location filename="../qtractorSessionForm.cpp" line="191"/>
         <source>Session directory does not exist:
 
 &quot;%1&quot;
