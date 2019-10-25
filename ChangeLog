@@ -7,7 +7,7 @@ ChangeLog
 GIT HEAD
 
 - A session name (sub-)directory is now suggested on
-  brand new session properties dialog. (EXPERIMENTAL)
+  every new session properties dialog. (EXPERIMENTAL)
 
 - Avoid adding any extraneous clip replica when Ctrl
   +dragging on either of its edges. (EXPERIMENTAL)

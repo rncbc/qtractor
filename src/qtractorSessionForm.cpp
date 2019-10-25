@@ -91,6 +91,9 @@ qtractorSessionForm::qtractorSessionForm (
 	QObject::connect(m_ui.SessionDirComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changeSessionDir(const QString&)));
+	QObject::connect(m_ui.SessionDirComboBox->lineEdit(),
+		SIGNAL(editingFinished()),
+		SLOT(finishSessionDir()));
 	QObject::connect(m_ui.SessionDirToolButton,
 		SIGNAL(clicked()),
 		SLOT(browseSessionDir()));
@@ -290,6 +293,13 @@ void qtractorSessionForm::changeSessionDir ( const QString& sSessionDir )
 		m_ui.SessionDirComboBox->setEditText(m_props.sessionDir);
 
 	changed();
+}
+
+
+// Session directory edit-finishing.
+void qtractorSessionForm::finishSessionDir (void)
+{
+	m_props.sessionDir = m_ui.SessionDirComboBox->currentText();
 }
 
 

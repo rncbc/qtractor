@@ -52,6 +52,7 @@ protected slots:
 
 	void changeSessionName(const QString& sSessionName);
 	void changeSessionDir(const QString& sSessionDir);
+	void finishSessionDir();
 	void browseSessionDir();
 
 protected:
