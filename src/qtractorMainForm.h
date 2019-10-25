@@ -449,6 +449,8 @@ protected:
 	void autoSaveSession();
 	void autoSaveClose();
 
+	QString sessionDir(const QString& sFilename) const;
+
 private:
 
 	// The Qt-designer UI struct...

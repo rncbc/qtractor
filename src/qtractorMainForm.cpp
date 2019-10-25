@@ -2204,9 +2204,6 @@ bool qtractorMainForm::editSession (void)
 	if (bPlaying)
 		m_pSession->lock();
 
-	// Take care of session name changes...
-	const QString sOldSessionName = m_pSession->sessionName();
-
 	// Now, express the change as a undoable command...
 	m_pSession->execute(
 		new qtractorSessionEditCommand(m_pSession, sessionForm.properties()));
@@ -2470,7 +2467,7 @@ bool qtractorMainForm::loadSessionFileEx (
 		if (m_pOptions && bUpdate) {
 			// Do not set (next) default session directory on zip/archives...
 			if ((iFlags & qtractorDocument::Archive) == 0)
-				m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+				m_pOptions->sSessionDir = sessionDir(sFilename);
 			// Save also some Audio engine hybrid-properties...
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 			if (pAudioEngine) {
@@ -2601,7 +2598,7 @@ bool qtractorMainForm::saveSessionFileEx (
 			}
 			// Do not set (next) default session directory on zip/archives...
 			if ((iFlags & qtractorDocument::Archive) == 0)
-				m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+				m_pOptions->sSessionDir = sessionDir(sFilename);
 			// Sync
 			m_pOptions->saveOptions();
 		}
@@ -2948,6 +2945,17 @@ void qtractorMainForm::autoSaveClose (void)
 	m_pOptions->sAutoSaveFilename.clear();
 
 	autoSaveReset();
+}
+
+
+// Make it sane a session directory...
+QString qtractorMainForm::sessionDir ( const QString& sFilename ) const
+{
+	QFileInfo fi(sFilename);
+	const QDir& dir = fi.dir();
+	if (fi.completeBaseName() == dir.dirName())
+		fi.setFile(dir.absolutePath());
+	return fi.absolutePath();
 }
 
 
