@@ -2626,10 +2626,11 @@ bool qtractorMainForm::saveSessionFileEx (
 QString qtractorMainForm::sessionBackupPath ( const QString& sFilename )
 {
 	QFileInfo fi(sFilename);
+
+	QString sBackupName = fi.completeBaseName();
+	if (fi.isDir())
+		fi.setFile(QDir(fi.filePath()), sBackupName);
 	if (fi.exists()) {
-		QString sBackupName = fi.completeBaseName();
-		if (fi.isDir())
-			fi.setFile(QDir(fi.filePath()), sBackupName);
 		int iBackupNo = 0;
 		const QRegExp rxBackupNo("\\.([0-9]+)$");
 		if (rxBackupNo.indexIn(sBackupName) >= 0) {
@@ -2644,10 +2645,9 @@ QString qtractorMainForm::sessionBackupPath ( const QString& sFilename )
 		fi.setFile(dir, sBackupName.arg(++iBackupNo));
 		while (fi.exists())
 			fi.setFile(dir, sBackupName.arg(++iBackupNo));
-		return fi.absoluteFilePath();
-	} else {
-		return sFilename;
 	}
+
+	return fi.absoluteFilePath();
 }
 
 
