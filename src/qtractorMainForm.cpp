@@ -5266,8 +5266,8 @@ void qtractorMainForm::transportBackward (void)
 	} else {
 		m_pSession->setPlayHead(playHeadBackward());
 	}
-	++m_iTransportUpdate;
 
+	++m_iTransportUpdate;
 	++m_iStabilizeTimer;
 }
 
@@ -5358,8 +5358,8 @@ void qtractorMainForm::transportForward (void)
 	} else {
 		m_pSession->setPlayHead(playHeadForward());
 	}
-	++m_iTransportUpdate;
 
+	++m_iTransportUpdate;
 	++m_iStabilizeTimer;
 }
 
@@ -5464,8 +5464,7 @@ void qtractorMainForm::transportPlay (void)
 		if (bPlaying) {
 			const unsigned long iPlayHead = m_pSession->playHead();
 			qtractorTrackView *pTrackView = m_pTracks->trackView();
-			if (iPlayHead < m_pSession->sessionEnd())
-				pTrackView->setPlayHeadAutoBackward(iPlayHead);
+			pTrackView->setPlayHeadAutoBackward(iPlayHead);
 			pTrackView->setSyncViewHoldOn(false);
 		}
 		else
@@ -6083,23 +6082,30 @@ void qtractorMainForm::setSongPos ( unsigned short iSongPos )
 unsigned long qtractorMainForm::playHeadBackward (void) const
 {
 	const unsigned long iPlayHead = m_pSession->playHead();
+	const bool bPlaying = m_pSession->isPlaying();
 	QList<unsigned long> list;
 	list.append(0);
 	if (iPlayHead > m_pSession->playHeadAutoBackward())
 		list.append(m_pSession->playHeadAutoBackward());
 	if (iPlayHead > m_pSession->editHead())
 		list.append(m_pSession->editHead());
-//	if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
-//		list.append(m_pSession->editTail());
+	if (iPlayHead > m_pSession->editTail() && !bPlaying)
+		list.append(m_pSession->editTail());
 	if (m_pSession->isLooping()) {
 		if (iPlayHead > m_pSession->loopStart())
 			list.append(m_pSession->loopStart());
-	//	if (iPlayHead > m_pSession->loopEnd() && !m_pSession->isPlaying())
-	//		list.append(m_pSession->loopEnd());
+		if (iPlayHead > m_pSession->loopEnd() && !bPlaying)
+			list.append(m_pSession->loopEnd());
+	}
+	if (m_pSession->isPunching()) {
+		if (iPlayHead > m_pSession->punchIn())
+			list.append(m_pSession->punchIn());
+		if (iPlayHead > m_pSession->punchOut() && !bPlaying)
+			list.append(m_pSession->punchOut());
 	}
 	if (iPlayHead > m_pSession->sessionStart())
 		list.append(m_pSession->sessionStart());
-//	if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
+//	if (iPlayHead > m_pSession->sessionEnd() && !bPlaying)
 //		list.append(m_pSession->sessionEnd());
 	qtractorTimeScale::Marker *pMarker
 		= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
@@ -6127,6 +6133,12 @@ unsigned long qtractorMainForm::playHeadForward (void) const
 			list.append(m_pSession->loopStart());
 		if (iPlayHead < m_pSession->loopEnd())
 			list.append(m_pSession->loopEnd());
+	}
+	if (m_pSession->isPunching()) {
+		if (iPlayHead < m_pSession->punchIn())
+			list.append(m_pSession->punchIn());
+		if (iPlayHead < m_pSession->punchOut())
+			list.append(m_pSession->punchOut());
 	}
 	if (iPlayHead < m_pSession->sessionStart())
 		list.append(m_pSession->sessionStart());

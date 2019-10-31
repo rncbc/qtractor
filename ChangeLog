@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Transport/Backward commands now honoring edit-tail,
+  loop-end and punch-out points, when playback is not
+  rolling.
+
 - A session name (sub-)directory is now suggested on
   every new session properties dialog. (EXPERIMENTAL)
 
@@ -3209,7 +3213,7 @@ O.6.1  2014-04-29  Bitsy Sweet Beta
 
 - Fixed a potential crash and/or simple record dismissal when changing
   properties of a track already armed for recording; prevent record
-engaged  tracks from editing or removal.
+  engaged tracks from editing or removal.
 
 - Lighten up the connections line and highlight colors, as seen to fit
   best on some darker background themes.
