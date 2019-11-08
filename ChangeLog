@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-0.9.11  2019-11-09  Mid-Autumn'19 Beta.
+0.9.11  2019-11-09  The Mauerfall'30 Release.
 
 - Transport/Backward commands now honoring edit-tail,
   loop-end and punch-out points, when playback is not
