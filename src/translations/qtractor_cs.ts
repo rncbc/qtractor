@@ -462,7 +462,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="586"/>
+        <location filename="../qtractorTrackList.cpp" line="593"/>
         <source>Unknown</source>
         <translation>Neznámý</translation>
     </message>

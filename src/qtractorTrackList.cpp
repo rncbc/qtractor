@@ -516,20 +516,24 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 			const unsigned short iChannel = track->midiChannel();
 			text << sOmni + QString::number(iChannel + 1);
 			// Care of MIDI instrument, program and bank numbers vs.names...
-			QString sInstrumentName = s;
-			QString sProgName = s;
+			QString sInstrumentName;
+			QString sProgName;
 			QString sBankName;
 			const int iProg = track->midiProg();
 			if (iProg >= 0)
-				sProgName = QString::number(iProg + 1) + s;
+				sProgName = QString::number(iProg + 1);
+			sProgName += s;
 			const int iBank = track->midiBank();
 			if (iBank >= 0)
 				sBankName = QString::number(iBank);
 			if (pMidiBus) {
 				const qtractorMidiBus::Patch& patch
 					= pMidiBus->patch(iChannel);
-				if (!patch.instrumentName.isEmpty()) {
+				if (patch.instrumentName.isEmpty())
+					sInstrumentName = pMidiBus->instrumentName();
+				else
 					sInstrumentName = patch.instrumentName;
+				if (!sInstrumentName.isEmpty()) {
 					bool bMidiManager = updateBankProgNames(
 						(track->pluginList())->midiManager(),
 						sInstrumentName, sBankName, sProgName);
@@ -558,6 +562,9 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 					}
 				}
 			}
+			// Trade (No instrument) for dashes...
+			if (sInstrumentName.isEmpty())
+				sInstrumentName = s;
 			// This is it, MIDI Patch/Bank...
 			text << sProgName + '\n' + sBankName << sInstrumentName;
 			// Re-create the MIDI meter...

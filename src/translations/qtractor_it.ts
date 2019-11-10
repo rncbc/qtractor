@@ -721,7 +721,7 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="586"/>
+        <location filename="../qtractorTrackList.cpp" line="593"/>
         <source>Unknown</source>
         <translation>Sconosciuto</translation>
     </message>

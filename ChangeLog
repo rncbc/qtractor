@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI Instrument and patch, bank and program names
+  are now correctly updated on their respective track
+  -list (left pane) columns. (EXPERIMENTAL)
+
 - Avoid copying/replicating dirty MIDI clip files,
   for yet untitled/scratch sessions. (EXPERIMENTAL)
 
@@ -86,7 +90,7 @@ GIT HEAD
 
 - Fixed editing and display of 'Pgm Change' events on
   the MIDI clip editor (aka. piano-roll).
-  
+
 - Introducing tempo/beat-detection support on the Clip
   / Tempo Adjust... dialog (provided libaubio >= 0.4.1
   is available); and now also featured with some rough

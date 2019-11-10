@@ -454,7 +454,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="586"/>
+        <location filename="../qtractorTrackList.cpp" line="593"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
