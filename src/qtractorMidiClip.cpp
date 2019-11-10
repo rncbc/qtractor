@@ -1251,6 +1251,10 @@ bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
 	if (pSession == nullptr)
 		return false;
 
+	// Do nothing if session is yet untitled...
+	if (pSession->sessionName().isEmpty())
+		return false;
+
 	// Have a new filename revision...
 	const QString& sFilename = createFilePathRevision();
 

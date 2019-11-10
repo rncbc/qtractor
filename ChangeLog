@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Avoid copying/replicating dirty MIDI clip files,
+  for yet untitled/scratch sessions. (EXPERIMENTAL)
+
+
 0.9.11  2019-11-09  The Mauerfall'30 Release.
 
 - Transport/Backward commands now honoring edit-tail,
