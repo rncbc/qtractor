@@ -2,7 +2,7 @@ project(QTRACTOR)
 
 cmake_minimum_required(VERSION 3.1)
 
-set (VERSION "0.9.11")
+set (VERSION "0.9.12")
 
 set (CONFIG_VERSION ${VERSION})
 execute_process (
@@ -199,7 +199,7 @@ set (CONFIG_FLOAT32 1)
 
 # Check for SSE optimization.
 if (CONFIG_SSE)
-   add_compile_options (-msse -mfpmath=sse -ffast-math)
+  add_compile_options (-msse -mfpmath=sse -ffast-math)
 endif ()
 
 # Checks for header files.
@@ -210,20 +210,23 @@ endif ()
 
 # Check for LADSPA headers.
 if (CONFIG_LADSPA)
-  check_include_file (ladspa.h CONFIG_LADSPA)
+  check_include_file (ladspa.h HAVE_LADSPA_H)
+  set (CONFIG_LADSPA ${HAVE_LADSPA_H})
 endif ()
 
 # Check for DSSI headers.
 if (CONFIG_DSSI)
-  check_include_file (dssi.h CONFIG_DSSI)
+  check_include_file (dssi.h HAVE_DSSI_H)
+  set (CONFIG_DSSI ${HAVE_DSSI_H})
 endif ()
 
 # Check for VST headers.
 if (CONFIG_VST)
-  check_include_file (aeffectx.h CONFIG_VST)
-  if (NOT CONFIG_VST AND CONFIG_VESTIGE)
+  check_include_file (aeffectx.h HAVE_AEFFECTX_H)
+  if (NOT HAVE_AEFFECTX_H AND CONFIG_VESTIGE)
      include_directories (${CMAKE_CURRENT_SOURCE_DIR}/src/vestige)
-     check_include_file (vestige.h CONFIG_VESTIGE)
+     check_include_file (vestige.h HAVE_VESTIGE_H)
+     set (CONFIG_VESTIGE ${HAVE_VESTIGE_H})
      set (CONFIG_VST ${CONFIG_VESTIGE})
   else ()
      set (CONFIG_VESTIGE 0)
@@ -450,11 +453,13 @@ if (CONFIG_LIBLILV)
 endif ()
 
 if (CONFIG_LV2_UI)
-  check_include_file(lv2/lv2plug.in/ns/extensions/ui/ui.h CONFIG_LV2_UI)
+  check_include_file(lv2/lv2plug.in/ns/extensions/ui/ui.h HAVE_LV2_UI_H)
+  set (CONFIG_LV2_UI ${HAVE_LV2_UI_H})
   if (CONFIG_LV2_UI)
     # Check for LV2 external UI instance access.
     if (CONFIG_LV2_EXTERNAL_UI)
-      check_include_file (lv2/lv2plug.in/ns/ext/instance-access/instance-access.h CONFIG_LV2_EXTERNAL_UI)
+      check_include_file (lv2/lv2plug.in/ns/ext/instance-access/instance-access.h HAVE_LV2_INSTANCE_ACCESS_H)
+      set (CONFIG_LV2_EXTERNAL_UI ${HAVE_LV2_INSTANCE_ACCESS_H})
     endif ()
   endif ()
 endif ()
@@ -487,11 +492,13 @@ if (CONFIG_LIBSUIL)
 endif ()
 
 if (CONFIG_LV2_EVENT)
-  check_include_file (lv2/lv2plug.in/ns/ext/event/event.h CONFIG_LV2_EVENT)
+  check_include_file (lv2/lv2plug.in/ns/ext/event/event.h HAVE_LV2_EVENT_H)
+  set (CONFIG_LV2_EVENT ${HAVE_LV2_EVENT_H})
 endif ()
 
 if (CONFIG_LV2_ATOM)
-  check_include_file (lv2/lv2plug.in/ns/ext/atom/atom.h CONFIG_LV2_ATOM)
+  check_include_file (lv2/lv2plug.in/ns/ext/atom/atom.h HAVE_LV2_ATOM_H)
+  set (CONFIG_LV2_ATOM ${HAVE_LV2_ATOM_H})
   set (CONFIG_LV2_ATOM_FORGE_OBJECT ${CONFIG_LV2_ATOM})
   set (CONFIG_LV2_ATOM_FORGE_KEY ${CONFIG_LV2_ATOM})
 endif ()
@@ -505,11 +512,13 @@ if (NOT CONFIG_LV2_ATOM)
 endif ()
 
 if (CONFIG_LV2_WORKER)
-  check_include_file (lv2/lv2plug.in/ns/ext/worker/worker.h CONFIG_LV2_WORKER)
+  check_include_file (lv2/lv2plug.in/ns/ext/worker/worker.h HAVE_LV2_WORKER_H)
+  set (CONFIG_LV2_WORKER ${HAVE_LV2_WORKER_H})
 endif ()
 
 if (CONFIG_LV2_STATE)
-  check_include_file (lv2/lv2plug.in/ns/ext/state/state.h CONFIG_LV2_STATE)
+  check_include_file (lv2/lv2plug.in/ns/ext/state/state.h HAVE_LV2_STATE_H)
+  set (CONFIG_LV2_STATE ${HAVE_LV2_STATE_H})
 endif ()
 
 if (NOT CONFIG_LV2_STATE)
@@ -520,19 +529,23 @@ if (NOT CONFIG_LV2_STATE)
 endif ()
 
 if (CONFIG_LV2_PROGRAMS)
-  check_include_file (lv2_programs.h CONFIG_LV2_PROGRAMS)
+  check_include_file (lv2_programs.h HAVE_LV2_PROGRAMS_H)
+  set (CONFIG_LV2_PROGRAMS ${HAVE_LV2_PROGRAMS_H})
 endif ()
 
 if (CONFIG_LV2_PRESETS)
-  check_include_file (lv2/lv2plug.in/ns/ext/presets/presets.h CONFIG_LV2_PRESETS)
+  check_include_file (lv2/lv2plug.in/ns/ext/presets/presets.h HAVE_LV2_PRESETS_H)
+  set (CONFIG_LV2_PRESETS ${HAVE_LV2_PRESETS_H})
 endif ()
 
 if (CONFIG_LV2_PATCH)
-  check_include_file (lv2/lv2plug.in/ns/ext/patch/patch.h CONFIG_LV2_PATCH)
+  check_include_file (lv2/lv2plug.in/ns/ext/patch/patch.h HAVE_LV2_PATCH_H)
+  set (CONFIG_LV2_PATCH ${HAVE_LV2_PATCH_H})
 endif ()
 
 if (CONFIG_LV2_TIME)
-  check_include_file (lv2/lv2plug.in/ns/ext/time/time.h CONFIG_LV2_TIME)
+  check_include_file (lv2/lv2plug.in/ns/ext/time/time.h HAVE_LV2_TIME_H)
+  set (CONFIG_LV2_TIME_H ${HAVE_LV2_TIME_H})
 endif ()
 
 if (NOT CONFIG_LV2_TIME)
@@ -540,7 +553,8 @@ if (NOT CONFIG_LV2_TIME)
 endif ()
 
 if (CONFIG_LV2_OPTIONS)
-  check_include_file (lv2/lv2plug.in/ns/ext/options/options.h CONFIG_LV2_OPTIONS)
+  check_include_file (lv2/lv2plug.in/ns/ext/options/options.h HAVE_LV2_OPTIONS_H)
+  set (CONFIG_LV2_OPTIONS ${HAVE_LV2_OPTIONS_H})
 endif ()
 
 if (NOT CONFIG_LV2_OPTIONS)
@@ -548,7 +562,8 @@ if (NOT CONFIG_LV2_OPTIONS)
 endif ()
 
 if (CONFIG_LV2_BUF_SIZE)
-  check_include_file (lv2/lv2plug.in/ns/ext/buf-size/buf-size.h CONFIG_LV2_BUF_SIZE)
+  check_include_file (lv2/lv2plug.in/ns/ext/buf-size/buf-size.h HAVE_LV2_BUF_SIZE_H)
+  set (CONFIG_LV2_BUF_SIZE ${HAVE_LV2_BUF_SIZE_H})
 endif ()
 
 if (CONFIG_LV2_UI_GTK2)

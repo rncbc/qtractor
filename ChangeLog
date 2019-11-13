@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Second attempt to fix the yet non-official though
+  CMake build configuration. (EXPERIMENTAL)
+
+
 0.9.11  2019-11-09  The Mauerfall'30 Release.
 
 - MIDI Instrument and patch, bank and program names
