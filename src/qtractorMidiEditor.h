@@ -544,6 +544,10 @@ private:
 	QColor m_foreground;
 	QColor m_background;
 
+	// The main widget splitters.
+	QSplitter *m_pHSplitter;
+	QSplitter *m_pVSplitter;
+
 	// The main child widgets.
 	QFrame *m_pEditListHeader;
 	qtractorMidiEditList *m_pEditList;

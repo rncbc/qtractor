@@ -41,6 +41,7 @@
 #include "qtractorTimeScale.h"
 
 #include "qtractorSession.h"
+#include "qtractorOptions.h"
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -779,11 +780,17 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Current ghost-track option.
 	m_pGhostTrack = nullptr;
 
+	// The main widget splitters.
+	m_pHSplitter = new QSplitter(Qt::Horizontal, this);
+	m_pHSplitter->setObjectName("qtractorMidiEditor::HSplitter");
+
+	m_pVSplitter = this;
+	m_pVSplitter->setObjectName("qtractorMidiEditor::VSplitter");
+
 	// Create child frame widgets...
-	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
-	QWidget *pVBoxLeft   = new QWidget(pSplitter);
-	QWidget *pVBoxRight  = new QWidget(pSplitter);
-	QWidget *pHBoxBottom = new QWidget(this);
+	QWidget *pVBoxLeft   = new QWidget(m_pHSplitter);
+	QWidget *pVBoxRight  = new QWidget(m_pHSplitter);
+	QWidget *pHBoxBottom = new QWidget(m_pVSplitter);
 
 	// Create child view widgets...
 	m_pEditListHeader = new QFrame(pVBoxLeft);
@@ -823,16 +830,16 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	pHBoxBottomLayout->addWidget(m_pEditEventFrame);
 	pHBoxBottom->setLayout(pHBoxBottomLayout);
 
-//	pSplitter->setOpaqueResize(false);
-	pSplitter->setStretchFactor(pSplitter->indexOf(pVBoxLeft), 0);
-	pSplitter->setHandleWidth(2);
+//	m_pHSplitter->setOpaqueResize(false);
+	m_pHSplitter->setStretchFactor(m_pHSplitter->indexOf(pVBoxLeft), 0);
+	m_pHSplitter->setHandleWidth(2);
 
-//	QSplitter::setOpaqueResize(false);
-	QSplitter::setStretchFactor(QSplitter::indexOf(pHBoxBottom), 0);
-	QSplitter::setHandleWidth(2);
+//	m_pVSplitter->setOpaqueResize(false);
+	m_pVSplitter->setStretchFactor(m_pVSplitter->indexOf(pHBoxBottom), 0);
+	m_pVSplitter->setHandleWidth(2);
 
-	QSplitter::setWindowIcon(QIcon(":/images/qtractorMidiEditor.png"));
-	QSplitter::setWindowTitle(tr("MIDI Editor"));
+	m_pVSplitter->setWindowIcon(QIcon(":/images/qtractorMidiEditor.png"));
+	m_pVSplitter->setWindowTitle(tr("MIDI Editor"));
 
 	// To have all views in positional sync.
 	QObject::connect(m_pEditList, SIGNAL(contentsMoving(int,int)),
@@ -856,11 +863,20 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 		SIGNAL(updateNotifySignal(unsigned int)),
 		SLOT(updateNotifySlot(unsigned int)));
 
-	// FIXME: Initial horizontal splitter sizes.
-	QList<int> sizes;
-	sizes.append(48);
-	sizes.append(752);
-	pSplitter->setSizes(sizes);
+	// Initial splitter sizes.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<int> sizes;
+		// Initial horizontal splitter sizes...
+		sizes.append(48);
+		sizes.append(752);
+		pOptions->loadSplitterSizes(m_pHSplitter, sizes);
+		sizes.clear();
+		// Initial vertical splitter sizes...
+		sizes.append(420);
+		sizes.append(180);
+		pOptions->loadSplitterSizes(m_pVSplitter, sizes);
+	}
 }
 
 
@@ -868,6 +884,13 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 qtractorMidiEditor::~qtractorMidiEditor (void)
 {
 	resetDragState(nullptr);
+
+	// Save splitter sizes...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		pOptions->saveSplitterSizes(m_pHSplitter);
+		pOptions->saveSplitterSizes(m_pVSplitter);
+	}
 
 	// Release local instances.
 	delete m_pTimeScale;

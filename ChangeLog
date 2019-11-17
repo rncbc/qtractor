@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI Clip editor (aka. piano-roll) horizontal and
+  vertical splitter sizes, widths and heights resp.
+  are now preserved as user preferences. (EXPERIMENTAL)
+
 - Second attempt to fix the yet non-official though
   CMake build configuration. (EXPERIMENTAL)
 
