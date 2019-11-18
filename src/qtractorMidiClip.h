@@ -255,6 +255,28 @@ public:
 	const QSize& editorSize() const
 		{ return m_sizeEditor; }
 
+	// MIDI clip editor zoom ratio accessors.
+	void setEditorHorizontalZoom(unsigned short iHorizontalZoom)
+		{ m_iEditorHorizontalZoom = iHorizontalZoom; }
+	unsigned short editorHorizontalZoom() const
+		{ return m_iEditorHorizontalZoom; }
+
+	void setEditorVerticalZoom(unsigned short iVerticalZoom)
+		{ m_iEditorVerticalZoom = iVerticalZoom; }
+	unsigned short editorVerticalZoom() const
+		{ return m_iEditorVerticalZoom; }
+
+	// MIDI clip editor splitter sizes accessors.
+	void setEditorHorizontalSizes(const QList<int>& sizes)
+		{ m_editorHorizontalSizes = sizes; }
+	QList<int> editorHorizontalSizes() const
+		{ return m_editorHorizontalSizes; }
+
+	void setEditorVerticalSizes(const QList<int>& sizes)
+		{ m_editorVerticalSizes = sizes; }
+	QList<int> editorVerticalSizes() const
+		{ return m_editorVerticalSizes; }
+
 	// Ghost track setting.
 	void setGhostTrackName(const QString& sGhostTrackName)
 		{ m_sGhostTrackName = sGhostTrackName; }
@@ -318,6 +340,14 @@ private:
 	// And for geometry it was last seen...
 	QPoint m_posEditor;
 	QSize m_sizeEditor;
+
+	// MIDI clip editor zoom ratio accessors.
+	unsigned short m_iEditorHorizontalZoom;
+	unsigned short m_iEditorVerticalZoom;
+
+	// MIDI clip editor splitter sizes accessors.
+	QList<int> m_editorHorizontalSizes;
+	QList<int> m_editorVerticalSizes;
 
 	// Ghost track setting.
 	QString m_sGhostTrackName;

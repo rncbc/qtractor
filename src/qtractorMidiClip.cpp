@@ -182,9 +182,13 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 
 	m_pMidiEditorForm = nullptr;
 
+	m_iEditorHorizontalZoom = 100;
+	m_iEditorVerticalZoom = 100;
+
 	m_iBeatsPerBar2 = 0;
 	m_iBeatDivisor2 = 0;
 }
+
 
 // Copy constructor.
 qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
@@ -204,6 +208,12 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	m_iRevision = clip.revision();
 
 	m_pMidiEditorForm = nullptr;
+
+	m_iEditorHorizontalZoom = clip.editorHorizontalZoom();
+	m_iEditorVerticalZoom = clip.editorVerticalZoom();
+
+	m_editorHorizontalSizes = clip.editorHorizontalSizes();
+	m_editorVerticalSizes = clip.editorVerticalSizes();
 
 	m_iBeatsPerBar2 = clip.beatsPerBar2();
 	m_iBeatDivisor2 = clip.beatDivisor2();
@@ -1305,6 +1315,24 @@ bool qtractorMidiClip::loadClipElement (
 			m_sizeEditor.setWidth(swh.at(0).toInt());
 			m_sizeEditor.setHeight(swh.at(1).toInt());
 		}
+		else if (eChild.tagName() == "editor-horizontal-zoom") {
+			m_iEditorHorizontalZoom = eChild.text().toUShort();
+		}
+		else if (eChild.tagName() == "editor-vertical-zoom") {
+			m_iEditorVerticalZoom = eChild.text().toUShort();
+		}
+		else if (eChild.tagName() == "editor-horizontal-sizes") {
+			const QStringList& hsizes = eChild.text().split(',');
+			m_editorHorizontalSizes.clear();
+			m_editorHorizontalSizes.append(hsizes.at(0).toInt());
+			m_editorHorizontalSizes.append(hsizes.at(1).toInt());
+		}
+		else if (eChild.tagName() == "editor-vertical-sizes") {
+			const QStringList& vsizes = eChild.text().split(',');
+			m_editorVerticalSizes.clear();
+			m_editorVerticalSizes.append(vsizes.at(0).toInt());
+			m_editorVerticalSizes.append(vsizes.at(1).toInt());
+		}
 		else if (eChild.tagName() == "ghost-track-name") {
 			m_sGhostTrackName = eChild.text();
 		}
@@ -1339,6 +1367,24 @@ bool qtractorMidiClip::saveClipElement (
 		pDocument->saveTextElement("editor-size",
 			QString::number(m_sizeEditor.width()) + ',' +
 			QString::number(m_sizeEditor.height()), &eMidiClip);
+	}
+	if (m_iEditorHorizontalZoom != 100) {
+		pDocument->saveTextElement("editor-horizontal-zoom",
+			QString::number(m_iEditorHorizontalZoom), &eMidiClip);
+	}
+	if (m_iEditorVerticalZoom != 100) {
+		pDocument->saveTextElement("editor-vertical-zoom",
+			QString::number(m_iEditorVerticalZoom), &eMidiClip);
+	}
+	if (m_editorHorizontalSizes.count() >= 2) {
+		pDocument->saveTextElement("editor-horizontal-sizes",
+			QString::number(m_editorHorizontalSizes.at(0)) + ',' +
+			QString::number(m_editorHorizontalSizes.at(1)), &eMidiClip);
+	}
+	if (m_editorVerticalSizes.count() >= 2) {
+		pDocument->saveTextElement("editor-vertical-sizes",
+			QString::number(m_editorVerticalSizes.at(0)) + ',' +
+			QString::number(m_editorVerticalSizes.at(1)), &eMidiClip);
 	}
 	if (!m_sGhostTrackName.isEmpty()) {
 		pDocument->saveTextElement("ghost-track-name",

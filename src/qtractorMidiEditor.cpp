@@ -877,6 +877,14 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 		sizes.append(180);
 		pOptions->loadSplitterSizes(m_pVSplitter, sizes);
 	}
+
+	// Track splitter moves...
+	QObject::connect(m_pHSplitter,
+		SIGNAL(splitterMoved(int, int)),
+		SLOT(horizontalSplitterSlot()));
+	QObject::connect(m_pVSplitter,
+		SIGNAL(splitterMoved(int, int)),
+		SLOT(verticalSplitterSlot()));
 }
 
 
@@ -943,6 +951,24 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 				}
 			}
 		}
+		// Set zoom ratios...
+		const unsigned short iHorizontalZoom
+			= pMidiClip->editorHorizontalZoom();
+		if (iHorizontalZoom != 100)
+			setHorizontalZoom(iHorizontalZoom);
+		const unsigned short iVerticalZoom
+			= pMidiClip->editorVerticalZoom();
+		if (iVerticalZoom != 100)
+			setVerticalZoom(iVerticalZoom);
+		// Set splitter sizes...
+		const QList<int>& hsizes
+			= pMidiClip->editorHorizontalSizes();
+		if (!hsizes.isEmpty())
+			setHorizontalSizes(hsizes);
+		const QList<int>& vsizes
+			= pMidiClip->editorVerticalSizes();
+		if (!vsizes.isEmpty())
+			setVerticalSizes(vsizes);
 		// Got clip!
 	} else {
 		// Reset those little things too..
@@ -1026,6 +1052,9 @@ void qtractorMidiEditor::setHorizontalZoom ( unsigned short iHorizontalZoom )
 {
 	m_pTimeScale->setHorizontalZoom(iHorizontalZoom);
 	m_pTimeScale->updateScale();
+
+	if (m_pMidiClip)
+		m_pMidiClip->setEditorHorizontalZoom(iHorizontalZoom);
 }
 
 unsigned short qtractorMidiEditor::horizontalZoom (void) const
@@ -1049,11 +1078,41 @@ void qtractorMidiEditor::setVerticalZoom ( unsigned short iVerticalZoom )
 	m_pEditList->setItemHeight(iItemHeight);
 
 	m_pTimeScale->setVerticalZoom(iVerticalZoom);
+
+	if (m_pMidiClip)
+		m_pMidiClip->setEditorVerticalZoom(iVerticalZoom);
 }
 
 unsigned short qtractorMidiEditor::verticalZoom (void) const
 {
 	return m_pTimeScale->verticalZoom();
+}
+
+
+// Splitter sizes accessors.
+void qtractorMidiEditor::setHorizontalSizes ( const QList<int>& sizes )
+{
+	const bool bBlockSignals = m_pHSplitter->blockSignals(true);
+	m_pHSplitter->setSizes(sizes);
+	m_pHSplitter->blockSignals(bBlockSignals);
+}
+
+QList<int> qtractorMidiEditor::horizontalSizes (void) const
+{
+	return m_pHSplitter->sizes();
+}
+
+
+void qtractorMidiEditor::setVerticalSizes ( const QList<int>& sizes )
+{
+	const bool bBlockSignals = m_pVSplitter->blockSignals(true);
+	m_pVSplitter->setSizes(sizes);
+	m_pVSplitter->blockSignals(bBlockSignals);
+}
+
+QList<int> qtractorMidiEditor::verticalSizes (void) const
+{
+	return m_pVSplitter->sizes();
 }
 
 
@@ -1617,6 +1676,22 @@ void qtractorMidiEditor::verticalZoomResetSlot (void)
 
 	verticalZoomStep(ZoomBase - m_pTimeScale->verticalZoom());
 	zoomCenterPost(zc);
+}
+
+
+
+
+// Splitters moved slots.
+void qtractorMidiEditor::horizontalSplitterSlot (void)
+{
+	if (m_pMidiClip)
+		m_pMidiClip->setEditorHorizontalSizes(m_pHSplitter->sizes());
+}
+
+void qtractorMidiEditor::verticalSplitterSlot (void)
+{
+	if (m_pMidiClip)
+		m_pMidiClip->setEditorVerticalSizes(m_pVSplitter->sizes());
 }
 
 

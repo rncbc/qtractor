@@ -129,6 +129,13 @@ public:
 	void setVerticalZoom(unsigned short iVerticalZoom);
 	unsigned short verticalZoom() const;
 
+	// Splitter sizes accessors.
+	void setHorizontalSizes(const QList<int>& sizes);
+	QList<int> horizontalSizes() const;
+
+	void setVerticalSizes(const QList<int>& sizes);
+	QList<int> verticalSizes() const;
+
 	// Local time scale accessors.
 	qtractorTimeScale *timeScale() const;
 	unsigned long timeOffset() const;
@@ -522,6 +529,10 @@ protected slots:
 	void verticalZoomInSlot();
 	void verticalZoomOutSlot();
 	void verticalZoomResetSlot();
+
+	// Splitters moved slots.
+	void horizontalSplitterSlot();
+	void verticalSplitterSlot();
 
 	// Command execution notification slot.
 	void updateNotifySlot(unsigned int flags);
