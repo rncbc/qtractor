@@ -41,6 +41,7 @@
 #include "qtractorTimeScale.h"
 
 #include "qtractorSession.h"
+#include "qtractorOptions.h"
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -779,11 +780,17 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Current ghost-track option.
 	m_pGhostTrack = nullptr;
 
+	// The main widget splitters.
+	m_pHSplitter = new QSplitter(Qt::Horizontal, this);
+	m_pHSplitter->setObjectName("qtractorMidiEditor::HSplitter");
+
+	m_pVSplitter = this;
+	m_pVSplitter->setObjectName("qtractorMidiEditor::VSplitter");
+
 	// Create child frame widgets...
-	QSplitter *pSplitter = new QSplitter(Qt::Horizontal, this);
-	QWidget *pVBoxLeft   = new QWidget(pSplitter);
-	QWidget *pVBoxRight  = new QWidget(pSplitter);
-	QWidget *pHBoxBottom = new QWidget(this);
+	QWidget *pVBoxLeft   = new QWidget(m_pHSplitter);
+	QWidget *pVBoxRight  = new QWidget(m_pHSplitter);
+	QWidget *pHBoxBottom = new QWidget(m_pVSplitter);
 
 	// Create child view widgets...
 	m_pEditListHeader = new QFrame(pVBoxLeft);
@@ -823,16 +830,16 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	pHBoxBottomLayout->addWidget(m_pEditEventFrame);
 	pHBoxBottom->setLayout(pHBoxBottomLayout);
 
-//	pSplitter->setOpaqueResize(false);
-	pSplitter->setStretchFactor(pSplitter->indexOf(pVBoxLeft), 0);
-	pSplitter->setHandleWidth(2);
+//	m_pHSplitter->setOpaqueResize(false);
+	m_pHSplitter->setStretchFactor(m_pHSplitter->indexOf(pVBoxLeft), 0);
+	m_pHSplitter->setHandleWidth(2);
 
-//	QSplitter::setOpaqueResize(false);
-	QSplitter::setStretchFactor(QSplitter::indexOf(pHBoxBottom), 0);
-	QSplitter::setHandleWidth(2);
+//	m_pVSplitter->setOpaqueResize(false);
+	m_pVSplitter->setStretchFactor(m_pVSplitter->indexOf(pHBoxBottom), 0);
+	m_pVSplitter->setHandleWidth(2);
 
-	QSplitter::setWindowIcon(QIcon(":/images/qtractorMidiEditor.png"));
-	QSplitter::setWindowTitle(tr("MIDI Editor"));
+	m_pVSplitter->setWindowIcon(QIcon(":/images/qtractorMidiEditor.png"));
+	m_pVSplitter->setWindowTitle(tr("MIDI Editor"));
 
 	// To have all views in positional sync.
 	QObject::connect(m_pEditList, SIGNAL(contentsMoving(int,int)),
@@ -856,11 +863,28 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 		SIGNAL(updateNotifySignal(unsigned int)),
 		SLOT(updateNotifySlot(unsigned int)));
 
-	// FIXME: Initial horizontal splitter sizes.
-	QList<int> sizes;
-	sizes.append(48);
-	sizes.append(752);
-	pSplitter->setSizes(sizes);
+	// Initial splitter sizes.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		QList<int> sizes;
+		// Initial horizontal splitter sizes...
+		sizes.append(48);
+		sizes.append(752);
+		pOptions->loadSplitterSizes(m_pHSplitter, sizes);
+		sizes.clear();
+		// Initial vertical splitter sizes...
+		sizes.append(420);
+		sizes.append(180);
+		pOptions->loadSplitterSizes(m_pVSplitter, sizes);
+	}
+
+	// Track splitter moves...
+	QObject::connect(m_pHSplitter,
+		SIGNAL(splitterMoved(int, int)),
+		SLOT(horizontalSplitterSlot()));
+	QObject::connect(m_pVSplitter,
+		SIGNAL(splitterMoved(int, int)),
+		SLOT(verticalSplitterSlot()));
 }
 
 
@@ -868,6 +892,13 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 qtractorMidiEditor::~qtractorMidiEditor (void)
 {
 	resetDragState(nullptr);
+
+	// Save splitter sizes...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		pOptions->saveSplitterSizes(m_pHSplitter);
+		pOptions->saveSplitterSizes(m_pVSplitter);
+	}
 
 	// Release local instances.
 	delete m_pTimeScale;
@@ -920,6 +951,24 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 				}
 			}
 		}
+		// Set zoom ratios...
+		const unsigned short iHorizontalZoom
+			= pMidiClip->editorHorizontalZoom();
+		if (iHorizontalZoom != 100)
+			setHorizontalZoom(iHorizontalZoom);
+		const unsigned short iVerticalZoom
+			= pMidiClip->editorVerticalZoom();
+		if (iVerticalZoom != 100)
+			setVerticalZoom(iVerticalZoom);
+		// Set splitter sizes...
+		const QList<int>& hsizes
+			= pMidiClip->editorHorizontalSizes();
+		if (!hsizes.isEmpty())
+			setHorizontalSizes(hsizes);
+		const QList<int>& vsizes
+			= pMidiClip->editorVerticalSizes();
+		if (!vsizes.isEmpty())
+			setVerticalSizes(vsizes);
 		// Got clip!
 	} else {
 		// Reset those little things too..
@@ -1003,6 +1052,9 @@ void qtractorMidiEditor::setHorizontalZoom ( unsigned short iHorizontalZoom )
 {
 	m_pTimeScale->setHorizontalZoom(iHorizontalZoom);
 	m_pTimeScale->updateScale();
+
+	if (m_pMidiClip)
+		m_pMidiClip->setEditorHorizontalZoom(iHorizontalZoom);
 }
 
 unsigned short qtractorMidiEditor::horizontalZoom (void) const
@@ -1026,11 +1078,41 @@ void qtractorMidiEditor::setVerticalZoom ( unsigned short iVerticalZoom )
 	m_pEditList->setItemHeight(iItemHeight);
 
 	m_pTimeScale->setVerticalZoom(iVerticalZoom);
+
+	if (m_pMidiClip)
+		m_pMidiClip->setEditorVerticalZoom(iVerticalZoom);
 }
 
 unsigned short qtractorMidiEditor::verticalZoom (void) const
 {
 	return m_pTimeScale->verticalZoom();
+}
+
+
+// Splitter sizes accessors.
+void qtractorMidiEditor::setHorizontalSizes ( const QList<int>& sizes )
+{
+	const bool bBlockSignals = m_pHSplitter->blockSignals(true);
+	m_pHSplitter->setSizes(sizes);
+	m_pHSplitter->blockSignals(bBlockSignals);
+}
+
+QList<int> qtractorMidiEditor::horizontalSizes (void) const
+{
+	return m_pHSplitter->sizes();
+}
+
+
+void qtractorMidiEditor::setVerticalSizes ( const QList<int>& sizes )
+{
+	const bool bBlockSignals = m_pVSplitter->blockSignals(true);
+	m_pVSplitter->setSizes(sizes);
+	m_pVSplitter->blockSignals(bBlockSignals);
+}
+
+QList<int> qtractorMidiEditor::verticalSizes (void) const
+{
+	return m_pVSplitter->sizes();
 }
 
 
@@ -1594,6 +1676,22 @@ void qtractorMidiEditor::verticalZoomResetSlot (void)
 
 	verticalZoomStep(ZoomBase - m_pTimeScale->verticalZoom());
 	zoomCenterPost(zc);
+}
+
+
+
+
+// Splitters moved slots.
+void qtractorMidiEditor::horizontalSplitterSlot (void)
+{
+	if (m_pMidiClip)
+		m_pMidiClip->setEditorHorizontalSizes(m_pHSplitter->sizes());
+}
+
+void qtractorMidiEditor::verticalSplitterSlot (void)
+{
+	if (m_pMidiClip)
+		m_pMidiClip->setEditorVerticalSizes(m_pVSplitter->sizes());
 }
 
 

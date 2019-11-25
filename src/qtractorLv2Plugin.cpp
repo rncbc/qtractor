@@ -26,6 +26,7 @@
 #include "qtractorLv2Plugin.h"
 
 #include "qtractorPluginFactory.h"
+#include "qtractorPluginCommand.h"
 
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
@@ -1032,8 +1033,6 @@ static struct qtractorLv2Urids
 
 
 #ifdef CONFIG_LV2_PROGRAMS
-
-#include "qtractorPluginCommand.h"
 
 void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
 {

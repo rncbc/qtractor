@@ -129,6 +129,13 @@ public:
 	void setVerticalZoom(unsigned short iVerticalZoom);
 	unsigned short verticalZoom() const;
 
+	// Splitter sizes accessors.
+	void setHorizontalSizes(const QList<int>& sizes);
+	QList<int> horizontalSizes() const;
+
+	void setVerticalSizes(const QList<int>& sizes);
+	QList<int> verticalSizes() const;
+
 	// Local time scale accessors.
 	qtractorTimeScale *timeScale() const;
 	unsigned long timeOffset() const;
@@ -523,6 +530,10 @@ protected slots:
 	void verticalZoomOutSlot();
 	void verticalZoomResetSlot();
 
+	// Splitters moved slots.
+	void horizontalSplitterSlot();
+	void verticalSplitterSlot();
+
 	// Command execution notification slot.
 	void updateNotifySlot(unsigned int flags);
 
@@ -543,6 +554,10 @@ private:
 	// Event fore/background colors.
 	QColor m_foreground;
 	QColor m_background;
+
+	// The main widget splitters.
+	QSplitter *m_pHSplitter;
+	QSplitter *m_pVSplitter;
 
 	// The main child widgets.
 	QFrame *m_pEditListHeader;

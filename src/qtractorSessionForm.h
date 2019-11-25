@@ -41,16 +41,23 @@ public:
 	// Destructor.
 	~qtractorSessionForm();
 
-    void setSession(qtractorSession *pSession);
-    const qtractorSession::Properties& properties();
+	void setSession(qtractorSession *pSession);
+	const qtractorSession::Properties& properties();
 
 protected slots:
 
-    void accept();
-    void reject();
-    void changed();
-    void stabilizeForm();
-    void browseSessionDir();
+	void accept();
+	void reject();
+	void changed();
+
+	void changeSessionName(const QString& sSessionName);
+	void changeSessionDir(const QString& sSessionDir);
+	void finishSessionDir();
+	void browseSessionDir();
+
+protected:
+
+	void stabilizeForm();
 
 private:
 

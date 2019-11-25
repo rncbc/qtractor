@@ -6,6 +6,40 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI Clip editor (aka. piano-roll) horizontal and
+  vertical splitter sizes, widths and heights resp.
+  are now preserved as user preferences and also to
+  session state. (EXPERIMENTAL)
+
+- Second attempt to fix the yet non-official though
+  CMake build configuration. (EXPERIMENTAL)
+
+
+0.9.11  2019-11-09  The Mauerfall'30 Release.
+
+- MIDI Instrument and patch, bank and program names
+  are now correctly updated on their respective track
+  -list (left pane) columns.
+
+- Avoid copying/replicating dirty MIDI clip files,
+  for yet untitled/scratch sessions.
+
+- Transport/Backward commands now honoring edit-tail,
+  loop-end and punch-out points, when playback is not
+  rolling.
+
+- A session name (sub-)directory is now suggested on
+  every new session properties dialog.
+
+- Avoid adding any extraneous clip replica when Ctrl
+  +dragging on either of its edges.
+
+- When using autotools and ./configure --with-qt=...,
+  it is also necessary to adjust the PKG_CONFIG_PATH
+  environment variable (after a merge request by plcl
+  aka. Pedro López-Cabanillas, while on qmidinet,
+  thanks).
+
 - Fixing a potential crash-effect in switching MIDI
   output buses on tracks that are set to show audio
   output monitoring meters, is on going still.
@@ -64,7 +98,7 @@ GIT HEAD
 
 - Fixed editing and display of 'Pgm Change' events on
   the MIDI clip editor (aka. piano-roll).
-  
+
 - Introducing tempo/beat-detection support on the Clip
   / Tempo Adjust... dialog (provided libaubio >= 0.4.1
   is available); and now also featured with some rough
@@ -3197,7 +3231,7 @@ O.6.1  2014-04-29  Bitsy Sweet Beta
 
 - Fixed a potential crash and/or simple record dismissal when changing
   properties of a track already armed for recording; prevent record
-engaged  tracks from editing or removal.
+  engaged tracks from editing or removal.
 
 - Lighten up the connections line and highlight colors, as seen to fit
   best on some darker background themes.
