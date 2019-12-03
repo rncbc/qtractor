@@ -852,7 +852,7 @@ qtractorTimeScale::Marker *qtractorTimeScale::MarkerCursor::seekPixel ( int x )
 qtractorTimeScale::Marker *qtractorTimeScale::addMarker (
 	unsigned long iFrame, const QString& sText, const QColor& rgbColor )
 {
-	Marker *pMarker	= 0;
+	Marker *pMarker	= nullptr;
 
 	// Snap to nearest bar...
 	unsigned short iBar = 0;
@@ -875,6 +875,49 @@ qtractorTimeScale::Marker *qtractorTimeScale::addMarker (
 	} else {
 		// Add/insert a new marker...
 		pMarker = new Marker(iFrame, iBar, sText, rgbColor);
+		if (pMarkerNear && pMarkerNear->frame > iFrame)
+			m_markers.insertBefore(pMarker, pMarkerNear);
+		else
+		if (pMarkerNear && pMarkerNear->frame < iFrame)
+			m_markers.insertAfter(pMarker, pMarkerNear);
+		else
+			m_markers.append(pMarker);
+	}
+
+	// Update positioning...
+	updateMarker(pMarker);
+
+	return pMarker;
+}
+
+
+// Key-signature list specifics.
+qtractorTimeScale::Marker *qtractorTimeScale::addKeySignature (
+	unsigned long iFrame, int iAccidentals, bool bMinor )
+{
+	Marker *pMarker	= nullptr;
+
+	// Snap to nearest bar...
+	unsigned short iBar = 0;
+
+	Node *pNodePrev = m_cursor.seekFrame(iFrame);
+	if (pNodePrev) {
+		iBar = pNodePrev->barFromFrame(iFrame);
+		iFrame = pNodePrev->frameFromBar(iBar);
+	}
+
+	// Seek for the nearest marker...
+	Marker *pMarkerNear = m_markerCursor.seekFrame(iFrame);
+	// Either update existing marker or add new one...
+	if (pMarkerNear && pMarkerNear->frame == iFrame) {
+		// Update exact matching marker...
+		pMarker = pMarkerNear;
+		pMarker->bar = iBar;
+		pMarker->accidentals = iAccidentals;
+		pMarker->minor = bMinor;
+	} else {
+		// Add/insert a new marker...
+		pMarker = new Marker(iFrame, iBar, iAccidentals, bMinor);
 		if (pMarkerNear && pMarkerNear->frame > iFrame)
 			m_markers.insertBefore(pMarker, pMarkerNear);
 		else

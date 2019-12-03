@@ -68,8 +68,8 @@ public:
 		EOT         = 0x2f,
 		TEMPO       = 0x51,
 		SMPTE       = 0x54,
-		TIME        = 0x58,
-		KEY         = 0x59,
+		TIMESIG     = 0x58,
+		KEYSIG      = 0x59,
 		PROPRIETARY = 0x7f
 	};
 

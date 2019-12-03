@@ -505,22 +505,33 @@ public:
 	{
 	public:
 
-		// Constructor.
+		// Constructors.
 		Marker(unsigned long iFrame, unsigned short iBar,
 			const QString& sText, const QColor& rgbColor = Qt::darkGray)
-			: frame(iFrame), bar(iBar), text(sText), color(rgbColor) {}
+			: frame(iFrame), bar(iBar), text(sText), color(rgbColor),
+				accidentals(0), minor(false) {}
+
+		Marker(unsigned long iFrame, unsigned short iBar,
+			int iAccidentals = 0, bool bMinor = false)
+			: frame(iFrame), bar(iBar), color(Qt::darkGray),
+				accidentals(iAccidentals), minor(bMinor) {}
 
 		// Copy constructor.
 		Marker(const Marker& marker) : frame(marker.frame),
-			bar(marker.bar), text(marker.text), color(marker.color) {}
+			bar(marker.bar), text(marker.text), color(marker.color),
+			accidentals(marker.accidentals), minor(marker.minor) {}
 
 		// Marker keys.
 		unsigned long  frame;
 		unsigned short bar;
 
-		// Marker payload.
+		// Location marker payload.
 		QString text;
 		QColor  color;
+
+		// Key-signature marker payload.
+		int     accidentals;
+		bool    minor;
 	};
 
 	// To optimize and keep track of current frame
@@ -565,6 +576,10 @@ public:
 		unsigned long iFrame,
 		const QString& sText,
 		const QColor& rgbColor = Qt::darkGray);
+	Marker *addKeySignature(
+		unsigned long iFrame,
+		int iAccidentals,
+		bool bMinor = false);
 	void updateMarker(Marker *pMarker);
 	void removeMarker(Marker *pMarker);
 

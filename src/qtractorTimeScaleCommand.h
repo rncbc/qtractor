@@ -219,6 +219,7 @@ protected:
 
 	// Executive commands.
 	bool addMarker();
+
 	bool updateMarker();
 	bool removeMarker();
 
