@@ -586,6 +586,9 @@ public:
 	// Update markers from given node position.
 	void updateMarkers(Node *pNode);
 
+	// Key signature map accessor.
+	static QString keySignatureName(int iAccidentals, bool bMinor);
+
 protected:
 
 	// Tempo-map independent coefficients.

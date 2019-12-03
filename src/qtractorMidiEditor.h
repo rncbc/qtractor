@@ -387,7 +387,7 @@ public:
 	static const QStringList& scaleKeyNames();
 	static const QStringList& scaleTypeNames();
 
-	// Scale quantizer method.	
+	// Scale quantizer method.
 	static unsigned char snapToScale(
 		unsigned char note, int iKey, int iScale);
 

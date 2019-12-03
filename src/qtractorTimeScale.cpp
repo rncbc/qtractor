@@ -970,4 +970,51 @@ void qtractorTimeScale::updateMarkers ( qtractorTimeScale::Node *pNode )
 }
 
 
+// Key signature map accessor.
+QString qtractorTimeScale::keySignatureName ( int iAccidentals, bool bMinor )
+{
+	static struct
+	{
+		const char *natural;
+		const char *sharp;
+		const char *flat;
+
+	} s_aAccidentalsTab[] = {
+
+		{ "C",     "B#",     nullptr },
+		{ nullptr, "C#",     "Db"    },
+		{ "D",     nullptr,  nullptr },
+		{ nullptr, "D#",     "Eb"    },
+		{ "E",     nullptr,  "Fb"    },
+		{ "F",     "E#",     nullptr },
+		{ nullptr, "F#",     "Gb"    },
+		{ "G",     nullptr,  nullptr },
+		{ nullptr, "G#",     "Ab"    },
+		{ "A",     nullptr,  nullptr },
+		{ nullptr, "A#",     "Bb"    },
+		{ "B",     nullptr,  "Cb"    }
+	};
+
+	const int i
+		= (iAccidentals * (iAccidentals < 0 ? -5 : 7)
+		+ (bMinor ? 9 : 0)) % 12;
+
+	const char *name = nullptr;
+	if (iAccidentals < 0)
+		name = s_aAccidentalsTab[i].flat;
+	else
+	if (iAccidentals > 0)
+		name = s_aAccidentalsTab[i].sharp;
+
+	if (name == nullptr)
+		name = s_aAccidentalsTab[i].natural;
+
+	QString sKeySignature = QString::fromLocal8Bit(name);
+	if (bMinor)
+		sKeySignature += 'm';
+
+	return sKeySignature;
+}
+
+
 // end of qtractorTimeScale.cpp
