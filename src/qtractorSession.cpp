@@ -2242,6 +2242,10 @@ bool qtractorSession::loadElement (
 						qtractorSession::timeScale()->addMarker(
 							iFrame, sText, rgbColor);
 					}
+					if (iAccidentals || bMinor) {
+						qtractorSession::timeScale()->addKeySignature(
+							iFrame, iAccidentals, bMinor);
+					}
 				}
 			}
 		}

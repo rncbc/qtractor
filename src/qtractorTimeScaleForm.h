@@ -89,13 +89,15 @@ protected:
 
 		AddMarker    = (1 << 3),
 		UpdateMarker = (1 << 4),
-		RemoveMarker = (1 << 5)
+		RemoveMarker = (1 << 5),
+
+		AddKeySignature    = (1 << 6),
+		UpdateKeySignature = (1 << 7)
 	};
 
 	unsigned int flags() const;
 
 	void setCurrentItem(qtractorTimeScale::Node *pNode, unsigned long iFrame);
-
 	void setCurrentMarker(qtractorTimeScale::Marker *pMarker);
 
 	void ensureVisibleFrame(unsigned long iFrame);
