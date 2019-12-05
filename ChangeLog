@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Basic key-signature has been added to tempo, time
+  -signature and location markers map. (EXPERIMENTAL)
+
 - MIDI Clip editor (aka. piano-roll) horizontal and
   vertical splitter sizes, widths and heights resp.
   are now preserved as user preferences and also to

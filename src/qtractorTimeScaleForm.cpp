@@ -247,9 +247,9 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	QObject::connect(m_ui.KeySignatureAccidentalsComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.KeySignatureModeComboBox,
+	QObject::connect(m_ui.KeySignatureMinorComboBox,
 		SIGNAL(activated(int)),
-		SLOT(modeChanged(int)));
+		SLOT(minorChanged(int)));
 
 	QObject::connect(m_ui.MarkerTextLineEdit,
 		SIGNAL(textChanged(const QString&)),
@@ -469,9 +469,9 @@ void qtractorTimeScaleForm::setCurrentKeySignature (
 	updateKeySignatures(iAccidentals, bMinor);
 
 	const bool bBlockSignals
-		= m_ui.KeySignatureModeComboBox->blockSignals(true);
-	m_ui.KeySignatureModeComboBox->setCurrentIndex(bMinor ? 1 : 0);
-	m_ui.KeySignatureModeComboBox->blockSignals(bBlockSignals);
+		= m_ui.KeySignatureMinorComboBox->blockSignals(true);
+	m_ui.KeySignatureMinorComboBox->setCurrentIndex(bMinor ? 1 : 0);
+	m_ui.KeySignatureMinorComboBox->blockSignals(bBlockSignals);
 }
 
 
@@ -488,6 +488,7 @@ void qtractorTimeScaleForm::updateKeySignatures (
 		= m_ui.KeySignatureAccidentalsComboBox->blockSignals(true);
 
 	m_ui.KeySignatureAccidentalsComboBox->clear();
+
 	int iIndex = 0;
 	for (int iData = -9; 9 >= iData; ++iData) {
 		m_ui.KeySignatureAccidentalsComboBox->addItem(
@@ -637,7 +638,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 		= m_ui.KeySignatureAccidentalsComboBox->currentIndex();
 	if (iIndex >= 0)
 		iAccidentals = m_ui.KeySignatureAccidentalsComboBox->itemData(iIndex).toInt();
-	const bool bMinor = (m_ui.KeySignatureModeComboBox->currentIndex() > 0);
+	const bool bMinor = (m_ui.KeySignatureMinorComboBox->currentIndex() > 0);
 
 	if (pMarker && pMarker->frame == iFrame) {
 		if (!sMarkerText.isEmpty())
@@ -706,7 +707,7 @@ void qtractorTimeScaleForm::addItem (void)
 		const int iIndex = m_ui.KeySignatureAccidentalsComboBox->currentIndex();
 		if (iIndex >= 0)
 			iAccidentals = m_ui.KeySignatureAccidentalsComboBox->itemData(iIndex).toInt();
-		const bool bMinor = (m_ui.KeySignatureModeComboBox->currentIndex() > 0);
+		const bool bMinor = (m_ui.KeySignatureMinorComboBox->currentIndex() > 0);
 		if (iAccidentals || bMinor) {
 			pSession->execute(
 				new qtractorTimeScaleAddKeySignatureCommand(
@@ -771,7 +772,7 @@ void qtractorTimeScaleForm::updateItem (void)
 			const int iIndex = m_ui.KeySignatureAccidentalsComboBox->currentIndex();
 			if (iIndex >= 0)
 				iAccidentals = m_ui.KeySignatureAccidentalsComboBox->itemData(iIndex).toInt();
-			const bool bMinor = (m_ui.KeySignatureModeComboBox->currentIndex() > 0);
+			const bool bMinor = (m_ui.KeySignatureMinorComboBox->currentIndex() > 0);
 			pSession->execute(
 				new qtractorTimeScaleUpdateKeySignatureCommand(
 					m_pTimeScale, iFrame, iAccidentals, bMinor));
@@ -946,10 +947,14 @@ void qtractorTimeScaleForm::tempoChanged (void)
 
 
 // Key signature has changed.
-void qtractorTimeScaleForm::modeChanged ( int iMode )
+void qtractorTimeScaleForm::minorChanged ( int iMinor )
 {
 	if (m_iDirtySetup > 0)
 		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTimeScaleForm::minorChanged(%d)", iMinor);
+#endif
 
 	int iAccidentals = 0;
 	const int iIndex
@@ -957,7 +962,7 @@ void qtractorTimeScaleForm::modeChanged ( int iMode )
 	if (iIndex >= 0)
 		iAccidentals = m_ui.KeySignatureAccidentalsComboBox->itemData(iIndex).toInt();
 
-	updateKeySignatures(iAccidentals, iMode > 0);
+	updateKeySignatures(iAccidentals, (iMinor > 0));
 
 	changed();
 }
