@@ -1548,8 +1548,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	// Set proper tempo map...
 	if (file.tempoMap()) {
 		file.tempoMap()->fromTimeScale(
-			pSession->timeScale(),
-			pSession->tickFromFrame(iTimeStart));
+			pSession->timeScale(), iTimeStart);
 	}
 
 	// Setup track (SMF format 1).

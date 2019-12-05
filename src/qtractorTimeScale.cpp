@@ -971,7 +971,8 @@ void qtractorTimeScale::updateMarkers ( qtractorTimeScale::Node *pNode )
 
 
 // Key signature map accessor.
-QString qtractorTimeScale::keySignatureName ( int iAccidentals, bool bMinor )
+QString qtractorTimeScale::keySignatureName (
+	int iAccidentals, bool bMinor, char chMinor )
 {
 	static struct
 	{
@@ -1010,8 +1011,8 @@ QString qtractorTimeScale::keySignatureName ( int iAccidentals, bool bMinor )
 		name = s_aAccidentalsTab[i].natural;
 
 	QString sKeySignature = QString::fromLocal8Bit(name);
-	if (bMinor)
-		sKeySignature += 'm';
+	if (bMinor && chMinor)
+		sKeySignature += chMinor;
 
 	return sKeySignature;
 }

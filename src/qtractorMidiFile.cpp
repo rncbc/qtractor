@@ -1329,8 +1329,8 @@ void qtractorMidiFile::writeMarker (
 		writeInt(qtractorMidiEvent::META, 1);
 		writeInt(qtractorMidiEvent::KEYSIG, 1);
 		writeInt(2);
-		writeInt(pMarker->accidentals);
-		writeInt(pMarker->minor ? 1 : 0);
+		writeInt(pMarker->accidentals, 1); // 1 byte, can be negative...
+		writeInt(pMarker->minor ? 1 : 0, 1);
 	}
 
 	if (!pMarker->text.isEmpty()) {

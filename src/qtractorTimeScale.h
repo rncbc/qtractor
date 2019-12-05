@@ -587,7 +587,8 @@ public:
 	void updateMarkers(Node *pNode);
 
 	// Key signature map accessor.
-	static QString keySignatureName(int iAccidentals, bool bMinor);
+	static QString keySignatureName(
+		int iAccidentals, bool bMinor, char chMinor = 'm');
 
 protected:
 
