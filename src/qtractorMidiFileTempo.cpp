@@ -179,7 +179,7 @@ qtractorMidiFileTempo::Marker *qtractorMidiFileTempo::seekMarker ( unsigned long
 
 // Marker list specifics.
 qtractorMidiFileTempo::Marker *qtractorMidiFileTempo::addMarker (
-	unsigned long iTick, const QString& sText, int iAccidentals, bool bMinor )
+	unsigned long iTick, const QString& sText, int iAccidentals, int iMode )
 {
 	Marker *pMarker = 0;
 
@@ -196,10 +196,10 @@ qtractorMidiFileTempo::Marker *qtractorMidiFileTempo::addMarker (
 		pMarker = pMarkerPrev;
 		pMarker->text = sText;
 		pMarker->accidentals = iAccidentals;
-		pMarker->minor = bMinor;
+		pMarker->mode = iMode;
 	} else {
 		// Add/insert a new marker...
-		pMarker = new Marker(iTick, sText, iAccidentals, bMinor);
+		pMarker = new Marker(iTick, sText, iAccidentals, iMode);
 		if (pMarkerPrev)
 			m_markers.insertAfter(pMarker, pMarkerPrev);
 		else
@@ -252,7 +252,7 @@ void qtractorMidiFileTempo::fromTimeScale (
 		const unsigned long iTick = pTimeScale->tickFromFrame(pMarker->frame);
 		unsigned long iTime = uint64_t(iTick) * p / q;
 		iTime = (iTime > iTimeOffset ? iTime - iTimeOffset : 0);
-		addMarker(iTime, pMarker->text, pMarker->accidentals, pMarker->minor);
+		addMarker(iTime, pMarker->text, pMarker->accidentals, pMarker->mode);
 		pMarker = pMarker->next();
 	}
 }
@@ -301,10 +301,10 @@ void qtractorMidiFileTempo::intoTimeScale (
 				pTimeScale->frameFromTick(iTime + iTimeOffset),
 				pMarker->text);
 		}
-		if (pMarker->accidentals || pMarker->minor) {
+		if (pMarker->accidentals || pMarker->mode) {
 			pTimeScale->addKeySignature(
 				pTimeScale->frameFromTick(iTime + iTimeOffset),
-				pMarker->accidentals, pMarker->minor);
+				pMarker->accidentals, pMarker->mode);
 		}
 		pMarker = pMarker->next();
 	}

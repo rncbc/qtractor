@@ -1325,12 +1325,12 @@ void qtractorMidiFile::writeMarker (
 
 	writeInt(iDeltaTime);
 
-	if (pMarker->accidentals || pMarker->minor) {
+	if (pMarker->accidentals || pMarker->mode) {
 		writeInt(qtractorMidiEvent::META, 1);
 		writeInt(qtractorMidiEvent::KEYSIG, 1);
 		writeInt(2);
 		writeInt(pMarker->accidentals, 1); // 1 byte, can be negative...
-		writeInt(pMarker->minor ? 1 : 0, 1);
+		writeInt(pMarker->mode, 1);
 	}
 
 	if (!pMarker->text.isEmpty()) {

@@ -509,17 +509,17 @@ public:
 		Marker(unsigned long iFrame, unsigned short iBar,
 			const QString& sText, const QColor& rgbColor = Qt::darkGray)
 			: frame(iFrame), bar(iBar), text(sText), color(rgbColor),
-				accidentals(0), minor(false) {}
+				accidentals(0), mode(0) {}
 
 		Marker(unsigned long iFrame, unsigned short iBar,
-			int iAccidentals = 0, bool bMinor = false)
+			int iAccidentals = 0, int iMode = 0)
 			: frame(iFrame), bar(iBar), color(Qt::darkGray),
-				accidentals(iAccidentals), minor(bMinor) {}
+				accidentals(iAccidentals), mode(iMode) {}
 
 		// Copy constructor.
 		Marker(const Marker& marker) : frame(marker.frame),
 			bar(marker.bar), text(marker.text), color(marker.color),
-			accidentals(marker.accidentals), minor(marker.minor) {}
+			accidentals(marker.accidentals), mode(marker.mode) {}
 
 		// Marker keys.
 		unsigned long  frame;
@@ -530,8 +530,8 @@ public:
 		QColor  color;
 
 		// Key-signature marker payload.
-		int     accidentals;
-		bool    minor;
+		int accidentals;
+		int mode;
 	};
 
 	// To optimize and keep track of current frame
@@ -579,7 +579,7 @@ public:
 	Marker *addKeySignature(
 		unsigned long iFrame,
 		int iAccidentals,
-		bool bMinor = false);
+		int iMode = 0);
 	void updateMarker(Marker *pMarker);
 	void removeMarker(Marker *pMarker);
 
@@ -588,7 +588,7 @@ public:
 
 	// Key signature map accessor.
 	static QString keySignatureName(
-		int iAccidentals, bool bMinor, char chMinor = 'm');
+		int iAccidentals, int iMode, char chMinor = 'm');
 
 protected:
 

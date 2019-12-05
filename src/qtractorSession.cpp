@@ -2220,7 +2220,7 @@ bool qtractorSession::loadElement (
 					QString sText;
 					QColor rgbColor = Qt::darkGray;
 					int iAccidentals = 0;
-					bool bMinor = false;
+					int iMode = 0;
 					for (QDomNode nItem = eMarker.firstChild();
 							!nItem.isNull();
 								nItem = nItem.nextSibling()) {
@@ -2234,17 +2234,17 @@ bool qtractorSession::loadElement (
 							rgbColor.setNamedColor(eItem.text());
 						else if (eItem.tagName() == "accidentals")
 							iAccidentals = eItem.text().toInt();
-						else if (eItem.tagName() == "minor")
-							bMinor = qtractorDocument::boolFromText(eItem.text());
+						else if (eItem.tagName() == "mode")
+							iMode = eItem.text().toInt();
 					}
 					// Add new marker...
 					if (!sText.isEmpty()) {
 						qtractorSession::timeScale()->addMarker(
 							iFrame, sText, rgbColor);
 					}
-					if (iAccidentals || bMinor) {
+					if (iAccidentals || iMode) {
 						qtractorSession::timeScale()->addKeySignature(
-							iFrame, iAccidentals, bMinor);
+							iFrame, iAccidentals, iMode);
 					}
 				}
 			}
@@ -2436,11 +2436,11 @@ bool qtractorSession::saveElement (
 				pDocument->saveTextElement("text", pMarker->text, &eMarker);
 				pDocument->saveTextElement("color", pMarker->color.name(), &eMarker);
 			}
-			if (pMarker->accidentals || pMarker->minor) {
+			if (pMarker->accidentals || pMarker->mode) {
 				pDocument->saveTextElement("accidentals",
 					QString::number(pMarker->accidentals), &eMarker);
-				pDocument->saveTextElement("minor",
-					qtractorDocument::textFromBool(pMarker->minor), &eMarker);
+				pDocument->saveTextElement("mode",
+					QString::number(pMarker->mode), &eMarker);
 			}
 			eMarkers.appendChild(eMarker);
 			pMarker = pMarker->next();

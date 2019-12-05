@@ -202,7 +202,7 @@ public:
 		qtractorTimeScale *pTimeScale, unsigned long iFrame = 0,
 	const QString& sText = QString(),
 	const QColor& rgbColor = Qt::darkGray,
-	int iAccidentals = 0, bool bMinor = false);
+	int iAccidentals = 0, int iMode = 0);
 
 	// Time-scale accessor.
 	qtractorTimeScale *timeScale() const
@@ -217,8 +217,8 @@ public:
 		{ return m_rgbColor; }
 	int accidentals() const
 		{ return m_iAccidentals; }
-	bool isMinor() const
-		{ return m_bMinor; }
+	bool mode() const
+		{ return m_iMode; }
 
 protected:
 
@@ -238,7 +238,7 @@ private:
 	QString       m_sText;
 	QColor        m_rgbColor;
 	int           m_iAccidentals;
-	bool          m_bMinor;
+	int           m_iMode;
 };
 
 
@@ -310,7 +310,7 @@ public:
 	// Constructor.
 	qtractorTimeScaleAddKeySignatureCommand(
 		qtractorTimeScale *pTimeScale, unsigned long iFrame,
-		int iAccidentals = 0, bool bMinor = false);
+		int iAccidentals = 0, int iMode = 0);
 
 	// Time-scale command methods.
 	bool redo();
@@ -329,7 +329,7 @@ public:
 	// Constructor.
 	qtractorTimeScaleUpdateKeySignatureCommand(
 		qtractorTimeScale *pTimeScale, unsigned long iFrame,
-		int iAccidentals = 0, bool bMinor = false);
+		int iAccidentals = 0, int iMode = 0);
 
 	// Time-scale command methods.
 	bool redo();
@@ -383,7 +383,7 @@ private:
 	QString       m_sOldText;
 	QColor        m_rgbOldColor;
 	int           m_iOldAccidentals;
-	bool          m_bOldMinor;
+	int           m_iOldMode;
 };
 
 

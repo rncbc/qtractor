@@ -69,7 +69,7 @@ protected slots:
 	void barChanged(int);
 	void timeChanged(unsigned long);
 	void tempoChanged();
-	void minorChanged(int);
+	void modeChanged(int);
 	void changed();
 
 	void tempoTap();
@@ -102,7 +102,7 @@ protected:
 	void setCurrentMarker(qtractorTimeScale::Marker *pMarker);
 	void setCurrentKeySignature(qtractorTimeScale::Marker *pMarker);
 
-	void updateKeySignatures(int iAccidentals, bool bMinor);
+	void updateKeySignatures(int iAccidentals, int iMode);
 
 	void ensureVisibleFrame(unsigned long iFrame);
 

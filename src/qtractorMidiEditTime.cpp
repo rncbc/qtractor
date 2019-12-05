@@ -231,10 +231,10 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	while (pMarker) {
 		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx + 4;
 		if (x > w) break;
-		if (pMarker->accidentals || pMarker->minor) {
+		if (pMarker->accidentals || pMarker->mode) {
 			const QString& sKeySignature
 				= qtractorTimeScale::keySignatureName(
-					pMarker->accidentals, pMarker->minor);
+					pMarker->accidentals, pMarker->mode);
 			painter.setPen(Qt::darkGray);
 			painter.drawText(x, y2, sKeySignature);
 			x += fm.horizontalAdvance(sKeySignature) + 4;

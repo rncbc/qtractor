@@ -183,9 +183,9 @@ public:
 
 		// Constructors.
 		Marker(unsigned long iTick, const QString& sText,
-			int iAccidentals = 0, bool bMinor = false)
+			int iAccidentals = 0, int iMode = 0)
 			: tick(iTick), text(sText),
-				accidentals(iAccidentals), minor(bMinor) {}
+				accidentals(iAccidentals), mode(iMode) {}
 
 		// Marker key.
 		unsigned long tick;
@@ -193,7 +193,7 @@ public:
 		// Marker payload.
 		QString text;
 		int     accidentals;
-		bool    minor;
+		int     mode;
 	};
 
 	// Marker list accessors.
@@ -207,7 +207,7 @@ public:
 		unsigned long iTick,
 		const QString& sText,
 		int iAccidentals = 0,
-		bool bMinor = false);
+		int iMode = 0);
 	void removeMarker(Marker *pMarker);
 
 	// Time-scale sync methods.

@@ -893,7 +893,7 @@ qtractorTimeScale::Marker *qtractorTimeScale::addMarker (
 
 // Key-signature list specifics.
 qtractorTimeScale::Marker *qtractorTimeScale::addKeySignature (
-	unsigned long iFrame, int iAccidentals, bool bMinor )
+	unsigned long iFrame, int iAccidentals, int iMode )
 {
 	Marker *pMarker	= nullptr;
 
@@ -914,10 +914,10 @@ qtractorTimeScale::Marker *qtractorTimeScale::addKeySignature (
 		pMarker = pMarkerNear;
 		pMarker->bar = iBar;
 		pMarker->accidentals = iAccidentals;
-		pMarker->minor = bMinor;
+		pMarker->mode = iMode;
 	} else {
 		// Add/insert a new marker...
-		pMarker = new Marker(iFrame, iBar, iAccidentals, bMinor);
+		pMarker = new Marker(iFrame, iBar, iAccidentals, iMode);
 		if (pMarkerNear && pMarkerNear->frame > iFrame)
 			m_markers.insertBefore(pMarker, pMarkerNear);
 		else
@@ -972,7 +972,7 @@ void qtractorTimeScale::updateMarkers ( qtractorTimeScale::Node *pNode )
 
 // Key signature map accessor.
 QString qtractorTimeScale::keySignatureName (
-	int iAccidentals, bool bMinor, char chMinor )
+	int iAccidentals, int iMode, char chMinor )
 {
 	static struct
 	{
@@ -998,7 +998,7 @@ QString qtractorTimeScale::keySignatureName (
 
 	const int i
 		= (iAccidentals * (iAccidentals < 0 ? -5 : 7)
-		+ (bMinor ? 9 : 0)) % 12;
+		+ (iMode > 0 ? 9 : 0)) % 12;
 
 	const char *name = nullptr;
 	if (iAccidentals < 0)
@@ -1011,7 +1011,7 @@ QString qtractorTimeScale::keySignatureName (
 		name = s_aAccidentalsTab[i].natural;
 
 	QString sKeySignature = QString::fromLocal8Bit(name);
-	if (bMinor && chMinor)
+	if (iMode > 0 && chMinor)
 		sKeySignature += chMinor;
 
 	return sKeySignature;
