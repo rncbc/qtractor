@@ -487,16 +487,22 @@ void qtractorTimeScaleForm::updateKeySignatures (
 	const bool bBlockSignals
 		= m_ui.KeySignatureAccidentalsComboBox->blockSignals(true);
 
+	const QString sAccidentals
+		= m_ui.KeySignatureAccidentalsComboBox->currentText();
+
 	m_ui.KeySignatureAccidentalsComboBox->clear();
 
 	int iIndex = 0;
-	for (int iData = -9; 9 >= iData; ++iData) {
+	for (int i = 0; i < 18; ++i) {
+		const int iData = i - 8;
 		m_ui.KeySignatureAccidentalsComboBox->addItem(
 			qtractorTimeScale::keySignatureName(iData, iMode, 0));
 		m_ui.KeySignatureAccidentalsComboBox->setItemData(iIndex++, iData);
 	}
 
-	iIndex = m_ui.KeySignatureAccidentalsComboBox->findData(iAccidentals);
+	iIndex = m_ui.KeySignatureAccidentalsComboBox->findText(sAccidentals);
+	if (iIndex < 0)
+		iIndex = m_ui.KeySignatureAccidentalsComboBox->findData(iAccidentals);
 	if (iIndex >= 0)
 		m_ui.KeySignatureAccidentalsComboBox->setCurrentIndex(iIndex);
 

@@ -2213,7 +2213,7 @@ bool qtractorSession::loadElement (
 				QDomElement eMarker = nMarker.toElement();
 				if (eMarker.isNull())
 					continue;
-				// Load markers...
+				// Load markers/key-signatures...
 				if (eMarker.tagName() == "marker") {
 					const unsigned long iFrame
 						= eMarker.attribute("frame").toULong();
@@ -2242,6 +2242,7 @@ bool qtractorSession::loadElement (
 						qtractorSession::timeScale()->addMarker(
 							iFrame, sText, rgbColor);
 					}
+					// Or/and key-signature...
 					if (iAccidentals || iMode) {
 						qtractorSession::timeScale()->addKeySignature(
 							iFrame, iAccidentals, iMode);
@@ -2424,7 +2425,7 @@ bool qtractorSession::saveElement (
 		pElement->appendChild(eTempoMap);
 	}
 
-	// Save location markers, if any...
+	// Save location markers/key-signatures, if any...
 	qtractorTimeScale::Marker *pMarker
 		= qtractorSession::timeScale()->markers().first();
 	if (pMarker) {
