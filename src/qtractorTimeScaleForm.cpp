@@ -500,9 +500,7 @@ void qtractorTimeScaleForm::updateKeySignatures (
 		m_ui.KeySignatureAccidentalsComboBox->setItemData(iIndex++, iData);
 	}
 
-	iIndex = m_ui.KeySignatureAccidentalsComboBox->findText(sAccidentals);
-	if (iIndex < 0)
-		iIndex = m_ui.KeySignatureAccidentalsComboBox->findData(iAccidentals);
+	iIndex = m_ui.KeySignatureAccidentalsComboBox->findData(iAccidentals);
 	if (iIndex >= 0)
 		m_ui.KeySignatureAccidentalsComboBox->setCurrentIndex(iIndex);
 
