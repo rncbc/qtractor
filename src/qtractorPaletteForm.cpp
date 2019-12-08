@@ -77,7 +77,7 @@ static struct
 	{ "ToolTipText",     QPalette::ToolTipText     },
 	{ "NoRole",          QPalette::NoRole          },
 
-	{  nullptr,             QPalette::NoRole          }
+	{  nullptr,          QPalette::NoRole          }
 };
 
 

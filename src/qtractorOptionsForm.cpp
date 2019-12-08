@@ -60,10 +60,6 @@ static inline float pow10f2 ( float x )
 	{ return ::powf(10.0f, 0.05f * x); }
 
 
-// Translatable macro contextualizer.
-#undef  _TR
-#define _TR(x) QT_TR_NOOP(x)
-
 // Available session formats/ext-suffixes.
 static struct
 {
@@ -72,16 +68,16 @@ static struct
 
 } g_aSessionFormats[] = {
 
-	{ _TR("XML Default (*.%1)"), "qtr" },
-	{ _TR("XML Regular (*.%1)"), "qts" },
-	{ _TR("ZIP Archive (*.%1)"), "qtz" },
+	{ QT_TR_NOOP("XML Default (*.%1)"), "qtr" },
+	{ QT_TR_NOOP("XML Regular (*.%1)"), "qts" },
+	{ QT_TR_NOOP("ZIP Archive (*.%1)"), "qtz" },
 
 	{ nullptr, nullptr }
 };
 
 
 // Default (empty/blank) name.
-static const char *g_pszDefName = _TR("(default)");
+static const char *g_pszDefName = QT_TR_NOOP("(default)");
 
 
 //----------------------------------------------------------------------------
@@ -1052,7 +1048,7 @@ void qtractorOptionsForm::resetCustomColorThemes (
 {
 	m_ui.CustomColorThemeComboBox->clear();
 	m_ui.CustomColorThemeComboBox->addItem(
-		QString::fromLatin1(g_pszDefName));
+		tr(g_pszDefName));
 	m_ui.CustomColorThemeComboBox->addItems(
 		qtractorPaletteForm::namedPaletteList(&m_pOptions->settings()));
 
@@ -1070,7 +1066,7 @@ void qtractorOptionsForm::resetCustomStyleThemes (
 {
 	m_ui.CustomStyleThemeComboBox->clear();
 	m_ui.CustomStyleThemeComboBox->addItem(
-		QString::fromLatin1(g_pszDefName));
+		tr(g_pszDefName));
 	m_ui.CustomStyleThemeComboBox->addItems(
 		QStyleFactory::keys());
 
