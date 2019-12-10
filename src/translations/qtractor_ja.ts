@@ -11022,53 +11022,53 @@ Do you want to apply the changes?</source>
         <translation>メトロノームのBeat用の音声ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1125"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1131"/>
         <source>Audio Meter Color</source>
         <translation>オーディオメーターの色</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1147"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1153"/>
         <source>MIDI Meter Color</source>
         <translation>MIDIメーターの色</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1243"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1249"/>
         <source>Plug-in Directory</source>
         <translation>プラグインディレクトリー</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1483"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1489"/>
         <source>LV2 Presets Directory</source>
         <translation>LV2プリセットディレクトリー</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1524"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1530"/>
         <source>Messages Font</source>
         <translation>メッセージのフォント</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1552"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1558"/>
         <source>Messages Log</source>
         <translation>メッセージログ</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1555"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1561"/>
         <source>Log files (*.%1)</source>
         <translation>ログファイル (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1556"/>
-        <location filename="../qtractorOptionsForm.cpp" line="1602"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1562"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1608"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1598"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1604"/>
         <source>Session Template</source>
         <translation>セッションのテンプレート</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1601"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1607"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>セッションのテンプレートファイル(*.qtr *.qts *.%1)</translation>
     </message>
