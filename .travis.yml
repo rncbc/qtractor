@@ -16,7 +16,7 @@ branches:
 
 before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.3-xenial
+- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.6-xenial
 - sudo apt-get update -qq
 
 install:
