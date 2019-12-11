@@ -60,6 +60,11 @@ static inline float pow10f2 ( float x )
 	{ return ::powf(10.0f, 0.05f * x); }
 
 
+// Translatable macro contextualizer.
+#undef  _TR
+#define _TR(x) QT_TR_NOOP(x)
+
+
 // Available session formats/ext-suffixes.
 static struct
 {
@@ -68,16 +73,16 @@ static struct
 
 } g_aSessionFormats[] = {
 
-	{ QT_TR_NOOP("XML Default (*.%1)"), "qtr" },
-	{ QT_TR_NOOP("XML Regular (*.%1)"), "qts" },
-	{ QT_TR_NOOP("ZIP Archive (*.%1)"), "qtz" },
+	{ _TR("XML Default (*.%1)"), "qtr" },
+	{ _TR("XML Regular (*.%1)"), "qts" },
+	{ _TR("ZIP Archive (*.%1)"), "qtz" },
 
 	{ nullptr, nullptr }
 };
 
 
 // Default (empty/blank) name.
-static const char *g_pszDefName = QT_TR_NOOP("(default)");
+static const char *g_pszDefName = _TR("(default)");
 
 
 //----------------------------------------------------------------------------

@@ -24,6 +24,11 @@
 #include <QObject>
 
 
+// Translatable macro contextualizer.
+#undef  _TR
+#define _TR(x) QT_TR_NOOP(x)
+
+
 //----------------------------------------------------------------------
 // class qtractorTimeScale -- Time scale conversion helper class.
 //
@@ -980,18 +985,18 @@ QString qtractorTimeScale::keySignatureName (
 
 	} s_aAccidentalsTab[] = {
 
-		{ QT_TR_NOOP("C"), QT_TR_NOOP("B#"), nullptr          },
-		{ nullptr,         QT_TR_NOOP("C#"), QT_TR_NOOP("Db") },
-		{ QT_TR_NOOP("D"), nullptr,          nullptr          },
-		{ nullptr,         QT_TR_NOOP("D#"), QT_TR_NOOP("Eb") },
-		{ QT_TR_NOOP("E"), nullptr,          QT_TR_NOOP("Fb") },
-		{ QT_TR_NOOP("F"), QT_TR_NOOP("E#"), nullptr          },
-		{ nullptr,         QT_TR_NOOP("F#"), QT_TR_NOOP("Gb") },
-		{ QT_TR_NOOP("G"), nullptr,          nullptr          },
-		{ nullptr,         QT_TR_NOOP("G#"), QT_TR_NOOP("Ab") },
-		{ QT_TR_NOOP("A"), nullptr,          nullptr          },
-		{ nullptr,         QT_TR_NOOP("A#"), QT_TR_NOOP("Bb") },
-		{ QT_TR_NOOP("B"), nullptr,          QT_TR_NOOP("Cb") }
+		{ _TR("C"), _TR("B#"), nullptr   },
+		{ nullptr,  _TR("C#"), _TR("Db") },
+		{ _TR("D"), nullptr,   nullptr   },
+		{ nullptr,  _TR("D#"), _TR("Eb") },
+		{ _TR("E"), nullptr,   _TR("Fb") },
+		{ _TR("F"), _TR("E#"), nullptr   },
+		{ nullptr,  _TR("F#"), _TR("Gb") },
+		{ _TR("G"), nullptr,   nullptr   },
+		{ nullptr,  _TR("G#"), _TR("Ab") },
+		{ _TR("A"), nullptr,   nullptr   },
+		{ nullptr,  _TR("A#"), _TR("Bb") },
+		{ _TR("B"), nullptr,   _TR("Cb") }
 	};
 
 	const int i

@@ -87,7 +87,7 @@ Audio:	%1 canali, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="85"/>
-        <location filename="../qtractorTimeScale.cpp" line="740"/>
+        <location filename="../qtractorTimeScale.cpp" line="745"/>
         <source>None</source>
         <translation>Nessuno</translation>
     </message>
@@ -529,7 +529,7 @@ MIDI:	</translation>
         <translation>proprietà sessione</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="744"/>
+        <location filename="../qtractorTimeScale.cpp" line="749"/>
         <source>Beat</source>
         <translation>Battito</translation>
     </message>
@@ -10959,52 +10959,52 @@ Sei sicuro?</translation>
         <translation>Alta risoluzione dell&apos;automazione della plugin (14 bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="133"/>
+        <location filename="../qtractorOptionsForm.cpp" line="138"/>
         <source>Signed 16-Bit</source>
         <translation>16-Bit con segno</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="134"/>
+        <location filename="../qtractorOptionsForm.cpp" line="139"/>
         <source>Signed 24-Bit</source>
         <translation>24-Bit con segno</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="135"/>
+        <location filename="../qtractorOptionsForm.cpp" line="140"/>
         <source>Signed 32-Bit</source>
         <translation>32-Bit con segno</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="136"/>
+        <location filename="../qtractorOptionsForm.cpp" line="141"/>
         <source>Float  32-Bit</source>
         <translation>32-Bit Float</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="137"/>
+        <location filename="../qtractorOptionsForm.cpp" line="142"/>
         <source>Float  64-Bit</source>
         <translation>64-Bit Float</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="141"/>
+        <location filename="../qtractorOptionsForm.cpp" line="146"/>
         <source>SMF Format 0</source>
         <translation>Formato 0 SMF</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="142"/>
+        <location filename="../qtractorOptionsForm.cpp" line="147"/>
         <source>SMF Format 1</source>
         <translation>Formato 1 SMF</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="162"/>
+        <location filename="../qtractorOptionsForm.cpp" line="167"/>
         <source>(Any)</source>
         <translation>(Qualsiasi)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="916"/>
+        <location filename="../qtractorOptionsForm.cpp" line="921"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="917"/>
+        <location filename="../qtractorOptionsForm.cpp" line="922"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -11013,63 +11013,63 @@ Do you want to apply the changes?</source>
 Vuoi applicare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="947"/>
+        <location filename="../qtractorOptionsForm.cpp" line="952"/>
         <source>Metronome Bar Audio File</source>
         <translation>File Audio Barra Metronomo</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="961"/>
+        <location filename="../qtractorOptionsForm.cpp" line="966"/>
         <source>Metronome Beat Audio File</source>
         <translation>File Audio Battito Metronomo</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1131"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1136"/>
         <source>Audio Meter Color</source>
         <translation>Colore del meter audio</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1153"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1158"/>
         <source>MIDI Meter Color</source>
         <translation>Colore del meter MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1249"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1254"/>
         <source>Plug-in Directory</source>
         <translation>Cartella Plug-in</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1489"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1494"/>
         <source>LV2 Presets Directory</source>
         <translation>Directory dei Preset LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1530"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1535"/>
         <source>Messages Font</source>
         <translation>Font dei messaggi</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1558"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1563"/>
         <source>Messages Log</source>
         <translation>Messaggi di Log</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1561"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1566"/>
         <source>Log files (*.%1)</source>
         <translation>File di Log (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1562"/>
-        <location filename="../qtractorOptionsForm.cpp" line="1608"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1567"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1613"/>
         <source>All files (*.*)</source>
         <translation type="unfinished">Tutti i file (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1604"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1609"/>
         <source>Session Template</source>
         <translation>Template Sessione</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1607"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1612"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>File Template Sessione (*.qtr *.qts *.%1)</translation>
     </message>
@@ -12343,114 +12343,6 @@ Vuoi applicare le modifiche?</translation>
         <location filename="../qtractorThumbView.cpp" line="77"/>
         <source>Thumb view</source>
         <translation>Vista anteprime</translation>
-    </message>
-</context>
-<context>
-    <name>qtractorTimeScale</name>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="983"/>
-        <source>C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="983"/>
-        <source>B#</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="984"/>
-        <source>C#</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="984"/>
-        <source>Db</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="985"/>
-        <source>D</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="986"/>
-        <source>D#</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="986"/>
-        <source>Eb</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="987"/>
-        <source>E</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="987"/>
-        <source>Fb</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="988"/>
-        <source>F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="988"/>
-        <source>E#</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="989"/>
-        <source>F#</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="989"/>
-        <source>Gb</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="990"/>
-        <source>G</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="991"/>
-        <source>G#</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="991"/>
-        <source>Ab</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="992"/>
-        <source>A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="993"/>
-        <source>A#</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="993"/>
-        <source>Bb</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="994"/>
-        <source>B</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTimeScale.cpp" line="994"/>
-        <source>Cb</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
