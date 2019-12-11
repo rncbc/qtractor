@@ -289,7 +289,7 @@ public:
 		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 	
 	// Track drag-move-select cursor and mode...
-	qtractorMidiEvent *dragMoveEvent (qtractorScrollView *pScrollView,
+	qtractorMidiEvent *dragMoveEvent(qtractorScrollView *pScrollView,
 		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 
 	// Start drag-move-selecting...
@@ -523,7 +523,7 @@ protected:
 	static void initDefaultControllerNames();
 	static void initDefaultRpnNames();
 	static void initDefaultNrpnNames();
-	static void initControl14Names();
+	static void initDefaultControl14Names();
 
 	// Scale key/note resolver.
 	static int scaleTabNote(int iScale, int n);

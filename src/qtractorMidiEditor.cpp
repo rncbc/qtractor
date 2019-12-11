@@ -410,7 +410,7 @@ const QMap<unsigned short, QString>& qtractorMidiEditor::defaultNrpnNames (void)
 
 static QHash<unsigned char, QString> g_control14Names;
 
-void qtractorMidiEditor::initControl14Names (void)
+void qtractorMidiEditor::initDefaultControl14Names (void)
 {
 	static struct
 	{
@@ -450,7 +450,7 @@ void qtractorMidiEditor::initControl14Names (void)
 // Default control-14 name accessor.
 const QString& qtractorMidiEditor::defaultControl14Name ( unsigned char controller )
 {
-	initControl14Names();
+	initDefaultControl14Names();
 
 	QHash<unsigned char, QString>::ConstIterator iter
 		= g_control14Names.constFind(controller);
