@@ -68,6 +68,8 @@ protected:
 	void fileChanged(const QString& sFilename,
 		unsigned short iTrackChannel);
 
+	static void initFadeTypes();
+
 private:
 
 	// The Qt-designer UI struct...

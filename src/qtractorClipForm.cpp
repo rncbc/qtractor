@@ -48,26 +48,9 @@ static inline float log10f2 ( float x )
 static inline float pow10f2 ( float x )
 	{ return ::powf(10.0f, 0.05f * x); }
 
-// Translatable macro contextualizer.
-#undef  _TR
-#define _TR(x) QT_TR_NOOP(x)
-
 
 //----------------------------------------------------------------------------
 // Fade types curves.
-
-const char *g_aFadeTypeNames[] = {
-
-	_TR("Linear"),		// Linear (obvious:)
-	_TR("Quadratic 1"),	// InQuad
-	_TR("Quadratic 2"),	// OutQuad
-	_TR("Quadratic 3"),	// InOutQuad
-	_TR("Cubic 1"),		// InCubic
-	_TR("Cubic 2"),		// OutCubic
-	_TR("Cubic 3"),		// InOutCubic
-
-	nullptr
-};
 
 struct FadeTypeInfo
 {
@@ -79,14 +62,27 @@ struct FadeTypeInfo
 static QHash<int, FadeTypeInfo> g_fadeTypes;
 
 
-static void initFadeTypes (void)
+void qtractorClipForm::initFadeTypes (void)
 {
+	const char *s_aFadeTypeNames[] = {
+
+		QT_TR_NOOP("Linear"),		// Linear (obvious:)
+		QT_TR_NOOP("Quadratic 1"),	// InQuad
+		QT_TR_NOOP("Quadratic 2"),	// OutQuad
+		QT_TR_NOOP("Quadratic 3"),	// InOutQuad
+		QT_TR_NOOP("Cubic 1"),		// InCubic
+		QT_TR_NOOP("Cubic 2"),		// OutCubic
+		QT_TR_NOOP("Cubic 3"),		// InOutCubic
+
+		nullptr
+	};
+
 	if (g_fadeTypes.isEmpty()) {
 		const QPixmap pmFadeIn(":/images/fadeIn.png");
 		const QPixmap pmFadeOut(":/images/fadeOut.png");
-		for (int i = 0; g_aFadeTypeNames[i]; ++i) {
+		for (int i = 0; s_aFadeTypeNames[i]; ++i) {
 			FadeTypeInfo& info = g_fadeTypes[i];
-			info.name = QObject::tr(g_aFadeTypeNames[i], "fadeType");
+			info.name = tr(s_aFadeTypeNames[i]);
 			info.iconFadeIn  = pmFadeIn.copy(i << 4, 0, 16, 16);
 			info.iconFadeOut = pmFadeOut.copy(i << 4, 0, 16, 16);
 		}

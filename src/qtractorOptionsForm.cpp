@@ -60,20 +60,36 @@ static inline float pow10f2 ( float x )
 	{ return ::powf(10.0f, 0.05f * x); }
 
 
+//----------------------------------------------------------------------------
 // Available session formats/ext-suffixes.
-static struct
+
+static QHash<QString, QString> g_sessionFormats;
+
+
+void qtractorOptionsForm::initSessionFormats (void)
 {
-	const char *name;
-	const char *ext;
+	static struct SessionFormat
+	{
+		const char *name;
+		const char *ext;
 
-} g_aSessionFormats[] = {
+	} s_aSessionFormats[] = {
 
-	{ QT_TR_NOOP("XML Default (*.%1)"), "qtr" },
-	{ QT_TR_NOOP("XML Regular (*.%1)"), "qts" },
-	{ QT_TR_NOOP("ZIP Archive (*.%1)"), "qtz" },
+		{ QT_TR_NOOP("XML Default (*.%1)"), "qtr" },
+		{ QT_TR_NOOP("XML Regular (*.%1)"), "qts" },
+		{ QT_TR_NOOP("ZIP Archive (*.%1)"), "qtz" },
 
-	{ nullptr, nullptr }
-};
+		{ nullptr, nullptr }
+	};
+
+	if (g_sessionFormats.isEmpty()) {
+		for (int i = 0; s_aSessionFormats[i].name; ++i) {
+			SessionFormat& sf = s_aSessionFormats[i];
+			g_sessionFormats.insert(sf.ext, tr(sf.name));
+		}
+	}
+
+}
 
 
 // Default (empty/blank) name.
@@ -109,10 +125,21 @@ qtractorOptionsForm::qtractorOptionsForm (
 	}
 
 	// Populate the session format combo-box.
+	initSessionFormats();
+
 	m_ui.SessionFormatComboBox->clear();
-	for (int i = 0; g_aSessionFormats[i].ext; ++i) {
-		m_ui.SessionFormatComboBox->addItem(
-			tr(g_aSessionFormats[i].name).arg(g_aSessionFormats[i].ext));
+	QHash<QString, QString>::ConstIterator sf_iter
+		= g_sessionFormats.constBegin();
+	const QHash<QString, QString>::ConstIterator& sf_end
+		= g_sessionFormats.constEnd();
+	int iSessionFormat = 0;
+	for ( ; sf_iter != sf_end; ++sf_iter) {
+		const QString& sSessionExt = sf_iter.key();
+		const QString& sSessionFormat = sf_iter.value();
+		m_ui.SessionFormatComboBox->insertItem(
+			iSessionFormat++,
+			sSessionFormat.arg(sSessionExt),
+			sSessionExt);
 	}
 
 	// Populate the capture file type combo-box.
@@ -688,8 +715,10 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 		m_ui.BaseFontSizeComboBox->setCurrentIndex(0);
 
 	// Session options...
-	m_ui.SessionFormatComboBox->setCurrentIndex(
-		sessionFormatFromExt(m_pOptions->sSessionExt));
+	int iSessionFormat = m_ui.SessionFormatComboBox->findData(m_pOptions->sSessionExt);
+	if (iSessionFormat < 0)
+		iSessionFormat = 0;
+	m_ui.SessionFormatComboBox->setCurrentIndex(iSessionFormat);
 	m_ui.SessionTemplateCheckBox->setChecked(m_pOptions->bSessionTemplate);
 	m_ui.SessionTemplatePathComboBox->setEditText(m_pOptions->sSessionTemplatePath);
 	m_ui.SessionBackupCheckBox->setChecked(m_pOptions->bSessionBackup);
@@ -844,8 +873,8 @@ void qtractorOptionsForm::accept (void)
 		// Session options...
 		m_pOptions->bSessionTemplate     = m_ui.SessionTemplateCheckBox->isChecked();
 		m_pOptions->sSessionTemplatePath = m_ui.SessionTemplatePathComboBox->currentText();
-		m_pOptions->sSessionExt = sessionExtFromFormat(
-			m_ui.SessionFormatComboBox->currentIndex());
+		const int iSessionFormat         = m_ui.SessionFormatComboBox->currentIndex();
+		m_pOptions->sSessionExt          = m_ui.SessionFormatComboBox->itemData(iSessionFormat).toString();
 		m_pOptions->bSessionBackup       = m_ui.SessionBackupCheckBox->isChecked();
 		m_pOptions->iSessionBackupMode   = m_ui.SessionBackupModeComboBox->currentIndex();
 		m_pOptions->bAutoSaveEnabled     = m_ui.SessionAutoSaveCheckBox->isChecked();
@@ -1131,7 +1160,7 @@ void qtractorOptionsForm::chooseAudioMeterColor (void)
 		= tr("Audio Meter Color");
 
 	QWidget *pParentWidget = nullptr;
-	QColorDialog::ColorDialogOptions options = 0;
+	QColorDialog::ColorDialogOptions options = nullptr;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1153,7 +1182,7 @@ void qtractorOptionsForm::chooseMidiMeterColor (void)
 		= tr("MIDI Meter Color");
 
 	QWidget *pParentWidget = nullptr;
-	QColorDialog::ColorDialogOptions options = 0;
+	QColorDialog::ColorDialogOptions options = nullptr;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1530,7 +1559,7 @@ void qtractorOptionsForm::chooseMessagesFont (void)
 		= tr("Messages Font");
 
 	QWidget *pParentWidget = nullptr;
-	QFontDialog::FontDialogOptions options = 0;
+	QFontDialog::FontDialogOptions options = nullptr;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFontDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1563,7 +1592,7 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options = nullptr;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1609,7 +1638,7 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options = nullptr;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1770,7 +1799,7 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 	QString sAudioFile;
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options = nullptr;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1798,30 +1827,6 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 #endif
 
 	return sAudioFile;
-}
-
-
-// Session format ext/suffix helpers.
-int qtractorOptionsForm::sessionFormatFromExt ( const QString& sSessionExt ) const
-{
-	int iSessionFormat = 0;
-
-	for (int i = 1; g_aSessionFormats[i].ext; ++i) {
-		if (g_aSessionFormats[i].ext == sSessionExt) {
-			iSessionFormat = i;
-			break;
-		}
-	}
-
-	return iSessionFormat;
-}
-
-QString qtractorOptionsForm::sessionExtFromFormat ( int iSessionFormat ) const
-{
-	if (iSessionFormat < 0 || iSessionFormat > 2)
-		iSessionFormat = 0;
-
-	return g_aSessionFormats[iSessionFormat].ext;
 }
 
 
