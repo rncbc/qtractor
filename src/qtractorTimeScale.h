@@ -28,12 +28,18 @@
 #include <QColor>
 
 
+// Needed for the translation functions.
+#include <QCoreApplication>
+
+
 //----------------------------------------------------------------------
 // class qtractorTimeScale -- Time scale conversion helper class.
 //
 
 class qtractorTimeScale
 {
+	Q_DECLARE_TR_FUNCTIONS(qtractorTimeScale)
+
 public:
 
 	// Available display-formats.

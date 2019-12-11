@@ -518,6 +518,16 @@ protected:
 	// Specialized drag/time-scale (draft)...
 	struct DragTimeScale;
 
+	// Initialize default names hash maps.
+	static void initDefaultNoteNames();
+	static void initDefaultControllerNames();
+	static void initDefaultRpnNames();
+	static void initDefaultNrpnNames();
+	static void initControl14Names();
+
+	// Scale key/note resolver.
+	static int scaleTabNote(int iScale, int n);
+
 protected slots:
 
 	// Horizontal zoom view slots.

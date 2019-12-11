@@ -37,12 +37,6 @@
 
 #include <QFile>
 
-
-// Translatable macro contextualizer.
-#undef  _TR
-#define _TR(x) QT_TR_NOOP(x)
-
-
 #include <math.h>
 
 // Ref. P.448. Approximate cube root of an IEEE float
@@ -897,56 +891,47 @@ void qtractorMidiControl::saveControllers ( qtractorDocument *pDocument,
 //----------------------------------------------------------------------------
 // MIDI Controller Type Text/Names - Default control types hash maps.
 
-static struct
-{
-	qtractorMidiControl::ControlType ctype;
-	const char *text;
-	const char *name;
-
-} g_aControlTypes[] = {
-
-	{ qtractorMidiEvent::NOTEON,     "NOTEON",     _TR("Note On")    },
-	{ qtractorMidiEvent::NOTEOFF,    "NOTEOFF",    _TR("Note Off")   },
-	{ qtractorMidiEvent::KEYPRESS,   "KEYPRESS",   _TR("Key Press")  },
-	{ qtractorMidiEvent::CONTROLLER, "CONTROLLER", _TR("Controller") },
-	{ qtractorMidiEvent::PGMCHANGE,  "PGMCHANGE",  _TR("Pgm Change") },
-	{ qtractorMidiEvent::CHANPRESS,  "CHANPRESS",  _TR("Chan Press") },
-	{ qtractorMidiEvent::PITCHBEND,  "PITCHBEND",  _TR("Pitch Bend") },
-	{ qtractorMidiEvent::REGPARAM,   "REGPARAM",   _TR("RPN")        },
-	{ qtractorMidiEvent::NONREGPARAM,"NONREGPARAM",_TR("NRPN")       },
-	{ qtractorMidiEvent::CONTROL14,  "CONTROL14",  _TR("Control 14") },
-
-	{ qtractorMidiControl::ControlType(0), nullptr, nullptr }
-};
-
 static QHash<qtractorMidiControl::ControlType, QString> g_controlTypeTexts;
 static QHash<QString, qtractorMidiControl::ControlType> g_textControlTypes;
-
-static void initControlTypeTexts (void)
-{
-	if (g_controlTypeTexts.isEmpty()) {
-		// Pre-load ontrol-types hash table...
-		for (int i = 0; g_aControlTypes[i].text; ++i) {
-			qtractorMidiControl::ControlType ctype = g_aControlTypes[i].ctype;
-			const QString& sText = QString(g_aControlTypes[i].text);
-			g_controlTypeTexts.insert(ctype, sText);
-			g_textControlTypes.insert(sText, ctype);
-		}
-	}
-}
-
 
 static QHash<qtractorMidiControl::ControlType, QString> g_controlTypeNames;
 static QHash<QString, qtractorMidiControl::ControlType> g_nameControlTypes;
 
-static void initControlTypeNames (void)
+void qtractorMidiControl::initControlTypes (void)
 {
+	static struct
+	{
+		qtractorMidiControl::ControlType ctype;
+		const char *text;
+		const char *name;
+
+	} s_aControlTypes[] = {
+
+		{ qtractorMidiEvent::NOTEON,     "NOTEON",      QT_TR_NOOP("Note On")    },
+		{ qtractorMidiEvent::NOTEOFF,    "NOTEOFF",     QT_TR_NOOP("Note Off")   },
+		{ qtractorMidiEvent::KEYPRESS,   "KEYPRESS",    QT_TR_NOOP("Key Press")  },
+		{ qtractorMidiEvent::CONTROLLER, "CONTROLLER",  QT_TR_NOOP("Controller") },
+		{ qtractorMidiEvent::PGMCHANGE,  "PGMCHANGE",   QT_TR_NOOP("Pgm Change") },
+		{ qtractorMidiEvent::CHANPRESS,  "CHANPRESS",   QT_TR_NOOP("Chan Press") },
+		{ qtractorMidiEvent::PITCHBEND,  "PITCHBEND",   QT_TR_NOOP("Pitch Bend") },
+		{ qtractorMidiEvent::REGPARAM,   "REGPARAM",    QT_TR_NOOP("RPN")        },
+		{ qtractorMidiEvent::NONREGPARAM,"NONREGPARAM", QT_TR_NOOP("NRPN")       },
+		{ qtractorMidiEvent::CONTROL14,  "CONTROL14",   QT_TR_NOOP("Control 14") },
+
+		{ qtractorMidiControl::ControlType(0), nullptr, nullptr }
+	};
+
 	if (g_controlTypeNames.isEmpty()) {
 		// Pre-load ontrol-types hash table...
-		for (int i = 0; g_aControlTypes[i].name; ++i) {
-			qtractorMidiControl::ControlType ctype = g_aControlTypes[i].ctype;
-			const QString& sName = QObject::tr(g_aControlTypes[i].name, "controlType");
+		for (int i = 0; s_aControlTypes[i].name; ++i) {
+			qtractorMidiControl::ControlType ctype = s_aControlTypes[i].ctype;
+			const QString& sText
+				= QString(s_aControlTypes[i].text);
+			const QString& sName
+				= tr(s_aControlTypes[i].name);
+			g_controlTypeTexts.insert(ctype, sText);
 			g_controlTypeNames.insert(ctype, sName);
+			g_textControlTypes.insert(sText, ctype);
 			g_nameControlTypes.insert(sName, ctype);
 		}
 	}
@@ -957,17 +942,17 @@ static void initControlTypeNames (void)
 qtractorMidiControl::ControlType qtractorMidiControl::typeFromText (
 	const QString& sText )
 {
-	initControlTypeTexts();
+	initControlTypes();
 
-	return g_textControlTypes[sText];
+	return g_textControlTypes.value(sText, qtractorMidiControl::ControlType(0));
 }
 
-const QString& qtractorMidiControl::textFromType (
+QString qtractorMidiControl::textFromType (
 	qtractorMidiControl::ControlType ctype )
 {
-	initControlTypeTexts();
+	initControlTypes();
 
-	return g_controlTypeTexts[ctype];
+	return g_controlTypeTexts.value(ctype);
 }
 
 
@@ -975,69 +960,59 @@ const QString& qtractorMidiControl::textFromType (
 qtractorMidiControl::ControlType qtractorMidiControl::typeFromName (
 	const QString& sName )
 {
-	initControlTypeNames();
+	initControlTypes();
 
-	return g_nameControlTypes[sName];
+	return g_nameControlTypes.value(sName, qtractorMidiControl::ControlType(0));
 }
 
-const QString& qtractorMidiControl::nameFromType (
+QString qtractorMidiControl::nameFromType (
 	qtractorMidiControl::ControlType ctype )
 {
-	initControlTypeNames();
+	initControlTypes();
 
-	return g_controlTypeNames[ctype];
+	return g_controlTypeNames.value(ctype);
 }
 
 
 //----------------------------------------------------------------------------
 // MIDI Controller Command Text/Names - Default command names hash map.
 
-static struct
-{
-	qtractorMidiControl::Command command;
-	const char *text;
-	const char *name;
-
-} g_aCommandNames[] = {
-
-	{ qtractorMidiControl::TRACK_GAIN,    "TRACK_GAIN",    _TR("Track Gain")    },
-	{ qtractorMidiControl::TRACK_PANNING, "TRACK_PANNING", _TR("Track Panning") },
-	{ qtractorMidiControl::TRACK_MONITOR, "TRACK_MONITOR", _TR("Track Monitor") },
-	{ qtractorMidiControl::TRACK_RECORD,  "TRACK_RECORD",  _TR("Track Record")  },
-	{ qtractorMidiControl::TRACK_MUTE,    "TRACK_MUTE",    _TR("Track Mute")    },
-	{ qtractorMidiControl::TRACK_SOLO,    "TRACK_SOLO",    _TR("Track Solo")    },
-
-	{ qtractorMidiControl::Command(0), nullptr, nullptr }
-};
-
 static QHash<qtractorMidiControl::Command, QString> g_commandTexts;
 static QHash<QString, qtractorMidiControl::Command> g_textCommands;
-
-static void initCommandTexts (void)
-{
-	if (g_commandTexts.isEmpty()) {
-		// Pre-load command-names hash table...
-		for (int i = 0; g_aCommandNames[i].text; ++i) {
-			qtractorMidiControl::Command command = g_aCommandNames[i].command;
-			const QString& sText = QString(g_aCommandNames[i].text);
-			g_commandTexts.insert(command, sText);
-			g_textCommands.insert(sText, command);
-		}
-	}
-}
 
 static QHash<qtractorMidiControl::Command, QString> g_commandNames;
 static QHash<QString, qtractorMidiControl::Command> g_nameCommands;
 
-static void initCommandNames (void)
+void qtractorMidiControl::initCommandNames (void)
 {
+	static struct
+	{
+		qtractorMidiControl::Command command;
+		const char *text;
+		const char *name;
+
+	} s_aCommandNames[] = {
+
+		{ TRACK_GAIN,    "TRACK_GAIN",    QT_TR_NOOP("Track Gain")    },
+		{ TRACK_PANNING, "TRACK_PANNING", QT_TR_NOOP("Track Panning") },
+		{ TRACK_MONITOR, "TRACK_MONITOR", QT_TR_NOOP("Track Monitor") },
+		{ TRACK_RECORD,  "TRACK_RECORD",  QT_TR_NOOP("Track Record")  },
+		{ TRACK_MUTE,    "TRACK_MUTE",    QT_TR_NOOP("Track Mute")    },
+		{ TRACK_SOLO,    "TRACK_SOLO",    QT_TR_NOOP("Track Solo")    },
+
+		{ Command(0), nullptr, nullptr }
+	};
+
 	if (g_commandNames.isEmpty()) {
 		// Pre-load command-names hash table...
-		for (int i = 0; g_aCommandNames[i].name; ++i) {
-			qtractorMidiControl::Command command = g_aCommandNames[i].command;
-			const QString& sName = QObject::tr(g_aCommandNames[i].name, "commandName");
+		for (int i = 0; s_aCommandNames[i].name; ++i) {
+			qtractorMidiControl::Command command = s_aCommandNames[i].command;
+			const QString& sText = QString(s_aCommandNames[i].text);
+			const QString& sName = tr(s_aCommandNames[i].name);
 			g_commandNames.insert(command, sName);
+			g_commandTexts.insert(command, sText);
 			g_nameCommands.insert(sName, command);
+			g_textCommands.insert(sText, command);
 		}
 	}
 }
@@ -1047,9 +1022,9 @@ qtractorMidiControl::Command qtractorMidiControl::commandFromText (
 	const QString& sText )
 {
 #if 0
-	initCommandTexts();
+	initCommandNames();
 
-	return g_textCommands[sText];
+	return g_textCommands.value(sText, Command(0));
 #else
 	if (sText == "TRACK_GAIN" || sText == "TrackGain")
 		return TRACK_GAIN;
@@ -1073,11 +1048,11 @@ qtractorMidiControl::Command qtractorMidiControl::commandFromText (
 #endif
 }
 
-const QString& qtractorMidiControl::textFromCommand ( Command command )
+QString qtractorMidiControl::textFromCommand ( Command command )
 {
-	initCommandTexts();
+	initCommandNames();
 
-	return g_commandTexts[command];
+	return g_commandTexts.value(command);
 }
 
 
@@ -1086,14 +1061,14 @@ qtractorMidiControl::Command qtractorMidiControl::commandFromName (
 {
 	initCommandNames();
 
-	return g_nameCommands[sName];
+	return g_nameCommands.value(sName, Command(0));
 }
 
-const QString& qtractorMidiControl::nameFromCommand ( Command command )
+QString qtractorMidiControl::nameFromCommand ( Command command )
 {
 	initCommandNames();
 
-	return g_commandNames[command];
+	return g_commandNames.value(command);
 }
 
 
