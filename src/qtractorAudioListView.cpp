@@ -75,9 +75,12 @@ qtractorAudioFileItem::qtractorAudioFileItem (
 		secs -= (float) ss;
 	}
 	zzz = (unsigned int) (secs * 1000.0f);
+#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
 	sTime.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, zzz);
+#else
+	sTime = QString::asprintf("%02u:%02u:%02u.%03u", hh, mm, ss, zzz);
+#endif
 	QTreeWidgetItem::setText(qtractorAudioListView::Time, sTime);
-
 	QTreeWidgetItem::setText(qtractorAudioListView::Path, sPath);
 }
 

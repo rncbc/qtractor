@@ -5218,7 +5218,11 @@ QString qtractorMidiEditor::eventToolTip ( qtractorMidiEvent *pEvent,
 		sToolTip += '{';
 		sToolTip += ' ';
 		for (unsigned short i = 0; i < len; ++i)
+		#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
 			sToolTip += QString().sprintf("%02x ", data[i]);
+		#else
+			sToolTip += QString::asprintf("%02x ", data[i]);
+		#endif
 		sToolTip += '}';
 		break;
 	}

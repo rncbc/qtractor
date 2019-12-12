@@ -630,7 +630,11 @@ QString qtractorTimeScale::textFromFrameEx (
 				++bars;
 				++beats;
 			}
+		#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
 			sText.sprintf("%u.%u.%03lu", bars, beats, ticks);
+		#else
+			sText = QString::asprintf("%u.%u.%03lu", bars, beats, ticks);
+		#endif
 			break;
 		}
 
@@ -653,7 +657,11 @@ QString qtractorTimeScale::textFromFrameEx (
 				secs -= float(ss);
 			}
 			zzz = (unsigned int) (secs * 1000.0f);
+		#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
 			sText.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, zzz);
+		#else
+			sText = QString::asprintf("%02u:%02u:%02u.%03u", hh, mm, ss, zzz);
+		#endif
 			break;
 		}
 
