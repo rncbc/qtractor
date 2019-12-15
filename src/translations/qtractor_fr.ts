@@ -6418,7 +6418,7 @@ est près et en fonctionnement puis redémarrez la session.</translation>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="997"/>
         <source>Track Panning</source>
-        <translation>Panoramique de piste/translation>
+        <translation>Panoramique de piste</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="998"/>
@@ -7111,6 +7111,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="105"/>
         <source>Low Floor Tom</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="106"/>
@@ -7910,7 +7911,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="517"/>
         <source>Phrygian</source>
-        <translation>Phrygien<ne/translation>
+        <translation>Phrygienne</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="518"/>
@@ -14033,7 +14034,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorTimeScale.cpp" line="993"/>
         <source>Fb</source>
-        <translation<Fab/translation>
+        <translation>Fab</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScale.cpp" line="994"/>
@@ -14078,7 +14079,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorTimeScale.cpp" line="999"/>
         <source>A#</source>
-        <translationLa#</translation>
+        <translation>La#</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScale.cpp" line="999"/>
