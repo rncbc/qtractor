@@ -7194,7 +7194,7 @@ Longueur:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="122"/>
-        <source></source>
+        <source>Vibraslap</source>
         <translation>Vibraslap</translation>
     </message>
     <message>
