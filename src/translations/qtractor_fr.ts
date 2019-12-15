@@ -7111,7 +7111,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="105"/>
         <source>Low Floor Tom</source>
-        <translation></translation>
+        <translation>Tom basse grave</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="106"/>
