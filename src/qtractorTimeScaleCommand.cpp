@@ -549,12 +549,14 @@ bool qtractorTimeScaleMoveNodeCommand::undo (void)
 // class qtractorTimeScaleMarkerCommand - implementation.
 //
 
-// Constructor.
+// Constructors.
 qtractorTimeScaleMarkerCommand::qtractorTimeScaleMarkerCommand (
-	const QString& sName, qtractorTimeScale *pTimeScale,
-	unsigned long iFrame, const QString& sText, const QColor& rgbColor )
+	const QString& sName, qtractorTimeScale *pTimeScale, unsigned long iFrame,
+	const QString& sText, const QColor& rgbColor,
+	int iAccidentals, int iMode )
 	: qtractorCommand(sName), m_pTimeScale(pTimeScale),
-		m_iFrame(iFrame), m_sText(sText), m_rgbColor(rgbColor)
+		m_iFrame(iFrame), m_sText(sText), m_rgbColor(rgbColor),
+		m_iAccidentals(iAccidentals), m_iMode(iMode)
 {
 }
 
@@ -591,7 +593,39 @@ bool qtractorTimeScaleMarkerCommand::updateMarker (void)
 }
 
 
-// Remove time-scale marker command method.
+// Add key-signature command method.
+bool qtractorTimeScaleMarkerCommand::addKeySignature (void)
+{
+	return (m_pTimeScale->addKeySignature(m_iFrame, m_iAccidentals, m_iMode) != nullptr);
+}
+
+
+// Update key-signature command method.
+bool qtractorTimeScaleMarkerCommand::updateKeySignature (void)
+{
+	qtractorTimeScale::Marker *pMarker
+		= m_pTimeScale->markers().seekFrame(m_iFrame);
+	if (pMarker == nullptr)
+		return false;
+	if (pMarker->frame != m_iFrame)
+		return false;
+
+	const int iAccidentals = pMarker->accidentals;
+	const int iMode        = pMarker->mode;
+
+	pMarker->accidentals = m_iAccidentals;
+	pMarker->mode        = m_iMode;
+
+	m_pTimeScale->updateMarker(pMarker);
+
+	m_iAccidentals = iAccidentals;
+	m_iMode        = iMode;
+
+	return true;
+}
+
+
+// Remove time-scale marker/key-signature command method.
 bool qtractorTimeScaleMarkerCommand::removeMarker (void)
 {
 	qtractorTimeScale::Marker *pMarker
@@ -604,6 +638,8 @@ bool qtractorTimeScaleMarkerCommand::removeMarker (void)
 //	m_iFrame   = pMarker->frame;
 	m_sText    = pMarker->text;
 	m_rgbColor = pMarker->color;
+	m_iAccidentals = pMarker->accidentals;
+	m_iMode    = pMarker->mode;
 
 	m_pTimeScale->removeMarker(pMarker);
 
@@ -668,6 +704,61 @@ bool qtractorTimeScaleRemoveMarkerCommand::undo (void) { return addMarker(); }
 
 
 //----------------------------------------------------------------------
+// class qtractorTimeScaleAddKeySignatureCommand - implementation.
+//
+
+// Constructor.
+qtractorTimeScaleAddKeySignatureCommand::qtractorTimeScaleAddKeySignatureCommand (
+	qtractorTimeScale *pTimeScale, unsigned long iFrame,
+	int iAccidentals, int iMode )
+	: qtractorTimeScaleMarkerCommand(
+		QObject::tr("add key signature"), pTimeScale,
+			iFrame, QString(), Qt::darkGray, iAccidentals, iMode)
+{
+}
+
+// Time-scale marker command methods.
+bool qtractorTimeScaleAddKeySignatureCommand::redo (void) { return addKeySignature(); }
+bool qtractorTimeScaleAddKeySignatureCommand::undo (void) { return removeMarker(); }
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleUpdateKeySignatureCommand - implementation.
+//
+
+// Constructor.
+qtractorTimeScaleUpdateKeySignatureCommand::qtractorTimeScaleUpdateKeySignatureCommand (
+	qtractorTimeScale *pTimeScale, unsigned long iFrame,
+	int iAccidentals, int iMode )
+	: qtractorTimeScaleMarkerCommand(
+		QObject::tr("update key signature"), pTimeScale,
+			iFrame, QString(), Qt::darkGray, iAccidentals, iMode)
+{
+}
+
+// Time-scale marker command methods.
+bool qtractorTimeScaleUpdateKeySignatureCommand::redo (void) { return updateKeySignature(); }
+bool qtractorTimeScaleUpdateKeySignatureCommand::undo (void) { return redo(); }
+
+
+//----------------------------------------------------------------------
+// class qtractorTimeScaleRemoveKeySignatureCommand - implementation.
+//
+
+// Constructor.
+qtractorTimeScaleRemoveKeySignatureCommand::qtractorTimeScaleRemoveKeySignatureCommand (
+	qtractorTimeScale *pTimeScale, qtractorTimeScale::Marker *pMarker )
+	: qtractorTimeScaleMarkerCommand(
+		QObject::tr("remove key signature"), pTimeScale, pMarker->frame)
+{
+}
+
+// Time-scale marker command methods.
+bool qtractorTimeScaleRemoveKeySignatureCommand::redo (void) { return removeMarker(); }
+bool qtractorTimeScaleRemoveKeySignatureCommand::undo (void) { return addKeySignature(); }
+
+
+//----------------------------------------------------------------------
 // class qtractorTimeScaleMoveMarkerCommand - implementation.
 //
 
@@ -676,7 +767,8 @@ qtractorTimeScaleMoveMarkerCommand::qtractorTimeScaleMoveMarkerCommand (
 	qtractorTimeScale *pTimeScale, qtractorTimeScale::Marker *pMarker,
 	unsigned long iFrame ) : qtractorTimeScaleMarkerCommand(
 		QObject::tr("move marker"), pTimeScale,
-		pMarker->frame, pMarker->text, pMarker->color)
+		pMarker->frame, pMarker->text, pMarker->color,
+		pMarker->accidentals, pMarker->mode)
 {
 	// The new location.
 	m_iNewFrame = pTimeScale->frameFromBar(pTimeScale->barFromFrame(iFrame));
@@ -685,11 +777,13 @@ qtractorTimeScaleMoveMarkerCommand::qtractorTimeScaleMoveMarkerCommand (
 	// Replaced marker salvage.
 	pMarker	= pTimeScale->markers().seekFrame(m_iNewFrame);
 	if (pMarker && pMarker->frame == m_iNewFrame) {
-		m_bOldMarker = true;
-		m_sOldText = pMarker->text;
+		m_bOldMarker  = true;
+		m_sOldText    = pMarker->text;
 		m_rgbOldColor = pMarker->color;
+		m_iOldAccidentals = pMarker->accidentals;
+		m_iOldMode    = pMarker->mode;
 	} else {
-		m_bOldMarker = false;
+		m_bOldMarker  = false;
 	}
 }
 
@@ -709,7 +803,10 @@ bool qtractorTimeScaleMoveMarkerCommand::redo (void)
 	if (pMarker && pMarker->frame == iOldFrame)
 		pTimeScale->removeMarker(pMarker);
 
-	pTimeScale->addMarker(iNewFrame, text(), color());
+	if (!text().isEmpty())
+		pTimeScale->addMarker(iNewFrame, text(), color());
+	if (accidentals() || mode())
+		pTimeScale->addKeySignature(iNewFrame, accidentals(), mode());
 
 	m_iNewFrame = iOldFrame;
 	m_iOldFrame = iNewFrame;
@@ -726,8 +823,12 @@ bool qtractorTimeScaleMoveMarkerCommand::undo (void)
 
 	const bool bResult = redo();
 
-	if (bResult && m_bOldMarker)
-		pTimeScale->addMarker(m_iNewFrame, m_sOldText, m_rgbOldColor);
+	if (bResult && m_bOldMarker) {
+		if (!m_sOldText.isEmpty())
+			pTimeScale->addMarker(m_iNewFrame, m_sOldText, m_rgbOldColor);
+		if (m_iOldAccidentals || m_iOldMode)
+			pTimeScale->addKeySignature(m_iNewFrame, m_iOldAccidentals, m_iOldMode);
+	}
 
 	return bResult;
 }

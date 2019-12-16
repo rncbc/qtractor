@@ -168,8 +168,18 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	while (pMarker) {
 		x = pTimeScale->pixelFromFrame(pMarker->frame) - cx + 4;
 		if (x > w) break;
-		painter.setPen(pMarker->color);
-		painter.drawText(x, y2, pMarker->text);
+		if (pMarker->accidentals || pMarker->mode) {
+			const QString& sKeySignature
+				= qtractorTimeScale::keySignatureName(
+					pMarker->accidentals, pMarker->mode);
+			painter.setPen(Qt::darkGray);
+			painter.drawText(x, y2, sKeySignature);
+			x += fm.horizontalAdvance(sKeySignature) + 4;
+		}
+		if (!pMarker->text.isEmpty()) {
+			painter.setPen(pMarker->color);
+			painter.drawText(x, y2, pMarker->text);
+		}
 		pMarker = pMarker->next();
 	}
 

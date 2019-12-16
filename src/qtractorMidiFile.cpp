@@ -518,13 +518,17 @@ bool qtractorMidiFile::readTracks ( qtractorMidiSequence **ppSeqs,
 						pSeq->setName(
 							QString::fromLatin1((const char *) data).simplified());
 						break;
-					case qtractorMidiEvent::TIME:
+					case qtractorMidiEvent::TIMESIG:
 						// Beats per bar is the numerator of time signature...
 						if ((unsigned short) data[0] > 0) {
 							m_pTempoMap->addNodeTime(iTrackTime,
 								(unsigned short) data[0],
 								(unsigned short) data[1]);
 						}
+						break;
+					case qtractorMidiEvent::KEYSIG:
+						m_pTempoMap->addMarker(iTrackTime, QString(),
+							int(char(data[0])), bool(data[1]));
 						break;
 					case qtractorMidiEvent::MARKER:
 						m_pTempoMap->addMarker(iTrackTime,
@@ -1296,7 +1300,7 @@ void qtractorMidiFile::writeNode (
 		// Time signature change...
 		writeInt(iDeltaTime);
 		writeInt(qtractorMidiEvent::META, 1);
-		writeInt(qtractorMidiEvent::TIME, 1);
+		writeInt(qtractorMidiEvent::TIMESIG, 1);
 		writeInt(4);
 		writeInt(pNode->beatsPerBar, 1);    // Numerator.
 		writeInt(pNode->beatDivisor, 1);    // Denominator.
@@ -1320,11 +1324,22 @@ void qtractorMidiFile::writeMarker (
 #endif
 
 	writeInt(iDeltaTime);
-	writeInt(qtractorMidiEvent::META, 1);
-	writeInt(qtractorMidiEvent::MARKER, 1);
-	writeInt(pMarker->text.length());
-	const QByteArray aMarker = pMarker->text.toLatin1();
-	writeData((unsigned char *) aMarker.constData(), aMarker.length());
+
+	if (pMarker->accidentals || pMarker->mode) {
+		writeInt(qtractorMidiEvent::META, 1);
+		writeInt(qtractorMidiEvent::KEYSIG, 1);
+		writeInt(2);
+		writeInt(pMarker->accidentals, 1); // 1 byte, can be negative...
+		writeInt(pMarker->mode, 1);
+	}
+
+	if (!pMarker->text.isEmpty()) {
+		writeInt(qtractorMidiEvent::META, 1);
+		writeInt(qtractorMidiEvent::MARKER, 1);
+		writeInt(pMarker->text.length());
+		const QByteArray aMarker = pMarker->text.toLatin1();
+		writeData((unsigned char *) aMarker.constData(), aMarker.length());
+	}
 }
 
 
