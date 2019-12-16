@@ -92,6 +92,9 @@ public:
 	qtractorAudioOutputMonitor(unsigned short iChannels,
 		float fGain = 1.0f, float fPanning = 0.0f);
 
+	// Destructor.
+	~qtractorAudioOutputMonitor();
+
 	// Channel property accessors.
 	void setChannels(unsigned short iChannels);
 

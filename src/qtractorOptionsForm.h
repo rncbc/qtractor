@@ -91,13 +91,12 @@ protected:
 	// Special combo-box color item helpers.
 	void updateColorText(QLineEdit *pLineEdit, const QColor& color);
 
-	// Session format ext/suffix helpers.
-	int sessionFormatFromExt(const QString& sSessionExt) const;
-	QString sessionExtFromFormat(int iSessionFormat) const;
-
 	// Custom color/style themes settlers.
 	void resetCustomColorThemes(const QString& sCustomColorTheme);
 	void resetCustomStyleThemes(const QString& sCustomStyleTheme);
+
+	// Session format ext/suffix table initializer.
+	static void initSessionFormats();
 
 private:
 

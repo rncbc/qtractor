@@ -31,8 +31,8 @@ Wiki:
 
 - static rendering:
   http://qtractor.org/doc
-  http://qtractor.sourceforge.net/doc
   https://qtractor.sourceforge.io/doc
+  http://qtractor.sourceforge.net/doc
 
 - user manual & how-to's:
   https://download.sf.net/qtractor/qtractor-manual-and-howtos.epub
@@ -110,7 +110,7 @@ The software requirements for build and runtime are listed as follows:
        https://qt.io/
 
   [2] JACK Audio Connection Kit
-       http://jackaudio.org/
+       https://jackaudio.org/
 
   [3] ALSA, Advanced Linux Sound Architecture
        https://www.alsa-project.org/
@@ -218,10 +218,10 @@ Support
 Qtractor is open source free software. For bug reports, feature requests,
 discussion forums, mailling lists, or any other matter related to the
 development of this piece of software, please use the Sourceforge
-project page (http://sourceforge.net/projects/qtractor).
+project page (https://sourceforge.net/projects/qtractor).
 
 You can also find timely and closer contact information on my personal
-web site (http://www.rncbc.org).
+web site (https://www.rncbc.org).
 
 
 Acknowledgments
@@ -229,11 +229,11 @@ Acknowledgments
 
 The dated Qtractor quick start guide and user manual for version 0.5.x
 has been authored by Seth Kenlon & Klaatu.
-(http://downloads.sourceforge.net/qtractor/qtractor-0.5.x-user-manual.pdf)
+(https://downloads.sourceforge.net/qtractor/qtractor-0.5.x-user-manual.pdf)
 
 The older Qtractor user manual for version 0.3.0 and before, have
 been co-authored by James Laco Hines and Stephen Doonan.
-(http://downloads.sourceforge.net/qtractor/qtractor-0.3.0-user-manual.pdf)
+(https://downloads.sourceforge.net/qtractor/qtractor-0.3.0-user-manual.pdf)
 
 Qtractor logo/icon is an original work of Andy Fitzsimon, borrowed
 from the public domain openclipart.org gallery.
@@ -241,7 +241,7 @@ from the public domain openclipart.org gallery.
 A special mention should also go to the translators of Qtractor
 (see TRANSLATORS) and of course, last but not least, to all the
 past, present and future contributors of the Qtractor Wiki.
-(http://sourceforge.net/p/qtractor/wiki/)
+(https://sourceforge.net/p/qtractor/wiki/)
 
 Thank you all.
 
@@ -254,7 +254,7 @@ References
      https://qt.io/
 
 [2] JACK Audio Connection Kit
-     http://jackaudio.org/
+     https://jackaudio.org/
 
 [3] ALSA, Advanced Linux Sound Architecture
      https://www.alsa-project.org/
@@ -311,6 +311,7 @@ References
      https://aubio.org
 
 [18] QjackCtl - JACK Qt GUI Interface
+     https://qjackctl.sourceforge.io
      http://qjackctl.sourceforge.net
 
 [19] GNU General Public License
@@ -325,4 +326,4 @@ Enjoy && have (lots of) fun.
 --
 rncbc aka Rui Nuno Capela
 rncbc at rncbc dot org
-http://www.rncbc.org
+https://www.rncbc.org

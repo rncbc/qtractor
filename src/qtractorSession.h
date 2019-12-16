@@ -170,6 +170,7 @@ public:
 
 	// Update time scale divisor factors.
 	void updateTimeScale();
+	void updateTimeScaleEx();
 
 	// Update time resolution divisor factors.
 	void updateTimeResolution(); 

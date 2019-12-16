@@ -179,7 +179,7 @@ qtractorMidiFileTempo::Marker *qtractorMidiFileTempo::seekMarker ( unsigned long
 
 // Marker list specifics.
 qtractorMidiFileTempo::Marker *qtractorMidiFileTempo::addMarker (
-	unsigned long iTick, const QString& sText )
+	unsigned long iTick, const QString& sText, int iAccidentals, int iMode )
 {
 	Marker *pMarker = 0;
 
@@ -195,9 +195,11 @@ qtractorMidiFileTempo::Marker *qtractorMidiFileTempo::addMarker (
 		// Update exact matching node...
 		pMarker = pMarkerPrev;
 		pMarker->text = sText;
+		pMarker->accidentals = iAccidentals;
+		pMarker->mode = iMode;
 	} else {
 		// Add/insert a new marker...
-		pMarker = new Marker(iTick, sText);
+		pMarker = new Marker(iTick, sText, iAccidentals, iMode);
 		if (pMarkerPrev)
 			m_markers.insertAfter(pMarker, pMarkerPrev);
 		else
@@ -250,7 +252,7 @@ void qtractorMidiFileTempo::fromTimeScale (
 		const unsigned long iTick = pTimeScale->tickFromFrame(pMarker->frame);
 		unsigned long iTime = uint64_t(iTick) * p / q;
 		iTime = (iTime > iTimeOffset ? iTime - iTimeOffset : 0);
-		addMarker(iTime, pMarker->text);
+		addMarker(iTime, pMarker->text, pMarker->accidentals, pMarker->mode);
 		pMarker = pMarker->next();
 	}
 }
@@ -270,6 +272,16 @@ void qtractorMidiFileTempo::intoTimeScale (
 
 	// Copy tempo-map nodes...
 	qtractorMidiFileTempo::Node *pNode = m_nodes.first();
+
+	// Very first node is kinda special...
+	if (pNode) {
+		pTimeScale->setTempo(pNode->tempo);
+		pTimeScale->setBeatsPerBar(pNode->beatsPerBar);
+		pTimeScale->setBeatDivisor(pNode->beatDivisor);
+		pNode = pNode->next();
+	}
+
+	// Now for all the rest...
 	while (pNode) {
 		const unsigned long iTime = uint64_t(pNode->tick) * p / q;
 		pTimeScale->addNode(
@@ -284,9 +296,16 @@ void qtractorMidiFileTempo::intoTimeScale (
 	qtractorMidiFileTempo::Marker *pMarker = m_markers.first();
 	while (pMarker) {
 		const unsigned long iTime = uint64_t(pMarker->tick) * p / q;
-		pTimeScale->addMarker(
-			pTimeScale->frameFromTick(iTime + iTimeOffset),
-			pMarker->text);
+		if (!pMarker->text.isEmpty()) {
+			pTimeScale->addMarker(
+				pTimeScale->frameFromTick(iTime + iTimeOffset),
+				pMarker->text);
+		}
+		if (pMarker->accidentals || pMarker->mode) {
+			pTimeScale->addKeySignature(
+				pTimeScale->frameFromTick(iTime + iTimeOffset),
+				pMarker->accidentals, pMarker->mode);
+		}
 		pMarker = pMarker->next();
 	}
 }

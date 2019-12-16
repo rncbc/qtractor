@@ -129,6 +129,13 @@ public:
 	void setVerticalZoom(unsigned short iVerticalZoom);
 	unsigned short verticalZoom() const;
 
+	// Splitter sizes accessors.
+	void setHorizontalSizes(const QList<int>& sizes);
+	QList<int> horizontalSizes() const;
+
+	void setVerticalSizes(const QList<int>& sizes);
+	QList<int> verticalSizes() const;
+
 	// Local time scale accessors.
 	qtractorTimeScale *timeScale() const;
 	unsigned long timeOffset() const;
@@ -282,7 +289,7 @@ public:
 		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 	
 	// Track drag-move-select cursor and mode...
-	qtractorMidiEvent *dragMoveEvent (qtractorScrollView *pScrollView,
+	qtractorMidiEvent *dragMoveEvent(qtractorScrollView *pScrollView,
 		const QPoint& pos, const Qt::KeyboardModifiers& modifiers);
 
 	// Start drag-move-selecting...
@@ -380,7 +387,7 @@ public:
 	static const QStringList& scaleKeyNames();
 	static const QStringList& scaleTypeNames();
 
-	// Scale quantizer method.	
+	// Scale quantizer method.
 	static unsigned char snapToScale(
 		unsigned char note, int iKey, int iScale);
 
@@ -511,6 +518,16 @@ protected:
 	// Specialized drag/time-scale (draft)...
 	struct DragTimeScale;
 
+	// Initialize default names hash maps.
+	static void initDefaultNoteNames();
+	static void initDefaultControllerNames();
+	static void initDefaultRpnNames();
+	static void initDefaultNrpnNames();
+	static void initDefaultControl14Names();
+
+	// Scale key/note resolver.
+	static int scaleTabNote(int iScale, int n);
+
 protected slots:
 
 	// Horizontal zoom view slots.
@@ -522,6 +539,10 @@ protected slots:
 	void verticalZoomInSlot();
 	void verticalZoomOutSlot();
 	void verticalZoomResetSlot();
+
+	// Splitters moved slots.
+	void horizontalSplitterSlot();
+	void verticalSplitterSlot();
 
 	// Command execution notification slot.
 	void updateNotifySlot(unsigned int flags);
@@ -543,6 +564,10 @@ private:
 	// Event fore/background colors.
 	QColor m_foreground;
 	QColor m_background;
+
+	// The main widget splitters.
+	QSplitter *m_pHSplitter;
+	QSplitter *m_pVSplitter;
 
 	// The main child widgets.
 	QFrame *m_pEditListHeader;

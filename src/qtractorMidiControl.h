@@ -30,6 +30,9 @@
 
 #include <math.h>
 
+// Needed for the translation functions.
+#include <QCoreApplication>
+
 
 // Forward declarations.
 class qtractorTrack;
@@ -46,6 +49,8 @@ class QDomElement;
 
 class qtractorMidiControl
 {
+	Q_DECLARE_TR_FUNCTIONS(qtractorMidiControl)
+
 public:
 
 	// Controller types.
@@ -355,19 +360,19 @@ public:
 
 	// Document textual helpers.
 	static ControlType typeFromText(const QString& sText);
-	static const QString& textFromType(ControlType ctype);
+	static QString textFromType(ControlType ctype);
 
 	static ControlType typeFromName(const QString& sName);
-	static const QString& nameFromType(ControlType ctype);
+	static QString nameFromType(ControlType ctype);
 
 	static unsigned short keyFromText(const QString& sText);
 	static QString textFromKey(unsigned short iKey);
 
 	static Command commandFromText(const QString& sText);
-	static const QString& textFromCommand(Command command);
+	static QString textFromCommand(Command command);
 
 	static Command commandFromName(const QString& sName);
-	static const QString& nameFromCommand(Command command);
+	static QString nameFromCommand(Command command);
 
 	// MIDI control non catch-up/hook global option.
 	static void setSync(bool bSync);
@@ -461,6 +466,10 @@ protected:
 		int   m_iMaxScale;
 		int   m_iMidScale;
 	};
+
+	// Initialize default control types and command names hash maps.
+	static void initControlTypes();
+	static void initCommandNames();
 
 private:
 

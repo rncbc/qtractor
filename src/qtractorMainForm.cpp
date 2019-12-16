@@ -2204,9 +2204,6 @@ bool qtractorMainForm::editSession (void)
 	if (bPlaying)
 		m_pSession->lock();
 
-	// Take care of session name changes...
-	const QString sOldSessionName = m_pSession->sessionName();
-
 	// Now, express the change as a undoable command...
 	m_pSession->execute(
 		new qtractorSessionEditCommand(m_pSession, sessionForm.properties()));
@@ -2470,7 +2467,7 @@ bool qtractorMainForm::loadSessionFileEx (
 		if (m_pOptions && bUpdate) {
 			// Do not set (next) default session directory on zip/archives...
 			if ((iFlags & qtractorDocument::Archive) == 0)
-				m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+				m_pOptions->sSessionDir = sessionDir(sFilename);
 			// Save also some Audio engine hybrid-properties...
 			qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 			if (pAudioEngine) {
@@ -2601,7 +2598,7 @@ bool qtractorMainForm::saveSessionFileEx (
 			}
 			// Do not set (next) default session directory on zip/archives...
 			if ((iFlags & qtractorDocument::Archive) == 0)
-				m_pOptions->sSessionDir = QFileInfo(sFilename).absolutePath();
+				m_pOptions->sSessionDir = sessionDir(sFilename);
 			// Sync
 			m_pOptions->saveOptions();
 		}
@@ -2628,24 +2625,29 @@ bool qtractorMainForm::saveSessionFileEx (
 
 QString qtractorMainForm::sessionBackupPath ( const QString& sFilename )
 {
-	const QFileInfo f1(sFilename);
-	if (f1.exists()) {
+	QFileInfo fi(sFilename);
+
+	QString sBackupName = fi.completeBaseName();
+	if (fi.isDir())
+		fi.setFile(QDir(fi.filePath()), sBackupName);
+	if (fi.exists()) {
 		int iBackupNo = 0;
-		const QDir& dir = f1.absoluteDir();
 		const QRegExp rxBackupNo("\\.([0-9]+)$");
-		QString sBackupName = f1.completeBaseName();
 		if (rxBackupNo.indexIn(sBackupName) >= 0) {
 			iBackupNo = rxBackupNo.cap(1).toInt();
 			sBackupName.remove(rxBackupNo);
 		}
-		sBackupName += ".%1." + f1.suffix();
-		QFileInfo f2(dir, sBackupName.arg(++iBackupNo));
-		while (f2.exists())
-			f2.setFile(dir, sBackupName.arg(++iBackupNo));
-		return f2.absoluteFilePath();
-	} else {
-		return sFilename;
+		sBackupName += ".%1";
+		const QString& sExt = fi.suffix();
+		if (!sExt.isEmpty())
+			sBackupName += '.' + sExt;
+		const QDir dir = fi.absoluteDir();
+		fi.setFile(dir, sBackupName.arg(++iBackupNo));
+		while (fi.exists())
+			fi.setFile(dir, sBackupName.arg(++iBackupNo));
 	}
+
+	return fi.absoluteFilePath();
 }
 
 
@@ -2943,6 +2945,17 @@ void qtractorMainForm::autoSaveClose (void)
 	m_pOptions->sAutoSaveFilename.clear();
 
 	autoSaveReset();
+}
+
+
+// Make it sane a session directory...
+QString qtractorMainForm::sessionDir ( const QString& sFilename ) const
+{
+	QFileInfo fi(sFilename);
+	const QDir& dir = fi.dir();
+	if (fi.completeBaseName() == dir.dirName())
+		fi.setFile(dir.absolutePath());
+	return fi.absolutePath();
 }
 
 
@@ -5253,8 +5266,8 @@ void qtractorMainForm::transportBackward (void)
 	} else {
 		m_pSession->setPlayHead(playHeadBackward());
 	}
-	++m_iTransportUpdate;
 
+	++m_iTransportUpdate;
 	++m_iStabilizeTimer;
 }
 
@@ -5345,8 +5358,8 @@ void qtractorMainForm::transportForward (void)
 	} else {
 		m_pSession->setPlayHead(playHeadForward());
 	}
-	++m_iTransportUpdate;
 
+	++m_iTransportUpdate;
 	++m_iStabilizeTimer;
 }
 
@@ -5451,8 +5464,7 @@ void qtractorMainForm::transportPlay (void)
 		if (bPlaying) {
 			const unsigned long iPlayHead = m_pSession->playHead();
 			qtractorTrackView *pTrackView = m_pTracks->trackView();
-			if (iPlayHead < m_pSession->sessionEnd())
-				pTrackView->setPlayHeadAutoBackward(iPlayHead);
+			pTrackView->setPlayHeadAutoBackward(iPlayHead);
 			pTrackView->setSyncViewHoldOn(false);
 		}
 		else
@@ -6070,23 +6082,30 @@ void qtractorMainForm::setSongPos ( unsigned short iSongPos )
 unsigned long qtractorMainForm::playHeadBackward (void) const
 {
 	const unsigned long iPlayHead = m_pSession->playHead();
+	const bool bPlaying = m_pSession->isPlaying();
 	QList<unsigned long> list;
 	list.append(0);
 	if (iPlayHead > m_pSession->playHeadAutoBackward())
 		list.append(m_pSession->playHeadAutoBackward());
 	if (iPlayHead > m_pSession->editHead())
 		list.append(m_pSession->editHead());
-//	if (iPlayHead > m_pSession->editTail() && !m_pSession->isPlaying())
-//		list.append(m_pSession->editTail());
+	if (iPlayHead > m_pSession->editTail() && !bPlaying)
+		list.append(m_pSession->editTail());
 	if (m_pSession->isLooping()) {
 		if (iPlayHead > m_pSession->loopStart())
 			list.append(m_pSession->loopStart());
-	//	if (iPlayHead > m_pSession->loopEnd() && !m_pSession->isPlaying())
-	//		list.append(m_pSession->loopEnd());
+		if (iPlayHead > m_pSession->loopEnd() && !bPlaying)
+			list.append(m_pSession->loopEnd());
+	}
+	if (m_pSession->isPunching()) {
+		if (iPlayHead > m_pSession->punchIn())
+			list.append(m_pSession->punchIn());
+		if (iPlayHead > m_pSession->punchOut() && !bPlaying)
+			list.append(m_pSession->punchOut());
 	}
 	if (iPlayHead > m_pSession->sessionStart())
 		list.append(m_pSession->sessionStart());
-//	if (iPlayHead > m_pSession->sessionEnd() && !m_pSession->isPlaying())
+//	if (iPlayHead > m_pSession->sessionEnd() && !bPlaying)
 //		list.append(m_pSession->sessionEnd());
 	qtractorTimeScale::Marker *pMarker
 		= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
@@ -6114,6 +6133,12 @@ unsigned long qtractorMainForm::playHeadForward (void) const
 			list.append(m_pSession->loopStart());
 		if (iPlayHead < m_pSession->loopEnd())
 			list.append(m_pSession->loopEnd());
+	}
+	if (m_pSession->isPunching()) {
+		if (iPlayHead < m_pSession->punchIn())
+			list.append(m_pSession->punchIn());
+		if (iPlayHead < m_pSession->punchOut())
+			list.append(m_pSession->punchOut());
 	}
 	if (iPlayHead < m_pSession->sessionStart())
 		list.append(m_pSession->sessionStart());
@@ -7511,7 +7536,7 @@ void qtractorMainForm::fastTimerSlot (void)
 			updateTransportTime(iPlayHead);
 			m_pThumbView->updateThumb();
 		}
-		// Ensure the amin form is stable later on...
+		// Ensure the main form is stable later on...
 		++m_iStabilizeTimer;
 		// Done with transport tricks.
 	}
@@ -7581,7 +7606,7 @@ void qtractorMainForm::slowTimerSlot (void)
 					m_pSession->seek(iPlayHead, true);
 			}
 			// 2. Watch for temp/time-sig changes on JACK transport...
-			if (pos.valid & JackPositionBBT) {
+			if ((pos.valid & JackPositionBBT) && pAudioEngine->isTimebaseEx()) {
 				qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(pos.frame);
@@ -8627,9 +8652,8 @@ void qtractorMainForm::contentsChanged (void)
 	qDebug("qtractorMainForm::contentsChanged()");
 #endif
 
-	// HACK: Force play-head position update...
-	// m_iPlayHead = 0;
-	m_pTempoCursor->clear();
+	// HACK: Force immediate stabilization later...
+	m_iStabilizeTimer = 0;
 
 	// Stabilize session toolbar widgets...
 //	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);

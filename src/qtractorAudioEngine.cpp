@@ -2174,6 +2174,12 @@ bool qtractorAudioEngine::isTimebase (void) const
 	return m_bTimebase;
 }
 
+bool qtractorAudioEngine::isTimebaseEx (void) const
+{
+	return (!m_bTimebase || m_iTimebase > 0);
+}
+
+
 
 // JACK Timebase reset method.
 void qtractorAudioEngine::resetTimebase (void)
@@ -2188,7 +2194,7 @@ void qtractorAudioEngine::resetTimebase (void)
 	}
 
 	if (m_bTimebase) {
-		// Just force the timebase callback, maybe once again... 
+		// Just force the timebase callback, maybe once again...
 		jack_set_timebase_callback(m_pJackClient,
 			0 /* FIXME: un-conditional! */,
 			qtractorAudioEngine_timebase, this);

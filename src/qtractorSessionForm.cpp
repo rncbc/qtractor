@@ -56,6 +56,10 @@ qtractorSessionForm::qtractorSessionForm (
 	if (pOptions)
 		pOptions->loadComboBoxHistory(m_ui.SessionDirComboBox);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	m_ui.SessionDirComboBox->lineEdit()->setClearButtonEnabled(true);
+#endif
+
 	// Setup some specific validators.
 	m_ui.SampleRateComboBox->setValidator(
 		new QIntValidator(m_ui.SampleRateComboBox));
@@ -83,10 +87,13 @@ qtractorSessionForm::qtractorSessionForm (
 	// UI signal/slot connections...
 	QObject::connect(m_ui.SessionNameLineEdit,
 		SIGNAL(textChanged(const QString&)),
-		SLOT(changed()));
+		SLOT(changeSessionName(const QString&)));
 	QObject::connect(m_ui.SessionDirComboBox,
 		SIGNAL(editTextChanged(const QString&)),
-		SLOT(changed()));
+		SLOT(changeSessionDir(const QString&)));
+	QObject::connect(m_ui.SessionDirComboBox->lineEdit(),
+		SIGNAL(editingFinished()),
+		SLOT(finishSessionDir()));
 	QObject::connect(m_ui.SessionDirToolButton,
 		SIGNAL(clicked()),
 		SLOT(browseSessionDir()));
@@ -266,18 +273,33 @@ void qtractorSessionForm::changed (void)
 }
 
 
-// Stabilize current form state.
-void qtractorSessionForm::stabilizeForm (void)
+// Session name in-flight change.
+void qtractorSessionForm::changeSessionName ( const QString& sSessionName )
 {
-	QFileInfo fi(m_ui.SessionDirComboBox->currentText());
-	if (fi.fileName().isEmpty())
-		fi.setFile(fi.path());
-	fi.setFile(fi.path());
+	if (m_props.sessionName.isEmpty()) {
+		QFileInfo fi(m_props.sessionDir);
+		fi.setFile(QDir(fi.filePath()), sSessionName);
+		m_ui.SessionDirComboBox->setEditText(fi.absoluteFilePath());
+	}
 
-	bool bValid = !m_ui.SessionNameLineEdit->text().isEmpty();
-	bValid = bValid && fi.isDir() && fi.isReadable() && fi.isWritable();
-//	bValid = bValid && !m_ui.DescriptionTextEdit->text().isEmpty();
-	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
+	changed();
+}
+
+
+// Session directory in-flight change.
+void qtractorSessionForm::changeSessionDir ( const QString& sSessionDir )
+{
+	if (sSessionDir.isEmpty())
+		m_ui.SessionDirComboBox->setEditText(m_props.sessionDir);
+
+	changed();
+}
+
+
+// Session directory edit-finishing.
+void qtractorSessionForm::finishSessionDir (void)
+{
+	m_props.sessionDir = m_ui.SessionDirComboBox->currentText();
 }
 
 
@@ -318,12 +340,38 @@ void qtractorSessionForm::browseSessionDir (void)
 	QString sSessionDir = fileDialog.selectedFiles().first();
 #endif
 
-    if (sSessionDir.isEmpty())
+	if (sSessionDir.isEmpty())
 		return;
+
+	m_props.sessionDir = sSessionDir;
+
+	if (m_props.sessionName.isEmpty()) {
+		const QString& sSessionName
+			= m_ui.SessionNameLineEdit->text();
+		QFileInfo fi(sSessionDir);
+		fi.setFile(QDir(fi.filePath()), sSessionName);
+		sSessionDir = fi.absoluteFilePath();
+	}
 
 	m_ui.SessionDirComboBox->setEditText(sSessionDir);
 	m_ui.SessionDirComboBox->setFocus();
+
 	changed();
+}
+
+
+// Stabilize current form state.
+void qtractorSessionForm::stabilizeForm (void)
+{
+	QFileInfo fi(m_ui.SessionDirComboBox->currentText());
+	if (fi.fileName().isEmpty())
+		fi.setFile(fi.path());
+	fi.setFile(fi.path());
+
+	bool bValid = !m_ui.SessionNameLineEdit->text().isEmpty();
+	bValid = bValid && fi.isDir() && fi.isReadable() && fi.isWritable();
+//	bValid = bValid && !m_ui.DescriptionTextEdit->text().isEmpty();
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
 
 
