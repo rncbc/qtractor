@@ -12187,11 +12187,6 @@ Sei sicuro?</translation>
         <translation>Palette personalizzata per il tema dei colori</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2542"/>
-        <source>KXStudio</source>
-        <translation>KXStudio</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="2616"/>
         <source>Custom widget style theme</source>
         <translation>Tema personalizzato per lo stile degli oggetti</translation>
@@ -12390,7 +12385,14 @@ Sei sicuro?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2537"/>
         <source>Wonton Soup</source>
-        <translation>Zuppa Wonton</translation>
+        <translatorcomment>DO NOT TRANSLATE</translatorcomment>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="2542"/>
+        <source>KXStudio</source>
+        <translatorcomment>DO NOT TRANSLATE</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2600"/>

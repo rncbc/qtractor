@@ -12244,11 +12244,13 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2537"/>
         <source>Wonton Soup</source>
+        <translatorcomment>DO NOT TRANSLATE</translatorcomment>
         <translation></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2542"/>
         <source>KXStudio</source>
+        <translatorcomment>DO NOT TRANSLATE</translatorcomment>
         <translation></translation>
     </message>
     <message>

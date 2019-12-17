@@ -12069,11 +12069,6 @@ Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="2542"/>
-        <source>KXStudio</source>
-        <translation>KXStudio</translation>
-    </message>
-    <message>
         <location filename="../qtractorOptionsForm.ui" line="2616"/>
         <source>Custom widget style theme</source>
         <translation type="unfinished"></translation>
@@ -12272,7 +12267,14 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2537"/>
         <source>Wonton Soup</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>DO NOT TRANSLATE</translatorcomment>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="2542"/>
+        <source>KXStudio</source>
+        <translatorcomment>DO NOT TRANSLATE</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2600"/>

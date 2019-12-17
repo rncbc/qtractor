@@ -12245,12 +12245,14 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2537"/>
         <source>Wonton Soup</source>
-        <translation>Wonton Soup</translation>
+        <translatorcomment>DO NOT TRANSLATE</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2542"/>
         <source>KXStudio</source>
-        <translation>KXStudio</translation>
+        <translatorcomment>DO NOT TRANSLATE</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2616"/>
