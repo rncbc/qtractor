@@ -171,6 +171,11 @@ Installation
 ------------
 
 The installation procedure follows the standard for source distributions.
+
+Install dependencies. For example, in debian-based distributions you can install basic dependencies with:
+
+    sudo apt-get install build-essential autoconf qtdeclarative5-dev libjack-jackd2-dev libasound2-dev libsndfile1-dev
+
 Unpack the tarball and in the extracted source directory:
 
     ./configure [--prefix=/usr/local]
