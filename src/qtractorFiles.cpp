@@ -91,7 +91,6 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pPlayLayout->setSpacing(2);
 	m_pPlayWidget->setLayout(m_pPlayLayout);
 
-	m_iPlayUpdate = 0;
 	m_pPlayButton = new QToolButton(m_pPlayWidget);
 	m_pPlayButton->setIcon(QIcon(":/images/transportPlay.png"));
 	m_pPlayButton->setToolTip(tr("Play file"));
@@ -334,10 +333,12 @@ void qtractorFiles::selectMidiFile ( const QString& sFilename,
 // Audition/pre-listening player methods.
 void qtractorFiles::setPlayState ( bool bOn )
 {
-	++m_iPlayUpdate;
+	const bool bBlockPlayAction = m_pPlayItemAction->blockSignals(true);
+	const bool bBlockPlayButton = m_pPlayButton->blockSignals(true);
 	m_pPlayItemAction->setChecked(bOn);
 	m_pPlayButton->setChecked(bOn);
-	--m_iPlayUpdate;
+	m_pPlayButton->blockSignals(bBlockPlayButton);
+	m_pPlayItemAction->blockSignals(bBlockPlayAction);
 }
 
 bool qtractorFiles::isPlayState (void) const
@@ -462,9 +463,6 @@ void qtractorFiles::stabilizeSlot (void)
 // Audition/pre-listening player slot.
 void qtractorFiles::playSlot ( bool bOn )
 {
-	if (m_iPlayUpdate > 0)
-		return;
-
 	setPlayState(bOn);
 
 	if (bOn) {

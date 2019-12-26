@@ -7746,9 +7746,8 @@ void qtractorMainForm::slowTimerSlot (void)
 		const bool bPlayerOpen
 			= (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen());
 		if (bPlayerOpen) {
-			if (m_pFiles && m_pFiles->isPlayState())
-				++m_iPlayerTimer;
-			if (m_pFileSystem && m_pFileSystem->isPlayState())
+			if ((m_pFiles && m_pFiles->isPlayState()) &&
+				(m_pFileSystem && m_pFileSystem->isPlayState()))
 				++m_iPlayerTimer;
 		}
 		if (m_iPlayerTimer < 1) {
@@ -8377,7 +8376,10 @@ void qtractorMainForm::activateAudioFile (
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine && pAudioEngine->openPlayer(sFilename)) {
 		// Try updating player status anyway...
-		m_pFiles->setPlayState(true);
+		if (m_pFiles)
+			m_pFiles->setPlayState(true);
+		if (m_pFileSystem)
+			m_pFileSystem->setPlayState(true);
 		++m_iPlayerTimer;
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
@@ -8434,7 +8436,10 @@ void qtractorMainForm::activateMidiFile (
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine && pMidiEngine->openPlayer(sFilename, iTrackChannel)) {
 		// Try updating player status anyway...
-		m_pFiles->setPlayState(true);
+		if (m_pFiles)
+			m_pFiles->setPlayState(true);
+		if (m_pFileSystem)
+			m_pFileSystem->setPlayState(true);
 		++m_iPlayerTimer;
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
@@ -8475,9 +8480,6 @@ void qtractorMainForm::activateFile ( const QString& sFilename )
 		if (closeSession())
 			loadSessionFile(sFilename);
 	}
-
-	// Try updating player status anyway...
-	++m_iPlayerTimer;
 }
 
 
