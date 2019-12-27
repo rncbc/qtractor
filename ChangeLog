@@ -4,18 +4,18 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.12  2019-12-28  The Winter'19 Release.
 
 - Basic key-signature has been added to tempo, time
-  -signature and location markers map. (EXPERIMENTAL)
+  -signature and location markers map.
 
 - MIDI Clip editor (aka. piano-roll) horizontal and
   vertical splitter sizes, widths and heights resp.
   are now preserved as user preferences and also to
-  session state. (EXPERIMENTAL)
+  session state.
 
 - Second attempt to fix the yet non-official though
-  CMake build configuration. (EXPERIMENTAL)
+  CMake build configuration.
 
 
 0.9.11  2019-11-09  The Mauerfall'30 Release.
