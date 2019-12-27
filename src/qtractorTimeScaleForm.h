@@ -28,7 +28,7 @@
 // Forward declarations...
 class qtractorTimeScaleListItem;
 
-class QTime;
+class QElapsedTimer;
 
 
 //----------------------------------------------------------------------------
@@ -114,9 +114,9 @@ private:
 	// Instance variables...
 	qtractorTimeScale *m_pTimeScale;
 
-	QTime *m_pTempoTap;
-	int    m_iTempoTap;
-	float  m_fTempoTap;
+	QElapsedTimer *m_pTempoTap;
+	int            m_iTempoTap;
+	float          m_fTempoTap;
 
 	int m_iDirtySetup;
 	int m_iDirtyCount;

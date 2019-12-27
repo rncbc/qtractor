@@ -7024,7 +7024,7 @@ void qtractorMainForm::trackCurveSelectMenuAction ( QMenu *pMenu,
 	QAction *pAction = pMenu->addAction(icon, text);
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurrentSubject == pSubject);
-	pAction->setData(qVariantFromValue(pObserver));
+	pAction->setData(QVariant::fromValue(pObserver));
 }
 
 

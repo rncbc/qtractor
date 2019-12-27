@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#ifndef __qtractor_dssi_scan_h
-#define __qtractor_dssi_scan_h
+#ifndef __qtractor_plugin_scan_h
+#define __qtractor_plugin_scan_h
 
 #include <QString>
 

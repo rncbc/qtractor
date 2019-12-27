@@ -32,9 +32,10 @@
 
 #include <QMessageBox>
 #include <QLineEdit>
-#include <QTime>
 #include <QPainter>
 #include <QPaintEvent>
+
+#include <QElapsedTimer>
 
 
 #ifdef CONFIG_LIBAUBIO
@@ -300,7 +301,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 
 	m_pClipWidget = nullptr;
 
-	m_pTempoTap = new QTime();
+	m_pTempoTap = new QElapsedTimer();
 	m_iTempoTap = 0;
 	m_fTempoTap = 0.0f;
 

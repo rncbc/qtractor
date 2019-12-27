@@ -54,7 +54,7 @@
 
 #include <QSocketNotifier>
 
-#include <QTime>
+#include <QElapsedTimer>
 
 #include <math.h>
 
@@ -1692,13 +1692,13 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		// Trap MIDI Clocks...
 		if ((m_clockMode & qtractorBus::Input)
 			&& m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
-			static QTime s_clockTime;
+			static QElapsedTimer s_clockTimer;
 			if (++m_iClockCount == 1)
-				s_clockTime.start();
+				s_clockTimer.start();
 			else
 			if (m_iClockCount > 72) { // 3 beat averaging...
 				m_iClockCount = 0;
-				const float fTempo = int(180000.0f / float(s_clockTime.elapsed()));
+				const float fTempo = int(180000.0f / float(s_clockTimer.elapsed()));
 				if (::fabsf(fTempo - m_fClockTempo) / m_fClockTempo > 0.01f) {
 					m_fClockTempo = fTempo;
 					// Post the stuffed event...

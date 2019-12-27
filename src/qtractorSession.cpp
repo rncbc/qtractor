@@ -51,6 +51,8 @@
 
 #include <QDomDocument>
 
+#include <QElapsedTimer>
+
 #include <stdlib.h>
 
 
@@ -1148,10 +1150,10 @@ void qtractorSession::stabilize ( int msecs )
 #endif
 
 	// Wait a litle bit before continue...
-	QTime t;
-	t.start();
+	QElapsedTimer timer;
+	timer.start();
 
-	while (t.elapsed() < msecs) {
+	while (timer.elapsed() < msecs) {
 		QThread::yieldCurrentThread();
 		QApplication::processEvents(/* QEventLoop::ExcludeUserInputEvents */);
 	}

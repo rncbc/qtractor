@@ -28,7 +28,7 @@
 class qtractorClip;
 class qtractorAudioClip;
 
-class QTime;
+class QElapsedTimer;
 
 
 //----------------------------------------------------------------------------
@@ -109,9 +109,9 @@ private:
 
 	ClipWidget *m_pClipWidget;
 
-	QTime *m_pTempoTap;
-	int    m_iTempoTap;
-	float  m_fTempoTap;
+	QElapsedTimer *m_pTempoTap;
+	int            m_iTempoTap;
+	float          m_fTempoTap;
 
 	int m_iDirtySetup;
 	int m_iDirtyCount;
