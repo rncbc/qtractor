@@ -4,6 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Make libaudio a build dependency on debian/ubuntu;
+  also fix cross-build check to sizeof(float).
+
+- Bumped copyright headers into the New Year (2020).
+
+
 0.9.12  2019-12-28  The Winter'19 Release.
 
 - Basic key-signature has been added to tempo, time

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.9.12, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.9.13, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -599,11 +599,10 @@ AC_SUBST(ac_lrelease)
 
 
 # Check for IEEE 32bit float optimizations.
+AC_CHECK_SIZEOF(float)
 AC_CACHE_CHECK([for IEEE 32bit float optimizations],
    ac_cv_float32, [
-   AC_TRY_RUN([
-      int main() { return (sizeof(float) == 4 ? 0 : 1); }
-   ], ac_cv_float32="yes", ac_cv_float32="no")
+   AS_IF([test "$ac_cv_sizeof_float" = 4], [ac_cv_float32="yes"], [ac_cv_float32="no"])
 ])
 ac_float32=$ac_cv_float32
 if test "x$ac_float32" = "xyes"; then
