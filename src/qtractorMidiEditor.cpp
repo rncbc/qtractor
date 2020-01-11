@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2554,8 +2554,8 @@ void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
 	int cx = m_pTimeScale->pixelFromFrame(zc.frame);
 	int cy = zc.item * m_pEditList->itemHeight();
 
-	if (cx > zc.x + x0) cx -= zc.x + x0; else cx = 0;
-	if (cy > zc.y) cy -= zc.y; else cy = 0;
+	if (cx > zc.x + x0) cx -= zc.x + x0; //else cx = 0;
+	if (cy > zc.y) cy -= zc.y; //else cy = 0;
 
 	// Update dependant views.
 	m_pEditList->updateContentsHeight();

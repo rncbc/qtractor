@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Avoid resetting top or left position when zooming
+  with mouse pointer is in main tracks or MIDI clip
+  editor (piano-roll) views.
+
 - Make libaudio a build dependency on debian/ubuntu;
   also fix cross-build check to sizeof(float).
 
