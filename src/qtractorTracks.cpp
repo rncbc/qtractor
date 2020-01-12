@@ -379,8 +379,10 @@ void qtractorTracks::zoomCenterPost ( const ZoomCenter& zc )
 	int cx = pSession->pixelFromFrame(zc.frame);
 	int cy = m_pTrackView->contentsY();
 
-	if (cx > zc.x) cx -= zc.x; //else cx = 0;
-	if (cy > zc.y) cy -= zc.y; //else cy = 0;
+	if (m_iZoomMode & ZoomHorizontal)
+		if (cx > zc.x) cx -= zc.x; else cx = 0;
+	if (m_iZoomMode & ZoomVertical)
+		if (cy > zc.y) cy -= zc.y; else cy = 0;
 
 	// Update the dependant views...
 	m_pTrackList->updateContentsHeight();
@@ -660,7 +662,7 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 struct audioClipNormalizeData
 {	// Ctor.
 	audioClipNormalizeData(unsigned short iChannels)
-		: count(0), channels(iChannels), max(0.0f) {};
+		: count(0), channels(iChannels), max(0.0f) {}
 	// Members.
 	unsigned int count;
 	unsigned short channels;
