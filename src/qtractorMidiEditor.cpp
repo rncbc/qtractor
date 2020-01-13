@@ -2562,16 +2562,19 @@ void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
 	int cx = m_pTimeScale->pixelFromFrame(zc.frame);
 	int cy = zc.item * m_pEditList->itemHeight();
 
-	if (m_iZoomMode & ZoomHorizontal)
-		if (cx > zc.x + x0) cx -= zc.x + x0; else cx = 0;
-	if (m_iZoomMode & ZoomVertical)
-		if (cy > zc.y) cy -= zc.y; else cy = 0;
-
 	// Update dependant views.
 	m_pEditList->updateContentsHeight();
 	m_pEditView->updateContentsWidth();
 
 	updateSelect(true);
+
+	if (m_iZoomMode & ZoomHorizontal) {
+		if (cx > zc.x + x0) cx -= zc.x + x0; else cx = 0;
+	}
+
+	if (m_iZoomMode & ZoomVertical) {
+		if (cy > zc.y) cy -= zc.y; else cy = 0;
+	}
 
 	// Do the centering...
 	m_pEditView->setContentsPos(cx, cy);

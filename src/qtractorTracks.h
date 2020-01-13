@@ -191,7 +191,7 @@ protected:
 	// Zoom centering context.
 	struct ZoomCenter
 	{
-		int x, y;
+		int x, y, ch;
 		unsigned long frame;
 	};
 

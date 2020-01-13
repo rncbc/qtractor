@@ -372,6 +372,7 @@ void qtractorTracks::zoomCenterPre ( ZoomCenter& zc ) const
 		}
 	}
 
+	zc.ch = m_pTrackView->contentsHeight();
 	zc.frame = pSession->frameFromPixel(cx + zc.x);
 }
 
@@ -387,14 +388,20 @@ void qtractorTracks::zoomCenterPost ( const ZoomCenter& zc )
 	int cx = pSession->pixelFromFrame(zc.frame);
 	int cy = m_pTrackView->contentsY();
 
-	if (m_iZoomMode & ZoomHorizontal)
-		if (cx > zc.x) cx -= zc.x; else cx = 0;
-	if (m_iZoomMode & ZoomVertical)
-		if (cy > zc.y) cy -= zc.y; else cy = 0;
-
 	// Update the dependant views...
 	m_pTrackList->updateContentsHeight();
 	m_pTrackView->updateContentsWidth();
+
+	if (m_iZoomMode & ZoomHorizontal) {
+		if (cx > zc.x) cx -= zc.x; else cx = 0;
+	}
+
+	if (m_iZoomMode & ZoomVertical) {
+	//	if (cy > zc.y) cy -= zc.y; else cy = 0;
+		cy = (cy * m_pTrackView->contentsHeight()) / zc.ch;
+	}
+
+	// Do the centering...
 	m_pTrackView->setContentsPos(cx, cy);
 	m_pTrackView->updateContents();
 
