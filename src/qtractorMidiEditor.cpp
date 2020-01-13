@@ -2525,20 +2525,28 @@ void qtractorMidiEditor::zoomCenterPre ( ZoomCenter& zc ) const
 	QWidget *pViewport = m_pEditView->viewport();
 	const QRect& rect = pViewport->rect();
 	const QPoint& pos = pViewport->mapFromGlobal(QCursor::pos());
+
+	zc.x = 0;
+	zc.y = 0;
+
 	if (rect.contains(pos)) {
-		zc.x = pos.x();
-		zc.y = pos.y();
+		if (m_iZoomMode & ZoomHorizontal)
+			zc.x = pos.x();
+		if (m_iZoomMode & ZoomVertical)
+			zc.y = pos.y();
 	} else {
-		zc.x = 0;
-		zc.y = 0;
-		if (cx > rect.width())
-			zc.x += (rect.width() >> 1);
-		if (cy > rect.height())
-			zc.y += (rect.height() >> 1);
+		if (m_iZoomMode & ZoomHorizontal) {
+			const int w2 = (rect.width() >> 1);
+			if (cx > w2) zc.x = w2;
+		}
+		if (m_iZoomMode & ZoomVertical) {
+			const int h2 = (rect.height() >> 1);
+			if (cy > h2) zc.y = h2;
+		}
 	}
 
-	zc.frame = m_pTimeScale->frameFromPixel(x0 + cx + zc.x);
 	zc.item = (cy + zc.y) / m_pEditList->itemHeight();
+	zc.frame = m_pTimeScale->frameFromPixel(x0 + cx + zc.x);
 }
 
 
