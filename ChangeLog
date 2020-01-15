@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Make man page compression reproducible (after request
+  by Jelle van der Waa, while on the Vee-Ones, thanks).
+
 - Avoid resetting top or left position when zooming
   with mouse pointer is in main tracks or MIDI clip
   editor (piano-roll) views.
