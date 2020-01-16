@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1302,11 +1302,11 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					}
 					else
 					if (iCol == Bus && pItem->plugins) {
-						if (rect.height() > qtractorTrack::HeightBase) {
+						if (rect.height() > qtractorTrack::HeightBase - 2) {
 							const int dy1 = qtractorTrack::HeightBase
 								- qtractorTrack::HeightMin;
 							(pItem->plugins)->setGeometry(
-								rect.adjusted(+4, dy1, -3, -2));
+								rect.adjusted(+4, dy1, -4, -2));
 							(pItem->plugins)->show();
 						} else {
 							(pItem->plugins)->hide();

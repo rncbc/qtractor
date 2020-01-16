@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -298,8 +298,8 @@ void qtractorOptions::loadOptions (void)
 	bTrackViewSnapGrid   = m_settings.value("/TrackViewSnapGrid", true).toBool();
 	bTrackViewToolTips   = m_settings.value("/TrackViewToolTips", true).toBool();
 	bTrackViewCurveEdit  = m_settings.value("/TrackViewCurveEdit", false).toBool();
-	bTrackListPlugins    = m_settings.value("/TrackListPlugins", false).toBool();
-	bTrackListMeters     = m_settings.value("/TrackListMeters", false).toBool();
+	bTrackListPlugins    = m_settings.value("/TrackListPlugins", true).toBool();
+	bTrackListMeters     = m_settings.value("/TrackListMeters", true).toBool();
 	m_settings.endGroup();
 
 	// MIDI options group.

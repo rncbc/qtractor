@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Plugins and meters on track list/left pane, are now
+  being set on as default--maybe going stapled in some
+  near future ;) (EXPERIMENTAL)
+
 - Make man page compression reproducible (after request
   by Jelle van der Waa, while on the Vee-Ones, thanks).
 
