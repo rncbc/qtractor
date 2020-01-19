@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed first bar/measure position drawing on the
+  time-scale/grid across time-signature changes on
+  the MIDI clip editor (aka. piano-roll) (hopefully
+  fixing issue #245).
+
 - Plugins and meters on track list/left pane, are now
   being set on as default--maybe going stapled in some
   near future ;) (EXPERIMENTAL)

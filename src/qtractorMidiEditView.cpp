@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -365,7 +365,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 		painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
 #else
 	unsigned short iBar = pNode->barFromPixel(dx);
-	if (iBar > 0) --iBar;
+	if (iBar > 0) pNode = cursor.seekBar(--iBar);
 	int x = pNode->pixelFromBar(iBar) - dx;
 	while (x < w) {
 		// Next bar...
