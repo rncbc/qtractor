@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -750,6 +750,8 @@ static const LV2_Feature *g_lv2_features[] =
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QCheckBox>
+
+#include <dlfcn.h>
 
 #define LV2_UI_TYPE_NONE       0
 #define LV2_UI_TYPE_QT4        1
@@ -2145,7 +2147,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_lv2_uis(nullptr)
 		, m_lv2_ui(nullptr)
 		, m_lv2_ui_features(nullptr)
-		, m_lv2_ui_library(nullptr)
+		, m_lv2_ui_module(nullptr)
 		, m_lv2_ui_descriptor(nullptr)
 		, m_lv2_ui_handle(nullptr)
 		, m_lv2_ui_widget(nullptr)
@@ -3487,9 +3489,9 @@ void qtractorLv2Plugin::closeEditor (void)
 		m_lv2_ui_descriptor = nullptr;
 	}
 
-	if (m_lv2_ui_library) {
-		delete m_lv2_ui_library;
-		m_lv2_ui_library = nullptr;
+	if (m_lv2_ui_module) {
+		::dlclose(m_lv2_ui_module);
+		m_lv2_ui_module = nullptr;
 	}
 
 	if (m_lv2_ui_features) {
@@ -4018,14 +4020,14 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 #endif
 
 	// Open UI library...
-	m_lv2_ui_library = new QLibrary(ui_binary_path);
+	m_lv2_ui_module = ::dlopen(ui_binary_path, RTLD_LOCAL | RTLD_LAZY);
 
 	// Get UI descriptor discovery function...
 	LV2UI_DescriptorFunction pfnLv2UiDescriptor
-		= (LV2UI_DescriptorFunction) m_lv2_ui_library->resolve("lv2ui_descriptor");
+		= (LV2UI_DescriptorFunction) ::dlsym(m_lv2_ui_module, "lv2ui_descriptor");
 	if (pfnLv2UiDescriptor == nullptr) {
-		delete m_lv2_ui_library;
-		m_lv2_ui_library = nullptr;
+		::dlclose(m_lv2_ui_module);
+		m_lv2_ui_module = nullptr;
 		return false;
 	}
 
@@ -4035,8 +4037,8 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	while (m_lv2_ui_descriptor && ::strcmp(m_lv2_ui_descriptor->URI, ui_uri))
 		m_lv2_ui_descriptor = (*pfnLv2UiDescriptor)(++ui_index);
 	if (m_lv2_ui_descriptor == nullptr) {
-		delete m_lv2_ui_library;
-		m_lv2_ui_library = nullptr;
+		::dlclose(m_lv2_ui_module);
+		m_lv2_ui_module = nullptr;
 		return false;
 	}
 
@@ -4090,8 +4092,8 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	if (m_lv2_ui_handle == nullptr) {
 		m_lv2_ui_widget = nullptr;
 		m_lv2_ui_descriptor = nullptr;
-		delete m_lv2_ui_library;
-		m_lv2_ui_library = nullptr;
+		::dlclose(m_lv2_ui_module);
+		m_lv2_ui_module = nullptr;
 		return false;
 	}
 

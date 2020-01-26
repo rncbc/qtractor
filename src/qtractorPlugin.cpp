@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,9 +41,12 @@
 #include <QDomElement>
 #include <QTextStream>
 
+#include <QLibrary>
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
+
+#include <dlfcn.h>
 
 #include <math.h>
 
@@ -55,11 +58,6 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #endif
 
 
-// A common function for special platforms...
-//
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-typedef void (*qtractorPluginFile_Function)(void);
-#endif
 
 
 //----------------------------------------------------------------------------
@@ -70,50 +68,43 @@ typedef void (*qtractorPluginFile_Function)(void);
 bool qtractorPluginFile::open (void)
 {
 	// Check whether already open...
-	if (++m_iOpenCount > 1)
+	if (m_module && ++m_iOpenCount > 1)
 		return true;
 
-	// ATTN: Not really needed, as it would be
-	// loaded automagically on resolve(), but ntl...
-	if (!QLibrary::load()) {
-		m_iOpenCount = 0;
-		return false;
+	// Do the openning dance...
+	if (m_module == nullptr) {
+		const QByteArray aFilename = m_sFilename.toUtf8();
+		m_module = ::dlopen(aFilename.constData(), RTLD_LOCAL | RTLD_LAZY);
 	}
 
-	// Do the openning dance...
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-	qtractorPluginFile_Function pfnInit
-		= (qtractorPluginFile_Function) QLibrary::resolve("_init");
-	if (pfnInit)
-		(*pfnInit)();
-#endif
-
 	// Done alright.
-	return true;
+	return (m_module != nullptr);
 }
 
 
 void qtractorPluginFile::close (void)
 {
-	if (!QLibrary::isLoaded())
+	if (!m_module)
 		return;
 
 	if (--m_iOpenCount > 0)
 		return;
 
-	// Do the closing dance...
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-	qtractorPluginFile_Function pfnFini
-		= (qtractorPluginFile_Function) QLibrary::resolve("_fini");
-	if (pfnFini)
-		(*pfnFini)();
-#endif
-
 	// ATTN: Might be really needed, as it would
 	// otherwise pile up hosing all available RAM
 	// until freed and unloaded on exit();
 	// nb. some VST might choke on auto-unload.
-	if (m_bAutoUnload) QLibrary::unload();
+	if (m_bAutoUnload) {
+		::dlclose(m_module);
+		m_module = nullptr;
+	}
+}
+
+
+// Symbol resolver.
+void *qtractorPluginFile::resolve ( const char *symbol )
+{
+	return (m_module ? ::dlsym(m_module, symbol) : nullptr);
 }
 
 

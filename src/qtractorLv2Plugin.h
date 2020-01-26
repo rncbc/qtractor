@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -507,7 +507,7 @@ private:
 	LV2_Feature  **m_lv2_ui_features;
 
 	// Alternate UI instantiation stuff.
-	QLibrary      *m_lv2_ui_library;
+	void          *m_lv2_ui_module;
 
 	const LV2UI_Descriptor *m_lv2_ui_descriptor;
 

@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,8 +27,6 @@
 #include "qtractorMidiControlObserver.h"
 
 #include "qtractorDocument.h"
-
-#include <QLibrary>
 
 #include <QStringList>
 #include <QPoint>
@@ -56,25 +54,29 @@ class qtractorCurveFile;
 // qtractorPluginFile -- Plugin file library instance.
 //
 
-class qtractorPluginFile : public QLibrary
+class qtractorPluginFile
 {
 public:
 
 	// Constructor.
 	qtractorPluginFile(const QString& sFilename, bool bAutoUnload = true)
-		: QLibrary(sFilename), m_bAutoUnload(bAutoUnload),
-			m_iOpenCount(0), m_iRefCount(0) {}
+		: m_sFilename(sFilename), m_module(nullptr),
+			m_bAutoUnload(bAutoUnload), m_iOpenCount(0), m_iRefCount(0) {}
 
 	// Destructor.
 	~qtractorPluginFile()
 		{ close(); }
 
 	// Helper property accessors.
-	QString filename() const { return QLibrary::fileName(); }
+	const QString& filename() const { return m_sFilename; }
+	void *module() const { return m_module; }
 
 	// Executive methods.
 	bool open();
 	void close();
+
+	// Symbol resolver.
+	void *resolve(const char *symbol);
 
 	// Auto-unload flag accessors.
 	void setAutoUnload(bool bAutoUnload)
@@ -98,6 +100,9 @@ public:
 private:
 
 	// Instance variables.
+	QString m_sFilename;
+	void   *m_module;
+
 	bool m_bAutoUnload;
 
 	unsigned int m_iOpenCount;
