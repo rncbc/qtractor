@@ -138,6 +138,8 @@ option (CONFIG_LV2_UI_GTK2 "Enable LV2 plug-in UI GTK2 native support (default=y
 
 option (CONFIG_LV2_UI_X11 "Enable LV2 plug-in UI X11 native support (default=yes)" 1)
 
+option (CONFIG_VST3_SDK "VST3 SDK path; enable VST3 plug-in support (default=no)")
+
 # Enable JACK session support.
 option (CONFIG_JACK_SESSION "Enable JACK session support (default=yes)" 1)
 
@@ -624,6 +626,14 @@ if (CONFIG_VST)
 endif ()
 
 
+# Check for VST3 plug-in support.
+if (CONFIG_VST3SDK)
+  set (CONFIG_VST3 1)
+  include_directories (${CONFIG_VST3SDK})
+else ()
+  set (CONFIG_VST3 0)
+endif ()
+
 add_subdirectory (src)
 
 
@@ -682,6 +692,8 @@ show_option ("  LV2 plug-in UI Idle interface support  . . . . . ." CONFIG_LV2_U
 show_option ("  LV2 plug-in UI Show interface support  . . . . . ." CONFIG_LV2_UI_SHOW)
 show_option ("  LV2 plug-in UI GTK2 native support . . . . . . . ." CONFIG_LV2_UI_GTK2)
 show_option ("  LV2 plug-in UI X11 native support  . . . . . . . ." CONFIG_LV2_UI_X11)
+message     ("")
+show_option ("  VST3 plug-in support (EXPERIMENTAL)  . . . . . . ." CONFIG_VST3)
 message     ("")
 show_option ("  JACK Session support . . . . . . . . . . . . . . ." CONFIG_JACK_SESSION)
 show_option ("  JACK Latency support . . . . . . . . . . . . . . ." CONFIG_JACK_LATENCY)

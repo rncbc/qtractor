@@ -406,6 +406,11 @@ AC_ARG_WITH(lv2,
   AS_HELP_STRING([--with-lv2=PATH], [use alternate LV2 header path]),
   [ac_with_lv2="$withval"])
 
+# Set for definite VST3 SDK root dir.
+AC_ARG_WITH(vst3sdk,
+  AS_HELP_STRING([--with-vst3sdk=PATH], [VST3 SDK path; enable VST3 plug-in support]),
+  [ac_with_vst3sdk="$withval"])
+
 
 # Honor user specified flags.
 ac_cflags=$CFLAGS
@@ -1355,6 +1360,16 @@ if test "x$ac_lv2_ui_x11" = "xyes"; then
    AC_DEFINE(CONFIG_LV2_UI_X11, 1, [Define if LV2 UI X11 native support is available.])
 fi
 
+# Check for VST3 SDK stuff.
+if test -n "$ac_with_vst3sdk"; then
+   ac_vst3sdk=$ac_with_vst3sdk
+   AC_SUBST(ac_vst3sdk)
+   AC_DEFINE(CONFIG_VST3, 1, [Define if VST3 plug-in support is avilable.])
+   ac_vst3="yes"
+else
+   ac_vst3="no"
+fi
+
 # Check for JACK session headers availability.
 if test "x$ac_jack_session" = "xyes"; then
    AC_CHECK_HEADER(jack/session.h, [ac_jack_session="yes"], [ac_jack_session="no"])
@@ -1489,6 +1504,8 @@ echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"
 echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
 echo "  LV2 plug-in UI GTK2 native support . . . . . . . .: $ac_lv2_ui_gtk2"
 echo "  LV2 plug-in UI X11 native support  . . . . . . . .: $ac_lv2_ui_x11"
+echo
+echo "  VST3 plug-in support (EXPERIMENTAL)  . . . . . . .: $ac_vst3"
 echo
 echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"

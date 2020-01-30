@@ -178,6 +178,9 @@
 /* Define if LV2 UI X11 native support is available. */
 #cmakedefine CONFIG_LV2_UI_X11 @CONFIG_LV2_UI_X11@
 
+/* Define if VST3 plug-in support is avilable. */
+#cmakedefine CONFIG_VST3 @CONFIG_VST3@
+
 /* Define if JACK session support is available. */
 #cmakedefine CONFIG_JACK_SESSION @CONFIG_JACK_SESSION@
 

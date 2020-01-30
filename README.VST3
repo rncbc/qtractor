@@ -1,0 +1,37 @@
+Native VST3 plug-in support
+--------------------------
+
+As was for VST, standing for old VST 2.x, building for native VST3
+support is not that easy. First of all you (yes you!) have download
+yourself the most recent VST3 SDK, from its official site:
+
+  Steinberg Media Technologies GmbH
+  http://www.steinberg.net
+
+  Steinberg 3rd Party Developers
+  https://www.steinberg.net/en/company/developers.html
+
+Once downloaded and unzipped you may proceed to build for VST3 plug-in
+support with the following build spell:
+
+  ./configure --with-vst3sdk=/path/to/VST_SDK/VST3_SDK
+
+
+You may choose to go with GitHub's public repository:
+
+  GitHub - VST 3 Plug-In SDK
+  https://github.com/steinbergmedia/vst3sdk
+
+Please note that you sure get the VST3 SDK and only (that meaning you
+won't get any VST2.x legacy base whatsoever). 
+  git --recursive clone https://github.com/steinbergmedia/vst3sdk
+
+And similarly, as before, to build the beast from this point:
+  ./configure --with-vst3sdk=/path/to/vst3sdk
+
+
+Least to say, this is all very, better said, extremely experimental
+stuff and there is NO GUARANTEE WHATSOEVER whether it will ever work.
+
+You've been advised.
+Cheers.

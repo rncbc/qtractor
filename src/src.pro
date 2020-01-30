@@ -116,6 +116,7 @@ HEADERS += config.h \
 	qtractorTrackView.h \
 	qtractorTracks.h \
 	qtractorVstPlugin.h \
+	qtractorVst3Plugin.h \
 	qtractorZipFile.h \
 	qtractorWsolaTimeStretcher.h \
 	qtractorBusForm.h \
@@ -238,6 +239,7 @@ SOURCES += \
 	qtractorTrackView.cpp \
 	qtractorTracks.cpp \
 	qtractorVstPlugin.cpp \
+	qtractorVst3Plugin.cpp \
 	qtractorWsolaTimeStretcher.cpp \
 	qtractorZipFile.cpp \
 	qtractorBusForm.cpp \

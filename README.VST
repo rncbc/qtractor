@@ -14,17 +14,12 @@ VST SDK, from its site:
 
 It doesn't really matter much whether you pick an older VST 2.x or
 the latest VST 3.x version of the VST SDK, you need to pick one and
-just one only. Do not try to build for the more recent VST 3.x or
-later: it won't work and I won't care :) but still, you may need
-to download the later anyway, as the former are probably included
-and distributed in that way only. Unfortunately, truth must be told,
-the most recent VST 3 Audio Plugins SDK bundle do not include the
-old VST SDK 2.x anymore. So, yet again, you're on your own.
+just one only. You may need to download the later anyway, as the
+former might be included and distributed in that way only. But again,
+you're on your own.
 
-Once you have downloaded the VST SDK zip-archive, for which you'll
-have to accept their license and supply some personal data, you'll
-have to unpack the pertinent header files, which are found under
-the respective folder:
+Once downloaded the VST SDK zip-archive, you'll have to unpack the
+pertinent header files, which are found under the respective folder:
 
   - VST SDK 2.4:
     vstsdk2.4/pluginterfaces/vst2.x/
@@ -50,7 +45,8 @@ where plug-ins can be picked up by qtractor at run-time are specified
 respectively in the View/Options.../Display/Plugin Paths dialog.
 
 Last warning notice: leave that VST_PATH environment variable alone.
-That variable is most precious for DSSI-VST, in finding Windows(tm)
-VST plug-ins (.dll's) on its own. Have a glass of WINE and relax ;)
+That variable is most precious for DSSI-VST though, in finding those
+Windows(tm) VSTi plug-ins (.dll's) on its own. Have a glass of WINE
+and relax ;)
 
 Enjoy.
