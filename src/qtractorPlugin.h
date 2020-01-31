@@ -122,7 +122,7 @@ class qtractorPluginType
 public:
 
 	// Have hints for plugin paths.
-	enum Hint { Any = 0, Ladspa, Dssi, Vst, Lv2, Insert, AuxSend };
+	enum Hint { Any = 0, Ladspa, Dssi, Vst, Vst3, Lv2, Insert, AuxSend };
 
 	// Constructor.
 	qtractorPluginType(qtractorPluginFile *pFile, unsigned long iIndex,

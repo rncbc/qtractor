@@ -234,6 +234,7 @@ void qtractorOptions::loadOptions (void)
 	ladspaPaths = m_settings.value("/LadspaPaths").toStringList();
 	dssiPaths   = m_settings.value("/DssiPaths").toStringList();
 	vstPaths    = m_settings.value("/VstPaths").toStringList();
+	vst3Paths   = m_settings.value("/Vst3Paths").toStringList();
 	lv2Paths    = m_settings.value("/Lv2Paths").toStringList();
 	sLv2PresetDir = m_settings.value("/Lv2PresetDir").toString();
 	bAudioOutputBus = m_settings.value("/AudioOutputBus", false).toBool();
@@ -245,6 +246,7 @@ void qtractorOptions::loadOptions (void)
 	iDummyLadspaHash = m_settings.value("/DummyLadspaHash", 0).toInt();
 	iDummyDssiHash = m_settings.value("/DummyDssiHash", 0).toInt();
 	iDummyVstHash = m_settings.value("/DummyVstHash", 0).toInt();
+	iDummyVst3Hash = m_settings.value("/DummyVst3Hash", 0).toInt();
 	iDummyLv2Hash = m_settings.value("/DummyLv2Hash", 0).toInt();
 	bLv2DynManifest = m_settings.value("/Lv2DynManifest", false).toBool();
 	bSaveCurve14bit = m_settings.value("/SaveCurve14bit", false).toBool();
@@ -535,6 +537,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/LadspaPaths", ladspaPaths);
 	m_settings.setValue("/DssiPaths", dssiPaths);
 	m_settings.setValue("/VstPaths", vstPaths);
+	m_settings.setValue("/Vst3Paths", vst3Paths);
 	m_settings.setValue("/Lv2Paths", lv2Paths);
 	m_settings.setValue("/Lv2PresetDir", sLv2PresetDir);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
@@ -546,6 +549,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/DummyLadspaHash", iDummyLadspaHash);
 	m_settings.setValue("/DummyDssiHash", iDummyDssiHash);
 	m_settings.setValue("/DummyVstHash", iDummyVstHash);
+	m_settings.setValue("/DummyVst3Hash", iDummyVst3Hash);
 	m_settings.setValue("/DummyLv2Hash", iDummyLv2Hash);
 	m_settings.setValue("/Lv2DynManifest", bLv2DynManifest);
 	m_settings.setValue("/SaveCurve14bit", bSaveCurve14bit);

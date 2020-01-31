@@ -25,9 +25,3162 @@
 
 #include "qtractorVst3Plugin.h"
 
-//	.
-//	.
-//	.
+#include "qtractorSession.h"
+#include "qtractorAudioEngine.h"
+#include "qtractorMidiManager.h"
+
+#include "pluginterfaces/vst/ivsthostapplication.h"
+#include "pluginterfaces/vst/ivstpluginterfacesupport.h"
+
+#include "pluginterfaces/vst/ivstaudioprocessor.h"
+#include "pluginterfaces/vst/ivsteditcontroller.h"
+
+#include "pluginterfaces/vst/ivstprocesscontext.h"
+#include "pluginterfaces/vst/ivstparameterchanges.h"
+#include "pluginterfaces/vst/ivstmidicontrollers.h"
+#include "pluginterfaces/vst/ivstevents.h"
+#include "pluginterfaces/vst/ivstunits.h"
+
+#include "pluginterfaces/gui/iplugview.h"
+
+#include "pluginterfaces/base/ibstream.h"
+
+#include "base/source/fobject.h"
+#include "base/source/fstring.h"
+
+#include <QWindow>
+#include <QWidget>
+#include <QVBoxLayout>
+
+#include <QTimer>
+
+#include <QResizeEvent>
+#include <QTimerEvent>
+#include <QCloseEvent>
+
+#include <QFileInfo>
+#include <QMap>
+
+
+using namespace Steinberg;
+using namespace Linux;
+
+
+//-----------------------------------------------------------------------------
+// class qtractorVst3PluginHost -- VST3 plugin host context decl.
+//
+
+class qtractorVst3PluginHost : public Vst::IHostApplication
+{
+public:
+
+	// Constructor.
+	qtractorVst3PluginHost ();
+
+	// Destructor.
+	virtual ~qtractorVst3PluginHost ();
+
+	DECLARE_FUNKNOWN_METHODS
+
+	//--- IHostApplication ---
+	//
+	tresult PLUGIN_API getName (Vst::String128 name) override;
+	tresult PLUGIN_API createInstance (TUID cid, TUID _iid, void **obj) override;
+
+	FUnknown *get() { return static_cast<Vst::IHostApplication *> (this); }
+
+	// QTimer stuff...
+	//
+	void startTimer (int msecs);
+	void stopTimer ();
+
+	int timerInterval() const;
+
+	// RunLoop adapters...
+	//
+	tresult registerEventHandler (IEventHandler *handler, FileDescriptor fd);
+	tresult unregisterEventHandler (IEventHandler *handler);
+
+	tresult registerTimer (ITimerHandler *handler, TimerInterval msecs);
+	tresult unregisterTimer (ITimerHandler *handler);
+
+	// Executive methods.
+	//
+	void processTimers();
+	void processEventHandlers();
+
+protected:
+
+	class PlugInterfaceSupport;
+
+	class Attribute;
+	class AttributeList;
+	class Message;
+
+	class Timer;
+
+private:
+
+	// Instance members.
+	IPtr<PlugInterfaceSupport> m_plugInterfaceSupport;
+
+	Timer *m_pTimer;
+
+	struct TimerItem
+	{
+		TimerItem(ITimerHandler *h, TimerInterval i)
+			: handler(h), interval(i), counter(0) {}
+
+		ITimerHandler *handler;
+		TimerInterval  interval;
+		TimerInterval  counter;
+	};
+
+	QHash<ITimerHandler *, TimerItem *> m_timers;
+	QHash<IEventHandler *, int> m_fileDescriptors;
+};
+
+
+//-----------------------------------------------------------------------------
+//
+class qtractorVst3PluginHost::PlugInterfaceSupport
+	: public FObject, public Vst::IPlugInterfaceSupport
+{
+public:
+
+	// Constructor.
+	PlugInterfaceSupport ()
+	{
+		addPluInterfaceSupported(Vst::IComponent::iid);
+		addPluInterfaceSupported(Vst::IAudioProcessor::iid);
+		addPluInterfaceSupported(Vst::IEditController::iid);
+		addPluInterfaceSupported(Vst::IConnectionPoint::iid);
+		addPluInterfaceSupported(Vst::IUnitInfo::iid);
+	//	addPluInterfaceSupported(Vst::IUnitData::iid);
+		addPluInterfaceSupported(Vst::IProgramListData::iid);
+		addPluInterfaceSupported(Vst::IMidiMapping::iid);
+	//	addPluInterfaceSupported(Vst::IEditController2::iid);
+	}
+
+	OBJ_METHODS (PlugInterfaceSupport, FObject)
+	REFCOUNT_METHODS (FObject)
+	DEFINE_INTERFACES
+		DEF_INTERFACE (Vst::IPlugInterfaceSupport)
+	END_DEFINE_INTERFACES (FObject)
+
+	//--- IPlugInterfaceSupport ----
+	//
+	tresult PLUGIN_API isPlugInterfaceSupported (const TUID _iid) override
+	{
+		if (m_fuids.contains(QString::fromLocal8Bit(_iid)))
+			return kResultOk;
+		else
+			return kResultFalse;
+	}
+
+protected:
+
+	void addPluInterfaceSupported(const TUID& _iid)
+		{ m_fuids.append(QString::fromLocal8Bit(_iid)); }
+
+private:
+
+	// Instance members.
+	QList<QString> m_fuids;
+};
+
+
+//-----------------------------------------------------------------------------
+//
+class qtractorVst3PluginHost::Attribute
+{
+public:
+
+	enum Type
+	{
+		kInteger,
+		kFloat,
+		kString,
+		kBinary
+	};
+
+	// Constructors.
+	Attribute (int64 value) : m_size(0), m_type(kInteger)
+		{ m_v.intValue = value; }
+
+	Attribute (double value) : m_size(0), m_type(kFloat)
+		{ m_v.floatValue = value; }
+
+	Attribute (const Vst::TChar *value, uint32 size)
+		: m_size(size), m_type(kString)
+	{
+		m_v.stringValue = new Vst::TChar[size];
+		::memcpy(m_v.stringValue, value, size * sizeof (Vst::TChar));
+	}
+
+	Attribute (const void *value, uint32 size)
+		: m_size(size), m_type(kBinary)
+	{
+		m_v.binaryValue = new char[size];
+		::memcpy(m_v.binaryValue, value, size);
+	}
+
+	// Destructor.
+	~Attribute ()
+	{
+		if (m_size)
+			delete [] m_v.binaryValue;
+	}
+
+	// Accessors.
+	int64 intValue () const
+		{ return m_v.intValue; }
+
+	double floatValue () const
+		{ return m_v.floatValue; }
+
+	const Vst::TChar *stringValue ( uint32& stringSize )
+	{
+		stringSize = m_size;
+		return m_v.stringValue;
+	}
+
+	const void *binaryValue ( uint32& binarySize )
+	{
+		binarySize = m_size;
+		return m_v.binaryValue;
+	}
+
+	Type getType () const
+		{ return m_type; }
+
+protected:
+
+	// Instance members.
+	union v
+	{
+		int64  intValue;
+		double floatValue;
+		Vst::TChar *stringValue;
+		char  *binaryValue;
+
+	} m_v;
+
+	uint32 m_size;
+	Type m_type;
+};
+
+
+//-----------------------------------------------------------------------------
+//
+class qtractorVst3PluginHost::AttributeList : public Vst::IAttributeList
+{
+public:
+
+	// Constructor.
+	AttributeList ()
+	{
+		FUNKNOWN_CTOR
+	}
+
+	// Destructor.
+	virtual ~AttributeList ()
+	{
+		qDeleteAll(m_list);
+		m_list.clear();
+
+		FUNKNOWN_DTOR
+	}
+
+	DECLARE_FUNKNOWN_METHODS
+
+	//--- IAttributeList ---
+	//
+	tresult PLUGIN_API setInt (AttrID aid, int64 value) override
+	{
+		removeAttrID(aid);
+		m_list.insert(aid, new Attribute(value));
+		return kResultTrue;
+	}
+
+	tresult PLUGIN_API getInt (AttrID aid, int64& value) override
+	{
+		Attribute *attr = m_list.value(aid, nullptr);
+		if (attr) {
+			value = attr->intValue();
+			return kResultTrue;
+		}
+		return kResultFalse;
+	}
+
+	tresult PLUGIN_API setFloat (AttrID aid, double value) override
+	{
+		removeAttrID(aid);
+		m_list.insert(aid, new Attribute(value));
+		return kResultTrue;
+	}
+
+	tresult PLUGIN_API getFloat (AttrID aid, double& value) override
+	{
+		Attribute *attr = m_list.value(aid, nullptr);
+		if (attr) {
+			value = attr->floatValue();
+			return kResultTrue;
+		}
+		return kResultFalse;
+	}
+
+	tresult PLUGIN_API setString (AttrID aid, const Vst::TChar *string) override
+	{
+		removeAttrID(aid);
+		m_list.insert(aid, new Attribute(string,
+			String(const_cast<Vst::TChar*> (string)).length ()));
+		return kResultTrue;
+	}
+
+	tresult PLUGIN_API getString (AttrID aid, Vst::TChar *string, uint32 size) override
+	{
+		Attribute *attr = m_list.value(aid, nullptr);
+		if (attr) {
+			uint32 size2 = 0;
+			const Vst::TChar *string2 = attr->stringValue(size2);
+			::memcpy(string, string2,
+				std::min<uint32> (size2, size) * sizeof(Vst::TChar));
+			return kResultTrue;
+		}
+		return kResultFalse;
+	}
+
+	tresult PLUGIN_API setBinary (AttrID aid, const void* data, uint32 size) override
+	{
+		removeAttrID(aid);
+		m_list.insert(aid, new Attribute(data, size));
+		return kResultTrue;
+	}
+
+	tresult PLUGIN_API getBinary (AttrID aid, const void*& data, uint32& size) override
+	{
+		Attribute *attr = m_list.value(aid, nullptr);
+		if (attr) {
+			data = attr->binaryValue(size);
+			return kResultTrue;
+		}
+		size = 0;
+		return kResultFalse;
+	}
+
+protected:
+
+	void removeAttrID (AttrID aid)
+	{
+		Attribute *attr = m_list.value(aid, nullptr);
+		if (attr) {
+			delete attr;
+			m_list.remove(aid);
+		}
+	}
+
+private:
+
+	// Instance members.
+	QHash<QString, Attribute *> m_list;
+};
+
+IMPLEMENT_FUNKNOWN_METHODS (qtractorVst3PluginHost::AttributeList, IAttributeList, IAttributeList::iid)
+
+
+//-----------------------------------------------------------------------------
+//
+class qtractorVst3PluginHost::Message : public Vst::IMessage
+{
+public:
+
+	// Constructor.
+	Message () : m_messageId(nullptr), m_attributeList(nullptr)
+	{
+		FUNKNOWN_CTOR
+	}
+
+	// Destructor.
+	virtual ~Message ()
+	{
+		setMessageID(nullptr);
+
+		if (m_attributeList)
+			m_attributeList->release();
+
+		FUNKNOWN_DTOR
+	}
+
+	DECLARE_FUNKNOWN_METHODS
+
+	//--- IMessage ---
+	//
+	const char *PLUGIN_API getMessageID () override
+		{ return m_messageId; }
+
+	void PLUGIN_API setMessageID (const char *messageId) override
+	{
+		if (m_messageId)
+			delete [] m_messageId;
+
+		m_messageId = nullptr;
+
+		if (messageId) {
+			size_t len = strlen(messageId) + 1;
+			m_messageId = new char[len];
+			::strcpy(m_messageId, messageId);
+		}
+	}
+
+	Vst::IAttributeList* PLUGIN_API getAttributes () override
+	{
+		if (!m_attributeList)
+			m_attributeList = new AttributeList();
+
+		return m_attributeList;
+	}
+
+protected:
+
+	// Instance members.
+	char *m_messageId;
+
+	AttributeList *m_attributeList;
+};
+
+IMPLEMENT_FUNKNOWN_METHODS (qtractorVst3PluginHost::Message, IMessage, IMessage::iid)
+
+
+//-----------------------------------------------------------------------------
+// class qtractorVst3PluginHost::Timer -- VST3 plugin host timer impl.
+//
+
+class qtractorVst3PluginHost::Timer : public QTimer
+{
+public:
+
+	// Constructor.
+	Timer (qtractorVst3PluginHost *pHost) : QTimer(), m_pHost(pHost) {}
+
+	// Main method.
+	void start (int msecs)
+	{
+		const int DEFAULT_MSECS = 30;
+
+		int iInterval = QTimer::interval();
+		if (iInterval == 0)
+			iInterval = DEFAULT_MSECS;
+		if (iInterval > msecs)
+			iInterval = msecs;
+
+		QTimer::start(iInterval);
+	}
+
+protected:
+
+	void timerEvent (QTimerEvent *pTimerEvent)
+	{
+		if (pTimerEvent->timerId() == QTimer::timerId()) {
+			m_pHost->processTimers();
+			m_pHost->processEventHandlers();
+		}
+	}
+
+private:
+
+	// Instance members.
+	qtractorVst3PluginHost *m_pHost;
+};
+
+
+//-----------------------------------------------------------------------------
+// class qtractorVst3PluginHost -- VST3 plugin host context impl.
+//
+
+// Constructor.
+qtractorVst3PluginHost::qtractorVst3PluginHost (void)
+{
+	FUNKNOWN_CTOR
+
+	m_plugInterfaceSupport = owned(NEW PlugInterfaceSupport());
+
+	m_pTimer = new Timer(this);
+}
+
+
+// Destructor.
+qtractorVst3PluginHost::~qtractorVst3PluginHost (void)
+{
+	qDeleteAll(m_timers);
+	m_timers.clear();
+
+	m_plugInterfaceSupport = nullptr;
+
+	delete m_pTimer;
+
+	FUNKNOWN_DTOR
+}
+
+
+
+//--- IHostApplication ---
+//
+tresult PLUGIN_API qtractorVst3PluginHost::getName ( Vst::String128 name )
+{
+	String str("qtractorVst3PluginHost");
+	str.copyTo16(name, 0, 127);
+	return kResultOk;
+}
+
+
+tresult PLUGIN_API qtractorVst3PluginHost::createInstance (
+	TUID cid, TUID _iid, void **obj )
+{
+	const FUID classID (FUID::fromTUID(cid));
+	const FUID interfaceID (FUID::fromTUID(_iid));
+
+	if (classID == Vst::IMessage::iid &&
+		interfaceID == Vst::IMessage::iid) {
+		*obj = new Message();
+		return kResultOk;
+	}
+	else
+	if (classID == Vst::IAttributeList::iid &&
+		interfaceID == Vst::IAttributeList::iid) {
+		*obj = new AttributeList();
+		return kResultOk;
+	}
+
+	*obj = nullptr;
+	return kResultFalse;
+}
+
+
+tresult PLUGIN_API qtractorVst3PluginHost::queryInterface (
+	const char *_iid, void **obj )
+{
+	QUERY_INTERFACE(_iid, obj, FUnknown::iid, IHostApplication)
+	QUERY_INTERFACE(_iid, obj, IHostApplication::iid, IHostApplication)
+
+	if (m_plugInterfaceSupport &&
+		m_plugInterfaceSupport->queryInterface(_iid, obj) == kResultOk)
+		return kResultOk;
+
+	*obj = nullptr;
+	return kResultFalse;
+}
+
+
+uint32 PLUGIN_API qtractorVst3PluginHost::addRef (void)
+	{ return 1;	}
+
+uint32 PLUGIN_API qtractorVst3PluginHost::release (void)
+	{ return 1; }
+
+
+// QTimer stuff...
+//
+void qtractorVst3PluginHost::startTimer (int msecs)
+	{ return m_pTimer->start(msecs); }
+
+void qtractorVst3PluginHost::stopTimer (void)
+	{ return m_pTimer->stop(); }
+
+int qtractorVst3PluginHost::timerInterval (void) const
+	{ return m_pTimer->interval(); }
+
+
+// IRunLoop stuff...
+//
+tresult qtractorVst3PluginHost::registerEventHandler (
+	IEventHandler *handler, FileDescriptor fd )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3PluginHost::registerEventHandler(%p, %d)", handler, int(fd));
+#endif
+	m_fileDescriptors.insert(handler, int(fd));
+	return kResultOk;
+}
+
+
+tresult qtractorVst3PluginHost::unregisterEventHandler ( IEventHandler *handler )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3PluginHost::unregisterEventHandler(%p)", handler);
+#endif
+	m_fileDescriptors.remove(handler);
+	return kResultOk;
+}
+
+
+tresult qtractorVst3PluginHost::registerTimer (
+	ITimerHandler *handler, TimerInterval msecs )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3PluginHost::registerTimer(%p, %u)", handler, uint(msecs));
+#endif
+	m_timers.insert(handler, new TimerItem(handler, msecs));
+	m_pTimer->start(int(msecs));
+	return kResultOk;
+}
+
+
+tresult qtractorVst3PluginHost::unregisterTimer ( ITimerHandler *handler )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3PluginHost::unregisterTimer(%p)", handler);
+#endif
+	m_timers.remove(handler);
+	if (m_timers.isEmpty())
+		m_pTimer->stop();
+	return kResultOk;
+}
+
+
+// Executive methods.
+//
+void qtractorVst3PluginHost::processTimers (void)
+{
+	foreach (TimerItem *timer, m_timers) {
+		timer->counter += timerInterval();
+		if (timer->counter >= timer->interval) {
+			timer->handler->onTimer();
+			timer->counter = 0;
+		}
+	}
+}
+
+
+void qtractorVst3PluginHost::processEventHandlers (void)
+{
+	int nfds = 0;
+
+	fd_set rfds;
+	fd_set wfds;
+	fd_set efds;
+
+	FD_ZERO(&rfds);
+	FD_ZERO(&wfds);
+	FD_ZERO(&efds);
+
+	QHash<IEventHandler *, int>::ConstIterator iter
+		= m_fileDescriptors.constBegin();
+	for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
+		const int fd = iter.value();
+		FD_SET(fd, &rfds);
+		FD_SET(fd, &wfds);
+		FD_SET(fd, &efds);
+		nfds = qMax(nfds, fd);
+	}
+
+	timeval timeout;
+	timeout.tv_sec  = 0;
+	timeout.tv_usec = 1000 * timerInterval();
+
+	const int result = ::select(nfds, &rfds, &wfds, nullptr, &timeout);
+	if (result > 0)	{
+		iter = m_fileDescriptors.constBegin();
+		for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
+			const int fd = iter.value();
+			if (FD_ISSET(fd, &rfds)  ||
+				FD_ISSET(fd, &wfds) ||
+				FD_ISSET(fd, &efds)) {
+				IEventHandler *handler = iter.key();
+				handler->onFDIsSet(fd);
+			}
+		}
+	}
+}
+
+
+// Host singleton.
+static qtractorVst3PluginHost g_hostContext;
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3PluginType::Impl -- VST3 plugin meta-interface impl.
+//
+
+class qtractorVst3PluginType::Impl
+{
+public:
+
+	// Constructor.
+	Impl (qtractorPluginFile *pFile) : m_pFile(pFile),
+		m_component(nullptr), m_controller(nullptr), m_unitInfos(nullptr) {}
+
+	// Destructor.
+	~Impl () { close(); }
+
+	// Executive methods.
+	bool open (unsigned long iIndex);
+	void close ();
+
+	// Accessors.
+	const PClassInfo& classInfo () const
+		{ return m_classInfo; }
+
+	Vst::IComponent *component () const
+		{ return m_component; }
+	Vst::IEditController *controller () const
+		{ return m_controller; }
+
+	Vst::IUnitInfo *unitInfos () const
+		{ return m_unitInfos; }
+
+	int numChannels (Vst::MediaType type, Vst::BusDirection direction) const;
+
+private:
+
+	// Instance members.
+	qtractorPluginFile *m_pFile;
+
+	PClassInfo m_classInfo;
+
+	IPtr<Vst::IComponent> m_component;
+	IPtr<Vst::IEditController> m_controller;
+
+	IPtr<Vst::IUnitInfo> m_unitInfos;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3PluginType::Impl -- VST3 plugin interface impl.
+//
+
+// Executive methods.
+//
+bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
+{
+	close();
+
+	typedef bool (*VST3_ModuleEntry)(void *);
+	const VST3_ModuleEntry module_entry
+		= VST3_ModuleEntry(m_pFile->resolve("ModuleEntry"));
+	if (!module_entry)
+		return false;
+	if (!module_entry(m_pFile->module()))
+		return false;
+
+	typedef IPluginFactory *(*VST3_GetFactory)();
+	const VST3_GetFactory get_plugin_factory
+		= VST3_GetFactory(m_pFile->resolve("GetPluginFactory"));
+	if (!get_plugin_factory) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
+			" *** Failed to resolve plug-in factory.", this,
+			m_pFile->filename().toUtf8().constData(), iIndex);
+	#endif
+		return false;
+	}
+
+	IPluginFactory *factory = get_plugin_factory();
+	if (!factory) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
+			" *** Failed to retrieve plug-in factory.", this,
+			m_pFile->filename().toUtf8().constData(), iIndex);
+	#endif
+		return false;
+	}
+
+	const int32 nclasses = factory->countClasses();
+
+	unsigned long i = 0;
+
+	for (int32 n = 0; n < nclasses; ++n) {
+
+		PClassInfo classInfo;
+		if (factory->getClassInfo(n, &classInfo) != kResultOk)
+			continue;
+
+		if (::strcmp(classInfo.category, kVstAudioEffectClass))
+			continue;
+
+		if (iIndex == i) {
+
+			m_classInfo = classInfo;
+
+			Vst::IComponent *component = nullptr;
+			if (factory->createInstance(
+					classInfo.cid, Vst::IComponent::iid,
+					(void **) &component) != kResultOk) {
+			#ifdef CONFIG_DEBUG
+				qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
+					" *** Failed to create plug-in component.", this,
+					m_pFile->filename().toUtf8().constData(), iIndex);
+			#endif
+				return false;
+			}
+
+			m_component = owned(component);
+
+			if (m_component->initialize(g_hostContext.get()) != kResultOk) {
+			#ifdef CONFIG_DEBUG
+				qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
+					" *** Failed to initialize plug-in component.", this,
+					m_pFile->filename().toUtf8().constData(), iIndex);
+			#endif
+				close();
+				return false;
+			}
+
+			Vst::IEditController *controller = nullptr;
+			if (m_component->queryInterface(
+					Vst::IEditController::iid,
+					(void **) &controller) != kResultOk) {
+				TUID controller_cid;
+				if (m_component->getControllerClassId(controller_cid) == kResultOk) {
+					if (factory->createInstance(
+							controller_cid, Vst::IEditController::iid,
+							(void **) &controller) != kResultOk) {
+					#ifdef CONFIG_DEBUG
+						qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
+							" *** Failed to create plug-in controller.", this,
+							m_pFile->filename().toUtf8().constData(), iIndex);
+					#endif
+					}
+					if (controller &&
+						controller->initialize(g_hostContext.get()) != kResultOk) {
+					#ifdef CONFIG_DEBUG
+						qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
+							" *** Failed to initialize plug-in controller.", this,
+							m_pFile->filename().toUtf8().constData(), iIndex);
+						controller = nullptr;
+					#endif
+					}
+				}
+			}
+
+			if (controller) m_controller = owned(controller);
+
+			Vst::IUnitInfo *unitInfos = nullptr;
+			if (m_component->queryInterface(
+					Vst::IUnitInfo::iid,
+					(void **) &unitInfos) != kResultOk) {
+				if (m_controller &&
+					m_controller->queryInterface(
+						Vst::IUnitInfo::iid,
+						(void **) &unitInfos) != kResultOk) {
+				#ifdef CONFIG_DEBUG
+					qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
+						" *** Failed to create plug-in units information.", this,
+						m_pFile->filename().toUtf8().constData(), iIndex);
+				#endif
+				}
+			}
+
+			if (unitInfos) m_unitInfos = owned(unitInfos);
+
+			return true;
+		}
+
+		++i;
+	}
+
+	return false;
+}
+
+
+void qtractorVst3PluginType::Impl::close (void)
+{
+	m_unitInfos = nullptr;
+
+	if (m_component && m_controller &&
+		FUnknownPtr<Vst::IEditController> (m_component).getInterface()) {
+		m_controller->terminate();
+	}
+
+	if (m_component)
+		m_component->terminate();
+
+	m_controller = nullptr;
+	m_component = nullptr;
+
+	typedef bool (*VST3_ModuleExit)();
+	const VST3_ModuleExit module_exit
+		= VST3_ModuleExit(m_pFile->resolve("ModuleExit"));
+	if (module_exit)
+		module_exit();
+}
+
+
+int qtractorVst3PluginType::Impl::numChannels (
+	Vst::MediaType type, Vst::BusDirection direction ) const
+{
+	if (!m_component)
+		return -1;
+
+	int nchannels = 0;
+
+	const int32 nbuses = m_component->getBusCount(type, direction);
+	for (int32 i = 0; i < nbuses; ++i) {
+		Vst::BusInfo busInfo;
+		if (m_component->getBusInfo(type, direction, i, busInfo) == kResultOk) {
+			if (busInfo.flags & Vst::BusInfo::kDefaultActive)
+				nchannels += busInfo.channelCount;
+		}
+	}
+
+	return nchannels;
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3PluginType -- VST3 plugin meta-interface impl.
+//
+
+// Constructor.
+qtractorVst3PluginType::qtractorVst3PluginType (
+	qtractorPluginFile *pFile, unsigned long iIndex )
+	: qtractorPluginType(pFile, iIndex, Vst3), m_pImpl(new Impl(pFile))
+{
+	clear();
+}
+
+
+// Destructor.
+qtractorVst3PluginType::~qtractorVst3PluginType (void)
+{
+	close();
+
+	delete m_pImpl;
+}
+
+
+// Factory method (static)
+qtractorVst3PluginType *qtractorVst3PluginType::createType (
+	qtractorPluginFile *pFile, unsigned long iIndex )
+{
+	return new qtractorVst3PluginType(pFile, iIndex);
+}
+
+
+// Executive methods.
+bool qtractorVst3PluginType::open (void)
+{
+	close();
+
+	if (!m_pImpl->open(index()))
+		return false;
+
+	// Properties...
+	const PClassInfo& classInfo = m_pImpl->classInfo();
+	m_sName = QString::fromLocal8Bit(classInfo.name);
+	m_iUniqueID = qHash(QString::fromLocal8Bit(classInfo.cid));
+
+	m_iAudioIns  = m_pImpl->numChannels(Vst::kAudio, Vst::kInput);
+	m_iAudioOuts = m_pImpl->numChannels(Vst::kAudio, Vst::kOutput);
+	m_iMidiIns   = m_pImpl->numChannels(Vst::kEvent, Vst::kInput);
+	m_iMidiOuts  = m_pImpl->numChannels(Vst::kEvent, Vst::kOutput);
+
+	Vst::IEditController *controller = m_pImpl->controller();
+	if (controller) {
+		IPtr<IPlugView> editor = controller->createView(Vst::ViewType::kEditor);
+		m_bEditor = (editor != nullptr);
+	}
+
+	m_bRealtime  = true;
+	m_bConfigure = true;
+
+	m_iControlIns  = 0;
+	m_iControlOuts = 0;
+
+	if (controller) {
+		const int32 nparams = controller->getParameterCount();
+		for (int32 i = 0; i < nparams; ++i) {
+			Vst::ParameterInfo paramInfo;
+			if (controller->getParameterInfo(i, paramInfo) == kResultOk) {
+				if (paramInfo.flags & Vst::ParameterInfo::kIsReadOnly)
+					++m_iControlOuts;
+				else
+				if (paramInfo.flags & Vst::ParameterInfo::kCanAutomate)
+					++m_iControlIns;
+			}
+		}
+	}
+
+	return true;
+}
+
+
+void qtractorVst3PluginType::close (void)
+{
+	m_pImpl->close();
+}
+
+
+void qtractorVst3PluginType::clear (void)
+{
+	m_sName.clear();
+
+	m_iUniqueID	= 0;
+
+	m_iAudioIns  = 0;
+	m_iAudioOuts = 0;
+	m_iMidiIns   = 0;
+	m_iMidiOuts  = 0;
+
+	m_bEditor = false;
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::ParamQueue -- VST3 plugin parameter queue impl.
+//
+
+class qtractorVst3Plugin::ParamQueue : public Vst::IParamValueQueue
+{
+public:
+
+	// Constructor.
+	ParamQueue (int32 nsize = 8)
+		: m_id(Vst::kNoParamId), m_queue(nullptr), m_nsize(0), m_ncount(0)
+		{ FUNKNOWN_CTOR	resize(nsize); }
+
+	// Destructor.
+	virtual ~ParamQueue ()
+		{ resize(0); FUNKNOWN_DTOR }
+
+	DECLARE_FUNKNOWN_METHODS
+
+	//--- IParamValueQueue ---
+	//
+	Vst::ParamID PLUGIN_API getParameterId () override
+		{ return m_id; }
+
+	int32 PLUGIN_API getPointCount () override
+		{ return m_ncount; }
+
+	tresult PLUGIN_API getPoint (
+		int32 index, int32& offset, Vst::ParamValue& value ) override
+	{
+		if (index < 0 || index >= m_ncount)
+			return kResultFalse;
+
+		const QueueItem& item = m_queue[index];
+		offset = item.offset;
+		value = item.value;
+		return kResultOk;
+	}
+
+	tresult PLUGIN_API addPoint (
+		int32 offset, Vst::ParamValue value, int32& index ) override
+	{
+		int32 i = 0;
+
+		for ( ; i < m_ncount; ++i) {
+			QueueItem& item = m_queue[i];
+			if (item.offset > offset)
+				break;
+			if (item.offset == offset) {
+				item.value = value;
+				index = i;
+				return kResultOk;
+			}
+		}
+
+		if (i >= m_nsize)
+			resize(m_nsize); // warning: non RT-safe!
+
+		index = i;
+
+		QueueItem& item = m_queue[index];
+		item.value = value;
+		item.offset = offset;
+		i = m_ncount++;
+		while (i > index) {
+			QueueItem& item2 = m_queue[i];
+			QueueItem& item1 = m_queue[--i];
+			item2.value  = item1.value;
+			item2.offset = item1.offset;
+		}
+
+		return kResultOk;
+	}
+
+	// Helper methods.
+	//
+	void setParameterId (Vst::ParamID id) { m_id = id; }
+
+	void takeFrom (ParamQueue& queue)
+	{
+		m_id     = queue.m_id;
+		m_queue  = queue.m_queue;
+		m_nsize  = queue.m_nsize;
+		m_ncount = queue.m_ncount;
+
+		queue.m_id     = Vst::kNoParamId;
+		queue.m_queue  = nullptr;
+		queue.m_nsize  = 0;
+		queue.m_ncount = 0;
+	}
+
+	void clear () { m_ncount = 0; }
+
+protected:
+
+	void resize (int32 nsize)
+	{
+		const int32 nsize2 = (nsize << 1);
+		if (m_nsize != nsize2) {
+			QueueItem *old_queue = m_queue;
+			m_queue = nullptr;
+			m_nsize = nsize2;
+			if (m_nsize > 0) {
+				m_queue = new QueueItem [m_nsize];
+				if (m_ncount > m_nsize)
+					m_ncount = m_nsize;
+				for (int32 i = 0; old_queue && i < m_ncount; ++i)
+					m_queue[i] = old_queue[i];
+			}
+			if (old_queue)
+				delete [] old_queue;
+		}
+	}
+
+private:
+
+	// Instance members.
+	struct QueueItem
+	{
+		QueueItem (Vst::ParamValue val = 0.0, int32 offs = 0)
+			: value(val), offset(offs) {}
+
+		Vst::ParamValue value;
+		int32 offset;
+	};
+
+	Vst::ParamID m_id;
+	QueueItem *m_queue;
+	int32 m_nsize;
+	volatile int32 m_ncount;
+};
+
+IMPLEMENT_FUNKNOWN_METHODS (qtractorVst3Plugin::ParamQueue, Vst::IParamValueQueue, Vst::IParamValueQueue::iid)
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::ParamChanges -- VST3 plugin parameter changes impl.
+//
+
+class qtractorVst3Plugin::ParamChanges : public Vst::IParameterChanges
+{
+public:
+
+	// Constructor.
+	ParamChanges (int32 nsize = 4)
+		: m_queues(nullptr), m_nsize(0), m_ncount(0)
+		{ FUNKNOWN_CTOR resize(nsize); }
+
+	// Destructor.
+	virtual ~ParamChanges ()
+		{ resize(0); FUNKNOWN_DTOR }
+
+	DECLARE_FUNKNOWN_METHODS
+
+	//--- IParameterChanges ----
+	//
+	int32 PLUGIN_API getParameterCount () override
+		{ return m_ncount; }
+
+	Vst::IParamValueQueue *PLUGIN_API getParameterData (int32 index) override
+	{
+		if (index >= 0 && index < m_ncount)
+			return &m_queues[index];
+		else
+			return nullptr;
+	}
+
+	Vst::IParamValueQueue *PLUGIN_API addParameterData (
+		const Vst::ParamID& id, int32& index ) override
+	{
+		int32 i = 0;
+
+		for ( ; i < m_ncount; ++i) {
+			ParamQueue *queue = &m_queues[i];
+			if (queue->getParameterId() == id) {
+				index = i;
+				return queue;
+			}
+		}
+
+		if (i >= m_nsize)
+			resize(m_nsize); // warning: non RT-safe!
+		if (i >= m_ncount)
+			++m_ncount;
+
+		index = i;
+
+		ParamQueue *queue = &m_queues[index];
+		queue->setParameterId(id);
+		return queue;
+	}
+
+	// Helper methods.
+	//
+	void clear ()
+	{
+		for (int32 i = 0; i < m_ncount; ++i)
+			m_queues[i].clear();
+
+		m_ncount = 0;
+	}
+
+protected:
+
+	void resize (int32 nsize)
+	{
+		const int32 nsize2 = (nsize << 1);
+		if (m_nsize != nsize2) {
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorVst3Plugin::ParamChanges[%p]::resize(%d)", this, nsize);
+		#endif
+			ParamQueue *old_queues = m_queues;
+			m_queues = nullptr;
+			m_nsize = nsize2;
+			if (m_nsize > 0) {
+				m_queues = new ParamQueue [m_nsize];
+				if (m_ncount > m_nsize)
+					m_ncount = m_nsize;
+				for (int32 i = 0; old_queues && i < m_ncount; ++i)
+					m_queues[i].takeFrom(old_queues[i]);
+			}
+			if (old_queues)
+				delete [] old_queues;
+		}
+	}
+
+private:
+
+	// Instance members.
+	ParamQueue *m_queues;
+	int32 m_nsize;
+	volatile int32 m_ncount;
+};
+
+IMPLEMENT_FUNKNOWN_METHODS (qtractorVst3Plugin::ParamChanges, Vst::IParameterChanges, Vst::IParameterChanges::iid)
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::ParamTransfer -- VST3 plugin parameter transfer impl.
+//
+
+class qtractorVst3Plugin::ParamTransfer
+{
+public:
+
+	// Constructor.
+	ParamTransfer (int32 nsize = 0x100)
+		: m_changes(nullptr), m_nsize(0), m_iread(0), m_iwrite(0)
+		{ resize(nsize); }
+
+	// Destructor.
+	virtual ~ParamTransfer ()
+		{ resize(0); }
+
+	// Executive methods.
+	//
+	void addChange (Vst::ParamID id, Vst::ParamValue value, int32 offset)
+	{
+		if (m_changes) {
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorVst3Plugin::ParamTransfer[%p]::addChange(%u, %g, %d)", this, id, value, offset);
+		#endif
+			ChangeItem& item = m_changes[m_iwrite];
+			item.id = id;
+			item.value = value;
+			item.offset = offset;
+			uint32_t iwrite = m_iwrite + 1;
+			if (iwrite >= m_nsize)
+				iwrite = 0;
+			if (m_iread != iwrite)
+				m_iwrite = iwrite;
+		}
+	}
+
+	void transferChangesTo (ParamChanges& dst)
+	{
+		Vst::ParamID id;
+		Vst::ParamValue value;
+		int32 offset;
+		int32 index;
+
+		while (getNextChange(id, value, offset)) {
+			Vst::IParamValueQueue *queue = dst.addParameterData(id, index);
+			if (queue)
+				queue->addPoint(offset, value, index);
+		}
+	}
+
+	void transferChangesFrom (ParamChanges& src)
+	{
+		Vst::ParamValue value;
+		int32 offset;
+		for (int32 i = 0; i < src.getParameterCount(); ++i) {
+			Vst::IParamValueQueue *queue = src.getParameterData(i);
+			for (int32 j = 0; queue && j < queue->getPointCount(); ++j) {
+				if (queue->getPoint(j, offset, value) == kResultOk)
+					addChange(queue->getParameterId(), value, offset);
+			}
+		}
+	}
+
+	void clear () { m_iwrite = m_iread; }
+
+protected:
+
+	bool getNextChange (Vst::ParamID& id, Vst::ParamValue& value, int32& offset)
+	{
+		if (!m_changes)
+			return false;
+
+		const uint32 iwrite = m_iwrite;
+		if (iwrite == m_iread)
+			return false;
+
+		const ChangeItem& item = m_changes[iwrite];
+		id = item.id;
+		value = item.value;
+		offset = item.offset;
+		uint32_t iread = m_iread + 1;
+		if (iread >= m_nsize)
+			iread = 0;
+		m_iread = iread;
+		return true;
+	}
+
+	void resize (int32 nsize)
+	{
+		const uint32_t nsize2 = (nsize << 1);
+		if (m_nsize != nsize2) {
+			if (m_changes)
+				delete [] m_changes;
+			m_changes = nullptr;
+			m_nsize = nsize2;
+			if (m_nsize > 0)
+				m_changes = new ChangeItem [m_nsize];
+		}
+	}
+
+private:
+
+	// Instance members.
+	struct ChangeItem
+	{
+		Vst::ParamID id;
+		Vst::ParamValue value;
+		int32 offset;
+	};
+
+	ChangeItem *m_changes;
+	uint32_t m_nsize;
+	volatile uint32_t m_iread;
+	volatile uint32_t m_iwrite;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::EventList -- VST3 plugin event list impl.
+//
+
+class qtractorVst3Plugin::EventList : public Vst::IEventList
+{
+public:
+
+	// Constructor.
+	EventList (uint32_t nsize = 0x100)
+		: m_events(nullptr), m_nsize(0), m_ncount(0)
+		{ resize(nsize); FUNKNOWN_CTOR }
+
+	// Destructor.
+	virtual ~EventList ()
+		{ resize(0); FUNKNOWN_DTOR }
+
+	DECLARE_FUNKNOWN_METHODS
+
+	//--- IEventList ---
+	//
+	int32 PLUGIN_API getEventCount () override
+		{ return m_ncount; }
+
+	tresult PLUGIN_API getEvent (int32 index, Vst::Event& event) override
+	{
+		if (index < 0 || index >= m_nsize)
+			return kInvalidArgument;
+
+		event = m_events[index];
+		return kResultOk;
+	}
+
+	tresult PLUGIN_API addEvent (Vst::Event& event) override
+	{
+		if (m_ncount >= m_nsize)
+			resize(m_nsize);  // warning: non RT-safe!
+
+		m_events[m_ncount++] = event;
+		return kResultOk;
+	}
+
+	// Helper methods.
+	//
+	void clear () { m_ncount = 0; }
+
+protected:
+
+	void resize (int32 nsize)
+	{
+		const int32 nsize2 = (nsize << 1);
+		if (m_nsize != nsize2) {
+		#ifdef CONFIG_DEBUG
+			qDebug("qtractorVst3Plugin::EventList[%p]::resize(%d)", this, nsize);
+		#endif
+			Vst::Event *old_events = m_events;
+			m_events = nullptr;
+			m_nsize = nsize2;
+			if (m_nsize > 0) {
+				m_events = new Vst::Event [m_nsize];
+				if (m_ncount > m_nsize)
+					m_ncount = m_nsize;
+				if (old_events)
+					::memcpy(&m_events[0], old_events,
+						sizeof(Vst::Event) * m_ncount);
+				if (m_nsize > m_ncount)
+					::memset(&m_events[m_ncount], 0,
+						sizeof(Vst::Event) * (m_nsize - m_ncount));
+			}
+			if (old_events)
+				delete [] old_events;
+		}
+	}
+
+private:
+
+	// Instance members.
+	Vst::Event *m_events;
+	int32 m_nsize;
+	volatile int32 m_ncount;
+};
+
+IMPLEMENT_FUNKNOWN_METHODS (qtractorVst3Plugin::EventList, IEventList, IEventList::iid)
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::Impl -- VST3 plugin interface impl.
+//
+
+class qtractorVst3Plugin::Impl
+{
+public:
+
+	// Constructor.
+	Impl (qtractorVst3PluginType *pType);
+
+	// Destructor.
+	~Impl ();
+
+	// Accessor.
+	qtractorVst3PluginType *type() const
+		{ return m_pType; }
+
+	// Do the actual (de)activation.
+	void activate();
+	void deactivate();
+
+	// Editor controller methods.
+	bool openEditor ();
+	void closeEditor ();
+
+	tresult notify (Vst::IMessage *message);
+
+	IPlugView *plugView () const { return m_plugView; }
+
+	// Processor context accessor.
+	Vst::ProcessContext& context() { return m_context; }
+
+	// Audio processor methods.
+	bool process_reset (float srate, uint32_t nframes);
+	void process_midi_in (
+		uint8_t *data, uint32_t size, uint32_t offset, uint16_t port);
+	void process (float **ins, float **outs, uint32_t nframes);
+
+	// Set/add a parameter value/point.
+	void setParameter (
+		Vst::ParamID id, Vst::ParamValue value, uint32_t offset);
+
+	// Program names list accessor.
+	const QList<Vst::ParameterInfo *>& paramInfos() const
+		{ return m_paramInfos; }
+
+	// Program names list accessor.
+	const QList<QString>& programs() const
+		{ return m_programs; }
+
+	// Program-change selector.
+	void selectProgram(int iBank, int iProg);
+
+	// Plugin preset i/o (configuration from/to state files).
+	bool loadPresetFile(const QString& sFilename);
+	bool savePresetFile(const QString& sFilename);
+
+	// MIDI event buffer accessors.
+	EventList& events_in()  { return m_events_in;  }
+	EventList& events_out() { return m_events_out; }
+
+protected:
+
+	// Plugin module initializer.
+	void initialize();
+
+	// Cleanup.
+	void clear();
+
+private:
+
+	// Instance variables.
+	qtractorVst3PluginType *m_pType;
+
+	IPtr<Handler>   m_handler;
+	IPtr<IPlugView> m_plugView;
+
+	Vst::IAudioProcessor *m_processor;
+
+	volatile bool m_processing;
+
+	Vst::ProcessContext m_context;
+
+	ParamChanges m_params_in;
+//	ParamChanges m_params_out;
+
+	EventList m_events_in;
+	EventList m_events_out;
+
+	// Parameter meta-data.
+	QList<Vst::ParameterInfo *> m_paramInfos;
+
+	// Program-change parameter info.
+	Vst::ParameterInfo m_programParamInfo;
+
+	// Program name list.
+	QList<QString> m_programs;
+
+	// MIDI controller assignment hash key/map.
+	struct MidiMapKey
+	{
+		MidiMapKey (int16 po = 0, int16 ch = 0, int16 co = 0)
+			: port(po), channel(ch), controller(co) {}
+		MidiMapKey (const MidiMapKey& key)
+			: port(key.port), channel(key.channel), controller(key.controller) {}
+
+		bool operator< (const MidiMapKey& key) const
+		{
+			if (port != key.port)
+				return (port < key.port);
+			else
+			if (channel != key.channel)
+				return (channel < key.channel);
+			else
+				return (controller < key.controller);
+		}
+
+		int16 port;
+		int16 channel;
+		int16 controller;
+	};
+
+	typedef QMap<MidiMapKey, Vst::ParamID> MidiMap;
+
+	MidiMap m_midiMap;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::Handler -- VST3 plugin interface handler.
+//
+
+class qtractorVst3Plugin::Handler
+	: public Vst::IComponentHandler
+	, public Vst::IConnectionPoint
+{
+public:
+
+	// Constructor.
+	Handler (Impl *pImpl) : m_pImpl(pImpl) { FUNKNOWN_CTOR }
+
+	// Destructor.
+	virtual ~Handler () { FUNKNOWN_DTOR }
+
+	DECLARE_FUNKNOWN_METHODS
+
+	//--- IComponentHandler ---
+	//
+	tresult PLUGIN_API beginEdit (Vst::ParamID id) override
+	{
+	#ifdef CONFIG_DEBUG
+		qDebug("vst3_text_plugin::Handler[%p]::beginEdit(%d)", this, int(id));
+	#endif
+		return kResultOk;
+	}
+
+	tresult PLUGIN_API performEdit (Vst::ParamID id, Vst::ParamValue value) override
+	{
+	#ifdef CONFIG_DEBUG
+		qDebug("vst3_text_plugin::Handler[%p]::performEdit(%d, %g)", this, int(id), float(value));
+	#endif
+		return kResultOk;
+	}
+
+	tresult PLUGIN_API endEdit (Vst::ParamID id) override
+	{
+	#ifdef CONFIG_DEBUG
+		qDebug("vst3_text_plugin::Handler[%p]::endEdit(%d)", this, int(id));
+	#endif
+		return kResultOk;
+	}
+
+	tresult PLUGIN_API restartComponent (int32 flags) override
+	{
+	#ifdef CONFIG_DEBUG
+		qDebug("vst3_text_plugin::Handler[%p]::restartComponent(0x%08x)", this, flags);
+	#endif
+		if (flags & (Vst::kReloadComponent | Vst::kParamValuesChanged)) {
+			m_pImpl->deactivate();
+			m_pImpl->activate();
+		}
+		return kResultOk;
+	}
+
+	//--- IConnectionPoint ---
+	//
+	tresult PLUGIN_API connect (Vst::IConnectionPoint *other) override
+		{ return (other ? kResultOk : kInvalidArgument); }
+
+	tresult PLUGIN_API disconnect (Vst::IConnectionPoint *other) override
+		{ return (other ? kResultOk : kInvalidArgument); }
+
+	tresult PLUGIN_API notify (Vst::IMessage *message) override
+		{ return m_pImpl->notify(message); }
+
+private:
+
+	// Instance client.
+	Impl *m_pImpl;
+};
+
+
+tresult PLUGIN_API qtractorVst3Plugin::Handler::queryInterface (
+	const char *_iid, void **obj )
+{
+	QUERY_INTERFACE(_iid, obj, FUnknown::iid, IComponentHandler)
+	QUERY_INTERFACE(_iid, obj, IComponentHandler::iid, IComponentHandler)
+	QUERY_INTERFACE(_iid, obj, IConnectionPoint::iid, IConnectionPoint)
+
+	*obj = nullptr;
+	return kNoInterface;
+}
+
+
+uint32 PLUGIN_API qtractorVst3Plugin::Handler::addRef (void)
+	{ return 1000;	}
+
+uint32 PLUGIN_API qtractorVst3Plugin::Handler::release (void)
+	{ return 1000; }
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::RunLoop -- VST3 plugin editor run-loop impl.
+//
+
+class qtractorVst3Plugin::RunLoop : public IRunLoop
+{
+public:
+
+	//--- IRunLoop ---
+	//
+	tresult PLUGIN_API registerEventHandler (IEventHandler *handler, FileDescriptor fd) override
+		{ return g_hostContext.registerEventHandler(handler, fd); }
+
+	tresult PLUGIN_API unregisterEventHandler (IEventHandler *handler) override
+		{ return g_hostContext.unregisterEventHandler(handler); }
+
+	tresult PLUGIN_API registerTimer (ITimerHandler *handler, TimerInterval msecs) override
+		{ return g_hostContext.registerTimer(handler, msecs); }
+
+	tresult PLUGIN_API unregisterTimer (ITimerHandler *handler) override
+		{ return g_hostContext.unregisterTimer(handler); }
+
+	tresult PLUGIN_API queryInterface (const TUID _iid, void **obj) override
+	{
+		if (FUnknownPrivate::iidEqual(_iid, FUnknown::iid) ||
+			FUnknownPrivate::iidEqual(_iid, IRunLoop::iid)) {
+			addRef();
+			*obj = this;
+			return kResultOk;
+		}
+
+		*obj = nullptr;
+		return kNoInterface;
+	}
+
+	uint32 PLUGIN_API addRef  () override { return 1001; }
+	uint32 PLUGIN_API release () override { return 1001; }
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::EditorFrame -- VST3 plugin editor frame interface impl.
+//
+
+class qtractorVst3Plugin::EditorFrame : public IPlugFrame
+{
+public:
+
+	// Constructor.
+	EditorFrame (IPlugView *plugView, QWidget *widget)
+		: m_plugView(plugView), m_widget(widget),
+			m_runLoop(nullptr), m_resizing(false)
+	{
+		m_runLoop = owned(NEW RunLoop());
+		m_plugView->setFrame(this);
+	}
+
+	// Destructor.
+	virtual ~EditorFrame ()
+	{
+		m_plugView->setFrame(nullptr);
+		m_runLoop = nullptr;
+	}
+
+	// Accessors.
+	IPlugView *plugView () const
+		{ return m_plugView; }
+	RunLoop *runLoop () const
+		{ return m_runLoop; }
+
+	//--- IPlugFrame ---
+	//
+	tresult PLUGIN_API resizeView (IPlugView *plugView, ViewRect *rect) override
+	{
+		if (!rect || !plugView || plugView != m_plugView)
+			return kInvalidArgument;
+
+		if (!m_widget || m_resizing)
+			return kResultFalse;
+
+		ViewRect rect0;
+		if (m_plugView->getSize(&rect0) != kResultOk)
+			return kInternalError;
+
+		m_resizing = false;
+		const QSize size(
+			rect->right  - rect->left,
+			rect->bottom - rect->top);
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin::EditorFrame[%p]::resizeView(%p, %p) size=(%d, %d)",
+			this, plugView, rect, size.width(), size.height());
+	#endif
+		if (m_plugView->canResize() != kResultOk)
+			m_widget->setFixedSize(size);
+		else
+			m_widget->resize(size);
+		m_resizing = true;
+
+		if (rect0.top    != rect->top   ||
+			rect0.left   != rect->left  ||
+			rect0.right  != rect->right ||
+			rect0.bottom != rect->bottom)
+			m_plugView->onSize(rect);
+
+		return kResultOk;
+	}
+
+	tresult PLUGIN_API queryInterface (const TUID _iid, void **obj) override
+	{
+		if (FUnknownPrivate::iidEqual(_iid, FUnknown::iid) ||
+			FUnknownPrivate::iidEqual(_iid, IPlugFrame::iid)) {
+			addRef();
+			*obj = this;
+			return kResultOk;
+		}
+
+		return m_runLoop->queryInterface(_iid, obj);
+	}
+
+	uint32 PLUGIN_API addRef  () override { return 1002; }
+	uint32 PLUGIN_API release () override { return 1002; }
+
+private:
+
+	// Instance members.
+	IPlugView *m_plugView;
+	QWidget *m_widget;
+	IPtr<RunLoop> m_runLoop;
+	int m_resizing;
+};
+
+
+//------------------------------------------------------------------------
+// qtractorVst3Plugin::Stream - Memory based stream for IBStream impl.
+
+class qtractorVst3Plugin::Stream : public IBStream
+{
+public:
+
+	// Constructors.
+	Stream () : m_pos(0)
+		{ FUNKNOWN_CTOR }
+	Stream (const QByteArray& data) : m_data(data), m_pos(0)
+		{ FUNKNOWN_CTOR }
+
+	// Destructor.
+	virtual ~Stream () { FUNKNOWN_DTOR }
+
+	DECLARE_FUNKNOWN_METHODS
+
+	//--- IBStream ---
+	//
+	tresult PLUGIN_API read (void *buffer, int32 nbytes, int32 *nread) override
+	{
+		if (m_pos + nbytes > m_data.size()) {
+			const int32 nsize = int32(m_data.size() - m_pos);
+			if (nsize > 0) {
+				nbytes = nsize;
+			} else {
+				nbytes = 0;
+				m_pos = int64(m_data.size());
+			}
+		}
+
+		if (nbytes > 0) {
+			::memcpy(buffer, m_data.data() + m_pos, nbytes);
+			m_pos += nbytes;
+		}
+
+		if (nread)
+			*nread = nbytes;
+
+		return kResultOk;
+	}
+
+	tresult PLUGIN_API write (void *buffer, int32 nbytes, int32 *nwrite) override
+	{
+		if (buffer == nullptr)
+			return kInvalidArgument;
+
+		const int32 nsize = m_pos + nbytes;
+		if (nsize > m_data.size())
+			m_data.resize(nsize);
+
+		if (m_pos >= 0 && nbytes > 0) {
+			::memcpy(m_data.data() + m_pos, buffer, nbytes);
+			m_pos += nbytes;
+		}
+		else nbytes = 0;
+
+		if (nwrite)
+			*nwrite = nbytes;
+
+		return kResultOk;
+	}
+
+	tresult PLUGIN_API seek (int64 pos, int32 mode, int64 *npos) override
+	{
+		if (mode == kIBSeekSet)
+			m_pos = pos;
+		else
+		if (mode == kIBSeekCur)
+			m_pos += pos;
+		else
+		if (mode == kIBSeekEnd)
+			m_pos = m_data.size() - pos;
+
+		if (m_pos < 0)
+			m_pos = 0;
+		else
+		if (m_pos > m_data.size())
+			m_pos = m_data.size();
+
+		if (npos)
+			*npos = m_pos;
+
+		return kResultTrue;
+	}
+
+	tresult PLUGIN_API tell (int64 *npos) override
+	{
+		if (npos) {
+			*npos = m_pos;
+			return kResultOk;
+		} else {
+			return kInvalidArgument;
+		}
+	}
+
+	// Other accessors.
+	//
+	const QByteArray& data() const { return m_data; }
+
+protected:
+
+	// Instance members.
+	QByteArray m_data;
+	int64      m_pos;
+};
+
+IMPLEMENT_FUNKNOWN_METHODS (qtractorVst3Plugin::Stream, IBStream, IBStream::iid)
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::Impl -- VST3 plugin interface impl.
+//
+
+// Constructor.
+qtractorVst3Plugin::Impl::Impl ( qtractorVst3PluginType *pType )
+	: m_pType(pType), m_handler(nullptr), m_plugView(nullptr),
+		m_processor(nullptr), m_processing(false)
+{
+	initialize();
+}
+
+
+// Destructor.
+qtractorVst3Plugin::Impl::~Impl (void)
+{
+	closeEditor();
+
+	deactivate();
+
+	if (m_handler) {
+		Vst::IComponent *component = m_pType->impl()->component();
+		FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
+		if (component_cp)
+			component_cp->disconnect(m_handler);
+		Vst::IEditController *controller = m_pType->impl()->controller();
+		FUnknownPtr<Vst::IConnectionPoint> controller_cp(controller);
+		if (controller_cp)
+			controller_cp->disconnect(m_handler);
+	}
+
+	m_processor = nullptr;
+	m_handler = nullptr;
+
+	clear();
+
+	delete m_pType;
+}
+
+
+// Plugin module initializer.
+void qtractorVst3Plugin::Impl::initialize (void)
+{
+	clear();
+
+	if (!m_pType->open())
+		return;
+
+	Vst::IComponent *component = m_pType->impl()->component();
+	if (!component)
+		return;
+
+	Vst::IEditController *controller = m_pType->impl()->controller();
+	if (controller) {
+		m_handler = owned(NEW Handler(this));
+		controller->setComponentHandler(m_handler);
+	}
+
+	// Connect components...
+	if (m_handler) {
+		FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
+		if (component_cp)
+			component_cp->connect(m_handler);
+		FUnknownPtr<Vst::IConnectionPoint> controller_cp(controller);
+		if (controller_cp)
+			controller_cp->connect(m_handler);
+	}
+
+	m_processor = FUnknownPtr<Vst::IAudioProcessor> (component);
+
+	if (controller) {
+		const int32 nparams = controller->getParameterCount();
+		for (int32 i = 0; i < nparams; ++i) {
+			Vst::ParameterInfo paramInfo;
+			if (controller->getParameterInfo(i, paramInfo) == kResultOk) {
+				Vst::ParameterInfo *pParamInfo = new Vst::ParameterInfo();
+				*pParamInfo = paramInfo;
+				m_paramInfos.append(pParamInfo);
+				if (m_programParamInfo.unitId != Vst::UnitID(-1))
+					continue;
+				if (paramInfo.flags & Vst::ParameterInfo::kIsProgramChange)
+					m_programParamInfo = paramInfo;
+			}
+		}
+		if (m_programParamInfo.unitId != Vst::UnitID(-1)) {
+			Vst::IUnitInfo *unitInfos = m_pType->impl()->unitInfos();
+			if (unitInfos) {
+				const int32 nunits = unitInfos->getUnitCount();
+				for (int32 i = 0; i < nunits; ++i) {
+					Vst::UnitInfo unitInfo;
+					if (unitInfos->getUnitInfo(i, unitInfo) != kResultOk)
+						continue;
+					if (unitInfo.id != m_programParamInfo.unitId)
+						continue;
+					const int32 nlists = unitInfos->getProgramListCount();
+					for (int32 j = 0; j < nlists; ++j) {
+						Vst::ProgramListInfo programListInfo;
+						if (unitInfos->getProgramListInfo(j, programListInfo) != kResultOk)
+							continue;
+						if (programListInfo.id != unitInfo.programListId)
+							continue;
+						const int32 nprograms = programListInfo.programCount;
+						for (int32 k = 0; k < nprograms; ++k) {
+							Vst::String128 name;
+							if (unitInfos->getProgramName(
+									programListInfo.id, k, name) == kResultOk)
+								m_programs.append(String(name).text8());
+						}
+						break;
+					}
+				}
+			}
+		}
+		if (m_programs.isEmpty() && m_programParamInfo.stepCount > 0) {
+			const int32 nprograms = m_programParamInfo.stepCount + 1;
+			for (int32 k = 0; k < nprograms; ++k) {
+				const Vst::ParamValue value
+					= Vst::ParamValue(k)
+					/ Vst::ParamValue(m_programParamInfo.stepCount);
+				Vst::String128 name;
+				if (controller->getParamStringByValue(
+						m_programParamInfo.id, value, name) == kResultOk)
+					m_programs.append(String(name).text8());
+			}
+		}
+	}
+
+	if (controller) {
+		const int32 nports = m_pType->midiIns();
+		FUnknownPtr<Vst::IMidiMapping> midiMapping(controller);
+		if (midiMapping && nports > 0) {
+			for (int16 i = 0; i < Vst::kCountCtrlNumber; ++i) { // controllers...
+				for (int32 j = 0; j < nports; ++j) { // ports...
+					for (int16 k = 0; k < 16; ++k) { // channels...
+						Vst::ParamID id = Vst::kNoParamId;
+						if (midiMapping->getMidiControllerAssignment(
+								j, k, Vst::CtrlNumber(i), id) == kResultOk) {
+							m_midiMap.insert(MidiMapKey(j, k, i), id);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+// Do the actual (de)activation.
+void qtractorVst3Plugin::Impl::activate (void)
+{
+	if (m_processing)
+		return;
+
+	Vst::IComponent *component = m_pType->impl()->component();
+	if (component && m_processor) {
+		component->setActive(true);
+		m_processor->setProcessing(true);
+		m_processing = true;
+	}
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin::Impl[%p]::activate() processing=%d", this, int(m_processing));
+#endif
+}
+
+
+void qtractorVst3Plugin::Impl::deactivate (void)
+{
+	if (!m_processing)
+		return;
+
+	Vst::IComponent *component = m_pType->impl()->component();
+	if (component && m_processor) {
+		m_processor->setProcessing(false);
+		component->setActive(false);
+		m_processing = false;
+	}
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin::Impl[%p]::deactivate() processing=%d", this, int(m_processing));
+#endif
+}
+
+
+// Editor controller methods.
+bool qtractorVst3Plugin::Impl::openEditor (void)
+{
+	closeEditor();
+
+	Vst::IEditController *controller = m_pType->impl()->controller();
+	if (controller)
+		m_plugView = controller->createView(Vst::ViewType::kEditor);
+
+	return (m_plugView != nullptr);
+}
+
+
+void qtractorVst3Plugin::Impl::closeEditor (void)
+{
+	m_plugView = nullptr;
+}
+
+
+tresult qtractorVst3Plugin::Impl::notify ( Vst::IMessage *message )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin::Impl[%p]::notify(%p)", this, message);
+#endif
+
+	Vst::IComponent *component = m_pType->impl()->component();
+	FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
+	if (component_cp)
+		component_cp->notify(message);
+
+	Vst::IEditController *controller = m_pType->impl()->controller();
+	FUnknownPtr<Vst::IConnectionPoint> controller_cp(controller);
+	if (controller_cp)
+		controller_cp->notify(message);
+
+	return kResultOk;
+}
+
+
+// Audio processor stuff (TODO)...
+bool qtractorVst3Plugin::Impl::process_reset (
+	float srate, uint32_t nframes )
+{
+	if (!m_processor)
+		return false;
+
+//	deactivate();
+
+	// Initialize running state...
+	m_context.sampleRate = srate;
+
+	m_params_in.clear();
+//	m_params_out.clear();
+
+	m_events_in.clear();
+	m_events_out.clear();
+
+	Vst::ProcessSetup setup;
+	setup.processMode        = Vst::kRealtime;
+	setup.symbolicSampleSize = Vst::kSample32;
+	setup.maxSamplesPerBlock = nframes;
+	setup.sampleRate         = m_context.sampleRate;
+
+	if (m_processor->setupProcessing(setup) != kResultOk)
+		return false;
+
+//	activate();
+
+	return true;
+}
+
+
+void qtractorVst3Plugin::Impl::process_midi_in (
+	uint8_t *data, uint32_t size, uint32_t offset, uint16_t port )
+{
+	for (uint32_t i = 0; i < size; ++i) {
+
+		// channel status
+		const int channel = (data[i] & 0x0f);// + 1;
+		const int status  = (data[i] & 0xf0);
+
+		// all system common/real-time ignored
+		if (status == 0xf0)
+			continue;
+
+		// check data size (#1)
+		if (++i >= size)
+			break;
+
+		// channel key
+		const int key = (data[i] & 0x7f);
+
+		// program change
+		if (status == 0xc0) {
+			// TODO: program-change...
+			continue;
+		}
+
+		// after-touch
+		if (status == 0xd0) {
+			const MidiMapKey mkey(port, channel, Vst::kAfterTouch);
+			const Vst::ParamID id = m_midiMap.value(mkey, Vst::kNoParamId);
+			if (id != Vst::kNoParamId) {
+				const float pre = float(key) / 127.0f;
+				setParameter(id, Vst::ParamValue(pre), offset);
+			}
+			continue;
+		}
+
+		// check data size (#2)
+		if (++i >= size)
+			break;
+
+		// channel value (normalized)
+		const int value = (data[i] & 0x7f);
+
+		Vst::Event event;
+		::memset(&event, 0, sizeof(Vst::Event));
+		event.busIndex = port;
+		event.sampleOffset = offset;
+		event.flags = Vst::Event::kIsLive;
+
+		// note on
+		if (status == 0x90) {
+			event.type = Vst::Event::kNoteOnEvent;
+			event.noteOn.noteId = -1;
+			event.noteOn.channel = channel;
+			event.noteOn.pitch = key;
+			event.noteOn.velocity = float(value) / 127.0f;
+			m_events_in.addEvent(event);
+		}
+		// note off
+		else if (status == 0x80) {
+			event.type = Vst::Event::kNoteOffEvent;
+			event.noteOff.noteId = -1;
+			event.noteOff.channel = channel;
+			event.noteOff.pitch = key;
+			event.noteOff.velocity = float(value) / 127.0f;
+			m_events_in.addEvent(event);
+		}
+		// key pressure/poly.aftertouch
+		else if (status == 0xa0) {
+			event.type = Vst::Event::kPolyPressureEvent;
+			event.polyPressure.channel = channel;
+			event.polyPressure.pitch = key;
+			event.polyPressure.pressure = float(value) / 127.0f;
+			m_events_in.addEvent(event);
+		}
+		// control-change
+		else if (status == 0xb0) {
+			const MidiMapKey mkey(port, channel, key);
+			const Vst::ParamID id = m_midiMap.value(mkey, Vst::kNoParamId);
+			if (id != Vst::kNoParamId) {
+				const float val = float(value) / 127.0f;
+				setParameter(id, Vst::ParamValue(val), offset);
+			}
+		}
+		// pitch-bend
+		else if (status == 0xe0) {
+			const MidiMapKey mkey(port, channel, Vst::kPitchBend);
+			const Vst::ParamID id = m_midiMap.value(mkey, Vst::kNoParamId);
+			if (id != Vst::kNoParamId) {
+				const float pitchbend
+					= float(key + (value << 7)) / float(0x3fff);
+				setParameter(id, Vst::ParamValue(pitchbend), offset);
+			}
+		}
+	}
+}
+
+
+void qtractorVst3Plugin::Impl::process (
+	float **ins, float **outs, uint32_t nframes )
+{
+	if (!m_processor)
+		return;
+
+	if (!m_processing)
+		return;
+
+//	m_params_out.clear();
+	m_events_out.clear();
+
+	Vst::AudioBusBuffers input_buffers;
+	input_buffers.silenceFlags      = 0;
+	input_buffers.numChannels       = m_pType->audioIns();
+	input_buffers.channelBuffers32  = ins;
+
+	Vst::AudioBusBuffers output_buffers;
+	output_buffers.silenceFlags     = 0;
+	output_buffers.numChannels      = m_pType->audioOuts();
+	output_buffers.channelBuffers32 = outs;
+
+	Vst::ProcessData data;
+	data.numSamples             = nframes;
+	data.symbolicSampleSize     = Vst::kSample32;
+	data.numInputs              = 1;
+	data.numOutputs             = 1;
+	data.inputs                 = &input_buffers;
+	data.outputs                = &output_buffers;
+	data.processContext         = &m_context;
+	data.inputEvents            = &m_events_in;
+	data.outputEvents           = &m_events_out;
+	data.inputParameterChanges  = &m_params_in;
+	data.outputParameterChanges = nullptr; //&m_params_out;
+
+	if (m_processor->process(data) != kResultOk) {
+		qWarning("qtractorVst3Plugin::Impl[%p]::process() FAILED!", this);
+	}
+
+	m_events_in.clear();
+	m_params_in.clear();
+}
+
+
+// Set/add a parameter value/point.
+void qtractorVst3Plugin::Impl::setParameter (
+	Vst::ParamID id, Vst::ParamValue value, uint32_t offset )
+{
+	int32 index = 0;
+	Vst::IParamValueQueue *queue = m_params_in.addParameterData(id, index);
+	if (queue && (queue->addPoint(offset, value, index) != kResultOk)) {
+		qWarning("qtractorVst3Plugin::Impl[%p]::setParameter(%u, %g, %u) FAILED!",
+			this, id, value, offset);
+	}
+}
+
+
+// Program-change selector.
+void qtractorVst3Plugin::Impl::selectProgram ( int iBank, int iProg )
+{
+	if (iBank < 0 || iProg < 0)
+		return;
+
+	const Vst::ParamID id = m_programParamInfo.id;
+	if (id == Vst::kNoParamId)
+		return;
+
+	if (m_programParamInfo.stepCount < 1)
+		return;
+
+	Vst::IEditController *controller = m_pType->impl()->controller();
+	if (!controller)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin::Impl[%p]::selectProgram(%d, %d)", this, iBank, iProg);
+#endif
+
+	int iIndex = 0;
+	if (iBank >= 0 && iProg >= 0)
+		iIndex = (iBank << 7) + iProg;
+
+	const Vst::ParamValue value
+		= controller->plainParamToNormalized(id, float(iIndex));
+//		= Vst::ParamValue(iIndex)
+//		/ Vst::ParamValue(m_programParamInfo.stepCount);
+	setParameter(id, value, 0);
+	controller->setParamNormalized(id, value);
+}
+
+
+// Plugin preset i/o (configuration from/to state files).
+bool qtractorVst3Plugin::Impl::loadPresetFile ( const QString& sFilename )
+{
+	Vst::IComponent *component = m_pType->impl()->component();
+	if (!component)
+		return false;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin::Impl[%p]::loadPresetFile(\"%s\")",
+		this, sFilename.toUtf8().constData());
+#endif
+
+	QFile file(sFilename);
+
+	if (!file.open(QFile::ReadOnly)) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin::Impl[%p]::loadPresetFile(\"%s\")"
+			" QFile::open(QFile::ReadOnly) FAILED!",
+			this, sFilename.toUtf8().constData());
+	#endif
+		return false;
+	}
+
+	Stream state(file.readAll());
+	file.close();
+
+	if (component->setState(&state) != kResultOk) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin::Impl[%p]::loadPresetFile(\"%s\")"
+			" Vst::IComponent::setState() FAILED!",
+			this, sFilename.toUtf8().constData());
+	#endif
+		return false;
+	}
+
+	Vst::IEditController *controller = m_pType->impl()->controller();
+	if (controller && controller->setComponentState(&state) != kResultOk) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin::Impl[%p]::loadPresetFile(\"%s\")"
+			" Vst::IEditController::setComponentState() FAILED!",
+			this, sFilename.toUtf8().constData());
+	#endif
+		return false;
+	}
+
+	return true;
+}
+
+
+bool qtractorVst3Plugin::Impl::savePresetFile ( const QString& sFilename )
+{
+	Vst::IComponent *component = m_pType->impl()->component();
+	if (!component)
+		return false;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin::Impl[%p]::savePresetFile(\"%s\")",
+		this, sFilename.toUtf8().constData());
+#endif
+
+	Stream state;
+
+	if (component->getState(&state) != kResultOk) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin::Impl[%p]::savePresetFile(\"%s\")"
+			" Vst::IComponent::setState() FAILED!",
+			this, sFilename.toUtf8().constData());
+	#endif
+		return false;
+	}
+
+	QFile file(sFilename);
+
+	if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin::Impl[%p]::savePresetFile(\"%s\")"
+			" QFile::open(QFile::WriteOnly|QFile::Truncate) FAILED!",
+			this, sFilename.toUtf8().constData());
+	#endif
+		return false;
+	}
+
+	file.write(state.data());
+	file.close();
+	return true;
+}
+
+
+// Cleanup.
+void qtractorVst3Plugin::Impl::clear (void)
+{
+	::memset(&m_context, 0, sizeof(Vst::ProcessContext));
+
+	qDeleteAll(m_paramInfos);
+	m_paramInfos.clear();
+
+	::memset(&m_programParamInfo, 0, sizeof(Vst::ParameterInfo));
+	m_programParamInfo.id = Vst::kNoParamId;
+	m_programParamInfo.unitId = Vst::UnitID(-1);
+	m_programs.clear();
+
+	m_midiMap.clear();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::EditorWidget -- VST3 plugin editor widget decl.
+//
+
+
+class qtractorVst3Plugin::EditorWidget : public QWidget
+{
+public:
+
+	EditorWidget(QWidget *pParent = nullptr, Qt::WindowFlags wflags = 0);
+
+	~EditorWidget ();
+
+	void setPlugin (qtractorVst3Plugin *pPlugin)
+		{ m_pPlugin = pPlugin; }
+	qtractorVst3Plugin *plugin () const
+		{ return m_pPlugin; }
+
+	WId parentWinId() const { return m_pWindow->winId(); }
+
+protected:
+
+	void resizeEvent(QResizeEvent *pResizeEvent);
+	void closeEvent(QCloseEvent *pCloseEvent);
+
+private:
+
+	qtractorVst3Plugin *m_pPlugin;
+
+	QWindow *m_pWindow;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin::EditorWidget -- VST3 plugin editor widget impl.
+//
+
+qtractorVst3Plugin::EditorWidget::EditorWidget (
+	QWidget *pParent, Qt::WindowFlags wflags )
+	: QWidget(pParent, wflags), m_pPlugin(nullptr), m_pWindow(new QWindow())
+{
+	m_pWindow->create();
+	QWidget *pContainer = QWidget::createWindowContainer(m_pWindow, this);
+	QVBoxLayout *pVBoxLayout = new QVBoxLayout();
+	pVBoxLayout->setMargin(0);
+	pVBoxLayout->setSpacing(0);
+	pVBoxLayout->addWidget(pContainer);
+	QWidget::setLayout(pVBoxLayout);
+}
+
+
+qtractorVst3Plugin::EditorWidget::~EditorWidget (void)
+{
+	m_pWindow->destroy();
+	delete m_pWindow;
+}
+
+
+void qtractorVst3Plugin::EditorWidget::resizeEvent ( QResizeEvent *pResizeEvent )
+{
+	IPlugView *plugView = nullptr;
+	EditorFrame *pEditorFrame = nullptr;
+	if (m_pPlugin)
+		pEditorFrame = m_pPlugin->editorFrame();
+	if (pEditorFrame)
+		plugView = pEditorFrame->plugView();
+	if (plugView && plugView->canResize() == kResultOk) {
+		ViewRect rect0;
+		if (plugView->getSize(&rect0) == kResultOk) {
+			const QSize& size = pResizeEvent->size();
+			ViewRect rect;
+			rect.left   = 0;
+			rect.top    = 0;
+			rect.right  = size.width();
+			rect.bottom = size.height();
+			if (rect0.top    != rect.top   ||
+				rect0.left   != rect.left  ||
+				rect0.right  != rect.right ||
+				rect0.bottom != rect.bottom)
+			#ifdef CONFIG_DEBUG
+				qDebug("qtractorVst3Plugin::EditorWidget[%p]::resizeEvent(%d, %d)",
+					this, size.width(), size.height());
+			#endif
+				plugView->onSize(&rect);
+		}
+	}
+}
+
+
+void qtractorVst3Plugin::EditorWidget::closeEvent ( QCloseEvent *pCloseEvent )
+{
+	QWidget::closeEvent(pCloseEvent);
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin -- VST3 plugin interface impl.
+//
+
+// Buffer size large enough to hold a regular MIDI channel event.
+const long c_iMaxMidiData = 4;
+
+// Constructor.
+qtractorVst3Plugin::qtractorVst3Plugin (
+	qtractorPluginList *pList, qtractorVst3PluginType *pType )
+	: qtractorPlugin(pList, pType), m_pImpl(new Impl(pType)),
+		m_pEditorFrame(nullptr), m_pEditorWidget(nullptr),
+		m_ppIBuffer(nullptr), m_ppOBuffer(nullptr),
+		m_pfIDummy(nullptr), m_pfODummy(nullptr),
+		m_pMidiParser(nullptr)
+{
+	initialize();
+}
+
+
+// Destructor.
+qtractorVst3Plugin::~qtractorVst3Plugin (void)
+{
+	// Cleanup all plugin instances...
+	setChannels(0);
+
+	// Deallocate I/O audio buffer pointers.
+	if (m_ppIBuffer)
+		delete [] m_ppIBuffer;
+	if (m_ppOBuffer)
+		delete [] m_ppOBuffer;
+
+	if (m_pfIDummy)
+		delete [] m_pfIDummy;
+	if (m_pfODummy)
+		delete [] m_pfODummy;
+
+	// Deallocate MIDI decoder.
+	if (m_pMidiParser)
+		snd_midi_event_free(m_pMidiParser);
+
+	delete m_pImpl;
+}
+
+
+// Plugin instance initializer.
+void qtractorVst3Plugin::initialize (void)
+{
+	// Allocate I/O audio buffer pointers.
+	const unsigned short iAudioIns  = audioIns();
+	const unsigned short iAudioOuts = audioOuts();
+	if (iAudioIns > 0)
+		m_ppIBuffer = new float * [iAudioIns];
+	if (iAudioOuts > 0)
+		m_ppOBuffer = new float * [iAudioOuts];
+
+	const QList<Vst::ParameterInfo *>& paramInfos = m_pImpl->paramInfos();
+	const int32 nparams = paramInfos.count();
+#if CONFIG_DEBUG
+	qDebug(" --- Parameters (nparams = %d) ---", nparams);
+#endif
+	unsigned long iIndex = 0;
+	foreach (const Vst::ParameterInfo *paramInfo, paramInfos) {
+		if ( (paramInfo->flags & Vst::ParameterInfo::kCanAutomate) &&
+			!(paramInfo->flags & Vst::ParameterInfo::kIsReadOnly))
+			addParam(new qtractorVst3PluginParam(this, iIndex));
+		++iIndex;
+	}
+
+	if (midiIns() > 0 &&
+		snd_midi_event_new(c_iMaxMidiData, &m_pMidiParser) == 0)
+		snd_midi_event_no_status(m_pMidiParser, 1);
+
+	// Instantiate each instance properly...
+	setChannels(channels());
+}
+
+
+// Channel/instance number accessors.
+void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
+{
+	// Check our type...
+	qtractorVst3PluginType *pVst3Type
+		= static_cast<qtractorVst3PluginType *> (type());
+	if (pVst3Type == nullptr)
+		return;
+
+	// Estimate the (new) number of instances...
+	const unsigned short iOldInstances = instances();
+	const unsigned short iInstances
+		= pVst3Type->instances(iChannels, list()->isMidi());
+	// Now see if instance count changed anyhow...
+	if (iInstances == iOldInstances)
+		return;
+
+	// Gotta go for a while...
+	const bool bActivated = isActivated();
+	setActivated(false);
+
+	// Set new instance number...
+	setInstances(iInstances);
+
+	// Bail out, if none are about to be created...
+	if (iInstances < 1) {
+		setActivated(bActivated);
+		return;
+	}
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin[%p]::setChannels(%u) instances=%u",
+		this, iChannels, iInstances);
+#endif
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == nullptr)
+		return;
+
+	const unsigned int iSampleRate = pAudioEngine->sampleRate();
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+
+	// Allocate the dummy audio I/O buffers...
+	const unsigned short iAudioIns = audioIns();
+	const unsigned short iAudioOuts = audioOuts();
+
+	if (iChannels < iAudioIns) {
+		if (m_pfIDummy)
+			delete [] m_pfIDummy;
+		m_pfIDummy = new float [iBufferSize];
+		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+	}
+
+	if (iChannels < iAudioOuts) {
+		if (m_pfODummy)
+			delete [] m_pfODummy;
+		m_pfODummy = new float [iBufferSize];
+	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+	}
+
+	if (m_pMidiParser)
+		snd_midi_event_reset_decode(m_pMidiParser);
+
+	// Setup all those instances alright...
+	m_pImpl->process_reset(float(iSampleRate), iBufferSize);
+
+	// (Re)issue all configuration as needed...
+	realizeConfigs();
+	realizeValues();
+
+	// But won't need it anymore.
+	releaseConfigs();
+	releaseValues();
+
+	// (Re)activate instance if necessary...
+	setActivated(bActivated);
+}
+
+
+// Do the actual (de)activation.
+void qtractorVst3Plugin::activate (void)
+{
+	m_pImpl->activate();
+}
+
+
+void qtractorVst3Plugin::deactivate (void)
+{
+	m_pImpl->deactivate();
+}
+
+
+// Open/close editor widget.
+void qtractorVst3Plugin::openEditor ( QWidget *pParent )
+{
+	qtractorVst3PluginType *pType = m_pImpl->type();
+	if (pType == nullptr)
+		return;
+
+	if (!pType->isEditor())
+		return;
+
+	if (m_pEditorWidget) {
+		if (!m_pEditorWidget->isVisible())
+			m_pEditorWidget->show();
+		m_pEditorWidget->raise();
+		m_pEditorWidget->activateWindow();
+		return;
+	}
+
+	if (!m_pImpl->openEditor())
+		return;
+
+	IPlugView *plugView = m_pImpl->plugView();
+	if (!plugView)
+		return;
+
+	if (plugView->isPlatformTypeSupported(kPlatformTypeX11EmbedWindowID) != kResultOk) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin::[%p]::openEditor(%p)"
+			" *** X11 Window platform is not supported (%s).", this, pParent,
+			kPlatformTypeX11EmbedWindowID);
+	#endif
+		return;
+	}
+
+	m_pEditorWidget = new EditorWidget(pParent, Qt::Window);
+	m_pEditorWidget->setAttribute(Qt::WA_QuitOnClose, false);
+	m_pEditorWidget->setWindowTitle(pType->name());
+	m_pEditorWidget->setPlugin(this);
+
+	m_pEditorFrame = new EditorFrame(plugView, m_pEditorWidget);
+
+	void *wid = (void *) m_pEditorWidget->parentWinId();
+	if (plugView->attached(wid, kPlatformTypeX11EmbedWindowID) != kResultOk) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin::[%p]::openEditor(%p)"
+			" *** Failed to create/attach editor window.", this, pParent);
+	#endif
+		closeEditor();
+		return;
+	}
+
+	m_pEditorWidget->show();
+	m_pEditorWidget->raise();
+	m_pEditorWidget->activateWindow();
+}
+
+
+void qtractorVst3Plugin::closeEditor (void)
+{
+	if (m_pEditorWidget)
+		m_pEditorWidget->hide();
+
+	IPlugView *plugView = m_pImpl->plugView();
+	if (plugView && plugView->removed() != kResultOk) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin::[%p]::closeEditor()"
+			" *** Failed to remove/detach window.", this);
+	#endif
+	}
+
+	if (m_pEditorWidget) {
+		delete m_pEditorWidget;
+		m_pEditorWidget = nullptr;
+	}
+
+	if (m_pEditorFrame) {
+		delete m_pEditorFrame;
+		m_pEditorFrame = nullptr;
+	}
+
+	m_pImpl->closeEditor();
+}
+
+
+// Our own editor widget/frame accessors.
+QWidget *qtractorVst3Plugin::editorWidget (void) const
+{
+	return m_pEditorWidget;
+}
+
+qtractorVst3Plugin::EditorFrame *qtractorVst3Plugin::editorFrame (void) const
+{
+	return m_pEditorFrame;
+}
+
+
+// Processor stuff...
+//
+
+void qtractorVst3Plugin::process_midi_in (
+	uint8_t *data, uint32_t size, uint32_t offset, uint16_t port )
+{
+	m_pImpl->process_midi_in(data, size, offset, port);
+}
+
+
+void qtractorVst3Plugin::process (
+	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
+{
+	// To process MIDI events, if any...
+	qtractorMidiManager *pMidiManager = nullptr;
+	const unsigned short iMidiIns  = midiIns();
+	const unsigned short iMidiOuts = midiOuts();
+	if (iMidiIns > 0 || iMidiOuts > 0)
+		pMidiManager = list()->midiManager();
+
+	// Process MIDI input stream, if any...
+	if (pMidiManager && m_pMidiParser) {
+		qtractorMidiBuffer *pMidiBuffer = pMidiManager->vst3_buffer_in();
+		snd_seq_event_t *pEv = pMidiBuffer->peek();
+		while (pEv) {
+			unsigned char midiData[c_iMaxMidiData];
+			unsigned char *pMidiData = &midiData[0];
+			long iMidiData = sizeof(midiData);
+			iMidiData = snd_midi_event_decode(m_pMidiParser,
+				pMidiData, iMidiData, pEv);
+			if (iMidiData < 0)
+				break;
+			m_pImpl->process_midi_in(pMidiData, iMidiData, pEv->time.tick, 0);
+			pEv = pMidiBuffer->next();
+		}
+	}
+
+	const unsigned short iChannels  = channels();
+	const unsigned short iAudioIns  = audioIns();
+	const unsigned short iAudioOuts = audioOuts();
+
+	unsigned short iIChannel = 0;
+	unsigned short iOChannel = 0;
+	unsigned short i;
+
+	// For each audio input port...
+	for (i = 0; i < iAudioIns; ++i) {
+		if (iIChannel < iChannels)
+			m_ppIBuffer[i] = ppIBuffer[iIChannel++];
+		else
+			m_ppIBuffer[i] = m_pfIDummy; // dummy input!
+	}
+
+	// For each audio output port...
+	for (i = 0; i < iAudioOuts; ++i) {
+		if (iOChannel < iChannels)
+			m_ppOBuffer[i] = ppOBuffer[iOChannel++];
+		else
+			m_ppOBuffer[i] = m_pfODummy; // dummy output!
+	}
+
+	// Run the main processor routine...
+	//
+	m_pImpl->process(m_ppIBuffer, m_ppOBuffer, nframes);
+
+	// Wrap dangling output channels?...
+	for (i = iOChannel; i < iChannels; ++i)
+		::memset(ppOBuffer[i], 0, nframes * sizeof(float));
+
+	// Process MIDI output stream, if any...
+	if (pMidiManager) {
+		if (iMidiOuts > 0) {
+			qtractorMidiBuffer *pMidiBuffer = pMidiManager->vst3_buffer_out();
+			EventList& events_out = m_pImpl->events_out();
+			const int32 nevents = events_out.getEventCount();
+			for (int32 i = 0; i < nevents; ++i) {
+				Vst::Event event;
+				if (events_out.getEvent(i, event) == kResultOk) {
+					snd_seq_event_t ev;
+					snd_seq_ev_clear(&ev);
+					switch (event.type) {
+					case Vst::Event::kNoteOnEvent:
+						ev.type = SND_SEQ_EVENT_NOTEON;
+						ev.data.note.channel  = event.noteOn.channel;
+						ev.data.note.note     = event.noteOn.pitch;
+						ev.data.note.velocity = event.noteOn.velocity;
+						break;
+					case Vst::Event::kNoteOffEvent:
+						ev.type = SND_SEQ_EVENT_NOTEOFF;
+						ev.data.note.channel  = event.noteOff.channel;
+						ev.data.note.note     = event.noteOff.pitch;
+						ev.data.note.velocity = event.noteOff.velocity;
+						break;
+					case Vst::Event::kPolyPressureEvent:
+						ev.type = SND_SEQ_EVENT_KEYPRESS;
+						ev.data.note.channel  = event.polyPressure.channel;
+						ev.data.note.note     = event.polyPressure.pitch;
+						ev.data.note.velocity = event.polyPressure.pressure;
+						break;
+					}
+					if (ev.type != SND_SEQ_EVENT_NONE)
+						pMidiBuffer->push(&ev, event.sampleOffset);
+				}
+			}
+			pMidiManager->vst3_buffer_swap();
+		} else {
+			pMidiManager->resetOutputBuffers();
+		}
+	}
+}
+
+
+// Transport BBT accessors...
+//
+void qtractorVst3Plugin::setTempo ( float tempo )
+{
+	Vst::ProcessContext& context = m_pImpl->context();
+	if (tempo > 0.0f) {
+		context.state |= Vst::ProcessContext::kTempoValid;
+		context.tempo = tempo;
+	} else {
+		context.state &= ~Vst::ProcessContext::kTempoValid;
+	}
+}
+
+
+float qtractorVst3Plugin::tempo (void) const
+{
+	const Vst::ProcessContext& context = m_pImpl->context();
+	if (context.state & Vst::ProcessContext::kTempoValid)
+		return context.tempo;
+	else
+		return 120.0f;
+}
+
+
+void qtractorVst3Plugin::setTimeSig ( int numerator, int denominator )
+{
+	Vst::ProcessContext& context = m_pImpl->context();
+	if (numerator > 0 && denominator > 0) {
+		context.state |= Vst::ProcessContext::kTimeSigValid;
+		context.timeSigNumerator = numerator;
+		context.timeSigDenominator = denominator;
+	} else {
+		context.state &= ~Vst::ProcessContext::kTimeSigValid;
+	}
+}
+
+
+int qtractorVst3Plugin::timeSigNumerator (void) const
+{
+	const Vst::ProcessContext& context = m_pImpl->context();
+	if (context.state & Vst::ProcessContext::kTimeSigValid)
+		return context.timeSigNumerator;
+	else
+		return 4;
+}
+
+
+int qtractorVst3Plugin::timeSigDenominator (void) const
+{
+	const Vst::ProcessContext& context = m_pImpl->context();
+	if (context.state & Vst::ProcessContext::kTimeSigValid)
+		return context.timeSigDenominator;
+	else
+		return 4;
+}
+
+
+// Provisional program/patch accessor.
+bool qtractorVst3Plugin::getProgram ( int iIndex, Program& program ) const
+{
+	const QList<QString>& programs
+		= m_pImpl->programs();
+
+	if (iIndex < 0 || iIndex >= programs.count())
+		return false;
+
+	// Map this to that...
+	program.bank = 0;
+	program.prog = iIndex;
+	program.name = programs.at(iIndex);
+
+	return true;
+}
+
+// Specific MIDI instrument selector.
+void qtractorVst3Plugin::selectProgram ( int iBank, int iProg )
+{
+	// HACK: We don't change program-preset when
+	// we're supposed to be multi-timbral...
+	if (list()->isMidiBus())
+		return;
+
+	m_pImpl->selectProgram(iBank, iProg);
+}
+
+
+// Plugin preset i/o (configuration from/to state files).
+bool qtractorVst3Plugin::loadPresetFile ( const QString& sFilename )
+{
+	return m_pImpl->loadPresetFile(sFilename);
+}
+
+
+bool qtractorVst3Plugin::savePresetFile ( const QString& sFilename )
+{
+	return m_pImpl->savePresetFile(sFilename);
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorVst3PluginParam::Impl -- VST3 plugin parameter interface impl.
+//
+
+class qtractorVst3PluginParam::Impl
+{
+public:
+
+	// Constructor.
+	Impl(const Vst::ParameterInfo& paramInfo)
+		: m_paramInfo(paramInfo) {}
+
+	// Accessors.
+	const Vst::ParameterInfo paramInfo() const
+		{ return m_paramInfo; }
+
+private:
+
+	// Instance members.
+	Vst::ParameterInfo m_paramInfo;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorVst3PluginParam -- VST3 plugin parameter interface decl.
+//
+
+// Constructor.
+qtractorVst3PluginParam::qtractorVst3PluginParam (
+	qtractorVst3Plugin *pPlugin, unsigned long iIndex )
+	: qtractorPluginParam(pPlugin, iIndex), m_pImpl(nullptr)
+{
+	const QList<Vst::ParameterInfo *>& paramInfos
+		= pPlugin->impl()->paramInfos();
+	if (iIndex < (unsigned long) paramInfos.count()) {
+		const Vst::ParameterInfo *paramInfo = paramInfos.at(iIndex);
+		m_pImpl = new Impl(*paramInfo);
+		setName(String(paramInfo->title).text8());
+		setMinValue(0.0f);
+		setMaxValue(1.0f);
+		setDefaultValue(paramInfo->defaultNormalizedValue);
+	}
+}
+
+
+// Destructor.
+qtractorVst3PluginParam::~qtractorVst3PluginParam (void)
+{
+	if (m_pImpl) delete m_pImpl;
+}
+
+
+// Port range hints predicate methods.
+bool qtractorVst3PluginParam::isBoundedBelow (void) const
+{
+	return true;
+}
+
+bool qtractorVst3PluginParam::isBoundedAbove (void) const
+{
+	return true;
+}
+
+bool qtractorVst3PluginParam::isDefaultValue (void) const
+{
+	return true;
+}
+
+bool qtractorVst3PluginParam::isLogarithmic (void) const
+{
+	return false;
+}
+
+bool qtractorVst3PluginParam::isSampleRate (void) const
+{
+	return false;
+}
+
+bool qtractorVst3PluginParam::isInteger (void) const
+{
+	if (m_pImpl)
+		return (m_pImpl->paramInfo().stepCount > 1);
+	else
+		return false;
+}
+
+bool qtractorVst3PluginParam::isToggled (void) const
+{
+	if (m_pImpl)
+		return (m_pImpl->paramInfo().stepCount == 1);
+	else
+		return false;
+}
+
+bool qtractorVst3PluginParam::isDisplay (void) const
+{
+	return true;
+}
+
+
+// Current display value.
+QString qtractorVst3PluginParam::display (void) const
+{
+	qtractorVst3PluginType *pVst3Type = nullptr;
+	if (plugin())
+		pVst3Type = static_cast<qtractorVst3PluginType *> (plugin()->type());
+	if (pVst3Type && m_pImpl) {
+		Vst::IEditController *controller = pVst3Type->impl()->controller();
+		if (controller) {
+			const Vst::ParamID id
+				= m_pImpl->paramInfo().id;
+			const Vst::ParamValue val
+				= Vst::ParamValue(value());
+			Vst::String128 str;
+			if (controller->getParamStringByValue(id, val, str) == kResultOk)
+				return QString::fromLocal8Bit(String(str).text8());
+		}
+	}
+
+	// Default parameter display value...
+	return qtractorPluginParam::display();
+}
+
 
 #endif	// CONFIG_VST3
 

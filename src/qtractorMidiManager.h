@@ -1,7 +1,7 @@
 // qtractorMidiManager.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,6 +27,13 @@
 
 #ifdef CONFIG_VST
 #include "qtractorVstPlugin.h"
+#ifndef CONFIG_MIDI_PARSER
+#define CONFIG_MIDI_PARSER 1
+#endif
+#endif
+
+#ifdef CONFIG_VST3
+#include "qtractorVst3Plugin.h"
 #ifndef CONFIG_MIDI_PARSER
 #define CONFIG_MIDI_PARSER 1
 #endif
@@ -242,6 +249,16 @@ public:
 	void vst_events_swap();
 #endif
 
+#ifdef CONFIG_VST3
+	// VST2 event buffer accessors...
+	qtractorMidiBuffer *vst3_buffer_in() const
+		{ return m_ppVst3MidiBuffers[m_iEventBuffer & 1]; }
+	qtractorMidiBuffer *vst3_buffer_out() const
+		{ return m_ppVst3MidiBuffers[(m_iEventBuffer + 1) & 1]; }
+	// Swap VST3 event buffers...
+	void vst3_buffer_swap();
+#endif
+
 #ifdef CONFIG_LV2_EVENT
 	// LV2 event buffer accessors...
 	LV2_Event_Buffer *lv2_events_in() const
@@ -387,6 +404,10 @@ private:
 #ifdef CONFIG_VST
 	VstMidiEvent       *m_ppVstMidiBuffers[2];
 	unsigned char      *m_ppVstBuffers[2];
+#endif
+
+#ifdef CONFIG_VST3
+	qtractorMidiBuffer *m_ppVst3MidiBuffers[2];
 #endif
 
 #ifdef CONFIG_LV2_EVENT

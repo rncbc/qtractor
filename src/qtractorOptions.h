@@ -214,6 +214,7 @@ public:
 	QStringList ladspaPaths;
 	QStringList dssiPaths;
 	QStringList vstPaths;
+	QStringList vst3Paths;
 	QStringList lv2Paths;
 
 	QString sLv2PresetDir;
@@ -235,6 +236,7 @@ public:
 	int  iDummyLadspaHash;
 	int  iDummyDssiHash;
 	int  iDummyVstHash;
+	int  iDummyVst3Hash;
 	int  iDummyLv2Hash;
 
 	// LV2 plugin specific options.

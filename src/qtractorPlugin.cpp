@@ -183,6 +183,9 @@ qtractorPluginType::Hint qtractorPluginType::hintFromText (
 	if (sText == "VST")
 		return Vst;
 	else
+	if (sText == "VST3")
+		return Vst3;
+	else
 	if (sText == "LV2")
 		return Lv2;
 	else
@@ -206,6 +209,9 @@ QString qtractorPluginType::textFromHint (
 	else
 	if (typeHint == Vst)
 		return "VST";
+	else
+	if (typeHint == Vst3)
+		return "VST3";
 	else
 	if (typeHint == Lv2)
 		return "LV2";

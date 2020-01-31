@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -745,7 +745,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		= static_cast<qtractorVstPluginType *> (type());
 	if (pVstType == nullptr)
 		return;
-		
+
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
 	const unsigned short iInstances
@@ -826,7 +826,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
 	}
 
-	// Setup all those instance alright...
+	// Setup all those instances alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// And now all other things as well...
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];

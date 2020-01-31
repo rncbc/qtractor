@@ -1,7 +1,7 @@
 // qtractor_plugin_scan.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -227,6 +227,84 @@ private:
 };
 
 #endif	// CONFIG_VST
+
+
+#ifdef CONFIG_VST3
+
+//----------------------------------------------------------------------
+// class qtractor_vst3_scan -- VST3 plugin (bare bones) interface.
+//
+
+class qtractor_vst3_scan
+{
+public:
+
+	// Constructor.
+	qtractor_vst3_scan();
+
+	// destructor.
+	~qtractor_vst3_scan();
+
+	// File loader.
+	bool open(const QString& sFilename);
+	bool open_descriptor(unsigned long iIndex);
+	void close_descriptor();
+	void close();
+
+	// Properties.
+	bool isOpen() const;
+
+	// Properties.
+	const QString& name() const
+		{ return m_sName; }
+
+	unsigned int uniqueID() const
+		{ return m_iUniqueID; }
+
+	int controlIns() const
+		{ return m_iControlIns; }
+	int controlOuts() const
+		{ return m_iControlOuts; }
+
+	int audioIns() const
+		{ return m_iAudioIns; }
+	int audioOuts() const
+		{ return m_iAudioOuts; }
+
+	int midiIns() const
+		{ return m_iMidiIns; }
+	int midiOuts() const
+		{ return m_iMidiOuts; }
+
+	bool hasEditor() const
+		{ return m_bEditor; }
+
+protected:
+
+	// Forward decls.
+	class Impl;
+
+	// Cleaner/wiper.
+	void clear();
+
+private:
+
+	// Instance variables.
+	Impl         *m_pImpl;
+
+	QString       m_sName;
+	unsigned long m_iIndex;
+	unsigned int  m_iUniqueID;
+	int           m_iControlIns;
+	int           m_iControlOuts;
+	int           m_iAudioIns;
+	int           m_iAudioOuts;
+	int           m_iMidiIns;
+	int           m_iMidiOuts;
+	bool          m_bEditor;
+};
+
+#endif	// CONFIG_VST3
 
 
 #endif	// __qtractor_plugin_scan_h

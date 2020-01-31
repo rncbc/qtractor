@@ -24,9 +24,196 @@
 
 #include "qtractorPlugin.h"
 
-//	.
-//	.
-//	.
+#include <QString>
+#include <QHash>
+
+#include <alsa/asoundlib.h>
+
+
+// Forward decl.
+class QWidget;
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3PluginType -- VST3 plugin meta-interface decl.
+//
+
+class qtractorVst3PluginType : public qtractorPluginType
+{
+public:
+
+	// Constructor.
+	qtractorVst3PluginType(qtractorPluginFile *pFile, unsigned long iIndex);
+
+	// Destructor.
+	~qtractorVst3PluginType();
+
+	// Factory method (static)
+	static qtractorVst3PluginType *createType (
+		qtractorPluginFile *pFile, unsigned long iIndex);
+
+	// Executive methods.
+	bool open();
+	void close();
+
+	// It can only be one...
+	unsigned short instances (
+		unsigned short iChannels, bool /*bMidi*/) const
+		{ return (iChannels > 0 ? 1 : 0); }
+
+	// Forward decls.
+	class Impl;
+
+	Impl *impl() const { return m_pImpl; }
+
+protected:
+
+	void clear();
+
+private:
+
+	// Instance variables.
+	Impl *m_pImpl;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorVst3Plugin -- VST3 plugin instance interface decl.
+//
+
+class qtractorVst3Plugin : public qtractorPlugin
+{
+public:
+
+	// Constructor.
+	qtractorVst3Plugin(qtractorPluginList *pList,
+		qtractorVst3PluginType *pType);
+
+	// Destructor.
+	~qtractorVst3Plugin();
+
+	// Channel/instance number accessors.
+	void setChannels(unsigned short iChannels);
+
+	// Do the actual (de)activation.
+	void activate();
+	void deactivate();
+
+	// Open/close editor widget.
+	void openEditor(QWidget *pParent = nullptr);
+	void closeEditor();
+
+	// Our own editor widget accessor.
+	QWidget *editorWidget() const;
+
+	// Processor stuff...
+	//
+	void process_midi_in(
+		uint8_t *data, uint32_t size, uint32_t offset, uint16_t port);
+	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
+
+	// Transport BBT accessors...
+	//
+	void setTempo(float tempo);
+	float tempo() const;
+
+	void setTimeSig(int numerator, int denominator);
+	int timeSigNumerator() const;
+	int timeSigDenominator() const;
+
+	// Provisional program/patch accessor.
+	bool getProgram(int iIndex, Program& program) const;
+
+	// Specific MIDI instrument selector.
+	void selectProgram(int iBank, int iProg);
+
+	// Plugin preset i/o (configuration from/to state files).
+	bool loadPresetFile(const QString& sFilename);
+	bool savePresetFile(const QString& sFilename);
+
+	// Forward decls.
+	class Impl;
+
+	Impl *impl() const { return m_pImpl; }
+
+protected:
+
+	// Forward decls.
+	class Handler;
+	class RunLoop;
+	class EditorFrame;
+	class EditorWidget;
+	class ParamQueue;
+	class ParamChanges;
+	class ParamTransfer;
+	class EventList;
+	class Stream;
+
+	// Plugin instance initializer.
+	void initialize();
+
+	// Internal accessors.
+	EditorFrame *editorFrame() const;
+
+private:
+
+	// Instance variables.
+	Impl *m_pImpl;
+
+	EditorFrame  *m_pEditorFrame;
+	EditorWidget *m_pEditorWidget;
+
+	// Audio I/O buffer pointers.
+	float **m_ppIBuffer;
+	float **m_ppOBuffer;
+
+	// Dummy I/O buffers.
+	float *m_pfIDummy;
+	float *m_pfODummy;
+
+	// MIDI Event decoder.
+	snd_midi_event_t *m_pMidiParser;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorVst3PluginParam -- VST3 plugin parameter interface decl.
+//
+class qtractorVst3PluginParam : public qtractorPluginParam
+{
+public:
+
+	// Constructor.
+	qtractorVst3PluginParam(
+		qtractorVst3Plugin *pPlugin, unsigned long iIndex);
+
+	// Destructor.
+	~qtractorVst3PluginParam();
+
+	// Port range hints predicate methods.
+	bool isBoundedBelow() const;
+	bool isBoundedAbove() const;
+	bool isDefaultValue() const;
+	bool isLogarithmic() const;
+	bool isSampleRate() const;
+	bool isInteger() const;
+	bool isToggled() const;
+	bool isDisplay() const;
+
+	// Current display value.
+	QString display() const;
+
+	// Forward decls.
+	class Impl;
+
+	Impl *impl() const { return m_pImpl; }
+
+private:
+
+	// Instance variables.
+	Impl *m_pImpl;
+};
+
 
 #endif  // __qtractorVst3Plugin_h
 

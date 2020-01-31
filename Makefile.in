@@ -111,6 +111,7 @@ headers = \
 	src/qtractorTrackView.h \
 	src/qtractorTracks.h \
 	src/qtractorVstPlugin.h \
+	src/qtractorVst3Plugin.h \
 	src/qtractorWsolaTimeStretcher.h \
 	src/qtractorZipFile.h \
 	src/qtractorBusForm.h \
@@ -231,6 +232,7 @@ sources = \
 	src/qtractorTrackView.cpp \
 	src/qtractorTracks.cpp \
 	src/qtractorVstPlugin.cpp \
+	src/qtractorVst3Plugin.cpp \
 	src/qtractorWsolaTimeStretcher.cpp \
 	src/qtractorZipFile.cpp \
 	src/qtractorBusForm.cpp \
