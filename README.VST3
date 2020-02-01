@@ -1,9 +1,12 @@
 Native VST3 plug-in support
 --------------------------
 
-As was for VST, standing for old VST 2.x, building for native VST3
-support is not that easy. First of all you'll need to download the
-most recent VST3 SDK, from its official site:
+Unlikely to what it was for VST, that meaning for the old VST 2.x,
+building for the newer VST3 plug-in support is probably easier and
+a lot less license-encumbered, if you know what I mean ;).
+
+You still need to download the most recent VST3 SDK from the official
+site though. Let's recapitulate:
 
   Steinberg Media Technologies GmbH
   http://www.steinberg.net
@@ -12,32 +15,35 @@ most recent VST3 SDK, from its official site:
   https://www.steinberg.net/en/company/developers.html
 
 Once downloaded and unzipped you may proceed to build for VST3 plug-in
-support with the following build spell:
+support, with the following magic spell:
 
   ./configure --with-vst3sdk=/path/to/VST_SDK/VST3_SDK
 
 
-Or you may choose to go the GitHub's route instead:
+Or, you may choose to go with the GitHub's route instead:
 
   GitHub - VST 3 Plug-In SDK
   https://github.com/steinbergmedia/vst3sdk
 
-Please note that in the later case you'll only get the VST3 SDK and only,
-that meaning you won't get any VST2.x legacy stuff as you probably still
-have with the former. 
+Please note that, in the later case, you'll get the VST3 SDK and only;
+you won't get the VST2.x legacy stuff whatsoever, as you probably, just
+probably, still get with the former route.
 
-Choose a permanent location on your file-system do clone the source code
-tree, while taking care of all the sub-modules as well:
+You may now choose your permanent location on your file-system to clone
+the source code tree and proceed, while taking care of all sub-modules
+as well:
 
   git --recursive clone https://github.com/steinbergmedia/vst3sdk
 
-Similarly, as before, to start the build from this point:
+Similarly, as before, you may now proceed with the build, starting from
+this point:
 
   ./configure --with-vst3sdk=/path/to/vst3sdk
 
 
-Lest to say, this is all very experimental stuffual disclaimer follows:
-there is NO GUARANTEE WHATSOEVER, whether it will ever work, if at all.
+Lest to say, that this is all very experimental stuff, so the (in)formal
+disclaimer applies, as always: there is NO GUARANTEE WHATSOEVER, whether
+it'll ever work for you or to anybody else.
 
 You've been advised ;).
 
