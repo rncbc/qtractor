@@ -25,7 +25,7 @@ VST3SDK = @ac_vst3sdk@
 	LIBS += -ldl
 	SOURCES += \
 	$${VST3SDK}/base/source/baseiids.cpp \
-	$${VST3SDK}/base/source/fstring.cpp \
+#	$${VST3SDK}/base/source/fstring.cpp \
 	$${VST3SDK}/base/source/fobject.cpp \
 	$${VST3SDK}/base/thread/source/flock.cpp \
 	$${VST3SDK}/public.sdk/source/common/commoniids.cpp \

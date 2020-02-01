@@ -61,6 +61,9 @@ public:
 		unsigned short iChannels, bool /*bMidi*/) const
 		{ return (iChannels > 0 ? 1 : 0); }
 
+	// Instance cached-deferred accessors.
+	const QString& aboutText();
+
 	// Forward decls.
 	class Impl;
 

@@ -644,7 +644,7 @@ bool qtractorVstPluginType::vst_canDo ( const char *pszCanDo ) const
 }
 
 
-// Instance cached-deferred accesors.
+// Instance cached-deferred accessors.
 const QString& qtractorVstPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {

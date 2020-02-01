@@ -46,7 +46,6 @@
 #include "pluginterfaces/base/ibstream.h"
 
 #include "base/source/fobject.h"
-#include "base/source/fstring.h"
 
 #include <QWindow>
 #include <QWidget>
@@ -64,6 +63,16 @@
 
 using namespace Steinberg;
 using namespace Linux;
+
+
+//-----------------------------------------------------------------------------
+// A Vst::String128 to QString converter.
+//
+static inline
+QString fromTChar ( const Vst::TChar *str )
+{
+	return QString::fromUtf16(reinterpret_cast<const ushort *> (str));
+}
 
 
 //-----------------------------------------------------------------------------
@@ -333,8 +342,7 @@ public:
 	tresult PLUGIN_API setString (AttrID aid, const Vst::TChar *string) override
 	{
 		removeAttrID(aid);
-		m_list.insert(aid, new Attribute(string,
-			String(const_cast<Vst::TChar*> (string)).length ()));
+		m_list.insert(aid, new Attribute(string, fromTChar(string).length()));
 		return kResultTrue;
 	}
 
@@ -528,8 +536,10 @@ qtractorVst3PluginHost::~qtractorVst3PluginHost (void)
 //
 tresult PLUGIN_API qtractorVst3PluginHost::getName ( Vst::String128 name )
 {
-	String str("qtractorVst3PluginHost");
-	str.copyTo16(name, 0, 127);
+	const QString str("qtractorVst3PluginHost");
+	const int nsize = qMin(str.length(), 127);
+	::memcpy(name, str.utf16(), nsize * sizeof(Vst::TChar));
+	name[nsize] = 0;
 	return kResultOk;
 }
 
@@ -1023,6 +1033,22 @@ void qtractorVst3PluginType::clear (void)
 	m_iMidiOuts  = 0;
 
 	m_bEditor = false;
+}
+
+
+// Instance cached-deferred accessors.
+const QString& qtractorVst3PluginType::aboutText (void)
+{
+	if (m_sAboutText.isEmpty()) {
+		const PClassInfo& classInfo = m_pImpl->classInfo();
+		m_sAboutText += QObject::tr("Name: ");
+		m_sAboutText += QString::fromLocal8Bit(classInfo.name);
+		m_sAboutText += '\n';
+		m_sAboutText += QObject::tr("Category: ");
+		m_sAboutText += QString::fromLocal8Bit(classInfo.category);
+	}
+
+	return m_sAboutText;
 }
 
 
@@ -1966,8 +1992,6 @@ qtractorVst3Plugin::Impl::~Impl (void)
 	m_handler = nullptr;
 
 	clear();
-
-	delete m_pType;
 }
 
 
@@ -2037,7 +2061,7 @@ void qtractorVst3Plugin::Impl::initialize (void)
 							Vst::String128 name;
 							if (unitInfos->getProgramName(
 									programListInfo.id, k, name) == kResultOk)
-								m_programs.append(String(name).text8());
+								m_programs.append(fromTChar(name));
 						}
 						break;
 					}
@@ -2053,7 +2077,7 @@ void qtractorVst3Plugin::Impl::initialize (void)
 				Vst::String128 name;
 				if (controller->getParamStringByValue(
 						m_programParamInfo.id, value, name) == kResultOk)
-					m_programs.append(String(name).text8());
+					m_programs.append(fromTChar(name));
 			}
 		}
 	}
@@ -3095,7 +3119,7 @@ qtractorVst3PluginParam::qtractorVst3PluginParam (
 	if (iIndex < (unsigned long) paramInfos.count()) {
 		const Vst::ParameterInfo *paramInfo = paramInfos.at(iIndex);
 		m_pImpl = new Impl(*paramInfo);
-		setName(String(paramInfo->title).text8());
+		setName(fromTChar(paramInfo->title));
 		setMinValue(0.0f);
 		setMaxValue(1.0f);
 		setDefaultValue(paramInfo->defaultNormalizedValue);
@@ -3173,7 +3197,7 @@ QString qtractorVst3PluginParam::display (void) const
 				= Vst::ParamValue(value());
 			Vst::String128 str;
 			if (controller->getParamStringByValue(id, val, str) == kResultOk)
-				return QString::fromLocal8Bit(String(str).text8());
+				return fromTChar(str);
 		}
 	}
 

@@ -93,7 +93,7 @@ public:
 	int vst_dispatch(
 		long opcode, long index, long value, void *ptr, float opt) const;
 
-	// Instance cached-deferred accesors.
+	// Instance cached-deferred accessors.
 	const QString& aboutText();
 
 protected:

@@ -917,8 +917,6 @@ static void qtractor_vst_scan_file ( const QString& sFilename )
 
 #include "pluginterfaces/gui/iplugview.h"
 
-#include "base/source/fstring.h"
-
 #include <dlfcn.h>
 
 //-----------------------------------------------------------------------------
@@ -947,8 +945,10 @@ public:
 	//
 	tresult PLUGIN_API getName (Vst::String128 name) override
 	{
-		String str("qtractor_vst3_scan_host");
-		str.copyTo16(name, 0, 127);
+		const QString str("qtractor_vst3_scan_host");
+		const int nsize = qMin(str.length(), 127);
+		::memcpy(name, str.utf16(), nsize * sizeof(Vst::TChar));
+		name[nsize] = 0;
 		return kResultOk;
 	}
 
