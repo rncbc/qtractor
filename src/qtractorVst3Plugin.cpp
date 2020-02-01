@@ -2601,6 +2601,29 @@ void qtractorVst3Plugin::EditorWidget::closeEvent ( QCloseEvent *pCloseEvent )
 }
 
 
+//----------------------------------------------------------------------------
+// qtractorVst3PluginParam::Impl -- VST3 plugin parameter interface impl.
+//
+
+class qtractorVst3PluginParam::Impl
+{
+public:
+
+	// Constructor.
+	Impl(const Vst::ParameterInfo& paramInfo)
+		: m_paramInfo(paramInfo) {}
+
+	// Accessors.
+	const Vst::ParameterInfo paramInfo() const
+		{ return m_paramInfo; }
+
+private:
+
+	// Instance members.
+	Vst::ParameterInfo m_paramInfo;
+};
+
+
 //----------------------------------------------------------------------
 // class qtractorVst3Plugin -- VST3 plugin interface impl.
 //
@@ -2772,6 +2795,28 @@ void qtractorVst3Plugin::activate (void)
 void qtractorVst3Plugin::deactivate (void)
 {
 	m_pImpl->deactivate();
+}
+
+
+// Parameter update method.
+void qtractorVst3Plugin::updateParam (
+	qtractorPluginParam *pParam, float fValue, bool bUpdate )
+{
+	qtractorVst3PluginParam *pVst3Param
+		= static_cast<qtractorVst3PluginParam *> (pParam);
+	if (pVst3Param == nullptr)
+		return;
+	if (pVst3Param->impl() == nullptr)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin[%p]::updateParam(%lu, %g, %d)",
+		this, pParam->index(), fValue, int(bUpdate));
+#endif
+
+	const Vst::ParamID id = pVst3Param->impl()->paramInfo().id;
+	const Vst::ParamValue value = Vst::ParamValue(fValue);
+	m_pImpl->setParameter(id, value, 0);
 }
 
 
@@ -3080,29 +3125,6 @@ bool qtractorVst3Plugin::savePresetFile ( const QString& sFilename )
 {
 	return m_pImpl->savePresetFile(sFilename);
 }
-
-
-//----------------------------------------------------------------------------
-// qtractorVst3PluginParam::Impl -- VST3 plugin parameter interface impl.
-//
-
-class qtractorVst3PluginParam::Impl
-{
-public:
-
-	// Constructor.
-	Impl(const Vst::ParameterInfo& paramInfo)
-		: m_paramInfo(paramInfo) {}
-
-	// Accessors.
-	const Vst::ParameterInfo paramInfo() const
-		{ return m_paramInfo; }
-
-private:
-
-	// Instance members.
-	Vst::ParameterInfo m_paramInfo;
-};
 
 
 //----------------------------------------------------------------------------

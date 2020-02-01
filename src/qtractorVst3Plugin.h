@@ -102,6 +102,9 @@ public:
 	void activate();
 	void deactivate();
 
+	// Parameter update method.
+	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+
 	// Open/close editor widget.
 	void openEditor(QWidget *pParent = nullptr);
 	void closeEditor();
