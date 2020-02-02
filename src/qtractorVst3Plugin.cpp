@@ -991,6 +991,7 @@ bool qtractorVst3PluginType::open (void)
 	// Properties...
 	const PClassInfo& classInfo = m_pImpl->classInfo();
 	m_sName = QString::fromLocal8Bit(classInfo.name);
+	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
 	m_iUniqueID = qHash(QString::fromLocal8Bit(classInfo.cid));
 
 	m_iAudioIns  = m_pImpl->numChannels(Vst::kAudio, Vst::kInput);
@@ -1014,6 +1015,7 @@ bool qtractorVst3PluginType::open (void)
 		const int32 nparams = controller->getParameterCount();
 		for (int32 i = 0; i < nparams; ++i) {
 			Vst::ParameterInfo paramInfo;
+			::memset(&paramInfo, 0, sizeof(Vst::ParameterInfo));
 			if (controller->getParameterInfo(i, paramInfo) == kResultOk) {
 				if (paramInfo.flags & Vst::ParameterInfo::kIsReadOnly)
 					++m_iControlOuts;
@@ -1548,12 +1550,14 @@ public:
 	void setParameter (
 		Vst::ParamID id, Vst::ParamValue value, uint32_t offset);
 
+	// Total parameter count.
+	int32 parameterCount() const;
+
 	// Get current parameter value.
 	Vst::ParamValue getParameter (Vst::ParamID id) const;
 
-	// Program names list accessor.
-	const QList<Vst::ParameterInfo *>& paramInfos() const
-		{ return m_paramInfos; }
+	// Parameter info accessors.
+	bool getParameterInfo(int32 index, Vst::ParameterInfo& paramInfo) const;
 
 	// Program names list accessor.
 	const QList<QString>& programs() const
@@ -1597,9 +1601,6 @@ private:
 
 	EventList m_events_in;
 	EventList m_events_out;
-
-	// Parameter meta-data.
-	QList<Vst::ParameterInfo *> m_paramInfos;
 
 	// Program-change parameter info.
 	Vst::ParameterInfo m_programParamInfo;
@@ -2045,10 +2046,8 @@ void qtractorVst3Plugin::Impl::initialize (void)
 		const int32 nparams = controller->getParameterCount();
 		for (int32 i = 0; i < nparams; ++i) {
 			Vst::ParameterInfo paramInfo;
+			::memset(&paramInfo, 0, sizeof(Vst::ParameterInfo));
 			if (controller->getParameterInfo(i, paramInfo) == kResultOk) {
-				Vst::ParameterInfo *pParamInfo = new Vst::ParameterInfo();
-				*pParamInfo = paramInfo;
-				m_paramInfos.append(pParamInfo);
 				if (m_programParamInfo.unitId != Vst::UnitID(-1))
 					continue;
 				if (paramInfo.flags & Vst::ParameterInfo::kIsProgramChange)
@@ -2394,6 +2393,29 @@ Vst::ParamValue qtractorVst3Plugin::Impl::getParameter ( Vst::ParamID id ) const
 }
 
 
+// Total parameter count.
+int32 qtractorVst3Plugin::Impl::parameterCount (void) const
+{
+	Vst::IEditController *controller = m_pType->impl()->controller();
+	if (controller)
+		return controller->getParameterCount();
+	else
+		return 0;
+}
+
+
+// Parameter info accessor
+bool qtractorVst3Plugin::Impl::getParameterInfo (
+	int32 index, Vst::ParameterInfo& paramInfo ) const
+{
+	Vst::IEditController *controller = m_pType->impl()->controller();
+	if (controller)
+		return (controller->getParameterInfo(index, paramInfo) == kResultOk);
+	else
+		return false;
+}
+
+
 // Program-change selector.
 void qtractorVst3Plugin::Impl::selectProgram ( int iBank, int iProg )
 {
@@ -2486,9 +2508,6 @@ bool qtractorVst3Plugin::Impl::getState ( QByteArray& data )
 void qtractorVst3Plugin::Impl::clear (void)
 {
 	::memset(&m_context, 0, sizeof(Vst::ProcessContext));
-
-	qDeleteAll(m_paramInfos);
-	m_paramInfos.clear();
 
 	::memset(&m_programParamInfo, 0, sizeof(Vst::ParameterInfo));
 	m_programParamInfo.id = Vst::kNoParamId;
@@ -2623,7 +2642,7 @@ public:
 		: m_paramInfo(paramInfo) {}
 
 	// Accessors.
-	const Vst::ParameterInfo paramInfo() const
+	const Vst::ParameterInfo& paramInfo() const
 		{ return m_paramInfo; }
 
 private:
@@ -2690,17 +2709,18 @@ void qtractorVst3Plugin::initialize (void)
 	if (iAudioOuts > 0)
 		m_ppOBuffer = new float * [iAudioOuts];
 
-	const QList<Vst::ParameterInfo *>& paramInfos = m_pImpl->paramInfos();
-	const int32 nparams = paramInfos.count();
+	const int32 nparams = m_pImpl->parameterCount();
 #if CONFIG_DEBUG
 	qDebug(" --- Parameters (nparams = %d) ---", nparams);
 #endif
-	unsigned long iIndex = 0;
-	foreach (const Vst::ParameterInfo *paramInfo, paramInfos) {
-		if ( (paramInfo->flags & Vst::ParameterInfo::kCanAutomate) &&
-			!(paramInfo->flags & Vst::ParameterInfo::kIsReadOnly))
-			addParam(new qtractorVst3PluginParam(this, iIndex));
-		++iIndex;
+	for (int32 i = 0; i < nparams; ++i) {
+		Vst::ParameterInfo paramInfo;
+		::memset(&paramInfo, 0, sizeof(Vst::ParameterInfo));
+		if (m_pImpl->getParameterInfo(i, paramInfo)) {
+			if ( (paramInfo.flags & Vst::ParameterInfo::kCanAutomate) &&
+				!(paramInfo.flags & Vst::ParameterInfo::kIsReadOnly))
+				addParam(new qtractorVst3PluginParam(this, i));
+		}
 	}
 
 	if (midiIns() > 0 &&
@@ -3263,6 +3283,10 @@ void qtractorVst3Plugin::selectProgram ( int iBank, int iProg )
 // Plugin preset i/o (configuration from/to state files).
 bool qtractorVst3Plugin::loadPresetFile ( const QString& sFilename )
 {
+	const QString& sExt = QFileInfo(sFilename).suffix().toLower();
+	if (sExt == "qtx")
+		return qtractorPlugin::loadPresetFile(sFilename);
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3Plugin[%p]::loadPresetFile(\"%s\")",
 		this, sFilename.toUtf8().constData());
@@ -3291,6 +3315,10 @@ bool qtractorVst3Plugin::loadPresetFile ( const QString& sFilename )
 
 bool qtractorVst3Plugin::savePresetFile ( const QString& sFilename )
 {
+	const QString& sExt = QFileInfo(sFilename).suffix().toLower();
+	if (sExt == "qtx")
+		return qtractorPlugin::savePresetFile(sFilename);
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3Plugin[%p]::savePresetFile(\"%s\")",
 		this, sFilename.toUtf8().constData());
@@ -3334,15 +3362,17 @@ qtractorVst3PluginParam::qtractorVst3PluginParam (
 	qtractorVst3Plugin *pPlugin, unsigned long iIndex )
 	: qtractorPluginParam(pPlugin, iIndex), m_pImpl(nullptr)
 {
-	const QList<Vst::ParameterInfo *>& paramInfos
-		= pPlugin->impl()->paramInfos();
-	if (iIndex < (unsigned long) paramInfos.count()) {
-		const Vst::ParameterInfo *paramInfo = paramInfos.at(iIndex);
-		m_pImpl = new Impl(*paramInfo);
-		setName(fromTChar(paramInfo->title));
-		setMinValue(0.0f);
-		setMaxValue(1.0f);
-		setDefaultValue(paramInfo->defaultNormalizedValue);
+	const unsigned long iMaxIndex = pPlugin->impl()->parameterCount();
+	if (iIndex < iMaxIndex) {
+		Vst::ParameterInfo paramInfo;
+		::memset(&paramInfo, 0, sizeof(Vst::ParameterInfo));
+		if (pPlugin->impl()->getParameterInfo(iIndex, paramInfo)) {
+			m_pImpl = new Impl(paramInfo);
+			setName(fromTChar(paramInfo.title));
+			setMinValue(0.0f);
+			setMaxValue(1.0f);
+			setDefaultValue(paramInfo.defaultNormalizedValue);
+		}
 	}
 }
 
@@ -3405,11 +3435,11 @@ bool qtractorVst3PluginParam::isDisplay (void) const
 // Current display value.
 QString qtractorVst3PluginParam::display (void) const
 {
-	qtractorVst3PluginType *pVst3Type = nullptr;
+	qtractorVst3PluginType *pType = nullptr;
 	if (plugin())
-		pVst3Type = static_cast<qtractorVst3PluginType *> (plugin()->type());
-	if (pVst3Type && m_pImpl) {
-		Vst::IEditController *controller = pVst3Type->impl()->controller();
+		pType = static_cast<qtractorVst3PluginType *> (plugin()->type());
+	if (pType && m_pImpl) {
+		Vst::IEditController *controller = pType->impl()->controller();
 		if (controller) {
 			const Vst::ParamID id
 				= m_pImpl->paramInfo().id;
