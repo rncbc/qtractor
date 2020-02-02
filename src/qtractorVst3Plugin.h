@@ -108,6 +108,9 @@ public:
 	// Parameters update method.
 	void updateParamValues(bool bUpdate);
 
+	// Parameter finder (by id).
+	qtractorPluginParam *findParamId(int id) const;
+
 	// Configuration state stuff.
 	void configure(const QString& sKey, const QString& sValue);
 
@@ -200,6 +203,9 @@ private:
 
 	// MIDI Event decoder.
 	snd_midi_event_t *m_pMidiParser;
+
+	// Identififier-parameter map.
+	QHash<int, qtractorPluginParam *> m_paramIds;
 };
 
 

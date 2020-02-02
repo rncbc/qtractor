@@ -1668,6 +1668,9 @@ public:
 	#ifdef CONFIG_DEBUG
 		qDebug("vst3_text_plugin::Handler[%p]::performEdit(%d, %g)", this, int(id), float(value));
 	#endif
+		qtractorPluginParam *pParam = m_pPlugin->findParamId(int(id));
+		if (pParam)
+			pParam->updateValue(float(value), false);
 		return kResultOk;
 	}
 
@@ -2780,8 +2783,12 @@ void qtractorVst3Plugin::initialize (void)
 		::memset(&paramInfo, 0, sizeof(Vst::ParameterInfo));
 		if (m_pImpl->getParameterInfo(i, paramInfo)) {
 			if ( (paramInfo.flags & Vst::ParameterInfo::kCanAutomate) &&
-				!(paramInfo.flags & Vst::ParameterInfo::kIsReadOnly))
-				addParam(new qtractorVst3PluginParam(this, i));
+				!(paramInfo.flags & Vst::ParameterInfo::kIsReadOnly)) {
+				qtractorVst3PluginParam *pParam
+					= new qtractorVst3PluginParam(this, i);
+				m_paramIds.insert(int(paramInfo.id), pParam);
+				addParam(pParam);
+			}
 		}
 	}
 
@@ -2932,6 +2939,13 @@ void qtractorVst3Plugin::updateParamValues ( bool bUpdate )
 			}
 		}
 	}
+}
+
+
+// Parameter finder (by id).
+qtractorPluginParam *qtractorVst3Plugin::findParamId ( int id ) const
+{
+	return m_paramIds.value(id, nullptr);
 }
 
 
