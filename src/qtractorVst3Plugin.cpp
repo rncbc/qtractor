@@ -1516,14 +1516,10 @@ class qtractorVst3Plugin::Impl
 public:
 
 	// Constructor.
-	Impl (qtractorVst3PluginType *pType);
+	Impl (qtractorVst3Plugin *pPlugin);
 
 	// Destructor.
 	~Impl ();
-
-	// Accessor.
-	qtractorVst3PluginType *type() const
-		{ return m_pType; }
 
 	// Do the actual (de)activation.
 	void activate();
@@ -1585,7 +1581,7 @@ protected:
 private:
 
 	// Instance variables.
-	qtractorVst3PluginType *m_pType;
+	qtractorVst3Plugin *m_pPlugin;
 
 	IPtr<Handler>   m_handler;
 	IPtr<IPlugView> m_plugView;
@@ -1649,7 +1645,8 @@ class qtractorVst3Plugin::Handler
 public:
 
 	// Constructor.
-	Handler (Impl *pImpl) : m_pImpl(pImpl) { FUNKNOWN_CTOR }
+	Handler (qtractorVst3Plugin *pPlugin)
+		: m_pPlugin(pPlugin) { FUNKNOWN_CTOR }
 
 	// Destructor.
 	virtual ~Handler () { FUNKNOWN_DTOR }
@@ -1687,9 +1684,12 @@ public:
 	#ifdef CONFIG_DEBUG
 		qDebug("vst3_text_plugin::Handler[%p]::restartComponent(0x%08x)", this, flags);
 	#endif
-		if (flags & (Vst::kReloadComponent | Vst::kParamValuesChanged)) {
-			m_pImpl->deactivate();
-			m_pImpl->activate();
+		if (flags & Vst::kParamValuesChanged)
+			m_pPlugin->updateParamValues(false);
+		else
+		if (flags & Vst::kReloadComponent) {
+			m_pPlugin->impl()->deactivate();
+			m_pPlugin->impl()->activate();
 		}
 		return kResultOk;
 	}
@@ -1703,12 +1703,12 @@ public:
 		{ return (other ? kResultOk : kInvalidArgument); }
 
 	tresult PLUGIN_API notify (Vst::IMessage *message) override
-		{ return m_pImpl->notify(message); }
+		{ return m_pPlugin->impl()->notify(message); }
 
 private:
 
 	// Instance client.
-	Impl *m_pImpl;
+	qtractorVst3Plugin *m_pPlugin;
 };
 
 
@@ -1979,8 +1979,8 @@ IMPLEMENT_FUNKNOWN_METHODS (qtractorVst3Plugin::Stream, IBStream, IBStream::iid)
 //
 
 // Constructor.
-qtractorVst3Plugin::Impl::Impl ( qtractorVst3PluginType *pType )
-	: m_pType(pType), m_handler(nullptr), m_plugView(nullptr),
+qtractorVst3Plugin::Impl::Impl ( qtractorVst3Plugin *pPlugin )
+	: m_pPlugin(pPlugin), m_handler(nullptr), m_plugView(nullptr),
 		m_processor(nullptr), m_processing(false)
 {
 	initialize();
@@ -1994,12 +1994,14 @@ qtractorVst3Plugin::Impl::~Impl (void)
 
 	deactivate();
 
-	if (m_handler) {
-		Vst::IComponent *component = m_pType->impl()->component();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (m_handler && pType) {
+		Vst::IComponent *component = pType->impl()->component();
 		FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
 		if (component_cp)
 			component_cp->disconnect(m_handler);
-		Vst::IEditController *controller = m_pType->impl()->controller();
+		Vst::IEditController *controller = pType->impl()->controller();
 		FUnknownPtr<Vst::IConnectionPoint> controller_cp(controller);
 		if (controller_cp)
 			controller_cp->disconnect(m_handler);
@@ -2017,16 +2019,21 @@ void qtractorVst3Plugin::Impl::initialize (void)
 {
 	clear();
 
-	if (!m_pType->open())
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
 		return;
 
-	Vst::IComponent *component = m_pType->impl()->component();
+	if (!pType->open())
+		return;
+
+	Vst::IComponent *component = pType->impl()->component();
 	if (!component)
 		return;
 
-	Vst::IEditController *controller = m_pType->impl()->controller();
+	Vst::IEditController *controller = pType->impl()->controller();
 	if (controller) {
-		m_handler = owned(NEW Handler(this));
+		m_handler = owned(NEW Handler(m_pPlugin));
 		controller->setComponentHandler(m_handler);
 	}
 
@@ -2055,7 +2062,7 @@ void qtractorVst3Plugin::Impl::initialize (void)
 			}
 		}
 		if (m_programParamInfo.unitId != Vst::UnitID(-1)) {
-			Vst::IUnitInfo *unitInfos = m_pType->impl()->unitInfos();
+			Vst::IUnitInfo *unitInfos = pType->impl()->unitInfos();
 			if (unitInfos) {
 				const int32 nunits = unitInfos->getUnitCount();
 				for (int32 i = 0; i < nunits; ++i) {
@@ -2098,7 +2105,7 @@ void qtractorVst3Plugin::Impl::initialize (void)
 	}
 
 	if (controller) {
-		const int32 nports = m_pType->midiIns();
+		const int32 nports = pType->midiIns();
 		FUnknownPtr<Vst::IMidiMapping> midiMapping(controller);
 		if (midiMapping && nports > 0) {
 			for (int16 i = 0; i < Vst::kCountCtrlNumber; ++i) { // controllers...
@@ -2123,7 +2130,12 @@ void qtractorVst3Plugin::Impl::activate (void)
 	if (m_processing)
 		return;
 
-	Vst::IComponent *component = m_pType->impl()->component();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return;
+
+	Vst::IComponent *component = pType->impl()->component();
 	if (component && m_processor) {
 		component->setActive(true);
 		m_processor->setProcessing(true);
@@ -2141,7 +2153,12 @@ void qtractorVst3Plugin::Impl::deactivate (void)
 	if (!m_processing)
 		return;
 
-	Vst::IComponent *component = m_pType->impl()->component();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return;
+
+	Vst::IComponent *component = pType->impl()->component();
 	if (component && m_processor) {
 		m_processor->setProcessing(false);
 		component->setActive(false);
@@ -2159,7 +2176,12 @@ bool qtractorVst3Plugin::Impl::openEditor (void)
 {
 	closeEditor();
 
-	Vst::IEditController *controller = m_pType->impl()->controller();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return false;
+
+	Vst::IEditController *controller = pType->impl()->controller();
 	if (controller)
 		m_plugView = controller->createView(Vst::ViewType::kEditor);
 
@@ -2175,16 +2197,21 @@ void qtractorVst3Plugin::Impl::closeEditor (void)
 
 tresult qtractorVst3Plugin::Impl::notify ( Vst::IMessage *message )
 {
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return kInternalError;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3Plugin::Impl[%p]::notify(%p)", this, message);
 #endif
 
-	Vst::IComponent *component = m_pType->impl()->component();
+	Vst::IComponent *component = pType->impl()->component();
 	FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
 	if (component_cp)
 		component_cp->notify(message);
 
-	Vst::IEditController *controller = m_pType->impl()->controller();
+	Vst::IEditController *controller = pType->impl()->controller();
 	FUnknownPtr<Vst::IConnectionPoint> controller_cp(controller);
 	if (controller_cp)
 		controller_cp->notify(message);
@@ -2334,17 +2361,22 @@ void qtractorVst3Plugin::Impl::process (
 	if (!m_processing)
 		return;
 
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return;
+
 //	m_params_out.clear();
 	m_events_out.clear();
 
 	Vst::AudioBusBuffers input_buffers;
 	input_buffers.silenceFlags      = 0;
-	input_buffers.numChannels       = m_pType->audioIns();
+	input_buffers.numChannels       = pType->audioIns();
 	input_buffers.channelBuffers32  = ins;
 
 	Vst::AudioBusBuffers output_buffers;
 	output_buffers.silenceFlags     = 0;
-	output_buffers.numChannels      = m_pType->audioOuts();
+	output_buffers.numChannels      = pType->audioOuts();
 	output_buffers.channelBuffers32 = outs;
 
 	Vst::ProcessData data;
@@ -2385,7 +2417,12 @@ void qtractorVst3Plugin::Impl::setParameter (
 // Get current parameter value.
 Vst::ParamValue qtractorVst3Plugin::Impl::getParameter ( Vst::ParamID id ) const
 {
-	Vst::IEditController *controller = m_pType->impl()->controller();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return 0.0;
+
+	Vst::IEditController *controller = pType->impl()->controller();
 	if (controller)
 		return controller->getParamNormalized(id);
 	else
@@ -2396,7 +2433,12 @@ Vst::ParamValue qtractorVst3Plugin::Impl::getParameter ( Vst::ParamID id ) const
 // Total parameter count.
 int32 qtractorVst3Plugin::Impl::parameterCount (void) const
 {
-	Vst::IEditController *controller = m_pType->impl()->controller();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return 0;
+
+	Vst::IEditController *controller = pType->impl()->controller();
 	if (controller)
 		return controller->getParameterCount();
 	else
@@ -2408,7 +2450,12 @@ int32 qtractorVst3Plugin::Impl::parameterCount (void) const
 bool qtractorVst3Plugin::Impl::getParameterInfo (
 	int32 index, Vst::ParameterInfo& paramInfo ) const
 {
-	Vst::IEditController *controller = m_pType->impl()->controller();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return false;
+
+	Vst::IEditController *controller = pType->impl()->controller();
 	if (controller)
 		return (controller->getParameterInfo(index, paramInfo) == kResultOk);
 	else
@@ -2429,7 +2476,12 @@ void qtractorVst3Plugin::Impl::selectProgram ( int iBank, int iProg )
 	if (m_programParamInfo.stepCount < 1)
 		return;
 
-	Vst::IEditController *controller = m_pType->impl()->controller();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return;
+
+	Vst::IEditController *controller = pType->impl()->controller();
 	if (!controller)
 		return;
 
@@ -2453,11 +2505,16 @@ void qtractorVst3Plugin::Impl::selectProgram ( int iBank, int iProg )
 // Plugin preset/state snapshot accessors.
 bool qtractorVst3Plugin::Impl::setState ( const QByteArray& data )
 {
-	Vst::IComponent *component = m_pType->impl()->component();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return false;
+
+	Vst::IComponent *component = pType->impl()->component();
 	if (!component)
 		return false;
 
-	Vst::IEditController *controller = m_pType->impl()->controller();
+	Vst::IEditController *controller = pType->impl()->controller();
 	if (!controller)
 		return false;
 
@@ -2485,7 +2542,12 @@ bool qtractorVst3Plugin::Impl::setState ( const QByteArray& data )
 
 bool qtractorVst3Plugin::Impl::getState ( QByteArray& data )
 {
-	Vst::IComponent *component = m_pType->impl()->component();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return false;
+
+	Vst::IComponent *component = pType->impl()->component();
 	if (!component)
 		return false;
 
@@ -2662,7 +2724,7 @@ const long c_iMaxMidiData = 4;
 // Constructor.
 qtractorVst3Plugin::qtractorVst3Plugin (
 	qtractorPluginList *pList, qtractorVst3PluginType *pType )
-	: qtractorPlugin(pList, pType), m_pImpl(new Impl(pType)),
+	: qtractorPlugin(pList, pType), m_pImpl(new Impl(this)),
 		m_pEditorFrame(nullptr), m_pEditorWidget(nullptr),
 		m_bEditorClosed(false),
 		m_ppIBuffer(nullptr), m_ppOBuffer(nullptr),
@@ -2941,7 +3003,8 @@ void qtractorVst3Plugin::releaseConfigs (void)
 // Open/close editor widget.
 void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 {
-	qtractorVst3PluginType *pType = m_pImpl->type();
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (type());
 	if (pType == nullptr)
 		return;
 
