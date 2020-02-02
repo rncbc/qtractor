@@ -197,7 +197,7 @@ public:
 #endif
 #endif
 
-	// Parameter update method.
+	// All parameters update method.
 	void updateParamValues(bool bUpdate);
 
 private:

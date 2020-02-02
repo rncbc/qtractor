@@ -53,8 +53,9 @@
 
 #include <QTimer>
 
-#include <QResizeEvent>
 #include <QTimerEvent>
+#include <QResizeEvent>
+#include <QShowEvent>
 #include <QCloseEvent>
 
 #include <QFileInfo>
@@ -117,6 +118,9 @@ public:
 	//
 	void processTimers();
 	void processEventHandlers();
+
+	// Cleanup.
+	void clear();
 
 protected:
 
@@ -520,8 +524,7 @@ qtractorVst3PluginHost::qtractorVst3PluginHost (void)
 // Destructor.
 qtractorVst3PluginHost::~qtractorVst3PluginHost (void)
 {
-	qDeleteAll(m_timers);
-	m_timers.clear();
+	clear();
 
 	m_plugInterfaceSupport = nullptr;
 
@@ -701,6 +704,16 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 			}
 		}
 	}
+}
+
+
+// Cleanup.
+void qtractorVst3PluginHost::clear (void)
+{
+	qDeleteAll(m_timers);
+	m_timers.clear();
+
+	m_fileDescriptors.clear();
 }
 
 
@@ -1535,6 +1548,9 @@ public:
 	void setParameter (
 		Vst::ParamID id, Vst::ParamValue value, uint32_t offset);
 
+	// Get current parameter value.
+	Vst::ParamValue getParameter (Vst::ParamID id) const;
+
 	// Program names list accessor.
 	const QList<Vst::ParameterInfo *>& paramInfos() const
 		{ return m_paramInfos; }
@@ -1546,9 +1562,9 @@ public:
 	// Program-change selector.
 	void selectProgram(int iBank, int iProg);
 
-	// Plugin preset i/o (configuration from/to state files).
-	bool loadPresetFile(const QString& sFilename);
-	bool savePresetFile(const QString& sFilename);
+	// Plugin preset/state snapshot accessors.
+	bool setState(const QByteArray& data);
+	bool getState(QByteArray& data);
 
 	// MIDI event buffer accessors.
 	EventList& events_in()  { return m_events_in;  }
@@ -2367,6 +2383,17 @@ void qtractorVst3Plugin::Impl::setParameter (
 }
 
 
+// Get current parameter value.
+Vst::ParamValue qtractorVst3Plugin::Impl::getParameter ( Vst::ParamID id ) const
+{
+	Vst::IEditController *controller = m_pType->impl()->controller();
+	if (controller)
+		return controller->getParamNormalized(id);
+	else
+		return 0.0;
+}
+
+
 // Program-change selector.
 void qtractorVst3Plugin::Impl::selectProgram ( int iBank, int iProg )
 {
@@ -2401,47 +2428,31 @@ void qtractorVst3Plugin::Impl::selectProgram ( int iBank, int iProg )
 }
 
 
-// Plugin preset i/o (configuration from/to state files).
-bool qtractorVst3Plugin::Impl::loadPresetFile ( const QString& sFilename )
+// Plugin preset/state snapshot accessors.
+bool qtractorVst3Plugin::Impl::setState ( const QByteArray& data )
 {
 	Vst::IComponent *component = m_pType->impl()->component();
 	if (!component)
 		return false;
 
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorVst3Plugin::Impl[%p]::loadPresetFile(\"%s\")",
-		this, sFilename.toUtf8().constData());
-#endif
-
-	QFile file(sFilename);
-
-	if (!file.open(QFile::ReadOnly)) {
-	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVst3Plugin::Impl[%p]::loadPresetFile(\"%s\")"
-			" QFile::open(QFile::ReadOnly) FAILED!",
-			this, sFilename.toUtf8().constData());
-	#endif
+	Vst::IEditController *controller = m_pType->impl()->controller();
+	if (!controller)
 		return false;
-	}
 
-	Stream state(file.readAll());
-	file.close();
+	Stream state(data);
 
 	if (component->setState(&state) != kResultOk) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVst3Plugin::Impl[%p]::loadPresetFile(\"%s\")"
-			" Vst::IComponent::setState() FAILED!",
-			this, sFilename.toUtf8().constData());
+		qDebug("qtractorVst3Plugin::Impl[%p]::setState()"
+			" IComponent::setState() FAILED!", this);
 	#endif
 		return false;
 	}
 
-	Vst::IEditController *controller = m_pType->impl()->controller();
-	if (controller && controller->setComponentState(&state) != kResultOk) {
+	if (controller->setComponentState(&state) != kResultOk) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVst3Plugin::Impl[%p]::loadPresetFile(\"%s\")"
-			" Vst::IEditController::setComponentState() FAILED!",
-			this, sFilename.toUtf8().constData());
+		qDebug("qtractorVst3Plugin::Impl[%p]::setState()"
+			" IEditController::setComponentState() FAILED!", this);
 	#endif
 		return false;
 	}
@@ -2450,41 +2461,23 @@ bool qtractorVst3Plugin::Impl::loadPresetFile ( const QString& sFilename )
 }
 
 
-bool qtractorVst3Plugin::Impl::savePresetFile ( const QString& sFilename )
+bool qtractorVst3Plugin::Impl::getState ( QByteArray& data )
 {
 	Vst::IComponent *component = m_pType->impl()->component();
 	if (!component)
 		return false;
 
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorVst3Plugin::Impl[%p]::savePresetFile(\"%s\")",
-		this, sFilename.toUtf8().constData());
-#endif
-
 	Stream state;
 
 	if (component->getState(&state) != kResultOk) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVst3Plugin::Impl[%p]::savePresetFile(\"%s\")"
-			" Vst::IComponent::setState() FAILED!",
-			this, sFilename.toUtf8().constData());
+		qDebug("qtractorVst3Plugin::Impl[%p]::getState()"
+			" Vst::IComponent::getState() FAILED!", this);
 	#endif
 		return false;
 	}
 
-	QFile file(sFilename);
-
-	if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
-	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVst3Plugin::Impl[%p]::savePresetFile(\"%s\")"
-			" QFile::open(QFile::WriteOnly|QFile::Truncate) FAILED!",
-			this, sFilename.toUtf8().constData());
-	#endif
-		return false;
-	}
-
-	file.write(state.data());
-	file.close();
+	data = state.data();
 	return true;
 }
 
@@ -2529,6 +2522,7 @@ public:
 protected:
 
 	void resizeEvent(QResizeEvent *pResizeEvent);
+	void showEvent(QShowEvent *pShowEvent);
 	void closeEvent(QCloseEvent *pCloseEvent);
 
 private:
@@ -2595,9 +2589,24 @@ void qtractorVst3Plugin::EditorWidget::resizeEvent ( QResizeEvent *pResizeEvent 
 }
 
 
+void qtractorVst3Plugin::EditorWidget::showEvent ( QShowEvent *pShowEvent )
+{
+	QWidget::showEvent(pShowEvent);
+
+	if (m_pPlugin)
+		m_pPlugin->toggleFormEditor(true);
+}
+
+
 void qtractorVst3Plugin::EditorWidget::closeEvent ( QCloseEvent *pCloseEvent )
 {
+	if (m_pPlugin)
+		m_pPlugin->toggleFormEditor(false);
+
 	QWidget::closeEvent(pCloseEvent);
+
+	if (m_pPlugin)
+		m_pPlugin->closeEditor();
 }
 
 
@@ -2636,6 +2645,7 @@ qtractorVst3Plugin::qtractorVst3Plugin (
 	qtractorPluginList *pList, qtractorVst3PluginType *pType )
 	: qtractorPlugin(pList, pType), m_pImpl(new Impl(pType)),
 		m_pEditorFrame(nullptr), m_pEditorWidget(nullptr),
+		m_bEditorClosed(false),
 		m_ppIBuffer(nullptr), m_ppOBuffer(nullptr),
 		m_pfIDummy(nullptr), m_pfODummy(nullptr),
 		m_pMidiParser(nullptr)
@@ -2706,15 +2716,15 @@ void qtractorVst3Plugin::initialize (void)
 void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 {
 	// Check our type...
-	qtractorVst3PluginType *pVst3Type
+	qtractorVst3PluginType *pType
 		= static_cast<qtractorVst3PluginType *> (type());
-	if (pVst3Type == nullptr)
+	if (pType == nullptr)
 		return;
 
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
 	const unsigned short iInstances
-		= pVst3Type->instances(iChannels, list()->isMidi());
+		= pType->instances(iChannels, list()->isMidi());
 	// Now see if instance count changed anyhow...
 	if (iInstances == iOldInstances)
 		return;
@@ -2820,6 +2830,94 @@ void qtractorVst3Plugin::updateParam (
 }
 
 
+// All parameters update method.
+void qtractorVst3Plugin::updateParamValues ( bool bUpdate )
+{
+	// Make sure all cached parameter values are in sync
+	// with plugin parameter values; update cache otherwise.
+	const qtractorPlugin::Params& params = qtractorPlugin::params();
+	qtractorPlugin::Params::ConstIterator param = params.constBegin();
+	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
+	for ( ; param != param_end; ++param) {
+		qtractorVst3PluginParam *pParam
+			= static_cast<qtractorVst3PluginParam *> (param.value());
+		if (pParam && pParam->impl()) {
+			Vst::ParamID id = pParam->impl()->paramInfo().id;
+			const float fValue = float(m_pImpl->getParameter(id));
+			if (pParam->value() != fValue) {
+				pParam->setValue(fValue, bUpdate);
+				updateFormDirtyCount();
+			}
+		}
+	}
+}
+
+
+// Configuration state stuff.
+void qtractorVst3Plugin::configure (
+	const QString& sKey, const QString& sValue )
+{
+	if (sKey == "state") {
+		// Load the BLOB (base64 encoded)...
+		const QByteArray data
+			= qUncompress(QByteArray::fromBase64(sValue.toLatin1()));
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin[%p]::configure() data.size=%d checksum=0x%04x",
+			this, data.size(), qChecksum(data.constData(), data.size()));
+	#endif
+		m_pImpl->setState(data);
+	}
+}
+
+
+// Plugin configuration/state snapshot.
+void qtractorVst3Plugin::freezeConfigs (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorVst3Plugin[%p]::freezeConfigs()", this);
+#endif
+
+	// HACK: Make sure all parameter values are in sync,
+	// provided freezeConfigs() are always called when
+	// saving plugin's state and before parameter values.
+	updateParamValues(false);
+
+	// Update current editor position...
+	if (m_pEditorWidget && m_pEditorWidget->isVisible())
+		setEditorPos(m_pEditorWidget->pos());
+
+	if (!type()->isConfigure())
+		return;
+
+	QByteArray data;
+
+	if (!m_pImpl->getState(data))
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVstPlugin[%p]::freezeConfigs() chunk.size=%d checksum=0x%04x",
+		this, data.size(), qChecksum(data.constData(), data.size()));
+#endif
+
+	// Set special plugin configuration item (base64 encoded)...
+	QByteArray cdata = qCompress(data).toBase64();
+	for (int i = cdata.size() - (cdata.size() % 72); i >= 0; i -= 72)
+		cdata.insert(i, "\n       "); // Indentation.
+	setConfig("state", cdata.constData());
+}
+
+
+void qtractorVst3Plugin::releaseConfigs (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin[%p]::releaseConfigs()", this);
+#endif
+
+	qtractorPlugin::clearConfigs();
+}
+
+
+
 // Open/close editor widget.
 void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 {
@@ -2830,13 +2928,20 @@ void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 	if (!pType->isEditor())
 		return;
 
+	// Is it already there?
 	if (m_pEditorWidget) {
-		if (!m_pEditorWidget->isVisible())
+		if (!m_pEditorWidget->isVisible()) {
+			moveWidgetPos(m_pEditorWidget, editorPos());
 			m_pEditorWidget->show();
+		}
 		m_pEditorWidget->raise();
 		m_pEditorWidget->activateWindow();
 		return;
 	}
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin[%p]::openEditor(%p)", this, pParent);
+#endif
 
 	if (!m_pImpl->openEditor())
 		return;
@@ -2871,16 +2976,27 @@ void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 		return;
 	}
 
-	m_pEditorWidget->show();
-	m_pEditorWidget->raise();
-	m_pEditorWidget->activateWindow();
+	// Final stabilization...
+	updateEditorTitle();
+	setEditorVisible(true);
 }
 
 
 void qtractorVst3Plugin::closeEditor (void)
 {
-	if (m_pEditorWidget)
-		m_pEditorWidget->hide();
+	if (m_bEditorClosed)
+		return;
+
+	m_bEditorClosed = true;
+
+	if (m_pEditorWidget == nullptr)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin[%p]::closeEditor()", this);
+#endif
+
+	setEditorVisible(false);
 
 	IPlugView *plugView = m_pImpl->plugView();
 	if (plugView && plugView->removed() != kResultOk) {
@@ -2890,10 +3006,8 @@ void qtractorVst3Plugin::closeEditor (void)
 	#endif
 	}
 
-	if (m_pEditorWidget) {
-		delete m_pEditorWidget;
-		m_pEditorWidget = nullptr;
-	}
+	delete m_pEditorWidget;
+	m_pEditorWidget = nullptr;
 
 	if (m_pEditorFrame) {
 		delete m_pEditorFrame;
@@ -2901,6 +3015,35 @@ void qtractorVst3Plugin::closeEditor (void)
 	}
 
 	m_pImpl->closeEditor();
+}
+
+
+// GUI editor visibility state.
+void qtractorVst3Plugin::setEditorVisible ( bool bVisible )
+{
+	if (m_pEditorWidget) {
+		if (bVisible)
+			moveWidgetPos(m_pEditorWidget, editorPos());
+		else
+			setEditorPos(m_pEditorWidget->pos());
+		m_pEditorWidget->setVisible(bVisible);
+	}
+}
+
+
+bool qtractorVst3Plugin::isEditorVisible (void) const
+{
+	return (m_pEditorWidget ? m_pEditorWidget->isVisible() : false);
+}
+
+
+// Update editor widget caption.
+void qtractorVst3Plugin::setEditorTitle ( const QString& sTitle )
+{
+	qtractorPlugin::setEditorTitle(sTitle);
+
+	if (m_pEditorWidget)
+		m_pEditorWidget->setWindowTitle(sTitle);
 }
 
 
@@ -3111,19 +3254,74 @@ void qtractorVst3Plugin::selectProgram ( int iBank, int iProg )
 		return;
 
 	m_pImpl->selectProgram(iBank, iProg);
+
+	// HACK: Make sure all displayed parameter values are in sync.
+	updateParamValues(false);
 }
 
 
 // Plugin preset i/o (configuration from/to state files).
 bool qtractorVst3Plugin::loadPresetFile ( const QString& sFilename )
 {
-	return m_pImpl->loadPresetFile(sFilename);
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin[%p]::loadPresetFile(\"%s\")",
+		this, sFilename.toUtf8().constData());
+#endif
+
+	QFile file(sFilename);
+
+	if (!file.open(QFile::ReadOnly)) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin[%p]::loadPresetFile(\"%s\")"
+			" QFile::open(QFile::ReadOnly) FAILED!",
+			this, sFilename.toUtf8().constData());
+	#endif
+		return false;
+	}
+
+	const bool bResult
+		= m_pImpl->setState(file.readAll());
+
+	file.close();
+	// HACK: Make sure all displayed parameter values are in sync.
+	updateParamValues(false);
+	return bResult;
 }
 
 
 bool qtractorVst3Plugin::savePresetFile ( const QString& sFilename )
 {
-	return m_pImpl->savePresetFile(sFilename);
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorVst3Plugin[%p]::savePresetFile(\"%s\")",
+		this, sFilename.toUtf8().constData());
+#endif
+
+	QByteArray data;;
+
+	if (!m_pImpl->getState(data))
+		return false;
+
+	QFile file(sFilename);
+
+	if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin[%p]::savePresetFile(\"%s\")"
+			" QFile::open(QFile::WriteOnly|QFile::Truncate) FAILED!",
+			this, sFilename.toUtf8().constData());
+	#endif
+		return false;
+	}
+
+	file.write(data);
+	file.close();
+	return true;
+}
+
+
+// Host cleanup (static).
+void qtractorVst3Plugin::clearAll (void)
+{
+	g_hostContext.clear();
 }
 
 

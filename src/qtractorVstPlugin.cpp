@@ -1036,11 +1036,13 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 
 
 // Configuration (CLOB) stuff.
-void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
+void qtractorVstPlugin::configure (
+	const QString& sKey, const QString& sValue )
 {
 	if (sKey == "chunk") {
 		// Load the BLOB (base64 encoded)...
-		QByteArray data = qUncompress(QByteArray::fromBase64(sValue.toLatin1()));
+		const QByteArray data
+			= qUncompress(QByteArray::fromBase64(sValue.toLatin1()));
 		const char *pData = data.constData();
 		const int iData = data.size();
 	#ifdef CONFIG_DEBUG
@@ -1089,11 +1091,12 @@ void qtractorVstPlugin::freezeConfigs (void)
 #endif
 
 	// Set special plugin configuration item (base64 encoded)...
-	QByteArray data = qCompress(QByteArray(pData, iData)).toBase64();
-	for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
-		data.insert(i, "\n       "); // Indentation.
-	setConfig("chunk", data.constData());
+	QByteArray cdata = qCompress(QByteArray(pData, iData)).toBase64();
+	for (int i = cdata.size() - (cdata.size() % 72); i >= 0; i -= 72)
+		cdata.insert(i, "\n       "); // Indentation.
+	setConfig("chunk", cdata.constData());
 }
+
 
 void qtractorVstPlugin::releaseConfigs (void)
 {
@@ -1267,6 +1270,7 @@ void qtractorVstPlugin::setEditorVisible ( bool bVisible )
 	}
 }
 
+
 bool qtractorVstPlugin::isEditorVisible (void) const
 {
 	return (m_pEditorWidget ? m_pEditorWidget->isVisible() : false);
@@ -1338,7 +1342,7 @@ bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
 #endif	// CONFIG_VST_X11
 
 
-// Parameter update method.
+// All parameters update method.
 void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 {
 	// Make sure all cached parameter values are in sync
@@ -1350,7 +1354,8 @@ void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 		const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
 			qtractorPluginParam *pParam = param.value();
-			float fValue = pVstEffect->getParameter(pVstEffect, pParam->index());
+			const float fValue
+				= pVstEffect->getParameter(pVstEffect, pParam->index());
 			if (pParam->value() != fValue) {
 				pParam->setValue(fValue, bUpdate);
 				updateFormDirtyCount();

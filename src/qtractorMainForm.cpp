@@ -91,6 +91,10 @@
 #include "qtractorVstPlugin.h"
 #endif
 
+#ifdef CONFIG_VST3
+#include "qtractorVst3Plugin.h"
+#endif
+
 #ifdef CONFIG_LV2
 #include "qtractorLv2Plugin.h"
 #endif
@@ -2270,6 +2274,9 @@ bool qtractorMainForm::closeSession (void)
 		qtractorSubject::clearQueue();
 		// Reset playhead.
 		m_iPlayHead = 0;
+	#ifdef CONFIG_VST3
+		qtractorVst3Plugin::clearAll();
+	#endif
 	#ifdef CONFIG_LV2
 		qtractorLv2PluginType::lv2_close();
 	#endif

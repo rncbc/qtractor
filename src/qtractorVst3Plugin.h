@@ -102,12 +102,28 @@ public:
 	void activate();
 	void deactivate();
 
-	// Parameter update method.
+	// Parameter update methods.
 	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+
+	// Parameters update method.
+	void updateParamValues(bool bUpdate);
+
+	// Configuration state stuff.
+	void configure(const QString& sKey, const QString& sValue);
+
+	// Plugin configuration/state snapshot.
+	void freezeConfigs();
+	void releaseConfigs();
 
 	// Open/close editor widget.
 	void openEditor(QWidget *pParent = nullptr);
 	void closeEditor();
+
+	// GUI editor visibility state.
+	void setEditorVisible(bool bVisible);
+	bool isEditorVisible() const;
+
+	void setEditorTitle(const QString& sTitle);
 
 	// Our own editor widget accessor.
 	QWidget *editorWidget() const;
@@ -136,6 +152,9 @@ public:
 	// Plugin preset i/o (configuration from/to state files).
 	bool loadPresetFile(const QString& sFilename);
 	bool savePresetFile(const QString& sFilename);
+
+	// Host cleanup (static).
+	static void clearAll();
 
 	// Forward decls.
 	class Impl;
@@ -168,6 +187,8 @@ private:
 
 	EditorFrame  *m_pEditorFrame;
 	EditorWidget *m_pEditorWidget;
+
+	volatile bool m_bEditorClosed;
 
 	// Audio I/O buffer pointers.
 	float **m_ppIBuffer;
