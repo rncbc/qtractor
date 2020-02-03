@@ -1542,6 +1542,9 @@ public:
 		uint8_t *data, uint32_t size, uint32_t offset, uint16_t port);
 	void process (float **ins, float **outs, uint32_t nframes);
 
+	// Plugin current latency (in frames);
+	unsigned long latency () const;
+
 	// Set/add a parameter value/point.
 	void setParameter (
 		Vst::ParamID id, Vst::ParamValue value, uint32_t offset);
@@ -2401,6 +2404,16 @@ void qtractorVst3Plugin::Impl::process (
 
 	m_events_in.clear();
 	m_params_in.clear();
+}
+
+
+// Plugin current latency (in frames);
+unsigned long qtractorVst3Plugin::Impl::latency (void) const
+{
+	if (m_processor)
+		return m_processor->getLatencySamples();
+	else
+		return 0;
 }
 
 
@@ -3265,6 +3278,13 @@ void qtractorVst3Plugin::process (
 			pMidiManager->resetOutputBuffers();
 		}
 	}
+}
+
+
+// Plugin current latency (in frames);
+unsigned long qtractorVst3Plugin::latency (void) const
+{
+	return m_pImpl->latency();
 }
 
 

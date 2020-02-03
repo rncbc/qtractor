@@ -137,6 +137,9 @@ public:
 		uint8_t *data, uint32_t size, uint32_t offset, uint16_t port);
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
+	// Plugin current latency (in frames);
+	unsigned long latency() const;
+
 	// Transport BBT accessors...
 	//
 	void setTempo(float tempo);
