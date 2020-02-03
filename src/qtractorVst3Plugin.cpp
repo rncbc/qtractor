@@ -26,6 +26,7 @@
 #include "qtractorVst3Plugin.h"
 
 #include "qtractorSession.h"
+#include "qtractorSessionCursor.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
 
@@ -119,6 +120,12 @@ public:
 	void processTimers();
 	void processEventHandlers();
 
+	// Common host time-keeper context accessor.
+	Vst::ProcessContext *processContext();
+
+	// Common host time-keeper process context.
+	void updateProcessContext(qtractorAudioEngine *pAudioEngine);
+
 	// Cleanup.
 	void clear();
 
@@ -151,6 +158,8 @@ private:
 
 	QHash<ITimerHandler *, TimerItem *> m_timers;
 	QHash<IEventHandler *, int> m_fileDescriptors;
+
+	Vst::ProcessContext m_processContext;
 };
 
 
@@ -707,6 +716,49 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 }
 
 
+// Common host time-keeper context accessor.
+Vst::ProcessContext *qtractorVst3PluginHost::processContext (void)
+{
+	return &m_processContext;
+}
+
+
+// Common host time-keeper process context.
+void qtractorVst3PluginHost::updateProcessContext (
+	qtractorAudioEngine *pAudioEngine )
+{
+	jack_position_t pos;
+	jack_transport_state_t state;
+
+	if (pAudioEngine->isFreewheel()) {
+		pos.frame = pAudioEngine->sessionCursor()->frame();
+		pAudioEngine->timebase(&pos, 0);
+		state = JackTransportRolling; // Fake transport rolling...
+	} else {
+		state = jack_transport_query(pAudioEngine->jackClient(), &pos);
+	}
+
+	if (state == JackTransportRolling)
+		m_processContext.state |=  Vst::ProcessContext::kPlaying;
+	else
+		m_processContext.state &= ~Vst::ProcessContext::kPlaying;
+
+	m_processContext.sampleRate = pos.frame_rate;
+	m_processContext.projectTimeSamples = pos.frame;
+
+	if (pos.valid & JackPositionBBT) {
+		m_processContext.state |= Vst::ProcessContext::kTempoValid;
+		m_processContext.tempo  = pos.beats_per_minute;
+		m_processContext.state |= Vst::ProcessContext::kTimeSigValid;
+		m_processContext.timeSigNumerator = pos.beats_per_bar;
+		m_processContext.timeSigDenominator = pos.beat_type;
+	} else {
+		m_processContext.state &= ~Vst::ProcessContext::kTempoValid;
+		m_processContext.state &= ~Vst::ProcessContext::kTimeSigValid;
+	}
+}
+
+
 // Cleanup.
 void qtractorVst3PluginHost::clear (void)
 {
@@ -714,6 +766,8 @@ void qtractorVst3PluginHost::clear (void)
 	m_timers.clear();
 
 	m_fileDescriptors.clear();
+
+	::memset(&m_processContext, 0, sizeof(Vst::ProcessContext));
 }
 
 
@@ -1533,9 +1587,6 @@ public:
 
 	IPlugView *plugView () const { return m_plugView; }
 
-	// Processor context accessor.
-	Vst::ProcessContext& context() { return m_context; }
-
 	// Audio processor methods.
 	bool process_reset (float srate, uint32_t nframes);
 	void process_midi_in (
@@ -1592,8 +1643,6 @@ private:
 	Vst::IAudioProcessor *m_processor;
 
 	volatile bool m_processing;
-
-	Vst::ProcessContext m_context;
 
 	ParamChanges m_params_in;
 //	ParamChanges m_params_out;
@@ -2236,8 +2285,6 @@ bool qtractorVst3Plugin::Impl::process_reset (
 //	deactivate();
 
 	// Initialize running state...
-	m_context.sampleRate = srate;
-
 	m_params_in.clear();
 //	m_params_out.clear();
 
@@ -2248,7 +2295,7 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	setup.processMode        = Vst::kRealtime;
 	setup.symbolicSampleSize = Vst::kSample32;
 	setup.maxSamplesPerBlock = nframes;
-	setup.sampleRate         = m_context.sampleRate;
+	setup.sampleRate         = srate;
 
 	if (m_processor->setupProcessing(setup) != kResultOk)
 		return false;
@@ -2392,7 +2439,7 @@ void qtractorVst3Plugin::Impl::process (
 	data.numOutputs             = 1;
 	data.inputs                 = &input_buffers;
 	data.outputs                = &output_buffers;
-	data.processContext         = &m_context;
+	data.processContext         = g_hostContext.processContext();
 	data.inputEvents            = &m_events_in;
 	data.outputEvents           = &m_events_out;
 	data.inputParameterChanges  = &m_params_in;
@@ -2585,8 +2632,6 @@ bool qtractorVst3Plugin::Impl::getState ( QByteArray& data )
 // Cleanup.
 void qtractorVst3Plugin::Impl::clear (void)
 {
-	::memset(&m_context, 0, sizeof(Vst::ProcessContext));
-
 	::memset(&m_programParamInfo, 0, sizeof(Vst::ParameterInfo));
 	m_programParamInfo.id = Vst::kNoParamId;
 	m_programParamInfo.unitId = Vst::UnitID(-1);
@@ -3288,63 +3333,6 @@ unsigned long qtractorVst3Plugin::latency (void) const
 }
 
 
-// Transport BBT accessors...
-//
-void qtractorVst3Plugin::setTempo ( float tempo )
-{
-	Vst::ProcessContext& context = m_pImpl->context();
-	if (tempo > 0.0f) {
-		context.state |= Vst::ProcessContext::kTempoValid;
-		context.tempo = tempo;
-	} else {
-		context.state &= ~Vst::ProcessContext::kTempoValid;
-	}
-}
-
-
-float qtractorVst3Plugin::tempo (void) const
-{
-	const Vst::ProcessContext& context = m_pImpl->context();
-	if (context.state & Vst::ProcessContext::kTempoValid)
-		return context.tempo;
-	else
-		return 120.0f;
-}
-
-
-void qtractorVst3Plugin::setTimeSig ( int numerator, int denominator )
-{
-	Vst::ProcessContext& context = m_pImpl->context();
-	if (numerator > 0 && denominator > 0) {
-		context.state |= Vst::ProcessContext::kTimeSigValid;
-		context.timeSigNumerator = numerator;
-		context.timeSigDenominator = denominator;
-	} else {
-		context.state &= ~Vst::ProcessContext::kTimeSigValid;
-	}
-}
-
-
-int qtractorVst3Plugin::timeSigNumerator (void) const
-{
-	const Vst::ProcessContext& context = m_pImpl->context();
-	if (context.state & Vst::ProcessContext::kTimeSigValid)
-		return context.timeSigNumerator;
-	else
-		return 4;
-}
-
-
-int qtractorVst3Plugin::timeSigDenominator (void) const
-{
-	const Vst::ProcessContext& context = m_pImpl->context();
-	if (context.state & Vst::ProcessContext::kTimeSigValid)
-		return context.timeSigDenominator;
-	else
-		return 4;
-}
-
-
 // Provisional program/patch accessor.
 bool qtractorVst3Plugin::getProgram ( int iIndex, Program& program ) const
 {
@@ -3440,6 +3428,13 @@ bool qtractorVst3Plugin::savePresetFile ( const QString& sFilename )
 	file.write(data);
 	file.close();
 	return true;
+}
+
+
+// Common host-time keeper (static)
+void qtractorVst3Plugin::updateTime ( qtractorAudioEngine *pAudioEngine )
+{
+	g_hostContext.updateProcessContext(pAudioEngine);
 }
 
 

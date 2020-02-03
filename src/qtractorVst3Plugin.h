@@ -30,7 +30,9 @@
 #include <alsa/asoundlib.h>
 
 
-// Forward decl.
+// Forward decls.
+class qtractorAudioEngine;
+
 class QWidget;
 
 
@@ -140,15 +142,6 @@ public:
 	// Plugin current latency (in frames);
 	unsigned long latency() const;
 
-	// Transport BBT accessors...
-	//
-	void setTempo(float tempo);
-	float tempo() const;
-
-	void setTimeSig(int numerator, int denominator);
-	int timeSigNumerator() const;
-	int timeSigDenominator() const;
-
 	// Provisional program/patch accessor.
 	bool getProgram(int iIndex, Program& program) const;
 
@@ -158,6 +151,9 @@ public:
 	// Plugin preset i/o (configuration from/to state files).
 	bool loadPresetFile(const QString& sFilename);
 	bool savePresetFile(const QString& sFilename);
+
+	// Common host-time keeper (static)
+	static void updateTime(qtractorAudioEngine *pAudioEngine);
 
 	// Host cleanup (static).
 	static void clearAll();
