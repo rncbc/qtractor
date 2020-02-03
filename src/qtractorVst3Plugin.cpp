@@ -1726,9 +1726,9 @@ public:
 
 	//--- IComponentHandler ---
 	//
-	tresult PLUGIN_API beginEdit (Vst::ParamID id) override
+	tresult PLUGIN_API beginEdit (Vst::ParamID /*id*/) override
 	{
-	#ifdef CONFIG_DEBUG
+	#ifdef CONFIG_DEBUG_0
 		qDebug("vst3_text_plugin::Handler[%p]::beginEdit(%d)", this, int(id));
 	#endif
 		return kResultOk;
@@ -1745,9 +1745,9 @@ public:
 		return kResultOk;
 	}
 
-	tresult PLUGIN_API endEdit (Vst::ParamID id) override
+	tresult PLUGIN_API endEdit (Vst::ParamID /*id*/) override
 	{
-	#ifdef CONFIG_DEBUG
+	#ifdef CONFIG_DEBUG_0
 		qDebug("vst3_text_plugin::Handler[%p]::endEdit(%d)", this, int(id));
 	#endif
 		return kResultOk;
@@ -2978,7 +2978,7 @@ void qtractorVst3Plugin::deactivate (void)
 
 // Parameter update method.
 void qtractorVst3Plugin::updateParam (
-	qtractorPluginParam *pParam, float fValue, bool bUpdate )
+	qtractorPluginParam *pParam, float fValue, bool /*bUpdate*/ )
 {
 	qtractorVst3PluginParam *pVst3Param
 		= static_cast<qtractorVst3PluginParam *> (pParam);
@@ -2987,7 +2987,7 @@ void qtractorVst3Plugin::updateParam (
 	if (pVst3Param->impl() == nullptr)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorVst3Plugin[%p]::updateParam(%lu, %g, %d)",
 		this, pParam->index(), fValue, int(bUpdate));
 #endif
