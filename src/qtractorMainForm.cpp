@@ -5768,8 +5768,8 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_VST
 	list << tr("VST Plug-in support disabled.");
 #endif
-#ifdef  CONFIG_VESTIGE_0
-	list << tr("VeSTige header support enabled.");
+#ifdef  CONFIG_VST3
+	list << tr("VST3 Plug-in support (EXPERIMENTAL) enabled.");
 #endif
 #ifndef CONFIG_LV2
 	list << tr("LV2 Plug-in support disabled.");
@@ -5777,17 +5777,17 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LIBLILV
 	list << tr("LV2 Plug-in support (liblilv) disabled.");
 #endif
-#ifndef  CONFIG_LV2_UI
+#ifndef CONFIG_LV2_UI
 	list << tr("LV2 Plug-in UI support disabled.");
 #else
-#ifndef  CONFIG_LIBSUIL
+#ifndef CONFIG_LIBSUIL
 	list << tr("LV2 Plug-in UI support (libsuil) disabled.");
 #endif
 #ifndef CONFIG_LV2_EXTERNAL_UI
 	list << tr("LV2 Plug-in External UI support disabled.");
 #endif
 #endif // CONFIG_LV2_UI
-#ifdef CONFIG_LV2_EVENT
+#ifdef  CONFIG_LV2_EVENT
 	list << tr("LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.");
 #endif
 #ifndef CONFIG_LV2_ATOM
@@ -5799,8 +5799,8 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_STATE
 	list << tr("LV2 Plug-in State support disabled.");
 #endif
-#ifdef CONFIG_LV2_STATE_FILES
-#ifdef CONFIG_LV2_STATE_MAKE_PATH
+#ifdef  CONFIG_LV2_STATE_FILES
+#ifdef  CONFIG_LV2_STATE_MAKE_PATH
 	list << tr("LV2 plug-in State Make Path support (DANGEROUS)	enabled.");
 #endif
 #else
@@ -5864,7 +5864,7 @@ void qtractorMainForm::helpAbout (void)
 	// Stuff the about box text...
 	QString sText = "<p>\n";
 	sText += "<b>" QTRACTOR_TITLE " - " + tr(QTRACTOR_SUBTITLE) + "</b><br />\n";
-	sText += "<br />\n";
+	sTex1t += "<br />\n";
 	sText += tr("Version") + ": <b>" CONFIG_BUILD_VERSION "</b><br />\n";
 //	sText += "<small>" + tr("Build") + ": " CONFIG_BUILD_DATE "</small><br />\n";
 	if (!list.isEmpty()) {

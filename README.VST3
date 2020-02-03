@@ -1,5 +1,5 @@
 Native VST3 plug-in support
---------------------------
+---------------------------
 
 Unlikely to what it was for VST, that meaning for the old VST 2.x,
 building for the newer VST3 plug-in support is probably easier and

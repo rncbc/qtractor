@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- VST3 plug-in support introduced. (EXPERIMENTAL)
+
 - Fixed first bar/measure position drawing on the
   time-scale/grid across time-signature changes on
   the MIDI clip editor (aka. piano-roll) (hopefully
