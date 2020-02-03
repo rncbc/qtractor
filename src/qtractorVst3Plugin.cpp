@@ -120,8 +120,11 @@ public:
 	void processTimers();
 	void processEventHandlers();
 
-	// Common host time-keeper context accessor.
+	// Common host time-keeper context accessors.
 	Vst::ProcessContext *processContext();
+
+	void processAddRef();
+	void processReleaseRef();
 
 	// Common host time-keeper process context.
 	void updateProcessContext(qtractorAudioEngine *pAudioEngine);
@@ -160,6 +163,7 @@ private:
 	QHash<IEventHandler *, int> m_fileDescriptors;
 
 	Vst::ProcessContext m_processContext;
+	unsigned int        m_processRefCount;
 };
 
 
@@ -525,8 +529,8 @@ qtractorVst3PluginHost::qtractorVst3PluginHost (void)
 	FUNKNOWN_CTOR
 
 	m_plugInterfaceSupport = owned(NEW PlugInterfaceSupport());
-
 	m_pTimer = new Timer(this);
+	m_processRefCount = 0;
 }
 
 
@@ -723,10 +727,25 @@ Vst::ProcessContext *qtractorVst3PluginHost::processContext (void)
 }
 
 
+void qtractorVst3PluginHost::processAddRef (void)
+{
+	++m_processRefCount;
+}
+
+
+void qtractorVst3PluginHost::processReleaseRef (void)
+{
+	if (m_processRefCount > 0) --m_processRefCount;
+}
+
+
 // Common host time-keeper process context.
 void qtractorVst3PluginHost::updateProcessContext (
 	qtractorAudioEngine *pAudioEngine )
 {
+	if (m_processRefCount < 1)
+		return;
+
 	jack_position_t pos;
 	jack_transport_state_t state;
 
@@ -2194,6 +2213,7 @@ void qtractorVst3Plugin::Impl::activate (void)
 	if (component && m_processor) {
 		component->setActive(true);
 		m_processor->setProcessing(true);
+		g_hostContext.processAddRef();
 		m_processing = true;
 	}
 
@@ -2215,6 +2235,7 @@ void qtractorVst3Plugin::Impl::deactivate (void)
 
 	Vst::IComponent *component = pType->impl()->component();
 	if (component && m_processor) {
+		g_hostContext.processReleaseRef();
 		m_processor->setProcessing(false);
 		component->setActive(false);
 		m_processing = false;
