@@ -2867,11 +2867,6 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Suporte a Detecção de ritmo (libaudio) desabilitado.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5772"/>
-        <source>VST3 Plug-in support (EXPERIMENTAL) enabled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5791"/>
         <source>LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.</source>
         <translation>Plugin MIDI LV2/Suporte a eventos (SEM SUPORTE) ativado.</translation>
@@ -4790,6 +4785,11 @@ está rodando e reinicie a sessão.</translation>
         <location filename="../qtractorMainForm.cpp" line="5235"/>
         <source>program</source>
         <translation>aplicativo</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5772"/>
+        <source>VST3 Plug-in support (EXPERIMENTAL) disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5816"/>

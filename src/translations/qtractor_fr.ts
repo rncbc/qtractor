@@ -5912,6 +5912,11 @@ que la prochaine fois que vous démarrerez %1.</translation>
         <translation>Support des greffons VST désactivé.</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="5772"/>
+        <source>VST3 Plug-in support (EXPERIMENTAL) disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="5775"/>
         <source>LV2 Plug-in support disabled.</source>
         <translation>Support du greffon LV2 désactivé.</translation>
@@ -6011,11 +6016,6 @@ est hautement recommandé.</translation>
         <location filename="../qtractorMainForm.cpp" line="510"/>
         <source>Current time (play-head)</source>
         <translation>Temps courant (tête de lecture)</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5772"/>
-        <source>VST3 Plug-in support (EXPERIMENTAL) enabled.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5778"/>

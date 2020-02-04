@@ -5,7 +5,7 @@
 override_dh_auto_configure:
 	# Add here commands to configure the package.
 	./autogen.sh
-	./configure --prefix=/usr
+	./configure --prefix=/usr --with-vst3sdk=/opt/vst3sdk
 	# --- end custom part for configure
 
 override_dh_clean:

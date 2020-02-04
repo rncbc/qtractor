@@ -5913,6 +5913,11 @@ al prossimo avvio di questo %1.</translation>
         <translation>Supporto Plug-in VST disabilitato.</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="5772"/>
+        <source>VST3 Plug-in support (EXPERIMENTAL) disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="5775"/>
         <source>LV2 Plug-in support disabled.</source>
         <translation>Supporto Plug-in LV2 disabilitato.</translation>
@@ -6012,11 +6017,6 @@ il file della sessione corrente.</translation>
         <location filename="../qtractorMainForm.cpp" line="510"/>
         <source>Current time (play-head)</source>
         <translation>Tempo corrente (barra di riproduzione)</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="5772"/>
-        <source>VST3 Plug-in support (EXPERIMENTAL) enabled.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5778"/>

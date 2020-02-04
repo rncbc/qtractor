@@ -5768,8 +5768,8 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_VST
 	list << tr("VST Plug-in support disabled.");
 #endif
-#ifdef  CONFIG_VST3
-	list << tr("VST3 Plug-in support (EXPERIMENTAL) enabled.");
+#ifndef CONFIG_VST3
+	list << tr("VST3 Plug-in support (EXPERIMENTAL) disabled.");
 #endif
 #ifndef CONFIG_LV2
 	list << tr("LV2 Plug-in support disabled.");
