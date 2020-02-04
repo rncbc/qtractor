@@ -58,7 +58,7 @@ public:
 	bool open();
 	void close();
 
-	// It can only be one...
+	// It can be only one...
 	unsigned short instances (
 		unsigned short iChannels, bool /*bMidi*/) const
 		{ return (iChannels > 0 ? 1 : 0); }
@@ -70,10 +70,6 @@ public:
 	class Impl;
 
 	Impl *impl() const { return m_pImpl; }
-
-protected:
-
-	void clear();
 
 private:
 
@@ -135,8 +131,8 @@ public:
 
 	// Processor stuff...
 	//
-	void process_midi_in(
-		uint8_t *data, uint32_t size, uint32_t offset, uint16_t port);
+	void process_midi_in(unsigned char *data, unsigned int size,
+		unsigned long offset, unsigned short port);
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
 	// Plugin current latency (in frames);

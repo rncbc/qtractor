@@ -369,8 +369,7 @@ public:
 		if (attr) {
 			uint32 size2 = 0;
 			const Vst::TChar *string2 = attr->stringValue(size2);
-			::memcpy(string, string2,
-				std::min<uint32> (size2, size) * sizeof(Vst::TChar));
+			::memcpy(string, string2, qMin(size, size2) * sizeof(Vst::TChar));
 			return kResultTrue;
 		}
 		return kResultFalse;
@@ -529,7 +528,9 @@ qtractorVst3PluginHost::qtractorVst3PluginHost (void)
 	FUNKNOWN_CTOR
 
 	m_plugInterfaceSupport = owned(NEW PlugInterfaceSupport());
+
 	m_pTimer = new Timer(this);
+
 	m_processRefCount = 0;
 }
 
@@ -709,7 +710,7 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 		iter = m_fileDescriptors.constBegin();
 		for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
 			const int fd = iter.value();
-			if (FD_ISSET(fd, &rfds)  ||
+			if (FD_ISSET(fd, &rfds) ||
 				FD_ISSET(fd, &wfds) ||
 				FD_ISSET(fd, &efds)) {
 				IEventHandler *handler = iter.key();
@@ -1032,7 +1033,6 @@ qtractorVst3PluginType::qtractorVst3PluginType (
 	qtractorPluginFile *pFile, unsigned long iIndex )
 	: qtractorPluginType(pFile, iIndex, Vst3), m_pImpl(new Impl(pFile))
 {
-	clear();
 }
 
 
@@ -1106,21 +1106,6 @@ bool qtractorVst3PluginType::open (void)
 void qtractorVst3PluginType::close (void)
 {
 	m_pImpl->close();
-}
-
-
-void qtractorVst3PluginType::clear (void)
-{
-	m_sName.clear();
-
-	m_iUniqueID	= 0;
-
-	m_iAudioIns  = 0;
-	m_iAudioOuts = 0;
-	m_iMidiIns   = 0;
-	m_iMidiOuts  = 0;
-
-	m_bEditor = false;
 }
 
 
@@ -1406,7 +1391,7 @@ public:
 			item.id = id;
 			item.value = value;
 			item.offset = offset;
-			uint32_t iwrite = m_iwrite + 1;
+			uint32 iwrite = m_iwrite + 1;
 			if (iwrite >= m_nsize)
 				iwrite = 0;
 			if (m_iread != iwrite)
@@ -1458,7 +1443,7 @@ protected:
 		id = item.id;
 		value = item.value;
 		offset = item.offset;
-		uint32_t iread = m_iread + 1;
+		uint32 iread = m_iread + 1;
 		if (iread >= m_nsize)
 			iread = 0;
 		m_iread = iread;
@@ -1467,7 +1452,7 @@ protected:
 
 	void resize (int32 nsize)
 	{
-		const uint32_t nsize2 = (nsize << 1);
+		const uint32 nsize2 = (nsize << 1);
 		if (m_nsize != nsize2) {
 			if (m_changes)
 				delete [] m_changes;
@@ -1489,9 +1474,9 @@ private:
 	};
 
 	ChangeItem *m_changes;
-	uint32_t m_nsize;
-	volatile uint32_t m_iread;
-	volatile uint32_t m_iwrite;
+	uint32 m_nsize;
+	volatile uint32 m_iread;
+	volatile uint32 m_iwrite;
 };
 
 
@@ -1504,7 +1489,7 @@ class qtractorVst3Plugin::EventList : public Vst::IEventList
 public:
 
 	// Constructor.
-	EventList (uint32_t nsize = 0x100)
+	EventList (uint32 nsize = 0x100)
 		: m_events(nullptr), m_nsize(0), m_ncount(0)
 		{ resize(nsize); FUNKNOWN_CTOR }
 
@@ -1595,8 +1580,8 @@ public:
 	~Impl ();
 
 	// Do the actual (de)activation.
-	void activate();
-	void deactivate();
+	void activate ();
+	void deactivate ();
 
 	// Editor controller methods.
 	bool openEditor ();
@@ -1607,49 +1592,49 @@ public:
 	IPlugView *plugView () const { return m_plugView; }
 
 	// Audio processor methods.
-	bool process_reset (float srate, uint32_t nframes);
-	void process_midi_in (
-		uint8_t *data, uint32_t size, uint32_t offset, uint16_t port);
-	void process (float **ins, float **outs, uint32_t nframes);
+	bool process_reset (float srate, unsigned int nframes);
+	void process_midi_in (unsigned char *data, unsigned int size,
+		unsigned long offset, unsigned short port);
+	void process (float **ins, float **outs, unsigned int nframes);
 
 	// Plugin current latency (in frames);
 	unsigned long latency () const;
 
 	// Set/add a parameter value/point.
 	void setParameter (
-		Vst::ParamID id, Vst::ParamValue value, uint32_t offset);
+		Vst::ParamID id, Vst::ParamValue value, uint32 offset);
 
 	// Total parameter count.
-	int32 parameterCount() const;
+	int32 parameterCount () const;
 
 	// Get current parameter value.
 	Vst::ParamValue getParameter (Vst::ParamID id) const;
 
 	// Parameter info accessors.
-	bool getParameterInfo(int32 index, Vst::ParameterInfo& paramInfo) const;
+	bool getParameterInfo (int32 index, Vst::ParameterInfo& paramInfo) const;
 
 	// Program names list accessor.
-	const QList<QString>& programs() const
+	const QList<QString>& programs () const
 		{ return m_programs; }
 
 	// Program-change selector.
-	void selectProgram(int iBank, int iProg);
+	void selectProgram (int iBank, int iProg);
 
 	// Plugin preset/state snapshot accessors.
-	bool setState(const QByteArray& data);
-	bool getState(QByteArray& data);
+	bool setState (const QByteArray& data);
+	bool getState (QByteArray& data);
 
 	// MIDI event buffer accessors.
-	EventList& events_in()  { return m_events_in;  }
-	EventList& events_out() { return m_events_out; }
+	EventList& events_in  () { return m_events_in;  }
+	EventList& events_out () { return m_events_out; }
 
 protected:
 
 	// Plugin module initializer.
-	void initialize();
+	void initialize ();
 
 	// Cleanup.
-	void clear();
+	void clear ();
 
 private:
 
@@ -1699,9 +1684,7 @@ private:
 		int16 controller;
 	};
 
-	typedef QMap<MidiMapKey, Vst::ParamID> MidiMap;
-
-	MidiMap m_midiMap;
+	QMap<MidiMapKey, Vst::ParamID> m_midiMap;
 };
 
 
@@ -2298,7 +2281,7 @@ tresult qtractorVst3Plugin::Impl::notify ( Vst::IMessage *message )
 
 // Audio processor stuff (TODO)...
 bool qtractorVst3Plugin::Impl::process_reset (
-	float srate, uint32_t nframes )
+	float srate, unsigned int nframes )
 {
 	if (!m_processor)
 		return false;
@@ -2328,7 +2311,8 @@ bool qtractorVst3Plugin::Impl::process_reset (
 
 
 void qtractorVst3Plugin::Impl::process_midi_in (
-	uint8_t *data, uint32_t size, uint32_t offset, uint16_t port )
+	unsigned char *data, unsigned int size,
+	unsigned long offset, unsigned short port )
 {
 	for (uint32_t i = 0; i < size; ++i) {
 
@@ -2427,7 +2411,7 @@ void qtractorVst3Plugin::Impl::process_midi_in (
 
 
 void qtractorVst3Plugin::Impl::process (
-	float **ins, float **outs, uint32_t nframes )
+	float **ins, float **outs, unsigned int nframes )
 {
 	if (!m_processor)
 		return;
@@ -2487,7 +2471,7 @@ unsigned long qtractorVst3Plugin::Impl::latency (void) const
 
 // Set/add a parameter value/point.
 void qtractorVst3Plugin::Impl::setParameter (
-	Vst::ParamID id, Vst::ParamValue value, uint32_t offset )
+	Vst::ParamID id, Vst::ParamValue value, uint32 offset )
 {
 	int32 index = 0;
 	Vst::IParamValueQueue *queue = m_params_in.addParameterData(id, index);
@@ -3239,7 +3223,8 @@ qtractorVst3Plugin::EditorFrame *qtractorVst3Plugin::editorFrame (void) const
 //
 
 void qtractorVst3Plugin::process_midi_in (
-	uint8_t *data, uint32_t size, uint32_t offset, uint16_t port )
+	unsigned char *data, unsigned int size,
+	unsigned long offset, unsigned short port )
 {
 	m_pImpl->process_midi_in(data, size, offset, port);
 }

@@ -827,12 +827,12 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translatio
         <translation>%1 (*.%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1132"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1117"/>
         <source>Name: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1135"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1120"/>
         <source>Category: </source>
         <translation type="unfinished"></translation>
     </message>

@@ -823,12 +823,12 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1132"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1117"/>
         <source>Name: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1135"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1120"/>
         <source>Category: </source>
         <translation type="unfinished"></translation>
     </message>

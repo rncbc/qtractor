@@ -826,12 +826,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1:Soubor s automatizací/křivkou nenalezen.</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1132"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1117"/>
         <source>Name: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1135"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1120"/>
         <source>Category: </source>
         <translation type="unfinished"></translation>
     </message>
