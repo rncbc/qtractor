@@ -17,7 +17,7 @@ site though. Let's recapitulate:
 Once downloaded and unzipped you may proceed to build for VST3 plug-in
 support, with the following magic spell:
 
-  ./configure --with-vst3sdk=/path/to/VST_SDK/VST3_SDK
+  ./configure --with-vst3=/path/to/VST_SDK/VST3_SDK
 
 
 Or, you may choose to go with the GitHub's route instead:
@@ -38,7 +38,7 @@ as well:
 Similarly, as before, you may now proceed with the build, starting from
 this point:
 
-  ./configure --with-vst3sdk=/path/to/vst3sdk
+  ./configure --with-vst3=/path/to/vst3sdk
 
 
 Lest to say, that this is all very experimental stuff, so the (in)formal

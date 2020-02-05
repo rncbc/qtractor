@@ -95,6 +95,9 @@ option (CONFIG_VST "Enable VST plug-in support (default=yes)" 1)
 
 option (CONFIG_VESTIGE "Enable VeSTige header support (default=yes)" 1)
 
+# Enable VST3 support.
+option (CONFIG_VST3 "Enable VST3 plug-in support (default=yes)" 1)
+
 # Enable LV2 support.
 option (CONFIG_LV2 "Enable LV2 plug-in support (default=yes)" 1)
 
@@ -137,8 +140,6 @@ option (CONFIG_LV2_UI_SHOW "Enable LV2 plug-in UI Show interface support (defaul
 option (CONFIG_LV2_UI_GTK2 "Enable LV2 plug-in UI GTK2 native support (default=yes)" 1)
 
 option (CONFIG_LV2_UI_X11 "Enable LV2 plug-in UI X11 native support (default=yes)" 1)
-
-option (CONFIG_VST3_SDK "VST3 SDK path; enable VST3 plug-in support (default=no)")
 
 # Enable JACK session support.
 option (CONFIG_JACK_SESSION "Enable JACK session support (default=yes)" 1)
@@ -321,7 +322,7 @@ if (CONFIG_LIBVORBIS)
 endif ()
 
 if (CONFIG_LIBVORBIS)
-  pkg_check_modules (VORBISENC REQUIRED vorbisenc)
+  pkg_check_modules (VORBISENC vorbisenc)
   if (VORBISENC_FOUND)
     include_directories (${VORBISENC_INCLUDE_DIRS})
     link_directories (${VORBISENC_LIBRARY_DIRS})
@@ -331,7 +332,7 @@ if (CONFIG_LIBVORBIS)
 endif ()
 
 if (CONFIG_LIBVORBIS)
-  pkg_check_modules (VORBISFILE REQUIRED vorbisfile)
+  pkg_check_modules (VORBISFILE vorbisfile)
   if (VORBISFILE_FOUND)
     include_directories (${VORBISFILE_INCLUDE_DIRS})
     link_directories (${VORBISFILE_LIBRARY_DIRS})
@@ -341,7 +342,7 @@ if (CONFIG_LIBVORBIS)
 endif ()
 
 if (CONFIG_LIBVORBIS)
-  pkg_check_modules (OGG REQUIRED ogg)
+  pkg_check_modules (OGG ogg)
   if (OGG_FOUND)
     include_directories (${OGG_INCLUDE_DIRS})
     link_directories (${OGG_LIBRARY_DIRS})
@@ -431,6 +432,18 @@ if (CONFIG_LIBZ)
   else ()
     message (WARNING "*** ZLIB library not found.")
     set (CONFIG_LIBZ 0)
+  endif ()
+endif ()
+
+# Check for VST3 SDK.
+if (CONFIG_VST3)
+  pkg_check_modules (VST3SDK vst3sdk>=3.6.14)
+  if (VST3SDK_FOUND)
+    include_directories (${VST3SDK_INCLUDE_DIRS})
+    set (CONFIG_VST3SDK ${VST3SDK_INCLUDE_DIRS})
+  else ()
+    message (WARNING "*** VST3 SDK not found.")
+    set (CONFIG_VST3 0)
   endif ()
 endif ()
 

@@ -158,6 +158,12 @@ AC_ARG_ENABLE(vst,
   [ac_vst="$enableval"],
   [ac_vst="yes"])
 
+# Enable VST3 support.
+AC_ARG_ENABLE(vst3,
+  AS_HELP_STRING([--enable-vst3], [enable VST3 plug-in support (default=yes)]),
+  [ac_vst3="$enableval"],
+  [ac_vst3="yes"])
+
 AC_ARG_ENABLE(vestige,
   AS_HELP_STRING([--enable-vestige], [enable VeSTige header support (default=yes)]),
   [ac_vestige="$enableval"],
@@ -401,15 +407,15 @@ AC_ARG_WITH(vst,
   AS_HELP_STRING([--with-vst=PATH], [use alternate VST header path]),
   [ac_with_vst="$withval"])
 
+# Set for alternate VST3 SDK root dir.
+AC_ARG_WITH(vst3,
+  AS_HELP_STRING([--with-vst3=PATH], [use alternate VST3 SDK path]),
+  [ac_with_vst3="$withval"])
+
 # Set for alternate LV2 include dir.
 AC_ARG_WITH(lv2,
   AS_HELP_STRING([--with-lv2=PATH], [use alternate LV2 header path]),
   [ac_with_lv2="$withval"])
-
-# Set for definite VST3 SDK root dir.
-AC_ARG_WITH(vst3sdk,
-  AS_HELP_STRING([--with-vst3sdk=PATH], [VST3 SDK path; enable VST3 plug-in support]),
-  [ac_with_vst3sdk="$withval"])
 
 
 # Honor user specified flags.
@@ -1361,13 +1367,19 @@ if test "x$ac_lv2_ui_x11" = "xyes"; then
 fi
 
 # Check for VST3 SDK stuff.
-if test -n "$ac_with_vst3sdk"; then
-   ac_vst3sdk=$ac_with_vst3sdk
-   AC_SUBST(ac_vst3sdk)
+if test "x$ac_vst3" = "xyes"; then
+   if test -n "$ac_with_vst3"; then
+      ac_vst3sdk=$ac_with_vst3
+   else
+      PKG_CHECK_MODULES([VST3SDK], [vst3sdk >= 3.6.14], [ac_vst3="yes"], [ac_vst3="no"])
+      if test "x$ac_vst3" = "xyes"; then
+         ac_vst3sdk="${VST3SDK_CFLAGS/-I/}"
+      fi
+   fi
+fi
+if test -n "x$ac_vst3" = "xyes" -a -n "$ac_vst3sdk"; then
    AC_DEFINE(CONFIG_VST3, 1, [Define if VST3 plug-in support is avilable.])
-   ac_vst3="yes"
-else
-   ac_vst3="no"
+   AC_SUBST(ac_vst3sdk)
 fi
 
 # Check for JACK session headers availability.

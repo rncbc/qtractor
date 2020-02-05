@@ -114,6 +114,7 @@ set (HEADERS
   qtractorTrackView.h
   qtractorTracks.h
   qtractorVstPlugin.h
+  qtractorVst3Plugin.h
   qtractorZipFile.h
   qtractorWsolaTimeStretcher.h
   qtractorBusForm.h
@@ -237,6 +238,7 @@ set (SOURCES
   qtractorTrackView.cpp
   qtractorTracks.cpp
   qtractorVstPlugin.cpp
+  qtractorVst3Plugin.cpp
   qtractorWsolaTimeStretcher.cpp
   qtractorZipFile.cpp
   qtractorBusForm.cpp
@@ -337,7 +339,7 @@ if (CONFIG_VST3SDK)
   add_definitions(-DNDEBUG)
   set (VST3SDK_SOURCES
     ${CONFIG_VST3SDK}/base/source/baseiids.cpp
-    ${CONFIG_VST3SDK}/base/source/fstring.cpp
+  # ${CONFIG_VST3SDK}/base/source/fstring.cpp
     ${CONFIG_VST3SDK}/base/source/fobject.cpp
     ${CONFIG_VST3SDK}/base/thread/source/flock.cpp
     ${CONFIG_VST3SDK}/public.sdk/source/common/commoniids.cpp
