@@ -3243,8 +3243,9 @@ void qtractorVst3Plugin::process (
 	// Process MIDI input stream, if any...
 	if (pMidiManager && m_pMidiParser) {
 		qtractorMidiBuffer *pMidiBuffer = pMidiManager->vst3_buffer_in();
-		snd_seq_event_t *pEv = pMidiBuffer->peek();
-		while (pEv) {
+		const unsigned int iEventCount = pMidiBuffer->count();
+		for (unsigned int i = 0; i < iEventCount; ++i) {
+			snd_seq_event_t *pEv = pMidiBuffer->at(i);
 			unsigned char midiData[c_iMaxMidiData];
 			unsigned char *pMidiData = &midiData[0];
 			long iMidiData = sizeof(midiData);
@@ -3253,7 +3254,6 @@ void qtractorVst3Plugin::process (
 			if (iMidiData < 0)
 				break;
 			m_pImpl->process_midi_in(pMidiData, iMidiData, pEv->time.tick, 0);
-			pEv = pMidiBuffer->next();
 		}
 	}
 

@@ -1,7 +1,7 @@
 // qtractorMidiBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -129,6 +129,14 @@ public:
 		} else {
 			return (iWriteIndex - iReadIndex + m_iBufferSize) & m_iBufferMask;
 		}
+	}
+
+	// Get event from buffer by index.
+	snd_seq_event_t *at(unsigned int iIndex) const
+	{
+		const unsigned int iReadIndex
+			= (m_iReadIndex + iIndex) & m_iBufferMask;
+		return &m_pBuffer[iReadIndex];
 	}
 
 	// Reset events in buffer.

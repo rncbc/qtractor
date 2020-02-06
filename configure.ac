@@ -1377,7 +1377,7 @@ if test "x$ac_vst3" = "xyes"; then
       fi
    fi
 fi
-if test -n "x$ac_vst3" = "xyes" -a -n "$ac_vst3sdk"; then
+if test "x$ac_vst3" = "xyes" -a -n "$ac_vst3sdk"; then
    AC_DEFINE(CONFIG_VST3, 1, [Define if VST3 plug-in support is avilable.])
    AC_SUBST(ac_vst3sdk)
 fi
