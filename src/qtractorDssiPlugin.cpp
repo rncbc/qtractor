@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -696,8 +696,8 @@ public:
 			qtractorMidiManager *pMidiManager
 				= pDssiPlugin->list()->midiManager();
 			if (pMidiManager) {
-				m_ppEvents[iInstances] = pMidiManager->events();
-				m_piEvents[iInstances] = pMidiManager->count();
+				m_ppEvents[iInstances] = pMidiManager->dssi_events();
+				m_piEvents[iInstances] = pMidiManager->dssi_count();
 			} else {
 				m_ppEvents[iInstances] = nullptr;
 				m_piEvents[iInstances] = 0;
@@ -1092,7 +1092,7 @@ void qtractorDssiPlugin::process (
 		// Make it run...
 		else if (pDssiDescriptor->run_synth) {
 			(*pDssiDescriptor->run_synth)(handle, nframes,
-				pMidiManager->events(), pMidiManager->count());
+				pMidiManager->dssi_events(), pMidiManager->dssi_count());
 		}
 		else (*pLadspaDescriptor->run)(handle, nframes);
 		// Wrap dangling output channels?...

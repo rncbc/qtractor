@@ -3242,7 +3242,7 @@ void qtractorVst3Plugin::process (
 
 	// Process MIDI input stream, if any...
 	if (pMidiManager && m_pMidiParser) {
-		qtractorMidiBuffer *pMidiBuffer = pMidiManager->vst3_buffer_in();
+		qtractorMidiBuffer *pMidiBuffer = pMidiManager->events_in();
 		const unsigned int iEventCount = pMidiBuffer->count();
 		for (unsigned int i = 0; i < iEventCount; ++i) {
 			snd_seq_event_t *pEv = pMidiBuffer->at(i);
@@ -3292,7 +3292,7 @@ void qtractorVst3Plugin::process (
 	// Process MIDI output stream, if any...
 	if (pMidiManager) {
 		if (iMidiOuts > 0) {
-			qtractorMidiBuffer *pMidiBuffer = pMidiManager->vst3_buffer_out();
+			qtractorMidiBuffer *pMidiBuffer = pMidiManager->events_out();
 			EventList& events_out = m_pImpl->events_out();
 			const int32 nevents = events_out.getEventCount();
 			for (int32 i = 0; i < nevents; ++i) {

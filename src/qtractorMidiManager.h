@@ -195,11 +195,11 @@ public:
 	// Clears buffers for processing.
 	void clear();
 
-	// Event buffer accessor. 
-	snd_seq_event_t *events() const { return m_pEventBuffer; }
-
-	// Returns number of events result of process.
-	unsigned int count() const { return m_iEventCount; }
+	// Event buffers accessors.
+	qtractorMidiBuffer *events_in() const
+		{ return m_ppEventBuffers[m_iEventBuffer & 1]; }
+	qtractorMidiBuffer *events_out() const
+		{ return m_ppEventBuffers[(m_iEventBuffer + 1) & 1]; }
 
 	// Direct buffering.
 	bool direct(snd_seq_event_t *pEvent);
@@ -237,6 +237,14 @@ public:
 	static void setDefaultAudioOutputMonitor(bool bAudioOutputMonitor);
 	static bool isDefaultAudioOutputMonitor();
 
+#ifdef CONFIG_DSSI
+	// DSSI event buffer accessors...
+	snd_seq_event_t *dssi_events() const
+		{ return m_pDssiEvents; }
+	unsigned int dssi_count() const
+		{ return m_iDssiEvents; }
+#endif
+
 #ifdef CONFIG_VST
 	// VST event buffer accessors...
 	VstEvents *vst_events_in() const
@@ -250,11 +258,6 @@ public:
 #endif
 
 #ifdef CONFIG_VST3
-	// VST2 event buffer accessors...
-	qtractorMidiBuffer *vst3_buffer_in() const
-		{ return m_ppVst3MidiBuffers[m_iEventBuffer & 1]; }
-	qtractorMidiBuffer *vst3_buffer_out() const
-		{ return m_ppVst3MidiBuffers[(m_iEventBuffer + 1) & 1]; }
 	// Swap VST3 event buffers...
 	void vst3_buffer_swap();
 #endif
@@ -392,22 +395,22 @@ private:
 
 	qtractorMidiBuffer  m_controllerBuffer;
 
-	snd_seq_event_t    *m_pEventBuffer;
-	unsigned int        m_iEventCount;
+	qtractorMidiBuffer  *m_ppEventBuffers[2];
+
+	unsigned short      m_iEventBuffer;
 
 #ifdef CONFIG_MIDI_PARSER
 	snd_midi_event_t   *m_pMidiParser;
 #endif
 
-	unsigned short      m_iEventBuffer;
+#ifdef CONFIG_DSSI
+	snd_seq_event_t    *m_pDssiEvents;
+	unsigned int        m_iDssiEvents;
+#endif
 
 #ifdef CONFIG_VST
 	VstMidiEvent       *m_ppVstMidiBuffers[2];
 	unsigned char      *m_ppVstBuffers[2];
-#endif
-
-#ifdef CONFIG_VST3
-	qtractorMidiBuffer *m_ppVst3MidiBuffers[2];
 #endif
 
 #ifdef CONFIG_LV2_EVENT
