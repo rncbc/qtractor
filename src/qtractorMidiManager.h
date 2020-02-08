@@ -196,9 +196,9 @@ public:
 	void clear();
 
 	// Event buffers accessors.
-	qtractorMidiBuffer *events_in() const
+	qtractorMidiBuffer *buffer_in() const
 		{ return m_ppEventBuffers[m_iEventBuffer & 1]; }
-	qtractorMidiBuffer *events_out() const
+	qtractorMidiBuffer *buffer_out() const
 		{ return m_ppEventBuffers[(m_iEventBuffer + 1) & 1]; }
 
 	// Direct buffering.

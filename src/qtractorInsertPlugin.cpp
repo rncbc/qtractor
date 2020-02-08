@@ -920,7 +920,7 @@ void qtractorMidiInsertPlugin::process (
 			= (pSession->isPlaying() ? pSession->playHead() : 0);
 		// Enqueue input events into sends/output bus...
 		if (m_pMidiOutputBuffer) {
-			qtractorMidiBuffer *pEventBuffer = pMidiManager->events_in();
+			qtractorMidiBuffer *pEventBuffer = pMidiManager->buffer_in();
 			const unsigned int iEventCount = pEventBuffer->count();
 			for (unsigned int i = 0; i < iEventCount; ++i) {
 				snd_seq_event_t *pEv = pEventBuffer->at(i);
@@ -1618,7 +1618,7 @@ void qtractorMidiAuxSendPlugin::process (
 		// Enqueue events into sends/output bus...
 		const unsigned long t0
 			= (pSession->isPlaying() ? pSession->playHead() : 0);
-		qtractorMidiBuffer *pEventBuffer = pMidiManager->events_in();
+		qtractorMidiBuffer *pEventBuffer = pMidiManager->buffer_in();
 		const unsigned int iEventCount = pEventBuffer->count();
 		for (unsigned int i = 0; i < iEventCount; ++i) {
 			snd_seq_event_t *pEv = pEventBuffer->at(i);
