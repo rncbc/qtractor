@@ -805,8 +805,8 @@ public:
 
 	// Constructor.
 	Impl (qtractorPluginFile *pFile) : m_pFile(pFile),
-		m_component(nullptr), m_controller(nullptr),
-		m_unitInfos(nullptr), m_iUniqueID(0) {}
+			m_component(nullptr), m_controller(nullptr),
+			m_unitInfos(nullptr), m_iUniqueID(0) {}
 
 	// Destructor.
 	~Impl () { close(); }
@@ -893,7 +893,7 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 		return false;
 	}
 
-	IPluginFactory *factory = get_plugin_factory();
+	IPluginFactory *factory = FUnknownPtr<IPluginFactory> (get_plugin_factory());
 	if (!factory) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
@@ -904,6 +904,9 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 	}
 
 	IPluginFactory2 *factory2 = FUnknownPtr<IPluginFactory2> (factory);
+	IPluginFactory3 *factory3 = FUnknownPtr<IPluginFactory3> (factory);
+	if (factory3)
+		factory3->setHostContext(g_hostContext.get());
 
 	const int32 nclasses = factory->countClasses();
 

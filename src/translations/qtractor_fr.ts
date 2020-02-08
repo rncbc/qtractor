@@ -745,13 +745,13 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>Produit :</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1172"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1175"/>
         <location filename="../qtractorVstPlugin.cpp" line="665"/>
         <source>Vendor: </source>
         <translation>Vendeur :</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1178"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1181"/>
         <location filename="../qtractorVstPlugin.cpp" line="673"/>
         <source>Version: </source>
         <translation>Version :</translation>
@@ -828,12 +828,12 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <translation>%1: Fichier automation/courbe introuvable.</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1156"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1159"/>
         <source>Name: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1159"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1162"/>
         <source>Category: </source>
         <translation type="unfinished"></translation>
     </message>
