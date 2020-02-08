@@ -805,7 +805,8 @@ public:
 
 	// Constructor.
 	Impl (qtractorPluginFile *pFile) : m_pFile(pFile),
-		m_component(nullptr), m_controller(nullptr), m_unitInfos(nullptr) {}
+		m_component(nullptr), m_controller(nullptr),
+		m_unitInfos(nullptr), m_iUniqueID(0) {}
 
 	// Destructor.
 	~Impl () { close(); }
@@ -815,9 +816,6 @@ public:
 	void close ();
 
 	// Accessors.
-	const PClassInfo& classInfo () const
-		{ return m_classInfo; }
-
 	Vst::IComponent *component () const
 		{ return m_component; }
 	Vst::IEditController *controller () const
@@ -826,6 +824,22 @@ public:
 	Vst::IUnitInfo *unitInfos () const
 		{ return m_unitInfos; }
 
+	const QString& name () const
+		{ return m_sName; }
+	const QString& category () const
+		{ return m_sCategory; }
+	const QString& subCategories () const
+		{ return m_sSubCategories; }
+	const QString& vendor () const
+		{ return m_sVendor; }
+	const QString& version () const
+		{ return m_sVersion; }
+	const QString& sdkVersion () const
+		{ return m_sSdkVersion; }
+
+	unsigned long uniqueID () const
+		{ return m_iUniqueID; }
+
 	int numChannels (Vst::MediaType type, Vst::BusDirection direction) const;
 
 private:
@@ -833,12 +847,19 @@ private:
 	// Instance members.
 	qtractorPluginFile *m_pFile;
 
-	PClassInfo m_classInfo;
-
 	IPtr<Vst::IComponent> m_component;
 	IPtr<Vst::IEditController> m_controller;
 
 	IPtr<Vst::IUnitInfo> m_unitInfos;
+
+	QString m_sName;
+	QString m_sCategory;
+	QString m_sSubCategories;
+	QString m_sVendor;
+	QString m_sVersion;
+	QString m_sSdkVersion;
+
+	unsigned long m_iUniqueID;
 };
 
 
@@ -882,6 +903,8 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 		return false;
 	}
 
+	IPluginFactory2 *factory2 = FUnknownPtr<IPluginFactory2> (factory);
+
 	const int32 nclasses = factory->countClasses();
 
 	unsigned long i = 0;
@@ -897,7 +920,24 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 
 		if (iIndex == i) {
 
-			m_classInfo = classInfo;
+			PClassInfo2 classInfo2;
+			if (factory2 && factory2->getClassInfo2(n, &classInfo2) == kResultOk) {
+				m_sName = QString::fromLocal8Bit(classInfo2.name);
+				m_sCategory = QString::fromLocal8Bit(classInfo2.category);
+				m_sSubCategories = QString::fromLocal8Bit(classInfo2.subCategories);
+				m_sVendor = QString::fromLocal8Bit(classInfo2.vendor);
+				m_sVersion = QString::fromLocal8Bit(classInfo2.version);
+				m_sSdkVersion = QString::fromLocal8Bit(classInfo2.sdkVersion);
+			} else {
+				m_sName = QString::fromLocal8Bit(classInfo.name);
+				m_sCategory = QString::fromLocal8Bit(classInfo.category);
+				m_sSubCategories.clear();
+				m_sVendor.clear();
+				m_sVersion.clear();
+				m_sSdkVersion.clear();
+			}
+
+			m_iUniqueID = qHash(QString::fromLocal8Bit(classInfo.cid));
 
 			Vst::IComponent *component = nullptr;
 			if (factory->createInstance(
@@ -1062,10 +1102,9 @@ bool qtractorVst3PluginType::open (void)
 		return false;
 
 	// Properties...
-	const PClassInfo& classInfo = m_pImpl->classInfo();
-	m_sName = QString::fromLocal8Bit(classInfo.name);
+	m_sName = m_pImpl->name();
 	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
-	m_iUniqueID = qHash(QString::fromLocal8Bit(classInfo.cid));
+	m_iUniqueID = m_pImpl->uniqueID();
 
 	m_iAudioIns  = m_pImpl->numChannels(Vst::kAudio, Vst::kInput);
 	m_iAudioOuts = m_pImpl->numChannels(Vst::kAudio, Vst::kOutput);
@@ -1113,12 +1152,39 @@ void qtractorVst3PluginType::close (void)
 const QString& qtractorVst3PluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		const PClassInfo& classInfo = m_pImpl->classInfo();
+		// PClassInfo...
 		m_sAboutText += QObject::tr("Name: ");
-		m_sAboutText += QString::fromLocal8Bit(classInfo.name);
+		m_sAboutText += m_pImpl->name();
 		m_sAboutText += '\n';
 		m_sAboutText += QObject::tr("Category: ");
-		m_sAboutText += QString::fromLocal8Bit(classInfo.category);
+		m_sAboutText += m_pImpl->category();
+		// PClassInfo2...
+		QString sText = m_pImpl->subCategories();
+		if (!sText.isEmpty()) {
+			m_sAboutText += ' ';
+			m_sAboutText += '-';
+			m_sAboutText += ' ';
+			m_sAboutText += sText;
+		}
+		sText = m_pImpl->vendor();
+		if (!sText.isEmpty()) {
+			m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Vendor: ");
+			m_sAboutText += sText;
+		}
+		sText = m_pImpl->version();
+		if (!sText.isEmpty()) {
+			m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Version: ");
+			m_sAboutText += sText;
+		}
+		sText = m_pImpl->sdkVersion();
+		if (!sText.isEmpty()) {
+			m_sAboutText += ' ';
+			m_sAboutText += '(';
+			m_sAboutText += sText;
+			m_sAboutText += ')';
+		}
 	}
 
 	return m_sAboutText;

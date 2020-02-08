@@ -812,11 +812,13 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translatio
         <translation>Producto: </translation>
     </message>
     <message>
+        <location filename="../qtractorVst3Plugin.cpp" line="1172"/>
         <location filename="../qtractorVstPlugin.cpp" line="665"/>
         <source>Vendor: </source>
         <translation>Fabricante: </translation>
     </message>
     <message>
+        <location filename="../qtractorVst3Plugin.cpp" line="1178"/>
         <location filename="../qtractorVstPlugin.cpp" line="673"/>
         <source>Version: </source>
         <translation>Versión: </translation>
@@ -827,12 +829,12 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translatio
         <translation>%1 (*.%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1117"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1156"/>
         <source>Name: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1120"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1159"/>
         <source>Category: </source>
         <translation type="unfinished"></translation>
     </message>
