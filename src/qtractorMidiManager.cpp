@@ -617,9 +617,9 @@ void qtractorMidiManager::process (
 	}
 
 #ifdef CONFIG_DEBUG_0
-	const unsigned int iEVentCount = pInputBuffer->count();
+	const unsigned int iEventCount = pEventBuffer->count();
 	for (unsigned int i = 0; i < iEventCount; ++i) {
-		snd_seq_event_t *pEv = pInputBuffer.at(i);
+		snd_seq_event_t *pEv = pEventBuffer->at(i);
 		// - show event for debug purposes...
 		const unsigned long iTime = iTimeStart + pEv->time.tick;
 		fprintf(stderr, "MIDI Seq %06lu 0x%02x", iTime, pEv->type);
