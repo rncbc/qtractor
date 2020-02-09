@@ -832,6 +832,10 @@ public:
 		{ return m_sSubCategories; }
 	const QString& vendor () const
 		{ return m_sVendor; }
+	const QString& email () const
+		{ return m_sEmail; }
+	const QString& url () const
+		{ return m_sUrl; }
 	const QString& version () const
 		{ return m_sVersion; }
 	const QString& sdkVersion () const
@@ -856,6 +860,8 @@ private:
 	QString m_sCategory;
 	QString m_sSubCategories;
 	QString m_sVendor;
+	QString m_sEmail;
+	QString m_sUrl;
 	QString m_sVersion;
 	QString m_sSdkVersion;
 
@@ -903,6 +909,16 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 		return false;
 	}
 
+	PFactoryInfo factoryInfo;
+	if (factory->getFactoryInfo(&factoryInfo) != kResultOk) {
+	#ifdef CONFIG_DEBUG
+		qDebug("vst3_test_plugin_type::Impl[%p]::open(\"%s\", %lu)"
+			" *** Failed to retrieve plug-in factory information.", this,
+			m_pFile->filename().toUtf8().constData(), iIndex);
+	#endif
+		return false;
+	}
+
 	IPluginFactory2 *factory2 = FUnknownPtr<IPluginFactory2> (factory);
 	IPluginFactory3 *factory3 = FUnknownPtr<IPluginFactory3> (factory);
 	if (factory3)
@@ -923,22 +939,39 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 
 		if (iIndex == i) {
 
-			PClassInfo2 classInfo2;
-			if (factory2 && factory2->getClassInfo2(n, &classInfo2) == kResultOk) {
-				m_sName = QString::fromLocal8Bit(classInfo2.name);
-				m_sCategory = QString::fromLocal8Bit(classInfo2.category);
-				m_sSubCategories = QString::fromLocal8Bit(classInfo2.subCategories);
-				m_sVendor = QString::fromLocal8Bit(classInfo2.vendor);
-				m_sVersion = QString::fromLocal8Bit(classInfo2.version);
-				m_sSdkVersion = QString::fromLocal8Bit(classInfo2.sdkVersion);
+			PClassInfoW classInfoW;
+			if (factory3 &&  factory3->getClassInfoUnicode(n, &classInfoW) == kResultOk) {
+				m_sName = fromTChar(classInfoW.name);
+				m_sCategory = QString::fromLocal8Bit(classInfoW.category);
+				m_sSubCategories = QString::fromLocal8Bit(classInfoW.subCategories);
+				m_sVendor = fromTChar(classInfoW.vendor);
+				m_sVersion = fromTChar(classInfoW.version);
+				m_sSdkVersion = fromTChar(classInfoW.sdkVersion);
 			} else {
-				m_sName = QString::fromLocal8Bit(classInfo.name);
-				m_sCategory = QString::fromLocal8Bit(classInfo.category);
-				m_sSubCategories.clear();
-				m_sVendor.clear();
-				m_sVersion.clear();
-				m_sSdkVersion.clear();
+				PClassInfo2 classInfo2;
+				if (factory2 && factory2->getClassInfo2(n, &classInfo2) == kResultOk) {
+					m_sName = QString::fromLocal8Bit(classInfo2.name);
+					m_sCategory = QString::fromLocal8Bit(classInfo2.category);
+					m_sSubCategories = QString::fromLocal8Bit(classInfo2.subCategories);
+					m_sVendor = QString::fromLocal8Bit(classInfo2.vendor);
+					m_sVersion = QString::fromLocal8Bit(classInfo2.version);
+					m_sSdkVersion = QString::fromLocal8Bit(classInfo2.sdkVersion);
+				} else {
+					m_sName = QString::fromLocal8Bit(classInfo.name);
+					m_sCategory = QString::fromLocal8Bit(classInfo.category);
+					m_sSubCategories.clear();
+					m_sVendor.clear();
+					m_sVersion.clear();
+					m_sSdkVersion.clear();
+				}
 			}
+
+			if (m_sVendor.isEmpty())
+				m_sVendor = QString::fromLocal8Bit(factoryInfo.vendor);
+			if (m_sEmail.isEmpty())
+				m_sEmail = QString::fromLocal8Bit(factoryInfo.email);
+			if (m_sUrl.isEmpty())
+				m_sUrl = QString::fromLocal8Bit(factoryInfo.url);
 
 			m_iUniqueID = qHash(QString::fromLocal8Bit(classInfo.cid));
 
@@ -1155,18 +1188,35 @@ void qtractorVst3PluginType::close (void)
 const QString& qtractorVst3PluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
-		// PClassInfo...
+	#if 0
 		m_sAboutText += QObject::tr("Name: ");
 		m_sAboutText += m_pImpl->name();
-		m_sAboutText += '\n';
-		m_sAboutText += QObject::tr("Category: ");
-		m_sAboutText += m_pImpl->category();
-		// PClassInfo2...
-		QString sText = m_pImpl->subCategories();
+	#endif
+		QString sText = m_pImpl->version();
 		if (!sText.isEmpty()) {
-			m_sAboutText += ' ';
-			m_sAboutText += '-';
-			m_sAboutText += ' ';
+		//	m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Version: ");
+			m_sAboutText += sText;
+		}
+		sText = m_pImpl->sdkVersion();
+		if (!sText.isEmpty()) {
+			m_sAboutText += '\t';
+			m_sAboutText += '(';
+			m_sAboutText += sText;
+			m_sAboutText += ')';
+		}
+	#if 0
+		sText = m_pImpl->category();
+		if (!sText.isEmpty()) {
+			m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Category: ");
+			m_sAboutText += sText;
+		}
+	#endif
+		sText = m_pImpl->subCategories();
+		if (!sText.isEmpty()) {
+			m_sAboutText += '\n';
+			m_sAboutText += QObject::tr("Categories: ");
 			m_sAboutText += sText;
 		}
 		sText = m_pImpl->vendor();
@@ -1175,18 +1225,19 @@ const QString& qtractorVst3PluginType::aboutText (void)
 			m_sAboutText += QObject::tr("Vendor: ");
 			m_sAboutText += sText;
 		}
-		sText = m_pImpl->version();
+	#if 0
+		sText = m_pImpl->email();
 		if (!sText.isEmpty()) {
 			m_sAboutText += '\n';
-			m_sAboutText += QObject::tr("Version: ");
+		//	m_sAboutText += QObject::tr("Email: ");
 			m_sAboutText += sText;
 		}
-		sText = m_pImpl->sdkVersion();
+	#endif
+		sText = m_pImpl->url();
 		if (!sText.isEmpty()) {
-			m_sAboutText += ' ';
-			m_sAboutText += '(';
+			m_sAboutText += '\n';
+		//	m_sAboutText += QObject::tr("URL: ");
 			m_sAboutText += sText;
-			m_sAboutText += ')';
 		}
 	}
 
