@@ -940,7 +940,7 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 		if (iIndex == i) {
 
 			PClassInfoW classInfoW;
-			if (factory3 &&  factory3->getClassInfoUnicode(n, &classInfoW) == kResultOk) {
+			if (factory3 && factory3->getClassInfoUnicode(n, &classInfoW) == kResultOk) {
 				m_sName = fromTChar(classInfoW.name);
 				m_sCategory = QString::fromLocal8Bit(classInfoW.category);
 				m_sSubCategories = QString::fromLocal8Bit(classInfoW.subCategories);
