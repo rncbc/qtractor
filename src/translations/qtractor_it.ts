@@ -746,13 +746,13 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>Prodotto:</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1225"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1291"/>
         <location filename="../qtractorVstPlugin.cpp" line="665"/>
         <source>Vendor: </source>
         <translation>Produttore: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1198"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1264"/>
         <location filename="../qtractorVstPlugin.cpp" line="673"/>
         <source>Version: </source>
         <translation>Versione: </translation>
@@ -829,17 +829,17 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>%1: File di automazione/curva non trovato.</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1192"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1258"/>
         <source>Name: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1212"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1278"/>
         <source>Category: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1219"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1285"/>
         <source>Categories: </source>
         <translation type="unfinished"></translation>
     </message>

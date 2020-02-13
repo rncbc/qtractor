@@ -63,6 +63,18 @@
 #include <QMap>
 
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#define CONFIG_VST3_XCB
+#endif
+
+#ifdef CONFIG_VST3_XCB
+#if defined(QT_X11EXTRAS_LIB)
+#include <QX11Info>
+#endif
+#include <xcb/xcb.h>
+#endif
+
+
 using namespace Steinberg;
 using namespace Linux;
 
@@ -120,6 +132,11 @@ public:
 	void processTimers();
 	void processEventHandlers();
 
+#ifdef CONFIG_VST3_XCB
+	void openXcbConnection();
+	void closeXcbConnection();
+#endif
+
 	// Common host time-keeper context accessors.
 	Vst::ProcessContext *processContext();
 
@@ -161,6 +178,12 @@ private:
 
 	QHash<ITimerHandler *, TimerItem *> m_timers;
 	QHash<IEventHandler *, int> m_fileDescriptors;
+
+#ifdef CONFIG_VST3_XCB
+	int               m_iXcbRefCount;
+	xcb_connection_t *m_pXcbConnection;
+	int               m_iXcbFileDescriptor;
+#endif	// defined(XCB_TEST)
 
 	Vst::ProcessContext m_processContext;
 	unsigned int        m_processRefCount;
@@ -691,6 +714,15 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 	FD_ZERO(&wfds);
 	FD_ZERO(&efds);
 
+#ifdef CONFIG_VST3_XCB
+	if (m_iXcbFileDescriptor) {
+		FD_SET(m_iXcbFileDescriptor, &rfds);
+		FD_SET(m_iXcbFileDescriptor, &wfds);
+		FD_SET(m_iXcbFileDescriptor, &efds);
+		nfds = qMax(nfds, m_iXcbFileDescriptor);
+	}
+#endif
+
 	QHash<IEventHandler *, int>::ConstIterator iter
 		= m_fileDescriptors.constBegin();
 	for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
@@ -719,6 +751,40 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 		}
 	}
 }
+
+
+#ifdef CONFIG_VST3_XCB
+
+void qtractorVst3PluginHost::openXcbConnection (void)
+{
+	if (m_pXcbConnection == nullptr && ++m_iXcbRefCount == 1) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3PluginHost::openXcbConnection()");
+	#endif
+	#if defined(QT_X11EXTRAS_LIB)
+		m_pXcbConnection = QX11Info::connection();
+	#else
+		m_pXcbConnection = xcb_connect(nullptr, nullptr);
+	#endif
+		m_iXcbFileDescriptor = xcb_get_file_descriptor(m_pXcbConnection);
+	}
+}
+
+void qtractorVst3PluginHost::closeXcbConnection (void)
+{
+	if (m_pXcbConnection && --m_iXcbRefCount == 0) {
+	#if defined(QT_X11EXTRAS_LIB)
+		xcb_disconnect(m_pXcbConnection);
+	#endif
+		m_pXcbConnection = nullptr;
+		m_iXcbFileDescriptor = 0;
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3PluginHost::closeXcbConnection()");
+	#endif
+	}
+}
+
+#endif	// CONFIG_VST3_XCB
 
 
 // Common host time-keeper context accessor.
@@ -2360,6 +2426,10 @@ bool qtractorVst3Plugin::Impl::openEditor (void)
 	if (pType == nullptr)
 		return false;
 
+#ifdef CONFIG_VST3_XCB
+	g_hostContext.openXcbConnection();
+#endif
+
 	Vst::IEditController *controller = pType->impl()->controller();
 	if (controller)
 		m_plugView = controller->createView(Vst::ViewType::kEditor);
@@ -2371,6 +2441,10 @@ bool qtractorVst3Plugin::Impl::openEditor (void)
 void qtractorVst3Plugin::Impl::closeEditor (void)
 {
 	m_plugView = nullptr;
+
+#ifdef CONFIG_VST3_XCB
+	g_hostContext.closeXcbConnection();
+#endif
 }
 
 
@@ -2845,12 +2919,13 @@ void qtractorVst3Plugin::EditorWidget::resizeEvent ( QResizeEvent *pResizeEvent 
 			if (rect0.top    != rect.top   ||
 				rect0.left   != rect.left  ||
 				rect0.right  != rect.right ||
-				rect0.bottom != rect.bottom)
+				rect0.bottom != rect.bottom) {
 			#ifdef CONFIG_DEBUG
 				qDebug("qtractorVst3Plugin::EditorWidget[%p]::resizeEvent(%d, %d)",
 					this, size.width(), size.height());
 			#endif
 				plugView->onSize(&rect);
+			}
 		}
 	}
 }

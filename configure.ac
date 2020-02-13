@@ -1378,6 +1378,11 @@ if test "x$ac_vst3" = "xyes"; then
    fi
 fi
 if test "x$ac_vst3" = "xyes" -a -n "$ac_vst3sdk"; then
+   PKG_CHECK_MODULES([XCB], [xcb], [ac_vst3_xcb="yes"], [ac_vst3_xcb="no"])
+   if test "x$ac_vst3_xcb" = "xyes"; then
+      ac_cflags="$ac_cflags $XCB_CFLAGS"
+      ac_libs="$ac_libs $XCB_LIBS"
+   fi
    AC_DEFINE(CONFIG_VST3, 1, [Define if VST3 plug-in support is avilable.])
    AC_SUBST(ac_vst3sdk)
 fi
