@@ -48,7 +48,6 @@
 
 #include "base/source/fobject.h"
 
-#include <QWindow>
 #include <QWidget>
 #include <QVBoxLayout>
 
@@ -773,7 +772,7 @@ void qtractorVst3PluginHost::openXcbConnection (void)
 void qtractorVst3PluginHost::closeXcbConnection (void)
 {
 	if (m_pXcbConnection && --m_iXcbRefCount == 0) {
-	#if defined(QT_X11EXTRAS_LIB)
+	#ifndef QT_X11EXTRAS_LIB
 		xcb_disconnect(m_pXcbConnection);
 	#endif
 		m_pXcbConnection = nullptr;
@@ -945,17 +944,17 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 {
 	close();
 
-	typedef bool (*VST3_ModuleEntry)(void *);
+	typedef bool (PLUGIN_API *VST3_ModuleEntry)(void *);
 	const VST3_ModuleEntry module_entry
-		= VST3_ModuleEntry(m_pFile->resolve("ModuleEntry"));
+		= reinterpret_cast<VST3_ModuleEntry> (m_pFile->resolve("ModuleEntry"));
 	if (!module_entry)
 		return false;
 	if (!module_entry(m_pFile->module()))
 		return false;
 
-	typedef IPluginFactory *(*VST3_GetFactory)();
-	const VST3_GetFactory get_plugin_factory
-		= VST3_GetFactory(m_pFile->resolve("GetPluginFactory"));
+	typedef IPluginFactory *(PLUGIN_API *VST3_GetPluginFactory)();
+	const VST3_GetPluginFactory get_plugin_factory
+		= reinterpret_cast<VST3_GetPluginFactory> (m_pFile->resolve("GetPluginFactory"));
 	if (!get_plugin_factory) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
@@ -965,7 +964,7 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 		return false;
 	}
 
-	IPluginFactory *factory = FUnknownPtr<IPluginFactory> (get_plugin_factory());
+	IPluginFactory *factory = get_plugin_factory();
 	if (!factory) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
@@ -1131,17 +1130,17 @@ void qtractorVst3PluginType::Impl::close (void)
 		m_controller->terminate();
 	}
 
-	if (m_component)
+	if (m_component) {
 		m_component->terminate();
+		typedef bool (PLUGIN_API *VST3_ModuleExit)();
+		const VST3_ModuleExit module_exit
+			= reinterpret_cast<VST3_ModuleExit> (m_pFile->resolve("ModuleExit"));
+		if (module_exit)
+			module_exit();
+	}
 
 	m_controller = nullptr;
 	m_component = nullptr;
-
-	typedef bool (*VST3_ModuleExit)();
-	const VST3_ModuleExit module_exit
-		= VST3_ModuleExit(m_pFile->resolve("ModuleExit"));
-	if (module_exit)
-		module_exit();
 }
 
 
@@ -2858,7 +2857,7 @@ public:
 	qtractorVst3Plugin *plugin () const
 		{ return m_pPlugin; }
 
-	WId parentWinId() const { return m_pWindow->winId(); }
+	WId parentWinId() const { return QWidget::winId(); }
 
 protected:
 
@@ -2869,8 +2868,6 @@ protected:
 private:
 
 	qtractorVst3Plugin *m_pPlugin;
-
-	QWindow *m_pWindow;
 };
 
 
@@ -2880,22 +2877,13 @@ private:
 
 qtractorVst3Plugin::EditorWidget::EditorWidget (
 	QWidget *pParent, Qt::WindowFlags wflags )
-	: QWidget(pParent, wflags), m_pPlugin(nullptr), m_pWindow(new QWindow())
+	: QWidget(pParent, wflags), m_pPlugin(nullptr)
 {
-	m_pWindow->create();
-	QWidget *pContainer = QWidget::createWindowContainer(m_pWindow, this);
-	QVBoxLayout *pVBoxLayout = new QVBoxLayout();
-	pVBoxLayout->setMargin(0);
-	pVBoxLayout->setSpacing(0);
-	pVBoxLayout->addWidget(pContainer);
-	QWidget::setLayout(pVBoxLayout);
 }
 
 
 qtractorVst3Plugin::EditorWidget::~EditorWidget (void)
 {
-	m_pWindow->destroy();
-	delete m_pWindow;
 }
 
 
