@@ -2238,16 +2238,17 @@ qtractorVst3Plugin::Impl::~Impl (void)
 
 	qtractorVst3PluginType *pType
 		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
-	if (m_handler && pType) {
+	if (pType) {
 		Vst::IComponent *component = pType->impl()->component();
-		FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
-		if (component_cp)
-			component_cp->disconnect(m_handler);
 		Vst::IEditController *controller = pType->impl()->controller();
+		FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
 		FUnknownPtr<Vst::IConnectionPoint> controller_cp(controller);
-		if (controller_cp)
-			controller_cp->disconnect(m_handler);
+		if (component_cp && controller_cp) {
+			component_cp->disconnect(controller_cp);
+			controller_cp->disconnect(component_cp);
+		}
 	}
+
 
 	m_processor = nullptr;
 	m_handler = nullptr;
@@ -2280,13 +2281,11 @@ void qtractorVst3Plugin::Impl::initialize (void)
 	}
 
 	// Connect components...
-	if (m_handler) {
-		FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
-		if (component_cp)
-			component_cp->connect(m_handler);
-		FUnknownPtr<Vst::IConnectionPoint> controller_cp(controller);
-		if (controller_cp)
-			controller_cp->connect(m_handler);
+	FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
+	FUnknownPtr<Vst::IConnectionPoint> controller_cp(controller);
+	if (component_cp && controller_cp) {
+		component_cp->connect(controller_cp);
+		controller_cp->connect(component_cp);
 	}
 
 	m_processor = FUnknownPtr<Vst::IAudioProcessor> (component);
