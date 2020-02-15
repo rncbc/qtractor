@@ -1232,7 +1232,7 @@ bool qtractor_vst3_scan::open_descriptor ( unsigned long iIndex )
 	const PClassInfo& classInfo = m_pImpl->classInfo();
 	m_sName = QString::fromLocal8Bit(classInfo.name);
 
-	m_iUniqueID = qHash(QString::fromLocal8Bit(classInfo.cid));
+	m_iUniqueID = qHash(QByteArray(classInfo.cid, sizeof(TUID)));
 
 	m_iAudioIns  = m_pImpl->numChannels(Vst::kAudio, Vst::kInput);
 	m_iAudioOuts = m_pImpl->numChannels(Vst::kAudio, Vst::kOutput);

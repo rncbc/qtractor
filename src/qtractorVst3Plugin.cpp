@@ -760,7 +760,7 @@ void qtractorVst3PluginHost::openXcbConnection (void)
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVst3PluginHost::openXcbConnection()");
 	#endif
-	#if defined(QT_X11EXTRAS_LIB)
+	#ifdef QT_X11EXTRAS_LIB
 		m_pXcbConnection = QX11Info::connection();
 	#else
 		m_pXcbConnection = xcb_connect(nullptr, nullptr);
@@ -1038,7 +1038,7 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 			if (m_sUrl.isEmpty())
 				m_sUrl = QString::fromLocal8Bit(factoryInfo.url);
 
-			m_iUniqueID = qHash(QString::fromLocal8Bit(classInfo.cid));
+			m_iUniqueID = qHash(QByteArray(classInfo.cid, sizeof(TUID)));
 
 			Vst::IComponent *component = nullptr;
 			if (factory->createInstance(
