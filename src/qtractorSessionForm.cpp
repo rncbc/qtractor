@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -141,6 +141,17 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 {
 	// Session properties cloning...
 	m_props = pSession->properties();
+
+	// HACK: Fix for an initial session directory proposal...
+	if (m_props.sessionName.isEmpty()) {
+		QDir dir(m_props.sessionDir);
+		QStringList filters;
+		filters << dir.dirName() + '*';
+		if (!dir.entryList(filters, QDir::Files).isEmpty()) {
+			const QFileInfo info(dir.absolutePath());
+			m_props.sessionDir = info.absolutePath();
+		}
+	}
 
 	// Initialize dialog widgets...
 	m_ui.SessionNameLineEdit->setText(m_props.sessionName);

@@ -13513,13 +13513,13 @@ Jste si jistý?</translation>
 <context>
     <name>qtractorSessionForm</name>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="193"/>
-        <location filename="../qtractorSessionForm.cpp" line="249"/>
+        <location filename="../qtractorSessionForm.cpp" line="204"/>
+        <location filename="../qtractorSessionForm.cpp" line="260"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="194"/>
+        <location filename="../qtractorSessionForm.cpp" line="205"/>
         <source>Session directory does not exist:
 
 &quot;%1&quot;
@@ -13532,7 +13532,7 @@ Do you want to create it?</source>
 Chcete jej vytvořit?</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="250"/>
+        <location filename="../qtractorSessionForm.cpp" line="261"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -13541,7 +13541,7 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="314"/>
+        <location filename="../qtractorSessionForm.cpp" line="325"/>
         <source>Session Directory</source>
         <translation>Adresář sezení</translation>
     </message>
