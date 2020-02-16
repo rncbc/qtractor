@@ -3028,6 +3028,15 @@ void qtractorVst3Plugin::deactivate (void)
 void qtractorVst3Plugin::updateParam (
 	qtractorPluginParam *pParam, float fValue, bool /*bUpdate*/ )
 {
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (type());
+	if (pType == nullptr)
+		return;
+
+	Vst::IEditController *controller = pType->impl()->controller();
+	if (!controller)
+		return;
+
 	qtractorVst3PluginParam *pVst3Param
 		= static_cast<qtractorVst3PluginParam *> (pParam);
 	if (pVst3Param == nullptr)
@@ -3043,6 +3052,7 @@ void qtractorVst3Plugin::updateParam (
 	const Vst::ParamID id = pVst3Param->impl()->paramInfo().id;
 	const Vst::ParamValue value = Vst::ParamValue(fValue);
 	m_pImpl->setParameter(id, value, 0);
+	controller->setParamNormalized(id, value);
 }
 
 
