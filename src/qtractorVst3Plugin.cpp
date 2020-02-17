@@ -2364,8 +2364,8 @@ tresult qtractorVst3Plugin::Impl::notify ( Vst::IMessage *message )
 bool qtractorVst3Plugin::Impl::process_reset (
 	float srate, unsigned int nframes )
 {
-	qtractorVst3Plugin_type *pType
-		= static_cast<qtractorVst3Plugin *> (m_pPlugin->type());
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
 	if (pType == nullptr)
 		return false;
 
