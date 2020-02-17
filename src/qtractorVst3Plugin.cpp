@@ -1721,6 +1721,13 @@ private:
 	EventList m_events_in;
 	EventList m_events_out;
 
+	// Processor buffers.
+	Vst::AudioBusBuffers m_buffers_in;
+	Vst::AudioBusBuffers m_buffers_out;
+
+	// Processor data.
+	Vst::ProcessData m_process_data;
+
 	// Program-change parameter info.
 	Vst::ParameterInfo m_programParamInfo;
 
@@ -2357,6 +2364,11 @@ tresult qtractorVst3Plugin::Impl::notify ( Vst::IMessage *message )
 bool qtractorVst3Plugin::Impl::process_reset (
 	float srate, unsigned int nframes )
 {
+	qtractorVst3Plugin_type *pType
+		= static_cast<qtractorVst3Plugin *> (m_pPlugin->type());
+	if (pType == nullptr)
+		return false;
+
 	if (!m_processor)
 		return false;
 
@@ -2377,6 +2389,28 @@ bool qtractorVst3Plugin::Impl::process_reset (
 
 	if (m_processor->setupProcessing(setup) != kResultOk)
 		return false;
+
+	// Setup processor audio I/O buffers...
+	m_buffers_in.silenceFlags      = 0;
+	m_buffers_in.numChannels       = pType->audioIns();
+	m_buffers_in.channelBuffers32  = nullptr;
+
+	m_buffers_out.silenceFlags     = 0;
+	m_buffers_out.numChannels      = pType->audioOuts();
+	m_buffers_out.channelBuffers32 = nullptr;
+
+	// Setup processor data struct...
+	m_process_data.numSamples             = nframes;
+	m_process_data.symbolicSampleSize     = Vst::kSample32;
+	m_process_data.numInputs              = 1;
+	m_process_data.numOutputs             = 1;
+	m_process_data.inputs                 = &m_buffers_in;
+	m_process_data.outputs                = &m_buffers_out;
+	m_process_data.processContext         = g_hostContext.processContext();
+	m_process_data.inputEvents            = &m_events_in;
+	m_process_data.outputEvents           = &m_events_out;
+	m_process_data.inputParameterChanges  = &m_params_in;
+	m_process_data.outputParameterChanges = nullptr; //&m_params_out;
 
 //	activate();
 
@@ -2501,30 +2535,11 @@ void qtractorVst3Plugin::Impl::process (
 //	m_params_out.clear();
 	m_events_out.clear();
 
-	Vst::AudioBusBuffers input_buffers;
-	input_buffers.silenceFlags      = 0;
-	input_buffers.numChannels       = pType->audioIns();
-	input_buffers.channelBuffers32  = ins;
+	m_buffers_in.channelBuffers32 = ins;
+	m_buffers_out.channelBuffers32 = outs;
+	m_process_data.numSamples = nframes;
 
-	Vst::AudioBusBuffers output_buffers;
-	output_buffers.silenceFlags     = 0;
-	output_buffers.numChannels      = pType->audioOuts();
-	output_buffers.channelBuffers32 = outs;
-
-	Vst::ProcessData data;
-	data.numSamples             = nframes;
-	data.symbolicSampleSize     = Vst::kSample32;
-	data.numInputs              = 1;
-	data.numOutputs             = 1;
-	data.inputs                 = &input_buffers;
-	data.outputs                = &output_buffers;
-	data.processContext         = g_hostContext.processContext();
-	data.inputEvents            = &m_events_in;
-	data.outputEvents           = &m_events_out;
-	data.inputParameterChanges  = &m_params_in;
-	data.outputParameterChanges = nullptr; //&m_params_out;
-
-	if (m_processor->process(data) != kResultOk) {
+	if (m_processor->process(m_process_data) != kResultOk) {
 		qWarning("qtractorVst3Plugin::Impl[%p]::process() FAILED!", this);
 	}
 
