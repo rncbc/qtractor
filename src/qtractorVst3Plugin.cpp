@@ -1796,6 +1796,7 @@ public:
 	#ifdef CONFIG_DEBUG
 		qDebug("vst3_text_plugin::Handler[%p]::performEdit(%d, %g)", this, int(id), float(value));
 	#endif
+		m_pPlugin->impl()->setParameter(id, value, 0);
 		qtractorPluginParam *pParam = m_pPlugin->findParamId(int(id));
 		if (pParam)
 			pParam->updateValue(float(value), false);
