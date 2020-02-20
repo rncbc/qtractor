@@ -1953,10 +1953,6 @@ public:
 		if (!m_widget || m_resizing)
 			return kResultFalse;
 
-		ViewRect rect0;
-		if (m_plugView->getSize(&rect0) != kResultOk)
-			return kInternalError;
-
 		m_resizing = false;
 		const QSize size(
 			rect->right  - rect->left,
@@ -1971,10 +1967,14 @@ public:
 			m_widget->resize(size);
 		m_resizing = true;
 
-		if (rect0.top    != rect->top   ||
-			rect0.left   != rect->left  ||
-			rect0.right  != rect->right ||
-			rect0.bottom != rect->bottom)
+		ViewRect rect0;
+		if (m_plugView->getSize(&rect0) != kResultOk)
+			return kInternalError;
+
+		const QSize size0(
+			rect0.right  - rect0.left,
+			rect0.bottom - rect0.top);
+		if (size != size0)
 			m_plugView->onSize(rect);
 
 		return kResultOk;
@@ -2001,7 +2001,7 @@ private:
 	IPlugView *m_plugView;
 	QWidget *m_widget;
 	IPtr<RunLoop> m_runLoop;
-	int m_resizing;
+	bool m_resizing;
 };
 
 
@@ -2775,6 +2775,7 @@ protected:
 private:
 
 	qtractorVst3Plugin *m_pPlugin;
+	bool m_resizing;
 };
 
 
@@ -2784,7 +2785,7 @@ private:
 
 qtractorVst3Plugin::EditorWidget::EditorWidget (
 	QWidget *pParent, Qt::WindowFlags wflags )
-	: QWidget(pParent, wflags), m_pPlugin(nullptr)
+	: QWidget(pParent, wflags), m_pPlugin(nullptr), m_resizing(false)
 {
 }
 
@@ -2796,6 +2797,9 @@ qtractorVst3Plugin::EditorWidget::~EditorWidget (void)
 
 void qtractorVst3Plugin::EditorWidget::resizeEvent ( QResizeEvent *pResizeEvent )
 {
+	if (m_resizing)
+		return;
+
 	IPlugView *plugView = nullptr;
 	EditorFrame *pEditorFrame = nullptr;
 	if (m_pPlugin)
@@ -2803,25 +2807,27 @@ void qtractorVst3Plugin::EditorWidget::resizeEvent ( QResizeEvent *pResizeEvent 
 	if (pEditorFrame)
 		plugView = pEditorFrame->plugView();
 	if (plugView && plugView->canResize() == kResultOk) {
-		ViewRect rect0;
-		if (plugView->getSize(&rect0) == kResultOk) {
-			const QSize& size = pResizeEvent->size();
-			ViewRect rect;
-			rect.left   = 0;
-			rect.top    = 0;
-			rect.right  = size.width();
-			rect.bottom = size.height();
-			if (rect0.top    != rect.top   ||
-				rect0.left   != rect.left  ||
-				rect0.right  != rect.right ||
-				rect0.bottom != rect.bottom) {
-			#ifdef CONFIG_DEBUG
-				qDebug("qtractorVst3Plugin::EditorWidget[%p]::resizeEvent(%d, %d)",
-					this, size.width(), size.height());
-			#endif
-				plugView->onSize(&rect);
+		const QSize& size = pResizeEvent->size();
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3Plugin::EditorWidget[%p]::resizeEvent(%d, %d)",
+			this, size.width(), size.height());
+	#endif
+		ViewRect rect;
+		rect.left   = 0;
+		rect.top    = 0;
+		rect.right  = size.width();
+		rect.bottom = size.height();
+		if (plugView->checkSizeConstraint(&rect) == kResultOk) {
+			const QSize size2(
+				rect.right - rect.left,
+				rect.bottom - rect.top);
+			if (size2 != size) {
+				m_resizing = true;
+				QWidget::resize(size2);
+				m_resizing = false;
 			}
 		}
+		plugView->onSize(&rect);
 	}
 }
 
