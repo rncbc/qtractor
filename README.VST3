@@ -40,6 +40,19 @@ this point:
 
   ./configure --with-vst3=/path/to/vst3sdk
 
+Note that you only need to have the original VST3 SDK source available.
+You don't really  need to build or deploy any of the VST3 SDK binaries,
+libraries or otherwise sample programs and plug-ins--unless you want to.
+
+That is, only the following VST3 SDK source code tree folders are needed
+to build Qtractor with VST3 Plug-in support enabled:
+
+  - VST SDK 3.x:
+    VST_SDK/VST3_SDK/ (or vst3sdk/)
+      base
+      pluginterfaces
+      public.sdk
+
 
 Lest to say, that this is all very experimental stuff, so the (in)formal
 disclaimer applies, as always: there is NO GUARANTEE WHATSOEVER, whether
@@ -47,4 +60,4 @@ it'll ever work for you or to anybody else.
 
 You've been advised ;).
 
-Cheers.
+Enjoy.
