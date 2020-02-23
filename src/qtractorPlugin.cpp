@@ -2505,4 +2505,23 @@ bool qtractorPluginList::Document::saveElement ( QDomElement *pElement )
 }
 
 
+//-------------------------------------------------------------------------
+// class qtractorPliuginList::WaitCursor - A waiting (hour-glass) helper.
+//
+
+// Constructor.
+qtractorPluginList::WaitCursor::WaitCursor (void)
+{
+	// Tell the world we'll (maybe) take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+}
+
+// Destructor.
+qtractorPluginList::WaitCursor::~WaitCursor (void)
+{
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
+}
+
+
 // end of qtractorPlugin.cpp

@@ -3216,6 +3216,9 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		return;
 	}
 
+	// Tell the world we'll (maybe) take some time...
+	qtractorPluginList::WaitCursor waiting;
+
 	m_lv2_ui_type = ui_iter.key();
 	m_lv2_ui = ui_iter.value();
 

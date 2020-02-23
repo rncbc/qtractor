@@ -3205,6 +3205,9 @@ void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 		return;
 	}
 
+	// Tell the world we'll (maybe) take some time...
+	qtractorPluginList::WaitCursor waiting;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3Plugin[%p]::openEditor(%p)", this, pParent);
 #endif

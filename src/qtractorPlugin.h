@@ -845,8 +845,9 @@ public:
 	// The meta-main audio-processing plugin-chain procedure.
 	void process(float **ppBuffer, unsigned int nframes);
 
-	// Forward declaration.
+	// Forward declarations.
 	class Document;
+	class WaitCursor;
 
 	// Create/load plugin state.
 	qtractorPlugin *loadPlugin(QDomElement *pElement);
@@ -1046,6 +1047,22 @@ private:
 
 	// Instance variables.
 	qtractorPluginList *m_pPluginList;
+};
+
+
+//-------------------------------------------------------------------------
+// qtractorPluginList::WaitCursor -- A waiting (hour-glass) helper.
+//
+
+class qtractorPluginList::WaitCursor
+{
+public:
+
+	// Constructor.
+	WaitCursor();
+
+	// Destructor.
+	~WaitCursor();
 };
 
 

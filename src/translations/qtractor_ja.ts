@@ -56,7 +56,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="135"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1572"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1575"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
@@ -757,7 +757,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>バージョン: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1569"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1572"/>
         <source>%1 (*.%2)</source>
         <translation></translation>
     </message>
@@ -812,7 +812,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>再確認しない</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3536"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3539"/>
         <source>plugin parameters</source>
         <translation>プラグインのパラメータ</translation>
     </message>

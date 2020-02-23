@@ -1139,6 +1139,9 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 		return;
 	}
 
+	// Tell the world we'll (maybe) take some time...
+	qtractorPluginList::WaitCursor waiting;
+
 	// Open up a new one...
 	m_pDssiEditor = osc_open_editor(this);
 
@@ -1160,7 +1163,10 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 		args[3].toUtf8().constData());
 #endif
 
-	if (!QProcess::startDetached(sDssiEditor, args)) {
+	const bool bStartDetached
+		= QProcess::startDetached(sDssiEditor, args);
+
+	if (!bStartDetached) {
 		closeEditor();
 		return;
 	}
