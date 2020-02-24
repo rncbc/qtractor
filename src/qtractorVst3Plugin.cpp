@@ -1713,6 +1713,10 @@ protected:
 	// Cleanup.
 	void clear ();
 
+	// Channel/bus (de)activation helper method.
+	void activate (Vst::IComponent *component,
+		Vst::MediaType type, Vst::BusDirection direction, bool state);
+
 private:
 
 	// Instance variables.
@@ -2280,6 +2284,8 @@ void qtractorVst3Plugin::Impl::activate (void)
 
 	Vst::IComponent *component = pType->impl()->component();
 	if (component && m_processor) {
+		activate(component, Vst::kEvent, Vst::kInput,  true);
+		activate(component, Vst::kEvent, Vst::kOutput, true);
 		component->setActive(true);
 		m_processor->setProcessing(true);
 		g_hostContext.processAddRef();
@@ -2308,6 +2314,8 @@ void qtractorVst3Plugin::Impl::deactivate (void)
 		m_processor->setProcessing(false);
 		component->setActive(false);
 		m_processing = false;
+		activate(component, Vst::kEvent, Vst::kOutput, false);
+		activate(component, Vst::kEvent, Vst::kInput,  false);
 	}
 
 #ifdef CONFIG_DEBUG
@@ -2745,6 +2753,17 @@ void qtractorVst3Plugin::Impl::clear (void)
 	m_programs.clear();
 
 	m_midiMap.clear();
+}
+
+
+void qtractorVst3Plugin::Impl::activate ( Vst::IComponent *component,
+	Vst::MediaType type, Vst::BusDirection direction, bool state )
+{
+	const int32 nbuses = component->getBusCount(type, direction);
+	for (int32 i = 0; i < nbuses; ++i) {
+		const bool state2 = (state && i == 0 && type == Vst::kEvent);
+		component->activateBus(type, direction, i, state2);
+	}
 }
 
 
