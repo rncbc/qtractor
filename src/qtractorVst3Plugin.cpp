@@ -3545,7 +3545,7 @@ bool qtractorVst3Plugin::savePresetFile ( const QString& sFilename )
 		this, sFilename.toUtf8().constData());
 #endif
 
-	QByteArray data;;
+	QByteArray data;
 
 	if (!m_pImpl->getState(data))
 		return false;
