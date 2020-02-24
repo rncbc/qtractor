@@ -2147,6 +2147,8 @@ qtractorVst3Plugin::Impl::~Impl (void)
 			component_cp->disconnect(controller_cp);
 			controller_cp->disconnect(component_cp);
 		}
+		if (controller)
+			controller->setComponentHandler(nullptr);
 	}
 
 
