@@ -4931,10 +4931,15 @@ void qtractorMainForm::viewRefresh (void)
 		pEditor->setEditTail(iEditTail, false);
 	}
 
-	// We're formerly done.
-	QApplication::restoreOverrideCursor();
+	// Reset XRUN counters...
+	m_iXrunCount = 0;
+	m_iXrunSkip  = 0;
+	m_iXrunTimer = 0;
 
 	++m_iStabilizeTimer;
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
 }
 
 
@@ -5709,6 +5714,11 @@ void qtractorMainForm::transportPanic (void)
 
 	// All (MIDI) tracks shut-off (panic)...
 	pMidiEngine->shutOffAllTracks();
+
+	// Reset XRUN counters...
+	m_iXrunCount = 0;
+	m_iXrunSkip  = 0;
+	m_iXrunTimer = 0;
 
 	++m_iStabilizeTimer;
 }
