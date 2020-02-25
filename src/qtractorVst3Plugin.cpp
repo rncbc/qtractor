@@ -2766,7 +2766,7 @@ void qtractorVst3Plugin::Impl::activate ( Vst::IComponent *component,
 	const int32 nbuses = component->getBusCount(type, direction);
 	for (int32 i = 0; i < nbuses; ++i) {
 		const bool state2 = (state && i == 0 && type == Vst::kEvent);
-		component->activateBus(type, direction, i, state2);
+		component->activateBus(type, direction, i, state || state2);
 	}
 }
 
