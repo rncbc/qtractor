@@ -2284,6 +2284,8 @@ void qtractorVst3Plugin::Impl::activate (void)
 
 	Vst::IComponent *component = pType->impl()->component();
 	if (component && m_processor) {
+		activate(component, Vst::kAudio, Vst::kInput,  true);
+		activate(component, Vst::kAudio, Vst::kOutput, true);
 		activate(component, Vst::kEvent, Vst::kInput,  true);
 		activate(component, Vst::kEvent, Vst::kOutput, true);
 		component->setActive(true);
@@ -2316,6 +2318,8 @@ void qtractorVst3Plugin::Impl::deactivate (void)
 		m_processing = false;
 		activate(component, Vst::kEvent, Vst::kOutput, false);
 		activate(component, Vst::kEvent, Vst::kInput,  false);
+		activate(component, Vst::kAudio, Vst::kOutput, false);
+		activate(component, Vst::kAudio, Vst::kInput,  false);
 	}
 
 #ifdef CONFIG_DEBUG
