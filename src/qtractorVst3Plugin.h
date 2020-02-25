@@ -186,8 +186,6 @@ private:
 	EditorFrame  *m_pEditorFrame;
 	EditorWidget *m_pEditorWidget;
 
-	volatile bool m_bEditorClosed;
-
 	// Audio I/O buffer pointers.
 	float **m_ppIBuffer;
 	float **m_ppOBuffer;

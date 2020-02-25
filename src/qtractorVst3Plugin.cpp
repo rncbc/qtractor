@@ -2919,7 +2919,6 @@ qtractorVst3Plugin::qtractorVst3Plugin (
 	qtractorPluginList *pList, qtractorVst3PluginType *pType )
 	: qtractorPlugin(pList, pType), m_pImpl(new Impl(this)),
 		m_pEditorFrame(nullptr), m_pEditorWidget(nullptr),
-		m_bEditorClosed(false),
 		m_ppIBuffer(nullptr), m_ppOBuffer(nullptr),
 		m_pfIDummy(nullptr), m_pfODummy(nullptr),
 		m_pMidiParser(nullptr)
@@ -3284,11 +3283,6 @@ void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 
 void qtractorVst3Plugin::closeEditor (void)
 {
-	if (m_bEditorClosed)
-		return;
-
-	m_bEditorClosed = true;
-
 	if (m_pEditorWidget == nullptr)
 		return;
 
