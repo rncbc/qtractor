@@ -1166,7 +1166,8 @@ int qtractorVst3PluginType::Impl::numChannels (
 	for (int32 i = 0; i < nbuses; ++i) {
 		Vst::BusInfo busInfo;
 		if (m_component->getBusInfo(type, direction, i, busInfo) == kResultOk) {
-			if (busInfo.flags & Vst::BusInfo::kDefaultActive)
+			if ((busInfo.busType == Vst::kMain) &&
+				(busInfo.flags & Vst::BusInfo::kDefaultActive))
 				nchannels += busInfo.channelCount;
 		}
 	}
@@ -2765,8 +2766,13 @@ void qtractorVst3Plugin::Impl::activate ( Vst::IComponent *component,
 {
 	const int32 nbuses = component->getBusCount(type, direction);
 	for (int32 i = 0; i < nbuses; ++i) {
-		const bool state2 = (state && i == 0 && type == Vst::kEvent);
-		component->activateBus(type, direction, i, state || state2);
+		Vst::BusInfo busInfo;
+		if (component->getBusInfo(type, direction, i, busInfo) == kResultOk) {
+			if (busInfo.flags & Vst::BusInfo::kDefaultActive) {
+				const bool state2 = state && (busInfo.busType == Vst::kMain);
+				component->activateBus(type, direction, i, state2);
+			}
+		}
 	}
 }
 
