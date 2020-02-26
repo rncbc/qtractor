@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Default track height has been slightly increased.
+
 - Track / Duplicate Track... now also takes a MIDI
   track's audio meters setting into account.
 

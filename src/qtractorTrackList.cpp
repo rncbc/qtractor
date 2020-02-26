@@ -1405,7 +1405,7 @@ void qtractorTrackList::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 	if (pTrack) {
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession) {
-			const int iZoomHeight = qtractorTrack::HeightBase;
+			const int iZoomHeight = pTrack->zoomHeightBase();
 			pSession->execute(
 				new qtractorResizeTrackCommand(pTrack, iZoomHeight));
 		}
