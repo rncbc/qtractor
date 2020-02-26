@@ -906,7 +906,7 @@ void qtractorTrackList::updateContentsHeight (void)
 {
 	// Remember to give some room to drop something at the bottom...
 	int iContentsHeight
-		= m_pHeader->sizeHint().height() + (qtractorTrack::HeightBase << 1);
+		= m_pHeader->sizeHint().height() + (qtractorTrack::HeightMin << 2);
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
 		qtractorTrack *pTrack = iter.next()->track;
@@ -1266,7 +1266,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 	const int hh = m_pHeader->sizeHint().height();
 	// Account for the item dropping headroom...
 	const int ch = qtractorScrollView::contentsHeight()
-		- (qtractorTrack::HeightBase << 1);
+		- (qtractorTrack::HeightMin << 2);
 
 	int x, y1, y2, h1;
 	y1 = y2 = 0;
@@ -1302,9 +1302,12 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					}
 					else
 					if (iCol == Bus && pItem->plugins) {
-						if (rect.height() > qtractorTrack::HeightBase - 2) {
-							const int dy1 = qtractorTrack::HeightBase
-								- qtractorTrack::HeightMin;
+						const int h2
+							= (qtractorTrack::HeightMin << 2)
+							-  qtractorTrack::HeightMin  - 2;
+						if (rect.height() > h2) {
+							const int dy1
+								= (qtractorTrack::HeightMin << 1);
 							(pItem->plugins)->setGeometry(
 								rect.adjusted(+4, dy1, -4, -2));
 							(pItem->plugins)->show();
