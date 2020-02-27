@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -826,62 +826,6 @@ bool qtractorAudioOutputBusCommand::redo (void)
 }
 
 bool qtractorAudioOutputBusCommand::undo (void)
-{
-	return redo();
-}
-
-
-//----------------------------------------------------------------------
-// class qtractorAudioOutputMonitorCommand - declaration.
-//
-
-// Constructor.
-qtractorAudioOutputMonitorCommand::qtractorAudioOutputMonitorCommand (
-	qtractorMidiManager *pMidiManager, bool bAudioOutputMonitor )
-	: qtractorCommand(QObject::tr("audio output meters")),
-		m_pMidiManager(pMidiManager), m_bAudioOutputMonitor(bAudioOutputMonitor)
-{
-}
-
-
-// Plugin audio ouput monitor command methods.
-bool qtractorAudioOutputMonitorCommand::redo (void)
-{
-	if (m_pMidiManager == nullptr)
-		return false;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return false;
-
-//	pSession->lock();
-
-	const bool bAudioOutputMonitor
-		= m_pMidiManager->isAudioOutputMonitor();
-
-	m_pMidiManager->setAudioOutputMonitor(m_bAudioOutputMonitor);
-
-	m_bAudioOutputMonitor = bAudioOutputMonitor;
-
-	// Update all tracks anyway...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		// Meters on tracks list...
-		qtractorTracks *pTracks = pMainForm->tracks();
-		if (pTracks)
-			pTracks->updateMidiTrackItem(m_pMidiManager);
-		// Meters on mixer strips...
-		qtractorMixer *pMixer = pMainForm->mixer();
-		if (pMixer)
-			pMixer->updateMidiManagerStrip(m_pMidiManager);
-	}
-
-//	pSession->unlock();
-
-	return true;
-}
-
-bool qtractorAudioOutputMonitorCommand::undo (void)
 {
 	return redo();
 }

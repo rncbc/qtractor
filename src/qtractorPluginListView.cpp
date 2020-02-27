@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,6 +32,8 @@
 #include "qtractorOptions.h"
 
 #include "qtractorMainForm.h"
+#include "qtractorTracks.h"
+#include "qtractorMixer.h"
 
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
@@ -1335,14 +1337,24 @@ void qtractorPluginListView::audioOutputMonitor (void)
 	if (pMidiManager == nullptr)
 		return;
 
-	// Make it an undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return;
+	// FIXME: Just toggle the setting?
+	const bool bAudioOutputMonitor
+		= !pMidiManager->isAudioOutputMonitor();
 
-	pSession->execute(
-		new qtractorAudioOutputMonitorCommand(pMidiManager,
-			!pMidiManager->isAudioOutputMonitor()));
+	pMidiManager->setAudioOutputMonitor(bAudioOutputMonitor);
+
+	// Update all tracks anyway...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		// Meters on tracks list...
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks)
+			pTracks->updateMidiTrackItem(pMidiManager);
+		// Meters on mixer strips...
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer)
+			pMixer->updateMidiManagerStrip(pMidiManager);
+	}
 
 	emit contentsChanged();
 }
