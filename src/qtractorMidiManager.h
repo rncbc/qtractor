@@ -234,9 +234,6 @@ public:
 	static void setDefaultAudioOutputAutoConnect(bool bAudioOutputAutoConnect);
 	static bool isDefaultAudioOutputAutoConnect();
 
-	static void setDefaultAudioOutputMonitor(bool bAudioOutputMonitor);
-	static bool isDefaultAudioOutputMonitor();
-
 #ifdef CONFIG_DSSI
 	// DSSI event buffer accessors...
 	snd_seq_event_t *dssi_events() const
@@ -304,6 +301,7 @@ public:
 
 	// Audio output bus monitor accessors.
 	void setAudioOutputMonitor(bool bAudioOutputMonitor);
+	void setAudioOutputMonitorEx(bool bAudioOutputMonitor);
 	bool isAudioOutputMonitor() const
 		{ return m_bAudioOutputMonitor; }
 	qtractorAudioOutputMonitor *audioOutputMonitor() const

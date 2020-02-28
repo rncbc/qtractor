@@ -1534,6 +1534,7 @@ qtractorPluginList::qtractorPluginList (
 		m_iMidiBank(-1), m_iMidiProg(-1),
 		m_pMidiProgramSubject(nullptr),
 		m_bAutoDeactivated(false),
+		m_bAudioOutputMonitor(false),
 		m_bLatency(false), m_iLatency(0)
 {
 	setAutoDelete(true);
@@ -1547,8 +1548,6 @@ qtractorPluginList::qtractorPluginList (
 		= qtractorMidiManager::isDefaultAudioOutputBus();
 	m_bAudioOutputAutoConnect
 		= qtractorMidiManager::isDefaultAudioOutputAutoConnect();
-	m_bAudioOutputMonitor
-		= qtractorMidiManager::isDefaultAudioOutputMonitor();
 
 	m_iAudioInsertActivated = 0;
 
@@ -2261,6 +2260,7 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 {
 	if (m_bAutoDeactivated != bDeactivated || bForce) {
 		m_bAutoDeactivated  = bDeactivated;
+		int iAudioOuts = 0;
 		if (bDeactivated) {
 			bool bStopDeactivation = false;
 			// pass to all plugins bottom to top / stop for active plugins
@@ -2271,11 +2271,13 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 					bStopDeactivation = pPlugin->isActivated();
 				else
 					pPlugin->autoDeactivatePlugin(bDeactivated);
+				iAudioOuts += pPlugin->audioOuts();
 			}
 			// (re)activate all above stopper
 			if (bStopDeactivation) {
 				for ( ; pPlugin; pPlugin = pPlugin->prev()) {
 					pPlugin->autoDeactivatePlugin(false);
+					iAudioOuts += pPlugin->audioOuts();
 				}
 			}
 		} else {
@@ -2283,8 +2285,14 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 			for (qtractorPlugin *pPlugin = first();
 					pPlugin; pPlugin = pPlugin->next()) {
 				pPlugin->autoDeactivatePlugin(bDeactivated);
+				iAudioOuts += pPlugin->audioOuts();
 			}
 		}
+		// Take the chance on whether to turn on/off
+		// audio monitors and meters, automagically...
+		qtractorMidiManager *pMidiManager = midiManager();
+		if (pMidiManager)
+			pMidiManager->setAudioOutputMonitorEx(iAudioOuts > 0);
 		// inform all views
 		QListIterator<qtractorPluginListView *> iter(m_views);
 		while (iter.hasNext()) {

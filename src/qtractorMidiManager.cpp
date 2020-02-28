@@ -30,6 +30,8 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioMonitor.h"
 
+#include "qtractorMainForm.h"
+#include "qtractorTracks.h"
 #include "qtractorMixer.h"
 
 #include <QThread>
@@ -389,7 +391,6 @@ void qtractorMidiOutputBuffer::processSync (void)
 
 bool qtractorMidiManager::g_bAudioOutputBus = false;
 bool qtractorMidiManager::g_bAudioOutputAutoConnect = true;
-bool qtractorMidiManager::g_bAudioOutputMonitor = false;
 
 // AG: Buffer size large enough to hold some sysex events.
 const long c_iMaxMidiData = 512;
@@ -1376,16 +1377,6 @@ bool qtractorMidiManager::isDefaultAudioOutputAutoConnect (void)
 	return g_bAudioOutputAutoConnect;
 }
 
-void qtractorMidiManager::setDefaultAudioOutputMonitor ( bool bAudioOutputMonitor )
-{
-	g_bAudioOutputMonitor = bAudioOutputMonitor;
-}
-
-bool qtractorMidiManager::isDefaultAudioOutputMonitor (void)
-{
-	return g_bAudioOutputMonitor;
-}
-
 
 // Output bus mode accessors.
 void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
@@ -1531,6 +1522,28 @@ void qtractorMidiManager::setAudioOutputMonitor ( bool bAudioOutputMonitor )
 	}
 
 	pSession->unlock();
+}
+
+
+void qtractorMidiManager::setAudioOutputMonitorEx ( bool bAudioOutputMonitor )
+{
+	if (( m_bAudioOutputMonitor && !bAudioOutputMonitor) ||
+		(!m_bAudioOutputMonitor &&  bAudioOutputMonitor)) {
+		// Only do this if really necessary...
+		setAudioOutputMonitor(bAudioOutputMonitor);
+		// Update all tracks anyway...
+		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+		if (pMainForm) {
+			// Meters on tracks list...
+			qtractorTracks *pTracks = pMainForm->tracks();
+			if (pTracks)
+				pTracks->updateMidiTrackItem(this);
+			// Meters on mixer strips...
+			qtractorMixer *pMixer = pMainForm->mixer();
+			if (pMixer)
+				pMixer->updateMidiManagerStrip(this);
+		}
+	}
 }
 
 

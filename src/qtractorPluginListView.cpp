@@ -32,8 +32,6 @@
 #include "qtractorOptions.h"
 
 #include "qtractorMainForm.h"
-#include "qtractorTracks.h"
-#include "qtractorMixer.h"
 
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
@@ -1338,23 +1336,8 @@ void qtractorPluginListView::audioOutputMonitor (void)
 		return;
 
 	// FIXME: Just toggle the setting?
-	const bool bAudioOutputMonitor
-		= !pMidiManager->isAudioOutputMonitor();
-
-	pMidiManager->setAudioOutputMonitor(bAudioOutputMonitor);
-
-	// Update all tracks anyway...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		// Meters on tracks list...
-		qtractorTracks *pTracks = pMainForm->tracks();
-		if (pTracks)
-			pTracks->updateMidiTrackItem(pMidiManager);
-		// Meters on mixer strips...
-		qtractorMixer *pMixer = pMainForm->mixer();
-		if (pMixer)
-			pMixer->updateMidiManagerStrip(pMidiManager);
-	}
+	pMidiManager->setAudioOutputMonitorEx(
+		!pMidiManager->isAudioOutputMonitor());
 
 	emit contentsChanged();
 }

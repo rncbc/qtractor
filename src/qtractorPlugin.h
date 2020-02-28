@@ -992,8 +992,6 @@ private:
 	bool m_bAudioOutputAutoConnect;
 	QString m_sAudioOutputBusName;
 
-	bool m_bAudioOutputMonitor;
-
 	qtractorBus::ConnectList m_audioOutputs;
 
 	// Audio inserts activation state.
@@ -1008,8 +1006,11 @@ private:
 	// Plugin registry (chain unique ids.)
 	QHash<unsigned long, unsigned int> m_uniqueIDs;
 
-	// Auto-plugin-deactivation
+	// Auto-plugin-deactivation.
 	bool m_bAutoDeactivated;
+
+	// Audio output monitor/meters.
+	bool m_bAudioOutputMonitor;
 
 	// Plugin chain total latency (in frames);
 	bool          m_bLatency;

@@ -3603,22 +3603,6 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="AudioOutputMonitorCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to show audio output meters on MIDI tracks and buses</string>
-            </property>
-            <property name="text">
-             <string>Show audio outpu&amp;t monitoring meters</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -3741,7 +3725,7 @@
             </property>
            </spacer>
           </item>
-          <item row="0" column="2">
+          <item row="1" column="0">
            <widget class="QCheckBox" name="Lv2DynManifestCheckBox">
             <property name="font">
              <font>
@@ -3880,7 +3864,6 @@
   <tabstop>DummyPluginScanCheckBox</tabstop>
   <tabstop>AudioOutputBusCheckBox</tabstop>
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
-  <tabstop>AudioOutputMonitorCheckBox</tabstop>
   <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>QueryEditorTypeCheckBox</tabstop>
   <tabstop>SaveCurve14bitCheckBox</tabstop>

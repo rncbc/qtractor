@@ -222,7 +222,6 @@ public:
 	// Plug-in instrument options.
 	bool bAudioOutputBus;
 	bool bAudioOutputAutoConnect;
-	bool bAudioOutputMonitor;
 
 	// Plug-in GUI options.
 	bool bOpenEditor;

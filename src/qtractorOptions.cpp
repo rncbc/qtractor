@@ -239,7 +239,6 @@ void qtractorOptions::loadOptions (void)
 	sLv2PresetDir = m_settings.value("/Lv2PresetDir").toString();
 	bAudioOutputBus = m_settings.value("/AudioOutputBus", false).toBool();
 	bAudioOutputAutoConnect = m_settings.value("/AudioOutputAutoConnect", true).toBool();
-	bAudioOutputMonitor = m_settings.value("/AudioOutputMonitor", false).toBool();
 	bOpenEditor = m_settings.value("/OpenEditor", true).toBool();
 	bQueryEditorType = m_settings.value("/QueryEditorType", false).toBool();
 	bDummyPluginScan = m_settings.value("/DummyPluginScan", true).toBool();
@@ -542,7 +541,6 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/Lv2PresetDir", sLv2PresetDir);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
 	m_settings.setValue("/AudioOutputAutoConnect", bAudioOutputAutoConnect);
-	m_settings.setValue("/AudioOutputMonitor", bAudioOutputMonitor);
 	m_settings.setValue("/OpenEditor", bOpenEditor);
 	m_settings.setValue("/QueryEditorType", bQueryEditorType);
 	m_settings.setValue("/DummyPluginScan", bDummyPluginScan);
