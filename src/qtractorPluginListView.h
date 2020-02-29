@@ -164,7 +164,6 @@ protected slots:
 	void audioOutputBus();
 	void audioOutputBusName();
 	void audioOutputAutoConnect();
-	void audioOutputMonitor();
 
 	// Drop item slots.
 	void dropMove();

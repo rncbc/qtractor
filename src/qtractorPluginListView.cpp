@@ -1329,20 +1329,6 @@ void qtractorPluginListView::audioOutputAutoConnect (void)
 }
 
 
-void qtractorPluginListView::audioOutputMonitor (void)
-{
-	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
-	if (pMidiManager == nullptr)
-		return;
-
-	// FIXME: Just toggle the setting?
-	pMidiManager->setAudioOutputMonitorEx(
-		!pMidiManager->isAudioOutputMonitor());
-
-	emit contentsChanged();
-}
-
-
 // Show an existing plugin form slot.
 void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
 {
@@ -2000,11 +1986,6 @@ void qtractorPluginListView::contextMenuEvent (
 		pAction->setCheckable(true);
 		pAction->setChecked(pMidiManager->isAudioOutputAutoConnect());
 		pAction->setEnabled(bAudioOutputBus);
-		pAudioMenu->addSeparator();
-		pAction = pAudioMenu->addAction(
-			tr("&Meters"), this, SLOT(audioOutputMonitor()));
-		pAction->setCheckable(true);
-		pAction->setChecked(pMidiManager->isAudioOutputMonitor());
 	}
 
 	menu.exec(pContextMenuEvent->globalPos());

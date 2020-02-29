@@ -2263,8 +2263,9 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 		int iAudioOuts = 0;
 		if (bDeactivated) {
 			bool bStopDeactivation = false;
-			// pass to all plugins bottom to top / stop for active plugins
-			// possibly connected to other tracks
+			// Pass to all plugins bottom to top;
+			// stop for any active plugins that are
+			// possibly connected to other tracks...
 			qtractorPlugin *pPlugin = last();
 			for ( ;	pPlugin && !bStopDeactivation; pPlugin = pPlugin->prev()) {
 				if (pPlugin->canBeConnectedToOtherTracks())
@@ -2273,7 +2274,7 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 					pPlugin->autoDeactivatePlugin(bDeactivated);
 				iAudioOuts += pPlugin->audioOuts();
 			}
-			// (re)activate all above stopper
+			// (Re)activate all above stopper...
 			if (bStopDeactivation) {
 				for ( ; pPlugin; pPlugin = pPlugin->prev()) {
 					pPlugin->autoDeactivatePlugin(false);
@@ -2281,15 +2282,15 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 				}
 			}
 		} else {
-			// pass to all plugins top to to bottom
+			// Oass to all plugins top to to bottom...
 			for (qtractorPlugin *pPlugin = first();
 					pPlugin; pPlugin = pPlugin->next()) {
 				pPlugin->autoDeactivatePlugin(bDeactivated);
 				iAudioOuts += pPlugin->audioOuts();
 			}
 		}
-		// Take the chance on whether to turn on/off
-		// audio monitors and meters, automagically...
+		// Take the chance to turn on/off automagically
+		// the audio monitors/meters, when applicable...
 		qtractorMidiManager *pMidiManager = midiManager();
 		if (pMidiManager)
 			pMidiManager->setAudioOutputMonitorEx(iAudioOuts > 0);
