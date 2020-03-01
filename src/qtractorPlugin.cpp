@@ -1669,6 +1669,9 @@ void qtractorPluginList::setChannelsEx (
 		}
 	}
 
+	// Whether to turn on/off any audio monitors/meters...
+	unsigned short iAudioOuts = 0;
+
 	// Reset all plugin chain channels...
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
@@ -1683,7 +1686,12 @@ void qtractorPluginList::setChannelsEx (
 			pPlugin->releaseConfigs();
 			pPlugin->releaseValues();
 		}
+		iAudioOuts += pPlugin->audioOuts();
 	}
+
+	// Turn on/off audio monitors/meters whether applicable...
+	if (m_pMidiManager)
+		m_pMidiManager->setAudioOutputMonitorEx(iAudioOuts > 0);
 }
 
 
@@ -1763,7 +1771,7 @@ void qtractorPluginList::insertPlugin (
 		pListView->setCurrentItem(pNextItem);
 	}
 
-	// update plugins for auto-plugin-deactivation...
+	// Update plugins for auto-plugin-deactivation...
 	autoDeactivatePlugins(m_bAutoDeactivated, true);
 }
 
@@ -2165,11 +2173,6 @@ bool qtractorPluginList::loadElement (
 			m_bAudioOutputAutoConnect = qtractorDocument::boolFromText(ePlugin.text());
 		}
 		else
-		// Load audio output monitor flag...
-		if (ePlugin.tagName() == "audio-output-monitor") {
-			m_bAudioOutputMonitor = qtractorDocument::boolFromText(ePlugin.text());
-		}
-		else
 		// Load audio output connections...
 		if (ePlugin.tagName() == "audio-outputs") {
 			qtractorBus::loadConnects(m_audioOutputs, pDocument, &ePlugin);
@@ -2219,9 +2222,6 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		pDocument->saveTextElement("audio-output-auto-connect",
 			qtractorDocument::textFromBool(
 				m_pMidiManager->isAudioOutputAutoConnect()), pElement);
-		pDocument->saveTextElement("audio-output-monitor",
-			qtractorDocument::textFromBool(
-				m_pMidiManager->isAudioOutputMonitor()), pElement);
 		if (bAudioOutputBus) {
 			qtractorAudioBus *pAudioBus = m_pMidiManager->audioOutputBus();
 			if (pAudioBus) {
@@ -2260,7 +2260,7 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 {
 	if (m_bAutoDeactivated != bDeactivated || bForce) {
 		m_bAutoDeactivated  = bDeactivated;
-		int iAudioOuts = 0;
+		unsigned short iAudioOuts = 0;
 		if (bDeactivated) {
 			bool bStopDeactivation = false;
 			// Pass to all plugins bottom to top;
@@ -2282,7 +2282,7 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 				}
 			}
 		} else {
-			// Oass to all plugins top to to bottom...
+			// Pass to all plugins top to to bottom...
 			for (qtractorPlugin *pPlugin = first();
 					pPlugin; pPlugin = pPlugin->next()) {
 				pPlugin->autoDeactivatePlugin(bDeactivated);
@@ -2294,7 +2294,7 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 		qtractorMidiManager *pMidiManager = midiManager();
 		if (pMidiManager)
 			pMidiManager->setAudioOutputMonitorEx(iAudioOuts > 0);
-		// inform all views
+		// Inform all views...
 		QListIterator<qtractorPluginListView *> iter(m_views);
 		while (iter.hasNext()) {
 			qtractorPluginListView *pListView = iter.next();
