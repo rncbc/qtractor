@@ -405,32 +405,32 @@ MIDI:	</translation>
         <translation>importar plugins</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="659"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="677"/>
         <source>add marker</source>
         <translation>adicionar marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="715"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="733"/>
         <source>add key signature</source>
         <translation>adicionar fórmula de compasso</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="734"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="752"/>
         <source>update key signature</source>
         <translation>atualizar fórmula de compasso</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="752"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="770"/>
         <source>remove key signature</source>
         <translation>remover fórmula de compasso</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="769"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="787"/>
         <source>move marker</source>
         <translation>mover marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="903"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="921"/>
         <source>change time-sig.</source>
         <translation>alterar formula-compasso.</translation>
     </message>
@@ -642,7 +642,7 @@ MIDI:	</translation>
         <translation>%1 - Banco %2</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="466"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="484"/>
         <source>remove tempo node</source>
         <translation>remover nó de tempo</translation>
     </message>
@@ -653,12 +653,12 @@ MIDI:	</translation>
         <translation>Tudo (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="678"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="696"/>
         <source>update marker</source>
         <translation>atualizar marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="483"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="501"/>
         <source>move tempo node</source>
         <translation>mover nó de tempo</translation>
     </message>
@@ -722,7 +722,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>Autor: </translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="448"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="466"/>
         <source>update tempo node</source>
         <translation>nó de atualização de tempo</translation>
     </message>
@@ -732,7 +732,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>, %1 pistas, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="428"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="446"/>
         <source>add tempo node</source>
         <translation>adicionar nó de tempo</translation>
     </message>
@@ -804,7 +804,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
 %3</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="696"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="714"/>
         <source>remove marker</source>
         <translation>remover marcador</translation>
     </message>
