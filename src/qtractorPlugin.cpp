@@ -2275,11 +2275,10 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 				iAudioOuts += pPlugin->audioOuts();
 			}
 			// (Re)activate all above stopper...
-			if (bStopDeactivation) {
-				for ( ; pPlugin; pPlugin = pPlugin->prev()) {
+			for ( ; pPlugin; pPlugin = pPlugin->prev()) {
+				if (bStopDeactivation)
 					pPlugin->autoDeactivatePlugin(false);
-					iAudioOuts += pPlugin->audioOuts();
-				}
+				iAudioOuts += pPlugin->audioOuts();
 			}
 		} else {
 			// Pass to all plugins top to to bottom...

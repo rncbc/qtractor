@@ -8,9 +8,9 @@ GIT HEAD
 
 - Audio output monitoring meters are now shown/hidden
   automagically on MIDI tracks and/or buses--no need
-  for some user preference option (ie. View/Options...
-  /Plugins/Instruments/Show audio output monitoring
-  meters is now gone). (EXPERIMENTAL)
+  for some user preference option anymore (ie. View/
+  Options.../Plugins/Instruments/Show audio output
+  monitoring meters, is now gone). (EXPERIMENTAL)
 
 - Default track height has been slightly increased.
 
