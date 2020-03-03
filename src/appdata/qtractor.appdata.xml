@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2005-2018 Rui Nuno Capela <rncbc@rncbc.org> -->
+<!-- Copyright 2005-2020 Rui Nuno Capela <rncbc@rncbc.org> -->
 <component type="desktop">
  <id>org.rncbc.qtractor</id>
  <metadata_license>FSFAP</metadata_license>
@@ -22,7 +22,7 @@
 ​ </provides>
  <screenshots>
   <screenshot type="default">
-   <image>http://qtractor.sourceforge.net/image/qtractor-screenshot16.png</image>
+   <image>https://qtractor.sourceforge.io/image/qtractor-screenshot16.png</image>
    <caption>The main window showing the application in action</caption>
   </screenshot>
  </screenshots>
