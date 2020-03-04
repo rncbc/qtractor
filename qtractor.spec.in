@@ -38,7 +38,7 @@ URL:		http://qtractor.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %if %{defined fedora}
-BuildRequires:	pkgconfig
+BuildRequires:	pkgconfig, ruby
 BuildRequires:	qt5-qtbase-devel >= 5.1, qt5-linguist
 BuildRequires:	qt5-qtx11extras-devel >= 5.1
 BuildRequires:	alsa-lib-devel
@@ -69,9 +69,6 @@ BuildRequires:	libsuil-devel
 BuildRequires:	zlib-devel
 BuildRequires:	gtk2-devel
 BuildRequires:	vst3sdk-devel >= 3.6.14
-%if %{defined fedora}
-BuildRequires:	jruby
-%endif
 
 Requires(post):		desktop-file-utils, shared-mime-info
 Requires(postun):	desktop-file-utils, shared-mime-info
