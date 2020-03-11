@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 UI Request-parameter feature/interface support
+  has been implemented. (EXPERIMENTAL)
+
 - Audio output monitoring meters are now shown/hidden
   automagically on MIDI tracks and/or buses--no need
   for some user preference option anymore (ie. View/

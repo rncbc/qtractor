@@ -69,8 +69,24 @@ class qtractorLv2Worker;
 #include <QWindow>
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
+// LV2 UI Request-parameter support (FAKE).
+#ifndef CONFIG_LV2_UI_REQ_PARAM
+#define CONFIG_LV2_UI_REQ_PARAM 1
+#ifndef LV2_UI__requestParameter
+#define LV2_UI__requestParameter LV2_UI_PREFIX "requestParameter"
+typedef enum {
+	LV2UI_REQUEST_PARAMETER_SUCCESS,
+	LV2UI_REQUEST_PARAMETER_BUSY,
+	LV2UI_REQUEST_PARAMETER_ERR_UNKNOWN,
+	LV2UI_REQUEST_PARAMETER_ERR_UNSUPPORTED
+} LV2UI_Request_Parameter_Status;
+typedef struct _LV2UI_Request_Parameter {
+	LV2UI_Feature_Handle handle;
+	LV2UI_Request_Parameter_Status (*request)(LV2UI_Feature_Handle handle, LV2_URID key);
+} LV2UI_Request_Parameter;
+#endif	// !LV2_UI__requestParameter
+#endif	// !CONFIG_LV2_UI_REQ_PARAM
 #endif	// CONFIG_LV2_UI
-
 
 #ifdef CONFIG_LV2_STATE
 // LV2 State support.
@@ -254,8 +270,13 @@ public:
 	uint32_t lv2_ui_port_index(const char *port_symbol);
 
 #ifdef CONFIG_LV2_UI_TOUCH
-	// LV2 UI touch control (ui->host).
+	// LV2 UI Touch interface (ui->host).
 	void lv2_ui_touch(uint32_t port_index, bool grabbed);
+#endif
+
+#ifdef CONFIG_LV2_UI_REQ_PARAM
+	// LV2 UI Request-parameter interface (ui->host).
+	LV2UI_Request_Parameter_Status lv2_ui_request_parameter(LV2_URID key);
 #endif
 
 	// LV2 UI resize control (host->ui).
@@ -558,9 +579,17 @@ private:
 	QHash<unsigned long, float> m_ui_params;
 
 #ifdef CONFIG_LV2_UI_TOUCH
+	// LV2 UI Touch interface (ui->host).
 	LV2UI_Touch m_lv2_ui_touch;
 	LV2_Feature m_lv2_ui_touch_feature;
 	QHash<unsigned long, bool> m_ui_params_touch;
+#endif
+
+#ifdef CONFIG_LV2_UI_REQ_PARAM
+	// LV2 UI Request-parameter interface (ui->host).
+	LV2UI_Request_Parameter m_lv2_ui_req_param;
+	LV2_Feature m_lv2_ui_req_param_feature;
+	volatile bool m_lv2_ui_req_param_busy;
 #endif
 
 #ifdef CONFIG_LV2_UI_IDLE

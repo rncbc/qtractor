@@ -255,6 +255,11 @@ AC_ARG_ENABLE(lv2-ui-touch,
   [ac_lv2_ui_touch="$enableval"],
   [ac_lv2_ui_touch="yes"])
 
+AC_ARG_ENABLE(lv2-ui-req-param,
+  AS_HELP_STRING([--enable-lv2-ui-req-param], [enable LV2 plug-in UI Request-parameter support (default=yes)]),
+  [ac_lv2_ui_req_param="$enableval"],
+  [ac_lv2_ui_req_param="yes"])
+
 AC_ARG_ENABLE(lv2-ui-idle,
   AS_HELP_STRING([--enable-lv2-ui-idle], [enable LV2 plug-in UI Idle interface support (default=yes)]),
   [ac_lv2_ui_idle="$enableval"],
@@ -833,6 +838,7 @@ if test "x$ac_lv2_ui" = "xno"; then
    ac_suil="no"
    ac_lv2_external_ui="no"
    ac_lv2_ui_touch="no"
+   ac_lv2_ui_req_param="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -912,6 +918,7 @@ if test "x$ac_lilv" = "xno"; then
    ac_lv2_options="no"
    ac_lv2_buf_size="no"
    ac_lv2_ui_touch="no"
+   ac_lv2_ui_req_param="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -1073,6 +1080,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_options="no"
       ac_lv2_buf_size="no"
       ac_lv2_ui_touch="no"
+      ac_lv2_ui_req_param="no"
       ac_lv2_ui_idle="no"
       ac_lv2_ui_show="no"
       ac_lv2_ui_gtk2="no"
@@ -1090,6 +1098,7 @@ else
    AC_MSG_WARN([*** LV2 UI support will be disabled.])
    ac_lv2_external_ui="no"
    ac_lv2_ui_touch="no"
+   ac_lv2_ui_req_param="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -1284,6 +1293,21 @@ if test "x$ac_lv2_ui_touch" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_UI_TOUCH, 1, [Define if LV2 UI Touch interface support is available.])
    else
       AC_MSG_WARN([*** LV2 UI Touch interface support will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_ui_req_param" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 UI Request-parameter support],
+      ac_cv_lv2_ui_req_param, [
+      AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
+         // Checking for LV2 UI Request-parameter interface...
+         LV2UI_Request_Parameter;
+      ], ac_cv_lv2_ui_req_param="yes", ac_cv_lv2_ui_req_param="no")
+   ])
+   ac_lv2_ui_req_param=$ac_cv_lv2_ui_req_param
+   if test "x$ac_lv2_ui_req_param" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI_REQ_PARAM, 1, [Define if LV2 UI Request-parameter support is available.])
+   else
+      AC_MSG_WARN([*** LV2 UI Request-parameter support will be disabled.])
    fi
 fi
 if test "x$ac_lv2_ui_idle" = "xyes"; then
@@ -1518,6 +1542,7 @@ echo "  LV2 plug-in Time/position support  . . . . . . . .: $ac_lv2_time_positio
 echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"
 echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
 echo "  LV2 plug-in UI Touch interface support . . . . . .: $ac_lv2_ui_touch"
+echo "  LV2 plug-in UI Request-parameter support . . . . .: $ac_lv2_ui_req_param"
 echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"
 echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
 echo "  LV2 plug-in UI GTK2 native support . . . . . . . .: $ac_lv2_ui_gtk2"

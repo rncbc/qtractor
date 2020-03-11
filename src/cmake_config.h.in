@@ -160,6 +160,9 @@
 /* Define if LV2 UI Touch interface support is available. */
 #cmakedefine CONFIG_LV2_UI_TOUCH @CONFIG_LV2_UI_TOUCH@
 
+/* Define if LV2 UI Request-parameter support is available. */
+#cmakedefine CONFIG_LV2_UI_REQ_PARAM @CONFIG_LV2_UI_REQ_PARAM@
+
 /* Define if LV2 UI Idle interface support is available. */
 #cmakedefine CONFIG_LV2_UI_IDLE @CONFIG_LV2_UI_IDLE@
 

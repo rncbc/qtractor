@@ -133,6 +133,8 @@ option (CONFIG_LV2_BUF_SIZE "Enable LV2 plug-in Buf-size support (default=yes)" 
 
 option (CONFIG_LV2_UI_TOUCH "Enable LV2 plug-in UI Touch interface support (default=yes)" 1)
 
+option (CONFIG_LV2_UI_REQ_PARAM "Enable LV2 plug-in UI Request-parameter support (default=yes)" 1)
+
 option (CONFIG_LV2_UI_IDLE "Enable LV2 plug-in UI Idle interface support (default=yes)" 1)
 
 option (CONFIG_LV2_UI_SHOW "Enable LV2 plug-in UI Show interface support (default=yes)" 1)
@@ -515,6 +517,7 @@ if (NOT CONFIG_LV2_UI)
   set (CONFIG_LIBSUIL 0)
   set (CONFIG_LV2_EXTERNAL_UI 0)
   set (CONFIG_LV2_UI_TOUCH 0)
+  set (CONFIG_LV2_UI_REQ_PARAM 0)
   set (CONFIG_LV2_UI_IDLE 0)
   set (CONFIG_LV2_UI_SHOW 0)
   set (CONFIG_LV2_UI_GTK2 0)
@@ -715,6 +718,7 @@ show_option ("  LV2 plug-in Time/position support  . . . . . . . ." CONFIG_LV2_T
 show_option ("  LV2 plug-in Options support  . . . . . . . . . . ." CONFIG_LV2_OPTIONS)
 show_option ("  LV2 plug-in Buf-size support . . . . . . . . . . ." CONFIG_LV2_BUF_SIZE)
 show_option ("  LV2 plug-in UI Touch interface support . . . . . ." CONFIG_LV2_UI_TOUCH)
+show_option ("  LV2 plug-in UI Request-parameter support . . . . ." CONFIG_LV2_UI_REQ_PARAM)
 show_option ("  LV2 plug-in UI Idle interface support  . . . . . ." CONFIG_LV2_UI_IDLE)
 show_option ("  LV2 plug-in UI Show interface support  . . . . . ." CONFIG_LV2_UI_SHOW)
 show_option ("  LV2 plug-in UI GTK2 native support . . . . . . . ." CONFIG_LV2_UI_GTK2)
