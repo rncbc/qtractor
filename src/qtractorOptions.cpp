@@ -299,8 +299,6 @@ void qtractorOptions::loadOptions (void)
 	bTrackViewSnapGrid   = m_settings.value("/TrackViewSnapGrid", true).toBool();
 	bTrackViewToolTips   = m_settings.value("/TrackViewToolTips", true).toBool();
 	bTrackViewCurveEdit  = m_settings.value("/TrackViewCurveEdit", false).toBool();
-	bTrackListPlugins    = m_settings.value("/TrackListPlugins", true).toBool();
-	bTrackListMeters     = m_settings.value("/TrackListMeters", true).toBool();
 	m_settings.endGroup();
 
 	// MIDI options group.
@@ -592,8 +590,6 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/TrackViewSnapGrid", bTrackViewSnapGrid);
 	m_settings.setValue("/TrackViewToolTips", bTrackViewToolTips);
 	m_settings.setValue("/TrackViewCurveEdit", bTrackViewCurveEdit);
-	m_settings.setValue("/TrackListPlugins", bTrackListPlugins);
-	m_settings.setValue("/TrackListMeters", bTrackListMeters);
 	m_settings.endGroup();
 
 	// MIDI Editor options group.

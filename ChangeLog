@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Always show plugins and meters on track list/left
+  pane as permanent standard now. (EXPERIMENTAL)
+
 - LV2 UI Request-parameter feature/interface support
   has been implemented. (EXPERIMENTAL)
 

@@ -2454,22 +2454,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QCheckBox" name="TrackListPluginsCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to show plugins on track list/left pane</string>
-            </property>
-            <property name="text">
-             <string>Sho&amp;w plugins on track list/left pane</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -2927,22 +2911,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item row="2" column="0" colspan="11">
-           <widget class="QCheckBox" name="TrackListMetersCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to show meters on track list/left pane</string>
-            </property>
-            <property name="text">
-             <string>Sho&amp;w meters on track list/left pane</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
@@ -3834,7 +3802,6 @@
   <tabstop>SyncViewHoldCheckBox</tabstop>
   <tabstop>UseNativeDialogsCheckBox</tabstop>
   <tabstop>MixerAutoGridLayoutCheckBox</tabstop>
-  <tabstop>TrackListPluginsCheckBox</tabstop>
   <tabstop>CustomColorThemeComboBox</tabstop>
   <tabstop>CustomColorThemeToolButton</tabstop>
   <tabstop>CustomStyleThemeComboBox</tabstop>
