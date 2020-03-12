@@ -70,7 +70,7 @@ class qtractorLv2Worker;
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
 // LV2 UI Request-parameter support (FAKE).
-#ifndef CONFIG_LV2_UI_REQ_PARAM
+#ifdef  CONFIG_LV2_UI_REQ_PARAM_FAKE
 #define CONFIG_LV2_UI_REQ_PARAM 1
 #ifndef LV2_UI__requestParameter
 #define LV2_UI__requestParameter LV2_UI_PREFIX "requestParameter"
@@ -85,7 +85,7 @@ typedef struct _LV2UI_Request_Parameter {
 	LV2UI_Request_Parameter_Status (*request)(LV2UI_Feature_Handle handle, LV2_URID key);
 } LV2UI_Request_Parameter;
 #endif	// !LV2_UI__requestParameter
-#endif	// !CONFIG_LV2_UI_REQ_PARAM
+#endif	// CONFIG_LV2_UI_REQ_PARAM_FAKE
 #endif	// CONFIG_LV2_UI
 
 #ifdef CONFIG_LV2_STATE

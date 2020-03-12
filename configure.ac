@@ -1300,7 +1300,7 @@ if test "x$ac_lv2_ui_req_param" = "xyes"; then
       ac_cv_lv2_ui_req_param, [
       AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
          // Checking for LV2 UI Request-parameter interface...
-         LV2UI_Request_Parameter;
+         LV2UI_Request_Parameter req_param;
       ], ac_cv_lv2_ui_req_param="yes", ac_cv_lv2_ui_req_param="no")
    ])
    ac_lv2_ui_req_param=$ac_cv_lv2_ui_req_param
