@@ -1239,7 +1239,10 @@ if test "x$ac_lv2_patch" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PATCH, 1, [Define if LV2 Patch is supported.])
    else
       AC_MSG_WARN([*** LV2 Patch support will be disabled.])
+      ac_lv2_ui_req_param="no"
    fi
+else
+   ac_lv2_ui_req_param="no"
 fi
 if test "x$ac_lv2_time" = "xyes"; then
    AC_CHECK_HEADER(

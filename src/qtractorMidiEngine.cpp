@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1699,7 +1699,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (m_iClockCount > 72) { // 3 beat averaging...
 				m_iClockCount = 0;
 				const float fTempo = int(180000.0f / float(s_clockTimer.elapsed()));
-				if (::fabsf(fTempo - m_fClockTempo) / m_fClockTempo > 0.01f) {
+				if (qAbs(fTempo - m_fClockTempo) / m_fClockTempo > 0.01f) {
 					m_fClockTempo = fTempo;
 					// Post the stuffed event...
 					m_proxy.notifyClkEvent(m_fClockTempo);

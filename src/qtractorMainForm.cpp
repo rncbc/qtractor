@@ -5825,6 +5825,9 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_UI_TOUCH
 	list << tr("LV2 Plug-in UI Touch interface support disabled.");
 #endif
+#ifndef CONFIG_LV2_UI_REQ_PARAM
+	list << tr("LV2 Plug-in UI Request-parameter support disabled.");
+#endif
 #ifndef CONFIG_LV2_UI_IDLE
 	list << tr("LV2 Plug-in UI Idle interface support disabled.");
 #endif
@@ -7615,7 +7618,7 @@ void qtractorMainForm::slowTimerSlot (void)
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(pos.frame);
 				if (pNode && pos.frame >= pNode->frame && (
-					::fabsf(pNode->tempo - pos.beats_per_minute) > 0.01f ||
+					qAbs(pNode->tempo - pos.beats_per_minute) > 0.01f ||
 					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
 					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {
 				#ifdef CONFIG_DEBUG

@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -5785,7 +5785,7 @@ void qtractorTrackView::closeEditCurveNode (void)
 		if (pSession) {
 			const float fOldValue = m_pEditCurveNode->value;
 			const float fNewValue = m_pEditCurveNodeSpinBox->value();
-			if (::fabsf(fNewValue - fOldValue)
+			if (qAbs(fNewValue - fOldValue)
 				> float(m_pEditCurveNodeSpinBox->singleStep())) {
 				qtractorCurveEditCommand *pEditCurveNodeCommand
 					= new qtractorCurveEditCommand(m_pEditCurve);

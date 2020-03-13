@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,7 +39,7 @@
 #include <QLineEdit>
 #include <QUrl>
 
-// Needed for fabsf(), logf() and powf()
+// Needed for logf() and powf()
 #include <math.h>
 
 static inline float log10f2 ( float x )
@@ -467,9 +467,9 @@ void qtractorClipForm::accept (void)
 				qtractorAudioClip *pAudioClip
 					= static_cast<qtractorAudioClip *> (m_pClip);
 				if (pAudioClip) {
-					if (::fabsf(fTimeStretch - pAudioClip->timeStretch()) < 0.001f)
+					if (qAbs(fTimeStretch - pAudioClip->timeStretch()) < 0.001f)
 						fTimeStretch = 0.0f;
-					if (::fabsf(fPitchShift - pAudioClip->pitchShift()) < 0.001f)
+					if (qAbs(fPitchShift - pAudioClip->pitchShift()) < 0.001f)
 						fPitchShift = 0.0f;
 					const bool bOldWsolaTimeStretch = pAudioClip->isWsolaTimeStretch();
 					if (( bOldWsolaTimeStretch && !bWsolaTimeStretch) ||
@@ -499,9 +499,9 @@ void qtractorClipForm::accept (void)
 			if (iFileChange > 0)
 				pClipCommand->fileClip(m_pClip, sFilename, iTrackChannel);
 			// Gain/nning...
-			if (::fabsf(fClipGain - m_pClip->clipGain()) > 0.001f)
+			if (qAbs(fClipGain - m_pClip->clipGain()) > 0.001f)
 				pClipCommand->gainClip(m_pClip, fClipGain);
-			if (::fabsf(fClipPanning - m_pClip->clipPanning()) > 0.001f)
+			if (qAbs(fClipPanning - m_pClip->clipPanning()) > 0.001f)
 				pClipCommand->panningClip(m_pClip, fClipPanning);
 			// Parameters and/or time-stretching changes...
 			if (iClipStart  != m_pClip->clipStart()  ||

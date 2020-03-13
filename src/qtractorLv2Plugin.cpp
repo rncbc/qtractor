@@ -3921,28 +3921,11 @@ LV2UI_Request_Parameter_Status qtractorLv2Plugin::lv2_ui_request_parameter ( LV2
 	if (m_lv2_ui_req_param_busy)
 		return LV2UI_REQUEST_PARAMETER_BUSY;
 
-	// We'll need this, sure.
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == nullptr)
-		return LV2UI_REQUEST_PARAMETER_ERR_UNKNOWN;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == nullptr)
-		return LV2UI_REQUEST_PARAMETER_ERR_UNKNOWN;
-
 	const char *pszKey = lv2_urid_unmap(key);
 	if (pszKey == nullptr)
 		return LV2UI_REQUEST_PARAMETER_ERR_UNKNOWN;
 
 #ifdef CONFIG_LV2_PATCH
-
-	qtractorLv2PluginType *pLv2Type
-		= static_cast<qtractorLv2PluginType *> (type());
-	if (pLv2Type == nullptr)
-		return LV2UI_REQUEST_PARAMETER_ERR_UNKNOWN;
-
-	if (m_lv2_patch_port_in >= pLv2Type->atomIns())
-		return LV2UI_REQUEST_PARAMETER_ERR_UNSUPPORTED;
 
 	Property *pProp = m_lv2_properties.value(pszKey, nullptr);
 	if (pProp == nullptr)
@@ -3955,7 +3938,7 @@ LV2UI_Request_Parameter_Status qtractorLv2Plugin::lv2_ui_request_parameter ( LV2
 	QString sFilename = pProp->value().toString();
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorLv2Plugin[%p]::lv2_ui_request_parameter(%d) [%s: \"%s\"]",
+	qDebug("qtractorLv2Plugin[%p]::lv2_ui_request_parameter(%d) [%s=\"%s\"]",
 		this, int(key), pProp->name().toUtf8().constData(), sFilename.toUtf8().constData());
 #endif
 
@@ -3966,9 +3949,13 @@ LV2UI_Request_Parameter_Status qtractorLv2Plugin::lv2_ui_request_parameter ( LV2
 
 	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options = 0;
-	if (pOptions->bDontUseNativeDialogs) {
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
-		pParentWidget = (m_pQtWidget ? m_pQtWidget : pMainForm);
+		if (m_pQtWidget && m_pQtWidget->isVisible())
+			pParentWidget = m_pQtWidget;
+		else
+			pParentWidget = qtractorMainForm::getInstance();
 	}
 #if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
 	sFilename = QFileDialog::getOpenFileName(pParentWidget,
@@ -3985,32 +3972,13 @@ LV2UI_Request_Parameter_Status qtractorLv2Plugin::lv2_ui_request_parameter ( LV2
 		sFilename = fileDialog.selectedFiles().first();
 #endif
 	if (!sFilename.isEmpty()) {
-		const QFileInfo fi(sFilename);
-		const QString& sPath = fi.canonicalFilePath();
-		// Set up forge to write to temporary buffer on the stack
-		LV2_Atom_Forge *forge = g_lv2_atom_forge;
-		LV2_Atom_Forge_Frame frame;
-		uint8_t buf[1024];
-		lv2_atom_forge_set_buffer(forge, buf, sizeof(buf));
-		// Serialize patch_Set message to set property...
-		lv2_atom_forge_object(forge, &frame, 1, g_lv2_urids.patch_Set);
-		lv2_atom_forge_key(forge, g_lv2_urids.patch_property);
-		lv2_atom_forge_urid(forge, key);
-		lv2_atom_forge_key(forge, g_lv2_urids.patch_value);
-		lv2_atom_forge_path(forge, sPath.toUtf8().data(), sPath.length() + 1);
-		// Write message back to UI...
-		const LV2_Atom *atom
-			= lv2_atom_forge_deref(forge, frame.ref);
-		lv2_ui_port_write(
-			m_piAtomIns[m_lv2_patch_port_in],
-			lv2_atom_total_size(atom),
-			g_lv2_urids.atom_eventTransfer,
-			(const void *) atom);
+		pProp->setValue(QFileInfo(sFilename).canonicalFilePath());
+		lv2_property_update(key);
 	}
 
-#endif	// CONFIG_LV2_PATCH
-
 	m_lv2_ui_req_param_busy = false;
+
+#endif	// CONFIG_LV2_PATCH
 
 	return LV2UI_REQUEST_PARAMETER_SUCCESS;
 }
