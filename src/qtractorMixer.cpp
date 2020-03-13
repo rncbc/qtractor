@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1059,8 +1059,6 @@ void qtractorMixerRackWidget::updateWorkspace (void)
 	const int h = pViewport->height();
 	const int w = pViewport->width();
 
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	const bool bAutoGridLayout = (pOptions && pOptions->bMixerAutoGridLayout);
 	const int nitems = m_pWorkspaceLayout->count();
 	if (nitems > 0) {
 		const int nrows = h / sizeHint().height();
@@ -1074,13 +1072,12 @@ void qtractorMixerRackWidget::updateWorkspace (void)
 		for (int i = 0; i < nitems; ++i) {
 			QLayoutItem *item = items[i];
 			m_pWorkspaceLayout->addItem(item, row, col++);
-			if (bAutoGridLayout) {
-				const int wi = item->sizeHint().width(); wth += wi;
-				if (wth > (w - wi) && row < nrows && col >= ncols) {
-					wth = 0;
-					col = 0;
-					++row;
-				}
+			// Auto-grid layout...
+			const int wi = item->sizeHint().width(); wth += wi;
+			if (wth > (w - wi) && row < nrows && col >= ncols) {
+				wth = 0;
+				col = 0;
+				++row;
 			}
 		}
 	}

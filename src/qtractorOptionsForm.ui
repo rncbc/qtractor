@@ -2407,22 +2407,6 @@
            <number>4</number>
           </property>
           <item row="0" column="0">
-           <widget class="QCheckBox" name="SyncViewHoldCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to hold auto-scrolling (follow play-head) on edits.</string>
-            </property>
-            <property name="text">
-             <string>H&amp;old auto-scrolling (follow play-head) on edits</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
            <widget class="QCheckBox" name="UseNativeDialogsCheckBox">
             <property name="font">
              <font>
@@ -2438,8 +2422,8 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QCheckBox" name="MixerAutoGridLayoutCheckBox">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="SyncViewHoldCheckBox">
             <property name="font">
              <font>
               <weight>50</weight>
@@ -2447,10 +2431,10 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Whether to allow automatic mixer strip/grid layout (multi-row).</string>
+             <string>Whether to hold auto-scrolling (follow play-head) on edits.</string>
             </property>
             <property name="text">
-             <string>A&amp;utomatic mixer strip/grid layout (multi-row)</string>
+             <string>H&amp;old auto-scrolling (follow play-head) on edits</string>
             </property>
            </widget>
           </item>
@@ -3799,9 +3783,8 @@
   <tabstop>MidiMetroOffsetSpinBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
   <tabstop>BaseFontSizeComboBox</tabstop>
-  <tabstop>SyncViewHoldCheckBox</tabstop>
   <tabstop>UseNativeDialogsCheckBox</tabstop>
-  <tabstop>MixerAutoGridLayoutCheckBox</tabstop>
+  <tabstop>SyncViewHoldCheckBox</tabstop>
   <tabstop>CustomColorThemeComboBox</tabstop>
   <tabstop>CustomColorThemeToolButton</tabstop>
   <tabstop>CustomStyleThemeComboBox</tabstop>

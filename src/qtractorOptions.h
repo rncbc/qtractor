@@ -293,9 +293,6 @@ public:
 	int  iMidiSnapToScaleKey;
 	int  iMidiSnapToScaleType;
 
-	// Mixer strip multi-row grid layout option.
-	bool bMixerAutoGridLayout;
-
 	// Meter colors.
 	QStringList audioMeterColors;
 	QStringList midiMeterColors;

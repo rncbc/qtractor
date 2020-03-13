@@ -426,7 +426,6 @@ protected:
 	void updateMidiControl();
 	void updateAudioMetronome();
 	void updateMidiMetronome();
-	void updateMixerAutoGridLayout();
 	void updateSyncViewHold();
 
 	void updateCustomColorTheme();
