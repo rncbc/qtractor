@@ -1166,7 +1166,7 @@ void qtractorTrackList::drawCell (
 		}
 	} else if (iCol == Channel) {
 		if ((pItem->track)->trackType() == qtractorTrack::Midi
-			|| pItem->meters == nullptr) {
+			|| rect.height() < qtractorTrack::HeightMin + 4) {
 			pPainter->drawText(rectText,
 				Qt::AlignHCenter | Qt::AlignTop,
 				pItem->text.at(iCol - 1));
@@ -1301,12 +1301,17 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					}
 					else
 					if (iCol == Channel && pItem->meters) {
-						const int dy1
-							= ((pItem->track)->trackType()
-								== qtractorTrack::Midi ? 20 : 4);
-						(pItem->meters)->setGeometry(
-							rect.adjusted(+4, dy1, -3, -2));
-						(pItem->meters)->show();
+						const int h2 = qtractorTrack::HeightMin + 4;
+						if (rect.height() > h2) {
+							const int dy1
+								= ((pItem->track)->trackType()
+									== qtractorTrack::Midi ? 20 : 4);
+							(pItem->meters)->setGeometry(
+								rect.adjusted(+4, dy1, -3, -2));
+							(pItem->meters)->show();
+						} else {
+							(pItem->meters)->hide();
+						}
 					}
 				}
 				else if (iCol == Name && pItem->buttons)
@@ -1317,13 +1322,13 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					(pItem->meters)->hide();
 				x += dx;
 			}
-		}
-		else {
-			 if (pItem->buttons)
+		} else {
+			// Just hide all children...
+			if (pItem->buttons)
 				(pItem->buttons)->hide();
-			 if (pItem->plugins)
+			if (pItem->plugins)
 				(pItem->plugins)->hide();
-			 if (pItem->meters)
+			if (pItem->meters)
 				(pItem->meters)->hide();
 		}
 		++iTrack;

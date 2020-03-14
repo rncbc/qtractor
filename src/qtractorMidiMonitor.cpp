@@ -1,7 +1,7 @@
 // qtractorMidiMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -96,7 +96,7 @@ float qtractorMidiMonitor::value_stamp ( unsigned long iStamp )
 	// Grab-and-reset current direct value...
 	if (m_iValueStamp != iStamp) {
 		unsigned char val = m_item.value;
-	    m_iValueStamp = iStamp;
+		m_iValueStamp = iStamp;
 		m_item.value = 0;
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession && g_iFrameSlot > 0) {
