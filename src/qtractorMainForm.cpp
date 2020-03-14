@@ -5821,8 +5821,8 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_UI_TOUCH
 	list << tr("LV2 Plug-in UI Touch interface support disabled.");
 #endif
-#ifndef CONFIG_LV2_UI_REQ_PARAM
-	list << tr("LV2 Plug-in UI Request-parameter support disabled.");
+#ifndef CONFIG_LV2_UI_REQ_VALUE
+	list << tr("LV2 Plug-in UI Request-value support disabled.");
 #endif
 #ifndef CONFIG_LV2_UI_IDLE
 	list << tr("LV2 Plug-in UI Idle interface support disabled.");

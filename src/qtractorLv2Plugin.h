@@ -69,23 +69,26 @@ class qtractorLv2Worker;
 #include <QWindow>
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
-// LV2 UI Request-parameter support (FAKE).
-#ifdef  CONFIG_LV2_UI_REQ_PARAM_FAKE
-#define CONFIG_LV2_UI_REQ_PARAM 1
-#ifndef LV2_UI__requestParameter
-#define LV2_UI__requestParameter LV2_UI_PREFIX "requestParameter"
+// LV2 UI Request-value support (FAKE).
+#ifdef  CONFIG_LV2_UI_REQ_VALUE_FAKE
+#define CONFIG_LV2_UI_REQ_VALUE 1
+#ifndef LV2_UI__requestValue
+#define LV2_UI__requestValue LV2_UI_PREFIX "requestValue"
 typedef enum {
-	LV2UI_REQUEST_PARAMETER_SUCCESS,
-	LV2UI_REQUEST_PARAMETER_BUSY,
-	LV2UI_REQUEST_PARAMETER_ERR_UNKNOWN,
-	LV2UI_REQUEST_PARAMETER_ERR_UNSUPPORTED
-} LV2UI_Request_Parameter_Status;
-typedef struct _LV2UI_Request_Parameter {
+	LV2UI_REQUEST_VALUE_SUCCESS,
+	LV2UI_REQUEST_VALUE_BUSY,
+	LV2UI_REQUEST_VALUE_ERR_UNKNOWN,
+	LV2UI_REQUEST_VALUE_ERR_UNSUPPORTED
+} LV2UI_Request_Value_Status;
+typedef struct _LV2UI_Request_Value {
 	LV2UI_Feature_Handle handle;
-	LV2UI_Request_Parameter_Status (*request)(LV2UI_Feature_Handle handle, LV2_URID key);
-} LV2UI_Request_Parameter;
-#endif	// !LV2_UI__requestParameter
-#endif	// CONFIG_LV2_UI_REQ_PARAM_FAKE
+	LV2UI_Request_Value_Status (*request)(
+		LV2UI_Feature_Handle handle,
+		LV2_URID key, LV2_URID type,
+		const LV2_Feature *const *features);
+} LV2UI_Request_Value;
+#endif	// !LV2_UI__requestValue
+#endif	// CONFIG_LV2_UI_REQ_VALUE_FAKE
 #endif	// CONFIG_LV2_UI
 
 #ifdef CONFIG_LV2_STATE
@@ -274,9 +277,10 @@ public:
 	void lv2_ui_touch(uint32_t port_index, bool grabbed);
 #endif
 
-#ifdef CONFIG_LV2_UI_REQ_PARAM
-	// LV2 UI Request-parameter interface (ui->host).
-	LV2UI_Request_Parameter_Status lv2_ui_request_parameter(LV2_URID key);
+#ifdef CONFIG_LV2_UI_REQ_VALUE
+	// LV2 UI Request-value interface (ui->host).
+	LV2UI_Request_Value_Status lv2_ui_request_value(
+		LV2_URID key, LV2_URID type, const LV2_Feature *const *features);
 #endif
 
 	// LV2 UI resize control (host->ui).
@@ -585,11 +589,11 @@ private:
 	QHash<unsigned long, bool> m_ui_params_touch;
 #endif
 
-#ifdef CONFIG_LV2_UI_REQ_PARAM
-	// LV2 UI Request-parameter interface (ui->host).
-	LV2UI_Request_Parameter m_lv2_ui_req_param;
-	LV2_Feature m_lv2_ui_req_param_feature;
-	volatile bool m_lv2_ui_req_param_busy;
+#ifdef CONFIG_LV2_UI_REQ_VALUE
+	// LV2 UI Request-value interface (ui->host).
+	LV2UI_Request_Value m_lv2_ui_req_value;
+	LV2_Feature m_lv2_ui_req_value_feature;
+	volatile bool m_lv2_ui_req_value_busy;
 #endif
 
 #ifdef CONFIG_LV2_UI_IDLE

@@ -15,8 +15,8 @@ GIT HEAD
 - Always show plugins and meters on track list/left
   pane as permanent standard now. (EXPERIMENTAL)
 
-- LV2 UI Request-parameter feature/interface support
-  has been implemented. (EXPERIMENTAL)
+- LV2 UI Request-value feature/interface support has
+  been implemented. (EXPERIMENTAL)
 
 - Audio output monitoring meters are now shown/hidden
   automagically on MIDI tracks and/or buses--no need

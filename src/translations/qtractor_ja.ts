@@ -762,64 +762,64 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>コピーライト: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2096"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2097"/>
         <source>Project: </source>
         <translation>プロジェクト: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3186"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3187"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation>プラグインのエディター(GUI)を選択:</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3198"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3199"/>
         <source>External</source>
         <translation>外部</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3201"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3202"/>
         <source>X11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3204"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3205"/>
         <source>Gtk2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3208"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3209"/>
         <source>Qt4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3212"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3213"/>
         <source>Qt5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3217"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3218"/>
         <source>Other</source>
         <translation>その他</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3225"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3226"/>
         <source>Don&apos;t ask this again</source>
         <translation>再確認しない</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3564"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3565"/>
         <source>plugin parameters</source>
         <translation>プラグインのパラメータ</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3948"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3952"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation type="unfinished">ファイルを開く</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2104"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2105"/>
         <source>Author: </source>
         <translation>作者: </translation>
     </message>
@@ -5965,11 +5965,6 @@ next time you start this %1.</source>
         <translation>LV2プラグインのUIタッチインターフェイスサポートは無効です。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5825"/>
-        <source>LV2 Plug-in UI Request-parameter support disabled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5828"/>
         <source>LV2 Plug-in UI Idle interface support disabled.</source>
         <translation>LV2プラグインUIのアイドルインターフェイスサポートは無効です。</translation>
@@ -6079,6 +6074,11 @@ is highly recommended.</source>
         <location filename="../qtractorMainForm.cpp" line="5818"/>
         <source>LV2 Plug-in Buf-size support disabled.</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5825"/>
+        <source>LV2 Plug-in UI Request-value support disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5848"/>
