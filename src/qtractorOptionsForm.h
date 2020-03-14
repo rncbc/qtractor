@@ -47,6 +47,9 @@ public:
 	void setOptions(qtractorOptions *pOptions);
 	qtractorOptions *options() const;
 
+	// Spacial meter colors dirty flag.
+	bool isDirtyMeterColors() const;
+
 	// Spacial custom color themes dirty flag.
 	bool isDirtyCustomColorThemes() const;
 
@@ -110,9 +113,10 @@ private:
 	qtractorTimeScale *m_pTimeScale;
 
 	// Meter colors.
-	enum { AudioMeterColors = 5, MidiMeterColors = 2 };
-	QColor m_audioMeterColors[AudioMeterColors];
-	QColor m_midiMeterColors[MidiMeterColors];
+	QColor *m_paAudioMeterColors;
+	QColor *m_paMidiMeterColors;
+
+	int m_iDirtyMeterColors;
 
 	// Custom color themes flag.
 	int m_iDirtyCustomColorThemes;

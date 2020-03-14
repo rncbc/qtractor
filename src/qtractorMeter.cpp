@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -139,6 +139,15 @@ void qtractorMeterValue::refreshAll (void)
 	QListIterator<qtractorMeterValue *> iter(g_values);
 	while (iter.hasNext())
 		iter.next()->refresh(g_iStamp);
+}
+
+
+// Global update (static).
+void qtractorMeterValue::updateAll (void)
+{
+	QListIterator<qtractorMeterValue *> iter(g_values);
+	while (iter.hasNext())
+		iter.next()->update();
 }
 
 

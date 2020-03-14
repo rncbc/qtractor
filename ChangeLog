@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- All meters background color are now customizable (cf.
+  View/Options.../Display/Meters, color level "Back").
+  
 - Automatic mixer grid layout (multi-row) is now in
   effect permanently--being an option no more.
 

@@ -1726,11 +1726,11 @@ bool qtractorMainForm::queryClose (void)
 			// Save custom meter colors, if any...
 			int iColor;
 			m_pOptions->audioMeterColors.clear();
-			for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 2; ++iColor)
+			for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 1; ++iColor)
 				m_pOptions->audioMeterColors.append(
 					qtractorAudioMeter::color(iColor).name());
 			m_pOptions->midiMeterColors.clear();
-			for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 2; ++iColor)
+			for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 1; ++iColor)
 				m_pOptions->midiMeterColors.append(
 					qtractorMidiMeter::color(iColor).name());
 			// Make sure there will be defaults...
@@ -5101,6 +5101,8 @@ void qtractorMainForm::viewOptions (void)
 			else
 				updateCustomColorTheme();
 		}
+		if (optionsForm.isDirtyMeterColors())
+			qtractorMeterValue::updateAll();
 		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
 			if (m_pOptions->sCustomStyleTheme.isEmpty())
 					iNeedRestart |= RestartProgram;

@@ -116,6 +116,19 @@ qtractorOptionsForm::qtractorOptionsForm (
 	// Have some deafult time-scale for instance...
 	m_pTimeScale = nullptr;
 
+	// Meter colors array setup.
+	m_paAudioMeterColors = new QColor [qtractorAudioMeter::ColorCount - 1];
+	m_paMidiMeterColors  = new QColor [qtractorMidiMeter::ColorCount  - 1];
+
+	int iColor;
+	for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 1; ++iColor)
+		m_paAudioMeterColors[iColor] = qtractorAudioMeter::defaultColor(iColor);
+	for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 1; ++iColor)
+		m_paMidiMeterColors[iColor] = qtractorMidiMeter::defaultColor(iColor);
+
+	m_iDirtyMeterColors = 0;
+
+	// Time-scale and audio metronome setup.
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		m_pTimeScale = new qtractorTimeScale(*pSession->timeScale());
@@ -532,6 +545,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 // Destructor.
 qtractorOptionsForm::~qtractorOptionsForm (void)
 {
+	delete [] m_paMidiMeterColors;
+	delete [] m_paAudioMeterColors;
+
 	if (m_pTimeScale) delete m_pTimeScale;
 }
 
@@ -639,16 +655,16 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MidiMetroBusCheckBox->setChecked(m_pOptions->bMidiMetroBus);
 	m_ui.MidiMetroOffsetSpinBox->setValue(m_pOptions->iMidiMetroOffset);
 
-	// Custom colors.
+	// Meter colors array setup.
 	int iColor;
-	for (iColor = 0; iColor < AudioMeterColors; ++iColor)
-		m_audioMeterColors[iColor] = qtractorAudioMeter::color(iColor);
-	for (iColor = 0; iColor < MidiMeterColors; ++iColor)
-		m_midiMeterColors[iColor] = qtractorMidiMeter::color(iColor);
+	for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 1; ++iColor)
+		m_paAudioMeterColors[iColor] = qtractorAudioMeter::color(iColor);
+	for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 1; ++iColor)
+		m_paMidiMeterColors[iColor] = qtractorMidiMeter::color(iColor);
 
 	// Default meter color levels shown...
-	m_ui.AudioMeterLevelComboBox->setCurrentIndex(AudioMeterColors - 1);
-	m_ui.MidiMeterLevelComboBox->setCurrentIndex(MidiMeterColors - 1);
+	m_ui.AudioMeterLevelComboBox->setCurrentIndex(qtractorAudioMeter::Color10dB);
+	m_ui.MidiMeterLevelComboBox->setCurrentIndex(qtractorMidiMeter::ColorOver);
 	changeAudioMeterLevel(m_ui.AudioMeterLevelComboBox->currentIndex());
 	changeMidiMeterLevel(m_ui.MidiMeterLevelComboBox->currentIndex());
 
@@ -755,6 +771,13 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 qtractorOptions *qtractorOptionsForm::options (void) const
 {
 	return m_pOptions;
+}
+
+
+// Spacial meter colors dirty flag.
+bool qtractorOptionsForm::isDirtyMeterColors (void) const
+{
+	return (m_iDirtyMeterColors > 0);
 }
 
 
@@ -866,10 +889,10 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iAutoSavePeriod      = m_ui.SessionAutoSaveSpinBox->value();
 		// Custom colors.
 		int iColor;
-		for (iColor = 0; iColor < AudioMeterColors; ++iColor)
-			qtractorAudioMeter::setColor(iColor, m_audioMeterColors[iColor]);
-		for (iColor = 0; iColor < MidiMeterColors; ++iColor)
-			qtractorMidiMeter::setColor(iColor, m_midiMeterColors[iColor]);
+		for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 1; ++iColor)
+			qtractorAudioMeter::setColor(iColor, m_paAudioMeterColors[iColor]);
+		for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 1; ++iColor)
+			qtractorMidiMeter::setColor(iColor, m_paMidiMeterColors[iColor]);
 		// Transport display preferences...
 		m_pOptions->bSyncViewHold = m_ui.SyncViewHoldCheckBox->isChecked();
 		// Dialogs preferences...
@@ -1099,7 +1122,7 @@ void qtractorOptionsForm::resetCustomStyleThemes (
 // Audio meter level index change.
 void qtractorOptionsForm::changeAudioMeterLevel ( int iColor )
 {
-	const QColor& color = m_audioMeterColors[iColor];
+	const QColor& color = m_paAudioMeterColors[iColor];
 	m_ui.AudioMeterColorLineEdit->setText(color.name());
 }
 
@@ -1107,7 +1130,7 @@ void qtractorOptionsForm::changeAudioMeterLevel ( int iColor )
 // MIDI meter level index change.
 void qtractorOptionsForm::changeMidiMeterLevel ( int iColor )
 {
-	const QColor& color = m_midiMeterColors[iColor];
+	const QColor& color = m_paMidiMeterColors[iColor];
 	m_ui.MidiMeterColorLineEdit->setText(color.name());
 }
 
@@ -1118,7 +1141,8 @@ void qtractorOptionsForm::changeAudioMeterColor ( const QString& sColor )
 	const QColor& color = QColor(sColor);
 	if (color.isValid()) {
 		updateColorText(m_ui.AudioMeterColorLineEdit, color);
-		m_audioMeterColors[m_ui.AudioMeterLevelComboBox->currentIndex()] = color;
+		m_paAudioMeterColors[m_ui.AudioMeterLevelComboBox->currentIndex()] = color;
+		++m_iDirtyMeterColors;
 		changed();
 	}
 }
@@ -1130,7 +1154,8 @@ void qtractorOptionsForm::changeMidiMeterColor ( const QString& sColor )
 	const QColor& color = QColor(sColor);
 	if (color.isValid()) {
 		updateColorText(m_ui.MidiMeterColorLineEdit, color);
-		m_midiMeterColors[m_ui.MidiMeterLevelComboBox->currentIndex()] = color;
+		m_paMidiMeterColors[m_ui.MidiMeterLevelComboBox->currentIndex()] = color;
+		++m_iDirtyMeterColors;
 		changed();
 	}
 }
@@ -1185,14 +1210,17 @@ void qtractorOptionsForm::resetMeterColors (void)
 {
 	// Reset colors.
 	int iColor;
-	for (iColor = 0; iColor < AudioMeterColors; ++iColor)
-		m_audioMeterColors[iColor] = qtractorAudioMeter::defaultColor(iColor);
-	for (iColor = 0; iColor < MidiMeterColors; ++iColor)
-		m_midiMeterColors[iColor] = qtractorMidiMeter::defaultColor(iColor);
+	for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 1; ++iColor)
+		m_paAudioMeterColors[iColor] = qtractorAudioMeter::defaultColor(iColor);
+	for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 1; ++iColor)
+		m_paMidiMeterColors[iColor] = qtractorMidiMeter::defaultColor(iColor);
 
 	// Update current display...
 	changeAudioMeterLevel(m_ui.AudioMeterLevelComboBox->currentIndex());
 	changeMidiMeterLevel(m_ui.MidiMeterLevelComboBox->currentIndex());
+
+	++m_iDirtyMeterColors;
+	changed();
 }
 
 

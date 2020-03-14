@@ -2682,6 +2682,11 @@
               <string>10 dB</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>Back</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="0" column="2">
@@ -2794,6 +2799,11 @@
             <item>
              <property name="text">
               <string>Over</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Back</string>
              </property>
             </item>
            </widget>
