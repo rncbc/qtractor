@@ -166,6 +166,9 @@
 /* Define if LV2 UI Request-value support is available. */
 #cmakedefine CONFIG_LV2_UI_REQ_VALUE @CONFIG_LV2_UI_REQ_VALUE@
 
+/* Define if LV2 UI Request-value support is available. (FAKE) */
+#cmakedefine CONFIG_LV2_UI_REQ_VALUE_FAKE @CONFIG_LV2_UI_REQ_VALUE_FAKE@
+
 /* Define if LV2 UI Idle interface support is available. */
 #cmakedefine CONFIG_LV2_UI_IDLE @CONFIG_LV2_UI_IDLE@
 

@@ -71,6 +71,7 @@ class qtractorLv2Worker;
 #endif
 // LV2 UI Request-value support (FAKE).
 #ifdef  CONFIG_LV2_UI_REQ_VALUE_FAKE
+#undef  CONFIG_LV2_UI_REQ_VALUE
 #define CONFIG_LV2_UI_REQ_VALUE 1
 #ifndef LV2_UI__requestValue
 #define LV2_UI__requestValue LV2_UI_PREFIX "requestValue"

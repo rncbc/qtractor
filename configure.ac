@@ -123,16 +123,16 @@ AC_ARG_ENABLE(libz,
   [ac_libz="yes"])
 
 # Enable LILV support.
-AC_ARG_ENABLE(lilv,
-  AS_HELP_STRING([--enable-lilv], [enable LILV interface support (default=yes)]),
-  [ac_lilv="$enableval"],
-  [ac_lilv="yes"])
+AC_ARG_ENABLE(liblilv,
+  AS_HELP_STRING([--enable-liblilv], [enable LILV interface support (default=yes)]),
+  [ac_liblilv="$enableval"],
+  [ac_liblilv="yes"])
 
 # Enable SUIL support.
-AC_ARG_ENABLE(suil,
-  AS_HELP_STRING([--enable-suil], [enable SUIL interface support (default=yes)]),
-  [ac_suil="$enableval"],
-  [ac_suil="yes"])
+AC_ARG_ENABLE(libsuil,
+  AS_HELP_STRING([--enable-libsuil], [enable SUIL interface support (default=yes)]),
+  [ac_libsuil="$enableval"],
+  [ac_libsuil="yes"])
 
 # Enable SSE optimization.
 AC_ARG_ENABLE(sse,
@@ -835,12 +835,12 @@ fi
 
 # Check for LV2 support.
 if test "x$ac_lv2" = "xno"; then
-   ac_lilv="no"
+   ac_liblilv="no"
    ac_lv2_ui="no"
 fi
 
 if test "x$ac_lv2_ui" = "xno"; then
-   ac_suil="no"
+   ac_libsuil="no"
    ac_lv2_external_ui="no"
    ac_lv2_ui_touch="no"
    ac_lv2_ui_req_value="no"
@@ -851,10 +851,10 @@ if test "x$ac_lv2_ui" = "xno"; then
 fi
 
 # Check for optional LILV library.
-if test "x$ac_lilv" = "xyes"; then
-   PKG_CHECK_MODULES([LILV], [lilv-0], [ac_lilv="yes"], [ac_lilv="no"])
+if test "x$ac_liblilv" = "xyes"; then
+   PKG_CHECK_MODULES([LILV], [lilv-0], [ac_liblilv="yes"], [ac_liblilv="no"])
 fi
-if test "x$ac_lilv" = "xyes"; then
+if test "x$ac_liblilv" = "xyes"; then
    AC_DEFINE(CONFIG_LIBLILV, 1, [Define if LILV library is available.])
    ac_cflags="$ac_cflags $LILV_CFLAGS"
    ac_libs="$ac_libs $LILV_LIBS"
@@ -865,7 +865,7 @@ else
    AC_MSG_WARN([*** LILV library not found.])
 fi
 
-if test "x$ac_lilv" = "xyes"; then
+if test "x$ac_liblilv" = "xyes"; then
    AC_CHECK_LIB(lilv-0, lilv_file_uri_parse,
       [ac_lilv_file_uri_parse="yes"],
       [ac_lilv_file_uri_parse="no"])
@@ -881,10 +881,10 @@ if test "x$ac_lilv" = "xyes"; then
 fi
 
 # Check for LV2 new UI instantiation availability (libsuil).
-if test "x$ac_suil" = "xyes"; then
-   PKG_CHECK_MODULES([SUIL], [suil-0], [ac_suil="yes"], [ac_suil="no"])
+if test "x$ac_libsuil" = "xyes"; then
+   PKG_CHECK_MODULES([SUIL], [suil-0], [ac_libsuil="yes"], [ac_libsuil="no"])
 fi
-if test "x$ac_suil" = "xyes"; then
+if test "x$ac_libsuil" = "xyes"; then
    AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is enabled.])
    ac_cflags="$ac_cflags $SUIL_CFLAGS"
    ac_libs="$ac_libs $SUIL_LIBS"
@@ -895,7 +895,7 @@ else
    AC_MSG_WARN([*** SUIL library will be disabled.])
 fi
 
-if test "x$ac_suil" = "xyes"; then
+if test "x$ac_libsuil" = "xyes"; then
    AC_CHECK_LIB(suil-0, suil_instance_get_handle,
       [ac_suil_instance_get_handle="yes"],
       [ac_suil_instance_get_handle="no"])
@@ -905,7 +905,7 @@ if test "x$ac_suil" = "xyes"; then
 fi
 
 # Check for LV2 host library (liblilv).
-if test "x$ac_lilv" = "xno"; then
+if test "x$ac_liblilv" = "xno"; then
    ac_lv2="no"
    ac_lv2_ui="no"
    ac_lv2_event="no"
@@ -1319,7 +1319,7 @@ if test "x$ac_lv2_ui_req_value" = "xyes"; then
    AC_CACHE_CHECK([for LV2 UI Request-value support],
       ac_cv_lv2_ui_req_value, [
       AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
-         // Checking for LV2 UI Request-parameter interface...
+         // Checking for LV2 UI Request-value interface...
          LV2UI_Request_Value req_value;
       ], ac_cv_lv2_ui_req_value="yes", ac_cv_lv2_ui_req_value="no")
    ])
@@ -1363,9 +1363,9 @@ if test "x$ac_lv2_ui_show" = "xyes"; then
    fi
 fi
 
-if test "x$ac_suil" = "xyes"; then
+if test "x$ac_libsuil" = "xyes"; then
    AC_CACHE_CHECK([for LV2 UI GTK2 support (libsuil_gtk2_in_qt5)],
-      ac_cv_suil_gtk2_in_qt5, [
+      ac_cv_libsuil_gtk2_in_qt5, [
       AC_TRY_RUN([
          #include <suil/suil.h>
          #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
@@ -1373,9 +1373,9 @@ if test "x$ac_suil" = "xyes"; then
          #define LV2_UI__Qt5UI LV2_UI_PREFIX "Qt5UI"
          #endif
          int main() { return !suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__GtkUI); }
-      ], ac_cv_suil_gtk2_in_qt5="yes", ac_cv_suil_gtk2_in_qt5="no")
+      ], ac_cv_libsuil_gtk2_in_qt5="yes", ac_cv_libsuil_gtk2_in_qt5="no")
    ])
-   if test "x$ac_cv_suil_gtk2_in_qt5" = "xyes"; then
+   if test "x$ac_cv_libsuil_gtk2_in_qt5" = "xyes"; then
       AC_DEFINE(CONFIG_LIBSUIL_GTK2_IN_QT5, 1, [Define if libsuil_gtk2_in_qt5 is available.])
    #  ac_lv2_ui_gtk2="no"
    fi
@@ -1391,9 +1391,9 @@ else
    AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
 fi
 
-if test "x$ac_suil" = "xyes"; then
+if test "x$ac_libsuil" = "xyes"; then
    AC_CACHE_CHECK([for LV2 UI X11 support (libsuil_x11_in_qt5)],
-      ac_cv_suil_x11_in_qt5, [
+      ac_cv_libsuil_x11_in_qt5, [
       AC_TRY_RUN([
          #include <suil/suil.h>
          #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
@@ -1401,9 +1401,9 @@ if test "x$ac_suil" = "xyes"; then
          #define LV2_UI__Qt5UI LV2_UI_PREFIX "Qt5UI"
          #endif
          int main() { return !suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__X11UI); }
-      ], ac_cv_suil_x11_in_qt5="yes", ac_cv_suil_x11_in_qt5="no")
+      ], ac_cv_libsuil_x11_in_qt5="yes", ac_cv_libsuil_x11_in_qt5="no")
    ])
-   if test "x$ac_cv_suil_x11_in_qt5" = "xyes"; then
+   if test "x$ac_cv_libsuil_x11_in_qt5" = "xyes"; then
       AC_DEFINE(CONFIG_LIBSUIL_X11_IN_QT5, 1, [Define if libsuil_x11_in_qt5 is available.])
    #  ac_lv2_ui_x11="no"
    fi
@@ -1546,9 +1546,9 @@ echo "  DSSI plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
 echo "  VST3 plug-in support (EXPERIMENTAL)  . . . . . . .: $ac_vst3"
 echo "  LV2 plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
-echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_lilv"
+echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_liblilv"
 echo "  LV2 plug-in UI support . . . . . . . . . . . . . .: $ac_lv2_ui"
-echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_suil"
+echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_libsuil"
 echo "  LV2 plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 plug-in MIDI/Event support (DEPRECATED)  . . .: $ac_lv2_event"
 echo "  LV2 plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
