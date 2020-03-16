@@ -250,6 +250,11 @@ AC_ARG_ENABLE(lv2-buf-size,
   [ac_lv2_buf_size="$enableval"],
   [ac_lv2_buf_size="yes"])
 
+AC_ARG_ENABLE(lv2-parameters,
+  AS_HELP_STRING([--enable-lv2-parameters], [enable LV2 plug-in Parameters support (default=yes)]),
+  [ac_lv2_parameters="$enableval"],
+  [ac_lv2_parameters="yes"])
+
 AC_ARG_ENABLE(lv2-ui-touch,
   AS_HELP_STRING([--enable-lv2-ui-touch], [enable LV2 plug-in UI Touch interface support (default=yes)]),
   [ac_lv2_ui_touch="$enableval"],
@@ -917,6 +922,7 @@ if test "x$ac_lilv" = "xno"; then
    ac_lv2_time_position="no";
    ac_lv2_options="no"
    ac_lv2_buf_size="no"
+   ac_lv2_parameters="no"
    ac_lv2_ui_touch="no"
    ac_lv2_ui_req_value="no"
    ac_lv2_ui_idle="no"
@@ -1079,6 +1085,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_time_position="no";
       ac_lv2_options="no"
       ac_lv2_buf_size="no"
+      ac_lv2_parameters="no"
       ac_lv2_ui_touch="no"
       ac_lv2_ui_req_value="no"
       ac_lv2_ui_idle="no"
@@ -1280,6 +1287,16 @@ if test "x$ac_lv2_buf_size" = "xyes"; then
       AC_MSG_WARN([*** LV2 Buf-size support will be disabled.])
    fi
 fi
+if test "x$ac_lv2_parameters" = "xyes"; then
+   AC_CHECK_HEADER(
+      lv2/lv2plug.in/ns/ext/parameters/parameters.h,
+      [ac_lv2_parameters="yes"], [ac_lv2_parameters="no"])
+   if test "x$ac_lv2_parameters" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_PARAMETERS, 1, [Define if LV2 Parameters is supported.])
+   else
+      AC_MSG_WARN([*** LV2 Parameters support will be disabled.])
+   fi
+fi
 if test "x$ac_lv2_time_position" = "xyes"; then
    AC_DEFINE(CONFIG_LV2_TIME_POSITION, 1, [Define if LV2 Time/position support is available.])
 fi
@@ -1310,7 +1327,9 @@ if test "x$ac_lv2_ui_req_value" = "xyes"; then
    if test "x$ac_lv2_ui_req_value" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_UI_REQ_VALUE, 1, [Define if LV2 UI Request-value support is available.])
    else
-      AC_MSG_WARN([*** LV2 UI Request-value support will be disabled.])
+     #AC_MSG_WARN([*** LV2 UI Request-value support will be disabled.])
+      AC_DEFINE(CONFIG_LV2_UI_REQ_VALUE_FAKE, 1, [Define if LV2 UI Request-value support is available. (FAKE)])
+      ac_lv2_ui_req_value="yes"
    fi
 fi
 if test "x$ac_lv2_ui_idle" = "xyes"; then
@@ -1544,6 +1563,7 @@ echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
 echo "  LV2 plug-in Time/position support  . . . . . . . .: $ac_lv2_time_position"
 echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"
 echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
+echo "  LV2 plug-in Parameters support . . . . . . . . . .: $ac_lv2_parameters"
 echo "  LV2 plug-in UI Touch interface support . . . . . .: $ac_lv2_ui_touch"
 echo "  LV2 plug-in UI Request-value support . . . . . . .: $ac_lv2_ui_req_value"
 echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"

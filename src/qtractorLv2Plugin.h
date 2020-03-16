@@ -675,8 +675,9 @@ private:
 #endif
 #ifdef CONFIG_LV2_UI
 	LV2_Feature        m_lv2_ui_options_feature;
-	LV2_Options_Option m_lv2_ui_options[4];
+	LV2_Options_Option m_lv2_ui_options[5];
 	float              m_fUpdateRate;
+	float              m_fSampleRate;
 	double             m_dSampleRate;
 #endif
 #endif

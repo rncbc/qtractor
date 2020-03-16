@@ -1007,6 +1007,12 @@ static LilvNode *g_lv2_minimum_size_prop = nullptr;
 static LilvNode *g_lv2_patch_message_class = nullptr;
 #endif
 
+#ifdef CONFIG_LV2_PARAMETERS
+// LV2 Parameters option.
+#include "lv2/lv2plug.in/ns/ext/parameters/parameters.h"
+#endif
+
+
 // LV2 URIDs stock.
 static struct qtractorLv2Urids
 {
@@ -1048,6 +1054,9 @@ static struct qtractorLv2Urids
 	LV2_URID ui_windowTitle;
 	LV2_URID ui_updateRate;
 	LV2_URID ui_sampleRate;
+#endif
+#ifdef CONFIG_LV2_PARAMETERS
+	LV2_URID param_sampleRate;
 #endif
 #endif	// CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_STATE
@@ -1856,11 +1865,15 @@ void qtractorLv2PluginType::lv2_open (void)
 	g_lv2_urids.ui_sampleRate
 		= qtractorLv2Plugin::lv2_urid_map(LV2_CORE__sampleRate);
 #endif
+#ifdef CONFIG_LV2_PARAMETERS
+	g_lv2_urids.param_sampleRate
+		= qtractorLv2Plugin::lv2_urid_map(LV2_PARAMETERS__sampleRate);
+#endif
+#endif	// CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_STATE
 	g_lv2_urids.state_StateChanged
 		= qtractorLv2Plugin::lv2_urid_map(LV2_STATE__StateChanged);
 #endif
-#endif	// CONFIG_LV2_OPTIONS
 
 #ifdef CONFIG_LV2_TIME
 	// LV2 Time: set up supported port designations...
@@ -2219,6 +2232,11 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_iNominalBlockLength(0)
 		, m_iSequenceSize(0)
 	#endif
+	#ifdef CONFIG_LV2_UI
+		, m_fUpdateRate(15.0f)
+		, m_fSampleRate(44100.0f)
+		, m_dSampleRate(44100.0)
+	#endif
 	#endif	// CONFIG_LV2_OPTIONS
 		, m_pfLatency(nullptr)
 {
@@ -2264,7 +2282,6 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 #endif	// CONFIG_LV2_STATE_MAKE_PATH
 
 #endif	// CONFIG_LV2_STATE_FILES
-
 
 #ifdef CONFIG_LV2_PROGRAMS
 
@@ -4058,12 +4075,15 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 
 #ifdef CONFIG_LV2_OPTIONS
 	m_fUpdateRate = 15.0f;
+	m_fSampleRate = 44100.0f;
 	m_dSampleRate = 44100.0;
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-		if (pAudioEngine)
-			m_dSampleRate = double(pAudioEngine->sampleRate());
+		if (pAudioEngine) {
+			m_fSampleRate = float(pAudioEngine->sampleRate());
+			m_dSampleRate = double(m_fSampleRate);
+		}
 	}
 	const LV2_Options_Option ui_options[] = {
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_windowTitle,
@@ -4072,6 +4092,10 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 		  sizeof(float), g_lv2_urids.atom_Float, &m_fUpdateRate },
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_sampleRate,
 		  sizeof(double), g_lv2_urids.atom_Double, &m_dSampleRate },
+	#ifdef CONFIG_LV2_PARAMETERS
+		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.param_sampleRate,
+		  sizeof(float), g_lv2_urids.atom_Float, &m_fSampleRate },
+	#endif
 		{ LV2_OPTIONS_INSTANCE, 0, 0, 0, 0, nullptr }
 	};
 	::memcpy(&m_lv2_ui_options, &ui_options, sizeof(ui_options));

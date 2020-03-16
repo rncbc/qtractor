@@ -154,6 +154,9 @@
 /* Define if LV2 Buf-size is supported. */
 #cmakedefine CONFIG_LV2_BUF_SIZE @CONFIG_LV2_BUF_SIZE@
 
+/* Define if LV2 Parameters is supported. */
+#cmakedefine CONFIG_LV2_PARAMETERS @CONFIG_LV2_PARAMETERS@
+
 /* Define if LV2 Time/position support is available. */
 #cmakedefine CONFIG_LV2_TIME_POSITION @CONFIG_LV2_TIME_POSITION@
 
