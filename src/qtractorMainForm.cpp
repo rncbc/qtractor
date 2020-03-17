@@ -1627,6 +1627,11 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	} else {
 		// Change to last known session dir...
 		if (!m_pOptions->sSessionDir.isEmpty()) {
+			QFileInfo info(m_pOptions->sSessionDir);
+			while (!info.exists() && !info.isRoot())
+				info.setFile(info.absolutePath());
+			if (info.exists() && !info.isRoot())
+				m_pOptions->sSessionDir = info.absoluteFilePath();
 			if (!QDir::setCurrent(m_pOptions->sSessionDir)) {
 				appendMessagesError(
 					tr("Could not set default session directory:\n\n"
