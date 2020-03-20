@@ -389,6 +389,7 @@ void qtractorTracks::zoomCenterPost ( const ZoomCenter& zc )
 	int cy = m_pTrackView->contentsY();
 
 	// Update the dependant views...
+	m_pTrackList->updateItems();
 	m_pTrackList->updateContentsHeight();
 	m_pTrackView->updateContentsWidth();
 

@@ -264,7 +264,7 @@ void qtractorTrackView::updateContentsHeight (void)
 		return;
 
 	// Allways give some room to drop something at the bottom...
-	int iContentsHeight = qtractorTrack::HeightBase << 1;
+	int iContentsHeight = (qtractorTrack::HeightMin << 2);
 	// Compute total track height...
 	qtractorTrack *pTrack = pSession->tracks().first();
 	while (pTrack) {

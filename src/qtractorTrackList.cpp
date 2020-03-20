@@ -440,11 +440,6 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 	if (track == nullptr)
 		return;
 
-	if (buttons == nullptr) {
-		buttons = new qtractorTrackListButtons(track, pTrackList->viewport());
-		buttons->lower();
-	}
-
 	updateIcon(pTrackList);
 
 	text << track->trackName();
@@ -467,24 +462,6 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 				QString::number(pAudioBus->channels()) : s.right(1));
 			// Fillers...
 			text << s << s;
-			// Re-create the audio meter...
-			if (meters == nullptr) {
-				qtractorAudioMonitor *pAudioMonitor
-					= static_cast<qtractorAudioMonitor *> (track->monitor());
-				if (pAudioMonitor) {
-					const int iAudioChannels = pAudioMonitor->channels();
-					if (iAudioChannels > 0) {
-						const int iColWidth
-							= pTrackList->header()->sectionSize(Channel);
-						const int iMinWidth = iColWidth / iAudioChannels - 1;
-						if (iMinWidth > 3) {
-							meters = new qtractorAudioMeter(
-								pAudioMonitor, pTrackList->viewport());
-							meters->lower();
-						}
-					}
-				}
-			}
 			break;
 		}
 
@@ -551,24 +528,6 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 				sInstrumentName = s;
 			// This is it, MIDI Patch/Bank...
 			text << sProgName + '\n' + sBankName << sInstrumentName;
-			// Re-create the MIDI meter...
-			if (meters == nullptr) {
-				qtractorMidiMonitor *pMidiMonitor
-					= static_cast<qtractorMidiMonitor *> (track->monitor());
-				if (pMidiMonitor) {
-					qtractorMidiComboMeter *pMidiComboMeter
-						= new qtractorMidiComboMeter(
-							pMidiMonitor, pTrackList->viewport());
-					qtractorMidiManager *pMidiManager
-						= (track->pluginList())->midiManager();
-					if (pMidiManager && pMidiManager->isAudioOutputMonitor()) {
-						pMidiComboMeter->setAudioOutputMonitor(
-							pMidiManager->audioOutputMonitor());
-					}
-					meters = pMidiComboMeter;
-					meters->lower();
-				}
-			}
 			break;
 		}
 
@@ -579,7 +538,37 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 		}
 	}
 
-	if (plugins == nullptr) {
+	updateButtons(pTrackList, true);
+	updatePlugins(pTrackList, true);
+	updateMeters(pTrackList, true);
+
+	if (buttons)
+		buttons->curveButton()->updateTrack();
+}
+
+
+// Track-list model item buttons updater.
+void qtractorTrackList::Item::updateButtons (
+	qtractorTrackList *pTrackList, bool bVisible )
+{
+	if (bVisible && buttons == nullptr) {
+		buttons = new qtractorTrackListButtons(track, pTrackList->viewport());
+		buttons->lower();
+	}
+	else
+	if (!bVisible && buttons) {
+	//	buttons->hide();
+		delete buttons;
+		buttons = nullptr;
+	}
+}
+
+
+// Track-list model item plugins updater.
+void qtractorTrackList::Item::updatePlugins (
+	qtractorTrackList *pTrackList, bool bVisible )
+{
+	if (bVisible && plugins == nullptr) {
 		const QFont& font = pTrackList->font();
 		plugins = new qtractorPluginListView(pTrackList->viewport());
 		plugins->setFont(QFont(font.family(), font.pointSize() - 2));
@@ -587,11 +576,74 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 		plugins->setPluginList(track->pluginList());
 		plugins->lower();
 	}
-
-	buttons->curveButton()->updateTrack();
+	else
+	if (!bVisible && plugins) {
+	//	plugins->hide();
+		delete plugins;
+		plugins = nullptr;
+	}
 }
 
 
+// Track-list model item meters updater.
+void qtractorTrackList::Item::updateMeters (
+	qtractorTrackList *pTrackList, bool bVisible )
+{
+	if (bVisible && meters == nullptr) {
+		switch (track->trackType()) {
+		case qtractorTrack::Audio: {
+			// Re-create the audio meters...
+			qtractorAudioMonitor *pAudioMonitor
+				= static_cast<qtractorAudioMonitor *> (track->monitor());
+			if (pAudioMonitor) {
+				const int iAudioChannels = pAudioMonitor->channels();
+				if (iAudioChannels > 0) {
+					const int iColWidth
+						= pTrackList->header()->sectionSize(Channel);
+					const int iMinWidth = iColWidth / iAudioChannels - 1;
+					if (iMinWidth > 3) {
+						meters = new qtractorAudioMeter(
+							pAudioMonitor, pTrackList->viewport());
+						meters->lower();
+					}
+				}
+			}
+			break;
+		}
+		case qtractorTrack::Midi: {
+			// Re-create the MIDI meters...
+			qtractorMidiMonitor *pMidiMonitor
+				= static_cast<qtractorMidiMonitor *> (track->monitor());
+			if (pMidiMonitor) {
+				qtractorMidiComboMeter *pMidiComboMeter
+					= new qtractorMidiComboMeter(
+						pMidiMonitor, pTrackList->viewport());
+				qtractorMidiManager *pMidiManager
+					= (track->pluginList())->midiManager();
+				if (pMidiManager && pMidiManager->isAudioOutputMonitor()) {
+					pMidiComboMeter->setAudioOutputMonitor(
+						pMidiManager->audioOutputMonitor());
+				}
+				meters = pMidiComboMeter;
+				meters->lower();
+			}
+			break;
+		}
+		case qtractorTrack::None:
+		default:
+			break;
+		}
+	}
+	else
+	if (!bVisible && meters) {
+	//	meters->hide();
+		delete meters;
+		meters = nullptr;
+	}
+}
+
+
+// Track-list model item icon updater.
 void qtractorTrackList::Item::updateIcon ( qtractorTrackList *pTrackList )
 {
 	const QPixmap pm(track->trackIcon());
@@ -850,7 +902,7 @@ void qtractorTrackList::updateItems (void)
 	while (iter.hasNext())
 		iter.next()->updateItem(this);
 
-	updateContents();
+//	updateContents();
 }
 
 
@@ -860,7 +912,7 @@ void qtractorTrackList::updateIcons (void)
 	while (iter.hasNext())
 		iter.next()->updateIcon(this);
 
-	updateContents();
+//	updateContents();
 }
 
 
@@ -1272,16 +1324,16 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					rect.setWidth(dx);
 					drawCell(&painter, iTrack, iCol, rect);
 					if (iCol == Name && pItem->buttons) {
-						const QSize sizeButtons
-							= (pItem->buttons)->sizeHint();
-						QRect rectButtons = rect;
-						rectButtons.setTop(rect.bottom() - sizeButtons.height());
-						rectButtons.setLeft(rect.right() - sizeButtons.width());
-						if (rectButtons.height() < h1) {
+						const int h2 = qtractorTrack::HeightMin - 4;
+						pItem->updateButtons(this, rect.height() > h2);
+						if (pItem->buttons) {
+							const QSize sizeButtons
+								= (pItem->buttons)->sizeHint();
+							QRect rectButtons = rect;
+							rectButtons.setTop(rect.bottom() - sizeButtons.height());
+							rectButtons.setLeft(rect.right() - sizeButtons.width());
 							(pItem->buttons)->setGeometry(rectButtons);
 							(pItem->buttons)->show();
-						} else {
-							(pItem->buttons)->hide();
 						}
 					}
 					else
@@ -1289,28 +1341,26 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 						const int h2
 							= (qtractorTrack::HeightMin << 2)
 							-  qtractorTrack::HeightMin  - 2;
-						if (rect.height() > h2) {
+						pItem->updatePlugins(this, rect.height() > h2);
+						if (pItem->plugins) {
 							const int dy1
 								= (qtractorTrack::HeightMin << 1);
 							(pItem->plugins)->setGeometry(
 								rect.adjusted(+4, dy1, -4, -2));
 							(pItem->plugins)->show();
-						} else {
-							(pItem->plugins)->hide();
 						}
 					}
 					else
 					if (iCol == Channel && pItem->meters) {
 						const int h2 = qtractorTrack::HeightMin + 4;
-						if (rect.height() > h2) {
+						pItem->updateMeters(this, rect.height() > h2);
+						if (pItem->meters) {
 							const int dy1
 								= ((pItem->track)->trackType()
 									== qtractorTrack::Midi ? 20 : 4);
 							(pItem->meters)->setGeometry(
 								rect.adjusted(+4, dy1, -3, -2));
 							(pItem->meters)->show();
-						} else {
-							(pItem->meters)->hide();
 						}
 					}
 				}
@@ -1490,8 +1540,12 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				const int iZoomHeight = y - m_iDragY;
 				pTrack->setZoomHeight(iZoomHeight);
 				Item *pItem = m_tracks.value(pTrack, nullptr);
-				if (pItem)
+				if (pItem) {
 					pItem->updateIcon(this);
+					pItem->updateButtons(this, true);
+					pItem->updatePlugins(this, true);
+					pItem->updateMeters(this, true);
+				}
 				m_pTracks->trackView()->updateContents();
 				updateContentsHeight();
 			}
