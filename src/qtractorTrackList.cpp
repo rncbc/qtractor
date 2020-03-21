@@ -379,7 +379,8 @@ QHeaderView *qtractorTrackList::header (void) const
 
 // Track-list model item constructor
 qtractorTrackList::Item::Item ( qtractorTrack *pTrack )
-	: track(pTrack), flags(0), buttons(nullptr), plugins(nullptr), meters(nullptr)
+	: track(pTrack), flags(0), updated(0),
+		buttons(nullptr), plugins(nullptr), meters(nullptr)
 {
 	const QString s;
 
@@ -538,12 +539,10 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 		}
 	}
 
-	updateButtons(pTrackList, true);
-	updatePlugins(pTrackList, true);
-	updateMeters(pTrackList, true);
-
 	if (buttons)
 		buttons->curveButton()->updateTrack();
+
+	++updated;
 }
 
 
@@ -1323,7 +1322,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 					rect.setX(x - cx);
 					rect.setWidth(dx);
 					drawCell(&painter, iTrack, iCol, rect);
-					if (iCol == Name && pItem->buttons) {
+					if (iCol == Name && pItem->updated) {
 						const int h2 = qtractorTrack::HeightMin - 4;
 						pItem->updateButtons(this, rect.height() > h2);
 						if (pItem->buttons) {
@@ -1337,7 +1336,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 						}
 					}
 					else
-					if (iCol == Bus && pItem->plugins) {
+					if (iCol == Bus && pItem->updated) {
 						const int h2
 							= (qtractorTrack::HeightMin << 2)
 							-  qtractorTrack::HeightMin  - 2;
@@ -1351,7 +1350,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 						}
 					}
 					else
-					if (iCol == Channel && pItem->meters) {
+					if (iCol == Channel && pItem->updated) {
 						const int h2 = qtractorTrack::HeightMin + 4;
 						pItem->updateMeters(this, rect.height() > h2);
 						if (pItem->meters) {
@@ -1364,22 +1363,19 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 						}
 					}
 				}
-				else if (iCol == Name && pItem->buttons)
-					(pItem->buttons)->hide();
-				else if (iCol == Bus && pItem->plugins)
-					(pItem->plugins)->hide();
-				else if (iCol == Channel && pItem->meters)
-					(pItem->meters)->hide();
+				else if (iCol == Name)
+					pItem->updateButtons(this, false);
+				else if (iCol == Bus)
+					pItem->updatePlugins(this, false);
+				else if (iCol == Channel)
+					pItem->updateMeters(this, false);
 				x += dx;
 			}
 		} else {
 			// Just hide all children...
-			if (pItem->buttons)
-				(pItem->buttons)->hide();
-			if (pItem->plugins)
-				(pItem->plugins)->hide();
-			if (pItem->meters)
-				(pItem->meters)->hide();
+			pItem->updateButtons(this, false);
+			pItem->updatePlugins(this, false);
+			pItem->updateMeters(this, false);
 		}
 		++iTrack;
 	}
