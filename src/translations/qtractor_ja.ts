@@ -720,17 +720,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>オートメーション</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="457"/>
+        <location filename="../qtractorTrackList.cpp" line="458"/>
         <source>Audio</source>
         <translation>音声</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="470"/>
+        <location filename="../qtractorTrackList.cpp" line="471"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="536"/>
+        <location filename="../qtractorTrackList.cpp" line="537"/>
         <source>Unknown</source>
         <translation>不明</translation>
     </message>

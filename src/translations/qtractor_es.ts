@@ -793,17 +793,17 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translatio
         <translation>Automatización</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="457"/>
+        <location filename="../qtractorTrackList.cpp" line="458"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="470"/>
+        <location filename="../qtractorTrackList.cpp" line="471"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="536"/>
+        <location filename="../qtractorTrackList.cpp" line="537"/>
         <source>Unknown</source>
         <translation>Desconocido</translation>
     </message>

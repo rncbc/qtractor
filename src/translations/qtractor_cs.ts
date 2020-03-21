@@ -447,17 +447,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="457"/>
+        <location filename="../qtractorTrackList.cpp" line="458"/>
         <source>Audio</source>
         <translation>Zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="470"/>
+        <location filename="../qtractorTrackList.cpp" line="471"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="536"/>
+        <location filename="../qtractorTrackList.cpp" line="537"/>
         <source>Unknown</source>
         <translation>Neznámý</translation>
     </message>

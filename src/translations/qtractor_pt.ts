@@ -19,7 +19,7 @@
         <translation>Arquivo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="470"/>
+        <location filename="../qtractorTrackList.cpp" line="471"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
@@ -70,7 +70,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>gravação da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="457"/>
+        <location filename="../qtractorTrackList.cpp" line="458"/>
         <source>Audio</source>
         <translation>Áudio</translation>
     </message>
@@ -693,7 +693,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Fornecedor: </translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="536"/>
+        <location filename="../qtractorTrackList.cpp" line="537"/>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
     </message>
