@@ -815,7 +815,7 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
         <location filename="../qtractorLv2Plugin.cpp" line="3969"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
-        <translation type="unfinished">Ouvrir le Fichier</translation>
+        <translation>Ouvrir un fichier</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
@@ -831,17 +831,17 @@ Piste: &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorVst3Plugin.cpp" line="1268"/>
         <source>Name: </source>
-        <translation type="unfinished"></translation>
+        <translation>Nom : </translation>
     </message>
     <message>
         <location filename="../qtractorVst3Plugin.cpp" line="1288"/>
         <source>Category: </source>
-        <translation type="unfinished"></translation>
+        <translation>Catégorie : </translation>
     </message>
     <message>
         <location filename="../qtractorVst3Plugin.cpp" line="1295"/>
         <source>Categories: </source>
-        <translation type="unfinished"></translation>
+        <translation>Catégories : </translation>
     </message>
 </context>
 <context>
@@ -5922,7 +5922,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5770"/>
         <source>VST3 Plug-in support (EXPERIMENTAL) disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support de greffon VST3 (EXPÉRIMENTAL) désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5773"/>
@@ -6073,7 +6073,7 @@ est hautement recommandé.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5830"/>
         <source>LV2 Plug-in UI Request-value support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support du UI Request-value pour les greffons LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5853"/>
@@ -8535,7 +8535,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="688"/>
         <source>M 6</source>
-        <translation type="unfinished"></translation>
+        <translation>M 6</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="887"/>
@@ -12386,7 +12386,7 @@ existantes :</translation>
         <location filename="../qtractorOptionsForm.ui" line="2687"/>
         <location filename="../qtractorOptionsForm.ui" line="2806"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Retour</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3058"/>
