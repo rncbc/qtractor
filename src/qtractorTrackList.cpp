@@ -1525,9 +1525,15 @@ void qtractorTrackList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	case DragResize:
 		// Currently resizing an item...
 		if (m_iDragTrack >= 0) {
+			qtractorSession *pSession
+				= qtractorSession::getInstance();
+			const int iVerticalZoom
+				= (pSession ? pSession->verticalZoom() : 100);
+			const int iZoomHeightMin
+				= (qtractorTrack::HeightMin * iVerticalZoom) / 100;
 			int y = pos.y();
-			if (y < m_iDragY + qtractorTrack::HeightMin)
-				y = m_iDragY + qtractorTrack::HeightMin;
+			if (y < m_iDragY + iZoomHeightMin)
+				y = m_iDragY + iZoomHeightMin;
 			m_posDrag.setY(y);
 			moveRubberBand(m_posDrag);
 			// Go for it, immediately...
