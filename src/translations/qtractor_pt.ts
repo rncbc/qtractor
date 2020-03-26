@@ -363,7 +363,8 @@ MIDI:	</translation>
         <location filename="../qtractorLv2Plugin.cpp" line="3969"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
-        <translation type="unfinished">Abrir Arquivo</translation>
+        <translatorcomment>parametro_para_requisição_da_interface_lv2</translatorcomment>
+        <translation>Abrir Arquivo</translation>
     </message>
     <message>
         <location filename="../qtractorTrackList.cpp" line="254"/>
@@ -832,17 +833,17 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorVst3Plugin.cpp" line="1268"/>
         <source>Name: </source>
-        <translation type="unfinished"></translation>
+        <translation>Nome: </translation>
     </message>
     <message>
         <location filename="../qtractorVst3Plugin.cpp" line="1288"/>
         <source>Category: </source>
-        <translation type="unfinished"></translation>
+        <translation>Categoria: </translation>
     </message>
     <message>
         <location filename="../qtractorVst3Plugin.cpp" line="1295"/>
         <source>Categories: </source>
-        <translation type="unfinished"></translation>
+        <translation>Categorias: </translation>
     </message>
 </context>
 <context>
@@ -4797,7 +4798,7 @@ está rodando e reinicie a sessão.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5770"/>
         <source>VST3 Plug-in support (EXPERIMENTAL) disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suporte a Plugin VST3 (EXPERIMENTAL) desabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5814"/>
@@ -4812,7 +4813,7 @@ está rodando e reinicie a sessão.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5830"/>
         <source>LV2 Plug-in UI Request-value support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Requisição da interface do Plugin LV2 - suporte a valor desabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5833"/>
@@ -11813,7 +11814,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <location filename="../qtractorOptionsForm.ui" line="2687"/>
         <location filename="../qtractorOptionsForm.ui" line="2806"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Voltar</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3030"/>
