@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,7 +50,7 @@
 #include <QStyleFactory>
 
 
-// Needed for fabsf(), logf() and powf()
+// Needed for logf() and powf()
 #include <math.h>
 
 static inline float log10f2 ( float x )
@@ -116,6 +116,19 @@ qtractorOptionsForm::qtractorOptionsForm (
 	// Have some deafult time-scale for instance...
 	m_pTimeScale = nullptr;
 
+	// Meter colors array setup.
+	m_paAudioMeterColors = new QColor [qtractorAudioMeter::ColorCount - 1];
+	m_paMidiMeterColors  = new QColor [qtractorMidiMeter::ColorCount  - 1];
+
+	int iColor;
+	for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 1; ++iColor)
+		m_paAudioMeterColors[iColor] = qtractorAudioMeter::defaultColor(iColor);
+	for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 1; ++iColor)
+		m_paMidiMeterColors[iColor] = qtractorMidiMeter::defaultColor(iColor);
+
+	m_iDirtyMeterColors = 0;
+
+	// Time-scale and audio metronome setup.
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		m_pTimeScale = new qtractorTimeScale(*pSession->timeScale());
@@ -203,6 +216,10 @@ qtractorOptionsForm::qtractorOptionsForm (
 #ifdef CONFIG_VST
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
+#endif
+#ifdef CONFIG_VST3
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Vst3));
 #endif
 #ifdef CONFIG_LV2
 	m_ui.PluginTypeComboBox->addItem(
@@ -412,9 +429,6 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.SessionAutoSaveSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.MixerAutoGridLayoutCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
 	QObject::connect(m_ui.CustomColorThemeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -445,12 +459,6 @@ qtractorOptionsForm::qtractorOptionsForm (
 	QObject::connect(m_ui.ResetMeterColorsPushButton,
 		SIGNAL(clicked()),
 		SLOT(resetMeterColors()));
-	QObject::connect(m_ui.TrackListMetersCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.TrackListPluginsCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
 	QObject::connect(m_ui.PluginTypeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(choosePluginType(int)));
@@ -487,9 +495,6 @@ qtractorOptionsForm::qtractorOptionsForm (
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.AudioOutputAutoConnectCheckBox,
-		SIGNAL(stateChanged(int)),
-		SLOT(changed()));
-	QObject::connect(m_ui.AudioOutputMonitorCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.OpenEditorCheckBox,
@@ -540,6 +545,9 @@ qtractorOptionsForm::qtractorOptionsForm (
 // Destructor.
 qtractorOptionsForm::~qtractorOptionsForm (void)
 {
+	delete [] m_paMidiMeterColors;
+	delete [] m_paAudioMeterColors;
+
 	if (m_pTimeScale) delete m_pTimeScale;
 }
 
@@ -647,19 +655,16 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.MidiMetroBusCheckBox->setChecked(m_pOptions->bMidiMetroBus);
 	m_ui.MidiMetroOffsetSpinBox->setValue(m_pOptions->iMidiMetroOffset);
 
-	// Mixer preferences.
-	m_ui.MixerAutoGridLayoutCheckBox->setChecked(m_pOptions->bMixerAutoGridLayout);
-
-	// Custom colors.
+	// Meter colors array setup.
 	int iColor;
-	for (iColor = 0; iColor < AudioMeterColors; ++iColor)
-		m_audioMeterColors[iColor] = qtractorAudioMeter::color(iColor);
-	for (iColor = 0; iColor < MidiMeterColors; ++iColor)
-		m_midiMeterColors[iColor] = qtractorMidiMeter::color(iColor);
+	for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 1; ++iColor)
+		m_paAudioMeterColors[iColor] = qtractorAudioMeter::color(iColor);
+	for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 1; ++iColor)
+		m_paMidiMeterColors[iColor] = qtractorMidiMeter::color(iColor);
 
 	// Default meter color levels shown...
-	m_ui.AudioMeterLevelComboBox->setCurrentIndex(AudioMeterColors - 1);
-	m_ui.MidiMeterLevelComboBox->setCurrentIndex(MidiMeterColors - 1);
+	m_ui.AudioMeterLevelComboBox->setCurrentIndex(qtractorAudioMeter::Color10dB);
+	m_ui.MidiMeterLevelComboBox->setCurrentIndex(qtractorMidiMeter::ColorOver);
 	changeAudioMeterLevel(m_ui.AudioMeterLevelComboBox->currentIndex());
 	changeMidiMeterLevel(m_ui.MidiMeterLevelComboBox->currentIndex());
 
@@ -702,8 +707,6 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.PeakAutoRemoveCheckBox->setChecked(m_pOptions->bPeakAutoRemove);
 	m_ui.KeepToolsOnTopCheckBox->setChecked(m_pOptions->bKeepToolsOnTop);
 	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
-	m_ui.TrackListMetersCheckBox->setChecked(m_pOptions->bTrackListMeters);
-	m_ui.TrackListPluginsCheckBox->setChecked(m_pOptions->bTrackListPlugins);
 	m_ui.ShiftKeyModifierCheckBox->setChecked(m_pOptions->bShiftKeyModifier);
 	m_ui.MidButtonModifierCheckBox->setChecked(m_pOptions->bMidButtonModifier);
 	m_ui.MaxRecentFilesSpinBox->setValue(m_pOptions->iMaxRecentFiles);
@@ -730,6 +733,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ladspaPaths = m_pOptions->ladspaPaths;
 	m_dssiPaths   = m_pOptions->dssiPaths;
 	m_vstPaths    = m_pOptions->vstPaths;
+	m_vst3Paths   = m_pOptions->vst3Paths;
 	m_lv2Paths    = m_pOptions->lv2Paths;
 
 	m_ui.Lv2PresetDirComboBox->setEditText(m_pOptions->sLv2PresetDir);
@@ -737,7 +741,6 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Plugin instruments options.
 	m_ui.AudioOutputBusCheckBox->setChecked(m_pOptions->bAudioOutputBus);
 	m_ui.AudioOutputAutoConnectCheckBox->setChecked(m_pOptions->bAudioOutputAutoConnect);
-	m_ui.AudioOutputMonitorCheckBox->setChecked(m_pOptions->bAudioOutputMonitor);
 	m_ui.OpenEditorCheckBox->setChecked(m_pOptions->bOpenEditor);
 	m_ui.QueryEditorTypeCheckBox->setChecked(m_pOptions->bQueryEditorType);
 	m_ui.DummyPluginScanCheckBox->setChecked(m_pOptions->bDummyPluginScan);
@@ -768,6 +771,13 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 qtractorOptions *qtractorOptionsForm::options (void) const
 {
 	return m_pOptions;
+}
+
+
+// Spacial meter colors dirty flag.
+bool qtractorOptionsForm::isDirtyMeterColors (void) const
+{
+	return (m_iDirtyMeterColors > 0);
 }
 
 
@@ -839,8 +849,6 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bPeakAutoRemove      = m_ui.PeakAutoRemoveCheckBox->isChecked();
 		m_pOptions->bKeepToolsOnTop      = m_ui.KeepToolsOnTopCheckBox->isChecked();
 		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
-		m_pOptions->bTrackListMeters     = m_ui.TrackListMetersCheckBox->isChecked();
-		m_pOptions->bTrackListPlugins    = m_ui.TrackListPluginsCheckBox->isChecked();
 		m_pOptions->bShiftKeyModifier    = m_ui.ShiftKeyModifierCheckBox->isChecked();
 		m_pOptions->bMidButtonModifier   = m_ui.MidButtonModifierCheckBox->isChecked();
 		m_pOptions->iMaxRecentFiles      = m_ui.MaxRecentFilesSpinBox->value();
@@ -852,12 +860,12 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->ladspaPaths          = m_ladspaPaths;
 		m_pOptions->dssiPaths            = m_dssiPaths;
 		m_pOptions->vstPaths             = m_vstPaths;
+		m_pOptions->vst3Paths            = m_vst3Paths;
 		m_pOptions->lv2Paths             = m_lv2Paths;
 		m_pOptions->sLv2PresetDir        = m_ui.Lv2PresetDirComboBox->currentText();
 		// Plugin instruments options.
 		m_pOptions->bAudioOutputBus      = m_ui.AudioOutputBusCheckBox->isChecked();
 		m_pOptions->bAudioOutputAutoConnect = m_ui.AudioOutputAutoConnectCheckBox->isChecked();
-		m_pOptions->bAudioOutputMonitor  = m_ui.AudioOutputMonitorCheckBox->isChecked();
 		m_pOptions->bOpenEditor          = m_ui.OpenEditorCheckBox->isChecked();
 		m_pOptions->bQueryEditorType     = m_ui.QueryEditorTypeCheckBox->isChecked();
 		m_pOptions->bDummyPluginScan     = m_ui.DummyPluginScanCheckBox->isChecked();
@@ -879,14 +887,12 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->iSessionBackupMode   = m_ui.SessionBackupModeComboBox->currentIndex();
 		m_pOptions->bAutoSaveEnabled     = m_ui.SessionAutoSaveCheckBox->isChecked();
 		m_pOptions->iAutoSavePeriod      = m_ui.SessionAutoSaveSpinBox->value();
-		// Mixer preferences....
-		m_pOptions->bMixerAutoGridLayout = m_ui.MixerAutoGridLayoutCheckBox->isChecked();
 		// Custom colors.
 		int iColor;
-		for (iColor = 0; iColor < AudioMeterColors; ++iColor)
-			qtractorAudioMeter::setColor(iColor, m_audioMeterColors[iColor]);
-		for (iColor = 0; iColor < MidiMeterColors; ++iColor)
-			qtractorMidiMeter::setColor(iColor, m_midiMeterColors[iColor]);
+		for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 1; ++iColor)
+			qtractorAudioMeter::setColor(iColor, m_paAudioMeterColors[iColor]);
+		for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 1; ++iColor)
+			qtractorMidiMeter::setColor(iColor, m_paMidiMeterColors[iColor]);
 		// Transport display preferences...
 		m_pOptions->bSyncViewHold = m_ui.SyncViewHoldCheckBox->isChecked();
 		// Dialogs preferences...
@@ -1116,7 +1122,7 @@ void qtractorOptionsForm::resetCustomStyleThemes (
 // Audio meter level index change.
 void qtractorOptionsForm::changeAudioMeterLevel ( int iColor )
 {
-	const QColor& color = m_audioMeterColors[iColor];
+	const QColor& color = m_paAudioMeterColors[iColor];
 	m_ui.AudioMeterColorLineEdit->setText(color.name());
 }
 
@@ -1124,7 +1130,7 @@ void qtractorOptionsForm::changeAudioMeterLevel ( int iColor )
 // MIDI meter level index change.
 void qtractorOptionsForm::changeMidiMeterLevel ( int iColor )
 {
-	const QColor& color = m_midiMeterColors[iColor];
+	const QColor& color = m_paMidiMeterColors[iColor];
 	m_ui.MidiMeterColorLineEdit->setText(color.name());
 }
 
@@ -1135,7 +1141,8 @@ void qtractorOptionsForm::changeAudioMeterColor ( const QString& sColor )
 	const QColor& color = QColor(sColor);
 	if (color.isValid()) {
 		updateColorText(m_ui.AudioMeterColorLineEdit, color);
-		m_audioMeterColors[m_ui.AudioMeterLevelComboBox->currentIndex()] = color;
+		m_paAudioMeterColors[m_ui.AudioMeterLevelComboBox->currentIndex()] = color;
+		++m_iDirtyMeterColors;
 		changed();
 	}
 }
@@ -1147,7 +1154,8 @@ void qtractorOptionsForm::changeMidiMeterColor ( const QString& sColor )
 	const QColor& color = QColor(sColor);
 	if (color.isValid()) {
 		updateColorText(m_ui.MidiMeterColorLineEdit, color);
-		m_midiMeterColors[m_ui.MidiMeterLevelComboBox->currentIndex()] = color;
+		m_paMidiMeterColors[m_ui.MidiMeterLevelComboBox->currentIndex()] = color;
+		++m_iDirtyMeterColors;
 		changed();
 	}
 }
@@ -1202,14 +1210,17 @@ void qtractorOptionsForm::resetMeterColors (void)
 {
 	// Reset colors.
 	int iColor;
-	for (iColor = 0; iColor < AudioMeterColors; ++iColor)
-		m_audioMeterColors[iColor] = qtractorAudioMeter::defaultColor(iColor);
-	for (iColor = 0; iColor < MidiMeterColors; ++iColor)
-		m_midiMeterColors[iColor] = qtractorMidiMeter::defaultColor(iColor);
+	for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 1; ++iColor)
+		m_paAudioMeterColors[iColor] = qtractorAudioMeter::defaultColor(iColor);
+	for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 1; ++iColor)
+		m_paMidiMeterColors[iColor] = qtractorMidiMeter::defaultColor(iColor);
 
 	// Update current display...
 	changeAudioMeterLevel(m_ui.AudioMeterLevelComboBox->currentIndex());
 	changeMidiMeterLevel(m_ui.MidiMeterLevelComboBox->currentIndex());
+
+	++m_iDirtyMeterColors;
+	changed();
 }
 
 
@@ -1243,6 +1254,9 @@ void qtractorOptionsForm::choosePluginType ( int iPluginType )
 		break;
 	case qtractorPluginType::Vst:
 		paths = m_vstPaths;
+		break;
+	case qtractorPluginType::Vst3:
+		paths = m_vst3Paths;
 		break;
 	case qtractorPluginType::Lv2:
 		paths = m_lv2Paths;
@@ -1337,6 +1351,9 @@ void qtractorOptionsForm::addPluginPath (void)
 	case qtractorPluginType::Vst:
 		m_vstPaths.append(sPluginPath);
 		break;
+	case qtractorPluginType::Vst3:
+		m_vst3Paths.append(sPluginPath);
+		break;
 	case qtractorPluginType::Lv2:
 		m_lv2Paths.append(sPluginPath);
 		break;
@@ -1393,6 +1410,9 @@ void qtractorOptionsForm::removePluginPath (void)
 	case qtractorPluginType::Vst:
 		m_vstPaths.removeAt(iPluginPath);
 		break;
+	case qtractorPluginType::Vst3:
+		m_vst3Paths.removeAt(iPluginPath);
+		break;
 	case qtractorPluginType::Lv2:
 		m_lv2Paths.removeAt(iPluginPath);
 		break;
@@ -1432,6 +1452,10 @@ void qtractorOptionsForm::moveUpPluginPath (void)
 	case qtractorPluginType::Vst:
 		sPluginPath = m_vstPaths.takeAt(iPluginPath);
 		m_vstPaths.insert(iPluginPath - 1, sPluginPath);
+		break;
+	case qtractorPluginType::Vst3:
+		sPluginPath = m_vst3Paths.takeAt(iPluginPath);
+		m_vst3Paths.insert(iPluginPath - 1, sPluginPath);
 		break;
 	case qtractorPluginType::Lv2:
 		sPluginPath = m_lv2Paths.takeAt(iPluginPath);
@@ -1477,6 +1501,10 @@ void qtractorOptionsForm::moveDownPluginPath (void)
 	case qtractorPluginType::Vst:
 		sPluginPath = m_vstPaths.takeAt(iPluginPath);
 		m_vstPaths.insert(iPluginPath + 1, sPluginPath);
+		break;
+	case qtractorPluginType::Vst3:
+		sPluginPath = m_vst3Paths.takeAt(iPluginPath);
+		m_vst3Paths.insert(iPluginPath + 1, sPluginPath);
 		break;
 	case qtractorPluginType::Lv2:
 		sPluginPath = m_lv2Paths.takeAt(iPluginPath);

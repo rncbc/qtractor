@@ -133,7 +133,6 @@ private:
 	QWidget     *m_pPlayWidget;
 	QHBoxLayout *m_pPlayLayout;
 	QToolButton *m_pPlayButton;
-	int          m_iPlayUpdate;
 
 	// List view actions.
 	QAction *m_pNewGroupAction;

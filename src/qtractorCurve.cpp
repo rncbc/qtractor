@@ -121,22 +121,22 @@ static inline void updateNodeSpline ( qtractorCurve::Node *pNode, float y0,
 		y1 = y0;
 	}
 
-	if (::fabsf(y1 - y2) > fZero)
+	if (qAbs(y1 - y2) > fZero)
 		s1 =  x1 / (y1 - y2);
 
 	if (pPrev) {
 		pPrev = pPrev->prev();
-		if (pPrev && (::fabsf(y1 - pPrev->value) > fZero)) {
+		if (pPrev && (qAbs(y1 - pPrev->value) > fZero)) {
 			const float s0
 				= (x1 - float(pPrev->frame) - x0) / (y1 - pPrev->value);
-			if (s1 * s0 > 0.0f && ::fabsf(s1 + s0) > fZero)
+			if (s1 * s0 > 0.0f && qAbs(s1 + s0) > fZero)
 				f1 = 2.0f / (s1 + s0);
 		}
 	}
 
-	if (pNext && (::fabsf(pNext->value - y2) > fZero))
+	if (pNext && (qAbs(pNext->value - y2) > fZero))
 		s2 = (float(pNext->frame) - x0) / (pNext->value - y2);
-	if (s2 * s1 > 0.0f && ::fabsf(s2 + s1) > fZero)
+	if (s2 * s1 > 0.0f && qAbs(s2 + s1) > fZero)
 		f2 = 2.0f / (s2 + s1);
 
 	const float x12 = x1 * x1;
@@ -273,7 +273,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 		float y2 = (pNext ? pNext->value : fValue);
 		float s1 = (x1 > x0 ? (y1 - y0) / (x1 - x0) : 0.0f);
 		float y3 = (x2 > x1 ? s1 * (x2 - x1) + y1 : y1);
-		if (::fabsf(y3 - y2) < fThreshold * ::fabsf(y3 - y1))
+		if (qAbs(y3 - y2) < fThreshold * qAbs(y3 - y1))
 			return nullptr;
 		if (pPrev) {
 			pNode = pPrev;
@@ -286,7 +286,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 			y2 = fValue;
 			s1 = (y1 - y0) / (x1 - x0);
 			y3 = s1 * (x2 - x1) + y1;
-			if (::fabsf(y3 - y2) > fThreshold * ::fabsf(y3 - y1))
+			if (qAbs(y3 - y2) > fThreshold * qAbs(y3 - y1))
 				pNode = nullptr;
 		}
 	}

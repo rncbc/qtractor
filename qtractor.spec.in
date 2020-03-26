@@ -1,7 +1,7 @@
 #
 # spec file for package qtractor
 #
-# Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+# Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -17,7 +17,7 @@
 
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 51
+%define release 52
 
 %define _prefix	@ac_prefix@
 
@@ -38,12 +38,12 @@ URL:		http://qtractor.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %if %{defined fedora}
-BuildRequires:	pkgconfig
+BuildRequires:	pkgconfig, ruby
 BuildRequires:	qt5-qtbase-devel >= 5.1, qt5-linguist
 BuildRequires:	qt5-qtx11extras-devel >= 5.1
 BuildRequires:	alsa-lib-devel
 BuildRequires:	rubberband-devel
-BuildRequires:  aubio-devel >= 0.4.1
+BuildRequires:	aubio-devel >= 0.4.1
 %else
 BuildRequires:	pkg-config
 BuildRequires:	libqt5-qtbase-devel >= 5.1, libqt5-linguist
@@ -67,7 +67,8 @@ BuildRequires:	libsratom-devel
 BuildRequires:	liblilv-devel
 BuildRequires:	libsuil-devel
 BuildRequires:	zlib-devel
-BuildRequires:  gtk2-devel
+BuildRequires:	gtk2-devel
+BuildRequires:	vst3sdk-devel >= 3.6.14
 
 Requires(post):		desktop-file-utils, shared-mime-info
 Requires(postun):	desktop-file-utils, shared-mime-info
@@ -135,6 +136,8 @@ the personal home-studio.
 %{_datadir}/man/man1/%{name}*.1.gz
 
 %changelog
+* Sat Dec 28 2019 Rui Nuno Capela <rncbc@rncbc.org> 0.9.12
+- Winter'19 release.
 * Sat Nov  9 2019 Rui Nuno Capela <rncbc@rncbc.org> 0.9.11
 - Mauerfall'30 release.
 * Sat Oct 12 2019 Rui Nuno Capela <rncbc@rncbc.org> 0.9.10

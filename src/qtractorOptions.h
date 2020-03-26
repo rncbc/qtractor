@@ -1,7 +1,7 @@
 // qtractorOptions.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -214,6 +214,7 @@ public:
 	QStringList ladspaPaths;
 	QStringList dssiPaths;
 	QStringList vstPaths;
+	QStringList vst3Paths;
 	QStringList lv2Paths;
 
 	QString sLv2PresetDir;
@@ -221,7 +222,6 @@ public:
 	// Plug-in instrument options.
 	bool bAudioOutputBus;
 	bool bAudioOutputAutoConnect;
-	bool bAudioOutputMonitor;
 
 	// Plug-in GUI options.
 	bool bOpenEditor;
@@ -235,6 +235,7 @@ public:
 	int  iDummyLadspaHash;
 	int  iDummyDssiHash;
 	int  iDummyVstHash;
+	int  iDummyVst3Hash;
 	int  iDummyLv2Hash;
 
 	// LV2 plugin specific options.
@@ -260,10 +261,6 @@ public:
 	bool bTrackViewSnapGrid;
 	bool bTrackViewToolTips;
 	bool bTrackViewCurveEdit;
-
-	// Tracks list options.
-	bool bTrackListPlugins;
-	bool bTrackListMeters;
 
 	// MIDI Editor options...
 	bool bMidiMenubar;
@@ -295,9 +292,6 @@ public:
 	int  iMidiEventParam;
 	int  iMidiSnapToScaleKey;
 	int  iMidiSnapToScaleType;
-
-	// Mixer strip multi-row grid layout option.
-	bool bMixerAutoGridLayout;
 
 	// Meter colors.
 	QStringList audioMeterColors;

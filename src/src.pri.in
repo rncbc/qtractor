@@ -16,6 +16,24 @@ LIBS += @ac_libs@
 QMAKE_CXXFLAGS += @ac_cflags@
 QMAKE_LFLAGS += @ac_ldflags@
 
+# VST3 plug-in support
+VST3SDK = @ac_vst3sdk@
+
+!isEmpty(VST3SDK) {
+	DEFINES += NDEBUG
+	INCLUDEPATH += $${VST3SDK}
+	LIBS += -ldl
+	SOURCES += \
+	$${VST3SDK}/base/source/baseiids.cpp \
+#	$${VST3SDK}/base/source/fstring.cpp \
+	$${VST3SDK}/base/source/fobject.cpp \
+	$${VST3SDK}/base/thread/source/flock.cpp \
+	$${VST3SDK}/public.sdk/source/common/commoniids.cpp \
+	$${VST3SDK}/public.sdk/source/vst/vstinitiids.cpp \
+	$${VST3SDK}/pluginterfaces/base/coreiids.cpp \
+	$${VST3SDK}/pluginterfaces/base/funknown.cpp
+}
+
 # X11 support
 unix:!macx {
 	QX11EXTRAS = @ac_qx11extras@

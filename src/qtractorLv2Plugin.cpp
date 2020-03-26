@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,7 +63,7 @@ static QHash<LV2_URID, QByteArray> g_ids_map;
 static LV2_URID qtractor_lv2_urid_map (
 	LV2_URID_Map_Handle /*handle*/, const char *uri )
 {
-	if (strcmp(uri, LILV_URI_MIDI_EVENT) == 0)
+	if (::strcmp(uri, LILV_URI_MIDI_EVENT) == 0)
 		return QTRACTOR_LV2_MIDI_EVENT_ID;
 	else
 		return qtractorLv2Plugin::lv2_urid_map(uri);
@@ -751,6 +751,8 @@ static const LV2_Feature *g_lv2_features[] =
 #include <QRadioButton>
 #include <QCheckBox>
 
+#include <dlfcn.h>
+
 #define LV2_UI_TYPE_NONE       0
 #define LV2_UI_TYPE_QT4        1
 #define LV2_UI_TYPE_QT5        2
@@ -844,6 +846,29 @@ static void qtractor_lv2_ui_touch (
 }
 
 #endif	// CONFIG_LV2_UI_TOUCH
+
+
+#ifdef CONFIG_LV2_UI_REQ_VALUE
+
+#include <QFileDialog>
+
+static LV2UI_Request_Value_Status qtractor_lv2_ui_request_value (
+	LV2UI_Feature_Handle handle, LV2_URID key, LV2_URID type,
+	const LV2_Feature *const *features )
+{
+	qtractorLv2Plugin *pLv2Plugin
+		= static_cast<qtractorLv2Plugin *> (handle);
+	if (pLv2Plugin == nullptr)
+		return LV2UI_REQUEST_VALUE_ERR_UNKNOWN;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_ui_request_value(%p, %d, %d)", pLv2Plugin, int(key), int(type));
+#endif
+
+	return pLv2Plugin->lv2_ui_request_value(key, type, features);
+}
+
+#endif	// CONFIG_LV2_UI_REQ_VALUE
 
 
 #include <QResizeEvent>
@@ -982,6 +1007,12 @@ static LilvNode *g_lv2_minimum_size_prop = nullptr;
 static LilvNode *g_lv2_patch_message_class = nullptr;
 #endif
 
+#ifdef CONFIG_LV2_PARAMETERS
+// LV2 Parameters option.
+#include "lv2/lv2plug.in/ns/ext/parameters/parameters.h"
+#endif
+
+
 // LV2 URIDs stock.
 static struct qtractorLv2Urids
 {
@@ -1023,6 +1054,9 @@ static struct qtractorLv2Urids
 	LV2_URID ui_windowTitle;
 	LV2_URID ui_updateRate;
 	LV2_URID ui_sampleRate;
+#endif
+#ifdef CONFIG_LV2_PARAMETERS
+	LV2_URID param_sampleRate;
 #endif
 #endif	// CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_STATE
@@ -1831,11 +1865,15 @@ void qtractorLv2PluginType::lv2_open (void)
 	g_lv2_urids.ui_sampleRate
 		= qtractorLv2Plugin::lv2_urid_map(LV2_CORE__sampleRate);
 #endif
+#ifdef CONFIG_LV2_PARAMETERS
+	g_lv2_urids.param_sampleRate
+		= qtractorLv2Plugin::lv2_urid_map(LV2_PARAMETERS__sampleRate);
+#endif
+#endif	// CONFIG_LV2_OPTIONS
 #ifdef CONFIG_LV2_STATE
 	g_lv2_urids.state_StateChanged
 		= qtractorLv2Plugin::lv2_urid_map(LV2_STATE__StateChanged);
 #endif
-#endif	// CONFIG_LV2_OPTIONS
 
 #ifdef CONFIG_LV2_TIME
 	// LV2 Time: set up supported port designations...
@@ -2145,7 +2183,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_lv2_uis(nullptr)
 		, m_lv2_ui(nullptr)
 		, m_lv2_ui_features(nullptr)
-		, m_lv2_ui_library(nullptr)
+		, m_lv2_ui_module(nullptr)
 		, m_lv2_ui_descriptor(nullptr)
 		, m_lv2_ui_handle(nullptr)
 		, m_lv2_ui_widget(nullptr)
@@ -2160,6 +2198,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_pQtFilter(nullptr)
 		, m_pQtWidget(nullptr)
 		, m_bQtDelete(false)
+	#ifdef CONFIG_LV2_UI_REQ_VALUE
+		, m_lv2_ui_req_value_busy(false)
+	#endif	// CONFIG_LV2_UI_REQ_VALUE
 	#ifdef CONFIG_LV2_UI_IDLE
 		, m_lv2_ui_idle_interface(nullptr)
 	#endif
@@ -2190,6 +2231,11 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_iMaxBlockLength(0)
 		, m_iNominalBlockLength(0)
 		, m_iSequenceSize(0)
+	#endif
+	#ifdef CONFIG_LV2_UI
+		, m_fUpdateRate(15.0f)
+		, m_fSampleRate(44100.0f)
+		, m_dSampleRate(44100.0)
 	#endif
 	#endif	// CONFIG_LV2_OPTIONS
 		, m_pfLatency(nullptr)
@@ -2236,7 +2282,6 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 #endif	// CONFIG_LV2_STATE_MAKE_PATH
 
 #endif	// CONFIG_LV2_STATE_FILES
-
 
 #ifdef CONFIG_LV2_PROGRAMS
 
@@ -3214,6 +3259,9 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		return;
 	}
 
+	// Tell the world we'll (maybe) take some time...
+	qtractorPluginList::WaitCursor waiting;
+
 	m_lv2_ui_type = ui_iter.key();
 	m_lv2_ui = ui_iter.value();
 
@@ -3487,9 +3535,9 @@ void qtractorLv2Plugin::closeEditor (void)
 		m_lv2_ui_descriptor = nullptr;
 	}
 
-	if (m_lv2_ui_library) {
-		delete m_lv2_ui_library;
-		m_lv2_ui_library = nullptr;
+	if (m_lv2_ui_module) {
+		::dlclose(m_lv2_ui_module);
+		m_lv2_ui_module = nullptr;
 	}
 
 	if (m_lv2_ui_features) {
@@ -3883,6 +3931,82 @@ void qtractorLv2Plugin::lv2_ui_touch ( uint32_t port_index, bool grabbed )
 #endif	// CONFIG_LV2_UI_TOUCH
 
 
+#ifdef CONFIG_LV2_UI_REQ_VALUE
+
+// LV2 UI requestValue control (ui->host).
+LV2UI_Request_Value_Status qtractorLv2Plugin::lv2_ui_request_value (
+	LV2_URID key, LV2_URID type, const LV2_Feature *const */*features*/ )
+{
+	if (m_lv2_ui_req_value_busy)
+		return LV2UI_REQUEST_VALUE_BUSY;
+
+	const char *pszKey = lv2_urid_unmap(key);
+	if (pszKey == nullptr)
+		return LV2UI_REQUEST_VALUE_ERR_UNKNOWN;
+
+#ifdef CONFIG_LV2_PATCH
+
+	Property *pProp = m_lv2_properties.value(pszKey, nullptr);
+	if (pProp == nullptr)
+		return LV2UI_REQUEST_VALUE_ERR_UNSUPPORTED;
+
+	if (!type)
+		type = pProp->type();
+	if (type != g_lv2_urids.atom_Path)
+		return LV2UI_REQUEST_VALUE_ERR_UNSUPPORTED;
+
+	QString sFilename = pProp->value().toString();
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorLv2Plugin[%p]::lv2_ui_request_value(%d, %d) [%s=\"%s\"]",
+		this, int(key), int(type), pProp->name().toUtf8().constData(),
+		sFilename.toUtf8().constData());
+#endif
+
+	m_lv2_ui_req_value_busy = true;
+
+	const QString& sTitle
+		= QObject::tr("Open File", "lv2_ui_request_parameter");
+
+	QWidget *pParentWidget = nullptr;
+	QFileDialog::Options options = 0;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
+		options |= QFileDialog::DontUseNativeDialog;
+		if (m_pQtWidget && m_pQtWidget->isVisible())
+			pParentWidget = m_pQtWidget;
+		else
+			pParentWidget = qtractorMainForm::getInstance();
+	}
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
+		sTitle, sFilename, QString(), nullptr, options);
+#else
+	// Construct open-file dialog...
+	QFileDialog fileDialog(pParentWidget, sTitle, sFilename);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFile);
+	fileDialog.setOptions(options);
+	// Show dialog...
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+#endif
+	if (!sFilename.isEmpty()) {
+		pProp->setValue(QFileInfo(sFilename).canonicalFilePath());
+		lv2_property_update(key);
+	}
+
+	m_lv2_ui_req_value_busy = false;
+
+#endif	// CONFIG_LV2_PATCH
+
+	return LV2UI_REQUEST_VALUE_SUCCESS;
+}
+
+#endif	// CONFIG_LV2_UI_REQ_VALUE
+
+
 // LV2 UI resize control (host->ui).
 void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 {
@@ -3923,7 +4047,7 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	int iFeatures = 0;
 	while (m_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_ui_features = new LV2_Feature * [iFeatures + 9];
+	m_lv2_ui_features = new LV2_Feature * [iFeatures + 10];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_ui_features[i] = (LV2_Feature *) m_lv2_features[i];
 
@@ -3951,12 +4075,15 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 
 #ifdef CONFIG_LV2_OPTIONS
 	m_fUpdateRate = 15.0f;
+	m_fSampleRate = 44100.0f;
 	m_dSampleRate = 44100.0;
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-		if (pAudioEngine)
-			m_dSampleRate = double(pAudioEngine->sampleRate());
+		if (pAudioEngine) {
+			m_fSampleRate = float(pAudioEngine->sampleRate());
+			m_dSampleRate = double(m_fSampleRate);
+		}
 	}
 	const LV2_Options_Option ui_options[] = {
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_windowTitle,
@@ -3965,6 +4092,10 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 		  sizeof(float), g_lv2_urids.atom_Float, &m_fUpdateRate },
 		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.ui_sampleRate,
 		  sizeof(double), g_lv2_urids.atom_Double, &m_dSampleRate },
+	#ifdef CONFIG_LV2_PARAMETERS
+		{ LV2_OPTIONS_INSTANCE, 0, g_lv2_urids.param_sampleRate,
+		  sizeof(float), g_lv2_urids.atom_Float, &m_fSampleRate },
+	#endif
 		{ LV2_OPTIONS_INSTANCE, 0, 0, 0, 0, nullptr }
 	};
 	::memcpy(&m_lv2_ui_options, &ui_options, sizeof(ui_options));
@@ -4018,14 +4149,14 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 #endif
 
 	// Open UI library...
-	m_lv2_ui_library = new QLibrary(ui_binary_path);
+	m_lv2_ui_module = ::dlopen(ui_binary_path, RTLD_LOCAL | RTLD_LAZY);
 
 	// Get UI descriptor discovery function...
 	LV2UI_DescriptorFunction pfnLv2UiDescriptor
-		= (LV2UI_DescriptorFunction) m_lv2_ui_library->resolve("lv2ui_descriptor");
+		= (LV2UI_DescriptorFunction) ::dlsym(m_lv2_ui_module, "lv2ui_descriptor");
 	if (pfnLv2UiDescriptor == nullptr) {
-		delete m_lv2_ui_library;
-		m_lv2_ui_library = nullptr;
+		::dlclose(m_lv2_ui_module);
+		m_lv2_ui_module = nullptr;
 		return false;
 	}
 
@@ -4035,8 +4166,8 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	while (m_lv2_ui_descriptor && ::strcmp(m_lv2_ui_descriptor->URI, ui_uri))
 		m_lv2_ui_descriptor = (*pfnLv2UiDescriptor)(++ui_index);
 	if (m_lv2_ui_descriptor == nullptr) {
-		delete m_lv2_ui_library;
-		m_lv2_ui_library = nullptr;
+		::dlclose(m_lv2_ui_module);
+		m_lv2_ui_module = nullptr;
 		return false;
 	}
 
@@ -4053,6 +4184,14 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	m_lv2_ui_touch_feature.URI     = LV2_UI__touch;
 	m_lv2_ui_touch_feature.data    = &m_lv2_ui_touch;
 	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_touch_feature;
+#endif
+
+#ifdef CONFIG_LV2_UI_REQ_VALUE
+	m_lv2_ui_req_value.handle      = this;
+	m_lv2_ui_req_value.request     = qtractor_lv2_ui_request_value;
+	m_lv2_ui_req_value_feature.URI = LV2_UI__requestValue;
+	m_lv2_ui_req_value_feature.data = &m_lv2_ui_req_value;
+	m_lv2_ui_features[iFeatures++] = &m_lv2_ui_req_value_feature;
 #endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
@@ -4090,8 +4229,8 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 	if (m_lv2_ui_handle == nullptr) {
 		m_lv2_ui_widget = nullptr;
 		m_lv2_ui_descriptor = nullptr;
-		delete m_lv2_ui_library;
-		m_lv2_ui_library = nullptr;
+		::dlclose(m_lv2_ui_module);
+		m_lv2_ui_module = nullptr;
 		return false;
 	}
 

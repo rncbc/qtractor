@@ -10,6 +10,7 @@ include(qtractor_plugin_scan.pri)
 HEADERS += qtractor_plugin_scan.h config.h
 SOURCES += qtractor_plugin_scan.cpp
 
+
 unix {
 
 	isEmpty(PREFIX) {

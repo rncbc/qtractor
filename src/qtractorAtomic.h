@@ -1,7 +1,7 @@
 // qtractorAtomic.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2015, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,7 +38,10 @@ extern "C" {
 
 typedef QAtomicInt qtractorAtomic;
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+#define ATOMIC_GET(a)	((a)->loadRelaxed())
+#define ATOMIC_SET(a,v)	((a)->storeRelaxed(v))
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #define ATOMIC_GET(a)	((a)->load())
 #define ATOMIC_SET(a,v)	((a)->store(v))
 #else

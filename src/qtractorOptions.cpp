@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -234,17 +234,18 @@ void qtractorOptions::loadOptions (void)
 	ladspaPaths = m_settings.value("/LadspaPaths").toStringList();
 	dssiPaths   = m_settings.value("/DssiPaths").toStringList();
 	vstPaths    = m_settings.value("/VstPaths").toStringList();
+	vst3Paths   = m_settings.value("/Vst3Paths").toStringList();
 	lv2Paths    = m_settings.value("/Lv2Paths").toStringList();
 	sLv2PresetDir = m_settings.value("/Lv2PresetDir").toString();
 	bAudioOutputBus = m_settings.value("/AudioOutputBus", false).toBool();
 	bAudioOutputAutoConnect = m_settings.value("/AudioOutputAutoConnect", true).toBool();
-	bAudioOutputMonitor = m_settings.value("/AudioOutputMonitor", false).toBool();
 	bOpenEditor = m_settings.value("/OpenEditor", true).toBool();
 	bQueryEditorType = m_settings.value("/QueryEditorType", false).toBool();
 	bDummyPluginScan = m_settings.value("/DummyPluginScan", true).toBool();
 	iDummyLadspaHash = m_settings.value("/DummyLadspaHash", 0).toInt();
 	iDummyDssiHash = m_settings.value("/DummyDssiHash", 0).toInt();
 	iDummyVstHash = m_settings.value("/DummyVstHash", 0).toInt();
+	iDummyVst3Hash = m_settings.value("/DummyVst3Hash", 0).toInt();
 	iDummyLv2Hash = m_settings.value("/DummyLv2Hash", 0).toInt();
 	bLv2DynManifest = m_settings.value("/Lv2DynManifest", false).toBool();
 	bSaveCurve14bit = m_settings.value("/SaveCurve14bit", false).toBool();
@@ -298,8 +299,6 @@ void qtractorOptions::loadOptions (void)
 	bTrackViewSnapGrid   = m_settings.value("/TrackViewSnapGrid", true).toBool();
 	bTrackViewToolTips   = m_settings.value("/TrackViewToolTips", true).toBool();
 	bTrackViewCurveEdit  = m_settings.value("/TrackViewCurveEdit", false).toBool();
-	bTrackListPlugins    = m_settings.value("/TrackListPlugins", false).toBool();
-	bTrackListMeters     = m_settings.value("/TrackListMeters", false).toBool();
 	m_settings.endGroup();
 
 	// MIDI options group.
@@ -341,11 +340,6 @@ void qtractorOptions::loadOptions (void)
 
 	// User preference options.
 	m_settings.beginGroup("/Preferences");
-
-	// Mixer options.
-	m_settings.beginGroup("/Mixer");
-	bMixerAutoGridLayout = m_settings.value("/AutoGridLayout", false).toBool();
-	m_settings.endGroup();
 
 	// Meter colors.
 	m_settings.beginGroup("/Colors");
@@ -535,17 +529,18 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/LadspaPaths", ladspaPaths);
 	m_settings.setValue("/DssiPaths", dssiPaths);
 	m_settings.setValue("/VstPaths", vstPaths);
+	m_settings.setValue("/Vst3Paths", vst3Paths);
 	m_settings.setValue("/Lv2Paths", lv2Paths);
 	m_settings.setValue("/Lv2PresetDir", sLv2PresetDir);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
 	m_settings.setValue("/AudioOutputAutoConnect", bAudioOutputAutoConnect);
-	m_settings.setValue("/AudioOutputMonitor", bAudioOutputMonitor);
 	m_settings.setValue("/OpenEditor", bOpenEditor);
 	m_settings.setValue("/QueryEditorType", bQueryEditorType);
 	m_settings.setValue("/DummyPluginScan", bDummyPluginScan);
 	m_settings.setValue("/DummyLadspaHash", iDummyLadspaHash);
 	m_settings.setValue("/DummyDssiHash", iDummyDssiHash);
 	m_settings.setValue("/DummyVstHash", iDummyVstHash);
+	m_settings.setValue("/DummyVst3Hash", iDummyVst3Hash);
 	m_settings.setValue("/DummyLv2Hash", iDummyLv2Hash);
 	m_settings.setValue("/Lv2DynManifest", bLv2DynManifest);
 	m_settings.setValue("/SaveCurve14bit", bSaveCurve14bit);
@@ -590,8 +585,6 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/TrackViewSnapGrid", bTrackViewSnapGrid);
 	m_settings.setValue("/TrackViewToolTips", bTrackViewToolTips);
 	m_settings.setValue("/TrackViewCurveEdit", bTrackViewCurveEdit);
-	m_settings.setValue("/TrackListPlugins", bTrackListPlugins);
-	m_settings.setValue("/TrackListMeters", bTrackListMeters);
 	m_settings.endGroup();
 
 	// MIDI Editor options group.
@@ -633,11 +626,6 @@ void qtractorOptions::saveOptions (void)
 
 	// User preference options.
 	m_settings.beginGroup("/Preferences");
-
-	// Mixer options.
-	m_settings.beginGroup("/Mixer");
-	m_settings.setValue("/AutoGridLayout", bMixerAutoGridLayout);
-	m_settings.endGroup();
 
 	// Meter colors.
 	m_settings.beginGroup("/Colors");

@@ -1,7 +1,7 @@
 // qtractorOptionsForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,6 +46,9 @@ public:
 
 	void setOptions(qtractorOptions *pOptions);
 	qtractorOptions *options() const;
+
+	// Spacial meter colors dirty flag.
+	bool isDirtyMeterColors() const;
 
 	// Spacial custom color themes dirty flag.
 	bool isDirtyCustomColorThemes() const;
@@ -110,9 +113,10 @@ private:
 	qtractorTimeScale *m_pTimeScale;
 
 	// Meter colors.
-	enum { AudioMeterColors = 5, MidiMeterColors = 2 };
-	QColor m_audioMeterColors[AudioMeterColors];
-	QColor m_midiMeterColors[MidiMeterColors];
+	QColor *m_paAudioMeterColors;
+	QColor *m_paMidiMeterColors;
+
+	int m_iDirtyMeterColors;
 
 	// Custom color themes flag.
 	int m_iDirtyCustomColorThemes;
@@ -120,8 +124,9 @@ private:
 	// Plug-ins path cache.
 	QStringList m_ladspaPaths;
 	QStringList m_dssiPaths;
-	QStringList m_lv2Paths;
 	QStringList m_vstPaths;
+	QStringList m_vst3Paths;
+	QStringList m_lv2Paths;
 
 	int m_iDirtyPluginPaths;
 };

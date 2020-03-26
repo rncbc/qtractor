@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -337,7 +337,13 @@ bool qtractorCopyTrackCommand::redo (void)
 	// Copy all former plugins and respective automation/curves...
 	qtractorPluginList *pPluginList = pTrack->pluginList();
 	qtractorPluginList *pNewPluginList = pNewTrack->pluginList();
+
+	qtractorMidiManager *pMidiManager = nullptr;
+	qtractorMidiManager *pNewMidiManager = nullptr;
+
 	if (pPluginList && pNewPluginList) {
+		pMidiManager = pPluginList->midiManager();
+		pNewMidiManager = pNewPluginList->midiManager();
 		for (qtractorPlugin *pPlugin = pPluginList->first();
 				pPlugin; pPlugin = pPlugin->next()) {
 			// Copy new plugin...
@@ -376,8 +382,6 @@ bool qtractorCopyTrackCommand::redo (void)
 			}
 		}
 		// And other MIDI specific plugins-list properties as well
-		qtractorMidiManager *pMidiManager = pPluginList->midiManager();
-		qtractorMidiManager *pNewMidiManager = pNewPluginList->midiManager();
 		if (pMidiManager && pNewMidiManager) {
 			// The basic ones...
 			pNewPluginList->setMidiBank(
@@ -397,6 +401,8 @@ bool qtractorCopyTrackCommand::redo (void)
 				pMidiManager->isAudioOutputAutoConnect());
 			pNewMidiManager->setAudioOutputBus(
 				pMidiManager->isAudioOutputBus());
+			pNewMidiManager->setAudioOutputMonitor(
+				pMidiManager->isAudioOutputMonitor());
 		}
 	}
 
@@ -463,7 +469,14 @@ bool qtractorCopyTrackCommand::redo (void)
 	// Refresh to most recent things...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
+		// Meters on tracks list...
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks && pNewMidiManager)
+			pTracks->updateMidiTrackItem(pNewMidiManager);
+		// Meters on mixer strips...
 		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer && pNewMidiManager)
+			pMixer->updateMidiManagerStrip(pNewMidiManager);
 		if (pMixer)
 			pMixer->updateTrackStrip(pNewTrack);
 	}

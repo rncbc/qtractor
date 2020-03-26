@@ -540,8 +540,7 @@ QAction *qtractorMidiControlObserverForm::addMidiControlAction (
 		QIcon(":/images/itemControllers.png"),
 		tr("&MIDI Controller..."), pWidget);
 
-	pAction->setData(
-		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
+	pAction->setData(QVariant::fromValue(pMidiObserver));
 
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
@@ -647,7 +646,7 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	pAction = pMenu->addAction(tr("&Automation"));
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurve && pCurve == pCurveList->currentCurve());
-	pAction->setData(qVariantFromValue(pMidiObserver));
+	pAction->setData(QVariant::fromValue(pMidiObserver));
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveSelect(bool)));

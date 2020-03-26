@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@
 
 #include <QHeaderView>
 #include <QMessageBox>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QMenu>
 
 #include <QColorDialog>
@@ -169,7 +169,7 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	// Initialize locals.
 	m_pTimeScale  = nullptr;
 
-	m_pTempoTap   = new QTime();
+	m_pTempoTap   = new QElapsedTimer();
 	m_iTempoTap   = 0;
 	m_fTempoTap   = 0.0f;
 
@@ -611,7 +611,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 			iFlags |= RemoveNode;
 	}
 	if (pNode
-		&& ::fabsf(pNode->tempo - fTempo) < 0.05f
+		&& qAbs(pNode->tempo - fTempo) < 0.05f
 	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
 		&& pNode->beatDivisor == iBeatDivisor)
@@ -622,7 +622,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 		iFlags &= ~AddNode;
 	if (pNode
 		&& (pNode = pNode->next())	// real assignment
-		&& ::fabsf(pNode->tempo - fTempo) < 0.05f
+		&& qAbs(pNode->tempo - fTempo) < 0.05f
 	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
 		&& pNode->beatDivisor == iBeatDivisor)

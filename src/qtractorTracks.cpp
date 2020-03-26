@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -352,18 +352,27 @@ void qtractorTracks::zoomCenterPre ( ZoomCenter& zc ) const
 	QWidget *pViewport = m_pTrackView->viewport();
 	const QRect& rect = pViewport->rect();
 	const QPoint& pos = pViewport->mapFromGlobal(QCursor::pos());
+
+	zc.x = 0;
+	zc.y = 0;
+
 	if (rect.contains(pos)) {
-		zc.x = pos.x();
-		zc.y = pos.y();
+		if (m_iZoomMode & ZoomHorizontal)
+			zc.x = pos.x();
+		if (m_iZoomMode & ZoomVertical)
+			zc.y = pos.y();
 	} else {
-		zc.x = 0;
-		zc.y = 0;
-		if (cx > rect.width())
-			zc.x += (rect.width() >> 1);
-		if (cy > rect.height())
-			zc.y += (rect.height() >> 1);
+		if (m_iZoomMode & ZoomHorizontal) {
+			const int w2 = (rect.width() >> 1);
+			if (cx > w2) zc.x = w2;
+		}
+		if (m_iZoomMode & ZoomVertical) {
+			const int h2 = (rect.height() >> 1);
+			if (cy > h2) zc.y = h2;
+		}
 	}
 
+	zc.ch = m_pTrackView->contentsHeight();
 	zc.frame = pSession->frameFromPixel(cx + zc.x);
 }
 
@@ -379,12 +388,21 @@ void qtractorTracks::zoomCenterPost ( const ZoomCenter& zc )
 	int cx = pSession->pixelFromFrame(zc.frame);
 	int cy = m_pTrackView->contentsY();
 
-	if (cx > zc.x) cx -= zc.x; else cx = 0;
-	if (cy > zc.y) cy -= zc.y; else cy = 0;
-
 	// Update the dependant views...
+	m_pTrackList->updateItems();
 	m_pTrackList->updateContentsHeight();
 	m_pTrackView->updateContentsWidth();
+
+	if (m_iZoomMode & ZoomHorizontal) {
+		if (cx > zc.x) cx -= zc.x; else cx = 0;
+	}
+
+	if (m_iZoomMode & ZoomVertical) {
+	//	if (cy > zc.y) cy -= zc.y; else cy = 0;
+		cy = (cy * m_pTrackView->contentsHeight()) / zc.ch;
+	}
+
+	// Do the centering...
 	m_pTrackView->setContentsPos(cx, cy);
 	m_pTrackView->updateContents();
 
@@ -660,7 +678,7 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 struct audioClipNormalizeData
 {	// Ctor.
 	audioClipNormalizeData(unsigned short iChannels)
-		: count(0), channels(iChannels), max(0.0f) {};
+		: count(0), channels(iChannels), max(0.0f) {}
 	// Members.
 	unsigned int count;
 	unsigned short channels;

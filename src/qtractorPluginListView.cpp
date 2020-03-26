@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1329,25 +1329,6 @@ void qtractorPluginListView::audioOutputAutoConnect (void)
 }
 
 
-void qtractorPluginListView::audioOutputMonitor (void)
-{
-	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
-	if (pMidiManager == nullptr)
-		return;
-
-	// Make it an undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return;
-
-	pSession->execute(
-		new qtractorAudioOutputMonitorCommand(pMidiManager,
-			!pMidiManager->isAudioOutputMonitor()));
-
-	emit contentsChanged();
-}
-
-
 // Show an existing plugin form slot.
 void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
 {
@@ -2005,11 +1986,6 @@ void qtractorPluginListView::contextMenuEvent (
 		pAction->setCheckable(true);
 		pAction->setChecked(pMidiManager->isAudioOutputAutoConnect());
 		pAction->setEnabled(bAudioOutputBus);
-		pAudioMenu->addSeparator();
-		pAction = pAudioMenu->addAction(
-			tr("&Meters"), this, SLOT(audioOutputMonitor()));
-		pAction->setCheckable(true);
-		pAction->setChecked(pMidiManager->isAudioOutputMonitor());
 	}
 
 	menu.exec(pContextMenuEvent->globalPos());

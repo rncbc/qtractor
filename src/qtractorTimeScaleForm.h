@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@
 // Forward declarations...
 class qtractorTimeScaleListItem;
 
-class QTime;
+class QElapsedTimer;
 
 
 //----------------------------------------------------------------------------
@@ -114,9 +114,9 @@ private:
 	// Instance variables...
 	qtractorTimeScale *m_pTimeScale;
 
-	QTime *m_pTempoTap;
-	int    m_iTempoTap;
-	float  m_fTempoTap;
+	QElapsedTimer *m_pTempoTap;
+	int            m_iTempoTap;
+	float          m_fTempoTap;
 
 	int m_iDirtySetup;
 	int m_iDirtyCount;

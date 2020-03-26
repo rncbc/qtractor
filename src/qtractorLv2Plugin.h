@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -69,8 +69,28 @@ class qtractorLv2Worker;
 #include <QWindow>
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
+// LV2 UI Request-value support (FAKE).
+#ifdef  CONFIG_LV2_UI_REQ_VALUE_FAKE
+#undef  CONFIG_LV2_UI_REQ_VALUE
+#define CONFIG_LV2_UI_REQ_VALUE 1
+#ifndef LV2_UI__requestValue
+#define LV2_UI__requestValue LV2_UI_PREFIX "requestValue"
+typedef enum {
+	LV2UI_REQUEST_VALUE_SUCCESS,
+	LV2UI_REQUEST_VALUE_BUSY,
+	LV2UI_REQUEST_VALUE_ERR_UNKNOWN,
+	LV2UI_REQUEST_VALUE_ERR_UNSUPPORTED
+} LV2UI_Request_Value_Status;
+typedef struct _LV2UI_Request_Value {
+	LV2UI_Feature_Handle handle;
+	LV2UI_Request_Value_Status (*request)(
+		LV2UI_Feature_Handle handle,
+		LV2_URID key, LV2_URID type,
+		const LV2_Feature *const *features);
+} LV2UI_Request_Value;
+#endif	// !LV2_UI__requestValue
+#endif	// CONFIG_LV2_UI_REQ_VALUE_FAKE
 #endif	// CONFIG_LV2_UI
-
 
 #ifdef CONFIG_LV2_STATE
 // LV2 State support.
@@ -254,8 +274,14 @@ public:
 	uint32_t lv2_ui_port_index(const char *port_symbol);
 
 #ifdef CONFIG_LV2_UI_TOUCH
-	// LV2 UI touch control (ui->host).
+	// LV2 UI Touch interface (ui->host).
 	void lv2_ui_touch(uint32_t port_index, bool grabbed);
+#endif
+
+#ifdef CONFIG_LV2_UI_REQ_VALUE
+	// LV2 UI Request-value interface (ui->host).
+	LV2UI_Request_Value_Status lv2_ui_request_value(
+		LV2_URID key, LV2_URID type, const LV2_Feature *const *features);
 #endif
 
 	// LV2 UI resize control (host->ui).
@@ -507,7 +533,7 @@ private:
 	LV2_Feature  **m_lv2_ui_features;
 
 	// Alternate UI instantiation stuff.
-	QLibrary      *m_lv2_ui_library;
+	void          *m_lv2_ui_module;
 
 	const LV2UI_Descriptor *m_lv2_ui_descriptor;
 
@@ -558,9 +584,17 @@ private:
 	QHash<unsigned long, float> m_ui_params;
 
 #ifdef CONFIG_LV2_UI_TOUCH
+	// LV2 UI Touch interface (ui->host).
 	LV2UI_Touch m_lv2_ui_touch;
 	LV2_Feature m_lv2_ui_touch_feature;
 	QHash<unsigned long, bool> m_ui_params_touch;
+#endif
+
+#ifdef CONFIG_LV2_UI_REQ_VALUE
+	// LV2 UI Request-value interface (ui->host).
+	LV2UI_Request_Value m_lv2_ui_req_value;
+	LV2_Feature m_lv2_ui_req_value_feature;
+	volatile bool m_lv2_ui_req_value_busy;
 #endif
 
 #ifdef CONFIG_LV2_UI_IDLE
@@ -642,8 +676,9 @@ private:
 #endif
 #ifdef CONFIG_LV2_UI
 	LV2_Feature        m_lv2_ui_options_feature;
-	LV2_Options_Option m_lv2_ui_options[4];
+	LV2_Options_Option m_lv2_ui_options[5];
 	float              m_fUpdateRate;
+	float              m_fSampleRate;
 	double             m_dSampleRate;
 #endif
 #endif

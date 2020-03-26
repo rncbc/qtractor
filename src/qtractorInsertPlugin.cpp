@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -920,10 +920,10 @@ void qtractorMidiInsertPlugin::process (
 			= (pSession->isPlaying() ? pSession->playHead() : 0);
 		// Enqueue input events into sends/output bus...
 		if (m_pMidiOutputBuffer) {
-			snd_seq_event_t *pEventBuffer = pMidiManager->events();
-			const unsigned int iEventCount = pMidiManager->count();
+			qtractorMidiBuffer *pEventBuffer = pMidiManager->buffer_in();
+			const unsigned int iEventCount = pEventBuffer->count();
 			for (unsigned int i = 0; i < iEventCount; ++i) {
-				snd_seq_event_t *pEv = &pEventBuffer[i];
+				snd_seq_event_t *pEv = pEventBuffer->at(i);
 				if (!m_pMidiOutputBuffer->enqueue(pEv, t0 + pEv->time.tick))
 					break;
 			}
@@ -1618,10 +1618,10 @@ void qtractorMidiAuxSendPlugin::process (
 		// Enqueue events into sends/output bus...
 		const unsigned long t0
 			= (pSession->isPlaying() ? pSession->playHead() : 0);
-		snd_seq_event_t *pEventBuffer = pMidiManager->events();
-		const unsigned int iEventCount = pMidiManager->count();
+		qtractorMidiBuffer *pEventBuffer = pMidiManager->buffer_in();
+		const unsigned int iEventCount = pEventBuffer->count();
 		for (unsigned int i = 0; i < iEventCount; ++i) {
-			snd_seq_event_t *pEv = &pEventBuffer[i];
+			snd_seq_event_t *pEv = pEventBuffer->at(i);
 			if (!m_pMidiOutputBuffer->enqueue(pEv, t0 + pEv->time.tick))
 				break;
 		}

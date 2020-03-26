@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,8 +27,6 @@
 #include "qtractorMidiControlObserver.h"
 
 #include "qtractorDocument.h"
-
-#include <QLibrary>
 
 #include <QStringList>
 #include <QPoint>
@@ -56,25 +54,29 @@ class qtractorCurveFile;
 // qtractorPluginFile -- Plugin file library instance.
 //
 
-class qtractorPluginFile : public QLibrary
+class qtractorPluginFile
 {
 public:
 
 	// Constructor.
 	qtractorPluginFile(const QString& sFilename, bool bAutoUnload = true)
-		: QLibrary(sFilename), m_bAutoUnload(bAutoUnload),
-			m_iOpenCount(0), m_iRefCount(0) {}
+		: m_sFilename(sFilename), m_module(nullptr),
+			m_bAutoUnload(bAutoUnload), m_iOpenCount(0), m_iRefCount(0) {}
 
 	// Destructor.
 	~qtractorPluginFile()
 		{ close(); }
 
 	// Helper property accessors.
-	QString filename() const { return QLibrary::fileName(); }
+	const QString& filename() const { return m_sFilename; }
+	void *module() const { return m_module; }
 
 	// Executive methods.
 	bool open();
 	void close();
+
+	// Symbol resolver.
+	void *resolve(const char *symbol);
 
 	// Auto-unload flag accessors.
 	void setAutoUnload(bool bAutoUnload)
@@ -98,6 +100,9 @@ public:
 private:
 
 	// Instance variables.
+	QString m_sFilename;
+	void   *m_module;
+
 	bool m_bAutoUnload;
 
 	unsigned int m_iOpenCount;
@@ -117,7 +122,7 @@ class qtractorPluginType
 public:
 
 	// Have hints for plugin paths.
-	enum Hint { Any = 0, Ladspa, Dssi, Vst, Lv2, Insert, AuxSend };
+	enum Hint { Any = 0, Ladspa, Dssi, Vst, Vst3, Lv2, Insert, AuxSend };
 
 	// Constructor.
 	qtractorPluginType(qtractorPluginFile *pFile, unsigned long iIndex,
@@ -840,8 +845,9 @@ public:
 	// The meta-main audio-processing plugin-chain procedure.
 	void process(float **ppBuffer, unsigned int nframes);
 
-	// Forward declaration.
+	// Forward declarations.
 	class Document;
+	class WaitCursor;
 
 	// Create/load plugin state.
 	qtractorPlugin *loadPlugin(QDomElement *pElement);
@@ -986,8 +992,6 @@ private:
 	bool m_bAudioOutputAutoConnect;
 	QString m_sAudioOutputBusName;
 
-	bool m_bAudioOutputMonitor;
-
 	qtractorBus::ConnectList m_audioOutputs;
 
 	// Audio inserts activation state.
@@ -1002,8 +1006,11 @@ private:
 	// Plugin registry (chain unique ids.)
 	QHash<unsigned long, unsigned int> m_uniqueIDs;
 
-	// Auto-plugin-deactivation
+	// Auto-plugin-deactivation.
 	bool m_bAutoDeactivated;
+
+	// Audio output monitor/meters.
+	bool m_bAudioOutputMonitor;
 
 	// Plugin chain total latency (in frames);
 	bool          m_bLatency;
@@ -1041,6 +1048,22 @@ private:
 
 	// Instance variables.
 	qtractorPluginList *m_pPluginList;
+};
+
+
+//-------------------------------------------------------------------------
+// qtractorPluginList::WaitCursor -- A waiting (hour-glass) helper.
+//
+
+class qtractorPluginList::WaitCursor
+{
+public:
+
+	// Constructor.
+	WaitCursor();
+
+	// Destructor.
+	~WaitCursor();
 };
 
 

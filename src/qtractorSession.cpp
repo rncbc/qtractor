@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,6 +50,8 @@
 #include <QDir>
 
 #include <QDomDocument>
+
+#include <QElapsedTimer>
 
 #include <stdlib.h>
 
@@ -344,8 +346,7 @@ qtractorInstrumentList *qtractorSession::instruments (void) const
 // Session directory path accessors.
 void qtractorSession::setSessionDir ( const QString& sSessionDir )
 {
-	QDir sdir(sSessionDir);
-
+	const QDir sdir(sSessionDir);
 	if (sdir.exists())
 		m_props.sessionDir = sdir.absolutePath();
 }
@@ -1148,10 +1149,10 @@ void qtractorSession::stabilize ( int msecs )
 #endif
 
 	// Wait a litle bit before continue...
-	QTime t;
-	t.start();
+	QElapsedTimer timer;
+	timer.start();
 
-	while (t.elapsed() < msecs) {
+	while (timer.elapsed() < msecs) {
 		QThread::yieldCurrentThread();
 		QApplication::processEvents(/* QEventLoop::ExcludeUserInputEvents */);
 	}

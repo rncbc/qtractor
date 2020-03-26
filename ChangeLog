@@ -6,16 +6,65 @@ ChangeLog
 
 GIT HEAD
 
+- All meters background color are now customizable (cf.
+  View/Options.../Display/Meters, color level "Back").
+  
+- Automatic mixer grid layout (multi-row) is now in
+  effect permanently--being an option no more.
+
+- Always show plugins and meters on track list/left
+  pane as permanent standard now. (EXPERIMENTAL)
+
+- LV2 UI Request-value feature/interface support has
+  been implemented. (EXPERIMENTAL)
+
+- Audio output monitoring meters are now shown/hidden
+  automagically on MIDI tracks and/or buses--no need
+  for some user preference option anymore (ie. View/
+  Options.../Plugins/Instruments/Show audio output
+  monitoring meters, is now gone). (EXPERIMENTAL)
+
+- Default track height has been slightly increased.
+
+- Track / Duplicate Track... now also takes a MIDI
+  track's audio meters setting into account.
+
+- VST3 plug-in support introduced. (EXPERIMENTAL)
+
+- Fixed first bar/measure position drawing on the
+  time-scale/grid across time-signature changes on
+  the MIDI clip editor (aka. piano-roll) (hopefully
+  fixing issue #245).
+
+- Plugins and meters on track list/left pane, are now
+  being set on as default--maybe going stapled in some
+  near future ;) (EXPERIMENTAL)
+
+- Make man page compression reproducible (after request
+  by Jelle van der Waa, while on the Vee-Ones, thanks).
+
+- Avoid resetting top or left position when zooming
+  with mouse pointer is in main tracks or MIDI clip
+  editor (piano-roll) views.
+
+- Make libaudio a build dependency on debian/ubuntu;
+  also fix cross-build check to sizeof(float).
+
+- Bumped copyright headers into the New Year (2020).
+
+
+0.9.12  2019-12-28  The Winter'19 Release.
+
 - Basic key-signature has been added to tempo, time
-  -signature and location markers map. (EXPERIMENTAL)
+  -signature and location markers map.
 
 - MIDI Clip editor (aka. piano-roll) horizontal and
   vertical splitter sizes, widths and heights resp.
   are now preserved as user preferences and also to
-  session state. (EXPERIMENTAL)
+  session state.
 
 - Second attempt to fix the yet non-official though
-  CMake build configuration. (EXPERIMENTAL)
+  CMake build configuration.
 
 
 0.9.11  2019-11-09  The Mauerfall'30 Release.
@@ -43,16 +92,12 @@ GIT HEAD
   aka. Pedro López-Cabanillas, while on qmidinet,
   thanks).
 
-- Fixing a potential crash-effect in switching MIDI
+- Fixed a potential crash-effect in switching MIDI
   output buses on tracks that are set to show audio
-  output monitoring meters, is on going still.
+  output monitoring meters.
 
 
 0.9.10  2019-10-12  Autumn'19 Beta.
-
-- Fixed the potential crash-effect in switching MIDI
-  output buses on tracks that are set to show audio
-  output monitoring meters.
 
 - Fixed initial session tempo override when importing
   a standard MIDI file (as reported on issue #230).

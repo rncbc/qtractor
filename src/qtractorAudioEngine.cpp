@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,6 +39,10 @@
 #include "qtractorCurveFile.h"
 
 #include "qtractorMainForm.h"
+
+#ifdef CONFIG_VST3
+#include "qtractorVst3Plugin.h"
+#endif
 
 #ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_TIME
@@ -969,6 +973,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		ATOMIC_SET(&m_playerLock, 0);
 	}
 
+#ifdef CONFIG_VST3
+	qtractorVst3Plugin::updateTime(this);
+#endif
 #ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_TIME
 	qtractorLv2Plugin::updateTime(this);

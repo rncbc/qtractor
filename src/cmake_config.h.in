@@ -154,11 +154,20 @@
 /* Define if LV2 Buf-size is supported. */
 #cmakedefine CONFIG_LV2_BUF_SIZE @CONFIG_LV2_BUF_SIZE@
 
+/* Define if LV2 Parameters is supported. */
+#cmakedefine CONFIG_LV2_PARAMETERS @CONFIG_LV2_PARAMETERS@
+
 /* Define if LV2 Time/position support is available. */
 #cmakedefine CONFIG_LV2_TIME_POSITION @CONFIG_LV2_TIME_POSITION@
 
 /* Define if LV2 UI Touch interface support is available. */
 #cmakedefine CONFIG_LV2_UI_TOUCH @CONFIG_LV2_UI_TOUCH@
+
+/* Define if LV2 UI Request-value support is available. */
+#cmakedefine CONFIG_LV2_UI_REQ_VALUE @CONFIG_LV2_UI_REQ_VALUE@
+
+/* Define if LV2 UI Request-value support is available. (FAKE) */
+#cmakedefine CONFIG_LV2_UI_REQ_VALUE_FAKE @CONFIG_LV2_UI_REQ_VALUE_FAKE@
 
 /* Define if LV2 UI Idle interface support is available. */
 #cmakedefine CONFIG_LV2_UI_IDLE @CONFIG_LV2_UI_IDLE@
@@ -177,6 +186,9 @@
 
 /* Define if LV2 UI X11 native support is available. */
 #cmakedefine CONFIG_LV2_UI_X11 @CONFIG_LV2_UI_X11@
+
+/* Define if VST3 plug-in support is avilable. */
+#cmakedefine CONFIG_VST3 @CONFIG_VST3@
 
 /* Define if JACK session support is available. */
 #cmakedefine CONFIG_JACK_SESSION @CONFIG_JACK_SESSION@

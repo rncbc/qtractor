@@ -1,7 +1,7 @@
 // qtractorVstPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -93,7 +93,7 @@ public:
 	int vst_dispatch(
 		long opcode, long index, long value, void *ptr, float opt) const;
 
-	// Instance cached-deferred accesors.
+	// Instance cached-deferred accessors.
 	const QString& aboutText();
 
 protected:
@@ -197,7 +197,7 @@ public:
 #endif
 #endif
 
-	// Parameter update method.
+	// All parameters update method.
 	void updateParamValues(bool bUpdate);
 
 private:

@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,9 +41,12 @@
 #include <QDomElement>
 #include <QTextStream>
 
+#include <QLibrary>
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
+
+#include <dlfcn.h>
 
 #include <math.h>
 
@@ -55,11 +58,6 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #endif
 
 
-// A common function for special platforms...
-//
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-typedef void (*qtractorPluginFile_Function)(void);
-#endif
 
 
 //----------------------------------------------------------------------------
@@ -70,50 +68,43 @@ typedef void (*qtractorPluginFile_Function)(void);
 bool qtractorPluginFile::open (void)
 {
 	// Check whether already open...
-	if (++m_iOpenCount > 1)
+	if (m_module && ++m_iOpenCount > 1)
 		return true;
 
-	// ATTN: Not really needed, as it would be
-	// loaded automagically on resolve(), but ntl...
-	if (!QLibrary::load()) {
-		m_iOpenCount = 0;
-		return false;
+	// Do the openning dance...
+	if (m_module == nullptr) {
+		const QByteArray aFilename = m_sFilename.toUtf8();
+		m_module = ::dlopen(aFilename.constData(), RTLD_LOCAL | RTLD_LAZY);
 	}
 
-	// Do the openning dance...
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-	qtractorPluginFile_Function pfnInit
-		= (qtractorPluginFile_Function) QLibrary::resolve("_init");
-	if (pfnInit)
-		(*pfnInit)();
-#endif
-
 	// Done alright.
-	return true;
+	return (m_module != nullptr);
 }
 
 
 void qtractorPluginFile::close (void)
 {
-	if (!QLibrary::isLoaded())
+	if (!m_module)
 		return;
 
 	if (--m_iOpenCount > 0)
 		return;
 
-	// Do the closing dance...
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-	qtractorPluginFile_Function pfnFini
-		= (qtractorPluginFile_Function) QLibrary::resolve("_fini");
-	if (pfnFini)
-		(*pfnFini)();
-#endif
-
 	// ATTN: Might be really needed, as it would
 	// otherwise pile up hosing all available RAM
 	// until freed and unloaded on exit();
 	// nb. some VST might choke on auto-unload.
-	if (m_bAutoUnload) QLibrary::unload();
+	if (m_bAutoUnload) {
+		::dlclose(m_module);
+		m_module = nullptr;
+	}
+}
+
+
+// Symbol resolver.
+void *qtractorPluginFile::resolve ( const char *symbol )
+{
+	return (m_module ? ::dlsym(m_module, symbol) : nullptr);
 }
 
 
@@ -192,6 +183,9 @@ qtractorPluginType::Hint qtractorPluginType::hintFromText (
 	if (sText == "VST")
 		return Vst;
 	else
+	if (sText == "VST3")
+		return Vst3;
+	else
 	if (sText == "LV2")
 		return Lv2;
 	else
@@ -215,6 +209,9 @@ QString qtractorPluginType::textFromHint (
 	else
 	if (typeHint == Vst)
 		return "VST";
+	else
+	if (typeHint == Vst3)
+		return "VST3";
 	else
 	if (typeHint == Lv2)
 		return "LV2";
@@ -1537,6 +1534,7 @@ qtractorPluginList::qtractorPluginList (
 		m_iMidiBank(-1), m_iMidiProg(-1),
 		m_pMidiProgramSubject(nullptr),
 		m_bAutoDeactivated(false),
+		m_bAudioOutputMonitor(false),
 		m_bLatency(false), m_iLatency(0)
 {
 	setAutoDelete(true);
@@ -1550,8 +1548,6 @@ qtractorPluginList::qtractorPluginList (
 		= qtractorMidiManager::isDefaultAudioOutputBus();
 	m_bAudioOutputAutoConnect
 		= qtractorMidiManager::isDefaultAudioOutputAutoConnect();
-	m_bAudioOutputMonitor
-		= qtractorMidiManager::isDefaultAudioOutputMonitor();
 
 	m_iAudioInsertActivated = 0;
 
@@ -1673,6 +1669,9 @@ void qtractorPluginList::setChannelsEx (
 		}
 	}
 
+	// Whether to turn on/off any audio monitors/meters...
+	unsigned short iAudioOuts = 0;
+
 	// Reset all plugin chain channels...
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
@@ -1687,7 +1686,12 @@ void qtractorPluginList::setChannelsEx (
 			pPlugin->releaseConfigs();
 			pPlugin->releaseValues();
 		}
+		iAudioOuts += pPlugin->audioOuts();
 	}
+
+	// Turn on/off audio monitors/meters whether applicable...
+	if (m_pMidiManager)
+		m_pMidiManager->setAudioOutputMonitorEx(iAudioOuts > 0);
 }
 
 
@@ -1767,7 +1771,7 @@ void qtractorPluginList::insertPlugin (
 		pListView->setCurrentItem(pNextItem);
 	}
 
-	// update plugins for auto-plugin-deactivation...
+	// Update plugins for auto-plugin-deactivation...
 	autoDeactivatePlugins(m_bAutoDeactivated, true);
 }
 
@@ -2169,11 +2173,6 @@ bool qtractorPluginList::loadElement (
 			m_bAudioOutputAutoConnect = qtractorDocument::boolFromText(ePlugin.text());
 		}
 		else
-		// Load audio output monitor flag...
-		if (ePlugin.tagName() == "audio-output-monitor") {
-			m_bAudioOutputMonitor = qtractorDocument::boolFromText(ePlugin.text());
-		}
-		else
 		// Load audio output connections...
 		if (ePlugin.tagName() == "audio-outputs") {
 			qtractorBus::loadConnects(m_audioOutputs, pDocument, &ePlugin);
@@ -2223,9 +2222,6 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		pDocument->saveTextElement("audio-output-auto-connect",
 			qtractorDocument::textFromBool(
 				m_pMidiManager->isAudioOutputAutoConnect()), pElement);
-		pDocument->saveTextElement("audio-output-monitor",
-			qtractorDocument::textFromBool(
-				m_pMidiManager->isAudioOutputMonitor()), pElement);
 		if (bAudioOutputBus) {
 			qtractorAudioBus *pAudioBus = m_pMidiManager->audioOutputBus();
 			if (pAudioBus) {
@@ -2264,31 +2260,40 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 {
 	if (m_bAutoDeactivated != bDeactivated || bForce) {
 		m_bAutoDeactivated  = bDeactivated;
+		unsigned short iAudioOuts = 0;
 		if (bDeactivated) {
 			bool bStopDeactivation = false;
-			// pass to all plugins bottom to top / stop for active plugins
-			// possibly connected to other tracks
+			// Pass to all plugins bottom to top;
+			// stop for any active plugins that are
+			// possibly connected to other tracks...
 			qtractorPlugin *pPlugin = last();
 			for ( ;	pPlugin && !bStopDeactivation; pPlugin = pPlugin->prev()) {
 				if (pPlugin->canBeConnectedToOtherTracks())
 					bStopDeactivation = pPlugin->isActivated();
 				else
 					pPlugin->autoDeactivatePlugin(bDeactivated);
+				iAudioOuts += pPlugin->audioOuts();
 			}
-			// (re)activate all above stopper
-			if (bStopDeactivation) {
-				for ( ; pPlugin; pPlugin = pPlugin->prev()) {
+			// (Re)activate all above stopper...
+			for ( ; pPlugin; pPlugin = pPlugin->prev()) {
+				if (bStopDeactivation)
 					pPlugin->autoDeactivatePlugin(false);
-				}
+				iAudioOuts += pPlugin->audioOuts();
 			}
 		} else {
-			// pass to all plugins top to to bottom
+			// Pass to all plugins top to to bottom...
 			for (qtractorPlugin *pPlugin = first();
 					pPlugin; pPlugin = pPlugin->next()) {
 				pPlugin->autoDeactivatePlugin(bDeactivated);
+				iAudioOuts += pPlugin->audioOuts();
 			}
 		}
-		// inform all views
+		// Take the chance to turn on/off automagically
+		// the audio monitors/meters, when applicable...
+		qtractorMidiManager *pMidiManager = midiManager();
+		if (pMidiManager)
+			pMidiManager->setAudioOutputMonitorEx(iAudioOuts > 0);
+		// Inform all views...
 		QListIterator<qtractorPluginListView *> iter(m_views);
 		while (iter.hasNext()) {
 			qtractorPluginListView *pListView = iter.next();
@@ -2505,6 +2510,25 @@ bool qtractorPluginList::Document::saveElement ( QDomElement *pElement )
 	}
 
 	return true;
+}
+
+
+//-------------------------------------------------------------------------
+// class qtractorPliuginList::WaitCursor - A waiting (hour-glass) helper.
+//
+
+// Constructor.
+qtractorPluginList::WaitCursor::WaitCursor (void)
+{
+	// Tell the world we'll (maybe) take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+}
+
+// Destructor.
+qtractorPluginList::WaitCursor::~WaitCursor (void)
+{
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
 }
 
 
