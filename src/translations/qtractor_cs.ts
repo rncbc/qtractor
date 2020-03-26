@@ -815,7 +815,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorLv2Plugin.cpp" line="3969"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
-        <translation type="unfinished">Otevřít soubor</translation>
+        <translation>Otevřít soubor</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
@@ -831,17 +831,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorVst3Plugin.cpp" line="1268"/>
         <source>Name: </source>
-        <translation type="unfinished"></translation>
+        <translation>Název: </translation>
     </message>
     <message>
         <location filename="../qtractorVst3Plugin.cpp" line="1288"/>
         <source>Category: </source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie: </translation>
     </message>
     <message>
         <location filename="../qtractorVst3Plugin.cpp" line="1295"/>
         <source>Categories: </source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie: </translation>
     </message>
 </context>
 <context>
@@ -2770,7 +2770,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5770"/>
         <source>VST3 Plug-in support (EXPERIMENTAL) disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro přídavné moduly VST3 (POKUSNÁ) byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5779"/>
@@ -2855,7 +2855,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5830"/>
         <source>LV2 Plug-in UI Request-value support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro hodnotu-požadavek rozhraní přídavných modulů LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5833"/>
@@ -12505,13 +12505,13 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2539"/>
         <source>Manage custom color palette themes</source>
-        <translation>Spravovat vlastní témata barevné palety</translation>
+        <translation>Spravovat vlastní motivy palety barev</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2687"/>
         <location filename="../qtractorOptionsForm.ui" line="2806"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Zpět</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3058"/>
