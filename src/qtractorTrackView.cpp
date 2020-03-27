@@ -62,6 +62,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QPainter>
+#include <QPainterPath>
 #include <QCursor>
 #include <QTimer>
 #include <QUrl>
