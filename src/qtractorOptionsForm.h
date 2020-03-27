@@ -40,7 +40,7 @@ class qtractorOptionsForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorOptionsForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorOptionsForm(QWidget *pParent = nullptr);
 	// Destructor.
 	~qtractorOptionsForm();
 

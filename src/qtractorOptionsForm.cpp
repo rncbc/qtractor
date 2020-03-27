@@ -100,9 +100,8 @@ static const char *g_pszDefName = QT_TRANSLATE_NOOP("qtractorOptionsForm", "(def
 // qtractorOptionsForm -- UI wrapper form.
 
 // Constructor.
-qtractorOptionsForm::qtractorOptionsForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -1168,7 +1167,7 @@ void qtractorOptionsForm::chooseAudioMeterColor (void)
 		= tr("Audio Meter Color");
 
 	QWidget *pParentWidget = nullptr;
-	QColorDialog::ColorDialogOptions options = nullptr;
+	QColorDialog::ColorDialogOptions options;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1190,7 +1189,7 @@ void qtractorOptionsForm::chooseMidiMeterColor (void)
 		= tr("MIDI Meter Color");
 
 	QWidget *pParentWidget = nullptr;
-	QColorDialog::ColorDialogOptions options = nullptr;
+	QColorDialog::ColorDialogOptions options;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1587,7 +1586,7 @@ void qtractorOptionsForm::chooseMessagesFont (void)
 		= tr("Messages Font");
 
 	QWidget *pParentWidget = nullptr;
-	QFontDialog::FontDialogOptions options = nullptr;
+	QFontDialog::FontDialogOptions options;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFontDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1620,7 +1619,7 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = nullptr;
+	QFileDialog::Options options;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1666,7 +1665,7 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = nullptr;
+	QFileDialog::Options options;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1827,7 +1826,7 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 	QString sAudioFile;
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = nullptr;
+	QFileDialog::Options options;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();

@@ -2004,7 +2004,7 @@ bool qtractorMainForm::openSession (void)
 		= filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -2096,7 +2096,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		const QString& sFilter
 			= filters.join(";;");
 		QWidget *pParentWidget = nullptr;
-		QFileDialog::Options options = 0;
+		QFileDialog::Options options;
 		if (m_pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
 			pParentWidget = QWidget::window();
@@ -4080,7 +4080,7 @@ void qtractorMainForm::trackCurveColor (void)
 #endif
 
 	QWidget *pParentWidget = nullptr;
-	QColorDialog::ColorDialogOptions options = 0;
+	QColorDialog::ColorDialogOptions options;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();

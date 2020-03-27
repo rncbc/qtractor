@@ -746,7 +746,7 @@ bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
 		return false;
 	QTextStream ts(&file);
-	ts << doc.toString() << endl;
+	ts << doc.toString() << Qt::endl;
 	file.close();
 
 	releaseConfigs();
@@ -2486,7 +2486,7 @@ bool qtractorPluginList::Document::save ( const QString& sFilename )
 	pDocument->appendChild(elem);
 
 	QTextStream ts(&file);
-	ts << pDocument->toString() << endl;
+	ts << pDocument->toString() << Qt::endl;
 	file.close();
 
 	return true;

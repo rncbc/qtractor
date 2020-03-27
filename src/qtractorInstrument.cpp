@@ -1,7 +1,7 @@
 // qtractorInstrument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -404,58 +404,58 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 	// Write the file.
 	QTextStream ts(&file);
 
-	ts << sepl << endl;
-	ts << "; " << QObject::tr("Cakewalk Instrument Definition File") << endl;
-	ts << ";"  << endl;
+	ts << sepl << Qt::endl;
+	ts << "; " << QObject::tr("Cakewalk Instrument Definition File") << Qt::endl;
+	ts << ";"  << Qt::endl;
 	ts << "; " << QObject::tr("File")
-		<< ": " << QFileInfo(sFilename).fileName() << endl;
+		<< ": " << QFileInfo(sFilename).fileName() << Qt::endl;
 	ts << "; " << QObject::tr("Date")
 		<< ": " << QDate::currentDate().toString("MMM dd yyyy")
-		<< " "  << QTime::currentTime().toString("hh:mm:ss") << endl;
-	ts << ";"  << endl;
+		<< " "  << QTime::currentTime().toString("hh:mm:ss") << Qt::endl;
+	ts << ";"  << Qt::endl;
 
 	// - Patch Names...
-    ts << sepl << endl << endl;
-	ts << ".Patch Names" << endl;
+    ts << sepl << Qt::endl << Qt::endl;
+	ts << ".Patch Names" << Qt::endl;
 	saveDataList(ts, m_patches);
 
 	// - Note Names...
-    ts << sepl << endl << endl;
-	ts << ".Note Names" << endl;
+    ts << sepl << Qt::endl << Qt::endl;
+	ts << ".Note Names" << Qt::endl;
 	saveDataList(ts, m_notes);
 
 	// - Controller Names...
-    ts << sepl << endl << endl;
-	ts << ".Controller Names" << endl;
+    ts << sepl << Qt::endl << Qt::endl;
+	ts << ".Controller Names" << Qt::endl;
 	saveDataList(ts, m_controllers);
 
 	// - RPN Names...
-    ts << sepl << endl << endl;
-	ts << ".RPN Names" << endl;
+    ts << sepl << Qt::endl << Qt::endl;
+	ts << ".RPN Names" << Qt::endl;
 	saveDataList(ts, m_rpns);
 
 	// - NRPN Names...
-    ts << sepl << endl << endl;
-	ts << ".NRPN Names" << endl;
+    ts << sepl << Qt::endl << Qt::endl;
+	ts << ".NRPN Names" << Qt::endl;
 	saveDataList(ts, m_nrpns);
 
 	// - Instrument Definitions...
-    ts << sepl << endl << endl;
-	ts << ".Instrument Definitions" << endl;
-    ts << endl;
+    ts << sepl << Qt::endl << Qt::endl;
+	ts << ".Instrument Definitions" << Qt::endl;
+    ts << Qt::endl;
 	qtractorInstrumentList::ConstIterator iter = constBegin();
 	const qtractorInstrumentList::ConstIterator& iter_end = constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		const qtractorInstrument& instr = *iter;
-		ts << "[" << instr.instrumentName() << "]" << endl;
+		ts << "[" << instr.instrumentName() << "]" << Qt::endl;
 		if (instr.bankSelMethod() > 0)
-		    ts << "BankSelMethod=" << instr.bankSelMethod() << endl;
+		    ts << "BankSelMethod=" << instr.bankSelMethod() << Qt::endl;
 		if (!instr.controllers().name().isEmpty())
-			ts << "Control=" << instr.controllers().name() << endl;
+			ts << "Control=" << instr.controllers().name() << Qt::endl;
 		if (!instr.rpns().name().isEmpty())
-			ts << "RPN=" << instr.rpns().name() << endl;
+			ts << "RPN=" << instr.rpns().name() << Qt::endl;
 		if (!instr.nrpns().name().isEmpty())
-			ts << "NRPN=" << instr.nrpns().name() << endl;
+			ts << "NRPN=" << instr.nrpns().name() << Qt::endl;
 		// - Patches...
 		const qtractorInstrumentPatches& patches = instr.patches();
 		qtractorInstrumentPatches::ConstIterator pit = patches.constBegin();
@@ -467,7 +467,7 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 				const QString& sBank = (iBank < 0
 					? QString("*") : QString::number(iBank));
 				ts << "Patch[" << sBank << "]="
-				   << sPatch << endl;
+				   << sPatch << Qt::endl;
 			}
 		}
 		// - Keys...
@@ -488,7 +488,7 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 					const QString& sProg = (iProg < 0
 						? QString("*") : QString::number(iProg));
 					ts << "Key[" << sBank << "," << sProg << "]="
-					   << sKey << endl;
+					   << sKey << Qt::endl;
 				}
 			}
 		}
@@ -508,10 +508,10 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 				const QString& sProg = (iProg < 0
 					? QString("*") : QString::number(iProg));
 				ts << "Drum[" << sBank << "," << sProg << "]="
-				   << fit.value() << endl;
+				   << fit.value() << Qt::endl;
 			}
 		}
-		ts << endl;
+		ts << Qt::endl;
 	}
 
 	// Done.
@@ -524,13 +524,13 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 void qtractorInstrumentList::saveDataList ( QTextStream& ts,
 	const qtractorInstrumentDataList& list ) const
 {
-    ts << endl;
+    ts << Qt::endl;
 	qtractorInstrumentDataList::ConstIterator it = list.constBegin(); 
 	const qtractorInstrumentDataList::ConstIterator& it_end = list.constEnd();
 	for ( ; it != it_end; ++it) {
 		const QString& sName = it.value().name();
 		if (!sName.isEmpty()) {
-			ts << "[" << sName << "]" << endl;
+			ts << "[" << sName << "]" << Qt::endl;
 			saveData(ts, it.value());
 		}
 	}
@@ -541,12 +541,12 @@ void qtractorInstrumentList::saveData ( QTextStream& ts,
 	const qtractorInstrumentData& data ) const
 {
 	if (!data.basedOn().isEmpty())
-	    ts << "BasedOn=" << data.basedOn() << endl;
+	    ts << "BasedOn=" << data.basedOn() << Qt::endl;
 	qtractorInstrumentData::ConstIterator it = data.constBegin();
 	const qtractorInstrumentData::ConstIterator& it_end = data.constEnd();
 	for ( ; it != it_end; ++it)
-		ts << it.key() << "=" << it.value() << endl;
-	ts << endl;
+		ts << it.key() << "=" << it.value() << Qt::endl;
+	ts << Qt::endl;
 }
 
 
@@ -908,7 +908,7 @@ void qtractorInstrumentList::loadMidiPatchNameList (
 					const QString sep(", ");
 					QStringList list = sBankName
 						.remove(sName).remove(sBank)
-						.split(sep, QString::SkipEmptyParts);
+						.split(sep, Qt::SkipEmptyParts);
 					list.append(sName + sBank);
 					sBankName = list.join(sep);
 				}

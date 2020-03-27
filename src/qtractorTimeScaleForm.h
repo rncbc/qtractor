@@ -41,7 +41,7 @@ class qtractorTimeScaleForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorTimeScaleForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorTimeScaleForm(QWidget *pParent = nullptr);
 
 	void setTimeScale(qtractorTimeScale *pTimeScale);
 	qtractorTimeScale *timeScale() const;

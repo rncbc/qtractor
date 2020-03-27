@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -323,7 +323,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	if (!file.open(mode))
 		return false;
 	QTextStream ts(&file);
-	ts << m_pDocument->toString() << endl;
+	ts << m_pDocument->toString() << Qt::endl;
 	file.close();
 
 #ifdef CONFIG_LIBZ
@@ -449,7 +449,7 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 							else sTemp.clear();
 						}
 						// Write possibly altered line...
-						ots << sLine << endl;
+						ots << sLine << Qt::endl;
 					}
 					// Almost done.
 					ots.flush();

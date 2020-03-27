@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,9 +50,9 @@ public:
 
 	// Pseudo-constructors.
 	static void showInstance(qtractorMidiControlObserver *pMidiObserver,
-		QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+		QWidget *pParent = nullptr, Qt::WindowFlags wflags = Qt::WindowFlags());
 	static void showInstance(QAction *pMidiObserverAction,
-		QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+		QWidget *pParent = nullptr, Qt::WindowFlags wflags = Qt::WindowFlags());
 
 	// Observer accessors.
 	void setMidiObserver(qtractorMidiControlObserver *pMidiObserver);
@@ -88,8 +88,8 @@ protected slots:
 protected:
 
 	// Constructor.
-	qtractorMidiControlObserverForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
-
+	qtractorMidiControlObserverForm(QWidget *pParent = nullptr,
+		Qt::WindowFlags wflags = Qt::WindowFlags());
 	// Destructor.
 	~qtractorMidiControlObserverForm();
 

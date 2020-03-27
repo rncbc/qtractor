@@ -48,7 +48,7 @@ class TimeshiftCurve : public QWidget
 public:
 
 	// Constructor.
-	TimeshiftCurve(QWidget *pParent = 0) : QWidget(pParent), m_p(0.0f) {}
+	TimeshiftCurve(QWidget *pParent = nullptr) : QWidget(pParent), m_p(0.0f) {}
 
 	// Accessors.
 	void setTimeshift(float p) { m_p = p; update(); }
@@ -117,9 +117,8 @@ private:
 // qtractorMidiToolsForm -- UI wrapper form.
 
 // Constructor.
-qtractorMidiToolsForm::qtractorMidiToolsForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);

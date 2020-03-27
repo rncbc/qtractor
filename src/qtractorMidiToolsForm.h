@@ -42,7 +42,7 @@ class qtractorMidiToolsForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorMidiToolsForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorMidiToolsForm(QWidget *pParent = nullptr);
 	// Destructor.
 	~qtractorMidiToolsForm();
 

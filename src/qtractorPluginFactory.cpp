@@ -813,7 +813,7 @@ bool qtractorPluginFactory::Scanner::start (void)
 		return false;
 
 	// Go go go!
-	QProcess::start(fi.filePath());
+	QProcess::start(fi.filePath(), QStringList());
 	return true;
 }
 

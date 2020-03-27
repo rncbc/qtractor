@@ -3969,7 +3969,7 @@ LV2UI_Request_Value_Status qtractorLv2Plugin::lv2_ui_request_value (
 		= QObject::tr("Open File", "lv2_ui_request_parameter");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;

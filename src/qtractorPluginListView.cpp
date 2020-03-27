@@ -891,7 +891,7 @@ void qtractorPluginListView::importPlugins (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1004,7 +1004,7 @@ void qtractorPluginListView::exportPlugins (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1412,7 +1412,7 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 // trap the wheel event to change the value of the direcgAccessParameter
 void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 {
-	const QPoint& pos = pWheelEvent->pos();
+	const QPoint& pos = pWheelEvent->position().toPoint();
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
 	if (pItem) {
@@ -1428,7 +1428,7 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 			float fValue = pDirectAccessObserver->value();
 			const float fScale = pDirectAccessObserver->scaleFromValue(
 				fValue, bLogarithmic);
-			float fDelta = (pWheelEvent->delta() < 0 ? -0.1f : +0.1f);
+			float fDelta = (pWheelEvent->angleDelta().y() < 0 ? -0.1f : +0.1f);
 			if (!pDirectAccessParam->isInteger())
 				fDelta *= 0.5f;
 			fValue = pDirectAccessObserver->valueFromScale(

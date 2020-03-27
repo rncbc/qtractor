@@ -181,7 +181,8 @@ class qtractorVstPlugin::EditorWidget : public QWidget
 public:
 
 	// Constructor.
-	EditorWidget(QWidget *pParent, Qt::WindowFlags wflags = 0)
+	EditorWidget(QWidget *pParent = nullptr,
+		Qt::WindowFlags wflags = Qt::WindowFlags())
 		: QWidget(pParent, wflags),
 	#ifdef CONFIG_VST_X11
 		m_pDisplay(QX11Info::display()),
@@ -1580,7 +1581,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		const QString& sDirectory = pvfs->initialPath;
 		const QString& sFilter = filters.join(";;");
-		QFileDialog::Options options = 0;
+		QFileDialog::Options options;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bDontUseNativeDialogs)
 			options |= QFileDialog::DontUseNativeDialog;

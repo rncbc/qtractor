@@ -2786,7 +2786,8 @@ class qtractorVst3Plugin::EditorWidget : public QWidget
 {
 public:
 
-	EditorWidget(QWidget *pParent = nullptr, Qt::WindowFlags wflags = 0);
+	EditorWidget(QWidget *pParent = nullptr,
+		Qt::WindowFlags wflags = Qt::WindowFlags());
 
 	~EditorWidget ();
 

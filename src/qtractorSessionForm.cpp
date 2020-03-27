@@ -41,9 +41,8 @@
 // qtractorSessionForm -- UI wrapper form.
 
 // Constructor.
-qtractorSessionForm::qtractorSessionForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
