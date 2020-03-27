@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.13  2020-03-28  A Spring'20 Release.
 
 - All meters background color are now customizable (cf.
   View/Options.../Display/Meters, color level "Back").
@@ -13,16 +13,16 @@ GIT HEAD
   effect permanently--being an option no more.
 
 - Always show plugins and meters on track list/left
-  pane as permanent standard now. (EXPERIMENTAL)
+  pane as permanent standard now.
 
 - LV2 UI Request-value feature/interface support has
-  been implemented. (EXPERIMENTAL)
+  been implemented.
 
 - Audio output monitoring meters are now shown/hidden
   automagically on MIDI tracks and/or buses--no need
   for some user preference option anymore (ie. View/
   Options.../Plugins/Instruments/Show audio output
-  monitoring meters, is now gone). (EXPERIMENTAL)
+  monitoring meters, is now gone).
 
 - Default track height has been slightly increased.
 
@@ -38,7 +38,7 @@ GIT HEAD
 
 - Plugins and meters on track list/left pane, are now
   being set on as default--maybe going stapled in some
-  near future ;) (EXPERIMENTAL)
+  near future ;)
 
 - Make man page compression reproducible (after request
   by Jelle van der Waa, while on the Vee-Ones, thanks).
