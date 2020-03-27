@@ -344,6 +344,12 @@ protected:
 	// Update whole automation/curve selection.
 	void updateCurveSelect();
 
+	// Retun either snapped pixel, or the passed one if Alt key is pressed
+	unsigned int pixelSnap(unsigned int x) const;
+
+	// Retun either snapped frame, or the passed one if Alt key is pressed
+	unsigned long frameSnap(unsigned long iFrame) const;
+
 	// Show selection tooltip...
 	void showToolTip(const QRect& rect, int dx) const;
 
