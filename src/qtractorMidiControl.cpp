@@ -37,6 +37,12 @@
 
 #include <QFile>
 
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
+
+
 #include <math.h>
 
 // Ref. P.448. Approximate cube root of an IEEE float
@@ -645,7 +651,7 @@ bool qtractorMidiControl::Document::save ( const QString& sFilename )
 	pDocument->appendChild(elem);
 
 	QTextStream ts(&file);
-	ts << pDocument->toString() << Qt::endl;
+	ts << pDocument->toString() << endl;
 	file.close();
 
 	return true;

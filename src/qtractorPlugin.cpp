@@ -57,7 +57,10 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
 #endif
 
-
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -746,7 +749,7 @@ bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
 		return false;
 	QTextStream ts(&file);
-	ts << doc.toString() << Qt::endl;
+	ts << doc.toString() << endl;
 	file.close();
 
 	releaseConfigs();
@@ -2486,7 +2489,7 @@ bool qtractorPluginList::Document::save ( const QString& sFilename )
 	pDocument->appendChild(elem);
 
 	QTextStream ts(&file);
-	ts << pDocument->toString() << Qt::endl;
+	ts << pDocument->toString() << endl;
 	file.close();
 
 	return true;

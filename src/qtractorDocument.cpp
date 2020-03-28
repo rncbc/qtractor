@@ -35,6 +35,11 @@
 #include <QTextStream>
 #include <QDir>
 
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
+
 
 // Local prototypes.
 static void remove_dir_list(const QList<QFileInfo>& list);
@@ -323,7 +328,7 @@ bool qtractorDocument::save ( const QString& sFilename, Flags flags )
 	if (!file.open(mode))
 		return false;
 	QTextStream ts(&file);
-	ts << m_pDocument->toString() << Qt::endl;
+	ts << m_pDocument->toString() << endl;
 	file.close();
 
 #ifdef CONFIG_LIBZ
@@ -449,7 +454,7 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 							else sTemp.clear();
 						}
 						// Write possibly altered line...
-						ots << sLine << Qt::endl;
+						ots << sLine << endl;
 					}
 					// Almost done.
 					ots.flush();

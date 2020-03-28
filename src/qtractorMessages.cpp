@@ -48,6 +48,11 @@
 #define QTRACTOR_MESSAGES_FDREAD    0
 #define QTRACTOR_MESSAGES_FDWRITE   1
 
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
+
 
 //-------------------------------------------------------------------------
 // qtractorMessagesTextEdit - Messages log dockable child window.
@@ -305,7 +310,7 @@ void qtractorMessages::setLogging ( bool bEnabled, const QString& sFilename )
 void qtractorMessages::appendMessagesLog ( const QString& s )
 {
 	if (m_pMessagesLog) {
-		QTextStream(m_pMessagesLog) << s << Qt::endl;
+		QTextStream(m_pMessagesLog) << s << endl;
 		m_pMessagesLog->flush();
 	}
 }
