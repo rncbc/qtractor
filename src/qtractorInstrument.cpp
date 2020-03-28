@@ -913,7 +913,11 @@ void qtractorInstrumentList::loadMidiPatchNameList (
 					const QString sep(", ");
 					QStringList list = sBankName
 						.remove(sName).remove(sBank)
+					#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 						.split(sep, Qt::SkipEmptyParts);
+					#else
+						.split(sep, QString::SkipEmptyParts);
+					#endif
 					list.append(sName + sBank);
 					sBankName = list.join(sep);
 				}

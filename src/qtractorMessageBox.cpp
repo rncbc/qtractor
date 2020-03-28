@@ -107,10 +107,10 @@ void qtractorMessageBox::setIconPixmap ( const QPixmap& pixmap )
 
 QPixmap qtractorMessageBox::iconPixmap (void) const
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-	return *m_pIconLabel->pixmap();
-#else
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 	return m_pIconLabel->pixmap(Qt::ReturnByValue);
+#else
+	return *m_pIconLabel->pixmap();
 #endif
 }
 
