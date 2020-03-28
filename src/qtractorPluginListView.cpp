@@ -1412,7 +1412,11 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 // trap the wheel event to change the value of the direcgAccessParameter
 void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 	const QPoint& pos = pWheelEvent->position().toPoint();
+#else
+	const QPoint& pos = pWheelEvent->pos();
+#endif
 	qtractorPluginListItem *pItem
 		= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
 	if (pItem) {

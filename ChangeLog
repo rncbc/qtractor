@@ -6,8 +6,9 @@ ChangeLog
 
 0.9.13  2020-03-28  A Spring'20 Release.
 
-- All meters background color are now customizable (cf.
-  View/Options.../Display/Meters, color level "Back").
+- All meters background color are now customize-able
+  (cf. View/Options.../Display/Meters, color level
+  "Back").
   
 - Automatic mixer grid layout (multi-row) is now in
   effect permanently--being an option no more.
@@ -19,7 +20,7 @@ ChangeLog
   been implemented.
 
 - Audio output monitoring meters are now shown/hidden
-  automagically on MIDI tracks and/or buses--no need
+  auto-magically on MIDI tracks and/or buses--no need
   for some user preference option anymore (ie. View/
   Options.../Plugins/Instruments/Show audio output
   monitoring meters, is now gone).
@@ -47,7 +48,7 @@ ChangeLog
   with mouse pointer is in main tracks or MIDI clip
   editor (piano-roll) views.
 
-- Make libaudio a build dependency on debian/ubuntu;
+- Make libaubio a build dependency on Debian/Ubuntu;
   also fix cross-build check to sizeof(float).
 
 - Bumped copyright headers into the New Year (2020).
