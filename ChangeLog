@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Use Shift or Ctrl keyboard modifiers with the mouse-
+  wheel to change any Direct Access plug-in parameters
+  (issue #257).
+
+
 0.9.13  2020-03-28  A Spring'20 Release.
 
 - All meters background color are now customize-able
