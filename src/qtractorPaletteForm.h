@@ -78,7 +78,6 @@ public:
 
 protected slots:
 
-	void nameComboActivated(const QString& name);
 	void nameComboChanged(const QString& name);
 	void saveButtonClicked();
 	void deleteButtonClicked();

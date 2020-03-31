@@ -5100,25 +5100,17 @@ void qtractorMainForm::viewOptions (void)
 		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
 			iNeedRestart |= RestartProgram;
 		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
-		#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-			++iNeedRestart;
-		#else		
 			if (m_pOptions->sCustomStyleTheme.isEmpty())
 				iNeedRestart |= RestartProgram;
 			else
 				updateCustomStyleTheme();
-		#endif
 		}
 		if ((sOldCustomColorTheme != m_pOptions->sCustomColorTheme) ||
 			(optionsForm.isDirtyCustomColorThemes())) {
-		#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-			iNeedRestart |= RestartProgram;
-		#else
 			if (m_pOptions->sCustomColorTheme.isEmpty())
 				iNeedRestart |= RestartProgram;
 			else
 				updateCustomColorTheme();
-		#endif
 		}
 		if (optionsForm.isDirtyMeterColors())
 			qtractorMeterValue::updateAll();
