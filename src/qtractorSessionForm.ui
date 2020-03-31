@@ -26,7 +26,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>320</height>
+    <height>240</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -145,12 +145,6 @@
        </item>
        <item>
         <widget class="QTextEdit" name="DescriptionTextEdit" >
-         <property name="maximumSize" >
-          <size>
-           <width>32767</width>
-           <height>72</height>
-          </size>
-         </property>
          <property name="toolTip" >
           <string>Session description</string>
          </property>
@@ -278,7 +272,7 @@
             <property name="sizeHint" >
              <size>
               <width>20</width>
-              <height>40</height>
+              <height>20</height>
              </size>
             </property>
            </spacer>
@@ -425,7 +419,7 @@
             <property name="sizeHint" >
              <size>
               <width>20</width>
-              <height>40</height>
+              <height>20</height>
              </size>
             </property>
            </spacer>
