@@ -102,6 +102,12 @@ typedef struct _LV2UI_Request_Value {
 #include "lv2_programs.h"
 #endif
 
+#ifdef CONFIG_LV2_MIDNAM
+// LV2 MIDNAM support.
+#include "lv2_midnam.h"
+#endif
+
+
 #ifdef CONFIG_LV2_PRESETS
 // LV2 Presets support.
 #include "lv2/lv2plug.in/ns/ext/presets/presets.h"
@@ -339,6 +345,9 @@ public:
 	static LV2_URID    lv2_urid_map(const char *uri);
 	static const char *lv2_urid_unmap(LV2_URID id);
 
+	// Provisional program/patch accessor.
+	bool getProgram(int iIndex, Program& program) const;
+
 #ifdef CONFIG_LV2_PROGRAMS
 
 	// LV2 Programs extension data descriptor accessor.
@@ -347,11 +356,18 @@ public:
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);
 
-	// Provisional program/patch accessor.
-	bool getProgram(int iIndex, Program& program) const;
-
 	// Program/patch notification.
 	void lv2_program_changed(int iIndex);
+
+#endif
+
+#ifdef CONFIG_LV2_MIDNAM
+
+	// LV2 MIDNAM extension data descriptor accessor.
+	const LV2_Midnam_Interface *lv2_midnam_descriptor(unsigned short iInstance) const;
+
+	// LV2 MIDNAME update notification.
+	void lv2_midnam_update();
 
 #endif
 
@@ -445,8 +461,12 @@ public:
 #endif
 #endif
 
-#ifdef CONFIG_LV2_UI
 protected:
+
+	//	Update instrument/programs cache.
+	bool updateInstruments();
+
+#ifdef CONFIG_LV2_UI
 
 	// Alternate UI instantiation stuff...
 	bool lv2_ui_instantiate(
@@ -636,9 +656,18 @@ private:
 	QString                    m_lv2_state_save_dir;
 #endif
 
+	// Programs cache.
+	QList<Program *> m_programs;
+
 #ifdef CONFIG_LV2_PROGRAMS
 	LV2_Feature                m_lv2_programs_host_feature;
 	LV2_Programs_Host          m_lv2_programs_host;
+#endif
+
+#ifdef CONFIG_LV2_MIDNAM
+	LV2_Feature                m_lv2_midnam_feature;
+	LV2_Midnam                 m_lv2_midnam;
+	bool                       m_lv2_midnam_update;
 #endif
 
 #ifdef CONFIG_LV2_PRESETS

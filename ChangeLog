@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 Plug-in MIDNAM support introduced. (EXPERIMENTAL)
+
 - Use Shift or Ctrl keyboard modifiers with the mouse-
   wheel to change any Direct Access plug-in parameters
   (issue #257).

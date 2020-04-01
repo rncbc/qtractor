@@ -1085,6 +1085,28 @@ void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
 #endif	// CONFIG_LV2_PROGRAMS
 
 
+#ifdef CONFIG_LV2_MIDNAM
+
+// LV2 MIDNAM XML support.
+#include <QDomDocument>
+
+void qtractor_lv2_midnam_update ( LV2_Programs_Handle handle )
+{
+	qtractorLv2Plugin *pLv2Plugin
+		= static_cast<qtractorLv2Plugin *> (handle);
+	if (pLv2Plugin == nullptr)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_midname_update(%p)", pLv2Plugin);
+#endif
+
+	pLv2Plugin->lv2_midnam_update();
+}
+
+#endif
+
+
 #ifdef CONFIG_LV2_STATE
 
 // LV2 State/Presets: port value setter.
@@ -2214,6 +2236,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif	// CONFIG_LV2_UI_GTK2
 	#endif
 	#endif	// CONFIG_LV2_UI
+	#ifdef CONFIG_LV2_MIDNAM
+		, m_lv2_midnam_update(false)
+	#endif
 	#ifdef CONFIG_LV2_TIME
 	#ifdef CONFIG_LV2_TIME_POSITION
 		, m_lv2_time_position_enabled(false)
@@ -2248,7 +2273,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_features = new LV2_Feature * [iFeatures + 6];
+	m_lv2_features = new LV2_Feature * [iFeatures + 7];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
 
@@ -2291,6 +2316,17 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	m_lv2_programs_host_feature.URI = LV2_PROGRAMS__Host;
 	m_lv2_programs_host_feature.data = &m_lv2_programs_host;
 	m_lv2_features[iFeatures++] = &m_lv2_programs_host_feature;
+
+#endif	// CONFIG_LV2_PROGRAMS
+
+#ifdef CONFIG_LV2_MIDNAM
+
+	m_lv2_midnam.handle = this;
+	m_lv2_midnam.update = &qtractor_lv2_midnam_update;
+
+	m_lv2_midnam_feature.URI = LV2_MIDNAM__update;
+	m_lv2_midnam_feature.data = &m_lv2_midnam;
+	m_lv2_features[iFeatures++] = &m_lv2_midnam_feature;
 
 #endif	// CONFIG_LV2_PROGRAMS
 
@@ -2596,6 +2632,10 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 	// Cleanup all plugin instances...
 	setChannels(0);
 
+	// Clear programs cache.
+	qDeleteAll(m_programs);
+	m_programs.clear();
+
 #ifdef CONFIG_LV2_TIME
 	// Remove from global running LV2 Time/position ref-count...
 	if (!m_lv2_time_ports.isEmpty()) {
@@ -2859,6 +2899,9 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
+
+	//	Initialize programs cache.
+	updateInstruments();
 
 	// (Re)activate instance if necessary...
 	setActivated(bActivated);
@@ -3599,6 +3642,13 @@ void qtractorLv2Plugin::idleEditor (void)
 		// Done.
 		m_ui_params.clear();
 	}
+
+#ifdef CONFIG_LV2_MIDNAM
+	if (m_lv2_midnam_update) {
+		m_lv2_midnam_update = false;
+		updateInstruments();
+	}
+#endif
 
 	// Now, the following only makes sense
 	// iif you have an open custom GUI editor..
@@ -4770,6 +4820,16 @@ const QString& qtractorLv2Plugin::lv2_state_save_dir (void) const
 #endif	// CONFIG_LV2_STATE_FILES
 
 
+// Provisional program/patch accessor.
+bool qtractorLv2Plugin::getProgram ( int iIndex, Program& program ) const
+{
+	if (iIndex < 0 || iIndex >= m_programs.count())
+		return false;
+
+	program = *m_programs.at(iIndex);
+	return true;
+}
+
 #ifdef CONFIG_LV2_PROGRAMS
 
 // LV2 Programs extension data descriptor accessor.
@@ -4837,34 +4897,6 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 }
 
 
-// Provisional program/patch accessor.
-bool qtractorLv2Plugin::getProgram ( int iIndex, Program& program ) const
-{
-	// Only first one instance should matter...
-	const LV2_Programs_Interface *programs = lv2_programs_descriptor(0);
-	if (programs == nullptr)
-		return false;
-	if (programs->get_program == nullptr)
-		return false;
-
-	LV2_Handle handle = lv2_handle(0);
-	if (handle == nullptr)
-		return false;
-
-	const LV2_Program_Descriptor *pLv2Program
-		= (*programs->get_program)(handle, iIndex);
-	if (pLv2Program == nullptr)
-		return false;
-
-	// Map this to that...
-	program.bank = pLv2Program->bank;
-	program.prog = pLv2Program->program;
-	program.name = pLv2Program->name;
-
-	return true;
-}
-
-
 // Program/patch notification.
 void qtractorLv2Plugin::lv2_program_changed ( int iIndex )
 {
@@ -4888,6 +4920,139 @@ void qtractorLv2Plugin::lv2_program_changed ( int iIndex )
 }
 
 #endif	// CONFIG_LV2_PROGRAMS
+
+
+#ifdef CONFIG_LV2_MIDNAM
+
+// LV2 MIDNAM extension data descriptor accessor.
+const LV2_Midnam_Interface *qtractorLv2Plugin::lv2_midnam_descriptor (
+	unsigned short iInstance ) const
+{
+	const LilvInstance *instance = lv2_instance(iInstance);
+	if (instance == nullptr)
+		return nullptr;
+
+	const LV2_Descriptor *descriptor = lilv_instance_get_descriptor(instance);
+	if (descriptor == nullptr)
+		return nullptr;
+	if (descriptor->extension_data == nullptr)
+		return nullptr;
+
+	return (const LV2_Midnam_Interface *)
+		(*descriptor->extension_data)(LV2_MIDNAM__interface);
+}
+
+
+// LV2 MIDNAME update notification.
+void qtractorLv2Plugin::lv2_midnam_update (void)
+{
+	m_lv2_midnam_update = true;
+}
+
+#endif	// CONFIG_LV2_MIDNAM
+
+
+//	Update instrument/programs cache.
+bool qtractorLv2Plugin::updateInstruments (void)
+{
+	// Clear programs cache.
+	qDeleteAll(m_programs);
+	m_programs.clear();
+
+	// Only first one instance should matter...
+	LV2_Handle handle = lv2_handle(0);
+	if (!handle)
+		return false;
+
+#ifdef CONFIG_LV2_PROGRAMS
+
+	const LV2_Programs_Interface *programs
+		= lv2_programs_descriptor(0);
+	if (programs && programs->get_program) {
+		for (int iIndex = 0;; ++iIndex) {
+			const LV2_Program_Descriptor *pLv2Program
+				= (*programs->get_program)(handle, iIndex);
+			if (pLv2Program == nullptr)
+				break;
+			// Map this to that...
+			Program *program = new Program;
+			program->bank = pLv2Program->bank;
+			program->prog = pLv2Program->program;
+			program->name = pLv2Program->name;
+			m_programs.append(program);
+		}
+	}
+
+#endif	// CONFIG_LV2_PROGRAMS
+
+#ifdef CONFIG_LV2_MIDNAM
+
+	if (!m_programs.isEmpty())
+		return true;
+
+	const LV2_Midnam_Interface *interface
+		= lv2_midnam_descriptor(0);
+	if (interface == nullptr)
+		return false;
+
+	char *midnam = (*interface->midnam)(handle);
+	if (midnam == nullptr)
+		return false;
+
+	const QString sMidnam
+		= QString::fromUtf8(midnam);
+	(*interface->free)(midnam);
+
+	QString sModel;
+	char *model = (*interface->model)(handle);
+	if (model) {
+		sModel = QString::fromUtf8(model);
+		(*interface->free)(model);
+	}
+
+	QDomDocument doc;
+	if (!doc.setContent(sMidnam))
+		return false;
+
+	qtractorInstrumentList instruments;
+	if (!instruments.loadMidiNameDocument(doc))
+		return false;
+
+	qtractorInstrumentList::ConstIterator iter = instruments.constBegin();
+	const qtractorInstrumentList::ConstIterator& iter_end = instruments.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		const QString& sInstrumentName = iter.key();
+		const qtractorInstrument& instr = iter.value();
+		if (!sModel.isEmpty() && !sInstrumentName.contains(sModel))
+			continue;
+		const qtractorInstrumentPatches& patches = instr.patches();
+		qtractorInstrumentPatches::ConstIterator patch_iter = patches.constBegin();
+		const qtractorInstrumentPatches::ConstIterator& patch_end = patches.constEnd();
+		for ( ; patch_iter != patch_end; ++patch_iter) {
+			const int iBank = patch_iter.key();
+			const qtractorInstrumentData& patch = patch_iter.value();
+			const QString& sBankName = patch.name();
+			if (iBank < 0 || sBankName.isEmpty()) continue;
+			qtractorInstrumentData::ConstIterator prog_iter = patch.constBegin();
+			const qtractorInstrumentData::ConstIterator& prog_end = patch.constEnd();
+			for ( ; prog_iter != prog_end; ++prog_iter) {
+				const int iProg = prog_iter.key();
+				if (iProg < 0) continue;
+				Program *program = new Program;
+				program->bank = iBank;
+				program->prog = iProg;
+				program->name = prog_iter.value();
+				m_programs.append(program);
+			}
+		}
+		if (!sModel.isEmpty())
+			break;
+	}
+
+#endif	// CONFIG_LV2_MIDNAM
+
+	return !m_programs.isEmpty();
+}
 
 
 #ifdef CONFIG_LV2_TIME

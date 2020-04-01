@@ -5807,6 +5807,9 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_PROGRAMS
 	list << tr("LV2 Plug-in Programs support disabled.");
 #endif
+#ifndef CONFIG_LV2_MIDNAM
+	list << tr("LV2 Plug-in MIDNAM support disabled.");
+#endif
 #ifndef CONFIG_LV2_PRESETS
 	list << tr("LV2 Plug-in Presets support disabled.");
 #endif
