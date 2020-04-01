@@ -46,6 +46,8 @@
 #endif
 #endif
 
+#include "qtractorInstrument.h"
+
 
 // Forward declarations.
 class qtractorTimeScale;
@@ -319,23 +321,11 @@ public:
 	int currentProg() const
 		{ return m_iCurrentProg; }
 
-	// MIDI Instrument collection map-types.
-	typedef QMap<int, QString> Progs;
-
-	struct Bank
-	{
-		QString name;
-		Progs   progs;
-	};
-
-	typedef QMap<int, Bank> Banks;
-	typedef QMap<QString, Banks> Instruments;
-
 	// Instrument map builder.
 	void updateInstruments();
 
 	// Instrument map accessor.
-	const Instruments& instruments() const
+	const qtractorInstrumentList& instruments() const
 		{ return m_instruments; }
 
 	// Direct MIDI controller helper.
@@ -434,7 +424,7 @@ private:
 	int m_iPendingBankLSB;
 	int m_iPendingProg;
 
-	Instruments m_instruments;
+	qtractorInstrumentList m_instruments;
 
 	// Global factory options.
 	static bool g_bAudioOutputBus;

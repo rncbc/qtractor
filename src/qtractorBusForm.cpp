@@ -1020,13 +1020,12 @@ void qtractorBusForm::updateMidiInstruments (void)
 			= (pMidiBus->pluginList_out())->midiManager();
 		if (pMidiManager) {
 			pMidiManager->updateInstruments();
-			const qtractorMidiManager::Instruments& list
+			const qtractorInstrumentList& instruments
 				= pMidiManager->instruments();
-			qtractorMidiManager::Instruments::ConstIterator iter = list.constBegin();
-			const qtractorMidiManager::Instruments::ConstIterator& iter_end
-				= list.constEnd();
+			qtractorInstrumentList::ConstIterator iter = instruments.constBegin();
+			const qtractorInstrumentList::ConstIterator& iter_end = instruments.constEnd();
 			for ( ; iter != iter_end; ++iter)
-				m_ui.MidiInstrumentComboBox->addItem(icon, iter.key());
+				m_ui.MidiInstrumentComboBox->addItem(icon, iter.value().instrumentName());
 		}
 	}
 

@@ -1,7 +1,7 @@
 // qtractorInstrumentMenu.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -121,11 +121,12 @@ bool qtractorInstrumentMenu::trackMenuAdd (
 	pMidiManager->updateInstruments();
 
 	// Instrument sub-menu...
-	const qtractorMidiManager::Instruments& list = pMidiManager->instruments();
-	qtractorMidiManager::Instruments::ConstIterator iter = list.constBegin();
-	const qtractorMidiManager::Instruments::ConstIterator& iter_end = list.constEnd();
+	const qtractorInstrumentList& instruments = pMidiManager->instruments();
+	qtractorInstrumentList::ConstIterator iter = instruments.constBegin();
+	const qtractorInstrumentList::ConstIterator& iter_end = instruments.constEnd();
 	for ( ; iter != iter_end; ++iter) {
-		const QString& sInstrumentName = iter.key();
+		const qtractorInstrument& instr = iter.value();
+		const QString& sInstrumentName = instr.instrumentName();
 		if (sInstrumentName.isEmpty()) continue;
 		QMenu *pBankMenu = pMenu->addMenu(icon, sInstrumentName);
 		QAction *pAction = pBankMenu->menuAction();
@@ -231,20 +232,21 @@ bool qtractorInstrumentMenu::bankMenuAdd (
 	if (pMidiManager == nullptr)
 		return false;
 
-	const qtractorMidiManager::Instruments& list
-		= pMidiManager->instruments();
-	if (!list.contains(sInstrumentName))
+	// Instrument plug-in banks sub-menu...
+	const qtractorInstrumentList& instruments = pMidiManager->instruments();
+	if (!instruments.contains(sInstrumentName))
 		return false;
 
-	// Instrument plug-in banks sub-menu...
-	const qtractorMidiManager::Banks& banks = list.value(sInstrumentName);
-	qtractorMidiManager::Banks::ConstIterator bank_iter = banks.constBegin();
-	const qtractorMidiManager::Banks::ConstIterator& bank_end = banks.constEnd();
-	for ( ; bank_iter != bank_end; ++bank_iter) {
-		const int iBank = bank_iter.key();
-		if (iBank < 0) continue;
-		const qtractorMidiManager::Bank& bank = bank_iter.value();
-		QMenu *pProgMenu = pBankMenu->addMenu(icon, bank.name);
+	const qtractorInstrument& instr = instruments.value(sInstrumentName);
+	const qtractorInstrumentPatches& patches = instr.patches();
+	qtractorInstrumentPatches::ConstIterator patch_iter = patches.constBegin();
+	const qtractorInstrumentPatches::ConstIterator& patch_end = patches.constEnd();
+	for ( ; patch_iter != patch_end; ++patch_iter) {
+		const int iBank = patch_iter.key();
+		const qtractorInstrumentData& patch = patch_iter.value();
+		const QString& sBankName = patch.name();
+		if (iBank < 0 || sBankName.isEmpty()) continue;
+		QMenu *pProgMenu = pBankMenu->addMenu(icon, sBankName);
 		QAction *pAction = pProgMenu->menuAction();
 		pAction->setCheckable(true);
 		pAction->setChecked(iBank == iCurrentBank);
@@ -375,20 +377,16 @@ bool qtractorInstrumentMenu::progMenuAdd (
 		return false;
 
 	// Instrument plugin programs sub-menu...
-	const qtractorMidiManager::Instruments& list
-		= pMidiManager->instruments();
-	if (!list.contains(sInstrumentName))
-		return false;
-
-	const qtractorMidiManager::Banks& banks
-		= list.value(sInstrumentName);
-	if (!banks.contains(iBank))
+	const qtractorInstrumentList& instruments = pMidiManager->instruments();
+	if (!instruments.contains(sInstrumentName))
 		return false;
 
 	const QString sProg("%1 - %2");
-	const qtractorMidiManager::Progs& progs = banks.value(iBank).progs;
-	qtractorMidiManager::Progs::ConstIterator prog_iter = progs.constBegin();
-	const qtractorMidiManager::Progs::ConstIterator& prog_end = progs.constEnd();
+	const qtractorInstrument& instr = instruments.value(sInstrumentName);
+	const qtractorInstrumentPatches& patches = instr.patches();
+	const qtractorInstrumentData& patch = patches[iBank];
+	qtractorInstrumentData::ConstIterator prog_iter = patch.constBegin();
+	const qtractorInstrumentData::ConstIterator& prog_end = patch.constEnd();
 	for ( ; prog_iter != prog_end; ++prog_iter) {
 		const int iProg = prog_iter.key();
 		if (iProg < 0) continue;

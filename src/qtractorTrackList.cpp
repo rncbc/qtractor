@@ -405,23 +405,21 @@ bool qtractorTrackList::Item::updateBankProgNames (
 	if (pMidiManager == nullptr)
 		return false;
 
-	const qtractorMidiManager::Instruments& list
+	const qtractorInstrumentList& instruments
 		= pMidiManager->instruments();
-	if (!list.contains(sInstrumentName))
+	if (!instruments.contains(sInstrumentName))
 		return false;
 
-	const qtractorMidiManager::Banks& banks
-		= list[sInstrumentName];
 	const int iBank = track->midiBank();
-	if (banks.contains(iBank)) {
-		const qtractorMidiManager::Bank& bank
-			= banks[iBank];
-		const int iProg = track->midiProg();
-		if (bank.progs.contains(iProg)) {
-			sBankName = bank.name;
-			sProgName = QString("%1 - %2").arg(iProg)
-				.arg(bank.progs[iProg]);
-		}
+	const int iProg = track->midiProg();
+
+	const qtractorInstrument& instr
+		= instruments.value(sInstrumentName);
+	const qtractorInstrumentData& bank
+		= instr.patch(iBank);
+	if (bank.contains(iProg)) {
+		sBankName = bank.name();
+		sProgName = QString("%1 - %2").arg(iProg).arg(bank[iProg]);
 	}
 
 	return true;

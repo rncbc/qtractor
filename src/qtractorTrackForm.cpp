@@ -660,12 +660,12 @@ void qtractorTrackForm::updateInstrumentsAdd (
 
 	pMidiManager->updateInstruments();
 
-	const qtractorMidiManager::Instruments& list
+	const qtractorInstrumentList& instruments
 		= pMidiManager->instruments();
-	qtractorMidiManager::Instruments::ConstIterator iter = list.constBegin();
-	const qtractorMidiManager::Instruments::ConstIterator& iter_end = list.constEnd();
+	qtractorInstrumentList::ConstIterator iter = instruments.constBegin();
+	const qtractorInstrumentList::ConstIterator& iter_end = instruments.constEnd();
 	for ( ; iter != iter_end; ++iter)
-		m_ui.InstrumentComboBox->addItem(icon, iter.key());
+		m_ui.InstrumentComboBox->addItem(icon, iter.value().instrumentName());
 }
 
 
@@ -1020,25 +1020,30 @@ bool qtractorTrackForm::updateBanksAdd (
 	if (pMidiManager == nullptr)
 		return false;
 
-	const qtractorMidiManager::Instruments& list
+	const qtractorInstrumentList& instruments
 		= pMidiManager->instruments();
-	if (!list.contains(sInstrumentName))
+	if (!instruments.contains(sInstrumentName))
 		return false;
 
-	// Refresh bank mapping...
-	const qtractorMidiManager::Banks& banks = list[sInstrumentName];
-	qtractorMidiManager::Banks::ConstIterator iter = banks.constBegin();
-	const qtractorMidiManager::Banks::ConstIterator& iter_end = banks.constEnd();
-	for ( ; iter != iter_end; ++iter) {
-		m_ui.BankComboBox->addItem(icon, iter.value().name);
-		m_banks[iBankIndex++] = iter.key();
+	// Get instrument set alright...
+	const qtractorInstrument& instr
+		= instruments.value(sInstrumentName);
+	// Refresh patch bank mapping...
+	const qtractorInstrumentPatches& patches = instr.patches();
+	qtractorInstrumentPatches::ConstIterator it = patches.constBegin();
+	const qtractorInstrumentPatches::ConstIterator& it_end = patches.constEnd();
+	for (; it != it_end; ++it) {
+		if (it.key() >= 0) {
+			m_ui.BankComboBox->addItem(icon, it.value().name());
+			m_banks[iBankIndex++] = it.key();
+		}
 	}
 	// Reset given bank combobox index.
 	iBankIndex = -1;
-	// For proper bank selection...
-	if (banks.contains(iBank)) {
-		const qtractorMidiManager::Bank& bank = banks[iBank];
-		iBankIndex = m_ui.BankComboBox->findText(bank.name);
+	if (iBank >= 0) {
+		const qtractorInstrumentData& patch = instr.patch(iBank);
+		if (!patch.name().isEmpty())
+			iBankIndex = m_ui.BankComboBox->findText(patch.name());
 	}
 
 	// Mark that we've have something.
@@ -1054,35 +1059,31 @@ bool qtractorTrackForm::updateProgramsAdd (
 	if (pMidiManager == nullptr)
 		return false;
 
-	const qtractorMidiManager::Instruments& list
+	const qtractorInstrumentList& instruments
 		= pMidiManager->instruments();
-	if (!list.contains(sInstrumentName))
+	if (!instruments.contains(sInstrumentName))
 		return false;
 
+	// Instrument reference...
+	const qtractorInstrument& instr
+		= instruments.value(sInstrumentName);
 	// Bank reference...
-	const qtractorMidiManager::Banks& banks
-		= list[sInstrumentName];
-	if (banks.contains(iBank)) {
-		const qtractorMidiManager::Progs& progs
-			= banks[iBank].progs;
-		// Refresh program mapping...
-		const QString sProg("%1 - %2");
-		qtractorMidiManager::Progs::ConstIterator iter = progs.constBegin();
-		const qtractorMidiManager::Progs::ConstIterator& iter_end = progs.constEnd();
-		for ( ; iter != iter_end; ++iter) {
+	const qtractorInstrumentData& bank = instr.patch(iBank);
+	// Enumerate the explicit given program list...
+	qtractorInstrumentData::ConstIterator iter = bank.constBegin();
+	const qtractorInstrumentData::ConstIterator& iter_end = bank.constEnd();
+	for (; iter != iter_end; ++iter) {
+		if (iter.key() >= 0 && !iter.value().isEmpty()) {
+			const QString sProg("%1 - %2");
 			m_ui.ProgComboBox->addItem(icon,
 				sProg.arg(iter.key()).arg(iter.value()));
 			m_progs[iProgIndex++] = iter.key();
 		}
-		// Reset given program combobox index.
-		iProgIndex = -1;
-		// For proper program selection...
-		if (progs.contains(iProg)) {
-			iProgIndex = m_ui.ProgComboBox->findText(
-				sProg.arg(iProg).arg(progs[iProg]));
-		}
 	}
-	else iProgIndex = -1;
+	// For proper program selection...
+	iProgIndex = -1;
+	if (iProg >= 0 && bank.contains(iProg))
+		iProgIndex = m_ui.ProgComboBox->findText(bank[iProg]);
 
 	// Mark that we've have something.
 	return true;

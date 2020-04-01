@@ -1550,21 +1550,28 @@ void qtractorMidiManager::setAudioOutputMonitorEx ( bool bAudioOutputMonitor )
 // Instrument map builder.
 void qtractorMidiManager::updateInstruments (void)
 {
-	m_instruments.clear();
+	m_instruments.clearAll();
 
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();
 			pPlugin; pPlugin = pPlugin->next()) {
 		int iIndex = 0;
+		int iBanks = 0;
 		qtractorPlugin::Program program;
-		Banks& banks = m_instruments[(pPlugin->type())->name()];
+		const QString& sInstrumentName = (pPlugin->type())->name();
+		qtractorInstrument& instr = m_instruments[sInstrumentName];
+		instr.setInstrumentName(sInstrumentName);
 		while (pPlugin->getProgram(iIndex++, program)) {
-			Bank& bank = banks[program.bank];
-			if (bank.name.isEmpty()) {
-				bank.name = QObject::tr("%1 - Bank %2")
+			QString sBankName = instr.bankName(program.bank);
+			if (sBankName.isEmpty()) {
+				sBankName = QObject::tr("%1 - Bank %2")
 					.arg(program.bank)
-					.arg(banks.count() - 1);
+					.arg(iBanks++);
+				instr.setBankName(program.bank, sBankName);
 			}
-			bank.progs[program.prog] = program.name.simplified();
+			instr.setProgName(
+				program.bank,
+				program.prog,
+				program.name.simplified());
 		}
 	}
 }

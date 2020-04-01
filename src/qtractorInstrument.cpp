@@ -163,7 +163,10 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 	}
 
 	// Check for a MIDINameDocument...
-	if (loadMidiNameDocument(&file)) {
+	file.seek(0);
+
+	QDomDocument doc;
+	if (doc.setContent(&file) && loadMidiNameDocument(doc)) {
 		file.close();
 		appendFile(sFilename);
 		return true;
@@ -661,14 +664,8 @@ void qtractorInstrumentList::loadSoundFontPresets ( QFile *pFile, int iSize )
 
 
 // Special MIDINameDocument loader.
-bool qtractorInstrumentList::loadMidiNameDocument ( QFile *pFile )
+bool qtractorInstrumentList::loadMidiNameDocument ( const QDomDocument& doc )
 {
-	pFile->seek(0);
-
-	QDomDocument doc;
-	if (!doc.setContent(pFile))
-		return false;
-
 	QDomElement eRoot = doc.documentElement();
 	if (eRoot.tagName() != "MIDINameDocument")
 		return false;
