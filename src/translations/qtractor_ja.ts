@@ -14715,27 +14715,27 @@ Do you want to apply the changes?</source>
         <translation>自前アイコン(&amp;I)...</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1198"/>
+        <location filename="../qtractorTrackForm.cpp" line="1201"/>
         <source>Image files (%1)</source>
         <translation>画像ファイル (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1199"/>
+        <location filename="../qtractorTrackForm.cpp" line="1202"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1195"/>
+        <location filename="../qtractorTrackForm.cpp" line="1198"/>
         <source>Track Icon</source>
         <translation>トラックアイコン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1498"/>
+        <location filename="../qtractorTrackForm.cpp" line="1501"/>
         <source>Foreground Color</source>
         <translation>全景の色</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1524"/>
+        <location filename="../qtractorTrackForm.cpp" line="1527"/>
         <source>Background Color</source>
         <translation>背景の色</translation>
     </message>

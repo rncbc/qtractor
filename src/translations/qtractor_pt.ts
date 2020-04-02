@@ -14563,17 +14563,17 @@ Do you want to apply the changes?</source>
 Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1198"/>
+        <location filename="../qtractorTrackForm.cpp" line="1201"/>
         <source>Image files (%1)</source>
         <translation>Arquivos de Imagem (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1199"/>
+        <location filename="../qtractorTrackForm.cpp" line="1202"/>
         <source>All files (*.*)</source>
         <translation>Todos os arquivos (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1195"/>
+        <location filename="../qtractorTrackForm.cpp" line="1198"/>
         <source>Track Icon</source>
         <translation>Figura da Pista</translation>
     </message>
@@ -14733,12 +14733,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Remover plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1498"/>
+        <location filename="../qtractorTrackForm.cpp" line="1501"/>
         <source>Foreground Color</source>
         <translation>Cor do Primeiro Plano</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1524"/>
+        <location filename="../qtractorTrackForm.cpp" line="1527"/>
         <source>Background Color</source>
         <translation>Cor do segundo plano</translation>
     </message>

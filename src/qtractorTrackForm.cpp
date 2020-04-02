@@ -1030,12 +1030,12 @@ bool qtractorTrackForm::updateBanksAdd (
 		= instruments.value(sInstrumentName);
 	// Refresh patch bank mapping...
 	const qtractorInstrumentPatches& patches = instr.patches();
-	qtractorInstrumentPatches::ConstIterator it = patches.constBegin();
-	const qtractorInstrumentPatches::ConstIterator& it_end = patches.constEnd();
-	for (; it != it_end; ++it) {
-		if (it.key() >= 0) {
-			m_ui.BankComboBox->addItem(icon, it.value().name());
-			m_banks[iBankIndex++] = it.key();
+	qtractorInstrumentPatches::ConstIterator iter = patches.constBegin();
+	const qtractorInstrumentPatches::ConstIterator& iter_end = patches.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		if (iter.key() >= 0) {
+			m_ui.BankComboBox->addItem(icon, iter.value().name());
+			m_banks[iBankIndex++] = iter.key();
 		}
 	}
 	// Reset given bank combobox index.
@@ -1064,6 +1064,8 @@ bool qtractorTrackForm::updateProgramsAdd (
 	if (!instruments.contains(sInstrumentName))
 		return false;
 
+	// Common program label...
+	const QString sProg("%1 - %2");
 	// Instrument reference...
 	const qtractorInstrument& instr
 		= instruments.value(sInstrumentName);
@@ -1072,18 +1074,19 @@ bool qtractorTrackForm::updateProgramsAdd (
 	// Enumerate the explicit given program list...
 	qtractorInstrumentData::ConstIterator iter = bank.constBegin();
 	const qtractorInstrumentData::ConstIterator& iter_end = bank.constEnd();
-	for (; iter != iter_end; ++iter) {
+	for ( ; iter != iter_end; ++iter) {
 		if (iter.key() >= 0 && !iter.value().isEmpty()) {
-			const QString sProg("%1 - %2");
 			m_ui.ProgComboBox->addItem(icon,
 				sProg.arg(iter.key()).arg(iter.value()));
 			m_progs[iProgIndex++] = iter.key();
 		}
 	}
-	// For proper program selection...
+	// For proper program selection, thru label...
 	iProgIndex = -1;
-	if (iProg >= 0 && bank.contains(iProg))
-		iProgIndex = m_ui.ProgComboBox->findText(bank[iProg]);
+	if (iProg >= 0 && bank.contains(iProg)) {
+		iProgIndex = m_ui.ProgComboBox->findText(
+			sProg.arg(iProg).arg(bank[iProg]));
+	}
 
 	// Mark that we've have something.
 	return true;

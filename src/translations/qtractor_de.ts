@@ -14559,27 +14559,27 @@ Wollen Sie diese übernehmen?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1198"/>
+        <location filename="../qtractorTrackForm.cpp" line="1201"/>
         <source>Image files (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1199"/>
+        <location filename="../qtractorTrackForm.cpp" line="1202"/>
         <source>All files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1195"/>
+        <location filename="../qtractorTrackForm.cpp" line="1198"/>
         <source>Track Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1498"/>
+        <location filename="../qtractorTrackForm.cpp" line="1501"/>
         <source>Foreground Color</source>
         <translation>Vordergrundfarbe</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1524"/>
+        <location filename="../qtractorTrackForm.cpp" line="1527"/>
         <source>Background Color</source>
         <translation>Hintergrundfarbe</translation>
     </message>

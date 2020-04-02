@@ -14716,27 +14716,27 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>(Rien)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1198"/>
+        <location filename="../qtractorTrackForm.cpp" line="1201"/>
         <source>Image files (%1)</source>
         <translation>Fichiers image (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1199"/>
+        <location filename="../qtractorTrackForm.cpp" line="1202"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1195"/>
+        <location filename="../qtractorTrackForm.cpp" line="1198"/>
         <source>Track Icon</source>
         <translation>Icône de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1498"/>
+        <location filename="../qtractorTrackForm.cpp" line="1501"/>
         <source>Foreground Color</source>
         <translation>Couleur du Premier Plan</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1524"/>
+        <location filename="../qtractorTrackForm.cpp" line="1527"/>
         <source>Background Color</source>
         <translation>Couleur d&apos;Arrière Plan</translation>
     </message>

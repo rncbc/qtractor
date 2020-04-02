@@ -14713,27 +14713,27 @@ Do you want to apply the changes?</source>
         <translation>&amp;Icono personalizado...</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1198"/>
+        <location filename="../qtractorTrackForm.cpp" line="1201"/>
         <source>Image files (%1)</source>
         <translation>Archivos de imagen (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1199"/>
+        <location filename="../qtractorTrackForm.cpp" line="1202"/>
         <source>All files (*.*)</source>
         <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1195"/>
+        <location filename="../qtractorTrackForm.cpp" line="1198"/>
         <source>Track Icon</source>
         <translation>Icono de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1498"/>
+        <location filename="../qtractorTrackForm.cpp" line="1501"/>
         <source>Foreground Color</source>
         <translation>Color destacado</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1524"/>
+        <location filename="../qtractorTrackForm.cpp" line="1527"/>
         <source>Background Color</source>
         <translation>Color de Fondo</translation>
     </message>
