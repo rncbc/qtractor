@@ -14684,12 +14684,12 @@ Do you want to discard the changes?</source>
         <translation>バイオリン(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="486"/>
+        <location filename="../qtractorTrackForm.cpp" line="495"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="487"/>
+        <location filename="../qtractorTrackForm.cpp" line="496"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -14698,14 +14698,14 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="631"/>
+        <location filename="../qtractorTrackForm.cpp" line="640"/>
         <source>(No instrument)</source>
         <translation>(インストルメントなし)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="204"/>
-        <location filename="../qtractorTrackForm.cpp" line="833"/>
-        <location filename="../qtractorTrackForm.cpp" line="947"/>
+        <location filename="../qtractorTrackForm.cpp" line="842"/>
+        <location filename="../qtractorTrackForm.cpp" line="956"/>
         <source>(None)</source>
         <translation>(なし)</translation>
     </message>
@@ -14715,27 +14715,27 @@ Do you want to apply the changes?</source>
         <translation>自前アイコン(&amp;I)...</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1201"/>
+        <location filename="../qtractorTrackForm.cpp" line="1210"/>
         <source>Image files (%1)</source>
         <translation>画像ファイル (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1202"/>
+        <location filename="../qtractorTrackForm.cpp" line="1211"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1198"/>
+        <location filename="../qtractorTrackForm.cpp" line="1207"/>
         <source>Track Icon</source>
         <translation>トラックアイコン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1501"/>
+        <location filename="../qtractorTrackForm.cpp" line="1510"/>
         <source>Foreground Color</source>
         <translation>全景の色</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1527"/>
+        <location filename="../qtractorTrackForm.cpp" line="1536"/>
         <source>Background Color</source>
         <translation>背景の色</translation>
     </message>

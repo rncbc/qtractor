@@ -360,10 +360,19 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	// Make sure this will be remembered for backup.
 	m_pOldMidiBus = m_pMidiBus;
 	m_iOldChannel = m_props.midiChannel;
-//	m_sOldInstrumentName initially blank...
+
+	m_sOldInstrumentName.clear();
+	if (m_pOldMidiBus) {
+		const qtractorMidiBus::Patch& patch
+			= m_pOldMidiBus->patch(m_iOldChannel);
+		if (patch.isValid())
+			m_sOldInstrumentName = patch.instrumentName;
+	}
+
 	m_iOldBankSelMethod  = m_props.midiBankSelMethod;
 	m_iOldBank = m_props.midiBank;
 	m_iOldProg = m_props.midiProg;
+
 
 	// Already time for instrument cacheing...
 	updateInstruments();
