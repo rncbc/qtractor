@@ -373,7 +373,6 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	m_iOldBank = m_props.midiBank;
 	m_iOldProg = m_props.midiProg;
 
-
 	// Already time for instrument cacheing...
 	updateInstruments();
 
