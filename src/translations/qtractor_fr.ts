@@ -9913,7 +9913,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1400"/>
         <source>&amp;Refresh</source>
-        <translation>&amp;Rafraichier</translation>
+        <translation>&amp;Rafraichir</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1403"/>
