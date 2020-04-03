@@ -667,7 +667,7 @@ private:
 #ifdef CONFIG_LV2_MIDNAM
 	LV2_Feature                m_lv2_midnam_feature;
 	LV2_Midnam                 m_lv2_midnam;
-	bool                       m_lv2_midnam_update;
+	unsigned int               m_lv2_midnam_update;
 #endif
 
 #ifdef CONFIG_LV2_PRESETS

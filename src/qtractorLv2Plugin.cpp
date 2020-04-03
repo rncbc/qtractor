@@ -2237,7 +2237,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#endif
 	#endif	// CONFIG_LV2_UI
 	#ifdef CONFIG_LV2_MIDNAM
-		, m_lv2_midnam_update(false)
+		, m_lv2_midnam_update(0)
 	#endif
 	#ifdef CONFIG_LV2_TIME
 	#ifdef CONFIG_LV2_TIME_POSITION
@@ -3644,8 +3644,8 @@ void qtractorLv2Plugin::idleEditor (void)
 	}
 
 #ifdef CONFIG_LV2_MIDNAM
-	if (m_lv2_midnam_update) {
-		m_lv2_midnam_update = false;
+	if (m_lv2_midnam_update > 0) {
+		m_lv2_midnam_update = 0;
 		updateInstruments();
 	}
 #endif
@@ -4882,10 +4882,12 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 	const LV2_Programs_UI_Interface *ui_programs
 		= (const LV2_Programs_UI_Interface *)
 			lv2_ui_extension_data(LV2_PROGRAMS__UIInterface);
-	if (ui_programs && ui_programs->select_program)
+	if (ui_programs && ui_programs->select_program) {
 		(*ui_programs->select_program)(m_lv2_ui_handle, iBank, iProg);
+	}
 #endif	// CONFIG_LV2_UI
 
+#if 0
 	// Reset parameters default value...
 	const qtractorPlugin::Params& params = qtractorPlugin::params();
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
@@ -4894,6 +4896,7 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 		qtractorPluginParam *pParam = param.value();
 		pParam->setDefaultValue(pParam->value());
 	}
+#endif
 }
 
 
@@ -4946,7 +4949,7 @@ const LV2_Midnam_Interface *qtractorLv2Plugin::lv2_midnam_descriptor (
 // LV2 MIDNAME update notification.
 void qtractorLv2Plugin::lv2_midnam_update (void)
 {
-	m_lv2_midnam_update = true;
+	++m_lv2_midnam_update;
 }
 
 #endif	// CONFIG_LV2_MIDNAM
