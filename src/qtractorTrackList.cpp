@@ -847,7 +847,7 @@ void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 {
 	Item *pItem = m_tracks.value(pTrack, nullptr);
 	if (pItem) {
-		pItem->updateButtons(this, false);
+	//	pItem->updateButtons(this, false);
 		pItem->updatePlugins(this, false);
 		pItem->updateMeters(this, false);
 		pItem->updateItem(this);
