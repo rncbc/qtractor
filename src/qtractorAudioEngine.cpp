@@ -1788,8 +1788,8 @@ unsigned long qtractorAudioEngine::metroOffset (void) const
 // Metronome latency offset compensation.
 unsigned long qtractorAudioEngine::metro_offset ( unsigned long iFrame ) const
 {
-	const unsigned long iOffset = m_iMetroOffset
-		+ (m_pMetroBus ? m_pMetroBus->latency_out() : 0);
+	const unsigned long iOffset = m_iMetroOffset;
+	//	+ (m_pMetroBus ? m_pMetroBus->latency_out() : 0);
 	return (iFrame > iOffset ? iFrame - iOffset : iFrame);
 }
 
@@ -2819,29 +2819,29 @@ unsigned int qtractorAudioBus::latency_in (void) const
 	if (pAudioEngine == nullptr)
 		return 0;
 
-	unsigned int iLatencyIn = pAudioEngine->bufferSize();
+	unsigned int iLatencyIn = 0;//pAudioEngine->bufferSize();
 
 #ifdef CONFIG_JACK_LATENCY
-	jack_nframes_t range_min = 0;
+	jack_nframes_t range_max= 0;
 	jack_latency_range_t range;
 	for (unsigned int i = 0; i < m_iChannels; ++i) {
 		if (m_ppIPorts[i] == nullptr)
 			continue;
 		jack_port_get_latency_range(m_ppIPorts[i], JackCaptureLatency, &range);
-		if (range_min > range.min || i == 0)
-			range_min = range.min;
+		if (range_max > range.max || i == 0)
+			range_max = range.max;
 	}
-	iLatencyIn += range_min;
+	iLatencyIn += range_max;
 #else
 	jack_nframes_t lat, lat_min = 0;
 	for (unsigned int i = 0; i < m_iChannels; ++i) {
 		if (m_ppIPorts[i] == nullptr)
 			continue;
 		lat = jack_port_get_latency(m_ppIPorts[i]);
-		if (lat_min > lat || i == 0)
-			lat_min = lat;
+		if (lat_max > lat || i == 0)
+			lat_max = lat;
 	}
-	iLatencyIn += lat_min;
+	iLatencyIn += lat_max;
 #endif
 
 	return iLatencyIn;
@@ -2857,29 +2857,29 @@ unsigned int qtractorAudioBus::latency_out (void) const
 	if (pAudioEngine == nullptr)
 		return 0;
 
-	unsigned int iLatencyOut = pAudioEngine->bufferSize();
+	unsigned int iLatencyOut = 0;//pAudioEngine->bufferSize();
 
 #ifdef CONFIG_JACK_LATENCY
-	jack_nframes_t range_min = 0;
+	jack_nframes_t range_max = 0;
 	jack_latency_range_t range;
 	for (unsigned int i = 0; i < m_iChannels; ++i) {
 		if (m_ppOPorts[i] == nullptr)
 			continue;
 		jack_port_get_latency_range(m_ppOPorts[i], JackPlaybackLatency, &range);
-		if (range_min > range.min || i == 0)
-			range_min = range.min;
+		if (range_max > range.max || i == 0)
+			range_max = range.max;
 	}
-	iLatencyOut += range_min;
+	iLatencyOut += range_max;
 #else
-	jack_nframes_t lat, lat_min = 0;
+	jack_nframes_t lat, lat_max = 0;
 	for (unsigned int i = 0; i < m_iChannels; ++i) {
 		if (m_ppOPorts[i] == nullptr)
 			continue;
 		lat = jack_port_get_latency(m_ppOPorts[i]);
-		if (lat_min > lat || i == 0)
-			lat_min = lat;
+		if (lat_max > lat || i == 0)
+			lat_max = lat;
 	}
-	iLatencyOut += lat_min;
+	iLatencyOut += lat_max;
 #endif
 
 	return iLatencyOut;
