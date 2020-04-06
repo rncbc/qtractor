@@ -316,8 +316,13 @@ void qtractorClip::updateClipTime (void)
 	m_iClipStart = pSession->frameFromTick(m_iClipStartTime);
 	m_iClipLength = pSession->frameFromTickRange(
 		m_iClipStartTime, m_iClipStartTime + m_iClipLengthTime);
+#if 1// EXPERIMENTAL: Don't quantize to MIDI metronomic time-scale...
+	m_iClipOffsetTime = pSession->tickFromFrameRange(
+		m_iClipStart, m_iClipStart + m_iClipOffset, true);
+#else
 	m_iClipOffset = pSession->frameFromTickRange(
 		m_iClipStartTime, m_iClipStartTime + m_iClipOffsetTime, true);
+#endif
 
 	m_iFadeInLength = pSession->frameFromTickRange(
 		m_iClipStartTime, m_iClipStartTime + m_iFadeInTime);
