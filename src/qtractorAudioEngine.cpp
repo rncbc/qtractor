@@ -369,7 +369,6 @@ static void qtractorAudioEngine_port_connect (
 
 
 #ifdef CONFIG_JACK_PORT_RENAME
-
 //----------------------------------------------------------------------
 // qtractorAudioEngine_port_rename -- JACK port rename callback.
 //
@@ -382,7 +381,6 @@ static void qtractorAudioEngine_port_rename (
 
 	pAudioEngine->notifyPortEvent();
 }
-
 #endif
 
 
@@ -416,7 +414,6 @@ static void qtractorAudioEngine_freewheel ( int iStarting, void *pvArg )
 
 
 #ifdef CONFIG_JACK_SESSION
-
 //----------------------------------------------------------------------
 // qtractorAudioEngine_session_event -- JACK session event callabck
 //
@@ -429,7 +426,6 @@ static void qtractorAudioEngine_session_event (
 
 	pAudioEngine->notifySessEvent(pSessionEvent);
 }
-
 #endif
 
 
@@ -2819,7 +2815,7 @@ unsigned int qtractorAudioBus::latency_in (void) const
 	if (pAudioEngine == nullptr)
 		return 0;
 
-	unsigned int iLatencyIn = 0;//pAudioEngine->bufferSize();
+	unsigned int iLatencyIn = pAudioEngine->bufferSize();
 
 #ifdef CONFIG_JACK_LATENCY
 	jack_nframes_t range_max= 0;
@@ -2857,7 +2853,7 @@ unsigned int qtractorAudioBus::latency_out (void) const
 	if (pAudioEngine == nullptr)
 		return 0;
 
-	unsigned int iLatencyOut = 0;//pAudioEngine->bufferSize();
+	unsigned int iLatencyOut = pAudioEngine->bufferSize();
 
 #ifdef CONFIG_JACK_LATENCY
 	jack_nframes_t range_max = 0;
