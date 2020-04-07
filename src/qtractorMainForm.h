@@ -311,7 +311,7 @@ protected slots:
 	void audioPortNotify();
 	void audioBuffNotify(unsigned int iBufferSize);
 	void audioSessNotify(void *pvSessionArg);
-	void audioSyncNotify(unsigned long iPlayHead);
+	void audioSyncNotify(unsigned long iPlayHead, bool bPlaying);
 	void audioPropNotify();
 
 	void midiMmcNotify(const qtractorMmcEvent& mmce);

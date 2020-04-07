@@ -309,8 +309,8 @@ qtractorMainForm::qtractorMainForm (
 			SIGNAL(sessEvent(void *)),
 			SLOT(audioSessNotify(void *)));
 		QObject::connect(pAudioEngineProxy,
-			SIGNAL(syncEvent(unsigned long)),
-			SLOT(audioSyncNotify(unsigned long)));
+			SIGNAL(syncEvent(unsigned long, bool)),
+			SLOT(audioSyncNotify(unsigned long, bool)));
 		QObject::connect(pAudioEngineProxy,
 			SIGNAL(propEvent()),
 			SLOT(audioPropNotify()));
@@ -7575,7 +7575,7 @@ void qtractorMainForm::fastTimerSlot (void)
 void qtractorMainForm::slowTimerSlot (void)
 {
 	// Avoid stabilize re-entrancy...
-	if (m_pSession->isBusy()) {
+	if (m_pSession->isBusy() || m_iTransportUpdate > 0) {
 		// Register the next timer slot.
 		QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(slowTimerSlot()));
 		return;
@@ -7608,7 +7608,7 @@ void qtractorMainForm::slowTimerSlot (void)
 				if (!bPlaying)
 					m_pSession->seek(iPlayHead, true);
 			}
-			// 2. Watch for temp/time-sig changes on JACK transport...
+			// 2. Watch for tempo/time-sig changes on JACK transport...
 			if ((pos.valid & JackPositionBBT) && pAudioEngine->isTimebaseEx()) {
 				qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
@@ -8043,14 +8043,20 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 
 
 // Custom (JACK) transport sync event handler.
-void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead )
+void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead, bool bPlaying )
 {
 	if (m_pSession->isBusy())
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::audioSyncNotify(%lu)", iPlayHead);
+	qDebug("qtractorMainForm::audioSyncNotify(%lu, %d)", iPlayHead, int(bPlaying));
 #endif
+
+	if (( bPlaying && !m_pSession->isPlaying()) ||
+		(!bPlaying &&  m_pSession->isPlaying())) {
+		// Toggle playing!
+		transportPlay();
+	}
 
 	m_pSession->setPlayHeadEx(iPlayHead);
 	++m_iTransportUpdate;

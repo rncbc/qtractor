@@ -434,7 +434,7 @@ static void qtractorAudioEngine_session_event (
 //
 
 static int qtractorAudioEngine_sync (
-	jack_transport_state_t /*state*/, jack_position_t *pos, void *pvArg )
+	jack_transport_state_t state, jack_position_t *pos, void *pvArg )
 {
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
@@ -442,14 +442,24 @@ static int qtractorAudioEngine_sync (
 	if (pAudioEngine->isFreewheel())
 		return 0;
 
+	const bool bPlaying	= pAudioEngine->isPlaying();
+	if ((state == JackTransportStopped  &&  bPlaying) ||
+		(state == JackTransportStarting && !bPlaying) ||
+		(state == JackTransportRolling  && !bPlaying)) {
+		pAudioEngine->notifySyncEvent(pos->frame, !bPlaying);
+		return 1;
+	}
+
 	const long iDeltaFrames
 		= long(pos->frame) - long(pAudioEngine->sessionCursor()->frame());
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
-	if (labs(iDeltaFrames) > long(iBufferSize << 1)) {
+	const long iBufferSize = long(pAudioEngine->bufferSize());
+	if (state == JackTransportStarting && iDeltaFrames < 0)
+		pAudioEngine->setTransportLatency(iBufferSize - iDeltaFrames);
+	if (qAbs(iDeltaFrames) > iBufferSize) {
 		unsigned long iPlayHead = pos->frame;
-		if (pAudioEngine->isPlaying())
+		if (bPlaying)
 			iPlayHead += iBufferSize;
-		pAudioEngine->notifySyncEvent(iPlayHead);
+		pAudioEngine->notifySyncEvent(iPlayHead, bPlaying);
 	}
 
 	return 1;
@@ -533,6 +543,9 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	// JACK transport mode.
 	m_transportMode = qtractorBus::Duplex;
 
+	// JACK transport latency.
+	m_iTransportLatency = 0;
+
 	// JACK timebase mode control.
 	m_bTimebase = true;
 	m_iTimebase = 0;
@@ -572,9 +585,9 @@ void qtractorAudioEngine::notifySessEvent ( void *pvSessionArg )
 	m_proxy.notifySessEvent(pvSessionArg);
 }
 
-void qtractorAudioEngine::notifySyncEvent ( unsigned long iPlayHead )
+void qtractorAudioEngine::notifySyncEvent ( unsigned long iPlayHead, bool bPlaying )
 {
-	m_proxy.notifySyncEvent(iPlayHead);
+	m_proxy.notifySyncEvent(iPlayHead, bPlaying);
 }
 
 void qtractorAudioEngine::notifyPropEvent (void)
@@ -797,6 +810,9 @@ bool qtractorAudioEngine::start (void)
 
 	// Make sure we have an actual session cursor...
 	resetMetro();
+
+	// Reset transport latency anyway...
+	m_iTransportLatency = 0;
 
 	// Start transport rolling...
 	if (m_transportMode & qtractorBus::Output)
@@ -2166,6 +2182,18 @@ qtractorBus::BusMode qtractorAudioEngine::transportMode (void) const
 }
 
 
+// JACK Transport latency accessors.
+void qtractorAudioEngine::setTransportLatency ( unsigned int iTransportLatency )
+{
+	m_iTransportLatency = iTransportLatency;
+}
+
+unsigned int qtractorAudioEngine::transportLatency (void) const
+{
+	return m_iTransportLatency;
+}
+
+
 // JACK Timebase mode accessors.
 void qtractorAudioEngine::setTimebase ( bool bTimebase )
 {
@@ -2815,10 +2843,10 @@ unsigned int qtractorAudioBus::latency_in (void) const
 	if (pAudioEngine == nullptr)
 		return 0;
 
-	unsigned int iLatencyIn = pAudioEngine->bufferSize();
+	unsigned int iLatencyIn = 0;
 
 #ifdef CONFIG_JACK_LATENCY
-	jack_nframes_t range_max= 0;
+	jack_nframes_t range_max = 0;
 	jack_latency_range_t range;
 	for (unsigned int i = 0; i < m_iChannels; ++i) {
 		if (m_ppIPorts[i] == nullptr)
@@ -2840,6 +2868,12 @@ unsigned int qtractorAudioBus::latency_in (void) const
 	iLatencyIn += lat_max;
 #endif
 
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	if (iLatencyIn  < iBufferSize)
+		iLatencyIn += pAudioEngine->transportLatency();
+	if (iLatencyIn  < iBufferSize)
+		iLatencyIn += iBufferSize;
+
 	return iLatencyIn;
 }
 
@@ -2853,7 +2887,7 @@ unsigned int qtractorAudioBus::latency_out (void) const
 	if (pAudioEngine == nullptr)
 		return 0;
 
-	unsigned int iLatencyOut = pAudioEngine->bufferSize();
+	unsigned int iLatencyOut = 0;
 
 #ifdef CONFIG_JACK_LATENCY
 	jack_nframes_t range_max = 0;
@@ -2877,6 +2911,12 @@ unsigned int qtractorAudioBus::latency_out (void) const
 	}
 	iLatencyOut += lat_max;
 #endif
+
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	if (iLatencyOut  < iBufferSize)
+		iLatencyOut += pAudioEngine->transportLatency();
+	if (iLatencyOut  < iBufferSize)
+		iLatencyOut += iBufferSize;
 
 	return iLatencyOut;
 }

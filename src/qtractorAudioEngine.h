@@ -65,8 +65,8 @@ public:
 		{ emit buffEvent(iBufferSize); }
 	void notifySessEvent(void *pvSessionArg)
 		{ emit sessEvent(pvSessionArg); }
-	void notifySyncEvent(unsigned long iPlayHead)
-		{ emit syncEvent(iPlayHead); }
+	void notifySyncEvent(unsigned long iPlayHead, bool bPlaying)
+		{ emit syncEvent(iPlayHead, bPlaying); }
 	void notifyPropEvent()
 		{ emit propEvent(); }
 
@@ -78,7 +78,7 @@ signals:
 	void portEvent();
 	void buffEvent(unsigned int iBufferSize);
 	void sessEvent(void *pvSessionArg);
-	void syncEvent(unsigned long iPlayHead);
+	void syncEvent(unsigned long iPlayHead, bool bPlaying);
 	void propEvent();
 };
 
@@ -106,7 +106,7 @@ public:
 	void notifyPortEvent();
 	void notifyBuffEvent(unsigned int iBufferSize);
 	void notifySessEvent(void *pvSessionArg);
-	void notifySyncEvent(unsigned long iPlayHead);
+	void notifySyncEvent(unsigned long iPlayHead, bool bPlaying);
 	void notifyPropEvent();
 
 	// JACK client descriptor accessor.
@@ -219,6 +219,10 @@ public:
 	void setTransportMode(qtractorBus::BusMode transportMode);
 	qtractorBus::BusMode transportMode() const;
 
+	// JACK Transport latency accessors.
+	void setTransportLatency(unsigned int iTransportLatency);
+	unsigned int transportLatency() const;
+
 	// JACK Timebase mode accessors.
 	void setTimebase(bool bTimebase);
 	bool isTimebase() const;
@@ -326,6 +330,9 @@ private:
 
 	// JACK Transport mode.
 	qtractorBus::BusMode m_transportMode;
+
+	// JACK Transport latency.
+	unsigned int         m_iTransportLatency;
 
 	// JACK Timebase mode and control.
 	bool                 m_bTimebase;
