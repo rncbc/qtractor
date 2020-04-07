@@ -452,9 +452,10 @@ static int qtractorAudioEngine_sync (
 
 	const long iDeltaFrames
 		= long(pos->frame) - long(pAudioEngine->sessionCursor()->frame());
-	const long iBufferSize = long(pAudioEngine->bufferSize());
 	if (state == JackTransportStarting && iDeltaFrames < 0)
-		pAudioEngine->setTransportLatency(iBufferSize - iDeltaFrames);
+		pAudioEngine->setTransportLatency(- iDeltaFrames);
+
+	const long iBufferSize = long(pAudioEngine->bufferSize());
 	if (qAbs(iDeltaFrames) > iBufferSize) {
 		unsigned long iPlayHead = pos->frame;
 		if (bPlaying)
@@ -2870,11 +2871,9 @@ unsigned int qtractorAudioBus::latency_in (void) const
 
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
 	if (iLatencyIn  < iBufferSize)
-		iLatencyIn += pAudioEngine->transportLatency();
-	if (iLatencyIn  < iBufferSize)
 		iLatencyIn += iBufferSize;
 
-	return iLatencyIn;
+	return iLatencyIn + pAudioEngine->transportLatency();
 }
 
 unsigned int qtractorAudioBus::latency_out (void) const
@@ -2913,8 +2912,6 @@ unsigned int qtractorAudioBus::latency_out (void) const
 #endif
 
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
-	if (iLatencyOut  < iBufferSize)
-		iLatencyOut += pAudioEngine->transportLatency();
 	if (iLatencyOut  < iBufferSize)
 		iLatencyOut += iBufferSize;
 
