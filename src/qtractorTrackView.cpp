@@ -570,7 +570,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					pPainter->setBrush(bg);
 				#endif
 					unsigned long iClipStart  = pClipRecord->clipStart();
-					unsigned long iClipOffset = 0;//pClipRecord->clipOffset();
+					unsigned long iClipOffset = pClipRecord->clipOffset();
 					// Care for loop-recording/take offsets...
 					if (pTrack->isClipRecordEx()) {
 						const unsigned long iClipEnd

@@ -422,10 +422,9 @@ bool qtractorClipCommand::addClipRecord (
 	unsigned long iClipOffset = pClip->clipOffset();
 	// Audio clips may need some record latency compensation...
 	if (trackType == qtractorTrack::Audio) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
-		if (pAudioBus)
-			iClipOffset += pAudioBus->latency_in();
+		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine)
+			iClipOffset += pAudioEngine->transportLatency();
 	}
 
 	// Check whether in loop-recording/takes mode...

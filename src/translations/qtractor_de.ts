@@ -112,22 +112,22 @@ End:	%3	Length:	%4</source>
         <translation>Datei:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="886"/>
+        <location filename="../qtractorClipCommand.cpp" line="885"/>
         <source>take %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="888"/>
+        <location filename="../qtractorClipCommand.cpp" line="887"/>
         <source>reset takes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1074"/>
+        <location filename="../qtractorClipCommand.cpp" line="1073"/>
         <source>clip tool %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1201"/>
+        <location filename="../qtractorClipCommand.cpp" line="1200"/>
         <source>clip record</source>
         <translation type="unfinished"></translation>
     </message>

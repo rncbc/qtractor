@@ -1714,6 +1714,11 @@ void qtractorSession::trackRecord (
 				qtractorAudioFileFactory::defaultExt(), true),
 			qtractorAudioFile::Write);
 		pTrack->setClipRecord(pAudioClip);
+		// Adjust for some input latency compensation already...
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
+		if (pAudioBus)
+			pAudioClip->setClipOffset(pAudioBus->latency_in());
 		// One-up audio tracks in record mode.
 		++m_iAudioRecord;
 		break;

@@ -2873,7 +2873,7 @@ unsigned int qtractorAudioBus::latency_in (void) const
 	if (iLatencyIn  < iBufferSize)
 		iLatencyIn += iBufferSize;
 
-	return iLatencyIn + pAudioEngine->transportLatency();
+	return iLatencyIn;
 }
 
 unsigned int qtractorAudioBus::latency_out (void) const
