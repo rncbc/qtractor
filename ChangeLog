@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fix clean-up of any recording leftovers. (EXPERIMENTAL)
+
 - JACK Transport latency is now taken into account for
   recording latency compensation. (EXPERIMENTAL)
 

@@ -369,9 +369,6 @@ bool qtractorClipCommand::addClipRecord (
 	if (iClipStart >= iClipEnd)
 		return false;
 
-	// Make sure the new clip has some legal length...
-	pClip->setClipLength(iClipEnd - iClipStart);
-
 	const qtractorTrack::TrackType trackType = pTrack->trackType();
 
 	// HACK: Exclusive MIDI clip recording/overdub...
