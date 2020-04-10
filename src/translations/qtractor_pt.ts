@@ -14332,17 +14332,17 @@ Você deseja descartar essas alterações?</translation>
 <context>
     <name>qtractorTimeSpinBox</name>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="431"/>
+        <location filename="../qtractorSpinBox.cpp" line="434"/>
         <source>&amp;BBT</source>
         <translation>&amp;CPS</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="426"/>
+        <location filename="../qtractorSpinBox.cpp" line="429"/>
         <source>&amp;Time</source>
         <translation>&amp;Tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="421"/>
+        <location filename="../qtractorSpinBox.cpp" line="424"/>
         <source>&amp;Frames</source>
         <translation>&amp;Amostras</translation>
     </message>
