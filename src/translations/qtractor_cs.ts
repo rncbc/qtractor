@@ -2893,6 +2893,15 @@ Jste si jistý?</translation>
         <translation>XRUN</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="6433"/>
+        <source>The audio/MIDI engine could not be started.
+
+Make sure the JACK audio server (jackd) and
+the ALSA Sequencer kernel module (snd-seq-midi)
+are up and running and then restart the session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="7124"/>
         <source>&amp;Hold</source>
         <translation>&amp;Držet</translation>
@@ -3337,19 +3346,6 @@ není stejný jako je vzorkovací kmitočet nynějšího zvukového stroje (%2 H
 
 Velmi se doporučuje uložit sezení
 a znovu nahrát z nového souboru sezení.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="6433"/>
-        <source>The audio/MIDI engine could not be started.
-
-Make sure the JACK audio server (jackd) and/or
-the ALSA Sequencer kernel module (snd-seq-midi)
-are up and running and then restart the session.</source>
-        <translation>Zvukový/MIDI stroj nebyl spuštěn.
-
-Ujistěte se, že jsou zvukový server Jack (jackd) a/nebo
-
-spuštěny a běží, a potom sezení začněte znovu.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6548"/>

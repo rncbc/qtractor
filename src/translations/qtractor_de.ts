@@ -6083,7 +6083,7 @@ wenn sie %1 das nächste Mal starten.</translation>
         <location filename="../qtractorMainForm.cpp" line="6433"/>
         <source>The audio/MIDI engine could not be started.
 
-Make sure the JACK audio server (jackd) and/or
+Make sure the JACK audio server (jackd) and
 the ALSA Sequencer kernel module (snd-seq-midi)
 are up and running and then restart the session.</source>
         <translation type="unfinished"></translation>

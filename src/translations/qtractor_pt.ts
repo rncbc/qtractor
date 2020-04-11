@@ -2901,6 +2901,15 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Suporte nativo a X11 para Interface de Plugin LV2 desativado.</translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="6433"/>
+        <source>The audio/MIDI engine could not be started.
+
+Make sure the JACK audio server (jackd) and
+the ALSA Sequencer kernel module (snd-seq-midi)
+are up and running and then restart the session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="7918"/>
         <source>The audio engine buffer size has changed,
 increased from %1 to %2 frames/period.
@@ -3873,19 +3882,6 @@ Desculpe.</translation>
         <location filename="../qtractorMainForm.cpp" line="5859"/>
         <source>JACK Latency support disabled.</source>
         <translation>Suporte a JACK Latency desabilitado.</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="6433"/>
-        <source>The audio/MIDI engine could not be started.
-
-Make sure the JACK audio server (jackd) and/or
-the ALSA Sequencer kernel module (snd-seq-midi)
-are up and running and then restart the session.</source>
-        <translation>O aparato de áudio/MIDI não pode ser iniciado.
-
-Certifique-se que o JACK audio server (jackd) e/ou
-o ALSA Sequencer kernel module (snd-seq-midi)
-estão rodando e reinicie a sessão.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="4121"/>

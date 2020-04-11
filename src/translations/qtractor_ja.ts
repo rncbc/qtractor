@@ -5990,6 +5990,15 @@ next time you start this %1.</source>
         <translation></translation>
     </message>
     <message>
+        <location filename="../qtractorMainForm.cpp" line="6433"/>
+        <source>The audio/MIDI engine could not be started.
+
+Make sure the JACK audio server (jackd) and
+the ALSA Sequencer kernel module (snd-seq-midi)
+are up and running and then restart the session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMainForm.cpp" line="6548"/>
         <source>The following issues were detected:
 
@@ -6146,19 +6155,6 @@ is highly recommended.</source>
 現在の音声エンジンのもの (%2 Hz) と異なります。
 
 セッションを保存し、再度起動することをおすすめします。</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="6433"/>
-        <source>The audio/MIDI engine could not be started.
-
-Make sure the JACK audio server (jackd) and/or
-the ALSA Sequencer kernel module (snd-seq-midi)
-are up and running and then restart the session.</source>
-        <translation>音声/MIDIエンジンがスタートしていません。
-
-JACK音声サーバー (jackd) そして/あるいは
-ALSAシーケンサーカーネルモジュール (snd-seq-midi) が
-スタートしていたら、セッションを再始動してください。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2311"/>
