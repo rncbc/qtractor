@@ -40,10 +40,6 @@
 
 #include <QDomDocument>
 
-#ifdef CONFIG_GRADIENT
-#include <QLinearGradient>
-#endif
-
 
 //-------------------------------------------------------------------------
 // qtractorClip -- Track clip capsule.

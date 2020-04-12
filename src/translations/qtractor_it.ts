@@ -92,24 +92,24 @@ Audio:	%1 canali, %2 Hz</translation>
         <translation>Nessuno</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="163"/>
+        <location filename="../qtractorClip.cpp" line="159"/>
         <source> (take %1)</source>
         <translation> (ripresa %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="546"/>
+        <location filename="../qtractorClip.cpp" line="542"/>
         <source>Name:	%1</source>
         <translation>Nome:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="554"/>
+        <location filename="../qtractorClip.cpp" line="550"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation>Inizio:	%1	Offset:	%2
 Fine:	%3	Lunghezza:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="562"/>
+        <location filename="../qtractorClip.cpp" line="558"/>
         <source>File:	%1</source>
         <translation>File:	%1</translation>
     </message>

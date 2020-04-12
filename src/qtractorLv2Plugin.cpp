@@ -2357,13 +2357,13 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	#ifdef CONFIG_LV2_EVENT
 		const uint32_t Lv2EventBufferSize
 			= (sizeof(LV2_Event) + 4) * MaxMidiEvents;
-		if (m_iSequenceSize > Lv2EventBufferSize || m_iSequenceSize < 1)
+		if (m_iSequenceSize < Lv2EventBufferSize)
 			m_iSequenceSize = Lv2EventBufferSize;
 	#endif
 	#ifdef CONFIG_LV2_ATOM
 		const uint32_t Lv2AtomBufferSize
 			= (sizeof(LV2_Atom_Event) + 4) * MaxMidiEvents;
-		if (m_iSequenceSize > Lv2AtomBufferSize || m_iSequenceSize < 1)
+		if (m_iSequenceSize < Lv2AtomBufferSize)
 			m_iSequenceSize = Lv2AtomBufferSize;
 	#endif
 	}
