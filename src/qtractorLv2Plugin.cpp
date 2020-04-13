@@ -993,6 +993,10 @@ static LV2_Atom_Forge *g_lv2_atom_forge = nullptr;
 		lv2_atom_forge_property_head(forge, key, 0)
 #endif
 
+#ifndef LV2_ATOM__portEvent
+#define LV2_ATOM__portEvent LV2_ATOM_PREFIX "portEvent"
+#endif
+
 static LilvNode *g_lv2_minimum_prop = nullptr;
 static LilvNode *g_lv2_maximum_prop = nullptr;
 static LilvNode *g_lv2_default_prop = nullptr;
@@ -1029,6 +1033,7 @@ static struct qtractorLv2Urids
 	LV2_URID atom_Double;
 	LV2_URID atom_String;
 	LV2_URID atom_Path;
+	LV2_URID atom_portEvent;
 #endif
 #ifdef CONFIG_LV2_PATCH
 	LV2_URID patch_Get;
@@ -1847,6 +1852,8 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__String);
 	g_lv2_urids.atom_Path
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Path);
+	g_lv2_urids.atom_portEvent
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__portEvent);
 #endif
 #ifdef CONFIG_LV2_PATCH
 	g_lv2_urids.patch_Get
@@ -4333,11 +4340,21 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 						lv2_property_changed(prop->key, &prop->value);
 				}
 			}
+			else
+		#endif // CONFIG_LV2_PATCH
+			if (obj->body.otype == g_lv2_urids.atom_portEvent) {
+				LV2_ATOM_OBJECT_FOREACH(obj, prop) {
+					const LV2_Atom *value = &prop->value;
+					if (value->type == g_lv2_urids.atom_Float) {
+						const uint32_t port_index = prop->key;
+						const uint32_t buffer_size = value->size;
+						const void *buffer = value + 1;
+						lv2_ui_port_write(port_index, buffer_size, 0, buffer);
+					}
+				}
+			}
 		#ifdef CONFIG_LV2_STATE
 			else
-		#endif
-		#endif // CONFIG_LV2_PATCH
-		#ifdef CONFIG_LV2_STATE
 			if (obj->body.otype == g_lv2_urids.state_StateChanged) {
 				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 				if (pMainForm)

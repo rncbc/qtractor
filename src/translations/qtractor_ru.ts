@@ -759,64 +759,64 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2132"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2139"/>
         <source>Project: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3247"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3254"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3259"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3266"/>
         <source>External</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3262"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3269"/>
         <source>X11</source>
         <translation>X11</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3265"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3272"/>
         <source>Gtk2</source>
         <translation>Gtk2</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3269"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3276"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3273"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3280"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3278"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3285"/>
         <source>Other</source>
         <translation>Другое</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3286"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3293"/>
         <source>Don&apos;t ask this again</source>
         <translation>Больше не спрашивать</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3625"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3632"/>
         <source>plugin parameters</source>
         <translation>Параметры лпагина</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4019"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4026"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation type="unfinished">Открыть файл</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2140"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2147"/>
         <source>Author: </source>
         <translation>Автор: </translation>
     </message>

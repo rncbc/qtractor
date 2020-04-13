@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 Atom/Port-event host notification support has been
+  implemented (unofficial). (EXPERIMENTAL)
+
 - Fix clean-up of any recording leftovers. (EXPERIMENTAL)
 
 - JACK Transport latency is now taken into account for
