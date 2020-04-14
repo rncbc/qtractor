@@ -2501,8 +2501,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						if (lilv_node_is_int(minimum_size)) {
 							const unsigned int iMinimumSize
 								= lilv_node_as_int(minimum_size);
-							if (iMinBufferCapacity  < iMinimumSize)
-								iMinBufferCapacity += iMinimumSize;
+							if (iMinBufferCapacity < iMinimumSize)
+								iMinBufferCapacity = iMinimumSize;
 						}
 						lilv_node_free(minimum_size);
 					}
@@ -2532,7 +2532,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 					= lv2_atom_buffer_new(iMinBufferCapacity,
 						g_lv2_urids.atom_Chunk,
 						g_lv2_urids.atom_Sequence, true);
-				iAtomInsCapacity += iMinBufferCapacity;
+				if (iAtomInsCapacity < iMinBufferCapacity)
+					iAtomInsCapacity = iMinBufferCapacity;
 			}
 		}
 		unsigned int iAtomOutsCapacity = 0;
@@ -2550,8 +2551,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						if (lilv_node_is_int(minimum_size)) {
 							const unsigned int iMinimumSize
 								= lilv_node_as_int(minimum_size);
-							if (iMinBufferCapacity  < iMinimumSize)
-								iMinBufferCapacity += iMinimumSize;
+							if (iMinBufferCapacity < iMinimumSize)
+								iMinBufferCapacity = iMinimumSize;
 						}
 						lilv_node_free(minimum_size);
 					}
@@ -2567,7 +2568,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 					= lv2_atom_buffer_new(iMinBufferCapacity,
 						g_lv2_urids.atom_Chunk,
 						g_lv2_urids.atom_Sequence, false);
-				iAtomOutsCapacity += iMinBufferCapacity;
+				if (iAtomOutsCapacity < iMinBufferCapacity)
+					iAtomOutsCapacity = iMinBufferCapacity;
 			}
 		}
 	#ifdef CONFIG_LV2_UI
@@ -4343,12 +4345,19 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 			else
 		#endif // CONFIG_LV2_PATCH
 			if (obj->body.otype == g_lv2_urids.atom_portEvent) {
-				LV2_ATOM_OBJECT_FOREACH(obj, prop) {
-					const LV2_Atom *value = &prop->value;
-					if (value->type == g_lv2_urids.atom_Float) {
-						const uint32_t port_index = prop->key;
-						const uint32_t buffer_size = value->size;
-						const void *buffer = value + 1;
+				const LV2_Atom_Tuple *tup = nullptr;
+				lv2_atom_object_get(obj,
+					g_lv2_atom_forge->Tuple, (const LV2_Atom *) &tup, 0);
+				if (tup == nullptr)
+					tup = (const LV2_Atom_Tuple *) obj;
+				uint32_t port_index = 0;
+				LV2_ATOM_TUPLE_FOREACH(tup, iter) {
+					if (iter->type == g_lv2_urids.atom_Int)
+						port_index = *(uint32_t *) (iter + 1);
+					else
+					if (iter->type == g_lv2_urids.atom_Float) {
+						const uint32_t buffer_size = iter->size;
+						const void *buffer = iter + 1;
 						lv2_ui_port_write(port_index, buffer_size, 0, buffer);
 					}
 				}

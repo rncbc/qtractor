@@ -315,52 +315,52 @@ MIDI:	</translation>
         <translation>Projeto: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3254"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3256"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3266"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3268"/>
         <source>External</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3269"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3271"/>
         <source>X11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3272"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3274"/>
         <source>Gtk2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3276"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3278"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3280"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3282"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3285"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3287"/>
         <source>Other</source>
         <translation>Outro</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3293"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3295"/>
         <source>Don&apos;t ask this again</source>
         <translation>Não pergunte novamente</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3632"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3634"/>
         <source>plugin parameters</source>
         <translation>parametros do plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4026"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4028"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translatorcomment>parametro_para_requisição_da_interface_lv2</translatorcomment>
