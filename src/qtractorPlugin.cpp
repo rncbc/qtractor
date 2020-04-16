@@ -430,7 +430,7 @@ void qtractorPlugin::ActivateObserver::update ( bool bUpdate )
 void qtractorPlugin::setValueList ( const QStringList& vlist )
 {
 //	qSort(m_params); -- does not work with QHash...
-	QMap<unsigned long, qtractorPluginParam *> params;
+	Params params;
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator& param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param)
@@ -439,7 +439,7 @@ void qtractorPlugin::setValueList ( const QStringList& vlist )
 	// Split it up...
 	clearValues();
 	QStringListIterator val(vlist);
-	QMapIterator<unsigned long, qtractorPluginParam *> iter(params);
+	QMapIterator<unsigned long, Param *> iter(params);
 	while (val.hasNext() && iter.hasNext())
 		m_values.index[iter.next().key()] = val.next().toFloat();
 }
@@ -447,7 +447,7 @@ void qtractorPlugin::setValueList ( const QStringList& vlist )
 QStringList qtractorPlugin::valueList (void) const
 {
 //	qSort(m_params); -- does not work with QHash...
-	QMap<unsigned long, qtractorPluginParam *> params;
+	Params params;
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator& param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param)
@@ -455,7 +455,7 @@ QStringList qtractorPlugin::valueList (void) const
 
 	// Join it up...
 	QStringList vlist;
-	QMapIterator<unsigned long, qtractorPluginParam *> iter(params);
+	QMapIterator<unsigned long, Param *> iter(params);
 	while (iter.hasNext())
 		vlist.append(QString::number(iter.next().value()->value()));
 
@@ -507,6 +507,17 @@ void qtractorPlugin::clearItems (void)
 {
 	qDeleteAll(m_items);
 	m_items.clear();
+}
+
+
+// Paremeters list accessor.
+void qtractorPlugin::addParam ( qtractorPlugin::Param *pParam )
+{
+	pParam->reset();
+	if (pParam->isLogarithmic())
+		pParam->observer()->setLogarithmic(true);
+	m_params.insert(pParam->index(), pParam);
+	m_paramNames.insert(pParam->name(), pParam);
 }
 
 
@@ -839,20 +850,14 @@ bool qtractorPlugin::loadPresetFileEx ( const QString& sFilename )
 
 
 // Plugin parameter lookup.
-qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
-{
-	return m_params.value(iIndex, nullptr);
-}
-
-qtractorPluginParam *qtractorPlugin::findParamName ( const QString& sName ) const
+qtractorPlugin::Param *qtractorPlugin::paramFromName ( const QString& sName ) const
 {
 	return m_paramNames.value(sName, nullptr);
 }
 
 
-
 // Direct access parameter
-qtractorPluginParam *qtractorPlugin::directAccessParam (void) const
+qtractorPlugin::Param *qtractorPlugin::directAccessParam (void) const
 {
 	if (isDirectAccessParam())
 		return findParam(m_iDirectAccessParamIndex);
@@ -929,8 +934,8 @@ void qtractorPlugin::freezeValues (void)
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator& param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
-		unsigned long iIndex = pParam->index();
+		Param *pParam = param.value();
+		const unsigned long iIndex = pParam->index();
 		m_values.names[iIndex] = pParam->name();
 		m_values.index[iIndex] = pParam->value();
 	}
@@ -979,10 +984,10 @@ void qtractorPlugin::realizeValues (void)
 	const ValueIndex::ConstIterator& param_end = m_values.index.constEnd();
 	for ( ; param != param_end; ++param) {
 		unsigned long iIndex = param.key();
-		qtractorPluginParam *pParam = findParam(iIndex);
+		Param *pParam = findParam(iIndex);
 		const QString& sName = m_values.names.value(iIndex);
 		if (!sName.isEmpty() && !(pParam && sName == pParam->name())) {
-			qtractorPluginParam *pParamEx = findParamName(sName);
+			Param *pParamEx = m_paramNames.value(sName, nullptr);
 			if (pParamEx)
 				pParam = pParamEx;
 		}
@@ -1064,7 +1069,7 @@ void qtractorPlugin::saveValues (
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		Param *pParam = param.value();
 		QDomElement eParam = pDocument->createElement("param");
 		eParam.setAttribute("name", pParam->name());
 		eParam.setAttribute("index", QString::number(pParam->index()));
@@ -1079,7 +1084,7 @@ void qtractorPlugin::saveValues (
 void qtractorPlugin::updateParamValue (
 	unsigned long iIndex, float fValue, bool bUpdate )
 {
-	qtractorPluginParam *pParam = findParam(iIndex);
+	Param *pParam = findParam(iIndex);
 	if (pParam)
 		pParam->updateValue(fValue, bUpdate);
 }
@@ -1110,7 +1115,7 @@ void qtractorPlugin::saveControllers (
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		Param *pParam = param.value();
 		qtractorMidiControlObserver *pObserver = pParam->observer();
 		if (pMidiControl->isMidiObserverMapped(pObserver)) {
 			qtractorMidiControl::Controller *pController
@@ -1175,9 +1180,9 @@ void qtractorPlugin::mapControllers (
 		//	setActivateSubjectIndex(0); // hack down!
 		//	iActivateSubjectIndex = 0;
 		} else {
-			qtractorPluginParam *pParam = nullptr;
+			Param *pParam = nullptr;
 			if (!pController->name.isEmpty())
-				pParam = findParamName(pController->name);
+				pParam = m_paramNames.value(pController->name, nullptr);
 			if (pParam == nullptr)
 				pParam = findParam(pController->index);
 			if (pParam)
@@ -1233,7 +1238,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		Param *pParam = param.value();
 		qtractorCurve *pCurve = pParam->subject()->curve();
 		if (pCurve) {
 			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
@@ -1334,9 +1339,9 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 			setActivateSubjectIndex(0); // hack down!
 			iActivateSubjectIndex = 0;
 		} else {
-			qtractorPluginParam *pParam = nullptr;
+			Param *pParam = nullptr;
 			if (!pCurveItem->name.isEmpty())
-				pParam = findParamName(pCurveItem->name);
+				pParam = m_paramNames.value(pCurveItem->name, nullptr);
 			if (pParam == nullptr)
 				pParam = findParam(pCurveItem->index);
 			if (pParam)
@@ -1456,11 +1461,11 @@ bool qtractorPlugin::savePluginEx (
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginParam -- Plugin parameter (control input port) instance.
+// qtractorPlugin::Param -- Plugin parameter (control input port) instance.
 //
 
 // Current port value.
-void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
+void qtractorPlugin::Param::setValue ( float fValue, bool bUpdate )
 {
 	// Decimals caching....
 	if (m_iDecimals < 0) {
@@ -1501,10 +1506,10 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 }
 
 
-void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
+void qtractorPlugin::Param::updateValue ( float fValue, bool bUpdate )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginParam[%p]::updateValue(%g, %d)", this, fValue, int(bUpdate));
+	qDebug("qtractorPlugin::Param[%p]::updateValue(%g, %d)", this, fValue, int(bUpdate));
 #endif
 
 	// Make it a undoable command...
@@ -1517,7 +1522,7 @@ void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
 
 
 // Constructor.
-qtractorPluginParam::Observer::Observer ( qtractorPluginParam *pParam )
+qtractorPlugin::Param::Observer::Observer ( Param *pParam )
 	: qtractorMidiControlObserver(pParam->subject()), m_pParam(pParam)
 {
 	setCurveList((pParam->plugin())->list()->curveList());
@@ -1525,7 +1530,7 @@ qtractorPluginParam::Observer::Observer ( qtractorPluginParam *pParam )
 
 
 // Virtual observer updater.
-void qtractorPluginParam::Observer::update ( bool bUpdate )
+void qtractorPlugin::Param::Observer::update ( bool bUpdate )
 {
 	qtractorMidiControlObserver::update(bUpdate);
 
@@ -1826,7 +1831,7 @@ void qtractorPluginList::movePlugin (
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			pCurve = pParam->subject()->curve();
 			if (pCurve && pCurve->list() == pCurveList) {
 				pCurveList->removeCurve(pCurve);

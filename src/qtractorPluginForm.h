@@ -24,12 +24,12 @@
 
 #include "ui_qtractorPluginForm.h"
 
+#include "qtractorPlugin.h"
+
 #include <QHash>
 
 
 // Forward declarations...
-class qtractorPlugin;
-class qtractorPluginParam;
 class qtractorPluginParamWidget;
 class qtractorPluginPropertyWidget;
 
@@ -153,11 +153,11 @@ class qtractorPluginParamWidget : public QWidget
 public:
 
 	// Constructor.
-	qtractorPluginParamWidget(qtractorPluginParam *pParam,
+	qtractorPluginParamWidget(qtractorPlugin::Param *pParam,
 		QWidget *pParent = nullptr);
 
 	// Main properties accessors.
-	qtractorPluginParam *param() const
+	qtractorPlugin::Param *param() const
 		{ return m_pParam; }
 
 	// Refreshner-loader method.
@@ -174,7 +174,7 @@ private:
 	class SliderInterface;
 
 	// Instance variables.
-	qtractorPluginParam *m_pParam;
+	qtractorPlugin::Param *m_pParam;
 
 	// Some possible managed widgets.
 	qtractorObserverCheckBox *m_pCheckBox;

@@ -712,7 +712,7 @@ qtractorVstPlugin::qtractorVstPlugin (
 	// Create all existing parameters...
 	const unsigned short iParamCount = pVstType->controlIns();
 	for (unsigned short i = 0; i < iParamCount; ++i)
-		addParam(new qtractorVstPluginParam(this, i));
+		addParam(new Param(this, i));
 
 	// Instantiate each instance properly...
 	setChannels(channels());
@@ -950,7 +950,7 @@ void qtractorVstPlugin::process (
 
 // Parameter update method.
 void qtractorVstPlugin::updateParam (
-	qtractorPluginParam *pParam, float fValue, bool /*bUpdate*/ )
+	qtractorPlugin::Param *pParam, float fValue, bool /*bUpdate*/ )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorVstPlugin[%p]::updateParam(%lu, %g, %d)",
@@ -995,7 +995,7 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			float *pfValue = pParam->subject()->data();
 			*pfValue = pVstEffect->getParameter(pVstEffect, pParam->index());
 			pParam->setDefaultValue(*pfValue);
@@ -1357,7 +1357,7 @@ void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			const float fValue
 				= pVstEffect->getParameter(pVstEffect, pParam->index());
 			if (pParam->value() != fValue) {
@@ -1370,16 +1370,16 @@ void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPluginParam -- VST plugin control input port instance.
+// qtractorVstPlugin::Param -- VST plugin control input port instance.
 //
 
 // Constructors.
-qtractorVstPluginParam::qtractorVstPluginParam (
+qtractorVstPlugin::Param::Param (
 	qtractorVstPlugin *pVstPlugin, unsigned long iIndex )
-	: qtractorPluginParam(pVstPlugin, iIndex)
+	: qtractorPlugin::Param(pVstPlugin, iIndex)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorVstPluginParam[%p] pVstPlugin=%p iIndex=%lu", this, pVstPlugin, iIndex);
+	qDebug("qtractorVstPlugin::Param[%p] pVstPlugin=%p iIndex=%lu", this, pVstPlugin, iIndex);
 #endif
 
 	qtractorVstPluginType *pVstType
@@ -1435,25 +1435,19 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 	if (pVstType && pVstType->effect()) {
 		AEffect *pVstEffect = (pVstType->effect())->vst_effect();
 		if (pVstEffect)
-			qtractorPluginParam::setValue(
+			qtractorPlugin::Param::setValue(
 				pVstEffect->getParameter(pVstEffect, iIndex), true);
 	}
 
-	setDefaultValue(qtractorPluginParam::value());
+	setDefaultValue(qtractorPlugin::Param::value());
 
 	// Initialize port value...
 	// reset();
 }
 
 
-// Destructor.
-qtractorVstPluginParam::~qtractorVstPluginParam (void)
-{
-}
-
-
 // Port range hints predicate methods.
-bool qtractorVstPluginParam::isBoundedBelow (void) const
+bool qtractorVstPlugin::Param::isBoundedBelow (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1462,7 +1456,7 @@ bool qtractorVstPluginParam::isBoundedBelow (void) const
 #endif
 }
 
-bool qtractorVstPluginParam::isBoundedAbove (void) const
+bool qtractorVstPlugin::Param::isBoundedAbove (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1471,22 +1465,22 @@ bool qtractorVstPluginParam::isBoundedAbove (void) const
 #endif
 }
 
-bool qtractorVstPluginParam::isDefaultValue (void) const
+bool qtractorVstPlugin::Param::isDefaultValue (void) const
 {
 	return true;
 }
 
-bool qtractorVstPluginParam::isLogarithmic (void) const
+bool qtractorVstPlugin::Param::isLogarithmic (void) const
 {
 	return false;
 }
 
-bool qtractorVstPluginParam::isSampleRate (void) const
+bool qtractorVstPlugin::Param::isSampleRate (void) const
 {
 	return false;
 }
 
-bool qtractorVstPluginParam::isInteger (void) const
+bool qtractorVstPlugin::Param::isInteger (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1495,7 +1489,7 @@ bool qtractorVstPluginParam::isInteger (void) const
 #endif
 }
 
-bool qtractorVstPluginParam::isToggled (void) const
+bool qtractorVstPlugin::Param::isToggled (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1504,7 +1498,7 @@ bool qtractorVstPluginParam::isToggled (void) const
 #endif
 }
 
-bool qtractorVstPluginParam::isDisplay (void) const
+bool qtractorVstPlugin::Param::isDisplay (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1515,7 +1509,7 @@ bool qtractorVstPluginParam::isDisplay (void) const
 
 
 // Current display value.
-QString qtractorVstPluginParam::display (void) const
+QString qtractorVstPlugin::Param::display (void) const
 {
 	qtractorVstPluginType *pVstType = nullptr;
 	if (plugin())
@@ -1542,7 +1536,7 @@ QString qtractorVstPluginParam::display (void) const
 	}
 
 	// Default parameter display value...
-	return qtractorPluginParam::display();
+	return qtractorPlugin::Param::display();
 }
 
 

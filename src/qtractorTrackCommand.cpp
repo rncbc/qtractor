@@ -367,10 +367,10 @@ bool qtractorCopyTrackCommand::redo (void)
 			const qtractorPlugin::Params::ConstIterator& param_end
 				= params.constEnd();
 			for ( ; param != param_end; ++param) {
-				qtractorPluginParam *pParam = param.value();
+				qtractorPlugin::Param *pParam = param.value();
 				pCurve = pParam->subject()->curve();
 				if (pCurve && pCurve->list() == pCurveList) {
-					qtractorPluginParam *pNewParam
+					qtractorPlugin::Param *pNewParam
 						= pNewPlugin->findParam(pParam->index());
 					if (pNewParam == nullptr)
 						continue;

@@ -1171,7 +1171,7 @@ static const void *qtractor_lv2_get_port_value ( const char *port_symbol,
 		= lilv_plugin_get_port_by_symbol(plugin, symbol);
 	if (port) {
 		unsigned long iIndex = lilv_port_get_index(plugin, port);
-		qtractorPluginParam *pParam = pLv2Plugin->findParam(iIndex);
+		qtractorPlugin::Param *pParam = pLv2Plugin->findParam(iIndex);
 		if (pParam) {
 			*size = sizeof(float);
 			*type = g_lv2_urids.atom_Float;
@@ -1252,7 +1252,7 @@ static struct qtractorLv2Time
 	float       value;
 	uint32_t    changed;
 
-	QList<qtractorLv2PluginParam *> *params;
+	QList<qtractorLv2Plugin::Param *> *params;
 
 } g_lv2_time[] = {
 
@@ -1819,7 +1819,7 @@ void qtractorLv2PluginType::lv2_open (void)
 		member.urid = qtractorLv2Plugin::lv2_urid_map(member.uri);
 		member.value = 0.0f;
 		member.changed = 0;
-		member.params = new QList<qtractorLv2PluginParam *> ();
+		member.params = new QList<qtractorLv2Plugin::Param *> ();
 	}
 #ifdef CONFIG_LV2_TIME_POSITION
 	// LV2 Time: set up for atom port event notifications...
@@ -2363,7 +2363,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 					else
 				#endif
 					if (lilv_port_is_a(plugin, port, g_lv2_control_class))
-						addParam(new qtractorLv2PluginParam(this, i));
+						addParam(new Param(this, i));
 				}
 				else
 				if (lilv_port_is_a(plugin, port, g_lv2_output_class)) {
@@ -2518,9 +2518,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 				if (port) {
 					const unsigned long iIndex
 						= lilv_port_get_index(plugin, port);
-					qtractorLv2PluginParam *pParam
-						= static_cast<qtractorLv2PluginParam *> (
-							findParam(iIndex));
+					Param *pParam = static_cast<Param *> (
+						qtractorPlugin::findParam(iIndex));
 					if (pParam) {
 						m_lv2_time_ports.insert(iIndex, i);
 						member.params->append(pParam);
@@ -2562,8 +2561,8 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 		const QHash<unsigned long, int>::ConstIterator& iter_end
 			= m_lv2_time_ports.constEnd();
 		for ( ; iter != iter_end; ++iter) {
-			qtractorLv2PluginParam *pParam
-				= static_cast<qtractorLv2PluginParam *> (findParam(iter.key()));
+			Param *pParam = static_cast<Param *> (
+				qtractorPlugin::findParam(iter.key()));
 			if (pParam)
 				g_lv2_time[iter.value()].params->removeAll(pParam);
 		}
@@ -2754,7 +2753,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 			qtractorPlugin::Params::ConstIterator param = params.constBegin();
 			const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 			for ( ; param != param_end; ++param) {
-				qtractorPluginParam *pParam = param.value();
+				qtractorPlugin::Param *pParam = param.value();
 				lilv_instance_connect_port(instance,
 					pParam->index(), pParam->subject()->data());
 			}
@@ -3292,7 +3291,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		qtractorPlugin::Param *pParam = param.value();
 		const float fValue = pParam->value();
 		lv2_ui_port_event(pParam->index(),
 			sizeof(float), 0, &fValue);
@@ -3540,7 +3539,7 @@ void qtractorLv2Plugin::idleEditor (void)
 			for ( ; iter != iter_end; ++iter) {
 				const unsigned long iIndex = iter.key();
 				const float fValue = iter.value();
-				qtractorPluginParam *pParam = findParam(iIndex);
+				qtractorPlugin::Param *pParam = findParam(iIndex);
 				if (pParam)
 					pParamValuesCommand->updateParamValue(pParam, fValue, false);
 			}
@@ -3794,7 +3793,7 @@ void qtractorLv2Plugin::loadEditorPos (void)
 
 // Parameter update method.
 void qtractorLv2Plugin::updateParam (
-	qtractorPluginParam *pParam, float fValue, bool bUpdate )
+	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::updateParam(%lu, %g, %d)",
@@ -3902,7 +3901,8 @@ LV2UI_Request_Value_Status qtractorLv2Plugin::lv2_ui_request_value (
 
 #ifdef CONFIG_LV2_PATCH
 
-	Property *pProp = static_cast<Property *> (qtractorPlugin::property(key));
+	Property *pProp = static_cast<Property *> (
+		qtractorPlugin::findProperty(key));
 	if (pProp == nullptr)
 		return LV2UI_REQUEST_VALUE_ERR_UNSUPPORTED;
 
@@ -4290,7 +4290,7 @@ void qtractorLv2Plugin::lv2_patch_properties ( const char *pszPatch )
 		const LilvNode *property = lilv_nodes_get(properties, iter);
 		const char *prop_uri = lilv_node_as_uri(property);
 		const unsigned long iProperty = lv2_urid_map(prop_uri);
-		if (iProperty && !qtractorPlugin::property(iProperty)) {
+		if (iProperty && !qtractorPlugin::findProperty(iProperty)) {
 			Property *pProp = new Property(this, iProperty, property);
 			qtractorPlugin::addProperty(pProp);
 			++m_lv2_patch_changed;
@@ -4305,7 +4305,8 @@ void qtractorLv2Plugin::lv2_patch_properties ( const char *pszPatch )
 void qtractorLv2Plugin::lv2_property_changed (
 	LV2_URID key, const LV2_Atom *value )
 {
-	Property *pProp = static_cast<Property *> (qtractorPlugin::property(key));
+	Property *pProp = static_cast<Property *> (
+		qtractorPlugin::findProperty(key));
 	if (pProp == nullptr)
 		return;
 
@@ -4354,7 +4355,8 @@ void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )
 	if (m_lv2_patch_port_in >= pLv2Type->atomIns())
 		return;
 
-	Property *pProp = static_cast<Property *> (qtractorPlugin::property(key));
+	Property *pProp = static_cast<Property *> (
+		qtractorPlugin::findProperty(key));
 	if (pProp == nullptr)
 		return;
 
@@ -4809,7 +4811,7 @@ void qtractorLv2Plugin::selectProgram ( int iBank, int iProg )
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		qtractorPlugin::Param *pParam = param.value();
 		pParam->setDefaultValue(pParam->value());
 	}
 #endif
@@ -5113,7 +5115,7 @@ void qtractorLv2Plugin::updateTimePost (void)
 		qtractorLv2Time& member = g_lv2_time[i];
 		if (member.changed > 0 &&
 			member.params && member.params->count() > 0) {
-			QListIterator<qtractorLv2PluginParam *> iter(*member.params);
+			QListIterator<Param *> iter(*member.params);
 			while (iter.hasNext())
 				iter.next()->setValue(member.value, true);
 			member.changed = 0;
@@ -5303,9 +5305,9 @@ bool qtractorLv2Plugin::isReadOnlyPreset ( const QString& sPreset ) const
 //
 
 // Constructors.
-qtractorLv2PluginParam::qtractorLv2PluginParam (
+qtractorLv2Plugin::Param::Param (
 	qtractorLv2Plugin *pLv2Plugin, unsigned long iIndex )
-	: qtractorPluginParam(pLv2Plugin, iIndex), m_iPortHints(None)
+	: qtractorPlugin::Param(pLv2Plugin, iIndex), m_iPortHints(None)
 {
 	const LilvPlugin *plugin = pLv2Plugin->lv2_plugin();
 	const LilvPort *port = lilv_plugin_get_port_by_index(plugin, iIndex);
@@ -5364,49 +5366,49 @@ qtractorLv2PluginParam::qtractorLv2PluginParam (
 
 
 // Port range hints predicate methods.
-bool qtractorLv2PluginParam::isBoundedBelow (void) const
+bool qtractorLv2Plugin::Param::isBoundedBelow (void) const
 {
 	return true;
 }
 
-bool qtractorLv2PluginParam::isBoundedAbove (void) const
+bool qtractorLv2Plugin::Param::isBoundedAbove (void) const
 {
 	return true;
 }
 
-bool qtractorLv2PluginParam::isDefaultValue (void) const
+bool qtractorLv2Plugin::Param::isDefaultValue (void) const
 {
 	return true;
 }
 
-bool qtractorLv2PluginParam::isLogarithmic (void) const
+bool qtractorLv2Plugin::Param::isLogarithmic (void) const
 {
 	return (m_iPortHints & Logarithmic);
 }
 
-bool qtractorLv2PluginParam::isSampleRate (void) const
+bool qtractorLv2Plugin::Param::isSampleRate (void) const
 {
 	return (m_iPortHints & SampleRate);
 }
 
-bool qtractorLv2PluginParam::isInteger (void) const
+bool qtractorLv2Plugin::Param::isInteger (void) const
 {
 	return (m_iPortHints & Integer);
 }
 
-bool qtractorLv2PluginParam::isToggled (void) const
+bool qtractorLv2Plugin::Param::isToggled (void) const
 {
 	return (m_iPortHints & Toggled);
 }
 
-bool qtractorLv2PluginParam::isDisplay (void) const
+bool qtractorLv2Plugin::Param::isDisplay (void) const
 {
 	return !m_display.isEmpty();
 }
 
 
 // Current display value.
-QString qtractorLv2PluginParam::display (void) const
+QString qtractorLv2Plugin::Param::display (void) const
 {
 	// Check if current value is mapped...
 	if (isDisplay()) {
@@ -5419,7 +5421,7 @@ QString qtractorLv2PluginParam::display (void) const
 	}
 
 	// Default parameter display value...
-	return qtractorPluginParam::display();
+	return qtractorPlugin::Param::display();
 }
 
 

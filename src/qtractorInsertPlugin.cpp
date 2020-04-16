@@ -445,7 +445,7 @@ const QString& qtractorMidiInsertPluginType::aboutText (void)
 // Constructors.
 qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	qtractorPluginList *pList, qtractorInsertPluginType *pInsertType )
-	: qtractorPlugin(pList, pInsertType), m_pAudioBus(nullptr)
+	: qtractorInsertPlugin(pList, pInsertType), m_pAudioBus(nullptr)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorAudioInsertPlugin[%p] channels=%u",
@@ -470,7 +470,7 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	}
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new Param(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(4.0f);
@@ -478,7 +478,7 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
 
-	m_pDryGainParam = new qtractorInsertPluginParam(this, 1);
+	m_pDryGainParam = new Param(this, 1);
 	m_pDryGainParam->setName(QObject::tr("Dry Gain"));
 	m_pDryGainParam->setMinValue(0.0f);
 	m_pDryGainParam->setMaxValue(4.0f);
@@ -486,7 +486,7 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	m_pDryGainParam->setValue(1.0f, false);
 	addParam(m_pDryGainParam);
 
-	m_pWetGainParam = new qtractorInsertPluginParam(this, 2);
+	m_pWetGainParam = new Param(this, 2);
 	m_pWetGainParam->setName(QObject::tr("Wet Gain"));
 	m_pWetGainParam->setMinValue(0.0f);
 	m_pWetGainParam->setMaxValue(4.0f);
@@ -743,7 +743,7 @@ qtractorAudioBus *qtractorAudioInsertPlugin::audioBus (void) const
 // Constructors.
 qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 	qtractorPluginList *pList, qtractorInsertPluginType *pInsertType )
-	: qtractorPlugin(pList, pInsertType), m_pMidiBus(nullptr),
+	: qtractorInsertPlugin(pList, pInsertType), m_pMidiBus(nullptr),
 		m_pMidiInputBuffer(nullptr), m_pMidiOutputBuffer(nullptr)
 {
 #ifdef CONFIG_DEBUG
@@ -752,7 +752,7 @@ qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new Param(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(4.0f);
@@ -760,7 +760,7 @@ qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
 
-	m_pDryGainParam = new qtractorInsertPluginParam(this, 1);
+	m_pDryGainParam = new Param(this, 1);
 	m_pDryGainParam->setName(QObject::tr("Dry Gain"));
 	m_pDryGainParam->setMinValue(0.0f);
 	m_pDryGainParam->setMaxValue(4.0f);
@@ -768,7 +768,7 @@ qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 	m_pDryGainParam->setValue(1.0f, false);
 	addParam(m_pDryGainParam);
 
-	m_pWetGainParam = new qtractorInsertPluginParam(this, 2);
+	m_pWetGainParam = new Param(this, 2);
 	m_pWetGainParam->setName(QObject::tr("Wet Gain"));
 	m_pWetGainParam->setMinValue(0.0f);
 	m_pWetGainParam->setMaxValue(4.0f);
@@ -1203,7 +1203,7 @@ const QString& qtractorMidiAuxSendPluginType::aboutText (void)
 // Constructors.
 qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 	qtractorPluginList *pList, qtractorAuxSendPluginType *pAuxSendType )
-	: qtractorPlugin(pList, pAuxSendType), m_pAudioBus(nullptr)
+	: qtractorAuxSendPlugin(pList, pAuxSendType), m_pAudioBus(nullptr)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorAudioAuxSendPlugin[%p] channels=%u",
@@ -1225,7 +1225,7 @@ qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 	}
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new Param(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(4.0f);
@@ -1444,7 +1444,7 @@ void qtractorAudioAuxSendPlugin::releaseConfigs (void)
 // Constructors.
 qtractorMidiAuxSendPlugin::qtractorMidiAuxSendPlugin (
 	qtractorPluginList *pList, qtractorAuxSendPluginType *pAuxSendType )
-	: qtractorPlugin(pList, pAuxSendType),
+	: qtractorAuxSendPlugin(pList, pAuxSendType),
 		m_pMidiBus(nullptr), m_pMidiOutputBuffer(nullptr)
 {
 #ifdef CONFIG_DEBUG
@@ -1453,7 +1453,7 @@ qtractorMidiAuxSendPlugin::qtractorMidiAuxSendPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new Param(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(4.0f);

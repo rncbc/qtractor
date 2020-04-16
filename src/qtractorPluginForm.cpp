@@ -25,7 +25,6 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
-#include "qtractorPlugin.h"
 #include "qtractorPluginListView.h"
 
 #include "qtractorInsertPlugin.h"
@@ -238,7 +237,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		qtractorPlugin::Param *pParam = param.value();
 		qtractorPluginParamWidget *pParamWidget
 			= new qtractorPluginParamWidget(pParam, this);
 		qtractorMidiControlObserver *pMidiObserver = pParam->observer();
@@ -889,7 +888,7 @@ void qtractorPluginForm::updateDirectAccessParamSlot (void)
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		qtractorPlugin::Param *pParam = param.value();
 		const int iParamIndex = int(param.key());
 		pAction = m_pDirectAccessParamMenu->addAction(
 			pParam->name(), this, SLOT(changeDirectAccessParamSlot()));
@@ -1158,7 +1157,7 @@ public:
 	};
 
 	// Constructor.
-	qtractorPluginParamDisplay(qtractorPluginParam *pParam)
+	qtractorPluginParamDisplay(qtractorPlugin::Param *pParam)
 		: QLabel(), m_pParam(pParam), m_observer(pParam->subject(), this) {}
 
 	// Observer accessor.
@@ -1171,7 +1170,7 @@ protected:
 private:
 
 	// Parameter reference.
-	qtractorPluginParam *m_pParam;
+	qtractorPlugin::Param *m_pParam;
 
 	// Observer instance.
 	Observer m_observer;
@@ -1189,7 +1188,7 @@ class qtractorPluginParamWidget::SliderInterface
 public:
 
 	// Constructor.
-	SliderInterface ( qtractorPluginParam *pParam )
+	SliderInterface ( qtractorPlugin::Param *pParam )
 		: m_pParam(pParam) {}
 
 	// Formerly Pure virtuals.
@@ -1204,7 +1203,7 @@ public:
 private:
 
 	// Instance references.
-	qtractorPluginParam *m_pParam;
+	qtractorPlugin::Param *m_pParam;
 };
 
 
@@ -1214,7 +1213,7 @@ private:
 
 // Constructor.
 qtractorPluginParamWidget::qtractorPluginParamWidget (
-	qtractorPluginParam *pParam, QWidget *pParent )
+	qtractorPlugin::Param *pParam, QWidget *pParent )
 	: QWidget(pParent), m_pParam(pParam)
 {
 	m_pSlider   = nullptr;
@@ -1367,7 +1366,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	pGridLayout->setMargin(0);
 	pGridLayout->setSpacing(4);
 
-	qtractorPlugin::Property *pProp = m_pPlugin->property(m_iProperty);
+	qtractorPlugin::Property *pProp = m_pPlugin->findProperty(m_iProperty);
 	if (pProp) {
 	//	pGridLayout->setColumnMinimumWidth(0, 120);
 		pGridLayout->setColumnMinimumWidth(2, 32);
@@ -1458,7 +1457,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 // Refreshner-loader method.
 void qtractorPluginPropertyWidget::refresh (void)
 {
-	qtractorPlugin::Property *pProp = m_pPlugin->property(m_iProperty);
+	qtractorPlugin::Property *pProp = m_pPlugin->findProperty(m_iProperty);
 	if (pProp == nullptr)
 		return;
 

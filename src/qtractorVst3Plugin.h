@@ -93,6 +93,9 @@ public:
 	// Destructor.
 	~qtractorVst3Plugin();
 
+	// Forward decl.
+	class Param;
+
 	// Channel/instance number accessors.
 	void setChannels(unsigned short iChannels);
 
@@ -101,13 +104,13 @@ public:
 	void deactivate();
 
 	// Parameter update methods.
-	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+	void updateParam(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Parameters update method.
 	void updateParamValues(bool bUpdate);
 
 	// Parameter finder (by id).
-	qtractorPluginParam *findParamId(int id) const;
+	qtractorPlugin::Param *findParamId(int id) const;
 
 	// Configuration state stuff.
 	void configure(const QString& sKey, const QString& sValue);
@@ -198,23 +201,22 @@ private:
 	snd_midi_event_t *m_pMidiParser;
 
 	// Identififier-parameter map.
-	QHash<int, qtractorPluginParam *> m_paramIds;
+	QHash<int, qtractorPlugin::Param *> m_paramIds;
 };
 
 
 //----------------------------------------------------------------------------
-// qtractorVst3PluginParam -- VST3 plugin parameter interface decl.
+// qtractorVst3Plugin::Param -- VST3 plugin parameter interface decl.
 //
-class qtractorVst3PluginParam : public qtractorPluginParam
+class qtractorVst3Plugin::Param : public qtractorPlugin::Param
 {
 public:
 
 	// Constructor.
-	qtractorVst3PluginParam(
-		qtractorVst3Plugin *pPlugin, unsigned long iIndex);
+	Param(qtractorVst3Plugin *pPlugin, unsigned long iIndex);
 
 	// Destructor.
-	~qtractorVst3PluginParam();
+	~Param();
 
 	// Port range hints predicate methods.
 	bool isBoundedBelow() const;

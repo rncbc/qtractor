@@ -343,14 +343,14 @@ public:
 
 	// Constructor.
 	qtractorPluginParamCommand(
-		qtractorPluginParam *pParam, float fValue, bool bUpdate);
+		qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Plugin-port command methods.
 	bool redo();
 	bool undo();
 
 	// Plugin-port accessor.
-	qtractorPluginParam *param() const { return m_pParam; }
+	qtractorPlugin::Param *param() const { return m_pParam; }
 
 	// Plugin-port value retrieval.
 	float value() const { return m_fValue; }
@@ -361,7 +361,8 @@ public:
 private:
 
 	// Instance variables.
-	qtractorPluginParam *m_pParam;
+	qtractorPlugin::Param *m_pParam;
+
 	float m_fValue;
 	bool  m_bUpdate;
 	float m_fPrevValue;
@@ -383,7 +384,7 @@ public:
 	~qtractorPluginParamValuesCommand();
 
 	// Plugin-value list accessor.
-	void updateParamValue(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+	void updateParamValue(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Composite predicate.
 	bool isEmpty() const;

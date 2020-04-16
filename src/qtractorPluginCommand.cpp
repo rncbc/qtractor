@@ -607,7 +607,7 @@ bool qtractorPluginPropertyCommand::redo (void)
 	QVariant value;
 
 	qtractorPluginType *pType = pPlugin->type();
-	qtractorPlugin::Property *pProp = pPlugin->property(m_iProperty);
+	qtractorPlugin::Property *pProp = pPlugin->findProperty(m_iProperty);
 	if (pProp) {
 		value = pProp->value();
 		pProp->setValue(m_value);
@@ -648,7 +648,7 @@ bool qtractorPluginPropertyCommand::undo (void)
 
 // Constructor.
 qtractorPluginParamCommand::qtractorPluginParamCommand (
-	qtractorPluginParam *pParam, float fValue, bool bUpdate )
+	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
 	: qtractorCommand(QString(pParam->name()).toLower()),
 		m_pParam(pParam), m_fValue(fValue), m_bUpdate(bUpdate),
 		m_fPrevValue(pParam->value())
@@ -740,7 +740,7 @@ qtractorPluginParamValuesCommand::~qtractorPluginParamValuesCommand (void)
 
 // Param-values list builder.
 void qtractorPluginParamValuesCommand::updateParamValue (
-	qtractorPluginParam *pParam, float fValue, bool bUpdate )
+	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
 {
 	m_paramCommands.append(
 		new qtractorPluginParamCommand(pParam, fValue, bUpdate));

@@ -1812,7 +1812,7 @@ public:
 		qDebug("vst3_text_plugin::Handler[%p]::performEdit(%d, %g)", this, int(id), float(value));
 	#endif
 		m_pPlugin->impl()->setParameter(id, value, 0);
-		qtractorPluginParam *pParam = m_pPlugin->findParamId(int(id));
+		qtractorPlugin::Param *pParam = m_pPlugin->findParamId(int(id));
 		if (pParam)
 			pParam->updateValue(float(value), false);
 		return kResultOk;
@@ -2886,10 +2886,10 @@ void qtractorVst3Plugin::EditorWidget::closeEvent ( QCloseEvent *pCloseEvent )
 
 
 //----------------------------------------------------------------------------
-// qtractorVst3PluginParam::Impl -- VST3 plugin parameter interface impl.
+// qtractorVst3Plugin::Param::Impl -- VST3 plugin parameter interface impl.
 //
 
-class qtractorVst3PluginParam::Impl
+class qtractorVst3Plugin::Param::Impl
 {
 public:
 
@@ -2974,8 +2974,7 @@ void qtractorVst3Plugin::initialize (void)
 		if (m_pImpl->getParameterInfo(i, paramInfo)) {
 			if ( (paramInfo.flags & Vst::ParameterInfo::kCanAutomate) &&
 				!(paramInfo.flags & Vst::ParameterInfo::kIsReadOnly)) {
-				qtractorVst3PluginParam *pParam
-					= new qtractorVst3PluginParam(this, i);
+				Param *pParam = new Param(this, i);
 				m_paramIds.insert(int(paramInfo.id), pParam);
 				addParam(pParam);
 			}
@@ -3089,7 +3088,7 @@ void qtractorVst3Plugin::deactivate (void)
 
 // Parameter update method.
 void qtractorVst3Plugin::updateParam (
-	qtractorPluginParam *pParam, float fValue, bool /*bUpdate*/ )
+	qtractorPlugin::Param *pParam, float fValue, bool /*bUpdate*/ )
 {
 	qtractorVst3PluginType *pType
 		= static_cast<qtractorVst3PluginType *> (type());
@@ -3100,8 +3099,7 @@ void qtractorVst3Plugin::updateParam (
 	if (!controller)
 		return;
 
-	qtractorVst3PluginParam *pVst3Param
-		= static_cast<qtractorVst3PluginParam *> (pParam);
+	Param *pVst3Param = static_cast<Param *> (pParam);
 	if (pVst3Param == nullptr)
 		return;
 	if (pVst3Param->impl() == nullptr)
@@ -3128,8 +3126,7 @@ void qtractorVst3Plugin::updateParamValues ( bool bUpdate )
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorVst3PluginParam *pParam
-			= static_cast<qtractorVst3PluginParam *> (param.value());
+		Param *pParam = static_cast<Param *> (param.value());
 		if (pParam && pParam->impl()) {
 			Vst::ParamID id = pParam->impl()->paramInfo().id;
 			const float fValue = float(m_pImpl->getParameter(id));
@@ -3143,7 +3140,7 @@ void qtractorVst3Plugin::updateParamValues ( bool bUpdate )
 
 
 // Parameter finder (by id).
-qtractorPluginParam *qtractorVst3Plugin::findParamId ( int id ) const
+qtractorPlugin::Param *qtractorVst3Plugin::findParamId ( int id ) const
 {
 	return m_paramIds.value(id, nullptr);
 }
@@ -3591,9 +3588,9 @@ void qtractorVst3Plugin::clearAll (void)
 //
 
 // Constructor.
-qtractorVst3PluginParam::qtractorVst3PluginParam (
+qtractorVst3Plugin::Param::Param (
 	qtractorVst3Plugin *pPlugin, unsigned long iIndex )
-	: qtractorPluginParam(pPlugin, iIndex), m_pImpl(nullptr)
+	: qtractorPlugin::Param(pPlugin, iIndex), m_pImpl(nullptr)
 {
 	const unsigned long iMaxIndex = pPlugin->impl()->parameterCount();
 	if (iIndex < iMaxIndex) {
@@ -3611,39 +3608,39 @@ qtractorVst3PluginParam::qtractorVst3PluginParam (
 
 
 // Destructor.
-qtractorVst3PluginParam::~qtractorVst3PluginParam (void)
+qtractorVst3Plugin::Param::~Param (void)
 {
 	if (m_pImpl) delete m_pImpl;
 }
 
 
 // Port range hints predicate methods.
-bool qtractorVst3PluginParam::isBoundedBelow (void) const
+bool qtractorVst3Plugin::Param::isBoundedBelow (void) const
 {
 	return true;
 }
 
-bool qtractorVst3PluginParam::isBoundedAbove (void) const
+bool qtractorVst3Plugin::Param::isBoundedAbove (void) const
 {
 	return true;
 }
 
-bool qtractorVst3PluginParam::isDefaultValue (void) const
+bool qtractorVst3Plugin::Param::isDefaultValue (void) const
 {
 	return true;
 }
 
-bool qtractorVst3PluginParam::isLogarithmic (void) const
+bool qtractorVst3Plugin::Param::isLogarithmic (void) const
 {
 	return false;
 }
 
-bool qtractorVst3PluginParam::isSampleRate (void) const
+bool qtractorVst3Plugin::Param::isSampleRate (void) const
 {
 	return false;
 }
 
-bool qtractorVst3PluginParam::isInteger (void) const
+bool qtractorVst3Plugin::Param::isInteger (void) const
 {
 	if (m_pImpl)
 		return (m_pImpl->paramInfo().stepCount > 1);
@@ -3651,7 +3648,7 @@ bool qtractorVst3PluginParam::isInteger (void) const
 		return false;
 }
 
-bool qtractorVst3PluginParam::isToggled (void) const
+bool qtractorVst3Plugin::Param::isToggled (void) const
 {
 	if (m_pImpl)
 		return (m_pImpl->paramInfo().stepCount == 1);
@@ -3659,14 +3656,14 @@ bool qtractorVst3PluginParam::isToggled (void) const
 		return false;
 }
 
-bool qtractorVst3PluginParam::isDisplay (void) const
+bool qtractorVst3Plugin::Param::isDisplay (void) const
 {
 	return true;
 }
 
 
 // Current display value.
-QString qtractorVst3PluginParam::display (void) const
+QString qtractorVst3Plugin::Param::display (void) const
 {
 	qtractorVst3PluginType *pType = nullptr;
 	if (plugin())
@@ -3685,7 +3682,7 @@ QString qtractorVst3PluginParam::display (void) const
 	}
 
 	// Default parameter display value...
-	return qtractorPluginParam::display();
+	return qtractorPlugin::Param::display();
 }
 
 

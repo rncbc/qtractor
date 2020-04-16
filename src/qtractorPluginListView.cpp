@@ -128,7 +128,7 @@ protected:
 			// Draw the direct access parameter value status...
 			QPolygon polyg(3);
 			qtractorPlugin *pPlugin = pItem->plugin();
-			qtractorPluginParam *pDirectAccessParam = nullptr;
+			qtractorPlugin::Param *pDirectAccessParam = nullptr;
 			qtractorMidiControlObserver *pDirectAccessObserver = nullptr;
 			if (pPlugin)
 				pDirectAccessParam = pPlugin->directAccessParam();
@@ -1382,7 +1382,7 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 				if (pPlugin) {
 					QString sToolTip = pItem->text(); // (pPlugin->type())->name();
 					if (pPlugin->isDirectAccessParam()) {
-						qtractorPluginParam *pDirectAccessParam
+						qtractorPlugin::Param *pDirectAccessParam
 							= pPlugin->directAccessParam();
 						if (pDirectAccessParam) {
 							sToolTip.append(QString("\n(%1: %2)")
@@ -1422,7 +1422,7 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 			= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
 		if (pItem) {
 			qtractorPlugin *pPlugin = pItem->plugin();
-			qtractorPluginParam *pDirectAccessParam = nullptr;
+			qtractorPlugin::Param *pDirectAccessParam = nullptr;
 			qtractorMidiControlObserver *pDirectAccessObserver = nullptr;
 			if (pPlugin)
 				pDirectAccessParam = pPlugin->directAccessParam();
@@ -1911,7 +1911,7 @@ void qtractorPluginListView::contextMenuEvent (
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			const int iParamIndex = int(param.key());
 			pAction = pDirectAccessParamMenu->addAction(
 				pParam->name(), this, SLOT(directAccessPlugin()));
@@ -2049,7 +2049,7 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 	if (pPlugin == nullptr)
 		return;
 
-	qtractorPluginParam *pDirectAccessParam	
+	qtractorPlugin::Param *pDirectAccessParam
 		= pPlugin->directAccessParam();
 	if (pDirectAccessParam == nullptr)
 		return;
@@ -2108,7 +2108,7 @@ void qtractorPluginListView::resetDirectAccess ( const QPoint& pos )
 	if (pPlugin == nullptr)
 		return;
 
-	qtractorPluginParam *pDirectAccessParam
+	qtractorPlugin::Param *pDirectAccessParam
 		= pPlugin->directAccessParam();
 	if (pDirectAccessParam == nullptr)
 		return;

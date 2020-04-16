@@ -225,6 +225,9 @@ public:
 	// Destructor.
 	~qtractorLv2Plugin();
 
+	// Forward decl.
+	class Param;
+
 	// Channel/intsance number accessors.
 	void setChannels(unsigned short iChannels);
 
@@ -267,7 +270,7 @@ public:
 	void loadEditorPos();
 
 	// Parameter update method.
-	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+	void updateParam(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Idle editor (static).
 	static void idleEditorAll();
@@ -663,16 +666,15 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorLv2PluginParam -- LV2 plugin control input port instance.
+// qtractorLv2Plugin::Param -- LV2 plugin control input port instance.
 //
 
-class qtractorLv2PluginParam : public qtractorPluginParam
+class qtractorLv2Plugin::Param : public qtractorPlugin::Param
 {
 public:
 
 	// Constructor.
-	qtractorLv2PluginParam(qtractorLv2Plugin *pLv2Plugin,
-		unsigned long iIndex);
+	Param(qtractorLv2Plugin *pLv2Plugin, unsigned long iIndex);
 
 	// Port range hints predicate methods.
 	bool isBoundedBelow() const;
