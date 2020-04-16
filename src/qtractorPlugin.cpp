@@ -1542,6 +1542,69 @@ void qtractorPlugin::Param::Observer::update ( bool bUpdate )
 
 
 //----------------------------------------------------------------------------
+// qtractorPlugin::Property -- Plugin property (aka. parameter) instance.
+//
+
+// Current property value.
+void qtractorPlugin::Property::setValue ( const QVariant& value )
+{
+	// Whether it's a scalar value...
+	//
+	if (isAutomatable()) {
+		// Decimals caching....
+		if (m_iDecimals < 0) {
+			m_iDecimals = 0;
+			if (!isInteger()) {
+				const float fDecs
+					= ::log10f(maxValue() - minValue());
+				if (fDecs < 0.0f)
+					m_iDecimals = 6;
+				else if (fDecs < 3.0f)
+					m_iDecimals = 3;
+				else if (fDecs < 6.0f)
+					m_iDecimals = 1;
+			#if 0
+				if (isLogarithmic())
+					++m_iDecimals;
+			#endif
+			}
+			// Make this permanent...
+			m_subject.setToggled(isToggled());
+			m_subject.setInteger(isInteger());
+		}
+		// Sanitize value...
+		float fValue = value.toFloat();
+		if (fValue > maxValue())
+			fValue = maxValue();
+		else
+		if (fValue < minValue())
+			fValue = minValue();
+		m_observer.setValue(fValue);
+	}
+
+	// Set main real value anyhow...
+	m_value = value;
+}
+
+
+// Constructor.
+qtractorPlugin::Property::Observer::Observer ( Property *pProp )
+	: qtractorMidiControlObserver(pProp->subject()), m_pProp(pProp)
+{
+	setCurveList((pProp->plugin())->list()->curveList());
+}
+
+
+// Virtual observer updater.
+void qtractorPlugin::Property::Observer::update ( bool bUpdate )
+{
+	qtractorMidiControlObserver::update(bUpdate);
+
+	// TODO: plugin->updateProperty()...?
+}
+
+
+//----------------------------------------------------------------------------
 // qtractorPluginList -- Plugin chain list instance.
 //
 

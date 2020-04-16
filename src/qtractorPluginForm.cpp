@@ -1407,16 +1407,16 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 			} else {
 				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 			//	pLabel->setMinimumWidth(120);
+				const int iDecimals = pProp->decimals();
 				pGridLayout->addWidget(pLabel, 0, 0);
-				const bool bIsInteger = pProp->isInteger();
 				m_pSpinBox = new qtractorSpinBox(/*this*/);
 				m_pSpinBox->setMinimumWidth(64);
 				m_pSpinBox->setMaximumWidth(96);
-				m_pSpinBox->setDecimals(bIsInteger ? 0 : 3);
+				m_pSpinBox->setDecimals(iDecimals);
 				m_pSpinBox->setMinimum(pProp->minValue());
 				m_pSpinBox->setMaximum(pProp->maxValue());
 				m_pSpinBox->setAlignment(Qt::AlignRight);
-				m_pSpinBox->setSingleStep(bIsInteger ? 1.0f : 0.001f);
+				m_pSpinBox->setSingleStep(::powf(10.0f, - float(iDecimals)));
 				m_pSpinBox->setAccelerated(true);
 			//	m_pSpinBox->setValue(pLv2Prop->value().toDouble());
 				pGridLayout->addWidget(m_pSpinBox, 0, 1);

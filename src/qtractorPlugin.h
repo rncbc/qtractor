@@ -749,17 +749,14 @@ private:
 	class Observer : public qtractorMidiControlObserver
 	{
 	public:
-
 		// Constructor.
 		Observer(Param *pParam);
 
 	protected:
-
 		// Virtual observer updater.
 		void update(bool bUpdate);
 
 	private:
-
 		// Instance members.
 		Param *m_pParam;
 
@@ -771,7 +768,7 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginProperty -- Plugin parameter (property) instance.
+// qtractorPlugin::Property -- Plugin property (aka. parameter) instance.
 //
 
 class qtractorPlugin::Property
@@ -782,8 +779,7 @@ public:
 	Property(qtractorPlugin *pPlugin, unsigned long iProperty)
 		: m_pPlugin(pPlugin), m_iProperty(iProperty),
 			m_sKey(QString::number(m_iProperty)),
-			m_fMinValue(0.0f), m_fMaxValue(1.0f),
-			m_fDefaultValue(0.0f) {}
+			m_subject(0.0f), m_observer(this), m_iDecimals(-1) {}
 
 	// Virtual destructor.
 	virtual ~Property() {}
@@ -800,11 +796,11 @@ public:
 
 	// Property name accessors.
 	void setName(const QString& sName)
-		{ m_sName = sName; }
+		{ m_subject.setName(sName); }
 	const QString& name() const
-		{ return m_sName; }
+		{ return m_subject.name(); }
 
-	// Parameter range hints predicate methods.
+	// Property range hints predicate methods.
 	virtual bool isToggled() const = 0;
 	virtual bool isInteger() const = 0;
 	virtual bool isString()  const = 0;
@@ -812,25 +808,39 @@ public:
 
 	// Bounding range values.
 	void setMinValue(float fMinValue)
-		{ m_fMinValue = fMinValue; }
+		{ m_subject.setMinValue(fMinValue); }
 	float minValue() const
-		{ return m_fMinValue; }
+		{ return m_subject.minValue(); }
 
 	void setMaxValue(float fMaxValue)
-		{ m_fMaxValue = fMaxValue; }
+		{ m_subject.setMaxValue(fMaxValue); }
 	float maxValue() const
-		{ return m_fMaxValue; }
+		{ return m_subject.maxValue(); }
 
 	// Default value
 	void setDefaultValue(float fDefaultValue)
-		{ m_fDefaultValue = fDefaultValue; }
+		{ m_subject.setDefaultValue(fDefaultValue); }
 	float defaultValue() const
-		{ return m_fDefaultValue; }
+		{ return m_subject.defaultValue(); }
 
-	void setValue(const QVariant& value)
-		{ m_value = value; }
+	// Main value.
+	void setValue(const QVariant& value);
 	const QVariant& value() const
 		{ return m_value; }
+
+	// Direct parameter subject value.
+	qtractorSubject *subject() { return &m_subject; }
+
+	// Specialized observer value.
+	qtractorMidiControlObserver *observer() { return &m_observer; }
+
+	// Property special predicate methods.
+	bool isAutomatable () const
+		{ return !isString() && !isPath(); }
+
+	// Property decimals helper (cached).
+	int decimals() const
+		{ return m_iDecimals; }
 
 private:
 
@@ -838,14 +848,34 @@ private:
 	qtractorPlugin *m_pPlugin;
 	unsigned long   m_iProperty;
 
+	// Property key id..
 	QString m_sKey;
-	QString m_sName;
 
-	float m_fMinValue;
-	float m_fMaxValue;
-	float m_fDefaultValue;
+	// Property subject value.
+	qtractorSubject m_subject;
 
+	// Property observer manager.
+	class Observer : public qtractorMidiControlObserver
+	{
+	public:
+		// Constructor.
+		Observer(Property *pProp);
+
+	protected:
+		// Virtual observer updater.
+		void update(bool bUpdate);
+
+	private:
+		// Instance members.
+		Property *m_pProp;
+
+	} m_observer;
+
+	// Propery value.
 	QVariant m_value;
+
+	// Decimals cache.
+	int m_iDecimals;
 };
 
 
