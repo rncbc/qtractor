@@ -606,25 +606,20 @@ bool qtractorPluginPropertyCommand::redo (void)
 	// Save the current toggled state alright...
 	QVariant value;
 
-#ifdef CONFIG_LV2_PATCH
 	qtractorPluginType *pType = pPlugin->type();
-	qtractorLv2Plugin *pLv2Plugin = nullptr;
-	qtractorLv2Plugin::Property *pLv2Prop = nullptr;
-	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
-		pLv2Plugin = static_cast<qtractorLv2Plugin *> (pPlugin);
-	if (pLv2Plugin) {
-		const LV2_URID key = m_iProperty;
-		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
-		if (pszKey) {
-			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, nullptr);
-			if (pLv2Prop) {
-				value = pLv2Prop->value();
-				pLv2Prop->setValue(m_value);
-				pLv2Plugin->lv2_property_update(key);
-			}
+	qtractorPlugin::Property *pProp = pPlugin->property(m_iProperty);
+	if (pProp) {
+		value = pProp->value();
+		pProp->setValue(m_value);
+	#ifdef CONFIG_LV2_PATCH
+		if (pType->typeHint() == qtractorPluginType::Lv2) {
+			qtractorLv2Plugin *pLv2Plugin
+				= static_cast<qtractorLv2Plugin *> (pPlugin);
+			if (pLv2Plugin)
+				pLv2Plugin->lv2_property_update(m_iProperty);
 		}
+	#endif
 	}
-#endif
 
 	m_value = value;
 

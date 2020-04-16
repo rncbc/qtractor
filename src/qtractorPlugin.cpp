@@ -266,6 +266,9 @@ qtractorPlugin::~qtractorPlugin (void)
 	qDeleteAll(m_params);
 	m_params.clear();
 
+	qDeleteAll(m_properties);
+	m_properties.clear();
+
 	// Rest of stuff goes cleaned too...
 	if (m_pType) delete m_pType;
 }
@@ -504,6 +507,14 @@ void qtractorPlugin::clearItems (void)
 {
 	qDeleteAll(m_items);
 	m_items.clear();
+}
+
+
+// Properties registry accessor.
+void qtractorPlugin::addProperty ( qtractorPlugin::Property *pProp )
+{
+	m_properties.insert(pProp->property(), pProp);
+	m_propertyKeys.insert(pProp->key(), pProp);
 }
 
 

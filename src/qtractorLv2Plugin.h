@@ -394,61 +394,6 @@ public:
 	void lv2_property_changed(LV2_URID key, const LV2_Atom *value);
 	void lv2_property_update(LV2_URID key);
 
-	// LV2 Patch/property registry item.
-	//
-	class Property
-	{
-	public:
-
-		Property(const LilvNode *property);
-
-		LV2_URID key() const
-			{ return m_key; }
-		const QString& uri() const
-			{ return m_uri; }
-		const QString& name() const
-			{ return m_name; }
-		LV2_URID type() const
-			{ return m_type; }
-
-		bool isToggled() const;
-		bool isInteger() const;
-		bool isString()  const;
-		bool isPath()    const;
-
-		float minValue() const
-			{ return m_min; }
-		float maxValue() const
-			{ return m_max; }
-		float defValue() const
-			{ return m_def; }
-
-		void setValue(const QVariant& value)
-			{ m_value = value; }
-		const QVariant& value() const
-			{ return m_value; }
-
-	private:
-
-		LV2_URID m_key;
-		QString  m_uri;
-		QString  m_name;
-		LV2_URID m_type;
-
-		float    m_min;
-		float    m_max;
-		float    m_def;
-
-		QVariant m_value;
-	};
-
-	// LV2 Patch/properties registry.
-	typedef QMap<QString, Property *> Properties;
-
-	// LV2 Patch/properties registry accessor.
-	const Properties& lv2_properties() const
-		{ return m_lv2_properties; }
-
 #endif	// CONFIG_LV2_PATCH
 
 #ifdef CONFIG_LV2_TIME
@@ -483,6 +428,8 @@ protected:
 #endif	// CONFIG_LV2_UI
 
 #ifdef CONFIG_LV2_PATCH
+	// LV2 Patch/property decl.
+	class Property;
 	// LV2 Patch/properties inventory.
 	void lv2_patch_properties(const char *pszPatch);
 #endif
@@ -690,8 +637,6 @@ private:
 	// LV2 Patch/properties support.
 	unsigned long m_lv2_patch_port_in;
 	unsigned int  m_lv2_patch_changed;
-	// LV2 Patch/properties registry.
-	Properties m_lv2_properties;
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS
@@ -725,7 +670,7 @@ class qtractorLv2PluginParam : public qtractorPluginParam
 {
 public:
 
-	// Constructors.
+	// Constructor.
 	qtractorLv2PluginParam(qtractorLv2Plugin *pLv2Plugin,
 		unsigned long iIndex);
 
@@ -758,6 +703,38 @@ private:
 
 	QHash<QString, QString> m_display;
 };
+
+
+#ifdef CONFIG_LV2_PATCH
+
+//----------------------------------------------------------------------------
+// qtractorLv2Plugin::Property -- LV2 Patch/property registry item.
+//
+
+class qtractorLv2Plugin::Property : public qtractorPlugin::Property
+{
+public:
+
+	// Constructor.
+	Property(qtractorLv2Plugin *pLv2Plugin,
+		unsigned long iProperty, const LilvNode *property);
+
+	// Property accessors.
+	LV2_URID type() const { return m_type; }
+
+	// Property predicates.
+	bool isToggled() const;
+	bool isInteger() const;
+	bool isString()  const;
+	bool isPath()    const;
+
+private:
+
+	// Instance variables.
+	LV2_URID m_type;
+};
+
+#endif	// CONFIG_LV2_PATCH
 
 
 #endif  // __qtractorLv2Plugin_h

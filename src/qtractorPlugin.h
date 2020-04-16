@@ -34,6 +34,7 @@
 
 #include <QMap>
 
+#include <QVariant>
 
 // Forward declarations.
 class qtractorPluginList;
@@ -219,7 +220,7 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginParam -- Plugin paramater (control input port) instance.
+// qtractorPluginParam -- Plugin parameter (control input port) instance.
 //
 
 class qtractorPluginParam
@@ -391,7 +392,10 @@ public:
 	const ParamNames& paramNames() const
 		{ return m_paramNames; }
 
-	// Parameter list accessor.
+	// Parameters list accessors.
+	qtractorPluginParam *param(unsigned long iIndex) const
+		{ return m_params.value(iIndex, nullptr); }
+
 	void addParam(qtractorPluginParam *pParam)
 	{
 		pParam->reset();
@@ -400,6 +404,23 @@ public:
 		m_params.insert(pParam->index(), pParam);
 		m_paramNames.insert(pParam->name(), pParam);
 	}
+
+	// Properties registry.
+	class Property;
+
+	typedef QHash<unsigned long, Property *> Properties;
+	const Properties& properties() const
+		{ return m_properties; }
+
+	typedef QMap<QString, Property *> PropertyKeys;
+	const PropertyKeys& propertyKeys() const
+		{ return m_propertyKeys; }
+
+	// Properties registry accessors.
+	Property *property(unsigned long iProperty) const
+		{ return m_properties.value(iProperty, nullptr); }
+
+	void addProperty(Property *pProp);
 
 	// Instance capped number of audio ports.
 	unsigned short audioIns() const
@@ -718,6 +739,12 @@ private:
 	// List of parameters (by name).
 	ParamNames m_paramNames;
 
+	// List of  properties (also parameters).
+	Properties m_properties;
+
+	// List of parameters (by name).
+	PropertyKeys m_propertyKeys;
+
 	// An accessible list of observers.
 	QList<qtractorPluginListItem *> m_items;
 
@@ -748,6 +775,85 @@ private:
 
 	// Default preset name.
 	static QString g_sDefPreset;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorPluginProperty -- Plugin parameter (property) instance.
+//
+
+class qtractorPlugin::Property
+{
+public:
+
+	// Constructor.
+	Property(qtractorPlugin *pPlugin, unsigned long iProperty)
+		: m_pPlugin(pPlugin), m_iProperty(iProperty),
+			m_sKey(QString::number(m_iProperty)),
+			m_fMinValue(0.0f), m_fMaxValue(1.0f),
+			m_fDefaultValue(0.0f) {}
+
+	// Virtual destructor.
+	virtual ~Property() {}
+
+	// Main properties accessors.
+	qtractorPlugin *plugin()   const { return m_pPlugin; }
+	unsigned long   property() const { return m_iProperty;  }
+
+	// Property key/id accessors.
+	void setKey(const QString& sKey)
+		{ m_sKey = sKey; }
+	const QString& key() const
+		{ return m_sKey; }
+
+	// Property name accessors.
+	void setName(const QString& sName)
+		{ m_sName = sName; }
+	const QString& name() const
+		{ return m_sName; }
+
+	// Parameter range hints predicate methods.
+	virtual bool isToggled() const = 0;
+	virtual bool isInteger() const = 0;
+	virtual bool isString()  const = 0;
+	virtual bool isPath()    const = 0;
+
+	// Bounding range values.
+	void setMinValue(float fMinValue)
+		{ m_fMinValue = fMinValue; }
+	float minValue() const
+		{ return m_fMinValue; }
+
+	void setMaxValue(float fMaxValue)
+		{ m_fMaxValue = fMaxValue; }
+	float maxValue() const
+		{ return m_fMaxValue; }
+
+	// Default value
+	void setDefaultValue(float fDefaultValue)
+		{ m_fDefaultValue = fDefaultValue; }
+	float defaultValue() const
+		{ return m_fDefaultValue; }
+
+	void setValue(const QVariant& value)
+		{ m_value = value; }
+	const QVariant& value() const
+		{ return m_value; }
+
+private:
+
+	// Instance variables.
+	qtractorPlugin *m_pPlugin;
+	unsigned long   m_iProperty;
+
+	QString m_sKey;
+	QString m_sName;
+
+	float m_fMinValue;
+	float m_fMaxValue;
+	float m_fDefaultValue;
+
+	QVariant m_value;
 };
 
 

@@ -1223,99 +1223,6 @@ static void qtractor_lv2_remove_file ( const QFileInfo& info )
 
 #ifdef CONFIG_LV2_PATCH
 
-//----------------------------------------------------------------------
-// class qtractorLv2Plugin::Property -- LV2 Patch/property registry item.
-//
-qtractorLv2Plugin::Property::Property ( const LilvNode *property )
-{
-	static const char *s_types[] = {
-		LV2_ATOM__Bool,
-		LV2_ATOM__Int,
-		LV2_ATOM__Long,
-		LV2_ATOM__Float,
-		LV2_ATOM__Double,
-		LV2_ATOM__String,
-		LV2_ATOM__Path,
-		nullptr
-	};
-
-	LilvNode *label_uri = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "label");
-	LilvNode *range_uri = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "range");
-
-	const char *prop_uri = lilv_node_as_uri(property);
-	m_key = qtractorLv2Plugin::lv2_urid_map(prop_uri);
-	m_uri = prop_uri;
-
-	LilvNodes *nodes = lilv_world_find_nodes(
-		g_lv2_world, property, label_uri, nullptr);
-	LilvNode *label = (nodes ? lilv_nodes_get_first(nodes) : label_uri);
-	m_name = (label ? lilv_node_as_string(label) : prop_uri);
-	m_type = 0;
-	for (int i = 0; s_types[i]; ++i) {
-		const char *type = s_types[i];
-		LilvNode *range = lilv_new_uri(g_lv2_world, type);
-		const bool has_range = lilv_world_ask(
-			g_lv2_world, property, range_uri, range);
-		lilv_node_free(range);
-		if (has_range) {
-			m_type = qtractorLv2Plugin::lv2_urid_map(type);
-			break;
-		}
-	}
-
-	LilvNode *prop_min = lilv_world_get(
-		g_lv2_world, property, g_lv2_minimum_prop, nullptr);
-	LilvNode *prop_max = lilv_world_get(
-		g_lv2_world, property, g_lv2_maximum_prop, nullptr);
-	LilvNode *prop_def = lilv_world_get(
-		g_lv2_world, property, g_lv2_default_prop, nullptr);
-
-	if (m_type == g_lv2_urids.atom_Bool) {
-		m_min = float(prop_min ? lilv_node_as_bool(prop_min) : false);
-		m_max = float(prop_max ? lilv_node_as_bool(prop_max) : true);
-		m_def = float(prop_def ? lilv_node_as_bool(prop_def) : false);
-	}
-	else
-	if (m_type == g_lv2_urids.atom_Int ||
-		m_type == g_lv2_urids.atom_Long) {
-		m_min = float(prop_min ? lilv_node_as_int(prop_min) : 0);
-		m_max = float(prop_max ? lilv_node_as_int(prop_max) : INT32_MAX);
-		m_def = float(prop_def ? lilv_node_as_int(prop_def) : 0);
-	}
-	else
-	if (m_type == g_lv2_urids.atom_Float ||
-		m_type == g_lv2_urids.atom_Double) {
-		m_min = (prop_min ? lilv_node_as_float(prop_min) : 0.0f);
-		m_max = (prop_max ? lilv_node_as_float(prop_max) : 1.0f);
-		m_def = (prop_def ? lilv_node_as_float(prop_def) : 0.0f);
-	}
-	else m_min = m_max = m_def = 0.0f;
-
-	if (prop_min) lilv_node_free(prop_min);
-	if (prop_max) lilv_node_free(prop_max);
-	if (prop_def) lilv_node_free(prop_def);
-
-	if (nodes) lilv_nodes_free(nodes);
-
-	lilv_node_free(label_uri);
-	lilv_node_free(range_uri);
-}
-
-bool qtractorLv2Plugin::Property::isToggled (void) const
-	{ return (m_type == g_lv2_urids.atom_Bool); }
-
-bool qtractorLv2Plugin::Property::isInteger (void) const
-	{ return (m_type == g_lv2_urids.atom_Int || m_type == g_lv2_urids.atom_Long); }
-
-bool qtractorLv2Plugin::Property::isString (void) const
-	{ return (m_type == g_lv2_urids.atom_String); }
-
-bool qtractorLv2Plugin::Property::isPath (void) const
-	{ return (m_type == g_lv2_urids.atom_Path); }
-
-#endif	// CONFIG_LV2_PATCH
-
-
 #ifdef CONFIG_LV2_TIME
 
 // JACK Transport position support.
@@ -2667,12 +2574,6 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 #endif
 #endif	// CONFIG_LV2_TIME
 
-	// Free up all the rest...
-#ifdef CONFIG_LV2_PATCH
-	qDeleteAll(m_lv2_properties);
-	m_lv2_properties.clear();
-#endif
-
 #ifdef CONFIG_LV2_ATOM
 	qtractorLv2PluginType *pLv2Type
 		= static_cast<qtractorLv2PluginType *> (type());
@@ -3999,13 +3900,9 @@ LV2UI_Request_Value_Status qtractorLv2Plugin::lv2_ui_request_value (
 	if (m_lv2_ui_req_value_busy)
 		return LV2UI_REQUEST_VALUE_BUSY;
 
-	const char *pszKey = lv2_urid_unmap(key);
-	if (pszKey == nullptr)
-		return LV2UI_REQUEST_VALUE_ERR_UNKNOWN;
-
 #ifdef CONFIG_LV2_PATCH
 
-	Property *pProp = m_lv2_properties.value(pszKey, nullptr);
+	Property *pProp = static_cast<Property *> (qtractorPlugin::property(key));
 	if (pProp == nullptr)
 		return LV2UI_REQUEST_VALUE_ERR_UNSUPPORTED;
 
@@ -4391,10 +4288,11 @@ void qtractorLv2Plugin::lv2_patch_properties ( const char *pszPatch )
 		g_lv2_world, lilv_plugin_get_uri(plugin), patch_uri, nullptr);
 	LILV_FOREACH(nodes, iter, properties) {
 		const LilvNode *property = lilv_nodes_get(properties, iter);
-		const char *pszKey = lilv_node_as_uri(property);
-		if (pszKey && !m_lv2_properties.contains(pszKey)) {
-			Property *pProp = new Property(property);
-			m_lv2_properties.insert(pProp->uri(), pProp);
+		const char *prop_uri = lilv_node_as_uri(property);
+		const unsigned long iProperty = lv2_urid_map(prop_uri);
+		if (iProperty && !qtractorPlugin::property(iProperty)) {
+			Property *pProp = new Property(this, iProperty, property);
+			qtractorPlugin::addProperty(pProp);
 			++m_lv2_patch_changed;
 		}
 	}
@@ -4407,11 +4305,7 @@ void qtractorLv2Plugin::lv2_patch_properties ( const char *pszPatch )
 void qtractorLv2Plugin::lv2_property_changed (
 	LV2_URID key, const LV2_Atom *value )
 {
-	const char *pszKey = lv2_urid_unmap(key);
-	if (pszKey == nullptr)
-		return;
-
-	Property *pProp = m_lv2_properties.value(pszKey, nullptr);
+	Property *pProp = static_cast<Property *> (qtractorPlugin::property(key));
 	if (pProp == nullptr)
 		return;
 
@@ -4460,11 +4354,7 @@ void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )
 	if (m_lv2_patch_port_in >= pLv2Type->atomIns())
 		return;
 
-	const char *pszKey = lv2_urid_unmap(key);
-	if (pszKey == nullptr)
-		return;
-
-	Property *pProp = m_lv2_properties.value(pszKey, nullptr);
+	Property *pProp = static_cast<Property *> (qtractorPlugin::property(key));
 	if (pProp == nullptr)
 		return;
 
@@ -5531,6 +5421,105 @@ QString qtractorLv2PluginParam::display (void) const
 	// Default parameter display value...
 	return qtractorPluginParam::display();
 }
+
+
+//----------------------------------------------------------------------
+// qtractorLv2Plugin::Property -- LV2 Patch/property registry item.
+//
+
+// Constructor.
+qtractorLv2Plugin::Property::Property ( qtractorLv2Plugin *pLv2Plugin,
+	unsigned long iProperty, const LilvNode *property )
+	: qtractorPlugin::Property(pLv2Plugin, iProperty)
+{
+	static const char *s_types[] = {
+		LV2_ATOM__Bool,
+		LV2_ATOM__Int,
+		LV2_ATOM__Long,
+		LV2_ATOM__Float,
+		LV2_ATOM__Double,
+		LV2_ATOM__String,
+		LV2_ATOM__Path,
+		nullptr
+	};
+
+	LilvNode *label_uri = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "label");
+	LilvNode *range_uri = lilv_new_uri(g_lv2_world, LILV_NS_RDFS "range");
+
+	const char *prop_uri = lilv_node_as_uri(property);
+	setKey(prop_uri);
+
+	LilvNodes *nodes = lilv_world_find_nodes(
+		g_lv2_world, property, label_uri, nullptr);
+	LilvNode *label = (nodes ? lilv_nodes_get_first(nodes) : label_uri);
+	setName(label ? lilv_node_as_string(label) : prop_uri);
+
+	m_type = 0;
+	for (int i = 0; s_types[i]; ++i) {
+		const char *type = s_types[i];
+		LilvNode *range = lilv_new_uri(g_lv2_world, type);
+		const bool has_range = lilv_world_ask(
+			g_lv2_world, property, range_uri, range);
+		lilv_node_free(range);
+		if (has_range) {
+			m_type = qtractorLv2Plugin::lv2_urid_map(type);
+			break;
+		}
+	}
+
+	LilvNode *prop_min = lilv_world_get(
+		g_lv2_world, property, g_lv2_minimum_prop, nullptr);
+	LilvNode *prop_max = lilv_world_get(
+		g_lv2_world, property, g_lv2_maximum_prop, nullptr);
+	LilvNode *prop_def = lilv_world_get(
+		g_lv2_world, property, g_lv2_default_prop, nullptr);
+
+	if (m_type == g_lv2_urids.atom_Bool) {
+		setMinValue(float(prop_min ? lilv_node_as_bool(prop_min) : false));
+		setMaxValue(float(prop_max ? lilv_node_as_bool(prop_max) : true));
+		setDefaultValue(float(prop_def ? lilv_node_as_bool(prop_def) : false));
+	}
+	else
+	if (m_type == g_lv2_urids.atom_Int ||
+		m_type == g_lv2_urids.atom_Long) {
+		setMinValue(float(prop_min ? lilv_node_as_int(prop_min) : 0));
+		setMaxValue(float(prop_max ? lilv_node_as_int(prop_max) : INT32_MAX));
+		setDefaultValue(float(prop_def ? lilv_node_as_int(prop_def) : 0));
+	}
+	else
+	if (m_type == g_lv2_urids.atom_Float ||
+		m_type == g_lv2_urids.atom_Double) {
+		setMinValue(prop_min ? lilv_node_as_float(prop_min) : 0.0f);
+		setMaxValue(prop_max ? lilv_node_as_float(prop_max) : 1.0f);
+		setDefaultValue(prop_def ? lilv_node_as_float(prop_def) : 0.0f);
+	}
+
+	if (prop_min) lilv_node_free(prop_min);
+	if (prop_max) lilv_node_free(prop_max);
+	if (prop_def) lilv_node_free(prop_def);
+
+	if (nodes) lilv_nodes_free(nodes);
+
+	lilv_node_free(label_uri);
+	lilv_node_free(range_uri);
+}
+
+
+// Property predicates.
+bool qtractorLv2Plugin::Property::isToggled (void) const
+	{ return (m_type == g_lv2_urids.atom_Bool); }
+
+bool qtractorLv2Plugin::Property::isInteger (void) const
+	{ return (m_type == g_lv2_urids.atom_Int || m_type == g_lv2_urids.atom_Long); }
+
+bool qtractorLv2Plugin::Property::isString (void) const
+	{ return (m_type == g_lv2_urids.atom_String); }
+
+bool qtractorLv2Plugin::Property::isPath (void) const
+	{ return (m_type == g_lv2_urids.atom_Path); }
+
+
+#endif	// CONFIG_LV2_PATCH
 
 
 #endif	// CONFIG_LV2

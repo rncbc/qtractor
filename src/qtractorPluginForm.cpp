@@ -28,10 +28,6 @@
 #include "qtractorPlugin.h"
 #include "qtractorPluginListView.h"
 
-#ifdef CONFIG_LV2_PATCH
-#include "qtractorLv2Plugin.h"
-#endif
-
 #include "qtractorInsertPlugin.h"
 
 #include "qtractorObserverWidget.h"
@@ -181,16 +177,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	const int MaxItemsPerPage   = MaxRowsPerPage * MaxColumnsPerPage;
 
 	const qtractorPlugin::Params& params = m_pPlugin->params();
-	const int iParams = params.count();
+	const qtractorPlugin::Properties& properties = m_pPlugin->properties();
 
-	int iItems = iParams;
-#ifdef CONFIG_LV2_PATCH
-	qtractorLv2Plugin *pLv2Plugin = nullptr;
-	if (pType->typeHint() == qtractorPluginType::Lv2)
-		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
-	if (pLv2Plugin)
-		iItems += pLv2Plugin->lv2_properties().count();
-#endif
+	int iItems = params.count() + properties.count();
 	int iItemsPerPage = iItems;
 	int iItemsOnLastPage = 0;
 	if (iItemsPerPage > MaxItemsPerPage) {
@@ -235,20 +224,16 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	QWidgetList widgets;
 
-#ifdef CONFIG_LV2_PATCH
-	if (pLv2Plugin) {
-		const qtractorLv2Plugin::Properties& props = pLv2Plugin->lv2_properties();
-		qtractorLv2Plugin::Properties::ConstIterator prop = props.constBegin();
-		const qtractorLv2Plugin::Properties::ConstIterator& prop_end = props.constEnd();
-		for ( ; prop != prop_end; ++prop) {
-			qtractorLv2Plugin::Property *pProp = prop.value();
-			qtractorPluginPropertyWidget *pPropWidget
-				= new qtractorPluginPropertyWidget(pLv2Plugin, pProp->key());
-			m_propWidgets.append(pPropWidget);
-			widgets.append(pPropWidget);
-		}
+	const qtractorPlugin::PropertyKeys& props = m_pPlugin->propertyKeys();
+	qtractorPlugin::PropertyKeys::ConstIterator prop = props.constBegin();
+	const qtractorPlugin::PropertyKeys::ConstIterator& prop_end = props.constEnd();
+	for ( ; prop != prop_end; ++prop) {
+		qtractorPlugin::Property *pProp = prop.value();
+		qtractorPluginPropertyWidget *pPropWidget
+			= new qtractorPluginPropertyWidget(pPlugin, pProp->property());
+		m_propWidgets.append(pPropWidget);
+		widgets.append(pPropWidget);
 	}
-#endif
 
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
@@ -338,7 +323,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
-	m_ui.DirectAccessParamPushButton->setVisible(iParams > 0);
+	m_ui.DirectAccessParamPushButton->setVisible(!params.isEmpty());
 
 	// Always first tab/page selected...
 	m_ui.TabWidget->setCurrentIndex(0);
@@ -1382,34 +1367,20 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	pGridLayout->setMargin(0);
 	pGridLayout->setSpacing(4);
 
-#ifdef CONFIG_LV2_PATCH
-	qtractorPluginType *pType = m_pPlugin->type();
-	qtractorLv2Plugin *pLv2Plugin = nullptr;
-	qtractorLv2Plugin::Property *pLv2Prop = nullptr;
-	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
-		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
-	if (pLv2Plugin) {
-		const LV2_URID key = m_iProperty;
-		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
-		if (pszKey)
-			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, nullptr);
-	}
-#endif
-
-#ifdef CONFIG_LV2_PATCH
-	if (pLv2Prop) {
+	qtractorPlugin::Property *pProp = m_pPlugin->property(m_iProperty);
+	if (pProp) {
 	//	pGridLayout->setColumnMinimumWidth(0, 120);
 		pGridLayout->setColumnMinimumWidth(2, 32);
-		if (pLv2Prop->isToggled()) {
+		if (pProp->isToggled()) {
 			m_pCheckBox = new QCheckBox(/*this*/);
 		//	m_pCheckBox->setMinimumWidth(120);
-			m_pCheckBox->setText(pLv2Prop->name());
+			m_pCheckBox->setText(pProp->name());
 		//	m_pCheckBox->setChecked(pLv2Prop->value().toBool());
 			pGridLayout->addWidget(m_pCheckBox, 0, 0, 1, 3);
 		} else {
 			QLabel *pLabel = new QLabel(/*this*/);
-			pLabel->setText(pLv2Prop->name() + ':');
-			if (pLv2Prop->isString()) {
+			pLabel->setText(pProp->name() + ':');
+			if (pProp->isString()) {
 				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
 			//	pLabel->setMinimumWidth(120);
 				pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
@@ -1422,7 +1393,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 				pGridLayout->addWidget(m_pTextEdit, 1, 0, 2, 3);
 			}
 			else
-			if (pLv2Prop->isPath()) {
+			if (pProp->isPath()) {
 				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
 			//	pLabel->setMinimumWidth(120);
 				pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
@@ -1438,13 +1409,13 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 			//	pLabel->setMinimumWidth(120);
 				pGridLayout->addWidget(pLabel, 0, 0);
-				const bool bIsInteger = pLv2Prop->isInteger();
+				const bool bIsInteger = pProp->isInteger();
 				m_pSpinBox = new qtractorSpinBox(/*this*/);
 				m_pSpinBox->setMinimumWidth(64);
 				m_pSpinBox->setMaximumWidth(96);
 				m_pSpinBox->setDecimals(bIsInteger ? 0 : 3);
-				m_pSpinBox->setMinimum(pLv2Prop->minValue());
-				m_pSpinBox->setMaximum(pLv2Prop->maxValue());
+				m_pSpinBox->setMinimum(pProp->minValue());
+				m_pSpinBox->setMaximum(pProp->maxValue());
 				m_pSpinBox->setAlignment(Qt::AlignRight);
 				m_pSpinBox->setSingleStep(bIsInteger ? 1.0f : 0.001f);
 				m_pSpinBox->setAccelerated(true);
@@ -1453,7 +1424,6 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 			}
 		}
 	}
-#endif	// CONFIG_LV2_PATCH
 
 	if (m_pCheckBox) {
 		QObject::connect(m_pCheckBox,
@@ -1481,63 +1451,53 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 
 	QWidget::setLayout(pGridLayout);
 
-#ifdef CONFIG_LV2_PATCH
-	if (pLv2Prop) QWidget::setToolTip(pLv2Prop->name());
-#endif
+	if (pProp) QWidget::setToolTip(pProp->name());
 }
 
 
 // Refreshner-loader method.
 void qtractorPluginPropertyWidget::refresh (void)
 {
+	qtractorPlugin::Property *pProp = m_pPlugin->property(m_iProperty);
+	if (pProp == nullptr)
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginPropertyWidget[%p]::refresh()", this);
 #endif
 
-#ifdef CONFIG_LV2_PATCH
-	qtractorPluginType *pType = m_pPlugin->type();
-	qtractorLv2Plugin *pLv2Plugin = nullptr;
-	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
-		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
-	if (pLv2Plugin) {
-		qtractorLv2Plugin::Property *pLv2Prop = nullptr;
-		const LV2_URID key = m_iProperty;
-		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
-		if (pszKey)
-			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, nullptr);
-		if (pLv2Prop) {
-			if (m_pCheckBox) {
-				const bool bCheckBox = m_pCheckBox->blockSignals(true);
-				m_pCheckBox->setChecked(pLv2Prop->value().toBool());
-				m_pCheckBox->blockSignals(bCheckBox);
-			}
-			if (m_pSpinBox) {
-				const bool bSpinBox = m_pSpinBox->blockSignals(true);
-				m_pSpinBox->setValue(pLv2Prop->value().toDouble());
-				m_pSpinBox->blockSignals(bSpinBox);
-			}
-			if (m_pTextEdit) {
-				const bool bTextEdit = m_pTextEdit->blockSignals(true);
-				m_pTextEdit->setPlainText(pLv2Prop->value().toString());
-				m_pTextEdit->document()->setModified(false);
-				m_pTextEdit->blockSignals(bTextEdit);
-			}
-			if (m_pComboBox) {
-				const bool bComboBox = m_pComboBox->blockSignals(true);
-				const QFileInfo fi(pLv2Prop->value().toString());
-				const QString& sPath = fi.canonicalFilePath();
-				int iIndex = m_pComboBox->findData(sPath);
-				if (iIndex < 0) {
-					m_pComboBox->insertItem(0, fi.fileName(), sPath);
-					iIndex = 0;
-				}
-				m_pComboBox->setCurrentIndex(iIndex);
-				m_pComboBox->setToolTip(sPath);
-				m_pComboBox->blockSignals(bComboBox);
-			}
-		}
+	if (m_pCheckBox) {
+		const bool bCheckBox = m_pCheckBox->blockSignals(true);
+		m_pCheckBox->setChecked(pProp->value().toBool());
+		m_pCheckBox->blockSignals(bCheckBox);
 	}
-#endif
+
+	if (m_pSpinBox) {
+		const bool bSpinBox = m_pSpinBox->blockSignals(true);
+		m_pSpinBox->setValue(pProp->value().toDouble());
+		m_pSpinBox->blockSignals(bSpinBox);
+	}
+
+	if (m_pTextEdit) {
+		const bool bTextEdit = m_pTextEdit->blockSignals(true);
+		m_pTextEdit->setPlainText(pProp->value().toString());
+		m_pTextEdit->document()->setModified(false);
+		m_pTextEdit->blockSignals(bTextEdit);
+	}
+
+	if (m_pComboBox) {
+		const bool bComboBox = m_pComboBox->blockSignals(true);
+		const QFileInfo fi(pProp->value().toString());
+		const QString& sPath = fi.canonicalFilePath();
+		int iIndex = m_pComboBox->findData(sPath);
+		if (iIndex < 0) {
+			m_pComboBox->insertItem(0, fi.fileName(), sPath);
+			iIndex = 0;
+		}
+		m_pComboBox->setCurrentIndex(iIndex);
+		m_pComboBox->setToolTip(sPath);
+		m_pComboBox->blockSignals(bComboBox);
+	}
 }
 
 
