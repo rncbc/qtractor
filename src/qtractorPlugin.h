@@ -836,7 +836,7 @@ public:
 
 	// Property special predicate methods.
 	bool isAutomatable () const
-		{ return !isString() && !isPath(); }
+		{ return !isInteger() && !isString() && !isPath(); }
 
 	// Property decimals helper (cached).
 	int decimals() const

@@ -550,6 +550,7 @@ void qtractorTrackList::Item::updateButtons (
 {
 	if (bVisible && buttons == nullptr) {
 		buttons = new qtractorTrackListButtons(track, pTrackList->viewport());
+		buttons->curveButton()->updateTrack();
 		buttons->lower();
 	}
 	else

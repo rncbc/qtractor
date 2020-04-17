@@ -1233,7 +1233,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	pCurveFile->clear();
 	pCurveFile->setBaseDir(pSession->sessionDir());
 
-	unsigned short iParam = 0;
+	unsigned short iItem = 0;
 	unsigned long iActivateSubjectIndex = activateSubjectIndex();
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
@@ -1246,16 +1246,16 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 			pCurveItem->index = pParam->index();
 			if (pParam->isToggled()	|| pParam->isInteger()
 				|| !pOptions->bSaveCurve14bit) {
-				const unsigned short controller = (iParam % 0x7f);
+				const unsigned short controller = (iItem % 0x7f);
 				if (controller == 0x00 || controller == 0x20)
-					++iParam; // Avoid bank-select controllers, please.
+					++iItem; // Avoid bank-select controllers, please.
 				pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
-				pCurveItem->param = (iParam % 0x7f);
+				pCurveItem->param = (iItem % 0x7f);
 			} else {
 				pCurveItem->ctype = qtractorMidiEvent::NONREGPARAM;
-				pCurveItem->param = (iParam % 0x3fff);
+				pCurveItem->param = (iItem % 0x3fff);
 			}
-			pCurveItem->channel = ((iParam / 0x7f) % 16);
+			pCurveItem->channel = ((iItem / 0x7f) % 16);
 			pCurveItem->mode = pCurve->mode();
 			pCurveItem->process = pCurve->isProcess();
 			pCurveItem->capture = pCurve->isCapture();
@@ -1264,10 +1264,45 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 			pCurveItem->color = pCurve->color();
 			pCurveItem->subject = pCurve->subject();
 			pCurveFile->addItem(pCurveItem);
-			++iParam;
+			++iItem;
 		}
 		if (iActivateSubjectIndex < pParam->index())
 			iActivateSubjectIndex = pParam->index();
+	}
+
+	Properties::ConstIterator prop = m_properties.constBegin();
+	const Properties::ConstIterator prop_end = m_properties.constEnd();
+	for ( ; prop != prop_end; ++prop) {
+		Property *pProp = prop.value();
+		if (!pProp->isAutomatable())
+			continue;
+		qtractorCurve *pCurve = pProp->subject()->curve();
+		if (pCurve) {
+			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+			pCurveItem->name = pProp->key();
+			pCurveItem->index = qHash(pProp->key());
+			if (pProp->isToggled()	|| pProp->isInteger()
+				|| !pOptions->bSaveCurve14bit) {
+				const unsigned short controller = (iItem % 0x7f);
+				if (controller == 0x00 || controller == 0x20)
+					++iItem; // Avoid bank-select controllers, please.
+				pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
+				pCurveItem->param = (iItem % 0x7f);
+			} else {
+				pCurveItem->ctype = qtractorMidiEvent::NONREGPARAM;
+				pCurveItem->param = (iItem % 0x3fff);
+			}
+			pCurveItem->channel = ((iItem / 0x7f) % 16);
+			pCurveItem->mode = pCurve->mode();
+			pCurveItem->process = pCurve->isProcess();
+			pCurveItem->capture = pCurve->isCapture();
+			pCurveItem->locked = pCurve->isLocked();
+			pCurveItem->logarithmic = pCurve->isLogarithmic();
+			pCurveItem->color = pCurve->color();
+			pCurveItem->subject = pCurve->subject();
+			pCurveFile->addItem(pCurveItem);
+			++iItem;
+		}
 	}
 
 	// Activate subject curve...
@@ -1279,10 +1314,10 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveItem->index = activateSubjectIndex();
 		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
-		const unsigned short controller = (iParam % 0x7f);
+		const unsigned short controller = (iItem % 0x7f);
 		if (controller == 0x00 || controller == 0x20)
-			++iParam; // Avoid bank-select controllers, please.
-		pCurveItem->param = (iParam % 0x7f);
+			++iItem; // Avoid bank-select controllers, please.
+		pCurveItem->param = (iItem % 0x7f);
 		pCurveItem->mode = pCurve->mode();
 		pCurveItem->process = pCurve->isProcess();
 		pCurveItem->capture = pCurve->isCapture();
@@ -1340,9 +1375,15 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 			iActivateSubjectIndex = 0;
 		} else {
 			Param *pParam = nullptr;
-			if (!pCurveItem->name.isEmpty())
-				pParam = m_paramNames.value(pCurveItem->name, nullptr);
-			if (pParam == nullptr)
+			Property *pProp = nullptr;
+			if (!pCurveItem->name.isEmpty()) {
+				pProp = m_propertyKeys.value(pCurveItem->name, nullptr);
+				if (pProp && pCurveItem->index == qHash(pProp->key()))
+					pCurveItem->subject = pProp->subject();
+				else
+					pParam = m_paramNames.value(pCurveItem->name, nullptr);
+			}
+			if (pParam == nullptr && pProp == nullptr)
 				pParam = findParam(pCurveItem->index);
 			if (pParam)
 				pCurveItem->subject = pParam->subject();

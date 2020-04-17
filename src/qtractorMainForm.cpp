@@ -7092,6 +7092,21 @@ bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 						param.value()->observer(), pCurrentSubject);
 				}
 			}
+			const qtractorPlugin::Properties& props = pPlugin->properties();
+			if (props.count() > 0) {
+				pPluginMenu->addSeparator();
+				qtractorPlugin::Properties::ConstIterator prop
+					= props.constBegin();
+				const qtractorPlugin::Properties::ConstIterator& prop_end
+					= props.constEnd();
+				for ( ; prop != prop_end; ++prop) {
+					qtractorPlugin::Property *pProp = prop.value();
+					if (pProp->isAutomatable()) {
+						trackCurveSelectMenuAction(pPluginMenu,
+							pProp->observer(), pCurrentSubject);
+					}
+				}
+			}
 			pPlugin = pPlugin->next();
 		}
 	}

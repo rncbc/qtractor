@@ -1464,23 +1464,24 @@ void qtractorPluginPropertyWidget::refresh (void)
 	qDebug("qtractorPluginPropertyWidget[%p]::refresh()", this);
 #endif
 
-#if 0
-	if (m_pCheckBox) {
-		const bool bCheckBox = m_pCheckBox->blockSignals(true);
-		m_pCheckBox->setChecked(m_pProp->value().toBool());
-		m_pCheckBox->blockSignals(bCheckBox);
+	if (m_pProp->isAutomatable()) {
+		if (m_pCheckBox)
+			m_pCheckBox->observer()->update(true);
+		if (m_pSpinBox)
+			m_pSpinBox->observer()->update(true);
+	} else {
+		if (m_pCheckBox) {
+			const bool bCheckBox = m_pCheckBox->blockSignals(true);
+			m_pCheckBox->setChecked(m_pProp->value().toBool());
+			m_pCheckBox->blockSignals(bCheckBox);
+		}
+		if (m_pSpinBox) {
+			const bool bSpinBox = m_pSpinBox->blockSignals(true);
+			m_pSpinBox->setValue(m_pProp->value().toDouble());
+			m_pSpinBox->blockSignals(bSpinBox);
+		}
 	}
-	if (m_pSpinBox) {
-		const bool bSpinBox = m_pSpinBox->blockSignals(true);
-		m_pSpinBox->setValue(m_pProp->value().toDouble());
-		m_pSpinBox->blockSignals(bSpinBox);
-	}
-#else
-	if (m_pCheckBox)
-		m_pCheckBox->observer()->update(true);
-	if (m_pSpinBox)
-		m_pSpinBox->observer()->update(true);
-#endif
+
 	if (m_pTextEdit) {
 		const bool bTextEdit = m_pTextEdit->blockSignals(true);
 		m_pTextEdit->setPlainText(m_pProp->value().toString());
