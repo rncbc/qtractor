@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 Plug-in Patch parameter/properties automation and
+  MIDI Controller assignment/learn are now a possibility.
+  (EXPERIMENTAL)
+
 - LV2 Atom/Port-event host notification support has been
   implemented (unofficial). (EXPERIMENTAL)
 
