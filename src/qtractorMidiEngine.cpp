@@ -4257,7 +4257,7 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 	if (pAlsaSeq == nullptr)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiBus[%p]::sendEvent(0x%02x, %u, %u, %u)",
 		this, int(etype), iChannel, iParam, iValue);
 #endif

@@ -526,7 +526,7 @@ void qtractorMidiControl::sendController (
 	if (pMidiBus == nullptr)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiControl::sendController(0x%02x, %u, %u, %d)",
 		int(ctype), iChannel, iParam, iValue);
 #endif
