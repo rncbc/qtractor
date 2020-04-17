@@ -196,14 +196,12 @@ class qtractorPluginPropertyWidget : public QWidget
 public:
 
 	// Constructor.
-	qtractorPluginPropertyWidget(qtractorPlugin *pPlugin,
-		unsigned long iProperty, QWidget *pParent = nullptr);
+	qtractorPluginPropertyWidget(qtractorPlugin::Property *pProp,
+		QWidget *pParent = nullptr);
 
 	// Main properties accessors.
-	qtractorPlugin *plugin() const
-		{ return m_pPlugin; }
-	unsigned long property() const
-		{ return m_iProperty; }
+	qtractorPlugin::Property *property() const
+		{ return m_pProp; }
 
 	// Refreshner-loader method.
 	void refresh();
@@ -224,15 +222,16 @@ protected:
 private:
 
 	// Instance variables.
-	qtractorPlugin *m_pPlugin;
-	unsigned long   m_iProperty;
+	qtractorPlugin::Property *m_pProp;
 
 	// Some possible managed widgets.
-	QCheckBox       *m_pCheckBox;
-	qtractorSpinBox *m_pSpinBox;
-	QTextEdit       *m_pTextEdit;
-	QComboBox       *m_pComboBox;
-	QToolButton     *m_pToolButton;
+	qtractorObserverCheckBox *m_pCheckBox;
+	qtractorObserverSpinBox  *m_pSpinBox;
+
+	// Non-automatable widgets.
+	QTextEdit   *m_pTextEdit;
+	QComboBox   *m_pComboBox;
+	QToolButton *m_pToolButton;
 };
 
 

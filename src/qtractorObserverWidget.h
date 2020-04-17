@@ -29,8 +29,9 @@
 // class qtractorObserverWidget -- Template widget observer/visitor.
 //
 
+#include "qtractorSpinBox.h"
+
 #include <QCheckBox>
-#include <QSpinBox>
 #include <QSlider>
 
 
@@ -148,7 +149,7 @@ signals:
 // class qtractorObserverSpinBox -- Concrete widget observer.
 //
 
-class qtractorObserverSpinBox : public qtractorObserverWidget<QDoubleSpinBox>
+class qtractorObserverSpinBox : public qtractorObserverWidget<qtractorSpinBox>
 {
 	Q_OBJECT
 

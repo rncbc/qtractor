@@ -70,10 +70,10 @@ void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 
 // Constructor.
 qtractorObserverSpinBox::qtractorObserverSpinBox ( QWidget *pParent ) 
-	: qtractorObserverWidget<QDoubleSpinBox> (pParent)
+	: qtractorObserverWidget<qtractorSpinBox> (pParent)
 {
 	QObject::connect(this,
-		SIGNAL(valueChanged(double)),
+		SIGNAL(valueChangedEx(double)),
 		SLOT(spinBoxChanged(double)));
 }
 

@@ -310,30 +310,6 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorPluginPropertyCommand - declaration.
-//
-
-class qtractorPluginPropertyCommand : public qtractorPluginCommand
-{
-public:
-
-	// Constructor.
-	qtractorPluginPropertyCommand(qtractorPlugin *pPlugin,
-		unsigned long iProperty, const QVariant& value);
-
-	// Plugin-port command methods.
-	bool redo();
-	bool undo();
-
-private:
-
-	// Instance variables.
-	unsigned long m_iProperty;
-	QVariant m_value;
-};
-
-
-//----------------------------------------------------------------------
 // class qtractorPluginParamCommand - declaration.
 //
 
@@ -397,6 +373,31 @@ private:
 
 	// Instance variables.
 	QList<qtractorPluginParamCommand *> m_paramCommands;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorPluginPropertyCommand - declaration.
+//
+
+class qtractorPluginPropertyCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorPluginPropertyCommand(
+		qtractorPlugin::Property *pProp, const QVariant& value);
+
+	// Plugin-port command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorPlugin::Property *m_pProp;
+
+	QVariant m_value;
 };
 
 

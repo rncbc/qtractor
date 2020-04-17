@@ -581,75 +581,13 @@ bool qtractorPluginProgramCommand::undo (void)
 
 
 //----------------------------------------------------------------------
-// class qtractorProgramPluginCommand - implementation
-//
-
-// Constructor.
-qtractorPluginPropertyCommand::qtractorPluginPropertyCommand (
-	qtractorPlugin *pPlugin, unsigned long iProperty, const QVariant& value )
-	: qtractorPluginCommand(QObject::tr("plugin property"), pPlugin)
-{
-	m_iProperty = iProperty;
-	m_value = value;
-
-	setRefresh(false);
-}
-
-
-// Plugin-property command methods.
-bool qtractorPluginPropertyCommand::redo (void)
-{
-	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == nullptr)
-		return false;
-
-	// Save the current toggled state alright...
-	QVariant value;
-
-	qtractorPluginType *pType = pPlugin->type();
-	qtractorPlugin::Property *pProp = pPlugin->findProperty(m_iProperty);
-	if (pProp) {
-		value = pProp->value();
-		pProp->setValue(m_value);
-	#ifdef CONFIG_LV2_PATCH
-		if (pType->typeHint() == qtractorPluginType::Lv2) {
-			qtractorLv2Plugin *pLv2Plugin
-				= static_cast<qtractorLv2Plugin *> (pPlugin);
-			if (pLv2Plugin)
-				pLv2Plugin->lv2_property_update(m_iProperty);
-		}
-	#endif
-	}
-
-	m_value = value;
-
-	// Update the form, showing it up as necessary...
-	pPlugin->updateFormDirtyCount();
-
-	// Update any GUI editor...
-	// pPlugin->idleEditor();
-
-	// FIXME: Might no work the first time...
-	pPlugin->refreshForm();
-
-	return true;
-}
-
-bool qtractorPluginPropertyCommand::undo (void)
-{
-	// As we swap the prev/state this is non-idempotent.
-	return redo();
-}
-
-
-//----------------------------------------------------------------------
 // class qtractorPluginParamCommand - implementation
 //
 
 // Constructor.
 qtractorPluginParamCommand::qtractorPluginParamCommand (
 	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
-	: qtractorCommand(QString(pParam->name()).toLower()),
+	: qtractorCommand(pParam->name()),
 		m_pParam(pParam), m_fValue(fValue), m_bUpdate(bUpdate),
 		m_fPrevValue(pParam->value())
 {
@@ -761,7 +699,7 @@ bool qtractorPluginParamValuesCommand::redo (void)
 
 	QListIterator<qtractorPluginParamCommand *> iter(m_paramCommands);
 	while (bRedo && iter.hasNext())
-	    bRedo = iter.next()->redo();
+		bRedo = iter.next()->redo();
 
 	return bRedo;
 }
@@ -777,6 +715,63 @@ bool qtractorPluginParamValuesCommand::undo (void)
 	    bUndo = iter.previous()->undo();
 
 	return bUndo;
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorPluginPropertyCommand - implementation
+//
+
+// Constructor.
+qtractorPluginPropertyCommand::qtractorPluginPropertyCommand (
+	qtractorPlugin::Property *pProp, const QVariant& value )
+	: qtractorCommand(pProp->name()), m_pProp(pProp), m_value(value)
+{
+	setRefresh(false);
+}
+
+
+// Plugin-property command methods.
+bool qtractorPluginPropertyCommand::redo (void)
+{
+	qtractorPlugin *pPlugin = m_pProp->plugin();
+	if (pPlugin == nullptr)
+		return false;
+
+	// Save the current toggled state alright...
+	const QVariant value = m_pProp->value();
+
+	m_pProp->setValue(m_value);
+
+#ifdef CONFIG_LV2_PATCH
+	qtractorPluginType *pType = pPlugin->type();
+	if (pType->typeHint() == qtractorPluginType::Lv2) {
+		qtractorLv2Plugin *pLv2Plugin
+			= static_cast<qtractorLv2Plugin *> (pPlugin);
+		if (pLv2Plugin)
+			pLv2Plugin->lv2_property_update(m_pProp->property());
+	}
+#endif
+
+	// Set undo value.
+	m_value = value;
+
+	// Update the form, showing it up as necessary...
+	pPlugin->updateFormDirtyCount();
+
+	// Update any GUI editor...
+	// pPlugin->idleEditor();
+
+	// FIXME: Might no work the first time...
+	pPlugin->refreshForm();
+
+	return true;
+}
+
+bool qtractorPluginPropertyCommand::undo (void)
+{
+	// As we swap the prev/state this is non-idempotent.
+	return redo();
 }
 
 

@@ -229,7 +229,12 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	for ( ; prop != prop_end; ++prop) {
 		qtractorPlugin::Property *pProp = prop.value();
 		qtractorPluginPropertyWidget *pPropWidget
-			= new qtractorPluginPropertyWidget(pPlugin, pProp->property());
+			= new qtractorPluginPropertyWidget(pProp, this);
+		if (pProp->isAutomatable()) {
+			qtractorMidiControlObserver *pMidiObserver = pProp->observer();
+			if (pMidiObserver)
+				addMidiControlAction(pPropWidget, pMidiObserver);
+		}
 		m_propWidgets.append(pPropWidget);
 		widgets.append(pPropWidget);
 	}
@@ -1353,8 +1358,8 @@ void qtractorPluginParamWidget::updateValue ( float fValue )
 
 // Constructor.
 qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
-	qtractorPlugin *pPlugin, unsigned long iProperty, QWidget *pParent )
-	: QWidget(pParent), m_pPlugin(pPlugin), m_iProperty(iProperty)
+	qtractorPlugin::Property *pProp, QWidget *pParent )
+	: QWidget(pParent), m_pProp(pProp)
 {
 	m_pCheckBox   = nullptr;
 	m_pSpinBox    = nullptr;
@@ -1366,73 +1371,72 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	pGridLayout->setMargin(0);
 	pGridLayout->setSpacing(4);
 
-	qtractorPlugin::Property *pProp = m_pPlugin->findProperty(m_iProperty);
-	if (pProp) {
-	//	pGridLayout->setColumnMinimumWidth(0, 120);
-		pGridLayout->setColumnMinimumWidth(2, 32);
-		if (pProp->isToggled()) {
-			m_pCheckBox = new QCheckBox(/*this*/);
-		//	m_pCheckBox->setMinimumWidth(120);
-			m_pCheckBox->setText(pProp->name());
-		//	m_pCheckBox->setChecked(pLv2Prop->value().toBool());
-			pGridLayout->addWidget(m_pCheckBox, 0, 0, 1, 3);
+//	pGridLayout->setColumnMinimumWidth(0, 120);
+	pGridLayout->setColumnMinimumWidth(2, 32);
+	if (m_pProp->isToggled()) {
+		m_pCheckBox = new qtractorObserverCheckBox(/*this*/);
+	//	m_pCheckBox->setMinimumWidth(120);
+		m_pCheckBox->setText(m_pProp->name());
+		m_pCheckBox->setSubject(m_pProp->subject());
+	//	m_pCheckBox->setChecked(pLv2Prop->value().toBool());
+		pGridLayout->addWidget(m_pCheckBox, 0, 0, 1, 3);
+	} else {
+		QLabel *pLabel = new QLabel(/*this*/);
+		pLabel->setText(pProp->name() + ':');
+		if (m_pProp->isString()) {
+			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+		//	pLabel->setMinimumWidth(120);
+			pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
+			m_pTextEdit = new QTextEdit(/*this*/);
+			m_pTextEdit->setTabChangesFocus(true);
+			m_pTextEdit->setMinimumWidth(120);
+			m_pTextEdit->setMaximumHeight(60);
+			m_pTextEdit->installEventFilter(this);
+		//	m_pTextEdit->setPlainText(pLv2Prop->value().toString());
+			pGridLayout->addWidget(m_pTextEdit, 1, 0, 2, 3);
+		}
+		else
+		if (m_pProp->isPath()) {
+			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+		//	pLabel->setMinimumWidth(120);
+			pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
+			m_pComboBox = new QComboBox(/*this*/);
+			m_pComboBox->setEditable(false);
+			m_pComboBox->setMinimumWidth(120);
+		//	m_pComboBox->addItem(pLv2Prop->value().toString());
+			pGridLayout->addWidget(m_pComboBox, 1, 0, 1, 2);
+			m_pToolButton = new QToolButton(/*this*/);
+			m_pToolButton->setIcon(QIcon(":/images/fileOpen.png"));
+			pGridLayout->addWidget(m_pToolButton, 1, 2);
 		} else {
-			QLabel *pLabel = new QLabel(/*this*/);
-			pLabel->setText(pProp->name() + ':');
-			if (pProp->isString()) {
-				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
-			//	pLabel->setMinimumWidth(120);
-				pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
-				m_pTextEdit = new QTextEdit(/*this*/);
-				m_pTextEdit->setTabChangesFocus(true);
-				m_pTextEdit->setMinimumWidth(120);
-				m_pTextEdit->setMaximumHeight(60);
-				m_pTextEdit->installEventFilter(this);
-			//	m_pTextEdit->setPlainText(pLv2Prop->value().toString());
-				pGridLayout->addWidget(m_pTextEdit, 1, 0, 2, 3);
-			}
-			else
-			if (pProp->isPath()) {
-				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
-			//	pLabel->setMinimumWidth(120);
-				pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
-				m_pComboBox = new QComboBox(/*this*/);
-				m_pComboBox->setEditable(false);
-				m_pComboBox->setMinimumWidth(120);
-			//	m_pComboBox->addItem(pLv2Prop->value().toString());
-				pGridLayout->addWidget(m_pComboBox, 1, 0, 1, 2);
-				m_pToolButton = new QToolButton(/*this*/);
-				m_pToolButton->setIcon(QIcon(":/images/fileOpen.png"));
-				pGridLayout->addWidget(m_pToolButton, 1, 2);
-			} else {
-				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-			//	pLabel->setMinimumWidth(120);
-				const int iDecimals = pProp->decimals();
-				pGridLayout->addWidget(pLabel, 0, 0);
-				m_pSpinBox = new qtractorSpinBox(/*this*/);
-				m_pSpinBox->setMinimumWidth(64);
-				m_pSpinBox->setMaximumWidth(96);
-				m_pSpinBox->setDecimals(iDecimals);
-				m_pSpinBox->setMinimum(pProp->minValue());
-				m_pSpinBox->setMaximum(pProp->maxValue());
-				m_pSpinBox->setAlignment(Qt::AlignRight);
-				m_pSpinBox->setSingleStep(::powf(10.0f, - float(iDecimals)));
-				m_pSpinBox->setAccelerated(true);
-			//	m_pSpinBox->setValue(pLv2Prop->value().toDouble());
-				pGridLayout->addWidget(m_pSpinBox, 0, 1);
-			}
+			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+		//	pLabel->setMinimumWidth(120);
+			const int iDecimals = m_pProp->decimals();
+			pGridLayout->addWidget(pLabel, 0, 0);
+			m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
+			m_pSpinBox->setMinimumWidth(64);
+			m_pSpinBox->setMaximumWidth(96);
+			m_pSpinBox->setDecimals(iDecimals);
+			m_pSpinBox->setMinimum(m_pProp->minValue());
+			m_pSpinBox->setMaximum(m_pProp->maxValue());
+			m_pSpinBox->setAlignment(Qt::AlignRight);
+			m_pSpinBox->setSingleStep(::powf(10.0f, - float(iDecimals)));
+			m_pSpinBox->setAccelerated(true);
+			m_pSpinBox->setSubject(m_pProp->subject());
+		//	m_pSpinBox->setValue(m_pProp->value().toDouble());
+			pGridLayout->addWidget(m_pSpinBox, 0, 1);
 		}
 	}
 
 	if (m_pCheckBox) {
 		QObject::connect(m_pCheckBox,
-			SIGNAL(toggled(bool)),
+			SIGNAL(valueChanged(float)),
 			SLOT(propertyChanged()));
 	}
 
 	if (m_pSpinBox) {
 		QObject::connect(m_pSpinBox,
-			SIGNAL(valueChangedEx(double)),
+			SIGNAL(valueChanged(float)),
 			SLOT(propertyChanged()));
 	}
 
@@ -1449,44 +1453,43 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	}
 
 	QWidget::setLayout(pGridLayout);
-
-	if (pProp) QWidget::setToolTip(pProp->name());
+	QWidget::setToolTip(m_pProp->name());
 }
 
 
 // Refreshner-loader method.
 void qtractorPluginPropertyWidget::refresh (void)
 {
-	qtractorPlugin::Property *pProp = m_pPlugin->findProperty(m_iProperty);
-	if (pProp == nullptr)
-		return;
-
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginPropertyWidget[%p]::refresh()", this);
 #endif
 
+#if 0
 	if (m_pCheckBox) {
 		const bool bCheckBox = m_pCheckBox->blockSignals(true);
-		m_pCheckBox->setChecked(pProp->value().toBool());
+		m_pCheckBox->setChecked(m_pProp->value().toBool());
 		m_pCheckBox->blockSignals(bCheckBox);
 	}
-
 	if (m_pSpinBox) {
 		const bool bSpinBox = m_pSpinBox->blockSignals(true);
-		m_pSpinBox->setValue(pProp->value().toDouble());
+		m_pSpinBox->setValue(m_pProp->value().toDouble());
 		m_pSpinBox->blockSignals(bSpinBox);
 	}
-
+#else
+	if (m_pCheckBox)
+		m_pCheckBox->observer()->update(true);
+	if (m_pSpinBox)
+		m_pSpinBox->observer()->update(true);
+#endif
 	if (m_pTextEdit) {
 		const bool bTextEdit = m_pTextEdit->blockSignals(true);
-		m_pTextEdit->setPlainText(pProp->value().toString());
+		m_pTextEdit->setPlainText(m_pProp->value().toString());
 		m_pTextEdit->document()->setModified(false);
 		m_pTextEdit->blockSignals(bTextEdit);
 	}
-
 	if (m_pComboBox) {
 		const bool bComboBox = m_pComboBox->blockSignals(true);
-		const QFileInfo fi(pProp->value().toString());
+		const QFileInfo fi(m_pProp->value().toString());
 		const QString& sPath = fi.canonicalFilePath();
 		int iIndex = m_pComboBox->findData(sPath);
 		if (iIndex < 0) {
@@ -1560,9 +1563,6 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 // Property value change slot.
 void qtractorPluginPropertyWidget::propertyChanged (void)
 {
-	if (m_pPlugin == nullptr)
-		return;
-
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorPluginPropertyWidget[%p]::propertyChanged()", this);
 #endif
@@ -1590,7 +1590,7 @@ void qtractorPluginPropertyWidget::propertyChanged (void)
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		pSession->execute(
-			new qtractorPluginPropertyCommand(m_pPlugin, m_iProperty, value));
+			new qtractorPluginPropertyCommand(m_pProp, value));
 }
 
 
