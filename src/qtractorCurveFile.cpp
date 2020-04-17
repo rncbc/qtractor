@@ -1,7 +1,7 @@
 // qtractorCurveFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -56,7 +56,7 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 			m_sFilename = eChild.text();
 		else
 		if (eChild.tagName() == "current")
-			m_iCurrentCurve = eChild.text().toInt();
+			m_iCurrentIndex = eChild.text().toULong();
 		else
 		if (eChild.tagName() == "curve-items") {
 			for (QDomNode nItem = eChild.firstChild();
@@ -137,7 +137,7 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 
 	iSeq = 0;
 
-	int iCurrent = -1;
+	unsigned long iCurrentIndex = 0;
 	QDomElement eItems = pDocument->document()->createElement("curve-items");
 	QListIterator<Item *> iter(m_items);
 	while (iter.hasNext()) {
@@ -174,7 +174,7 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 			pDocument->saveTextElement("color",
 				pItem->color.name(), &eItem);
 			if (m_pCurveList->currentCurve() == pCurve)
-				iCurrent = pItem->index;
+				iCurrentIndex = pItem->index;
 			eItems.appendChild(eItem);
 			++iSeq;
 		}
@@ -197,9 +197,9 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 		sFilename = QDir(m_sBaseDir).relativeFilePath(m_sFilename);
 	pDocument->saveTextElement("filename", sFilename, pElement);
 
-	if (iCurrent >= 0) {
+	if (iCurrentIndex > 0) {
 		pDocument->saveTextElement("current",
-			QString::number(iCurrent), pElement);
+			QString::number(iCurrentIndex), pElement);
 	}
 }
 
@@ -242,7 +242,7 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 			if (pCurve == nullptr)
 				pCurve = new qtractorCurve(m_pCurveList,
 					pItem->subject, pItem->mode);
-			if (m_iCurrentCurve == int(pItem->index))
+			if (m_iCurrentIndex == pItem->index)
 				pCurrentCurve = pCurve;
 			qtractorMidiSequence seq(QString(), pItem->channel, iTicksPerBeat);
 			if (file.readTrack(&seq, iSeq)) {

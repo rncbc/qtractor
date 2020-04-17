@@ -1110,8 +1110,9 @@ void qtractorPlugin::saveControllers (
 	if (pMidiControl == nullptr)
 		return;
 
-	unsigned long iActivateSubjectIndex = activateSubjectIndex();
 	qtractorMidiControl::Controllers controllers;
+
+	unsigned long iActivateSubjectIndex = activateSubjectIndex();
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
@@ -1134,6 +1135,28 @@ void qtractorPlugin::saveControllers (
 		}
 		if (iActivateSubjectIndex < pParam->index())
 			iActivateSubjectIndex = pParam->index();
+	}
+
+	Properties::ConstIterator prop = m_properties.constBegin();
+	const Properties::ConstIterator prop_end = m_properties.constEnd();
+	for ( ; prop != prop_end; ++prop) {
+		Property *pProp = prop.value();
+		qtractorMidiControlObserver *pObserver = pProp->observer();
+		if (pMidiControl->isMidiObserverMapped(pObserver)) {
+			qtractorMidiControl::Controller *pController
+				= new qtractorMidiControl::Controller;
+			pController->name = pProp->key();
+			pController->index = qHash(pProp->key());
+			pController->ctype = pObserver->type();
+			pController->channel = pObserver->channel();
+			pController->param = pObserver->param();
+			pController->logarithmic = pObserver->isLogarithmic();
+			pController->feedback = pObserver->isFeedback();
+			pController->invert = pObserver->isInvert();
+			pController->hook = pObserver->isHook();
+			pController->latch = pObserver->isLatch();
+			controllers.append(pController);
+		}
 	}
 
 	qtractorMidiControlObserver *pActivateObserver = activateObserver();
@@ -1181,9 +1204,15 @@ void qtractorPlugin::mapControllers (
 		//	iActivateSubjectIndex = 0;
 		} else {
 			Param *pParam = nullptr;
-			if (!pController->name.isEmpty())
-				pParam = m_paramNames.value(pController->name, nullptr);
-			if (pParam == nullptr)
+			Property *pProp = nullptr;
+			if (!pController->name.isEmpty()) {
+				pProp = m_propertyKeys.value(pController->name, nullptr);
+				if (pProp && pController->index == qHash(pProp->key()))
+					pObserver = pProp->observer();
+				else
+					pParam = m_paramNames.value(pController->name, nullptr);
+			}
+			if (pParam == nullptr && pProp == nullptr)
 				pParam = findParam(pController->index);
 			if (pParam)
 				pObserver = pParam->observer();
@@ -1641,7 +1670,18 @@ void qtractorPlugin::Property::Observer::update ( bool bUpdate )
 {
 	qtractorMidiControlObserver::update(bUpdate);
 
-	// TODO: plugin->updateProperty()...?
+#ifdef CONFIG_LV2_PATCH
+	if (bUpdate) {
+		qtractorPlugin *pPlugin = m_pProp->plugin();
+		qtractorPluginType *pType = pPlugin->type();
+		if (pType->typeHint() == qtractorPluginType::Lv2) {
+			qtractorLv2Plugin *pLv2Plugin
+				= static_cast<qtractorLv2Plugin *> (pPlugin);
+			if (pLv2Plugin)
+				pLv2Plugin->lv2_property_update(m_pProp->property());
+		}
+	}
+#endif
 }
 
 
