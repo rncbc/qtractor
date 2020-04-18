@@ -993,8 +993,12 @@ static LV2_Atom_Forge *g_lv2_atom_forge = nullptr;
 		lv2_atom_forge_property_head(forge, key, 0)
 #endif
 
-#ifndef LV2_ATOM__portEvent
-#define LV2_ATOM__portEvent LV2_ATOM_PREFIX "portEvent"
+#ifndef LV2_ATOM__PortEvent
+#define LV2_ATOM__PortEvent LV2_ATOM_PREFIX "PortEvent"
+#endif
+
+#ifndef LV2_ATOM__portTuple
+#define LV2_ATOM__portTuple LV2_ATOM_PREFIX "portTuple"
 #endif
 
 static LilvNode *g_lv2_minimum_prop = nullptr;
@@ -1033,7 +1037,8 @@ static struct qtractorLv2Urids
 	LV2_URID atom_Double;
 	LV2_URID atom_String;
 	LV2_URID atom_Path;
-	LV2_URID atom_portEvent;
+	LV2_URID atom_PortEvent;
+	LV2_URID atom_portTuple;
 #endif
 #ifdef CONFIG_LV2_PATCH
 	LV2_URID patch_Get;
@@ -1759,8 +1764,10 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__String);
 	g_lv2_urids.atom_Path
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Path);
-	g_lv2_urids.atom_portEvent
-		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__portEvent);
+	g_lv2_urids.atom_PortEvent
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__PortEvent);
+	g_lv2_urids.atom_portTuple
+		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__portTuple);
 #endif
 #ifdef CONFIG_LV2_PATCH
 	g_lv2_urids.patch_Get
@@ -4241,10 +4248,10 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 			}
 			else
 		#endif // CONFIG_LV2_PATCH
-			if (obj->body.otype == g_lv2_urids.atom_portEvent) {
+			if (obj->body.otype == g_lv2_urids.atom_PortEvent) {
 				const LV2_Atom_Tuple *tup = nullptr;
 				lv2_atom_object_get(obj,
-					g_lv2_atom_forge->Tuple, (const LV2_Atom *) &tup, 0);
+					g_lv2_urids.atom_portTuple, (const LV2_Atom *) &tup, 0);
 				if (tup == nullptr)
 					tup = (const LV2_Atom_Tuple *) obj;
 				uint32_t port_index = 0;
