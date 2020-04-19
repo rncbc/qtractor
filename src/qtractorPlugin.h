@@ -785,14 +785,17 @@ public:
 	virtual ~Property() {}
 
 	// Main properties accessors.
-	qtractorPlugin *plugin()   const { return m_pPlugin; }
-	unsigned long   property() const { return m_iProperty;  }
+	qtractorPlugin *plugin() const { return m_pPlugin; }
+	unsigned long   id()     const { return m_iProperty;  }
 
 	// Property key/id accessors.
 	void setKey(const QString& sKey)
 		{ m_sKey = sKey; }
 	const QString& key() const
 		{ return m_sKey; }
+
+	// Property index/hash-key accessor.
+	unsigned long index() const { return qHash(m_sKey); }
 
 	// Property name accessors.
 	void setName(const QString& sName)
@@ -805,6 +808,10 @@ public:
 	virtual bool isInteger() const = 0;
 	virtual bool isString()  const = 0;
 	virtual bool isPath()    const = 0;
+
+	// Property special predicate methods.
+	virtual bool isAutomatable () const
+		{ return !isString() && !isPath(); }
 
 	// Bounding range values.
 	void setMinValue(float fMinValue)
@@ -833,10 +840,6 @@ public:
 
 	// Specialized observer value.
 	qtractorMidiControlObserver *observer() { return &m_observer; }
-
-	// Property special predicate methods.
-	bool isAutomatable () const
-		{ return !isInteger() && !isString() && !isPath(); }
 
 	// Property decimals helper (cached).
 	int decimals() const
@@ -871,11 +874,11 @@ private:
 
 	} m_observer;
 
-	// Propery value.
-	QVariant m_value;
-
 	// Decimals cache.
 	int m_iDecimals;
+
+	// Propery value.
+	QVariant m_value;
 };
 
 

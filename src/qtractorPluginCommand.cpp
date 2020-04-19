@@ -749,7 +749,7 @@ bool qtractorPluginPropertyCommand::redo (void)
 		qtractorLv2Plugin *pLv2Plugin
 			= static_cast<qtractorLv2Plugin *> (pPlugin);
 		if (pLv2Plugin)
-			pLv2Plugin->lv2_property_update(m_pProp->property());
+			pLv2Plugin->lv2_property_update(m_pProp->id());
 	}
 #endif
 

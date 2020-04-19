@@ -524,7 +524,7 @@ void qtractorPlugin::addParam ( qtractorPlugin::Param *pParam )
 // Properties registry accessor.
 void qtractorPlugin::addProperty ( qtractorPlugin::Property *pProp )
 {
-	m_properties.insert(pProp->property(), pProp);
+	m_properties.insert(pProp->id(), pProp);
 	m_propertyKeys.insert(pProp->key(), pProp);
 }
 
@@ -1146,7 +1146,7 @@ void qtractorPlugin::saveControllers (
 			qtractorMidiControl::Controller *pController
 				= new qtractorMidiControl::Controller;
 			pController->name = pProp->key();
-			pController->index = qHash(pProp->key());
+			pController->index = pProp->index();
 			pController->ctype = pObserver->type();
 			pController->channel = pObserver->channel();
 			pController->param = pObserver->param();
@@ -1207,7 +1207,7 @@ void qtractorPlugin::mapControllers (
 			Property *pProp = nullptr;
 			if (!pController->name.isEmpty()) {
 				pProp = m_propertyKeys.value(pController->name, nullptr);
-				if (pProp && pController->index == qHash(pProp->key()))
+				if (pProp && pController->index == pProp->index())
 					pObserver = pProp->observer();
 				else
 					pParam = m_paramNames.value(pController->name, nullptr);
@@ -1309,7 +1309,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 		if (pCurve) {
 			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 			pCurveItem->name = pProp->key();
-			pCurveItem->index = qHash(pProp->key());
+			pCurveItem->index = pProp->index();
 			if (pProp->isToggled()	|| pProp->isInteger()
 				|| !pOptions->bSaveCurve14bit) {
 				const unsigned short controller = (iItem % 0x7f);
@@ -1407,7 +1407,7 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 			Property *pProp = nullptr;
 			if (!pCurveItem->name.isEmpty()) {
 				pProp = m_propertyKeys.value(pCurveItem->name, nullptr);
-				if (pProp && pCurveItem->index == qHash(pProp->key()))
+				if (pProp && pCurveItem->index == pProp->index())
 					pCurveItem->subject = pProp->subject();
 				else
 					pParam = m_paramNames.value(pCurveItem->name, nullptr);
@@ -1678,7 +1678,7 @@ void qtractorPlugin::Property::Observer::update ( bool bUpdate )
 			qtractorLv2Plugin *pLv2Plugin
 				= static_cast<qtractorLv2Plugin *> (pPlugin);
 			if (pLv2Plugin)
-				pLv2Plugin->lv2_property_update(m_pProp->property());
+				pLv2Plugin->lv2_property_update(m_pProp->id());
 		}
 	}
 #endif
