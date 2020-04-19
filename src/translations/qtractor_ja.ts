@@ -488,17 +488,17 @@ MIDI:	</translation>
         <translation>プラグインのプログラム</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="786"/>
+        <location filename="../qtractorPluginCommand.cpp" line="788"/>
         <source>dedicated audio outputs</source>
         <translation>音声出力専用</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="831"/>
+        <location filename="../qtractorPluginCommand.cpp" line="833"/>
         <source>direct access param</source>
         <translation>ダイレクトアクセスパラメーター</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="863"/>
+        <location filename="../qtractorPluginCommand.cpp" line="865"/>
         <source>import plugins</source>
         <translation>プラグインのインポート</translation>
     </message>

@@ -743,18 +743,20 @@ bool qtractorPluginPropertyCommand::redo (void)
 
 	m_pProp->setValue(m_value);
 
-#ifdef CONFIG_LV2_PATCH
-	qtractorPluginType *pType = pPlugin->type();
-	if (pType->typeHint() == qtractorPluginType::Lv2) {
-		qtractorLv2Plugin *pLv2Plugin
-			= static_cast<qtractorLv2Plugin *> (pPlugin);
-		if (pLv2Plugin)
-			pLv2Plugin->lv2_property_update(m_pProp->id());
-	}
-#endif
-
 	// Set undo value.
 	m_value = value;
+
+#ifdef CONFIG_LV2_PATCH
+	if (!m_pProp->isAutomatable()) {
+		qtractorPluginType *pType = pPlugin->type();
+		if (pType->typeHint() == qtractorPluginType::Lv2) {
+			qtractorLv2Plugin *pLv2Plugin
+				= static_cast<qtractorLv2Plugin *> (pPlugin);
+			if (pLv2Plugin)
+				pLv2Plugin->lv2_property_update(m_pProp->id());
+		}
+	}
+#endif
 
 	// Update the form, showing it up as necessary...
 	pPlugin->updateFormDirtyCount();

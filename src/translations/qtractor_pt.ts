@@ -402,7 +402,7 @@ MIDI:	</translation>
         <translation>programação do plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="863"/>
+        <location filename="../qtractorPluginCommand.cpp" line="865"/>
         <source>import plugins</source>
         <translation>importar plugins</translation>
     </message>
@@ -456,7 +456,7 @@ MIDI:	</translation>
 %6</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="786"/>
+        <location filename="../qtractorPluginCommand.cpp" line="788"/>
         <source>dedicated audio outputs</source>
         <translation>saídas de áudio dedicadas</translation>
     </message>
@@ -481,7 +481,7 @@ MIDI:	</translation>
         <translation>resetar controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="831"/>
+        <location filename="../qtractorPluginCommand.cpp" line="833"/>
         <source>direct access param</source>
         <translation>acesso direto a parâmetros</translation>
     </message>

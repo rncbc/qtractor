@@ -292,17 +292,17 @@ MIDI:	</translation>
         <translation>Program přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="786"/>
+        <location filename="../qtractorPluginCommand.cpp" line="788"/>
         <source>dedicated audio outputs</source>
         <translation>Jednoúčelové zvukové výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="831"/>
+        <location filename="../qtractorPluginCommand.cpp" line="833"/>
         <source>direct access param</source>
         <translation>Parametr pro přímý přístup</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="863"/>
+        <location filename="../qtractorPluginCommand.cpp" line="865"/>
         <source>import plugins</source>
         <translation>Přídavné moduly k zavedení</translation>
     </message>
