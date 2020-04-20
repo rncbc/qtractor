@@ -4325,8 +4325,8 @@ void qtractorLv2Plugin::lv2_property_changed (
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorLv2Plugin[%p]::lv2_property_changed(\"%s\") [%s]",
-		this, pszKey, pProp->name().toUtf8().constData());
+	qDebug("qtractorLv2Plugin[%p]::lv2_property_changed(%u) [%s]",
+		this, key, pProp->name().toUtf8().constData());
 #endif
 
 	if (type == g_lv2_urids.atom_Bool)
@@ -4371,8 +4371,8 @@ void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )
 	const QVariant& value = pProp->value();
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorLv2Plugin[%p]::lv2_property_update(%u) [%s=\"%s\"]",
-		this, key, lv2_urid_map(key), pProp->name().toUtf8().constData());
+	qDebug("qtractorLv2Plugin[%p]::lv2_property_update(%u) [%s]",
+		this, key, pProp->name().toUtf8().constData());
 #endif
 
 	// Set up forge to write to temporary buffer on the stack
