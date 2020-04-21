@@ -741,7 +741,7 @@ bool qtractorPluginPropertyCommand::redo (void)
 	// Save the current toggled state alright...
 	const QVariant value = m_pProp->value();
 
-	m_pProp->setValue(m_value);
+	m_pProp->setValue(m_value, true);
 
 	// Set undo value.
 	m_value = value;

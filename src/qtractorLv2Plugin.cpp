@@ -3956,7 +3956,7 @@ LV2UI_Request_Value_Status qtractorLv2Plugin::lv2_ui_request_value (
 		sFilename = fileDialog.selectedFiles().first();
 #endif
 	if (!sFilename.isEmpty()) {
-		pProp->setValue(QFileInfo(sFilename).canonicalFilePath());
+		pProp->setValue(QFileInfo(sFilename).canonicalFilePath(), true);
 		lv2_property_update(key);
 	}
 
@@ -4350,6 +4350,7 @@ void qtractorLv2Plugin::lv2_property_changed (
 	// Update the stock/generic form if visible...
 	refreshForm();
 }
+
 
 // LV2 Patch/property updated, eventually from plugin->UI...
 void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )

@@ -1616,11 +1616,11 @@ void qtractorPlugin::Param::Observer::update ( bool bUpdate )
 //
 
 // Current property value.
-void qtractorPlugin::Property::setValue ( const QVariant& value )
+void qtractorPlugin::Property::setValue ( const QVariant& value, bool bUpdate )
 {
 	// Whether it's a scalar value...
 	//
-	if (isAutomatable()) {
+	if (isAutomatable() && !bUpdate) {
 		// Decimals caching....
 		if (m_iDecimals < 0) {
 			m_iDecimals = 0;
@@ -1668,6 +1668,8 @@ qtractorPlugin::Property::Observer::Observer ( Property *pProp )
 // Virtual observer updater.
 void qtractorPlugin::Property::Observer::update ( bool bUpdate )
 {
+	m_pProp->setValue(value(), bUpdate);
+
 	qtractorMidiControlObserver::update(bUpdate);
 
 #ifdef CONFIG_LV2_PATCH

@@ -830,8 +830,8 @@ public:
 	float defaultValue() const
 		{ return m_subject.defaultValue(); }
 
-	// Main value.
-	void setValue(const QVariant& value);
+	// Main property value.
+	void setValue(const QVariant& value, bool bUpdate = false);
 	const QVariant& value() const
 		{ return m_value; }
 
@@ -853,6 +853,9 @@ private:
 
 	// Property key id..
 	QString m_sKey;
+
+	// Propery value.
+	QVariant m_value;
 
 	// Property subject value.
 	qtractorSubject m_subject;
@@ -876,9 +879,6 @@ private:
 
 	// Decimals cache.
 	int m_iDecimals;
-
-	// Propery value.
-	QVariant m_value;
 };
 
 
