@@ -615,7 +615,7 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	if (pSession == nullptr)
 		return;
 
-	qtractorTrack *pTrack = pSession->findTrack(pCurveList);
+	qtractorTrack *pTrack = pSession->findTrackCurveList(pCurveList);
 	if (pTrack == nullptr)
 		return;
 

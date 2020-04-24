@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Generic plug-in/Properties... dialog now showing each
+  parameter/property automation status on a skeuomorphic
+  aka. fake and tiny LED ;) (EXPERIMENTAL)
+
 - LV2 Plug-in Patch parameter/properties automation and
   MIDI Controller assignment/learn are now a possibility.
   (EXPERIMENTAL)

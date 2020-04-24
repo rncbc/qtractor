@@ -907,8 +907,8 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 	// Acquire track-name for uniqueness...
 	acquireTrackName(pTrack);
 
-	if (pTrack->curveList())
-		m_curves.insert(pTrack->curveList(), pTrack);
+	// Associate track to its curve-list...
+	acquireTrackCurveList(pTrack);
 
 	qtractorSessionCursor *pSessionCursor = m_cursors.first();
 	while (pSessionCursor) {
@@ -983,8 +983,8 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 	// Release track-name from uniqueness...
 	releaseTrackName(pTrack);
 
-	if (pTrack->curveList())
-		m_curves.remove(pTrack->curveList());
+	// Dessociate track from its curve-list...
+	releaseTrackCurveList(pTrack);
 
 	if (pTrack->trackType() == qtractorTrack::Midi)
 		releaseMidiTag(pTrack);
@@ -2014,8 +2014,23 @@ void qtractorSession::process_curve ( unsigned long iFrame )
 }
 
 
+// Manage curve-lists to specific tracks.
+void qtractorSession::acquireTrackCurveList ( qtractorTrack *pTrack )
+{
+	if (pTrack && pTrack->curveList())
+		m_curves.insert(pTrack->curveList(), pTrack);
+}
+
+void qtractorSession::releaseTrackCurveList ( qtractorTrack *pTrack )
+{
+	if (pTrack && pTrack->curveList())
+		m_curves.remove(pTrack->curveList());
+}
+
+
 // Find track of specific curve-list.
-qtractorTrack *qtractorSession::findTrack ( qtractorCurveList *pCurveList ) const
+qtractorTrack *qtractorSession::findTrackCurveList (
+	qtractorCurveList *pCurveList ) const
 {
 	return m_curves.value(pCurveList, nullptr);
 }

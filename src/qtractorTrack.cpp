@@ -2480,4 +2480,18 @@ void qtractorTrack::updateMidiClips (void)
 }
 
 
+// Update all plugin forms, if visible.
+void qtractorTrack::refreshPluginForms (void)
+{
+	if (m_pPluginList == nullptr)
+		return;
+
+	qtractorPlugin *pPlugin = m_pPluginList->first();
+	while (pPlugin) {
+		pPlugin->refreshForm();
+		pPlugin = pPlugin->next();
+	}
+}
+
+
 // end of qtractorTrack.cpp

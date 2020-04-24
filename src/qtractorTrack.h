@@ -361,6 +361,9 @@ public:
 	void updateMidiTrack();
 	void updateMidiClips();
 
+	// Update all plugin forms, if visible.
+	void refreshPluginForms();
+
 private:
 
 	qtractorSession *m_pSession;    // Session reference.

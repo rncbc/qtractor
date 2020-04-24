@@ -46,6 +46,7 @@ class qtractorSpinBox;
 class QCheckBox;
 class QTextEdit;
 class QComboBox;
+class QPushButton;
 class QToolButton;
 
 
@@ -168,6 +169,14 @@ protected slots:
 	// Parameter value change slot.
 	void updateValue(float fValue);
 
+	// Automation curve selector.
+	void curveButtonClicked();
+
+protected:
+
+	// Parameter automation curve status update/refresh.
+	void updateCurveButton();
+
 private:
 
 	// Local forward declarations.
@@ -182,6 +191,8 @@ private:
 	qtractorObserverSpinBox  *m_pSpinBox;
 
 	qtractorPluginParamDisplay *m_pDisplay;
+
+	QPushButton *m_pCurveButton;
 };
 
 
@@ -208,13 +219,19 @@ public:
 
 protected slots:
 
-	// Property file selector.
-	void buttonClicked();
-
 	// Property value change slot.
 	void propertyChanged();
 
+	// Property file selector.
+	void toolButtonClicked();
+
+	// Automation curve selector.
+	void curveButtonClicked();
+
 protected:
+
+	// Parameter automation curve status update/refresh.
+	void updateCurveButton();
 
 	// Text edit (string) event filter.
 	bool eventFilter(QObject *pObject, QEvent *pEvent);
@@ -227,6 +244,8 @@ private:
 	// Some possible managed widgets.
 	qtractorObserverCheckBox *m_pCheckBox;
 	qtractorObserverSpinBox  *m_pSpinBox;
+
+	QPushButton *m_pCurveButton;
 
 	// Non-automatable widgets.
 	QTextEdit   *m_pTextEdit;

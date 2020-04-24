@@ -41,6 +41,8 @@
 #include "qtractorSession.h"
 #include "qtractorEngine.h"
 
+#include "qtractorCurve.h"
+
 #include <QMessageBox>
 #include <QTabWidget>
 #include <QGridLayout>
@@ -1226,6 +1228,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	m_pCheckBox = nullptr;
 	m_pDisplay  = nullptr;
 
+	m_pCurveButton = nullptr;
+
 	QGridLayout *pGridLayout = new QGridLayout();
 	pGridLayout->setMargin(0);
 	pGridLayout->setSpacing(4);
@@ -1236,10 +1240,11 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pCheckBox->setSubject(m_pParam->subject());
 	//	m_pCheckBox->setChecked(m_pParam->value() > 0.1f);
 		pGridLayout->addWidget(m_pCheckBox, 0, 0);
+		pGridLayout->setColumnStretch(0, 3);
 	} else if (m_pParam->isInteger()) {
-		pGridLayout->setColumnMinimumWidth(0, 120);
+	//	pGridLayout->setColumnMinimumWidth(0, 120);
 		QLabel *pLabel = new QLabel(/*this*/);
-		pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+		pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		pLabel->setText(m_pParam->name() + ':');
 		pGridLayout->addWidget(pLabel, 0, 0);
 		m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
@@ -1250,7 +1255,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pSpinBox->setAlignment(Qt::AlignHCenter);
 		m_pSpinBox->setSubject(m_pParam->subject());
 	//	m_pSpinBox->setValue(int(m_pParam->value()));
-		pGridLayout->addWidget(m_pSpinBox, 0, 1);
+		pGridLayout->addWidget(m_pSpinBox, 0, 1,
+			Qt::AlignRight | Qt::AlignVCenter);
 		m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
 		m_pDisplay->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	//	m_pDisplay->setText(m_pParam->display());
@@ -1262,7 +1268,6 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		pLabel->setText(m_pParam->name() + ':');
 		if (m_pParam->isDisplay()) {
 			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-		//	pLabel->setFixedWidth(72);
 			pLabel->setMinimumWidth(64);
 			pGridLayout->addWidget(pLabel, 0, 0);
 		} else {
@@ -1289,7 +1294,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pDisplay->setMinimumWidth(64);
 			pGridLayout->addWidget(m_pDisplay, 0, 2);
 		} else {
-			pGridLayout->addWidget(m_pSlider, 1, 0, 1, 2);
+			pGridLayout->addWidget(m_pSlider, 1, 0, 1, 3);
 			const int iDecimals = m_pParam->decimals();
 			m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
 			m_pSpinBox->setDecimals(iDecimals);
@@ -1300,9 +1305,11 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pSpinBox->setSubject(m_pParam->subject());
 		//	m_pSpinBox->setValue(m_pParam->value());
 			m_pSpinBox->setMaximumWidth(64);
-			pGridLayout->addWidget(m_pSpinBox, 1, 2);
+			pGridLayout->addWidget(m_pSpinBox, 1, 3);
 		}
 	}
+
+	QWidget::setLayout(pGridLayout);
 
 	if (m_pCheckBox) {
 		QObject::connect(m_pCheckBox,
@@ -1322,7 +1329,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			SLOT(updateValue(float)));
 	}
 
-	QWidget::setLayout(pGridLayout);
+	updateCurveButton();
+
 	QWidget::setToolTip(m_pParam->name());
 }
 
@@ -1342,6 +1350,70 @@ void qtractorPluginParamWidget::refresh (void)
 		m_pSlider->observer()->update(true);
 	if (m_pDisplay)
 		m_pDisplay->observer()->update(true);
+
+	updateCurveButton();
+}
+
+
+// Parameter automation curve status update/refresh.
+void qtractorPluginParamWidget::updateCurveButton (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorMidiControlObserver *pMidiObserver
+		= static_cast<qtractorMidiControlObserver *> (m_pParam->observer());
+	if (pMidiObserver == nullptr)
+		return;
+
+	qtractorTrack *pTrack = nullptr;
+	qtractorPluginList *pPluginList = (m_pParam->plugin())->list();
+	qtractorCurveList *pCurveList = pPluginList->curveList();
+	if (pCurveList && pCurveList == pMidiObserver->curveList())
+		pTrack = pSession->findTrackCurveList(pCurveList);
+	if (pTrack == nullptr) {
+		if (m_pCurveButton) {
+			m_pCurveButton->hide();
+			delete m_pCurveButton;
+			m_pCurveButton = nullptr;
+		}
+		// Bail out!
+		return;
+	}
+
+	if (m_pCurveButton == nullptr) {
+		QSize iconSize(12, 12);
+		m_pCurveButton = new QPushButton(/*this*/);
+		m_pCurveButton->setFlat(true);
+		m_pCurveButton->setIconSize(iconSize);
+		m_pCurveButton->setMaximumSize(iconSize + QSize(4, 4));
+		QGridLayout *pGridLayout
+			=  static_cast<QGridLayout *> (QWidget::layout());
+		if (pGridLayout) {
+			pGridLayout->addWidget(m_pCurveButton, 0, 3,
+				Qt::AlignRight | Qt::AlignVCenter);
+			pGridLayout->setColumnMinimumWidth(3, 32);
+		}
+		QObject::connect(m_pCurveButton,
+			SIGNAL(clicked()),
+			SLOT(curveButtonClicked()));
+	}
+
+	qtractorCurve *pCurve = nullptr;
+	qtractorSubject *pSubject = pMidiObserver->subject();
+	if (pSubject)
+		pCurve = pSubject->curve();
+	if (pCurve && pCurve->isCapture())
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveCapture.png"));
+	else
+	if (pCurve && pCurve->isProcess())
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveProcess.png"));
+	else
+	if (pCurve)
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveEnabled.png"));
+	else
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveNone.png"));
 }
 
 
@@ -1349,6 +1421,14 @@ void qtractorPluginParamWidget::refresh (void)
 void qtractorPluginParamWidget::updateValue ( float fValue )
 {
 	m_pParam->updateValue(fValue, true);
+}
+
+
+// Automation curve selector.
+void qtractorPluginParamWidget::curveButtonClicked (void)
+{
+	const QPoint& pos = m_pCurveButton->geometry().center();
+	qtractorMidiControlObserverForm::midiControlMenu(this, pos);
 }
 
 
@@ -1367,6 +1447,8 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	m_pComboBox   = nullptr;
 	m_pToolButton = nullptr;
 
+	m_pCurveButton = nullptr;
+
 	QGridLayout *pGridLayout = new QGridLayout();
 	pGridLayout->setMargin(0);
 	pGridLayout->setSpacing(4);
@@ -1379,7 +1461,8 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 		m_pCheckBox->setText(m_pProp->name());
 		m_pCheckBox->setSubject(m_pProp->subject());
 	//	m_pCheckBox->setChecked(pLv2Prop->value().toBool());
-		pGridLayout->addWidget(m_pCheckBox, 0, 0, 1, 3);
+		pGridLayout->addWidget(m_pCheckBox, 0, 0);
+		pGridLayout->setColumnStretch(0, 3);
 	} else {
 		QLabel *pLabel = new QLabel(/*this*/);
 		pLabel->setText(pProp->name() + ':');
@@ -1424,9 +1507,13 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 			m_pSpinBox->setAccelerated(true);
 			m_pSpinBox->setSubject(m_pProp->subject());
 		//	m_pSpinBox->setValue(m_pProp->value().toDouble());
-			pGridLayout->addWidget(m_pSpinBox, 0, 1);
+			pGridLayout->addWidget(m_pSpinBox, 0, 1,
+				Qt::AlignRight | Qt::AlignVCenter);
+			pGridLayout->setColumnStretch(1, 1);
 		}
 	}
+
+	QWidget::setLayout(pGridLayout);
 
 	if (m_pCheckBox) {
 		QObject::connect(m_pCheckBox,
@@ -1449,10 +1536,11 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	if (m_pToolButton) {
 		QObject::connect(m_pToolButton,
 			SIGNAL(clicked()),
-			SLOT(buttonClicked()));
+			SLOT(toolButtonClicked()));
 	}
 
-	QWidget::setLayout(pGridLayout);
+	updateCurveButton();
+
 	QWidget::setToolTip(m_pProp->name());
 }
 
@@ -1501,11 +1589,86 @@ void qtractorPluginPropertyWidget::refresh (void)
 		m_pComboBox->setToolTip(sPath);
 		m_pComboBox->blockSignals(bComboBox);
 	}
+
+	updateCurveButton();
+}
+
+
+// Property automation curve status update/refresh.
+void qtractorPluginPropertyWidget::updateCurveButton (void)
+{
+	if (!m_pProp->isAutomatable())
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorMidiControlObserver *pMidiObserver
+		= static_cast<qtractorMidiControlObserver *> (m_pProp->observer());
+	if (pMidiObserver == nullptr)
+		return;
+
+	qtractorTrack *pTrack = nullptr;
+	qtractorPluginList *pPluginList = (m_pProp->plugin())->list();
+	qtractorCurveList *pCurveList = pPluginList->curveList();
+	if (pCurveList && pCurveList == pMidiObserver->curveList())
+		pTrack = pSession->findTrackCurveList(pCurveList);
+	if (pTrack == nullptr) {
+		if (m_pCurveButton) {
+			m_pCurveButton->hide();
+			delete m_pCurveButton;
+			m_pCurveButton = nullptr;
+		}
+		// Bail out!
+		return;
+	}
+
+	if (m_pCurveButton == nullptr) {
+		QSize iconSize(12, 12);
+		m_pCurveButton = new QPushButton(/*this*/);
+		m_pCurveButton->setFlat(true);
+		m_pCurveButton->setIconSize(iconSize);
+		m_pCurveButton->setMaximumSize(iconSize + QSize(4, 4));
+		QGridLayout *pGridLayout
+			=  static_cast<QGridLayout *> (QWidget::layout());
+		if (pGridLayout) {
+			pGridLayout->addWidget(m_pCurveButton, 0, 2,
+				Qt::AlignRight | Qt::AlignVCenter);
+		//	pGridLayout->setColumnMinimumWidth(3, 32);
+		}
+		QObject::connect(m_pCurveButton,
+			SIGNAL(clicked()),
+			SLOT(curveButtonClicked()));
+	}
+
+	qtractorCurve *pCurve = nullptr;
+	qtractorSubject *pSubject = pMidiObserver->subject();
+	if (pSubject)
+		pCurve = pSubject->curve();
+	if (pCurve && pCurve->isCapture())
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveCapture.png"));
+	else
+	if (pCurve && pCurve->isProcess())
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveProcess.png"));
+	else
+	if (pCurve)
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveEnabled.png"));
+	else
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveNone.png"));
+}
+
+
+// Automation curve selector.
+void qtractorPluginPropertyWidget::curveButtonClicked (void)
+{
+	const QPoint& pos = m_pCurveButton->geometry().center();
+	qtractorMidiControlObserverForm::midiControlMenu(this, pos);
 }
 
 
 // Property file selector.
-void qtractorPluginPropertyWidget::buttonClicked (void)
+void qtractorPluginPropertyWidget::toolButtonClicked (void)
 {
 	// Sure we have this...
 	if (m_pComboBox == nullptr)

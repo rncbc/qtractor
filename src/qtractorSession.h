@@ -403,8 +403,12 @@ public:
 	// Instrument names mapping.
 	qtractorInstrumentList *instruments() const;
 
+	// Manage curve-lists to specific tracks.
+	void acquireTrackCurveList(qtractorTrack *pTrack);
+	void releaseTrackCurveList(qtractorTrack *pTrack);
+
 	// Find track of specific curve-list.
-	qtractorTrack *findTrack(qtractorCurveList *pCurveList) const;
+	qtractorTrack *findTrackCurveList(qtractorCurveList *pCurveList) const;
 
 	// Find track of specific name.
 	qtractorTrack *findTrack(const QString& sTrackName) const;

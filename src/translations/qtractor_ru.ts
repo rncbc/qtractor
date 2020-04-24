@@ -688,63 +688,63 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="104"/>
+        <location filename="../qtractorCurveCommand.cpp" line="110"/>
         <source>automation select</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="131"/>
+        <location filename="../qtractorCurveCommand.cpp" line="137"/>
         <source>automation mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="159"/>
+        <location filename="../qtractorCurveCommand.cpp" line="165"/>
         <source>automation play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="188"/>
-        <location filename="../qtractorCurveCommand.cpp" line="526"/>
+        <location filename="../qtractorCurveCommand.cpp" line="194"/>
+        <location filename="../qtractorCurveCommand.cpp" line="532"/>
         <source>automation record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="217"/>
+        <location filename="../qtractorCurveCommand.cpp" line="223"/>
         <source>automation logarithmic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="244"/>
+        <location filename="../qtractorCurveCommand.cpp" line="250"/>
         <source>automation color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="271"/>
+        <location filename="../qtractorCurveCommand.cpp" line="277"/>
         <source>automation play all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="300"/>
+        <location filename="../qtractorCurveCommand.cpp" line="306"/>
         <source>automation record all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="335"/>
+        <location filename="../qtractorCurveCommand.cpp" line="341"/>
         <source>automation edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="397"/>
+        <location filename="../qtractorCurveCommand.cpp" line="403"/>
         <source>automation clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="414"/>
+        <location filename="../qtractorCurveCommand.cpp" line="420"/>
         <source>automation clear all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorCurveCommand.cpp" line="467"/>
+        <location filename="../qtractorCurveCommand.cpp" line="473"/>
         <source>automation edit list</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12847,46 +12847,46 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorPluginForm</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="212"/>
+        <location filename="../qtractorPluginForm.cpp" line="214"/>
         <source>Page %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="320"/>
+        <location filename="../qtractorPluginForm.cpp" line="322"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="438"/>
-        <location filename="../qtractorPluginForm.cpp" line="459"/>
+        <location filename="../qtractorPluginForm.cpp" line="440"/>
+        <location filename="../qtractorPluginForm.cpp" line="461"/>
         <source>(none)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="552"/>
+        <location filename="../qtractorPluginForm.cpp" line="554"/>
         <source>Open Preset</source>
         <translation>Открыть предустановку</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="555"/>
-        <location filename="../qtractorPluginForm.cpp" line="651"/>
+        <location filename="../qtractorPluginForm.cpp" line="557"/>
+        <location filename="../qtractorPluginForm.cpp" line="653"/>
         <source>Preset files (*.%1)</source>
         <translation>Файлы предустановок (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="556"/>
-        <location filename="../qtractorPluginForm.cpp" line="652"/>
+        <location filename="../qtractorPluginForm.cpp" line="558"/>
+        <location filename="../qtractorPluginForm.cpp" line="654"/>
         <source>All files (*.*)</source>
         <translation type="unfinished">Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="597"/>
-        <location filename="../qtractorPluginForm.cpp" line="696"/>
+        <location filename="../qtractorPluginForm.cpp" line="599"/>
+        <location filename="../qtractorPluginForm.cpp" line="698"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="598"/>
+        <location filename="../qtractorPluginForm.cpp" line="600"/>
         <source>Preset could not be loaded from file:
 
 &quot;%1&quot;.
@@ -12895,12 +12895,12 @@ Sorry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="649"/>
+        <location filename="../qtractorPluginForm.cpp" line="651"/>
         <source>Save Preset</source>
         <translation>Сохранить предустановку</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="697"/>
+        <location filename="../qtractorPluginForm.cpp" line="699"/>
         <source>Preset could not be saved to file:
 
 &quot;%1&quot;.
@@ -12909,12 +12909,12 @@ Sorry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="729"/>
+        <location filename="../qtractorPluginForm.cpp" line="731"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="730"/>
+        <location filename="../qtractorPluginForm.cpp" line="732"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -12927,17 +12927,17 @@ Are you sure?</source>
 Вы уверены?</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1128"/>
+        <location filename="../qtractorPluginForm.cpp" line="1130"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1132"/>
+        <location filename="../qtractorPluginForm.cpp" line="1134"/>
         <source>(no latency)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="908"/>
+        <location filename="../qtractorPluginForm.cpp" line="910"/>
         <source>&amp;None</source>
         <translation type="unfinished">&amp;Снять выделение</translation>
     </message>
@@ -13243,7 +13243,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1527"/>
+        <location filename="../qtractorPluginForm.cpp" line="1690"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>

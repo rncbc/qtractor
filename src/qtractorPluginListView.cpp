@@ -1579,7 +1579,7 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 	return true;
 }
 
-bool qtractorPluginListView::canDropItem (  QDropEvent *pDropEvent  )
+bool qtractorPluginListView::canDropItem ( QDropEvent *pDropEvent  )
 {
 	const bool bCanDropItem = canDropEvent(pDropEvent);
 	
