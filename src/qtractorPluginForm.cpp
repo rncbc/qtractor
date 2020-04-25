@@ -259,6 +259,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	int iRow = 0;
 	int iColumn = 0;
 
+	iColumnsPerPage += (iColumnsPerPage - 1); // Plus gap columns!
+
 	QListIterator<QWidget *> iter(widgets);
 	while (iter.hasNext()) {
 		pGridLayout->addWidget(iter.next(), iRow, iColumn);
@@ -276,6 +278,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 					++iPage;
 				}
 			}
+			else
+			pGridLayout->setColumnMinimumWidth(iColumn++, 8); // Gap column!
 		}
 	}
 
@@ -1362,6 +1366,11 @@ void qtractorPluginParamWidget::updateCurveButton (void)
 	if (pSession == nullptr)
 		return;
 
+	QGridLayout *pGridLayout
+		=  static_cast<QGridLayout *> (QWidget::layout());
+	if (pGridLayout == nullptr)
+		return;
+
 	qtractorMidiControlObserver *pMidiObserver
 		= static_cast<qtractorMidiControlObserver *> (m_pParam->observer());
 	if (pMidiObserver == nullptr)
@@ -1377,6 +1386,7 @@ void qtractorPluginParamWidget::updateCurveButton (void)
 			m_pCurveButton->hide();
 			delete m_pCurveButton;
 			m_pCurveButton = nullptr;
+			pGridLayout->setColumnMinimumWidth(3, 0);
 		}
 		// Bail out!
 		return;
@@ -1388,13 +1398,9 @@ void qtractorPluginParamWidget::updateCurveButton (void)
 		m_pCurveButton->setFlat(true);
 		m_pCurveButton->setIconSize(iconSize);
 		m_pCurveButton->setMaximumSize(iconSize + QSize(4, 4));
-		QGridLayout *pGridLayout
-			=  static_cast<QGridLayout *> (QWidget::layout());
-		if (pGridLayout) {
-			pGridLayout->addWidget(m_pCurveButton, 0, 3,
-				Qt::AlignRight | Qt::AlignVCenter);
-			pGridLayout->setColumnMinimumWidth(3, 32);
-		}
+		pGridLayout->addWidget(m_pCurveButton, 0, 3,
+			Qt::AlignRight | Qt::AlignVCenter);
+		pGridLayout->setColumnMinimumWidth(3, 22);
 		QObject::connect(m_pCurveButton,
 			SIGNAL(clicked()),
 			SLOT(curveButtonClicked()));
@@ -1427,7 +1433,7 @@ void qtractorPluginParamWidget::updateValue ( float fValue )
 // Automation curve selector.
 void qtractorPluginParamWidget::curveButtonClicked (void)
 {
-	const QPoint& pos = m_pCurveButton->geometry().center();
+	const QPoint& pos = m_pCurveButton->geometry().bottomLeft();
 	qtractorMidiControlObserverForm::midiControlMenu(this, pos);
 }
 
@@ -1454,7 +1460,7 @@ qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
 	pGridLayout->setSpacing(4);
 
 //	pGridLayout->setColumnMinimumWidth(0, 120);
-	pGridLayout->setColumnMinimumWidth(2, 32);
+	pGridLayout->setColumnMinimumWidth(2, 22);
 	if (m_pProp->isToggled()) {
 		m_pCheckBox = new qtractorObserverCheckBox(/*this*/);
 	//	m_pCheckBox->setMinimumWidth(120);
@@ -1604,6 +1610,11 @@ void qtractorPluginPropertyWidget::updateCurveButton (void)
 	if (pSession == nullptr)
 		return;
 
+	QGridLayout *pGridLayout
+		=  static_cast<QGridLayout *> (QWidget::layout());
+	if (pGridLayout == nullptr)
+		return;
+
 	qtractorMidiControlObserver *pMidiObserver
 		= static_cast<qtractorMidiControlObserver *> (m_pProp->observer());
 	if (pMidiObserver == nullptr)
@@ -1619,6 +1630,7 @@ void qtractorPluginPropertyWidget::updateCurveButton (void)
 			m_pCurveButton->hide();
 			delete m_pCurveButton;
 			m_pCurveButton = nullptr;
+		//	pGridLayout->setColumnMinimumWidth(2, 0);
 		}
 		// Bail out!
 		return;
@@ -1630,13 +1642,9 @@ void qtractorPluginPropertyWidget::updateCurveButton (void)
 		m_pCurveButton->setFlat(true);
 		m_pCurveButton->setIconSize(iconSize);
 		m_pCurveButton->setMaximumSize(iconSize + QSize(4, 4));
-		QGridLayout *pGridLayout
-			=  static_cast<QGridLayout *> (QWidget::layout());
-		if (pGridLayout) {
-			pGridLayout->addWidget(m_pCurveButton, 0, 2,
-				Qt::AlignRight | Qt::AlignVCenter);
-		//	pGridLayout->setColumnMinimumWidth(3, 32);
-		}
+		pGridLayout->addWidget(m_pCurveButton, 0, 2,
+			Qt::AlignRight | Qt::AlignVCenter);
+	//	pGridLayout->setColumnMinimumWidth(2, 22);
 		QObject::connect(m_pCurveButton,
 			SIGNAL(clicked()),
 			SLOT(curveButtonClicked()));
@@ -1662,7 +1670,7 @@ void qtractorPluginPropertyWidget::updateCurveButton (void)
 // Automation curve selector.
 void qtractorPluginPropertyWidget::curveButtonClicked (void)
 {
-	const QPoint& pos = m_pCurveButton->geometry().center();
+	const QPoint& pos = m_pCurveButton->geometry().bottomLeft();
 	qtractorMidiControlObserverForm::midiControlMenu(this, pos);
 }
 
