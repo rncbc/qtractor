@@ -13349,7 +13349,7 @@ Jste si jistý?</translation>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1698"/>
+        <location filename="../qtractorPluginForm.cpp" line="1701"/>
         <source>Open File</source>
         <translation>Otevřít soubor</translation>
     </message>

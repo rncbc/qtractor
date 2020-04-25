@@ -13335,7 +13335,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1698"/>
+        <location filename="../qtractorPluginForm.cpp" line="1701"/>
         <source>Open File</source>
         <translation>Apri file</translation>
     </message>

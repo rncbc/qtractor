@@ -13350,7 +13350,7 @@ Posso continuar?</translation>
 <context>
     <name>qtractorPluginPropertyWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1698"/>
+        <location filename="../qtractorPluginForm.cpp" line="1701"/>
         <source>Open File</source>
         <translation>Abrir Arquivo</translation>
     </message>

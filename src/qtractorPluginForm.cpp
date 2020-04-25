@@ -1259,6 +1259,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pSpinBox->setAlignment(Qt::AlignHCenter);
 		m_pSpinBox->setSubject(m_pParam->subject());
 	//	m_pSpinBox->setValue(int(m_pParam->value()));
+		m_pSpinBox->setMinimumWidth(64);
+		m_pSpinBox->setMaximumWidth(96);
 		pGridLayout->addWidget(m_pSpinBox, 0, 1,
 			Qt::AlignRight | Qt::AlignVCenter);
 		m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
@@ -1308,7 +1310,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pSpinBox->setAccelerated(true);
 			m_pSpinBox->setSubject(m_pParam->subject());
 		//	m_pSpinBox->setValue(m_pParam->value());
-			m_pSpinBox->setMaximumWidth(64);
+			m_pSpinBox->setMinimumWidth(64);
+			m_pSpinBox->setMaximumWidth(96);
 			pGridLayout->addWidget(m_pSpinBox, 1, 3);
 		}
 	}
