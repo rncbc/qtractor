@@ -730,6 +730,16 @@ public:
 	bool isString()  const;
 	bool isPath()    const;
 
+protected:
+
+	// Fake property predicates.
+	bool isBoundedBelow() const;
+	bool isBoundedAbove() const;
+	bool isDefaultValue() const;
+	bool isLogarithmic()  const;
+	bool isSampleRate()   const;
+	bool isDisplay()      const;
+
 private:
 
 	// Instance variables.

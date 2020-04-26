@@ -434,7 +434,7 @@ MIDI:	</translation>
         <translation>Attiva</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2278"/>
+        <location filename="../qtractorPlugin.cpp" line="2255"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin non trovata.</translation>
     </message>
@@ -13335,7 +13335,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1629"/>
+        <location filename="../qtractorPluginForm.cpp" line="1551"/>
         <source>Open File</source>
         <translation type="unfinished">Apri file</translation>
     </message>

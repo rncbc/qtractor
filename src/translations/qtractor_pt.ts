@@ -821,7 +821,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>%1: Arquivo de automação/curva não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2278"/>
+        <location filename="../qtractorPlugin.cpp" line="2255"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>
@@ -13350,7 +13350,7 @@ Posso continuar?</translation>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1629"/>
+        <location filename="../qtractorPluginForm.cpp" line="1551"/>
         <source>Open File</source>
         <translation type="unfinished">Abrir Arquivo</translation>
     </message>

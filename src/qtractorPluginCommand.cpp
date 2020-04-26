@@ -739,9 +739,9 @@ bool qtractorPluginPropertyCommand::redo (void)
 		return false;
 
 	// Save the current toggled state alright...
-	const QVariant value = m_pProp->value();
+	const QVariant value = m_pProp->variant();
 
-	m_pProp->setValue(m_value, true);
+	m_pProp->setVariant(m_value, true);
 
 	// Set undo value.
 	m_value = value;
@@ -753,7 +753,7 @@ bool qtractorPluginPropertyCommand::redo (void)
 			qtractorLv2Plugin *pLv2Plugin
 				= static_cast<qtractorLv2Plugin *> (pPlugin);
 			if (pLv2Plugin)
-				pLv2Plugin->lv2_property_update(m_pProp->id());
+				pLv2Plugin->lv2_property_update(m_pProp->index());
 		}
 	}
 #endif

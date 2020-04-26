@@ -52,7 +52,6 @@ class qtractorCurveFile;
 //----------------------------------------------------------------------------
 // qtractorPluginFile -- Plugin file library instance.
 //
-
 class qtractorPluginFile
 {
 public:
@@ -720,7 +719,7 @@ public:
 	float prevValue() const
 		{ return m_observer.prevValue(); }
 
-	// Parameter update method.
+	// Parameter update executive method.
 	void updateValue(float fValue, bool bUpdate);
 
 	// Reset-to-default method.
@@ -735,6 +734,11 @@ public:
 	// Parameter decimals helper (cached).
 	int decimals() const
 		{ return m_iDecimals; }
+
+protected:
+
+	// Virtual observer updater.
+	virtual void update(float fValue, bool bUpdate);
 
 private:
 
@@ -771,22 +775,14 @@ private:
 // qtractorPlugin::Property -- Plugin property (aka. parameter) instance.
 //
 
-class qtractorPlugin::Property
+class qtractorPlugin::Property : public qtractorPlugin::Param
 {
 public:
 
 	// Constructor.
 	Property(qtractorPlugin *pPlugin, unsigned long iProperty)
-		: m_pPlugin(pPlugin), m_iProperty(iProperty),
-			m_sKey(QString::number(m_iProperty)),
-			m_subject(0.0f), m_observer(this), m_iDecimals(-1) {}
-
-	// Virtual destructor.
-	virtual ~Property() {}
-
-	// Main properties accessors.
-	qtractorPlugin *plugin() const { return m_pPlugin; }
-	unsigned long   id()     const { return m_iProperty;  }
+		: Param(pPlugin , iProperty),
+			m_sKey(QString::number(iProperty)) {}
 
 	// Property key/id accessors.
 	void setKey(const QString& sKey)
@@ -795,90 +791,33 @@ public:
 		{ return m_sKey; }
 
 	// Property index/hash-key accessor.
-	unsigned long index() const { return qHash(m_sKey); }
-
-	// Property name accessors.
-	void setName(const QString& sName)
-		{ m_subject.setName(sName); }
-	const QString& name() const
-		{ return m_subject.name(); }
+	unsigned long key_index() const { return qHash(m_sKey); }
 
 	// Property range hints predicate methods.
-	virtual bool isToggled() const = 0;
-	virtual bool isInteger() const = 0;
-	virtual bool isString()  const = 0;
-	virtual bool isPath()    const = 0;
+	virtual bool isString() const = 0;
+	virtual bool isPath()   const = 0;
 
 	// Property special predicate methods.
 	virtual bool isAutomatable () const
 		{ return !isString() && !isPath(); }
 
-	// Bounding range values.
-	void setMinValue(float fMinValue)
-		{ m_subject.setMinValue(fMinValue); }
-	float minValue() const
-		{ return m_subject.minValue(); }
-
-	void setMaxValue(float fMaxValue)
-		{ m_subject.setMaxValue(fMaxValue); }
-	float maxValue() const
-		{ return m_subject.maxValue(); }
-
-	// Default value
-	void setDefaultValue(float fDefaultValue)
-		{ m_subject.setDefaultValue(fDefaultValue); }
-	float defaultValue() const
-		{ return m_subject.defaultValue(); }
-
 	// Main property value.
-	void setValue(const QVariant& value, bool bUpdate = false);
-	const QVariant& value() const
+	void setVariant(const QVariant& value, bool bUpdate = false);
+	const QVariant& variant() const
 		{ return m_value; }
 
-	// Direct parameter subject value.
-	qtractorSubject *subject() { return &m_subject; }
+protected:
 
-	// Specialized observer value.
-	qtractorMidiControlObserver *observer() { return &m_observer; }
-
-	// Property decimals helper (cached).
-	int decimals() const
-		{ return m_iDecimals; }
+	// Virtual observer updater.
+	void update(float fValue, bool bUpdate);
 
 private:
-
-	// Instance variables.
-	qtractorPlugin *m_pPlugin;
-	unsigned long   m_iProperty;
 
 	// Property key id..
 	QString m_sKey;
 
 	// Propery value.
 	QVariant m_value;
-
-	// Property subject value.
-	qtractorSubject m_subject;
-
-	// Property observer manager.
-	class Observer : public qtractorMidiControlObserver
-	{
-	public:
-		// Constructor.
-		Observer(Property *pProp);
-
-	protected:
-		// Virtual observer updater.
-		void update(bool bUpdate);
-
-	private:
-		// Instance members.
-		Property *m_pProp;
-
-	} m_observer;
-
-	// Decimals cache.
-	int m_iDecimals;
 };
 
 

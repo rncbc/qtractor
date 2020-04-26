@@ -49,8 +49,6 @@ class QComboBox;
 class QPushButton;
 class QToolButton;
 
-class QGridLayout;
-
 
 //----------------------------------------------------------------------------
 // qtractorPluginForm -- UI wrapper form.
@@ -157,14 +155,6 @@ public:
 	// Constructors.
 	qtractorPluginParamWidget(qtractorPlugin::Param *pParam,
 		QWidget *pParent = nullptr);
-	qtractorPluginParamWidget(qtractorPlugin::Property *pProp,
-		QWidget *pParent = nullptr);
-
-	// Main properties accessors.
-	qtractorPlugin::Param *param() const
-		{ return m_pParam; }
-	qtractorPlugin::Property *property() const
-		{ return m_pProp; }
 
 	// Refreshner-loader method.
 	void refresh();
@@ -185,14 +175,8 @@ protected slots:
 
 protected:
 
-	// Initializers.
-	void initParamWidget();
-
-	void initParamLayout(QGridLayout *pGridLayout);
-	void initPropertyLayout(QGridLayout *pGridLayout);
-
-	// Adaptor predicate methods.
-	bool isAutomatable() const;
+	// Param/Property discriminator..
+	qtractorPlugin::Property *property () const;
 
 	// Parameter automation curve status update/refresh.
 	void updateCurveButton();
@@ -206,8 +190,7 @@ private:
 	class SliderInterface;
 
 	// Instance variables.
-	qtractorPlugin::Param    *m_pParam;
-	qtractorPlugin::Property *m_pProp;
+	qtractorPlugin::Param *m_pParam;
 
 	// Some possible managed widgets.
 	qtractorObserverCheckBox *m_pCheckBox;

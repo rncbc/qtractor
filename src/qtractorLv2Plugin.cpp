@@ -3918,7 +3918,7 @@ LV2UI_Request_Value_Status qtractorLv2Plugin::lv2_ui_request_value (
 	if (type != g_lv2_urids.atom_Path)
 		return LV2UI_REQUEST_VALUE_ERR_UNSUPPORTED;
 
-	QString sFilename = pProp->value().toString();
+	QString sFilename = pProp->variant().toString();
 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_request_value(%d, %d) [%s=\"%s\"]",
@@ -3956,7 +3956,7 @@ LV2UI_Request_Value_Status qtractorLv2Plugin::lv2_ui_request_value (
 		sFilename = fileDialog.selectedFiles().first();
 #endif
 	if (!sFilename.isEmpty()) {
-		pProp->setValue(QFileInfo(sFilename).canonicalFilePath(), true);
+		pProp->setVariant(QFileInfo(sFilename).canonicalFilePath(), true);
 		lv2_property_update(key);
 	}
 
@@ -4330,22 +4330,22 @@ void qtractorLv2Plugin::lv2_property_changed (
 #endif
 
 	if (type == g_lv2_urids.atom_Bool)
-		pProp->setValue(bool(*(const int32_t *) body));
+		pProp->setVariant(bool(*(const int32_t *) body));
 	else
 	if (type == g_lv2_urids.atom_Int)
-		pProp->setValue(int(*(const int32_t *) body));
+		pProp->setVariant(int(*(const int32_t *) body));
 	else
 	if (type == g_lv2_urids.atom_Long)
-		pProp->setValue(qlonglong(*(const int64_t *) body));
+		pProp->setVariant(qlonglong(*(const int64_t *) body));
 	else
 	if (type == g_lv2_urids.atom_Float)
-		pProp->setValue(*(const float *) body);
+		pProp->setVariant(*(const float *) body);
 	else
 	if (type == g_lv2_urids.atom_Double)
-		pProp->setValue(*(const double *) body);
+		pProp->setVariant(*(const double *) body);
 	else
 	if (type == g_lv2_urids.atom_String || type == g_lv2_urids.atom_Path)
-		pProp->setValue(QByteArray((const char *) body, size));
+		pProp->setVariant(QByteArray((const char *) body, size));
 
 	// Update the stock/generic form if visible...
 	refreshForm();
@@ -4369,7 +4369,7 @@ void qtractorLv2Plugin::lv2_property_update ( LV2_URID key )
 		return;
 
 	LV2_URID type = pProp->type();
-	const QVariant& value = pProp->value();
+	const QVariant& value = pProp->variant();
 
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_property_update(%u) [%s]",
@@ -5527,6 +5527,26 @@ bool qtractorLv2Plugin::Property::isString (void) const
 
 bool qtractorLv2Plugin::Property::isPath (void) const
 	{ return (m_type == g_lv2_urids.atom_Path); }
+
+
+// Fake property predicates.
+bool qtractorLv2Plugin::Property::isBoundedBelow (void) const
+	{ return !isString() && !isPath(); }
+
+bool qtractorLv2Plugin::Property::isBoundedAbove (void) const
+	{ return !isString() && !isPath(); }
+
+bool qtractorLv2Plugin::Property::isDefaultValue (void) const
+	{ return !isString() && !isPath(); }
+
+bool qtractorLv2Plugin::Property::isLogarithmic (void) const
+	{ return false; }
+
+bool qtractorLv2Plugin::Property::isSampleRate (void) const
+	{ return false; }
+
+bool qtractorLv2Plugin::Property::isDisplay (void) const
+	{ return false; }
 
 
 #endif	// CONFIG_LV2_PATCH

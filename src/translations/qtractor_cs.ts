@@ -237,7 +237,7 @@ MIDI:	</translation>
         <translation>Zapnout</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2278"/>
+        <location filename="../qtractorPlugin.cpp" line="2255"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 přídavný modul nenalezen.</translation>
     </message>
@@ -13349,7 +13349,7 @@ Jste si jistý?</translation>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1629"/>
+        <location filename="../qtractorPluginForm.cpp" line="1551"/>
         <source>Open File</source>
         <translation type="unfinished">Otevřít soubor</translation>
     </message>
