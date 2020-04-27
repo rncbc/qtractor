@@ -256,7 +256,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	int iColumn = 0;
 
 	iColumnsPerPage += (iColumnsPerPage - 1); // Plus gap columns!
-	pGridLayout->setColumnStretch(iColumn, 1);
+	if (!m_paramWidgets.isEmpty())
+		pGridLayout->setColumnStretch(iColumn, 1);
 	QListIterator<qtractorPluginParamWidget *> iter(m_paramWidgets);
 	while (iter.hasNext()) {
 		pGridLayout->addWidget(iter.next(), iRow, iColumn);
