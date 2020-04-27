@@ -5549,8 +5549,24 @@ bool qtractorLv2Plugin::Property::isDisplay (void) const
 	{ return false; }
 
 
-#endif	// CONFIG_LV2_PATCH
+// Virtual observer updater.
+void qtractorLv2Plugin::Property::update ( float fValue, bool bUpdate )
+{
+	qtractorPlugin::Property::update(fValue, bUpdate);
 
+	if (bUpdate) {
+		qtractorPlugin *pPlugin = plugin();
+		qtractorPluginType *pType = pPlugin->type();
+		if (pType->typeHint() == qtractorPluginType::Lv2) {
+			qtractorLv2Plugin *pLv2Plugin
+				= static_cast<qtractorLv2Plugin *> (pPlugin);
+			if (pLv2Plugin)
+				pLv2Plugin->lv2_property_update(index());
+		}
+	}
+}
+
+#endif	// CONFIG_LV2_PATCH
 
 #endif	// CONFIG_LV2
 

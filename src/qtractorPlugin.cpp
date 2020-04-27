@@ -1648,19 +1648,6 @@ void qtractorPlugin::Property::setVariant ( const QVariant& value, bool bUpdate 
 void qtractorPlugin::Property::update ( float fValue, bool bUpdate )
 {
 	setVariant(fValue, bUpdate);
-
-#ifdef CONFIG_LV2_PATCH
-	if (bUpdate) {
-		qtractorPlugin *pPlugin = plugin();
-		qtractorPluginType *pType = pPlugin->type();
-		if (pType->typeHint() == qtractorPluginType::Lv2) {
-			qtractorLv2Plugin *pLv2Plugin
-				= static_cast<qtractorLv2Plugin *> (pPlugin);
-			if (pLv2Plugin)
-				pLv2Plugin->lv2_property_update(index());
-		}
-	}
-#endif
 }
 
 

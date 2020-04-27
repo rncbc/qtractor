@@ -740,6 +740,9 @@ protected:
 	bool isSampleRate()   const;
 	bool isDisplay()      const;
 
+	// Virtual observer updater.
+	void update(float fValue, bool bUpdate);
+
 private:
 
 	// Instance variables.
