@@ -517,6 +517,7 @@ private:
 #ifdef CONFIG_LIBSUIL
 	SuilHost      *m_suil_host;
 	SuilInstance  *m_suil_instance;
+	bool           m_suil_support;
 #endif
 
 #ifdef CONFIG_LV2_ATOM

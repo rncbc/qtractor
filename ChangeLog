@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 plug-in UI GTK2 and X11 in Qt5 host native support
+  in addition and alternative to libsuil. (EXPERIMENTAL)
+
 - Generic plug-in/Properties... dialog now showing each
   parameter/property automation status on a skeuomorphic
   aka. fake and tiny LED ;) (EXPERIMENTAL)

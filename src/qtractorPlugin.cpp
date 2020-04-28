@@ -1520,7 +1520,7 @@ bool qtractorPlugin::savePluginEx (
 				QString::number(posForm.y()), pElement);
 		}
 		const int iEditorType = editorType();
-		if (iEditorType >= 0) {
+		if (iEditorType > 0) {
 			pDocument->saveTextElement("editor-type",
 				QString::number(iEditorType), pElement);
 		}
