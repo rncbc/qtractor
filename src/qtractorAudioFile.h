@@ -1,7 +1,7 @@
 // qtractorAudioFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -80,14 +80,6 @@ public:
 	// Supported file types.
 	enum FileType { SndFile, VorbisFile, MadFile };
 
-	// Factory methods.
-	static qtractorAudioFile *createAudioFile (
-		const QString& sFilename, unsigned short iChannels = 0,
-		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
-	static qtractorAudioFile *createAudioFile (
-		FileType type, unsigned short iChannels = 0,
-		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
-
 	// Audio file format descriptor.
 	struct FileFormat
 	{
@@ -124,18 +116,23 @@ public:
 	// Check whether given file type/format is valid.
 	static bool isValidFormat(const FileFormat *pFormat, int iFormat);
 
+	// Factory methods.
+	static qtractorAudioFile *createAudioFile (const QString& sFilename,
+		unsigned short iChannels = 0, unsigned int iSampleRate = 0,
+		unsigned int iBufferSize = 0, int iFormat = 0);
+	static qtractorAudioFile *createAudioFile (const FileFormat *pFormat,
+		unsigned short iChannels = 0, unsigned int iSampleRate = 0,
+		unsigned int iBufferSize = 0, int iFormat = 0);
+
 protected:
 
 	// Instance factory methods.
-	qtractorAudioFile *newAudioFile (
-		const QString& sFilename, unsigned short iChannels,
-		unsigned int iSampleRate, unsigned int iBufferSize);
-	qtractorAudioFile *newAudioFile (
-		FileType type, unsigned short iChannels,
-		unsigned int iSampleRate, unsigned int iBufferSize);
-
-	// Translate format index into libsndfile specific...
-	static int format(const FileFormat *pFormat, int iFormat);
+	qtractorAudioFile *newAudioFile (const QString& sFilename,
+		unsigned short iChannels, unsigned int iSampleRate,
+		unsigned int iBufferSize, int iFormat);
+	qtractorAudioFile *newAudioFile (const FileFormat *pFormat,
+		unsigned short iChannels, unsigned int iSampleRate,
+		unsigned int iBufferSize, int iFormat);
 
 private:
 

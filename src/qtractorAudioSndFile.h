@@ -1,7 +1,7 @@
 // qtractorAudioSndFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,7 +38,8 @@ public:
 
 	// Constructor.
 	qtractorAudioSndFile(unsigned short iChannels = 0,
-		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
+		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0,
+		int iFormat = 0);
 
 	// Destructor.
 	virtual ~qtractorAudioSndFile();
@@ -56,7 +57,10 @@ public:
 	unsigned long  frames() const;
 
 	// Specialty methods.
-	unsigned int   sampleRate() const;
+	unsigned int sampleRate() const;
+
+	// Translate format index into libsndfile specific...
+	static int format(int iFormat);
 
 protected:
 
