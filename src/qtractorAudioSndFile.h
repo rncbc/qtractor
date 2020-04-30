@@ -59,8 +59,11 @@ public:
 	// Specialty methods.
 	unsigned int sampleRate() const;
 
-	// Translate format index into libsndfile specific...
-	static int format(int iFormat);
+	// Check whether given file type/format is valid. (static)
+	static bool isValidFormat(int iType, int iFormat);
+
+	// Translate format index into libsndfile specific. (static)
+	static int format(int iType, int iFormat);
 
 protected:
 

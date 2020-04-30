@@ -153,7 +153,8 @@ public:
 	// Audio-export method.
 	bool fileExport(const QString& sExportPath,
 		const QList<qtractorAudioBus *>& exportBuses,
-		unsigned long iExportStart = 0, unsigned long iExportEnd = 0);
+		unsigned long iExportStart, unsigned long iExportEnd,
+		int iExportFormat = -1);
 
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);

@@ -110,29 +110,24 @@ public:
 		int iFormat = 0, int iQuality = 4);
 
 	static QString defaultExt();
-	static int defaultFormat();
-	static int defaultQuality();
 
-	// Check whether given file type/format is valid.
+	// Check whether given file type/format is valid. (static)
 	static bool isValidFormat(const FileFormat *pFormat, int iFormat);
 
-	// Factory methods.
+	// Factory method. (static)
 	static qtractorAudioFile *createAudioFile (const QString& sFilename,
 		unsigned short iChannels = 0, unsigned int iSampleRate = 0,
-		unsigned int iBufferSize = 0, int iFormat = 0);
-	static qtractorAudioFile *createAudioFile (const FileFormat *pFormat,
-		unsigned short iChannels = 0, unsigned int iSampleRate = 0,
-		unsigned int iBufferSize = 0, int iFormat = 0);
+		unsigned int iBufferSize = 0, int iFormat = -1);
 
 protected:
 
-	// Instance factory methods.
+	// Instance factory method.
 	qtractorAudioFile *newAudioFile (const QString& sFilename,
 		unsigned short iChannels, unsigned int iSampleRate,
 		unsigned int iBufferSize, int iFormat);
-	qtractorAudioFile *newAudioFile (const FileFormat *pFormat,
-		unsigned short iChannels, unsigned int iSampleRate,
-		unsigned int iBufferSize, int iFormat);
+
+	static int defaultFormat();
+	static int defaultQuality();
 
 private:
 
@@ -146,8 +141,8 @@ private:
 
 	// Default file format/type (for capture/record)
 	FileFormat *m_pDefaultFormat;
-	int m_iDefaultFormat;
-	int m_iDefaultQuality;
+	int         m_iDefaultFormat;
+	int         m_iDefaultQuality;
 
 	// The singleton instance.
 	static qtractorAudioFileFactory *g_pInstance;

@@ -152,7 +152,7 @@ qtractorAudioFileFactory::~qtractorAudioFileFactory (void)
 }
 
 
-// Factory methods.
+// Factory method. (static)
 qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
 	const QString& sFilename, unsigned short iChannels,
 	unsigned int iSampleRate, unsigned int iBufferSize, int iFormat )
@@ -161,45 +161,32 @@ qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
 		sFilename, iChannels, iSampleRate, iBufferSize, iFormat);
 }
 
-qtractorAudioFile *qtractorAudioFileFactory::createAudioFile (
-	const FileFormat *pFormat, unsigned short iChannels,
-	unsigned int iSampleRate, unsigned int iBufferSize, int iFormat )
-{
-	return g_pInstance->newAudioFile(
-		pFormat, iChannels, iSampleRate, iBufferSize, iFormat);
-}
 
-
-// Internal factory methods.
+// Internal factory method.
 qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	const QString& sFilename, unsigned short iChannels,
 	unsigned int iSampleRate, unsigned int iBufferSize, int iFormat )
 {
 	const QString& sExt = QFileInfo(sFilename).suffix().toLower();
 	const FileFormat *pFormat = m_types.value(sExt, nullptr);
-
-	if (!isValidFormat(pFormat, iFormat))
+	if (pFormat == nullptr)
 		return nullptr;
 
-	return newAudioFile(pFormat, iChannels, iSampleRate, iBufferSize, iFormat);
-}
-
-
-qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
-	const FileFormat *pFormat, unsigned short iChannels,
-	unsigned int iSampleRate, unsigned int iBufferSize, int iFormat )
-{
 	switch (pFormat->type) {
 	case SndFile: {
-		if (iFormat == 0)
+		if (iFormat < 0)
 			iFormat = defaultFormat();
+		if (!qtractorAudioSndFile::isValidFormat(pFormat->data, iFormat)) {
+			iFormat = 0; // Retry with PCM Signed 16-Bit at least...
+			if (!qtractorAudioSndFile::isValidFormat(pFormat->data, iFormat))
+				return nullptr;
+		}
 		return new qtractorAudioSndFile(
 			iChannels, iSampleRate, iBufferSize,
-			(pFormat->data & SF_FORMAT_TYPEMASK) |
-			qtractorAudioSndFile::format(iFormat));
+			qtractorAudioSndFile::format(pFormat->data, iFormat));
 	}
 	case VorbisFile: {
-		if (iFormat == 0)
+		if (iFormat < 0)
 			iFormat = defaultQuality();
 		return new qtractorAudioVorbisFile(
 			iChannels, iSampleRate, iBufferSize,
@@ -286,27 +273,16 @@ int qtractorAudioFileFactory::defaultQuality (void)
 }
 
 
-// Check whether given file type/format is valid.
+// Check whether given file type/format is valid. (static)
 bool qtractorAudioFileFactory::isValidFormat (
 	const FileFormat *pFormat, int iFormat )
 {
 	if (pFormat == nullptr)
 		return false;
+	if (pFormat->type != SndFile)
+		return false;
 
-	bool bValid = true;
-
-	// Translate this to some libsndfile slang...
-	if (pFormat->type == SndFile) {
-		SF_INFO sfinfo;
-		::memset(&sfinfo, 0, sizeof(sfinfo));
-		sfinfo.samplerate = 44100;  // Dummy samplerate.
-		sfinfo.channels = 2;        // Dummy stereo.
-		sfinfo.format  = (pFormat->data & SF_FORMAT_TYPEMASK);
-		sfinfo.format |= qtractorAudioSndFile::format(iFormat);
-		bValid = ::sf_format_check(&sfinfo);
-	}
-
-	return bValid;
+	return qtractorAudioSndFile::isValidFormat(pFormat->data, iFormat);
 }
 
 

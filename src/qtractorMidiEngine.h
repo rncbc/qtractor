@@ -238,7 +238,8 @@ public:
 	// MIDI-export method.
 	bool fileExport(const QString& sExportPath,
 		const QList<qtractorMidiBus *>& exportBuses,
-		unsigned long iExportStart = 0, unsigned long iExportEnd = 0);
+		unsigned long iExportStart, unsigned long iExportEnd,
+		int iExportFormat = -1);
 
 	// Retrieve/restore all connections, on all buses;
 	// return the effective number of connection attempts.

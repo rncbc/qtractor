@@ -1478,7 +1478,7 @@ unsigned long qtractorAudioEngine::exportLength (void) const
 // Audio-export method.
 bool qtractorAudioEngine::fileExport (
 	const QString& sExportPath, const QList<qtractorAudioBus *>& exportBuses,
-	unsigned long iExportStart, unsigned long iExportEnd )
+	unsigned long iExportStart, unsigned long iExportEnd, int iExportFormat )
 {
 	// No simultaneous or foul exports...
 	if (!isActivated() || isPlaying() || isExporting())
@@ -1513,12 +1513,11 @@ bool qtractorAudioEngine::fileExport (
 	// Get proper file type class...
 	const unsigned int iChannels = pExportBus->channels();
 	qtractorAudioFile *pExportFile
-		= qtractorAudioFileFactory::createAudioFile(
-			sExportPath, iChannels, sampleRate());
+		= qtractorAudioFileFactory::createAudioFile(sExportPath,
+			iChannels, sampleRate(), bufferSize(), iExportFormat);
 	// No file ready for export?
 	if (pExportFile == nullptr)
 		return false;
-
 	// Go open it, for writeing of course...
 	if (!pExportFile->open(sExportPath, qtractorAudioFile::Write)) {
 		delete pExportFile;

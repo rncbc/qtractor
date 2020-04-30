@@ -213,25 +213,37 @@ void qtractorAudioSndFile::allocBufferCheck ( unsigned int iBufferSize )
 }
 
 
-// Translate format index into libsndfile specific...
-int qtractorAudioSndFile::format ( int iFormat )
+// Check whether given file type/format is valid. (static)
+bool qtractorAudioSndFile::isValidFormat ( int iType, int iFormat )
 {
+	SF_INFO sfinfo;
+	::memset(&sfinfo, 0, sizeof(sfinfo));
+	sfinfo.samplerate = 44100;  // Dummy samplerate.
+	sfinfo.channels = 2;        // Dummy stereo.
+	sfinfo.format = format(iType, iFormat);
+	return bool(::sf_format_check(&sfinfo));
+}
+
+
+// Translate format index into libsndfile specific. (static)
+int qtractorAudioSndFile::format ( int iType, int iFormat )
+{
+	iType &= SF_FORMAT_TYPEMASK;
+
 	// Translate this to some libsndfile slang...
 	switch (iFormat) {
 	case 4:
-		return SF_FORMAT_DOUBLE;
+		return iType | SF_FORMAT_DOUBLE;
 	case 3:
-		return SF_FORMAT_FLOAT;
+		return iType | SF_FORMAT_FLOAT;
 	case 2:
-		return SF_FORMAT_PCM_32;
+		return iType | SF_FORMAT_PCM_32;
 	case 1:
-		return SF_FORMAT_PCM_24;
+		return iType | SF_FORMAT_PCM_24;
 	case 0:
 	default:
-		return SF_FORMAT_PCM_16;
+		return iType | SF_FORMAT_PCM_16;
 	}
-
-	return 0;
 }
 
 

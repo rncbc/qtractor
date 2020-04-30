@@ -270,10 +270,12 @@ void qtractorExportForm::accept (void)
 					.arg(sExportPath));
 				// Do the export as commanded...
 				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+				// Go...
 				const bool bResult = pAudioEngine->fileExport(
 					sExportPath, exportBuses,
 					m_ui.ExportStartSpinBox->value(),
 					m_ui.ExportEndSpinBox->value());
+				// Done.
 				QApplication::restoreOverrideCursor();
 				if (bResult) {
 					// Add new tracks if necessary...
@@ -324,10 +326,12 @@ void qtractorExportForm::accept (void)
 					.arg(sExportPath));
 				// Do the export as commanded...
 				QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+				// Go...
 				const bool bResult = pMidiEngine->fileExport(
 					sExportPath, exportBuses,
 					m_ui.ExportStartSpinBox->value(),
 					m_ui.ExportEndSpinBox->value());
+				// Done.
 				QApplication::restoreOverrideCursor();
 				if (bResult) {
 					// Add new tracks if necessary...
