@@ -176,11 +176,9 @@ qtractorAudioFile *qtractorAudioFileFactory::newAudioFile (
 	case SndFile: {
 		if (iFormat < 0)
 			iFormat = defaultFormat();
-		if (!qtractorAudioSndFile::isValidFormat(pFormat->data, iFormat)) {
-			iFormat = 0; // Retry with PCM Signed 16-Bit at least...
-			if (!qtractorAudioSndFile::isValidFormat(pFormat->data, iFormat))
-				return nullptr;
-		}
+		while (iFormat > 0 && // Retry down to PCM Signed 16-Bit...
+			!qtractorAudioSndFile::isValidFormat(pFormat->data, iFormat))
+			--iFormat;
 		return new qtractorAudioSndFile(
 			iChannels, iSampleRate, iBufferSize,
 			qtractorAudioSndFile::format(pFormat->data, iFormat));
@@ -280,7 +278,7 @@ bool qtractorAudioFileFactory::isValidFormat (
 	if (pFormat == nullptr)
 		return false;
 	if (pFormat->type != SndFile)
-		return false;
+		return true;
 
 	return qtractorAudioSndFile::isValidFormat(pFormat->data, iFormat);
 }

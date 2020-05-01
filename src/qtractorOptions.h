@@ -105,6 +105,10 @@ public:
 	int     iAudioCaptureType;
 	int     iAudioCaptureFormat;
 	int     iAudioCaptureQuality;
+	QString sAudioExportExt;
+	int     iAudioExportType;
+	int     iAudioExportFormat;
+	int     iAudioExportQuality;
 	int     iAudioResampleType;
 	bool    bAudioAutoTimeStretch;
 	bool    bAudioWsolaTimeStretch;
@@ -128,6 +132,7 @@ public:
 
 	// MIDI options...
 	int  iMidiCaptureFormat;
+	int  iMidiExportFormat;
 	int  iMidiCaptureQuantize;
 	int  iMidiQueueTimer;
 	bool bMidiDriftCorrect;
@@ -151,7 +156,6 @@ public:
 
 	// MIDI metronome latency offset compensation.
 	int iMidiMetroOffset;
-
 
 	// Default options...
 	QString sSessionDir;

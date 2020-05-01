@@ -1708,7 +1708,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 		m_ui.MessagesLimitCheckBox->isChecked());
 
 	// Audio options validy check...
-	int iIndex  = m_ui.AudioCaptureTypeComboBox->currentIndex();
+	const int iIndex = m_ui.AudioCaptureTypeComboBox->currentIndex();
 	int iFormat	= m_ui.AudioCaptureTypeComboBox->itemData(iIndex).toInt();
 	const qtractorAudioFileFactory::FileFormat *pFormat
 		= qtractorAudioFileFactory::formats().at(iFormat);

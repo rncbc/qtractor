@@ -169,7 +169,7 @@
              <string>Sample &amp;Rate:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>SampleRateComboBox</cstring>
@@ -212,7 +212,7 @@
              <string>&amp;Tempo:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>TempoSpinBox</cstring>
@@ -238,7 +238,7 @@
              <string>T&amp;icks/Beat:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>TicksPerBeatSpinBox</cstring>
@@ -292,7 +292,7 @@
              <string>&amp;Snap/Beat:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>SnapPerBeatComboBox</cstring>
@@ -315,7 +315,7 @@
              <string>&amp;Pixels/Beat:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>PixelsPerBeatSpinBox</cstring>
@@ -347,7 +347,7 @@
              <string>&amp;Horizontal Zoom:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>HorizontalZoomSpinBox</cstring>
@@ -382,7 +382,7 @@
              <string>&amp;Vertical Zoom:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>VerticalZoomSpinBox</cstring>

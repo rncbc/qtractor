@@ -49,7 +49,10 @@ protected slots:
 	void accept();
 	void reject();
 
-	void browseExportPath();
+	void exportPathChanged(const QString&);
+	void exportPathClicked();
+
+	void audioExportTypeChanged(int);
 
 	void rangeChanged();
 	void formatChanged(int);

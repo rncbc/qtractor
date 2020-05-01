@@ -393,32 +393,32 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="680"/>
+        <location filename="../qtractorOptions.cpp" line="690"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Utilisation: %1 [options] [fichier-session]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="683"/>
+        <location filename="../qtractorOptions.cpp" line="693"/>
         <source>Options:</source>
         <translation>Options :</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="686"/>
+        <location filename="../qtractorOptions.cpp" line="696"/>
         <source>Set session identification (uuid)</source>
         <translation>Définir l&apos;identificateur de session (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="689"/>
+        <location filename="../qtractorOptions.cpp" line="699"/>
         <source>Show help about command line options</source>
         <translation>Afficher l&apos;aide à propos des options de ligne de commande</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="691"/>
+        <location filename="../qtractorOptions.cpp" line="701"/>
         <source>Show version information</source>
         <translation>Afficher les informations de version</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="728"/>
+        <location filename="../qtractorOptions.cpp" line="738"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>Option -s nécessite un argument (session-id).</translation>
     </message>
@@ -1871,162 +1871,237 @@ Voulez vous appliquer les changements ?</translation>
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="52"/>
+        <location filename="../qtractorExportForm.ui" line="47"/>
         <source>&amp;File:</source>
         <translation>&amp;Fichier :</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="76"/>
+        <location filename="../qtractorExportForm.ui" line="71"/>
         <source>Export file name</source>
         <translation>Nom de fichier d&apos;exportation</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="101"/>
+        <location filename="../qtractorExportForm.ui" line="96"/>
         <source>Browse export file name</source>
         <translation>Parcourir les fichiers d&apos;exportation</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="113"/>
+        <location filename="../qtractorExportForm.ui" line="128"/>
+        <source>File &amp;type:</source>
+        <translation type="unfinished">&amp;Type de fichier :</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="144"/>
+        <source>Audio file type to use on export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="160"/>
+        <source>Sample &amp;format:</source>
+        <translation type="unfinished">&amp;Format d&apos;échantillon :</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="176"/>
+        <source>Audio sample format to use on export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="192"/>
+        <source>&amp;Quality:</source>
+        <translation type="unfinished">&amp;Qualité :</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="214"/>
+        <source>Audio compression quality to use on export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="271"/>
+        <source>File &amp;format:</source>
+        <translation type="unfinished">Format de &amp;fichier :</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="287"/>
+        <source>MIDI file format to use on export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="314"/>
         <source>Range</source>
         <translation>Plage</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="125"/>
+        <location filename="../qtractorExportForm.ui" line="335"/>
         <source>Session range</source>
         <translation>Plage de session</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="128"/>
+        <location filename="../qtractorExportForm.ui" line="338"/>
         <source>&amp;Session</source>
         <translation>&amp;Session</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="138"/>
+        <location filename="../qtractorExportForm.ui" line="348"/>
         <source>Loop range</source>
         <translation>Plage de boucle</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="141"/>
+        <location filename="../qtractorExportForm.ui" line="351"/>
         <source>&amp;Loop</source>
         <translation>Bouc&amp;le</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="151"/>
+        <location filename="../qtractorExportForm.ui" line="361"/>
         <source>Punch range</source>
         <translation>Plage de Punch</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="154"/>
+        <location filename="../qtractorExportForm.ui" line="364"/>
         <source>&amp;Punch</source>
         <translation>&amp;Punch</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="164"/>
+        <location filename="../qtractorExportForm.ui" line="374"/>
         <source>Edit range</source>
         <translation>Éditer la plage</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="167"/>
+        <location filename="../qtractorExportForm.ui" line="377"/>
         <source>&amp;Edit</source>
         <translation>&amp;Éditer</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="177"/>
+        <location filename="../qtractorExportForm.ui" line="387"/>
         <source>Custom range</source>
         <translation>Plage spéciale</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="180"/>
+        <location filename="../qtractorExportForm.ui" line="390"/>
         <source>&amp;Custom</source>
         <translation>&amp;Spéciale</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="206"/>
+        <location filename="../qtractorExportForm.ui" line="416"/>
         <source>St&amp;art:</source>
         <translation>&amp;Début :</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="222"/>
-        <source>Clip start</source>
-        <translation>Début du clip</translation>
+        <location filename="../qtractorExportForm.ui" line="432"/>
+        <source>Custom start</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="229"/>
+        <location filename="../qtractorExportForm.ui" line="455"/>
+        <source>Custom end</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.ui" line="439"/>
         <source>En&amp;d:</source>
         <translation>F&amp;in :</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="245"/>
-        <source>Clip offset</source>
-        <translation>Décalage du clip</translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.ui" line="255"/>
+        <location filename="../qtractorExportForm.ui" line="484"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="273"/>
+        <location filename="../qtractorExportForm.ui" line="496"/>
         <source>Output bus names</source>
         <translation>Nom des bus de sortie</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="286"/>
+        <location filename="../qtractorExportForm.ui" line="509"/>
         <source>Format</source>
         <translation>Format</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="292"/>
+        <location filename="../qtractorExportForm.ui" line="515"/>
         <source>Time display format</source>
         <translation>Format d&apos;affichage du temps</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="296"/>
+        <location filename="../qtractorExportForm.ui" line="519"/>
         <source>Frames</source>
         <translation>Trames</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="301"/>
+        <location filename="../qtractorExportForm.ui" line="524"/>
         <source>Time</source>
         <translation>Temps</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="306"/>
+        <location filename="../qtractorExportForm.ui" line="529"/>
         <source>BBT</source>
         <translation>BBT</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="325"/>
+        <location filename="../qtractorExportForm.ui" line="548"/>
         <source>Whether to add/import new track(s) with export result</source>
         <translation>Ajouter/importer ou non de nouvelle(s) piste(s) avec le résultat exporté</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="328"/>
+        <location filename="../qtractorExportForm.ui" line="551"/>
         <source>&amp;Add new track(s)</source>
         <translation>&amp;Ajouter de nouvelle(s) piste(s)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="144"/>
+        <location filename="../qtractorExportForm.cpp" line="153"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="150"/>
+        <location filename="../qtractorExportForm.cpp" line="160"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="181"/>
+        <location filename="../qtractorExportForm.cpp" line="195"/>
+        <source>Signed 16-Bit</source>
+        <translation type="unfinished">16-Bits signé</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="196"/>
+        <source>Signed 24-Bit</source>
+        <translation type="unfinished">24-Bits signé</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="197"/>
+        <source>Signed 32-Bit</source>
+        <translation type="unfinished">32-Bits signé</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="198"/>
+        <source>Float  32-Bit</source>
+        <translation type="unfinished">Flottant  32-Bits</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="199"/>
+        <source>Float  64-Bit</source>
+        <translation type="unfinished">Flottant  64-Bits</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="235"/>
+        <source>SMF Format 0</source>
+        <translation type="unfinished">Format SMF 0</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="236"/>
+        <source>SMF Format 1</source>
+        <translation type="unfinished">Format SMF 1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorExportForm.cpp" line="261"/>
         <source>Export %1</source>
         <translation>Exporter %1</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="230"/>
+        <location filename="../qtractorExportForm.cpp" line="316"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="231"/>
+        <location filename="../qtractorExportForm.cpp" line="317"/>
         <source>The file already exists:
 
 &quot;%1&quot;
@@ -2039,17 +2114,17 @@ Do you want to replace it?</source>
 Voulez-vous le remplacer ?</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="269"/>
+        <location filename="../qtractorExportForm.cpp" line="362"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>Exportation du fichier audio: &quot;%1&quot; commencée...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="294"/>
+        <location filename="../qtractorExportForm.cpp" line="388"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>Exportation du fichier audio: &quot;%1&quot; terminée.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="299"/>
+        <location filename="../qtractorExportForm.cpp" line="393"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -2062,17 +2137,17 @@ failed.</source>
 échec.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="325"/>
+        <location filename="../qtractorExportForm.cpp" line="419"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>Exportation du fichier MIDI: &quot;%1&quot; commencée...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="348"/>
+        <location filename="../qtractorExportForm.cpp" line="443"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>Exportation du fichier MIDI: &quot;%1&quot; terminée.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="353"/>
+        <location filename="../qtractorExportForm.cpp" line="448"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -2085,17 +2160,17 @@ failed.</source>
 échec.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="410"/>
+        <location filename="../qtractorExportForm.cpp" line="531"/>
         <source>Export %1 File</source>
         <translation>Exporter %1 fichier</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="413"/>
+        <location filename="../qtractorExportForm.cpp" line="534"/>
         <source>%1 files (*.%1)</source>
         <translation>%1 fichiers (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="414"/>
+        <location filename="../qtractorExportForm.cpp" line="535"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
@@ -11634,32 +11709,32 @@ existantes :</translation>
         <translation>Capture / Exporte</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="710"/>
+        <location filename="../qtractorOptionsForm.ui" line="797"/>
         <source>Audio compression quality to use on capture (record) and export</source>
         <translation>Qualité de compression audio à utiliser lors de la capture (enregistrement) et de l&apos;exportation</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="738"/>
+        <location filename="../qtractorOptionsForm.ui" line="762"/>
         <source>Audio sample format to use on capture (record) and export</source>
         <translation>Format d&apos;échantillon audio à utiliser lors de la capture (enregistrement) et de l&apos;exportation</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="751"/>
+        <location filename="../qtractorOptionsForm.ui" line="720"/>
         <source>Audio file type to use on capture (record) and export</source>
         <translation>Type de fichier audio à utiliser lors de la capture (enregistrement) et de l&apos;exportation</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="777"/>
+        <location filename="../qtractorOptionsForm.ui" line="704"/>
         <source>File &amp;type:</source>
         <translation>&amp;Type de fichier :</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="793"/>
+        <location filename="../qtractorOptionsForm.ui" line="746"/>
         <source>Sample &amp;format:</source>
         <translation>&amp;Format d&apos;échantillon :</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.ui" line="809"/>
+        <location filename="../qtractorOptionsForm.ui" line="775"/>
         <source>&amp;Quality:</source>
         <translation>&amp;Qualité :</translation>
     </message>

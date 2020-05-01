@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Export file type, format and quality are now specific options on
+  the Track/Export Tracks.../Audio, MIDI dialogs. (EXPERIMENTAL)
+
 - LV2 plug-in UI GTK2 and X11 in Qt5 host native support in addition
   and alternative to libsuil. (EXPERIMENTAL)
 
