@@ -169,16 +169,13 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 
 	// Populate the audio capture sample format combo-box.
 	m_ui.AudioCaptureFormatComboBox->clear();
-	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 16-Bit"));
-	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 24-Bit"));
-	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 32-Bit"));
-	m_ui.AudioCaptureFormatComboBox->addItem(tr("Float  32-Bit"));
-	m_ui.AudioCaptureFormatComboBox->addItem(tr("Float  64-Bit"));
+	m_ui.AudioCaptureFormatComboBox->addItems(
+		qtractorOptions::audioFileFormats());
 
 	// Populate the MIDI capture file format combo-box.
 	m_ui.MidiCaptureFormatComboBox->clear();
-	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 0"));
-	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 1"));
+	m_ui.MidiCaptureFormatComboBox->addItems(
+		qtractorOptions::midiFileFormats());
 
 	// Populate the MIDI capture quantize combo-box.
 	const QIcon snapIcon(":/images/itemBeat.png");

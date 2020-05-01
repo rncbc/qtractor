@@ -192,11 +192,8 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 			}
 			// Populate the audio sample format combo-box...
 			m_ui.AudioExportFormatComboBox->clear();
-			m_ui.AudioExportFormatComboBox->addItem(tr("Signed 16-Bit"));
-			m_ui.AudioExportFormatComboBox->addItem(tr("Signed 24-Bit"));
-			m_ui.AudioExportFormatComboBox->addItem(tr("Signed 32-Bit"));
-			m_ui.AudioExportFormatComboBox->addItem(tr("Float  32-Bit"));
-			m_ui.AudioExportFormatComboBox->addItem(tr("Float  64-Bit"));
+			m_ui.AudioExportFormatComboBox->addItems(
+				qtractorOptions::audioFileFormats());
 			// Audio options...
 			QString sAudioExportExt = pOptions->sAudioExportExt;
 			int iAudioExportType    = pOptions->iAudioExportType;
@@ -232,8 +229,8 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 		case qtractorTrack::Midi: {
 			// Populate the MIDI file format combo-box...
 			m_ui.MidiExportFormatComboBox->clear();
-			m_ui.MidiExportFormatComboBox->addItem(tr("SMF Format 0"));
-			m_ui.MidiExportFormatComboBox->addItem(tr("SMF Format 1"));
+			m_ui.MidiExportFormatComboBox->addItems(
+				qtractorOptions::midiFileFormats());
 			// Initial MIDI options...
 			int iMidiExportFormat = pOptions->iMidiExportFormat;
 			if (iMidiExportFormat < 0)

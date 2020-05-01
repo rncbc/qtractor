@@ -423,6 +423,41 @@ MIDI:	</translation>
         <translation>-sオプションは引数としてsession-idを必要とします。</translation>
     </message>
     <message>
+        <location filename="../qtractorOptions.cpp" line="1114"/>
+        <source>Signed 16-Bit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptions.cpp" line="1115"/>
+        <source>Signed 24-Bit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptions.cpp" line="1116"/>
+        <source>Signed 32-Bit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptions.cpp" line="1117"/>
+        <source>Float  32-Bit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptions.cpp" line="1118"/>
+        <source>Float  64-Bit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptions.cpp" line="1130"/>
+        <source>SMF Format 0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptions.cpp" line="1131"/>
+        <source>SMF Format 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorPlugin.cpp" line="228"/>
         <source>(Any)</source>
         <translation>(任意)</translation>
@@ -2056,52 +2091,17 @@ Do you want to apply the changes?</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="195"/>
-        <source>Signed 16-Bit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="196"/>
-        <source>Signed 24-Bit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="197"/>
-        <source>Signed 32-Bit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="198"/>
-        <source>Float  32-Bit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="199"/>
-        <source>Float  64-Bit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="235"/>
-        <source>SMF Format 0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="236"/>
-        <source>SMF Format 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorExportForm.cpp" line="261"/>
+        <location filename="../qtractorExportForm.cpp" line="258"/>
         <source>Export %1</source>
         <translation>%1のエクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="316"/>
+        <location filename="../qtractorExportForm.cpp" line="313"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="317"/>
+        <location filename="../qtractorExportForm.cpp" line="314"/>
         <source>The file already exists:
 
 &quot;%1&quot;
@@ -2114,17 +2114,17 @@ Do you want to replace it?</source>
 置きかえますか？</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="363"/>
+        <location filename="../qtractorExportForm.cpp" line="360"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>音声ファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="389"/>
+        <location filename="../qtractorExportForm.cpp" line="386"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>音声ファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="394"/>
+        <location filename="../qtractorExportForm.cpp" line="391"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -2137,17 +2137,17 @@ failed.</source>
 失敗。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="420"/>
+        <location filename="../qtractorExportForm.cpp" line="417"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>MIDIファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="443"/>
+        <location filename="../qtractorExportForm.cpp" line="440"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>MIDIファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="448"/>
+        <location filename="../qtractorExportForm.cpp" line="445"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -2160,17 +2160,17 @@ failed.</source>
 失敗。</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="531"/>
+        <location filename="../qtractorExportForm.cpp" line="528"/>
         <source>Export %1 File</source>
         <translation>%1 ファイルのエクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="534"/>
+        <location filename="../qtractorExportForm.cpp" line="531"/>
         <source>%1 files (*.%1)</source>
         <translation>%1 ファイル (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="535"/>
+        <location filename="../qtractorExportForm.cpp" line="532"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
@@ -12660,52 +12660,17 @@ Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="172"/>
-        <source>Signed 16-Bit</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.cpp" line="173"/>
-        <source>Signed 24-Bit</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.cpp" line="174"/>
-        <source>Signed 32-Bit</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.cpp" line="175"/>
-        <source>Float  32-Bit</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.cpp" line="176"/>
-        <source>Float  64-Bit</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.cpp" line="180"/>
-        <source>SMF Format 0</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.cpp" line="181"/>
-        <source>SMF Format 1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../qtractorOptionsForm.cpp" line="201"/>
+        <location filename="../qtractorOptionsForm.cpp" line="198"/>
         <source>(Any)</source>
         <translation>(任意)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="950"/>
+        <location filename="../qtractorOptionsForm.cpp" line="947"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="951"/>
+        <location filename="../qtractorOptionsForm.cpp" line="948"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12714,63 +12679,63 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="981"/>
+        <location filename="../qtractorOptionsForm.cpp" line="978"/>
         <source>Metronome Bar Audio File</source>
         <translation>メトロノームのbar用音声ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="995"/>
+        <location filename="../qtractorOptionsForm.cpp" line="992"/>
         <source>Metronome Beat Audio File</source>
         <translation>メトロノームのBeat用の音声ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1167"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1164"/>
         <source>Audio Meter Color</source>
         <translation>オーディオメーターの色</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1189"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1186"/>
         <source>MIDI Meter Color</source>
         <translation>MIDIメーターの色</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1291"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1288"/>
         <source>Plug-in Directory</source>
         <translation>プラグインディレクトリー</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1545"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1542"/>
         <source>LV2 Presets Directory</source>
         <translation>LV2プリセットディレクトリー</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1586"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1583"/>
         <source>Messages Font</source>
         <translation>メッセージのフォント</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1614"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1611"/>
         <source>Messages Log</source>
         <translation>メッセージログ</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1617"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1614"/>
         <source>Log files (*.%1)</source>
         <translation>ログファイル (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1618"/>
-        <location filename="../qtractorOptionsForm.cpp" line="1664"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1615"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1661"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1660"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1657"/>
         <source>Session Template</source>
         <translation>セッションのテンプレート</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1663"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1660"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>セッションのテンプレートファイル(*.qtr *.qts *.%1)</translation>
     </message>

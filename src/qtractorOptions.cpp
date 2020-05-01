@@ -1103,5 +1103,37 @@ void qtractorOptions::saveActionControl ( QObject *pObject )
 }
 
 
+//---------------------------------------------------------------------------
+// Common string lists.
+
+const QStringList& qtractorOptions::audioFileFormats (void)
+{
+	static QStringList s_formats;
+
+	if (s_formats.isEmpty()) {
+		s_formats.append(QObject::tr("Signed 16-Bit"));
+		s_formats.append(QObject::tr("Signed 24-Bit"));
+		s_formats.append(QObject::tr("Signed 32-Bit"));
+		s_formats.append(QObject::tr("Float  32-Bit"));
+		s_formats.append(QObject::tr("Float  64-Bit"));
+	}
+
+	return s_formats;
+}
+
+
+const QStringList& qtractorOptions::midiFileFormats (void)
+{
+	static QStringList s_formats;
+
+	if (s_formats.isEmpty()) {
+		s_formats.append(QObject::tr("SMF Format 0"));
+		s_formats.append(QObject::tr("SMF Format 1"));
+	}
+
+	return s_formats;
+}
+
+
 // end of qtractorOptions.cpp
 
