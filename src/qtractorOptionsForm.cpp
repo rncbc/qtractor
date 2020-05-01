@@ -155,16 +155,16 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	}
 
 	// Populate the capture file type combo-box.
+	int iType = 0;
 	m_ui.AudioCaptureTypeComboBox->clear();
-	int iFormat = 0;
 	const qtractorAudioFileFactory::FileFormats& list
 		= qtractorAudioFileFactory::formats();
 	QListIterator<qtractorAudioFileFactory::FileFormat *> iter(list);
 	while (iter.hasNext()) {
 		qtractorAudioFileFactory::FileFormat *pFormat = iter.next();
 		if (pFormat->type != qtractorAudioFileFactory::MadFile)
-			m_ui.AudioCaptureTypeComboBox->addItem(pFormat->name, iFormat);
-		++iFormat;
+			m_ui.AudioCaptureTypeComboBox->addItem(pFormat->name, iType);
+		++iType;
 	}
 
 	// Populate the audio capture sample format combo-box.
@@ -572,8 +572,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 		m_pTimeScale->setDisplayFormat(displayFormat);
 
 	// Audio options.
-	int iIndex  = 0;
-	int iFormat = 0;
+	int iType = 0;
+	int iIndex = 0;
 	const qtractorAudioFileFactory::FileFormats& list
 		= qtractorAudioFileFactory::formats();
 	QListIterator<qtractorAudioFileFactory::FileFormat *> iter(list);
@@ -582,10 +582,10 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 		if (m_pOptions->sAudioCaptureExt == pFormat->ext
 			&& (m_pOptions->iAudioCaptureType == 0 ||
 				m_pOptions->iAudioCaptureType == pFormat->data)) {
-			iIndex = m_ui.AudioCaptureTypeComboBox->findData(iFormat);
+			iIndex = m_ui.AudioCaptureTypeComboBox->findData(iType);
 			break;
 		}
-		++iFormat;
+		++iType;
 	}
 	m_ui.AudioCaptureTypeComboBox->setCurrentIndex(iIndex);
 	m_ui.AudioCaptureFormatComboBox->setCurrentIndex(m_pOptions->iAudioCaptureFormat);
@@ -792,10 +792,10 @@ void qtractorOptionsForm::accept (void)
 	// Save options...
 	if (m_iDirtyCount > 0) {
 		// Audio options...
-		const int iFormat = m_ui.AudioCaptureTypeComboBox->itemData(
+		const int iType = m_ui.AudioCaptureTypeComboBox->itemData(
 			m_ui.AudioCaptureTypeComboBox->currentIndex()).toInt();
 		const qtractorAudioFileFactory::FileFormat *pFormat
-			= qtractorAudioFileFactory::formats().at(iFormat);
+			= qtractorAudioFileFactory::formats().at(iType);
 		m_pOptions->sAudioCaptureExt     = pFormat->ext;
 		m_pOptions->iAudioCaptureType    = pFormat->data;
 		m_pOptions->iAudioCaptureFormat  = m_ui.AudioCaptureFormatComboBox->currentIndex();
@@ -1709,9 +1709,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 
 	// Audio options validy check...
 	const int iIndex = m_ui.AudioCaptureTypeComboBox->currentIndex();
-	int iFormat	= m_ui.AudioCaptureTypeComboBox->itemData(iIndex).toInt();
+	const int iType	= m_ui.AudioCaptureTypeComboBox->itemData(iIndex).toInt();
 	const qtractorAudioFileFactory::FileFormat *pFormat
-		= qtractorAudioFileFactory::formats().at(iFormat);
+		= qtractorAudioFileFactory::formats().at(iType);
 
 	const bool bSndFile
 		= (pFormat && pFormat->type == qtractorAudioFileFactory::SndFile);
@@ -1725,7 +1725,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 
 	bool bValid = (m_iDirtyCount > 0);
 	if (bValid) {
-		iFormat = m_ui.AudioCaptureFormatComboBox->currentIndex();
+		const int iFormat = m_ui.AudioCaptureFormatComboBox->currentIndex();
 		bValid  = qtractorAudioFileFactory::isValidFormat(pFormat, iFormat);
 	}
 

@@ -173,8 +173,8 @@ public:
 	QString sSessionTemplatePath;
 	bool    bSessionBackup;
 	int     iSessionBackupMode;
-	bool	bAutoMonitor;
-	bool	bAutoDeactivate;
+	bool    bAutoMonitor;
+	bool    bAutoDeactivate;
 	int     iSnapPerBeat;
 	float   fTempo;
 	int     iBeatsPerBar;
