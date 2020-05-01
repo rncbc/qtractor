@@ -708,7 +708,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1" colspan="2">
+          <item row="0" column="1" colspan="3">
            <widget class="QComboBox" name="AudioCaptureTypeComboBox">
             <property name="font">
              <font>
@@ -721,7 +721,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3" rowspan="2">
+          <item row="0" column="4" rowspan="2">
            <spacer>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -750,7 +750,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1" colspan="2">
+          <item row="1" column="1">
            <widget class="QComboBox" name="AudioCaptureFormatComboBox">
             <property name="font">
              <font>
@@ -763,13 +763,16 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="1" column="2">
            <widget class="QLabel" name="AudioCaptureQualityTextLabel">
             <property name="font">
              <font>
               <weight>50</weight>
               <bold>false</bold>
              </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="text">
              <string>&amp;Quality:</string>
@@ -779,7 +782,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="1" column="3">
            <widget class="QSpinBox" name="AudioCaptureQualitySpinBox">
             <property name="maximumSize">
              <size>
@@ -800,10 +803,10 @@
              <string/>
             </property>
             <property name="minimum">
-             <number>1</number>
+             <number>0</number>
             </property>
             <property name="maximum">
-             <number>9</number>
+             <number>10</number>
             </property>
             <property name="singleStep">
              <number>1</number>
@@ -812,19 +815,6 @@
              <number>4</number>
             </property>
            </widget>
-          </item>
-          <item row="2" column="2" colspan="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>120</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </widget>

@@ -1,7 +1,7 @@
 // qtractorAudioVorbisFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -393,10 +393,10 @@ unsigned int qtractorAudioVorbisFile::sampleRate (void) const
 }
 
 
-// Translate quality index into vorbis encoder specific...
+// Translate quality index into vorbis encoder specific. (static)
 int qtractorAudioVorbisFile::quality ( int iQuality )
 {
-	return (iQuality > 0 && iQuality < 10 ? iQuality : 4);
+	return (iQuality >= 0 && 10 >= iQuality ? iQuality : 4);
 }
 
 

@@ -60,6 +60,11 @@ protected slots:
 
 	void stabilizeForm();
 
+protected:
+
+	int audioExportFormat() const;
+	int midiExportFormat() const;
+
 private:
 
 	// The Qt-designer UI struct...

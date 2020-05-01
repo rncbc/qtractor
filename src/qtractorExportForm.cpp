@@ -336,6 +336,7 @@ void qtractorExportForm::accept (void)
 	m_ui.ExportPathTextLabel->setEnabled(false);
 	m_ui.ExportPathComboBox->setEnabled(false);
 	m_ui.ExportPathToolButton->setEnabled(false);
+	m_ui.ExportTypeWidget->setEnabled(false);
 	m_ui.ExportBusGroupBox->setEnabled(false);
 	m_ui.ExportRangeGroupBox->setEnabled(false);
 	m_ui.FormatGroupBox->setEnabled(false);
@@ -368,7 +369,7 @@ void qtractorExportForm::accept (void)
 				sExportPath, exportBuses,
 				m_ui.ExportStartSpinBox->value(),
 				m_ui.ExportEndSpinBox->value(),
-				m_ui.AudioExportFormatComboBox->currentIndex());
+				audioExportFormat());
 			// Done.
 			QApplication::restoreOverrideCursor();
 			if (bResult) {
@@ -424,8 +425,7 @@ void qtractorExportForm::accept (void)
 			const bool bResult = pMidiEngine->fileExport(
 				sExportPath, exportBuses,
 				m_ui.ExportStartSpinBox->value(),
-				m_ui.ExportEndSpinBox->value(),
-				m_ui.MidiExportFormatComboBox->currentIndex());
+				midiExportFormat());
 			// Done.
 			QApplication::restoreOverrideCursor();
 			if (bResult) {
@@ -755,6 +755,36 @@ void qtractorExportForm::stabilizeForm (void)
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
+
+
+// Retrieve current aliased file format index...
+int qtractorExportForm::audioExportFormat (void) const
+{
+	if (m_exportType != qtractorTrack::Audio)
+		return -1;
+
+	const int iIndex = m_ui.AudioExportTypeComboBox->currentIndex();
+	const int iFormat = m_ui.AudioExportTypeComboBox->itemData(iIndex).toInt();
+	const qtractorAudioFileFactory::FileFormat *pFormat
+		= qtractorAudioFileFactory::formats().at(iFormat);
+	if (pFormat == nullptr)
+		return -1;
+
+	if (pFormat->type == qtractorAudioFileFactory::VorbisFile)
+		return m_ui.AudioExportQualitySpinBox->value();
+	else
+		return m_ui.AudioExportFormatComboBox->currentIndex();
+}
+
+
+int qtractorExportForm::midiExportFormat (void) const
+{
+	if (m_exportType != qtractorTrack::Midi)
+		return -1;
+
+	return m_ui.MidiExportFormatComboBox->currentIndex();
+}
+
 
 
 // end of qtractorExportForm.cpp

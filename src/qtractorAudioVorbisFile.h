@@ -63,7 +63,7 @@ public:
 	// Specialty methods.
 	unsigned int sampleRate() const;
 
-	// Translate quality index into vorbis encoder specific...
+	// Translate quality index into vorbis encoder specific.
 	static int quality(int iQuality);
 
 protected:
