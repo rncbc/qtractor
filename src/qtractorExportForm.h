@@ -62,6 +62,8 @@ protected slots:
 
 protected:
 
+	void audioExportTypeUpdate(int iIndex);
+
 	int audioExportFormat() const;
 	int midiExportFormat() const;
 

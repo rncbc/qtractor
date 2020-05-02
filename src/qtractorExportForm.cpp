@@ -578,6 +578,7 @@ void qtractorExportForm::exportPathChanged ( const QString& sExportPath )
 			if (iIndex >= 0) {
 				m_ui.AudioExportTypeComboBox->setCurrentIndex(iIndex);
 				m_sExportExt = sExportExt;
+				audioExportTypeUpdate(iIndex);
 			}
 		}
 	}
@@ -592,9 +593,7 @@ void qtractorExportForm::audioExportTypeChanged ( int iIndex )
 	if (m_exportType == qtractorTrack::Audio) {
 		const void *handle
 			= m_ui.AudioExportTypeComboBox->handleOf(iIndex);
-		const qtractorAudioFileFactory::FileFormat *pFormat
-			= static_cast<const qtractorAudioFileFactory::FileFormat *> (handle);
-		if (handle && pFormat) {
+		if (handle) {
 			m_sExportExt = m_ui.AudioExportTypeComboBox->currentExt(handle);
 			QString sExportPath = m_ui.ExportPathComboBox->currentText();
 			const QString& sExportExt
@@ -606,15 +605,8 @@ void qtractorExportForm::audioExportTypeChanged ( int iIndex )
 					sExportPath.replace('.' + sExportExt, '.' + m_sExportExt);
 				m_ui.ExportPathComboBox->setEditText(sExportPath);
 			}
-			const bool bBlockSignals
-				= m_ui.AudioExportFormatComboBox->blockSignals(true);
-			int iFormat = m_ui.AudioExportFormatComboBox->currentIndex();
-			while (iFormat > 0 && // Retry down to PCM Signed 16-Bit...
-				!qtractorAudioFileFactory::isValidFormat(pFormat, iFormat))
-				--iFormat;
-			m_ui.AudioExportFormatComboBox->setCurrentIndex(iFormat);
-			m_ui.AudioExportFormatComboBox->blockSignals(bBlockSignals);
 		}
+		audioExportTypeUpdate(iIndex);
 	}
 
 	stabilizeForm();
@@ -664,7 +656,9 @@ void qtractorExportForm::valueChanged (void)
 // Display format has changed.
 void qtractorExportForm::formatChanged ( int iDisplayFormat )
 {
-	const bool bBlockSignals = m_ui.FormatComboBox->blockSignals(true);
+	const bool bBlockSignals
+		= m_ui.FormatComboBox->blockSignals(true);
+
 	m_ui.FormatComboBox->setCurrentIndex(iDisplayFormat);
 
 	qtractorTimeScale::DisplayFormat displayFormat
@@ -690,7 +684,9 @@ void qtractorExportForm::stabilizeForm (void)
 		return;
 
 	// General options validy check...
-	bool bValid = !m_ui.ExportPathComboBox->currentText().isEmpty() &&
+	const QString& sExportPath = m_ui.ExportPathComboBox->currentText();
+	bool bValid = !sExportPath.isEmpty() &&
+		QFileInfo(sExportPath).dir().exists() &&
 		m_ui.ExportBusNameListBox->currentItem() != nullptr &&
 		m_ui.ExportStartSpinBox->value() < m_ui.ExportEndSpinBox->value();
 
@@ -707,6 +703,8 @@ void qtractorExportForm::stabilizeForm (void)
 			= (pFormat && pFormat->type == qtractorAudioFileFactory::VorbisFile);
 		m_ui.AudioExportQualityTextLabel->setEnabled(bVorbisFile);
 		m_ui.AudioExportQualitySpinBox->setEnabled(bVorbisFile);
+		if (bValid && pFormat == nullptr)
+			bValid = false;
 		if (bValid) {
 			const int iFormat = m_ui.AudioExportFormatComboBox->currentIndex();
 			bValid = qtractorAudioFileFactory::isValidFormat(pFormat, iFormat);
@@ -726,6 +724,26 @@ void qtractorExportForm::stabilizeForm (void)
 	m_ui.ExportEndSpinBox->setMinimum(iExportStart);
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
+}
+
+
+// Audio file type changed aftermath.
+void qtractorExportForm::audioExportTypeUpdate ( int iIndex )
+{
+	const void *handle
+		= m_ui.AudioExportTypeComboBox->handleOf(iIndex);
+	const qtractorAudioFileFactory::FileFormat *pFormat
+		= static_cast<const qtractorAudioFileFactory::FileFormat *> (handle);
+	if (handle && pFormat) {
+		const bool bBlockSignals
+			= m_ui.AudioExportFormatComboBox->blockSignals(true);
+		int iFormat = m_ui.AudioExportFormatComboBox->currentIndex();
+		while (iFormat > 0 && // Retry down to PCM Signed 16-Bit...
+			!qtractorAudioFileFactory::isValidFormat(pFormat, iFormat))
+			--iFormat;
+		m_ui.AudioExportFormatComboBox->setCurrentIndex(iFormat);
+		m_ui.AudioExportFormatComboBox->blockSignals(bBlockSignals);
+	}
 }
 
 
