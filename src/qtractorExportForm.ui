@@ -133,7 +133,7 @@
         </widget>
        </item>
        <item row="0" column="1" colspan="3">
-        <widget class="QComboBox" name="AudioExportTypeComboBox">
+        <widget class="qtractorAudioFileTypeComboBox" name="AudioExportTypeComboBox">
          <property name="font">
           <font>
            <weight>50</weight>
@@ -165,7 +165,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QComboBox" name="AudioExportFormatComboBox">
+        <widget class="qtractorAudioFileFormatComboBox" name="AudioExportFormatComboBox">
          <property name="font">
           <font>
            <weight>50</weight>
@@ -276,7 +276,7 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QComboBox" name="MidiExportFormatComboBox">
+        <widget class="qtractorMidiFileFormatComboBox" name="MidiExportFormatComboBox">
          <property name="font">
           <font>
            <weight>50</weight>
@@ -572,6 +572,21 @@
    <class>qtractorTimeSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qtractorSpinBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorAudioFileFormatComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorAudioFileTypeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorMidiFileFormatComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

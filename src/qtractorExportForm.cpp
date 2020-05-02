@@ -178,22 +178,6 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 		m_ui.AddTrackCheckBox->setChecked(pOptions->bExportAddTrack);
 		switch (m_exportType) {
 		case qtractorTrack::Audio: {
-			// Populate the file type combo-box....
-			int iType = 0;
-			m_ui.AudioExportTypeComboBox->clear();
-			const qtractorAudioFileFactory::FileFormats& list
-				= qtractorAudioFileFactory::formats();
-			QListIterator<qtractorAudioFileFactory::FileFormat *> iter(list);
-			while (iter.hasNext()) {
-				qtractorAudioFileFactory::FileFormat *pFormat = iter.next();
-				if (pFormat->type != qtractorAudioFileFactory::MadFile)
-					m_ui.AudioExportTypeComboBox->addItem(pFormat->name, iType);
-				++iType;
-			}
-			// Populate the audio sample format combo-box...
-			m_ui.AudioExportFormatComboBox->clear();
-			m_ui.AudioExportFormatComboBox->addItems(
-				qtractorOptions::audioFileFormats());
 			// Audio options...
 			QString sAudioExportExt = pOptions->sAudioExportExt;
 			int iAudioExportType    = pOptions->iAudioExportType;
@@ -207,30 +191,14 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 				iAudioExportFormat = pOptions->iAudioCaptureFormat;
 			if (iAudioExportQuality < 0)
 				iAudioExportQuality = pOptions->iAudioCaptureQuality;
-			int iIndex = 0;
-			iType = 0;
-			iter.toFront();
-			while (iter.hasNext()) {
-				qtractorAudioFileFactory::FileFormat *pFormat = iter.next();
-				if (sAudioExportExt == pFormat->ext
-					&& (iAudioExportType == 0 ||
-						iAudioExportType == pFormat->data)) {
-					iIndex = m_ui.AudioExportTypeComboBox->findData(iType);
-					m_sExportExt = pFormat->ext;
-					break;
-				}
-				++iType;
-			}
-			m_ui.AudioExportTypeComboBox->setCurrentIndex(iIndex);
+			m_ui.AudioExportTypeComboBox->setCurrentType(
+				sAudioExportExt, iAudioExportType);
 			m_ui.AudioExportFormatComboBox->setCurrentIndex(iAudioExportFormat);
 			m_ui.AudioExportQualitySpinBox->setValue(iAudioExportQuality);
+			m_sExportExt = m_ui.AudioExportTypeComboBox->currentExt();
 			break;
 		}
 		case qtractorTrack::Midi: {
-			// Populate the MIDI file format combo-box...
-			m_ui.MidiExportFormatComboBox->clear();
-			m_ui.MidiExportFormatComboBox->addItems(
-				qtractorOptions::midiFileFormats());
 			// Initial MIDI options...
 			int iMidiExportFormat = pOptions->iMidiExportFormat;
 			if (iMidiExportFormat < 0)
@@ -461,13 +429,10 @@ void qtractorExportForm::accept (void)
 		switch (m_exportType) {
 		case qtractorTrack::Audio: {
 			// Audio options...
-			const int iType = m_ui.AudioExportTypeComboBox->itemData(
-				m_ui.AudioExportTypeComboBox->currentIndex()).toInt();
-			const qtractorAudioFileFactory::FileFormat *pFormat
-				= qtractorAudioFileFactory::formats().at(iType);
-			pOptions->sAudioExportExt     = pFormat->ext;
-			pOptions->iAudioExportType    = pFormat->data;
-			pOptions->iAudioExportFormat  = m_ui.AudioExportFormatComboBox->currentIndex();
+			const void *handle = m_ui.AudioExportTypeComboBox->currentHandle();
+			pOptions->sAudioExportExt = m_ui.AudioExportTypeComboBox->currentExt(handle);;
+			pOptions->iAudioExportType = m_ui.AudioExportTypeComboBox->currentType(handle);
+			pOptions->iAudioExportFormat = m_ui.AudioExportFormatComboBox->currentIndex();
 			pOptions->iAudioExportQuality = m_ui.AudioExportQualitySpinBox->value();
 			break;
 		}
@@ -528,8 +493,19 @@ void qtractorExportForm::exportPathClicked (void)
 		= tr("Export %1 File").arg(m_sExportType);
 
 	QStringList filters;
-	filters.append(tr("%1 files (*.%1)").arg(m_sExportExt));
-	filters.append(tr("All files (*.*)"));
+	switch (m_exportType) {
+	case qtractorTrack::Audio:
+		filters.append(qtractorAudioFileFactory::filters());
+		break;
+	case qtractorTrack::Midi:
+		filters.append(tr("MIDI files (*.%1 *.smf *.midi)").arg(m_sExportExt));
+		// Fall-thru...
+	case qtractorTrack::None:
+	default:
+		filters.append(tr("All files (*.*)"));
+		break;
+	}
+
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
@@ -597,22 +573,12 @@ void qtractorExportForm::exportPathChanged ( const QString& sExportPath )
 		const QString& sExportExt
 			= QFileInfo(sExportPath).suffix().toLower();
 		if (sExportExt != m_sExportExt) {
-			int iType = 0;
-			int iIndex = -1;
-			const qtractorAudioFileFactory::FileFormats& list
-				= qtractorAudioFileFactory::formats();
-			QListIterator<qtractorAudioFileFactory::FileFormat *> iter(list);
-			while (iter.hasNext()) {
-				qtractorAudioFileFactory::FileFormat *pFormat = iter.next();
-				if (sExportExt == pFormat->ext) {
-					iIndex = m_ui.AudioExportTypeComboBox->findData(iType);
-					m_sExportExt = pFormat->ext;
-					break;
-				}
-				++iType;
-			}
-			if (iIndex >= 0)
+			const int iIndex
+				= m_ui.AudioExportTypeComboBox->indexOf(sExportExt);
+			if (iIndex >= 0) {
 				m_ui.AudioExportTypeComboBox->setCurrentIndex(iIndex);
+				m_sExportExt = sExportExt;
+			}
 		}
 	}
 
@@ -624,19 +590,30 @@ void qtractorExportForm::exportPathChanged ( const QString& sExportPath )
 void qtractorExportForm::audioExportTypeChanged ( int iIndex )
 {
 	if (m_exportType == qtractorTrack::Audio) {
-		const int iType = m_ui.AudioExportTypeComboBox->itemData(iIndex).toInt();
+		const void *handle
+			= m_ui.AudioExportTypeComboBox->handleOf(iIndex);
 		const qtractorAudioFileFactory::FileFormat *pFormat
-			= qtractorAudioFileFactory::formats().at(iType);
-		m_sExportExt = pFormat->ext;
-		QString sExportPath = m_ui.ExportPathComboBox->currentText();
-		const QString& sExportExt
-			= QFileInfo(sExportPath).suffix().toLower();
-		if (sExportExt != m_sExportExt) {
-			if (sExportExt.isEmpty())
-				sExportPath += '.' + m_sExportExt;
-			else
-				sExportPath.replace('.' + sExportExt, '.' + m_sExportExt);
-			m_ui.ExportPathComboBox->setEditText(sExportPath);
+			= static_cast<const qtractorAudioFileFactory::FileFormat *> (handle);
+		if (handle && pFormat) {
+			m_sExportExt = m_ui.AudioExportTypeComboBox->currentExt(handle);
+			QString sExportPath = m_ui.ExportPathComboBox->currentText();
+			const QString& sExportExt
+				= QFileInfo(sExportPath).suffix().toLower();
+			if (sExportExt != m_sExportExt) {
+				if (sExportExt.isEmpty())
+					sExportPath += '.' + m_sExportExt;
+				else
+					sExportPath.replace('.' + sExportExt, '.' + m_sExportExt);
+				m_ui.ExportPathComboBox->setEditText(sExportPath);
+			}
+			const bool bBlockSignals
+				= m_ui.AudioExportFormatComboBox->blockSignals(true);
+			int iFormat = m_ui.AudioExportFormatComboBox->currentIndex();
+			while (iFormat > 0 && // Retry down to PCM Signed 16-Bit...
+				!qtractorAudioFileFactory::isValidFormat(pFormat, iFormat))
+				--iFormat;
+			m_ui.AudioExportFormatComboBox->setCurrentIndex(iFormat);
+			m_ui.AudioExportFormatComboBox->blockSignals(bBlockSignals);
 		}
 	}
 
@@ -719,10 +696,9 @@ void qtractorExportForm::stabilizeForm (void)
 
 	// Audio options stabilizing and validy check...
 	if (m_exportType == qtractorTrack::Audio) {
-		const int iIndex = m_ui.AudioExportTypeComboBox->currentIndex();
-		const int iType = m_ui.AudioExportTypeComboBox->itemData(iIndex).toInt();
 		const qtractorAudioFileFactory::FileFormat *pFormat
-			= qtractorAudioFileFactory::formats().at(iType);
+			= static_cast<const qtractorAudioFileFactory::FileFormat *> (
+				m_ui.AudioExportTypeComboBox->currentHandle());
 		const bool bSndFile
 			= (pFormat && pFormat->type == qtractorAudioFileFactory::SndFile);
 		m_ui.AudioExportFormatTextLabel->setEnabled(bSndFile);
@@ -759,10 +735,9 @@ int qtractorExportForm::audioExportFormat (void) const
 	if (m_exportType != qtractorTrack::Audio)
 		return -1;
 
-	const int iIndex = m_ui.AudioExportTypeComboBox->currentIndex();
-	const int iType = m_ui.AudioExportTypeComboBox->itemData(iIndex).toInt();
 	const qtractorAudioFileFactory::FileFormat *pFormat
-		= qtractorAudioFileFactory::formats().at(iType);
+		= static_cast<const qtractorAudioFileFactory::FileFormat *> (
+			m_ui.AudioExportTypeComboBox->currentHandle());
 	if (pFormat == nullptr)
 		return -1;
 

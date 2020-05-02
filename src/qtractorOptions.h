@@ -334,10 +334,6 @@ public:
 	void loadActionControl(QObject *pObject);
 	void saveActionControl(QObject *pObject);
 
-	// Common string lists.
-	static const QStringList& audioFileFormats();
-	static const QStringList& midiFileFormats();
-
 	// Singleton instance accessor.
 	static qtractorOptions *getInstance();
 
