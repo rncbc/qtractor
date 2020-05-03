@@ -7,12 +7,13 @@
         <location filename="../qtractorAudioClip.cpp" line="747"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
-        <translation>Zvuk:	%1 kanály, %2 Hz</translation>
+        <translation>
+Zvuk:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="752"/>
         <source> (%1 dB)</source>
-        <translation>(%1 dB)</translation>
+        <translation> (%1 dB)</translation>
     </message>
     <message>
         <location filename="../qtractorAudioClip.cpp" line="756"/>
@@ -84,7 +85,7 @@ Audio:	%1 channels, %2 Hz</source>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation>Začátek:	%1	Posun	%2
-Konec:	%2	Délka:	%3</translation>
+Konec:	%3	Délka:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="558"/>
@@ -214,12 +215,12 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorOptions.cpp" line="699"/>
         <source>Show help about command line options</source>
-        <translation>Ukázat nápovědu k volbám příkazového řádku</translation>
+        <translation>Ukázat nápovědu k volbám (argumentům) příkazového řádku</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="701"/>
         <source>Show version information</source>
-        <translation>Ukázat informaci o verzi</translation>
+        <translation>Ukázat informace o verzi</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="738"/>
@@ -229,37 +230,37 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorComboBox.cpp" line="125"/>
         <source>Signed 16-Bit</source>
-        <translation type="unfinished">Označený znaménkem 16-Bit</translation>
+        <translation>Označený znaménkem 16-Bit</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="126"/>
         <source>Signed 24-Bit</source>
-        <translation type="unfinished">Označený znaménkem 24-Bit</translation>
+        <translation>Označený znaménkem 24-Bit</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="127"/>
         <source>Signed 32-Bit</source>
-        <translation type="unfinished">Označený znaménkem 32-Bit</translation>
+        <translation>Označený znaménkem 32-Bit</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="128"/>
         <source>Float  32-Bit</source>
-        <translation type="unfinished">Plovoucí 32-Bit</translation>
+        <translation>Plovoucí 32-Bit</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="129"/>
         <source>Float  64-Bit</source>
-        <translation type="unfinished">Plovoucí 64-Bit</translation>
+        <translation>Plovoucí 64-Bit</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="146"/>
         <source>SMF Format 0</source>
-        <translation type="unfinished">SMF Format 0</translation>
+        <translation>SMF Format 0</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="147"/>
         <source>SMF Format 1</source>
-        <translation type="unfinished">SMF Format 1</translation>
+        <translation>SMF Format 1</translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="228"/>
@@ -814,7 +815,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3220"/>
         <source>X11 (native)</source>
-        <translation type="unfinished"></translation>
+        <translation>X11 (nativní)</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3223"/>
@@ -824,7 +825,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3226"/>
         <source>Gtk2 (native)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gtk2 (nativní)</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3230"/>
@@ -1988,7 +1989,7 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="501"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
-        <translation type="unfinished">Soubory MIDI (*.%1 *.smf *.midi)</translation>
+        <translation>Soubory MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="505"/>
@@ -2013,42 +2014,42 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="128"/>
         <source>File &amp;type:</source>
-        <translation type="unfinished">Druh &amp;souboru:</translation>
+        <translation>Druh &amp;souboru:</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="144"/>
         <source>Audio file type to use on export</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ zvukového souboru k použití při vyvedení</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="160"/>
         <source>Sample &amp;format:</source>
-        <translation type="unfinished">Formát &amp;vzorku:</translation>
+        <translation>Formát &amp;vzorku:</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="176"/>
         <source>Audio sample format to use on export</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát zvukového vzorku k použití při vyvedení</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="192"/>
         <source>&amp;Quality:</source>
-        <translation type="unfinished">&amp;Kvalita:</translation>
+        <translation>&amp;Kvalita:</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="214"/>
         <source>Audio compression quality to use on export</source>
-        <translation type="unfinished"></translation>
+        <translation>Kvalitu zvukové komprese k použití při vyvedení</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="271"/>
         <source>File &amp;format:</source>
-        <translation type="unfinished">Formát &amp;souboru:</translation>
+        <translation>Formát &amp;souboru:</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="287"/>
         <source>MIDI file format to use on export</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát souboru MIDI k použití při vyvedení</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="314"/>
@@ -2158,12 +2159,12 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="432"/>
         <source>Custom start</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastní začátek</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="455"/>
         <source>Custom end</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastní konec</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="515"/>
@@ -2855,52 +2856,52 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5781"/>
         <source>LV2 Plug-in UI support disabled.</source>
-        <translation>Podpora pro uživatelské rozhraní přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro uživatelské rozhraní přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5784"/>
         <source>LV2 Plug-in UI support (libsuil) disabled.</source>
-        <translation>Podpora pro uživatelské rozhraní přídavných modulů LV2 (libsuil) byla zakázána.</translation>
+        <translation>Podpora pro uživatelské rozhraní přídavného modulu LV2 (libsuil) byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5794"/>
         <source>LV2 Plug-in MIDI/Atom support disabled.</source>
-        <translation>Podpora pro MIDI/Atom přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro MIDI/Atom přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5797"/>
         <source>LV2 Plug-in Worker/Schedule support disabled.</source>
-        <translation>Podpora pro pracovník/rozvrh přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro pracovník/rozvrh přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5800"/>
         <source>LV2 Plug-in State support disabled.</source>
-        <translation>Podpora pro stav přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro stav přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5807"/>
         <source>LV2 Plug-in State Files support disabled.</source>
-        <translation>Podpora pro soubory stavu přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro soubory stavu přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5813"/>
         <source>LV2 Plug-in MIDNAM support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro MIDNAM přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5825"/>
         <source>LV2 Plug-in Options support disabled.</source>
-        <translation>Podpora pro volby přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro volby přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5828"/>
         <source>LV2 Plug-in Buf-size support disabled.</source>
-        <translation>Podpora pro velikost vyrovnávací paměti přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro velikost vyrovnávací paměti přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5810"/>
         <source>LV2 Plug-in Programs support disabled.</source>
-        <translation>Podpora pro programy přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro programy přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="662"/>
@@ -2910,47 +2911,47 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5791"/>
         <source>LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.</source>
-        <translation>Podpora pro MIDI/událost přídavných modulů LV2 (NESCHVÁLENO) byla povolena.</translation>
+        <translation>Podpora pro MIDI/událost přídavného modulu LV2 (NESCHVÁLENO) byla povolena.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5804"/>
         <source>LV2 plug-in State Make Path support (DANGEROUS)	enabled.</source>
-        <translation>Podpora pro cestu Make stavu přídavných modulů LV2 (NEBEZPEČNÉ) byla povolena.</translation>
+        <translation>Podpora pro cestu Make stavu přídavného modulu LV2 (NEBEZPEČNÉ) byla povolena.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5816"/>
         <source>LV2 Plug-in Presets support disabled.</source>
-        <translation>Podpora pro přednastavení přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro přednastavení přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5819"/>
         <source>LV2 Plug-in Patch support disabled.</source>
-        <translation>Podpora pro záplatu přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro záplatu přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5822"/>
         <source>LV2 Plug-in Time/position support disabled.</source>
-        <translation>Podpora pro čas/poloha přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro čas/poloha přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5832"/>
         <source>LV2 Plug-in UI Touch interface support disabled.</source>
-        <translation>Podpora pro rozhraní dotykového uživatelského rozhraní přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro rozhraní dotykového uživatelského rozhraní přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5835"/>
         <source>LV2 Plug-in UI Request-value support disabled.</source>
-        <translation>Podpora pro hodnotu-požadavek rozhraní přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro hodnotu-požadavek rozhraní přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5838"/>
         <source>LV2 Plug-in UI Idle interface support disabled.</source>
-        <translation>Podpora pro rozhraní IDLE přídavných modulů LV2 byla zakázána.</translation>
+        <translation>Podpora pro rozhraní IDLE přídavného modulu LV2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5841"/>
         <source>LV2 Plug-in UI Show interface support disabled.</source>
-        <translation>Podpora pro rozhraní IDLE přídavných modulů LV2 Show byla zakázána.</translation>
+        <translation>Podpora pro rozhraní IDLE přídavného modulu LV2 Show byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5861"/>
@@ -2979,7 +2980,11 @@ Jste si jistý?</translation>
 Make sure the JACK audio server (jackd) and
 the ALSA Sequencer kernel module (snd-seq-midi)
 are up and running and then restart the session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stroj zvuk/MIDI se nepodařilo spustit.
+
+Ujistěte se, že zvukový server JACK (jackd) a
+modul jádra sekvencer ALSA (snd-seq-midi)
+jsou spuštěny a běží, a potom sezení spusťte znovu.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7142"/>
@@ -13401,7 +13406,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1552"/>
         <source>Open File</source>
-        <translation type="unfinished">Otevřít soubor</translation>
+        <translation>Otevřít soubor</translation>
     </message>
 </context>
 <context>
