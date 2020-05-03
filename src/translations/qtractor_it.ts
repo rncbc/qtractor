@@ -201,37 +201,37 @@ Fine:	%3	Lunghezza:	%4</translation>
         <translation>%1 Monitor</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="538"/>
+        <location filename="../qtractorEngineCommand.cpp" line="540"/>
         <source>create bus</source>
         <translation>crea bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="560"/>
+        <location filename="../qtractorEngineCommand.cpp" line="562"/>
         <source>update bus</source>
         <translation>aggiorna bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="577"/>
+        <location filename="../qtractorEngineCommand.cpp" line="579"/>
         <source>delete bus</source>
         <translation>rimuovi bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="600"/>
+        <location filename="../qtractorEngineCommand.cpp" line="602"/>
         <source>move bus</source>
         <translation>sposta bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="653"/>
+        <location filename="../qtractorEngineCommand.cpp" line="655"/>
         <source>bus pass-through</source>
         <translation>pass-through bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="699"/>
+        <location filename="../qtractorEngineCommand.cpp" line="701"/>
         <source>bus gain</source>
         <translation>guadagno bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="776"/>
+        <location filename="../qtractorEngineCommand.cpp" line="778"/>
         <source>bus pan</source>
         <translation>bilanciamento bus</translation>
     </message>
@@ -11322,22 +11322,22 @@ Sei sicuro?</translation>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1387"/>
+        <location filename="../qtractorMixer.cpp" line="1389"/>
         <source>Inputs</source>
         <translation>Ingressi</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1388"/>
+        <location filename="../qtractorMixer.cpp" line="1390"/>
         <source>Tracks</source>
         <translation>Tracce</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1390"/>
+        <location filename="../qtractorMixer.cpp" line="1392"/>
         <source>Outputs</source>
         <translation>Uscite</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1397"/>
+        <location filename="../qtractorMixer.cpp" line="1399"/>
         <source>Mixer</source>
         <translation>Mixer</translation>
     </message>

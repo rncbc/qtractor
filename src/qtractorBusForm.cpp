@@ -561,7 +561,7 @@ bool qtractorBusForm::updateBus ( qtractorBus *pBus )
 	pUpdateBusCommand->setBusName(sBusName);
 	pUpdateBusCommand->setBusMode(busMode);
 	pUpdateBusCommand->setMonitor(
-		(busMode & qtractorBus::Duplex) == qtractorBus::Duplex
+		((busMode & qtractorBus::Duplex) == qtractorBus::Duplex)
 		&& m_ui.MonitorCheckBox->isChecked());
 
 	// Specialties for bus types...

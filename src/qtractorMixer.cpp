@@ -1168,7 +1168,9 @@ void qtractorMixerRack::addStrip ( qtractorMixerStrip *pStrip )
 	// Add this to the workspace layout...
 	m_pRackWidget->addStrip(pStrip);
 
-	m_strips.insert(pStrip->meter()->monitor(), pStrip);
+	qtractorMonitor *pMonitor = pStrip->monitor();
+	if (pMonitor)
+		m_strips.insert(pMonitor, pStrip);
 
 	pStrip->show();
 }

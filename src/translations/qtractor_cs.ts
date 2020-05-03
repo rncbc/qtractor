@@ -92,37 +92,37 @@ Konec:	%2	Délka:	%3</translation>
         <translation>Soubor:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="538"/>
+        <location filename="../qtractorEngineCommand.cpp" line="540"/>
         <source>create bus</source>
         <translation>Vytvořit sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="560"/>
+        <location filename="../qtractorEngineCommand.cpp" line="562"/>
         <source>update bus</source>
         <translation>Zaktualizovat sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="577"/>
+        <location filename="../qtractorEngineCommand.cpp" line="579"/>
         <source>delete bus</source>
         <translation>Smazat sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="600"/>
+        <location filename="../qtractorEngineCommand.cpp" line="602"/>
         <source>move bus</source>
         <translation>Posunout sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="653"/>
+        <location filename="../qtractorEngineCommand.cpp" line="655"/>
         <source>bus pass-through</source>
         <translation>Průchodnost sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="699"/>
+        <location filename="../qtractorEngineCommand.cpp" line="701"/>
         <source>bus gain</source>
         <translation>Zesílení sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="776"/>
+        <location filename="../qtractorEngineCommand.cpp" line="778"/>
         <source>bus pan</source>
         <translation>Vyvážení sběrnice</translation>
     </message>
@@ -11322,22 +11322,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1387"/>
+        <location filename="../qtractorMixer.cpp" line="1389"/>
         <source>Inputs</source>
         <translation>Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1388"/>
+        <location filename="../qtractorMixer.cpp" line="1390"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1390"/>
+        <location filename="../qtractorMixer.cpp" line="1392"/>
         <source>Outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1397"/>
+        <location filename="../qtractorMixer.cpp" line="1399"/>
         <source>Mixer</source>
         <translation>Mixážní pult</translation>
     </message>

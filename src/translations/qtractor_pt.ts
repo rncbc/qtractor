@@ -581,17 +581,17 @@ MIDI:	</translation>
         <translation>%1 Banco %2</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="560"/>
+        <location filename="../qtractorEngineCommand.cpp" line="562"/>
         <source>update bus</source>
         <translation>atualizar canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="600"/>
+        <location filename="../qtractorEngineCommand.cpp" line="602"/>
         <source>move bus</source>
         <translation>mover canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="538"/>
+        <location filename="../qtractorEngineCommand.cpp" line="540"/>
         <source>create bus</source>
         <translation>criar canal primário</translation>
     </message>
@@ -617,7 +617,7 @@ MIDI:	</translation>
         <translation>renderizar sessão</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="776"/>
+        <location filename="../qtractorEngineCommand.cpp" line="778"/>
         <source>bus pan</source>
         <translation>panorâmico do canal primário</translation>
     </message>
@@ -739,7 +739,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Desconhecido</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="699"/>
+        <location filename="../qtractorEngineCommand.cpp" line="701"/>
         <source>bus gain</source>
         <translation>volume do canal primário</translation>
     </message>
@@ -758,7 +758,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="577"/>
+        <location filename="../qtractorEngineCommand.cpp" line="579"/>
         <source>delete bus</source>
         <translation>apagar canal primário</translation>
     </message>
@@ -784,7 +784,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>adicionar nó de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="653"/>
+        <location filename="../qtractorEngineCommand.cpp" line="655"/>
         <source>bus pass-through</source>
         <translation>repassar canal primário</translation>
     </message>
@@ -11322,22 +11322,22 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1397"/>
+        <location filename="../qtractorMixer.cpp" line="1399"/>
         <source>Mixer</source>
         <translation>Mixer</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1387"/>
+        <location filename="../qtractorMixer.cpp" line="1389"/>
         <source>Inputs</source>
         <translation>Entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1388"/>
+        <location filename="../qtractorMixer.cpp" line="1390"/>
         <source>Tracks</source>
         <translation>Pistas</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1390"/>
+        <location filename="../qtractorMixer.cpp" line="1392"/>
         <source>Outputs</source>
         <translation>Saídas</translation>
     </message>
