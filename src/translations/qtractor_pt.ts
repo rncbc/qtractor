@@ -87,37 +87,37 @@ Fim:	%3	Tamanho:	%4</translation>
     <message>
         <location filename="../qtractorComboBox.cpp" line="125"/>
         <source>Signed 16-Bit</source>
-        <translation type="unfinished">Codificado em 16-Bits</translation>
+        <translation>Assinatura de 16-Bits</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="126"/>
         <source>Signed 24-Bit</source>
-        <translation type="unfinished">Codificado em 24-Bits</translation>
+        <translation>Assinatura de 24-Bits</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="127"/>
         <source>Signed 32-Bit</source>
-        <translation type="unfinished">Codificado em 32-Bits</translation>
+        <translation>Assinatura de 32-Bits</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="128"/>
         <source>Float  32-Bit</source>
-        <translation type="unfinished">Decimal em  32-Bits</translation>
+        <translation>Decimal de  32-Bits</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="129"/>
         <source>Float  64-Bit</source>
-        <translation type="unfinished">Decimal em  64-Bits</translation>
+        <translation>Decimal de  64-Bits</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="146"/>
         <source>SMF Format 0</source>
-        <translation type="unfinished">SMF Formato 0</translation>
+        <translation>Formato SMF 0</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="147"/>
         <source>SMF Format 1</source>
-        <translation type="unfinished">SMF Formato 1</translation>
+        <translation>Formato SMF 1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="106"/>
@@ -367,7 +367,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3220"/>
         <source>X11 (native)</source>
-        <translation type="unfinished"></translation>
+        <translation>X11 (nativo)</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3223"/>
@@ -377,7 +377,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3226"/>
         <source>Gtk2 (native)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gtk2 (nativo)</translation>
     </message>
     <message>
         <location filename="../qtractorLv2Plugin.cpp" line="3230"/>
@@ -1930,42 +1930,42 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="128"/>
         <source>File &amp;type:</source>
-        <translation type="unfinished">&amp;Tipo de arquivo:</translation>
+        <translation>&amp;Tipo de arquivo:</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="144"/>
         <source>Audio file type to use on export</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de arquivo de áudio utilizado na exportação</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="160"/>
         <source>Sample &amp;format:</source>
-        <translation type="unfinished">&amp;Formato da Amostra:</translation>
+        <translation>&amp;Formato da Amostra:</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="176"/>
         <source>Audio sample format to use on export</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato da amostra de áudio para usado na exportação</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="192"/>
         <source>&amp;Quality:</source>
-        <translation type="unfinished">&amp;Qualidade:</translation>
+        <translation>&amp;Qualidade:</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="214"/>
         <source>Audio compression quality to use on export</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualidade da compressão de áudio a ser usada na exportação</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="271"/>
         <source>File &amp;format:</source>
-        <translation type="unfinished">&amp;Formato do arquivo:</translation>
+        <translation>&amp;Formato do arquivo:</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="287"/>
         <source>MIDI file format to use on export</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato do arquivo arquivo MIDI a ser usado na exportação</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="351"/>
@@ -2071,7 +2071,7 @@ falhou.</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="501"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
-        <translation type="unfinished">Arquivos MIDI (*.%1 *.smf *.midi)</translation>
+        <translation>Arquivos MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="374"/>
@@ -2129,12 +2129,12 @@ falhou.</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="432"/>
         <source>Custom start</source>
-        <translation type="unfinished"></translation>
+        <translation>Início padrão</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="455"/>
         <source>Custom end</source>
-        <translation type="unfinished"></translation>
+        <translation>Final padrão</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="548"/>
@@ -2968,7 +2968,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5813"/>
         <source>LV2 Plug-in MIDNAM support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suporte a LV2 Plug-in MIDINAM desabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5846"/>
@@ -2987,7 +2987,11 @@ Você quer mesmo manter as modificações?</translation>
 Make sure the JACK audio server (jackd) and
 the ALSA Sequencer kernel module (snd-seq-midi)
 are up and running and then restart the session.</source>
-        <translation type="unfinished"></translation>
+        <translation>O aparato de Áudio/MIDI não pôde ser inicializado.
+
+Certifique-se que o servidor de áudio JACK (jackd) e
+o módulo Sequenciador ALSA do kernel (snd-seq-midi)
+foram chamados e estão rodando e então reinicie a sessão.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="7936"/>
@@ -13402,7 +13406,7 @@ Posso continuar?</translation>
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1552"/>
         <source>Open File</source>
-        <translation type="unfinished">Abrir Arquivo</translation>
+        <translation>Abrir Arquivo</translation>
     </message>
 </context>
 <context>
