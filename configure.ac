@@ -235,6 +235,11 @@ AC_ARG_ENABLE(lv2-patch,
   [ac_lv2_patch="$enableval"],
   [ac_lv2_patch="yes"])
 
+AC_ARG_ENABLE(lv2-port-event,
+  AS_HELP_STRING([--enable-lv2-port-event], [enable LV2 plug-in Port-event support (EXPERIMENTAL) (default=no)]),
+  [ac_lv2_port_event="$enableval"],
+  [ac_lv2_port_event="no"])
+
 AC_ARG_ENABLE(lv2-time,
   AS_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in Time support (default=yes)]),
   [ac_lv2_time="$enableval"],
@@ -924,6 +929,7 @@ if test "x$ac_liblilv" = "xno"; then
    ac_lv2_midnam="no"
    ac_lv2_presets="no"
    ac_lv2_patch="no"
+   ac_lv2_port_event="no"
    ac_lv2_time="no"
    ac_lv2_time_position="no";
    ac_lv2_options="no"
@@ -1088,6 +1094,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_midnam="no"
       ac_lv2_presets="no"
       ac_lv2_patch="no"
+      ac_lv2_port_event="no"
       ac_lv2_time="no"
       ac_lv2_time_position="no";
       ac_lv2_options="no"
@@ -1265,6 +1272,9 @@ if test "x$ac_lv2_patch" = "xyes"; then
    fi
 else
    ac_lv2_ui_req_value="no"
+fi
+if test "x$ac_lv2_port_event" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2_PORT_EVENT, 1, [Define if LV2 Port-event is supported. (EXPERIMENTAL)])
 fi
 if test "x$ac_lv2_time" = "xyes"; then
    AC_CHECK_HEADER(
@@ -1575,6 +1585,7 @@ echo "  LV2 plug-in Programs support . . . . . . . . . . .: $ac_lv2_programs"
 echo "  LV2 plug-in MIDNAM support . . . . . . . . . . . .: $ac_lv2_midnam"
 echo "  LV2 plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
 echo "  LV2 plug-in Patch support  . . . . . . . . . . . .: $ac_lv2_patch"
+echo "  LV2 plug-in Port-event support (EXPERIMENTAL)  . .: $ac_lv2_port_event"
 echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
 echo "  LV2 plug-in Time/position support  . . . . . . . .: $ac_lv2_time_position"
 echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"

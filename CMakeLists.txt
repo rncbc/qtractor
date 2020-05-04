@@ -125,6 +125,8 @@ option (CONFIG_LV2_PRESETS "Enable LV2 plug-in Presets support (default=yes)" 1)
 
 option (CONFIG_LV2_PATCH "Enable LV2 plug-in Patch support (default=yes)" 1)
 
+option (CONFIG_LV2_PORT_EVENT "Enable LV2 plug-in Port-eventsupport (EXPERIMENTAL) (default=no)" 0)
+
 option (CONFIG_LV2_TIME "Enable LV2 plug-in Time support (default=yes)" 1)
 
 option (CONFIG_LV2_TIME_POSITION "Enable LV2 plug-in Time/position support (default=yes)" 1)
@@ -747,6 +749,7 @@ show_option ("  LV2 plug-in Programs support . . . . . . . . . . ." CONFIG_LV2_P
 show_option ("  LV2 plug-in MIDNAM support . . . . . . . . . . . ." CONFIG_LV2_MIDNAM)
 show_option ("  LV2 plug-in Presets support  . . . . . . . . . . ." CONFIG_LV2_PRESETS)
 show_option ("  LV2 plug-in Patch support  . . . . . . . . . . . ." CONFIG_LV2_PATCH)
+show_option ("  LV2 plug-in Port-event support (EXPERIMENTAL)  . ." CONFIG_LV2_PORT_EVENT)
 show_option ("  LV2 plug-in Time support . . . . . . . . . . . . ." CONFIG_LV2_TIME)
 show_option ("  LV2 plug-in Time/position support  . . . . . . . ." CONFIG_LV2_TIME_POSITION)
 show_option ("  LV2 plug-in Options support  . . . . . . . . . . ." CONFIG_LV2_OPTIONS)

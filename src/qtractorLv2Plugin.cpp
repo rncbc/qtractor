@@ -1770,11 +1770,13 @@ void qtractorLv2PluginType::lv2_open (void)
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__String);
 	g_lv2_urids.atom_Path
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Path);
+#ifdef CONFIG_LV2_PORT_EVENT
 	g_lv2_urids.atom_PortEvent
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__PortEvent);
 	g_lv2_urids.atom_portTuple
 		= qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__portTuple);
 #endif
+#endif	// CONFIG_LV2_ATOM
 #ifdef CONFIG_LV2_PATCH
 	g_lv2_urids.patch_Get
 		= qtractorLv2Plugin::lv2_urid_map(LV2_PATCH__Get);
@@ -4300,6 +4302,7 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 			}
 			else
 		#endif // CONFIG_LV2_PATCH
+		#ifdef CONFIG_LV2_PORT_EVENT
 			if (obj->body.otype == g_lv2_urids.atom_PortEvent) {
 				const LV2_Atom_Tuple *tup = nullptr;
 				lv2_atom_object_get(obj,
@@ -4318,8 +4321,9 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 					}
 				}
 			}
-		#ifdef CONFIG_LV2_STATE
 			else
+		#endif	// CONFIG_LV2_PORT_EVENT
+		#ifdef CONFIG_LV2_STATE
 			if (obj->body.otype == g_lv2_urids.state_StateChanged) {
 				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 				if (pMainForm)
