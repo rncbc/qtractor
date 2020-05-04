@@ -107,26 +107,20 @@ public:
 
 
 //----------------------------------------------------------------------------
-// qtractorInsertPluginParam -- Common insert plugin control input port.
+// qtractorInsertPlugin -- Insert pseudo-plugin decl.
 //
 
-class qtractorInsertPluginParam : public qtractorPluginParam
+class qtractorInsertPlugin : public qtractorPlugin
 {
 public:
 
 	// Constructors.
-	qtractorInsertPluginParam(qtractorPlugin *pPlugin,
-		unsigned long iIndex) : qtractorPluginParam(pPlugin, iIndex) {}
+	qtractorInsertPlugin(qtractorPluginList *pList,
+		qtractorInsertPluginType *pInsertType)
+		: qtractorPlugin(pList, pInsertType) {}
 
-	// Port range hints predicate methods.
-	bool isBoundedBelow() const { return true; }
-	bool isBoundedAbove() const { return true; }
-	bool isDefaultValue() const { return true; }
-	bool isLogarithmic() const { return true; }
-	bool isSampleRate() const { return false; }
-	bool isInteger() const { return false; }
-	bool isToggled() const { return false; }
-	bool isDisplay() const { return false; }
+	// Forward decls.
+	class Param;
 };
 
 
@@ -134,7 +128,7 @@ public:
 // qtractorAudioInsertPlugin -- Audio-insert pseudo-plugin instance.
 //
 
-class qtractorAudioInsertPlugin : public qtractorPlugin
+class qtractorAudioInsertPlugin : public qtractorInsertPlugin
 {
 public:
 
@@ -175,9 +169,9 @@ private:
 	// Instance variables.
 	qtractorAudioBus *m_pAudioBus;
 
-	qtractorInsertPluginParam *m_pSendGainParam;
-	qtractorInsertPluginParam *m_pDryGainParam;
-	qtractorInsertPluginParam *m_pWetGainParam;
+	Param *m_pSendGainParam;
+	Param *m_pDryGainParam;
+	Param *m_pWetGainParam;
 
 	// Custom optimized processors.
 	void (*m_pfnProcessGain)(float **, unsigned int,
@@ -191,7 +185,7 @@ private:
 // qtractorMidiInsertPlugin -- MIDI-insert pseudo-plugin instance.
 //
 
-class qtractorMidiInsertPlugin : public qtractorPlugin
+class qtractorMidiInsertPlugin : public qtractorInsertPlugin
 {
 public:
 
@@ -235,9 +229,9 @@ private:
 	qtractorMidiInputBuffer   *m_pMidiInputBuffer;
 	qtractorMidiOutputBuffer  *m_pMidiOutputBuffer;
 
-	qtractorInsertPluginParam *m_pSendGainParam;
-	qtractorInsertPluginParam *m_pDryGainParam;
-	qtractorInsertPluginParam *m_pWetGainParam;
+	Param *m_pSendGainParam;
+	Param *m_pDryGainParam;
+	Param *m_pWetGainParam;
 };
 
 
@@ -316,10 +310,28 @@ public:
 
 
 //----------------------------------------------------------------------------
+// qtractorAuxSendPlugin -- Aux-send pseudo-plugin decl.
+//
+
+class qtractorAuxSendPlugin : public qtractorPlugin
+{
+public:
+
+	// Constructors.
+	qtractorAuxSendPlugin(qtractorPluginList *pList,
+		qtractorAuxSendPluginType *pAuxSendType)
+		: qtractorPlugin(pList, pAuxSendType) {}
+
+	// Forward decls.
+	class Param;
+};
+
+
+//----------------------------------------------------------------------------
 // qtractorAudioAuxSendPlugin -- Audio aux-send pseudo-plugin instance.
 //
 
-class qtractorAudioAuxSendPlugin : public qtractorPlugin
+class qtractorAudioAuxSendPlugin : public qtractorAuxSendPlugin
 {
 public:
 
@@ -362,7 +374,7 @@ private:
 	qtractorAudioBus *m_pAudioBus;
 	QString           m_sAudioBusName;
 
-	qtractorInsertPluginParam *m_pSendGainParam;
+	Param *m_pSendGainParam;
 
 	// Custom optimized processors.
 	void (*m_pfnProcessAdd)(float **, float **, unsigned int,
@@ -374,7 +386,7 @@ private:
 // qtractorMidiAuxSendPlugin -- MIDI aux-send pseudo-plugin instance.
 //
 
-class qtractorMidiAuxSendPlugin : public qtractorPlugin
+class qtractorMidiAuxSendPlugin : public qtractorAuxSendPlugin
 {
 public:
 
@@ -419,7 +431,55 @@ private:
 
 	qtractorMidiOutputBuffer *m_pMidiOutputBuffer;
 
-	qtractorInsertPluginParam *m_pSendGainParam;
+	Param *m_pSendGainParam;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorInsertPlugin::Param -- Common insert plugin control input port.
+//
+
+class qtractorInsertPlugin::Param : public qtractorPlugin::Param
+{
+public:
+
+	// Constructors.
+	Param(qtractorInsertPlugin *pInsertPlugin, unsigned long iIndex)
+		: qtractorPlugin::Param(pInsertPlugin, iIndex) {}
+
+	// Port range hints predicate methods.
+	bool isBoundedBelow() const { return true; }
+	bool isBoundedAbove() const { return true; }
+	bool isDefaultValue() const { return true; }
+	bool isLogarithmic() const { return true; }
+	bool isSampleRate() const { return false; }
+	bool isInteger() const { return false; }
+	bool isToggled() const { return false; }
+	bool isDisplay() const { return false; }
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorAuxSendPlugin::Param -- Common aux-send plugin control input port.
+//
+
+class qtractorAuxSendPlugin::Param : public qtractorPlugin::Param
+{
+public:
+
+	// Constructors.
+	Param(qtractorAuxSendPlugin *pAuxSendPlugin, unsigned long iIndex)
+		: qtractorPlugin::Param(pAuxSendPlugin, iIndex) {}
+
+	// Port range hints predicate methods.
+	bool isBoundedBelow() const { return true; }
+	bool isBoundedAbove() const { return true; }
+	bool isDefaultValue() const { return true; }
+	bool isLogarithmic() const { return true; }
+	bool isSampleRate() const { return false; }
+	bool isInteger() const { return false; }
+	bool isToggled() const { return false; }
+	bool isDisplay() const { return false; }
 };
 
 

@@ -26,7 +26,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>320</height>
+    <height>240</height>
    </rect>
   </property>
   <property name="focusPolicy" >
@@ -145,12 +145,6 @@
        </item>
        <item>
         <widget class="QTextEdit" name="DescriptionTextEdit" >
-         <property name="maximumSize" >
-          <size>
-           <width>32767</width>
-           <height>72</height>
-          </size>
-         </property>
          <property name="toolTip" >
           <string>Session description</string>
          </property>
@@ -175,7 +169,7 @@
              <string>Sample &amp;Rate:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>SampleRateComboBox</cstring>
@@ -218,7 +212,7 @@
              <string>&amp;Tempo:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>TempoSpinBox</cstring>
@@ -244,7 +238,7 @@
              <string>T&amp;icks/Beat:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>TicksPerBeatSpinBox</cstring>
@@ -278,7 +272,7 @@
             <property name="sizeHint" >
              <size>
               <width>20</width>
-              <height>40</height>
+              <height>20</height>
              </size>
             </property>
            </spacer>
@@ -298,7 +292,7 @@
              <string>&amp;Snap/Beat:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>SnapPerBeatComboBox</cstring>
@@ -321,7 +315,7 @@
              <string>&amp;Pixels/Beat:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>PixelsPerBeatSpinBox</cstring>
@@ -353,7 +347,7 @@
              <string>&amp;Horizontal Zoom:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>HorizontalZoomSpinBox</cstring>
@@ -388,7 +382,7 @@
              <string>&amp;Vertical Zoom:</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy" >
              <cstring>VerticalZoomSpinBox</cstring>
@@ -425,7 +419,7 @@
             <property name="sizeHint" >
              <size>
               <width>20</width>
-              <height>40</height>
+              <height>20</height>
              </size>
             </property>
            </spacer>

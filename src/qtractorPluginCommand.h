@@ -310,30 +310,6 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorPluginPropertyCommand - declaration.
-//
-
-class qtractorPluginPropertyCommand : public qtractorPluginCommand
-{
-public:
-
-	// Constructor.
-	qtractorPluginPropertyCommand(qtractorPlugin *pPlugin,
-		unsigned long iProperty, const QVariant& value);
-
-	// Plugin-port command methods.
-	bool redo();
-	bool undo();
-
-private:
-
-	// Instance variables.
-	unsigned long m_iProperty;
-	QVariant m_value;
-};
-
-
-//----------------------------------------------------------------------
 // class qtractorPluginParamCommand - declaration.
 //
 
@@ -343,14 +319,14 @@ public:
 
 	// Constructor.
 	qtractorPluginParamCommand(
-		qtractorPluginParam *pParam, float fValue, bool bUpdate);
+		qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Plugin-port command methods.
 	bool redo();
 	bool undo();
 
 	// Plugin-port accessor.
-	qtractorPluginParam *param() const { return m_pParam; }
+	qtractorPlugin::Param *param() const { return m_pParam; }
 
 	// Plugin-port value retrieval.
 	float value() const { return m_fValue; }
@@ -361,7 +337,8 @@ public:
 private:
 
 	// Instance variables.
-	qtractorPluginParam *m_pParam;
+	qtractorPlugin::Param *m_pParam;
+
 	float m_fValue;
 	bool  m_bUpdate;
 	float m_fPrevValue;
@@ -383,7 +360,7 @@ public:
 	~qtractorPluginParamValuesCommand();
 
 	// Plugin-value list accessor.
-	void updateParamValue(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+	void updateParamValue(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Composite predicate.
 	bool isEmpty() const;
@@ -396,6 +373,31 @@ private:
 
 	// Instance variables.
 	QList<qtractorPluginParamCommand *> m_paramCommands;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorPluginPropertyCommand - declaration.
+//
+
+class qtractorPluginPropertyCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorPluginPropertyCommand(
+		qtractorPlugin::Property *pProp, const QVariant& value);
+
+	// Plugin-port command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorPlugin::Property *m_pProp;
+
+	QVariant m_value;
 };
 
 

@@ -37,6 +37,12 @@
 
 #include <QFile>
 
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
+
+
 #include <math.h>
 
 // Ref. P.448. Approximate cube root of an IEEE float
@@ -520,7 +526,7 @@ void qtractorMidiControl::sendController (
 	if (pMidiBus == nullptr)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiControl::sendController(0x%02x, %u, %u, %d)",
 		int(ctype), iChannel, iParam, iValue);
 #endif

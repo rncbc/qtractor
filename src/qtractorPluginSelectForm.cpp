@@ -37,9 +37,8 @@
 // qtractorPluginSelectForm -- UI wrapper form.
 
 // Constructor.
-qtractorPluginSelectForm::qtractorPluginSelectForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorPluginSelectForm::qtractorPluginSelectForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);

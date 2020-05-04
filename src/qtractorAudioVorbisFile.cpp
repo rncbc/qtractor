@@ -1,7 +1,7 @@
 // qtractorAudioVorbisFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,7 +38,7 @@
 
 // Constructor.
 qtractorAudioVorbisFile::qtractorAudioVorbisFile ( unsigned short iChannels,
-	unsigned int iSampleRate, unsigned int iBufferSize )
+	unsigned int iSampleRate, unsigned int iBufferSize, int iQuality )
 {
 	// Initialize state variables.
 	m_iMode  = qtractorAudioVorbisFile::None;
@@ -59,6 +59,9 @@ qtractorAudioVorbisFile::qtractorAudioVorbisFile ( unsigned short iChannels,
 	// Adjust size the next nearest power-of-two.
 	while (m_iBufferSize < iBufferSize)
 		m_iBufferSize <<= 1;
+
+	// Encoding quality (write-only).
+	m_iQuality = iQuality;
 }
 
 // Destructor.
@@ -117,7 +120,7 @@ bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 			m_ovsect = 0;
 			break;
 		}
-	
+
 		case Write:
 		{
 			// Init the Ogg Vorbis structs for encoding...
@@ -126,11 +129,10 @@ bool qtractorAudioVorbisFile::open ( const QString& sFilename, int iMode )
 			// Using a VBR quality mode:
 			// Quality=0.1 (lowest quality, smallest file)
 			// Quality=1.0 (highest quality, largest file).
-			int iQuality = qtractorAudioFileFactory::defaultQuality();
 			if (vorbis_encode_init_vbr(m_ovinfo, 
 					(long) m_iChannels,
 					(long) m_iSampleRate,
-					0.1f * float(iQuality)) != 0) {
+					0.1f * float(m_iQuality)) != 0) {
 				close();
 				return false;
 			}
@@ -388,6 +390,13 @@ unsigned int qtractorAudioVorbisFile::sampleRate (void) const
 #else
 	return 0;
 #endif
+}
+
+
+// Translate quality index into vorbis encoder specific. (static)
+int qtractorAudioVorbisFile::quality ( int iQuality )
+{
+	return (iQuality >= 0 && 10 >= iQuality ? iQuality : 4);
 }
 
 

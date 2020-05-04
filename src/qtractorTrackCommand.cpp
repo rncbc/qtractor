@@ -367,10 +367,10 @@ bool qtractorCopyTrackCommand::redo (void)
 			const qtractorPlugin::Params::ConstIterator& param_end
 				= params.constEnd();
 			for ( ; param != param_end; ++param) {
-				qtractorPluginParam *pParam = param.value();
+				qtractorPlugin::Param *pParam = param.value();
 				pCurve = pParam->subject()->curve();
 				if (pCurve && pCurve->list() == pCurveList) {
-					qtractorPluginParam *pNewParam
+					qtractorPlugin::Param *pNewParam
 						= pNewPlugin->findParam(pParam->index());
 					if (pNewParam == nullptr)
 						continue;
@@ -548,7 +548,7 @@ bool qtractorMoveTrackCommand::redo (void)
 
 	int iTrack = pSession->tracks().find(pTrack);
 	if (iTrack < 0)
-	    return false;
+		return false;
 
 	// Save the next track alright...
 	qtractorTrack *pNextTrack = pTrack->next();
@@ -669,7 +669,7 @@ qtractorImportTrackCommand::qtractorImportTrackCommand (
 qtractorImportTrackCommand::~qtractorImportTrackCommand (void)
 {
 	if (m_pSaveCommand)
-	    delete m_pSaveCommand;
+		delete m_pSaveCommand;
 
 	qDeleteAll(m_trackCommands);
 	m_trackCommands.clear();
@@ -693,15 +693,15 @@ bool qtractorImportTrackCommand::redo (void)
 
 	if (m_pSaveCommand && m_iSaveCount > 0) {
 		if (!m_pSaveCommand->redo())
-		    bResult = false;
+			bResult = false;
 	}
 	++m_iSaveCount;
 
 	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
 	while (iter.hasNext()) {
-	    qtractorAddTrackCommand *pTrackCommand = iter.next();
+		qtractorAddTrackCommand *pTrackCommand = iter.next();
 		if (!pTrackCommand->redo())
-		    bResult = false;
+			bResult = false;
 	}
 
 	return bResult;
@@ -716,7 +716,7 @@ bool qtractorImportTrackCommand::undo (void)
 	while (iter.hasPrevious()) {
 		qtractorAddTrackCommand *pTrackCommand = iter.previous();
 		if (!pTrackCommand->undo())
-		    bResult = false;
+			bResult = false;
 	}
 
 	if (m_pSaveCommand && !m_pSaveCommand->undo())
@@ -802,7 +802,7 @@ bool qtractorEditTrackCommand::redo (void)
 	// Mixer turn...
 	qtractorMixer *pMixer = pMainForm->mixer();
 	if (pMixer)
-		pMixer->updateTracks(true);
+		pMixer->updateTracks();
 
 	// Finally update any outstanding clip editors...
 	m_pTrack->updateClipEditors();

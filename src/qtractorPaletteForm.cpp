@@ -1,7 +1,7 @@
 // qtractorPaletteForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -75,6 +75,9 @@ static struct
 	{ "LinkVisited",     QPalette::LinkVisited     },
 	{ "ToolTipBase",     QPalette::ToolTipBase     },
 	{ "ToolTipText",     QPalette::ToolTipText     },
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+	{ "PlaceholderText", QPalette::PlaceholderText },
+#endif
 	{ "NoRole",          QPalette::NoRole          },
 
 	{  nullptr,          QPalette::NoRole          }
@@ -112,9 +115,6 @@ qtractorPaletteForm::qtractorPaletteForm ( QWidget *parent, const QPalette& pal 
 	m_ui.paletteView->setColumnHidden(2, true);
 	m_ui.paletteView->setColumnHidden(3, true);
 
-	QObject::connect(m_ui.nameCombo,
-		SIGNAL(activated(const QString&)),
-		SLOT(nameComboActivated(const QString&)));
 	QObject::connect(m_ui.nameCombo,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(nameComboChanged(const QString&)));
@@ -226,18 +226,14 @@ QSettings *qtractorPaletteForm::settings (void) const
 }
 
 
-void qtractorPaletteForm::nameComboActivated ( const QString& name )
-{
-	setPaletteName(name);
-}
-
-
 void qtractorPaletteForm::nameComboChanged ( const QString& name )
 {
-	if (m_dirtyCount > 0 || m_ui.nameCombo->findText(name) < 0)
+	if (m_dirtyCount > 0 || m_ui.nameCombo->findText(name) < 0) {
 		updateDialogButtons();
-	else
+	} else {
 		setPaletteName(name);
+		++m_dirtyTotal;
+	}
 }
 
 
@@ -513,7 +509,9 @@ bool qtractorPaletteForm::namedPalette (
 	QSettings *settings, const QString& name, QPalette& pal, bool fixup )
 {
 	int result = 0;
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 	uint mask = pal.resolve();
+#endif
 
 	// Custom color themes...
 	if (name == "Wonton Soup") {
@@ -574,7 +572,9 @@ bool qtractorPaletteForm::namedPalette (
 		pal.setColor(QPalette::Active,   QPalette::LinkVisited, QColor(64, 128, 255));
 		pal.setColor(QPalette::Inactive, QPalette::LinkVisited, QColor(64, 128, 255));
 		pal.setColor(QPalette::Disabled, QPalette::LinkVisited, QColor(54, 76, 119));
+	#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 		mask = 0;
+	#endif
 		++result;
 	}
 	else
@@ -636,7 +636,9 @@ bool qtractorPaletteForm::namedPalette (
 		pal.setColor(QPalette::Active,   QPalette::LinkVisited, QColor(230, 100, 230));
 		pal.setColor(QPalette::Inactive, QPalette::LinkVisited, QColor(230, 100, 230));
 		pal.setColor(QPalette::Disabled, QPalette::LinkVisited, QColor(74, 34, 74));
+	#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 		mask = 0;
+	#endif
 		++result;
 	}
 	else
@@ -654,7 +656,9 @@ bool qtractorPaletteForm::namedPalette (
 				pal.setColor(QPalette::Active,   cr, QColor(clist.at(0)));
 				pal.setColor(QPalette::Inactive, cr, QColor(clist.at(1)));
 				pal.setColor(QPalette::Disabled, cr, QColor(clist.at(2)));
+			#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 				mask &= ~(1 << int(cr));
+			#endif
 				++result;
 			}
 		}
@@ -693,7 +697,9 @@ bool qtractorPaletteForm::namedPalette (
 		++result;
 	}
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 	pal.resolve(mask);
+#endif
 	return (result > 0);
 }
 

@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -85,9 +85,8 @@ private:
 //
 
 // Constructor.
-qtractorMidiSysexForm::qtractorMidiSysexForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorMidiSysexForm::qtractorMidiSysexForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -219,7 +218,7 @@ void qtractorMidiSysexForm::importSlot (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -303,7 +302,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -450,7 +449,7 @@ void qtractorMidiSysexForm::openSlot (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -527,7 +526,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 		const QString& sFilter = filters.join(";;");
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		QWidget *pParentWidget = nullptr;
-		QFileDialog::Options options = 0;
+		QFileDialog::Options options;
 		if (pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
 			pParentWidget = QWidget::window();

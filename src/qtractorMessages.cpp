@@ -1,7 +1,7 @@
 // qtractorMessages.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -47,6 +47,11 @@
 #define QTRACTOR_MESSAGES_FDNIL    -1
 #define QTRACTOR_MESSAGES_FDREAD    0
 #define QTRACTOR_MESSAGES_FDWRITE   1
+
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
 
 
 //-------------------------------------------------------------------------

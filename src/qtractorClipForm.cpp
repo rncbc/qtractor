@@ -94,9 +94,8 @@ void qtractorClipForm::initFadeTypes (void)
 // qtractorClipForm -- UI wrapper form.
 
 // Constructor.
-qtractorClipForm::qtractorClipForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorClipForm::qtractorClipForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -698,7 +697,7 @@ void qtractorClipForm::browseFilename (void)
 		= tr("%1 Clip File").arg(sType);
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;

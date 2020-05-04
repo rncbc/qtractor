@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.9.13, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.9.14, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -219,6 +219,11 @@ AC_ARG_ENABLE(lv2-programs,
   AS_HELP_STRING([--enable-lv2-programs], [enable LV2 plug-in Programs support (default=yes)]),
   [ac_lv2_programs="$enableval"],
   [ac_lv2_programs="yes"])
+
+AC_ARG_ENABLE(lv2-midnam,
+  AS_HELP_STRING([--enable-lv2-midnam], [enable LV2 plug-in MIDNAM support (default=yes)]),
+  [ac_lv2_midnam="$enableval"],
+  [ac_lv2_midnam="yes"])
 
 AC_ARG_ENABLE(lv2-presets,
   AS_HELP_STRING([--enable-lv2-presets], [enable LV2 plug-in Presets support (default=yes)]),
@@ -916,6 +921,7 @@ if test "x$ac_liblilv" = "xno"; then
    ac_lv2_state_files="no"
    ac_lv2_state_make_path="no"
    ac_lv2_programs="no"
+   ac_lv2_midnam="no"
    ac_lv2_presets="no"
    ac_lv2_patch="no"
    ac_lv2_time="no"
@@ -1079,6 +1085,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_state_files="no"
       ac_lv2_state_make_path="no"
       ac_lv2_programs="no"
+      ac_lv2_midnam="no"
       ac_lv2_presets="no"
       ac_lv2_patch="no"
       ac_lv2_time="no"
@@ -1226,6 +1233,14 @@ if test "x$ac_lv2_programs" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PROGRAMS, 1, [Define if LV2 Programs extension is available.])
    else
       AC_MSG_WARN([*** LV2 Programs extension will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_midnam" = "xyes"; then
+   AC_CHECK_HEADER(lv2_midnam.h, [ac_lv2_midnam="yes"], [ac_lv2_midnam="no"])
+   if test "x$ac_lv2_midnam" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_MIDNAM, 1, [Define if LV2 MIDNAM extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 MIDNAM extension will be disabled.])
    fi
 fi
 if test "x$ac_lv2_presets" = "xyes"; then
@@ -1557,6 +1572,7 @@ echo "  LV2 plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
 echo "  LV2 plug-in State Files support  . . . . . . . . .: $ac_lv2_state_files"
 echo "  LV2 plug-in State Make Path support (DANGEROUS)  .: $ac_lv2_state_make_path"
 echo "  LV2 plug-in Programs support . . . . . . . . . . .: $ac_lv2_programs"
+echo "  LV2 plug-in MIDNAM support . . . . . . . . . . . .: $ac_lv2_midnam"
 echo "  LV2 plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
 echo "  LV2 plug-in Patch support  . . . . . . . . . . . .: $ac_lv2_patch"
 echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"

@@ -79,7 +79,8 @@ class qtractorMainForm : public QMainWindow
 public:
 
 	// Constructor.
-	qtractorMainForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorMainForm(QWidget *pParent = nullptr,
+		Qt::WindowFlags wflags = Qt::WindowFlags());
 	// Destructor.
 	~qtractorMainForm();
 
@@ -310,7 +311,7 @@ protected slots:
 	void audioPortNotify();
 	void audioBuffNotify(unsigned int iBufferSize);
 	void audioSessNotify(void *pvSessionArg);
-	void audioSyncNotify(unsigned long iPlayHead);
+	void audioSyncNotify(unsigned long iPlayHead, bool bPlaying);
 	void audioPropNotify();
 
 	void midiMmcNotify(const qtractorMmcEvent& mmce);

@@ -2,7 +2,7 @@ project(QTRACTOR)
 
 cmake_minimum_required(VERSION 3.1)
 
-set (VERSION "0.9.13")
+set (VERSION "0.9.14")
 
 set (CONFIG_VERSION ${VERSION})
 execute_process (
@@ -118,6 +118,8 @@ option (CONFIG_LV2_STATE_FILES "Enable LV2 plug-in State Files support (default=
 option (CONFIG_LV2_STATE_MAKE_PATH "Enable LV2 plug-in State Make Path support (default=no)" 0)
 
 option (CONFIG_LV2_PROGRAMS "Enable LV2 plug-in Programs support (default=yes)" 1)
+
+option (CONFIG_LV2_MIDNAM "Enable LV2 plug-in MIDNAM support (default=yes)" 1)
 
 option (CONFIG_LV2_PRESETS "Enable LV2 plug-in Presets support (default=yes)" 1)
 
@@ -596,6 +598,13 @@ if (CONFIG_LV2_PROGRAMS)
   endif ()
 endif ()
 
+if (CONFIG_LV2_MIDNAM)
+  check_include_file (lv2_midnam.h HAVE_LV2_MIDNAM_H)
+  if (NOT HAVE_LV2_MIDNAM_H)
+    set (CONFIG_LV2_MIDNAM 0)
+  endif ()
+endif ()
+
 if (CONFIG_LV2_PRESETS)
   check_include_file (lv2/lv2plug.in/ns/ext/presets/presets.h HAVE_LV2_PRESETS_H)
   if (NOT HAVE_LV2_PRESETS_H)
@@ -735,6 +744,7 @@ show_option ("  LV2 plug-in State support  . . . . . . . . . . . ." CONFIG_LV2_S
 show_option ("  LV2 plug-in State Files support  . . . . . . . . ." CONFIG_LV2_STATE_FILES)
 show_option ("  LV2 plug-in State Make Path support (DANGEROUS)  ." CONFIG_LV2_STATE_MAKE_PATH)
 show_option ("  LV2 plug-in Programs support . . . . . . . . . . ." CONFIG_LV2_PROGRAMS)
+show_option ("  LV2 plug-in MIDNAM support . . . . . . . . . . . ." CONFIG_LV2_MIDNAM)
 show_option ("  LV2 plug-in Presets support  . . . . . . . . . . ." CONFIG_LV2_PRESETS)
 show_option ("  LV2 plug-in Patch support  . . . . . . . . . . . ." CONFIG_LV2_PATCH)
 show_option ("  LV2 plug-in Time support . . . . . . . . . . . . ." CONFIG_LV2_TIME)

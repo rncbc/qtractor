@@ -1,7 +1,7 @@
 // qtractorEngineCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -92,7 +92,6 @@ bool qtractorBusCommand::createBus (void)
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return false;
-
 
 	// Create the bus of proper type...
 	m_pBus = nullptr;
@@ -225,7 +224,6 @@ bool qtractorBusCommand::updateBus (void)
 			// Find the input strips that have this bus monitored...
 			pStrip = (pMixer->inputRack())->findStrip(m_pBus->monitor_in());
 			if (pStrip) {
-				pStrip->clear();
 				if (m_busMode & qtractorBus::Input) {
 					strips.append(pStrip);
 				} else {
@@ -237,7 +235,6 @@ bool qtractorBusCommand::updateBus (void)
 			// Find the output strips that have this bus monitored...
 			pStrip = (pMixer->outputRack())->findStrip(m_pBus->monitor_out());
 			if (pStrip) {
-				pStrip->clear();
 				if (m_busMode & qtractorBus::Output) {
 					strips.append(pStrip);
 				} else {
@@ -273,13 +270,17 @@ bool qtractorBusCommand::updateBus (void)
 		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus) {
 			if (pMixer) {
 				pStrip = (pMixer->trackRack())->findStrip(pTrack->monitor());
-				if (pStrip) {
-					pStrip->clear();
+				if (pStrip)
 					strips.append(pStrip);
-				}
 			}
 			pTrack->close();
 		}
+	}
+
+	if (pMixer) {
+		QListIterator<qtractorMixerStrip *> iter(strips);
+		while (iter.hasNext())
+			iter.next()->clear();
 	}
 
 	// May close now the bus...
@@ -331,6 +332,7 @@ bool qtractorBusCommand::updateBus (void)
 		QListIterator<qtractorMixerStrip *> iter(strips);
 		while (iter.hasNext()) {
 			pStrip = iter.next();
+			pStrip->clear();
 			if (pStrip->track())
 				pStrip->setTrack(pStrip->track());
 			else
@@ -436,7 +438,7 @@ bool qtractorBusCommand::deleteBus (void)
 					strips.append(pStrip);
 				}
 			}
-		}			
+		}
 	}
 
 	// May close now the bus...

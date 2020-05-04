@@ -290,7 +290,7 @@ static int osc_update (
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		qtractorPlugin::Param *pParam = param.value();
 		osc_send_control(pDssiEditor,
 			pParam->index(),
 			pParam->value());
@@ -983,7 +983,7 @@ void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 void qtractorDssiPlugin::resetChannels (void)
 {
 	// (Re)initialize controller port map, anyway.
-	::memset(m_apControllerMap, 0, 128 * sizeof(qtractorPluginParam *));
+	::memset(m_apControllerMap, 0, 128 * sizeof(qtractorPlugin::Param *));
 
 	// Check how many instances are about there...
 	const unsigned short iInstances = instances();
@@ -1008,7 +1008,7 @@ void qtractorDssiPlugin::resetChannels (void)
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			const int iController
 				= (*pDssiDescriptor->get_midi_controller_for_port)(
 					handle, pParam->index());
@@ -1104,7 +1104,7 @@ void qtractorDssiPlugin::process (
 
 // Parameter update method.
 void qtractorDssiPlugin::updateParam (
-	qtractorPluginParam *pParam, float fValue, bool bUpdate )
+	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorDssiPlugin[%p]::updateParam(%lu, %g, %d)",
@@ -1259,7 +1259,7 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		qtractorPlugin::Param *pParam = param.value();
 		pParam->setDefaultValue(pParam->value());
 	}
 }
@@ -1296,7 +1296,7 @@ bool qtractorDssiPlugin::getProgram ( int iIndex, Program& program ) const
 // MIDI continuous controller handler.
 void qtractorDssiPlugin::setController ( int iController, int iValue )
 {
-	qtractorPluginParam *pParam
+	qtractorPlugin::Param *pParam
 		= m_apControllerMap[DSSI_CC_NUMBER(iController)];
 	if (pParam == nullptr)
 		return;

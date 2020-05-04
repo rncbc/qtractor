@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -369,9 +369,6 @@ bool qtractorClipCommand::addClipRecord (
 	if (iClipStart >= iClipEnd)
 		return false;
 
-	// Make sure the new clip has some legal length...
-	pClip->setClipLength(iClipEnd - iClipStart);
-
 	const qtractorTrack::TrackType trackType = pTrack->trackType();
 
 	// HACK: Exclusive MIDI clip recording/overdub...
@@ -422,10 +419,9 @@ bool qtractorClipCommand::addClipRecord (
 	unsigned long iClipOffset = pClip->clipOffset();
 	// Audio clips may need some record latency compensation...
 	if (trackType == qtractorTrack::Audio) {
-		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
-		if (pAudioBus)
-			iClipOffset += pAudioBus->latency_in();
+		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine)
+			iClipOffset += pAudioEngine->transportLatency();
 	}
 
 	// Check whether in loop-recording/takes mode...
@@ -815,14 +811,20 @@ bool qtractorClipCommand::execute ( bool bRedo )
 		}
 		case ResetClip: {
 			const unsigned long iClipStartTime  = pClip->clipStartTime();
-			const unsigned long iClipOffsetTime = pClip->clipOffsetTime();
 			const unsigned long iClipLengthTime = pClip->clipLengthTime();
-			pClip->setClipOffset(pItem->clipOffset);
-			pClip->setClipLength(pItem->clipLength);
-			pItem->clipOffset =	pSession->frameFromTickRange(
-				iClipStartTime, iClipStartTime + iClipOffsetTime, true);
 			pItem->clipLength =	pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipLengthTime);
+			pClip->setClipLength(pItem->clipLength);
+		#if 1// EXPERIMENTAL: Don't quantize to MIDI metronomic time-scale...
+			const unsigned long iClipOffset= pClip->clipOffset();
+			pClip->setClipOffset(pItem->clipOffset);
+			pItem->clipOffset =	iClipOffset;
+		#else
+			const unsigned long iClipOffsetTime = pClip->clipOffsetTime();
+			pClip->setClipOffset(pItem->clipOffset);
+			pItem->clipOffset =	pSession->frameFromTickRange(
+				iClipStartTime, iClipStartTime + iClipOffsetTime, true);
+		#endif
 			break;
 		}
 		case WsolaClip: {

@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,6 +34,11 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <QDir>
+
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
 
 
 // Local prototypes.

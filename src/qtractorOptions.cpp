@@ -137,6 +137,10 @@ void qtractorOptions::loadOptions (void)
 	iAudioCaptureType    = m_settings.value("/CaptureType", 0).toInt();
 	iAudioCaptureFormat  = m_settings.value("/CaptureFormat", 0).toInt();
 	iAudioCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
+	sAudioExportExt      = m_settings.value("/ExportExt").toString();
+	iAudioExportType     = m_settings.value("/ExportType", -1).toInt();
+	iAudioExportFormat   = m_settings.value("/ExportFormat", -1).toInt();
+	iAudioExportQuality  = m_settings.value("/ExportQuality", -1).toInt();
 	iAudioResampleType   = m_settings.value("/ResampleType", 2).toInt();
 	bAudioAutoTimeStretch = m_settings.value("/AutoTimeStretch", false).toBool();
 	bAudioWsolaTimeStretch = m_settings.value("/WsolaTimeStretch", true).toBool();
@@ -153,6 +157,7 @@ void qtractorOptions::loadOptions (void)
 	// MIDI rendering options group.
 	m_settings.beginGroup("/Midi");
 	iMidiCaptureFormat = m_settings.value("/CaptureFormat", 1).toInt();
+	iMidiExportFormat  = m_settings.value("/ExportFormat", 1).toInt();
 	iMidiCaptureQuantize = m_settings.value("/CaptureQuantize", 0).toInt();
 	iMidiQueueTimer    = m_settings.value("/QueueTimer", 0).toInt();
 	bMidiDriftCorrect  = m_settings.value("/DriftCorrect", true).toBool();
@@ -432,6 +437,10 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/CaptureType", iAudioCaptureType);
 	m_settings.setValue("/CaptureFormat", iAudioCaptureFormat);
 	m_settings.setValue("/CaptureQuality", iAudioCaptureQuality);
+	m_settings.setValue("/ExportExt", sAudioExportExt);
+	m_settings.setValue("/ExportType", iAudioExportType);
+	m_settings.setValue("/ExportFormat", iAudioExportFormat);
+	m_settings.setValue("/ExportQuality", iAudioExportQuality);
 	m_settings.setValue("/ResampleType", iAudioResampleType);
 	m_settings.setValue("/AutoTimeStretch", bAudioAutoTimeStretch);
 	m_settings.setValue("/WsolaTimeStretch", bAudioWsolaTimeStretch);
@@ -448,6 +457,7 @@ void qtractorOptions::saveOptions (void)
 	// MIDI rendering options group.
 	m_settings.beginGroup("/Midi");
 	m_settings.setValue("/CaptureFormat", iMidiCaptureFormat);
+	m_settings.setValue("/ExportFormat", iMidiExportFormat);
 	m_settings.setValue("/CaptureQuantize", iMidiCaptureQuantize);
 	m_settings.setValue("/QueueTimer", iMidiQueueTimer);
 	m_settings.setValue("/DriftCorrect", bMidiDriftCorrect);

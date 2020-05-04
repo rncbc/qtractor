@@ -1,7 +1,7 @@
 // qtractorFileList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -177,19 +177,20 @@ void qtractorFileList::cleanup ( bool bForce )
 	const Hash::ConstIterator& iter_end = m_items.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		Item *pItem = iter.value();
+	#ifdef CONFIG_DEBUG_0
+		qDebug("qtractorFileList::cleanup(%d, \"%s\") autoRemove=%d refCount=%d clips=%d",
+			int(pItem->type()), pItem->path().toUtf8().constData(),
+			int(pItem->isAutoRemove()), pItem->refCount(), pItem->clipRefCount());
+	#endif
 		if (pItem->isAutoRemove()) {
 			const QString& sPath = pItem->path();
-		#ifdef CONFIG_DEBUG_0
-			qDebug("qtractorFileList::cleanup(%d, \"%s\") refCount=%d clips=%d",
-				int(pItem->type()), pItem->path().toUtf8().constData(),
-				pItem->refCount(), pItem->clipRefCount());
-		#endif
 			if (!bForce && pItem->clipRefCount() > 0) {
-				pItem->setAutoRemove(false);
+			//	pItem->setAutoRemove(false);
 				pItem->removeRef();
 			}
 			// Time for the kill...?
-			if (bForce) QFile::remove(sPath);
+			if (bForce && pItem->clipRefCount() < 1)
+				QFile::remove(sPath);
 		}
 	}
 }

@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,9 +30,10 @@
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 
+#include <QPainter>
+#include <QPainterPath>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QPainter>
 
 #include <time.h>
 #include <math.h>
@@ -47,7 +48,7 @@ class TimeshiftCurve : public QWidget
 public:
 
 	// Constructor.
-	TimeshiftCurve(QWidget *pParent = 0) : QWidget(pParent), m_p(0.0f) {}
+	TimeshiftCurve(QWidget *pParent = nullptr) : QWidget(pParent), m_p(0.0f) {}
 
 	// Accessors.
 	void setTimeshift(float p) { m_p = p; update(); }
@@ -116,9 +117,8 @@ private:
 // qtractorMidiToolsForm -- UI wrapper form.
 
 // Constructor.
-qtractorMidiToolsForm::qtractorMidiToolsForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);

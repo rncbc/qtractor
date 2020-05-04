@@ -64,8 +64,8 @@ class qtractorMonitorButton : public qtractorMidiControlButton
 public:
 
 	// Constructors.
-	qtractorMonitorButton(qtractorTrack *pTrack, QWidget *pParent = 0);
-	qtractorMonitorButton(qtractorBus *pBus, QWidget *pParent = 0);
+	qtractorMonitorButton(qtractorTrack *pTrack, QWidget *pParent = nullptr);
+	qtractorMonitorButton(qtractorBus *pBus, QWidget *pParent = nullptr);
 
 	// Specific track accessors.
 	void setTrack(qtractorTrack *pTrack);
@@ -382,7 +382,8 @@ class qtractorMixer : public QMainWindow
 public:
 
 	// Constructor.
-	qtractorMixer(QWidget *pParent, Qt::WindowFlags wflags = 0);
+	qtractorMixer(QWidget *pParent = nullptr,
+		Qt::WindowFlags wflags = Qt::WindowFlags());
 	// Default destructor.
 	~qtractorMixer();
 

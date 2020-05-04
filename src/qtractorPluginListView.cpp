@@ -128,7 +128,7 @@ protected:
 			// Draw the direct access parameter value status...
 			QPolygon polyg(3);
 			qtractorPlugin *pPlugin = pItem->plugin();
-			qtractorPluginParam *pDirectAccessParam = nullptr;
+			qtractorPlugin::Param *pDirectAccessParam = nullptr;
 			qtractorMidiControlObserver *pDirectAccessObserver = nullptr;
 			if (pPlugin)
 				pDirectAccessParam = pPlugin->directAccessParam();
@@ -891,7 +891,7 @@ void qtractorPluginListView::importPlugins (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1004,7 +1004,7 @@ void qtractorPluginListView::exportPlugins (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1382,7 +1382,7 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 				if (pPlugin) {
 					QString sToolTip = pItem->text(); // (pPlugin->type())->name();
 					if (pPlugin->isDirectAccessParam()) {
-						qtractorPluginParam *pDirectAccessParam
+						qtractorPlugin::Param *pDirectAccessParam
 							= pPlugin->directAccessParam();
 						if (pDirectAccessParam) {
 							sToolTip.append(QString("\n(%1: %2)")
@@ -1412,29 +1412,35 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 // trap the wheel event to change the value of the direcgAccessParameter
 void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 {
-	const QPoint& pos = pWheelEvent->pos();
-	qtractorPluginListItem *pItem
-		= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
-	if (pItem) {
-		qtractorPlugin *pPlugin = pItem->plugin();
-		qtractorPluginParam *pDirectAccessParam = nullptr;
-		qtractorMidiControlObserver *pDirectAccessObserver = nullptr;
-		if (pPlugin)
-			pDirectAccessParam = pPlugin->directAccessParam();
-		if (pDirectAccessParam)
-			pDirectAccessObserver = pDirectAccessParam->observer();
-		if (pDirectAccessObserver) {
-			const bool bLogarithmic = pDirectAccessParam->isLogarithmic();
-			float fValue = pDirectAccessObserver->value();
-			const float fScale = pDirectAccessObserver->scaleFromValue(
-				fValue, bLogarithmic);
-			float fDelta = (pWheelEvent->delta() < 0 ? -0.1f : +0.1f);
-			if (!pDirectAccessParam->isInteger())
-				fDelta *= 0.5f;
-			fValue = pDirectAccessObserver->valueFromScale(
-				fScale + fDelta, bLogarithmic);
-			pDirectAccessParam->updateValue(fValue, true);
-			return;
+	if (pWheelEvent->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+		const QPoint& pos = pWheelEvent->position().toPoint();
+	#else
+		const QPoint& pos = pWheelEvent->pos();
+	#endif
+		qtractorPluginListItem *pItem
+			= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
+		if (pItem) {
+			qtractorPlugin *pPlugin = pItem->plugin();
+			qtractorPlugin::Param *pDirectAccessParam = nullptr;
+			qtractorMidiControlObserver *pDirectAccessObserver = nullptr;
+			if (pPlugin)
+				pDirectAccessParam = pPlugin->directAccessParam();
+			if (pDirectAccessParam)
+				pDirectAccessObserver = pDirectAccessParam->observer();
+			if (pDirectAccessObserver) {
+				const bool bLogarithmic = pDirectAccessParam->isLogarithmic();
+				float fValue = pDirectAccessObserver->value();
+				const float fScale = pDirectAccessObserver->scaleFromValue(
+					fValue, bLogarithmic);
+				float fDelta = (pWheelEvent->angleDelta().y() < 0 ? -0.1f : +0.1f);
+				if (!pDirectAccessParam->isInteger())
+					fDelta *= 0.5f;
+				fValue = pDirectAccessObserver->valueFromScale(
+					fScale + fDelta, bLogarithmic);
+				pDirectAccessParam->updateValue(fValue, true);
+				return;
+			}
 		}
 	}
 
@@ -1573,7 +1579,7 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 	return true;
 }
 
-bool qtractorPluginListView::canDropItem (  QDropEvent *pDropEvent  )
+bool qtractorPluginListView::canDropItem ( QDropEvent *pDropEvent  )
 {
 	const bool bCanDropItem = canDropEvent(pDropEvent);
 	
@@ -1905,7 +1911,7 @@ void qtractorPluginListView::contextMenuEvent (
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			const int iParamIndex = int(param.key());
 			pAction = pDirectAccessParamMenu->addAction(
 				pParam->name(), this, SLOT(directAccessPlugin()));
@@ -2043,7 +2049,7 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 	if (pPlugin == nullptr)
 		return;
 
-	qtractorPluginParam *pDirectAccessParam	
+	qtractorPlugin::Param *pDirectAccessParam
 		= pPlugin->directAccessParam();
 	if (pDirectAccessParam == nullptr)
 		return;
@@ -2102,7 +2108,7 @@ void qtractorPluginListView::resetDirectAccess ( const QPoint& pos )
 	if (pPlugin == nullptr)
 		return;
 
-	qtractorPluginParam *pDirectAccessParam
+	qtractorPlugin::Param *pDirectAccessParam
 		= pPlugin->directAccessParam();
 	if (pDirectAccessParam == nullptr)
 		return;

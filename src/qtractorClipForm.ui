@@ -121,7 +121,7 @@
       <string>Track/&amp;Channel:</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <set>Qt::AlignRight|Qt::AlignVCenter</set>
      </property>
      <property name="buddy">
       <cstring>TrackChannelSpinBox</cstring>
@@ -195,7 +195,7 @@
          <string>&amp;Gain:</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <set>Qt::AlignRight|Qt::AlignVCenter</set>
         </property>
         <property name="buddy">
          <cstring>ClipGainSpinBox</cstring>
@@ -262,7 +262,7 @@
          <string>&amp;Panning:</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <set>Qt::AlignRight|Qt::AlignVCenter</set>
         </property>
         <property name="buddy">
          <cstring>ClipPanningSpinBox</cstring>
@@ -329,7 +329,7 @@
          <string>Forma&amp;t:</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <set>Qt::AlignRight|Qt::AlignVCenter</set>
         </property>
         <property name="buddy">
          <cstring>FormatComboBox</cstring>
@@ -530,7 +530,7 @@
          <string>Pitch S&amp;hift:</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <set>Qt::AlignRight|Qt::AlignVCenter</set>
         </property>
         <property name="buddy">
          <cstring>PitchShiftSpinBox</cstring>

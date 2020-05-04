@@ -139,6 +139,9 @@
 /* Define if LV2 Programs extension is available. */
 #cmakedefine CONFIG_LV2_PROGRAMS @CONFIG_LV2_PROGRAMS@
 
+/* Define if LV2 MIDNAM extension is available. */
+#cmakedefine CONFIG_LV2_MIDNAM @CONFIG_LV2_MIDNAM@
+
 /* Define if LV2 Presets are supported. */
 #cmakedefine CONFIG_LV2_PRESETS @CONFIG_LV2_PRESETS@
 

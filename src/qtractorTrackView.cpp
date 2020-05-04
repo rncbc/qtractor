@@ -62,6 +62,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QPainter>
+#include <QPainterPath>
 #include <QCursor>
 #include <QTimer>
 #include <QUrl>
@@ -569,7 +570,7 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 					pPainter->setBrush(bg);
 				#endif
 					unsigned long iClipStart  = pClipRecord->clipStart();
-					unsigned long iClipOffset = 0;//pClipRecord->clipOffset();
+					unsigned long iClipOffset = pClipRecord->clipOffset();
 					// Care for loop-recording/take offsets...
 					if (pTrack->isClipRecordEx()) {
 						const unsigned long iClipEnd
@@ -2207,7 +2208,7 @@ void qtractorTrackView::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 void qtractorTrackView::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
-		const int delta = pWheelEvent->delta();
+		const int delta = pWheelEvent->angleDelta().y();
 		if (delta > 0)
 			m_pTracks->zoomIn();
 		else

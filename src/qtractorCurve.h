@@ -1,7 +1,7 @@
 // qtractorCurve.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -248,9 +248,9 @@ public:
 	const QColor& color() const
 		{ return m_color; }
 
-    // Emptyness status.
-    bool isEmpty() const
-        { return (m_nodes.count() < 1); }
+	// Emptyness status.
+	bool isEmpty() const
+		{ return (m_nodes.count() < 1); }
 
 protected:
 
@@ -268,7 +268,7 @@ protected:
 
 		// Constructor.
 		Observer(qtractorSubject *pSubject, qtractorCurve *pCurve)
-		    : qtractorObserver(pSubject), m_pCurve(pCurve) {}
+			: qtractorObserver(pSubject), m_pCurve(pCurve) {}
 
 		// Capture updater.
 		void update(bool) { m_pCurve->capture(); }
@@ -593,11 +593,11 @@ public:
 		return true;
 	}
 
-    // Emptyness status.
-    bool isEmpty() const
-        { return (count() < 1); }
+	// Emptyness status.
+	bool isEmpty() const
+		{ return (count() < 1); }
 
-    // Whole list cleaner.
+	// Whole list cleaner.
 	void clearAll()
 	{
 		m_pCurrentCurve = nullptr;

@@ -1,7 +1,7 @@
 // qtractorZipFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2010-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -342,7 +342,7 @@ public:
 	qtractorZipFile::Status status;
 	bool dirty_contents;
 	QString file_prefix;
-	QHash<QString, FileHeader> file_headers;
+	QMultiHash<QString, FileHeader> file_headers;
 	QHash<QString, int> file_aliases;
 	QByteArray comment;
 	unsigned int total_uncompressed;
@@ -735,7 +735,7 @@ bool qtractorZipDevice::addEntry (
 	write_uint(fh.h.offset_local_header, 0);  /* DEFERRED (write_offset) */
 	write_ushort(fh.h.compression_method, 0); /* DEFERRED */
 
-	file_headers.insertMulti(sFilepath, fh);
+	file_headers.insert(sFilepath, fh);
 	file_aliases.insert(sFakepath, file_aliases.count());
 	dirty_contents = true;
 
@@ -866,8 +866,8 @@ bool qtractorZipDevice::processAll (void)
 
 	int iProcessed = 0;
 
-	QHash<QString, FileHeader>::Iterator iter = file_headers.begin();
-	const QHash<QString, FileHeader>::Iterator& iter_end = file_headers.end();
+	QMultiHash<QString, FileHeader>::Iterator iter = file_headers.begin();
+	const QMultiHash<QString, FileHeader>::Iterator& iter_end = file_headers.end();
 	for ( ; iter != iter_end; ++iter) {
 		if (!processEntry(iter.key(), iter.value()))
 			break;

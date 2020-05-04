@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1209,7 +1209,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		filters.append(tr("All files (*.*)"));
 		const QString& sFilter = filters.join(";;");
 		QWidget *pParentWidget = nullptr;
-		QFileDialog::Options options = 0;
+		QFileDialog::Options options;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;

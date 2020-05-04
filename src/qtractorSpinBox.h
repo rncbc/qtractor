@@ -44,7 +44,7 @@ class qtractorSpinBox : public QDoubleSpinBox
 public:
 
 	// Constructor.
-	qtractorSpinBox(QWidget *pParent = 0);
+	qtractorSpinBox(QWidget *pParent = nullptr);
 
 	// Edit mode behavior:
 	// DefaultMode - default (immediate value changes) behavior.
@@ -92,7 +92,7 @@ class qtractorTimeSpinBox : public QAbstractSpinBox
 public:
 
 	// Constructor.
-	qtractorTimeSpinBox(QWidget *pParent = 0);
+	qtractorTimeSpinBox(QWidget *pParent = nullptr);
 
 	// Time-scale accessors.
 	void setTimeScale(qtractorTimeScale *pTimeScale);
@@ -190,7 +190,7 @@ class qtractorTempoSpinBox : public QAbstractSpinBox
 public:
 
 	// Constructor.
-	qtractorTempoSpinBox(QWidget *pParent = 0);
+	qtractorTempoSpinBox(QWidget *pParent = nullptr);
 
 	// Nominal tempo value (BPM) accessors.
 	void setTempo(float fTempo, bool bNotifyChange = true);

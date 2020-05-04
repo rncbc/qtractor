@@ -207,8 +207,8 @@ void qtractorPluginFactory::updatePluginPaths (void)
 	// VST3 default path...
 	QStringList vst3_paths;
 	if (pOptions)
-		vst_paths = pOptions->vstPaths;
-	if (vst_paths.isEmpty()) {
+		vst3_paths = pOptions->vstPaths;
+	if (vst3_paths.isEmpty()) {
 		QString sVst3Paths = ::getenv("VST3_PATH");
 		if (sVst3Paths.isEmpty())
 			sVst3Paths = ::getenv("VST3_PATH");
@@ -813,7 +813,7 @@ bool qtractorPluginFactory::Scanner::start (void)
 		return false;
 
 	// Go go go!
-	QProcess::start(fi.filePath());
+	QProcess::start(fi.filePath(), QStringList());
 	return true;
 }
 

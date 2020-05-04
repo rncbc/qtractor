@@ -415,6 +415,9 @@ void qtractorTimeSpinBox::contextMenuEvent (
 	if (m_pTimeScale == nullptr)
 		return;
 
+	const bool bBlockSignals
+		= QAbstractSpinBox::blockSignals(true);
+
 	QMenu menu(this);
 	QAction *pAction;
 
@@ -434,6 +437,9 @@ void qtractorTimeSpinBox::contextMenuEvent (
 	pAction->setData(int(qtractorTimeScale::BBT));
 
 	pAction = menu.exec(pContextMenuEvent->globalPos());
+
+	QAbstractSpinBox::blockSignals(bBlockSignals);
+
 	if (pAction == nullptr)
 		return;
 

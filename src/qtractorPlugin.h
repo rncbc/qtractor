@@ -31,13 +31,12 @@
 #include <QStringList>
 #include <QPoint>
 #include <QSize>
-
 #include <QMap>
+#include <QVariant>
 
 
 // Forward declarations.
 class qtractorPluginList;
-class qtractorPluginParam;
 class qtractorPluginForm;
 class qtractorPlugin;
 
@@ -53,7 +52,6 @@ class qtractorCurveFile;
 //----------------------------------------------------------------------------
 // qtractorPluginFile -- Plugin file library instance.
 //
-
 class qtractorPluginFile
 {
 public:
@@ -219,120 +217,6 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginParam -- Plugin paramater (control input port) instance.
-//
-
-class qtractorPluginParam
-{
-public:
-
-	// Constructor.
-	qtractorPluginParam(qtractorPlugin *pPlugin, unsigned long iIndex)
-		: m_pPlugin(pPlugin), m_iIndex(iIndex),
-			m_subject(0.0f), m_observer(this), m_iDecimals(-1) {}
-
-	// Virtual destructor.
-	virtual ~qtractorPluginParam() {}
-
-	// Main properties accessors.
-	qtractorPlugin *plugin() const { return m_pPlugin; }
-	unsigned long   index()  const { return m_iIndex;  }
-
-	// Parameter name accessors.
-	void setName(const QString& sName)
-		{ m_subject.setName(sName); }
-	const QString& name() const
-		{ return m_subject.name(); }
-
-	// Parameter range hints predicate methods.
-	virtual bool isBoundedBelow() const = 0;
-	virtual bool isBoundedAbove() const = 0;
-	virtual bool isDefaultValue() const = 0;
-	virtual bool isLogarithmic()  const = 0;
-	virtual bool isSampleRate()   const = 0;
-	virtual bool isInteger()      const = 0;
-	virtual bool isToggled()      const = 0;
-	virtual bool isDisplay()      const = 0;
-
-	// Current display value.
-	virtual QString display() const
-		{ return QString::number(value(), 'f', decimals()); }
-	
-	// Bounding range values.
-	void setMinValue(float fMinValue)
-		{ m_subject.setMinValue(fMinValue); }
-	float minValue() const
-		{ return m_subject.minValue(); }
-
-	void setMaxValue(float fMaxValue)
-		{ m_subject.setMaxValue(fMaxValue); }
-	float maxValue() const
-		{ return m_subject.maxValue(); }
-	
-	// Default value
-	void setDefaultValue(float fDefaultValue)
-		{ m_subject.setDefaultValue(fDefaultValue); }
-	float defaultValue() const
-		{ return m_subject.defaultValue(); }
-	
-	// Current parameter value.
-	void setValue(float fValue, bool bUpdate);
-	float value() const
-		{ return m_observer.value(); }
-	float prevValue() const
-		{ return m_observer.prevValue(); }
-
-	// Parameter update method.
-	void updateValue(float fValue, bool bUpdate);
-
-	// Reset-to-default method.
-	void reset() { setValue(defaultValue(), true); }
-
-	// Direct parameter subject value.
-	qtractorSubject *subject() { return &m_subject; }
-
-	// Specialized observer value.
-	qtractorMidiControlObserver *observer() { return &m_observer; }
-
-	// Parameter decimals helper (cached).
-	int decimals() const
-		{ return m_iDecimals; }
-
-private:
-
-	// Instance variables.
-	qtractorPlugin *m_pPlugin;
-	unsigned long   m_iIndex;
-
-	// Port subject value.
-	qtractorSubject m_subject;
-
-	// Port observer manager.
-	class Observer : public qtractorMidiControlObserver
-	{
-	public:
-
-		// Constructor.
-		Observer(qtractorPluginParam *pParam);
-
-	protected:
-
-		// Virtual observer updater.
-		void update(bool bUpdate);
-
-	private:
-
-		// Instance members.
-		qtractorPluginParam *m_pParam;
-
-	} m_observer;
-
-	// Decimals cache.
-	int m_iDecimals;
-};
-
-
-//----------------------------------------------------------------------------
 // qtractorPlugin -- Plugin instance.
 //
 
@@ -383,23 +267,38 @@ public:
 		{ return m_iActivateSubjectIndex; }
 
 	// An accessible list of parameters.
-	typedef QMap<unsigned long, qtractorPluginParam *> Params;
+	class Param;
+
+	typedef QMap<unsigned long, Param *> Params;
 	const Params& params() const
 		{ return m_params; }
 
-	typedef QHash<QString, qtractorPluginParam *> ParamNames;
+	typedef QHash<QString, Param *> ParamNames;
 	const ParamNames& paramNames() const
 		{ return m_paramNames; }
 
-	// Parameter list accessor.
-	void addParam(qtractorPluginParam *pParam)
-	{
-		pParam->reset();
-		if (pParam->isLogarithmic())
-			pParam->observer()->setLogarithmic(true);
-		m_params.insert(pParam->index(), pParam);
-		m_paramNames.insert(pParam->name(), pParam);
-	}
+	// Parameters list accessors.
+	void addParam(Param *pParam);
+
+	Param *findParam(unsigned long iIndex) const
+		{ return m_params.value(iIndex, nullptr); }
+
+	// Properties registry.
+	class Property;
+
+	typedef QHash<unsigned long, Property *> Properties;
+	const Properties& properties() const
+		{ return m_properties; }
+
+	typedef QMap<QString, Property *> PropertyKeys;
+	const PropertyKeys& propertyKeys() const
+		{ return m_propertyKeys; }
+
+	// Properties registry accessors.
+	void addProperty(Property *pProp);
+
+	Property *findProperty(unsigned long iProperty) const
+		{ return m_properties.value(iProperty, nullptr); }
 
 	// Instance capped number of audio ports.
 	unsigned short audioIns() const
@@ -433,7 +332,7 @@ public:
 
 	// Parameter update method.
 	virtual void updateParam(
-		qtractorPluginParam */*pParam*/, float /*fValue*/, bool /*bUpdate*/) {}
+		Param */*pParam*/, float /*fValue*/, bool /*bUpdate*/) {}
 
 	// Specific MIDI instrument selector.
 	virtual void selectProgram(int /*iBank*/, int /*iProg*/) {}
@@ -560,8 +459,7 @@ public:
 	bool loadPresetFileEx(const QString& sFilename);
 
 	// Plugin parameter lookup.
-	qtractorPluginParam *findParam(unsigned long iIndex) const;
-	qtractorPluginParam *findParamName(const QString& sName) const;
+	Param *paramFromName(const QString& sName) const;
 
 	// Plugin configuration (CLOB) stuff.
 	typedef QHash<QString, QString> Configs;
@@ -642,7 +540,7 @@ public:
 	void applyCurveFile (qtractorCurveFile *pCurveFile);
 
 	// Direct access parameter accessors.
-	qtractorPluginParam *directAccessParam() const;
+	Param *directAccessParam() const;
 	void setDirectAccessParamIndex(long iDirectAccessParamIndex);
 	long directAccessParamIndex() const;
 	bool isDirectAccessParam() const;
@@ -718,6 +616,12 @@ private:
 	// List of parameters (by name).
 	ParamNames m_paramNames;
 
+	// List of  properties (also parameters).
+	Properties m_properties;
+
+	// List of parameters (by name).
+	PropertyKeys m_propertyKeys;
+
 	// An accessible list of observers.
 	QList<qtractorPluginListItem *> m_items;
 
@@ -748,6 +652,172 @@ private:
 
 	// Default preset name.
 	static QString g_sDefPreset;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorPlugin::Param -- Plugin parameter (control input port) instance.
+//
+
+class qtractorPlugin::Param
+{
+public:
+
+	// Constructor.
+	Param(qtractorPlugin *pPlugin, unsigned long iIndex)
+		: m_pPlugin(pPlugin), m_iIndex(iIndex),
+			m_subject(0.0f), m_observer(this), m_iDecimals(-1) {}
+
+	// Virtual destructor.
+	virtual ~Param() {}
+
+	// Main properties accessors.
+	qtractorPlugin *plugin() const { return m_pPlugin; }
+	unsigned long   index()  const { return m_iIndex;  }
+
+	// Parameter name accessors.
+	void setName(const QString& sName)
+		{ m_subject.setName(sName); }
+	const QString& name() const
+		{ return m_subject.name(); }
+
+	// Parameter range hints predicate methods.
+	virtual bool isBoundedBelow() const = 0;
+	virtual bool isBoundedAbove() const = 0;
+	virtual bool isDefaultValue() const = 0;
+	virtual bool isLogarithmic()  const = 0;
+	virtual bool isSampleRate()   const = 0;
+	virtual bool isInteger()      const = 0;
+	virtual bool isToggled()      const = 0;
+	virtual bool isDisplay()      const = 0;
+
+	// Current display value.
+	virtual QString display() const
+		{ return QString::number(value(), 'f', decimals()); }
+
+	// Bounding range values.
+	void setMinValue(float fMinValue)
+		{ m_subject.setMinValue(fMinValue); }
+	float minValue() const
+		{ return m_subject.minValue(); }
+
+	void setMaxValue(float fMaxValue)
+		{ m_subject.setMaxValue(fMaxValue); }
+	float maxValue() const
+		{ return m_subject.maxValue(); }
+
+	// Default value
+	void setDefaultValue(float fDefaultValue)
+		{ m_subject.setDefaultValue(fDefaultValue); }
+	float defaultValue() const
+		{ return m_subject.defaultValue(); }
+
+	// Current parameter value.
+	void setValue(float fValue, bool bUpdate);
+	float value() const
+		{ return m_observer.value(); }
+	float prevValue() const
+		{ return m_observer.prevValue(); }
+
+	// Parameter update executive method.
+	void updateValue(float fValue, bool bUpdate);
+
+	// Reset-to-default method.
+	void reset() { setValue(defaultValue(), true); }
+
+	// Direct parameter subject value.
+	qtractorSubject *subject() { return &m_subject; }
+
+	// Specialized observer value.
+	qtractorMidiControlObserver *observer() { return &m_observer; }
+
+	// Parameter decimals helper (cached).
+	int decimals() const
+		{ return m_iDecimals; }
+
+protected:
+
+	// Virtual observer updater.
+	virtual void update(float fValue, bool bUpdate);
+
+private:
+
+	// Instance variables.
+	qtractorPlugin *m_pPlugin;
+	unsigned long   m_iIndex;
+
+	// Port subject value.
+	qtractorSubject m_subject;
+
+	// Port observer manager.
+	class Observer : public qtractorMidiControlObserver
+	{
+	public:
+		// Constructor.
+		Observer(Param *pParam);
+
+	protected:
+		// Virtual observer updater.
+		void update(bool bUpdate);
+
+	private:
+		// Instance members.
+		Param *m_pParam;
+
+	} m_observer;
+
+	// Decimals cache.
+	int m_iDecimals;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorPlugin::Property -- Plugin property (aka. parameter) instance.
+//
+
+class qtractorPlugin::Property : public qtractorPlugin::Param
+{
+public:
+
+	// Constructor.
+	Property(qtractorPlugin *pPlugin, unsigned long iProperty)
+		: Param(pPlugin , iProperty),
+			m_sKey(QString::number(iProperty)) {}
+
+	// Property key/id accessors.
+	void setKey(const QString& sKey)
+		{ m_sKey = sKey; }
+	const QString& key() const
+		{ return m_sKey; }
+
+	// Property index/hash-key accessor.
+	unsigned long key_index() const { return qHash(m_sKey); }
+
+	// Property range hints predicate methods.
+	virtual bool isString() const = 0;
+	virtual bool isPath()   const = 0;
+
+	// Property special predicate methods.
+	virtual bool isAutomatable () const
+		{ return !isString() && !isPath(); }
+
+	// Main property value.
+	void setVariant(const QVariant& value, bool bUpdate = false);
+	const QVariant& variant() const
+		{ return m_value; }
+
+protected:
+
+	// Virtual observer updater.
+	void update(float fValue, bool bUpdate);
+
+private:
+
+	// Property key id..
+	QString m_sKey;
+
+	// Propery value.
+	QVariant m_value;
 };
 
 

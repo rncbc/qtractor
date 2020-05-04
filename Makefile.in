@@ -25,6 +25,7 @@ headers = \
 	src/qtractorClip.h \
 	src/qtractorClipCommand.h \
 	src/qtractorClipSelect.h \
+	src/qtractorComboBox.h \
 	src/qtractorCommand.h \
 	src/qtractorConnect.h \
 	src/qtractorConnections.h \
@@ -156,6 +157,7 @@ sources = \
 	src/qtractorClip.cpp \
 	src/qtractorClipCommand.cpp \
 	src/qtractorClipSelect.cpp \
+	src/qtractorComboBox.cpp \
 	src/qtractorCommand.cpp \
 	src/qtractorConnect.cpp \
 	src/qtractorConnections.cpp \

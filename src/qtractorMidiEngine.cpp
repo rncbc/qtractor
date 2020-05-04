@@ -3482,7 +3482,7 @@ bool qtractorMidiEngine::saveElement (
 // MIDI-export method.
 bool qtractorMidiEngine::fileExport (
 	const QString& sExportPath, const QList<qtractorMidiBus *>& exportBuses,
-	unsigned long iExportStart, unsigned long iExportEnd )
+	unsigned long iExportStart, unsigned long iExportEnd, int iExportFormat )
 {
 	// No simultaneous or foul exports...
 	if (isPlaying())
@@ -3508,7 +3508,9 @@ bool qtractorMidiEngine::fileExport (
 		= pSession->tickFromFrame(iExportEnd);
 
 	const unsigned short iFormat
-		= qtractorMidiClip::defaultFormat();
+		= (iExportFormat < 0
+		? qtractorMidiClip::defaultFormat()
+		: iExportFormat);
 
 	unsigned short iSeq;
 	unsigned short iSeqs = 0;
@@ -4257,7 +4259,7 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 	if (pAlsaSeq == nullptr)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiBus[%p]::sendEvent(0x%02x, %u, %u, %u)",
 		this, int(etype), iChannel, iParam, iValue);
 #endif

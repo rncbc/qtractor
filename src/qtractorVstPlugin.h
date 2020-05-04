@@ -124,6 +124,9 @@ public:
 	// Destructor.
 	~qtractorVstPlugin();
 
+	// Forward decl.
+	class Param;
+
 	// Channel/intsance number accessors.
 	void setChannels(unsigned short iChannels);
 
@@ -135,7 +138,7 @@ public:
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
 	// Parameter update method.
-	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+	void updateParam(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);
@@ -221,19 +224,15 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPluginParam -- VST plugin control input port instance.
+// qtractorVstPlugin::Param -- VST plugin control input port instance.
 //
 
-class qtractorVstPluginParam : public qtractorPluginParam
+class qtractorVstPlugin::Param : public qtractorPlugin::Param
 {
 public:
 
 	// Constructors.
-	qtractorVstPluginParam(qtractorVstPlugin *pVstPlugin,
-		unsigned long iIndex);
-
-	// Destructor.
-	~qtractorVstPluginParam();
+	Param(qtractorVstPlugin *pVstPlugin, unsigned long iIndex);
 
 	// Port range hints predicate methods.
 	bool isBoundedBelow() const;

@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -197,7 +197,7 @@ qtractorLadspaPlugin::qtractorLadspaPlugin ( qtractorPluginList *pList,
 					m_piAudioIns[iAudioIns++] = i;
 				else
 				if (LADSPA_IS_PORT_CONTROL(portType))
-					addParam(new qtractorLadspaPluginParam(this, i));
+					addParam(new Param(this, i));
 			}
 			else
 			if (LADSPA_IS_PORT_OUTPUT(portType)) {
@@ -336,7 +336,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			// Just in case the plugin decides
 			// to set the port value at this time...
 			float *pfValue = pParam->subject()->data();
@@ -466,13 +466,13 @@ void qtractorLadspaPlugin::process (
 
 
 //----------------------------------------------------------------------------
-// qtractorLadspaPluginParam -- LADSPA plugin control input port instance.
+// qtractorLadspaPlugin::Param -- LADSPA plugin control input port instance.
 //
 
 // Constructors.
-qtractorLadspaPluginParam::qtractorLadspaPluginParam (
+qtractorLadspaPlugin::Param::Param (
 	qtractorLadspaPlugin *pLadspaPlugin, unsigned long iIndex )
-	: qtractorPluginParam(pLadspaPlugin, iIndex)
+	: qtractorPlugin::Param(pLadspaPlugin, iIndex)
 {
 	const LADSPA_Descriptor *pLadspaDescriptor
 		= pLadspaPlugin->ladspa_descriptor();
@@ -563,49 +563,43 @@ qtractorLadspaPluginParam::qtractorLadspaPluginParam (
 }
 
 
-// Destructor.
-qtractorLadspaPluginParam::~qtractorLadspaPluginParam (void)
-{
-}
-
-
 // Port range hints predicate methods.
-bool qtractorLadspaPluginParam::isBoundedBelow (void) const
+bool qtractorLadspaPlugin::Param::isBoundedBelow (void) const
 {
 	return LADSPA_IS_HINT_BOUNDED_BELOW(m_portHints);
 }
 
-bool qtractorLadspaPluginParam::isBoundedAbove (void) const
+bool qtractorLadspaPlugin::Param::isBoundedAbove (void) const
 {
 	return LADSPA_IS_HINT_BOUNDED_ABOVE(m_portHints);
 }
 
-bool qtractorLadspaPluginParam::isDefaultValue (void) const
+bool qtractorLadspaPlugin::Param::isDefaultValue (void) const
 {
 	return LADSPA_IS_HINT_HAS_DEFAULT(m_portHints);
 }
 
-bool qtractorLadspaPluginParam::isLogarithmic (void) const
+bool qtractorLadspaPlugin::Param::isLogarithmic (void) const
 {
 	return LADSPA_IS_HINT_LOGARITHMIC(m_portHints);
 }
 
-bool qtractorLadspaPluginParam::isSampleRate (void) const
+bool qtractorLadspaPlugin::Param::isSampleRate (void) const
 {
 	return LADSPA_IS_HINT_SAMPLE_RATE(m_portHints);
 }
 
-bool qtractorLadspaPluginParam::isInteger (void) const
+bool qtractorLadspaPlugin::Param::isInteger (void) const
 {
 	return LADSPA_IS_HINT_INTEGER(m_portHints);
 }
 
-bool qtractorLadspaPluginParam::isToggled (void) const
+bool qtractorLadspaPlugin::Param::isToggled (void) const
 {
 	return LADSPA_IS_HINT_TOGGLED(m_portHints);
 }
 
-bool qtractorLadspaPluginParam::isDisplay (void) const
+bool qtractorLadspaPlugin::Param::isDisplay (void) const
 {
 	return false;
 }

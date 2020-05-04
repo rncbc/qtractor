@@ -405,23 +405,21 @@ bool qtractorTrackList::Item::updateBankProgNames (
 	if (pMidiManager == nullptr)
 		return false;
 
-	const qtractorMidiManager::Instruments& list
+	const qtractorInstrumentList& instruments
 		= pMidiManager->instruments();
-	if (!list.contains(sInstrumentName))
+	if (!instruments.contains(sInstrumentName))
 		return false;
 
-	const qtractorMidiManager::Banks& banks
-		= list[sInstrumentName];
 	const int iBank = track->midiBank();
-	if (banks.contains(iBank)) {
-		const qtractorMidiManager::Bank& bank
-			= banks[iBank];
-		const int iProg = track->midiProg();
-		if (bank.progs.contains(iProg)) {
-			sBankName = bank.name;
-			sProgName = QString("%1 - %2").arg(iProg)
-				.arg(bank.progs[iProg]);
-		}
+	const int iProg = track->midiProg();
+
+	const qtractorInstrument& instr
+		= instruments.value(sInstrumentName);
+	const qtractorInstrumentData& bank
+		= instr.patch(iBank);
+	if (bank.contains(iProg)) {
+		sBankName = bank.name();
+		sProgName = QString("%1 - %2").arg(iProg).arg(bank[iProg]);
 	}
 
 	return true;
@@ -552,6 +550,7 @@ void qtractorTrackList::Item::updateButtons (
 {
 	if (bVisible && buttons == nullptr) {
 		buttons = new qtractorTrackListButtons(track, pTrackList->viewport());
+		buttons->curveButton()->updateTrack();
 		buttons->lower();
 	}
 	else
@@ -848,8 +847,12 @@ qtractorTrack *qtractorTrackList::currentTrack (void) const
 void qtractorTrackList::updateTrack ( qtractorTrack *pTrack )
 {
 	Item *pItem = m_tracks.value(pTrack, nullptr);
-	if (pItem)
+	if (pItem) {
+	//	pItem->updateButtons(this, false);
+		pItem->updatePlugins(this, false);
+		pItem->updateMeters(this, false);
 		pItem->updateItem(this);
+	}
 
 	updateContents();
 }
@@ -1734,7 +1737,7 @@ void qtractorTrackList::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 void qtractorTrackList::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
-		const int delta = pWheelEvent->delta();
+		const int delta = pWheelEvent->angleDelta().y();
 		if (delta > 0)
 			m_pTracks->zoomIn();
 		else

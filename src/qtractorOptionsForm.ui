@@ -343,7 +343,7 @@
              <string>Number of &amp;recent files:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>MaxRecentFilesSpinBox</cstring>
@@ -533,7 +533,7 @@
              <string>Transport &amp;mode:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>TransportModeComboBox</cstring>
@@ -626,7 +626,7 @@
              <string>&amp;Loop recording mode (takes):</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>LoopRecordingModeComboBox</cstring>
@@ -692,7 +692,97 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <item row="2" column="1">
+          <item row="0" column="0">
+           <widget class="QLabel" name="AudioCaptureTypeTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>File &amp;type:</string>
+            </property>
+            <property name="buddy">
+             <cstring>AudioCaptureTypeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="3">
+           <widget class="qtractorAudioFileTypeComboBox" name="AudioCaptureTypeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Audio file type to use on capture (record) and export</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4" rowspan="2">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="AudioCaptureFormatTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Sample &amp;format:</string>
+            </property>
+            <property name="buddy">
+             <cstring>AudioCaptureFormatComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="qtractorAudioFileFormatComboBox" name="AudioCaptureFormatComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Audio sample format to use on capture (record) and export</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="AudioCaptureQualityTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
+            <property name="text">
+             <string>&amp;Quality:</string>
+            </property>
+            <property name="buddy">
+             <cstring>AudioCaptureQualitySpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
            <widget class="QSpinBox" name="AudioCaptureQualitySpinBox">
             <property name="maximumSize">
              <size>
@@ -713,10 +803,10 @@
              <string/>
             </property>
             <property name="minimum">
-             <number>1</number>
+             <number>0</number>
             </property>
             <property name="maximum">
-             <number>9</number>
+             <number>10</number>
             </property>
             <property name="singleStep">
              <number>1</number>
@@ -725,106 +815,6 @@
              <number>4</number>
             </property>
            </widget>
-          </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QComboBox" name="AudioCaptureFormatComboBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Audio sample format to use on capture (record) and export</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="AudioCaptureTypeComboBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Audio file type to use on capture (record) and export</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3" rowspan="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="AudioCaptureTypeTextLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>File &amp;type:</string>
-            </property>
-            <property name="buddy">
-             <cstring>AudioCaptureTypeComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="AudioCaptureFormatTextLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Sample &amp;format:</string>
-            </property>
-            <property name="buddy">
-             <cstring>AudioCaptureFormatComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="AudioCaptureQualityTextLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>&amp;Quality:</string>
-            </property>
-            <property name="buddy">
-             <cstring>AudioCaptureQualitySpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2" colspan="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>120</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </widget>
@@ -885,7 +875,7 @@
              <string>Sample-&amp;rate converter type:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>AudioResampleTypeComboBox</cstring>
@@ -1348,7 +1338,7 @@
              <string>&amp;Offset (latency):</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>AudioMetroOffsetSpinBox</cstring>
@@ -1410,7 +1400,7 @@
            </widget>
           </item>
           <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="MidiCaptureFormatComboBox">
+           <widget class="qtractorMidiFileFormatComboBox" name="MidiCaptureFormatComboBox">
             <property name="font">
              <font>
               <weight>50</weight>
@@ -1447,7 +1437,7 @@
              <string>&amp;Quantize:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>MidiCaptureQuantizeComboBox</cstring>
@@ -2193,7 +2183,7 @@
              <string>&amp;Offset (latency):</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>AudioMetroOffsetSpinBox</cstring>
@@ -2319,7 +2309,7 @@
              <string>&amp;Base font size:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>BaseFontSizeComboBox</cstring>
@@ -2474,7 +2464,7 @@
              <string>&amp;Color theme:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>CustomColorThemeComboBox</cstring>
@@ -2767,7 +2757,7 @@
              <string>&amp;MIDI:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>MidiMeterLevelComboBox</cstring>
@@ -3728,6 +3718,21 @@
    <class>qtractorTimeSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qtractorSpinBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorAudioFileTypeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorAudioFileFormatComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorMidiFileFormatComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

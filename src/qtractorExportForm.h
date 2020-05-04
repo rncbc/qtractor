@@ -1,7 +1,7 @@
 // qtractorExportForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@ class qtractorExportForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorExportForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorExportForm(QWidget *pParent = nullptr);
 	// Destructor.
 	~qtractorExportForm();
 
@@ -49,13 +49,23 @@ protected slots:
 	void accept();
 	void reject();
 
-	void browseExportPath();
+	void exportPathChanged(const QString&);
+	void exportPathClicked();
+
+	void audioExportTypeChanged(int);
 
 	void rangeChanged();
 	void formatChanged(int);
 	void valueChanged();
 
 	void stabilizeForm();
+
+protected:
+
+	void audioExportTypeUpdate(int iIndex);
+
+	int audioExportFormat() const;
+	int midiExportFormat() const;
 
 private:
 

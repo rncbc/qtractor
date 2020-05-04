@@ -844,8 +844,10 @@ void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 				pClip; pClip = pClip->next()) {
 		//	pClip->setClipStart(qtractorTimeScale::uroundf(
 		//		fRatio * float(pClip->clipStart())));
-		//	pClip->setClipOffset(qtractorTimeScale::uroundf(
-		//		fRatio * float(pClip->clipOffset())));
+		#if 1// EXPERIMENTAL: Don't quantize to MIDI metronomic time-scale...
+			pClip->setClipOffset(qtractorTimeScale::uroundf(
+				fRatio * float(pClip->clipOffset())));
+		#endif
 		//	pClip->setClipLength(qtractorTimeScale::uroundf(
 		//		fRatio * float(pClip->clipLength())));
 			pClip->setFadeInLength(qtractorTimeScale::uroundf(
@@ -905,8 +907,8 @@ void qtractorSession::insertTrack ( qtractorTrack *pTrack,
 	// Acquire track-name for uniqueness...
 	acquireTrackName(pTrack);
 
-	if (pTrack->curveList())
-		m_curves.insert(pTrack->curveList(), pTrack);
+	// Associate track to its curve-list...
+	acquireTrackCurveList(pTrack);
 
 	qtractorSessionCursor *pSessionCursor = m_cursors.first();
 	while (pSessionCursor) {
@@ -981,8 +983,8 @@ void qtractorSession::unlinkTrack ( qtractorTrack *pTrack )
 	// Release track-name from uniqueness...
 	releaseTrackName(pTrack);
 
-	if (pTrack->curveList())
-		m_curves.remove(pTrack->curveList());
+	// Dessociate track from its curve-list...
+	releaseTrackCurveList(pTrack);
 
 	if (pTrack->trackType() == qtractorTrack::Midi)
 		releaseMidiTag(pTrack);
@@ -1712,6 +1714,11 @@ void qtractorSession::trackRecord (
 				qtractorAudioFileFactory::defaultExt(), true),
 			qtractorAudioFile::Write);
 		pTrack->setClipRecord(pAudioClip);
+		// Adjust for some input latency compensation already...
+		qtractorAudioBus *pAudioBus
+			= static_cast<qtractorAudioBus *> (pTrack->inputBus());
+		if (pAudioBus)
+			pAudioClip->setClipOffset(pAudioBus->latency_in());
 		// One-up audio tracks in record mode.
 		++m_iAudioRecord;
 		break;
@@ -2007,8 +2014,23 @@ void qtractorSession::process_curve ( unsigned long iFrame )
 }
 
 
+// Manage curve-lists to specific tracks.
+void qtractorSession::acquireTrackCurveList ( qtractorTrack *pTrack )
+{
+	if (pTrack && pTrack->curveList())
+		m_curves.insert(pTrack->curveList(), pTrack);
+}
+
+void qtractorSession::releaseTrackCurveList ( qtractorTrack *pTrack )
+{
+	if (pTrack && pTrack->curveList())
+		m_curves.remove(pTrack->curveList());
+}
+
+
 // Find track of specific curve-list.
-qtractorTrack *qtractorSession::findTrack ( qtractorCurveList *pCurveList ) const
+qtractorTrack *qtractorSession::findTrackCurveList (
+	qtractorCurveList *pCurveList ) const
 {
 	return m_curves.value(pCurveList, nullptr);
 }

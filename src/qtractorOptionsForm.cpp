@@ -100,9 +100,8 @@ static const char *g_pszDefName = QT_TRANSLATE_NOOP("qtractorOptionsForm", "(def
 // qtractorOptionsForm -- UI wrapper form.
 
 // Constructor.
-qtractorOptionsForm::qtractorOptionsForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -154,32 +153,6 @@ qtractorOptionsForm::qtractorOptionsForm (
 			sSessionFormat.arg(sSessionExt),
 			sSessionExt);
 	}
-
-	// Populate the capture file type combo-box.
-	m_ui.AudioCaptureTypeComboBox->clear();
-	int iFormat = 0;
-	const qtractorAudioFileFactory::FileFormats& list
-		= qtractorAudioFileFactory::formats();
-	QListIterator<qtractorAudioFileFactory::FileFormat *> iter(list);
-	while (iter.hasNext()) {
-		qtractorAudioFileFactory::FileFormat *pFormat = iter.next();
-		if (pFormat->type != qtractorAudioFileFactory::MadFile)
-			m_ui.AudioCaptureTypeComboBox->addItem(pFormat->name, iFormat);
-		++iFormat;
-	}
-
-	// Populate the audio capture sample format combo-box.
-	m_ui.AudioCaptureFormatComboBox->clear();
-	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 16-Bit"));
-	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 24-Bit"));
-	m_ui.AudioCaptureFormatComboBox->addItem(tr("Signed 32-Bit"));
-	m_ui.AudioCaptureFormatComboBox->addItem(tr("Float  32-Bit"));
-	m_ui.AudioCaptureFormatComboBox->addItem(tr("Float  64-Bit"));
-
-	// Populate the MIDI capture file format combo-box.
-	m_ui.MidiCaptureFormatComboBox->clear();
-	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 0"));
-	m_ui.MidiCaptureFormatComboBox->addItem(tr("SMF Format 1"));
 
 	// Populate the MIDI capture quantize combo-box.
 	const QIcon snapIcon(":/images/itemBeat.png");
@@ -245,7 +218,7 @@ qtractorOptionsForm::qtractorOptionsForm (
 	// UI signal/slot connections...
 	QObject::connect(m_ui.AudioCaptureTypeComboBox,
 		SIGNAL(activated(int)),
-		SLOT(changed()));
+		SLOT(audioCaptureTypeChanged(int)));
 	QObject::connect(m_ui.AudioCaptureFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -573,22 +546,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 		m_pTimeScale->setDisplayFormat(displayFormat);
 
 	// Audio options.
-	int iIndex  = 0;
-	int iFormat = 0;
-	const qtractorAudioFileFactory::FileFormats& list
-		= qtractorAudioFileFactory::formats();
-	QListIterator<qtractorAudioFileFactory::FileFormat *> iter(list);
-	while (iter.hasNext()) {
-		qtractorAudioFileFactory::FileFormat *pFormat = iter.next();
-		if (m_pOptions->sAudioCaptureExt == pFormat->ext
-			&& (m_pOptions->iAudioCaptureType == 0 ||
-				m_pOptions->iAudioCaptureType == pFormat->data)) {
-			iIndex = m_ui.AudioCaptureTypeComboBox->findData(iFormat);
-			break;
-		}
-		++iFormat;
-	}
-	m_ui.AudioCaptureTypeComboBox->setCurrentIndex(iIndex);
+	m_ui.AudioCaptureTypeComboBox->setCurrentType(
+		m_pOptions->sAudioCaptureExt, m_pOptions->iAudioCaptureType);
 	m_ui.AudioCaptureFormatComboBox->setCurrentIndex(m_pOptions->iAudioCaptureFormat);
 	m_ui.AudioCaptureQualitySpinBox->setValue(m_pOptions->iAudioCaptureQuality);
 	m_ui.AudioResampleTypeComboBox->setCurrentIndex(m_pOptions->iAudioResampleType);
@@ -793,12 +752,9 @@ void qtractorOptionsForm::accept (void)
 	// Save options...
 	if (m_iDirtyCount > 0) {
 		// Audio options...
-		const int iFormat = m_ui.AudioCaptureTypeComboBox->itemData(
-			m_ui.AudioCaptureTypeComboBox->currentIndex()).toInt();
-		const qtractorAudioFileFactory::FileFormat *pFormat
-			= qtractorAudioFileFactory::formats().at(iFormat);
-		m_pOptions->sAudioCaptureExt     = pFormat->ext;
-		m_pOptions->iAudioCaptureType    = pFormat->data;
+		const void *handle = m_ui.AudioCaptureTypeComboBox->currentHandle();
+		m_pOptions->sAudioCaptureExt     = m_ui.AudioCaptureTypeComboBox->currentExt(handle);
+		m_pOptions->iAudioCaptureType    = m_ui.AudioCaptureTypeComboBox->currentType(handle);
 		m_pOptions->iAudioCaptureFormat  = m_ui.AudioCaptureFormatComboBox->currentIndex();
 		m_pOptions->iAudioCaptureQuality = m_ui.AudioCaptureQualitySpinBox->value();
 		m_pOptions->iAudioResampleType   = m_ui.AudioResampleTypeComboBox->currentIndex();
@@ -972,6 +928,28 @@ void qtractorOptionsForm::changed (void)
 {
 	++m_iDirtyCount;
 	stabilizeForm();
+}
+
+
+// Audio file type changed.
+void qtractorOptionsForm::audioCaptureTypeChanged ( int iIndex )
+{
+	const void *handle
+		= m_ui.AudioCaptureTypeComboBox->handleOf(iIndex);
+	const qtractorAudioFileFactory::FileFormat *pFormat
+		= static_cast<const qtractorAudioFileFactory::FileFormat *> (handle);
+	if (handle && pFormat) {
+		const bool bBlockSignals
+			= m_ui.AudioCaptureFormatComboBox->blockSignals(true);
+		int iFormat = m_ui.AudioCaptureFormatComboBox->currentIndex();
+		while (iFormat > 0 && // Retry down to PCM Signed 16-Bit...
+			!qtractorAudioFileFactory::isValidFormat(pFormat, iFormat))
+			--iFormat;
+		m_ui.AudioCaptureFormatComboBox->setCurrentIndex(iFormat);
+		m_ui.AudioCaptureFormatComboBox->blockSignals(bBlockSignals);
+	}
+
+	changed();
 }
 
 
@@ -1168,7 +1146,7 @@ void qtractorOptionsForm::chooseAudioMeterColor (void)
 		= tr("Audio Meter Color");
 
 	QWidget *pParentWidget = nullptr;
-	QColorDialog::ColorDialogOptions options = nullptr;
+	QColorDialog::ColorDialogOptions options;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1190,7 +1168,7 @@ void qtractorOptionsForm::chooseMidiMeterColor (void)
 		= tr("MIDI Meter Color");
 
 	QWidget *pParentWidget = nullptr;
-	QColorDialog::ColorDialogOptions options = nullptr;
+	QColorDialog::ColorDialogOptions options;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1587,7 +1565,7 @@ void qtractorOptionsForm::chooseMessagesFont (void)
 		= tr("Messages Font");
 
 	QWidget *pParentWidget = nullptr;
-	QFontDialog::FontDialogOptions options = nullptr;
+	QFontDialog::FontDialogOptions options;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFontDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1620,7 +1598,7 @@ void qtractorOptionsForm::chooseMessagesLogPath (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = nullptr;
+	QFileDialog::Options options;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1666,7 +1644,7 @@ void qtractorOptionsForm::chooseSessionTemplatePath (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = nullptr;
+	QFileDialog::Options options;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1709,10 +1687,9 @@ void qtractorOptionsForm::stabilizeForm (void)
 		m_ui.MessagesLimitCheckBox->isChecked());
 
 	// Audio options validy check...
-	int iIndex  = m_ui.AudioCaptureTypeComboBox->currentIndex();
-	int iFormat	= m_ui.AudioCaptureTypeComboBox->itemData(iIndex).toInt();
 	const qtractorAudioFileFactory::FileFormat *pFormat
-		= qtractorAudioFileFactory::formats().at(iFormat);
+		= static_cast<const qtractorAudioFileFactory::FileFormat *> (
+			m_ui.AudioCaptureTypeComboBox->currentHandle());
 
 	const bool bSndFile
 		= (pFormat && pFormat->type == qtractorAudioFileFactory::SndFile);
@@ -1726,7 +1703,7 @@ void qtractorOptionsForm::stabilizeForm (void)
 
 	bool bValid = (m_iDirtyCount > 0);
 	if (bValid) {
-		iFormat = m_ui.AudioCaptureFormatComboBox->currentIndex();
+		const int iFormat = m_ui.AudioCaptureFormatComboBox->currentIndex();
 		bValid  = qtractorAudioFileFactory::isValidFormat(pFormat, iFormat);
 	}
 
@@ -1827,7 +1804,7 @@ QString qtractorOptionsForm::getOpenAudioFileName (
 	QString sAudioFile;
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = nullptr;
+	QFileDialog::Options options;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();

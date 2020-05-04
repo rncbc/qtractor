@@ -1,7 +1,7 @@
 // qtractorInstrument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,6 +31,11 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
 
 
 //----------------------------------------------------------------------
@@ -158,7 +163,10 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 	}
 
 	// Check for a MIDINameDocument...
-	if (loadMidiNameDocument(&file)) {
+	file.seek(0);
+
+	QDomDocument doc;
+	if (doc.setContent(&file) && loadMidiNameDocument(doc)) {
 		file.close();
 		appendFile(sFilename);
 		return true;
@@ -411,8 +419,8 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 		<< ": " << QFileInfo(sFilename).fileName() << endl;
 	ts << "; " << QObject::tr("Date")
 		<< ": " << QDate::currentDate().toString("MMM dd yyyy")
-		<< " "  << QTime::currentTime().toString("hh:mm:ss") << endl;
-	ts << ";"  << endl;
+		<< " " << QTime::currentTime().toString("hh:mm:ss") << endl;
+	ts << ";" << endl;
 
 	// - Patch Names...
     ts << sepl << endl << endl;
@@ -656,14 +664,8 @@ void qtractorInstrumentList::loadSoundFontPresets ( QFile *pFile, int iSize )
 
 
 // Special MIDINameDocument loader.
-bool qtractorInstrumentList::loadMidiNameDocument ( QFile *pFile )
+bool qtractorInstrumentList::loadMidiNameDocument ( const QDomDocument& doc )
 {
-	pFile->seek(0);
-
-	QDomDocument doc;
-	if (!doc.setContent(pFile))
-		return false;
-
 	QDomElement eRoot = doc.documentElement();
 	if (eRoot.tagName() != "MIDINameDocument")
 		return false;
@@ -908,7 +910,11 @@ void qtractorInstrumentList::loadMidiPatchNameList (
 					const QString sep(", ");
 					QStringList list = sBankName
 						.remove(sName).remove(sBank)
+					#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+						.split(sep, Qt::SkipEmptyParts);
+					#else
 						.split(sep, QString::SkipEmptyParts);
+					#endif
 					list.append(sName + sBank);
 					sBankName = list.join(sep);
 				}
