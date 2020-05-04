@@ -5977,7 +5977,7 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5757"/>
         <source>Beat-detection support (libaubio) disabled.</source>
-        <translation>ビート検出サポート (libaubio) は無効です。</translation>
+        <translation>ビート検出 (libaudio) は無効です。</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5760"/>
@@ -13239,7 +13239,7 @@ Are you sure?</source>
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation>インポートしたプラグインを削除します:
+        <translation>全プラグインを除去またはインポートします:
 
 &quot;%1&quot;
 
@@ -13963,6 +13963,11 @@ Do you want to apply the changes?</source>
         <translation>長さ(&amp;L):</translation>
     </message>
     <message>
+        <location filename="../qtractorTempoAdjustForm.ui" line="37"/>
+        <source>Tempo Adjust - Qtractor</source>
+        <translation>テンポ調整 - Qtractor</translation>
+    </message>
+    <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="66"/>
         <source>&amp;Tempo:</source>
         <translation>テンポ(&amp;T):</translation>
@@ -14631,12 +14636,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.ui" line="631"/>
         <source>Whether to enable plugin latency/delay compensation</source>
-        <translation>プラグインのレイテンシー/遅延の補償を有効にするかどうか</translation>
+        <translation>プラグインのレイテンシー/ディレイ補償を有効にするかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="634"/>
         <source>&amp;Latency compensation</source>
-        <translation>遅延の補償(&amp;L)</translation>
+        <translation>レイテンシー補償(&amp;L)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="147"/>
