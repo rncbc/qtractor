@@ -13963,11 +13963,6 @@ Do you want to apply the changes?</source>
         <translation>長さ(&amp;L):</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="37"/>
-        <source>Tempo Adjust - Qtractor</source>
-        <translation>テンポ調整 - Qtractor</translation>
-    </message>
-    <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="66"/>
         <source>&amp;Tempo:</source>
         <translation>テンポ(&amp;T):</translation>
