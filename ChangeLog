@@ -4,34 +4,33 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.14  2020-05-07  A Mid-Spring'20 Release.
 
 - Export file type, format and quality are now specific options on
-  the Track/Export Tracks.../Audio, MIDI dialogs. (EXPERIMENTAL)
+  the Track/Export Tracks.../Audio, MIDI dialogs.
 
 - LV2 plug-in UI GTK2 and X11 in Qt5 host native support in addition
-  and alternative to libsuil. (EXPERIMENTAL)
+  and alternative to libsuil.
 
 - Generic plug-in/Properties... dialog now showing each
   parameter/property automation status on a skeuomorphic aka. fake and
-  tiny LED ;) (EXPERIMENTAL)
+  tiny LED ;)
 
 - LV2 Plug-in Patch parameter/properties automation and MIDI
-  Controller assignment/learn are now a possibility. (EXPERIMENTAL)
+  Controller assignment/learn are now a possibility.
 
 - LV2 Atom/Port-event host notification support has been implemented
-  (unofficial). (EXPERIMENTAL)
+  (unofficial).
 
-- Fix clean-up of any recording leftovers. (EXPERIMENTAL)
+- Fix clean-up of any recording leftovers.
 
 - JACK Transport latency is now taken into account for recording
-  latency compensation. (EXPERIMENTAL)
+  latency compensation.
 
 - Attempt to force correct audio clip offsets due on recording latency
   compensation are not quantized to MIDI metronomic time-scale anymore.
-  (EXPERIMENTAL)
 
-- LV2 Plug-in MIDNAM support introduced. (EXPERIMENTAL)
+- LV2 Plug-in MIDNAM support introduced.
 
 - Use Shift or Ctrl keyboard modifiers with the mouse- wheel to change
   any Direct Access plug-in parameters (issue #257).

@@ -17,7 +17,7 @@
 
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 54
+%define release 55
 
 %define _prefix	@ac_prefix@
 
@@ -136,6 +136,8 @@ the personal home-studio.
 %{_datadir}/man/man1/%{name}*.1.gz
 
 %changelog
+* Thu May  7 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.14
+- Mid-Spring'20 release.
 * Sat Mar 28 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.13
 - Spring'20 release.
 * Sat Dec 28 2019 Rui Nuno Capela <rncbc@rncbc.org> 0.9.12
