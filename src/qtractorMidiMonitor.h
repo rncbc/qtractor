@@ -38,6 +38,9 @@ public:
 
 	// Constructor.
 	qtractorMidiMonitor(float fGain = 1.0f, float fPanning = 0.0f);
+	// Copy constructor.
+	qtractorMidiMonitor(const qtractorMidiMonitor& monitor);
+
 	// Destructor.
 	~qtractorMidiMonitor();
 

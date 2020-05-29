@@ -70,7 +70,7 @@ public:
 	// Rebuild the whole panning-gain array...
 	virtual void update() = 0;
 
-private:
+protected:
 
 	// Observer -- Local dedicated observers.
 	class Observer : public qtractorMidiControlObserver

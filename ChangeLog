@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed MIDI track monitor reinstantiation and reset. (EXPERIMENTAL)
+
+
 0.9.14  2020-05-07  A Mid-Spring'20 Release.
 
 - Export file type, format and quality are now specific options on

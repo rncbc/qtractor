@@ -51,6 +51,20 @@ qtractorMidiMonitor::qtractorMidiMonitor ( float fGain, float fPanning )
 	reset();
 }
 
+// Copy constructor.
+qtractorMidiMonitor::qtractorMidiMonitor ( const qtractorMidiMonitor& monitor )
+	: qtractorMidiMonitor(monitor.gain(), monitor.panning())
+{
+	qtractorMonitor::gainSubject()->setDefaultValue(
+		monitor.m_gainSubject.defaultValue());
+	qtractorMonitor::panningSubject()->setDefaultValue(
+		monitor.m_panningSubject.defaultValue());
+
+	m_iFrameStart = monitor.m_iFrameStart;
+	m_iTimeStart  = monitor.m_iTimeStart;
+}
+
+
 // Destructor.
 qtractorMidiMonitor::~qtractorMidiMonitor (void)
 {

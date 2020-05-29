@@ -510,8 +510,14 @@ bool qtractorTrack::open (void)
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (m_pOutputBus);
 		if (pAudioBus) {
-			m_pMonitor = new qtractorAudioMonitor(pAudioBus->channels(),
-				m_props.gain, m_props.panning);
+			qtractorAudioMonitor *pAudioMonitor
+				= static_cast<qtractorAudioMonitor *> (pMonitor);
+			if (pAudioMonitor) {
+				m_pMonitor = new qtractorAudioMonitor(*pAudioMonitor);
+			} else {
+				m_pMonitor = new qtractorAudioMonitor(
+					pAudioBus->channels(), m_props.gain, m_props.panning);
+			}
 			m_pPluginList->setChannels(pAudioBus->channels(),
 				qtractorPluginList::AudioTrack);
 		}
@@ -521,8 +527,14 @@ bool qtractorTrack::open (void)
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (m_pOutputBus);
 		if (pMidiBus) {
-			m_pMonitor = new qtractorMidiMonitor(
-				m_props.gain, m_props.panning);
+			qtractorMidiMonitor *pMidiMonitor
+				= static_cast<qtractorMidiMonitor *> (pMonitor);
+			if (pMidiMonitor) {
+				m_pMonitor = new qtractorMidiMonitor(*pMidiMonitor);
+			} else {
+				m_pMonitor = new qtractorMidiMonitor(
+					m_props.gain, m_props.panning);
+			}
 			m_pMidiVolumeObserver = new MidiVolumeObserver(
 				this, m_pMonitor->gainSubject());
 			m_pMidiPanningObserver = new MidiPanningObserver(
