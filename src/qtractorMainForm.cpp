@@ -6242,9 +6242,9 @@ void qtractorMainForm::stabilizeForm (void)
 //	m_ui.editCopyAction->setEnabled(bSelected);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	const QMimeData *pMimeData
-	    = QApplication::clipboard()->mimeData();
+		= QApplication::clipboard()->mimeData();
 	m_ui.editPasteAction->setEnabled(bClipboard
-	    || (pMimeData && pMimeData->hasUrls()));
+		|| (pMimeData && pMimeData->hasUrls()));
 #else
 	m_ui.editPasteAction->setEnabled(bClipboard);
 #endif
@@ -7552,7 +7552,7 @@ void qtractorMainForm::fastTimerSlot (void)
 		// Ensure track-view into visibility...
 		if (m_ui.transportFollowAction->isChecked())
 			m_pTracks->trackView()->ensureVisibleFrame(iPlayHead);
-		// Take the change to give some visual feedback...
+		// Take the chance to give some visual feedback...
 		if (m_iTransportUpdate > 0) {
 			updateTransportTime(iPlayHead);
 			m_pThumbView->updateThumb();
@@ -7801,7 +7801,7 @@ void qtractorMainForm::slowTimerSlot (void)
 	}
 
 	// Check if its time to stabilize main form...
-	if (m_iStabilizeTimer > 0 && --m_iStabilizeTimer < 1) {
+	if (m_iStabilizeTimer > 0/* && --m_iStabilizeTimer < 1 */) {
 		m_iStabilizeTimer = 0;
 		stabilizeForm();
 	}
@@ -8682,7 +8682,7 @@ void qtractorMainForm::contentsChanged (void)
 #endif
 
 	// HACK: Force immediate stabilization later...
-	m_iStabilizeTimer = 0;
+	//m_iStabilizeTimer = 0;
 
 	// Stabilize session toolbar widgets...
 //	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);

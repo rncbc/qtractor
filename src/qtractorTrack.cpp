@@ -571,6 +571,9 @@ bool qtractorTrack::open (void)
 		break;
 	}
 
+	// Make sure there's no subject automation on going...
+	qtractorSubject::clearQueue();
+
 	// Before we get rid of old monitor...
 	if (pMonitor) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

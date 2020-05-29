@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Let main window pseudo-asynchronous stabilization re. menus, tools
+  and status bars, just faster and immediate. (EXPERIMENTAL)
+
 - Fixed MIDI track monitor reinstantiation and reset. (EXPERIMENTAL)
 
 
