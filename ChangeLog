@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed VST3 audio-processor initialization/activation when a plugin
+  has no inputs or outputs present. (EXPERIMENTAL)
+
 - Let main window pseudo-asynchronous stabilization re. menus, tools
   and status bars, just faster and immediate. (EXPERIMENTAL)
 

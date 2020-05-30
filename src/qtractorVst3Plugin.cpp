@@ -2428,16 +2428,29 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	// Setup processor data struct...
 	m_process_data.numSamples             = nframes;
 	m_process_data.symbolicSampleSize     = Vst::kSample32;
-	m_process_data.numInputs              = 1;
-	m_process_data.numOutputs             = 1;
-	m_process_data.inputs                 = &m_buffers_in;
-	m_process_data.outputs                = &m_buffers_out;
+	
+	if (pType->audioIns() > 0) {
+		m_process_data.numInputs          = 1;
+		m_process_data.inputs             = &m_buffers_in;
+	} else {
+		m_process_data.numInputs          = 0;
+		m_process_data.inputs             = nullptr;
+	}
+	
+	if (pType->audioOuts() > 0) {
+		m_process_data.numOutputs         = 1;
+		m_process_data.outputs            = &m_buffers_out;
+	} else {
+		m_process_data.numOutputs         = 0;
+		m_process_data.outputs            = nullptr;
+	}
+	
 	m_process_data.processContext         = g_hostContext.processContext();
 	m_process_data.inputEvents            = &m_events_in;
 	m_process_data.outputEvents           = &m_events_out;
 	m_process_data.inputParameterChanges  = &m_params_in;
 	m_process_data.outputParameterChanges = nullptr; //&m_params_out;
-
+	
 //	activate();
 
 	return true;
