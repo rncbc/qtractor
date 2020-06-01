@@ -1958,7 +1958,7 @@ public:
 		if (!m_widget || m_resizing)
 			return kResultFalse;
 
-		m_resizing = false;
+		m_resizing = true;
 		const QSize size(
 			rect->right  - rect->left,
 			rect->bottom - rect->top);
@@ -1970,7 +1970,7 @@ public:
 			m_widget->setFixedSize(size);
 		else
 			m_widget->resize(size);
-		m_resizing = true;
+		m_resizing = false;
 
 		ViewRect rect0;
 		if (m_plugView->getSize(&rect0) != kResultOk)
