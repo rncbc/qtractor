@@ -1043,9 +1043,11 @@ static struct qtractorLv2Urids
 	LV2_URID atom_Double;
 	LV2_URID atom_String;
 	LV2_URID atom_Path;
+#ifdef CONFIG_LV2_PORT_EVENT
 	LV2_URID atom_PortEvent;
 	LV2_URID atom_portTuple;
 #endif
+#endif	// CONFIG_LV2_ATOM
 #ifdef CONFIG_LV2_PATCH
 	LV2_URID patch_Get;
 	LV2_URID patch_Put;
@@ -3496,6 +3498,10 @@ void qtractorLv2Plugin::closeEditor (void)
 	m_ui_params_touch.clear();
 #endif
 
+#ifdef CONFIG_LV2_PORT_EVENT
+	m_port_events.clear();
+#endif
+
 #ifdef CONFIG_LV2_UI_SHOW
 	m_lv2_ui_show_interface	= nullptr;
 #endif
@@ -3611,6 +3617,25 @@ void qtractorLv2Plugin::idleEditor (void)
 		// Done.
 		m_ui_params.clear();
 	}
+
+#ifdef CONFIG_LV2_PORT_EVENT
+	// Try to make all port events at once now...
+	if (m_port_events.count() > 0) {
+		QHash<unsigned long, float>::ConstIterator iter
+			= m_port_events.constBegin();
+		const QHash<unsigned long, float>::ConstIterator& iter_end
+			= m_port_events.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			const unsigned long iIndex = iter.key();
+			const float fValue = iter.value();
+			qtractorPlugin::Param *pParam = findParam(iIndex);
+			if (pParam)
+				pParam->setValue(fValue, false);
+		}
+		// Done.
+		m_port_events.clear();
+	}
+#endif
 
 #ifdef CONFIG_LV2_MIDNAM
 	if (m_lv2_midnam_update > 0) {
@@ -3911,6 +3936,7 @@ void qtractorLv2Plugin::lv2_ui_port_write ( uint32_t port_index,
 	// updateParamValue(port_index, port_value, false);
 	m_ui_params.insert(port_index, port_value);
 }
+
 
 // LV2 UI portMap method.
 uint32_t qtractorLv2Plugin::lv2_ui_port_index ( const char *port_symbol )
@@ -4315,9 +4341,9 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 						port_index = *(uint32_t *) (iter + 1);
 					else
 					if (iter->type == g_lv2_urids.atom_Float) {
-						const uint32_t buffer_size = iter->size;
+					//	const uint32_t buffer_size = iter->size;
 						const void *buffer = iter + 1;
-						lv2_ui_port_write(port_index, buffer_size, 0, buffer);
+						m_port_events.insert(port_index, *(float *) buffer);
 					}
 				}
 			}

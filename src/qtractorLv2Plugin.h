@@ -661,6 +661,11 @@ private:
 #endif
 #endif
 
+#ifdef CONFIG_LV2_PORT_EVENT
+	// Changed control input port-events hash-queue.
+	QHash<unsigned long, float> m_port_events;
+#endif
+
 	// Plugin current latency output control port;
 	float *m_pfLatency;
 };

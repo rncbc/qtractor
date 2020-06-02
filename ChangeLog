@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 Atom/Port-event host notification support has been retouched,
+  but still unofficial though. (EXPERIMENTAL)
+
 - Fixed VST3 audio-processor initialization/activation when a plugin
   has no inputs or outputs present. (EXPERIMENTAL)
 
