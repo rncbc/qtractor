@@ -3605,16 +3605,23 @@ qtractorVst3Plugin::Param::Param (
 	qtractorVst3Plugin *pPlugin, unsigned long iIndex )
 	: qtractorPlugin::Param(pPlugin, iIndex), m_pImpl(nullptr)
 {
-	const unsigned long iMaxIndex = pPlugin->impl()->parameterCount();
-	if (iIndex < iMaxIndex) {
-		Vst::ParameterInfo paramInfo;
-		::memset(&paramInfo, 0, sizeof(Vst::ParameterInfo));
-		if (pPlugin->impl()->getParameterInfo(iIndex, paramInfo)) {
-			m_pImpl = new Impl(paramInfo);
-			setName(fromTChar(paramInfo.title));
-			setMinValue(0.0f);
-			setMaxValue(1.0f);
-			setDefaultValue(paramInfo.defaultNormalizedValue);
+	qtractorVst3PluginType *pType
+		= static_cast<qtractorVst3PluginType *> (pPlugin->type());
+	if (pType) {
+		Vst::IEditController *controller = pType->impl()->controller();
+		if (controller) {
+			const unsigned long iMaxIndex = controller->getParameterCount();
+			if (iIndex < iMaxIndex) {
+				Vst::ParameterInfo paramInfo;
+				::memset(&paramInfo, 0, sizeof(Vst::ParameterInfo));
+				if (controller->getParameterInfo(iIndex, paramInfo) == kResultOk) {
+					m_pImpl = new Impl(paramInfo);
+					setName(fromTChar(paramInfo.title));
+					setMinValue(0.0f);
+					setMaxValue(1.0f);
+					setDefaultValue(controller->getParamNormalized(paramInfo.id));
+				}
+			}
 		}
 	}
 }
