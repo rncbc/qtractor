@@ -635,10 +635,10 @@ uint32 PLUGIN_API qtractorVst3PluginHost::release (void)
 // QTimer stuff...
 //
 void qtractorVst3PluginHost::startTimer (int msecs)
-	{ return m_pTimer->start(msecs); }
+	{ m_pTimer->start(msecs); }
 
 void qtractorVst3PluginHost::stopTimer (void)
-	{ return m_pTimer->stop(); }
+	{ m_pTimer->stop(); }
 
 int qtractorVst3PluginHost::timerInterval (void) const
 	{ return m_pTimer->interval(); }
