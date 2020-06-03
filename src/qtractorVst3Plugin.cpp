@@ -1121,6 +1121,16 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 
 			if (unitInfos) m_unitInfos = owned(unitInfos);
 
+			// Connect components...
+			if (m_component && m_controller) {
+				FUnknownPtr<Vst::IConnectionPoint> component_cp(m_component);
+				FUnknownPtr<Vst::IConnectionPoint> controller_cp(m_controller);
+				if (component_cp && controller_cp) {
+					component_cp->connect(controller_cp);
+					controller_cp->connect(component_cp);
+				}
+			}
+
 			return true;
 		}
 
@@ -1133,6 +1143,15 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 
 void qtractorVst3PluginType::Impl::close (void)
 {
+	if (m_component && m_controller) {
+		FUnknownPtr<Vst::IConnectionPoint> component_cp(m_component);
+		FUnknownPtr<Vst::IConnectionPoint> controller_cp(m_controller);
+		if (component_cp && controller_cp) {
+			component_cp->disconnect(controller_cp);
+			controller_cp->disconnect(component_cp);
+		}
+	}
+
 	m_unitInfos = nullptr;
 
 	if (m_component && m_controller &&
@@ -2144,18 +2163,10 @@ qtractorVst3Plugin::Impl::~Impl (void)
 	qtractorVst3PluginType *pType
 		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
 	if (pType) {
-		Vst::IComponent *component = pType->impl()->component();
 		Vst::IEditController *controller = pType->impl()->controller();
-		FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
-		FUnknownPtr<Vst::IConnectionPoint> controller_cp(controller);
-		if (component_cp && controller_cp) {
-			component_cp->disconnect(controller_cp);
-			controller_cp->disconnect(component_cp);
-		}
 		if (controller)
 			controller->setComponentHandler(nullptr);
 	}
-
 
 	m_processor = nullptr;
 	m_handler = nullptr;
@@ -2185,14 +2196,6 @@ void qtractorVst3Plugin::Impl::initialize (void)
 	if (controller) {
 		m_handler = owned(NEW Handler(m_pPlugin));
 		controller->setComponentHandler(m_handler);
-	}
-
-	// Connect components...
-	FUnknownPtr<Vst::IConnectionPoint> component_cp(component);
-	FUnknownPtr<Vst::IConnectionPoint> controller_cp(controller);
-	if (component_cp && controller_cp) {
-		component_cp->connect(controller_cp);
-		controller_cp->connect(component_cp);
 	}
 
 	m_processor = FUnknownPtr<Vst::IAudioProcessor> (component);

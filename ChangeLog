@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed VST3 component/controller inter-connection. (EXPERIMENTAL)
+
 - LV2 Atom/Port-event host notification support has been retouched,
   but still unofficial though. (EXPERIMENTAL)
 
