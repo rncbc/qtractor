@@ -770,13 +770,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>プロダクト: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1320"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1322"/>
         <location filename="../qtractorVstPlugin.cpp" line="666"/>
         <source>Vendor: </source>
         <translation>ベンダー: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1293"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1295"/>
         <location filename="../qtractorVstPlugin.cpp" line="674"/>
         <source>Version: </source>
         <translation>バージョン: </translation>
@@ -869,17 +869,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>%1: オートメーション/カーブファイルが見つかりません。</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1287"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1289"/>
         <source>Name: </source>
         <translation>名前: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1307"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1309"/>
         <source>Category: </source>
         <translation>カテゴリー: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1314"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1316"/>
         <source>Categories: </source>
         <translation>カテゴリー: </translation>
     </message>

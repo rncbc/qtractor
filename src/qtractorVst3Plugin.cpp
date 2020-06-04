@@ -652,7 +652,7 @@ tresult qtractorVst3PluginHost::registerEventHandler (
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::registerEventHandler(%p, %d)", handler, int(fd));
 #endif
-	m_fileDescriptors.insert(handler, int(fd));
+	m_fileDescriptors.insertMulti(handler, int(fd));
 	return kResultOk;
 }
 
@@ -729,11 +729,12 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 	QHash<IEventHandler *, int>::ConstIterator iter
 		= m_fileDescriptors.constBegin();
 	for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
-		const int fd = iter.value();
-		FD_SET(fd, &rfds);
-		FD_SET(fd, &wfds);
-		FD_SET(fd, &efds);
-		nfds = qMax(nfds, fd);
+		foreach (int fd, m_fileDescriptors.values(iter.key())) {
+			FD_SET(fd, &rfds);
+			FD_SET(fd, &wfds);
+			FD_SET(fd, &efds);
+			nfds = qMax(nfds, fd);
+		}
 	}
 
 	timeval timeout;
@@ -744,12 +745,13 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 	if (result > 0)	{
 		iter = m_fileDescriptors.constBegin();
 		for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
-			const int fd = iter.value();
-			if (FD_ISSET(fd, &rfds) ||
-				FD_ISSET(fd, &wfds) ||
-				FD_ISSET(fd, &efds)) {
-				IEventHandler *handler = iter.key();
-				handler->onFDIsSet(fd);
+			foreach (int fd, m_fileDescriptors.values(iter.key())) {
+				if (FD_ISSET(fd, &rfds) ||
+					FD_ISSET(fd, &wfds) ||
+					FD_ISSET(fd, &efds)) {
+					IEventHandler *handler = iter.key();
+					handler->onFDIsSet(fd);
+				}
 			}
 		}
 	}
@@ -987,7 +989,7 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 	PFactoryInfo factoryInfo;
 	if (factory->getFactoryInfo(&factoryInfo) != kResultOk) {
 	#ifdef CONFIG_DEBUG
-		qDebug("vst3_test_plugin_type::Impl[%p]::open(\"%s\", %lu)"
+		qDebug("qtractorVst3PluginType::Impl[%p]::open(\"%s\", %lu)"
 			" *** Failed to retrieve plug-in factory information.", this,
 			m_pFile->filename().toUtf8().constData(), iIndex);
 	#endif
@@ -2344,6 +2346,7 @@ bool qtractorVst3Plugin::Impl::openEditor (void)
 
 #ifdef CONFIG_VST3_XCB
 	g_hostContext.openXcbConnection();
+	g_hostContext.startTimer(200);
 #endif
 
 	Vst::IEditController *controller = pType->impl()->controller();
@@ -2359,6 +2362,7 @@ void qtractorVst3Plugin::Impl::closeEditor (void)
 	m_plugView = nullptr;
 
 #ifdef CONFIG_VST3_XCB
+	g_hostContext.stopTimer();
 	g_hostContext.closeXcbConnection();
 #endif
 }
