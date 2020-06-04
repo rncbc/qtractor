@@ -165,6 +165,8 @@ private:
 
 	Timer *m_pTimer;
 
+	unsigned int m_timerRefCount;
+
 	struct TimerItem
 	{
 		TimerItem(ITimerHandler *h, TimerInterval i)
@@ -552,6 +554,8 @@ qtractorVst3PluginHost::qtractorVst3PluginHost (void)
 
 	m_pTimer = new Timer(this);
 
+	m_timerRefCount = 0;
+
 #ifdef CONFIG_VST3_XCB
 	m_pXcbConnection = nullptr;
 	m_iXcbFileDescriptor = 0;
@@ -634,11 +638,11 @@ uint32 PLUGIN_API qtractorVst3PluginHost::release (void)
 
 // QTimer stuff...
 //
-void qtractorVst3PluginHost::startTimer (int msecs)
-	{ m_pTimer->start(msecs); }
+void qtractorVst3PluginHost::startTimer ( int msecs )
+	{ if (++m_timerRefCount == 1) m_pTimer->start(msecs); }
 
 void qtractorVst3PluginHost::stopTimer (void)
-	{ m_pTimer->stop(); }
+	{ if (m_timerRefCount > 0 && --m_timerRefCount == 0) m_pTimer->stop(); }
 
 int qtractorVst3PluginHost::timerInterval (void) const
 	{ return m_pTimer->interval(); }
@@ -857,6 +861,7 @@ void qtractorVst3PluginHost::clear (void)
 	closeXcbConnection();
 #endif
 
+	m_timerRefCount = 0;
 	m_processRefCount = 0;
 
 	qDeleteAll(m_timers);
@@ -2346,8 +2351,9 @@ bool qtractorVst3Plugin::Impl::openEditor (void)
 
 #ifdef CONFIG_VST3_XCB
 	g_hostContext.openXcbConnection();
-	g_hostContext.startTimer(200);
 #endif
+
+	g_hostContext.startTimer(200);
 
 	Vst::IEditController *controller = pType->impl()->controller();
 	if (controller)
@@ -2361,8 +2367,9 @@ void qtractorVst3Plugin::Impl::closeEditor (void)
 {
 	m_plugView = nullptr;
 
-#ifdef CONFIG_VST3_XCB
 	g_hostContext.stopTimer();
+
+#ifdef CONFIG_VST3_XCB
 	g_hostContext.closeXcbConnection();
 #endif
 }
