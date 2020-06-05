@@ -2001,7 +2001,7 @@ Você quer substituí-lo?</translation>
         <translation>Limites</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="413"/>
+        <location filename="../qtractorExportForm.cpp" line="414"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -2039,7 +2039,7 @@ falhou.</translation>
         <translation>A Renderização do arquivo de áudio: &quot;%1&quot; terminou.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="505"/>
+        <location filename="../qtractorExportForm.cpp" line="506"/>
         <source>All files (*.*)</source>
         <translation>Todos os arquivos (*.*)</translation>
     </message>
@@ -2064,12 +2064,12 @@ falhou.</translation>
         <translation>A Renderização do arquivo de áudio: &quot;%1&quot; começou...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="408"/>
+        <location filename="../qtractorExportForm.cpp" line="409"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>A Renderização do arquivo MIDI: &quot;%1&quot; terminou.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="501"/>
+        <location filename="../qtractorExportForm.cpp" line="502"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Arquivos MIDI (*.%1 *.smf *.midi)</translation>
     </message>
@@ -2097,7 +2097,7 @@ failed.</source>
 falhou.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="493"/>
+        <location filename="../qtractorExportForm.cpp" line="494"/>
         <source>Export %1 File</source>
         <translation>Renderizando %1 do Arquivo</translation>
     </message>

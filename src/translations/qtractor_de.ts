@@ -2136,12 +2136,12 @@ gescheitert.</translation>
         <translation>MIDI-Dateiexport: &quot;%1&quot; gestartet...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="408"/>
+        <location filename="../qtractorExportForm.cpp" line="409"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>MIDI-Dateiexport: &quot;%1&quot; vollständig.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="413"/>
+        <location filename="../qtractorExportForm.cpp" line="414"/>
         <source>MIDI file export:
 
 &quot;%1&quot;
@@ -2154,17 +2154,17 @@ failed.</source>
 gescheitert.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="493"/>
+        <location filename="../qtractorExportForm.cpp" line="494"/>
         <source>Export %1 File</source>
         <translation>Exportiere %1-Datei</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="501"/>
+        <location filename="../qtractorExportForm.cpp" line="502"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation type="unfinished">MIDI-Dateien (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="505"/>
+        <location filename="../qtractorExportForm.cpp" line="506"/>
         <source>All files (*.*)</source>
         <translation type="unfinished">Alle Dateien (*.*)</translation>
     </message>

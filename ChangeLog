@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed MIDI tracks export that were missing the end-of-export tail
+  parameter and bailing out always with default SMF format anyway.
+
 - Fixed VST3 component/controller inter-connection. (EXPERIMENTAL)
 
 - LV2 Atom/Port-event host notification support has been retouched,

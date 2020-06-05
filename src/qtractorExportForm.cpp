@@ -390,6 +390,7 @@ void qtractorExportForm::accept (void)
 			const bool bResult = pMidiEngine->fileExport(
 				sExportPath, exportBuses,
 				m_ui.ExportStartSpinBox->value(),
+				m_ui.ExportEndSpinBox->value(),
 				midiExportFormat());
 			// Done.
 			QApplication::restoreOverrideCursor();
