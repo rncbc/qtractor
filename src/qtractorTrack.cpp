@@ -571,9 +571,6 @@ bool qtractorTrack::open (void)
 		break;
 	}
 
-	// Make sure there's no subject automation on going...
-	qtractorSubject::clearQueue();
-
 	// Before we get rid of old monitor...
 	if (pMonitor) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -644,6 +641,9 @@ bool qtractorTrack::open (void)
 // Track close method.
 void qtractorTrack::close (void)
 {
+	// Make sure there's no subject automation going on...
+	qtractorSubject::resetQueue();
+
 	if (m_pMidiVolumeObserver) {
 		delete m_pMidiVolumeObserver;
 		m_pMidiVolumeObserver = nullptr;
