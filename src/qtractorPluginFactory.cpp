@@ -207,13 +207,11 @@ void qtractorPluginFactory::updatePluginPaths (void)
 	// VST3 default path...
 	QStringList vst3_paths;
 	if (pOptions)
-		vst3_paths = pOptions->vstPaths;
+		vst3_paths = pOptions->vst3Paths;
 	if (vst3_paths.isEmpty()) {
 		QString sVst3Paths = ::getenv("VST3_PATH");
 		if (sVst3Paths.isEmpty())
-			sVst3Paths = ::getenv("VST3_PATH");
-		if (sVst3Paths.isEmpty())
-			sVst3Paths += default_paths("vst3");
+			sVst3Paths = default_paths("vst3");
 		vst3_paths = sVst3Paths.split(PATH_SEP);
 	}
 	m_paths.insert(qtractorPluginType::Vst3, vst3_paths);
