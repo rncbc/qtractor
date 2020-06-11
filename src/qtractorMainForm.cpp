@@ -7719,13 +7719,13 @@ void qtractorMainForm::slowTimerSlot (void)
 		// Did we skip any?
 		if (m_iXrunSkip > 0) {
 			appendMessagesColor(
-				tr("XRUN(%1 skipped)").arg(m_iXrunSkip), Qt::darkMagenta);
+				tr("XRUN(%1 skipped)").arg(m_iXrunSkip), "#cc99cc");
 			m_iXrunSkip = 0;
 		}
 		// Just post an informative message...
 		appendMessagesColor(
 			tr("XRUN(%1): some frames might have been lost.")
-			.arg(m_iXrunCount), Qt::magenta);
+			.arg(m_iXrunCount), "#cc0033");
 		// Let the XRUN status item get an update...
 		++m_iStabilizeTimer;
 	}
@@ -7741,7 +7741,7 @@ void qtractorMainForm::slowTimerSlot (void)
 		m_iAudioRefreshTimer = 0;
 		if (pAudioEngine->updateConnects() == 0) {
 			appendMessagesColor(
-				tr("Audio connections change."), Qt::darkCyan);
+				tr("Audio connections change."), "#cc9966");
 			if (m_iAudioPropertyChange > 0) {
 				m_iAudioPropertyChange = 0;
 				m_pConnections->connectForm()->audioClear();
@@ -7756,7 +7756,7 @@ void qtractorMainForm::slowTimerSlot (void)
 		m_iMidiRefreshTimer = 0;
 		if (pMidiEngine->updateConnects() == 0) {
 			appendMessagesColor(
-				tr("MIDI connections change."), Qt::darkYellow);
+				tr("MIDI connections change."), "#66cc99");
 			m_pConnections->connectForm()->midiRefresh();
 		}
 	}
