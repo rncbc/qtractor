@@ -6405,17 +6405,17 @@ is highly recommended.</source>
 <context>
     <name>qtractorMessages</name>
     <message>
-        <location filename="../qtractorMessages.cpp" line="116"/>
+        <location filename="../qtractorMessages.cpp" line="115"/>
         <source>Messages</source>
         <translation>Сообщения</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="289"/>
+        <location filename="../qtractorMessages.cpp" line="293"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Ведение журнала остановлено --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="299"/>
+        <location filename="../qtractorMessages.cpp" line="303"/>
         <source>Logging started --- %1 ---</source>
         <translation>Ведение журнала начато --- %1 ---</translation>
     </message>

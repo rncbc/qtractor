@@ -6453,17 +6453,17 @@ sezením znovu.</translation>
 <context>
     <name>qtractorMessages</name>
     <message>
-        <location filename="../qtractorMessages.cpp" line="116"/>
+        <location filename="../qtractorMessages.cpp" line="115"/>
         <source>Messages</source>
         <translation>Zprávy</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="289"/>
+        <location filename="../qtractorMessages.cpp" line="293"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Zapisování vzkazů bylo zastaveno --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="299"/>
+        <location filename="../qtractorMessages.cpp" line="303"/>
         <source>Logging started --- %1 ---</source>
         <translation>Zapisování vzkazů začalo --- %1 ---</translation>
     </message>

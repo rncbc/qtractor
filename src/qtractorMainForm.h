@@ -103,7 +103,7 @@ public:
 	void updateTransportTime(unsigned long iPlayHead);
 
 	void appendMessages(const QString& s);
-	void appendMessagesColor(const QString& s, const QString& c);
+	void appendMessagesColor(const QString& s, const QColor& rgb);
 	void appendMessagesText(const QString& s);
 	void appendMessagesError(const QString& s);
 

@@ -7343,10 +7343,10 @@ void qtractorMainForm::appendMessages( const QString& s )
 	statusBar()->showMessage(s, 3000);
 }
 
-void qtractorMainForm::appendMessagesColor( const QString& s, const QString& c )
+void qtractorMainForm::appendMessagesColor( const QString& s, const QColor& rgb )
 {
 	if (m_pMessages)
-		m_pMessages->appendMessagesColor(s, c);
+		m_pMessages->appendMessagesColor(s, rgb);
 
 	statusBar()->showMessage(s, 3000);
 }
@@ -7362,7 +7362,7 @@ void qtractorMainForm::appendMessagesError( const QString& s )
 	if (m_pMessages)
 		m_pMessages->show();
 
-	appendMessagesColor(s.simplified(), "#ff0000");
+	appendMessagesColor(s.simplified(), Qt::red);
 
 	QMessageBox::critical(this, tr("Error"), s);
 }
@@ -7719,13 +7719,13 @@ void qtractorMainForm::slowTimerSlot (void)
 		// Did we skip any?
 		if (m_iXrunSkip > 0) {
 			appendMessagesColor(
-				tr("XRUN(%1 skipped)").arg(m_iXrunSkip), "#cc99cc");
+				tr("XRUN(%1 skipped)").arg(m_iXrunSkip), Qt::darkMagenta);
 			m_iXrunSkip = 0;
 		}
 		// Just post an informative message...
 		appendMessagesColor(
 			tr("XRUN(%1): some frames might have been lost.")
-			.arg(m_iXrunCount), "#cc0033");
+			.arg(m_iXrunCount), Qt::magenta);
 		// Let the XRUN status item get an update...
 		++m_iStabilizeTimer;
 	}
@@ -7741,7 +7741,7 @@ void qtractorMainForm::slowTimerSlot (void)
 		m_iAudioRefreshTimer = 0;
 		if (pAudioEngine->updateConnects() == 0) {
 			appendMessagesColor(
-				tr("Audio connections change."), "#cc9966");
+				tr("Audio connections change."), Qt::darkCyan);
 			if (m_iAudioPropertyChange > 0) {
 				m_iAudioPropertyChange = 0;
 				m_pConnections->connectForm()->audioClear();
@@ -7756,7 +7756,7 @@ void qtractorMainForm::slowTimerSlot (void)
 		m_iMidiRefreshTimer = 0;
 		if (pMidiEngine->updateConnects() == 0) {
 			appendMessagesColor(
-				tr("MIDI connections change."), "#66cc99");
+				tr("MIDI connections change."), Qt::darkYellow);
 			m_pConnections->connectForm()->midiRefresh();
 		}
 	}

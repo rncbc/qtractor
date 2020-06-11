@@ -6450,17 +6450,17 @@ JACK音声サーバー(jackd)が起動し実行されているなら
 <context>
     <name>qtractorMessages</name>
     <message>
-        <location filename="../qtractorMessages.cpp" line="116"/>
+        <location filename="../qtractorMessages.cpp" line="115"/>
         <source>Messages</source>
         <translation>メッセージ</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="289"/>
+        <location filename="../qtractorMessages.cpp" line="293"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>ロギングの停止 --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="299"/>
+        <location filename="../qtractorMessages.cpp" line="303"/>
         <source>Logging started --- %1 ---</source>
         <translation>ロギングの開始 --- %1 ---</translation>
     </message>
