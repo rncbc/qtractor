@@ -1,7 +1,7 @@
 // qtractorFiles.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -153,7 +153,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(m_pTabWidget);
-	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
+//	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
 	QDockWidget::setAllowedAreas(
 		Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	// Some specialties to this kind of dock window...
