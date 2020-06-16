@@ -292,7 +292,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	QFrame::setFont(font2);
 
 	m_pLayout = new QVBoxLayout(this);
-	m_pLayout->setMargin(4);
+	m_pLayout->setContentsMargins(4, 4, 4, 4);
 	m_pLayout->setSpacing(4);
 
 	m_pLabel = new IconLabel(/*this*/);
@@ -313,7 +313,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	const QSizePolicy buttonPolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
 	m_pButtonLayout = new QHBoxLayout(/*this*/);
-	m_pButtonLayout->setMargin(0);
+	m_pButtonLayout->setContentsMargins(0, 0, 0, 0);
 	m_pButtonLayout->setSpacing(2);
 
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
@@ -948,7 +948,7 @@ qtractorMixerRackWidget::qtractorMixerRackWidget (
 	qtractorMixerRack *pRack ) : QScrollArea(pRack), m_pRack(pRack)
 {
 	m_pWorkspaceLayout = new QGridLayout();
-	m_pWorkspaceLayout->setMargin(0);
+	m_pWorkspaceLayout->setContentsMargins(0, 0, 0, 0);
 	m_pWorkspaceLayout->setSpacing(0);
 
 	m_pWorkspaceWidget = new QWidget(this);
@@ -1104,7 +1104,7 @@ public:
 
 		QHBoxLayout *pHBoxLayout = new QHBoxLayout();
 		pHBoxLayout->setSpacing(4);
-		pHBoxLayout->setMargin(2);
+		pHBoxLayout->setContentsMargins(2, 2, 2, 2);
 	#if 0
 		QFrame *pLeftFrame = new QFrame();
 		pLeftFrame->setFrameStyle(QFrame::HLine | QFrame::Sunken);

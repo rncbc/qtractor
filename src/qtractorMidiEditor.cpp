@@ -854,21 +854,21 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 
 	// Create child box layouts...
 	QVBoxLayout *pVBoxLeftLayout = new QVBoxLayout(pVBoxLeft);
-	pVBoxLeftLayout->setMargin(0);
+	pVBoxLeftLayout->setContentsMargins(0, 0, 0, 0);
 	pVBoxLeftLayout->setSpacing(0);
 	pVBoxLeftLayout->addWidget(m_pEditListHeader);
 	pVBoxLeftLayout->addWidget(m_pEditList);
 	pVBoxLeft->setLayout(pVBoxLeftLayout);
 
 	QVBoxLayout *pVBoxRightLayout = new QVBoxLayout(pVBoxRight);
-	pVBoxRightLayout->setMargin(0);
+	pVBoxRightLayout->setContentsMargins(0, 0, 0, 0);
 	pVBoxRightLayout->setSpacing(0);
 	pVBoxRightLayout->addWidget(m_pEditTime);
 	pVBoxRightLayout->addWidget(m_pEditView);
 	pVBoxRight->setLayout(pVBoxRightLayout);
 
 	QHBoxLayout *pHBoxBottomLayout = new QHBoxLayout(pHBoxBottom);
-	pHBoxBottomLayout->setMargin(0);
+	pHBoxBottomLayout->setContentsMargins(0, 0, 0, 0);
 	pHBoxBottomLayout->setSpacing(0);
 	pHBoxBottomLayout->addWidget(m_pEditEventScale);
 	pHBoxBottomLayout->addWidget(m_pEditEvent);

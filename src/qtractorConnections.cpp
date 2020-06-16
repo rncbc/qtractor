@@ -59,7 +59,7 @@ qtractorConnections::qtractorConnections (
 
 	// Prepare the layout stuff.
 	QHBoxLayout *pLayout = new QHBoxLayout();
-	pLayout->setMargin(0);
+	pLayout->setContentsMargins(0, 0, 0, 0);
 	pLayout->setSpacing(0);
 	pLayout->addWidget(m_pConnectForm);
 	QWidget::setLayout(pLayout);

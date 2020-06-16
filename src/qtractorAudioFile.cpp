@@ -25,8 +25,8 @@
 #include "qtractorAudioVorbisFile.h"
 #include "qtractorAudioMadFile.h"
 
+#include <QRegularExpression>
 #include <QFileInfo>
-#include <QRegExp>
 
 
 //----------------------------------------------------------------------
@@ -121,13 +121,15 @@ qtractorAudioFileFactory::qtractorAudioFileFactory (void)
 #endif
 
 	// Finally, simply build the all (most commonly) supported files entry.
-	QRegExp rx("^(aif(|f)|fla(|c)|mp3|ogg|w(av|64))", Qt::CaseInsensitive);
+	const QRegularExpression rx(
+		"^(aif(|f)|fla(|c)|mp3|ogg|w(av|64))",
+		QRegularExpression::CaseInsensitiveOption);
 	QStringList exts;
 	FileTypes::ConstIterator iter = m_types.constBegin();
 	const FileTypes::ConstIterator& iter_end = m_types.constEnd();
 	for ( ; iter != iter_end; ++iter) {
 		const QString& sExt = iter.key();
-		if (rx.exactMatch(sExt))
+		if (rx.match(sExt).hasMatch())
 			exts.append(sExtMask.arg(sExt));
 		m_exts.append(sExt);
 	}

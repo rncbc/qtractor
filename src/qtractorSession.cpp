@@ -46,8 +46,8 @@
 #include <QApplication>
 #include <QDateTime>
 #include <QFileInfo>
-#include <QRegExp>
 #include <QDir>
+#include <QRegularExpression>
 
 #include <QDomDocument>
 
@@ -1509,10 +1509,10 @@ unsigned long qtractorSession::frameTimeEx (void) const
 // Sanitize a given name.
 QString qtractorSession::sanitize ( const QString& s )
 {
-//	return s.simplified().replace(QRegExp("[\\s|\\.|\\-|/]+"), '_');
+//	return s.simplified().replace(QRegularExpression("[\\s|\\.|\\-|/]+"), '_');
 	const QChar space(' ');
-	const QRegExp regex("[^\\w]+");
-	return QString(s).replace(regex, space).simplified().replace(space, '_');
+	const QRegularExpression rx("[^\\w]+");
+	return QString(s).replace(rx, space).simplified().replace(space, '_');
 }
 
 
@@ -1525,11 +1525,11 @@ QString qtractorSession::uniqueTrackName ( const QString& sTrackName ) const
 
 	QString sOldTrackName = sTrackName;
 	QString sNewTrackName;
-	const QRegExp rxTrackNo("([0-9]+)$");
+	QRegularExpression rxTrackNo("([0-9]+)$");
+	QRegularExpressionMatch match = rxTrackNo.match(sOldTrackName);
 	int iTrackNo = 0;
-
-	if (rxTrackNo.indexIn(sOldTrackName) >= 0) {
-		iTrackNo = rxTrackNo.cap(1).toInt();
+	if (match.hasMatch()) {
+		iTrackNo = match.captured(1).toInt();
 		sOldTrackName.remove(rxTrackNo);
 	}
 	else sOldTrackName += ' ';
@@ -1581,9 +1581,13 @@ QString qtractorSession::createFilePath (
 	const QStringList& files
 		= dir.entryList(filter, QDir::Files, QDir::Time);
 	if (!files.isEmpty()) {
-		QRegExp rx(sFilename.arg("([\\d]+)"));
-		if (rx.lastIndexIn(files.first()) >= 0)
-			iFileNo = rx.cap(1).toInt();
+		QRegularExpression rx(sFilename.arg("([\\d]+)"));
+		QRegularExpressionMatchIterator iter = rx.globalMatch(files.first());
+		if (iter.hasNext()) {
+			QRegularExpressionMatch match = iter.next();
+			while (iter.hasNext()) match = iter.next();
+			iFileNo = match.captured(1).toInt();
+		}
 	}
 
 	// Check whether it's not aquired as our own already,
@@ -2522,7 +2526,7 @@ void qtractorSession::renameSession (
 	// Lock it up...
 	lock();
 
-	const QRegExp rx('^' + sOldName);
+	const QRegularExpression rx('^' + sOldName);
 
 	// For each and every track...
 	for (qtractorTrack *pTrack = m_tracks.first();
@@ -2548,10 +2552,11 @@ void qtractorSession::renameSession (
 			// Increment filename suffix if exists already...
 			if (info2.exists()) {
 				int iFileNo = 0;
-				const QRegExp rxFileNo("([0-9]+)$");
 				sFileName = info2.completeBaseName();
-				if (rxFileNo.indexIn(sFileName) >= 0) {
-					iFileNo = rxFileNo.cap(1).toInt();
+				QRegularExpression rxFileNo("([0-9]+)$");
+				QRegularExpressionMatch match = rxFileNo.match(sFileName);
+				if (match.hasMatch()) {
+					iFileNo = match.captured(1).toInt();
 					sFileName.remove(rxFileNo);
 				}
 				else sFileName += '-';

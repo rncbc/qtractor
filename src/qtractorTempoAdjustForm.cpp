@@ -148,8 +148,8 @@ public:
 			qtractorTrack *pTrack = pClip->track();
 			if (pTrack) {
 				QPalette pal;
-				pal.setColor(QPalette::Foreground, pTrack->foreground());
-				pal.setColor(QPalette::Background, pTrack->background());
+				pal.setColor(QPalette::WindowText, pTrack->foreground());
+				pal.setColor(QPalette::Window, pTrack->background());
 				QFrame::setPalette(pal);
 			}
 		}

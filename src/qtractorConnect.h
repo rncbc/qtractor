@@ -24,7 +24,8 @@
 
 #include <QTreeWidget>
 
-#include <QRegExp>
+#include <QRegularExpression>
+
 #include <QList>
 
 
@@ -301,8 +302,8 @@ private:
 	QTreeWidgetItem *m_pHiliteItem;
 
 	// Client:port regular expression filters.
-	QRegExp m_rxClientName;
-	QRegExp m_rxPortName;
+	QRegularExpression m_rxClientName;
+	QRegularExpression m_rxPortName;
 	
 	// Maintained list of client names.
 	QStringList m_clientNames;

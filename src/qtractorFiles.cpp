@@ -87,7 +87,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	// Player button (initially disabled)...
 	m_pPlayWidget = new QWidget(m_pTabWidget);
 	m_pPlayLayout = new QHBoxLayout(/*m_pPlayWidget*/);
-	m_pPlayLayout->setMargin(2);
+	m_pPlayLayout->setContentsMargins(2, 2, 2, 2);
 	m_pPlayLayout->setSpacing(2);
 	m_pPlayWidget->setLayout(m_pPlayLayout);
 

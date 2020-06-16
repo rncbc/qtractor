@@ -970,22 +970,22 @@ bool qtractorPaletteForm::PaletteModel::setData (
 		if (m_generate) {
 			m_palette.setBrush(QPalette::Inactive, cr, color);
 			switch (cr) {
-				case QPalette::Foreground:
+				case QPalette::WindowText:
 				case QPalette::Text:
 				case QPalette::ButtonText:
 				case QPalette::Base:
 					break;
 				case QPalette::Dark:
-					m_palette.setBrush(QPalette::Disabled, QPalette::Foreground, color);
+					m_palette.setBrush(QPalette::Disabled, QPalette::WindowText, color);
 					m_palette.setBrush(QPalette::Disabled, QPalette::Dark, color);
 					m_palette.setBrush(QPalette::Disabled, QPalette::Text, color);
 					m_palette.setBrush(QPalette::Disabled, QPalette::ButtonText, color);
 					index_begin = PaletteModel::index(0, 0);
 					index_end = PaletteModel::index(m_nrows - 1, 3);
 					break;
-				case QPalette::Background:
+				case QPalette::Window:
 					m_palette.setBrush(QPalette::Disabled, QPalette::Base, color);
-					m_palette.setBrush(QPalette::Disabled, QPalette::Background, color);
+					m_palette.setBrush(QPalette::Disabled, QPalette::Window, color);
 					index_begin = PaletteModel::index(QPalette::Base, 0);
 					break;
 				case QPalette::Highlight:
@@ -1264,7 +1264,7 @@ qtractorPaletteForm::ColorEditor::ColorEditor ( QWidget *parent )
 	: QWidget(parent)
 {
 	QLayout *layout = new QHBoxLayout(this);
-	layout->setMargin(0);
+	layout->setContentsMargins(0, 0, 0, 0);
 	m_button = new qtractorPaletteForm::ColorButton(this);
 	layout->addWidget(m_button);
 	QObject::connect(m_button,
@@ -1310,7 +1310,7 @@ qtractorPaletteForm::RoleEditor::RoleEditor ( QWidget *parent )
 	m_edited = false;
 
 	QHBoxLayout *layout = new QHBoxLayout(this);
-	layout->setMargin(0);
+	layout->setContentsMargins(0, 0, 0, 0);
 	layout->setSpacing(0);
 
 	m_label = new QLabel(this);

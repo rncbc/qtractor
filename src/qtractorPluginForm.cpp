@@ -85,7 +85,8 @@ qtractorPluginForm::qtractorPluginForm (
 	m_ui.DirectAccessParamPushButton->setMenu(m_pDirectAccessParamMenu);
 
 	m_ui.PresetComboBox->setValidator(
-		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetComboBox));
+		new QRegularExpressionValidator(
+			QRegularExpression("[\\w-]+"), m_ui.PresetComboBox));
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
 	m_ui.PresetComboBox->setCompleter(nullptr);
 
@@ -215,7 +216,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	if (iItems > 0) {
 		pTabWidget  = m_ui.TabWidget;
 		pGridLayout = new QGridLayout();
-		pGridLayout->setMargin(8);
+		pGridLayout->setContentsMargins(8, 8, 8, 8);
 		pGridLayout->setSpacing(4);
 		pPageWidget = new QWidget();
 		pPageWidget->setLayout(pGridLayout);
@@ -267,7 +268,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 				iColumn = 0;
 				if (pTabWidget && iPage < iPages) {
 					pGridLayout = new QGridLayout();
-					pGridLayout->setMargin(8);
+					pGridLayout->setContentsMargins(8, 8, 8, 8);
 					pGridLayout->setSpacing(4);
 					pPageWidget = new QWidget();
 					pPageWidget->setLayout(pGridLayout);
@@ -1230,7 +1231,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	m_pToolButton = nullptr;
 
 	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(0);
+	pGridLayout->setContentsMargins(0, 0, 0, 0);
 	pGridLayout->setSpacing(4);
 
 	qtractorPlugin::Property *pProp = property();

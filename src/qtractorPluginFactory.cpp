@@ -50,6 +50,8 @@
 #include <QDateTime>
 #include <QDir>
 
+#include <QRegularExpression>
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QDesktopServices>
 #else
@@ -979,7 +981,7 @@ qtractorDummyPluginType::qtractorDummyPluginType (
 	const QStringList& props = sText.split('|');
 
 	m_sName  = props.at(1);
-	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
+	m_sLabel = m_sName.simplified().replace(QRegularExpression("[\\s|\\.|\\-]+"), "_");
 
 	const QStringList& audios = props.at(2).split(':');
 	m_iAudioIns  = audios.at(0).toUShort();

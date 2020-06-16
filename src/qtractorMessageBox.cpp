@@ -41,7 +41,7 @@ qtractorMessageBox::qtractorMessageBox ( QWidget *pParent, Qt::WindowFlags wflag
 		| Qt::WindowCloseButtonHint);
 
 	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(8);
+	pGridLayout->setContentsMargins(8, 8, 8, 8);
 	pGridLayout->setSpacing(2);
 
 	m_pIconLabel = new QLabel();
@@ -52,7 +52,7 @@ qtractorMessageBox::qtractorMessageBox ( QWidget *pParent, Qt::WindowFlags wflag
 	m_pTextLabel->setOpenExternalLinks(true);
 
 	m_pCustomButtonLayout = new QVBoxLayout();
-	m_pCustomButtonLayout->setMargin(8);
+	m_pCustomButtonLayout->setContentsMargins(8, 8, 8, 8);
 	m_pCustomButtonLayout->setSpacing(2);
 
 	m_pDialogButtonBox = new QDialogButtonBox();

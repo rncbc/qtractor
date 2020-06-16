@@ -226,7 +226,7 @@ qtractorTrackListButtons::qtractorTrackListButtons (
 	QWidget::setBackgroundRole(QPalette::Window);
 
 	QHBoxLayout *pHBoxLayout = new QHBoxLayout();
-	pHBoxLayout->setMargin(2);
+	pHBoxLayout->setContentsMargins(2, 2, 2, 2);
 	pHBoxLayout->setSpacing(2);
 
 	const QFont& font = QWidget::font();

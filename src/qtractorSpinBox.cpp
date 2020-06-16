@@ -664,8 +664,12 @@ QValidator::State qtractorTempoSpinBox::validate ( QString& sText, int& iPos ) c
 	if (iPos == 0)
 		return QValidator::Acceptable;
 
-	const QChar& ch = sText[iPos - 1];
+	const QChar& ch = sText.at(iPos - 1);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	const QChar& decp = QLocale().decimalPoint().at(0);
+#else
 	const QChar& decp = QLocale().decimalPoint();
+#endif
 	if (ch == decp || ch == '/' || ch == ' ' || ch.isDigit())
 		return QValidator::Acceptable;
 	else
@@ -694,7 +698,11 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 	const int iCursorPos = pLineEdit->cursorPosition();
 	const QString& sText = pLineEdit->text();
 	if (iCursorPos < sText.section(' ', 0, 0).length() + 1) {
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		const QChar& decp = QLocale().decimalPoint().at(0);
+	#else
 		const QChar& decp = QLocale().decimalPoint();
+	#endif
 		if (iCursorPos > sText.section(decp, 0, 0).length())
 			setTempo(tempo() + 0.1f * float(iSteps));
 		else

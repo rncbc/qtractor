@@ -96,7 +96,7 @@ qtractorTracks::qtractorTracks ( QWidget *pParent )
 
 	// Create child box layouts...
 	QVBoxLayout *pVBoxLayout = new QVBoxLayout(pVBox);
-	pVBoxLayout->setMargin(0);
+	pVBoxLayout->setContentsMargins(0, 0, 0, 0);
 	pVBoxLayout->setSpacing(0);
 	pVBoxLayout->addWidget(m_pTrackTime);
 	pVBoxLayout->addWidget(m_pTrackView);

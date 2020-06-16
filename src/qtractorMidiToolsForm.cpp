@@ -135,12 +135,13 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	m_pTimeshiftCurve = new TimeshiftCurve();
 
 	QVBoxLayout *pFrameLayout = new QVBoxLayout();
-	pFrameLayout->setMargin(1);
+	pFrameLayout->setContentsMargins(1, 1, 1, 1);
 	pFrameLayout->addWidget(m_pTimeshiftCurve);
 	m_ui.TimeshiftFrame->setLayout(pFrameLayout);
 
 	m_ui.PresetNameComboBox->setValidator(
-		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetNameComboBox));
+		new QRegularExpressionValidator(
+			QRegularExpression("[\\w-]+"), m_ui.PresetNameComboBox));
 	m_ui.PresetNameComboBox->setInsertPolicy(QComboBox::NoInsert);
 
 	if (g_sDefPreset.isEmpty())

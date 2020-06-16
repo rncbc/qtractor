@@ -141,7 +141,7 @@ QString qtractorClip::shortClipName ( const QString& sClipName ) const
 		const QString& sSessionName = m_pTrack->session()->sessionName();
 		if (!sSessionName.isEmpty()) {
 			const QString sRegExp("^%1[\\-|_|\\s]+");
-			sShortClipName.remove(QRegExp(sRegExp.arg(sSessionName)));
+			sShortClipName.remove(QRegularExpression(sRegExp.arg(sSessionName)));
 		}
 	}
 

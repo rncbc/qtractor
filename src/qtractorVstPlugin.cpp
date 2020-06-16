@@ -521,7 +521,7 @@ bool qtractorVstPluginType::open (void)
 	else
 		m_sName = QFileInfo(filename()).baseName();
 	// Sanitize plugin label.
-	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
+	m_sLabel = m_sName.simplified().replace(QRegularExpression("[\\s|\\.|\\-]+"), "_");
 
 	// Retrieve plugin unique identifier.
 #ifdef CONFIG_VESTIGE_OLD

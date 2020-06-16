@@ -61,6 +61,8 @@
 #include <QFileInfo>
 #include <QMap>
 
+#include <QRegularExpression>
+
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #define CONFIG_VST3_XCB
@@ -178,7 +180,7 @@ private:
 	};
 
 	QHash<ITimerHandler *, TimerItem *> m_timers;
-	QHash<IEventHandler *, int> m_fileDescriptors;
+	QMultiHash<IEventHandler *, int> m_fileDescriptors;
 
 #ifdef CONFIG_VST3_XCB
 	xcb_connection_t   *m_pXcbConnection;
@@ -656,7 +658,7 @@ tresult qtractorVst3PluginHost::registerEventHandler (
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::registerEventHandler(%p, %d)", handler, int(fd));
 #endif
-	m_fileDescriptors.insertMulti(handler, int(fd));
+	m_fileDescriptors.insert(handler, int(fd));
 	return kResultOk;
 }
 
@@ -730,7 +732,7 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 	}
 #endif
 
-	QHash<IEventHandler *, int>::ConstIterator iter
+	QMultiHash<IEventHandler *, int>::ConstIterator iter
 		= m_fileDescriptors.constBegin();
 	for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
 		foreach (int fd, m_fileDescriptors.values(iter.key())) {
@@ -1241,7 +1243,7 @@ bool qtractorVst3PluginType::open (void)
 
 	// Properties...
 	m_sName = m_pImpl->name();
-	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
+	m_sLabel = m_sName.simplified().replace(QRegularExpression("[\\s|\\.|\\-]+"), "_");
 	m_iUniqueID = m_pImpl->uniqueID();
 
 	m_iAudioIns  = m_pImpl->numChannels(Vst::kAudio, Vst::kInput);

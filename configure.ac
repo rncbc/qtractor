@@ -530,7 +530,7 @@ AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
    ac_cv_qt_version_major=$(($ac_cv_qt_version_major + 0))
 ])
 ac_qt_version_major=$ac_cv_qt_version_major
-if test $ac_qt_version_major -ne 5; then
+if test $ac_qt_version_major -lt 5; then
 	AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
 	ac_qmake=$ac_cv_qmake
 fi

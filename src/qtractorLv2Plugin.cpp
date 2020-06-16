@@ -1416,7 +1416,7 @@ bool qtractorLv2PluginType::open (void)
 	}
 
 	// Sanitize plugin label.
-	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
+	m_sLabel = m_sName.simplified().replace(QRegularExpression("[\\s|\\.|\\-]+"), "_");
 
 	// Retrieve plugin unique identifier.
 	m_iUniqueID = qHash(m_sUri);
@@ -3410,7 +3410,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		QWidget *pQtContainer = QWidget::createWindowContainer(pQtWindow, pQtWidget);
 		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
-		pVBoxLayout->setMargin(0);
+		pVBoxLayout->setContentsMargins(0, 0, 0, 0);
 		pVBoxLayout->setSpacing(0);
 		pVBoxLayout->addWidget(pQtContainer);
 		pQtWidget->setLayout(pVBoxLayout);

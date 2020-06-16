@@ -29,8 +29,9 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QPainter>
-#include <QRegExp>
 #include <QList>
+
+#include <QRegularExpression>
 
 
 //----------------------------------------------------------------------------
@@ -308,7 +309,9 @@ void qtractorPluginSelectForm::refresh (void)
 	const bool bMidi = m_pPluginList->isMidi();
 
 	QString sSearch = m_ui.PluginSearchComboBox->currentText().simplified();
-	const QRegExp rx(sSearch.replace(QRegExp("[\\s]+"), ".*"), Qt::CaseInsensitive);
+	const QRegularExpression rx(sSearch.replace(
+		QRegularExpression("[\\s]+"), ".*"),
+		QRegularExpression::CaseInsensitiveOption);
 
 	QStringList cols;
 	QList<QTreeWidgetItem *> items;
@@ -317,9 +320,9 @@ void qtractorPluginSelectForm::refresh (void)
 		qtractorPluginType *pType = type_iter.next();
 		const QString& sFilename = pType->filename();
 		const QString& sName = pType->name();
-		if (rx.isEmpty()
-			|| rx.indexIn(sName) >= 0
-			|| rx.indexIn(sFilename) >= 0) {
+		if (rx.pattern().isEmpty()
+			|| rx.match(sName).hasMatch()
+			|| rx.match(sFilename).hasMatch()) {
 			// Try primary instantiation...
 			const int iAudioIns    = pType->audioIns();
 			const int iAudioOuts   = pType->audioOuts();
@@ -374,7 +377,7 @@ void qtractorPluginSelectForm::refresh (void)
 		pHeader->sortIndicatorSection(),
 		pHeader->sortIndicatorOrder());
 
-	m_ui.PluginResetToolButton->setEnabled(!rx.isEmpty());
+	m_ui.PluginResetToolButton->setEnabled(!rx.pattern().isEmpty());
 
 	stabilize();
 }

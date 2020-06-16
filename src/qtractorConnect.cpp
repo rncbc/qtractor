@@ -600,16 +600,17 @@ bool qtractorClientListView::isClientName ( const QString& sClientName )
 	if (m_clientNames.indexOf(sClientName) < 0)
 		m_clientNames.append(sClientName);
 
-	return (m_rxClientName.isEmpty()
-		|| m_rxClientName.exactMatch(sClientName));
+	return (m_rxClientName.pattern().isEmpty()
+		|| m_rxClientName.match(sClientName).hasMatch());
 }
 
 
 // Port filter regular expression;
 bool qtractorClientListView::isPortName ( const QString& sPortName )
 {
-	return (m_rxClientName.isEmpty() || m_rxPortName.isEmpty()
-		|| m_rxPortName.exactMatch(sPortName));
+	return (m_rxClientName.pattern().isEmpty()
+		|| m_rxPortName.pattern().isEmpty()
+		|| m_rxPortName.match(sPortName).hasMatch());
 }
 
 
