@@ -76,6 +76,10 @@
 
 #define BUFF_SIZE 16384
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 8, 0)
+#define toSecsSinceEpoch	toTime_t
+#endif
+
 
 static inline unsigned int read_uint ( const unsigned char *data )
 {
