@@ -1344,8 +1344,14 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 
 #undef signals // Collides with GTK symbology
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+
+#pragma GCC diagnostic pop
+
 
 static void qtractor_lv2_ui_gtk2_on_size_request (
 	GtkWidget */*widget*/, GtkRequisition *req, gpointer user_data )
@@ -2960,7 +2966,7 @@ void qtractorLv2Plugin::process (
 				else
 					lv2_atom_buffer_reset(abuf, true);
 				lilv_instance_connect_port(instance,
-					m_piAtomIns[j], &abuf->atoms);
+					m_piAtomIns[j], &abuf->aseq);
 			#ifdef CONFIG_LV2_TIME_POSITION
 				// Time position has changed, provide an update...
 				if (m_lv2_time_position_changed > 0 &&
@@ -3000,7 +3006,7 @@ void qtractorLv2Plugin::process (
 				else
 					lv2_atom_buffer_reset(abuf, false);
 				lilv_instance_connect_port(instance,
-					m_piAtomOuts[j], &abuf->atoms);
+					m_piAtomOuts[j], &abuf->aseq);
 			}
 		#ifdef CONFIG_LV2_UI
 			// Read and apply control changes, eventually from an UI...
