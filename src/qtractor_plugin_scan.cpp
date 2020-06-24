@@ -1183,7 +1183,7 @@ public:
 		for (int32 i = 0; i < nbuses; ++i) {
 			Vst::BusInfo busInfo;
 			if (m_component->getBusInfo(type, direction, i, busInfo) == kResultOk) {
-				if ((busInfo.busType == Vst::kMain) &&
+				if (/*(busInfo.busType == Vst::kMain) &&*/
 					(busInfo.flags & Vst::BusInfo::kDefaultActive))
 					nchannels += busInfo.channelCount;
 			}
