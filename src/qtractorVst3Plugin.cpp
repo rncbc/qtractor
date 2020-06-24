@@ -86,7 +86,7 @@ using namespace Linux;
 static inline
 QString fromTChar ( const Vst::TChar *str )
 {
-	return QString::fromUtf16(reinterpret_cast<const ushort *> (str));
+	return QString::fromUtf16(reinterpret_cast<const char16_t *> (str));
 }
 
 
@@ -2798,8 +2798,7 @@ void qtractorVst3Plugin::Impl::activate ( Vst::IComponent *component,
 		Vst::BusInfo busInfo;
 		if (component->getBusInfo(type, direction, i, busInfo) == kResultOk) {
 			if (busInfo.flags & Vst::BusInfo::kDefaultActive) {
-				const bool state2 = state;// && (busInfo.busType == Vst::kMain);
-				component->activateBus(type, direction, i, state2);
+				component->activateBus(type, direction, i, state);
 			}
 		}
 	}
