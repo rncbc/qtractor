@@ -68,7 +68,7 @@ Features
 - Built-in mixer and monitor controls.
 - Built-in connection patchbay control and persistence
   (a-la QjackCtl [18]).
-- LADSPA [5], DSSI [11], native VST [12] and LV2 [13] plug-ins support.
+- LADSPA [5], DSSI [11], native VST(2), VST3 [12] and LV2 [13] plug-ins support.
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support, including
   native VST FXB/FXP file support.
@@ -145,7 +145,7 @@ The software requirements for build and runtime are listed as follows:
   [11] DSSI, An API for soft synth plugins with custom user interfaces
        http://dssi.sourceforge.net/
 
-  [12] VST SDK, Steinberg's Virtual Studio Technology (see README.VST)
+  [12] VST SDK, Steinberg's Virtual Studio Technology (see README.VST(3))
        https://www.steinberg.net/
 
   [13] LV2, Audio Plugin Standard, the extensible successor of LADSPA
