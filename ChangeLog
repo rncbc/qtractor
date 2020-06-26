@@ -4,23 +4,23 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.15  2020-06-27  An Early-Summer'20 Release.
 
 - Fixed MIDI tracks export that were missing the end-of-export tail
   parameter and bailing out always with default SMF format anyway.
 
-- Fixed VST3 component/controller inter-connection. (EXPERIMENTAL)
+- Fixed VST3 component/controller inter-connection.
 
 - LV2 Atom/Port-event host notification support has been retouched,
-  but still unofficial though. (EXPERIMENTAL)
+  but still unofficial though.
 
 - Fixed VST3 audio-processor initialization/activation when a plugin
-  has no inputs or outputs present. (EXPERIMENTAL)
+  has no inputs or outputs present.
 
 - Let main window pseudo-asynchronous stabilization re. menus, tools
-  and status bars, just faster and immediate. (EXPERIMENTAL)
+  and status bars, just faster and immediate.
 
-- Fixed MIDI track monitor reinstantiation and reset. (EXPERIMENTAL)
+- Fixed MIDI track monitor reinstantiation and reset.
 
 
 0.9.14  2020-05-07  A Mid-Spring'20 Release.
