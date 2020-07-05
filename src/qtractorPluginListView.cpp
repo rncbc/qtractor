@@ -1551,7 +1551,11 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 
 	qtractorPluginListItem *pDropItem
 		= static_cast<qtractorPluginListItem *> (
+		#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+			QListWidget::itemAt(pDropEvent->position().toPoint()));
+		#else
 			QListWidget::itemAt(pDropEvent->pos()));
+		#endif
 	if (pDropItem && pDropItem != m_pDropItem)
 		ensureVisibleItem(pDropItem);
 
@@ -1673,11 +1677,19 @@ void qtractorPluginListView::dropEvent ( QDropEvent *pDropEvent )
 	// If we aren't in the same list,
 	// or care for keyboard modifiers...
 	if (((m_pDragItem->plugin())->list() == m_pPluginList) ||
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		(pDropEvent->modifiers() & Qt::ShiftModifier)) {
+	#else
 		(pDropEvent->keyboardModifiers() & Qt::ShiftModifier)) {
+	#endif
 		dropMove();
 	}
 	else
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	if (pDropEvent->modifiers() & Qt::ControlModifier) {
+#else
 	if (pDropEvent->keyboardModifiers() & Qt::ControlModifier) {
+#endif
 		dropCopy();
 	} else {
 		// We'll better have a drop menu...
@@ -1687,7 +1699,11 @@ void qtractorPluginListView::dropEvent ( QDropEvent *pDropEvent )
 		menu.addSeparator();
 		menu.addAction(QIcon(":/images/formReject.png"),
 			tr("C&ancel"), this, SLOT(dropCancel()));
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		menu.exec(QListWidget::mapToGlobal(pDropEvent->position().toPoint()));
+	#else
 		menu.exec(QListWidget::mapToGlobal(pDropEvent->pos()));
+	#endif
 	}
 
 	dragLeaveEvent(nullptr);

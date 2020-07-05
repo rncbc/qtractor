@@ -1762,7 +1762,11 @@ void qtractorTrackList::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 {
 	// Now set ready for drag something...
 	const QPoint& pos
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		= qtractorScrollView::viewportToContents(pDragMoveEvent->position().toPoint());
+	#else
 		= qtractorScrollView::viewportToContents(pDragMoveEvent->pos());
+	#endif
 
 	// Select current track...
 	const int iTrack = trackRowAt(pos);

@@ -201,7 +201,11 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 		SLOT(playSlot(bool)));
 
 	QObject::connect(m_pRootPathComboBox,
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+		SIGNAL(textActivated(const QString&)),
+	#else
 		SIGNAL(activated(const QString&)),
+	#endif
 		SLOT(rootPathActivated(const QString&)));
 	QObject::connect(m_pFileSystemTreeView,
 		SIGNAL(doubleClicked(const QModelIndex&)),

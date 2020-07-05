@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed deprecated stuff on an early preparation for Qt6.
+
+
 0.9.15  2020-06-27  An Early-Summer'20 Release.
 
 - Fixed MIDI tracks export that were missing the end-of-export tail

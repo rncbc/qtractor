@@ -36,9 +36,11 @@ VST3SDK = @ac_vst3sdk@
 
 # X11 support
 unix:!macx {
-	QX11EXTRAS = @ac_qx11extras@
-	!isEmpty(QX11EXTRAS) {
-		QT += x11extras
+	lessThan(QT_MAJOR_VERSION, 6) {
+		QX11EXTRAS = @ac_qx11extras@
+		!isEmpty(QX11EXTRAS) {
+			QT += x11extras
+		}
 	}
 }
 

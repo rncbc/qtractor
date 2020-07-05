@@ -2,7 +2,7 @@ project(QTRACTOR)
 
 cmake_minimum_required(VERSION 3.1)
 
-set (VERSION "0.9.15")
+set (VERSION "0.9.16")
 
 set (CONFIG_VERSION ${VERSION})
 execute_process (
