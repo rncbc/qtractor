@@ -27,7 +27,7 @@
     <x>0</x>
     <y>0</y>
     <width>520</width>
-    <height>480</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -3470,22 +3470,6 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="0" colspan="2">
-           <widget class="QCheckBox" name="DummyPluginScanCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to use out-of-process plugin inventory scan and cache for persistence</string>
-            </property>
-            <property name="text">
-             <string>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -3676,22 +3660,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="Lv2DynManifestCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether LV2 Dynamic Manifest plugins are supported</string>
-            </property>
-            <property name="text">
-             <string>LV2 Dy&amp;namic Manifest support</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>

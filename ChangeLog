@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Both out-of-process plugin inventory scan and LV2 Dynamic manifest
+  options have been removed from View > Options... > Plugins dialog.
+
 - Fixed deprecated stuff on an early preparation for Qt6.
 
 
