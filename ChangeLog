@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Make sure LV2 plug-in UI GTK2 and X11 native support is selected
+  first by default on top to libsuil. (EXPERIMENTAL)
+
 - Both out-of-process plugin inventory scan and LV2 Dynamic manifest
   options have been removed from View > Options... > Plugins dialog.
 

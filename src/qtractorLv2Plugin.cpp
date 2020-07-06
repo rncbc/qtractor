@@ -3130,20 +3130,21 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (m_lv2_uis == nullptr)
 		return;
 
+	// Make sure native UIs gets top priority...
 	struct ui_key
 	{
 		ui_key (int type = LV2_UI_TYPE_NONE)
 		{
 			if (type >= LV2_UI_TYPE_NATIVE)
-				ukey = ((type - LV2_UI_TYPE_NATIVE) << 1) | 1;
+				ukey = ((type - LV2_UI_TYPE_NATIVE) << 1);
 			else
-				ukey = (type << 1);
+				ukey = (type << 1) | 1;
 		}
 
 		int ui_type () const
 		{
 			int type = (ukey >> 1);
-			if (ukey & 1)
+			if ((ukey & 1) == 0)
 				type += LV2_UI_TYPE_NATIVE;
 			return type;
 		}
