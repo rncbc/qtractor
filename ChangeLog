@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- When enabled, do auto-save upon adding or inserting a new plugin.
+  (EXPERIMENTAL)
+
 - Make sure LV2 plug-in UI GTK2 and X11 native support is selected
   first by default on top to libsuil. (EXPERIMENTAL)
 

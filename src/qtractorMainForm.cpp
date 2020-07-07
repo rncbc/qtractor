@@ -2971,6 +2971,18 @@ QString qtractorMainForm::sessionDir ( const QString& sFilename ) const
 }
 
 
+// Execute auto-save as soon as possible (quasi-immediately please).
+void qtractorMainForm::autoSaveAsap (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMainForm::autoSaveAsap()");
+#endif
+
+	if (m_pOptions->bAutoSaveEnabled)
+		m_iAutoSaveTimer = m_iAutoSavePeriod;
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- File Action slots.
 

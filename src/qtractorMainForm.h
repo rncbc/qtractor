@@ -298,6 +298,8 @@ public slots:
 	void updateNotifySlot(unsigned int flags);
 	void dirtyNotifySlot();
 
+	void autoSaveAsap();
+
 protected slots:
 
 	void fastTimerSlot();

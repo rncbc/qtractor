@@ -514,6 +514,10 @@ void qtractorPluginListView::addPlugin (void)
 	if (m_pPluginList == nullptr)
 		return;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->autoSaveAsap();
+
 	qtractorPluginSelectForm selectForm(this);
 	selectForm.setPluginList(m_pPluginList);
 	if (!selectForm.exec())
