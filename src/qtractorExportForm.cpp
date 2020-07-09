@@ -222,8 +222,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	m_ui.ExportBusNameListBox->clear();
 	if (pEngine) {
 		QDialog::setWindowIcon(icon);
-		QDialog::setWindowTitle(
-			tr("Export %1").arg(m_sExportType));
+		QDialog::setWindowTitle(windowTitleEx(m_sExportType));
 		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Output)
@@ -257,224 +256,6 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 qtractorTrack::TrackType qtractorExportForm::exportType (void) const
 {
 	return m_exportType;
-}
-
-
-// Accept settings (OK button slot).
-void qtractorExportForm::accept (void)
-{
-	// Must always be a export bus target...
-	const QList<QListWidgetItem *>& exportBusNameItems
-		= m_ui.ExportBusNameListBox->selectedItems();
-	if (exportBusNameItems.isEmpty())
-		return;
-
-	// Enforce (again) default file extension...
-	QString sExportPath = m_ui.ExportPathComboBox->currentText();
-
-	if (QFileInfo(sExportPath).suffix().isEmpty())
-		sExportPath += '.' + m_sExportExt;
-
-	// Check (again) wether the file already exists...
-	if (QFileInfo(sExportPath).exists()) {
-		if (QMessageBox::warning(this,
-			tr("Warning"),
-			tr("The file already exists:\n\n"
-			"\"%1\"\n\n"
-			"Do you want to replace it?")
-			.arg(sExportPath),
-			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
-			m_ui.ExportPathComboBox->setFocus();
-			return;
-		}
-	}
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return;
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == nullptr)
-		return;
-
-	// It can take a minute...
-	m_ui.ExportPathTextLabel->setEnabled(false);
-	m_ui.ExportPathComboBox->setEnabled(false);
-	m_ui.ExportPathToolButton->setEnabled(false);
-	m_ui.ExportTypeWidget->setEnabled(false);
-	m_ui.ExportBusGroupBox->setEnabled(false);
-	m_ui.ExportRangeGroupBox->setEnabled(false);
-	m_ui.FormatGroupBox->setEnabled(false);
-	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-
-	// Carry on...
-	switch (m_exportType) {
-	case qtractorTrack::Audio: {
-		// Audio file export...
-		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-		if (pAudioEngine) {
-			// Get the export buses by name...
-			QList<qtractorAudioBus *> exportBuses;
-			QListIterator<QListWidgetItem *> iter(exportBusNameItems);
-			while (iter.hasNext()) {
-				qtractorAudioBus *pExportBus
-					= static_cast<qtractorAudioBus *> (
-						pAudioEngine->findOutputBus(iter.next()->text()));
-				if (pExportBus)
-					exportBuses.append(pExportBus);
-			}
-			// Log this event...
-			pMainForm->appendMessages(
-				tr("Audio file export: \"%1\" started...")
-				.arg(sExportPath));
-			// Do the export as commanded...
-			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-			// Go...
-			const bool bResult = pAudioEngine->fileExport(
-				sExportPath, exportBuses,
-				m_ui.ExportStartSpinBox->value(),
-				m_ui.ExportEndSpinBox->value(),
-				audioExportFormat());
-			// Done.
-			QApplication::restoreOverrideCursor();
-			if (bResult) {
-				// Add new tracks if necessary...
-				qtractorTracks *pTracks = pMainForm->tracks();
-				if (pTracks && m_ui.AddTrackCheckBox->isChecked()) {
-					pTracks->addAudioTracks(
-						QStringList(sExportPath),
-						pAudioEngine->exportStart(),
-						pAudioEngine->exportOffset(),
-						pAudioEngine->exportLength(),
-						pTracks->currentTrack());
-				}
-				else pMainForm->addAudioFile(sExportPath);
-				// Log the success...
-				pMainForm->appendMessages(
-					tr("Audio file export: \"%1\" complete.")
-					.arg(sExportPath));
-			} else {
-				// Log the failure...
-				pMainForm->appendMessagesError(
-					tr("Audio file export:\n\n\"%1\"\n\nfailed.")
-					.arg(sExportPath));
-			}
-			// HACK: Reset all (internal) MIDI controllers...
-			qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-			if (pMidiEngine)
-				pMidiEngine->resetAllControllers(true); // Force immediate.
-		}
-		break;
-	}
-	case qtractorTrack::Midi: {
-		// MIDI file export...
-		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-		if (pMidiEngine) {
-			// Get the export buses by name...
-			QList<qtractorMidiBus *> exportBuses;
-			QListIterator<QListWidgetItem *> iter(exportBusNameItems);
-			while (iter.hasNext()) {
-				qtractorMidiBus *pExportBus
-					= static_cast<qtractorMidiBus *> (
-						pMidiEngine->findOutputBus(iter.next()->text()));
-				if (pExportBus)
-					exportBuses.append(pExportBus);
-			}
-			// Log this event...
-			pMainForm->appendMessages(
-				tr("MIDI file export: \"%1\" started...")
-				.arg(sExportPath));
-			// Do the export as commanded...
-			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-			// Go...
-			const bool bResult = pMidiEngine->fileExport(
-				sExportPath, exportBuses,
-				m_ui.ExportStartSpinBox->value(),
-				m_ui.ExportEndSpinBox->value(),
-				midiExportFormat());
-			// Done.
-			QApplication::restoreOverrideCursor();
-			if (bResult) {
-				// Add new tracks if necessary...
-				qtractorTracks *pTracks = pMainForm->tracks();
-				if (pTracks && m_ui.AddTrackCheckBox->isChecked()) {
-					pTracks->addMidiTracks(
-						QStringList(sExportPath),
-						m_ui.ExportStartSpinBox->value(),
-						pTracks->currentTrack());
-				}
-				else pMainForm->addMidiFile(sExportPath);
-				// Log the success...
-				pMainForm->appendMessages(
-					tr("MIDI file export: \"%1\" complete.")
-					.arg(sExportPath));
-			} else {
-				// Log the failure...
-				pMainForm->appendMessagesError(
-					tr("MIDI file export:\n\n\"%1\"\n\nfailed.")
-					.arg(sExportPath));
-			}
-		}
-		break;
-	}
-	case qtractorTrack::None:
-	default:
-		break;
-	}
-
-	// Save other conveniency options...
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions) {
-		pOptions->saveComboBoxHistory(m_ui.ExportPathComboBox);
-		pOptions->bExportAddTrack = m_ui.AddTrackCheckBox->isChecked();
-		switch (m_exportType) {
-		case qtractorTrack::Audio: {
-			// Audio options...
-			const void *handle = m_ui.AudioExportTypeComboBox->currentHandle();
-			pOptions->sAudioExportExt = m_ui.AudioExportTypeComboBox->currentExt(handle);;
-			pOptions->iAudioExportType = m_ui.AudioExportTypeComboBox->currentType(handle);
-			pOptions->iAudioExportFormat = m_ui.AudioExportFormatComboBox->currentIndex();
-			pOptions->iAudioExportQuality = m_ui.AudioExportQualitySpinBox->value();
-			break;
-		}
-		case qtractorTrack::Midi:
-			// MIDI options...
-			pOptions->iMidiExportFormat = m_ui.MidiExportFormatComboBox->currentIndex();
-			// Fall-thu...
-		case qtractorTrack::None:
-		default:
-			break;
-		}
-	}
-
-	// Just go with dialog acceptance.
-	QDialog::accept();
-}
-
-
-// Reject settings (Cancel button slot).
-void qtractorExportForm::reject (void)
-{
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession) {
-		// It can take a minute...
-		m_ui.DialogButtonBox->button(QDialogButtonBox::Cancel)->setEnabled(false);
-		switch (m_exportType) {
-		case qtractorTrack::Audio: {
-			// Audio file export...
-			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-			if (pAudioEngine)
-				pAudioEngine->setExporting(false);
-			break;
-		}
-		case qtractorTrack::Midi:
-		default:
-			break;
-		}
-	}
-
-	// Bail out...
-	QDialog::reject();
 }
 
 
@@ -775,6 +556,265 @@ int qtractorExportForm::midiExportFormat (void) const
 	return m_ui.MidiExportFormatComboBox->currentIndex();
 }
 
+
+//----------------------------------------------------------------------------
+// qtractorExportTrackForm -- UI wrapper form.
+
+// Constructor.
+qtractorExportTrackForm::qtractorExportTrackForm ( QWidget *pParent )
+	: qtractorExportForm(pParent)
+{
+}
+
+// Destructor.
+qtractorExportTrackForm::~qtractorExportTrackForm (void)
+{
+}
+
+// Make up window/dialog title.
+QString qtractorExportTrackForm::windowTitleEx ( const QString& sExportType ) const
+{
+	return tr("Export %1 Tracks").arg(sExportType);
+}
+
+
+// Executive slots -- accept settings (OK button slot).
+void qtractorExportTrackForm::accept (void)
+{
+	// Must always be a export bus target...
+	const QList<QListWidgetItem *>& exportBusNameItems
+		= m_ui.ExportBusNameListBox->selectedItems();
+	if (exportBusNameItems.isEmpty())
+		return;
+
+	// Enforce (again) default file extension...
+	QString sExportPath = m_ui.ExportPathComboBox->currentText();
+
+	if (QFileInfo(sExportPath).suffix().isEmpty())
+		sExportPath += '.' + m_sExportExt;
+
+	// Check (again) wether the file already exists...
+	if (QFileInfo(sExportPath).exists()) {
+		if (QMessageBox::warning(this,
+			tr("Warning"),
+			tr("The file already exists:\n\n"
+			"\"%1\"\n\n"
+			"Do you want to replace it?")
+			.arg(sExportPath),
+			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel) {
+			m_ui.ExportPathComboBox->setFocus();
+			return;
+		}
+	}
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm == nullptr)
+		return;
+
+	// It can take a minute...
+	m_ui.ExportPathTextLabel->setEnabled(false);
+	m_ui.ExportPathComboBox->setEnabled(false);
+	m_ui.ExportPathToolButton->setEnabled(false);
+	m_ui.ExportTypeWidget->setEnabled(false);
+	m_ui.ExportBusGroupBox->setEnabled(false);
+	m_ui.ExportRangeGroupBox->setEnabled(false);
+	m_ui.FormatGroupBox->setEnabled(false);
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
+	// Carry on...
+	switch (m_exportType) {
+	case qtractorTrack::Audio: {
+		// Audio file export...
+		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine) {
+			// Get the export buses by name...
+			QList<qtractorAudioBus *> exportBuses;
+			QListIterator<QListWidgetItem *> iter(exportBusNameItems);
+			while (iter.hasNext()) {
+				qtractorAudioBus *pExportBus
+					= static_cast<qtractorAudioBus *> (
+						pAudioEngine->findOutputBus(iter.next()->text()));
+				if (pExportBus)
+					exportBuses.append(pExportBus);
+			}
+			// Log this event...
+			pMainForm->appendMessages(
+				tr("Audio file export: \"%1\" started...")
+				.arg(sExportPath));
+			// Do the export as commanded...
+			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+			// Go...
+			const bool bResult = pAudioEngine->fileExport(
+				sExportPath, exportBuses,
+				m_ui.ExportStartSpinBox->value(),
+				m_ui.ExportEndSpinBox->value(),
+				audioExportFormat());
+			// Done.
+			QApplication::restoreOverrideCursor();
+			if (bResult) {
+				// Add new tracks if necessary...
+				qtractorTracks *pTracks = pMainForm->tracks();
+				if (pTracks && m_ui.AddTrackCheckBox->isChecked()) {
+					pTracks->addAudioTracks(
+						QStringList(sExportPath),
+						pAudioEngine->exportStart(),
+						pAudioEngine->exportOffset(),
+						pAudioEngine->exportLength(),
+						pTracks->currentTrack());
+				}
+				else pMainForm->addAudioFile(sExportPath);
+				// Log the success...
+				pMainForm->appendMessages(
+					tr("Audio file export: \"%1\" complete.")
+					.arg(sExportPath));
+			} else {
+				// Log the failure...
+				pMainForm->appendMessagesError(
+					tr("Audio file export:\n\n\"%1\"\n\nfailed.")
+					.arg(sExportPath));
+			}
+			// HACK: Reset all (internal) MIDI controllers...
+			qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+			if (pMidiEngine)
+				pMidiEngine->resetAllControllers(true); // Force immediate.
+		}
+		break;
+	}
+	case qtractorTrack::Midi: {
+		// MIDI file export...
+		qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+		if (pMidiEngine) {
+			// Get the export buses by name...
+			QList<qtractorMidiBus *> exportBuses;
+			QListIterator<QListWidgetItem *> iter(exportBusNameItems);
+			while (iter.hasNext()) {
+				qtractorMidiBus *pExportBus
+					= static_cast<qtractorMidiBus *> (
+						pMidiEngine->findOutputBus(iter.next()->text()));
+				if (pExportBus)
+					exportBuses.append(pExportBus);
+			}
+			// Log this event...
+			pMainForm->appendMessages(
+				tr("MIDI file export: \"%1\" started...")
+				.arg(sExportPath));
+			// Do the export as commanded...
+			QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+			// Go...
+			const bool bResult = pMidiEngine->fileExport(
+				sExportPath, exportBuses,
+				m_ui.ExportStartSpinBox->value(),
+				m_ui.ExportEndSpinBox->value(),
+				midiExportFormat());
+			// Done.
+			QApplication::restoreOverrideCursor();
+			if (bResult) {
+				// Add new tracks if necessary...
+				qtractorTracks *pTracks = pMainForm->tracks();
+				if (pTracks && m_ui.AddTrackCheckBox->isChecked()) {
+					pTracks->addMidiTracks(
+						QStringList(sExportPath),
+						m_ui.ExportStartSpinBox->value(),
+						pTracks->currentTrack());
+				}
+				else pMainForm->addMidiFile(sExportPath);
+				// Log the success...
+				pMainForm->appendMessages(
+					tr("MIDI file export: \"%1\" complete.")
+					.arg(sExportPath));
+			} else {
+				// Log the failure...
+				pMainForm->appendMessagesError(
+					tr("MIDI file export:\n\n\"%1\"\n\nfailed.")
+					.arg(sExportPath));
+			}
+		}
+		break;
+	}
+	case qtractorTrack::None:
+	default:
+		break;
+	}
+
+	// Save other conveniency options...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions) {
+		pOptions->saveComboBoxHistory(m_ui.ExportPathComboBox);
+		pOptions->bExportAddTrack = m_ui.AddTrackCheckBox->isChecked();
+		switch (m_exportType) {
+		case qtractorTrack::Audio: {
+			// Audio options...
+			const void *handle = m_ui.AudioExportTypeComboBox->currentHandle();
+			pOptions->sAudioExportExt = m_ui.AudioExportTypeComboBox->currentExt(handle);;
+			pOptions->iAudioExportType = m_ui.AudioExportTypeComboBox->currentType(handle);
+			pOptions->iAudioExportFormat = m_ui.AudioExportFormatComboBox->currentIndex();
+			pOptions->iAudioExportQuality = m_ui.AudioExportQualitySpinBox->value();
+			break;
+		}
+		case qtractorTrack::Midi:
+			// MIDI options...
+			pOptions->iMidiExportFormat = m_ui.MidiExportFormatComboBox->currentIndex();
+			// Fall-thu...
+		case qtractorTrack::None:
+		default:
+			break;
+		}
+	}
+
+	// Just go with dialog acceptance.
+	qtractorExportForm::accept();
+}
+
+
+// Executive slots -- reject settings (Cancel button slot).
+void qtractorExportTrackForm::reject (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession) {
+		// It can take a minute...
+		m_ui.DialogButtonBox->button(QDialogButtonBox::Cancel)->setEnabled(false);
+		switch (m_exportType) {
+		case qtractorTrack::Audio: {
+			// Audio file export...
+			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+			if (pAudioEngine)
+				pAudioEngine->setExporting(false);
+			break;
+		}
+		case qtractorTrack::Midi:
+		default:
+			break;
+		}
+	}
+
+	// Bail out...
+	qtractorExportForm::reject();
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorExportClipForm -- UI wrapper form.
+
+// Constructor.
+qtractorExportClipForm::qtractorExportClipForm ( QWidget *pParent )
+	: qtractorExportForm(pParent)
+{
+}
+
+// Destructor.
+qtractorExportClipForm::~qtractorExportClipForm (void)
+{
+}
+
+// Make up window/dialog title.
+QString qtractorExportClipForm::windowTitleEx ( const QString& sExportType ) const
+{
+	return tr("Export %1 Clips").arg(sExportType);
+}
 
 
 // end of qtractorExportForm.cpp

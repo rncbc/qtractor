@@ -39,15 +39,15 @@ public:
 	// Constructor.
 	qtractorExportForm(QWidget *pParent = nullptr);
 	// Destructor.
-	~qtractorExportForm();
+	virtual ~qtractorExportForm();
 
 	void setExportType(qtractorTrack::TrackType exportType);
 	qtractorTrack::TrackType exportType() const;
 
-protected slots:
+	// Make up window/dialog title (pure virtual).
+	virtual QString windowTitleEx(const QString& sExportType) const = 0;
 
-	void accept();
-	void reject();
+protected slots:
 
 	void exportPathChanged(const QString&);
 	void exportPathClicked();
@@ -67,8 +67,6 @@ protected:
 	int audioExportFormat() const;
 	int midiExportFormat() const;
 
-private:
-
 	// The Qt-designer UI struct...
 	Ui::qtractorExportForm m_ui;
 
@@ -79,6 +77,50 @@ private:
 	QString m_sExportExt;
 
 	qtractorTimeScale *m_pTimeScale;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorExportTrackForm -- UI wrapper form.
+
+class qtractorExportTrackForm : public qtractorExportForm
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorExportTrackForm(QWidget *pParent = nullptr);
+	// Destructor.
+	~qtractorExportTrackForm();
+
+	// Make up window/dialog title.
+	QString windowTitleEx(const QString& sExportType) const;
+
+protected slots:
+
+	// Executive slots.
+	void accept();
+	void reject();
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorExportClipForm -- UI wrapper form.
+
+class qtractorExportClipForm : public qtractorExportForm
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorExportClipForm(QWidget *pParent = nullptr);
+	// Destructor.
+	~qtractorExportClipForm();
+
+	// Make up window/dialog title.
+	QString windowTitleEx(const QString& sExportType) const;
 };
 
 

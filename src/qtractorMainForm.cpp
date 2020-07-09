@@ -3887,7 +3887,7 @@ void qtractorMainForm::trackExportAudio (void)
 	const bool bAutoDeactivate = m_pSession->isAutoDeactivate();
 	m_pSession->setAutoDeactivate(false);
 
-	qtractorExportForm exportForm(this);
+	qtractorExportTrackForm exportForm(this);
 	exportForm.setExportType(qtractorTrack::Audio);
 	exportForm.exec();
 
@@ -3902,7 +3902,7 @@ void qtractorMainForm::trackExportMidi (void)
 	qDebug("qtractorMainForm::trackExportMidi()");
 #endif
 
-	qtractorExportForm exportForm(this);
+	qtractorExportTrackForm exportForm(this);
 	exportForm.setExportType(qtractorTrack::Midi);
 	exportForm.exec();
 }
