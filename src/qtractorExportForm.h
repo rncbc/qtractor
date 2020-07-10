@@ -41,11 +41,11 @@ public:
 	// Destructor.
 	virtual ~qtractorExportForm();
 
+	void setExportTitle(const QString& sExportTitle);
+	const QString& exportTitle() const;
+
 	void setExportType(qtractorTrack::TrackType exportType);
 	qtractorTrack::TrackType exportType() const;
-
-	// Make up window/dialog title (pure virtual).
-	virtual QString windowTitleEx(const QString& sExportType) const = 0;
 
 protected slots:
 
@@ -58,9 +58,14 @@ protected slots:
 	void formatChanged(int);
 	void valueChanged();
 
-	void stabilizeForm();
+	virtual void stabilizeForm();
 
 protected:
+
+	// Make up window/dialog title (pure virtual).
+	virtual QString windowTitleEx(
+		const QString& sExportTitle,
+		const QString& sExportType) const = 0;
 
 	void audioExportTypeUpdate(int iIndex);
 
@@ -73,6 +78,7 @@ protected:
 	// Instance variables...
 	qtractorTrack::TrackType m_exportType;
 
+	QString m_sExportTitle;
 	QString m_sExportType;
 	QString m_sExportExt;
 
@@ -94,14 +100,20 @@ public:
 	// Destructor.
 	~qtractorExportTrackForm();
 
-	// Make up window/dialog title.
-	QString windowTitleEx(const QString& sExportType) const;
-
 protected slots:
 
 	// Executive slots.
 	void accept();
 	void reject();
+
+	void stabilizeForm();
+
+protected:
+
+	// Make up window/dialog title (pure virtual).
+	QString windowTitleEx(
+		const QString& sExportTitle,
+		const QString& sExportType) const;
 };
 
 
@@ -119,8 +131,16 @@ public:
 	// Destructor.
 	~qtractorExportClipForm();
 
-	// Make up window/dialog title.
-	QString windowTitleEx(const QString& sExportType) const;
+	// Settle/retrieve the export path.
+	void setExportPath(const QString& sExportPath);
+	QString exportPath() const;
+
+protected:
+
+	// Make up window/dialog title (pure virtual).
+	QString windowTitleEx(
+		const QString& sExportTitle,
+		const QString& sExportType) const;
 };
 
 

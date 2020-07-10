@@ -57,6 +57,9 @@ qtractorExportForm::qtractorExportForm ( QWidget *pParent )
 	m_exportType = qtractorTrack::None;
 	m_pTimeScale = nullptr;
 
+	// Deafult title prefix.
+	m_sExportTitle = tr("Export");
+
 	// Try to restore old window positioning.
 	m_ui.ExportTypeWidget->hide();
 //	adjustSize();
@@ -127,6 +130,18 @@ qtractorExportForm::~qtractorExportForm (void)
 	// Don't forget to get rid of local time-scale instance...
 	if (m_pTimeScale)
 		delete m_pTimeScale;
+}
+
+
+// Default window title (prefix).
+void qtractorExportForm::setExportTitle ( const QString& sExportTitle )
+{
+	m_sExportTitle = sExportTitle;
+}
+
+const QString& qtractorExportForm::exportTitle (void) const
+{
+	return m_sExportTitle;
 }
 
 
@@ -222,7 +237,8 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	m_ui.ExportBusNameListBox->clear();
 	if (pEngine) {
 		QDialog::setWindowIcon(icon);
-		QDialog::setWindowTitle(windowTitleEx(m_sExportType));
+		QDialog::setWindowTitle(
+			windowTitleEx(m_sExportTitle, m_sExportType));
 		for (qtractorBus *pBus = pEngine->buses().first();
 				pBus; pBus = pBus->next()) {
 			if (pBus->busMode() & qtractorBus::Output)
@@ -244,7 +260,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	// Shake it a little bit first, but
 	// make it as tight as possible...
 	m_ui.ExportTypeWidget->show();
-	resize(width() - 1, height() - 1);
+	QDialog::resize(width() - 1, height() - 1);
 //	adjustSize();
 
 	// Done.
@@ -461,16 +477,11 @@ void qtractorExportForm::formatChanged ( int iDisplayFormat )
 // Stabilize current form state.
 void qtractorExportForm::stabilizeForm (void)
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return;
-
 	// General options validy check...
-	const QString& sExportPath = m_ui.ExportPathComboBox->currentText();
+	const QString& sExportPath
+		= m_ui.ExportPathComboBox->currentText();
 	bool bValid = !sExportPath.isEmpty() &&
-		QFileInfo(sExportPath).dir().exists() &&
-		m_ui.ExportBusNameListBox->currentItem() != nullptr &&
-		m_ui.ExportStartSpinBox->value() < m_ui.ExportEndSpinBox->value();
+		QFileInfo(sExportPath).dir().exists();
 
 	// Audio options stabilizing and validy check...
 	if (m_exportType == qtractorTrack::Audio) {
@@ -492,18 +503,6 @@ void qtractorExportForm::stabilizeForm (void)
 			bValid = qtractorAudioFileFactory::isValidFormat(pFormat, iFormat);
 		}
 	}
-
-	// Range options stabilizing...
-	m_ui.LoopRangeRadioButton->setEnabled(pSession->isLooping());
-	m_ui.PunchRangeRadioButton->setEnabled(pSession->isPunching());
-	m_ui.EditRangeRadioButton->setEnabled(
-		pSession->editHead() < pSession->editTail());
-
-	const unsigned long iExportStart = m_ui.ExportStartSpinBox->value();
-	const unsigned long iExportEnd = m_ui.ExportEndSpinBox->value();
-
-	m_ui.ExportStartSpinBox->setMaximum(iExportEnd);
-	m_ui.ExportEndSpinBox->setMinimum(iExportStart);
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }
@@ -566,15 +565,48 @@ qtractorExportTrackForm::qtractorExportTrackForm ( QWidget *pParent )
 {
 }
 
+
 // Destructor.
 qtractorExportTrackForm::~qtractorExportTrackForm (void)
 {
 }
 
+
 // Make up window/dialog title.
-QString qtractorExportTrackForm::windowTitleEx ( const QString& sExportType ) const
+QString qtractorExportTrackForm::windowTitleEx (
+	const QString& sExportTitle, const QString& sExportType ) const
 {
-	return tr("Export %1 Tracks").arg(sExportType);
+	return tr("%1 %2 Tracks").arg(sExportTitle).arg(sExportType);
+}
+
+
+// Stabilize current form state.
+void qtractorExportTrackForm::stabilizeForm (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	// Range options stabilizing...
+	m_ui.LoopRangeRadioButton->setEnabled(pSession->isLooping());
+	m_ui.PunchRangeRadioButton->setEnabled(pSession->isPunching());
+	m_ui.EditRangeRadioButton->setEnabled(
+		pSession->editHead() < pSession->editTail());
+
+	const unsigned long iExportStart = m_ui.ExportStartSpinBox->value();
+	const unsigned long iExportEnd = m_ui.ExportEndSpinBox->value();
+
+	m_ui.ExportStartSpinBox->setMaximum(iExportEnd);
+	m_ui.ExportEndSpinBox->setMinimum(iExportStart);
+
+	qtractorExportForm::stabilizeForm();
+
+	QPushButton *pPushButton = m_ui.DialogButtonBox->button(QDialogButtonBox::Ok);
+	if (pPushButton && pPushButton->isEnabled()) {
+		pPushButton->setEnabled(
+			m_ui.ExportBusNameListBox->currentItem() != nullptr &&
+			m_ui.ExportStartSpinBox->value() < m_ui.ExportEndSpinBox->value());
+	}
 }
 
 
@@ -803,17 +835,46 @@ void qtractorExportTrackForm::reject (void)
 qtractorExportClipForm::qtractorExportClipForm ( QWidget *pParent )
 	: qtractorExportForm(pParent)
 {
+	// Hide and disable all unecessary stuff.
+	m_ui.ExportRangeGroupBox->setEnabled(false);
+	m_ui.ExportRangeGroupBox->setVisible(false);
+
+	m_ui.ExportBusGroupBox->setEnabled(false);
+	m_ui.ExportBusGroupBox->setVisible(false);
+
+	m_ui.FormatGroupBox->setEnabled(false);
+	m_ui.FormatGroupBox->setVisible(false);
+
+	m_ui.AddTrackCheckBox->setEnabled(false);
+	m_ui.AddTrackCheckBox->setVisible(false);
+
+	adjustSize();
 }
+
 
 // Destructor.
 qtractorExportClipForm::~qtractorExportClipForm (void)
 {
 }
 
+
 // Make up window/dialog title.
-QString qtractorExportClipForm::windowTitleEx ( const QString& sExportType ) const
+QString qtractorExportClipForm::windowTitleEx (
+	const QString& sExportTitle, const QString& sExportType ) const
 {
-	return tr("Export %1 Clips").arg(sExportType);
+	return tr("%1 %2 Clips").arg(sExportTitle).arg(sExportType);
+}
+
+
+// Settle/retrieve the export path.
+void qtractorExportClipForm::setExportPath ( const QString& sExportPath )
+{
+	m_ui.ExportPathComboBox->setCurrentText(sExportPath);
+}
+
+QString qtractorExportClipForm::exportPath (void) const
+{
+	return m_ui.ExportPathComboBox->currentText();
 }
 
 

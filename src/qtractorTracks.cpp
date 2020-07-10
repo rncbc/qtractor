@@ -52,6 +52,8 @@
 #include "qtractorTrackForm.h"
 #include "qtractorClipForm.h"
 
+#include "qtractorExportForm.h"
+
 #include "qtractorPasteRepeatForm.h"
 #include "qtractorTempoAdjustForm.h"
 
@@ -1196,6 +1198,17 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	if (pAudioBus == nullptr)
 		return false;
 
+#if 1//QTRACTOR_EXPORT_CLIP_FORM
+	qtractorExportClipForm exportForm(this);
+	exportForm.setExportTitle(tr("Merge/Export"));
+	exportForm.setExportType(qtractorTrack::Audio);
+	const QString& sExt = qtractorAudioFileFactory::defaultExt();
+	QString sFilename = pSession->createFilePath(pTrack->trackName(), sExt);
+	exportForm.setExportPath(sFilename);
+	if (!exportForm.exec())
+		return false;
+	sFilename = exportForm.exportPath();
+#else
 	const QString& sExt
 		= qtractorAudioFileFactory::defaultExt();
 	const QString& sTitle
@@ -1235,6 +1248,8 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 		return false;
 	QString sFilename = fileDialog.selectedFiles().first();
 #endif
+#endif	// !QTRACTOR_EXPORT_CLIP_FORM
+
 	if (sFilename.isEmpty() || sFilename.at(0) == '.')
 		return false;
 	if (QFileInfo(sFilename).suffix().isEmpty())
@@ -1466,16 +1481,25 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	if (pSession == nullptr)
 		return false;
 
+#if 1//QTRACTOR_EXPORT_CLIP_FORM
+	qtractorExportClipForm exportForm(this);
+	exportForm.setExportTitle(tr("Merge/Export"));
+	exportForm.setExportType(qtractorTrack::Midi);
+	const QString& sExt("mid");
+	QString sFilename = pSession->createFilePath(pTrack->trackName(), sExt);
+	exportForm.setExportPath(sFilename);
+	if (!exportForm.exec())
+		return false;
+	sFilename = exportForm.exportPath();
+#else
 	// Merge MIDI Clip filename requester...
 	const QString  sExt("mid");
 	const QString& sTitle
 		= tr("Merge/Export MIDI Clip");
-
 	QStringList filters;
 	filters.append(tr("MIDI files (*.mid *.smf *.midi)"));
 	filters.append(tr("All files (*.*)"));
 	const QString& sFilter = filters.join(";;");
-
 	QWidget *pParentWidget = nullptr;
 	QFileDialog::Options options;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
@@ -1508,6 +1532,8 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		return false;
 	QString sFilename = fileDialog.selectedFiles().first();
 #endif
+#endif	// !QTRACTOR_EXPORT_CLIP_FORM
+
 	if (sFilename.isEmpty() || sFilename.at(0) == '.')
 		return false;
 	if (QFileInfo(sFilename).suffix().isEmpty())
