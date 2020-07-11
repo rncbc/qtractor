@@ -144,7 +144,6 @@ const QString& qtractorExportForm::exportTitle (void) const
 	return m_sExportTitle;
 }
 
-
 // Populate (setup) dialog controls from settings descriptors.
 void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 {
@@ -528,6 +527,13 @@ void qtractorExportForm::audioExportTypeUpdate ( int iIndex )
 }
 
 
+// Retrieve current audio file suffix.
+const QString& qtractorExportForm::exportExt (void) const
+{
+	return m_sExportExt;
+}
+
+
 // Retrieve current aliased file format index...
 int qtractorExportForm::audioExportFormat (void) const
 {
@@ -553,6 +559,36 @@ int qtractorExportForm::midiExportFormat (void) const
 		return -1;
 
 	return m_ui.MidiExportFormatComboBox->currentIndex();
+}
+
+
+// Save export options (settings).
+void qtractorExportForm::saveExportOptions (void)
+{
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == nullptr)
+		return;
+
+	pOptions->saveComboBoxHistory(m_ui.ExportPathComboBox);
+	pOptions->bExportAddTrack = m_ui.AddTrackCheckBox->isChecked();
+	switch (m_exportType) {
+	case qtractorTrack::Audio: {
+		// Audio options...
+		const void *handle = m_ui.AudioExportTypeComboBox->currentHandle();
+		pOptions->sAudioExportExt = m_ui.AudioExportTypeComboBox->currentExt(handle);;
+		pOptions->iAudioExportType = m_ui.AudioExportTypeComboBox->currentType(handle);
+		pOptions->iAudioExportFormat = m_ui.AudioExportFormatComboBox->currentIndex();
+		pOptions->iAudioExportQuality = m_ui.AudioExportQualitySpinBox->value();
+		break;
+	}
+	case qtractorTrack::Midi:
+		// MIDI options...
+		pOptions->iMidiExportFormat = m_ui.MidiExportFormatComboBox->currentIndex();
+		// Fall-thru...
+	case qtractorTrack::None:
+	default:
+		break;
+	}
 }
 
 
@@ -773,29 +809,7 @@ void qtractorExportTrackForm::accept (void)
 	}
 
 	// Save other conveniency options...
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions) {
-		pOptions->saveComboBoxHistory(m_ui.ExportPathComboBox);
-		pOptions->bExportAddTrack = m_ui.AddTrackCheckBox->isChecked();
-		switch (m_exportType) {
-		case qtractorTrack::Audio: {
-			// Audio options...
-			const void *handle = m_ui.AudioExportTypeComboBox->currentHandle();
-			pOptions->sAudioExportExt = m_ui.AudioExportTypeComboBox->currentExt(handle);;
-			pOptions->iAudioExportType = m_ui.AudioExportTypeComboBox->currentType(handle);
-			pOptions->iAudioExportFormat = m_ui.AudioExportFormatComboBox->currentIndex();
-			pOptions->iAudioExportQuality = m_ui.AudioExportQualitySpinBox->value();
-			break;
-		}
-		case qtractorTrack::Midi:
-			// MIDI options...
-			pOptions->iMidiExportFormat = m_ui.MidiExportFormatComboBox->currentIndex();
-			// Fall-thu...
-		case qtractorTrack::None:
-		default:
-			break;
-		}
-	}
+	saveExportOptions();
 
 	// Just go with dialog acceptance.
 	qtractorExportForm::accept();
@@ -875,6 +889,15 @@ void qtractorExportClipForm::setExportPath ( const QString& sExportPath )
 QString qtractorExportClipForm::exportPath (void) const
 {
 	return m_ui.ExportPathComboBox->currentText();
+}
+
+
+// Executive slots -- accept settings (OK button slot).
+void qtractorExportClipForm::accept (void)
+{
+	saveExportOptions();
+
+	qtractorExportForm::accept();
 }
 
 

@@ -41,11 +41,20 @@ public:
 	// Destructor.
 	virtual ~qtractorExportForm();
 
+	// Default window title (prefix).
 	void setExportTitle(const QString& sExportTitle);
 	const QString& exportTitle() const;
 
+	// Populate (setup) dialog controls from settings descriptors.
 	void setExportType(qtractorTrack::TrackType exportType);
 	qtractorTrack::TrackType exportType() const;
+
+	// Retrieve current audio file suffix.
+	const QString& exportExt() const;
+
+	// Retrieve current aliased file format index.
+	int audioExportFormat() const;
+	int midiExportFormat() const;
 
 protected slots:
 
@@ -67,10 +76,11 @@ protected:
 		const QString& sExportTitle,
 		const QString& sExportType) const = 0;
 
+	// Audio file type changed aftermath.
 	void audioExportTypeUpdate(int iIndex);
 
-	int audioExportFormat() const;
-	int midiExportFormat() const;
+	// Save export options (settings).
+	void saveExportOptions();
 
 	// The Qt-designer UI struct...
 	Ui::qtractorExportForm m_ui;
@@ -134,6 +144,11 @@ public:
 	// Settle/retrieve the export path.
 	void setExportPath(const QString& sExportPath);
 	QString exportPath() const;
+
+protected slots:
+
+	// Executive slots.
+	void accept();
 
 protected:
 
