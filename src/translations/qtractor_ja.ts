@@ -2134,7 +2134,11 @@ Do you want to apply the changes?</source>
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ファイルはすでに存在しています:
+
+&quot;%1&quot;
+
+置きかえますか？</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="714"/>

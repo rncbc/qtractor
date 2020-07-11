@@ -2135,7 +2135,11 @@ Vuoi applicare le modifiche?</translation>
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Il file esiste già:
+
+&quot;%1&quot;
+
+Vuoi sostituirlo?</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="714"/>
