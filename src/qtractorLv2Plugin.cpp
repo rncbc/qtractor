@@ -946,6 +946,10 @@ static LilvNode *g_lv2_event_class = nullptr;
 static LilvNode *g_lv2_atom_class = nullptr;
 #endif
 
+#ifdef CONFIG_LV2_CVPORT
+static LilvNode *g_lv2_cvport_class = nullptr;
+#endif
+
 #ifdef CONFIG_LV2_UI
 #ifdef CONFIG_LV2_EXTERNAL_UI
 static LilvNode *g_lv2_external_ui_class = nullptr;
@@ -1443,6 +1447,10 @@ bool qtractorLv2PluginType::open (void)
 	m_iAtomIns     = 0;
 	m_iAtomOuts    = 0;
 #endif
+#ifdef CONFIG_LV2_CVPORT
+	m_iCVPortIns   = 0;
+	m_iCVPortOuts  = 0;
+#endif
 
 	const unsigned long iNumPorts = lilv_plugin_get_num_ports(m_lv2_plugin);
 
@@ -1498,6 +1506,16 @@ bool qtractorLv2PluginType::open (void)
 						lilv_port_is_a(m_lv2_plugin, port, g_lv2_midi_class))
 						++m_iMidiOuts;
 				}
+			}
+		#endif
+		#ifdef CONFIG_LV2_CVPORT
+			else
+			if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_cvport_class)) {
+				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_input_class))
+					++m_iCVPortIns;
+				else
+				if (lilv_port_is_a(m_lv2_plugin, port, g_lv2_output_class))
+					++m_iCVPortOuts;
 			}
 		#endif
 		}
@@ -1688,6 +1706,9 @@ void qtractorLv2PluginType::lv2_open (void)
 #ifdef CONFIG_LV2_ATOM
 	g_lv2_atom_class    = lilv_new_uri(g_lv2_world, LV2_ATOM__AtomPort);
 #endif
+#ifdef CONFIG_LV2_CVPORT
+	g_lv2_cvport_class = lilv_new_uri(g_lv2_world, LV2_CORE__CVPort);
+#endif
 
 #ifdef CONFIG_LV2_UI
 #ifdef CONFIG_LV2_EXTERNAL_UI
@@ -1861,6 +1882,9 @@ void qtractorLv2PluginType::lv2_close (void)
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLv2PluginType::lv2_close()");
 #endif
+#ifdef CONFIG_LV2_CVPORT
+	g_lv2_cvport_class = NULL;
+#endif
 
 	// LV2 URIDs stock reset.
 	::memset(&g_lv2_urids, 0, sizeof(g_lv2_urids));
@@ -1928,6 +1952,9 @@ void qtractorLv2PluginType::lv2_close (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	lilv_node_free(g_lv2_atom_class);
+#endif
+#ifdef CONFIG_LV2_CVPORT
+	lilv_node_free(g_lv2_cvport_class);
 #endif
 
 #ifdef CONFIG_LV2_UI
@@ -2130,6 +2157,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 		, m_lv2_atom_buffer_outs(nullptr)
 		, m_lv2_atom_midi_port_in(0)
 		, m_lv2_atom_midi_port_out(0)
+	#endif
+	#ifdef CONFIG_LV2_CVPORT
+		, m_piCVPortIns(nullptr)
+		, m_piCVPortOuts(nullptr)
 	#endif
 		, m_lv2_features(nullptr)
 	#ifdef CONFIG_LV2_WORKER
@@ -2364,6 +2395,15 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 			m_piAtomOuts = new unsigned long [iAtomOuts];
 		iAtomIns = iAtomOuts = 0;
 	#endif	// CONFIG_LV2_ATOM
+	#ifdef CONFIG_LV2_CVPORT
+		unsigned short iCVPortIns  = pLv2Type->cvportIns();
+		unsigned short iCVPortOuts = pLv2Type->cvportOuts();
+		if (iCVPortIns > 0)
+			m_piCVPortIns = new unsigned long [iCVPortIns];
+		if (iCVPortOuts > 0)
+			m_piCVPortOuts = new unsigned long [iCVPortOuts];
+		iCVPortIns = iCVPortOuts = 0;
+	#endif	// CONFIG_LV2_CVPORT
 		const bool bLatency = lilv_plugin_has_latency(plugin);
 		const uint32_t iLatencyPort
 			= (bLatency ? lilv_plugin_get_latency_port_index(plugin) : 0);
@@ -2386,6 +2426,11 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 						m_piAtomIns[iAtomIns++] = i;
 					else
 				#endif
+				#ifdef CONFIG_LV2_CVPORT
+					if (lilv_port_is_a(plugin, port, g_lv2_cvport_class))
+						m_piCVPortIns[iCVPortIns++] = i;
+					else
+				#endif
 					if (lilv_port_is_a(plugin, port, g_lv2_control_class))
 						addParam(new Param(this, i));
 				}
@@ -2403,6 +2448,11 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 				#ifdef CONFIG_LV2_ATOM
 					if (lilv_port_is_a(plugin, port, g_lv2_atom_class))
 						m_piAtomOuts[iAtomOuts++] = i;
+					else
+				#endif
+				#ifdef CONFIG_LV2_CVPORT
+					if (lilv_port_is_a(plugin, port, g_lv2_cvport_class))
+						m_piCVPortOuts[iCVPortOuts++] = i;
 					else
 				#endif
 					if (lilv_port_is_a(plugin, port, g_lv2_control_class)) {
@@ -2597,6 +2647,13 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 #endif
 #endif	// CONFIG_LV2_TIME
 
+#ifdef CONFIG_LV2_CVPORT
+	if (m_piCVPortOuts)
+		delete [] m_piCVPortOuts;
+	if (m_piCVPortIns)
+		delete [] m_piCVPortIns;
+#endif	// CONFIG_LV2_CVPORT
+
 #ifdef CONFIG_LV2_ATOM
 	qtractorLv2PluginType *pLv2Type
 		= static_cast<qtractorLv2PluginType *> (type());
@@ -2731,14 +2788,22 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	const unsigned short iAudioIns = pLv2Type->audioIns();
 	const unsigned short iAudioOuts = pLv2Type->audioOuts();
 
-	if (iChannels < iAudioIns) {
+	if (iChannels < iAudioIns
+	#ifdef CONFIG_LV2_CVPORT
+		|| pLv2Type->cvportIns() > 0
+	#endif
+	) {
 		if (m_pfIDummy)
 			delete [] m_pfIDummy;
 		m_pfIDummy = new float [iBufferSize];
 		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
 	}
 
-	if (iChannels < iAudioOuts) {
+	if (iChannels < iAudioOuts
+	#ifdef CONFIG_LV2_CVPORT
+		|| pLv2Type->cvportOuts() > 0
+	#endif
+	) {
 		if (m_pfODummy)
 			delete [] m_pfODummy;
 		m_pfODummy = new float [iBufferSize];
@@ -2758,6 +2823,12 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// We'll need output control (not dummy anymore) port indexes...
 	const unsigned short iControlOuts = pLv2Type->controlOuts();
+
+	// But we'll need dummy CV ports and indexes...
+#ifdef CONFIG_LV2_CVPORT
+	const unsigned short iCVPortIns   = pLv2Type->cvportIns();
+	const unsigned short iCVPortOuts  = pLv2Type->cvportOuts();
+#endif
 
 	unsigned short i, j;
 
@@ -2796,6 +2867,17 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 				lilv_instance_connect_port(instance,
 					m_piAudioOuts[j], m_pfODummy); // dummy input port!
 			}
+		#ifdef CONFIG_LV2_CVPORT
+			// Connect all existing CVPort's to a dummy port...
+			for (unsigned short j = 0; j < iCVPortIns; ++j) {
+				lilv_instance_connect_port(instance,
+					m_piCVPortIns[j], m_pfIDummy);
+			}
+			for (unsigned short j = 0; j < iCVPortOuts; ++j) {
+				lilv_instance_connect_port(instance,
+					m_piCVPortOuts[j], m_pfODummy);
+			}
+		#endif
 		#if 0//def CONFIG_LV2_TIME
 			// Connect time-pos designated ports, if any...
 			QHash<unsigned long, int>::ConstIterator iter

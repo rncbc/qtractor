@@ -182,6 +182,10 @@ public:
 	unsigned short atomIns()    const { return m_iAtomIns;    }
 	unsigned short atomOuts()   const { return m_iAtomOuts;   }
 #endif
+#ifdef CONFIG_LV2_CVPORT
+	unsigned short cvportIns()  const { return m_iCVPortIns;  }
+	unsigned short cvportOuts() const { return m_iCVPortOuts; }
+#endif
 
 #ifdef CONFIG_LV2_UI_SHOW
 	// Check for LV2 UI Show interface.
@@ -206,6 +210,10 @@ protected:
 #ifdef CONFIG_LV2_ATOM
 	unsigned short m_iAtomIns;
 	unsigned short m_iAtomOuts;
+#endif
+#ifdef CONFIG_LV2_CVPORT
+	unsigned short m_iCVPortIns;
+	unsigned short m_iCVPortOuts;
 #endif
 };
 
@@ -473,6 +481,12 @@ private:
 	unsigned long  m_lv2_atom_midi_port_in;
 	unsigned long  m_lv2_atom_midi_port_out;
 
+#endif
+
+#ifdef CONFIG_LV2_CVPORT
+	// List of LV2 CVPort indexes.
+	unsigned long *m_piCVPortIns;
+	unsigned long *m_piCVPortOuts;
 #endif
 
 	// Local copy of features array.

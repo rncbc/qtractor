@@ -185,6 +185,11 @@ AC_ARG_ENABLE(lv2-atom,
   [ac_lv2_atom="$enableval"],
   [ac_lv2_atom="yes"])
 
+AC_ARG_ENABLE(lv2-cvport,
+  AC_HELP_STRING([--enable-lv2-cvport], [enable LV2 plug-in CVPort support (DUMMY) (default=yes)]),
+  [ac_lv2_cvport="$enableval"],
+  [ac_lv2_cvport="yes"])
+
 AC_ARG_ENABLE(lv2-worker,
   AS_HELP_STRING([--enable-lv2-worker], [enable LV2 plug-in Worker/schedule support (default=yes)]),
   [ac_lv2_worker="$enableval"],
@@ -531,8 +536,8 @@ AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
 ])
 ac_qt_version_major=$ac_cv_qt_version_major
 if test $ac_qt_version_major -lt 5; then
-	AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
-	ac_qmake=$ac_cv_qmake
+   AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
+   ac_qmake=$ac_cv_qmake
 fi
 
 if test "x$ac_qmake" = "xno"; then
@@ -920,6 +925,7 @@ if test "x$ac_liblilv" = "xno"; then
    ac_lv2_ui="no"
    ac_lv2_event="no"
    ac_lv2_atom="no"
+   ac_lv2_cvport="no"
    ac_lv2_worker="no"
    ac_lv2_external_ui="no"
    ac_lv2_state="no"
@@ -1085,6 +1091,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_ui="no"
       ac_lv2_event="no"
       ac_lv2_atom="no"
+      ac_lv2_cvport="no"
       ac_lv2_worker="no"
       ac_lv2_external_ui="no"
       ac_lv2_state="no"
@@ -1180,6 +1187,23 @@ else
    ac_lv2_state="no"
    ac_lv2_options="no"
    ac_lv2_time_position="no"
+fi
+if test "x$ac_lv2_cvport" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 CVPort support],
+     ac_cv_lv2_cvport, [
+     AC_TRY_LINK([#include "lv2.h"], [
+        // Checking for LV2 CVPort support...
+        #ifndef LV2_CORE__CVPort
+        #error LV2 CVPort is not available.
+        #endif
+     ], ac_cv_lv2_cvport="yes", ac_cv_lv2_cvport="no")
+   ])
+   ac_lv2_cvport=$ac_cv_lv2_cvport
+   if test "x$ac_lv2_cvport" = "xyes"; then
+     AC_DEFINE(CONFIG_LV2_CVPORT, 1, [Define if LV2 CVPort support is available. (DUMMY)])
+   else
+     AC_MSG_WARN([*** LV2 CVPort support will be disabled.])
+   fi
 fi
 if test "x$ac_lv2_worker" = "xyes"; then
    AC_CHECK_HEADER(
@@ -1577,6 +1601,7 @@ echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_libsuil"
 echo "  LV2 plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 plug-in MIDI/Event support (DEPRECATED)  . . .: $ac_lv2_event"
 echo "  LV2 plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
+echo "  LV2 plug-in CVPort support (DUMMY) . . . . . . . .: $ac_lv2_cvport"
 echo "  LV2 plug-in Worker/Schedule support  . . . . . . .: $ac_lv2_worker"
 echo "  LV2 plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
 echo "  LV2 plug-in State Files support  . . . . . . . . .: $ac_lv2_state_files"

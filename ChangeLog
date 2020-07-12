@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Finally indulged on dummy LV2 plug-in CVPort support, just to
+  avoid certain immediate and sudden crashes when inserting those
+  kind of 'non-functional' plugins accidentally. (EXPERIMENTAL)
+
 - Bring the Track Export dialog down to Clip Merge/Export as well,
   for optional file type and format selection. (EXPERIMENTAL)
 

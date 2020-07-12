@@ -105,6 +105,8 @@ option (CONFIG_LV2_EVENT "Enable LV2 plug-in MIDI/Event support (default=no)" 0)
 
 option (CONFIG_LV2_ATOM "Enable LV2 plug-in MIDI/Atom support (default=yes)" 1)
 
+option (CONFIG_LV2_CVPORT "Enable LV2 plug-in CVPort support (DUMMY) (default=yes)" 1)
+
 option (CONFIG_LV2_WORKER "Enable LV2 plug-in Worker/schedule support (default=yes)" 1)
 
 option (CONFIG_LV2_UI "Enable LV2 plug-in UI support (default=yes)" 1)

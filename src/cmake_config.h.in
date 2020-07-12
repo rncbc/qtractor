@@ -115,6 +115,9 @@
 /* Define if LV2 Atom/MIDI aupport is available. */
 #cmakedefine CONFIG_LV2_ATOM @CONFIG_LV2_ATOM@
 
+/* Define if LV2 CVPort aupport is available. (DUMMY) */
+#cmakedefine CONFIG_LV2_CVPORT @CONFIG_LV2_CVPORT@
+
 /* Define if lv2_atom_forge_object is available. */
 #cmakedefine CONFIG_LV2_ATOM_FORGE_OBJECT @CONFIG_LV2_ATOM_FORGE_OBJECT@
 
