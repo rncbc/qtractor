@@ -304,8 +304,9 @@ References
      (needed for LV2 UI support)
      https://drobilla.net/software/suil/
 
-[16] Non Session Management (NSM)
-     http://non.tuxfamily.org/nsm/
+[16] New Session Management (NSM)
+     https://linuxaudio.github.io/new-session-manager/
+    (formerly http://non.tuxfamily.org/nsm/)
 
 [17] libaubio, a library for real time audio labelling
      https://aubio.org
