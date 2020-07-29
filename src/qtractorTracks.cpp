@@ -1256,9 +1256,6 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	if (QFileInfo(sFilename).suffix().isEmpty())
 		sFilename += '.' + sExt;
 
-	// Should take sometime...
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
 	const unsigned int iBufferSize
 		= pSession->audioEngine()->bufferSize();
 
@@ -1266,17 +1263,17 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 		= qtractorAudioFileFactory::createAudioFile(sFilename,
 			pAudioBus->channels(), pSession->sampleRate(),
 			iBufferSize, iFormat);
-	if (pAudioFile == nullptr) {
-		QApplication::restoreOverrideCursor();
+	if (pAudioFile == nullptr)
 		return false;
-	}
 
 	// Open the file for writing...
 	if (!pAudioFile->open(sFilename, qtractorAudioFile::Write)) {
-		QApplication::restoreOverrideCursor();
 		delete pAudioFile;
 		return false;
 	}
+
+	// Should take sometime now...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	// Start logging...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -1366,13 +1363,14 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 			// Quite similar to qtractorAudioClip::process()...
 			const unsigned long iClipStart = pClip->clipStart();
 			const unsigned long iClipEnd   = iClipStart + pClip->clipLength();;
+			const float fGain = pClip->clipGain();
 			if (iFrameStart < iClipStart && iFrameEnd > iClipStart) {
 				const unsigned long iOffset = iFrameEnd - iClipStart;
 				while (!pBuff->inSync(0, 0))
 					pBuff->syncExport();
 				pBuff->readMix(ppFrames, iOffset,
 					iChannels, iClipStart - iFrameStart,
-					pClip->fadeInOutGain(iOffset));
+					fGain * pClip->fadeInOutGain(iOffset));
 			}
 			else
 			if (iFrameStart >= iClipStart && iFrameStart < iClipEnd) {
@@ -1380,7 +1378,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 				while (!pBuff->inSync(iFrame, iFrame))
 					pBuff->syncExport();
 				pBuff->readMix(ppFrames, iBufferSize, iChannels, 0,
-					pClip->fadeInOutGain(iFrameEnd - iClipStart));
+					fGain * pClip->fadeInOutGain(iFrameEnd - iClipStart));
 			}
 		}
 		// Actually write to merge audio file;

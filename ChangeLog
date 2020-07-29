@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Audio Clip / Export... now takes into account custom fixed gain
+  property (shamefully missing for the whole last decade to date).
+
 - Finally indulged on dummy LV2 plug-in CVPort support, just to
   avoid certain immediate and sudden crashes when inserting those
   kind of 'non-functional' plugins accidentally. (EXPERIMENTAL)
