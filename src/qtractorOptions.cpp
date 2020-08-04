@@ -255,7 +255,7 @@ void qtractorOptions::loadOptions (void)
 	iDummyVst3Hash = m_settings.value("/DummyVst3Hash", 0).toInt();
 	iDummyLv2Hash = m_settings.value("/DummyLv2Hash", 0).toInt();
 	bLv2DynManifest = false;//m_settings.value("/Lv2DynManifest", false).toBool();
-	bSaveCurve14bit = m_settings.value("/SaveCurve14bit", false).toBool();
+	bSaveCurve14bit = true;//m_settings.value("/SaveCurve14bit", false).toBool();
 	m_settings.endGroup();
 
 	// Instrument file list.

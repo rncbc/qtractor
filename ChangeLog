@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Experimental / High resolution plugin automation (14-bit) options
+  is now also removed from View > Options... > Plugins dialog.
+
 - Audio Clip / Export... now takes into account custom fixed gain
   property (shamefully missing for the whole last decade to date).
 
