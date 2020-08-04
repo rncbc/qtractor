@@ -14165,22 +14165,22 @@ Chcete použít tyto změny?</translation>
         <translation>&amp;Tempo:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="222"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="225"/>
         <source>T&amp;ap</source>
         <translation>Zaťu&amp;kání</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="311"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="317"/>
         <source>Marker text</source>
         <translation>Text značky</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="327"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="333"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="324"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="330"/>
         <source>Marker color</source>
         <translation>Barva značky</translation>
     </message>
@@ -14195,105 +14195,105 @@ Chcete použít tyto změny?</translation>
         <translation>Klíč</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="215"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="218"/>
         <source>Tempo (BPM) / Time signature</source>
         <translation>Tempo (ÚZM)/Taktové označení</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="245"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="248"/>
         <source>&amp;Key signature:</source>
         <translation>&amp;Předznamenání:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="255"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="261"/>
         <source>Key signature (accidentals)</source>
         <translation>Předznamenání (posuvky)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="265"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="271"/>
         <source>Key signature (mode)</source>
         <translation>Předznamenání (režim)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="272"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="278"/>
         <source>Major</source>
         <translation>Durový</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="277"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="283"/>
         <source>Minor</source>
         <translation>Mollový</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="301"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="307"/>
         <source>&amp;Marker:</source>
         <translation>&amp;Značka:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="353"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="359"/>
         <source>Tempo &amp;scale factor:</source>
         <translation>Násobek &amp;změny tempa:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="363"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="372"/>
         <source>Tempo scale factor</source>
         <translation>Násobek změny tempa</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="388"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="397"/>
         <source>App&amp;ly</source>
         <translation>&amp;Použít</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="407"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="416"/>
         <source>Refresh tempo map</source>
         <translation>Obnovit zobrazení tempa</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="410"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="419"/>
         <source>Re&amp;fresh</source>
         <translation>&amp;Obnovit</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="436"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="445"/>
         <source>Add node</source>
         <translation>Přidat uzel</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="439"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="448"/>
         <location filename="../qtractorTimeScaleForm.cpp" line="1109"/>
         <source>&amp;Add</source>
         <translation>&amp;Přidat</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="449"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="458"/>
         <source>Update node</source>
         <translation>Obnovit uzel</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="452"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="461"/>
         <location filename="../qtractorTimeScaleForm.cpp" line="1114"/>
         <source>&amp;Update</source>
         <translation>&amp;Obnovit</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="462"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="471"/>
         <source>Remove node</source>
         <translation>Odstranit uzel</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="465"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="474"/>
         <location filename="../qtractorTimeScaleForm.cpp" line="1119"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odstranit</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="475"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="484"/>
         <source>Close this dialog</source>
         <translation>Zavřít tento dialog</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="478"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="487"/>
         <source>Close</source>
         <translation>Zavřít</translation>
     </message>

@@ -14115,7 +14115,7 @@ Você quer mesmo manter as alterações?</translation>
 <context>
     <name>qtractorTimeScaleForm</name>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="327"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="333"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -14125,13 +14125,13 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Compasso</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="439"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="448"/>
         <location filename="../qtractorTimeScaleForm.cpp" line="1109"/>
         <source>&amp;Add</source>
         <translation>&amp;Adicionar</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="222"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="225"/>
         <source>T&amp;ap</source>
         <translation>T&amp;ap</translation>
     </message>
@@ -14156,47 +14156,47 @@ Você quer mesmo manter as alterações?</translation>
         <translation>&amp;Compasso:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="215"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="218"/>
         <source>Tempo (BPM) / Time signature</source>
         <translation>Andamento (BPM) / Fórmula de Compasso</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="245"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="248"/>
         <source>&amp;Key signature:</source>
         <translation>&amp;Fórmula de Compasso:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="255"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="261"/>
         <source>Key signature (accidentals)</source>
         <translation>Fórmula de Compasso (acidentes)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="265"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="271"/>
         <source>Key signature (mode)</source>
         <translation>Fómula de compasso (modo)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="272"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="278"/>
         <source>Major</source>
         <translation>Maior</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="277"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="283"/>
         <source>Minor</source>
         <translation>Menor</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="301"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="307"/>
         <source>&amp;Marker:</source>
         <translation>&amp;Marcador:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="353"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="359"/>
         <source>Tempo &amp;scale factor:</source>
         <translation>&amp;Fator de Proporção do tempo:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="478"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="487"/>
         <source>Close</source>
         <translation>Fechar</translation>
     </message>
@@ -14211,7 +14211,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Local da cabeça do compasso</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="324"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="330"/>
         <source>Marker color</source>
         <translation>Cor do marcador</translation>
     </message>
@@ -14221,12 +14221,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>fator de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="475"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="484"/>
         <source>Close this dialog</source>
         <translation>Fechar este diálogo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="388"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="397"/>
         <source>App&amp;ly</source>
         <translation>Ap&amp;licar</translation>
     </message>
@@ -14240,7 +14240,7 @@ Do you want to apply the changes?</source>
 Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="363"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="372"/>
         <source>Tempo scale factor</source>
         <translation>Fator de escalonamento do Andamento</translation>
     </message>
@@ -14260,12 +14260,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Tempo/localização na amostra</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="410"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="419"/>
         <source>Re&amp;fresh</source>
         <translation>Atual&amp;izar</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="407"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="416"/>
         <source>Refresh tempo map</source>
         <translation>Atualizar mapa de tempo</translation>
     </message>
@@ -14275,12 +14275,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>&amp;Atualizar</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="449"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="458"/>
         <source>Update node</source>
         <translation>Atualizar nó</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="436"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="445"/>
         <source>Add node</source>
         <translation>Adicionar nó</translation>
     </message>
@@ -14290,7 +14290,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Mapa de Tempo / Marcadores</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="465"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="474"/>
         <location filename="../qtractorTimeScaleForm.cpp" line="1119"/>
         <source>&amp;Remove</source>
         <translation>&amp;Remover</translation>
@@ -14301,18 +14301,18 @@ Você quer mesmo manter as alterações?</translation>
         <translation>&amp;Andamento:</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="452"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="461"/>
         <location filename="../qtractorTimeScaleForm.cpp" line="1114"/>
         <source>&amp;Update</source>
         <translation>&amp;Atualizar</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="311"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="317"/>
         <source>Marker text</source>
         <translation>Marcador de texto</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="462"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="471"/>
         <source>Remove node</source>
         <translation>Remover nó</translation>
     </message>

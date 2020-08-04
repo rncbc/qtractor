@@ -14162,22 +14162,22 @@ Do you want to apply the changes?</source>
         <translation>テンポ(&amp;T):</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="222"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="225"/>
         <source>T&amp;ap</source>
         <translation>タップ(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="311"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="317"/>
         <source>Marker text</source>
         <translation>マーカーテキスト</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="327"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="333"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="324"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="330"/>
         <source>Marker color</source>
         <translation>マーカーの色</translation>
     </message>
@@ -14192,105 +14192,105 @@ Do you want to apply the changes?</source>
         <translation>キー</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="215"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="218"/>
         <source>Tempo (BPM) / Time signature</source>
         <translation>テンポ (BPM) / 拍子記号</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="245"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="248"/>
         <source>&amp;Key signature:</source>
         <translation>キー記号(&amp;K):</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="255"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="261"/>
         <source>Key signature (accidentals)</source>
         <translation>キー記号(臨時記号)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="265"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="271"/>
         <source>Key signature (mode)</source>
         <translation>キー記号(調子)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="272"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="278"/>
         <source>Major</source>
         <translation>メジャー</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="277"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="283"/>
         <source>Minor</source>
         <translation>マイナー</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="301"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="307"/>
         <source>&amp;Marker:</source>
         <translation>マーカー(&amp;M):</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="353"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="359"/>
         <source>Tempo &amp;scale factor:</source>
         <translation>テンポスケールファクター(&amp;S):</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="363"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="372"/>
         <source>Tempo scale factor</source>
         <translation>テンポスケールファクター</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="388"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="397"/>
         <source>App&amp;ly</source>
         <translation>適用 (&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="407"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="416"/>
         <source>Refresh tempo map</source>
         <translation>テンポマップの更新</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="410"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="419"/>
         <source>Re&amp;fresh</source>
         <translation>更新(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="436"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="445"/>
         <source>Add node</source>
         <translation>ノードを追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="439"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="448"/>
         <location filename="../qtractorTimeScaleForm.cpp" line="1109"/>
         <source>&amp;Add</source>
         <translation>追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="449"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="458"/>
         <source>Update node</source>
         <translation>ノードをアップデート</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="452"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="461"/>
         <location filename="../qtractorTimeScaleForm.cpp" line="1114"/>
         <source>&amp;Update</source>
         <translation>アップデート(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="462"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="471"/>
         <source>Remove node</source>
         <translation>ノードを除去</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="465"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="474"/>
         <location filename="../qtractorTimeScaleForm.cpp" line="1119"/>
         <source>&amp;Remove</source>
         <translation>除去(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="475"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="484"/>
         <source>Close this dialog</source>
         <translation>ダイアログを閉じます</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.ui" line="478"/>
+        <location filename="../qtractorTimeScaleForm.ui" line="487"/>
         <source>Close</source>
         <translation>閉じる</translation>
     </message>
