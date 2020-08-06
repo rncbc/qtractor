@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.16  2020-08-07  A Summer'20 Release.
 
 - Experimental / High resolution plugin automation (14-bit) options
   is now also removed from View > Options... > Plugins dialog.
@@ -14,16 +14,15 @@ GIT HEAD
 
 - Finally indulged on dummy LV2 plug-in CVPort support, just to
   avoid certain immediate and sudden crashes when inserting those
-  kind of 'non-functional' plugins accidentally. (EXPERIMENTAL)
+  kind of 'non-functional' plugins accidentally.
 
 - Bring the Track Export dialog down to Clip Merge/Export as well,
-  for optional file type and format selection. (EXPERIMENTAL)
+  for optional file type and format selection.
 
 - When enabled, do auto-save upon adding or inserting a new plugin.
-  (EXPERIMENTAL)
 
 - Make sure LV2 plug-in UI GTK2 and X11 native support is selected
-  first by default on top to libsuil. (EXPERIMENTAL)
+  first by default on top to libsuil.
 
 - Both out-of-process plugin inventory scan and LV2 Dynamic manifest
   options have been removed from View > Options... > Plugins dialog.
@@ -105,7 +104,7 @@ GIT HEAD
 - Track / Duplicate Track... now also takes a MIDI track's audio
   meters setting into account.
 
-- VST3 plug-in support introduced. (EXPERIMENTAL)
+- VST3 plug-in support introduced.
 
 - Fixed first bar/measure position drawing on the time-scale/grid
   across time-signature changes on the MIDI clip editor (aka.
