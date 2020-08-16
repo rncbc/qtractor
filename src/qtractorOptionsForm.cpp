@@ -197,8 +197,6 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 #ifdef CONFIG_LV2
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Lv2));
-#else
-	m_ui.Lv2DynManifestCheckBox->hide();
 #endif
 
 #ifndef CONFIG_LV2_PRESETS
