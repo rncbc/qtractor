@@ -768,7 +768,7 @@ show_option ("  JACK Session support . . . . . . . . . . . . . . ." CONFIG_JACK_
 show_option ("  JACK Latency support . . . . . . . . . . . . . . ." CONFIG_JACK_LATENCY)
 show_option ("  JACK Metadata support  . . . . . . . . . . . . . ." CONFIG_JACK_METADATA)
 message     ("")
-show_option ("  Non Session Management (NSM) support . . . . . . ." CONFIG_NSM)
+show_option ("  New Session Management (NSM) support . . . . . . ." CONFIG_NSM)
 message     ("")
 show_option ("  VeSTige header support . . . . . . . . . . . . . ." CONFIG_VESTIGE)
 show_option ("  Unique/Single instance support . . . . . . . . . ." CONFIG_XUNIQUE)
