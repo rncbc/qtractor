@@ -1041,17 +1041,34 @@ void qtractorTimeScaleForm::tempoTap (void)
 #endif
 
 	const int iTimeTap = m_pTempoTap->restart();
-	if (iTimeTap > 200 && iTimeTap < 2000) { // Magic!
-		m_fTempoTap += (60000.0f / float(iTimeTap));
-		if (++m_iTempoTap > 2) {
-			m_fTempoTap /= float(m_iTempoTap);
-			m_iTempoTap  = 1; // Median-like averaging...
-			m_ui.TempoSpinBox->setTempo(int(m_fTempoTap), true);
-		}
-	} else {
+
+	if (iTimeTap < 200 || iTimeTap > 2000) { // Magic!
 		m_iTempoTap = 0;
 		m_fTempoTap = 0.0f;
+		return;
 	}
+
+	const float fTempoTap = ::rintf(60000.0f / float(iTimeTap));
+#if 0
+	m_fTempoTap += fTempoTap;
+	if (++m_iTempoTap > 2) {
+		m_fTempoTap /= float(m_iTempoTap);
+		m_ui.TempoSpinBox->setTempo(::rintf(m_fTempoTap), false);
+		m_iTempoTap	= 1; // Median-like averaging...
+	}
+#else
+	if (m_fTempoTap  > 0.0f) {
+		m_fTempoTap *= 0.5f;
+		m_fTempoTap += 0.5f * fTempoTap;
+	} else {
+		m_fTempoTap  = fTempoTap;
+	}
+	if (++m_iTempoTap > 2) {
+		m_ui.TempoSpinBox->setTempo(::rintf(m_fTempoTap), false);
+		m_iTempoTap	 = 1; // Median-like averaging...
+		m_fTempoTap  = fTempoTap;
+	}
+#endif
 }
 
 
