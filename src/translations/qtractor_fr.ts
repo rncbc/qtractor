@@ -12647,12 +12647,12 @@ existantes :</translation>
         <translation>(Tout)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="895"/>
+        <location filename="../qtractorOptionsForm.cpp" line="893"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="896"/>
+        <location filename="../qtractorOptionsForm.cpp" line="894"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12661,63 +12661,63 @@ Do you want to apply the changes?</source>
 Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="948"/>
+        <location filename="../qtractorOptionsForm.cpp" line="946"/>
         <source>Metronome Bar Audio File</source>
         <translation>Fichier audio métronome - Barre</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="962"/>
+        <location filename="../qtractorOptionsForm.cpp" line="960"/>
         <source>Metronome Beat Audio File</source>
         <translation>Fichier audio métronome - Battement</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1134"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1132"/>
         <source>Audio Meter Color</source>
         <translation>Couleur Audiomètre</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1156"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1154"/>
         <source>MIDI Meter Color</source>
         <translation>Couleur MIDImètre</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1258"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1256"/>
         <source>Plug-in Directory</source>
         <translation>Répertoire Greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1512"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1510"/>
         <source>LV2 Presets Directory</source>
         <translation>Répertoire des préréglage LV2</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1553"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1551"/>
         <source>Messages Font</source>
         <translation>Police de messages</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1581"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1579"/>
         <source>Messages Log</source>
         <translation>Journal des messages</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1584"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1582"/>
         <source>Log files (*.%1)</source>
         <translation>Fichiers journal (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1585"/>
-        <location filename="../qtractorOptionsForm.cpp" line="1631"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1583"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1629"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1627"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1625"/>
         <source>Session Template</source>
         <translation>Modèle de session</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1630"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1628"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Fichiers de modèle de session (*.qtr *.qts *.%1)</translation>
     </message>

@@ -12529,12 +12529,12 @@ Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="895"/>
+        <location filename="../qtractorOptionsForm.cpp" line="893"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="896"/>
+        <location filename="../qtractorOptionsForm.cpp" line="894"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12542,63 +12542,63 @@ Do you want to apply the changes?</source>
 Wollen Sie diese übernehmen?</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="948"/>
+        <location filename="../qtractorOptionsForm.cpp" line="946"/>
         <source>Metronome Bar Audio File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="962"/>
+        <location filename="../qtractorOptionsForm.cpp" line="960"/>
         <source>Metronome Beat Audio File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1134"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1132"/>
         <source>Audio Meter Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1156"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1154"/>
         <source>MIDI Meter Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1258"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1256"/>
         <source>Plug-in Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1512"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1510"/>
         <source>LV2 Presets Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1553"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1551"/>
         <source>Messages Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1581"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1579"/>
         <source>Messages Log</source>
         <translation>Meldungsprotokoll</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1584"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1582"/>
         <source>Log files (*.%1)</source>
         <translation>Log-Dateien (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1585"/>
-        <location filename="../qtractorOptionsForm.cpp" line="1631"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1583"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1629"/>
         <source>All files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1627"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1625"/>
         <source>Session Template</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1630"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1628"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation type="unfinished"></translation>
     </message>

@@ -351,4 +351,3 @@ private:
 
 
 // end of qtractorOptions.h
-
