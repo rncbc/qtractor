@@ -737,6 +737,12 @@ qtractorEditTrackCommand::qtractorEditTrackCommand (
 		QObject::tr("track properties"), pTrack->properties(), props)
 {
 	m_pTrack = pTrack;
+
+	// Check whether we'll need to re-open the track...
+	const qtractorTrack::Properties& old_props = pTrack->properties();
+	m_bReopen = (
+		old_props.inputBusName  != props.inputBusName ||
+		old_props.outputBusName != props.outputBusName);
 }
 
 
@@ -765,7 +771,7 @@ bool qtractorEditTrackCommand::redo (void)
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
 	// Reopen to assign a probable new bus...
-	if (bResult)
+	if (bResult && m_bReopen)
 		bResult = m_pTrack->open();
 
 	// Re-acquire track-name for uniqueness...

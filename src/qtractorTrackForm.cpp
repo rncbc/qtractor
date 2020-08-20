@@ -1199,7 +1199,7 @@ void qtractorTrackForm::trackIconClicked (void)
 {
 	QString sFilename = m_props.trackIcon;
 
-	if (sFilename.at(0) == ':')
+	if (!sFilename.isEmpty() && sFilename.at(0) == ':')
 		sFilename.clear();
 
 	const QString& sTitle
