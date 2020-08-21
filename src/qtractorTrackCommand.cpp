@@ -102,9 +102,8 @@ bool qtractorTrackCommand::addTrack (void)
 	// And the new track list view item too...
 	iTrack = pTrackList->insertTrack(iTrack, m_pTrack);
 
-	// Special MIDI track cases...
-	if (m_pTrack->trackType() == qtractorTrack::Midi)
-		pTracks->updateMidiTrack(m_pTrack);
+	// Update track-list items...
+	m_pTrack->updateTrack();
 
 	// (Re)open all clips...
 	qtractorClip *pClip = m_pTrack->clips().first();
@@ -771,8 +770,11 @@ bool qtractorEditTrackCommand::redo (void)
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
 	// Reopen to assign a probable new bus...
-	if (bResult && m_bReopen)
+	if (bResult && m_bReopen) {
+		pSession->lock();
 		bResult = m_pTrack->open();
+		pSession->unlock();
+	}
 
 	// Re-acquire track-name for uniqueness...
 	pSession->acquireTrackName(m_pTrack);
@@ -797,13 +799,12 @@ bool qtractorEditTrackCommand::redo (void)
 		pSession->trackRecord(m_pTrack, true, iClipStart, iFrameTime);
 	}
 
-	// Special MIDI track cases...
-	if (m_pTrack->trackType() == qtractorTrack::Midi) {
-		// Refresh MIDI track item, at least the names...
-		m_pTrack->updateMidiTrack();
-		// Update and trap dirty clips...
+	// Update track-list items...
+	m_pTrack->updateTrack();
+
+	// Special MIDI track case: update and trap dirty clips...
+	if (m_pTrack->trackType() == qtractorTrack::Midi)
 		m_pTrack->updateMidiClips();
-	}
 
 	// Mixer turn...
 	qtractorMixer *pMixer = pMainForm->mixer();

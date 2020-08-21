@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed crash when changing an auto-monitored audio track's number
+  of channels due on switching its audio output bus. (EXPERIMENTAL)
+
 - Avoid a complete track re-open when changing properties, unless
   either input or output buses are changed. (EXPERIMENTAL)
 

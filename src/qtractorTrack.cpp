@@ -510,14 +510,8 @@ bool qtractorTrack::open (void)
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (m_pOutputBus);
 		if (pAudioBus) {
-			qtractorAudioMonitor *pAudioMonitor
-				= static_cast<qtractorAudioMonitor *> (pMonitor);
-			if (pAudioMonitor) {
-				m_pMonitor = new qtractorAudioMonitor(*pAudioMonitor);
-			} else {
-				m_pMonitor = new qtractorAudioMonitor(
-					pAudioBus->channels(), m_props.gain, m_props.panning);
-			}
+			m_pMonitor = new qtractorAudioMonitor(
+				pAudioBus->channels(), m_props.gain, m_props.panning);
 			m_pPluginList->setChannels(pAudioBus->channels(),
 				qtractorPluginList::AudioTrack);
 		}

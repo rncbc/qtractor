@@ -122,6 +122,9 @@ protected:
 
 	QColor colorItem(QComboBox *pComboBox);
 
+	// Update/reset output bus name...
+	void updateOutputBusName(const QString& sBusName);
+
 	// Save/load default bus names...
 	void loadDefaultBusNames(qtractorTrack::TrackType trackType);
 	void saveDefaultBusNames(qtractorTrack::TrackType trackType) const;

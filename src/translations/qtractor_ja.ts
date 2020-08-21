@@ -195,7 +195,7 @@ End:	%3	Length:	%4</source>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="428"/>
-        <location filename="../qtractorTrack.cpp" line="699"/>
+        <location filename="../qtractorTrack.cpp" line="693"/>
         <source>%1 Monitor</source>
         <translation>%1 モニター</translation>
     </message>
@@ -618,31 +618,31 @@ MIDI:	</translation>
         <translation>拍子の変更。</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="700"/>
+        <location filename="../qtractorTrack.cpp" line="694"/>
         <source>%1 Record</source>
         <translation>%1 記録</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="701"/>
+        <location filename="../qtractorTrack.cpp" line="695"/>
         <source>%1 Mute</source>
         <translation>%1 ミュート</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="702"/>
+        <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Solo</source>
         <translation>%1 ソロ</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="3999"/>
         <location filename="../qtractorMidiEngine.cpp" line="4008"/>
-        <location filename="../qtractorTrack.cpp" line="707"/>
+        <location filename="../qtractorTrack.cpp" line="701"/>
         <source>%1 Volume</source>
         <translation>%1 ボリューム</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2649"/>
         <location filename="../qtractorAudioEngine.cpp" line="2658"/>
-        <location filename="../qtractorTrack.cpp" line="710"/>
+        <location filename="../qtractorTrack.cpp" line="704"/>
         <source>%1 Gain</source>
         <translation>%1 ゲイン</translation>
     </message>
@@ -651,47 +651,47 @@ MIDI:	</translation>
         <location filename="../qtractorAudioEngine.cpp" line="2660"/>
         <location filename="../qtractorMidiEngine.cpp" line="4001"/>
         <location filename="../qtractorMidiEngine.cpp" line="4010"/>
-        <location filename="../qtractorTrack.cpp" line="713"/>
+        <location filename="../qtractorTrack.cpp" line="707"/>
         <source>%1 Pan</source>
         <translation>%1 パニング</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="213"/>
+        <location filename="../qtractorTrackCommand.cpp" line="212"/>
         <source>add track</source>
         <translation>トラックの追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="237"/>
+        <location filename="../qtractorTrackCommand.cpp" line="236"/>
         <source>remove track</source>
         <translation>トラックの除去</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="262"/>
+        <location filename="../qtractorTrackCommand.cpp" line="261"/>
         <source>duplicate track</source>
         <translation>トラックの複製</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="524"/>
+        <location filename="../qtractorTrackCommand.cpp" line="523"/>
         <source>move track</source>
         <translation>トラックの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="603"/>
+        <location filename="../qtractorTrackCommand.cpp" line="602"/>
         <source>resize track</source>
         <translation>トラックのリサイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="650"/>
+        <location filename="../qtractorTrackCommand.cpp" line="649"/>
         <source>import track</source>
         <translation>トラックのインポート</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="737"/>
+        <location filename="../qtractorTrackCommand.cpp" line="736"/>
         <source>track properties</source>
         <translation>トラックのプロパティー</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="782"/>
+        <location filename="../qtractorTrackCommand.cpp" line="784"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
@@ -700,37 +700,37 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 トラック: &quot;%1&quot; 入力: &quot;%2&quot; 出力: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="862"/>
+        <location filename="../qtractorTrackCommand.cpp" line="863"/>
         <source>track record</source>
         <translation>トラックを録音</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="865"/>
+        <location filename="../qtractorTrackCommand.cpp" line="866"/>
         <source>track mute</source>
         <translation>トラックミュート</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="868"/>
+        <location filename="../qtractorTrackCommand.cpp" line="869"/>
         <source>track solo</source>
         <translation>トラックをソロ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1042"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1043"/>
         <source>track monitor</source>
         <translation>トラックモニター</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1150"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1151"/>
         <source>track gain</source>
         <translation>トラックゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1239"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1240"/>
         <source>track pan</source>
         <translation>トラックパニング</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1326"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1327"/>
         <source>track instrument</source>
         <translation>トラックのインストルメント</translation>
     </message>
@@ -14706,12 +14706,12 @@ Do you want to discard the changes?</source>
         <translation>バイオリン(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="494"/>
+        <location filename="../qtractorTrackForm.cpp" line="500"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="495"/>
+        <location filename="../qtractorTrackForm.cpp" line="501"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -14752,12 +14752,12 @@ Do you want to apply the changes?</source>
         <translation>トラックアイコン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1509"/>
+        <location filename="../qtractorTrackForm.cpp" line="1491"/>
         <source>Foreground Color</source>
         <translation>全景の色</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1535"/>
+        <location filename="../qtractorTrackForm.cpp" line="1517"/>
         <source>Background Color</source>
         <translation>背景の色</translation>
     </message>
