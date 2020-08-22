@@ -1,7 +1,7 @@
 // qtractorWsolaTimeStretcher.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2012, Olli Parviainen.
@@ -25,7 +25,9 @@
 #ifndef __qtractorWsolaTimeStretcher_h
 #define __qtractorWsolaTimeStretcher_h
 
-#include "qtractorFifoBuffer.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 //---------------------------------------------------------------------------
@@ -156,6 +158,76 @@ public:
 	// Clears all buffers.
 	void clear();
 
+	//----------------------------------------------------------------------
+	// class qtractorWsolaTimeStretcher::FifoBuffer -- FIFO buffer/cache template declaration.
+	//
+	class FifoBuffer
+	{
+	public:
+		
+		// Constructor.
+		FifoBuffer(unsigned short iChannels = 2);
+		// Destructor.
+		~FifoBuffer();
+		
+		// Implementation initializer.
+		void setChannels(unsigned short iChannels);
+
+		// Implementation properties.
+		unsigned short channels() const { return m_iChannels;   }
+		unsigned int bufferSize() const { return m_iBufferSize; }
+
+		// Write samples/frames to the end of sample frame buffer.
+		unsigned int writeFrames(
+			float **ppFrames, unsigned int iFrames, unsigned int iOffset = 0);
+
+		// Adjusts the book-keeping to increase number of frames
+		// in the buffer without copying any actual frames.
+		void putFrames(
+			float **ppFrames, unsigned int iFrames, unsigned iOffset = 0);
+		void putFrames(unsigned int iFrames);
+
+		// Read frames from beginning of the sample buffer.
+		unsigned int readFrames(
+			float **ppFrames, unsigned int iFrames, unsigned int iOffset = 0) const;
+
+		// Adjusts book-keeping so that given number of frames are removed
+		// from beginning of the sample buffer without copying them anywhere. 
+		unsigned int receiveFrames(
+			float **ppFrames, unsigned int iFrames, unsigned iOffset = 0);
+		unsigned int receiveFrames(unsigned int iFrames);
+
+		// Returns number of frames currently available.
+		unsigned int frames() const { return m_iFrameCount; }
+
+		// Returns a pointer to the beginning of the output samples. 
+		float *ptrBegin(unsigned short iChannel) const
+			{ return m_ppBuffer[iChannel] + m_iFramePos; }
+
+		// Returns a pointer to the end of the used part of the sample buffer.
+		float *ptrEnd(unsigned short iChannel) const
+			{ return m_ppBuffer[iChannel] + m_iFramePos + m_iFrameCount; }
+
+		// Returns nonzero if there aren't any frames available.
+		bool isEmpty() const { return (m_iFrameCount == 0); }
+
+		// Clears all the buffers.
+		void clear() { m_iFrameCount = m_iFramePos = 0; }	
+
+		// Ensures that the buffer has capacity for at least this many frames.
+		void ensureCapacity(unsigned int iCapacity);
+
+	private:
+
+		// Buffer instance variables.
+		unsigned short m_iChannels;
+		float **m_ppBuffer;
+		float **m_ppBufferUnaligned;
+		unsigned int m_iBufferSize;
+		unsigned int m_iFrameCount;
+		unsigned int m_iFramePos;
+	};
+
 protected:
 
 	// Calculates processing sequence length according to tempo setting.
@@ -202,8 +274,8 @@ private:
 	unsigned int m_iSeekWindowLength;
 	float m_fNominalSkip;
 	float m_fSkipFract;
-	qtractorFifoBuffer<float> m_outputBuffer;
-	qtractorFifoBuffer<float> m_inputBuffer;
+	FifoBuffer m_outputBuffer;
+	FifoBuffer m_inputBuffer;
 	bool m_bMidBufferDirty;
 
 	// Calculates the cross-correlation value over the overlap period.

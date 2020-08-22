@@ -40,7 +40,6 @@ set (HEADERS
   qtractorDssiPlugin.h
   qtractorEngine.h
   qtractorEngineCommand.h
-  qtractorFifoBuffer.h
   qtractorFileList.h
   qtractorFileListView.h
   qtractorFiles.h
