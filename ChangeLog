@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Early fixing to build for Qt >= 6.0.0 and the c++17 standard.
+
 - Fixed crash when changing an auto-monitored audio track's number
   of channels due on switching its audio output bus. (EXPERIMENTAL)
 
