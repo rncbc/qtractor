@@ -92,7 +92,7 @@ Features
 - MIDI system exclusive (SysEx) setups.
 - JACK transport sync master/slave.
 - JACK session support.
-- NSM (New Session Management) support [16].
+- NSM (Non/New Session Management) support [16].
 - MMC control surface enabled.
 - MIDI Clock, Song Position Pointer (SPP) support.
 - Configurable PC-keyboard and MIDI controller shortcuts.
@@ -301,7 +301,7 @@ References
      (needed for LV2 UI support)
      https://drobilla.net/software/suil/
 
-[16] New Session Management (NSM)
+[16] Non/New Session Management (NSM)
      https://linuxaudio.github.io/new-session-manager/
     (formerly http://non.tuxfamily.org/nsm/)
 
