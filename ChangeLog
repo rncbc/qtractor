@@ -4,15 +4,15 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.17  2020-09-15  An End-of-Summer'20 Release.
 
 - Early fixing to build for Qt >= 6.0.0 and the c++17 standard.
 
 - Fixed crash when changing an auto-monitored audio track's number
-  of channels due on switching its audio output bus. (EXPERIMENTAL)
+  of channels due on switching its audio output bus.
 
 - Avoid a complete track re-open when changing properties, unless
-  either input or output buses are changed. (EXPERIMENTAL)
+  either input or output buses are changed.
 
 - Fixed custom track icon selection when none is currently set.
 
