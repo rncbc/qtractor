@@ -3183,8 +3183,7 @@ void qtractorVst3Plugin::configure (
 		const QByteArray data
 			= qUncompress(QByteArray::fromBase64(sValue.toLatin1()));
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVst3Plugin[%p]::configure() data.size=%d checksum=0x%04x",
-			this, data.size(), qChecksum(data.constData(), data.size()));
+		qDebug("qtractorVst3Plugin[%p]::configure() data.size=%d", this, int(data.size()));
 	#endif
 		m_pImpl->setState(data);
 	}
@@ -3216,8 +3215,7 @@ void qtractorVst3Plugin::freezeConfigs (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::freezeConfigs() chunk.size=%d checksum=0x%04x",
-		this, data.size(), qChecksum(data.constData(), data.size()));
+	qDebug("qtractorVstPlugin[%p]::freezeConfigs() chunk.size=%d", this, int(data.size()));
 #endif
 
 	// Set special plugin configuration item (base64 encoded)...

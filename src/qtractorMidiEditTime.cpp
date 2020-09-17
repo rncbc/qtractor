@@ -523,7 +523,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 			m_pEditor->selectionChangeNotify();
 		}
 		break;
-	case Qt::MidButton:
+	case Qt::MiddleButton:
 		if (pOptions && pOptions->bMidButtonModifier)
 			bModifier = !bModifier;	// Reverse mid-button role...
 		if (bModifier) {

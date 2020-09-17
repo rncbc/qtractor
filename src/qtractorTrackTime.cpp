@@ -452,7 +452,7 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 			//	m_dragState = m_dragCursor;
 			}
 			break;
-		case Qt::MidButton:
+		case Qt::MiddleButton:
 			// Mid-button direct positioning...
 			m_pTracks->selectNone();
 			if (pOptions && pOptions->bMidButtonModifier)

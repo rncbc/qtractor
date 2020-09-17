@@ -120,7 +120,7 @@ qtractorObserverSlider::qtractorObserverSlider ( QWidget *pParent )
 void qtractorObserverSlider::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Reset to default value...
-	if (pMouseEvent->button() == Qt::MidButton)
+	if (pMouseEvent->button() == Qt::MiddleButton)
 		setValue(scaleFromValue(observer()->defaultValue()));
 	else
 		qtractorObserverWidget<QSlider>::mousePressEvent(pMouseEvent);

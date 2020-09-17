@@ -1892,7 +1892,7 @@ void qtractorTrackView::mousePressEvent ( QMouseEvent *pMouseEvent )
 			}
 			qtractorScrollView::viewport()->update();
 			break;
-		case Qt::MidButton:
+		case Qt::MiddleButton:
 			// Mid-button positioning...
 			clearSelect();
 			if (pOptions && pOptions->bMidButtonModifier)

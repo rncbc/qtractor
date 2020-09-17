@@ -177,7 +177,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>%1 Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1567"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1565"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -695,7 +695,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1570"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1568"/>
         <source>All files (*.*)</source>
         <translation>Tudo (*.*)</translation>
     </message>
@@ -12815,31 +12815,31 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Mostrar Detalhes</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="316"/>
+        <location filename="../qtractorPaletteForm.cpp" line="323"/>
         <source>Import File - %1</source>
         <translation>Importar Arquivo - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="319"/>
-        <location filename="../qtractorPaletteForm.cpp" line="385"/>
+        <location filename="../qtractorPaletteForm.cpp" line="326"/>
+        <location filename="../qtractorPaletteForm.cpp" line="400"/>
         <source>Palette files (*.%1)</source>
         <translation>Arquivos de Paleta (* %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="320"/>
-        <location filename="../qtractorPaletteForm.cpp" line="386"/>
+        <location filename="../qtractorPaletteForm.cpp" line="327"/>
+        <location filename="../qtractorPaletteForm.cpp" line="401"/>
         <source>All files (*.*)</source>
         <translation>Todos os arquivos (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="372"/>
-        <location filename="../qtractorPaletteForm.cpp" line="805"/>
-        <location filename="../qtractorPaletteForm.cpp" line="813"/>
+        <location filename="../qtractorPaletteForm.cpp" line="387"/>
+        <location filename="../qtractorPaletteForm.cpp" line="818"/>
+        <location filename="../qtractorPaletteForm.cpp" line="826"/>
         <source>Warning - %1</source>
         <translation>Cuidado - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="373"/>
+        <location filename="../qtractorPaletteForm.cpp" line="388"/>
         <source>Could not import from file:
 
 %1
@@ -12852,12 +12852,12 @@ Sorry.</source>
 Desculpe.</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="382"/>
+        <location filename="../qtractorPaletteForm.cpp" line="397"/>
         <source>Export File - %1</source>
         <translation>Exportar Arquivo - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="806"/>
+        <location filename="../qtractorPaletteForm.cpp" line="819"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -12866,7 +12866,7 @@ Do you want to discard the changes?</source>
 Você deseja descartar essas alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="814"/>
+        <location filename="../qtractorPaletteForm.cpp" line="827"/>
         <source>Some settings have been changed:
 
 &quot;%1&quot;.
@@ -12882,22 +12882,22 @@ Você deseja salvar essas alterações?</translation>
 <context>
     <name>qtractorPaletteForm::PaletteModel</name>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1045"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1070"/>
         <source>Color Role</source>
         <translation>Rolo de Cor</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1048"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1073"/>
         <source>Active</source>
         <translation>Ativar</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1051"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1076"/>
         <source>Inactive</source>
         <translation>Desativar</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1054"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1079"/>
         <source>Disabled</source>
         <translation>Desabilitar</translation>
     </message>

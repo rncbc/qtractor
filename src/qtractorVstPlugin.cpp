@@ -1047,8 +1047,7 @@ void qtractorVstPlugin::configure (
 		const char *pData = data.constData();
 		const int iData = data.size();
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPlugin[%p]::configure() chunk.size=%d checksum=0x%04x",
-			this, iData, qChecksum(pData, iData));
+		qDebug("qtractorVstPlugin[%p]::configure() chunk.size=%d", this, iData);
 	#endif
 		for (unsigned short i = 0; i < instances(); ++i)
 			vst_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
@@ -1087,8 +1086,7 @@ void qtractorVstPlugin::freezeConfigs (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::freezeConfigs() chunk.size=%d checksum=0x%04x",
-		this, iData, qChecksum(pData, iData));
+	qDebug("qtractorVstPlugin[%p]::freezeConfigs() chunk.size=%d", this, iData);
 #endif
 
 	// Set special plugin configuration item (base64 encoded)...

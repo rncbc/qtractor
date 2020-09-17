@@ -1472,7 +1472,7 @@ void qtractorPluginListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		dragDirectAccess(pos);
 	}
 	else // Reset to default value...
-	if (pMouseEvent->button() == Qt::MidButton) {
+	if (pMouseEvent->button() == Qt::MiddleButton) {
 		resetDirectAccess(pos);
 	}
 

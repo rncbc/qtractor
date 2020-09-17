@@ -730,7 +730,7 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 	case Qt::LeftButton:
 		// Only the left-mouse-button was meaningful...
 		break;
-	case Qt::MidButton:
+	case Qt::MiddleButton:
 		// Mid-button direct positioning...
 		m_pEditor->selectAll(this, false);
 		// Which mouse state?
