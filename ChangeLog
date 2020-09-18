@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Note names display (inside note rectangles) are now an option on
+  the MIDI clip editor (aka. piano-roll; menu View > Note Names).
+
+
 0.9.17  2020-09-15  An End-of-Summer'20 Release.
 
 - Early fixing to build for Qt >= 6.0.0 and the c++17 standard.

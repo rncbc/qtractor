@@ -155,6 +155,7 @@ protected slots:
 	void viewToolbarScale(bool bOn);
 	void viewToolbarThumb(bool bOn);
 	void viewEvents(bool bOn);
+	void viewNoteNames(bool bOn);
 	void viewNoteDuration(bool bOn);
 	void viewNoteColor(bool bOn);
 	void viewNoteType();

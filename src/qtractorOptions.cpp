@@ -322,6 +322,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiTimeToolbar = m_settings.value("/TimeToolbar", false).toBool();
 	bMidiThumbToolbar = m_settings.value("/ThumbToolbar", true).toBool();
 	iMidiDisplayFormat = m_settings.value("/DisplayFormat", 2).toInt();
+	bMidiNoteNames   = m_settings.value("/NoteNames", false).toBool();
 	bMidiNoteDuration = m_settings.value("/NoteDuration", true).toBool();
 	bMidiNoteColor   = m_settings.value("/NoteColor", false).toBool();
 	bMidiValueColor  = m_settings.value("/ValueColor", false).toBool();
@@ -613,6 +614,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ScaleToolbar", bMidiScaleToolbar);
 	m_settings.setValue("/ThumbToolbar", bMidiThumbToolbar);
 	m_settings.setValue("/DisplayFormat", iMidiDisplayFormat);
+	m_settings.setValue("/NoteNames", bMidiNoteNames);
 	m_settings.setValue("/NoteDuration", bMidiNoteDuration);
 	m_settings.setValue("/NoteColor", bMidiNoteColor);
 	m_settings.setValue("/ValueColor", bMidiValueColor);

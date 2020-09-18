@@ -149,6 +149,7 @@
     <addaction name="separator"/>
     <addaction name="viewToolTipsAction"/>
     <addaction name="separator"/>
+    <addaction name="viewNoteNamesAction"/>
     <addaction name="viewNoteDurationAction"/>
     <addaction name="viewNoteColorAction"/>
     <addaction name="viewNoteTypeMenu"/>
@@ -1151,6 +1152,26 @@
    </property>
    <property name="statusTip">
     <string>Show/hide the events list</string>
+   </property>
+  </action>
+  <action name="viewNoteNamesAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Note &amp;Names</string>
+   </property>
+   <property name="iconText">
+    <string>Note Names</string>
+   </property>
+   <property name="toolTip">
+    <string>Note names</string>
+   </property>
+   <property name="statusTip">
+    <string>Whether to show note names</string>
+   </property>
+   <property name="shortcut">
+    <string/>
    </property>
   </action>
   <action name="viewNoteDurationAction">

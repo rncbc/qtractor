@@ -179,7 +179,7 @@ qtractorMidiEditEvent::qtractorMidiEditEvent (
 	qtractorScrollView::setMouseTracking(true);
 
 	const QFont& font = qtractorScrollView::font();
-	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
+	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 3));
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
@@ -570,6 +570,9 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 
 	int x, y;
 
+	const QFontMetrics fm(qtractorScrollView::font());
+	const int hs = fm.height();
+
 	qtractorTimeScale::Cursor cursor(m_pEditor->timeScale());
 	qtractorTimeScale::Node *pNode;
 
@@ -634,6 +637,15 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 			} else {
 				painter.fillRect(x, y0 - 2, w1, 4, rgbFore);
 				painter.fillRect(x + 1, y0 - 1, w1 - 4, 2, rgbValue);
+			}
+			if (m_pEditor->isNoteNames() && hs < y0 - y && (
+				eventType == qtractorMidiEvent::NOTEON ||
+				eventType == qtractorMidiEvent::KEYPRESS)) {
+				const QString& sNoteName
+					= m_pEditor->noteName(pEvent->note());
+				const int ws = fm.horizontalAdvance(sNoteName);
+				if (ws < w1)
+					painter.drawText(x + 2, y + hs, sNoteName);
 			}
 		}
 		pEvent = pEvent->next();

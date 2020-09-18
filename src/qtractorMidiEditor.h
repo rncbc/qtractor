@@ -188,6 +188,10 @@ public:
 	void setSendNotes(bool bSendNotes);
 	bool isSendNotes() const;
 
+	// Note names display.
+	void setNoteNames(bool bNoteNames);
+	bool isNoteNames() const;
+
 	// Note event value vs. duration display.
 	void setNoteDuration(bool bNoteDuration);
 	bool isNoteDuration() const;
@@ -678,7 +682,10 @@ private:
 
 	// Note autition while editing.
 	bool m_bSendNotes;
-	
+
+	// Note names display (inside rectangles).
+	bool m_bNoteNames;
+
 	// Event value stick vs. duration rectangle.
 	bool m_bNoteDuration;
 

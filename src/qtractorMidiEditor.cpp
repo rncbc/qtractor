@@ -804,6 +804,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Note autition while editing.
 	m_bSendNotes = false;
 
+	// Note names display (inside rectangles).
+	m_bNoteNames = false;
+
 	// Event (note) duration rectangle vs. stick.
 	m_bNoteDuration = false;
 
@@ -1427,6 +1430,18 @@ void qtractorMidiEditor::setSendNotes ( bool bSendNotes )
 bool qtractorMidiEditor::isSendNotes (void) const
 {
 	return m_bSendNotes;
+}
+
+
+// Note names display (inside rectangles).
+void qtractorMidiEditor::setNoteNames ( bool bNoteNames )
+{
+	m_bNoteNames = bNoteNames;
+}
+
+bool qtractorMidiEditor::isNoteNames (void) const
+{
+	return m_bNoteNames;
 }
 
 

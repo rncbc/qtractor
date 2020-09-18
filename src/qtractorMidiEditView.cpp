@@ -102,7 +102,7 @@ qtractorMidiEditView::qtractorMidiEditView (
 	qtractorScrollView::setMouseTracking(true);
 
 	const QFont& font = qtractorScrollView::font();
-	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
+	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 3));
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
@@ -536,6 +536,9 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 	const int h1 = m_pEditor->editList()->itemHeight();
 	const int ch = qtractorScrollView::contentsHeight() - dy;
 
+	const QFontMetrics fm(qtractorScrollView::font());
+	const int hs = fm.height();
+
 	QVector<QPoint> diamond;
 	if (bDrumMode) {
 		const int h2 = (h1 >> 1) + 1;
@@ -600,8 +603,16 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 					painter.drawPolygon(polyg); // diamond
 				} else {
 					painter.fillRect(x, y, w1, h1, rgbFore);
-					if (h1 > 3)
+					if (h1 > 3) {
 						painter.fillRect(x + 1, y + 1, w1 - 4, h1 - 3, rgbNote);
+						if (m_pEditor->isNoteNames() && hs < h1) {
+							const QString& sNoteName
+								= m_pEditor->noteName(pEvent->note());
+							const int ws = fm.horizontalAdvance(sNoteName);
+							if (ws < w1)
+								painter.drawText(x + 2, y + hs, sNoteName);
+						}
+					}
 				}
 			}
 		}
