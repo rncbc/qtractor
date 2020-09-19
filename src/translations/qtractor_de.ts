@@ -7046,17 +7046,17 @@ Länge:	%3</translation>
 <context>
     <name>qtractorMidiEditView</name>
     <message>
-        <location filename="../qtractorMidiEditView.cpp" line="75"/>
+        <location filename="../qtractorMidiEditView.cpp" line="79"/>
         <source>Zoom in (vertical)</source>
         <translation>Vergrößern (vertikal)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditView.cpp" line="76"/>
+        <location filename="../qtractorMidiEditView.cpp" line="80"/>
         <source>Zoom out (vertical)</source>
         <translation>Verkleinern (vertikal)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditView.cpp" line="77"/>
+        <location filename="../qtractorMidiEditView.cpp" line="81"/>
         <source>Zoom reset (vertical)</source>
         <translation>Normal (vertikal)</translation>
     </message>
