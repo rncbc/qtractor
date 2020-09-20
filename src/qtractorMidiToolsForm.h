@@ -59,7 +59,7 @@ protected slots:
 
 	// Preset management slots...
 	void presetChanged(const QString& sPreset);
-	void presetActivated(const QString& sPreset);
+	void presetActivated(int iPreset);
 	void presetSave();
 	void presetDelete();
 

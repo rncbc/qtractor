@@ -3250,14 +3250,18 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		else
 	#endif
 		if (lilv_ui_is_a(ui, g_lv2_x11_ui_class)) {
+		#ifdef CONFIG_LIBSUIL
 			ui_map.insert(ui_key(LV2_UI_TYPE_X11), ui);
+		#endif
 		#ifdef CONFIG_LV2_UI_X11
 			ui_map.insert(ui_key(LV2_UI_TYPE_X11_NATIVE), ui);
 		#endif
 		}
 		else
 		if (lilv_ui_is_a(ui, g_lv2_gtk_ui_class)) {
+		#ifdef CONFIG_LIBSUIL
 			ui_map.insert(ui_key(LV2_UI_TYPE_GTK), ui);
+		#endif
 		#ifdef CONFIG_LV2_UI_GTK2
 			ui_map.insert(ui_key(LV2_UI_TYPE_GTK_NATIVE), ui);
 		#endif
@@ -3267,9 +3271,11 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		if (lilv_ui_is_a(ui, g_lv2_qt4_ui_class))
 			ui_map.insert(ui_key(LV2_UI_TYPE_QT4), ui);
 	#else
+	#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 		else
 		if (lilv_ui_is_a(ui, g_lv2_qt5_ui_class))
 			ui_map.insert(ui_key(LV2_UI_TYPE_QT5), ui);
+	#endif
 	#endif
 	#ifdef CONFIG_LV2_UI_SHOW
 		else
@@ -3282,72 +3288,74 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	const QMap<ui_key, LilvUI *>::ConstIterator& ui_end = ui_map.constEnd();
 	QMap<ui_key, LilvUI *>::ConstIterator ui_iter = ui_begin;
 
+	const int iEditorType = editorType();
+	if (iEditorType > 0) // Must be != LV2_UI_TYPE_NONE.
+		ui_iter = ui_map.constFind(ui_key(iEditorType));
+
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions && pOptions->bQueryEditorType) {
-		const int iEditorType = editorType();
-		if (iEditorType > 0) // Must be != LV2_UI_TYPE_NONE.
-			ui_iter = ui_map.constFind(ui_key(iEditorType));
-		else
-		if (ui_map.count() > 1) {
-			const QString& sTitle
-				= type()->name();
-			const QString& sText
-				= QObject::tr("Select plug-in's editor (GUI):");
-			qtractorMessageBox mbox(qtractorMainForm::getInstance());
-			mbox.setIcon(QMessageBox::Question);
-			mbox.setWindowTitle(sTitle);
-			mbox.setText(sText);
-			mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-			QButtonGroup group;
-			for ( ; ui_iter != ui_end; ++ui_iter) {
-				const int ui_type = ui_iter.key().ui_type();
-				QRadioButton *pRadioButton;
-				switch (ui_type) {
-				case LV2_UI_TYPE_EXTERNAL:
-					pRadioButton = new QRadioButton(QObject::tr("External"));
-					break;
-				case LV2_UI_TYPE_X11:
-					pRadioButton = new QRadioButton(QObject::tr("X11"));
-					break;
-				case LV2_UI_TYPE_X11_NATIVE:
-					pRadioButton = new QRadioButton(QObject::tr("X11 (native)"));
-					break;
-				case LV2_UI_TYPE_GTK:
-					pRadioButton = new QRadioButton(QObject::tr("Gtk2"));
-					break;
-				case LV2_UI_TYPE_GTK_NATIVE:
-					pRadioButton = new QRadioButton(QObject::tr("Gtk2 (native)"));
-					break;
-			#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-				case LV2_UI_TYPE_QT4:
-					pRadioButton = new QRadioButton(QObject::tr("Qt4"));
-					break;
-			#else
-				case LV2_UI_TYPE_QT5:
-					pRadioButton = new QRadioButton(QObject::tr("Qt5"));
-					break;
-			#endif
-				case LV2_UI_TYPE_OTHER:
-				default:
-					pRadioButton = new QRadioButton(QObject::tr("Other"));
-					break;
-				}
-				pRadioButton->setChecked(ui_iter == ui_begin);
-				group.addButton(pRadioButton, ui_type);
-				mbox.addCustomButton(pRadioButton);
+	if (pOptions && pOptions->bQueryEditorType
+		&& (ui_map.count() > 1)
+		&& (0 >= iEditorType || ui_iter == ui_end)) {
+		const QString& sTitle
+			= type()->name();
+		const QString& sText
+			= QObject::tr("Select plug-in's editor (GUI):");
+		qtractorMessageBox mbox(qtractorMainForm::getInstance());
+		mbox.setIcon(QMessageBox::Question);
+		mbox.setWindowTitle(sTitle);
+		mbox.setText(sText);
+		mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+		QButtonGroup group;
+		for (ui_iter = ui_begin; ui_iter != ui_end; ++ui_iter) {
+			const int ui_type = ui_iter.key().ui_type();
+			QRadioButton *pRadioButton;
+			switch (ui_type) {
+			case LV2_UI_TYPE_EXTERNAL:
+				pRadioButton = new QRadioButton(QObject::tr("External"));
+				break;
+			case LV2_UI_TYPE_X11:
+				pRadioButton = new QRadioButton(QObject::tr("X11"));
+				break;
+			case LV2_UI_TYPE_X11_NATIVE:
+				pRadioButton = new QRadioButton(QObject::tr("X11 (native)"));
+				break;
+			case LV2_UI_TYPE_GTK:
+				pRadioButton = new QRadioButton(QObject::tr("Gtk2"));
+				break;
+			case LV2_UI_TYPE_GTK_NATIVE:
+				pRadioButton = new QRadioButton(QObject::tr("Gtk2 (native)"));
+				break;
+		#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+			case LV2_UI_TYPE_QT4:
+				pRadioButton = new QRadioButton(QObject::tr("Qt4"));
+				break;
+		#else
+		#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+			case LV2_UI_TYPE_QT5:
+				pRadioButton = new QRadioButton(QObject::tr("Qt5"));
+				break;
+		#endif
+		#endif
+			case LV2_UI_TYPE_OTHER:
+			default:
+				pRadioButton = new QRadioButton(QObject::tr("Other"));
+				break;
 			}
-			mbox.addCustomSpacer();
-			QCheckBox cbox(QObject::tr("Don't ask this again"));
-			cbox.setChecked(false);
-			cbox.blockSignals(true);
-			mbox.addButton(&cbox, QMessageBox::ActionRole);
-			if (mbox.exec() == QMessageBox::Ok)
-				ui_iter = ui_map.constFind(ui_key(group.checkedId()));
-			else
-				ui_iter = ui_end;
-			if (ui_iter != ui_end && cbox.isChecked())
-				setEditorType(ui_iter.key().ui_type());
+			pRadioButton->setChecked(ui_iter == ui_begin);
+			group.addButton(pRadioButton, ui_type);
+			mbox.addCustomButton(pRadioButton);
 		}
+		mbox.addCustomSpacer();
+		QCheckBox cbox(QObject::tr("Don't ask this again"));
+		cbox.setChecked(false);
+		cbox.blockSignals(true);
+		mbox.addButton(&cbox, QMessageBox::ActionRole);
+		if (mbox.exec() == QMessageBox::Ok)
+			ui_iter = ui_map.constFind(ui_key(group.checkedId()));
+		else
+			ui_iter = ui_end;
+		if (ui_iter != ui_end && cbox.isChecked())
+			setEditorType(ui_iter.key().ui_type());
 	}
 
 	if (ui_iter == ui_end) {
@@ -3391,9 +3399,11 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 		ui_type_uri = LV2_UI__Qt4UI;
 		break;
 #else
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 	case LV2_UI_TYPE_QT5:
 		ui_type_uri = LV2_UI__Qt5UI;
 		break;
+#endif
 #endif
 	default:
 		break;
@@ -4156,6 +4166,11 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 }
 
 
+#ifndef CONFIG_LIBSUIL
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
+
 // Alternate UI instantiation stuff.
 bool qtractorLv2Plugin::lv2_ui_instantiate (
 	const char *ui_host_uri, const char *plugin_uri,
@@ -4368,6 +4383,11 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 
 	return true;
 }
+
+#ifndef CONFIG_LIBSUIL
+#pragma GCC diagnostic pop
+#endif
+
 
 
 void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,

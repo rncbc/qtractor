@@ -59,11 +59,11 @@ protected slots:
 	void moveUpSlot();
 	void moveDownSlot();
 
-	void nameChanged(const QString&);
+	void nameChanged(const QString& sName);
 	void textChanged();
 
 	void openSlot();
-	void loadSlot(const QString&);
+	void loadSlot(int iName);
 	void saveSlot();
 	void deleteSlot();
 

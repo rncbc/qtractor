@@ -71,12 +71,12 @@ protected slots:
 	void pluginListChanged();
 
 	void trackTypeChanged();
-	void inputBusNameChanged(const QString& sBusName);
-	void outputBusNameChanged(const QString& sBusName);
+	void inputBusNameChanged(int iInputBusName);
+	void outputBusNameChanged(int iOutputBusName);
 	void busNameClicked();
 
 	void channelChanged(int iChannel);
-	void instrumentChanged(const QString& sInstrumentName);
+	void instrumentChanged(int iInstrument);
 	void bankSelMethodChanged(int iBankSelMethod);
 	void bankChanged();
 	void progChanged();

@@ -103,8 +103,8 @@ qtractorPluginForm::qtractorPluginForm (
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changePresetSlot(const QString&)));
 	QObject::connect(m_ui.PresetComboBox,
-		SIGNAL(activated(const QString &)),
-		SLOT(loadPresetSlot(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(loadPresetSlot(int)));
 	QObject::connect(m_ui.OpenPresetToolButton,
 		SIGNAL(clicked()),
 		SLOT(openPresetSlot()));
@@ -132,8 +132,8 @@ qtractorPluginForm::qtractorPluginForm (
 		SIGNAL(clicked()),
 		SLOT(returnsSlot()));
 	QObject::connect(m_ui.AuxSendBusNameComboBox,
-		SIGNAL(activated(const QString&)),
-		SLOT(changeAuxSendBusNameSlot(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(changeAuxSendBusNameSlot(int)));
 	QObject::connect(m_ui.AuxSendBusNameToolButton,
 		SIGNAL(clicked()),
 		SLOT(clickAuxSendBusNameSlot()));
@@ -510,12 +510,17 @@ void qtractorPluginForm::changePresetSlot ( const QString& sPreset )
 }
 
 
-void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
+void qtractorPluginForm::loadPresetSlot ( int iPreset )
 {
 	if (m_pPlugin == nullptr)
 		return;
 
-	if (m_iUpdate > 0 || sPreset.isEmpty())
+	if (m_iUpdate > 0)
+		return;
+
+	const QString& sPreset
+		= m_ui.PresetComboBox->itemText(iPreset);
+	if (sPreset.isEmpty())
 		return;
 
 	m_pPlugin->loadPresetEx(sPreset);
@@ -828,7 +833,7 @@ void qtractorPluginForm::returnsSlot (void)
 
 
 // Audio bus name (aux-send) select slot.
-void qtractorPluginForm::changeAuxSendBusNameSlot ( const QString& sAuxSendBusName )
+void qtractorPluginForm::changeAuxSendBusNameSlot ( int iAuxSendBusName )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
@@ -839,6 +844,11 @@ void qtractorPluginForm::changeAuxSendBusNameSlot ( const QString& sAuxSendBusNa
 
 	qtractorPluginType *pType = m_pPlugin->type();
 	if (pType->typeHint() != qtractorPluginType::AuxSend)
+		return;
+
+	const QString& sAuxSendBusName
+		= m_ui.AuxSendBusNameComboBox->itemText(iAuxSendBusName);
+	if (sAuxSendBusName.isEmpty())
 		return;
 
 	pSession->execute(

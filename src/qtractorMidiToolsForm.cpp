@@ -222,8 +222,8 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(presetChanged(const QString&)));
 	QObject::connect(m_ui.PresetNameComboBox,
-		SIGNAL(activated(const QString &)),
-		SLOT(presetActivated(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(presetActivated(int)));
 	QObject::connect(m_ui.PresetSaveToolButton,
 		SIGNAL(clicked()),
 		SLOT(presetSave()));
@@ -709,11 +709,11 @@ void qtractorMidiToolsForm::presetChanged ( const QString& sPreset )
 }
 
 
-void qtractorMidiToolsForm::presetActivated ( const QString& sPreset )
+void qtractorMidiToolsForm::presetActivated ( int iPreset )
 {
 	++m_iUpdate;
 
-	loadPreset(sPreset);
+	loadPreset(m_ui.PresetNameComboBox->itemText(iPreset));
 
 	m_iDirtyCount = 0;
 	--m_iUpdate;

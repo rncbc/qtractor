@@ -142,8 +142,8 @@ qtractorMidiSysexForm::qtractorMidiSysexForm ( QWidget *pParent )
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(nameChanged(const QString&)));
 	QObject::connect(m_ui.NameComboBox,
-		SIGNAL(activated(const QString &)),
-		SLOT(loadSlot(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(loadSlot(int)));
 	QObject::connect(m_ui.SysexTextEdit,
 		SIGNAL(textChanged()),
 		SLOT(textChanged()));
@@ -403,9 +403,14 @@ void qtractorMidiSysexForm::moveDownSlot (void)
 
 
 // Load a SysEx item.
-void qtractorMidiSysexForm::loadSlot ( const QString& sName )
+void qtractorMidiSysexForm::loadSlot ( int iName )
 {
-	if (m_iUpdateSysex > 0 || sName.isEmpty())
+	if (m_iUpdateSysex > 0)
+		return;
+
+	const QString& sName
+		= m_ui.NameComboBox->itemText(iName);
+	if (sName.isEmpty())
 		return;
 
 	// We'll need this, sure.

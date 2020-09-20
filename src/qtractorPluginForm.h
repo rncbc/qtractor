@@ -83,7 +83,7 @@ public:
 protected slots:
 
 	void changePresetSlot(const QString& sPreset);
-	void loadPresetSlot(const QString& sPreset);
+	void loadPresetSlot(int iPreset);
 	void openPresetSlot();
 	void savePresetSlot();
 	void deletePresetSlot();
@@ -98,7 +98,7 @@ protected slots:
 	void midiControlActionSlot();
 	void midiControlMenuSlot(const QPoint& pos);
 
-	void changeAuxSendBusNameSlot(const QString& sAuxSendBusName);
+	void changeAuxSendBusNameSlot(int iAuxSendBusName);
 	void clickAuxSendBusNameSlot();
 
 	void updateDirectAccessParamSlot();
