@@ -541,7 +541,8 @@ ac_qt_version_major=$ac_cv_qt_version_major
 if test $ac_qt_version_major -lt 5; then
    AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
    ac_qmake=$ac_cv_qmake
-else
+fi
+if test $ac_qt_version_major -ge 6; then
    ac_libsuil="no"
 fi
 
