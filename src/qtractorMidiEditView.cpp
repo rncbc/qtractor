@@ -541,7 +541,7 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 	const int ch = qtractorScrollView::contentsHeight() - dy;
 
 	const QFontMetrics fm(qtractorScrollView::font());
-	const int hs = fm.height();
+	const int hs = fm.ascent(); // fm.height() - 2;
 
 	QVector<QPoint> diamond;
 	if (bDrumMode) {
@@ -612,9 +612,9 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 						if (m_pEditor->isNoteNames() && hs < h1) {
 							const QString& sNoteName
 								= m_pEditor->noteName(pEvent->note());
-							const int ws = fm.horizontalAdvance(sNoteName);
-							if (ws < w1)
-								painter.drawText(x + 2, y + hs, sNoteName);
+							painter.drawText(
+								QRect(x + 2, y + 1, w1 - 6, h1 - 4),
+								Qt::AlignTop | Qt::AlignLeft, sNoteName);
 						}
 					}
 				}

@@ -904,16 +904,16 @@ fi
 # Check for LV2 new UI instantiation availability (libsuil).
 if test "x$ac_libsuil" = "xyes"; then
    PKG_CHECK_MODULES([SUIL], [suil-0], [ac_libsuil="yes"], [ac_libsuil="no"])
-fi
-if test "x$ac_libsuil" = "xyes"; then
-   AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is enabled.])
-   ac_cflags="$ac_cflags $SUIL_CFLAGS"
-   ac_libs="$ac_libs $SUIL_LIBS"
-   CFLAGS="$CFLAGS $SUIL_CFLAGS"
-   CPPFLAGS="$CPPFLAGS $SUIL_CFLAGS"
-   LIBS="$LIBS $SUIL_LIBS"
-else
-   AC_MSG_WARN([*** SUIL library will be disabled.])
+   if test "x$ac_libsuil" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is enabled.])
+      ac_cflags="$ac_cflags $SUIL_CFLAGS"
+      ac_libs="$ac_libs $SUIL_LIBS"
+      CFLAGS="$CFLAGS $SUIL_CFLAGS"
+      CPPFLAGS="$CPPFLAGS $SUIL_CFLAGS"
+      LIBS="$LIBS $SUIL_LIBS"
+   else
+      AC_MSG_WARN([*** SUIL library will be disabled.])
+   fi
 fi
 
 if test "x$ac_libsuil" = "xyes"; then

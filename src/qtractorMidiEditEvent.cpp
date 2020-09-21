@@ -571,7 +571,7 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 	int x, y;
 
 	const QFontMetrics fm(qtractorScrollView::font());
-	const int hs = fm.height();
+	const int hs = fm.ascent(); // fm.height() - 2;
 
 	qtractorTimeScale::Cursor cursor(m_pEditor->timeScale());
 	qtractorTimeScale::Node *pNode;
@@ -643,9 +643,9 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 				eventType == qtractorMidiEvent::KEYPRESS)) {
 				const QString& sNoteName
 					= m_pEditor->noteName(pEvent->note());
-				const int ws = fm.horizontalAdvance(sNoteName);
-				if (ws < w1)
-					painter.drawText(x + 2, y + hs, sNoteName);
+				painter.drawText(
+					QRect(x + 2, y + 1, w1 - 6, y0 - y),
+					Qt::AlignTop | Qt::AlignLeft, sNoteName);
 			}
 		}
 		pEvent = pEvent->next();
