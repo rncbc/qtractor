@@ -1010,7 +1010,10 @@ public:
 		typedef bool (*VST3_ModuleEntry)(void *);
 		const VST3_ModuleEntry module_entry
 			= VST3_ModuleEntry(::dlsym(m_module, "ModuleEntry"));
-		return (module_entry && module_entry(m_module));
+		if (module_entry)
+			module_entry(m_module);
+
+		return true;
 	}
 
 	bool open_descriptor ( unsigned long iIndex )

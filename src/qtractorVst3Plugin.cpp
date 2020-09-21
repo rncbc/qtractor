@@ -966,10 +966,8 @@ bool qtractorVst3PluginType::Impl::open ( unsigned long iIndex )
 	typedef bool (PLUGIN_API *VST3_ModuleEntry)(void *);
 	const VST3_ModuleEntry module_entry
 		= reinterpret_cast<VST3_ModuleEntry> (m_pFile->resolve("ModuleEntry"));
-	if (!module_entry)
-		return false;
-	if (!module_entry(m_pFile->module()))
-		return false;
+	if (module_entry)
+		module_entry(m_pFile->module());
 
 	typedef IPluginFactory *(PLUGIN_API *VST3_GetPluginFactory)();
 	const VST3_GetPluginFactory get_plugin_factory
@@ -1168,14 +1166,14 @@ void qtractorVst3PluginType::Impl::close (void)
 		m_controller->terminate();
 	}
 
-	if (m_component) {
+	if (m_component)
 		m_component->terminate();
-		typedef bool (PLUGIN_API *VST3_ModuleExit)();
-		const VST3_ModuleExit module_exit
-			= reinterpret_cast<VST3_ModuleExit> (m_pFile->resolve("ModuleExit"));
-		if (module_exit)
-			module_exit();
-	}
+
+	typedef bool (PLUGIN_API *VST3_ModuleExit)();
+	const VST3_ModuleExit module_exit
+		= reinterpret_cast<VST3_ModuleExit> (m_pFile->resolve("ModuleExit"));
+	if (module_exit)
+		module_exit();
 
 	m_controller = nullptr;
 	m_component = nullptr;
