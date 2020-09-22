@@ -70,7 +70,7 @@ static LV2_URID qtractor_lv2_urid_map (
 }
 
 static LV2_URID_Map g_lv2_urid_map =
-	{ nullptr, qtractor_lv2_urid_map };
+	{ &g_lv2_urid_map, qtractor_lv2_urid_map };
 static const LV2_Feature g_lv2_urid_map_feature =
 	{ LV2_URID_MAP_URI, &g_lv2_urid_map };
 
