@@ -1696,7 +1696,7 @@ public:
 	IPlugView *plugView () const { return m_plugView; }
 
 	// Audio processor methods.
-	bool process_reset (float srate, unsigned int nframes);
+	bool process_reset (qtractorAudioEngine *pAudioEngine);
 	void process_midi_in (unsigned char *data, unsigned int size,
 		unsigned long offset, unsigned short port);
 	void process (float **ins, float **outs, unsigned int nframes);
@@ -2402,7 +2402,7 @@ tresult qtractorVst3Plugin::Impl::notify ( Vst::IMessage *message )
 
 // Audio processor stuff (TODO)...
 bool qtractorVst3Plugin::Impl::process_reset (
-	float srate, unsigned int nframes )
+	qtractorAudioEngine *pAudioEngine )
 {
 	qtractorVst3PluginType *pType
 		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
@@ -2421,11 +2421,15 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	m_events_in.clear();
 	m_events_out.clear();
 
+	const bool         bFreewheel  = pAudioEngine->isFreewheel();
+	const unsigned int iSampleRate = pAudioEngine->sampleRate();
+	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+
 	Vst::ProcessSetup setup;
-	setup.processMode        = Vst::kRealtime;
+	setup.processMode        = (bFreewheel ? Vst::kOffline :  Vst::kRealtime);
 	setup.symbolicSampleSize = Vst::kSample32;
-	setup.maxSamplesPerBlock = nframes;
-	setup.sampleRate         = srate;
+	setup.maxSamplesPerBlock = iBufferSize;
+	setup.sampleRate         = float(iSampleRate);
 
 	if (m_processor->setupProcessing(setup) != kResultOk)
 		return false;
@@ -2440,7 +2444,7 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	m_buffers_out.channelBuffers32 = nullptr;
 
 	// Setup processor data struct...
-	m_process_data.numSamples             = nframes;
+	m_process_data.numSamples             = iBufferSize;
 	m_process_data.symbolicSampleSize     = Vst::kSample32;
 
 	if (pType->audioIns() > 0) {
@@ -2464,7 +2468,7 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	m_process_data.outputEvents           = &m_events_out;
 	m_process_data.inputParameterChanges  = &m_params_in;
 	m_process_data.outputParameterChanges = nullptr; //&m_params_out;
-	
+
 //	activate();
 
 	return true;
@@ -3059,7 +3063,6 @@ void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 	if (pAudioEngine == nullptr)
 		return;
 
-	const unsigned int iSampleRate = pAudioEngine->sampleRate();
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
 
 	// Allocate the dummy audio I/O buffers...
@@ -3084,7 +3087,7 @@ void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 		snd_midi_event_reset_decode(m_pMidiParser);
 
 	// Setup all those instances alright...
-	m_pImpl->process_reset(float(iSampleRate), iBufferSize);
+	m_pImpl->process_reset(pAudioEngine);
 
 	// (Re)issue all configuration as needed...
 	realizeConfigs();
