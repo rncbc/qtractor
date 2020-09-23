@@ -263,11 +263,14 @@ bool qtractorBusCommand::updateBus (void)
 	// Close all applicable tracks...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->inputBus() == m_pBus)
+		if (pTrack->trackType() != m_pBus->busType())
+			continue;
+		if (pTrack->inputBus()  == m_pBus)
 			pTrack->setInputBusName(m_sBusName);
 		if (pTrack->outputBus() == m_pBus)
 			pTrack->setOutputBusName(m_sBusName);
-		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus) {
+		if (pTrack->inputBus()  == m_pBus ||
+			pTrack->outputBus() == m_pBus) {
 			if (pMixer) {
 				pStrip = (pMixer->trackRack())->findStrip(pTrack->monitor());
 				if (pStrip)
@@ -290,6 +293,7 @@ bool qtractorBusCommand::updateBus (void)
 	m_pBus->setBusName(m_sBusName);
 	m_pBus->setBusMode(m_busMode);
 	m_pBus->setMonitor(m_bMonitor);
+
 	// Special case for typed buses...
 	if (pAudioBus) {
 		pAudioBus->setChannels(m_iChannels);
@@ -317,6 +321,8 @@ bool qtractorBusCommand::updateBus (void)
 	qtractorTracks *pTracks = pMainForm->tracks();
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() != m_pBus->busType())
+			continue;
 		if (pTrack->inputBusName()  == m_sBusName ||
 			pTrack->outputBusName() == m_sBusName) {
 			// Reopen track back...
@@ -429,7 +435,10 @@ bool qtractorBusCommand::deleteBus (void)
 	// Close all applicable tracks...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus) {
+		if (pTrack->trackType() != m_pBus->busType())
+			continue;
+		if (pTrack->inputBus()  == m_pBus ||
+			pTrack->outputBus() == m_pBus) {
 			pTrack->close();
 			if (pMixer) {
 				pStrip = (pMixer->trackRack())->findStrip(pTrack->monitor());

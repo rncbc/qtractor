@@ -403,7 +403,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		// Have we an audio monitor/meter?...
 		if (pAudioMonitor) {
 			const int iAudioChannels = pAudioMonitor->channels();
-			iFixedWidth += 12 * (iAudioChannels < 2	? 2 : iAudioChannels);
+			iFixedWidth += (iAudioChannels < 3 ? 24 : 8 * iAudioChannels);
 			m_pMixerMeter = new qtractorAudioMixerMeter(pAudioMonitor, this);
 		}
 		m_pPluginListView->setEnabled(true);
@@ -537,7 +537,7 @@ void qtractorMixerStrip::setMonitor ( qtractorMonitor *pMonitor )
 			const int iOldWidth = QFrame::width();
 			const int iAudioChannels = pAudioMonitor->channels();
 			const int iFixedWidth = 54
-				+ 12 * (iAudioChannels < 2 ? 2 : iAudioChannels);
+				+ (iAudioChannels < 3 ? 24 : 8 * iAudioChannels);
 			if (iFixedWidth != iOldWidth) {
 				QFrame::setFixedWidth(iFixedWidth);
 				m_pRack->updateWorkspace();

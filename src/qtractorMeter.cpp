@@ -58,7 +58,7 @@ qtractorMeterScale::qtractorMeterScale (
 	QFrame::setFrameShape(QFrame::Panel);
 	QFrame::setFrameShadow(QFrame::Sunken);
 
-//	QFrame::setMinimumWidth(16);
+	QFrame::setMinimumWidth(20);
 	QFrame::setMaximumWidth(24);
 //	QFrame::setBackgroundRole(QPalette::Mid);
 

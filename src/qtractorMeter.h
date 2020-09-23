@@ -124,7 +124,7 @@ class qtractorMeter : public QWidget
 public:
 
 	// Constructor.
-	qtractorMeter(QWidget *pParent = 0);
+	qtractorMeter(QWidget *pParent = nullptr);
 
 	// Default destructor.
 	virtual ~qtractorMeter();
@@ -179,7 +179,7 @@ class qtractorMixerMeter : public QWidget
 public:
 
 	// Constructor.
-	qtractorMixerMeter(QWidget *pParent = 0);
+	qtractorMixerMeter(QWidget *pParent = nullptr);
 
 	// Default destructor.
 	virtual ~qtractorMixerMeter();

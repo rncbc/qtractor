@@ -127,7 +127,7 @@ public:
 
 	// Constructor.
 	qtractorMidiMeter(
-		qtractorMidiMonitor *pMidiMonitor, QWidget *pParent = 0);
+		qtractorMidiMonitor *pMidiMonitor, QWidget *pParent = nullptr);
 
 	// Default destructor.
 	~qtractorMidiMeter();
@@ -193,7 +193,7 @@ public:
 
 	// Constructor.
 	qtractorMidiComboMeter(
-		qtractorMidiMonitor *pMidiMonitor, QWidget *pParent = 0);
+		qtractorMidiMonitor *pMidiMonitor, QWidget *pParent = nullptr);
 
 	// Default destructor.
 	~qtractorMidiComboMeter();
@@ -243,7 +243,7 @@ public:
 
 	// Constructor.
 	qtractorMidiMixerMeter(
-		qtractorMidiMonitor *pMidiMonitor, QWidget *pParent = 0);
+		qtractorMidiMonitor *pMidiMonitor, QWidget *pParent = nullptr);
 
 	// Default destructor.
 	~qtractorMidiMixerMeter();

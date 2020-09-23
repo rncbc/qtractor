@@ -1779,23 +1779,21 @@ void qtractorPluginList::setChannelsEx (
 	// Go, go, go...
 	m_iChannels = iChannels;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return;
-
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == nullptr)
-		return;
-
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
-
-	// Allocate new interim buffer...
+	// Allocate new interim buffers...
 	if (m_iChannels > 0) {
-		m_pppBuffers[1] = new float * [m_iChannels];
-		for (i = 0; i < m_iChannels; ++i) {
-			m_pppBuffers[1][i] = new float [iBufferSize];
-			::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
-		}
+		qtractorAudioEngine *pAudioEngine = nullptr;
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine) {
+			const unsigned int iBufferSize = pAudioEngine->bufferSize();
+			m_pppBuffers[1] = new float * [m_iChannels];
+			for (i = 0; i < m_iChannels; ++i) {
+				m_pppBuffers[1][i] = new float [iBufferSize];
+				::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
+			}
+		}	// Gone terribly wrong...
+		else m_iChannels = 0;
 	}
 
 	// Whether to turn on/off any audio monitors/meters...
