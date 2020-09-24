@@ -341,7 +341,7 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			m_piStamps[i] = 0;
 			m_pfValues[i] = m_pfPrevValues[i] = 0.0f;
-			m_pfGains[i]  = m_pfPrevGains[i] = 0.0f;
+			m_pfGains[i]  = m_pfPrevGains[i]  = 0.0f;
 		}
 		// Initial population...
 		update();

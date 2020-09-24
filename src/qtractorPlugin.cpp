@@ -1766,11 +1766,29 @@ void qtractorPluginList::setChannelsEx (
 		return;
 #endif
 
-	unsigned short i;
+	// Whether to turn on/off any audio monitors/meters later...
+	unsigned short iAudioOuts = 0;
+
+	// Reset all plugin chain channels...
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (bReset && iChannels > 0) {
+			pPlugin->freezeConfigs();
+			pPlugin->freezeValues();
+		}
+		pPlugin->setChannels(iChannels);
+		if (bReset && iChannels > 0) {
+			pPlugin->realizeConfigs();
+			pPlugin->realizeValues();
+			pPlugin->releaseConfigs();
+			pPlugin->releaseValues();
+		}
+		iAudioOuts += pPlugin->audioOuts();
+	}
 
 	// Delete old interim buffer...
 	if (m_pppBuffers[1]) {
-		for (i = 0; i < m_iChannels; ++i)
+		for (unsigned short i = 0; i < m_iChannels; ++i)
 			delete [] m_pppBuffers[1][i];
 		delete [] m_pppBuffers[1];
 		m_pppBuffers[1] = nullptr;
@@ -1788,32 +1806,12 @@ void qtractorPluginList::setChannelsEx (
 		if (pAudioEngine) {
 			const unsigned int iBufferSize = pAudioEngine->bufferSize();
 			m_pppBuffers[1] = new float * [m_iChannels];
-			for (i = 0; i < m_iChannels; ++i) {
+			for (unsigned short i = 0; i < m_iChannels; ++i) {
 				m_pppBuffers[1][i] = new float [iBufferSize];
 				::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
 			}
 		}	// Gone terribly wrong...
 		else m_iChannels = 0;
-	}
-
-	// Whether to turn on/off any audio monitors/meters...
-	unsigned short iAudioOuts = 0;
-
-	// Reset all plugin chain channels...
-	for (qtractorPlugin *pPlugin = first();
-			pPlugin; pPlugin = pPlugin->next()) {
-		if (bReset && m_iChannels > 0) {
-			pPlugin->freezeConfigs();
-			pPlugin->freezeValues();
-		}
-		pPlugin->setChannels(m_iChannels);
-		if (bReset && m_iChannels > 0) {
-			pPlugin->realizeConfigs();
-			pPlugin->realizeValues();
-			pPlugin->releaseConfigs();
-			pPlugin->releaseValues();
-		}
-		iAudioOuts += pPlugin->audioOuts();
 	}
 
 	// Turn on/off audio monitors/meters whether applicable...

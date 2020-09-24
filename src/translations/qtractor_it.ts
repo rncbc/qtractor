@@ -201,37 +201,37 @@ Fine:	%3	Lunghezza:	%4</translation>
         <translation>%1 Monitor</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="540"/>
+        <location filename="../qtractorEngineCommand.cpp" line="553"/>
         <source>create bus</source>
         <translation>crea bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="562"/>
+        <location filename="../qtractorEngineCommand.cpp" line="575"/>
         <source>update bus</source>
         <translation>aggiorna bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="579"/>
+        <location filename="../qtractorEngineCommand.cpp" line="592"/>
         <source>delete bus</source>
         <translation>rimuovi bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="602"/>
+        <location filename="../qtractorEngineCommand.cpp" line="615"/>
         <source>move bus</source>
         <translation>sposta bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="655"/>
+        <location filename="../qtractorEngineCommand.cpp" line="668"/>
         <source>bus pass-through</source>
         <translation>pass-through bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="701"/>
+        <location filename="../qtractorEngineCommand.cpp" line="714"/>
         <source>bus gain</source>
         <translation>guadagno bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="778"/>
+        <location filename="../qtractorEngineCommand.cpp" line="791"/>
         <source>bus pan</source>
         <translation>bilanciamento bus</translation>
     </message>
@@ -469,7 +469,7 @@ MIDI:	</translation>
         <translation>Attiva</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2242"/>
+        <location filename="../qtractorPlugin.cpp" line="2238"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin non trovata.</translation>
     </message>

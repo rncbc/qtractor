@@ -3033,8 +3033,8 @@ void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 	const unsigned short iOldInstances = instances();
 	const unsigned short iInstances
 		= pType->instances(iChannels, list()->isMidi());
-	// Now see if instance count changed anyhow...
-	if (iInstances == iOldInstances)
+	// Now see if instance and channel count changed anyhow...
+	if (iInstances == iOldInstances && iChannels == channels())
 		return;
 
 	// Gotta go for a while...

@@ -242,7 +242,7 @@ bool qtractorBusCommand::updateBus (void)
 				}
 			}
 			// Find the MIDI strips that have this (audio) bus monitored...
-			if ((m_pBus->busType() == qtractorTrack::Audio)) {
+			if (m_pBus->busType() == qtractorTrack::Audio && m_iChannels != iChannels) {
 				qtractorAudioBus *pAudioOutputBus
 					= static_cast<qtractorAudioBus *> (m_pBus);
 				const QList<qtractorMixerStrip *>& strips2
@@ -346,9 +346,13 @@ bool qtractorBusCommand::updateBus (void)
 				pStrip->setBus(pStrip->bus());
 		}
 		pMixer->updateBuses();
+		// Update all applicable MIDI managers too...
 		QListIterator<qtractorMidiManager *> iter2(managers);
-		while (iter2.hasNext())
-			iter2.next()->setAudioOutputMonitor(true);
+		while (iter2.hasNext()) {
+			qtractorMidiManager *pMidiManager = iter2.next();
+		//	pMidiManager->setAudioOutputMonitor(true);
+			pMidiManager->pluginList()->setChannelsEx(m_iChannels, false);
+		}
 	}
 
 	// Swap saved bus properties...

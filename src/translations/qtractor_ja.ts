@@ -200,37 +200,37 @@ End:	%3	Length:	%4</source>
         <translation>%1 モニター</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="540"/>
+        <location filename="../qtractorEngineCommand.cpp" line="553"/>
         <source>create bus</source>
         <translation>バスの作成</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="562"/>
+        <location filename="../qtractorEngineCommand.cpp" line="575"/>
         <source>update bus</source>
         <translation>バスの更新</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="579"/>
+        <location filename="../qtractorEngineCommand.cpp" line="592"/>
         <source>delete bus</source>
         <translation>バスの削除</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="602"/>
+        <location filename="../qtractorEngineCommand.cpp" line="615"/>
         <source>move bus</source>
         <translation>バスの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="655"/>
+        <location filename="../qtractorEngineCommand.cpp" line="668"/>
         <source>bus pass-through</source>
         <translation>バスのパススルー</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="701"/>
+        <location filename="../qtractorEngineCommand.cpp" line="714"/>
         <source>bus gain</source>
         <translation>バスのゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="778"/>
+        <location filename="../qtractorEngineCommand.cpp" line="791"/>
         <source>bus pan</source>
         <translation>バスのパン</translation>
     </message>
@@ -468,7 +468,7 @@ MIDI:	</translation>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2242"/>
+        <location filename="../qtractorPlugin.cpp" line="2238"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 プラグインが見つかりません。</translation>
     </message>

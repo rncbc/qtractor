@@ -2726,8 +2726,8 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	const unsigned short iInstances
 		= pLv2Type->instances(iChannels, list()->isMidi());
 
-	// Now see if instance count changed anyhow...
-	if (iInstances == iOldInstances)
+	// Now see if instance and channel count changed anyhow...
+	if (iInstances == iOldInstances && iChannels == channels())
 		return;
 
 	const LilvPlugin *plugin = pLv2Type->lv2_plugin();
@@ -2785,7 +2785,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
 
-	const unsigned short iAudioIns = pLv2Type->audioIns();
+	const unsigned short iAudioIns  = pLv2Type->audioIns();
 	const unsigned short iAudioOuts = pLv2Type->audioOuts();
 
 	if (iChannels < iAudioIns
