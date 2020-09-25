@@ -98,6 +98,10 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 
 	const QPalette& pal = qtractorScrollView::palette();
 
+	const QColor& rgbText  = pal.windowText().color();
+	const QColor& rgbLine  = pal.mid().color();
+	const QColor& rgbLight = pal.light().color();
+
 	m_pixmap = QPixmap(w, h);
 	m_pixmap.fill(pal.window().color());
 
@@ -135,9 +139,9 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		const bool bBeatIsBar = pNode->beatIsBar(iBeat);
 		if (bBeatIsBar || iPixelsPerBeat > 8) {
 			y1 = (bBeatIsBar && x >= x1 ? 0 : fm.ascent());
-			painter.setPen(pal.mid().color());
+			painter.setPen(rgbLine);
 			painter.drawLine(x, y1, x, y2);
-			painter.setPen(pal.light().color());
+			painter.setPen(rgbLight);
 			++x; painter.drawLine(x, y1, x, y2);
 		}
 		if (bBeatIsBar) {
@@ -146,7 +150,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x1 = x + 2;
 				const unsigned short iBar = pNode->barFromBeat(iBeat);
 				const QString& sBeat = QString::number(iBar + 1);
-				painter.setPen(pal.windowText().color());
+				painter.setPen(rgbText);
 				painter.drawText(x1, y1, sBeat);
 				x1 += fm.horizontalAdvance(sBeat) + 2;
 			}
@@ -178,7 +182,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 			const QString& sBar	= QString::number(iBar);
 			x1 = x;
 			y1 = fm.ascent();
-			painter.setPen(pal.windowText().color());
+			painter.setPen(rgbText);
 			painter.drawText(x1 + 2, y1, sBar);
 			x1 += fm.horizontalAdvance(sBar) + 2;
 		}
@@ -205,9 +209,9 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 					break;
 				if (x > x1) {
 					y1 = fm.ascent();
-					painter.setPen(pal.mid().color());
+					painter.setPen(rgbLine);
 					painter.drawLine(x, y1, x, y2);
-					painter.setPen(pal.light().color());
+					painter.setPen(rgbLight);
 					++x; painter.drawLine(x, y1, x, y2);
 				}
 			}
@@ -215,9 +219,9 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 		// Bar line...
 		if (x2 > x1) {
 			y1 = 0;
-			painter.setPen(pal.mid().color());
+			painter.setPen(rgbLine);
 			painter.drawLine(x2 - 1, y1, x2 - 1, y2);
-			painter.setPen(pal.light().color());
+			painter.setPen(rgbLight);
 			painter.drawLine(x2, y1, x2, y2);
 		}
 		// Move forward...

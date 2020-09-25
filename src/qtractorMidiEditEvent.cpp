@@ -295,7 +295,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	const QPalette& pal = qtractorScrollView::palette();
 
 	const QColor& rgbBase  = pal.base().color();
-	const QColor& rgbDark  = pal.mid().color();
+	const QColor& rgbLine  = pal.mid().color();
 	const QColor& rgbLight = pal.midlight().color();
 
 	m_pixmap = QPixmap(w, h);
@@ -355,7 +355,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	while (x < w) {
 		const bool bBeatIsBar = pNode->beatIsBar(iBeat);
 		if (bBeatIsBar) {
-			painter.setPen(rgbDark);
+			painter.setPen(rgbLine);
 			painter.drawLine(x - 1, 0, x - 1, h);
 			if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
 				painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
@@ -422,7 +422,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 			}
 		}
 		// Bar line...
-		painter.setPen(rgbDark);
+		painter.setPen(rgbLine);
 		painter.drawLine(x2 - 1, 0, x2 - 1, h);
 		painter.setPen(rgbLight);
 		painter.drawLine(x2, 0, x2, h);
@@ -464,7 +464,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 
 	painter.setPen(rgbLight);
 	painter.drawLine(0, y0 - 1, w, y0 - 1);
-	painter.setPen(rgbDark);
+	painter.setPen(rgbLine);
 	painter.drawLine(0, y0, w, y0);
 
 	// Draw ghost-track events in dimmed transparecncy (alpha=55)...

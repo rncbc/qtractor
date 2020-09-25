@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Undimmed octave divider lines on the piano-roll. (EXPERIMENTAL)
+
 - Fixed potential crash on changing audio output buses channel count.
   (EXPERIMENTAL)
 
