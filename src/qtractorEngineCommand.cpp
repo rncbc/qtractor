@@ -351,7 +351,13 @@ bool qtractorBusCommand::updateBus (void)
 		while (iter2.hasNext()) {
 			qtractorMidiManager *pMidiManager = iter2.next();
 		//	pMidiManager->setAudioOutputMonitor(true);
-			pMidiManager->pluginList()->setChannelsEx(m_iChannels, false);
+			qtractorPluginList *pPluginList = pMidiManager->pluginList();
+			if (pPluginList) {
+				const bool bAudioOuts
+					= pPluginList->resetChannels(m_iChannels, false);
+				pPluginList->setChannelsEx(m_iChannels);
+				pMidiManager->setAudioOutputMonitorEx(bAudioOuts);
+			}
 		}
 	}
 

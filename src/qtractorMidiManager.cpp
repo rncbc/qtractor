@@ -1393,8 +1393,13 @@ void qtractorMidiManager::setAudioOutputBus ( bool bAudioOutputBus )
 
 	createAudioOutputBus();
 
-	if (m_pAudioOutputBus)
-		m_pPluginList->setChannelsEx(m_pAudioOutputBus->channels(), true);
+	if (m_pAudioOutputBus) {
+		const unsigned short iChannels
+			= m_pAudioOutputBus->channels();
+		m_pPluginList->setChannelsEx(iChannels);
+		setAudioOutputMonitorEx(
+			m_pPluginList->resetChannels(iChannels, true));
+	}
 
 	pSession->unlock();
 }

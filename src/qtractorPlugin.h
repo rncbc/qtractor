@@ -857,9 +857,12 @@ public:
 	const QString& name() const
 		{ return m_sName; }
 
-	// Main-parameters accessors.
+	// Set all plugin chain number of channels.
 	void setChannels(unsigned short iChannels, unsigned int iFlags);
-	void setChannelsEx(unsigned short iChannels, bool bReset = false);
+	void setChannelsEx(unsigned short iChannels);
+
+	// Reset all plugin chain number of channels.
+	bool resetChannels(unsigned short iChannels, bool bReset = false);
 
 	// Reset and (re)activate all plugin chain.
 	void resetBuffers();

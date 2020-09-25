@@ -1711,7 +1711,7 @@ void qtractorPluginList::setName ( const QString& sName )
 }
 
 
-// Main-parameters accessor.
+// Set all plugin chain number of channels.
 void qtractorPluginList::setChannels (
 	unsigned short iChannels, unsigned int iFlags )
 {
@@ -1749,42 +1749,26 @@ void qtractorPluginList::setChannels (
 	}
 
 	// Allocate all new interim buffers...
-	setChannelsEx(iChannels, false);
+	setChannelsEx(iChannels);
+
+	// Reset all plugins number of channels...
+	const bool bAudioOuts = resetChannels(iChannels, false);
 
 	// FIXME: This should be better managed...
-	if (m_pMidiManager)
+	if (m_pMidiManager) {
+		m_pMidiManager->setAudioOutputMonitorEx(bAudioOuts);
 		m_pMidiManager->updateInstruments();
+	}
 }
 
 
-void qtractorPluginList::setChannelsEx (
-	unsigned short iChannels, bool bReset )
+void qtractorPluginList::setChannelsEx ( unsigned short iChannels )
 {
 #if 0
 	// Maybe we don't need to change a thing here...
 	if (iChannels == m_iChannels)
 		return;
 #endif
-
-	// Whether to turn on/off any audio monitors/meters later...
-	unsigned short iAudioOuts = 0;
-
-	// Reset all plugin chain channels...
-	for (qtractorPlugin *pPlugin = first();
-			pPlugin; pPlugin = pPlugin->next()) {
-		if (bReset && iChannels > 0) {
-			pPlugin->freezeConfigs();
-			pPlugin->freezeValues();
-		}
-		pPlugin->setChannels(iChannels);
-		if (bReset && iChannels > 0) {
-			pPlugin->realizeConfigs();
-			pPlugin->realizeValues();
-			pPlugin->releaseConfigs();
-			pPlugin->releaseValues();
-		}
-		iAudioOuts += pPlugin->audioOuts();
-	}
 
 	// Delete old interim buffer...
 	if (m_pppBuffers[1]) {
@@ -1813,10 +1797,35 @@ void qtractorPluginList::setChannelsEx (
 		}	// Gone terribly wrong...
 		else m_iChannels = 0;
 	}
+}
+
+
+// Reset all plugin chain number of channels.
+bool qtractorPluginList::resetChannels (
+	unsigned short iChannels, bool bReset )
+{
+	// Whether to turn on/off any audio monitors/meters later...
+	unsigned short iAudioOuts = 0;
+
+	// Reset all plugin chain channels...
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (bReset && iChannels > 0) {
+			pPlugin->freezeConfigs();
+			pPlugin->freezeValues();
+		}
+		pPlugin->setChannels(iChannels);
+		if (bReset && iChannels > 0) {
+			pPlugin->realizeConfigs();
+			pPlugin->realizeValues();
+			pPlugin->releaseConfigs();
+			pPlugin->releaseValues();
+		}
+		iAudioOuts += pPlugin->audioOuts();
+	}
 
 	// Turn on/off audio monitors/meters whether applicable...
-	if (m_pMidiManager)
-		m_pMidiManager->setAudioOutputMonitorEx(iAudioOuts > 0);
+	return (iAudioOuts > 0);
 }
 
 
