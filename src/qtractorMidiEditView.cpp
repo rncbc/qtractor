@@ -617,9 +617,11 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 						if (m_pEditor->isNoteNames() && hs < h1) {
 							const QString& sNoteName
 								= m_pEditor->noteName(pEvent->note());
+							painter.setPen(rgbFore.darker(160));
 							painter.drawText(
 								QRect(x + 2, y + 1, w1 - 6, h1 - 4),
 								Qt::AlignTop | Qt::AlignLeft, sNoteName);
+							painter.setPen(rgbFore);
 						}
 					}
 				}

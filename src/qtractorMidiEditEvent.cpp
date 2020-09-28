@@ -643,9 +643,11 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 				eventType == qtractorMidiEvent::KEYPRESS)) {
 				const QString& sNoteName
 					= m_pEditor->noteName(pEvent->note());
+				painter.setPen(rgbFore.darker(160));
 				painter.drawText(
 					QRect(x + 2, y + 1, w1 - 6, y0 - y),
 					Qt::AlignTop | Qt::AlignLeft, sNoteName);
+				painter.setPen(rgbFore);
 			}
 		}
 		pEvent = pEvent->next();
