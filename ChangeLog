@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Plugin search paths (View > Options... > Plugins > Paths) now lists
+  all the default and actual existing paths, instead of a blank list.
+  (EXPERIMENTAL)
+
 - Undimmed octave divider lines on the piano-roll. (EXPERIMENTAL)
 
 - Fixed potential crash on changing audio output buses channel count.
