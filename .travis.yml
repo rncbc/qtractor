@@ -20,7 +20,7 @@ before_install:
 - sudo apt-get update -qq
 
 install:
-- sudo apt-get install -qq qt515base qt515tools qt515x11extras libgl-dev; source /opt/qt515/bin/qt515-env.sh
+- sudo apt-get install -qq qt515base qt515tools libgl-dev; source /opt/qt515/bin/qt515-env.sh
 - sudo apt-get install -qq libjack-dev libasound2-dev libsndfile1-dev
 - sudo apt-get install -qq libvorbis-dev libmad0-dev libsamplerate-dev zlib1g-dev
 - sudo apt-get install -qq ladspa-sdk dssi-dev liblo-dev librubberband-dev vst3sdk-dev
