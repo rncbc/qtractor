@@ -1391,7 +1391,7 @@ void qtractorTrackForm::instrumentChanged ( int iInstrument )
 	if (m_iDirtySetup > 0)
 		return;
 
-	updateBanks(m_ui.InputBusNameComboBox->itemText(iInstrument),
+	updateBanks(m_ui.InstrumentComboBox->itemText(iInstrument),
 		-1, // m_ui.BankSelMethodComboBox->currentItem(),
 		midiBank(),
 		midiProg());
