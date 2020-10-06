@@ -685,11 +685,6 @@ if (CONFIG_LV2_UI_GTK2)
   endif ()
 endif ()
 
-# Check for VST/X11 support.
-if (CONFIG_VST)
-  find_package (Qt5 REQUIRED NO_MODULE COMPONENTS X11Extras)
-endif ()
-
 
 # Check for VST3 plug-in support.
 if (CONFIG_VST3SDK)

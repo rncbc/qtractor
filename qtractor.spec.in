@@ -40,14 +40,12 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 %if %{defined fedora}
 BuildRequires:	pkgconfig, ruby
 BuildRequires:	qt5-qtbase-devel >= 5.1, qt5-linguist
-BuildRequires:	qt5-qtx11extras-devel >= 5.1
 BuildRequires:	alsa-lib-devel
 BuildRequires:	rubberband-devel
 BuildRequires:	aubio-devel >= 0.4.1
 %else
 BuildRequires:	pkg-config
 BuildRequires:	libqt5-qtbase-devel >= 5.1, libqt5-linguist
-BuildRequires:	libqt5-qtx11extras-devel >= 5.1
 BuildRequires:	alsa-devel
 BuildRequires:	librubberband-devel
 BuildRequires:  libaubio-devel >= 0.4.1

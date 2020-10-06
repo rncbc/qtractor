@@ -428,10 +428,6 @@ if (CONFIG_LIBSUIL)
   target_link_libraries (${NAME} PRIVATE ${SUIL_LIBRARIES})
 endif ()
 
-if (CONFIG_VST)
-  target_link_libraries (${NAME} PRIVATE Qt5::X11Extras)
-endif ()
-
 
 if (UNIX AND NOT APPLE)
   install (TARGETS ${NAME} RUNTIME

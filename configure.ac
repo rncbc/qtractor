@@ -1527,19 +1527,6 @@ if test "x$ac_nsm" = "xyes"; then
    AC_DEFINE(CONFIG_NSM, 1, [Define if NSM support is available.])
 fi
 
-# Check for VST/X11 support.
-if test "x$ac_vst" = "xyes"; then
-   PKG_CHECK_MODULES([QT5X11EXTRAS], [Qt5X11Extras], [ac_qt5x11extras="yes"], [ac_qt5x11extras="no"])
-fi
-if test "x$ac_qt5x11extras" = "xyes"; then
-   ac_qx11extras="x11extras"
-   # Some recent distros (eg. fedora, debian) require this.
-   if test "x$ac_cv_lib_X11_main" = "xyes"; then
-      ac_libs="$ac_libs -lX11"
-   fi
-fi
-AC_SUBST(ac_qx11extras)
-
 # Check for unique/single instance support.
 if test "x$ac_xunique" = "xyes"; then
    PKG_CHECK_MODULES([QT5NETWORK], [Qt5Network], [ac_qt5network="yes"], [ac_qt5network="no"])

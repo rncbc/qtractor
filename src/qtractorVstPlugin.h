@@ -44,10 +44,6 @@
 #if defined(Q_WS_X11)
 #define CONFIG_VST_X11
 #endif
-#else
-#if defined(QT_X11EXTRAS_LIB)
-#define CONFIG_VST_X11
-#endif
 #endif
 
 // Forward decls.
@@ -193,11 +189,11 @@ public:
 	// Editor widget forward decls.
 	class EditorWidget;
 
-#ifdef CONFIG_VST_X11
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_VST_X11
 	// Global X11 event filter.
 	static bool x11EventFilter(void *pvEvent);
-#endif
+#endif	// CONFIG_VST_X11
 #endif
 
 	// All parameters update method.

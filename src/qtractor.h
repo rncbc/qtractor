@@ -30,10 +30,6 @@
 #if defined(Q_WS_X11)
 #define CONFIG_X11
 #endif
-#else
-#if defined(QT_X11EXTRAS_LIB)
-#define CONFIG_X11
-#endif
 #endif
 
 

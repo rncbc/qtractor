@@ -49,19 +49,17 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #endif
 
 
-#ifdef CONFIG_VST_X11
-
-#include <QX11Info>
-
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_VST_X11
+#include <QX11Info>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
+#endif	// CONFIG_VST_X11
 #else
 #include <QWindow>
 #endif
 
-#endif	// CONFIG_VST_X11
 
 
 #if !defined(VST_2_3_EXTENSIONS)
@@ -112,8 +110,8 @@ const int effFlagsProgramChunks = 32;
 //---------------------------------------------------------------------
 // qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
 
-#ifdef CONFIG_VST_X11
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_VST_X11
 
 static int g_iXError = 0;
 
@@ -165,8 +163,8 @@ static Window getXChildWindow ( Display *pDisplay, Window w )
 	return wChild;
 }
 
-#endif
 #endif // CONFIG_VST_X11
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -184,16 +182,16 @@ public:
 	EditorWidget(QWidget *pParent = nullptr,
 		Qt::WindowFlags wflags = Qt::WindowFlags())
 		: QWidget(pParent, wflags),
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	#ifdef CONFIG_VST_X11
 		m_pDisplay(QX11Info::display()),
-	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		m_wVstEditor(0),
 		m_pVstEventProc(nullptr),
 		m_bButtonPress(false),
+	#endif	// CONFIG_VST_X11
 	#else
 		m_pWindow(nullptr),
 	#endif
-	#endif	// CONFIG_VST_X11
 		m_pVstPlugin(nullptr)
 		{ QWidget::setAttribute(Qt::WA_QuitOnClose, false); }
 
@@ -208,10 +206,11 @@ public:
 		// Start the proper (child) editor...
 		long  value = 0;
 		void *ptr = nullptr;
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	#ifdef CONFIG_VST_X11
 		value = (long) m_pDisplay;
-	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		ptr = (void *) QWidget::winId();
+	#endif // CONFIG_VST_X11
 	#else
 		m_pWindow = new QWindow();
 		m_pWindow->create();
@@ -223,7 +222,6 @@ public:
 		QWidget::setLayout(pVBoxLayout);
 		ptr = (void *) m_pWindow->winId();
 	#endif
-	#endif // CONFIG_VST_X11
 
 		// Launch the custom GUI editor...
 		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
@@ -243,13 +241,13 @@ public:
 				QWidget::setFixedSize(w, h);
 		}
 
-	#ifdef CONFIG_VST_X11
 	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+	#ifdef CONFIG_VST_X11
 		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) QWidget::winId());
 		if (m_wVstEditor)
 			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
-	#endif
 	#endif	// CONFIG_VST_X11
+	#endif
 
 		g_vstEditors.append(this);
 	}
@@ -268,18 +266,16 @@ public:
 		if (iIndex >= 0)
 			g_vstEditors.removeAt(iIndex);
 
-	#ifdef CONFIG_VST_X11
 	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		if (m_pWindow) {
 			m_pWindow->destroy();
 			delete m_pWindow;
 		}
 	#endif
-	#endif	// CONFIG_VST_X11
 	}
 
-#ifdef CONFIG_VST_X11
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_VST_X11
 	// Local X11 event filter.
 	bool x11EventFilter(XEvent *pEvent)
 	{
@@ -306,8 +302,8 @@ public:
 			return false;
 		}
 	}
-#endif
 #endif	// CONFIG_VST_X11
+#endif
 
 	qtractorVstPlugin *plugin() const
 		{ return m_pVstPlugin; }
@@ -334,8 +330,8 @@ protected:
 			m_pVstPlugin->closeEditor();
 	}
 
-#ifdef CONFIG_VST_X11
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_VST_X11
 	void moveEvent(QMoveEvent *pMoveEvent)
 	{
 		QWidget::moveEvent(pMoveEvent);
@@ -344,22 +340,22 @@ protected:
 		//	QWidget::update();
 		}
 	}
-#endif
 #endif	// CONFIG_VST_X11
+#endif
 
 private:
 
 	// Instance variables...
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_VST_X11
 	Display   *m_pDisplay;
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	Window     m_wVstEditor;
 	XEventProc m_pVstEventProc;
 	bool       m_bButtonPress;
+#endif	// CONFIG_VST_X11
 #else
 	QWindow   *m_pWindow;
 #endif
-#endif	// CONFIG_VST_X11
 
 	qtractorVstPlugin *m_pVstPlugin;
 };
