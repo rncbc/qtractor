@@ -489,13 +489,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Продукт: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1327"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1318"/>
         <location filename="../qtractorVstPlugin.cpp" line="666"/>
         <source>Vendor: </source>
         <translation>Производитель: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1300"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1291"/>
         <location filename="../qtractorVstPlugin.cpp" line="674"/>
         <source>Version: </source>
         <translation>Версия: </translation>
@@ -866,17 +866,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1294"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1285"/>
         <source>Name: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1314"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1305"/>
         <source>Category: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1321"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1312"/>
         <source>Categories: </source>
         <translation type="unfinished"></translation>
     </message>

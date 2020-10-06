@@ -69,9 +69,6 @@
 #endif
 
 #ifdef CONFIG_VST3_XCB
-#if defined(QT_X11EXTRAS_LIB)
-#include <QX11Info>
-#endif
 #include <xcb/xcb.h>
 #endif
 
@@ -772,21 +769,15 @@ void qtractorVst3PluginHost::openXcbConnection (void)
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVst3PluginHost::openXcbConnection()");
 	#endif
-	#ifdef QT_X11EXTRAS_LIB
-		m_pXcbConnection = QX11Info::connection();
-	#else
-		m_pXcbConnection = xcb_connect(nullptr, nullptr);
-	#endif
-		m_iXcbFileDescriptor = xcb_get_file_descriptor(m_pXcbConnection);
+		m_pXcbConnection = ::xcb_connect(nullptr, nullptr);
+		m_iXcbFileDescriptor = ::xcb_get_file_descriptor(m_pXcbConnection);
 	}
 }
 
 void qtractorVst3PluginHost::closeXcbConnection (void)
 {
 	if (m_pXcbConnection) {
-	#ifndef QT_X11EXTRAS_LIB
-		xcb_disconnect(m_pXcbConnection);
-	#endif
+		::xcb_disconnect(m_pXcbConnection);
 		m_pXcbConnection = nullptr;
 		m_iXcbFileDescriptor = 0;
 	#ifdef CONFIG_DEBUG
@@ -1166,14 +1157,14 @@ void qtractorVst3PluginType::Impl::close (void)
 		m_controller->terminate();
 	}
 
-	if (m_component)
+	if (m_component) {
 		m_component->terminate();
-
-	typedef bool (PLUGIN_API *VST3_ModuleExit)();
-	const VST3_ModuleExit module_exit
-		= reinterpret_cast<VST3_ModuleExit> (m_pFile->resolve("ModuleExit"));
-	if (module_exit)
-		module_exit();
+		typedef bool (PLUGIN_API *VST3_ModuleExit)();
+		const VST3_ModuleExit module_exit
+			= reinterpret_cast<VST3_ModuleExit> (m_pFile->resolve("ModuleExit"));
+		if (module_exit)
+			module_exit();
+	}
 
 	m_controller = nullptr;
 	m_component = nullptr;
