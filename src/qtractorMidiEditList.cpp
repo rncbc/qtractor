@@ -292,6 +292,10 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 	// Were we pending on some sounding note?
 	dragNoteOff();
 
+	// Are we allowed to preview this?
+	if (!m_pEditor->isSendNotes())
+		iVelocity = -1;
+
 	// Now for the sounding new one...
 	if (iNote >= 0) {
 		// This stands for the keyboard area...
@@ -329,6 +333,8 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 		qtractorScrollView::viewport()->update(
 			QRect(contentsToViewport(m_rectNote.topLeft()),
 			m_rectNote.size()));
+		// Propagate this to the proper piano-roll...
+		m_pEditor->editView()->dragNoteOn(iNote, iVelocity);
 	}
 }
 
@@ -375,7 +381,6 @@ void qtractorMidiEditList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_posDrag   = pos;
 		// Are we keying in some keyboard?
 		dragNoteOn(pos);
-		m_pEditor->editView()->dragNoteOn(pos);
 		break;
 	default:
 		break;
@@ -400,7 +405,6 @@ void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			pMouseEvent->modifiers() & Qt::ControlModifier, false);
 		// Are we keying in some keyboard?
 		dragNoteOn(pos);
-		m_pEditor->editView()->dragNoteOn(pos);
 		break;
 	case DragStart:
 		// Rubber-band starting...
@@ -420,7 +424,6 @@ void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	default:
 		// Are we hovering in some keyboard?
 		dragNoteOn(pos, -1);
-		m_pEditor->editView()->dragNoteOn(pos, -1);
 		break;
 	}
 

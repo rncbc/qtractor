@@ -69,7 +69,6 @@ public:
 	qtractorMidiEvent::EventType eventType() const;
 
 	// Single note-on/off handlers.
-	void dragNoteOn(const QPoint& pos, int iVelocity = 1);
 	void dragNoteOn(int iNote, int iVelocity = 1);
 	void dragNoteOff();
 

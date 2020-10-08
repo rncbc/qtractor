@@ -222,16 +222,6 @@ qtractorMidiEvent::EventType qtractorMidiEditView::eventType (void) const
 }
 
 
-// Single note-on position handler.
-void qtractorMidiEditView::dragNoteOn ( const QPoint& pos, int iVelocity )
-{
-	// Compute new key cordinates...
-	const int ch = qtractorScrollView::contentsHeight();
-	const int hk = m_pEditor->editList()->itemHeight();
-	dragNoteOn((ch - pos.y()) / hk, iVelocity);
-}
-
-
 // Single note-on handler.
 void qtractorMidiEditView::dragNoteOn ( int iNote, int iVelocity )
 {
@@ -242,17 +232,22 @@ void qtractorMidiEditView::dragNoteOn ( int iNote, int iVelocity )
 	// Were we pending on some sounding note?
 	dragNoteOff();
 
+	// Are we allowed to preview this?
+	if (!m_pEditor->isSendNotes())
+		iVelocity = -1;
+
 	// Now for the sounding new one...
 	if (iNote >= 0) {
 		// This stands for the keyboard area...
 		QWidget *pViewport = qtractorScrollView::viewport();
-		const int w  = pViewport->width();
+		const int wk = pViewport->width();
 		const int hk = m_pEditor->editList()->itemHeight();
+		const int xk = 0; // moot ntl.
 		const int yk = ((127 - iNote) * hk) + 1;
 		// This is the new note on...
 		m_iNoteOn = iNote;
 		m_iNoteVel = iVelocity;
-		m_rectNote.setRect(0, yk, w, hk);
+		m_rectNote.setRect(xk, yk, wk, hk);
 		// Otherwise, reset any pending note...
 		qtractorScrollView::viewport()->update(
 			QRect(contentsToViewport(m_rectNote.topLeft()),
