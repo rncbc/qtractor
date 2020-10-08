@@ -64,6 +64,9 @@ qtractorMidiEditView::qtractorMidiEditView (
 
 	m_eventType = qtractorMidiEvent::NOTEON;
 
+	m_iNoteOn  = -1;
+	m_iNoteVel = -1;
+
 	// Zoom tool widgets
 	m_pVzoomIn    = new QToolButton(this);
 	m_pVzoomOut   = new QToolButton(this);
@@ -216,6 +219,60 @@ void qtractorMidiEditView::setEventType (
 qtractorMidiEvent::EventType qtractorMidiEditView::eventType (void) const
 {
 	return m_eventType;
+}
+
+
+// Single note-on position handler.
+void qtractorMidiEditView::dragNoteOn ( const QPoint& pos, int iVelocity )
+{
+	// Compute new key cordinates...
+	const int ch = qtractorScrollView::contentsHeight();
+	const int hk = m_pEditor->editList()->itemHeight();
+	dragNoteOn((ch - pos.y()) / hk, iVelocity);
+}
+
+
+// Single note-on handler.
+void qtractorMidiEditView::dragNoteOn ( int iNote, int iVelocity )
+{
+	// If it ain't changed we won't change it ;)
+	if (iNote == m_iNoteOn && m_iNoteVel >= iVelocity)
+		return;
+
+	// Were we pending on some sounding note?
+	dragNoteOff();
+
+	// Now for the sounding new one...
+	if (iNote >= 0) {
+		// This stands for the keyboard area...
+		QWidget *pViewport = qtractorScrollView::viewport();
+		const int w  = pViewport->width();
+		const int hk = m_pEditor->editList()->itemHeight();
+		const int yk = ((127 - iNote) * hk) + 1;
+		// This is the new note on...
+		m_iNoteOn = iNote;
+		m_iNoteVel = iVelocity;
+		m_rectNote.setRect(0, yk, w, hk);
+		// Otherwise, reset any pending note...
+		qtractorScrollView::viewport()->update(
+			QRect(contentsToViewport(m_rectNote.topLeft()),
+			m_rectNote.size()));
+	}
+}
+
+
+// Single note-on handler.
+void qtractorMidiEditView::dragNoteOff (void)
+{
+	if (m_iNoteOn < 0)
+		return;
+
+	// Turn off old note...
+	m_iNoteOn = m_iNoteVel = -1;
+
+	qtractorScrollView::viewport()->update(
+		QRect(contentsToViewport(m_rectNote.topLeft()),
+		m_rectNote.size()));
 }
 
 
@@ -651,6 +708,15 @@ void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect 
 		pPainter->fillRect(xs, rect.top(), xs + ws, rect.bottom(), m_gradRight);
 #endif
 	m_pEditor->paintDragState(this, pPainter);
+
+	// Are we sticking in some note?
+	if (m_iNoteOn >= 0) {
+		pPainter->fillRect(QRect(
+			contentsToViewport(m_rectNote.topLeft()),
+			m_rectNote.size()),	m_iNoteVel > 0
+				? QColor(255,   0, 120, 40)
+				: QColor(120, 120, 255, 40));
+	}
 
 	// Draw special play/edit-head/tail headers...
 	const int cx = qtractorScrollView::contentsX();

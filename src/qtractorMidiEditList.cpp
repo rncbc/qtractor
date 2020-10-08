@@ -51,6 +51,7 @@ qtractorMidiEditList::qtractorMidiEditList (
 
 	m_iItemHeight = ItemHeightBase;
 	m_dragState = DragNone;
+
 	m_iNoteOn  = -1;
 	m_iNoteVel = -1;
 
@@ -248,7 +249,7 @@ void qtractorMidiEditList::updatePixmap ( int /*cx*/, int cy )
 }
 
 
-// Draw the time scale.
+// Draw the piano keyboard.
 void qtractorMidiEditList::drawContents ( QPainter *pPainter, const QRect& rect )
 {
 	pPainter->drawPixmap(rect, m_pixmap, rect);
@@ -269,6 +270,15 @@ void qtractorMidiEditList::contentsYMovingSlot ( int /*cx*/, int cy )
 {
 	if (qtractorScrollView::contentsY() != cy)
 		qtractorScrollView::setContentsPos(qtractorScrollView::contentsX(), cy);
+}
+
+
+// Piano keyboard note-on position handler.
+void qtractorMidiEditList::dragNoteOn ( const QPoint& pos, int iVelocity )
+{
+	// Compute new key cordinates...
+	const int ch = qtractorScrollView::contentsHeight();
+	dragNoteOn((ch - pos.y()) / m_iItemHeight, iVelocity);
 }
 
 
@@ -323,15 +333,6 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 }
 
 
-// Piano keyboard note-on position handler.
-void qtractorMidiEditList::dragNoteOn ( const QPoint& pos, int iVelocity )
-{
-	// Compute new key cordinates...
-	const int ch = qtractorScrollView::contentsHeight();
-	dragNoteOn((ch - pos.y()) / m_iItemHeight, iVelocity);
-}
-
-
 // Piano keyboard note-on handler.
 void qtractorMidiEditList::dragNoteOff (void)
 {
@@ -347,6 +348,8 @@ void qtractorMidiEditList::dragNoteOff (void)
 	qtractorScrollView::viewport()->update(
 		QRect(contentsToViewport(m_rectNote.topLeft()),
 		m_rectNote.size()));
+
+	m_pEditor->editView()->dragNoteOff();
 }
 
 
@@ -372,6 +375,7 @@ void qtractorMidiEditList::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_posDrag   = pos;
 		// Are we keying in some keyboard?
 		dragNoteOn(pos);
+		m_pEditor->editView()->dragNoteOn(pos);
 		break;
 	default:
 		break;
@@ -396,6 +400,7 @@ void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			pMouseEvent->modifiers() & Qt::ControlModifier, false);
 		// Are we keying in some keyboard?
 		dragNoteOn(pos);
+		m_pEditor->editView()->dragNoteOn(pos);
 		break;
 	case DragStart:
 		// Rubber-band starting...
@@ -415,6 +420,7 @@ void qtractorMidiEditList::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	default:
 		// Are we hovering in some keyboard?
 		dragNoteOn(pos, -1);
+		m_pEditor->editView()->dragNoteOn(pos, -1);
 		break;
 	}
 

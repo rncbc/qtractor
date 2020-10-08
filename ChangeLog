@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor mouse hovering effect extended to whole current
+  note line on main view (piano-roll; eye-candy++). (EXPERIMENTAL)
+
 - Plugin search paths (View > Options... > Plugins > Paths) now lists
   all the default and actual existing paths, instead of a blank list.
   (EXPERIMENTAL)

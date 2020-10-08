@@ -64,13 +64,9 @@ public:
 	// Overall contents update.
 	void updateContents();
 
-	// Piano keyboard note-on handler.
-	void dragNoteOn(int iNote, int iVelocity = 1);
-
-	// Piano keyboard note-on position handler.
+	// Piano keyboard note-on/off handlers.
 	void dragNoteOn(const QPoint& pos, int iVelocity = 1);
-
-	// Piano keyboard note-off handler.
+	void dragNoteOn(int iNote, int iVelocity = 1);
 	void dragNoteOff();
 
 protected:

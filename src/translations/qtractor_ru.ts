@@ -7009,7 +7009,7 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorMidiEditList</name>
     <message>
-        <location filename="../qtractorMidiEditList.cpp" line="212"/>
+        <location filename="../qtractorMidiEditList.cpp" line="213"/>
         <source>C%1</source>
         <translation>C%1</translation>
     </message>
@@ -7062,17 +7062,17 @@ Length:	%3</source>
 <context>
     <name>qtractorMidiEditView</name>
     <message>
-        <location filename="../qtractorMidiEditView.cpp" line="79"/>
+        <location filename="../qtractorMidiEditView.cpp" line="82"/>
         <source>Zoom in (vertical)</source>
         <translation>Приблизить по вертикали</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditView.cpp" line="80"/>
+        <location filename="../qtractorMidiEditView.cpp" line="83"/>
         <source>Zoom out (vertical)</source>
         <translation>Отдалить по вертикали</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditView.cpp" line="81"/>
+        <location filename="../qtractorMidiEditView.cpp" line="84"/>
         <source>Zoom reset (vertical)</source>
         <translation>Исходный масштаб по вертикали</translation>
     </message>

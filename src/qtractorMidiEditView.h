@@ -68,6 +68,11 @@ public:
 	void setEventType(qtractorMidiEvent::EventType eventType);
 	qtractorMidiEvent::EventType eventType() const;
 
+	// Single note-on/off handlers.
+	void dragNoteOn(const QPoint& pos, int iVelocity = 1);
+	void dragNoteOn(int iNote, int iVelocity = 1);
+	void dragNoteOff();
+
 protected:
 
 	// Virtual size hint.
@@ -135,6 +140,11 @@ private:
 	// Optional edge-shadow gradient brushes.
 	QBrush m_gradLeft;
 	QBrush m_gradRight;
+
+	// The current note being keyed on.
+	int    m_iNoteOn;
+	int    m_iNoteVel;
+	QRect  m_rectNote;
 };
 
 
