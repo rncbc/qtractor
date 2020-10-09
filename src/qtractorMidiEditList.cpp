@@ -303,25 +303,27 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 		const int w = pViewport->width();
 		int wk = (w << 1) / 3;
 		int xk = w - wk;
+		int yk, hk, k;
 	#if 0
-		float yk, hk;
-		int k  = (iNote % 12);
+		k = (iNote % 12);
 		if (k >= 5) ++k;
-		if ((k % 2) == 0) {
-			hk = (12.0f * m_iItemHeight) / 7.0f;
-			yk = (128 * m_iItemHeight) - ((iNote / 12) * 7 + (k / 2) + 1) * hk + 2;
+		if ((k & 1) == 0) {
+			const int ch = (128 * m_iItemHeight);
+			const float h1 = (12.0f * m_iItemHeight) / 7.0f;
+			hk = int(h1);
+			yk = ch - int(h1 * ((iNote / 12) * 7 + (k >> 1) + 1));
 		} else {
 			hk = m_iItemHeight;
 			yk = ((127 - iNote) * hk) + 1;
 			wk = (wk * 6) / 10;
 		}
 	#else
-		const int hk = m_iItemHeight;
-		int k = (iNote % 12);
+		k = (iNote % 12);
 		if (k >= 5) ++k;
 		if (k % 2)
 			wk = (wk * 6) / 10;
-		const int yk = ((127 - iNote) * hk) + 1;
+		hk = m_iItemHeight;
+		yk = ((127 - iNote) * hk) + 1;
 	#endif
 		// This is the new note on...
 		m_iNoteOn = iNote;
