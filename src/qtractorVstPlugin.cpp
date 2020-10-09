@@ -216,7 +216,7 @@ public:
 		m_pWindow->create();
 		QWidget *pContainer = QWidget::createWindowContainer(m_pWindow, this);
 		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
-		pVBoxLayout->setMargin(0);
+		pVBoxLayout->setContentsMargins(0, 0, 0, 0);
 		pVBoxLayout->setSpacing(0);
 		pVBoxLayout->addWidget(pContainer);
 		QWidget::setLayout(pVBoxLayout);
