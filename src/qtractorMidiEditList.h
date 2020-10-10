@@ -24,6 +24,7 @@
 
 #include "qtractorScrollView.h"
 
+#include <QPainterPath>
 #include <QPixmap>
 
 
@@ -127,7 +128,8 @@ private:
 	// The current note being keyed on.
 	int    m_iNoteOn;
 	int    m_iNoteVel;
-	QRect  m_rectNote;
+
+	QPainterPath  m_pathNote;
 };
 
 

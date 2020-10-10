@@ -256,11 +256,12 @@ void qtractorMidiEditList::drawContents ( QPainter *pPainter, const QRect& rect 
 
 	// Are we sticking in some note?
 	if (m_iNoteOn >= 0) {
-		pPainter->fillRect(QRect(
-			contentsToViewport(m_rectNote.topLeft()),
-			m_rectNote.size()),	m_iNoteVel > 0
-				? QColor(255,   0, 120, 120)
-				: QColor(120, 120, 255, 120));
+		const QPoint& cpos = m_pathNote.boundingRect().toRect().topLeft();
+		const QPoint& vpos = contentsToViewport(cpos);
+		const QPainterPath& path = m_pathNote.translated(vpos - cpos);
+		pPainter->fillPath(path, m_iNoteVel > 0
+			? QColor(255,   0, 120, 120)
+			: QColor(120, 120, 255, 120));
 	}
 }
 
@@ -301,40 +302,49 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 		// This stands for the keyboard area...
 		QWidget *pViewport = qtractorScrollView::viewport();
 		const int w = pViewport->width();
-		int wk = (w << 1) / 3;
-		int xk = w - wk;
-		int yk, hk, k;
-	#if 0
-		k = (iNote % 12);
+		const float wk = float(w << 1) / 3.0f;
+		const float xk = float(w - wk) + 2.0f;
+		float yk, hk;
+		int k = (iNote % 12);
 		if (k >= 5) ++k;
-		if ((k & 1) == 0) {
-			const int ch = (128 * m_iItemHeight);
-			const float h1 = (12.0f * m_iItemHeight) / 7.0f;
-			hk = int(h1);
-			yk = ch - int(h1 * ((iNote / 12) * 7 + (k >> 1) + 1));
+		m_pathNote.clear();
+		hk = float(m_iItemHeight);
+		yk = float(127 - iNote) * hk + 1.0f;
+		QPainterPath path1;
+		path1.addRect(xk, yk, (wk * 6.0f) / 10.0f, hk);
+	#if 1
+		if (k & 1) {
+			m_pathNote = path1;
 		} else {
-			hk = m_iItemHeight;
-			yk = ((127 - iNote) * hk) + 1;
-			wk = (wk * 6) / 10;
+			const int ch = (128 * m_iItemHeight);
+			hk = (12.0f * m_iItemHeight) / 7.0f;
+			yk = float(ch) - (hk * ((iNote / 12) * 7 + (k >> 1) + 1));
+			m_pathNote.addRect(xk, yk, wk, hk);
+			if (k == 0 || k == 2 || k == 6 || k == 8 || k == 10) {
+				m_pathNote = m_pathNote.subtracted(
+					path1.translated(0.0f, - 0.5f * hk - 1.5f));
+			}
+			if (k == 2 || k == 4 || k == 8 || k == 10 || k == 12) {
+				m_pathNote = m_pathNote.subtracted(
+					path1.translated(0.0f, + 0.5f * hk + 1.5f));
+			}
 		}
 	#else
-		k = (iNote % 12);
-		if (k >= 5) ++k;
-		if (k % 2)
-			wk = (wk * 6) / 10;
-		hk = m_iItemHeight;
-		yk = ((127 - iNote) * hk) + 1;
+		if (k & 1) {
+			m_pathNote = path1;
+		} else {
+			m_pathNote.addRect(xk, yk, wk, hk);
+		}
 	#endif
 		// This is the new note on...
 		m_iNoteOn = iNote;
 		m_iNoteVel = iVelocity;
-		m_rectNote.setRect(xk, yk, wk, hk);
 		if (m_iNoteVel > 0)
 			m_pEditor->sendNote(m_iNoteOn, m_iNoteVel);
 		// Otherwise, reset any pending note...
+		const QRect& rect = m_pathNote.boundingRect().toRect();
 		qtractorScrollView::viewport()->update(
-			QRect(contentsToViewport(m_rectNote.topLeft()),
-			m_rectNote.size()));
+			QRect(contentsToViewport(rect.topLeft()), rect.size()));
 		// Propagate this to the proper piano-roll...
 		m_pEditor->editView()->dragNoteOn(iNote, iVelocity);
 	}
@@ -353,9 +363,9 @@ void qtractorMidiEditList::dragNoteOff (void)
 
 	m_iNoteOn = m_iNoteVel = -1;
 
+	const QRect& rect = m_pathNote.boundingRect().toRect();
 	qtractorScrollView::viewport()->update(
-		QRect(contentsToViewport(m_rectNote.topLeft()),
-		m_rectNote.size()));
+		QRect(contentsToViewport(rect.topLeft()), rect.size()));
 
 	m_pEditor->editView()->dragNoteOff();
 }
