@@ -256,10 +256,7 @@ void qtractorMidiEditList::drawContents ( QPainter *pPainter, const QRect& rect 
 
 	// Are we sticking in some note?
 	if (m_iNoteOn >= 0) {
-		const QPoint& cpos = m_pathNote.boundingRect().toRect().topLeft();
-		const QPoint& vpos = contentsToViewport(cpos);
-		const QPainterPath& path = m_pathNote.translated(vpos - cpos);
-		pPainter->fillPath(path, m_iNoteVel > 0
+		pPainter->fillPath(m_pathNote, m_iNoteVel > 0
 			? QColor(255,   0, 120, 120)
 			: QColor(120, 120, 255, 120));
 	}
@@ -269,6 +266,8 @@ void qtractorMidiEditList::drawContents ( QPainter *pPainter, const QRect& rect 
 // To have keyline in v-sync with main view.
 void qtractorMidiEditList::contentsYMovingSlot ( int /*cx*/, int cy )
 {
+	dragNoteOff();
+
 	if (qtractorScrollView::contentsY() != cy)
 		qtractorScrollView::setContentsPos(qtractorScrollView::contentsX(), cy);
 }
@@ -342,9 +341,11 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 		if (m_iNoteVel > 0)
 			m_pEditor->sendNote(m_iNoteOn, m_iNoteVel);
 		// Otherwise, reset any pending note...
-		const QRect& rect = m_pathNote.boundingRect().toRect();
-		qtractorScrollView::viewport()->update(
-			QRect(contentsToViewport(rect.topLeft()), rect.size()));
+		const QRect&  rect = m_pathNote.boundingRect().toRect();
+		const QPoint& cpos = rect.topLeft();
+		const QPoint& vpos = contentsToViewport(cpos);
+		m_pathNote.translate(vpos - cpos);
+		qtractorScrollView::viewport()->update(QRect(vpos, rect.size()));
 		// Propagate this to the proper piano-roll...
 		m_pEditor->editView()->dragNoteOn(iNote, iVelocity);
 	}
@@ -364,8 +365,7 @@ void qtractorMidiEditList::dragNoteOff (void)
 	m_iNoteOn = m_iNoteVel = -1;
 
 	const QRect& rect = m_pathNote.boundingRect().toRect();
-	qtractorScrollView::viewport()->update(
-		QRect(contentsToViewport(rect.topLeft()), rect.size()));
+	qtractorScrollView::viewport()->update(rect);
 
 	m_pEditor->editView()->dragNoteOff();
 }
