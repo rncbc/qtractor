@@ -307,11 +307,11 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 		float yk, hk;
 		int k = (iNote % 12);
 		if (k >= 5) ++k;
-		m_pathNote.clear();
 		hk = float(m_iItemHeight);
 		yk = float(127 - iNote) * hk + 1.0f;
 		QPainterPath path1;
 		path1.addRect(xk, yk, (wk * 6.0f) / 10.0f, hk);
+		m_pathNote = QPainterPath();
 	#if 1
 		if (k & 1) {
 			m_pathNote = path1;
