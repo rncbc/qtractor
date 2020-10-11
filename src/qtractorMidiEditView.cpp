@@ -242,7 +242,7 @@ void qtractorMidiEditView::dragNoteOn ( int iNote, int iVelocity )
 		QWidget *pViewport = qtractorScrollView::viewport();
 		const int wk = pViewport->width();
 		const int hk = m_pEditor->editList()->itemHeight();
-		const int xk = 0; // moot ntl.
+		const int xk = qtractorScrollView::contentsX();
 		const int yk = ((127 - iNote) * hk) + 1;
 		// This is the new note on...
 		m_iNoteOn = iNote;
