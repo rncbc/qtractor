@@ -1059,9 +1059,13 @@ void qtractorSession::setCurrentTrack ( qtractorTrack *pTrack )
 
 	m_pCurrentTrack = pTrack;
 
-	// notify auto-plugin-deactivate
+	// Notify auto-plugin-deactivate...
 	if (m_pCurrentTrack != pOldCurrentTrack)
 		autoDeactivatePlugins();
+
+	// Current-track plugin editors (GUI) auto-focus...
+	if (m_pCurrentTrack && m_pCurrentTrack->pluginList())
+		m_pCurrentTrack->pluginList()->setEditorVisibleAll(true);
 }
 
 qtractorTrack *qtractorSession::currentTrack (void) const

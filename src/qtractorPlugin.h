@@ -1031,6 +1031,9 @@ public:
 
 	void resetLatency();
 
+	// Plugin editors (GUI) visibility (auto-focus).
+	void setEditorVisibleAll(bool bVisible);
+
 protected:
 
 	// Check/sanitize plugin file-path.

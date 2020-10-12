@@ -3337,6 +3337,10 @@ void qtractorVst3Plugin::setEditorVisible ( bool bVisible )
 		else
 			setEditorPos(m_pEditorWidget->pos());
 		m_pEditorWidget->setVisible(bVisible);
+		if (bVisible) {
+			m_pEditorWidget->raise();
+			m_pEditorWidget->activateWindow();
+		}
 	}
 }
 
