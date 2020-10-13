@@ -276,9 +276,32 @@ void qtractorMidiEditList::contentsYMovingSlot ( int /*cx*/, int cy )
 // Piano keyboard note-on position handler.
 void qtractorMidiEditList::dragNoteOn ( const QPoint& pos, int iVelocity )
 {
+	dragNoteOn(noteAt(pos), iVelocity);
+}
+
+
+// Piano keyboard note descriminator.
+int qtractorMidiEditList::noteAt ( const QPoint& pos ) const
+{
 	// Compute new key cordinates...
 	const int ch = qtractorScrollView::contentsHeight();
-	dragNoteOn((ch - pos.y()) / m_iItemHeight, iVelocity);
+
+	QWidget *pViewport = qtractorScrollView::viewport();
+	const int xk = (pViewport->width() << 1) / 3;
+	int iNote = (ch - pos.y()) / m_iItemHeight;
+	if (pos.x() >=  xk) {
+		int k = (iNote % 12);
+		if (k >= 5) ++k;
+		if (k & 1) {
+			const int yk = ch - (12 * iNote * m_iItemHeight / 7);
+			if (pos.y() >= yk)
+				++iNote;
+			else
+				--iNote;
+		}
+	}
+
+	return iNote;
 }
 
 
@@ -298,54 +321,15 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 
 	// Now for the sounding new one...
 	if (iNote >= 0) {
-		// This stands for the keyboard area...
-		QWidget *pViewport = qtractorScrollView::viewport();
-		const int w = pViewport->width();
-		const float wk = float(w << 1) / 3.0f;
-		const float xk = float(w - wk) + 2.0f;
-		float yk, hk;
-		int k = (iNote % 12);
-		if (k >= 5) ++k;
-		hk = float(m_iItemHeight);
-		yk = float(127 - iNote) * hk + 1.0f;
-		QPainterPath path1;
-		path1.addRect(xk, yk, (wk * 6.0f) / 10.0f, hk);
-		m_pathNote = QPainterPath();
-	#if 1
-		if (k & 1) {
-			m_pathNote = path1;
-		} else {
-			const int ch = (128 * m_iItemHeight);
-			hk = (12.0f * m_iItemHeight) / 7.0f;
-			yk = float(ch) - (hk * ((iNote / 12) * 7 + (k >> 1) + 1));
-			m_pathNote.addRect(xk, yk, wk, hk);
-			if (k == 0 || k == 2 || k == 6 || k == 8 || k == 10) {
-				m_pathNote = m_pathNote.subtracted(
-					path1.translated(0.0f, - 0.5f * hk - 1.5f));
-			}
-			if (k == 2 || k == 4 || k == 8 || k == 10 || k == 12) {
-				m_pathNote = m_pathNote.subtracted(
-					path1.translated(0.0f, + 0.5f * hk + 1.5f));
-			}
-		}
-	#else
-		if (k & 1) {
-			m_pathNote = path1;
-		} else {
-			m_pathNote.addRect(xk, yk, wk, hk);
-		}
-	#endif
 		// This is the new note on...
 		m_iNoteOn = iNote;
 		m_iNoteVel = iVelocity;
+		m_pathNote = notePath(iNote);
 		if (m_iNoteVel > 0)
 			m_pEditor->sendNote(m_iNoteOn, m_iNoteVel);
 		// Otherwise, reset any pending note...
-		const QRect&  rect = m_pathNote.boundingRect().toRect();
-		const QPoint& cpos = rect.topLeft();
-		const QPoint& vpos = contentsToViewport(cpos);
-		m_pathNote.translate(vpos - cpos);
-		qtractorScrollView::viewport()->update(QRect(vpos, rect.size()));
+		const QRect& rect = m_pathNote.boundingRect().toRect();
+		qtractorScrollView::viewport()->update(rect);
 		// Propagate this to the proper piano-roll...
 		m_pEditor->editView()->dragNoteOn(iNote, iVelocity);
 	}
@@ -368,6 +352,57 @@ void qtractorMidiEditList::dragNoteOff (void)
 	qtractorScrollView::viewport()->update(rect);
 
 	m_pEditor->editView()->dragNoteOff();
+}
+
+
+// Piano keyboard note-key shaper.
+QPainterPath qtractorMidiEditList::notePath ( int iNote ) const
+{
+	QPainterPath path;
+
+	// This stands for the keyboard area...
+	QWidget *pViewport = qtractorScrollView::viewport();
+	const int w = pViewport->width();
+	const float wk = float(w << 1) / 3.0f;
+	const float xk = float(w - wk) + 2.0f;
+	float yk, hk;
+	int k = (iNote % 12);
+	if (k >= 5) ++k;
+	hk = float(m_iItemHeight);
+	yk = float(127 - iNote) * hk + 1.0f;
+	QPainterPath path1;
+	path1.addRect(xk, yk, (wk * 6.0f) / 10.0f, hk);
+#if 1
+	if (k & 1) {
+		path = path1;
+	} else {
+		const int ch = (128 * m_iItemHeight);
+		hk = (12.0f * m_iItemHeight) / 7.0f;
+		yk = float(ch) - (hk * ((iNote / 12) * 7 + (k >> 1) + 1));
+		path.addRect(xk, yk, wk, hk);
+		if (k == 0 || k == 2 || k == 6 || k == 8 || k == 10) {
+			path = path.subtracted(
+				path1.translated(0.0f, - 0.5f * hk - 1.5f));
+		}
+		if (k == 2 || k == 4 || k == 8 || k == 10 || k == 12) {
+			path = path.subtracted(
+				path1.translated(0.0f, + 0.5f * hk + 1.5f));
+		}
+	}
+#else
+	if (k & 1) {
+		path = path1;
+	} else {
+		path.addRect(xk, yk, wk, hk);
+	}
+#endif
+
+	const QRect&  rect = path.boundingRect().toRect();
+	const QPoint& cpos = rect.topLeft();
+	const QPoint& vpos = contentsToViewport(cpos);
+	path.translate(vpos - cpos);
+
+	return path;
 }
 
 
@@ -531,10 +566,9 @@ bool qtractorMidiEditList::eventFilter ( QObject *pObject, QEvent *pEvent )
 				const QPoint& pos
 					= qtractorScrollView::viewportToContents(pHelpEvent->pos());
 				const QString sToolTip("%1 (%2)");
-				const int ch = qtractorScrollView::contentsHeight();
-				const int note = (ch - pos.y()) / m_iItemHeight;
+				const int iNote = noteAt(pos);
 				QToolTip::showText(pHelpEvent->globalPos(),
-					sToolTip.arg(m_pEditor->noteName(note)).arg(note));
+					sToolTip.arg(m_pEditor->noteName(iNote)).arg(iNote));
 				return true;
 			}
 		}

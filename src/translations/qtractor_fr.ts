@@ -8660,40 +8660,40 @@ Longueur:	%3</translation>
         <translation>enlever plage</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4232"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4235"/>
         <source>move</source>
         <translation>déplacer</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4268"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4271"/>
         <source>edit</source>
         <translation>éditer</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4268"/>
-        <location filename="../qtractorMidiEditor.cpp" line="4497"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4271"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4500"/>
         <source>resize</source>
         <translation>redimensionner</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4347"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4350"/>
         <source>rescale</source>
         <translation>remise à l&apos;échelle</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4436"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4439"/>
         <source>paste</source>
         <translation>coller</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5184"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5187"/>
         <source>Time:	%1
 Type:	</source>
         <translation>Temps:	%1
 Type:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5193"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5196"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration: %4</source>
@@ -8702,14 +8702,14 @@ Velocité:	%3
 Durée: %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5200"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5203"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation>Touche Appuyée (%1) %2
 Valeur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5206"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5209"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -8718,7 +8718,7 @@ Nom:	%2
 Valeur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5212"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5215"/>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -8727,7 +8727,7 @@ Nom:	%2
 Valeur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5218"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5221"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -8736,7 +8736,7 @@ Nom:	%2
 Valeur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5224"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5227"/>
         <source>Control 14 (%1)
 Name:	%2
 Value:	%3</source>
@@ -8745,34 +8745,34 @@ Nom:	%2
 Valeur:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5230"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5233"/>
         <source>Pgm Change (%1)</source>
         <translation>Pgm Change (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5234"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5237"/>
         <source>Chan Press (%1)</source>
         <translation>Can Appuyé (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5238"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5241"/>
         <source>Pitch Bend (%1)</source>
         <translation>Pitch Bend (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5245"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5248"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 bytes)
 Données :</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5261"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5264"/>
         <source>Unknown (%1)</source>
         <translation>Inconnu (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5521"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5524"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>

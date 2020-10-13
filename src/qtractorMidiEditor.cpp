@@ -3302,7 +3302,10 @@ void qtractorMidiEditor::dragMoveUpdate (
 	}
 
 	// Let note hovering shine...
-	m_pEditList->dragNoteOn(pos, -1);
+	const int iNote
+		= (pScrollView->contentsHeight() - pos.y())
+		/ m_pEditList->itemHeight();
+	m_pEditList->dragNoteOn(iNote, -1);
 }
 
 

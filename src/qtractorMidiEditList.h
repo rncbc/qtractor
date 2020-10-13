@@ -66,7 +66,6 @@ public:
 	void updateContents();
 
 	// Piano keyboard note-on/off handlers.
-	void dragNoteOn(const QPoint& pos, int iVelocity = 1);
 	void dragNoteOn(int iNote, int iVelocity = 1);
 	void dragNoteOff();
 
@@ -97,6 +96,15 @@ protected:
 
 	// Trap for help/tool-tip events.
 	bool eventFilter(QObject *pObject, QEvent *pEvent);
+
+	// Piano keyboard note-on/off handlers.
+	void dragNoteOn(const QPoint& pos, int iVelocity = 1);
+
+	// Piano keyboard note descriminator.
+	int noteAt(const QPoint& pos) const;
+
+	// Piano keyboard note-key shaper.
+	QPainterPath notePath(int iNote) const;
 
 protected slots:
 
