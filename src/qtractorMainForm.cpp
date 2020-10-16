@@ -8006,6 +8006,11 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 }
 
 
+#ifdef CONFIG_JACK_SESSION
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 // Custom (JACK) session event handler.
 void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 {
@@ -8075,8 +8080,12 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 		close();
 	}
 
-#endif
+#endif	// CONFIG_JACK_SESSION
 }
+
+#ifdef CONFIG_JACK_SESSION
+#pragma GCC diagnostic pop
+#endif
 
 
 // Custom (JACK) transport sync event handler.

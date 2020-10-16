@@ -689,6 +689,11 @@ bool qtractorAudioEngine::init (void)
 }
 
 
+#ifdef CONFIG_JACK_SESSION
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 // Device engine activation method.
 bool qtractorAudioEngine::activate (void)
 {
@@ -747,10 +752,8 @@ bool qtractorAudioEngine::activate (void)
 
 #ifdef CONFIG_JACK_SESSION
 	// Set JACK session event callback.
-	if (jack_set_session_callback) {
-		jack_set_session_callback(m_pJackClient,
-			qtractorAudioEngine_session_event, this);
-	}
+	jack_set_session_callback(m_pJackClient,
+		qtractorAudioEngine_session_event, this);
 #endif
 
 	// Set JACK transport sync callback.
@@ -798,6 +801,10 @@ bool qtractorAudioEngine::activate (void)
 	// We're now ready and running...
 	return true;
 }
+
+#ifdef CONFIG_JACK_SESSION
+#pragma GCC diagnostic pop
+#endif
 
 
 // Device engine start method.
