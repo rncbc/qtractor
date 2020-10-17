@@ -17,9 +17,9 @@
  </description>
  <launchable type="desktop-id">qtractor.desktop</launchable>
  <provides>
-​  <binary>qtractor</binary>
-​  <binary>qtractor_plugin_scan</binary>
-​ </provides>
+  <binary>qtractor</binary>
+  <binary>qtractor_plugin_scan</binary>
+ </provides>
  <screenshots>
   <screenshot type="default">
    <image>https://qtractor.sourceforge.io/image/qtractor-screenshot16.png</image>
