@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,9 +41,12 @@
 #include <QDomElement>
 #include <QTextStream>
 
+#include <QLibrary>
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
+
+#include <dlfcn.h>
 
 #include <math.h>
 
@@ -54,11 +57,9 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 }
 #endif
 
-
-// A common function for special platforms...
-//
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-typedef void (*qtractorPluginFile_Function)(void);
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
 #endif
 
 
@@ -70,50 +71,43 @@ typedef void (*qtractorPluginFile_Function)(void);
 bool qtractorPluginFile::open (void)
 {
 	// Check whether already open...
-	if (++m_iOpenCount > 1)
+	if (m_module && ++m_iOpenCount > 1)
 		return true;
 
-	// ATTN: Not really needed, as it would be
-	// loaded automagically on resolve(), but ntl...
-	if (!QLibrary::load()) {
-		m_iOpenCount = 0;
-		return false;
+	// Do the openning dance...
+	if (m_module == nullptr) {
+		const QByteArray aFilename = m_sFilename.toUtf8();
+		m_module = ::dlopen(aFilename.constData(), RTLD_LOCAL | RTLD_LAZY);
 	}
 
-	// Do the openning dance...
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-	qtractorPluginFile_Function pfnInit
-		= (qtractorPluginFile_Function) QLibrary::resolve("_init");
-	if (pfnInit)
-		(*pfnInit)();
-#endif
-
 	// Done alright.
-	return true;
+	return (m_module != nullptr);
 }
 
 
 void qtractorPluginFile::close (void)
 {
-	if (!QLibrary::isLoaded())
+	if (!m_module)
 		return;
 
 	if (--m_iOpenCount > 0)
 		return;
 
-	// Do the closing dance...
-#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32)
-	qtractorPluginFile_Function pfnFini
-		= (qtractorPluginFile_Function) QLibrary::resolve("_fini");
-	if (pfnFini)
-		(*pfnFini)();
-#endif
-
 	// ATTN: Might be really needed, as it would
 	// otherwise pile up hosing all available RAM
 	// until freed and unloaded on exit();
 	// nb. some VST might choke on auto-unload.
-	if (m_bAutoUnload) QLibrary::unload();
+	if (m_bAutoUnload) {
+		::dlclose(m_module);
+		m_module = nullptr;
+	}
+}
+
+
+// Symbol resolver.
+void *qtractorPluginFile::resolve ( const char *symbol )
+{
+	return (m_module ? ::dlsym(m_module, symbol) : nullptr);
 }
 
 
@@ -192,6 +186,9 @@ qtractorPluginType::Hint qtractorPluginType::hintFromText (
 	if (sText == "VST")
 		return Vst;
 	else
+	if (sText == "VST3")
+		return Vst3;
+	else
 	if (sText == "LV2")
 		return Lv2;
 	else
@@ -215,6 +212,9 @@ QString qtractorPluginType::textFromHint (
 	else
 	if (typeHint == Vst)
 		return "VST";
+	else
+	if (typeHint == Vst3)
+		return "VST3";
 	else
 	if (typeHint == Lv2)
 		return "LV2";
@@ -265,6 +265,9 @@ qtractorPlugin::~qtractorPlugin (void)
 	// Clear out all dependables...
 	qDeleteAll(m_params);
 	m_params.clear();
+
+	qDeleteAll(m_properties);
+	m_properties.clear();
 
 	// Rest of stuff goes cleaned too...
 	if (m_pType) delete m_pType;
@@ -427,7 +430,7 @@ void qtractorPlugin::ActivateObserver::update ( bool bUpdate )
 void qtractorPlugin::setValueList ( const QStringList& vlist )
 {
 //	qSort(m_params); -- does not work with QHash...
-	QMap<unsigned long, qtractorPluginParam *> params;
+	Params params;
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator& param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param)
@@ -436,7 +439,7 @@ void qtractorPlugin::setValueList ( const QStringList& vlist )
 	// Split it up...
 	clearValues();
 	QStringListIterator val(vlist);
-	QMapIterator<unsigned long, qtractorPluginParam *> iter(params);
+	QMapIterator<unsigned long, Param *> iter(params);
 	while (val.hasNext() && iter.hasNext())
 		m_values.index[iter.next().key()] = val.next().toFloat();
 }
@@ -444,7 +447,7 @@ void qtractorPlugin::setValueList ( const QStringList& vlist )
 QStringList qtractorPlugin::valueList (void) const
 {
 //	qSort(m_params); -- does not work with QHash...
-	QMap<unsigned long, qtractorPluginParam *> params;
+	Params params;
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator& param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param)
@@ -452,7 +455,7 @@ QStringList qtractorPlugin::valueList (void) const
 
 	// Join it up...
 	QStringList vlist;
-	QMapIterator<unsigned long, qtractorPluginParam *> iter(params);
+	QMapIterator<unsigned long, Param *> iter(params);
 	while (iter.hasNext())
 		vlist.append(QString::number(iter.next().value()->value()));
 
@@ -504,6 +507,25 @@ void qtractorPlugin::clearItems (void)
 {
 	qDeleteAll(m_items);
 	m_items.clear();
+}
+
+
+// Paremeters list accessor.
+void qtractorPlugin::addParam ( qtractorPlugin::Param *pParam )
+{
+	pParam->reset();
+	if (pParam->isLogarithmic())
+		pParam->observer()->setLogarithmic(true);
+	m_params.insert(pParam->index(), pParam);
+	m_paramNames.insert(pParam->name(), pParam);
+}
+
+
+// Properties registry accessor.
+void qtractorPlugin::addProperty ( qtractorPlugin::Property *pProp )
+{
+	m_properties.insert(pProp->index(), pProp);
+	m_propertyKeys.insert(pProp->key(), pProp);
 }
 
 
@@ -828,20 +850,14 @@ bool qtractorPlugin::loadPresetFileEx ( const QString& sFilename )
 
 
 // Plugin parameter lookup.
-qtractorPluginParam *qtractorPlugin::findParam ( unsigned long iIndex ) const
-{
-	return m_params.value(iIndex, nullptr);
-}
-
-qtractorPluginParam *qtractorPlugin::findParamName ( const QString& sName ) const
+qtractorPlugin::Param *qtractorPlugin::paramFromName ( const QString& sName ) const
 {
 	return m_paramNames.value(sName, nullptr);
 }
 
 
-
 // Direct access parameter
-qtractorPluginParam *qtractorPlugin::directAccessParam (void) const
+qtractorPlugin::Param *qtractorPlugin::directAccessParam (void) const
 {
 	if (isDirectAccessParam())
 		return findParam(m_iDirectAccessParamIndex);
@@ -918,8 +934,8 @@ void qtractorPlugin::freezeValues (void)
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator& param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
-		unsigned long iIndex = pParam->index();
+		Param *pParam = param.value();
+		const unsigned long iIndex = pParam->index();
 		m_values.names[iIndex] = pParam->name();
 		m_values.index[iIndex] = pParam->value();
 	}
@@ -968,10 +984,10 @@ void qtractorPlugin::realizeValues (void)
 	const ValueIndex::ConstIterator& param_end = m_values.index.constEnd();
 	for ( ; param != param_end; ++param) {
 		unsigned long iIndex = param.key();
-		qtractorPluginParam *pParam = findParam(iIndex);
+		Param *pParam = findParam(iIndex);
 		const QString& sName = m_values.names.value(iIndex);
 		if (!sName.isEmpty() && !(pParam && sName == pParam->name())) {
-			qtractorPluginParam *pParamEx = findParamName(sName);
+			Param *pParamEx = m_paramNames.value(sName, nullptr);
 			if (pParamEx)
 				pParam = pParamEx;
 		}
@@ -1053,7 +1069,7 @@ void qtractorPlugin::saveValues (
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		Param *pParam = param.value();
 		QDomElement eParam = pDocument->createElement("param");
 		eParam.setAttribute("name", pParam->name());
 		eParam.setAttribute("index", QString::number(pParam->index()));
@@ -1068,7 +1084,7 @@ void qtractorPlugin::saveValues (
 void qtractorPlugin::updateParamValue (
 	unsigned long iIndex, float fValue, bool bUpdate )
 {
-	qtractorPluginParam *pParam = findParam(iIndex);
+	Param *pParam = findParam(iIndex);
 	if (pParam)
 		pParam->updateValue(fValue, bUpdate);
 }
@@ -1094,12 +1110,13 @@ void qtractorPlugin::saveControllers (
 	if (pMidiControl == nullptr)
 		return;
 
-	unsigned long iActivateSubjectIndex = activateSubjectIndex();
 	qtractorMidiControl::Controllers controllers;
+
+	unsigned long iActivateSubjectIndex = activateSubjectIndex();
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		Param *pParam = param.value();
 		qtractorMidiControlObserver *pObserver = pParam->observer();
 		if (pMidiControl->isMidiObserverMapped(pObserver)) {
 			qtractorMidiControl::Controller *pController
@@ -1118,6 +1135,28 @@ void qtractorPlugin::saveControllers (
 		}
 		if (iActivateSubjectIndex < pParam->index())
 			iActivateSubjectIndex = pParam->index();
+	}
+
+	Properties::ConstIterator prop = m_properties.constBegin();
+	const Properties::ConstIterator prop_end = m_properties.constEnd();
+	for ( ; prop != prop_end; ++prop) {
+		Property *pProp = prop.value();
+		qtractorMidiControlObserver *pObserver = pProp->observer();
+		if (pMidiControl->isMidiObserverMapped(pObserver)) {
+			qtractorMidiControl::Controller *pController
+				= new qtractorMidiControl::Controller;
+			pController->name = pProp->key();
+			pController->index = pProp->key_index();
+			pController->ctype = pObserver->type();
+			pController->channel = pObserver->channel();
+			pController->param = pObserver->param();
+			pController->logarithmic = pObserver->isLogarithmic();
+			pController->feedback = pObserver->isFeedback();
+			pController->invert = pObserver->isInvert();
+			pController->hook = pObserver->isHook();
+			pController->latch = pObserver->isLatch();
+			controllers.append(pController);
+		}
 	}
 
 	qtractorMidiControlObserver *pActivateObserver = activateObserver();
@@ -1164,10 +1203,16 @@ void qtractorPlugin::mapControllers (
 		//	setActivateSubjectIndex(0); // hack down!
 		//	iActivateSubjectIndex = 0;
 		} else {
-			qtractorPluginParam *pParam = nullptr;
-			if (!pController->name.isEmpty())
-				pParam = findParamName(pController->name);
-			if (pParam == nullptr)
+			Param *pParam = nullptr;
+			Property *pProp = nullptr;
+			if (!pController->name.isEmpty()) {
+				pProp = m_propertyKeys.value(pController->name, nullptr);
+				if (pProp && pController->index == pProp->key_index())
+					pObserver = pProp->observer();
+				else
+					pParam = m_paramNames.value(pController->name, nullptr);
+			}
+			if (pParam == nullptr && pProp == nullptr)
 				pParam = findParam(pController->index);
 			if (pParam)
 				pObserver = pParam->observer();
@@ -1217,12 +1262,12 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	pCurveFile->clear();
 	pCurveFile->setBaseDir(pSession->sessionDir());
 
-	unsigned short iParam = 0;
+	unsigned short iItem = 0;
 	unsigned long iActivateSubjectIndex = activateSubjectIndex();
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		Param *pParam = param.value();
 		qtractorCurve *pCurve = pParam->subject()->curve();
 		if (pCurve) {
 			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
@@ -1230,16 +1275,16 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 			pCurveItem->index = pParam->index();
 			if (pParam->isToggled()	|| pParam->isInteger()
 				|| !pOptions->bSaveCurve14bit) {
-				const unsigned short controller = (iParam % 0x7f);
+				const unsigned short controller = (iItem % 0x7f);
 				if (controller == 0x00 || controller == 0x20)
-					++iParam; // Avoid bank-select controllers, please.
+					++iItem; // Avoid bank-select controllers, please.
 				pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
-				pCurveItem->param = (iParam % 0x7f);
+				pCurveItem->param = (iItem % 0x7f);
 			} else {
 				pCurveItem->ctype = qtractorMidiEvent::NONREGPARAM;
-				pCurveItem->param = (iParam % 0x3fff);
+				pCurveItem->param = (iItem % 0x3fff);
 			}
-			pCurveItem->channel = ((iParam / 0x7f) % 16);
+			pCurveItem->channel = ((iItem / 0x7f) % 16);
 			pCurveItem->mode = pCurve->mode();
 			pCurveItem->process = pCurve->isProcess();
 			pCurveItem->capture = pCurve->isCapture();
@@ -1248,10 +1293,45 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 			pCurveItem->color = pCurve->color();
 			pCurveItem->subject = pCurve->subject();
 			pCurveFile->addItem(pCurveItem);
-			++iParam;
+			++iItem;
 		}
 		if (iActivateSubjectIndex < pParam->index())
 			iActivateSubjectIndex = pParam->index();
+	}
+
+	Properties::ConstIterator prop = m_properties.constBegin();
+	const Properties::ConstIterator prop_end = m_properties.constEnd();
+	for ( ; prop != prop_end; ++prop) {
+		Property *pProp = prop.value();
+		if (!pProp->isAutomatable())
+			continue;
+		qtractorCurve *pCurve = pProp->subject()->curve();
+		if (pCurve) {
+			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
+			pCurveItem->name = pProp->key();
+			pCurveItem->index = pProp->key_index();
+			if (pProp->isToggled()	|| pProp->isInteger()
+				|| !pOptions->bSaveCurve14bit) {
+				const unsigned short controller = (iItem % 0x7f);
+				if (controller == 0x00 || controller == 0x20)
+					++iItem; // Avoid bank-select controllers, please.
+				pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
+				pCurveItem->param = (iItem % 0x7f);
+			} else {
+				pCurveItem->ctype = qtractorMidiEvent::NONREGPARAM;
+				pCurveItem->param = (iItem % 0x3fff);
+			}
+			pCurveItem->channel = ((iItem / 0x7f) % 16);
+			pCurveItem->mode = pCurve->mode();
+			pCurveItem->process = pCurve->isProcess();
+			pCurveItem->capture = pCurve->isCapture();
+			pCurveItem->locked = pCurve->isLocked();
+			pCurveItem->logarithmic = pCurve->isLogarithmic();
+			pCurveItem->color = pCurve->color();
+			pCurveItem->subject = pCurve->subject();
+			pCurveFile->addItem(pCurveItem);
+			++iItem;
+		}
 	}
 
 	// Activate subject curve...
@@ -1263,10 +1343,10 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 		pCurveItem->index = activateSubjectIndex();
 		pCurveItem->ctype = qtractorMidiEvent::CONTROLLER;
 		pCurveItem->channel = 0;
-		const unsigned short controller = (iParam % 0x7f);
+		const unsigned short controller = (iItem % 0x7f);
 		if (controller == 0x00 || controller == 0x20)
-			++iParam; // Avoid bank-select controllers, please.
-		pCurveItem->param = (iParam % 0x7f);
+			++iItem; // Avoid bank-select controllers, please.
+		pCurveItem->param = (iItem % 0x7f);
 		pCurveItem->mode = pCurve->mode();
 		pCurveItem->process = pCurve->isProcess();
 		pCurveItem->capture = pCurve->isCapture();
@@ -1323,10 +1403,16 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 			setActivateSubjectIndex(0); // hack down!
 			iActivateSubjectIndex = 0;
 		} else {
-			qtractorPluginParam *pParam = nullptr;
-			if (!pCurveItem->name.isEmpty())
-				pParam = findParamName(pCurveItem->name);
-			if (pParam == nullptr)
+			Param *pParam = nullptr;
+			Property *pProp = nullptr;
+			if (!pCurveItem->name.isEmpty()) {
+				pProp = m_propertyKeys.value(pCurveItem->name, nullptr);
+				if (pProp && pCurveItem->index == pProp->key_index())
+					pCurveItem->subject = pProp->subject();
+				else
+					pParam = m_paramNames.value(pCurveItem->name, nullptr);
+			}
+			if (pParam == nullptr && pProp == nullptr)
 				pParam = findParam(pCurveItem->index);
 			if (pParam)
 				pCurveItem->subject = pParam->subject();
@@ -1434,7 +1520,7 @@ bool qtractorPlugin::savePluginEx (
 				QString::number(posForm.y()), pElement);
 		}
 		const int iEditorType = editorType();
-		if (iEditorType >= 0) {
+		if (iEditorType > 0) {
 			pDocument->saveTextElement("editor-type",
 				QString::number(iEditorType), pElement);
 		}
@@ -1445,11 +1531,11 @@ bool qtractorPlugin::savePluginEx (
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginParam -- Plugin parameter (control input port) instance.
+// qtractorPlugin::Param -- Plugin parameter (control input port) instance.
 //
 
 // Current port value.
-void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
+void qtractorPlugin::Param::setValue ( float fValue, bool bUpdate )
 {
 	// Decimals caching....
 	if (m_iDecimals < 0) {
@@ -1490,10 +1576,11 @@ void qtractorPluginParam::setValue ( float fValue, bool bUpdate )
 }
 
 
-void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
+// Parameter update executive method.
+void qtractorPlugin::Param::updateValue ( float fValue, bool bUpdate )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginParam[%p]::updateValue(%g, %d)", this, fValue, int(bUpdate));
+	qDebug("qtractorPlugin::Param[%p]::updateValue(%g, %d)", this, fValue, int(bUpdate));
 #endif
 
 	// Make it a undoable command...
@@ -1505,8 +1592,18 @@ void qtractorPluginParam::updateValue ( float fValue, bool bUpdate )
 }
 
 
+// Virtual observer updater.
+void qtractorPlugin::Param::update ( float fValue, bool bUpdate )
+{
+	qtractorPlugin *pPlugin = plugin();
+	if (bUpdate && pPlugin->directAccessParamIndex() == long(index()))
+		pPlugin->updateDirectAccessParam();
+	pPlugin->updateParam(this, fValue, bUpdate);
+}
+
+
 // Constructor.
-qtractorPluginParam::Observer::Observer ( qtractorPluginParam *pParam )
+qtractorPlugin::Param::Observer::Observer ( Param *pParam )
 	: qtractorMidiControlObserver(pParam->subject()), m_pParam(pParam)
 {
 	setCurveList((pParam->plugin())->list()->curveList());
@@ -1514,14 +1611,43 @@ qtractorPluginParam::Observer::Observer ( qtractorPluginParam *pParam )
 
 
 // Virtual observer updater.
-void qtractorPluginParam::Observer::update ( bool bUpdate )
+void qtractorPlugin::Param::Observer::update ( bool bUpdate )
 {
-	qtractorMidiControlObserver::update(bUpdate);
+	m_pParam->update(qtractorMidiControlObserver::value(), bUpdate);
 
-	qtractorPlugin *pPlugin = m_pParam->plugin();
-	if (bUpdate && pPlugin->directAccessParamIndex() == long(m_pParam->index()))
-		pPlugin->updateDirectAccessParam();
-	pPlugin->updateParam(m_pParam, qtractorMidiControlObserver::value(), bUpdate);
+	qtractorMidiControlObserver::update(bUpdate);
+}
+
+
+//----------------------------------------------------------------------------
+// qtractorPlugin::Property -- Plugin property (aka. parameter) instance.
+//
+
+// Current property value.
+void qtractorPlugin::Property::setVariant ( const QVariant& value, bool bUpdate )
+{
+	// Whether it's a scalar value...
+	//
+	if (isAutomatable() && !bUpdate) {
+		// Sanitize value...
+		float fValue = value.toFloat();
+		if (fValue > maxValue())
+			fValue = maxValue();
+		else
+		if (fValue < minValue())
+			fValue = minValue();
+		setValue(fValue, false);
+	}
+
+	// Set main real value anyhow...
+	m_value = value;
+}
+
+
+// Virtual observer updater.
+void qtractorPlugin::Property::update ( float fValue, bool bUpdate )
+{
+	setVariant(fValue, bUpdate);
 }
 
 
@@ -1537,6 +1663,7 @@ qtractorPluginList::qtractorPluginList (
 		m_iMidiBank(-1), m_iMidiProg(-1),
 		m_pMidiProgramSubject(nullptr),
 		m_bAutoDeactivated(false),
+		m_bAudioOutputMonitor(false),
 		m_bLatency(false), m_iLatency(0)
 {
 	setAutoDelete(true);
@@ -1550,8 +1677,6 @@ qtractorPluginList::qtractorPluginList (
 		= qtractorMidiManager::isDefaultAudioOutputBus();
 	m_bAudioOutputAutoConnect
 		= qtractorMidiManager::isDefaultAudioOutputAutoConnect();
-	m_bAudioOutputMonitor
-		= qtractorMidiManager::isDefaultAudioOutputMonitor();
 
 	m_iAudioInsertActivated = 0;
 
@@ -1586,7 +1711,7 @@ void qtractorPluginList::setName ( const QString& sName )
 }
 
 
-// Main-parameters accessor.
+// Set all plugin chain number of channels.
 void qtractorPluginList::setChannels (
 	unsigned short iChannels, unsigned int iFlags )
 {
@@ -1624,16 +1749,20 @@ void qtractorPluginList::setChannels (
 	}
 
 	// Allocate all new interim buffers...
-	setChannelsEx(iChannels, false);
+	setChannelsEx(iChannels);
+
+	// Reset all plugins number of channels...
+	const bool bAudioOuts = resetChannels(iChannels, false);
 
 	// FIXME: This should be better managed...
-	if (m_pMidiManager)
+	if (m_pMidiManager) {
+		m_pMidiManager->setAudioOutputMonitorEx(bAudioOuts);
 		m_pMidiManager->updateInstruments();
+	}
 }
 
 
-void qtractorPluginList::setChannelsEx (
-	unsigned short iChannels, bool bReset )
+void qtractorPluginList::setChannelsEx ( unsigned short iChannels )
 {
 #if 0
 	// Maybe we don't need to change a thing here...
@@ -1641,11 +1770,9 @@ void qtractorPluginList::setChannelsEx (
 		return;
 #endif
 
-	unsigned short i;
-
 	// Delete old interim buffer...
 	if (m_pppBuffers[1]) {
-		for (i = 0; i < m_iChannels; ++i)
+		for (unsigned short i = 0; i < m_iChannels; ++i)
 			delete [] m_pppBuffers[1][i];
 		delete [] m_pppBuffers[1];
 		m_pppBuffers[1] = nullptr;
@@ -1654,40 +1781,51 @@ void qtractorPluginList::setChannelsEx (
 	// Go, go, go...
 	m_iChannels = iChannels;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return;
-
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	if (pAudioEngine == nullptr)
-		return;
-
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
-
-	// Allocate new interim buffer...
+	// Allocate new interim buffers...
 	if (m_iChannels > 0) {
-		m_pppBuffers[1] = new float * [m_iChannels];
-		for (i = 0; i < m_iChannels; ++i) {
-			m_pppBuffers[1][i] = new float [iBufferSize];
-			::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
-		}
+		qtractorAudioEngine *pAudioEngine = nullptr;
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pAudioEngine = pSession->audioEngine();
+		if (pAudioEngine) {
+			const unsigned int iBufferSize = pAudioEngine->bufferSize();
+			m_pppBuffers[1] = new float * [m_iChannels];
+			for (unsigned short i = 0; i < m_iChannels; ++i) {
+				m_pppBuffers[1][i] = new float [iBufferSize];
+				::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
+			}
+		}	// Gone terribly wrong...
+		else m_iChannels = 0;
 	}
+}
+
+
+// Reset all plugin chain number of channels.
+bool qtractorPluginList::resetChannels (
+	unsigned short iChannels, bool bReset )
+{
+	// Whether to turn on/off any audio monitors/meters later...
+	unsigned short iAudioOuts = 0;
 
 	// Reset all plugin chain channels...
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
-		if (bReset && m_iChannels > 0) {
+		if (bReset && iChannels > 0) {
 			pPlugin->freezeConfigs();
 			pPlugin->freezeValues();
 		}
-		pPlugin->setChannels(m_iChannels);
-		if (bReset && m_iChannels > 0) {
+		pPlugin->setChannels(iChannels);
+		if (bReset && iChannels > 0) {
 			pPlugin->realizeConfigs();
 			pPlugin->realizeValues();
 			pPlugin->releaseConfigs();
 			pPlugin->releaseValues();
 		}
+		iAudioOuts += pPlugin->audioOuts();
 	}
+
+	// Turn on/off audio monitors/meters whether applicable...
+	return (iAudioOuts > 0);
 }
 
 
@@ -1767,7 +1905,7 @@ void qtractorPluginList::insertPlugin (
 		pListView->setCurrentItem(pNextItem);
 	}
 
-	// update plugins for auto-plugin-deactivation...
+	// Update plugins for auto-plugin-deactivation...
 	autoDeactivatePlugins(m_bAutoDeactivated, true);
 }
 
@@ -1808,7 +1946,7 @@ void qtractorPluginList::movePlugin (
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			pCurve = pParam->subject()->curve();
 			if (pCurve && pCurve->list() == pCurveList) {
 				pCurveList->removeCurve(pCurve);
@@ -2169,11 +2307,6 @@ bool qtractorPluginList::loadElement (
 			m_bAudioOutputAutoConnect = qtractorDocument::boolFromText(ePlugin.text());
 		}
 		else
-		// Load audio output monitor flag...
-		if (ePlugin.tagName() == "audio-output-monitor") {
-			m_bAudioOutputMonitor = qtractorDocument::boolFromText(ePlugin.text());
-		}
-		else
 		// Load audio output connections...
 		if (ePlugin.tagName() == "audio-outputs") {
 			qtractorBus::loadConnects(m_audioOutputs, pDocument, &ePlugin);
@@ -2223,9 +2356,6 @@ bool qtractorPluginList::saveElement ( qtractorDocument *pDocument,
 		pDocument->saveTextElement("audio-output-auto-connect",
 			qtractorDocument::textFromBool(
 				m_pMidiManager->isAudioOutputAutoConnect()), pElement);
-		pDocument->saveTextElement("audio-output-monitor",
-			qtractorDocument::textFromBool(
-				m_pMidiManager->isAudioOutputMonitor()), pElement);
 		if (bAudioOutputBus) {
 			qtractorAudioBus *pAudioBus = m_pMidiManager->audioOutputBus();
 			if (pAudioBus) {
@@ -2264,31 +2394,40 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 {
 	if (m_bAutoDeactivated != bDeactivated || bForce) {
 		m_bAutoDeactivated  = bDeactivated;
+		unsigned short iAudioOuts = 0;
 		if (bDeactivated) {
 			bool bStopDeactivation = false;
-			// pass to all plugins bottom to top / stop for active plugins
-			// possibly connected to other tracks
+			// Pass to all plugins bottom to top;
+			// stop for any active plugins that are
+			// possibly connected to other tracks...
 			qtractorPlugin *pPlugin = last();
 			for ( ;	pPlugin && !bStopDeactivation; pPlugin = pPlugin->prev()) {
 				if (pPlugin->canBeConnectedToOtherTracks())
 					bStopDeactivation = pPlugin->isActivated();
 				else
 					pPlugin->autoDeactivatePlugin(bDeactivated);
+				iAudioOuts += pPlugin->audioOuts();
 			}
-			// (re)activate all above stopper
-			if (bStopDeactivation) {
-				for ( ; pPlugin; pPlugin = pPlugin->prev()) {
+			// (Re)activate all above stopper...
+			for ( ; pPlugin; pPlugin = pPlugin->prev()) {
+				if (bStopDeactivation)
 					pPlugin->autoDeactivatePlugin(false);
-				}
+				iAudioOuts += pPlugin->audioOuts();
 			}
 		} else {
-			// pass to all plugins top to to bottom
+			// Pass to all plugins top to to bottom...
 			for (qtractorPlugin *pPlugin = first();
 					pPlugin; pPlugin = pPlugin->next()) {
 				pPlugin->autoDeactivatePlugin(bDeactivated);
+				iAudioOuts += pPlugin->audioOuts();
 			}
 		}
-		// inform all views
+		// Take the chance to turn on/off automagically
+		// the audio monitors/meters, when applicable...
+		qtractorMidiManager *pMidiManager = midiManager();
+		if (pMidiManager)
+			pMidiManager->setAudioOutputMonitorEx(iAudioOuts > 0);
+		// Inform all views...
 		QListIterator<qtractorPluginListView *> iter(m_views);
 		while (iter.hasNext()) {
 			qtractorPluginListView *pListView = iter.next();
@@ -2365,6 +2504,17 @@ void qtractorPluginList::resetLatency (void)
 			// Accumulate latency...
 			m_iLatency += pPlugin->latency();
 		}
+	}
+}
+
+
+// Plugin editors (GUI) visibility (auto-focus).
+void qtractorPluginList::setEditorVisibleAll ( bool bVisible )
+{
+	for (qtractorPlugin *pPlugin = first();
+			pPlugin; pPlugin = pPlugin->next()) {
+		if (pPlugin->isEditorVisible())
+			pPlugin->setEditorVisible(bVisible);
 	}
 }
 
@@ -2505,6 +2655,25 @@ bool qtractorPluginList::Document::saveElement ( QDomElement *pElement )
 	}
 
 	return true;
+}
+
+
+//-------------------------------------------------------------------------
+// class qtractorPliuginList::WaitCursor - A waiting (hour-glass) helper.
+//
+
+// Constructor.
+qtractorPluginList::WaitCursor::WaitCursor (void)
+{
+	// Tell the world we'll (maybe) take some time...
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+}
+
+// Destructor.
+qtractorPluginList::WaitCursor::~WaitCursor (void)
+{
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
 }
 
 

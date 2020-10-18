@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,6 +26,7 @@
 
 #include "qtractorMidiRpn.h"
 
+#include <QRegularExpression>
 #include <QDir>
 
 
@@ -1349,11 +1350,12 @@ QString qtractorMidiFile::createFilePathRevision (
 {
 	QFileInfo fi(sFilename);
 
-	const QRegExp rxRevision("(.+)\\-(\\d+)$");
+	const QRegularExpression rxRevision("(.+)\\-(\\d+)$");
 	QString sBasename = fi.baseName();
-	if (rxRevision.exactMatch(sBasename)) {
-		sBasename = rxRevision.cap(1);
-		iRevision = rxRevision.cap(2).toInt();
+	QRegularExpressionMatch match = rxRevision.match(sBasename);
+	if (match.hasMatch()) {
+		sBasename = match.captured(1);
+		iRevision = match.captured(2).toInt();
 	}
 
 	sBasename += "-%1." + fi.completeSuffix();

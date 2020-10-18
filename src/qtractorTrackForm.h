@@ -1,7 +1,7 @@
 // qtractorTrackForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -47,7 +47,7 @@ class qtractorTrackForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorTrackForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorTrackForm(QWidget *pParent = nullptr);
 	// Destructor.
 	~qtractorTrackForm();
 
@@ -71,12 +71,12 @@ protected slots:
 	void pluginListChanged();
 
 	void trackTypeChanged();
-	void inputBusNameChanged(const QString& sBusName);
-	void outputBusNameChanged(const QString& sBusName);
+	void inputBusNameChanged(int iInputBusName);
+	void outputBusNameChanged(int iOutputBusName);
 	void busNameClicked();
 
 	void channelChanged(int iChannel);
-	void instrumentChanged(const QString& sInstrumentName);
+	void instrumentChanged(int iInstrument);
 	void bankSelMethodChanged(int iBankSelMethod);
 	void bankChanged();
 	void progChanged();
@@ -121,6 +121,9 @@ protected:
 	void updateColorText(QComboBox *pComboBox, const QColor& color);
 
 	QColor colorItem(QComboBox *pComboBox);
+
+	// Update/reset output bus name...
+	void updateOutputBusName(const QString& sBusName);
 
 	// Save/load default bus names...
 	void loadDefaultBusNames(qtractorTrack::TrackType trackType);

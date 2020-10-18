@@ -1,7 +1,7 @@
 // qtractorSession.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -403,8 +403,12 @@ public:
 	// Instrument names mapping.
 	qtractorInstrumentList *instruments() const;
 
+	// Manage curve-lists to specific tracks.
+	void acquireTrackCurveList(qtractorTrack *pTrack);
+	void releaseTrackCurveList(qtractorTrack *pTrack);
+
 	// Find track of specific curve-list.
-	qtractorTrack *findTrack(qtractorCurveList *pCurveList) const;
+	qtractorTrack *findTrackCurveList(qtractorCurveList *pCurveList) const;
 
 	// Find track of specific name.
 	qtractorTrack *findTrack(const QString& sTrackName) const;

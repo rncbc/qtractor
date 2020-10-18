@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -128,7 +128,7 @@ protected:
 			// Draw the direct access parameter value status...
 			QPolygon polyg(3);
 			qtractorPlugin *pPlugin = pItem->plugin();
-			qtractorPluginParam *pDirectAccessParam = nullptr;
+			qtractorPlugin::Param *pDirectAccessParam = nullptr;
 			qtractorMidiControlObserver *pDirectAccessObserver = nullptr;
 			if (pPlugin)
 				pDirectAccessParam = pPlugin->directAccessParam();
@@ -514,6 +514,10 @@ void qtractorPluginListView::addPlugin (void)
 	if (m_pPluginList == nullptr)
 		return;
 
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->autoSaveAsap();
+
 	qtractorPluginSelectForm selectForm(this);
 	selectForm.setPluginList(m_pPluginList);
 	if (!selectForm.exec())
@@ -891,7 +895,7 @@ void qtractorPluginListView::importPlugins (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1004,7 +1008,7 @@ void qtractorPluginListView::exportPlugins (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1329,25 +1333,6 @@ void qtractorPluginListView::audioOutputAutoConnect (void)
 }
 
 
-void qtractorPluginListView::audioOutputMonitor (void)
-{
-	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
-	if (pMidiManager == nullptr)
-		return;
-
-	// Make it an undoable command...
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return;
-
-	pSession->execute(
-		new qtractorAudioOutputMonitorCommand(pMidiManager,
-			!pMidiManager->isAudioOutputMonitor()));
-
-	emit contentsChanged();
-}
-
-
 // Show an existing plugin form slot.
 void qtractorPluginListView::itemDoubleClickedSlot ( QListWidgetItem *item )
 {
@@ -1401,7 +1386,7 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 				if (pPlugin) {
 					QString sToolTip = pItem->text(); // (pPlugin->type())->name();
 					if (pPlugin->isDirectAccessParam()) {
-						qtractorPluginParam *pDirectAccessParam
+						qtractorPlugin::Param *pDirectAccessParam
 							= pPlugin->directAccessParam();
 						if (pDirectAccessParam) {
 							sToolTip.append(QString("\n(%1: %2)")
@@ -1431,29 +1416,35 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 // trap the wheel event to change the value of the direcgAccessParameter
 void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 {
-	const QPoint& pos = pWheelEvent->pos();
-	qtractorPluginListItem *pItem
-		= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
-	if (pItem) {
-		qtractorPlugin *pPlugin = pItem->plugin();
-		qtractorPluginParam *pDirectAccessParam = nullptr;
-		qtractorMidiControlObserver *pDirectAccessObserver = nullptr;
-		if (pPlugin)
-			pDirectAccessParam = pPlugin->directAccessParam();
-		if (pDirectAccessParam)
-			pDirectAccessObserver = pDirectAccessParam->observer();
-		if (pDirectAccessObserver) {
-			const bool bLogarithmic = pDirectAccessParam->isLogarithmic();
-			float fValue = pDirectAccessObserver->value();
-			const float fScale = pDirectAccessObserver->scaleFromValue(
-				fValue, bLogarithmic);
-			float fDelta = (pWheelEvent->delta() < 0 ? -0.1f : +0.1f);
-			if (!pDirectAccessParam->isInteger())
-				fDelta *= 0.5f;
-			fValue = pDirectAccessObserver->valueFromScale(
-				fScale + fDelta, bLogarithmic);
-			pDirectAccessParam->updateValue(fValue, true);
-			return;
+	if (pWheelEvent->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+		const QPoint& pos = pWheelEvent->position().toPoint();
+	#else
+		const QPoint& pos = pWheelEvent->pos();
+	#endif
+		qtractorPluginListItem *pItem
+			= static_cast<qtractorPluginListItem *> (QListWidget::itemAt(pos));
+		if (pItem) {
+			qtractorPlugin *pPlugin = pItem->plugin();
+			qtractorPlugin::Param *pDirectAccessParam = nullptr;
+			qtractorMidiControlObserver *pDirectAccessObserver = nullptr;
+			if (pPlugin)
+				pDirectAccessParam = pPlugin->directAccessParam();
+			if (pDirectAccessParam)
+				pDirectAccessObserver = pDirectAccessParam->observer();
+			if (pDirectAccessObserver) {
+				const bool bLogarithmic = pDirectAccessParam->isLogarithmic();
+				float fValue = pDirectAccessObserver->value();
+				const float fScale = pDirectAccessObserver->scaleFromValue(
+					fValue, bLogarithmic);
+				float fDelta = (pWheelEvent->angleDelta().y() < 0 ? -0.1f : +0.1f);
+				if (!pDirectAccessParam->isInteger())
+					fDelta *= 0.5f;
+				fValue = pDirectAccessObserver->valueFromScale(
+					fScale + fDelta, bLogarithmic);
+				pDirectAccessParam->updateValue(fValue, true);
+				return;
+			}
 		}
 	}
 
@@ -1481,7 +1472,7 @@ void qtractorPluginListView::mousePressEvent ( QMouseEvent *pMouseEvent )
 		dragDirectAccess(pos);
 	}
 	else // Reset to default value...
-	if (pMouseEvent->button() == Qt::MidButton) {
+	if (pMouseEvent->button() == Qt::MiddleButton) {
 		resetDirectAccess(pos);
 	}
 
@@ -1564,7 +1555,11 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 
 	qtractorPluginListItem *pDropItem
 		= static_cast<qtractorPluginListItem *> (
+		#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+			QListWidget::itemAt(pDropEvent->position().toPoint()));
+		#else
 			QListWidget::itemAt(pDropEvent->pos()));
+		#endif
 	if (pDropItem && pDropItem != m_pDropItem)
 		ensureVisibleItem(pDropItem);
 
@@ -1592,7 +1587,7 @@ bool qtractorPluginListView::canDropEvent ( QDropEvent *pDropEvent )
 	return true;
 }
 
-bool qtractorPluginListView::canDropItem (  QDropEvent *pDropEvent  )
+bool qtractorPluginListView::canDropItem ( QDropEvent *pDropEvent  )
 {
 	const bool bCanDropItem = canDropEvent(pDropEvent);
 	
@@ -1686,11 +1681,19 @@ void qtractorPluginListView::dropEvent ( QDropEvent *pDropEvent )
 	// If we aren't in the same list,
 	// or care for keyboard modifiers...
 	if (((m_pDragItem->plugin())->list() == m_pPluginList) ||
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		(pDropEvent->modifiers() & Qt::ShiftModifier)) {
+	#else
 		(pDropEvent->keyboardModifiers() & Qt::ShiftModifier)) {
+	#endif
 		dropMove();
 	}
 	else
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	if (pDropEvent->modifiers() & Qt::ControlModifier) {
+#else
 	if (pDropEvent->keyboardModifiers() & Qt::ControlModifier) {
+#endif
 		dropCopy();
 	} else {
 		// We'll better have a drop menu...
@@ -1700,7 +1703,11 @@ void qtractorPluginListView::dropEvent ( QDropEvent *pDropEvent )
 		menu.addSeparator();
 		menu.addAction(QIcon(":/images/formReject.png"),
 			tr("C&ancel"), this, SLOT(dropCancel()));
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		menu.exec(QListWidget::mapToGlobal(pDropEvent->position().toPoint()));
+	#else
 		menu.exec(QListWidget::mapToGlobal(pDropEvent->pos()));
+	#endif
 	}
 
 	dragLeaveEvent(nullptr);
@@ -1924,7 +1931,7 @@ void qtractorPluginListView::contextMenuEvent (
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			const int iParamIndex = int(param.key());
 			pAction = pDirectAccessParamMenu->addAction(
 				pParam->name(), this, SLOT(directAccessPlugin()));
@@ -2005,11 +2012,6 @@ void qtractorPluginListView::contextMenuEvent (
 		pAction->setCheckable(true);
 		pAction->setChecked(pMidiManager->isAudioOutputAutoConnect());
 		pAction->setEnabled(bAudioOutputBus);
-		pAudioMenu->addSeparator();
-		pAction = pAudioMenu->addAction(
-			tr("&Meters"), this, SLOT(audioOutputMonitor()));
-		pAction->setCheckable(true);
-		pAction->setChecked(pMidiManager->isAudioOutputMonitor());
 	}
 
 	menu.exec(pContextMenuEvent->globalPos());
@@ -2067,7 +2069,7 @@ void qtractorPluginListView::dragDirectAccess ( const QPoint& pos )
 	if (pPlugin == nullptr)
 		return;
 
-	qtractorPluginParam *pDirectAccessParam	
+	qtractorPlugin::Param *pDirectAccessParam
 		= pPlugin->directAccessParam();
 	if (pDirectAccessParam == nullptr)
 		return;
@@ -2126,7 +2128,7 @@ void qtractorPluginListView::resetDirectAccess ( const QPoint& pos )
 	if (pPlugin == nullptr)
 		return;
 
-	qtractorPluginParam *pDirectAccessParam
+	qtractorPlugin::Param *pDirectAccessParam
 		= pPlugin->directAccessParam();
 	if (pDirectAccessParam == nullptr)
 		return;

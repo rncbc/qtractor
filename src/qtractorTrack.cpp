@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -510,8 +510,8 @@ bool qtractorTrack::open (void)
 		qtractorAudioBus *pAudioBus
 			= static_cast<qtractorAudioBus *> (m_pOutputBus);
 		if (pAudioBus) {
-			m_pMonitor = new qtractorAudioMonitor(pAudioBus->channels(),
-				m_props.gain, m_props.panning);
+			m_pMonitor = new qtractorAudioMonitor(
+				pAudioBus->channels(), m_props.gain, m_props.panning);
 			m_pPluginList->setChannels(pAudioBus->channels(),
 				qtractorPluginList::AudioTrack);
 		}
@@ -521,8 +521,14 @@ bool qtractorTrack::open (void)
 		qtractorMidiBus *pMidiBus
 			= static_cast<qtractorMidiBus *> (m_pOutputBus);
 		if (pMidiBus) {
-			m_pMonitor = new qtractorMidiMonitor(
-				m_props.gain, m_props.panning);
+			qtractorMidiMonitor *pMidiMonitor
+				= static_cast<qtractorMidiMonitor *> (pMonitor);
+			if (pMidiMonitor) {
+				m_pMonitor = new qtractorMidiMonitor(*pMidiMonitor);
+			} else {
+				m_pMonitor = new qtractorMidiMonitor(
+					m_props.gain, m_props.panning);
+			}
 			m_pMidiVolumeObserver = new MidiVolumeObserver(
 				this, m_pMonitor->gainSubject());
 			m_pMidiPanningObserver = new MidiPanningObserver(
@@ -629,6 +635,9 @@ bool qtractorTrack::open (void)
 // Track close method.
 void qtractorTrack::close (void)
 {
+	// Make sure there's no subject automation going on...
+	qtractorSubject::resetQueue();
+
 	if (m_pMidiVolumeObserver) {
 		delete m_pMidiVolumeObserver;
 		m_pMidiVolumeObserver = nullptr;
@@ -1085,6 +1094,8 @@ void qtractorTrack::setHeight ( int iHeight )
 	if (m_iHeight < HeightMin)
 		m_iHeight = HeightMin;
 
+	m_iHeightBase = m_iHeight;
+
 	updateZoomHeight();
 }
 
@@ -1095,6 +1106,16 @@ void qtractorTrack::updateHeight (void)
 		if (m_iHeight < HeightMin)
 			m_iHeight = HeightMin;
 	}
+}
+
+
+// Base zoomed view height accessor.
+int qtractorTrack::zoomHeightBase (void) const
+{
+	if (m_pSession)
+		return (m_iHeightBase * m_pSession->verticalZoom()) / 100;
+	else
+		return m_iHeightBase;
 }
 
 
@@ -1842,7 +1863,7 @@ bool qtractorTrack::loadElement (
 
 	// Reset take(record) descriptor/id registry.
 	clearTakeInfo();
-	
+
 	return true;
 }
 
@@ -2464,6 +2485,20 @@ void qtractorTrack::updateMidiClips (void)
 			// Re-open the MIDI clip anyway...
 			pMidiClip->open();
 		}
+	}
+}
+
+
+// Update all plugin forms, if visible.
+void qtractorTrack::refreshPluginForms (void)
+{
+	if (m_pPluginList == nullptr)
+		return;
+
+	qtractorPlugin *pPlugin = m_pPluginList->first();
+	while (pPlugin) {
+		pPlugin->refreshForm();
+		pPlugin = pPlugin->next();
 	}
 }
 

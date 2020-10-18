@@ -1,7 +1,7 @@
 // qtractorOptions.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -105,6 +105,10 @@ public:
 	int     iAudioCaptureType;
 	int     iAudioCaptureFormat;
 	int     iAudioCaptureQuality;
+	QString sAudioExportExt;
+	int     iAudioExportType;
+	int     iAudioExportFormat;
+	int     iAudioExportQuality;
 	int     iAudioResampleType;
 	bool    bAudioAutoTimeStretch;
 	bool    bAudioWsolaTimeStretch;
@@ -128,6 +132,7 @@ public:
 
 	// MIDI options...
 	int  iMidiCaptureFormat;
+	int  iMidiExportFormat;
 	int  iMidiCaptureQuantize;
 	int  iMidiQueueTimer;
 	bool bMidiDriftCorrect;
@@ -152,7 +157,6 @@ public:
 	// MIDI metronome latency offset compensation.
 	int iMidiMetroOffset;
 
-
 	// Default options...
 	QString sSessionDir;
 	QString sAudioDir;
@@ -169,8 +173,8 @@ public:
 	QString sSessionTemplatePath;
 	bool    bSessionBackup;
 	int     iSessionBackupMode;
-	bool	bAutoMonitor;
-	bool	bAutoDeactivate;
+	bool    bAutoMonitor;
+	bool    bAutoDeactivate;
 	int     iSnapPerBeat;
 	float   fTempo;
 	int     iBeatsPerBar;
@@ -214,6 +218,7 @@ public:
 	QStringList ladspaPaths;
 	QStringList dssiPaths;
 	QStringList vstPaths;
+	QStringList vst3Paths;
 	QStringList lv2Paths;
 
 	QString sLv2PresetDir;
@@ -221,7 +226,6 @@ public:
 	// Plug-in instrument options.
 	bool bAudioOutputBus;
 	bool bAudioOutputAutoConnect;
-	bool bAudioOutputMonitor;
 
 	// Plug-in GUI options.
 	bool bOpenEditor;
@@ -235,6 +239,7 @@ public:
 	int  iDummyLadspaHash;
 	int  iDummyDssiHash;
 	int  iDummyVstHash;
+	int  iDummyVst3Hash;
 	int  iDummyLv2Hash;
 
 	// LV2 plugin specific options.
@@ -261,10 +266,6 @@ public:
 	bool bTrackViewToolTips;
 	bool bTrackViewCurveEdit;
 
-	// Tracks list options.
-	bool bTrackListPlugins;
-	bool bTrackListMeters;
-
 	// MIDI Editor options...
 	bool bMidiMenubar;
 	bool bMidiStatusbar;
@@ -276,6 +277,7 @@ public:
 	bool bMidiScaleToolbar;
 	bool bMidiThumbToolbar;
 	int  iMidiDisplayFormat;
+	bool bMidiNoteNames;
 	bool bMidiNoteDuration;
 	bool bMidiNoteColor;
 	bool bMidiValueColor;
@@ -295,9 +297,6 @@ public:
 	int  iMidiEventParam;
 	int  iMidiSnapToScaleKey;
 	int  iMidiSnapToScaleType;
-
-	// Mixer strip multi-row grid layout option.
-	bool bMixerAutoGridLayout;
 
 	// Meter colors.
 	QStringList audioMeterColors;
@@ -353,4 +352,3 @@ private:
 
 
 // end of qtractorOptions.h
-

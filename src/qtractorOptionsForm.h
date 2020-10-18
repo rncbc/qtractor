@@ -1,7 +1,7 @@
 // qtractorOptionsForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -40,12 +40,15 @@ class qtractorOptionsForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorOptionsForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorOptionsForm(QWidget *pParent = nullptr);
 	// Destructor.
 	~qtractorOptionsForm();
 
 	void setOptions(qtractorOptions *pOptions);
 	qtractorOptions *options() const;
+
+	// Spacial meter colors dirty flag.
+	bool isDirtyMeterColors() const;
 
 	// Spacial custom color themes dirty flag.
 	bool isDirtyCustomColorThemes() const;
@@ -55,27 +58,27 @@ protected slots:
 	void accept();
 	void reject();
 	void changed();
+	void audioCaptureTypeChanged(int);
 	void chooseMetroBarFilename();
 	void chooseMetroBeatFilename();
 	void updateMetroNoteNames();
-	void displayFormatChanged(int iDisplayFormat);
+	void displayFormatChanged(int);
 	void editCustomColorThemes();
-	void changeAudioMeterLevel(int iColor);
-	void changeMidiMeterLevel(int iColor);
-	void changeAudioMeterColor(const QString& sColor);
-	void changeMidiMeterColor(const QString& sColor);
+	void changeAudioMeterLevel(int);
+	void changeMidiMeterLevel(int);
+	void changeAudioMeterColor(const QString&);
+	void changeMidiMeterColor(const QString&);
 	void chooseAudioMeterColor();
 	void chooseMidiMeterColor();
 	void resetMeterColors();
-	void choosePluginType(int iPluginType);
-	void changePluginPath(const QString& sPluginPath);
+	void choosePluginType(int);
+	void changePluginPath(const QString&);
 	void choosePluginPath();
 	void selectPluginPath();
 	void addPluginPath();
 	void removePluginPath();
 	void moveUpPluginPath();
 	void moveDownPluginPath();
-	void pluginPathsChanged();
 	void chooseLv2PresetDir();
 	void chooseMessagesFont();
 	void chooseMessagesLogPath();
@@ -110,9 +113,10 @@ private:
 	qtractorTimeScale *m_pTimeScale;
 
 	// Meter colors.
-	enum { AudioMeterColors = 5, MidiMeterColors = 2 };
-	QColor m_audioMeterColors[AudioMeterColors];
-	QColor m_midiMeterColors[MidiMeterColors];
+	QColor *m_paAudioMeterColors;
+	QColor *m_paMidiMeterColors;
+
+	int m_iDirtyMeterColors;
 
 	// Custom color themes flag.
 	int m_iDirtyCustomColorThemes;
@@ -120,10 +124,15 @@ private:
 	// Plug-ins path cache.
 	QStringList m_ladspaPaths;
 	QStringList m_dssiPaths;
-	QStringList m_lv2Paths;
 	QStringList m_vstPaths;
+	QStringList m_vst3Paths;
+	QStringList m_lv2Paths;
 
-	int m_iDirtyPluginPaths;
+	int m_iDirtyLadspaPaths;
+	int m_iDirtyDssiPaths;
+	int m_iDirtyVstPaths;
+	int m_iDirtyVst3Paths;
+	int m_iDirtyLv2Paths;
 };
 
 

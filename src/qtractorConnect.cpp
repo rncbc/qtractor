@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,8 +27,8 @@
 #include <QScrollBar>
 #include <QToolTip>
 #include <QPainter>
-#include <QPolygon>
 #include <QPainterPath>
+#include <QPolygon>
 #include <QTimer>
 #include <QMenu>
 
@@ -600,16 +600,17 @@ bool qtractorClientListView::isClientName ( const QString& sClientName )
 	if (m_clientNames.indexOf(sClientName) < 0)
 		m_clientNames.append(sClientName);
 
-	return (m_rxClientName.isEmpty()
-		|| m_rxClientName.exactMatch(sClientName));
+	return (m_rxClientName.pattern().isEmpty()
+		|| m_rxClientName.match(sClientName).hasMatch());
 }
 
 
 // Port filter regular expression;
 bool qtractorClientListView::isPortName ( const QString& sPortName )
 {
-	return (m_rxClientName.isEmpty() || m_rxPortName.isEmpty()
-		|| m_rxPortName.exactMatch(sPortName));
+	return (m_rxClientName.pattern().isEmpty()
+		|| m_rxPortName.pattern().isEmpty()
+		|| m_rxPortName.match(sPortName).hasMatch());
 }
 
 
@@ -853,7 +854,11 @@ void qtractorClientListView::dragEnterEvent ( QDragEnterEvent *pDragEnterEvent )
 {
 	if (pDragEnterEvent->source() != this &&
 		pDragEnterEvent->mimeData()->hasText() &&
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		dragDropItem(pDragEnterEvent->position().toPoint())) {
+	#else
 		dragDropItem(pDragEnterEvent->pos())) {
+	#endif
 		pDragEnterEvent->accept();
 	} else {
 		pDragEnterEvent->ignore();
@@ -865,7 +870,11 @@ void qtractorClientListView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 {
 	if (pDragMoveEvent->source() != this &&
 		pDragMoveEvent->mimeData()->hasText() &&
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		dragDropItem(pDragMoveEvent->position().toPoint())) {
+	#else
 		dragDropItem(pDragMoveEvent->pos())) {
+	#endif
 		pDragMoveEvent->accept();
 	} else {
 		pDragMoveEvent->ignore();
@@ -886,7 +895,11 @@ void qtractorClientListView::dropEvent( QDropEvent *pDropEvent )
 {
 	if (pDropEvent->source() != this &&
 		pDropEvent->mimeData()->hasText() &&
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		dragDropItem(pDropEvent->position().toPoint())) {
+	#else
 		dragDropItem(pDropEvent->pos())) {
+	#endif
 		const QString sText = pDropEvent->mimeData()->text();
 		if (!sText.isEmpty() && m_pConnect)
 			m_pConnect->connectSelected();

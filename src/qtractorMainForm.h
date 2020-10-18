@@ -1,7 +1,7 @@
 // qtractorMainForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -79,7 +79,8 @@ class qtractorMainForm : public QMainWindow
 public:
 
 	// Constructor.
-	qtractorMainForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorMainForm(QWidget *pParent = nullptr,
+		Qt::WindowFlags wflags = Qt::WindowFlags());
 	// Destructor.
 	~qtractorMainForm();
 
@@ -102,7 +103,7 @@ public:
 	void updateTransportTime(unsigned long iPlayHead);
 
 	void appendMessages(const QString& s);
-	void appendMessagesColor(const QString& s, const QString& c);
+	void appendMessagesColor(const QString& s, const QColor& rgb);
 	void appendMessagesText(const QString& s);
 	void appendMessagesError(const QString& s);
 
@@ -297,6 +298,8 @@ public slots:
 	void updateNotifySlot(unsigned int flags);
 	void dirtyNotifySlot();
 
+	void autoSaveAsap();
+
 protected slots:
 
 	void fastTimerSlot();
@@ -310,7 +313,7 @@ protected slots:
 	void audioPortNotify();
 	void audioBuffNotify(unsigned int iBufferSize);
 	void audioSessNotify(void *pvSessionArg);
-	void audioSyncNotify(unsigned long iPlayHead);
+	void audioSyncNotify(unsigned long iPlayHead, bool bPlaying);
 	void audioPropNotify();
 
 	void midiMmcNotify(const qtractorMmcEvent& mmce);
@@ -426,7 +429,6 @@ protected:
 	void updateMidiControl();
 	void updateAudioMetronome();
 	void updateMidiMetronome();
-	void updateMixerAutoGridLayout();
 	void updateSyncViewHold();
 
 	void updateCustomColorTheme();

@@ -1,7 +1,7 @@
 // qtractorMessageBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2017, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,7 +41,7 @@ qtractorMessageBox::qtractorMessageBox ( QWidget *pParent, Qt::WindowFlags wflag
 		| Qt::WindowCloseButtonHint);
 
 	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(8);
+	pGridLayout->setContentsMargins(8, 8, 8, 8);
 	pGridLayout->setSpacing(2);
 
 	m_pIconLabel = new QLabel();
@@ -52,7 +52,7 @@ qtractorMessageBox::qtractorMessageBox ( QWidget *pParent, Qt::WindowFlags wflag
 	m_pTextLabel->setOpenExternalLinks(true);
 
 	m_pCustomButtonLayout = new QVBoxLayout();
-	m_pCustomButtonLayout->setMargin(8);
+	m_pCustomButtonLayout->setContentsMargins(8, 8, 8, 8);
 	m_pCustomButtonLayout->setSpacing(2);
 
 	m_pDialogButtonBox = new QDialogButtonBox();
@@ -107,7 +107,11 @@ void qtractorMessageBox::setIconPixmap ( const QPixmap& pixmap )
 
 QPixmap qtractorMessageBox::iconPixmap (void) const
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+	return m_pIconLabel->pixmap(Qt::ReturnByValue);
+#else
 	return *m_pIconLabel->pixmap();
+#endif
 }
 
 

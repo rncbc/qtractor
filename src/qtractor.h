@@ -1,7 +1,7 @@
 // qtractor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,10 +28,6 @@
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #if defined(Q_WS_X11)
-#define CONFIG_X11
-#endif
-#else
-#if defined(QT_X11EXTRAS_LIB)
 #define CONFIG_X11
 #endif
 #endif

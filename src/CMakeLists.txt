@@ -27,6 +27,7 @@ set (HEADERS
   qtractorClip.h
   qtractorClipCommand.h
   qtractorClipSelect.h
+  qtractorComboBox.h
   qtractorCommand.h
   qtractorConnect.h
   qtractorConnections.h
@@ -39,7 +40,6 @@ set (HEADERS
   qtractorDssiPlugin.h
   qtractorEngine.h
   qtractorEngineCommand.h
-  qtractorFifoBuffer.h
   qtractorFileList.h
   qtractorFileListView.h
   qtractorFiles.h
@@ -114,6 +114,7 @@ set (HEADERS
   qtractorTrackView.h
   qtractorTracks.h
   qtractorVstPlugin.h
+  qtractorVst3Plugin.h
   qtractorZipFile.h
   qtractorWsolaTimeStretcher.h
   qtractorBusForm.h
@@ -159,6 +160,7 @@ set (SOURCES
   qtractorClip.cpp
   qtractorClipCommand.cpp
   qtractorClipSelect.cpp
+  qtractorComboBox.cpp
   qtractorCommand.cpp
   qtractorConnect.cpp
   qtractorConnections.cpp
@@ -237,6 +239,7 @@ set (SOURCES
   qtractorTrackView.cpp
   qtractorTracks.cpp
   qtractorVstPlugin.cpp
+  qtractorVst3Plugin.cpp
   qtractorWsolaTimeStretcher.cpp
   qtractorZipFile.cpp
   qtractorBusForm.cpp
@@ -333,18 +336,32 @@ if (APPLE)
     MACOSX_PACKAGE_LOCATION Resources)
 endif ()
 
+if (CONFIG_VST3SDK)
+  add_definitions(-DNDEBUG)
+  set (VST3SDK_SOURCES
+    ${CONFIG_VST3SDK}/base/source/baseiids.cpp
+  # ${CONFIG_VST3SDK}/base/source/fstring.cpp
+    ${CONFIG_VST3SDK}/base/source/fobject.cpp
+    ${CONFIG_VST3SDK}/base/thread/source/flock.cpp
+    ${CONFIG_VST3SDK}/public.sdk/source/common/commoniids.cpp
+    ${CONFIG_VST3SDK}/public.sdk/source/vst/vstinitiids.cpp
+    ${CONFIG_VST3SDK}/pluginterfaces/base/coreiids.cpp
+    ${CONFIG_VST3SDK}/pluginterfaces/base/funknown.cpp
+  )
+endif ()
 
 add_executable (${NAME}
   ${UI_SOURCES}
   ${MOC_SOURCES}
   ${QRC_SOURCES}
   ${SOURCES}
+  ${VST3SDK_SOURCES}
 )
 
-add_executable (${NAME}_plugin_scan qtractor_plugin_scan.cpp)
+add_executable (${NAME}_plugin_scan qtractor_plugin_scan.cpp ${VST3SDK_SOURCES})
 
-set_target_properties (${NAME} PROPERTIES CXX_STANDARD 11)
-set_target_properties (${NAME}_plugin_scan PROPERTIES CXX_STANDARD 11)
+set_target_properties (${NAME} PROPERTIES CXX_STANDARD 17)
+set_target_properties (${NAME}_plugin_scan PROPERTIES CXX_STANDARD 17)
 
 if (WIN32)
   set_target_properties (${NAME} PROPERTIES WIN32_EXECUTABLE true)
@@ -409,10 +426,6 @@ endif ()
 
 if (CONFIG_LIBSUIL)
   target_link_libraries (${NAME} PRIVATE ${SUIL_LIBRARIES})
-endif ()
-
-if (CONFIG_VST)
-  target_link_libraries (${NAME} PRIVATE Qt5::X11Extras)
 endif ()
 
 

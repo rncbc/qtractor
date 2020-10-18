@@ -1,7 +1,7 @@
 // qtractorMidiEditView.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -67,6 +67,10 @@ public:
 	// Current event selection accessors.
 	void setEventType(qtractorMidiEvent::EventType eventType);
 	qtractorMidiEvent::EventType eventType() const;
+
+	// Single note-on/off handlers.
+	void dragNoteOn(int iNote, int iVelocity = 1);
+	void dragNoteOff();
 
 protected:
 
@@ -135,6 +139,11 @@ private:
 	// Optional edge-shadow gradient brushes.
 	QBrush m_gradLeft;
 	QBrush m_gradRight;
+
+	// The current note being keyed on.
+	int    m_iNoteOn;
+	int    m_iNoteVel;
+	QRect  m_rectNote;
 };
 
 

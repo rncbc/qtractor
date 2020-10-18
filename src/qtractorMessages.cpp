@@ -1,7 +1,7 @@
 // qtractorMessages.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,11 +27,10 @@
 #include <QSocketNotifier>
 
 #include <QFile>
-#include <QTextEdit>
+#include <QTextBrowser>
 #include <QTextCursor>
 #include <QTextStream>
 #include <QTextBlock>
-#include <QScrollBar>
 #include <QDateTime>
 #include <QIcon>
 
@@ -48,22 +47,27 @@
 #define QTRACTOR_MESSAGES_FDREAD    0
 #define QTRACTOR_MESSAGES_FDWRITE   1
 
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
+
 
 //-------------------------------------------------------------------------
-// qtractorMessagesTextEdit - Messages log dockable child window.
+// qtractorMessagesTextView - Messages log dockable child window.
 //
 
-class qtractorMessagesTextEdit : public QTextEdit
+class qtractorMessagesTextView : public QTextBrowser
 {
 public:
 
 	// Constructor.
-	qtractorMessagesTextEdit(QWidget *pParent) : QTextEdit(pParent) {}
+	qtractorMessagesTextView(QWidget *pParent) : QTextBrowser(pParent) {}
 
 protected:
 
 	// Minimum recommended.
-	QSize sizeHint() const { return QTextEdit::minimumSize(); }
+	QSize sizeHint() const { return QTextBrowser::minimumSize(); }
 };
 
 
@@ -84,13 +88,13 @@ qtractorMessages::qtractorMessages ( QWidget *pParent )
 	m_fdStdout[QTRACTOR_MESSAGES_FDWRITE] = QTRACTOR_MESSAGES_FDNIL;
 
 	// Create local text view widget.
-	m_pMessagesTextView = new qtractorMessagesTextEdit(this);
+	m_pMessagesTextView = new qtractorMessagesTextView(this);
 //  QFont font(m_pMessagesTextView->font());
 //  font.setFamily("Fixed");
 //  m_pMessagesTextView->setFont(font);
 	m_pMessagesTextView->setLineWrapMode(QTextEdit::NoWrap);
-	m_pMessagesTextView->setReadOnly(true);
-	m_pMessagesTextView->setUndoRedoEnabled(false);
+//	m_pMessagesTextView->setReadOnly(true);
+//	m_pMessagesTextView->setUndoRedoEnabled(false);
 //	m_pMessagesTextView->setTextFormat(Qt::LogText);
 
 	// Initialize default message limit.
@@ -101,7 +105,7 @@ qtractorMessages::qtractorMessages ( QWidget *pParent )
 
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(m_pMessagesTextView);
-	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
+//	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
 	QDockWidget::setAllowedAreas(
 		Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
 	// Some specialties to this kind of dock window...
@@ -184,6 +188,11 @@ void qtractorMessages::appendStdoutBuffer ( const QString& s )
 {
 	m_sStdoutBuffer.append(s);
 
+	processStdoutBuffer();
+}
+
+void qtractorMessages::processStdoutBuffer (void)
+{
 	const int iLength = m_sStdoutBuffer.lastIndexOf('\n');
 	if (iLength > 0) {
 		const QString& sTemp = m_sStdoutBuffer.left(iLength);
@@ -200,7 +209,7 @@ void qtractorMessages::appendStdoutBuffer ( const QString& s )
 void qtractorMessages::flushStdoutBuffer (void)
 {
 	if (!m_sStdoutBuffer.isEmpty()) {
-		appendMessagesText(m_sStdoutBuffer);
+		processStdoutBuffer();
 		m_sStdoutBuffer.clear();
 	}
 }
@@ -305,7 +314,9 @@ void qtractorMessages::setLogging ( bool bEnabled, const QString& sFilename )
 void qtractorMessages::appendMessagesLog ( const QString& s )
 {
 	if (m_pMessagesLog) {
-		QTextStream(m_pMessagesLog) << s << endl;
+		QTextStream(m_pMessagesLog)
+			<< QTime::currentTime().toString("hh:mm:ss.zzz")
+			<< ' ' << s << endl;
 		m_pMessagesLog->flush();
 	}
 }
@@ -337,15 +348,13 @@ void qtractorMessages::appendMessagesLine ( const QString& s )
 // The main utility methods.
 void qtractorMessages::appendMessages ( const QString& s )
 {
-	appendMessagesColor(s, "#999999");
+	appendMessagesColor(s, Qt::gray);
 }
 
-void qtractorMessages::appendMessagesColor ( const QString& s, const QString &c )
+void qtractorMessages::appendMessagesColor ( const QString& s, const QColor& rgb )
 {
-	const QString& sText
-		= QTime::currentTime().toString("hh:mm:ss.zzz") + ' ' + s;
-	appendMessagesLine("<font color=\"" + c + "\">" + sText + "</font>");
-	appendMessagesLog(sText);
+	appendMessagesLine("<font color=\"" + rgb.name() + "\">" + s + "</font>");
+	appendMessagesLog(s);
 }
 
 void qtractorMessages::appendMessagesText ( const QString& s )

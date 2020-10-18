@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@
     <x>0</x>
     <y>0</y>
     <width>520</width>
-    <height>480</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -343,7 +343,7 @@
              <string>Number of &amp;recent files:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>MaxRecentFilesSpinBox</cstring>
@@ -533,7 +533,7 @@
              <string>Transport &amp;mode:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>TransportModeComboBox</cstring>
@@ -626,7 +626,7 @@
              <string>&amp;Loop recording mode (takes):</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>LoopRecordingModeComboBox</cstring>
@@ -692,7 +692,97 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <item row="2" column="1">
+          <item row="0" column="0">
+           <widget class="QLabel" name="AudioCaptureTypeTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>File &amp;type:</string>
+            </property>
+            <property name="buddy">
+             <cstring>AudioCaptureTypeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="3">
+           <widget class="qtractorAudioFileTypeComboBox" name="AudioCaptureTypeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Audio file type to use on capture (record) and export</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4" rowspan="2">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="AudioCaptureFormatTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Sample &amp;format:</string>
+            </property>
+            <property name="buddy">
+             <cstring>AudioCaptureFormatComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="qtractorAudioFileFormatComboBox" name="AudioCaptureFormatComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Audio sample format to use on capture (record) and export</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="AudioCaptureQualityTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
+            <property name="text">
+             <string>&amp;Quality:</string>
+            </property>
+            <property name="buddy">
+             <cstring>AudioCaptureQualitySpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
            <widget class="QSpinBox" name="AudioCaptureQualitySpinBox">
             <property name="maximumSize">
              <size>
@@ -713,10 +803,10 @@
              <string/>
             </property>
             <property name="minimum">
-             <number>1</number>
+             <number>0</number>
             </property>
             <property name="maximum">
-             <number>9</number>
+             <number>10</number>
             </property>
             <property name="singleStep">
              <number>1</number>
@@ -725,106 +815,6 @@
              <number>4</number>
             </property>
            </widget>
-          </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QComboBox" name="AudioCaptureFormatComboBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Audio sample format to use on capture (record) and export</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="AudioCaptureTypeComboBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Audio file type to use on capture (record) and export</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3" rowspan="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="AudioCaptureTypeTextLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>File &amp;type:</string>
-            </property>
-            <property name="buddy">
-             <cstring>AudioCaptureTypeComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="AudioCaptureFormatTextLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Sample &amp;format:</string>
-            </property>
-            <property name="buddy">
-             <cstring>AudioCaptureFormatComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="AudioCaptureQualityTextLabel">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>&amp;Quality:</string>
-            </property>
-            <property name="buddy">
-             <cstring>AudioCaptureQualitySpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2" colspan="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>120</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </widget>
@@ -885,7 +875,7 @@
              <string>Sample-&amp;rate converter type:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>AudioResampleTypeComboBox</cstring>
@@ -1348,7 +1338,7 @@
              <string>&amp;Offset (latency):</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>AudioMetroOffsetSpinBox</cstring>
@@ -1410,7 +1400,7 @@
            </widget>
           </item>
           <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="MidiCaptureFormatComboBox">
+           <widget class="qtractorMidiFileFormatComboBox" name="MidiCaptureFormatComboBox">
             <property name="font">
              <font>
               <weight>50</weight>
@@ -1447,7 +1437,7 @@
              <string>&amp;Quantize:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>MidiCaptureQuantizeComboBox</cstring>
@@ -2193,7 +2183,7 @@
              <string>&amp;Offset (latency):</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>AudioMetroOffsetSpinBox</cstring>
@@ -2319,7 +2309,7 @@
              <string>&amp;Base font size:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>BaseFontSizeComboBox</cstring>
@@ -2407,22 +2397,6 @@
            <number>4</number>
           </property>
           <item row="0" column="0">
-           <widget class="QCheckBox" name="SyncViewHoldCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to hold auto-scrolling (follow play-head) on edits.</string>
-            </property>
-            <property name="text">
-             <string>H&amp;old auto-scrolling (follow play-head) on edits</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
            <widget class="QCheckBox" name="UseNativeDialogsCheckBox">
             <property name="font">
              <font>
@@ -2438,8 +2412,8 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QCheckBox" name="MixerAutoGridLayoutCheckBox">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="SyncViewHoldCheckBox">
             <property name="font">
              <font>
               <weight>50</weight>
@@ -2447,26 +2421,10 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Whether to allow automatic mixer strip/grid layout (multi-row).</string>
+             <string>Whether to hold auto-scrolling (follow play-head) on edits.</string>
             </property>
             <property name="text">
-             <string>A&amp;utomatic mixer strip/grid layout (multi-row)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QCheckBox" name="TrackListPluginsCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to show plugins on track list/left pane</string>
-            </property>
-            <property name="text">
-             <string>Sho&amp;w plugins on track list/left pane</string>
+             <string>H&amp;old auto-scrolling (follow play-head) on edits</string>
             </property>
            </widget>
           </item>
@@ -2506,7 +2464,7 @@
              <string>&amp;Color theme:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>CustomColorThemeComboBox</cstring>
@@ -2714,6 +2672,11 @@
               <string>10 dB</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>Back</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="0" column="2">
@@ -2794,7 +2757,7 @@
              <string>&amp;MIDI:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>MidiMeterLevelComboBox</cstring>
@@ -2826,6 +2789,11 @@
             <item>
              <property name="text">
               <string>Over</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Back</string>
              </property>
             </item>
            </widget>
@@ -2927,22 +2895,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item row="2" column="0" colspan="11">
-           <widget class="QCheckBox" name="TrackListMetersCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to show meters on track list/left pane</string>
-            </property>
-            <property name="text">
-             <string>Sho&amp;w meters on track list/left pane</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
@@ -3335,9 +3287,6 @@
             <property name="statusTip">
              <string>Plugin paths</string>
             </property>
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
             <property name="selectionBehavior">
              <enum>QAbstractItemView::SelectRows</enum>
             </property>
@@ -3518,22 +3467,6 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="0" colspan="2">
-           <widget class="QCheckBox" name="DummyPluginScanCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to use out-of-process plugin inventory scan and cache for persistence</string>
-            </property>
-            <property name="text">
-             <string>Ou&amp;t-of-process plugin inventory scan (RECOMMENDED)</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -3602,22 +3535,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="AudioOutputMonitorCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to show audio output meters on MIDI tracks and buses</string>
-            </property>
-            <property name="text">
-             <string>Show audio outpu&amp;t monitoring meters</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
@@ -3691,75 +3608,6 @@
          </layout>
         </widget>
        </item>
-       <item>
-        <widget class="QGroupBox" name="PluginsExperimentalGroupBox">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="title">
-          <string>Experimental</string>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout">
-          <property name="margin">
-           <number>8</number>
-          </property>
-          <property name="spacing">
-           <number>4</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="SaveCurve14bitCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether to save plugin automation with higher resolution (14-bit)</string>
-            </property>
-            <property name="text">
-             <string>&amp;High resolution plugin automation (14-bit)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="2">
-           <widget class="QCheckBox" name="Lv2DynManifestCheckBox">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Whether LV2 Dynamic Manifest plugins are supported</string>
-            </property>
-            <property name="text">
-             <string>LV2 Dy&amp;namic Manifest support</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
       </layout>
      </widget>
     </widget>
@@ -3782,6 +3630,21 @@
    <class>qtractorTimeSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qtractorSpinBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorAudioFileTypeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorAudioFileFormatComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorMidiFileFormatComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -3847,10 +3710,8 @@
   <tabstop>MidiMetroOffsetSpinBox</tabstop>
   <tabstop>DisplayFormatComboBox</tabstop>
   <tabstop>BaseFontSizeComboBox</tabstop>
-  <tabstop>SyncViewHoldCheckBox</tabstop>
   <tabstop>UseNativeDialogsCheckBox</tabstop>
-  <tabstop>MixerAutoGridLayoutCheckBox</tabstop>
-  <tabstop>TrackListPluginsCheckBox</tabstop>
+  <tabstop>SyncViewHoldCheckBox</tabstop>
   <tabstop>CustomColorThemeComboBox</tabstop>
   <tabstop>CustomColorThemeToolButton</tabstop>
   <tabstop>CustomStyleThemeComboBox</tabstop>
@@ -3877,14 +3738,10 @@
   <tabstop>PluginPathDownToolButton</tabstop>
   <tabstop>Lv2PresetDirComboBox</tabstop>
   <tabstop>Lv2PresetDirToolButton</tabstop>
-  <tabstop>DummyPluginScanCheckBox</tabstop>
   <tabstop>AudioOutputBusCheckBox</tabstop>
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
-  <tabstop>AudioOutputMonitorCheckBox</tabstop>
   <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>QueryEditorTypeCheckBox</tabstop>
-  <tabstop>SaveCurve14bitCheckBox</tabstop>
-  <tabstop>Lv2DynManifestCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

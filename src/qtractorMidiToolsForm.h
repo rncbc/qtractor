@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@ class qtractorMidiToolsForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorMidiToolsForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorMidiToolsForm(QWidget *pParent = nullptr);
 	// Destructor.
 	~qtractorMidiToolsForm();
 
@@ -59,7 +59,7 @@ protected slots:
 
 	// Preset management slots...
 	void presetChanged(const QString& sPreset);
-	void presetActivated(const QString& sPreset);
+	void presetActivated(int iPreset);
 	void presetSave();
 	void presetDelete();
 

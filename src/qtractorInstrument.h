@@ -1,7 +1,7 @@
 // qtractorInstrument.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,6 +30,7 @@
 class QTextStream;
 class QFile;
 
+class QDomDocument;
 class QDomElement;
 
 
@@ -293,7 +294,7 @@ public:
 
 	// Manage a file list (out of sync)
 	void appendFile(const QString& sFilename)
-	    { m_files.append(sFilename); }
+		{ m_files.append(sFilename); }
 
 	void removeFile(const QString& sFilename)
 	{
@@ -338,6 +339,9 @@ public:
 	// Special instrument list merge method.
 	void merge(const qtractorInstrumentList& instruments);
 
+	// Special MIDINameDocument loader.
+	bool loadMidiNameDocument(const QDomDocument& doc);
+
 protected:
 
 	// Internal instrument data list save method helpers.
@@ -352,9 +356,7 @@ protected:
 	bool loadSoundFont(QFile *pFile);
 	void loadSoundFontPresets(QFile *pFile, int iSize);
 
-	// Special MIDINameDocument loader.
-	bool loadMidiNameDocument(QFile *pFile);
-
+	// Special MIDINameDocument loaders.
 	void loadMidiDeviceNames(
 		QDomElement *pElement);
 	void loadMidiChannelNameSet(

@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@
 
 #include <QHeaderView>
 #include <QMessageBox>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QMenu>
 
 #include <QColorDialog>
@@ -156,9 +156,8 @@ private:
 // qtractorTimeScaleForm -- UI wrapper form.
 
 // Constructor.
-qtractorTimeScaleForm::qtractorTimeScaleForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorTimeScaleForm::qtractorTimeScaleForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -169,7 +168,7 @@ qtractorTimeScaleForm::qtractorTimeScaleForm (
 	// Initialize locals.
 	m_pTimeScale  = nullptr;
 
-	m_pTempoTap   = new QTime();
+	m_pTempoTap   = new QElapsedTimer();
 	m_iTempoTap   = 0;
 	m_fTempoTap   = 0.0f;
 
@@ -611,7 +610,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 			iFlags |= RemoveNode;
 	}
 	if (pNode
-		&& ::fabsf(pNode->tempo - fTempo) < 0.05f
+		&& qAbs(pNode->tempo - fTempo) < 0.05f
 	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
 		&& pNode->beatDivisor == iBeatDivisor)
@@ -622,7 +621,7 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 		iFlags &= ~AddNode;
 	if (pNode
 		&& (pNode = pNode->next())	// real assignment
-		&& ::fabsf(pNode->tempo - fTempo) < 0.05f
+		&& qAbs(pNode->tempo - fTempo) < 0.05f
 	//	&& pNode->beatType == iBeatType
 		&& pNode->beatsPerBar == iBeatsPerBar
 		&& pNode->beatDivisor == iBeatDivisor)
@@ -1042,17 +1041,34 @@ void qtractorTimeScaleForm::tempoTap (void)
 #endif
 
 	const int iTimeTap = m_pTempoTap->restart();
-	if (iTimeTap > 200 && iTimeTap < 2000) { // Magic!
-		m_fTempoTap += (60000.0f / float(iTimeTap));
-		if (++m_iTempoTap > 2) {
-			m_fTempoTap /= float(m_iTempoTap);
-			m_iTempoTap  = 1; // Median-like averaging...
-			m_ui.TempoSpinBox->setTempo(int(m_fTempoTap), true);
-		}
-	} else {
+
+	if (iTimeTap < 200 || iTimeTap > 2000) { // Magic!
 		m_iTempoTap = 0;
 		m_fTempoTap = 0.0f;
+		return;
 	}
+
+	const float fTempoTap = ::rintf(60000.0f / float(iTimeTap));
+#if 0
+	m_fTempoTap += fTempoTap;
+	if (++m_iTempoTap > 2) {
+		m_fTempoTap /= float(m_iTempoTap);
+		m_ui.TempoSpinBox->setTempo(::rintf(m_fTempoTap), false);
+		m_iTempoTap	= 1; // Median-like averaging...
+	}
+#else
+	if (m_fTempoTap  > 0.0f) {
+		m_fTempoTap *= 0.5f;
+		m_fTempoTap += 0.5f * fTempoTap;
+	} else {
+		m_fTempoTap  = fTempoTap;
+	}
+	if (++m_iTempoTap > 2) {
+		m_ui.TempoSpinBox->setTempo(::rintf(m_fTempoTap), false);
+		m_iTempoTap	 = 1; // Median-like averaging...
+		m_fTempoTap  = fTempoTap;
+	}
+#endif
 }
 
 
@@ -1067,7 +1083,7 @@ void qtractorTimeScaleForm::markerColor (void)
 
 	QWidget *pParentWidget = nullptr;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	QColorDialog::ColorDialogOptions options = 0;
+	QColorDialog::ColorDialogOptions options;
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();

@@ -1,7 +1,7 @@
 // qtractorCurveFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ public:
 
 	// Constructor.
 	qtractorCurveFile(qtractorCurveList *pCurveList)
-		: m_pCurveList(pCurveList), m_iCurrentCurve(-1) {}
+		: m_pCurveList(pCurveList), m_iCurrentIndex(0) {}
 
 	// Destructor.	
 	~qtractorCurveFile() { clear(); }
@@ -66,10 +66,10 @@ public:
 		{ return m_sFilename; }
 
 	// Current curve index accesors.
-	void setCurrentCurve(int iCurrentCurve)
-		{ m_iCurrentCurve = iCurrentCurve; }
-	int currentCurve() const
-		{ return m_iCurrentCurve; }
+	void setCurrentIndex(unsigned long iCurrentIndex)
+		{ m_iCurrentIndex = iCurrentIndex; }
+	unsigned long currentIndex() const
+		{ return m_iCurrentIndex; }
 
 	// Curve item escriptor.
 	struct Item
@@ -105,7 +105,7 @@ public:
 		qDeleteAll(m_items);
 		m_items.clear();
 
-		m_iCurrentCurve = -1;
+		m_iCurrentIndex = 0;
 	}
 
 	// Curve item list serialization methods.
@@ -128,7 +128,7 @@ private:
 
 	QList<Item *> m_items;
 
-	int m_iCurrentCurve;
+	unsigned long m_iCurrentIndex;
 };
 
 

@@ -1,7 +1,7 @@
 // qtractorLadspaPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -87,6 +87,9 @@ public:
 	// Destructor.
 	~qtractorLadspaPlugin();
 
+	// Forward decl.
+	class Param;
+
 	// Channel/intsance number accessors.
 	void setChannels(unsigned short iChannels);
 
@@ -134,19 +137,15 @@ protected:
 
 
 //----------------------------------------------------------------------------
-// qtractorLadspaPluginParam -- LADSPA plugin control input port instance.
+// qtractorLadspaPlugin::Param -- LADSPA plugin control input port instance.
 //
 
-class qtractorLadspaPluginParam : public qtractorPluginParam
+class qtractorLadspaPlugin::Param : public qtractorPlugin::Param
 {
 public:
 
 	// Constructors.
-	qtractorLadspaPluginParam(qtractorLadspaPlugin *pLadspaPlugin,
-		unsigned long iIndex);
-
-	// Destructor.
-	~qtractorLadspaPluginParam();
+	Param(qtractorLadspaPlugin *pLadspaPlugin, unsigned long iIndex);
 
 	// Port range hints predicate methods.
 	bool isBoundedBelow() const;

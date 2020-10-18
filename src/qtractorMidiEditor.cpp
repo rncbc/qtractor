@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -804,6 +804,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Note autition while editing.
 	m_bSendNotes = false;
 
+	// Note names display (inside rectangles).
+	m_bNoteNames = false;
+
 	// Event (note) duration rectangle vs. stick.
 	m_bNoteDuration = false;
 
@@ -854,21 +857,21 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 
 	// Create child box layouts...
 	QVBoxLayout *pVBoxLeftLayout = new QVBoxLayout(pVBoxLeft);
-	pVBoxLeftLayout->setMargin(0);
+	pVBoxLeftLayout->setContentsMargins(0, 0, 0, 0);
 	pVBoxLeftLayout->setSpacing(0);
 	pVBoxLeftLayout->addWidget(m_pEditListHeader);
 	pVBoxLeftLayout->addWidget(m_pEditList);
 	pVBoxLeft->setLayout(pVBoxLeftLayout);
 
 	QVBoxLayout *pVBoxRightLayout = new QVBoxLayout(pVBoxRight);
-	pVBoxRightLayout->setMargin(0);
+	pVBoxRightLayout->setContentsMargins(0, 0, 0, 0);
 	pVBoxRightLayout->setSpacing(0);
 	pVBoxRightLayout->addWidget(m_pEditTime);
 	pVBoxRightLayout->addWidget(m_pEditView);
 	pVBoxRight->setLayout(pVBoxRightLayout);
 
 	QHBoxLayout *pHBoxBottomLayout = new QHBoxLayout(pHBoxBottom);
-	pHBoxBottomLayout->setMargin(0);
+	pHBoxBottomLayout->setContentsMargins(0, 0, 0, 0);
 	pHBoxBottomLayout->setSpacing(0);
 	pHBoxBottomLayout->addWidget(m_pEditEventScale);
 	pHBoxBottomLayout->addWidget(m_pEditEvent);
@@ -1427,6 +1430,18 @@ void qtractorMidiEditor::setSendNotes ( bool bSendNotes )
 bool qtractorMidiEditor::isSendNotes (void) const
 {
 	return m_bSendNotes;
+}
+
+
+// Note names display (inside rectangles).
+void qtractorMidiEditor::setNoteNames ( bool bNoteNames )
+{
+	m_bNoteNames = bNoteNames;
+}
+
+bool qtractorMidiEditor::isNoteNames (void) const
+{
+	return m_bNoteNames;
 }
 
 
@@ -2525,20 +2540,28 @@ void qtractorMidiEditor::zoomCenterPre ( ZoomCenter& zc ) const
 	QWidget *pViewport = m_pEditView->viewport();
 	const QRect& rect = pViewport->rect();
 	const QPoint& pos = pViewport->mapFromGlobal(QCursor::pos());
+
+	zc.x = 0;
+	zc.y = 0;
+
 	if (rect.contains(pos)) {
-		zc.x = pos.x();
-		zc.y = pos.y();
+		if (m_iZoomMode & ZoomHorizontal)
+			zc.x = pos.x();
+		if (m_iZoomMode & ZoomVertical)
+			zc.y = pos.y();
 	} else {
-		zc.x = 0;
-		zc.y = 0;
-		if (cx > rect.width())
-			zc.x += (rect.width() >> 1);
-		if (cy > rect.height())
-			zc.y += (rect.height() >> 1);
+		if (m_iZoomMode & ZoomHorizontal) {
+			const int w2 = (rect.width() >> 1);
+			if (cx > w2) zc.x = w2;
+		}
+		if (m_iZoomMode & ZoomVertical) {
+			const int h2 = (rect.height() >> 1);
+			if (cy > h2) zc.y = h2;
+		}
 	}
 
-	zc.frame = m_pTimeScale->frameFromPixel(x0 + cx + zc.x);
 	zc.item = (cy + zc.y) / m_pEditList->itemHeight();
+	zc.frame = m_pTimeScale->frameFromPixel(x0 + cx + zc.x);
 }
 
 
@@ -2554,14 +2577,19 @@ void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
 	int cx = m_pTimeScale->pixelFromFrame(zc.frame);
 	int cy = zc.item * m_pEditList->itemHeight();
 
-	if (cx > zc.x + x0) cx -= zc.x + x0; else cx = 0;
-	if (cy > zc.y) cy -= zc.y; else cy = 0;
-
 	// Update dependant views.
 	m_pEditList->updateContentsHeight();
 	m_pEditView->updateContentsWidth();
 
 	updateSelect(true);
+
+	if (m_iZoomMode & ZoomHorizontal) {
+		if (cx > zc.x + x0) cx -= zc.x + x0; else cx = 0;
+	}
+
+	if (m_iZoomMode & ZoomVertical) {
+		if (cy > zc.y) cy -= zc.y; else cy = 0;
+	}
 
 	// Do the centering...
 	m_pEditView->setContentsPos(cx, cy);
@@ -3274,7 +3302,10 @@ void qtractorMidiEditor::dragMoveUpdate (
 	}
 
 	// Let note hovering shine...
-	m_pEditList->dragNoteOn(pos, -1);
+	const int iNote
+		= (pScrollView->contentsHeight() - pos.y())
+		/ m_pEditList->itemHeight();
+	m_pEditList->dragNoteOn(iNote, -1);
 }
 
 

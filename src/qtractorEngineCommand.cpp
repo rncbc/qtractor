@@ -1,7 +1,7 @@
 // qtractorEngineCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -92,7 +92,6 @@ bool qtractorBusCommand::createBus (void)
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return false;
-
 
 	// Create the bus of proper type...
 	m_pBus = nullptr;
@@ -225,7 +224,6 @@ bool qtractorBusCommand::updateBus (void)
 			// Find the input strips that have this bus monitored...
 			pStrip = (pMixer->inputRack())->findStrip(m_pBus->monitor_in());
 			if (pStrip) {
-				pStrip->clear();
 				if (m_busMode & qtractorBus::Input) {
 					strips.append(pStrip);
 				} else {
@@ -237,7 +235,6 @@ bool qtractorBusCommand::updateBus (void)
 			// Find the output strips that have this bus monitored...
 			pStrip = (pMixer->outputRack())->findStrip(m_pBus->monitor_out());
 			if (pStrip) {
-				pStrip->clear();
 				if (m_busMode & qtractorBus::Output) {
 					strips.append(pStrip);
 				} else {
@@ -245,7 +242,7 @@ bool qtractorBusCommand::updateBus (void)
 				}
 			}
 			// Find the MIDI strips that have this (audio) bus monitored...
-			if ((m_pBus->busType() == qtractorTrack::Audio)) {
+			if (m_pBus->busType() == qtractorTrack::Audio && m_iChannels != iChannels) {
 				qtractorAudioBus *pAudioOutputBus
 					= static_cast<qtractorAudioBus *> (m_pBus);
 				const QList<qtractorMixerStrip *>& strips2
@@ -266,20 +263,27 @@ bool qtractorBusCommand::updateBus (void)
 	// Close all applicable tracks...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->inputBus() == m_pBus)
+		if (pTrack->trackType() != m_pBus->busType())
+			continue;
+		if (pTrack->inputBus()  == m_pBus)
 			pTrack->setInputBusName(m_sBusName);
 		if (pTrack->outputBus() == m_pBus)
 			pTrack->setOutputBusName(m_sBusName);
-		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus) {
+		if (pTrack->inputBus()  == m_pBus ||
+			pTrack->outputBus() == m_pBus) {
 			if (pMixer) {
 				pStrip = (pMixer->trackRack())->findStrip(pTrack->monitor());
-				if (pStrip) {
-					pStrip->clear();
+				if (pStrip)
 					strips.append(pStrip);
-				}
 			}
 			pTrack->close();
 		}
+	}
+
+	if (pMixer) {
+		QListIterator<qtractorMixerStrip *> iter(strips);
+		while (iter.hasNext())
+			iter.next()->clear();
 	}
 
 	// May close now the bus...
@@ -289,6 +293,7 @@ bool qtractorBusCommand::updateBus (void)
 	m_pBus->setBusName(m_sBusName);
 	m_pBus->setBusMode(m_busMode);
 	m_pBus->setMonitor(m_bMonitor);
+
 	// Special case for typed buses...
 	if (pAudioBus) {
 		pAudioBus->setChannels(m_iChannels);
@@ -316,6 +321,8 @@ bool qtractorBusCommand::updateBus (void)
 	qtractorTracks *pTracks = pMainForm->tracks();
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() != m_pBus->busType())
+			continue;
 		if (pTrack->inputBusName()  == m_sBusName ||
 			pTrack->outputBusName() == m_sBusName) {
 			// Reopen track back...
@@ -331,6 +338,7 @@ bool qtractorBusCommand::updateBus (void)
 		QListIterator<qtractorMixerStrip *> iter(strips);
 		while (iter.hasNext()) {
 			pStrip = iter.next();
+			pStrip->clear();
 			if (pStrip->track())
 				pStrip->setTrack(pStrip->track());
 			else
@@ -338,9 +346,19 @@ bool qtractorBusCommand::updateBus (void)
 				pStrip->setBus(pStrip->bus());
 		}
 		pMixer->updateBuses();
+		// Update all applicable MIDI managers too...
 		QListIterator<qtractorMidiManager *> iter2(managers);
-		while (iter2.hasNext())
-			iter2.next()->setAudioOutputMonitor(true);
+		while (iter2.hasNext()) {
+			qtractorMidiManager *pMidiManager = iter2.next();
+		//	pMidiManager->setAudioOutputMonitor(true);
+			qtractorPluginList *pPluginList = pMidiManager->pluginList();
+			if (pPluginList) {
+				const bool bAudioOuts
+					= pPluginList->resetChannels(m_iChannels, false);
+				pPluginList->setChannelsEx(m_iChannels);
+				pMidiManager->setAudioOutputMonitorEx(bAudioOuts);
+			}
+		}
 	}
 
 	// Swap saved bus properties...
@@ -427,7 +445,10 @@ bool qtractorBusCommand::deleteBus (void)
 	// Close all applicable tracks...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
-		if (pTrack->inputBus() == m_pBus || pTrack->outputBus() == m_pBus) {
+		if (pTrack->trackType() != m_pBus->busType())
+			continue;
+		if (pTrack->inputBus()  == m_pBus ||
+			pTrack->outputBus() == m_pBus) {
 			pTrack->close();
 			if (pMixer) {
 				pStrip = (pMixer->trackRack())->findStrip(pTrack->monitor());
@@ -436,7 +457,7 @@ bool qtractorBusCommand::deleteBus (void)
 					strips.append(pStrip);
 				}
 			}
-		}			
+		}
 	}
 
 	// May close now the bus...

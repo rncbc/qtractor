@@ -1,7 +1,7 @@
 // qtractorTrackList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -268,6 +268,9 @@ private:
 			QString& sBankName, QString& sProgName) const;
 		// Item updaters.
 		void updateItem(qtractorTrackList *pTrackList);
+		void updateButtons(qtractorTrackList *pTrackList, bool bVisible);
+		void updatePlugins(qtractorTrackList *pTrackList, bool bVisible);
+		void updateMeters(qtractorTrackList *pTrackList, bool bVisible);
 		void updateIcon(qtractorTrackList *pTrackList);
 		// Item members.
 		qtractorTrack *track;
@@ -275,6 +278,7 @@ private:
 		QStringList    text;
 		unsigned int   flags;
 		// Track-list item widgets.
+		unsigned int   updated;
 		qtractorTrackListButtons *buttons;
 		qtractorPluginListView *plugins;
 		QWidget *meters;

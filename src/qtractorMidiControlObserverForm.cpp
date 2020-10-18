@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -540,8 +540,7 @@ QAction *qtractorMidiControlObserverForm::addMidiControlAction (
 		QIcon(":/images/itemControllers.png"),
 		tr("&MIDI Controller..."), pWidget);
 
-	pAction->setData(
-		qVariantFromValue<qtractorMidiControlObserver *> (pMidiObserver));
+	pAction->setData(QVariant::fromValue(pMidiObserver));
 
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
@@ -616,7 +615,7 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	if (pSession == nullptr)
 		return;
 
-	qtractorTrack *pTrack = pSession->findTrack(pCurveList);
+	qtractorTrack *pTrack = pSession->findTrackCurveList(pCurveList);
 	if (pTrack == nullptr)
 		return;
 
@@ -647,7 +646,7 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 	pAction = pMenu->addAction(tr("&Automation"));
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurve && pCurve == pCurveList->currentCurve());
-	pAction->setData(qVariantFromValue(pMidiObserver));
+	pAction->setData(QVariant::fromValue(pMidiObserver));
 	QObject::connect(
 		pAction, SIGNAL(triggered(bool)),
 		pMainForm, SLOT(trackCurveSelect(bool)));

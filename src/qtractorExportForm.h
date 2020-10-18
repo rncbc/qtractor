@@ -1,7 +1,7 @@
 // qtractorExportForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -37,27 +37,50 @@ class qtractorExportForm : public QDialog
 public:
 
 	// Constructor.
-	qtractorExportForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
+	qtractorExportForm(QWidget *pParent = nullptr);
 	// Destructor.
-	~qtractorExportForm();
+	virtual ~qtractorExportForm();
 
+	// Default window title (prefix).
+	void setExportTitle(const QString& sExportTitle);
+	const QString& exportTitle() const;
+
+	// Populate (setup) dialog controls from settings descriptors.
 	void setExportType(qtractorTrack::TrackType exportType);
 	qtractorTrack::TrackType exportType() const;
 
+	// Retrieve current audio file suffix.
+	const QString& exportExt() const;
+
+	// Retrieve current aliased file format index.
+	int audioExportFormat() const;
+	int midiExportFormat() const;
+
 protected slots:
 
-	void accept();
-	void reject();
+	void exportPathChanged(const QString&);
+	void exportPathClicked();
 
-	void browseExportPath();
+	void audioExportTypeChanged(int);
 
 	void rangeChanged();
 	void formatChanged(int);
 	void valueChanged();
 
-	void stabilizeForm();
+	virtual void stabilizeForm();
 
-private:
+protected:
+
+	// Make up window/dialog title (pure virtual).
+	virtual QString windowTitleEx(
+		const QString& sExportTitle,
+		const QString& sExportType) const = 0;
+
+	// Audio file type changed aftermath.
+	void audioExportTypeUpdate(int iIndex);
+
+	// Save export options (settings).
+	void saveExportOptions();
 
 	// The Qt-designer UI struct...
 	Ui::qtractorExportForm m_ui;
@@ -65,10 +88,74 @@ private:
 	// Instance variables...
 	qtractorTrack::TrackType m_exportType;
 
+	QString m_sExportTitle;
 	QString m_sExportType;
 	QString m_sExportExt;
 
 	qtractorTimeScale *m_pTimeScale;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorExportTrackForm -- UI wrapper form.
+
+class qtractorExportTrackForm : public qtractorExportForm
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorExportTrackForm(QWidget *pParent = nullptr);
+	// Destructor.
+	~qtractorExportTrackForm();
+
+protected slots:
+
+	// Executive slots.
+	void accept();
+	void reject();
+
+	void stabilizeForm();
+
+protected:
+
+	// Make up window/dialog title (pure virtual).
+	QString windowTitleEx(
+		const QString& sExportTitle,
+		const QString& sExportType) const;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorExportClipForm -- UI wrapper form.
+
+class qtractorExportClipForm : public qtractorExportForm
+{
+	Q_OBJECT
+
+public:
+
+	// Constructor.
+	qtractorExportClipForm(QWidget *pParent = nullptr);
+	// Destructor.
+	~qtractorExportClipForm();
+
+	// Settle/retrieve the export path.
+	void setExportPath(const QString& sExportPath);
+	QString exportPath() const;
+
+protected slots:
+
+	// Executive slots.
+	void accept();
+
+protected:
+
+	// Make up window/dialog title (pure virtual).
+	QString windowTitleEx(
+		const QString& sExportTitle,
+		const QString& sExportType) const;
 };
 
 

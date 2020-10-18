@@ -1,7 +1,7 @@
 // qtractorAudioFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -80,14 +80,6 @@ public:
 	// Supported file types.
 	enum FileType { SndFile, VorbisFile, MadFile };
 
-	// Factory methods.
-	static qtractorAudioFile *createAudioFile (
-		const QString& sFilename, unsigned short iChannels = 0,
-		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
-	static qtractorAudioFile *createAudioFile (
-		FileType type, unsigned short iChannels = 0,
-		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
-
 	// Audio file format descriptor.
 	struct FileFormat
 	{
@@ -118,24 +110,24 @@ public:
 		int iFormat = 0, int iQuality = 4);
 
 	static QString defaultExt();
-	static int defaultFormat();
-	static int defaultQuality();
 
-	// Check whether given file type/format is valid.
+	// Check whether given file type/format is valid. (static)
 	static bool isValidFormat(const FileFormat *pFormat, int iFormat);
+
+	// Factory method. (static)
+	static qtractorAudioFile *createAudioFile (const QString& sFilename,
+		unsigned short iChannels = 0, unsigned int iSampleRate = 0,
+		unsigned int iBufferSize = 0, int iFormat = -1);
 
 protected:
 
-	// Instance factory methods.
-	qtractorAudioFile *newAudioFile (
-		const QString& sFilename, unsigned short iChannels,
-		unsigned int iSampleRate, unsigned int iBufferSize);
-	qtractorAudioFile *newAudioFile (
-		FileType type, unsigned short iChannels,
-		unsigned int iSampleRate, unsigned int iBufferSize);
+	// Instance factory method.
+	qtractorAudioFile *newAudioFile (const QString& sFilename,
+		unsigned short iChannels, unsigned int iSampleRate,
+		unsigned int iBufferSize, int iFormat);
 
-	// Translate format index into libsndfile specific...
-	static int format(const FileFormat *pFormat, int iFormat);
+	static int defaultFormat();
+	static int defaultQuality();
 
 private:
 
@@ -149,8 +141,8 @@ private:
 
 	// Default file format/type (for capture/record)
 	FileFormat *m_pDefaultFormat;
-	int m_iDefaultFormat;
-	int m_iDefaultQuality;
+	int         m_iDefaultFormat;
+	int         m_iDefaultQuality;
 
 	// The singleton instance.
 	static qtractorAudioFileFactory *g_pInstance;

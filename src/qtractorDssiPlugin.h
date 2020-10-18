@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -100,7 +100,7 @@ public:
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
 	// Parameter update method.
-	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+	void updateParam(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);
@@ -151,7 +151,7 @@ private:
 	bool m_bEditorVisible;
 
 	// Controller port map.
-	qtractorPluginParam *m_apControllerMap[128];
+	qtractorPlugin::Param *m_apControllerMap[128];
 
 	// Tracking changes on output control ports.
 	float *m_pfControlOutsLast;

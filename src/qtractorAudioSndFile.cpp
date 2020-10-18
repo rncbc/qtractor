@@ -1,7 +1,7 @@
 // qtractorAudioSndFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,12 +29,13 @@
 
 // Constructor.
 qtractorAudioSndFile::qtractorAudioSndFile ( unsigned short iChannels,
-	unsigned int iSampleRate, unsigned int iBufferSize )
+	unsigned int iSampleRate, unsigned int iBufferSize, int iFormat )
 {
 	// Need a minimum of specification, at least for write mode.
 	::memset(&m_sfinfo, 0, sizeof(m_sfinfo));
 	m_sfinfo.channels   = iChannels;
 	m_sfinfo.samplerate = iSampleRate;
+	m_sfinfo.format     = iFormat;
 
 	// Initialize other stuff.
 	m_pSndFile    = nullptr;
@@ -80,7 +81,8 @@ bool qtractorAudioSndFile::open ( const QString& sFilename, int iMode )
 	if (sfmode & SFM_WRITE) {
 		if (m_sfinfo.channels == 0 || m_sfinfo.samplerate == 0)
 			return false;
-		m_sfinfo.format = qtractorAudioFileFactory::defaultFormat();
+		if (m_sfinfo.format == 0)
+			m_sfinfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
 	}
 
 	// Now open it.
@@ -207,6 +209,40 @@ void qtractorAudioSndFile::allocBufferCheck ( unsigned int iBufferSize )
 		while (m_iBufferSize < iBufferSize)
 			m_iBufferSize <<= 1;
 		m_pBuffer = new float [m_sfinfo.channels * m_iBufferSize];
+	}
+}
+
+
+// Check whether given file type/format is valid. (static)
+bool qtractorAudioSndFile::isValidFormat ( int iType, int iFormat )
+{
+	SF_INFO sfinfo;
+	::memset(&sfinfo, 0, sizeof(sfinfo));
+	sfinfo.samplerate = 44100;  // Dummy samplerate.
+	sfinfo.channels = 2;        // Dummy stereo.
+	sfinfo.format = format(iType, iFormat);
+	return bool(::sf_format_check(&sfinfo));
+}
+
+
+// Translate format index into libsndfile specific. (static)
+int qtractorAudioSndFile::format ( int iType, int iFormat )
+{
+	iType &= SF_FORMAT_TYPEMASK;
+
+	// Translate this to some libsndfile slang...
+	switch (iFormat) {
+	case 4:
+		return iType | SF_FORMAT_DOUBLE;
+	case 3:
+		return iType | SF_FORMAT_FLOAT;
+	case 2:
+		return iType | SF_FORMAT_PCM_32;
+	case 1:
+		return iType | SF_FORMAT_PCM_24;
+	case 0:
+	default:
+		return iType | SF_FORMAT_PCM_16;
 	}
 }
 

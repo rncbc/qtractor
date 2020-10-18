@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -527,6 +527,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.viewEventsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewEvents(bool)));
+	QObject::connect(m_ui.viewNoteNamesAction,
+		SIGNAL(triggered(bool)),
+		SLOT(viewNoteNames(bool)));
 	QObject::connect(m_ui.viewNoteDurationAction,
 		SIGNAL(triggered(bool)),
 		SLOT(viewNoteDuration(bool)));
@@ -677,6 +680,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewToolbarTimeAction->setChecked(pOptions->bMidiTimeToolbar);
 		m_ui.viewToolbarScaleAction->setChecked(pOptions->bMidiScaleToolbar);
 		m_ui.viewToolbarThumbAction->setChecked(pOptions->bMidiThumbToolbar);
+		m_ui.viewNoteNamesAction->setChecked(pOptions->bMidiNoteNames);
 		m_ui.viewNoteDurationAction->setChecked(pOptions->bMidiNoteDuration);
 		m_ui.viewNoteColorAction->setChecked(pOptions->bMidiNoteColor);
 		m_ui.viewValueColorAction->setChecked(pOptions->bMidiValueColor);
@@ -714,6 +718,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_pMidiEditor->setEditModeDraw(pOptions->bMidiEditModeDraw);
 		m_pMidiEditor->setNoteColor(pOptions->bMidiNoteColor);
 		m_pMidiEditor->setValueColor(pOptions->bMidiValueColor);
+		m_pMidiEditor->setNoteNames(pOptions->bMidiNoteNames);
 		m_pMidiEditor->setNoteDuration(pOptions->bMidiNoteDuration);
 		m_pMidiEditor->setSendNotes(pOptions->bMidiPreview);
 		m_pMidiEditor->setSyncView(pOptions->bMidiFollow);
@@ -918,6 +923,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->bMidiEditMode = m_pMidiEditor->isEditMode();
 		pOptions->bMidiEditModeDraw = m_pMidiEditor->isEditModeDraw();
 		pOptions->iMidiDisplayFormat = (m_pMidiEditor->timeScale())->displayFormat();
+		pOptions->bMidiNoteNames = m_ui.viewNoteNamesAction->isChecked();
 		pOptions->bMidiNoteDuration = m_ui.viewNoteDurationAction->isChecked();
 		pOptions->bMidiNoteColor = m_ui.viewNoteColorAction->isChecked();
 		pOptions->bMidiValueColor = m_ui.viewValueColorAction->isChecked();
@@ -1209,7 +1215,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 		filters.append(tr("All files (*.*)"));
 		const QString& sFilter = filters.join(";;");
 		QWidget *pParentWidget = nullptr;
-		QFileDialog::Options options = 0;
+		QFileDialog::Options options;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
@@ -1718,6 +1724,14 @@ void qtractorMidiEditorForm::viewNoteColor ( bool bOn )
 void qtractorMidiEditorForm::viewValueColor ( bool bOn )
 {
 	m_pMidiEditor->setValueColor(bOn);
+	m_pMidiEditor->updateContents();
+}
+
+
+// View note names (in rectangles)
+void qtractorMidiEditorForm::viewNoteNames ( bool bOn )
+{
+	m_pMidiEditor->setNoteNames(bOn);
 	m_pMidiEditor->updateContents();
 }
 

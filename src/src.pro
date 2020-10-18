@@ -29,6 +29,7 @@ HEADERS += config.h \
 	qtractorClip.h \
 	qtractorClipCommand.h \
 	qtractorClipSelect.h \
+	qtractorComboBox.h \
 	qtractorCommand.h \
 	qtractorConnect.h \
 	qtractorConnections.h \
@@ -41,7 +42,6 @@ HEADERS += config.h \
 	qtractorDssiPlugin.h \
 	qtractorEngine.h \
 	qtractorEngineCommand.h \
-	qtractorFifoBuffer.h \
 	qtractorFileList.h \
 	qtractorFileListView.h \
 	qtractorFiles.h \
@@ -116,6 +116,7 @@ HEADERS += config.h \
 	qtractorTrackView.h \
 	qtractorTracks.h \
 	qtractorVstPlugin.h \
+	qtractorVst3Plugin.h \
 	qtractorZipFile.h \
 	qtractorWsolaTimeStretcher.h \
 	qtractorBusForm.h \
@@ -160,6 +161,7 @@ SOURCES += \
 	qtractorClip.cpp \
 	qtractorClipCommand.cpp \
 	qtractorClipSelect.cpp \
+	qtractorComboBox.cpp \
 	qtractorCommand.cpp \
 	qtractorConnect.cpp \
 	qtractorConnections.cpp \
@@ -238,6 +240,7 @@ SOURCES += \
 	qtractorTrackView.cpp \
 	qtractorTracks.cpp \
 	qtractorVstPlugin.cpp \
+	qtractorVst3Plugin.cpp \
 	qtractorWsolaTimeStretcher.cpp \
 	qtractorZipFile.cpp \
 	qtractorBusForm.cpp \

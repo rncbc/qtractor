@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -102,9 +102,8 @@ bool qtractorTrackCommand::addTrack (void)
 	// And the new track list view item too...
 	iTrack = pTrackList->insertTrack(iTrack, m_pTrack);
 
-	// Special MIDI track cases...
-	if (m_pTrack->trackType() == qtractorTrack::Midi)
-		pTracks->updateMidiTrack(m_pTrack);
+	// Update track-list items...
+	m_pTrack->updateTrack();
 
 	// (Re)open all clips...
 	qtractorClip *pClip = m_pTrack->clips().first();
@@ -337,7 +336,13 @@ bool qtractorCopyTrackCommand::redo (void)
 	// Copy all former plugins and respective automation/curves...
 	qtractorPluginList *pPluginList = pTrack->pluginList();
 	qtractorPluginList *pNewPluginList = pNewTrack->pluginList();
+
+	qtractorMidiManager *pMidiManager = nullptr;
+	qtractorMidiManager *pNewMidiManager = nullptr;
+
 	if (pPluginList && pNewPluginList) {
+		pMidiManager = pPluginList->midiManager();
+		pNewMidiManager = pNewPluginList->midiManager();
 		for (qtractorPlugin *pPlugin = pPluginList->first();
 				pPlugin; pPlugin = pPlugin->next()) {
 			// Copy new plugin...
@@ -361,10 +366,10 @@ bool qtractorCopyTrackCommand::redo (void)
 			const qtractorPlugin::Params::ConstIterator& param_end
 				= params.constEnd();
 			for ( ; param != param_end; ++param) {
-				qtractorPluginParam *pParam = param.value();
+				qtractorPlugin::Param *pParam = param.value();
 				pCurve = pParam->subject()->curve();
 				if (pCurve && pCurve->list() == pCurveList) {
-					qtractorPluginParam *pNewParam
+					qtractorPlugin::Param *pNewParam
 						= pNewPlugin->findParam(pParam->index());
 					if (pNewParam == nullptr)
 						continue;
@@ -376,8 +381,6 @@ bool qtractorCopyTrackCommand::redo (void)
 			}
 		}
 		// And other MIDI specific plugins-list properties as well
-		qtractorMidiManager *pMidiManager = pPluginList->midiManager();
-		qtractorMidiManager *pNewMidiManager = pNewPluginList->midiManager();
 		if (pMidiManager && pNewMidiManager) {
 			// The basic ones...
 			pNewPluginList->setMidiBank(
@@ -397,6 +400,8 @@ bool qtractorCopyTrackCommand::redo (void)
 				pMidiManager->isAudioOutputAutoConnect());
 			pNewMidiManager->setAudioOutputBus(
 				pMidiManager->isAudioOutputBus());
+			pNewMidiManager->setAudioOutputMonitor(
+				pMidiManager->isAudioOutputMonitor());
 		}
 	}
 
@@ -463,7 +468,14 @@ bool qtractorCopyTrackCommand::redo (void)
 	// Refresh to most recent things...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
+		// Meters on tracks list...
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks && pNewMidiManager)
+			pTracks->updateMidiTrackItem(pNewMidiManager);
+		// Meters on mixer strips...
 		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer && pNewMidiManager)
+			pMixer->updateMidiManagerStrip(pNewMidiManager);
 		if (pMixer)
 			pMixer->updateTrackStrip(pNewTrack);
 	}
@@ -535,7 +547,7 @@ bool qtractorMoveTrackCommand::redo (void)
 
 	int iTrack = pSession->tracks().find(pTrack);
 	if (iTrack < 0)
-	    return false;
+		return false;
 
 	// Save the next track alright...
 	qtractorTrack *pNextTrack = pTrack->next();
@@ -656,7 +668,7 @@ qtractorImportTrackCommand::qtractorImportTrackCommand (
 qtractorImportTrackCommand::~qtractorImportTrackCommand (void)
 {
 	if (m_pSaveCommand)
-	    delete m_pSaveCommand;
+		delete m_pSaveCommand;
 
 	qDeleteAll(m_trackCommands);
 	m_trackCommands.clear();
@@ -680,15 +692,15 @@ bool qtractorImportTrackCommand::redo (void)
 
 	if (m_pSaveCommand && m_iSaveCount > 0) {
 		if (!m_pSaveCommand->redo())
-		    bResult = false;
+			bResult = false;
 	}
 	++m_iSaveCount;
 
 	QListIterator<qtractorAddTrackCommand *> iter(m_trackCommands);
 	while (iter.hasNext()) {
-	    qtractorAddTrackCommand *pTrackCommand = iter.next();
+		qtractorAddTrackCommand *pTrackCommand = iter.next();
 		if (!pTrackCommand->redo())
-		    bResult = false;
+			bResult = false;
 	}
 
 	return bResult;
@@ -703,7 +715,7 @@ bool qtractorImportTrackCommand::undo (void)
 	while (iter.hasPrevious()) {
 		qtractorAddTrackCommand *pTrackCommand = iter.previous();
 		if (!pTrackCommand->undo())
-		    bResult = false;
+			bResult = false;
 	}
 
 	if (m_pSaveCommand && !m_pSaveCommand->undo())
@@ -724,6 +736,12 @@ qtractorEditTrackCommand::qtractorEditTrackCommand (
 		QObject::tr("track properties"), pTrack->properties(), props)
 {
 	m_pTrack = pTrack;
+
+	// Check whether we'll need to re-open the track...
+	const qtractorTrack::Properties& old_props = pTrack->properties();
+	m_bReopen = (
+		old_props.inputBusName  != props.inputBusName ||
+		old_props.outputBusName != props.outputBusName);
 }
 
 
@@ -752,8 +770,11 @@ bool qtractorEditTrackCommand::redo (void)
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
 	// Reopen to assign a probable new bus...
-	if (bResult)
+	if (bResult && m_bReopen) {
+		pSession->lock();
 		bResult = m_pTrack->open();
+		pSession->unlock();
+	}
 
 	// Re-acquire track-name for uniqueness...
 	pSession->acquireTrackName(m_pTrack);
@@ -778,13 +799,12 @@ bool qtractorEditTrackCommand::redo (void)
 		pSession->trackRecord(m_pTrack, true, iClipStart, iFrameTime);
 	}
 
-	// Special MIDI track cases...
-	if (m_pTrack->trackType() == qtractorTrack::Midi) {
-		// Refresh MIDI track item, at least the names...
-		m_pTrack->updateMidiTrack();
-		// Update and trap dirty clips...
+	// Update track-list items...
+	m_pTrack->updateTrack();
+
+	// Special MIDI track case: update and trap dirty clips...
+	if (m_pTrack->trackType() == qtractorTrack::Midi)
 		m_pTrack->updateMidiClips();
-	}
 
 	// Mixer turn...
 	qtractorMixer *pMixer = pMainForm->mixer();

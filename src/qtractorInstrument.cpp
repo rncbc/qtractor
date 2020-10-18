@@ -1,7 +1,7 @@
 // qtractorInstrument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,13 +24,18 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QDate>
 
 #include <QDomDocument>
 
 #include <stdlib.h>
 #include <stdint.h>
+
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
 
 
 //----------------------------------------------------------------------
@@ -158,7 +163,10 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 	}
 
 	// Check for a MIDINameDocument...
-	if (loadMidiNameDocument(&file)) {
+	file.seek(0);
+
+	QDomDocument doc;
+	if (doc.setContent(&file) && loadMidiNameDocument(doc)) {
 		file.close();
 		appendFile(sFilename);
 		return true;
@@ -180,18 +188,20 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 	qtractorInstrument     *pInstrument = nullptr;
 	qtractorInstrumentData *pData = nullptr;
 
-	QRegExp rxTitle   ("^\\[([^\\]]+)\\]$");
-	QRegExp rxData    ("^([0-9]+)=(.+)$");
-	QRegExp rxBasedOn ("^BasedOn=(.+)$");
-	QRegExp rxBankSel ("^BankSelMethod=(0|1|2|3)$");
-	QRegExp rxUseNotes("^UsesNotesAsControllers=(0|1)$");
-	QRegExp rxControl ("^Control=(.+)$");
-	QRegExp rxRpn     ("^RPN=(.+)$");
-	QRegExp rxNrpn    ("^NRPN=(.+)$");
-	QRegExp rxPatch   ("^Patch\\[([0-9]+|\\*)\\]=(.+)$");
-	QRegExp rxKey     ("^Key\\[([0-9]+|\\*),([0-9]+|\\*)\\]=(.+)$");
-	QRegExp rxDrum    ("^Drum\\[([0-9]+|\\*),([0-9]+|\\*)\\]=(0|1)$");
-	
+	QRegularExpression rxTitle   ("^\\[([^\\]]+)\\]$");
+	QRegularExpression rxData    ("^([0-9]+)=(.+)$");
+	QRegularExpression rxBasedOn ("^BasedOn=(.+)$");
+	QRegularExpression rxBankSel ("^BankSelMethod=(0|1|2|3)$");
+	QRegularExpression rxUseNotes("^UsesNotesAsControllers=(0|1)$");
+	QRegularExpression rxControl ("^Control=(.+)$");
+	QRegularExpression rxRpn     ("^RPN=(.+)$");
+	QRegularExpression rxNrpn    ("^NRPN=(.+)$");
+	QRegularExpression rxPatch   ("^Patch\\[([0-9]+|\\*)\\]=(.+)$");
+	QRegularExpression rxKey     ("^Key\\[([0-9]+|\\*),([0-9]+|\\*)\\]=(.+)$");
+	QRegularExpression rxDrum    ("^Drum\\[([0-9]+|\\*),([0-9]+|\\*)\\]=(0|1)$");
+
+	QRegularExpressionMatch match;
+
 	const QString s0_127    = "0..127";
 	const QString s1_128    = "1..128";
 	const QString s0_16383  = "0..16383";
@@ -254,15 +264,22 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 		// Now it depends on the section...
 		switch (sect) {
 			case PatchNames: {
-				if (rxTitle.exactMatch(sLine)) {
+				match = rxTitle.match(sLine);
+				if (match.hasMatch()) {
 					// New patch name...
-					const QString& sTitle = rxTitle.cap(1);
+					const QString& sTitle = match.captured(1);
 					pData = &(m_patches[sTitle]);
 					pData->setName(sTitle);
-				} else if (rxBasedOn.exactMatch(sLine)) {
-					pData->setBasedOn(rxBasedOn.cap(1));
-				} else if (rxData.exactMatch(sLine)) {
-					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
+					break;
+				}
+				match = rxBasedOn.match(sLine);
+				if (match.hasMatch()) {
+					pData->setBasedOn(match.captured(1));
+					break;
+				}
+				match = rxData.match(sLine);
+				if (match.hasMatch()) {
+					(*pData)[match.captured(1).toInt()] = match.captured(2);
 				} else {
 					qWarning("%s(%d): %s: Unknown .Patch Names entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
@@ -270,15 +287,22 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				break;
 			}
 			case NoteNames: {
-				if (rxTitle.exactMatch(sLine)) {
+				match = rxTitle.match(sLine);
+				if (match.hasMatch()) {
 					// New note name...
-					const QString& sTitle = rxTitle.cap(1);
+					const QString& sTitle = match.captured(1);
 					pData = &(m_notes[sTitle]);
 					pData->setName(sTitle);
-				} else if (rxBasedOn.exactMatch(sLine)) {
-					pData->setBasedOn(rxBasedOn.cap(1));
-				} else if (rxData.exactMatch(sLine)) {
-					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
+					break;
+				}
+				match = rxBasedOn.match(sLine);
+				if (match.hasMatch()) {
+					pData->setBasedOn(match.captured(1));
+					break;
+				}
+				match = rxData.match(sLine);
+				if (match.hasMatch()) {
+					(*pData)[match.captured(1).toInt()] = match.captured(2);
 				} else {
 					qWarning("%s(%d): %s: Unknown .Note Names entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
@@ -286,15 +310,22 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				break;
 			}
 			case ControllerNames: {
-				if (rxTitle.exactMatch(sLine)) {
+				match = rxTitle.match(sLine);
+				if (match.hasMatch()) {
 					// New controller name...
-					const QString& sTitle = rxTitle.cap(1);
+					const QString& sTitle = match.captured(1);
 					pData = &(m_controllers[sTitle]);
 					pData->setName(sTitle);
-				} else if (rxBasedOn.exactMatch(sLine)) {
-					pData->setBasedOn(rxBasedOn.cap(1));
-				} else if (rxData.exactMatch(sLine)) {
-					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
+					break;
+				}
+				match = rxBasedOn.match(sLine);
+				if (match.hasMatch()) {
+					pData->setBasedOn(match.captured(1));
+					break;
+				}
+				match = rxData.match(sLine);
+				if (match.hasMatch()) {
+					(*pData)[match.captured(1).toInt()] = match.captured(2);
 				} else {
 					qWarning("%s(%d): %s: Unknown .Controller Names entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
@@ -302,15 +333,22 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				break;
 			}
 			case RpnNames: {
-				if (rxTitle.exactMatch(sLine)) {
+				match = rxTitle.match(sLine);
+				if (match.hasMatch()) {
 					// New RPN name...
-					const QString& sTitle = rxTitle.cap(1);
+					const QString& sTitle = match.captured(1);
 					pData = &(m_rpns[sTitle]);
 					pData->setName(sTitle);
-				} else if (rxBasedOn.exactMatch(sLine)) {
-					pData->setBasedOn(rxBasedOn.cap(1));
-				} else if (rxData.exactMatch(sLine)) {
-					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
+					break;
+				}
+				match = rxBasedOn.match(sLine);
+				if (match.hasMatch()) {
+					pData->setBasedOn(match.captured(1));
+					break;
+				}
+				match = rxData.match(sLine);
+				if (match.hasMatch()) {
+					(*pData)[match.captured(1).toInt()] = match.captured(2);
 				} else {
 					qWarning("%s(%d): %s: Unknown .RPN Names entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
@@ -318,15 +356,22 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				break;
 			}
 			case NrpnNames: {
-				if (rxTitle.exactMatch(sLine)) {
+				match = rxTitle.match(sLine);
+				if (match.hasMatch()) {
 					// New NRPN name...
-					const QString& sTitle = rxTitle.cap(1);
+					const QString& sTitle = match.captured(1);
 					pData = &(m_nrpns[sTitle]);
 					pData->setName(sTitle);
-				} else if (rxBasedOn.exactMatch(sLine)) {
-					pData->setBasedOn(rxBasedOn.cap(1));
-				} else if (rxData.exactMatch(sLine)) {
-					(*pData)[rxData.cap(1).toInt()] = rxData.cap(2);
+					break;
+				}
+				match = rxBasedOn.match(sLine);
+				if (match.hasMatch()) {
+					pData->setBasedOn(match.captured(1));
+					break;
+				}
+				match = rxData.match(sLine);
+				if (match.hasMatch()) {
+					(*pData)[match.captured(1).toInt()] = match.captured(2);
 				} else {
 					qWarning("%s(%d): %s: Unknown .NRPN Names entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
@@ -334,40 +379,65 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 				break;
 			}
 			case InstrDefs: {
-				if (rxTitle.exactMatch(sLine)) {
+				match = rxTitle.match(sLine);
+				if (match.hasMatch()) {
 					// New instrument definition...
-					const QString& sTitle = rxTitle.cap(1);
+					const QString& sTitle = match.captured(1);
 					pInstrument = &((*this)[sTitle]);
 					pInstrument->setInstrumentName(sTitle);
-				} else if (rxBankSel.exactMatch(sLine)) {
+					break;
+				}
+				match = rxBankSel.match(sLine);
+				if (match.hasMatch()) {
 					pInstrument->setBankSelMethod(
-						rxBankSel.cap(1).toInt());
-				} else if (rxUseNotes.exactMatch(sLine)) {
+						match.captured(1).toInt());
+					break;
+				}
+				match = rxUseNotes.match(sLine);
+				if (match.hasMatch()) {
 					pInstrument->setUsesNotesAsControllers(
-						(bool) rxBankSel.cap(1).toInt());
-				} else if (rxPatch.exactMatch(sLine)) {
-					int iBank = (rxPatch.cap(1) == sAsterisk
-						? -1 : rxPatch.cap(1).toInt());
-					pInstrument->setPatch(iBank, m_patches[rxPatch.cap(2)]);
-				} else if (rxControl.exactMatch(sLine)) {
-					pInstrument->setControllers(m_controllers[rxControl.cap(1)]);
-				} else if (rxRpn.exactMatch(sLine)) {
-					pInstrument->setRpns(m_rpns[rxRpn.cap(1)]);
-				} else if (rxNrpn.exactMatch(sLine)) {
-					pInstrument->setNrpns(m_nrpns[rxNrpn.cap(1)]);
-				} else if (rxKey.exactMatch(sLine)) {
-					int iBank = (rxKey.cap(1) == sAsterisk
-						? -1 : rxKey.cap(1).toInt());
-					int iProg = (rxKey.cap(2) == sAsterisk
-						? -1 : rxKey.cap(2).toInt());
-					pInstrument->setNotes(iBank, iProg,	m_notes[rxKey.cap(3)]);
-				} else if (rxDrum.exactMatch(sLine)) {
-					const int iBank = (rxDrum.cap(1) == sAsterisk
-						? -1 : rxDrum.cap(1).toInt());
-					const int iProg = (rxDrum.cap(2) == sAsterisk
-						? -1 : rxKey.cap(2).toInt());
+						bool(match.captured(1).toInt()));
+					break;
+				}
+				match = rxPatch.match(sLine);
+				if (match.hasMatch()) {
+					const QString& cap1 = match.captured(1);
+					const int iBank = (cap1 == sAsterisk ? -1 : cap1.toInt());
+					pInstrument->setPatch(iBank, m_patches[match.captured(2)]);
+					break;
+				}
+				match = rxControl.match(sLine);
+				if (match.hasMatch()) {
+					pInstrument->setControllers(m_controllers[match.captured(1)]);
+					break;
+				}
+				match = rxRpn.match(sLine);
+				if (match.hasMatch()) {
+					pInstrument->setRpns(m_rpns[match.captured(1)]);
+					break;
+				}
+				match = rxNrpn.match(sLine);
+				if (match.hasMatch()) {
+					pInstrument->setNrpns(m_nrpns[match.captured(1)]);
+					break;
+				}
+				match = rxKey.match(sLine);
+				if (match.hasMatch()) {
+					const QString& cap1 = match.captured(1);
+					const QString& cap2 = match.captured(2);
+					const int iBank = (cap1 == sAsterisk ? -1 : cap1.toInt());
+					const int iProg = (cap2 == sAsterisk ? -1 : cap2.toInt());
+					pInstrument->setNotes(iBank, iProg,	m_notes[match.captured(3)]);
+					break;
+				}
+				match = rxDrum.match(sLine);
+				if (match.hasMatch()) {
+					const QString& cap1 = match.captured(1);
+					const QString& cap2 = match.captured(2);
+					const int iBank = (cap1 == sAsterisk ? -1 : cap1.toInt());
+					const int iProg = (cap2 == sAsterisk ? -1 : cap2.toInt());
 					pInstrument->setDrum(iBank, iProg,
-						(bool) rxDrum.cap(3).toInt());
+						bool(match.captured(3).toInt()));
 				} else {
 					qWarning("%s(%d): %s: Unknown .Instrument Definitions entry.",
 						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
@@ -411,8 +481,8 @@ bool qtractorInstrumentList::save ( const QString& sFilename ) const
 		<< ": " << QFileInfo(sFilename).fileName() << endl;
 	ts << "; " << QObject::tr("Date")
 		<< ": " << QDate::currentDate().toString("MMM dd yyyy")
-		<< " "  << QTime::currentTime().toString("hh:mm:ss") << endl;
-	ts << ";"  << endl;
+		<< " " << QTime::currentTime().toString("hh:mm:ss") << endl;
+	ts << ";" << endl;
 
 	// - Patch Names...
     ts << sepl << endl << endl;
@@ -656,14 +726,8 @@ void qtractorInstrumentList::loadSoundFontPresets ( QFile *pFile, int iSize )
 
 
 // Special MIDINameDocument loader.
-bool qtractorInstrumentList::loadMidiNameDocument ( QFile *pFile )
+bool qtractorInstrumentList::loadMidiNameDocument ( const QDomDocument& doc )
 {
-	pFile->seek(0);
-
-	QDomDocument doc;
-	if (!doc.setContent(pFile))
-		return false;
-
 	QDomElement eRoot = doc.documentElement();
 	if (eRoot.tagName() != "MIDINameDocument")
 		return false;
@@ -908,7 +972,11 @@ void qtractorInstrumentList::loadMidiPatchNameList (
 					const QString sep(", ");
 					QStringList list = sBankName
 						.remove(sName).remove(sBank)
+					#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+						.split(sep, Qt::SkipEmptyParts);
+					#else
 						.split(sep, QString::SkipEmptyParts);
+					#endif
 					list.append(sName + sBank);
 					sBankName = list.join(sep);
 				}

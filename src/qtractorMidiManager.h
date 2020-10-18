@@ -1,7 +1,7 @@
 // qtractorMidiManager.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,12 +32,21 @@
 #endif
 #endif
 
+#ifdef CONFIG_VST3
+#include "qtractorVst3Plugin.h"
+#ifndef CONFIG_MIDI_PARSER
+#define CONFIG_MIDI_PARSER 1
+#endif
+#endif
+
 #if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
 #include "qtractorLv2Plugin.h"
 #ifndef CONFIG_MIDI_PARSER
 #define CONFIG_MIDI_PARSER 1
 #endif
 #endif
+
+#include "qtractorInstrument.h"
 
 
 // Forward declarations.
@@ -188,11 +197,11 @@ public:
 	// Clears buffers for processing.
 	void clear();
 
-	// Event buffer accessor. 
-	snd_seq_event_t *events() const { return m_pEventBuffer; }
-
-	// Returns number of events result of process.
-	unsigned int count() const { return m_iEventCount; }
+	// Event buffers accessors.
+	qtractorMidiBuffer *buffer_in() const
+		{ return m_ppEventBuffers[m_iEventBuffer & 1]; }
+	qtractorMidiBuffer *buffer_out() const
+		{ return m_ppEventBuffers[(m_iEventBuffer + 1) & 1]; }
 
 	// Direct buffering.
 	bool direct(snd_seq_event_t *pEvent);
@@ -227,8 +236,13 @@ public:
 	static void setDefaultAudioOutputAutoConnect(bool bAudioOutputAutoConnect);
 	static bool isDefaultAudioOutputAutoConnect();
 
-	static void setDefaultAudioOutputMonitor(bool bAudioOutputMonitor);
-	static bool isDefaultAudioOutputMonitor();
+#ifdef CONFIG_DSSI
+	// DSSI event buffer accessors...
+	snd_seq_event_t *dssi_events() const
+		{ return m_pDssiEvents; }
+	unsigned int dssi_count() const
+		{ return m_iDssiEvents; }
+#endif
 
 #ifdef CONFIG_VST
 	// VST event buffer accessors...
@@ -240,6 +254,11 @@ public:
 	void vst_events_copy(VstEvents *pVstBuffer);
 	// Swap VST event buffers...
 	void vst_events_swap();
+#endif
+
+#ifdef CONFIG_VST3
+	// Swap VST3 event buffers...
+	void vst3_buffer_swap();
 #endif
 
 #ifdef CONFIG_LV2_EVENT
@@ -284,6 +303,7 @@ public:
 
 	// Audio output bus monitor accessors.
 	void setAudioOutputMonitor(bool bAudioOutputMonitor);
+	void setAudioOutputMonitorEx(bool bAudioOutputMonitor);
 	bool isAudioOutputMonitor() const
 		{ return m_bAudioOutputMonitor; }
 	qtractorAudioOutputMonitor *audioOutputMonitor() const
@@ -301,23 +321,11 @@ public:
 	int currentProg() const
 		{ return m_iCurrentProg; }
 
-	// MIDI Instrument collection map-types.
-	typedef QMap<int, QString> Progs;
-
-	struct Bank
-	{
-		QString name;
-		Progs   progs;
-	};
-
-	typedef QMap<int, Bank> Banks;
-	typedef QMap<QString, Banks> Instruments;
-
 	// Instrument map builder.
 	void updateInstruments();
 
 	// Instrument map accessor.
-	const Instruments& instruments() const
+	const qtractorInstrumentList& instruments() const
 		{ return m_instruments; }
 
 	// Direct MIDI controller helper.
@@ -375,14 +383,18 @@ private:
 
 	qtractorMidiBuffer  m_controllerBuffer;
 
-	snd_seq_event_t    *m_pEventBuffer;
-	unsigned int        m_iEventCount;
+	qtractorMidiBuffer  *m_ppEventBuffers[2];
+
+	unsigned short      m_iEventBuffer;
 
 #ifdef CONFIG_MIDI_PARSER
 	snd_midi_event_t   *m_pMidiParser;
 #endif
 
-	unsigned short      m_iEventBuffer;
+#ifdef CONFIG_DSSI
+	snd_seq_event_t    *m_pDssiEvents;
+	unsigned int        m_iDssiEvents;
+#endif
 
 #ifdef CONFIG_VST
 	VstMidiEvent       *m_ppVstMidiBuffers[2];
@@ -412,7 +424,7 @@ private:
 	int m_iPendingBankLSB;
 	int m_iPendingProg;
 
-	Instruments m_instruments;
+	qtractorInstrumentList m_instruments;
 
 	// Global factory options.
 	static bool g_bAudioOutputBus;

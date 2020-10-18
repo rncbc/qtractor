@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1220,7 +1220,12 @@ void qtractorFileListView::dragMoveEvent ( QDragMoveEvent *pDragMoveEvent )
 		return;
 	}
 
-	QTreeWidgetItem *pDropItem = dragDropItem(pDragMoveEvent->pos());
+	QTreeWidgetItem *pDropItem = dragDropItem(
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		pDragMoveEvent->position().toPoint());
+	#else
+		pDragMoveEvent->pos());
+	#endif	
 	if (canDropItem(pDropItem)) {
 		if (!pDragMoveEvent->isAccepted()) {
 			pDragMoveEvent->setDropAction(Qt::MoveAction);
@@ -1246,7 +1251,13 @@ void qtractorFileListView::dragLeaveEvent ( QDragLeaveEvent */*pDragLeaveEvent*/
 
 void qtractorFileListView::dropEvent ( QDropEvent *pDropEvent )
 {
-	QTreeWidgetItem *pDropItem = dragDropItem(pDropEvent->pos());
+	const QPoint& pos
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		= pDropEvent->position().toPoint();
+	#else
+		= pDropEvent->pos();
+	#endif
+	QTreeWidgetItem *pDropItem = dragDropItem(pos);
 	if (!canDropItem(pDropItem)) {
 		dragLeaveEvent(nullptr);
 		m_pDragItem = nullptr;
@@ -1256,9 +1267,7 @@ void qtractorFileListView::dropEvent ( QDropEvent *pDropEvent )
 	// Not quite parent, but the exact drop target...
 	qtractorFileGroupItem *pParentItem
 		= static_cast<qtractorFileGroupItem *> (pDropItem);
-	const bool bOutdent
-		= (pDropEvent->pos().x() < QTreeWidget::indentation());
-
+	const bool bOutdent = (pos.x() < QTreeWidget::indentation());
 	// Get access to the pertinent drop data...
 	int iUpdate = 0;
 	const QMimeData *pMimeData = pDropEvent->mimeData();

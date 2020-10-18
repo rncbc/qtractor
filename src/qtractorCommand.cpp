@@ -1,7 +1,7 @@
 // qtractorCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-20199, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,8 +21,9 @@
 
 #include "qtractorCommand.h"
 
+#include <QRegularExpression>
+
 #include <QAction>
-#include <QRegExp>
 
 
 //----------------------------------------------------------------------
@@ -172,7 +173,7 @@ bool qtractorCommandList::redo (void)
 void qtractorCommandList::updateAction (
 	QAction *pAction, qtractorCommand *pCommand ) const
 {
-	const QRegExp rxBrackets("[\\s]+\\([^\\)]+\\)$");
+	const QRegularExpression rxBrackets("[\\s]+\\([^\\)]+\\)$");
 	pAction->setText(pAction->text().remove(rxBrackets));
 	pAction->setStatusTip(pAction->statusTip().remove(rxBrackets));
 	pAction->setToolTip(pAction->toolTip().remove(rxBrackets));

@@ -1,7 +1,7 @@
 // qtractorAudioVorbisFile.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,7 +41,9 @@ public:
 
 	// Constructor.
 	qtractorAudioVorbisFile(unsigned short iChannels = 0,
-		unsigned int iSampleRate = 0, unsigned int iBufferSize = 0);
+		unsigned int iSampleRate = 0,
+		unsigned int iBufferSize = 0,
+		int iQuality = 4);
 
 	// Destructor.
 	virtual ~qtractorAudioVorbisFile();
@@ -59,7 +61,10 @@ public:
 	unsigned long  frames() const;
 
 	// Specialty methods.
-	unsigned int   sampleRate() const;
+	unsigned int sampleRate() const;
+
+	// Translate quality index into vorbis encoder specific.
+	static int quality(int iQuality);
 
 protected:
 
@@ -93,6 +98,7 @@ private:
 #endif	// CONFIG_LIBVORBIS
 
 	unsigned int     m_iBufferSize; // estimated buffer size.
+	int              m_iQuality;    // encoding quality (write-only).
 };
 
 

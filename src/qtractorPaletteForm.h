@@ -1,7 +1,7 @@
 // qtractorPaletteForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,7 +78,6 @@ public:
 
 protected slots:
 
-	void nameComboActivated(const QString& name);
 	void nameComboChanged(const QString& name);
 	void saveButtonClicked();
 	void deleteButtonClicked();

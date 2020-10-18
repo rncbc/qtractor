@@ -1,7 +1,7 @@
 // qtractorConnect.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,7 +24,8 @@
 
 #include <QTreeWidget>
 
-#include <QRegExp>
+#include <QRegularExpression>
+
 #include <QList>
 
 
@@ -301,8 +302,8 @@ private:
 	QTreeWidgetItem *m_pHiliteItem;
 
 	// Client:port regular expression filters.
-	QRegExp m_rxClientName;
-	QRegExp m_rxPortName;
+	QRegularExpression m_rxClientName;
+	QRegularExpression m_rxPortName;
 	
 	// Maintained list of client names.
 	QStringList m_clientNames;

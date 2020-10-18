@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>380</width>
-    <height>280</height>
+    <width>440</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -37,15 +37,10 @@
    <string>Export</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/qtractor.png</iconset>
+   <iconset resource="qtractor.qrc">
+    <normaloff>:/images/qtractor.png</normaloff>:/images/qtractor.png</iconset>
   </property>
   <layout class="QGridLayout">
-   <property name="margin">
-    <number>8</number>
-   </property>
-   <property name="spacing">
-    <number>4</number>
-   </property>
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="ExportPathTextLabel">
      <property name="text">
@@ -69,7 +64,7 @@
        <property name="minimumSize">
         <size>
          <width>320</width>
-         <height>0</height>
+         <height>22</height>
         </size>
        </property>
        <property name="toolTip">
@@ -101,19 +96,234 @@
         <string>Browse export file name</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+        <iconset resource="qtractor.qrc">
+         <normaloff>:/images/fileOpen.png</normaloff>:/images/fileOpen.png</iconset>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="2" column="0" rowspan="2">
+   <item row="2" column="0" colspan="2">
+    <widget class="QStackedWidget" name="ExportTypeWidget">
+     <widget class="QWidget" name="AudioExportTypePage">
+      <layout class="QGridLayout">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <property name="margin">
+        <number>4</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="AudioExportTypeTextLabel">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignVCenter</set>
+         </property>
+         <property name="text">
+          <string>File &amp;type:</string>
+         </property>
+         <property name="buddy">
+          <cstring>AudioExportTypeComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" colspan="3">
+        <widget class="qtractorAudioFileTypeComboBox" name="AudioExportTypeComboBox">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Audio file type to use on export</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="AudioExportFormatTextLabel">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignVCenter</set>
+         </property>
+         <property name="text">
+          <string>Sample &amp;format:</string>
+         </property>
+         <property name="buddy">
+          <cstring>AudioExportFormatComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="qtractorAudioFileFormatComboBox" name="AudioExportFormatComboBox">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Audio sample format to use on export</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="AudioExportQualityTextLabel">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignVCenter</set>
+         </property>
+         <property name="text">
+          <string>&amp;Quality:</string>
+         </property>
+         <property name="buddy">
+          <cstring>AudioExportQualitySpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QSpinBox" name="AudioExportQualitySpinBox">
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>32767</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Audio compression quality to use on export</string>
+         </property>
+         <property name="suffix">
+          <string/>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>10</number>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>4</number>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4" rowspan="2">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="MidiExportTypePage">
+      <layout class="QGridLayout">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <property name="margin">
+        <number>4</number>
+       </property>
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="MidiExportFormatTextLabel">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignVCenter</set>
+         </property>
+         <property name="text">
+          <string>File &amp;format:</string>
+         </property>
+         <property name="buddy">
+          <cstring>MidiExportFormatComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="qtractorMidiFileFormatComboBox" name="MidiExportFormatComboBox">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>MIDI file format to use on export</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>22</width>
+           <height>22</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="3" column="0" rowspan="2">
     <widget class="QGroupBox" name="ExportRangeGroupBox">
      <property name="title">
       <string>Range</string>
      </property>
      <layout class="QGridLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>8</number>
+      </property>
+      <property name="topMargin">
+       <number>8</number>
+      </property>
+      <property name="rightMargin">
+       <number>8</number>
+      </property>
+      <property name="bottomMargin">
        <number>8</number>
       </property>
       <property name="spacing">
@@ -192,7 +402,7 @@
         <property name="sizeType">
          <enum>QSizePolicy::Fixed</enum>
         </property>
-        <property name="sizeHint">
+        <property name="sizeHint" stdset="0">
          <size>
           <width>16</width>
           <height>16</height>
@@ -219,7 +429,7 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>Clip start</string>
+         <string>Custom start</string>
         </property>
        </widget>
       </item>
@@ -242,15 +452,34 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>Clip offset</string>
+         <string>Custom end</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="3" rowspan="7">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="3" column="1">
     <widget class="QGroupBox" name="ExportBusGroupBox">
+     <property name="minimumSize">
+      <size>
+       <width>160</width>
+       <height>120</height>
+      </size>
+     </property>
      <property name="title">
       <string>Outputs</string>
      </property>
@@ -259,16 +488,10 @@
        <number>4</number>
       </property>
       <property name="margin">
-       <number>8</number>
+       <number>4</number>
       </property>
       <item>
        <widget class="QListWidget" name="ExportBusNameListBox">
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>100</height>
-         </size>
-        </property>
         <property name="toolTip">
          <string>Output bus names</string>
         </property>
@@ -280,7 +503,7 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <widget class="QGroupBox" name="FormatGroupBox">
      <property name="title">
       <string>Format</string>
@@ -311,7 +534,7 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <layout class="QHBoxLayout">
      <property name="spacing">
       <number>4</number>
@@ -350,10 +573,29 @@
    <extends>QSpinBox</extends>
    <header>qtractorSpinBox.h</header>
   </customwidget>
+  <customwidget>
+   <class>qtractorAudioFileFormatComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorAudioFileTypeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qtractorMidiFileFormatComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qtractorComboBox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>ExportPathComboBox</tabstop>
   <tabstop>ExportPathToolButton</tabstop>
+  <tabstop>AudioExportTypeComboBox</tabstop>
+  <tabstop>AudioExportFormatComboBox</tabstop>
+  <tabstop>AudioExportQualitySpinBox</tabstop>
+  <tabstop>MidiExportFormatComboBox</tabstop>
   <tabstop>SessionRangeRadioButton</tabstop>
   <tabstop>LoopRangeRadioButton</tabstop>
   <tabstop>PunchRangeRadioButton</tabstop>

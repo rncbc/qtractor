@@ -1,7 +1,7 @@
 // qtractorMidiEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -238,7 +238,8 @@ public:
 	// MIDI-export method.
 	bool fileExport(const QString& sExportPath,
 		const QList<qtractorMidiBus *>& exportBuses,
-		unsigned long iExportStart = 0, unsigned long iExportEnd = 0);
+		unsigned long iExportStart, unsigned long iExportEnd,
+		int iExportFormat = -1);
 
 	// Retrieve/restore all connections, on all buses;
 	// return the effective number of connection attempts.

@@ -1,7 +1,7 @@
 // qtractorTempoAdjustForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -32,9 +32,10 @@
 
 #include <QMessageBox>
 #include <QLineEdit>
-#include <QTime>
 #include <QPainter>
 #include <QPaintEvent>
+
+#include <QElapsedTimer>
 
 
 #ifdef CONFIG_LIBAUBIO
@@ -147,8 +148,8 @@ public:
 			qtractorTrack *pTrack = pClip->track();
 			if (pTrack) {
 				QPalette pal;
-				pal.setColor(QPalette::Foreground, pTrack->foreground());
-				pal.setColor(QPalette::Background, pTrack->background());
+				pal.setColor(QPalette::WindowText, pTrack->foreground());
+				pal.setColor(QPalette::Window, pTrack->background());
 				QFrame::setPalette(pal);
 			}
 		}
@@ -282,9 +283,8 @@ private:
 // qtractorTempoAdjustForm -- UI wrapper form.
 
 // Constructor.
-qtractorTempoAdjustForm::qtractorTempoAdjustForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorTempoAdjustForm::qtractorTempoAdjustForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -300,7 +300,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm (
 
 	m_pClipWidget = nullptr;
 
-	m_pTempoTap = new QTime();
+	m_pTempoTap = new QElapsedTimer();
 	m_iTempoTap = 0;
 	m_fTempoTap = 0.0f;
 
@@ -678,17 +678,34 @@ void qtractorTempoAdjustForm::tempoTap (void)
 #endif
 
 	const int iTimeTap = m_pTempoTap->restart();
-	if (iTimeTap > 200 && iTimeTap < 2000) { // Magic!
-		m_fTempoTap += (60000.0f / float(iTimeTap));
-		if (++m_iTempoTap > 2) {
-			m_fTempoTap /= float(m_iTempoTap);
-			m_iTempoTap  = 1; // Median-like averaging...
-			m_ui.TempoSpinBox->setTempo(int(m_fTempoTap), true);
-		}
-	} else {
+
+	if (iTimeTap < 200 || iTimeTap > 2000) { // Magic!
 		m_iTempoTap = 0;
 		m_fTempoTap = 0.0f;
+		return;
 	}
+
+	const float fTempoTap = ::rintf(60000.0f / float(iTimeTap));
+#if 0
+	m_fTempoTap += fTempoTap;
+	if (++m_iTempoTap > 2) {
+		m_fTempoTap /= float(m_iTempoTap);
+		m_ui.TempoSpinBox->setTempo(::rintf(m_fTempoTap), false);
+		m_iTempoTap	= 1; // Median-like averaging...
+	}
+#else
+	if (m_fTempoTap  > 0.0f) {
+		m_fTempoTap *= 0.5f;
+		m_fTempoTap += 0.5f * fTempoTap;
+	} else {
+		m_fTempoTap  = fTempoTap;
+	}
+	if (++m_iTempoTap > 2) {
+		m_ui.TempoSpinBox->setTempo(::rintf(m_fTempoTap), false);
+		m_iTempoTap	 = 1; // Median-like averaging...
+		m_fTempoTap  = fTempoTap;
+	}
+#endif
 }
 
 

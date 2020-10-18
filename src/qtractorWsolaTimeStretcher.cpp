@@ -1,7 +1,7 @@
 // qtractorWsolaTimeStretcher.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2012, Olli Parviainen.
@@ -639,6 +639,170 @@ void qtractorWsolaTimeStretcher::calcSeekWindowLength (void)
 	// Update seek window lengths.
 	m_iSeekLength = (m_iSampleRate * m_iSeekWindowMs) / 1000;
 	m_iSeekWindowLength = (m_iSampleRate * m_iSequenceMs) / 1000;
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorWsolaTimeStretcher::FifoBuffer -- FIFO buffer/cache method implementation.
+//
+
+// Constructor.
+qtractorWsolaTimeStretcher::FifoBuffer::FifoBuffer (
+	unsigned short iChannels ) : m_iChannels(0),
+		m_ppBuffer(nullptr), m_ppBufferUnaligned(nullptr),
+		m_iFrameCount(0), m_iFramePos(0)
+{
+	setChannels(iChannels);
+}
+
+
+// Destructor.
+qtractorWsolaTimeStretcher::FifoBuffer::~FifoBuffer (void)
+{
+	if (m_ppBufferUnaligned) {
+		for (unsigned short i = 0; i < m_iChannels; ++i)
+			delete [] m_ppBufferUnaligned[i];
+		delete [] m_ppBufferUnaligned;
+	}
+	if (m_ppBuffer)
+		delete [] m_ppBuffer;
+}
+
+
+// Sets number of channels, 1=mono, 2=stereo, ...
+void qtractorWsolaTimeStretcher::FifoBuffer::setChannels (
+	unsigned short iChannels )
+{
+	if (m_iChannels == iChannels)
+		return;
+	
+	m_iChannels = iChannels;
+	m_iBufferSize = 0;
+	
+	ensureCapacity(1024);
+}
+
+
+// Read frames from beginning of the sample buffer.
+unsigned int qtractorWsolaTimeStretcher::FifoBuffer::readFrames (
+	float **ppFrames, unsigned int iFrames, unsigned int iOffset ) const
+{
+	const unsigned int iMaxFrames
+	= (iFrames > m_iFrameCount ? m_iFrameCount : iFrames);
+	for (unsigned short i = 0; i < m_iChannels; ++i)
+		::memcpy(ppFrames[i], ptrBegin(i) + iOffset, iMaxFrames * sizeof(float));
+	return iMaxFrames;
+}
+	
+	
+// Adjusts book-keeping so that given number of frames are removed
+// from beginning of the sample buffer without copying them anywhere. 
+//
+// Used to reduce the number of samples in the buffer when accessing
+// the sample buffer directly with ptrBegin() function.
+unsigned int qtractorWsolaTimeStretcher::FifoBuffer::receiveFrames (
+	float **ppFrames, unsigned int iFrames, unsigned int iOffset )
+{
+	return receiveFrames(readFrames(ppFrames, iFrames, iOffset));
+}
+
+
+unsigned int qtractorWsolaTimeStretcher::FifoBuffer::receiveFrames (
+	unsigned int iFrames )
+{
+	if (iFrames >= m_iFrameCount) {
+		const unsigned int iFrameCount = m_iFrameCount;
+		m_iFrameCount = 0;
+		return iFrameCount;
+	}
+
+	m_iFrameCount -= iFrames;
+	m_iFramePos += iFrames;
+
+	return iFrames;
+}
+
+
+// Write samples/frames to the end of sample frame buffer.
+unsigned int qtractorWsolaTimeStretcher::FifoBuffer::writeFrames (
+	float **ppFrames, unsigned int iFrames, unsigned int iOffset )
+{
+	ensureCapacity(iFrames);
+
+	for (unsigned short i = 0; i < m_iChannels; ++i)
+		::memcpy(ptrEnd(i), ppFrames[i] + iOffset, iFrames * sizeof(float));
+
+	return iFrames;
+}
+
+
+// Adjusts the book-keeping to increase number of frames
+// in the buffer without copying any actual frames.
+//
+// This function is used to update the number of frames in the
+// sample buffer when accessing the buffer directly with ptrEnd()
+// function. Please be careful though.
+void qtractorWsolaTimeStretcher::FifoBuffer::putFrames (
+	float **ppFrames, unsigned int iFrames, unsigned int iOffset )
+{
+	m_iFrameCount += writeFrames(ppFrames, iFrames, iOffset);
+}
+
+
+void qtractorWsolaTimeStretcher::FifoBuffer::putFrames (
+	unsigned int iFrames )
+{
+	ensureCapacity(iFrames);
+
+	m_iFrameCount += iFrames;
+}
+
+
+// Ensures that the buffer has capacity for at least this many frames.
+void qtractorWsolaTimeStretcher::FifoBuffer::ensureCapacity (
+	unsigned int iCapacity )
+{
+	const unsigned int iBufferSize
+		= m_iFramePos + m_iFrameCount + (iCapacity << 2);
+
+	if (iBufferSize > m_iBufferSize) {
+		// Enlarge the buffer in 4KB steps (round up to next 4KB boundary)
+		const unsigned int iSizeInBytes
+		= ((iBufferSize << 1) * sizeof(float) + 4095) & -4096;
+		// assert(iSizeInBytes % 2 == 0);
+		float **ppTemp = new float * [m_iChannels];
+		float **ppTempUnaligned = new float * [m_iChannels];
+		m_iBufferSize = (iSizeInBytes / sizeof(float)) + (16 / sizeof(float));
+		for (unsigned short i = 0; i < m_iChannels; ++i) {
+			ppTempUnaligned[i] = new float [m_iBufferSize];
+			ppTemp[i] = (float *) (((unsigned long) ppTempUnaligned[i] + 15) & -16);
+			if (m_ppBuffer) {
+				if (m_iFrameCount > 0) {
+					::memcpy(ppTemp[i], ptrBegin(i),
+						m_iFrameCount * sizeof(float));
+				}
+				delete [] m_ppBufferUnaligned[i];
+			}
+		}
+		if (m_ppBuffer) {
+			delete [] m_ppBufferUnaligned;
+			delete [] m_ppBuffer;
+		}
+		m_ppBufferUnaligned = ppTempUnaligned;
+		m_ppBuffer = ppTemp;
+		// Done realloc.
+		m_iFramePos = 0;
+	} else if (m_iFramePos > (m_iBufferSize >> 2)) {
+		// Rewind the buffer by moving data...
+		if (m_iFrameCount > 0) {
+			for (unsigned short i = 0; i < m_iChannels; ++i) {
+				::memmove(m_ppBuffer[i], ptrBegin(i),
+					m_iFrameCount * sizeof(float));
+			}
+		}
+		// Done rewind.
+		m_iFramePos = 0;
+	}
 }
 
 

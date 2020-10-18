@@ -1,7 +1,7 @@
 // qtractorMidiMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -234,7 +234,7 @@ qtractorMidiMeterLed::qtractorMidiMeterLed (
 	m_pMidiLabel->setPixmap(*g_pLedPixmap[LedOff]);
 
 	QHBoxLayout *pHBoxLayout = new QHBoxLayout();
-	pHBoxLayout->setMargin(0);
+	pHBoxLayout->setContentsMargins(0, 0, 0, 0);
 	pHBoxLayout->setSpacing(0);
 	pHBoxLayout->addWidget(m_pMidiLabel);
 	qtractorMeterValue::setLayout(pHBoxLayout);
@@ -411,7 +411,7 @@ qtractorMidiComboMeter::qtractorMidiComboMeter (
 	m_pAudioMeter = nullptr;
 
 	QHBoxLayout *pHBoxLayout = new QHBoxLayout();
-	pHBoxLayout->setMargin(0);
+	pHBoxLayout->setContentsMargins(0, 0, 0, 0);
 	pHBoxLayout->setSpacing(2);
 	pHBoxLayout->addWidget(m_pMidiMeter);
 	QWidget::setLayout(pHBoxLayout);

@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -85,9 +85,8 @@ private:
 //
 
 // Constructor.
-qtractorMidiSysexForm::qtractorMidiSysexForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorMidiSysexForm::qtractorMidiSysexForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -143,8 +142,8 @@ qtractorMidiSysexForm::qtractorMidiSysexForm (
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(nameChanged(const QString&)));
 	QObject::connect(m_ui.NameComboBox,
-		SIGNAL(activated(const QString &)),
-		SLOT(loadSlot(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(loadSlot(int)));
 	QObject::connect(m_ui.SysexTextEdit,
 		SIGNAL(textChanged()),
 		SLOT(textChanged()));
@@ -219,7 +218,7 @@ void qtractorMidiSysexForm::importSlot (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -303,7 +302,7 @@ void qtractorMidiSysexForm::exportSlot (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -404,9 +403,14 @@ void qtractorMidiSysexForm::moveDownSlot (void)
 
 
 // Load a SysEx item.
-void qtractorMidiSysexForm::loadSlot ( const QString& sName )
+void qtractorMidiSysexForm::loadSlot ( int iName )
 {
-	if (m_iUpdateSysex > 0 || sName.isEmpty())
+	if (m_iUpdateSysex > 0)
+		return;
+
+	const QString& sName
+		= m_ui.NameComboBox->itemText(iName);
+	if (sName.isEmpty())
 		return;
 
 	// We'll need this, sure.
@@ -450,7 +454,7 @@ void qtractorMidiSysexForm::openSlot (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -527,7 +531,7 @@ void qtractorMidiSysexForm::saveSlot (void)
 		const QString& sFilter = filters.join(";;");
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		QWidget *pParentWidget = nullptr;
-		QFileDialog::Options options = 0;
+		QFileDialog::Options options;
 		if (pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
 			pParentWidget = QWidget::window();

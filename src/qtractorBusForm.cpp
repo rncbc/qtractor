@@ -1,7 +1,7 @@
 // qtractorBusForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -101,9 +101,8 @@ private:
 // qtractorBusForm -- UI wrapper form.
 
 // Constructor.
-qtractorBusForm::qtractorBusForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorBusForm::qtractorBusForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -343,7 +342,7 @@ void qtractorBusForm::showBus ( qtractorBus *pBus )
 				= static_cast<qtractorMidiBus *> (pBus);
 			if (pMidiBus) {
 				// MIDI bus specifics...
-				int iInstrumentIndex
+				const int iInstrumentIndex
 					= m_ui.MidiInstrumentComboBox->findText(
 						pMidiBus->instrumentName());
 				m_ui.MidiInstrumentComboBox->setCurrentIndex(
@@ -549,18 +548,8 @@ bool qtractorBusForm::updateBus ( qtractorBus *pBus )
 	// Reset plugin lists...
 	resetPluginLists();
 
-	qtractorBus::BusMode busMode = qtractorBus::None;
-	switch (m_ui.BusModeComboBox->currentIndex()) {
-	case 0:
-		busMode = qtractorBus::Input;
-		break;
-	case 1:
-		busMode = qtractorBus::Output;
-		break;
-	case 2:
-		busMode = qtractorBus::Duplex;
-		break;
-	}
+	const qtractorBus::BusMode busMode
+		= qtractorBus::BusMode(m_ui.BusModeComboBox->currentIndex() + 1);
 
 	// Make it as an unduable command...
 	qtractorUpdateBusCommand *pUpdateBusCommand
@@ -572,7 +561,7 @@ bool qtractorBusForm::updateBus ( qtractorBus *pBus )
 	pUpdateBusCommand->setBusName(sBusName);
 	pUpdateBusCommand->setBusMode(busMode);
 	pUpdateBusCommand->setMonitor(
-		(busMode & qtractorBus::Duplex) == qtractorBus::Duplex
+		((busMode & qtractorBus::Duplex) == qtractorBus::Duplex)
 		&& m_ui.MonitorCheckBox->isChecked());
 
 	// Specialties for bus types...
@@ -665,18 +654,8 @@ void qtractorBusForm::createBus (void)
 	if (sBusName.isEmpty())
 		return;
 
-	qtractorBus::BusMode busMode = qtractorBus::None;
-	switch (m_ui.BusModeComboBox->currentIndex()) {
-	case 0:
-		busMode = qtractorBus::Input;
-		break;
-	case 1:
-		busMode = qtractorBus::Output;
-		break;
-	case 2:
-		busMode = qtractorBus::Duplex;
-		break;
-	}
+	const qtractorBus::BusMode busMode
+		= qtractorBus::BusMode(m_ui.BusModeComboBox->currentIndex() + 1);
 
 	// Make it as an unduable command...
 	qtractorCreateBusCommand *pCreateBusCommand
@@ -847,21 +826,36 @@ void qtractorBusForm::reject (void)
 // Stabilize current form state.
 void qtractorBusForm::stabilizeForm (void)
 {
-	if (m_pBus) {
-		m_ui.CommonBusGroup->setEnabled(true);
-		m_ui.AudioBusGroup->setVisible(
-			m_pBus->busType() == qtractorTrack::Audio);
-		m_ui.MidiBusGroup->setVisible(
-			m_pBus->busType() == qtractorTrack::Midi &&
-			(m_pBus->busMode() & qtractorBus::Output));
-	} else {
-		m_ui.CommonBusGroup->setEnabled(false);
+	const qtractorBus::BusMode busMode
+		= qtractorBus::BusMode(m_ui.BusModeComboBox->currentIndex() + 1);
+
+	bool bEnabled = (m_pBus != nullptr);
+	m_ui.BusTabWidget->setEnabled(bEnabled);
+	m_ui.CommonBusGroup->setEnabled(bEnabled);
+	if (m_pBus && m_pBus->busType() == qtractorTrack::Audio) {
+		m_ui.AudioBusGroup->setEnabled(true);
+		m_ui.AudioBusGroup->setVisible(true);
+		m_ui.MidiBusGroup->setEnabled(false);
+		m_ui.MidiBusGroup->setVisible(false);
+	}
+	else
+	if (m_pBus && m_pBus->busType() == qtractorTrack::Midi) {
+		m_ui.AudioBusGroup->setEnabled(false);
 		m_ui.AudioBusGroup->setVisible(false);
+		m_ui.MidiBusGroup->setEnabled(true);
+		m_ui.MidiBusGroup->setVisible(true);
+		bEnabled = (busMode & qtractorBus::Output);
+		m_ui.MidiInstrumentComboBox->setEnabled(bEnabled);
+		m_ui.MidiSysexPushButton->setEnabled(bEnabled);
+		m_ui.MidiSysexTextLabel->setEnabled(bEnabled);
+	} else {
+		m_ui.AudioBusGroup->setEnabled(false);
+		m_ui.AudioBusGroup->setVisible(true);
+		m_ui.MidiBusGroup->setEnabled(false);
 		m_ui.MidiBusGroup->setVisible(false);
 	}
 
-	m_ui.MonitorCheckBox->setEnabled(
-		m_pBus && m_ui.BusModeComboBox->currentIndex() == 2);
+	m_ui.MonitorCheckBox->setEnabled(busMode == qtractorBus::Duplex);
 
 	const unsigned int iFlags = flags();
 	m_ui.MoveUpPushButton->setEnabled(iFlags & MoveUp);
@@ -871,13 +865,14 @@ void qtractorBusForm::stabilizeForm (void)
 	m_ui.DeletePushButton->setEnabled(iFlags & Delete);
 
 	// Stabilize current plugin lists state.
-	bool bEnabled;
 	int iItem, iItemCount;
 	qtractorPlugin *pPlugin = nullptr;
 	qtractorPluginListItem *pItem = nullptr;
 
 	// Input plugin list...
-	bEnabled = (m_ui.InputPluginListView->pluginList() != nullptr);
+	bEnabled = (busMode & qtractorBus::Input)
+		&& (m_pBus && (m_pBus->busMode() & qtractorBus::Input))
+		&& (m_ui.InputPluginListView->pluginList() != nullptr);
 	m_ui.BusTabWidget->setTabEnabled(1, bEnabled);
 	if (bEnabled) {
 		iItemCount = m_ui.InputPluginListView->count();
@@ -897,7 +892,9 @@ void qtractorBusForm::stabilizeForm (void)
 	}
 
 	// Output plugin list...
-	bEnabled = (m_ui.OutputPluginListView->pluginList() != nullptr);
+	bEnabled = (busMode & qtractorBus::Output)
+		&& (m_pBus && (m_pBus->busMode() & qtractorBus::Output))
+		&& (m_ui.OutputPluginListView->pluginList() != nullptr);
 	m_ui.BusTabWidget->setTabEnabled(2, bEnabled);
 	if (bEnabled) {
 		iItemCount = m_ui.OutputPluginListView->count();
@@ -1021,13 +1018,12 @@ void qtractorBusForm::updateMidiInstruments (void)
 			= (pMidiBus->pluginList_out())->midiManager();
 		if (pMidiManager) {
 			pMidiManager->updateInstruments();
-			const qtractorMidiManager::Instruments& list
+			const qtractorInstrumentList& instruments
 				= pMidiManager->instruments();
-			qtractorMidiManager::Instruments::ConstIterator iter = list.constBegin();
-			const qtractorMidiManager::Instruments::ConstIterator& iter_end
-				= list.constEnd();
+			qtractorInstrumentList::ConstIterator iter = instruments.constBegin();
+			const qtractorInstrumentList::ConstIterator& iter_end = instruments.constEnd();
 			for ( ; iter != iter_end; ++iter)
-				m_ui.MidiInstrumentComboBox->addItem(icon, iter.key());
+				m_ui.MidiInstrumentComboBox->addItem(icon, iter.value().instrumentName());
 		}
 	}
 

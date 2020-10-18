@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -91,6 +91,10 @@
 #include "qtractorVstPlugin.h"
 #endif
 
+#ifdef CONFIG_VST3
+#include "qtractorVst3Plugin.h"
+#endif
+
 #ifdef CONFIG_LV2
 #include "qtractorLv2Plugin.h"
 #endif
@@ -108,8 +112,8 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFile>
-#include <QRegExp>
 #include <QUrl>
+#include <QRegularExpression>
 
 #include <QDomDocument>
 
@@ -305,8 +309,8 @@ qtractorMainForm::qtractorMainForm (
 			SIGNAL(sessEvent(void *)),
 			SLOT(audioSessNotify(void *)));
 		QObject::connect(pAudioEngineProxy,
-			SIGNAL(syncEvent(unsigned long)),
-			SLOT(audioSyncNotify(unsigned long)));
+			SIGNAL(syncEvent(unsigned long, bool)),
+			SLOT(audioSyncNotify(unsigned long, bool)));
 		QObject::connect(pAudioEngineProxy,
 			SIGNAL(propEvent()),
 			SLOT(audioPropNotify()));
@@ -1475,7 +1479,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	updateMidiPlayer();
 	updateMidiControl();
 	updateMidiMetronome();
-	updateMixerAutoGridLayout();
 	updateSyncViewHold();
 
 	// FIXME: This is what it should ever be,
@@ -1492,8 +1495,6 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_pOptions->bAudioOutputBus);
 	qtractorMidiManager::setDefaultAudioOutputAutoConnect(
 		m_pOptions->bAudioOutputAutoConnect);
-	qtractorMidiManager::setDefaultAudioOutputMonitor(
-		m_pOptions->bAudioOutputMonitor);
 	// Set default audio-buffer quality...
 	qtractorAudioBuffer::setDefaultResampleType(
 		m_pOptions->iAudioResampleType);
@@ -1626,6 +1627,11 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	} else {
 		// Change to last known session dir...
 		if (!m_pOptions->sSessionDir.isEmpty()) {
+			QFileInfo info(m_pOptions->sSessionDir);
+			while (!info.exists() && !info.isRoot())
+				info.setFile(info.absolutePath());
+			if (info.exists() && !info.isRoot())
+				m_pOptions->sSessionDir = info.absoluteFilePath();
 			if (!QDir::setCurrent(m_pOptions->sSessionDir)) {
 				appendMessagesError(
 					tr("Could not set default session directory:\n\n"
@@ -1725,11 +1731,11 @@ bool qtractorMainForm::queryClose (void)
 			// Save custom meter colors, if any...
 			int iColor;
 			m_pOptions->audioMeterColors.clear();
-			for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 2; ++iColor)
+			for (iColor = 0; iColor < qtractorAudioMeter::ColorCount - 1; ++iColor)
 				m_pOptions->audioMeterColors.append(
 					qtractorAudioMeter::color(iColor).name());
 			m_pOptions->midiMeterColors.clear();
-			for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 2; ++iColor)
+			for (iColor = 0; iColor < qtractorMidiMeter::ColorCount - 1; ++iColor)
 				m_pOptions->midiMeterColors.append(
 					qtractorMidiMeter::color(iColor).name());
 			// Make sure there will be defaults...
@@ -1766,7 +1772,11 @@ void qtractorMainForm::closeEvent ( QCloseEvent *pCloseEvent )
 	// Let's be sure about that...
 	if (queryClose()) {
 		pCloseEvent->accept();
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		QApplication::exit(0);
+	#else
 		QApplication::quit();
+	#endif
 	} else {
 		pCloseEvent->ignore();
 	}
@@ -1998,7 +2008,7 @@ bool qtractorMainForm::openSession (void)
 		= filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (m_pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -2059,7 +2069,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 	QString sFilename = m_sFilename;
 
 	if (sFilename.isEmpty()) {
-		sFilename = QFileInfo(m_pOptions->sSessionDir,
+		sFilename = QFileInfo(m_pSession->sessionDir(),
 			qtractorSession::sanitize(m_pSession->sessionName())).absoluteFilePath();
 		bPrompt = true;
 	}
@@ -2090,7 +2100,7 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 		const QString& sFilter
 			= filters.join(";;");
 		QWidget *pParentWidget = nullptr;
-		QFileDialog::Options options = 0;
+		QFileDialog::Options options;
 		if (m_pOptions->bDontUseNativeDialogs) {
 			options |= QFileDialog::DontUseNativeDialog;
 			pParentWidget = QWidget::window();
@@ -2270,6 +2280,9 @@ bool qtractorMainForm::closeSession (void)
 		qtractorSubject::clearQueue();
 		// Reset playhead.
 		m_iPlayHead = 0;
+	#ifdef CONFIG_VST3
+		qtractorVst3Plugin::clearAll();
+	#endif
 	#ifdef CONFIG_LV2
 		qtractorLv2PluginType::lv2_close();
 	#endif
@@ -2632,9 +2645,10 @@ QString qtractorMainForm::sessionBackupPath ( const QString& sFilename )
 		fi.setFile(QDir(fi.filePath()), sBackupName);
 	if (fi.exists()) {
 		int iBackupNo = 0;
-		const QRegExp rxBackupNo("\\.([0-9]+)$");
-		if (rxBackupNo.indexIn(sBackupName) >= 0) {
-			iBackupNo = rxBackupNo.cap(1).toInt();
+		QRegularExpression rxBackupNo("\\.([0-9]+)$");
+		QRegularExpressionMatch match = rxBackupNo.match(sBackupName);
+		if (match.hasMatch()) {
+			iBackupNo = match.captured(1).toInt();
 			sBackupName.remove(rxBackupNo);
 		}
 		sBackupName += ".%1";
@@ -2859,7 +2873,9 @@ void qtractorMainForm::autoSaveReset (void)
 // Execute auto-save routine...
 void qtractorMainForm::autoSaveSession (void)
 {
-	QString sAutoSaveDir = m_pOptions->sSessionDir;
+	QString sAutoSaveDir = m_pSession->sessionDir();
+	if (sAutoSaveDir.isEmpty())
+		sAutoSaveDir = m_pOptions->sSessionDir;
 	if (sAutoSaveDir.isEmpty())
 		sAutoSaveDir = QDir::tempPath();
 
@@ -2956,6 +2972,18 @@ QString qtractorMainForm::sessionDir ( const QString& sFilename ) const
 	if (fi.completeBaseName() == dir.dirName())
 		fi.setFile(dir.absolutePath());
 	return fi.absolutePath();
+}
+
+
+// Execute auto-save as soon as possible (quasi-immediately please).
+void qtractorMainForm::autoSaveAsap (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMainForm::autoSaveAsap()");
+#endif
+
+	if (m_pOptions->bAutoSaveEnabled)
+		m_iAutoSaveTimer = m_iAutoSavePeriod;
 }
 
 
@@ -3863,7 +3891,7 @@ void qtractorMainForm::trackExportAudio (void)
 	const bool bAutoDeactivate = m_pSession->isAutoDeactivate();
 	m_pSession->setAutoDeactivate(false);
 
-	qtractorExportForm exportForm(this);
+	qtractorExportTrackForm exportForm(this);
 	exportForm.setExportType(qtractorTrack::Audio);
 	exportForm.exec();
 
@@ -3878,7 +3906,7 @@ void qtractorMainForm::trackExportMidi (void)
 	qDebug("qtractorMainForm::trackExportMidi()");
 #endif
 
-	qtractorExportForm exportForm(this);
+	qtractorExportTrackForm exportForm(this);
 	exportForm.setExportType(qtractorTrack::Midi);
 	exportForm.exec();
 }
@@ -4071,7 +4099,7 @@ void qtractorMainForm::trackCurveColor (void)
 #endif
 
 	QWidget *pParentWidget = nullptr;
-	QColorDialog::ColorDialogOptions options = 0;
+	QColorDialog::ColorDialogOptions options;
 	if (m_pOptions && m_pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -4924,10 +4952,15 @@ void qtractorMainForm::viewRefresh (void)
 		pEditor->setEditTail(iEditTail, false);
 	}
 
-	// We're formerly done.
-	QApplication::restoreOverrideCursor();
+	// Reset XRUN counters...
+	m_iXrunCount = 0;
+	m_iXrunSkip  = 0;
+	m_iXrunTimer = 0;
 
 	++m_iStabilizeTimer;
+
+	// We're formerly done.
+	QApplication::restoreOverrideCursor();
 }
 
 
@@ -5019,12 +5052,9 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldMetroBeatDuration  = m_pOptions->iMetroBeatDuration;
 	const bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
 	const int     iOldMidiMetroOffset    = m_pOptions->iMidiMetroOffset;
-	const bool    bOldMixerAutoGridLayout = m_pOptions->bMixerAutoGridLayout;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
-	const bool    bOldTrackListPlugins   = m_pOptions->bTrackListPlugins;
-	const bool    bOldTrackListMeters    = m_pOptions->bTrackListMeters;
 #ifdef CONFIG_LV2
 	const QString sep(':'); 
 	const bool    bOldLv2DynManifest     = m_pOptions->bLv2DynManifest;
@@ -5088,6 +5118,12 @@ void qtractorMainForm::viewOptions (void)
 		}
 		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
 			iNeedRestart |= RestartProgram;
+		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
+			if (m_pOptions->sCustomStyleTheme.isEmpty())
+				iNeedRestart |= RestartProgram;
+			else
+				updateCustomStyleTheme();
+		}
 		if ((sOldCustomColorTheme != m_pOptions->sCustomColorTheme) ||
 			(optionsForm.isDirtyCustomColorThemes())) {
 			if (m_pOptions->sCustomColorTheme.isEmpty())
@@ -5095,12 +5131,8 @@ void qtractorMainForm::viewOptions (void)
 			else
 				updateCustomColorTheme();
 		}
-		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
-			if (m_pOptions->sCustomStyleTheme.isEmpty())
-					iNeedRestart |= RestartProgram;
-			else
-				updateCustomStyleTheme();
-		}
+		if (optionsForm.isDirtyMeterColors())
+			qtractorMeterValue::updateAll();
 		if (( bOldCompletePath && !m_pOptions->bCompletePath) ||
 			(!bOldCompletePath &&  m_pOptions->bCompletePath) ||
 			(iOldMaxRecentFiles != m_pOptions->iMaxRecentFiles))
@@ -5138,8 +5170,6 @@ void qtractorMainForm::viewOptions (void)
 			m_pOptions->bAudioOutputBus);
 		qtractorMidiManager::setDefaultAudioOutputAutoConnect(
 			m_pOptions->bAudioOutputAutoConnect);
-		qtractorMidiManager::setDefaultAudioOutputMonitor(
-			m_pOptions->bAudioOutputMonitor);
 		// Auto time-stretching, loop-recording global modes...
 		if (m_pSession) {
 			m_pSession->setAutoTimeStretch(m_pOptions->bAudioAutoTimeStretch);
@@ -5202,21 +5232,10 @@ void qtractorMainForm::viewOptions (void)
 			( bOldMidiMetroBus     && !m_pOptions->bMidiMetroBus)     ||
 			(!bOldMidiMetroBus     &&  m_pOptions->bMidiMetroBus))
 			updateMidiMetronome();
-		// Mixer layout options...
-		if (( bOldMixerAutoGridLayout && !m_pOptions->bMixerAutoGridLayout) ||
-			(!bOldMixerAutoGridLayout &&  m_pOptions->bMixerAutoGridLayout))
-			updateMixerAutoGridLayout();
 		// Transport display options...
 		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
 			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
 			updateSyncViewHold();
-		if (( bOldTrackListPlugins && !m_pOptions->bTrackListPlugins) ||
-			(!bOldTrackListPlugins &&  m_pOptions->bTrackListPlugins) ||
-			( bOldTrackListMeters  && !m_pOptions->bTrackListMeters)  ||
-			(!bOldTrackListMeters  &&  m_pOptions->bTrackListMeters)) {
-			if (m_pTracks)
-				m_pTracks->trackList()->updateItems();
-		}
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
@@ -5703,6 +5722,11 @@ void qtractorMainForm::transportPanic (void)
 	// All (MIDI) tracks shut-off (panic)...
 	pMidiEngine->shutOffAllTracks();
 
+	// Reset XRUN counters...
+	m_iXrunCount = 0;
+	m_iXrunSkip  = 0;
+	m_iXrunTimer = 0;
+
 	++m_iStabilizeTimer;
 }
 
@@ -5761,8 +5785,8 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_VST
 	list << tr("VST Plug-in support disabled.");
 #endif
-#ifdef  CONFIG_VESTIGE_0
-	list << tr("VeSTige header support enabled.");
+#ifndef CONFIG_VST3
+	list << tr("VST3 Plug-in support (EXPERIMENTAL) disabled.");
 #endif
 #ifndef CONFIG_LV2
 	list << tr("LV2 Plug-in support disabled.");
@@ -5770,17 +5794,19 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LIBLILV
 	list << tr("LV2 Plug-in support (liblilv) disabled.");
 #endif
-#ifndef  CONFIG_LV2_UI
+#ifndef CONFIG_LV2_UI
 	list << tr("LV2 Plug-in UI support disabled.");
 #else
-#ifndef  CONFIG_LIBSUIL
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#ifndef CONFIG_LIBSUIL
 	list << tr("LV2 Plug-in UI support (libsuil) disabled.");
+#endif
 #endif
 #ifndef CONFIG_LV2_EXTERNAL_UI
 	list << tr("LV2 Plug-in External UI support disabled.");
 #endif
 #endif // CONFIG_LV2_UI
-#ifdef CONFIG_LV2_EVENT
+#ifdef  CONFIG_LV2_EVENT
 	list << tr("LV2 Plug-in MIDI/Event support (DEPRECATED) enabled.");
 #endif
 #ifndef CONFIG_LV2_ATOM
@@ -5792,8 +5818,8 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_LV2_STATE
 	list << tr("LV2 Plug-in State support disabled.");
 #endif
-#ifdef CONFIG_LV2_STATE_FILES
-#ifdef CONFIG_LV2_STATE_MAKE_PATH
+#ifdef  CONFIG_LV2_STATE_FILES
+#ifdef  CONFIG_LV2_STATE_MAKE_PATH
 	list << tr("LV2 plug-in State Make Path support (DANGEROUS)	enabled.");
 #endif
 #else
@@ -5801,6 +5827,9 @@ void qtractorMainForm::helpAbout (void)
 #endif // CONFIG_LV2_STATE_FILES
 #ifndef CONFIG_LV2_PROGRAMS
 	list << tr("LV2 Plug-in Programs support disabled.");
+#endif
+#ifndef CONFIG_LV2_MIDNAM
+	list << tr("LV2 Plug-in MIDNAM support disabled.");
 #endif
 #ifndef CONFIG_LV2_PRESETS
 	list << tr("LV2 Plug-in Presets support disabled.");
@@ -5820,6 +5849,9 @@ void qtractorMainForm::helpAbout (void)
 #ifdef  CONFIG_LV2_UI
 #ifndef CONFIG_LV2_UI_TOUCH
 	list << tr("LV2 Plug-in UI Touch interface support disabled.");
+#endif
+#ifndef CONFIG_LV2_UI_REQ_VALUE
+	list << tr("LV2 Plug-in UI Request-value support disabled.");
 #endif
 #ifndef CONFIG_LV2_UI_IDLE
 	list << tr("LV2 Plug-in UI Idle interface support disabled.");
@@ -6229,9 +6261,9 @@ void qtractorMainForm::stabilizeForm (void)
 //	m_ui.editCopyAction->setEnabled(bSelected);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	const QMimeData *pMimeData
-	    = QApplication::clipboard()->mimeData();
+		= QApplication::clipboard()->mimeData();
 	m_ui.editPasteAction->setEnabled(bClipboard
-	    || (pMimeData && pMimeData->hasUrls()));
+		|| (pMimeData && pMimeData->hasUrls()));
 #else
 	m_ui.editPasteAction->setEnabled(bClipboard);
 #endif
@@ -6420,7 +6452,7 @@ bool qtractorMainForm::startSession (void)
 		// Uh-oh, we can't go on like this...
 		appendMessagesError(
 			tr("The audio/MIDI engine could not be started.\n\n"
-			"Make sure the JACK audio server (jackd) and/or\n"
+			"Make sure the JACK audio server (jackd) and\n"
 			"the ALSA Sequencer kernel module (snd-seq-midi)\n"
 			"are up and running and then restart the session."));
 	}
@@ -6860,14 +6892,6 @@ void qtractorMainForm::updateMidiMetronome (void)
 }
 
 
-// Update mixer automatic multi-row strip/grid layout.
-void qtractorMainForm::updateMixerAutoGridLayout (void)
-{
-	if (m_pMixer)
-		m_pMixer->updateWorkspaces();
-}
-
-
 // Update transport display options.
 void qtractorMainForm::updateSyncViewHold (void)
 {
@@ -7024,7 +7048,7 @@ void qtractorMainForm::trackCurveSelectMenuAction ( QMenu *pMenu,
 	QAction *pAction = pMenu->addAction(icon, text);
 	pAction->setCheckable(true);
 	pAction->setChecked(pCurrentSubject == pSubject);
-	pAction->setData(qVariantFromValue(pObserver));
+	pAction->setData(QVariant::fromValue(pObserver));
 }
 
 
@@ -7087,6 +7111,22 @@ bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 				for ( ; param != param_end; ++param) {
 					trackCurveSelectMenuAction(pPluginMenu,
 						param.value()->observer(), pCurrentSubject);
+				}
+			}
+			const qtractorPlugin::PropertyKeys& props
+				= pPlugin->propertyKeys();
+			if (props.count() > 0) {
+				pPluginMenu->addSeparator();
+				qtractorPlugin::PropertyKeys::ConstIterator prop
+					= props.constBegin();
+				const qtractorPlugin::PropertyKeys::ConstIterator& prop_end
+					= props.constEnd();
+				for ( ; prop != prop_end; ++prop) {
+					qtractorPlugin::Property *pProp = prop.value();
+					if (pProp->isAutomatable()) {
+						trackCurveSelectMenuAction(pPluginMenu,
+							pProp->observer(), pCurrentSubject);
+					}
 				}
 			}
 			pPlugin = pPlugin->next();
@@ -7322,10 +7362,10 @@ void qtractorMainForm::appendMessages( const QString& s )
 	statusBar()->showMessage(s, 3000);
 }
 
-void qtractorMainForm::appendMessagesColor( const QString& s, const QString& c )
+void qtractorMainForm::appendMessagesColor( const QString& s, const QColor& rgb )
 {
 	if (m_pMessages)
-		m_pMessages->appendMessagesColor(s, c);
+		m_pMessages->appendMessagesColor(s, rgb);
 
 	statusBar()->showMessage(s, 3000);
 }
@@ -7341,7 +7381,7 @@ void qtractorMainForm::appendMessagesError( const QString& s )
 	if (m_pMessages)
 		m_pMessages->show();
 
-	appendMessagesColor(s.simplified(), "#ff0000");
+	appendMessagesColor(s.simplified(), Qt::red);
 
 	QMessageBox::critical(this, tr("Error"), s);
 }
@@ -7531,7 +7571,7 @@ void qtractorMainForm::fastTimerSlot (void)
 		// Ensure track-view into visibility...
 		if (m_ui.transportFollowAction->isChecked())
 			m_pTracks->trackView()->ensureVisibleFrame(iPlayHead);
-		// Take the change to give some visual feedback...
+		// Take the chance to give some visual feedback...
 		if (m_iTransportUpdate > 0) {
 			updateTransportTime(iPlayHead);
 			m_pThumbView->updateThumb();
@@ -7572,7 +7612,7 @@ void qtractorMainForm::fastTimerSlot (void)
 void qtractorMainForm::slowTimerSlot (void)
 {
 	// Avoid stabilize re-entrancy...
-	if (m_pSession->isBusy()) {
+	if (m_pSession->isBusy() || m_iTransportUpdate > 0) {
 		// Register the next timer slot.
 		QTimer::singleShot(QTRACTOR_TIMER_DELAY, this, SLOT(slowTimerSlot()));
 		return;
@@ -7605,13 +7645,13 @@ void qtractorMainForm::slowTimerSlot (void)
 				if (!bPlaying)
 					m_pSession->seek(iPlayHead, true);
 			}
-			// 2. Watch for temp/time-sig changes on JACK transport...
+			// 2. Watch for tempo/time-sig changes on JACK transport...
 			if ((pos.valid & JackPositionBBT) && pAudioEngine->isTimebaseEx()) {
 				qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(pos.frame);
 				if (pNode && pos.frame >= pNode->frame && (
-					::fabsf(pNode->tempo - pos.beats_per_minute) > 0.01f ||
+					qAbs(pNode->tempo - pos.beats_per_minute) > 0.01f ||
 					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
 					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {
 				#ifdef CONFIG_DEBUG
@@ -7746,9 +7786,8 @@ void qtractorMainForm::slowTimerSlot (void)
 		const bool bPlayerOpen
 			= (pAudioEngine->isPlayerOpen() || pMidiEngine->isPlayerOpen());
 		if (bPlayerOpen) {
-			if (m_pFiles && m_pFiles->isPlayState())
-				++m_iPlayerTimer;
-			if (m_pFileSystem && m_pFileSystem->isPlayState())
+			if ((m_pFiles && m_pFiles->isPlayState()) &&
+				(m_pFileSystem && m_pFileSystem->isPlayState()))
 				++m_iPlayerTimer;
 		}
 		if (m_iPlayerTimer < 1) {
@@ -7781,7 +7820,7 @@ void qtractorMainForm::slowTimerSlot (void)
 	}
 
 	// Check if its time to stabilize main form...
-	if (m_iStabilizeTimer > 0 && --m_iStabilizeTimer < 1) {
+	if (m_iStabilizeTimer > 0/* && --m_iStabilizeTimer < 1 */) {
 		m_iStabilizeTimer = 0;
 		stabilizeForm();
 	}
@@ -7967,6 +8006,11 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 }
 
 
+#ifdef CONFIG_JACK_SESSION
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 // Custom (JACK) session event handler.
 void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 {
@@ -8036,19 +8080,29 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 		close();
 	}
 
-#endif
+#endif	// CONFIG_JACK_SESSION
 }
+
+#ifdef CONFIG_JACK_SESSION
+#pragma GCC diagnostic pop
+#endif
 
 
 // Custom (JACK) transport sync event handler.
-void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead )
+void qtractorMainForm::audioSyncNotify ( unsigned long iPlayHead, bool bPlaying )
 {
 	if (m_pSession->isBusy())
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMainForm::audioSyncNotify(%lu)", iPlayHead);
+	qDebug("qtractorMainForm::audioSyncNotify(%lu, %d)", iPlayHead, int(bPlaying));
 #endif
+
+	if (( bPlaying && !m_pSession->isPlaying()) ||
+		(!bPlaying &&  m_pSession->isPlaying())) {
+		// Toggle playing!
+		transportPlay();
+	}
 
 	m_pSession->setPlayHeadEx(iPlayHead);
 	++m_iTransportUpdate;
@@ -8377,7 +8431,10 @@ void qtractorMainForm::activateAudioFile (
 	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 	if (pAudioEngine && pAudioEngine->openPlayer(sFilename)) {
 		// Try updating player status anyway...
-		m_pFiles->setPlayState(true);
+		if (m_pFiles)
+			m_pFiles->setPlayState(true);
+		if (m_pFileSystem)
+			m_pFileSystem->setPlayState(true);
 		++m_iPlayerTimer;
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
@@ -8434,7 +8491,10 @@ void qtractorMainForm::activateMidiFile (
 	qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 	if (pMidiEngine && pMidiEngine->openPlayer(sFilename, iTrackChannel)) {
 		// Try updating player status anyway...
-		m_pFiles->setPlayState(true);
+		if (m_pFiles)
+			m_pFiles->setPlayState(true);
+		if (m_pFileSystem)
+			m_pFileSystem->setPlayState(true);
 		++m_iPlayerTimer;
 		appendMessages(tr("Playing \"%1\"...")
 			.arg(QFileInfo(sFilename).fileName()));
@@ -8475,9 +8535,6 @@ void qtractorMainForm::activateFile ( const QString& sFilename )
 		if (closeSession())
 			loadSessionFile(sFilename);
 	}
-
-	// Try updating player status anyway...
-	++m_iPlayerTimer;
 }
 
 
@@ -8653,7 +8710,7 @@ void qtractorMainForm::contentsChanged (void)
 #endif
 
 	// HACK: Force immediate stabilization later...
-	m_iStabilizeTimer = 0;
+	//m_iStabilizeTimer = 0;
 
 	// Stabilize session toolbar widgets...
 //	m_pTempoSpinBox->setTempo(m_pSession->tempo(), false);

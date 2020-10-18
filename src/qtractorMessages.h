@@ -1,7 +1,7 @@
 // qtractorMessages.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
 #include <QDockWidget>
 
 // Forward declarations.
-class qtractorMessagesTextEdit;
+class qtractorMessagesTextView;
 
 class QSocketNotifier;
 class QFile;
@@ -42,7 +42,7 @@ class qtractorMessages : public QDockWidget
 public:
 
 	// Constructor.
-	qtractorMessages(QWidget *pParent);
+	qtractorMessages(QWidget *pParent = nullptr);
 	// Destructor.
 	~qtractorMessages();
 
@@ -52,7 +52,7 @@ public:
 
 	// Message font accessors.
 	QFont messagesFont() const;
-	void setMessagesFont(const QFont & font);
+	void setMessagesFont(const QFont& font);
 
 	// Maximum number of message lines accessors.
 	int messagesLimit() const;
@@ -64,7 +64,7 @@ public:
 
 	// The main utility methods.
 	void appendMessages(const QString& s);
-	void appendMessagesColor(const QString& s, const QString &c);
+	void appendMessagesColor(const QString& s, const QColor& rgb);
 	void appendMessagesText(const QString& s);
 
 	// Stdout capture functions.
@@ -86,6 +86,9 @@ protected:
 	// Set stdout/stderr blocking mode.
 	bool stdoutBlock(int fd, bool bBlock) const;
 
+	// Split stdout/stderr into separate lines...
+	void processStdoutBuffer();
+
 protected slots:
 
 	// Stdout capture slot.
@@ -99,7 +102,7 @@ private:
 	int m_iMessagesHigh;
 
 	// The textview main widget.
-	qtractorMessagesTextEdit *m_pMessagesTextView;
+	qtractorMessagesTextView *m_pMessagesTextView;
 
 	// Stdout capture variables.
 	QSocketNotifier *m_pStdoutNotifier;

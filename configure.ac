@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.9.12, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.9.18, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -10,7 +10,7 @@ AC_CONFIG_FILES(src/qtractor_plugin_scan.pri)
 AC_CACHE_VAL([ac_cv_build_version], [
    ac_cv_build_version=$(git describe --tags --dirty --abbrev=6 2>/dev/null)
    if test -n "$ac_cv_build_version"; then
-      ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/^[[^_]]*[[_v]]//i')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/^[[^0-9]]\+//')
       ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/-g/git./')
       ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/[[_|-]]\+/./g')
       ac_cv_build_version_extra=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
@@ -123,16 +123,16 @@ AC_ARG_ENABLE(libz,
   [ac_libz="yes"])
 
 # Enable LILV support.
-AC_ARG_ENABLE(lilv,
-  AS_HELP_STRING([--enable-lilv], [enable LILV interface support (default=yes)]),
-  [ac_lilv="$enableval"],
-  [ac_lilv="yes"])
+AC_ARG_ENABLE(liblilv,
+  AS_HELP_STRING([--enable-liblilv], [enable LILV interface support (default=yes)]),
+  [ac_liblilv="$enableval"],
+  [ac_liblilv="yes"])
 
 # Enable SUIL support.
-AC_ARG_ENABLE(suil,
-  AS_HELP_STRING([--enable-suil], [enable SUIL interface support (default=yes)]),
-  [ac_suil="$enableval"],
-  [ac_suil="yes"])
+AC_ARG_ENABLE(libsuil,
+  AS_HELP_STRING([--enable-libsuil], [enable SUIL interface support (default=yes)]),
+  [ac_libsuil="$enableval"],
+  [ac_libsuil="yes"])
 
 # Enable SSE optimization.
 AC_ARG_ENABLE(sse,
@@ -158,6 +158,12 @@ AC_ARG_ENABLE(vst,
   [ac_vst="$enableval"],
   [ac_vst="yes"])
 
+# Enable VST3 support.
+AC_ARG_ENABLE(vst3,
+  AS_HELP_STRING([--enable-vst3], [enable VST3 plug-in support (default=yes)]),
+  [ac_vst3="$enableval"],
+  [ac_vst3="yes"])
+
 AC_ARG_ENABLE(vestige,
   AS_HELP_STRING([--enable-vestige], [enable VeSTige header support (default=yes)]),
   [ac_vestige="$enableval"],
@@ -178,6 +184,11 @@ AC_ARG_ENABLE(lv2-atom,
   AS_HELP_STRING([--enable-lv2-atom], [enable LV2 plug-in MIDI/Atom support (default=yes)]),
   [ac_lv2_atom="$enableval"],
   [ac_lv2_atom="yes"])
+
+AC_ARG_ENABLE(lv2-cvport,
+  AC_HELP_STRING([--enable-lv2-cvport], [enable LV2 plug-in CVPort support (DUMMY) (default=yes)]),
+  [ac_lv2_cvport="$enableval"],
+  [ac_lv2_cvport="yes"])
 
 AC_ARG_ENABLE(lv2-worker,
   AS_HELP_STRING([--enable-lv2-worker], [enable LV2 plug-in Worker/schedule support (default=yes)]),
@@ -214,6 +225,11 @@ AC_ARG_ENABLE(lv2-programs,
   [ac_lv2_programs="$enableval"],
   [ac_lv2_programs="yes"])
 
+AC_ARG_ENABLE(lv2-midnam,
+  AS_HELP_STRING([--enable-lv2-midnam], [enable LV2 plug-in MIDNAM support (default=yes)]),
+  [ac_lv2_midnam="$enableval"],
+  [ac_lv2_midnam="yes"])
+
 AC_ARG_ENABLE(lv2-presets,
   AS_HELP_STRING([--enable-lv2-presets], [enable LV2 plug-in Presets support (default=yes)]),
   [ac_lv2_presets="$enableval"],
@@ -223,6 +239,11 @@ AC_ARG_ENABLE(lv2-patch,
   AS_HELP_STRING([--enable-lv2-patch], [enable LV2 plug-in Patch support (default=yes)]),
   [ac_lv2_patch="$enableval"],
   [ac_lv2_patch="yes"])
+
+AC_ARG_ENABLE(lv2-port-event,
+  AS_HELP_STRING([--enable-lv2-port-event], [enable LV2 plug-in Port-event support (EXPERIMENTAL) (default=yes)]),
+  [ac_lv2_port_event="$enableval"],
+  [ac_lv2_port_event="yes"])
 
 AC_ARG_ENABLE(lv2-time,
   AS_HELP_STRING([--enable-lv2-time], [enable LV2 plug-in Time support (default=yes)]),
@@ -244,10 +265,20 @@ AC_ARG_ENABLE(lv2-buf-size,
   [ac_lv2_buf_size="$enableval"],
   [ac_lv2_buf_size="yes"])
 
+AC_ARG_ENABLE(lv2-parameters,
+  AS_HELP_STRING([--enable-lv2-parameters], [enable LV2 plug-in Parameters support (default=yes)]),
+  [ac_lv2_parameters="$enableval"],
+  [ac_lv2_parameters="yes"])
+
 AC_ARG_ENABLE(lv2-ui-touch,
   AS_HELP_STRING([--enable-lv2-ui-touch], [enable LV2 plug-in UI Touch interface support (default=yes)]),
   [ac_lv2_ui_touch="$enableval"],
   [ac_lv2_ui_touch="yes"])
+
+AC_ARG_ENABLE(lv2-ui-req-value,
+  AS_HELP_STRING([--enable-lv2-ui-req-value], [enable LV2 plug-in UI Request-value support (default=yes)]),
+  [ac_lv2_ui_req_value="$enableval"],
+  [ac_lv2_ui_req_value="yes"])
 
 AC_ARG_ENABLE(lv2-ui-idle,
   AS_HELP_STRING([--enable-lv2-ui-idle], [enable LV2 plug-in UI Idle interface support (default=yes)]),
@@ -401,6 +432,11 @@ AC_ARG_WITH(vst,
   AS_HELP_STRING([--with-vst=PATH], [use alternate VST header path]),
   [ac_with_vst="$withval"])
 
+# Set for alternate VST3 SDK root dir.
+AC_ARG_WITH(vst3,
+  AS_HELP_STRING([--with-vst3=PATH], [use alternate VST3 SDK path]),
+  [ac_with_vst3="$withval"])
+
 # Set for alternate LV2 include dir.
 AC_ARG_WITH(lv2,
   AS_HELP_STRING([--with-lv2=PATH], [use alternate LV2 header path]),
@@ -433,8 +469,11 @@ AC_CACHE_CHECK([for g++ major version], [ac_cv_gxx_version_major], [
 ])
 ac_gxx_version_major=$ac_cv_gxx_version_major
 if test $ac_gxx_version_major -ge 4 -a $ac_gxx_version_major -lt 6; then
-   CPPFLAGS="-std=c++11 $CPPFLAGS"
+   CXXFLAGS="-std=c++11 $CXXFLAGS"
    ac_cflags="-std=c++11 $ac_cflags"
+elif test $ac_gxx_version_major -ge 6 -a $ac_gxx_version_major -lt 11; then
+   CXXFLAGS="-std=c++17 $CXXFLAGS"
+   ac_cflags="-std=c++17 $ac_cflags"
 fi
 
 # Check for proper flags.
@@ -499,9 +538,12 @@ AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
    ac_cv_qt_version_major=$(($ac_cv_qt_version_major + 0))
 ])
 ac_qt_version_major=$ac_cv_qt_version_major
-if test $ac_qt_version_major -ne 5; then
-	AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
-	ac_qmake=$ac_cv_qmake
+if test $ac_qt_version_major -lt 5; then
+   AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
+   ac_qmake=$ac_cv_qmake
+fi
+if test $ac_qt_version_major -ge 6; then
+   ac_libsuil="no"
 fi
 
 if test "x$ac_qmake" = "xno"; then
@@ -599,11 +641,10 @@ AC_SUBST(ac_lrelease)
 
 
 # Check for IEEE 32bit float optimizations.
+AC_CHECK_SIZEOF(float)
 AC_CACHE_CHECK([for IEEE 32bit float optimizations],
    ac_cv_float32, [
-   AC_TRY_RUN([
-      int main() { return (sizeof(float) == 4 ? 0 : 1); }
-   ], ac_cv_float32="yes", ac_cv_float32="no")
+   AS_IF([test "$ac_cv_sizeof_float" = 4], [ac_cv_float32="yes"], [ac_cv_float32="no"])
 ])
 ac_float32=$ac_cv_float32
 if test "x$ac_float32" = "xyes"; then
@@ -815,14 +856,15 @@ fi
 
 # Check for LV2 support.
 if test "x$ac_lv2" = "xno"; then
-   ac_lilv="no"
+   ac_liblilv="no"
    ac_lv2_ui="no"
 fi
 
 if test "x$ac_lv2_ui" = "xno"; then
-   ac_suil="no"
+   ac_libsuil="no"
    ac_lv2_external_ui="no"
    ac_lv2_ui_touch="no"
+   ac_lv2_ui_req_value="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -830,10 +872,10 @@ if test "x$ac_lv2_ui" = "xno"; then
 fi
 
 # Check for optional LILV library.
-if test "x$ac_lilv" = "xyes"; then
-   PKG_CHECK_MODULES([LILV], [lilv-0], [ac_lilv="yes"], [ac_lilv="no"])
+if test "x$ac_liblilv" = "xyes"; then
+   PKG_CHECK_MODULES([LILV], [lilv-0], [ac_liblilv="yes"], [ac_liblilv="no"])
 fi
-if test "x$ac_lilv" = "xyes"; then
+if test "x$ac_liblilv" = "xyes"; then
    AC_DEFINE(CONFIG_LIBLILV, 1, [Define if LILV library is available.])
    ac_cflags="$ac_cflags $LILV_CFLAGS"
    ac_libs="$ac_libs $LILV_LIBS"
@@ -844,7 +886,7 @@ else
    AC_MSG_WARN([*** LILV library not found.])
 fi
 
-if test "x$ac_lilv" = "xyes"; then
+if test "x$ac_liblilv" = "xyes"; then
    AC_CHECK_LIB(lilv-0, lilv_file_uri_parse,
       [ac_lilv_file_uri_parse="yes"],
       [ac_lilv_file_uri_parse="no"])
@@ -860,21 +902,21 @@ if test "x$ac_lilv" = "xyes"; then
 fi
 
 # Check for LV2 new UI instantiation availability (libsuil).
-if test "x$ac_suil" = "xyes"; then
-   PKG_CHECK_MODULES([SUIL], [suil-0], [ac_suil="yes"], [ac_suil="no"])
-fi
-if test "x$ac_suil" = "xyes"; then
-   AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is enabled.])
-   ac_cflags="$ac_cflags $SUIL_CFLAGS"
-   ac_libs="$ac_libs $SUIL_LIBS"
-   CFLAGS="$CFLAGS $SUIL_CFLAGS"
-   CPPFLAGS="$CPPFLAGS $SUIL_CFLAGS"
-   LIBS="$LIBS $SUIL_LIBS"
-else
-   AC_MSG_WARN([*** SUIL library will be disabled.])
+if test "x$ac_libsuil" = "xyes"; then
+   PKG_CHECK_MODULES([SUIL], [suil-0], [ac_libsuil="yes"], [ac_libsuil="no"])
+   if test "x$ac_libsuil" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is enabled.])
+      ac_cflags="$ac_cflags $SUIL_CFLAGS"
+      ac_libs="$ac_libs $SUIL_LIBS"
+      CFLAGS="$CFLAGS $SUIL_CFLAGS"
+      CPPFLAGS="$CPPFLAGS $SUIL_CFLAGS"
+      LIBS="$LIBS $SUIL_LIBS"
+   else
+      AC_MSG_WARN([*** SUIL library will be disabled.])
+   fi
 fi
 
-if test "x$ac_suil" = "xyes"; then
+if test "x$ac_libsuil" = "xyes"; then
    AC_CHECK_LIB(suil-0, suil_instance_get_handle,
       [ac_suil_instance_get_handle="yes"],
       [ac_suil_instance_get_handle="no"])
@@ -884,24 +926,29 @@ if test "x$ac_suil" = "xyes"; then
 fi
 
 # Check for LV2 host library (liblilv).
-if test "x$ac_lilv" = "xno"; then
+if test "x$ac_liblilv" = "xno"; then
    ac_lv2="no"
    ac_lv2_ui="no"
    ac_lv2_event="no"
    ac_lv2_atom="no"
+   ac_lv2_cvport="no"
    ac_lv2_worker="no"
    ac_lv2_external_ui="no"
    ac_lv2_state="no"
    ac_lv2_state_files="no"
    ac_lv2_state_make_path="no"
    ac_lv2_programs="no"
+   ac_lv2_midnam="no"
    ac_lv2_presets="no"
    ac_lv2_patch="no"
+   ac_lv2_port_event="no"
    ac_lv2_time="no"
    ac_lv2_time_position="no";
    ac_lv2_options="no"
    ac_lv2_buf_size="no"
+   ac_lv2_parameters="no"
    ac_lv2_ui_touch="no"
+   ac_lv2_ui_req_value="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -1050,19 +1097,24 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_ui="no"
       ac_lv2_event="no"
       ac_lv2_atom="no"
+      ac_lv2_cvport="no"
       ac_lv2_worker="no"
       ac_lv2_external_ui="no"
       ac_lv2_state="no"
       ac_lv2_state_files="no"
       ac_lv2_state_make_path="no"
       ac_lv2_programs="no"
+      ac_lv2_midnam="no"
       ac_lv2_presets="no"
       ac_lv2_patch="no"
+      ac_lv2_port_event="no"
       ac_lv2_time="no"
       ac_lv2_time_position="no";
       ac_lv2_options="no"
       ac_lv2_buf_size="no"
+      ac_lv2_parameters="no"
       ac_lv2_ui_touch="no"
+      ac_lv2_ui_req_value="no"
       ac_lv2_ui_idle="no"
       ac_lv2_ui_show="no"
       ac_lv2_ui_gtk2="no"
@@ -1080,6 +1132,7 @@ else
    AC_MSG_WARN([*** LV2 UI support will be disabled.])
    ac_lv2_external_ui="no"
    ac_lv2_ui_touch="no"
+   ac_lv2_ui_req_value="no"
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
@@ -1140,6 +1193,23 @@ else
    ac_lv2_state="no"
    ac_lv2_options="no"
    ac_lv2_time_position="no"
+fi
+if test "x$ac_lv2_cvport" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 CVPort support],
+     ac_cv_lv2_cvport, [
+     AC_TRY_LINK([#include "lv2.h"], [
+        // Checking for LV2 CVPort support...
+        #ifndef LV2_CORE__CVPort
+        #error LV2 CVPort is not available.
+        #endif
+     ], ac_cv_lv2_cvport="yes", ac_cv_lv2_cvport="no")
+   ])
+   ac_lv2_cvport=$ac_cv_lv2_cvport
+   if test "x$ac_lv2_cvport" = "xyes"; then
+     AC_DEFINE(CONFIG_LV2_CVPORT, 1, [Define if LV2 CVPort support is available. (DUMMY)])
+   else
+     AC_MSG_WARN([*** LV2 CVPort support will be disabled.])
+   fi
 fi
 if test "x$ac_lv2_worker" = "xyes"; then
    AC_CHECK_HEADER(
@@ -1202,6 +1272,14 @@ if test "x$ac_lv2_programs" = "xyes"; then
       AC_MSG_WARN([*** LV2 Programs extension will be disabled.])
    fi
 fi
+if test "x$ac_lv2_midnam" = "xyes"; then
+   AC_CHECK_HEADER(lv2_midnam.h, [ac_lv2_midnam="yes"], [ac_lv2_midnam="no"])
+   if test "x$ac_lv2_midnam" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_MIDNAM, 1, [Define if LV2 MIDNAM extension is available.])
+   else
+      AC_MSG_WARN([*** LV2 MIDNAM extension will be disabled.])
+   fi
+fi
 if test "x$ac_lv2_presets" = "xyes"; then
    AC_CHECK_HEADER(
       lv2/lv2plug.in/ns/ext/presets/presets.h,
@@ -1220,7 +1298,13 @@ if test "x$ac_lv2_patch" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_PATCH, 1, [Define if LV2 Patch is supported.])
    else
       AC_MSG_WARN([*** LV2 Patch support will be disabled.])
+      ac_lv2_ui_req_value="no"
    fi
+else
+   ac_lv2_ui_req_value="no"
+fi
+if test "x$ac_lv2_port_event" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2_PORT_EVENT, 1, [Define if LV2 Port-event is supported. (EXPERIMENTAL)])
 fi
 if test "x$ac_lv2_time" = "xyes"; then
    AC_CHECK_HEADER(
@@ -1258,6 +1342,16 @@ if test "x$ac_lv2_buf_size" = "xyes"; then
       AC_MSG_WARN([*** LV2 Buf-size support will be disabled.])
    fi
 fi
+if test "x$ac_lv2_parameters" = "xyes"; then
+   AC_CHECK_HEADER(
+      lv2/lv2plug.in/ns/ext/parameters/parameters.h,
+      [ac_lv2_parameters="yes"], [ac_lv2_parameters="no"])
+   if test "x$ac_lv2_parameters" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_PARAMETERS, 1, [Define if LV2 Parameters is supported.])
+   else
+      AC_MSG_WARN([*** LV2 Parameters support will be disabled.])
+   fi
+fi
 if test "x$ac_lv2_time_position" = "xyes"; then
    AC_DEFINE(CONFIG_LV2_TIME_POSITION, 1, [Define if LV2 Time/position support is available.])
 fi
@@ -1274,6 +1368,23 @@ if test "x$ac_lv2_ui_touch" = "xyes"; then
       AC_DEFINE(CONFIG_LV2_UI_TOUCH, 1, [Define if LV2 UI Touch interface support is available.])
    else
       AC_MSG_WARN([*** LV2 UI Touch interface support will be disabled.])
+   fi
+fi
+if test "x$ac_lv2_ui_req_value" = "xyes"; then
+   AC_CACHE_CHECK([for LV2 UI Request-value support],
+      ac_cv_lv2_ui_req_value, [
+      AC_TRY_LINK([#include "lv2/lv2plug.in/ns/extensions/ui/ui.h"], [
+         // Checking for LV2 UI Request-value interface...
+         LV2UI_Request_Value req_value;
+      ], ac_cv_lv2_ui_req_value="yes", ac_cv_lv2_ui_req_value="no")
+   ])
+   ac_lv2_ui_req_value=$ac_cv_lv2_ui_req_value
+   if test "x$ac_lv2_ui_req_value" = "xyes"; then
+      AC_DEFINE(CONFIG_LV2_UI_REQ_VALUE, 1, [Define if LV2 UI Request-value support is available.])
+   else
+     #AC_MSG_WARN([*** LV2 UI Request-value support will be disabled.])
+      AC_DEFINE(CONFIG_LV2_UI_REQ_VALUE_FAKE, 1, [Define if LV2 UI Request-value support is available. (FAKE)])
+      ac_lv2_ui_req_value="yes"
    fi
 fi
 if test "x$ac_lv2_ui_idle" = "xyes"; then
@@ -1307,9 +1418,9 @@ if test "x$ac_lv2_ui_show" = "xyes"; then
    fi
 fi
 
-if test "x$ac_suil" = "xyes"; then
+if test "x$ac_libsuil" = "xyes"; then
    AC_CACHE_CHECK([for LV2 UI GTK2 support (libsuil_gtk2_in_qt5)],
-      ac_cv_suil_gtk2_in_qt5, [
+      ac_cv_libsuil_gtk2_in_qt5, [
       AC_TRY_RUN([
          #include <suil/suil.h>
          #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
@@ -1317,9 +1428,9 @@ if test "x$ac_suil" = "xyes"; then
          #define LV2_UI__Qt5UI LV2_UI_PREFIX "Qt5UI"
          #endif
          int main() { return !suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__GtkUI); }
-      ], ac_cv_suil_gtk2_in_qt5="yes", ac_cv_suil_gtk2_in_qt5="no")
+      ], ac_cv_libsuil_gtk2_in_qt5="yes", ac_cv_libsuil_gtk2_in_qt5="no")
    ])
-   if test "x$ac_cv_suil_gtk2_in_qt5" = "xyes"; then
+   if test "x$ac_cv_libsuil_gtk2_in_qt5" = "xyes"; then
       AC_DEFINE(CONFIG_LIBSUIL_GTK2_IN_QT5, 1, [Define if libsuil_gtk2_in_qt5 is available.])
    #  ac_lv2_ui_gtk2="no"
    fi
@@ -1335,9 +1446,9 @@ else
    AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
 fi
 
-if test "x$ac_suil" = "xyes"; then
+if test "x$ac_libsuil" = "xyes"; then
    AC_CACHE_CHECK([for LV2 UI X11 support (libsuil_x11_in_qt5)],
-      ac_cv_suil_x11_in_qt5, [
+      ac_cv_libsuil_x11_in_qt5, [
       AC_TRY_RUN([
          #include <suil/suil.h>
          #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
@@ -1345,15 +1456,36 @@ if test "x$ac_suil" = "xyes"; then
          #define LV2_UI__Qt5UI LV2_UI_PREFIX "Qt5UI"
          #endif
          int main() { return !suil_ui_supported(LV2_UI__Qt5UI, LV2_UI__X11UI); }
-      ], ac_cv_suil_x11_in_qt5="yes", ac_cv_suil_x11_in_qt5="no")
+      ], ac_cv_libsuil_x11_in_qt5="yes", ac_cv_libsuil_x11_in_qt5="no")
    ])
-   if test "x$ac_cv_suil_x11_in_qt5" = "xyes"; then
+   if test "x$ac_cv_libsuil_x11_in_qt5" = "xyes"; then
       AC_DEFINE(CONFIG_LIBSUIL_X11_IN_QT5, 1, [Define if libsuil_x11_in_qt5 is available.])
    #  ac_lv2_ui_x11="no"
    fi
 fi
 if test "x$ac_lv2_ui_x11" = "xyes"; then
    AC_DEFINE(CONFIG_LV2_UI_X11, 1, [Define if LV2 UI X11 native support is available.])
+fi
+
+# Check for VST3 SDK stuff.
+if test "x$ac_vst3" = "xyes"; then
+   if test -n "$ac_with_vst3"; then
+      ac_vst3sdk=$ac_with_vst3
+   else
+      PKG_CHECK_MODULES([VST3SDK], [vst3sdk >= 3.6.14], [ac_vst3="yes"], [ac_vst3="no"])
+      if test "x$ac_vst3" = "xyes"; then
+         ac_vst3sdk="${VST3SDK_CFLAGS/-I/}"
+      fi
+   fi
+fi
+if test "x$ac_vst3" = "xyes" -a -n "$ac_vst3sdk"; then
+   PKG_CHECK_MODULES([XCB], [xcb], [ac_vst3_xcb="yes"], [ac_vst3_xcb="no"])
+   if test "x$ac_vst3_xcb" = "xyes"; then
+      ac_cflags="$ac_cflags $XCB_CFLAGS"
+      ac_libs="$ac_libs $XCB_LIBS"
+   fi
+   AC_DEFINE(CONFIG_VST3, 1, [Define if VST3 plug-in support is avilable.])
+   AC_SUBST(ac_vst3sdk)
 fi
 
 # Check for JACK session headers availability.
@@ -1394,19 +1526,6 @@ fi
 if test "x$ac_nsm" = "xyes"; then
    AC_DEFINE(CONFIG_NSM, 1, [Define if NSM support is available.])
 fi
-
-# Check for VST/X11 support.
-if test "x$ac_vst" = "xyes"; then
-   PKG_CHECK_MODULES([QT5X11EXTRAS], [Qt5X11Extras], [ac_qt5x11extras="yes"], [ac_qt5x11extras="no"])
-fi
-if test "x$ac_qt5x11extras" = "xyes"; then
-   ac_qx11extras="x11extras"
-   # Some recent distros (eg. fedora, debian) require this.
-   if test "x$ac_cv_lib_X11_main" = "xyes"; then
-      ac_libs="$ac_libs -lX11"
-   fi
-fi
-AC_SUBST(ac_qx11extras)
 
 # Check for unique/single instance support.
 if test "x$ac_xunique" = "xyes"; then
@@ -1467,25 +1586,31 @@ echo "  SSE optimization support (x86) . . . . . . . . . .: $ac_sse"
 echo "  LADSPA plug-in support . . . . . . . . . . . . . .: $ac_ladspa"
 echo "  DSSI plug-in support . . . . . . . . . . . . . . .: $ac_dssi"
 echo "  VST plug-in support  . . . . . . . . . . . . . . .: $ac_vst"
+echo "  VST3 plug-in support . . . . . . . . . . . . . . .: $ac_vst3"
 echo "  LV2 plug-in support  . . . . . . . . . . . . . . .: $ac_lv2"
-echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_lilv"
+echo "  LV2 plug-in support (liblilv)  . . . . . . . . . .: $ac_liblilv"
 echo "  LV2 plug-in UI support . . . . . . . . . . . . . .: $ac_lv2_ui"
-echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_suil"
+echo "  LV2 plug-in UI support (libsuil) . . . . . . . . .: $ac_libsuil"
 echo "  LV2 plug-in External UI support  . . . . . . . . .: $ac_lv2_external_ui"
 echo "  LV2 plug-in MIDI/Event support (DEPRECATED)  . . .: $ac_lv2_event"
 echo "  LV2 plug-in MIDI/Atom support  . . . . . . . . . .: $ac_lv2_atom"
+echo "  LV2 plug-in CVPort support (DUMMY) . . . . . . . .: $ac_lv2_cvport"
 echo "  LV2 plug-in Worker/Schedule support  . . . . . . .: $ac_lv2_worker"
 echo "  LV2 plug-in State support  . . . . . . . . . . . .: $ac_lv2_state"
 echo "  LV2 plug-in State Files support  . . . . . . . . .: $ac_lv2_state_files"
 echo "  LV2 plug-in State Make Path support (DANGEROUS)  .: $ac_lv2_state_make_path"
 echo "  LV2 plug-in Programs support . . . . . . . . . . .: $ac_lv2_programs"
+echo "  LV2 plug-in MIDNAM support . . . . . . . . . . . .: $ac_lv2_midnam"
 echo "  LV2 plug-in Presets support  . . . . . . . . . . .: $ac_lv2_presets"
 echo "  LV2 plug-in Patch support  . . . . . . . . . . . .: $ac_lv2_patch"
+echo "  LV2 plug-in Port-event support (EXPERIMENTAL)  . .: $ac_lv2_port_event"
 echo "  LV2 plug-in Time support . . . . . . . . . . . . .: $ac_lv2_time"
 echo "  LV2 plug-in Time/position support  . . . . . . . .: $ac_lv2_time_position"
 echo "  LV2 plug-in Options support  . . . . . . . . . . .: $ac_lv2_options"
 echo "  LV2 plug-in Buf-size support . . . . . . . . . . .: $ac_lv2_buf_size"
+echo "  LV2 plug-in Parameters support . . . . . . . . . .: $ac_lv2_parameters"
 echo "  LV2 plug-in UI Touch interface support . . . . . .: $ac_lv2_ui_touch"
+echo "  LV2 plug-in UI Request-value support . . . . . . .: $ac_lv2_ui_req_value"
 echo "  LV2 plug-in UI Idle interface support  . . . . . .: $ac_lv2_ui_idle"
 echo "  LV2 plug-in UI Show interface support  . . . . . .: $ac_lv2_ui_show"
 echo "  LV2 plug-in UI GTK2 native support . . . . . . . .: $ac_lv2_ui_gtk2"
@@ -1495,7 +1620,7 @@ echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
 echo "  JACK Metadata support  . . . . . . . . . . . . . .: $ac_jack_metadata"
 echo
-echo "  Non Session Management (NSM) support . . . . . . .: $ac_nsm"
+echo "  New Session Management (NSM) support . . . . . . .: $ac_nsm"
 echo
 echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
 echo "  Unique/Single instance support . . . . . . . . . .: $ac_xunique"

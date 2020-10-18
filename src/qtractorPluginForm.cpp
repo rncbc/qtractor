@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,12 +25,7 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
-#include "qtractorPlugin.h"
 #include "qtractorPluginListView.h"
-
-#ifdef CONFIG_LV2_PATCH
-#include "qtractorLv2Plugin.h"
-#endif
 
 #include "qtractorInsertPlugin.h"
 
@@ -45,6 +40,8 @@
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 #include "qtractorEngine.h"
+
+#include "qtractorCurve.h"
 
 #include <QMessageBox>
 #include <QTabWidget>
@@ -88,7 +85,8 @@ qtractorPluginForm::qtractorPluginForm (
 	m_ui.DirectAccessParamPushButton->setMenu(m_pDirectAccessParamMenu);
 
 	m_ui.PresetComboBox->setValidator(
-		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetComboBox));
+		new QRegularExpressionValidator(
+			QRegularExpression("[\\w-]+"), m_ui.PresetComboBox));
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
 	m_ui.PresetComboBox->setCompleter(nullptr);
 
@@ -105,8 +103,8 @@ qtractorPluginForm::qtractorPluginForm (
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changePresetSlot(const QString&)));
 	QObject::connect(m_ui.PresetComboBox,
-		SIGNAL(activated(const QString &)),
-		SLOT(loadPresetSlot(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(loadPresetSlot(int)));
 	QObject::connect(m_ui.OpenPresetToolButton,
 		SIGNAL(clicked()),
 		SLOT(openPresetSlot()));
@@ -134,8 +132,8 @@ qtractorPluginForm::qtractorPluginForm (
 		SIGNAL(clicked()),
 		SLOT(returnsSlot()));
 	QObject::connect(m_ui.AuxSendBusNameComboBox,
-		SIGNAL(activated(const QString&)),
-		SLOT(changeAuxSendBusNameSlot(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(changeAuxSendBusNameSlot(int)));
 	QObject::connect(m_ui.AuxSendBusNameToolButton,
 		SIGNAL(clicked()),
 		SLOT(clickAuxSendBusNameSlot()));
@@ -181,16 +179,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	const int MaxItemsPerPage   = MaxRowsPerPage * MaxColumnsPerPage;
 
 	const qtractorPlugin::Params& params = m_pPlugin->params();
-	const int iParams = params.count();
+	const qtractorPlugin::Properties& properties = m_pPlugin->properties();
 
-	int iItems = iParams;
-#ifdef CONFIG_LV2_PATCH
-	qtractorLv2Plugin *pLv2Plugin = nullptr;
-	if (pType->typeHint() == qtractorPluginType::Lv2)
-		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
-	if (pLv2Plugin)
-		iItems += pLv2Plugin->lv2_properties().count();
-#endif
+	int iItems = params.count() + properties.count();
 	int iItemsPerPage = iItems;
 	int iItemsOnLastPage = 0;
 	if (iItemsPerPage > MaxItemsPerPage) {
@@ -225,7 +216,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	if (iItems > 0) {
 		pTabWidget  = m_ui.TabWidget;
 		pGridLayout = new QGridLayout();
-		pGridLayout->setMargin(8);
+		pGridLayout->setContentsMargins(8, 8, 8, 8);
 		pGridLayout->setSpacing(4);
 		pPageWidget = new QWidget();
 		pPageWidget->setLayout(pGridLayout);
@@ -233,34 +224,31 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		++iPage;
 	}
 
-	QWidgetList widgets;
-
-#ifdef CONFIG_LV2_PATCH
-	if (pLv2Plugin) {
-		const qtractorLv2Plugin::Properties& props = pLv2Plugin->lv2_properties();
-		qtractorLv2Plugin::Properties::ConstIterator prop = props.constBegin();
-		const qtractorLv2Plugin::Properties::ConstIterator& prop_end = props.constEnd();
-		for ( ; prop != prop_end; ++prop) {
-			qtractorLv2Plugin::Property *pProp = prop.value();
-			qtractorPluginPropertyWidget *pPropWidget
-				= new qtractorPluginPropertyWidget(pLv2Plugin, pProp->key());
-			m_propWidgets.append(pPropWidget);
-			widgets.append(pPropWidget);
+	const qtractorPlugin::PropertyKeys& props = m_pPlugin->propertyKeys();
+	qtractorPlugin::PropertyKeys::ConstIterator prop = props.constBegin();
+	const qtractorPlugin::PropertyKeys::ConstIterator& prop_end = props.constEnd();
+	for ( ; prop != prop_end; ++prop) {
+		qtractorPlugin::Property *pProp = prop.value();
+		qtractorPluginParamWidget *pPropWidget
+			= new qtractorPluginParamWidget(pProp, this);
+		if (pProp->isAutomatable()) {
+			qtractorMidiControlObserver *pMidiObserver = pProp->observer();
+			if (pMidiObserver)
+				addMidiControlAction(pPropWidget, pMidiObserver);
 		}
+		m_paramWidgets.append(pPropWidget);
 	}
-#endif
 
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		qtractorPlugin::Param *pParam = param.value();
 		qtractorPluginParamWidget *pParamWidget
 			= new qtractorPluginParamWidget(pParam, this);
 		qtractorMidiControlObserver *pMidiObserver = pParam->observer();
 		if (pMidiObserver)
 			addMidiControlAction(pParamWidget, pMidiObserver);
 		m_paramWidgets.append(pParamWidget);
-		widgets.append(pParamWidget);
 	}
 
 	// FIXME: Couldn't stand more than a hundred widgets?
@@ -268,7 +256,10 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	int iRow = 0;
 	int iColumn = 0;
 
-	QListIterator<QWidget *> iter(widgets);
+	iColumnsPerPage += (iColumnsPerPage - 1); // Plus gap columns!
+	if (!m_paramWidgets.isEmpty())
+		pGridLayout->setColumnStretch(iColumn, 1);
+	QListIterator<qtractorPluginParamWidget *> iter(m_paramWidgets);
 	while (iter.hasNext()) {
 		pGridLayout->addWidget(iter.next(), iRow, iColumn);
 		if (++iRow >= iRowsPerPage) {
@@ -277,7 +268,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 				iColumn = 0;
 				if (pTabWidget && iPage < iPages) {
 					pGridLayout = new QGridLayout();
-					pGridLayout->setMargin(8);
+					pGridLayout->setContentsMargins(8, 8, 8, 8);
 					pGridLayout->setSpacing(4);
 					pPageWidget = new QWidget();
 					pPageWidget->setLayout(pGridLayout);
@@ -285,6 +276,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 					++iPage;
 				}
 			}
+			else
+			pGridLayout->setColumnMinimumWidth(iColumn++, 8); // Gap column!
+			pGridLayout->setColumnStretch(iColumn, 1);
 		}
 	}
 
@@ -338,7 +332,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// This should trigger paramsSlot(!bEditor)
 	// and adjust the size of the params dialog...
-	m_ui.DirectAccessParamPushButton->setVisible(iParams > 0);
+	m_ui.DirectAccessParamPushButton->setVisible(!params.isEmpty());
 
 	// Always first tab/page selected...
 	m_ui.TabWidget->setCurrentIndex(0);
@@ -516,12 +510,17 @@ void qtractorPluginForm::changePresetSlot ( const QString& sPreset )
 }
 
 
-void qtractorPluginForm::loadPresetSlot ( const QString& sPreset )
+void qtractorPluginForm::loadPresetSlot ( int iPreset )
 {
 	if (m_pPlugin == nullptr)
 		return;
 
-	if (m_iUpdate > 0 || sPreset.isEmpty())
+	if (m_iUpdate > 0)
+		return;
+
+	const QString& sPreset
+		= m_ui.PresetComboBox->itemText(iPreset);
+	if (sPreset.isEmpty())
 		return;
 
 	m_pPlugin->loadPresetEx(sPreset);
@@ -568,7 +567,7 @@ void qtractorPluginForm::openPresetSlot (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -663,7 +662,7 @@ void qtractorPluginForm::savePresetSlot (void)
 			filters.append(tr("All files (*.*)"));
 			const QString& sFilter = filters.join(";;");
 			QWidget *pParentWidget = nullptr;
-			QFileDialog::Options options = 0;
+			QFileDialog::Options options;
 			if (pOptions->bDontUseNativeDialogs) {
 				options |= QFileDialog::DontUseNativeDialog;
 				pParentWidget = QWidget::window();
@@ -834,7 +833,7 @@ void qtractorPluginForm::returnsSlot (void)
 
 
 // Audio bus name (aux-send) select slot.
-void qtractorPluginForm::changeAuxSendBusNameSlot ( const QString& sAuxSendBusName )
+void qtractorPluginForm::changeAuxSendBusNameSlot ( int iAuxSendBusName )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
@@ -845,6 +844,11 @@ void qtractorPluginForm::changeAuxSendBusNameSlot ( const QString& sAuxSendBusNa
 
 	qtractorPluginType *pType = m_pPlugin->type();
 	if (pType->typeHint() != qtractorPluginType::AuxSend)
+		return;
+
+	const QString& sAuxSendBusName
+		= m_ui.AuxSendBusNameComboBox->itemText(iAuxSendBusName);
+	if (sAuxSendBusName.isEmpty())
 		return;
 
 	pSession->execute(
@@ -904,7 +908,7 @@ void qtractorPluginForm::updateDirectAccessParamSlot (void)
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		qtractorPlugin::Param *pParam = param.value();
 		const int iParamIndex = int(param.key());
 		pAction = m_pDirectAccessParamMenu->addAction(
 			pParam->name(), this, SLOT(changeDirectAccessParamSlot()));
@@ -982,10 +986,6 @@ void qtractorPluginForm::refresh (void)
 
 //	m_pPlugin->idleEditor();
 
-	QListIterator<qtractorPluginPropertyWidget *> prop_iter(m_propWidgets);
-	while (prop_iter.hasNext())
-		prop_iter.next()->refresh();
-
 	QListIterator<qtractorPluginParamWidget *> param_iter(m_paramWidgets);
 	while (param_iter.hasNext())
 		param_iter.next()->refresh();
@@ -1043,9 +1043,6 @@ void qtractorPluginForm::clear (void)
 
 	qDeleteAll(m_paramWidgets);
 	m_paramWidgets.clear();
-
-	qDeleteAll(m_propWidgets);
-	m_propWidgets.clear();
 
 	m_pDirectAccessParamMenu->clear();	
 }
@@ -1173,7 +1170,7 @@ public:
 	};
 
 	// Constructor.
-	qtractorPluginParamDisplay(qtractorPluginParam *pParam)
+	qtractorPluginParamDisplay(qtractorPlugin::Param *pParam)
 		: QLabel(), m_pParam(pParam), m_observer(pParam->subject(), this) {}
 
 	// Observer accessor.
@@ -1186,7 +1183,7 @@ protected:
 private:
 
 	// Parameter reference.
-	qtractorPluginParam *m_pParam;
+	qtractorPlugin::Param *m_pParam;
 
 	// Observer instance.
 	Observer m_observer;
@@ -1204,7 +1201,7 @@ class qtractorPluginParamWidget::SliderInterface
 public:
 
 	// Constructor.
-	SliderInterface ( qtractorPluginParam *pParam )
+	SliderInterface ( qtractorPlugin::Param *pParam )
 		: m_pParam(pParam) {}
 
 	// Formerly Pure virtuals.
@@ -1219,17 +1216,17 @@ public:
 private:
 
 	// Instance references.
-	qtractorPluginParam *m_pParam;
+	qtractorPlugin::Param *m_pParam;
 };
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginParamWidget -- Plugin port widget.
+// qtractorPluginParamWidget -- Plugin parameter/property common widget.
 //
 
-// Constructor.
+// Constructors.
 qtractorPluginParamWidget::qtractorPluginParamWidget (
-	qtractorPluginParam *pParam, QWidget *pParent )
+	qtractorPlugin::Param *pParam, QWidget *pParent )
 	: QWidget(pParent), m_pParam(pParam)
 {
 	m_pSlider   = nullptr;
@@ -1237,83 +1234,126 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	m_pCheckBox = nullptr;
 	m_pDisplay  = nullptr;
 
+	m_pCurveButton = nullptr;
+
+	m_pTextEdit   = nullptr;
+	m_pComboBox   = nullptr;
+	m_pToolButton = nullptr;
+
 	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(0);
+	pGridLayout->setContentsMargins(0, 0, 0, 0);
 	pGridLayout->setSpacing(4);
+
+	qtractorPlugin::Property *pProp = property();
 
 	if (m_pParam->isToggled()) {
 		m_pCheckBox = new qtractorObserverCheckBox(/*this*/);
+	//	m_pCheckBox->setMinimumWidth(120);
 		m_pCheckBox->setText(m_pParam->name());
 		m_pCheckBox->setSubject(m_pParam->subject());
 	//	m_pCheckBox->setChecked(m_pParam->value() > 0.1f);
 		pGridLayout->addWidget(m_pCheckBox, 0, 0);
-	} else if (m_pParam->isInteger()) {
-		pGridLayout->setColumnMinimumWidth(0, 120);
-		QLabel *pLabel = new QLabel(/*this*/);
-		pLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		pLabel->setText(m_pParam->name() + ':');
-		pGridLayout->addWidget(pLabel, 0, 0);
-		m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
-		m_pSpinBox->setMaximumWidth(64);
-		m_pSpinBox->setDecimals(0);
-		m_pSpinBox->setMinimum(m_pParam->minValue());
-		m_pSpinBox->setMaximum(m_pParam->maxValue());
-		m_pSpinBox->setAlignment(Qt::AlignHCenter);
-		m_pSpinBox->setSubject(m_pParam->subject());
-	//	m_pSpinBox->setValue(int(m_pParam->value()));
-		pGridLayout->addWidget(m_pSpinBox, 0, 1);
-		m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
-		m_pDisplay->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-	//	m_pDisplay->setText(m_pParam->display());
-	//	m_pDisplay->setFixedWidth(72);
-		m_pDisplay->setMinimumWidth(64);
-		pGridLayout->addWidget(m_pDisplay, 0, 2);
+		pGridLayout->setColumnStretch(0, 3);
 	} else {
 		QLabel *pLabel = new QLabel(/*this*/);
 		pLabel->setText(m_pParam->name() + ':');
-		if (m_pParam->isDisplay()) {
-			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-		//	pLabel->setFixedWidth(72);
-			pLabel->setMinimumWidth(64);
-			pGridLayout->addWidget(pLabel, 0, 0);
-		} else {
+		if (pProp && pProp->isString()) {
 			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+		//	pLabel->setMinimumWidth(120);
 			pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
+			m_pTextEdit = new QTextEdit(/*this*/);
+			m_pTextEdit->setTabChangesFocus(true);
+			m_pTextEdit->setMinimumWidth(120);
+			m_pTextEdit->setMaximumHeight(60);
+			m_pTextEdit->installEventFilter(this);
+		//	m_pTextEdit->setPlainText(pProp->variant().toString());
+			pGridLayout->addWidget(m_pTextEdit, 1, 0, 2, 3);
 		}
-		m_pSlider = new qtractorObserverSlider(/*this*/);
-		m_pSlider->setInterface(new SliderInterface(m_pParam));
-		m_pSlider->setOrientation(Qt::Horizontal);
-		m_pSlider->setTickPosition(QSlider::NoTicks);
-		m_pSlider->setMinimumWidth(120);
-		m_pSlider->setMinimum(0);
-		m_pSlider->setMaximum(10000);
-		m_pSlider->setPageStep(1000);
-		m_pSlider->setSingleStep(100);
-		m_pSlider->setSubject(m_pParam->subject());
-	//	m_pSlider->setValue(m_pSlider->scaleFromValue(m_pParam->value()));
-		if (m_pParam->isDisplay()) {
-			pGridLayout->addWidget(m_pSlider, 0, 1);
-			m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
-			m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-		//	m_pDisplay->setText(m_pParam->display());
-		//	m_pDisplay->setFixedWidth(72);
-			m_pDisplay->setMinimumWidth(64);
-			pGridLayout->addWidget(m_pDisplay, 0, 2);
-		} else {
-			pGridLayout->addWidget(m_pSlider, 1, 0, 1, 2);
-			const int iDecimals = m_pParam->decimals();
+		else
+		if (pProp && pProp->isPath()) {
+			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+		//	pLabel->setMinimumWidth(120);
+			pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
+			m_pComboBox = new QComboBox(/*this*/);
+			m_pComboBox->setEditable(false);
+			m_pComboBox->setMinimumWidth(120);
+		//	m_pComboBox->addItem(pProp->variant().toString());
+			pGridLayout->addWidget(m_pComboBox, 1, 0, 1, 2);
+			pGridLayout->setColumnStretch(0, 2);
+			m_pToolButton = new QToolButton(/*this*/);
+			m_pToolButton->setIcon(QIcon(":/images/fileOpen.png"));
+			pGridLayout->addWidget(m_pToolButton, 1, 2);
+		}
+		else
+		if (m_pParam->isInteger()) {
+			pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+			pGridLayout->addWidget(pLabel, 0, 0);
 			m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
-			m_pSpinBox->setDecimals(iDecimals);
+			m_pSpinBox->setMinimumWidth(64);
+			m_pSpinBox->setMaximumWidth(96);
+			m_pSpinBox->setDecimals(0);
 			m_pSpinBox->setMinimum(m_pParam->minValue());
 			m_pSpinBox->setMaximum(m_pParam->maxValue());
-			m_pSpinBox->setSingleStep(::powf(10.0f, - float(iDecimals)));
-			m_pSpinBox->setAccelerated(true);
+			m_pSpinBox->setAlignment(pProp ? Qt::AlignRight : Qt::AlignHCenter);
 			m_pSpinBox->setSubject(m_pParam->subject());
-		//	m_pSpinBox->setValue(m_pParam->value());
-			m_pSpinBox->setMaximumWidth(64);
-			pGridLayout->addWidget(m_pSpinBox, 1, 2);
+		//	m_pSpinBox->setValue(int(m_pParam->value()));
+			pGridLayout->addWidget(m_pSpinBox, 0, 1,
+				Qt::AlignRight | Qt::AlignVCenter);
+			pGridLayout->setColumnStretch(1, 2);
+			if (m_pParam->isDisplay()) {
+				m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
+				m_pDisplay->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+			//	m_pDisplay->setText(m_pParam->display());
+				m_pDisplay->setMinimumWidth(64);
+				pGridLayout->addWidget(m_pDisplay, 0, 2);
+			}
+		} else {
+			if (m_pParam->isDisplay()) {
+				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+				pLabel->setMinimumWidth(64);
+				pGridLayout->addWidget(pLabel, 0, 0);
+			} else {
+				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
+				pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
+			}
+			m_pSlider = new qtractorObserverSlider(/*this*/);
+			m_pSlider->setInterface(new SliderInterface(m_pParam));
+			m_pSlider->setOrientation(Qt::Horizontal);
+			m_pSlider->setTickPosition(QSlider::NoTicks);
+			m_pSlider->setMinimumWidth(120);
+			m_pSlider->setMinimum(0);
+			m_pSlider->setMaximum(10000);
+			m_pSlider->setPageStep(1000);
+			m_pSlider->setSingleStep(100);
+			m_pSlider->setSubject(m_pParam->subject());
+		//	m_pSlider->setValue(m_pSlider->scaleFromValue(m_pParam->value()));
+			if (m_pParam->isDisplay()) {
+				pGridLayout->addWidget(m_pSlider, 0, 1);
+				m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
+				m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+			//	m_pDisplay->setText(m_pParam->display());
+			//	m_pDisplay->setFixedWidth(72);
+				m_pDisplay->setMinimumWidth(64);
+				pGridLayout->addWidget(m_pDisplay, 0, 2);
+			} else {
+				pGridLayout->addWidget(m_pSlider, 1, 0, 1, 3);
+				const int iDecimals = m_pParam->decimals();
+				m_pSpinBox = new qtractorObserverSpinBox(/*this*/);
+				m_pSpinBox->setMinimumWidth(64);
+				m_pSpinBox->setMaximumWidth(96);
+				m_pSpinBox->setDecimals(iDecimals);
+				m_pSpinBox->setMinimum(m_pParam->minValue());
+				m_pSpinBox->setMaximum(m_pParam->maxValue());
+				m_pSpinBox->setSingleStep(::powf(10.0f, - float(iDecimals)));
+				m_pSpinBox->setAccelerated(true);
+				m_pSpinBox->setSubject(m_pParam->subject());
+			//	m_pSpinBox->setValue(m_pParam->value());
+				pGridLayout->addWidget(m_pSpinBox, 1, 3);
+			}
 		}
 	}
+
+	QWidget::setLayout(pGridLayout);
 
 	if (m_pCheckBox) {
 		QObject::connect(m_pCheckBox,
@@ -1333,8 +1373,28 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			SLOT(updateValue(float)));
 	}
 
-	QWidget::setLayout(pGridLayout);
+	if (m_pComboBox) {
+		QObject::connect(m_pComboBox,
+			SIGNAL(activated(int)),
+			SLOT(propertyChanged()));
+	}
+
+	if (m_pToolButton) {
+		QObject::connect(m_pToolButton,
+			SIGNAL(clicked()),
+			SLOT(toolButtonClicked()));
+	}
+
+	updateCurveButton();
+
 	QWidget::setToolTip(m_pParam->name());
+}
+
+
+// Param/Property discriminator..
+qtractorPlugin::Property *qtractorPluginParamWidget::property (void) const
+{
+	return dynamic_cast<qtractorPlugin::Property *> (m_pParam);
 }
 
 
@@ -1345,204 +1405,143 @@ void qtractorPluginParamWidget::refresh (void)
 	qDebug("qtractorPluginParamWidget[%p]::refresh()", this);
 #endif
 
-	if (m_pCheckBox)
-		m_pCheckBox->observer()->update(true);
-	if (m_pSpinBox)
-		m_pSpinBox->observer()->update(true);
-	if (m_pSlider)
-		m_pSlider->observer()->update(true);
-	if (m_pDisplay)
-		m_pDisplay->observer()->update(true);
+	qtractorPlugin::Property *pProp = property();
+	if (pProp && !pProp->isAutomatable()) {
+		if (m_pCheckBox) {
+			const bool bCheckBox = m_pCheckBox->blockSignals(true);
+			m_pCheckBox->setChecked(pProp->variant().toBool());
+			m_pCheckBox->blockSignals(bCheckBox);
+		}
+		if (m_pSpinBox) {
+			const bool bSpinBox = m_pSpinBox->blockSignals(true);
+			m_pSpinBox->setValue(pProp->variant().toDouble());
+			m_pSpinBox->blockSignals(bSpinBox);
+		}
+		if (m_pTextEdit) {
+			const bool bTextEdit = m_pTextEdit->blockSignals(true);
+			m_pTextEdit->setPlainText(pProp->variant().toString());
+			m_pTextEdit->document()->setModified(false);
+			m_pTextEdit->blockSignals(bTextEdit);
+		}
+		if (m_pComboBox) {
+			const bool bComboBox = m_pComboBox->blockSignals(true);
+			const QFileInfo fi(pProp->variant().toString());
+			const QString& sPath = fi.canonicalFilePath();
+			int iIndex = m_pComboBox->findData(sPath);
+			if (iIndex < 0) {
+				m_pComboBox->insertItem(0, fi.fileName(), sPath);
+				iIndex = 0;
+			}
+			m_pComboBox->setCurrentIndex(iIndex);
+			m_pComboBox->setToolTip(sPath);
+			m_pComboBox->blockSignals(bComboBox);
+		}
+	} else {
+		if (m_pCheckBox)
+			m_pCheckBox->observer()->update(true);
+		if (m_pSpinBox)
+			m_pSpinBox->observer()->update(true);
+		if (m_pSlider)
+			m_pSlider->observer()->update(true);
+		if (m_pDisplay)
+			m_pDisplay->observer()->update(true);
+	}
+
+	updateCurveButton();
+}
+
+
+// Parameter automation curve status update/refresh.
+void qtractorPluginParamWidget::updateCurveButton (void)
+{
+	qtractorPlugin::Property *pProp = property();
+	if (pProp && !pProp->isAutomatable())
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	QGridLayout *pGridLayout
+		=  static_cast<QGridLayout *> (QWidget::layout());
+	if (pGridLayout == nullptr)
+		return;
+
+	qtractorMidiControlObserver *pMidiObserver = m_pParam->observer();
+	if (pMidiObserver == nullptr)
+		return;
+
+	qtractorPluginList *pPluginList = (m_pParam->plugin())->list();
+	if (pPluginList == nullptr)
+		return;
+
+	qtractorTrack *pTrack = nullptr;
+	qtractorCurveList *pCurveList = pPluginList->curveList();
+	if (pCurveList && pCurveList == pMidiObserver->curveList())
+		pTrack = pSession->findTrackCurveList(pCurveList);
+	if (pTrack == nullptr) {
+		if (m_pCurveButton) {
+			m_pCurveButton->hide();
+			delete m_pCurveButton;
+			m_pCurveButton = nullptr;
+			pGridLayout->setColumnMinimumWidth(3, 0);
+		}
+		// Bail out!
+		return;
+	}
+
+	if (m_pCurveButton == nullptr) {
+		QSize iconSize(12, 12);
+		m_pCurveButton = new QPushButton(/*this*/);
+		m_pCurveButton->setFlat(true);
+		m_pCurveButton->setIconSize(iconSize);
+		m_pCurveButton->setMaximumSize(iconSize + QSize(4, 4));
+		pGridLayout->addWidget(m_pCurveButton, 0, 3,
+			Qt::AlignRight | Qt::AlignVCenter);
+		pGridLayout->setColumnMinimumWidth(3, 22);
+		QObject::connect(m_pCurveButton,
+			SIGNAL(clicked()),
+			SLOT(curveButtonClicked()));
+	}
+
+	qtractorCurve *pCurve = nullptr;
+	qtractorSubject *pSubject = pMidiObserver->subject();
+	if (pSubject)
+		pCurve = pSubject->curve();
+	if (pCurve && pCurve->isCapture())
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveCapture.png"));
+	else
+	if (pCurve && pCurve->isProcess())
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveProcess.png"));
+	else
+	if (pCurve)
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveEnabled.png"));
+	else
+		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveNone.png"));
 }
 
 
 // Parameter value change slot.
 void qtractorPluginParamWidget::updateValue ( float fValue )
 {
-	m_pParam->updateValue(fValue, true);
+	qtractorPlugin::Property *pProp = property();
+	if (pProp)
+		propertyChanged();
+	else
+		m_pParam->updateValue(fValue, true);
 }
 
 
-//----------------------------------------------------------------------------
-// qtractorPluginPropertyWidget -- Plugin property widget.
-//
-
-// Constructor.
-qtractorPluginPropertyWidget::qtractorPluginPropertyWidget (
-	qtractorPlugin *pPlugin, unsigned long iProperty, QWidget *pParent )
-	: QWidget(pParent), m_pPlugin(pPlugin), m_iProperty(iProperty)
+// Automation curve selector.
+void qtractorPluginParamWidget::curveButtonClicked (void)
 {
-	m_pCheckBox   = nullptr;
-	m_pSpinBox    = nullptr;
-	m_pTextEdit   = nullptr;
-	m_pComboBox   = nullptr;
-	m_pToolButton = nullptr;
-
-	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(0);
-	pGridLayout->setSpacing(4);
-
-#ifdef CONFIG_LV2_PATCH
-	qtractorPluginType *pType = m_pPlugin->type();
-	qtractorLv2Plugin *pLv2Plugin = nullptr;
-	qtractorLv2Plugin::Property *pLv2Prop = nullptr;
-	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
-		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
-	if (pLv2Plugin) {
-		const LV2_URID key = m_iProperty;
-		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
-		if (pszKey)
-			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, nullptr);
-	}
-#endif
-
-#ifdef CONFIG_LV2_PATCH
-	if (pLv2Prop) {
-	//	pGridLayout->setColumnMinimumWidth(0, 120);
-		pGridLayout->setColumnMinimumWidth(2, 32);
-		if (pLv2Prop->isToggled()) {
-			m_pCheckBox = new QCheckBox(/*this*/);
-		//	m_pCheckBox->setMinimumWidth(120);
-			m_pCheckBox->setText(pLv2Prop->name());
-		//	m_pCheckBox->setChecked(pLv2Prop->value().toBool());
-			pGridLayout->addWidget(m_pCheckBox, 0, 0, 1, 3);
-		} else {
-			QLabel *pLabel = new QLabel(/*this*/);
-			pLabel->setText(pLv2Prop->name() + ':');
-			if (pLv2Prop->isString()) {
-				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
-			//	pLabel->setMinimumWidth(120);
-				pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
-				m_pTextEdit = new QTextEdit(/*this*/);
-				m_pTextEdit->setTabChangesFocus(true);
-				m_pTextEdit->setMinimumWidth(120);
-				m_pTextEdit->setMaximumHeight(60);
-				m_pTextEdit->installEventFilter(this);
-			//	m_pTextEdit->setPlainText(pLv2Prop->value().toString());
-				pGridLayout->addWidget(m_pTextEdit, 1, 0, 2, 3);
-			}
-			else
-			if (pLv2Prop->isPath()) {
-				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
-			//	pLabel->setMinimumWidth(120);
-				pGridLayout->addWidget(pLabel, 0, 0, 1, 3);
-				m_pComboBox = new QComboBox(/*this*/);
-				m_pComboBox->setEditable(false);
-				m_pComboBox->setMinimumWidth(120);
-			//	m_pComboBox->addItem(pLv2Prop->value().toString());
-				pGridLayout->addWidget(m_pComboBox, 1, 0, 1, 2);
-				m_pToolButton = new QToolButton(/*this*/);
-				m_pToolButton->setIcon(QIcon(":/images/fileOpen.png"));
-				pGridLayout->addWidget(m_pToolButton, 1, 2);
-			} else {
-				pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-			//	pLabel->setMinimumWidth(120);
-				pGridLayout->addWidget(pLabel, 0, 0);
-				const bool bIsInteger = pLv2Prop->isInteger();
-				m_pSpinBox = new qtractorSpinBox(/*this*/);
-				m_pSpinBox->setMinimumWidth(64);
-				m_pSpinBox->setMaximumWidth(96);
-				m_pSpinBox->setDecimals(bIsInteger ? 0 : 3);
-				m_pSpinBox->setMinimum(pLv2Prop->minValue());
-				m_pSpinBox->setMaximum(pLv2Prop->maxValue());
-				m_pSpinBox->setAlignment(Qt::AlignRight);
-				m_pSpinBox->setSingleStep(bIsInteger ? 1.0f : 0.001f);
-				m_pSpinBox->setAccelerated(true);
-			//	m_pSpinBox->setValue(pLv2Prop->value().toDouble());
-				pGridLayout->addWidget(m_pSpinBox, 0, 1);
-			}
-		}
-	}
-#endif	// CONFIG_LV2_PATCH
-
-	if (m_pCheckBox) {
-		QObject::connect(m_pCheckBox,
-			SIGNAL(toggled(bool)),
-			SLOT(propertyChanged()));
-	}
-
-	if (m_pSpinBox) {
-		QObject::connect(m_pSpinBox,
-			SIGNAL(valueChangedEx(double)),
-			SLOT(propertyChanged()));
-	}
-
-	if (m_pComboBox) {
-		QObject::connect(m_pComboBox,
-			SIGNAL(activated(int)),
-			SLOT(propertyChanged()));
-	}
-
-	if (m_pToolButton) {
-		QObject::connect(m_pToolButton,
-			SIGNAL(clicked()),
-			SLOT(buttonClicked()));
-	}
-
-	QWidget::setLayout(pGridLayout);
-
-#ifdef CONFIG_LV2_PATCH
-	if (pLv2Prop) QWidget::setToolTip(pLv2Prop->name());
-#endif
-}
-
-
-// Refreshner-loader method.
-void qtractorPluginPropertyWidget::refresh (void)
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginPropertyWidget[%p]::refresh()", this);
-#endif
-
-#ifdef CONFIG_LV2_PATCH
-	qtractorPluginType *pType = m_pPlugin->type();
-	qtractorLv2Plugin *pLv2Plugin = nullptr;
-	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
-		pLv2Plugin = static_cast<qtractorLv2Plugin *> (m_pPlugin);
-	if (pLv2Plugin) {
-		qtractorLv2Plugin::Property *pLv2Prop = nullptr;
-		const LV2_URID key = m_iProperty;
-		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
-		if (pszKey)
-			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, nullptr);
-		if (pLv2Prop) {
-			if (m_pCheckBox) {
-				const bool bCheckBox = m_pCheckBox->blockSignals(true);
-				m_pCheckBox->setChecked(pLv2Prop->value().toBool());
-				m_pCheckBox->blockSignals(bCheckBox);
-			}
-			if (m_pSpinBox) {
-				const bool bSpinBox = m_pSpinBox->blockSignals(true);
-				m_pSpinBox->setValue(pLv2Prop->value().toDouble());
-				m_pSpinBox->blockSignals(bSpinBox);
-			}
-			if (m_pTextEdit) {
-				const bool bTextEdit = m_pTextEdit->blockSignals(true);
-				m_pTextEdit->setPlainText(pLv2Prop->value().toString());
-				m_pTextEdit->document()->setModified(false);
-				m_pTextEdit->blockSignals(bTextEdit);
-			}
-			if (m_pComboBox) {
-				const bool bComboBox = m_pComboBox->blockSignals(true);
-				const QFileInfo fi(pLv2Prop->value().toString());
-				const QString& sPath = fi.canonicalFilePath();
-				int iIndex = m_pComboBox->findData(sPath);
-				if (iIndex < 0) {
-					m_pComboBox->insertItem(0, fi.fileName(), sPath);
-					iIndex = 0;
-				}
-				m_pComboBox->setCurrentIndex(iIndex);
-				m_pComboBox->setToolTip(sPath);
-				m_pComboBox->blockSignals(bComboBox);
-			}
-		}
-	}
-#endif
+	const QPoint& pos = m_pCurveButton->geometry().bottomLeft();
+	qtractorMidiControlObserverForm::midiControlMenu(this, pos);
 }
 
 
 // Property file selector.
-void qtractorPluginPropertyWidget::buttonClicked (void)
+void qtractorPluginParamWidget::toolButtonClicked (void)
 {
 	// Sure we have this...
 	if (m_pComboBox == nullptr)
@@ -1564,7 +1563,7 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 		= tr("Open File");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -1599,13 +1598,14 @@ void qtractorPluginPropertyWidget::buttonClicked (void)
 
 
 // Property value change slot.
-void qtractorPluginPropertyWidget::propertyChanged (void)
+void qtractorPluginParamWidget::propertyChanged (void)
 {
-	if (m_pPlugin == nullptr)
+	qtractorPlugin::Property *pProp = property();
+	if (pProp == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorPluginPropertyWidget[%p]::propertyChanged()", this);
+	qDebug("qtractorPluginParamWidget[%p]::propertyChanged()", this);
 #endif
 
 	QVariant value;
@@ -1631,12 +1631,12 @@ void qtractorPluginPropertyWidget::propertyChanged (void)
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession)
 		pSession->execute(
-			new qtractorPluginPropertyCommand(m_pPlugin, m_iProperty, value));
+			new qtractorPluginPropertyCommand(pProp, value));
 }
 
 
 // Text edit (string) event filter.
-bool qtractorPluginPropertyWidget::eventFilter (
+bool qtractorPluginParamWidget::eventFilter (
 	QObject *pObject, QEvent *pEvent )
 {
 	if (qobject_cast<QTextEdit *> (pObject) == m_pTextEdit) {

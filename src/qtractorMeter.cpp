@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -58,7 +58,7 @@ qtractorMeterScale::qtractorMeterScale (
 	QFrame::setFrameShape(QFrame::Panel);
 	QFrame::setFrameShadow(QFrame::Sunken);
 
-//	QFrame::setMinimumWidth(16);
+	QFrame::setMinimumWidth(20);
 	QFrame::setMaximumWidth(24);
 //	QFrame::setBackgroundRole(QPalette::Mid);
 
@@ -142,6 +142,15 @@ void qtractorMeterValue::refreshAll (void)
 }
 
 
+// Global update (static).
+void qtractorMeterValue::updateAll (void)
+{
+	QListIterator<qtractorMeterValue *> iter(g_values);
+	while (iter.hasNext())
+		iter.next()->update();
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorMeter -- Meter bridge slot widget.
 
@@ -150,7 +159,7 @@ qtractorMeter::qtractorMeter ( QWidget *pParent )
 	: QWidget(pParent)
 {
 	m_pBoxLayout = new QHBoxLayout();
-	m_pBoxLayout->setMargin(0);
+	m_pBoxLayout->setContentsMargins(0, 0, 0, 0);
 	m_pBoxLayout->setSpacing(2);
 
 	QWidget::setLayout(m_pBoxLayout);
@@ -254,7 +263,7 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 //	QWidget::setFont(font2);
 
 	QVBoxLayout *pVBoxLayout = new QVBoxLayout();
-	pVBoxLayout->setMargin(0);
+	pVBoxLayout->setContentsMargins(0, 0, 0, 0);
 	pVBoxLayout->setSpacing(2);
 	QWidget::setLayout(pVBoxLayout);
 
@@ -271,13 +280,13 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 
 	m_pTopWidget = new QWidget(/*this*/);
 	m_pTopLayout = new QHBoxLayout();
-	m_pTopLayout->setMargin(2);
+	m_pTopLayout->setContentsMargins(2, 2, 2, 2);
 	m_pTopLayout->setSpacing(0);
 	m_pTopWidget->setLayout(m_pTopLayout);
 	pVBoxLayout->addWidget(m_pTopWidget);
 
 	m_pBoxLayout = new QHBoxLayout();
-	m_pBoxLayout->setMargin(2);
+	m_pBoxLayout->setContentsMargins(2, 2, 2, 2);
 	m_pBoxLayout->setSpacing(2);
 	pVBoxLayout->addLayout(m_pBoxLayout);
 

@@ -1,7 +1,7 @@
 // qtractorObserverWidget.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -70,10 +70,10 @@ void qtractorObserverCheckBox::checkBoxChanged ( bool bValue )
 
 // Constructor.
 qtractorObserverSpinBox::qtractorObserverSpinBox ( QWidget *pParent ) 
-	: qtractorObserverWidget<QDoubleSpinBox> (pParent)
+	: qtractorObserverWidget<qtractorSpinBox> (pParent)
 {
 	QObject::connect(this,
-		SIGNAL(valueChanged(double)),
+		SIGNAL(valueChangedEx(double)),
 		SLOT(spinBoxChanged(double)));
 }
 
@@ -120,7 +120,7 @@ qtractorObserverSlider::qtractorObserverSlider ( QWidget *pParent )
 void qtractorObserverSlider::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	// Reset to default value...
-	if (pMouseEvent->button() == Qt::MidButton)
+	if (pMouseEvent->button() == Qt::MiddleButton)
 		setValue(scaleFromValue(observer()->defaultValue()));
 	else
 		qtractorObserverWidget<QSlider>::mousePressEvent(pMouseEvent);
@@ -130,7 +130,7 @@ void qtractorObserverSlider::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	int iValue = value();
 
-	if (pWheelEvent->delta() > 0)
+	if (pWheelEvent->angleDelta().y() > 0)
 		iValue += pageStep();
 	else
 		iValue -= pageStep();

@@ -1,7 +1,7 @@
 // qtractorSpinBox.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ class qtractorSpinBox : public QDoubleSpinBox
 public:
 
 	// Constructor.
-	qtractorSpinBox(QWidget *pParent = 0);
+	qtractorSpinBox(QWidget *pParent = nullptr);
 
 	// Edit mode behavior:
 	// DefaultMode - default (immediate value changes) behavior.
@@ -92,7 +92,7 @@ class qtractorTimeSpinBox : public QAbstractSpinBox
 public:
 
 	// Constructor.
-	qtractorTimeSpinBox(QWidget *pParent = 0);
+	qtractorTimeSpinBox(QWidget *pParent = nullptr);
 
 	// Time-scale accessors.
 	void setTimeScale(qtractorTimeScale *pTimeScale);
@@ -190,7 +190,7 @@ class qtractorTempoSpinBox : public QAbstractSpinBox
 public:
 
 	// Constructor.
-	qtractorTempoSpinBox(QWidget *pParent = 0);
+	qtractorTempoSpinBox(QWidget *pParent = nullptr);
 
 	// Nominal tempo value (BPM) accessors.
 	void setTempo(float fTempo, bool bNotifyChange = true);

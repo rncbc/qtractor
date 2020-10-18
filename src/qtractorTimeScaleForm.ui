@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -198,6 +198,9 @@
          <property name="text">
           <string>&amp;Tempo:</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignVCenter</set>
+         </property>
          <property name="buddy">
           <cstring>TempoSpinBox</cstring>
          </property>
@@ -243,6 +246,9 @@
         <widget class="QLabel" name="KeySignatureTextLabel">
          <property name="text">
           <string>&amp;Key signature:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignVCenter</set>
          </property>
          <property name="buddy">
           <cstring>KeySignatureAccidentalsComboBox</cstring>
@@ -351,6 +357,9 @@
         <widget class="QLabel" name="TempoFactorTextLabel">
          <property name="text">
           <string>Tempo &amp;scale factor:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignVCenter</set>
          </property>
          <property name="buddy">
           <cstring>TempoFactorSpinBox</cstring>

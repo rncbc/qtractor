@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,8 +31,10 @@
 #include <QTextStream>
 
 #include <QApplication>
-#include <QDesktopWidget>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QDesktopWidget>
+#endif
 
 // Supposed to be determinant as default audio file type
 // (effective only for capture/record)
@@ -137,6 +139,10 @@ void qtractorOptions::loadOptions (void)
 	iAudioCaptureType    = m_settings.value("/CaptureType", 0).toInt();
 	iAudioCaptureFormat  = m_settings.value("/CaptureFormat", 0).toInt();
 	iAudioCaptureQuality = m_settings.value("/CaptureQuality", 4).toInt();
+	sAudioExportExt      = m_settings.value("/ExportExt").toString();
+	iAudioExportType     = m_settings.value("/ExportType", -1).toInt();
+	iAudioExportFormat   = m_settings.value("/ExportFormat", -1).toInt();
+	iAudioExportQuality  = m_settings.value("/ExportQuality", -1).toInt();
 	iAudioResampleType   = m_settings.value("/ResampleType", 2).toInt();
 	bAudioAutoTimeStretch = m_settings.value("/AutoTimeStretch", false).toBool();
 	bAudioWsolaTimeStretch = m_settings.value("/WsolaTimeStretch", true).toBool();
@@ -153,6 +159,7 @@ void qtractorOptions::loadOptions (void)
 	// MIDI rendering options group.
 	m_settings.beginGroup("/Midi");
 	iMidiCaptureFormat = m_settings.value("/CaptureFormat", 1).toInt();
+	iMidiExportFormat  = m_settings.value("/ExportFormat", 1).toInt();
 	iMidiCaptureQuantize = m_settings.value("/CaptureQuantize", 0).toInt();
 	iMidiQueueTimer    = m_settings.value("/QueueTimer", 0).toInt();
 	bMidiDriftCorrect  = m_settings.value("/DriftCorrect", true).toBool();
@@ -212,7 +219,7 @@ void qtractorOptions::loadOptions (void)
 	bPasteRepeatPeriod = m_settings.value("/PasteRepeatPeriod", false).toInt();
 	sPluginSearch   = m_settings.value("/PluginSearch").toString();
 	iPluginType     = m_settings.value("/PluginType", 1).toInt();
-	bPluginActivate = m_settings.value("/PluginActivate", false).toBool();
+	bPluginActivate = m_settings.value("/PluginActivate", true).toBool();
 	iCurveMode      = m_settings.value("/CurveMode", 0).toInt();
 	iEditRangeOptions = m_settings.value("/EditRangeOptions", 3).toInt();
 	bShiftKeyModifier = m_settings.value("/ShiftKeyModifier", false).toBool();
@@ -234,20 +241,21 @@ void qtractorOptions::loadOptions (void)
 	ladspaPaths = m_settings.value("/LadspaPaths").toStringList();
 	dssiPaths   = m_settings.value("/DssiPaths").toStringList();
 	vstPaths    = m_settings.value("/VstPaths").toStringList();
+	vst3Paths   = m_settings.value("/Vst3Paths").toStringList();
 	lv2Paths    = m_settings.value("/Lv2Paths").toStringList();
 	sLv2PresetDir = m_settings.value("/Lv2PresetDir").toString();
 	bAudioOutputBus = m_settings.value("/AudioOutputBus", false).toBool();
 	bAudioOutputAutoConnect = m_settings.value("/AudioOutputAutoConnect", true).toBool();
-	bAudioOutputMonitor = m_settings.value("/AudioOutputMonitor", false).toBool();
 	bOpenEditor = m_settings.value("/OpenEditor", true).toBool();
 	bQueryEditorType = m_settings.value("/QueryEditorType", false).toBool();
-	bDummyPluginScan = m_settings.value("/DummyPluginScan", true).toBool();
+	bDummyPluginScan = true;//m_settings.value("/DummyPluginScan", true).toBool();
 	iDummyLadspaHash = m_settings.value("/DummyLadspaHash", 0).toInt();
 	iDummyDssiHash = m_settings.value("/DummyDssiHash", 0).toInt();
 	iDummyVstHash = m_settings.value("/DummyVstHash", 0).toInt();
+	iDummyVst3Hash = m_settings.value("/DummyVst3Hash", 0).toInt();
 	iDummyLv2Hash = m_settings.value("/DummyLv2Hash", 0).toInt();
-	bLv2DynManifest = m_settings.value("/Lv2DynManifest", false).toBool();
-	bSaveCurve14bit = m_settings.value("/SaveCurve14bit", false).toBool();
+	bLv2DynManifest = false;//m_settings.value("/Lv2DynManifest", false).toBool();
+	bSaveCurve14bit = true;//m_settings.value("/SaveCurve14bit", false).toBool();
 	m_settings.endGroup();
 
 	// Instrument file list.
@@ -298,8 +306,6 @@ void qtractorOptions::loadOptions (void)
 	bTrackViewSnapGrid   = m_settings.value("/TrackViewSnapGrid", true).toBool();
 	bTrackViewToolTips   = m_settings.value("/TrackViewToolTips", true).toBool();
 	bTrackViewCurveEdit  = m_settings.value("/TrackViewCurveEdit", false).toBool();
-	bTrackListPlugins    = m_settings.value("/TrackListPlugins", false).toBool();
-	bTrackListMeters     = m_settings.value("/TrackListMeters", false).toBool();
 	m_settings.endGroup();
 
 	// MIDI options group.
@@ -316,6 +322,7 @@ void qtractorOptions::loadOptions (void)
 	bMidiTimeToolbar = m_settings.value("/TimeToolbar", false).toBool();
 	bMidiThumbToolbar = m_settings.value("/ThumbToolbar", true).toBool();
 	iMidiDisplayFormat = m_settings.value("/DisplayFormat", 2).toInt();
+	bMidiNoteNames   = m_settings.value("/NoteNames", false).toBool();
 	bMidiNoteDuration = m_settings.value("/NoteDuration", true).toBool();
 	bMidiNoteColor   = m_settings.value("/NoteColor", false).toBool();
 	bMidiValueColor  = m_settings.value("/ValueColor", false).toBool();
@@ -341,11 +348,6 @@ void qtractorOptions::loadOptions (void)
 
 	// User preference options.
 	m_settings.beginGroup("/Preferences");
-
-	// Mixer options.
-	m_settings.beginGroup("/Mixer");
-	bMixerAutoGridLayout = m_settings.value("/AutoGridLayout", false).toBool();
-	m_settings.endGroup();
 
 	// Meter colors.
 	m_settings.beginGroup("/Colors");
@@ -438,6 +440,10 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/CaptureType", iAudioCaptureType);
 	m_settings.setValue("/CaptureFormat", iAudioCaptureFormat);
 	m_settings.setValue("/CaptureQuality", iAudioCaptureQuality);
+	m_settings.setValue("/ExportExt", sAudioExportExt);
+	m_settings.setValue("/ExportType", iAudioExportType);
+	m_settings.setValue("/ExportFormat", iAudioExportFormat);
+	m_settings.setValue("/ExportQuality", iAudioExportQuality);
 	m_settings.setValue("/ResampleType", iAudioResampleType);
 	m_settings.setValue("/AutoTimeStretch", bAudioAutoTimeStretch);
 	m_settings.setValue("/WsolaTimeStretch", bAudioWsolaTimeStretch);
@@ -454,6 +460,7 @@ void qtractorOptions::saveOptions (void)
 	// MIDI rendering options group.
 	m_settings.beginGroup("/Midi");
 	m_settings.setValue("/CaptureFormat", iMidiCaptureFormat);
+	m_settings.setValue("/ExportFormat", iMidiExportFormat);
 	m_settings.setValue("/CaptureQuantize", iMidiCaptureQuantize);
 	m_settings.setValue("/QueueTimer", iMidiQueueTimer);
 	m_settings.setValue("/DriftCorrect", bMidiDriftCorrect);
@@ -535,17 +542,18 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/LadspaPaths", ladspaPaths);
 	m_settings.setValue("/DssiPaths", dssiPaths);
 	m_settings.setValue("/VstPaths", vstPaths);
+	m_settings.setValue("/Vst3Paths", vst3Paths);
 	m_settings.setValue("/Lv2Paths", lv2Paths);
 	m_settings.setValue("/Lv2PresetDir", sLv2PresetDir);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
 	m_settings.setValue("/AudioOutputAutoConnect", bAudioOutputAutoConnect);
-	m_settings.setValue("/AudioOutputMonitor", bAudioOutputMonitor);
 	m_settings.setValue("/OpenEditor", bOpenEditor);
 	m_settings.setValue("/QueryEditorType", bQueryEditorType);
 	m_settings.setValue("/DummyPluginScan", bDummyPluginScan);
 	m_settings.setValue("/DummyLadspaHash", iDummyLadspaHash);
 	m_settings.setValue("/DummyDssiHash", iDummyDssiHash);
 	m_settings.setValue("/DummyVstHash", iDummyVstHash);
+	m_settings.setValue("/DummyVst3Hash", iDummyVst3Hash);
 	m_settings.setValue("/DummyLv2Hash", iDummyLv2Hash);
 	m_settings.setValue("/Lv2DynManifest", bLv2DynManifest);
 	m_settings.setValue("/SaveCurve14bit", bSaveCurve14bit);
@@ -590,8 +598,6 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/TrackViewSnapGrid", bTrackViewSnapGrid);
 	m_settings.setValue("/TrackViewToolTips", bTrackViewToolTips);
 	m_settings.setValue("/TrackViewCurveEdit", bTrackViewCurveEdit);
-	m_settings.setValue("/TrackListPlugins", bTrackListPlugins);
-	m_settings.setValue("/TrackListMeters", bTrackListMeters);
 	m_settings.endGroup();
 
 	// MIDI Editor options group.
@@ -608,6 +614,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ScaleToolbar", bMidiScaleToolbar);
 	m_settings.setValue("/ThumbToolbar", bMidiThumbToolbar);
 	m_settings.setValue("/DisplayFormat", iMidiDisplayFormat);
+	m_settings.setValue("/NoteNames", bMidiNoteNames);
 	m_settings.setValue("/NoteDuration", bMidiNoteDuration);
 	m_settings.setValue("/NoteColor", bMidiNoteColor);
 	m_settings.setValue("/ValueColor", bMidiValueColor);
@@ -633,11 +640,6 @@ void qtractorOptions::saveOptions (void)
 
 	// User preference options.
 	m_settings.beginGroup("/Preferences");
-
-	// Mixer options.
-	m_settings.beginGroup("/Mixer");
-	m_settings.setValue("/AutoGridLayout", bMixerAutoGridLayout);
-	m_settings.endGroup();
 
 	// Meter colors.
 	m_settings.beginGroup("/Colors");
@@ -787,8 +789,10 @@ void qtractorOptions::loadWidgetGeometry ( QWidget *pWidget, bool bVisible )
 			QWidget *pParent = pWidget->parentWidget();
 			if (pParent)
 				pParent = pParent->window();
+		#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 			if (pParent == nullptr)
 				pParent = QApplication::desktop();
+		#endif
 			if (pParent) {
 				QRect wrect(pWidget->geometry());
 				wrect.moveCenter(pParent->geometry().center());
@@ -1106,4 +1110,3 @@ void qtractorOptions::saveActionControl ( QObject *pObject )
 
 
 // end of qtractorOptions.cpp
-

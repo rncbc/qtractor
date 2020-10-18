@@ -25,6 +25,7 @@ headers = \
 	src/qtractorClip.h \
 	src/qtractorClipCommand.h \
 	src/qtractorClipSelect.h \
+	src/qtractorComboBox.h \
 	src/qtractorCommand.h \
 	src/qtractorConnect.h \
 	src/qtractorConnections.h \
@@ -37,7 +38,6 @@ headers = \
 	src/qtractorDssiPlugin.h \
 	src/qtractorEngine.h \
 	src/qtractorEngineCommand.h \
-	src/qtractorFifoBuffer.h \
 	src/qtractorFileList.h \
 	src/qtractorFileListView.h \
 	src/qtractorFiles.h \
@@ -111,6 +111,7 @@ headers = \
 	src/qtractorTrackView.h \
 	src/qtractorTracks.h \
 	src/qtractorVstPlugin.h \
+	src/qtractorVst3Plugin.h \
 	src/qtractorWsolaTimeStretcher.h \
 	src/qtractorZipFile.h \
 	src/qtractorBusForm.h \
@@ -155,6 +156,7 @@ sources = \
 	src/qtractorClip.cpp \
 	src/qtractorClipCommand.cpp \
 	src/qtractorClipSelect.cpp \
+	src/qtractorComboBox.cpp \
 	src/qtractorCommand.cpp \
 	src/qtractorConnect.cpp \
 	src/qtractorConnections.cpp \
@@ -231,6 +233,7 @@ sources = \
 	src/qtractorTrackView.cpp \
 	src/qtractorTracks.cpp \
 	src/qtractorVstPlugin.cpp \
+	src/qtractorVst3Plugin.cpp \
 	src/qtractorWsolaTimeStretcher.cpp \
 	src/qtractorZipFile.cpp \
 	src/qtractorBusForm.cpp \
@@ -340,15 +343,19 @@ translations_lrelease:	translations_lupdate $(translations_targets)
 install:	$(target) translations_lrelease $(name).1
 	@$(MAKE) INSTALL_ROOT=$(DESTDIR) -f $(name).mak install
 	@install -d -v -m 0755 $(DESTDIR)$(translations_dir)
-	@install -d -v -m 0755 $(DESTDIR)$(mandir)/man1
 	@install -v -m 0644 $(translations_targets) $(DESTDIR)$(translations_dir)
-	@install -v -m 0644 $(name)*.1 $(DESTDIR)$(mandir)/man1
-	@gzip -vf $(DESTDIR)$(mandir)/man1/$(name)*.1
+	@install -d -v -m 0755 $(DESTDIR)$(mandir)/man1
+	@install -v -m 0644 $(name).1 $(DESTDIR)$(mandir)/man1/$(name).1
+	@gzip -nvf $(DESTDIR)$(mandir)/man1/$(name).1
+	@install -d -v -m 0755 $(DESTDIR)$(mandir)/fr/man1
+	@install -v -m 0644 $(name).fr.1 $(DESTDIR)$(mandir)/fr/man1/$(name).1
+	@gzip -nvf $(DESTDIR)$(mandir)/fr/man1/$(name).1
 
 uninstall:	$(DESTDIR)$(prefix)/bin/$(name)
 	@$(MAKE) INSTALL_ROOT=$(DESTDIR) -f $(name).mak uninstall
 	@rm -rvf $(DESTDIR)$(translations_dir)
-	@rm -vf $(DESTDIR)$(mandir)/man1/$(name)*.1.gz
+	@rm -vf $(DESTDIR)$(mandir)/man1/$(name).1.gz
+	@rm -vf $(DESTDIR)$(mandir)/fr/man1/$(name).1.gz
 
 
 clean:	$(name).mak

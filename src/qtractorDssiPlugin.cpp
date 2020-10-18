@@ -1,7 +1,7 @@
 // qtractorDssiPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -290,7 +290,7 @@ static int osc_update (
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		qtractorPlugin::Param *pParam = param.value();
 		osc_send_control(pDssiEditor,
 			pParam->index(),
 			pParam->value());
@@ -696,8 +696,8 @@ public:
 			qtractorMidiManager *pMidiManager
 				= pDssiPlugin->list()->midiManager();
 			if (pMidiManager) {
-				m_ppEvents[iInstances] = pMidiManager->events();
-				m_piEvents[iInstances] = pMidiManager->count();
+				m_ppEvents[iInstances] = pMidiManager->dssi_events();
+				m_piEvents[iInstances] = pMidiManager->dssi_count();
 			} else {
 				m_ppEvents[iInstances] = nullptr;
 				m_piEvents[iInstances] = 0;
@@ -983,7 +983,7 @@ void qtractorDssiPlugin::setChannels ( unsigned short iChannels )
 void qtractorDssiPlugin::resetChannels (void)
 {
 	// (Re)initialize controller port map, anyway.
-	::memset(m_apControllerMap, 0, 128 * sizeof(qtractorPluginParam *));
+	::memset(m_apControllerMap, 0, 128 * sizeof(qtractorPlugin::Param *));
 
 	// Check how many instances are about there...
 	const unsigned short iInstances = instances();
@@ -1008,7 +1008,7 @@ void qtractorDssiPlugin::resetChannels (void)
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			const int iController
 				= (*pDssiDescriptor->get_midi_controller_for_port)(
 					handle, pParam->index());
@@ -1092,7 +1092,7 @@ void qtractorDssiPlugin::process (
 		// Make it run...
 		else if (pDssiDescriptor->run_synth) {
 			(*pDssiDescriptor->run_synth)(handle, nframes,
-				pMidiManager->events(), pMidiManager->count());
+				pMidiManager->dssi_events(), pMidiManager->dssi_count());
 		}
 		else (*pLadspaDescriptor->run)(handle, nframes);
 		// Wrap dangling output channels?...
@@ -1104,7 +1104,7 @@ void qtractorDssiPlugin::process (
 
 // Parameter update method.
 void qtractorDssiPlugin::updateParam (
-	qtractorPluginParam *pParam, float fValue, bool bUpdate )
+	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorDssiPlugin[%p]::updateParam(%lu, %g, %d)",
@@ -1139,6 +1139,9 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 		return;
 	}
 
+	// Tell the world we'll (maybe) take some time...
+	qtractorPluginList::WaitCursor waiting;
+
 	// Open up a new one...
 	m_pDssiEditor = osc_open_editor(this);
 
@@ -1160,7 +1163,10 @@ void qtractorDssiPlugin::openEditor ( QWidget */*pParent*/ )
 		args[3].toUtf8().constData());
 #endif
 
-	if (!QProcess::startDetached(sDssiEditor, args)) {
+	const bool bStartDetached
+		= QProcess::startDetached(sDssiEditor, args);
+
+	if (!bStartDetached) {
 		closeEditor();
 		return;
 	}
@@ -1253,7 +1259,7 @@ void qtractorDssiPlugin::selectProgram ( int iBank, int iProg )
 	qtractorPlugin::Params::ConstIterator param = params.constBegin();
 	const qtractorPlugin::Params::ConstIterator& param_end = params.constEnd();
 	for ( ; param != param_end; ++param) {
-		qtractorPluginParam *pParam = param.value();
+		qtractorPlugin::Param *pParam = param.value();
 		pParam->setDefaultValue(pParam->value());
 	}
 }
@@ -1290,7 +1296,7 @@ bool qtractorDssiPlugin::getProgram ( int iIndex, Program& program ) const
 // MIDI continuous controller handler.
 void qtractorDssiPlugin::setController ( int iController, int iValue )
 {
-	qtractorPluginParam *pParam
+	qtractorPlugin::Param *pParam
 		= m_apControllerMap[DSSI_CC_NUMBER(iController)];
 	if (pParam == nullptr)
 		return;
@@ -1357,7 +1363,7 @@ void qtractorDssiPlugin::updateControlOuts ( bool bForce )
 	if (m_pDssiEditor && m_piControlOuts && m_pfControlOuts) {
 		const unsigned long iControlOuts = type()->controlOuts();
 		for (unsigned long j = 0; j < iControlOuts; ++j) {
-		//	if (::fabsf(m_pfControlOuts[j] - m_pfControlOutsLast[j]) > 1e-6f) {
+		//	if (qAbs(m_pfControlOuts[j] - m_pfControlOutsLast[j]) > 1e-6f) {
 			if (m_pfControlOutsLast[j] != m_pfControlOuts[j] || bForce) {
 				osc_send_control(m_pDssiEditor,
 					m_piControlOuts[j],

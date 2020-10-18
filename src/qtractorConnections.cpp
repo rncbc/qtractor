@@ -1,7 +1,7 @@
 // qtractorConnections.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -59,7 +59,7 @@ qtractorConnections::qtractorConnections (
 
 	// Prepare the layout stuff.
 	QHBoxLayout *pLayout = new QHBoxLayout();
-	pLayout->setMargin(0);
+	pLayout->setContentsMargins(0, 0, 0, 0);
 	pLayout->setSpacing(0);
 	pLayout->addWidget(m_pConnectForm);
 	QWidget::setLayout(pLayout);

@@ -1,7 +1,7 @@
 // qtractorTrack.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -174,7 +174,7 @@ public:
 	bool isPluginListLatency() const;
 
 	// Base height (in pixels).
-	enum { HeightMin = 24, HeightBase = 72 };
+	enum { HeightMin = 24, HeightBase = 96 };
 
 	// Normalized view height accessors.
 	void updateHeight();
@@ -185,6 +185,7 @@ public:
 	void updateZoomHeight();
 	void setZoomHeight(int iZoomHeight);
 	int zoomHeight() const;
+	int zoomHeightBase() const;
 
 	// Clip list management methods.
 	const qtractorList<qtractorClip>& clips() const;
@@ -360,6 +361,9 @@ public:
 	void updateMidiTrack();
 	void updateMidiClips();
 
+	// Update all plugin forms, if visible.
+	void refreshPluginForms();
+
 private:
 
 	qtractorSession *m_pSession;    // Session reference.
@@ -377,6 +381,7 @@ private:
 	unsigned char    m_midiNoteMin; // MIDI specific: track-minimum note.
 
 	int              m_iHeight;     // View height (normalized).
+	int              m_iHeightBase; // View height (base).
 	int              m_iZoomHeight; // View height (zoomed).
 
 	qtractorList<qtractorClip> m_clips; // List of clips.

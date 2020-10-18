@@ -1,7 +1,7 @@
 // qtractorMidiEditor.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -187,6 +187,10 @@ public:
 	// Note autition while editing.
 	void setSendNotes(bool bSendNotes);
 	bool isSendNotes() const;
+
+	// Note names display.
+	void setNoteNames(bool bNoteNames);
+	bool isNoteNames() const;
 
 	// Note event value vs. duration display.
 	void setNoteDuration(bool bNoteDuration);
@@ -678,7 +682,10 @@ private:
 
 	// Note autition while editing.
 	bool m_bSendNotes;
-	
+
+	// Note names display (inside rectangles).
+	bool m_bNoteNames;
+
 	// Event value stick vs. duration rectangle.
 	bool m_bNoteDuration;
 

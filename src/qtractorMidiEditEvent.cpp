@@ -1,7 +1,7 @@
 // qtractorMidiEditEvent.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -179,7 +179,7 @@ qtractorMidiEditEvent::qtractorMidiEditEvent (
 	qtractorScrollView::setMouseTracking(true);
 
 	const QFont& font = qtractorScrollView::font();
-	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 1));
+	qtractorScrollView::setFont(QFont(font.family(), font.pointSize() - 3));
 
 //	QObject::connect(this, SIGNAL(contentsMoving(int,int)),
 //		this, SLOT(updatePixmap(int,int)));
@@ -295,7 +295,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	const QPalette& pal = qtractorScrollView::palette();
 
 	const QColor& rgbBase  = pal.base().color();
-	const QColor& rgbDark  = pal.mid().color();
+	const QColor& rgbLine  = pal.mid().color();
 	const QColor& rgbLight = pal.midlight().color();
 
 	m_pixmap = QPixmap(w, h);
@@ -355,7 +355,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	while (x < w) {
 		const bool bBeatIsBar = pNode->beatIsBar(iBeat);
 		if (bBeatIsBar) {
-			painter.setPen(rgbDark);
+			painter.setPen(rgbLine);
 			painter.drawLine(x - 1, 0, x - 1, h);
 			if (m_pEditor->isSnapZebra() && (x > x2) && (++iBar & 1))
 				painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
@@ -385,7 +385,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 		painter.fillRect(QRect(x2, 0, x - x2 + 1, h), zebra);
 #else
 	unsigned short iBar = pNode->barFromPixel(dx);
-	if (iBar > 0) --iBar;
+	if (iBar > 0) pNode = cursor.seekBar(--iBar);
 	int x = pNode->pixelFromBar(iBar) - dx;
 	while (x < w) {
 		// Next bar...
@@ -422,7 +422,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 			}
 		}
 		// Bar line...
-		painter.setPen(rgbDark);
+		painter.setPen(rgbLine);
 		painter.drawLine(x2 - 1, 0, x2 - 1, h);
 		painter.setPen(rgbLight);
 		painter.drawLine(x2, 0, x2, h);
@@ -464,7 +464,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 
 	painter.setPen(rgbLight);
 	painter.drawLine(0, y0 - 1, w, y0 - 1);
-	painter.setPen(rgbDark);
+	painter.setPen(rgbLine);
 	painter.drawLine(0, y0, w, y0);
 
 	// Draw ghost-track events in dimmed transparecncy (alpha=55)...
@@ -570,6 +570,9 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 
 	int x, y;
 
+	const QFontMetrics fm(qtractorScrollView::font());
+	const int hs = fm.ascent(); // fm.height() - 2;
+
 	qtractorTimeScale::Cursor cursor(m_pEditor->timeScale());
 	qtractorTimeScale::Node *pNode;
 
@@ -634,6 +637,17 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 			} else {
 				painter.fillRect(x, y0 - 2, w1, 4, rgbFore);
 				painter.fillRect(x + 1, y0 - 1, w1 - 4, 2, rgbValue);
+			}
+			if (m_pEditor->isNoteNames() && hs < y0 - y && (
+				eventType == qtractorMidiEvent::NOTEON ||
+				eventType == qtractorMidiEvent::KEYPRESS)) {
+				const QString& sNoteName
+					= m_pEditor->noteName(pEvent->note());
+				painter.setPen(rgbFore.darker(160));
+				painter.drawText(
+					QRect(x + 2, y + 1, w1 - 6, y0 - y),
+					Qt::AlignTop | Qt::AlignLeft, sNoteName);
+				painter.setPen(rgbFore);
 			}
 		}
 		pEvent = pEvent->next();
@@ -730,7 +744,7 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 	case Qt::LeftButton:
 		// Only the left-mouse-button was meaningful...
 		break;
-	case Qt::MidButton:
+	case Qt::MiddleButton:
 		// Mid-button direct positioning...
 		m_pEditor->selectAll(this, false);
 		// Which mouse state?
@@ -784,7 +798,7 @@ void qtractorMidiEditEvent::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 void qtractorMidiEditEvent::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
-		const int delta = pWheelEvent->delta();
+		const int delta = pWheelEvent->angleDelta().y();
 		if (delta > 0)
 			m_pEditor->zoomIn();
 		else

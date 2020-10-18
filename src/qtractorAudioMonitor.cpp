@@ -1,7 +1,7 @@
 // qtractorAudioMonitor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -277,6 +277,17 @@ qtractorAudioMonitor::qtractorAudioMonitor ( unsigned short iChannels,
 }
 
 
+// Copy constructor.
+qtractorAudioMonitor::qtractorAudioMonitor ( const qtractorAudioMonitor& monitor )
+	: qtractorAudioMonitor(monitor.channels(), monitor.gain(), monitor.panning())
+{
+	qtractorMonitor::gainSubject()->setDefaultValue(
+		monitor.m_gainSubject.defaultValue());
+	qtractorMonitor::panningSubject()->setDefaultValue(
+		monitor.m_panningSubject.defaultValue());
+}
+
+
 // Destructor.
 qtractorAudioMonitor::~qtractorAudioMonitor (void)
 {
@@ -330,7 +341,7 @@ void qtractorAudioMonitor::setChannels ( unsigned short iChannels )
 		for (unsigned short i = 0; i < m_iChannels; ++i) {
 			m_piStamps[i] = 0;
 			m_pfValues[i] = m_pfPrevValues[i] = 0.0f;
-			m_pfGains[i]  = m_pfPrevGains[i] = 0.0f;
+			m_pfGains[i]  = m_pfPrevGains[i]  = 0.0f;
 		}
 		// Initial population...
 		update();

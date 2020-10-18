@@ -1,7 +1,7 @@
 // qtractorPluginCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -310,30 +310,6 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorPluginPropertyCommand - declaration.
-//
-
-class qtractorPluginPropertyCommand : public qtractorPluginCommand
-{
-public:
-
-	// Constructor.
-	qtractorPluginPropertyCommand(qtractorPlugin *pPlugin,
-		unsigned long iProperty, const QVariant& value);
-
-	// Plugin-port command methods.
-	bool redo();
-	bool undo();
-
-private:
-
-	// Instance variables.
-	unsigned long m_iProperty;
-	QVariant m_value;
-};
-
-
-//----------------------------------------------------------------------
 // class qtractorPluginParamCommand - declaration.
 //
 
@@ -343,14 +319,14 @@ public:
 
 	// Constructor.
 	qtractorPluginParamCommand(
-		qtractorPluginParam *pParam, float fValue, bool bUpdate);
+		qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Plugin-port command methods.
 	bool redo();
 	bool undo();
 
 	// Plugin-port accessor.
-	qtractorPluginParam *param() const { return m_pParam; }
+	qtractorPlugin::Param *param() const { return m_pParam; }
 
 	// Plugin-port value retrieval.
 	float value() const { return m_fValue; }
@@ -361,7 +337,8 @@ public:
 private:
 
 	// Instance variables.
-	qtractorPluginParam *m_pParam;
+	qtractorPlugin::Param *m_pParam;
+
 	float m_fValue;
 	bool  m_bUpdate;
 	float m_fPrevValue;
@@ -383,7 +360,7 @@ public:
 	~qtractorPluginParamValuesCommand();
 
 	// Plugin-value list accessor.
-	void updateParamValue(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+	void updateParamValue(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Composite predicate.
 	bool isEmpty() const;
@@ -396,6 +373,31 @@ private:
 
 	// Instance variables.
 	QList<qtractorPluginParamCommand *> m_paramCommands;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorPluginPropertyCommand - declaration.
+//
+
+class qtractorPluginPropertyCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorPluginPropertyCommand(
+		qtractorPlugin::Property *pProp, const QVariant& value);
+
+	// Plugin-port command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	qtractorPlugin::Property *m_pProp;
+
+	QVariant m_value;
 };
 
 
@@ -424,32 +426,6 @@ private:
 	bool m_bAudioOutputBus;
 	bool m_bAudioOutputAutoConnect;
 	QString m_sAudioOutputBusName;
-};
-
-
-//----------------------------------------------------------------------
-// class qtractorAudioOutputMonitorCommand - declaration.
-//
-
-class qtractorAudioOutputMonitorCommand : public qtractorCommand
-{
-public:
-
-	// Constructor.
-	qtractorAudioOutputMonitorCommand(
-		qtractorMidiManager *pMidiManager,
-		bool bAudioOutputMonitor);
-
-	// Plugin audio ouput monitor command methods.
-	bool redo();
-	bool undo();
-
-private:
-
-	// Instance variables.
-	qtractorMidiManager *m_pMidiManager;
-
-	bool m_bAudioOutputMonitor;
 };
 
 

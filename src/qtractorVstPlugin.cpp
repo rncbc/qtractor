@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -49,19 +49,17 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 #endif
 
 
-#ifdef CONFIG_VST_X11
-
-#include <QX11Info>
-
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_VST_X11
+#include <QX11Info>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
+#endif	// CONFIG_VST_X11
 #else
 #include <QWindow>
 #endif
 
-#endif	// CONFIG_VST_X11
 
 
 #if !defined(VST_2_3_EXTENSIONS)
@@ -112,8 +110,8 @@ const int effFlagsProgramChunks = 32;
 //---------------------------------------------------------------------
 // qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
 
-#ifdef CONFIG_VST_X11
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_VST_X11
 
 static int g_iXError = 0;
 
@@ -165,8 +163,8 @@ static Window getXChildWindow ( Display *pDisplay, Window w )
 	return wChild;
 }
 
-#endif
 #endif // CONFIG_VST_X11
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -181,18 +179,19 @@ class qtractorVstPlugin::EditorWidget : public QWidget
 public:
 
 	// Constructor.
-	EditorWidget(QWidget *pParent, Qt::WindowFlags wflags = 0)
+	EditorWidget(QWidget *pParent = nullptr,
+		Qt::WindowFlags wflags = Qt::WindowFlags())
 		: QWidget(pParent, wflags),
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	#ifdef CONFIG_VST_X11
 		m_pDisplay(QX11Info::display()),
-	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		m_wVstEditor(0),
 		m_pVstEventProc(nullptr),
 		m_bButtonPress(false),
+	#endif	// CONFIG_VST_X11
 	#else
 		m_pWindow(nullptr),
 	#endif
-	#endif	// CONFIG_VST_X11
 		m_pVstPlugin(nullptr)
 		{ QWidget::setAttribute(Qt::WA_QuitOnClose, false); }
 
@@ -207,22 +206,22 @@ public:
 		// Start the proper (child) editor...
 		long  value = 0;
 		void *ptr = nullptr;
+	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	#ifdef CONFIG_VST_X11
 		value = (long) m_pDisplay;
-	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		ptr = (void *) QWidget::winId();
+	#endif // CONFIG_VST_X11
 	#else
 		m_pWindow = new QWindow();
 		m_pWindow->create();
 		QWidget *pContainer = QWidget::createWindowContainer(m_pWindow, this);
 		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
-		pVBoxLayout->setMargin(0);
+		pVBoxLayout->setContentsMargins(0, 0, 0, 0);
 		pVBoxLayout->setSpacing(0);
 		pVBoxLayout->addWidget(pContainer);
 		QWidget::setLayout(pVBoxLayout);
 		ptr = (void *) m_pWindow->winId();
 	#endif
-	#endif // CONFIG_VST_X11
 
 		// Launch the custom GUI editor...
 		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
@@ -242,13 +241,13 @@ public:
 				QWidget::setFixedSize(w, h);
 		}
 
-	#ifdef CONFIG_VST_X11
 	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+	#ifdef CONFIG_VST_X11
 		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) QWidget::winId());
 		if (m_wVstEditor)
 			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
-	#endif
 	#endif	// CONFIG_VST_X11
+	#endif
 
 		g_vstEditors.append(this);
 	}
@@ -267,18 +266,16 @@ public:
 		if (iIndex >= 0)
 			g_vstEditors.removeAt(iIndex);
 
-	#ifdef CONFIG_VST_X11
 	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		if (m_pWindow) {
 			m_pWindow->destroy();
 			delete m_pWindow;
 		}
 	#endif
-	#endif	// CONFIG_VST_X11
 	}
 
-#ifdef CONFIG_VST_X11
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_VST_X11
 	// Local X11 event filter.
 	bool x11EventFilter(XEvent *pEvent)
 	{
@@ -305,8 +302,8 @@ public:
 			return false;
 		}
 	}
-#endif
 #endif	// CONFIG_VST_X11
+#endif
 
 	qtractorVstPlugin *plugin() const
 		{ return m_pVstPlugin; }
@@ -333,8 +330,8 @@ protected:
 			m_pVstPlugin->closeEditor();
 	}
 
-#ifdef CONFIG_VST_X11
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_VST_X11
 	void moveEvent(QMoveEvent *pMoveEvent)
 	{
 		QWidget::moveEvent(pMoveEvent);
@@ -343,22 +340,22 @@ protected:
 		//	QWidget::update();
 		}
 	}
-#endif
 #endif	// CONFIG_VST_X11
+#endif
 
 private:
 
 	// Instance variables...
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_VST_X11
 	Display   *m_pDisplay;
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	Window     m_wVstEditor;
 	XEventProc m_pVstEventProc;
 	bool       m_bButtonPress;
+#endif	// CONFIG_VST_X11
 #else
 	QWindow   *m_pWindow;
 #endif
-#endif	// CONFIG_VST_X11
 
 	qtractorVstPlugin *m_pVstPlugin;
 };
@@ -520,7 +517,7 @@ bool qtractorVstPluginType::open (void)
 	else
 		m_sName = QFileInfo(filename()).baseName();
 	// Sanitize plugin label.
-	m_sLabel = m_sName.simplified().replace(QRegExp("[\\s|\\.|\\-]+"), "_");
+	m_sLabel = m_sName.simplified().replace(QRegularExpression("[\\s|\\.|\\-]+"), "_");
 
 	// Retrieve plugin unique identifier.
 #ifdef CONFIG_VESTIGE_OLD
@@ -644,7 +641,7 @@ bool qtractorVstPluginType::vst_canDo ( const char *pszCanDo ) const
 }
 
 
-// Instance cached-deferred accesors.
+// Instance cached-deferred accessors.
 const QString& qtractorVstPluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
@@ -711,7 +708,7 @@ qtractorVstPlugin::qtractorVstPlugin (
 	// Create all existing parameters...
 	const unsigned short iParamCount = pVstType->controlIns();
 	for (unsigned short i = 0; i < iParamCount; ++i)
-		addParam(new qtractorVstPluginParam(this, i));
+		addParam(new Param(this, i));
 
 	// Instantiate each instance properly...
 	setChannels(channels());
@@ -745,13 +742,13 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		= static_cast<qtractorVstPluginType *> (type());
 	if (pVstType == nullptr)
 		return;
-		
+
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
 	const unsigned short iInstances
 		= pVstType->instances(iChannels, list()->isMidi());
-	// Now see if instance count changed anyhow...
-	if (iInstances == iOldInstances)
+	// Now see if instance and channel count changed anyhow...
+	if (iInstances == iOldInstances && iChannels == channels())
 		return;
 
 	// Gotta go for a while...
@@ -826,7 +823,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
 	}
 
-	// Setup all those instance alright...
+	// Setup all those instances alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// And now all other things as well...
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
@@ -949,7 +946,7 @@ void qtractorVstPlugin::process (
 
 // Parameter update method.
 void qtractorVstPlugin::updateParam (
-	qtractorPluginParam *pParam, float fValue, bool /*bUpdate*/ )
+	qtractorPlugin::Param *pParam, float fValue, bool /*bUpdate*/ )
 {
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorVstPlugin[%p]::updateParam(%lu, %g, %d)",
@@ -994,7 +991,7 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
+			qtractorPlugin::Param *pParam = param.value();
 			float *pfValue = pParam->subject()->data();
 			*pfValue = pVstEffect->getParameter(pVstEffect, pParam->index());
 			pParam->setDefaultValue(*pfValue);
@@ -1036,16 +1033,17 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 
 
 // Configuration (CLOB) stuff.
-void qtractorVstPlugin::configure ( const QString& sKey, const QString& sValue )
+void qtractorVstPlugin::configure (
+	const QString& sKey, const QString& sValue )
 {
 	if (sKey == "chunk") {
 		// Load the BLOB (base64 encoded)...
-		QByteArray data = qUncompress(QByteArray::fromBase64(sValue.toLatin1()));
+		const QByteArray data
+			= qUncompress(QByteArray::fromBase64(sValue.toLatin1()));
 		const char *pData = data.constData();
 		const int iData = data.size();
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPlugin[%p]::configure() chunk.size=%d checksum=0x%04x",
-			this, iData, qChecksum(pData, iData));
+		qDebug("qtractorVstPlugin[%p]::configure() chunk.size=%d", this, iData);
 	#endif
 		for (unsigned short i = 0; i < instances(); ++i)
 			vst_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
@@ -1084,16 +1082,16 @@ void qtractorVstPlugin::freezeConfigs (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::freezeConfigs() chunk.size=%d checksum=0x%04x",
-		this, iData, qChecksum(pData, iData));
+	qDebug("qtractorVstPlugin[%p]::freezeConfigs() chunk.size=%d", this, iData);
 #endif
 
 	// Set special plugin configuration item (base64 encoded)...
-	QByteArray data = qCompress(QByteArray(pData, iData)).toBase64();
-	for (int i = data.size() - (data.size() % 72); i >= 0; i -= 72)
-		data.insert(i, "\n       "); // Indentation.
-	setConfig("chunk", data.constData());
+	QByteArray cdata = qCompress(QByteArray(pData, iData)).toBase64();
+	for (int i = cdata.size() - (cdata.size() % 72); i >= 0; i -= 72)
+		cdata.insert(i, "\n       "); // Indentation.
+	setConfig("chunk", cdata.constData());
 }
+
 
 void qtractorVstPlugin::releaseConfigs (void)
 {
@@ -1186,6 +1184,9 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 		return;
 	}
 
+	// Tell the world we'll (maybe) take some time...
+	qtractorPluginList::WaitCursor waiting;
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVstPlugin[%p]::openEditor(%p)", this, pParent);
 #endif
@@ -1264,8 +1265,13 @@ void qtractorVstPlugin::setEditorVisible ( bool bVisible )
 		else
 			setEditorPos(m_pEditorWidget->pos());
 		m_pEditorWidget->setVisible(bVisible);
+		if (bVisible) {
+			m_pEditorWidget->raise();
+			m_pEditorWidget->activateWindow();
+		}
 	}
 }
+
 
 bool qtractorVstPlugin::isEditorVisible (void) const
 {
@@ -1338,7 +1344,7 @@ bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
 #endif	// CONFIG_VST_X11
 
 
-// Parameter update method.
+// All parameters update method.
 void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 {
 	// Make sure all cached parameter values are in sync
@@ -1349,8 +1355,9 @@ void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
-			qtractorPluginParam *pParam = param.value();
-			float fValue = pVstEffect->getParameter(pVstEffect, pParam->index());
+			qtractorPlugin::Param *pParam = param.value();
+			const float fValue
+				= pVstEffect->getParameter(pVstEffect, pParam->index());
 			if (pParam->value() != fValue) {
 				pParam->setValue(fValue, bUpdate);
 				updateFormDirtyCount();
@@ -1361,16 +1368,16 @@ void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPluginParam -- VST plugin control input port instance.
+// qtractorVstPlugin::Param -- VST plugin control input port instance.
 //
 
 // Constructors.
-qtractorVstPluginParam::qtractorVstPluginParam (
+qtractorVstPlugin::Param::Param (
 	qtractorVstPlugin *pVstPlugin, unsigned long iIndex )
-	: qtractorPluginParam(pVstPlugin, iIndex)
+	: qtractorPlugin::Param(pVstPlugin, iIndex)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorVstPluginParam[%p] pVstPlugin=%p iIndex=%lu", this, pVstPlugin, iIndex);
+	qDebug("qtractorVstPlugin::Param[%p] pVstPlugin=%p iIndex=%lu", this, pVstPlugin, iIndex);
 #endif
 
 	qtractorVstPluginType *pVstType
@@ -1426,25 +1433,19 @@ qtractorVstPluginParam::qtractorVstPluginParam (
 	if (pVstType && pVstType->effect()) {
 		AEffect *pVstEffect = (pVstType->effect())->vst_effect();
 		if (pVstEffect)
-			qtractorPluginParam::setValue(
+			qtractorPlugin::Param::setValue(
 				pVstEffect->getParameter(pVstEffect, iIndex), true);
 	}
 
-	setDefaultValue(qtractorPluginParam::value());
+	setDefaultValue(qtractorPlugin::Param::value());
 
 	// Initialize port value...
 	// reset();
 }
 
 
-// Destructor.
-qtractorVstPluginParam::~qtractorVstPluginParam (void)
-{
-}
-
-
 // Port range hints predicate methods.
-bool qtractorVstPluginParam::isBoundedBelow (void) const
+bool qtractorVstPlugin::Param::isBoundedBelow (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1453,7 +1454,7 @@ bool qtractorVstPluginParam::isBoundedBelow (void) const
 #endif
 }
 
-bool qtractorVstPluginParam::isBoundedAbove (void) const
+bool qtractorVstPlugin::Param::isBoundedAbove (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1462,22 +1463,22 @@ bool qtractorVstPluginParam::isBoundedAbove (void) const
 #endif
 }
 
-bool qtractorVstPluginParam::isDefaultValue (void) const
+bool qtractorVstPlugin::Param::isDefaultValue (void) const
 {
 	return true;
 }
 
-bool qtractorVstPluginParam::isLogarithmic (void) const
+bool qtractorVstPlugin::Param::isLogarithmic (void) const
 {
 	return false;
 }
 
-bool qtractorVstPluginParam::isSampleRate (void) const
+bool qtractorVstPlugin::Param::isSampleRate (void) const
 {
 	return false;
 }
 
-bool qtractorVstPluginParam::isInteger (void) const
+bool qtractorVstPlugin::Param::isInteger (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1486,7 +1487,7 @@ bool qtractorVstPluginParam::isInteger (void) const
 #endif
 }
 
-bool qtractorVstPluginParam::isToggled (void) const
+bool qtractorVstPlugin::Param::isToggled (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1495,7 +1496,7 @@ bool qtractorVstPluginParam::isToggled (void) const
 #endif
 }
 
-bool qtractorVstPluginParam::isDisplay (void) const
+bool qtractorVstPlugin::Param::isDisplay (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1506,7 +1507,7 @@ bool qtractorVstPluginParam::isDisplay (void) const
 
 
 // Current display value.
-QString qtractorVstPluginParam::display (void) const
+QString qtractorVstPlugin::Param::display (void) const
 {
 	qtractorVstPluginType *pVstType = nullptr;
 	if (plugin())
@@ -1533,7 +1534,7 @@ QString qtractorVstPluginParam::display (void) const
 	}
 
 	// Default parameter display value...
-	return qtractorPluginParam::display();
+	return qtractorPlugin::Param::display();
 }
 
 
@@ -1572,7 +1573,7 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 			.arg(pvfs->title).arg((pVstPlugin->type())->name());
 		const QString& sDirectory = pvfs->initialPath;
 		const QString& sFilter = filters.join(";;");
-		QFileDialog::Options options = 0;
+		QFileDialog::Options options;
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bDontUseNativeDialogs)
 			options |= QFileDialog::DontUseNativeDialog;

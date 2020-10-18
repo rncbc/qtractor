@@ -1,7 +1,7 @@
 // qtractorPluginForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,12 +24,12 @@
 
 #include "ui_qtractorPluginForm.h"
 
+#include "qtractorPlugin.h"
+
 #include <QHash>
 
 
 // Forward declarations...
-class qtractorPlugin;
-class qtractorPluginParam;
 class qtractorPluginParamWidget;
 class qtractorPluginPropertyWidget;
 
@@ -46,6 +46,7 @@ class qtractorSpinBox;
 class QCheckBox;
 class QTextEdit;
 class QComboBox;
+class QPushButton;
 class QToolButton;
 
 
@@ -59,8 +60,8 @@ class qtractorPluginForm : public QWidget
 public:
 
 	// Constructor.
-	qtractorPluginForm(QWidget *pParent = 0, Qt::WindowFlags wflags = 0);
-
+	qtractorPluginForm(QWidget *pParent = nullptr,
+		Qt::WindowFlags wflags = Qt::WindowFlags());
 	// Destructor.
 	~qtractorPluginForm();
 
@@ -82,7 +83,7 @@ public:
 protected slots:
 
 	void changePresetSlot(const QString& sPreset);
-	void loadPresetSlot(const QString& sPreset);
+	void loadPresetSlot(int iPreset);
 	void openPresetSlot();
 	void savePresetSlot();
 	void deletePresetSlot();
@@ -97,7 +98,7 @@ protected slots:
 	void midiControlActionSlot();
 	void midiControlMenuSlot(const QPoint& pos);
 
-	void changeAuxSendBusNameSlot(const QString& sAuxSendBusName);
+	void changeAuxSendBusNameSlot(int iAuxSendBusName);
 	void clickAuxSendBusNameSlot();
 
 	void updateDirectAccessParamSlot();
@@ -132,7 +133,6 @@ private:
 	// Instance variables...
 	qtractorPlugin *m_pPlugin;
 
-	QList<qtractorPluginPropertyWidget *> m_propWidgets;
 	QList<qtractorPluginParamWidget *> m_paramWidgets;
 
 	QMenu *m_pDirectAccessParamMenu;
@@ -143,7 +143,7 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorPluginParamWidget -- Plugin port widget.
+// qtractorPluginParamWidget -- Plugin parameter/property common widget.
 //
 
 class qtractorPluginParamWidget : public QWidget
@@ -152,13 +152,9 @@ class qtractorPluginParamWidget : public QWidget
 
 public:
 
-	// Constructor.
-	qtractorPluginParamWidget(qtractorPluginParam *pParam,
+	// Constructors.
+	qtractorPluginParamWidget(qtractorPlugin::Param *pParam,
 		QWidget *pParent = nullptr);
-
-	// Main properties accessors.
-	qtractorPluginParam *param() const
-		{ return m_pParam; }
 
 	// Refreshner-loader method.
 	void refresh();
@@ -168,13 +164,33 @@ protected slots:
 	// Parameter value change slot.
 	void updateValue(float fValue);
 
+	// Property value change slot.
+	void propertyChanged();
+
+	// Property file selector.
+	void toolButtonClicked();
+
+	// Automation curve selector.
+	void curveButtonClicked();
+
+protected:
+
+	// Param/Property discriminator..
+	qtractorPlugin::Property *property () const;
+
+	// Parameter automation curve status update/refresh.
+	void updateCurveButton();
+
+	// Text edit (string) event filter.
+	bool eventFilter(QObject *pObject, QEvent *pEvent);
+
 private:
 
 	// Local forward declarations.
 	class SliderInterface;
 
 	// Instance variables.
-	qtractorPluginParam *m_pParam;
+	qtractorPlugin::Param *m_pParam;
 
 	// Some possible managed widgets.
 	qtractorObserverCheckBox *m_pCheckBox;
@@ -182,57 +198,13 @@ private:
 	qtractorObserverSpinBox  *m_pSpinBox;
 
 	qtractorPluginParamDisplay *m_pDisplay;
-};
 
+	QPushButton *m_pCurveButton;
 
-//----------------------------------------------------------------------------
-// qtractorPluginPropertyWidget -- Plugin pproperty widget.
-//
-
-class qtractorPluginPropertyWidget : public QWidget
-{
-	Q_OBJECT
-
-public:
-
-	// Constructor.
-	qtractorPluginPropertyWidget(qtractorPlugin *pPlugin,
-		unsigned long iProperty, QWidget *pParent = nullptr);
-
-	// Main properties accessors.
-	qtractorPlugin *plugin() const
-		{ return m_pPlugin; }
-	unsigned long property() const
-		{ return m_iProperty; }
-
-	// Refreshner-loader method.
-	void refresh();
-
-protected slots:
-
-	// Property file selector.
-	void buttonClicked();
-
-	// Property value change slot.
-	void propertyChanged();
-
-protected:
-
-	// Text edit (string) event filter.
-	bool eventFilter(QObject *pObject, QEvent *pEvent);
-
-private:
-
-	// Instance variables.
-	qtractorPlugin *m_pPlugin;
-	unsigned long   m_iProperty;
-
-	// Some possible managed widgets.
-	QCheckBox       *m_pCheckBox;
-	qtractorSpinBox *m_pSpinBox;
-	QTextEdit       *m_pTextEdit;
-	QComboBox       *m_pComboBox;
-	QToolButton     *m_pToolButton;
+	// Non-automatable widgets.
+	QTextEdit   *m_pTextEdit;
+	QComboBox   *m_pComboBox;
+	QToolButton *m_pToolButton;
 };
 
 

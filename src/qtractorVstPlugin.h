@@ -1,7 +1,7 @@
 // qtractorVstPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,10 +42,6 @@
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #if defined(Q_WS_X11)
-#define CONFIG_VST_X11
-#endif
-#else
-#if defined(QT_X11EXTRAS_LIB)
 #define CONFIG_VST_X11
 #endif
 #endif
@@ -93,7 +89,7 @@ public:
 	int vst_dispatch(
 		long opcode, long index, long value, void *ptr, float opt) const;
 
-	// Instance cached-deferred accesors.
+	// Instance cached-deferred accessors.
 	const QString& aboutText();
 
 protected:
@@ -124,6 +120,9 @@ public:
 	// Destructor.
 	~qtractorVstPlugin();
 
+	// Forward decl.
+	class Param;
+
 	// Channel/intsance number accessors.
 	void setChannels(unsigned short iChannels);
 
@@ -135,7 +134,7 @@ public:
 	void process(float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
 	// Parameter update method.
-	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+	void updateParam(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);
@@ -190,14 +189,14 @@ public:
 	// Editor widget forward decls.
 	class EditorWidget;
 
-#ifdef CONFIG_VST_X11
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_VST_X11
 	// Global X11 event filter.
 	static bool x11EventFilter(void *pvEvent);
-#endif
+#endif	// CONFIG_VST_X11
 #endif
 
-	// Parameter update method.
+	// All parameters update method.
 	void updateParamValues(bool bUpdate);
 
 private:
@@ -221,19 +220,15 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPluginParam -- VST plugin control input port instance.
+// qtractorVstPlugin::Param -- VST plugin control input port instance.
 //
 
-class qtractorVstPluginParam : public qtractorPluginParam
+class qtractorVstPlugin::Param : public qtractorPlugin::Param
 {
 public:
 
 	// Constructors.
-	qtractorVstPluginParam(qtractorVstPlugin *pVstPlugin,
-		unsigned long iIndex);
-
-	// Destructor.
-	~qtractorVstPluginParam();
+	Param(qtractorVstPlugin *pVstPlugin, unsigned long iIndex);
 
 	// Port range hints predicate methods.
 	bool isBoundedBelow() const;

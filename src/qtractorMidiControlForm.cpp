@@ -1,7 +1,7 @@
 // qtractorMidiControlForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -242,7 +242,7 @@ void qtractorMidiControlForm::importSlot (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -466,7 +466,7 @@ void qtractorMidiControlForm::exportSlot (void)
 	else sPath = pOptions->midiControlFiles.last();
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	if (pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
 		pParentWidget = QWidget::window();
@@ -754,15 +754,16 @@ void qtractorMidiControlForm::stabilizeForm (void)
 		m_pControlTypeGroup->setControlType(
 			qtractorMidiControl::typeFromName(pItem->text(0)));
 		m_pControlTypeGroup->setControlParam( // remove non-digits tail...
-			pItem->text(2).remove(QRegExp("[\\D]+.*$")).toUShort());
+			pItem->text(2).remove(QRegularExpression("[\\D]+.*$")).toUShort());
 		m_ui.ChannelComboBox->setCurrentIndex(
 			m_ui.ChannelComboBox->findText(pItem->text(1)));
 		QString sText = pItem->text(3);
-		QRegExp rx("\\+[\\D]+([\\d]+)[\\D]+([\\d]+)");
-		if (rx.indexIn(sText) >= 0) {
+		QRegularExpression rx("\\+[\\D]+([\\d]+)[\\D]+([\\d]+)");
+		QRegularExpressionMatch match = rx.match(sText);
+		if (match.hasMatch()) {
 			m_ui.TrackParamCheckBox->setChecked(true);
-			m_ui.TrackOffsetSpinBox->setValue(rx.cap(1).toInt());
-			m_ui.TrackLimitSpinBox->setValue(rx.cap(2).toInt());
+			m_ui.TrackOffsetSpinBox->setValue(match.captured(1).toInt());
+			m_ui.TrackLimitSpinBox->setValue(match.captured(2).toInt());
 		} else {
 			m_ui.TrackParamCheckBox->setChecked(false);
 			m_ui.TrackOffsetSpinBox->setValue(sText.toInt());

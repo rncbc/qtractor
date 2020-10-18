@@ -1,7 +1,7 @@
 // qtractorAudioEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,8 +65,8 @@ public:
 		{ emit buffEvent(iBufferSize); }
 	void notifySessEvent(void *pvSessionArg)
 		{ emit sessEvent(pvSessionArg); }
-	void notifySyncEvent(unsigned long iPlayHead)
-		{ emit syncEvent(iPlayHead); }
+	void notifySyncEvent(unsigned long iPlayHead, bool bPlaying)
+		{ emit syncEvent(iPlayHead, bPlaying); }
 	void notifyPropEvent()
 		{ emit propEvent(); }
 
@@ -78,7 +78,7 @@ signals:
 	void portEvent();
 	void buffEvent(unsigned int iBufferSize);
 	void sessEvent(void *pvSessionArg);
-	void syncEvent(unsigned long iPlayHead);
+	void syncEvent(unsigned long iPlayHead, bool bPlaying);
 	void propEvent();
 };
 
@@ -106,7 +106,7 @@ public:
 	void notifyPortEvent();
 	void notifyBuffEvent(unsigned int iBufferSize);
 	void notifySessEvent(void *pvSessionArg);
-	void notifySyncEvent(unsigned long iPlayHead);
+	void notifySyncEvent(unsigned long iPlayHead, bool bPlaying);
 	void notifyPropEvent();
 
 	// JACK client descriptor accessor.
@@ -153,7 +153,8 @@ public:
 	// Audio-export method.
 	bool fileExport(const QString& sExportPath,
 		const QList<qtractorAudioBus *>& exportBuses,
-		unsigned long iExportStart = 0, unsigned long iExportEnd = 0);
+		unsigned long iExportStart, unsigned long iExportEnd,
+		int iExportFormat = -1);
 
 	// Special track-immediate methods.
 	void trackMute(qtractorTrack *pTrack, bool bMute);
@@ -218,6 +219,10 @@ public:
 	// JACK Transport mode accessors.
 	void setTransportMode(qtractorBus::BusMode transportMode);
 	qtractorBus::BusMode transportMode() const;
+
+	// JACK Transport latency accessors.
+	void setTransportLatency(unsigned int iTransportLatency);
+	unsigned int transportLatency() const;
 
 	// JACK Timebase mode accessors.
 	void setTimebase(bool bTimebase);
@@ -326,6 +331,9 @@ private:
 
 	// JACK Transport mode.
 	qtractorBus::BusMode m_transportMode;
+
+	// JACK Transport latency.
+	unsigned int         m_iTransportLatency;
 
 	// JACK Timebase mode and control.
 	bool                 m_bTimebase;

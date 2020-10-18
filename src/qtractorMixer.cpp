@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -91,13 +91,9 @@ qtractorMonitorButton::qtractorMonitorButton (
 // Common initializer.
 void qtractorMonitorButton::initMonitorButton (void)
 {
-	QIcon icons;
-	icons.addPixmap(QPixmap(":/images/itemLedOff.png"),
-		QIcon::Normal, QIcon::Off);
-	icons.addPixmap(QPixmap(":/images/itemLedOn.png"),
-		QIcon::Normal, QIcon::On);
-	QPushButton::setIcon(icons);
+	QPushButton::setIcon(QPixmap(":/images/itemLedOff.png"));
 	QPushButton::setText(' ' + tr("monitor"));
+	QPushButton::setCheckable(true);
 
 	QObject::connect(this, SIGNAL(toggled(bool)), SLOT(toggledSlot(bool)));
 }
@@ -132,7 +128,13 @@ void qtractorMonitorButton::updateValue ( float fValue )
 {
 	// Avoid self-triggering...
 	const bool bBlockSignals = QPushButton::blockSignals(true);
-	QPushButton::setChecked(fValue > 0.0f);
+	if (fValue > 0.0f) {
+		QPushButton::setIcon(QPixmap(":/images/itemLedOn.png"));
+		QPushButton::setChecked(true);
+	} else {
+		QPushButton::setIcon(QPixmap(":/images/itemLedOff.png"));
+		QPushButton::setChecked(false);
+	}
 	QPushButton::blockSignals(bBlockSignals);
 }
 
@@ -292,7 +294,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	QFrame::setFont(font2);
 
 	m_pLayout = new QVBoxLayout(this);
-	m_pLayout->setMargin(4);
+	m_pLayout->setContentsMargins(4, 4, 4, 4);
 	m_pLayout->setSpacing(4);
 
 	m_pLabel = new IconLabel(/*this*/);
@@ -313,7 +315,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	const QSizePolicy buttonPolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
 	m_pButtonLayout = new QHBoxLayout(/*this*/);
-	m_pButtonLayout->setMargin(0);
+	m_pButtonLayout->setContentsMargins(0, 0, 0, 0);
 	m_pButtonLayout->setSpacing(2);
 
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
@@ -401,7 +403,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 		// Have we an audio monitor/meter?...
 		if (pAudioMonitor) {
 			const int iAudioChannels = pAudioMonitor->channels();
-			iFixedWidth += 12 * (iAudioChannels < 2	? 2 : iAudioChannels);
+			iFixedWidth += (iAudioChannels < 3 ? 24 : 8 * iAudioChannels);
 			m_pMixerMeter = new qtractorAudioMixerMeter(pAudioMonitor, this);
 		}
 		m_pPluginListView->setEnabled(true);
@@ -535,7 +537,7 @@ void qtractorMixerStrip::setMonitor ( qtractorMonitor *pMonitor )
 			const int iOldWidth = QFrame::width();
 			const int iAudioChannels = pAudioMonitor->channels();
 			const int iFixedWidth = 54
-				+ 12 * (iAudioChannels < 2 ? 2 : iAudioChannels);
+				+ (iAudioChannels < 3 ? 24 : 8 * iAudioChannels);
 			if (iFixedWidth != iOldWidth) {
 				QFrame::setFixedWidth(iFixedWidth);
 				m_pRack->updateWorkspace();
@@ -948,7 +950,7 @@ qtractorMixerRackWidget::qtractorMixerRackWidget (
 	qtractorMixerRack *pRack ) : QScrollArea(pRack), m_pRack(pRack)
 {
 	m_pWorkspaceLayout = new QGridLayout();
-	m_pWorkspaceLayout->setMargin(0);
+	m_pWorkspaceLayout->setContentsMargins(0, 0, 0, 0);
 	m_pWorkspaceLayout->setSpacing(0);
 
 	m_pWorkspaceWidget = new QWidget(this);
@@ -1059,8 +1061,6 @@ void qtractorMixerRackWidget::updateWorkspace (void)
 	const int h = pViewport->height();
 	const int w = pViewport->width();
 
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	const bool bAutoGridLayout = (pOptions && pOptions->bMixerAutoGridLayout);
 	const int nitems = m_pWorkspaceLayout->count();
 	if (nitems > 0) {
 		const int nrows = h / sizeHint().height();
@@ -1074,13 +1074,12 @@ void qtractorMixerRackWidget::updateWorkspace (void)
 		for (int i = 0; i < nitems; ++i) {
 			QLayoutItem *item = items[i];
 			m_pWorkspaceLayout->addItem(item, row, col++);
-			if (bAutoGridLayout) {
-				const int wi = item->sizeHint().width(); wth += wi;
-				if (wth > (w - wi) && row < nrows && col >= ncols) {
-					wth = 0;
-					col = 0;
-					++row;
-				}
+			// Auto-grid layout...
+			const int wi = item->sizeHint().width(); wth += wi;
+			if (wth > (w - wi) && row < nrows && col >= ncols) {
+				wth = 0;
+				col = 0;
+				++row;
 			}
 		}
 	}
@@ -1107,7 +1106,7 @@ public:
 
 		QHBoxLayout *pHBoxLayout = new QHBoxLayout();
 		pHBoxLayout->setSpacing(4);
-		pHBoxLayout->setMargin(2);
+		pHBoxLayout->setContentsMargins(2, 2, 2, 2);
 	#if 0
 		QFrame *pLeftFrame = new QFrame();
 		pLeftFrame->setFrameStyle(QFrame::HLine | QFrame::Sunken);
@@ -1146,7 +1145,7 @@ qtractorMixerRack::qtractorMixerRack (
 		QDockWidget::DockWidgetMovable  |
 		QDockWidget::DockWidgetFloatable); // FIXME: is floatable necessary?
 
-	QDockWidget::setAllowedAreas(Qt::AllDockWidgetAreas);
+//	QDockWidget::setAllowedAreas(Qt::AllDockWidgetAreas);
 }
 
 
@@ -1171,7 +1170,9 @@ void qtractorMixerRack::addStrip ( qtractorMixerStrip *pStrip )
 	// Add this to the workspace layout...
 	m_pRackWidget->addStrip(pStrip);
 
-	m_strips.insert(pStrip->meter()->monitor(), pStrip);
+	qtractorMonitor *pMonitor = pStrip->monitor();
+	if (pMonitor)
+		m_strips.insert(pMonitor, pStrip);
 
 	pStrip->show();
 }
@@ -1507,33 +1508,6 @@ void qtractorMixer::updateBusStrip ( qtractorMixerRack *pRack,
 	}
 
 	pBus->mapControllers(busMode);
-#if 0
-	qtractorAudioBus *pAudioBus;
-	qtractorMidiBus  *pMidiBus;
-
-	switch (pBus->busType()) {
-	case qtractorTrack::Audio:
-		pAudioBus = static_cast<qtractorAudioBus *> (pBus);
-		if (pAudioBus) {
-			pAudioBus->applyCurveFile(busMode,
-				(busMode == qtractorBus::Input
-					? pAudioBus->curveFile_in()
-					: pAudioBus->curveFile_out()));
-		}
-		break;
-	case qtractorTrack::Midi:
-		pMidiBus = static_cast<qtractorMidiBus *> (pBus);
-		if (pMidiBus) {
-			pMidiBus->applyCurveFile(busMode,
-				(busMode == qtractorBus::Input
-					? pMidiBus->curveFile_in()
-					: pMidiBus->curveFile_out()));
-		}
-		break;
-	default:
-		break;
-	}
-#endif
 }
 
 

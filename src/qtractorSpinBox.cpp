@@ -1,7 +1,7 @@
 // qtractorSpinBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -415,6 +415,9 @@ void qtractorTimeSpinBox::contextMenuEvent (
 	if (m_pTimeScale == nullptr)
 		return;
 
+	const bool bBlockSignals
+		= QAbstractSpinBox::blockSignals(true);
+
 	QMenu menu(this);
 	QAction *pAction;
 
@@ -434,6 +437,9 @@ void qtractorTimeSpinBox::contextMenuEvent (
 	pAction->setData(int(qtractorTimeScale::BBT));
 
 	pAction = menu.exec(pContextMenuEvent->globalPos());
+
+	QAbstractSpinBox::blockSignals(bBlockSignals);
+
 	if (pAction == nullptr)
 		return;
 
@@ -606,7 +612,7 @@ bool qtractorTempoSpinBox::updateValue ( float fTempo,
 	if (iBeatDivisor > 8)
 		iBeatDivisor = 8;
 
-	if (::fabsf(m_fTempo - fTempo) > 0.05f) {
+	if (qAbs(m_fTempo - fTempo) > 0.05f) {
 		// Fixup: round to one single decimal place.
 		m_fTempo = 0.1f * ::roundf(10.0f * fTempo);
 		++m_iValueChanged;
@@ -658,8 +664,12 @@ QValidator::State qtractorTempoSpinBox::validate ( QString& sText, int& iPos ) c
 	if (iPos == 0)
 		return QValidator::Acceptable;
 
-	const QChar& ch = sText[iPos - 1];
+	const QChar& ch = sText.at(iPos - 1);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	const QChar& decp = QLocale().decimalPoint().at(0);
+#else
 	const QChar& decp = QLocale().decimalPoint();
+#endif
 	if (ch == decp || ch == '/' || ch == ' ' || ch.isDigit())
 		return QValidator::Acceptable;
 	else
@@ -688,7 +698,11 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 	const int iCursorPos = pLineEdit->cursorPosition();
 	const QString& sText = pLineEdit->text();
 	if (iCursorPos < sText.section(' ', 0, 0).length() + 1) {
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+		const QChar& decp = QLocale().decimalPoint().at(0);
+	#else
 		const QChar& decp = QLocale().decimalPoint();
+	#endif
 		if (iCursorPos > sText.section(decp, 0, 0).length())
 			setTempo(tempo() + 0.1f * float(iSteps));
 		else

@@ -1,7 +1,7 @@
 // qtractorFileSystem.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -149,7 +149,7 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	// Setup UI layout...
 	QWidget *pGridWidget = new QWidget();
 	QGridLayout *pGridLayout = new QGridLayout();
-	pGridLayout->setMargin(0);
+	pGridLayout->setContentsMargins(0, 0, 0, 0);
 	pGridLayout->setSpacing(2);
 	pGridLayout->addWidget(m_pHomeToolButton, 0, 0);
 	pGridLayout->addWidget(m_pCdUpToolButton, 0, 1);
@@ -161,7 +161,7 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 
 	// Prepare the dockable window stuff.
 	QDockWidget::setWidget(pGridWidget);
-	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
+//	QDockWidget::setFeatures(QDockWidget::AllDockWidgetFeatures);
 	QDockWidget::setAllowedAreas(
 		Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	// Some specialties to this kind of dock window...
@@ -201,7 +201,11 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 		SLOT(playSlot(bool)));
 
 	QObject::connect(m_pRootPathComboBox,
+	#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+		SIGNAL(textActivated(const QString&)),
+	#else
 		SIGNAL(activated(const QString&)),
+	#endif
 		SLOT(rootPathActivated(const QString&)));
 	QObject::connect(m_pFileSystemTreeView,
 		SIGNAL(doubleClicked(const QModelIndex&)),

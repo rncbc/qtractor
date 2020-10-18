@@ -1,7 +1,7 @@
 // qtractorCurveCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,6 +26,8 @@
 
 #include "qtractorMainForm.h"
 #include "qtractorTracks.h"
+
+#include "qtractorPlugin.h"
 
 
 //----------------------------------------------------------------------
@@ -62,7 +64,11 @@ bool qtractorCurveBaseCommand::execute ( bool /*bRedo*/ )
 		qtractorTracks *pTracks = pMainForm->tracks();
 		if (pTracks) {
 			pTracks->clearSelect();
-			pTracks->updateTrackList(pTracks->currentTrack());
+			qtractorTrack *pTrack = pTracks->currentTrack();
+			if (pTrack) {
+				pTracks->updateTrackList(pTrack);
+				pTrack->refreshPluginForms();
+			}
 		}
 	}
 

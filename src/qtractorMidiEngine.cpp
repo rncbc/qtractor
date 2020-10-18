@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -54,7 +54,7 @@
 
 #include <QSocketNotifier>
 
-#include <QTime>
+#include <QElapsedTimer>
 
 #include <math.h>
 
@@ -1692,15 +1692,16 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		// Trap MIDI Clocks...
 		if ((m_clockMode & qtractorBus::Input)
 			&& m_pIControlBus && m_pIControlBus->alsaPort() == iAlsaPort) {
-			static QTime s_clockTime;
+			static QElapsedTimer s_clockTimer;
 			if (++m_iClockCount == 1)
-				s_clockTime.start();
+				s_clockTimer.start();
 			else
 			if (m_iClockCount > 72) { // 3 beat averaging...
 				m_iClockCount = 0;
-				const float fTempo = int(180000.0f / float(s_clockTime.elapsed()));
-				if (::fabsf(fTempo - m_fClockTempo) / m_fClockTempo > 0.01f) {
-					m_fClockTempo = fTempo;
+				const float fClockTempo
+					= ::rintf(180000.0f / float(s_clockTimer.elapsed()));
+				if (qAbs(fClockTempo - m_fClockTempo) / m_fClockTempo > 0.01f) {
+					m_fClockTempo = fClockTempo;
 					// Post the stuffed event...
 					m_proxy.notifyClkEvent(m_fClockTempo);
 				}
@@ -3482,7 +3483,7 @@ bool qtractorMidiEngine::saveElement (
 // MIDI-export method.
 bool qtractorMidiEngine::fileExport (
 	const QString& sExportPath, const QList<qtractorMidiBus *>& exportBuses,
-	unsigned long iExportStart, unsigned long iExportEnd )
+	unsigned long iExportStart, unsigned long iExportEnd, int iExportFormat )
 {
 	// No simultaneous or foul exports...
 	if (isPlaying())
@@ -3508,7 +3509,9 @@ bool qtractorMidiEngine::fileExport (
 		= pSession->tickFromFrame(iExportEnd);
 
 	const unsigned short iFormat
-		= qtractorMidiClip::defaultFormat();
+		= (iExportFormat < 0
+		? qtractorMidiClip::defaultFormat()
+		: iExportFormat);
 
 	unsigned short iSeq;
 	unsigned short iSeqs = 0;
@@ -4257,7 +4260,7 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 	if (pAlsaSeq == nullptr)
 		return;
 
-#ifdef CONFIG_DEBUG
+#ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiBus[%p]::sendEvent(0x%02x, %u, %u, %u)",
 		this, int(etype), iChannel, iParam, iValue);
 #endif

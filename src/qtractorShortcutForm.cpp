@@ -1,7 +1,7 @@
 // qtractorShortcutForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -102,7 +102,7 @@ qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 
 	QHBoxLayout *pLayout = new QHBoxLayout();
 	pLayout->setSpacing(0);
-	pLayout->setMargin(0);
+	pLayout->setContentsMargins(0, 0, 0, 0);
 	pLayout->addWidget(m_pItemEdit);
 	pLayout->addWidget(m_pToolButton);
 	QWidget::setLayout(pLayout);

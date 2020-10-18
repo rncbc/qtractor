@@ -1,7 +1,7 @@
 // qtractorDocument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,6 +34,13 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <QDir>
+
+#include <QRegularExpression>
+
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
 
 
 // Local prototypes.
@@ -409,9 +416,9 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 					ofile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 					// Ready, set, go...
 					const QFileInfo alias(sAlias);
-					const QRegExp rxComment("//.*$");
-					const QRegExp rxDefaultPath("default_path[\\s]*=(.+)$");
-					const QRegExp rxSample("sample[\\s]*=(.+\\.[\\w]+)");
+					const QRegularExpression rxComment("//.*$");
+					const QRegularExpression rxDefaultPath("default_path[\\s]*=(.+)$");
+					const QRegularExpression rxSample("sample[\\s]*=(.+\\.[\\w]+)");
 					// Care for default path...
 					QDir dir(QFileInfo(ifile).absoluteDir());
 					// Prepare the text streams...
@@ -425,28 +432,30 @@ QString qtractorDocument::addFile ( const QString& sFilename )
 						sTemp.remove(rxComment);
 						// While not empty...
 						while (!sTemp.isEmpty()) {
-							if (rxDefaultPath.indexIn(sTemp) >= 0) {
-								const QFileInfo fi(dir, rxDefaultPath.cap(1));
+							QRegularExpressionMatch match = rxDefaultPath.match(sTemp);
+							if (match.hasMatch()) {
+								const QFileInfo fi(dir, match.captured(1));
 								const QString& sDefaultPath
 									= fi.absoluteFilePath();
 								dir.setPath(sDefaultPath);
 								sTemp.remove(rxDefaultPath);
 								sLine.remove(rxDefaultPath);
 								sTemp = sTemp.simplified();
+							} else {
+								match = rxSample.match(sTemp);
+								if (match.hasMatch()) {
+									const QFileInfo fi(dir, match.captured(1));
+									const QString& sSamplePath
+										= fi.absoluteFilePath();
+									const QString& sSampleAlias
+										= m_pZipFile->alias(sSamplePath, alias.path());
+									m_pZipFile->addFile(sSamplePath, sSampleAlias);
+									sTemp.remove(rxSample);
+									sLine.replace(rxSample, "sample=" + fi.fileName());
+									sTemp = sTemp.simplified();
+								}
+								else sTemp.clear();
 							}
-							else
-							if (rxSample.indexIn(sTemp) >= 0) {
-								const QFileInfo fi(dir, rxSample.cap(1));
-								const QString& sSamplePath
-									= fi.absoluteFilePath();
-								const QString& sSampleAlias
-									= m_pZipFile->alias(sSamplePath, alias.path());
-								m_pZipFile->addFile(sSamplePath, sSampleAlias);
-								sTemp.remove(rxSample);
-								sLine.replace(rxSample, "sample=" + fi.fileName());
-								sTemp = sTemp.simplified();
-							}
-							else sTemp.clear();
 						}
 						// Write possibly altered line...
 						ots << sLine << endl;

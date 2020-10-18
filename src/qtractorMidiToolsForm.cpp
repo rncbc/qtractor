@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,9 +30,10 @@
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
 
+#include <QPainter>
+#include <QPainterPath>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QPainter>
 
 #include <time.h>
 #include <math.h>
@@ -47,7 +48,7 @@ class TimeshiftCurve : public QWidget
 public:
 
 	// Constructor.
-	TimeshiftCurve(QWidget *pParent = 0) : QWidget(pParent), m_p(0.0f) {}
+	TimeshiftCurve(QWidget *pParent = nullptr) : QWidget(pParent), m_p(0.0f) {}
 
 	// Accessors.
 	void setTimeshift(float p) { m_p = p; update(); }
@@ -116,9 +117,8 @@ private:
 // qtractorMidiToolsForm -- UI wrapper form.
 
 // Constructor.
-qtractorMidiToolsForm::qtractorMidiToolsForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -135,12 +135,13 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 	m_pTimeshiftCurve = new TimeshiftCurve();
 
 	QVBoxLayout *pFrameLayout = new QVBoxLayout();
-	pFrameLayout->setMargin(1);
+	pFrameLayout->setContentsMargins(1, 1, 1, 1);
 	pFrameLayout->addWidget(m_pTimeshiftCurve);
 	m_ui.TimeshiftFrame->setLayout(pFrameLayout);
 
 	m_ui.PresetNameComboBox->setValidator(
-		new QRegExpValidator(QRegExp("[\\w-]+"), m_ui.PresetNameComboBox));
+		new QRegularExpressionValidator(
+			QRegularExpression("[\\w-]+"), m_ui.PresetNameComboBox));
 	m_ui.PresetNameComboBox->setInsertPolicy(QComboBox::NoInsert);
 
 	if (g_sDefPreset.isEmpty())
@@ -221,8 +222,8 @@ qtractorMidiToolsForm::qtractorMidiToolsForm (
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(presetChanged(const QString&)));
 	QObject::connect(m_ui.PresetNameComboBox,
-		SIGNAL(activated(const QString &)),
-		SLOT(presetActivated(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(presetActivated(int)));
 	QObject::connect(m_ui.PresetSaveToolButton,
 		SIGNAL(clicked()),
 		SLOT(presetSave()));
@@ -708,11 +709,11 @@ void qtractorMidiToolsForm::presetChanged ( const QString& sPreset )
 }
 
 
-void qtractorMidiToolsForm::presetActivated ( const QString& sPreset )
+void qtractorMidiToolsForm::presetActivated ( int iPreset )
 {
 	++m_iUpdate;
 
-	loadPreset(sPreset);
+	loadPreset(m_ui.PresetNameComboBox->itemText(iPreset));
 
 	m_iDirtyCount = 0;
 	--m_iUpdate;

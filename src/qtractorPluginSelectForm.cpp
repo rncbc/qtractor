@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -29,17 +29,17 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QPainter>
-#include <QRegExp>
 #include <QList>
+
+#include <QRegularExpression>
 
 
 //----------------------------------------------------------------------------
 // qtractorPluginSelectForm -- UI wrapper form.
 
 // Constructor.
-qtractorPluginSelectForm::qtractorPluginSelectForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorPluginSelectForm::qtractorPluginSelectForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -63,6 +63,10 @@ qtractorPluginSelectForm::qtractorPluginSelectForm (
 #ifdef CONFIG_VST
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
+#endif
+#ifdef CONFIG_VST3
+	m_ui.PluginTypeComboBox->addItem(
+		qtractorPluginType::textFromHint(qtractorPluginType::Vst3));
 #endif
 #ifdef CONFIG_LV2
 	m_ui.PluginTypeComboBox->addItem(
@@ -305,7 +309,9 @@ void qtractorPluginSelectForm::refresh (void)
 	const bool bMidi = m_pPluginList->isMidi();
 
 	QString sSearch = m_ui.PluginSearchComboBox->currentText().simplified();
-	const QRegExp rx(sSearch.replace(QRegExp("[\\s]+"), ".*"), Qt::CaseInsensitive);
+	const QRegularExpression rx(sSearch.replace(
+		QRegularExpression("[\\s]+"), ".*"),
+		QRegularExpression::CaseInsensitiveOption);
 
 	QStringList cols;
 	QList<QTreeWidgetItem *> items;
@@ -314,9 +320,9 @@ void qtractorPluginSelectForm::refresh (void)
 		qtractorPluginType *pType = type_iter.next();
 		const QString& sFilename = pType->filename();
 		const QString& sName = pType->name();
-		if (rx.isEmpty()
-			|| rx.indexIn(sName) >= 0
-			|| rx.indexIn(sFilename) >= 0) {
+		if (rx.pattern().isEmpty()
+			|| rx.match(sName).hasMatch()
+			|| rx.match(sFilename).hasMatch()) {
 			// Try primary instantiation...
 			const int iAudioIns    = pType->audioIns();
 			const int iAudioOuts   = pType->audioOuts();
@@ -371,7 +377,7 @@ void qtractorPluginSelectForm::refresh (void)
 		pHeader->sortIndicatorSection(),
 		pHeader->sortIndicatorOrder());
 
-	m_ui.PluginResetToolButton->setEnabled(!rx.isEmpty());
+	m_ui.PluginResetToolButton->setEnabled(!rx.pattern().isEmpty());
 
 	stabilize();
 }

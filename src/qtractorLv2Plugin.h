@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -69,8 +69,28 @@ class qtractorLv2Worker;
 #include <QWindow>
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
+// LV2 UI Request-value support (FAKE).
+#ifdef  CONFIG_LV2_UI_REQ_VALUE_FAKE
+#undef  CONFIG_LV2_UI_REQ_VALUE
+#define CONFIG_LV2_UI_REQ_VALUE 1
+#ifndef LV2_UI__requestValue
+#define LV2_UI__requestValue LV2_UI_PREFIX "requestValue"
+typedef enum {
+	LV2UI_REQUEST_VALUE_SUCCESS,
+	LV2UI_REQUEST_VALUE_BUSY,
+	LV2UI_REQUEST_VALUE_ERR_UNKNOWN,
+	LV2UI_REQUEST_VALUE_ERR_UNSUPPORTED
+} LV2UI_Request_Value_Status;
+typedef struct _LV2UI_Request_Value {
+	LV2UI_Feature_Handle handle;
+	LV2UI_Request_Value_Status (*request)(
+		LV2UI_Feature_Handle handle,
+		LV2_URID key, LV2_URID type,
+		const LV2_Feature *const *features);
+} LV2UI_Request_Value;
+#endif	// !LV2_UI__requestValue
+#endif	// CONFIG_LV2_UI_REQ_VALUE_FAKE
 #endif	// CONFIG_LV2_UI
-
 
 #ifdef CONFIG_LV2_STATE
 // LV2 State support.
@@ -81,6 +101,12 @@ class qtractorLv2Worker;
 // LV2 Programs support.
 #include "lv2_programs.h"
 #endif
+
+#ifdef CONFIG_LV2_MIDNAM
+// LV2 MIDNAM support.
+#include "lv2_midnam.h"
+#endif
+
 
 #ifdef CONFIG_LV2_PRESETS
 // LV2 Presets support.
@@ -156,6 +182,10 @@ public:
 	unsigned short atomIns()    const { return m_iAtomIns;    }
 	unsigned short atomOuts()   const { return m_iAtomOuts;   }
 #endif
+#ifdef CONFIG_LV2_CVPORT
+	unsigned short cvportIns()  const { return m_iCVPortIns;  }
+	unsigned short cvportOuts() const { return m_iCVPortOuts; }
+#endif
 
 #ifdef CONFIG_LV2_UI_SHOW
 	// Check for LV2 UI Show interface.
@@ -181,6 +211,10 @@ protected:
 	unsigned short m_iAtomIns;
 	unsigned short m_iAtomOuts;
 #endif
+#ifdef CONFIG_LV2_CVPORT
+	unsigned short m_iCVPortIns;
+	unsigned short m_iCVPortOuts;
+#endif
 };
 
 
@@ -198,6 +232,9 @@ public:
 
 	// Destructor.
 	~qtractorLv2Plugin();
+
+	// Forward decl.
+	class Param;
 
 	// Channel/intsance number accessors.
 	void setChannels(unsigned short iChannels);
@@ -241,7 +278,7 @@ public:
 	void loadEditorPos();
 
 	// Parameter update method.
-	void updateParam(qtractorPluginParam *pParam, float fValue, bool bUpdate);
+	void updateParam(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
 	// Idle editor (static).
 	static void idleEditorAll();
@@ -254,8 +291,14 @@ public:
 	uint32_t lv2_ui_port_index(const char *port_symbol);
 
 #ifdef CONFIG_LV2_UI_TOUCH
-	// LV2 UI touch control (ui->host).
+	// LV2 UI Touch interface (ui->host).
 	void lv2_ui_touch(uint32_t port_index, bool grabbed);
+#endif
+
+#ifdef CONFIG_LV2_UI_REQ_VALUE
+	// LV2 UI Request-value interface (ui->host).
+	LV2UI_Request_Value_Status lv2_ui_request_value(
+		LV2_URID key, LV2_URID type, const LV2_Feature *const *features);
 #endif
 
 	// LV2 UI resize control (host->ui).
@@ -313,6 +356,9 @@ public:
 	static LV2_URID    lv2_urid_map(const char *uri);
 	static const char *lv2_urid_unmap(LV2_URID id);
 
+	// Provisional program/patch accessor.
+	bool getProgram(int iIndex, Program& program) const;
+
 #ifdef CONFIG_LV2_PROGRAMS
 
 	// LV2 Programs extension data descriptor accessor.
@@ -321,11 +367,18 @@ public:
 	// Bank/program selector override.
 	void selectProgram(int iBank, int iProg);
 
-	// Provisional program/patch accessor.
-	bool getProgram(int iIndex, Program& program) const;
-
 	// Program/patch notification.
 	void lv2_program_changed(int iIndex);
+
+#endif
+
+#ifdef CONFIG_LV2_MIDNAM
+
+	// LV2 MIDNAM extension data descriptor accessor.
+	const LV2_Midnam_Interface *lv2_midnam_descriptor(unsigned short iInstance) const;
+
+	// LV2 MIDNAME update notification.
+	void lv2_midnam_update();
 
 #endif
 
@@ -352,61 +405,6 @@ public:
 	void lv2_property_changed(LV2_URID key, const LV2_Atom *value);
 	void lv2_property_update(LV2_URID key);
 
-	// LV2 Patch/property registry item.
-	//
-	class Property
-	{
-	public:
-
-		Property(const LilvNode *property);
-
-		LV2_URID key() const
-			{ return m_key; }
-		const QString& uri() const
-			{ return m_uri; }
-		const QString& name() const
-			{ return m_name; }
-		LV2_URID type() const
-			{ return m_type; }
-
-		bool isToggled() const;
-		bool isInteger() const;
-		bool isString()  const;
-		bool isPath()    const;
-
-		float minValue() const
-			{ return m_min; }
-		float maxValue() const
-			{ return m_max; }
-		float defValue() const
-			{ return m_def; }
-
-		void setValue(const QVariant& value)
-			{ m_value = value; }
-		const QVariant& value() const
-			{ return m_value; }
-
-	private:
-
-		LV2_URID m_key;
-		QString  m_uri;
-		QString  m_name;
-		LV2_URID m_type;
-
-		float    m_min;
-		float    m_max;
-		float    m_def;
-
-		QVariant m_value;
-	};
-
-	// LV2 Patch/properties registry.
-	typedef QMap<QString, Property *> Properties;
-
-	// LV2 Patch/properties registry accessor.
-	const Properties& lv2_properties() const
-		{ return m_lv2_properties; }
-
 #endif	// CONFIG_LV2_PATCH
 
 #ifdef CONFIG_LV2_TIME
@@ -419,8 +417,12 @@ public:
 #endif
 #endif
 
-#ifdef CONFIG_LV2_UI
 protected:
+
+	//	Update instrument/programs cache.
+	bool updateInstruments();
+
+#ifdef CONFIG_LV2_UI
 
 	// Alternate UI instantiation stuff...
 	bool lv2_ui_instantiate(
@@ -437,6 +439,8 @@ protected:
 #endif	// CONFIG_LV2_UI
 
 #ifdef CONFIG_LV2_PATCH
+	// LV2 Patch/property decl.
+	class Property;
 	// LV2 Patch/properties inventory.
 	void lv2_patch_properties(const char *pszPatch);
 #endif
@@ -479,6 +483,12 @@ private:
 
 #endif
 
+#ifdef CONFIG_LV2_CVPORT
+	// List of LV2 CVPort indexes.
+	unsigned long *m_piCVPortIns;
+	unsigned long *m_piCVPortOuts;
+#endif
+
 	// Local copy of features array.
 	LV2_Feature  **m_lv2_features;
 
@@ -507,7 +517,7 @@ private:
 	LV2_Feature  **m_lv2_ui_features;
 
 	// Alternate UI instantiation stuff.
-	QLibrary      *m_lv2_ui_library;
+	void          *m_lv2_ui_module;
 
 	const LV2UI_Descriptor *m_lv2_ui_descriptor;
 
@@ -521,6 +531,7 @@ private:
 #ifdef CONFIG_LIBSUIL
 	SuilHost      *m_suil_host;
 	SuilInstance  *m_suil_instance;
+	bool           m_suil_support;
 #endif
 
 #ifdef CONFIG_LV2_ATOM
@@ -558,9 +569,17 @@ private:
 	QHash<unsigned long, float> m_ui_params;
 
 #ifdef CONFIG_LV2_UI_TOUCH
+	// LV2 UI Touch interface (ui->host).
 	LV2UI_Touch m_lv2_ui_touch;
 	LV2_Feature m_lv2_ui_touch_feature;
 	QHash<unsigned long, bool> m_ui_params_touch;
+#endif
+
+#ifdef CONFIG_LV2_UI_REQ_VALUE
+	// LV2 UI Request-value interface (ui->host).
+	LV2UI_Request_Value m_lv2_ui_req_value;
+	LV2_Feature m_lv2_ui_req_value_feature;
+	volatile bool m_lv2_ui_req_value_busy;
 #endif
 
 #ifdef CONFIG_LV2_UI_IDLE
@@ -602,9 +621,18 @@ private:
 	QString                    m_lv2_state_save_dir;
 #endif
 
+	// Programs cache.
+	QList<Program *> m_programs;
+
 #ifdef CONFIG_LV2_PROGRAMS
 	LV2_Feature                m_lv2_programs_host_feature;
 	LV2_Programs_Host          m_lv2_programs_host;
+#endif
+
+#ifdef CONFIG_LV2_MIDNAM
+	LV2_Feature                m_lv2_midnam_feature;
+	LV2_Midnam                 m_lv2_midnam;
+	unsigned int               m_lv2_midnam_update;
 #endif
 
 #ifdef CONFIG_LV2_PRESETS
@@ -627,8 +655,6 @@ private:
 	// LV2 Patch/properties support.
 	unsigned long m_lv2_patch_port_in;
 	unsigned int  m_lv2_patch_changed;
-	// LV2 Patch/properties registry.
-	Properties m_lv2_properties;
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS
@@ -642,10 +668,16 @@ private:
 #endif
 #ifdef CONFIG_LV2_UI
 	LV2_Feature        m_lv2_ui_options_feature;
-	LV2_Options_Option m_lv2_ui_options[4];
+	LV2_Options_Option m_lv2_ui_options[5];
 	float              m_fUpdateRate;
+	float              m_fSampleRate;
 	double             m_dSampleRate;
 #endif
+#endif
+
+#ifdef CONFIG_LV2_PORT_EVENT
+	// Changed control input port-events hash-queue.
+	QHash<unsigned long, float> m_port_events;
 #endif
 
 	// Plugin current latency output control port;
@@ -654,16 +686,15 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorLv2PluginParam -- LV2 plugin control input port instance.
+// qtractorLv2Plugin::Param -- LV2 plugin control input port instance.
 //
 
-class qtractorLv2PluginParam : public qtractorPluginParam
+class qtractorLv2Plugin::Param : public qtractorPlugin::Param
 {
 public:
 
-	// Constructors.
-	qtractorLv2PluginParam(qtractorLv2Plugin *pLv2Plugin,
-		unsigned long iIndex);
+	// Constructor.
+	Param(qtractorLv2Plugin *pLv2Plugin, unsigned long iIndex);
 
 	// Port range hints predicate methods.
 	bool isBoundedBelow() const;
@@ -694,6 +725,51 @@ private:
 
 	QHash<QString, QString> m_display;
 };
+
+
+#ifdef CONFIG_LV2_PATCH
+
+//----------------------------------------------------------------------------
+// qtractorLv2Plugin::Property -- LV2 Patch/property registry item.
+//
+
+class qtractorLv2Plugin::Property : public qtractorPlugin::Property
+{
+public:
+
+	// Constructor.
+	Property(qtractorLv2Plugin *pLv2Plugin,
+		unsigned long iProperty, const LilvNode *property);
+
+	// Property accessors.
+	LV2_URID type() const { return m_type; }
+
+	// Property predicates.
+	bool isToggled() const;
+	bool isInteger() const;
+	bool isString()  const;
+	bool isPath()    const;
+
+protected:
+
+	// Fake property predicates.
+	bool isBoundedBelow() const;
+	bool isBoundedAbove() const;
+	bool isDefaultValue() const;
+	bool isLogarithmic()  const;
+	bool isSampleRate()   const;
+	bool isDisplay()      const;
+
+	// Virtual observer updater.
+	void update(float fValue, bool bUpdate);
+
+private:
+
+	// Instance variables.
+	LV2_URID m_type;
+};
+
+#endif	// CONFIG_LV2_PATCH
 
 
 #endif  // __qtractorLv2Plugin_h

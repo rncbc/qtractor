@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -122,9 +122,8 @@ private:
 // qtractorTrackForm -- UI wrapper form.
 
 // Constructor.
-qtractorTrackForm::qtractorTrackForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+qtractorTrackForm::qtractorTrackForm ( QWidget *pParent )
+	: QDialog(pParent)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -219,11 +218,11 @@ qtractorTrackForm::qtractorTrackForm (
 		SIGNAL(toggled(bool)),
 		SLOT(trackTypeChanged()));
 	QObject::connect(m_ui.InputBusNameComboBox,
-		SIGNAL(activated(const QString &)),
-		SLOT(inputBusNameChanged(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(inputBusNameChanged(int)));
 	QObject::connect(m_ui.OutputBusNameComboBox,
-		SIGNAL(activated(const QString &)),
-		SLOT(outputBusNameChanged(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(outputBusNameChanged(int)));
 	QObject::connect(m_ui.BusNameToolButton,
 		SIGNAL(clicked()),
 		SLOT(busNameClicked()));
@@ -234,8 +233,8 @@ qtractorTrackForm::qtractorTrackForm (
 		SIGNAL(valueChanged(int)),
 		SLOT(channelChanged(int)));
 	QObject::connect(m_ui.InstrumentComboBox,
-		SIGNAL(activated(const QString &)),
-		SLOT(instrumentChanged(const QString&)));
+		SIGNAL(activated(int)),
+		SLOT(instrumentChanged(int)));
 	QObject::connect(m_ui.BankSelMethodComboBox,
 		SIGNAL(activated(int)),
 		SLOT(bankSelMethodChanged(int)));
@@ -355,13 +354,24 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 		m_ui.OutputBusNameComboBox->setCurrentIndex(
 			m_ui.OutputBusNameComboBox->findText(m_props.outputBusName));
 
+	// Track original output bus name...
+	m_sOldOutputBusName = m_props.outputBusName;
+
 	// Force MIDI output bus recaching.
 	m_pMidiBus = midiBus();
 
 	// Make sure this will be remembered for backup.
 	m_pOldMidiBus = m_pMidiBus;
 	m_iOldChannel = m_props.midiChannel;
-//	m_sOldInstrumentName initially blank...
+
+	m_sOldInstrumentName.clear();
+	if (m_pOldMidiBus) {
+		const qtractorMidiBus::Patch& patch
+			= m_pOldMidiBus->patch(m_iOldChannel);
+		if (patch.isValid())
+			m_sOldInstrumentName = patch.instrumentName;
+	}
+
 	m_iOldBankSelMethod  = m_props.midiBankSelMethod;
 	m_iOldBank = m_props.midiBank;
 	m_iOldProg = m_props.midiProg;
@@ -461,6 +471,9 @@ void qtractorTrackForm::accept (void)
 		m_props.foreground = colorItem(m_ui.ForegroundColorComboBox);
 		m_props.background = colorItem(m_ui.BackgroundColorComboBox);
 		m_props.background.setAlpha(192);
+		// Restore original...
+		if (m_props.outputBusName != m_sOldOutputBusName)
+			updateOutputBusName(m_sOldOutputBusName);
 		// Save default bus names...
 		saveDefaultBusNames(m_props.trackType);
 		// Reset dirty flag.
@@ -508,13 +521,7 @@ void qtractorTrackForm::reject (void)
 			// Backout all commands made this far...
 			(pSession->commands())->backout(m_pLastCommand);
 			// Restore old output bus...
-			if (!m_sOldOutputBusName.isEmpty()) {
-				pSession->lock();
-				m_pTrack->setOutputBusName(m_sOldOutputBusName);
-				m_pTrack->open(); // re-open...
-				pSession->unlock();
-				m_sOldOutputBusName.clear();
-			}
+			updateOutputBusName(m_sOldOutputBusName);
 			// Try to restore the previously saved patch...
 			if (m_pOldMidiBus && m_iDirtyPatch > 0) {
 				m_pOldMidiBus->setPatch(m_iOldChannel, m_sOldInstrumentName,
@@ -661,12 +668,12 @@ void qtractorTrackForm::updateInstrumentsAdd (
 
 	pMidiManager->updateInstruments();
 
-	const qtractorMidiManager::Instruments& list
+	const qtractorInstrumentList& instruments
 		= pMidiManager->instruments();
-	qtractorMidiManager::Instruments::ConstIterator iter = list.constBegin();
-	const qtractorMidiManager::Instruments::ConstIterator& iter_end = list.constEnd();
+	qtractorInstrumentList::ConstIterator iter = instruments.constBegin();
+	const qtractorInstrumentList::ConstIterator& iter_end = instruments.constEnd();
 	for ( ; iter != iter_end; ++iter)
-		m_ui.InstrumentComboBox->addItem(icon, iter.key());
+		m_ui.InstrumentComboBox->addItem(icon, iter.value().instrumentName());
 }
 
 
@@ -1021,25 +1028,30 @@ bool qtractorTrackForm::updateBanksAdd (
 	if (pMidiManager == nullptr)
 		return false;
 
-	const qtractorMidiManager::Instruments& list
+	const qtractorInstrumentList& instruments
 		= pMidiManager->instruments();
-	if (!list.contains(sInstrumentName))
+	if (!instruments.contains(sInstrumentName))
 		return false;
 
-	// Refresh bank mapping...
-	const qtractorMidiManager::Banks& banks = list[sInstrumentName];
-	qtractorMidiManager::Banks::ConstIterator iter = banks.constBegin();
-	const qtractorMidiManager::Banks::ConstIterator& iter_end = banks.constEnd();
+	// Get instrument set alright...
+	const qtractorInstrument& instr
+		= instruments.value(sInstrumentName);
+	// Refresh patch bank mapping...
+	const qtractorInstrumentPatches& patches = instr.patches();
+	qtractorInstrumentPatches::ConstIterator iter = patches.constBegin();
+	const qtractorInstrumentPatches::ConstIterator& iter_end = patches.constEnd();
 	for ( ; iter != iter_end; ++iter) {
-		m_ui.BankComboBox->addItem(icon, iter.value().name);
-		m_banks[iBankIndex++] = iter.key();
+		if (iter.key() >= 0) {
+			m_ui.BankComboBox->addItem(icon, iter.value().name());
+			m_banks[iBankIndex++] = iter.key();
+		}
 	}
 	// Reset given bank combobox index.
 	iBankIndex = -1;
-	// For proper bank selection...
-	if (banks.contains(iBank)) {
-		const qtractorMidiManager::Bank& bank = banks[iBank];
-		iBankIndex = m_ui.BankComboBox->findText(bank.name);
+	if (iBank >= 0) {
+		const qtractorInstrumentData& patch = instr.patch(iBank);
+		if (!patch.name().isEmpty())
+			iBankIndex = m_ui.BankComboBox->findText(patch.name());
 	}
 
 	// Mark that we've have something.
@@ -1055,35 +1067,34 @@ bool qtractorTrackForm::updateProgramsAdd (
 	if (pMidiManager == nullptr)
 		return false;
 
-	const qtractorMidiManager::Instruments& list
+	const qtractorInstrumentList& instruments
 		= pMidiManager->instruments();
-	if (!list.contains(sInstrumentName))
+	if (!instruments.contains(sInstrumentName))
 		return false;
 
+	// Common program label...
+	const QString sProg("%1 - %2");
+	// Instrument reference...
+	const qtractorInstrument& instr
+		= instruments.value(sInstrumentName);
 	// Bank reference...
-	const qtractorMidiManager::Banks& banks
-		= list[sInstrumentName];
-	if (banks.contains(iBank)) {
-		const qtractorMidiManager::Progs& progs
-			= banks[iBank].progs;
-		// Refresh program mapping...
-		const QString sProg("%1 - %2");
-		qtractorMidiManager::Progs::ConstIterator iter = progs.constBegin();
-		const qtractorMidiManager::Progs::ConstIterator& iter_end = progs.constEnd();
-		for ( ; iter != iter_end; ++iter) {
+	const qtractorInstrumentData& bank = instr.patch(iBank);
+	// Enumerate the explicit given program list...
+	qtractorInstrumentData::ConstIterator iter = bank.constBegin();
+	const qtractorInstrumentData::ConstIterator& iter_end = bank.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		if (iter.key() >= 0 && !iter.value().isEmpty()) {
 			m_ui.ProgComboBox->addItem(icon,
 				sProg.arg(iter.key()).arg(iter.value()));
 			m_progs[iProgIndex++] = iter.key();
 		}
-		// Reset given program combobox index.
-		iProgIndex = -1;
-		// For proper program selection...
-		if (progs.contains(iProg)) {
-			iProgIndex = m_ui.ProgComboBox->findText(
-				sProg.arg(iProg).arg(progs[iProg]));
-		}
 	}
-	else iProgIndex = -1;
+	// For proper program selection, thru label...
+	iProgIndex = -1;
+	if (iProg >= 0 && bank.contains(iProg)) {
+		iProgIndex = m_ui.ProgComboBox->findText(
+			sProg.arg(iProg).arg(bank[iProg]));
+	}
 
 	// Mark that we've have something.
 	return true;
@@ -1188,7 +1199,7 @@ void qtractorTrackForm::trackIconClicked (void)
 {
 	QString sFilename = m_props.trackIcon;
 
-	if (sFilename.at(0) == ':')
+	if (!sFilename.isEmpty() && sFilename.at(0) == ':')
 		sFilename.clear();
 
 	const QString& sTitle
@@ -1200,7 +1211,7 @@ void qtractorTrackForm::trackIconClicked (void)
 	const QString& sFilter = filters.join(";;");
 
 	QWidget *pParentWidget = nullptr;
-	QFileDialog::Options options = 0;
+	QFileDialog::Options options;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QFileDialog::DontUseNativeDialog;
@@ -1238,17 +1249,8 @@ void qtractorTrackForm::trackTypeChanged (void)
 	if (m_pTrack == nullptr)
 		return;
 
-	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == nullptr)
-		return;
-
-	if (!m_sOldOutputBusName.isEmpty()) {
-		pSession->lock();
-		m_pTrack->setOutputBusName(m_sOldOutputBusName);
-		m_pTrack->open(); // re-open...
-		pSession->unlock();
-		m_sOldOutputBusName.clear();
-	}
+	// Restore previous output bus, if any...
+	updateOutputBusName(m_sOldOutputBusName);
 
 	if (m_pOldMidiBus) {
 		// Restore previously current/saved patch...
@@ -1270,20 +1272,20 @@ void qtractorTrackForm::trackTypeChanged (void)
 
 	updateTrackType(trackType);
 
-//	inputBusNameChanged(m_ui.InputBusNameComboBox->currentText());
-	outputBusNameChanged(m_ui.OutputBusNameComboBox->currentText());
+//	inputBusNameChanged(m_ui.InputBusNameComboBox->currentIndex());
+	outputBusNameChanged(m_ui.OutputBusNameComboBox->currentIndex());
 }
 
 
 // Make changes due to input-bus name.
-void qtractorTrackForm::inputBusNameChanged ( const QString& /* sBusName */ )
+void qtractorTrackForm::inputBusNameChanged ( int /* iInputBusName */ )
 {
 	changed();
 }
 
 
 // Make changes due to output-bus name.
-void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
+void qtractorTrackForm::outputBusNameChanged ( int iOutputBusName )
 {
 	if (m_iDirtySetup > 0)
 		return;
@@ -1291,20 +1293,14 @@ void qtractorTrackForm::outputBusNameChanged ( const QString& sBusName )
 	if (m_pTrack == nullptr)
 		return;
 
-	qtractorSession *pSession = m_pTrack->session();
-	if (pSession == nullptr)
-		return;
-
 	// (Re)initialize output bus properly...
+	const QString& sBusName
+		= m_ui.OutputBusNameComboBox->itemText(iOutputBusName);
+
 	const QString& sOutputBusName
 		= m_pTrack->outputBusName();
 	if (sOutputBusName != sBusName) {
-		pSession->lock();
-		if (m_sOldOutputBusName.isEmpty() && !sOutputBusName.isEmpty())
-			m_sOldOutputBusName = sOutputBusName;
-		m_pTrack->setOutputBusName(sBusName);
-		m_pTrack->open(); // Re-open...
-		pSession->unlock();
+		updateOutputBusName(sBusName);
 		// Recache the applicable MIDI output bus ...
 		if (trackType() == qtractorTrack::Midi) {
 			m_pMidiBus = midiBus();
@@ -1390,12 +1386,12 @@ void qtractorTrackForm::channelChanged ( int iChannel )
 
 
 // Make changes due to MIDI instrument.
-void qtractorTrackForm::instrumentChanged ( const QString& sInstrumentName )
+void qtractorTrackForm::instrumentChanged ( int iInstrument )
 {
 	if (m_iDirtySetup > 0)
 		return;
 
-	updateBanks(sInstrumentName,
+	updateBanks(m_ui.InstrumentComboBox->itemText(iInstrument),
 		-1, // m_ui.BankSelMethodComboBox->currentItem(),
 		midiBank(),
 		midiProg());
@@ -1498,7 +1494,7 @@ void qtractorTrackForm::selectForegroundColor (void)
 		= tr("Foreground Color");
 
 	QWidget *pParentWidget = nullptr;
-	QColorDialog::ColorDialogOptions options = 0;
+	QColorDialog::ColorDialogOptions options;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
@@ -1524,7 +1520,7 @@ void qtractorTrackForm::selectBackgroundColor (void)
 		= tr("Background Color");
 
 	QWidget *pParentWidget = nullptr;
-	QColorDialog::ColorDialogOptions options = 0;
+	QColorDialog::ColorDialogOptions options;
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bDontUseNativeDialogs) {
 		options |= QColorDialog::DontUseNativeDialog;
@@ -1580,6 +1576,26 @@ void qtractorTrackForm::setMidiProgram ( int iBank, int iProg )
 	);
 
 	changed();
+}
+
+
+// Update/reset output bus name...
+void qtractorTrackForm::updateOutputBusName ( const QString& sBusName )
+{
+	if (sBusName.isEmpty())
+		return;
+
+	if (m_pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = m_pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	pSession->lock();
+	m_pTrack->setOutputBusName(sBusName);
+	m_pTrack->open(); // re-open...
+	pSession->unlock();
 }
 
 

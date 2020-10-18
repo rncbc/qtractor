@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -581,80 +581,13 @@ bool qtractorPluginProgramCommand::undo (void)
 
 
 //----------------------------------------------------------------------
-// class qtractorProgramPluginCommand - implementation
-//
-
-// Constructor.
-qtractorPluginPropertyCommand::qtractorPluginPropertyCommand (
-	qtractorPlugin *pPlugin, unsigned long iProperty, const QVariant& value )
-	: qtractorPluginCommand(QObject::tr("plugin property"), pPlugin)
-{
-	m_iProperty = iProperty;
-	m_value = value;
-
-	setRefresh(false);
-}
-
-
-// Plugin-property command methods.
-bool qtractorPluginPropertyCommand::redo (void)
-{
-	qtractorPlugin *pPlugin = plugins().first();
-	if (pPlugin == nullptr)
-		return false;
-
-	// Save the current toggled state alright...
-	QVariant value;
-
-#ifdef CONFIG_LV2_PATCH
-	qtractorPluginType *pType = pPlugin->type();
-	qtractorLv2Plugin *pLv2Plugin = nullptr;
-	qtractorLv2Plugin::Property *pLv2Prop = nullptr;
-	if (pType && pType->typeHint() == qtractorPluginType::Lv2)
-		pLv2Plugin = static_cast<qtractorLv2Plugin *> (pPlugin);
-	if (pLv2Plugin) {
-		const LV2_URID key = m_iProperty;
-		const char *pszKey = qtractorLv2Plugin::lv2_urid_unmap(key);
-		if (pszKey) {
-			pLv2Prop = pLv2Plugin->lv2_properties().value(pszKey, nullptr);
-			if (pLv2Prop) {
-				value = pLv2Prop->value();
-				pLv2Prop->setValue(m_value);
-				pLv2Plugin->lv2_property_update(key);
-			}
-		}
-	}
-#endif
-
-	m_value = value;
-
-	// Update the form, showing it up as necessary...
-	pPlugin->updateFormDirtyCount();
-
-	// Update any GUI editor...
-	// pPlugin->idleEditor();
-
-	// FIXME: Might no work the first time...
-	pPlugin->refreshForm();
-
-	return true;
-}
-
-bool qtractorPluginPropertyCommand::undo (void)
-{
-	// As we swap the prev/state this is non-idempotent.
-	return redo();
-}
-
-
-//----------------------------------------------------------------------
 // class qtractorPluginParamCommand - implementation
 //
 
 // Constructor.
 qtractorPluginParamCommand::qtractorPluginParamCommand (
-	qtractorPluginParam *pParam, float fValue, bool bUpdate )
-	: qtractorCommand(QString(pParam->name()).toLower()),
+	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
+	: qtractorCommand(pParam->name()),
 		m_pParam(pParam), m_fValue(fValue), m_bUpdate(bUpdate),
 		m_fPrevValue(pParam->value())
 {
@@ -745,7 +678,7 @@ qtractorPluginParamValuesCommand::~qtractorPluginParamValuesCommand (void)
 
 // Param-values list builder.
 void qtractorPluginParamValuesCommand::updateParamValue (
-	qtractorPluginParam *pParam, float fValue, bool bUpdate )
+	qtractorPlugin::Param *pParam, float fValue, bool bUpdate )
 {
 	m_paramCommands.append(
 		new qtractorPluginParamCommand(pParam, fValue, bUpdate));
@@ -766,7 +699,7 @@ bool qtractorPluginParamValuesCommand::redo (void)
 
 	QListIterator<qtractorPluginParamCommand *> iter(m_paramCommands);
 	while (bRedo && iter.hasNext())
-	    bRedo = iter.next()->redo();
+		bRedo = iter.next()->redo();
 
 	return bRedo;
 }
@@ -782,6 +715,65 @@ bool qtractorPluginParamValuesCommand::undo (void)
 	    bUndo = iter.previous()->undo();
 
 	return bUndo;
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorPluginPropertyCommand - implementation
+//
+
+// Constructor.
+qtractorPluginPropertyCommand::qtractorPluginPropertyCommand (
+	qtractorPlugin::Property *pProp, const QVariant& value )
+	: qtractorCommand(pProp->name()), m_pProp(pProp), m_value(value)
+{
+	setRefresh(false);
+}
+
+
+// Plugin-property command methods.
+bool qtractorPluginPropertyCommand::redo (void)
+{
+	qtractorPlugin *pPlugin = m_pProp->plugin();
+	if (pPlugin == nullptr)
+		return false;
+
+	// Save the current toggled state alright...
+	const QVariant value = m_pProp->variant();
+
+	m_pProp->setVariant(m_value, true);
+
+	// Set undo value.
+	m_value = value;
+
+#ifdef CONFIG_LV2_PATCH
+	if (!m_pProp->isAutomatable()) {
+		qtractorPluginType *pType = pPlugin->type();
+		if (pType->typeHint() == qtractorPluginType::Lv2) {
+			qtractorLv2Plugin *pLv2Plugin
+				= static_cast<qtractorLv2Plugin *> (pPlugin);
+			if (pLv2Plugin)
+				pLv2Plugin->lv2_property_update(m_pProp->index());
+		}
+	}
+#endif
+
+	// Update the form, showing it up as necessary...
+	pPlugin->updateFormDirtyCount();
+
+	// Update any GUI editor...
+	// pPlugin->idleEditor();
+
+	// FIXME: Might no work the first time...
+	pPlugin->refreshForm();
+
+	return true;
+}
+
+bool qtractorPluginPropertyCommand::undo (void)
+{
+	// As we swap the prev/state this is non-idempotent.
+	return redo();
 }
 
 
@@ -826,62 +818,6 @@ bool qtractorAudioOutputBusCommand::redo (void)
 }
 
 bool qtractorAudioOutputBusCommand::undo (void)
-{
-	return redo();
-}
-
-
-//----------------------------------------------------------------------
-// class qtractorAudioOutputMonitorCommand - declaration.
-//
-
-// Constructor.
-qtractorAudioOutputMonitorCommand::qtractorAudioOutputMonitorCommand (
-	qtractorMidiManager *pMidiManager, bool bAudioOutputMonitor )
-	: qtractorCommand(QObject::tr("audio output meters")),
-		m_pMidiManager(pMidiManager), m_bAudioOutputMonitor(bAudioOutputMonitor)
-{
-}
-
-
-// Plugin audio ouput monitor command methods.
-bool qtractorAudioOutputMonitorCommand::redo (void)
-{
-	if (m_pMidiManager == nullptr)
-		return false;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return false;
-
-//	pSession->lock();
-
-	const bool bAudioOutputMonitor
-		= m_pMidiManager->isAudioOutputMonitor();
-
-	m_pMidiManager->setAudioOutputMonitor(m_bAudioOutputMonitor);
-
-	m_bAudioOutputMonitor = bAudioOutputMonitor;
-
-	// Update all tracks anyway...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm) {
-		// Meters on tracks list...
-		qtractorTracks *pTracks = pMainForm->tracks();
-		if (pTracks)
-			pTracks->updateMidiTrackItem(m_pMidiManager);
-		// Meters on mixer strips...
-		qtractorMixer *pMixer = pMainForm->mixer();
-		if (pMixer)
-			pMixer->updateMidiManagerStrip(m_pMidiManager);
-	}
-
-//	pSession->unlock();
-
-	return true;
-}
-
-bool qtractorAudioOutputMonitorCommand::undo (void)
 {
 	return redo();
 }

@@ -1,7 +1,7 @@
 // qtractorMixer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -64,8 +64,8 @@ class qtractorMonitorButton : public qtractorMidiControlButton
 public:
 
 	// Constructors.
-	qtractorMonitorButton(qtractorTrack *pTrack, QWidget *pParent = 0);
-	qtractorMonitorButton(qtractorBus *pBus, QWidget *pParent = 0);
+	qtractorMonitorButton(qtractorTrack *pTrack, QWidget *pParent = nullptr);
+	qtractorMonitorButton(qtractorBus *pBus, QWidget *pParent = nullptr);
 
 	// Specific track accessors.
 	void setTrack(qtractorTrack *pTrack);
@@ -382,7 +382,8 @@ class qtractorMixer : public QMainWindow
 public:
 
 	// Constructor.
-	qtractorMixer(QWidget *pParent, Qt::WindowFlags wflags = 0);
+	qtractorMixer(QWidget *pParent = nullptr,
+		Qt::WindowFlags wflags = Qt::WindowFlags());
 	// Default destructor.
 	~qtractorMixer();
 

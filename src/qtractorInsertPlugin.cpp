@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -445,7 +445,7 @@ const QString& qtractorMidiInsertPluginType::aboutText (void)
 // Constructors.
 qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	qtractorPluginList *pList, qtractorInsertPluginType *pInsertType )
-	: qtractorPlugin(pList, pInsertType), m_pAudioBus(nullptr)
+	: qtractorInsertPlugin(pList, pInsertType), m_pAudioBus(nullptr)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorAudioInsertPlugin[%p] channels=%u",
@@ -470,7 +470,7 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	}
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new Param(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(4.0f);
@@ -478,7 +478,7 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
 
-	m_pDryGainParam = new qtractorInsertPluginParam(this, 1);
+	m_pDryGainParam = new Param(this, 1);
 	m_pDryGainParam->setName(QObject::tr("Dry Gain"));
 	m_pDryGainParam->setMinValue(0.0f);
 	m_pDryGainParam->setMaxValue(4.0f);
@@ -486,7 +486,7 @@ qtractorAudioInsertPlugin::qtractorAudioInsertPlugin (
 	m_pDryGainParam->setValue(1.0f, false);
 	addParam(m_pDryGainParam);
 
-	m_pWetGainParam = new qtractorInsertPluginParam(this, 2);
+	m_pWetGainParam = new Param(this, 2);
 	m_pWetGainParam->setName(QObject::tr("Wet Gain"));
 	m_pWetGainParam->setMinValue(0.0f);
 	m_pWetGainParam->setMaxValue(4.0f);
@@ -527,8 +527,8 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 	// Estimate the (new) number of instances...
 	const unsigned short iInstances
 		= pType->instances(iChannels, list()->isMidi());
-	// Now see if instance count changed anyhow...
-	if (iInstances == instances())
+	// Now see if instance and channel count changed anyhow...
+	if (iInstances == instances() && iChannels == channels())
 		return;
 
 	// Gotta go for a while...
@@ -743,7 +743,7 @@ qtractorAudioBus *qtractorAudioInsertPlugin::audioBus (void) const
 // Constructors.
 qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 	qtractorPluginList *pList, qtractorInsertPluginType *pInsertType )
-	: qtractorPlugin(pList, pInsertType), m_pMidiBus(nullptr),
+	: qtractorInsertPlugin(pList, pInsertType), m_pMidiBus(nullptr),
 		m_pMidiInputBuffer(nullptr), m_pMidiOutputBuffer(nullptr)
 {
 #ifdef CONFIG_DEBUG
@@ -752,7 +752,7 @@ qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new Param(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(4.0f);
@@ -760,7 +760,7 @@ qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 	m_pSendGainParam->setValue(1.0f, false);
 	addParam(m_pSendGainParam);
 
-	m_pDryGainParam = new qtractorInsertPluginParam(this, 1);
+	m_pDryGainParam = new Param(this, 1);
 	m_pDryGainParam->setName(QObject::tr("Dry Gain"));
 	m_pDryGainParam->setMinValue(0.0f);
 	m_pDryGainParam->setMaxValue(4.0f);
@@ -768,7 +768,7 @@ qtractorMidiInsertPlugin::qtractorMidiInsertPlugin (
 	m_pDryGainParam->setValue(1.0f, false);
 	addParam(m_pDryGainParam);
 
-	m_pWetGainParam = new qtractorInsertPluginParam(this, 2);
+	m_pWetGainParam = new Param(this, 2);
 	m_pWetGainParam->setName(QObject::tr("Wet Gain"));
 	m_pWetGainParam->setMinValue(0.0f);
 	m_pWetGainParam->setMaxValue(4.0f);
@@ -809,8 +809,8 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 	// Estimate the (new) number of instances...
 	const unsigned short iInstances
 		= pType->instances(iChannels, list()->isMidi());
-	// Now see if instance count changed anyhow...
-	if (iInstances == instances())
+	// Now see if instance and channel count changed anyhow...
+	if (iInstances == instances() && iChannels == channels())
 		return;
 
 	// Gotta go for a while...
@@ -920,10 +920,10 @@ void qtractorMidiInsertPlugin::process (
 			= (pSession->isPlaying() ? pSession->playHead() : 0);
 		// Enqueue input events into sends/output bus...
 		if (m_pMidiOutputBuffer) {
-			snd_seq_event_t *pEventBuffer = pMidiManager->events();
-			const unsigned int iEventCount = pMidiManager->count();
+			qtractorMidiBuffer *pEventBuffer = pMidiManager->buffer_in();
+			const unsigned int iEventCount = pEventBuffer->count();
 			for (unsigned int i = 0; i < iEventCount; ++i) {
-				snd_seq_event_t *pEv = &pEventBuffer[i];
+				snd_seq_event_t *pEv = pEventBuffer->at(i);
 				if (!m_pMidiOutputBuffer->enqueue(pEv, t0 + pEv->time.tick))
 					break;
 			}
@@ -1203,7 +1203,7 @@ const QString& qtractorMidiAuxSendPluginType::aboutText (void)
 // Constructors.
 qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 	qtractorPluginList *pList, qtractorAuxSendPluginType *pAuxSendType )
-	: qtractorPlugin(pList, pAuxSendType), m_pAudioBus(nullptr)
+	: qtractorAuxSendPlugin(pList, pAuxSendType), m_pAudioBus(nullptr)
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorAudioAuxSendPlugin[%p] channels=%u",
@@ -1225,7 +1225,7 @@ qtractorAudioAuxSendPlugin::qtractorAudioAuxSendPlugin (
 	}
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new Param(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(4.0f);
@@ -1263,8 +1263,8 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 	// Estimate the (new) number of instances...
 	const unsigned short iInstances
 		= pType->instances(iChannels, list()->isMidi());
-	// Now see if instance count changed anyhow...
-	if (iInstances == instances())
+	// Now see if instance and channel count changed anyhow...
+	if (iInstances == instances() && iChannels == channels())
 		return;
 
 	// Gotta go for a while...
@@ -1444,7 +1444,7 @@ void qtractorAudioAuxSendPlugin::releaseConfigs (void)
 // Constructors.
 qtractorMidiAuxSendPlugin::qtractorMidiAuxSendPlugin (
 	qtractorPluginList *pList, qtractorAuxSendPluginType *pAuxSendType )
-	: qtractorPlugin(pList, pAuxSendType),
+	: qtractorAuxSendPlugin(pList, pAuxSendType),
 		m_pMidiBus(nullptr), m_pMidiOutputBuffer(nullptr)
 {
 #ifdef CONFIG_DEBUG
@@ -1453,7 +1453,7 @@ qtractorMidiAuxSendPlugin::qtractorMidiAuxSendPlugin (
 #endif
 
 	// Create and attach the custom parameters...
-	m_pSendGainParam = new qtractorInsertPluginParam(this, 0);
+	m_pSendGainParam = new Param(this, 0);
 	m_pSendGainParam->setName(QObject::tr("Send Gain"));
 	m_pSendGainParam->setMinValue(0.0f);
 	m_pSendGainParam->setMaxValue(4.0f);
@@ -1491,8 +1491,8 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 	// Estimate the (new) number of instances...
 	const unsigned short iInstances
 		= pType->instances(iChannels, list()->isMidi());
-	// Now see if instance count changed anyhow...
-	if (iInstances == instances())
+	// Now see if instance and channel count changed anyhow...
+	if (iInstances == instances() && iChannels == channels())
 		return;
 
 	// Gotta go for a while...
@@ -1618,10 +1618,10 @@ void qtractorMidiAuxSendPlugin::process (
 		// Enqueue events into sends/output bus...
 		const unsigned long t0
 			= (pSession->isPlaying() ? pSession->playHead() : 0);
-		snd_seq_event_t *pEventBuffer = pMidiManager->events();
-		const unsigned int iEventCount = pMidiManager->count();
+		qtractorMidiBuffer *pEventBuffer = pMidiManager->buffer_in();
+		const unsigned int iEventCount = pEventBuffer->count();
 		for (unsigned int i = 0; i < iEventCount; ++i) {
-			snd_seq_event_t *pEv = &pEventBuffer[i];
+			snd_seq_event_t *pEv = pEventBuffer->at(i);
 			if (!m_pMidiOutputBuffer->enqueue(pEv, t0 + pEv->time.tick))
 				break;
 		}

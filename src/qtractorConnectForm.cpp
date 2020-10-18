@@ -1,7 +1,7 @@
 // qtractorConnectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,8 +34,8 @@
 // qtractorConnectForm -- UI wrapper form.
 
 // Constructor.
-qtractorConnectForm::qtractorConnectForm (
-	QWidget *pParent, Qt::WindowFlags wflags ) : QWidget(pParent, wflags)
+qtractorConnectForm::qtractorConnectForm ( QWidget *pParent, Qt::WindowFlags wflags )
+	: QWidget(pParent, wflags)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
