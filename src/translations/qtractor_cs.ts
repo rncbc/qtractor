@@ -1905,7 +1905,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="879"/>
         <source>%1 %2 Clips</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %2 záběry</translation>
     </message>
 </context>
 <context>
@@ -2122,12 +2122,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="615"/>
         <source>%1 %2 Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %2 stop</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="667"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Varování</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="668"/>
@@ -2136,7 +2136,7 @@ Chcete použít tyto změny?</translation>
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation type="unfinished">Soubor již existuje:
+        <translation>Soubor již existuje:
 
 &quot;%1&quot;
 
@@ -2145,12 +2145,12 @@ Chcete jej nahradit?</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="714"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
-        <translation type="unfinished">Vyvedení zvukového souboru: &quot;%1&quot; právě začalo...</translation>
+        <translation>Vyvedení zvukového souboru: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="740"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
-        <translation type="unfinished">Vyvedení zvukového souboru: &quot;%1&quot; je hotovo.</translation>
+        <translation>Vyvedení zvukového souboru: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="745"/>
@@ -2159,7 +2159,7 @@ Chcete jej nahradit?</translation>
 &quot;%1&quot;
 
 failed.</source>
-        <translation type="unfinished">Vyvedení zvukového souboru:
+        <translation>Vyvedení zvukového souboru:
 
 &quot;%1&quot;
 
@@ -2168,12 +2168,12 @@ selhalo.</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="771"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
-        <translation type="unfinished">Vyvedení souboru MIDI: &quot;%1&quot; právě začalo...</translation>
+        <translation>Vyvedení souboru MIDI: &quot;%1&quot; právě začalo...</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="795"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
-        <translation type="unfinished">Vyvedení souboru MIDI: &quot;%1&quot; je hotovo.</translation>
+        <translation>Vyvedení souboru MIDI: &quot;%1&quot; je hotovo.</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="800"/>
@@ -2182,7 +2182,7 @@ selhalo.</translation>
 &quot;%1&quot;
 
 failed.</source>
-        <translation type="unfinished">Vyvedení souboru MIDI:
+        <translation>Vyvedení souboru MIDI:
 
 &quot;%1&quot;
 
@@ -9879,22 +9879,22 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1162"/>
         <source>Note &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Názvy not</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1165"/>
         <source>Note Names</source>
-        <translation type="unfinished">Názvy not</translation>
+        <translation>Názvy not</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1168"/>
         <source>Note names</source>
-        <translation type="unfinished"></translation>
+        <translation>Názvy not</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1171"/>
         <source>Whether to show note names</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda ukázat názvy not</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1182"/>
@@ -15096,7 +15096,7 @@ Jste si jistý?</translation>
         <location filename="../qtractorTracks.cpp" line="1204"/>
         <location filename="../qtractorTracks.cpp" line="1489"/>
         <source>Merge/Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloučit/Vyvést</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1217"/>

@@ -15,7 +15,7 @@ branches:
   - master
 
 before_install:
-- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.15.0-focal
+- sudo add-apt-repository --yes ppa:beineri/opt-qt-5.15.1-focal
 - sudo add-apt-repository --yes ppa:rncbc/focal
 - sudo apt-get update -qq
 
