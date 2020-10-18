@@ -7961,12 +7961,12 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="504"/>
         <source>Major</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mayor</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="505"/>
         <source>Minor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Menor</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="506"/>
