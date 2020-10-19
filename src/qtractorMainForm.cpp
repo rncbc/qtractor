@@ -1588,6 +1588,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 			m_sNsmExt = qtractorDocument::defaultExt();
 		// Run-time special non-persistent options.
 		//m_pOptions->bDontUseNativeDialogs = true;
+		QMainWindow::hide();
+		m_pConnections->hide();
+		m_pMixer->hide();
 	}
 	else
 #endif
@@ -1705,16 +1708,18 @@ bool qtractorMainForm::queryClose (void)
 		// Try to save current positioning.
 		if (bQueryClose) {
 			// Save decorations state.
-			m_pOptions->bMenubar = m_ui.menuBar->isVisible();
-			m_pOptions->bStatusbar = statusBar()->isVisible();
-			m_pOptions->bFileToolbar = m_ui.fileToolbar->isVisible();
-			m_pOptions->bEditToolbar = m_ui.editToolbar->isVisible();
-			m_pOptions->bTrackToolbar = m_ui.trackToolbar->isVisible();
-			m_pOptions->bViewToolbar = m_ui.viewToolbar->isVisible();
-			m_pOptions->bOptionsToolbar = m_ui.optionsToolbar->isVisible();
-			m_pOptions->bTransportToolbar = m_ui.transportToolbar->isVisible();
-			m_pOptions->bTimeToolbar = m_ui.timeToolbar->isVisible();
-			m_pOptions->bThumbToolbar = m_ui.thumbViewToolbar->isVisible();
+			if (QMainWindow::isVisible()) {
+				m_pOptions->bMenubar = m_ui.menuBar->isVisible();
+				m_pOptions->bStatusbar = statusBar()->isVisible();
+				m_pOptions->bFileToolbar = m_ui.fileToolbar->isVisible();
+				m_pOptions->bEditToolbar = m_ui.editToolbar->isVisible();
+				m_pOptions->bTrackToolbar = m_ui.trackToolbar->isVisible();
+				m_pOptions->bViewToolbar = m_ui.viewToolbar->isVisible();
+				m_pOptions->bOptionsToolbar = m_ui.optionsToolbar->isVisible();
+				m_pOptions->bTransportToolbar = m_ui.transportToolbar->isVisible();
+				m_pOptions->bTimeToolbar = m_ui.timeToolbar->isVisible();
+				m_pOptions->bThumbToolbar = m_ui.thumbViewToolbar->isVisible();
+			}
 			m_pOptions->bTrackViewSnapZebra = m_ui.viewSnapZebraAction->isChecked();
 			m_pOptions->bTrackViewSnapGrid = m_ui.viewSnapGridAction->isChecked();
 			m_pOptions->bTrackViewToolTips = m_ui.viewToolTipsAction->isChecked();
@@ -1759,9 +1764,14 @@ bool qtractorMainForm::queryClose (void)
 			if (pAudioEngine)
 				m_pOptions->bAudioMasterAutoConnect = pAudioEngine->isMasterAutoConnect();
 			// And the main windows state.
-			m_pOptions->saveWidgetGeometry(m_pConnections);
-			m_pOptions->saveWidgetGeometry(m_pMixer);
-			m_pOptions->saveWidgetGeometry(this, true);
+			bool bSaveVisibility = true;
+		#if CONFIG_NSM
+			if (m_pNsmClient && m_pNsmClient->is_active())
+				bSaveVisibility = false;
+		#endif
+			m_pOptions->saveWidgetGeometry(m_pConnections, !bSaveVisibility);
+			m_pOptions->saveWidgetGeometry(m_pMixer, !bSaveVisibility);
+			m_pOptions->saveWidgetGeometry(this, bSaveVisibility);
 		}
 	}
 
@@ -2848,6 +2858,8 @@ void qtractorMainForm::hideNsmSession (void)
 #endif
 
 	QMainWindow::hide();
+	m_pConnections->hide();
+	m_pMixer->hide();
 
 #endif	// CONFIG_NSM
 }

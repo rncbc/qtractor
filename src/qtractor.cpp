@@ -520,7 +520,7 @@ int main ( int argc, char **argv )
 	// Construct, setup and show the main form (a pseudo-singleton).
 	qtractorMainForm w;
 	w.setup(&options);
-	w.show();
+//	w.show();
 
 	// Settle this one as application main widget...
 	app.setMainWidget(&w);
