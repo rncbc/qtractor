@@ -419,10 +419,6 @@ public:
 
 protected:
 
-	// Notify the main application widget that we're closing.
-	void showEvent(QShowEvent *);
-	void hideEvent(QHideEvent *);
-
 	// Just about to notify main-window that we're closing.
 	void closeEvent(QCloseEvent *);
 

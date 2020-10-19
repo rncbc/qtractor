@@ -107,36 +107,6 @@ qtractorConnections::~qtractorConnections (void)
 }
 
 
-// Notify the main application widget that we're emerging.
-void qtractorConnections::showEvent ( QShowEvent *pShowEvent )
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorConnections::showEvent()");
-#endif
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->stabilizeForm();
-
-	QWidget::showEvent(pShowEvent);
-}
-
-
-// Notify the main application widget that we're closing.
-void qtractorConnections::hideEvent ( QHideEvent *pHideEvent )
-{
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorConnections::hideEvent()");
-#endif
-
-	QWidget::hideEvent(pHideEvent);
-
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->stabilizeForm();
-}
-
-
 // Just about to notify main-window that we're closing.
 void qtractorConnections::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 {
