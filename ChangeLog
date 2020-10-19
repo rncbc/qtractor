@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Main window now always starts hidden when under NSM. (EXPERIMENTAL)
+
 - Plugin editors (GUIs) that are currently open on a track are now
   brought up as top-level windows immediately when a track is made
   current or highlighted (and Track / Auto Monitor is in effect).

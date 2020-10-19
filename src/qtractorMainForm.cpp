@@ -1438,7 +1438,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	}
 
 	// Try to restore old window positioning.
-	m_pOptions->loadWidgetGeometry(this, true);
+	m_pOptions->loadWidgetGeometry(this);
 	m_pOptions->loadWidgetGeometry(m_pMixer);
 	m_pOptions->loadWidgetGeometry(m_pConnections);
 
@@ -1589,7 +1589,9 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		// Run-time special non-persistent options.
 		//m_pOptions->bDontUseNativeDialogs = true;
 	}
+	else
 #endif
+	QMainWindow::show();
 
 	// Make it ready :-)
 	statusBar()->showMessage(tr("Ready"), 3000);
