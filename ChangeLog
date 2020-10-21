@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- When under NSM, all top-level windows, main, mixer and connections, 
+  will always start hidden. (GH #279). (EXPERIMENTAL)
+
 - Plugin editors (GUIs) that are currently open on a track are now
   brought up as top-level windows immediately when a track is made
   current or highlighted (and Track / Auto Monitor is in effect).
