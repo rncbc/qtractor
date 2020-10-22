@@ -531,6 +531,10 @@ if test "x$ac_qmake" = "xno"; then
    AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
    ac_qmake=$ac_cv_qmake
 fi
+if test "x$ac_qmake" = "xno"; then
+   AC_PATH_TOOL(ac_cv_qmake, qmake-qt6, [no], $ac_path)
+   ac_qmake=$ac_cv_qmake
+fi
 
 # Check for proper Qt major version.
 AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
@@ -538,16 +542,12 @@ AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
    ac_cv_qt_version_major=$(($ac_cv_qt_version_major + 0))
 ])
 ac_qt_version_major=$ac_cv_qt_version_major
-if test $ac_qt_version_major -lt 5; then
-   AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
-   ac_qmake=$ac_cv_qmake
-fi
-if test $ac_qt_version_major -ge 6; then
-   ac_libsuil="no"
-fi
-
 if test "x$ac_qmake" = "xno"; then
-   AC_MSG_ERROR([qmake-qt5 $ac_errmsg (qt5-devel)])
+   if test $ac_qt_version_major -lt 6; then
+      AC_MSG_ERROR([qmake-qt5 $ac_errmsg (qt5-devel)])
+   else
+      AC_MSG_ERROR([qmake-qt6 $ac_errmsg (qt6-devel)])
+   fi
 fi
 
 # Check for proper Qt install path.
@@ -618,9 +618,17 @@ AC_SUBST(ac_uic)
 # Check for Qt lupdate utility.
 AC_PATH_TOOL(ac_lupdate, lupdate, [no], $ac_path)
 if test "x$ac_lupdate" = "xno"; then
-   AC_PATH_TOOL(ac_cv_lupdate, lupdate-qt5, [no], $ac_path)
+   if test $ac_qt_version_major -lt 6; then
+      AC_PATH_TOOL(ac_cv_lupdate, lupdate-qt5, [no], $ac_path)
+   else
+      AC_PATH_TOOL(ac_cv_lupdate, lupdate-qt6, [no], $ac_path)
+   fi
    if test "x$ac_cv_lupdate" = "xno"; then
-      AC_MSG_ERROR([lupdate $ac_errmsg (qt5-linguist)])
+      if test $ac_qt_version_major -lt 6; then
+         AC_MSG_ERROR([lupdate $ac_errmsg (qt5-linguist)])
+      else
+         AC_MSG_ERROR([lupdate $ac_errmsg (qt6-linguist)])
+      fi
    else
       ac_lupdate=$ac_cv_lupdate;
    fi
@@ -630,9 +638,17 @@ AC_SUBST(ac_lupdate)
 # Check for Qt lrelease utility.
 AC_PATH_TOOL(ac_lrelease, lrelease, [no], $ac_path)
 if test "x$ac_lrelease" = "xno"; then
-   AC_PATH_TOOL(ac_cv_lrelease, lrelease-qt5, [no], $ac_path)
+   if test $ac_qt_version_major -lt 6; then
+      AC_PATH_TOOL(ac_cv_lrelease, lrelease-qt5, [no], $ac_path)
+   else
+      AC_PATH_TOOL(ac_cv_lrelease, lrelease-qt6, [no], $ac_path)
+   fi
    if test "x$ac_cv_lrelease" = "xno"; then
-      AC_MSG_ERROR([lrelease $ac_errmsg (qt5-linguist)])
+      if test $ac_qt_version_major -lt 6; then
+         AC_MSG_ERROR([lrelease $ac_errmsg (qt5-linguist)])
+      else
+         AC_MSG_ERROR([lrelease $ac_errmsg (qt6-linguist)])
+      fi
    else
       ac_lrelease=$ac_cv_lrelease;
    fi
@@ -869,6 +885,11 @@ if test "x$ac_lv2_ui" = "xno"; then
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
    ac_lv2_ui_x11="no"
+fi
+
+# Disable libSUIL upon Qt >= 6.0.0 ...
+if test $ac_qt_version_major -ge 6; then
+   ac_libsuil="no"
 fi
 
 # Check for optional LILV library.
@@ -1529,12 +1550,17 @@ fi
 
 # Check for unique/single instance support.
 if test "x$ac_xunique" = "xyes"; then
-   PKG_CHECK_MODULES([QT5NETWORK], [Qt5Network], [ac_qt5network="yes"], [ac_qt5network="no"])
-   if test "x$ac_qt5network" = "xyes"; then
-      AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if unique/single instance is enabled.])
-      ac_qnetwork="network"
+   if test $ac_qt_version_major -lt 6; then
+      PKG_CHECK_MODULES([QT5NETWORK], [Qt5Network], [ac_xunique="yes"], [ac_xunique="no"])
+   else
+      PKG_CHECK_MODULES([QT6NETWORK], [Qt6Network], [ac_xunique="yes"], [ac_xunique="no"])
    fi
 fi
+if test "x$ac_xunique" = "xyes"; then
+   AC_DEFINE(CONFIG_XUNIQUE, 1, [Define if unique/single instance is enabled.])
+   ac_qnetwork="network"
+fi
+
 AC_SUBST(ac_qnetwork)
 
 # Check for gradient eye-candy.
