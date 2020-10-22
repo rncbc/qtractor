@@ -1905,7 +1905,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="879"/>
         <source>%1 %2 Clips</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %2 Sequências</translation>
     </message>
 </context>
 <context>
@@ -2122,12 +2122,12 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="615"/>
         <source>%1 %2 Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %2 Pistas</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="667"/>
         <source>Warning</source>
-        <translation type="unfinished">Atenção</translation>
+        <translation>Atenção</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="668"/>
@@ -2136,7 +2136,7 @@ Você quer mesmo manter as modificações?</translation>
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation type="unfinished">Esse arquivo já existe:
+        <translation>Esse arquivo já existe:
 
 &quot;%1&quot;
 
@@ -2145,12 +2145,12 @@ Você quer substituí-lo?</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="714"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
-        <translation type="unfinished">A Renderização do arquivo de áudio: &quot;%1&quot; começou...</translation>
+        <translation>A Renderização do arquivo de áudio: &quot;%1&quot; começou...</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="740"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
-        <translation type="unfinished">A Renderização do arquivo de áudio: &quot;%1&quot; terminou.</translation>
+        <translation>A Renderização do arquivo de áudio: &quot;%1&quot; terminou.</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="745"/>
@@ -2159,7 +2159,7 @@ Você quer substituí-lo?</translation>
 &quot;%1&quot;
 
 failed.</source>
-        <translation type="unfinished">A Renderização do arquivo de áudio:
+        <translation>A Renderização do arquivo de áudio:
 
 &quot;%1&quot;
 
@@ -2168,12 +2168,12 @@ falhou.</translation>
     <message>
         <location filename="../qtractorExportForm.cpp" line="771"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
-        <translation type="unfinished">A Renderização do arquivo MIDI: &quot;%1&quot; começou...</translation>
+        <translation>A Renderização do arquivo MIDI: &quot;%1&quot; começou...</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="795"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
-        <translation type="unfinished">A Renderização do arquivo MIDI: &quot;%1&quot; terminou.</translation>
+        <translation>A Renderização do arquivo MIDI: &quot;%1&quot; terminou.</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="800"/>
@@ -2182,7 +2182,7 @@ falhou.</translation>
 &quot;%1&quot;
 
 failed.</source>
-        <translation type="unfinished">A Renderização do arquivo MIDI:
+        <translation>A Renderização do arquivo MIDI:
 
 &quot;%1&quot;
 
@@ -9153,22 +9153,22 @@ Valor:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1162"/>
         <source>Note &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomes das &amp;Notas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1165"/>
         <source>Note Names</source>
-        <translation type="unfinished">Nomes das Notas</translation>
+        <translation>Nomes das Notas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1168"/>
         <source>Note names</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomes das notas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1171"/>
         <source>Whether to show note names</source>
-        <translation type="unfinished"></translation>
+        <translation>Quando mostrar nome das notas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1225"/>
@@ -15154,7 +15154,7 @@ Posso continuar?</translation>
         <location filename="../qtractorTracks.cpp" line="1204"/>
         <location filename="../qtractorTracks.cpp" line="1489"/>
         <source>Merge/Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Unir/Exportar</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1418"/>
