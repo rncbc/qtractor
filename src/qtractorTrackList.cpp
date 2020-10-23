@@ -210,7 +210,7 @@ QVariant qtractorTrackList::HeaderModel::headerData (
 			else
 				return QSize(100, 24);
 		}
-	}	
+	}
 
 	return QVariant();
 }
