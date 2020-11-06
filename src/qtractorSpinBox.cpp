@@ -612,9 +612,8 @@ bool qtractorTempoSpinBox::updateValue ( float fTempo,
 	if (iBeatDivisor > 8)
 		iBeatDivisor = 8;
 
-	if (qAbs(m_fTempo - fTempo) > 0.05f) {
-		// Fixup: round to one single decimal place.
-		m_fTempo = 0.1f * ::roundf(10.0f * fTempo);
+	if (qAbs(m_fTempo - fTempo) > 0.01f) {
+		m_fTempo = fTempo;
 		++m_iValueChanged;
 	}
 

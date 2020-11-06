@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Tempo (BPM) entry may still only show one decimal figure, but any
+  fractional should now be honored internally. (EXPERIMENTAL)
+
 0.9.18  2020-10-30  A Fall'20 Release.
 
 - When under NSM, all top-level windows, main, mixer and connections,
