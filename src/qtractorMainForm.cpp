@@ -597,6 +597,7 @@ qtractorMainForm::qtractorMainForm (
 	// Track status.
 	pLabel = new QLabel(tr("Track"));
 	pLabel->setAlignment(Qt::AlignLeft);
+	pLabel->setMinimumWidth(120);
 	pLabel->setToolTip(tr("Current track name"));
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusName] = pLabel;

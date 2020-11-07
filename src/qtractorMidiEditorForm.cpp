@@ -327,6 +327,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Status clip/sequence name...
 	m_pTrackNameLabel = new QLabel(spc);
 	m_pTrackNameLabel->setAlignment(Qt::AlignLeft);
+	m_pTrackNameLabel->setMinimumWidth(60);
 	m_pTrackNameLabel->setToolTip(tr("MIDI clip name"));
 	m_pTrackNameLabel->setAutoFillBackground(true);
 	pStatusBar->addWidget(m_pTrackNameLabel, 1);
@@ -334,6 +335,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Status filename...
 	m_pFileNameLabel = new QLabel(spc);
 	m_pFileNameLabel->setAlignment(Qt::AlignLeft);
+	m_pFileNameLabel->setMinimumWidth(240);
 	m_pFileNameLabel->setToolTip(tr("MIDI file name"));
 	m_pFileNameLabel->setAutoFillBackground(true);
 	pStatusBar->addWidget(m_pFileNameLabel, 2);
@@ -341,6 +343,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Status track/channel number...
 	m_pTrackChannelLabel = new QLabel(spc);
 	m_pTrackChannelLabel->setAlignment(Qt::AlignHCenter);
+	m_pTrackChannelLabel->setMinimumWidth(60);
 	m_pTrackChannelLabel->setToolTip(tr("MIDI track/channel"));
 	m_pTrackChannelLabel->setAutoFillBackground(true);
 	pStatusBar->addWidget(m_pTrackChannelLabel);

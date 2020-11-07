@@ -6,8 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor status-bar labels are not stretched to whole text
+  size anymore, most specially for the current file complete path.  
+
 - Tempo (BPM) entry may still only show one decimal figure, but any
   fractional should now be honored internally. (EXPERIMENTAL)
+
 
 0.9.18  2020-10-30  A Fall'20 Release.
 
