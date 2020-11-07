@@ -5030,6 +5030,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldCompletePath       = m_pOptions->bCompletePath;
 	const bool    bOldPeakAutoRemove     = m_pOptions->bPeakAutoRemove;
 	const bool    bOldKeepToolsOnTop     = m_pOptions->bKeepToolsOnTop;
+	const bool    bOldKeepEditorsOnTop   = m_pOptions->bKeepEditorsOnTop;
 	const int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
 	const int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
 	const int     iOldBaseFontSize       = m_pOptions->iBaseFontSize;
@@ -5158,6 +5159,9 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldKeepToolsOnTop && !m_pOptions->bKeepToolsOnTop) ||
 			(!bOldKeepToolsOnTop &&  m_pOptions->bKeepToolsOnTop))
 			iNeedRestart |= RestartProgram;
+		if (( bOldKeepEditorsOnTop && !m_pOptions->bKeepEditorsOnTop) ||
+			(!bOldKeepEditorsOnTop &&  m_pOptions->bKeepEditorsOnTop))
+			iNeedRestart |= RestartSession;
 		if (sOldMessagesFont != m_pOptions->sMessagesFont)
 			updateMessagesFont();
 		if (( bOldMessagesLimit && !m_pOptions->bMessagesLimit) ||

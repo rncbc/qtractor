@@ -360,6 +360,9 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.KeepToolsOnTopCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.KeepEditorsOnTopCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.TrackViewDropSpanCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -662,6 +665,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.CompletePathCheckBox->setChecked(m_pOptions->bCompletePath);
 	m_ui.PeakAutoRemoveCheckBox->setChecked(m_pOptions->bPeakAutoRemove);
 	m_ui.KeepToolsOnTopCheckBox->setChecked(m_pOptions->bKeepToolsOnTop);
+	m_ui.KeepEditorsOnTopCheckBox->setChecked(m_pOptions->bKeepEditorsOnTop);
 	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
 	m_ui.ShiftKeyModifierCheckBox->setChecked(m_pOptions->bShiftKeyModifier);
 	m_ui.MidButtonModifierCheckBox->setChecked(m_pOptions->bMidButtonModifier);
@@ -827,6 +831,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bCompletePath        = m_ui.CompletePathCheckBox->isChecked();
 		m_pOptions->bPeakAutoRemove      = m_ui.PeakAutoRemoveCheckBox->isChecked();
 		m_pOptions->bKeepToolsOnTop      = m_ui.KeepToolsOnTopCheckBox->isChecked();
+		m_pOptions->bKeepEditorsOnTop    = m_ui.KeepEditorsOnTopCheckBox->isChecked();
 		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
 		m_pOptions->bShiftKeyModifier    = m_ui.ShiftKeyModifierCheckBox->isChecked();
 		m_pOptions->bMidButtonModifier   = m_ui.MidButtonModifierCheckBox->isChecked();

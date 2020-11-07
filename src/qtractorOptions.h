@@ -72,6 +72,7 @@ public:
 	bool    bCompletePath;
 	bool    bPeakAutoRemove;
 	bool    bKeepToolsOnTop;
+	bool    bKeepEditorsOnTop;
 	int     iDisplayFormat;
 	int     iBaseFontSize;
 

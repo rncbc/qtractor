@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Added option to keep MIDI clip editor windows (aka. piano-roll)
+  always on top of the main window (cf. View/Options.../General/
+  Keep editor windows always on top). (EXPERIMENTAL)
+
 - MIDI clip editor status-bar labels are not stretched to whole text
   size anymore, most specially for the current file complete path.  
 
@@ -27,7 +31,7 @@ GIT HEAD
   keys on MIDI clip editor's virtual piano keyboard, are now fully
   highlighted.
 
-- Plugin search paths (View > Options... > Plugins > Paths) now lists
+- Plugin search paths (cf. View/Options.../Plugins/Paths) now showing
   all the default and actual existing paths, instead of a blank list.
 
 - Undimmed octave divider lines on the piano-roll.
