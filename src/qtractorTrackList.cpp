@@ -328,7 +328,7 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 		QSettings& settings = pOptions->settings();
 		settings.beginGroup("Tracks");
 		const QByteArray& aHeaderView
-			= pOptions->settings().value("/TrackList/HeaderView").toByteArray();
+			= settings.value("/TrackList/HeaderView").toByteArray();
 		if (!aHeaderView.isEmpty())
 			m_pHeader->restoreState(aHeaderView);
 		settings.endGroup();
