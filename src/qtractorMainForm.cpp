@@ -7670,7 +7670,7 @@ void qtractorMainForm::slowTimerSlot (void)
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(pos.frame);
 				if (pNode && pos.frame >= pNode->frame && (
-					qAbs(pNode->tempo - pos.beats_per_minute) > 0.01f ||
+					qAbs(pNode->tempo - pos.beats_per_minute) > 0.001f ||
 					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
 					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {
 				#ifdef CONFIG_DEBUG

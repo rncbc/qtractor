@@ -6,15 +6,16 @@ ChangeLog
 
 GIT HEAD
 
+- Tempo (BPM) entry may now specified with arbitrary precision, with
+  at most 3 decimal positions to the fractional part; integer values
+  are now also displayed with no decimal point. (EXPERIMENTAL)
+
 - Added option to keep MIDI clip editor windows (aka. piano-roll)
   always on top of the main window (cf. View/Options.../General/
   Keep editor windows always on top). (EXPERIMENTAL)
 
 - MIDI clip editor status-bar labels are not stretched to whole text
   size anymore, most specially for the current file complete path.  
-
-- Tempo (BPM) entry may still only show one decimal figure, but any
-  fractional should now be honored internally. (EXPERIMENTAL)
 
 
 0.9.18  2020-10-30  A Fall'20 Release.

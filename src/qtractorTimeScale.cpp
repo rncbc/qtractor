@@ -415,13 +415,13 @@ qtractorTimeScale::Node *qtractorTimeScale::addNode (
 		pNode->beatType = iBeatType;
 		pNode->beatsPerBar = iBeatsPerBar;
 		pNode->beatDivisor = iBeatDivisor;
-	} else if (pPrev && qAbs(pPrev->tempo - fTempo) < 0.01f
+	} else if (pPrev && qAbs(pPrev->tempo - fTempo) < 0.001f
 		&& pPrev->beatType == iBeatType
 		&& pPrev->beatsPerBar == iBeatsPerBar
 		&& pPrev->beatDivisor == iBeatDivisor) {
 		// No need for a new node...
 		return pPrev;
-	} else if (pNext && qAbs(pNext->tempo - fTempo) < 0.01f
+	} else if (pNext && qAbs(pNext->tempo - fTempo) < 0.001f
 		&& pNext->beatType == iBeatType
 		&& pNext->beatsPerBar == iBeatsPerBar
 		&& pNext->beatDivisor == iBeatDivisor) {

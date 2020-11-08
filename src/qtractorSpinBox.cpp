@@ -612,7 +612,7 @@ bool qtractorTempoSpinBox::updateValue ( float fTempo,
 	if (iBeatDivisor > 8)
 		iBeatDivisor = 8;
 
-	if (qAbs(m_fTempo - fTempo) > 0.01f) {
+	if (qAbs(m_fTempo - fTempo) > 0.001f) {
 		m_fTempo = fTempo;
 		++m_iValueChanged;
 	}
@@ -696,19 +696,25 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
 	const int iCursorPos = pLineEdit->cursorPosition();
 	const QString& sText = pLineEdit->text();
-	if (iCursorPos < sText.section(' ', 0, 0).length() + 1) {
+	const int iLength = sText.indexOf(' ');
+	if (iCursorPos < iLength + 1) {
 	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 		const QChar& decp = QLocale().decimalPoint().at(0);
 	#else
 		const QChar& decp = QLocale().decimalPoint();
 	#endif
-		if (iCursorPos > sText.section(decp, 0, 0).length())
-			setTempo(tempo() + 0.1f * float(iSteps));
-		else
-			setTempo(tempo() + float(iSteps));
+		float fStep = 1.0f;
+		const int iDecimalPos = sText.indexOf(decp);
+		if (iDecimalPos >= 0 && iDecimalPos < iCursorPos) {
+			int i = iCursorPos - iDecimalPos;
+			while (--i > 0) fStep *= 0.1f;
+		}
+		setTempo(tempo() + fStep * float(iSteps));
+		pLineEdit->setCursorPosition(iCursorPos
+			+ pLineEdit->text().indexOf(' ') - iLength);
 	}
 	else
-	if (iCursorPos > sText.section('/', 0, 0).length())
+	if (iCursorPos > sText.indexOf('/'))
 		setBeatDivisor(int(beatDivisor()) + iSteps);
 	else
 		setBeatsPerBar(int(beatsPerBar()) + iSteps);
@@ -758,7 +764,7 @@ QString qtractorTempoSpinBox::textFromValue ( float fTempo,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor) const
 {
 	return QString("%1 %2/%3")
-		.arg(fTempo, 0, 'f', 1)
+		.arg(fTempo)
 		.arg(iBeatsPerBar)
 		.arg(1 << iBeatDivisor);
 }
