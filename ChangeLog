@@ -6,9 +6,9 @@ ChangeLog
 
 GIT HEAD
 
-- Tempo (BPM) entry may now specified with arbitrary precision, with
-  at most 3 decimal positions to the fractional part; integer values
-  are now also displayed with no decimal point. (EXPERIMENTAL)
+- Tempo (BPM) entry may now be specified with arbitrary precision, to
+  at most 3 decimal positions in fractional part, while integer whole
+  values are displayed with no decimal point. (EXPERIMENTAL)
 
 - Added option to keep MIDI clip editor windows (aka. piano-roll)
   always on top of the main window (cf. View/Options.../General/
