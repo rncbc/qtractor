@@ -1064,7 +1064,7 @@ void qtractorTimeScaleForm::tempoTap (void)
 		m_fTempoTap  = fTempoTap;
 	}
 	if (++m_iTempoTap > 2) {
-		m_ui.TempoSpinBox->setTempo(::rintf(m_fTempoTap), false);
+		m_ui.TempoSpinBox->setTempo(::rintf(m_fTempoTap), true);
 		m_iTempoTap	 = 1; // Median-like averaging...
 		m_fTempoTap  = fTempoTap;
 	}
