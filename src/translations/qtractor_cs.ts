@@ -14384,17 +14384,17 @@ Chcete zahodit tyto změny?</translation>
 <context>
     <name>qtractorTimeSpinBox</name>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="424"/>
+        <location filename="../qtractorSpinBox.cpp" line="427"/>
         <source>&amp;Frames</source>
         <translation>&amp;Snímky</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="429"/>
+        <location filename="../qtractorSpinBox.cpp" line="432"/>
         <source>&amp;Time</source>
         <translation>Č&amp;as</translation>
     </message>
     <message>
-        <location filename="../qtractorSpinBox.cpp" line="434"/>
+        <location filename="../qtractorSpinBox.cpp" line="437"/>
         <source>&amp;BBT</source>
         <translation>&amp;TDT</translation>
     </message>
