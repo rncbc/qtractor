@@ -5161,7 +5161,7 @@ void qtractorMainForm::viewOptions (void)
 			iNeedRestart |= RestartProgram;
 		if (( bOldKeepEditorsOnTop && !m_pOptions->bKeepEditorsOnTop) ||
 			(!bOldKeepEditorsOnTop &&  m_pOptions->bKeepEditorsOnTop))
-			iNeedRestart |= RestartSession;
+			updateEditorForms();
 		if (sOldMessagesFont != m_pOptions->sMessagesFont)
 			updateMessagesFont();
 		if (( bOldMessagesLimit && !m_pOptions->bMessagesLimit) ||
@@ -7508,6 +7508,30 @@ void qtractorMainForm::removeEditorForm ( qtractorMidiEditorForm *pEditorForm )
 	const int iEditorForm = m_editors.indexOf(pEditorForm);
 	if (iEditorForm >= 0)
 		m_editors.removeAt(iEditorForm);
+}
+
+
+void qtractorMainForm::updateEditorForms (void)
+{
+	if (m_pOptions == nullptr)
+		return;
+
+	Qt::WindowFlags wflags = Qt::Window;
+	if (m_pOptions->bKeepEditorsOnTop)
+		wflags |= Qt::Tool;
+
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	while (iter.hasNext()) {
+		qtractorMidiEditorForm *pForm = iter.next();
+		const bool bVisible = pForm->isVisible();
+		if (m_pOptions->bKeepEditorsOnTop)
+			pForm->setParent(this);
+		else
+			pForm->setParent(nullptr);
+		pForm->setWindowFlags(wflags);
+		if (bVisible)
+			pForm->show();
+	}
 }
 
 
