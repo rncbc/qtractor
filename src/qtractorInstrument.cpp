@@ -217,11 +217,13 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 		++iLine;
 		const QString& sLine = ts.readLine().simplified();
 		// If not empty, nor a comment, call the server...
-		if (sLine.isEmpty() || sLine[0] == ';')
+		if (sLine.isEmpty() || sLine.at(0) == ';')
 			continue;
 
 		// Check for section intro line...
-		if (sLine[0] == '.') {
+		if (sLine.at(0) == '.') {
+			pInstrument = nullptr;
+			pData = nullptr;
 			if (sLine == ".Patch Names") {
 				sect = PatchNames;
 			//	m_patches.clear();
@@ -272,6 +274,11 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					pData->setName(sTitle);
 					break;
 				}
+				if (pData == nullptr) {
+					qWarning("%s(%d): %s: Untitled .Patch Names entry.",
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
+					break;
+				}
 				match = rxBasedOn.match(sLine);
 				if (match.hasMatch()) {
 					pData->setBasedOn(match.captured(1));
@@ -293,6 +300,11 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					const QString& sTitle = match.captured(1);
 					pData = &(m_notes[sTitle]);
 					pData->setName(sTitle);
+					break;
+				}
+				if (pData == nullptr) {
+					qWarning("%s(%d): %s: Untitled .Note Names entry.",
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 					break;
 				}
 				match = rxBasedOn.match(sLine);
@@ -318,6 +330,11 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					pData->setName(sTitle);
 					break;
 				}
+				if (pData == nullptr) {
+					qWarning("%s(%d): %s: Untitled .Controller Names entry.",
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
+					break;
+				}
 				match = rxBasedOn.match(sLine);
 				if (match.hasMatch()) {
 					pData->setBasedOn(match.captured(1));
@@ -339,6 +356,11 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					const QString& sTitle = match.captured(1);
 					pData = &(m_rpns[sTitle]);
 					pData->setName(sTitle);
+					break;
+				}
+				if (pData == nullptr) {
+					qWarning("%s(%d): %s: Untitled .RPN Names entry.",
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
 					break;
 				}
 				match = rxBasedOn.match(sLine);
@@ -364,6 +386,11 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					pData->setName(sTitle);
 					break;
 				}
+				if (pData == nullptr) {
+					qWarning("%s(%d): %s: Untitled .NRPN Names entry.",
+						sFilename.toUtf8().constData(), iLine, sLine.toUtf8().constData());
+					break;
+				}
 				match = rxBasedOn.match(sLine);
 				if (match.hasMatch()) {
 					pData->setBasedOn(match.captured(1));
@@ -386,6 +413,12 @@ bool qtractorInstrumentList::load ( const QString& sFilename )
 					pInstrument = &((*this)[sTitle]);
 					pInstrument->setInstrumentName(sTitle);
 					break;
+				}
+				if (pInstrument == nullptr) {
+					// New instrument definition (use filename as default)
+					const QString& sTitle = QFileInfo(sFilename).completeBaseName();
+					pInstrument = &((*this)[sTitle]);
+					pInstrument->setInstrumentName(sTitle);
 				}
 				match = rxBankSel.match(sLine);
 				if (match.hasMatch()) {

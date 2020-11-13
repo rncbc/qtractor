@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed immediate crash when loading untitled or unnamed Instrument
+  Definitions files (*.ins): base file-name is now taken as default 
+  instrument definition name or title. (EXPERIMENTAL)
+
 - Tempo (BPM) entry may now be specified with arbitrary precision, to
   at most 3 decimal positions in fractional part, while integer whole
   values are displayed with no decimal point. (EXPERIMENTAL)

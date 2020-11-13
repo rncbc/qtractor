@@ -292,22 +292,22 @@ End:	%3	Length:	%4</source>
         <translation>%1 (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="478"/>
+        <location filename="../qtractorInstrument.cpp" line="511"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation>Cakewalkのインストルメント定義ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="480"/>
+        <location filename="../qtractorInstrument.cpp" line="513"/>
         <source>File</source>
         <translation>ファイル</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="482"/>
+        <location filename="../qtractorInstrument.cpp" line="515"/>
         <source>Date</source>
         <translation>日付</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="704"/>
+        <location filename="../qtractorInstrument.cpp" line="737"/>
         <source>%1 Bank %2</source>
         <translation>%1 バンク %2</translation>
     </message>

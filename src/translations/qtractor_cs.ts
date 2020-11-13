@@ -128,22 +128,22 @@ Konec:	%3	Délka:	%4</translation>
         <translation>Vyvážení sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="478"/>
+        <location filename="../qtractorInstrument.cpp" line="511"/>
         <source>Cakewalk Instrument Definition File</source>
         <translation>Soubor s Cakewalk definicí nástroje</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="480"/>
+        <location filename="../qtractorInstrument.cpp" line="513"/>
         <source>File</source>
         <translation>Soubor</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="482"/>
+        <location filename="../qtractorInstrument.cpp" line="515"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrument.cpp" line="704"/>
+        <location filename="../qtractorInstrument.cpp" line="737"/>
         <source>%1 Bank %2</source>
         <translation>%1 Banka %2</translation>
     </message>
