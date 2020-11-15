@@ -240,7 +240,7 @@ bool qtractorEngine::open (void)
 		pBus = pBus->next();
 	}
 
-	// Nows time to activate...
+	// Now's the right time to activate...
 	if (!activate())
 		return false;
 
