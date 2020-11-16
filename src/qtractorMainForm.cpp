@@ -7524,10 +7524,12 @@ void qtractorMainForm::updateEditorForms (void)
 	while (iter.hasNext()) {
 		qtractorMidiEditorForm *pForm = iter.next();
 		const bool bVisible = pForm->isVisible();
+	#if 0//QTRACTOR_MIDI_EDITOR_TOOL_PARENT
 		if (m_pOptions->bKeepEditorsOnTop)
 			pForm->setParent(this);
 		else
 			pForm->setParent(nullptr);
+	#endif
 		pForm->setWindowFlags(wflags);
 		if (bVisible)
 			pForm->show();
