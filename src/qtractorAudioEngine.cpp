@@ -774,14 +774,6 @@ bool qtractorAudioEngine::activate (void)
 	// Time to activate ourselves...
 	jack_activate(m_pJackClient);
 
-	// HACK: Make sure we'll wait enough time (3 seconds)
-	// to the JACK server starting up and stabilizing...
-	if (m_pJackClient) {
-		const unsigned int iFrameTime = (3 * sampleRate());
-		while (jackFrameTime() < iFrameTime)
-			QThread::msleep(200);
-	}
-
 	// Now, do all auto-connection stuff (if applicable...)
 	if (m_bPlayerBus && m_pPlayerBus)
 		m_pPlayerBus->autoConnect();
