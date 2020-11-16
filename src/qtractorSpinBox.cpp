@@ -25,7 +25,7 @@
 #include <QLineEdit>
 #include <QMenu>
 
-#if 0//QTRACTOR_TEMPO_SPINBOX_LOCALE
+#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
 #include <QLocale>
 #endif
 
@@ -667,7 +667,7 @@ QValidator::State qtractorTempoSpinBox::validate ( QString& sText, int& iPos ) c
 		return QValidator::Acceptable;
 
 	const QChar& ch = sText.at(iPos - 1);
-#if 0//QTRACTOR_TEMPO_SPINBOX_LOCALE
+#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 	const QChar& decp = QLocale().decimalPoint().at(0);
 #else
@@ -705,7 +705,7 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 	const QString& sText = pLineEdit->text();
 	const int iLength = sText.indexOf(' ');
 	if (iCursorPos < iLength + 1) {
-	#if 0//QTRACTOR_TEMPO_SPINBOX_LOCALE
+	#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
 	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 		const QChar& decp = QLocale().decimalPoint().at(0);
 	#else
@@ -749,7 +749,7 @@ QAbstractSpinBox::StepEnabled qtractorTempoSpinBox::stepEnabled (void) const
 // Value/text format converters.
 float qtractorTempoSpinBox::tempoFromText ( const QString& sText ) const
 {
-#if 0//QTRACTOR_TEMPO_SPINBOX_LOCALE
+#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
 	bool ok = false;
 	const QString& sTempo = sText.section(' ', 0, 0);
 	float fTempo = QLocale().toFloat(sTempo, &ok);
@@ -782,7 +782,7 @@ QString qtractorTempoSpinBox::textFromValue ( float fTempo,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor) const
 {
 	return QString("%1 %2/%3")
-	#if 0//QTRACTOR_TEMPO_SPINBOX_LOCALE
+	#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
 		.arg(QLocale().toString(fTempo))
 	#else
 		.arg(fTempo)
