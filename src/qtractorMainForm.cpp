@@ -1315,7 +1315,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	Qt::WindowFlags wflags = Qt::Window;
 	if (m_pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::Tool;
-		wflags |= Qt::WindowStaysOnTopHint;
+	//	wflags |= Qt::WindowStaysOnTopHint;
 		pParent = this;
 	}
 	// Other child/tools forms are also created right away...
