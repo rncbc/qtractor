@@ -1199,7 +1199,8 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 #if 0//QTRACTOR_VST_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bKeepToolsOnTop) {
-		wflags |= Qt::WindowStaysOnTopHint; // Qt::Tool, formerly.
+		wflags |= Qt::Tool;
+		wflags |= Qt::WindowStaysOnTopHint;
 		// Make sure it has a parent...
 		if (pParent == nullptr)
 			pParent = qtractorMainForm::getInstance();

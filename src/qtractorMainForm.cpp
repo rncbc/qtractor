@@ -1315,6 +1315,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	Qt::WindowFlags wflags = Qt::Window;
 	if (m_pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::Tool;
+		wflags |= Qt::WindowStaysOnTopHint;
 		pParent = this;
 	}
 	// Other child/tools forms are also created right away...
@@ -7517,8 +7518,10 @@ void qtractorMainForm::updateEditorForms (void)
 		return;
 
 	Qt::WindowFlags wflags = Qt::Window;
-	if (m_pOptions->bKeepEditorsOnTop)
+	if (m_pOptions->bKeepEditorsOnTop) {
 		wflags |= Qt::Tool;
+		wflags |= Qt::WindowStaysOnTopHint;
+	}
 
 	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
 	while (iter.hasNext()) {

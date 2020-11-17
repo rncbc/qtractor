@@ -1133,6 +1133,7 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepEditorsOnTop) {
 			wflags |= Qt::Tool;
+			wflags |= Qt::WindowStaysOnTopHint;
 		#if 0//QTRACTOR_MIDI_EDITOR_TOOL_PARENT
 			// Make sure it has a parent...
 			if (pParent == nullptr)
