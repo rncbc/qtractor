@@ -13917,7 +13917,7 @@ Deseja aplicar as modificações?</translation>
 <context>
     <name>qtractorTempoAdjustForm</name>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="287"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="303"/>
         <source>BBT</source>
         <translation>CPS (Compasso Pulso Subpulso)</translation>
     </message>
@@ -13927,12 +13927,12 @@ Deseja aplicar as modificações?</translation>
         <translation>T&amp;ap</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="282"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="298"/>
         <source>Time</source>
         <translation>Tempo (h:m:s)</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="151"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="167"/>
         <source>Range</source>
         <translation>Limites</translation>
     </message>
@@ -13947,32 +13947,32 @@ Deseja aplicar as modificações?</translation>
         <translation>&amp;Detectar</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="192"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="208"/>
         <source>&amp;Length:</source>
         <translation>Com&amp;primento:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="221"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="237"/>
         <source>&amp;Beats:</source>
         <translation>&amp;Pulsação:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="244"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="260"/>
         <source>A&amp;djust</source>
         <translation>A&amp;juste</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="208"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="224"/>
         <source>Range length</source>
         <translation>Tamanho dos limites</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="267"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="283"/>
         <source>Format</source>
         <translation>Formato</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="277"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="293"/>
         <source>Frames</source>
         <translation>Amostras</translation>
     </message>
@@ -13986,12 +13986,12 @@ Do you want to apply the changes?</source>
 Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="179"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="195"/>
         <source>Range start</source>
         <translation>Começo do limite</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="231"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="247"/>
         <source>Range beats</source>
         <translation>Tamanho do compasso</translation>
     </message>
@@ -14011,12 +14011,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Metrônomo</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="163"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="179"/>
         <source>&amp;Start:</source>
         <translation>&amp;Início:</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.ui" line="273"/>
+        <location filename="../qtractorTempoAdjustForm.ui" line="289"/>
         <source>Time display format</source>
         <translation>Formato de exibição do tempo</translation>
     </message>

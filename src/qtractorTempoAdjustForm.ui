@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
-    <height>120</height>
+    <width>640</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -74,8 +74,8 @@
          <widget class="qtractorTempoSpinBox" name="TempoSpinBox">
           <property name="minimumSize">
            <size>
-            <width>120</width>
-            <height>0</height>
+            <width>100</width>
+            <height>10</height>
            </size>
           </property>
           <property name="toolTip">
@@ -129,7 +129,23 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="6">
+        <item row="0" column="6">
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint">
+           <size>
+            <width>8</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="0" colspan="7">
          <spacer>
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -137,7 +153,7 @@
           <property name="sizeHint">
           <size>
            <width>20</width>
-           <height>0</height>
+           <height>20</height>
           </size>
           </property>
          </spacer>
