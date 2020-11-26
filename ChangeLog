@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed VST3 number of channels query/report. (EXPERIMENTAL)
+
 - Fixed immediate crash when loading untitled or unnamed Instrument
   Definitions files (*.ins): base file-name is now taken as default 
   instrument definition name or title. (EXPERIMENTAL)
