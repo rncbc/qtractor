@@ -13520,7 +13520,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginSelectForm.cpp" line="343"/>
         <source>GUI</source>
-        <translation>IGU</translation>
+        <translation>IUG</translation>
     </message>
     <message>
         <location filename="../qtractorPluginSelectForm.cpp" line="345"/>
