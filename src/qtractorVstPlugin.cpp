@@ -1213,6 +1213,7 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 
 	// Final stabilization...
 	updateEditorTitle();
+	moveWidgetPos(m_pEditorWidget, editorPos());
 	setEditorVisible(true);
 	idleEditor();
 }
@@ -1261,9 +1262,7 @@ void qtractorVstPlugin::idleEditor (void)
 void qtractorVstPlugin::setEditorVisible ( bool bVisible )
 {
 	if (m_pEditorWidget) {
-		if (bVisible)
-			moveWidgetPos(m_pEditorWidget, editorPos());
-		else
+		if (!bVisible)
 			setEditorPos(m_pEditorWidget->pos());
 		m_pEditorWidget->setVisible(bVisible);
 		if (bVisible) {
