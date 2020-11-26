@@ -616,7 +616,7 @@ bool qtractorTempoSpinBox::updateValue ( float fTempo,
 		iBeatDivisor = 8;
 
 	if (qAbs(m_fTempo - fTempo) > 0.001f) {
-		m_fTempo = fTempo;
+		m_fTempo = 0.01f * ::roundf(100.0f * fTempo);
 		++m_iValueChanged;
 	}
 
