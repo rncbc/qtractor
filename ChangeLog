@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Track colors saturation introduced as yet another eye-candy option
+  (cf. View/Options.../Display/Track color saturation) (EXPERIMENTAL)
+
 - Fixed VST3 number of channels query/report. (EXPERIMENTAL)
 
 - Fixed immediate crash when loading untitled or unnamed Instrument

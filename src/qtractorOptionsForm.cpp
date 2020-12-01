@@ -506,6 +506,9 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.UseNativeDialogsCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.TrackColorSaturationSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -653,6 +656,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	// Dialogs preferences...
 	m_ui.UseNativeDialogsCheckBox->setChecked(m_pOptions->bUseNativeDialogs);
+
+	// Default track color saturation issue..
+	m_ui.TrackColorSaturationSpinBox->setValue(m_pOptions->iTrackColorSaturation);
 
 	// Logging options...
 	m_ui.MessagesLogCheckBox->setChecked(m_pOptions->bMessagesLog);
@@ -885,6 +891,8 @@ void qtractorOptionsForm::accept (void)
 		// Dialogs preferences...
 		m_pOptions->bUseNativeDialogs = m_ui.UseNativeDialogsCheckBox->isChecked();
 		m_pOptions->bDontUseNativeDialogs = !m_pOptions->bUseNativeDialogs;
+		// Default track color saturation issue..
+		m_pOptions->iTrackColorSaturation = m_ui.TrackColorSaturationSpinBox->value();
 		// Custom options..
 		if (m_ui.CustomColorThemeComboBox->currentIndex() > 0)
 			m_pOptions->sCustomColorTheme = m_ui.CustomColorThemeComboBox->currentText();

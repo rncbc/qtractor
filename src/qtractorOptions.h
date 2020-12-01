@@ -266,6 +266,7 @@ public:
 	bool bTrackViewSnapGrid;
 	bool bTrackViewToolTips;
 	bool bTrackViewCurveEdit;
+	int  iTrackColorSaturation;
 
 	// MIDI Editor options...
 	bool bMidiMenubar;

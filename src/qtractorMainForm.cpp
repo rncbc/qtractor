@@ -1504,6 +1504,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_pOptions->bAudioWsolaTimeStretch);
 	qtractorAudioBuffer::setDefaultWsolaQuickSeek(
 		m_pOptions->bAudioWsolaQuickSeek);
+	qtractorTrack::setTrackColorSaturation(
+		m_pOptions->iTrackColorSaturation);
 
 	// Set default custom spin-box edit mode (deferred)...
 	qtractorSpinBox::setEditMode(qtractorSpinBox::DeferredMode);
@@ -5070,6 +5072,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
 	const int     iOldMidiMetroOffset    = m_pOptions->iMidiMetroOffset;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
+	const int     iOldTrackColorSaturation = m_pOptions->iTrackColorSaturation;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 #ifdef CONFIG_LV2
@@ -5256,6 +5259,10 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
 			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
 			updateSyncViewHold();
+		// Default track color saturation factor [0..400].
+		if (iOldTrackColorSaturation != m_pOptions->iTrackColorSaturation)
+			qtractorTrack::setTrackColorSaturation(
+				m_pOptions->iTrackColorSaturation);
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
