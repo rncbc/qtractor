@@ -162,11 +162,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 //	m_ui.timeToolbar->addSeparator();
 
 	// Time-signature spin-box.
-	const QString sTempo("999.9 9/9");
+	const QString sTempo("+999 9/9");
 	m_pTempoSpinBox = new qtractorTempoSpinBox(m_ui.timeToolbar);
-//	m_pTempoSpinBox->setDecimals(1);
-//	m_pTempoSpinBox->setMinimum(1.0f);
-//	m_pTempoSpinBox->setMaximum(1000.0f);
 //	m_pTempoSpinBox->setFont(font);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	m_pTempoSpinBox->setMinimumSize(QSize(fm.horizontalAdvance(sTempo) + d, d) + pad);
