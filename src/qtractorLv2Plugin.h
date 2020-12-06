@@ -445,6 +445,12 @@ protected:
 	void lv2_patch_properties(const char *pszPatch);
 #endif
 
+#ifdef CONFIG_LV2_STATE
+	// Save/restore complete plugin state into/from a string.
+	QString lv2_state_save();
+	bool lv2_state_restore(const QString& s);
+#endif	// CONFIG_LV2_STATE
+
 private:
 
 	// Instance variables.
