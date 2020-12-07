@@ -744,6 +744,7 @@ bool qtractorPlugin::loadPresetFile ( const QString& sFilename )
 // Save plugin preset to xml file.
 bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 {
+	freezeValues();
 	freezeConfigs();
 
 	QFileInfo fi(sFilename);
@@ -984,7 +985,7 @@ void qtractorPlugin::realizeValues (void)
 	ValueIndex::ConstIterator param = m_values.index.constBegin();
 	const ValueIndex::ConstIterator& param_end = m_values.index.constEnd();
 	for ( ; param != param_end; ++param) {
-		unsigned long iIndex = param.key();
+		const unsigned long iIndex = param.key();
 		Param *pParam = findParam(iIndex);
 		const QString& sName = m_values.names.value(iIndex);
 		if (!sName.isEmpty() && !(pParam && sName == pParam->name())) {
@@ -1033,7 +1034,7 @@ void qtractorPlugin::loadValues ( QDomElement *pElement, Values& values )
 			continue;
 		// Check for config item...
 		if (eParam.tagName() == "param") {
-			unsigned long iIndex = eParam.attribute("index").toULong();
+			const unsigned long iIndex = eParam.attribute("index").toULong();
 			const QString& sName = eParam.attribute("name");
 			if (!sName.isEmpty())
 				values.names.insert(iIndex, sName);
@@ -1067,6 +1068,7 @@ void qtractorPlugin::saveConfigs (
 void qtractorPlugin::saveValues (
 	QDomDocument *pDocument, QDomElement *pElement )
 {
+#if 0
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
@@ -1078,6 +1080,20 @@ void qtractorPlugin::saveValues (
 			pDocument->createTextNode(QString::number(pParam->value())));
 		pElement->appendChild(eParam);
 	}
+#else
+	ValueIndex::ConstIterator param = m_values.index.constBegin();
+	const ValueIndex::ConstIterator& param_end = m_values.index.constEnd();
+	for ( ; param != param_end; ++param) {
+		const unsigned long iIndex = param.key();
+		const QString& sName = m_values.names.value(iIndex);
+		QDomElement eParam = pDocument->createElement("param");
+		eParam.setAttribute("name", sName);
+		eParam.setAttribute("index", QString::number(iIndex));
+		eParam.appendChild(
+			pDocument->createTextNode(QString::number(param.value())));
+		pElement->appendChild(eParam);
+	}
+#endif
 }
 
 
@@ -1428,6 +1444,7 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 bool qtractorPlugin::savePlugin (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
+	freezeValues();
 	freezeConfigs();
 
 	qtractorPluginType *pType = type();
@@ -1471,6 +1488,7 @@ bool qtractorPlugin::savePlugin (
 
 	// May release plugin state...
 	releaseConfigs();
+	releaseValues();
 
 	return true;
 }
@@ -1812,8 +1830,8 @@ bool qtractorPluginList::resetChannels (
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
 		if (bReset && iChannels > 0) {
-			pPlugin->freezeConfigs();
 			pPlugin->freezeValues();
+			pPlugin->freezeConfigs();
 		}
 		pPlugin->setChannels(iChannels);
 		if (bReset && iChannels > 0) {

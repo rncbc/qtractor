@@ -4666,7 +4666,8 @@ void qtractorLv2Plugin::freezeConfigs (void)
 		const uint32_t  size = data.size();
 		const LV2_URID  type = lv2_urid_map(QTRACTOR_LV2_STATE_TYPE);
 		const uint32_t flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;
-		lv2_state_store(key, value, size, type, flags);
+		if (lv2_state_store(key, value, size, type, flags) == LV2_STATE_SUCCESS)
+			qtractorPlugin::clearValues();
 	} else {
 		const LV2_State_Interface *state = lv2_state_interface(0);
 		if (state) {
