@@ -4658,6 +4658,16 @@ void qtractorLv2Plugin::freezeConfigs (void)
 
 #ifdef CONFIG_LV2_STATE
 
+#if 1//CONFIG_LV2_STATE_LEGACY
+	const LV2_State_Interface *state = lv2_state_interface(0);
+	if (state) {
+		LV2_Handle handle = lv2_handle(0);
+		if (handle)
+			(*state->save)(handle, qtractor_lv2_state_store, this,
+				LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+	}
+#endif
+
 	const QString& s = lv2_state_save();
 	if (!s.isEmpty()) {
 		const QByteArray data(s.toUtf8());
@@ -4666,16 +4676,12 @@ void qtractorLv2Plugin::freezeConfigs (void)
 		const uint32_t  size = data.size();
 		const LV2_URID  type = lv2_urid_map(QTRACTOR_LV2_STATE_TYPE);
 		const uint32_t flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;
+	#if 1//CONFIG_LV2_STATE_LEGACY
+		lv2_state_store(key, value, size, type, flags);
+	#else
 		if (lv2_state_store(key, value, size, type, flags) == LV2_STATE_SUCCESS)
 			qtractorPlugin::clearValues();
-	} else {
-		const LV2_State_Interface *state = lv2_state_interface(0);
-		if (state) {
-			LV2_Handle handle = lv2_handle(0);
-			if (handle)
-				(*state->save)(handle, qtractor_lv2_state_store, this,
-					LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
-		}
+	#endif
 	}
 
 #endif	// CONFIG_LV2_STATE
@@ -4746,22 +4752,25 @@ void qtractorLv2Plugin::realizeConfigs (void)
 			m_lv2_state_ctypes.insert(sKey, type);
 	}
 
-	const unsigned short iInstances = instances();
-	for (unsigned short i = 0; i < iInstances; ++i) {
-		const LV2_State_Interface *state = lv2_state_interface(i);
-		if (state) {
-			LV2_Handle handle = lv2_handle(i);
-			if (handle)
-				(*state->restore)(handle, qtractor_lv2_state_retrieve, this,
-					LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
-		}
-	}
-
 	const QString& s = m_lv2_state_configs.value(QTRACTOR_LV2_STATE_KEY);
 	if (!s.isEmpty()) {
 		qtractorPlugin::clearValues();
 		lv2_state_restore(s);
 	}
+#if 1//CONFIG_LV2_STATE_LEGACY
+	else {
+		const unsigned short iInstances = instances();
+		for (unsigned short i = 0; i < iInstances; ++i) {
+			const LV2_State_Interface *state = lv2_state_interface(i);
+			if (state) {
+				LV2_Handle handle = lv2_handle(i);
+				if (handle)
+					(*state->restore)(handle, qtractor_lv2_state_retrieve, this,
+						LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+			}
+		}
+	}
+#endif
 
 #endif	// CONFIG_LV2_STATE
 
