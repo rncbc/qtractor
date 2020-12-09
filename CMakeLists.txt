@@ -178,13 +178,14 @@ if (POLICY CMP0075)
 endif ()
 
 # Check for Qt
-find_package (Qt5 REQUIRED COMPONENTS Core Gui Widgets Xml)
+find_package (QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
+find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Xml)
 
 if (CONFIG_XUNIQUE)
-  find_package (Qt5 REQUIRED COMPONENTS Network)
+  find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Network)
 endif ()
 
-find_package (Qt5LinguistTools)
+find_package (Qt${QT_VERSION_MAJOR}LinguistTools)
 
 include (CheckIncludeFile)
 include (CheckIncludeFiles)

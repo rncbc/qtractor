@@ -308,12 +308,12 @@ set (TRANSLATIONS
   translations/qtractor_ru.ts
 )
 
-qt5_add_translation ( QM_FILES ${TRANSLATIONS} )
-add_custom_target( translations ALL DEPENDS ${QM_FILES} )
+qt_wrap_ui (UI_SOURCES ${FORMS})
+qt_wrap_cpp (MOC_SOURCES ${HEADERS})
+qt_add_resources (QRC_SOURCES ${RESOURCES})
+qt_add_translation (QM_FILES ${TRANSLATIONS})
 
-qt5_wrap_ui (UI_SOURCES ${FORMS})
-qt5_wrap_cpp (MOC_SOURCES ${HEADERS})
-qt5_add_resources (QRC_SOURCES ${RESOURCES})
+add_custom_target (translations ALL DEPENDS ${QM_FILES})
 
 if (WIN32)
   set (RC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/win32/${PROJECT_NAME}.rc)
@@ -373,11 +373,11 @@ if (APPLE)
   set_target_properties (${PROJECT_NAME}_plugin_scan PROPERTIES MACOSX_BUNDLE true)
 endif ()
 
-target_link_libraries (${PROJECT_NAME} PRIVATE Qt5::Widgets Qt5::Xml)
-target_link_libraries (${PROJECT_NAME}_plugin_scan PRIVATE Qt5::Core)
+target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml)
+target_link_libraries (${PROJECT_NAME}_plugin_scan PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
 if (CONFIG_XUNIQUE)
-  target_link_libraries (${PROJECT_NAME} PRIVATE Qt5::Network)
+  target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
 endif ()
 
 if (CONFIG_LIBJACK)
