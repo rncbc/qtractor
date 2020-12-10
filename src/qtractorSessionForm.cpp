@@ -52,8 +52,10 @@ qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
 
 	// Initialize conveniency options...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions)
+	if (pOptions) {
+		m_ui.AutoSessionDirCheckBox->setChecked(pOptions->bAutoSessionDir);
 		pOptions->loadComboBoxHistory(m_ui.SessionDirComboBox);
+	}
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
 	m_ui.SessionDirComboBox->lineEdit()->setClearButtonEnabled(true);
@@ -87,6 +89,9 @@ qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
 	QObject::connect(m_ui.SessionNameLineEdit,
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changeSessionName(const QString&)));
+	QObject::connect(m_ui.AutoSessionDirCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changeAutoSessionDir(bool)));
 	QObject::connect(m_ui.SessionDirComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changeSessionDir(const QString&)));
@@ -142,7 +147,8 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	m_props = pSession->properties();
 
 	// HACK: Fix for an initial session directory proposal...
-	if (m_props.sessionName.isEmpty()) {
+	const bool bNoSessionName = m_props.sessionName.isEmpty();
+	if (bNoSessionName) {
 		QDir dir(m_props.sessionDir);
 		QStringList filters;
 		filters << dir.dirName() + '*';
@@ -173,7 +179,9 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	m_ui.VerticalZoomSpinBox->setValue(int(m_props.timeScale.verticalZoom()));
 
 	// Start editing session name, if empty...
-	if (m_props.sessionName.isEmpty())
+	m_ui.AutoSessionDirCheckBox->setEnabled(bNoSessionName);
+	m_ui.AutoSessionDirCheckBox->setVisible(bNoSessionName);
+	if (bNoSessionName)
 		m_ui.SessionNameLineEdit->setFocus();
 
 	// Backup clean.
@@ -236,8 +244,10 @@ void qtractorSessionForm::accept (void)
 
 	// Save other conveniency options...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions)
+	if (pOptions) {
+		pOptions->bAutoSessionDir = m_ui.AutoSessionDirCheckBox->isChecked();
 		pOptions->saveComboBoxHistory(m_ui.SessionDirComboBox);
+	}
 
 	// Just go with dialog acceptance.
 	QDialog::accept();
@@ -286,13 +296,29 @@ void qtractorSessionForm::changed (void)
 // Session name in-flight change.
 void qtractorSessionForm::changeSessionName ( const QString& sSessionName )
 {
-	if (m_props.sessionName.isEmpty()) {
+	if (m_ui.AutoSessionDirCheckBox->isChecked()
+		&& m_props.sessionName.isEmpty()) {
 		QFileInfo fi(m_props.sessionDir);
 		fi.setFile(QDir(fi.filePath()), sSessionName);
 		m_ui.SessionDirComboBox->setEditText(fi.absoluteFilePath());
 	}
 
 	changed();
+}
+
+
+// Session directory auto-name change.
+void qtractorSessionForm::changeAutoSessionDir ( bool bOn )
+{
+	QFileInfo fi(m_props.sessionDir);
+
+	if (bOn && m_props.sessionName.isEmpty()) {
+		const QString& sSessionName
+			= m_ui.SessionNameLineEdit->text();
+		fi.setFile(QDir(fi.filePath()), sSessionName);
+	}
+
+	m_ui.SessionDirComboBox->setEditText(fi.absoluteFilePath());
 }
 
 

@@ -390,32 +390,32 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="698"/>
+        <location filename="../qtractorOptions.cpp" line="700"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Benutzung: %1 [Optionen] [Sitzungsdatei]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="701"/>
+        <location filename="../qtractorOptions.cpp" line="703"/>
         <source>Options:</source>
         <translation>Optionen:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="704"/>
+        <location filename="../qtractorOptions.cpp" line="706"/>
         <source>Set session identification (uuid)</source>
         <translation>Setze Sitzungsidentifikation (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="707"/>
+        <location filename="../qtractorOptions.cpp" line="709"/>
         <source>Show help about command line options</source>
         <translation>Zeige Hilfe zu Kommandozeilenargumenten an</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="709"/>
+        <location filename="../qtractorOptions.cpp" line="711"/>
         <source>Show version information</source>
         <translation>Zeige Versionsinformation an</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="746"/>
+        <location filename="../qtractorOptions.cpp" line="748"/>
         <source>Option -s requires an argument (session-id).</source>
         <translation>Option -s benötigt ein Argument (session-id).</translation>
     </message>
@@ -13427,154 +13427,164 @@ Are you sure?</source>
         <translation>Sitzungsname</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="78"/>
+        <location filename="../qtractorSessionForm.ui" line="83"/>
         <source>&amp;Directory:</source>
         <translation>&amp;Verzeichnis:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="99"/>
+        <location filename="../qtractorSessionForm.ui" line="93"/>
+        <source>Whether to auto-name the session directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionForm.ui" line="96"/>
+        <source>&amp;Auto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorSessionForm.ui" line="129"/>
         <source>Session directory</source>
         <translation>Sitzungsverzeichnis</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="127"/>
+        <location filename="../qtractorSessionForm.ui" line="157"/>
         <source>Browse for session directory</source>
         <translation>Sitzungsverzeichnis auswählen</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="130"/>
+        <location filename="../qtractorSessionForm.ui" line="160"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="139"/>
+        <location filename="../qtractorSessionForm.ui" line="169"/>
         <source>&amp;Description:</source>
         <translation>&amp;Beschreibung:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="149"/>
+        <location filename="../qtractorSessionForm.ui" line="179"/>
         <source>Session description</source>
         <translation>Sitzungsbeschreibung</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="157"/>
+        <location filename="../qtractorSessionForm.ui" line="187"/>
         <source>Properties</source>
         <translation>Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="163"/>
+        <location filename="../qtractorSessionForm.ui" line="193"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="169"/>
+        <location filename="../qtractorSessionForm.ui" line="199"/>
         <source>Sample &amp;Rate:</source>
         <translation>Abtast&amp;rate:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="182"/>
+        <location filename="../qtractorSessionForm.ui" line="212"/>
         <source>Sample rate (Hz)</source>
         <translation>Abtastrate (Hz)</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="189"/>
+        <location filename="../qtractorSessionForm.ui" line="219"/>
         <source>44100</source>
         <translation>44100</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="194"/>
+        <location filename="../qtractorSessionForm.ui" line="224"/>
         <source>48000</source>
         <translation>48000</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="199"/>
+        <location filename="../qtractorSessionForm.ui" line="229"/>
         <source>96000</source>
         <translation>96000</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="204"/>
+        <location filename="../qtractorSessionForm.ui" line="234"/>
         <source>192000</source>
         <translation>192000</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="212"/>
+        <location filename="../qtractorSessionForm.ui" line="242"/>
         <source>&amp;Tempo:</source>
         <translation>&amp;Tempo:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="231"/>
+        <location filename="../qtractorSessionForm.ui" line="261"/>
         <source>Tempo (BPM) / Signature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="238"/>
+        <location filename="../qtractorSessionForm.ui" line="268"/>
         <source>T&amp;icks/Beat:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="251"/>
+        <location filename="../qtractorSessionForm.ui" line="281"/>
         <source>Resolution (ticks/beat; tpqn)</source>
         <translation>Auflösung (ticks/beat; tpqn)</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="286"/>
+        <location filename="../qtractorSessionForm.ui" line="316"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="292"/>
+        <location filename="../qtractorSessionForm.ui" line="322"/>
         <source>&amp;Snap/Beat:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="305"/>
+        <location filename="../qtractorSessionForm.ui" line="335"/>
         <source>Snap/beat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="315"/>
+        <location filename="../qtractorSessionForm.ui" line="345"/>
         <source>&amp;Pixels/Beat:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="328"/>
+        <location filename="../qtractorSessionForm.ui" line="358"/>
         <source>Pixels/beat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="347"/>
+        <location filename="../qtractorSessionForm.ui" line="377"/>
         <source>&amp;Horizontal Zoom:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="360"/>
+        <location filename="../qtractorSessionForm.ui" line="390"/>
         <source>Horizontal Zoom (%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="363"/>
-        <location filename="../qtractorSessionForm.ui" line="398"/>
+        <location filename="../qtractorSessionForm.ui" line="393"/>
+        <location filename="../qtractorSessionForm.ui" line="428"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="382"/>
+        <location filename="../qtractorSessionForm.ui" line="412"/>
         <source>&amp;Vertical Zoom:</source>
         <translation>&amp;Vertikale Vergrößerung:</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.ui" line="395"/>
+        <location filename="../qtractorSessionForm.ui" line="425"/>
         <source>Vertical Zoom (%)</source>
         <translation>Vertikale Vergrößerung (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="203"/>
-        <location filename="../qtractorSessionForm.cpp" line="259"/>
+        <location filename="../qtractorSessionForm.cpp" line="211"/>
+        <location filename="../qtractorSessionForm.cpp" line="269"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="204"/>
+        <location filename="../qtractorSessionForm.cpp" line="212"/>
         <source>Session directory does not exist:
 
 &quot;%1&quot;
@@ -13587,7 +13597,7 @@ Do you want to create it?</source>
 Wollen sie es anlegen?</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="260"/>
+        <location filename="../qtractorSessionForm.cpp" line="270"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -13595,7 +13605,7 @@ Do you want to apply the changes?</source>
 Wollen Sie diese übernehmen?</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="324"/>
+        <location filename="../qtractorSessionForm.cpp" line="350"/>
         <source>Session Directory</source>
         <translation>Sitzungsverzeichnis</translation>
     </message>

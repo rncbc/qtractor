@@ -182,6 +182,9 @@ public:
 	int     iBeatDivisor;
 	int     iLoopRecordingMode;
 
+	// Session directory auto-name default.
+	bool    bAutoSessionDir;
+
 	// Paste-repeat convenient defaults.
 	int     iPasteRepeatCount;
 	bool    bPasteRepeatPeriod;

@@ -216,6 +216,7 @@ void qtractorOptions::loadOptions (void)
 	iBeatsPerBar    = m_settings.value("/BeatsPerBar", 4).toInt();
 	iBeatDivisor    = m_settings.value("/BeatDivisor", 2).toInt();
 	iLoopRecordingMode = m_settings.value("/LoopRecordingMode", 0).toInt();
+	bAutoSessionDir = m_settings.value("/AutoSessionDir", true).toBool();
 	iPasteRepeatCount = m_settings.value("/PasteRepeatCount", 2).toInt();
 	bPasteRepeatPeriod = m_settings.value("/PasteRepeatPeriod", false).toInt();
 	sPluginSearch   = m_settings.value("/PluginSearch").toString();
@@ -519,6 +520,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/BeatsPerBar", iBeatsPerBar);
 	m_settings.setValue("/BeatDivisor", iBeatDivisor);
 	m_settings.setValue("/LoopRecordingMode", iLoopRecordingMode);
+	m_settings.setValue("/AutoSessionDir", bAutoSessionDir);
 	m_settings.setValue("/PasteRepeatCount", iPasteRepeatCount);
 	m_settings.setValue("/PasteRepeatPeriod", bPasteRepeatPeriod);
 	m_settings.setValue("/PluginSearch", sPluginSearch);
