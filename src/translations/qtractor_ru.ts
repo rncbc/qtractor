@@ -13446,13 +13446,13 @@ Are you sure?</source>
 <context>
     <name>qtractorSessionForm</name>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="211"/>
-        <location filename="../qtractorSessionForm.cpp" line="269"/>
+        <location filename="../qtractorSessionForm.cpp" line="212"/>
+        <location filename="../qtractorSessionForm.cpp" line="270"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="212"/>
+        <location filename="../qtractorSessionForm.cpp" line="213"/>
         <source>Session directory does not exist:
 
 &quot;%1&quot;
@@ -13461,7 +13461,7 @@ Do you want to create it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="270"/>
+        <location filename="../qtractorSessionForm.cpp" line="271"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -13470,7 +13470,7 @@ Do you want to apply the changes?</source>
 Вы хотите применить изменения?</translation>
     </message>
     <message>
-        <location filename="../qtractorSessionForm.cpp" line="350"/>
+        <location filename="../qtractorSessionForm.cpp" line="361"/>
         <source>Session Directory</source>
         <translation>Каталог файлов сеанса</translation>
     </message>

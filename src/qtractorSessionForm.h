@@ -53,7 +53,6 @@ protected slots:
 	void changeSessionName(const QString& sSessionName);
 	void changeAutoSessionDir(bool bOn);
 	void changeSessionDir(const QString& sSessionDir);
-	void finishSessionDir();
 	void browseSessionDir();
 
 protected:
@@ -67,6 +66,10 @@ private:
 
 	// Instance variables...
 	qtractorSession::Properties m_props;
+
+	bool    m_bNewSession;
+	QString m_sSessionDir;
+
 	int m_iDirtyCount;
 };
 
