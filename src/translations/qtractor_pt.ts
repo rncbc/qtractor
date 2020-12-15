@@ -2995,7 +2995,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5925"/>
         <source>Using: Qt %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Usando: Qt %1</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6484"/>
@@ -11645,12 +11645,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="502"/>
         <source>Whether to keep all editor windows on top of the main window</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre manter todas as janelas de edição na frente da janela principal</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="505"/>
         <source>Keep &amp;editor windows always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>Manter janela de &amp;edição sempre na frente</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1072"/>
@@ -11686,22 +11686,22 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2443"/>
         <source>&amp;Hold auto-scrolling (follow play-head) on edits</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Manter rolagem automática (Segue indicador de progresso) nas edições</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2469"/>
         <source>Trac&amp;k color saturation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Saturação de cor da &amp;Pista:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2488"/>
         <source>Default new track color saturation</source>
-        <translation type="unfinished"></translation>
+        <translation>Nova saturação de cor padrão</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2491"/>
         <source> %</source>
-        <translation type="unfinished"> %</translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2529"/>
@@ -13585,12 +13585,12 @@ Posso continuar?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="93"/>
         <source>Whether to auto-name the session directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre nomear automaticamente a pasta da sessão</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="96"/>
         <source>&amp;Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Automático</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="224"/>
