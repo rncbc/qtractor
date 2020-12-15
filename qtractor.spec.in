@@ -17,7 +17,7 @@
 
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 58
+%define release 59
 
 %define _prefix	@ac_prefix@
 
@@ -33,7 +33,7 @@ License:	GPL-2.0+
 Group:		Productivity/Multimedia/Sound/Midi
 Source0:	%{name}-%{version}.tar.gz
 URL:		http://qtractor.sourceforge.net/
-#Packager:	rncbc.org
+Packager:	rncbc.org
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -137,6 +137,8 @@ the personal home-studio.
 %{_datadir}/man/fr/man1/%{name}.1.gz
 
 %changelog
+* Fri Oct 30 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.18
+- Fall'20 release.
 * Thu Sep 15 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.17
 - End-of-Summer'20 release.
 * Fri Aug  7 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.16

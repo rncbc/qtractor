@@ -6,28 +6,55 @@ ChangeLog
 
 GIT HEAD
 
-- When under NSM, all top-level windows, main, mixer and connections, 
-  will always start hidden. (GH #279). (EXPERIMENTAL)
+- Session directory auto-name option added to the session properties
+  dialog, as convenience. (EXPERIMENTAL)
+
+- Loading and saving a LV2 plugin's state has been vastly improved.
+  IMPORTANT CAVEAT: From this moment onwards, all LV2 plugins won't
+  get their state restored correctly, when loading any these newer
+  saved sessions into older versions of the program. (EXPERIMENTAL)
+
+- Track colors saturation introduced as yet another eye-candy option
+  (cf. View/Options.../Display/Track color saturation) (EXPERIMENTAL)
+
+- Fixed VST3 number of channels query/report. (EXPERIMENTAL)
+
+- Fixed immediate crash when loading untitled or unnamed Instrument
+  Definitions files (*.ins): base file-name is now taken as default 
+  instrument definition name or title. (EXPERIMENTAL)
+
+- Tempo (BPM) entry may now be specified with arbitrary precision, to
+  at most 3 decimal positions in fractional part, while integer whole
+  values are displayed with no decimal point. (EXPERIMENTAL)
+
+- Added option to keep MIDI clip editor windows (aka. piano-roll)
+  always on top of the main window (cf. View/Options.../General/
+  Keep editor windows always on top). (EXPERIMENTAL)
+
+- MIDI clip editor status-bar labels are not stretched to whole text
+  size anymore, most specially for the current file complete path.  
+
+
+0.9.18  2020-10-30  A Fall'20 Release.
+
+- When under NSM, all top-level windows, main, mixer and connections,
+  will always start hidden.
 
 - Plugin editors (GUIs) that are currently open on a track are now
   brought up as top-level windows immediately when a track is made
   current or highlighted (and Track / Auto Monitor is in effect).
-  (GH #277; auto-focus plugin GUI editor window on track select)
-  (EXPERIMENTAL)
 
 - MIDI clip editor mouse hovering effect extended to whole current
   note line on main view (piano-roll eye-candy++); also, the white
   keys on MIDI clip editor's virtual piano keyboard, are now fully
-  highlighted. (EXPERIMENTAL)
+  highlighted.
 
-- Plugin search paths (View > Options... > Plugins > Paths) now lists
+- Plugin search paths (cf. View/Options.../Plugins/Paths) now showing
   all the default and actual existing paths, instead of a blank list.
-  (EXPERIMENTAL)
 
-- Undimmed octave divider lines on the piano-roll. (EXPERIMENTAL)
+- Undimmed octave divider lines on the piano-roll.
 
 - Fixed potential crash on changing audio output buses channel count.
-  (EXPERIMENTAL)
 
 - Note names display (inside note rectangles) are now an option on
   the MIDI clip editor (aka. piano-roll; menu View > Note Names).
@@ -120,7 +147,7 @@ GIT HEAD
 - LV2 Plug-in MIDNAM support introduced.
 
 - Use Shift or Ctrl keyboard modifiers with the mouse- wheel to change
-  any Direct Access plug-in parameters (issue #257).
+  any Direct Access plug-in parameters.
 
 
 0.9.13  2020-03-28  A Spring'20 Release.
@@ -150,7 +177,7 @@ GIT HEAD
 
 - Fixed first bar/measure position drawing on the time-scale/grid
   across time-signature changes on the MIDI clip editor (aka.
-  piano-roll) (hopefully fixing issue #245).
+  piano-roll).
 
 - Plugins and meters on track list/left pane, are now being set on as
   default--maybe going stapled in some near future ;)
@@ -209,7 +236,7 @@ GIT HEAD
 0.9.10  2019-10-12  Autumn'19 Beta.
 
 - Fixed initial session tempo override when importing a standard MIDI
-  file (as reported on issue #230).
+  file.
 
 - An alternate time-signature/meter option is being served to the MIDI
   clip editor (aka. piano-roll) and allowing for some poly-rythm/meter

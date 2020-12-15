@@ -360,6 +360,9 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.KeepToolsOnTopCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.KeepEditorsOnTopCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.TrackViewDropSpanCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
@@ -502,6 +505,9 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 		SLOT(changed()));
 	QObject::connect(m_ui.UseNativeDialogsCheckBox,
 		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.TrackColorSaturationSpinBox,
+		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
@@ -651,6 +657,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Dialogs preferences...
 	m_ui.UseNativeDialogsCheckBox->setChecked(m_pOptions->bUseNativeDialogs);
 
+	// Default track color saturation issue..
+	m_ui.TrackColorSaturationSpinBox->setValue(m_pOptions->iTrackColorSaturation);
+
 	// Logging options...
 	m_ui.MessagesLogCheckBox->setChecked(m_pOptions->bMessagesLog);
 	m_ui.MessagesLogPathComboBox->setEditText(m_pOptions->sMessagesLogPath);
@@ -662,6 +671,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.CompletePathCheckBox->setChecked(m_pOptions->bCompletePath);
 	m_ui.PeakAutoRemoveCheckBox->setChecked(m_pOptions->bPeakAutoRemove);
 	m_ui.KeepToolsOnTopCheckBox->setChecked(m_pOptions->bKeepToolsOnTop);
+	m_ui.KeepEditorsOnTopCheckBox->setChecked(m_pOptions->bKeepEditorsOnTop);
 	m_ui.TrackViewDropSpanCheckBox->setChecked(m_pOptions->bTrackViewDropSpan);
 	m_ui.ShiftKeyModifierCheckBox->setChecked(m_pOptions->bShiftKeyModifier);
 	m_ui.MidButtonModifierCheckBox->setChecked(m_pOptions->bMidButtonModifier);
@@ -827,6 +837,7 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bCompletePath        = m_ui.CompletePathCheckBox->isChecked();
 		m_pOptions->bPeakAutoRemove      = m_ui.PeakAutoRemoveCheckBox->isChecked();
 		m_pOptions->bKeepToolsOnTop      = m_ui.KeepToolsOnTopCheckBox->isChecked();
+		m_pOptions->bKeepEditorsOnTop    = m_ui.KeepEditorsOnTopCheckBox->isChecked();
 		m_pOptions->bTrackViewDropSpan   = m_ui.TrackViewDropSpanCheckBox->isChecked();
 		m_pOptions->bShiftKeyModifier    = m_ui.ShiftKeyModifierCheckBox->isChecked();
 		m_pOptions->bMidButtonModifier   = m_ui.MidButtonModifierCheckBox->isChecked();
@@ -880,6 +891,8 @@ void qtractorOptionsForm::accept (void)
 		// Dialogs preferences...
 		m_pOptions->bUseNativeDialogs = m_ui.UseNativeDialogsCheckBox->isChecked();
 		m_pOptions->bDontUseNativeDialogs = !m_pOptions->bUseNativeDialogs;
+		// Default track color saturation issue..
+		m_pOptions->iTrackColorSaturation = m_ui.TrackColorSaturationSpinBox->value();
 		// Custom options..
 		if (m_ui.CustomColorThemeComboBox->currentIndex() > 0)
 			m_pOptions->sCustomColorTheme = m_ui.CustomColorThemeComboBox->currentText();

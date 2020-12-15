@@ -114,6 +114,10 @@ static const LV2_Feature g_lv2_uri_map_feature =
 
 #ifdef CONFIG_LV2_STATE
 
+#define QTRACTOR_LV2_STATE_PREFIX   "urn:qtractor:state"
+#define QTRACTOR_LV2_STATE_KEY      QTRACTOR_LV2_STATE_PREFIX "#key"
+#define QTRACTOR_LV2_STATE_TYPE     QTRACTOR_LV2_STATE_PREFIX "#type"
+
 #ifndef LV2_STATE__StateChanged
 #define LV2_STATE__StateChanged LV2_STATE_PREFIX "StateChanged"
 #endif
@@ -1131,7 +1135,7 @@ void qtractor_lv2_midnam_update ( LV2_Programs_Handle handle )
 
 #ifdef CONFIG_LV2_STATE
 
-// LV2 State/Presets: port value setter.
+// LV2 State/Presets: port value settler.
 static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	void *user_data, const void *value, uint32_t size, uint32_t type )
 {
@@ -1152,9 +1156,11 @@ static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	const LilvPort *port
 		= lilv_plugin_get_port_by_symbol(plugin, symbol);
 	if (port) {
-		const float val = *(float *) value;
-		const unsigned long port_index = lilv_port_get_index(plugin, port);
-		pLv2Plugin->updateParamValue(port_index, val, true);
+		const float fValue = *(float *) value;
+		const unsigned long iIndex = lilv_port_get_index(plugin, port);
+		qtractorPlugin::Param *pParam = pLv2Plugin->findParam(iIndex);
+		if (pParam)
+			pParam->setValue(fValue, false);
 	}
 
 	lilv_node_free(symbol);
@@ -4652,15 +4658,30 @@ void qtractorLv2Plugin::freezeConfigs (void)
 
 #ifdef CONFIG_LV2_STATE
 
-	const unsigned short iInstances = instances();
-	for (unsigned short i = 0; i < iInstances; ++i) {
-		const LV2_State_Interface *state = lv2_state_interface(i);
-		if (state) {
-			LV2_Handle handle = lv2_handle(i);
-			if (handle)
-				(*state->save)(handle, qtractor_lv2_state_store, this,
-					LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
-		}
+#if 1//CONFIG_LV2_STATE_LEGACY
+	const LV2_State_Interface *state = lv2_state_interface(0);
+	if (state) {
+		LV2_Handle handle = lv2_handle(0);
+		if (handle)
+			(*state->save)(handle, qtractor_lv2_state_store, this,
+				LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+	}
+#endif
+
+	const QString& s = lv2_state_save();
+	if (!s.isEmpty()) {
+		const QByteArray data(s.toUtf8());
+		const LV2_URID   key = lv2_urid_map(QTRACTOR_LV2_STATE_KEY);
+		const char    *value = data.constData();
+		const uint32_t  size = data.size();
+		const LV2_URID  type = lv2_urid_map(QTRACTOR_LV2_STATE_TYPE);
+		const uint32_t flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;
+	#if 1//CONFIG_LV2_STATE_LEGACY
+		lv2_state_store(key, value, size, type, flags);
+	#else
+		if (lv2_state_store(key, value, size, type, flags) == LV2_STATE_SUCCESS)
+			qtractorPlugin::clearValues();
+	#endif
 	}
 
 #endif	// CONFIG_LV2_STATE
@@ -4731,16 +4752,25 @@ void qtractorLv2Plugin::realizeConfigs (void)
 			m_lv2_state_ctypes.insert(sKey, type);
 	}
 
-	const unsigned short iInstances = instances();
-	for (unsigned short i = 0; i < iInstances; ++i) {
-		const LV2_State_Interface *state = lv2_state_interface(i);
-		if (state) {
-			LV2_Handle handle = lv2_handle(i);
-			if (handle)
-				(*state->restore)(handle, qtractor_lv2_state_retrieve, this,
-					LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+	const QString& s = m_lv2_state_configs.value(QTRACTOR_LV2_STATE_KEY);
+	if (!s.isEmpty()) {
+		qtractorPlugin::clearValues();
+		lv2_state_restore(s);
+	}
+#if 1//CONFIG_LV2_STATE_LEGACY
+	else {
+		const unsigned short iInstances = instances();
+		for (unsigned short i = 0; i < iInstances; ++i) {
+			const LV2_State_Interface *state = lv2_state_interface(i);
+			if (state) {
+				LV2_Handle handle = lv2_handle(i);
+				if (handle)
+					(*state->restore)(handle, qtractor_lv2_state_retrieve, this,
+						LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+			}
 		}
 	}
+#endif
 
 #endif	// CONFIG_LV2_STATE
 
@@ -4763,7 +4793,7 @@ void qtractorLv2Plugin::releaseConfigs (void)
 	m_lv2_state_ctypes.clear();
 #endif
 
-	qtractorPlugin::releaseConfigs();
+	qtractorPlugin::clearConfigs();
 }
 
 
@@ -5497,6 +5527,65 @@ bool qtractorLv2Plugin::isReadOnlyPreset ( const QString& sPreset ) const
 }
 
 #endif	// CONFIG_LV2_PRESETS
+
+
+#ifdef CONFIG_LV2_STATE
+
+// Save plugin complete state into a string.
+QString qtractorLv2Plugin::lv2_state_save (void)
+{
+	QString s;
+
+	qtractorLv2PluginType *pLv2Type
+		= static_cast<qtractorLv2PluginType *> (type());
+	if (pLv2Type == nullptr)
+		return s;
+
+	LilvState *state = lilv_state_new_from_instance(
+		lv2_plugin(), m_ppInstances[0], &g_lv2_urid_map,
+		nullptr, nullptr, nullptr, nullptr,
+		qtractor_lv2_get_port_value, this,
+		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+
+	if (state == nullptr)
+		return s;
+
+	const char *uri = QTRACTOR_LV2_STATE_PREFIX;
+	const char *pszState = lilv_state_to_string(g_lv2_world,
+		&g_lv2_urid_map, &g_lv2_urid_unmap, state, uri, nullptr);
+	if (pszState == nullptr) {
+		lilv_state_free(state);
+		return s;
+	}
+
+	s = QString::fromUtf8(pszState);
+
+	::free((void *) pszState);
+	lilv_state_free(state);
+
+	return s;
+}
+
+
+// Restore complete plugin state from a string.
+bool qtractorLv2Plugin::lv2_state_restore ( const QString& s )
+{
+	LilvState *state = lilv_state_new_from_string(g_lv2_world,
+		&g_lv2_urid_map, s.toUtf8().constData());
+	if (state == nullptr)
+		return false;
+
+	const unsigned short iInstances = instances();
+	for (unsigned short i = 0; i < iInstances; ++i) {
+		lilv_state_restore(state, m_ppInstances[i],
+			qtractor_lv2_set_port_value, this, 0, m_lv2_features);
+	}
+
+	lilv_state_free(state);
+	return true;
+}
+
+#endif	// CONFIG_LV2_STATE
 
 
 //----------------------------------------------------------------------------

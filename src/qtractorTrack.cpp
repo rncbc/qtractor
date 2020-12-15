@@ -1312,12 +1312,39 @@ const QColor& qtractorTrack::foreground (void) const
 }
 
 
+// Default track color saturation factor [0..500].
+int qtractorTrack::g_iTrackColorSaturation = 100;
+
+void qtractorTrack::setTrackColorSaturation ( int iTrackColorSaturation )
+{
+	g_iTrackColorSaturation = iTrackColorSaturation;
+}
+
+int qtractorTrack::trackColorSaturation (void)
+{
+	return g_iTrackColorSaturation;
+}
+
+
 // Generate a default track color.
 QColor qtractorTrack::trackColor ( int iTrack )
 {
 	const int c[3] = { 0xff, 0xcc, 0x99 };
 
-	return QColor(c[iTrack % 3], c[(iTrack / 3) % 3], c[(iTrack / 9) % 3]);
+	QColor color(
+		c[iTrack % 3],
+		c[(iTrack / 3) % 3],
+		c[(iTrack / 9) % 3]);
+
+	int h, s, v;
+	color.getHsv(&h, &s, &v);
+	s += (s * (g_iTrackColorSaturation - 100)) / 100;
+	if (s < 0) s = 0;
+	else
+	if (s > 255) s = 255;
+	color.setHsv(h, s, v);
+
+	return color;
 }
 
 

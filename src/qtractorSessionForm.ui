@@ -73,14 +73,44 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="SessionDirTextLabel" >
-         <property name="text" >
-          <string>&amp;Directory:</string>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
          </property>
-         <property name="buddy" >
-          <cstring>SessionDirComboBox</cstring>
-         </property>
-        </widget>
+         <item>
+          <widget class="QLabel" name="SessionDirTextLabel" >
+           <property name="text" >
+            <string>&amp;Directory:</string>
+           </property>
+           <property name="buddy" >
+            <cstring>SessionDirComboBox</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="AutoSessionDirCheckBox">
+           <property name="toolTip">
+            <string>Whether to auto-name the session directory</string>
+           </property>
+           <property name="text">
+            <string>&amp;Auto</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>20</width>
+             <height>8</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" >
@@ -453,6 +483,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>SessionNameLineEdit</tabstop>
+  <tabstop>AutoSessionDirCheckBox</tabstop>
   <tabstop>SessionDirComboBox</tabstop>
   <tabstop>SessionDirToolButton</tabstop>
   <tabstop>DescriptionTextEdit</tabstop>

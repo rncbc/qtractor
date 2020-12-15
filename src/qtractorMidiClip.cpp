@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -36,9 +36,7 @@
 
 #include "qtractorMainForm.h"
 
-#if 0//QTRACTOR_MIDI_EDITOR_TOOL
 #include "qtractorOptions.h"
-#endif
 
 #include <QMessageBox>
 #include <QFileInfo>
@@ -1132,15 +1130,16 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 		// Build up the editor form...
 		// What style do we create tool childs?
 		Qt::WindowFlags wflags = Qt::Window;
-	#if 0//QTRACTOR_MIDI_EDITOR_TOOL
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
-		if (pOptions && pOptions->bKeepToolsOnTop) {
+		if (pOptions && pOptions->bKeepEditorsOnTop) {
 			wflags |= Qt::Tool;
+			wflags |= Qt::WindowStaysOnTopHint;
+		#if 0//QTRACTOR_MIDI_EDITOR_TOOL_PARENT
 			// Make sure it has a parent...
 			if (pParent == nullptr)
 				pParent = qtractorMainForm::getInstance();
+		#endif
 		}
-	#endif
 		// Do it...
 		m_pMidiEditorForm = new qtractorMidiEditorForm(pParent, wflags);
 		m_pMidiEditorForm->show();

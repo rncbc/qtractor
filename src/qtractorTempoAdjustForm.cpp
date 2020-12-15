@@ -630,7 +630,7 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 	if (fTempoDetect > 0.1f) {
 		const float fTempo
 			= aubio_tempo_get_bpm(data.aubio);
-		m_ui.TempoSpinBox->setTempo(fTempo, true);
+		m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
 	}
 
 	if (m_pClipWidget) {
@@ -664,7 +664,7 @@ void qtractorTempoAdjustForm::tempoAdjust (void)
 
 	const float fTempo
 		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
-	m_ui.TempoSpinBox->setTempo(fTempo, true);
+	m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
 
 	changed();
 }

@@ -513,11 +513,8 @@ qtractorMainForm::qtractorMainForm (
 //	m_ui.timeToolbar->addSeparator();
 
 	// Tempo spin-box.
-	const QString sTempo("999.9 9/9");
+	const QString sTempo("+999 9/9");
 	m_pTempoSpinBox = new qtractorTempoSpinBox(m_ui.timeToolbar);
-//	m_pTempoSpinBox->setDecimals(1);
-//	m_pTempoSpinBox->setMinimum(1.0f);
-//	m_pTempoSpinBox->setMaximum(1000.0f);
 //	m_pTempoSpinBox->setFont(font);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	m_pTempoSpinBox->setMinimumSize(QSize(fm.horizontalAdvance(sTempo) + d, d) + pad);
@@ -597,6 +594,7 @@ qtractorMainForm::qtractorMainForm (
 	// Track status.
 	pLabel = new QLabel(tr("Track"));
 	pLabel->setAlignment(Qt::AlignLeft);
+	pLabel->setMinimumWidth(120);
 	pLabel->setToolTip(tr("Current track name"));
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusName] = pLabel;
@@ -1314,6 +1312,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	Qt::WindowFlags wflags = Qt::Window;
 	if (m_pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::Tool;
+	//	wflags |= Qt::WindowStaysOnTopHint;
 		pParent = this;
 	}
 	// Other child/tools forms are also created right away...
@@ -1502,6 +1501,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_pOptions->bAudioWsolaTimeStretch);
 	qtractorAudioBuffer::setDefaultWsolaQuickSeek(
 		m_pOptions->bAudioWsolaQuickSeek);
+	qtractorTrack::setTrackColorSaturation(
+		m_pOptions->iTrackColorSaturation);
 
 	// Set default custom spin-box edit mode (deferred)...
 	qtractorSpinBox::setEditMode(qtractorSpinBox::DeferredMode);
@@ -5029,6 +5030,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldCompletePath       = m_pOptions->bCompletePath;
 	const bool    bOldPeakAutoRemove     = m_pOptions->bPeakAutoRemove;
 	const bool    bOldKeepToolsOnTop     = m_pOptions->bKeepToolsOnTop;
+	const bool    bOldKeepEditorsOnTop   = m_pOptions->bKeepEditorsOnTop;
 	const int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
 	const int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
 	const int     iOldBaseFontSize       = m_pOptions->iBaseFontSize;
@@ -5067,6 +5069,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
 	const int     iOldMidiMetroOffset    = m_pOptions->iMidiMetroOffset;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
+	const int     iOldTrackColorSaturation = m_pOptions->iTrackColorSaturation;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 #ifdef CONFIG_LV2
@@ -5157,6 +5160,9 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldKeepToolsOnTop && !m_pOptions->bKeepToolsOnTop) ||
 			(!bOldKeepToolsOnTop &&  m_pOptions->bKeepToolsOnTop))
 			iNeedRestart |= RestartProgram;
+		if (( bOldKeepEditorsOnTop && !m_pOptions->bKeepEditorsOnTop) ||
+			(!bOldKeepEditorsOnTop &&  m_pOptions->bKeepEditorsOnTop))
+			updateEditorForms();
 		if (sOldMessagesFont != m_pOptions->sMessagesFont)
 			updateMessagesFont();
 		if (( bOldMessagesLimit && !m_pOptions->bMessagesLimit) ||
@@ -5250,6 +5256,10 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
 			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
 			updateSyncViewHold();
+		// Default track color saturation factor [0..400].
+		if (iOldTrackColorSaturation != m_pOptions->iTrackColorSaturation)
+			qtractorTrack::setTrackColorSaturation(
+				m_pOptions->iTrackColorSaturation);
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
@@ -5911,6 +5921,12 @@ void qtractorMainForm::helpAbout (void)
 		sText += list.join("<br />\n");
 		sText += "</font></small><br />\n";
 	}
+	sText += "<br />\n";
+	sText += tr("Using: Qt %1").arg(qVersion());
+#if defined(QT_STATIC)
+	sText += "-static";
+#endif
+	sText += "<br />\n";
 	sText += "<br />\n";
 	sText += tr("Website") + ": <a href=\"" QTRACTOR_WEBSITE "\">" QTRACTOR_WEBSITE "</a><br />\n";
 	sText += "<br />\n";
@@ -7506,6 +7522,34 @@ void qtractorMainForm::removeEditorForm ( qtractorMidiEditorForm *pEditorForm )
 }
 
 
+void qtractorMainForm::updateEditorForms (void)
+{
+	if (m_pOptions == nullptr)
+		return;
+
+	Qt::WindowFlags wflags = Qt::Window;
+	if (m_pOptions->bKeepEditorsOnTop) {
+		wflags |= Qt::Tool;
+		wflags |= Qt::WindowStaysOnTopHint;
+	}
+
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	while (iter.hasNext()) {
+		qtractorMidiEditorForm *pForm = iter.next();
+		const bool bVisible = pForm->isVisible();
+	#if 0//QTRACTOR_MIDI_EDITOR_TOOL_PARENT
+		if (m_pOptions->bKeepEditorsOnTop)
+			pForm->setParent(this);
+		else
+			pForm->setParent(nullptr);
+	#endif
+		pForm->setWindowFlags(wflags);
+		if (bVisible)
+			pForm->show();
+	}
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Timer stuff.
 
@@ -7665,7 +7709,7 @@ void qtractorMainForm::slowTimerSlot (void)
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(pos.frame);
 				if (pNode && pos.frame >= pNode->frame && (
-					qAbs(pNode->tempo - pos.beats_per_minute) > 0.01f ||
+					qAbs(pNode->tempo - pos.beats_per_minute) > 0.001f ||
 					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
 					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {
 				#ifdef CONFIG_DEBUG
