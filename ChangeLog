@@ -10,9 +10,9 @@ GIT HEAD
   dialog, as convenience. (EXPERIMENTAL)
 
 - Loading and saving a LV2 plugin's state has been vastly improved.
-  IMPORTANT CAVEAT: From this moment onwards, all LV2 plugins won't
-  get their state restored correctly, when loading any these newer
-  saved sessions into older versions of the program. (EXPERIMENTAL)
+  IMPORTANT CAVEAT: From this moment onwards, when loading any newer
+  saved sessions into older versions of the program, all LV2 plugins
+  won't get their state restored correctly. (EXPERIMENTAL)
 
 - Track colors saturation introduced as yet another eye-candy option
   (cf. View/Options.../Display/Track color saturation) (EXPERIMENTAL)

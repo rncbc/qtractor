@@ -4658,7 +4658,7 @@ void qtractorLv2Plugin::freezeConfigs (void)
 
 #ifdef CONFIG_LV2_STATE
 
-#if 1//CONFIG_LV2_STATE_LEGACY
+#if 0//CONFIG_LV2_STATE_LEGACY
 	const LV2_State_Interface *state = lv2_state_interface(0);
 	if (state) {
 		LV2_Handle handle = lv2_handle(0);
@@ -4676,7 +4676,7 @@ void qtractorLv2Plugin::freezeConfigs (void)
 		const uint32_t  size = data.size();
 		const LV2_URID  type = lv2_urid_map(QTRACTOR_LV2_STATE_TYPE);
 		const uint32_t flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;
-	#if 1//CONFIG_LV2_STATE_LEGACY
+	#if 0//CONFIG_LV2_STATE_LEGACY
 		lv2_state_store(key, value, size, type, flags);
 	#else
 		if (lv2_state_store(key, value, size, type, flags) == LV2_STATE_SUCCESS)
@@ -4756,9 +4756,7 @@ void qtractorLv2Plugin::realizeConfigs (void)
 	if (!s.isEmpty()) {
 		qtractorPlugin::clearValues();
 		lv2_state_restore(s);
-	}
-#if 1//CONFIG_LV2_STATE_LEGACY
-	else {
+	} else {
 		const unsigned short iInstances = instances();
 		for (unsigned short i = 0; i < iInstances; ++i) {
 			const LV2_State_Interface *state = lv2_state_interface(i);
@@ -4770,7 +4768,6 @@ void qtractorLv2Plugin::realizeConfigs (void)
 			}
 		}
 	}
-#endif
 
 #endif	// CONFIG_LV2_STATE
 
