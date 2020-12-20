@@ -4,32 +4,32 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.19  2020-12-20  A Winter'20 Release.
 
 - Session directory auto-name option added to the session properties
-  dialog, as convenience. (EXPERIMENTAL)
+  dialog, as convenience.
 
 - Loading and saving a LV2 plugin's state has been vastly improved.
   IMPORTANT CAVEAT: From this moment onwards, when loading any newer
   saved sessions into older versions of the program, all LV2 plugins
-  won't get their state restored correctly. (EXPERIMENTAL)
+  won't get their state restored correctly.
 
 - Track colors saturation introduced as yet another eye-candy option
-  (cf. View/Options.../Display/Track color saturation) (EXPERIMENTAL)
+  (cf. View/Options.../Display/Track color saturation)
 
-- Fixed VST3 number of channels query/report. (EXPERIMENTAL)
+- Fixed VST3 number of channels query/report.
 
 - Fixed immediate crash when loading untitled or unnamed Instrument
   Definitions files (*.ins): base file-name is now taken as default 
-  instrument definition name or title. (EXPERIMENTAL)
+  instrument definition name or title.
 
 - Tempo (BPM) entry may now be specified with arbitrary precision, to
   at most 3 decimal positions in fractional part, while integer whole
-  values are displayed with no decimal point. (EXPERIMENTAL)
+  values are displayed with no decimal point.
 
 - Added option to keep MIDI clip editor windows (aka. piano-roll)
   always on top of the main window (cf. View/Options.../General/
-  Keep editor windows always on top). (EXPERIMENTAL)
+  Keep editor windows always on top).
 
 - MIDI clip editor status-bar labels are not stretched to whole text
   size anymore, most specially for the current file complete path.  

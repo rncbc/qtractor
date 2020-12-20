@@ -1,8 +1,14 @@
+qtractor (0.9.19-60) unstable; urgency=low
+
+  * New release: winter'20 release
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Sun, 20 Dec 2020 12:00:00 +0000
+
 qtractor (0.9.18-59) unstable; urgency=low
 
   * New release: fall'20 release
 
- -- Rui Nuno Capela <rncbc@rncbc.org>  fri, 30 Oct 2020 19:00:00 +0000
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Fri, 30 Oct 2020 19:00:00 +0000
 
 qtractor (0.9.17-58) unstable; urgency=low
 
