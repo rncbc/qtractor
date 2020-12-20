@@ -125,6 +125,7 @@ static const LV2_Feature g_lv2_uri_map_feature =
 static const LV2_Feature g_lv2_state_feature =
 	{ LV2_STATE_URI, nullptr };
 
+#if 0//CONFIG_LV2_STATE_LEGACY
 static LV2_State_Status qtractor_lv2_state_store ( LV2_State_Handle handle,
 	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
 {
@@ -140,6 +141,7 @@ static LV2_State_Status qtractor_lv2_state_store ( LV2_State_Handle handle,
 
 	return pLv2Plugin->lv2_state_store(key, value, size, type, flags);
 }
+#endif
 
 static const void *qtractor_lv2_state_retrieve ( LV2_State_Handle handle,
 	uint32_t key, size_t *size, uint32_t *type, uint32_t *flags )
