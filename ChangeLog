@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Early preparations for the New Year develop(ment) cycle.
+
+
 0.9.19  2020-12-20  A Winter'20 Release.
 
 - Session directory auto-name option added to the session properties
