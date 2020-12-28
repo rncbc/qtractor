@@ -3392,22 +3392,22 @@ až při příštím spuštění %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5925"/>
         <source>Using: Qt %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Použitím: Qt %1</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5931"/>
         <source>Website</source>
-        <translation>Webová stránka</translation>
+        <translation>Stránky</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5936"/>
         <source>This program is free software; you can redistribute it and/or modify it</source>
-        <translation>Tento program je svobodným programovým vybavením. Můžete jej šířit a /nebo upravovat</translation>
+        <translation>Tento program je svobodným programem. Můžete jej šířit a/nebo upravit</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5937"/>
         <source>under the terms of the GNU General Public License version 2 or later.</source>
-        <translation>za podmínek GNU General Public License verze 2 nebo pozdější.</translation>
+        <translation>za podmínek GNU General Public License ve verzi 2 nebo pozdější.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="3051"/>
@@ -12552,12 +12552,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="502"/>
         <source>Whether to keep all editor windows on top of the main window</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda se mají držet všechna okna editoru navrchu hlavního okna</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="505"/>
         <source>Keep &amp;editor windows always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>Držet všechna okna &amp;editoru vždy navrchu</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1354"/>
@@ -12588,22 +12588,22 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2443"/>
         <source>&amp;Hold auto-scrolling (follow play-head) on edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Při úpravách po&amp;držet automatické posouvání (sledovat ukazatel přehrávání)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2469"/>
         <source>Trac&amp;k color saturation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sytost barvy &amp;stopy:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2488"/>
         <source>Default new track color saturation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí sytost barvy nové stopy</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2491"/>
         <source> %</source>
-        <translation type="unfinished"></translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2615"/>
@@ -13614,12 +13614,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="93"/>
         <source>Whether to auto-name the session directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda automaticky pojmenovat adresář se sezením</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="96"/>
         <source>&amp;Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Automaticky</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="129"/>
