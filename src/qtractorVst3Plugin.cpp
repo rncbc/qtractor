@@ -1157,17 +1157,17 @@ void qtractorVst3PluginType::Impl::close (void)
 		m_controller->terminate();
 	}
 
+	m_controller = nullptr;
+
 	if (m_component) {
 		m_component->terminate();
+		m_component = nullptr;
 		typedef bool (PLUGIN_API *VST3_ModuleExit)();
 		const VST3_ModuleExit module_exit
 			= reinterpret_cast<VST3_ModuleExit> (m_pFile->resolve("ModuleExit"));
 		if (module_exit)
 			module_exit();
 	}
-
-	m_controller = nullptr;
-	m_component = nullptr;
 }
 
 

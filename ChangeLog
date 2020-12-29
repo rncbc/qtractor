@@ -6,7 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- Early preparations for the New Year develop(ment) cycle.
+- Fix incorrect destruction order for VST3 modules (as reported by
+  Robbert van der Helm on GH #291, thanks).
 
 
 0.9.19  2020-12-20  A Winter'20 Release.
