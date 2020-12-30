@@ -1144,11 +1144,12 @@ public:
 			m_controller->terminate();
 		}
 
-		if (m_component)
-			m_component->terminate();
-
 		m_controller = nullptr;
-		m_component = nullptr;
+
+		if (m_component) {
+			m_component->terminate();
+			m_component = nullptr;
+		}
 	}
 
 	void close ()
