@@ -10,9 +10,7 @@ specially dedicated to the personal home-studio.
 
 Website:
 
-  http://qtractor.org
-  https://qtractor.sourceforge.io
-  http://qtractor.sourceforge.net
+  https://qtractor.org
 
 Project page:
 
@@ -30,9 +28,7 @@ Wiki:
   https://sourceforge.net/p/qtractor/wiki/
 
 - static rendering:
-  http://qtractor.org/doc
-  https://qtractor.sourceforge.io/doc
-  http://qtractor.sourceforge.net/doc
+  https://qtractor.org/doc
 
 - user manual & how-to's:
   https://download.sf.net/qtractor/qtractor-manual-and-howtos.epub
@@ -288,7 +284,7 @@ References
      https://www.steinberg.net/
 
 [13] LV2, Audio Plugin Standard, the extensible successor of LADSPA
-     http://lv2plug.in/
+     https://lv2plug.in/
 
 [14] liblilv, Lightweight LV2 host implementation stack
      (needed for LV2 support)
