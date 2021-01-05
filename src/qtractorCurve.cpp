@@ -1,7 +1,7 @@
 // qtractorCurve.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@
 
 #include "qtractorSession.h"
 
-#include <math.h>
+#include <cmath>
 
 
 // Ref. P.448. Approximate cube root of an IEEE float
