@@ -13922,12 +13922,12 @@ Do you want to apply the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="813"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="815"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorTempoAdjustForm.cpp" line="814"/>
+        <location filename="../qtractorTempoAdjustForm.cpp" line="816"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
