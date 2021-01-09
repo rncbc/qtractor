@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -307,7 +307,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 
 	m_pPluginListView = new qtractorPluginListView(/*this*/);
 	m_pPluginListView->setFont(font3);
-//	m_pPluginListView->setFixedHeight(iFixedHeight << 2);
+	m_pPluginListView->setMinimumHeight(iFixedHeight << 1);
 	m_pPluginListView->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 	m_pPluginListView->setTinyScrollBar(true);
 	m_pLayout->addWidget(m_pPluginListView, 1);
@@ -1076,7 +1076,7 @@ void qtractorMixerRackWidget::updateWorkspace (void)
 			m_pWorkspaceLayout->addItem(item, row, col++);
 			// Auto-grid layout...
 			const int wi = item->sizeHint().width(); wth += wi;
-			if (wth > (w - wi) && row < nrows && col >= ncols) {
+			if (wth > (w - wi) && row < nrows && col > ncols) {
 				wth = 0;
 				col = 0;
 				++row;

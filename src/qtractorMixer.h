@@ -1,7 +1,7 @@
 // qtractorMixer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -111,9 +111,10 @@ class qtractorMixerStrip : public QFrame
 public:
 
 	// Constructors.
-	qtractorMixerStrip(qtractorMixerRack *pRack, qtractorBus *pBus,
-		qtractorBus::BusMode busMode);
-	qtractorMixerStrip(qtractorMixerRack *pRack, qtractorTrack *pTrack);
+	qtractorMixerStrip(qtractorMixerRack *pRack,
+		qtractorBus *pBus, qtractorBus::BusMode busMode);
+	qtractorMixerStrip(qtractorMixerRack *pRack,
+		qtractorTrack *pTrack);
 
 	// Default destructor.
 	~qtractorMixerStrip();
@@ -261,7 +262,7 @@ protected:
 
 	// Initial minimum widget extents.
 	QSize sizeHint() const
-		{ return QSize(160, 320); }
+		{ return QSize(80, 280); }
 
 private:
 
