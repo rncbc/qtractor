@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Exiting, quitting or closing the main window while under NSM, now
+  promptly asks whether to save, discard or cancel as usual. (fixes
+  GH issue #292; EXPERIMENTAL)
+
 - Re-improved Mixer multi-row layout (regression to a former patch
   by Holger Marzen aka. bluebell, sorry).
 

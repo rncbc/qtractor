@@ -1689,11 +1689,6 @@ void qtractorMainForm::handle_sigterm (void)
 // Window close event handlers.
 bool qtractorMainForm::queryClose (void)
 {
-#ifdef CONFIG_NSM
-	if (m_pNsmClient && m_pNsmClient->is_active())
-		m_iDirtyCount = 0;
-#endif
-
 	bool bQueryClose = closeSession();
 
 	// Try to save current general state...
