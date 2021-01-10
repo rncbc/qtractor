@@ -1679,8 +1679,13 @@ void qtractorMainForm::handle_sigterm (void)
 
 	char c;
 
-	if (::read(g_fdSigterm[1], &c, sizeof(c)) > 0)
+	if (::read(g_fdSigterm[1], &c, sizeof(c)) > 0) {
+	#ifdef CONFIG_NSM
+		if (m_pNsmClient && m_pNsmClient->is_active())
+			m_iDirtyCount = 0;
+	#endif
 		close();
+	}
 
 #endif
 }
