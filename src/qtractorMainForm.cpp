@@ -1782,6 +1782,16 @@ bool qtractorMainForm::queryClose (void)
 
 void qtractorMainForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
+#ifdef CONFIG_NSM
+	// Just hide if under NSM auspice...
+	if (m_pNsmClient && m_pNsmClient->is_active()) {
+		pCloseEvent->ignore();
+		QMainWindow::hide();
+		m_pConnections->hide();
+		m_pMixer->hide();
+	}
+	else
+#endif
 	// Let's be sure about that...
 	if (queryClose()) {
 		pCloseEvent->accept();
