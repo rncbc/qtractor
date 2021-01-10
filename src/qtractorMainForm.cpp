@@ -1684,7 +1684,13 @@ void qtractorMainForm::handle_sigterm (void)
 		if (m_pNsmClient && m_pNsmClient->is_active())
 			m_iDirtyCount = 0;
 	#endif
-		close();
+		if (queryClose()) {
+		#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+			QApplication::exit(0);
+		#else
+			QApplication::quit();
+		#endif
+		}
 	}
 
 #endif
