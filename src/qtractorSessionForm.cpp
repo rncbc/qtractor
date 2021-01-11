@@ -57,6 +57,12 @@ qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
 		pOptions->loadComboBoxHistory(m_ui.SessionDirComboBox);
 	}
 
+	const QFont& font = QDialog::font();
+	const QFont font2(font.family(), font.pointSize() - 2);
+	m_ui.AutoSessionDirCheckBox->setFont(font2);
+	m_ui.AutoSessionDirCheckBox->setMaximumHeight(
+		QFontMetrics(font2).height());
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
 	m_ui.SessionDirComboBox->lineEdit()->setClearButtonEnabled(true);
 #endif
