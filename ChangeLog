@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Make NSM state file names independent to session display names,
+  keeping backward compatibility for old sessions. (EXPERIMENTAL)
+
 - Exiting, quitting or closing the main window while under NSM, now
   promptly asks whether to save, discard or cancel as usual. (fixes
   GH issue #292; EXPERIMENTAL)

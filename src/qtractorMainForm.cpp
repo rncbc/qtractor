@@ -2742,7 +2742,9 @@ void qtractorMainForm::openNsmSession (void)
 		m_pSession->setClientName(client_id);
 		m_pSession->setSessionName(display_name);
 		m_pSession->setSessionDir(path_name);
-		const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
+		QFileInfo fi(path_name, "session." + m_sNsmExt);
+		if (!fi.exists())
+			fi.setFile(path_name, display_name + '.' + m_sNsmExt);
 		const QString& sFilename = fi.absoluteFilePath();
 		if (fi.exists()) {
 			const int iFlags = qtractorDocument::Default;
@@ -2818,7 +2820,8 @@ void qtractorMainForm::saveNsmSessionEx ( bool bSaveReply )
 	//	m_pSession->setClientName(client_id);
 		m_pSession->setSessionName(display_name);
 		m_pSession->setSessionDir(path_name);
-		const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
+	//	const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
+		const QFileInfo fi(path_name, "session." + m_sNsmExt);
 		const QString& sFilename = fi.absoluteFilePath();
 		const int iFlags = qtractorDocument::SymLink;
 		bSaved = saveSessionFileEx(sFilename, iFlags, false);
