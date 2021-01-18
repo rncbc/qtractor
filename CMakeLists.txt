@@ -1,6 +1,6 @@
-project(qtractor)
+cmake_minimum_required(VERSION 3.10)
 
-cmake_minimum_required(VERSION 3.1)
+project(qtractor)
 
 set (VERSION "0.9.20")
 
@@ -273,7 +273,7 @@ endif ()
 find_package (PkgConfig REQUIRED)
 
 # Check for JACK libraries.
-pkg_check_modules (JACK REQUIRED jack>=0.100.0)
+pkg_check_modules (JACK REQUIRED IMPORTED_TARGET jack>=0.100.0)
 if (JACK_FOUND)
   set (CONFIG_LIBJACK 1)
   include_directories (${JACK_INCLUDE_DIRS})
@@ -300,7 +300,7 @@ else ()
 endif ()
 
 # Check for ALSA libraries.
-pkg_check_modules (ALSA REQUIRED alsa)
+pkg_check_modules (ALSA REQUIRED IMPORTED_TARGET alsa)
 if (ALSA_FOUND)
   set (CONFIG_LIBASOUND 1)
   include_directories (${ALSA_INCLUDE_DIRS})
@@ -313,7 +313,7 @@ else ()
 endif ()
 
 # Check for SNDFILE libraries.
-pkg_check_modules (SNDFILE REQUIRED sndfile)
+pkg_check_modules (SNDFILE REQUIRED IMPORTED_TARGET sndfile)
 if (SNDFILE_FOUND)
   set (CONFIG_LIBSNDFILE 1)
   include_directories (${SNDFILE_INCLUDE_DIRS})
@@ -327,7 +327,7 @@ endif ()
 
 # Check for VORBIS libraries.
 if (CONFIG_LIBVORBIS)
-  pkg_check_modules (VORBIS vorbis)
+  pkg_check_modules (VORBIS IMPORTED_TARGET vorbis)
   if (VORBIS_FOUND)
     include_directories (${VORBIS_INCLUDE_DIRS})
     link_directories (${VORBIS_LIBRARY_DIRS})
@@ -340,7 +340,7 @@ if (CONFIG_LIBVORBIS)
 endif ()
 
 if (CONFIG_LIBVORBIS)
-  pkg_check_modules (VORBISENC vorbisenc)
+  pkg_check_modules (VORBISENC IMPORTED_TARGET vorbisenc)
   if (VORBISENC_FOUND)
     include_directories (${VORBISENC_INCLUDE_DIRS})
     link_directories (${VORBISENC_LIBRARY_DIRS})
@@ -350,7 +350,7 @@ if (CONFIG_LIBVORBIS)
 endif ()
 
 if (CONFIG_LIBVORBIS)
-  pkg_check_modules (VORBISFILE vorbisfile)
+  pkg_check_modules (VORBISFILE IMPORTED_TARGET vorbisfile)
   if (VORBISFILE_FOUND)
     include_directories (${VORBISFILE_INCLUDE_DIRS})
     link_directories (${VORBISFILE_LIBRARY_DIRS})
@@ -360,7 +360,7 @@ if (CONFIG_LIBVORBIS)
 endif ()
 
 if (CONFIG_LIBVORBIS)
-  pkg_check_modules (OGG ogg)
+  pkg_check_modules (OGG IMPORTED_TARGET ogg)
   if (OGG_FOUND)
     include_directories (${OGG_INCLUDE_DIRS})
     link_directories (${OGG_LIBRARY_DIRS})
@@ -371,7 +371,7 @@ endif ()
 
 # Check for MAD libraries.
 if (CONFIG_LIBMAD)
-  pkg_check_modules (MAD mad)
+  pkg_check_modules (MAD IMPORTED_TARGET mad)
   if (MAD_FOUND)
     include_directories (${MAD_INCLUDE_DIRS})
     link_directories (${MAD_LIBRARY_DIRS})
@@ -385,7 +385,7 @@ endif ()
 
 # Check for SAMPLERATE libraries.
 if (CONFIG_LIBSAMPLERATE)
-  pkg_check_modules (SAMPLERATE samplerate)
+  pkg_check_modules (SAMPLERATE IMPORTED_TARGET samplerate)
   if (SAMPLERATE_FOUND)
     include_directories (${SAMPLERATE_INCLUDE_DIRS})
     link_directories (${SAMPLERATE_LIBRARY_DIRS})
@@ -399,7 +399,7 @@ endif ()
 
 # Check for RUBBERBAND libraries.
 if (CONFIG_LIBRUBBERBAND)
-  pkg_check_modules (RUBBERBAND rubberband)
+  pkg_check_modules (RUBBERBAND IMPORTED_TARGET rubberband)
   if (RUBBERBAND_FOUND)
     include_directories (${RUBBERBAND_INCLUDE_DIRS})
     link_directories (${RUBBERBAND_LIBRARY_DIRS})
@@ -413,7 +413,7 @@ endif ()
 
 # Check for AUBIO libraries.
 if (CONFIG_LIBAUBIO)
-  pkg_check_modules (AUBIO aubio>=0.4.1)
+  pkg_check_modules (AUBIO IMPORTED_TARGET aubio>=0.4.1)
   if (AUBIO_FOUND)
     include_directories (${AUBIO_INCLUDE_DIRS})
     link_directories (${AUBIO_LIBRARY_DIRS})
@@ -427,7 +427,7 @@ endif ()
 
 # Check for LIBLO libraries.
 if (CONFIG_LIBLO)
-  pkg_check_modules (LIBLO liblo)
+  pkg_check_modules (LIBLO IMPORTED_TARGET liblo)
   if (LIBLO_FOUND)
     include_directories (${LIBLO_INCLUDE_DIRS})
     link_directories (${LIBLO_LIBRARY_DIRS})
@@ -441,7 +441,7 @@ endif ()
 
 # Check for ZLIB libraries.
 if (CONFIG_LIBZ)
-  pkg_check_modules (ZLIB zlib)
+  pkg_check_modules (ZLIB IMPORTED_TARGET zlib)
   if (ZLIB_FOUND)
     include_directories (${ZLIB_INCLUDE_DIRS})
     link_directories (${ZLIB_LIBRARY_DIRS})
@@ -492,7 +492,7 @@ endif ()
 
 # Check for optional LILV library.
 if (CONFIG_LIBLILV)
-  pkg_check_modules (LILV lilv-0)
+  pkg_check_modules (LILV IMPORTED_TARGET lilv-0)
   if (LILV_FOUND)
     include_directories (${LILV_INCLUDE_DIRS})
     link_directories (${LILV_LIBRARY_DIRS})
@@ -535,7 +535,7 @@ endif ()
 
 # Check for optional SUIL library.
 if (CONFIG_LIBSUIL)
-  pkg_check_modules (SUIL suil-0)
+  pkg_check_modules (SUIL IMPORTED_TARGET suil-0)
   if (SUIL_FOUND)
     include_directories (${SUIL_INCLUDE_DIRS})
     link_directories (${SUIL_LIBRARY_DIRS})

@@ -1,9 +1,6 @@
 # project(qtractor)
 
-include_directories (
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 configure_file (cmake_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
@@ -308,10 +305,17 @@ set (TRANSLATIONS
   translations/qtractor_ru.ts
 )
 
-qt_wrap_ui (UI_SOURCES ${FORMS})
-qt_wrap_cpp (MOC_SOURCES ${HEADERS})
-qt_add_resources (QRC_SOURCES ${RESOURCES})
-qt_add_translation (QM_FILES ${TRANSLATIONS})
+if (QT_VERSION VERSION_LESS 5.15.0)
+  qt5_wrap_ui (UI_SOURCES ${FORMS})
+  qt5_wrap_cpp (MOC_SOURCES ${HEADERS})
+  qt5_add_resources (QRC_SOURCES ${RESOURCES})
+  qt5_add_translation (QM_FILES ${TRANSLATIONS})
+else ()
+  qt_wrap_ui (UI_SOURCES ${FORMS})
+  qt_wrap_cpp (MOC_SOURCES ${HEADERS})
+  qt_add_resources (QRC_SOURCES ${RESOURCES})
+  qt_add_translation (QM_FILES ${TRANSLATIONS})
+endif ()
 
 add_custom_target (translations ALL DEPENDS ${QM_FILES})
 
@@ -350,6 +354,7 @@ if (CONFIG_VST3SDK)
   )
 endif ()
 
+
 add_executable (${PROJECT_NAME}
   ${UI_SOURCES}
   ${MOC_SOURCES}
@@ -381,51 +386,54 @@ if (CONFIG_XUNIQUE)
 endif ()
 
 if (CONFIG_LIBJACK)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${JACK_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::JACK)
 endif ()
 
 if (CONFIG_LIBASOUND)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${ALSA_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::ALSA)
 endif ()
 
 if (CONFIG_LIBSNDFILE)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${SNDFILE_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::SNDFILE)
 endif ()
 
 if (CONFIG_LIBVORBIS)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${VORBIS_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::VORBIS)
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::VORBISENC)
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::VORBISFILE)
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::OGG)
 endif ()
 
 if (CONFIG_LIBMAD)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${MAD_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::MAD)
 endif ()
 
 if (CONFIG_LIBSAMPLERATE)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${SAMPLERATE_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::SAMPLERATE)
 endif ()
 
 if (CONFIG_LIBRUBBERBAND)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${RUBBERBAND_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::RUBBERBAND)
 endif ()
 
 if (CONFIG_LIBAUBIO)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${AUBIO_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::AUBIO)
 endif ()
 
 if (CONFIG_LIBLO)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${LIBLO_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::LIBLO)
 endif ()
 
 if (CONFIG_LIBZ)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::ZLIB)
 endif ()
 
 if (CONFIG_LIBLILV)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${LILV_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::LILV)
 endif ()
 
 if (CONFIG_LIBSUIL)
-  target_link_libraries (${PROJECT_NAME} PRIVATE ${SUIL_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::SUIL)
 endif ()
 
 

@@ -19,3 +19,4 @@ qrc_*.cpp
 .ui
 qtractor
 qtractor_plugin_scan
+build/
