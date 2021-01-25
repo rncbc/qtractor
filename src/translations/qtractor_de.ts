@@ -6408,12 +6408,12 @@ is highly recommended.</source>
         <translation>Meldungen</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="293"/>
+        <location filename="../qtractorMessages.cpp" line="302"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Aufzeichung angehalten --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="303"/>
+        <location filename="../qtractorMessages.cpp" line="312"/>
         <source>Logging started --- %1 ---</source>
         <translation>Aufzeichnung gestartet --- %1 ---</translation>
     </message>

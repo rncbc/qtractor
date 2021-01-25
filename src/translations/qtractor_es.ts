@@ -6469,12 +6469,12 @@ el archivo de sesión actual.</translation>
         <translation>Mensajes</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="293"/>
+        <location filename="../qtractorMessages.cpp" line="302"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Se ha detenido la bitácora --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="303"/>
+        <location filename="../qtractorMessages.cpp" line="312"/>
         <source>Logging started --- %1 ---</source>
         <translation>Se ha iniciado la bitácora --- %1 ---</translation>
     </message>

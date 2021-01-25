@@ -6475,12 +6475,12 @@ sezením znovu.</translation>
         <translation>Zprávy</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="293"/>
+        <location filename="../qtractorMessages.cpp" line="302"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Zapisování vzkazů bylo zastaveno --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="303"/>
+        <location filename="../qtractorMessages.cpp" line="312"/>
         <source>Logging started --- %1 ---</source>
         <translation>Zapisování vzkazů začalo --- %1 ---</translation>
     </message>

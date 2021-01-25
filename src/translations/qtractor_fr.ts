@@ -6473,12 +6473,12 @@ est près et en fonctionnement puis redémarrez la session.</translation>
         <translation>Messages</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="293"/>
+        <location filename="../qtractorMessages.cpp" line="302"/>
         <source>Logging stopped --- %1 ---</source>
         <translation>Journalisation arrêtée --- %1 ---</translation>
     </message>
     <message>
-        <location filename="../qtractorMessages.cpp" line="303"/>
+        <location filename="../qtractorMessages.cpp" line="312"/>
         <source>Logging started --- %1 ---</source>
         <translation>Journalisation démarrée --- %1 ---</translation>
     </message>
