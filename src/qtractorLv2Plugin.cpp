@@ -1356,14 +1356,17 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 
 #undef signals // Collides with GTK symbology
 
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic pop
-
+#endif
 
 static void qtractor_lv2_ui_gtk2_on_size_request (
 	GtkWidget */*widget*/, GtkRequisition *req, gpointer user_data )
@@ -4175,8 +4178,10 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 
 
 #ifndef CONFIG_LIBSUIL
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
 #endif
 
 // Alternate UI instantiation stuff.
@@ -4393,7 +4398,9 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 }
 
 #ifndef CONFIG_LIBSUIL
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic pop
+#endif
 #endif
 
 
