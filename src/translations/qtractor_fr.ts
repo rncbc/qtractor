@@ -847,12 +847,12 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
         <translation>Ne pas redemander</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3710"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3709"/>
         <source>plugin parameters</source>
         <translation>paramètres du greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4121"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4120"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Ouvrir un fichier</translation>
