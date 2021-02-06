@@ -3479,8 +3479,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 #ifdef CONFIG_LV2_UI_X11
 	if (!ui_supported && m_pQtWidget
 		&& m_lv2_ui_type == LV2_UI_TYPE_X11) {
-		// Override widget handle...
-		m_lv2_ui_widget = static_cast<LV2UI_Widget> (m_pQtWidget);
+		// Initialize widget event filter...
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 	//	m_bQtDelete = true;
 		// LV2 UI resize control...
@@ -4166,6 +4165,25 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_resize(%d, %d)",
 		this, size.width(), size.height());
 #endif
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+#ifdef CONFIG_LV2_UI_X11
+	if (m_lv2_ui_type == LV2_UI_TYPE_X11
+		&& m_lv2_ui_widget
+	#ifdef CONFIG_LIBSUIL
+		&& m_suil_instance == nullptr
+	#endif
+	) {
+		const WId wid = WId(m_lv2_ui_widget);
+		QWindow *pWindow = QWindow::fromWinId(wid);
+		if (pWindow) {
+			pWindow->resize(size);
+			delete pWindow;
+		}
+	}
+#endif	// CONFIG_LV2_UI_X11
+#endif
+
 	const LV2UI_Resize *resize
 		= (const LV2UI_Resize *) lv2_ui_extension_data(LV2_UI__resize);
 	if (resize && resize->ui_resize) {

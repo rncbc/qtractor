@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed LV2 plug-in UI X11 (native) resize (as reported by sjaehn
+  on GH issue #293; EXPERIMENTAL)
+
 - Make NSM state file names independent to session display names,
   keeping backward compatibility for old sessions. (EXPERIMENTAL)
 
