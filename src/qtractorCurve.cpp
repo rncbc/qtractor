@@ -310,7 +310,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 	}
 
 	updateNode(pNode);
-	
+
 	// Dirty up...
 	if (m_pList)
 		m_pList->notify();

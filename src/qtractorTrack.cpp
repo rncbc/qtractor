@@ -1522,7 +1522,6 @@ void qtractorTrack::process_curve ( unsigned long iFrame )
 }
 
 
-
 // Track paint method.
 void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 	unsigned long iTrackStart, unsigned long iTrackEnd, qtractorClip *pClip )
