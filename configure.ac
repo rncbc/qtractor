@@ -1646,7 +1646,7 @@ echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
 echo "  JACK Metadata support  . . . . . . . . . . . . . .: $ac_jack_metadata"
 echo
-echo "  New Session Management (NSM) support . . . . . . .: $ac_nsm"
+echo "  Non/New Session Management (NSM) support . . . . .: $ac_nsm"
 echo
 echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
 echo "  Unique/Single instance support . . . . . . . . . .: $ac_xunique"
