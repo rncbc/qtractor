@@ -34,6 +34,7 @@ public:
 	{
 		qtractorSubject  *subject;
 		qtractorObserver *sender;
+		float             value;
 	};
 
 	qtractorSubjectQueue ( unsigned int iQueueSize = 1024 )
@@ -46,7 +47,7 @@ public:
 	void clear()
 		{ m_iQueueIndex = 0; }
 
-	bool push ( qtractorSubject *pSubject, qtractorObserver *pSender )
+	bool push ( qtractorSubject *pSubject, qtractorObserver *pSender, float fValue )
 	{
 		if (m_iQueueIndex >= m_iQueueSize)
 			return false;
@@ -54,6 +55,7 @@ public:
 		QueueItem *pItem = &m_pQueueItems[m_iQueueIndex++];
 		pItem->subject = pSubject;
 		pItem->sender  = pSender;
+		pItem->value   = fValue;
 		return true;
 	}
 
@@ -63,7 +65,7 @@ public:
 			return false;
 		QueueItem *pItem = &m_pQueueItems[--m_iQueueIndex];
 		qtractorSubject *pSubject = pItem->subject;
-		pSubject->notify(pItem->sender, bUpdate);
+		pSubject->notify(pItem->sender, pItem->value, bUpdate);
 		pSubject->setQueued(false);
 		return true;
 	}
@@ -119,7 +121,8 @@ static qtractorSubjectQueue g_subjectQueue;
 
 // Constructor.
 qtractorSubject::qtractorSubject ( float fValue, float fDefaultValue )
-	: m_fValue(fValue), m_bQueued(false), m_fPrevValue(fValue),
+	: m_fValue(fValue), m_bQueued(false),
+		m_fPrevValue(fValue), m_fLastValue(fValue),
 		m_fMinValue(0.0f), m_fMaxValue(1.0f), m_fDefaultValue(fDefaultValue),
 		m_bToggled(false), m_bInteger(false), m_pCurve(nullptr)
 {
@@ -144,7 +147,7 @@ void qtractorSubject::setValue ( float fValue, qtractorObserver *pSender )
 
 	if (!m_bQueued) {
 		m_fPrevValue = m_fValue;
-		g_subjectQueue.push(this, pSender);
+		g_subjectQueue.push(this, pSender, fValue);
 	}
 
 	m_fValue = safeValue(fValue);
@@ -152,13 +155,15 @@ void qtractorSubject::setValue ( float fValue, qtractorObserver *pSender )
 
 
 // Observer/view updater.
-void qtractorSubject::notify ( qtractorObserver *pSender, bool bUpdate )
+void qtractorSubject::notify (
+	qtractorObserver *pSender, float fValue, bool bUpdate )
 {
 	QListIterator<qtractorObserver *> iter(m_observers);
 	while (iter.hasNext()) {
 		qtractorObserver *pObserver = iter.next();
 		if (pSender && pSender == pObserver)
 			continue;
+		m_fLastValue = fValue;
 		pObserver->update(bUpdate);
 	}
 }

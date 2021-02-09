@@ -253,7 +253,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 #endif
 
 	Node *pNode = nullptr;
-	Node *pNext = m_cursor.seek(iFrame);
+	Node *pNext = Cursor(this).seek(iFrame);
 	Node *pPrev = (pNext ? pNext->prev() : m_nodes.last());
 
 	if (pNext && isMinFrameDist(pNext, iFrame, fValue))
@@ -275,9 +275,9 @@ qtractorCurve::Node *qtractorCurve::addNode (
 		float y3 = (x2 > x1 ? s1 * (x2 - x1) + y1 : y1);
 		if (qAbs(y3 - y2) < fThreshold * qAbs(y3 - y1))
 			return nullptr;
-		if (pPrev) {
+		if (pPrev && pPrev->prev()) {
 			pNode = pPrev;
-			pPrev = pNode->prev();
+			pPrev = pPrev->prev();
 			x0 = (pPrev ? float(pPrev->frame) : 0.0f);
 			y0 = (pPrev ? pPrev->value : m_tail.value);
 			x1 = float(pNode->frame);

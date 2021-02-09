@@ -202,11 +202,8 @@ public:
 	// The meta-processing automation procedure.
 	void process(unsigned long iFrame)
 	{
-		if (isProcess()) {
-			Node *pNode = seek(iFrame);
-			if (!isCapture())
-				m_observer.setValue(value(pNode, iFrame));
-		}
+		if (isProcess())
+			m_observer.setValue(value(iFrame));
 	}
 
 	void process() { process(m_cursor.frame()); }
@@ -215,7 +212,7 @@ public:
 	void capture(unsigned long iFrame)
 	{
 		if (isCapture())
-			addNode(iFrame, m_observer.value(), m_pEditList);
+			addNode(iFrame, m_observer.lastValue(), m_pEditList);
 	}
 
 	void capture() { capture(m_cursor.frame()); }
