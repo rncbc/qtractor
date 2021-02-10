@@ -82,7 +82,7 @@ qtractorMessages::qtractorMessages ( QWidget *pParent )
 	// Surely a name is crucial (e.g.for storing geometry settings)
 	QDockWidget::setObjectName("qtractorMessages");
 
-	// Intialize stdout capture stuff.
+	// Initialize stdout capture stuff.
 	m_pStdoutNotifier = nullptr;
 	m_fdStdout[QTRACTOR_MESSAGES_FDREAD]  = QTRACTOR_MESSAGES_FDNIL;
 	m_fdStdout[QTRACTOR_MESSAGES_FDWRITE] = QTRACTOR_MESSAGES_FDNIL;

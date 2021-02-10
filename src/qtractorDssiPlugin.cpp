@@ -857,7 +857,7 @@ bool qtractorDssiPluginType::open (void)
 	m_iMidiIns = 1;
 
 #ifdef CONFIG_LIBLO
-	// Check for GUI editor exacutable...
+	// Check for GUI editor executable...
 	const QFileInfo fi(filename());
 	QFileInfo gi(fi.dir(), fi.baseName());
 	if (gi.isDir()) {

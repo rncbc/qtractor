@@ -74,7 +74,7 @@ qtractorMeter *qtractorMeterScale::meter (void) const
 }
 
 
-// Draw scale line and label; assumes labels drawed from top to bottom.
+// Draw scale line and label; assumes labels drawn from top to bottom.
 void qtractorMeterScale::drawLineLabel ( QPainter *p,
 	int y, const QString& sLabel )
 {

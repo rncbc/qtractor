@@ -273,7 +273,7 @@ public:
 	void setClockMode(qtractorBus::BusMode clockMode);
 	qtractorBus::BusMode clockMode() const;
 
-	// Free overriden SysEx queued events.
+	// Free overridden SysEx queued events.
 	void clearSysexCache();
 
 	// Reset ouput queue drift stats (audio vs. MIDI)...
@@ -398,7 +398,7 @@ private:
 	unsigned short m_iClockCount;
 	float          m_fClockTempo;
 
-	// Overriden SysEx queued events.
+	// Overridden SysEx queued events.
 	QList<qtractorMidiEvent *> m_sysexCache;
 };
 

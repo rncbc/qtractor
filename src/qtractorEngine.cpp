@@ -108,7 +108,7 @@ bool qtractorEngine::isActivated(void) const
 }
 
 
-// Buses list managament methods.
+// Buses list management methods.
 const qtractorList<qtractorBus>& qtractorEngine::buses (void) const
 {
 	return m_buses;
@@ -185,7 +185,7 @@ qtractorBus *qtractorEngine::findOutputBus (
 }
 
 
-// Exo-buses list managament methods.
+// Exo-buses list management methods.
 const qtractorList<qtractorBus>& qtractorEngine::busesEx (void) const
 {
 	return m_busesEx;
@@ -262,7 +262,7 @@ void qtractorEngine::close (void)
 	if (bActivated) {
 		// Deactivate the derived engine first.
 		deactivate();
-		// Close all dependant buses...
+		// Close all dependent buses...
 		for (qtractorBus *pBus = m_buses.first();
 				pBus; pBus = pBus->next()) {
 			pBus->close();

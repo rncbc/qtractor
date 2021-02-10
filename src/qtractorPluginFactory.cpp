@@ -1009,7 +1009,7 @@ qtractorDummyPluginType::qtractorDummyPluginType (
 }
 
 
-// Must be overriden methods.
+// Must be overridden methods.
 bool qtractorDummyPluginType::open (void)
 {
 	return true;

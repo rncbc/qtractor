@@ -233,7 +233,7 @@ void qtractorWsolaTimeStretcher::setTempo ( float fTempo )
 	clear();
 
 	// These will be enough for most purposes, and
-	// shoudl avoid in-the-fly buffer re-allocations...
+	// should avoid in-the-fly buffer re-allocations...
 	m_inputBuffer.ensureCapacity(m_iFramesReq);
 	m_outputBuffer.ensureCapacity(m_iFramesReq);
 }

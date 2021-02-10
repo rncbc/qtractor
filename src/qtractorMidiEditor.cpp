@@ -2465,7 +2465,7 @@ void qtractorMidiEditor::removeEditRange (void)
 // Update/sync integral contents.
 void qtractorMidiEditor::updateContents (void)
 {
-	// Update dependant views.
+	// Update dependent views.
 	m_pEditList->updateContentsHeight();
 	m_pEditView->updateContentsWidth();
 
@@ -2484,7 +2484,7 @@ void qtractorMidiEditor::updateContents (void)
 // Try to center vertically the edit-view...
 void qtractorMidiEditor::centerContents (void)
 {
-	// Update dependant views.
+	// Update dependent views.
 	m_pEditList->updateContentsHeight();
 	m_pEditView->updateContentsWidth();
 
@@ -2577,7 +2577,7 @@ void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
 	int cx = m_pTimeScale->pixelFromFrame(zc.frame);
 	int cy = zc.item * m_pEditList->itemHeight();
 
-	// Update dependant views.
+	// Update dependent views.
 	m_pEditList->updateContentsHeight();
 	m_pEditView->updateContentsWidth();
 
