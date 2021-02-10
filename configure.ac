@@ -669,6 +669,7 @@ fi
 
 # Check for SSE optimization.
 if test "x$ac_sse" = "xyes"; then
+  AC_CHECK_HEADER([xmmintrin.h],[
    ac_sse_cflags="-msse -mfpmath=sse -ffast-math"
    ac_old_cflags=$CFLAGS
    ac_old_cppflags=$CPPFLAGS
@@ -690,15 +691,20 @@ if test "x$ac_sse" = "xyes"; then
               : "=a" (a), "=S" (b), "=c" (c), "=d" (d) : "0" (1));
             return ((d & (1 << 25)) ? 0 : 1);
          }
-      ], ac_cv_sse="yes", ac_cv_sse="no")
+      ], ac_cv_sse="yes", ac_cv_sse="no", ac_cv_sse=cross)
    ])
-   ac_sse=$ac_cv_sse
+   if test "x$ac_cv_sse" = xcross; then
+      ac_sse=yes
+   else
+      ac_sse=$ac_cv_sse
+   fi
    if test "x$ac_sse" = "xyes"; then
       ac_cflags="$ac_sse_cflags $ac_cflags"
    else
       CPPFLAGS=$ac_old_cppflags
       CFLAGS=$ac_old_cflags
    fi
+  ],[ac_sse=no])
 fi
 
 
