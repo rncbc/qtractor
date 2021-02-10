@@ -348,7 +348,7 @@ bool qtractor_dssi_scan::open_descriptor ( unsigned long iIndex )
 
 	m_bEditor = false;
 
-	// Check for GUI editor exacutable...
+	// Check for GUI editor executable...
 	const QFileInfo fi(m_pLibrary->fileName());
 	const QFileInfo gi(fi.dir(), fi.baseName());
 	if (gi.isDir()) {

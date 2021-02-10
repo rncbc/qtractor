@@ -74,7 +74,7 @@ bool qtractorPluginFile::open (void)
 	if (m_module && ++m_iOpenCount > 1)
 		return true;
 
-	// Do the openning dance...
+	// Do the opening dance...
 	if (m_module == nullptr) {
 		const QByteArray aFilename = m_sFilename.toUtf8();
 		m_module = ::dlopen(aFilename.constData(), RTLD_LOCAL | RTLD_LAZY);
@@ -321,7 +321,7 @@ bool qtractorPlugin::isActivated (void) const
 }
 
 
-// Avoid save/copy auto-deactivated as deacitvated...
+// Avoid save/copy auto-deactivated as deactivated...
 bool qtractorPlugin::isActivatedEx (void) const
 {
 	return m_bActivated;

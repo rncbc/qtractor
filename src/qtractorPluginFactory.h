@@ -199,7 +199,7 @@ public:
 	qtractorDummyPluginType(
 		const QString& sText, unsigned long iIndex, Hint typeHint);
 
-	// Must be overriden methods.
+	// Must be overridden methods.
 	bool open();
 	void close();
 

@@ -573,7 +573,7 @@ void qtractorMidiOutputThread::process (void)
 	if (pMidiCursor == nullptr)
 		return;
 
-	// Free overriden SysEx queued events.
+	// Free overridden SysEx queued events.
 	m_pMidiEngine->clearSysexCache();
 
 	// Now for the next readahead bunch...
@@ -1313,7 +1313,7 @@ void qtractorMidiEngine::alsaNotifyAck (void)
 // Special slave sync method.
 void qtractorMidiEngine::sync (void)
 {
-	// Pure conditional thread slave syncronization...
+	// Pure conditional thread slave synchronization...
 	if (m_pOutputThread && m_pOutputThread->midiCursorSync())
 		m_pOutputThread->sync();
 }
@@ -1421,7 +1421,7 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 	qDebug("qtractorMidiEngine::resetAllControllers(%d)", int(bForceImmediate));
 #endif
 
-	// Deferred processsing?
+	// Deferred processing?
 	if (!bForceImmediate) {
 		++m_iResetAllControllers;
 		return;
@@ -1944,7 +1944,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	}
 #endif
 
-	// Intialize outbound event...
+	// Initialize outbound event...
 	snd_seq_event_t ev;
 	snd_seq_ev_clear(&ev);
 
@@ -3253,7 +3253,7 @@ void qtractorMidiEngine::processMetro (
 	unsigned int  iBeat = pNode->beatFromTick(iTimeStart);
 	unsigned long iTime = pNode->tickFromBeat(iBeat);
 
-	// Intialize outbound metronome event...
+	// Initialize outbound metronome event...
 	snd_seq_event_t ev;
 	snd_seq_ev_clear(&ev);
 	// Addressing...
@@ -3266,7 +3266,7 @@ void qtractorMidiEngine::processMetro (
 	ev.type = SND_SEQ_EVENT_NOTE;
 	ev.data.note.channel = m_iMetroChannel;
 
-	// Intialize outbound clock event...
+	// Initialize outbound clock event...
 	snd_seq_event_t ev_clock;
 	snd_seq_ev_clear(&ev_clock);
 	// Addressing...
@@ -3786,7 +3786,7 @@ qtractorBus::BusMode qtractorMidiEngine::clockMode (void) const
 }
 
 
-// Free overriden SysEx queued events.
+// Free overridden SysEx queued events.
 void qtractorMidiEngine::clearSysexCache (void)
 {
 	qDeleteAll(m_sysexCache);
@@ -3868,7 +3868,7 @@ bool qtractorMidiBus::open (void)
 	const qtractorBus::BusMode busMode
 		= qtractorMidiBus::busMode();
 
-	// The verry same port might be used for input and output...
+	// The very same port might be used for input and output...
 	unsigned int flags = 0;
 
 	if (busMode & qtractorBus::Input)
@@ -4953,7 +4953,7 @@ bool qtractorMidiBus::saveElement (
 		pElement->appendChild(eMidiOutputs);
 	}
 
-	// Save default intrument name, if any...
+	// Save default instrument name, if any...
 	if (!qtractorMidiBus::instrumentName().isEmpty()) {
 		pDocument->saveTextElement("midi-instrument-name",
 			qtractorMidiBus::instrumentName(), pElement);

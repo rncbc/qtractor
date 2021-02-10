@@ -390,7 +390,7 @@ bool qtractorAudioMadFile::seek ( unsigned long iOffset )
 	g_mutex.lock();
 	if (m_pFrameList->count() > 0
 		&& m_pFrameList->last().iOutputOffset > iOffset) {
-		// Assume the worst case (seek to very beggining...)
+		// Assume the worst case (seek to very beginning...)
 		m_curr.iInputOffset  = 0;
 		m_curr.iOutputOffset = 0;
 		m_curr.iDecodeCount  = 0;

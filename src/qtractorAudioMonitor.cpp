@@ -543,7 +543,7 @@ void qtractorAudioOutputMonitor::setChannels ( unsigned short iChannels )
 }
 
 
-// Associated meters (kinda observers) managament methods.
+// Associated meters (kinda observers) management methods.
 void qtractorAudioOutputMonitor::addAudioMeter (
 	qtractorAudioMeter *pAudioMeter )
 {

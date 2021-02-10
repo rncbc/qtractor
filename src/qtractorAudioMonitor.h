@@ -100,7 +100,7 @@ public:
 	// Channel property accessors.
 	void setChannels(unsigned short iChannels);
 
-	// Associated meters (kinda observers) managament methods.
+	// Associated meters (kinda observers) management methods.
 	void addAudioMeter(qtractorAudioMeter *pAudioMeter);
 	void removeAudioMeter(qtractorAudioMeter *pAudioMeter);
 

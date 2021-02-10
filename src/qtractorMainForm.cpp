@@ -227,7 +227,7 @@ qtractorMainForm::qtractorMainForm (
 	// Initialize some pointer references.
 	m_pOptions = nullptr;
 
-	// FIXME: This gotta go, somwhere in time...
+	// FIXME: This gotta go, somewhere in time...
 	m_pSession = new qtractorSession();
 	m_pTempoCursor = new qtractorTempoCursor();
 	m_pMessageList = new qtractorMessageList();
@@ -6662,7 +6662,7 @@ void qtractorMainForm::updateExportMenu (void)
 		}
 	}
 
-	// nb. audio export also applies to MIDI intrument tracks...
+	// nb. audio export also applies to MIDI instrument tracks...
 	m_ui.trackExportAudioAction->setEnabled(iAudioClips > 0 || iMidiClips > 0);
 	m_ui.trackExportMidiAction->setEnabled(iMidiClips > 0);
 }

@@ -338,7 +338,7 @@ public:
 	void setProperties(const Properties& props);
 	Properties& properties();
 
-	// Reset state properties (as needed on copy/dublicate)
+	// Reset state properties (as needed on copy/duplicate)
 	void resetProperties();
 
 	// Track type textual helper methods.

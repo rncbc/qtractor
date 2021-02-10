@@ -1529,7 +1529,7 @@ bool qtractorAudioEngine::fileExport (
 	// No file ready for export?
 	if (pExportFile == nullptr)
 		return false;
-	// Go open it, for writeing of course...
+	// Go open it, for writing of course...
 	if (!pExportFile->open(sExportPath, qtractorAudioFile::Write)) {
 		delete pExportFile;
 		return false;

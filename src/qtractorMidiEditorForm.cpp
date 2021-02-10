@@ -747,7 +747,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		pOptions->loadActionShortcuts(this);
 	}
 
-	// Make last-but-not-least conections....
+	// Make last-but-not-least connections....
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		QObject::connect(m_ui.transportBackwardAction,

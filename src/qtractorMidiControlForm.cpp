@@ -223,7 +223,7 @@ void qtractorMidiControlForm::reject (void)
 }
 
 
-// Import new intrument file(s) into listing.
+// Import new instrument file(s) into listing.
 void qtractorMidiControlForm::importSlot (void)
 {
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
