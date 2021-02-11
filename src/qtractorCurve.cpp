@@ -392,21 +392,15 @@ void qtractorCurve::removeNode ( Node *pNode )
 bool qtractorCurve::isMinFrameDist (
 	Node *pNode, unsigned long iFrame, float fValue ) const
 {
+	if (iFrame > pNode->frame - m_iMinFrameDist &&
+		iFrame < pNode->frame + m_iMinFrameDist)
+		return true;
+
 	const float fThreshold = 0.025f
 		* (m_observer.maxValue() - m_observer.minValue());
 
-	const bool bMinValueDist
-		= (fValue > pNode->value - fThreshold
-		&& fValue < pNode->value + fThreshold);
-
-	const bool bMinFrameDist
-		= (iFrame > pNode->frame - m_iMinFrameDist
-		&& iFrame < pNode->frame + m_iMinFrameDist);
-
-	if (m_mode == Hold || !m_observer.isDecimal())
-		return bMinFrameDist || bMinValueDist;
-	else
-		return bMinFrameDist && bMinValueDist;
+	return (fValue > pNode->value - fThreshold &&
+			fValue < pNode->value + fThreshold);
 }
 
 

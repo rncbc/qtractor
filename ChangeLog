@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed and improved automation curve recording, whenever playback
+  is rolling (and also when isn't:)). (EXPERIMENTAL)
+
 - Fixed parsing/loading of large archive/zip files (.qtz > 2GB).
 
 - Fixed LV2 plug-in UI X11 (native) resize (as reported by sjaehn
