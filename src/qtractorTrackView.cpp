@@ -3932,9 +3932,12 @@ void qtractorTrackView::dragCurveNode (
 	if (m_pDragCurve && m_pDragCurve != pCurve)
 		return;
 
+	const unsigned long iFrame
+		= pCurve->cursor().frame();
+
 	if (m_pCurveEditCommand == nullptr)
 		m_pCurveEditCommand = new qtractorCurveEditCommand(pCurve);
-	
+
 	qtractorCurve::Node *pNode = m_pDragCurveNode;
 
 	m_pDragCurveNode = nullptr;
@@ -3983,6 +3986,8 @@ void qtractorTrackView::dragCurveNode (
 				nodeToolTip(m_pDragCurve, m_pDragCurveNode), pViewport);
 		}
 	}
+
+	pCurve->cursor().seek(iFrame);
 }
 
 
@@ -5429,6 +5434,9 @@ void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 	if (!m_pCurveSelect->isCurrentCurve(pCurve))
 		return;
 
+	const unsigned long iFrame
+		= pCurve->cursor().frame();
+
 	const int x0 = m_pCurveSelect->rect().x();
 	const int x1 = x0 + m_iDragCurveX;
 	const long delta = long(pSession->frameFromPixel(x1))
@@ -5487,6 +5495,8 @@ void qtractorTrackView::moveCurveSelect ( const QPoint& pos )
 		updateRect(rectUpdate.united(m_pCurveSelect->rect()));
 		m_pTracks->selectionChangeNotify();
 	}
+
+	pCurve->cursor().seek(iFrame);
 }
 
 
@@ -5513,6 +5523,9 @@ void qtractorTrackView::pasteCurveSelect ( const QPoint& pos )
 		return;
 	if (pCurve->isLocked())
 		return;
+
+	const unsigned long iFrame
+		= pCurve->cursor().frame();
 
 	// We'll need this...
 	qtractorCurveEditCommand *pCurveEditCommand
@@ -5587,6 +5600,8 @@ void qtractorTrackView::pasteCurveSelect ( const QPoint& pos )
 		updateRect(rectUpdate.united(m_pCurveSelect->rect()));
 		m_pTracks->selectionChangeNotify();
 	}
+
+	pCurve->cursor().seek(iFrame);
 }
 
 

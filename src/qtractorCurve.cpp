@@ -253,7 +253,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 #endif
 
 	Node *pNode = nullptr;
-	Node *pNext = Cursor(this).seek(iFrame);
+	Node *pNext = m_cursor.seek(iFrame);
 	Node *pPrev = (pNext ? pNext->prev() : m_nodes.last());
 
 	if (pNext && isMinFrameDist(pNext, iFrame))
@@ -356,7 +356,7 @@ void qtractorCurve::unlinkNode ( Node *pNode )
 	qDebug("qtractorCurve[%p]::unlinkNode(%p)", this, pNode);
 #endif
 
-	m_cursor.reset();
+	m_cursor.reset(pNode);
 
 	Node *pNext = pNode->next();
 	m_nodes.unlink(pNode);
@@ -790,6 +790,9 @@ bool qtractorCurveEditList::execute ( bool bRedo )
 	if (m_pCurve == nullptr)
 		return false;
 
+	const unsigned long iFrame
+		= m_pCurve->cursor().frame();
+
 	QListIterator<Item *> iter(m_items);
 	if (!bRedo)
 		iter.toBack();
@@ -828,6 +831,7 @@ bool qtractorCurveEditList::execute ( bool bRedo )
 		}
 	}
 
+	m_pCurve->cursor().seek(iFrame);
 	m_pCurve->update();
 
 	return true;

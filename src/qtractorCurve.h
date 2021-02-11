@@ -151,7 +151,7 @@ public:
 		// Accessors.
 		qtractorCurve *curve() const { return m_pCurve; }
 		unsigned long  frame() const { return m_iFrame; }
-	
+
 		// Specific methods.
 		Node *seek(unsigned long iFrame);
 		void reset(Node *pNode = nullptr);
@@ -180,7 +180,7 @@ public:
 	};
 
 	// Internal cursor accessor.
-	const Cursor& cursor() const { return m_cursor; }
+	Cursor& cursor() { return m_cursor; }
 
 	// Curve state flags.
 	enum State { Idle = 0, Process = 1, Capture = 2, Locked = 4 };
