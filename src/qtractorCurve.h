@@ -252,7 +252,7 @@ public:
 protected:
 
 	// Snap to minimum distance frame.
-	bool isMinFrameDist(Node *pNode, unsigned long iFrame, float fValue) const;
+	bool isMinFrameDist(Node *pNode, unsigned long iFrame) const;
 
 	// Node interpolation coefficients updater.
 	void updateNode(Node *pNode);

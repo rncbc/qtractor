@@ -256,10 +256,10 @@ qtractorCurve::Node *qtractorCurve::addNode (
 	Node *pNext = Cursor(this).seek(iFrame);
 	Node *pPrev = (pNext ? pNext->prev() : m_nodes.last());
 
-	if (pNext && isMinFrameDist(pNext, iFrame, fValue))
+	if (pNext && isMinFrameDist(pNext, iFrame))
 		pNode = pNext;
 	else
-	if (pPrev && isMinFrameDist(pPrev, iFrame, fValue))
+	if (pPrev && isMinFrameDist(pPrev, iFrame))
 		pNode = pPrev;
 	else
 	if (m_mode != Hold && m_observer.isDecimal()) {
@@ -275,6 +275,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 		float y3 = (x2 > x1 ? s1 * (x2 - x1) + y1 : y1);
 		if (qAbs(y3 - y2) < fThreshold * qAbs(y3 - y1))
 			return nullptr;
+	#if 0// Overkill maybe?...
 		if (pPrev && pPrev->prev()) {
 			pNode = pPrev;
 			pPrev = pPrev->prev();
@@ -289,6 +290,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 			if (qAbs(y3 - y2) > fThreshold * qAbs(y3 - y1))
 				pNode = nullptr;
 		}
+	#endif
 	}
 
 	if (pNode) {
@@ -354,7 +356,7 @@ void qtractorCurve::unlinkNode ( Node *pNode )
 	qDebug("qtractorCurve[%p]::unlinkNode(%p)", this, pNode);
 #endif
 
-	m_cursor.reset(pNode);
+	m_cursor.reset();
 
 	Node *pNext = pNode->next();
 	m_nodes.unlink(pNode);
@@ -389,18 +391,10 @@ void qtractorCurve::removeNode ( Node *pNode )
 
 
 // Whether to snap to minimum distance frame.
-bool qtractorCurve::isMinFrameDist (
-	Node *pNode, unsigned long iFrame, float fValue ) const
+bool qtractorCurve::isMinFrameDist ( Node *pNode, unsigned long iFrame) const
 {
-	if (iFrame > pNode->frame - m_iMinFrameDist &&
-		iFrame < pNode->frame + m_iMinFrameDist)
-		return true;
-
-	const float fThreshold = 0.025f
-		* (m_observer.maxValue() - m_observer.minValue());
-
-	return (fValue > pNode->value - fThreshold &&
-			fValue < pNode->value + fThreshold);
+	return (iFrame > pNode->frame - m_iMinFrameDist &&
+			iFrame < pNode->frame + m_iMinFrameDist);
 }
 
 
