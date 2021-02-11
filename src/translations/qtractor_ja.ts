@@ -14975,49 +14975,49 @@ Length:	%3</source>
         <translation>クリップのリピート</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4719"/>
+        <location filename="../qtractorTrackView.cpp" line="4724"/>
         <source>%1 automation</source>
         <translation>%1 オートメーション</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4792"/>
+        <location filename="../qtractorTrackView.cpp" line="4797"/>
         <source>%1 clip</source>
         <translation>%1 クリップ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5438"/>
+        <location filename="../qtractorTrackView.cpp" line="5446"/>
         <source>move automation</source>
         <translation>オートメーションの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5519"/>
+        <location filename="../qtractorTrackView.cpp" line="5532"/>
         <source>paste automation</source>
         <translation>オートメーションの貼り付け</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4723"/>
-        <location filename="../qtractorTrackView.cpp" line="4796"/>
+        <location filename="../qtractorTrackView.cpp" line="4728"/>
+        <location filename="../qtractorTrackView.cpp" line="4801"/>
         <source>cut</source>
         <translation>切り取り</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4726"/>
-        <location filename="../qtractorTrackView.cpp" line="4799"/>
+        <location filename="../qtractorTrackView.cpp" line="4731"/>
+        <location filename="../qtractorTrackView.cpp" line="4804"/>
         <source>delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4802"/>
+        <location filename="../qtractorTrackView.cpp" line="4807"/>
         <source>split</source>
         <translation>分割</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5165"/>
+        <location filename="../qtractorTrackView.cpp" line="5170"/>
         <source>move clip</source>
         <translation>クリップの移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5298"/>
+        <location filename="../qtractorTrackView.cpp" line="5303"/>
         <source>paste clip</source>
         <translation>クリップの貼り付け</translation>
     </message>
