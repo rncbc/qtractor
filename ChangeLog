@@ -4,28 +4,25 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.20  2021-02-12  A Winter'21 Release.
 
 - Fixed and improved automation curve recording, whenever playback
-  is rolling (and also when isn't:)). (EXPERIMENTAL)
+  is rolling (and also when isn't:)).
 
-- Fixed parsing/loading of large archive/zip files (.qtz > 2GB).
+- Fixed parsing/loading of large session bundle archive/zip files
+  (.qtz > 2GB).
 
-- Fixed LV2 plug-in UI X11 (native) resize (as reported by sjaehn
-  on GH issue #293; EXPERIMENTAL)
+- Fixed LV2 plug-in UI X11 (native) resize.
 
 - Make NSM state file names independent to session display names,
-  keeping backward compatibility for old sessions. (EXPERIMENTAL)
+  keeping backward compatibility for old sessions.
 
 - Exiting, quitting or closing the main window while under NSM, now
-  promptly asks whether to save, discard or cancel as usual. (fixes
-  GH issue #292; EXPERIMENTAL)
+  promptly asks whether to save, discard or cancel as usual.
 
-- Re-improved Mixer multi-row layout (regression to a former patch
-  by Holger Marzen aka. bluebell, sorry).
+- Re-improved Mixer multi-row layout.
 
-- Fix incorrect destruction order for VST3 modules (as reported by
-  Robbert van der Helm on GH #291, thanks).
+- Fix incorrect destruction order for VST3 modules.
 
 
 0.9.19  2020-12-20  A Winter'20 Release.
