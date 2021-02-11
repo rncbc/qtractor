@@ -1,7 +1,7 @@
 // qtractorZipFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2010-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -399,11 +399,9 @@ void qtractorZipDevice::scanFiles (void)
 
 	// Find EndOfDirectory header...
 	int i = 0;
-	int dir_start_offset = -1;
-	int num_dir_entries = 0;
 	EndOfDirectory eod;
-	while (dir_start_offset == -1) {
-		const int pos = device->size() - sizeof(EndOfDirectory) - i;
+	for (;;) {
+		const qint64 pos = device->size() - sizeof(EndOfDirectory) - i;
 		if (pos < 0 || i > 65535) {
 			qWarning("qtractorZipDevice::scanFiles: "
 				"end-of-directory not found.");
@@ -418,9 +416,8 @@ void qtractorZipDevice::scanFiles (void)
 	}
 
 	// Have the eod...
-	dir_start_offset = read_uint(eod.dir_start_offset);
-	num_dir_entries = read_ushort(eod.num_dir_entries);
-
+	const qint64 dir_start_offset = read_uint(eod.dir_start_offset);
+	const int num_dir_entries = read_ushort(eod.num_dir_entries);
 	const int comment_length = read_ushort(eod.comment_length);
 	if (comment_length != i)
 		qWarning("qtractorZipDevice::scanFiles: failed to parse zip file.");

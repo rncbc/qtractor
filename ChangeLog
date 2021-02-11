@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed parsing/loading of large archive/zip files (.qtz > 2GB).
+
 - Fixed LV2 plug-in UI X11 (native) resize (as reported by sjaehn
   on GH issue #293; EXPERIMENTAL)
 
