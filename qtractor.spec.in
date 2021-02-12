@@ -137,7 +137,7 @@ the personal home-studio.
 %{_datadir}/man/fr/man1/%{name}.1.gz
 
 %changelog
-* Fri Feb 12 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.20
+* Fri Feb 12 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.20
 - Winter'21 release.
 * Sun Dec 20 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.19
 - Winter'20 release.
