@@ -773,6 +773,10 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI_TYPE_GTK_NATIVE LV2_UI_TYPE_GTK + LV2_UI_TYPE_NATIVE
 #define LV2_UI_TYPE_X11_NATIVE LV2_UI_TYPE_X11 + LV2_UI_TYPE_NATIVE
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+#include <QWindow>
+#endif
+
 #ifndef LV2_UI__Qt5UI
 #define LV2_UI__Qt5UI	LV2_UI_PREFIX "Qt5UI"
 #endif
