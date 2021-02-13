@@ -65,9 +65,7 @@ class qtractorLv2Worker;
 #include "lv2_external_ui.h"
 #endif
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
-#ifdef CONFIG_LV2_UI_GTK2
 #include <QWindow>
-#endif	// CONFIG_LV2_UI_GTK2
 #endif
 // LV2 UI Request-value support (FAKE).
 #ifdef  CONFIG_LV2_UI_REQ_VALUE_FAKE
