@@ -1242,7 +1242,8 @@ bool qtractorVst3PluginType::open (void)
 
 	Vst::IEditController *controller = m_pImpl->controller();
 	if (controller) {
-		IPtr<IPlugView> editor = controller->createView(Vst::ViewType::kEditor);
+		IPtr<IPlugView> editor =
+			owned(controller->createView(Vst::ViewType::kEditor));
 		m_bEditor = (editor != nullptr);
 	}
 
@@ -2348,7 +2349,7 @@ bool qtractorVst3Plugin::Impl::openEditor (void)
 
 	Vst::IEditController *controller = pType->impl()->controller();
 	if (controller)
-		m_plugView = controller->createView(Vst::ViewType::kEditor);
+		m_plugView = owned(controller->createView(Vst::ViewType::kEditor));
 
 	return (m_plugView != nullptr);
 }
