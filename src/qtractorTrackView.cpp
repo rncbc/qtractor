@@ -3210,28 +3210,6 @@ void qtractorTrackView::updateCurveSelect (void)
 }
 
 
-// Retun either snapped pixel, or the passed one if Alt key is pressed
-unsigned int qtractorTrackView::pixelSnap ( unsigned int x ) const
-{
-	if (QApplication::keyboardModifiers() & Qt::AltModifier)
-		return x;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	return (pSession ? pSession->pixelSnap(x) : x);
-}
-
-
-// Retun either snapped frame, or the passed one if Alt key is pressed
-unsigned long qtractorTrackView::frameSnap ( unsigned long iFrame ) const
-{
-	if (QApplication::keyboardModifiers() & Qt::AltModifier)
-		return iFrame;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	return (pSession ? pSession->frameSnap(iFrame) : iFrame);
-}
-
-
 // Show selection tooltip...
 void qtractorTrackView::showToolTip ( const QRect& rect, int dx ) const
 {
@@ -5753,6 +5731,28 @@ void qtractorTrackView::setSyncViewHold ( bool bSyncViewHold )
 bool qtractorTrackView::isSyncViewHold (void) const
 {
 	return (m_bSyncViewHold && m_iSyncViewHold > 0);
+}
+
+
+// Return either snapped pixel, or the passed one if [Alt] key is pressed.
+unsigned int qtractorTrackView::pixelSnap ( unsigned int x ) const
+{
+	if (QApplication::keyboardModifiers() & Qt::AltModifier)
+		return x;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	return (pSession ? pSession->pixelSnap(x) : x);
+}
+
+
+// Return either snapped frame, or the passed one if [Alt] key is pressed.
+unsigned long qtractorTrackView::frameSnap ( unsigned long iFrame ) const
+{
+	if (QApplication::keyboardModifiers() & Qt::AltModifier)
+		return iFrame;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	return (pSession ? pSession->frameSnap(iFrame) : iFrame);
 }
 
 

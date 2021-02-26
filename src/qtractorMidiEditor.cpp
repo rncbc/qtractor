@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -3331,7 +3331,7 @@ void qtractorMidiEditor::dragMoveCommit (
 		// Shall we move the playhead?...
 		if (m_pEventDrag == nullptr) {
 			// Direct snap positioning...
-			const unsigned long iFrame = m_pTimeScale->frameSnap(m_iOffset
+			const unsigned long iFrame = frameSnap(m_iOffset
 				+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 			// Playhead positioning...
 			setPlayHead(iFrame);
@@ -3916,7 +3916,7 @@ void qtractorMidiEditor::updateDragMove (
 	if (bEditView && m_bDrumMode)
 		x0 += h1;
 	x0 += m_pTimeScale->pixelFromFrame(m_iOffset);
-	m_posDelta.setX(m_pTimeScale->pixelSnap(x0 + dx) - x0);
+	m_posDelta.setX(pixelSnap(x0 + dx) - x0);
 
 	if (bEditView && h1 > 0) {
 		const int ch = m_pEditView->contentsHeight();
@@ -3996,7 +3996,7 @@ void qtractorMidiEditor::updateDragRescale (
 		x1 = m_rectDrag.right() + dx;
 		if (x1 < m_rectDrag.left())
 			dx = -(m_rectDrag.width());
-		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
+		dx = pixelSnap(x0 + dx) - x0;
 		break;
 	case ResizeValue:
 	case ResizeValue14:
@@ -4063,7 +4063,7 @@ void qtractorMidiEditor::updateDragResize (
 			m_posDrag.setX(m_rectDrag.right());
 			x0 += m_rectDrag.width();
 		}
-		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
+		dx = pixelSnap(x0 + dx) - x0;
 		break;
 	case ResizeNoteRight:
 		dx = delta.x();
@@ -4075,7 +4075,7 @@ void qtractorMidiEditor::updateDragResize (
 			m_posDrag.setX(m_rectDrag.left());
 			x0 -= m_rectDrag.width();
 		}
-		dx = m_pTimeScale->pixelSnap(x0 + dx) - x0;
+		dx = pixelSnap(x0 + dx) - x0;
 		break;
 	case ResizeValue:
 		if (m_bDrumMode && m_bEventDragEdit // HACK: Fake note resizes...
@@ -5452,7 +5452,7 @@ bool qtractorMidiEditor::keyStep (
 			x1 -= iHorizontalStep;
 		else
 			x1 += iHorizontalStep;
-		m_posStep.setX(m_pTimeScale->pixelSnap(x1 < 0 ? 0 : x1) - x0);
+		m_posStep.setX(pixelSnap(x1 < 0 ? 0 : x1) - x0);
 	}
 
 	// Early sanity check...
@@ -5514,9 +5514,9 @@ void qtractorMidiEditor::showToolTip (
 	if (m_pTimeScale == nullptr)
 		return;
 
-	const unsigned long iFrameStart = m_pTimeScale->frameSnap(
+	const unsigned long iFrameStart = frameSnap(
 		m_iOffset + m_pTimeScale->frameFromPixel(rect.left()));
-	const unsigned long iFrameEnd = m_pTimeScale->frameSnap(
+	const unsigned long iFrameEnd = frameSnap(
 		iFrameStart + m_pTimeScale->frameFromPixel(rect.width()));
 
 	QToolTip::showText(
@@ -5546,6 +5546,26 @@ void qtractorMidiEditor::setSyncViewHold ( bool bSyncViewHold )
 bool qtractorMidiEditor::isSyncViewHold (void) const
 {
 	return (m_bSyncViewHold && m_iSyncViewHold > 0);
+}
+
+
+// Return either snapped pixel, or the passed one if [Alt] key is pressed.
+unsigned int qtractorMidiEditor::pixelSnap ( unsigned int x ) const
+{
+	if (QApplication::keyboardModifiers() & Qt::AltModifier)
+		return x;
+	else
+		return (m_pTimeScale ? m_pTimeScale->pixelSnap(x) : x);
+}
+
+
+// Return either snapped frame, or the passed one if [Alt] key is pressed.
+unsigned long qtractorMidiEditor::frameSnap ( unsigned long iFrame ) const
+{
+	if (QApplication::keyboardModifiers() & Qt::AltModifier)
+		return iFrame;
+	else
+		return (m_pTimeScale ? m_pTimeScale->frameSnap(iFrame) : iFrame);
 }
 
 

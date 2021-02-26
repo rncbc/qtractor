@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -436,7 +436,7 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (pSession) {
 		// Direct snap positioning...
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
-		unsigned long iFrame = pSession->frameSnap(
+		unsigned long iFrame = pTrackView->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		// Which mouse state?
 		const Qt::KeyboardModifiers& modifiers = pMouseEvent->modifiers();
@@ -495,7 +495,7 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			= pMouseEvent->modifiers();
 		// Are we already moving/dragging something?
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
-		const unsigned long iFrame = pSession->frameSnap(
+		const unsigned long iFrame = pTrackView->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		const int y = pTrackView->contentsY();
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -594,7 +594,7 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			= (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
 		// Direct snap positioning...
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
-		const unsigned long iFrame = pSession->frameSnap(
+		const unsigned long iFrame = pTrackView->frameSnap(
 			pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 		switch (m_dragState) {
 		case DragSelect:
@@ -723,7 +723,8 @@ void qtractorTrackTime::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
-	const unsigned long iFrame = pSession->frameSnap(
+	qtractorTrackView *pTrackView = m_pTracks->trackView();
+	const unsigned long iFrame = pTrackView->frameSnap(
 		pSession->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 
 	// Show tempo map dialog.
@@ -912,7 +913,8 @@ void qtractorTrackTime::showToolTip ( unsigned long iFrame ) const
 
 void qtractorTrackTime::showToolTip ( const QRect& rect ) const
 {
-	if (!m_pTracks->trackView()->isToolTips())
+	qtractorTrackView *pTrackView = m_pTracks->trackView();
+	if (!pTrackView->isToolTips())
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -923,9 +925,9 @@ void qtractorTrackTime::showToolTip ( const QRect& rect ) const
 	if (pTimeScale == nullptr)
 		return;
 
-	const unsigned long iFrameStart = pTimeScale->frameSnap(
+	const unsigned long iFrameStart = pTrackView->frameSnap(
 		pTimeScale->frameFromPixel(rect.left()));
-	const unsigned long iFrameEnd = pTimeScale->frameSnap(
+	const unsigned long iFrameEnd = pTrackView->frameSnap(
 		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
 
 	QToolTip::showText(QCursor::pos(),

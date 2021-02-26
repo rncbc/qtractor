@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -505,7 +505,7 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+	unsigned long iFrame = m_pEditor->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 
 	// We'll need options somehow...
@@ -566,7 +566,7 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	// Are we already moving/dragging something?
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	const unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+	const unsigned long iFrame = m_pEditor->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 	const int y = m_pEditor->editView()->contentsY();
 	switch (m_dragState) {
@@ -651,7 +651,7 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	const unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+	const unsigned long iFrame = m_pEditor->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 	switch (m_dragState) {
 	case DragSelect:
@@ -752,7 +752,7 @@ void qtractorMidiEditTime::mouseDoubleClickEvent ( QMouseEvent *pMouseEvent )
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	const unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+	const unsigned long iFrame = m_pEditor->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 
 	// Show tempo map dialog.
@@ -941,9 +941,9 @@ void qtractorMidiEditTime::showToolTip ( const QRect& rect ) const
 	if (pTimeScale == nullptr)
 		return;
 
-	const unsigned long iFrameStart = pTimeScale->frameSnap(
+	const unsigned long iFrameStart = m_pEditor->frameSnap(
 		pTimeScale->frameFromPixel(rect.left()));
-	const unsigned long iFrameEnd = pTimeScale->frameSnap(
+	const unsigned long iFrameEnd = m_pEditor->frameSnap(
 		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
 
 	QToolTip::showText(QCursor::pos(),
