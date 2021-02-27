@@ -14858,42 +14858,42 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorTrackTime</name>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="880"/>
+        <location filename="../qtractorTrackTime.cpp" line="881"/>
         <source>Play-head</source>
         <translation>再生先頭</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="883"/>
+        <location filename="../qtractorTrackTime.cpp" line="884"/>
         <source>Edit-head</source>
         <translation>編集先頭</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="886"/>
+        <location filename="../qtractorTrackTime.cpp" line="887"/>
         <source>Edit-tail</source>
         <translation>編集末尾</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="889"/>
+        <location filename="../qtractorTrackTime.cpp" line="890"/>
         <source>Loop-start</source>
         <translation>ループスタート</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="892"/>
+        <location filename="../qtractorTrackTime.cpp" line="893"/>
         <source>Loop-end</source>
         <translation>ループエンド</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="895"/>
+        <location filename="../qtractorTrackTime.cpp" line="896"/>
         <source>Punch-in</source>
         <translation>パンチイン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="898"/>
+        <location filename="../qtractorTrackTime.cpp" line="899"/>
         <source>Punch-out</source>
         <translation>パンチアウト</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="932"/>
+        <location filename="../qtractorTrackTime.cpp" line="934"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>

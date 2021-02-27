@@ -6,7 +6,13 @@ ChangeLog
 
 GIT HEAD
 
-- Bumped version micro/dot number into the next develop cycle.
+- Ignore snap while ALT key is pressed, on the main track-view and
+  the MIDI clip editors (aka. piano-roll). (Yosbel, GH#256)
+
+- Fixed a FTBFS when native LV2 UI GTK2 support is disabled. (David
+  Runge, GH#297)
+
+- Fix IPlugView leaks for VST3 plugins. (Robbert van der Helm, GH#291)
 
 
 0.9.20  2021-02-12  A Winter'21 Release.

@@ -14852,42 +14852,42 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorTrackTime</name>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="880"/>
+        <location filename="../qtractorTrackTime.cpp" line="881"/>
         <source>Play-head</source>
         <translation>Cabezal de reproducción</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="883"/>
+        <location filename="../qtractorTrackTime.cpp" line="884"/>
         <source>Edit-head</source>
         <translation>Cabezal de edición</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="886"/>
+        <location filename="../qtractorTrackTime.cpp" line="887"/>
         <source>Edit-tail</source>
         <translation>Editar cola</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="889"/>
+        <location filename="../qtractorTrackTime.cpp" line="890"/>
         <source>Loop-start</source>
         <translation>Inicio de bucle</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="892"/>
+        <location filename="../qtractorTrackTime.cpp" line="893"/>
         <source>Loop-end</source>
         <translation>Fin del bucle</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="895"/>
+        <location filename="../qtractorTrackTime.cpp" line="896"/>
         <source>Punch-in</source>
         <translation>Punch-in</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="898"/>
+        <location filename="../qtractorTrackTime.cpp" line="899"/>
         <source>Punch-out</source>
         <translation>Punch-out</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="932"/>
+        <location filename="../qtractorTrackTime.cpp" line="934"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
