@@ -204,12 +204,10 @@ void qtractorMessages::processStdoutBuffer (void)
 {
 	const int iLength = m_sStdoutBuffer.lastIndexOf('\n');
 	if (iLength > 0) {
-		const QString& sTemp = m_sStdoutBuffer.left(iLength);
-		m_sStdoutBuffer.remove(0, iLength + 1);
-		QStringList list = sTemp.split('\n');
-		QStringListIterator iter(list);
+		QStringListIterator iter(m_sStdoutBuffer.left(iLength).split('\n'));
 		while (iter.hasNext())
 			appendMessagesText(iter.next());
+		m_sStdoutBuffer.remove(0, iLength + 1);
 	}
 }
 
@@ -217,8 +215,10 @@ void qtractorMessages::processStdoutBuffer (void)
 // Stdout flusher -- show up any unfinished line...
 void qtractorMessages::flushStdoutBuffer (void)
 {
+	processStdoutBuffer();
+
 	if (!m_sStdoutBuffer.isEmpty()) {
-		processStdoutBuffer();
+		appendMessagesText(m_sStdoutBuffer);
 		m_sStdoutBuffer.clear();
 	}
 }
