@@ -22,7 +22,7 @@
  </provides>
  <screenshots>
   <screenshot type="default">
-   <image>https://qtractor.sourceforge.io/image/qtractor-screenshot16.png</image>
+   <image>https://qtractor.org/image/qtractor-screenshot16.png</image>
    <caption>The main window showing the application in action</caption>
   </screenshot>
  </screenshots>
@@ -40,7 +40,7 @@
   <keyword>LV2</keyword>
   <keyword>Qt</keyword>
  </keywords>
- <url type="homepage">http://qtractor.org</url>
+ <url type="homepage">https://qtractor.org</url>
  <project_group>rncbc.org</project_group>
  <developer_name>rncbc aka. Rui Nuno Capela</developer_name>
  <update_contact>rncbc@rncbc.org</update_contact>
