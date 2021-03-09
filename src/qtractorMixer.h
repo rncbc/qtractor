@@ -262,7 +262,7 @@ protected:
 
 	// Initial minimum widget extents.
 	QSize sizeHint() const
-		{ return QSize(80, 280); }
+		{ return QSize(160, 420); }
 
 private:
 
@@ -432,7 +432,7 @@ protected:
 
 	// Initial minimum widget extents.
 	QSize sizeHint() const
-		{ return QSize(480, 320); }
+		{ return QSize(640, 420); }
 
 private:
 
