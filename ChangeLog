@@ -4,15 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.21  2021-03-18  An End-of-Winter'21 Release.
 
 - Ignore snap while ALT key is pressed, on the main track-view and
-  the MIDI clip editors (aka. piano-roll). (Yosbel, GH#256)
+  the MIDI clip editors (aka. piano-roll).
 
-- Fixed a FTBFS when native LV2 UI GTK2 support is disabled. (David
-  Runge, GH#297)
+- Fixed a FTBFS when native LV2 UI GTK2 support is disabled.
 
-- Fix IPlugView leaks for VST3 plugins. (Robbert van der Helm, GH#291)
+- Fix IPlugView leaks for VST3 plugins.
 
 
 0.9.20  2021-02-12  A Winter'21 Release.
