@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Incremented micro-version to the next develop season.
+
+
 0.9.21  2021-03-18  An End-of-Winter'21 Release.
 
 - Ignore snap while ALT key is pressed, on the main track-view and
