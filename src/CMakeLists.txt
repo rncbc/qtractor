@@ -449,6 +449,8 @@ if (UNIX AND NOT APPLE)
      DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
   install (FILES images/${PROJECT_NAME}.png
      DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/apps)
+  install (FILES images/${PROJECT_NAME}.svg
+     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
   install (FILES appdata/${PROJECT_NAME}.appdata.xml
      DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
   install (FILES mimetypes/${PROJECT_NAME}.xml
