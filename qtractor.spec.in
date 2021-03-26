@@ -41,7 +41,7 @@ BuildRequires:	coreutils
 BuildRequires:	pkgconfig
 BuildRequires:	glibc-devel
 BuildRequires:	gcc-c++
-BuildRequires:	autoconf automake
+BuildRequires:	cmake
 %if %{defined fedora}
 BuildRequires:	qt5-qtbase-devel >= 5.1, qt5-linguist
 BuildRequires:	qt5-qtsvg-devel, qt5-qtwayland-devel
