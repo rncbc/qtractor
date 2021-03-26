@@ -50,7 +50,7 @@ BuildRequires:	rubberband-devel
 BuildRequires:	aubio-devel >= 0.4.1
 BuildRequires:	ruby
 %else
-BuildRequires:	libqt5-qtbase-devel >= 5.1, libqt5-linguist
+BuildRequires:	libqt5-qtbase-devel >= 5.1, libqt5-linguist-devel
 BuildRequires:	libqt5-qtsvg-devel, libqt5-qtwayland-devel
 BuildRequires:	alsa-devel
 BuildRequires:	librubberband-devel
