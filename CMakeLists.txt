@@ -34,6 +34,9 @@ set (PACKAGE_BUGREPORT "rncbc@rncbc.org")
 set (PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set (PACKAGE_TARNAME "qtractor")
 
+set (ac_version "${PROJECT_VERSION}")
+set (ac_prefix "${CMAKE_INSTALL_PREFIX}")
+
 set (CONFIG_BUILD_VERSION "${PACKAGE_VERSION}")
 
 if (CMAKE_BUILD_TYPE)

@@ -4,13 +4,5 @@
 
 override_dh_auto_configure:
 	# Add here commands to configure the package.
-	./autogen.sh
-	./configure --prefix=/usr
+	cmake -DCMAKE_INSTALL_PREFIX=/usr
 	# --- end custom part for configure
-
-override_dh_clean:
-	# Add here commands to clean up after the build process.
-	./autogen.sh clean
-	# --- end custom part for cleaning up
-
-	dh_clean

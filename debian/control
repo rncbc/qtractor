@@ -2,7 +2,7 @@ Source: qtractor
 Section: contrib/sound
 Priority: extra
 Maintainer: Rui Nuno Capela <rncbc@rncbc.org>
-Build-Depends: debhelper (>= 9), automake, pkg-config,
+Build-Depends: debhelper (>= 9), cmake, pkg-config,
   qtchooser, qtbase5-dev (>= 5.1), qtbase5-dev-tools (>= 5.1),
   qttools5-dev (>= 5.1), qttools5-dev-tools (>= 5.1),
   libqt5svg5-dev, libqt5waylandclient5-dev | qtwayland5-dev-tools,

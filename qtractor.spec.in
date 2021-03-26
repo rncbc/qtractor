@@ -87,11 +87,10 @@ Linux Desktop Audio Workstation GUI, specially dedicated to
 the personal home-studio.
 
 %prep
-%setup
-[ -x ./autogen.sh ] && ./autogen.sh
+%setup -q
 
 %build
-%configure
+cmake -DCMAKE_INSTALL_PREFIX=%{_prefix}
 %__make %{?_smp_mflags}
 
 %install

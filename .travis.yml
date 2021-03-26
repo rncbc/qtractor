@@ -34,6 +34,6 @@ before_script:
 
 script:
 - source /opt/qt515/bin/qt515-env.sh
-- ./configure
+- cmake
 - make
 - sudo make install

@@ -6,7 +6,7 @@ ChangeLog
 
 GIT HEAD
 
-- Incremented micro-version to the next develop season.
+- All packaging builds switching to CMake. (EXPERIMENTAL)
 
 
 0.9.21  2021-03-18  An End-of-Winter'21 Release.
