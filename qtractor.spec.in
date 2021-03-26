@@ -150,7 +150,7 @@ cmake -DCMAKE_INSTALL_PREFIX=%{_prefix}
 - Winter'20 release.
 * Fri Oct 30 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.18
 - Fall'20 release.
-* Thu Sep 15 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.17
+* Tue Sep 15 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.17
 - End-of-Summer'20 release.
 * Fri Aug  7 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.16
 - Summer'20 release.
