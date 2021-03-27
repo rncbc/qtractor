@@ -4,5 +4,5 @@
 
 override_dh_auto_configure:
 	# Add here commands to configure the package.
-	cmake -DCMAKE_INSTALL_PREFIX=/usr
+	cmake -DCMAKE_INSTALL_PREFIX=/usr .
 	# --- end custom part for configure

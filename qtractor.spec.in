@@ -90,7 +90,7 @@ the personal home-studio.
 %setup -q
 
 %build
-cmake -DCMAKE_INSTALL_PREFIX=%{_prefix}
+cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} .
 %__make %{?_smp_mflags}
 
 %install

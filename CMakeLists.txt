@@ -226,7 +226,9 @@ set (CONFIG_FLOAT32 1)
 
 # Check for SSE optimization.
 if (CONFIG_SSE)
-  add_compile_options (-msse -mfpmath=sse -ffast-math)
+  if (CMAKE_SYSTEM_PROCESSOR MATCHES "^x86" OR CMAKE_SYSTEM_PROCESSOR MATCHES "^i[3456]86")
+    add_compile_options (-msse -mfpmath=sse -ffast-math)
+  endif ()
 endif ()
 
 # Checks for header files.
