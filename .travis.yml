@@ -30,10 +30,9 @@ install:
 
 before_script:
 - git fetch --unshallow --tags -q
-- ./autogen.sh
 
 script:
 - source /opt/qt515/bin/qt515-env.sh
-- cmake
+- cmake .
 - make
 - sudo make install
