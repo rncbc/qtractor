@@ -227,9 +227,14 @@ set (CONFIG_FLOAT32 1)
 # Check for SSE optimization.
 if (CONFIG_SSE)
   if (CMAKE_SYSTEM_PROCESSOR MATCHES "^x86" OR CMAKE_SYSTEM_PROCESSOR MATCHES "^i[3456]86")
-    add_compile_options (-msse -mfpmath=sse -ffast-math)
+    check_include_file (xmmintrin.h HAVE_XMMINTRIN_H)
+    if (HAVE_XMMINTRIN_H)
+      add_compile_options (-msse -mfpmath=sse)
+    endif ()
   endif ()
 endif ()
+
+add_compile_options (-ffast-math)
 
 # Checks for header files.
 if (UNIX AND NOT APPLE)
