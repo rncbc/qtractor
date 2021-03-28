@@ -52,6 +52,11 @@
 #include <QFileInfo>
 
 
+
+// MIDI specific controllers.
+#define MIDI_CHANNEL_VOLUME		0x07
+#define MIDI_CHANNEL_PANNING	0x0a
+
 //------------------------------------------------------------------------
 // qtractorTrack::StateObserver -- Local track state observer.
 
@@ -106,29 +111,18 @@ public:
 
 	// Constructor.
 	MidiVolumeObserver(qtractorTrack *pTrack, qtractorSubject *pSubject)
-		: qtractorObserver(pSubject), m_pTrack(pTrack), m_volume(0) {}
+		: qtractorObserver(pSubject), m_pTrack(pTrack) {}
 
 protected:
 
 	// Update feedback.
-	void update(bool /*bUpdate*/)
-	{
-		const float fVolume = value();
-		const unsigned char vol = int(127.0f * fVolume) & 0x7f;
-		if (m_volume != vol) {
-			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
-			if (pMidiBus)
-				pMidiBus->setVolume(m_pTrack, fVolume);
-			m_volume = vol;
-		}
-	}
+	void update(bool bUpdate)
+		{ m_pTrack->setMidiVolume(int(127.0f * value()) & 0x7f, bUpdate); }
 
 private:
 
 	// Members.
 	qtractorTrack *m_pTrack;
-	unsigned char  m_volume;
 };
 
 
@@ -141,29 +135,18 @@ public:
 
 	// Constructor.
 	MidiPanningObserver(qtractorTrack *pTrack, qtractorSubject *pSubject)
-		: qtractorObserver(pSubject), m_pTrack(pTrack), m_panning(0) {}
+		: qtractorObserver(pSubject), m_pTrack(pTrack) {}
 
 protected:
 
 	// Update feedback.
-	void update(bool /*bUpdate*/)
-	{
-		const float fPanning = value();
-		const unsigned char pan = (0x40 + int(63.0f * fPanning)) & 0x7f;
-		if (m_panning != pan) {
-			qtractorMidiBus *pMidiBus
-				= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
-			if (pMidiBus)
-				pMidiBus->setPanning(m_pTrack, fPanning);
-			m_panning = pan;
-		}
-	}
+	void update(bool bUpdate)
+		{ m_pTrack->setMidiPanning((0x40 + int(63.0f * value())) & 0x7f, bUpdate); }
 
 private:
 
 	// Members.
 	qtractorTrack *m_pTrack;
-	unsigned char  m_panning;
 };
 
 
@@ -312,10 +295,14 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pInputBus  = nullptr;
 	m_pOutputBus = nullptr;
 	m_pMonitor   = nullptr;
-	m_iMidiTag   = 0;
+
+	m_iMidiTag = 0;
 
 	m_midiNoteMin = 0;
 	m_midiNoteMax = 0;
+
+	m_midiVolume  = 0;
+	m_midiPanning = 0x40;
 
 	m_pClipRecord = nullptr;
 	m_iClipRecordStart = 0;
@@ -407,6 +394,14 @@ void qtractorTrack::clear (void)
 
 	m_pPluginList->clear();
 	m_pCurveFile->clear();
+
+	m_iMidiTag = 0;
+
+	m_midiNoteMin = 0;
+	m_midiNoteMax = 0;
+
+	m_midiVolume  = 0;
+	m_midiPanning = 0x40;
 
 	m_props.midiBankSelMethod = -1;
 	m_props.midiBank = -1;
@@ -1013,6 +1008,78 @@ void qtractorTrack::setMidiNoteMax ( unsigned char note )
 unsigned char qtractorTrack::midiNoteMax (void) const
 {
 	return m_midiNoteMax;
+}
+
+
+// MIDI specific volume controller.
+void qtractorTrack::setMidiVolume ( unsigned char vol, bool bUpdate )
+{
+	if (m_midiVolume == vol)
+		return;
+
+	m_midiVolume = vol;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (m_pOutputBus);
+	if (pMidiBus == nullptr)
+		return;
+
+	if (bUpdate) {
+		pMidiBus->setController(this, MIDI_CHANNEL_VOLUME, vol);
+		return;
+	}
+
+	qtractorMidiManager *pMidiManager = nullptr;
+	if (m_pPluginList)
+		pMidiManager = m_pPluginList->midiManager();
+	if (pMidiManager)
+		pMidiManager->setController(midiChannel(), MIDI_CHANNEL_VOLUME, vol);
+	if (pMidiBus->pluginList_out()) {
+		pMidiManager = pMidiBus->pluginList_out()->midiManager();
+		if (pMidiManager)
+			pMidiManager->setController(midiChannel(), MIDI_CHANNEL_VOLUME, vol);
+	}
+}
+
+unsigned char qtractorTrack::midiVolume (void) const
+{
+	return m_midiVolume;
+}
+
+
+// MIDI specific panning controller.
+void qtractorTrack::setMidiPanning ( unsigned char pan, bool bUpdate )
+{
+	if (m_midiPanning == pan)
+		return;
+
+	m_midiPanning = pan;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (m_pOutputBus);
+	if (pMidiBus == nullptr)
+		return;
+
+	if (bUpdate) {
+		pMidiBus->setController(this, MIDI_CHANNEL_PANNING, pan);
+		return;
+	}
+
+	qtractorMidiManager *pMidiManager = nullptr;
+	if (m_pPluginList)
+		pMidiManager = m_pPluginList->midiManager();
+	if (pMidiManager)
+		pMidiManager->setController(midiChannel(), MIDI_CHANNEL_PANNING, pan);
+	if (pMidiBus->pluginList_out()) {
+		pMidiManager = pMidiBus->pluginList_out()->midiManager();
+		if (pMidiManager)
+			pMidiManager->setController(midiChannel(), MIDI_CHANNEL_PANNING, pan);
+	}
+}
+
+unsigned char qtractorTrack::midiPanning (void) const
+{
+	return m_midiPanning;
 }
 
 
