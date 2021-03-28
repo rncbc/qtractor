@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed one terribly old and overlooked mistake that was preventing
+  MIDI tracks volume and panning automation to take effect on audio
+  export. (EXPERIMENTAL)
+
 - All packaging builds switching to CMake. (EXPERIMENTAL)
 
 

@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -111,17 +111,15 @@ public:
 protected:
 
 	// Update feedback.
-	void update(bool bUpdate)
+	void update(bool /*bUpdate*/)
 	{
 		const float fVolume = value();
 		const unsigned char vol = int(127.0f * fVolume) & 0x7f;
 		if (m_volume != vol) {
-			if (bUpdate) {
-				qtractorMidiBus *pMidiBus
-					= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
-				if (pMidiBus)
-					pMidiBus->setVolume(m_pTrack, fVolume);
-			}
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
+			if (pMidiBus)
+				pMidiBus->setVolume(m_pTrack, fVolume);
 			m_volume = vol;
 		}
 	}
@@ -148,17 +146,15 @@ public:
 protected:
 
 	// Update feedback.
-	void update(bool bUpdate)
+	void update(bool /*bUpdate*/)
 	{
 		const float fPanning = value();
 		const unsigned char pan = (0x40 + int(63.0f * fPanning)) & 0x7f;
 		if (m_panning != pan) {
-			if (bUpdate) {
-				qtractorMidiBus *pMidiBus
-					= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
-				if (pMidiBus)
-					pMidiBus->setPanning(m_pTrack, fPanning);
-			}
+			qtractorMidiBus *pMidiBus
+				= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
+			if (pMidiBus)
+				pMidiBus->setPanning(m_pTrack, fPanning);
 			m_panning = pan;
 		}
 	}
