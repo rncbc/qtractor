@@ -597,7 +597,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="428"/>
-        <location filename="../qtractorTrack.cpp" line="689"/>
+        <location filename="../qtractorTrack.cpp" line="684"/>
         <source>%1 Monitor</source>
         <translation>%1 Sledovat</translation>
     </message>
@@ -669,31 +669,31 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nastavit ovladač znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="690"/>
+        <location filename="../qtractorTrack.cpp" line="685"/>
         <source>%1 Record</source>
         <translation>%1 Nahrát</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="691"/>
+        <location filename="../qtractorTrack.cpp" line="686"/>
         <source>%1 Mute</source>
         <translation>%1 Ztlumit</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="692"/>
+        <location filename="../qtractorTrack.cpp" line="687"/>
         <source>%1 Solo</source>
         <translation>%1 Sólo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="3999"/>
         <location filename="../qtractorMidiEngine.cpp" line="4008"/>
-        <location filename="../qtractorTrack.cpp" line="697"/>
+        <location filename="../qtractorTrack.cpp" line="692"/>
         <source>%1 Volume</source>
         <translation>%1 Hlasitost</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2660"/>
         <location filename="../qtractorAudioEngine.cpp" line="2669"/>
-        <location filename="../qtractorTrack.cpp" line="700"/>
+        <location filename="../qtractorTrack.cpp" line="695"/>
         <source>%1 Gain</source>
         <translation>%1 Zesílení</translation>
     </message>
@@ -702,7 +702,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorAudioEngine.cpp" line="2671"/>
         <location filename="../qtractorMidiEngine.cpp" line="4001"/>
         <location filename="../qtractorMidiEngine.cpp" line="4010"/>
-        <location filename="../qtractorTrack.cpp" line="703"/>
+        <location filename="../qtractorTrack.cpp" line="698"/>
         <source>%1 Pan</source>
         <translation>%1 Vyvážení (Pan)</translation>
     </message>
