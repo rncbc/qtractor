@@ -538,9 +538,11 @@ fi
 
 # Check for proper Qt major version.
 AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
-   ac_cv_qt_version_major=$($ac_qmake -query QT_VERSION | cut -d'.' -f1)
+   ac_cv_qt_version=$($ac_qmake -query QT_VERSION)
+   ac_cv_qt_version_major=$(echo $ac_cv_qt_version | cut -d'.' -f1)
    ac_cv_qt_version_major=$(($ac_cv_qt_version_major + 0))
 ])
+ac_qt_version=$ac_cv_qt_version
 ac_qt_version_major=$ac_cv_qt_version_major
 if test "x$ac_qmake" = "xno"; then
    if test $ac_qt_version_major -lt 6; then
@@ -1599,7 +1601,7 @@ AC_OUTPUT
 # Output summary message
 
 echo
-echo "  $PACKAGE_NAME $ac_build_version"
+echo "  $PACKAGE_NAME $ac_build_version (Qt $ac_qt_version)"
 echo
 echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_debug"
 echo

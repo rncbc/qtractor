@@ -183,8 +183,14 @@ if (POLICY CMP0075)
   cmake_policy (SET CMP0075 NEW)
 endif ()
 
-# Check for Qt
-find_package (QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
+# Check for Qt...
+find_package (Qt6 QUIET)
+if (Qt6_FOUND)
+  find_package (QT QUIET NAMES Qt6)
+else ()
+  find_package (QT QUIET NAMES Qt5)
+endif ()
+
 find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Xml)
 
 if (CONFIG_XUNIQUE)
@@ -726,7 +732,7 @@ macro (SHOW_OPTION text value)
 endmacro ()
 
 
-message   ("\n  ${PACKAGE_NAME} ${PACKAGE_VERSION}")
+message   ("\n  ${PACKAGE_NAME} ${PACKAGE_VERSION} (Qt ${QT_VERSION})")
 message   ("\n  Build target . . . . . . . . . . . . . . . . . . .: ${CONFIG_BUILD_TYPE}\n")
 show_option ("  JACK Audio Connection Kit support  . . . . . . . ." CONFIG_LIBJACK)
 show_option ("  ALSA MIDI Sequencer support  . . . . . . . . . . ." CONFIG_LIBASOUND)
