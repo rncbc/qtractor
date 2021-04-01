@@ -68,6 +68,13 @@ AC_ARG_ENABLE(debug,
   AS_HELP_STRING([--enable-debug], [enable debugging (default=no)]),
   [ac_debug="$enableval"])
 
+# Enable Qt6 build preference.
+AC_ARG_ENABLE(qt6,
+  AS_HELP_STRING([--enable-qt6], [enable Qt6 build (default=no)]),
+  [ac_qt6="$enableval"],
+  [ac_qt6="no"])
+
+
 if test "x$ac_debug" = "xyes"; then
    AC_DEFINE(CONFIG_DEBUG, 1, [Define if debugging is enabled.])
    ac_stacktrace="yes"
@@ -522,18 +529,23 @@ ac_errmsg="not found in current PATH. Maybe QT development environment isn't ava
 # Check for qtchooser availability.
 AC_PATH_TOOL(ac_qtchooser, qtchooser, [no], $ac_path)
 if test -x $ac_qtchooser; then
-   export QT_SELECT=5
+   if test "x$ac_qt6" = "xyes"; then
+      export QT_SELECT=6
+   else
+      export QT_SELECT=5
+   fi
 fi
 
 # Check for proper qmake path/version alternatives.
 AC_PATH_TOOL(ac_qmake, qmake, [no], $ac_path)
 if test "x$ac_qmake" = "xno"; then
-   AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
-   ac_qmake=$ac_cv_qmake
-fi
-if test "x$ac_qmake" = "xno"; then
-   AC_PATH_TOOL(ac_cv_qmake, qmake-qt6, [no], $ac_path)
-   ac_qmake=$ac_cv_qmake
+   if test "x$ac_qt6" = "xyes"; then
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt6, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
+   else
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
+   fi
 fi
 
 # Check for proper Qt major version.
