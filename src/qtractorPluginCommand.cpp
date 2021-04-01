@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -746,6 +746,7 @@ bool qtractorPluginPropertyCommand::redo (void)
 	// Set undo value.
 	m_value = value;
 
+#ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_PATCH
 	if (!m_pProp->isAutomatable()) {
 		qtractorPluginType *pType = pPlugin->type();
@@ -756,6 +757,7 @@ bool qtractorPluginPropertyCommand::redo (void)
 				pLv2Plugin->lv2_property_update(m_pProp->index());
 		}
 	}
+#endif
 #endif
 
 	// Update the form, showing it up as necessary...
