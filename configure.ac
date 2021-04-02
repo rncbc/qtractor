@@ -907,11 +907,6 @@ if test "x$ac_lv2_ui" = "xno"; then
    ac_lv2_ui_x11="no"
 fi
 
-# Disable libSUIL upon Qt >= 6.0.0 ...
-if test $ac_qt_version_major -ge 6; then
-   ac_libsuil="no"
-fi
-
 # Check for optional LILV library.
 if test "x$ac_liblilv" = "xyes"; then
    PKG_CHECK_MODULES([LILV], [lilv-0], [ac_liblilv="yes"], [ac_liblilv="no"])
@@ -940,34 +935,7 @@ if test "x$ac_liblilv" = "xyes"; then
    if test "x$ac_lilv_world_unload_resource" = "xyes"; then
       AC_DEFINE(CONFIG_LILV_WORLD_UNLOAD_RESOURCE, 1, [Define if lilv_world_unload_resource is available.])
    fi
-fi
-
-# Check for LV2 new UI instantiation availability (libsuil).
-if test "x$ac_libsuil" = "xyes"; then
-   PKG_CHECK_MODULES([SUIL], [suil-0], [ac_libsuil="yes"], [ac_libsuil="no"])
-   if test "x$ac_libsuil" = "xyes"; then
-      AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is enabled.])
-      ac_cflags="$ac_cflags $SUIL_CFLAGS"
-      ac_libs="$ac_libs $SUIL_LIBS"
-      CFLAGS="$CFLAGS $SUIL_CFLAGS"
-      CPPFLAGS="$CPPFLAGS $SUIL_CFLAGS"
-      LIBS="$LIBS $SUIL_LIBS"
-   else
-      AC_MSG_WARN([*** SUIL library will be disabled.])
-   fi
-fi
-
-if test "x$ac_libsuil" = "xyes"; then
-   AC_CHECK_LIB(suil-0, suil_instance_get_handle,
-      [ac_suil_instance_get_handle="yes"],
-      [ac_suil_instance_get_handle="no"])
-   if test "x$ac_suil_instance_get_handle" = "xyes"; then
-      AC_DEFINE(CONFIG_SUIL_INSTANCE_GET_HANDLE, 1, [Define if suil_instance_get_handle is available.])
-   fi
-fi
-
-# Check for LV2 host library (liblilv).
-if test "x$ac_liblilv" = "xno"; then
+else
    ac_lv2="no"
    ac_lv2_ui="no"
    ac_lv2_event="no"
@@ -994,7 +962,38 @@ if test "x$ac_liblilv" = "xno"; then
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
    ac_lv2_ui_x11="no"
+   ac_libsuil="no"
 fi
+
+# Disable libsuil upon Qt >= 6.0.0 ...
+if test "x$ac_libsuil" = "xyes" -a $ac_qt_version_major -ge 6; then
+   ac_libsuil="no"
+fi
+
+# Check for LV2 new UI instantiation availability (libsuil).
+if test "x$ac_libsuil" = "xyes"; then
+   PKG_CHECK_MODULES([SUIL], [suil-0], [ac_libsuil="yes"], [ac_libsuil="no"])
+   if test "x$ac_libsuil" = "xyes"; then
+      AC_DEFINE(CONFIG_LIBSUIL, 1, [Define if SUIL library is enabled.])
+      ac_cflags="$ac_cflags $SUIL_CFLAGS"
+      ac_libs="$ac_libs $SUIL_LIBS"
+      CFLAGS="$CFLAGS $SUIL_CFLAGS"
+      CPPFLAGS="$CPPFLAGS $SUIL_CFLAGS"
+      LIBS="$LIBS $SUIL_LIBS"
+   else
+      AC_MSG_WARN([*** SUIL library will be disabled.])
+   fi
+fi
+
+if test "x$ac_libsuil" = "xyes"; then
+   AC_CHECK_LIB(suil-0, suil_instance_get_handle,
+      [ac_suil_instance_get_handle="yes"],
+      [ac_suil_instance_get_handle="no"])
+   if test "x$ac_suil_instance_get_handle" = "xyes"; then
+      AC_DEFINE(CONFIG_SUIL_INSTANCE_GET_HANDLE, 1, [Define if suil_instance_get_handle is available.])
+   fi
+fi
+
 
 # Check for JACK session event callback availability.
 if test "x$ac_jack_session" = "xyes"; then
@@ -1229,11 +1228,13 @@ if test "x$ac_lv2_atom" = "xyes"; then
       ac_lv2_state="no"
       ac_lv2_options="no"
       ac_lv2_time_position="no"
+      ac_lv2_port_event="no"
    fi
 else
    ac_lv2_state="no"
    ac_lv2_options="no"
    ac_lv2_time_position="no"
+   ac_lv2_port_event="no"
 fi
 if test "x$ac_lv2_cvport" = "xyes"; then
    AC_CACHE_CHECK([for LV2 CVPort support],
@@ -1666,7 +1667,7 @@ echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
 echo "  JACK Metadata support  . . . . . . . . . . . . . .: $ac_jack_metadata"
 echo
-echo "  Non/New Session Management (NSM) support . . . . .: $ac_nsm"
+echo "  Non Session Management (NSM) support . . . . . . .: $ac_nsm"
 echo
 echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
 echo "  Unique/Single instance support . . . . . . . . . .: $ac_xunique"
