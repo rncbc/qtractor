@@ -36,9 +36,9 @@
 
 #include "qtractorOptions.h"
 
-#ifdef CONFIG_LV2_STATE
-// LV2 State/Dirty (StateChanged) notification.
 #include "qtractorMainForm.h"
+
+#ifdef CONFIG_LV2_STATE
 // LV2 State/Presets: standard directory access.
 // For local file vs. URI manipulations.
 #include <QFileInfo>
@@ -617,7 +617,7 @@ static char *qtractor_lv2_state_abstract_path (
 }
 
 static char *qtractor_lv2_state_absolute_path (
-    LV2_State_Map_Path_Handle handle, const char *abstract_path )
+	LV2_State_Map_Path_Handle handle, const char *abstract_path )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (handle);
@@ -1351,6 +1351,8 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 #endif	// CONFIG_LV2_TIME_POSITION
 
 #endif	// CONFIG_LV2_TIME
+
+#endif	// CONFIG_LV2_PATCH
 
 
 #ifdef CONFIG_LV2_UI
@@ -3163,25 +3165,25 @@ void qtractorLv2Plugin::process (
 				= lv2_atom_buffer_get(&aiter, &data);
 			if (pLv2AtomEvent == nullptr)
 				break;
-		//	if (j > 0 || pLv2AtomEvent->body.type != QTRACTOR_LV2_MIDI_EVENT_ID) {
-				char buf[sizeof(ControlEvent) + sizeof(LV2_Atom)];
-				const uint32_t type = pLv2AtomEvent->body.type;
-				const uint32_t size = pLv2AtomEvent->body.size;
-				ControlEvent *ev = (ControlEvent *) buf;
-				ev->index    = m_piAtomOuts[j];
-				ev->protocol = g_lv2_urids.atom_eventTransfer;
-				ev->size     = sizeof(LV2_Atom) + size;
-				LV2_Atom *atom = (LV2_Atom *) ev->body;
-				atom->type = type;
-				atom->size = size;
-				if (::jack_ringbuffer_write_space(m_plugin_events)
-					< sizeof(buf) + size)
-					break;
-				::jack_ringbuffer_write(m_plugin_events,
-					(const char *) buf, sizeof(buf));
-				::jack_ringbuffer_write(m_plugin_events,
-					(const char *) data, size);
-		//	}
+		//if (j > 0 || pLv2AtomEvent->body.type != QTRACTOR_LV2_MIDI_EVENT_ID) {
+			char buf[sizeof(ControlEvent) + sizeof(LV2_Atom)];
+			const uint32_t type = pLv2AtomEvent->body.type;
+			const uint32_t size = pLv2AtomEvent->body.size;
+			ControlEvent *ev = (ControlEvent *) buf;
+			ev->index    = m_piAtomOuts[j];
+			ev->protocol = g_lv2_urids.atom_eventTransfer;
+			ev->size     = sizeof(LV2_Atom) + size;
+			LV2_Atom *atom = (LV2_Atom *) ev->body;
+			atom->type = type;
+			atom->size = size;
+			if (::jack_ringbuffer_write_space(m_plugin_events)
+				< sizeof(buf) + size)
+				break;
+			::jack_ringbuffer_write(m_plugin_events,
+				(const char *) buf, sizeof(buf));
+			::jack_ringbuffer_write(m_plugin_events,
+				(const char *) data, size);
+		//}
 			lv2_atom_buffer_increment(&aiter);
 		}
 	}
@@ -4493,7 +4495,9 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 					}
 				}
 			}
+		#ifdef CONFIG_LV2_STATE
 			else
+		#endif
 		#endif	// CONFIG_LV2_PORT_EVENT
 		#ifdef CONFIG_LV2_STATE
 			if (obj->body.otype == g_lv2_urids.state_StateChanged) {
@@ -5740,6 +5744,8 @@ QString qtractorLv2Plugin::Param::display (void) const
 	return qtractorPlugin::Param::display();
 }
 
+
+#ifdef CONFIG_LV2_PATCH
 
 //----------------------------------------------------------------------
 // qtractorLv2Plugin::Property -- LV2 Patch/property registry item.

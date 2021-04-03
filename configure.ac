@@ -1305,6 +1305,7 @@ else
    ac_lv2_state_files="no"
    ac_lv2_presets="no"
    ac_lv2_patch="no"
+   ac_lv2_time="no"
 fi
 if test "x$ac_lv2_programs" = "xyes"; then
    AC_CHECK_HEADER(lv2_programs.h, [ac_lv2_programs="yes"], [ac_lv2_programs="no"])
