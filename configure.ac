@@ -1299,6 +1299,7 @@ if test "x$ac_lv2_state" = "xyes"; then
       ac_lv2_state_files="no"
       ac_lv2_presets="no"
       ac_lv2_patch="no"
+      ac_lv2_time="no"
    fi
 else
    ac_lv2_state_make_path="no"
