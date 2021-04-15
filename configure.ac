@@ -11,8 +11,10 @@ AC_CACHE_VAL([ac_cv_build_version], [
    ac_cv_build_version=$(git describe --tags --dirty --abbrev=6 2>/dev/null)
    if test -n "$ac_cv_build_version"; then
       ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/^[[^0-9]]\+//')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/^1_//')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/^[[_vV]]\+//')
       ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/-g/git./')
-      ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/[[_|-]]\+/./g')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/[[_|-]]/./g')
       ac_cv_build_version_extra=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
       if test "x$ac_cv_build_version_extra" != "xmaster"; then
          ac_cv_build_version="$ac_cv_build_version [[$ac_cv_build_version_extra]]"
