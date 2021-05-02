@@ -261,17 +261,17 @@ MIDI:	</translation>
         <translation type="unfinished">SMF Format 1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="228"/>
+        <location filename="../qtractorPlugin.cpp" line="225"/>
         <source>(Any)</source>
         <translation>(Любой)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="254"/>
+        <location filename="../qtractorPlugin.cpp" line="251"/>
         <source>Activate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2266"/>
+        <location filename="../qtractorPlugin.cpp" line="2263"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -645,7 +645,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="237"/>
+        <location filename="../qtractorPlugin.cpp" line="234"/>
         <source>(default)</source>
         <translation>(по умолчанию)</translation>
     </message>

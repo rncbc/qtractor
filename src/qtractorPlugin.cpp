@@ -71,7 +71,7 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 bool qtractorPluginFile::open (void)
 {
 	// Check whether already open...
-	if (m_module && ++m_iOpenCount > 1)
+	if (m_module || ++m_iOpenCount > 1)
 		return true;
 
 	// Do the opening dance...
@@ -87,10 +87,7 @@ bool qtractorPluginFile::open (void)
 
 void qtractorPluginFile::close (void)
 {
-	if (!m_module)
-		return;
-
-	if (--m_iOpenCount > 0)
+	if (!m_module || --m_iOpenCount > 0)
 		return;
 
 	// ATTN: Might be really needed, as it would

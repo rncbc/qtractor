@@ -2183,10 +2183,10 @@ void qtractorVst3Plugin::Impl::initialize (void)
 		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
 	if (pType == nullptr)
 		return;
-
+#if 0//HACK: Plugin-type might be already open via plugin-factory...
 	if (!pType->open())
 		return;
-
+#endif
 	Vst::IComponent *component = pType->impl()->component();
 	if (!component)
 		return;
