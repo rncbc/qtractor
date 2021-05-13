@@ -1,3 +1,9 @@
+qtractor (0.9.22-64.1) unstable; urgency=low
+
+  * New release: spring'21 release
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Fri, 14 May 2021 20:00:00 +0100
+
 qtractor (0.9.21-63) unstable; urgency=low
 
   * New release: end-of-winter'21 release

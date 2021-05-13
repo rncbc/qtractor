@@ -17,7 +17,7 @@
 
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 63
+%define release 64
 
 %define _prefix	@ac_prefix@
 
@@ -142,6 +142,8 @@ cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} .
 %{_datadir}/man/fr/man1/%{name}.1.gz
 
 %changelog
+* Fri May 14 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.22
+- Spring'21 release.
 * Thu Mar 18 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.21
 - End-of-Winter'21 release.
 * Fri Feb 12 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.20

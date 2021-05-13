@@ -4,13 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.22  2021-05-14  A Spring'21 Release.
 
 - Fixed one terribly old and overlooked mistake that was preventing
   MIDI tracks volume and panning automation to take effect on audio
-  export. (EXPERIMENTAL)
+  export.
 
-- All packaging builds switching to CMake. (EXPERIMENTAL)
+- All packaging builds switching to CMake.
 
 
 0.9.21  2021-03-18  An End-of-Winter'21 Release.
