@@ -163,31 +163,16 @@ The software requirements for build and runtime are listed as follows:
 Installation
 ------------
 
-The installation procedure follows the standard for source distributions.
 Unpack the tarball and in the extracted source directory:
 
-    ./configure [--prefix=/usr/local]
-    make
+    cmake [-DCMAKE_INSTALL_PREFIX=/usr/local] -B build -S .
+    make -C build
 
 and optionally as root:
 
-    make install
+    sudo make -C build install
 
-This procedure will end installing the following files:
-
-    ${prefix}/bin/qtractor
-    ${prefix}/share/applications/qtractor.desktop
-    ${prefix}/share/icons/hicolor/32x32/apps/qtractor.png
-    ${prefix}/share/qtractor/translations/qtractor_*.qm
-
-Just launch ${prefix}/bin/qtractor and you're off (hopefully).
-
-Note that the default installation path ${prefix} is /usr/local.
-
-If you're checking out from Git, you'll have to prepare the
-configure script just before you proceed with the above instructions:
-
-   ./autogen.sh
+See also the README.cmake file in the source distribution.
 
 
 Configuration

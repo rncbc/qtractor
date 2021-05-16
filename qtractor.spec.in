@@ -90,11 +90,11 @@ the personal home-studio.
 %setup -q
 
 %build
-cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} .
-%__make %{?_smp_mflags}
+cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build -S .
+%__make %{?_smp_mflags} -C build
 
 %install
-%__make DESTDIR="%{buildroot}" install
+%__make DESTDIR="%{buildroot}" -C build install
 
 %post
 %mime_database_post
