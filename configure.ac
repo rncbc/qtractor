@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.9.22, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.9.23, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -72,9 +72,9 @@ AC_ARG_ENABLE(debug,
 
 # Enable Qt6 build preference.
 AC_ARG_ENABLE(qt6,
-  AS_HELP_STRING([--enable-qt6], [enable Qt6 build (default=no)]),
+  AS_HELP_STRING([--enable-qt6], [enable Qt6 build (default=yes)]),
   [ac_qt6="$enableval"],
-  [ac_qt6="no"])
+  [ac_qt6="yes"])
 
 
 if test "x$ac_debug" = "xyes"; then
