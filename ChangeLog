@@ -9,6 +9,10 @@ GIT HEAD
 - Added special support for LV2 UI GTK2 plugins based on Gtkmm 2.4
   framework. (EXPERIMENTAL)
 
+- All builds default to Qt6 (Qt >= 6.1) where available.
+
+- CMake is now the official build system.
+
 
 0.9.22  2021-05-14  A Spring'21 Release.
 
