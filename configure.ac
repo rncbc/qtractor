@@ -304,6 +304,11 @@ AC_ARG_ENABLE(lv2-ui-gtk2,
   [ac_lv2_ui_gtk2="$enableval"],
   [ac_lv2_ui_gtk2="yes"])
 
+AC_ARG_ENABLE(lv2-ui-gtkmm2,
+  AS_HELP_STRING([--enable-lv2-ui-gtkmm2], [enable LV2 plug-in UI GTKMM2 native support (default=yes)]),
+  [ac_lv2_ui_gtkmm2="$enableval"],
+  [ac_lv2_ui_gtkmm2="yes"])
+
 AC_ARG_ENABLE(lv2-ui-x11,
   AS_HELP_STRING([--enable-lv2-ui-x11], [enable LV2 plug-in UI X11 native support (default=yes)]),
   [ac_lv2_ui_x11="$enableval"],
@@ -914,6 +919,7 @@ if test "x$ac_lv2_ui" = "xno"; then
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_gtkmm2="no"
    ac_lv2_ui_x11="no"
 fi
 
@@ -971,6 +977,7 @@ else
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_gtkmm2="no"
    ac_lv2_ui_x11="no"
    ac_libsuil="no"
 fi
@@ -1168,6 +1175,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_ui_idle="no"
       ac_lv2_ui_show="no"
       ac_lv2_ui_gtk2="no"
+      ac_lv2_ui_gtkmm2="no"
       ac_lv2_ui_x11="no"
    fi
 fi
@@ -1186,6 +1194,7 @@ else
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_gtkmm2="no"
    ac_lv2_ui_x11="no"
 fi
 if test "x$ac_lv2_event" = "xyes"; then
@@ -1498,7 +1507,19 @@ if test "x$ac_lv2_ui_gtk2" = "xyes"; then
    ac_libs="$ac_libs $GTK2_LIBS"
 else
    AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
+   ac_lv2_ui_gtkmm2="no"
 fi
+if test "x$ac_lv2_ui_gtkmm2" = "xyes"; then
+   PKG_CHECK_MODULES([GTKMM2], [gtkmm-2.4], [ac_lv2_ui_gtkmm2="yes"], [ac_lv2_ui_gtkmm2="no"])
+fi
+if test "x$ac_lv2_ui_gtkmm2" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2_UI_GTKMM2, 1, [Define if LV2 UI GTKMM2 native support is available.])
+   ac_cflags="$ac_cflags $GTKMM2_CFLAGS"
+   ac_libs="$ac_libs $GTKMM2_LIBS"
+else
+   AC_MSG_WARN([*** LV2 UI GTKMM2 native support will be disabled.])
+fi
+
 
 if test "x$ac_libsuil" = "xyes"; then
    AC_CACHE_CHECK([for LV2 UI X11 support (libsuil_x11_in_qt5)],

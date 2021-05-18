@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Added special support for LV2 UI GTK2 plugins based on Gtkmm 2.4
+  framework. (EXPERIMENTAL)
+
+
 0.9.22  2021-05-14  A Spring'21 Release.
 
 - Fixed one terribly old and overlooked mistake that was preventing

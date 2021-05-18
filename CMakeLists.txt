@@ -159,6 +159,8 @@ option (CONFIG_LV2_UI_SHOW "Enable LV2 plug-in UI Show interface support (defaul
 
 option (CONFIG_LV2_UI_GTK2 "Enable LV2 plug-in UI GTK2 native support (default=yes)" 1)
 
+option (CONFIG_LV2_UI_GTKMM2 "Enable LV2 plug-in UI GTKMM2 native support (default=yes)" 1)
+
 option (CONFIG_LV2_UI_X11 "Enable LV2 plug-in UI X11 native support (default=yes)" 1)
 
 # Enable JACK session support.
@@ -479,6 +481,7 @@ if (NOT CONFIG_LV2_UI)
   set (CONFIG_LV2_UI_IDLE 0)
   set (CONFIG_LV2_UI_SHOW 0)
   set (CONFIG_LV2_UI_GTK2 0)
+  set (CONFIG_LV2_UI_GTKMM2 0)
   set (CONFIG_LV2_UI_X11 0)
 endif ()
 
@@ -525,6 +528,7 @@ if (NOT CONFIG_LIBLILV)
   set (CONFIG_LV2_UI_IDLE 0)
   set (CONFIG_LV2_UI_SHOW 0)
   set (CONFIG_LV2_UI_GTK2 0)
+  set (CONFIG_LV2_UI_GTKMM2 0)
   set (CONFIG_LV2_UI_X11 0)
   set (CONFIG_LIBSUIL 0)
 endif ()
@@ -682,6 +686,15 @@ if (CONFIG_LV2_UI_GTK2)
   if (NOT GTK2_FOUND)
     message (WARNING "*** GTK2 libraries not found.")
     set (CONFIG_LV2_UI_GTK2 0)
+    set (CONFIG_LV2_UI_GTKMM2 0)
+  endif ()
+endif ()
+
+if (CONFIG_LV2_UI_GTKMM2)
+  pkg_check_modules (GTKMM2 gtkmm-2.4)
+  if (NOT GTKMM2_FOUND)
+    message (WARNING "*** GTKMM2 libraries not found.")
+    set (CONFIG_LV2_UI_GTKMM2 0)
   endif ()
 endif ()
 

@@ -54,6 +54,7 @@ set (HEADERS
   qtractorLadspaPlugin.h
   qtractorList.h
   qtractorLv2Plugin.h
+  qtractorLv2Gtk2Plugin.h
   qtractorMessageBox.h
   qtractorMessageList.h
   qtractorMessages.h
@@ -185,6 +186,7 @@ set (SOURCES
   qtractorInstrumentMenu.cpp
   qtractorLadspaPlugin.cpp
   qtractorLv2Plugin.cpp
+  qtractorLv2Gtk2Plugin.cpp
   qtractorMessageBox.cpp
   qtractorMessageList.cpp
   qtractorMessages.cpp
@@ -458,6 +460,12 @@ if (CONFIG_LV2_UI_GTK2)
   target_include_directories (${PROJECT_NAME} PRIVATE ${GTK2_INCLUDE_DIRS})
   target_link_directories (${PROJECT_NAME} PRIVATE ${GTK2_LIBRARY_DIRS})
   target_link_libraries (${PROJECT_NAME} PRIVATE ${GTK2_LIBRARIES})
+endif ()
+
+if (CONFIG_LV2_UI_GTKMM2)
+  target_include_directories (${PROJECT_NAME} PRIVATE ${GTKMM2_INCLUDE_DIRS})
+  target_link_directories (${PROJECT_NAME} PRIVATE ${GTKMM2_LIBRARY_DIRS})
+  target_link_libraries (${PROJECT_NAME} PRIVATE ${GTKMM2_LIBRARIES})
 endif ()
 
 if (CONFIG_VST3)

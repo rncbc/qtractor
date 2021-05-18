@@ -1360,7 +1360,9 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 
 #ifdef CONFIG_LV2_UI_GTK2
 
-#undef signals // Collides with GTK symbology
+#include "qtractorLv2Gtk2Plugin.h"
+
+#undef signals // Collides with some GTK symbology
 
 #if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic push
@@ -1387,8 +1389,6 @@ static void qtractor_lv2_ui_gtk2_on_size_allocate (
 	QWidget *pQtWidget = static_cast<QWidget *> (user_data);
 	pQtWidget->resize(rect->width, rect->height);
 }
-
-static bool g_lv2_ui_gtk2_init = false;
 
 #endif	// CONFIG_LV2_UI_GTK2
 
@@ -3504,10 +3504,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (!ui_supported && m_lv2_ui_widget
 		&& m_lv2_ui_type == LV2_UI_TYPE_GTK) {
 		// Initialize GTK+ framework (one time only)...
-		if (!g_lv2_ui_gtk2_init) {
-			gtk_init(nullptr, nullptr);
-			g_lv2_ui_gtk2_init = true;
-		}
+		qtractorLv2Gtk2Plugin::init_main();
 		// Create embeddable native window...
 		GtkWidget *pGtkWidget = static_cast<GtkWidget *> (m_lv2_ui_widget);
 		GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -3635,6 +3632,7 @@ void qtractorLv2Plugin::closeEditor (void)
 		gtk_widget_destroy(m_pGtkWindow);
 		m_pGtkWindow = nullptr;
 	}
+	qtractorLv2Gtk2Plugin::exit_main();
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
 
