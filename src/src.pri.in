@@ -7,7 +7,7 @@ DATADIR = @ac_datadir@
 MANDIR  = @ac_mandir@
 
 VERSION = @ac_version@
-CONFIG += @ac_debug@
+CONFIG += @ac_build_type@
 
 INCLUDEPATH += @ac_incpath@
 LIBS += @ac_libs@

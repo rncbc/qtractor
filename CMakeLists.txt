@@ -184,6 +184,11 @@ option (CONFIG_GRADIENT "Enable gradient eye-candy (default=yes)" 1)
 # Enable debugger stack_trace option (assumes --enable-debug).
 option (CONFIG_STACKTRACE "Enable debugger stack-trace (default=no)" 0)
 
+# Add some debug flags.
+if (CONFIG_DEBUG)
+  add_compile_options (-g -fsanitize=address -fno-omit-frame-pointer)
+  link_libraries (asan)
+endif ()
 
 # Enable Qt6 build preference.
 option (CONFIG_QT6 "Enable Qt6 build (default=yes)" 1)
