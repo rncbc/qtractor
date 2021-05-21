@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required (VERSION 3.13)
 
-project(qtractor
+project (qtractor
   VERSION 0.9.23
   DESCRIPTION "An Audio/MIDI multi-track sequencer"
   LANGUAGES C CXX)
@@ -184,11 +184,6 @@ option (CONFIG_GRADIENT "Enable gradient eye-candy (default=yes)" 1)
 # Enable debugger stack_trace option (assumes --enable-debug).
 option (CONFIG_STACKTRACE "Enable debugger stack-trace (default=no)" 0)
 
-# Add some debug flags.
-if (CONFIG_DEBUG)
-  add_compile_options (-g -fsanitize=address -fno-omit-frame-pointer)
-  link_libraries (asan)
-endif ()
 
 # Enable Qt6 build preference.
 option (CONFIG_QT6 "Enable Qt6 build (default=yes)" 1)
@@ -306,6 +301,7 @@ if (CONFIG_LV2)
   set (CMAKE_REQUIRED_INCLUDES "${LV2_INCLUDES};${CMAKE_REQUIRED_INCLUDES}")
   include_directories (${LV2_INCLUDES})
 endif ()
+
 
 # Find package modules
 find_package (PkgConfig REQUIRED)
