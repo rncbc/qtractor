@@ -1648,6 +1648,7 @@ LilvPlugin *qtractorLv2PluginType::lv2_plugin ( const QString& sUri )
 				const LilvNode *impl
 					= lilv_new_uri(g_lv2_world, g_lv2_features[i]->URI);
 				bSupported = lilv_node_equals(impl, node);
+				lilv_node_free(impl);
 			}
 			if (!bSupported) {
 			#ifdef CONFIG_DEBUG

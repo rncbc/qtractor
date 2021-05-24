@@ -684,10 +684,6 @@ if test "x$ac_lrelease" = "xno"; then
 fi
 AC_SUBST(ac_lrelease)
 
-if test "x$ac_debug" = "xyes"; then
-  ac_cflags="-g -fsanitize=address -fno-omit-frame-pointer $ac_cflags"
-  ac_libs="$ac_libs -lasan"
-fi
 
 # Check for IEEE 32bit float optimizations.
 AC_CHECK_SIZEOF(float)
