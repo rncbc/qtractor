@@ -1,7 +1,7 @@
 // qtractorPluginFactory.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -56,6 +56,11 @@
 #include <QDesktopServices>
 #else
 #include <QStandardPaths>
+#endif
+
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
 #endif
 
 
@@ -893,7 +898,7 @@ bool qtractorPluginFactory::Scanner::addTypes (
 					flags.append("RT");
 				sout << flags.join(",") << '|';
 				sout << sFilename << '|' << 0 << '|';
-				sout << "0x" << QString::number(pType->uniqueID(), 16) << '\n';
+				sout << "0x" << QString::number(pType->uniqueID(), 16) << endl;
 			}
 			// Success.
 			return true;
@@ -942,11 +947,11 @@ bool qtractorPluginFactory::Scanner::addTypes ( const QStringList& list )
 			pPluginFactory->addType(pType);
 			// Cache in...
 			if (m_file.isOpen())
-				QTextStream(&m_file) << sText << "\n";
+				QTextStream(&m_file) << sText << endl;
 			// Done.
 		} else {
 			// Possibly some mistake occurred...
-			QTextStream(stderr) << sText + '\n';
+			QTextStream(stderr) << sText << endl;
 		}
 	}
 
