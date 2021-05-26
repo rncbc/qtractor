@@ -97,6 +97,14 @@ protected:
 	bool addTypes(qtractorPluginType::Hint typeHint,
 		qtractorPluginFile *pFile, unsigned long iIndex);
 
+	// Blacklist file paths.
+	QString blacklistTempFilePath() const;
+	QString blacklistDataFilePath() const;
+
+	// Simple blacklist file I/O methods.
+	bool readBlacklist(QFile& file);
+	bool writeBlacklist(QFile& file, const QStringList& blacklist) const;
+
 	// Generic plugin-scan factory method.
 	bool startScan(qtractorPluginType::Hint typeHint);
 
@@ -116,6 +124,9 @@ private:
 
 	// Internal plugin types list.
 	Types m_types;
+
+	// Plugin blacklist.
+	QStringList m_blacklist;
 
 	// Scan (out-of-process) clients.
 	class Scanner;
