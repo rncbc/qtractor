@@ -215,6 +215,8 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	m_iDirtyVst3Paths   = 0;
 	m_iDirtyLv2Paths    = 0;
 
+	m_iDirtyBlacklist   = 0;
+
 	// Try to restore old window positioning.
 	adjustSize();
 
@@ -482,6 +484,18 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.QueryEditorTypeCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.PluginBlacklistWidget,
+		SIGNAL(itemSelectionChanged()),
+		SLOT(selectPluginBlacklist()));
+	QObject::connect(m_ui.PluginBlacklistRemoveToolButton,
+		SIGNAL(clicked()),
+		SLOT(removePluginBlacklist()));
+	QObject::connect(m_ui.PluginBlacklistClearToolButton,
+		SIGNAL(clicked()),
+		SLOT(clearPluginBlacklist()));
+	QObject::connect(m_ui.PluginPathDownToolButton,
+		SIGNAL(clicked()),
+		SLOT(moveDownPluginPath()));
 	QObject::connect(m_ui.MessagesFontPushButton,
 		SIGNAL(clicked()),
 		SLOT(chooseMessagesFont()));
@@ -541,6 +555,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_pOptions->loadComboBoxHistory(m_ui.MessagesLogPathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.SessionTemplatePathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.Lv2PresetDirComboBox);
+	m_pOptions->loadComboBoxHistory(m_ui.PluginBlacklistPathComboBox);
 
 	// Time-scale related options...
 	const qtractorTimeScale::DisplayFormat displayFormat
@@ -740,7 +755,11 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.PluginTypeComboBox->setCurrentIndex(iPluginType);
 	m_ui.PluginPathComboBox->setEditText(QString());
 
+	m_ui.PluginBlacklistWidget->clear();
+	m_ui.PluginBlacklistWidget->addItems(pPluginFactory->blacklist());
+
 	choosePluginType(iPluginType);
+	selectPluginBlacklist();
 
 #ifdef CONFIG_DEBUG
 	m_ui.StdoutCaptureCheckBox->setEnabled(false);
@@ -754,6 +773,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_iDirtyVstPaths    = 0;
 	m_iDirtyVst3Paths   = 0;
 	m_iDirtyLv2Paths    = 0;
+
+	m_iDirtyBlacklist   = 0;
 
 	stabilizeForm();
 }
@@ -903,16 +924,27 @@ void qtractorOptionsForm::accept (void)
 		else
 			m_pOptions->sCustomStyleTheme.clear();
 		// Reset dirty flags.
-		if (m_iDirtyLadspaPaths > 0 ||
-			m_iDirtyDssiPaths   > 0 ||
-			m_iDirtyVstPaths    > 0 ||
-			m_iDirtyVst3Paths   > 0 ||
-			m_iDirtyLv2Paths    > 0) {
-			qtractorPluginFactory *pPluginFactory
-				= qtractorPluginFactory::getInstance();
-			if (pPluginFactory) {
+		qtractorPluginFactory *pPluginFactory
+			= qtractorPluginFactory::getInstance();
+		if (pPluginFactory) {
+			if (m_iDirtyLadspaPaths > 0 ||
+				m_iDirtyDssiPaths   > 0 ||
+				m_iDirtyVstPaths    > 0 ||
+				m_iDirtyVst3Paths   > 0 ||
+				m_iDirtyLv2Paths    > 0) {
 				pPluginFactory->updatePluginPaths();
 				pPluginFactory->clearAll();
+			}
+			if (m_iDirtyBlacklist > 0) {
+				QStringList blacklist;
+				const int iBlacklistCount
+					= m_ui.PluginBlacklistWidget->count();
+				for (int iBlacklist = 0; iBlacklist < iBlacklistCount; ++iBlacklist) {
+					const QListWidgetItem *pItem
+						= m_ui.PluginBlacklistWidget->item(iBlacklist);
+					if (pItem) blacklist.append(pItem->text());
+				}
+				pPluginFactory->setBlacklist(blacklist);
 			}
 		}
 		m_iDirtyCount = 0;
@@ -925,6 +957,7 @@ void qtractorOptionsForm::accept (void)
 	m_pOptions->saveComboBoxHistory(m_ui.MessagesLogPathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.SessionTemplatePathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.Lv2PresetDirComboBox);
+	m_pOptions->saveComboBoxHistory(m_ui.PluginBlacklistPathComboBox);
 
 	// Save/commit to disk.
 	m_pOptions->saveOptions();
@@ -1286,9 +1319,7 @@ void qtractorOptionsForm::choosePluginType ( int iPluginType )
 	}
 
 	m_ui.PluginPathListWidget->clear();
-	QStringListIterator iter(paths);
-	while (iter.hasNext())
-		m_ui.PluginPathListWidget->addItem(iter.next());
+	m_ui.PluginPathListWidget->addItems(paths);
 
 	selectPluginPath();
 	stabilizeForm();
@@ -1613,6 +1644,135 @@ void qtractorOptionsForm::chooseLv2PresetDir (void)
 }
 
 
+// Change plugin path.
+void qtractorOptionsForm::changePluginBlacklist ( const QString& /*sBlacklist*/ )
+{
+	selectPluginBlacklist();
+	stabilizeForm();
+}
+
+
+// Browse for plugin blacklist path.
+void qtractorOptionsForm::choosePluginBlacklist (void)
+{
+	QString sFilename;
+
+	const QString  sExt("so");
+	const QString& sTitle
+		= tr("Plug-in Blacklist");
+
+	QStringList filters;
+	filters.append(tr("Plug-in files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
+
+	QWidget *pParentWidget = nullptr;
+	QFileDialog::Options options;
+	if (m_pOptions->bDontUseNativeDialogs) {
+		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
+	// Ask for the filename to open...
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
+		sTitle, m_ui.PluginBlacklistPathComboBox->currentText(), sFilter, nullptr, options);
+#else
+	// Construct open-files dialog...
+	QFileDialog fileDialog(pParentWidget,
+		sTitle, m_ui.PluginBlacklistPathComboBox->currentText(), sFilter);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFile);
+	fileDialog.setDefaultSuffix(sExt);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
+	fileDialog.setSidebarUrls(urls);
+	fileDialog.setOptions(options);
+	// Show dialog...
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+#endif
+
+	if (!sFilename.isEmpty()) {
+		m_ui.PluginBlacklistPathComboBox->setEditText(sFilename);
+		m_ui.PluginBlacklistPathComboBox->setFocus();
+	}
+
+	selectPluginBlacklist();
+	stabilizeForm();
+}
+
+
+// Add chosen plugin blacklist path.
+void qtractorOptionsForm::addPluginBlacklist (void)
+{
+	const QString& sBlacklist
+		= m_ui.PluginBlacklistPathComboBox->currentText();
+	if (sBlacklist.isEmpty())
+		return;
+
+	m_ui.PluginBlacklistWidget->addItem(sBlacklist);
+	m_ui.PluginBlacklistWidget->setCurrentRow(
+		m_ui.PluginBlacklistWidget->count() - 1);
+
+	const int i = m_ui.PluginBlacklistPathComboBox->findText(sBlacklist);
+	if (i >= 0)
+		m_ui.PluginBlacklistPathComboBox->removeItem(i);
+	m_ui.PluginBlacklistPathComboBox->insertItem(0, sBlacklist);
+	m_ui.PluginBlacklistPathComboBox->setEditText(QString());
+
+	m_ui.PluginBlacklistWidget->setFocus();
+
+	++m_iDirtyBlacklist;
+
+	selectPluginBlacklist();
+	changed();
+}
+
+
+// Select current plugin path.
+void qtractorOptionsForm::selectPluginBlacklist (void)
+{
+	const int iBlacklist
+		= m_ui.PluginBlacklistWidget->currentRow();
+
+	m_ui.PluginBlacklistRemoveToolButton->setEnabled(iBlacklist >= 0);
+	m_ui.PluginBlacklistClearToolButton->setEnabled(iBlacklist >= 0);
+}
+
+
+// Remove current plugin path.
+void qtractorOptionsForm::removePluginBlacklist (void)
+{
+	const int iBlacklist
+		= m_ui.PluginBlacklistWidget->currentRow();
+	if (iBlacklist < 0)
+		return;
+
+	QListWidgetItem *pItem = m_ui.PluginBlacklistWidget->takeItem(iBlacklist);
+	if (pItem)
+		delete pItem;
+
+	++m_iDirtyBlacklist;
+
+	selectPluginBlacklist();
+	changed();
+}
+
+
+// Clear blacklist paths.
+void qtractorOptionsForm::clearPluginBlacklist (void)
+{
+	m_ui.PluginBlacklistWidget->clear();
+
+	++m_iDirtyBlacklist;
+
+	selectPluginBlacklist();
+	changed();
+}
+
+
 // The messages font selection dialog.
 void qtractorOptionsForm::chooseMessagesFont (void)
 {
@@ -1836,6 +1996,12 @@ void qtractorOptionsForm::stabilizeForm (void)
 		!sPluginPath.isEmpty() && QDir(sPluginPath).exists()
 		&& m_ui.PluginPathListWidget->findItems(
 			sPluginPath, Qt::MatchExactly).isEmpty());
+
+	const QString& sBlacklist = m_ui.PluginBlacklistPathComboBox->currentText();
+	m_ui.PluginBlacklistAddToolButton->setEnabled(
+		!sBlacklist.isEmpty()
+		&& m_ui.PluginBlacklistWidget->findItems(
+			sBlacklist, Qt::MatchExactly).isEmpty());
 
 	if (bValid) {
 		const QString& sLv2PresetDir = m_ui.Lv2PresetDirComboBox->currentText();

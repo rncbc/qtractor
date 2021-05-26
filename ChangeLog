@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing plug-in blacklisting, on user discretion (in View
+  /Options.../Plugins/Blacklist) and on inventory scan (crashed
+  plug-ins are now automatically blacklisted). (EXPERIMENTAL)
+
 - Added special support for LV2 UI GTK2 plugins based on Gtkmm 2.4
   framework. (EXPERIMENTAL)
 

@@ -77,6 +77,10 @@ public:
 		const QString& sFilename, unsigned long iIndex,
 		qtractorPluginType::Hint typeHint);
 
+	// Blacklist accessors.
+	void setBlacklist(const QStringList&  blacklist);
+	const QStringList& blacklist() const;
+
 	// Singleton instance accessor.
 	static qtractorPluginFactory *getInstance();
 

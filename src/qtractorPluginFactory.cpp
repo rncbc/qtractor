@@ -281,6 +281,18 @@ QStringList qtractorPluginFactory::pluginPaths (
 }
 
 
+// Blacklist accessors.
+void qtractorPluginFactory::setBlacklist ( const QStringList&  blacklist )
+{
+	m_blacklist = blacklist;
+}
+
+const QStringList& qtractorPluginFactory::blacklist (void) const
+{
+	return m_blacklist;
+}
+
+
 // Absolute temporary blacklist file path.
 QString qtractorPluginFactory::blacklistTempFilePath (void) const
 {

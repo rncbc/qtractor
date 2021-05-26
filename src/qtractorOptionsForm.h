@@ -80,6 +80,12 @@ protected slots:
 	void moveUpPluginPath();
 	void moveDownPluginPath();
 	void chooseLv2PresetDir();
+	void changePluginBlacklist(const QString&);
+	void choosePluginBlacklist();
+	void selectPluginBlacklist();
+	void addPluginBlacklist();
+	void removePluginBlacklist();
+	void clearPluginBlacklist();
 	void chooseMessagesFont();
 	void chooseMessagesLogPath();
 	void chooseSessionTemplatePath();
@@ -133,6 +139,8 @@ private:
 	int m_iDirtyVstPaths;
 	int m_iDirtyVst3Paths;
 	int m_iDirtyLv2Paths;
+
+	int m_iDirtyBlacklist;
 };
 
 
