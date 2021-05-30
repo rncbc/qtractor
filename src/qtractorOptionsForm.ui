@@ -3293,7 +3293,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="PluginPathBrowseToolButton">
+             <widget class="QToolButton" name="PluginPathToolButton">
               <property name="minimumSize">
                <size>
                 <width>22</width>
@@ -3712,7 +3712,7 @@
           <item row="0" column="0" colspan="2">
            <layout class="QHBoxLayout">
             <item>
-             <widget class="QComboBox" name="PluginBlacklistPathComboBox">
+             <widget class="QComboBox" name="PluginBlacklistComboBox">
               <property name="minimumSize">
                <size>
                 <width>320</width>
@@ -3734,7 +3734,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="PluginBlacklistPathToolButton">
+             <widget class="QToolButton" name="PluginBlacklistToolButton">
               <property name="minimumSize">
                <size>
                 <width>22</width>
@@ -4024,7 +4024,7 @@
   <tabstop>MessagesLogPathToolButton</tabstop>
   <tabstop>PluginTypeComboBox</tabstop>
   <tabstop>PluginPathComboBox</tabstop>
-  <tabstop>PluginPathBrowseToolButton</tabstop>
+  <tabstop>PluginPathToolButton</tabstop>
   <tabstop>PluginPathAddToolButton</tabstop>
   <tabstop>PluginPathListWidget</tabstop>
   <tabstop>PluginPathRemoveToolButton</tabstop>
@@ -4036,8 +4036,8 @@
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
   <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>QueryEditorTypeCheckBox</tabstop>
-  <tabstop>PluginBlacklistPathComboBox</tabstop>
-  <tabstop>PluginBlacklistPathToolButton</tabstop>
+  <tabstop>PluginBlacklistComboBox</tabstop>
+  <tabstop>PluginBlacklistToolButton</tabstop>
   <tabstop>PluginBlacklistAddToolButton</tabstop>
   <tabstop>PluginBlacklistWidget</tabstop>
   <tabstop>PluginBlacklistRemoveToolButton</tabstop>
