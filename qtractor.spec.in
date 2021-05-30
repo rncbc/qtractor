@@ -62,6 +62,7 @@ BuildRequires:	qt5-qtwayland-devel
 BuildRequires:	qt5-qtsvg-devel
 BuildRequires:	qt5-linguist
 %endif
+BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	rubberband-devel
 BuildRequires:	aubio-devel >= 0.4.1
@@ -80,11 +81,11 @@ BuildRequires:	libqt5-qtwayland-devel
 BuildRequires:	libqt5-qtsvg-devel
 BuildRequires:	libqt5-linguist-devel
 %endif
+BuildRequires:	libjack-devel
 BuildRequires:	alsa-devel
 BuildRequires:	librubberband-devel
 BuildRequires:  libaubio-devel >= 0.4.1
 %endif
-BuildRequires:	libjack-devel
 BuildRequires:	libsndfile-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libmad-devel
