@@ -128,8 +128,11 @@ public:
 
 	// Internal sample-rate accessor.
 	unsigned int sampleRate() const;
-	// Buffer size accessor.
+
+	// Buffer size accessors.
 	unsigned int bufferSize() const;
+	unsigned int bufferSizeEx() const;
+
 	// Buffer offset accessor.
 	unsigned int bufferOffset() const;
 
@@ -280,12 +283,15 @@ private:
 	unsigned int m_iSampleRate;
 	unsigned int m_iBufferSize;
 
-	// Audio (Master) bus defaults.
-	bool m_bMasterAutoConnect;
+	// Initial maximum safe buffer size.
+	unsigned int m_iBufferSizeEx;
 
 	// Partial buffer offset state;
 	// careful for proper loop concatenation.
 	unsigned int m_iBufferOffset;
+
+	// Audio (Master) bus defaults.
+	bool m_bMasterAutoConnect;
 
 	// Audio-export freewheeling (internal) state.
 	bool m_bFreewheel;

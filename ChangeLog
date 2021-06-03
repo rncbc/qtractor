@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Have some tolerance for JACK buffer-size changes, only prompting
+  to a complete session reload, if increasing in double the initial
+  period size. (EXPERIMENTAL)
+
 - Introducing plug-in blacklisting, on user discretion (in View
   /Options.../Plugins/Blacklist) and on inventory scan (crashed
   plug-ins are now automatically blacklisted). (EXPERIMENTAL)

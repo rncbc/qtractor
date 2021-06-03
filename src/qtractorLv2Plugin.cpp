@@ -2333,7 +2333,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	if (pSession) {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
-			m_iMinBlockLength     = pAudioEngine->bufferSize();
+			m_iMinBlockLength     = pAudioEngine->bufferSizeEx();
 			m_iMaxBlockLength     = m_iMinBlockLength;
 			m_iNominalBlockLength = m_iMaxBlockLength;
 		}
@@ -2801,7 +2801,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		return;
 
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 	const unsigned short iAudioIns  = pLv2Type->audioIns();
 	const unsigned short iAudioOuts = pLv2Type->audioOuts();
@@ -2813,8 +2813,8 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	) {
 		if (m_pfIDummy)
 			delete [] m_pfIDummy;
-		m_pfIDummy = new float [iBufferSize];
-		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+		m_pfIDummy = new float [iBufferSizeEx];
+		::memset(m_pfIDummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 	if (iChannels < iAudioOuts
@@ -2824,8 +2824,8 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	) {
 		if (m_pfODummy)
 			delete [] m_pfODummy;
-		m_pfODummy = new float [iBufferSize];
-	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+		m_pfODummy = new float [iBufferSizeEx];
+	//	::memset(m_pfODummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 #ifdef CONFIG_LV2_WORKER

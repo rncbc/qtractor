@@ -301,7 +301,7 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 		return;
 
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 	const unsigned short iAudioIns = pLadspaType->audioIns();
 	const unsigned short iAudioOuts = pLadspaType->audioOuts();
@@ -309,15 +309,15 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 	if (iChannels < iAudioIns) {
 		if (m_pfIDummy)
 			delete [] m_pfIDummy;
-		m_pfIDummy = new float [iBufferSize];
-		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+		m_pfIDummy = new float [iBufferSizeEx];
+		::memset(m_pfIDummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 	if (iChannels < iAudioOuts) {
 		if (m_pfODummy)
 			delete [] m_pfODummy;
-		m_pfODummy = new float [iBufferSize];
-	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+		m_pfODummy = new float [iBufferSizeEx];
+	//	::memset(m_pfODummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 	// We'll need output control (not dummy anymore) port indexes...

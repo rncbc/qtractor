@@ -33,16 +33,16 @@ Audio:	%1 channels, %2 Hz</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2658"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2950"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2668"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2960"/>
         <location filename="../qtractorMidiEngine.cpp" line="3997"/>
         <location filename="../qtractorMidiEngine.cpp" line="4562"/>
         <source>%1 In</source>
         <translation>Вход %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2667"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2950"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2677"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2960"/>
         <location filename="../qtractorMidiEngine.cpp" line="4006"/>
         <location filename="../qtractorMidiEngine.cpp" line="4562"/>
         <source>%1 Out</source>
@@ -55,7 +55,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1568"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1569"/>
         <source>All files (*.*)</source>
         <translation>Все файлы (*.*)</translation>
     </message>
@@ -501,7 +501,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Версия: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1565"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1566"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -687,15 +687,15 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2660"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2669"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2670"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2679"/>
         <location filename="../qtractorTrack.cpp" line="695"/>
         <source>%1 Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2662"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2671"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2672"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2681"/>
         <location filename="../qtractorMidiEngine.cpp" line="4001"/>
         <location filename="../qtractorMidiEngine.cpp" line="4010"/>
         <location filename="../qtractorTrack.cpp" line="698"/>

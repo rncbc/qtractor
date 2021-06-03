@@ -1804,11 +1804,11 @@ void qtractorPluginList::setChannelsEx ( unsigned short iChannels )
 		if (pSession)
 			pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
-			const unsigned int iBufferSize = pAudioEngine->bufferSize();
+			const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 			m_pppBuffers[1] = new float * [m_iChannels];
 			for (unsigned short i = 0; i < m_iChannels; ++i) {
-				m_pppBuffers[1][i] = new float [iBufferSize];
-				::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
+				m_pppBuffers[1][i] = new float [iBufferSizeEx];
+				::memset(m_pppBuffers[1][i], 0, iBufferSizeEx * sizeof(float));
 			}
 		}	// Gone terribly wrong...
 		else m_iChannels = 0;
@@ -1856,7 +1856,7 @@ void qtractorPluginList::resetBuffers (void)
 	if (pAudioEngine == nullptr)
 		return;
 
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 #if 0
 	// Save and reset activation count...
@@ -1873,7 +1873,7 @@ void qtractorPluginList::resetBuffers (void)
 	// Reset interim buffer, if any...
 	if (m_pppBuffers[1]) {
 		for (unsigned short i = 0; i < m_iChannels; ++i)
-			::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
+			::memset(m_pppBuffers[1][i], 0, iBufferSizeEx * sizeof(float));
 	}
 #if 0
 	// Restore activation of all previously deactivated plugins...

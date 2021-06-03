@@ -424,7 +424,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 		setSyncFlag(InitSync);
 	} else {
 		// Get a reasonablebuffer size for readMix()...
-		iBufferSize = pSession->audioEngine()->bufferSize();
+		iBufferSize = pSession->audioEngine()->bufferSizeEx();
 		if (iBufferSize < (m_iBufferSize >> 2))
 			iBufferSize = (m_iBufferSize >> 2);
 		// Allocate those minimal buffers for readMix()...

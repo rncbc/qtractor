@@ -2416,11 +2416,12 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	const bool         bFreewheel  = pAudioEngine->isFreewheel();
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 	Vst::ProcessSetup setup;
 	setup.processMode        = (bFreewheel ? Vst::kOffline :  Vst::kRealtime);
 	setup.symbolicSampleSize = Vst::kSample32;
-	setup.maxSamplesPerBlock = iBufferSize;
+	setup.maxSamplesPerBlock = iBufferSizeEx;
 	setup.sampleRate         = float(iSampleRate);
 
 	if (m_processor->setupProcessing(setup) != kResultOk)
@@ -3055,7 +3056,7 @@ void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 	if (pAudioEngine == nullptr)
 		return;
 
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 	// Allocate the dummy audio I/O buffers...
 	const unsigned short iAudioIns = audioIns();
@@ -3064,15 +3065,15 @@ void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 	if (iChannels < iAudioIns) {
 		if (m_pfIDummy)
 			delete [] m_pfIDummy;
-		m_pfIDummy = new float [iBufferSize];
-		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+		m_pfIDummy = new float [iBufferSizeEx];
+		::memset(m_pfIDummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 	if (iChannels < iAudioOuts) {
 		if (m_pfODummy)
 			delete [] m_pfODummy;
-		m_pfODummy = new float [iBufferSize];
-	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+		m_pfODummy = new float [iBufferSizeEx];
+	//	::memset(m_pfODummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 	if (m_pMidiParser)
