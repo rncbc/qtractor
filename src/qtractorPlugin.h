@@ -558,6 +558,9 @@ protected:
 	// Instance number settler.
 	void setInstances(unsigned short iInstances);
 
+	// Internal activation methods.
+	void setChannelsActivated(unsigned short iChannels, bool bActivated);
+
 	// Activation stabilizers.
 	void updateActivated(bool bActivated);
 	void updateActivatedEx(bool bActivated);

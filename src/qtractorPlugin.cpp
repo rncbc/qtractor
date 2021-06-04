@@ -299,11 +299,11 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 // Activation methods.
 
 // immediate
-void qtractorPlugin::setActivated (bool bActivated)
+void qtractorPlugin::setActivated ( bool bActivated )
 {
 	updateActivated(bActivated);
 
-	m_activateObserver.setValue(bActivated ? 1.0f : 0.0f);
+	setActivatedEx(bActivated);
 }
 
 // queued (GUI invocation)
@@ -404,6 +404,17 @@ void qtractorPlugin::updateActivatedEx ( bool bActivated )
 
 	if (m_pForm)
 		m_pForm->updateActivated();
+}
+
+
+// Internal activation methods.
+void qtractorPlugin::setChannelsActivated (
+	unsigned short iChannels, bool bActivated )
+{
+	if (iChannels > 0)
+		setActivated(bActivated);
+	else
+		updateActivated(false);
 }
 
 

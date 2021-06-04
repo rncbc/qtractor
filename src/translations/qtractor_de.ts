@@ -194,7 +194,7 @@ End:	%3	Length:	%4</source>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="428"/>
-        <location filename="../qtractorTrack.cpp" line="684"/>
+        <location filename="../qtractorTrack.cpp" line="685"/>
         <source>%1 Monitor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -465,7 +465,7 @@ MIDI:	</translation>
         <translation>Aktivieren</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2263"/>
+        <location filename="../qtractorPlugin.cpp" line="2274"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 Plugin nicht gefunden.</translation>
     </message>
@@ -615,31 +615,31 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="685"/>
+        <location filename="../qtractorTrack.cpp" line="686"/>
         <source>%1 Record</source>
         <translation>%1 Aufnahme</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="686"/>
+        <location filename="../qtractorTrack.cpp" line="687"/>
         <source>%1 Mute</source>
         <translation>%1 Stumm</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="687"/>
+        <location filename="../qtractorTrack.cpp" line="688"/>
         <source>%1 Solo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="3999"/>
         <location filename="../qtractorMidiEngine.cpp" line="4008"/>
-        <location filename="../qtractorTrack.cpp" line="692"/>
+        <location filename="../qtractorTrack.cpp" line="693"/>
         <source>%1 Volume</source>
         <translation>%1 Lautstärke</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2670"/>
         <location filename="../qtractorAudioEngine.cpp" line="2679"/>
-        <location filename="../qtractorTrack.cpp" line="695"/>
+        <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation type="unfinished"></translation>
     </message>
@@ -648,7 +648,7 @@ MIDI:	</translation>
         <location filename="../qtractorAudioEngine.cpp" line="2681"/>
         <location filename="../qtractorMidiEngine.cpp" line="4001"/>
         <location filename="../qtractorMidiEngine.cpp" line="4010"/>
-        <location filename="../qtractorTrack.cpp" line="698"/>
+        <location filename="../qtractorTrack.cpp" line="699"/>
         <source>%1 Pan</source>
         <translation type="unfinished"></translation>
     </message>

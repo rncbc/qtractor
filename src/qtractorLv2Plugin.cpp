@@ -2754,7 +2754,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// Gotta go for a while...
 	const bool bActivated = isActivated();
-	setActivated(false);
+	setChannelsActivated(iChannels, false);
 
 	// Set new instance number...
 	setInstances(iInstances);
@@ -2782,7 +2782,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// Bail out, if none are about to be created...
 	if (iInstances < 1) {
-		setActivated(bActivated);
+		setChannelsActivated(iChannels, bActivated);
 		return;
 	}
 
@@ -2937,7 +2937,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	updateInstruments();
 
 	// (Re)activate instance if necessary...
-	setActivated(bActivated);
+	setChannelsActivated(iChannels, bActivated);
 }
 
 

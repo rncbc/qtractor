@@ -201,7 +201,7 @@ Fin:	%3	Duración:	%4</translation>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="428"/>
-        <location filename="../qtractorTrack.cpp" line="684"/>
+        <location filename="../qtractorTrack.cpp" line="685"/>
         <source>%1 Monitor</source>
         <translation>%1 Monitor</translation>
     </message>
@@ -551,7 +551,7 @@ MIDI:	</translation>
         <translation>Activar</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2263"/>
+        <location filename="../qtractorPlugin.cpp" line="2274"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 plugin no encontrado.</translation>
     </message>
@@ -701,31 +701,31 @@ MIDI:	</translation>
         <translation>cambiar compás.</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="685"/>
+        <location filename="../qtractorTrack.cpp" line="686"/>
         <source>%1 Record</source>
         <translation>%1 Grabar</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="686"/>
+        <location filename="../qtractorTrack.cpp" line="687"/>
         <source>%1 Mute</source>
         <translation>%1 Silenciar</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="687"/>
+        <location filename="../qtractorTrack.cpp" line="688"/>
         <source>%1 Solo</source>
         <translation>%1 Solo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="3999"/>
         <location filename="../qtractorMidiEngine.cpp" line="4008"/>
-        <location filename="../qtractorTrack.cpp" line="692"/>
+        <location filename="../qtractorTrack.cpp" line="693"/>
         <source>%1 Volume</source>
         <translation>%1 Volumen</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2670"/>
         <location filename="../qtractorAudioEngine.cpp" line="2679"/>
-        <location filename="../qtractorTrack.cpp" line="695"/>
+        <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation>%1 Ganancia</translation>
     </message>
@@ -734,7 +734,7 @@ MIDI:	</translation>
         <location filename="../qtractorAudioEngine.cpp" line="2681"/>
         <location filename="../qtractorMidiEngine.cpp" line="4001"/>
         <location filename="../qtractorMidiEngine.cpp" line="4010"/>
-        <location filename="../qtractorTrack.cpp" line="698"/>
+        <location filename="../qtractorTrack.cpp" line="699"/>
         <source>%1 Pan</source>
         <translation>%1 Panorámica</translation>
     </message>

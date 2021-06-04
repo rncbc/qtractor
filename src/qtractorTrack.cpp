@@ -626,8 +626,9 @@ bool qtractorTrack::open (void)
 // Track close method.
 void qtractorTrack::close (void)
 {
-	// Make sure there's no subject automation going on...
+#if 0// Sure there's no subject automation going on?...
 	qtractorSubject::resetQueue();
+#endif
 
 	if (m_pMidiVolumeObserver) {
 		delete m_pMidiVolumeObserver;
