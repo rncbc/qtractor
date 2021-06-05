@@ -1775,12 +1775,12 @@ Voulez vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="105"/>
         <source>Custom range</source>
-        <translation>Plage spéciale</translation>
+        <translation>Plage personnalisée</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="108"/>
         <source>&amp;Custom</source>
-        <translation>&amp;Spéciale</translation>
+        <translation>&amp;Personnalisé</translation>
     </message>
     <message>
         <location filename="../qtractorEditRangeForm.ui" line="118"/>
@@ -2017,12 +2017,12 @@ Voulez vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorExportForm.ui" line="387"/>
         <source>Custom range</source>
-        <translation>Plage spéciale</translation>
+        <translation>Plage personnalisée</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="390"/>
         <source>&amp;Custom</source>
-        <translation>&amp;Spéciale</translation>
+        <translation>&amp;Personnalisée</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.ui" line="416"/>
@@ -12330,47 +12330,47 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3706"/>
         <source>Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste noire</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3729"/>
         <source>Plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin de la liste noire des greffons</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3757"/>
         <source>Browse plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>Parcourir le chemin de la liste noire des greffons</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3788"/>
         <source>Add plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter le chemin de la liste noire des greffons</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3815"/>
         <source>Plugin blacklist paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemins de la liste noire des greffons</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3846"/>
         <source>Remove plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le chemin de la liste noire des greffons</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3890"/>
         <source>Clear plugin blacklist paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer les chemins de la liste noire des greffons</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3893"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Nettoyer</translation>
+        <translation>Effa&amp;cer</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2529"/>
         <source>Custom</source>
-        <translation>Spéciale</translation>
+        <translation>Personnalisée</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2550"/>
@@ -12380,7 +12380,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2569"/>
         <source>Custom color palette theme</source>
-        <translation>Palette de couleur customisée</translation>
+        <translation>Palette de couleur personnalisée</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2581"/>
@@ -12397,7 +12397,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2660"/>
         <source>Custom widget style theme</source>
-        <translation>Style de thème de widget customisé</translation>
+        <translation>Style de thème de widget personnalisé</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2697"/>
@@ -12786,12 +12786,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1668"/>
         <source>Plug-in Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste noire de greffon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1671"/>
         <source>Plug-in files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de greffon (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1786"/>
