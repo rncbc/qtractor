@@ -11,6 +11,7 @@ configure
 *.qm
 *.o
 *.so
+*.txt.user
 *.pro.user
 *.qmake.stash
 qrc_*.cpp
