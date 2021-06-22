@@ -304,7 +304,7 @@ endif ()
 
 
 # Find package modules
-find_package (PkgConfig REQUIRED)
+include (FindPkgConfig)
 
 # Check for JACK libraries.
 pkg_check_modules (JACK REQUIRED IMPORTED_TARGET jack>=0.100.0)
