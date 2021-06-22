@@ -1,7 +1,7 @@
 // qtractorMessages.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -82,7 +82,7 @@ qtractorMessages::qtractorMessages ( QWidget *pParent )
 	// Surely a name is crucial (e.g.for storing geometry settings)
 	QDockWidget::setObjectName("qtractorMessages");
 
-	// Intialize stdout capture stuff.
+	// Initialize stdout capture stuff.
 	m_pStdoutNotifier = nullptr;
 	m_fdStdout[QTRACTOR_MESSAGES_FDREAD]  = QTRACTOR_MESSAGES_FDNIL;
 	m_fdStdout[QTRACTOR_MESSAGES_FDWRITE] = QTRACTOR_MESSAGES_FDNIL;
@@ -144,6 +144,11 @@ void qtractorMessages::closeEvent ( QCloseEvent * /*pCloseEvent*/ )
 }
 
 
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
+
 // Set stdout/stderr blocking mode.
 bool qtractorMessages::stdoutBlock ( int fd, bool bBlock ) const
 {
@@ -182,6 +187,10 @@ void qtractorMessages::stdoutNotify ( int fd )
 #endif
 }
 
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
+#pragma GCC diagnostic pop
+#endif
+
 
 // Stdout buffer handler -- now splitted by complete new-lines...
 void qtractorMessages::appendStdoutBuffer ( const QString& s )
@@ -195,12 +204,10 @@ void qtractorMessages::processStdoutBuffer (void)
 {
 	const int iLength = m_sStdoutBuffer.lastIndexOf('\n');
 	if (iLength > 0) {
-		const QString& sTemp = m_sStdoutBuffer.left(iLength);
-		m_sStdoutBuffer.remove(0, iLength + 1);
-		QStringList list = sTemp.split('\n');
-		QStringListIterator iter(list);
+		QStringListIterator iter(m_sStdoutBuffer.left(iLength).split('\n'));
 		while (iter.hasNext())
 			appendMessagesText(iter.next());
+		m_sStdoutBuffer.remove(0, iLength + 1);
 	}
 }
 
@@ -208,8 +215,10 @@ void qtractorMessages::processStdoutBuffer (void)
 // Stdout flusher -- show up any unfinished line...
 void qtractorMessages::flushStdoutBuffer (void)
 {
+	processStdoutBuffer();
+
 	if (!m_sStdoutBuffer.isEmpty()) {
-		processStdoutBuffer();
+		appendMessagesText(m_sStdoutBuffer);
 		m_sStdoutBuffer.clear();
 	}
 }

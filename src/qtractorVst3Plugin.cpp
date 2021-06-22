@@ -1157,17 +1157,17 @@ void qtractorVst3PluginType::Impl::close (void)
 		m_controller->terminate();
 	}
 
+	m_controller = nullptr;
+
 	if (m_component) {
 		m_component->terminate();
+		m_component = nullptr;
 		typedef bool (PLUGIN_API *VST3_ModuleExit)();
 		const VST3_ModuleExit module_exit
 			= reinterpret_cast<VST3_ModuleExit> (m_pFile->resolve("ModuleExit"));
 		if (module_exit)
 			module_exit();
 	}
-
-	m_controller = nullptr;
-	m_component = nullptr;
 }
 
 
@@ -1183,7 +1183,7 @@ int qtractorVst3PluginType::Impl::numChannels (
 	for (int32 i = 0; i < nbuses; ++i) {
 		Vst::BusInfo busInfo;
 		if (m_component->getBusInfo(type, direction, i, busInfo) == kResultOk) {
-			if (/*(busInfo.busType == Vst::kMain) &&*/
+			if ((busInfo.busType == Vst::kMain) ||
 				(busInfo.flags & Vst::BusInfo::kDefaultActive))
 				nchannels += busInfo.channelCount;
 		}
@@ -1242,7 +1242,8 @@ bool qtractorVst3PluginType::open (void)
 
 	Vst::IEditController *controller = m_pImpl->controller();
 	if (controller) {
-		IPtr<IPlugView> editor = controller->createView(Vst::ViewType::kEditor);
+		IPtr<IPlugView> editor =
+			owned(controller->createView(Vst::ViewType::kEditor));
 		m_bEditor = (editor != nullptr);
 	}
 
@@ -2182,10 +2183,10 @@ void qtractorVst3Plugin::Impl::initialize (void)
 		= static_cast<qtractorVst3PluginType *> (m_pPlugin->type());
 	if (pType == nullptr)
 		return;
-
+#if 0//HACK: Plugin-type might be already open via plugin-factory...
 	if (!pType->open())
 		return;
-
+#endif
 	Vst::IComponent *component = pType->impl()->component();
 	if (!component)
 		return;
@@ -2348,7 +2349,7 @@ bool qtractorVst3Plugin::Impl::openEditor (void)
 
 	Vst::IEditController *controller = pType->impl()->controller();
 	if (controller)
-		m_plugView = controller->createView(Vst::ViewType::kEditor);
+		m_plugView = owned(controller->createView(Vst::ViewType::kEditor));
 
 	return (m_plugView != nullptr);
 }
@@ -2415,11 +2416,12 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	const bool         bFreewheel  = pAudioEngine->isFreewheel();
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 	Vst::ProcessSetup setup;
 	setup.processMode        = (bFreewheel ? Vst::kOffline :  Vst::kRealtime);
 	setup.symbolicSampleSize = Vst::kSample32;
-	setup.maxSamplesPerBlock = iBufferSize;
+	setup.maxSamplesPerBlock = iBufferSizeEx;
 	setup.sampleRate         = float(iSampleRate);
 
 	if (m_processor->setupProcessing(setup) != kResultOk)
@@ -3030,14 +3032,14 @@ void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 
 	// Gotta go for a while...
 	const bool bActivated = isActivated();
-	setActivated(false);
+	setChannelsActivated(iChannels, false);
 
 	// Set new instance number...
 	setInstances(iInstances);
 
 	// Bail out, if none are about to be created...
 	if (iInstances < 1) {
-		setActivated(bActivated);
+		setChannelsActivated(iChannels, bActivated);
 		return;
 	}
 
@@ -3054,7 +3056,7 @@ void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 	if (pAudioEngine == nullptr)
 		return;
 
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 	// Allocate the dummy audio I/O buffers...
 	const unsigned short iAudioIns = audioIns();
@@ -3063,15 +3065,15 @@ void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 	if (iChannels < iAudioIns) {
 		if (m_pfIDummy)
 			delete [] m_pfIDummy;
-		m_pfIDummy = new float [iBufferSize];
-		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+		m_pfIDummy = new float [iBufferSizeEx];
+		::memset(m_pfIDummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 	if (iChannels < iAudioOuts) {
 		if (m_pfODummy)
 			delete [] m_pfODummy;
-		m_pfODummy = new float [iBufferSize];
-	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+		m_pfODummy = new float [iBufferSizeEx];
+	//	::memset(m_pfODummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 	if (m_pMidiParser)
@@ -3089,7 +3091,7 @@ void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 	releaseValues();
 
 	// (Re)activate instance if necessary...
-	setActivated(bActivated);
+	setChannelsActivated(iChannels, bActivated);
 }
 
 
@@ -3293,6 +3295,7 @@ void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 
 	// Final stabilization...
 	updateEditorTitle();
+	moveWidgetPos(m_pEditorWidget, editorPos());
 	setEditorVisible(true);
 }
 
@@ -3332,9 +3335,7 @@ void qtractorVst3Plugin::closeEditor (void)
 void qtractorVst3Plugin::setEditorVisible ( bool bVisible )
 {
 	if (m_pEditorWidget) {
-		if (bVisible)
-			moveWidgetPos(m_pEditorWidget, editorPos());
-		else
+		if (!bVisible)
 			setEditorPos(m_pEditorWidget->pos());
 		m_pEditorWidget->setVisible(bVisible);
 		if (bVisible) {

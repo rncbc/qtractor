@@ -1,7 +1,7 @@
 // qtractorClipForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@
 #include <QUrl>
 
 // Needed for logf() and powf()
-#include <math.h>
+#include <cmath>
 
 static inline float log10f2 ( float x )
 	{ return (x > 0.0f ? 20.0f * ::log10f(x) : -60.0f); }

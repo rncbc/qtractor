@@ -6,28 +6,113 @@ ChangeLog
 
 GIT HEAD
 
-- When under NSM, all top-level windows, main, mixer and connections, 
-  will always start hidden. (GH #279). (EXPERIMENTAL)
+- Have some tolerance for JACK buffer-size changes, only prompting
+  to a complete session reload, if increasing in double the initial
+  period size. (EXPERIMENTAL)
+
+- Introducing plug-in blacklisting, on user discretion (in View
+  /Options.../Plugins/Blacklist) and on inventory scan (crashed
+  plug-ins are now automatically blacklisted). (EXPERIMENTAL)
+
+- Added special support for LV2 UI GTK2 plugins based on Gtkmm 2.4
+  framework. (EXPERIMENTAL)
+
+- All builds default to Qt6 (Qt >= 6.1) where available.
+
+- CMake is now the official build system.
+
+
+0.9.22  2021-05-14  A Spring'21 Release.
+
+- Fixed one terribly old and overlooked mistake that was preventing
+  MIDI tracks volume and panning automation to take effect on audio
+  export.
+
+- All packaging builds switching to CMake.
+
+
+0.9.21  2021-03-18  An End-of-Winter'21 Release.
+
+- Ignore snap while ALT key is pressed, on the main track-view and
+  the MIDI clip editors (aka. piano-roll).
+
+- Fixed a FTBFS when native LV2 UI GTK2 support is disabled.
+
+- Fix IPlugView leaks for VST3 plugins.
+
+
+0.9.20  2021-02-12  A Winter'21 Release.
+
+- Fixed and improved automation curve recording, whenever playback
+  is rolling (and also when isn't:)).
+
+- Fixed parsing/loading of large session bundle archive/zip files
+  (.qtz > 2GB).
+
+- Fixed LV2 plug-in UI X11 (native) resize.
+
+- Make NSM state file names independent to session display names,
+  keeping backward compatibility for old sessions.
+
+- Exiting, quitting or closing the main window while under NSM, now
+  promptly asks whether to save, discard or cancel as usual.
+
+- Re-improved Mixer multi-row layout.
+
+- Fix incorrect destruction order for VST3 modules.
+
+
+0.9.19  2020-12-20  A Winter'20 Release.
+
+- Session directory auto-name option added to the session properties
+  dialog, as convenience.
+
+- Loading and saving a LV2 plugin's state has been vastly improved.
+  IMPORTANT CAVEAT: From this moment onwards, when loading any newer
+  saved sessions into older versions of the program, all LV2 plugins
+  won't get their state restored correctly.
+
+- Track colors saturation introduced as yet another eye-candy option
+  (cf. View/Options.../Display/Track color saturation)
+
+- Fixed VST3 number of channels query/report.
+
+- Fixed immediate crash when loading untitled or unnamed Instrument
+  Definitions files (*.ins): base file-name is now taken as default 
+  instrument definition name or title.
+
+- Tempo (BPM) entry may now be specified with arbitrary precision, to
+  at most 3 decimal positions in fractional part, while integer whole
+  values are displayed with no decimal point.
+
+- Added option to keep MIDI clip editor windows (aka. piano-roll)
+  always on top of the main window (cf. View/Options.../General/
+  Keep editor windows always on top).
+
+- MIDI clip editor status-bar labels are not stretched to whole text
+  size anymore, most specially for the current file complete path.  
+
+
+0.9.18  2020-10-30  A Fall'20 Release.
+
+- When under NSM, all top-level windows, main, mixer and connections,
+  will always start hidden.
 
 - Plugin editors (GUIs) that are currently open on a track are now
   brought up as top-level windows immediately when a track is made
   current or highlighted (and Track / Auto Monitor is in effect).
-  (GH #277; auto-focus plugin GUI editor window on track select)
-  (EXPERIMENTAL)
 
 - MIDI clip editor mouse hovering effect extended to whole current
   note line on main view (piano-roll eye-candy++); also, the white
   keys on MIDI clip editor's virtual piano keyboard, are now fully
-  highlighted. (EXPERIMENTAL)
+  highlighted.
 
-- Plugin search paths (View > Options... > Plugins > Paths) now lists
+- Plugin search paths (cf. View/Options.../Plugins/Paths) now showing
   all the default and actual existing paths, instead of a blank list.
-  (EXPERIMENTAL)
 
-- Undimmed octave divider lines on the piano-roll. (EXPERIMENTAL)
+- Undimmed octave divider lines on the piano-roll.
 
 - Fixed potential crash on changing audio output buses channel count.
-  (EXPERIMENTAL)
 
 - Note names display (inside note rectangles) are now an option on
   the MIDI clip editor (aka. piano-roll; menu View > Note Names).
@@ -120,7 +205,7 @@ GIT HEAD
 - LV2 Plug-in MIDNAM support introduced.
 
 - Use Shift or Ctrl keyboard modifiers with the mouse- wheel to change
-  any Direct Access plug-in parameters (issue #257).
+  any Direct Access plug-in parameters.
 
 
 0.9.13  2020-03-28  A Spring'20 Release.
@@ -150,7 +235,7 @@ GIT HEAD
 
 - Fixed first bar/measure position drawing on the time-scale/grid
   across time-signature changes on the MIDI clip editor (aka.
-  piano-roll) (hopefully fixing issue #245).
+  piano-roll).
 
 - Plugins and meters on track list/left pane, are now being set on as
   default--maybe going stapled in some near future ;)
@@ -209,7 +294,7 @@ GIT HEAD
 0.9.10  2019-10-12  Autumn'19 Beta.
 
 - Fixed initial session tempo override when importing a standard MIDI
-  file (as reported on issue #230).
+  file.
 
 - An alternate time-signature/meter option is being served to the MIDI
   clip editor (aka. piano-roll) and allowing for some poly-rythm/meter
@@ -835,7 +920,7 @@ GIT HEAD
 - Immediate visual sync has been added to main and MIDI clip editor
   thumb-views (a request by Frank Neumann, thanks).
 
-- Fixed an old MIDI clip editor contents disapearing bug, which
+- Fixed an old MIDI clip editor contents disappearing bug, which
   manifested when drawing free-hand (ie. Edit/Select Mode/Edit Draw is
   on) over and behind its start/beginning position (while in the lower
   view pane).
@@ -1613,7 +1698,7 @@ O.6.1  2014-04-29  Bitsy Sweet Beta
   support it, is now effectively and complete.
 
 - Custom connections for dedicated audio outputs from all plugin
-  chains in MIDI tracks or buses are back in business, hopefuly restored
+  chains in MIDI tracks or buses are back in business, hopefully restored
   gain on session load (ticket by yuba, thanks).
 
 - Track Properties dialog now dirty after any plugin related change
@@ -1983,7 +2068,7 @@ O.6.1  2014-04-29  Bitsy Sweet Beta
 
 - Some audio/MIDI content/media-file resource management is entering
   the scene, taking care of some file-system house-keeping, this gets
-  evident on unsaved/dead recorded files being automaticaly removed from
+  evident on unsaved/dead recorded files being automatically removed from
   the file-system, on session close.
 
 - Killed the old and entirely deprecated LV2 Save/Restore and Persist
@@ -3497,7 +3582,7 @@ C3).
   with captured events being recorded with erratic long delays.
 
 - Almost complete refactoring of the clumsy audio peak file classes,
-  possibly making it even clumsier but straight neverthless, with the
+  possibly making it even clumsier but straight nevertheless, with the
   noble and final aim to build it in-flight and draw the waveforms
   while recording is rolling.
 

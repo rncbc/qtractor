@@ -162,11 +162,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 //	m_ui.timeToolbar->addSeparator();
 
 	// Time-signature spin-box.
-	const QString sTempo("999.9 9/9");
+	const QString sTempo("+999 9/9");
 	m_pTempoSpinBox = new qtractorTempoSpinBox(m_ui.timeToolbar);
-//	m_pTempoSpinBox->setDecimals(1);
-//	m_pTempoSpinBox->setMinimum(1.0f);
-//	m_pTempoSpinBox->setMaximum(1000.0f);
 //	m_pTempoSpinBox->setFont(font);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	m_pTempoSpinBox->setMinimumSize(QSize(fm.horizontalAdvance(sTempo) + d, d) + pad);
@@ -327,6 +324,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Status clip/sequence name...
 	m_pTrackNameLabel = new QLabel(spc);
 	m_pTrackNameLabel->setAlignment(Qt::AlignLeft);
+	m_pTrackNameLabel->setMinimumWidth(60);
 	m_pTrackNameLabel->setToolTip(tr("MIDI clip name"));
 	m_pTrackNameLabel->setAutoFillBackground(true);
 	pStatusBar->addWidget(m_pTrackNameLabel, 1);
@@ -334,6 +332,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Status filename...
 	m_pFileNameLabel = new QLabel(spc);
 	m_pFileNameLabel->setAlignment(Qt::AlignLeft);
+	m_pFileNameLabel->setMinimumWidth(240);
 	m_pFileNameLabel->setToolTip(tr("MIDI file name"));
 	m_pFileNameLabel->setAutoFillBackground(true);
 	pStatusBar->addWidget(m_pFileNameLabel, 2);
@@ -341,6 +340,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Status track/channel number...
 	m_pTrackChannelLabel = new QLabel(spc);
 	m_pTrackChannelLabel->setAlignment(Qt::AlignHCenter);
+	m_pTrackChannelLabel->setMinimumWidth(60);
 	m_pTrackChannelLabel->setToolTip(tr("MIDI track/channel"));
 	m_pTrackChannelLabel->setAutoFillBackground(true);
 	pStatusBar->addWidget(m_pTrackChannelLabel);
@@ -747,7 +747,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		pOptions->loadActionShortcuts(this);
 	}
 
-	// Make last-but-not-least conections....
+	// Make last-but-not-least connections....
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm) {
 		QObject::connect(m_ui.transportBackwardAction,

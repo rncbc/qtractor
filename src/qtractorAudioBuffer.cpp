@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
 
-#include <math.h>
+#include <cmath>
 
 
 // Glitch, click, pop-free ramp length (in frames).
@@ -424,7 +424,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 		setSyncFlag(InitSync);
 	} else {
 		// Get a reasonablebuffer size for readMix()...
-		iBufferSize = pSession->audioEngine()->bufferSize();
+		iBufferSize = pSession->audioEngine()->bufferSizeEx();
 		if (iBufferSize < (m_iBufferSize >> 2))
 			iBufferSize = (m_iBufferSize >> 2);
 		// Allocate those minimal buffers for readMix()...

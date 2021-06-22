@@ -1,7 +1,7 @@
 // qtractorMidiManager.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,10 +39,12 @@
 #endif
 #endif
 
+#ifdef CONFIG_LV2
 #if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
 #include "qtractorLv2Plugin.h"
 #ifndef CONFIG_MIDI_PARSER
 #define CONFIG_MIDI_PARSER 1
+#endif
 #endif
 #endif
 
@@ -261,6 +263,7 @@ public:
 	void vst3_buffer_swap();
 #endif
 
+#ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_EVENT
 	// LV2 event buffer accessors...
 	LV2_Event_Buffer *lv2_events_in() const
@@ -270,7 +273,6 @@ public:
 	// Swap LV2 event buffers...
 	void lv2_events_swap();
 #endif
-
 #ifdef CONFIG_LV2_ATOM
 	// LV2 atom buffer accessors...
 	LV2_Atom_Buffer *lv2_atom_buffer_in() const
@@ -281,6 +283,7 @@ public:
 	void lv2_atom_buffer_swap();
 	// Resize LV2 atom buffers if necessary.
 	void lv2_atom_buffer_resize(unsigned int iMinBufferSize);
+#endif
 #endif
 
 	// Audio output bus mode accessors.
@@ -401,12 +404,14 @@ private:
 	unsigned char      *m_ppVstBuffers[2];
 #endif
 
+#ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_EVENT
 	LV2_Event_Buffer   *m_ppLv2EventBuffers[2];
 #endif
 #ifdef CONFIG_LV2_ATOM
 	LV2_Atom_Buffer    *m_ppLv2AtomBuffers[2];
 	unsigned int        m_iLv2AtomBufferSize;
+#endif
 #endif
 
 	bool                m_bAudioOutputBus;

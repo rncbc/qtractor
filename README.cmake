@@ -22,7 +22,7 @@ Linux and other systems at:
 How to use it?
 ==============
 
-1. You need CMake 3.1 or newer to build Qtractor
+1. You need CMake 3.13 or newer to build Qtractor
 
 2. Unpack the Qtractor sources somewhere, or checkout the repository, 
    and create a build directory. For instance, using a command line shell:
@@ -71,7 +71,3 @@ If there is an error executing the build process, after running a flawless CMake
 configuration process, this means that there may be an error in the source code, 
 or in the build system, or something incompatible in 3rd party libraries.
 
-The CMake build system for Qtractor is experimental. It will take a while
-until it becomes stable and fully tested. You can help providing feedback, 
-please send a report containing your problems to the Qtractor development 
-mailing list, https://lists.sourceforge.net/mailman/listinfo/qtractor-devel

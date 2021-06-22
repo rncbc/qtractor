@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -36,9 +36,9 @@
 
 #include "qtractorOptions.h"
 
-#ifdef CONFIG_LV2_STATE
-// LV2 State/Dirty (StateChanged) notification.
 #include "qtractorMainForm.h"
+
+#ifdef CONFIG_LV2_STATE
 // LV2 State/Presets: standard directory access.
 // For local file vs. URI manipulations.
 #include <QFileInfo>
@@ -46,7 +46,7 @@
 #include <QUrl>
 #endif
 
-#include <math.h>
+#include <cmath>
 
 #ifndef INT32_MAX
 #define INT32_MAX 2147483647
@@ -114,6 +114,10 @@ static const LV2_Feature g_lv2_uri_map_feature =
 
 #ifdef CONFIG_LV2_STATE
 
+#define QTRACTOR_LV2_STATE_PREFIX   "urn:qtractor:state"
+#define QTRACTOR_LV2_STATE_KEY      QTRACTOR_LV2_STATE_PREFIX "#key"
+#define QTRACTOR_LV2_STATE_TYPE     QTRACTOR_LV2_STATE_PREFIX "#type"
+
 #ifndef LV2_STATE__StateChanged
 #define LV2_STATE__StateChanged LV2_STATE_PREFIX "StateChanged"
 #endif
@@ -121,6 +125,7 @@ static const LV2_Feature g_lv2_uri_map_feature =
 static const LV2_Feature g_lv2_state_feature =
 	{ LV2_STATE_URI, nullptr };
 
+#if 0//CONFIG_LV2_STATE_LEGACY
 static LV2_State_Status qtractor_lv2_state_store ( LV2_State_Handle handle,
 	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
 {
@@ -136,6 +141,7 @@ static LV2_State_Status qtractor_lv2_state_store ( LV2_State_Handle handle,
 
 	return pLv2Plugin->lv2_state_store(key, value, size, type, flags);
 }
+#endif
 
 static const void *qtractor_lv2_state_retrieve ( LV2_State_Handle handle,
 	uint32_t key, size_t *size, uint32_t *type, uint32_t *flags )
@@ -611,7 +617,7 @@ static char *qtractor_lv2_state_abstract_path (
 }
 
 static char *qtractor_lv2_state_absolute_path (
-    LV2_State_Map_Path_Handle handle, const char *abstract_path )
+	LV2_State_Map_Path_Handle handle, const char *abstract_path )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (handle);
@@ -766,6 +772,10 @@ static const LV2_Feature *g_lv2_features[] =
 
 #define LV2_UI_TYPE_GTK_NATIVE LV2_UI_TYPE_GTK + LV2_UI_TYPE_NATIVE
 #define LV2_UI_TYPE_X11_NATIVE LV2_UI_TYPE_X11 + LV2_UI_TYPE_NATIVE
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+#include <QWindow>
+#endif
 
 #ifndef LV2_UI__Qt5UI
 #define LV2_UI__Qt5UI	LV2_UI_PREFIX "Qt5UI"
@@ -1131,7 +1141,7 @@ void qtractor_lv2_midnam_update ( LV2_Programs_Handle handle )
 
 #ifdef CONFIG_LV2_STATE
 
-// LV2 State/Presets: port value setter.
+// LV2 State/Presets: port value settler.
 static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	void *user_data, const void *value, uint32_t size, uint32_t type )
 {
@@ -1152,9 +1162,11 @@ static void qtractor_lv2_set_port_value ( const char *port_symbol,
 	const LilvPort *port
 		= lilv_plugin_get_port_by_symbol(plugin, symbol);
 	if (port) {
-		const float val = *(float *) value;
-		const unsigned long port_index = lilv_port_get_index(plugin, port);
-		pLv2Plugin->updateParamValue(port_index, val, true);
+		const float fValue = *(float *) value;
+		const unsigned long iIndex = lilv_port_get_index(plugin, port);
+		qtractorPlugin::Param *pParam = pLv2Plugin->findParam(iIndex);
+		if (pParam)
+			pParam->setValue(fValue, false);
 	}
 
 	lilv_node_free(symbol);
@@ -1340,22 +1352,29 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 
 #endif	// CONFIG_LV2_TIME
 
+#endif	// CONFIG_LV2_PATCH
+
 
 #ifdef CONFIG_LV2_UI
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 
 #ifdef CONFIG_LV2_UI_GTK2
 
-#undef signals // Collides with GTK symbology
+#include "qtractorLv2Gtk2Plugin.h"
 
+#undef signals // Collides with some GTK symbology
+
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic pop
-
+#endif
 
 static void qtractor_lv2_ui_gtk2_on_size_request (
 	GtkWidget */*widget*/, GtkRequisition *req, gpointer user_data )
@@ -1370,8 +1389,6 @@ static void qtractor_lv2_ui_gtk2_on_size_allocate (
 	QWidget *pQtWidget = static_cast<QWidget *> (user_data);
 	pQtWidget->resize(rect->width, rect->height);
 }
-
-static bool g_lv2_ui_gtk2_init = false;
 
 #endif	// CONFIG_LV2_UI_GTK2
 
@@ -1631,6 +1648,7 @@ LilvPlugin *qtractorLv2PluginType::lv2_plugin ( const QString& sUri )
 				const LilvNode *impl
 					= lilv_new_uri(g_lv2_world, g_lv2_features[i]->URI);
 				bSupported = lilv_node_equals(impl, node);
+				lilv_node_free(impl);
 			}
 			if (!bSupported) {
 			#ifdef CONFIG_DEBUG
@@ -2315,7 +2333,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	if (pSession) {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
-			m_iMinBlockLength     = pAudioEngine->bufferSize();
+			m_iMinBlockLength     = pAudioEngine->bufferSizeEx();
 			m_iMaxBlockLength     = m_iMinBlockLength;
 			m_iNominalBlockLength = m_iMaxBlockLength;
 		}
@@ -2736,7 +2754,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// Gotta go for a while...
 	const bool bActivated = isActivated();
-	setActivated(false);
+	setChannelsActivated(iChannels, false);
 
 	// Set new instance number...
 	setInstances(iInstances);
@@ -2764,7 +2782,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// Bail out, if none are about to be created...
 	if (iInstances < 1) {
-		setActivated(bActivated);
+		setChannelsActivated(iChannels, bActivated);
 		return;
 	}
 
@@ -2783,7 +2801,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 		return;
 
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 	const unsigned short iAudioIns  = pLv2Type->audioIns();
 	const unsigned short iAudioOuts = pLv2Type->audioOuts();
@@ -2795,8 +2813,8 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	) {
 		if (m_pfIDummy)
 			delete [] m_pfIDummy;
-		m_pfIDummy = new float [iBufferSize];
-		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+		m_pfIDummy = new float [iBufferSizeEx];
+		::memset(m_pfIDummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 	if (iChannels < iAudioOuts
@@ -2806,8 +2824,8 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	) {
 		if (m_pfODummy)
 			delete [] m_pfODummy;
-		m_pfODummy = new float [iBufferSize];
-	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+		m_pfODummy = new float [iBufferSizeEx];
+	//	::memset(m_pfODummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 #ifdef CONFIG_LV2_WORKER
@@ -2919,7 +2937,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	updateInstruments();
 
 	// (Re)activate instance if necessary...
-	setActivated(bActivated);
+	setChannelsActivated(iChannels, bActivated);
 }
 
 
@@ -3148,25 +3166,25 @@ void qtractorLv2Plugin::process (
 				= lv2_atom_buffer_get(&aiter, &data);
 			if (pLv2AtomEvent == nullptr)
 				break;
-		//	if (j > 0 || pLv2AtomEvent->body.type != QTRACTOR_LV2_MIDI_EVENT_ID) {
-				char buf[sizeof(ControlEvent) + sizeof(LV2_Atom)];
-				const uint32_t type = pLv2AtomEvent->body.type;
-				const uint32_t size = pLv2AtomEvent->body.size;
-				ControlEvent *ev = (ControlEvent *) buf;
-				ev->index    = m_piAtomOuts[j];
-				ev->protocol = g_lv2_urids.atom_eventTransfer;
-				ev->size     = sizeof(LV2_Atom) + size;
-				LV2_Atom *atom = (LV2_Atom *) ev->body;
-				atom->type = type;
-				atom->size = size;
-				if (::jack_ringbuffer_write_space(m_plugin_events)
-					< sizeof(buf) + size)
-					break;
-				::jack_ringbuffer_write(m_plugin_events,
-					(const char *) buf, sizeof(buf));
-				::jack_ringbuffer_write(m_plugin_events,
-					(const char *) data, size);
-		//	}
+		//if (j > 0 || pLv2AtomEvent->body.type != QTRACTOR_LV2_MIDI_EVENT_ID) {
+			char buf[sizeof(ControlEvent) + sizeof(LV2_Atom)];
+			const uint32_t type = pLv2AtomEvent->body.type;
+			const uint32_t size = pLv2AtomEvent->body.size;
+			ControlEvent *ev = (ControlEvent *) buf;
+			ev->index    = m_piAtomOuts[j];
+			ev->protocol = g_lv2_urids.atom_eventTransfer;
+			ev->size     = sizeof(LV2_Atom) + size;
+			LV2_Atom *atom = (LV2_Atom *) ev->body;
+			atom->type = type;
+			atom->size = size;
+			if (::jack_ringbuffer_write_space(m_plugin_events)
+				< sizeof(buf) + size)
+				break;
+			::jack_ringbuffer_write(m_plugin_events,
+				(const char *) buf, sizeof(buf));
+			::jack_ringbuffer_write(m_plugin_events,
+				(const char *) data, size);
+		//}
 			lv2_atom_buffer_increment(&aiter);
 		}
 	}
@@ -3468,8 +3486,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 #ifdef CONFIG_LV2_UI_X11
 	if (!ui_supported && m_pQtWidget
 		&& m_lv2_ui_type == LV2_UI_TYPE_X11) {
-		// Override widget handle...
-		m_lv2_ui_widget = static_cast<LV2UI_Widget> (m_pQtWidget);
+		// Initialize widget event filter...
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 	//	m_bQtDelete = true;
 		// LV2 UI resize control...
@@ -3488,10 +3505,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	if (!ui_supported && m_lv2_ui_widget
 		&& m_lv2_ui_type == LV2_UI_TYPE_GTK) {
 		// Initialize GTK+ framework (one time only)...
-		if (!g_lv2_ui_gtk2_init) {
-			gtk_init(nullptr, nullptr);
-			g_lv2_ui_gtk2_init = true;
-		}
+		qtractorLv2Gtk2Plugin::init_main();
 		// Create embeddable native window...
 		GtkWidget *pGtkWidget = static_cast<GtkWidget *> (m_lv2_ui_widget);
 		GtkWidget *pGtkWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -3619,6 +3633,7 @@ void qtractorLv2Plugin::closeEditor (void)
 		gtk_widget_destroy(m_pGtkWindow);
 		m_pGtkWindow = nullptr;
 	}
+	qtractorLv2Gtk2Plugin::exit_main();
 #endif	// CONFIG_LV2_UI_GTK2
 #endif
 
@@ -4155,6 +4170,25 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_resize(%d, %d)",
 		this, size.width(), size.height());
 #endif
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+#ifdef CONFIG_LV2_UI_X11
+	if (m_lv2_ui_type == LV2_UI_TYPE_X11
+		&& m_lv2_ui_widget
+	#ifdef CONFIG_LIBSUIL
+		&& m_suil_instance == nullptr
+	#endif
+	) {
+		const WId wid = WId(m_lv2_ui_widget);
+		QWindow *pWindow = QWindow::fromWinId(wid);
+		if (pWindow) {
+			pWindow->resize(size);
+			delete pWindow;
+		}
+	}
+#endif	// CONFIG_LV2_UI_X11
+#endif
+
 	const LV2UI_Resize *resize
 		= (const LV2UI_Resize *) lv2_ui_extension_data(LV2_UI__resize);
 	if (resize && resize->ui_resize) {
@@ -4167,8 +4201,10 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 
 
 #ifndef CONFIG_LIBSUIL
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
 #endif
 
 // Alternate UI instantiation stuff.
@@ -4385,7 +4421,9 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 }
 
 #ifndef CONFIG_LIBSUIL
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic pop
+#endif
 #endif
 
 
@@ -4456,7 +4494,9 @@ void qtractorLv2Plugin::lv2_ui_port_event ( uint32_t port_index,
 					}
 				}
 			}
+		#ifdef CONFIG_LV2_STATE
 			else
+		#endif
 		#endif	// CONFIG_LV2_PORT_EVENT
 		#ifdef CONFIG_LV2_STATE
 			if (obj->body.otype == g_lv2_urids.state_StateChanged) {
@@ -4652,15 +4692,30 @@ void qtractorLv2Plugin::freezeConfigs (void)
 
 #ifdef CONFIG_LV2_STATE
 
-	const unsigned short iInstances = instances();
-	for (unsigned short i = 0; i < iInstances; ++i) {
-		const LV2_State_Interface *state = lv2_state_interface(i);
-		if (state) {
-			LV2_Handle handle = lv2_handle(i);
-			if (handle)
-				(*state->save)(handle, qtractor_lv2_state_store, this,
-					LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
-		}
+#if 0//CONFIG_LV2_STATE_LEGACY
+	const LV2_State_Interface *state = lv2_state_interface(0);
+	if (state) {
+		LV2_Handle handle = lv2_handle(0);
+		if (handle)
+			(*state->save)(handle, qtractor_lv2_state_store, this,
+				LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+	}
+#endif
+
+	const QString& s = lv2_state_save();
+	if (!s.isEmpty()) {
+		const QByteArray data(s.toUtf8());
+		const LV2_URID   key = lv2_urid_map(QTRACTOR_LV2_STATE_KEY);
+		const char    *value = data.constData();
+		const uint32_t  size = data.size();
+		const LV2_URID  type = lv2_urid_map(QTRACTOR_LV2_STATE_TYPE);
+		const uint32_t flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;
+	#if 0//CONFIG_LV2_STATE_LEGACY
+		lv2_state_store(key, value, size, type, flags);
+	#else
+		if (lv2_state_store(key, value, size, type, flags) == LV2_STATE_SUCCESS)
+			qtractorPlugin::clearValues();
+	#endif
 	}
 
 #endif	// CONFIG_LV2_STATE
@@ -4731,14 +4786,20 @@ void qtractorLv2Plugin::realizeConfigs (void)
 			m_lv2_state_ctypes.insert(sKey, type);
 	}
 
-	const unsigned short iInstances = instances();
-	for (unsigned short i = 0; i < iInstances; ++i) {
-		const LV2_State_Interface *state = lv2_state_interface(i);
-		if (state) {
-			LV2_Handle handle = lv2_handle(i);
-			if (handle)
-				(*state->restore)(handle, qtractor_lv2_state_retrieve, this,
-					LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+	const QString& s = m_lv2_state_configs.value(QTRACTOR_LV2_STATE_KEY);
+	if (!s.isEmpty()) {
+		qtractorPlugin::clearValues();
+		lv2_state_restore(s);
+	} else {
+		const unsigned short iInstances = instances();
+		for (unsigned short i = 0; i < iInstances; ++i) {
+			const LV2_State_Interface *state = lv2_state_interface(i);
+			if (state) {
+				LV2_Handle handle = lv2_handle(i);
+				if (handle)
+					(*state->restore)(handle, qtractor_lv2_state_retrieve, this,
+						LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+			}
 		}
 	}
 
@@ -4763,7 +4824,7 @@ void qtractorLv2Plugin::releaseConfigs (void)
 	m_lv2_state_ctypes.clear();
 #endif
 
-	qtractorPlugin::releaseConfigs();
+	qtractorPlugin::clearConfigs();
 }
 
 
@@ -5499,6 +5560,65 @@ bool qtractorLv2Plugin::isReadOnlyPreset ( const QString& sPreset ) const
 #endif	// CONFIG_LV2_PRESETS
 
 
+#ifdef CONFIG_LV2_STATE
+
+// Save plugin complete state into a string.
+QString qtractorLv2Plugin::lv2_state_save (void)
+{
+	QString s;
+
+	qtractorLv2PluginType *pLv2Type
+		= static_cast<qtractorLv2PluginType *> (type());
+	if (pLv2Type == nullptr)
+		return s;
+
+	LilvState *state = lilv_state_new_from_instance(
+		lv2_plugin(), m_ppInstances[0], &g_lv2_urid_map,
+		nullptr, nullptr, nullptr, nullptr,
+		qtractor_lv2_get_port_value, this,
+		LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
+
+	if (state == nullptr)
+		return s;
+
+	const char *uri = QTRACTOR_LV2_STATE_PREFIX;
+	const char *pszState = lilv_state_to_string(g_lv2_world,
+		&g_lv2_urid_map, &g_lv2_urid_unmap, state, uri, nullptr);
+	if (pszState == nullptr) {
+		lilv_state_free(state);
+		return s;
+	}
+
+	s = QString::fromUtf8(pszState);
+
+	::free((void *) pszState);
+	lilv_state_free(state);
+
+	return s;
+}
+
+
+// Restore complete plugin state from a string.
+bool qtractorLv2Plugin::lv2_state_restore ( const QString& s )
+{
+	LilvState *state = lilv_state_new_from_string(g_lv2_world,
+		&g_lv2_urid_map, s.toUtf8().constData());
+	if (state == nullptr)
+		return false;
+
+	const unsigned short iInstances = instances();
+	for (unsigned short i = 0; i < iInstances; ++i) {
+		lilv_state_restore(state, m_ppInstances[i],
+			qtractor_lv2_set_port_value, this, 0, m_lv2_features);
+	}
+
+	lilv_state_free(state);
+	return true;
+}
+
+#endif	// CONFIG_LV2_STATE
+
+
 //----------------------------------------------------------------------------
 // qtractorLv2PluginParam -- LV2 plugin control input port instance.
 //
@@ -5623,6 +5743,8 @@ QString qtractorLv2Plugin::Param::display (void) const
 	return qtractorPlugin::Param::display();
 }
 
+
+#ifdef CONFIG_LV2_PATCH
 
 //----------------------------------------------------------------------
 // qtractorLv2Plugin::Property -- LV2 Patch/property registry item.

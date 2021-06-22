@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(Qtractor, 0.9.18, rncbc@rncbc.org, qtractor)
+AC_INIT(Qtractor, 0.9.23, rncbc@rncbc.org, qtractor)
 
 AC_CONFIG_SRCDIR(src/qtractor.cpp)
 AC_CONFIG_HEADERS(src/config.h)
@@ -11,8 +11,10 @@ AC_CACHE_VAL([ac_cv_build_version], [
    ac_cv_build_version=$(git describe --tags --dirty --abbrev=6 2>/dev/null)
    if test -n "$ac_cv_build_version"; then
       ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/^[[^0-9]]\+//')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/^1_//')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/^[[_vV]]\+//')
       ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/-g/git./')
-      ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/[[_|-]]\+/./g')
+      ac_cv_build_version=$(echo $ac_cv_build_version | sed 's/[[_|-]]/./g')
       ac_cv_build_version_extra=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
       if test "x$ac_cv_build_version_extra" != "xmaster"; then
          ac_cv_build_version="$ac_cv_build_version [[$ac_cv_build_version_extra]]"
@@ -68,16 +70,23 @@ AC_ARG_ENABLE(debug,
   AS_HELP_STRING([--enable-debug], [enable debugging (default=no)]),
   [ac_debug="$enableval"])
 
+# Enable Qt6 build preference.
+AC_ARG_ENABLE(qt6,
+  AS_HELP_STRING([--enable-qt6], [enable Qt6 build (default=yes)]),
+  [ac_qt6="$enableval"],
+  [ac_qt6="yes"])
+
+
 if test "x$ac_debug" = "xyes"; then
    AC_DEFINE(CONFIG_DEBUG, 1, [Define if debugging is enabled.])
    ac_stacktrace="yes"
-   ac_debug="debug"
+   ac_build_type="debug"
 else
    ac_stacktrace="no"
-   ac_debug="release"
+   ac_build_type="release"
 fi
 
-AC_SUBST(ac_debug)
+AC_SUBST(ac_build_type)
 
 
 # Enable libvorbis(file) availability.
@@ -294,6 +303,11 @@ AC_ARG_ENABLE(lv2-ui-gtk2,
   AS_HELP_STRING([--enable-lv2-ui-gtk2], [enable LV2 plug-in UI GTK2 native support (default=yes)]),
   [ac_lv2_ui_gtk2="$enableval"],
   [ac_lv2_ui_gtk2="yes"])
+
+AC_ARG_ENABLE(lv2-ui-gtkmm2,
+  AS_HELP_STRING([--enable-lv2-ui-gtkmm2], [enable LV2 plug-in UI GTKMM2 native support (default=yes)]),
+  [ac_lv2_ui_gtkmm2="$enableval"],
+  [ac_lv2_ui_gtkmm2="yes"])
 
 AC_ARG_ENABLE(lv2-ui-x11,
   AS_HELP_STRING([--enable-lv2-ui-x11], [enable LV2 plug-in UI X11 native support (default=yes)]),
@@ -522,25 +536,32 @@ ac_errmsg="not found in current PATH. Maybe QT development environment isn't ava
 # Check for qtchooser availability.
 AC_PATH_TOOL(ac_qtchooser, qtchooser, [no], $ac_path)
 if test -x $ac_qtchooser; then
-   export QT_SELECT=5
+   if test "x$ac_qt6" = "xyes"; then
+      export QT_SELECT=6
+   else
+      export QT_SELECT=5
+   fi
 fi
 
 # Check for proper qmake path/version alternatives.
 AC_PATH_TOOL(ac_qmake, qmake, [no], $ac_path)
 if test "x$ac_qmake" = "xno"; then
-   AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
-   ac_qmake=$ac_cv_qmake
-fi
-if test "x$ac_qmake" = "xno"; then
-   AC_PATH_TOOL(ac_cv_qmake, qmake-qt6, [no], $ac_path)
-   ac_qmake=$ac_cv_qmake
+   if test "x$ac_qt6" = "xyes"; then
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt6, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
+   else
+      AC_PATH_TOOL(ac_cv_qmake, qmake-qt5, [no], $ac_path)
+      ac_qmake=$ac_cv_qmake
+   fi
 fi
 
 # Check for proper Qt major version.
 AC_CACHE_CHECK([for Qt major version], [ac_cv_qt_version_major], [
-   ac_cv_qt_version_major=$($ac_qmake -query QT_VERSION | cut -d'.' -f1)
+   ac_cv_qt_version=$($ac_qmake -query QT_VERSION)
+   ac_cv_qt_version_major=$(echo $ac_cv_qt_version | cut -d'.' -f1)
    ac_cv_qt_version_major=$(($ac_cv_qt_version_major + 0))
 ])
+ac_qt_version=$ac_cv_qt_version
 ac_qt_version_major=$ac_cv_qt_version_major
 if test "x$ac_qmake" = "xno"; then
    if test $ac_qt_version_major -lt 6; then
@@ -551,12 +572,20 @@ if test "x$ac_qmake" = "xno"; then
 fi
 
 # Check for proper Qt install path.
-AC_CACHE_CHECK([for Qt install path], [ac_cv_qt_install_path], [
-   ac_cv_qt_install_path=$($ac_qmake -query QT_INSTALL_BINS)
+AC_CACHE_CHECK([for Qt install path (bin)], [ac_cv_qt_install_bins], [
+   ac_cv_qt_install_bins=$($ac_qmake -query QT_INSTALL_BINS)
 ])
-ac_qt_install_path=$ac_cv_qt_install_path
-if test -d $ac_qt_install_path; then
-   ac_path="$ac_qt_install_path:$ac_path"
+ac_qt_install_bins=$ac_cv_qt_install_bins
+if test -d $ac_qt_install_bins; then
+   ac_path="$ac_qt_install_bins:$ac_path"
+fi
+
+AC_CACHE_CHECK([for Qt install path (libexec)], [ac_cv_qt_install_libexecs], [
+   ac_cv_qt_install_libexecs=$($ac_qmake -query QT_INSTALL_LIBEXECS)
+])
+ac_qt_install_libexecs=$ac_cv_qt_install_libexecs
+if test -d $ac_qt_install_libexecs; then
+   ac_path="$ac_qt_install_libexecs:$ac_path"
 fi
 
 # Check it again, now with updated PATH, just in case...
@@ -669,6 +698,7 @@ fi
 
 # Check for SSE optimization.
 if test "x$ac_sse" = "xyes"; then
+  AC_CHECK_HEADER([xmmintrin.h],[
    ac_sse_cflags="-msse -mfpmath=sse -ffast-math"
    ac_old_cflags=$CFLAGS
    ac_old_cppflags=$CPPFLAGS
@@ -690,15 +720,20 @@ if test "x$ac_sse" = "xyes"; then
               : "=a" (a), "=S" (b), "=c" (c), "=d" (d) : "0" (1));
             return ((d & (1 << 25)) ? 0 : 1);
          }
-      ], ac_cv_sse="yes", ac_cv_sse="no")
+      ], ac_cv_sse="yes", ac_cv_sse="no", ac_cv_sse=cross)
    ])
-   ac_sse=$ac_cv_sse
+   if test "x$ac_cv_sse" = xcross; then
+      ac_sse=yes
+   else
+      ac_sse=$ac_cv_sse
+   fi
    if test "x$ac_sse" = "xyes"; then
       ac_cflags="$ac_sse_cflags $ac_cflags"
    else
       CPPFLAGS=$ac_old_cppflags
       CFLAGS=$ac_old_cflags
    fi
+  ],[ac_sse=no])
 fi
 
 
@@ -719,9 +754,6 @@ if test "x$ac_libjack" = "xyes"; then
    AC_DEFINE(CONFIG_LIBJACK, 1, [Define if JACK library is available.])
    ac_cflags="$ac_cflags $JACK_CFLAGS"
    ac_libs="$ac_libs $JACK_LIBS"
-   CFLAGS="$CFLAGS $JACK_CFLAGS"
-   CPPFLAGS="$CPPFLAGS $JACK_CFLAGS"
-   LIBS="$LIBS $JACK_LIBS"
 else
    AC_MSG_ERROR([*** JACK library not found.])
 fi
@@ -884,12 +916,8 @@ if test "x$ac_lv2_ui" = "xno"; then
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_gtkmm2="no"
    ac_lv2_ui_x11="no"
-fi
-
-# Disable libSUIL upon Qt >= 6.0.0 ...
-if test $ac_qt_version_major -ge 6; then
-   ac_libsuil="no"
 fi
 
 # Check for optional LILV library.
@@ -920,6 +948,40 @@ if test "x$ac_liblilv" = "xyes"; then
    if test "x$ac_lilv_world_unload_resource" = "xyes"; then
       AC_DEFINE(CONFIG_LILV_WORLD_UNLOAD_RESOURCE, 1, [Define if lilv_world_unload_resource is available.])
    fi
+else
+   ac_lv2="no"
+   ac_lv2_ui="no"
+   ac_lv2_event="no"
+   ac_lv2_atom="no"
+   ac_lv2_cvport="no"
+   ac_lv2_worker="no"
+   ac_lv2_external_ui="no"
+   ac_lv2_state="no"
+   ac_lv2_state_files="no"
+   ac_lv2_state_make_path="no"
+   ac_lv2_programs="no"
+   ac_lv2_midnam="no"
+   ac_lv2_presets="no"
+   ac_lv2_patch="no"
+   ac_lv2_port_event="no"
+   ac_lv2_time="no"
+   ac_lv2_time_position="no";
+   ac_lv2_options="no"
+   ac_lv2_buf_size="no"
+   ac_lv2_parameters="no"
+   ac_lv2_ui_touch="no"
+   ac_lv2_ui_req_value="no"
+   ac_lv2_ui_idle="no"
+   ac_lv2_ui_show="no"
+   ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_gtkmm2="no"
+   ac_lv2_ui_x11="no"
+   ac_libsuil="no"
+fi
+
+# Disable libsuil upon Qt >= 6.0.0 ...
+if test "x$ac_libsuil" = "xyes" -a $ac_qt_version_major -ge 6; then
+   ac_libsuil="no"
 fi
 
 # Check for LV2 new UI instantiation availability (libsuil).
@@ -946,35 +1008,6 @@ if test "x$ac_libsuil" = "xyes"; then
    fi
 fi
 
-# Check for LV2 host library (liblilv).
-if test "x$ac_liblilv" = "xno"; then
-   ac_lv2="no"
-   ac_lv2_ui="no"
-   ac_lv2_event="no"
-   ac_lv2_atom="no"
-   ac_lv2_cvport="no"
-   ac_lv2_worker="no"
-   ac_lv2_external_ui="no"
-   ac_lv2_state="no"
-   ac_lv2_state_files="no"
-   ac_lv2_state_make_path="no"
-   ac_lv2_programs="no"
-   ac_lv2_midnam="no"
-   ac_lv2_presets="no"
-   ac_lv2_patch="no"
-   ac_lv2_port_event="no"
-   ac_lv2_time="no"
-   ac_lv2_time_position="no";
-   ac_lv2_options="no"
-   ac_lv2_buf_size="no"
-   ac_lv2_parameters="no"
-   ac_lv2_ui_touch="no"
-   ac_lv2_ui_req_value="no"
-   ac_lv2_ui_idle="no"
-   ac_lv2_ui_show="no"
-   ac_lv2_ui_gtk2="no"
-   ac_lv2_ui_x11="no"
-fi
 
 # Check for JACK session event callback availability.
 if test "x$ac_jack_session" = "xyes"; then
@@ -1139,6 +1172,7 @@ if test "x$ac_lv2" = "xyes"; then
       ac_lv2_ui_idle="no"
       ac_lv2_ui_show="no"
       ac_lv2_ui_gtk2="no"
+      ac_lv2_ui_gtkmm2="no"
       ac_lv2_ui_x11="no"
    fi
 fi
@@ -1157,6 +1191,7 @@ else
    ac_lv2_ui_idle="no"
    ac_lv2_ui_show="no"
    ac_lv2_ui_gtk2="no"
+   ac_lv2_ui_gtkmm2="no"
    ac_lv2_ui_x11="no"
 fi
 if test "x$ac_lv2_event" = "xyes"; then
@@ -1209,11 +1244,13 @@ if test "x$ac_lv2_atom" = "xyes"; then
       ac_lv2_state="no"
       ac_lv2_options="no"
       ac_lv2_time_position="no"
+      ac_lv2_port_event="no"
    fi
 else
    ac_lv2_state="no"
    ac_lv2_options="no"
    ac_lv2_time_position="no"
+   ac_lv2_port_event="no"
 fi
 if test "x$ac_lv2_cvport" = "xyes"; then
    AC_CACHE_CHECK([for LV2 CVPort support],
@@ -1278,12 +1315,14 @@ if test "x$ac_lv2_state" = "xyes"; then
       ac_lv2_state_files="no"
       ac_lv2_presets="no"
       ac_lv2_patch="no"
+      ac_lv2_time="no"
    fi
 else
    ac_lv2_state_make_path="no"
    ac_lv2_state_files="no"
    ac_lv2_presets="no"
    ac_lv2_patch="no"
+   ac_lv2_time="no"
 fi
 if test "x$ac_lv2_programs" = "xyes"; then
    AC_CHECK_HEADER(lv2_programs.h, [ac_lv2_programs="yes"], [ac_lv2_programs="no"])
@@ -1465,7 +1504,19 @@ if test "x$ac_lv2_ui_gtk2" = "xyes"; then
    ac_libs="$ac_libs $GTK2_LIBS"
 else
    AC_MSG_WARN([*** LV2 UI GTK2 native support will be disabled.])
+   ac_lv2_ui_gtkmm2="no"
 fi
+if test "x$ac_lv2_ui_gtkmm2" = "xyes"; then
+   PKG_CHECK_MODULES([GTKMM2], [gtkmm-2.4], [ac_lv2_ui_gtkmm2="yes"], [ac_lv2_ui_gtkmm2="no"])
+fi
+if test "x$ac_lv2_ui_gtkmm2" = "xyes"; then
+   AC_DEFINE(CONFIG_LV2_UI_GTKMM2, 1, [Define if LV2 UI GTKMM2 native support is available.])
+   ac_cflags="$ac_cflags $GTKMM2_CFLAGS"
+   ac_libs="$ac_libs $GTKMM2_LIBS"
+else
+   AC_MSG_WARN([*** LV2 UI GTKMM2 native support will be disabled.])
+fi
+
 
 if test "x$ac_libsuil" = "xyes"; then
    AC_CACHE_CHECK([for LV2 UI X11 support (libsuil_x11_in_qt5)],
@@ -1553,7 +1604,8 @@ if test "x$ac_xunique" = "xyes"; then
    if test $ac_qt_version_major -lt 6; then
       PKG_CHECK_MODULES([QT5NETWORK], [Qt5Network], [ac_xunique="yes"], [ac_xunique="no"])
    else
-      PKG_CHECK_MODULES([QT6NETWORK], [Qt6Network], [ac_xunique="yes"], [ac_xunique="no"])
+     #PKG_CHECK_MODULES([QT6NETWORK], [Qt6Network], [ac_xunique="yes"], [ac_xunique="no"])
+      AC_CHECK_LIB(Qt6Network, main, [ac_xunique="yes"], [ac_xunique="no"])
    fi
 fi
 if test "x$ac_xunique" = "xyes"; then
@@ -1593,9 +1645,9 @@ AC_OUTPUT
 # Output summary message
 
 echo
-echo "  $PACKAGE_NAME $ac_build_version"
+echo "  $PACKAGE_NAME $ac_build_version (Qt $ac_qt_version)"
 echo
-echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_debug"
+echo "  Build target . . . . . . . . . . . . . . . . . . .: $ac_build_type"
 echo
 echo "  JACK Audio Connection Kit support  . . . . . . . .: $ac_libjack"
 echo "  ALSA MIDI Sequencer support  . . . . . . . . . . .: $ac_libasound"
@@ -1646,7 +1698,7 @@ echo "  JACK Session support . . . . . . . . . . . . . . .: $ac_jack_session"
 echo "  JACK Latency support . . . . . . . . . . . . . . .: $ac_jack_latency"
 echo "  JACK Metadata support  . . . . . . . . . . . . . .: $ac_jack_metadata"
 echo
-echo "  New Session Management (NSM) support . . . . . . .: $ac_nsm"
+echo "  Non Session Management (NSM) support . . . . . . .: $ac_nsm"
 echo
 echo "  VeSTige header support . . . . . . . . . . . . . .: $ac_vestige"
 echo "  Unique/Single instance support . . . . . . . . . .: $ac_xunique"

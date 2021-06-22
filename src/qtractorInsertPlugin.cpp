@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -533,7 +533,7 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 
 	// Gotta go for a while...
 	const bool bActivated = isActivated();
-	setActivated(false);
+	setChannelsActivated(iChannels, false);
 
 	// Cleanup bus...
 	if (m_pAudioBus) {
@@ -546,7 +546,7 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 	// Set new instance number...
 	setInstances(iInstances);
 	if (iInstances < 1) {
-	//	setActivated(bActivated);
+	//	setChannelsActivated(iChannels, bActivated);
 		return;
 	}
 
@@ -584,7 +584,7 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 	m_pAudioBus->open();
 
 	// (Re)activate instance if necessary...
-	setActivated(bActivated);
+	setChannelsActivated(iChannels, bActivated);
 }
 
 
@@ -815,7 +815,7 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 
 	// Gotta go for a while...
 	const bool bActivated = isActivated();
-	setActivated(false);
+	setChannelsActivated(iChannels, false);
 
 	// Cleanup buffers...
 	if (m_pMidiInputBuffer) {
@@ -841,7 +841,7 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 	// Set new instance number...
 	setInstances(iInstances);
 	if (iInstances < 1) {
-	//	setActivated(bActivated);
+	//	setChannelsActivated(iChannels, bActivated);
 		return;
 	}
 
@@ -888,7 +888,7 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 		pMidiEngine->addInputBuffer(m_pMidiBus->alsaPort(), m_pMidiInputBuffer);
 
 	// (Re)activate instance if necessary...
-	setActivated(bActivated);
+	setChannelsActivated(iChannels, bActivated);
 }
 
 
@@ -1269,7 +1269,7 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 
 	// Gotta go for a while...
 	const bool bActivated = isActivated();
-	setActivated(false);
+	setChannelsActivated(iChannels, false);
 
 	// Cleanup bus...
 	if (m_pAudioBus)
@@ -1278,7 +1278,7 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 	// Set new instance number...
 	setInstances(iInstances);
 	if (iInstances < 1) {
-	//	setActivated(bActivated);
+	//	setChannelsActivated(iChannels, bActivated);
 		return;
 	}
 
@@ -1313,7 +1313,7 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 	setAudioBusName(m_sAudioBusName);
 
 	// (Re)activate instance if necessary...
-	setActivated(bActivated);
+	setChannelsActivated(iChannels, bActivated);
 }
 
 
@@ -1497,7 +1497,7 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 
 	// Gotta go for a while...
 	const bool bActivated = isActivated();
-	setActivated(false);
+	setChannelsActivated(iChannels, false);
 
 	// Cleanup buffer...
 	if (m_pMidiOutputBuffer) {
@@ -1512,7 +1512,7 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 	// Set new instance number...
 	setInstances(iInstances);
 	if (iInstances < 1) {
-	//	setActivated(bActivated);
+	//	setChannelsActivated(iChannels, bActivated);
 		return;
 	}
 
@@ -1547,7 +1547,7 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 	setMidiBusName(m_sMidiBusName);
 
 	// (Re)activate instance if necessary...
-	setActivated(bActivated);
+	setChannelsActivated(iChannels, bActivated);
 }
 
 

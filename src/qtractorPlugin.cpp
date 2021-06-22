@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -46,9 +46,9 @@
 #include <QFile>
 #include <QDir>
 
-#include <dlfcn.h>
+#include <cmath>
 
-#include <math.h>
+#include <dlfcn.h>
 
 
 #if QT_VERSION < QT_VERSION_CHECK(4, 5, 0)
@@ -71,10 +71,10 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 bool qtractorPluginFile::open (void)
 {
 	// Check whether already open...
-	if (m_module && ++m_iOpenCount > 1)
+	if (m_module || ++m_iOpenCount > 1)
 		return true;
 
-	// Do the openning dance...
+	// Do the opening dance...
 	if (m_module == nullptr) {
 		const QByteArray aFilename = m_sFilename.toUtf8();
 		m_module = ::dlopen(aFilename.constData(), RTLD_LOCAL | RTLD_LAZY);
@@ -87,10 +87,7 @@ bool qtractorPluginFile::open (void)
 
 void qtractorPluginFile::close (void)
 {
-	if (!m_module)
-		return;
-
-	if (--m_iOpenCount > 0)
+	if (!m_module || --m_iOpenCount > 0)
 		return;
 
 	// ATTN: Might be really needed, as it would
@@ -302,11 +299,11 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 // Activation methods.
 
 // immediate
-void qtractorPlugin::setActivated (bool bActivated)
+void qtractorPlugin::setActivated ( bool bActivated )
 {
 	updateActivated(bActivated);
 
-	m_activateObserver.setValue(bActivated ? 1.0f : 0.0f);
+	setActivatedEx(bActivated);
 }
 
 // queued (GUI invocation)
@@ -321,7 +318,7 @@ bool qtractorPlugin::isActivated (void) const
 }
 
 
-// Avoid save/copy auto-deactivated as deacitvated...
+// Avoid save/copy auto-deactivated as deactivated...
 bool qtractorPlugin::isActivatedEx (void) const
 {
 	return m_bActivated;
@@ -407,6 +404,17 @@ void qtractorPlugin::updateActivatedEx ( bool bActivated )
 
 	if (m_pForm)
 		m_pForm->updateActivated();
+}
+
+
+// Internal activation methods.
+void qtractorPlugin::setChannelsActivated (
+	unsigned short iChannels, bool bActivated )
+{
+	if (iChannels > 0)
+		setActivated(bActivated);
+	else
+		updateActivated(false);
 }
 
 
@@ -542,6 +550,7 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 		qtractorOptions *pOptions = qtractorOptions::getInstance();
 		if (pOptions && pOptions->bKeepToolsOnTop) {
 			wflags |= Qt::Tool;
+		//	wflags |= Qt::WindowStaysOnTopHint;
 		#if 0//QTRACTOR_PLUGIN_FORM_TOOL_PARENT
 			// Make sure it has a parent...
 			if (pParent == nullptr)
@@ -743,6 +752,7 @@ bool qtractorPlugin::loadPresetFile ( const QString& sFilename )
 // Save plugin preset to xml file.
 bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 {
+	freezeValues();
 	freezeConfigs();
 
 	QFileInfo fi(sFilename);
@@ -983,7 +993,7 @@ void qtractorPlugin::realizeValues (void)
 	ValueIndex::ConstIterator param = m_values.index.constBegin();
 	const ValueIndex::ConstIterator& param_end = m_values.index.constEnd();
 	for ( ; param != param_end; ++param) {
-		unsigned long iIndex = param.key();
+		const unsigned long iIndex = param.key();
 		Param *pParam = findParam(iIndex);
 		const QString& sName = m_values.names.value(iIndex);
 		if (!sName.isEmpty() && !(pParam && sName == pParam->name())) {
@@ -1032,7 +1042,7 @@ void qtractorPlugin::loadValues ( QDomElement *pElement, Values& values )
 			continue;
 		// Check for config item...
 		if (eParam.tagName() == "param") {
-			unsigned long iIndex = eParam.attribute("index").toULong();
+			const unsigned long iIndex = eParam.attribute("index").toULong();
 			const QString& sName = eParam.attribute("name");
 			if (!sName.isEmpty())
 				values.names.insert(iIndex, sName);
@@ -1066,6 +1076,7 @@ void qtractorPlugin::saveConfigs (
 void qtractorPlugin::saveValues (
 	QDomDocument *pDocument, QDomElement *pElement )
 {
+#if 0
 	Params::ConstIterator param = m_params.constBegin();
 	const Params::ConstIterator param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
@@ -1077,6 +1088,20 @@ void qtractorPlugin::saveValues (
 			pDocument->createTextNode(QString::number(pParam->value())));
 		pElement->appendChild(eParam);
 	}
+#else
+	ValueIndex::ConstIterator param = m_values.index.constBegin();
+	const ValueIndex::ConstIterator& param_end = m_values.index.constEnd();
+	for ( ; param != param_end; ++param) {
+		const unsigned long iIndex = param.key();
+		const QString& sName = m_values.names.value(iIndex);
+		QDomElement eParam = pDocument->createElement("param");
+		eParam.setAttribute("name", sName);
+		eParam.setAttribute("index", QString::number(iIndex));
+		eParam.appendChild(
+			pDocument->createTextNode(QString::number(param.value())));
+		pElement->appendChild(eParam);
+	}
+#endif
 }
 
 
@@ -1427,6 +1452,7 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 bool qtractorPlugin::savePlugin (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
+	freezeValues();
 	freezeConfigs();
 
 	qtractorPluginType *pType = type();
@@ -1470,6 +1496,7 @@ bool qtractorPlugin::savePlugin (
 
 	// May release plugin state...
 	releaseConfigs();
+	releaseValues();
 
 	return true;
 }
@@ -1788,11 +1815,11 @@ void qtractorPluginList::setChannelsEx ( unsigned short iChannels )
 		if (pSession)
 			pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
-			const unsigned int iBufferSize = pAudioEngine->bufferSize();
+			const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 			m_pppBuffers[1] = new float * [m_iChannels];
 			for (unsigned short i = 0; i < m_iChannels; ++i) {
-				m_pppBuffers[1][i] = new float [iBufferSize];
-				::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
+				m_pppBuffers[1][i] = new float [iBufferSizeEx];
+				::memset(m_pppBuffers[1][i], 0, iBufferSizeEx * sizeof(float));
 			}
 		}	// Gone terribly wrong...
 		else m_iChannels = 0;
@@ -1811,8 +1838,8 @@ bool qtractorPluginList::resetChannels (
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
 		if (bReset && iChannels > 0) {
-			pPlugin->freezeConfigs();
 			pPlugin->freezeValues();
+			pPlugin->freezeConfigs();
 		}
 		pPlugin->setChannels(iChannels);
 		if (bReset && iChannels > 0) {
@@ -1840,7 +1867,7 @@ void qtractorPluginList::resetBuffers (void)
 	if (pAudioEngine == nullptr)
 		return;
 
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 #if 0
 	// Save and reset activation count...
@@ -1857,7 +1884,7 @@ void qtractorPluginList::resetBuffers (void)
 	// Reset interim buffer, if any...
 	if (m_pppBuffers[1]) {
 		for (unsigned short i = 0; i < m_iChannels; ++i)
-			::memset(m_pppBuffers[1][i], 0, iBufferSize * sizeof(float));
+			::memset(m_pppBuffers[1][i], 0, iBufferSizeEx * sizeof(float));
 	}
 #if 0
 	// Restore activation of all previously deactivated plugins...

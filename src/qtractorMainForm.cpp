@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -149,7 +149,7 @@
 
 #include <algorithm>
 
-#include <math.h>
+#include <cmath>
 
 // Timer constants (magic) stuff.
 #define QTRACTOR_TIMER_MSECS    66
@@ -190,7 +190,7 @@ static void qtractor_sigusr1_handler ( int /* signo */ )
 {
 	char c = 1;
 
-	(::write(g_fdSigusr1[0], &c, sizeof(c)) > 0);
+	(void) (::write(g_fdSigusr1[0], &c, sizeof(c)) > 0);
 }
 
 // File descriptor for SIGTERM notifier.
@@ -201,7 +201,7 @@ static void qtractor_sigterm_handler ( int /* signo */ )
 {
 	char c = 1;
 
-	(::write(g_fdSigterm[0], &c, sizeof(c)) > 0);
+	(void) (::write(g_fdSigterm[0], &c, sizeof(c)) > 0);
 }
 
 #endif	// HAVE_SIGNAL_H
@@ -227,7 +227,7 @@ qtractorMainForm::qtractorMainForm (
 	// Initialize some pointer references.
 	m_pOptions = nullptr;
 
-	// FIXME: This gotta go, somwhere in time...
+	// FIXME: This gotta go, somewhere in time...
 	m_pSession = new qtractorSession();
 	m_pTempoCursor = new qtractorTempoCursor();
 	m_pMessageList = new qtractorMessageList();
@@ -513,11 +513,8 @@ qtractorMainForm::qtractorMainForm (
 //	m_ui.timeToolbar->addSeparator();
 
 	// Tempo spin-box.
-	const QString sTempo("999.9 9/9");
+	const QString sTempo("+999 9/9");
 	m_pTempoSpinBox = new qtractorTempoSpinBox(m_ui.timeToolbar);
-//	m_pTempoSpinBox->setDecimals(1);
-//	m_pTempoSpinBox->setMinimum(1.0f);
-//	m_pTempoSpinBox->setMaximum(1000.0f);
 //	m_pTempoSpinBox->setFont(font);
 	m_pTempoSpinBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	m_pTempoSpinBox->setMinimumSize(QSize(fm.horizontalAdvance(sTempo) + d, d) + pad);
@@ -597,6 +594,7 @@ qtractorMainForm::qtractorMainForm (
 	// Track status.
 	pLabel = new QLabel(tr("Track"));
 	pLabel->setAlignment(Qt::AlignLeft);
+	pLabel->setMinimumWidth(120);
 	pLabel->setToolTip(tr("Current track name"));
 	pLabel->setAutoFillBackground(true);
 	m_statusItems[StatusName] = pLabel;
@@ -1314,6 +1312,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	Qt::WindowFlags wflags = Qt::Window;
 	if (m_pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::Tool;
+	//	wflags |= Qt::WindowStaysOnTopHint;
 		pParent = this;
 	}
 	// Other child/tools forms are also created right away...
@@ -1502,6 +1501,8 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_pOptions->bAudioWsolaTimeStretch);
 	qtractorAudioBuffer::setDefaultWsolaQuickSeek(
 		m_pOptions->bAudioWsolaQuickSeek);
+	qtractorTrack::setTrackColorSaturation(
+		m_pOptions->iTrackColorSaturation);
 
 	// Set default custom spin-box edit mode (deferred)...
 	qtractorSpinBox::setEditMode(qtractorSpinBox::DeferredMode);
@@ -1678,8 +1679,19 @@ void qtractorMainForm::handle_sigterm (void)
 
 	char c;
 
-	if (::read(g_fdSigterm[1], &c, sizeof(c)) > 0)
-		close();
+	if (::read(g_fdSigterm[1], &c, sizeof(c)) > 0) {
+	#ifdef CONFIG_NSM
+		if (m_pNsmClient && m_pNsmClient->is_active())
+			m_iDirtyCount = 0;
+	#endif
+		if (queryClose()) {
+		#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+			QApplication::exit(0);
+		#else
+			QApplication::quit();
+		#endif
+		}
+	}
 
 #endif
 }
@@ -1688,11 +1700,6 @@ void qtractorMainForm::handle_sigterm (void)
 // Window close event handlers.
 bool qtractorMainForm::queryClose (void)
 {
-#ifdef CONFIG_NSM
-	if (m_pNsmClient && m_pNsmClient->is_active())
-		m_iDirtyCount = 0;
-#endif
-
 	bool bQueryClose = closeSession();
 
 	// Try to save current general state...
@@ -1781,6 +1788,16 @@ bool qtractorMainForm::queryClose (void)
 
 void qtractorMainForm::closeEvent ( QCloseEvent *pCloseEvent )
 {
+#ifdef CONFIG_NSM
+	// Just hide if under NSM auspice...
+	if (m_pNsmClient && m_pNsmClient->is_active()) {
+		pCloseEvent->ignore();
+		QMainWindow::hide();
+		m_pConnections->hide();
+		m_pMixer->hide();
+	}
+	else
+#endif
 	// Let's be sure about that...
 	if (queryClose()) {
 		pCloseEvent->accept();
@@ -2725,7 +2742,9 @@ void qtractorMainForm::openNsmSession (void)
 		m_pSession->setClientName(client_id);
 		m_pSession->setSessionName(display_name);
 		m_pSession->setSessionDir(path_name);
-		const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
+		QFileInfo fi(path_name, "session." + m_sNsmExt);
+		if (!fi.exists())
+			fi.setFile(path_name, display_name + '.' + m_sNsmExt);
 		const QString& sFilename = fi.absoluteFilePath();
 		if (fi.exists()) {
 			const int iFlags = qtractorDocument::Default;
@@ -2801,7 +2820,8 @@ void qtractorMainForm::saveNsmSessionEx ( bool bSaveReply )
 	//	m_pSession->setClientName(client_id);
 		m_pSession->setSessionName(display_name);
 		m_pSession->setSessionDir(path_name);
-		const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
+	//	const QFileInfo fi(path_name, display_name + '.' + m_sNsmExt);
+		const QFileInfo fi(path_name, "session." + m_sNsmExt);
 		const QString& sFilename = fi.absoluteFilePath();
 		const int iFlags = qtractorDocument::SymLink;
 		bSaved = saveSessionFileEx(sFilename, iFlags, false);
@@ -5029,6 +5049,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldCompletePath       = m_pOptions->bCompletePath;
 	const bool    bOldPeakAutoRemove     = m_pOptions->bPeakAutoRemove;
 	const bool    bOldKeepToolsOnTop     = m_pOptions->bKeepToolsOnTop;
+	const bool    bOldKeepEditorsOnTop   = m_pOptions->bKeepEditorsOnTop;
 	const int     iOldMaxRecentFiles     = m_pOptions->iMaxRecentFiles;
 	const int     iOldDisplayFormat      = m_pOptions->iDisplayFormat;
 	const int     iOldBaseFontSize       = m_pOptions->iBaseFontSize;
@@ -5067,6 +5088,7 @@ void qtractorMainForm::viewOptions (void)
 	const bool    bOldMidiMetroBus       = m_pOptions->bMidiMetroBus;
 	const int     iOldMidiMetroOffset    = m_pOptions->iMidiMetroOffset;
 	const bool    bOldSyncViewHold       = m_pOptions->bSyncViewHold;
+	const int     iOldTrackColorSaturation = m_pOptions->iTrackColorSaturation;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 #ifdef CONFIG_LV2
@@ -5157,6 +5179,9 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldKeepToolsOnTop && !m_pOptions->bKeepToolsOnTop) ||
 			(!bOldKeepToolsOnTop &&  m_pOptions->bKeepToolsOnTop))
 			iNeedRestart |= RestartProgram;
+		if (( bOldKeepEditorsOnTop && !m_pOptions->bKeepEditorsOnTop) ||
+			(!bOldKeepEditorsOnTop &&  m_pOptions->bKeepEditorsOnTop))
+			updateEditorForms();
 		if (sOldMessagesFont != m_pOptions->sMessagesFont)
 			updateMessagesFont();
 		if (( bOldMessagesLimit && !m_pOptions->bMessagesLimit) ||
@@ -5250,6 +5275,10 @@ void qtractorMainForm::viewOptions (void)
 		if (( bOldSyncViewHold && !m_pOptions->bSyncViewHold) ||
 			(!bOldSyncViewHold &&  m_pOptions->bSyncViewHold))
 			updateSyncViewHold();
+		// Default track color saturation factor [0..400].
+		if (iOldTrackColorSaturation != m_pOptions->iTrackColorSaturation)
+			qtractorTrack::setTrackColorSaturation(
+				m_pOptions->iTrackColorSaturation);
 		// Warn if something will be only effective on next time.
 		if (iNeedRestart & RestartAny) {
 			QString sNeedRestart;
@@ -5912,6 +5941,12 @@ void qtractorMainForm::helpAbout (void)
 		sText += "</font></small><br />\n";
 	}
 	sText += "<br />\n";
+	sText += tr("Using: Qt %1").arg(qVersion());
+#if defined(QT_STATIC)
+	sText += "-static";
+#endif
+	sText += "<br />\n";
+	sText += "<br />\n";
 	sText += tr("Website") + ": <a href=\"" QTRACTOR_WEBSITE "\">" QTRACTOR_WEBSITE "</a><br />\n";
 	sText += "<br />\n";
 	sText += "<small>";
@@ -6570,11 +6605,11 @@ void qtractorMainForm::updateSessionPost (void)
 	// We're definitely clean...
 	qtractorSubject::resetQueue();
 
-	// Sync all process-enabled automation curves...
-	m_pSession->process_curve(m_iPlayHead);
-
 	// Update the session views...
 	viewRefresh();
+
+	// Sync all process-enabled automation curves...
+	m_pSession->process_curve(m_iPlayHead);
 
 	// Check for any pending nested messages...
 	if (!qtractorMessageList::isEmpty()) {
@@ -6627,7 +6662,7 @@ void qtractorMainForm::updateExportMenu (void)
 		}
 	}
 
-	// nb. audio export also applies to MIDI intrument tracks...
+	// nb. audio export also applies to MIDI instrument tracks...
 	m_ui.trackExportAudioAction->setEnabled(iAudioClips > 0 || iMidiClips > 0);
 	m_ui.trackExportMidiAction->setEnabled(iMidiClips > 0);
 }
@@ -7506,6 +7541,34 @@ void qtractorMainForm::removeEditorForm ( qtractorMidiEditorForm *pEditorForm )
 }
 
 
+void qtractorMainForm::updateEditorForms (void)
+{
+	if (m_pOptions == nullptr)
+		return;
+
+	Qt::WindowFlags wflags = Qt::Window;
+	if (m_pOptions->bKeepEditorsOnTop) {
+		wflags |= Qt::Tool;
+		wflags |= Qt::WindowStaysOnTopHint;
+	}
+
+	QListIterator<qtractorMidiEditorForm *> iter(m_editors);
+	while (iter.hasNext()) {
+		qtractorMidiEditorForm *pForm = iter.next();
+		const bool bVisible = pForm->isVisible();
+	#if 0//QTRACTOR_MIDI_EDITOR_TOOL_PARENT
+		if (m_pOptions->bKeepEditorsOnTop)
+			pForm->setParent(this);
+		else
+			pForm->setParent(nullptr);
+	#endif
+		pForm->setWindowFlags(wflags);
+		if (bVisible)
+			pForm->show();
+	}
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMainForm -- Timer stuff.
 
@@ -7665,7 +7728,7 @@ void qtractorMainForm::slowTimerSlot (void)
 				qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 				qtractorTimeScale::Node *pNode = cursor.seekFrame(pos.frame);
 				if (pNode && pos.frame >= pNode->frame && (
-					qAbs(pNode->tempo - pos.beats_per_minute) > 0.01f ||
+					qAbs(pNode->tempo - pos.beats_per_minute) > 0.001f ||
 					pNode->beatsPerBar != (unsigned short) pos.beats_per_bar ||
 					(1 << pNode->beatDivisor) != (unsigned short) pos.beat_type)) {
 				#ifdef CONFIG_DEBUG
@@ -8021,8 +8084,10 @@ void qtractorMainForm::audioBuffNotify ( unsigned int iBufferSize )
 
 
 #ifdef CONFIG_JACK_SESSION
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 #endif
 
 // Custom (JACK) session event handler.
@@ -8098,7 +8163,9 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 }
 
 #ifdef CONFIG_JACK_SESSION
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic pop
+#endif
 #endif
 
 

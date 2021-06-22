@@ -1,7 +1,7 @@
 // lv2_atom_helpers.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -215,8 +215,10 @@ LV2_Atom_Event *lv2_atom_buffer_get (
 
 // Write an event at a LV2 atom:Sequence buffer iterator.
 //
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
 
 static inline
 bool lv2_atom_buffer_write (
@@ -249,7 +251,9 @@ bool lv2_atom_buffer_write (
 	return true;
 }
 
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic pop
+#endif
 
 
 #endif	// LV2_ATOM_HELPERS_H

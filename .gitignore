@@ -11,6 +11,7 @@ configure
 *.qm
 *.o
 *.so
+*.txt.user
 *.pro.user
 *.qmake.stash
 qrc_*.cpp
@@ -19,3 +20,4 @@ qrc_*.cpp
 .ui
 qtractor
 qtractor_plugin_scan
+build/

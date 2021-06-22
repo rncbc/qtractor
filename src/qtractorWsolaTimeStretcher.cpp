@@ -1,7 +1,7 @@
 // qtractorWsolaTimeStretcher.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    Adapted and refactored from the SoundTouch library (L)GPL,
    Copyright (C) 2001-2012, Olli Parviainen.
@@ -24,7 +24,7 @@
 
 #include "qtractorWsolaTimeStretcher.h"
 
-#include <math.h>
+#include <cmath>
 
 
 // Cross-correlation value calculation over the overlap period.
@@ -233,7 +233,7 @@ void qtractorWsolaTimeStretcher::setTempo ( float fTempo )
 	clear();
 
 	// These will be enough for most purposes, and
-	// shoudl avoid in-the-fly buffer re-allocations...
+	// should avoid in-the-fly buffer re-allocations...
 	m_inputBuffer.ensureCapacity(m_iFramesReq);
 	m_outputBuffer.ensureCapacity(m_iFramesReq);
 }

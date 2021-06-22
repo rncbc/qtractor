@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@
 #include <QValidator>
 #include <QLineEdit>
 
-#include <math.h>
+#include <cmath>
 
 
 //----------------------------------------------------------------------------
@@ -52,8 +52,16 @@ qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
 
 	// Initialize conveniency options...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions)
+	if (pOptions) {
+		m_ui.AutoSessionDirCheckBox->setChecked(pOptions->bAutoSessionDir);
 		pOptions->loadComboBoxHistory(m_ui.SessionDirComboBox);
+	}
+
+	const QFont& font = QDialog::font();
+	const QFont font2(font.family(), font.pointSize() - 2);
+	m_ui.AutoSessionDirCheckBox->setFont(font2);
+	m_ui.AutoSessionDirCheckBox->setMaximumHeight(
+		QFontMetrics(font2).height());
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
 	m_ui.SessionDirComboBox->lineEdit()->setClearButtonEnabled(true);
@@ -78,6 +86,7 @@ qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
 //	m_ui.SnapPerBeatComboBox->insertItems(0, snapItems);
 
 	// Initialize dirty control state.
+	m_bNewSession = false;
 	m_iDirtyCount = 0;
 
 	// Try to restore old window positioning.
@@ -87,12 +96,12 @@ qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
 	QObject::connect(m_ui.SessionNameLineEdit,
 		SIGNAL(textChanged(const QString&)),
 		SLOT(changeSessionName(const QString&)));
+	QObject::connect(m_ui.AutoSessionDirCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changeAutoSessionDir(bool)));
 	QObject::connect(m_ui.SessionDirComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(changeSessionDir(const QString&)));
-	QObject::connect(m_ui.SessionDirComboBox->lineEdit(),
-		SIGNAL(editingFinished()),
-		SLOT(finishSessionDir()));
 	QObject::connect(m_ui.SessionDirToolButton,
 		SIGNAL(clicked()),
 		SLOT(browseSessionDir()));
@@ -142,7 +151,8 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	m_props = pSession->properties();
 
 	// HACK: Fix for an initial session directory proposal...
-	if (m_props.sessionName.isEmpty()) {
+	m_bNewSession = m_props.sessionName.isEmpty();
+	if (m_bNewSession) {
 		QDir dir(m_props.sessionDir);
 		QStringList filters;
 		filters << dir.dirName() + '*';
@@ -151,6 +161,9 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 			m_props.sessionDir = info.absolutePath();
 		}
 	}
+
+	// HACK: Remember current session-dir....
+	m_sSessionDir = m_props.sessionDir;
 
 	// Initialize dialog widgets...
 	m_ui.SessionNameLineEdit->setText(m_props.sessionName);
@@ -173,7 +186,9 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	m_ui.VerticalZoomSpinBox->setValue(int(m_props.timeScale.verticalZoom()));
 
 	// Start editing session name, if empty...
-	if (m_props.sessionName.isEmpty())
+	m_ui.AutoSessionDirCheckBox->setEnabled(m_bNewSession);
+	m_ui.AutoSessionDirCheckBox->setVisible(m_bNewSession);
+	if (m_bNewSession)
 		m_ui.SessionNameLineEdit->setFocus();
 
 	// Backup clean.
@@ -207,7 +222,7 @@ void qtractorSessionForm::accept (void)
 			QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
 			return;
 		// Proceed...
-		dir.mkdir(sSessionDir);
+		dir.mkpath(sSessionDir);
 	}
 
 	// Save options...
@@ -236,8 +251,10 @@ void qtractorSessionForm::accept (void)
 
 	// Save other conveniency options...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions)
+	if (pOptions) {
+		pOptions->bAutoSessionDir = m_ui.AutoSessionDirCheckBox->isChecked();
 		pOptions->saveComboBoxHistory(m_ui.SessionDirComboBox);
+	}
 
 	// Just go with dialog acceptance.
 	QDialog::accept();
@@ -286,13 +303,33 @@ void qtractorSessionForm::changed (void)
 // Session name in-flight change.
 void qtractorSessionForm::changeSessionName ( const QString& sSessionName )
 {
-	if (m_props.sessionName.isEmpty()) {
-		QFileInfo fi(m_props.sessionDir);
+	if (m_bNewSession && m_ui.AutoSessionDirCheckBox->isChecked()) {
+		QFileInfo fi(m_sSessionDir);
 		fi.setFile(QDir(fi.filePath()), sSessionName);
+		const bool bBlockSignals
+			= m_ui.SessionDirComboBox->blockSignals(true);
 		m_ui.SessionDirComboBox->setEditText(fi.absoluteFilePath());
+		m_ui.SessionDirComboBox->blockSignals(bBlockSignals);
 	}
 
 	changed();
+}
+
+
+// Session directory auto-name change.
+void qtractorSessionForm::changeAutoSessionDir ( bool bOn )
+{
+
+	if (bOn && m_bNewSession) {
+		QFileInfo fi(m_sSessionDir);
+		const QString& sSessionName
+			= m_ui.SessionNameLineEdit->text();
+		fi.setFile(QDir(fi.filePath()), sSessionName);
+		const bool bBlockSignals
+			= m_ui.SessionDirComboBox->blockSignals(true);
+		m_ui.SessionDirComboBox->setEditText(fi.absoluteFilePath());
+		m_ui.SessionDirComboBox->blockSignals(bBlockSignals);
+	}
 }
 
 
@@ -300,16 +337,22 @@ void qtractorSessionForm::changeSessionName ( const QString& sSessionName )
 void qtractorSessionForm::changeSessionDir ( const QString& sSessionDir )
 {
 	if (sSessionDir.isEmpty())
-		m_ui.SessionDirComboBox->setEditText(m_props.sessionDir);
+		m_ui.SessionDirComboBox->setEditText(m_sSessionDir);
+	else
+	if (m_bNewSession && m_ui.AutoSessionDirCheckBox->isChecked()) {
+		const QFileInfo fi(sSessionDir);
+		if (fi.absolutePath() == m_sSessionDir) {
+			const QString& sSessionName = fi.fileName();
+			if (!sSessionName.isEmpty()) {
+				const bool bBlockSignals
+					= m_ui.SessionNameLineEdit->blockSignals(true);
+				m_ui.SessionNameLineEdit->setText(sSessionName);
+				m_ui.SessionNameLineEdit->blockSignals(bBlockSignals);
+			}
+		}
+	}
 
 	changed();
-}
-
-
-// Session directory edit-finishing.
-void qtractorSessionForm::finishSessionDir (void)
-{
-	m_props.sessionDir = m_ui.SessionDirComboBox->currentText();
 }
 
 
@@ -353,9 +396,9 @@ void qtractorSessionForm::browseSessionDir (void)
 	if (sSessionDir.isEmpty())
 		return;
 
-	m_props.sessionDir = sSessionDir;
+	m_sSessionDir = sSessionDir;
 
-	if (m_props.sessionName.isEmpty()) {
+	if (m_bNewSession && m_ui.AutoSessionDirCheckBox->isChecked()) {
 		const QString& sSessionName
 			= m_ui.SessionNameLineEdit->text();
 		QFileInfo fi(sSessionDir);
@@ -363,7 +406,10 @@ void qtractorSessionForm::browseSessionDir (void)
 		sSessionDir = fi.absoluteFilePath();
 	}
 
+	const bool bBlockSignals
+		= m_ui.SessionDirComboBox->blockSignals(true);
 	m_ui.SessionDirComboBox->setEditText(sSessionDir);
+	m_ui.SessionDirComboBox->blockSignals(bBlockSignals);
 	m_ui.SessionDirComboBox->setFocus();
 
 	changed();
@@ -373,13 +419,17 @@ void qtractorSessionForm::browseSessionDir (void)
 // Stabilize current form state.
 void qtractorSessionForm::stabilizeForm (void)
 {
-	QFileInfo fi(m_ui.SessionDirComboBox->currentText());
-	if (fi.fileName().isEmpty())
-		fi.setFile(fi.path());
-	fi.setFile(fi.path());
-
+	const QString& sSessionDir
+		= m_ui.SessionDirComboBox->currentText();
 	bool bValid = !m_ui.SessionNameLineEdit->text().isEmpty();
-	bValid = bValid && fi.isDir() && fi.isReadable() && fi.isWritable();
+	bValid = bValid && !sSessionDir.isEmpty();
+	if (bValid) {
+		QFileInfo fi(sSessionDir);
+		bValid = bValid && (fi.canonicalFilePath() != QDir::homePath());
+		while (bValid && !fi.exists())
+			fi.setFile(fi.path());
+		bValid = bValid && fi.isDir() && fi.isReadable() && fi.isWritable();
+	}
 //	bValid = bValid && !m_ui.DescriptionTextEdit->text().isEmpty();
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
 }

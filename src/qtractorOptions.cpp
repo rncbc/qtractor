@@ -97,6 +97,7 @@ void qtractorOptions::loadOptions (void)
 	bCompletePath   = m_settings.value("/CompletePath", true).toBool();
 	bPeakAutoRemove = m_settings.value("/PeakAutoRemove", true).toBool();
 	bKeepToolsOnTop = m_settings.value("/KeepToolsOnTop", true).toBool();
+	bKeepEditorsOnTop = m_settings.value("/KeepEditorsOnTop", false).toBool();
 	iDisplayFormat  = m_settings.value("/DisplayFormat", 1).toInt();
 	iMaxRecentFiles = m_settings.value("/MaxRecentFiles", 5).toInt();
 	iBaseFontSize   = m_settings.value("/BaseFontSize", 0).toInt();
@@ -215,6 +216,7 @@ void qtractorOptions::loadOptions (void)
 	iBeatsPerBar    = m_settings.value("/BeatsPerBar", 4).toInt();
 	iBeatDivisor    = m_settings.value("/BeatDivisor", 2).toInt();
 	iLoopRecordingMode = m_settings.value("/LoopRecordingMode", 0).toInt();
+	bAutoSessionDir = m_settings.value("/AutoSessionDir", true).toBool();
 	iPasteRepeatCount = m_settings.value("/PasteRepeatCount", 2).toInt();
 	bPasteRepeatPeriod = m_settings.value("/PasteRepeatPeriod", false).toInt();
 	sPluginSearch   = m_settings.value("/PluginSearch").toString();
@@ -306,6 +308,7 @@ void qtractorOptions::loadOptions (void)
 	bTrackViewSnapGrid   = m_settings.value("/TrackViewSnapGrid", true).toBool();
 	bTrackViewToolTips   = m_settings.value("/TrackViewToolTips", true).toBool();
 	bTrackViewCurveEdit  = m_settings.value("/TrackViewCurveEdit", false).toBool();
+	iTrackColorSaturation = m_settings.value("/TrackColorSaturation", 100).toInt();
 	m_settings.endGroup();
 
 	// MIDI options group.
@@ -398,6 +401,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/CompletePath", bCompletePath);
 	m_settings.setValue("/PeakAutoRemove", bPeakAutoRemove);
 	m_settings.setValue("/KeepToolsOnTop", bKeepToolsOnTop);
+	m_settings.setValue("/KeepEditorsOnTop", bKeepEditorsOnTop);
 	m_settings.setValue("/DisplayFormat", iDisplayFormat);
 	m_settings.setValue("/MaxRecentFiles", iMaxRecentFiles);
 	m_settings.setValue("/BaseFontSize", iBaseFontSize);
@@ -516,6 +520,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/BeatsPerBar", iBeatsPerBar);
 	m_settings.setValue("/BeatDivisor", iBeatDivisor);
 	m_settings.setValue("/LoopRecordingMode", iLoopRecordingMode);
+	m_settings.setValue("/AutoSessionDir", bAutoSessionDir);
 	m_settings.setValue("/PasteRepeatCount", iPasteRepeatCount);
 	m_settings.setValue("/PasteRepeatPeriod", bPasteRepeatPeriod);
 	m_settings.setValue("/PluginSearch", sPluginSearch);
@@ -598,6 +603,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/TrackViewSnapGrid", bTrackViewSnapGrid);
 	m_settings.setValue("/TrackViewToolTips", bTrackViewToolTips);
 	m_settings.setValue("/TrackViewCurveEdit", bTrackViewCurveEdit);
+	m_settings.setValue("/TrackColorSaturation", iTrackColorSaturation);
 	m_settings.endGroup();
 
 	// MIDI Editor options group.
@@ -753,8 +759,11 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			return false;
 		}
 		else if (sArg == "-v" || sArg == "--version") {
-			out << QString("Qt: %1\n")
-				.arg(qVersion());
+			out << QString("Qt: %1").arg(qVersion());
+		#if defined(QT_STATIC)
+			out << "-static";
+		#endif
+			out << '\n';
 			out << QString("%1: %2\n")
 				.arg(QTRACTOR_TITLE)
 				.arg(CONFIG_BUILD_VERSION);

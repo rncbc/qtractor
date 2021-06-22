@@ -160,6 +160,15 @@ bool qtractorSession::init (void)
 	// Done.
 	unlock();
 
+	// HACK: Make sure we'll wait enough time (3 seconds)
+	// to the JACK server starting up and stabilizing...
+	if (bResult) {
+		const unsigned int iFrameTime
+			= (m_pAudioEngine->sampleRate() * 3);
+		while (m_pAudioEngine->jackFrameTime() < iFrameTime)
+			stabilize();
+	}
+
 	return bResult;
 }
 

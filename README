@@ -10,9 +10,7 @@ specially dedicated to the personal home-studio.
 
 Website:
 
-  http://qtractor.org
-  https://qtractor.sourceforge.io
-  http://qtractor.sourceforge.net
+  https://qtractor.org
 
 Project page:
 
@@ -30,9 +28,7 @@ Wiki:
   https://sourceforge.net/p/qtractor/wiki/
 
 - static rendering:
-  http://qtractor.org/doc
-  https://qtractor.sourceforge.io/doc
-  http://qtractor.sourceforge.net/doc
+  https://qtractor.org/doc
 
 - user manual & how-to's:
   https://download.sf.net/qtractor/qtractor-manual-and-howtos.epub
@@ -92,7 +88,7 @@ Features
 - MIDI system exclusive (SysEx) setups.
 - JACK transport sync master/slave.
 - JACK session support.
-- NSM (Non/New Session Management) support [16].
+- NSM (Non Session Management) support [16].
 - MMC control surface enabled.
 - MIDI Clock, Song Position Pointer (SPP) support.
 - Configurable PC-keyboard and MIDI controller shortcuts.
@@ -167,31 +163,16 @@ The software requirements for build and runtime are listed as follows:
 Installation
 ------------
 
-The installation procedure follows the standard for source distributions.
 Unpack the tarball and in the extracted source directory:
 
-    ./configure [--prefix=/usr/local]
-    make
+    cmake [-DCMAKE_INSTALL_PREFIX=/usr/local] -B build -S .
+    make -C build
 
 and optionally as root:
 
-    make install
+    sudo make -C build install
 
-This procedure will end installing the following files:
-
-    ${prefix}/bin/qtractor
-    ${prefix}/share/applications/qtractor.desktop
-    ${prefix}/share/icons/hicolor/32x32/apps/qtractor.png
-    ${prefix}/share/qtractor/translations/qtractor_*.qm
-
-Just launch ${prefix}/bin/qtractor and you're off (hopefully).
-
-Note that the default installation path ${prefix} is /usr/local.
-
-If you're checking out from Git, you'll have to prepare the
-configure script just before you proceed with the above instructions:
-
-   ./autogen.sh
+See also the README.cmake file in the source distribution.
 
 
 Configuration
@@ -213,7 +194,7 @@ Support
 -------
 
 Qtractor is free, Linux Audio [18] open source free software. For bug
-reports, feature requests, discussion forums, mailling lists, or any
+reports, feature requests, discussion forums, mailing lists, or any
 other matter related to the development of this piece of software,
 please use the Sourceforge project page (https://sourceforge.net/projects/qtractor).
 
@@ -288,7 +269,7 @@ References
      https://www.steinberg.net/
 
 [13] LV2, Audio Plugin Standard, the extensible successor of LADSPA
-     http://lv2plug.in/
+     https://lv2plug.in/
 
 [14] liblilv, Lightweight LV2 host implementation stack
      (needed for LV2 support)
@@ -301,9 +282,8 @@ References
      (needed for LV2 UI support)
      https://drobilla.net/software/suil/
 
-[16] Non/New Session Management (NSM)
-     https://linuxaudio.github.io/new-session-manager/
-    (formerly http://non.tuxfamily.org/nsm/)
+[16] Non Session Management (NSM)
+     http://non.tuxfamily.org/nsm/
 
 [17] libaubio, a library for real time audio labelling
      https://aubio.org

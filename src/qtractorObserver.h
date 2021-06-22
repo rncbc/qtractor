@@ -1,7 +1,7 @@
 // qtractorObserver.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
 #include <QString>
 #include <QList>
 
-#include <math.h>
+#include <cmath>
 
 
 // Forward declarations.
@@ -54,9 +54,11 @@ public:
 
 	float prevValue() const
 		{ return m_fPrevValue; }
+	float lastValue() const
+		{ return m_fLastValue; }
 
 	// Observers notification.
-	void notify(qtractorObserver *pSender, bool bUpdate);
+	void notify(qtractorObserver *pSender, float fValue, bool bUpdate);
 
 	// Observer list accessors.
 	void attach(qtractorObserver *pObserver)
@@ -167,6 +169,7 @@ private:
 	bool	m_bQueued;
 
 	float   m_fPrevValue;
+	float   m_fLastValue;
 
 	// Human readable name/label.
 	QString m_sName;
@@ -200,8 +203,8 @@ class qtractorObserver
 public:
 
 	// Constructor.
-	qtractorObserver(qtractorSubject *pSubject = nullptr) : m_pSubject(pSubject)
-		{ if (m_pSubject) m_pSubject->attach(this); }
+	qtractorObserver(qtractorSubject *pSubject = nullptr)
+		: m_pSubject(pSubject) { if (m_pSubject) m_pSubject->attach(this); }
 
 	// Virtual destructor.
 	virtual ~qtractorObserver()
@@ -230,6 +233,8 @@ public:
 
 	float prevValue() const
 		{ return (m_pSubject ? m_pSubject->prevValue() : 0.0f); }
+	float lastValue() const
+		{ return (m_pSubject ? m_pSubject->lastValue() : 0.0f); }
 
 	// Value limits accessors.
 	float maxValue() const

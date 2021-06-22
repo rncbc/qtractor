@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -65,9 +65,7 @@ class qtractorLv2Worker;
 #include "lv2_external_ui.h"
 #endif
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
-#ifdef CONFIG_LV2_UI_GTK2
-#include <QWindow>
-#endif	// CONFIG_LV2_UI_GTK2
+class QWindow;
 #endif
 // LV2 UI Request-value support (FAKE).
 #ifdef  CONFIG_LV2_UI_REQ_VALUE_FAKE
@@ -444,6 +442,12 @@ protected:
 	// LV2 Patch/properties inventory.
 	void lv2_patch_properties(const char *pszPatch);
 #endif
+
+#ifdef CONFIG_LV2_STATE
+	// Save/restore complete plugin state into/from a string.
+	QString lv2_state_save();
+	bool lv2_state_restore(const QString& s);
+#endif	// CONFIG_LV2_STATE
 
 private:
 

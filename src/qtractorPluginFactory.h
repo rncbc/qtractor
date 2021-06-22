@@ -1,7 +1,7 @@
 // qtractorPluginFactory.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -77,6 +77,10 @@ public:
 		const QString& sFilename, unsigned long iIndex,
 		qtractorPluginType::Hint typeHint);
 
+	// Blacklist accessors.
+	void setBlacklist(const QStringList&  blacklist);
+	const QStringList& blacklist() const;
+
 	// Singleton instance accessor.
 	static qtractorPluginFactory *getInstance();
 
@@ -97,6 +101,14 @@ protected:
 	bool addTypes(qtractorPluginType::Hint typeHint,
 		qtractorPluginFile *pFile, unsigned long iIndex);
 
+	// Blacklist file paths.
+	QString blacklistTempFilePath() const;
+	QString blacklistDataFilePath() const;
+
+	// Simple blacklist file I/O methods.
+	bool readBlacklist(QFile& file);
+	bool writeBlacklist(QFile& file, const QStringList& blacklist) const;
+
 	// Generic plugin-scan factory method.
 	bool startScan(qtractorPluginType::Hint typeHint);
 
@@ -116,6 +128,9 @@ private:
 
 	// Internal plugin types list.
 	Types m_types;
+
+	// Plugin blacklist.
+	QStringList m_blacklist;
 
 	// Scan (out-of-process) clients.
 	class Scanner;
@@ -199,7 +214,7 @@ public:
 	qtractorDummyPluginType(
 		const QString& sText, unsigned long iIndex, Hint typeHint);
 
-	// Must be overriden methods.
+	// Must be overridden methods.
 	bool open();
 	void close();
 

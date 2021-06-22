@@ -278,6 +278,14 @@ void qtractorTrackListButtons::updateTrackButtons (void)
 //----------------------------------------------------------------------------
 // qtractorTrackList -- Track list widget.
 
+// Local constants.
+static const char *TracksGroup            = "/Tracks";
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+static const char *TrackListHeaderViewKey = "/TrackList/HeaderView";
+#else
+static const char *TrackListHeaderViewKey = "/TrackListHeaderView";
+#endif
+
 // Constructor.
 qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent )
 	: qtractorScrollView(pParent)
@@ -326,9 +334,9 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		QSettings& settings = pOptions->settings();
-		settings.beginGroup("Tracks");
+		settings.beginGroup(TracksGroup);
 		const QByteArray& aHeaderView
-			= pOptions->settings().value("/TrackList/HeaderView").toByteArray();
+			= settings.value(TrackListHeaderViewKey).toByteArray();
 		if (!aHeaderView.isEmpty())
 			m_pHeader->restoreState(aHeaderView);
 		settings.endGroup();
@@ -353,8 +361,8 @@ qtractorTrackList::~qtractorTrackList (void)
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		QSettings& settings = pOptions->settings();
-		settings.beginGroup("Tracks");
-		settings.setValue("/TrackList/HeaderView", m_pHeader->saveState());
+		settings.beginGroup(TracksGroup);
+		settings.setValue(TrackListHeaderViewKey, m_pHeader->saveState());
 		settings.endGroup();
 	}
 

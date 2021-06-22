@@ -1,10 +1,14 @@
-set(NAME qtractor)
+# project (qtractor)
 
-include_directories (
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-)
+set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set (CMAKE_AUTOUIC ON)
+set (CMAKE_AUTOMOC ON)
+set (CMAKE_AUTORCC ON)
+
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
+    file (REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
+endif ()
 configure_file (cmake_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 set (HEADERS
@@ -50,6 +54,7 @@ set (HEADERS
   qtractorLadspaPlugin.h
   qtractorList.h
   qtractorLv2Plugin.h
+  qtractorLv2Gtk2Plugin.h
   qtractorMessageBox.h
   qtractorMessageList.h
   qtractorMessages.h
@@ -181,6 +186,7 @@ set (SOURCES
   qtractorInstrumentMenu.cpp
   qtractorLadspaPlugin.cpp
   qtractorLv2Plugin.cpp
+  qtractorLv2Gtk2Plugin.cpp
   qtractorMessageBox.cpp
   qtractorMessageList.cpp
   qtractorMessages.cpp
@@ -308,16 +314,17 @@ set (TRANSLATIONS
   translations/qtractor_ru.ts
 )
 
-qt5_add_translation ( QM_FILES ${TRANSLATIONS} )
-add_custom_target( translations ALL DEPENDS ${QM_FILES} )
+if (QT_VERSION VERSION_LESS 5.15.0)
+  qt5_add_translation (QM_FILES ${TRANSLATIONS})
+else ()
+  qt_add_translation (QM_FILES ${TRANSLATIONS})
+endif ()
 
-qt5_wrap_ui (UI_SOURCES ${FORMS})
-qt5_wrap_cpp (MOC_SOURCES ${HEADERS})
-qt5_add_resources (QRC_SOURCES ${RESOURCES})
+add_custom_target (translations ALL DEPENDS ${QM_FILES})
 
 if (WIN32)
-  set (RC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/win32/${NAME}.rc)
-  set (RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/${NAME}.res.obj)
+  set (RC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/win32/${PROJECT_NAME}.rc)
+  set (RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.res.obj)
   find_program (WINDRES_EXECUTABLE NAMES windres mingw32-windres i686-mingw32-windres)
   if (MINGW)
     exec_program (${WINDRES_EXECUTABLE}
@@ -329,9 +336,9 @@ if (WIN32)
 endif ()
 
 if (APPLE)
-  set (ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/images/${NAME}.icns)
+  set (ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/images/${PROJECT_NAME}.icns)
   list (APPEND SOURCES ${ICON_FILE})
-  set (MACOSX_BUNDLE_ICON_FILE ${NAME}.icns)
+  set (MACOSX_BUNDLE_ICON_FILE ${PROJECT_NAME}.icns)
   set_source_files_properties (${ICON_FILE} PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources)
 endif ()
@@ -350,116 +357,170 @@ if (CONFIG_VST3SDK)
   )
 endif ()
 
-add_executable (${NAME}
-  ${UI_SOURCES}
-  ${MOC_SOURCES}
-  ${QRC_SOURCES}
+
+add_executable (${PROJECT_NAME}
+  ${HEADERS}
   ${SOURCES}
+  ${FORMS}
+  ${RESOURCES}
   ${VST3SDK_SOURCES}
 )
 
-add_executable (${NAME}_plugin_scan qtractor_plugin_scan.cpp ${VST3SDK_SOURCES})
+# Add some debugger flags.
+if (CONFIG_DEBUG)
+  target_compile_options (${PROJECT_NAME} PRIVATE -g -fsanitize=address -fno-omit-frame-pointer)
+  target_link_libraries (${PROJECT_NAME} PRIVATE asan)
+endif ()
 
-set_target_properties (${NAME} PROPERTIES CXX_STANDARD 17)
-set_target_properties (${NAME}_plugin_scan PROPERTIES CXX_STANDARD 17)
+add_executable (${PROJECT_NAME}_plugin_scan qtractor_plugin_scan.cpp ${VST3SDK_SOURCES})
+
+set_target_properties (${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
+set_target_properties (${PROJECT_NAME}_plugin_scan PROPERTIES CXX_STANDARD 17)
 
 if (WIN32)
-  set_target_properties (${NAME} PROPERTIES WIN32_EXECUTABLE true)
-  set_target_properties (${NAME}_plugin_scan PROPERTIES WIN32_EXECUTABLE true)
+  set_target_properties (${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE true)
+  set_target_properties (${PROJECT_NAME}_plugin_scan PROPERTIES WIN32_EXECUTABLE true)
 endif ()
 
 if (APPLE)
-  set_target_properties (${NAME} PROPERTIES MACOSX_BUNDLE true)
-  set_target_properties (${NAME}_plugin_scan PROPERTIES MACOSX_BUNDLE true)
+  set_target_properties (${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE true)
+  set_target_properties (${PROJECT_NAME}_plugin_scan PROPERTIES MACOSX_BUNDLE true)
 endif ()
 
-target_link_libraries (${NAME} PRIVATE Qt5::Widgets Qt5::Xml)
-target_link_libraries (${NAME}_plugin_scan PRIVATE Qt5::Core)
+target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml)
+target_link_libraries (${PROJECT_NAME}_plugin_scan PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
 if (CONFIG_XUNIQUE)
-  target_link_libraries (${NAME} PRIVATE Qt5::Network)
+  target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
+endif ()
+
+if (UNIX AND NOT APPLE)
+  if (DL_LIBRARY)
+    target_link_libraries (${PROJECT_NAME} PRIVATE ${DL_LIBRARY})
+    target_link_libraries (${PROJECT_NAME}_plugin_scan PRIVATE ${DL_LIBRARY})
+  endif ()
 endif ()
 
 if (CONFIG_LIBJACK)
-  target_link_libraries (${NAME} PRIVATE ${JACK_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::JACK)
 endif ()
 
 if (CONFIG_LIBASOUND)
-  target_link_libraries (${NAME} PRIVATE ${ALSA_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::ALSA)
 endif ()
 
 if (CONFIG_LIBSNDFILE)
-  target_link_libraries (${NAME} PRIVATE ${SNDFILE_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::SNDFILE)
 endif ()
 
 if (CONFIG_LIBVORBIS)
-  target_link_libraries (${NAME} PRIVATE ${VORBIS_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::VORBIS)
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::VORBISENC)
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::VORBISFILE)
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::OGG)
 endif ()
 
 if (CONFIG_LIBMAD)
-  target_link_libraries (${NAME} PRIVATE ${MAD_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::MAD)
 endif ()
 
 if (CONFIG_LIBSAMPLERATE)
-  target_link_libraries (${NAME} PRIVATE ${SAMPLERATE_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::SAMPLERATE)
 endif ()
 
 if (CONFIG_LIBRUBBERBAND)
-  target_link_libraries (${NAME} PRIVATE ${RUBBERBAND_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::RUBBERBAND)
 endif ()
 
 if (CONFIG_LIBAUBIO)
-  target_link_libraries (${NAME} PRIVATE ${AUBIO_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::AUBIO)
 endif ()
 
 if (CONFIG_LIBLO)
-  target_link_libraries (${NAME} PRIVATE ${LIBLO_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::LIBLO)
 endif ()
 
 if (CONFIG_LIBZ)
-  target_link_libraries (${NAME} PRIVATE ${ZLIB_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::ZLIB)
 endif ()
 
 if (CONFIG_LIBLILV)
-  target_link_libraries (${NAME} PRIVATE ${LILV_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::LILV)
 endif ()
 
 if (CONFIG_LIBSUIL)
-  target_link_libraries (${NAME} PRIVATE ${SUIL_LIBRARIES})
+  target_link_libraries (${PROJECT_NAME} PRIVATE PkgConfig::SUIL)
+endif ()
+
+if (CONFIG_LV2)
+  target_include_directories (${PROJECT_NAME} PRIVATE ${LV2_INCLUDE_DIRS})
+  target_link_directories (${PROJECT_NAME} PRIVATE ${LV2_LIBRARY_DIRS})
+  target_link_libraries (${PROJECT_NAME} PRIVATE ${LV2_LIBRARIES})
+  target_include_directories (${PROJECT_NAME}_plugin_scan PRIVATE ${LV2_INCLUDE_DIRS})
+  target_link_directories (${PROJECT_NAME}_plugin_scan PRIVATE ${LV2_LIBRARY_DIRS})
+  target_link_libraries (${PROJECT_NAME}_plugin_scan PRIVATE ${LV2_LIBRARIES})
+endif ()
+
+if (CONFIG_LV2_UI_GTK2)
+  target_include_directories (${PROJECT_NAME} PRIVATE ${GTK2_INCLUDE_DIRS})
+  target_link_directories (${PROJECT_NAME} PRIVATE ${GTK2_LIBRARY_DIRS})
+  target_link_libraries (${PROJECT_NAME} PRIVATE ${GTK2_LIBRARIES})
+endif ()
+
+if (CONFIG_LV2_UI_GTKMM2)
+  target_include_directories (${PROJECT_NAME} PRIVATE ${GTKMM2_INCLUDE_DIRS})
+  target_link_directories (${PROJECT_NAME} PRIVATE ${GTKMM2_LIBRARY_DIRS})
+  target_link_libraries (${PROJECT_NAME} PRIVATE ${GTKMM2_LIBRARIES})
+endif ()
+
+if (CONFIG_VST3 AND CONFIG_VST3SDK)
+  target_include_directories (${PROJECT_NAME} PRIVATE ${CONFIG_VST3SDK})
+  target_include_directories (${PROJECT_NAME}_plugin_scan PRIVATE ${CONFIG_VST3SDK})
+  if (XCB_FOUND)
+    target_include_directories (${PROJECT_NAME} PRIVATE ${XCB_INCLUDE_DIRS})
+    target_link_directories (${PROJECT_NAME} PRIVATE ${XCB_LIBRARY_DIRS})
+    target_link_libraries (${PROJECT_NAME} PRIVATE ${XCB_LIBRARIES})
+  endif ()
+  if (PTHREAD_LIBRARY)
+    target_link_libraries (${PROJECT_NAME} PRIVATE ${PTHREAD_LIBRARY})
+    target_link_libraries (${PROJECT_NAME}_plugin_scan PRIVATE ${PTHREAD_LIBRARY})
+  endif ()
 endif ()
 
 
 if (UNIX AND NOT APPLE)
-  install (TARGETS ${NAME} RUNTIME
+  install (TARGETS ${PROJECT_NAME} RUNTIME
      DESTINATION ${CMAKE_INSTALL_BINDIR})
-  install (TARGETS ${NAME}_plugin_scan RUNTIME
-     DESTINATION ${CMAKE_INSTALL_LIBDIR}/${NAME})
+  install (TARGETS ${PROJECT_NAME}_plugin_scan RUNTIME
+     DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME})
   install (FILES ${QM_FILES}
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/${NAME}/translations)
-  install (FILES ${NAME}.desktop
+     DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/translations)
+  install (FILES ${PROJECT_NAME}.desktop
      DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-  install (FILES images/${NAME}.png
+  install (FILES images/${PROJECT_NAME}.png
      DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/apps)
-  install (FILES appdata/${NAME}.appdata.xml
+  install (FILES images/${PROJECT_NAME}.svg
+     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
+  install (FILES appdata/${PROJECT_NAME}.appdata.xml
      DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
-  install (FILES mimetypes/${NAME}.xml
+  install (FILES mimetypes/${PROJECT_NAME}.xml
      DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
-  install (FILES mimetypes/application-x-${NAME}-session.png
-       mimetypes/application-x-${NAME}-template.png
-       mimetypes/application-x-${NAME}-archive.png
+  install (FILES mimetypes/application-x-${PROJECT_NAME}-session.png
+       mimetypes/application-x-${PROJECT_NAME}-template.png
+       mimetypes/application-x-${PROJECT_NAME}-archive.png
      DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/mimetypes)
-  install (FILES mimetypes/application-x-${NAME}-session.svg
-       mimetypes/application-x-${NAME}-template.svg
-       mimetypes/application-x-${NAME}-archive.svg
+  install (FILES mimetypes/application-x-${PROJECT_NAME}-session.svg
+       mimetypes/application-x-${PROJECT_NAME}-template.svg
+       mimetypes/application-x-${PROJECT_NAME}-archive.svg
      DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/mimetypes)
 endif ()
 
 if (WIN32)
-   install (TARGETS ${NAME} RUNTIME
+   install (TARGETS ${PROJECT_NAME} RUNTIME
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-   install (TARGETS ${NAME}_plugin_scan RUNTIME
+   install (TARGETS ${PROJECT_NAME}_plugin_scan RUNTIME
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
    install (FILES ${QM_FILES}
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/${NAME}/translations)
+     DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/translations)
 endif ()
 

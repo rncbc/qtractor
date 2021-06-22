@@ -204,7 +204,7 @@ void qtractorInstrumentForm::reloadFiles ( const QStringList& files )
 }
 
 
-// Import new intrument file(s) into listing.
+// Import new instrument file(s) into listing.
 void qtractorInstrumentForm::importSlot (void)
 {
 	if (m_pInstruments == nullptr)

@@ -1,7 +1,7 @@
 #
 # spec file for package qtractor
 #
-# Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+# Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -17,12 +17,18 @@
 
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 58
+%define release 64.1
 
 %define _prefix	@ac_prefix@
 
 %if %{defined fedora}
 %define debug_package %{nil}
+%endif
+
+%if 0%{?fedora_version} >= 34 || 0%{?suse_version} > 1500
+%define qt_major_version  6
+%else
+%define qt_major_version  5
 %endif
 
 Summary:	An Audio/MIDI multi-track sequencer
@@ -32,25 +38,54 @@ Release:	%{release}
 License:	GPL-2.0+
 Group:		Productivity/Multimedia/Sound/Midi
 Source0:	%{name}-%{version}.tar.gz
-URL:		http://qtractor.sourceforge.net/
-#Packager:	rncbc.org
+URL:		https://qtractor.org/
+Packager:	rncbc.org
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
+BuildRequires:	coreutils
+BuildRequires:	pkgconfig
+BuildRequires:	glibc-devel
+BuildRequires:	gcc-c++
+BuildRequires:	cmake
 %if %{defined fedora}
-BuildRequires:	pkgconfig, ruby
-BuildRequires:	qt5-qtbase-devel >= 5.1, qt5-linguist
+%if 0%{qt_major_version} == 6
+BuildRequires:	qt6-qtbase-devel >= 6.1
+BuildRequires:	qt6-qttools-devel
+BuildRequires:	qt6-qtwayland-devel
+BuildRequires:	qt6-qtsvg-devel
+BuildRequires:	qt6-linguist
+%else
+BuildRequires:	qt5-qtbase-devel >= 5.1
+BuildRequires:	qt5-qttools-devel
+BuildRequires:	qt5-qtwayland-devel
+BuildRequires:	qt5-qtsvg-devel
+BuildRequires:	qt5-linguist
+%endif
+BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	rubberband-devel
 BuildRequires:	aubio-devel >= 0.4.1
+BuildRequires:	ruby
 %else
-BuildRequires:	pkg-config
-BuildRequires:	libqt5-qtbase-devel >= 5.1, libqt5-linguist
+%if 0%{qt_major_version} == 6
+BuildRequires:	qt6-base-devel >= 6.1
+BuildRequires:	qt6-tools-devel
+BuildRequires:	qt6-wayland-devel
+BuildRequires:	qt6-svg-devel
+BuildRequires:	qt6-linguist-devel
+%else
+BuildRequires:	libqt5-qtbase-devel >= 5.1
+BuildRequires:	libqt5-qttools-devel
+BuildRequires:	libqt5-qtwayland-devel
+BuildRequires:	libqt5-qtsvg-devel
+BuildRequires:	libqt5-linguist-devel
+%endif
+BuildRequires:	libjack-devel
 BuildRequires:	alsa-devel
 BuildRequires:	librubberband-devel
 BuildRequires:  libaubio-devel >= 0.4.1
 %endif
-BuildRequires:	libjack-devel
 BuildRequires:	libsndfile-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libmad-devel
@@ -66,6 +101,11 @@ BuildRequires:	liblilv-devel
 BuildRequires:	libsuil-devel
 BuildRequires:	zlib-devel
 BuildRequires:	gtk2-devel
+%if %{defined fedora}
+BuildRequires:	gtkmm24-devel
+%else
+BuildRequires:	gtkmm2-devel
+%endif
 BuildRequires:	vst3sdk-devel >= 3.6.14
 
 Requires(post):		desktop-file-utils, shared-mime-info
@@ -81,15 +121,14 @@ Linux Desktop Audio Workstation GUI, specially dedicated to
 the personal home-studio.
 
 %prep
-%setup
-[ -x ./autogen.sh ] && ./autogen.sh
+%setup -q
 
 %build
-%configure
-%__make %{?_smp_mflags}
+cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build -S .
+%__make %{?_smp_mflags} -C build
 
 %install
-%__make DESTDIR="%{buildroot}" install
+%__make DESTDIR="%{buildroot}" -C build install
 
 %post
 %mime_database_post
@@ -137,7 +176,17 @@ the personal home-studio.
 %{_datadir}/man/fr/man1/%{name}.1.gz
 
 %changelog
-* Thu Sep 15 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.17
+* Fri May 14 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.22
+- Spring'21 release.
+* Thu Mar 18 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.21
+- End-of-Winter'21 release.
+* Fri Feb 12 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.20
+- Winter'21 release.
+* Sun Dec 20 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.19
+- Winter'20 release.
+* Fri Oct 30 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.18
+- Fall'20 release.
+* Tue Sep 15 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.17
 - End-of-Summer'20 release.
 * Fri Aug  7 2020 Rui Nuno Capela <rncbc@rncbc.org> 0.9.16
 - Summer'20 release.

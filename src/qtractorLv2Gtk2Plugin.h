@@ -1,15 +1,7 @@
-This package was debianized by Rui Nuno Capela <rncbc@rncbc.org> on
-Thu, 14 Jun 2007 10:08:41 +0100.
-
-It was downloaded from https://qtractor.org
-
-Upstream Author: Rui Nuno Capela <rncbc@rncbc.org>
-
-Copyright:
-
+// qtractorLv2Gtk2Plugin.h
+//
+/****************************************************************************
    Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
-
-License:
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,6 +17,29 @@ License:
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-The Debian packaging is (C) 2008-2021, Rui Nuno Capela <rncbc@rncbc.org>
-and is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+*****************************************************************************/
 
+#ifndef __qtractorLv2Gtk2Plugin_h
+#define __qtractorLv2Gtk2Plugin_h
+
+#ifdef CONFIG_LV2
+#ifdef CONFIG_LV2_UI
+#ifdef CONFIG_LV2_UI_GTK2
+
+
+namespace qtractorLv2Gtk2Plugin {
+
+	// Module entry/exit points.
+	void init_main();
+	void exit_main();
+
+}	// namespace qtractorLv2Gtk2Plugin
+
+
+#endif	// CONFIG_LV2_UI_GTK2
+#endif	// CONFIG_LV2_UI
+#endif	// CONFIG_LV2
+
+#endif  // __qtractorLv2Gtk2Plugin_h
+
+// end of qtractorLv2Gtk2Plugin.h

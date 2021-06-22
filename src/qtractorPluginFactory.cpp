@@ -1,7 +1,7 @@
 // qtractorPluginFactory.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -58,6 +58,11 @@
 #include <QStandardPaths>
 #endif
 
+// Deprecated QTextStreamFunctions/Qt namespaces workaround.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#define endl	Qt::endl
+#endif
+
 
 //----------------------------------------------------------------------------
 // qtractorPluginFactory -- Plugin path helper.
@@ -77,6 +82,17 @@ qtractorPluginFactory *qtractorPluginFactory::getInstance (void)
 qtractorPluginFactory::qtractorPluginFactory ( QObject *pParent )
 	: QObject(pParent), m_typeHint(qtractorPluginType::Any)
 {
+	// Load persistent blacklist...
+	//m_blacklist.clear();
+	QFile data_file(blacklistDataFilePath());
+	if (data_file.exists())
+		readBlacklist(data_file);
+	QFile temp_file(blacklistTempFilePath());
+	if (temp_file.exists()) {
+		readBlacklist(temp_file);
+		temp_file.remove();
+	}
+
 	g_pPluginFactory = this;
 }
 
@@ -90,8 +106,16 @@ qtractorPluginFactory::~qtractorPluginFactory (void)
 	clear();
 
 	m_paths.clear();
-}
 
+	// Save persistent blacklist...
+	QFile data_file(blacklistDataFilePath());
+	if (!m_blacklist.isEmpty())
+		writeBlacklist(data_file, m_blacklist);
+	else
+	if (data_file.exists())
+		data_file.remove();
+	m_blacklist.clear();
+}
 
 
 // A common scheme for (a default) plugin serach paths...
@@ -254,6 +278,92 @@ QStringList qtractorPluginFactory::pluginPaths (
 		updatePluginPaths();
 
 	return m_paths.value(typeHint);
+}
+
+
+// Blacklist accessors.
+void qtractorPluginFactory::setBlacklist ( const QStringList&  blacklist )
+{
+	m_blacklist = blacklist;
+}
+
+const QStringList& qtractorPluginFactory::blacklist (void) const
+{
+	return m_blacklist;
+}
+
+
+// Absolute temporary blacklist file path.
+QString qtractorPluginFactory::blacklistTempFilePath (void) const
+{
+	const QString& sTempName
+		= "qtractor_plugin_blacklist.temp";
+	const QString& sTempDir
+	#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
+		= QDesktopServices::storageLocation(QDesktopServices::TempLocation);
+	#else
+		= QStandardPaths::writableLocation(QStandardPaths::TempLocation);
+	#endif
+	const QFileInfo fi(sTempDir, sTempName);
+	const QDir& dir = fi.absoluteDir();
+	if (!dir.exists())
+		dir.mkpath(dir.path());
+	return fi.absoluteFilePath();
+}
+
+
+// Absolute persistent blacklist file path.
+QString qtractorPluginFactory::blacklistDataFilePath (void) const
+{
+	const QString& sDataName
+		= "qtractor_plugin_blacklist.data";
+	const QString& sDataDir
+	#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
+		= QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+	#else
+		= QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+	#endif
+	const QFileInfo fi(sDataDir, sDataName);
+	const QDir& dir = fi.absoluteDir();
+	if (!dir.exists())
+		dir.mkpath(dir.absolutePath());
+	return fi.absoluteFilePath();
+}
+
+
+// Read from file and append to blacklist.
+bool qtractorPluginFactory::readBlacklist (	QFile& file )
+{
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+		return false;
+
+	QTextStream sin(&file);
+	while (!sin.atEnd()) {
+		const QString& line = sin.readLine();
+		if (line.isEmpty())
+			continue;
+		m_blacklist.append(line);
+	}
+	file.close();
+
+	return true;
+}
+
+
+// Write/append blacklist to file.
+bool qtractorPluginFactory::writeBlacklist (
+	QFile& file, const QStringList& blacklist ) const
+{
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+		return false;
+
+	QTextStream sout(&file);
+	QStringListIterator iter(blacklist);
+	while (iter.hasNext())
+		sout << iter.next() << endl;
+	file.close();
+
+	return true;
 }
 
 
@@ -608,6 +718,10 @@ qtractorPlugin *qtractorPluginFactory::createPlugin (
 bool qtractorPluginFactory::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
+	// Check if already blacklisted...
+	if (m_blacklist.contains(sFilename))
+		return false;
+
 	// Try first out-of-process scans, if any...
 	Scanner *pScanner = m_scanners.value(typeHint, nullptr);
 	if (pScanner)
@@ -636,9 +750,20 @@ bool qtractorPluginFactory::addTypes (
 	if (pFile == nullptr)
 		return false;
 
+	// Add to temporary blacklist...
+	QFile temp_file(blacklistTempFilePath());
+	if (temp_file.exists())
+		readBlacklist(temp_file);
+	writeBlacklist(temp_file, QStringList() << sFilename);
+
 	unsigned long iIndex = 0;
 	while (addTypes(typeHint, pFile, iIndex))
 		++iIndex;
+
+	// If it reaches here safely, then there's
+	// no use to temporary blacklist anymore...
+	temp_file.remove();
+
 	if (iIndex > 0) {
 		pFile->close();
 		return true;
@@ -862,13 +987,14 @@ bool qtractorPluginFactory::Scanner::addTypes (
 			return addTypes(list);
 	}
 
+	qtractorPluginFactory *pPluginFactory
+		= static_cast<qtractorPluginFactory *> (QObject::parent());
+	if (pPluginFactory == nullptr)
+		return false;
+
 #ifdef CONFIG_LV2
 	// LV2 plugins are dang special...
 	if (typeHint == qtractorPluginType::Lv2) {
-		qtractorPluginFactory *pPluginFactory
-			= static_cast<qtractorPluginFactory *> (QObject::parent());
-		if (pPluginFactory == nullptr)
-			return false;
 		qtractorPluginType *pType
 			= qtractorLv2PluginType::createType(sFilename);
 		if (pType == nullptr)
@@ -893,7 +1019,7 @@ bool qtractorPluginFactory::Scanner::addTypes (
 					flags.append("RT");
 				sout << flags.join(",") << '|';
 				sout << sFilename << '|' << 0 << '|';
-				sout << "0x" << QString::number(pType->uniqueID(), 16) << '\n';
+				sout << "0x" << QString::number(pType->uniqueID(), 16) << endl;
 			}
 			// Success.
 			return true;
@@ -905,11 +1031,18 @@ bool qtractorPluginFactory::Scanner::addTypes (
 	}
 #endif
 
+	// Add to temporary blacklist...
+	QFile temp_file(pPluginFactory->blacklistTempFilePath());
+	if (temp_file.exists())
+		pPluginFactory->readBlacklist(temp_file);
+	pPluginFactory->writeBlacklist(temp_file, QStringList() << sFilename);
+
 	// Not cached, yet...
 	const QString& sHint = qtractorPluginType::textFromHint(typeHint);
 	const QString& sLine = sHint + ':' + sFilename + '\n';
 	const QByteArray& data = sLine.toUtf8();
-	const bool bResult = (QProcess::write(data) == data.size());
+
+	bool bResult = (QProcess::write(data) == data.size());
 
 	// Check for hideous scan crashes...
 	if (!QProcess::waitForReadyRead(3000)) {
@@ -917,8 +1050,14 @@ bool qtractorPluginFactory::Scanner::addTypes (
 			QProcess::waitForFinished(200);
 			start(); // Restart the crashed scan...
 			QProcess::waitForStarted(200);
+			bResult = false;
 		}
 	}
+
+	// If it reaches here safely, then there's
+	// no use to temporary blacklist anymore...
+	if (bResult)
+		temp_file.remove();
 
 	return bResult;
 }
@@ -942,11 +1081,11 @@ bool qtractorPluginFactory::Scanner::addTypes ( const QStringList& list )
 			pPluginFactory->addType(pType);
 			// Cache in...
 			if (m_file.isOpen())
-				QTextStream(&m_file) << sText << "\n";
+				QTextStream(&m_file) << sText << endl;
 			// Done.
 		} else {
 			// Possibly some mistake occurred...
-			QTextStream(stderr) << sText + '\n';
+			QTextStream(stderr) << sText << endl;
 		}
 	}
 
@@ -961,12 +1100,16 @@ QString qtractorPluginFactory::Scanner::cacheFilePath (void) const
 		+ qtractorPluginType::textFromHint(m_typeHint).toLower()
 		+ "_scan.cache";
 	const QString& sCacheDir
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+	#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
 		= QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-#else
+	#else
 		= QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-#endif
-	return QFileInfo(sCacheDir, sCacheName).absoluteFilePath();
+	#endif
+	const QFileInfo fi(sCacheDir, sCacheName);
+	const QDir& dir = fi.absoluteDir();
+	if (!dir.exists())
+		dir.mkpath(dir.path());
+	return fi.absoluteFilePath();
 }
 
 
@@ -1009,7 +1152,7 @@ qtractorDummyPluginType::qtractorDummyPluginType (
 }
 
 
-// Must be overriden methods.
+// Must be overridden methods.
 bool qtractorDummyPluginType::open (void)
 {
 	return true;

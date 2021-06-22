@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -51,6 +51,11 @@
 #include <QDomDocument>
 #include <QFileInfo>
 
+
+
+// MIDI specific controllers.
+#define MIDI_CHANNEL_VOLUME		0x07
+#define MIDI_CHANNEL_PANNING	0x0a
 
 //------------------------------------------------------------------------
 // qtractorTrack::StateObserver -- Local track state observer.
@@ -106,31 +111,18 @@ public:
 
 	// Constructor.
 	MidiVolumeObserver(qtractorTrack *pTrack, qtractorSubject *pSubject)
-		: qtractorObserver(pSubject), m_pTrack(pTrack), m_volume(0) {}
+		: qtractorObserver(pSubject), m_pTrack(pTrack) {}
 
 protected:
 
 	// Update feedback.
 	void update(bool bUpdate)
-	{
-		const float fVolume = value();
-		const unsigned char vol = int(127.0f * fVolume) & 0x7f;
-		if (m_volume != vol) {
-			if (bUpdate) {
-				qtractorMidiBus *pMidiBus
-					= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
-				if (pMidiBus)
-					pMidiBus->setVolume(m_pTrack, fVolume);
-			}
-			m_volume = vol;
-		}
-	}
+		{ m_pTrack->setMidiVolume(int(127.0f * value()) & 0x7f, bUpdate); }
 
 private:
 
 	// Members.
 	qtractorTrack *m_pTrack;
-	unsigned char  m_volume;
 };
 
 
@@ -143,31 +135,18 @@ public:
 
 	// Constructor.
 	MidiPanningObserver(qtractorTrack *pTrack, qtractorSubject *pSubject)
-		: qtractorObserver(pSubject), m_pTrack(pTrack), m_panning(0) {}
+		: qtractorObserver(pSubject), m_pTrack(pTrack) {}
 
 protected:
 
 	// Update feedback.
 	void update(bool bUpdate)
-	{
-		const float fPanning = value();
-		const unsigned char pan = (0x40 + int(63.0f * fPanning)) & 0x7f;
-		if (m_panning != pan) {
-			if (bUpdate) {
-				qtractorMidiBus *pMidiBus
-					= static_cast<qtractorMidiBus *> (m_pTrack->outputBus());
-				if (pMidiBus)
-					pMidiBus->setPanning(m_pTrack, fPanning);
-			}
-			m_panning = pan;
-		}
-	}
+		{ m_pTrack->setMidiPanning((0x40 + int(63.0f * value())) & 0x7f, bUpdate); }
 
 private:
 
 	// Members.
 	qtractorTrack *m_pTrack;
-	unsigned char  m_panning;
 };
 
 
@@ -316,10 +295,14 @@ qtractorTrack::qtractorTrack ( qtractorSession *pSession, TrackType trackType )
 	m_pInputBus  = nullptr;
 	m_pOutputBus = nullptr;
 	m_pMonitor   = nullptr;
-	m_iMidiTag   = 0;
+
+	m_iMidiTag = 0;
 
 	m_midiNoteMin = 0;
 	m_midiNoteMax = 0;
+
+	m_midiVolume  = 0;
+	m_midiPanning = 0x40;
 
 	m_pClipRecord = nullptr;
 	m_iClipRecordStart = 0;
@@ -411,6 +394,14 @@ void qtractorTrack::clear (void)
 
 	m_pPluginList->clear();
 	m_pCurveFile->clear();
+
+	m_iMidiTag = 0;
+
+	m_midiNoteMin = 0;
+	m_midiNoteMax = 0;
+
+	m_midiVolume  = 0;
+	m_midiPanning = 0x40;
 
 	m_props.midiBankSelMethod = -1;
 	m_props.midiBank = -1;
@@ -635,8 +626,9 @@ bool qtractorTrack::open (void)
 // Track close method.
 void qtractorTrack::close (void)
 {
-	// Make sure there's no subject automation going on...
+#if 0// Sure there's no subject automation going on?...
 	qtractorSubject::resetQueue();
+#endif
 
 	if (m_pMidiVolumeObserver) {
 		delete m_pMidiVolumeObserver;
@@ -1020,6 +1012,78 @@ unsigned char qtractorTrack::midiNoteMax (void) const
 }
 
 
+// MIDI specific volume controller.
+void qtractorTrack::setMidiVolume ( unsigned char vol, bool bUpdate )
+{
+	if (m_midiVolume == vol)
+		return;
+
+	m_midiVolume = vol;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (m_pOutputBus);
+	if (pMidiBus == nullptr)
+		return;
+
+	if (bUpdate) {
+		pMidiBus->setController(this, MIDI_CHANNEL_VOLUME, vol);
+		return;
+	}
+
+	qtractorMidiManager *pMidiManager = nullptr;
+	if (m_pPluginList)
+		pMidiManager = m_pPluginList->midiManager();
+	if (pMidiManager)
+		pMidiManager->setController(midiChannel(), MIDI_CHANNEL_VOLUME, vol);
+	if (pMidiBus->pluginList_out()) {
+		pMidiManager = pMidiBus->pluginList_out()->midiManager();
+		if (pMidiManager)
+			pMidiManager->setController(midiChannel(), MIDI_CHANNEL_VOLUME, vol);
+	}
+}
+
+unsigned char qtractorTrack::midiVolume (void) const
+{
+	return m_midiVolume;
+}
+
+
+// MIDI specific panning controller.
+void qtractorTrack::setMidiPanning ( unsigned char pan, bool bUpdate )
+{
+	if (m_midiPanning == pan)
+		return;
+
+	m_midiPanning = pan;
+
+	qtractorMidiBus *pMidiBus
+		= static_cast<qtractorMidiBus *> (m_pOutputBus);
+	if (pMidiBus == nullptr)
+		return;
+
+	if (bUpdate) {
+		pMidiBus->setController(this, MIDI_CHANNEL_PANNING, pan);
+		return;
+	}
+
+	qtractorMidiManager *pMidiManager = nullptr;
+	if (m_pPluginList)
+		pMidiManager = m_pPluginList->midiManager();
+	if (pMidiManager)
+		pMidiManager->setController(midiChannel(), MIDI_CHANNEL_PANNING, pan);
+	if (pMidiBus->pluginList_out()) {
+		pMidiManager = pMidiBus->pluginList_out()->midiManager();
+		if (pMidiManager)
+			pMidiManager->setController(midiChannel(), MIDI_CHANNEL_PANNING, pan);
+	}
+}
+
+unsigned char qtractorTrack::midiPanning (void) const
+{
+	return m_midiPanning;
+}
+
+
 // Assigned input bus name accessors.
 void qtractorTrack::setInputBusName ( const QString& sBusName )
 {
@@ -1151,7 +1215,7 @@ const qtractorList<qtractorClip>& qtractorTrack::clips (void) const
 }
 
 
-// Insert a new clip in garanteed sorted fashion.
+// Insert a new clip in guaranteed sorted fashion.
 void qtractorTrack::addClip ( qtractorClip *pClip )
 {
 	// Preliminary settings...
@@ -1312,12 +1376,39 @@ const QColor& qtractorTrack::foreground (void) const
 }
 
 
+// Default track color saturation factor [0..500].
+int qtractorTrack::g_iTrackColorSaturation = 100;
+
+void qtractorTrack::setTrackColorSaturation ( int iTrackColorSaturation )
+{
+	g_iTrackColorSaturation = iTrackColorSaturation;
+}
+
+int qtractorTrack::trackColorSaturation (void)
+{
+	return g_iTrackColorSaturation;
+}
+
+
 // Generate a default track color.
 QColor qtractorTrack::trackColor ( int iTrack )
 {
 	const int c[3] = { 0xff, 0xcc, 0x99 };
 
-	return QColor(c[iTrack % 3], c[(iTrack / 3) % 3], c[(iTrack / 9) % 3]);
+	QColor color(
+		c[iTrack % 3],
+		c[(iTrack / 3) % 3],
+		c[(iTrack / 9) % 3]);
+
+	int h, s, v;
+	color.getHsv(&h, &s, &v);
+	s += (s * (g_iTrackColorSaturation - 100)) / 100;
+	if (s < 0) s = 0;
+	else
+	if (s > 255) s = 255;
+	color.setHsv(h, s, v);
+
+	return color;
 }
 
 
@@ -1334,7 +1425,7 @@ qtractorTrack::Properties& qtractorTrack::properties (void)
 }
 
 
-// Reset state properties (as needed on copy/dublicate)
+// Reset state properties (as needed on copy/duplicate)
 void qtractorTrack::resetProperties (void)
 {
 	const bool bMonitor = m_props.monitor;
@@ -1493,7 +1584,6 @@ void qtractorTrack::process_curve ( unsigned long iFrame )
 	if (pCurveList && pCurveList->isProcess())
 		pCurveList->process(iFrame);
 }
-
 
 
 // Track paint method.

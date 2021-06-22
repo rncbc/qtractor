@@ -1,7 +1,7 @@
 // qtractorSpinBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,13 +23,16 @@
 #include "qtractorSpinBox.h"
 
 #include <QLineEdit>
-#include <QLocale>
 #include <QMenu>
+
+#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
+#include <QLocale>
+#endif
 
 #include <QContextMenuEvent>
 #include <QKeyEvent>
 
-#include <math.h>
+#include <cmath>
 
 
 //-------------------------------------------------------------------------
@@ -612,9 +615,8 @@ bool qtractorTempoSpinBox::updateValue ( float fTempo,
 	if (iBeatDivisor > 8)
 		iBeatDivisor = 8;
 
-	if (qAbs(m_fTempo - fTempo) > 0.05f) {
-		// Fixup: round to one single decimal place.
-		m_fTempo = 0.1f * ::roundf(10.0f * fTempo);
+	if (qAbs(m_fTempo - fTempo) > 0.001f) {
+		m_fTempo = 0.01f * ::roundf(100.0f * fTempo);
 		++m_iValueChanged;
 	}
 
@@ -665,10 +667,14 @@ QValidator::State qtractorTempoSpinBox::validate ( QString& sText, int& iPos ) c
 		return QValidator::Acceptable;
 
 	const QChar& ch = sText.at(iPos - 1);
+#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 	const QChar& decp = QLocale().decimalPoint().at(0);
 #else
 	const QChar& decp = QLocale().decimalPoint();
+#endif
+#else
+	const QChar& decp = '.';
 #endif
 	if (ch == decp || ch == '/' || ch == ' ' || ch.isDigit())
 		return QValidator::Acceptable;
@@ -697,19 +703,29 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
 	const int iCursorPos = pLineEdit->cursorPosition();
 	const QString& sText = pLineEdit->text();
-	if (iCursorPos < sText.section(' ', 0, 0).length() + 1) {
+	const int iLength = sText.indexOf(' ');
+	if (iCursorPos < iLength + 1) {
+	#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
 	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 		const QChar& decp = QLocale().decimalPoint().at(0);
 	#else
 		const QChar& decp = QLocale().decimalPoint();
 	#endif
-		if (iCursorPos > sText.section(decp, 0, 0).length())
-			setTempo(tempo() + 0.1f * float(iSteps));
-		else
-			setTempo(tempo() + float(iSteps));
+	#else
+		const QChar& decp = '.';
+	#endif
+		float fStep = 1.0f;
+		const int iDecimalPos = sText.indexOf(decp);
+		if (iDecimalPos >= 0 && iDecimalPos < iCursorPos) {
+			int i = iCursorPos - iDecimalPos;
+			while (--i > 0) fStep *= 0.1f;
+		}
+		setTempo(tempo() + fStep * float(iSteps));
+		pLineEdit->setCursorPosition(iCursorPos
+			+ pLineEdit->text().indexOf(' ') - iLength);
 	}
 	else
-	if (iCursorPos > sText.section('/', 0, 0).length())
+	if (iCursorPos > sText.indexOf('/'))
 		setBeatDivisor(int(beatDivisor()) + iSteps);
 	else
 		setBeatsPerBar(int(beatsPerBar()) + iSteps);
@@ -733,7 +749,14 @@ QAbstractSpinBox::StepEnabled qtractorTempoSpinBox::stepEnabled (void) const
 // Value/text format converters.
 float qtractorTempoSpinBox::tempoFromText ( const QString& sText ) const
 {
+#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
+	bool ok = false;
+	const QString& sTempo = sText.section(' ', 0, 0);
+	float fTempo = QLocale().toFloat(sTempo, &ok);
+	if (!ok) fTempo = sText.toFloat();
+#else
 	const float fTempo = sText.section(' ', 0, 0).toFloat();
+#endif
 	return (fTempo >= 1.0f ? fTempo : m_fTempo);
 }
 
@@ -759,7 +782,11 @@ QString qtractorTempoSpinBox::textFromValue ( float fTempo,
 	unsigned short iBeatsPerBar, unsigned short iBeatDivisor) const
 {
 	return QString("%1 %2/%3")
-		.arg(fTempo, 0, 'f', 1)
+	#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
+		.arg(QLocale().toString(fTempo))
+	#else
+		.arg(fTempo)
+	#endif
 		.arg(iBeatsPerBar)
 		.arg(1 << iBeatDivisor);
 }

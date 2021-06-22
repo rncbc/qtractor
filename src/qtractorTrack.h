@@ -1,7 +1,7 @@
 // qtractorTrack.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -152,6 +152,14 @@ public:
 	// MIDI specific: track-maximum note.
 	void setMidiNoteMax(unsigned char note);
 	unsigned char midiNoteMax() const;
+
+	// MIDI specific volume controller.
+	void setMidiVolume(unsigned char vol, bool bUpdate = false);
+	unsigned char midiVolume() const;
+
+	// MIDI specific panning controller.
+	void setMidiPanning(unsigned char pan, bool bUpdate = false);
+	unsigned char midiPanning() const;
 
 	// Assigned bus name accessors.
 	void setInputBusName(const QString& sBusName);
@@ -338,7 +346,7 @@ public:
 	void setProperties(const Properties& props);
 	Properties& properties();
 
-	// Reset state properties (as needed on copy/dublicate)
+	// Reset state properties (as needed on copy/duplicate)
 	void resetProperties();
 
 	// Track type textual helper methods.
@@ -364,6 +372,10 @@ public:
 	// Update all plugin forms, if visible.
 	void refreshPluginForms();
 
+	// Default track color saturation factor [0..500].
+	static void setTrackColorSaturation(int iTrackColorSaturation);
+	static int trackColorSaturation();
+
 private:
 
 	qtractorSession *m_pSession;    // Session reference.
@@ -379,6 +391,9 @@ private:
 
 	unsigned char    m_midiNoteMax; // MIDI specific: track-maximum note;
 	unsigned char    m_midiNoteMin; // MIDI specific: track-minimum note.
+
+	unsigned char    m_midiVolume;  // MIDI specific: track-volume;
+	unsigned char    m_midiPanning; // MIDI specific: track-panning.
 
 	int              m_iHeight;     // View height (normalized).
 	int              m_iHeightBase; // View height (base).
@@ -429,6 +444,9 @@ private:
 	class MidiProgramObserver;
 
 	MidiProgramObserver *m_pMidiProgramObserver;
+
+	// Default track color saturation factor [0..500].
+	static int g_iTrackColorSaturation;
 };
 
 

@@ -1,7 +1,7 @@
 // qtractorCurve.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -151,7 +151,7 @@ public:
 		// Accessors.
 		qtractorCurve *curve() const { return m_pCurve; }
 		unsigned long  frame() const { return m_iFrame; }
-	
+
 		// Specific methods.
 		Node *seek(unsigned long iFrame);
 		void reset(Node *pNode = nullptr);
@@ -180,7 +180,7 @@ public:
 	};
 
 	// Internal cursor accessor.
-	const Cursor& cursor() const { return m_cursor; }
+	Cursor& cursor() { return m_cursor; }
 
 	// Curve state flags.
 	enum State { Idle = 0, Process = 1, Capture = 2, Locked = 4 };
@@ -194,7 +194,7 @@ public:
 	bool isLocked() const
 		{ return (m_state & Locked); }
 
-	// Ccapture/process state settlers.
+	// Capture/process state settlers.
 	void setCapture(bool bCapture);
 	void setProcess(bool bProcess);
 	void setLocked(bool bLocked);
@@ -202,11 +202,8 @@ public:
 	// The meta-processing automation procedure.
 	void process(unsigned long iFrame)
 	{
-		if (isProcess()) {
-			Node *pNode = seek(iFrame);
-			if (!isCapture())
-				m_observer.setValue(value(pNode, iFrame));
-		}
+		if (isProcess())
+			m_observer.setValue(value(iFrame));
 	}
 
 	void process() { process(m_cursor.frame()); }
@@ -215,7 +212,7 @@ public:
 	void capture(unsigned long iFrame)
 	{
 		if (isCapture())
-			addNode(iFrame, m_observer.value(), m_pEditList);
+			addNode(iFrame, m_observer.lastValue(), m_pEditList);
 	}
 
 	void capture() { capture(m_cursor.frame()); }
@@ -255,7 +252,7 @@ public:
 protected:
 
 	// Snap to minimum distance frame.
-	bool isMinFrameDist(Node *pNode, unsigned long iFrame, float fValue) const;
+	bool isMinFrameDist(Node *pNode, unsigned long iFrame) const;
 
 	// Node interpolation coefficients updater.
 	void updateNode(Node *pNode);
@@ -487,16 +484,6 @@ public:
 		qtractorCurve *pCurve = first();
 		while (pCurve) {
 			pCurve->setLength(iLength);
-			pCurve = pCurve->next();
-		}
-	}
-
-	// Record automation procedure.
-	void capture(unsigned long iFrame)
-	{
-		qtractorCurve *pCurve = first();
-		while (pCurve) {
-			pCurve->capture(iFrame);
 			pCurve = pCurve->next();
 		}
 	}

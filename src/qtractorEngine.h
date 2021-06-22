@@ -75,7 +75,7 @@ public:
 	void setPlaying(bool bPlaying);
 	bool isPlaying() const;
 
-	// Buses list managament methods.
+	// Buses list management methods.
 	const qtractorList<qtractorBus>& buses() const;
 
 	void addBus(qtractorBus *pBus);
@@ -87,7 +87,7 @@ public:
 	qtractorBus *findInputBus(const QString& sInputBusName) const;
 	qtractorBus *findOutputBus(const QString& sOutputBusName) const;
 
-	// Exo-buses list managament methods.
+	// Exo-buses list management methods.
 	const qtractorList<qtractorBus>& busesEx() const;
 
 	void addBusEx(qtractorBus *pBus);

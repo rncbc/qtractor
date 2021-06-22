@@ -1,7 +1,7 @@
 // qtractorMidiEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -273,7 +273,7 @@ public:
 	void setClockMode(qtractorBus::BusMode clockMode);
 	qtractorBus::BusMode clockMode() const;
 
-	// Free overriden SysEx queued events.
+	// Free overridden SysEx queued events.
 	void clearSysexCache();
 
 	// Reset ouput queue drift stats (audio vs. MIDI)...
@@ -398,7 +398,7 @@ private:
 	unsigned short m_iClockCount;
 	float          m_fClockTempo;
 
-	// Overriden SysEx queued events.
+	// Overridden SysEx queued events.
 	QList<qtractorMidiEvent *> m_sysexCache;
 };
 

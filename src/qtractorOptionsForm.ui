@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -442,7 +442,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="2" colspan="2">
+          <item row="2" column="2" colspan="2">
            <widget class="QCheckBox" name="TrackViewDropSpanCheckBox">
             <property name="font">
              <font>
@@ -458,7 +458,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2" colspan="2">
+          <item row="3" column="2" colspan="2">
            <widget class="QCheckBox" name="ShiftKeyModifierCheckBox">
             <property name="font">
              <font>
@@ -474,7 +474,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="2" colspan="2">
+          <item row="4" column="2" colspan="2">
            <widget class="QCheckBox" name="MidButtonModifierCheckBox">
             <property name="font">
              <font>
@@ -487,6 +487,22 @@
             </property>
             <property name="text">
              <string>Re&amp;verse middle-button modifier role (Shift/Ctrl)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2" colspan="2">
+           <widget class="QCheckBox" name="KeepEditorsOnTopCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to keep all editor windows on top of the main window</string>
+            </property>
+            <property name="text">
+             <string>Keep &amp;editor windows always on top</string>
             </property>
            </widget>
           </item>
@@ -2424,9 +2440,79 @@
              <string>Whether to hold auto-scrolling (follow play-head) on edits.</string>
             </property>
             <property name="text">
-             <string>H&amp;old auto-scrolling (follow play-head) on edits</string>
+             <string>&amp;Hold auto-scrolling (follow play-head) on edits</string>
             </property>
            </widget>
+          </item>
+          <item row="0" column="1">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="TrackColorSaturationTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Trac&amp;k color saturation:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>TrackColorSaturationSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QSpinBox" name="TrackColorSaturationSpinBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Default new track color saturation</string>
+            </property>
+            <property name="suffix">
+             <string> %</string>
+            </property>
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>500</number>
+            </property>
+            <property name="value">
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="3">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -3207,7 +3293,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="PluginPathBrowseToolButton">
+             <widget class="QToolButton" name="PluginPathToolButton">
               <property name="minimumSize">
                <size>
                 <width>22</width>
@@ -3540,19 +3626,6 @@
         </widget>
        </item>
        <item>
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint">
-          <size>
-           <width>20</width>
-           <height>4</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
         <widget class="QGroupBox" name="PluginsEditorGroupBox">
          <property name="font">
           <font>
@@ -3602,6 +3675,225 @@
             </property>
             <property name="text">
              <string>&amp;Select plugin's editor (GUI) if more than one are available</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint">
+          <size>
+           <width>20</width>
+           <height>4</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="PluginsBlacklistGroupBox">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="title">
+          <string>Blacklist</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0" colspan="2">
+           <layout class="QHBoxLayout">
+            <item>
+             <widget class="QComboBox" name="PluginBlacklistComboBox">
+              <property name="minimumSize">
+               <size>
+                <width>320</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Plugin blacklist path</string>
+              </property>
+              <property name="editable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="PluginBlacklistToolButton">
+              <property name="minimumSize">
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Browse plugin blacklist path</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="PluginBlacklistAddToolButton">
+              <property name="minimumSize">
+               <size>
+                <width>66</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>Add plugin blacklist path</string>
+              </property>
+              <property name="text">
+               <string>&amp;Add</string>
+              </property>
+              <property name="toolButtonStyle">
+               <enum>Qt::ToolButtonTextBesideIcon</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" rowspan="3">
+           <widget class="QListWidget" name="PluginBlacklistWidget">
+            <property name="maximumSize">
+             <size>
+              <width>32767</width>
+              <height>72</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="statusTip">
+             <string>Plugin blacklist paths</string>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <property name="uniformItemSizes">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QToolButton" name="PluginBlacklistRemoveToolButton">
+            <property name="minimumSize">
+             <size>
+              <width>66</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>60</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Remove plugin blacklist path</string>
+            </property>
+            <property name="text">
+             <string>&amp;Remove</string>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>4</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="1">
+           <widget class="QToolButton" name="PluginBlacklistClearToolButton">
+            <property name="minimumSize">
+             <size>
+              <width>66</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>60</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Clear plugin blacklist paths</string>
+            </property>
+            <property name="text">
+             <string>&amp;Clear</string>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
           </item>
@@ -3663,9 +3955,10 @@
   <tabstop>CompletePathCheckBox</tabstop>
   <tabstop>PeakAutoRemoveCheckBox</tabstop>
   <tabstop>KeepToolsOnTopCheckBox</tabstop>
+  <tabstop>MaxRecentFilesSpinBox</tabstop>
   <tabstop>TrackViewDropSpanCheckBox</tabstop>
   <tabstop>MidButtonModifierCheckBox</tabstop>
-  <tabstop>MaxRecentFilesSpinBox</tabstop>
+  <tabstop>KeepEditorsOnTopCheckBox</tabstop>
   <tabstop>TransportModeComboBox</tabstop>
   <tabstop>TimebaseCheckBox</tabstop>
   <tabstop>LoopRecordingModeComboBox</tabstop>
@@ -3712,6 +4005,7 @@
   <tabstop>BaseFontSizeComboBox</tabstop>
   <tabstop>UseNativeDialogsCheckBox</tabstop>
   <tabstop>SyncViewHoldCheckBox</tabstop>
+  <tabstop>TrackColorSaturationSpinBox</tabstop>
   <tabstop>CustomColorThemeComboBox</tabstop>
   <tabstop>CustomColorThemeToolButton</tabstop>
   <tabstop>CustomStyleThemeComboBox</tabstop>
@@ -3730,7 +4024,7 @@
   <tabstop>MessagesLogPathToolButton</tabstop>
   <tabstop>PluginTypeComboBox</tabstop>
   <tabstop>PluginPathComboBox</tabstop>
-  <tabstop>PluginPathBrowseToolButton</tabstop>
+  <tabstop>PluginPathToolButton</tabstop>
   <tabstop>PluginPathAddToolButton</tabstop>
   <tabstop>PluginPathListWidget</tabstop>
   <tabstop>PluginPathRemoveToolButton</tabstop>
@@ -3742,6 +4036,12 @@
   <tabstop>AudioOutputAutoConnectCheckBox</tabstop>
   <tabstop>OpenEditorCheckBox</tabstop>
   <tabstop>QueryEditorTypeCheckBox</tabstop>
+  <tabstop>PluginBlacklistComboBox</tabstop>
+  <tabstop>PluginBlacklistToolButton</tabstop>
+  <tabstop>PluginBlacklistAddToolButton</tabstop>
+  <tabstop>PluginBlacklistWidget</tabstop>
+  <tabstop>PluginBlacklistRemoveToolButton</tabstop>
+  <tabstop>PluginBlacklistClearToolButton</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -787,7 +787,7 @@ void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	const QPoint& pos
 		= qtractorScrollView::viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
-	const unsigned long iFrame = pTimeScale->frameSnap(m_pEditor->offset()
+	const unsigned long iFrame = m_pEditor->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 
 	// We'll need options somehow...

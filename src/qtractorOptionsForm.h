@@ -1,7 +1,7 @@
 // qtractorOptionsForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -80,6 +80,12 @@ protected slots:
 	void moveUpPluginPath();
 	void moveDownPluginPath();
 	void chooseLv2PresetDir();
+	void changePluginBlacklist(const QString&);
+	void choosePluginBlacklist();
+	void selectPluginBlacklist();
+	void addPluginBlacklist();
+	void removePluginBlacklist();
+	void clearPluginBlacklist();
 	void chooseMessagesFont();
 	void chooseMessagesLogPath();
 	void chooseSessionTemplatePath();
@@ -133,6 +139,8 @@ private:
 	int m_iDirtyVstPaths;
 	int m_iDirtyVst3Paths;
 	int m_iDirtyLv2Paths;
+
+	int m_iDirtyBlacklist;
 };
 
 

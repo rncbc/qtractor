@@ -1,7 +1,7 @@
 // qtractorCurve.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@
 
 #include "qtractorSession.h"
 
-#include <math.h>
+#include <cmath>
 
 
 // Ref. P.448. Approximate cube root of an IEEE float
@@ -256,10 +256,10 @@ qtractorCurve::Node *qtractorCurve::addNode (
 	Node *pNext = m_cursor.seek(iFrame);
 	Node *pPrev = (pNext ? pNext->prev() : m_nodes.last());
 
-	if (pNext && isMinFrameDist(pNext, iFrame, fValue))
+	if (pNext && isMinFrameDist(pNext, iFrame))
 		pNode = pNext;
 	else
-	if (pPrev && isMinFrameDist(pPrev, iFrame, fValue))
+	if (pPrev && isMinFrameDist(pPrev, iFrame))
 		pNode = pPrev;
 	else
 	if (m_mode != Hold && m_observer.isDecimal()) {
@@ -275,9 +275,10 @@ qtractorCurve::Node *qtractorCurve::addNode (
 		float y3 = (x2 > x1 ? s1 * (x2 - x1) + y1 : y1);
 		if (qAbs(y3 - y2) < fThreshold * qAbs(y3 - y1))
 			return nullptr;
-		if (pPrev) {
+	#if 0// Overkill maybe?...
+		if (pPrev && pPrev->prev()) {
 			pNode = pPrev;
-			pPrev = pNode->prev();
+			pPrev = pPrev->prev();
 			x0 = (pPrev ? float(pPrev->frame) : 0.0f);
 			y0 = (pPrev ? pPrev->value : m_tail.value);
 			x1 = float(pNode->frame);
@@ -289,6 +290,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 			if (qAbs(y3 - y2) > fThreshold * qAbs(y3 - y1))
 				pNode = nullptr;
 		}
+	#endif
 	}
 
 	if (pNode) {
@@ -310,7 +312,7 @@ qtractorCurve::Node *qtractorCurve::addNode (
 	}
 
 	updateNode(pNode);
-	
+
 	// Dirty up...
 	if (m_pList)
 		m_pList->notify();
@@ -389,24 +391,10 @@ void qtractorCurve::removeNode ( Node *pNode )
 
 
 // Whether to snap to minimum distance frame.
-bool qtractorCurve::isMinFrameDist (
-	Node *pNode, unsigned long iFrame, float fValue ) const
+bool qtractorCurve::isMinFrameDist ( Node *pNode, unsigned long iFrame) const
 {
-	const float fThreshold = 0.025f
-		* (m_observer.maxValue() - m_observer.minValue());
-
-	const bool bMinValueDist
-		= (fValue > pNode->value - fThreshold
-		&& fValue < pNode->value + fThreshold);
-
-	const bool bMinFrameDist
-		= (iFrame > pNode->frame - m_iMinFrameDist
-		&& iFrame < pNode->frame + m_iMinFrameDist);
-
-	if (m_mode == Hold || !m_observer.isDecimal())
-		return bMinFrameDist || bMinValueDist;
-	else
-		return bMinFrameDist && bMinValueDist;
+	return (iFrame > pNode->frame - m_iMinFrameDist &&
+			iFrame < pNode->frame + m_iMinFrameDist);
 }
 
 
@@ -802,6 +790,9 @@ bool qtractorCurveEditList::execute ( bool bRedo )
 	if (m_pCurve == nullptr)
 		return false;
 
+	const unsigned long iFrame
+		= m_pCurve->cursor().frame();
+
 	QListIterator<Item *> iter(m_items);
 	if (!bRedo)
 		iter.toBack();
@@ -840,6 +831,7 @@ bool qtractorCurveEditList::execute ( bool bRedo )
 		}
 	}
 
+	m_pCurve->cursor().seek(iFrame);
 	m_pCurve->update();
 
 	return true;

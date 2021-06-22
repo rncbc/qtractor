@@ -1,7 +1,7 @@
 // qtractorMidiManager.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -436,6 +436,7 @@ qtractorMidiManager::qtractorMidiManager (
 	const unsigned int VstBufferSize = sizeof(VstEvents)
 		+ MaxMidiEvents * sizeof(VstMidiEvent *);
 #endif
+#ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_EVENT
 	const unsigned int Lv2EventBufferSize
 		= (sizeof(LV2_Event) + 4) * MaxMidiEvents;
@@ -443,12 +444,14 @@ qtractorMidiManager::qtractorMidiManager (
 #ifdef CONFIG_LV2_ATOM
 	m_iLv2AtomBufferSize = (sizeof(LV2_Atom_Event) + 4) * MaxMidiEvents;
 #endif
+#endif
 	for (unsigned short i = 0; i < 2; ++i) {
 		m_ppEventBuffers[i] = new qtractorMidiBuffer(MaxMidiEvents);
 	#ifdef CONFIG_VST
 		m_ppVstBuffers[i] = new unsigned char [VstBufferSize];
 		m_ppVstMidiBuffers[i] = new VstMidiEvent [MaxMidiEvents];
 	#endif
+	#ifdef CONFIG_LV2
 	#ifdef CONFIG_LV2_EVENT
 		m_ppLv2EventBuffers[i] = lv2_event_buffer_new(Lv2EventBufferSize,
 			LV2_EVENT_AUDIO_STAMP);
@@ -457,6 +460,7 @@ qtractorMidiManager::qtractorMidiManager (
 		m_ppLv2AtomBuffers[i] = lv2_atom_buffer_new(m_iLv2AtomBufferSize,
 			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Chunk),
 			qtractorLv2Plugin::lv2_urid_map(LV2_ATOM__Sequence), (i & 1) == 0);
+	#endif
 	#endif
 	}
 
@@ -474,11 +478,13 @@ qtractorMidiManager::~qtractorMidiManager (void)
 
 	// Destroy event_buffers...
 	for (unsigned short i = 0; i < 2; ++i) {
+	#ifdef CONFIG_LV2
 	#ifdef CONFIG_LV2_ATOM
 		lv2_atom_buffer_free(m_ppLv2AtomBuffers[i]);
 	#endif
 	#ifdef CONFIG_LV2_EVENT
 		::free(m_ppLv2EventBuffers[i]);
+	#endif
 	#endif
 	#ifdef CONFIG_VST
 		delete [] m_ppVstMidiBuffers[i];
@@ -559,6 +565,7 @@ void qtractorMidiManager::clear (void)
 	#ifdef CONFIG_VST
 		::memset(m_ppVstBuffers[i], 0, sizeof(VstEvents));
 	#endif
+	#ifdef CONFIG_LV2
 	#ifdef CONFIG_LV2_EVENT
 		LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[i];
 		lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
@@ -566,6 +573,7 @@ void qtractorMidiManager::clear (void)
 	#endif
 	#ifdef CONFIG_LV2_ATOM
 		lv2_atom_buffer_reset(m_ppLv2AtomBuffers[i], (i & 1) == 0);
+	#endif
 	#endif
 	}
 
@@ -870,6 +878,7 @@ void qtractorMidiManager::processEventBuffers (void)
 #ifdef CONFIG_VST
 	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iInputBuffer];
 #endif
+#ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_EVENT
 	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iInputBuffer];
 	LV2_Event_Iterator eiter;
@@ -879,6 +888,7 @@ void qtractorMidiManager::processEventBuffers (void)
 	LV2_Atom_Buffer *pLv2AtomBuffer = m_ppLv2AtomBuffers[iInputBuffer];
 	LV2_Atom_Buffer_Iterator aiter;
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
+#endif
 #endif
 	const unsigned int MaxMidiEvents = (bufferSize() << 1);
 	unsigned int iMidiEvents = 0;
@@ -921,6 +931,7 @@ void qtractorMidiManager::processEventBuffers (void)
 			pVstEvents->events[iVstMidiEvents++] = (VstEvent *) pVstMidiEvent;
 		}
 	#endif
+	#ifdef CONFIG_LV2
 	#ifdef CONFIG_LV2_EVENT
 		lv2_event_write(&eiter, pEv->time.tick, 0,
 			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
@@ -928,6 +939,7 @@ void qtractorMidiManager::processEventBuffers (void)
 	#ifdef CONFIG_LV2_ATOM
 		lv2_atom_buffer_write(&aiter, pEv->time.tick, 0,
 			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
+	#endif
 	#endif
 		if (++iMidiEvents >= MaxMidiEvents)
 			break;
@@ -955,6 +967,7 @@ void qtractorMidiManager::resetInputBuffers (void)
 #ifdef CONFIG_VST
 	::memset(m_ppVstBuffers[iInputBuffer], 0, sizeof(VstEvents));
 #endif
+#ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_EVENT
 	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iInputBuffer];
 	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
@@ -962,6 +975,7 @@ void qtractorMidiManager::resetInputBuffers (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	lv2_atom_buffer_reset(m_ppLv2AtomBuffers[iInputBuffer], true);
+#endif
 #endif
 }
 
@@ -977,6 +991,7 @@ void qtractorMidiManager::resetOutputBuffers (void)
 #ifdef CONFIG_VST
 	::memset(m_ppVstBuffers[iOutputBuffer], 0, sizeof(VstEvents));
 #endif
+#ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_EVENT
 	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iOutputBuffer];
 	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
@@ -984,6 +999,7 @@ void qtractorMidiManager::resetOutputBuffers (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	lv2_atom_buffer_reset(m_ppLv2AtomBuffers[iOutputBuffer], false);
+#endif
 #endif
 }
 
@@ -1002,6 +1018,7 @@ void qtractorMidiManager::swapEventBuffers (void)
 #ifdef CONFIG_VST
 	::memset(m_ppVstBuffers[iInputBuffer], 0, sizeof(VstEvents));
 #endif
+#ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_EVENT
 	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iInputBuffer];
 	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
@@ -1009,6 +1026,7 @@ void qtractorMidiManager::swapEventBuffers (void)
 #endif
 #ifdef CONFIG_LV2_ATOM
 	lv2_atom_buffer_reset(m_ppLv2AtomBuffers[iInputBuffer], false);
+#endif
 #endif
 
 	++m_iEventBuffer;
@@ -1045,6 +1063,7 @@ void qtractorMidiManager::vst_events_swap (void)
 	qtractorMidiBuffer *pEventBuffer = m_ppEventBuffers[iOutputBuffer];
 	VstMidiEvent *pVstMidiBuffer = m_ppVstMidiBuffers[iOutputBuffer];
 	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iOutputBuffer];
+#ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_EVENT
 	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iOutputBuffer];
 	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
@@ -1057,6 +1076,7 @@ void qtractorMidiManager::vst_events_swap (void)
 	lv2_atom_buffer_reset(pLv2AtomBuffer, true);
 	LV2_Atom_Buffer_Iterator aiter;
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
+#endif
 #endif
 	unsigned int iMidiEvents = 0;
 	const unsigned int MaxMidiEvents = (bufferSize() << 1);
@@ -1076,6 +1096,7 @@ void qtractorMidiManager::vst_events_swap (void)
 			ev.time.tick = pVstMidiEvent->deltaFrames;
 		}
 	#endif
+	#ifdef CONFIG_LV2
 	#ifdef CONFIG_LV2_EVENT
 		lv2_event_write(&eiter, pVstMidiEvent->deltaFrames, 0,
 			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
@@ -1083,6 +1104,7 @@ void qtractorMidiManager::vst_events_swap (void)
 	#ifdef CONFIG_LV2_ATOM
 		lv2_atom_buffer_write(&aiter, pVstMidiEvent->deltaFrames, 0,
 			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
+	#endif
 	#endif
 		pEventBuffer->push(&ev, ev.time.tick);
 		++iMidiEvents;
@@ -1113,6 +1135,7 @@ void qtractorMidiManager::vst3_buffer_swap (void)
 	VstEvents *pVstEvents = (VstEvents *) m_ppVstBuffers[iOutputBuffer];
 	::memset(pVstEvents, 0, sizeof(VstEvents));
 #endif
+#ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_EVENT
 	LV2_Event_Buffer *pLv2EventBuffer = m_ppLv2EventBuffers[iOutputBuffer];
 	lv2_event_buffer_reset(pLv2EventBuffer, LV2_EVENT_AUDIO_STAMP,
@@ -1125,6 +1148,7 @@ void qtractorMidiManager::vst3_buffer_swap (void)
 	lv2_atom_buffer_reset(pLv2AtomBuffer, true);
 	LV2_Atom_Buffer_Iterator aiter;
 	lv2_atom_buffer_begin(&aiter, pLv2AtomBuffer);
+#endif
 #endif
 	unsigned int iMidiEvents = 0;
 	const unsigned int MaxMidiEvents = (bufferSize() << 1);
@@ -1148,6 +1172,7 @@ void qtractorMidiManager::vst3_buffer_swap (void)
 		::memcpy(&pVstMidiEvent->midiData[0], pMidiData, iMidiData);
 		pVstEvents->events[iMidiEvents] = (VstEvent *) pVstMidiEvent;
 	#endif
+	#ifdef CONFIG_LV2
 	#ifdef CONFIG_LV2_EVENT
 		lv2_event_write(&eiter, pEv->time.tick, 0,
 			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
@@ -1155,6 +1180,7 @@ void qtractorMidiManager::vst3_buffer_swap (void)
 	#ifdef CONFIG_LV2_ATOM
 		lv2_atom_buffer_write(&aiter, pEv->time.tick, 0,
 			QTRACTOR_LV2_MIDI_EVENT_ID, iMidiData, pMidiData);
+	#endif
 	#endif
 		if (++iMidiEvents >= MaxMidiEvents)
 			break;
@@ -1170,6 +1196,8 @@ void qtractorMidiManager::vst3_buffer_swap (void)
 
 #endif	// CONFIG_VST3
 
+
+#ifdef CONFIG_LV2
 
 #ifdef CONFIG_LV2_EVENT
 
@@ -1352,6 +1380,8 @@ void qtractorMidiManager::lv2_atom_buffer_resize ( unsigned int iMinBufferSize )
 }
 
 #endif	// CONFIG_LV2_ATOM
+
+#endif	// CONFIG_LV2
 
 
 // Some default factory options.

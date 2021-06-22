@@ -1,7 +1,7 @@
 // qtractor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -116,7 +116,7 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 			QApplication::installTranslator(m_pQtTranslator);
 		} else {
 			delete m_pQtTranslator;
-			m_pQtTranslator = 0;
+			m_pQtTranslator = nullptr;
 		#ifdef CONFIG_DEBUG
 			qWarning("Warning: no translation found for '%s' locale: %s/%s.qm",
 				loc.name().toUtf8().constData(),
@@ -135,7 +135,7 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 				QApplication::installTranslator(m_pMyTranslator);
 			} else {
 				delete m_pMyTranslator;
-				m_pMyTranslator = 0;
+				m_pMyTranslator = nullptr;
 			#ifdef CONFIG_DEBUG
 				qWarning("Warning: no translation found for '%s' locale: %s/%s.qm",
 					loc.name().toUtf8().constData(),
@@ -477,6 +477,9 @@ int main ( int argc, char **argv )
 	::signal(SIGABRT, stacktrace);
 	::signal(SIGBUS,  stacktrace);
 #endif
+#endif
+#if defined(Q_OS_LINUX)
+	::setenv("QT_QPA_PLATFORM", "xcb", 0);
 #endif
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
 #if QT_VERSION <  QT_VERSION_CHECK(6, 0, 0)

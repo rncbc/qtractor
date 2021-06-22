@@ -1,7 +1,7 @@
 // qtractor_plugin_scan.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -348,7 +348,7 @@ bool qtractor_dssi_scan::open_descriptor ( unsigned long iIndex )
 
 	m_bEditor = false;
 
-	// Check for GUI editor exacutable...
+	// Check for GUI editor executable...
 	const QFileInfo fi(m_pLibrary->fileName());
 	const QFileInfo gi(fi.dir(), fi.baseName());
 	if (gi.isDir()) {
@@ -1144,11 +1144,12 @@ public:
 			m_controller->terminate();
 		}
 
-		if (m_component)
-			m_component->terminate();
-
 		m_controller = nullptr;
-		m_component = nullptr;
+
+		if (m_component) {
+			m_component->terminate();
+			m_component = nullptr;
+		}
 	}
 
 	void close ()
@@ -1186,7 +1187,7 @@ public:
 		for (int32 i = 0; i < nbuses; ++i) {
 			Vst::BusInfo busInfo;
 			if (m_component->getBusInfo(type, direction, i, busInfo) == kResultOk) {
-				if (/*(busInfo.busType == Vst::kMain) &&*/
+				if ((busInfo.busType == Vst::kMain) ||
 					(busInfo.flags & Vst::BusInfo::kDefaultActive))
 					nchannels += busInfo.channelCount;
 			}
@@ -1264,7 +1265,8 @@ bool qtractor_vst3_scan::open_descriptor ( unsigned long iIndex )
 
 	Vst::IEditController *controller = m_pImpl->controller();
 	if (controller) {
-		IPtr<IPlugView> editor = controller->createView(Vst::ViewType::kEditor);
+		IPtr<IPlugView> editor
+			= owned(controller->createView(Vst::ViewType::kEditor));
 		m_bEditor = (editor != nullptr);
 	}
 

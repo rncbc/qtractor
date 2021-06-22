@@ -376,7 +376,7 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	m_iOldBank = m_props.midiBank;
 	m_iOldProg = m_props.midiProg;
 
-	// Already time for instrument cacheing...
+	// Already time for instrument caching...
 	updateInstruments();
 
 	m_ui.OmniCheckBox->setChecked(m_props.midiOmni);
@@ -447,7 +447,7 @@ void qtractorTrackForm::accept (void)
 
 	// Save options...
 	if (m_iDirtyCount > 0) {
-		// Make sure one has unque track names...
+		// Make sure one has unique track names...
 		pSession->releaseTrackName(m_pTrack);
 		const QString& sTrackName
 			= pSession->uniqueTrackName(

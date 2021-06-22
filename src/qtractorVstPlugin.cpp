@@ -753,7 +753,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// Gotta go for a while...
 	const bool bActivated = isActivated();
-	setActivated(false);
+	setChannelsActivated(iChannels, false);
 
 	// Set new instance number...
 	setInstances(iInstances);
@@ -775,7 +775,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// Bail out, if none are about to be created...
 	if (iInstances < 1) {
-		setActivated(bActivated);
+		setChannelsActivated(iChannels, bActivated);
 		return;
 	}
 
@@ -794,6 +794,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
 	const unsigned int iBufferSize = pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 	// Allocate new instances...
 	m_ppEffects = new qtractorVstPluginType::Effect * [iInstances];
@@ -812,15 +813,15 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	if (iChannels < iAudioIns) {
 		if (m_pfIDummy)
 			delete [] m_pfIDummy;
-		m_pfIDummy = new float [iBufferSize];
-		::memset(m_pfIDummy, 0, iBufferSize * sizeof(float));
+		m_pfIDummy = new float [iBufferSizeEx];
+		::memset(m_pfIDummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 	if (iChannels < iAudioOuts) {
 		if (m_pfODummy)
 			delete [] m_pfODummy;
-		m_pfODummy = new float [iBufferSize];
-	//	::memset(m_pfODummy, 0, iBufferSize * sizeof(float));
+		m_pfODummy = new float [iBufferSizeEx];
+	//	::memset(m_pfODummy, 0, iBufferSizeEx * sizeof(float));
 	}
 
 	// Setup all those instances alright...
@@ -849,7 +850,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	releaseValues();
 
 	// (Re)activate instance if necessary...
-	setActivated(bActivated);
+	setChannelsActivated(iChannels, bActivated);
 }
 
 
@@ -1199,7 +1200,8 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 #if 0//QTRACTOR_VST_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bKeepToolsOnTop) {
-		wflags |= Qt::WindowStaysOnTopHint; // Qt::Tool, formerly.
+		wflags |= Qt::Tool;
+	//	wflags |= Qt::WindowStaysOnTopHint;
 		// Make sure it has a parent...
 		if (pParent == nullptr)
 			pParent = qtractorMainForm::getInstance();
@@ -1212,6 +1214,7 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 
 	// Final stabilization...
 	updateEditorTitle();
+	moveWidgetPos(m_pEditorWidget, editorPos());
 	setEditorVisible(true);
 	idleEditor();
 }
@@ -1260,9 +1263,7 @@ void qtractorVstPlugin::idleEditor (void)
 void qtractorVstPlugin::setEditorVisible ( bool bVisible )
 {
 	if (m_pEditorWidget) {
-		if (bVisible)
-			moveWidgetPos(m_pEditorWidget, editorPos());
-		else
+		if (!bVisible)
 			setEditorPos(m_pEditorWidget->pos());
 		m_pEditorWidget->setVisible(bVisible);
 		if (bVisible) {

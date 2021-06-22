@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -393,8 +393,7 @@ static int qtractorAudioEngine_buffer_size ( jack_nframes_t nframes, void *pvArg
 	qtractorAudioEngine *pAudioEngine
 		= static_cast<qtractorAudioEngine *> (pvArg);
 
-	if (pAudioEngine->bufferSize() < (unsigned int) nframes)
-		pAudioEngine->notifyBuffEvent(nframes);
+	pAudioEngine->notifyBuffEvent(nframes);
 
 	return 0;
 }
@@ -497,7 +496,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	m_iSampleRate = 44100;	// A sensible default, always.
 	m_iBufferSize = 0;
-
+	m_iBufferSizeEx = 0;
 	m_iBufferOffset = 0;
 
 	m_bMasterAutoConnect = true;
@@ -578,7 +577,10 @@ void qtractorAudioEngine::notifyPortEvent (void)
 
 void qtractorAudioEngine::notifyBuffEvent ( unsigned int iBufferSize )
 {
-	m_proxy.notifyBuffEvent(iBufferSize);
+	if (m_iBufferSizeEx < iBufferSize)
+		m_proxy.notifyBuffEvent(iBufferSize);
+	else
+		m_iBufferSize = iBufferSize;
 }
 
 void qtractorAudioEngine::notifySessEvent ( void *pvSessionArg )
@@ -610,10 +612,15 @@ unsigned int qtractorAudioEngine::sampleRate (void) const
 	return m_iSampleRate;
 }
 
-// Buffer size accessor.
+// Buffer size accessors.
 unsigned int qtractorAudioEngine::bufferSize (void) const
 {
 	return m_iBufferSize;
+}
+
+unsigned int qtractorAudioEngine::bufferSizeEx (void) const
+{
+	return m_iBufferSizeEx;
 }
 
 
@@ -674,6 +681,9 @@ bool qtractorAudioEngine::init (void)
 	m_iSampleRate = jack_get_sample_rate(m_pJackClient);
 	m_iBufferSize = jack_get_buffer_size(m_pJackClient);
 
+	// Guard for buffer size changes...
+	m_iBufferSizeEx = (m_iBufferSize << 2);
+
 	// ATTN: Second is setting proper session client name.
 	pSession->setClientName(
 		QString::fromUtf8(jack_get_client_name(m_pJackClient)));
@@ -690,8 +700,10 @@ bool qtractorAudioEngine::init (void)
 
 
 #ifdef CONFIG_JACK_SESSION
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 #endif
 
 // Device engine activation method.
@@ -803,7 +815,9 @@ bool qtractorAudioEngine::activate (void)
 }
 
 #ifdef CONFIG_JACK_SESSION
+#if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic pop
+#endif
 #endif
 
 
@@ -1521,11 +1535,11 @@ bool qtractorAudioEngine::fileExport (
 	const unsigned int iChannels = pExportBus->channels();
 	qtractorAudioFile *pExportFile
 		= qtractorAudioFileFactory::createAudioFile(sExportPath,
-			iChannels, sampleRate(), bufferSize(), iExportFormat);
+			iChannels, sampleRate(), bufferSizeEx(), iExportFormat);
 	// No file ready for export?
 	if (pExportFile == nullptr)
 		return false;
-	// Go open it, for writeing of course...
+	// Go open it, for writing of course...
 	if (!pExportFile->open(sExportPath, qtractorAudioFile::Write)) {
 		delete pExportFile;
 		return false;
@@ -1541,7 +1555,7 @@ bool qtractorAudioEngine::fileExport (
 	m_bExporting   = true;
 	m_pExportBuses = new QList<qtractorAudioBus *> (exportBuses);
 	m_pExportFile  = pExportFile;
-	m_pExportBuffer = new qtractorAudioExportBuffer(iChannels, bufferSize());
+	m_pExportBuffer = new qtractorAudioExportBuffer(iChannels, bufferSizeEx());
 	m_iExportStart = iExportStart;
 	m_iExportEnd   = iExportEnd;
 	m_bExportDone  = false;
@@ -2412,8 +2426,8 @@ bool qtractorAudioBus::open (void)
 
 	const qtractorBus::BusMode busMode
 		= qtractorAudioBus::busMode();
-	const unsigned int iBufferSize
-		= pAudioEngine->bufferSize();
+	const unsigned int iBufferSizeEx
+		= pAudioEngine->bufferSizeEx();
 
 	unsigned short i;
 	unsigned short iDisabled = 0;
@@ -2452,7 +2466,7 @@ bool qtractorAudioBus::open (void)
 	m_ppXBuffer = new float * [m_iChannels];
 	m_ppYBuffer = new float * [m_iChannels];
 	for (i = 0; i < m_iChannels; ++i) {
-		m_ppXBuffer[i] = new float [iBufferSize];
+		m_ppXBuffer[i] = new float [iBufferSizeEx];
 		m_ppYBuffer[i] = nullptr;
 	}
 
