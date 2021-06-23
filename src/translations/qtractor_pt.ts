@@ -11740,42 +11740,42 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3706"/>
         <source>Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista Maldita</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3729"/>
         <source>Plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>Caminho de Plugins malditos</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3757"/>
         <source>Browse plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>Navegar caminho de plugins malditos</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3788"/>
         <source>Add plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar caminho à lista de Plugins Malditos</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3815"/>
         <source>Plugin blacklist paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Caminhos da lista de Plugins Malditos</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3846"/>
         <source>Remove plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover caminho da lista de Plugins malditos</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3890"/>
         <source>Clear plugin blacklist paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpar caminhos na Lista de Plugins malditos</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3893"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Limpar</translation>
+        <translation>&amp;Limpar</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1557"/>
@@ -12537,12 +12537,12 @@ Você quer mesmo manter as alterações?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1668"/>
         <source>Plug-in Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista de Plugins malditos</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1671"/>
         <source>Plug-in files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos de Plug-in(*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1662"/>
