@@ -13566,42 +13566,32 @@ Are you sure?</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="202"/>
-        <source>&amp;Activate</source>
-        <translation>有効化(&amp;A)</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
-        <source>Activate plugin on insert</source>
-        <translation>挿入時にプラグインを有効化する</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="234"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="237"/>
         <source>Plugin scanning in progress...</source>
         <translation>プラグインを検索中です...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="241"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="202"/>
         <source>Rescan for available plugins (refresh)</source>
         <translation>利用可能なプラグインを再検索します(更新)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="244"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
         <source>&amp;Rescan</source>
         <translation>再検索(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="343"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="332"/>
         <source>GUI</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="345"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="334"/>
         <source>EXT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="347"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="336"/>
         <source>RT</source>
         <translation></translation>
     </message>
@@ -14834,14 +14824,14 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="639"/>
+        <location filename="../qtractorTrackForm.cpp" line="641"/>
         <source>(No instrument)</source>
         <translation>(インストルメントなし)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="204"/>
-        <location filename="../qtractorTrackForm.cpp" line="841"/>
-        <location filename="../qtractorTrackForm.cpp" line="955"/>
+        <location filename="../qtractorTrackForm.cpp" line="843"/>
+        <location filename="../qtractorTrackForm.cpp" line="957"/>
         <source>(None)</source>
         <translation>(なし)</translation>
     </message>
@@ -14851,27 +14841,27 @@ Do you want to apply the changes?</source>
         <translation>自前アイコン(&amp;I)...</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1209"/>
+        <location filename="../qtractorTrackForm.cpp" line="1211"/>
         <source>Image files (%1)</source>
         <translation>画像ファイル (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1210"/>
+        <location filename="../qtractorTrackForm.cpp" line="1212"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1206"/>
+        <location filename="../qtractorTrackForm.cpp" line="1208"/>
         <source>Track Icon</source>
         <translation>トラックアイコン</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1494"/>
+        <location filename="../qtractorTrackForm.cpp" line="1496"/>
         <source>Foreground Color</source>
         <translation>全景の色</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1520"/>
+        <location filename="../qtractorTrackForm.cpp" line="1522"/>
         <source>Background Color</source>
         <translation>背景の色</translation>
     </message>

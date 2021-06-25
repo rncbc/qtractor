@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -113,7 +113,6 @@ qtractorPluginSelectForm::qtractorPluginSelectForm ( QWidget *pParent )
 		m_ui.PluginSearchComboBox->setEditText(
 			pOptions->sPluginSearch);
 		m_ui.PluginTypeComboBox->setCurrentIndex(pOptions->iPluginType);
-		m_ui.PluginActivateCheckBox->setChecked(pOptions->bPluginActivate);
 	}
 
 	// Let the search begin...
@@ -149,9 +148,6 @@ qtractorPluginSelectForm::qtractorPluginSelectForm ( QWidget *pParent )
 	QObject::connect(m_ui.PluginListView,
 		SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
 		SLOT(accept()));
-	QObject::connect(m_ui.PluginActivateCheckBox,
-		SIGNAL(clicked()),
-		SLOT(stabilize()));
 	QObject::connect(m_ui.PluginRescanPushButton,
 		SIGNAL(clicked()),
 		SLOT(rescan()));
@@ -183,7 +179,6 @@ qtractorPluginSelectForm::~qtractorPluginSelectForm (void)
 		pOptions->iPluginType = m_ui.PluginTypeComboBox->currentIndex();
 		pOptions->sPluginSearch = m_ui.PluginSearchComboBox->currentText();
 		pOptions->saveComboBoxHistory(m_ui.PluginSearchComboBox);
-		pOptions->bPluginActivate= m_ui.PluginActivateCheckBox->isChecked();
 		// Save aslast seen dialog position and extent...
 		pOptions->saveWidgetGeometry(this, true);
 	}
@@ -224,11 +219,6 @@ qtractorPluginType::Hint qtractorPluginSelectForm::pluginTypeHint ( int iPlugin 
 {
 	const QString& sText = m_selectedItems.at(iPlugin)->text(8);
 	return qtractorPluginType::hintFromText(sText);
-}
-
-bool qtractorPluginSelectForm::isPluginActivated (void) const
-{
-	return m_ui.PluginActivateCheckBox->isChecked();
 }
 
 
@@ -288,14 +278,13 @@ void qtractorPluginSelectForm::refresh (void)
 	if (pPluginFactory->types().isEmpty()) {
 		// Tell the world we'll take some time...
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-		const bool bRescan = m_ui.PluginRescanPushButton->isVisible();
-		if (bRescan) m_ui.PluginRescanPushButton->hide();
+		m_ui.PluginRescanPushButton->setEnabled(false);
 		m_ui.DialogButtonBox->button(QDialogButtonBox::Cancel)->setEnabled(false);
 		m_ui.PluginScanProgressBar->show();
 		pPluginFactory->scan();
 		m_ui.PluginScanProgressBar->hide();
 		m_ui.DialogButtonBox->button(QDialogButtonBox::Cancel)->setEnabled(true);
-		if (bRescan) m_ui.PluginRescanPushButton->show();
+		m_ui.PluginRescanPushButton->setEnabled(true);
 		// We're formerly done.
 		QApplication::restoreOverrideCursor();
 	}

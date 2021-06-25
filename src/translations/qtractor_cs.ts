@@ -13493,17 +13493,17 @@ Jste si jistý?</translation>
 <context>
     <name>qtractorPluginSelectForm</name>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="343"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="332"/>
         <source>GUI</source>
         <translation>GUI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="345"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="334"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="347"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="336"/>
         <source>RT</source>
         <translation>RT</translation>
     </message>
@@ -13584,27 +13584,17 @@ Jste si jistý?</translation>
         <translation>Druh</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="202"/>
-        <source>&amp;Activate</source>
-        <translation>&amp;Zapnout</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
-        <source>Activate plugin on insert</source>
-        <translation>Zapnout přídavný modul při vložení</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="234"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="237"/>
         <source>Plugin scanning in progress...</source>
         <translation>Běží hledání přídavných modulů...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="241"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="202"/>
         <source>Rescan for available plugins (refresh)</source>
         <translation>Prohledat znovu na dostupné přídavné moduly (obnovit)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="244"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
         <source>&amp;Rescan</source>
         <translation>&amp;Prohledat znovu...</translation>
     </message>
@@ -14609,39 +14599,39 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="639"/>
+        <location filename="../qtractorTrackForm.cpp" line="641"/>
         <source>(No instrument)</source>
         <translation>(Žádný nástroj)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1209"/>
+        <location filename="../qtractorTrackForm.cpp" line="1211"/>
         <source>Image files (%1)</source>
         <translation>Obrázkové soubory (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1210"/>
+        <location filename="../qtractorTrackForm.cpp" line="1212"/>
         <source>All files (*.*)</source>
         <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1206"/>
+        <location filename="../qtractorTrackForm.cpp" line="1208"/>
         <source>Track Icon</source>
         <translation>Ikona stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1494"/>
+        <location filename="../qtractorTrackForm.cpp" line="1496"/>
         <source>Foreground Color</source>
         <translation>Barva popředí</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1520"/>
+        <location filename="../qtractorTrackForm.cpp" line="1522"/>
         <source>Background Color</source>
         <translation>Barva pozadí</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="204"/>
-        <location filename="../qtractorTrackForm.cpp" line="841"/>
-        <location filename="../qtractorTrackForm.cpp" line="955"/>
+        <location filename="../qtractorTrackForm.cpp" line="843"/>
+        <location filename="../qtractorTrackForm.cpp" line="957"/>
         <source>(None)</source>
         <translation>(Žádný)</translation>
     </message>

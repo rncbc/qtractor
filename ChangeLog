@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Dropped the 'Activate' option on the plug-in Selection dialog,
+  now being as always on by default. (EXPERIMENTAL)
+
 - Have some tolerance for JACK buffer-size changes, only prompting
   to a complete session reload, if increasing in double the initial
   period size. (EXPERIMENTAL)

@@ -221,7 +221,7 @@ void qtractorOptions::loadOptions (void)
 	bPasteRepeatPeriod = m_settings.value("/PasteRepeatPeriod", false).toInt();
 	sPluginSearch   = m_settings.value("/PluginSearch").toString();
 	iPluginType     = m_settings.value("/PluginType", 1).toInt();
-	bPluginActivate = m_settings.value("/PluginActivate", true).toBool();
+	bPluginActivate = true;//m_settings.value("/PluginActivate", true).toBool();
 	iCurveMode      = m_settings.value("/CurveMode", 0).toInt();
 	iEditRangeOptions = m_settings.value("/EditRangeOptions", 3).toInt();
 	bShiftKeyModifier = m_settings.value("/ShiftKeyModifier", false).toBool();

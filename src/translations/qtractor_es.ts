@@ -13564,42 +13564,32 @@ Are you sure?</source>
         <translation>Tipo</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="202"/>
-        <source>&amp;Activate</source>
-        <translation>&amp;Activar</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
-        <source>Activate plugin on insert</source>
-        <translation>Activar plugin en inserción</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="234"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="237"/>
         <source>Plugin scanning in progress...</source>
         <translation>Exploración de plugins en progreso...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="241"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="202"/>
         <source>Rescan for available plugins (refresh)</source>
         <translation>Reescanear plugins disponibles (refrescar)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="244"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
         <source>&amp;Rescan</source>
         <translation>&amp;Reescanear</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="343"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="332"/>
         <source>GUI</source>
         <translation>GUI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="345"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="334"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="347"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="336"/>
         <source>RT</source>
         <translation>RT</translation>
     </message>
@@ -14832,14 +14822,14 @@ Do you want to apply the changes?</source>
 ¿Desea aplicar los cambios?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="639"/>
+        <location filename="../qtractorTrackForm.cpp" line="641"/>
         <source>(No instrument)</source>
         <translation>(No hay instrumento)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="204"/>
-        <location filename="../qtractorTrackForm.cpp" line="841"/>
-        <location filename="../qtractorTrackForm.cpp" line="955"/>
+        <location filename="../qtractorTrackForm.cpp" line="843"/>
+        <location filename="../qtractorTrackForm.cpp" line="957"/>
         <source>(None)</source>
         <translation>(Ninguno)</translation>
     </message>
@@ -14849,27 +14839,27 @@ Do you want to apply the changes?</source>
         <translation>&amp;Icono personalizado...</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1209"/>
+        <location filename="../qtractorTrackForm.cpp" line="1211"/>
         <source>Image files (%1)</source>
         <translation>Archivos de imagen (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1210"/>
+        <location filename="../qtractorTrackForm.cpp" line="1212"/>
         <source>All files (*.*)</source>
         <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1206"/>
+        <location filename="../qtractorTrackForm.cpp" line="1208"/>
         <source>Track Icon</source>
         <translation>Icono de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1494"/>
+        <location filename="../qtractorTrackForm.cpp" line="1496"/>
         <source>Foreground Color</source>
         <translation>Color destacado</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1520"/>
+        <location filename="../qtractorTrackForm.cpp" line="1522"/>
         <source>Background Color</source>
         <translation>Color de Fondo</translation>
     </message>
