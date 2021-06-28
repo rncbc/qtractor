@@ -495,7 +495,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="242"/>
         <source>remove plugin</source>
-        <translation>プラグインの除去</translation>
+        <translation>プラグインの削除</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="348"/>
@@ -570,7 +570,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="484"/>
         <source>remove tempo node</source>
-        <translation>テンポノードを除去</translation>
+        <translation>テンポノードを削除</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="501"/>
@@ -590,7 +590,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="714"/>
         <source>remove marker</source>
-        <translation>マーカーの除去</translation>
+        <translation>マーカーの削除</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleCommand.cpp" line="733"/>
@@ -663,7 +663,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="236"/>
         <source>remove track</source>
-        <translation>トラックの除去</translation>
+        <translation>トラックの削除</translation>
     </message>
     <message>
         <location filename="../qtractorTrackCommand.cpp" line="261"/>
@@ -1105,13 +1105,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorBusForm.ui" line="374"/>
         <source>Remove input plugin</source>
-        <translation>入力プラグインを除去</translation>
+        <translation>入力プラグインを削除</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="377"/>
         <location filename="../qtractorBusForm.ui" line="499"/>
         <source>&amp;Remove</source>
-        <translation>除去(&amp;R)</translation>
+        <translation>削除(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="409"/>
@@ -1153,7 +1153,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorBusForm.ui" line="496"/>
         <source>Remove output plugin</source>
-        <translation>出力プラグインを除去</translation>
+        <translation>出力プラグインを削除</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="531"/>
@@ -1251,7 +1251,7 @@ Do you want to apply the changes?</source>
 &quot;%1&quot; (%2)
 
 Are you sure?</source>
-        <translation>このバスを除去します:
+        <translation>このバスを削除します:
 
 &quot;%1&quot; (%2)
 
@@ -1903,7 +1903,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorExportForm.cpp" line="879"/>
         <source>%1 %2 Clips</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %2 クリップ</translation>
     </message>
 </context>
 <context>
@@ -2120,12 +2120,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorExportForm.cpp" line="615"/>
         <source>%1 %2 Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %2 トラック</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="667"/>
         <source>Warning</source>
-        <translation type="unfinished">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="668"/>
@@ -2134,7 +2134,7 @@ Do you want to apply the changes?</source>
 &quot;%1&quot;
 
 Do you want to replace it?</source>
-        <translation type="unfinished">ファイルはすでに存在しています:
+        <translation>ファイルはすでに存在しています:
 
 &quot;%1&quot;
 
@@ -2143,12 +2143,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../qtractorExportForm.cpp" line="714"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
-        <translation type="unfinished">音声ファイルのエクスポート: &quot;%1&quot; 開始...</translation>
+        <translation>音声ファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="740"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
-        <translation type="unfinished">音声ファイルのエクスポート: &quot;%1&quot; 完了。</translation>
+        <translation>音声ファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="745"/>
@@ -2157,21 +2157,21 @@ Do you want to replace it?</source>
 &quot;%1&quot;
 
 failed.</source>
-        <translation type="unfinished">音声ファイルのエクスポート:
+        <translation>音声ファイルのエクスポート:
 
 &quot;%1&quot;
 
-失敗。</translation>
+失敗しました。</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="771"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
-        <translation type="unfinished">MIDIファイルのエクスポート: &quot;%1&quot; 開始...</translation>
+        <translation>MIDIファイルのエクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="795"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
-        <translation type="unfinished">MIDIファイルのエクスポート: &quot;%1&quot; 完了。</translation>
+        <translation>MIDIファイルのエクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
         <location filename="../qtractorExportForm.cpp" line="800"/>
@@ -2180,11 +2180,11 @@ failed.</source>
 &quot;%1&quot;
 
 failed.</source>
-        <translation type="unfinished">MIDIファイルのエクスポート:
+        <translation>MIDIファイルのエクスポート:
 
 &quot;%1&quot;
 
-失敗。</translation>
+失敗しました。</translation>
     </message>
 </context>
 <context>
@@ -2205,7 +2205,7 @@ failed.</source>
         <source>About to remove %1 file item(s).
 
 Are you sure?</source>
-        <translation>%1ファイルアイテムを除去します。
+        <translation>%1ファイルアイテムを削除します。
 
 よろしいですか？</translation>
     </message>
@@ -2216,7 +2216,7 @@ Are you sure?</source>
 &quot;%2&quot;
 
 Are you sure?</source>
-        <translation>%1アイテムを除去します:
+        <translation>%1アイテムを削除します:
 
 &quot;%2&quot;
 
@@ -2346,7 +2346,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorFiles.cpp" line="116"/>
         <source>&amp;Remove</source>
-        <translation>除去(&amp;R)</translation>
+        <translation>削除(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorFiles.cpp" line="118"/>
@@ -2415,12 +2415,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorInstrumentForm.ui" line="149"/>
         <source>Remove instrument file</source>
-        <translation>インストルメントファイルの除去</translation>
+        <translation>インストルメントファイルの削除</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.ui" line="152"/>
         <source>&amp;Remove</source>
-        <translation>除去(&amp;R)</translation>
+        <translation>削除(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.ui" line="162"/>
@@ -2667,7 +2667,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="419"/>
         <source>Remo&amp;ve</source>
-        <translation>除去(&amp;V)</translation>
+        <translation>削除(&amp;V)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="211"/>
@@ -3288,17 +3288,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="997"/>
         <source>Remove Range</source>
-        <translation>レンジの除去</translation>
+        <translation>レンジの削除</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1000"/>
         <source>Remove range</source>
-        <translation>レンジを除去します</translation>
+        <translation>レンジを削除します</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1003"/>
         <source>Remove range as selected</source>
-        <translation>選択されているレンジの除去</translation>
+        <translation>選択されているレンジの削除</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1006"/>
@@ -3308,17 +3308,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1014"/>
         <source>Remove Track Range</source>
-        <translation>トラックレンジの除去</translation>
+        <translation>トラックレンジの削除</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1017"/>
         <source>Remove track range</source>
-        <translation>トラックレンジを除去します</translation>
+        <translation>トラックレンジを削除します</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1020"/>
         <source>Remove track range as selected</source>
-        <translation>選択されているトラックレンジの除去</translation>
+        <translation>選択されているトラックレンジの削除</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1023"/>
@@ -3418,22 +3418,22 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1102"/>
         <source>&amp;Remove Track</source>
-        <translation>トラックを除去(&amp;R)</translation>
+        <translation>トラックを削除(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1105"/>
         <source>Remove Track</source>
-        <translation>トラックを除去</translation>
+        <translation>トラックを削除</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1108"/>
         <source>Remove track</source>
-        <translation>トラックを除去</translation>
+        <translation>トラックを削除</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1111"/>
         <source>Remove current track from session</source>
-        <translation>セッションからトラックを除去します</translation>
+        <translation>セッションからトラックを削除します</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1114"/>
@@ -5815,7 +5815,7 @@ Do you want to save the changes?</source>
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation>アーカイブディレクトリを除去します:
+        <translation>アーカイブディレクトリを削除します:
 
 &quot;%1&quot;
 
@@ -6079,7 +6079,7 @@ next time you start this %1.</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5944"/>
         <source>Using: Qt %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt %1 を使用</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6394"/>
@@ -6600,12 +6600,12 @@ JACK音声サーバー(jackd)が起動し実行されているなら
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="85"/>
         <source>Remove controller file</source>
-        <translation>コントローラーファイルの除去</translation>
+        <translation>コントローラーファイルの削除</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="88"/>
         <source>&amp;Remove</source>
-        <translation>除去(&amp;R)</translation>
+        <translation>削除(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="98"/>
@@ -6777,7 +6777,7 @@ JACK音声サーバー(jackd)が起動し実行されているなら
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="393"/>
         <source>Unmap/remove controller command</source>
-        <translation>コントローラーコマンドをアンマップ/除去します</translation>
+        <translation>コントローラーコマンドをアンマップ/削除します</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlForm.ui" line="396"/>
@@ -6856,7 +6856,7 @@ JACK音声サーバー(jackd)が起動し実行されているなら
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation>コントローラーファイルを除去します:
+        <translation>コントローラーファイルを削除します:
 
 %1
 
@@ -8661,7 +8661,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="2419"/>
         <source>remove range</source>
-        <translation>レンジの除去</translation>
+        <translation>レンジの削除</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="4235"/>
@@ -8822,7 +8822,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="215"/>
         <source>Remo&amp;ve</source>
-        <translation>除去(&amp;V)</translation>
+        <translation>削除(&amp;V)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="174"/>
@@ -9417,17 +9417,17 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="868"/>
         <source>Remove Range</source>
-        <translation>レンジの除去</translation>
+        <translation>レンジの削除</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="871"/>
         <source>Remove range</source>
-        <translation>レンジを除去します</translation>
+        <translation>レンジを削除します</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="874"/>
         <source>Remove range as selected</source>
-        <translation>選択されているレンジを除去します</translation>
+        <translation>選択されているレンジを削除します</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="877"/>
@@ -9711,22 +9711,22 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1162"/>
         <source>Note &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>ノート名(&amp;N)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1165"/>
         <source>Note Names</source>
-        <translation type="unfinished">ノート名</translation>
+        <translation>ノート名</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1168"/>
         <source>Note names</source>
-        <translation type="unfinished"></translation>
+        <translation>ノート名</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1171"/>
         <source>Whether to show note names</source>
-        <translation type="unfinished"></translation>
+        <translation>ノート名を表示するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1182"/>
@@ -10789,12 +10789,12 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiSysexForm.ui" line="230"/>
         <source>Remove SysEx item</source>
-        <translation>SysExアイテムの除去</translation>
+        <translation>SysExアイテムの削除</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.ui" line="233"/>
         <source>&amp;Remove</source>
-        <translation>除去(&amp;R)</translation>
+        <translation>削除(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiSysexForm.cpp" line="215"/>
@@ -11626,12 +11626,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="422"/>
         <source>Whether to remove audio peak files on session close</source>
-        <translation>セッション終了の際に音声ピークファイルを除去するかどうか</translation>
+        <translation>セッション終了の際に音声ピークファイルを削除するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="425"/>
         <source>Auto-remove audio pea&amp;k files</source>
-        <translation>音声ピークファイルの自動除去(&amp;K)</translation>
+        <translation>音声ピークファイルの自動削除(&amp;K)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="438"/>
@@ -11883,12 +11883,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="502"/>
         <source>Whether to keep all editor windows on top of the main window</source>
-        <translation type="unfinished"></translation>
+        <translation>すべてのエディタウィンドウをメインウィンドウよりも常に手前に表示するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="505"/>
         <source>Keep &amp;editor windows always on top</source>
-        <translation type="unfinished"></translation>
+        <translation>エディタウィンドウを常に手前に表示(&amp;E)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="967"/>
@@ -12329,42 +12329,42 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3706"/>
         <source>Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>ブラックリスト</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3729"/>
         <source>Plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのブラックリストへのパス</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3757"/>
         <source>Browse plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのブラックリストを見ます</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3788"/>
         <source>Add plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのブラックリストへのパスを追加します</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3815"/>
         <source>Plugin blacklist paths</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのブラックリストへのパス</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3846"/>
         <source>Remove plugin blacklist path</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのブラックリストへのパスを削除します</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3890"/>
         <source>Clear plugin blacklist paths</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのブラックリストへのパスを全削除します</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3893"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished">クリアー(&amp;C)</translation>
+        <translation>全削除(&amp;C)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2529"/>
@@ -12542,22 +12542,22 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2443"/>
         <source>&amp;Hold auto-scrolling (follow play-head) on edits</source>
-        <translation type="unfinished"></translation>
+        <translation>編集中は自動スクロール(再生の先頭に追随)を止める(&amp;H)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2469"/>
         <source>Trac&amp;k color saturation:</source>
-        <translation type="unfinished"></translation>
+        <translation>新規トラックの色の彩度(&amp;K):</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2488"/>
         <source>Default new track color saturation</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいトラックの色のデフォルトの彩度</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2491"/>
         <source> %</source>
-        <translation type="unfinished"> %</translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2763"/>
@@ -12634,13 +12634,13 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3405"/>
         <source>Remove plugin path</source>
-        <translation>プラグインパスの除去</translation>
+        <translation>プラグインパスの削除</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3408"/>
         <location filename="../qtractorOptionsForm.ui" line="3849"/>
         <source>&amp;Remove</source>
-        <translation>除去(&amp;R)</translation>
+        <translation>削除(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3436"/>
@@ -12785,12 +12785,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1668"/>
         <source>Plug-in Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインのブラックリスト</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1671"/>
         <source>Plug-in files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインファイル (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1786"/>
@@ -13293,7 +13293,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="704"/>
         <source>remove all plugins</source>
-        <translation>すべてのプラグインを除去</translation>
+        <translation>すべてのプラグインを削除</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="890"/>
@@ -13324,7 +13324,7 @@ Are you sure?</source>
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation>全プラグインを除去またはインポートします:
+        <translation>全プラグインを削除またはインポートします:
 
 &quot;%1&quot;
 
@@ -13412,12 +13412,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1887"/>
         <source>&amp;Remove</source>
-        <translation>除去(&amp;R)</translation>
+        <translation>削除(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1891"/>
         <source>Re&amp;move All</source>
-        <translation>すべてを除去(&amp;M)</translation>
+        <translation>すべてを削除(&amp;M)</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1898"/>
@@ -13622,12 +13622,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorSessionForm.ui" line="93"/>
         <source>Whether to auto-name the session directory</source>
-        <translation type="unfinished"></translation>
+        <translation>セッションディレクトリ名を自動で決定するかどうか</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="96"/>
         <source>&amp;Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>自動(&amp;A)</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="129"/>
@@ -14380,13 +14380,13 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="471"/>
         <source>Remove node</source>
-        <translation>ノードを除去</translation>
+        <translation>ノードを削除</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="474"/>
         <location filename="../qtractorTimeScaleForm.cpp" line="1136"/>
         <source>&amp;Remove</source>
-        <translation>除去(&amp;R)</translation>
+        <translation>削除(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="484"/>
@@ -14421,7 +14421,7 @@ Do you want to apply the changes?</source>
 %1 (%2) %3  %4/%5
 
 Are you sure?</source>
-        <translation>テンポノードを除去します:
+        <translation>テンポノードを削除します:
 
 %1 (%2) %3  %4/%5%
 
@@ -14686,12 +14686,12 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.ui" line="556"/>
         <source>Remove plugin</source>
-        <translation>プラグインを除去</translation>
+        <translation>プラグインを削除</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="559"/>
         <source>&amp;Remove</source>
-        <translation>除去(&amp;R)</translation>
+        <translation>削除(&amp;R)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="591"/>
@@ -15165,7 +15165,7 @@ Length:	%3</source>
         <location filename="../qtractorTracks.cpp" line="1204"/>
         <location filename="../qtractorTracks.cpp" line="1489"/>
         <source>Merge/Export</source>
-        <translation type="unfinished"></translation>
+        <translation>マージ/エクスポート</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1217"/>
@@ -15230,17 +15230,17 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="2341"/>
         <source>Remove Range</source>
-        <translation>レンジの除去</translation>
+        <translation>レンジの削除</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2361"/>
         <source>remove range</source>
-        <translation>レンジを除去します</translation>
+        <translation>レンジを削除します</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2362"/>
         <source>remove track range</source>
-        <translation>トラックレンジを除去します</translation>
+        <translation>トラックレンジを削除します</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2659"/>
@@ -15254,7 +15254,7 @@ Length:	%3</source>
 &quot;%1&quot;
 
 Are you sure?</source>
-        <translation>トラックを除去します:
+        <translation>トラックを削除します:
 
 &quot;%1&quot;
 
