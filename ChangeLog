@@ -4,21 +4,21 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.23  2021-07-10  An Early-Summer'21 Release.
 
 - Dropped the 'Activate' option on the plug-in Selection dialog,
-  now being as always on by default. (EXPERIMENTAL)
+  now being as always on by default.
 
 - Have some tolerance for JACK buffer-size changes, only prompting
   to a complete session reload, if increasing in double the initial
-  period size. (EXPERIMENTAL)
+  period size.
 
 - Introducing plug-in blacklisting, on user discretion (in View
   /Options.../Plugins/Blacklist) and on inventory scan (crashed
-  plug-ins are now automatically blacklisted). (EXPERIMENTAL)
+  plug-ins are now automatically blacklisted).
 
 - Added special support for LV2 UI GTK2 plugins based on Gtkmm 2.4
-  framework. (EXPERIMENTAL)
+  framework.
 
 - All builds default to Qt6 (Qt >= 6.1) where available.
 
