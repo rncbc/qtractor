@@ -66,7 +66,6 @@ BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	rubberband-devel
 BuildRequires:	aubio-devel >= 0.4.1
-BuildRequires:	ruby
 %else
 %if 0%{qt_major_version} == 6
 BuildRequires:	qt6-base-devel >= 6.1
