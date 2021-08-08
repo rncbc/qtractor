@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed Mixer multi-row automatic layout consistency, when adding
+  new or removing existing tracks or buses.
+
+
 0.9.23  2021-07-10  An Early-Summer'21 Release.
 
 - Dropped the 'Activate' option on the plug-in Selection dialog,
