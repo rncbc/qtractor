@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2541,7 +2541,9 @@ void qtractorSession::renameSession (
 
 	const QRegularExpression rx('^' + sOldName);
 
-	// For each and every track...
+	// For each and every track and clip...
+	QStringList paths;
+
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		// Refer to a proper files-view...
@@ -2560,6 +2562,8 @@ void qtractorSession::renameSession (
 			// Rename clip filename prefix...
 			const QFileInfo info1(pClip->filename());
 			QString sFileName = info1.fileName();
+			if (!sFileName.contains(rx))
+				continue;
 			sFileName.replace(rx, sNewName);
 			QFileInfo info2(info1.dir(), sFileName);
 			// Increment filename suffix if exists already...
@@ -2577,15 +2581,18 @@ void qtractorSession::renameSession (
 				do { info2.setFile(info1.dir(), sFileName.arg(++iFileNo)); }
 				while (info2.exists());
 			}
+			const QString& sOldFilePath
+				= info1.absoluteFilePath();
+			const QString& sNewFilePath
+				= info2.absoluteFilePath();
+			if (paths.contains(sOldFilePath))
+				continue;
+			paths.append(sNewFilePath);
 		#ifdef CONFIG_DEBUG
 			qDebug("qtractorSession::renameSession: \"%s\" -> \"%s\"",
 				info1.fileName().toUtf8().constData(),
 				info2.fileName().toUtf8().constData());
 		#endif
-			const QString& sOldFilePath
-				= info1.absoluteFilePath();
-			const QString& sNewFilePath
-				= info2.absoluteFilePath();
 			if (QFile::rename(sOldFilePath, sNewFilePath)) {
 				// Re-hash clip filenames...
 				if (iFileType == qtractorFileList::Midi) {

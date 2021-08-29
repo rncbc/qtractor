@@ -12800,31 +12800,31 @@ Wollen Sie diese übernehmen?</translation>
         <translation>Details anzeigen</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="323"/>
+        <location filename="../qtractorPaletteForm.cpp" line="325"/>
         <source>Import File - %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="326"/>
-        <location filename="../qtractorPaletteForm.cpp" line="400"/>
+        <location filename="../qtractorPaletteForm.cpp" line="328"/>
+        <location filename="../qtractorPaletteForm.cpp" line="402"/>
         <source>Palette files (*.%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="327"/>
-        <location filename="../qtractorPaletteForm.cpp" line="401"/>
+        <location filename="../qtractorPaletteForm.cpp" line="329"/>
+        <location filename="../qtractorPaletteForm.cpp" line="403"/>
         <source>All files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="387"/>
-        <location filename="../qtractorPaletteForm.cpp" line="820"/>
-        <location filename="../qtractorPaletteForm.cpp" line="828"/>
+        <location filename="../qtractorPaletteForm.cpp" line="389"/>
+        <location filename="../qtractorPaletteForm.cpp" line="822"/>
+        <location filename="../qtractorPaletteForm.cpp" line="830"/>
         <source>Warning - %1</source>
         <translation>Warnung - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="388"/>
+        <location filename="../qtractorPaletteForm.cpp" line="390"/>
         <source>Could not import from file:
 
 %1
@@ -12833,12 +12833,12 @@ Sorry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="397"/>
+        <location filename="../qtractorPaletteForm.cpp" line="399"/>
         <source>Export File - %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="821"/>
+        <location filename="../qtractorPaletteForm.cpp" line="823"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -12846,7 +12846,7 @@ Do you want to discard the changes?</source>
 Wollen Sie diese verwerfen?</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="829"/>
+        <location filename="../qtractorPaletteForm.cpp" line="831"/>
         <source>Some settings have been changed:
 
 &quot;%1&quot;.
@@ -12862,22 +12862,22 @@ Wollen Sie diese speichern?</translation>
 <context>
     <name>qtractorPaletteForm::PaletteModel</name>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1072"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1074"/>
         <source>Color Role</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1075"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1077"/>
         <source>Active</source>
         <translation>Aktiv</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1078"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1080"/>
         <source>Inactive</source>
         <translation>Inaktiv</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1081"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1083"/>
         <source>Disabled</source>
         <translation>Deaktiviert</translation>
     </message>
