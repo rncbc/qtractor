@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -469,8 +469,10 @@ qtractorFileListItem *qtractorFileListView::selectFileItem (
 	const QString& sPath, int iChannel )
 {
 	qtractorFileListItem *pFileItem = findFileItem(sPath);
-	if (pFileItem == nullptr)
+	if (pFileItem == nullptr) {
+		QTreeWidget::setCurrentItem(nullptr);
 		return nullptr;
+	}
 
 	// Shall we go deep further intto a channel item?
 	if (iChannel >= 0) {

@@ -2184,25 +2184,25 @@ gescheitert.</translation>
 <context>
     <name>qtractorFileListView</name>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="553"/>
+        <location filename="../qtractorFileListView.cpp" line="555"/>
         <source>New Group</source>
         <translation>Neue Gruppe</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="664"/>
-        <location filename="../qtractorFileListView.cpp" line="693"/>
+        <location filename="../qtractorFileListView.cpp" line="666"/>
+        <location filename="../qtractorFileListView.cpp" line="695"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="665"/>
+        <location filename="../qtractorFileListView.cpp" line="667"/>
         <source>About to remove %1 file item(s).
 
 Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="694"/>
+        <location filename="../qtractorFileListView.cpp" line="696"/>
         <source>About to remove %1 item:
 
 &quot;%2&quot;
@@ -2211,12 +2211,12 @@ Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="697"/>
+        <location filename="../qtractorFileListView.cpp" line="699"/>
         <source>group</source>
         <translation>Gruppe</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="697"/>
+        <location filename="../qtractorFileListView.cpp" line="699"/>
         <source>file</source>
         <translation>Datei</translation>
     </message>
