@@ -388,7 +388,8 @@ protected:
 	bool loadSessionFileEx(const QString& sFilename, int iFlags, bool bUpdate);
 	bool saveSessionFileEx(const QString& sFilename, int iFlags, bool bUpdate);
 
-	QString sessionBackupPath(const QString& sFilename);
+	QString sessionBackupPath(const QString& sFilename) const;
+	QString sessionArchivePath(const QString& sFilename) const;
 
 	bool startSession();
 	bool checkRestartSession();

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Whenever possible, avoid suggesting Save As... to an extracted
+  archive/zip directory. (EXPERIMENTAL)
+
 - Fixed an old nasty mistake when renaming session names and then
   saving into an archive/zip bundle file (.qtz) (EXPERIMENTAL)
 

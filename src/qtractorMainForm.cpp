@@ -2134,6 +2134,8 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			options |= QFileDialog::DontUseNativeDialog;
 			pParentWidget = QWidget::window();
 		}
+		// Always avoid to store session on extracted direactories...
+		sFilename = sessionArchivePath(sFilename);
 		// Try to rename as if a backup is about...
 		sFilename = sessionBackupPath(sFilename);
 	#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
@@ -2665,7 +2667,7 @@ bool qtractorMainForm::saveSessionFileEx (
 }
 
 
-QString qtractorMainForm::sessionBackupPath ( const QString& sFilename )
+QString qtractorMainForm::sessionBackupPath ( const QString& sFilename ) const
 {
 	QFileInfo fi(sFilename);
 
@@ -2690,6 +2692,32 @@ QString qtractorMainForm::sessionBackupPath ( const QString& sFilename )
 			fi.setFile(dir, sBackupName.arg(++iBackupNo));
 	}
 
+	return fi.absoluteFilePath();
+}
+
+
+// Whenever on some Save As... situation:
+// better check whether the target directory
+// is one of the extracted archives/zip ones...
+//
+QString qtractorMainForm::sessionArchivePath ( const QString& sFilename ) const
+{
+	QFileInfo fi(sFilename);
+#ifdef CONFIG_LIBZ
+	const QStringList& paths
+		= qtractorDocument::extractedArchives();
+	if (!paths.isEmpty()) {
+		QStringListIterator iter(paths);
+		while (iter.hasNext()) {
+			const QString& sPath = iter.next();
+			if (sPath == fi.absolutePath()) {
+				const QString& sDir
+					= QFileInfo(sPath).absolutePath();
+				fi.setFile(sDir, fi.fileName());
+			}
+		}
+	}
+#endif
 	return fi.absoluteFilePath();
 }
 
