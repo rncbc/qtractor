@@ -2526,6 +2526,7 @@ bool qtractorMainForm::loadSessionFileEx (
 				m_pOptions->iMidiMmcDevice = pMidiEngine->mmcDevice();
 				m_pOptions->iMidiSppMode   = int(pMidiEngine->sppMode());
 				m_pOptions->iMidiClockMode = int(pMidiEngine->clockMode());
+				m_pOptions->bMidiResetAllControllers = pMidiEngine->isResetAllControllers();
 			}
 			// Save it good...
 			m_pOptions->saveOptions();
@@ -2639,6 +2640,7 @@ bool qtractorMainForm::saveSessionFileEx (
 				m_pOptions->iMidiMmcDevice = int(pMidiEngine->mmcDevice());
 				m_pOptions->iMidiSppMode   = int(pMidiEngine->sppMode());
 				m_pOptions->iMidiClockMode = int(pMidiEngine->clockMode());
+				m_pOptions->bMidiResetAllControllers = pMidiEngine->isResetAllControllers();
 			}
 			// Do not set (next) default session directory on zip/archives...
 			if ((iFlags & qtractorDocument::Archive) == 0)
@@ -5093,6 +5095,7 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldMidiMmcMode        = m_pOptions->iMidiMmcMode;
 	const int     iOldMidiSppMode        = m_pOptions->iMidiSppMode;
 	const int     iOldMidiClockMode      = m_pOptions->iMidiClockMode;
+	const bool    bOldMidiResetAllControllers = m_pOptions->bMidiResetAllControllers;
 	const int     iOldMidiCaptureQuantize = m_pOptions->iMidiCaptureQuantize;
 	const int     iOldMidiQueueTimer     = m_pOptions->iMidiQueueTimer;
 	const bool    bOldMidiDriftCorrect   = m_pOptions->bMidiDriftCorrect;
@@ -5250,6 +5253,8 @@ void qtractorMainForm::viewOptions (void)
 			(iOldMidiMmcMode   != m_pOptions->iMidiMmcMode)   ||
 			(iOldMidiSppMode   != m_pOptions->iMidiSppMode)   ||
 			(iOldMidiClockMode != m_pOptions->iMidiClockMode) ||
+			( bOldMidiResetAllControllers && !m_pOptions->bMidiResetAllControllers) ||
+			(!bOldMidiResetAllControllers &&  m_pOptions->bMidiResetAllControllers) ||
 			(iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize)) {
 			++m_iDirtyCount; // Fake session properties change.
 			updateMidiControlModes();
@@ -6861,6 +6866,7 @@ void qtractorMainForm::updateMidiControlModes (void)
 	pMidiEngine->setMmcMode(qtractorBus::BusMode(m_pOptions->iMidiMmcMode));
 	pMidiEngine->setSppMode(qtractorBus::BusMode(m_pOptions->iMidiSppMode));
 	pMidiEngine->setClockMode(qtractorBus::BusMode(m_pOptions->iMidiClockMode));
+	pMidiEngine->setResetAllControllers(m_pOptions->bMidiResetAllControllers);
 }
 
 

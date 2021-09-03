@@ -1944,7 +1944,7 @@ void qtractorSession::releaseMidiTag ( qtractorTrack *pTrack )
 // MIDI session/tracks instrument/controller patching (conditional).
 void qtractorSession::resetAllMidiControllers ( bool bForceImmediate )
 {
-	if (!bForceImmediate || m_pMidiEngine->isResetAllControllers())
+	if (!bForceImmediate || m_pMidiEngine->isResetAllControllersPending())
 		m_pMidiEngine->resetAllControllers(bForceImmediate);
 }
 

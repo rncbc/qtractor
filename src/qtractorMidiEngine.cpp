@@ -1258,6 +1258,9 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	// MIDI Clock mode.
 	m_clockMode = qtractorBus::None;
 
+	// Whether to reset all MIDI controllers (on playback start).
+	m_bResetAllControllers = false;
+
 	// MIDI Clock tempo tracking.
 	m_iClockCount = 0;
 	m_fClockTempo = 120.0f;
@@ -1482,7 +1485,7 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 
 // Whether is actually pending a reset of
 // all the MIDI instrument/controllers...
-bool qtractorMidiEngine::isResetAllControllers (void) const
+bool qtractorMidiEngine::isResetAllControllersPending (void) const
 {
 	return (m_iResetAllControllers > 0);
 }
@@ -2387,6 +2390,9 @@ bool qtractorMidiEngine::start (void)
 
 	// Carry on...
 	m_pOutputThread->processSync();
+
+	if (m_bResetAllControllers)
+		resetAllControllers(true);
 
 	return true;
 }
@@ -3783,6 +3789,18 @@ void qtractorMidiEngine::setClockMode ( qtractorBus::BusMode clockMode )
 qtractorBus::BusMode qtractorMidiEngine::clockMode (void) const
 {
 	return m_clockMode;
+}
+
+
+// Whether to reset all MIDI controllers (on playback start).
+void qtractorMidiEngine::setResetAllControllers ( bool bResetAllControllers )
+{
+	m_bResetAllControllers = bResetAllControllers;
+}
+
+bool qtractorMidiEngine::isResetAllControllers (void) const
+{
+	return m_bResetAllControllers;
 }
 
 

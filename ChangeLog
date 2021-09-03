@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- An new (hidden) option has been added to enforce the reset of
+  all MIDI track/channel and buses controllers on playback start.
+  (EXPERIMENTAL)
+
 - Whenever possible, avoid suggesting Save As... to an extracted
   archive/zip directory. (EXPERIMENTAL)
 

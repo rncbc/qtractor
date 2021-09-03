@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -173,6 +173,7 @@ void qtractorOptions::loadOptions (void)
 	iMidiMmcMode       = m_settings.value("/MmcMode", 3).toInt();
 	iMidiSppMode       = m_settings.value("/SppMode", 3).toInt();
 	iMidiClockMode     = m_settings.value("/ClockMode", 0).toInt();
+	bMidiResetAllControllers = m_settings.value("/ResetAllControllers", false).toBool();
 	m_settings.endGroup();
 
 	// Metronome options group.
@@ -477,6 +478,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MmcMode", iMidiMmcMode);
 	m_settings.setValue("/SppMode", iMidiSppMode);
 	m_settings.setValue("/ClockMode", iMidiClockMode);
+	m_settings.setValue("/ResetAllControllers", bMidiResetAllControllers);
 	m_settings.endGroup();
 
 	// Metronome options group.
