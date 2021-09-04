@@ -299,6 +299,9 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.MidiPlayerBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MidiResetAllControllersCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MidiMmcModeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
@@ -617,6 +620,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 		timer.indexOf(m_pOptions->iMidiQueueTimer));
 	m_ui.MidiDriftCorrectCheckBox->setChecked(m_pOptions->bMidiDriftCorrect);
 	m_ui.MidiPlayerBusCheckBox->setChecked(m_pOptions->bMidiPlayerBus);
+	m_ui.MidiResetAllControllersCheckBox->setChecked(m_pOptions->bMidiResetAllControllers);
 
 	// MIDI control options.
 	m_ui.MidiMmcModeComboBox->setCurrentIndex(m_pOptions->iMidiMmcMode);
@@ -841,6 +845,7 @@ void qtractorOptionsForm::accept (void)
 			m_ui.MidiQueueTimerComboBox->currentIndex()).toInt();
 		m_pOptions->bMidiDriftCorrect    = m_ui.MidiDriftCorrectCheckBox->isChecked();
 		m_pOptions->bMidiPlayerBus       = m_ui.MidiPlayerBusCheckBox->isChecked();
+		m_pOptions->bMidiResetAllControllers = m_ui.MidiResetAllControllersCheckBox->isChecked();
 		m_pOptions->iMidiMmcMode         = m_ui.MidiMmcModeComboBox->currentIndex();
 		m_pOptions->iMidiMmcDevice       = m_ui.MidiMmcDeviceComboBox->currentIndex();
 		m_pOptions->iMidiSppMode         = m_ui.MidiSppModeComboBox->currentIndex();

@@ -1561,7 +1561,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="4">
+          <item row="1" column="0" colspan="3">
            <widget class="QCheckBox" name="MidiPlayerBusCheckBox">
             <property name="font">
              <font>
@@ -1574,6 +1574,22 @@
             </property>
             <property name="text">
              <string>Dedicated MIDI p&amp;layer outputs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QCheckBox" name="MidiResetAllControllersCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to reset/resend all controllers on playback start</string>
+            </property>
+            <property name="text">
+             <string>&amp;Reset all controllers on playback start</string>
             </property>
            </widget>
           </item>
@@ -3986,6 +4002,7 @@
   <tabstop>MidiQueueTimerComboBox</tabstop>
   <tabstop>MidiDriftCorrectCheckBox</tabstop>
   <tabstop>MidiPlayerBusCheckBox</tabstop>
+  <tabstop>MidiResetAllControllersCheckBox</tabstop>
   <tabstop>MidiMmcModeComboBox</tabstop>
   <tabstop>MidiMmcDeviceComboBox</tabstop>
   <tabstop>MidiSppModeComboBox</tabstop>

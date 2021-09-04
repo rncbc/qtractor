@@ -6,9 +6,9 @@ ChangeLog
 
 GIT HEAD
 
-- An new (hidden) option has been added to enforce the reset of
-  all MIDI track/channel and buses controllers on playback start.
-  (EXPERIMENTAL)
+- A new option has been added to reset/resend all MIDI track/channel
+  and buses controllers on playback start (cf. View/Options.../MIDI/
+  Playback/Reset all controllers on playback start). (EXPERIMENTAL)
 
 - Whenever possible, avoid suggesting Save As... to an extracted
   archive/zip directory. (EXPERIMENTAL)
