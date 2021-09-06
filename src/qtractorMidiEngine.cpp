@@ -1248,7 +1248,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iCaptureQuantize = 0;
 
 	// MIDI controller mapping flagger.
-	m_iResetAllControllers = 0;
+	m_iResetAllControllersPending = 0;
 
 	// MIDI MMC/SPP modes.
 	m_mmcDevice = 0x7f; // All-caller-id.
@@ -1426,7 +1426,7 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 
 	// Deferred processing?
 	if (!bForceImmediate) {
-		++m_iResetAllControllers;
+		++m_iResetAllControllersPending;
 		return;
 	}
 
@@ -1479,7 +1479,7 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 		pMidiControl->sendAllControllers();
 
 	// Done.
-	m_iResetAllControllers = 0;
+	m_iResetAllControllersPending = 0;
 }
 
 
@@ -1487,7 +1487,7 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 // all the MIDI instrument/controllers...
 bool qtractorMidiEngine::isResetAllControllersPending (void) const
 {
-	return (m_iResetAllControllers > 0);
+	return (m_iResetAllControllersPending > 0);
 }
 
 
@@ -2390,9 +2390,6 @@ bool qtractorMidiEngine::start (void)
 
 	// Carry on...
 	m_pOutputThread->processSync();
-
-	if (m_bResetAllControllers)
-		resetAllControllers(true);
 
 	return true;
 }
@@ -3699,7 +3696,7 @@ int qtractorMidiEngine::updateConnects (void)
 	const int iUpdate = qtractorEngine::updateConnects();
 
 	// Reset all pending controllers, if any...
-	if (m_iResetAllControllers > 0)
+	if (m_iResetAllControllersPending > 0)
 		resetAllControllers(true); // Force immediate!
 
 	// Done.

@@ -386,7 +386,7 @@ private:
 	unsigned short m_iCaptureQuantize;
 
 	// Controller update pending flagger.
-	int m_iResetAllControllers;
+	int m_iResetAllControllersPending;
 
 	// MMC Device ID.
 	unsigned char m_mmcDevice;

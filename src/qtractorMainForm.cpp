@@ -6006,16 +6006,17 @@ void qtractorMainForm::helpAboutQt (void)
 
 bool qtractorMainForm::setPlaying ( bool bPlaying )
 {
-	// In case of (re)starting playback, send now
-	// all tracks MIDI bank select/program changes...
-	if (bPlaying)
-		m_pSession->resetAllMidiControllers(true); // Force conditional!
-
 	// Toggle engine play status...
 	m_pSession->setPlaying(bPlaying);
 
 	// We must start/stop certain things...
-	if (!bPlaying) {
+	if (bPlaying) {
+		// In case of (re)starting playback, send now
+		// all tracks MIDI bank select/program changes...
+		m_pSession->resetAllMidiControllers(true);
+		// Start something?...
+		++m_iTransportUpdate;
+	} else {
 		// Shutdown recording anyway...
 		if (m_pSession->isRecording() && setRecording(false)) {
 			// Send MMC RECORD_EXIT command...
@@ -6039,8 +6040,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 		}
 		if (pCurveCommand)
 			m_pSession->commands()->push(pCurveCommand);
-	}	// Start something... ;)
-	else ++m_iTransportUpdate;
+	}
 
 	// Done with playback switch...
 	return true;
@@ -6522,7 +6522,6 @@ bool qtractorMainForm::startSession (void)
 		// Get on with the special ALSA sequencer notifier...
 		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 		if (pMidiEngine && pMidiEngine->alsaNotifier()) {
-			m_pSession->resetAllMidiControllers(false); // Deferred++
 			QObject::connect(pMidiEngine->alsaNotifier(),
 				SIGNAL(activated(int)),
 				SLOT(alsaNotify()));
@@ -6661,6 +6660,9 @@ void qtractorMainForm::updateSessionPost (void)
 		}
 		qtractorMessageList::clear();
 	}
+
+	// Reset/reset all MIDI controllers (conditional)...
+	m_pSession->resetAllMidiControllers(false);
 
 	// Ah, make it stand right.
 	if (m_pTracks)
