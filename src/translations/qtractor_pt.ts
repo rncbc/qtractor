@@ -11748,6 +11748,11 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Tema padrão para widgets</translation>
     </message>
     <message>
+        <location filename="../qtractorOptionsForm.ui" line="3483"/>
+        <source>Move down path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorOptionsForm.ui" line="3722"/>
         <source>Blacklist</source>
         <translation>Lista Maldita</translation>
@@ -12460,7 +12465,6 @@ Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3452"/>
-        <location filename="../qtractorOptionsForm.ui" line="3483"/>
         <source>Move up path</source>
         <translation>Mover local Para Cima</translation>
     </message>

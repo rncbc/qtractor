@@ -3480,7 +3480,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Move up path</string>
+             <string>Move down path</string>
             </property>
             <property name="text">
              <string>&amp;Down</string>

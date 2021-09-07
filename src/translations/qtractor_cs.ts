@@ -12717,7 +12717,6 @@ Chcete použít tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3452"/>
-        <location filename="../qtractorOptionsForm.ui" line="3483"/>
         <source>Move up path</source>
         <translation>Přesunout cestu nahoru</translation>
     </message>
@@ -12725,6 +12724,11 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="3455"/>
         <source>&amp;Up</source>
         <translation>&amp;Nahoru</translation>
+    </message>
+    <message>
+        <location filename="../qtractorOptionsForm.ui" line="3483"/>
+        <source>Move down path</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3486"/>
