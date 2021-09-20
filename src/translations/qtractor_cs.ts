@@ -12585,12 +12585,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1589"/>
         <source>Whether to reset/resend all controllers on playback start</source>
-        <translation type="unfinished"></translation>
+        <translation>Zda obnovit výchozí/znovu odeslat všechny ovladače při spuštění přehrávání</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1592"/>
         <source>&amp;Reset all controllers on playback start</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Òbnovit výchozí všechny ovladače při spuštění přehrávání</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2060"/>
@@ -12728,7 +12728,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3483"/>
         <source>Move down path</source>
-        <translation type="unfinished"></translation>
+        <translation>Přesunout cestu dolů</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3486"/>
