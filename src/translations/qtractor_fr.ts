@@ -12051,7 +12051,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1589"/>
         <source>Whether to reset/resend all controllers on playback start</source>
-        <translation>S'il faut réinitialiser/renvoyer tous les contrôleurs au début de la lecture</translation>
+        <translation>S&apos;il faut réinitialiser/renvoyer tous les contrôleurs au début de la lecture</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1592"/>
