@@ -12051,12 +12051,12 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1589"/>
         <source>Whether to reset/resend all controllers on playback start</source>
-        <translation type="unfinished"></translation>
+        <translation>S'il faut réinitialiser/renvoyer tous les contrôleurs au début de la lecture</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1592"/>
         <source>&amp;Reset all controllers on playback start</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Réinitialiser tous les contrôleurs au début de la lecture</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1608"/>
@@ -12335,7 +12335,7 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3483"/>
         <source>Move down path</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacement vers le bas du chemin</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3690"/>
