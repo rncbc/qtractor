@@ -12042,12 +12042,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1589"/>
         <source>Whether to reset/resend all controllers on playback start</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se reinician/reenvían todos los controladores al iniciar la reproducción</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1592"/>
         <source>&amp;Reset all controllers on playback start</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reiniciar todos los controladores al iniciar la reproducción</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1608"/>
@@ -12316,7 +12316,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3483"/>
         <source>Move down path</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover ruta hacia abajo</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3722"/>
