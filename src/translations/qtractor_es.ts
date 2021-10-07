@@ -7484,52 +7484,52 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="199"/>
         <source>Volume (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Volumen (control amplio)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="200"/>
         <source>Balance (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Balance (control amplio)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="201"/>
         <source>Pan Position (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Posición del Paneo (control amplio)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="202"/>
         <source>Expression (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Expresión (control amplio)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="203"/>
         <source>Effect Control 1 (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Control de Efecto 1 (control amplio)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="204"/>
         <source>Effect Control 2 (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Control de Efecto 2 (control amplio)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="205"/>
         <source>General Purpose Slider 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslizador de Propósito General 1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="206"/>
         <source>General Purpose Slider 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslizador de Propósito General 2</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="207"/>
         <source>General Purpose Slider 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslizador de Propósito General 3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="208"/>
         <source>General Purpose Slider 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslizador de Propósito General 4</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="209"/>
@@ -7674,47 +7674,47 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="237"/>
         <source>General Purpose Button 1 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Botón de Propósito General 1 (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="238"/>
         <source>General Purpose Button 2 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Botón de Propósito General 2 (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="239"/>
         <source>General Purpose Button 3 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Botón de Propósito General 3 (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="240"/>
         <source>General Purpose Button 4 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Botón de Propósito General 4 (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="241"/>
         <source>Effects Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Efectos</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="242"/>
         <source>Tremulo Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Trémulo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="243"/>
         <source>Chorus Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Coro</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="244"/>
         <source>Celeste Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Celeste</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="245"/>
         <source>Phaser Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Phaser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="246"/>
@@ -7749,42 +7749,42 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="252"/>
         <source>All Sound Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Apagar Todos los Sonidos</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="253"/>
         <source>All Controllers Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Apagar todos los COntroladores</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="254"/>
         <source>Local Keyboard (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Teclado Local (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="255"/>
         <source>All Notes Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Apagar Todas las Notas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="256"/>
         <source>Omni Mode Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo Omni Apagado</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="257"/>
         <source>Omni Mode On</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo Omni Encendido</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="258"/>
         <source>Mono Operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Operación Mono</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="259"/>
         <source>Poly Operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Operación Poli</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="304"/>
@@ -7944,52 +7944,52 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="429"/>
         <source>Expression (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Expresión (14bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="430"/>
         <source>Effect Control 1 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Control de Efecto 1 (14bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="431"/>
         <source>Effect Control 2 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Control de Efecto 2 (14bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="432"/>
         <source>General Purpose Slider 1 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslizador de Propósito General 1 (14 bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="433"/>
         <source>General Purpose Slider 2 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslizador de Propósito General 2 14bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="434"/>
         <source>General Purpose Slider 3 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslizador de Propósito General 3 (14bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="435"/>
         <source>General Purpose Slider 4 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslizador de Propósito General (14bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="503"/>
         <source>Chromatic</source>
-        <translation type="unfinished"></translation>
+        <translation>Cromático</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="504"/>
         <source>Major</source>
-        <translation type="unfinished">Mayor</translation>
+        <translation>Mayor</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="505"/>
         <source>Minor</source>
-        <translation type="unfinished">Menor</translation>
+        <translation>Menor</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="506"/>
@@ -12056,12 +12056,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1589"/>
         <source>Whether to reset/resend all controllers on playback start</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se reinician/reenvían todos los controladores al iniciar la reproducción</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1592"/>
         <source>&amp;Reset all controllers on playback start</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reiniciar todos los controladores al iniciar la reproducción</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1608"/>
@@ -12330,7 +12330,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3483"/>
         <source>Move down path</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover ruta hacia abajo</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3722"/>
