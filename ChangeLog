@@ -4,17 +4,17 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.24  2021-10-16  An Autumn'21 Release.
 
 - A new option has been added to reset/resend all MIDI track/channel
   and buses controllers on playback start (cf. View/Options.../MIDI/
-  Playback/Reset all controllers on playback start). (EXPERIMENTAL)
+  Playback/Reset all controllers on playback start).
 
 - Whenever possible, avoid suggesting Save As... to an extracted
-  archive/zip directory. (EXPERIMENTAL)
+  archive/zip directory.
 
 - Fixed an old nasty mistake when renaming session names and then
-  saving into an archive/zip bundle file (.qtz) (EXPERIMENTAL)
+  saving into an archive/zip bundle file (.qtz).
 
 - Fixed Mixer multi-row automatic layout consistency, when adding
   new or removing existing tracks or buses.
