@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed potential crash on session close or application exit, when
+  some plugins have been removed. (EXPERIMENTAL)
+
+
 0.9.24  2021-10-16  An Autumn'21 Release.
 
 - A new option has been added to reset/resend all MIDI track/channel
