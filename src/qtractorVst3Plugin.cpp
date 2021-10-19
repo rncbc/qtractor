@@ -3025,12 +3025,12 @@ void qtractorVst3Plugin::setChannels ( unsigned short iChannels )
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
 	unsigned short iInstances = 0;
-	qtractorPluginList *pPluginList = list();
-	if (pPluginList)
-		iInstances = pType->instances(iChannels, pPluginList->isMidi());
-	// Now see if instance and channel count changed anyhow...
-	if (iInstances == iOldInstances && iChannels == channels())
-		return;
+	if (iChannels > 0) {
+		iInstances = pType->instances(iChannels, list()->isMidi());
+		// Now see if instance and channel count changed anyhow...
+		if (iInstances == iOldInstances && iChannels == channels())
+			return;
+	}
 
 	// Gotta go for a while...
 	const bool bActivated = isActivated();

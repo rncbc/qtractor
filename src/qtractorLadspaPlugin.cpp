@@ -254,12 +254,12 @@ void qtractorLadspaPlugin::setChannels ( unsigned short iChannels )
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
 	unsigned short iInstances = 0;
-	qtractorPluginList *pPluginList = list();
-	if (pPluginList)
-		iInstances = pLadspaType->instances(iChannels, pPluginList->isMidi());
-	// Now see if instance count changed anyhow...
-	if (iInstances == iOldInstances && iChannels == channels())
-		return;
+	if (iChannels > 0) {
+		iInstances = pLadspaType->instances(iChannels, list()->isMidi());
+		// Now see if instance count changed anyhow...
+		if (iInstances == iOldInstances && iChannels == channels())
+			return;
+	}
 
 	const LADSPA_Descriptor *pLadspaDescriptor
 		= pLadspaType->ladspa_descriptor();
