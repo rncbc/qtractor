@@ -7660,47 +7660,47 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="237"/>
         <source>General Purpose Button 1 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Botón de Propósito General 1 (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="238"/>
         <source>General Purpose Button 2 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Botón de Propósito General 2 (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="239"/>
         <source>General Purpose Button 3 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Botón de Propósito General 3 (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="240"/>
         <source>General Purpose Button 4 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Botón de Propósito General 4 (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="241"/>
         <source>Effects Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Efectos</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="242"/>
         <source>Tremulo Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Trémulo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="243"/>
         <source>Chorus Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Coro</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="244"/>
         <source>Celeste Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Celeste</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="245"/>
         <source>Phaser Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Phaser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="246"/>
