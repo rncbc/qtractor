@@ -97,7 +97,9 @@ BuildRequires:	libserd-devel
 BuildRequires:	libsord-devel
 BuildRequires:	libsratom-devel
 BuildRequires:	liblilv-devel
+%if 0%{qt_major_version} < 6
 BuildRequires:	libsuil-devel
+%endif
 BuildRequires:	zlib-devel
 BuildRequires:	gtk2-devel
 %if %{defined fedora}
