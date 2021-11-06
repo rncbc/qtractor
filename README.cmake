@@ -39,12 +39,26 @@ $ mkdir build
 $ pwd
 qtractor-x.y.z
 $ cd build
-$ cmake -DCMAKE_BUILD_TYPE=debug ..
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
 
 3. Execute the build command. If you used the Makefiles generator (the default
    in Linux and other Unix systems) then execute make, gmake, or mingw32-make.
    If you generated a project file, use your IDE to build it.
 
+Configuration options   
+=====================
+
+CMAKE_BUILD_TYPE=Release
+
+    Specifies the build type: size optimized or including debug symbols.
+
+CMAKE_INSTALL_PREFIX=/usr/local
+
+    Install directory prefix that will be used when you call 'make install'.
+
+For more information, please see:
+    https://cmake.org/cmake/help/v3.10/manual/cmake.1.html
+    
 Compiling with make
 ===================
 
