@@ -126,10 +126,11 @@ the personal home-studio.
 
 %build
 cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build
-%__make %{?_smp_mflags} -C build
+cmake --build build %{?_smp_mflags}
 
 %install
-%__make DESTDIR="%{buildroot}" -C build install
+DESTDIR="%{buildroot}" \
+cmake --install build
 
 %post
 %mime_database_post
