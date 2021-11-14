@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- A more verbose warning question is issued, on whether to continue
+  saving to an existing zip/archive directory and accept to replace
+  and erase all its current data in the future. (EXPERIMENTAL)
+
 - Fixed potential crash on session close or application exit, when
   some plugins have been removed. (EXPERIMENTAL)
 

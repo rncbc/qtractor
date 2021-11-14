@@ -2321,7 +2321,7 @@ bool qtractorMainForm::closeSession (void)
 		// Is it time to cleanup extracted archives?
 		const QStringList& paths = qtractorDocument::extractedArchives();
 		if (!paths.isEmpty()) {
-			bool bArchiveRemove = true;
+			bool bRemoveArchive = true;
 			bool bConfirmArchive = (m_pOptions && m_pOptions->bConfirmArchive);
 		#ifdef CONFIG_NSM
 			if (m_pNsmClient && m_pNsmClient->is_active())
@@ -2347,12 +2347,12 @@ bool qtractorMainForm::closeSession (void)
 				cbox.setChecked(false);
 				cbox.blockSignals(true);
 				mbox.addButton(&cbox, QMessageBox::ActionRole);
-				bArchiveRemove = (mbox.exec() == QMessageBox::Ok);
+				bRemoveArchive = (mbox.exec() == QMessageBox::Ok);
 				if (cbox.isChecked())
 					m_pOptions->bConfirmArchive = false;
 			#endif
 			}
-			qtractorDocument::clearExtractedArchives(bArchiveRemove);
+			qtractorDocument::clearExtractedArchives(bRemoveArchive);
 		}
 	#endif
 		// Some defaults are due...
@@ -2431,7 +2431,7 @@ bool qtractorMainForm::loadSessionFileEx (
 		} else {
 			info.setFile(info.path() + QDir::separator() + info.completeBaseName());
 			if (info.exists() && info.isDir()) {
-				bool bArchiveRemove = true;
+				bool bRemoveArchive = true;
 				if  (m_pOptions && m_pOptions->bConfirmArchive) {
 					const QString& sTitle
 						= tr("Warning");
@@ -2441,7 +2441,7 @@ bool qtractorMainForm::loadSessionFileEx (
 						"Do you want to replace it?")
 						.arg(info.filePath());
 				#if 0
-					bArchiveRemove (QMessageBox::warning(this, sTitle, sText,
+					bRemoveArchive (QMessageBox::warning(this, sTitle, sText,
 						QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
 				#else
 					QMessageBox mbox(this);
@@ -2453,12 +2453,12 @@ bool qtractorMainForm::loadSessionFileEx (
 					cbox.setChecked(false);
 					cbox.blockSignals(true);
 					mbox.addButton(&cbox, QMessageBox::ActionRole);
-					bArchiveRemove = (mbox.exec() == QMessageBox::Ok);
+					bRemoveArchive = (mbox.exec() == QMessageBox::Ok);
 					if (cbox.isChecked())
 						m_pOptions->bConfirmArchive = false;
 				#endif
-					// Restarting...
-					if (!bArchiveRemove) {
+					// Restarting?...
+					if (!bRemoveArchive) {
 					#ifdef CONFIG_LV2
 						QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 						qtractorLv2PluginType::lv2_open();
@@ -2573,12 +2573,51 @@ bool qtractorMainForm::saveSessionFileEx (
 #endif
 
 	// Flag whether we're about to save as template or archive...
-	const QString& sSuffix = QFileInfo(sFilename).suffix();
+	QFileInfo info(sFilename);
+	const QString& sSuffix = info.suffix();
 	if (sSuffix == qtractorDocument::templateExt())
 		iFlags |= qtractorDocument::Template;
 #ifdef CONFIG_LIBZ
-	if (sSuffix == qtractorDocument::archiveExt())
+	if (sSuffix == qtractorDocument::archiveExt()) {
 		iFlags |= qtractorDocument::Archive;
+		info.setFile(info.path() + QDir::separator() + info.completeBaseName());
+		if (info.exists() && info.isDir()) {
+			bool bConfirmArchive = true;
+			if  (m_pOptions && m_pOptions->bConfirmArchive) {
+				const QString& sTitle
+					= tr("Warning");
+				const QString& sText = tr(
+					"A directory with same name already exists:\n\n"
+					"\"%1\"\n\n"
+					"This directory will be replaced, "
+					"erasing all its current data,\n"
+					"when opening and extracting "
+					"this archive in the future.\n\n"
+					"Do you want to continue?")
+					.arg(info.filePath());
+			#if 0
+				bConfirmArchive (QMessageBox::warning(this, sTitle, sText,
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+			#else
+				QMessageBox mbox(this);
+				mbox.setIcon(QMessageBox::Warning);
+				mbox.setWindowTitle(sTitle);
+				mbox.setText(sText);
+				mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+				QCheckBox cbox(tr("Don't ask this again"));
+				cbox.setChecked(false);
+				cbox.blockSignals(true);
+				mbox.addButton(&cbox, QMessageBox::ActionRole);
+				bConfirmArchive = (mbox.exec() == QMessageBox::Ok);
+				if (cbox.isChecked())
+					m_pOptions->bConfirmArchive = false;
+			#endif
+			}
+			// Aborting?...
+			if (!bConfirmArchive)
+				return false;
+		}
+	}
 #endif
 
 	// Tell the world we'll take some time...
