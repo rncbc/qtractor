@@ -780,5 +780,4 @@ show_option ("  VeSTige header support . . . . . . . . . . . . . ." CONFIG_VESTI
 show_option ("  Unique/Single instance support . . . . . . . . . ." CONFIG_XUNIQUE)
 show_option ("  Gradient eye-candy . . . . . . . . . . . . . . . ." CONFIG_GRADIENT)
 show_option ("  Debugger stack-trace (gdb) . . . . . . . . . . . ." CONFIG_STACKTRACE)
-message   ("\n  Install prefix . . . . . . . . . . . . . . . . . .: ${CONFIG_PREFIX}")
-message   ("\nNow type 'make', followed by 'make install' as root.\n")
+message   ("\n  Install prefix . . . . . . . . . . . . . . . . . .: ${CONFIG_PREFIX}\n")

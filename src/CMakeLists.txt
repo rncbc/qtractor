@@ -7,9 +7,9 @@ set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTORCC ON)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
-    file (REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
+  file (REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
 endif ()
-configure_file (cmake_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file (config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 set (HEADERS
   qtractor.h

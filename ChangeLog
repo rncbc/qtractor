@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Dropped autotools (autoconf, automake, etc.) build system.
+
 - A more verbose warning question is issued, on whether to continue
   saving to an existing zip/archive directory and accept to replace
   and erase all its current data in the future. (EXPERIMENTAL)
