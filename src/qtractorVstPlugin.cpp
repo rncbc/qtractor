@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -745,11 +745,13 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
-	const unsigned short iInstances
-		= pVstType->instances(iChannels, list()->isMidi());
-	// Now see if instance and channel count changed anyhow...
-	if (iInstances == iOldInstances && iChannels == channels())
-		return;
+	unsigned short iInstances = 0;
+	if (iChannels > 0) {
+		iInstances = pVstType->instances(iChannels, list()->isMidi());
+		// Now see if instance and channel count changed anyhow...
+		if (iInstances == iOldInstances && iChannels == channels())
+			return;
+	}
 
 	// Gotta go for a while...
 	const bool bActivated = isActivated();

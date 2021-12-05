@@ -17,7 +17,7 @@
 
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 66.1
+%define release 67.1
 
 %define _prefix	@ac_prefix@
 
@@ -97,7 +97,9 @@ BuildRequires:	libserd-devel
 BuildRequires:	libsord-devel
 BuildRequires:	libsratom-devel
 BuildRequires:	liblilv-devel
+%if 0%{qt_major_version} < 6
 BuildRequires:	libsuil-devel
+%endif
 BuildRequires:	zlib-devel
 BuildRequires:	gtk2-devel
 %if %{defined fedora}
@@ -123,11 +125,12 @@ the personal home-studio.
 %setup -q
 
 %build
-cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build -S .
-%__make %{?_smp_mflags} -C build
+cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build
+cmake --build build %{?_smp_mflags}
 
 %install
-%__make DESTDIR="%{buildroot}" -C build install
+DESTDIR="%{buildroot}" \
+cmake --install build
 
 %post
 %mime_database_post
@@ -142,7 +145,7 @@ cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build -S .
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS COPYING ChangeLog README TODO
+%doc README LICENSE TRANSLATORS ChangeLog
 %dir %{_libdir}/%{name}
 #dir %{_datadir}/mime
 #dir %{_datadir}/mime/packages
@@ -175,6 +178,8 @@ cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build -S .
 %{_datadir}/man/fr/man1/%{name}.1.gz
 
 %changelog
+* Sat Oct 16 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.24
+- Autumn'21 release.
 * Sat Jul 10 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.23
 - Early-Summer'21 release.
 * Fri May 14 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.22

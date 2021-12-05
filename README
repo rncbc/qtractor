@@ -165,12 +165,12 @@ Installation
 
 Unpack the tarball and in the extracted source directory:
 
-    cmake [-DCMAKE_INSTALL_PREFIX=/usr/local] -B build -S .
-    make -C build
+    cmake [-DCMAKE_INSTALL_PREFIX=/usr/local] -B build
+    cmake --build build [--parallel <Njobs>]
 
-and optionally as root:
+and optionally, as root:
 
-    sudo make -C build install
+    sudo cmake --install build
 
 See also the README.cmake file in the source distribution.
 
