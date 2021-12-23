@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed problem with punch-in/out and loop-recording being lost when
+  stopping the play-head right after and between the loop-start and
+  punch-in points, even though at least one cycle or take is through.
+
 - Dropped autotools (autoconf, automake, etc.) build system.
 
 - A more verbose warning question is issued, on whether to continue
