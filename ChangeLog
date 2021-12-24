@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Clip/File Loop Set menu command is now a toggle. (EXPERIMENTAL)
+
 - Fixed problem with punch-in/out and loop-recording being lost when
   stopping the play-head right after and between the loop-start and
   punch-in points, even though at least one cycle or take is through.

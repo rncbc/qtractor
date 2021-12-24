@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2141,6 +2141,16 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		// Special record mode settlement.
 		m_pTimeSpinBox->setReadOnly(bRecording);
 		m_pTempoSpinBox->setReadOnly(bRecording);
+		// Check whether the clip is currently in loop-set...
+		if (pMidiClip) {
+			const unsigned long iClipStart
+				= pMidiClip->clipStart();
+			const unsigned long iClipEnd
+				= iClipStart + pMidiClip->clipLength();
+			m_ui.fileLoopSetAction->setChecked(bLooping
+				&& iClipStart == pSession->loopStart()
+				&& iClipEnd   == pSession->loopEnd());
+		}
 	}
 
 	// Secondary rtime-signature status...

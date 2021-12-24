@@ -4489,7 +4489,6 @@ void qtractorMainForm::clipRangeSet (void)
 	qDebug("qtractorMainForm::clipRangeSet()");
 #endif
 
-	// Normalize current clip, if any...
 	if (m_pTracks)
 		m_pTracks->rangeClip();
 }
@@ -4502,9 +4501,8 @@ void qtractorMainForm::clipLoopSet (void)
 	qDebug("qtractorMainForm::clipLoopSet()");
 #endif
 
-	// Normalize current clip, if any...
 	if (m_pTracks)
-		m_pTracks->loopClip();
+		m_ui.clipLoopSetAction->setChecked(m_pTracks->loopClip());
 }
 
 

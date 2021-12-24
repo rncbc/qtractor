@@ -1765,8 +1765,14 @@ bool qtractorTracks::rangeClipEx ( qtractorClip *pClip, bool bLoopSet )
 	pSession->setEditTail(iEditTail);
 
 	if (bLoopSet) {
-		return pSession->execute(
+		if (pSession->isLooping()
+			&& iEditHead == pSession->loopStart()
+			&& iEditTail == pSession->loopEnd()) {
+			iEditHead = iEditTail = 0;
+		}
+		pSession->execute(
 			new qtractorSessionLoopCommand(pSession, iEditHead, iEditTail));
+		return (iEditHead < iEditTail);
 	}
 
 	selectionChangeNotify();

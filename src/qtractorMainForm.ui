@@ -1964,6 +1964,9 @@
    </property>
   </action>
   <action name="clipLoopSetAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Loop Set</string>
    </property>
