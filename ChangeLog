@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Hopefully fixed an old MIDI off-timing bug noticeable only when
+  exporting (Track/Export Tracks/Audio...) on large buffer-sizes
+  (>= 2K frames/period). (EXPERIMENTAL)
+
 - Clip/File Loop Set menu command is now a toggle. (EXPERIMENTAL)
 
 - Fixed problem with punch-in/out and loop-recording being lost when
