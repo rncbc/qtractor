@@ -5876,7 +5876,7 @@ Do you want to continue?</source>
 &quot;%1&quot;
 
 Ce répertoire sera remplacé, en effaçant toutes ses données actuelles,
-lors de l'ouverture et de l'extraction de cette archive dans le futur.
+lors de l&apos;ouverture et de l&apos;extraction de cette archive dans le futur.
 
 Souhaitez-vous continuer ?</translation>
     </message>
