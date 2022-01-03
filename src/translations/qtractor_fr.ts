@@ -5871,7 +5871,14 @@ This directory will be replaced, erasing all its current data,
 when opening and extracting this archive in the future.
 
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Un répertoire du même nom existe déjà :
+
+&quot;%1&quot;
+
+Ce répertoire sera remplacé, en effaçant toutes ses données actuelles,
+lors de l'ouverture et de l'extraction de cette archive dans le futur.
+
+Souhaitez-vous continuer ?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2626"/>
