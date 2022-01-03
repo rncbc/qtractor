@@ -2812,7 +2812,14 @@ This directory will be replaced, erasing all its current data,
 when opening and extracting this archive in the future.
 
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář se stejným názvem již existuje:
+
+&quot;%1&quot;
+
+Tento adresář bude nahrazen. Při otevírání a rozbalování tohoto archivu v budoucnu
+budou smazána všechna jeho nynější data.
+
+Chcete pokračovat?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2626"/>
