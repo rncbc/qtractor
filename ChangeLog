@@ -8,9 +8,9 @@ ChangeLog
 
 - Hopefully fixed an old MIDI off-timing bug noticeable only when
   exporting (Track/Export Tracks/Audio...) on large buffer-sizes
-  (>= 2K frames/period). (EXPERIMENTAL)
+  (>= 2K frames/period).
 
-- Clip/File Loop Set menu command is now a toggle. (EXPERIMENTAL)
+- Clip/File Loop Set menu command is now a toggle.
 
 - Fixed problem with punch-in/out and loop-recording being lost when
   stopping the play-head right after and between the loop-start and
@@ -20,10 +20,10 @@ ChangeLog
 
 - A more verbose warning question is issued, on whether to continue
   saving to an existing zip/archive directory and accept to replace
-  and erase all its current data in the future. (EXPERIMENTAL)
+  and erase all its current data in the future.
 
 - Fixed potential crash on session close or application exit, when
-  some plugins have been removed. (EXPERIMENTAL)
+  some plugins have been removed.
 
 
 0.9.24  2021-10-16  An Autumn'21 Release.
