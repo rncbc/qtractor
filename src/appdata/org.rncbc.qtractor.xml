@@ -15,7 +15,7 @@
   evolve as a fairly-featured Linux Desktop Audio Workstation GUI,
   specially dedicated to the personal home-studio.</p>
  </description>
- <launchable type="desktop-id">qtractor.desktop</launchable>
+ <launchable type="desktop-id">org.rncbc.qtractor.desktop</launchable>
  <provides>
   <binary>qtractor</binary>
   <binary>qtractor_plugin_scan</binary>
@@ -44,4 +44,8 @@
  <project_group>rncbc.org</project_group>
  <developer_name>rncbc aka. Rui Nuno Capela</developer_name>
  <update_contact>rncbc@rncbc.org</update_contact>
+ <releases>
+   <release version="0.9.25" date="2022-01-09" urgency="low" />
+ </releases>
+ <content_rating type="oars-1.0"/>
 </component>
