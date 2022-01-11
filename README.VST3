@@ -38,7 +38,7 @@ as well:
 Similarly, as before, you may now proceed with the build, starting from
 this point:
 
-  ./configure --with-vst3=/path/to/vst3sdk
+  cmake -DCONFIG_VST3SDK=/path/to/vst3sdk ...
 
 Note that you only need to have the original VST3 SDK source available.
 You don't really need to build or deploy any of the VST3 SDK binaries,

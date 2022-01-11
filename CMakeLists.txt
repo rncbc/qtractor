@@ -279,7 +279,7 @@ if (CONFIG_DSSI)
 endif ()
 
 # Check for VST headers.
-if (CONFIG_VST)
+if (CONFIG_VST AND NOT CONFIG_VST2SDK)
   check_include_file (aeffectx.h HAVE_AEFFECTX_H)
   if (NOT HAVE_AEFFECTX_H AND CONFIG_VESTIGE)
     set (VESTIGE_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/vestige)

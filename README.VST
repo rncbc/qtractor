@@ -37,7 +37,7 @@ directories (eg. /usr/local/include or /usr/include). That way, all
 will be handled automagically by the usual build steps. Otherwise,
 you'll need do supply the include path yourself, as in the following:
 
-  ./configure --with-vst=/path/to/pluginterfaces/vst2.x
+  cmake -DCONFIG_VST2SDK=/path/to/pluginterfaces/vst2.x ...
 
 Next step, once properly built, you'll need to tell where the actual
 native VST plug-ins can be found in your file system. The directories
