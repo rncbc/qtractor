@@ -173,7 +173,7 @@ cmake --install build
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_datadir}/icons/hicolor/scalable/mimetypes/application-x-%{name}*.svg
 %{_datadir}/%{name}/translations/%{name}_*.qm
-%{_datadir}/metainfo/org.rncbc.%{name}.xml
+%{_datadir}/metainfo/org.rncbc.%{name}.metainfo.xml
 %{_datadir}/man/man1/%{name}.1.gz
 %{_datadir}/man/fr/man1/%{name}.1.gz
 

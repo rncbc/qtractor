@@ -501,7 +501,7 @@ if (UNIX AND NOT APPLE)
      DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/apps)
   install (FILES images/${PROJECT_NAME}.svg
      DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
-  install (FILES appdata/org.rncbc.${PROJECT_NAME}.xml
+  install (FILES appdata/org.rncbc.${PROJECT_NAME}.metainfo.xml
      DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
   install (FILES mimetypes/${PROJECT_NAME}.xml
      DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
