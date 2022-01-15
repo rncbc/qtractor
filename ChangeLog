@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed translations path to be relative to application runtime.
+
+
 0.9.25  2022-01-09  A Winter'22 Release.
 
 - Hopefully fixed an old MIDI off-timing bug noticeable only when
