@@ -6,6 +6,7 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed in-flight transport mode changes. (EXPERIMENTAL)
 - Fixed translations path to be relative to application runtime.
 
 

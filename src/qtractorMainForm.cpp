@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -5900,7 +5900,7 @@ void qtractorMainForm::helpAbout (void)
 	list << tr("VST Plug-in support disabled.");
 #endif
 #ifndef CONFIG_VST3
-	list << tr("VST3 Plug-in support (EXPERIMENTAL) disabled.");
+	list << tr("VST3 Plug-in support disabled.");
 #endif
 #ifndef CONFIG_LV2
 	list << tr("LV2 Plug-in support disabled.");

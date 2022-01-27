@@ -2198,7 +2198,19 @@ int qtractorAudioEngine::updateConnects (void)
 void qtractorAudioEngine::setTransportMode (
 	qtractorBus::BusMode transportMode )
 {
+	const bool bActivated = isActivated();
+	if (bActivated && (m_transportMode & qtractorBus::Input)) {
+		jack_set_sync_callback(m_pJackClient,
+			nullptr, nullptr);
+	}
+
 	m_transportMode = transportMode;
+
+	if (bActivated && (m_transportMode & qtractorBus::Input)) {
+		jack_set_sync_callback(m_pJackClient,
+			qtractorAudioEngine_sync, this);
+	}
+
 }
 
 qtractorBus::BusMode qtractorAudioEngine::transportMode (void) const

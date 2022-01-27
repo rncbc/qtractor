@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -815,8 +815,8 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pItem->clipLength =	pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipLengthTime);
 			pClip->setClipLength(pItem->clipLength);
-		#if 1// EXPERIMENTAL: Don't quantize to MIDI metronomic time-scale...
-			const unsigned long iClipOffset= pClip->clipOffset();
+		#if 1// FIXUP: Don't quantize to MIDI metronomic time-scale...
+			const unsigned long iClipOffset = pClip->clipOffset();
 			pClip->setClipOffset(pItem->clipOffset);
 			pItem->clipOffset =	iClipOffset;
 		#else

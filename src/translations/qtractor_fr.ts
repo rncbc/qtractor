@@ -34,16 +34,16 @@ Audio :	%1 canaux, %2 Hz</translation>
         <translation>	(%1 demi-tons de décalage de la tonalité)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2672"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2964"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2684"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2976"/>
         <location filename="../qtractorMidiEngine.cpp" line="4012"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 In</source>
         <translation>%1 Entrée</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2681"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2964"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2693"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2976"/>
         <location filename="../qtractorMidiEngine.cpp" line="4021"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 Out</source>
@@ -640,15 +640,15 @@ MIDI:	</translation>
         <translation>%1 Volume</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2674"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2683"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2686"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation>%1 Gain</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2676"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2685"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2688"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
         <location filename="../qtractorMidiEngine.cpp" line="4016"/>
         <location filename="../qtractorMidiEngine.cpp" line="4025"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -6032,11 +6032,6 @@ que la prochaine fois que vous démarrerez %1.</translation>
         <translation>Support des greffons VST désactivé.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5903"/>
-        <source>VST3 Plug-in support (EXPERIMENTAL) disabled.</source>
-        <translation>Support de greffon VST3 (EXPÉRIMENTAL) désactivé.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5906"/>
         <source>LV2 Plug-in support disabled.</source>
         <translation>Support du greffon LV2 désactivé.</translation>
@@ -6159,6 +6154,11 @@ est hautement recommandé.</translation>
         <location filename="../qtractorMainForm.cpp" line="510"/>
         <source>Current time (play-head)</source>
         <translation>Temps courant (tête de lecture)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5903"/>
+        <source>VST3 Plug-in support disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5909"/>

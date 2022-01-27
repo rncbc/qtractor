@@ -34,16 +34,16 @@ Audio:	%1 channels, %2 Hz</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2672"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2964"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2684"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2976"/>
         <location filename="../qtractorMidiEngine.cpp" line="4012"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 In</source>
         <translation>%1 入力</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2681"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2964"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2693"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2976"/>
         <location filename="../qtractorMidiEngine.cpp" line="4021"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 Out</source>
@@ -640,15 +640,15 @@ MIDI:	</translation>
         <translation>%1 ボリューム</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2674"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2683"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2686"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation>%1 ゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2676"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2685"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2688"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
         <location filename="../qtractorMidiEngine.cpp" line="4016"/>
         <location filename="../qtractorMidiEngine.cpp" line="4025"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -6025,11 +6025,6 @@ next time you start this %1.</source>
         <translation>VSTプラグインサポートは無効です。</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="5903"/>
-        <source>VST3 Plug-in support (EXPERIMENTAL) disabled.</source>
-        <translation>VST3プラグインサポート (実験的) は無効です。</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="5906"/>
         <source>LV2 Plug-in support disabled.</source>
         <translation>LV2プラグインサポートは無効です。</translation>
@@ -6152,6 +6147,11 @@ is highly recommended.</source>
         <location filename="../qtractorMainForm.cpp" line="510"/>
         <source>Current time (play-head)</source>
         <translation>現在の時間 (再生の先頭)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="5903"/>
+        <source>VST3 Plug-in support disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5909"/>

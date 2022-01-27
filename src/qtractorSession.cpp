@@ -853,7 +853,7 @@ void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 				pClip; pClip = pClip->next()) {
 		//	pClip->setClipStart(qtractorTimeScale::uroundf(
 		//		fRatio * float(pClip->clipStart())));
-		#if 1// EXPERIMENTAL: Don't quantize to MIDI metronomic time-scale...
+		#if 1// FIXUP: Don't quantize to MIDI metronomic time-scale...
 			pClip->setClipOffset(qtractorTimeScale::uroundf(
 				fRatio * float(pClip->clipOffset())));
 		#endif

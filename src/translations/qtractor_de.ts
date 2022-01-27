@@ -35,16 +35,16 @@ Audio:	%1 Kanäle, %2 Hz</translation>
 	(%1 Halbton-Tonhöhenänderung)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2672"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2964"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2684"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2976"/>
         <location filename="../qtractorMidiEngine.cpp" line="4012"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 In</source>
         <translation>%1 Ein</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2681"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2964"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2693"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2976"/>
         <location filename="../qtractorMidiEngine.cpp" line="4021"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 Out</source>
@@ -639,15 +639,15 @@ MIDI:	</translation>
         <translation>%1 Lautstärke</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2674"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2683"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2686"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2676"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2685"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2688"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
         <location filename="../qtractorMidiEngine.cpp" line="4016"/>
         <location filename="../qtractorMidiEngine.cpp" line="4025"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -6005,8 +6005,8 @@ wenn sie %1 das nächste Mal starten.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5903"/>
-        <source>VST3 Plug-in support (EXPERIMENTAL) disabled.</source>
-        <translation>VST3 PlugIn-Unterstützung deaktiviert.</translation>
+        <source>VST3 Plug-in support disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5906"/>
