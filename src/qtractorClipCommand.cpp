@@ -30,6 +30,7 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
+#include "qtractorTracks.h"
 #include "qtractorFiles.h"
 
 #include "qtractorMidiEditCommand.h"
@@ -78,7 +79,7 @@ void qtractorClipCommand::addClip ( qtractorClip *pClip,
 {
 	m_items.append(new Item(AddClip, pClip, pTrack));
 
-	setClearSelectReset(true);
+//	setClearSelectReset(true);
 }
 
 
@@ -498,8 +499,12 @@ bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
 				takeInfoClip(pAudioClip, pTakePart->takeInfo());
 				pTakePart->setClip(pAudioClip);
 			}
-			if (pMainForm)	
+			if (pMainForm) {
 				pMainForm->addAudioFile(pAudioClip->filename());
+				qtractorTracks *pTracks = pMainForm->tracks();
+				if (pTracks)
+					pTracks->setCurrentClip(pAudioClip);
+			}
 		}
 		break;
 	}
@@ -516,8 +521,11 @@ bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
 				takeInfoClip(pMidiClip, pTakePart->takeInfo());
 				pTakePart->setClip(pMidiClip);
 			}
-			if (pMainForm)	
+			if (pMainForm)
 				pMainForm->addMidiFile(pMidiClip->filename());
+				qtractorTracks *pTracks = pMainForm->tracks();
+				if (pTracks)
+					pTracks->setCurrentClip(pMidiClip);
 		}
 		break;
 	}

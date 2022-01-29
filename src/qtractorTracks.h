@@ -1,7 +1,7 @@
 // qtractorTracks.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -86,6 +86,7 @@ public:
 	void updateMidiTrackItem(qtractorMidiManager *pMidiManager);
 
 	// Primordial clip management methods.
+	void setCurrentClip(qtractorClip *pClip);
 	qtractorClip *currentClip() const;
 
 	bool newClip();

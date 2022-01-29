@@ -6,7 +6,13 @@ ChangeLog
 
 GIT HEAD
 
+- Make last recorded clip current and suitable target for immediate
+  loop recording takes switch or navigation. (EXPERIMENTAL)
+
+- Number of takes is now shown on clip titles and tooltips.
+
 - Fixed in-flight transport mode changes. (EXPERIMENTAL)
+
 - Fixed translations path to be relative to application runtime.
 
 
