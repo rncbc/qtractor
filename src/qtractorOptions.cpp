@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,6 +31,14 @@
 #include <QTextStream>
 
 #include <QApplication>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+#if defined(Q_OS_WINDOWS)
+#include <QMessageBox>
+#endif
+#endif
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QDesktopWidget>
@@ -692,6 +700,20 @@ QSettings& qtractorOptions::settings (void)
 // Command-line argument stuff.
 //
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+
+void qtractorOptions::show_error( const QString& msg )
+{
+#if defined(Q_OS_WINDOWS)
+	QMessageBox::information(nullptr, QApplication::applicationName(), msg);
+#else
+	const QByteArray tmp = msg.toUtf8() + '\n';
+	::fputs(tmp.constData(), stderr);
+#endif
+}
+
+#else
+
 // Help about command line options.
 void qtractorOptions::print_usage ( const QString& arg0 )
 {
@@ -713,14 +735,54 @@ void qtractorOptions::print_usage ( const QString& arg0 )
 		QObject::tr("Show version information") + sEol;
 }
 
+#endif
+
 
 // Parse command line arguments into m_settings.
 bool qtractorOptions::parse_args ( const QStringList& args )
 {
+	int iCmdArgs = 0;
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+
+	QCommandLineParser parser;
+	parser.setApplicationDescription(
+		QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
+
+#ifdef CONFIG_JACK_SESSION
+	parser.addOption({{"s", "session-id"},
+		QObject::tr("Set session identification (uuid)"), "uuid"});
+#endif
+	parser.addHelpOption();
+	parser.addVersionOption();
+	parser.addPositionalArgument("session-file",
+		QObject::tr("Session file (.qtr)"),
+		QObject::tr("[session-file]"));
+	parser.process(args);
+
+#ifdef CONFIG_JACK_SESSION
+	if (parser.isSet("session-id")) {
+		const QString& sVal = parser.value("session-id");
+		if (sVal.isEmpty()) {
+			show_error(QObject::tr("Option -s requires an argument (uuid)."));
+			return false;
+		}
+		sSessionId = sVal;
+	}
+#endif
+
+	foreach(const QString& sArg, parser.positionalArguments()) {
+		if (iCmdArgs > 0)
+			sSessionFile += ' ';
+		sSessionFile += sArg;
+		++iCmdArgs;
+	}
+
+#else
+
 	QTextStream out(stderr);
 	const QString sEol = "\n\n";
 	const int argc = args.count();
-	int iCmdArgs = 0;
 
 	for (int i = 1; i < argc; ++i) {
 
@@ -747,7 +809,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		}
 		if (sArg == "-s" || sArg == "--session-id") {
 			if (sVal.isNull()) {
-				out << QObject::tr("Option -s requires an argument (session-id).") + sEol;
+				out << QObject::tr("Option -s requires an argument (uuid).") + sEol;
 				return false;
 			}
 			sSessionId = sVal;
@@ -778,6 +840,8 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			++iCmdArgs;
 		}
 	}
+
+#endif
 
 	// Alright with argument parsing.
 	return true;

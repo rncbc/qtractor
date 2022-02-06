@@ -106,6 +106,13 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 	QApplication::setApplicationName(QTRACTOR_TITLE);
 	QApplication::setApplicationDisplayName(QTRACTOR_TITLE);
 	//	QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
+	QString sVersion(CONFIG_BUILD_VERSION);
+	sVersion += '\n';
+	sVersion += QString("Qt: %1").arg(qVersion());
+#if defined(QT_STATIC)
+	sVersion += "-static";
+#endif
+	QApplication::setApplicationVersion(sVersion);
 #endif
 	// Load translation support.
 	QLocale loc;

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Migrated command line parsing to QCommandLineParser/Option
+  (Qt >= 5.2) (EXPERIMENTAL)
+
 - Make last recorded clip current and suitable target for immediate
   loop recording takes switch or navigation. (EXPERIMENTAL)
 
