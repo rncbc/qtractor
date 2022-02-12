@@ -284,6 +284,7 @@ private:
 	unsigned int m_iBufferSize;
 
 	// Initial maximum safe buffer size.
+	unsigned int m_iBufferSizeHi;
 	unsigned int m_iBufferSizeEx;
 
 	// Partial buffer offset state;

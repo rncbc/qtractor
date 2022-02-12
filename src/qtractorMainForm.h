@@ -525,8 +525,9 @@ private:
 		StatusLoop    = 5,   // Current session looping state.
 		StatusXrun    = 6,   // Current session XRUN count.
 		StatusTime    = 7,   // Current session length time.
-		StatusRate    = 8,   // Current session sample rate.
-		StatusItems   = 9    // Number of status items.
+		StatusSize    = 8,   // Current session buffer size.
+		StatusRate    = 9,   // Current session sample rate.
+		StatusItems   = 10   // Number of status items.
 	};
 
 	QLabel *m_statusItems[StatusItems];

@@ -87,7 +87,7 @@ void qtractorClipCommand::removeClip ( qtractorClip *pClip )
 {
 	m_items.append(new Item(RemoveClip, pClip, pClip->track()));
 
-	setClearSelectReset(true);
+//	setClearSelectReset(true);
 }
 
 
@@ -162,7 +162,7 @@ void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 		}
 	}
 
-	setClearSelect(true);
+//	setClearSelect(true);
 }
 
 
@@ -642,6 +642,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				pTrack->removeClip(pClip);
 			pItem->autoDelete = !bRedo;
 			pSession->updateTrack(pTrack);
+			setClearSelectReset(!bRedo);
 			break;
 		}
 		case RemoveClip: {
@@ -651,6 +652,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				pTrack->addClip(pClip);
 			pItem->autoDelete = bRedo;
 			pSession->updateTrack(pTrack);
+			setClearSelectReset(bRedo);
 			break;
 		}
 		case FileClip: {
@@ -699,6 +701,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pOldTrack != pTrack)
 				pSession->updateTrack(pOldTrack);
 			pSession->updateTrack(pTrack);
+			setClearSelect(true);
 			break;
 		}
 		case ResizeClip: {

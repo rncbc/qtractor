@@ -6,6 +6,13 @@ ChangeLog
 
 GIT HEAD
 
+- Have even more tolerance to JACK buffer-size changes, prompting
+  for a complete session reload, only when exceeding the quadruple
+  of the previous/current size. (EXPERIMENTAL)
+  
+- Added an additional status-bar label to show the session current
+  buffer-size (in frames per period).
+
 - Migrated command line parsing to QCommandLineParser/Option
   (Qt >= 5.2) (EXPERIMENTAL)
 

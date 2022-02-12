@@ -670,6 +670,15 @@ qtractorMainForm::qtractorMainForm (
 	m_statusItems[StatusTime] = pLabel;
 	pStatusBar->addPermanentWidget(pLabel);
 
+	// Session buffer size.
+	pLabel = new QLabel("9999");
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
+	pLabel->setAutoFillBackground(true);
+	pLabel->setToolTip(tr("Session buffer size"));
+	m_statusItems[StatusSize] = pLabel;
+	pStatusBar->addPermanentWidget(pLabel);
+
 	// Session sample rate.
 	pLabel = new QLabel("199999 Hz");
 	pLabel->setAlignment(Qt::AlignHCenter);
@@ -6468,6 +6477,9 @@ void qtractorMainForm::stabilizeForm (void)
 
 	m_statusItems[StatusTime]->setText(
 		m_pSession->timeScale()->textFromFrame(0, true, iSessionEnd));
+
+	m_statusItems[StatusSize]->setText(
+		QString::number(m_pSession->audioEngine()->bufferSize()));
 
 	m_statusItems[StatusRate]->setText(
 		tr("%1 Hz").arg(m_pSession->sampleRate()));

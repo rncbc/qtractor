@@ -496,6 +496,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	m_iSampleRate = 44100;	// A sensible default, always.
 	m_iBufferSize = 0;
+	m_iBufferSizeHi = 0;
 	m_iBufferSizeEx = 0;
 	m_iBufferOffset = 0;
 
@@ -577,10 +578,12 @@ void qtractorAudioEngine::notifyPortEvent (void)
 
 void qtractorAudioEngine::notifyBuffEvent ( unsigned int iBufferSize )
 {
-	if (m_iBufferSizeEx < iBufferSize)
+	if (m_iBufferSizeHi < iBufferSize) {
+		m_iBufferSizeHi = iBufferSize;
 		m_proxy.notifyBuffEvent(iBufferSize);
-	else
+	} else {
 		m_iBufferSize = iBufferSize;
+	}
 }
 
 void qtractorAudioEngine::notifySessEvent ( void *pvSessionArg )
@@ -682,7 +685,13 @@ bool qtractorAudioEngine::init (void)
 	m_iBufferSize = jack_get_buffer_size(m_pJackClient);
 
 	// Guard for buffer size changes...
-	m_iBufferSizeEx = (m_iBufferSize << 2);
+	if (m_iBufferSizeHi < m_iBufferSize)
+		m_iBufferSizeHi = m_iBufferSize;
+
+	const unsigned int iBufferSizeEx = (m_iBufferSizeHi << 2);
+	if (m_iBufferSizeEx < iBufferSizeEx)
+		m_iBufferSizeEx = iBufferSizeEx;
+qDebug("DEBUG> qtractorAudioEngine::init() iBufferSize=%u iBufferSizeEx=%u.", m_iBufferSize, m_iBufferSizeEx);
 
 	// ATTN: Second is setting proper session client name.
 	pSession->setClientName(
