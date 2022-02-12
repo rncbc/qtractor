@@ -35,16 +35,16 @@ Audio:	%1 Kanäle, %2 Hz</translation>
 	(%1 Halbton-Tonhöhenänderung)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2693"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2686"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2978"/>
         <location filename="../qtractorMidiEngine.cpp" line="4012"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 In</source>
         <translation>%1 Ein</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2702"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2978"/>
         <location filename="../qtractorMidiEngine.cpp" line="4021"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 Out</source>
@@ -651,15 +651,15 @@ MIDI:	</translation>
         <translation>%1 Lautstärke</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2704"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2688"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2706"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2690"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2699"/>
         <location filename="../qtractorMidiEngine.cpp" line="4016"/>
         <location filename="../qtractorMidiEngine.cpp" line="4025"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -6204,11 +6204,6 @@ wenn sie %1 das nächste Mal starten.</translation>
         <location filename="../qtractorMainForm.cpp" line="6474"/>
         <source>XRUN</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="6485"/>
-        <source>%1 Hz</source>
-        <translation>%1 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6580"/>

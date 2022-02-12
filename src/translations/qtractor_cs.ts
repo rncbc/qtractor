@@ -35,16 +35,16 @@ Zvuk:	%1 kanály, %2 Hz</translation>
 	(posunutí výšky tónu v půltónech %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2693"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2686"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2978"/>
         <location filename="../qtractorMidiEngine.cpp" line="4012"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2702"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2978"/>
         <location filename="../qtractorMidiEngine.cpp" line="4021"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 Out</source>
@@ -703,15 +703,15 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1 Hlasitost</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2704"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2688"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation>%1 Zesílení</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2706"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2690"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2699"/>
         <location filename="../qtractorMidiEngine.cpp" line="4016"/>
         <location filename="../qtractorMidiEngine.cpp" line="4025"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -3463,11 +3463,6 @@ až při příštím spuštění %1.</translation>
         <location filename="../qtractorMainForm.cpp" line="6352"/>
         <source>[modified]</source>
         <translation>(upraveno)</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="6485"/>
-        <source>%1 Hz</source>
-        <translation>%1 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6580"/>

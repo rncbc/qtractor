@@ -33,16 +33,16 @@ Audio:	%1 channels, %2 Hz</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2693"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2686"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2978"/>
         <location filename="../qtractorMidiEngine.cpp" line="4012"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 In</source>
         <translation>Вход %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2702"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2978"/>
         <location filename="../qtractorMidiEngine.cpp" line="4021"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 Out</source>
@@ -699,15 +699,15 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Громкость %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2704"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2688"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2706"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2690"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2699"/>
         <location filename="../qtractorMidiEngine.cpp" line="4016"/>
         <location filename="../qtractorMidiEngine.cpp" line="4025"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -3413,11 +3413,6 @@ next time you start this %1.</source>
         <location filename="../qtractorMainForm.cpp" line="6352"/>
         <source>[modified]</source>
         <translation>[изменен]</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMainForm.cpp" line="6485"/>
-        <source>%1 Hz</source>
-        <translation>%1 Гц</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6580"/>
