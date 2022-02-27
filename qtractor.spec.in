@@ -166,11 +166,11 @@ cmake --install build
 #dir %{_datadir}/man/fr/man1
 %{_bindir}/%{name}
 %{_libdir}/%{name}/%{name}_plugin_scan
-%{_datadir}/mime/packages/%{name}.xml
+%{_datadir}/mime/packages/org.rncbc.%{name}.xml
 %{_datadir}/applications/org.rncbc.%{name}.desktop
-%{_datadir}/icons/hicolor/32x32/apps/%{name}.png
+%{_datadir}/icons/hicolor/32x32/apps/org.rncbc.%{name}.png
 %{_datadir}/icons/hicolor/32x32/mimetypes/application-x-%{name}*.png
-%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+%{_datadir}/icons/hicolor/scalable/apps/org.rncbc.%{name}.svg
 %{_datadir}/icons/hicolor/scalable/mimetypes/application-x-%{name}*.svg
 %{_datadir}/%{name}/translations/%{name}_*.qm
 %{_datadir}/metainfo/org.rncbc.%{name}.metainfo.xml
