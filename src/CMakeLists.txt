@@ -517,9 +517,9 @@ if (UNIX AND NOT APPLE)
       mimetypes/application-x-${PROJECT_NAME}-template.png
       mimetypes/application-x-${PROJECT_NAME}-archive.png
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/mimetypes)
-  install (FILES mimetypes/application-x-${PROJECT_NAME}-session.svg
-      mimetypes/application-x-${PROJECT_NAME}-template.svg
-      mimetypes/application-x-${PROJECT_NAME}-archive.svg
+  install (FILES mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-session.svg
+      mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-template.svg
+      mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-archive.svg
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/mimetypes)
 endif ()
 
