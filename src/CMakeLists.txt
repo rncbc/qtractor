@@ -513,9 +513,9 @@ if (UNIX AND NOT APPLE)
     DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
   install (FILES mimetypes/org.rncbc.${PROJECT_NAME}.xml
     DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
-  install (FILES mimetypes/application-x-${PROJECT_NAME}-session.png
-      mimetypes/application-x-${PROJECT_NAME}-template.png
-      mimetypes/application-x-${PROJECT_NAME}-archive.png
+  install (FILES mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-session.png
+      mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-template.png
+      mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-archive.png
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/mimetypes)
   install (FILES mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-session.svg
       mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-template.svg
