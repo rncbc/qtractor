@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Main application icon is now presented in scalable format (SVG).
+
 - Have even more tolerance to JACK buffer-size changes, prompting
   for a complete session reload, only when exceeding the double of
   the previous/current size. (EXPERIMENTAL)

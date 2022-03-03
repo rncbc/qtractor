@@ -43,7 +43,7 @@
    <bool>true</bool>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/qtractor.png</iconset>
+   <iconset resource="qtractor.qrc">:/images/qtractor.svg</iconset>
   </property>
   <widget class="QWidget" name="widget"/>
   <widget class="QToolBar" name="fileToolbar">

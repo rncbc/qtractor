@@ -37,8 +37,7 @@
    <string>Take Range</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">
-    <normaloff>:/images/qtractor.png</normaloff>:/images/qtractor.png</iconset>
+   <iconset resource="qtractor.qrc">:/images/qtractor.svg</iconset>
   </property>
   <layout class="QGridLayout">
    <item row="0" column="0" rowspan="2">
