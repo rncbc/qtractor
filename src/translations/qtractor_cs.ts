@@ -1742,132 +1742,132 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorEditRangeForm</name>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="47"/>
+        <location filename="../qtractorEditRangeForm.ui" line="46"/>
         <source>Range</source>
         <translation>Rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="53"/>
+        <location filename="../qtractorEditRangeForm.ui" line="52"/>
         <source>Selection range</source>
         <translation>Rozsah výběru</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="56"/>
+        <location filename="../qtractorEditRangeForm.ui" line="55"/>
         <source>&amp;Selection</source>
         <translation>&amp;Výběr</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="66"/>
+        <location filename="../qtractorEditRangeForm.ui" line="65"/>
         <source>Loop range</source>
         <translation>Rozsah smyčky</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="69"/>
+        <location filename="../qtractorEditRangeForm.ui" line="68"/>
         <source>&amp;Loop</source>
         <translation>&amp;Smyčka</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="79"/>
+        <location filename="../qtractorEditRangeForm.ui" line="78"/>
         <source>Punch range</source>
         <translation>Rozsah přepsání</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="82"/>
+        <location filename="../qtractorEditRangeForm.ui" line="81"/>
         <source>&amp;Punch</source>
         <translation>&amp;Přepsání</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="92"/>
+        <location filename="../qtractorEditRangeForm.ui" line="91"/>
         <source>Edit range</source>
         <translation>Rozsah úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="95"/>
+        <location filename="../qtractorEditRangeForm.ui" line="94"/>
         <source>&amp;Edit</source>
         <translation>Úp&amp;ravy</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="105"/>
+        <location filename="../qtractorEditRangeForm.ui" line="104"/>
         <source>Custom range</source>
         <translation>Vlastní rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="108"/>
+        <location filename="../qtractorEditRangeForm.ui" line="107"/>
         <source>&amp;Custom</source>
         <translation>&amp;Vlastní</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="118"/>
+        <location filename="../qtractorEditRangeForm.ui" line="117"/>
         <source>St&amp;art:</source>
         <translation>Za&amp;čátek:</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="134"/>
+        <location filename="../qtractorEditRangeForm.ui" line="133"/>
         <source>Clip start</source>
         <translation>Začátek záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="157"/>
+        <location filename="../qtractorEditRangeForm.ui" line="156"/>
         <source>En&amp;d:</source>
         <translation>Ko&amp;nec:</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="173"/>
+        <location filename="../qtractorEditRangeForm.ui" line="172"/>
         <source>Clip offset</source>
         <translation>Posun záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="228"/>
+        <location filename="../qtractorEditRangeForm.ui" line="227"/>
         <source>Apply to Loop points in range</source>
         <translation>Použít na body smyčky v rozsahu</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="231"/>
+        <location filename="../qtractorEditRangeForm.ui" line="230"/>
         <source>L&amp;oop</source>
         <translation>&amp;Smyčka</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="238"/>
+        <location filename="../qtractorEditRangeForm.ui" line="237"/>
         <source>Apply to Punch In/Out points in range</source>
         <translation>Použít na body začátku/konce přepsání v rozsahu</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="241"/>
+        <location filename="../qtractorEditRangeForm.ui" line="240"/>
         <source>Pu&amp;nch</source>
         <translation>&amp;Přepsání</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="251"/>
+        <location filename="../qtractorEditRangeForm.ui" line="250"/>
         <source>Mar&amp;kers</source>
         <translation>&amp;Značky</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="261"/>
+        <location filename="../qtractorEditRangeForm.ui" line="260"/>
         <source>Te&amp;mpo Map</source>
         <translation>&amp;Zobrazení tempa</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="271"/>
+        <location filename="../qtractorEditRangeForm.ui" line="270"/>
         <source>&amp;Format</source>
         <translation>&amp;Formát</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="277"/>
+        <location filename="../qtractorEditRangeForm.ui" line="276"/>
         <source>Time display format</source>
         <translation>Formát zobrazení času</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="286"/>
+        <location filename="../qtractorEditRangeForm.ui" line="285"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="291"/>
+        <location filename="../qtractorEditRangeForm.ui" line="290"/>
         <source>BBT</source>
         <translation>TDT (takty-doby-tiky)</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="281"/>
+        <location filename="../qtractorEditRangeForm.ui" line="280"/>
         <source>Frames</source>
         <translation>Snímky</translation>
     </message>
@@ -1877,37 +1877,37 @@ Chcete použít tyto změny?</translation>
         <translation>Rozsah úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="196"/>
+        <location filename="../qtractorEditRangeForm.ui" line="195"/>
         <source>Options</source>
         <translation>Volby</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="202"/>
+        <location filename="../qtractorEditRangeForm.ui" line="201"/>
         <source>Apply to clips in range</source>
         <translation>Použít na záběry v rozsahu</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="205"/>
+        <location filename="../qtractorEditRangeForm.ui" line="204"/>
         <source>Cl&amp;ips</source>
         <translation>&amp;Záběry</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="218"/>
+        <location filename="../qtractorEditRangeForm.ui" line="217"/>
         <source>A&amp;utomation</source>
         <translation>A&amp;utomatizace</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="215"/>
+        <location filename="../qtractorEditRangeForm.ui" line="214"/>
         <source>Apply to Automation nodes in range</source>
         <translation>Použít na uzly automatizace v rozsahu</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="258"/>
+        <location filename="../qtractorEditRangeForm.ui" line="257"/>
         <source>Apply to Tempo Map nodes in range</source>
         <translation>Použít na uzly zobrazení tempa v rozsahu</translation>
     </message>
     <message>
-        <location filename="../qtractorEditRangeForm.ui" line="248"/>
+        <location filename="../qtractorEditRangeForm.ui" line="247"/>
         <source>Apply to location Markers in range</source>
         <translation>Použít na značky umístění v rozsahu</translation>
     </message>
@@ -1948,157 +1948,157 @@ Chcete použít tyto změny?</translation>
         <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="47"/>
+        <location filename="../qtractorExportForm.ui" line="46"/>
         <source>&amp;File:</source>
         <translation>&amp;Soubor:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="71"/>
+        <location filename="../qtractorExportForm.ui" line="70"/>
         <source>Export file name</source>
         <translation>Vyvést název souboru</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="96"/>
+        <location filename="../qtractorExportForm.ui" line="95"/>
         <source>Browse export file name</source>
         <translation>Procházet vyvedeným názvem souboru</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="128"/>
+        <location filename="../qtractorExportForm.ui" line="127"/>
         <source>File &amp;type:</source>
         <translation>Druh &amp;souboru:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="144"/>
+        <location filename="../qtractorExportForm.ui" line="143"/>
         <source>Audio file type to use on export</source>
         <translation>Typ zvukového souboru k použití při vyvedení</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="160"/>
+        <location filename="../qtractorExportForm.ui" line="159"/>
         <source>Sample &amp;format:</source>
         <translation>Formát &amp;vzorku:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="176"/>
+        <location filename="../qtractorExportForm.ui" line="175"/>
         <source>Audio sample format to use on export</source>
         <translation>Formát zvukového vzorku k použití při vyvedení</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="192"/>
+        <location filename="../qtractorExportForm.ui" line="191"/>
         <source>&amp;Quality:</source>
         <translation>&amp;Kvalita:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="214"/>
+        <location filename="../qtractorExportForm.ui" line="213"/>
         <source>Audio compression quality to use on export</source>
         <translation>Kvalitu zvukové komprese k použití při vyvedení</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="271"/>
+        <location filename="../qtractorExportForm.ui" line="270"/>
         <source>File &amp;format:</source>
         <translation>Formát &amp;souboru:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="287"/>
+        <location filename="../qtractorExportForm.ui" line="286"/>
         <source>MIDI file format to use on export</source>
         <translation>Formát souboru MIDI k použití při vyvedení</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="314"/>
+        <location filename="../qtractorExportForm.ui" line="313"/>
         <source>Range</source>
         <translation>Rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="335"/>
+        <location filename="../qtractorExportForm.ui" line="334"/>
         <source>Session range</source>
         <translation>Rozsah sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="338"/>
+        <location filename="../qtractorExportForm.ui" line="337"/>
         <source>&amp;Session</source>
         <translation>&amp;Sezení</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="348"/>
+        <location filename="../qtractorExportForm.ui" line="347"/>
         <source>Loop range</source>
         <translation>Rozsah smyčky</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="351"/>
+        <location filename="../qtractorExportForm.ui" line="350"/>
         <source>&amp;Loop</source>
         <translation>&amp;Smyčka</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="361"/>
+        <location filename="../qtractorExportForm.ui" line="360"/>
         <source>Punch range</source>
         <translation>Rozsah přepsání</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="364"/>
+        <location filename="../qtractorExportForm.ui" line="363"/>
         <source>&amp;Punch</source>
         <translation>&amp;Přepsání</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="374"/>
+        <location filename="../qtractorExportForm.ui" line="373"/>
         <source>Edit range</source>
         <translation>Rozsah úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="377"/>
+        <location filename="../qtractorExportForm.ui" line="376"/>
         <source>&amp;Edit</source>
         <translation>&amp;Úprava</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="387"/>
+        <location filename="../qtractorExportForm.ui" line="386"/>
         <source>Custom range</source>
         <translation>Vlastní rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="390"/>
+        <location filename="../qtractorExportForm.ui" line="389"/>
         <source>&amp;Custom</source>
         <translation>&amp;Vlastní</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="416"/>
+        <location filename="../qtractorExportForm.ui" line="415"/>
         <source>St&amp;art:</source>
         <translation>Za&amp;čátek:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="439"/>
+        <location filename="../qtractorExportForm.ui" line="438"/>
         <source>En&amp;d:</source>
         <translation>Ko&amp;nec:</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="484"/>
+        <location filename="../qtractorExportForm.ui" line="483"/>
         <source>Outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="496"/>
+        <location filename="../qtractorExportForm.ui" line="495"/>
         <source>Output bus names</source>
         <translation>Názvy výstupních sběrnic</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="524"/>
+        <location filename="../qtractorExportForm.ui" line="523"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="529"/>
+        <location filename="../qtractorExportForm.ui" line="528"/>
         <source>BBT</source>
         <translation>TDT (takty-doby-tiky)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="548"/>
+        <location filename="../qtractorExportForm.ui" line="547"/>
         <source>Whether to add/import new track(s) with export result</source>
         <translation>Zda se má/mají přidat/zavést nová stopa/nové stopy s výsledkem vyvedení</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="551"/>
+        <location filename="../qtractorExportForm.ui" line="550"/>
         <source>&amp;Add new track(s)</source>
         <translation>&amp;Přidat novou stopu(y)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="509"/>
+        <location filename="../qtractorExportForm.ui" line="508"/>
         <source>Format</source>
         <translation>Formát</translation>
     </message>
@@ -2109,22 +2109,22 @@ Chcete použít tyto změny?</translation>
         <translation>Vyvést</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="432"/>
+        <location filename="../qtractorExportForm.ui" line="431"/>
         <source>Custom start</source>
         <translation>Vlastní začátek</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="455"/>
+        <location filename="../qtractorExportForm.ui" line="454"/>
         <source>Custom end</source>
         <translation>Vlastní konec</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="515"/>
+        <location filename="../qtractorExportForm.ui" line="514"/>
         <source>Time display format</source>
         <translation>Formát zobrazení času</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.ui" line="519"/>
+        <location filename="../qtractorExportForm.ui" line="518"/>
         <source>Frames</source>
         <translation>Snímky</translation>
     </message>
@@ -13915,77 +13915,77 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorTakeRangeForm</name>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="47"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="46"/>
         <source>Range</source>
         <translation>Rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="63"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="62"/>
         <source>Selection range</source>
         <translation>Rozsah výběru</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="66"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="65"/>
         <source>&amp;Selection</source>
         <translation>&amp;Výběr</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="118"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="117"/>
         <source>Loop range</source>
         <translation>Rozsah smyčky</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="121"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="120"/>
         <source>&amp;Loop</source>
         <translation>&amp;Smyčka</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="167"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="166"/>
         <source>Punch range</source>
         <translation>Rozsah přepsání</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="170"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="169"/>
         <source>&amp;Punch</source>
         <translation>&amp;Přepsání</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="226"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="225"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="231"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="230"/>
         <source>BBT</source>
         <translation>TDT (takty-doby-tiky)</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="92"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="91"/>
         <source>Edit range</source>
         <translation>Rozsah úprav</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="95"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="94"/>
         <source>&amp;Edit</source>
         <translation>Úp&amp;ravy</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="105"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="104"/>
         <source>Custom range</source>
         <translation>Vlastní rozsah</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="108"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="107"/>
         <source>&amp;Custom</source>
         <translation>&amp;Vlastní</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="157"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="156"/>
         <source>St&amp;art:</source>
         <translation>Za&amp;čátek:</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="137"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="136"/>
         <source>Clip start</source>
         <translation>Začátek záběru</translation>
     </message>
@@ -13995,37 +13995,37 @@ Chcete použít tyto změny?</translation>
         <translation>Rozsah záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="53"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="52"/>
         <source>En&amp;d:</source>
         <translation>Ko&amp;nec:</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="150"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="149"/>
         <source>Clip offset</source>
         <translation>Posun záběru</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="183"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="182"/>
         <source>Select</source>
         <translation>Vybrat</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="201"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="200"/>
         <source>Current take</source>
         <translation>Nynější záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="211"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="210"/>
         <source>Format</source>
         <translation>Formát</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="217"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="216"/>
         <source>Time display format</source>
         <translation>Formát zobrazení času</translation>
     </message>
     <message>
-        <location filename="../qtractorTakeRangeForm.ui" line="221"/>
+        <location filename="../qtractorTakeRangeForm.ui" line="220"/>
         <source>Frames</source>
         <translation>Snímky</translation>
     </message>

@@ -106,6 +106,10 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 	QApplication::setApplicationName(QTRACTOR_TITLE);
 	QApplication::setApplicationDisplayName(QTRACTOR_TITLE);
 	//	QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
+	QApplication::setDesktopFileName(
+		QString("org.rncbc.%1").arg(PACKAGE_TARNAME));
+#endif
 	QString sVersion(CONFIG_BUILD_VERSION);
 	sVersion += '\n';
 	sVersion += QString("Qt: %1").arg(qVersion());
