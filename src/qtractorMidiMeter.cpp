@@ -1,7 +1,7 @@
 // qtractorMidiMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -198,7 +198,7 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		pMidiMeter->pixmap(), 0, h - m_iValue, w, m_iValue);
 #else
 	painter.fillRect(0, h - m_iValue, w, m_iValue,
-		MidiMeter->color(qtractorMidiMeter::ColorOver));
+		pMidiMeter->color(qtractorMidiMeter::ColorOver));
 #endif
 
 	painter.setPen(pMidiMeter->color(qtractorMidiMeter::ColorPeak));
