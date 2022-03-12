@@ -1,7 +1,7 @@
 // qtractorVst3Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -3284,6 +3284,10 @@ void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 	m_pEditorWidget->setPlugin(this);
 
 	m_pEditorFrame = new EditorFrame(plugView, m_pEditorWidget);
+
+	ViewRect rect;
+	if (plugView->getSize(&rect) == kResultOk)
+		m_pEditorFrame->resizeView(plugView, &rect);
 
 	void *wid = (void *) m_pEditorWidget->parentWinId();
 	if (plugView->attached(wid, kPlatformTypeX11EmbedWindowID) != kResultOk) {
