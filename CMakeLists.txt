@@ -711,10 +711,10 @@ endif ()
 add_subdirectory (src)
 
 
-configure_file (qtractor.spec.in qtractor.spec IMMEDIATE @ONLY)
+if (UNIX AND NOT APPLE)
+  configure_file (${PROJECT_NAME}.spec.in ${PROJECT_NAME}.spec IMMEDIATE @ONLY)
+endif ()
 
-install (FILES qtractor.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-install (FILES qtractor.fr.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/fr/man1 RENAME qtractor.1)
 
 # Configuration status
 macro (SHOW_OPTION text value)
