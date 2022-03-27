@@ -421,18 +421,18 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorOptions.cpp" line="759"/>
         <source>Session file (.qtr)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de session (.qtr)</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="760"/>
         <source>[session-file]</source>
-        <translation type="unfinished"></translation>
+        <translation>[fichier-de-session]</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="767"/>
         <location filename="../qtractorOptions.cpp" line="812"/>
         <source>Option -s requires an argument (uuid).</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;option -s nécessite un argument (uuid).</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="125"/>
@@ -5715,7 +5715,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="678"/>
         <source>Session buffer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de la mémoire tampon de la session</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1954"/>
@@ -6175,7 +6175,7 @@ est hautement recommandé.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5912"/>
         <source>VST3 Plug-in support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support des greffons VST3 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5918"/>
