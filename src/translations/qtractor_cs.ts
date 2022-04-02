@@ -226,18 +226,18 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorOptions.cpp" line="759"/>
         <source>Session file (.qtr)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubor se sezením (.qtr)</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="760"/>
         <source>[session-file]</source>
-        <translation type="unfinished"></translation>
+        <translation>[soubor se sezením]</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="767"/>
         <location filename="../qtractorOptions.cpp" line="812"/>
         <source>Option -s requires an argument (uuid).</source>
-        <translation type="unfinished"></translation>
+        <translation>Volba -s vyžaduje argument (uuid).</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="125"/>
@@ -2750,7 +2750,7 @@ Promiňte.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="678"/>
         <source>Session buffer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Velikost vyrovnávací paměti sezení</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2026"/>
@@ -3395,7 +3395,7 @@ až při příštím spuštění %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5912"/>
         <source>VST3 Plug-in support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro přídavné moduly VST3 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5915"/>
