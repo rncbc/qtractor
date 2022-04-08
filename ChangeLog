@@ -4,26 +4,26 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.26  2022-04-09  A Spring'22 Release.
 
 - Main application icon is now presented in scalable format (SVG).
 
 - Have even more tolerance to JACK buffer-size changes, prompting
   for a complete session reload, only when exceeding the double of
-  the previous/current size. (EXPERIMENTAL)
-  
+  the previous/current size.
+
 - Added an additional status-bar label to show the session current
   buffer-size (in frames per period).
 
 - Migrated command line parsing to QCommandLineParser/Option
-  (Qt >= 5.2) (EXPERIMENTAL)
+  (Qt >= 5.2)
 
 - Make last recorded clip current and suitable target for immediate
-  loop recording takes switch or navigation. (EXPERIMENTAL)
+  loop recording takes switch or navigation.
 
 - Number of takes is now shown on clip titles and tooltips.
 
-- Fixed in-flight transport mode changes. (EXPERIMENTAL)
+- Fixed in-flight transport mode changes.
 
 - Fixed translations path to be relative to application runtime.
 

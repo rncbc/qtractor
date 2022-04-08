@@ -17,7 +17,7 @@
 
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 68.1
+%define release 69.1
 
 %define _prefix	@ac_prefix@
 
@@ -178,6 +178,8 @@ cmake --install build
 %{_datadir}/man/fr/man1/%{name}.1.gz
 
 %changelog
+* Sat Apr  9 2022 Rui Nuno Capela <rncbc@rncbc.org> 0.9.26
+- A Spring'22 Release.
 * Sun Jan  9 2022 Rui Nuno Capela <rncbc@rncbc.org> 0.9.25
 - A Winter'22 Release.
 * Sat Oct 16 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.24
