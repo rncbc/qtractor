@@ -388,7 +388,7 @@ if (APPLE)
   set_target_properties (${PROJECT_NAME}_plugin_scan PROPERTIES MACOSX_BUNDLE true)
 endif ()
 
-target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml)
+target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml Qt${QT_VERSION_MAJOR}::Svg)
 target_link_libraries (${PROJECT_NAME}_plugin_scan PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
 if (CONFIG_XUNIQUE)

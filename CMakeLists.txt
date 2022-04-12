@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.15)
 
 project (qtractor
-  VERSION 0.9.26
+  VERSION 0.9.27
   DESCRIPTION "An Audio/MIDI multi-track sequencer"
   LANGUAGES C CXX)
 
@@ -210,7 +210,7 @@ else ()
   find_package (QT QUIET NAMES Qt5)
 endif ()
 
-find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Xml)
+find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Xml Svg)
 
 if (CONFIG_XUNIQUE)
   find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Network)
