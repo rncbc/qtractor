@@ -2989,7 +2989,7 @@ void qtractorMainForm::autoSaveSession (void)
 	QString sAutoSaveDir = m_pSession->sessionDir();
 	if (sAutoSaveDir.isEmpty())
 		sAutoSaveDir = m_pOptions->sSessionDir;
-	if (sAutoSaveDir.isEmpty())
+	if (sAutoSaveDir.isEmpty() || !QFileInfo(sAutoSaveDir).isWritable())
 		sAutoSaveDir = QDir::tempPath();
 
 	QString sAutoSaveName = m_pSession->sessionName();
