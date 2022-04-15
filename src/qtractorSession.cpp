@@ -64,9 +64,6 @@ void qtractorSession::Properties::clear (void)
 {
 	sessionDir = QDir().absolutePath();
 
-	if (sessionDir.isEmpty() || !QFileInfo(sessionDir).isWritable())
-		sessionDir = QDir::homePath();
-
 	sessionName.clear();
 	description.clear();
 	timeScale.clear();
@@ -360,8 +357,11 @@ qtractorInstrumentList *qtractorSession::instruments (void) const
 void qtractorSession::setSessionDir ( const QString& sSessionDir )
 {
 	const QDir sdir(sSessionDir);
-	if (sdir.exists())
+	if (sdir.exists()) {
 		m_props.sessionDir = sdir.absolutePath();
+		if (!QFileInfo(m_props.sessionDir).isWritable())
+			m_props.sessionDir = QDir::homePath();
+	}
 }
 
 const QString& qtractorSession::sessionDir (void) const
