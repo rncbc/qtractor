@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed the out-of-process plugin scanner path resolution on some
+  self-container(ized) formats eg. AppImage and possibly Flatpak,
+  (EXPERIMENTAL)
+  
+
 0.9.26  2022-04-09  A Spring'22 Release.
 
 - Main application icon is now presented in scalable format (SVG).
