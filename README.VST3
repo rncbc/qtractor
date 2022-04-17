@@ -17,7 +17,7 @@ site though. Let's recapitulate:
 Once downloaded and unzipped you may proceed to build for VST3 plug-in
 support, with the following magic spell:
 
-  ./configure --with-vst3=/path/to/VST_SDK/VST3_SDK
+  cmake -DCONFIG_VST3SDK=/path/to/VST_SDK/vst3sdk ...
 
 
 Or, you may choose to go with the GitHub's route instead:
@@ -49,7 +49,7 @@ That is, only the following VST3 SDK source code tree folders are needed
 to build Qtractor with VST3 Plug-in support enabled:
 
   - VST SDK 3.x:
-    VST_SDK/VST3_SDK/ (or vst3sdk/)
+    VST_SDK/vst3sdk/
       base
       pluginterfaces
       public.sdk
