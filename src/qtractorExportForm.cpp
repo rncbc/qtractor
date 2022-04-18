@@ -253,8 +253,34 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	}
 
 	// Populate range values...
-	m_ui.SessionRangeRadioButton->setChecked(true);
-//	rangeChanged();
+	switch (pOptions ? RangeType(pOptions->iExportRangeType) : Session) {
+	case Custom:
+		m_ui.CustomRangeRadioButton->setChecked(true);
+		break;
+	case Edit:
+		if (pSession && pSession->editHead() < pSession->editTail()) {
+			m_ui.EditRangeRadioButton->setChecked(true);
+			break;
+		}
+		// Fall thru...
+	case Punch:
+		if (pSession && pSession->isPunching()) {
+			m_ui.PunchRangeRadioButton->setChecked(true);
+			break;
+		}
+		// Fall thru...
+	case Loop:
+		if (pSession && pSession->isLooping()) {
+			m_ui.LoopRangeRadioButton->setChecked(true);
+			break;
+		}
+		// Fall thru...
+	case Session:
+	default:
+		m_ui.SessionRangeRadioButton->setChecked(true);
+		break;
+	}
+	rangeChanged();
 
 	// Shake it a little bit first, but
 	// make it as tight as possible...
@@ -410,32 +436,50 @@ void qtractorExportForm::audioExportTypeChanged ( int iIndex )
 }
 
 
-// Display format has changed.
+// Range type has changed.
 void qtractorExportForm::rangeChanged (void)
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;
 
-	if (m_ui.SessionRangeRadioButton->isChecked()) {
-		m_ui.ExportStartSpinBox->setValue(pSession->sessionStart(), false);
-		m_ui.ExportEndSpinBox->setValue(pSession->sessionEnd(), false);
-	}
-	else
-	if (m_ui.LoopRangeRadioButton->isChecked()) {
-		m_ui.ExportStartSpinBox->setValue(pSession->loopStart(), false);
-		m_ui.ExportEndSpinBox->setValue(pSession->loopEnd(), false);
-	}
-	else
-	if (m_ui.PunchRangeRadioButton->isChecked()) {
-		m_ui.ExportStartSpinBox->setValue(pSession->punchIn(), false);
-		m_ui.ExportEndSpinBox->setValue(pSession->punchOut(), false);
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions == nullptr)
+		return;
+
+	unsigned long iExportStart = 0;
+	unsigned long iExportEnd   = 0;
+
+	if (m_ui.CustomRangeRadioButton->isChecked()) {
+		iExportStart = pOptions->iExportRangeStart;
+		iExportEnd   = pOptions->iExportRangeEnd;
 	}
 	else
 	if (m_ui.EditRangeRadioButton->isChecked()) {
-		m_ui.ExportStartSpinBox->setValue(pSession->editHead(), false);
-		m_ui.ExportEndSpinBox->setValue(pSession->editTail(), false);
+		iExportStart = pSession->editHead();
+		iExportEnd   = pSession->editTail();
 	}
+	else
+	if (m_ui.PunchRangeRadioButton->isChecked()) {
+		iExportStart = pSession->punchIn();
+		iExportEnd   = pSession->punchOut();
+	}
+	else
+	if (m_ui.LoopRangeRadioButton->isChecked()) {
+		iExportStart = pSession->loopStart();
+		iExportEnd   = pSession->loopEnd();
+	}
+
+	if (iExportStart >= iExportEnd) {
+		iExportStart = pSession->sessionStart();
+		iExportEnd   = pSession->sessionEnd();
+	}
+
+	if (iExportEnd > pSession->sessionEnd())
+		iExportEnd = pSession->sessionEnd();
+
+	m_ui.ExportStartSpinBox->setValue(iExportStart, false);
+	m_ui.ExportEndSpinBox->setValue(iExportEnd, false);
 
 	stabilizeForm();
 }
@@ -589,6 +633,24 @@ void qtractorExportForm::saveExportOptions (void)
 	default:
 		break;
 	}
+
+	if (m_ui.CustomRangeRadioButton->isChecked()) {
+		pOptions->iExportRangeType = Custom;
+		pOptions->iExportRangeStart = m_ui.ExportStartSpinBox->value();
+		pOptions->iExportRangeEnd = m_ui.ExportEndSpinBox->value();
+	}
+	else
+	if (m_ui.EditRangeRadioButton->isChecked())
+		pOptions->iExportRangeType = Edit;
+	else
+	if (m_ui.PunchRangeRadioButton->isChecked())
+		pOptions->iExportRangeType = Punch;
+	else
+	if (m_ui.LoopRangeRadioButton->isChecked())
+		pOptions->iExportRangeType = Loop;
+	else
+//	if (m_ui.SessionRangeRadioButton->isChecked())
+		pOptions->iExportRangeType = Session;
 }
 
 

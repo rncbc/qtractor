@@ -393,44 +393,44 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="724"/>
+        <location filename="../qtractorOptions.cpp" line="730"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Utilisation: %1 [options] [fichier-session]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="727"/>
+        <location filename="../qtractorOptions.cpp" line="733"/>
         <source>Options:</source>
         <translation>Options :</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="730"/>
-        <location filename="../qtractorOptions.cpp" line="754"/>
+        <location filename="../qtractorOptions.cpp" line="736"/>
+        <location filename="../qtractorOptions.cpp" line="760"/>
         <source>Set session identification (uuid)</source>
         <translation>Définir l&apos;identificateur de session (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="733"/>
+        <location filename="../qtractorOptions.cpp" line="739"/>
         <source>Show help about command line options</source>
         <translation>Afficher l&apos;aide à propos des options de ligne de commande</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="735"/>
+        <location filename="../qtractorOptions.cpp" line="741"/>
         <source>Show version information</source>
         <translation>Afficher les informations de version</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="759"/>
+        <location filename="../qtractorOptions.cpp" line="765"/>
         <source>Session file (.qtr)</source>
         <translation>Fichier de session (.qtr)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="760"/>
+        <location filename="../qtractorOptions.cpp" line="766"/>
         <source>[session-file]</source>
         <translation>[fichier-de-session]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="767"/>
-        <location filename="../qtractorOptions.cpp" line="812"/>
+        <location filename="../qtractorOptions.cpp" line="773"/>
+        <location filename="../qtractorOptions.cpp" line="818"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation>L&apos;option -s nécessite un argument (uuid).</translation>
     </message>
@@ -1913,7 +1913,7 @@ Voulez vous appliquer les changements ?</translation>
 <context>
     <name>qtractorExportClipForm</name>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="879"/>
+        <location filename="../qtractorExportForm.cpp" line="941"/>
         <source>%1 %2 Clips</source>
         <translation>%1 %2 clips</translation>
     </message>
@@ -2112,17 +2112,17 @@ Voulez vous appliquer les changements ?</translation>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="290"/>
+        <location filename="../qtractorExportForm.cpp" line="316"/>
         <source>Export %1 File</source>
         <translation>Exporter %1 fichier</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="298"/>
+        <location filename="../qtractorExportForm.cpp" line="324"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Fichiers MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="302"/>
+        <location filename="../qtractorExportForm.cpp" line="328"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
@@ -2130,17 +2130,17 @@ Voulez vous appliquer les changements ?</translation>
 <context>
     <name>qtractorExportTrackForm</name>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="615"/>
+        <location filename="../qtractorExportForm.cpp" line="677"/>
         <source>%1 %2 Tracks</source>
         <translation>%1 %2 pistes</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="667"/>
+        <location filename="../qtractorExportForm.cpp" line="729"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="668"/>
+        <location filename="../qtractorExportForm.cpp" line="730"/>
         <source>The file already exists:
 
 &quot;%1&quot;
@@ -2153,17 +2153,17 @@ Do you want to replace it?</source>
 Voulez-vous le remplacer ?</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="714"/>
+        <location filename="../qtractorExportForm.cpp" line="776"/>
         <source>Audio file export: &quot;%1&quot; started...</source>
         <translation>Exportation du fichier audio : &quot;%1&quot; commencée...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="740"/>
+        <location filename="../qtractorExportForm.cpp" line="802"/>
         <source>Audio file export: &quot;%1&quot; complete.</source>
         <translation>Exportation du fichier audio : &quot;%1&quot; terminée.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="745"/>
+        <location filename="../qtractorExportForm.cpp" line="807"/>
         <source>Audio file export:
 
 &quot;%1&quot;
@@ -2176,17 +2176,17 @@ failed.</source>
 échec.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="771"/>
+        <location filename="../qtractorExportForm.cpp" line="833"/>
         <source>MIDI file export: &quot;%1&quot; started...</source>
         <translation>Exportation du fichier MIDI : &quot;%1&quot; commencée...</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="795"/>
+        <location filename="../qtractorExportForm.cpp" line="857"/>
         <source>MIDI file export: &quot;%1&quot; complete.</source>
         <translation>Exportation du fichier MIDI : &quot;%1&quot; terminée.</translation>
     </message>
     <message>
-        <location filename="../qtractorExportForm.cpp" line="800"/>
+        <location filename="../qtractorExportForm.cpp" line="862"/>
         <source>MIDI file export:
 
 &quot;%1&quot;

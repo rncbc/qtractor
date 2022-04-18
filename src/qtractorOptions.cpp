@@ -236,6 +236,9 @@ void qtractorOptions::loadOptions (void)
 	bShiftKeyModifier = m_settings.value("/ShiftKeyModifier", false).toBool();
 	bMidButtonModifier = m_settings.value("/MidButtonModifier", false).toBool();
 	bMidiControlSync = m_settings.value("/MidiControlSync", false).toBool();
+	iExportRangeType = m_settings.value("/ExportRangeType", 0).toInt();
+	iExportRangeStart = (unsigned long) m_settings.value("/ExportRangeStart", 0).toUInt();
+	iExportRangeEnd = (unsigned long) m_settings.value("/ExportRangeEnd", 0).toUInt();
 	bExportAddTrack = m_settings.value("/ExportAddTrack", false).toBool();
 	m_settings.endGroup();
 
@@ -541,6 +544,9 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ShiftKeyModifier", bShiftKeyModifier);
 	m_settings.setValue("/MidButtonModifier", bMidButtonModifier);
 	m_settings.setValue("/MidiControlSync", bMidiControlSync);
+	m_settings.setValue("/ExportRangeType", iExportRangeType);
+	m_settings.setValue("/ExportRangeStart", uint(iExportRangeStart));
+	m_settings.setValue("/ExportRangeEnd", uint(iExportRangeEnd));
 	m_settings.setValue("/ExportAddTrack", bExportAddTrack);
 	m_settings.endGroup();
 

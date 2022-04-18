@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Export Tracks dialog last range selection is now rememmbered.
+
 - Fixed the out-of-process plugin scanner path resolution on some
   self-container(ized) formats eg. AppImage and possibly Flatpak,
   (EXPERIMENTAL)

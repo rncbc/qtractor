@@ -50,8 +50,8 @@ qtractorEditRangeForm::qtractorEditRangeForm ( QWidget *pParent )
 	m_iSelectStart = 0;
 	m_iSelectEnd   = 0;
 
-    m_options = Clips | Automation;
-    m_iUpdate = 0;
+	m_options = Clips | Automation;
+	m_iUpdate = 0;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -77,12 +77,12 @@ qtractorEditRangeForm::qtractorEditRangeForm ( QWidget *pParent )
 			m_ui.CustomRangeRadioButton->setChecked(true);
 	}
 
-    // Update options check-boxes.
-    qtractorOptions *pOptions = qtractorOptions::getInstance();
-    if (pOptions)
-        m_options = pOptions->iEditRangeOptions;
+	// Update options check-boxes.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		m_options = pOptions->iEditRangeOptions;
 
-    updateOptions();
+	updateOptions();
 
 	// Try to restore old window positioning.
 	adjustSize();
@@ -322,7 +322,7 @@ void qtractorEditRangeForm::stabilizeForm (void)
 	m_ui.LoopCheckBox->setEnabled(bLooping);
 	m_ui.PunchCheckBox->setEnabled(bPunching);
 	m_ui.MarkersCheckBox->setEnabled(pTimeScale->markers().first() != nullptr);
-    m_ui.TempoMapCheckBox->setEnabled(pTimeScale->nodes().count() > 1);
+	m_ui.TempoMapCheckBox->setEnabled(pTimeScale->nodes().count() > 1);
 
 	const unsigned long iRangeStart = m_ui.RangeStartSpinBox->value();
 	const unsigned long iRangeEnd = m_ui.RangeEndSpinBox->value();

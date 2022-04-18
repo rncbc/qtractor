@@ -82,6 +82,9 @@ protected:
 	// Save export options (settings).
 	void saveExportOptions();
 
+	// Range types.
+	enum RangeType { Session = 0, Loop, Punch, Edit, Custom };
+
 	// The Qt-designer UI struct...
 	Ui::qtractorExportForm m_ui;
 

@@ -214,7 +214,10 @@ public:
 	// MIDI control non catch-up/hook option.
 	bool    bMidiControlSync;
 
-	// Export add new track(s) option.
+	// Export tracks  options.
+	int     iExportRangeType;
+	unsigned long iExportRangeStart;
+	unsigned long iExportRangeEnd;
 	bool    bExportAddTrack;
 
 	// Session auto-save options.

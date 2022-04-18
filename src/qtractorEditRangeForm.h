@@ -50,8 +50,8 @@ public:
 	unsigned long rangeStart() const;
 	unsigned long rangeEnd() const;
 
-    // Range option flags.
-    enum Option {
+	// Range option flags.
+	enum Option {
 		None       = 0,
 		Clips      = 1,
 		Automation = 2,
@@ -59,7 +59,7 @@ public:
 		Punch      = 8,
 		Markers    = 16,
 		TempoMap   = 32
-    };
+	};
 
 	// Retrieve range option flags.
 	unsigned int rangeOptions() const;
