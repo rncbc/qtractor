@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -332,10 +332,16 @@ void qtractorThumbView::setPlayHeadX ( int iPlayHeadX )
 	if (pTracks == nullptr)
 		return;
 
-	const int f2 = 1 + (m_iContentsLength / w);
-	pSession->setPlayHead(f2 * iPlayHeadX);
+	qtractorTrackView *pTrackView = pTracks->trackView();
+	if (pTrackView == nullptr)
+		return;
 
-	pTracks->trackView()->setSyncViewHoldOn(false);
+	const int f2 = 1 + (m_iContentsLength / w);
+	const unsigned long iPlayHead = f2 * iPlayHeadX;
+	pSession->setPlayHead(iPlayHead);
+
+	pTrackView->setPlayHeadAutoBackward(iPlayHead);
+	pTrackView->setSyncViewHoldOn(false);
 }
 
 
@@ -359,10 +365,6 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 	if (pMainForm == nullptr)
-		return;
-
-	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks == nullptr)
 		return;
 
 	const int f2 = 1 + (m_iContentsLength / w);

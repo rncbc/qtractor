@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Set auto-backward play-head location also when clicking on main
+  track-view header/time-ruler and on thumb-view. (EXPERIMENTAL)
+
 - Fixed LV2 plug-in buffer-size initialization, esp. affecting the
   the ZynReverb LV2 playback. (re. GH issue #332) (EXPERIMENTAL)
 
