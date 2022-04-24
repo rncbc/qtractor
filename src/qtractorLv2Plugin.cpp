@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2333,9 +2333,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	if (pSession) {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
-			m_iMinBlockLength     = pAudioEngine->bufferSizeEx();
-			m_iMaxBlockLength     = m_iMinBlockLength;
-			m_iNominalBlockLength = m_iMaxBlockLength;
+			m_iMinBlockLength     = pAudioEngine->bufferSize();
+			m_iMaxBlockLength     = pAudioEngine->bufferSizeEx();
+			m_iNominalBlockLength = m_iMinBlockLength;
 		}
 	}
 

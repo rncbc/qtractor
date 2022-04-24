@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed LV2 plug-in buffer-size initialization, esp. affecting the
+  the ZynReverb LV2 playback. (re. GH issue #332) (EXPERIMENTAL)
+
 - Export Tracks dialog last range selection is now rememmbered.
 
 - Fixed the out-of-process plugin scanner path resolution on some
