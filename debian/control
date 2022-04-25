@@ -10,6 +10,7 @@ Build-Depends: debhelper (>= 11), cmake, pkg-config,
   libqt6svg6-dev | libqt5svg5-dev,
   libqt6waylandclient6 | qt6-wayland-dev (>= 6.1) |
   libqt5waylandclient5-dev | qtwayland5-dev  (>= 5.1),
+  libqt6opengl6-dev | libqt5opengl5-dev,  
   libjack-dev | libjack-jackd2-dev, libasound2-dev, libsndfile-dev,
   libvorbis-dev, libmad0-dev, libsamplerate-dev, librubberband-dev,
   ladspa-sdk, dssi-dev, liblo-dev, lv2-dev, libz-dev, libfftw3-dev,
