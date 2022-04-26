@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 11), cmake, pkg-config,
   qt6-base-dev (>= 6.1) | qtbase5-dev (>= 5.1),
   qt6-base-dev-tools (>= 6.1) | qtbase5-dev-tools (>= 5.1),
   qt6-tools-dev (>= 6.1) | qttools5-dev (>= 5.1),
-  qt6-tools-dev-tools (>= 6.1)| qttools5-dev-tools (>= 5.1),
+  qt6-l10n-tools (>= 6.1) | qttools5-dev-tools (>= 5.1),
   libqt6waylandclient6-dev | qt6-wayland-dev (>= 6.1) |
   libqt5waylandclient5-dev | qtwayland5-dev  (>= 5.1),
   libqt6svg6-dev | libqt5svg5-dev, libgl-dev,
