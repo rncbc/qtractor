@@ -79,7 +79,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 1, 0)
+	QMainWindow::setWindowIcon(QIcon(":/images/qtractor.png"));
+#endif
 	m_iDirtyCount = 0;
 
 	// Set our central widget.

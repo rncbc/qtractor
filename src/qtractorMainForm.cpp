@@ -220,7 +220,9 @@ qtractorMainForm::qtractorMainForm (
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 1, 0)
+	QMainWindow::setWindowIcon(QIcon(":/images/qtractor.png"));
+#endif
 	// Pseudo-singleton reference setup.
 	g_pMainForm = this;
 

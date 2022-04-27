@@ -39,7 +39,9 @@ qtractorTakeRangeForm::qtractorTakeRangeForm ( QWidget *pParent )
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 1, 0)
+	QDialog::setWindowIcon(QIcon(":/images/qtractor.png"));
+#endif
 	// Window modality (let plugin/tool windows rave around).
 	QDialog::setWindowModality(Qt::ApplicationModal);
 
