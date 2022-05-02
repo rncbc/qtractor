@@ -22,9 +22,9 @@ Standards-Version: 3.9.7
 
 Package: qtractor
 Architecture: any
-Depends: libjack0 | libjack-jackd2-0,
-  ${shlibs:Depends},
-  ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends},
+  qt6-qpa-plugins | libqt5opengl5,
+  libjack0 | libjack-jackd2-0
 Description: An Audio/MIDI multi-track sequencer.
   Qtractor is an Audio/MIDI multi-track sequencer application
   written in C++ with the Qt framework. Target platform will be
