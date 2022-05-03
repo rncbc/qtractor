@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 11), cmake, pkg-config,
   qt6-base-dev-tools (>= 6.1) | qtbase5-dev-tools (>= 5.1),
   qt6-tools-dev (>= 6.1) | qttools5-dev (>= 5.1),
   qt6-tools-dev-tools (>= 6.1) | qttools5-dev-tools (>= 5.1),
-  qt6-l10n-tools (>= 6.1)  | qttools5-dev-tools (>= 5.1),
+  qt6-l10n-tools (>= 6.1)  | base-files (<< 12),
   libqt6waylandclient6-dev | qt6-wayland-dev (>= 6.1) |
   libqt5waylandclient5-dev | qtwayland5-dev  (>= 5.1),
   libqt6svg6-dev | libqt5svg5-dev, libgl-dev,
@@ -23,7 +23,7 @@ Standards-Version: 3.9.7
 Package: qtractor
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
-  qt6-qpa-plugins | libqt5opengl5,
+  qt6-qpa-plugins | base-files (<< 12),
   libjack0 | libjack-jackd2-0
 Description: An Audio/MIDI multi-track sequencer.
   Qtractor is an Audio/MIDI multi-track sequencer application
