@@ -23,6 +23,7 @@ Standards-Version: 3.9.7
 Package: qtractor
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
+  libqt6svg6 (>= 6.1) | libqt5svg5 (>= 5.1),
   qt6-qpa-plugins | base-files (<< 12),
   libjack0 | libjack-jackd2-0
 Description: An Audio/MIDI multi-track sequencer.
