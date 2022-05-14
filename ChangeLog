@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed MIDI clip editor vertical-zooming when using the [Ctrl+]
+  mouse-wheel.
+
 - Set auto-backward play-head location also when clicking on main
   track-view header/time-ruler and on thumb-view. (EXPERIMENTAL)
 
