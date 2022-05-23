@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Track/Export Tracks... dialog ranges are not capped to current
+  session-end anymore. (EXPERIMENTAL)
+
 - Fixed MIDI clip editor vertical-zooming when using the [Ctrl+]
   mouse-wheel.
 

@@ -476,10 +476,10 @@ void qtractorExportForm::rangeChanged (void)
 		iExportStart = pSession->sessionStart();
 		iExportEnd   = pSession->sessionEnd();
 	}
-
+#if 0
 	if (iExportEnd > pSession->sessionEnd())
 		iExportEnd = pSession->sessionEnd();
-
+#endif
 	m_ui.ExportStartSpinBox->setValue(iExportStart, false);
 	m_ui.ExportEndSpinBox->setValue(iExportEnd, false);
 
