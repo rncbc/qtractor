@@ -1,7 +1,7 @@
 // qtractorFiles.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -434,14 +434,14 @@ void qtractorFiles::stabilizeSlot (void)
 			pItem && pItem->type() == qtractorFileListView::FileItem);
 		m_pCopyItemAction->setEnabled(
 			pItem && pItem->type() == qtractorFileListView::FileItem);
-    #if QT_VERSION >= 0x0050000
+	#if QT_VERSION >= 0x0050000
 		const QMimeData *pMimeData
 			= QApplication::clipboard()->mimeData();
 		m_pPasteItemAction->setEnabled(
 			pMimeData && pMimeData->hasUrls());
-    #else
+	#else
 		m_pPasteItemAction->setEnabled(false);
-    #endif
+	#endif
 		m_pRenameItemAction->setEnabled(
 			pItem && pItem->type() == qtractorFileListView::GroupItem);
 		m_pRemoveItemAction->setEnabled(
@@ -530,7 +530,9 @@ void qtractorFiles::contextMenuEvent (
 	default:
 		break;
 	}
-	
+
+	stabilizeSlot();
+
 	menu.exec(pContextMenuEvent->globalPos());
 }
 

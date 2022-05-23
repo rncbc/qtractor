@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -416,6 +416,7 @@ qtractorFileListItem *qtractorFileListView::addFileItem (
 				}
 			}
 			else QTreeWidget::addTopLevelItem(pFileItem);
+			emit contentsChanged();
 		}
 	}
 #if 0
@@ -519,27 +520,19 @@ void qtractorFileListView::openFile (void)
 	qtractorFileListItem *pFileItem = nullptr;
 	qtractorFileGroupItem *pParentItem = currentGroupItem();
 	// Pick each one of the selected files...
-	int iUpdate = 0;
 	QStringListIterator iter(files);
 	while (iter.hasNext()) {
 		const QString& sPath = iter.next();
 		// Add the new file item...
 		pFileItem = addFileItem(sPath, pParentItem);
 		// Make all this new open and visible.
-		if (pFileItem) {
-			++iUpdate;
-			if (pParentItem)
-				pParentItem->setOpen(true);
-		}
+		if (pParentItem && pFileItem)
+			pParentItem->setOpen(true);
 	}
 
 	// Make the last one current...
 	if (pFileItem)
 		QTreeWidget::setCurrentItem(pFileItem);
-		
-	// Make proper notifications...
-	if (iUpdate > 0)
-		emit contentsChanged();
 }
 
 

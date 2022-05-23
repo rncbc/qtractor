@@ -2204,18 +2204,18 @@ selhalo.</translation>
 <context>
     <name>qtractorFileListView</name>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="555"/>
+        <location filename="../qtractorFileListView.cpp" line="548"/>
         <source>New Group</source>
         <translation>Nová skupina</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="666"/>
-        <location filename="../qtractorFileListView.cpp" line="695"/>
+        <location filename="../qtractorFileListView.cpp" line="659"/>
+        <location filename="../qtractorFileListView.cpp" line="688"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="667"/>
+        <location filename="../qtractorFileListView.cpp" line="660"/>
         <source>About to remove %1 file item(s).
 
 Are you sure?</source>
@@ -2224,7 +2224,7 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="696"/>
+        <location filename="../qtractorFileListView.cpp" line="689"/>
         <source>About to remove %1 item:
 
 &quot;%2&quot;
@@ -2237,12 +2237,12 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="699"/>
+        <location filename="../qtractorFileListView.cpp" line="692"/>
         <source>group</source>
         <translation>Skupina</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="699"/>
+        <location filename="../qtractorFileListView.cpp" line="692"/>
         <source>file</source>
         <translation>Soubor</translation>
     </message>
