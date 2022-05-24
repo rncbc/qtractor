@@ -5829,7 +5829,7 @@ void qtractorTrackView::openEditCurveNode (
 	m_pEditCurveNodeSpinBox->setFocus();
 
 	QObject::connect(m_pEditCurveNodeSpinBox,
-		SIGNAL(valueChanged(const QString&)),
+		SIGNAL(valueChanged(double)),
 		SLOT(editCurveNodeChanged()));
 	QObject::connect(m_pEditCurveNodeSpinBox,
 		SIGNAL(editingFinished()),
