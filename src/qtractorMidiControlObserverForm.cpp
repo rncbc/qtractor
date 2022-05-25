@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -256,14 +256,23 @@ QAction *qtractorMidiControlObserverForm::midiObserverAction (void) const
 
 
 // Pseudo-destructor.
-void qtractorMidiControlObserverForm::closeEvent ( QCloseEvent *pCloseEvent )
+void qtractorMidiControlObserverForm::cleanup (void)
 {
 	// Cleanup.
 	m_pMidiObserverAction = nullptr;
 	m_pMidiObserver = nullptr;
 
-	// Pseudo-singleton reference setup.
+	// Aint't dirty no more...
+	m_iDirtyCount = 0;
+
+	// Pseudo-singleton reference cleanup.
 	g_pMidiObserverForm = nullptr;
+}
+
+
+void qtractorMidiControlObserverForm::closeEvent ( QCloseEvent *pCloseEvent )
+{
+	cleanup();
 
 	// Sure acceptance and probable destruction (cf. WA_DeleteOnClose).
 	QDialog::closeEvent(pCloseEvent);
@@ -382,12 +391,10 @@ void qtractorMidiControlObserverForm::accept (void)
 			new qtractorMidiControlObserverMapCommand(m_pMidiObserver));
 	}
 
-	// Aint't dirty no more...
-	m_iDirtyCount = 0;
+	cleanup();
 
 	// Just go with dialog acceptance...
 	QDialog::accept();
-	QDialog::close();
 }
 
 
@@ -429,9 +436,10 @@ void qtractorMidiControlObserverForm::reject (void)
 		}
 	}
 
+	cleanup();
+
 	// Just go with dialog rejection...
 	QDialog::reject();
-	QDialog::close();
 }
 
 
@@ -457,9 +465,10 @@ void qtractorMidiControlObserverForm::reset (void)
 			new qtractorMidiControlObserverUnmapCommand(m_pMidiObserver));
 	}
 
+	cleanup();
+
 	// Bail out...
 	QDialog::accept();
-	QDialog::close();
 }
 
 

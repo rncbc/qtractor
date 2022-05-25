@@ -6,7 +6,10 @@ ChangeLog
 
 GIT HEAD
 
-- Fixed non-effective automation curve node editing. (GH issue #338)
+- Fixed one killer lurking in MIDI Controller... modeless dialog
+  instantiation. (EXPERIMENTAL) (GH issue #339)
+
+- Fixed non-effective automation curve node editing. (EXPERIMENTAL)
 
 - Track/Export Tracks... dialog ranges are not capped to current
   session-end anymore. (EXPERIMENTAL)

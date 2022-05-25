@@ -6958,22 +6958,22 @@ Posso continuar?</translation>
         <translation>&amp;Gancho</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="660"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="669"/>
         <source>&amp;Lock</source>
         <translation>&amp;Travar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="678"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="687"/>
         <source>&amp;Play</source>
         <translation>&amp;Tocar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="541"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="550"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Controlador &amp;MIDI...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="704"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="713"/>
         <source>&amp;Clear</source>
         <translation>&amp;Limpar</translation>
     </message>
@@ -6994,7 +6994,7 @@ Posso continuar?</translation>
         <translation>Ca&amp;nal:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="405"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="412"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -7008,7 +7008,7 @@ Você deseja aplicar essas mudanças?</translation>
         <translation>Parâmtero MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="646"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="655"/>
         <source>&amp;Automation</source>
         <translation>&amp;Automação</translation>
     </message>
@@ -7038,7 +7038,7 @@ Você deseja aplicar essas mudanças?</translation>
         <translation>&amp;Entradas</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="694"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="703"/>
         <source>&amp;Record</source>
         <translation>Grava&amp;r</translation>
     </message>
@@ -7053,7 +7053,7 @@ Você deseja aplicar essas mudanças?</translation>
         <translation>&amp;Resultado</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="358"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="367"/>
         <source>MIDI controller is already assigned.
 
 Do you want to replace the mapping?</source>
