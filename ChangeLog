@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed audio clip export, normalize and tempo-adjust when audio
+  file number of channels is disparately greater than respective
+  track's output bus count. (EXPERIMENTAL)
+
 - Fixed one killer lurking in MIDI Controller... modeless dialog
   instantiation. (EXPERIMENTAL) (GH issue #339)
 

@@ -872,15 +872,9 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 	while (iFrameStart < iLength) {
 		pBuff->syncExport();
 		if (pBuff->inSync(iFrameStart, iFrameStart + iFrames)) {
-			const int nread = pBuff->read(ppFrames, iFrames);
+			const int nread = pBuff->readMix(ppFrames, iFrames, iChannels, 0, clipGain());
 			if (nread < 1)
 				break;
-			for (i = 0; i < iChannels; ++i) {
-				const float fGain = clipGain() * pBuff->channelGain(i);
-				float *pFrames = ppFrames[i];
-				for (int n = 0; n < nread; ++n)
-					*pFrames++ *= fGain;
-			}
 			(*pfnClipExport)(ppFrames, nread, pvArg);
 			iFrameStart += nread;
 		}
