@@ -1405,7 +1405,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	}
 
 	for (i = 0; i < iChannels; ++i)
-		delete ppFrames[i];
+		delete [] ppFrames[i];
 	delete [] ppFrames;
 
 	qDeleteAll(list);

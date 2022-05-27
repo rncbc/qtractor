@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -454,7 +454,7 @@ bool qtractorAudioBuffer::open ( const QString& sFilename, int iMode )
 	// Make it sync-managed...
 	if (m_pSyncThread)
 		m_pSyncThread->sync(this);
-	
+
 	return true;
 }
 
@@ -776,6 +776,65 @@ int qtractorAudioBuffer::readMix ( float **ppFrames, unsigned int iFrames,
 	if (!m_bIntegral &&
 		m_pSyncThread && m_pRingBuffer->writable() > m_iThreshold)
 		m_pSyncThread->sync(this);
+
+	return nread;
+}
+
+
+int qtractorAudioBuffer::readMux ( float **ppFrames, unsigned int iFrames,
+	unsigned short iChannels, unsigned int iOffset, float fGain )
+{
+	if (iFrames == 0)
+		return 0;
+
+	const int nread = m_pRingBuffer->read(m_ppBuffer, iFrames);
+	if (nread == 0)
+		return 0;
+
+	const unsigned short iBuffers = m_pRingBuffer->channels();
+
+	unsigned short i, j; int n;
+	float *pFrames, *pBuffer;
+	float fGainIter;
+
+	const float fPrevGain = m_fGain * fGain;
+
+	for (i = 0; i < iChannels; ++i)
+		::memset(ppFrames[i], 0, iFrames * sizeof(float));
+
+	if (iChannels == iBuffers) {
+		for (i = 0; i < iBuffers; ++i) {
+			pFrames = ppFrames[i] + iOffset;
+			pBuffer = m_ppBuffer[i];
+			fGainIter = fPrevGain * m_pfGains[i];
+			for (n = 0; n < nread; ++n)
+				*pFrames++ += fGainIter * *pBuffer++;
+		}
+	}
+	else if (iChannels > iBuffers) {
+		j = 0;
+		for (i = 0; i < iChannels; ++i) {
+			pFrames = ppFrames[i] + iOffset;
+			pBuffer = m_ppBuffer[j];
+			fGainIter = fPrevGain * m_pfGains[j];
+			for (n = 0; n < nread; ++n)
+				*pFrames++ += fGainIter * *pBuffer++;
+			if (++j >= iBuffers)
+				j = 0;
+		}
+	}
+	else { // (iChannels < iBuffers)
+		i = 0;
+		for (j = 0; j < iBuffers; ++j) {
+			pFrames = ppFrames[i] + iOffset;
+			pBuffer = m_ppBuffer[j];
+			fGainIter = fPrevGain * m_pfGains[j];
+			for (n = 0; n < nread; ++n)
+				*pFrames++ += fGainIter * *pBuffer++;
+			if (++i >= iChannels)
+				i = 0;
+		}
+	}
 
 	return nread;
 }
