@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -333,13 +333,15 @@ void qtractorPlugin::autoDeactivatePlugin ( bool bDeactivated )
 			// was activated?
 			if (m_bActivated) {
 				deactivate();
-				m_pList->updateActivated(false);
+				if (m_pList)
+					m_pList->updateActivated(false);
 			}
 		}
 		// reactivate?
 		else if (m_bActivated) {
 			activate();
-			m_pList->updateActivated(true);
+			if (m_pList)
+				m_pList->updateActivated(true);
 		}
 		m_bAutoDeactivated = bDeactivated;
 	}
@@ -356,7 +358,8 @@ bool qtractorPlugin::canBeConnectedToOtherTracks (void) const
 // Activation stabilizers.
 void qtractorPlugin::updateActivated ( bool bActivated )
 {
-	if (bActivated != m_bActivated) {
+	if (( bActivated && !m_bActivated) ||
+		(!bActivated &&  m_bActivated)) {
 		m_bActivated = bActivated;
 		const bool bIsConnectedToOtherTracks = canBeConnectedToOtherTracks();
 		// Auto-plugin-deactivation overrides standard-activation for plugins
@@ -367,7 +370,8 @@ void qtractorPlugin::updateActivated ( bool bActivated )
 				activate();
 			else
 				deactivate();
-			m_pList->updateActivated(bActivated);
+			if (m_pList)
+				m_pList->updateActivated(bActivated);
 		}
 		// Plugins connected to other tracks activation change
 		// auto-plugin-deactivate for all tracks
@@ -414,7 +418,16 @@ void qtractorPlugin::setChannelsActivated (
 	if (iChannels > 0)
 		setActivated(bActivated);
 	else
-		updateActivated(false);
+		updateActivated(bActivated);
+}
+
+
+// Internal deactivation cleanup.
+void qtractorPlugin::cleanup (void)
+{
+	m_bActivated = false;
+
+	setChannels(0);
 }
 
 
@@ -900,9 +913,11 @@ bool qtractorPlugin::isDirectAccessParam (void) const
 void qtractorPlugin::updateDirectAccessParam (void)
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-	QListIterator<qtractorPluginListView *> iter(m_pList->views());
-	while (iter.hasNext())
-		iter.next()->viewport()->update();
+	if (m_pList) {
+		QListIterator<qtractorPluginListView *> iter(m_pList->views());
+		while (iter.hasNext())
+			iter.next()->viewport()->update();
+	}
 #else
 	QListIterator<qtractorPluginListItem *> iter(m_items);
 	while (iter.hasNext())
@@ -976,7 +991,9 @@ void qtractorPlugin::realizeConfigs (void)
 		configure(config.key(), config.value());
 
 	// Set proper bank/program selection...
-	qtractorMidiManager *pMidiManager = m_pList->midiManager();
+	qtractorMidiManager *pMidiManager = nullptr;
+	if (m_pList)
+		pMidiManager = m_pList->midiManager();
 	if (pMidiManager)
 		selectProgram(pMidiManager->currentBank(), pMidiManager->currentProg());
 }

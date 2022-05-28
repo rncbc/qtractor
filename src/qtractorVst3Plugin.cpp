@@ -2955,7 +2955,7 @@ qtractorVst3Plugin::qtractorVst3Plugin (
 qtractorVst3Plugin::~qtractorVst3Plugin (void)
 {
 	// Cleanup all plugin instances...
-	setChannels(0);
+	cleanup();	// setChannels(0);
 
 	// Deallocate I/O audio buffer pointers.
 	if (m_ppIBuffer)

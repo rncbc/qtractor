@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed implicit deactivation when a plugin is removed from chain.
+  (GH issue #341) (EXPERIMENTAL)
+
 - Fixed audio clip export, normalize and tempo-adjust when audio
   file number of channels is disparately greater than respective
   track's output bus count. (EXPERIMENTAL)

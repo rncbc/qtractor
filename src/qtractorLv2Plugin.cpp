@@ -2637,7 +2637,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 qtractorLv2Plugin::~qtractorLv2Plugin (void)
 {
 	// Cleanup all plugin instances...
-	setChannels(0);
+	cleanup();	// setChannels(0);
 
 	// Clear programs cache.
 	qDeleteAll(m_programs);

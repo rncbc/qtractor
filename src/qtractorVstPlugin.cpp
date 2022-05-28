@@ -1,7 +1,7 @@
 // qtractorVstPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -719,7 +719,7 @@ qtractorVstPlugin::qtractorVstPlugin (
 qtractorVstPlugin::~qtractorVstPlugin (void)
 {
 	// Cleanup all plugin instances...
-	setChannels(0);
+	cleanup();	// setChannels(0);
 
 	// Deallocate I/O audio buffer pointers.
 	if (m_ppIBuffer)
