@@ -212,6 +212,10 @@ endif ()
 
 find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Xml Svg)
 
+if (NOT CONFIG_QT6)
+  find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS X11Extras)
+endif ()
+
 if (CONFIG_XUNIQUE)
   find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Network)
 endif ()
@@ -441,11 +445,14 @@ if (CONFIG_VST3 AND NOT CONFIG_VST3SDK)
   endif ()
 endif ()
 
-if (CONFIG_VST3)
+if (CONFIG_VST3 OR CONFIG_LV2_UI_X11)
   pkg_check_modules (XCB xcb)
   if (NOT XCB_FOUND)
     message (WARNING "*** XCB library not found.")
   endif ()
+endif ()
+
+if (CONFIG_VST3)
   find_library (PTHREAD_LIBRARY pthread)
   if (NOT PTHREAD_LIBRARY)
     message (WARNING "*** pthread library not found.")

@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed LV2 plug-ins UI X11 (native) initial size. (EXPERIMENTAL)
+
 - Fixed implicit deactivation when a plugin is removed from chain.
   (GH issue #341) (EXPERIMENTAL)
 

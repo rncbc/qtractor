@@ -1394,6 +1394,35 @@ static void qtractor_lv2_ui_gtk2_on_size_allocate (
 
 #ifdef CONFIG_LV2_UI_X11
 
+#include <xcb/xcb.h>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QX11Info>
+#endif
+
+static void qtractor_lv2_ui_size_hints ( WId wid, QSize& size )
+{
+	xcb_connection_t *c = nullptr;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
+	const QNativeInterface::QX11Application *ni
+		= qApp->nativeInterface<QNativeInterface::QX11Application> ();
+	if (ni) c = ni->connection();
+#endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+	c = QX11Info::connection();
+#endif
+	if (c == nullptr)
+		return;
+
+	xcb_get_geometry_cookie_t cookie = ::xcb_get_geometry(c, wid);
+	xcb_get_geometry_reply_t *reply = ::xcb_get_geometry_reply(c, cookie, nullptr);
+	if (reply) {
+		size.setWidth(reply->width);
+		size.setHeight(reply->height);
+		::free(reply);
+	}
+}
+
 static int qtractor_lv2_ui_resize (
 	LV2UI_Feature_Handle handle, int width, int height )
 {
@@ -3485,13 +3514,16 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_X11
-	if (!ui_supported && m_pQtWidget
+	if (!ui_supported && m_lv2_ui_widget && m_pQtWidget
 		&& m_lv2_ui_type == LV2_UI_TYPE_X11) {
 		// Initialize widget event filter...
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 	//	m_bQtDelete = true;
 		// LV2 UI resize control...
 		QSize size = m_pQtWidget->sizeHint();
+	#ifdef CONFIG_LV2_UI_X11
+		qtractor_lv2_ui_size_hints(WId(m_lv2_ui_widget), size);
+	#endif
 		if (!size.isValid() || size.isNull())
 			size = m_pQtWidget->size();
 		if (size.isValid() && !size.isNull()) {
