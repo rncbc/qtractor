@@ -60,6 +60,7 @@ BuildRequires:	qt5-qtbase-devel >= 5.1
 BuildRequires:	qt5-qttools-devel
 BuildRequires:	qt5-qtwayland-devel
 BuildRequires:	qt5-qtsvg-devel
+BuildRequires:	qt5-qtx11extras-devel
 BuildRequires:	qt5-linguist
 %endif
 BuildRequires:	jack-audio-connection-kit-devel
@@ -78,6 +79,7 @@ BuildRequires:	libqt5-qtbase-devel >= 5.1
 BuildRequires:	libqt5-qttools-devel
 BuildRequires:	libqt5-qtwayland-devel
 BuildRequires:	libqt5-qtsvg-devel
+BuildRequires:	libqt5-qtx11extras-devel
 BuildRequires:	libqt5-linguist-devel
 %endif
 BuildRequires:	libjack-devel
