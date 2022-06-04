@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Auto-unlink MIDI clips when pasted/placed with Ctrl+click/Enter.
+  (EXPERIMENTAL) (GH issue #343)
+
 - Fixed LV2 plug-ins UI X11 (native) initial size. (EXPERIMENTAL)
 
 - Fixed implicit deactivation when a plugin is removed from chain.

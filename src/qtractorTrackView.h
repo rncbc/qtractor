@@ -190,7 +190,7 @@ public:
 	void moveClipSelect(qtractorTrack *pTrack);
 
 	// Paste from clipboard (execute).
-	void pasteClipSelect(qtractorTrack *pTrack);
+	void pasteClipSelect(qtractorTrack *pTrack, bool bUnlink = false);
 
 	// Curve/automation selection executive method.
 	void executeCurveSelect(qtractorTrackView::Command cmd);
@@ -226,7 +226,7 @@ public:
 	qtractorSessionCursor *sessionCursor() const;
 
 	// Clip cloner helper.
-	static qtractorClip *cloneClip(qtractorClip *pClip);
+	static qtractorClip *cloneClip(qtractorClip *pClip, bool bUnlink = false);
 
 	// Multi-item drop mode (whether to span clips horixontally).
 	void setDropSpan(bool bDropSpan);
