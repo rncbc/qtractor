@@ -719,7 +719,7 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	QPalette pal;
 	QColor rgbBase;
 	if (m_bSelected) {
-		rgbBase  = pal.midlight().color();
+		rgbBase = pal.midlight().color();
 		pal.setColor(QPalette::WindowText,
 			pal.highlightedText().color());
 		pal.setColor(QPalette::Window,
@@ -731,18 +731,6 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 		pal.setColor(QPalette::Window,
 			rgbBase);
 	}
-	m_pPluginListView->setPalette(pal);
-	m_pMonitorButton->setPalette(pal);
-	if (m_pBusButton)
-		m_pBusButton->setPalette(pal);
-	if (m_pRecordButton)
-		m_pRecordButton->setPalette(pal);
-	if (m_pMuteButton)
-		m_pMuteButton->setPalette(pal);
-	if (m_pSoloButton)
-		m_pSoloButton->setPalette(pal);
-	if (m_pMixerMeter)
-		m_pMixerMeter->setPalette(pal);
 #ifdef CONFIG_GRADIENT
 	const QSize& hint = QFrame::sizeHint();
 	QLinearGradient grad(0, 0, hint.width() >> 1, hint.height());
@@ -755,9 +743,26 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 		grad.setColorAt(0.6, rgbBase.lighter(105));
 		grad.setColorAt(1.0, rgbBase.darker(130));
 	}
+	const QBrush brush
+		= pal.brush(QPalette::Window);
 	pal.setBrush(QPalette::Window, grad);
 #endif
 	QFrame::setPalette(pal);
+#ifdef CONFIG_GRADIENT
+	pal.setBrush(QPalette::Window, brush);
+#endif
+	m_pPluginListView->setPalette(pal);
+	m_pMonitorButton->setPalette(pal);
+	if (m_pBusButton)
+		m_pBusButton->setPalette(pal);
+	if (m_pRecordButton)
+		m_pRecordButton->setPalette(pal);
+	if (m_pMuteButton)
+		m_pMuteButton->setPalette(pal);
+	if (m_pSoloButton)
+		m_pSoloButton->setPalette(pal);
+	if (m_pMixerMeter)
+		m_pMixerMeter->setPalette(pal);
 #ifdef CONFIG_GRADIENT
 	if (m_pRecordButton)
 		m_pRecordButton->observer()->update(true);
