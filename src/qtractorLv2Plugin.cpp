@@ -3753,8 +3753,14 @@ void qtractorLv2Plugin::idleEditor (void)
 				const unsigned long iIndex = iter.key();
 				const float fValue = iter.value();
 				qtractorPlugin::Param *pParam = findParam(iIndex);
-				if (pParam)
+				if (pParam) {
+				#ifdef CONFIG_LV2_UI_TOUCH
+					if (m_ui_params_touch.value(iIndex, false))
+						pParam->setValue(fValue, false);
+					else
+				#endif
 					pParamValuesCommand->updateParamValue(pParam, fValue, false);
+				}
 			}
 			if (pParamValuesCommand->isEmpty())
 				delete pParamValuesCommand;
@@ -4070,12 +4076,6 @@ void qtractorLv2Plugin::lv2_ui_port_write ( uint32_t port_index,
 
 	if (buffer_size != sizeof(float) || protocol != 0)
 		return;
-
-#ifdef CONFIG_LV2_UI_TOUCH
-	if (m_ui_params_touch.contains(port_index)
-		&& !m_ui_params_touch.value(port_index, false))
-		return;
-#endif
 
 	const float port_value = *(float *) buffer;
 

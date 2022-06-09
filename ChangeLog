@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Reviewed LV2 plug-in UI Touch feature/interface. (EXPERIMENTAL)
+
 - Auto-unlink MIDI clips when pasted/placed with Ctrl+click/Enter.
   (EXPERIMENTAL) (GH issue #343)
 
