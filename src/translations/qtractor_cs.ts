@@ -865,7 +865,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Parametry přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4158"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4170"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Otevřít soubor</translation>

@@ -576,7 +576,7 @@ private:
 	// LV2 UI Touch interface (ui->host).
 	LV2UI_Touch m_lv2_ui_touch;
 	LV2_Feature m_lv2_ui_touch_feature;
-	QHash<unsigned long, bool> m_ui_params_touch;
+	QHash<unsigned long, float> m_ui_params_touch;
 #endif
 
 #ifdef CONFIG_LV2_UI_REQ_VALUE

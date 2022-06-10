@@ -861,7 +861,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Параметры лпагина</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4158"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4170"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Открыть файл</translation>

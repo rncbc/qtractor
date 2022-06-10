@@ -3753,14 +3753,8 @@ void qtractorLv2Plugin::idleEditor (void)
 				const unsigned long iIndex = iter.key();
 				const float fValue = iter.value();
 				qtractorPlugin::Param *pParam = findParam(iIndex);
-				if (pParam) {
-				#ifdef CONFIG_LV2_UI_TOUCH
-					if (m_ui_params_touch.value(iIndex, false))
-						pParam->setValue(fValue, false);
-					else
-				#endif
+				if (pParam)
 					pParamValuesCommand->updateParamValue(pParam, fValue, false);
-				}
 			}
 			if (pParamValuesCommand->isEmpty())
 				delete pParamValuesCommand;
@@ -4079,8 +4073,15 @@ void qtractorLv2Plugin::lv2_ui_port_write ( uint32_t port_index,
 
 	const float port_value = *(float *) buffer;
 
-	// FIXME: Update plugin params...
-	// updateParamValue(port_index, port_value, false);
+#ifdef CONFIG_LV2_UI_TOUCH
+	// Hold plugin param value if under touch...
+	if (m_ui_params_touch.contains(port_index)) {
+		m_ui_params_touch.insert(port_index, port_value);
+		return;
+	}
+#endif
+
+	// Update plugin params...
 	m_ui_params.insert(port_index, port_value);
 }
 
@@ -4112,12 +4113,23 @@ uint32_t qtractorLv2Plugin::lv2_ui_port_index ( const char *port_symbol )
 // LV2 UI touch control (ui->host).
 void qtractorLv2Plugin::lv2_ui_touch ( uint32_t port_index, bool grabbed )
 {
+	qtractorPlugin::Param *pParam = findParam(port_index);
+	if (pParam == nullptr)
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_touch(%u, %d)",
 		this, port_index, int(grabbed));
 #endif
 
-	m_ui_params_touch[port_index] = grabbed;
+	if (grabbed) {
+		m_ui_params_touch.insert(port_index, pParam->value());
+	} else {
+		const float port_value
+			= m_ui_params_touch.value(port_index, pParam->value());
+		m_ui_params.insert(port_index, port_value);
+		m_ui_params_touch.remove(port_index);
+	}
 }
 
 #endif	// CONFIG_LV2_UI_TOUCH
