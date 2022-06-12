@@ -510,13 +510,13 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Výrobek: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1326"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1282"/>
         <location filename="../qtractorVstPlugin.cpp" line="662"/>
         <source>Vendor: </source>
         <translation>Prodejce: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1299"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1255"/>
         <location filename="../qtractorVstPlugin.cpp" line="670"/>
         <source>Version: </source>
         <translation>Verze: </translation>
@@ -882,17 +882,17 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1:Soubor s automatizací/křivkou nenalezen.</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1293"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1249"/>
         <source>Name: </source>
         <translation>Název: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1313"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1269"/>
         <source>Category: </source>
         <translation>Kategorie: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1320"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1276"/>
         <source>Categories: </source>
         <translation>Kategorie: </translation>
     </message>

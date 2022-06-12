@@ -52,8 +52,10 @@
 #include <QVBoxLayout>
 
 #include <QTimer>
-
 #include <QTimerEvent>
+
+#include <QSocketNotifier>
+
 #include <QResizeEvent>
 #include <QShowEvent>
 #include <QCloseEvent>
@@ -62,15 +64,6 @@
 #include <QMap>
 
 #include <QRegularExpression>
-
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-#define CONFIG_VST3_XCB
-#endif
-
-#ifdef CONFIG_VST3_XCB
-#include <xcb/xcb.h>
-#endif
 
 
 using namespace Steinberg;
@@ -128,12 +121,7 @@ public:
 	// Executive methods.
 	//
 	void processTimers();
-	void processEventHandlers();
-
-#ifdef CONFIG_VST3_XCB
-	void openXcbConnection();
-	void closeXcbConnection();
-#endif
+	void processEventHandler(IEventHandler *handler, int fd);
 
 	// Common host time-keeper context accessors.
 	Vst::ProcessContext *processContext();
@@ -171,19 +159,41 @@ private:
 		TimerItem(ITimerHandler *h, TimerInterval i)
 			: handler(h), interval(i), counter(0) {}
 
+		void reset(TimerInterval i)
+			{ interval = i; counter = 0; }
+
 		ITimerHandler *handler;
 		TimerInterval  interval;
 		TimerInterval  counter;
 	};
 
 	QHash<ITimerHandler *, TimerItem *> m_timers;
-	QMultiHash<IEventHandler *, int> m_fileDescriptors;
 
-#ifdef CONFIG_VST3_XCB
-	xcb_connection_t   *m_pXcbConnection;
-	int                 m_iXcbFileDescriptor;
-	unsigned int        m_iXcbRefCount;
-#endif	// defined(XCB_TEST)
+	struct EventHandlerItem
+	{
+		EventHandlerItem(int fd)
+			: r(nullptr), w(nullptr), e(nullptr) { reset(fd); }
+
+		~EventHandlerItem() { reset(0); };
+
+		void reset(int fd)
+		{
+			if (r) { delete r; r = nullptr; }
+			if (w) { delete w; w = nullptr; }
+			if (e) { delete e; e = nullptr; }
+			if (fd) {
+				r = new QSocketNotifier(fd, QSocketNotifier::Read);
+				w = new QSocketNotifier(fd, QSocketNotifier::Write);
+				e = new QSocketNotifier(fd, QSocketNotifier::Exception);
+			}
+		}
+
+		QSocketNotifier *r;
+		QSocketNotifier *w;
+		QSocketNotifier *e;
+	};
+
+	QHash<IEventHandler *, EventHandlerItem *> m_eventHandlers;
 
 	Vst::ProcessContext m_processContext;
 	unsigned int        m_processRefCount;
@@ -528,10 +538,8 @@ protected:
 
 	void timerEvent (QTimerEvent *pTimerEvent)
 	{
-		if (pTimerEvent->timerId() == QTimer::timerId()) {
+		if (pTimerEvent->timerId() == QTimer::timerId())
 			m_pHost->processTimers();
-			m_pHost->processEventHandlers();
-		}
 	}
 
 private:
@@ -555,12 +563,6 @@ qtractorVst3PluginHost::qtractorVst3PluginHost (void)
 	m_pTimer = new Timer(this);
 
 	m_timerRefCount = 0;
-
-#ifdef CONFIG_VST3_XCB
-	m_pXcbConnection = nullptr;
-	m_iXcbFileDescriptor = 0;
-	m_iXcbRefCount = 0;
-#endif
 
 	m_processRefCount = 0;
 }
@@ -657,7 +659,32 @@ tresult qtractorVst3PluginHost::registerEventHandler (
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::registerEventHandler(%p, %d)", handler, int(fd));
 #endif
-	m_fileDescriptors.insert(handler, int(fd));
+	EventHandlerItem *event_handler = m_eventHandlers.value(handler, nullptr);
+	if (event_handler) {
+		event_handler->reset(fd);
+	} else {
+		event_handler = new EventHandlerItem(fd);
+		m_eventHandlers.insert(handler, event_handler);
+	}
+
+	if (event_handler->r) {
+		QObject::connect(event_handler->r,
+			&QSocketNotifier::activated, [this, handler, fd] {
+			processEventHandler(handler, fd); });
+	}
+
+	if (event_handler->w) {
+		QObject::connect(event_handler->w,
+			&QSocketNotifier::activated, [this, handler, fd] {
+			processEventHandler(handler, fd); });
+	}
+
+	if (event_handler->e) {
+		QObject::connect(event_handler->e,
+			&QSocketNotifier::activated, [this, handler, fd] {
+			processEventHandler(handler, fd); });
+	}
+
 	return kResultOk;
 }
 
@@ -667,7 +694,10 @@ tresult qtractorVst3PluginHost::unregisterEventHandler ( IEventHandler *handler 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::unregisterEventHandler(%p)", handler);
 #endif
-	m_fileDescriptors.remove(handler);
+	EventHandlerItem *event_handler = m_eventHandlers.value(handler, nullptr);
+	if (event_handler)
+		delete event_handler;
+	m_eventHandlers.remove(handler);
 	return kResultOk;
 }
 
@@ -678,7 +708,12 @@ tresult qtractorVst3PluginHost::registerTimer (
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::registerTimer(%p, %u)", handler, uint(msecs));
 #endif
-	m_timers.insert(handler, new TimerItem(handler, msecs));
+	TimerItem *timer = m_timers.value(handler, nullptr);
+	if (timer)
+		timer->reset(msecs);
+	else
+		timer = new TimerItem(handler, msecs);
+	m_timers.insert(handler, timer);
 	m_pTimer->start(int(msecs));
 	return kResultOk;
 }
@@ -689,6 +724,9 @@ tresult qtractorVst3PluginHost::unregisterTimer ( ITimerHandler *handler )
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::unregisterTimer(%p)", handler);
 #endif
+	TimerItem *timer = m_timers.value(handler, nullptr);
+	if (timer)
+		delete timer;
 	m_timers.remove(handler);
 	if (m_timers.isEmpty())
 		m_pTimer->stop();
@@ -710,85 +748,11 @@ void qtractorVst3PluginHost::processTimers (void)
 }
 
 
-void qtractorVst3PluginHost::processEventHandlers (void)
+void qtractorVst3PluginHost::processEventHandler (
+	IEventHandler *handler, int fd )
 {
-	int nfds = 0;
-
-	fd_set rfds;
-	fd_set wfds;
-	fd_set efds;
-
-	FD_ZERO(&rfds);
-	FD_ZERO(&wfds);
-	FD_ZERO(&efds);
-
-#ifdef CONFIG_VST3_XCB
-	if (m_iXcbFileDescriptor) {
-		FD_SET(m_iXcbFileDescriptor, &rfds);
-		FD_SET(m_iXcbFileDescriptor, &wfds);
-		FD_SET(m_iXcbFileDescriptor, &efds);
-		nfds = qMax(nfds, m_iXcbFileDescriptor);
-	}
-#endif
-
-	QMultiHash<IEventHandler *, int>::ConstIterator iter
-		= m_fileDescriptors.constBegin();
-	for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
-		foreach (int fd, m_fileDescriptors.values(iter.key())) {
-			FD_SET(fd, &rfds);
-			FD_SET(fd, &wfds);
-			FD_SET(fd, &efds);
-			nfds = qMax(nfds, fd);
-		}
-	}
-
-	timeval timeout;
-	timeout.tv_sec  = 0;
-	timeout.tv_usec = 1000 * timerInterval();
-
-	const int result = ::select(nfds, &rfds, &wfds, nullptr, &timeout);
-	if (result > 0)	{
-		iter = m_fileDescriptors.constBegin();
-		for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
-			foreach (int fd, m_fileDescriptors.values(iter.key())) {
-				if (FD_ISSET(fd, &rfds) ||
-					FD_ISSET(fd, &wfds) ||
-					FD_ISSET(fd, &efds)) {
-					IEventHandler *handler = iter.key();
-					handler->onFDIsSet(fd);
-				}
-			}
-		}
-	}
+	handler->onFDIsSet(fd);
 }
-
-
-#ifdef CONFIG_VST3_XCB
-
-void qtractorVst3PluginHost::openXcbConnection (void)
-{
-	if (++m_iXcbRefCount == 1 && m_pXcbConnection == nullptr) {
-	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVst3PluginHost::openXcbConnection()");
-	#endif
-		m_pXcbConnection = ::xcb_connect(nullptr, nullptr);
-		m_iXcbFileDescriptor = ::xcb_get_file_descriptor(m_pXcbConnection);
-	}
-}
-
-void qtractorVst3PluginHost::closeXcbConnection (void)
-{
-	if (m_pXcbConnection && --m_iXcbRefCount < 1) {
-		::xcb_disconnect(m_pXcbConnection);
-		m_pXcbConnection = nullptr;
-		m_iXcbFileDescriptor = 0;
-	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVst3PluginHost::closeXcbConnection()");
-	#endif
-	}
-}
-
-#endif	// CONFIG_VST3_XCB
 
 
 // Common host time-keeper context accessor.
@@ -852,22 +816,14 @@ void qtractorVst3PluginHost::updateProcessContext (
 // Cleanup.
 void qtractorVst3PluginHost::clear (void)
 {
-#ifdef CONFIG_VST3_XCB
-	if (m_pXcbConnection) {
-		::xcb_disconnect(m_pXcbConnection);
-		m_pXcbConnection = nullptr;
-		m_iXcbFileDescriptor = 0;
-	}
-	m_iXcbRefCount = 0;
-#endif
-
 	m_timerRefCount = 0;
 	m_processRefCount = 0;
 
 	qDeleteAll(m_timers);
 	m_timers.clear();
 
-	m_fileDescriptors.clear();
+	qDeleteAll(m_eventHandlers);
+	m_eventHandlers.clear();
 
 	::memset(&m_processContext, 0, sizeof(Vst::ProcessContext));
 }
@@ -2348,9 +2304,6 @@ bool qtractorVst3Plugin::Impl::openEditor (void)
 	if (pType == nullptr)
 		return false;
 
-#ifdef CONFIG_VST3_XCB
-	g_hostContext.openXcbConnection();
-#endif
 	g_hostContext.startTimer(200);
 
 	Vst::IEditController *controller = pType->impl()->controller();
@@ -2366,10 +2319,6 @@ void qtractorVst3Plugin::Impl::closeEditor (void)
 	m_plugView = nullptr;
 
 	g_hostContext.stopTimer();
-
-#ifdef CONFIG_VST3_XCB
-	g_hostContext.closeXcbConnection();
-#endif
 }
 
 
