@@ -182,6 +182,7 @@ private:
 #ifdef CONFIG_VST3_XCB
 	xcb_connection_t   *m_pXcbConnection;
 	int                 m_iXcbFileDescriptor;
+	unsigned int        m_iXcbRefCount;
 #endif	// defined(XCB_TEST)
 
 	Vst::ProcessContext m_processContext;
@@ -558,6 +559,7 @@ qtractorVst3PluginHost::qtractorVst3PluginHost (void)
 #ifdef CONFIG_VST3_XCB
 	m_pXcbConnection = nullptr;
 	m_iXcbFileDescriptor = 0;
+	m_iXcbRefCount = 0;
 #endif
 
 	m_processRefCount = 0;
@@ -765,7 +767,7 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 
 void qtractorVst3PluginHost::openXcbConnection (void)
 {
-	if (m_pXcbConnection == nullptr) {
+	if (++m_iXcbRefCount == 1 && m_pXcbConnection == nullptr) {
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorVst3PluginHost::openXcbConnection()");
 	#endif
@@ -776,7 +778,7 @@ void qtractorVst3PluginHost::openXcbConnection (void)
 
 void qtractorVst3PluginHost::closeXcbConnection (void)
 {
-	if (m_pXcbConnection) {
+	if (m_pXcbConnection && --m_iXcbRefCount < 1) {
 		::xcb_disconnect(m_pXcbConnection);
 		m_pXcbConnection = nullptr;
 		m_iXcbFileDescriptor = 0;
@@ -851,7 +853,12 @@ void qtractorVst3PluginHost::updateProcessContext (
 void qtractorVst3PluginHost::clear (void)
 {
 #ifdef CONFIG_VST3_XCB
-	closeXcbConnection();
+	if (m_pXcbConnection) {
+		::xcb_disconnect(m_pXcbConnection);
+		m_pXcbConnection = nullptr;
+		m_iXcbFileDescriptor = 0;
+	}
+	m_iXcbRefCount = 0;
 #endif
 
 	m_timerRefCount = 0;
@@ -2344,7 +2351,6 @@ bool qtractorVst3Plugin::Impl::openEditor (void)
 #ifdef CONFIG_VST3_XCB
 	g_hostContext.openXcbConnection();
 #endif
-
 	g_hostContext.startTimer(200);
 
 	Vst::IEditController *controller = pType->impl()->controller();
