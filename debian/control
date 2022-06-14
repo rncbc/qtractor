@@ -8,8 +8,6 @@ Build-Depends: debhelper (>= 11), cmake, pkg-config,
   qt6-tools-dev (>= 6.1) | qttools5-dev (>= 5.1),
   qt6-tools-dev-tools (>= 6.1) | qttools5-dev-tools (>= 5.1),
   qt6-l10n-tools (>= 6.1)  | base-files (<< 12),
-  libqt6waylandclient6-dev | qt6-wayland-dev (>= 6.1) |
-  libqt5waylandclient5-dev | qtwayland5-dev  (>= 5.1),
   libqt6svg6-dev | libqt5svg5-dev, libgl-dev,
   base-files (>= 12) | libqt5x11extras5-dev (>= 5.1),
   libjack-dev | libjack-jackd2-dev, libasound2-dev, libsndfile-dev,
