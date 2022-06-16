@@ -39,6 +39,13 @@
 #endif
 #endif
 
+#ifdef CONFIG_CLAP
+#include "qtractorClapPlugin.h"
+#ifndef CONFIG_MIDI_PARSER
+#define CONFIG_MIDI_PARSER 1
+#endif
+#endif
+
 #ifdef CONFIG_LV2
 #if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
 #include "qtractorLv2Plugin.h"

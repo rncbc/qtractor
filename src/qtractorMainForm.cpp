@@ -2325,6 +2325,9 @@ bool qtractorMainForm::closeSession (void)
 	#ifdef CONFIG_VST3
 		qtractorVst3Plugin::clearAll();
 	#endif
+	#ifdef CONFIG_CLAP
+		qtractorClapPlugin::clearAll();
+	#endif
 	#ifdef CONFIG_LV2
 		qtractorLv2PluginType::lv2_close();
 	#endif
@@ -7762,6 +7765,10 @@ void qtractorMainForm::fastTimerSlot (void)
 	// Crispy plugin LV2 UI idle-updates...
 	qtractorLv2Plugin::idleEditorAll();
 #endif
+#endif
+#ifdef CONFIG_CLAP
+	// Crispy plugin CLAP UI idle-updates...
+	qtractorClapPlugin::idleEditorAll();
 #endif
 #ifdef CONFIG_VST
 	// Crispy plugin VST UI idle-updates...

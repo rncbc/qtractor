@@ -426,7 +426,8 @@ protected:
 	bool lv2_ui_instantiate(
 		const char *ui_host_uri, const char *plugin_uri,
 		const char *ui_uri,	const char *ui_type_uri,
-		const char *ui_bundle_path, const char *ui_binary_path);
+		const char *ui_bundle_path, const char *ui_binary_path,
+		QWidget *pParent, Qt::WindowFlags wflags);
 
 	void lv2_ui_port_event(
 		uint32_t port_index, uint32_t buffer_size,

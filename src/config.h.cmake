@@ -202,6 +202,9 @@
 /* Define if VST3 plug-in support is avilable. */
 #cmakedefine CONFIG_VST3 @CONFIG_VST3@
 
+/* Define if CLAP plug-in support is avilable. */
+#cmakedefine CONFIG_CLAP @CONFIG_CLAP@
+
 /* Define if JACK session support is available. */
 #cmakedefine CONFIG_JACK_SESSION @CONFIG_JACK_SESSION@
 

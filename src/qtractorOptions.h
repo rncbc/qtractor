@@ -231,6 +231,7 @@ public:
 	QStringList dssiPaths;
 	QStringList vstPaths;
 	QStringList vst3Paths;
+	QStringList clapPaths;
 	QStringList lv2Paths;
 
 	QString sLv2PresetDir;
@@ -252,6 +253,7 @@ public:
 	int  iDummyDssiHash;
 	int  iDummyVstHash;
 	int  iDummyVst3Hash;
+	int  iDummyClapHash;
 	int  iDummyLv2Hash;
 
 	// LV2 plugin specific options.

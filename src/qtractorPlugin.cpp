@@ -115,7 +115,11 @@ qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
 {
 	qtractorPluginFile *pFile = g_files.value(sFilename, nullptr);
 
-	if (pFile == nullptr && QLibrary::isLibrary(sFilename)) {
+	if (pFile == nullptr && QLibrary::isLibrary(sFilename)
+	#ifdef CONFIG_CLAP
+		|| QFileInfo(sFilename).suffix() == "clap"
+	#endif
+	) {
 		pFile = new qtractorPluginFile(sFilename);
 		g_files.insert(pFile->filename(), pFile);
 	}
@@ -186,6 +190,9 @@ qtractorPluginType::Hint qtractorPluginType::hintFromText (
 	if (sText == "VST3")
 		return Vst3;
 	else
+	if (sText == "CLAP")
+		return Clap;
+	else
 	if (sText == "LV2")
 		return Lv2;
 	else
@@ -212,6 +219,9 @@ QString qtractorPluginType::textFromHint (
 	else
 	if (typeHint == Vst3)
 		return "VST3";
+	else
+	if (typeHint == Clap)
+		return "CLAP";
 	else
 	if (typeHint == Lv2)
 		return "LV2";
@@ -258,13 +268,8 @@ qtractorPlugin::~qtractorPlugin (void)
 {
 	// Clear out all dependables...
 	clearItems();
-
-	// Clear out all dependables...
-	qDeleteAll(m_params);
-	m_params.clear();
-
-	qDeleteAll(m_properties);
-	m_properties.clear();
+	clearParams();
+	clearProperties();
 
 	// Rest of stuff goes cleaned too...
 	if (m_pType) delete m_pType;
@@ -531,7 +536,7 @@ void qtractorPlugin::clearItems (void)
 }
 
 
-// Paremeters list accessor.
+// Paremeters list accessors.
 void qtractorPlugin::addParam ( qtractorPlugin::Param *pParam )
 {
 	pParam->reset();
@@ -542,11 +547,41 @@ void qtractorPlugin::addParam ( qtractorPlugin::Param *pParam )
 }
 
 
+void qtractorPlugin::removeParam ( qtractorPlugin::Param *pParam )
+{
+	m_paramNames.remove(pParam->name());
+	m_params.remove(pParam->index());
+}
+
+
+void qtractorPlugin::clearParams (void)
+{
+	qDeleteAll(m_params);
+	m_params.clear();
+	m_paramNames.clear();
+}
+
+
 // Properties registry accessor.
 void qtractorPlugin::addProperty ( qtractorPlugin::Property *pProp )
 {
 	m_properties.insert(pProp->index(), pProp);
 	m_propertyKeys.insert(pProp->key(), pProp);
+}
+
+
+void qtractorPlugin::removeProperty ( qtractorPlugin::Property *pProp )
+{
+	m_propertyKeys.remove(pProp->name());
+	m_properties.remove(pProp->index());
+}
+
+
+void qtractorPlugin::clearProperties (void)
+{
+	qDeleteAll(m_properties);
+	m_properties.clear();
+	m_propertyKeys.clear();
 }
 
 

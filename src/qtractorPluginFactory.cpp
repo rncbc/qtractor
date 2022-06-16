@@ -34,6 +34,9 @@
 #ifdef CONFIG_VST3
 #include "qtractorVst3Plugin.h"
 #endif
+#ifdef CONFIG_CLAP
+#include "qtractorClapPlugin.h"
+#endif
 #ifdef CONFIG_LV2
 #include "qtractorLv2Plugin.h"
 #endif
@@ -244,6 +247,20 @@ void qtractorPluginFactory::updatePluginPaths (void)
 	m_paths.insert(qtractorPluginType::Vst3, vst3_paths);
 #endif
 
+#ifdef CONFIG_CLAP
+	// CLAP default path...
+	QStringList clap_paths;
+	if (pOptions)
+		clap_paths = pOptions->clapPaths;
+	if (clap_paths.isEmpty()) {
+		QString sClapPaths = ::getenv("CLAP_PATH");
+		if (sClapPaths.isEmpty())
+			sClapPaths = default_paths("clap");
+		clap_paths = sClapPaths.split(PATH_SEP);
+	}
+	m_paths.insert(qtractorPluginType::Clap, clap_paths);
+#endif
+
 #ifdef CONFIG_LV2
 	// LV2 default path...
 	QStringList lv2_paths;
@@ -390,6 +407,9 @@ bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 	case qtractorPluginType::Vst3:
 		iDummyPluginHash = pOptions->iDummyVst3Hash;
 		break;
+	case qtractorPluginType::Clap:
+		iDummyPluginHash = pOptions->iDummyClapHash;
+		break;
 	case qtractorPluginType::Lv2:
 		iDummyPluginHash = pOptions->iDummyLv2Hash;
 		break;
@@ -415,6 +435,9 @@ bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 				break;
 			case qtractorPluginType::Vst3:
 				pOptions->iDummyVst3Hash = iNewDummyPluginHash;
+				break;
+			case qtractorPluginType::Clap:
+				pOptions->iDummyClapHash = iNewDummyPluginHash;
 				break;
 			case qtractorPluginType::Lv2:
 				pOptions->iDummyLv2Hash = iNewDummyPluginHash;
@@ -487,11 +510,24 @@ void qtractorPluginFactory::scan (void)
 	}
 #endif
 #ifdef CONFIG_VST3
-	// VST default path...
+	// VST3 default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Vst3) {
 		const qtractorPluginType::Hint typeHint
 			= qtractorPluginType::Vst3;
+		const QStringList& paths = m_paths.value(typeHint);
+		if (!paths.isEmpty()) {
+			iFileCount += addFiles(typeHint, paths);
+			startScan(typeHint);
+		}
+	}
+#endif
+#ifdef CONFIG_CLAP
+	// CLAP default path...
+	if (m_typeHint == qtractorPluginType::Any ||
+		m_typeHint == qtractorPluginType::Clap) {
+		const qtractorPluginType::Hint typeHint
+			= qtractorPluginType::Clap;
 		const QStringList& paths = m_paths.value(typeHint);
 		if (!paths.isEmpty()) {
 			iFileCount += addFiles(typeHint, paths);
@@ -587,8 +623,9 @@ int qtractorPluginFactory::addFiles (
 
 	const QDir dir(sPath);
 	QDir::Filters filters = QDir::Files;
-	if (typeHint == qtractorPluginType::Vst ||
-		typeHint == qtractorPluginType::Vst3)
+	if (typeHint == qtractorPluginType::Vst  ||
+		typeHint == qtractorPluginType::Vst3 ||
+		typeHint == qtractorPluginType::Clap)
 		filters = filters | QDir::AllDirs | QDir::NoDotAndDotDot;
 	const QFileInfoList& info_list = dir.entryInfoList(filters);
 	QListIterator<QFileInfo> info_iter(info_list);
@@ -598,7 +635,11 @@ int qtractorPluginFactory::addFiles (
 		if (info.isDir() && info.isReadable())
 			iFileCount += addFiles(typeHint, sFilename);
 		else
-		if (QLibrary::isLibrary(sFilename)) {
+		if (QLibrary::isLibrary(sFilename)
+		#ifdef CONFIG_CLAP
+			|| (typeHint == qtractorPluginType::Clap && info.suffix() == "clap")
+		#endif
+		) {
 			m_files[typeHint].append(sFilename);
 			++iFileCount;
 		}
@@ -707,6 +748,20 @@ qtractorPlugin *qtractorPluginFactory::createPlugin (
 	}
 #endif
 
+#ifdef CONFIG_CLAP
+	// Try CLAP plugin types...
+	if (typeHint == qtractorPluginType::Clap) {
+		qtractorClapPluginType *pClapType
+			= qtractorClapPluginType::createType(pFile, iIndex);
+		if (pClapType) {
+			pFile->addRef();
+			if (pClapType->open())
+				return new qtractorClapPlugin(pList, pClapType);
+			delete pClapType;
+		}
+	}
+#endif
+
 	// Bad luck, no valid plugin found...
 	qtractorPluginFile::removeFile(pFile);
 
@@ -806,6 +861,12 @@ bool qtractorPluginFactory::addTypes (
 	case qtractorPluginType::Vst3:
 		// Try VST3 plugin type...
 		pType = qtractorVst3PluginType::createType(pFile, iIndex);
+		break;
+#endif
+#ifdef CONFIG_CLAP
+	case qtractorPluginType::Clap:
+		// Try CLAP plugin type...
+		pType = qtractorClapPluginType::createType(pFile, iIndex);
 		break;
 #endif
 	default:
@@ -1169,17 +1230,17 @@ void qtractorDummyPluginType::close (void)
 qtractorDummyPluginType *qtractorDummyPluginType::createType (
 	const QString& sText )
 {
-	// Sanity check...
+	// Sanity checks...
 	const QStringList& props = sText.split('|');
-	if (props.count() < 7)
+	if (props.count() < 9)
 		return nullptr;
 
-	const Hint typeHint = qtractorPluginType::hintFromText(props.at(0));
-	const unsigned long iIndex = props.at(7).toULong();
-#if 0// FIXME: Yep, most probably it used to be a dummy VST plugin effect...
-	if (typeHint != Vst)
+	const Hint typeHint
+		= qtractorPluginType::hintFromText(props.at(0));
+	if (typeHint == Any)
 		return nullptr;
-#endif
+
+	const unsigned long iIndex = props.at(7).toULong();
 	return new qtractorDummyPluginType(sText, iIndex, typeHint);
 }
 

@@ -163,6 +163,9 @@ option (CONFIG_LV2_UI_GTKMM2 "Enable LV2 plug-in UI GTKMM2 native support (defau
 
 option (CONFIG_LV2_UI_X11 "Enable LV2 plug-in UI X11 native support (default=yes)" 1)
 
+# Enable CLAP support.
+option (CONFIG_CLAP "Enable CLAP plug-in support (default=yes)" 1)
+
 # Enable JACK session support.
 option (CONFIG_JACK_SESSION "Enable JACK session support (default=yes)" 1)
 
@@ -778,6 +781,7 @@ show_option ("  LV2 plug-in UI Idle interface support  . . . . . ." CONFIG_LV2_U
 show_option ("  LV2 plug-in UI Show interface support  . . . . . ." CONFIG_LV2_UI_SHOW)
 show_option ("  LV2 plug-in UI GTK2 native support . . . . . . . ." CONFIG_LV2_UI_GTK2)
 show_option ("  LV2 plug-in UI X11 native support  . . . . . . . ." CONFIG_LV2_UI_X11)
+show_option ("  CLAP plug-in support (EXPERIMENTAL)  . . . . . . ." CONFIG_CLAP)
 message     ("")
 show_option ("  JACK Session support . . . . . . . . . . . . . . ." CONFIG_JACK_SESSION)
 show_option ("  JACK Latency support . . . . . . . . . . . . . . ." CONFIG_JACK_LATENCY)

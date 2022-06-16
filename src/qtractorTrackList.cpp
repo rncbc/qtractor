@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1043,7 +1043,10 @@ void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
 void qtractorTrackList::resetHeaderSize ( int iCol )
 {
 	const bool bBlockSignals = m_pHeader->blockSignals(true);
-	m_pHeader->resizeSection(iCol, m_pHeader->sectionSizeHint(iCol));
+	const int iColSize = m_pHeader->model()->headerData(iCol,
+		Qt::Horizontal, Qt::SizeHintRole).toSize().width();
+	//	= m_pHeader->sectionSizeHint(iCol);
+	m_pHeader->resizeSection(iCol, iColSize);
 	if (iCol == Number) {
 		// Resize all icons anyway...
 		QListIterator<Item *> iter(m_items);

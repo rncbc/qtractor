@@ -3225,7 +3225,7 @@ void qtractorLv2Plugin::process (
 #ifdef CONFIG_LV2_UI
 
 // Open editor.
-void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
+void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 {
 	if (m_lv2_ui) {
 		setEditorVisible(true);
@@ -3443,6 +3443,19 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	qDebug("qtractorLv2Plugin[%p]::openEditor(\"%s\")", this, ui_type_uri);
 #endif
 
+	// What style do we create tool childs?
+	Qt::WindowFlags wflags = Qt::Window;
+#if 0//QTRACTOR_LV2_EDITOR_TOOL
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bKeepToolsOnTop) {
+		wflags |= Qt::Tool;
+	//	wflags |= Qt::WindowStaysOnTopHint;
+		// Make sure it has a parent...
+		if (pParent == nullptr)
+			pParent = qtractorMainForm::getInstance();
+	}
+#endif
+
 	const char *ui_host_uri = LV2_UI_HOST_URI;
 	const char *plugin_uri
 		= lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin()));
@@ -3461,7 +3474,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	// Do try to instantiate the UI...
 	const bool ui_instantiate = lv2_ui_instantiate(
 		ui_host_uri, plugin_uri, ui_uri, ui_type_uri,
-		ui_bundle_path, ui_binary_path);
+		ui_bundle_path, ui_binary_path, pParent, wflags);
 
 #ifdef CONFIG_LILV_FILE_URI_PARSE
 	lilv_free((void *) ui_binary_path);
@@ -3534,7 +3547,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	//	const WId wid = gtk_plug_get_id((GtkPlug *) pGtkWindow);
 		QWindow *pQtWindow = QWindow::fromWinId(wid);
 		// Create the new parent frame...
-		QWidget *pQtWidget = new QWidget(nullptr, Qt::Window);
+		QWidget *pQtWidget = new QWidget(pParent, wflags);
 		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		QWidget *pQtContainer = QWidget::createWindowContainer(pQtWindow, pQtWidget);
 		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
@@ -4238,7 +4251,8 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 bool qtractorLv2Plugin::lv2_ui_instantiate (
 	const char *ui_host_uri, const char *plugin_uri,
 	const char *ui_uri,	const char *ui_type_uri,
-	const char *ui_bundle_path, const char *ui_binary_path )
+	const char *ui_bundle_path, const char *ui_binary_path,
+	QWidget *pParent, Qt::WindowFlags wflags )
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_instantiate(\"%s\")", this, ui_uri);
@@ -4408,7 +4422,7 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 #ifdef CONFIG_LV2_UI_X11
 	if (m_lv2_ui_type == LV2_UI_TYPE_X11) {
 		// Create the new parent frame...
-		QWidget *pQtWidget = new QWidget(nullptr, Qt::Window);
+		QWidget *pQtWidget = new QWidget(pParent, wflags);
 		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		// Add/prepare some needed features...
 		m_lv2_ui_resize.handle = pQtWidget;

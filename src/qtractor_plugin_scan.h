@@ -1,7 +1,7 @@
 // qtractor_plugin_scan.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -305,6 +305,62 @@ private:
 };
 
 #endif	// CONFIG_VST3
+
+
+#ifdef CONFIG_CLAP
+
+//----------------------------------------------------------------------
+// class qtractor_clap_scan -- CLAP plugin (bare bones) interface.
+//
+
+class qtractor_clap_scan
+{
+public:
+
+	// Constructor.
+	qtractor_clap_scan();
+
+	// destructor.
+	~qtractor_clap_scan();
+
+	// File loader.
+	bool open(const QString& sFilename);
+	bool open_descriptor(unsigned long iIndex);
+	void close_descriptor();
+	void close();
+
+	// Properties.
+	bool isOpen() const;
+
+	// Properties.
+	const QString& name() const;
+	unsigned int uniqueID() const;
+
+	int controlIns() const;
+	int controlOuts() const;
+
+	int audioIns() const;
+	int audioOuts() const;
+
+	int midiIns() const;
+	int midiOuts() const;
+
+	bool hasEditor() const;
+	bool hasState() const;
+
+protected:
+
+	// Forward decls.
+	class Impl;
+
+private:
+
+	// Instance variables.
+	Impl *m_pImpl;
+};
+
+
+#endif	// CONFIG_CLAP
 
 
 #endif	// __qtractor_plugin_scan_h

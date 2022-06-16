@@ -132,12 +132,14 @@ private:
 	QStringList m_dssiPaths;
 	QStringList m_vstPaths;
 	QStringList m_vst3Paths;
+	QStringList m_clapPaths;
 	QStringList m_lv2Paths;
 
 	int m_iDirtyLadspaPaths;
 	int m_iDirtyDssiPaths;
 	int m_iDirtyVstPaths;
 	int m_iDirtyVst3Paths;
+	int m_iDirtyClapPaths;
 	int m_iDirtyLv2Paths;
 
 	int m_iDirtyBlacklist;

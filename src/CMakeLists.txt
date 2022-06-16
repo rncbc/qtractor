@@ -28,6 +28,7 @@ set (HEADERS
   qtractorAudioPeak.h
   qtractorAudioSndFile.h
   qtractorAudioVorbisFile.h
+  qtractorClapPlugin.h
   qtractorClip.h
   qtractorClipCommand.h
   qtractorClipSelect.h
@@ -162,6 +163,7 @@ set (SOURCES
   qtractorAudioPeak.cpp
   qtractorAudioSndFile.cpp
   qtractorAudioVorbisFile.cpp
+  qtractorClapPlugin.cpp
   qtractorClip.cpp
   qtractorClipCommand.cpp
   qtractorClipSelect.cpp
@@ -490,6 +492,11 @@ if (CONFIG_VST3 AND CONFIG_VST3SDK)
     target_link_libraries (${PROJECT_NAME} PRIVATE ${PTHREAD_LIBRARY})
     target_link_libraries (${PROJECT_NAME}_plugin_scan PRIVATE ${PTHREAD_LIBRARY})
   endif ()
+endif ()
+
+if (CONFIG_CLAP)
+  target_include_directories (${PROJECT_NAME} PRIVATE clap/include)
+  target_include_directories (${PROJECT_NAME}_plugin_scan PRIVATE clap/include)
 endif ()
 
 if (XCB_FOUND)

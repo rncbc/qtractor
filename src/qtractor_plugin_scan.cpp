@@ -1,7 +1,7 @@
 // qtractor_plugin_scan.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,12 +28,13 @@
 #include <QDir>
 
 #include <stdint.h>
+#include <dlfcn.h>
 
 
 #ifdef CONFIG_LADSPA
 
 //----------------------------------------------------------------------
-// class qtractor_ladspa_scan -- LADSPA plugin re bones) interface
+// class qtractor_ladspa_scan -- LADSPA plugin (bare bones) interface
 //
 
 // Constructor.
@@ -917,8 +918,6 @@ static void qtractor_vst_scan_file ( const QString& sFilename )
 
 #include "pluginterfaces/gui/iplugview.h"
 
-#include <dlfcn.h>
-
 //-----------------------------------------------------------------------------
 
 using namespace Steinberg;
@@ -945,7 +944,7 @@ public:
 	//
 	tresult PLUGIN_API getName (Vst::String128 name) override
 	{
-		const QString str("qtractor_vst3_scan_host");
+		const QString str("qtractor_plugin_scan");
 		const int nsize = qMin(str.length(), 127);
 		::memcpy(name, str.utf16(), nsize * sizeof(Vst::TChar));
 		name[nsize] = 0;
@@ -1382,6 +1381,444 @@ static void qtractor_vst3_scan_file ( const QString& sFilename )
 #endif	// CONFIG_VST3
 
 
+#ifdef CONFIG_CLAP
+
+#include <clap/clap.h>
+
+//----------------------------------------------------------------------
+// class qtractor_clap_scan::Impl -- CLAP plugin interface impl.
+//
+
+class qtractor_clap_scan::Impl
+{
+public:
+
+	// Constructor.
+	Impl() : m_module(nullptr),
+		m_entry(nullptr), m_factory(nullptr), m_plugin(nullptr)
+	{
+		::memset(&m_host, 0, sizeof(m_host));
+
+		m_host.host_data = this;
+		m_host.clap_version = CLAP_VERSION;
+		m_host.name = "qtractor_plugin_scan";
+		m_host.version = CONFIG_BUILD_VERSION;
+		m_host.vendor = "rncbc.org";
+		m_host.url = "https://qtractor.org";
+		m_host.get_extension = qtractor_clap_scan::Impl::get_extension;
+		m_host.request_restart = qtractor_clap_scan::Impl::request_restart;
+		m_host.request_process = qtractor_clap_scan::Impl::request_process;
+		m_host.request_callback = qtractor_clap_scan::Impl::request_callback;
+
+		clear();
+	}
+
+	// destructor.
+	~Impl() { close_descriptor(); close(); }
+
+	static const void *get_extension(const clap_host *host, const char *ext_id)
+		{ return nullptr; }
+
+	static void request_restart (const clap_host *host) {}
+	static void request_process (const clap_host *host) {}
+	static void request_callback(const clap_host *host) {}
+
+	// File loader.
+	bool open ( const QString& sFilename )
+	{
+		close();
+
+		const QByteArray aFilename = sFilename.toUtf8();
+		m_module = ::dlopen(aFilename.constData(), RTLD_LOCAL | RTLD_LAZY);
+		if (!m_module)
+			return false;
+
+		m_entry = reinterpret_cast<const clap_plugin_entry *> (
+			::dlsym(m_module, "clap_entry"));
+		if (!m_entry)
+			return false;
+
+		m_entry->init(aFilename.constData());
+
+		m_factory = static_cast<const clap_plugin_factory *> (
+			m_entry->get_factory(CLAP_PLUGIN_FACTORY_ID));
+		if (!m_factory)
+			return false;
+
+		return true;
+	}
+
+	bool open_descriptor ( unsigned long iIndex )
+	{
+		if (!m_factory)
+			return false;
+
+		close_descriptor();
+
+		auto count = m_factory->get_plugin_count(m_factory);
+		if (iIndex >= count)
+			return false;
+
+		auto desc = m_factory->get_plugin_descriptor(m_factory, iIndex);
+		if (!desc) {
+			qDebug("qtractor_clap_scan::Impl[%p]::open_descriptor(%lu)"
+				" *** No plug-in descriptor.", this, iIndex);
+			return false;
+		}
+
+		if (!clap_version_is_compatible(desc->clap_version)) {
+			qDebug("qtractor_clap_scan::Impl[%p]::open_descriptor(%lu)"
+				" *** Incompatible CLAP version:"
+				" plug-in is %d.%d.%d, host is %d.%d.%d.", this, iIndex,
+				desc->clap_version.major,
+				desc->clap_version.minor,
+				desc->clap_version.revision,
+				CLAP_VERSION.major,
+				CLAP_VERSION.minor,
+				CLAP_VERSION.revision);
+			return false;
+		}
+
+		m_plugin = m_factory->create_plugin(m_factory, &m_host, desc->id);
+		if (!m_plugin) {
+			qDebug("qtractor_clap_scan::Impl[%p]::open_descriptor(%lu)"
+				" *** Could not create plug-in with id: %s.", this, iIndex, desc->id);
+			return false;
+		}
+
+		if (!m_plugin->init(m_plugin)) {
+			qDebug("qtractor_clap_scan::Impl[%p]::open_descriptor(%lu)"
+				" *** Could not initialize plug-in with id: %s.", this, iIndex, desc->id);
+			m_plugin->destroy(m_plugin);
+			m_plugin = nullptr;
+			return false;
+		}
+
+		m_sName = desc->name;
+		m_iUniqueID = qHash(desc->id);
+
+		const clap_plugin_audio_ports *audio_ports
+			= static_cast<const clap_plugin_audio_ports *> (
+				m_plugin->get_extension(m_plugin, CLAP_EXT_AUDIO_PORTS));
+		if (audio_ports && audio_ports->count && audio_ports->get) {
+			clap_audio_port_info info;
+			const uint32_t nins = audio_ports->count(m_plugin, true);
+			for (uint32_t i = 0; i < nins; ++i) {
+				::memset(&info, 0, sizeof(info));
+				if (audio_ports->get(m_plugin, i, true, &info)) {
+					if (info.flags & CLAP_AUDIO_PORT_IS_MAIN)
+						m_iAudioIns += info.channel_count;
+				}
+			}
+			const uint32_t nouts = audio_ports->count(m_plugin, false);
+			for (uint32_t i = 0; i < nouts; ++i) {
+				::memset(&info, 0, sizeof(info));
+				if (audio_ports->get(m_plugin, i, false, &info)) {
+					if (info.flags & CLAP_AUDIO_PORT_IS_MAIN)
+						m_iAudioOuts += info.channel_count;
+				}
+			}
+		}
+
+		const clap_plugin_note_ports *note_ports
+			= static_cast<const clap_plugin_note_ports *> (
+				m_plugin->get_extension(m_plugin, CLAP_EXT_NOTE_PORTS));
+		if (note_ports && note_ports->count && note_ports->get) {
+			clap_note_port_info info;
+			const uint32_t nins = note_ports->count(m_plugin, true);
+			for (uint32_t i = 0; i < nins; ++i) {
+				::memset(&info, 0, sizeof(info));
+				if (note_ports->get(m_plugin, i, true, &info)) {
+					if (info.supported_dialects & CLAP_NOTE_DIALECT_MIDI)
+						++m_iMidiIns;
+				}
+			}
+			const uint32_t nouts = note_ports->count(m_plugin, false);
+			for (uint32_t i = 0; i < nouts; ++i) {
+				::memset(&info, 0, sizeof(info));
+				if (note_ports->get(m_plugin, i, false, &info)) {
+					if (info.supported_dialects & CLAP_NOTE_DIALECT_MIDI)
+						++m_iMidiOuts;
+				}
+			}
+		}
+
+		const clap_plugin_params *params
+			= static_cast<const clap_plugin_params *> (
+				m_plugin->get_extension(m_plugin, CLAP_EXT_PARAMS));
+		if (params && params->count && params->get_info) {
+			clap_param_info info;
+			const uint32_t nparams = params->count(m_plugin);
+			for (uint32_t i = 0; i < nparams; ++i) {
+				::memset(&info, 0, sizeof(info));
+				if (params->get_info(m_plugin, i, &info)) {
+					if (info.flags & CLAP_PARAM_IS_READONLY)
+						++m_iControlOuts;
+					else
+						++m_iControlIns;
+				}
+			}
+		}
+
+		const clap_plugin_gui *gui
+			= static_cast<const clap_plugin_gui *> (
+				m_plugin->get_extension(m_plugin, CLAP_EXT_GUI));
+		if (gui && gui->is_api_supported && gui->create && gui->destroy) {
+			m_bEditor = (
+				gui->is_api_supported(m_plugin, CLAP_WINDOW_API_X11, false) ||
+				gui->is_api_supported(m_plugin, CLAP_WINDOW_API_X11, true));
+		}
+
+		const clap_plugin_state *state
+			= static_cast<const clap_plugin_state *> (
+				m_plugin->get_extension(m_plugin, CLAP_EXT_STATE));
+		m_bState = (state && state->save && state->load);
+
+		return true;
+	}
+
+	void close_descriptor ()
+	{
+		if (m_plugin) {
+			m_plugin->destroy(m_plugin);
+			m_plugin = nullptr;
+		}
+
+		clear();
+	}
+
+	void close ()
+	{
+		if (!m_module)
+			return;
+
+		m_factory = nullptr;
+
+		if (m_entry) {
+			m_entry->deinit();
+			m_entry = nullptr;
+		}
+
+		::dlclose(m_module);
+		m_module = nullptr;
+	}
+
+	bool isOpen () const
+		{ return (m_module && m_entry && m_factory); }
+
+	// Properties.
+	const QString& name() const
+		{ return m_sName; }
+
+	unsigned int uniqueID() const
+		{ return m_iUniqueID; }
+
+	int controlIns() const
+		{ return m_iControlIns; }
+	int controlOuts() const
+		{ return m_iControlOuts; }
+
+	int audioIns() const
+		{ return m_iAudioIns; }
+	int audioOuts() const
+		{ return m_iAudioOuts; }
+
+	int midiIns() const
+		{ return m_iMidiIns; }
+	int midiOuts() const
+		{ return m_iMidiOuts; }
+
+	bool hasEditor() const
+		{ return m_bEditor; }
+	bool hasState() const
+		{ return m_bState; }
+
+protected:
+
+	// Cleaner/wiper.
+	void clear ()
+	{
+		m_sName.clear();
+		m_iUniqueID  = 0;
+		m_iControlIns  = 0;
+		m_iControlOuts = 0;
+		m_iAudioIns  = 0;
+		m_iAudioOuts = 0;
+		m_iMidiIns   = 0;
+		m_iMidiOuts  = 0;
+		m_bEditor = false;
+		m_bState = false;
+	}
+
+private:
+
+	// Instance variables.
+	void *m_module;
+
+	const clap_plugin_entry *m_entry;
+	const clap_plugin_factory *m_factory;
+	const clap_plugin *m_plugin;
+
+	clap_host m_host;
+
+	QString       m_sName;
+	unsigned long m_iIndex;
+	unsigned int  m_iUniqueID;
+	int           m_iControlIns;
+	int           m_iControlOuts;
+	int           m_iAudioIns;
+	int           m_iAudioOuts;
+	int           m_iMidiIns;
+	int           m_iMidiOuts;
+	bool          m_bEditor;
+	bool          m_bState;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractor_clap_scan -- CLAP plugin (bare bones) interface
+//
+
+// Constructor.
+qtractor_clap_scan::qtractor_clap_scan (void) : m_pImpl(new Impl())
+{
+}
+
+
+// destructor.
+qtractor_clap_scan::~qtractor_clap_scan (void)
+{
+	close_descriptor();
+	close();
+
+	delete m_pImpl;
+}
+
+
+// File loader.
+bool qtractor_clap_scan::open ( const QString& sFilename )
+{
+	close();
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractor_clap_scan[%p]::open(\"%s\")", this, sFilename.toUtf8().constData());
+#endif
+
+	return m_pImpl->open(sFilename);
+}
+
+
+bool qtractor_clap_scan::open_descriptor ( unsigned long iIndex )
+{
+	close_descriptor();
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractor_clap_scan[%p]::open_descriptor( %lu)", this, iIndex);
+#endif
+
+	return m_pImpl->open_descriptor(iIndex);
+}
+
+
+// File unloader.
+void qtractor_clap_scan::close_descriptor (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractor_clap_scan[%p]::close_descriptor()", this);
+#endif
+
+	m_pImpl->close_descriptor();
+}
+
+
+void qtractor_clap_scan::close (void)
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractor_clap_scan[%p]::close()", this);
+#endif
+
+	m_pImpl->close();
+}
+
+
+// Properties.
+bool qtractor_clap_scan::isOpen (void) const
+	{ return m_pImpl->isOpen(); }
+
+const QString& qtractor_clap_scan::name (void) const
+	{ return m_pImpl->name(); }
+
+unsigned int qtractor_clap_scan::uniqueID (void) const
+	{ return m_pImpl->uniqueID(); }
+
+int qtractor_clap_scan::controlIns (void) const
+	{ return m_pImpl->controlIns(); }
+int qtractor_clap_scan::controlOuts (void) const
+	{ return m_pImpl->controlOuts(); }
+
+int qtractor_clap_scan::audioIns (void) const
+	{ return m_pImpl->audioIns(); }
+int qtractor_clap_scan::audioOuts (void) const
+	{ return m_pImpl->audioOuts(); }
+
+int qtractor_clap_scan::midiIns (void) const
+	{ return m_pImpl->midiIns(); }
+int qtractor_clap_scan::midiOuts (void) const
+	{ return m_pImpl->midiOuts(); }
+
+bool qtractor_clap_scan::hasEditor (void) const
+	{ return m_pImpl->hasEditor(); }
+bool qtractor_clap_scan::hasState (void) const
+	{ return m_pImpl->hasState(); }
+
+
+//-------------------------------------------------------------------------
+// qtractor_clap_scan_file - The main scan procedure.
+//
+
+static void qtractor_clap_scan_file ( const QString& sFilename )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_clap_scan_file(\"%s\")", sFilename.toUtf8().constData());
+#endif
+
+	qtractor_clap_scan plugin;
+
+	if (!plugin.open(sFilename))
+		return;
+
+	QTextStream sout(stdout);
+	unsigned long i = 0;
+	while (plugin.open_descriptor(i)) {
+		sout << "CLAP|";
+		sout << plugin.name() << '|';
+		sout << plugin.audioIns()   << ':' << plugin.audioOuts()   << '|';
+		sout << plugin.midiIns()    << ':' << plugin.midiOuts()    << '|';
+		sout << plugin.controlIns() << ':' << plugin.controlOuts() << '|';
+		QStringList flags;
+		if (plugin.hasEditor())
+			flags.append("GUI");
+		if (plugin.hasState())
+			flags.append("EXT");
+		flags.append("RT");
+		sout << flags.join(",") << '|';
+		sout << sFilename << '|' << i << '|';
+		sout << "0x" << QString::number(plugin.uniqueID(), 16) << '\n';
+		plugin.close_descriptor();
+		++i;
+	}
+
+	plugin.close();
+
+	// Must always give an answer, even if it's a wrong one...
+	if (i == 0)
+		sout << "qtractor_clap_scan: " << sFilename << ": plugin file error.\n";
+}
+
+
+#endif	// CONFIG_CLAP
+
+
 //-------------------------------------------------------------------------
 // main - The main program trunk.
 //
@@ -1419,6 +1856,11 @@ int main ( int argc, char **argv )
 		#ifdef CONFIG_VST3
 			if (sHint == "VST3")
 				qtractor_vst3_scan_file(sFilename);
+			else
+		#endif
+		#ifdef CONFIG_CLAP
+			if (sHint == "CLAP")
+				qtractor_clap_scan_file(sFilename);
 			else
 		#endif
 			break;

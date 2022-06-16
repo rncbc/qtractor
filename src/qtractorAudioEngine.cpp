@@ -44,6 +44,10 @@
 #include "qtractorVst3Plugin.h"
 #endif
 
+#ifdef CONFIG_CLAP
+#include "qtractorClapPlugin.h"
+#endif
+
 #ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_TIME
 #include "qtractorLv2Plugin.h"
@@ -1011,6 +1015,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 
 #ifdef CONFIG_VST3
 	qtractorVst3Plugin::updateTime(this);
+#endif
+#ifdef CONFIG_CLAP
+	qtractorClapPlugin::updateTime(this);
 #endif
 #ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_TIME

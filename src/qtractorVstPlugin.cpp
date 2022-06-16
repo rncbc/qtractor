@@ -1352,6 +1352,8 @@ bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
 // All parameters update method.
 void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 {
+	int nupdate = 0;
+
 	// Make sure all cached parameter values are in sync
 	// with plugin parameter values; update cache otherwise.
 	AEffect *pVstEffect = vst_effect(0);
@@ -1365,10 +1367,13 @@ void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 				= pVstEffect->getParameter(pVstEffect, pParam->index());
 			if (pParam->value() != fValue) {
 				pParam->setValue(fValue, bUpdate);
-				updateFormDirtyCount();
+				++nupdate;
 			}
 		}
 	}
+
+	if (nupdate > 0)
+		updateFormDirtyCount();
 }
 
 
