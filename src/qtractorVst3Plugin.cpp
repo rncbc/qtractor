@@ -172,25 +172,22 @@ private:
 	struct EventHandlerItem
 	{
 		EventHandlerItem(int fd)
-			: r(nullptr), w(nullptr), e(nullptr) { reset(fd); }
+			: r_notifier(nullptr), w_notifier(nullptr) { reset(fd); }
 
 		~EventHandlerItem() { reset(0); };
 
 		void reset(int fd)
 		{
-			if (r) { delete r; r = nullptr; }
-			if (w) { delete w; w = nullptr; }
-			if (e) { delete e; e = nullptr; }
+			if (r_notifier) { delete r_notifier; r_notifier = nullptr; }
+			if (w_notifier) { delete w_notifier; w_notifier = nullptr; }
 			if (fd) {
-				r = new QSocketNotifier(fd, QSocketNotifier::Read);
-				w = new QSocketNotifier(fd, QSocketNotifier::Write);
-				e = new QSocketNotifier(fd, QSocketNotifier::Exception);
+				r_notifier = new QSocketNotifier(fd, QSocketNotifier::Read);
+				w_notifier = new QSocketNotifier(fd, QSocketNotifier::Write);
 			}
 		}
 
-		QSocketNotifier *r;
-		QSocketNotifier *w;
-		QSocketNotifier *e;
+		QSocketNotifier *r_notifier;
+		QSocketNotifier *w_notifier;
 	};
 
 	QHash<IEventHandler *, EventHandlerItem *> m_eventHandlers;
@@ -667,20 +664,14 @@ tresult qtractorVst3PluginHost::registerEventHandler (
 		m_eventHandlers.insert(handler, event_handler);
 	}
 
-	if (event_handler->r) {
-		QObject::connect(event_handler->r,
+	if (event_handler->r_notifier) {
+		QObject::connect(event_handler->r_notifier,
 			&QSocketNotifier::activated, [this, handler, fd] {
 			processEventHandler(handler, fd); });
 	}
 
-	if (event_handler->w) {
-		QObject::connect(event_handler->w,
-			&QSocketNotifier::activated, [this, handler, fd] {
-			processEventHandler(handler, fd); });
-	}
-
-	if (event_handler->e) {
-		QObject::connect(event_handler->e,
+	if (event_handler->w_notifier) {
+		QObject::connect(event_handler->w_notifier,
 			&QSocketNotifier::activated, [this, handler, fd] {
 			processEventHandler(handler, fd); });
 	}
