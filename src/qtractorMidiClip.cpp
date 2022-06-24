@@ -221,7 +221,12 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 // Destructor.
 qtractorMidiClip::~qtractorMidiClip (void)
 {
-//	close();
+	// Sure close MIDI clip editor if any...
+	if (m_pMidiEditorForm) {
+		m_pMidiEditorForm->close();
+		delete m_pMidiEditorForm;
+		m_pMidiEditorForm = nullptr;
+	}
 
 	closeMidiFile();
 }
