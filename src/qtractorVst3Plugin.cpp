@@ -54,8 +54,6 @@
 #include <QTimer>
 #include <QTimerEvent>
 
-#include <QSocketNotifier>
-
 #include <QResizeEvent>
 #include <QShowEvent>
 #include <QCloseEvent>
@@ -64,6 +62,19 @@
 #include <QMap>
 
 #include <QRegularExpression>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#define CONFIG_VST3_XCB
+#endif
+
+#ifdef CONFIG_VST3_XCB
+#include <xcb/xcb.h>
+#endif
+
+#if 0//QTRACTOR_VST3_EDITOR_TOOL
+#include "qtractorMainForm.h"
+#include "qtractorOptions.h"
+#endif
 
 
 using namespace Steinberg;
@@ -121,7 +132,12 @@ public:
 	// Executive methods.
 	//
 	void processTimers();
-	void processEventHandler(IEventHandler *handler, int fd);
+	void processEventHandlers();
+
+#ifdef CONFIG_VST3_XCB
+	void openXcbConnection();
+	void closeXcbConnection();
+#endif
 
 	// Common host time-keeper context accessors.
 	Vst::ProcessContext *processContext();
@@ -168,29 +184,12 @@ private:
 	};
 
 	QHash<ITimerHandler *, TimerItem *> m_timers;
+	QMultiHash<IEventHandler *, int> m_fileDescriptors;
 
-	struct EventHandlerItem
-	{
-		EventHandlerItem(int fd)
-			: r_notifier(nullptr), w_notifier(nullptr) { reset(fd); }
-
-		~EventHandlerItem() { reset(0); };
-
-		void reset(int fd)
-		{
-			if (r_notifier) { delete r_notifier; r_notifier = nullptr; }
-			if (w_notifier) { delete w_notifier; w_notifier = nullptr; }
-			if (fd) {
-				r_notifier = new QSocketNotifier(fd, QSocketNotifier::Read);
-				w_notifier = new QSocketNotifier(fd, QSocketNotifier::Write);
-			}
-		}
-
-		QSocketNotifier *r_notifier;
-		QSocketNotifier *w_notifier;
-	};
-
-	QHash<IEventHandler *, EventHandlerItem *> m_eventHandlers;
+#ifdef CONFIG_VST3_XCB
+	xcb_connection_t   *m_pXcbConnection;
+	int                 m_iXcbFileDescriptor;
+#endif
 
 	Vst::ProcessContext m_processContext;
 	unsigned int        m_processRefCount;
@@ -535,8 +534,10 @@ protected:
 
 	void timerEvent (QTimerEvent *pTimerEvent)
 	{
-		if (pTimerEvent->timerId() == QTimer::timerId())
+		if (pTimerEvent->timerId() == QTimer::timerId()) {
 			m_pHost->processTimers();
+			m_pHost->processEventHandlers();
+		}
 	}
 
 private:
@@ -560,6 +561,11 @@ qtractorVst3PluginHost::qtractorVst3PluginHost (void)
 	m_pTimer = new Timer(this);
 
 	m_timerRefCount = 0;
+
+#ifdef CONFIG_VST3_XCB
+	m_pXcbConnection = nullptr;
+	m_iXcbFileDescriptor = 0;
+#endif
 
 	m_processRefCount = 0;
 }
@@ -656,26 +662,7 @@ tresult qtractorVst3PluginHost::registerEventHandler (
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::registerEventHandler(%p, %d)", handler, int(fd));
 #endif
-	EventHandlerItem *event_handler = m_eventHandlers.value(handler, nullptr);
-	if (event_handler) {
-		event_handler->reset(fd);
-	} else {
-		event_handler = new EventHandlerItem(fd);
-		m_eventHandlers.insert(handler, event_handler);
-	}
-
-	if (event_handler->r_notifier) {
-		QObject::connect(event_handler->r_notifier,
-			&QSocketNotifier::activated, [this, handler, fd] {
-			processEventHandler(handler, fd); });
-	}
-
-	if (event_handler->w_notifier) {
-		QObject::connect(event_handler->w_notifier,
-			&QSocketNotifier::activated, [this, handler, fd] {
-			processEventHandler(handler, fd); });
-	}
-
+	m_fileDescriptors.insert(handler, int(fd));
 	return kResultOk;
 }
 
@@ -685,10 +672,7 @@ tresult qtractorVst3PluginHost::unregisterEventHandler ( IEventHandler *handler 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::unregisterEventHandler(%p)", handler);
 #endif
-	EventHandlerItem *event_handler = m_eventHandlers.value(handler, nullptr);
-	if (event_handler)
-		delete event_handler;
-	m_eventHandlers.remove(handler);
+	m_fileDescriptors.remove(handler);
 	return kResultOk;
 }
 
@@ -739,11 +723,85 @@ void qtractorVst3PluginHost::processTimers (void)
 }
 
 
-void qtractorVst3PluginHost::processEventHandler (
-	IEventHandler *handler, int fd )
+void qtractorVst3PluginHost::processEventHandlers (void)
 {
-	handler->onFDIsSet(fd);
+	int nfds = 0;
+
+	fd_set rfds;
+	fd_set wfds;
+	fd_set efds;
+
+	FD_ZERO(&rfds);
+	FD_ZERO(&wfds);
+	FD_ZERO(&efds);
+
+#ifdef CONFIG_VST3_XCB
+	if (m_iXcbFileDescriptor) {
+		FD_SET(m_iXcbFileDescriptor, &rfds);
+		FD_SET(m_iXcbFileDescriptor, &wfds);
+		FD_SET(m_iXcbFileDescriptor, &efds);
+		nfds = qMax(nfds, m_iXcbFileDescriptor);
+	}
+#endif
+
+	QMultiHash<IEventHandler *, int>::ConstIterator iter
+		= m_fileDescriptors.constBegin();
+	for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
+		foreach (int fd, m_fileDescriptors.values(iter.key())) {
+			FD_SET(fd, &rfds);
+			FD_SET(fd, &wfds);
+			FD_SET(fd, &efds);
+			nfds = qMax(nfds, fd);
+		}
+	}
+
+	timeval timeout;
+	timeout.tv_sec  = 0;
+	timeout.tv_usec = 1000 * timerInterval();
+
+	const int result = ::select(nfds, &rfds, &wfds, nullptr, &timeout);
+	if (result > 0)	{
+		iter = m_fileDescriptors.constBegin();
+		for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
+			foreach (int fd, m_fileDescriptors.values(iter.key())) {
+				if (FD_ISSET(fd, &rfds) ||
+					FD_ISSET(fd, &wfds) ||
+					FD_ISSET(fd, &efds)) {
+					IEventHandler *handler = iter.key();
+					handler->onFDIsSet(fd);
+				}
+			}
+		}
+	}
 }
+
+
+#ifdef CONFIG_VST3_XCB
+
+void qtractorVst3PluginHost::openXcbConnection (void)
+{
+	if (m_pXcbConnection == nullptr) {
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3PluginHost::openXcbConnection()");
+	#endif
+		m_pXcbConnection = ::xcb_connect(nullptr, nullptr);
+		m_iXcbFileDescriptor = ::xcb_get_file_descriptor(m_pXcbConnection);
+	}
+}
+
+void qtractorVst3PluginHost::closeXcbConnection (void)
+{
+	if (m_pXcbConnection) {
+		::xcb_disconnect(m_pXcbConnection);
+		m_pXcbConnection = nullptr;
+		m_iXcbFileDescriptor = 0;
+	#ifdef CONFIG_DEBUG
+		qDebug("qtractorVst3PluginHost::closeXcbConnection()");
+	#endif
+	}
+}
+
+#endif	// CONFIG_VST3_XCB
 
 
 // Common host time-keeper context accessor.
@@ -807,14 +865,17 @@ void qtractorVst3PluginHost::updateProcessContext (
 // Cleanup.
 void qtractorVst3PluginHost::clear (void)
 {
+#ifdef CONFIG_VST3_XCB
+	closeXcbConnection();
+#endif
+
 	m_timerRefCount = 0;
 	m_processRefCount = 0;
 
 	qDeleteAll(m_timers);
 	m_timers.clear();
 
-	qDeleteAll(m_eventHandlers);
-	m_eventHandlers.clear();
+	m_fileDescriptors.clear();
 
 	::memset(&m_processContext, 0, sizeof(Vst::ProcessContext));
 }
@@ -834,8 +895,8 @@ public:
 
 	// Constructor.
 	Impl (qtractorPluginFile *pFile) : m_pFile(pFile),
-			m_component(nullptr), m_controller(nullptr),
-			m_unitInfos(nullptr), m_iUniqueID(0) {}
+		m_component(nullptr), m_controller(nullptr),
+		m_unitInfos(nullptr), m_iUniqueID(0) {}
 
 	// Destructor.
 	~Impl () { close(); }
@@ -2295,6 +2356,10 @@ bool qtractorVst3Plugin::Impl::openEditor (void)
 	if (pType == nullptr)
 		return false;
 
+#ifdef CONFIG_VST3_XCB
+	g_hostContext.openXcbConnection();
+#endif
+
 	g_hostContext.startTimer(200);
 
 	Vst::IEditController *controller = pType->impl()->controller();
@@ -2310,6 +2375,10 @@ void qtractorVst3Plugin::Impl::closeEditor (void)
 	m_plugView = nullptr;
 
 	g_hostContext.stopTimer();
+
+#ifdef CONFIG_VST3_XCB
+	g_hostContext.closeXcbConnection();
+#endif
 }
 
 
@@ -2338,7 +2407,8 @@ tresult qtractorVst3Plugin::Impl::notify ( Vst::IMessage *message )
 }
 
 
-// Audio processor stuff (TODO)...
+// Audio processor stuff...
+//
 bool qtractorVst3Plugin::Impl::process_reset (
 	qtractorAudioEngine *pAudioEngine )
 {
@@ -3090,6 +3160,8 @@ void qtractorVst3Plugin::updateParam (
 // All parameters update method.
 void qtractorVst3Plugin::updateParamValues ( bool bUpdate )
 {
+	int nupdate = 0;
+
 	// Make sure all cached parameter values are in sync
 	// with plugin parameter values; update cache otherwise.
 	const qtractorPlugin::Params& params = qtractorPlugin::params();
@@ -3102,10 +3174,13 @@ void qtractorVst3Plugin::updateParamValues ( bool bUpdate )
 			const float fValue = float(m_pImpl->getParameter(id));
 			if (pParam->value() != fValue) {
 				pParam->setValue(fValue, bUpdate);
-				updateFormDirtyCount();
+				++nupdate;
 			}
 		}
 	}
+
+	if (nupdate > 0)
+		updateFormDirtyCount();
 }
 
 
@@ -3151,13 +3226,15 @@ void qtractorVst3Plugin::freezeConfigs (void)
 	if (!type()->isConfigure())
 		return;
 
+	clearConfigs();
+
 	QByteArray data;
 
 	if (!m_pImpl->getState(data))
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::freezeConfigs() chunk.size=%d", this, int(data.size()));
+	qDebug("qtractorVst3Plugin[%p]::freezeConfigs() data.size=%d", this, int(data.size()));
 #endif
 
 	// Set special plugin configuration item (base64 encoded)...
@@ -3224,7 +3301,20 @@ void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 		return;
 	}
 
-	m_pEditorWidget = new EditorWidget(pParent, Qt::Window);
+	// What style do we create tool childs?
+	Qt::WindowFlags wflags = Qt::Window;
+#if 0//QTRACTOR_VST3_EDITOR_TOOL
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bKeepToolsOnTop) {
+		wflags |= Qt::Tool;
+	//	wflags |= Qt::WindowStaysOnTopHint;
+		// Make sure it has a parent...
+		if (pParent == nullptr)
+			pParent = qtractorMainForm::getInstance();
+	}
+#endif
+
+	m_pEditorWidget = new EditorWidget(pParent, wflags);
 	m_pEditorWidget->setAttribute(Qt::WA_QuitOnClose, false);
 	m_pEditorWidget->setWindowTitle(pType->name());
 	m_pEditorWidget->setPlugin(this);
@@ -3431,7 +3521,7 @@ void qtractorVst3Plugin::process (
 						pMidiBuffer->push(&ev, event.sampleOffset);
 				}
 			}
-			pMidiManager->vst3_buffer_swap();
+			pMidiManager->swapOutputBuffers();
 		} else {
 			pMidiManager->resetOutputBuffers();
 		}

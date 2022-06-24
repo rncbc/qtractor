@@ -125,24 +125,6 @@ static const LV2_Feature g_lv2_uri_map_feature =
 static const LV2_Feature g_lv2_state_feature =
 	{ LV2_STATE_URI, nullptr };
 
-#if 0//CONFIG_LV2_STATE_LEGACY
-static LV2_State_Status qtractor_lv2_state_store ( LV2_State_Handle handle,
-	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
-{
-	qtractorLv2Plugin *pLv2Plugin
-		= static_cast<qtractorLv2Plugin *> (handle);
-	if (pLv2Plugin == nullptr)
-		return LV2_STATE_ERR_UNKNOWN;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_state_store(%p, %d, %d, %d, %d)", pLv2Plugin,
-		int(key), int(size), int(type), int(flags));
-#endif
-
-	return pLv2Plugin->lv2_state_store(key, value, size, type, flags);
-}
-#endif
-
 static const void *qtractor_lv2_state_retrieve ( LV2_State_Handle handle,
 	uint32_t key, size_t *size, uint32_t *type, uint32_t *flags )
 {
@@ -4731,21 +4713,13 @@ void qtractorLv2Plugin::freezeConfigs (void)
 	if (!type()->isConfigure())
 		return;
 
+	clearConfigs();
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::freezeConfigs()", this);
 #endif
 
 #ifdef CONFIG_LV2_STATE
-
-#if 0//CONFIG_LV2_STATE_LEGACY
-	const LV2_State_Interface *state = lv2_state_interface(0);
-	if (state) {
-		LV2_Handle handle = lv2_handle(0);
-		if (handle)
-			(*state->save)(handle, qtractor_lv2_state_store, this,
-				LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
-	}
-#endif
 
 	const QString& s = lv2_state_save();
 	if (!s.isEmpty()) {
@@ -4755,12 +4729,8 @@ void qtractorLv2Plugin::freezeConfigs (void)
 		const uint32_t  size = data.size();
 		const LV2_URID  type = lv2_urid_map(QTRACTOR_LV2_STATE_TYPE);
 		const uint32_t flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;
-	#if 0//CONFIG_LV2_STATE_LEGACY
-		lv2_state_store(key, value, size, type, flags);
-	#else
 		if (lv2_state_store(key, value, size, type, flags) == LV2_STATE_SUCCESS)
 			qtractorPlugin::clearValues();
-	#endif
 	}
 
 #endif	// CONFIG_LV2_STATE

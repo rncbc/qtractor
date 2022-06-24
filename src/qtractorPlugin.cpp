@@ -765,8 +765,8 @@ bool qtractorPlugin::loadPresetFile ( const QString& sFilename )
 // Save plugin preset to xml file.
 bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 {
-	freezeValues();
 	freezeConfigs();
+	freezeValues();
 
 	QFileInfo fi(sFilename);
 
@@ -1469,8 +1469,8 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 bool qtractorPlugin::savePlugin (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
-	freezeValues();
 	freezeConfigs();
+	freezeValues();
 
 	qtractorPluginType *pType = type();
 	pElement->setAttribute("type",
@@ -1855,8 +1855,8 @@ bool qtractorPluginList::resetChannels (
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
 		if (bReset && iChannels > 0) {
-			pPlugin->freezeValues();
 			pPlugin->freezeConfigs();
+			pPlugin->freezeValues();
 		}
 		pPlugin->setChannels(iChannels);
 		if (bReset && iChannels > 0) {
@@ -2057,8 +2057,8 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		return nullptr;
 
 	// Clone the plugin instance...
-	pPlugin->freezeValues();
 	pPlugin->freezeConfigs();
+	pPlugin->freezeValues();
 
 #if 0
 	// MIDI bank program whether necessary...

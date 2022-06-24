@@ -1073,6 +1073,8 @@ void qtractorVstPlugin::freezeConfigs (void)
 	if (!type()->isConfigure())
 		return;
 
+	clearConfigs();
+
 	AEffect *pVstEffect = vst_effect(0);
 	if (pVstEffect == nullptr)
 		return;

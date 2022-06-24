@@ -1,7 +1,7 @@
 // qtractorMidiManager.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -258,11 +258,6 @@ public:
 	void vst_events_swap();
 #endif
 
-#ifdef CONFIG_VST3
-	// Swap VST3 event buffers...
-	void vst3_buffer_swap();
-#endif
-
 #ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_EVENT
 	// LV2 event buffer accessors...
@@ -284,6 +279,12 @@ public:
 	// Resize LV2 atom buffers if necessary.
 	void lv2_atom_buffer_resize(unsigned int iMinBufferSize);
 #endif
+#endif
+
+#ifdef CONFIG_MIDI_PARSER
+	// Parse MIDI output and swap event buffers.
+	// (esp. used by VST3 and CLAP)
+	void swapOutputBuffers();
 #endif
 
 	// Audio output bus mode accessors.

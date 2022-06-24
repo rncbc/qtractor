@@ -445,7 +445,7 @@ if (CONFIG_VST3 AND NOT CONFIG_VST3SDK)
   endif ()
 endif ()
 
-if (CONFIG_LV2_UI_X11)
+if (CONFIG_VST3 OR CONFIG_LV2_UI_X11)
   pkg_check_modules (XCB xcb)
   if (NOT XCB_FOUND)
     message (WARNING "*** XCB library not found.")

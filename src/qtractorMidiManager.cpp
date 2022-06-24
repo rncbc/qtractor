@@ -1,7 +1,7 @@
 // qtractorMidiManager.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1115,13 +1115,12 @@ void qtractorMidiManager::vst_events_swap (void)
 #endif	// CONFIG_VST
 
 
-#ifdef CONFIG_VST3
-
-// Swap VST3 event buffers...
-void qtractorMidiManager::vst3_buffer_swap (void)
-{
 #ifdef CONFIG_MIDI_PARSER
 
+// Parse MIDI output and swap event buffers.
+// (esp. used by VST3 and CLAP)
+void qtractorMidiManager::swapOutputBuffers (void)
+{
 	if (m_pMidiParser == nullptr) {
 		swapEventBuffers();
 		return;
@@ -1189,12 +1188,10 @@ void qtractorMidiManager::vst3_buffer_swap (void)
 	pVstEvents->numEvents = iMidiEvents;
 #endif
 
-#endif	// CONFIG_MIDI_PARSER
-
 	swapEventBuffers();
 }
 
-#endif	// CONFIG_VST3
+#endif	// CONFIG_MIDI_PARSER
 
 
 #ifdef CONFIG_LV2
