@@ -57,7 +57,7 @@ Audio:	%1 Kanäle, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1571"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1573"/>
         <source>All files (*.*)</source>
         <translation>Alle Dateien (*.*)</translation>
     </message>
@@ -313,7 +313,7 @@ Ende:	%3	Länge:	%4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiManager.cpp" line="1601"/>
+        <location filename="../qtractorMidiManager.cpp" line="1598"/>
         <source>%1 - Bank %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -781,19 +781,19 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>Produkt: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1273"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1334"/>
         <location filename="../qtractorVstPlugin.cpp" line="662"/>
         <source>Vendor: </source>
         <translation>Anbieter: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1246"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1307"/>
         <location filename="../qtractorVstPlugin.cpp" line="670"/>
         <source>Version: </source>
         <translation>Version: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1568"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1570"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -803,74 +803,74 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>Copyright: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2143"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2125"/>
         <source>Project: </source>
         <translation>Projekt: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3350"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3332"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3362"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3344"/>
         <source>External</source>
         <translation>Extern</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3365"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3347"/>
         <source>X11</source>
         <translation>X11</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3368"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3350"/>
         <source>X11 (native)</source>
         <translation>X11 (nativ)</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3371"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3353"/>
         <source>Gtk2</source>
         <translation>Gtk2</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3374"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3356"/>
         <source>Gtk2 (native)</source>
         <translation>Gtk2 (nativ)</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3378"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3360"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3383"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3365"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3389"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3371"/>
         <source>Other</source>
         <translation>Andere</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3397"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3379"/>
         <source>Don&apos;t ask this again</source>
         <translation>Nicht mehr nachfragen</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3747"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3729"/>
         <source>plugin parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4170"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4152"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Datei öffnen</translation>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2151"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2133"/>
         <source>Author: </source>
         <translation>Autor: </translation>
     </message>
@@ -880,17 +880,17 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1240"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1301"/>
         <source>Name: </source>
         <translation>Name: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1260"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1321"/>
         <source>Category: </source>
         <translation>Kategorie: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1267"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1328"/>
         <source>Categories: </source>
         <translation>Kategorien: </translation>
     </message>
