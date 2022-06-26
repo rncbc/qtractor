@@ -170,9 +170,9 @@ private:
 
 	unsigned int m_timerRefCount;
 
-	struct TimerItem
+	struct TimerHandlerItem
 	{
-		TimerItem(ITimerHandler *h, TimerInterval i)
+		TimerHandlerItem(ITimerHandler *h, TimerInterval i)
 			: handler(h), interval(i), counter(0) {}
 
 		void reset(TimerInterval i)
@@ -183,12 +183,14 @@ private:
 		TimerInterval  counter;
 	};
 
-	QHash<ITimerHandler *, TimerItem *> m_timers;
-	QMultiHash<IEventHandler *, int> m_fileDescriptors;
+	QHash<ITimerHandler *, TimerHandlerItem *> m_timerHandlers;
+	QList<TimerHandlerItem *> m_timerHandlerItems;
+
+	QMultiHash<IEventHandler *, int> m_eventHandlers;
 
 #ifdef CONFIG_VST3_XCB
-	xcb_connection_t   *m_pXcbConnection;
-	int                 m_iXcbFileDescriptor;
+	xcb_connection_t *m_pXcbConnection;
+	int               m_iXcbFileDescriptor;
 #endif
 
 	Vst::ProcessContext m_processContext;
@@ -662,7 +664,7 @@ tresult qtractorVst3PluginHost::registerEventHandler (
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::registerEventHandler(%p, %d)", handler, int(fd));
 #endif
-	m_fileDescriptors.insert(handler, int(fd));
+	m_eventHandlers.insert(handler, int(fd));
 	return kResultOk;
 }
 
@@ -672,7 +674,7 @@ tresult qtractorVst3PluginHost::unregisterEventHandler ( IEventHandler *handler 
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::unregisterEventHandler(%p)", handler);
 #endif
-	m_fileDescriptors.remove(handler);
+	m_eventHandlers.remove(handler);
 	return kResultOk;
 }
 
@@ -683,12 +685,13 @@ tresult qtractorVst3PluginHost::registerTimer (
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::registerTimer(%p, %u)", handler, uint(msecs));
 #endif
-	TimerItem *timer = m_timers.value(handler, nullptr);
-	if (timer)
-		timer->reset(msecs);
-	else
-		timer = new TimerItem(handler, msecs);
-	m_timers.insert(handler, timer);
+	TimerHandlerItem *timer_handler = m_timerHandlers.value(handler, nullptr);
+	if (timer_handler) {
+		timer_handler->reset(msecs);
+	} else {
+		timer_handler = new TimerHandlerItem(handler, msecs);
+		m_timerHandlers.insert(handler, timer_handler);
+	}
 	m_pTimer->start(int(msecs));
 	return kResultOk;
 }
@@ -699,11 +702,12 @@ tresult qtractorVst3PluginHost::unregisterTimer ( ITimerHandler *handler )
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorVst3PluginHost::unregisterTimer(%p)", handler);
 #endif
-	TimerItem *timer = m_timers.value(handler, nullptr);
-	if (timer)
-		delete timer;
-	m_timers.remove(handler);
-	if (m_timers.isEmpty())
+	TimerHandlerItem *timer_handler = m_timerHandlers.value(handler, nullptr);
+	if (timer_handler) {
+		m_timerHandlers.remove(handler);
+		m_timerHandlerItems.append(timer_handler);
+	}
+	if (m_timerHandlers.isEmpty())
 		m_pTimer->stop();
 	return kResultOk;
 }
@@ -713,11 +717,11 @@ tresult qtractorVst3PluginHost::unregisterTimer ( ITimerHandler *handler )
 //
 void qtractorVst3PluginHost::processTimers (void)
 {
-	foreach (TimerItem *timer, m_timers) {
-		timer->counter += timerInterval();
-		if (timer->counter >= timer->interval) {
-			timer->handler->onTimer();
-			timer->counter = 0;
+	foreach (TimerHandlerItem *timer_handler, m_timerHandlers) {
+		timer_handler->counter += timerInterval();
+		if (timer_handler->counter >= timer_handler->interval) {
+			timer_handler->handler->onTimer();
+			timer_handler->counter = 0;
 		}
 	}
 }
@@ -745,9 +749,9 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 #endif
 
 	QMultiHash<IEventHandler *, int>::ConstIterator iter
-		= m_fileDescriptors.constBegin();
-	for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
-		foreach (int fd, m_fileDescriptors.values(iter.key())) {
+		= m_eventHandlers.constBegin();
+	for ( ; iter != m_eventHandlers.constEnd(); ++iter) {
+		foreach (int fd, m_eventHandlers.values(iter.key())) {
 			FD_SET(fd, &rfds);
 			FD_SET(fd, &wfds);
 			FD_SET(fd, &efds);
@@ -761,9 +765,9 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 
 	const int result = ::select(nfds, &rfds, &wfds, nullptr, &timeout);
 	if (result > 0)	{
-		iter = m_fileDescriptors.constBegin();
-		for ( ; iter != m_fileDescriptors.constEnd(); ++iter) {
-			foreach (int fd, m_fileDescriptors.values(iter.key())) {
+		iter = m_eventHandlers.constBegin();
+		for ( ; iter != m_eventHandlers.constEnd(); ++iter) {
+			foreach (int fd, m_eventHandlers.values(iter.key())) {
 				if (FD_ISSET(fd, &rfds) ||
 					FD_ISSET(fd, &wfds) ||
 					FD_ISSET(fd, &efds)) {
@@ -872,10 +876,11 @@ void qtractorVst3PluginHost::clear (void)
 	m_timerRefCount = 0;
 	m_processRefCount = 0;
 
-	qDeleteAll(m_timers);
-	m_timers.clear();
+	qDeleteAll(m_timerHandlerItems);
+	m_timerHandlerItems.clear();
+	m_timerHandlers.clear();
 
-	m_fileDescriptors.clear();
+	m_eventHandlers.clear();
 
 	::memset(&m_processContext, 0, sizeof(Vst::ProcessContext));
 }
