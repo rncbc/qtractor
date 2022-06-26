@@ -5916,6 +5916,9 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_VST3
 	list << tr("VST3 Plug-in support disabled.");
 #endif
+#ifndef CONFIG_CLAP
+	list << tr("CLAP Plug-in support disabled.");
+#endif
 #ifndef CONFIG_LV2
 	list << tr("LV2 Plug-in support disabled.");
 #else
