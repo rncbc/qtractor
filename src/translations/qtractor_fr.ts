@@ -791,19 +791,19 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="570"/>
         <source>Manual: </source>
-        <translation type="unfinished"></translation>
+        <translation>Manuel : </translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="576"/>
         <source>Support: </source>
-        <translation type="unfinished"></translation>
+        <translation>Support : </translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="541"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1312"/>
         <location filename="../qtractorVstPlugin.cpp" line="670"/>
         <source>Version: </source>
-        <translation>Version :</translation>
+        <translation>Version : </translation>
     </message>
     <message>
         <location filename="../qtractorVstPlugin.cpp" line="1575"/>
@@ -6064,7 +6064,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5920"/>
         <source>CLAP Plug-in support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le support des greffons CLAP est désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5923"/>
