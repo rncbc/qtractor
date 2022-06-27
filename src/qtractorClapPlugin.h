@@ -154,20 +154,6 @@ public:
 	// Plugin current latency (in frames);
 	unsigned long latency() const;
 
-	// Program (patch) descriptor.
-	struct Program
-	{
-		int     bank;
-		int     prog;
-		QString name;
-	};
-
-	// Provisional program/patch accessor.
-	bool getProgram(int iIndex, Program& program) const;
-
-	// Specific MIDI instrument selector.
-	void selectProgram(int iBank, int iProg);
-
 	// Plugin preset i/o (configuration from/to state files).
 	bool loadPresetFile(const QString& sFilename);
 	bool savePresetFile(const QString& sFilename);

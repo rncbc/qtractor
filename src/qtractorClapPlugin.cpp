@@ -810,13 +810,6 @@ public:
 
 	EventList& params_out () { return m_params_out; }
 
-	// Program names list accessor.
-	const QList<QString>& programs () const
-		{ return m_programs; }
-
-	// Program-change selector.
-	void selectProgram (int iBank, int iProg);
-
 	// Plugin preset/state snapshot accessors.
 	bool setState (const QByteArray& data);
 	bool getState (QByteArray& data);
@@ -845,9 +838,6 @@ protected:
 
 	// Plugin module initializer.
 	void initialize ();
-
-	// Cleanup.
-	void clear ();
 
 	// Host extensions interface.
 	//
@@ -1048,9 +1038,6 @@ private:
 
 	// Process context.
 	clap_process m_process;
-
-	// Program name list.
-	QList<QString> m_programs;
 
 	// Working state stream buffer.
 	QByteArray m_state_data;
@@ -1340,16 +1327,12 @@ qtractorClapPlugin::Impl::~Impl (void)
 
 	m_gui = nullptr;
 	m_state = nullptr;
-
-	clear();
 }
 
 
 // Plugin module initializer.
 void qtractorClapPlugin::Impl::initialize (void)
 {
-	clear();
-
 	qtractorClapPluginType *pType
 		= static_cast<qtractorClapPluginType *> (m_pPlugin->type());
 	if (pType == nullptr)
@@ -1704,24 +1687,6 @@ QString qtractorClapPlugin::Impl::getParameterText (
 }
 
 
-// Program-change selector.
-void qtractorClapPlugin::Impl::selectProgram ( int iBank, int iProg )
-{
-	if (iBank < 0 || iProg < 0)
-		return;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractorClapPlugin::Impl[%p]::selectProgram(%d, %d)", this, iBank, iProg);
-#endif
-
-	int iIndex = 0;
-	if (iBank >= 0 && iProg >= 0)
-		iIndex = (iBank << 7) + iProg;
-
-	// TODO: ?...
-}
-
-
 // Plugin preset/state snapshot accessors.
 bool qtractorClapPlugin::Impl::setState ( const QByteArray& data )
 {
@@ -1820,14 +1785,6 @@ void qtractorClapPlugin::Impl::plugin_params_flush (void)
 		process_params_out();
 		m_events_out.clear();
 	}
-}
-
-
-// Cleanup.
-void qtractorClapPlugin::Impl::clear (void)
-{
-	// TODO: ?...
-	m_programs.clear();
 }
 
 
@@ -3224,30 +3181,6 @@ void qtractorClapPlugin::process (
 unsigned long qtractorClapPlugin::latency (void) const
 {
 	return m_pImpl->latency();
-}
-
-
-// Provisional program/patch accessor.
-bool qtractorClapPlugin::getProgram ( int iIndex, Program& program ) const
-{
-	const QList<QString>& programs
-		= m_pImpl->programs();
-
-	if (iIndex < 0 || iIndex >= programs.count())
-		return false;
-
-	// Map this to that...
-	program.bank = 0;
-	program.prog = iIndex;
-	program.name = programs.at(iIndex);
-
-	return true;
-}
-
-// Specific MIDI instrument selector.
-void qtractorClapPlugin::selectProgram ( int iBank, int iProg )
-{
-	m_pImpl->selectProgram(iBank, iProg);
 }
 
 
