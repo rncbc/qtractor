@@ -280,11 +280,9 @@ void qtractorTrackListButtons::updateTrackButtons (void)
 
 // Local constants.
 static const char *TracksGroup            = "/Tracks";
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-static const char *TrackListHeaderViewKey = "/TrackList/HeaderView";
-#else
 static const char *TrackListHeaderViewKey = "/TrackListHeaderView";
-#endif
+// FIXME: Qt5 legacy?
+static const char *TrackListHeaderViewOldKey = "/TrackList/HeaderView";
 
 // Constructor.
 qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent )
@@ -362,6 +360,7 @@ qtractorTrackList::~qtractorTrackList (void)
 	if (pOptions) {
 		QSettings& settings = pOptions->settings();
 		settings.beginGroup(TracksGroup);
+		settings.remove(TrackListHeaderViewOldKey); // FIXME: Qt5 legacy?
 		settings.setValue(TrackListHeaderViewKey, m_pHeader->saveState());
 		settings.endGroup();
 	}
@@ -1043,9 +1042,9 @@ void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
 void qtractorTrackList::resetHeaderSize ( int iCol )
 {
 	const bool bBlockSignals = m_pHeader->blockSignals(true);
-	const int iColSize = m_pHeader->model()->headerData(iCol,
-		Qt::Horizontal, Qt::SizeHintRole).toSize().width();
-	//	= m_pHeader->sectionSizeHint(iCol);
+	const int iColSize = m_pHeader->sectionSizeHint(iCol);
+	//	= m_pHeader->model()->headerData(iCol,
+	//		Qt::Horizontal, Qt::SizeHintRole).toSize().width();
 	m_pHeader->resizeSection(iCol, iColSize);
 	if (iCol == Number) {
 		// Resize all icons anyway...
