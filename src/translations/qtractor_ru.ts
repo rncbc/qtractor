@@ -9609,7 +9609,7 @@ Do you want to save the changes?</source>
         <location filename="../qtractorMidiEditorForm.ui" line="972"/>
         <location filename="../qtractorMidiEditorForm.ui" line="975"/>
         <source>Timeshift</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Смещение во времени</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="978"/>
@@ -10400,13 +10400,13 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1719"/>
         <source>Pa&amp;nic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Па&amp;ника</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1722"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1725"/>
         <source>Panic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Паника</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1728"/>
