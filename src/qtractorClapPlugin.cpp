@@ -919,6 +919,30 @@ protected:
 	void plugin_params_clear (clap_id param_id, clap_param_clear_flags flags);
 	void plugin_params_request_flush ();
 
+	// Host Audio Ports support callbacks...
+	//
+	static bool host_audio_ports_is_rescan_flag_supported (
+		const clap_host *host, uint32_t flag);
+	static void host_audio_ports_rescan (
+		const clap_host *host, uint32_t flags);
+
+	static const constexpr clap_host_audio_ports g_host_audio_ports = {
+		Impl::host_audio_ports_is_rescan_flag_supported,
+		Impl::host_audio_ports_rescan,
+	};
+
+	// Host Note Ports support callbacks...
+	//
+	static uint32_t host_note_ports_supported_dialects (
+		const clap_host *host);
+	static void host_note_ports_rescan (
+		const clap_host *host, uint32_t flags);
+
+	static const constexpr clap_host_note_ports g_host_note_ports = {
+		Impl::host_note_ports_supported_dialects,
+		Impl::host_note_ports_rescan,
+	};
+
 	// Host Timer support callbacks...
 	//
 	static bool host_register_timer (
@@ -1826,6 +1850,12 @@ const void *qtractorClapPlugin::Impl::get_extension (
 		if (::strcmp(ext_id, CLAP_EXT_PARAMS) == 0)
 			return &host_data->g_host_params;
 		else
+		if (::strcmp(ext_id, CLAP_EXT_AUDIO_PORTS) == 0)
+			return &host_data->g_host_audio_ports;
+		else
+		if (::strcmp(ext_id, CLAP_EXT_NOTE_PORTS) == 0)
+			return &host_data->g_host_note_ports;
+		else
 		if (::strcmp(ext_id, CLAP_EXT_TIMER_SUPPORT) == 0)
 			return &host_data->g_host_timer_support;
 		else
@@ -2111,6 +2141,56 @@ void qtractorClapPlugin::Impl::plugin_params_request_flush (void)
 	m_params_flush = true;
 
 	plugin_params_flush();
+}
+
+
+// Host Audio Ports support callbacks...
+//
+bool qtractorClapPlugin::Impl::host_audio_ports_is_rescan_flag_supported (
+	const clap_host *host, uint32_t flag )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorClapPlugin::Impl::host_audio_ports_is_rescan_flag_supported(%p, 0x%04x)", host, flag);
+#endif
+	// Not supported.
+	//
+	return false;
+}
+
+
+void qtractorClapPlugin::Impl::host_audio_ports_rescan (
+	const clap_host *host, uint32_t flags )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorClapPlugin::Impl::host_audio_ports_rescan(%p, 0x%04x)", host, flags);
+#endif
+	// Not supported.
+	//
+}
+
+
+// Host Note Ports support callbacks...
+//
+uint32_t qtractorClapPlugin::Impl::host_note_ports_supported_dialects (
+	const clap_host *host )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorClapPlugin::Impl::host_note_ports_supported_dialects(%p)", host);
+#endif
+	// Only MIDI 1.0 is scrictly supported.
+	//
+	return CLAP_NOTE_DIALECT_MIDI;
+}
+
+
+void qtractorClapPlugin::Impl::host_note_ports_rescan (
+	const clap_host *host, uint32_t flags )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorClapPlugin::Impl::host_note_ports_rescan(%p, 0x%04x)", host, flags);
+#endif
+	// Not supported.
+	//
 }
 
 
