@@ -158,6 +158,10 @@ public:
 	bool loadPresetFile(const QString& sFilename);
 	bool savePresetFile(const QString& sFilename);
 
+	// Reinitialize the plugin instance.
+	void request_restart();
+	void restart();
+
 	// Idle editor.
 	static void idleEditorAll();
 

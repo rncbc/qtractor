@@ -834,6 +834,9 @@ public:
 	// Plugin parameters flush.
 	void plugin_params_flush ();
 
+	// Reinitialize the plugin instance...
+	void plugin_request_restart ();
+
 protected:
 
 	// Plugin module initializer.
@@ -850,7 +853,7 @@ protected:
 	static void host_request_process (const clap_host *host);
 	static void host_request_callback (const clap_host *host);
 
-	void plugin_request_restart ();
+//	void plugin_request_restart ();
 	void plugin_request_process ();
 	void plugin_request_callback ();
 
@@ -1018,6 +1021,7 @@ private:
 	volatile bool m_activated;
 	volatile bool m_sleeping;
 	volatile bool m_processing;
+	volatile bool m_restarting;
 
 	clap_host m_host;
 
@@ -1293,7 +1297,7 @@ qtractorClapPlugin::Impl::Impl ( qtractorClapPlugin *pPlugin )
 		m_timer_support(nullptr), m_posix_fd_support(nullptr),
 		m_gui(nullptr), m_state(nullptr), m_params_flush(false),
 		m_activated(false), m_sleeping(false), m_processing(false),
-		m_srate(44100), m_nframes(0)
+		m_restarting(false), m_srate(44100), m_nframes(0)
 {
 	qtractorClapPluginHost::setup(&m_host, this);
 	m_host.get_extension = qtractorClapPlugin::Impl::get_extension;
@@ -1582,11 +1586,11 @@ void qtractorClapPlugin::Impl::process (
 		m_processing = m_plugin->start_processing(m_plugin);
 	}
 	else
-	if (m_processing && m_sleeping) {
+	if (m_processing && (m_sleeping || m_restarting)) {
 		m_plugin->stop_processing(m_plugin);
 		m_processing = false;
 		g_host.transportReleaseRef();
-		if (m_plugin->reset)
+		if (m_plugin->reset && !m_restarting)
 			m_plugin->reset(m_plugin);
 	}
 
@@ -1866,8 +1870,23 @@ void qtractorClapPlugin::Impl::host_request_callback ( const clap_host *host )
 
 void qtractorClapPlugin::Impl::plugin_request_restart (void)
 {
-	// TODO: ?...
-	//
+	if (m_restarting || g_audio_thread)
+		return;
+
+	m_restarting = true;
+
+	while (m_processing) {
+		qtractorSession::stabilize();
+	}
+
+	m_restarting = false;
+
+	deactivate(true);
+
+	if (m_pPlugin)
+		m_pPlugin->restart();
+
+	activate();
 }
 
 
@@ -3267,6 +3286,21 @@ void qtractorClapPlugin::idleEditorAll (void)
 	QListIterator<qtractorClapPlugin *> iter(g_clapPlugins);
 	while (iter.hasNext())
 		iter.next()->idleEditor();
+}
+
+
+// Request to reinitialize th plugin instance...
+void qtractorClapPlugin::request_restart (void)
+{
+	if (m_pImpl)
+		m_pImpl->plugin_request_restart();
+}
+
+
+void qtractorClapPlugin::restart (void)
+{
+	deinitialize();
+	initialize();
 }
 
 
