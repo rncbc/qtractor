@@ -37,6 +37,8 @@
   <keyword>LADSPA</keyword>
   <keyword>DSSI</keyword>
   <keyword>VST</keyword>
+  <keyword>VST3</keyword>
+  <keyword>CLAP</keyword>
   <keyword>LV2</keyword>
   <keyword>Qt</keyword>
  </keywords>
