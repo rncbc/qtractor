@@ -1104,7 +1104,7 @@ void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
 // LV2 MIDNAM XML support.
 #include <QDomDocument>
 
-void qtractor_lv2_midnam_update ( LV2_Programs_Handle handle )
+void qtractor_lv2_midnam_update ( LV2_Midnam_Handle handle )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (handle);
