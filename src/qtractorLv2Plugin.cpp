@@ -2651,8 +2651,7 @@ qtractorLv2Plugin::~qtractorLv2Plugin (void)
 	cleanup();	// setChannels(0);
 
 	// Clear programs cache.
-	qDeleteAll(m_programs);
-	m_programs.clear();
+	clearInstruments();
 
 #ifdef CONFIG_LV2_TIME
 	// Remove from global running LV2 Time/position ref-count...
@@ -2945,7 +2944,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	releaseConfigs();
 	releaseValues();
 
-	//	Initialize programs cache.
+	// Initialize programs cache.
 	updateInstruments();
 
 	// (Re)activate instance if necessary...
@@ -5037,6 +5036,18 @@ bool qtractorLv2Plugin::getProgram ( int iIndex, Program& program ) const
 	return true;
 }
 
+
+// Provisional note name accessor.
+bool qtractorLv2Plugin::getNoteName ( int iIndex, NoteName& note ) const
+{
+	if (iIndex < 0 || iIndex >= m_noteNames.count())
+		return false;
+
+	note = *m_noteNames.at(iIndex);
+	return true;
+}
+
+
 #ifdef CONFIG_LV2_PROGRAMS
 
 // LV2 Programs extension data descriptor accessor.
@@ -5163,16 +5174,14 @@ void qtractorLv2Plugin::lv2_midnam_update (void)
 
 
 //	Update instrument/programs cache.
-bool qtractorLv2Plugin::updateInstruments (void)
+void qtractorLv2Plugin::updateInstruments (void)
 {
-	// Clear programs cache.
-	qDeleteAll(m_programs);
-	m_programs.clear();
+	clearInstruments();
 
 	// Only first one instance should matter...
 	LV2_Handle handle = lv2_handle(0);
 	if (!handle)
-		return false;
+		return;
 
 #ifdef CONFIG_LV2_PROGRAMS
 
@@ -5198,16 +5207,16 @@ bool qtractorLv2Plugin::updateInstruments (void)
 #ifdef CONFIG_LV2_MIDNAM
 
 	if (!m_programs.isEmpty())
-		return true;
+		return;
 
 	const LV2_Midnam_Interface *interface
 		= lv2_midnam_descriptor(0);
 	if (interface == nullptr)
-		return false;
+		return;
 
 	char *midnam = (*interface->midnam)(handle);
 	if (midnam == nullptr)
-		return false;
+		return;
 
 	const QString sMidnam
 		= QString::fromUtf8(midnam);
@@ -5222,11 +5231,11 @@ bool qtractorLv2Plugin::updateInstruments (void)
 
 	QDomDocument doc;
 	if (!doc.setContent(sMidnam))
-		return false;
+		return;
 
 	qtractorInstrumentList instruments;
 	if (!instruments.loadMidiNameDocument(doc))
-		return false;
+		return;
 
 	qtractorInstrumentList::ConstIterator iter = instruments.constBegin();
 	const qtractorInstrumentList::ConstIterator& iter_end = instruments.constEnd();
@@ -5240,11 +5249,11 @@ bool qtractorLv2Plugin::updateInstruments (void)
 		const qtractorInstrumentPatches::ConstIterator& patch_end = patches.constEnd();
 		for ( ; patch_iter != patch_end; ++patch_iter) {
 			const int iBank = patch_iter.key();
-			const qtractorInstrumentData& patch = patch_iter.value();
-			const QString& sBankName = patch.name();
+			const qtractorInstrumentData& progs = patch_iter.value();
+			const QString& sBankName = progs.name();
 			if (iBank < 0 || sBankName.isEmpty()) continue;
-			qtractorInstrumentData::ConstIterator prog_iter = patch.constBegin();
-			const qtractorInstrumentData::ConstIterator& prog_end = patch.constEnd();
+			qtractorInstrumentData::ConstIterator prog_iter = progs.constBegin();
+			const qtractorInstrumentData::ConstIterator& prog_end = progs.constEnd();
 			for ( ; prog_iter != prog_end; ++prog_iter) {
 				const int iProg = prog_iter.key();
 				if (iProg < 0) continue;
@@ -5255,13 +5264,45 @@ bool qtractorLv2Plugin::updateInstruments (void)
 				m_programs.append(program);
 			}
 		}
+		const qtractorInstrumentKeys& keys = instr.keys();
+		qtractorInstrumentKeys::ConstIterator key_iter = keys.constBegin();
+		const qtractorInstrumentKeys::ConstIterator& key_end = keys.constEnd();
+		for ( ; key_iter != key_end; ++key_iter) {
+			const int iBank = key_iter.key();
+			const qtractorInstrumentNotes& progs = key_iter.value();
+			qtractorInstrumentNotes::ConstIterator prog_iter = progs.constBegin();
+			const qtractorInstrumentNotes::ConstIterator& prog_end = progs.constEnd();
+			for ( ; prog_iter != prog_end; ++prog_iter) {
+				const int iProg = prog_iter.key();
+				const qtractorInstrumentData& notes = prog_iter.value();
+				qtractorInstrumentData::ConstIterator note_iter = notes.constBegin();
+				const qtractorInstrumentData::ConstIterator& note_end = notes.constEnd();
+				for ( ; note_iter != note_end; ++note_iter) {
+					NoteName *note = new NoteName;
+					note->bank = iBank;
+					note->prog = iProg;
+					note->note = note_iter.key();
+					note->name = note_iter.value();
+					m_noteNames.append(note);
+				}
+			}
+		}
 		if (!sModel.isEmpty())
 			break;
 	}
 
 #endif	// CONFIG_LV2_MIDNAM
+}
 
-	return !m_programs.isEmpty();
+
+// Clear instrument/programs cache.
+void qtractorLv2Plugin::clearInstruments (void)
+{
+	qDeleteAll(m_programs);
+	m_programs.clear();
+
+	qDeleteAll(m_noteNames);
+	m_noteNames.clear();
 }
 
 

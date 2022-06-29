@@ -1,7 +1,7 @@
 // qtractorInstrumentForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -278,7 +278,7 @@ void qtractorInstrumentForm::importSlot (void)
 			// New item on the block :-)
 			pItem = new QTreeWidgetItem(m_ui.FilesListView, pItem);
 			if (pItem) {
-				QFileInfo info(sPath);
+				const QFileInfo info(sPath);
 				pItem->setIcon(0, QIcon(":/images/itemFile.png"));
 				pItem->setText(0, info.completeBaseName());
 				pItem->setText(1, sPath);
@@ -319,7 +319,7 @@ void qtractorInstrumentForm::moveUpSlot (void)
 {
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
 	if (pItem) {
-		int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
+		const int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
 		if (iItem > 0) {
 			pItem = m_ui.FilesListView->takeTopLevelItem(iItem);
 			m_ui.FilesListView->insertTopLevelItem(iItem - 1, pItem);
@@ -337,7 +337,7 @@ void qtractorInstrumentForm::moveDownSlot (void)
 {
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
 	if (pItem) {
-		int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
+		const int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
 		if (iItem < m_ui.FilesListView->topLevelItemCount() - 1) {
 			pItem = m_ui.FilesListView->takeTopLevelItem(iItem);
 			m_ui.FilesListView->insertTopLevelItem(iItem + 1, pItem);
@@ -498,8 +498,8 @@ void qtractorInstrumentForm::stabilizeForm (void)
 {
 	QTreeWidgetItem *pItem = m_ui.FilesListView->currentItem();
 	if (pItem) {
-		int iItemCount = m_ui.FilesListView->topLevelItemCount();
-		int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
+		const int iItemCount = m_ui.FilesListView->topLevelItemCount();
+		const int iItem = m_ui.FilesListView->indexOfTopLevelItem(pItem);
 		m_ui.RemovePushButton->setEnabled(true);
 		m_ui.MoveUpPushButton->setEnabled(iItem > 0);
 		m_ui.MoveDownPushButton->setEnabled(iItem < iItemCount - 1);
@@ -565,7 +565,7 @@ void qtractorInstrumentForm::refreshForm (void)
 			= patches.constEnd();
 		for ( ; pat != pat_end; ++pat) {
 			pBankItem = new QTreeWidgetItem(pChildItem, pBankItem);
-			int iBank = pat.key();
+			const int iBank = pat.key();
 			const QString sBankName
 				= (iBank < 0 ? QString("*") : QString::number(iBank));
 			pBankItem->setIcon(0, QIcon(":/images/itemPatches.png"));
@@ -585,7 +585,7 @@ void qtractorInstrumentForm::refreshForm (void)
 			const qtractorInstrumentData::ConstIterator& it_end
 				= patch.constEnd();
 			for ( ; it != it_end; ++it) {
-				int iProg = it.key();
+				const int iProg = it.key();
 				pProgItem = new QTreeWidgetItem(pBankItem, pProgItem);
 				pProgItem->setText(0,
 					QString("%1 = %2").arg(iProg).arg(it.value()));

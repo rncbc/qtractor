@@ -353,6 +353,19 @@ public:
 	virtual bool getProgram(int /*iIndex*/, Program& /*program*/) const
 		{ return false; }
 
+	// Note name descriptor.
+	struct NoteName
+	{
+		int     bank;
+		int     prog;
+		int     note;
+		QString name;
+	};
+
+	// Provisional note name accessor.
+	virtual bool getNoteName(int /*iIndex*/, NoteName& /*note*/) const
+		{ return false; }
+
 	// MIDI continuous controller handler.
 	virtual void setController(int /*iController*/, int /*iValue*/) {}
 

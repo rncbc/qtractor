@@ -125,6 +125,12 @@ public:
 	void freezeConfigs();
 	void releaseConfigs();
 
+	// Provisional note name accessor.
+	bool getNoteName(int iIndex, NoteName& note) const;
+
+	// Update instrument/note names cache.
+	void updateNoteNames();
+
 	// Open/close editor widget.
 	void openEditor(QWidget *pParent = nullptr);
 	void closeEditor();
@@ -188,6 +194,9 @@ protected:
 	// Make up some others dirty...
 	void updateDirtyCount();
 
+	// Clear instrument/note names cache.
+	void clearNoteNames();
+
 private:
 
 	// Instance variables.
@@ -215,6 +224,9 @@ private:
 	// Identififier-parameters map.
 	QHash<int, qtractorPlugin::Param *> m_paramIds;
 	QHash<int, double> m_paramValues;
+
+	// Note-names cache.
+	QList<NoteName *> m_noteNames;
 };
 
 

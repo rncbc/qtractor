@@ -1605,6 +1605,13 @@ void qtractorMidiManager::updateInstruments (void)
 				program.prog,
 				program.name.simplified());
 		}
+		iIndex = 0;
+		qtractorPlugin::NoteName note;
+		while (pPlugin->getNoteName(iIndex++, note)) {
+			qtractorInstrumentData& notes
+				= instr.notes(note.bank, note.prog);
+			notes[note.note] = note.name;
+		}
 	}
 }
 

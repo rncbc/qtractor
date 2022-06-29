@@ -357,6 +357,9 @@ public:
 	// Provisional program/patch accessor.
 	bool getProgram(int iIndex, Program& program) const;
 
+	// Provisional note name accessor.
+	bool getNoteName(int iIndex, NoteName& note) const;
+
 #ifdef CONFIG_LV2_PROGRAMS
 
 	// LV2 Programs extension data descriptor accessor.
@@ -417,8 +420,11 @@ public:
 
 protected:
 
-	//	Update instrument/programs cache.
-	bool updateInstruments();
+	// Update instrument/programs cache.
+	void updateInstruments();
+
+	// Clear instrument/programs cache.
+	void clearInstruments();
 
 #ifdef CONFIG_LV2_UI
 
@@ -628,6 +634,9 @@ private:
 
 	// Programs cache.
 	QList<Program *> m_programs;
+
+	// Note-names cache.
+	QList<NoteName *> m_noteNames;
 
 #ifdef CONFIG_LV2_PROGRAMS
 	LV2_Feature                m_lv2_programs_host_feature;

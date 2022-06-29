@@ -624,6 +624,9 @@ public:
 	const clap_plugin_gui *gui() const
 		{ return m_gui; }
 
+	const clap_plugin_note_name *note_names () const
+		{ return m_note_names; }
+
 	// Do the actual (de)activation.
 	void activate ();
 	void deactivate (bool force = false);
@@ -995,6 +998,17 @@ protected:
 
 	void plugin_state_mark_dirty ();
 
+	// Host Note-names callbacks...
+	//
+	static void host_note_name_changed (
+		const clap_host *host);
+
+	static const constexpr clap_host_note_name g_host_note_name = {
+		Impl::host_note_name_changed,
+	};
+
+	void plugin_note_name_changed ();
+
 	// Transfer parameter changes...
 	void process_params_out ();
 
@@ -1015,6 +1029,8 @@ private:
 
 	const clap_plugin_gui *m_gui;
 	const clap_plugin_state *m_state;
+
+	const clap_plugin_note_name *m_note_names;
 
 	volatile bool m_params_flush;
 
@@ -1295,9 +1311,10 @@ void qtractorClapPluginHost::updateTransport ( qtractorAudioEngine *pAudioEngine
 qtractorClapPlugin::Impl::Impl ( qtractorClapPlugin *pPlugin )
 	: m_pPlugin(pPlugin), m_plugin(nullptr), m_params(nullptr),
 		m_timer_support(nullptr), m_posix_fd_support(nullptr),
-		m_gui(nullptr), m_state(nullptr), m_params_flush(false),
-		m_activated(false), m_sleeping(false), m_processing(false),
-		m_restarting(false), m_srate(44100), m_nframes(0)
+		m_gui(nullptr), m_state(nullptr), m_note_names(nullptr),
+		m_params_flush(false), m_activated(false), m_sleeping(false),
+		m_processing(false), m_restarting(false),
+		m_srate(44100), m_nframes(0)
 {
 	qtractorClapPluginHost::setup(&m_host, this);
 	m_host.get_extension = qtractorClapPlugin::Impl::get_extension;
@@ -1331,6 +1348,7 @@ qtractorClapPlugin::Impl::~Impl (void)
 
 	m_gui = nullptr;
 	m_state = nullptr;
+	m_note_names = nullptr;
 }
 
 
@@ -1372,6 +1390,8 @@ void qtractorClapPlugin::Impl::initialize (void)
 		m_plugin->get_extension(m_plugin, CLAP_EXT_GUI));
 	m_state	= static_cast<const clap_plugin_state *> (
 		m_plugin->get_extension(m_plugin, CLAP_EXT_STATE));
+	m_note_names = static_cast<const clap_plugin_note_name *> (
+		m_plugin->get_extension(m_plugin, CLAP_EXT_NOTE_NAME));
 }
 
 
@@ -1831,6 +1851,9 @@ const void *qtractorClapPlugin::Impl::get_extension (
 		else
 		if (::strcmp(ext_id, CLAP_EXT_STATE) == 0)
 			return &host_data->g_host_state;
+		else
+		if (::strcmp(ext_id, CLAP_EXT_NOTE_NAME) == 0)
+			return &host_data->g_host_note_name;
 	}
 	return nullptr;
 }
@@ -2276,6 +2299,28 @@ void qtractorClapPlugin::Impl::plugin_state_mark_dirty (void)
 }
 
 
+// Host Note-names callbacks...
+//
+void qtractorClapPlugin::Impl::host_note_name_changed (
+	const clap_host *host )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorClapPlugin::Impl::host_note_name_changed(%p)", host);
+#endif
+	Impl *pImpl = static_cast<Impl *> (host->host_data);
+	if (pImpl) pImpl->plugin_note_name_changed();
+}
+
+
+// Plugin Note-name callbacks...
+//
+void qtractorClapPlugin::Impl::plugin_note_name_changed (void)
+{
+	if (m_pPlugin)
+		m_pPlugin->updateNoteNames();
+}
+
+
 // Transfer parameter changes...
 void qtractorClapPlugin::Impl::process_params_out (void)
 {
@@ -2520,6 +2565,7 @@ void qtractorClapPlugin::initialize (void)
 void qtractorClapPlugin::deinitialize (void)
 {
 	clearParams();
+	clearNoteNames();
 
 	// Cleanup all plugin instances...
 	cleanup();	// setChannels(0);
@@ -2637,6 +2683,9 @@ void qtractorClapPlugin::setChannels ( unsigned short iChannels )
 	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
+
+	// Initialize note-names cache.
+	updateNoteNames();
 
 	// (Re)activate instance if necessary...
 	setChannelsActivated(iChannels, bActivated);
@@ -2779,6 +2828,54 @@ void qtractorClapPlugin::releaseConfigs (void)
 	qtractorPlugin::clearConfigs();
 }
 
+
+
+// Provisional note name accessor.
+bool qtractorClapPlugin::getNoteName ( int iIndex, NoteName& note ) const
+{
+	if (iIndex < 0 || iIndex >= m_noteNames.count())
+		return false;
+
+	note = *m_noteNames.at(iIndex);
+	return true;
+}
+
+
+// Update/clear instrument/note names cache.
+void qtractorClapPlugin::updateNoteNames (void)
+{
+	clearNoteNames();
+
+	const clap_plugin *plugin = m_pImpl->plugin();
+	if (!plugin)
+		return;
+
+	const clap_plugin_note_name *note_names
+		= m_pImpl->note_names();;
+	if (note_names && note_names->count && note_names->get) {
+		const int ncount = note_names->count(plugin);
+		for (int i = 0; i < ncount; ++i) {
+			clap_note_name note_name;
+			::memset(&note_name, 0, sizeof(note_name));
+			if (note_names->get(plugin, i, &note_name)) {
+				NoteName *note = new NoteName;
+				note->bank = -1;
+				note->prog = -1;
+				note->note = note_name.key;
+				note->name = note_name.name;
+				m_noteNames.append(note);
+			}
+		}
+	}
+}
+
+
+// Clear instrument/note names cache.
+void qtractorClapPlugin::clearNoteNames (void)
+{
+	qDeleteAll(m_noteNames);
+	m_noteNames.clear();
+}
 
 
 // Open/close editor widget.
