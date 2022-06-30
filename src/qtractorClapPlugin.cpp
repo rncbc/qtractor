@@ -842,8 +842,9 @@ public:
 
 protected:
 
-	// Plugin module initializer.
+	// Plugin module (de)initializers.
 	void initialize ();
+	void deinitialize ();
 
 	// Host extensions interface.
 	//
@@ -1329,26 +1330,7 @@ qtractorClapPlugin::Impl::Impl ( qtractorClapPlugin *pPlugin )
 // Destructor.
 qtractorClapPlugin::Impl::~Impl (void)
 {
-	g_host.clear(&m_host);
-
-	deactivate(true);
-
-	if (m_plugin) {
-		m_plugin->destroy(m_plugin);
-		m_plugin = nullptr;
-	}
-
-	qDeleteAll(m_param_infos);
-	m_param_infos.clear();
-	m_param_ids.clear();
-	m_params = nullptr;
-
-	m_timer_support = nullptr;
-	m_posix_fd_support = nullptr;
-
-	m_gui = nullptr;
-	m_state = nullptr;
-	m_note_names = nullptr;
+	deinitialize();
 }
 
 
@@ -1392,6 +1374,32 @@ void qtractorClapPlugin::Impl::initialize (void)
 		m_plugin->get_extension(m_plugin, CLAP_EXT_STATE));
 	m_note_names = static_cast<const clap_plugin_note_name *> (
 		m_plugin->get_extension(m_plugin, CLAP_EXT_NOTE_NAME));
+}
+
+
+// Plugin module deinitializer.
+void qtractorClapPlugin::Impl::deinitialize (void)
+{
+	g_host.clear(&m_host);
+
+	deactivate(true);
+
+	if (m_plugin) {
+		m_plugin->destroy(m_plugin);
+		m_plugin = nullptr;
+	}
+
+	qDeleteAll(m_param_infos);
+	m_param_infos.clear();
+	m_param_ids.clear();
+	m_params = nullptr;
+
+	m_timer_support = nullptr;
+	m_posix_fd_support = nullptr;
+
+	m_gui = nullptr;
+	m_state = nullptr;
+	m_note_names = nullptr;
 }
 
 
@@ -1891,6 +1899,8 @@ void qtractorClapPlugin::Impl::host_request_callback ( const clap_host *host )
 }
 
 
+// Main plugin callbacks...
+//
 void qtractorClapPlugin::Impl::plugin_request_restart (void)
 {
 	if (m_restarting || g_audio_thread)
@@ -2209,18 +2219,12 @@ bool qtractorClapPlugin::Impl::host_unregister_timer (
 }
 
 
+// Plugin Timer support callbacks...
+//
 void qtractorClapPlugin::Impl::plugin_on_timer ( clap_id timer_id )
 {
 	if (m_timer_support && m_timer_support->on_timer && m_plugin)
 		m_timer_support->on_timer(m_plugin, timer_id);
-}
-
-
-void qtractorClapPlugin::Impl::plugin_on_posix_fd (
-	int fd, clap_posix_fd_flags_t flags )
-{
-	if (m_posix_fd_support && m_posix_fd_support->on_fd && m_plugin)
-		m_posix_fd_support->on_fd(m_plugin, fd, flags);
 }
 
 
@@ -2244,6 +2248,16 @@ bool qtractorClapPlugin::Impl::host_unregister_posix_fd (
 	const clap_host *host, int fd )
 {
 	return g_host.unregister_posix_fd(host, fd);
+}
+
+
+// Plugin POSIX FD support callbacks...
+//
+void qtractorClapPlugin::Impl::plugin_on_posix_fd (
+	int fd, clap_posix_fd_flags_t flags )
+{
+	if (m_posix_fd_support && m_posix_fd_support->on_fd && m_plugin)
+		m_posix_fd_support->on_fd(m_plugin, fd, flags);
 }
 
 
