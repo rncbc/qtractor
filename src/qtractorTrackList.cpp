@@ -281,8 +281,6 @@ void qtractorTrackListButtons::updateTrackButtons (void)
 // Local constants.
 static const char *TracksGroup            = "/Tracks";
 static const char *TrackListHeaderViewKey = "/TrackListHeaderView";
-// FIXME: Qt5 legacy?
-static const char *TrackListHeaderViewOldKey = "/TrackList/HeaderView";
 
 // Constructor.
 qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent )
@@ -309,7 +307,6 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 	m_pHeader->setHighlightSections(false);
 	m_pHeader->setStretchLastSection(true);
 	m_pHeader->setSortIndicatorShown(false);
-	m_pHeader->setMinimumSectionSize(24);
 
 	// Default section sizes...
 	const int iColCount = m_pHeader->count() - 1;
@@ -340,6 +337,9 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 		settings.endGroup();
 	}
 
+	// Enforce this no matter what...
+	m_pHeader->setMinimumSectionSize(24);
+
 	QObject::connect(m_pHeader,
 		SIGNAL(sectionResized(int,int,int)),
 		SLOT(updateHeaderSize(int,int,int)));
@@ -360,7 +360,6 @@ qtractorTrackList::~qtractorTrackList (void)
 	if (pOptions) {
 		QSettings& settings = pOptions->settings();
 		settings.beginGroup(TracksGroup);
-		settings.remove(TrackListHeaderViewOldKey); // FIXME: Qt5 legacy?
 		settings.setValue(TrackListHeaderViewKey, m_pHeader->saveState());
 		settings.endGroup();
 	}
