@@ -1196,30 +1196,43 @@ bool qtractorClapPluginHost::unregister_posix_fd (
 // Cleanup.
 void qtractorClapPluginHost::clear ( const clap_host *host )
 {
+	QList<Key> keys;
+	QList<TimerItem *> timers;
+
 	QHash<Key, TimerItem *>::ConstIterator timer_iter = m_timers.constBegin();
 	const QHash<Key, TimerItem *>::ConstIterator& timer_end = m_timers.constEnd();
-	while (timer_iter != timer_end) {
+	for ( ; timer_iter != timer_end; ++timer_iter) {
+		const Key& key = timer_iter.key();
 		TimerItem *timer = timer_iter.value();
-		if (timer_iter.key().host == host) {
-			delete timer;
-			timer_iter = m_timers.erase(timer_iter);
-		} else {
-			++timer_iter;
+		if (key.host == host) {
+			timers.append(timer);
+			keys.append(key);
 		}
 	}
 
+	foreach (const Key& key, keys)
+		m_timers.remove(key);
+	qDeleteAll(timers);
+
+	keys.clear();
+	QList<PosixFdItem *> posix_fds;
+
 	QHash<Key, PosixFdItem *>::ConstIterator posix_fd_iter = m_posix_fds.constBegin();
 	const QHash<Key, PosixFdItem *>::ConstIterator& posix_fd_end = m_posix_fds.constEnd();
-	while (posix_fd_iter != posix_fd_end) {
+	for ( ; posix_fd_iter != posix_fd_end; ++posix_fd_iter) {
+		const Key& key = posix_fd_iter.key();
 		PosixFdItem *posix_fd = posix_fd_iter.value();
-		if (posix_fd_iter.key().host == host) {
-			delete posix_fd;
-			posix_fd_iter = m_posix_fds.erase(posix_fd_iter);
-		} else {
-			++posix_fd_iter;
+		if (key.host == host) {
+			posix_fds.append(posix_fd);
+			keys.append(key);
 		}
 	}
+
+	foreach (const Key& key, keys)
+		m_posix_fds.remove(key);
+	qDeleteAll(posix_fds);
 }
+
 
 void qtractorClapPluginHost::clear (void)
 {

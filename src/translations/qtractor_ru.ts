@@ -481,17 +481,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Автоматизация</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="463"/>
+        <location filename="../qtractorTrackList.cpp" line="462"/>
         <source>Audio</source>
         <translation>Звук</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="476"/>
+        <location filename="../qtractorTrackList.cpp" line="475"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="542"/>
+        <location filename="../qtractorTrackList.cpp" line="541"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
