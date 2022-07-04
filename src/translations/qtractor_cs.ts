@@ -519,12 +519,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="570"/>
         <source>Manual: </source>
-        <translation type="unfinished"></translation>
+        <translation>Příručka:</translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="576"/>
         <source>Support: </source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora:</translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="541"/>
@@ -2912,7 +2912,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5920"/>
         <source>CLAP Plug-in support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro přídavné moduly CLAP byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5929"/>
