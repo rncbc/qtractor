@@ -109,6 +109,9 @@ public:
 	void activate();
 	void deactivate();
 
+	// Instance parameters initializer.
+	void addParams();
+
 	// Parameter update methods.
 	void updateParam(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 

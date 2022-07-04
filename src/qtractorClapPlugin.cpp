@@ -846,6 +846,10 @@ protected:
 	void initialize ();
 	void deinitialize ();
 
+	// Parameters info/ids (de)initializer.
+	void addParamInfos();
+	void clearParamInfos();
+
 	// Host extensions interface.
 	//
 	static const void *get_extension(
@@ -1364,17 +1368,6 @@ void qtractorClapPlugin::Impl::initialize (void)
 
 	m_params = static_cast<const clap_plugin_params *> (
 		m_plugin->get_extension(m_plugin, CLAP_EXT_PARAMS));
-	if (m_params && m_params->count && m_params->get_info) {
-		const uint32_t nparams = m_params->count(m_plugin);
-		for (uint32_t i = 0; i < nparams; ++i) {
-			clap_param_info *param_info = new clap_param_info;
-			::memset(param_info, 0, sizeof(clap_param_info));
-			if (m_params->get_info(m_plugin, i, param_info)) {
-				m_param_ids.insert(i, param_info->id);
-				m_param_infos.insert(param_info->id, param_info);
-			}
-		}
-	}
 
 	m_timer_support = static_cast<const clap_plugin_timer_support *> (
 		m_plugin->get_extension(m_plugin, CLAP_EXT_TIMER_SUPPORT));
@@ -1387,6 +1380,8 @@ void qtractorClapPlugin::Impl::initialize (void)
 		m_plugin->get_extension(m_plugin, CLAP_EXT_STATE));
 	m_note_names = static_cast<const clap_plugin_note_name *> (
 		m_plugin->get_extension(m_plugin, CLAP_EXT_NOTE_NAME));
+
+	addParamInfos();
 }
 
 
@@ -1397,14 +1392,13 @@ void qtractorClapPlugin::Impl::deinitialize (void)
 
 	deactivate(true);
 
+	clearParamInfos();
+
 	if (m_plugin) {
 		m_plugin->destroy(m_plugin);
 		m_plugin = nullptr;
 	}
 
-	qDeleteAll(m_param_infos);
-	m_param_infos.clear();
-	m_param_ids.clear();
 	m_params = nullptr;
 
 	m_timer_support = nullptr;
@@ -1413,6 +1407,31 @@ void qtractorClapPlugin::Impl::deinitialize (void)
 	m_gui = nullptr;
 	m_state = nullptr;
 	m_note_names = nullptr;
+}
+
+
+// Parameters info/ids (de)initializer.
+void qtractorClapPlugin::Impl::addParamInfos (void)
+{
+	if (m_params && m_params->count && m_params->get_info) {
+		const uint32_t nparams = m_params->count(m_plugin);
+		for (uint32_t i = 0; i < nparams; ++i) {
+			clap_param_info *param_info = new clap_param_info;
+			::memset(param_info, 0, sizeof(clap_param_info));
+			if (m_params->get_info(m_plugin, i, param_info)) {
+				m_param_ids.insert(i, param_info->id);
+				m_param_infos.insert(param_info->id, param_info);
+			}
+		}
+	}
+}
+
+
+void qtractorClapPlugin::Impl::clearParamInfos (void)
+{
+	qDeleteAll(m_param_infos);
+	m_param_infos.clear();
+	m_param_ids.clear();
 }
 
 
@@ -2145,8 +2164,22 @@ void qtractorClapPlugin::Impl::host_params_request_flush (
 void qtractorClapPlugin::Impl::plugin_params_rescan (
 	clap_param_rescan_flags flags )
 {
-	// TODO: ?....
-	//
+	if (m_pPlugin == nullptr)
+		return;
+
+	if (flags & CLAP_PARAM_RESCAN_VALUES)
+		m_pPlugin->updateParamValues(false);
+	else
+	if (flags & (CLAP_PARAM_RESCAN_INFO | CLAP_PARAM_RESCAN_TEXT)) {
+	//	m_pPlugin->closeForm(true); // TODO: must destroy the generic plugin!
+		m_pPlugin->clearParams();
+		clearParamInfos();
+		addParamInfos();
+		m_pPlugin->addParams();
+	}
+	else
+	if (flags & CLAP_PARAM_RESCAN_ALL)
+		m_pPlugin->request_restart();
 }
 
 
@@ -2729,6 +2762,30 @@ void qtractorClapPlugin::activate (void)
 void qtractorClapPlugin::deactivate (void)
 {
 	m_pImpl->deactivate();
+}
+
+
+// Instance parameters initializer.
+void qtractorClapPlugin::addParams (void)
+{
+	const unsigned long nparams
+		= m_pImpl->getParameterCount();
+#ifdef CONFIG_DEBUG
+	qDebug(" --- Parameters (nparams = %lu) ---", nparams);
+#endif
+	for (unsigned long i = 0; i < nparams; ++i) {
+		const clap_id id = m_pImpl->getParameterId(i);
+		if (id == CLAP_INVALID_ID)
+			continue;
+		const clap_param_info *param_info
+			= m_pImpl->getParameterInfo(id);
+		if (param_info) {
+			if ( (param_info->flags & CLAP_PARAM_IS_AUTOMATABLE) &&
+				!(param_info->flags & CLAP_PARAM_IS_READONLY)) {
+				addParam(new Param(this, i));
+			}
+		}
+	}
 }
 
 
