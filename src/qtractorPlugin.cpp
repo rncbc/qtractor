@@ -290,11 +290,7 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 	if (iInstances < 1) {
 		// We're sorry but dialogs must also go now...
 		closeEditor();
-		if (m_pForm) {
-			m_pForm->close();
-			delete m_pForm;
-			m_pForm = nullptr;
-		}
+		closeForm(true);
 	}
 
 	m_iInstances = iInstances;
@@ -624,9 +620,18 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 }
 
 
-void qtractorPlugin::closeForm (void)
+void qtractorPlugin::closeForm ( bool bForce )
 {
-	if (m_pForm && m_pForm->isVisible())
+	if (m_pForm == nullptr)
+		return;
+
+	if (bForce) {
+		m_pForm->close();
+		delete m_pForm;
+		m_pForm = nullptr;
+	}
+	else
+	if (m_pForm->isVisible())
 		m_pForm->hide();
 }
 

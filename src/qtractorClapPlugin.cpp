@@ -2171,7 +2171,7 @@ void qtractorClapPlugin::Impl::plugin_params_rescan (
 		m_pPlugin->updateParamValues(false);
 	else
 	if (flags & (CLAP_PARAM_RESCAN_INFO | CLAP_PARAM_RESCAN_TEXT)) {
-	//	m_pPlugin->closeForm(true); // TODO: must destroy the generic plugin!
+		m_pPlugin->closeForm(true);
 		m_pPlugin->clearParams();
 		clearParamInfos();
 		addParamInfos();

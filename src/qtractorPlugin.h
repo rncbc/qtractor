@@ -426,7 +426,7 @@ public:
 
 	// Special plugin form methods.
 	void openForm(QWidget *pParent = nullptr);
-	void closeForm();
+	void closeForm(bool bForce = false);
 
 	bool isFormVisible() const;
 
