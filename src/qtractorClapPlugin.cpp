@@ -2799,7 +2799,9 @@ void qtractorClapPlugin::addParams (void)
 		if (param_info) {
 			if ( (param_info->flags & CLAP_PARAM_IS_AUTOMATABLE) &&
 				!(param_info->flags & CLAP_PARAM_IS_READONLY)) {
-				addParam(new Param(this, i));
+				Param *pParam = new Param(this, i);
+				m_paramIds.insert(int(param_info->id), pParam);
+				addParam(pParam);
 			}
 		}
 	}
