@@ -944,6 +944,17 @@ protected:
 		Impl::host_note_ports_rescan,
 	};
 
+	// Host Latency callbacks...
+	//
+	static void host_latency_changed (
+		const clap_host *host);
+
+	static const constexpr clap_host_latency g_host_latency = {
+		Impl::host_latency_changed,
+	};
+
+	void plugin_latency_changed ();
+
 	// Host Timer support callbacks...
 	//
 	static bool host_register_timer (
@@ -1877,6 +1888,9 @@ const void *qtractorClapPlugin::Impl::get_extension (
 		if (::strcmp(ext_id, CLAP_EXT_NOTE_PORTS) == 0)
 			return &host_data->g_host_note_ports;
 		else
+		if (::strcmp(ext_id, CLAP_EXT_LATENCY) == 0)
+			return &host_data->g_host_latency;
+		else
 		if (::strcmp(ext_id, CLAP_EXT_TIMER_SUPPORT) == 0)
 			return &host_data->g_host_timer_support;
 		else
@@ -2246,6 +2260,28 @@ void qtractorClapPlugin::Impl::host_note_ports_rescan (
 #endif
 	// Not supported.
 	//
+}
+
+
+// Host Latency callbacks...
+//
+void qtractorClapPlugin::Impl::host_latency_changed (
+	const clap_host *host )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorClapPlugin::Impl::host_latency_changed(%p)", host);
+#endif
+	Impl *pImpl = static_cast<Impl *> (host->host_data);
+	if (pImpl) pImpl->plugin_latency_changed();
+}
+
+
+// Plugin Latency callbacks...
+//
+void qtractorClapPlugin::Impl::plugin_latency_changed (void)
+{
+	if (m_pPlugin)
+		m_pPlugin->request_restart();
 }
 
 
