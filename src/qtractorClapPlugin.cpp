@@ -2619,26 +2619,7 @@ qtractorClapPlugin::~qtractorClapPlugin (void)
 // Plugin instance initializer.
 void qtractorClapPlugin::initialize (void)
 {
-	const unsigned long nparams
-		= m_pImpl->getParameterCount();
-#ifdef CONFIG_DEBUG
-	qDebug(" --- Parameters (nparams = %lu) ---", nparams);
-#endif
-	for (unsigned long i = 0; i < nparams; ++i) {
-		const clap_id id = m_pImpl->getParameterId(i);
-		if (id == CLAP_INVALID_ID)
-			continue;
-		const clap_param_info *param_info
-			= m_pImpl->getParameterInfo(id);
-		if (param_info) {
-			if ( (param_info->flags & CLAP_PARAM_IS_AUTOMATABLE) &&
-				!(param_info->flags & CLAP_PARAM_IS_READONLY)) {
-				Param *pParam = new Param(this, i);
-				m_paramIds.insert(int(param_info->id), pParam);
-				addParam(pParam);
-			}
-		}
-	}
+	addParams();
 
 	// Allocate I/O audio buffer pointers.
 	const unsigned short iAudioIns  = audioIns();
@@ -2660,11 +2641,11 @@ void qtractorClapPlugin::initialize (void)
 // Plugin instance de-initializer.
 void qtractorClapPlugin::deinitialize (void)
 {
-	clearParams();
-	clearNoteNames();
-
 	// Cleanup all plugin instances...
 	cleanup();	// setChannels(0);
+
+	clearParams();
+	clearNoteNames();
 
 	// Deallocate I/O audio buffer pointers.
 	if (m_ppIBuffer) {
@@ -2822,6 +2803,15 @@ void qtractorClapPlugin::addParams (void)
 			}
 		}
 	}
+}
+
+
+void qtractorClapPlugin::clearParams (void)
+{
+	m_paramValues.clear();
+	m_paramIds.clear();
+
+	qtractorPlugin::clearParams();
 }
 
 
