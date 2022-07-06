@@ -29,6 +29,7 @@
 #include "qtractorSessionCursor.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
+#include "qtractorCurve.h"
 
 #include <clap/clap.h>
 
@@ -2200,8 +2201,39 @@ void qtractorClapPlugin::Impl::plugin_params_rescan (
 void qtractorClapPlugin::Impl::plugin_params_clear (
 	clap_id param_id, clap_param_clear_flags flags )
 {
-	// TODO: ?....
-	//
+	if (m_pPlugin == nullptr)
+		return;
+
+	if (!flags || param_id == CLAP_INVALID_ID)
+		return;
+
+	// Clear any automation curves and direct access
+	// references to the plugin parameter (param_id)...
+	qtractorPlugin::Param *pParam = m_pPlugin->findParamId(param_id);
+	if (pParam == nullptr)
+		return;
+
+	// Clear all automation curves, if any...
+	qtractorSubject::resetQueue();
+
+	qtractorSubject *pSubject = pParam->subject();
+	if (pSubject) {
+		qtractorCurve *pCurve = pSubject->curve();
+		if (pCurve) {
+			qtractorCurveList *pCurveList = pCurve->list();
+			if (pCurveList)
+				pCurveList->removeCurve(pCurve);
+			pSubject->setCurve(nullptr);
+			delete pCurve;
+		}
+	}
+
+	// Clear direct access, if any...
+	if (m_pPlugin->directAccessParamIndex() == pParam->index())
+		m_pPlugin->setDirectAccessParamIndex(-1);
+
+	// And mark it dirty, of course...
+	m_pPlugin->updateDirtyCount();
 }
 
 
