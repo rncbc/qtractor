@@ -2207,30 +2207,14 @@ void qtractorClapPlugin::Impl::plugin_params_clear (
 	if (!flags || param_id == CLAP_INVALID_ID)
 		return;
 
-	// Clear any automation curves and direct access
-	// references to the plugin parameter (param_id)...
-	qtractorPlugin::Param *pParam = m_pPlugin->findParamId(param_id);
-	if (pParam == nullptr)
-		return;
-
 	// Clear all automation curves, if any...
 	qtractorSubject::resetQueue();
 
-	qtractorSubject *pSubject = pParam->subject();
-	if (pSubject) {
-		qtractorCurve *pCurve = pSubject->curve();
-		if (pCurve) {
-			qtractorCurveList *pCurveList = pCurve->list();
-			if (pCurveList)
-				pCurveList->removeCurve(pCurve);
-			pSubject->setCurve(nullptr);
-			delete pCurve;
-		}
-	}
-
-	// Clear direct access, if any...
-	if (m_pPlugin->directAccessParamIndex() == pParam->index())
-		m_pPlugin->setDirectAccessParamIndex(-1);
+	// Clear any automation curves and direct access
+	// references to the plugin parameter (param_id)...
+	qtractorPlugin::Param *pParam = m_pPlugin->findParamId(int(param_id));
+	if (pParam)
+		m_pPlugin->clearParam(pParam);
 
 	// And mark it dirty, of course...
 	m_pPlugin->updateDirtyCount();
@@ -2842,10 +2826,33 @@ void qtractorClapPlugin::addParams (void)
 
 void qtractorClapPlugin::clearParams (void)
 {
-	m_paramValues.clear();
 	m_paramIds.clear();
+	m_paramValues.clear();
 
 	qtractorPlugin::clearParams();
+}
+
+
+void qtractorClapPlugin::clearParam ( qtractorPlugin::Param *pParam )
+{
+	if (pParam == nullptr)
+		return;
+
+	qtractorSubject *pSubject = pParam->subject();
+	if (pSubject) {
+		qtractorCurve *pCurve = pSubject->curve();
+		if (pCurve) {
+			qtractorCurveList *pCurveList = pCurve->list();
+			if (pCurveList)
+				pCurveList->removeCurve(pCurve);
+			pSubject->setCurve(nullptr);
+			delete pCurve;
+		}
+	}
+
+	// Clear direct access, if any...
+	if (directAccessParamIndex() == pParam->index())
+		setDirectAccessParamIndex(-1);
 }
 
 
@@ -3540,6 +3547,12 @@ void qtractorClapPlugin::request_restart (void)
 
 void qtractorClapPlugin::restart (void)
 {
+	// Clear all automation curves, if any...
+	qtractorSubject::resetQueue();
+
+	foreach (qtractorPlugin::Param *pParam, m_paramIds)
+		clearParam(pParam);
+
 	deinitialize();
 	initialize();
 }

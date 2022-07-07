@@ -113,6 +113,9 @@ public:
 	void addParams();
 	void clearParams();
 
+	// Clear a specific parameter.
+	void clearParam(qtractorPlugin::Param *pParam);
+
 	// Parameter update methods.
 	void updateParam(qtractorPlugin::Param *pParam, float fValue, bool bUpdate);
 
@@ -195,11 +198,11 @@ protected:
 	void initialize();
 	void deinitialize();
 
-	// Make up some others dirty...
-	void updateDirtyCount();
-
 	// Clear instrument/note names cache.
 	void clearNoteNames();
+
+	// Make up some others dirty...
+	void updateDirtyCount();
 
 private:
 
