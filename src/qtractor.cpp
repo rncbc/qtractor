@@ -228,10 +228,17 @@ bool qtractorApplication::setup (void)
 	m_pDisplay = QX11Info::display();
 	if (m_pDisplay) {
 		QString sUnique = QTRACTOR_XUNIQUE;
+		QString sUserName = QString::fromUtf8(::getenv("USER"));
+		if (sUserName.isEmpty())
+			sUserName = QString::fromUtf8(::getenv("USERNAME"));
+		if (!sUserName.isEmpty()) {
+			sUnique += ':';
+			sUnique += sUserName;
+		}
 		char szHostName[255];
 		if (::gethostname(szHostName, sizeof(szHostName)) == 0) {
 			sUnique += '@';
-			sUnique += szHostName;
+			sUnique += QString::fromUtf8(szHostName);
 		}
 		m_aUnique = XInternAtom(m_pDisplay, sUnique.toUtf8().constData(), false);
 		XGrabServer(m_pDisplay);
@@ -277,6 +284,13 @@ bool qtractorApplication::setup (void)
 #endif	// CONFIG_X11
 #else
 	m_sUnique = QCoreApplication::applicationName();
+	QString sUserName = QString::fromUtf8(::getenv("USER"));
+	if (sUserName.isEmpty())
+		sUserName = QString::fromUtf8(::getenv("USERNAME"));
+	if (!sUserName.isEmpty()) {
+		m_sUnique += ':';
+		m_sUnique += sUserName;
+	}
 	m_sUnique += '@';
 	m_sUnique += QHostInfo::localHostName();
 #ifdef Q_OS_UNIX
