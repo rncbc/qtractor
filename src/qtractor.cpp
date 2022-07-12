@@ -1,7 +1,7 @@
 // qtractor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,6 +39,10 @@
 #define CONFIG_PREFIX	"/usr/local"
 #endif
 
+#ifndef CONFIG_BINDIR
+#define CONFIG_BINDIR	CONFIG_PREFIX "/bin"
+#endif
+
 #ifndef CONFIG_DATADIR
 #define CONFIG_DATADIR	CONFIG_PREFIX "/share"
 #endif
@@ -53,8 +57,10 @@
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #define CONFIG_PLUGINSDIR CONFIG_LIBDIR "/qt4/plugins"
-#else
+#elif QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #define CONFIG_PLUGINSDIR CONFIG_LIBDIR "/qt5/plugins"
+#else
+#define CONFIG_PLUGINSDIR CONFIG_LIBDIR "/qt6/plugins"
 #endif
 
 #ifdef CONFIG_X11
@@ -100,6 +106,17 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 	QApplication::setApplicationName(QTRACTOR_TITLE);
 	QApplication::setApplicationDisplayName(QTRACTOR_TITLE);
 	//	QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
+	QApplication::setDesktopFileName(
+		QString("org.rncbc.%1").arg(PACKAGE_TARNAME));
+#endif
+	QString sVersion(CONFIG_BUILD_VERSION);
+	sVersion += '\n';
+	sVersion += QString("Qt: %1").arg(qVersion());
+#if defined(QT_STATIC)
+	sVersion += "-static";
+#endif
+	QApplication::setApplicationVersion(sVersion);
 #endif
 	// Load translation support.
 	QLocale loc;
@@ -130,7 +147,9 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 		if (m_pMyTranslator->load(sLocName, sLocPath)) {
 			QApplication::installTranslator(m_pMyTranslator);
 		} else {
-			sLocPath = CONFIG_DATADIR "/qtractor/translations";
+			sLocPath = QApplication::applicationDirPath();
+			sLocPath.remove(CONFIG_BINDIR);
+			sLocPath.append(CONFIG_DATADIR "/qtractor/translations");
 			if (m_pMyTranslator->load(sLocName, sLocPath)) {
 				QApplication::installTranslator(m_pMyTranslator);
 			} else {
@@ -478,7 +497,7 @@ int main ( int argc, char **argv )
 	::signal(SIGBUS,  stacktrace);
 #endif
 #endif
-#if defined(Q_OS_LINUX)
+#if defined(Q_OS_LINUX) && !defined(CONFIG_WAYLAND)
 	::setenv("QT_QPA_PLATFORM", "xcb", 0);
 #endif
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)

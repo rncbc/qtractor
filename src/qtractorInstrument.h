@@ -1,7 +1,7 @@
 // qtractorInstrument.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -230,7 +230,7 @@ public:
 		{ return m_pData->nrpns; }
 
 	// Keys banks accessors.
-	const qtractorInstrumentData& notes(int iBank, int iProg) const;
+	qtractorInstrumentData& notes(int iBank, int iProg) const;
 	void setNotes(int iBank, int iProg, const qtractorInstrumentData& notes)
 		{ m_pData->keys[iBank][iProg] = notes; }
 	const qtractorInstrumentKeys& keys() const

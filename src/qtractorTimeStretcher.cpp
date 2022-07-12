@@ -1,7 +1,7 @@
 // qtractorTimeStretcher.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -75,6 +75,10 @@ qtractorTimeStretcher::qtractorTimeStretcher (
 
 #ifdef CONFIG_LIBRUBBERBAND
 	if (fTimeStretch > 0.0f || fPitchShift > 0.0f) {
+		if (fTimeStretch < 1e-3f)
+			fTimeStretch = 1.0f;
+		if (fPitchShift  < 1e-3f)
+			fPitchShift  = 1.0f;
 		m_pRubberBandStretcher
 			= new RubberBand::RubberBandStretcher(
 				iSampleRate, iChannels,

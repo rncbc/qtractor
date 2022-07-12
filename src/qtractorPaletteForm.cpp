@@ -1,7 +1,7 @@
 // qtractorPaletteForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,6 +23,8 @@
 #include "qtractorPaletteForm.h"
 
 #include "ui_qtractorPaletteForm.h"
+
+#include "qtractorOptions.h"
 
 #include <QMetaProperty>
 #include <QToolButton>
@@ -1275,8 +1277,17 @@ void qtractorPaletteForm::ColorButton::paintEvent ( QPaintEvent *event )
 
 void qtractorPaletteForm::ColorButton::chooseColor (void)
 {
-	const QColor color
-		= QColorDialog::getColor(m_brush.color(), this);
+	QWidget *pParentWidget = nullptr;
+	QColorDialog::ColorDialogOptions options;
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bDontUseNativeDialogs) {
+		options |= QColorDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
+
+	const QColor& color	= QColorDialog::getColor(
+		m_brush.color(), pParentWidget, QString(), options);
+
 	if (color.isValid()) {
 		m_brush.setColor(color);
 		emit changed();

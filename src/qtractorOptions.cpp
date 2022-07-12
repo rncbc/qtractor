@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -31,6 +31,14 @@
 #include <QTextStream>
 
 #include <QApplication>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+#if defined(Q_OS_WINDOWS)
+#include <QMessageBox>
+#endif
+#endif
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QDesktopWidget>
@@ -173,6 +181,7 @@ void qtractorOptions::loadOptions (void)
 	iMidiMmcMode       = m_settings.value("/MmcMode", 3).toInt();
 	iMidiSppMode       = m_settings.value("/SppMode", 3).toInt();
 	iMidiClockMode     = m_settings.value("/ClockMode", 0).toInt();
+	bMidiResetAllControllers = m_settings.value("/ResetAllControllers", false).toBool();
 	m_settings.endGroup();
 
 	// Metronome options group.
@@ -221,12 +230,15 @@ void qtractorOptions::loadOptions (void)
 	bPasteRepeatPeriod = m_settings.value("/PasteRepeatPeriod", false).toInt();
 	sPluginSearch   = m_settings.value("/PluginSearch").toString();
 	iPluginType     = m_settings.value("/PluginType", 1).toInt();
-	bPluginActivate = m_settings.value("/PluginActivate", true).toBool();
+	bPluginActivate = true;//m_settings.value("/PluginActivate", true).toBool();
 	iCurveMode      = m_settings.value("/CurveMode", 0).toInt();
 	iEditRangeOptions = m_settings.value("/EditRangeOptions", 3).toInt();
 	bShiftKeyModifier = m_settings.value("/ShiftKeyModifier", false).toBool();
 	bMidButtonModifier = m_settings.value("/MidButtonModifier", false).toBool();
 	bMidiControlSync = m_settings.value("/MidiControlSync", false).toBool();
+	iExportRangeType = m_settings.value("/ExportRangeType", 0).toInt();
+	iExportRangeStart = (unsigned long) m_settings.value("/ExportRangeStart", 0).toUInt();
+	iExportRangeEnd = (unsigned long) m_settings.value("/ExportRangeEnd", 0).toUInt();
 	bExportAddTrack = m_settings.value("/ExportAddTrack", false).toBool();
 	m_settings.endGroup();
 
@@ -244,6 +256,7 @@ void qtractorOptions::loadOptions (void)
 	dssiPaths   = m_settings.value("/DssiPaths").toStringList();
 	vstPaths    = m_settings.value("/VstPaths").toStringList();
 	vst3Paths   = m_settings.value("/Vst3Paths").toStringList();
+	clapPaths   = m_settings.value("/ClapPaths").toStringList();
 	lv2Paths    = m_settings.value("/Lv2Paths").toStringList();
 	sLv2PresetDir = m_settings.value("/Lv2PresetDir").toString();
 	bAudioOutputBus = m_settings.value("/AudioOutputBus", false).toBool();
@@ -255,6 +268,7 @@ void qtractorOptions::loadOptions (void)
 	iDummyDssiHash = m_settings.value("/DummyDssiHash", 0).toInt();
 	iDummyVstHash = m_settings.value("/DummyVstHash", 0).toInt();
 	iDummyVst3Hash = m_settings.value("/DummyVst3Hash", 0).toInt();
+	iDummyClapHash = m_settings.value("/DummyClapHash", 0).toInt();
 	iDummyLv2Hash = m_settings.value("/DummyLv2Hash", 0).toInt();
 	bLv2DynManifest = false;//m_settings.value("/Lv2DynManifest", false).toBool();
 	bSaveCurve14bit = true;//m_settings.value("/SaveCurve14bit", false).toBool();
@@ -477,6 +491,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/MmcMode", iMidiMmcMode);
 	m_settings.setValue("/SppMode", iMidiSppMode);
 	m_settings.setValue("/ClockMode", iMidiClockMode);
+	m_settings.setValue("/ResetAllControllers", bMidiResetAllControllers);
 	m_settings.endGroup();
 
 	// Metronome options group.
@@ -531,6 +546,9 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ShiftKeyModifier", bShiftKeyModifier);
 	m_settings.setValue("/MidButtonModifier", bMidButtonModifier);
 	m_settings.setValue("/MidiControlSync", bMidiControlSync);
+	m_settings.setValue("/ExportRangeType", iExportRangeType);
+	m_settings.setValue("/ExportRangeStart", uint(iExportRangeStart));
+	m_settings.setValue("/ExportRangeEnd", uint(iExportRangeEnd));
 	m_settings.setValue("/ExportAddTrack", bExportAddTrack);
 	m_settings.endGroup();
 
@@ -548,6 +566,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/DssiPaths", dssiPaths);
 	m_settings.setValue("/VstPaths", vstPaths);
 	m_settings.setValue("/Vst3Paths", vst3Paths);
+	m_settings.setValue("/ClapPaths", vst3Paths);
 	m_settings.setValue("/Lv2Paths", lv2Paths);
 	m_settings.setValue("/Lv2PresetDir", sLv2PresetDir);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
@@ -559,6 +578,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/DummyDssiHash", iDummyDssiHash);
 	m_settings.setValue("/DummyVstHash", iDummyVstHash);
 	m_settings.setValue("/DummyVst3Hash", iDummyVst3Hash);
+	m_settings.setValue("/DummyClapHash", iDummyClapHash);
 	m_settings.setValue("/DummyLv2Hash", iDummyLv2Hash);
 	m_settings.setValue("/Lv2DynManifest", bLv2DynManifest);
 	m_settings.setValue("/SaveCurve14bit", bSaveCurve14bit);
@@ -690,6 +710,20 @@ QSettings& qtractorOptions::settings (void)
 // Command-line argument stuff.
 //
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+
+void qtractorOptions::show_error( const QString& msg )
+{
+#if defined(Q_OS_WINDOWS)
+	QMessageBox::information(nullptr, QApplication::applicationName(), msg);
+#else
+	const QByteArray tmp = msg.toUtf8() + '\n';
+	::fputs(tmp.constData(), stderr);
+#endif
+}
+
+#else
+
 // Help about command line options.
 void qtractorOptions::print_usage ( const QString& arg0 )
 {
@@ -711,14 +745,54 @@ void qtractorOptions::print_usage ( const QString& arg0 )
 		QObject::tr("Show version information") + sEol;
 }
 
+#endif
+
 
 // Parse command line arguments into m_settings.
 bool qtractorOptions::parse_args ( const QStringList& args )
 {
+	int iCmdArgs = 0;
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+
+	QCommandLineParser parser;
+	parser.setApplicationDescription(
+		QTRACTOR_TITLE " - " + QObject::tr(QTRACTOR_SUBTITLE));
+
+#ifdef CONFIG_JACK_SESSION
+	parser.addOption({{"s", "session-id"},
+		QObject::tr("Set session identification (uuid)"), "uuid"});
+#endif
+	parser.addHelpOption();
+	parser.addVersionOption();
+	parser.addPositionalArgument("session-file",
+		QObject::tr("Session file (.qtr)"),
+		QObject::tr("[session-file]"));
+	parser.process(args);
+
+#ifdef CONFIG_JACK_SESSION
+	if (parser.isSet("session-id")) {
+		const QString& sVal = parser.value("session-id");
+		if (sVal.isEmpty()) {
+			show_error(QObject::tr("Option -s requires an argument (uuid)."));
+			return false;
+		}
+		sSessionId = sVal;
+	}
+#endif
+
+	foreach(const QString& sArg, parser.positionalArguments()) {
+		if (iCmdArgs > 0)
+			sSessionFile += ' ';
+		sSessionFile += sArg;
+		++iCmdArgs;
+	}
+
+#else
+
 	QTextStream out(stderr);
 	const QString sEol = "\n\n";
 	const int argc = args.count();
-	int iCmdArgs = 0;
 
 	for (int i = 1; i < argc; ++i) {
 
@@ -745,7 +819,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 		}
 		if (sArg == "-s" || sArg == "--session-id") {
 			if (sVal.isNull()) {
-				out << QObject::tr("Option -s requires an argument (session-id).") + sEol;
+				out << QObject::tr("Option -s requires an argument (uuid).") + sEol;
 				return false;
 			}
 			sSessionId = sVal;
@@ -776,6 +850,8 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			++iCmdArgs;
 		}
 	}
+
+#endif
 
 	// Alright with argument parsing.
 	return true;

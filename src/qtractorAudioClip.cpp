@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -861,33 +861,28 @@ bool qtractorAudioClip::clipExport ( ClipExport pfnClipExport, void *pvArg,
 
 	unsigned short i;
 
-	const unsigned int iFrames = pBuff->bufferSize();
+	const unsigned int iFrames
+		= pSession->audioEngine()->bufferSizeEx();
 	float **ppFrames = new float * [iChannels];
-	for (i = 0; i < iChannels; ++i) {
+	for (i = 0; i < iChannels; ++i)
 		ppFrames[i] = new float[iFrames];
-		::memset(ppFrames[i], 0, iFrames * sizeof(float));
-	}
 
+	const float fGain = clipGain();
 	unsigned long iFrameStart = 0;
 	while (iFrameStart < iLength) {
 		pBuff->syncExport();
 		if (pBuff->inSync(iFrameStart, iFrameStart + iFrames)) {
-			const int nread = pBuff->read(ppFrames, iFrames);
+			const int nread
+				= pBuff->readMux(ppFrames, iFrames, iChannels, 0, fGain);
 			if (nread < 1)
 				break;
-			for (i = 0; i < iChannels; ++i) {
-				const float fGain = clipGain() * pBuff->channelGain(i);
-				float *pFrames = ppFrames[i];
-				for (int n = 0; n < nread; ++n)
-					*pFrames++ *= fGain;
-			}
 			(*pfnClipExport)(ppFrames, nread, pvArg);
 			iFrameStart += nread;
 		}
 	}
 
 	for (i = 0; i < iChannels; ++i)
-		delete ppFrames[i];
+		delete [] ppFrames[i];
 	delete [] ppFrames;
 	delete pBuff;
 

@@ -1,7 +1,7 @@
 #
 # spec file for package qtractor
 #
-# Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+# Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -17,7 +17,7 @@
 
 %define name    @PACKAGE_TARNAME@
 %define version @PACKAGE_VERSION@
-%define release 64.1
+%define release 70.1
 
 %define _prefix	@ac_prefix@
 
@@ -52,33 +52,30 @@ BuildRequires:	cmake
 %if 0%{qt_major_version} == 6
 BuildRequires:	qt6-qtbase-devel >= 6.1
 BuildRequires:	qt6-qttools-devel
-BuildRequires:	qt6-qtwayland-devel
 BuildRequires:	qt6-qtsvg-devel
 BuildRequires:	qt6-linguist
 %else
 BuildRequires:	qt5-qtbase-devel >= 5.1
 BuildRequires:	qt5-qttools-devel
-BuildRequires:	qt5-qtwayland-devel
 BuildRequires:	qt5-qtsvg-devel
+BuildRequires:	qt5-qtx11extras-devel
 BuildRequires:	qt5-linguist
 %endif
 BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	rubberband-devel
 BuildRequires:	aubio-devel >= 0.4.1
-BuildRequires:	ruby
 %else
 %if 0%{qt_major_version} == 6
 BuildRequires:	qt6-base-devel >= 6.1
 BuildRequires:	qt6-tools-devel
-BuildRequires:	qt6-wayland-devel
 BuildRequires:	qt6-svg-devel
 BuildRequires:	qt6-linguist-devel
 %else
 BuildRequires:	libqt5-qtbase-devel >= 5.1
 BuildRequires:	libqt5-qttools-devel
-BuildRequires:	libqt5-qtwayland-devel
 BuildRequires:	libqt5-qtsvg-devel
+BuildRequires:	libqt5-qtx11extras-devel
 BuildRequires:	libqt5-linguist-devel
 %endif
 BuildRequires:	libjack-devel
@@ -98,7 +95,9 @@ BuildRequires:	libserd-devel
 BuildRequires:	libsord-devel
 BuildRequires:	libsratom-devel
 BuildRequires:	liblilv-devel
+%if 0%{qt_major_version} < 6
 BuildRequires:	libsuil-devel
+%endif
 BuildRequires:	zlib-devel
 BuildRequires:	gtk2-devel
 %if %{defined fedora}
@@ -124,11 +123,12 @@ the personal home-studio.
 %setup -q
 
 %build
-cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build -S .
-%__make %{?_smp_mflags} -C build
+cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build
+cmake --build build %{?_smp_mflags}
 
 %install
-%__make DESTDIR="%{buildroot}" -C build install
+DESTDIR="%{buildroot}" \
+cmake --install build
 
 %post
 %mime_database_post
@@ -143,7 +143,7 @@ cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build -S .
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS COPYING ChangeLog README TODO
+%doc README LICENSE TRANSLATORS ChangeLog
 %dir %{_libdir}/%{name}
 #dir %{_datadir}/mime
 #dir %{_datadir}/mime/packages
@@ -164,18 +164,28 @@ cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build -S .
 #dir %{_datadir}/man/fr/man1
 %{_bindir}/%{name}
 %{_libdir}/%{name}/%{name}_plugin_scan
-%{_datadir}/mime/packages/%{name}.xml
-%{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/32x32/apps/%{name}.png
-%{_datadir}/icons/hicolor/32x32/mimetypes/application-x-%{name}*.png
-%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
-%{_datadir}/icons/hicolor/scalable/mimetypes/application-x-%{name}*.svg
+%{_datadir}/mime/packages/org.rncbc.%{name}.xml
+%{_datadir}/applications/org.rncbc.%{name}.desktop
+%{_datadir}/icons/hicolor/32x32/apps/org.rncbc.%{name}.png
+%{_datadir}/icons/hicolor/scalable/apps/org.rncbc.%{name}.svg
+%{_datadir}/icons/hicolor/32x32/mimetypes/org.rncbc.%{name}.application-x-%{name}*.png
+%{_datadir}/icons/hicolor/scalable/mimetypes/org.rncbc.%{name}.application-x-%{name}*.svg
 %{_datadir}/%{name}/translations/%{name}_*.qm
-%{_datadir}/metainfo/%{name}.appdata.xml
+%{_datadir}/metainfo/org.rncbc.%{name}.metainfo.xml
 %{_datadir}/man/man1/%{name}.1.gz
 %{_datadir}/man/fr/man1/%{name}.1.gz
 
 %changelog
+* Thu Jul  7 2022 Rui Nuno Capela <rncbc@rncbc.org> 0.9.27
+- An Early-Summer'22 Release.
+* Sat Apr  9 2022 Rui Nuno Capela <rncbc@rncbc.org> 0.9.26
+- A Spring'22 Release.
+* Sun Jan  9 2022 Rui Nuno Capela <rncbc@rncbc.org> 0.9.25
+- A Winter'22 Release.
+* Sat Oct 16 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.24
+- Autumn'21 release.
+* Sat Jul 10 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.23
+- Early-Summer'21 release.
 * Fri May 14 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.22
 - Spring'21 release.
 * Thu Mar 18 2021 Rui Nuno Capela <rncbc@rncbc.org> 0.9.21

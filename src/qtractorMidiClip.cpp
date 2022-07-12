@@ -1,7 +1,7 @@
 // qtractorMidiClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -221,7 +221,12 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 // Destructor.
 qtractorMidiClip::~qtractorMidiClip (void)
 {
-	close();
+	// Sure close MIDI clip editor if any...
+	if (m_pMidiEditorForm) {
+		m_pMidiEditorForm->close();
+		delete m_pMidiEditorForm;
+		m_pMidiEditorForm = nullptr;
+	}
 
 	closeMidiFile();
 }

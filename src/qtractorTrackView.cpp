@@ -1,7 +1,7 @@
 // qtractorTrackView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2112,7 +2112,8 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			break;
 		case DragClipPaste:
 			// Let's paste them...
-			pasteClipSelect(dragClipMove(pos + m_posStep));
+			pasteClipSelect(dragClipMove(pos + m_posStep),
+				modifiers & Qt::ControlModifier);
 			break;
 		case DragClipPasteDrop:
 			// Let's drop-paste them...
@@ -3071,6 +3072,13 @@ void qtractorTrackView::updateRect ( const QRect& rect )
 	qtractorScrollView::update(	// Add some slack margin...
 		QRect(qtractorScrollView::contentsToViewport(
 			rect.topLeft()), rect.size() + QSize(4, 4)));
+}
+
+
+// Make current selected clip reference.
+void qtractorTrackView::setCurrentClip ( qtractorClip *pClip )
+{
+	m_pClipDrag = pClip;
 }
 
 
@@ -4120,7 +4128,8 @@ void qtractorTrackView::keyPressEvent ( QKeyEvent *pKeyEvent )
 			if (m_dragState == DragClipMove)
 				moveClipSelect(dragClipMove(pos + m_posStep));
 			else if (m_dragState == DragClipPaste)
-				pasteClipSelect(dragClipMove(pos + m_posStep));
+				pasteClipSelect(dragClipMove(pos + m_posStep),
+					modifiers & Qt::ControlModifier);
 			else if (m_dragState == DragClipPasteDrop)
 				dropClip(pos + m_posStep);
 			else if (m_dragState == DragCurveMove)
@@ -5284,7 +5293,7 @@ void qtractorTrackView::moveClipSelect ( qtractorTrack *pTrack )
 
 
 // Paste from clipboard (execute).
-void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
+void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack, bool bUnlink )
 {
 	// Check if there's anything really on clipboard...
 	if (g_clipboard.clips.count() < 1)
@@ -5354,7 +5363,7 @@ void qtractorTrackView::pasteClipSelect ( qtractorTrack *pTrack )
 				iPasteDelta += long(iClipStart) - long(iFrameStart);
 			}
 			// Now, its imperative to make a proper copy of those clips...
-			qtractorClip *pNewClip = cloneClip(pClip);
+			qtractorClip *pNewClip = cloneClip(pClip, bUnlink);
 			// Add the new pasted clip...
 			if (pNewClip) {
 				// HACK: convert/override MIDI clip-offset, length
@@ -5606,7 +5615,7 @@ void qtractorTrackView::pasteCurveSelect ( const QPoint& pos )
 
 
 // Clip cloner helper.
-qtractorClip *qtractorTrackView::cloneClip ( qtractorClip *pClip )
+qtractorClip *qtractorTrackView::cloneClip ( qtractorClip *pClip, bool bUnlink )
 {
 	if (pClip == nullptr)
 		return nullptr;
@@ -5615,7 +5624,12 @@ qtractorClip *qtractorTrackView::cloneClip ( qtractorClip *pClip )
 	if (pTrack == nullptr)
 		return nullptr;
 
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return nullptr;
+
 	qtractorClip *pNewClip = nullptr;
+
 	switch (pTrack->trackType()) {
 		case qtractorTrack::Audio: {
 			qtractorAudioClip *pAudioClip
@@ -5627,8 +5641,32 @@ qtractorClip *qtractorTrackView::cloneClip ( qtractorClip *pClip )
 		case qtractorTrack::Midi: {
 			qtractorMidiClip *pMidiClip
 				= static_cast<qtractorMidiClip *> (pClip);
-			if (pMidiClip)
+			if (pMidiClip) {
 				pNewClip = new qtractorMidiClip(*pMidiClip);
+				// Whether to Auto-unlink the new MIDI clip...
+				qtractorMidiClip *pNewMidiClip = nullptr;
+				if (bUnlink)
+					pNewMidiClip = static_cast<qtractorMidiClip *> (pNewClip);
+				if (pNewMidiClip) {
+					// Have a new filename revision...
+					const QString& sFilename
+						= pNewMidiClip->createFilePathRevision(true);
+					// Save/replace the clip track...
+					qtractorMidiFile::saveCopyFile(sFilename,
+						pMidiClip->filename(),
+						pMidiClip->trackChannel(),
+						pMidiClip->format(),
+						pMidiClip->sequence(),
+						pSession->timeScale(),
+						pSession->tickFromFrame(pMidiClip->clipStart()));
+					// Set new copy filename...
+					pNewMidiClip->setFilename(sFilename);
+					pSession->files()->addClipItem(qtractorFileList::Midi, pNewMidiClip, true);
+					qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+					if (pMainForm)
+						pMainForm->addMidiFile(sFilename);
+				}
+			}
 			break;
 		}
 		case qtractorTrack::None:
@@ -5822,7 +5860,7 @@ void qtractorTrackView::openEditCurveNode (
 	m_pEditCurveNodeSpinBox->setFocus();
 
 	QObject::connect(m_pEditCurveNodeSpinBox,
-		SIGNAL(valueChanged(const QString&)),
+		SIGNAL(valueChanged(double)),
 		SLOT(editCurveNodeChanged()));
 	QObject::connect(m_pEditCurveNodeSpinBox,
 		SIGNAL(editingFinished()),

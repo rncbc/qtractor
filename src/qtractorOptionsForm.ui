@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@
    <string>Options</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/qtractor.png</iconset>
+   <iconset resource="qtractor.qrc">:/images/qtractor.svg</iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -1561,7 +1561,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="4">
+          <item row="1" column="0" colspan="3">
            <widget class="QCheckBox" name="MidiPlayerBusCheckBox">
             <property name="font">
              <font>
@@ -1574,6 +1574,22 @@
             </property>
             <property name="text">
              <string>Dedicated MIDI p&amp;layer outputs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QCheckBox" name="MidiResetAllControllersCheckBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Whether to reset/resend all controllers on playback start</string>
+            </property>
+            <property name="text">
+             <string>&amp;Reset all controllers on playback start</string>
             </property>
            </widget>
           </item>
@@ -3464,7 +3480,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Move up path</string>
+             <string>Move down path</string>
             </property>
             <property name="text">
              <string>&amp;Down</string>
@@ -3986,6 +4002,7 @@
   <tabstop>MidiQueueTimerComboBox</tabstop>
   <tabstop>MidiDriftCorrectCheckBox</tabstop>
   <tabstop>MidiPlayerBusCheckBox</tabstop>
+  <tabstop>MidiResetAllControllersCheckBox</tabstop>
   <tabstop>MidiMmcModeComboBox</tabstop>
   <tabstop>MidiMmcDeviceComboBox</tabstop>
   <tabstop>MidiSppModeComboBox</tabstop>

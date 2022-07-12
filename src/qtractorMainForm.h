@@ -1,7 +1,7 @@
 // qtractorMainForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -388,7 +388,8 @@ protected:
 	bool loadSessionFileEx(const QString& sFilename, int iFlags, bool bUpdate);
 	bool saveSessionFileEx(const QString& sFilename, int iFlags, bool bUpdate);
 
-	QString sessionBackupPath(const QString& sFilename);
+	QString sessionBackupPath(const QString& sFilename) const;
+	QString sessionArchivePath(const QString& sFilename) const;
 
 	bool startSession();
 	bool checkRestartSession();
@@ -524,8 +525,9 @@ private:
 		StatusLoop    = 5,   // Current session looping state.
 		StatusXrun    = 6,   // Current session XRUN count.
 		StatusTime    = 7,   // Current session length time.
-		StatusRate    = 8,   // Current session sample rate.
-		StatusItems   = 9    // Number of status items.
+		StatusSize    = 8,   // Current session buffer size.
+		StatusRate    = 9,   // Current session sample rate.
+		StatusItems   = 10   // Number of status items.
 	};
 
 	QLabel *m_statusItems[StatusItems];

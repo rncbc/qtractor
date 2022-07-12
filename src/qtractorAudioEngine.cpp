@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,6 +42,10 @@
 
 #ifdef CONFIG_VST3
 #include "qtractorVst3Plugin.h"
+#endif
+
+#ifdef CONFIG_CLAP
+#include "qtractorClapPlugin.h"
 #endif
 
 #ifdef CONFIG_LV2
@@ -496,7 +500,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 
 	m_iSampleRate = 44100;	// A sensible default, always.
 	m_iBufferSize = 0;
-	m_iBufferSizeEx = 0;
+	m_iBufferSizeEx = 1024;	// Another sensible default, sometimes.
 	m_iBufferOffset = 0;
 
 	m_bMasterAutoConnect = true;
@@ -682,7 +686,9 @@ bool qtractorAudioEngine::init (void)
 	m_iBufferSize = jack_get_buffer_size(m_pJackClient);
 
 	// Guard for buffer size changes...
-	m_iBufferSizeEx = (m_iBufferSize << 2);
+	const unsigned int iBufferSizeEx = (m_iBufferSize << 1);
+	if (m_iBufferSizeEx < iBufferSizeEx)
+		m_iBufferSizeEx = iBufferSizeEx;
 
 	// ATTN: Second is setting proper session client name.
 	pSession->setClientName(
@@ -1010,6 +1016,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 #ifdef CONFIG_VST3
 	qtractorVst3Plugin::updateTime(this);
 #endif
+#ifdef CONFIG_CLAP
+	qtractorClapPlugin::updateTime(this);
+#endif
 #ifdef CONFIG_LV2
 #ifdef CONFIG_LV2_TIME
 	qtractorLv2Plugin::updateTime(this);
@@ -1221,13 +1230,6 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 		qtractorLv2Plugin::updateTime(this);
 	#endif
 	#endif
-		// MIDI plugin manager processing...
-		qtractorMidiManager *pMidiManager
-			= pSession->midiManagers().first();
-		while (pMidiManager) {
-			pMidiManager->process(iFrameStart, iFrameEnd);
-			pMidiManager = pMidiManager->next();
-		}
 		// Perform all tracks processing...
 		int iTrack = 0;
 		for (qtractorTrack *pTrack = pSession->tracks().first();
@@ -1235,6 +1237,13 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 			pTrack->process_export(pAudioCursor->clip(iTrack),
 				iFrameStart, iFrameEnd);
 			++iTrack;
+		}
+		// MIDI plugin manager processing...
+		qtractorMidiManager *pMidiManager
+			= pSession->midiManagers().first();
+		while (pMidiManager) {
+			pMidiManager->process(iFrameStart, iFrameEnd);
+			pMidiManager = pMidiManager->next();
 		}
 		// Prepare advance for next cycle...
 		pAudioCursor->seek(iFrameEnd);
@@ -1508,6 +1517,10 @@ bool qtractorAudioEngine::fileExport (
 	// Make sure we have an actual session cursor...
 	qtractorSession *pSession = session();
 	if (pSession == nullptr)
+		return false;
+
+	qtractorSessionCursor *pAudioCursor = sessionCursor();
+	if (pAudioCursor == nullptr)
 		return false;
 
 	// About to show some progress bar...
@@ -2194,7 +2207,19 @@ int qtractorAudioEngine::updateConnects (void)
 void qtractorAudioEngine::setTransportMode (
 	qtractorBus::BusMode transportMode )
 {
+	const bool bActivated = isActivated();
+	if (bActivated && (m_transportMode & qtractorBus::Input)) {
+		jack_set_sync_callback(m_pJackClient,
+			nullptr, nullptr);
+	}
+
 	m_transportMode = transportMode;
+
+	if (bActivated && (m_transportMode & qtractorBus::Input)) {
+		jack_set_sync_callback(m_pJackClient,
+			qtractorAudioEngine_sync, this);
+	}
+
 }
 
 qtractorBus::BusMode qtractorAudioEngine::transportMode (void) const

@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>images/qtractor.png</file>
+        <file>images/qtractor.svg</file>
         <file>images/qtractorMidiEditor.png</file>
         <file>images/qtractorTracks.png</file>
         <file>images/clipEdit.png</file>

@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -280,11 +280,7 @@ void qtractorTrackListButtons::updateTrackButtons (void)
 
 // Local constants.
 static const char *TracksGroup            = "/Tracks";
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-static const char *TrackListHeaderViewKey = "/TrackList/HeaderView";
-#else
 static const char *TrackListHeaderViewKey = "/TrackListHeaderView";
-#endif
 
 // Constructor.
 qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent )
@@ -311,7 +307,6 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 	m_pHeader->setHighlightSections(false);
 	m_pHeader->setStretchLastSection(true);
 	m_pHeader->setSortIndicatorShown(false);
-	m_pHeader->setMinimumSectionSize(24);
 
 	// Default section sizes...
 	const int iColCount = m_pHeader->count() - 1;
@@ -341,6 +336,9 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 			m_pHeader->restoreState(aHeaderView);
 		settings.endGroup();
 	}
+
+	// Enforce this no matter what...
+	m_pHeader->setMinimumSectionSize(24);
 
 	QObject::connect(m_pHeader,
 		SIGNAL(sectionResized(int,int,int)),
@@ -1043,7 +1041,10 @@ void qtractorTrackList::updateHeaderSize ( int iCol, int, int iColSize )
 void qtractorTrackList::resetHeaderSize ( int iCol )
 {
 	const bool bBlockSignals = m_pHeader->blockSignals(true);
-	m_pHeader->resizeSection(iCol, m_pHeader->sectionSizeHint(iCol));
+	const int iColSize = m_pHeader->sectionSizeHint(iCol);
+	//	= m_pHeader->model()->headerData(iCol,
+	//		Qt::Horizontal, Qt::SizeHintRole).toSize().width();
+	m_pHeader->resizeSection(iCol, iColSize);
 	if (iCol == Number) {
 		// Resize all icons anyway...
 		QListIterator<Item *> iter(m_items);

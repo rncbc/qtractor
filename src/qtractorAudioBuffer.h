@@ -1,7 +1,7 @@
 // qtractorAudioBuffer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -134,6 +134,8 @@ public:
 
 	// Special kind of super-read/channel-mix.
 	int readMix(float **ppFrames, unsigned int iFrames,
+		unsigned short iChannels, unsigned int iOffset, float fGain);
+	int readMux(float **ppFrames, unsigned int iFrames,
 		unsigned short iChannels, unsigned int iOffset, float fGain);
 
 	// Buffer data seek.

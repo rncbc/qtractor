@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -173,9 +173,13 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		m_pPlugin->activateObserver());
 
 	qtractorPluginType *pType = m_pPlugin->type();
-	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
-	const int MaxRowsPerPage    = (bVstPlugin ? 12 : 8);
-	const int MaxColumnsPerPage = (bVstPlugin ?  2 : 3);
+	const qtractorPluginType::Hint typeHint = pType->typeHint();
+	const bool bTwoColumnPage
+		= (typeHint == qtractorPluginType::Vst
+		|| typeHint == qtractorPluginType::Vst3
+		|| typeHint == qtractorPluginType::Clap);
+	const int MaxRowsPerPage    = (bTwoColumnPage ? 12 : 8);
+	const int MaxColumnsPerPage = (bTwoColumnPage ?  2 : 3);
 	const int MaxItemsPerPage   = MaxRowsPerPage * MaxColumnsPerPage;
 
 	const qtractorPlugin::Params& params = m_pPlugin->params();
@@ -289,7 +293,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 		toggleEditor(m_pPlugin->isEditorVisible());
 
 	// Show insert tool options...
-	const bool bInsertPlugin = (pType->typeHint() == qtractorPluginType::Insert);
+	const bool bInsertPlugin = (typeHint == qtractorPluginType::Insert);
 	if (bInsertPlugin) {
 		if (pType->index() > 0) {
 			m_ui.SendsToolButton->setIcon(QIcon(":/images/itemAudioPortOut.png"));
@@ -303,7 +307,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	m_ui.ReturnsToolButton->setVisible(bInsertPlugin);
 
 	// Show aux-send tool options...
-	const bool bAuxSendPlugin = (pType->typeHint() == qtractorPluginType::AuxSend);
+	const bool bAuxSendPlugin = (typeHint == qtractorPluginType::AuxSend);
 	m_ui.AuxSendBusNameComboBox->setVisible(bAuxSendPlugin);
 	m_ui.AuxSendBusNameLabel->setVisible(bAuxSendPlugin);
 	m_ui.AuxSendBusNameToolButton->setVisible(bAuxSendPlugin);
@@ -318,7 +322,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	// About page...
 	m_ui.NameTextLabel->setText(pType->name());
 	m_ui.TypeHintTextLabel->setText(
-		qtractorPluginType::textFromHint(pType->typeHint()));
+		qtractorPluginType::textFromHint(typeHint));
 	QString sAboutText = pType->aboutText();
 	sAboutText += '\n';
 	sAboutText += '\n';
@@ -1253,7 +1257,14 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 		m_pCheckBox->setSubject(m_pParam->subject());
 	//	m_pCheckBox->setChecked(m_pParam->value() > 0.1f);
 		pGridLayout->addWidget(m_pCheckBox, 0, 0);
-		pGridLayout->setColumnStretch(0, 3);
+		pGridLayout->setColumnStretch(0, 2);
+		if (m_pParam->isDisplay()) {
+			m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
+			m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+		//	m_pDisplay->setText(m_pParam->display());
+			m_pDisplay->setMinimumWidth(64);
+			pGridLayout->addWidget(m_pDisplay, 0, 2);
+		}
 	} else {
 		QLabel *pLabel = new QLabel(/*this*/);
 		pLabel->setText(m_pParam->name() + ':');
@@ -1302,7 +1313,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			pGridLayout->setColumnStretch(1, 2);
 			if (m_pParam->isDisplay()) {
 				m_pDisplay = new qtractorPluginParamDisplay(m_pParam);
-				m_pDisplay->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+				m_pDisplay->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 			//	m_pDisplay->setText(m_pParam->display());
 				m_pDisplay->setMinimumWidth(64);
 				pGridLayout->addWidget(m_pDisplay, 0, 2);

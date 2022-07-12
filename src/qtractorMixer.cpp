@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -717,24 +717,40 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 	m_bSelected = bSelected;
 
 	QPalette pal;
+	QColor rgbBase;
+	if (m_bSelected) {
+		rgbBase = pal.midlight().color();
+		pal.setColor(QPalette::WindowText,
+			pal.highlightedText().color());
+		pal.setColor(QPalette::Window,
+			rgbBase.darker(150));
+	} else {
+		rgbBase	= pal.window().color();
+		pal.setColor(QPalette::WindowText,
+			pal.windowText().color());
+		pal.setColor(QPalette::Window,
+			rgbBase);
+	}
 #ifdef CONFIG_GRADIENT
 	const QSize& hint = QFrame::sizeHint();
 	QLinearGradient grad(0, 0, hint.width() >> 1, hint.height());
 	if (m_bSelected) {
-		const QColor& rgbBase = pal.midlight().color();
-		pal.setColor(QPalette::WindowText, pal.highlightedText().color());
-		pal.setColor(QPalette::Window, rgbBase.darker(150));
 		grad.setColorAt(0.4, rgbBase.darker(150));
 		grad.setColorAt(0.6, rgbBase.darker(130));
 		grad.setColorAt(1.0, rgbBase.darker());
 	} else {
-		const QColor& rgbBase = pal.window().color();
-		pal.setColor(QPalette::WindowText, pal.windowText().color());
-		pal.setColor(QPalette::Window, rgbBase);
 		grad.setColorAt(0.4, rgbBase);
 		grad.setColorAt(0.6, rgbBase.lighter(105));
 		grad.setColorAt(1.0, rgbBase.darker(130));
 	}
+	const QBrush brush
+		= pal.brush(QPalette::Window);
+	pal.setBrush(QPalette::Window, grad);
+#endif
+	QFrame::setPalette(pal);
+#ifdef CONFIG_GRADIENT
+	pal.setBrush(QPalette::Window, brush);
+#endif
 	m_pPluginListView->setPalette(pal);
 	m_pMonitorButton->setPalette(pal);
 	if (m_pBusButton)
@@ -747,19 +763,6 @@ void qtractorMixerStrip::setSelected ( bool bSelected )
 		m_pSoloButton->setPalette(pal);
 	if (m_pMixerMeter)
 		m_pMixerMeter->setPalette(pal);
-	pal.setBrush(QPalette::Window, grad);
-#else
-	if (m_bSelected) {
-		const QColor& rgbBase = pal.midlight().color();
-		pal.setColor(QPalette::WindowText, rgbBase.lighter());
-		pal.setColor(QPalette::Window, rgbBase.darker(150));
-	} else {
-		const QColor& rgbBase = pal.button().color();
-	//	pal.setColor(QPalette::WindowText, rgbBase.darker());
-		pal.setColor(QPalette::Window, rgbBase);
-	}
-#endif
-	QFrame::setPalette(pal);
 #ifdef CONFIG_GRADIENT
 	if (m_pRecordButton)
 		m_pRecordButton->observer()->update(true);
@@ -1291,7 +1294,7 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 		else ++strip;
 	}
 
-	m_pRackWidget->workspace()->adjustSize();
+	m_pRackWidget->updateWorkspace();
 	m_pRackWidget->workspace()->setUpdatesEnabled(true);
 }
 

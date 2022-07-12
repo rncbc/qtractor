@@ -1,7 +1,7 @@
 // qtractorInstrument.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -53,7 +53,7 @@ const qtractorInstrumentData& qtractorInstrument::patch ( int iBank ) const
 
 
 // Retrieve key/notes list for given (bank, prog) pair.
-const qtractorInstrumentData& qtractorInstrument::notes ( int iBank, int iProg ) const
+qtractorInstrumentData& qtractorInstrument::notes ( int iBank, int iProg ) const
 {
 	if (m_pData->keys.contains(iBank)) {
 		if (m_pData->keys[iBank].contains(iProg)) {

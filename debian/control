@@ -2,13 +2,17 @@ Source: qtractor
 Section: contrib/sound
 Priority: extra
 Maintainer: Rui Nuno Capela <rncbc@rncbc.org>
-Build-Depends: debhelper (>= 10), cmake, pkg-config,
-  qtchooser, qtbase5-dev (>= 5.1), qtbase5-dev-tools (>= 5.1),
-  qttools5-dev (>= 5.1), qttools5-dev-tools (>= 5.1),
-  libqt5svg5-dev, libqt5waylandclient5-dev | qtwayland5-dev-tools,
+Build-Depends: debhelper (>= 11), cmake, pkg-config,
+  qt6-base-dev (>= 6.1) | qtbase5-dev (>= 5.1),
+  qt6-base-dev-tools (>= 6.1) | qtbase5-dev-tools (>= 5.1),
+  qt6-tools-dev (>= 6.1) | qttools5-dev (>= 5.1),
+  qt6-tools-dev-tools (>= 6.1) | qttools5-dev-tools (>= 5.1),
+  qt6-l10n-tools (>= 6.1)  | base-files (<< 12),
+  libqt6svg6-dev | libqt5svg5-dev, libgl-dev,
+  base-files (>= 12) | libqt5x11extras5-dev (>= 5.1),
   libjack-dev | libjack-jackd2-dev, libasound2-dev, libsndfile-dev,
   libvorbis-dev, libmad0-dev, libsamplerate-dev, librubberband-dev,
-  ladspa-sdk, dssi-dev, liblo-dev, lv2-dev, libz-dev,
+  ladspa-sdk, dssi-dev, liblo-dev, lv2-dev, libz-dev, libfftw3-dev,
   liblilv-dev, libsratom-dev, libsord-dev, libserd-dev,
   libsuil-dev, libgtk2.0-dev, libgtkmm-2.4-dev,
   libx11-dev, x11proto-core-dev, libfontconfig-dev,
@@ -17,9 +21,10 @@ Standards-Version: 3.9.7
 
 Package: qtractor
 Architecture: any
-Depends: libjack0 | libjack-jackd2-0,
-  ${shlibs:Depends},
-  ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends},
+  libqt6svg6 (>= 6.1) | libqt5svg5 (>= 5.1),
+  qt6-qpa-plugins | base-files (<< 12),
+  libjack0 | libjack-jackd2-0
 Description: An Audio/MIDI multi-track sequencer.
   Qtractor is an Audio/MIDI multi-track sequencer application
   written in C++ with the Qt framework. Target platform will be

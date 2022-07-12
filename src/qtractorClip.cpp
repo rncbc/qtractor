@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -155,9 +155,10 @@ QString qtractorClip::clipTitle (void) const
 
 	if (m_pTakeInfo && m_pTakeInfo->partClip(this) != TakeInfo::ClipHead) {
 		const int iCurrentTake = m_pTakeInfo->currentTake();
-		if (iCurrentTake >= 0) {
-			sClipTitle += QObject::tr(" (take %1)")
-				.arg(iCurrentTake + 1);
+		const int iTakeCount = m_pTakeInfo->takeCount();
+		if (iCurrentTake >= 0 && iCurrentTake < iTakeCount) {
+			sClipTitle += QObject::tr(" (take %1/%2)")
+				.arg(iCurrentTake + 1).arg(iTakeCount);
 		}
 	}
 
@@ -312,7 +313,7 @@ void qtractorClip::updateClipTime (void)
 	m_iClipStart = pSession->frameFromTick(m_iClipStartTime);
 	m_iClipLength = pSession->frameFromTickRange(
 		m_iClipStartTime, m_iClipStartTime + m_iClipLengthTime);
-#if 1// EXPERIMENTAL: Don't quantize to MIDI metronomic time-scale...
+#if 1// FIXUP: Don't quantize to MIDI metronomic time-scale...
 	m_iClipOffsetTime = pSession->tickFromFrameRange(
 		m_iClipStart, m_iClipStart + m_iClipOffset, true);
 #else

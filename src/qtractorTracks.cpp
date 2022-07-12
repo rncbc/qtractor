@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -453,6 +453,13 @@ void qtractorTracks::updateContents ( bool bRefresh )
 qtractorTrack *qtractorTracks::currentTrack (void) const
 {
 	return m_pTrackList->currentTrack();
+}
+
+
+// Make current selected clip reference.
+void qtractorTracks::setCurrentClip ( qtractorClip *pClip )
+{
+	m_pTrackView->setCurrentClip(pClip);
 }
 
 
@@ -1398,7 +1405,7 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	}
 
 	for (i = 0; i < iChannels; ++i)
-		delete ppFrames[i];
+		delete [] ppFrames[i];
 	delete [] ppFrames;
 
 	qDeleteAll(list);
@@ -1765,8 +1772,14 @@ bool qtractorTracks::rangeClipEx ( qtractorClip *pClip, bool bLoopSet )
 	pSession->setEditTail(iEditTail);
 
 	if (bLoopSet) {
-		return pSession->execute(
+		if (pSession->isLooping()
+			&& iEditHead == pSession->loopStart()
+			&& iEditTail == pSession->loopEnd()) {
+			iEditHead = iEditTail = 0;
+		}
+		pSession->execute(
 			new qtractorSessionLoopCommand(pSession, iEditHead, iEditTail));
+		return (iEditHead < iEditTail);
 	}
 
 	selectionChangeNotify();

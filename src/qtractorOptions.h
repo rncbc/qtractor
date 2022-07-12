@@ -1,7 +1,7 @@
 // qtractorOptions.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -53,8 +53,12 @@ public:
 
 	// Command line arguments parser.
 	bool parse_args(const QStringList& args);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	void show_error(const QString& msg);
+#else
 	// Command line usage helper.
 	void print_usage(const QString& arg0);
+#endif
 
 	// Startup supplied session uuid.
 	QString sSessionId;
@@ -141,10 +145,14 @@ public:
 	bool bMidiControlBus;
 	bool bMidiMetroBus;
 	bool bMidiMetronome;
+	int  iMidiMetroOffset;
 	int  iMidiMmcDevice;
 	int  iMidiMmcMode;
 	int  iMidiSppMode;
 	int  iMidiClockMode;
+
+	// Whether to reset all MIDI controllers (on playback start).
+	bool bMidiResetAllControllers;
 
 	// MIDI Metronome parameters.
 	int iMetroChannel;
@@ -154,9 +162,6 @@ public:
 	int iMetroBeatNote;
 	int iMetroBeatVelocity;
 	int iMetroBeatDuration;
-
-	// MIDI metronome latency offset compensation.
-	int iMidiMetroOffset;
 
 	// Default options...
 	QString sSessionDir;
@@ -209,7 +214,10 @@ public:
 	// MIDI control non catch-up/hook option.
 	bool    bMidiControlSync;
 
-	// Export add new track(s) option.
+	// Export tracks  options.
+	int     iExportRangeType;
+	unsigned long iExportRangeStart;
+	unsigned long iExportRangeEnd;
 	bool    bExportAddTrack;
 
 	// Session auto-save options.
@@ -223,6 +231,7 @@ public:
 	QStringList dssiPaths;
 	QStringList vstPaths;
 	QStringList vst3Paths;
+	QStringList clapPaths;
 	QStringList lv2Paths;
 
 	QString sLv2PresetDir;
@@ -244,6 +253,7 @@ public:
 	int  iDummyDssiHash;
 	int  iDummyVstHash;
 	int  iDummyVst3Hash;
+	int  iDummyClapHash;
 	int  iDummyLv2Hash;
 
 	// LV2 plugin specific options.

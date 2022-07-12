@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -2533,7 +2533,6 @@ void qtractorMidiEditor::zoomCenterPre ( ZoomCenter& zc ) const
 		return;
 
 	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
-
 	const int cx = m_pEditView->contentsX();
 	const int cy = m_pEditView->contentsY();
 
@@ -2561,7 +2560,7 @@ void qtractorMidiEditor::zoomCenterPre ( ZoomCenter& zc ) const
 	}
 
 	zc.item = (cy + zc.y) / m_pEditList->itemHeight();
-	zc.frame = m_pTimeScale->frameFromPixel(x0 + cx + zc.x);
+	zc.frame = m_pTimeScale->frameFromPixel(cx + zc.x + x0);
 }
 
 
@@ -2573,8 +2572,7 @@ void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
 		return;
 
 	const int x0 = m_pTimeScale->pixelFromFrame(m_iOffset);
-
-	int cx = m_pTimeScale->pixelFromFrame(zc.frame);
+	int cx = m_pTimeScale->pixelFromFrame(zc.frame) - x0;
 	int cy = zc.item * m_pEditList->itemHeight();
 
 	// Update dependent views.
@@ -2584,7 +2582,7 @@ void qtractorMidiEditor::zoomCenterPost ( const ZoomCenter& zc )
 	updateSelect(true);
 
 	if (m_iZoomMode & ZoomHorizontal) {
-		if (cx > zc.x + x0) cx -= zc.x + x0; else cx = 0;
+		if (cx > zc.x) cx -= zc.x; else cx = 0;
 	}
 
 	if (m_iZoomMode & ZoomVertical) {

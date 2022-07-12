@@ -1248,7 +1248,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iCaptureQuantize = 0;
 
 	// MIDI controller mapping flagger.
-	m_iResetAllControllers = 0;
+	m_iResetAllControllersPending = 0;
 
 	// MIDI MMC/SPP modes.
 	m_mmcDevice = 0x7f; // All-caller-id.
@@ -1257,6 +1257,9 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	// MIDI Clock mode.
 	m_clockMode = qtractorBus::None;
+
+	// Whether to reset all MIDI controllers (on playback start).
+	m_bResetAllControllers = false;
 
 	// MIDI Clock tempo tracking.
 	m_iClockCount = 0;
@@ -1423,7 +1426,7 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 
 	// Deferred processing?
 	if (!bForceImmediate) {
-		++m_iResetAllControllers;
+		++m_iResetAllControllersPending;
 		return;
 	}
 
@@ -1476,15 +1479,15 @@ void qtractorMidiEngine::resetAllControllers ( bool bForceImmediate )
 		pMidiControl->sendAllControllers();
 
 	// Done.
-	m_iResetAllControllers = 0;
+	m_iResetAllControllersPending = 0;
 }
 
 
 // Whether is actually pending a reset of
 // all the MIDI instrument/controllers...
-bool qtractorMidiEngine::isResetAllControllers (void) const
+bool qtractorMidiEngine::isResetAllControllersPending (void) const
 {
-	return (m_iResetAllControllers > 0);
+	return (m_iResetAllControllersPending > 0);
 }
 
 
@@ -3693,7 +3696,7 @@ int qtractorMidiEngine::updateConnects (void)
 	const int iUpdate = qtractorEngine::updateConnects();
 
 	// Reset all pending controllers, if any...
-	if (m_iResetAllControllers > 0)
+	if (m_iResetAllControllersPending > 0)
 		resetAllControllers(true); // Force immediate!
 
 	// Done.
@@ -3783,6 +3786,18 @@ void qtractorMidiEngine::setClockMode ( qtractorBus::BusMode clockMode )
 qtractorBus::BusMode qtractorMidiEngine::clockMode (void) const
 {
 	return m_clockMode;
+}
+
+
+// Whether to reset all MIDI controllers (on playback start).
+void qtractorMidiEngine::setResetAllControllers ( bool bResetAllControllers )
+{
+	m_bResetAllControllers = bResetAllControllers;
+}
+
+bool qtractorMidiEngine::isResetAllControllers (void) const
+{
+	return m_bResetAllControllers;
 }
 
 

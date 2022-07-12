@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -63,6 +63,7 @@
 void qtractorSession::Properties::clear (void)
 {
 	sessionDir = QDir().absolutePath();
+
 	sessionName.clear();
 	description.clear();
 	timeScale.clear();
@@ -356,8 +357,11 @@ qtractorInstrumentList *qtractorSession::instruments (void) const
 void qtractorSession::setSessionDir ( const QString& sSessionDir )
 {
 	const QDir sdir(sSessionDir);
-	if (sdir.exists())
+	if (sdir.exists()) {
 		m_props.sessionDir = sdir.absolutePath();
+		if (!QFileInfo(m_props.sessionDir).isWritable())
+			m_props.sessionDir = QDir::homePath();
+	}
 }
 
 const QString& qtractorSession::sessionDir (void) const
@@ -853,7 +857,7 @@ void qtractorSession::updateSampleRate ( unsigned int iSampleRate )
 				pClip; pClip = pClip->next()) {
 		//	pClip->setClipStart(qtractorTimeScale::uroundf(
 		//		fRatio * float(pClip->clipStart())));
-		#if 1// EXPERIMENTAL: Don't quantize to MIDI metronomic time-scale...
+		#if 1// FIXUP: Don't quantize to MIDI metronomic time-scale...
 			pClip->setClipOffset(qtractorTimeScale::uroundf(
 				fRatio * float(pClip->clipOffset())));
 		#endif
@@ -1944,8 +1948,9 @@ void qtractorSession::releaseMidiTag ( qtractorTrack *pTrack )
 // MIDI session/tracks instrument/controller patching (conditional).
 void qtractorSession::resetAllMidiControllers ( bool bForceImmediate )
 {
-	if (!bForceImmediate || m_pMidiEngine->isResetAllControllers())
-		m_pMidiEngine->resetAllControllers(bForceImmediate);
+	m_pMidiEngine->resetAllControllers(
+		( bForceImmediate && m_pMidiEngine->isResetAllControllers()) ||
+		(!bForceImmediate && m_pMidiEngine->isResetAllControllersPending()));
 }
 
 
@@ -2541,7 +2546,9 @@ void qtractorSession::renameSession (
 
 	const QRegularExpression rx('^' + sOldName);
 
-	// For each and every track...
+	// For each and every track and clip...
+	QStringList paths;
+
 	for (qtractorTrack *pTrack = m_tracks.first();
 			pTrack; pTrack = pTrack->next()) {
 		// Refer to a proper files-view...
@@ -2560,56 +2567,64 @@ void qtractorSession::renameSession (
 			// Rename clip filename prefix...
 			const QFileInfo info1(pClip->filename());
 			QString sFileName = info1.fileName();
+			if (!sFileName.contains(rx))
+				continue;
 			sFileName.replace(rx, sNewName);
 			QFileInfo info2(info1.dir(), sFileName);
-			// Increment filename suffix if exists already...
-			if (info2.exists()) {
-				int iFileNo = 0;
-				sFileName = info2.completeBaseName();
-				QRegularExpression rxFileNo("([0-9]+)$");
-				QRegularExpressionMatch match = rxFileNo.match(sFileName);
-				if (match.hasMatch()) {
-					iFileNo = match.captured(1).toInt();
-					sFileName.remove(rxFileNo);
-				}
-				else sFileName += '-';
-				sFileName += "%1." + info1.suffix();
-				do { info2.setFile(info1.dir(), sFileName.arg(++iFileNo)); }
-				while (info2.exists());
-			}
-		#ifdef CONFIG_DEBUG
-			qDebug("qtractorSession::renameSession: \"%s\" -> \"%s\"",
-				info1.fileName().toUtf8().constData(),
-				info2.fileName().toUtf8().constData());
-		#endif
 			const QString& sOldFilePath
 				= info1.absoluteFilePath();
+			if (!paths.contains(sOldFilePath)) {
+				paths.append(sOldFilePath);
+				// Increment filename suffix if exists already...
+				if (info2.exists()) {
+					int iFileNo = 0;
+					sFileName = info2.completeBaseName();
+					QRegularExpression rxFileNo("([0-9]+)$");
+					QRegularExpressionMatch match = rxFileNo.match(sFileName);
+					if (match.hasMatch()) {
+						iFileNo = match.captured(1).toInt();
+						sFileName.remove(rxFileNo);
+					}
+					else sFileName += '-';
+					sFileName += "%1." + info1.suffix();
+					do { info2.setFile(info1.dir(), sFileName.arg(++iFileNo)); }
+					while (info2.exists());
+				}
+			}
 			const QString& sNewFilePath
 				= info2.absoluteFilePath();
-			if (QFile::rename(sOldFilePath, sNewFilePath)) {
-				// Re-hash clip filenames...
-				if (iFileType == qtractorFileList::Midi) {
-					qtractorMidiClip *pMidiClip
-						= static_cast<qtractorMidiClip *> (pClip);
-					if (pMidiClip)
-						pMidiClip->setFilenameEx(sNewFilePath, false);
-				} else {
-					pClip->close();
-					pClip->setFilename(sNewFilePath);
-					pClip->open();
+			if (!paths.contains(sNewFilePath)) {
+				paths.append(sNewFilePath);
+				if (!QFile::rename(sOldFilePath, sNewFilePath))
+					continue;
+			#ifdef CONFIG_DEBUG
+				qDebug("qtractorSession::renameSession: \"%s\" -> \"%s\"",
+					info1.fileName().toUtf8().constData(),
+					info2.fileName().toUtf8().constData());
+			#endif
+			}
+			// Re-hash clip filenames...
+			if (iFileType == qtractorFileList::Midi) {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (pClip);
+				if (pMidiClip)
+					pMidiClip->setFilenameEx(sNewFilePath, false);
+			} else {
+				pClip->close();
+				pClip->setFilename(sNewFilePath);
+				pClip->open();
+			}
+			// Manage files-view item...
+			if (pFileListView) {
+				qtractorFileGroupItem *pGroupItem = nullptr;
+				qtractorFileListItem *pFileItem
+					= pFileListView->findFileItem(sOldFilePath);
+				if (pFileItem) {
+					pGroupItem = pFileItem->groupItem();
+					m_pFiles->removeFileItem(iFileType, pFileItem);
+					delete pFileItem;
 				}
-				// Manage files-view item...
-				if (pFileListView) {
-					qtractorFileGroupItem *pGroupItem = nullptr;
-					qtractorFileListItem *pFileItem
-						= pFileListView->findFileItem(sOldFilePath);
-					if (pFileItem) {
-						pGroupItem = pFileItem->groupItem();
-						m_pFiles->removeFileItem(iFileType, pFileItem);
-						delete pFileItem;
-					}
-					pFileListView->addFileItem(sNewFilePath, pGroupItem);
-				}
+				pFileListView->addFileItem(sNewFilePath, pGroupItem);
 			}
 		}
 	}

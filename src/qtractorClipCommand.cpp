@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,6 +30,7 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
+#include "qtractorTracks.h"
 #include "qtractorFiles.h"
 
 #include "qtractorMidiEditCommand.h"
@@ -78,7 +79,7 @@ void qtractorClipCommand::addClip ( qtractorClip *pClip,
 {
 	m_items.append(new Item(AddClip, pClip, pTrack));
 
-	setClearSelectReset(true);
+//	setClearSelectReset(true);
 }
 
 
@@ -86,7 +87,7 @@ void qtractorClipCommand::removeClip ( qtractorClip *pClip )
 {
 	m_items.append(new Item(RemoveClip, pClip, pClip->track()));
 
-	setClearSelectReset(true);
+//	setClearSelectReset(true);
 }
 
 
@@ -161,7 +162,7 @@ void qtractorClipCommand::moveClip ( qtractorClip *pClip,
 		}
 	}
 
-	setClearSelect(true);
+//	setClearSelect(true);
 }
 
 
@@ -498,8 +499,12 @@ bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
 				takeInfoClip(pAudioClip, pTakePart->takeInfo());
 				pTakePart->setClip(pAudioClip);
 			}
-			if (pMainForm)	
+			if (pMainForm) {
 				pMainForm->addAudioFile(pAudioClip->filename());
+				qtractorTracks *pTracks = pMainForm->tracks();
+				if (pTracks)
+					pTracks->setCurrentClip(pAudioClip);
+			}
 		}
 		break;
 	}
@@ -516,8 +521,11 @@ bool qtractorClipCommand::addClipRecordTake ( qtractorTrack *pTrack,
 				takeInfoClip(pMidiClip, pTakePart->takeInfo());
 				pTakePart->setClip(pMidiClip);
 			}
-			if (pMainForm)	
+			if (pMainForm)
 				pMainForm->addMidiFile(pMidiClip->filename());
+				qtractorTracks *pTracks = pMainForm->tracks();
+				if (pTracks)
+					pTracks->setCurrentClip(pMidiClip);
 		}
 		break;
 	}
@@ -634,6 +642,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				pTrack->removeClip(pClip);
 			pItem->autoDelete = !bRedo;
 			pSession->updateTrack(pTrack);
+			setClearSelectReset(!bRedo);
 			break;
 		}
 		case RemoveClip: {
@@ -643,6 +652,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				pTrack->addClip(pClip);
 			pItem->autoDelete = bRedo;
 			pSession->updateTrack(pTrack);
+			setClearSelectReset(bRedo);
 			break;
 		}
 		case FileClip: {
@@ -691,6 +701,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			if (pOldTrack != pTrack)
 				pSession->updateTrack(pOldTrack);
 			pSession->updateTrack(pTrack);
+			setClearSelect(true);
 			break;
 		}
 		case ResizeClip: {
@@ -815,8 +826,8 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			pItem->clipLength =	pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipLengthTime);
 			pClip->setClipLength(pItem->clipLength);
-		#if 1// EXPERIMENTAL: Don't quantize to MIDI metronomic time-scale...
-			const unsigned long iClipOffset= pClip->clipOffset();
+		#if 1// FIXUP: Don't quantize to MIDI metronomic time-scale...
+			const unsigned long iClipOffset = pClip->clipOffset();
 			pClip->setClipOffset(pItem->clipOffset);
 			pItem->clipOffset =	iClipOffset;
 		#else

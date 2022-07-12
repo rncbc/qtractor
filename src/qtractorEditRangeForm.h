@@ -1,7 +1,7 @@
 // qtractorEditRangeForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -50,8 +50,8 @@ public:
 	unsigned long rangeStart() const;
 	unsigned long rangeEnd() const;
 
-    // Range option flags.
-    enum Option {
+	// Range option flags.
+	enum Option {
 		None       = 0,
 		Clips      = 1,
 		Automation = 2,
@@ -59,7 +59,7 @@ public:
 		Punch      = 8,
 		Markers    = 16,
 		TempoMap   = 32
-    };
+	};
 
 	// Retrieve range option flags.
 	unsigned int rangeOptions() const;

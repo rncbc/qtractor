@@ -1,7 +1,7 @@
-cmake_minimum_required (VERSION 3.13)
+cmake_minimum_required (VERSION 3.15)
 
 project (qtractor
-  VERSION 0.9.23
+  VERSION 0.9.27
   DESCRIPTION "An Audio/MIDI multi-track sequencer"
   LANGUAGES C CXX)
 
@@ -163,6 +163,9 @@ option (CONFIG_LV2_UI_GTKMM2 "Enable LV2 plug-in UI GTKMM2 native support (defau
 
 option (CONFIG_LV2_UI_X11 "Enable LV2 plug-in UI X11 native support (default=yes)" 1)
 
+# Enable CLAP support.
+option (CONFIG_CLAP "Enable CLAP plug-in support (default=yes)" 1)
+
 # Enable JACK session support.
 option (CONFIG_JACK_SESSION "Enable JACK session support (default=yes)" 1)
 
@@ -184,6 +187,8 @@ option (CONFIG_GRADIENT "Enable gradient eye-candy (default=yes)" 1)
 # Enable debugger stack_trace option (assumes --enable-debug).
 option (CONFIG_STACKTRACE "Enable debugger stack-trace (default=no)" 0)
 
+# Enable Wayland support option.
+option (CONFIG_WAYLAND "Enable Wayland support (EXPERIMENTAL) (default=no)" 0)
 
 # Enable Qt6 build preference.
 option (CONFIG_QT6 "Enable Qt6 build (default=yes)" 1)
@@ -208,7 +213,11 @@ else ()
   find_package (QT QUIET NAMES Qt5)
 endif ()
 
-find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Xml)
+find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Xml Svg)
+
+if (NOT CONFIG_QT6)
+  find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS X11Extras)
+endif ()
 
 if (CONFIG_XUNIQUE)
   find_package (Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Network)
@@ -279,7 +288,7 @@ if (CONFIG_DSSI)
 endif ()
 
 # Check for VST headers.
-if (CONFIG_VST)
+if (CONFIG_VST AND NOT CONFIG_VST2SDK)
   check_include_file (aeffectx.h HAVE_AEFFECTX_H)
   if (NOT HAVE_AEFFECTX_H AND CONFIG_VESTIGE)
     set (VESTIGE_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/vestige)
@@ -439,11 +448,14 @@ if (CONFIG_VST3 AND NOT CONFIG_VST3SDK)
   endif ()
 endif ()
 
-if (CONFIG_VST3)
+if (CONFIG_VST3 OR CONFIG_LV2_UI_X11)
   pkg_check_modules (XCB xcb)
   if (NOT XCB_FOUND)
     message (WARNING "*** XCB library not found.")
   endif ()
+endif ()
+
+if (CONFIG_VST3)
   find_library (PTHREAD_LIBRARY pthread)
   if (NOT PTHREAD_LIBRARY)
     message (WARNING "*** pthread library not found.")
@@ -709,10 +721,10 @@ endif ()
 add_subdirectory (src)
 
 
-configure_file (qtractor.spec.in qtractor.spec IMMEDIATE @ONLY)
+if (UNIX AND NOT APPLE)
+  configure_file (${PROJECT_NAME}.spec.in ${PROJECT_NAME}.spec IMMEDIATE @ONLY)
+endif ()
 
-install (FILES qtractor.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-install (FILES qtractor.fr.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/fr/man1 RENAME qtractor.1)
 
 # Configuration status
 macro (SHOW_OPTION text value)
@@ -742,6 +754,7 @@ show_option ("  LADSPA plug-in support . . . . . . . . . . . . . ." CONFIG_LADSP
 show_option ("  DSSI plug-in support . . . . . . . . . . . . . . ." CONFIG_DSSI)
 show_option ("  VST plug-in support  . . . . . . . . . . . . . . ." CONFIG_VST)
 show_option ("  VST3 plug-in support . . . . . . . . . . . . . . ." CONFIG_VST3)
+show_option ("  CLAP plug-in support (EXPERIMENTAL)  . . . . . . ." CONFIG_CLAP)
 show_option ("  LV2 plug-in support  . . . . . . . . . . . . . . ." CONFIG_LV2)
 show_option ("  LV2 plug-in support (liblilv)  . . . . . . . . . ." CONFIG_LIBLILV)
 show_option ("  LV2 plug-in UI support . . . . . . . . . . . . . ." CONFIG_LV2_UI)
@@ -780,5 +793,4 @@ show_option ("  VeSTige header support . . . . . . . . . . . . . ." CONFIG_VESTI
 show_option ("  Unique/Single instance support . . . . . . . . . ." CONFIG_XUNIQUE)
 show_option ("  Gradient eye-candy . . . . . . . . . . . . . . . ." CONFIG_GRADIENT)
 show_option ("  Debugger stack-trace (gdb) . . . . . . . . . . . ." CONFIG_STACKTRACE)
-message   ("\n  Install prefix . . . . . . . . . . . . . . . . . .: ${CONFIG_PREFIX}")
-message   ("\nNow type 'make', followed by 'make install' as root.\n")
+message   ("\n  Install prefix . . . . . . . . . . . . . . . . . .: ${CONFIG_PREFIX}\n")

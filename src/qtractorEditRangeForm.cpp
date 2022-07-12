@@ -1,7 +1,7 @@
 // qtractorEditRangeForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,6 +39,9 @@ qtractorEditRangeForm::qtractorEditRangeForm ( QWidget *pParent )
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
+#if QT_VERSION < QT_VERSION_CHECK(6, 1, 0)
+	QDialog::setWindowIcon(QIcon(":/images/qtractor.png"));
+#endif
 
 	// Window modality (let plugin/tool windows rave around).
 	QDialog::setWindowModality(Qt::ApplicationModal);
@@ -50,8 +53,8 @@ qtractorEditRangeForm::qtractorEditRangeForm ( QWidget *pParent )
 	m_iSelectStart = 0;
 	m_iSelectEnd   = 0;
 
-    m_options = Clips | Automation;
-    m_iUpdate = 0;
+	m_options = Clips | Automation;
+	m_iUpdate = 0;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
@@ -77,12 +80,12 @@ qtractorEditRangeForm::qtractorEditRangeForm ( QWidget *pParent )
 			m_ui.CustomRangeRadioButton->setChecked(true);
 	}
 
-    // Update options check-boxes.
-    qtractorOptions *pOptions = qtractorOptions::getInstance();
-    if (pOptions)
-        m_options = pOptions->iEditRangeOptions;
+	// Update options check-boxes.
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions)
+		m_options = pOptions->iEditRangeOptions;
 
-    updateOptions();
+	updateOptions();
 
 	// Try to restore old window positioning.
 	adjustSize();
@@ -322,7 +325,7 @@ void qtractorEditRangeForm::stabilizeForm (void)
 	m_ui.LoopCheckBox->setEnabled(bLooping);
 	m_ui.PunchCheckBox->setEnabled(bPunching);
 	m_ui.MarkersCheckBox->setEnabled(pTimeScale->markers().first() != nullptr);
-    m_ui.TempoMapCheckBox->setEnabled(pTimeScale->nodes().count() > 1);
+	m_ui.TempoMapCheckBox->setEnabled(pTimeScale->nodes().count() > 1);
 
 	const unsigned long iRangeStart = m_ui.RangeStartSpinBox->value();
 	const unsigned long iRangeEnd = m_ui.RangeEndSpinBox->value();

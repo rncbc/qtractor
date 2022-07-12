@@ -7,9 +7,9 @@ set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTORCC ON)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
-    file (REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
+  file (REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
 endif ()
-configure_file (cmake_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file (config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 set (HEADERS
   qtractor.h
@@ -28,6 +28,7 @@ set (HEADERS
   qtractorAudioPeak.h
   qtractorAudioSndFile.h
   qtractorAudioVorbisFile.h
+  qtractorClapPlugin.h
   qtractorClip.h
   qtractorClipCommand.h
   qtractorClipSelect.h
@@ -162,6 +163,7 @@ set (SOURCES
   qtractorAudioPeak.cpp
   qtractorAudioSndFile.cpp
   qtractorAudioVorbisFile.cpp
+  qtractorClapPlugin.cpp
   qtractorClip.cpp
   qtractorClipCommand.cpp
   qtractorClipSelect.cpp
@@ -312,6 +314,7 @@ set (TRANSLATIONS
   translations/qtractor_ja.ts
   translations/qtractor_pt.ts
   translations/qtractor_ru.ts
+  translations/qtractor_uk.ts
 )
 
 if (QT_VERSION VERSION_LESS 5.15.0)
@@ -368,8 +371,9 @@ add_executable (${PROJECT_NAME}
 
 # Add some debugger flags.
 if (CONFIG_DEBUG AND UNIX AND NOT APPLE)
-  target_compile_options (${PROJECT_NAME} PRIVATE -g -fsanitize=address -fno-omit-frame-pointer)
-  target_link_libraries (${PROJECT_NAME} PRIVATE asan)
+  set (CONFIG_DEBUG_OPTIONS -g -fsanitize=address -fno-omit-frame-pointer)
+  target_compile_options (${PROJECT_NAME} PRIVATE ${CONFIG_DEBUG_OPTIONS})
+  target_link_options (${PROJECT_NAME} PRIVATE ${CONFIG_DEBUG_OPTIONS})
 endif ()
 
 add_executable (${PROJECT_NAME}_plugin_scan qtractor_plugin_scan.cpp ${VST3SDK_SOURCES})
@@ -387,8 +391,12 @@ if (APPLE)
   set_target_properties (${PROJECT_NAME}_plugin_scan PROPERTIES MACOSX_BUNDLE true)
 endif ()
 
-target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml)
+target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml Qt${QT_VERSION_MAJOR}::Svg)
 target_link_libraries (${PROJECT_NAME}_plugin_scan PRIVATE Qt${QT_VERSION_MAJOR}::Core)
+
+if (NOT CONFIG_QT6)
+  target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::X11Extras)
+endif ()
 
 if (CONFIG_XUNIQUE)
   target_link_libraries (${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
@@ -473,54 +481,71 @@ if (CONFIG_LV2_UI_GTKMM2)
   target_link_libraries (${PROJECT_NAME} PRIVATE ${GTKMM2_LIBRARIES})
 endif ()
 
+if (CONFIG_VST AND CONFIG_VST2SDK AND NOT CONFIG_VESTIGE)
+  target_include_directories (${PROJECT_NAME} PRIVATE ${CONFIG_VST2SDK})
+  target_include_directories (${PROJECT_NAME}_plugin_scan PRIVATE ${CONFIG_VST2SDK})
+endif ()
+
 if (CONFIG_VST3 AND CONFIG_VST3SDK)
   target_include_directories (${PROJECT_NAME} PRIVATE ${CONFIG_VST3SDK})
   target_include_directories (${PROJECT_NAME}_plugin_scan PRIVATE ${CONFIG_VST3SDK})
-  if (XCB_FOUND)
-    target_include_directories (${PROJECT_NAME} PRIVATE ${XCB_INCLUDE_DIRS})
-    target_link_directories (${PROJECT_NAME} PRIVATE ${XCB_LIBRARY_DIRS})
-    target_link_libraries (${PROJECT_NAME} PRIVATE ${XCB_LIBRARIES})
-  endif ()
   if (PTHREAD_LIBRARY)
     target_link_libraries (${PROJECT_NAME} PRIVATE ${PTHREAD_LIBRARY})
     target_link_libraries (${PROJECT_NAME}_plugin_scan PRIVATE ${PTHREAD_LIBRARY})
   endif ()
 endif ()
 
+if (CONFIG_CLAP)
+  target_include_directories (${PROJECT_NAME} PRIVATE clap/include)
+  target_include_directories (${PROJECT_NAME}_plugin_scan PRIVATE clap/include)
+endif ()
+
+if (XCB_FOUND)
+  target_include_directories (${PROJECT_NAME} PRIVATE ${XCB_INCLUDE_DIRS})
+  target_link_directories (${PROJECT_NAME} PRIVATE ${XCB_LIBRARY_DIRS})
+  target_link_libraries (${PROJECT_NAME} PRIVATE ${XCB_LIBRARIES})
+endif ()
+
 
 if (UNIX AND NOT APPLE)
   install (TARGETS ${PROJECT_NAME} RUNTIME
-     DESTINATION ${CMAKE_INSTALL_BINDIR})
+    DESTINATION ${CMAKE_INSTALL_BINDIR})
   install (TARGETS ${PROJECT_NAME}_plugin_scan RUNTIME
-     DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME})
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME})
   install (FILES ${QM_FILES}
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/translations)
-  install (FILES ${PROJECT_NAME}.desktop
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/translations)
   install (FILES images/${PROJECT_NAME}.png
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/apps)
+    RENAME org.rncbc.${PROJECT_NAME}.png
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/apps)
   install (FILES images/${PROJECT_NAME}.svg
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
-  install (FILES appdata/${PROJECT_NAME}.appdata.xml
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
-  install (FILES mimetypes/${PROJECT_NAME}.xml
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
-  install (FILES mimetypes/application-x-${PROJECT_NAME}-session.png
-       mimetypes/application-x-${PROJECT_NAME}-template.png
-       mimetypes/application-x-${PROJECT_NAME}-archive.png
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/mimetypes)
-  install (FILES mimetypes/application-x-${PROJECT_NAME}-session.svg
-       mimetypes/application-x-${PROJECT_NAME}-template.svg
-       mimetypes/application-x-${PROJECT_NAME}-archive.svg
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/mimetypes)
+    RENAME org.rncbc.${PROJECT_NAME}.svg
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
+  install (FILES appdata/org.rncbc.${PROJECT_NAME}.desktop
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+  install (FILES appdata/org.rncbc.${PROJECT_NAME}.metainfo.xml
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/metainfo)
+  install (FILES mimetypes/org.rncbc.${PROJECT_NAME}.xml
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/mime/packages)
+  install (FILES mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-session.png
+      mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-template.png
+      mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-archive.png
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/mimetypes)
+  install (FILES mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-session.svg
+      mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-template.svg
+      mimetypes/org.rncbc.${PROJECT_NAME}.application-x-${PROJECT_NAME}-archive.svg
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/mimetypes)
+  install (FILES man1/${PROJECT_NAME}.1
+    DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+  install (FILES man1/${PROJECT_NAME}.fr.1
+    DESTINATION ${CMAKE_INSTALL_MANDIR}/fr/man1 RENAME ${PROJECT_NAME}.1)
 endif ()
 
 if (WIN32)
-   install (TARGETS ${PROJECT_NAME} RUNTIME
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-   install (TARGETS ${PROJECT_NAME}_plugin_scan RUNTIME
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-   install (FILES ${QM_FILES}
-     DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/translations)
+  install (TARGETS ${PROJECT_NAME} RUNTIME
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+  install (TARGETS ${PROJECT_NAME}_plugin_scan RUNTIME
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+  install (FILES ${QM_FILES}
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/translations)
 endif ()
 

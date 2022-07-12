@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -124,24 +124,6 @@ static const LV2_Feature g_lv2_uri_map_feature =
 
 static const LV2_Feature g_lv2_state_feature =
 	{ LV2_STATE_URI, nullptr };
-
-#if 0//CONFIG_LV2_STATE_LEGACY
-static LV2_State_Status qtractor_lv2_state_store ( LV2_State_Handle handle,
-	uint32_t key, const void *value, size_t size, uint32_t type, uint32_t flags )
-{
-	qtractorLv2Plugin *pLv2Plugin
-		= static_cast<qtractorLv2Plugin *> (handle);
-	if (pLv2Plugin == nullptr)
-		return LV2_STATE_ERR_UNKNOWN;
-
-#ifdef CONFIG_DEBUG
-	qDebug("qtractor_lv2_state_store(%p, %d, %d, %d, %d)", pLv2Plugin,
-		int(key), int(size), int(type), int(flags));
-#endif
-
-	return pLv2Plugin->lv2_state_store(key, value, size, type, flags);
-}
-#endif
 
 static const void *qtractor_lv2_state_retrieve ( LV2_State_Handle handle,
 	uint32_t key, size_t *size, uint32_t *type, uint32_t *flags )
@@ -1122,7 +1104,7 @@ void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
 // LV2 MIDNAM XML support.
 #include <QDomDocument>
 
-void qtractor_lv2_midnam_update ( LV2_Programs_Handle handle )
+void qtractor_lv2_midnam_update ( LV2_Midnam_Handle handle )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (handle);
@@ -1393,6 +1375,35 @@ static void qtractor_lv2_ui_gtk2_on_size_allocate (
 #endif	// CONFIG_LV2_UI_GTK2
 
 #ifdef CONFIG_LV2_UI_X11
+
+#include <xcb/xcb.h>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QX11Info>
+#endif
+
+static void qtractor_lv2_ui_size_hints ( WId wid, QSize& size )
+{
+	xcb_connection_t *c = nullptr;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
+	const QNativeInterface::QX11Application *ni
+		= qApp->nativeInterface<QNativeInterface::QX11Application> ();
+	if (ni) c = ni->connection();
+#endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+	c = QX11Info::connection();
+#endif
+	if (c == nullptr)
+		return;
+
+	xcb_get_geometry_cookie_t cookie = ::xcb_get_geometry(c, wid);
+	xcb_get_geometry_reply_t *reply = ::xcb_get_geometry_reply(c, cookie, nullptr);
+	if (reply) {
+		size.setWidth(reply->width);
+		size.setHeight(reply->height);
+		::free(reply);
+	}
+}
 
 static int qtractor_lv2_ui_resize (
 	LV2UI_Feature_Handle handle, int width, int height )
@@ -2333,9 +2344,9 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	if (pSession) {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
-			m_iMinBlockLength     = pAudioEngine->bufferSizeEx();
-			m_iMaxBlockLength     = m_iMinBlockLength;
-			m_iNominalBlockLength = m_iMaxBlockLength;
+			m_iMinBlockLength     = pAudioEngine->bufferSize();
+			m_iMaxBlockLength     = pAudioEngine->bufferSizeEx();
+			m_iNominalBlockLength = m_iMinBlockLength;
 		}
 	}
 
@@ -2637,11 +2648,10 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 qtractorLv2Plugin::~qtractorLv2Plugin (void)
 {
 	// Cleanup all plugin instances...
-	setChannels(0);
+	cleanup();	// setChannels(0);
 
 	// Clear programs cache.
-	qDeleteAll(m_programs);
-	m_programs.clear();
+	clearInstruments();
 
 #ifdef CONFIG_LV2_TIME
 	// Remove from global running LV2 Time/position ref-count...
@@ -2741,12 +2751,13 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
-	const unsigned short iInstances
-		= pLv2Type->instances(iChannels, list()->isMidi());
-
-	// Now see if instance and channel count changed anyhow...
-	if (iInstances == iOldInstances && iChannels == channels())
-		return;
+	unsigned short iInstances = 0;
+	if (iChannels > 0) {
+		iInstances = pLv2Type->instances(iChannels, list()->isMidi());
+		// Now see if instance and channel count changed anyhow...
+		if (iInstances == iOldInstances && iChannels == channels())
+			return;
+	}
 
 	const LilvPlugin *plugin = pLv2Type->lv2_plugin();
 	if (plugin == nullptr)
@@ -2933,7 +2944,7 @@ void qtractorLv2Plugin::setChannels ( unsigned short iChannels )
 	releaseConfigs();
 	releaseValues();
 
-	//	Initialize programs cache.
+	// Initialize programs cache.
 	updateInstruments();
 
 	// (Re)activate instance if necessary...
@@ -3213,7 +3224,7 @@ void qtractorLv2Plugin::process (
 #ifdef CONFIG_LV2_UI
 
 // Open editor.
-void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
+void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 {
 	if (m_lv2_ui) {
 		setEditorVisible(true);
@@ -3431,6 +3442,19 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	qDebug("qtractorLv2Plugin[%p]::openEditor(\"%s\")", this, ui_type_uri);
 #endif
 
+	// What style do we create tool childs?
+	Qt::WindowFlags wflags = Qt::Window;
+#if 0//QTRACTOR_LV2_EDITOR_TOOL
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+	if (pOptions && pOptions->bKeepToolsOnTop) {
+		wflags |= Qt::Tool;
+	//	wflags |= Qt::WindowStaysOnTopHint;
+		// Make sure it has a parent...
+		if (pParent == nullptr)
+			pParent = qtractorMainForm::getInstance();
+	}
+#endif
+
 	const char *ui_host_uri = LV2_UI_HOST_URI;
 	const char *plugin_uri
 		= lilv_node_as_uri(lilv_plugin_get_uri(pLv2Type->lv2_plugin()));
@@ -3449,7 +3473,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	// Do try to instantiate the UI...
 	const bool ui_instantiate = lv2_ui_instantiate(
 		ui_host_uri, plugin_uri, ui_uri, ui_type_uri,
-		ui_bundle_path, ui_binary_path);
+		ui_bundle_path, ui_binary_path, pParent, wflags);
 
 #ifdef CONFIG_LILV_FILE_URI_PARSE
 	lilv_free((void *) ui_binary_path);
@@ -3484,13 +3508,16 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifdef CONFIG_LV2_UI_X11
-	if (!ui_supported && m_pQtWidget
+	if (!ui_supported && m_lv2_ui_widget && m_pQtWidget
 		&& m_lv2_ui_type == LV2_UI_TYPE_X11) {
 		// Initialize widget event filter...
 		m_pQtFilter = new EventFilter(this, m_pQtWidget);
 	//	m_bQtDelete = true;
 		// LV2 UI resize control...
 		QSize size = m_pQtWidget->sizeHint();
+	#ifdef CONFIG_LV2_UI_X11
+		qtractor_lv2_ui_size_hints(WId(m_lv2_ui_widget), size);
+	#endif
 		if (!size.isValid() || size.isNull())
 			size = m_pQtWidget->size();
 		if (size.isValid() && !size.isNull()) {
@@ -3519,7 +3546,7 @@ void qtractorLv2Plugin::openEditor ( QWidget */*pParent*/ )
 	//	const WId wid = gtk_plug_get_id((GtkPlug *) pGtkWindow);
 		QWindow *pQtWindow = QWindow::fromWinId(wid);
 		// Create the new parent frame...
-		QWidget *pQtWidget = new QWidget(nullptr, Qt::Window);
+		QWidget *pQtWidget = new QWidget(pParent, wflags);
 		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		QWidget *pQtContainer = QWidget::createWindowContainer(pQtWindow, pQtWidget);
 		QVBoxLayout *pVBoxLayout = new QVBoxLayout();
@@ -4038,16 +4065,17 @@ void qtractorLv2Plugin::lv2_ui_port_write ( uint32_t port_index,
 	if (buffer_size != sizeof(float) || protocol != 0)
 		return;
 
-#ifdef CONFIG_LV2_UI_TOUCH
-	if (m_ui_params_touch.contains(port_index)
-		&& !m_ui_params_touch.value(port_index, false))
-		return;
-#endif
-
 	const float port_value = *(float *) buffer;
 
-	// FIXME: Update plugin params...
-	// updateParamValue(port_index, port_value, false);
+#ifdef CONFIG_LV2_UI_TOUCH
+	// Hold plugin param value if under touch...
+	if (m_ui_params_touch.contains(port_index)) {
+		m_ui_params_touch.insert(port_index, port_value);
+		return;
+	}
+#endif
+
+	// Update plugin params...
 	m_ui_params.insert(port_index, port_value);
 }
 
@@ -4079,12 +4107,23 @@ uint32_t qtractorLv2Plugin::lv2_ui_port_index ( const char *port_symbol )
 // LV2 UI touch control (ui->host).
 void qtractorLv2Plugin::lv2_ui_touch ( uint32_t port_index, bool grabbed )
 {
+	qtractorPlugin::Param *pParam = findParam(port_index);
+	if (pParam == nullptr)
+		return;
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_touch(%u, %d)",
 		this, port_index, int(grabbed));
 #endif
 
-	m_ui_params_touch[port_index] = grabbed;
+	if (grabbed) {
+		m_ui_params_touch.insert(port_index, pParam->value());
+	} else {
+		const float port_value
+			= m_ui_params_touch.value(port_index, pParam->value());
+		m_ui_params.insert(port_index, port_value);
+		m_ui_params_touch.remove(port_index);
+	}
 }
 
 #endif	// CONFIG_LV2_UI_TOUCH
@@ -4211,7 +4250,8 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 bool qtractorLv2Plugin::lv2_ui_instantiate (
 	const char *ui_host_uri, const char *plugin_uri,
 	const char *ui_uri,	const char *ui_type_uri,
-	const char *ui_bundle_path, const char *ui_binary_path )
+	const char *ui_bundle_path, const char *ui_binary_path,
+	QWidget *pParent, Qt::WindowFlags wflags )
 {
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorLv2Plugin[%p]::lv2_ui_instantiate(\"%s\")", this, ui_uri);
@@ -4381,7 +4421,7 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 #ifdef CONFIG_LV2_UI_X11
 	if (m_lv2_ui_type == LV2_UI_TYPE_X11) {
 		// Create the new parent frame...
-		QWidget *pQtWidget = new QWidget(nullptr, Qt::Window);
+		QWidget *pQtWidget = new QWidget(pParent, wflags);
 		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		// Add/prepare some needed features...
 		m_lv2_ui_resize.handle = pQtWidget;
@@ -4686,21 +4726,13 @@ void qtractorLv2Plugin::freezeConfigs (void)
 	if (!type()->isConfigure())
 		return;
 
+	clearConfigs();
+
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorLv2Plugin[%p]::freezeConfigs()", this);
 #endif
 
 #ifdef CONFIG_LV2_STATE
-
-#if 0//CONFIG_LV2_STATE_LEGACY
-	const LV2_State_Interface *state = lv2_state_interface(0);
-	if (state) {
-		LV2_Handle handle = lv2_handle(0);
-		if (handle)
-			(*state->save)(handle, qtractor_lv2_state_store, this,
-				LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE, m_lv2_features);
-	}
-#endif
 
 	const QString& s = lv2_state_save();
 	if (!s.isEmpty()) {
@@ -4710,12 +4742,8 @@ void qtractorLv2Plugin::freezeConfigs (void)
 		const uint32_t  size = data.size();
 		const LV2_URID  type = lv2_urid_map(QTRACTOR_LV2_STATE_TYPE);
 		const uint32_t flags = LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE;
-	#if 0//CONFIG_LV2_STATE_LEGACY
-		lv2_state_store(key, value, size, type, flags);
-	#else
 		if (lv2_state_store(key, value, size, type, flags) == LV2_STATE_SUCCESS)
 			qtractorPlugin::clearValues();
-	#endif
 	}
 
 #endif	// CONFIG_LV2_STATE
@@ -5008,6 +5036,18 @@ bool qtractorLv2Plugin::getProgram ( int iIndex, Program& program ) const
 	return true;
 }
 
+
+// Provisional note name accessor.
+bool qtractorLv2Plugin::getNoteName ( int iIndex, NoteName& note ) const
+{
+	if (iIndex < 0 || iIndex >= m_noteNames.count())
+		return false;
+
+	note = *m_noteNames.at(iIndex);
+	return true;
+}
+
+
 #ifdef CONFIG_LV2_PROGRAMS
 
 // LV2 Programs extension data descriptor accessor.
@@ -5134,16 +5174,14 @@ void qtractorLv2Plugin::lv2_midnam_update (void)
 
 
 //	Update instrument/programs cache.
-bool qtractorLv2Plugin::updateInstruments (void)
+void qtractorLv2Plugin::updateInstruments (void)
 {
-	// Clear programs cache.
-	qDeleteAll(m_programs);
-	m_programs.clear();
+	clearInstruments();
 
 	// Only first one instance should matter...
 	LV2_Handle handle = lv2_handle(0);
 	if (!handle)
-		return false;
+		return;
 
 #ifdef CONFIG_LV2_PROGRAMS
 
@@ -5169,16 +5207,16 @@ bool qtractorLv2Plugin::updateInstruments (void)
 #ifdef CONFIG_LV2_MIDNAM
 
 	if (!m_programs.isEmpty())
-		return true;
+		return;
 
 	const LV2_Midnam_Interface *interface
 		= lv2_midnam_descriptor(0);
 	if (interface == nullptr)
-		return false;
+		return;
 
 	char *midnam = (*interface->midnam)(handle);
 	if (midnam == nullptr)
-		return false;
+		return;
 
 	const QString sMidnam
 		= QString::fromUtf8(midnam);
@@ -5193,11 +5231,11 @@ bool qtractorLv2Plugin::updateInstruments (void)
 
 	QDomDocument doc;
 	if (!doc.setContent(sMidnam))
-		return false;
+		return;
 
 	qtractorInstrumentList instruments;
 	if (!instruments.loadMidiNameDocument(doc))
-		return false;
+		return;
 
 	qtractorInstrumentList::ConstIterator iter = instruments.constBegin();
 	const qtractorInstrumentList::ConstIterator& iter_end = instruments.constEnd();
@@ -5211,11 +5249,11 @@ bool qtractorLv2Plugin::updateInstruments (void)
 		const qtractorInstrumentPatches::ConstIterator& patch_end = patches.constEnd();
 		for ( ; patch_iter != patch_end; ++patch_iter) {
 			const int iBank = patch_iter.key();
-			const qtractorInstrumentData& patch = patch_iter.value();
-			const QString& sBankName = patch.name();
+			const qtractorInstrumentData& progs = patch_iter.value();
+			const QString& sBankName = progs.name();
 			if (iBank < 0 || sBankName.isEmpty()) continue;
-			qtractorInstrumentData::ConstIterator prog_iter = patch.constBegin();
-			const qtractorInstrumentData::ConstIterator& prog_end = patch.constEnd();
+			qtractorInstrumentData::ConstIterator prog_iter = progs.constBegin();
+			const qtractorInstrumentData::ConstIterator& prog_end = progs.constEnd();
 			for ( ; prog_iter != prog_end; ++prog_iter) {
 				const int iProg = prog_iter.key();
 				if (iProg < 0) continue;
@@ -5226,13 +5264,45 @@ bool qtractorLv2Plugin::updateInstruments (void)
 				m_programs.append(program);
 			}
 		}
+		const qtractorInstrumentKeys& keys = instr.keys();
+		qtractorInstrumentKeys::ConstIterator key_iter = keys.constBegin();
+		const qtractorInstrumentKeys::ConstIterator& key_end = keys.constEnd();
+		for ( ; key_iter != key_end; ++key_iter) {
+			const int iBank = key_iter.key();
+			const qtractorInstrumentNotes& progs = key_iter.value();
+			qtractorInstrumentNotes::ConstIterator prog_iter = progs.constBegin();
+			const qtractorInstrumentNotes::ConstIterator& prog_end = progs.constEnd();
+			for ( ; prog_iter != prog_end; ++prog_iter) {
+				const int iProg = prog_iter.key();
+				const qtractorInstrumentData& notes = prog_iter.value();
+				qtractorInstrumentData::ConstIterator note_iter = notes.constBegin();
+				const qtractorInstrumentData::ConstIterator& note_end = notes.constEnd();
+				for ( ; note_iter != note_end; ++note_iter) {
+					NoteName *note = new NoteName;
+					note->bank = iBank;
+					note->prog = iProg;
+					note->note = note_iter.key();
+					note->name = note_iter.value();
+					m_noteNames.append(note);
+				}
+			}
+		}
 		if (!sModel.isEmpty())
 			break;
 	}
 
 #endif	// CONFIG_LV2_MIDNAM
+}
 
-	return !m_programs.isEmpty();
+
+// Clear instrument/programs cache.
+void qtractorLv2Plugin::clearInstruments (void)
+{
+	qDeleteAll(m_programs);
+	m_programs.clear();
+
+	qDeleteAll(m_noteNames);
+	m_noteNames.clear();
 }
 
 

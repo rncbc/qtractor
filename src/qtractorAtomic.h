@@ -1,7 +1,7 @@
 // qtractorAtomic.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -59,10 +59,10 @@ static inline int ATOMIC_CAS ( qtractorAtomic *pVal,
 
 #if defined(__GNUC__)
 
-#if defined(powerpc) || defined(__ppc__)
+#if defined(__powerpc__) || defined(__powerpc64__)
 
 static inline int ATOMIC_CAS1 (
-	volatile int *pAddr, int iOldValue, int iNewValue )
+	volatile int *pValue, int iOldValue, int iNewValue )
 {
 	register int result;
 	asm volatile (

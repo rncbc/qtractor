@@ -1,7 +1,7 @@
 // qtractorMainForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -220,7 +220,9 @@ qtractorMainForm::qtractorMainForm (
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 1, 0)
+	QMainWindow::setWindowIcon(QIcon(":/images/qtractor.png"));
+#endif
 	// Pseudo-singleton reference setup.
 	g_pMainForm = this;
 
@@ -670,8 +672,17 @@ qtractorMainForm::qtractorMainForm (
 	m_statusItems[StatusTime] = pLabel;
 	pStatusBar->addPermanentWidget(pLabel);
 
+	// Session buffer size.
+	pLabel = new QLabel("1999");
+	pLabel->setAlignment(Qt::AlignHCenter);
+	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
+	pLabel->setAutoFillBackground(true);
+	pLabel->setToolTip(tr("Session buffer size"));
+	m_statusItems[StatusSize] = pLabel;
+	pStatusBar->addPermanentWidget(pLabel);
+
 	// Session sample rate.
-	pLabel = new QLabel("199999 Hz");
+	pLabel = new QLabel("199999");
 	pLabel->setAlignment(Qt::AlignHCenter);
 	pLabel->setMinimumSize(pLabel->sizeHint() + pad);
 	pLabel->setAutoFillBackground(true);
@@ -2134,6 +2145,8 @@ bool qtractorMainForm::saveSession ( bool bPrompt )
 			options |= QFileDialog::DontUseNativeDialog;
 			pParentWidget = QWidget::window();
 		}
+		// Always avoid to store session on extracted direactories...
+		sFilename = sessionArchivePath(sFilename);
 		// Try to rename as if a backup is about...
 		sFilename = sessionBackupPath(sFilename);
 	#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
@@ -2312,6 +2325,9 @@ bool qtractorMainForm::closeSession (void)
 	#ifdef CONFIG_VST3
 		qtractorVst3Plugin::clearAll();
 	#endif
+	#ifdef CONFIG_CLAP
+		qtractorClapPlugin::clearAll();
+	#endif
 	#ifdef CONFIG_LV2
 		qtractorLv2PluginType::lv2_close();
 	#endif
@@ -2319,7 +2335,7 @@ bool qtractorMainForm::closeSession (void)
 		// Is it time to cleanup extracted archives?
 		const QStringList& paths = qtractorDocument::extractedArchives();
 		if (!paths.isEmpty()) {
-			bool bArchiveRemove = true;
+			bool bRemoveArchive = true;
 			bool bConfirmArchive = (m_pOptions && m_pOptions->bConfirmArchive);
 		#ifdef CONFIG_NSM
 			if (m_pNsmClient && m_pNsmClient->is_active())
@@ -2345,12 +2361,12 @@ bool qtractorMainForm::closeSession (void)
 				cbox.setChecked(false);
 				cbox.blockSignals(true);
 				mbox.addButton(&cbox, QMessageBox::ActionRole);
-				bArchiveRemove = (mbox.exec() == QMessageBox::Ok);
+				bRemoveArchive = (mbox.exec() == QMessageBox::Ok);
 				if (cbox.isChecked())
 					m_pOptions->bConfirmArchive = false;
 			#endif
 			}
-			qtractorDocument::clearExtractedArchives(bArchiveRemove);
+			qtractorDocument::clearExtractedArchives(bRemoveArchive);
 		}
 	#endif
 		// Some defaults are due...
@@ -2429,7 +2445,7 @@ bool qtractorMainForm::loadSessionFileEx (
 		} else {
 			info.setFile(info.path() + QDir::separator() + info.completeBaseName());
 			if (info.exists() && info.isDir()) {
-				bool bArchiveRemove = true;
+				bool bRemoveArchive = true;
 				if  (m_pOptions && m_pOptions->bConfirmArchive) {
 					const QString& sTitle
 						= tr("Warning");
@@ -2439,7 +2455,7 @@ bool qtractorMainForm::loadSessionFileEx (
 						"Do you want to replace it?")
 						.arg(info.filePath());
 				#if 0
-					bArchiveRemove (QMessageBox::warning(this, sTitle, sText,
+					bRemoveArchive (QMessageBox::warning(this, sTitle, sText,
 						QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
 				#else
 					QMessageBox mbox(this);
@@ -2451,12 +2467,12 @@ bool qtractorMainForm::loadSessionFileEx (
 					cbox.setChecked(false);
 					cbox.blockSignals(true);
 					mbox.addButton(&cbox, QMessageBox::ActionRole);
-					bArchiveRemove = (mbox.exec() == QMessageBox::Ok);
+					bRemoveArchive = (mbox.exec() == QMessageBox::Ok);
 					if (cbox.isChecked())
 						m_pOptions->bConfirmArchive = false;
 				#endif
-					// Restarting...
-					if (!bArchiveRemove) {
+					// Restarting?...
+					if (!bRemoveArchive) {
 					#ifdef CONFIG_LV2
 						QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 						qtractorLv2PluginType::lv2_open();
@@ -2524,6 +2540,7 @@ bool qtractorMainForm::loadSessionFileEx (
 				m_pOptions->iMidiMmcDevice = pMidiEngine->mmcDevice();
 				m_pOptions->iMidiSppMode   = int(pMidiEngine->sppMode());
 				m_pOptions->iMidiClockMode = int(pMidiEngine->clockMode());
+				m_pOptions->bMidiResetAllControllers = pMidiEngine->isResetAllControllers();
 			}
 			// Save it good...
 			m_pOptions->saveOptions();
@@ -2570,12 +2587,52 @@ bool qtractorMainForm::saveSessionFileEx (
 #endif
 
 	// Flag whether we're about to save as template or archive...
-	const QString& sSuffix = QFileInfo(sFilename).suffix();
+	QFileInfo info(sFilename);
+	const QString& sSuffix = info.suffix();
 	if (sSuffix == qtractorDocument::templateExt())
 		iFlags |= qtractorDocument::Template;
 #ifdef CONFIG_LIBZ
-	if (sSuffix == qtractorDocument::archiveExt())
+	if (sSuffix == qtractorDocument::archiveExt()) {
 		iFlags |= qtractorDocument::Archive;
+		info.setFile(info.path() + QDir::separator() + info.completeBaseName());
+		if (info.exists() && info.isDir() &&
+			!qtractorDocument::extractedArchives().contains(info.filePath())) {
+			bool bConfirmArchive = true;
+			if  (m_pOptions && m_pOptions->bConfirmArchive) {
+				const QString& sTitle
+					= tr("Warning");
+				const QString& sText = tr(
+					"A directory with same name already exists:\n\n"
+					"\"%1\"\n\n"
+					"This directory will be replaced, "
+					"erasing all its current data,\n"
+					"when opening and extracting "
+					"this archive in the future.\n\n"
+					"Do you want to continue?")
+					.arg(info.filePath());
+			#if 0
+				bConfirmArchive (QMessageBox::warning(this, sTitle, sText,
+					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok);
+			#else
+				QMessageBox mbox(this);
+				mbox.setIcon(QMessageBox::Warning);
+				mbox.setWindowTitle(sTitle);
+				mbox.setText(sText);
+				mbox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+				QCheckBox cbox(tr("Don't ask this again"));
+				cbox.setChecked(false);
+				cbox.blockSignals(true);
+				mbox.addButton(&cbox, QMessageBox::ActionRole);
+				bConfirmArchive = (mbox.exec() == QMessageBox::Ok);
+				if (cbox.isChecked())
+					m_pOptions->bConfirmArchive = false;
+			#endif
+			}
+			// Aborting?...
+			if (!bConfirmArchive)
+				return false;
+		}
+	}
 #endif
 
 	// Tell the world we'll take some time...
@@ -2637,6 +2694,7 @@ bool qtractorMainForm::saveSessionFileEx (
 				m_pOptions->iMidiMmcDevice = int(pMidiEngine->mmcDevice());
 				m_pOptions->iMidiSppMode   = int(pMidiEngine->sppMode());
 				m_pOptions->iMidiClockMode = int(pMidiEngine->clockMode());
+				m_pOptions->bMidiResetAllControllers = pMidiEngine->isResetAllControllers();
 			}
 			// Do not set (next) default session directory on zip/archives...
 			if ((iFlags & qtractorDocument::Archive) == 0)
@@ -2665,7 +2723,7 @@ bool qtractorMainForm::saveSessionFileEx (
 }
 
 
-QString qtractorMainForm::sessionBackupPath ( const QString& sFilename )
+QString qtractorMainForm::sessionBackupPath ( const QString& sFilename ) const
 {
 	QFileInfo fi(sFilename);
 
@@ -2690,6 +2748,32 @@ QString qtractorMainForm::sessionBackupPath ( const QString& sFilename )
 			fi.setFile(dir, sBackupName.arg(++iBackupNo));
 	}
 
+	return fi.absoluteFilePath();
+}
+
+
+// Whenever on some Save As... situation:
+// better check whether the target directory
+// is one of the extracted archives/zip ones...
+//
+QString qtractorMainForm::sessionArchivePath ( const QString& sFilename ) const
+{
+	QFileInfo fi(sFilename);
+#ifdef CONFIG_LIBZ
+	const QStringList& paths
+		= qtractorDocument::extractedArchives();
+	if (!paths.isEmpty()) {
+		QStringListIterator iter(paths);
+		while (iter.hasNext()) {
+			const QString& sPath = iter.next();
+			if (sPath == fi.absolutePath()) {
+				const QString& sDir
+					= QFileInfo(sPath).absolutePath();
+				fi.setFile(sDir, fi.fileName());
+			}
+		}
+	}
+#endif
 	return fi.absoluteFilePath();
 }
 
@@ -2910,7 +2994,7 @@ void qtractorMainForm::autoSaveSession (void)
 	QString sAutoSaveDir = m_pSession->sessionDir();
 	if (sAutoSaveDir.isEmpty())
 		sAutoSaveDir = m_pOptions->sSessionDir;
-	if (sAutoSaveDir.isEmpty())
+	if (sAutoSaveDir.isEmpty() || !QFileInfo(sAutoSaveDir).isWritable())
 		sAutoSaveDir = QDir::tempPath();
 
 	QString sAutoSaveName = m_pSession->sessionName();
@@ -4420,7 +4504,6 @@ void qtractorMainForm::clipRangeSet (void)
 	qDebug("qtractorMainForm::clipRangeSet()");
 #endif
 
-	// Normalize current clip, if any...
 	if (m_pTracks)
 		m_pTracks->rangeClip();
 }
@@ -4433,9 +4516,8 @@ void qtractorMainForm::clipLoopSet (void)
 	qDebug("qtractorMainForm::clipLoopSet()");
 #endif
 
-	// Normalize current clip, if any...
 	if (m_pTracks)
-		m_pTracks->loopClip();
+		m_ui.clipLoopSetAction->setChecked(m_pTracks->loopClip());
 }
 
 
@@ -5065,6 +5147,7 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldMidiMmcMode        = m_pOptions->iMidiMmcMode;
 	const int     iOldMidiSppMode        = m_pOptions->iMidiSppMode;
 	const int     iOldMidiClockMode      = m_pOptions->iMidiClockMode;
+	const bool    bOldMidiResetAllControllers = m_pOptions->bMidiResetAllControllers;
 	const int     iOldMidiCaptureQuantize = m_pOptions->iMidiCaptureQuantize;
 	const int     iOldMidiQueueTimer     = m_pOptions->iMidiQueueTimer;
 	const bool    bOldMidiDriftCorrect   = m_pOptions->bMidiDriftCorrect;
@@ -5222,6 +5305,8 @@ void qtractorMainForm::viewOptions (void)
 			(iOldMidiMmcMode   != m_pOptions->iMidiMmcMode)   ||
 			(iOldMidiSppMode   != m_pOptions->iMidiSppMode)   ||
 			(iOldMidiClockMode != m_pOptions->iMidiClockMode) ||
+			( bOldMidiResetAllControllers && !m_pOptions->bMidiResetAllControllers) ||
+			(!bOldMidiResetAllControllers &&  m_pOptions->bMidiResetAllControllers) ||
 			(iOldMidiCaptureQuantize != m_pOptions->iMidiCaptureQuantize)) {
 			++m_iDirtyCount; // Fake session properties change.
 			updateMidiControlModes();
@@ -5829,7 +5914,10 @@ void qtractorMainForm::helpAbout (void)
 	list << tr("VST Plug-in support disabled.");
 #endif
 #ifndef CONFIG_VST3
-	list << tr("VST3 Plug-in support (EXPERIMENTAL) disabled.");
+	list << tr("VST3 Plug-in support disabled.");
+#endif
+#ifndef CONFIG_CLAP
+	list << tr("CLAP Plug-in support disabled.");
 #endif
 #ifndef CONFIG_LV2
 	list << tr("LV2 Plug-in support disabled.");
@@ -5973,16 +6061,17 @@ void qtractorMainForm::helpAboutQt (void)
 
 bool qtractorMainForm::setPlaying ( bool bPlaying )
 {
-	// In case of (re)starting playback, send now
-	// all tracks MIDI bank select/program changes...
-	if (bPlaying)
-		m_pSession->resetAllMidiControllers(true); // Force conditional!
-
 	// Toggle engine play status...
 	m_pSession->setPlaying(bPlaying);
 
 	// We must start/stop certain things...
-	if (!bPlaying) {
+	if (bPlaying) {
+		// In case of (re)starting playback, send now
+		// all tracks MIDI bank select/program changes...
+		m_pSession->resetAllMidiControllers(true);
+		// Start something?...
+		++m_iTransportUpdate;
+	} else {
 		// Shutdown recording anyway...
 		if (m_pSession->isRecording() && setRecording(false)) {
 			// Send MMC RECORD_EXIT command...
@@ -6006,8 +6095,7 @@ bool qtractorMainForm::setPlaying ( bool bPlaying )
 		}
 		if (pCurveCommand)
 			m_pSession->commands()->push(pCurveCommand);
-	}	// Start something... ;)
-	else ++m_iTransportUpdate;
+	}
 
 	// Done with playback switch...
 	return true;
@@ -6398,8 +6486,11 @@ void qtractorMainForm::stabilizeForm (void)
 	m_statusItems[StatusTime]->setText(
 		m_pSession->timeScale()->textFromFrame(0, true, iSessionEnd));
 
+	m_statusItems[StatusSize]->setText(
+		QString::number(m_pSession->audioEngine()->bufferSize()));
+
 	m_statusItems[StatusRate]->setText(
-		tr("%1 Hz").arg(m_pSession->sampleRate()));
+		QString::number(m_pSession->sampleRate()));
 
 	m_statusItems[StatusRec]->setPalette(*m_paletteItems[
 		bRecording && bRolling ? PaletteRed : PaletteNone]);
@@ -6489,7 +6580,6 @@ bool qtractorMainForm::startSession (void)
 		// Get on with the special ALSA sequencer notifier...
 		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
 		if (pMidiEngine && pMidiEngine->alsaNotifier()) {
-			m_pSession->resetAllMidiControllers(false); // Deferred++
 			QObject::connect(pMidiEngine->alsaNotifier(),
 				SIGNAL(activated(int)),
 				SLOT(alsaNotify()));
@@ -6628,6 +6718,9 @@ void qtractorMainForm::updateSessionPost (void)
 		}
 		qtractorMessageList::clear();
 	}
+
+	// Reset/reset all MIDI controllers (conditional)...
+	m_pSession->resetAllMidiControllers(false);
 
 	// Ah, make it stand right.
 	if (m_pTracks)
@@ -6833,6 +6926,7 @@ void qtractorMainForm::updateMidiControlModes (void)
 	pMidiEngine->setMmcMode(qtractorBus::BusMode(m_pOptions->iMidiMmcMode));
 	pMidiEngine->setSppMode(qtractorBus::BusMode(m_pOptions->iMidiSppMode));
 	pMidiEngine->setClockMode(qtractorBus::BusMode(m_pOptions->iMidiClockMode));
+	pMidiEngine->setResetAllControllers(m_pOptions->bMidiResetAllControllers);
 }
 
 
@@ -7674,6 +7768,10 @@ void qtractorMainForm::fastTimerSlot (void)
 	// Crispy plugin LV2 UI idle-updates...
 	qtractorLv2Plugin::idleEditorAll();
 #endif
+#endif
+#ifdef CONFIG_CLAP
+	// Crispy plugin CLAP UI idle-updates...
+	qtractorClapPlugin::idleEditorAll();
 #endif
 #ifdef CONFIG_VST
 	// Crispy plugin VST UI idle-updates...

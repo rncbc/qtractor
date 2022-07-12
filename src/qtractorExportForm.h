@@ -1,7 +1,7 @@
 // qtractorExportForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,6 +81,9 @@ protected:
 
 	// Save export options (settings).
 	void saveExportOptions();
+
+	// Range types.
+	enum RangeType { Session = 0, Loop, Punch, Edit, Custom };
 
 	// The Qt-designer UI struct...
 	Ui::qtractorExportForm m_ui;

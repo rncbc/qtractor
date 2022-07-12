@@ -1,7 +1,7 @@
 // qtractorCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -131,7 +131,7 @@ public:
 	// Remove last command from command chain.
 	void removeLastCommand();
 
-	// Special backout method (EXPERIMENTAL).
+	// Special backout method.
 	void backout(qtractorCommand *pCommand);
 
 	// Cannonical command methods.

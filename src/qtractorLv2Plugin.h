@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -357,6 +357,9 @@ public:
 	// Provisional program/patch accessor.
 	bool getProgram(int iIndex, Program& program) const;
 
+	// Provisional note name accessor.
+	bool getNoteName(int iIndex, NoteName& note) const;
+
 #ifdef CONFIG_LV2_PROGRAMS
 
 	// LV2 Programs extension data descriptor accessor.
@@ -417,8 +420,11 @@ public:
 
 protected:
 
-	//	Update instrument/programs cache.
-	bool updateInstruments();
+	// Update instrument/programs cache.
+	void updateInstruments();
+
+	// Clear instrument/programs cache.
+	void clearInstruments();
 
 #ifdef CONFIG_LV2_UI
 
@@ -426,7 +432,8 @@ protected:
 	bool lv2_ui_instantiate(
 		const char *ui_host_uri, const char *plugin_uri,
 		const char *ui_uri,	const char *ui_type_uri,
-		const char *ui_bundle_path, const char *ui_binary_path);
+		const char *ui_bundle_path, const char *ui_binary_path,
+		QWidget *pParent, Qt::WindowFlags wflags);
 
 	void lv2_ui_port_event(
 		uint32_t port_index, uint32_t buffer_size,
@@ -576,7 +583,7 @@ private:
 	// LV2 UI Touch interface (ui->host).
 	LV2UI_Touch m_lv2_ui_touch;
 	LV2_Feature m_lv2_ui_touch_feature;
-	QHash<unsigned long, bool> m_ui_params_touch;
+	QHash<unsigned long, float> m_ui_params_touch;
 #endif
 
 #ifdef CONFIG_LV2_UI_REQ_VALUE
@@ -627,6 +634,9 @@ private:
 
 	// Programs cache.
 	QList<Program *> m_programs;
+
+	// Note-names cache.
+	QList<NoteName *> m_noteNames;
 
 #ifdef CONFIG_LV2_PROGRAMS
 	LV2_Feature                m_lv2_programs_host_feature;

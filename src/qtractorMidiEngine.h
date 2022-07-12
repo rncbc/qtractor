@@ -123,7 +123,7 @@ public:
 
 	// Reset all MIDI controllers...
 	void resetAllControllers(bool bForceImmediate);
-	bool isResetAllControllers() const;
+	bool isResetAllControllersPending() const;
 
 	// Shut-off all MIDI buses (stop)...
 	void shutOffAllBuses(bool bClose = false);
@@ -273,6 +273,10 @@ public:
 	void setClockMode(qtractorBus::BusMode clockMode);
 	qtractorBus::BusMode clockMode() const;
 
+	// Whether to reset all MIDI controllers (on playback start).
+	void setResetAllControllers(bool bResetAllControllers);
+	bool isResetAllControllers() const;
+
 	// Free overridden SysEx queued events.
 	void clearSysexCache();
 
@@ -382,7 +386,7 @@ private:
 	unsigned short m_iCaptureQuantize;
 
 	// Controller update pending flagger.
-	int m_iResetAllControllers;
+	int m_iResetAllControllersPending;
 
 	// MMC Device ID.
 	unsigned char m_mmcDevice;
@@ -393,6 +397,9 @@ private:
 
 	// MIDI Clock mode.
 	qtractorBus::BusMode m_clockMode;
+
+	// Whether to reset all MIDI controllers (on playback start).
+	bool m_bResetAllControllers;
 
 	// MIDI Clock tempo tracking.
 	unsigned short m_iClockCount;

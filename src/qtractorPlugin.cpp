@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -115,7 +115,11 @@ qtractorPluginFile *qtractorPluginFile::addFile ( const QString& sFilename )
 {
 	qtractorPluginFile *pFile = g_files.value(sFilename, nullptr);
 
-	if (pFile == nullptr && QLibrary::isLibrary(sFilename)) {
+	if (pFile == nullptr && QLibrary::isLibrary(sFilename)
+	#ifdef CONFIG_CLAP
+		|| QFileInfo(sFilename).suffix() == "clap"
+	#endif
+	) {
 		pFile = new qtractorPluginFile(sFilename);
 		g_files.insert(pFile->filename(), pFile);
 	}
@@ -186,6 +190,9 @@ qtractorPluginType::Hint qtractorPluginType::hintFromText (
 	if (sText == "VST3")
 		return Vst3;
 	else
+	if (sText == "CLAP")
+		return Clap;
+	else
 	if (sText == "LV2")
 		return Lv2;
 	else
@@ -212,6 +219,9 @@ QString qtractorPluginType::textFromHint (
 	else
 	if (typeHint == Vst3)
 		return "VST3";
+	else
+	if (typeHint == Clap)
+		return "CLAP";
 	else
 	if (typeHint == Lv2)
 		return "LV2";
@@ -258,13 +268,8 @@ qtractorPlugin::~qtractorPlugin (void)
 {
 	// Clear out all dependables...
 	clearItems();
-
-	// Clear out all dependables...
-	qDeleteAll(m_params);
-	m_params.clear();
-
-	qDeleteAll(m_properties);
-	m_properties.clear();
+	clearParams();
+	clearProperties();
 
 	// Rest of stuff goes cleaned too...
 	if (m_pType) delete m_pType;
@@ -285,11 +290,7 @@ void qtractorPlugin::setInstances ( unsigned short iInstances )
 	if (iInstances < 1) {
 		// We're sorry but dialogs must also go now...
 		closeEditor();
-		if (m_pForm) {
-			m_pForm->close();
-			delete m_pForm;
-			m_pForm = nullptr;
-		}
+		closeForm(true);
 	}
 
 	m_iInstances = iInstances;
@@ -333,13 +334,15 @@ void qtractorPlugin::autoDeactivatePlugin ( bool bDeactivated )
 			// was activated?
 			if (m_bActivated) {
 				deactivate();
-				m_pList->updateActivated(false);
+				if (m_pList)
+					m_pList->updateActivated(false);
 			}
 		}
 		// reactivate?
 		else if (m_bActivated) {
 			activate();
-			m_pList->updateActivated(true);
+			if (m_pList)
+				m_pList->updateActivated(true);
 		}
 		m_bAutoDeactivated = bDeactivated;
 	}
@@ -356,7 +359,8 @@ bool qtractorPlugin::canBeConnectedToOtherTracks (void) const
 // Activation stabilizers.
 void qtractorPlugin::updateActivated ( bool bActivated )
 {
-	if (bActivated != m_bActivated) {
+	if (( bActivated && !m_bActivated) ||
+		(!bActivated &&  m_bActivated)) {
 		m_bActivated = bActivated;
 		const bool bIsConnectedToOtherTracks = canBeConnectedToOtherTracks();
 		// Auto-plugin-deactivation overrides standard-activation for plugins
@@ -367,7 +371,8 @@ void qtractorPlugin::updateActivated ( bool bActivated )
 				activate();
 			else
 				deactivate();
-			m_pList->updateActivated(bActivated);
+			if (m_pList)
+				m_pList->updateActivated(bActivated);
 		}
 		// Plugins connected to other tracks activation change
 		// auto-plugin-deactivate for all tracks
@@ -414,7 +419,16 @@ void qtractorPlugin::setChannelsActivated (
 	if (iChannels > 0)
 		setActivated(bActivated);
 	else
-		updateActivated(false);
+		updateActivated(bActivated);
+}
+
+
+// Internal deactivation cleanup.
+void qtractorPlugin::cleanup (void)
+{
+	m_bActivated = false;
+
+	setChannels(0);
 }
 
 
@@ -518,7 +532,7 @@ void qtractorPlugin::clearItems (void)
 }
 
 
-// Paremeters list accessor.
+// Paremeters list accessors.
 void qtractorPlugin::addParam ( qtractorPlugin::Param *pParam )
 {
 	pParam->reset();
@@ -529,11 +543,41 @@ void qtractorPlugin::addParam ( qtractorPlugin::Param *pParam )
 }
 
 
+void qtractorPlugin::removeParam ( qtractorPlugin::Param *pParam )
+{
+	m_paramNames.remove(pParam->name());
+	m_params.remove(pParam->index());
+}
+
+
+void qtractorPlugin::clearParams (void)
+{
+	qDeleteAll(m_params);
+	m_params.clear();
+	m_paramNames.clear();
+}
+
+
 // Properties registry accessor.
 void qtractorPlugin::addProperty ( qtractorPlugin::Property *pProp )
 {
 	m_properties.insert(pProp->index(), pProp);
 	m_propertyKeys.insert(pProp->key(), pProp);
+}
+
+
+void qtractorPlugin::removeProperty ( qtractorPlugin::Property *pProp )
+{
+	m_propertyKeys.remove(pProp->name());
+	m_properties.remove(pProp->index());
+}
+
+
+void qtractorPlugin::clearProperties (void)
+{
+	qDeleteAll(m_properties);
+	m_properties.clear();
+	m_propertyKeys.clear();
 }
 
 
@@ -576,9 +620,18 @@ void qtractorPlugin::openForm ( QWidget *pParent )
 }
 
 
-void qtractorPlugin::closeForm (void)
+void qtractorPlugin::closeForm ( bool bForce )
 {
-	if (m_pForm && m_pForm->isVisible())
+	if (m_pForm == nullptr)
+		return;
+
+	if (bForce) {
+		m_pForm->close();
+		delete m_pForm;
+		m_pForm = nullptr;
+	}
+	else
+	if (m_pForm->isVisible())
 		m_pForm->hide();
 }
 
@@ -752,8 +805,8 @@ bool qtractorPlugin::loadPresetFile ( const QString& sFilename )
 // Save plugin preset to xml file.
 bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 {
-	freezeValues();
 	freezeConfigs();
+	freezeValues();
 
 	QFileInfo fi(sFilename);
 
@@ -900,9 +953,11 @@ bool qtractorPlugin::isDirectAccessParam (void) const
 void qtractorPlugin::updateDirectAccessParam (void)
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-	QListIterator<qtractorPluginListView *> iter(m_pList->views());
-	while (iter.hasNext())
-		iter.next()->viewport()->update();
+	if (m_pList) {
+		QListIterator<qtractorPluginListView *> iter(m_pList->views());
+		while (iter.hasNext())
+			iter.next()->viewport()->update();
+	}
 #else
 	QListIterator<qtractorPluginListItem *> iter(m_items);
 	while (iter.hasNext())
@@ -976,7 +1031,9 @@ void qtractorPlugin::realizeConfigs (void)
 		configure(config.key(), config.value());
 
 	// Set proper bank/program selection...
-	qtractorMidiManager *pMidiManager = m_pList->midiManager();
+	qtractorMidiManager *pMidiManager = nullptr;
+	if (m_pList)
+		pMidiManager = m_pList->midiManager();
 	if (pMidiManager)
 		selectProgram(pMidiManager->currentBank(), pMidiManager->currentProg());
 }
@@ -1452,8 +1509,8 @@ void qtractorPlugin::applyCurveFile ( qtractorCurveFile *pCurveFile )
 bool qtractorPlugin::savePlugin (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
-	freezeValues();
 	freezeConfigs();
+	freezeValues();
 
 	qtractorPluginType *pType = type();
 	pElement->setAttribute("type",
@@ -1838,8 +1895,8 @@ bool qtractorPluginList::resetChannels (
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
 		if (bReset && iChannels > 0) {
-			pPlugin->freezeValues();
 			pPlugin->freezeConfigs();
+			pPlugin->freezeValues();
 		}
 		pPlugin->setChannels(iChannels);
 		if (bReset && iChannels > 0) {
@@ -2040,8 +2097,8 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		return nullptr;
 
 	// Clone the plugin instance...
-	pPlugin->freezeValues();
 	pPlugin->freezeConfigs();
+	pPlugin->freezeValues();
 
 #if 0
 	// MIDI bank program whether necessary...
