@@ -157,18 +157,18 @@ Fim:	%3	Tamanho:	%4</translation>
     <message>
         <location filename="../qtractorOptions.cpp" line="769"/>
         <source>Session file (.qtr)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo do projeto (.qtr)</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="770"/>
         <source>[session-file]</source>
-        <translation type="unfinished"></translation>
+        <translation>[arquivo do projeto]</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="777"/>
         <location filename="../qtractorOptions.cpp" line="822"/>
         <source>Option -s requires an argument (uuid).</source>
-        <translation type="unfinished"></translation>
+        <translation>Opção -s requer argumento (uuid).</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2697"/>
@@ -627,12 +627,12 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="571"/>
         <source>Manual: </source>
-        <translation type="unfinished"></translation>
+        <translation>Manual: </translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="577"/>
         <source>Support: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuda: </translation>
     </message>
     <message>
         <location filename="../qtractorSessionCommand.cpp" line="99"/>
@@ -2973,7 +2973,7 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="680"/>
         <source>Session buffer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamanho do buffer do Projeto</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2041"/>
@@ -2998,7 +2998,14 @@ This directory will be replaced, erasing all its current data,
 when opening and extracting this archive in the future.
 
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasta com o mesmo nome já existe:
+
+&quot;%1&quot;
+
+Esta pasta será substituída apagando to o conteúdo anterior,
+quando abrir ou extrair este conteúdo no futuro.
+
+Você deseja continuar assim mesmo?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5845"/>
@@ -3013,12 +3020,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5917"/>
         <source>VST3 Plug-in support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suporte a Pugins VST3 desabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5920"/>
         <source>CLAP Plug-in support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Suporte a plugins CLAP desabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5941"/>
@@ -11717,12 +11724,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1589"/>
         <source>Whether to reset/resend all controllers on playback start</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre que reiniciar/reenviar todos os controladores ao iniciar a reprodução</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1592"/>
         <source>&amp;Reset all controllers on playback start</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reiniciar todos os controladores na reprodução</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2060"/>
@@ -11794,7 +11801,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3483"/>
         <source>Move down path</source>
-        <translation type="unfinished"></translation>
+        <translation>Move para baixo no caminho</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3722"/>
