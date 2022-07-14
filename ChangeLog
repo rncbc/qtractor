@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Add current system user-name to the singleton/unique application
+  instance identifier. (EXPERIMENTAL)
+
+
 0.9.27  2022-07-07  An Early-Summer'22 Release.
 
 - CLAP plug-in host support introduced. (EXPERIMENTAL)
