@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed typos and updated some old MIDI GM2 Controller names.
+
 - Add current system user-name to the singleton/unique application
   instance identifier. (EXPERIMENTAL)
 
