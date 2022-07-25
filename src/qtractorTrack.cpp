@@ -532,7 +532,7 @@ bool qtractorTrack::open (void)
 			pAudioBus = pMidiManager->audioOutputBus();
 		if (pAudioBus == nullptr) {
 			// Output bus gets to be the first available output bus...
-			for (qtractorBus *pBus = (pAudioEngine->buses()).first();
+			for (qtractorBus *pBus = pAudioEngine->buses().first();
 					pBus; pBus = pBus->next()) {
 				if (pBus->busMode() & qtractorBus::Output) {
 					pAudioBus = static_cast<qtractorAudioBus *> (pBus);
@@ -737,20 +737,6 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 	// Set new track type, now...
 	m_props.trackType = trackType;
 
-	// Get number of default number of audio channels
-	// from the the first available output bus...
-	unsigned short iChannels = 0;
-	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
-	for (qtractorBus *pBus = (pAudioEngine->buses()).first();
-			pBus; pBus = pBus->next()) {
-		if (pBus->busMode() & qtractorBus::Output) {
-			qtractorAudioBus *pAudioBus = static_cast<qtractorAudioBus *> (pBus);
-			if (pAudioBus)
-				iChannels = pAudioBus->channels();
-			break;
-		}
-	}
-
 	// Acquire a new MIDI-tag and setup the plugin-list flags...
 	unsigned int iFlags = qtractorPluginList::Track;
 	// Get current audio output bus for the plugin list...
@@ -760,7 +746,7 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 	}
 
 	// (Re)set plugin-list...
-	m_pPluginList->setChannels(iChannels, iFlags);
+	m_pPluginList->setChannels(0, iFlags);
 }
 
 

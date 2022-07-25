@@ -14663,12 +14663,12 @@ Chcete použít tyto změny?</translation>
         <translation>Ikona stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1496"/>
+        <location filename="../qtractorTrackForm.cpp" line="1524"/>
         <source>Foreground Color</source>
         <translation>Barva popředí</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1522"/>
+        <location filename="../qtractorTrackForm.cpp" line="1550"/>
         <source>Background Color</source>
         <translation>Barva pozadí</translation>
     </message>

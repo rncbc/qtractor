@@ -14891,12 +14891,12 @@ Do you want to apply the changes?</source>
         <translation>Icono de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1496"/>
+        <location filename="../qtractorTrackForm.cpp" line="1524"/>
         <source>Foreground Color</source>
         <translation>Color destacado</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1522"/>
+        <location filename="../qtractorTrackForm.cpp" line="1550"/>
         <source>Background Color</source>
         <translation>Color de Fondo</translation>
     </message>

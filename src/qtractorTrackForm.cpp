@@ -1276,6 +1276,34 @@ void qtractorTrackForm::trackTypeChanged (void)
 
 //	inputBusNameChanged(m_ui.InputBusNameComboBox->currentIndex());
 	outputBusNameChanged(m_ui.OutputBusNameComboBox->currentIndex());
+
+	// FIXME: Plugin-list initial number of audio output channels...
+	qtractorPluginList *pPluginList = m_pTrack->pluginList();
+	if (pPluginList && m_pTrack->session()) {
+		unsigned short iChannels = pPluginList->channels();
+		// Somehow switching track-types might zero it...
+		if (iChannels == 0) {
+			qtractorAudioEngine *pAudioEngine
+				= (m_pTrack->session())->audioEngine();
+			if (pAudioEngine) {
+				for (qtractorBus *pBus = pAudioEngine->buses().first();
+						pBus; pBus = pBus->next()) {
+					if (pBus->busMode() & qtractorBus::Output) {
+						qtractorAudioBus *pAudioBus
+							= static_cast<qtractorAudioBus *> (pBus);
+						if (pAudioBus)
+							iChannels = pAudioBus->channels();
+						break;
+					}
+				}
+			}
+		}
+		// Have we some?...
+		if (iChannels > 0) {
+			const unsigned int iFlags = pPluginList->flags();
+			pPluginList->setChannels(iChannels, iFlags);
+		}
+	}
 }
 
 

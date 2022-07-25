@@ -14901,12 +14901,12 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>Icône de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1496"/>
+        <location filename="../qtractorTrackForm.cpp" line="1524"/>
         <source>Foreground Color</source>
         <translation>Couleur d&apos;avant-plan</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1522"/>
+        <location filename="../qtractorTrackForm.cpp" line="1550"/>
         <source>Background Color</source>
         <translation>Couleur d&apos;arrière-plan</translation>
     </message>
