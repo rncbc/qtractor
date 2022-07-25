@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -737,15 +737,30 @@ void qtractorTrack::setTrackType ( qtractorTrack::TrackType trackType )
 	// Set new track type, now...
 	m_props.trackType = trackType;
 
-	// Acquire a new midi-tag and setup new plugin-list flags...
+	// Get number of default number of audio channels
+	// from the the first available output bus...
+	unsigned short iChannels = 0;
+	qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
+	for (qtractorBus *pBus = (pAudioEngine->buses()).first();
+			pBus; pBus = pBus->next()) {
+		if (pBus->busMode() & qtractorBus::Output) {
+			qtractorAudioBus *pAudioBus = static_cast<qtractorAudioBus *> (pBus);
+			if (pAudioBus)
+				iChannels = pAudioBus->channels();
+			break;
+		}
+	}
+
+	// Acquire a new MIDI-tag and setup the plugin-list flags...
 	unsigned int iFlags = qtractorPluginList::Track;
+	// Get current audio output bus for the plugin list...
 	if (m_props.trackType == qtractorTrack::Midi) {
 		m_pSession->acquireMidiTag(this);
 		iFlags |= qtractorPluginList::Midi;
 	}
 
 	// (Re)set plugin-list...
-	m_pPluginList->setChannels(0, iFlags);
+	m_pPluginList->setChannels(iChannels, iFlags);
 }
 
 

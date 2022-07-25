@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed plugin-list state when switching initial track-type from
+  audio to MIDI and vice-versa. (EXPERIMENTAL)
+
 - Fixed typos and updated some old MIDI GM2 Controller names.
 
 - Add current system user-name to the singleton/unique application
