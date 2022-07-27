@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Improved key-signature editing and display on the tempo-map and
+  markers management dialog. (EXPERIMENTAL)
+
 - Fixed plugin-list state when switching initial track-type from
   audio to MIDI and vice-versa. (EXPERIMENTAL)
 
@@ -369,7 +372,7 @@ GIT HEAD
 
 0.9.12  2019-12-28  The Winter'19 Release.
 
-- Basic key-signature has been added to tempo, time -signature and
+- Basic key-signature has been added to tempo, time-signature and
   location markers map.
 
 - MIDI Clip editor (aka. piano-roll) horizontal and vertical splitter

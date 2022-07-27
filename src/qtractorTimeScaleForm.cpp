@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -121,12 +121,9 @@ public:
 				QTreeWidgetItem::setText(1, pTimeScale->textFromFrameEx(
 					displayFormat, pMarker->frame));
 			}
-			if (pMarker->accidentals || pMarker->mode) {
-				QTreeWidgetItem::setText(3,
-					qtractorTimeScale::keySignatureName(
-						pMarker->accidentals, pMarker->mode));
-			}
-			else QTreeWidgetItem::setText(3, dash);
+			QTreeWidgetItem::setText(3,
+				qtractorTimeScale::keySignatureName(
+					pMarker->accidentals, pMarker->mode));
 			if (!pMarker->text.isEmpty()) {
 				QTreeWidgetItem::setText(4, pMarker->text);
 				QTreeWidgetItem::setForeground(4, pMarker->color);
@@ -274,6 +271,13 @@ qtractorTimeScaleForm::qtractorTimeScaleForm ( QWidget *pParent )
 		SLOT(reject()));
 
 	stabilizeForm();
+}
+
+
+// Destructor.
+qtractorTimeScaleForm::~qtractorTimeScaleForm (void)
+{
+	delete m_pTempoTap;
 }
 
 
@@ -646,22 +650,25 @@ unsigned int qtractorTimeScaleForm::flags (void) const
 	if (pMarker && pMarker->frame == iFrame) {
 		if (!sMarkerText.isEmpty())
 			iFlags |= UpdateMarker;
-		if (iAccidentals || iMode)
-			iFlags |= UpdateKeySignature;
 		iFlags |= RemoveMarker;
+		iFlags |= UpdateKeySignature;
 	}
+
 	if (pMarker
 		&& pMarker->text == sMarkerText
 		&& pMarker->color == rgbMarkerColor)
 		iFlags &= ~UpdateMarker;
-	else if (!sMarkerText.isEmpty())
-		iFlags |=  AddMarker;
+	else
+	if (!sMarkerText.isEmpty())
+		iFlags |= AddMarker;
+
 	if (pMarker
 		&& pMarker->accidentals == iAccidentals
 		&& pMarker->mode == iMode)
 		iFlags &= ~UpdateKeySignature;
-	else if (iAccidentals || iMode)
-		iFlags |=  AddKeySignature;
+	else
+	if (iIndex >= 0)
+		iFlags |= AddKeySignature;
 
 	if (pMarker && pMarker->frame == iFrame) {
 		iFlags &= ~AddMarker;
@@ -711,12 +718,10 @@ void qtractorTimeScaleForm::addItem (void)
 		if (iIndex >= 0)
 			iAccidentals = m_ui.KeySignatureAccidentalsComboBox->itemData(iIndex).toInt();
 		const int iMode = m_ui.KeySignatureModeComboBox->currentIndex();
-		if (iAccidentals || iMode) {
-			pSession->execute(
-				new qtractorTimeScaleAddKeySignatureCommand(
-					m_pTimeScale, iFrame, iAccidentals, iMode));
-			++m_iDirtyTotal;
-		}
+		pSession->execute(
+			new qtractorTimeScaleAddKeySignatureCommand(
+				m_pTimeScale, iFrame, iAccidentals, iMode));
+		++m_iDirtyTotal;
 	}
 
 	refresh();
