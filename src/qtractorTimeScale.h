@@ -1,7 +1,7 @@
 // qtractorTimeScale.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -515,7 +515,7 @@ public:
 		Marker(unsigned long iFrame, unsigned short iBar,
 			const QString& sText, const QColor& rgbColor = Qt::darkGray)
 			: frame(iFrame), bar(iBar), text(sText), color(rgbColor),
-				accidentals(0), mode(0) {}
+				accidentals(MinAccidentals), mode(-1) {}
 
 		Marker(unsigned long iFrame, unsigned short iBar,
 			int iAccidentals = 0, int iMode = 0)
@@ -548,7 +548,7 @@ public:
 
 		// Constructor.
 		MarkerCursor(qtractorTimeScale *pTimeScale)
-			: ts(pTimeScale), marker(0) {}
+			: ts(pTimeScale), marker(nullptr) {}
 
 		// Time scale accessor.
 		qtractorTimeScale *timeScale() const { return ts; }
@@ -592,7 +592,12 @@ public:
 	// Update markers from given node position.
 	void updateMarkers(Node *pNode);
 
-	// Key signature map accessor.
+	// Key signature map accessors.
+	//
+	enum { MinAccidentals = -9, MaxAccidentals = 9 };
+
+	static bool isKeySignature(int iAccidentals, int iMode);
+
 	static QString keySignatureName(
 		int iAccidentals, int iMode, char chMinor = 'm');
 

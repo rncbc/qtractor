@@ -235,7 +235,8 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	while (pMarker) {
 		x = pTimeScale->pixelFromFrame(pMarker->frame) - dx + 4;
 		if (x > w) break;
-		if (pMarker->accidentals || pMarker->mode) {
+		if (qtractorTimeScale::isKeySignature(
+				pMarker->accidentals, pMarker->mode)) {
 			const QString& sKeySignature
 				= qtractorTimeScale::keySignatureName(
 					pMarker->accidentals, pMarker->mode);

@@ -168,7 +168,8 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 	while (pMarker) {
 		x = pTimeScale->pixelFromFrame(pMarker->frame) - cx + 4;
 		if (x > w) break;
-		if (pMarker->accidentals || pMarker->mode) {
+		if (qtractorTimeScale::isKeySignature(
+				pMarker->accidentals, pMarker->mode)) {
 			const QString& sKeySignature
 				= qtractorTimeScale::keySignatureName(
 					pMarker->accidentals, pMarker->mode);

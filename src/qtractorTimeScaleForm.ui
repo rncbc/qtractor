@@ -275,6 +275,11 @@
          </property>
          <item>
           <property name="text">
+           <string>-</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Major</string>
           </property>
          </item>

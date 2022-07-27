@@ -71,6 +71,7 @@ protected slots:
 	void barChanged(int);
 	void timeChanged(unsigned long);
 	void tempoChanged();
+	void accidentalsChanged(int);
 	void modeChanged(int);
 	void changed();
 

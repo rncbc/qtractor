@@ -2264,8 +2264,8 @@ bool qtractorSession::loadElement (
 						= eMarker.attribute("frame").toULong();
 					QString sText;
 					QColor rgbColor = Qt::darkGray;
-					int iAccidentals = 0;
-					int iMode = 0;
+					int iAccidentals = qtractorTimeScale::MinAccidentals;
+					int iMode = -1;
 					for (QDomNode nItem = eMarker.firstChild();
 							!nItem.isNull();
 								nItem = nItem.nextSibling()) {
@@ -2288,7 +2288,7 @@ bool qtractorSession::loadElement (
 							iFrame, sText, rgbColor);
 					}
 					// Or/and key-signature...
-					if (iAccidentals || iMode) {
+					if (qtractorTimeScale::isKeySignature(iAccidentals, iMode)) {
 						qtractorSession::timeScale()->addKeySignature(
 							iFrame, iAccidentals, iMode);
 					}
@@ -2482,7 +2482,8 @@ bool qtractorSession::saveElement (
 				pDocument->saveTextElement("text", pMarker->text, &eMarker);
 				pDocument->saveTextElement("color", pMarker->color.name(), &eMarker);
 			}
-			if (pMarker->accidentals || pMarker->mode) {
+			if (qtractorTimeScale::isKeySignature(
+					pMarker->accidentals, pMarker->mode)) {
 				pDocument->saveTextElement("accidentals",
 					QString::number(pMarker->accidentals), &eMarker);
 				pDocument->saveTextElement("mode",

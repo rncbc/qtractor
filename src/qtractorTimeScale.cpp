@@ -1,7 +1,7 @@
 // qtractorTimeScale.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -975,6 +975,14 @@ void qtractorTimeScale::updateMarkers ( qtractorTimeScale::Node *pNode )
 
 
 // Key signature map accessor.
+//
+bool qtractorTimeScale::isKeySignature ( int iAccidentals, int iMode )
+{
+	return (MinAccidentals <  iAccidentals
+		&&  MaxAccidentals >= iAccidentals && iMode >= 0);
+}
+
+
 QString qtractorTimeScale::keySignatureName (
 	int iAccidentals, int iMode, char chMinor )
 {
@@ -1000,6 +1008,11 @@ QString qtractorTimeScale::keySignatureName (
 		{ QT_TR_NOOP("B"), nullptr,          QT_TR_NOOP("Cb") }
 	};
 
+	QString sKeySignature('-');
+
+	if (!isKeySignature(iAccidentals, iMode))
+		return sKeySignature;
+
 	const int i
 		= (iAccidentals * (iAccidentals < 0 ? -5 : 7)
 		+ (iMode > 0 ? 9 : 0)) % 12;
@@ -1013,7 +1026,7 @@ QString qtractorTimeScale::keySignatureName (
 	if (name == nullptr)
 		name = s_aAccidentalsTab[i].natural;
 
-	QString sKeySignature = tr(name);
+	sKeySignature = tr(name);
 
 	if (iMode && chMinor)
 		sKeySignature += chMinor;
