@@ -11392,22 +11392,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1394"/>
+        <location filename="../qtractorMixer.cpp" line="1396"/>
         <source>Inputs</source>
         <translation>Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1395"/>
+        <location filename="../qtractorMixer.cpp" line="1397"/>
         <source>Tracks</source>
         <translation>Pistes</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1397"/>
+        <location filename="../qtractorMixer.cpp" line="1399"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1404"/>
+        <location filename="../qtractorMixer.cpp" line="1406"/>
         <source>Mixer</source>
         <translation>Mixeur</translation>
     </message>
@@ -11428,22 +11428,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1025"/>
+        <location filename="../qtractorMixer.cpp" line="1027"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1029"/>
+        <location filename="../qtractorMixer.cpp" line="1031"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1035"/>
+        <location filename="../qtractorMixer.cpp" line="1037"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Moniteur</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1044"/>
+        <location filename="../qtractorMixer.cpp" line="1046"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Bus...</translation>
     </message>
@@ -11451,42 +11451,42 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerStrip</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="362"/>
+        <location filename="../qtractorMixer.cpp" line="364"/>
         <source>inputs</source>
         <translation>entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="362"/>
+        <location filename="../qtractorMixer.cpp" line="364"/>
         <source>outputs</source>
         <translation>sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="363"/>
+        <location filename="../qtractorMixer.cpp" line="365"/>
         <source>Connect %1</source>
         <translation>Connecter %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="604"/>
+        <location filename="../qtractorMixer.cpp" line="606"/>
         <source>%1 In</source>
         <translation>%1 Entrée</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="606"/>
+        <location filename="../qtractorMixer.cpp" line="608"/>
         <source>%1 Out</source>
         <translation>%1 Sortie</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="616"/>
+        <location filename="../qtractorMixer.cpp" line="618"/>
         <source>(Audio)</source>
         <translation>(Audio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="621"/>
+        <location filename="../qtractorMixer.cpp" line="623"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="625"/>
+        <location filename="../qtractorMixer.cpp" line="627"/>
         <source>(None)</source>
         <translation>(Rien)</translation>
     </message>
@@ -14865,12 +14865,12 @@ Voulez-vous abandonner ces changements ?</translation>
         <translation>&amp;Violon</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="500"/>
+        <location filename="../qtractorTrackForm.cpp" line="501"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="501"/>
+        <location filename="../qtractorTrackForm.cpp" line="502"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -14879,39 +14879,39 @@ Do you want to apply the changes?</source>
 Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="641"/>
+        <location filename="../qtractorTrackForm.cpp" line="642"/>
         <source>(No instrument)</source>
         <translation>(Pas d&apos;instrument)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="204"/>
-        <location filename="../qtractorTrackForm.cpp" line="843"/>
-        <location filename="../qtractorTrackForm.cpp" line="957"/>
+        <location filename="../qtractorTrackForm.cpp" line="844"/>
+        <location filename="../qtractorTrackForm.cpp" line="958"/>
         <source>(None)</source>
         <translation>(Rien)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1211"/>
+        <location filename="../qtractorTrackForm.cpp" line="1212"/>
         <source>Image files (%1)</source>
         <translation>Fichiers image (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1212"/>
+        <location filename="../qtractorTrackForm.cpp" line="1213"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1208"/>
+        <location filename="../qtractorTrackForm.cpp" line="1209"/>
         <source>Track Icon</source>
         <translation>Icône de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1524"/>
+        <location filename="../qtractorTrackForm.cpp" line="1525"/>
         <source>Foreground Color</source>
         <translation>Couleur d&apos;avant-plan</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1550"/>
+        <location filename="../qtractorTrackForm.cpp" line="1551"/>
         <source>Background Color</source>
         <translation>Couleur d&apos;arrière-plan</translation>
     </message>

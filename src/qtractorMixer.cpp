@@ -201,8 +201,10 @@ protected:
 	{
 		QPainter painter(this);
 		QRect rect(QLabel::rect());
-		painter.drawPixmap(rect.x(), rect.y(), m_icon.pixmap(rect.height()));
-		rect.setX(rect.x() + rect.height() + 1);
+		const int x = rect.x() + 1;
+		const int y = rect.y() + ((rect.height() - 16) >> 1) + 1;
+		painter.drawPixmap(x, y, m_icon.pixmap(16));
+		rect.setX(x + 16);
 		painter.drawText(rect, QLabel::alignment(), QLabel::text());
 	}
 

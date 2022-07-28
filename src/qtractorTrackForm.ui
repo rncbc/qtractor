@@ -81,7 +81,7 @@
           </widget>
          </item>
          <item row="1" column="5">
-          <widget class="QPushButton" name="TrackIconPushButton">
+          <widget class="QToolButton" name="TrackIconToolButton">
            <property name="minimumSize">
             <size>
              <width>32</width>
