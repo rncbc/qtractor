@@ -34,16 +34,16 @@ Audio :	%1 canaux, %2 Hz</translation>
         <translation>	(%1 demi-tons de décalage de la tonalité)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2693"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2707"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2999"/>
         <location filename="../qtractorMidiEngine.cpp" line="4012"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 In</source>
         <translation>%1 Entrée</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2702"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2716"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2999"/>
         <location filename="../qtractorMidiEngine.cpp" line="4021"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 Out</source>
@@ -652,15 +652,15 @@ MIDI:	</translation>
         <translation>%1 Volume</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2704"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2709"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2718"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation>%1 Gain</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2706"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2711"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2720"/>
         <location filename="../qtractorMidiEngine.cpp" line="4016"/>
         <location filename="../qtractorMidiEngine.cpp" line="4025"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -782,24 +782,24 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
         <translation>Produit :</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="558"/>
+        <location filename="../qtractorClapPlugin.cpp" line="553"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1339"/>
         <location filename="../qtractorVstPlugin.cpp" line="662"/>
         <source>Vendor: </source>
         <translation>Vendeur :</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="571"/>
+        <location filename="../qtractorClapPlugin.cpp" line="566"/>
         <source>Manual: </source>
         <translation>Manuel : </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="577"/>
+        <location filename="../qtractorClapPlugin.cpp" line="572"/>
         <source>Support: </source>
         <translation>Support : </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="542"/>
+        <location filename="../qtractorClapPlugin.cpp" line="537"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1312"/>
         <location filename="../qtractorVstPlugin.cpp" line="670"/>
         <source>Version: </source>
@@ -893,7 +893,7 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
         <translation>%1 : fichier automation/courbe introuvable.</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="536"/>
+        <location filename="../qtractorClapPlugin.cpp" line="531"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1306"/>
         <source>Name: </source>
         <translation>Nom : </translation>

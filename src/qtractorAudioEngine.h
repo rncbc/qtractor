@@ -241,6 +241,9 @@ public:
 	// Reset all audio monitoring...
 	void resetAllMonitors();
 
+	// Whether we're in the audio/real-time thread...
+	static bool isProcessing();
+
 protected:
 
 	// Concrete device (de)activation methods.

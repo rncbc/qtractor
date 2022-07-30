@@ -33,16 +33,16 @@ Audio:	%1 channels, %2 Hz</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2693"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2707"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2999"/>
         <location filename="../qtractorMidiEngine.cpp" line="4012"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 In</source>
         <translation>Вход %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2702"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2716"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2999"/>
         <location filename="../qtractorMidiEngine.cpp" line="4021"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 Out</source>
@@ -501,24 +501,24 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Продукт: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="558"/>
+        <location filename="../qtractorClapPlugin.cpp" line="553"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1339"/>
         <location filename="../qtractorVstPlugin.cpp" line="662"/>
         <source>Vendor: </source>
         <translation>Производитель: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="571"/>
+        <location filename="../qtractorClapPlugin.cpp" line="566"/>
         <source>Manual: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="577"/>
+        <location filename="../qtractorClapPlugin.cpp" line="572"/>
         <source>Support: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="542"/>
+        <location filename="../qtractorClapPlugin.cpp" line="537"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1312"/>
         <location filename="../qtractorVstPlugin.cpp" line="670"/>
         <source>Version: </source>
@@ -711,15 +711,15 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Громкость %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2704"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2709"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2718"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2706"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2711"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2720"/>
         <location filename="../qtractorMidiEngine.cpp" line="4016"/>
         <location filename="../qtractorMidiEngine.cpp" line="4025"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -890,7 +890,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="536"/>
+        <location filename="../qtractorClapPlugin.cpp" line="531"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1306"/>
         <source>Name: </source>
         <translation>Название: </translation>

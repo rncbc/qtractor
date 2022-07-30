@@ -935,6 +935,15 @@ void qtractorAudioEngine::clean (void)
 }
 
 
+// Whether we're in the audio/real-time thread...
+static thread_local bool g_bProcessing = false;
+
+bool qtractorAudioEngine::isProcessing (void)
+{
+	return g_bProcessing;
+}
+
+
 // Process cycle executive.
 int qtractorAudioEngine::process ( unsigned int nframes )
 {
@@ -965,6 +974,9 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	// Session RT-safeness lock...
 	if (!pSession->acquire())
 		return 0;
+
+	// We're in the audio/real-time thread...
+	g_bProcessing = true;
 
 	// Track whether audio output buses
 	// buses needs monitoring while idle...
@@ -1086,6 +1098,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		}
 		// Done as idle...
 		pAudioCursor->process(nframes);
+		g_bProcessing = false;
 		pSession->release();
 		return 0;
 	}
@@ -1177,6 +1190,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	pSession->midiEngine()->sync();
 
 	// Release RT-safeness lock...
+	g_bProcessing = false;
 	pSession->release();
 
 	// Process session stuff...

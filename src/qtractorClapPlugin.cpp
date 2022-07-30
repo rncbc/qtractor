@@ -54,11 +54,6 @@
 #include "qtractorMainForm.h"
 
 
-// FIXME: Whether we're in the main or audio-thread...
-//
-thread_local bool g_audio_thread = false;
-
-
 //-----------------------------------------------------------------------------
 // class qtractorClapPluginHost -- CLAP plugin host (singleton) decl.
 //
@@ -1650,8 +1645,6 @@ void qtractorClapPlugin::Impl::process (
 	if (!m_activated)
 		return;
 
-	g_audio_thread = true;
-
 	if (!m_processing && !m_sleeping) {
 		plugin_params_flush();
 		g_host.transportAddRef();
@@ -1678,8 +1671,6 @@ void qtractorClapPlugin::Impl::process (
 		// Transfer parameter changes...
 		process_params_out();
 	}
-
-	g_audio_thread = false;
 }
 
 
@@ -1950,7 +1941,7 @@ void qtractorClapPlugin::Impl::host_request_callback ( const clap_host *host )
 //
 void qtractorClapPlugin::Impl::plugin_request_restart (void)
 {
-	if (m_restarting || g_audio_thread)
+	if (m_restarting || qtractorAudioEngine::isProcessing())
 		return;
 
 	m_restarting = true;
@@ -2364,14 +2355,14 @@ void qtractorClapPlugin::Impl::plugin_on_posix_fd (
 bool qtractorClapPlugin::Impl::host_is_main_thread (
 	const clap_host *host )
 {
-	return !g_audio_thread;
+	return !qtractorAudioEngine::isProcessing();
 }
 
 
 bool qtractorClapPlugin::Impl::host_is_audio_thread (
 	const clap_host *host )
 {
-	return  g_audio_thread;
+	return  qtractorAudioEngine::isProcessing();
 }
 
 

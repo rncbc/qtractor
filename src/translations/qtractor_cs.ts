@@ -35,16 +35,16 @@ Zvuk:	%1 kanály, %2 Hz</translation>
 	(posunutí výšky tónu v půltónech %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2693"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2707"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2999"/>
         <location filename="../qtractorMidiEngine.cpp" line="4012"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2702"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2985"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2716"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2999"/>
         <location filename="../qtractorMidiEngine.cpp" line="4021"/>
         <location filename="../qtractorMidiEngine.cpp" line="4577"/>
         <source>%1 Out</source>
@@ -510,24 +510,24 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Výrobek: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="558"/>
+        <location filename="../qtractorClapPlugin.cpp" line="553"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1339"/>
         <location filename="../qtractorVstPlugin.cpp" line="662"/>
         <source>Vendor: </source>
         <translation>Prodejce: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="571"/>
+        <location filename="../qtractorClapPlugin.cpp" line="566"/>
         <source>Manual: </source>
         <translation>Příručka:</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="577"/>
+        <location filename="../qtractorClapPlugin.cpp" line="572"/>
         <source>Support: </source>
         <translation>Podpora:</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="542"/>
+        <location filename="../qtractorClapPlugin.cpp" line="537"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1312"/>
         <location filename="../qtractorVstPlugin.cpp" line="670"/>
         <source>Version: </source>
@@ -715,15 +715,15 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1 Hlasitost</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2695"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2704"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2709"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2718"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation>%1 Zesílení</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2697"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2706"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2711"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2720"/>
         <location filename="../qtractorMidiEngine.cpp" line="4016"/>
         <location filename="../qtractorMidiEngine.cpp" line="4025"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -894,7 +894,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1:Soubor s automatizací/křivkou nenalezen.</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="536"/>
+        <location filename="../qtractorClapPlugin.cpp" line="531"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1306"/>
         <source>Name: </source>
         <translation>Název: </translation>
