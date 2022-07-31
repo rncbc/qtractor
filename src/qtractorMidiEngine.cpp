@@ -41,8 +41,6 @@
 
 #include "qtractorPlugin.h"
 
-#include "qtractorCurveFile.h"
-
 #include <QApplication>
 #include <QFileInfo>
 

@@ -26,7 +26,6 @@
 #include "qtractorVst3Plugin.h"
 
 #include "qtractorSession.h"
-#include "qtractorSessionCursor.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
 
@@ -834,35 +833,27 @@ void qtractorVst3PluginHost::updateProcessContext (
 	if (m_processRefCount < 1)
 		return;
 
-	jack_position_t pos;
-	jack_transport_state_t state;
+	const qtractorAudioEngine::TimeInfo& timeInfo
+		= pAudioEngine->timeInfo();
 
-	if (pAudioEngine->isFreewheel()) {
-		pos.frame = pAudioEngine->sessionCursor()->frame();
-		pAudioEngine->timebase(&pos, 0);
-		state = JackTransportRolling; // Fake transport rolling...
-	} else {
-		state = jack_transport_query(pAudioEngine->jackClient(), &pos);
-	}
-
-	if (state == JackTransportRolling)
+	if (pAudioEngine->isPlaying() || pAudioEngine->isFreewheel())
 		m_processContext.state |=  Vst::ProcessContext::kPlaying;
 	else
 		m_processContext.state &= ~Vst::ProcessContext::kPlaying;
 
-	m_processContext.sampleRate = pos.frame_rate;
-	m_processContext.projectTimeSamples = pos.frame;
+	m_processContext.sampleRate = pAudioEngine->sampleRate();
+	m_processContext.projectTimeSamples = timeInfo.frame;
 
-	if (pos.valid & JackPositionBBT) {
-		m_processContext.state |= Vst::ProcessContext::kTempoValid;
-		m_processContext.tempo  = pos.beats_per_minute;
-		m_processContext.state |= Vst::ProcessContext::kTimeSigValid;
-		m_processContext.timeSigNumerator = pos.beats_per_bar;
-		m_processContext.timeSigDenominator = pos.beat_type;
-	} else {
-		m_processContext.state &= ~Vst::ProcessContext::kTempoValid;
-		m_processContext.state &= ~Vst::ProcessContext::kTimeSigValid;
-	}
+	m_processContext.state |= Vst::ProcessContext::kProjectTimeMusicValid;
+	m_processContext.projectTimeMusic = timeInfo.beats;
+	m_processContext.state |= Vst::ProcessContext::kBarPositionValid;
+	m_processContext.barPositionMusic = timeInfo.beats;
+
+	m_processContext.state |= Vst::ProcessContext::kTempoValid;
+	m_processContext.tempo  = timeInfo.tempo;
+	m_processContext.state |= Vst::ProcessContext::kTimeSigValid;
+	m_processContext.timeSigNumerator = timeInfo.beatsPerBar;
+	m_processContext.timeSigDenominator = timeInfo.beatType;
 }
 
 

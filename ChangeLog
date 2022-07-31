@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Complete overhaul of the time(base)/BBT host time information
+  for most plug-in types: VST, VST3, CLAP and LV2. (EXPERIMENTAL)
+  
 - Improved key-signature editing and display on the tempo-map and
   markers management dialog. (EXPERIMENTAL)
 

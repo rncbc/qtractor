@@ -35,34 +35,34 @@ Audio:	%1 channels, %2 Hz</source>
 	(зсування тону півтонів %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2707"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2999"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4012"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4577"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2738"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3030"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4010"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4575"/>
         <source>%1 In</source>
         <translation>Вхід %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2709"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2718"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2740"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2749"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation>Підсилення %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2711"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2720"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4016"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4025"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2742"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2751"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4014"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4023"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
         <source>%1 Pan</source>
         <translation>Панорамування %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2716"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2999"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4021"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4577"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2747"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3030"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4019"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4575"/>
         <source>%1 Out</source>
         <translation>Вихід %1</translation>
     </message>
@@ -73,7 +73,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVstPlugin.cpp" line="1578"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1579"/>
         <source>All files (*.*)</source>
         <translation>усі файли (*.*)</translation>
     </message>
@@ -108,32 +108,32 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Немає</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="531"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1306"/>
+        <location filename="../qtractorClapPlugin.cpp" line="530"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1297"/>
         <source>Name: </source>
         <translation>Назва: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="537"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1312"/>
-        <location filename="../qtractorVstPlugin.cpp" line="670"/>
+        <location filename="../qtractorClapPlugin.cpp" line="536"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1303"/>
+        <location filename="../qtractorVstPlugin.cpp" line="671"/>
         <source>Version: </source>
         <translation>Версія: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="553"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1339"/>
-        <location filename="../qtractorVstPlugin.cpp" line="662"/>
+        <location filename="../qtractorClapPlugin.cpp" line="552"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1330"/>
+        <location filename="../qtractorVstPlugin.cpp" line="663"/>
         <source>Vendor: </source>
         <translation>Виробник: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="566"/>
+        <location filename="../qtractorClapPlugin.cpp" line="565"/>
         <source>Manual: </source>
         <translation>Підручник: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="572"/>
+        <location filename="../qtractorClapPlugin.cpp" line="571"/>
         <source>Support: </source>
         <translation>Підтримка: </translation>
     </message>
@@ -515,8 +515,8 @@ MIDI:	</translation>
         <translation>скинути контролер</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="4014"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4023"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4012"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4021"/>
         <location filename="../qtractorTrack.cpp" line="693"/>
         <source>%1 Volume</source>
         <translation>Гучність %1</translation>
@@ -890,22 +890,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Невідомо</translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1326"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1317"/>
         <source>Category: </source>
         <translation>Категорія: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1333"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1324"/>
         <source>Categories: </source>
         <translation>Категорії: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="654"/>
+        <location filename="../qtractorVstPlugin.cpp" line="655"/>
         <source>Product: </source>
         <translation>Продукт: </translation>
     </message>
     <message>
-        <location filename="../qtractorVstPlugin.cpp" line="1575"/>
+        <location filename="../qtractorVstPlugin.cpp" line="1576"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>

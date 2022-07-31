@@ -25,8 +25,6 @@
 
 #include "qtractorVstPlugin.h"
 
-#include "qtractorPluginForm.h"
-
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
@@ -41,6 +39,9 @@
 #include <QFileDialog>
 #include <QFileInfo>
 
+#include <QRegularExpression>
+
+#include <QVBoxLayout>
 
 #if QT_VERSION < QT_VERSION_CHECK(4, 5, 0)
 namespace Qt {
@@ -1710,50 +1711,29 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 
 	case audioMasterGetTime:
 	//	VST_HC_DEBUG("audioMasterGetTime");
+		::memset(&s_vstTimeInfo, 0, sizeof(s_vstTimeInfo));
 		if (pSession) {
-			::memset(&s_vstTimeInfo, 0, sizeof(s_vstTimeInfo));
-			const unsigned long iPlayHead = pSession->playHead();
-			qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
-			qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
-			s_vstTimeInfo.samplePos = double(iPlayHead);
-			s_vstTimeInfo.sampleRate = double(pSession->sampleRate());
-			s_vstTimeInfo.flags = 0;
 			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-			if (pSession->isPlaying() || (pAudioEngine && pAudioEngine->isFreewheel()))
-				s_vstTimeInfo.flags |= (kVstTransportChanged | kVstTransportPlaying);
-			if (pNode) {
-				unsigned short bars  = 0;
-				unsigned int   beats = 0;
-				unsigned long  ticks = pNode->tickFromFrame(iPlayHead) - pNode->tick;
-				if (ticks >= (unsigned long) pNode->ticksPerBeat) {
-					beats += (unsigned int)  (ticks / pNode->ticksPerBeat);
-					ticks -= (unsigned long) (beats * pNode->ticksPerBeat);
-				}
-				if (beats >= (unsigned int) pNode->beatsPerBar) {
-					bars  += (unsigned short) (beats / pNode->beatsPerBar);
-				//	beats -= (unsigned int) (bars * pNode->beatsPerBar);
-				}
-				s_vstTimeInfo.ppqPos = double(pNode->beat + beats)
-					+ (double(ticks) / double(pNode->ticksPerBeat));
+			if (pAudioEngine) {
+				const qtractorAudioEngine::TimeInfo& timeInfo
+					= pAudioEngine->timeInfo();
+				s_vstTimeInfo.samplePos = double(timeInfo.frame);
+				s_vstTimeInfo.sampleRate = double(pAudioEngine->sampleRate());
+				s_vstTimeInfo.flags = 0;
+				if (pAudioEngine->isPlaying() || pAudioEngine->isFreewheel())
+					s_vstTimeInfo.flags |= (kVstTransportChanged | kVstTransportPlaying);
 				s_vstTimeInfo.flags |= kVstPpqPosValid;
-				s_vstTimeInfo.tempo  = double(pNode->tempo);
-				s_vstTimeInfo.flags |= kVstTempoValid;
-				s_vstTimeInfo.barStartPos = double(pNode->beat)
-					+ double(bars * pNode->beatsPerBar);
+				s_vstTimeInfo.ppqPos = double(timeInfo.beats);
 				s_vstTimeInfo.flags |= kVstBarsValid;
-				if (pSession->isLooping()) {
-					s_vstTimeInfo.cycleStartPos
-						= double(pNode->beatFromFrame(pSession->loopStart()));
-					s_vstTimeInfo.cycleEndPos
-						= double(pNode->beatFromFrame(pSession->loopEnd()));
-					s_vstTimeInfo.flags |= kVstCyclePosValid;
-				}
-				s_vstTimeInfo.timeSigNumerator = pNode->beatsPerBar;
-				s_vstTimeInfo.timeSigDenominator = (1 << pNode->beatDivisor);
+				s_vstTimeInfo.barStartPos = double(timeInfo.barBeats);
+				s_vstTimeInfo.flags |= kVstTempoValid;
+				s_vstTimeInfo.tempo  = double(timeInfo.tempo);
 				s_vstTimeInfo.flags |= kVstTimeSigValid;
+				s_vstTimeInfo.timeSigNumerator = timeInfo.beatsPerBar;
+				s_vstTimeInfo.timeSigDenominator = timeInfo.beatType;
 			}
-			ret = (VstIntPtr) &s_vstTimeInfo;
 		}
+		ret = (VstIntPtr) &s_vstTimeInfo;
 		break;
 
 	case audioMasterProcessEvents:

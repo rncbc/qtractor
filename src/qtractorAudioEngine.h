@@ -244,6 +244,24 @@ public:
 	// Whether we're in the audio/real-time thread...
 	static bool isProcessing();
 
+	// Time(base)/BBT time info.
+	struct TimeInfo
+	{
+		unsigned long  frame;
+		float          tempo;
+		unsigned short ticksPerBeat;
+		unsigned short beatsPerBar;
+		unsigned short beatType;
+		float          beats;
+		unsigned short bar;
+		unsigned int   beat;
+		unsigned int   tick;
+		float          barBeats;
+	};
+
+	const TimeInfo& timeInfo() const
+		{ return m_timeInfo; }
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -270,6 +288,9 @@ protected:
 
 	// Metronome latency offset compensation.
 	unsigned long metro_offset(unsigned long iFrame) const;
+
+	// Update time(base)/BBT time info.
+	void updateTimeInfo(unsigned long iFrame);
 
 private:
 
@@ -347,6 +368,9 @@ private:
 	// JACK Timebase mode and control.
 	bool                 m_bTimebase;
 	unsigned int         m_iTimebase;
+
+	// Time(base)/BBT time info.
+	TimeInfo             m_timeInfo;
 };
 
 

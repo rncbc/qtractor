@@ -32,8 +32,6 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
 
-#include "qtractorSessionCursor.h"
-
 #include "qtractorOptions.h"
 
 #include "qtractorMainForm.h"
@@ -45,6 +43,8 @@
 #include <QDir>
 #include <QUrl>
 #endif
+
+#include <QRegularExpression>
 
 #include <cmath>
 
@@ -731,8 +731,6 @@ static const LV2_Feature *g_lv2_features[] =
 
 #ifdef CONFIG_LV2_UI
 
-#include "qtractorPluginForm.h"
-
 #include "qtractorMessageBox.h"
 
 #include <QButtonGroup>
@@ -1343,6 +1341,8 @@ static void qtractor_lv2_time_position_close ( qtractorLv2Plugin *pLv2Plugin )
 #ifdef CONFIG_LV2_UI_GTK2
 
 #include "qtractorLv2Gtk2Plugin.h"
+
+#include <QVBoxLayout>
 
 #undef signals // Collides with some GTK symbology
 
@@ -5331,51 +5331,41 @@ void qtractorLv2Plugin::updateTime ( qtractorAudioEngine *pAudioEngine )
 	g_lv2_time_position_changed = 0;
 #endif
 
-	jack_position_t pos;
-	jack_transport_state_t state;
-
-	if (pAudioEngine->isFreewheel()) {
-		pos.frame = pAudioEngine->sessionCursor()->frame();
-		pAudioEngine->timebase(&pos, 0);
-		state = JackTransportRolling; // Fake transport rolling...
-	} else {
-		state = jack_transport_query(pAudioEngine->jackClient(), &pos);
-	}
+	const qtractorAudioEngine::TimeInfo& timeInfo
+		= pAudioEngine->timeInfo();
 
 #if 0//QTRACTOR_LV2_TIME_POSITION_FRAME_0
 	qtractor_lv2_time_update(
 		qtractorLv2Time::frame,
-		float(pos.frame));
+		float(timeInfo.frame));
 #endif
 	qtractor_lv2_time_update(
 		qtractorLv2Time::framesPerSecond,
-		float(pos.frame_rate));
+		float(pAudioEngine->sampleRate()));
 	qtractor_lv2_time_update(
 		qtractorLv2Time::speed,
-		(state == JackTransportRolling ? 1.0f : 0.0f));
+		(pAudioEngine->isPlaying() || pAudioEngine->isFreewheel() ? 1.0f : 0.0f));
 
-	if (pos.valid & JackPositionBBT) {
-		qtractor_lv2_time_update(
-			qtractorLv2Time::bar,
-			float(pos.bar));
-		qtractor_lv2_time_update(
-			qtractorLv2Time::beat,
-			float(pos.beat));
-	#if 0//QTRACTOR_LV2_TIME_POSITION_BARBEAT_0
-		qtractor_lv2_time_update(
-			qtractorLv2Time::barBeat,
-			float(pos.beat + (pos.tick / pos.ticks_per_beat) - 1));
-	#endif
-		qtractor_lv2_time_update(
-			qtractorLv2Time::beatUnit,
-			float(pos.beat_type));
-		qtractor_lv2_time_update(
-			qtractorLv2Time::beatsPerBar,
-			float(pos.beats_per_bar));
-		qtractor_lv2_time_update(
-			qtractorLv2Time::beatsPerMinute,
-			float(pos.beats_per_minute));
-	}
+	qtractor_lv2_time_update(
+		qtractorLv2Time::bar,
+		float(timeInfo.bar));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::beat,
+		float(timeInfo.beat));
+#if 0//QTRACTOR_LV2_TIME_POSITION_BARBEAT_0
+	qtractor_lv2_time_update(
+		qtractorLv2Time::barBeat,
+		timeInfo.barBeats);
+#endif
+	qtractor_lv2_time_update(
+		qtractorLv2Time::beatUnit,
+		float(timeInfo.beatType));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::beatsPerBar,
+		float(timeInfo.beatsPerBar));
+	qtractor_lv2_time_update(
+		qtractorLv2Time::beatsPerMinute,
+		timeInfo.tempo);
 
 #ifdef CONFIG_LV2_TIME_POSITION
 	if (g_lv2_time_position_changed > 0 &&
@@ -5390,7 +5380,7 @@ void qtractorLv2Plugin::updateTime ( qtractorAudioEngine *pAudioEngine )
 		qtractorLv2Time& time_frame
 			= g_lv2_time[qtractorLv2Time::frame];
 	#if 1//QTRACTOR_LV2_TIME_POSITION_FRAME_1
-		time_frame.value = float(pos.frame);
+		time_frame.value = float(timeInfo.frame);
 	#endif
 		lv2_atom_forge_key(forge, time_frame.urid);
 		lv2_atom_forge_long(forge, long(time_frame.value));
@@ -5398,35 +5388,33 @@ void qtractorLv2Plugin::updateTime ( qtractorAudioEngine *pAudioEngine )
 			= g_lv2_time[qtractorLv2Time::speed];
 		lv2_atom_forge_key(forge, time_speed.urid);
 		lv2_atom_forge_float(forge, time_speed.value);
-		if (pos.valid & JackPositionBBT) {
-			const qtractorLv2Time& time_bar
-				= g_lv2_time[qtractorLv2Time::bar];
-			lv2_atom_forge_key(forge, time_bar.urid);
-			lv2_atom_forge_long(forge, long(time_bar.value) - 1); // WTF?
-			const qtractorLv2Time& time_beat
-				= g_lv2_time[qtractorLv2Time::beat];
-			lv2_atom_forge_key(forge, time_beat.urid);
-			lv2_atom_forge_double(forge, double(time_beat.value));
-			qtractorLv2Time& time_barBeat
-				= g_lv2_time[qtractorLv2Time::barBeat];
-		#if 1//QTRACTOR_LV2_TIME_POSITION_BARBEAT_1
-			time_barBeat.value = float(pos.beat + (pos.tick / pos.ticks_per_beat) - 1);
-		#endif
-			lv2_atom_forge_key(forge, time_barBeat.urid);
-			lv2_atom_forge_float(forge, time_barBeat.value);
-			const qtractorLv2Time& time_beatUnit
-				= g_lv2_time[qtractorLv2Time::beatUnit];
-			lv2_atom_forge_key(forge, time_beatUnit.urid);
-			lv2_atom_forge_int(forge, int(time_beatUnit.value));
-			const qtractorLv2Time& time_beatsPerBar
-				= g_lv2_time[qtractorLv2Time::beatsPerBar];
-			lv2_atom_forge_key(forge, time_beatsPerBar.urid);
-			lv2_atom_forge_float(forge, time_beatsPerBar.value);
-			const qtractorLv2Time& time_beatsPerMinute
-				= g_lv2_time[qtractorLv2Time::beatsPerMinute];
-			lv2_atom_forge_key(forge, time_beatsPerMinute.urid);
-			lv2_atom_forge_float(forge, time_beatsPerMinute.value);
-		}
+		const qtractorLv2Time& time_bar
+			= g_lv2_time[qtractorLv2Time::bar];
+		lv2_atom_forge_key(forge, time_bar.urid);
+		lv2_atom_forge_long(forge, long(time_bar.value) - 1); // WTF?
+		const qtractorLv2Time& time_beat
+			= g_lv2_time[qtractorLv2Time::beat];
+		lv2_atom_forge_key(forge, time_beat.urid);
+		lv2_atom_forge_double(forge, double(time_beat.value));
+		qtractorLv2Time& time_barBeat
+			= g_lv2_time[qtractorLv2Time::barBeat];
+	#if 1//QTRACTOR_LV2_TIME_POSITION_BARBEAT_1
+		time_barBeat.value = timeInfo.barBeats;
+	#endif
+		lv2_atom_forge_key(forge, time_barBeat.urid);
+		lv2_atom_forge_float(forge, time_barBeat.value);
+		const qtractorLv2Time& time_beatUnit
+			= g_lv2_time[qtractorLv2Time::beatUnit];
+		lv2_atom_forge_key(forge, time_beatUnit.urid);
+		lv2_atom_forge_int(forge, int(time_beatUnit.value));
+		const qtractorLv2Time& time_beatsPerBar
+			= g_lv2_time[qtractorLv2Time::beatsPerBar];
+		lv2_atom_forge_key(forge, time_beatsPerBar.urid);
+		lv2_atom_forge_float(forge, time_beatsPerBar.value);
+		const qtractorLv2Time& time_beatsPerMinute
+			= g_lv2_time[qtractorLv2Time::beatsPerMinute];
+		lv2_atom_forge_key(forge, time_beatsPerMinute.urid);
+		lv2_atom_forge_float(forge, time_beatsPerMinute.value);
 		lv2_atom_forge_pop(forge, &frame);
 		// Make all supporting plugins ready...
 		QListIterator<qtractorLv2Plugin *> iter(*g_lv2_time_position_plugins);

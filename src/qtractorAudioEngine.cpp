@@ -23,7 +23,6 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioMonitor.h"
 #include "qtractorAudioBuffer.h"
-#include "qtractorAudioClip.h"
 
 #include "qtractorSession.h"
 
@@ -35,8 +34,6 @@
 #include "qtractorMidiManager.h"
 #include "qtractorPlugin.h"
 #include "qtractorClip.h"
-
-#include "qtractorCurveFile.h"
 
 #include "qtractorMainForm.h"
 
@@ -553,6 +550,9 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	// JACK timebase mode control.
 	m_bTimebase = true;
 	m_iTimebase = 0;
+
+	// Time(base)/BBT time info.
+	::memset(&m_timeInfo, 0, sizeof(TimeInfo));
 }
 
 
@@ -1025,17 +1025,12 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		ATOMIC_SET(&m_playerLock, 0);
 	}
 
-#ifdef CONFIG_VST3
-	qtractorVst3Plugin::updateTime(this);
-#endif
-#ifdef CONFIG_CLAP
-	qtractorClapPlugin::updateTime(this);
-#endif
-#ifdef CONFIG_LV2
-#ifdef CONFIG_LV2_TIME
-	qtractorLv2Plugin::updateTime(this);
-#endif
-#endif
+	// This the legal process cycle frame range...
+	unsigned long iFrameStart = pAudioCursor->frame();
+	unsigned long iFrameEnd   = iFrameStart + nframes;
+
+	// Update time(base) info...
+	updateTimeInfo(iFrameStart);
 
 	// MIDI plugin manager processing...
 	qtractorMidiManager *pMidiManager
@@ -1103,10 +1098,6 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		return 0;
 	}
 
-	// This the legal process cycle frame range...
-	unsigned long iFrameStart = pAudioCursor->frame();
-	unsigned long iFrameEnd   = iFrameStart + nframes;
-
 	// Metronome stuff...
 	if (m_bMetronome && m_pMetroBus && iFrameEnd > m_iMetroBeatStart) {
 		qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
@@ -1147,6 +1138,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 				if (m_transportMode & qtractorBus::Output)
 					jack_transport_locate(m_pJackClient, iFrameStart);
 				pAudioCursor->seek(iFrameStart);
+				// Update time(base) info...
+				updateTimeInfo(iFrameStart);
 			}
 		}
 	}
@@ -1238,12 +1231,8 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 	if (iFrameStart < m_iExportEnd) {
 		// Prepare mix-down buffer...
 		m_pExportBuffer->process_prepare(nframes);
-		// Force/sync every audio clip approaching...
-	#ifdef CONFIG_LV2
-	#ifdef CONFIG_LV2_TIME
-		qtractorLv2Plugin::updateTime(this);
-	#endif
-	#endif
+		// Update time(base) info...
+		updateTimeInfo(iFrameStart);
 		// Perform all tracks processing...
 		int iTrack = 0;
 		for (qtractorTrack *pTrack = pSession->tracks().first();
@@ -1313,6 +1302,48 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 		// HACK: Reset all audio monitors...
 		resetAllMonitors();
 	}
+}
+
+
+// Update time(base)/BBT time info.
+void qtractorAudioEngine::updateTimeInfo ( unsigned long iFrame )
+{
+	qtractorSession *pSession = session();
+	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
+
+	m_timeInfo.frame = iFrame;
+	m_timeInfo.tempo = pNode->tempo;
+	m_timeInfo.beatsPerBar  = pNode->beatsPerBar;
+	m_timeInfo.ticksPerBeat = pNode->ticksPerBeat;
+	m_timeInfo.beatType = (1 << pNode->beatDivisor);
+	m_timeInfo.beats = float(pNode->beat);
+	m_timeInfo.tick = pNode->tickFromFrame(iFrame) - pNode->tick;
+	const float beats = float(m_timeInfo.tick) / float(m_timeInfo.ticksPerBeat);
+	m_timeInfo.beats += beats;
+	m_timeInfo.bar = pNode->bar + (unsigned short) beats / m_timeInfo.beatsPerBar;
+	m_timeInfo.beat = (unsigned int) beats;
+	if (m_timeInfo.tick >= (unsigned long) m_timeInfo.ticksPerBeat)
+		m_timeInfo.tick -= (unsigned long) (m_timeInfo.beat * m_timeInfo.ticksPerBeat);
+	if (m_timeInfo.beat >= (unsigned int) m_timeInfo.beatsPerBar)
+		m_timeInfo.beat -= (unsigned int) (m_timeInfo.bar * m_timeInfo.beatsPerBar);
+	m_timeInfo.barBeats = beats - float(m_timeInfo.beat)
+		- float(m_timeInfo.tick) / float(m_timeInfo.ticksPerBeat);
+
+	++m_timeInfo.bar;
+	++m_timeInfo.beat;
+
+#ifdef CONFIG_VST3
+	qtractorVst3Plugin::updateTime(this);
+#endif
+#ifdef CONFIG_CLAP
+	qtractorClapPlugin::updateTime(this);
+#endif
+#ifdef CONFIG_LV2
+#ifdef CONFIG_LV2_TIME
+	qtractorLv2Plugin::updateTime(this);
+#endif
+#endif
 }
 
 

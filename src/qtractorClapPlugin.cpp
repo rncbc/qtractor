@@ -26,7 +26,6 @@
 #include "qtractorClapPlugin.h"
 
 #include "qtractorSession.h"
-#include "qtractorSessionCursor.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
 #include "qtractorCurve.h"
@@ -1294,36 +1293,28 @@ void qtractorClapPluginHost::updateTransport ( qtractorAudioEngine *pAudioEngine
 	if (m_transportRefCount < 1)
 		return;
 
-	jack_position_t pos;
-	jack_transport_state_t state;
+	const qtractorAudioEngine::TimeInfo& timeInfo
+		= pAudioEngine->timeInfo();
 
-	if (pAudioEngine->isFreewheel()) {
-		pos.frame = pAudioEngine->sessionCursor()->frame();
-		pAudioEngine->timebase(&pos, 0);
-		state = JackTransportRolling; // Fake transport rolling...
-	} else {
-		state = ::jack_transport_query(pAudioEngine->jackClient(), &pos);
-	}
-
-	if (state == JackTransportRolling)
+	if (pAudioEngine->isPlaying() || pAudioEngine->isFreewheel())
 		m_transport.flags |=  CLAP_TRANSPORT_IS_PLAYING;
 	else
 		m_transport.flags &= ~CLAP_TRANSPORT_IS_PLAYING;
 
 	m_transport.flags |= CLAP_TRANSPORT_HAS_SECONDS_TIMELINE;
 	m_transport.song_pos_seconds = CLAP_SECTIME_FACTOR *
-		double(pos.frame) / double(pos.frame_rate);
+		double(timeInfo.frame) / double(pAudioEngine->sampleRate());
 
-	if (pos.valid & JackPositionBBT) {
-		m_transport.flags |= CLAP_TRANSPORT_HAS_TEMPO;
-		m_transport.tempo  = pos.beats_per_minute;
-		m_transport.flags |= CLAP_TRANSPORT_HAS_TIME_SIGNATURE;
-		m_transport.tsig_num = uint16_t(pos.beats_per_bar);
-		m_transport.tsig_denom = uint16_t(pos.beat_type);
-	} else {
-		m_transport.flags &= ~CLAP_TRANSPORT_HAS_TEMPO;
-		m_transport.flags &= ~CLAP_TRANSPORT_HAS_TIME_SIGNATURE;
-	}
+	m_transport.flags |= CLAP_TRANSPORT_HAS_BEATS_TIMELINE;
+	m_transport.song_pos_beats = CLAP_BEATTIME_FACTOR *	double(timeInfo.beats);
+	m_transport.bar_start = CLAP_BEATTIME_FACTOR * double(timeInfo.barBeats);
+	m_transport.bar_number = timeInfo.bar;
+
+	m_transport.flags |= CLAP_TRANSPORT_HAS_TEMPO;
+	m_transport.tempo  = timeInfo.tempo;
+	m_transport.flags |= CLAP_TRANSPORT_HAS_TIME_SIGNATURE;
+	m_transport.tsig_num = uint16_t(timeInfo.beatsPerBar);
+	m_transport.tsig_denom = uint16_t(timeInfo.beatType);
 }
 
 
