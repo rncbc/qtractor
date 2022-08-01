@@ -35,23 +35,23 @@ Audio:	%1 channels, %2 Hz</source>
 	(зсування тону півтонів %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2738"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3030"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2756"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3048"/>
         <location filename="../qtractorMidiEngine.cpp" line="4010"/>
         <location filename="../qtractorMidiEngine.cpp" line="4575"/>
         <source>%1 In</source>
         <translation>Вхід %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2740"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2749"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2758"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2767"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation>Підсилення %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2742"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2751"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2760"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2769"/>
         <location filename="../qtractorMidiEngine.cpp" line="4014"/>
         <location filename="../qtractorMidiEngine.cpp" line="4023"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -59,8 +59,8 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Панорамування %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2747"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3030"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2765"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3048"/>
         <location filename="../qtractorMidiEngine.cpp" line="4019"/>
         <location filename="../qtractorMidiEngine.cpp" line="4575"/>
         <source>%1 Out</source>

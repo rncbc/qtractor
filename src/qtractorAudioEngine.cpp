@@ -786,6 +786,9 @@ bool qtractorAudioEngine::activate (void)
 		qtractorAudioEngine_property_change, this);
 #endif
 
+	// Initialize time(base) information for sure...
+	updateTimeInfo(0);
+
 	// Reset all dependable monitoring...
 	resetAllMonitors();
 
@@ -1350,6 +1353,7 @@ void qtractorAudioEngine::updateTimeInfo ( unsigned long iFrame )
 // JACK timebase master callback.
 void qtractorAudioEngine::timebase ( jack_position_t *pPos, int iNewPos )
 {
+#if 0//QTRACTOR_TIMEBASE_OLD
 	qtractorSession *pSession = session();
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(pPos->frame);
@@ -1374,7 +1378,21 @@ void qtractorAudioEngine::timebase ( jack_position_t *pPos, int iNewPos )
 	pPos->ticks_per_beat   = pNode->ticksPerBeat;
 	pPos->beats_per_minute = pNode->tempo;
 	pPos->beat_type        = float(1 << pNode->beatDivisor);
-
+#else
+	// Check for major gaps to last known JACK transport position...
+	if (qAbs(long(pPos->frame) - long(m_timeInfo.frame)) > long(m_iBufferSize))
+		updateTimeInfo(pPos->frame);
+	// Time frame code in bars.beats.ticks ...
+	pPos->valid = JackPositionBBT;
+	pPos->bar   = m_timeInfo.bar;
+	pPos->beat  = m_timeInfo.beat;
+	pPos->tick  = m_timeInfo.tick;
+	// Keep current tempo (BPM)...
+	pPos->beats_per_bar    = m_timeInfo.beatsPerBar;
+	pPos->ticks_per_beat   = m_timeInfo.ticksPerBeat;
+	pPos->beats_per_minute = m_timeInfo.tempo;
+	pPos->beat_type        = m_timeInfo.beatType;
+#endif
 	// Tell that we've been here...
 	if (iNewPos) ++m_iTimebase;
 }
