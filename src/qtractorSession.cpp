@@ -1328,9 +1328,12 @@ void qtractorSession::setPlayHead ( unsigned long iPlayHead )
 
 	seek(iPlayHead, true);
 
-	// Sync all track automation...
-	if (!bPlaying)
+	if (!bPlaying) {
+		// Update time(base)/BBT info...
+		m_pAudioEngine->updateTimeInfo(iPlayHead);
+		// Sync all track automation...
 		process_curve(iPlayHead);
+	}
 
 	setPlaying(bPlaying);
 	unlock();
@@ -1365,9 +1368,12 @@ void qtractorSession::setPlayHeadEx ( unsigned long iPlayHead )
 		m_pAudioEngine->resetAllMonitors();
 		// Make sure we have an actual session cursor...
 		m_pAudioEngine->resetMetro();
+	} else {
+		// Update time(base)/BBT info...
+		m_pAudioEngine->updateTimeInfo(iPlayHead);
+		// Sync all track automation...
+		process_curve(iPlayHead);
 	}
-	// Sync all track automation...
-	else process_curve(iPlayHead);
 
 	m_pMidiEngine->setPlaying(bPlaying);
 

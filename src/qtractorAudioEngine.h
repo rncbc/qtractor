@@ -244,7 +244,7 @@ public:
 	// Whether we're in the audio/real-time thread...
 	static bool isProcessing();
 
-	// Time(base)/BBT time info.
+	// Time(base)/BBT info.
 	struct TimeInfo
 	{
 		unsigned long  frame;
@@ -263,6 +263,9 @@ public:
 
 	const TimeInfo& timeInfo() const
 		{ return m_timeInfo; }
+
+	// Update time(base)/BBT info.
+	void updateTimeInfo(unsigned long iFrame);
 
 protected:
 
@@ -290,9 +293,6 @@ protected:
 
 	// Metronome latency offset compensation.
 	unsigned long metro_offset(unsigned long iFrame) const;
-
-	// Update time(base)/BBT time info.
-	void updateTimeInfo(unsigned long iFrame);
 
 private:
 

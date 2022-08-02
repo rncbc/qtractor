@@ -1308,7 +1308,7 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 }
 
 
-// Update time(base)/BBT time info.
+// Update time(base)/BBT info.
 void qtractorAudioEngine::updateTimeInfo ( unsigned long iFrame )
 {
 	qtractorSession *pSession = session();
