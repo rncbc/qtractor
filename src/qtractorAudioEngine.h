@@ -248,6 +248,8 @@ public:
 	struct TimeInfo
 	{
 		unsigned long  frame;
+		bool           playing;
+		unsigned int   sampleRate;
 		float          tempo;
 		unsigned short ticksPerBeat;
 		unsigned short beatsPerBar;

@@ -1718,9 +1718,9 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 				const qtractorAudioEngine::TimeInfo& timeInfo
 					= pAudioEngine->timeInfo();
 				s_vstTimeInfo.samplePos = double(timeInfo.frame);
-				s_vstTimeInfo.sampleRate = double(pAudioEngine->sampleRate());
+				s_vstTimeInfo.sampleRate = double(timeInfo.sampleRate);
 				s_vstTimeInfo.flags = 0;
-				if (pAudioEngine->isPlaying() || pAudioEngine->isFreewheel())
+				if (timeInfo.playing)
 					s_vstTimeInfo.flags |= (kVstTransportChanged | kVstTransportPlaying);
 				s_vstTimeInfo.flags |= kVstPpqPosValid;
 				s_vstTimeInfo.ppqPos = double(timeInfo.beats);

@@ -1316,6 +1316,8 @@ void qtractorAudioEngine::updateTimeInfo ( unsigned long iFrame )
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
 
 	m_timeInfo.frame = iFrame;
+	m_timeInfo.playing = (isPlaying() || isFreewheel());
+	m_timeInfo.sampleRate = sampleRate();
 	m_timeInfo.tempo = pNode->tempo;
 	m_timeInfo.beatsPerBar  = pNode->beatsPerBar;
 	m_timeInfo.ticksPerBeat = pNode->ticksPerBeat;

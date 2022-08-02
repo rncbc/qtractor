@@ -836,12 +836,12 @@ void qtractorVst3PluginHost::updateProcessContext (
 	const qtractorAudioEngine::TimeInfo& timeInfo
 		= pAudioEngine->timeInfo();
 
-	if (pAudioEngine->isPlaying() || pAudioEngine->isFreewheel())
+	if (timeInfo.playing)
 		m_processContext.state |=  Vst::ProcessContext::kPlaying;
 	else
 		m_processContext.state &= ~Vst::ProcessContext::kPlaying;
 
-	m_processContext.sampleRate = pAudioEngine->sampleRate();
+	m_processContext.sampleRate = timeInfo.sampleRate;
 	m_processContext.projectTimeSamples = timeInfo.frame;
 
 	m_processContext.state |= Vst::ProcessContext::kProjectTimeMusicValid;

@@ -5341,10 +5341,10 @@ void qtractorLv2Plugin::updateTime ( qtractorAudioEngine *pAudioEngine )
 #endif
 	qtractor_lv2_time_update(
 		qtractorLv2Time::framesPerSecond,
-		float(pAudioEngine->sampleRate()));
+		float(timeInfo.sampleRate));
 	qtractor_lv2_time_update(
 		qtractorLv2Time::speed,
-		(pAudioEngine->isPlaying() || pAudioEngine->isFreewheel() ? 1.0f : 0.0f));
+		(timeInfo.playing ? 1.0f : 0.0f));
 
 	qtractor_lv2_time_update(
 		qtractorLv2Time::bar,

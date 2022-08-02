@@ -1296,7 +1296,7 @@ void qtractorClapPluginHost::updateTransport ( qtractorAudioEngine *pAudioEngine
 	const qtractorAudioEngine::TimeInfo& timeInfo
 		= pAudioEngine->timeInfo();
 
-	if (pAudioEngine->isPlaying() || pAudioEngine->isFreewheel())
+	if (timeInfo.playing)
 		m_transport.flags |=  CLAP_TRANSPORT_IS_PLAYING;
 	else
 		m_transport.flags &= ~CLAP_TRANSPORT_IS_PLAYING;
