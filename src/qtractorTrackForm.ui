@@ -661,7 +661,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>TrackNameTextEdit</tabstop>
-  <tabstop>TrackIconPushButton</tabstop>
+  <tabstop>TrackIconToolButton</tabstop>
   <tabstop>AudioRadioButton</tabstop>
   <tabstop>MidiRadioButton</tabstop>
   <tabstop>InputBusNameComboBox</tabstop>
