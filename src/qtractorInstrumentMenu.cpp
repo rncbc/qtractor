@@ -1,7 +1,7 @@
 // qtractorInstrumentMenu.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -295,7 +295,11 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 		return false;
 
 	QMenu *pBankMenu = nullptr;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+	QListIterator<QObject *> iter(pBankAction->associatedObjects());
+#else
 	QListIterator<QWidget *> iter(pBankAction->associatedWidgets());
+#endif
 	while (iter.hasNext() && pBankMenu == nullptr)
 		pBankMenu = qobject_cast<QMenu *> (iter.next());
 	if (pBankMenu == nullptr)
@@ -429,7 +433,11 @@ void qtractorInstrumentMenu::progActionTriggered ( bool /*bOn*/ )
 	QAction *pProgAction = qobject_cast<QAction *> (sender());
 	if (pProgAction) {
 		const int iProg = pProgAction->data().toInt();
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+		QListIterator<QObject *> bank_iter(pProgAction->associatedObjects());
+	#else
 		QListIterator<QWidget *> bank_iter(pProgAction->associatedWidgets());
+	#endif
 		while (bank_iter.hasNext()) {
 			QMenu *pBankMenu = qobject_cast<QMenu *> (bank_iter.next());
 			if (pBankMenu == nullptr)
@@ -437,7 +445,11 @@ void qtractorInstrumentMenu::progActionTriggered ( bool /*bOn*/ )
 			QAction *pBankAction = pBankMenu->menuAction();
 			if (pBankAction) {
 				const int iBank = pBankAction->data().toInt();
+			#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+				QListIterator<QObject *> iter(pBankAction->associatedObjects());
+			#else
 				QListIterator<QWidget *> iter(pBankAction->associatedWidgets());
+			#endif
 				while (iter.hasNext()) {
 					QMenu *pMenu = qobject_cast<QMenu *> (iter.next());
 					if (pMenu) {

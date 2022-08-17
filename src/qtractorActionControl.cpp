@@ -1,7 +1,7 @@
 // qtractorActionControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -176,8 +176,11 @@ QString qtractorActionControl::menuActionText (
 	QAction *pAction, const QString& sText )
 {
 	QString sActionText = sText;
-
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+	QListIterator<QObject *> iter(pAction->associatedObjects());
+#else
 	QListIterator<QWidget *> iter(pAction->associatedWidgets());
+#endif
 	while (iter.hasNext()) {
 		QMenu *pMenu = qobject_cast<QMenu *> (iter.next());
 		if (pMenu) {

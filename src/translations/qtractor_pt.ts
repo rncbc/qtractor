@@ -2649,8 +2649,8 @@ Você quer mesmo manter as modificações?</translation>
     <message>
         <location filename="../qtractorInstrumentMenu.cpp" line="214"/>
         <location filename="../qtractorInstrumentMenu.cpp" line="263"/>
-        <location filename="../qtractorInstrumentMenu.cpp" line="358"/>
-        <location filename="../qtractorInstrumentMenu.cpp" line="407"/>
+        <location filename="../qtractorInstrumentMenu.cpp" line="362"/>
+        <location filename="../qtractorInstrumentMenu.cpp" line="411"/>
         <source>(None)</source>
         <translation>(Nada)</translation>
     </message>
