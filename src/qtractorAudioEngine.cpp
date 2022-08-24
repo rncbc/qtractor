@@ -1327,13 +1327,12 @@ void qtractorAudioEngine::updateTimeInfo ( unsigned long iFrame )
 	const float beats = float(m_timeInfo.tick) / float(m_timeInfo.ticksPerBeat);
 	m_timeInfo.beats += beats;
 	m_timeInfo.bar = pNode->bar + (unsigned short) beats / m_timeInfo.beatsPerBar;
-	m_timeInfo.beat = (unsigned int) beats;
+	m_timeInfo.beat = (unsigned int) m_timeInfo.beats;
 	if (m_timeInfo.tick >= (unsigned long) m_timeInfo.ticksPerBeat)
 		m_timeInfo.tick -= (unsigned long) (m_timeInfo.beat * m_timeInfo.ticksPerBeat);
 	if (m_timeInfo.beat >= (unsigned int) m_timeInfo.beatsPerBar)
 		m_timeInfo.beat -= (unsigned int) (m_timeInfo.bar * m_timeInfo.beatsPerBar);
-	m_timeInfo.barBeats = beats - float(m_timeInfo.beat)
-		- float(m_timeInfo.tick) / float(m_timeInfo.ticksPerBeat);
+	m_timeInfo.barBeats = ::truncf(m_timeInfo.beats) - float(m_timeInfo.beat);
 
 	++m_timeInfo.bar;
 	++m_timeInfo.beat;
