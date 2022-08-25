@@ -12784,12 +12784,12 @@ existantes :</translation>
         <translation>(Tout)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1008"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1009"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1009"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1010"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -12798,32 +12798,32 @@ Do you want to apply the changes?</source>
 Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1061"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1062"/>
         <source>Metronome Bar Audio File</source>
         <translation>Fichier audio métronome - barre</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1075"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1076"/>
         <source>Metronome Beat Audio File</source>
         <translation>Fichier audio métronome - battement</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1247"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1248"/>
         <source>Audio Meter Color</source>
         <translation>Couleur Audiomètre</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1269"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1270"/>
         <source>MIDI Meter Color</source>
         <translation>Couleur MIDImètre</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1372"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1373"/>
         <source>Plug-in Directory</source>
         <translation>Répertoire Greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1656"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1657"/>
         <source>LV2 Presets Directory</source>
         <translation>Répertoire des préréglage LV2</translation>
     </message>
@@ -12833,39 +12833,39 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>Liste noire de greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1712"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1718"/>
         <source>Plug-in files (*.%1)</source>
         <translation>Fichiers de greffon (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1827"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1834"/>
         <source>Messages Font</source>
         <translation>Police de messages</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1855"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1862"/>
         <source>Messages Log</source>
         <translation>Journal des messages</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1858"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1865"/>
         <source>Log files (*.%1)</source>
         <translation>Fichiers journal (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1713"/>
-        <location filename="../qtractorOptionsForm.cpp" line="1859"/>
-        <location filename="../qtractorOptionsForm.cpp" line="1905"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1719"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1866"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1912"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1901"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1908"/>
         <source>Session Template</source>
         <translation>Modèle de session</translation>
     </message>
     <message>
-        <location filename="../qtractorOptionsForm.cpp" line="1904"/>
+        <location filename="../qtractorOptionsForm.cpp" line="1911"/>
         <source>Session template files (*.qtr *.qts *.%1)</source>
         <translation>Fichiers de modèle de session (*.qtr *.qts *.%1)</translation>
     </message>

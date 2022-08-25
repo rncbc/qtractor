@@ -972,7 +972,8 @@ void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 	// Add current text as latest item...
 	const QString sCurrentText = pComboBox->currentText();
 	int iCount = pComboBox->count();
-	for (int i = 0; i < iCount; i++) {
+
+	for (int i = 0; i < iCount; ++i) {
 		const QString& sText = pComboBox->itemText(i);
 		if (sText == sCurrentText) {
 			pComboBox->removeItem(i);
