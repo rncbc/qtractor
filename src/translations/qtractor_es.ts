@@ -504,18 +504,18 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorOptions.cpp" line="769"/>
         <source>Session file (.qtr)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo de sesión (.qtr)</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="770"/>
         <source>[session-file]</source>
-        <translation type="unfinished"></translation>
+        <translation>[archivo-de-sesión]</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="777"/>
         <location filename="../qtractorOptions.cpp" line="822"/>
         <source>Option -s requires an argument (uuid).</source>
-        <translation type="unfinished"></translation>
+        <translation>Opción -s requiere un argumento (uuid).</translation>
     </message>
     <message>
         <location filename="../qtractorComboBox.cpp" line="125"/>
@@ -874,12 +874,12 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translatio
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="565"/>
         <source>Manual: </source>
-        <translation type="unfinished"></translation>
+        <translation>Manual: </translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="571"/>
         <source>Support: </source>
-        <translation type="unfinished"></translation>
+        <translation>Soporte: </translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="536"/>
@@ -5738,7 +5738,7 @@ Lo siento.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="680"/>
         <source>Session buffer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño del búfer de sesión</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1956"/>
@@ -5918,7 +5918,14 @@ This directory will be replaced, erasing all its current data,
 when opening and extracting this archive in the future.
 
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ya existe un directorio con el mismo nombre:
+
+&quot;%1&quot;
+
+Este directorio será reemplazado, borrando todos sus datos actuales,
+al abrir y extraer este archivo en el futuro.
+
+¿Quiere continuar?</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="2640"/>
@@ -6059,37 +6066,37 @@ la próxima vez que inicie este %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5908"/>
         <source>LADSPA Plug-in support disabled.</source>
-        <translation>Soporte de Plug-in LADSPA deshabilitado.</translation>
+        <translation>Compatibilidad con plug-ins LADSPA deshabilitada.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5911"/>
         <source>DSSI Plug-in support disabled.</source>
-        <translation>Soporte de Plug-in DSSI deshabilitado.</translation>
+        <translation>Compatibilidad con plug-ins DSSI deshabilitada.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5914"/>
         <source>VST Plug-in support disabled.</source>
-        <translation>Soporte de Plug-in VST deshabilitado.</translation>
+        <translation>Compatibilidad con plug-ins VST deshabilitada.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5917"/>
         <source>VST3 Plug-in support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Compatibilidad con plug-ins VST3 deshabilitada.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5920"/>
         <source>CLAP Plug-in support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5923"/>
         <source>LV2 Plug-in support disabled.</source>
-        <translation>Soporte de Plug-in LV2 deshabilitado.</translation>
+        <translation>Compatibilidad con plug-ins LV2 deshabilitada.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5926"/>
         <source>LV2 Plug-in support (liblilv) disabled.</source>
-        <translation>Soporte de Plug-in LV2  (liblilv) deshabilitado.</translation>
+        <translation>Compatibilidad con plug-ins LV2  (liblilv) deshabilitada.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5929"/>
@@ -7564,92 +7571,92 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="209"/>
         <source>Bank Select (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccion de Banco (detallado)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="210"/>
         <source>Modulation Wheel (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rueda de Modulacióin (detallado)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="211"/>
         <source>Breath Controller (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Control de Aliento (detallado)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="212"/>
         <source>Foot Pedal (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pedal (detallado)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="213"/>
         <source>Portamento Time (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiempo de Portamento (detallado)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="214"/>
         <source>Data Entry (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Entradad de Datos (detallado)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="215"/>
         <source>Volume (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Volumen (control fino)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="216"/>
         <source>Balance (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Balance (control fino)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="217"/>
         <source>Pan Position (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Posición del Paneo (control fino)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="218"/>
         <source>Expression (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Expresión (control fino)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="219"/>
         <source>Effect Control 1 (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Control de Efecto 1 (fino)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="220"/>
         <source>Effect Control 2 (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Control de Efecto 2 (fino)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="221"/>
         <source>Hold Pedal (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pedal de Sostener (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="222"/>
         <source>Portamento (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Portamento (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="224"/>
         <source>Soft Pedal (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pedal suave (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="225"/>
         <source>Legato Pedal (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pedal legato (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="226"/>
         <source>Hold 2 Pedal (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pedal de Sostener2 (enc/apag)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="227"/>
         <source>Sound Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Variación del Sonido</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="236"/>
@@ -7694,32 +7701,32 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="245"/>
         <source>Data Button Increment</source>
-        <translation type="unfinished"></translation>
+        <translation>Incremento del botón de datos</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="246"/>
         <source>Data Button Decrement</source>
-        <translation type="unfinished"></translation>
+        <translation>Decremento del botón de datos</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="247"/>
         <source>Non-Registered Parameter (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Parámetro No Registrado (control fino)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="248"/>
         <source>Non-Registered Parameter (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Parámetro No Registrado (control amplio)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="249"/>
         <source>Registered Parameter (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Parámetro Registrado (control fino)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="250"/>
         <source>Registered Parameter (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Parámetro Registrado (control amplio)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="251"/>
@@ -7764,17 +7771,17 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="303"/>
         <source>Pitch Bend Sensitivity</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="304"/>
         <source>Fine Tune</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuste Fino</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="305"/>
         <source>Coarse Tune</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuste Amplio</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="306"/>
@@ -7918,37 +7925,37 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="421"/>
         <source>Modulation Wheel (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rueda de Modulacióin (14bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="422"/>
         <source>Breath Controller (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Control de Aliento (14bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="423"/>
         <source>Foot Pedal (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pedal (14bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="424"/>
         <source>Portamento Time (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiempo de Portamento (14bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="425"/>
         <source>Volume (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Volumen (14 bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="426"/>
         <source>Balance (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Balance (14 bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="427"/>
         <source>Pan Position (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Posición del Paneo (14 bit)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="428"/>
@@ -8003,72 +8010,72 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="505"/>
         <source>Melodic Minor (Asc)</source>
-        <translation type="unfinished"></translation>
+        <translation>Menor Melódica (Asc)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="506"/>
         <source>Melodic Minor (Desc)</source>
-        <translation type="unfinished"></translation>
+        <translation>Menor Melódica (Desc)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="507"/>
         <source>Whole Tone</source>
-        <translation type="unfinished"></translation>
+        <translation>Tonos Completos</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="508"/>
         <source>Pentatonic Major</source>
-        <translation type="unfinished"></translation>
+        <translation>Pentatónica Mayor</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="509"/>
         <source>Pentatonic Minor</source>
-        <translation type="unfinished"></translation>
+        <translation>Pentatónica Menor</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="510"/>
         <source>Pentatonic Blues</source>
-        <translation type="unfinished"></translation>
+        <translation>Pentatónica Blues</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="511"/>
         <source>Pentatonic Neutral</source>
-        <translation type="unfinished"></translation>
+        <translation>Pentatónica Neutral</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="512"/>
         <source>Octatonic (H-W)</source>
-        <translation type="unfinished"></translation>
+        <translation>Octatónica (S-T)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="513"/>
         <source>Octatonic (W-H)</source>
-        <translation type="unfinished"></translation>
+        <translation>Octatónica (T-S)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="514"/>
         <source>Ionian</source>
-        <translation type="unfinished"></translation>
+        <translation>Jónica</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="515"/>
         <source>Dorian</source>
-        <translation type="unfinished"></translation>
+        <translation>Dórica</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="516"/>
         <source>Phrygian</source>
-        <translation type="unfinished"></translation>
+        <translation>Frigio</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="517"/>
         <source>Lydian</source>
-        <translation type="unfinished"></translation>
+        <translation>Lidio</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="518"/>
         <source>Mixolydian</source>
-        <translation type="unfinished"></translation>
+        <translation>Mixolidio</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="519"/>
@@ -8078,12 +8085,12 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="520"/>
         <source>Locrian</source>
-        <translation type="unfinished"></translation>
+        <translation>Locrio</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="521"/>
         <source>Egyptian</source>
-        <translation type="unfinished"></translation>
+        <translation>Egipcia</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="522"/>
@@ -8234,7 +8241,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="561"/>
         <source>Diminished</source>
-        <translation type="unfinished"></translation>
+        <translation>Disminuida</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="567"/>
@@ -14338,7 +14345,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="278"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="283"/>
