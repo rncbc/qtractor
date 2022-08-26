@@ -7836,7 +7836,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="230"/>
         <source>Attack Time</source>
-        <translation>Temps d'attaque</translation>
+        <translation>Temps d&apos;attaque</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="231"/>
