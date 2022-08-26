@@ -7826,32 +7826,32 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="223"/>
         <source>Sostenuto Pedal (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pédale de soutien (on/off)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="229"/>
         <source>Release Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Temps de relâche</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="230"/>
         <source>Attack Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Temps d'attaque</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="231"/>
         <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Luminosité</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="232"/>
         <source>Decay Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Temps de déclin</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="241"/>
         <source>Tremolo Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Niveau de trémolo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="350"/>
@@ -14363,7 +14363,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="278"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="283"/>
