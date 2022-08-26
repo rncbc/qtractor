@@ -478,10 +478,10 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.Lv2PresetDirComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(pluginPathsChanged()));
-#endif
 	QObject::connect(m_ui.Lv2PresetDirToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseLv2PresetDir()));
+#endif
 	QObject::connect(m_ui.AudioOutputBusCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
