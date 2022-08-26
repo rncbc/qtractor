@@ -969,23 +969,26 @@ void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 {
 	const bool bBlockSignals = pComboBox->blockSignals(true);
 
-	// Add current text as latest item...
-	const QString sCurrentText = pComboBox->currentText();
 	int iCount = pComboBox->count();
 
-	for (int i = 0; i < iCount; ++i) {
-		const QString& sText = pComboBox->itemText(i);
-		if (sText == sCurrentText) {
-			pComboBox->removeItem(i);
-			--iCount;
-			break;
+	// Add current text as latest item (if not blank)...
+	const QString& sCurrentText = pComboBox->currentText();
+	if (!sCurrentText.isEmpty()) {
+		for (int i = 0; i < iCount; ++i) {
+			const QString& sText = pComboBox->itemText(i);
+			if (sText == sCurrentText) {
+				pComboBox->removeItem(i);
+				--iCount;
+				break;
+			}
 		}
+		pComboBox->insertItem(0, sCurrentText);
+		pComboBox->setCurrentIndex(0);
+		++iCount;
 	}
+
 	while (iCount >= iLimit)
 		pComboBox->removeItem(--iCount);
-	pComboBox->insertItem(0, sCurrentText);
-	pComboBox->setCurrentIndex(0);
-	++iCount;
 
 	// Save combobox list to configuration settings file...
 	m_settings.beginGroup("/History/" + pComboBox->objectName());
