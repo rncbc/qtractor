@@ -2207,7 +2207,7 @@ void qtractorClapPlugin::Impl::plugin_params_request_flush (void)
 {
 	m_params_flush = true;
 
-	plugin_params_flush();
+//	plugin_params_flush();
 }
 
 
