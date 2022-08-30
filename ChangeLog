@@ -7,24 +7,24 @@ ChangeLog
 GIT HEAD
 
 - Complete overhaul of the time(base)/BBT host information for most
-  plug-in types: VST, VST3, CLAP and LV2. (EXPERIMENTAL)
+  plug-in types: VST, VST3, CLAP and LV2.
   
 - Improved key-signature editing and display on Tempo Map / Markers
-  (time-scale) management dialog. (EXPERIMENTAL)
+  (time-scale) management dialog.
 
 - Fixed plugin selection, when creating and switching initial track
-  type, from audio to MIDI and vice-versa. (EXPERIMENTAL)
+  type, from audio to MIDI and vice-versa.
 
 - Fixed typos and updated some old MIDI GM2 Controller names.
 
 - Add current system user-name to the singleton/unique application
   instance identifier (when explicitly opted in at build configure
-  time). (EXPERIMENTAL)
+  time).
 
 
 0.9.27  2022-07-07  An Early-Summer'22 Release.
 
-- CLAP plug-in host support introduced. (EXPERIMENTAL)
+- CLAP plug-in host support introduced.
 
 - Reviewed LV2 plug-in UI Touch feature/interface.
 

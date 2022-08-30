@@ -137,7 +137,7 @@ option (CONFIG_LV2_PRESETS "Enable LV2 plug-in Presets support (default=yes)" 1)
 
 option (CONFIG_LV2_PATCH "Enable LV2 plug-in Patch support (default=yes)" 1)
 
-option (CONFIG_LV2_PORT_EVENT "Enable LV2 plug-in Port-event support (EXPERIMENTAL) (default=yes)" 1)
+option (CONFIG_LV2_PORT_EVENT "Enable LV2 plug-in Port-event support (default=yes)" 1)
 
 option (CONFIG_LV2_TIME "Enable LV2 plug-in Time support (default=yes)" 1)
 
@@ -188,7 +188,7 @@ option (CONFIG_GRADIENT "Enable gradient eye-candy (default=yes)" 1)
 option (CONFIG_STACKTRACE "Enable debugger stack-trace (default=no)" 0)
 
 # Enable Wayland support option.
-option (CONFIG_WAYLAND "Enable Wayland support (EXPERIMENTAL) (default=no)" 0)
+option (CONFIG_WAYLAND "Enable Wayland support (NOT RECOMMENDED) (default=no)" 0)
 
 # Enable Qt6 build preference.
 option (CONFIG_QT6 "Enable Qt6 build (default=yes)" 1)
@@ -754,7 +754,7 @@ show_option ("  LADSPA plug-in support . . . . . . . . . . . . . ." CONFIG_LADSP
 show_option ("  DSSI plug-in support . . . . . . . . . . . . . . ." CONFIG_DSSI)
 show_option ("  VST plug-in support  . . . . . . . . . . . . . . ." CONFIG_VST)
 show_option ("  VST3 plug-in support . . . . . . . . . . . . . . ." CONFIG_VST3)
-show_option ("  CLAP plug-in support (EXPERIMENTAL)  . . . . . . ." CONFIG_CLAP)
+show_option ("  CLAP plug-in support . . . . . . . . . . . . . . ." CONFIG_CLAP)
 show_option ("  LV2 plug-in support  . . . . . . . . . . . . . . ." CONFIG_LV2)
 show_option ("  LV2 plug-in support (liblilv)  . . . . . . . . . ." CONFIG_LIBLILV)
 show_option ("  LV2 plug-in UI support . . . . . . . . . . . . . ." CONFIG_LV2_UI)
@@ -770,7 +770,7 @@ show_option ("  LV2 plug-in Programs support . . . . . . . . . . ." CONFIG_LV2_P
 show_option ("  LV2 plug-in MIDNAM support . . . . . . . . . . . ." CONFIG_LV2_MIDNAM)
 show_option ("  LV2 plug-in Presets support  . . . . . . . . . . ." CONFIG_LV2_PRESETS)
 show_option ("  LV2 plug-in Patch support  . . . . . . . . . . . ." CONFIG_LV2_PATCH)
-show_option ("  LV2 plug-in Port-event support (EXPERIMENTAL)  . ." CONFIG_LV2_PORT_EVENT)
+show_option ("  LV2 plug-in Port-event support . . . . . . . , . ." CONFIG_LV2_PORT_EVENT)
 show_option ("  LV2 plug-in Time support . . . . . . . . . . . . ." CONFIG_LV2_TIME)
 show_option ("  LV2 plug-in Time/position support  . . . . . . . ." CONFIG_LV2_TIME_POSITION)
 show_option ("  LV2 plug-in Options support  . . . . . . . . . . ." CONFIG_LV2_OPTIONS)

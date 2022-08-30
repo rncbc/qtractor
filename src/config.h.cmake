@@ -151,7 +151,7 @@
 /* Define if LV2 Patch is supported. */
 #cmakedefine CONFIG_LV2_PATCH @CONFIG_LV2_PATCH@
 
-/* Define if LV2 Port-event is supported. (EXPERIMENTAL) */
+/* Define if LV2 Port-event is supported. */
 #cmakedefine CONFIG_LV2_PORT_EVENT @CONFIG_LV2_PORT_EVENT@
 
 /* Define if LV2 Time is supported. */
@@ -227,7 +227,7 @@
 #cmakedefine CONFIG_STACKTRACE @CONFIG_STACKTRACE@
 
 
-/* Define if Wayland is supported */
+/* Define if Wayland is supported (NOT RECOMMENDED) */
 #cmakedefine CONFIG_WAYLAND @CONFIG_WAYLAND@
 
 #endif /* CONFIG_H */
