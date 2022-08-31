@@ -3317,9 +3317,14 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 	const QMap<ui_key, LilvUI *>::ConstIterator& ui_end = ui_map.constEnd();
 	QMap<ui_key, LilvUI *>::ConstIterator ui_iter = ui_begin;
 
-	const int iEditorType = editorType();
-	if (iEditorType > 0) // Must be != LV2_UI_TYPE_NONE.
+	int iEditorType = editorType();
+	if (iEditorType > 0) { // Must be != LV2_UI_TYPE_NONE.
 		ui_iter = ui_map.constFind(ui_key(iEditorType));
+		if (ui_iter == ui_end) {
+			iEditorType = -1;
+			ui_iter = ui_begin;
+		}
+	}
 
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bQueryEditorType
