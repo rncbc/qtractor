@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.28  2022-09-03  A Late-Summer'22 Release.
 
 - Complete overhaul of the time(base)/BBT host information for most
   plug-in types: VST, VST3, CLAP and LV2.
