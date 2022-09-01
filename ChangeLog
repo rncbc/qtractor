@@ -6,9 +6,9 @@ ChangeLog
 
 0.9.28  2022-09-03  A Late-Summer'22 Release.
 
-- Complete overhaul of the time(base)/BBT host information for most
-  plug-in types: VST, VST3, CLAP and LV2.
-  
+- Complete overhaul of the current host time(base)/BBT information
+  delivered to plug-in types that matter: VST, VST3, CLAP and LV2.
+
 - Improved key-signature editing and display on Tempo Map / Markers
   (time-scale) management dialog.
 
