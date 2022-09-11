@@ -104,6 +104,7 @@ const int effGetParamLabel = 6;
 const int effGetParamDisplay = 7;
 const int effGetChunk = 23;
 const int effSetChunk = 24;
+const int effGetProgramNameIndexed = 29;
 const int effFlagsProgramChunks = 32;
 #endif
 
@@ -1016,16 +1017,16 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 
 	char szName[256];
 	::memset(szName, 0, sizeof(szName));
-#ifndef CONFIG_VESTIGE
 	if (vst_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
-#endif
+	#if 0//QTRACTOR_VST_GET_PROGRAM_OLD
 		const int iOldIndex = vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
 		vst_dispatch(0, effSetProgram, 0, iIndex, nullptr, 0.0f);
 		vst_dispatch(0, effGetProgramName, 0, 0, (void *) szName, 0.0f);
 		vst_dispatch(0, effSetProgram, 0, iOldIndex, nullptr, 0.0f);
-#ifndef CONFIG_VESTIGE
+	#else
+		::snprintf(szName, sizeof(szName) - 1, "Program %d", iIndex + 1);
+	#endif
 	}
-#endif
 
 	// Map this to that...
 	program.bank = 0;

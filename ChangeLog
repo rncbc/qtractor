@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed a pretty ancient bug in the VST(2.x) plug-in program names
+  inventory, present when building to the VeSTige header (which is
+  still the default). (EXPERIMENTAL)
+
+
 0.9.28  2022-09-03  A Late-Summer'22 Release.
 
 - Complete overhaul of the current host time(base)/BBT information
