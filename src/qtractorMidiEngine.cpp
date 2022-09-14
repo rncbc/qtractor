@@ -1970,7 +1970,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			if (pSession->isLooping()) {
 				const unsigned long iLoopEndTime
 					= pSession->tickFromFrame(pSession->loopEnd());
-				if (iLoopEndTime < iTime + ev.data.note.duration)
+				if (iLoopEndTime > iTime && iLoopEndTime < iTime + ev.data.note.duration)
 					ev.data.note.duration = iLoopEndTime - iTime;
 			}
 			break;

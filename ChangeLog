@@ -6,9 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed another old bug in MIDI note-off messages not being sent
+  while playing after loop region. (GH issue #359)
+
 - Fixed a pretty ancient bug in the VST(2.x) plug-in program names
   inventory, present when building to the VeSTige header (which is
-  still the default). (EXPERIMENTAL)
+  still the default). (GH issue #357)
 
 
 0.9.28  2022-09-03  A Late-Summer'22 Release.
