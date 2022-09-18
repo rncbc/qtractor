@@ -177,6 +177,10 @@ and optionally, as root:
 
     [sudo] cmake --install build
 
+Uninstall by calling:
+
+    [sudo] cmake --build build --target uninstall
+
 Note that the default installation path (<prefix>) is /usr/local .
 
 
