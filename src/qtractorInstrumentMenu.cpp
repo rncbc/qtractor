@@ -295,7 +295,7 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 		return false;
 
 	QMenu *pBankMenu = nullptr;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 2)
 	QListIterator<QObject *> iter(pBankAction->associatedObjects());
 #else
 	QListIterator<QWidget *> iter(pBankAction->associatedWidgets());
@@ -433,7 +433,7 @@ void qtractorInstrumentMenu::progActionTriggered ( bool /*bOn*/ )
 	QAction *pProgAction = qobject_cast<QAction *> (sender());
 	if (pProgAction) {
 		const int iProg = pProgAction->data().toInt();
-	#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+	#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 2)
 		QListIterator<QObject *> bank_iter(pProgAction->associatedObjects());
 	#else
 		QListIterator<QWidget *> bank_iter(pProgAction->associatedWidgets());
@@ -445,7 +445,7 @@ void qtractorInstrumentMenu::progActionTriggered ( bool /*bOn*/ )
 			QAction *pBankAction = pBankMenu->menuAction();
 			if (pBankAction) {
 				const int iBank = pBankAction->data().toInt();
-			#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+			#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 2)
 				QListIterator<QObject *> iter(pBankAction->associatedObjects());
 			#else
 				QListIterator<QWidget *> iter(pBankAction->associatedWidgets());

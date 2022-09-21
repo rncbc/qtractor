@@ -176,7 +176,7 @@ QString qtractorActionControl::menuActionText (
 	QAction *pAction, const QString& sText )
 {
 	QString sActionText = sText;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 2)
 	QListIterator<QObject *> iter(pAction->associatedObjects());
 #else
 	QListIterator<QWidget *> iter(pAction->associatedWidgets());
