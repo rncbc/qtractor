@@ -960,7 +960,8 @@ void qtractorPluginFactory::Scanner::close (void)
 	// We're we scanning hard?...
 	if (QProcess::state() != QProcess::NotRunning || m_iExitStatus < 0) {
 		QProcess::closeWriteChannel();
-		QProcess::waitForFinished(200);
+		while (QProcess::state() != QProcess::NotRunning)
+			QProcess::waitForFinished(200);
 	}
 
 	// Done anyway.

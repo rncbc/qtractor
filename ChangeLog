@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed the out-of-process plugin scanner terminating too soon and
+  sometimes miss some very last results. (EXPERIMENTAL)
+
 - Fixed another old bug in MIDI note-off messages not being sent
   while playing after loop region. (GH issue #359)
 
