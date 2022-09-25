@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed an old window parenting (aka z-level) issue, related to
+  the Add Track and Track Properties dialogs and whether called
+  from the main or mixer menus. (EXPERIMENTAL)
+
 - Fixed the out-of-process plugin scanner terminating too soon and
   sometimes miss some very last results. (EXPERIMENTAL)
 

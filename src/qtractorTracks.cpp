@@ -52,6 +52,8 @@
 #include "qtractorTrackForm.h"
 #include "qtractorClipForm.h"
 
+#include "qtractorMixer.h"
+
 #include "qtractorExportForm.h"
 
 #include "qtractorPasteRepeatForm.h"
@@ -2624,8 +2626,13 @@ bool qtractorTracks::addTrack (void)
 	pTrack->setBackground(color);
 	pTrack->setForeground(color.darker());
 
+	QWidget *pParent = static_cast<QWidget *> (pMainForm);
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer && pMixer->isActiveWindow())
+		pParent = static_cast<QWidget *> (pMixer);
+
 	// Open dialog for settings...
-	qtractorTrackForm trackForm(pMainForm);
+	qtractorTrackForm trackForm(pParent);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec()) {
 		delete pTrack;
@@ -2713,8 +2720,13 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	if (pTrack->isRecord() && pSession->isRecording() && pSession->isPlaying())
 		return false;
 
+	QWidget *pParent = static_cast<QWidget *> (pMainForm);
+	qtractorMixer *pMixer = pMainForm->mixer();
+	if (pMixer && pMixer->isActiveWindow())
+		pParent = static_cast<QWidget *> (pMixer);
+
 	// Open dialog for settings...
-	qtractorTrackForm trackForm(pMainForm);
+	qtractorTrackForm trackForm(pParent);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec())
 		return false;
