@@ -1406,8 +1406,11 @@ void qtractorMidiEditorForm::fileTrackProperties (void)
 		return;
 
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm && pMainForm->tracks())
-		(pMainForm->tracks())->editTrack(pTrack);
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks)
+			pTracks->editTrack(pTrack);
+	}
 }
 
 

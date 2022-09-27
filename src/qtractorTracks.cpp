@@ -52,8 +52,6 @@
 #include "qtractorTrackForm.h"
 #include "qtractorClipForm.h"
 
-#include "qtractorMixer.h"
-
 #include "qtractorExportForm.h"
 
 #include "qtractorPasteRepeatForm.h"
@@ -2612,10 +2610,6 @@ bool qtractorTracks::addTrack (void)
 	if (pSession == nullptr)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == nullptr)
-		return false;
-
 	// Create a new track right away...
 	const int iTrack = pSession->tracks().count() + 1;
 	const QColor& color = qtractorTrack::trackColor(iTrack);
@@ -2626,12 +2620,11 @@ bool qtractorTracks::addTrack (void)
 	pTrack->setBackground(color);
 	pTrack->setForeground(color.darker());
 
-	QWidget *pParent = static_cast<QWidget *> (pMainForm);
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer && pMixer->isActiveWindow())
-		pParent = static_cast<QWidget *> (pMixer);
-
 	// Open dialog for settings...
+	QWidget *pParent = QApplication::activeWindow();
+	if (pParent == nullptr)
+		pParent = static_cast<QWidget *> (qtractorMainForm::getInstance());
+
 	qtractorTrackForm trackForm(pParent);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec()) {
@@ -2706,10 +2699,6 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	if (pSession == nullptr)
 		return false;
 
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm == nullptr)
-		return false;
-
 	// Get the list view item reference of the intended track...
 	if (pTrack == nullptr)
 		pTrack = currentTrack();
@@ -2720,12 +2709,11 @@ bool qtractorTracks::editTrack ( qtractorTrack *pTrack )
 	if (pTrack->isRecord() && pSession->isRecording() && pSession->isPlaying())
 		return false;
 
-	QWidget *pParent = static_cast<QWidget *> (pMainForm);
-	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer && pMixer->isActiveWindow())
-		pParent = static_cast<QWidget *> (pMixer);
-
 	// Open dialog for settings...
+	QWidget *pParent = QApplication::activeWindow();
+	if (pParent == nullptr)
+		pParent = static_cast<QWidget *> (qtractorMainForm::getInstance());
+
 	qtractorTrackForm trackForm(pParent);
 	trackForm.setTrack(pTrack);
 	if (!trackForm.exec())
