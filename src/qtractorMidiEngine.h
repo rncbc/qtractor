@@ -405,6 +405,10 @@ private:
 	unsigned short m_iClockCount;
 	float          m_fClockTempo;
 
+	// Same record time(stamp) note-off tracking.
+	unsigned long  m_iLastEventTime;
+	unsigned short m_iLastEventNote;
+
 	// Overridden SysEx queued events.
 	QList<qtractorMidiEvent *> m_sysexCache;
 };

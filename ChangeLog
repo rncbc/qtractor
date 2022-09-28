@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Capture same time(stamp) note-off tracking and postponing is
+  now on trial, hopefully mitigating a legato issue, reported
+  to MIDI wind instruments (EWI). (SF #282) (EXPERIMENTAL)
+
 - Fixed an old window parenting (aka z-level) issue, related to
   the Add Track and Track Properties dialogs and whether called
   from the main or mixer menus. (EXPERIMENTAL)
