@@ -1753,7 +1753,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		if (type == qtractorMidiEvent::NOTEOFF
 			&& m_iLastEventTime == tick
 			&& m_iLastEventNote != param) {
-			++tick;
+			tick += (unsigned long) (pSession->ticksPerBeat() >> 4);
 		} else {
 			if (type == qtractorMidiEvent::NOTEON)
 				m_iLastEventNote = param;
