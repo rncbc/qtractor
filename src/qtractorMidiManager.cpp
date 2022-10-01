@@ -371,7 +371,7 @@ void qtractorMidiOutputBuffer::processSync (void)
 		// Schedule into sends/output bus...
 		snd_seq_ev_set_source(pEv, m_pMidiBus->alsaPort());
 		snd_seq_ev_set_subs(pEv);
-		snd_seq_ev_schedule_tick(pEv, pMidiEngine->alsaQueue(), 0, tick);
+		snd_seq_ev_schedule_tick(pEv, pMidiEngine->alsaQueue(), 0, pMidiEngine->timep(tick));
 		snd_seq_event_output(pMidiEngine->alsaSeq(), pEv);
 		if (pMidiManager)
 			pMidiManager->queued(pEv, pEv->time.tick);

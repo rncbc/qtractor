@@ -139,6 +139,10 @@ public:
 		qtractorMidiInputBuffer *pMidiInputBuffer);
 	void removeInputBuffer(int iAlsaPort);
 
+	// Adjust time to/from  high resolution queue (64bit).
+	unsigned long timep(unsigned long time) const;
+	unsigned long timeq(unsigned long time) const;
+
 	// MIDI event capture method.
 	void capture(snd_seq_event_t *pEv);
 
@@ -333,6 +337,9 @@ private:
 	// ALSA port input registries.
 	QHash<int, qtractorMidiBus *> m_inputBuses;
 	QHash<int, qtractorMidiInputBuffer *> m_inputBuffers;
+
+	// Current session resolution.
+	unsigned short m_iTicksPerBeat;
 
 	// Whether to check for time drift.
 	bool m_bDriftCorrect;
