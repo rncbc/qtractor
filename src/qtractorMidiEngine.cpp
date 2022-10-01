@@ -274,6 +274,8 @@ private:
 	qtractorMidiBus           *m_pMidiBus;
 	qtractorMidiEngine        *m_pMidiEngine;
 
+	int                        m_iPlayerQueue;
+
 	unsigned short             m_iSeqs;
 	qtractorMidiSequence     **m_ppSeqs;
 	qtractorMidiCursor       **m_ppSeqCursors;
@@ -810,8 +812,9 @@ void qtractorMidiPlayerThread::run (void)
 qtractorMidiPlayer::qtractorMidiPlayer (qtractorMidiBus *pMidiBus )
 	: m_pMidiBus(pMidiBus),
 		m_pMidiEngine(static_cast<qtractorMidiEngine *> (pMidiBus->engine())),
-		m_iSeqs(0), m_ppSeqs(nullptr), m_ppSeqCursors(nullptr), m_pTimeScale(nullptr), 
-		m_pCursor(nullptr), m_fTempo(0.0f), m_pPlayerThread(nullptr)
+		m_iPlayerQueue(-1), m_iSeqs(0), m_ppSeqs(nullptr), m_ppSeqCursors(nullptr),
+		m_pTimeScale(nullptr), m_pCursor(nullptr), m_fTempo(0.0f),
+		m_pPlayerThread(nullptr)
 {
 }
 
@@ -848,9 +851,16 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 	if (pAlsaSeq == nullptr)
 		return false;
 
-	qtractorMidiFile file;
-	if (!file.open(sFilename))
+	m_iPlayerQueue = snd_seq_alloc_queue(pAlsaSeq);
+	if (m_iPlayerQueue < 0)
 		return false;
+
+	qtractorMidiFile file;
+	if (!file.open(sFilename)) {
+		snd_seq_free_queue(pAlsaSeq, m_iPlayerQueue);
+		m_iPlayerQueue = -1;
+		return false;
+	}
 
 	m_pTimeScale = new qtractorTimeScale(*pTimeScale);
 	m_pTimeScale->setTicksPerBeat(file.ticksPerBeat());
@@ -877,17 +887,15 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 	m_pCursor = new qtractorTimeScale::Cursor(m_pTimeScale);
 	m_fTempo = m_pTimeScale->tempo();
 
-	const int iAlsaQueue = m_pMidiEngine->alsaQueue();
-
 	snd_seq_queue_tempo_t *tempo;
 	snd_seq_queue_tempo_alloca(&tempo);
-	snd_seq_get_queue_tempo(pAlsaSeq, iAlsaQueue, tempo);
+	snd_seq_get_queue_tempo(pAlsaSeq, m_iPlayerQueue, tempo);
 	snd_seq_queue_tempo_set_ppq(tempo, (int) m_pTimeScale->ticksPerBeat());
 	snd_seq_queue_tempo_set_tempo(tempo,
 		(unsigned int) (60000000.0f / m_fTempo));
-	snd_seq_set_queue_tempo(pAlsaSeq, iAlsaQueue, tempo);
+	snd_seq_set_queue_tempo(pAlsaSeq, m_iPlayerQueue, tempo);
 
-	snd_seq_start_queue(pAlsaSeq, iAlsaQueue, nullptr);
+	snd_seq_start_queue(pAlsaSeq, m_iPlayerQueue, nullptr);
 	snd_seq_drain_output(pAlsaSeq);
 
 	pAudioCursor->reset();
@@ -907,7 +915,6 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 // Close and stop playing.
 void qtractorMidiPlayer::close (void)
 {
-
 	if (m_pPlayerThread) {
 		if (m_pPlayerThread->isRunning()) do {
 			m_pPlayerThread->setRunState(false);
@@ -921,9 +928,11 @@ void qtractorMidiPlayer::close (void)
 		snd_seq_t *pAlsaSeq = m_pMidiEngine->alsaSeq();
 		if (pAlsaSeq) {
 			snd_seq_drop_output(pAlsaSeq);
-			const int iAlsaQueue = m_pMidiEngine->alsaQueue();
-			if (iAlsaQueue >= 0)
-				snd_seq_stop_queue(pAlsaSeq, iAlsaQueue, nullptr);
+			if (m_iPlayerQueue >= 0) {
+				snd_seq_stop_queue(pAlsaSeq, m_iPlayerQueue, nullptr);
+				snd_seq_free_queue(pAlsaSeq, m_iPlayerQueue);
+				m_iPlayerQueue = -1;
+			}
 			for (unsigned short iSeq = 0; iSeq < m_iSeqs; ++iSeq) {
 				const unsigned short iChannel = m_ppSeqs[iSeq]->channel();
 				m_pMidiBus->setController(iChannel, ALL_SOUND_OFF);
@@ -984,8 +993,7 @@ bool qtractorMidiPlayer::process (
 	if (pAlsaSeq == nullptr)
 		return false;
 
-	const int iAlsaQueue = m_pMidiEngine->alsaQueue();
-	if (iAlsaQueue < 0)
+	if (m_iPlayerQueue < 0)
 		return false;
 
 	qtractorTimeScale::Node *pNode
@@ -995,9 +1003,9 @@ bool qtractorMidiPlayer::process (
 			? pNode->tickFromFrame(iFrameStart) : pNode->tick);
 		snd_seq_event_t ev;
 		snd_seq_ev_clear(&ev);
-		snd_seq_ev_schedule_tick(&ev, iAlsaQueue, 0, iTime);
+		snd_seq_ev_schedule_tick(&ev, m_iPlayerQueue, 0, iTime);
 		ev.type = SND_SEQ_EVENT_TEMPO;
-		ev.data.queue.queue = iAlsaQueue;
+		ev.data.queue.queue = m_iPlayerQueue;
 		ev.data.queue.param.value
 			= (unsigned int) (60000000.0f / pNode->tempo);
 		ev.dest.client = SND_SEQ_CLIENT_SYSTEM;
@@ -1045,7 +1053,7 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 	snd_seq_ev_set_source(&ev, m_pMidiBus->alsaPort());
 	snd_seq_ev_set_subs(&ev);
 
-	snd_seq_ev_schedule_tick(&ev, m_pMidiEngine->alsaQueue(), 0, iTime);
+	snd_seq_ev_schedule_tick(&ev, m_iPlayerQueue, 0, iTime);
 
 	switch (pEvent->type()) {
 	case qtractorMidiEvent::NOTEON:
@@ -1156,8 +1164,7 @@ unsigned long qtractorMidiPlayer::queueTime (void) const
 	if (pAlsaSeq == nullptr)
 		return 0;
 
-	int iAlsaQueue = m_pMidiEngine->alsaQueue();
-	if (iAlsaQueue < 0)
+	if (m_iPlayerQueue < 0)
 		return 0;
 
 	unsigned long iQueueTime = 0;
@@ -1165,7 +1172,7 @@ unsigned long qtractorMidiPlayer::queueTime (void) const
 	snd_seq_queue_status_t *pQueueStatus;
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
-			pAlsaSeq, iAlsaQueue, pQueueStatus) >= 0) {
+			pAlsaSeq, m_iPlayerQueue, pQueueStatus) >= 0) {
 		iQueueTime = snd_seq_queue_status_get_tick_time(pQueueStatus);
 	}
 
