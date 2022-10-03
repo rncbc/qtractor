@@ -19,7 +19,7 @@
 %define version 0.9.28
 %define release 71.1
 
-%define _prefix	@ac_prefix@
+%define _prefix	/usr
 
 %if %{defined fedora}
 %define debug_package %{nil}
