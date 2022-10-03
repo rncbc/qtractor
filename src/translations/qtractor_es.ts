@@ -7771,7 +7771,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="303"/>
         <source>Pitch Bend Sensitivity</source>
-        <translation></translation>
+        <translation>Sensibilidad de Inflexión de Tono</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="304"/>
