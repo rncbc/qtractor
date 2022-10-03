@@ -10,10 +10,6 @@ GIT HEAD
   now on trial, hopefully mitigating a legato issue, reported
   to MIDI wind instruments (EWI). (SF #282) (HIGHLY EXPERIMENTAL)
 
-- The internal main MIDI engine gets its ALSA sequencer queue to
-  a higher resolution (PPQN aka ticks-per-beat), not subordinated
-  to the current session's anymore. (HIGHLY EXPERIMENTAL)
-
 - Fixed an old window parenting (aka z-level) issue, related to
   the Add Track and Track Properties dialogs and whether called
   from the main or mixer menus. (EXPERIMENTAL)

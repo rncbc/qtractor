@@ -75,14 +75,6 @@
 #define DRIFT_CHECK_MAX     (DRIFT_CHECK << 1)
 
 
-// Adjust time to/from  high resolution queue (64bit).
-#define TICKS_PER_BEAT_MIN  24
-#define TICKS_PER_BEAT_DEF  960
-#define TICKS_PER_BEAT_MAX  3840
-
-#define TICKS_PER_BEAT_HRQ  (TICKS_PER_BEAT_MAX << 8)
-
-
 //----------------------------------------------------------------------
 // class qtractorMidiInputRpn -- MIDI RPN/NRPN input parser (singleton).
 //
@@ -1214,8 +1206,6 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pInputThread  = nullptr;
 	m_pOutputThread = nullptr;
 
-	m_iTicksPerBeat = TICKS_PER_BEAT_DEF;
-
 	m_bDriftCorrect = true;
 
 	m_iDriftCheck   = 0;
@@ -1378,14 +1368,11 @@ void qtractorMidiEngine::resetTempo (void)
 	// Fill tempo struct with current tempo info.
 	snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
 	// Set the new intended ones...
-	snd_seq_queue_tempo_set_ppq(tempo, TICKS_PER_BEAT_HRQ);
+	snd_seq_queue_tempo_set_ppq(tempo, (int) pSession->ticksPerBeat());
 	snd_seq_queue_tempo_set_tempo(tempo,
 		(unsigned int) (60000000.0f / pNode->tempo));
 	// Give tempo struct to the queue.
 	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
-
-	// Reset to base session resolution...
-	m_iTicksPerBeat = pSession->ticksPerBeat();
 
 	// Recache tempo value...
 	m_fMetroTempo = pNode->tempo;
@@ -1585,14 +1572,6 @@ void qtractorMidiEngine::removeInputBuffer ( int iAlsaPort )
 }
 
 
-// Adjust time to/from  high resolution queue (64bit).
-unsigned long qtractorMidiEngine::timep ( unsigned long time ) const
-	{ return uint64_t(time) * TICKS_PER_BEAT_HRQ / m_iTicksPerBeat; }
-
-unsigned long qtractorMidiEngine::timeq ( unsigned long time ) const
-	{ return uint64_t(time) * m_iTicksPerBeat / TICKS_PER_BEAT_HRQ; }
-
-
 // MIDI event capture method.
 void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 {
@@ -1612,11 +1591,11 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	unsigned char *pSysex   = nullptr;
 	unsigned short iSysex   = 0;
 
-	unsigned long tick = timeq(pEv->time.tick);
+	unsigned long tick = pEv->time.tick;
 
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
-		const unsigned long q = m_iTicksPerBeat / m_iCaptureQuantize;
+		const unsigned long q = pSession->ticksPerBeat() / m_iCaptureQuantize;
 		tick = q * ((tick + (q >> 1)) / q);
 	}
 
@@ -1996,7 +1975,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	snd_seq_ev_set_subs(&ev);
 
 	// Scheduled delivery...
-	snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, timep(tick));
+	snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 
 	// Set proper event data...
 	switch (pEvent->type()) {
@@ -2005,12 +1984,12 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.data.note.channel  = pTrack->midiChannel();
 			ev.data.note.note     = pEvent->note();
 			ev.data.note.velocity = int(fGain * float(pEvent->value())) & 0x7f;
-			ev.data.note.duration = timep(pEvent->duration());
+			ev.data.note.duration = pEvent->duration();
 			if (pSession->isLooping()) {
 				const unsigned long iLoopEndTime
 					= pSession->tickFromFrame(pSession->loopEnd());
-				if (iLoopEndTime > iTime && iLoopEndTime < iTime + pEvent->duration())
-					ev.data.note.duration = timep(iLoopEndTime - iTime);
+				if (iLoopEndTime > iTime && iLoopEndTime < iTime + ev.data.note.duration)
+					ev.data.note.duration = iLoopEndTime - iTime;
 			}
 			break;
 		case qtractorMidiEvent::KEYPRESS:
@@ -2204,7 +2183,7 @@ void qtractorMidiEngine::driftCheck (void)
 		const long iAudioTime
 			= long(pNode->tickFromFrame(iAudioFrame)) - m_iTimeStart;
 		const long iMidiTime
-			= long(timeq(snd_seq_queue_status_get_tick_time(pQueueStatus)));
+			= long(snd_seq_queue_status_get_tick_time(pQueueStatus));
 		long iDeltaTime = (iAudioTime - iMidiTime);
 	//	if (pSession->isLooping()) {
 			const long iDeadTime
@@ -2599,7 +2578,7 @@ void qtractorMidiEngine::trackMute ( qtractorTrack *pTrack, bool bMute )
 		snd_seq_remove_events_alloca(&pre);
 		snd_seq_timestamp_t ts;
 		const unsigned long iTime = pSession->tickFromFrame(iFrame);
-		ts.tick = timep((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
+		ts.tick = ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
 		snd_seq_remove_events_set_time(pre, &ts);
 		snd_seq_remove_events_set_tag(pre, pTrack->midiTag());
 		snd_seq_remove_events_set_channel(pre, pTrack->midiChannel());
@@ -2658,7 +2637,7 @@ void qtractorMidiEngine::metroMute ( bool bMute )
  		snd_seq_remove_events_alloca(&pre);
 		snd_seq_timestamp_t ts;
 		const unsigned long iTime = pSession->tickFromFrame(iFrame);
-		ts.tick = timep((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
+		ts.tick = ((long) iTime > m_iTimeStart ? iTime - m_iTimeStart : 0);
 		snd_seq_remove_events_set_time(pre, &ts);
 		snd_seq_remove_events_set_tag(pre, 0xff);
 		snd_seq_remove_events_set_channel(pre, m_iMetroChannel);
@@ -3269,7 +3248,7 @@ void qtractorMidiEngine::processMetro (
 		// the time playback/queue started...
 		const unsigned long tick
 			= (long(iTime) > m_iTimeStart ? iTime - m_iTimeStart : 0);
-		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, timep(tick));
+		snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 		ev.type = SND_SEQ_EVENT_TEMPO;
 		ev.data.queue.queue = m_iAlsaQueue;
 		ev.data.queue.param.value
@@ -3334,7 +3313,7 @@ void qtractorMidiEngine::processMetro (
 				if (iTimeClock >= iTimeStart) {
 					const unsigned long tick
 						= (long(iTimeClock) > m_iTimeStart ? iTimeClock - m_iTimeStart : 0);
-					snd_seq_ev_schedule_tick(&ev_clock, m_iAlsaQueue, 0, timep(tick));
+					snd_seq_ev_schedule_tick(&ev_clock, m_iAlsaQueue, 0, tick);
 					snd_seq_event_output(m_pAlsaSeq, &ev_clock);
 				}
 				iTimeClock += iTicksPerClock;
@@ -3347,7 +3326,7 @@ void qtractorMidiEngine::processMetro (
 			// Set proper event schedule time...
 			const unsigned long tick
 				= (long(iTimeOffset) > m_iTimeStart ? iTimeOffset - m_iTimeStart : 0);
-			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, timep(tick));
+			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
 			// Set proper event data...
 			if (pNode->beatIsBar(iBeat)) {
 				ev.data.note.note     = m_iMetroBarNote;
