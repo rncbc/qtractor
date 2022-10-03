@@ -7840,17 +7840,17 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="231"/>
         <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Brillo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="232"/>
         <source>Decay Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiempo de Caída</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="241"/>
         <source>Tremolo Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Nivel de Trémolo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="350"/>
