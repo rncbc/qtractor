@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-0.9.29  2022-09-05  An Early-Autumn'22 Release.
+0.9.29  2022-10-05  An Early-Autumn'22 Release.
 
 - Capture same time(stamp) note-off tracking and postponing is
   now on trial, hopefully mitigating a legato issue, reported
