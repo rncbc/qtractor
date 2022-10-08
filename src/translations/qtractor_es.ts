@@ -7797,45 +7797,45 @@ Duración:	%3</translation>
         <location filename="../qtractorMidiEditor.cpp" line="233"/>
         <location filename="../qtractorMidiEditor.cpp" line="345"/>
         <source>Vibrato Rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocidad del Vibrato</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="234"/>
         <location filename="../qtractorMidiEditor.cpp" line="346"/>
         <source>Vibrato Depth</source>
-        <translation type="unfinished"></translation>
+        <translation>Profundidad del Vibrato</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="235"/>
         <location filename="../qtractorMidiEditor.cpp" line="347"/>
         <source>Vibrato Delay</source>
-        <translation type="unfinished"></translation>
+        <translation>Retraso del Vibrato</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="348"/>
         <source>Filter Cutoff</source>
-        <translation type="unfinished"></translation>
+        <translation>Corte del Filtro</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="228"/>
         <location filename="../qtractorMidiEditor.cpp" line="349"/>
         <source>Filter Resonance</source>
-        <translation type="unfinished"></translation>
+        <translation>Resonacia del Filtro</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="223"/>
         <source>Sostenuto Pedal (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pedal de Sostenuto</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="229"/>
         <source>Release Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiempo de Caída</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="230"/>
         <source>Attack Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiempo de Ataque</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="231"/>
@@ -7855,7 +7855,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="350"/>
         <source>EG Attack</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="351"/>
