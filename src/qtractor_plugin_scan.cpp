@@ -1529,7 +1529,7 @@ public:
 			for (uint32_t i = 0; i < nins; ++i) {
 				::memset(&info, 0, sizeof(info));
 				if (note_ports->get(m_plugin, i, true, &info)) {
-					if (info.supported_dialects & CLAP_NOTE_DIALECT_MIDI)
+				//	if (info.supported_dialects & CLAP_NOTE_DIALECT_MIDI)
 						++m_iMidiIns;
 				}
 			}
@@ -1537,7 +1537,7 @@ public:
 			for (uint32_t i = 0; i < nouts; ++i) {
 				::memset(&info, 0, sizeof(info));
 				if (note_ports->get(m_plugin, i, false, &info)) {
-					if (info.supported_dialects & CLAP_NOTE_DIALECT_MIDI)
+				//	if (info.supported_dialects & CLAP_NOTE_DIALECT_MIDI)
 						++m_iMidiOuts;
 				}
 			}

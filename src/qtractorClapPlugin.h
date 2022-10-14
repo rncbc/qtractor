@@ -67,6 +67,11 @@ public:
 	const QString& aboutText()
 		{ return m_sAboutText; }
 
+	int midiDialectIns() const
+		{ return m_iMidiDialectIns; }
+	int midiDialectOuts() const
+		{ return m_iMidiDialectOuts; }
+
 	// Forward decls.
 	class Impl;
 
@@ -81,6 +86,9 @@ private:
 
 	// Instance variables.   
 	Impl *m_pImpl;
+
+	int m_iMidiDialectIns;
+	int m_iMidiDialectOuts;
 };
 
 

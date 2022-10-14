@@ -6,7 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- Bumping into the next develop cycle/season...
+- Better discriminate CLAP Plug-in specific note events and strict
+  MIDI dialect event processing. (EXPERIMENTAL)
 
 
 0.9.29  2022-10-05  An Early-Autumn'22 Release.
