@@ -7786,12 +7786,12 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="306"/>
         <source>Tuning Program</source>
-        <translation type="unfinished"></translation>
+        <translation>Programa de Afinación</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="307"/>
         <source>Tuning Bank</source>
-        <translation type="unfinished"></translation>
+        <translation>Banco de Afinación</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="233"/>
@@ -8556,17 +8556,17 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="661"/>
         <source>Prometheus</source>
-        <translation type="unfinished"></translation>
+        <translation>Prometeo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="662"/>
         <source>Prometheus Neapolitan</source>
-        <translation type="unfinished"></translation>
+        <translation>Prometeo Napolitana</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="663"/>
         <source>Six Tone Symmetrical</source>
-        <translation type="unfinished"></translation>
+        <translation>Seis Tonos Simétrica</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="664"/>
