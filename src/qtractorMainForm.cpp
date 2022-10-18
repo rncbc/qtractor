@@ -8222,7 +8222,7 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 		= m_pSession->sessionDir();
 	const QString sSessionDir
 		= QString::fromUtf8(pJackSessionEvent->session_dir);
-	m_pSessionDir->setSessionDir(sSessionDir);
+	m_pSession->setSessionDir(sSessionDir);
 
 	if (m_pSession->sessionName().isEmpty())
 		m_pSession->setSessionName(::getenv("LADISH_PROJECT_NAME"));
