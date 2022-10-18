@@ -1,7 +1,7 @@
 // qtractorSessionCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -166,7 +166,8 @@ qtractorSessionEditCommand::qtractorSessionEditCommand (
 	}
 
 	// Append time resolution changes too...
-	const unsigned short iTicksPerBeat = properties.timeScale.ticksPerBeat();
+	const unsigned short iTicksPerBeat
+		= properties.timeScale.ticksPerBeat();
 	if (pSession->ticksPerBeat() != iTicksPerBeat)
 		m_iTicksPerBeat = iTicksPerBeat;
 

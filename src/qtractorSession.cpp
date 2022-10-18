@@ -509,6 +509,12 @@ unsigned short qtractorSession::beatType (void) const
 // Resolution accessors.
 void qtractorSession::setTicksPerBeat ( unsigned short iTicksPerBeat )
 {
+	if (iTicksPerBeat < qtractorTimeScale::TICKS_PER_BEAT_MIN)
+		iTicksPerBeat = qtractorTimeScale::TICKS_PER_BEAT_MIN;
+	else
+	if (iTicksPerBeat > qtractorTimeScale::TICKS_PER_BEAT_MAX)
+		iTicksPerBeat = qtractorTimeScale::TICKS_PER_BEAT_MAX;
+
 	m_props.timeScale.setTicksPerBeat(iTicksPerBeat);
 }
 
@@ -710,14 +716,14 @@ unsigned long qtractorSession::locateFromFrame ( unsigned long iFrame ) const
 
 
 // Song position pointer (SPP=MIDI beats) to frame converters.
-unsigned long qtractorSession::frameFromSongPos ( unsigned short iSongPos )
+unsigned long qtractorSession::frameFromSongPos ( unsigned int iSongPos )
 {
-	return frameFromTick((iSongPos * ticksPerBeat()) >> 2);
+	return frameFromTick((iSongPos * qtractorTimeScale::TICKS_PER_BEAT_HRQ) >> 2);
 }
 
-unsigned short qtractorSession::songPosFromFrame ( unsigned long iFrame )
+unsigned int qtractorSession::songPosFromFrame ( unsigned long iFrame )
 {
-	return ((tickFromFrame(iFrame) << 2) / ticksPerBeat());
+	return ((tickFromFrame(iFrame) << 2) / qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 }
 
 

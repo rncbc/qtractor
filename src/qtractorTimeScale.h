@@ -601,11 +601,24 @@ public:
 	static QString keySignatureName(
 		int iAccidentals, int iMode, char chMinor = 'm');
 
+	// MIDI resolution constants.
+	static const unsigned short TICKS_PER_BEAT_MIN = 24;
+	static const unsigned short TICKS_PER_BEAT_DEF = 960;
+	static const unsigned short TICKS_PER_BEAT_MAX = 3840;
+
+	static const unsigned short TICKS_PER_BEAT_HRQ = (TICKS_PER_BEAT_MAX << 3);
+
 protected:
 
 	// Tempo-map independent coefficients.
 	float pixelRate() const { return m_fPixelRate; }
 	float frameRate() const { return m_fFrameRate; }
+
+	// MIDI time adjust to/from official high resolution queue (64bit).
+	unsigned long timep ( unsigned long time ) const
+		{ return uint64_t(time) * TICKS_PER_BEAT_HRQ / m_iTicksPerBeat; }
+	unsigned long timeq ( unsigned long time ) const
+		{ return uint64_t(time) * m_iTicksPerBeat / TICKS_PER_BEAT_HRQ; }
 
 private:
 

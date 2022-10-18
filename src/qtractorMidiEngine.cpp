@@ -1365,7 +1365,7 @@ void qtractorMidiEngine::resetTempo (void)
 	// Fill tempo struct with current tempo info.
 	snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
 	// Set the new intended ones...
-	snd_seq_queue_tempo_set_ppq(tempo, (int) pSession->ticksPerBeat());
+	snd_seq_queue_tempo_set_ppq(tempo, qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 	snd_seq_queue_tempo_set_tempo(tempo,
 		(unsigned int) (60000000.0f / pNode->tempo));
 	// Give tempo struct to the queue.
@@ -1592,7 +1592,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
-		const unsigned long q = pSession->ticksPerBeat() / m_iCaptureQuantize;
+		const unsigned long q
+			= qtractorTimeScale::TICKS_PER_BEAT_HRQ
+			/ m_iCaptureQuantize;
 		tick = q * ((tick + (q >> 1)) / q);
 	}
 
@@ -1985,7 +1987,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			if (pSession->isLooping()) {
 				const unsigned long iLoopEndTime
 					= pSession->tickFromFrame(pSession->loopEnd());
-				if (iLoopEndTime > iTime && iLoopEndTime < iTime + ev.data.note.duration)
+				if (iLoopEndTime > iTime && iLoopEndTime < iTime + pEvent->duration())
 					ev.data.note.duration = iLoopEndTime - iTime;
 			}
 			break;
@@ -3304,7 +3306,7 @@ void qtractorMidiEngine::processMetro (
 		// the time playback/queue started...
 		if (m_clockMode & qtractorBus::Output) {
 			unsigned long iTimeClock = iTime;
-			const unsigned int iTicksPerClock = pNode->ticksPerBeat / 24;
+			const unsigned short iTicksPerClock = pNode->ticksPerBeat / 24;
 			for (unsigned int iClock = 0; iClock < 24; ++iClock) {
 				if (iTimeClock >= iTimeEnd)
 					break;
@@ -3521,9 +3523,6 @@ bool qtractorMidiEngine::fileExport (
 	if (iExportStart >= iExportEnd)
 		return false;
 
-	const unsigned short iTicksPerBeat
-		= pSession->ticksPerBeat();
-
 	const unsigned long iTimeStart
 		= pSession->tickFromFrame(iExportStart);
 	const unsigned long iTimeEnd
@@ -3543,7 +3542,7 @@ bool qtractorMidiEngine::fileExport (
 		ppSeqs = new qtractorMidiSequence * [iSeqs];
 		for (iSeq = 0; iSeq < iSeqs; ++iSeq) {
 			ppSeqs[iSeq] = new qtractorMidiSequence(
-				QString(), iSeq, iTicksPerBeat);
+				QString(), iSeq, qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 		}
 	}
 
@@ -3589,7 +3588,8 @@ bool qtractorMidiEngine::fileExport (
 			// SMF Format 1
 			++iTracks;
 			pSeq = new qtractorMidiSequence(
-				pTrack->trackName(), iTracks, iTicksPerBeat);
+				pTrack->trackName(), iTracks,
+				qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 			pSeq->setChannel(pTrack->midiChannel());
 			seqs.append(pSeq);
 		}
@@ -3670,7 +3670,7 @@ bool qtractorMidiEngine::fileExport (
 	const bool bResult
 		= file.open(sExportPath, qtractorMidiFile::Write);
 	if (bResult) {
-		if (file.writeHeader(iFormat, iTracks, iTicksPerBeat)) {
+		if (file.writeHeader(iFormat, iTracks, pSession->ticksPerBeat())) {
 			// Export SysEx setups...
 			bus_iter.toFront();
 			while (bus_iter.hasNext()) {
@@ -3679,7 +3679,8 @@ bool qtractorMidiEngine::fileExport (
 				if (pSysexList && pSysexList->count() > 0) {
 					if (ppSeqs[0] == nullptr) {
 						ppSeqs[0] = new qtractorMidiSequence(
-							QFileInfo(sExportPath).baseName(), 0, iTicksPerBeat);
+							QFileInfo(sExportPath).baseName(), 0,
+							qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 					}
 					pExportBus->exportSysexList(ppSeqs[0]);
 				}

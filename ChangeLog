@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- The internal main MIDI engine gets its ALSA sequencer queue to a
+  higher resolution (PPQN aka ticks-per-beat) and not subordinated
+  to the current session's anymore. (EXTREMELY EXPERIMENTAL)
+
 - Although being deprecated to use, JACK Session support is hopefuly
   fixed, once again. (GH issue #366) (EXPERIMENTAL)
 

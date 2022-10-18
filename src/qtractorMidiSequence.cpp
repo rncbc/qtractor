@@ -1,7 +1,7 @@
 // qtractorMidiSequence.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -91,12 +91,12 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 		if (pNoteEvent) {
 			const unsigned long t1 = pNoteEvent->time();	// NOTEON
 			const unsigned long t2 = pEvent->time();		// NOTEOFF
-			if (t1 > t2) {
-				pNoteEvent->setDuration(m_duration - t1);
-			} else {
-				pNoteEvent->setDuration(t2 - t1);
+			if (t2 > t1) {
+				pNoteEvent->setDuration(t2 - t1 - 1);
 				if (m_duration < t2)
 					m_duration = t2;
+			} else {
+				pNoteEvent->setDuration(m_duration - t1);
 			}
 			m_notes.erase(iter_last);
 		}
@@ -223,9 +223,8 @@ void qtractorMidiSequence::replaceEvents ( qtractorMidiSequence *pSeq,
 	for (pEvent = pSeq->events().first(); pEvent; pEvent = pEvent->next()) {
 		qtractorMidiEvent *pNewEvent = new qtractorMidiEvent(*pEvent);
 		pNewEvent->setTime(timeq(iTimeOffset + pEvent->time(), iTicksPerBeat));
-		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
+		if (pEvent->type() == qtractorMidiEvent::NOTEON)
 			pNewEvent->setDuration(timeq(pEvent->duration(), iTicksPerBeat));
-		}
 		insertEvent(pNewEvent);
 	}
 
@@ -238,12 +237,18 @@ void qtractorMidiSequence::copyEvents ( qtractorMidiSequence *pSeq )
 {
 	// Remove existing events.
 	m_events.clear();
-	
+
+	const unsigned short iTicksPerBeat = pSeq->ticksPerBeat();
+
 	// Clone new ones...
 	qtractorMidiEvent *pEvent = pSeq->events().first();
-	for (; pEvent; pEvent = pEvent->next())
-		m_events.append(new qtractorMidiEvent(*pEvent));
-
+	for (; pEvent; pEvent = pEvent->next()) {
+		qtractorMidiEvent *pNewEvent = new qtractorMidiEvent(*pEvent);
+		pNewEvent->setTime(timeq(pEvent->time(), iTicksPerBeat));
+		if (pEvent->type() == qtractorMidiEvent::NOTEON)
+			pNewEvent->setDuration(timeq(pEvent->duration(), iTicksPerBeat));
+		m_events.append(pNewEvent);
+	}
 	// Done.
 }
 

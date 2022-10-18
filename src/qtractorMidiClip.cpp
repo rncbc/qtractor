@@ -292,7 +292,7 @@ bool qtractorMidiClip::createMidiFile (
 	qtractorMidiSequence *pSeq = m_pData->sequence();
 
 	pSeq->clear();
-	pSeq->setTicksPerBeat(pSession->ticksPerBeat());
+	pSeq->setTicksPerBeat(qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 	pSeq->setName(shortClipName(QFileInfo(sFilename).baseName()));
 	pSeq->setChannel(pTrack->midiChannel());
 
@@ -300,7 +300,7 @@ bool qtractorMidiClip::createMidiFile (
 	setRevision(1);
 
 	// Write SMF header...
-	if (m_pFile->writeHeader(iFormat, iTracks, pSeq->ticksPerBeat())) {
+	if (m_pFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat())) {
 		// Set initial local properties...
 		if (m_pFile->tempoMap()) {
 			m_pFile->tempoMap()->fromTimeScale(
@@ -398,7 +398,7 @@ bool qtractorMidiClip::openMidiFile (
 	qtractorMidiSequence *pSeq = m_pData->sequence();
 
 	pSeq->clear();
-	pSeq->setTicksPerBeat(pSession->ticksPerBeat());
+	pSeq->setTicksPerBeat(qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 
 	const unsigned long iClipStart  = clipStart();
 	const unsigned long iClipOffset = clipOffset();
@@ -432,7 +432,7 @@ bool qtractorMidiClip::openMidiFile (
 			++iTracks;
 		}
 		// Write SMF header...
-		if (m_pFile->writeHeader(iFormat, iTracks, pSeq->ticksPerBeat())) {
+		if (m_pFile->writeHeader(iFormat, iTracks, pSession->ticksPerBeat())) {
 			// Set initial local properties...
 			if (m_pFile->tempoMap()) {
 				m_pFile->tempoMap()->fromTimeScale(
@@ -1428,7 +1428,6 @@ bool qtractorMidiClip::clipExport (
 	if (iLength < 1)
 		iLength = clipLength();
 
-	const unsigned short iTicksPerBeat = pSession->ticksPerBeat();
 	const unsigned long iTimeOffset = pSeq->timeOffset();
 
 	qtractorTimeScale::Cursor cursor(pSession->timeScale());
@@ -1443,7 +1442,9 @@ bool qtractorMidiClip::clipExport (
 	pNode = cursor.seekFrame(f1 += iLength);
 	const unsigned long iTimeEnd = iTimeStart + pNode->tickFromFrame(f1) - t1;
 
-	qtractorMidiSequence seq(pSeq->name(), pSeq->channel(), iTicksPerBeat);
+	qtractorMidiSequence seq(
+		pSeq->name(), pSeq->channel(),
+		qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 
 	seq.setBankSelMethod(pTrack->midiBankSelMethod());
 	seq.setBank(pTrack->midiBank());
