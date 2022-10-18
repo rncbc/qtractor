@@ -8256,7 +8256,7 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 	jack_session_reply(pJackClient, pJackSessionEvent);
 	jack_session_event_free(pJackSessionEvent);
 
-	m_pSessionDir->setSessionDir(sOldSessionDir);
+	m_pSession->setSessionDir(sOldSessionDir);
 
 	if (bQuit) {
 		m_iDirtyCount = 0;
