@@ -2748,7 +2748,7 @@ Sorry.</source>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1956"/>
-        <location filename="../qtractorMainForm.cpp" line="8228"/>
+        <location filename="../qtractorMainForm.cpp" line="8234"/>
         <source>Untitled%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3077,114 +3077,114 @@ JACK (jackd) запущен и функционирует,
 а затем начните сеанс заново.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8310"/>
-        <location filename="../qtractorMainForm.cpp" line="8497"/>
+        <location filename="../qtractorMainForm.cpp" line="8316"/>
+        <location filename="../qtractorMainForm.cpp" line="8503"/>
         <source>STOP</source>
         <translation>СТОП</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8317"/>
+        <location filename="../qtractorMainForm.cpp" line="8323"/>
         <source>PLAY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8321"/>
+        <location filename="../qtractorMainForm.cpp" line="8327"/>
         <source>FFWD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8325"/>
+        <location filename="../qtractorMainForm.cpp" line="8331"/>
         <source>REW</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8330"/>
+        <location filename="../qtractorMainForm.cpp" line="8336"/>
         <source>REC ON</source>
         <translation>ЗАП  ВКЛ</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8338"/>
+        <location filename="../qtractorMainForm.cpp" line="8344"/>
         <source>REC OFF</source>
         <translation>ЗАП ВЫКЛ</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8342"/>
+        <location filename="../qtractorMainForm.cpp" line="8348"/>
         <source>RESET</source>
         <translation>СБРОС</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8346"/>
+        <location filename="../qtractorMainForm.cpp" line="8352"/>
         <source>LOCATE %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8350"/>
+        <location filename="../qtractorMainForm.cpp" line="8356"/>
         <source>SHUTTLE %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8354"/>
+        <location filename="../qtractorMainForm.cpp" line="8360"/>
         <source>STEP %1</source>
         <translation>ШАГ %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8360"/>
+        <location filename="../qtractorMainForm.cpp" line="8366"/>
         <source>TRACK RECORD %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8365"/>
+        <location filename="../qtractorMainForm.cpp" line="8371"/>
         <source>TRACK MUTE %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8370"/>
+        <location filename="../qtractorMainForm.cpp" line="8376"/>
         <source>TRACK SOLO %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8380"/>
+        <location filename="../qtractorMainForm.cpp" line="8386"/>
         <source>Unknown sub-command</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8386"/>
-        <location filename="../qtractorMainForm.cpp" line="8517"/>
+        <location filename="../qtractorMainForm.cpp" line="8392"/>
+        <location filename="../qtractorMainForm.cpp" line="8523"/>
         <source>Not implemented</source>
         <translation>Не реализовано</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8399"/>
+        <location filename="../qtractorMainForm.cpp" line="8405"/>
         <source>MIDI CTL: %1, Channel %2, Param %3, Value %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8535"/>
+        <location filename="../qtractorMainForm.cpp" line="8541"/>
         <source>%1 BPM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8448"/>
+        <location filename="../qtractorMainForm.cpp" line="8454"/>
         <source>(track %1, gain %2)</source>
         <translation>(дорожка %1, усиление %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8469"/>
+        <location filename="../qtractorMainForm.cpp" line="8475"/>
         <source>(track %1, panning %2)</source>
         <translation>(дорожка %1, панорамирование %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8490"/>
+        <location filename="../qtractorMainForm.cpp" line="8496"/>
         <source>START</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8505"/>
+        <location filename="../qtractorMainForm.cpp" line="8511"/>
         <source>CONTINUE</source>
         <translation>ПРОДОЛЖИТЬ</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8511"/>
+        <location filename="../qtractorMainForm.cpp" line="8517"/>
         <source>SONGPOS %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3503,13 +3503,13 @@ is highly recommended.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8375"/>
+        <location filename="../qtractorMainForm.cpp" line="8381"/>
         <source>TRACK MONITOR %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8618"/>
-        <location filename="../qtractorMainForm.cpp" line="8678"/>
+        <location filename="../qtractorMainForm.cpp" line="8624"/>
+        <location filename="../qtractorMainForm.cpp" line="8684"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>Воспроизводится &quot;%1&quot;...</translation>
     </message>

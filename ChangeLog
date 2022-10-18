@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Although being deprecated to use, JACK Session support is hopefuly
+  fixed, once again. (GH issue #366) (EXPERIMENTAL)
+
 - Better discriminate CLAP Plug-in specific note events and strict
   MIDI dialect event processing. (EXPERIMENTAL)
 

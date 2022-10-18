@@ -2638,7 +2638,7 @@ bool qtractorMainForm::saveSessionFileEx (
 	// Tell the world we'll take some time...
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	appendMessages(tr("Saving \"%1\"...").arg(sFilename));
-	
+
 	// Trap dirty clips (only MIDI at this time...)
 	for (qtractorTrack *pTrack = m_pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -8206,7 +8206,7 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 
 	jack_session_event_t *pJackSessionEvent
 		= (jack_session_event_t *) pvSessionArg;
-	
+
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::audioSessNotify()"
 		" type=%d client_uuid=\"%s\" session_dir=\"%s\"",
@@ -8218,6 +8218,12 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 	const bool bTemplate = (pJackSessionEvent->type == JackSessionSaveTemplate);
 	const bool bQuit = (pJackSessionEvent->type == JackSessionSaveAndQuit);
 
+	const QString sOldSessionDir
+		= m_pSession->sessionDir();
+	const QString sSessionDir
+		= QString::fromUtf8(pJackSessionEvent->session_dir);
+	m_pSessionDir->setSessionDir(sSessionDir);
+
 	if (m_pSession->sessionName().isEmpty())
 		m_pSession->setSessionName(::getenv("LADISH_PROJECT_NAME"));
 	if (m_pSession->sessionName().isEmpty())
@@ -8226,9 +8232,7 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 	QString sSessionName = m_pSession->sessionName();
 	if (sSessionName.isEmpty())
 		sSessionName = tr("Untitled%1").arg(m_iUntitled);
-	
-	const QString sSessionDir
-		= QString::fromUtf8(pJackSessionEvent->session_dir);
+
 	const QString sSessionExt = (bTemplate
 		? qtractorDocument::templateExt()
 		: m_pOptions->sSessionExt);
@@ -8244,13 +8248,15 @@ void qtractorMainForm::audioSessNotify ( void *pvSessionArg )
 		= (bTemplate ? qtractorDocument::Template : qtractorDocument::Default);
 
 	if (saveSessionFileEx(sFilename, iFlags | qtractorDocument::SymLink, false))
-		args << QString("\"${SESSION_DIR}%1\"").arg(sSessionFile);
+		args << QString("${SESSION_DIR}%1").arg(sSessionFile);
 
 	const QByteArray aCmdLine = args.join(" ").toUtf8();
 	pJackSessionEvent->command_line = ::strdup(aCmdLine.constData());
 
 	jack_session_reply(pJackClient, pJackSessionEvent);
 	jack_session_event_free(pJackSessionEvent);
+
+	m_pSessionDir->setSessionDir(sOldSessionDir);
 
 	if (bQuit) {
 		m_iDirtyCount = 0;
