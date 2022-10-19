@@ -1,7 +1,7 @@
 // qtractorMidiEventList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -519,8 +519,7 @@ QWidget *qtractorMidiEventItemDelegate::createEditor ( QWidget *pParent,
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
 			qtractorTimeSpinBox *pTimeSpinBox
 				= new qtractorTimeSpinBox(pParent);
-			pTimeSpinBox->setTimeScale(
-				(pListModel->editor())->timeScale());
+			pTimeSpinBox->setTimeScale(pMidiEditor->timeScale());
 			pTimeSpinBox->setDeltaValue(true);
 			pEditor = pTimeSpinBox;
 		}
@@ -843,6 +842,20 @@ void qtractorMidiEventListView::selectEvent (
 }
 
 
+// Custom editor closing stub.
+void qtractorMidiEventListView::closeEditor (
+	QWidget */*pEditor*/, QAbstractItemDelegate::EndEditHint /*hint*/ )
+{
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiEventListView[%p]::closeEditor(%p, 0x%04x)", this, pEditor, uint(hint));
+#endif
+
+	// FIXME: Avoid spitting out QAbstractItemView::closeEditor
+	// called with an editor that does not belong to this view...
+//	QTreeView::closeEditor(pEditor, hint);
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorMidiEventList -- MIDI Event List dockable window.
 
@@ -885,6 +898,7 @@ qtractorMidiEventList::~qtractorMidiEventList (void)
 }
 
 
+
 // Full update when show up.
 void qtractorMidiEventList::showEvent ( QShowEvent *pShowEvent )
 {
@@ -921,11 +935,11 @@ void qtractorMidiEventList::setEditor ( qtractorMidiEditor *pEditor )
 
 	// Set MIDI editor change connections.
 	QObject::connect(pEditor,
-		SIGNAL(selectNotifySignal(qtractorMidiEditor*)),
-		SLOT(selectNotifySlot(qtractorMidiEditor*)));
+		SIGNAL(selectNotifySignal(qtractorMidiEditor *)),
+		SLOT(selectNotifySlot(qtractorMidiEditor *)));
 	QObject::connect(pEditor,
-		SIGNAL(changeNotifySignal(qtractorMidiEditor*)),
-		SLOT(changeNotifySlot(qtractorMidiEditor*)));
+		SIGNAL(changeNotifySignal(qtractorMidiEditor *)),
+		SLOT(changeNotifySlot(qtractorMidiEditor *)));
 }
 
 
@@ -1020,7 +1034,7 @@ void qtractorMidiEventList::selectionChangedSlot (
 	m_pListView->setUpdatesEnabled(true);
 
 	pEditor->selectionChangeNotify();
-	
+
 	--m_iSelectUpdate;
 }
 
