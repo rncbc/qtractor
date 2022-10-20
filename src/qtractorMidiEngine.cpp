@@ -572,9 +572,6 @@ void qtractorMidiOutputThread::process (void)
 	if (pMidiCursor == nullptr)
 		return;
 
-	// Free overridden SysEx queued events.
-	m_pMidiEngine->clearSysexCache();
-
 	// Now for the next readahead bunch...
 	unsigned long iFrameStart = pMidiCursor->frame();
 	unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
@@ -2064,22 +2061,26 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			break;
 		case qtractorMidiEvent::SYSEX: {
 			ev.type = SND_SEQ_EVENT_SYSEX;
+			unsigned char *data = pEvent->sysex();
+			unsigned short data_len = pEvent->sysex_len();
 			if (pMidiBus->midiMonitor_out()) {
-				// HACK: Master volume hack...
-				unsigned char *data = pEvent->sysex();
+				// HACK: Master volume: make a copy
+				// and update it while queued...
 				if (data[1] == 0x7f &&
 					data[2] == 0x7f &&
 					data[3] == 0x04 &&
 					data[4] == 0x01) {
-					// Make a copy, update and cache it while queued...
-					pEvent = new qtractorMidiEvent(*pEvent);
-					data = pEvent->sysex();
+					static unsigned char s_data[8];
+					if (data_len > sizeof(s_data))
+						data_len = sizeof(s_data);
+					::memcpy(s_data, data, data_len);
+					const float fGain = pMidiBus->midiMonitor_out()->gain();
+					data = &s_data[0];
 					data[5] = 0;
-					data[6] = int(pMidiBus->midiMonitor_out()->gain() * float(data[6])) & 0x7f;
-					m_sysexCache.append(pEvent);
+					data[6] = int(fGain * float(data[6])) & 0x7f;
 				}
 			}
-			snd_seq_ev_set_sysex(&ev, pEvent->sysex_len(), pEvent->sysex());
+			snd_seq_ev_set_sysex(&ev, data_len, data);
 			break;
 		}
 		default:
@@ -2513,9 +2514,6 @@ void qtractorMidiEngine::clean (void)
 		m_iAlsaClient = -1;
 		m_pAlsaSeq    = nullptr;
 	}
-
-	// Clean any other left-overs...
-	clearSysexCache();
 
 	// And all other timing tracers.
 	m_iTimeStart  = 0;
@@ -3818,14 +3816,6 @@ void qtractorMidiEngine::setResetAllControllers ( bool bResetAllControllers )
 bool qtractorMidiEngine::isResetAllControllers (void) const
 {
 	return m_bResetAllControllers;
-}
-
-
-// Free overridden SysEx queued events.
-void qtractorMidiEngine::clearSysexCache (void)
-{
-	qDeleteAll(m_sysexCache);
-	m_sysexCache.clear();
 }
 
 
