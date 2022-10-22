@@ -797,7 +797,6 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		return;
 
 	const unsigned int iSampleRate = pAudioEngine->sampleRate();
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
 	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 	// Allocate new instances...
@@ -834,7 +833,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
 	//	pEffect->vst_dispatch(effOpen, 0, 0, nullptr, 0.0f);
 		pEffect->vst_dispatch(effSetSampleRate, 0, 0, nullptr, float(iSampleRate));
-		pEffect->vst_dispatch(effSetBlockSize,  0, iBufferSize, nullptr, 0.0f);
+		pEffect->vst_dispatch(effSetBlockSize,  0, iBufferSizeEx, nullptr, 0.0f);
 	//	pEffect->vst_dispatch(effSetProgram, 0, 0, nullptr, 0.0f);
 	#if 0 // !VST_FORCE_DEPRECATED
 		unsigned short j;
