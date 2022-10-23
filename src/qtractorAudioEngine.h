@@ -136,6 +136,9 @@ public:
 	// Buffer offset accessor.
 	unsigned int bufferOffset() const;
 
+	// Block-stride size (in frames) accessor.
+	unsigned int blockSize() const;
+
 	// Audio (Master) bus defaults accessors.
 	void setMasterAutoConnect(bool bMasterAutoConnect);
 	bool isMasterAutoConnect() const;
@@ -315,6 +318,9 @@ private:
 	// Partial buffer offset state;
 	// careful for proper loop concatenation.
 	unsigned int m_iBufferOffset;
+
+	// Block-stride size (in frames).
+	unsigned int m_iBlockSize;
 
 	// Audio (Master) bus defaults.
 	bool m_bMasterAutoConnect;

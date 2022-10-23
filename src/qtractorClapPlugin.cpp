@@ -1508,7 +1508,7 @@ bool qtractorClapPlugin::Impl::process_reset (
 	deactivate();
 
 	m_srate = pAudioEngine->sampleRate();
-	m_nframes = pAudioEngine->bufferSize();
+	m_nframes = pAudioEngine->blockSize();
 	m_nframes_max = pAudioEngine->bufferSizeEx();
 
 	::memset(&m_audio_ins, 0, sizeof(m_audio_ins));
@@ -1531,7 +1531,7 @@ bool qtractorClapPlugin::Impl::process_reset (
 	}
 	m_process.in_events  = m_events_in.ins();
 	m_process.out_events = m_events_out.outs();
-	m_process.frames_count = m_nframes;
+	m_process.frames_count = pAudioEngine->bufferSize();
 	m_process.steady_time = 0;
 	m_process.transport = g_host.transport();
 
