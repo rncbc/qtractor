@@ -8,11 +8,11 @@ GIT HEAD
 
 - The main real-time process cycle now runs on uniform block-sizes,
   in strides of 64 frames per period, meaning a higher resolution
-  automation, independent of buffer-size. (EXTREMELY EXPERIMENTAL)
+  automation, independent of buffer-size. (EXPERIMENTAL)
 
 - The internal main MIDI engine gets its ALSA sequencer queue to a
   higher resolution (PPQN aka ticks-per-beat) and not subordinated
-  to the current session's anymore. (EXTREMELY EXPERIMENTAL)
+  to the current session's anymore. (EXPERIMENTAL)
 
 - Although being deprecated to use, JACK Session support is hopefuly
   fixed, once again. (GH issue #366) (EXPERIMENTAL)
