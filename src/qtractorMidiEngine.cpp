@@ -2227,26 +2227,29 @@ void qtractorMidiEngine::driftCheck (void)
 			snd_seq_queue_tempo_set_skew(pQueueTempo, iSkewNext);
 			snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pQueueTempo);
 		}
-		m_iTimeDrift = iTimeDrift;
-	//--DRIFT-SKEW-END--
 	#ifdef CONFIG_DEBUG//_0
 		qDebug("qtractorMidiEngine::driftCheck(%u): "
 			"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld (%.2g%%)",
 			m_iDriftCount, iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
 			((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 	#endif
-		if ((iSkewNext > iSkewBase && iSkewNext > iSkewPrev) ||
-			(iSkewNext < iSkewBase && iSkewNext < iSkewPrev)) {
-			if (m_iDriftCheck > DRIFT_CHECK_MIN)
-				m_iDriftCount >>= 1;
+		// Adaptive drift check... plan A.
+		const bool bDecreased = (qAbs(m_iTimeDrift) > qAbs(iTimeDrift));
+		const bool bOvershoot = ((m_iTimeDrift * iTimeDrift) < 0);
+		m_iTimeDrift = iTimeDrift;
+		if ((bOvershoot || !bDecreased)
+			&& (m_iDriftCheck > DRIFT_CHECK_MIN)) {
+			m_iDriftCount >>= 1;
+		//	m_iTimeDrift  <<= 1;
 		}
 		else
 		// Adaptive drift check... plan B.
-		if (m_iDriftCheck < DRIFT_CHECK_MAX && !iDeltaTime) {
+		if ((bDecreased || !bOvershoot || !iDeltaTime)
+			&& (m_iDriftCheck < DRIFT_CHECK_MAX)) {
 			m_iDriftCount <<= 1;
-			// Adaptive drift check... plan 9.
 			m_iTimeDrift  >>= 1;
 		}
+	//--DRIFT-SKEW-END--
 	}
 
 	// Restart counting...

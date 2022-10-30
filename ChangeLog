@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Improved MIDI queue time drift correction resilience and stability
+  against in-flight tempo changes. (EXPERIMENTAL)
+
 - The main real-time process cycle now runs on uniform block-sizes,
   in strides of 64 frames per period, meaning a higher resolution
   automation, independent of buffer-size. (EXPERIMENTAL)
