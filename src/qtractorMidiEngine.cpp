@@ -2204,7 +2204,6 @@ void qtractorMidiEngine::driftCheck (void)
 		const long iMidiTime
 			= long(snd_seq_queue_status_get_tick_time(pQueueStatus));
 		long iDeltaTime = (iAudioTime - iMidiTime);
-qDebug("DEBUG> driftCheck: tempo=%g iFramestart=%ld iTimeStart=%ld iDeltaTime=%ld", pNode->tempo, m_iFrameStart, m_iTimeStart, iDeltaTime);
 	//	if (pSession->isLooping()) {
 			const long iDeadTime
 				= pSession->tickFromFrame(iAudioFrame + readAhead())
