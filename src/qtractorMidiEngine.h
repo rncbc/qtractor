@@ -338,9 +338,11 @@ private:
 	unsigned int m_iDriftCheck;
 	unsigned int m_iDriftCount;
 
+	long m_iTimeDrift;
+	long m_iFrameDrift;
+
 	// The delta-time/frame when playback started.
 	long m_iTimeStart;
-	long m_iTimeDrift;
 	long m_iFrameStart;
 
 	// The absolute-time/frame when playback started.

@@ -1,7 +1,7 @@
 // qtractorTimeScaleCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -125,14 +125,14 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
+		// Resync all clips on play-head...
+		pSession->seek(iPlayHead, true);
 		// The Audio engine too...
 		if (pSession->audioEngine())
 			pSession->audioEngine()->resetMetro();
 		// The MIDI engine queue needs a reset...
 		if (pSession->midiEngine())
 			pSession->midiEngine()->resetTempo();
-		// Resync all clips on play-head...
-		pSession->seek(iPlayHead, true);
 	} else {
 		// Force JACK Timebase state, if applicable...
 		if (pSession->audioEngine())
@@ -306,14 +306,14 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 
 	// Restore playback state, if needed...
 	if (bPlaying) {
+		// Resync all clips on play-head...
+		pSession->seek(iPlayHead, true);
 		// The Audio engine too...
 		if (pSession->audioEngine())
 			pSession->audioEngine()->resetMetro();
 		// The MIDI engine queue needs a reset...
 		if (pSession->midiEngine())
 			pSession->midiEngine()->resetTempo();
-		// Resync all clips on play-head...
-		pSession->seek(iPlayHead, true);
 	} else {
 		// Force JACK Timebase state, if applicable...
 		if (pSession->audioEngine())
