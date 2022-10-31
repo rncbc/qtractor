@@ -2196,6 +2196,7 @@ void qtractorMidiEngine::driftCheck (void)
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
+		//--DRIFT-SKEW-BEGIN--
 		const long iAudioFrame = m_iFrameStart + m_iFrameDrift
 			+ pAudioEngine->jackFrameTime() - m_iAudioFrameStart;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
@@ -2203,17 +2204,14 @@ void qtractorMidiEngine::driftCheck (void)
 			= long(pNode->tickFromFrame(iAudioFrame)) - m_iTimeStart;
 		const long iMidiTime
 			= long(snd_seq_queue_status_get_tick_time(pQueueStatus));
-		long iDeltaTime = (iAudioTime - iMidiTime);
-	//	if (pSession->isLooping()) {
-			const long iDeadTime
-				= pSession->tickFromFrame(iAudioFrame + readAhead())
-				- iAudioTime - m_iTimeStart;
-			const long iDeadTime2 = long(iDeadTime >> 4);
-			if (iDeltaTime < -iDeadTime2 || iDeltaTime > +iDeadTime2)
-				iDeltaTime = 0;
-	//	}
-	//--DRIFT-SKEW-BEGIN--
-		const long iTimeDrift = m_iTimeDrift + (iDeltaTime << 1);
+		const long iMinDeltaTime
+			= long(qtractorTimeScale::TICKS_PER_BEAT_MIN >> 2);
+		const long iMaxDeltaTime
+			= long(qtractorTimeScale::TICKS_PER_BEAT_MAX >> 4);
+		const long iDeltaTime = (iAudioTime - iMidiTime);
+		long iTimeDrift = m_iTimeDrift;
+		if (iDeltaTime > -iMaxDeltaTime && iDeltaTime < +iMaxDeltaTime)
+			iTimeDrift += iDeltaTime;
 		snd_seq_queue_tempo_t *pQueueTempo;
 		snd_seq_queue_tempo_alloca(&pQueueTempo);
 		snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pQueueTempo);
@@ -2222,7 +2220,7 @@ void qtractorMidiEngine::driftCheck (void)
 		const unsigned int iSkewPrev
 			= snd_seq_queue_tempo_get_skew(pQueueTempo);
 		const unsigned int iSkewNext = (unsigned int) (float(iSkewBase)
-			* float(iAudioTime + m_iTimeDrift) / float(iAudioTime));
+			* float(iAudioTime + iTimeDrift) / float(iAudioTime));
 		if (iSkewNext != iSkewPrev) {
 			snd_seq_queue_tempo_set_skew(pQueueTempo, iSkewNext);
 			snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pQueueTempo);
@@ -2230,13 +2228,12 @@ void qtractorMidiEngine::driftCheck (void)
 	#ifdef CONFIG_DEBUG//_0
 		qDebug("qtractorMidiEngine::driftCheck(%u): "
 			"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld (%.2g%%)",
-			m_iDriftCount, iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
+			m_iDriftCount, iAudioTime, iMidiTime, iDeltaTime, iTimeDrift,
 			((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 	#endif
 		// Adaptive drift check... plan A.
 		const bool bDecreased = (qAbs(m_iTimeDrift) > qAbs(iTimeDrift));
 		const bool bOvershoot = ((m_iTimeDrift * iTimeDrift) < 0);
-		m_iTimeDrift = iTimeDrift;
 		if ((bOvershoot || !bDecreased)
 			&& (m_iDriftCheck > DRIFT_CHECK_MIN)) {
 			m_iDriftCount >>= 1;
@@ -2244,12 +2241,15 @@ void qtractorMidiEngine::driftCheck (void)
 		}
 		else
 		// Adaptive drift check... plan B.
-		if ((bDecreased || !bOvershoot || !iDeltaTime)
+		if ((bDecreased || !bOvershoot)
+			&& (iDeltaTime > -iMinDeltaTime && iDeltaTime < +iMinDeltaTime)
 			&& (m_iDriftCheck < DRIFT_CHECK_MAX)) {
 			m_iDriftCount <<= 1;
 			m_iTimeDrift  >>= 1;
 		}
-	//--DRIFT-SKEW-END--
+		// Adaptive drift check... complete.
+		m_iTimeDrift = iTimeDrift;
+		//--DRIFT-SKEW-END--
 	}
 
 	// Restart counting...
@@ -2290,7 +2290,7 @@ bool qtractorMidiEngine::init (void)
 
 	// Set sequencer queue timer.
 	if (qtractorMidiTimer().indexOf(m_iAlsaTimer) > 0) {
-		qtractorMidiTimer::Key key(m_iAlsaTimer);	
+		qtractorMidiTimer::Key key(m_iAlsaTimer);
 		snd_timer_id_t *pAlsaTimerId;
 		snd_timer_id_alloca(&pAlsaTimerId);
 		snd_timer_id_set_class(pAlsaTimerId, key.alsaTimerClass());
@@ -5208,7 +5208,7 @@ bool qtractorMidiBus::exportSysexList ( qtractorMidiSequence *pSeq )
 		qtractorMidiEvent *pEvent
 			= new qtractorMidiEvent(0, qtractorMidiEvent::SYSEX);
 		pEvent->setSysex(pSysex->data(), pSysex->size());
-		pSeq->addEvent(pEvent);			
+		pSeq->addEvent(pEvent);
 	}
 
 	return true;
