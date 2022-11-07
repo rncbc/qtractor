@@ -193,7 +193,7 @@ float qtractorTimeScale::Node::tempoEx ( unsigned short iBeatType ) const
 unsigned long qtractorTimeScale::Node::tickSnap (
 	unsigned long iTick, unsigned short p ) const
 {
-#if 0
+#if 1
 	unsigned long iTickSnap = iTick - tick;
 	if (ts->snapPerBeat() > 0) {
 		const unsigned long q = ticksPerBeat / ts->snapPerBeat();
