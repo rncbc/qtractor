@@ -238,7 +238,7 @@ unsigned short qtractorTimeScale::Node::beatsPerBar2 (void) const
 	return iBeatsPerBar2;
 }
 
-unsigned short qtractorTimeScale::Node::ticksPerBeat2 (void) const
+unsigned int qtractorTimeScale::Node::ticksPerBeat2 (void) const
 {
 	return (ticksPerBeat * beatsPerBar) / beatsPerBar2();
 }
@@ -614,7 +614,7 @@ QString qtractorTimeScale::textFromFrameEx (
 					beats -= (unsigned int) (bars * pNode->beatsPerBar);
 				}
 				if (beatsPerBar2() > 0 || beatDivisor2() > 0) {
-					const unsigned short iTicksPerBeat2 = pNode->ticksPerBeat2();
+					const unsigned int iTicksPerBeat2 = pNode->ticksPerBeat2();
 					ticks += (unsigned long) (beats * pNode->ticksPerBeat);
 					if (ticks >= (unsigned long) iTicksPerBeat2) {
 						beats  = (unsigned int) (ticks / iTicksPerBeat2);

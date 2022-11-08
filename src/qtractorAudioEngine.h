@@ -254,7 +254,7 @@ public:
 		bool           playing;
 		unsigned int   sampleRate;
 		float          tempo;
-		unsigned short ticksPerBeat;
+		unsigned int   ticksPerBeat;
 		unsigned short beatsPerBar;
 		unsigned short beatType;
 		float          beats;

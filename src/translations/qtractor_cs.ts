@@ -386,12 +386,12 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="85"/>
-        <location filename="../qtractorTimeScale.cpp" line="745"/>
+        <location filename="../qtractorTimeScale.cpp" line="744"/>
         <source>None</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="749"/>
+        <location filename="../qtractorTimeScale.cpp" line="748"/>
         <source>Beat</source>
         <translation>Doba</translation>
     </message>
@@ -14155,107 +14155,107 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorTimeScale</name>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="996"/>
+        <location filename="../qtractorTimeScale.cpp" line="995"/>
         <source>C</source>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="996"/>
+        <location filename="../qtractorTimeScale.cpp" line="995"/>
         <source>B#</source>
         <translation>His</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="997"/>
+        <location filename="../qtractorTimeScale.cpp" line="996"/>
         <source>C#</source>
         <translation>Cis</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="997"/>
+        <location filename="../qtractorTimeScale.cpp" line="996"/>
         <source>Db</source>
         <translation>Des</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="998"/>
+        <location filename="../qtractorTimeScale.cpp" line="997"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="999"/>
+        <location filename="../qtractorTimeScale.cpp" line="998"/>
         <source>D#</source>
         <translation>Dis</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="999"/>
+        <location filename="../qtractorTimeScale.cpp" line="998"/>
         <source>Eb</source>
         <translation>Es</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1000"/>
+        <location filename="../qtractorTimeScale.cpp" line="999"/>
         <source>E</source>
         <translation>E</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1000"/>
+        <location filename="../qtractorTimeScale.cpp" line="999"/>
         <source>Fb</source>
         <translation>Fes</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1001"/>
+        <location filename="../qtractorTimeScale.cpp" line="1000"/>
         <source>F</source>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1001"/>
+        <location filename="../qtractorTimeScale.cpp" line="1000"/>
         <source>E#</source>
         <translation>Eis</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1002"/>
+        <location filename="../qtractorTimeScale.cpp" line="1001"/>
         <source>F#</source>
         <translation>Fis</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1002"/>
+        <location filename="../qtractorTimeScale.cpp" line="1001"/>
         <source>Gb</source>
         <translation>Ges</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1003"/>
+        <location filename="../qtractorTimeScale.cpp" line="1002"/>
         <source>G</source>
         <translation>G</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1004"/>
+        <location filename="../qtractorTimeScale.cpp" line="1003"/>
         <source>G#</source>
         <translation>Gis</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1004"/>
+        <location filename="../qtractorTimeScale.cpp" line="1003"/>
         <source>Ab</source>
         <translation>As</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1005"/>
+        <location filename="../qtractorTimeScale.cpp" line="1004"/>
         <source>A</source>
         <translation>A</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1006"/>
+        <location filename="../qtractorTimeScale.cpp" line="1005"/>
         <source>A#</source>
         <translation>Ais</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1006"/>
+        <location filename="../qtractorTimeScale.cpp" line="1005"/>
         <source>Bb</source>
         <translation>B</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1007"/>
+        <location filename="../qtractorTimeScale.cpp" line="1006"/>
         <source>B</source>
         <translation>H</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1007"/>
+        <location filename="../qtractorTimeScale.cpp" line="1006"/>
         <source>Cb</source>
         <translation>Ces</translation>
     </message>

@@ -3325,7 +3325,7 @@ void qtractorMidiEngine::processMetro (
 		// the time playback/queue started...
 		if (m_clockMode & qtractorBus::Output) {
 			unsigned long iTimeClock = iTime;
-			const unsigned short iTicksPerClock = pNode->ticksPerBeat / 24;
+			const unsigned int iTicksPerClock = pNode->ticksPerBeat / 24;
 			for (unsigned int iClock = 0; iClock < 24; ++iClock) {
 				if (iTimeClock >= iTimeEnd)
 					break;
