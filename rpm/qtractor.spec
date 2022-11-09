@@ -98,14 +98,12 @@ BuildRequires:	liblo-devel
 BuildRequires:	ladspa-devel
 BuildRequires:	dssi-devel
 BuildRequires:	lv2-devel
-#BuildRequires:	libserd-devel
-#BuildRequires:	libsord-devel
-#BuildRequires:	libsratom-devel
-#BuildRequires:	liblilv-devel
-BuildRequires:	pkgconfig(lilv-0)
+BuildRequires:	libserd-devel
+BuildRequires:	libsord-devel
+BuildRequires:	libsratom-devel
+BuildRequires:	liblilv-devel
 %if 0%{qt_major_version} < 6
-#BuildRequires:	libsuil-devel
-BuildRequires:	pkgconfig(suil-0)
+BuildRequires:	libsuil-devel
 %endif
 BuildRequires:	zlib-devel
 BuildRequires:	gtk2-devel
