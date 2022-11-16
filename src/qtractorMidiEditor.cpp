@@ -2802,7 +2802,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	// This would the new event onset time...
 	pNode = cursor.seekPixel(x1);
 	const unsigned short p = (bEditView && m_bDrumMode ? 1 : 8);
-	const unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1), p) - t0;
+	const unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1) - t0, p);
 	x1 = pNode->pixelFromTick(t0 + t1);
 
 	// Check for time/onset changes and whether it's already drawn...
