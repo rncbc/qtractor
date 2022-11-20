@@ -1772,10 +1772,13 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			 iTime <  pSession->punchOutTime()));
 		// Same record time(stamp) note-off tracking...
 		if (type == qtractorMidiEvent::NOTEON) {
-			if (tick > 0 &&
+			const unsigned long delta
+				= qtractorTimeScale::TICKS_PER_BEAT_HRQ
+				/ pSession->ticksPerBeat();
+			if (tick > delta &&
 				m_iLastEventTime >= tick &&
 				m_iLastEventNote != param)
-				tick -= qtractorTimeScale::TICKS_PER_BEAT_HRQ / pSession->ticksPerBeat();
+				tick -= delta;
 		}
 		else
 		if (type == qtractorMidiEvent::NOTEOFF) {
