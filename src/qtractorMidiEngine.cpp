@@ -1775,7 +1775,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			if (tick > 0 &&
 				m_iLastEventTime >= tick &&
 				m_iLastEventNote != param)
-				--tick;
+				tick -= qtractorTimeScale::TICKS_PER_BEAT_HRQ / pSession->ticksPerBeat();
 		}
 		else
 		if (type == qtractorMidiEvent::NOTEOFF) {
