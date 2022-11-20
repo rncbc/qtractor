@@ -4228,6 +4228,7 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 		if (pWindow) {
 			pWindow->resize(size);
 			delete pWindow;
+			return;
 		}
 	}
 #endif	// CONFIG_LV2_UI_X11
