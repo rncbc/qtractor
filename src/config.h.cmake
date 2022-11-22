@@ -97,8 +97,8 @@
 /* Define if DSSI header is available. */
 #cmakedefine CONFIG_DSSI @CONFIG_DSSI@
 
-/* Define if VST header is available. */
-#cmakedefine CONFIG_VST @CONFIG_VST@
+/* Define if VST2 header is available. */
+#cmakedefine CONFIG_VST2 @CONFIG_VST2@
 
 /* Define if VeSTige header is available. */
 #cmakedefine CONFIG_VESTIGE @CONFIG_VESTIGE@

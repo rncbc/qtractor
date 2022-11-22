@@ -1,4 +1,4 @@
-// qtractorVstPlugin.h
+// qtractorVst2Plugin.h
 //
 /****************************************************************************
    Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#ifndef __qtractorVstPlugin_h
-#define __qtractorVstPlugin_h
+#ifndef __qtractorVst2Plugin_h
+#define __qtractorVst2Plugin_h
 
 #include "qtractorPlugin.h"
 
@@ -42,7 +42,7 @@
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #if defined(Q_WS_X11)
-#define CONFIG_VST_X11
+#define CONFIG_VST2_X11
 #endif
 #endif
 
@@ -51,10 +51,10 @@ class QFile;
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPluginType -- VST plugin type instance.
+// qtractorVst2PluginType -- VST2 plugin type instance.
 //
 
-class qtractorVstPluginType : public qtractorPluginType
+class qtractorVst2PluginType : public qtractorPluginType
 {
 public:
 
@@ -62,13 +62,13 @@ public:
 	class Effect;
 
 	// Constructor.
-	qtractorVstPluginType(qtractorPluginFile *pFile,
+	qtractorVst2PluginType(qtractorPluginFile *pFile,
 		unsigned long iIndex, Effect *pEffect = nullptr)
-		: qtractorPluginType(pFile, iIndex, qtractorPluginType::Vst),
+		: qtractorPluginType(pFile, iIndex, qtractorPluginType::Vst2),
 			m_pEffect(pEffect), m_iFlagsEx(0) {}
 
 	// Destructor.
-	~qtractorVstPluginType()
+	~qtractorVst2PluginType()
 		{ close(); }
 
 	// Derived methods.
@@ -79,14 +79,14 @@ public:
 	Effect *effect() const { return m_pEffect; }
 
 	// Factory method (static)
-	static qtractorVstPluginType *createType(
+	static qtractorVst2PluginType *createType(
 		qtractorPluginFile *pFile, unsigned long iIndex);
 
 	// Effect instance method (static)
-	static AEffect *vst_effect(qtractorPluginFile *pFile);
+	static AEffect *vst2_effect(qtractorPluginFile *pFile);
 
-	// VST host dispatcher.
-	int vst_dispatch(
+	// VST2 host dispatcher.
+	int vst2_dispatch(
 		long opcode, long index, long value, void *ptr, float opt) const;
 
 	// Instance cached-deferred accessors.
@@ -94,31 +94,31 @@ public:
 
 protected:
 
-	// VST flag inquirer.
-	bool vst_canDo(const char *pszCanDo) const;
+	// VST2 flag inquirer.
+	bool vst2_canDo(const char *pszCanDo) const;
 
 private:
 
-	// VST descriptor reference.
+	// VST2 descriptor reference.
 	Effect      *m_pEffect;
 	unsigned int m_iFlagsEx;
 };
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPlugin -- VST plugin instance.
+// qtractorVst2Plugin -- VST2 plugin instance.
 //
 
-class qtractorVstPlugin : public qtractorPlugin
+class qtractorVst2Plugin : public qtractorPlugin
 {
 public:
 
 	// Constructor.
-	qtractorVstPlugin(qtractorPluginList *pList,
-		qtractorVstPluginType *pVstType);
+	qtractorVst2Plugin(qtractorPluginList *pList,
+		qtractorVst2PluginType *pVst2Type);
 
 	// Destructor.
-	~qtractorVstPlugin();
+	~qtractorVst2Plugin();
 
 	// Forward decl.
 	class Param;
@@ -168,10 +168,10 @@ public:
 	void setEditorTitle(const QString& sTitle);
 
 	// Specific accessors.
-	AEffect *vst_effect(unsigned short iInstance) const;
+	AEffect *vst2_effect(unsigned short iInstance) const;
 
-	// VST host dispatcher.
-	int vst_dispatch(unsigned short iInstance,
+	// VST2 host dispatcher.
+	int vst2_dispatch(unsigned short iInstance,
 		long opcode, long index, long value, void *ptr, float opt) const;
 
 	// Our own editor widget accessor.
@@ -180,8 +180,8 @@ public:
 	// Our own editor widget size accessor.
 	void resizeEditor(int w, int h);
 
-	// Global VST plugin lookup.
-	static qtractorVstPlugin *findPlugin(AEffect *pVstEffect);
+	// Global VST2 plugin lookup.
+	static qtractorVst2Plugin *findPlugin(AEffect *pVst2Effect);
 
 	// Idle editor (static).
 	static void idleEditorAll();
@@ -190,10 +190,10 @@ public:
 	class EditorWidget;
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#ifdef CONFIG_VST_X11
+#ifdef CONFIG_VST2_X11
 	// Global X11 event filter.
 	static bool x11EventFilter(void *pvEvent);
-#endif	// CONFIG_VST_X11
+#endif	// CONFIG_VST2_X11
 #endif
 
 	// All parameters update method.
@@ -202,7 +202,7 @@ public:
 private:
 
 	// Instance variables.
-	qtractorVstPluginType::Effect **m_ppEffects;
+	qtractorVst2PluginType::Effect **m_ppEffects;
 
 	// Audio I/O buffer pointers.
 	float **m_ppIBuffer;
@@ -220,15 +220,15 @@ private:
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPlugin::Param -- VST plugin control input port instance.
+// qtractorVst2Plugin::Param -- VST2 plugin control input port instance.
 //
 
-class qtractorVstPlugin::Param : public qtractorPlugin::Param
+class qtractorVst2Plugin::Param : public qtractorPlugin::Param
 {
 public:
 
 	// Constructors.
-	Param(qtractorVstPlugin *pVstPlugin, unsigned long iIndex);
+	Param(qtractorVst2Plugin *pVst2Plugin, unsigned long iIndex);
 
 	// Port range hints predicate methods.
 	bool isBoundedBelow() const;
@@ -250,15 +250,15 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorVstPreset -- VST preset file interface.
+// class qtractorVst2Preset -- VST2 preset file interface.
 //
 
-class qtractorVstPreset
+class qtractorVst2Preset
 {
 public:
 
 	// Constructor.
-	qtractorVstPreset(qtractorVstPlugin *pVstPlugin);
+	qtractorVst2Preset(qtractorVst2Plugin *pVst2Plugin);
 
 	// File loader/saver.
 	bool load(const QString& sFilename);
@@ -290,10 +290,10 @@ protected:
 private:
 
 	// Instance variables.
-	qtractorVstPlugin *m_pVstPlugin;
+	qtractorVst2Plugin *m_pVst2Plugin;
 };
 
 
-#endif  // __qtractorVstPlugin_h
+#endif  // __qtractorVst2Plugin_h
 
-// end of qtractorVstPlugin.h
+// end of qtractorVst2Plugin.h

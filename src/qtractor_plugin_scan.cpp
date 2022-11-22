@@ -490,7 +490,7 @@ static void qtractor_dssi_scan_file ( const QString& sFilename )
 #endif	// CONFIG_DSSI
 
 
-#ifdef CONFIG_VST
+#ifdef CONFIG_VST2
 
 #if !defined(__WIN32__) && !defined(_WIN32) && !defined(WIN32)
 #define __cdecl
@@ -515,11 +515,11 @@ typedef long     VstIntPtr;
 
 typedef AEffect* (*VST_GetPluginInstance) (audioMasterCallback);
 
-static VstIntPtr VSTCALLBACK qtractor_vst_scan_callback (AEffect *effect,
+static VstIntPtr VSTCALLBACK qtractor_vst2_scan_callback (AEffect *effect,
 	VstInt32 opcode, VstInt32 index, VstIntPtr value, void *ptr, float opt);
 
 // Current working VST Shell identifier.
-static int g_iVstShellCurrentId = 0;
+static int g_iVst2ShellCurrentId = 0;
 
 // Specific extended flags that saves us
 // from calling canDo() in audio callbacks.
@@ -551,25 +551,25 @@ const int effFlagsProgramChunks = 32;
 
 
 //----------------------------------------------------------------------
-// class qtractor_vst_scan -- VST plugin re bones) interface
+// class qtractor_vst2_scan -- VST2 plugin re bones) interface
 //
 
 // Constructor.
-qtractor_vst_scan::qtractor_vst_scan (void)
+qtractor_vst2_scan::qtractor_vst2_scan (void)
 	: m_pLibrary(nullptr), m_pEffect(nullptr), m_iFlagsEx(0), m_bEditor(false)
 {
 }
 
 
 // destructor.
-qtractor_vst_scan::~qtractor_vst_scan (void)
+qtractor_vst2_scan::~qtractor_vst2_scan (void)
 {
 	close();
 }
 
 
 // File loader.
-bool qtractor_vst_scan::open ( const QString& sFilename )
+bool qtractor_vst2_scan::open ( const QString& sFilename )
 {
 	close();
 
@@ -577,7 +577,7 @@ bool qtractor_vst_scan::open ( const QString& sFilename )
 		return false;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractor_vst_scan[%p]::open(\"%s\", %lu)", this,
+	qDebug("qtractor_vst2_scan[%p]::open(\"%s\", %lu)", this,
 		sFilename.toUtf8().constData());
 #endif
 
@@ -590,7 +590,7 @@ bool qtractor_vst_scan::open ( const QString& sFilename )
 
 
 // Plugin loader.
-bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
+bool qtractor_vst2_scan::open_descriptor ( unsigned long iIndex )
 {
 	if (m_pLibrary == nullptr)
 		return false;
@@ -598,7 +598,7 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 	close_descriptor();
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractor_vst_scan[%p]::open_descriptor(%lu)", this, iIndex);
+	qDebug("qtractor_vst2_scan[%p]::open_descriptor(%lu)", this, iIndex);
 #endif
 
 	VST_GetPluginInstance pfnGetPluginInstance
@@ -607,15 +607,15 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 		pfnGetPluginInstance = (VST_GetPluginInstance) m_pLibrary->resolve("main");
 	if (pfnGetPluginInstance == nullptr) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractor_vst_scan[%p]: plugin does not have a main entry point.", this);
+		qDebug("qtractor_vst2_scan[%p]: plugin does not have a main entry point.", this);
 	#endif
 		return false;
 	}
 
-	m_pEffect = (*pfnGetPluginInstance)(qtractor_vst_scan_callback);
+	m_pEffect = (*pfnGetPluginInstance)(qtractor_vst2_scan_callback);
 	if (m_pEffect == nullptr) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractor_vst_scan[%p]: plugin instance could not be created.", this);
+		qDebug("qtractor_vst2_scan[%p]: plugin instance could not be created.", this);
 	#endif
 		return false;
 	}
@@ -623,35 +623,35 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 	// Did VST plugin instantiated OK?
 	if (m_pEffect->magic != kEffectMagic) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractor_vst_scan[%p]: plugin is not a valid VST.", this);
+		qDebug("qtractor_vst2_scan[%p]: plugin is not a valid VST.", this);
 	#endif
 		m_pEffect = nullptr;
 		return false;
 	}
 
 	// Check whether it's a VST Shell...
-	const int categ = vst_dispatch(effGetPlugCategory, 0, 0, nullptr, 0.0f);
+	const int categ = vst2_dispatch(effGetPlugCategory, 0, 0, nullptr, 0.0f);
 	if (categ == kPlugCategShell) {
 		int id = 0;
 		char buf[40];
 		unsigned long i = 0;
 		for ( ; iIndex >= i; ++i) {
 			buf[0] = (char) 0;
-			id = vst_dispatch(effShellGetNextPlugin, 0, 0, (void *) buf, 0.0f);
+			id = vst2_dispatch(effShellGetNextPlugin, 0, 0, (void *) buf, 0.0f);
 			if (id == 0 || !buf[0])
 				break;
 		}
 		// Check if we're actually the intended plugin...
 		if (i < iIndex || id == 0 || !buf[0]) {
 		#ifdef CONFIG_DEBUG
-			qDebug("qtractor_vst_scan[%p]: "
-				"vst_shell(%lu) plugin is not a valid VST.", this, iIndex);
+			qDebug("qtractor_vst2_scan[%p]: "
+				"vst2_shell(%lu) plugin is not a valid VST.", this, iIndex);
 		#endif
 			m_pEffect = nullptr;
 			return false;
 		}
 		// Make it known...
-		g_iVstShellCurrentId = id;
+		g_iVst2ShellCurrentId = id;
 		// Re-allocate the thing all over again...
 		pfnGetPluginInstance
 			= (VST_GetPluginInstance) m_pLibrary->resolve("VSTPluginMain");
@@ -659,35 +659,35 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 			pfnGetPluginInstance = (VST_GetPluginInstance) m_pLibrary->resolve("main");
 		if (pfnGetPluginInstance == nullptr) {
 		#ifdef CONFIG_DEBUG
-			qDebug("qtractor_vst_scan[%p]: "
-				"vst_shell(%lu) plugin does not have a main entry point.", this, iIndex);
+			qDebug("qtractor_vst2_scan[%p]: "
+				"vst2_shell(%lu) plugin does not have a main entry point.", this, iIndex);
 		#endif
 			m_pEffect = nullptr;
 			return false;
 		}
 		// Does the VST plugin instantiate OK?
-		m_pEffect = (*pfnGetPluginInstance)(qtractor_vst_scan_callback);
+		m_pEffect = (*pfnGetPluginInstance)(qtractor_vst2_scan_callback);
 		// Not needed anymore, hopefully...
-		g_iVstShellCurrentId = 0;
+		g_iVst2ShellCurrentId = 0;
 		// Don't go further if failed...
 		if (m_pEffect == nullptr) {
 		#ifdef CONFIG_DEBUG
-			qDebug("qtractor_vst_scan[%p]: "
-				"vst_shell(%lu) plugin instance could not be created.", this, iIndex);
+			qDebug("qtractor_vst2_scan[%p]: "
+				"vst2_shell(%lu) plugin instance could not be created.", this, iIndex);
 		#endif
 			return false;
 		}
 		if (m_pEffect->magic != kEffectMagic) {
 		#ifdef CONFIG_DEBUG
-			qDebug("qtractor_vst_scan[%p]: "
-				"vst_shell(%lu) plugin is not a valid VST.", this, iIndex);
+			qDebug("qtractor_vst2_scan[%p]: "
+				"vst2_shell(%lu) plugin is not a valid VST.", this, iIndex);
 		#endif
 			m_pEffect = nullptr;
 			return false;
 		}
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractor_vst_scan[%p]: "
-			"vst_shell(%lu) id=0x%x name=\"%s\"", this, i, id, buf);
+		qDebug("qtractor_vst2_scan[%p]: "
+			"vst2_shell(%lu) id=0x%x name=\"%s\"", this, i, id, buf);
 	#endif
 	}
 	else
@@ -697,28 +697,28 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 		return false;
 	}
 
-//	vst_dispatch(effIdentify, 0, 0, nullptr, 0.0f);
-	vst_dispatch(effOpen,     0, 0, nullptr, 0.0f);
+//	vst2_dispatch(effIdentify, 0, 0, nullptr, 0.0f);
+	vst2_dispatch(effOpen,     0, 0, nullptr, 0.0f);
 
 	// Get label name...
 	char szName[256]; ::memset(szName, 0, sizeof(szName));
-	if (vst_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f))
+	if (vst2_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f))
 		m_sName = szName;
 
 	// Specific inquiries...
 	m_iFlagsEx = 0;
 
-	if (canDo("sendVstEvents"))       m_iFlagsEx |= effFlagsExCanSendVstEvents;
-	if (canDo("sendVstMidiEvent"))    m_iFlagsEx |= effFlagsExCanSendVstMidiEvents;
-	if (canDo("sendVstTimeInfo"))     m_iFlagsEx |= effFlagsExCanSendVstTimeInfo;
-	if (canDo("receiveVstEvents"))    m_iFlagsEx |= effFlagsExCanReceiveVstEvents;
-	if (canDo("receiveVstMidiEvent")) m_iFlagsEx |= effFlagsExCanReceiveVstMidiEvents;
-	if (canDo("receiveVstTimeInfo"))  m_iFlagsEx |= effFlagsExCanReceiveVstTimeInfo;
-	if (canDo("offline"))             m_iFlagsEx |= effFlagsExCanProcessOffline;
-	if (canDo("plugAsChannelInsert")) m_iFlagsEx |= effFlagsExCanUseAsInsert;
-	if (canDo("plugAsSend"))          m_iFlagsEx |= effFlagsExCanUseAsSend;
-	if (canDo("mixDryWet"))           m_iFlagsEx |= effFlagsExCanMixDryWet;
-	if (canDo("midiProgramNames"))    m_iFlagsEx |= effFlagsExCanMidiProgramNames;
+	if (vst2_canDo("sendVstEvents"))       m_iFlagsEx |= effFlagsExCanSendVstEvents;
+	if (vst2_canDo("sendVstMidiEvent"))    m_iFlagsEx |= effFlagsExCanSendVstMidiEvents;
+	if (vst2_canDo("sendVstTimeInfo"))     m_iFlagsEx |= effFlagsExCanSendVstTimeInfo;
+	if (vst2_canDo("receiveVstEvents"))    m_iFlagsEx |= effFlagsExCanReceiveVstEvents;
+	if (vst2_canDo("receiveVstMidiEvent")) m_iFlagsEx |= effFlagsExCanReceiveVstMidiEvents;
+	if (vst2_canDo("receiveVstTimeInfo"))  m_iFlagsEx |= effFlagsExCanReceiveVstTimeInfo;
+	if (vst2_canDo("offline"))             m_iFlagsEx |= effFlagsExCanProcessOffline;
+	if (vst2_canDo("plugAsChannelInsert")) m_iFlagsEx |= effFlagsExCanUseAsInsert;
+	if (vst2_canDo("plugAsSend"))          m_iFlagsEx |= effFlagsExCanUseAsSend;
+	if (vst2_canDo("mixDryWet"))           m_iFlagsEx |= effFlagsExCanMixDryWet;
+	if (vst2_canDo("midiProgramNames"))    m_iFlagsEx |= effFlagsExCanMidiProgramNames;
 
 	m_bEditor = (m_pEffect->flags & effFlagsHasEditor);
 
@@ -727,16 +727,16 @@ bool qtractor_vst_scan::open_descriptor ( unsigned long iIndex )
 
 
 // Plugin unloader.
-void qtractor_vst_scan::close_descriptor (void)
+void qtractor_vst2_scan::close_descriptor (void)
 {
 	if (m_pEffect == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractor_vst_scan[%p]::close_descriptor()", this);
+	qDebug("qtractor_vst2_scan[%p]::close_descriptor()", this);
 #endif
 
-	vst_dispatch(effClose, 0, 0, 0, 0.0f);
+	vst2_dispatch(effClose, 0, 0, 0, 0.0f);
 
 	m_pEffect  = nullptr;
 	m_iFlagsEx = 0;
@@ -746,16 +746,16 @@ void qtractor_vst_scan::close_descriptor (void)
 
 
 // File unloader.
-void qtractor_vst_scan::close (void)
+void qtractor_vst2_scan::close (void)
 {
 	if (m_pLibrary == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractor_vst_scan[%p]::close()", this);
+	qDebug("qtractor_vst2_scan[%p]::close()", this);
 #endif
 
-	vst_dispatch(effClose, 0, 0, 0, 0.0f);
+	vst2_dispatch(effClose, 0, 0, 0, 0.0f);
 
 	if (m_pLibrary->isLoaded() && !m_bEditor)
 		m_pLibrary->unload();
@@ -769,7 +769,7 @@ void qtractor_vst_scan::close (void)
 
 
 // Check wether plugin is loaded.
-bool qtractor_vst_scan::isOpen (void) const
+bool qtractor_vst2_scan::isOpen (void) const
 {
 	if (m_pLibrary == nullptr)
 		return false;
@@ -777,41 +777,41 @@ bool qtractor_vst_scan::isOpen (void) const
 	return m_pLibrary->isLoaded();
 }
 
-unsigned int qtractor_vst_scan::uniqueID() const
+unsigned int qtractor_vst2_scan::uniqueID() const
 	{ return (m_pEffect ? m_pEffect->uniqueID : 0); }
 
-int qtractor_vst_scan::numPrograms() const
+int qtractor_vst2_scan::numPrograms() const
 	{ return (m_pEffect ? m_pEffect->numPrograms : 0); }
-int qtractor_vst_scan::numParams() const
+int qtractor_vst2_scan::numParams() const
 	{ return (m_pEffect ? m_pEffect->numParams : 0); }
-int qtractor_vst_scan::numInputs() const
+int qtractor_vst2_scan::numInputs() const
 	{ return (m_pEffect ? m_pEffect->numInputs : 0); }
-int qtractor_vst_scan::numOutputs() const
+int qtractor_vst2_scan::numOutputs() const
 	{ return (m_pEffect ? m_pEffect->numOutputs : 0); }
 
-int qtractor_vst_scan::numMidiInputs() const
+int qtractor_vst2_scan::numMidiInputs() const
 	{ return (m_pEffect && (
 		(m_iFlagsEx & effFlagsExCanReceiveVstMidiEvents) ||
 		(m_pEffect->flags & effFlagsIsSynth) ? 1 : 0)); }
 
-int qtractor_vst_scan::numMidiOutputs() const
+int qtractor_vst2_scan::numMidiOutputs() const
 	{ return ((m_iFlagsEx & effFlagsExCanSendVstMidiEvents) ? 1 : 0); }
 
-bool qtractor_vst_scan::hasEditor() const
+bool qtractor_vst2_scan::hasEditor() const
 	{ return m_bEditor; }
-bool qtractor_vst_scan::hasProgramChunks() const
+bool qtractor_vst2_scan::hasProgramChunks() const
 	{ return (m_pEffect && (m_pEffect->flags & effFlagsProgramChunks)); }
 
 
 // VST host dispatcher.
-int qtractor_vst_scan::vst_dispatch (
+int qtractor_vst2_scan::vst2_dispatch (
 	long opcode, long index, long value, void *ptr, float opt ) const
 {
 	if (m_pEffect == nullptr)
 		return 0;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("vst_plugin[%p]::vst_dispatch(%ld, %ld, %ld, %p, %g)",
+	qDebug("vst2_plugin[%p]::vst2_dispatch(%ld, %ld, %ld, %p, %g)",
 		this, opcode, index, value, ptr, opt);
 #endif
 
@@ -820,16 +820,16 @@ int qtractor_vst_scan::vst_dispatch (
 
 
 // VST flag inquirer.
-bool qtractor_vst_scan::canDo ( const char *pszCanDo ) const
+bool qtractor_vst2_scan::vst2_canDo ( const char *pszCanDo ) const
 {
-	return (vst_dispatch(effCanDo, 0, 0, (void *) pszCanDo, 0.0f) > 0);
+	return (vst2_dispatch(effCanDo, 0, 0, (void *) pszCanDo, 0.0f) > 0);
 }
 
 
 //----------------------------------------------------------------------
 // The magnificient host callback, which every VST plugin will call.
 
-static VstIntPtr VSTCALLBACK qtractor_vst_scan_callback ( AEffect* effect,
+static VstIntPtr VSTCALLBACK qtractor_vst2_scan_callback ( AEffect* effect,
 	VstInt32 opcode, VstInt32 index, VstIntPtr /*value*/, void */*ptr*/, float opt )
 {
 	VstIntPtr ret = 0;
@@ -842,7 +842,7 @@ static VstIntPtr VSTCALLBACK qtractor_vst_scan_callback ( AEffect* effect,
 		effect->setParameter(effect, index, opt);
 		break;
 	case audioMasterCurrentId:
-		ret = (VstIntPtr) g_iVstShellCurrentId;
+		ret = (VstIntPtr) g_iVst2ShellCurrentId;
 		break;
 	case audioMasterGetSampleRate:
 		effect->dispatcher(effect, effSetSampleRate, 0, 0, nullptr, 44100.0f);
@@ -868,12 +868,12 @@ static VstIntPtr VSTCALLBACK qtractor_vst_scan_callback ( AEffect* effect,
 // The VST plugin stance scan method.
 //
 
-static void qtractor_vst_scan_file ( const QString& sFilename )
+static void qtractor_vst2_scan_file ( const QString& sFilename )
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractor_vst_scan_file(\"%s\")", sFilename.toUtf8().constData());
+	qDebug("qtractor_vst2_scan_file(\"%s\")", sFilename.toUtf8().constData());
 #endif
-	qtractor_vst_scan plugin;
+	qtractor_vst2_scan plugin;
 
 	if (!plugin.open(sFilename))
 		return;
@@ -903,10 +903,10 @@ static void qtractor_vst_scan_file ( const QString& sFilename )
 
 	// Must always give an answer, even if it's a wrong one...
 	if (i == 0)
-		sout << "qtractor_vst_scan: " << sFilename << ": plugin file error.\n";
+		sout << "qtractor_vst2_scan: " << sFilename << ": plugin file error.\n";
 }
 
-#endif	// CONFIG_VST
+#endif	// CONFIG_VST2
 
 
 #ifdef CONFIG_VST3
@@ -979,7 +979,7 @@ uint32 PLUGIN_API qtractor_vst3_scan_host::release (void)
 	{ return 1; }
 
 
-static qtractor_vst3_scan_host g_hostContext;
+static qtractor_vst3_scan_host g_vst3HostContext;
 
 
 //----------------------------------------------------------------------
@@ -1072,7 +1072,7 @@ public:
 
 				m_component = owned(component);
 
-				if (m_component->initialize(g_hostContext.get()) != kResultOk) {
+				if (m_component->initialize(g_vst3HostContext.get()) != kResultOk) {
 				#ifdef CONFIG_DEBUG
 					qDebug("qtractor_vst3_scan::Impl[%p]::open_descriptor(%lu)"
 						" *** Failed to initialize plug-in component.", this, iIndex);
@@ -1096,7 +1096,7 @@ public:
 						#endif
 						}
 						if (controller &&
-							controller->initialize(g_hostContext.get()) != kResultOk) {
+							controller->initialize(g_vst3HostContext.get()) != kResultOk) {
 						#ifdef CONFIG_DEBUG
 							qDebug("qtractor_vst3_scan::Impl[%p]::open_descriptor(%lu)"
 								" *** Failed to initialize plug-in controller.", this, iIndex);
@@ -1848,9 +1848,9 @@ int main ( int argc, char **argv )
 				qtractor_dssi_scan_file(sFilename);
 			else
 		#endif
-		#ifdef CONFIG_VST
-			if (sHint == "VST")
-				qtractor_vst_scan_file(sFilename);
+		#ifdef CONFIG_VST2
+			if (sHint == "VST2" || sHint == "VST")
+				qtractor_vst2_scan_file(sFilename);
 			else
 		#endif
 		#ifdef CONFIG_VST3

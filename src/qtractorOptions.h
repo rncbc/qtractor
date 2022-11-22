@@ -229,7 +229,7 @@ public:
 	// Plug-in paths.
 	QStringList ladspaPaths;
 	QStringList dssiPaths;
-	QStringList vstPaths;
+	QStringList vst2Paths;
 	QStringList vst3Paths;
 	QStringList clapPaths;
 	QStringList lv2Paths;
@@ -251,7 +251,7 @@ public:
 	bool bDummyPluginScan;
 	int  iDummyLadspaHash;
 	int  iDummyDssiHash;
-	int  iDummyVstHash;
+	int  iDummyVst2Hash;
 	int  iDummyVst3Hash;
 	int  iDummyClapHash;
 	int  iDummyLv2Hash;

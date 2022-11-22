@@ -98,7 +98,7 @@ option (CONFIG_LADSPA "Enable LADSPA plug-in support (default=yes)" 1)
 option (CONFIG_DSSI "Enable DSSI plug-in support (default=yes)" 1)
 
 # Enable VST support.
-option (CONFIG_VST "Enable VST plug-in support (default=yes)" 1)
+option (CONFIG_VST2 "Enable VST2 plug-in support (default=yes)" 1)
 
 option (CONFIG_VESTIGE "Enable VeSTige header support (default=yes)" 1)
 
@@ -285,7 +285,7 @@ if (CONFIG_DSSI)
 endif ()
 
 # Check for VST headers.
-if (CONFIG_VST AND NOT CONFIG_VST2SDK)
+if (CONFIG_VST2 AND NOT CONFIG_VST2SDK)
   check_include_file (aeffectx.h HAVE_AEFFECTX_H)
   if (NOT HAVE_AEFFECTX_H AND CONFIG_VESTIGE)
     set (VESTIGE_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/vestige)
@@ -295,7 +295,7 @@ if (CONFIG_VST AND NOT CONFIG_VST2SDK)
     if (NOT HAVE_VESTIGE_H)
       set (CONFIG_VESTIGE 0)
     endif ()
-    set (CONFIG_VST ${CONFIG_VESTIGE})
+    set (CONFIG_VST2 ${CONFIG_VESTIGE})
   else ()
     set (CONFIG_VESTIGE 0)
   endif ()
@@ -744,7 +744,7 @@ show_option ("  IEEE 32bit float optimizations . . . . . . . . . ." CONFIG_FLOAT
 show_option ("  SSE optimization support (x86) . . . . . . . . . ." CONFIG_SSE)
 show_option ("  LADSPA plug-in support . . . . . . . . . . . . . ." CONFIG_LADSPA)
 show_option ("  DSSI plug-in support . . . . . . . . . . . . . . ." CONFIG_DSSI)
-show_option ("  VST plug-in support  . . . . . . . . . . . . . . ." CONFIG_VST)
+show_option ("  VST2 plug-in support . . . . . . . . . . . . . . ." CONFIG_VST2)
 show_option ("  VST3 plug-in support . . . . . . . . . . . . . . ." CONFIG_VST3)
 show_option ("  CLAP plug-in support . . . . . . . . . . . . . . ." CONFIG_CLAP)
 show_option ("  LV2 plug-in support  . . . . . . . . . . . . . . ." CONFIG_LV2)

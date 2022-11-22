@@ -64,8 +64,8 @@
 #endif
 
 #ifdef CONFIG_X11
-#ifdef CONFIG_VST
-#include "qtractorVstPlugin.h"
+#ifdef CONFIG_VST2
+#include "qtractorVst2Plugin.h"
 #endif
 #endif
 
@@ -394,9 +394,9 @@ bool qtractorApplication::x11EventFilter ( XEvent *pEv )
 		&& pEv->xproperty.state == PropertyNewValue)
 		x11PropertyNotify(pEv->xproperty.window);
 #endif	// CONFIG_XUNIQUE
-#ifdef CONFIG_VST
-	// Let xevents be processed by VST plugin editors...
-	if (qtractorVstPlugin::x11EventFilter(pEv))
+#ifdef CONFIG_VST2
+	// Let xevents be processed by VST2 plugin editors...
+	if (qtractorVst2Plugin::x11EventFilter(pEv))
 		return true;
 #endif
 	return QApplication::x11EventFilter(pEv);

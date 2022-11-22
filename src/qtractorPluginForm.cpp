@@ -175,7 +175,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	qtractorPluginType *pType = m_pPlugin->type();
 	const qtractorPluginType::Hint typeHint = pType->typeHint();
 	const bool bTwoColumnPage
-		= (typeHint == qtractorPluginType::Vst
+		= (typeHint == qtractorPluginType::Vst2
 		|| typeHint == qtractorPluginType::Vst3
 		|| typeHint == qtractorPluginType::Clap);
 	const int MaxRowsPerPage    = (bTwoColumnPage ? 12 : 8);
@@ -539,8 +539,8 @@ void qtractorPluginForm::openPresetSlot (void)
 		return;
 
 	qtractorPluginType *pType = m_pPlugin->type();
-	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
-	if (!pType->isConfigure() && !bVstPlugin)
+	const bool bVst2Plugin = (pType->typeHint() == qtractorPluginType::Vst2);
+	if (!pType->isConfigure() && !bVst2Plugin)
 		return;
 
 	if (m_iUpdate > 0)
@@ -557,7 +557,7 @@ void qtractorPluginForm::openPresetSlot (void)
 	// Prompt if file does not currently exist...
 	const QString sExt("qtx");
 	QStringList exts(sExt);
-	if (bVstPlugin) {
+	if (bVst2Plugin) {
 		exts.append("fxp");
 		exts.append("fxb");
 	}
@@ -645,13 +645,13 @@ void qtractorPluginForm::savePresetSlot (void)
 	settings.beginGroup(m_pPlugin->presetGroup());
 	// Which mode of preset?
 	qtractorPluginType *pType = m_pPlugin->type();
-	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
-	if (pType->isConfigure() || bVstPlugin) {
+	const bool bVst2Plugin = (pType->typeHint() == qtractorPluginType::Vst2);
+	if (pType->isConfigure() || bVst2Plugin) {
 		// Sure, we'll have something complex enough
 		// to make it save into an external file...
 		const QString sExt("qtx");
 		QStringList exts(sExt);
-		if (bVstPlugin) { exts.append("fxp"); exts.append("fxb"); }
+		if (bVst2Plugin) { exts.append("fxp"); exts.append("fxb"); }
 		QFileInfo fi(settings.value(sPreset).toString());
 		if (!fi.exists() || !fi.isFile())
 			fi.setFile(QDir(pOptions->sPresetDir),
@@ -1012,7 +1012,7 @@ void qtractorPluginForm::refresh (void)
 void qtractorPluginForm::stabilize (void)
 {
 	qtractorPluginType *pType = m_pPlugin->type();
-	const bool bVstPlugin = (pType->typeHint() == qtractorPluginType::Vst);
+	const bool bVst2Plugin = (pType->typeHint() == qtractorPluginType::Vst2);
 
 	bool bExists  = false;
 	bool bEnabled = (m_pPlugin != nullptr);
@@ -1022,7 +1022,7 @@ void qtractorPluginForm::stabilize (void)
 
 	m_ui.PresetComboBox->setEnabled(bEnabled);
 	m_ui.OpenPresetToolButton->setVisible(
-		bEnabled && (pType->isConfigure() || bVstPlugin));
+		bEnabled && (pType->isConfigure() || bVst2Plugin));
 
 	if (bEnabled) {
 		const QString& sPreset = m_ui.PresetComboBox->currentText();

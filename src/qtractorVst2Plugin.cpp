@@ -1,4 +1,4 @@
-// qtractorVstPlugin.cpp
+// qtractorVst2Plugin.cpp
 //
 /****************************************************************************
    Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
@@ -21,9 +21,9 @@
 
 #include "qtractorAbout.h"
 
-#ifdef CONFIG_VST
+#ifdef CONFIG_VST2
 
-#include "qtractorVstPlugin.h"
+#include "qtractorVst2Plugin.h"
 
 #include "qtractorSession.h"
 #include "qtractorAudioEngine.h"
@@ -31,7 +31,7 @@
 
 #include "qtractorOptions.h"
 
-#if 0//QTRACTOR_VST_EDITOR_TOOL
+#if 0//QTRACTOR_VST2_EDITOR_TOOL
 #include "qtractorMainForm.h"
 #endif
 
@@ -51,12 +51,12 @@ const WindowFlags WindowCloseButtonHint = WindowFlags(0x08000000);
 
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#ifdef CONFIG_VST_X11
+#ifdef CONFIG_VST2_X11
 #include <QX11Info>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 typedef void (*XEventProc)(XEvent *);
-#endif	// CONFIG_VST_X11
+#endif	// CONFIG_VST2_X11
 #else
 #include <QWindow>
 #endif
@@ -76,12 +76,12 @@ typedef long     VstIntPtr;
 
 typedef AEffect* (*VST_GetPluginInstance) (audioMasterCallback);
 
-static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback (AEffect* effect,
+static VstIntPtr VSTCALLBACK qtractorVst2Plugin_HostCallback (AEffect* effect,
 	VstInt32 opcode, VstInt32 index, VstIntPtr value, void *ptr, float opt);
 
 // Specific extended flags that saves us
 // from calling canDo() in audio callbacks.
-enum qtractorVstPluginFlagsEx
+enum qtractorVst2PluginFlagsEx
 {
 	effFlagsExCanSendVstEvents          = 1 << 0,
 	effFlagsExCanSendVstMidiEvents      = 1 << 1,
@@ -110,10 +110,10 @@ const int effFlagsProgramChunks = 32;
 
 
 //---------------------------------------------------------------------
-// qtractorVstPlugin::EditorWidget - Helpers for own editor widget.
+// qtractorVst2Plugin::EditorWidget - Helpers for own editor widget.
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#ifdef CONFIG_VST_X11
+#ifdef CONFIG_VST2_X11
 
 static int g_iXError = 0;
 
@@ -165,18 +165,18 @@ static Window getXChildWindow ( Display *pDisplay, Window w )
 	return wChild;
 }
 
-#endif // CONFIG_VST_X11
+#endif // CONFIG_VST2_X11
 #endif
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPlugin::EditorWidget -- Plugin editor wrapper widget.
+// qtractorVst2Plugin::EditorWidget -- Plugin editor wrapper widget.
 //
 
-// Dynamic singleton list of VST editors.
-static QList<qtractorVstPlugin::EditorWidget *> g_vstEditors;
+// Dynamic singleton list of VST2 editors.
+static QList<qtractorVst2Plugin::EditorWidget *> g_vst2Editors;
 
-class qtractorVstPlugin::EditorWidget : public QWidget
+class qtractorVst2Plugin::EditorWidget : public QWidget
 {
 public:
 
@@ -185,34 +185,34 @@ public:
 		Qt::WindowFlags wflags = Qt::WindowFlags())
 		: QWidget(pParent, wflags),
 	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-	#ifdef CONFIG_VST_X11
+	#ifdef CONFIG_VST2_X11
 		m_pDisplay(QX11Info::display()),
-		m_wVstEditor(0),
-		m_pVstEventProc(nullptr),
+		m_wVst2Editor(0),
+		m_pVst2EventProc(nullptr),
 		m_bButtonPress(false),
-	#endif	// CONFIG_VST_X11
+	#endif	// CONFIG_VST2_X11
 	#else
 		m_pWindow(nullptr),
 	#endif
-		m_pVstPlugin(nullptr)
+		m_pVst2Plugin(nullptr)
 		{ QWidget::setAttribute(Qt::WA_QuitOnClose, false); }
 
 	// Destructor.
 	~EditorWidget() { close(); }
 
 	// Specialized editor methods.
-	void open(qtractorVstPlugin *pVstPlugin)
+	void open(qtractorVst2Plugin *pVst2Plugin)
 	{
-		m_pVstPlugin = pVstPlugin;
+		m_pVst2Plugin = pVst2Plugin;
 		
 		// Start the proper (child) editor...
 		long  value = 0;
 		void *ptr = nullptr;
 	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-	#ifdef CONFIG_VST_X11
+	#ifdef CONFIG_VST2_X11
 		value = (long) m_pDisplay;
 		ptr = (void *) QWidget::winId();
-	#endif // CONFIG_VST_X11
+	#endif // CONFIG_VST2_X11
 	#else
 		m_pWindow = new QWindow();
 		m_pWindow->create();
@@ -226,7 +226,7 @@ public:
 	#endif
 
 		// Launch the custom GUI editor...
-		m_pVstPlugin->vst_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
+		m_pVst2Plugin->vst2_dispatch(0, effEditOpen, 0, value, ptr, 0.0f);
 
 		// Make it the right size
 		struct ERect {
@@ -236,7 +236,7 @@ public:
 			short right;
 		} *pRect;
 
-		if (m_pVstPlugin->vst_dispatch(0, effEditGetRect, 0, 0, &pRect, 0.0f)) {
+		if (m_pVst2Plugin->vst2_dispatch(0, effEditGetRect, 0, 0, &pRect, 0.0f)) {
 			const int w = pRect->right - pRect->left;
 			const int h = pRect->bottom - pRect->top;
 			if (w > 0 && h > 0)
@@ -244,14 +244,14 @@ public:
 		}
 
 	#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-	#ifdef CONFIG_VST_X11
-		m_wVstEditor = getXChildWindow(m_pDisplay, (Window) QWidget::winId());
-		if (m_wVstEditor)
-			m_pVstEventProc = getXEventProc(m_pDisplay, m_wVstEditor);
-	#endif	// CONFIG_VST_X11
+	#ifdef CONFIG_VST2_X11
+		m_wVst2Editor = getXChildWindow(m_pDisplay, (Window) QWidget::winId());
+		if (m_wVst2Editor)
+			m_pVst2EventProc = getXEventProc(m_pDisplay, m_wVst2Editor);
+	#endif	// CONFIG_VST2_X11
 	#endif
 
-		g_vstEditors.append(this);
+		g_vst2Editors.append(this);
 	}
 
 	// Close the editor widget.
@@ -259,14 +259,14 @@ public:
 	{
 		QWidget::close();
 
-		if (m_pVstPlugin) {
-			m_pVstPlugin->vst_dispatch(0, effEditClose, 0, 0, nullptr, 0.0f);
-			m_pVstPlugin = nullptr;
+		if (m_pVst2Plugin) {
+			m_pVst2Plugin->vst2_dispatch(0, effEditClose, 0, 0, nullptr, 0.0f);
+			m_pVst2Plugin = nullptr;
 		}
 
-		const int iIndex = g_vstEditors.indexOf(this);
+		const int iIndex = g_vst2Editors.indexOf(this);
 		if (iIndex >= 0)
-			g_vstEditors.removeAt(iIndex);
+			g_vst2Editors.removeAt(iIndex);
 
 	#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 		if (m_pWindow) {
@@ -277,11 +277,11 @@ public:
 	}
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#ifdef CONFIG_VST_X11
+#ifdef CONFIG_VST2_X11
 	// Local X11 event filter.
 	bool x11EventFilter(XEvent *pEvent)
 	{
-		if (m_pVstEventProc && pEvent->xany.window == m_wVstEditor) {
+		if (m_pVst2EventProc && pEvent->xany.window == m_wVst2Editor) {
 			// Avoid mouse tracking events...
 			switch (pEvent->xany.type) {
 			case ButtonPress:
@@ -298,17 +298,17 @@ public:
 				break;
 			}
 			// Process as intended...
-			(*m_pVstEventProc)(pEvent);
+			(*m_pVst2EventProc)(pEvent);
 			return true;
 		} else {
 			return false;
 		}
 	}
-#endif	// CONFIG_VST_X11
+#endif	// CONFIG_VST2_X11
 #endif
 
-	qtractorVstPlugin *plugin() const
-		{ return m_pVstPlugin; }
+	qtractorVst2Plugin *plugin() const
+		{ return m_pVst2Plugin; }
 
 protected:
 
@@ -317,183 +317,183 @@ protected:
 	{
 		QWidget::showEvent(pShowEvent);
 
-		if (m_pVstPlugin)
-			m_pVstPlugin->toggleFormEditor(true);
+		if (m_pVst2Plugin)
+			m_pVst2Plugin->toggleFormEditor(true);
 	}
 
 	void closeEvent(QCloseEvent *pCloseEvent)
 	{
-		if (m_pVstPlugin)
-			m_pVstPlugin->toggleFormEditor(false);
+		if (m_pVst2Plugin)
+			m_pVst2Plugin->toggleFormEditor(false);
 
 		QWidget::closeEvent(pCloseEvent);
 
-		if (m_pVstPlugin)
-			m_pVstPlugin->closeEditor();
+		if (m_pVst2Plugin)
+			m_pVst2Plugin->closeEditor();
 	}
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#ifdef CONFIG_VST_X11
+#ifdef CONFIG_VST2_X11
 	void moveEvent(QMoveEvent *pMoveEvent)
 	{
 		QWidget::moveEvent(pMoveEvent);
-		if (m_wVstEditor) {
-			XMoveWindow(m_pDisplay, m_wVstEditor, 0, 0);
+		if (m_wVst2Editor) {
+			XMoveWindow(m_pDisplay, m_wVst2Editor, 0, 0);
 		//	QWidget::update();
 		}
 	}
-#endif	// CONFIG_VST_X11
+#endif	// CONFIG_VST2_X11
 #endif
 
 private:
 
 	// Instance variables...
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#ifdef CONFIG_VST_X11
+#ifdef CONFIG_VST2_X11
 	Display   *m_pDisplay;
-	Window     m_wVstEditor;
-	XEventProc m_pVstEventProc;
+	Window     m_wVst2Editor;
+	XEventProc m_pVst2EventProc;
 	bool       m_bButtonPress;
-#endif	// CONFIG_VST_X11
+#endif	// CONFIG_VST2_X11
 #else
 	QWindow   *m_pWindow;
 #endif
 
-	qtractorVstPlugin *m_pVstPlugin;
+	qtractorVst2Plugin *m_pVst2Plugin;
 };
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPluginType::Effect -- VST AEffect instance.
+// qtractorVst2PluginType::Effect -- VST2 AEffect instance.
 //
 
-class qtractorVstPluginType::Effect
+class qtractorVst2PluginType::Effect
 {
 public:
 
 	// Constructor.
-	Effect(AEffect *pVstEffect = nullptr) : m_pVstEffect(pVstEffect) {}
+	Effect(AEffect *pVst2Effect = nullptr) : m_pVst2Effect(pVst2Effect) {}
 
 	// Specific methods.
 	bool open(qtractorPluginFile *pFile, unsigned long iIndex);
 	void close();
 
 	// Specific accessors.
-	AEffect *vst_effect() const { return m_pVstEffect; }
+	AEffect *vst2_effect() const { return m_pVst2Effect; }
 
-	// VST host dispatcher.
-	int vst_dispatch(
+	// VST2 host dispatcher.
+	int vst2_dispatch(
 		long opcode, long index, long value, void *ptr, float opt) const;
 
 private:
 
-	// VST descriptor itself.
-	AEffect *m_pVstEffect;
+	// VST2 descriptor itself.
+	AEffect *m_pVst2Effect;
 };
 
 
-// Current working VST Shell identifier.
-static int g_iVstShellCurrentId = 0;
+// Current working VST2 Shell identifier.
+static int g_iVst2ShellCurrentId = 0;
 
 
 // Specific methods.
-bool qtractorVstPluginType::Effect::open (
+bool qtractorVst2PluginType::Effect::open (
 	qtractorPluginFile *pFile, unsigned long iIndex )
 {
 	// Do we have an effect descriptor already?
-	if (m_pVstEffect == nullptr)
-		m_pVstEffect = qtractorVstPluginType::vst_effect(pFile);
-	if (m_pVstEffect == nullptr)
+	if (m_pVst2Effect == nullptr)
+		m_pVst2Effect = qtractorVst2PluginType::vst2_effect(pFile);
+	if (m_pVst2Effect == nullptr)
 		return false;
 
-	// Check whether it's a VST Shell...
-	const int categ = vst_dispatch(effGetPlugCategory, 0, 0, nullptr, 0.0f);
+	// Check whether it's a VST2 Shell...
+	const int categ = vst2_dispatch(effGetPlugCategory, 0, 0, nullptr, 0.0f);
 	if (categ == kPlugCategShell) {
 		int id = 0;
 		char buf[40];
 		unsigned long i = 0;
 		for ( ; iIndex >= i; ++i) {
 			buf[0] = (char) 0;
-			id = vst_dispatch(effShellGetNextPlugin, 0, 0, (void *) buf, 0.0f);
+			id = vst2_dispatch(effShellGetNextPlugin, 0, 0, (void *) buf, 0.0f);
 			if (id == 0 || !buf[0])
 				break;
 		}
 		// Check if we're actually the intended plugin...
 		if (i < iIndex || id == 0 || !buf[0]) {
-			m_pVstEffect = nullptr;
+			m_pVst2Effect = nullptr;
 			return false;
 		}
 		// Make it known...
-		g_iVstShellCurrentId = id;
+		g_iVst2ShellCurrentId = id;
 		// Re-allocate the thing all over again...
-		m_pVstEffect = qtractorVstPluginType::vst_effect(pFile);
+		m_pVst2Effect = qtractorVst2PluginType::vst2_effect(pFile);
 		// Not needed anymore, hopefully...
-		g_iVstShellCurrentId = 0;
+		g_iVst2ShellCurrentId = 0;
 		// Don't go further if failed...
-		if (m_pVstEffect == nullptr)
+		if (m_pVst2Effect == nullptr)
 			return false;
 	#ifdef CONFIG_DEBUG//_0
-		qDebug("AEffect[%p]::vst_shell(%lu) id=0x%x name=\"%s\"",
-			m_pVstEffect, i, id, buf);
+		qDebug("AEffect[%p]::vst2_shell(%lu) id=0x%x name=\"%s\"",
+			m_pVst2Effect, i, id, buf);
 	#endif
 	}
 	else
-	// Not a VST Shell plugin...
+	// Not a VST2 Shell plugin...
 	if (iIndex > 0) {
-		m_pVstEffect = nullptr;
+		m_pVst2Effect = nullptr;
 		return false;
 	}
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("AEffect[%p]::open(%p, %lu)", m_pVstEffect, pFile, iIndex);
+	qDebug("AEffect[%p]::open(%p, %lu)", m_pVst2Effect, pFile, iIndex);
 #endif
 
-	vst_dispatch(effOpen, 0, 0, nullptr, 0.0f);
-//	vst_dispatch(effIdentify, 0, 0, nullptr, 0);
-//	vst_dispatch(effMainsChanged, 0, 0, nullptr, 0.0f);
+	vst2_dispatch(effOpen, 0, 0, nullptr, 0.0f);
+//	vst2_dispatch(effIdentify, 0, 0, nullptr, 0);
+//	vst2_dispatch(effMainsChanged, 0, 0, nullptr, 0.0f);
 
 	return true;
 }
 
 
-void qtractorVstPluginType::Effect::close (void)
+void qtractorVst2PluginType::Effect::close (void)
 {
-	if (m_pVstEffect == nullptr)
+	if (m_pVst2Effect == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("AEffect[%p]::close()", m_pVstEffect);
+	qDebug("AEffect[%p]::close()", m_pVst2Effect);
 #endif
 
-//	vst_dispatch(effMainsChanged, 0, 0, nullptr, 0.0f);
-	vst_dispatch(effClose, 0, 0, nullptr, 0.0f);
+//	vst2_dispatch(effMainsChanged, 0, 0, nullptr, 0.0f);
+	vst2_dispatch(effClose, 0, 0, nullptr, 0.0f);
 
-	m_pVstEffect = nullptr;
+	m_pVst2Effect = nullptr;
 }
 
 
-// VST host dispatcher.
-int qtractorVstPluginType::Effect::vst_dispatch (
+// VST2 host dispatcher.
+int qtractorVst2PluginType::Effect::vst2_dispatch (
 	long opcode, long index, long value, void *ptr, float opt ) const
 {
-	if (m_pVstEffect == nullptr)
+	if (m_pVst2Effect == nullptr)
 		return 0;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("AEffect[%p]::dispatcher(%ld, %ld, %ld, %p, %g)",
-		m_pVstEffect, opcode, index, value, ptr, opt);
+	qDebug("AEffect[%p]::vst2_dispatch(%ld, %ld, %ld, %p, %g)",
+		m_pVst2Effect, opcode, index, value, ptr, opt);
 #endif
 
-	return m_pVstEffect->dispatcher(m_pVstEffect, opcode, index, value, ptr, opt);
+	return m_pVst2Effect->dispatcher(m_pVst2Effect, opcode, index, value, ptr, opt);
 }
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPluginType -- VST plugin type instance.
+// qtractorVst2PluginType -- VST2 plugin type instance.
 //
 
 // Derived methods.
-bool qtractorVstPluginType::open (void)
+bool qtractorVst2PluginType::open (void)
 {
 	// Do we have an effect descriptor already?
 	if (m_pEffect == nullptr)
@@ -501,19 +501,19 @@ bool qtractorVstPluginType::open (void)
 	if (!m_pEffect->open(file(), index()))
 		return false;
 
-	AEffect *pVstEffect = m_pEffect->vst_effect();
-	if (pVstEffect == nullptr)
+	AEffect *pVst2Effect = m_pEffect->vst2_effect();
+	if (pVst2Effect == nullptr)
 		return false;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPluginType[%p]::open() filename=\"%s\" index=%lu",
+	qDebug("qtractorVst2PluginType[%p]::open() filename=\"%s\" index=%lu",
 		this, filename().toUtf8().constData(), index());
 #endif
 
 	// Retrieve plugin type names.
 	char szName[256];
 	::memset(szName, 0, sizeof(szName));
-	vst_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f);
+	vst2_dispatch(effGetEffectName, 0, 0, (void *) szName, 0.0f);
 	if (szName[0])
 		m_sName = QString::fromLocal8Bit(szName);
 	else
@@ -525,38 +525,38 @@ bool qtractorVstPluginType::open (void)
 #ifdef CONFIG_VESTIGE_OLD
 	m_iUniqueID = qHash(m_sLabel);
 #else
-	m_iUniqueID = pVstEffect->uniqueID;
+	m_iUniqueID = pVst2Effect->uniqueID;
 #endif
 
 	// Specific inquiries...
 	m_iFlagsEx = 0;
-//	if (vst_canDo("sendVstEvents"))       m_iFlagsEx |= effFlagsExCanSendVstEvents;
-	if (vst_canDo("sendVstMidiEvent"))    m_iFlagsEx |= effFlagsExCanSendVstMidiEvents;
-//	if (vst_canDo("sendVstTimeInfo"))     m_iFlagsEx |= effFlagsExCanSendVstTimeInfo;
-//	if (vst_canDo("receiveVstEvents"))    m_iFlagsEx |= effFlagsExCanReceiveVstEvents;
-	if (vst_canDo("receiveVstMidiEvent")) m_iFlagsEx |= effFlagsExCanReceiveVstMidiEvents;
-//	if (vst_canDo("receiveVstTimeInfo"))  m_iFlagsEx |= effFlagsExCanReceiveVstTimeInfo;
-//	if (vst_canDo("offline"))             m_iFlagsEx |= effFlagsExCanProcessOffline;
-//	if (vst_canDo("plugAsChannelInsert")) m_iFlagsEx |= effFlagsExCanUseAsInsert;
-//	if (vst_canDo("plugAsSend"))          m_iFlagsEx |= effFlagsExCanUseAsSend;
-//	if (vst_canDo("mixDryWet"))           m_iFlagsEx |= effFlagsExCanMixDryWet;
-//	if (vst_canDo("midiProgramNames"))    m_iFlagsEx |= effFlagsExCanMidiProgramNames;
+//	if (vst2_canDo("sendVstEvents"))       m_iFlagsEx |= effFlagsExCanSendVstEvents;
+	if (vst2_canDo("sendVstMidiEvent"))    m_iFlagsEx |= effFlagsExCanSendVstMidiEvents;
+//	if (vst2_canDo("sendVstTimeInfo"))     m_iFlagsEx |= effFlagsExCanSendVstTimeInfo;
+//	if (vst2_canDo("receiveVstEvents"))    m_iFlagsEx |= effFlagsExCanReceiveVstEvents;
+	if (vst2_canDo("receiveVstMidiEvent")) m_iFlagsEx |= effFlagsExCanReceiveVstMidiEvents;
+//	if (vst2_canDo("receiveVstTimeInfo"))  m_iFlagsEx |= effFlagsExCanReceiveVstTimeInfo;
+//	if (vst2_canDo("offline"))             m_iFlagsEx |= effFlagsExCanProcessOffline;
+//	if (vst2_canDo("plugAsChannelInsert")) m_iFlagsEx |= effFlagsExCanUseAsInsert;
+//	if (vst2_canDo("plugAsSend"))          m_iFlagsEx |= effFlagsExCanUseAsSend;
+//	if (vst2_canDo("mixDryWet"))           m_iFlagsEx |= effFlagsExCanMixDryWet;
+//	if (vst2_canDo("midiProgramNames"))    m_iFlagsEx |= effFlagsExCanMidiProgramNames;
 
 	// Compute and cache port counts...
-	m_iControlIns  = pVstEffect->numParams;
+	m_iControlIns  = pVst2Effect->numParams;
 	m_iControlOuts = 0;
-	m_iAudioIns    = pVstEffect->numInputs;
-	m_iAudioOuts   = pVstEffect->numOutputs;
+	m_iAudioIns    = pVst2Effect->numInputs;
+	m_iAudioOuts   = pVst2Effect->numOutputs;
 	m_iMidiIns     = ((m_iFlagsEx & effFlagsExCanReceiveVstMidiEvents)
-		|| (pVstEffect->flags & effFlagsIsSynth) ? 1 : 0);
+		|| (pVst2Effect->flags & effFlagsIsSynth) ? 1 : 0);
 	m_iMidiOuts    = ((m_iFlagsEx & effFlagsExCanSendVstMidiEvents) ? 1 : 0);
 
 	// Cache flags.
 	m_bRealtime  = true;
-	m_bConfigure = (pVstEffect->flags & effFlagsProgramChunks);
-	m_bEditor    = (pVstEffect->flags & effFlagsHasEditor);
+	m_bConfigure = (pVst2Effect->flags & effFlagsProgramChunks);
+	m_bEditor    = (pVst2Effect->flags & effFlagsHasEditor);
 
-	// HACK: Some native VST plugins with a GUI editor
+	// HACK: Some native VST2 plugins with a GUI editor
 	// need to skip explicit shared library unloading,
 	// on close, in order to avoid mysterious crashes
 	// later on session and/or application exit.
@@ -566,13 +566,13 @@ bool qtractorVstPluginType::open (void)
 }
 
 
-void qtractorVstPluginType::close (void)
+void qtractorVst2PluginType::close (void)
 {
 	if (m_pEffect == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPluginType[%p]::close()", this);
+	qDebug("qtractorVst2PluginType[%p]::close()", this);
 #endif
 
 	m_pEffect->close();
@@ -583,7 +583,7 @@ void qtractorVstPluginType::close (void)
 
 
 // Factory method (static)
-qtractorVstPluginType *qtractorVstPluginType::createType (
+qtractorVst2PluginType *qtractorVst2PluginType::createType (
 	qtractorPluginFile *pFile, unsigned long iIndex )
 {
 	// Sanity check...
@@ -591,17 +591,17 @@ qtractorVstPluginType *qtractorVstPluginType::createType (
 		return nullptr;
 
 	// Retrieve effect instance if any...
-	AEffect *pVstEffect = vst_effect(pFile);
-	if (pVstEffect == nullptr)
+	AEffect *pVst2Effect = vst2_effect(pFile);
+	if (pVst2Effect == nullptr)
 		return nullptr;
 
 	// Yep, most probably its a valid plugin effect...
-	return new qtractorVstPluginType(pFile, iIndex, new Effect(pVstEffect));
+	return new qtractorVst2PluginType(pFile, iIndex, new Effect(pVst2Effect));
 }
 
 
 // Effect instance method (static)
-AEffect *qtractorVstPluginType::vst_effect ( qtractorPluginFile *pFile )
+AEffect *qtractorVst2PluginType::vst2_effect ( qtractorPluginFile *pFile )
 {
 	VST_GetPluginInstance pfnGetPluginInstance
 		= (VST_GetPluginInstance) pFile->resolve("VSTPluginMain");
@@ -610,46 +610,46 @@ AEffect *qtractorVstPluginType::vst_effect ( qtractorPluginFile *pFile )
 	if (pfnGetPluginInstance == nullptr)
 		return nullptr;
 
-	// Does the VST plugin instantiate OK?
-	AEffect *pVstEffect
-		= (*pfnGetPluginInstance)(qtractorVstPlugin_HostCallback);
-	if (pVstEffect == nullptr)
+	// Does the VST2 plugin instantiate OK?
+	AEffect *pVst2Effect
+		= (*pfnGetPluginInstance)(qtractorVst2Plugin_HostCallback);
+	if (pVst2Effect == nullptr)
 		return nullptr;
-	if (pVstEffect->magic != kEffectMagic)
+	if (pVst2Effect->magic != kEffectMagic)
 		return nullptr;
 
-	return pVstEffect;
+	return pVst2Effect;
 }
 
 
-// VST host dispatcher.
-int qtractorVstPluginType::vst_dispatch (
+// VST2 host dispatcher.
+int qtractorVst2PluginType::vst2_dispatch (
 	long opcode, long index, long value, void *ptr, float opt ) const
 {
 	if (m_pEffect == nullptr)
 		return 0;
 
-	return m_pEffect->vst_dispatch(opcode, index, value, ptr, opt);
+	return m_pEffect->vst2_dispatch(opcode, index, value, ptr, opt);
 }
 
 
-// VST flag inquirer.
-bool qtractorVstPluginType::vst_canDo ( const char *pszCanDo ) const
+// VST2 flag inquirer.
+bool qtractorVst2PluginType::vst2_canDo ( const char *pszCanDo ) const
 {
 	if (m_pEffect == nullptr)
 		return false;
 
-	return (m_pEffect->vst_dispatch(effCanDo, 0, 0, (void *) pszCanDo, 0.0f) > 0);
+	return (m_pEffect->vst2_dispatch(effCanDo, 0, 0, (void *) pszCanDo, 0.0f) > 0);
 }
 
 
 // Instance cached-deferred accessors.
-const QString& qtractorVstPluginType::aboutText (void)
+const QString& qtractorVst2PluginType::aboutText (void)
 {
 	if (m_sAboutText.isEmpty()) {
 		char szTemp[256];
 		::memset(szTemp, 0, sizeof(szTemp));
-		vst_dispatch(effGetProductString, 0, 0, (void *) szTemp, 0.0f);
+		vst2_dispatch(effGetProductString, 0, 0, (void *) szTemp, 0.0f);
 		if (szTemp[0]) {
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
@@ -657,7 +657,7 @@ const QString& qtractorVstPluginType::aboutText (void)
 			m_sAboutText += QString::fromLocal8Bit(szTemp);
 		}
 		::memset(szTemp, 0, sizeof(szTemp));
-		vst_dispatch(effGetVendorString, 0, 0, (void *) szTemp, 0.0f);
+		vst2_dispatch(effGetVendorString, 0, 0, (void *) szTemp, 0.0f);
 		if (szTemp[0]) {
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
@@ -665,7 +665,7 @@ const QString& qtractorVstPluginType::aboutText (void)
 			m_sAboutText += QString::fromLocal8Bit(szTemp);
 		}
 		const int iVersion
-			= vst_dispatch(effGetVendorVersion, 0, 0, nullptr, 0.0f);
+			= vst2_dispatch(effGetVendorVersion, 0, 0, nullptr, 0.0f);
 		if (iVersion) {
 			if (!m_sAboutText.isEmpty())
 				m_sAboutText += '\n';
@@ -679,36 +679,36 @@ const QString& qtractorVstPluginType::aboutText (void)
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPlugin -- VST plugin instance.
+// qtractorVst2Plugin -- VST2 plugin instance.
 //
 
-// Dynamic singleton list of VST plugins.
-static QHash<AEffect *, qtractorVstPlugin *> g_vstPlugins;
+// Dynamic singleton list of VST2 plugins.
+static QHash<AEffect *, qtractorVst2Plugin *> g_vst2Plugins;
 
 // Constructors.
-qtractorVstPlugin::qtractorVstPlugin (
-	qtractorPluginList *pList, qtractorVstPluginType *pVstType )
-	: qtractorPlugin(pList, pVstType), m_ppEffects(nullptr),
+qtractorVst2Plugin::qtractorVst2Plugin (
+	qtractorPluginList *pList, qtractorVst2PluginType *pVst2Type )
+	: qtractorPlugin(pList, pVst2Type), m_ppEffects(nullptr),
 		m_ppIBuffer(nullptr), m_ppOBuffer(nullptr),
 		m_pfIDummy(nullptr), m_pfODummy(nullptr),
 		m_pEditorWidget(nullptr), m_bEditorClosed(false)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p] filename=\"%s\" index=%lu typeHint=%d",
+	qDebug("qtractorVst2Plugin[%p] filename=\"%s\" index=%lu typeHint=%d",
 		this, type()->filename().toUtf8().constData(),
 		type()->index(), int(type()->typeHint()));
 #endif
 
 	// Allocate I/O audio buffer pointers.
-	const unsigned short iAudioIns  = pVstType->audioIns();
-	const unsigned short iAudioOuts = pVstType->audioOuts();
+	const unsigned short iAudioIns  = pVst2Type->audioIns();
+	const unsigned short iAudioOuts = pVst2Type->audioOuts();
 	if (iAudioIns > 0)
 		m_ppIBuffer = new float * [iAudioIns];
 	if (iAudioOuts > 0)
 		m_ppOBuffer = new float * [iAudioOuts];
 
 	// Create all existing parameters...
-	const unsigned short iParamCount = pVstType->controlIns();
+	const unsigned short iParamCount = pVst2Type->controlIns();
 	for (unsigned short i = 0; i < iParamCount; ++i)
 		addParam(new Param(this, i));
 
@@ -718,7 +718,7 @@ qtractorVstPlugin::qtractorVstPlugin (
 
 
 // Destructor.
-qtractorVstPlugin::~qtractorVstPlugin (void)
+qtractorVst2Plugin::~qtractorVst2Plugin (void)
 {
 	// Cleanup all plugin instances...
 	cleanup();	// setChannels(0);
@@ -737,19 +737,19 @@ qtractorVstPlugin::~qtractorVstPlugin (void)
 
 
 // Channel/instance number accessors.
-void qtractorVstPlugin::setChannels ( unsigned short iChannels )
+void qtractorVst2Plugin::setChannels ( unsigned short iChannels )
 {
 	// Check our type...
-	qtractorVstPluginType *pVstType
-		= static_cast<qtractorVstPluginType *> (type());
-	if (pVstType == nullptr)
+	qtractorVst2PluginType *pVst2Type
+		= static_cast<qtractorVst2PluginType *> (type());
+	if (pVst2Type == nullptr)
 		return;
 
 	// Estimate the (new) number of instances...
 	const unsigned short iOldInstances = instances();
 	unsigned short iInstances = 0;
 	if (iChannels > 0) {
-		iInstances = pVstType->instances(iChannels, list()->isMidi());
+		iInstances = pVst2Type->instances(iChannels, list()->isMidi());
 		// Now see if instance and channel count changed anyhow...
 		if (iInstances == iOldInstances && iChannels == channels())
 			return;
@@ -764,15 +764,15 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 	// Close old instances, all the way...
 	if (m_ppEffects) {
-		qtractorVstPluginType::Effect *pEffect;
+		qtractorVst2PluginType::Effect *pEffect;
 		for (unsigned short i = 1; i < iOldInstances; ++i) {
 			pEffect = m_ppEffects[i];
-			g_vstPlugins.remove(pEffect->vst_effect());
+			g_vst2Plugins.remove(pEffect->vst2_effect());
 			pEffect->close();
 			delete pEffect;
 		}
 		pEffect = m_ppEffects[0];
-		g_vstPlugins.remove(pEffect->vst_effect());
+		g_vst2Plugins.remove(pEffect->vst2_effect());
 		delete [] m_ppEffects;
 		m_ppEffects = nullptr;
 	}
@@ -784,7 +784,7 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	}
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::setChannels(%u) instances=%u",
+	qDebug("qtractorVst2Plugin[%p]::setChannels(%u) instances=%u",
 		this, iChannels, iInstances);
 #endif
 
@@ -800,13 +800,13 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
 	// Allocate new instances...
-	m_ppEffects = new qtractorVstPluginType::Effect * [iInstances];
-	m_ppEffects[0] = pVstType->effect();
-	g_vstPlugins.insert(m_ppEffects[0]->vst_effect(), this);
+	m_ppEffects = new qtractorVst2PluginType::Effect * [iInstances];
+	m_ppEffects[0] = pVst2Type->effect();
+	g_vst2Plugins.insert(m_ppEffects[0]->vst2_effect(), this);
 	for (unsigned short i = 1; i < iInstances; ++i) {
-		m_ppEffects[i] = new qtractorVstPluginType::Effect();
-		m_ppEffects[i]->open(pVstType->file(), pVstType->index());
-		g_vstPlugins.insert(m_ppEffects[i]->vst_effect(), this);
+		m_ppEffects[i] = new qtractorVst2PluginType::Effect();
+		m_ppEffects[i]->open(pVst2Type->file(), pVst2Type->index());
+		g_vst2Plugins.insert(m_ppEffects[i]->vst2_effect(), this);
 	}
 
 	// Allocate the dummy audio I/O buffers...
@@ -830,17 +830,17 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 	// Setup all those instances alright...
 	for (unsigned short i = 0; i < iInstances; ++i) {
 		// And now all other things as well...
-		qtractorVstPluginType::Effect *pEffect = m_ppEffects[i];
-	//	pEffect->vst_dispatch(effOpen, 0, 0, nullptr, 0.0f);
-		pEffect->vst_dispatch(effSetSampleRate, 0, 0, nullptr, float(iSampleRate));
-		pEffect->vst_dispatch(effSetBlockSize,  0, iBufferSizeEx, nullptr, 0.0f);
-	//	pEffect->vst_dispatch(effSetProgram, 0, 0, nullptr, 0.0f);
+		qtractorVst2PluginType::Effect *pEffect = m_ppEffects[i];
+	//	pEffect->vst2_dispatch(effOpen, 0, 0, nullptr, 0.0f);
+		pEffect->vst2_dispatch(effSetSampleRate, 0, 0, nullptr, float(iSampleRate));
+		pEffect->vst2_dispatch(effSetBlockSize,  0, iBufferSizeEx, nullptr, 0.0f);
+	//	pEffect->vst2_dispatch(effSetProgram, 0, 0, nullptr, 0.0f);
 	#if 0 // !VST_FORCE_DEPRECATED
 		unsigned short j;
 		for (j = 0; j < iAudioIns; ++j)
-			pEffect->vst_dispatch(effConnectInput, j, 1, nullptr, 0.0f);
+			pEffect->vst2_dispatch(effConnectInput, j, 1, nullptr, 0.0f);
 		for (j = 0; j < iAudioOuts; ++j)
-			pEffect->vst_dispatch(effConnectOutput, j, 1, nullptr, 0.0f);
+			pEffect->vst2_dispatch(effConnectOutput, j, 1, nullptr, 0.0f);
 	#endif
 	}
 
@@ -858,31 +858,31 @@ void qtractorVstPlugin::setChannels ( unsigned short iChannels )
 
 
 // Do the actual activation.
-void qtractorVstPlugin::activate (void)
+void qtractorVst2Plugin::activate (void)
 {
 	for (unsigned short i = 0; i < instances(); ++i) {
-		vst_dispatch(i, effMainsChanged, 0, 1, nullptr, 0.0f);
+		vst2_dispatch(i, effMainsChanged, 0, 1, nullptr, 0.0f);
 	#ifndef CONFIG_VESTIGE
-		vst_dispatch(i, effStartProcess, 0, 0, nullptr, 0.0f);
+		vst2_dispatch(i, effStartProcess, 0, 0, nullptr, 0.0f);
 	#endif
 	}
 }
 
 
 // Do the actual deactivation.
-void qtractorVstPlugin::deactivate (void)
+void qtractorVst2Plugin::deactivate (void)
 {
 	for (unsigned short i = 0; i < instances(); ++i) {
 	#ifndef CONFIG_VESTIGE
-		vst_dispatch(i, effStopProcess, 0, 0, nullptr, 0.0f);
+		vst2_dispatch(i, effStopProcess, 0, 0, nullptr, 0.0f);
 	#endif
-		vst_dispatch(i, effMainsChanged, 0, 0, nullptr, 0.0f);
+		vst2_dispatch(i, effMainsChanged, 0, 0, nullptr, 0.0f);
 	}
 }
 
 
 // The main plugin processing procedure.
-void qtractorVstPlugin::process (
+void qtractorVst2Plugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
 	if (m_ppEffects == nullptr)
@@ -907,7 +907,7 @@ void qtractorVstPlugin::process (
 
 	// For each plugin instance...
 	for (i = 0; i < iInstances; ++i) {
-		AEffect *pVstEffect = vst_effect(i);
+		AEffect *pVst2Effect = vst2_effect(i);
 		// For each instance audio input port...
 		for (j = 0; j < iAudioIns; ++j) {
 			if (iIChannel < iChannels)
@@ -924,18 +924,18 @@ void qtractorVstPlugin::process (
 		}
 		// Make it run MIDI, if applicable...
 		if (pMidiManager) {
-			pVstEffect->dispatcher(pVstEffect,
-				effProcessEvents, 0, 0, pMidiManager->vst_events_in(), 0.0f);
+			pVst2Effect->dispatcher(pVst2Effect,
+				effProcessEvents, 0, 0, pMidiManager->vst2_events_in(), 0.0f);
 		}
 		// Make it run audio...
-		if (pVstEffect->flags & effFlagsCanReplacing) {
-			pVstEffect->processReplacing(
-				pVstEffect, m_ppIBuffer, m_ppOBuffer, nframes);
+		if (pVst2Effect->flags & effFlagsCanReplacing) {
+			pVst2Effect->processReplacing(
+				pVst2Effect, m_ppIBuffer, m_ppOBuffer, nframes);
 		}
 	#if 0 // !VST_FORCE_DEPRECATED
 		else {
-			pVstEffect->process(
-				pVstEffect, m_ppIBuffer, m_ppOBuffer, nframes);
+			pVst2Effect->process(
+				pVst2Effect, m_ppIBuffer, m_ppOBuffer, nframes);
 		}
 	#endif
 		// Wrap dangling output channels?...
@@ -944,30 +944,30 @@ void qtractorVstPlugin::process (
 	}
 
 	if (pMidiManager && iMidiOuts > 0)
-		pMidiManager->vst_events_swap();
+		pMidiManager->vst2_events_swap();
 }
 
 
 // Parameter update method.
-void qtractorVstPlugin::updateParam (
+void qtractorVst2Plugin::updateParam (
 	qtractorPlugin::Param *pParam, float fValue, bool /*bUpdate*/ )
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorVstPlugin[%p]::updateParam(%lu, %g, %d)",
+	qDebug("qtractorVst2Plugin[%p]::updateParam(%lu, %g, %d)",
 		this, pParam->index(), fValue, int(bUpdate));
 #endif
 
 	// Maybe we're not pretty instantiated yet...
 	for (unsigned short i = 0; i < instances(); ++i) {
-		AEffect *pVstEffect = vst_effect(i);
-		if (pVstEffect)
-			pVstEffect->setParameter(pVstEffect, pParam->index(), fValue);
+		AEffect *pVst2Effect = vst2_effect(i);
+		if (pVst2Effect)
+			pVst2Effect->setParameter(pVst2Effect, pParam->index(), fValue);
 	}
 }
 
 
 // Bank/program selector.
-void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
+void qtractorVst2Plugin::selectProgram ( int iBank, int iProg )
 {
 	if (iBank < 0 || iProg < 0)
 		return;
@@ -978,7 +978,7 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::selectProgram(%d, %d)", this, iBank, iProg);
+	qDebug("qtractorVst2Plugin[%p]::selectProgram(%d, %d)", this, iBank, iProg);
 #endif
 
 	int iIndex = 0;
@@ -986,18 +986,18 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 		iIndex = (iBank << 7) + iProg;
 
 	for (unsigned short i = 0; i < instances(); ++i)
-		vst_dispatch(i, effSetProgram, 0, iIndex, nullptr, 0.0f);
+		vst2_dispatch(i, effSetProgram, 0, iIndex, nullptr, 0.0f);
 
 	// Reset parameters default value...
-	AEffect *pVstEffect = vst_effect(0);
-	if (pVstEffect) {
+	AEffect *pVst2Effect = vst2_effect(0);
+	if (pVst2Effect) {
 		const qtractorPlugin::Params& params = qtractorPlugin::params();
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
 			qtractorPlugin::Param *pParam = param.value();
 			float *pfValue = pParam->subject()->data();
-			*pfValue = pVstEffect->getParameter(pVstEffect, pParam->index());
+			*pfValue = pVst2Effect->getParameter(pVst2Effect, pParam->index());
 			pParam->setDefaultValue(*pfValue);
 		}
 	}
@@ -1005,23 +1005,23 @@ void qtractorVstPlugin::selectProgram ( int iBank, int iProg )
 
 
 // Provisional program/patch accessor.
-bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
+bool qtractorVst2Plugin::getProgram ( int iIndex, Program& program ) const
 {
 	// Iteration sanity check...
-	AEffect *pVstEffect = vst_effect(0);
-	if (pVstEffect == nullptr)
+	AEffect *pVst2Effect = vst2_effect(0);
+	if (pVst2Effect == nullptr)
 		return false;
-	if (iIndex < 0 || iIndex >= pVstEffect->numPrograms)
+	if (iIndex < 0 || iIndex >= pVst2Effect->numPrograms)
 		return false;
 
 	char szName[256];
 	::memset(szName, 0, sizeof(szName));
-	if (vst_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
-	#if 0//QTRACTOR_VST_GET_PROGRAM_OLD
-		const int iOldIndex = vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
-		vst_dispatch(0, effSetProgram, 0, iIndex, nullptr, 0.0f);
-		vst_dispatch(0, effGetProgramName, 0, 0, (void *) szName, 0.0f);
-		vst_dispatch(0, effSetProgram, 0, iOldIndex, nullptr, 0.0f);
+	if (vst2_dispatch(0, effGetProgramNameIndexed, iIndex, 0, (void *) szName, 0.0f) == 0) {
+	#if 0//QTRACTOR_VST2_GET_PROGRAM_OLD
+		const int iOldIndex = vst2_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
+		vst2_dispatch(0, effSetProgram, 0, iIndex, nullptr, 0.0f);
+		vst2_dispatch(0, effGetProgramName, 0, 0, (void *) szName, 0.0f);
+		vst2_dispatch(0, effSetProgram, 0, iOldIndex, nullptr, 0.0f);
 	#else
 		::snprintf(szName, sizeof(szName) - 1, "Program %d", iIndex + 1);
 	#endif
@@ -1037,7 +1037,7 @@ bool qtractorVstPlugin::getProgram ( int iIndex, Program& program ) const
 
 
 // Configuration (CLOB) stuff.
-void qtractorVstPlugin::configure (
+void qtractorVst2Plugin::configure (
 	const QString& sKey, const QString& sValue )
 {
 	if (sKey == "chunk") {
@@ -1047,19 +1047,19 @@ void qtractorVstPlugin::configure (
 		const char *pData = data.constData();
 		const int iData = data.size();
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPlugin[%p]::configure() chunk.size=%d", this, iData);
+		qDebug("qtractorVst2Plugin[%p]::configure() chunk.size=%d", this, iData);
 	#endif
 		for (unsigned short i = 0; i < instances(); ++i)
-			vst_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
+			vst2_dispatch(i, effSetChunk, 0, iData, (void *) pData, 0.0f);
 	}
 }
 
 
 // Plugin configuration/state snapshot.
-void qtractorVstPlugin::freezeConfigs (void)
+void qtractorVst2Plugin::freezeConfigs (void)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorVstPlugin[%p]::freezeConfigs()", this);
+	qDebug("qtractorVst2Plugin[%p]::freezeConfigs()", this);
 #endif
 
 	// HACK: Make sure all parameter values are in sync,
@@ -1076,19 +1076,19 @@ void qtractorVstPlugin::freezeConfigs (void)
 
 	clearConfigs();
 
-	AEffect *pVstEffect = vst_effect(0);
-	if (pVstEffect == nullptr)
+	AEffect *pVst2Effect = vst2_effect(0);
+	if (pVst2Effect == nullptr)
 		return;
 
 	// Save plugin state into chunk configuration...
 	char *pData = nullptr;
 	const int iData
-		= vst_dispatch(0, effGetChunk, 0, 0, (void *) &pData, 0.0f);
+		= vst2_dispatch(0, effGetChunk, 0, 0, (void *) &pData, 0.0f);
 	if (iData < 1 || pData == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::freezeConfigs() chunk.size=%d", this, iData);
+	qDebug("qtractorVst2Plugin[%p]::freezeConfigs() chunk.size=%d", this, iData);
 #endif
 
 	// Set special plugin configuration item (base64 encoded)...
@@ -1099,10 +1099,10 @@ void qtractorVstPlugin::freezeConfigs (void)
 }
 
 
-void qtractorVstPlugin::releaseConfigs (void)
+void qtractorVst2Plugin::releaseConfigs (void)
 {
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::releaseConfigs()", this);
+	qDebug("qtractorVst2Plugin[%p]::releaseConfigs()", this);
 #endif
 
 	qtractorPlugin::clearConfigs();
@@ -1110,74 +1110,74 @@ void qtractorVstPlugin::releaseConfigs (void)
 
 
 // Plugin current latency (in frames);
-unsigned long qtractorVstPlugin::latency (void) const
+unsigned long qtractorVst2Plugin::latency (void) const
 {
-	AEffect *pVstEffect = vst_effect(0);
-	if (pVstEffect == nullptr)
+	AEffect *pVst2Effect = vst2_effect(0);
+	if (pVst2Effect == nullptr)
 		return 0;
 
 #ifdef CONFIG_VESTIGE
 	const VstInt32 *pInitialDelay
-		= (VstInt32 *) &(pVstEffect->empty3[0]);
+		= (VstInt32 *) &(pVst2Effect->empty3[0]);
 	return *pInitialDelay;
 #else
-	return pVstEffect->initialDelay;
+	return pVst2Effect->initialDelay;
 #endif
 }
 
 
 // Plugin preset i/o (configuration from/to (fxp/fxb files).
-bool qtractorVstPlugin::loadPresetFile ( const QString& sFilename )
+bool qtractorVst2Plugin::loadPresetFile ( const QString& sFilename )
 {
 	bool bResult = false;
 
 	const QString& sExt = QFileInfo(sFilename).suffix().toLower();
 	if (sExt == "fxp" || sExt == "fxb") {
-		bResult = qtractorVstPreset(this).load(sFilename);
+		bResult = qtractorVst2Preset(this).load(sFilename);
 	} else {
 		const int iCurrentProgram
-			= vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
+			= vst2_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
 		bResult = qtractorPlugin::loadPresetFile(sFilename);
 		for (unsigned short i = 0; i < instances(); ++i)
-			vst_dispatch(i, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
+			vst2_dispatch(i, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
 	}
 
 	return bResult;
 }
 
-bool qtractorVstPlugin::savePresetFile ( const QString& sFilename )
+bool qtractorVst2Plugin::savePresetFile ( const QString& sFilename )
 {
 	const QString& sExt = QFileInfo(sFilename).suffix().toLower();
 	if (sExt == "fxp" || sExt == "fxb")
-		return qtractorVstPreset(this).save(sFilename);
+		return qtractorVst2Preset(this).save(sFilename);
 	else
 		return qtractorPlugin::savePresetFile(sFilename);
 }
 
 
 // Specific accessors.
-AEffect *qtractorVstPlugin::vst_effect ( unsigned short iInstance ) const
+AEffect *qtractorVst2Plugin::vst2_effect ( unsigned short iInstance ) const
 {
 	if (m_ppEffects == nullptr)
 		return nullptr;
 
-	return m_ppEffects[iInstance]->vst_effect();
+	return m_ppEffects[iInstance]->vst2_effect();
 }
 
 
-// VST host dispatcher.
-int qtractorVstPlugin::vst_dispatch( unsigned short iInstance,
+// VST2 host dispatcher.
+int qtractorVst2Plugin::vst2_dispatch( unsigned short iInstance,
 	long opcode, long index, long value, void *ptr, float opt) const
 {
 	if (m_ppEffects == nullptr)
 		return 0;
 
-	return m_ppEffects[iInstance]->vst_dispatch(opcode, index, value, ptr, opt);
+	return m_ppEffects[iInstance]->vst2_dispatch(opcode, index, value, ptr, opt);
 }
 
 
 // Open editor.
-void qtractorVstPlugin::openEditor ( QWidget *pParent )
+void qtractorVst2Plugin::openEditor ( QWidget *pParent )
 {
 	// Is it already there?
 	if (m_pEditorWidget) {
@@ -1194,7 +1194,7 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 	qtractorPluginList::WaitCursor waiting;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::openEditor(%p)", this, pParent);
+	qDebug("qtractorVst2Plugin[%p]::openEditor(%p)", this, pParent);
 #endif
 
 	// Make sure it's not closed...
@@ -1202,7 +1202,7 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 
 	// What style do we create tool childs?
 	Qt::WindowFlags wflags = Qt::Window;
-#if 0//QTRACTOR_VST_EDITOR_TOOL
+#if 0//QTRACTOR_VST2_EDITOR_TOOL
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions && pOptions->bKeepToolsOnTop) {
 		wflags |= Qt::Tool;
@@ -1226,7 +1226,7 @@ void qtractorVstPlugin::openEditor ( QWidget *pParent )
 
 
 // Close editor.
-void qtractorVstPlugin::closeEditor (void)
+void qtractorVst2Plugin::closeEditor (void)
 {
 	if (m_bEditorClosed)
 		return;
@@ -1237,7 +1237,7 @@ void qtractorVstPlugin::closeEditor (void)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin[%p]::closeEditor()", this);
+	qDebug("qtractorVst2Plugin[%p]::closeEditor()", this);
 #endif
 
 	setEditorVisible(false);
@@ -1249,23 +1249,23 @@ void qtractorVstPlugin::closeEditor (void)
 
 
 // Idle editor.
-void qtractorVstPlugin::idleEditor (void)
+void qtractorVst2Plugin::idleEditor (void)
 {
 	if (m_pEditorWidget == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorVstPlugin[%p]::idleEditor()", this);
+	qDebug("qtractorVst2Plugin[%p]::idleEditor()", this);
 #endif
 
-	vst_dispatch(0, effEditIdle, 0, 0, nullptr, 0.0f);
+	vst2_dispatch(0, effEditIdle, 0, 0, nullptr, 0.0f);
 
 	m_pEditorWidget->update();
 }
 
 
 // GUI editor visibility state.
-void qtractorVstPlugin::setEditorVisible ( bool bVisible )
+void qtractorVst2Plugin::setEditorVisible ( bool bVisible )
 {
 	if (m_pEditorWidget) {
 		if (!bVisible)
@@ -1279,14 +1279,14 @@ void qtractorVstPlugin::setEditorVisible ( bool bVisible )
 }
 
 
-bool qtractorVstPlugin::isEditorVisible (void) const
+bool qtractorVst2Plugin::isEditorVisible (void) const
 {
 	return (m_pEditorWidget ? m_pEditorWidget->isVisible() : false);
 }
 
 
 // Update editor widget caption.
-void qtractorVstPlugin::setEditorTitle ( const QString& sTitle )
+void qtractorVst2Plugin::setEditorTitle ( const QString& sTitle )
 {
 	qtractorPlugin::setEditorTitle(sTitle);
 
@@ -1296,48 +1296,48 @@ void qtractorVstPlugin::setEditorTitle ( const QString& sTitle )
 
 
 // Idle editor (static).
-void qtractorVstPlugin::idleEditorAll (void)
+void qtractorVst2Plugin::idleEditorAll (void)
 {
-	QListIterator<EditorWidget *> iter(g_vstEditors);
+	QListIterator<EditorWidget *> iter(g_vst2Editors);
 	while (iter.hasNext()) {
-		qtractorVstPlugin *pVstPlugin = iter.next()->plugin();
-		if (pVstPlugin)
-			pVstPlugin->idleEditor();
+		qtractorVst2Plugin *pVst2Plugin = iter.next()->plugin();
+		if (pVst2Plugin)
+			pVst2Plugin->idleEditor();
 	}
 }
 
 
 // Our own editor widget accessor.
-QWidget *qtractorVstPlugin::editorWidget (void) const
+QWidget *qtractorVst2Plugin::editorWidget (void) const
 {
 	return static_cast<QWidget *> (m_pEditorWidget);
 }
 
 
 // Our own editor widget size accessor.
-void qtractorVstPlugin::resizeEditor ( int w, int h )
+void qtractorVst2Plugin::resizeEditor ( int w, int h )
 {
 	if (m_pEditorWidget && w > 0 && h > 0)
 		m_pEditorWidget->setFixedSize(w, h);
 }
 
 
-// Global VST plugin lookup.
-qtractorVstPlugin *qtractorVstPlugin::findPlugin ( AEffect *pVstEffect )
+// Global VST2 plugin lookup.
+qtractorVst2Plugin *qtractorVst2Plugin::findPlugin ( AEffect *pVst2Effect )
 {
-	return g_vstPlugins.value(pVstEffect, nullptr);
+	return g_vst2Plugins.value(pVst2Effect, nullptr);
 }
 
 
-#ifdef CONFIG_VST_X11
+#ifdef CONFIG_VST2_X11
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 
 // Global X11 event filter.
-bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
+bool qtractorVst2Plugin::x11EventFilter ( void *pvEvent )
 {
 	XEvent *pEvent = (XEvent *) pvEvent;
 
-	QListIterator<EditorWidget *> iter(g_vstEditors);
+	QListIterator<EditorWidget *> iter(g_vst2Editors);
 	while (iter.hasNext()) {
 		if (iter.next()->x11EventFilter(pEvent))
 			return true;
@@ -1347,25 +1347,25 @@ bool qtractorVstPlugin::x11EventFilter ( void *pvEvent )
 }
 
 #endif
-#endif	// CONFIG_VST_X11
+#endif	// CONFIG_VST2_X11
 
 
 // All parameters update method.
-void qtractorVstPlugin::updateParamValues ( bool bUpdate )
+void qtractorVst2Plugin::updateParamValues ( bool bUpdate )
 {
 	int nupdate = 0;
 
 	// Make sure all cached parameter values are in sync
 	// with plugin parameter values; update cache otherwise.
-	AEffect *pVstEffect = vst_effect(0);
-	if (pVstEffect) {
+	AEffect *pVst2Effect = vst2_effect(0);
+	if (pVst2Effect) {
 		const qtractorPlugin::Params& params = qtractorPlugin::params();
 		qtractorPlugin::Params::ConstIterator param = params.constBegin();
 		const qtractorPlugin::Params::ConstIterator param_end = params.constEnd();
 		for ( ; param != param_end; ++param) {
 			qtractorPlugin::Param *pParam = param.value();
 			const float fValue
-				= pVstEffect->getParameter(pVstEffect, pParam->index());
+				= pVst2Effect->getParameter(pVst2Effect, pParam->index());
 			if (pParam->value() != fValue) {
 				pParam->setValue(fValue, bUpdate);
 				++nupdate;
@@ -1379,24 +1379,24 @@ void qtractorVstPlugin::updateParamValues ( bool bUpdate )
 
 
 //----------------------------------------------------------------------------
-// qtractorVstPlugin::Param -- VST plugin control input port instance.
+// qtractorVst2Plugin::Param -- VST2 plugin control input port instance.
 //
 
 // Constructors.
-qtractorVstPlugin::Param::Param (
-	qtractorVstPlugin *pVstPlugin, unsigned long iIndex )
-	: qtractorPlugin::Param(pVstPlugin, iIndex)
+qtractorVst2Plugin::Param::Param (
+	qtractorVst2Plugin *pVst2Plugin, unsigned long iIndex )
+	: qtractorPlugin::Param(pVst2Plugin, iIndex)
 {
 #ifdef CONFIG_DEBUG_0
-	qDebug("qtractorVstPlugin::Param[%p] pVstPlugin=%p iIndex=%lu", this, pVstPlugin, iIndex);
+	qDebug("qtractorVst2Plugin::Param[%p] pVst2Plugin=%p iIndex=%lu", this, pVst2Plugin, iIndex);
 #endif
 
-	qtractorVstPluginType *pVstType
-		= static_cast<qtractorVstPluginType *> (pVstPlugin->type());
+	qtractorVst2PluginType *pVst2Type
+		= static_cast<qtractorVst2PluginType *> (pVst2Plugin->type());
 	
 	char szName[64]; szName[0] = (char) 0;
-	if (pVstType)
-		pVstType->vst_dispatch(effGetParamName, iIndex, 0, (void *) szName, 0.0f);
+	if (pVst2Type)
+		pVst2Type->vst2_dispatch(effGetParamName, iIndex, 0, (void *) szName, 0.0f);
 	if (!szName[0])
 		::snprintf(szName, sizeof(szName), "Param #%lu", iIndex + 1); // Default dummy name.
 	setName(szName);
@@ -1406,7 +1406,7 @@ qtractorVstPlugin::Param::Param (
 
 	::memset(&m_props, 0, sizeof(m_props));
 
-	if (pVstType &&	pVstType->vst_dispatch(
+	if (pVst2Type &&	pVst2Type->vst2_dispatch(
 			effGetParameterProperties, iIndex, 0, (void *) &m_props, 0.0f)) {
 	#ifdef CONFIG_DEBUG_0
 		qDebug("  VstParamProperties(%lu) {", iIndex);
@@ -1441,11 +1441,11 @@ qtractorVstPlugin::Param::Param (
 	}
 
 	// ATTN: Set default value as initial one...
-	if (pVstType && pVstType->effect()) {
-		AEffect *pVstEffect = (pVstType->effect())->vst_effect();
-		if (pVstEffect)
+	if (pVst2Type && pVst2Type->effect()) {
+		AEffect *pVst2Effect = (pVst2Type->effect())->vst2_effect();
+		if (pVst2Effect)
 			qtractorPlugin::Param::setValue(
-				pVstEffect->getParameter(pVstEffect, iIndex), true);
+				pVst2Effect->getParameter(pVst2Effect, iIndex), true);
 	}
 
 	setDefaultValue(qtractorPlugin::Param::value());
@@ -1456,7 +1456,7 @@ qtractorVstPlugin::Param::Param (
 
 
 // Port range hints predicate methods.
-bool qtractorVstPlugin::Param::isBoundedBelow (void) const
+bool qtractorVst2Plugin::Param::isBoundedBelow (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1465,7 +1465,7 @@ bool qtractorVstPlugin::Param::isBoundedBelow (void) const
 #endif
 }
 
-bool qtractorVstPlugin::Param::isBoundedAbove (void) const
+bool qtractorVst2Plugin::Param::isBoundedAbove (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1474,22 +1474,22 @@ bool qtractorVstPlugin::Param::isBoundedAbove (void) const
 #endif
 }
 
-bool qtractorVstPlugin::Param::isDefaultValue (void) const
+bool qtractorVst2Plugin::Param::isDefaultValue (void) const
 {
 	return true;
 }
 
-bool qtractorVstPlugin::Param::isLogarithmic (void) const
+bool qtractorVst2Plugin::Param::isLogarithmic (void) const
 {
 	return false;
 }
 
-bool qtractorVstPlugin::Param::isSampleRate (void) const
+bool qtractorVst2Plugin::Param::isSampleRate (void) const
 {
 	return false;
 }
 
-bool qtractorVstPlugin::Param::isInteger (void) const
+bool qtractorVst2Plugin::Param::isInteger (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1498,7 +1498,7 @@ bool qtractorVstPlugin::Param::isInteger (void) const
 #endif
 }
 
-bool qtractorVstPlugin::Param::isToggled (void) const
+bool qtractorVst2Plugin::Param::isToggled (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1507,7 +1507,7 @@ bool qtractorVstPlugin::Param::isToggled (void) const
 #endif
 }
 
-bool qtractorVstPlugin::Param::isDisplay (void) const
+bool qtractorVst2Plugin::Param::isDisplay (void) const
 {
 #ifdef CONFIG_VESTIGE_OLD
 	return false;
@@ -1518,24 +1518,24 @@ bool qtractorVstPlugin::Param::isDisplay (void) const
 
 
 // Current display value.
-QString qtractorVstPlugin::Param::display (void) const
+QString qtractorVst2Plugin::Param::display (void) const
 {
-	qtractorVstPluginType *pVstType = nullptr;
+	qtractorVst2PluginType *pVst2Type = nullptr;
 	if (plugin())
-		pVstType = static_cast<qtractorVstPluginType *> (plugin()->type());
-	if (pVstType) {
+		pVst2Type = static_cast<qtractorVst2PluginType *> (plugin()->type());
+	if (pVst2Type) {
 		QString sDisplay;
 		char szText[64];
 		// Grab parameter display value...
 		szText[0] = '\0';
-		pVstType->vst_dispatch(effGetParamDisplay,
+		pVst2Type->vst2_dispatch(effGetParamDisplay,
 			index(), 0, (void *) szText, 0.0f);
 		if (szText[0]) {
 			// Got
 			sDisplay += QString(szText).trimmed();
 			// Grab parameter name...
 			szText[0] = '\0';
-			pVstType->vst_dispatch(effGetParamLabel,
+			pVst2Type->vst2_dispatch(effGetParamLabel,
 				index(), 0, (void *) szText, 0.0f);
 			if (szText[0])
 				sDisplay += ' ' + QString(szText).trimmed();
@@ -1550,19 +1550,19 @@ QString qtractorVstPlugin::Param::display (void) const
 
 
 //----------------------------------------------------------------------
-// VST host callback file selection helpers.
+// VST2 host callback file selection helpers.
 
 #ifndef CONFIG_VESTIGE
 
-static VstIntPtr qtractorVstPlugin_openFileSelector (
+static VstIntPtr qtractorVst2Plugin_openFileSelector (
 	AEffect *effect, VstFileSelect *pvfs )
 {
-	qtractorVstPlugin *pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-	if (pVstPlugin == nullptr)
+	qtractorVst2Plugin *pVst2Plugin = qtractorVst2Plugin::findPlugin(effect);
+	if (pVst2Plugin == nullptr)
 		return 0;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin_openFileSelector(%p, %p) command=%d reserved=%d",
+	qDebug("qtractorVst2Plugin_openFileSelector(%p, %p) command=%d reserved=%d",
 		effect, pvfs, int(pvfs->command), int(pvfs->reserved));
 #endif
 
@@ -1577,11 +1577,11 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 				.arg(pvfs->fileTypes[i].name).arg(pvfs->fileTypes[i].dosType));
 		}
 		filters.append(QObject::tr("All files (*.*)"));
-		QWidget *pParentWidget = pVstPlugin->editorWidget();
+		QWidget *pParentWidget = pVst2Plugin->editorWidget();
 		if (pParentWidget)
 			pParentWidget = pParentWidget->window();
 		const QString& sTitle = QString("%1 - %2")
-			.arg(pvfs->title).arg((pVstPlugin->type())->name());
+			.arg(pvfs->title).arg((pVst2Plugin->type())->name());
 		const QString& sDirectory = pvfs->initialPath;
 		const QString& sFilter = filters.join(";;");
 		QFileDialog::Options options;
@@ -1606,11 +1606,11 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 	}
 	else
 	if (pvfs->command == kVstDirectorySelect) {
-		QWidget *pParentWidget = pVstPlugin->editorWidget();
+		QWidget *pParentWidget = pVst2Plugin->editorWidget();
 		if (pParentWidget)
 			pParentWidget = pParentWidget->window();
 		const QString& sTitle = QString("%1 - %2")
-			.arg(pvfs->title).arg((pVstPlugin->type())->name());
+			.arg(pvfs->title).arg((pVst2Plugin->type())->name());
 		const QFileDialog::Options options
 			= QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog;
 		const QString& sDirectory
@@ -1630,15 +1630,15 @@ static VstIntPtr qtractorVstPlugin_openFileSelector (
 }
 
 
-static VstIntPtr qtractorVstPlugin_closeFileSelector (
+static VstIntPtr qtractorVst2Plugin_closeFileSelector (
 	AEffect *effect, VstFileSelect *pvfs )
 {
-	qtractorVstPlugin *pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-	if (pVstPlugin == nullptr)
+	qtractorVst2Plugin *pVst2Plugin = qtractorVst2Plugin::findPlugin(effect);
+	if (pVst2Plugin == nullptr)
 		return 0;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPlugin_closeFileSelector(%p, %p) command=%d reserved=%d",
+	qDebug("qtractorVst2Plugin_closeFileSelector(%p, %p) command=%d reserved=%d",
 		effect, pvfs, int(pvfs->command), int(pvfs->reserved));
 #endif
 
@@ -1658,116 +1658,116 @@ static VstIntPtr qtractorVstPlugin_closeFileSelector (
 // The magnificient host callback, which every VSTi plugin will call.
 
 #ifdef CONFIG_DEBUG
-#define VST_HC_FMT "qtractorVstPlugin_HostCallback(%p, %s(%d), %d, %d, %p, %g)"
-#define VST_HC_DEBUG(s)  qDebug(VST_HC_FMT, \
+#define VST2_HC_FMT "qtractorVst2Plugin_HostCallback(%p, %s(%d), %d, %d, %p, %g)"
+#define VST2_HC_DEBUG(s)  qDebug(VST2_HC_FMT, \
 	effect, (s), int(opcode), int(index), int(value), ptr, opt)
-#define VST_HC_DEBUGX(s) qDebug(VST_HC_FMT " [%s]", \
+#define VST2_HC_DEBUGX(s) qDebug(VST2_HC_FMT " [%s]", \
 	effect, (s), int(opcode), int(index), int(value), ptr, opt, (char *) ptr)
 #else
-#define VST_HC_DEBUG(s)
-#define VST_HC_DEBUGX(s)
+#define VST2_HC_DEBUG(s)
+#define VST2_HC_DEBUGX(s)
 #endif
 
-static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
+static VstIntPtr VSTCALLBACK qtractorVst2Plugin_HostCallback ( AEffect *effect,
 	VstInt32 opcode, VstInt32 index, VstIntPtr value, void *ptr, float opt )
 {
 	VstIntPtr ret = 0;
-	qtractorVstPlugin *pVstPlugin = nullptr;
-	static VstTimeInfo s_vstTimeInfo;
+	qtractorVst2Plugin *pVst2Plugin = nullptr;
+	static VstTimeInfo s_vst2TimeInfo;
 	qtractorSession *pSession = qtractorSession::getInstance();
 
 	switch (opcode) {
 
 	// VST 1.0 opcodes...
 	case audioMasterVersion:
-		VST_HC_DEBUG("audioMasterVersion");
+		VST2_HC_DEBUG("audioMasterVersion");
 		ret = 2; // vst2.x
 		break;
 
 	case audioMasterAutomate:
-		VST_HC_DEBUG("audioMasterAutomate");
+		VST2_HC_DEBUG("audioMasterAutomate");
 	//	effect->setParameter(effect, index, opt);
-		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
-			pVstPlugin->updateParamValue(index, opt, false);
+		pVst2Plugin = qtractorVst2Plugin::findPlugin(effect);
+		if (pVst2Plugin) {
+			pVst2Plugin->updateParamValue(index, opt, false);
 		//	QApplication::processEvents();
 		}
 		break;
 
 	case audioMasterCurrentId:
-		VST_HC_DEBUG("audioMasterCurrentId");
-		ret = (VstIntPtr) g_iVstShellCurrentId;
+		VST2_HC_DEBUG("audioMasterCurrentId");
+		ret = (VstIntPtr) g_iVst2ShellCurrentId;
 		break;
 
 	case audioMasterIdle:
-		VST_HC_DEBUG("audioMasterIdle");
-		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
-			pVstPlugin->updateParamValues(false);
-			pVstPlugin->idleEditor();
+		VST2_HC_DEBUG("audioMasterIdle");
+		pVst2Plugin = qtractorVst2Plugin::findPlugin(effect);
+		if (pVst2Plugin) {
+			pVst2Plugin->updateParamValues(false);
+			pVst2Plugin->idleEditor();
 		//	QApplication::processEvents();
 		}
 		break;
 
 	case audioMasterGetTime:
-	//	VST_HC_DEBUG("audioMasterGetTime");
-		::memset(&s_vstTimeInfo, 0, sizeof(s_vstTimeInfo));
+	//	VST2_HC_DEBUG("audioMasterGetTime");
+		::memset(&s_vst2TimeInfo, 0, sizeof(s_vst2TimeInfo));
 		if (pSession) {
 			qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 			if (pAudioEngine) {
 				const qtractorAudioEngine::TimeInfo& timeInfo
 					= pAudioEngine->timeInfo();
-				s_vstTimeInfo.samplePos = double(timeInfo.frame);
-				s_vstTimeInfo.sampleRate = double(timeInfo.sampleRate);
-				s_vstTimeInfo.flags = 0;
+				s_vst2TimeInfo.samplePos = double(timeInfo.frame);
+				s_vst2TimeInfo.sampleRate = double(timeInfo.sampleRate);
+				s_vst2TimeInfo.flags = 0;
 				if (timeInfo.playing)
-					s_vstTimeInfo.flags |= (kVstTransportChanged | kVstTransportPlaying);
-				s_vstTimeInfo.flags |= kVstPpqPosValid;
-				s_vstTimeInfo.ppqPos = double(timeInfo.beats);
-				s_vstTimeInfo.flags |= kVstBarsValid;
-				s_vstTimeInfo.barStartPos = double(timeInfo.barBeats);
-				s_vstTimeInfo.flags |= kVstTempoValid;
-				s_vstTimeInfo.tempo  = double(timeInfo.tempo);
-				s_vstTimeInfo.flags |= kVstTimeSigValid;
-				s_vstTimeInfo.timeSigNumerator = timeInfo.beatsPerBar;
-				s_vstTimeInfo.timeSigDenominator = timeInfo.beatType;
+					s_vst2TimeInfo.flags |= (kVstTransportChanged | kVstTransportPlaying);
+				s_vst2TimeInfo.flags |= kVstPpqPosValid;
+				s_vst2TimeInfo.ppqPos = double(timeInfo.beats);
+				s_vst2TimeInfo.flags |= kVstBarsValid;
+				s_vst2TimeInfo.barStartPos = double(timeInfo.barBeats);
+				s_vst2TimeInfo.flags |= kVstTempoValid;
+				s_vst2TimeInfo.tempo  = double(timeInfo.tempo);
+				s_vst2TimeInfo.flags |= kVstTimeSigValid;
+				s_vst2TimeInfo.timeSigNumerator = timeInfo.beatsPerBar;
+				s_vst2TimeInfo.timeSigDenominator = timeInfo.beatType;
 			}
 		}
-		ret = (VstIntPtr) &s_vstTimeInfo;
+		ret = (VstIntPtr) &s_vst2TimeInfo;
 		break;
 
 	case audioMasterProcessEvents:
-		VST_HC_DEBUG("audioMasterProcessEvents");
-		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
+		VST2_HC_DEBUG("audioMasterProcessEvents");
+		pVst2Plugin = qtractorVst2Plugin::findPlugin(effect);
+		if (pVst2Plugin) {
 			qtractorMidiManager *pMidiManager = nullptr;
-			qtractorPluginList *pPluginList = pVstPlugin->list();
+			qtractorPluginList *pPluginList = pVst2Plugin->list();
 			if (pPluginList)
 				pMidiManager = pPluginList->midiManager();
 			if (pMidiManager) {
-				pMidiManager->vst_events_copy((VstEvents *) ptr);
+				pMidiManager->vst2_events_copy((VstEvents *) ptr);
 				ret = 1; // supported and processed.
 			}
 		}
 		break;
 
 	case audioMasterIOChanged:
-		VST_HC_DEBUG("audioMasterIOChanged");
+		VST2_HC_DEBUG("audioMasterIOChanged");
 		break;
 
 	case audioMasterSizeWindow:
-		VST_HC_DEBUG("audioMasterSizeWindow");
-		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
-			pVstPlugin->resizeEditor(int(index), int(value));
+		VST2_HC_DEBUG("audioMasterSizeWindow");
+		pVst2Plugin = qtractorVst2Plugin::findPlugin(effect);
+		if (pVst2Plugin) {
+			pVst2Plugin->resizeEditor(int(index), int(value));
 			ret = 1; // supported.
 		}
 		break;
 
 	case audioMasterGetSampleRate:
-		VST_HC_DEBUG("audioMasterGetSampleRate");
-		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
+		VST2_HC_DEBUG("audioMasterGetSampleRate");
+		pVst2Plugin = qtractorVst2Plugin::findPlugin(effect);
+		if (pVst2Plugin) {
 			qtractorSession *pSession = qtractorSession::getInstance();
 			if (pSession) {
 				qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
@@ -1778,9 +1778,9 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 		break;
 
 	case audioMasterGetBlockSize:
-		VST_HC_DEBUG("audioMasterGetBlockSize");
-		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
+		VST2_HC_DEBUG("audioMasterGetBlockSize");
+		pVst2Plugin = qtractorVst2Plugin::findPlugin(effect);
+		if (pVst2Plugin) {
 			qtractorSession *pSession = qtractorSession::getInstance();
 			if (pSession) {
 				qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
@@ -1791,50 +1791,50 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 		break;
 
 	case audioMasterGetInputLatency:
-		VST_HC_DEBUG("audioMasterGetInputLatency");
+		VST2_HC_DEBUG("audioMasterGetInputLatency");
 		break;
 
 	case audioMasterGetOutputLatency:
-		VST_HC_DEBUG("audioMasterGetOutputLatency");
+		VST2_HC_DEBUG("audioMasterGetOutputLatency");
 		break;
 
 	case audioMasterGetCurrentProcessLevel:
-	//	VST_HC_DEBUG("audioMasterGetCurrentProcessLevel");
+	//	VST2_HC_DEBUG("audioMasterGetCurrentProcessLevel");
 		break;
 
 	case audioMasterGetAutomationState:
-		VST_HC_DEBUG("audioMasterGetAutomationState");
+		VST2_HC_DEBUG("audioMasterGetAutomationState");
 		ret = 1; // off.
 		break;
 
 #if !defined(VST_2_3_EXTENSIONS) 
 	case audioMasterGetSpeakerArrangement:
-		VST_HC_DEBUG("audioMasterGetSpeakerArrangement");
+		VST2_HC_DEBUG("audioMasterGetSpeakerArrangement");
 		break;
 #endif
 
 	case audioMasterGetVendorString:
-		VST_HC_DEBUG("audioMasterGetVendorString");
+		VST2_HC_DEBUG("audioMasterGetVendorString");
 		::strcpy((char *) ptr, QTRACTOR_DOMAIN);
 		ret = 1; // ok.
 		break;
 
 	case audioMasterGetProductString:
-		VST_HC_DEBUG("audioMasterGetProductString");
+		VST2_HC_DEBUG("audioMasterGetProductString");
 		::strcpy((char *) ptr, QTRACTOR_TITLE);
 		ret = 1; // ok.
 		break;
 
 	case audioMasterGetVendorVersion:
-		VST_HC_DEBUG("audioMasterGetVendorVersion");
+		VST2_HC_DEBUG("audioMasterGetVendorVersion");
 		break;
 
 	case audioMasterVendorSpecific:
-		VST_HC_DEBUG("audioMasterVendorSpecific");
+		VST2_HC_DEBUG("audioMasterVendorSpecific");
 		break;
 
 	case audioMasterCanDo:
-		VST_HC_DEBUGX("audioMasterCanDo");
+		VST2_HC_DEBUGX("audioMasterCanDo");
 		if (::strcmp("receiveVstMidiEvent", (char *) ptr) == 0 ||
 			::strcmp("sendVstMidiEvent",    (char *) ptr) == 0 ||
 			::strcmp("sendVstTimeInfo",     (char *) ptr) == 0 ||
@@ -1852,108 +1852,108 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 		break;
 
 	case audioMasterGetLanguage:
-		VST_HC_DEBUG("audioMasterGetLanguage");
+		VST2_HC_DEBUG("audioMasterGetLanguage");
 		ret = (VstIntPtr) kVstLangEnglish;
 		break;
 
 #if 0 // !VST_FORCE_DEPRECATED
 	case audioMasterPinConnected:
-		VST_HC_DEBUG("audioMasterPinConnected");
+		VST2_HC_DEBUG("audioMasterPinConnected");
 		break;
 
 	// VST 2.0 opcodes...
 	case audioMasterWantMidi:
-		VST_HC_DEBUG("audioMasterWantMidi");
+		VST2_HC_DEBUG("audioMasterWantMidi");
 		break;
 
 	case audioMasterSetTime:
-		VST_HC_DEBUG("audioMasterSetTime");
+		VST2_HC_DEBUG("audioMasterSetTime");
 		break;
 
 	case audioMasterTempoAt:
-		VST_HC_DEBUG("audioMasterTempoAt");
+		VST2_HC_DEBUG("audioMasterTempoAt");
 		if (pSession)
 			ret = (VstIntPtr) (pSession->tempo() * 10000.0f);
 		break;
 
 	case audioMasterGetNumAutomatableParameters:
-		VST_HC_DEBUG("audioMasterGetNumAutomatableParameters");
+		VST2_HC_DEBUG("audioMasterGetNumAutomatableParameters");
 		break;
 
 	case audioMasterGetParameterQuantization:
-		VST_HC_DEBUG("audioMasterGetParameterQuantization");
+		VST2_HC_DEBUG("audioMasterGetParameterQuantization");
 		ret = 1; // full single float precision
 		break;
 
 	case audioMasterNeedIdle:
-		VST_HC_DEBUG("audioMasterNeedIdle");
+		VST2_HC_DEBUG("audioMasterNeedIdle");
 		break;
 
 	case audioMasterGetPreviousPlug:
-		VST_HC_DEBUG("audioMasterGetPreviousPlug");
+		VST2_HC_DEBUG("audioMasterGetPreviousPlug");
 		break;
 
 	case audioMasterGetNextPlug:
-		VST_HC_DEBUG("audioMasterGetNextPlug");
+		VST2_HC_DEBUG("audioMasterGetNextPlug");
 		break;
 
 	case audioMasterWillReplaceOrAccumulate:
-		VST_HC_DEBUG("audioMasterWillReplaceOrAccumulate");
+		VST2_HC_DEBUG("audioMasterWillReplaceOrAccumulate");
 		ret = 1;
 		break;
 
 	case audioMasterSetOutputSampleRate:
-		VST_HC_DEBUG("audioMasterSetOutputSampleRate");
+		VST2_HC_DEBUG("audioMasterSetOutputSampleRate");
 		break;
 
 	case audioMasterSetIcon:
-		VST_HC_DEBUG("audioMasterSetIcon");
+		VST2_HC_DEBUG("audioMasterSetIcon");
 		break;
 
 	case audioMasterOpenWindow:
-		VST_HC_DEBUG("audioMasterOpenWindow");
+		VST2_HC_DEBUG("audioMasterOpenWindow");
 		break;
 
 	case audioMasterCloseWindow:
-		VST_HC_DEBUG("audioMasterCloseWindow");
+		VST2_HC_DEBUG("audioMasterCloseWindow");
 		break;
 #endif
 
 	case audioMasterGetDirectory:
-		VST_HC_DEBUG("audioMasterGetDirectory");
+		VST2_HC_DEBUG("audioMasterGetDirectory");
 		break;
 
 	case audioMasterUpdateDisplay:
-		VST_HC_DEBUG("audioMasterUpdateDisplay");
-		pVstPlugin = qtractorVstPlugin::findPlugin(effect);
-		if (pVstPlugin) {
-			pVstPlugin->updateParamValues(false);
+		VST2_HC_DEBUG("audioMasterUpdateDisplay");
+		pVst2Plugin = qtractorVst2Plugin::findPlugin(effect);
+		if (pVst2Plugin) {
+			pVst2Plugin->updateParamValues(false);
 		//	QApplication::processEvents();
 			ret = 1; // supported.
 		}
 		break;
 
 	case audioMasterBeginEdit:
-		VST_HC_DEBUG("audioMasterBeginEdit");
+		VST2_HC_DEBUG("audioMasterBeginEdit");
 		break;
 
 	case audioMasterEndEdit:
-		VST_HC_DEBUG("audioMasterEndEdit");
+		VST2_HC_DEBUG("audioMasterEndEdit");
 		break;
 
 #ifndef CONFIG_VESTIGE
 	case audioMasterOpenFileSelector:
-		VST_HC_DEBUG("audioMasterOpenFileSelector");
-		ret = qtractorVstPlugin_openFileSelector(effect, (VstFileSelect *) ptr);
+		VST2_HC_DEBUG("audioMasterOpenFileSelector");
+		ret = qtractorVst2Plugin_openFileSelector(effect, (VstFileSelect *) ptr);
 		break;
 
 	case audioMasterCloseFileSelector:
-		VST_HC_DEBUG("audioMasterCloseFileSelector");
-		ret = qtractorVstPlugin_closeFileSelector(effect, (VstFileSelect *) ptr);
+		VST2_HC_DEBUG("audioMasterCloseFileSelector");
+		ret = qtractorVst2Plugin_closeFileSelector(effect, (VstFileSelect *) ptr);
 		break;
 #endif
 	default:
-		VST_HC_DEBUG("audioMasterUnknown");
+		VST2_HC_DEBUG("audioMasterUnknown");
 		break;
 	}
 
@@ -1962,7 +1962,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 
 
 //-----------------------------------------------------------------------------
-// Structures for VST presets (fxb/fxp files)
+// Structures for VST2 presets (fxb/fxp files)
 
 // Constants copied/stringified from "vstfxstore.h"
 //
@@ -1977,7 +1977,7 @@ static VstIntPtr VSTCALLBACK qtractorVstPlugin_HostCallback ( AEffect *effect,
 
 // Common bank/program header structure (fxb/fxp files)
 //
-struct qtractorVstPreset::BaseHeader
+struct qtractorVst2Preset::BaseHeader
 {
 	VstInt32 chunkMagic;		// 'CcnK'
 	VstInt32 byteSize;			// size of this chunk, excl. magic + byteSize
@@ -1990,7 +1990,7 @@ struct qtractorVstPreset::BaseHeader
 
 // Program sub-header structure (fxb/fxp files)
 //
-struct qtractorVstPreset::ProgHeader
+struct qtractorVst2Preset::ProgHeader
 {
 	VstInt32 numParams;			// number of parameters
 	char prgName[28];			// program name (null-terminated ASCII string)
@@ -1999,7 +1999,7 @@ struct qtractorVstPreset::ProgHeader
 
 // Bank sub-header structure (fxb files)
 //
-struct qtractorVstPreset::BankHeader
+struct qtractorVst2Preset::BankHeader
 {
 	VstInt32 numPrograms;		// number of programs
 	VstInt32 currentProgram;	// version 2: current program number
@@ -2009,7 +2009,7 @@ struct qtractorVstPreset::BankHeader
 
 // Common auxiliary chunk structure (chunked fxb/fxp files)
 //
-struct qtractorVstPreset::Chunk
+struct qtractorVst2Preset::Chunk
 {
 	VstInt32 size;
 	char *data;
@@ -2047,19 +2047,19 @@ static inline bool fx_is_magic ( VstInt32 v, const char *c )
 
 
 //----------------------------------------------------------------------
-// class qtractorVstPreset -- VST preset file interface
+// class qtractorVst2Preset -- VST2 preset file interface
 //
 
 // Constructor.
-qtractorVstPreset::qtractorVstPreset ( qtractorVstPlugin *pVstPlugin )
-	: m_pVstPlugin(pVstPlugin)
+qtractorVst2Preset::qtractorVst2Preset ( qtractorVst2Plugin *pVst2Plugin )
+	: m_pVst2Plugin(pVst2Plugin)
 {
 }
 
 
 // Loader methods.
 //
-bool qtractorVstPreset::load_bank_progs ( QFile& file )
+bool qtractorVst2Preset::load_bank_progs ( QFile& file )
 {
 	BankHeader bank_header;
 	const int nread_bank = sizeof(bank_header);
@@ -2072,7 +2072,7 @@ bool qtractorVstPreset::load_bank_progs ( QFile& file )
 	const int iNumPrograms = int(bank_header.numPrograms);
 //	const int iCurrentProgram = int(bank_header.currentProgram);
 	const int iCurrentProgram
-		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
+		= m_pVst2Plugin->vst2_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
 
 	for (int iProgram = 0; iProgram < iNumPrograms; ++iProgram) {
 
@@ -2091,8 +2091,8 @@ bool qtractorVstPreset::load_bank_progs ( QFile& file )
 		if (!fx_is_magic(base_header.chunkMagic, cMagic))
 			return false;
 
-		for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
-			m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iProgram, nullptr, 0.0f);
+		for (unsigned short i = 0; i < m_pVst2Plugin->instances(); ++i)
+			m_pVst2Plugin->vst2_dispatch(i, effSetProgram, 0, iProgram, nullptr, 0.0f);
 
 		if (fx_is_magic(base_header.fxMagic, fMagic)) {
 			if (!load_prog_params(file))
@@ -2106,14 +2106,14 @@ bool qtractorVstPreset::load_bank_progs ( QFile& file )
 		else return false;
 	}
 
-	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
-		m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
+	for (unsigned short i = 0; i < m_pVst2Plugin->instances(); ++i)
+		m_pVst2Plugin->vst2_dispatch(i, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
 
 	return true;
 }
 
 
-bool qtractorVstPreset::load_prog_params ( QFile& file )
+bool qtractorVst2Preset::load_prog_params ( QFile& file )
 {
 	ProgHeader prog_header;
 	const int nread = sizeof(prog_header);
@@ -2122,8 +2122,8 @@ bool qtractorVstPreset::load_prog_params ( QFile& file )
 
 	fx_endian_swap(prog_header.numParams);
 
-	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
-		m_pVstPlugin->vst_dispatch(i, effSetProgramName, 0, 0, (void *) prog_header.prgName, 0.0f);
+	for (unsigned short i = 0; i < m_pVst2Plugin->instances(); ++i)
+		m_pVst2Plugin->vst2_dispatch(i, effSetProgramName, 0, 0, (void *) prog_header.prgName, 0.0f);
 
 	const int iNumParams = int(prog_header.numParams);
 	if (iNumParams < 1)
@@ -2136,10 +2136,10 @@ bool qtractorVstPreset::load_prog_params ( QFile& file )
 
 	for (int iParam = 0; iParam < iNumParams; ++iParam) {
 		fx_endian_swap(params[iParam]);
-		for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i) {
-			AEffect *pVstEffect = m_pVstPlugin->vst_effect(i);
-			if (pVstEffect)
-				pVstEffect->setParameter(pVstEffect, iParam, params[iParam]);
+		for (unsigned short i = 0; i < m_pVst2Plugin->instances(); ++i) {
+			AEffect *pVst2Effect = m_pVst2Plugin->vst2_effect(i);
+			if (pVst2Effect)
+				pVst2Effect->setParameter(pVst2Effect, iParam, params[iParam]);
 		}
 	}
 
@@ -2148,7 +2148,7 @@ bool qtractorVstPreset::load_prog_params ( QFile& file )
 }
 
 
-bool qtractorVstPreset::load_bank_chunk ( QFile& file )
+bool qtractorVst2Preset::load_bank_chunk ( QFile& file )
 {
 	BankHeader bank_header;
 	const int nread = sizeof(bank_header);
@@ -2156,18 +2156,18 @@ bool qtractorVstPreset::load_bank_chunk ( QFile& file )
 		return false;
 
 	const int iCurrentProgram
-		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
+		= m_pVst2Plugin->vst2_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
 
 	const bool bResult = load_chunk(file, 0);
 
-	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
-		m_pVstPlugin->vst_dispatch(i, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
+	for (unsigned short i = 0; i < m_pVst2Plugin->instances(); ++i)
+		m_pVst2Plugin->vst2_dispatch(i, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
 
 	return bResult;
 }
 
 
-bool qtractorVstPreset::load_prog_chunk ( QFile& file )
+bool qtractorVst2Preset::load_prog_chunk ( QFile& file )
 {
 	ProgHeader prog_header;
 	const int nread = sizeof(prog_header);
@@ -2178,7 +2178,7 @@ bool qtractorVstPreset::load_prog_chunk ( QFile& file )
 }
 
 
-bool qtractorVstPreset::load_chunk ( QFile& file, int preset )
+bool qtractorVst2Preset::load_chunk ( QFile& file, int preset )
 {
 	Chunk chunk;
 	const int nread = sizeof(chunk.size);
@@ -2194,8 +2194,8 @@ bool qtractorVstPreset::load_chunk ( QFile& file, int preset )
 		return false;
 	}
 
-	for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i) {
-		m_pVstPlugin->vst_dispatch(i, effSetChunk,
+	for (unsigned short i = 0; i < m_pVst2Plugin->instances(); ++i) {
+		m_pVst2Plugin->vst2_dispatch(i, effSetChunk,
 			preset, chunk.size,	(void *) chunk.data, 0.0f);
 	}
 
@@ -2206,9 +2206,9 @@ bool qtractorVstPreset::load_chunk ( QFile& file, int preset )
 
 // File loader.
 //
-bool qtractorVstPreset::load ( const QString& sFilename )
+bool qtractorVst2Preset::load ( const QString& sFilename )
 {
-	if (m_pVstPlugin == nullptr)
+	if (m_pVst2Plugin == nullptr)
 		return false;
 
 	const QFileInfo fi(sFilename);
@@ -2234,7 +2234,7 @@ bool qtractorVstPreset::load ( const QString& sFilename )
 	}
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPreset::load(\"%s\")", sFilename.toUtf8().constData());
+	qDebug("qtractorVst2Preset::load(\"%s\")", sFilename.toUtf8().constData());
 #endif
 
 //	fx_endian_swap(base_header.chunkMagic);
@@ -2248,51 +2248,51 @@ bool qtractorVstPreset::load ( const QString& sFilename )
 
 	if (!fx_is_magic(base_header.chunkMagic, cMagic)) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPresetload() header.chunkMagic is not \"%s\".", cMagic);
+		qDebug("qtractorVst2Presetload() header.chunkMagic is not \"%s\".", cMagic);
 	#endif
 	}
 	else
-	if (base_header.fxID != VstInt32(m_pVstPlugin->uniqueID())) {
+	if (base_header.fxID != VstInt32(m_pVst2Plugin->uniqueID())) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPreset::load() header.fxID != 0x%08lx.", m_pVstPlugin->uniqueID());
+		qDebug("qtractorVst2Preset::load() header.fxID != 0x%08lx.", m_pVst2Plugin->uniqueID());
 	#endif
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, bankMagic)) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (regular fxb)", bankMagic);
+		qDebug("qtractorVst2Preset::load() header.fxMagic is \"%s\" (regular fxb)", bankMagic);
 	#endif
 		bResult = load_bank_progs(file);
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, chunkBankMagic)) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (chunked fxb)", chunkBankMagic);
+		qDebug("qtractorVst2Preset::load() header.fxMagic is \"%s\" (chunked fxb)", chunkBankMagic);
 	#endif
 		bResult = load_bank_chunk(file);
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, fMagic)) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (regular fxp)", fMagic);
+		qDebug("qtractorVst2Preset::load() header.fxMagic is \"%s\" (regular fxp)", fMagic);
 	#endif
 		bResult = load_prog_params(file);
 	}
 	else
 	if (fx_is_magic(base_header.fxMagic, chunkPresetMagic)) {
 	#ifdef CONFIG_DEBUG
-		qDebug("qtractorVstPreset::load() header.fxMagic is \"%s\" (chunked fxp)", chunkPresetMagic);
+		qDebug("qtractorVst2Preset::load() header.fxMagic is \"%s\" (chunked fxp)", chunkPresetMagic);
 	#endif
 		bResult = load_prog_chunk(file);
 	}
 	#ifdef CONFIG_DEBUG
-	else qDebug("qtractorVstPreset::load() header.fxMagic not recognized.");
+	else qDebug("qtractorVst2Preset::load() header.fxMagic not recognized.");
 	#endif
 
 	file.close();
 
 	// HACK: Make sure all displayed parameter values are in sync.
-	m_pVstPlugin->updateParamValues(false);
+	m_pVst2Plugin->updateParamValues(false);
 
 	return bResult;
 }
@@ -2300,20 +2300,23 @@ bool qtractorVstPreset::load ( const QString& sFilename )
 
 // Saver methods.
 //
-bool qtractorVstPreset::save_bank_progs ( QFile& file )
+bool qtractorVst2Preset::save_bank_progs ( QFile& file )
 {
-	AEffect *pVstEffect = m_pVstPlugin->vst_effect(0);
-	if (pVstEffect == nullptr)
+	if (m_pVst2Plugin == nullptr)
 		return false;
 
-	const int iNumPrograms = pVstEffect->numPrograms;
+	AEffect *pVst2Effect = m_pVst2Plugin->vst2_effect(0);
+	if (pVst2Effect == nullptr)
+		return false;
+
+	const int iNumPrograms = pVst2Effect->numPrograms;
 	if (iNumPrograms < 1)
 		return false;
 
 	const int iCurrentProgram
-		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
-	const int iVstVersion
-		= m_pVstPlugin->vst_dispatch(0, effGetVstVersion, 0, 0, nullptr, 0.0f);
+		= m_pVst2Plugin->vst2_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
+	const int iVst2Version
+		= m_pVst2Plugin->vst2_dispatch(0, effGetVstVersion, 0, 0, nullptr, 0.0f);
 
 	BankHeader bank_header;
 	::memset(&bank_header, 0, sizeof(bank_header));
@@ -2326,13 +2329,13 @@ bool qtractorVstPreset::save_bank_progs ( QFile& file )
 	file.write((char *) &bank_header, sizeof(bank_header));
 
 	const bool bChunked
-		= (m_pVstPlugin->type())->isConfigure();
+		= (m_pVst2Plugin->type())->isConfigure();
 
 	bool bResult = false;
 
 	for (int iProgram = 0; iProgram < iNumPrograms; ++iProgram) {
 
-		m_pVstPlugin->vst_dispatch(0, effSetProgram, 0, iProgram, nullptr, 0.0f);
+		m_pVst2Plugin->vst2_dispatch(0, effSetProgram, 0, iProgram, nullptr, 0.0f);
 
 		BaseHeader base_header;
 		::memset(&base_header, 0, sizeof(base_header));
@@ -2340,8 +2343,8 @@ bool qtractorVstPreset::save_bank_progs ( QFile& file )
 		base_header.byteSize = 0; // FIXME!
 		base_header.fxMagic = *(VstInt32 *) (bChunked ? chunkPresetMagic : fMagic);
 		base_header.version = 1;
-		base_header.fxID = m_pVstPlugin->uniqueID();
-		base_header.fxVersion = iVstVersion;
+		base_header.fxID = m_pVst2Plugin->uniqueID();
+		base_header.fxVersion = iVst2Version;
 
 		// Estimate size of this section...
 		base_header.byteSize = sizeof(base_header)
@@ -2353,7 +2356,7 @@ bool qtractorVstPreset::save_bank_progs ( QFile& file )
 			get_chunk(chunk, 1);
 			base_header.byteSize += sizeof(chunk.size) + chunk.size;
 		} else {
-			const int iNumParams  = pVstEffect->numParams;
+			const int iNumParams  = pVst2Effect->numParams;
 			base_header.byteSize += sizeof(ProgHeader);
 			base_header.byteSize += iNumParams * sizeof(float);
 		}
@@ -2376,19 +2379,22 @@ bool qtractorVstPreset::save_bank_progs ( QFile& file )
 		}
 	}
 
-	m_pVstPlugin->vst_dispatch(0, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
+	m_pVst2Plugin->vst2_dispatch(0, effSetProgram, 0, iCurrentProgram, nullptr, 0.0f);
 
 	return bResult;
 }
 
 
-bool qtractorVstPreset::save_prog_params ( QFile& file )
+bool qtractorVst2Preset::save_prog_params ( QFile& file )
 {
-	AEffect *pVstEffect = m_pVstPlugin->vst_effect(0);
-	if (pVstEffect == nullptr)
+	if (m_pVst2Plugin == nullptr)
 		return false;
 
-	const int iNumParams = pVstEffect->numParams;
+	AEffect *pVst2Effect = m_pVst2Plugin->vst2_effect(0);
+	if (pVst2Effect == nullptr)
+		return false;
+
+	const int iNumParams = pVst2Effect->numParams;
 	if (iNumParams < 1)
 		return false;
 
@@ -2396,7 +2402,7 @@ bool qtractorVstPreset::save_prog_params ( QFile& file )
 	::memset(&prog_header, 0, sizeof(prog_header));
 	prog_header.numParams = iNumParams;
 
-	m_pVstPlugin->vst_dispatch(0, effGetProgramName, 0, 0, (void *) prog_header.prgName, 0.0f);
+	m_pVst2Plugin->vst2_dispatch(0, effGetProgramName, 0, 0, (void *) prog_header.prgName, 0.0f);
 
 	fx_endian_swap(prog_header.numParams);
 
@@ -2404,7 +2410,7 @@ bool qtractorVstPreset::save_prog_params ( QFile& file )
 
 	float *params = new float [iNumParams];
 	for (int iParam = 0; iParam < iNumParams; ++iParam) {
-		params[iParam] = pVstEffect->getParameter(pVstEffect, iParam);
+		params[iParam] = pVst2Effect->getParameter(pVst2Effect, iParam);
 		fx_endian_swap(params[iParam]);
 	}
 
@@ -2415,15 +2421,18 @@ bool qtractorVstPreset::save_prog_params ( QFile& file )
 }
 
 
-bool qtractorVstPreset::save_bank_chunk ( QFile& file, const Chunk& chunk )
+bool qtractorVst2Preset::save_bank_chunk ( QFile& file, const Chunk& chunk )
 {
-	AEffect *pVstEffect = m_pVstPlugin->vst_effect(0);
-	if (pVstEffect == nullptr)
+	if (m_pVst2Plugin == nullptr)
 		return false;
 
-	const int iNumPrograms = pVstEffect->numPrograms;
+	AEffect *pVst2Effect = m_pVst2Plugin->vst2_effect(0);
+	if (pVst2Effect == nullptr)
+		return false;
+
+	const int iNumPrograms = pVst2Effect->numPrograms;
 	const int iCurrentProgram
-		= m_pVstPlugin->vst_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
+		= m_pVst2Plugin->vst2_dispatch(0, effGetProgram, 0, 0, nullptr, 0.0f);
 
 	BankHeader bank_header;
 	::memset(&bank_header, 0, sizeof(bank_header));
@@ -2439,19 +2448,22 @@ bool qtractorVstPreset::save_bank_chunk ( QFile& file, const Chunk& chunk )
 }
 
 
-bool qtractorVstPreset::save_prog_chunk ( QFile& file, const Chunk& chunk )
+bool qtractorVst2Preset::save_prog_chunk ( QFile& file, const Chunk& chunk )
 {
-	AEffect *pVstEffect = m_pVstPlugin->vst_effect(0);
-	if (pVstEffect == nullptr)
+	if (m_pVst2Plugin == nullptr)
 		return false;
 
-	const int iNumParams = pVstEffect->numParams;
+	AEffect *pVst2Effect = m_pVst2Plugin->vst2_effect(0);
+	if (pVst2Effect == nullptr)
+		return false;
+
+	const int iNumParams = pVst2Effect->numParams;
 
 	ProgHeader prog_header;
 	::memset(&prog_header, 0, sizeof(prog_header));
 	prog_header.numParams = iNumParams;
 
-	m_pVstPlugin->vst_dispatch(0, effGetProgramName,
+	m_pVst2Plugin->vst2_dispatch(0, effGetProgramName,
 		0, 0, (void *) prog_header.prgName, 0.0f);
 
 	fx_endian_swap(prog_header.numParams);
@@ -2462,7 +2474,7 @@ bool qtractorVstPreset::save_prog_chunk ( QFile& file, const Chunk& chunk )
 }
 
 
-bool qtractorVstPreset::save_chunk ( QFile& file, const Chunk& chunk )
+bool qtractorVst2Preset::save_chunk ( QFile& file, const Chunk& chunk )
 {
 	const int ndata = int(chunk.size);
 
@@ -2476,10 +2488,10 @@ bool qtractorVstPreset::save_chunk ( QFile& file, const Chunk& chunk )
 }
 
 
-bool qtractorVstPreset::get_chunk ( Chunk& chunk, int preset )
+bool qtractorVst2Preset::get_chunk ( Chunk& chunk, int preset )
 {
 	chunk.data = nullptr;
-	chunk.size = m_pVstPlugin->vst_dispatch(0,
+	chunk.size = m_pVst2Plugin->vst2_dispatch(0,
 		effGetChunk, preset, 0, (void *) &chunk.data, 0.0f);
 	return (chunk.size > 0 && chunk.data != nullptr);
 }
@@ -2487,13 +2499,13 @@ bool qtractorVstPreset::get_chunk ( Chunk& chunk, int preset )
 
 // File saver.
 //
-bool qtractorVstPreset::save ( const QString& sFilename )
+bool qtractorVst2Preset::save ( const QString& sFilename )
 {
-	if (m_pVstPlugin == nullptr)
+	if (m_pVst2Plugin == nullptr)
 		return false;
 
-	AEffect *pVstEffect = m_pVstPlugin->vst_effect(0);
-	if (pVstEffect == nullptr)
+	AEffect *pVst2Effect = m_pVst2Plugin->vst2_effect(0);
+	if (pVst2Effect == nullptr)
 		return false;
 
 	const QFileInfo fi(sFilename);
@@ -2510,13 +2522,13 @@ bool qtractorVstPreset::save ( const QString& sFilename )
 		return false;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorVstPreset::save(\"%s\")", sFilename.toUtf8().constData());
+	qDebug("qtractorVst2Preset::save(\"%s\")", sFilename.toUtf8().constData());
 #endif
 
 	const bool bChunked
-		= (m_pVstPlugin->type())->isConfigure();
-	const int iVstVersion
-		= m_pVstPlugin->vst_dispatch(0, effGetVstVersion, 0, 0, nullptr, 0.0f);
+		= (m_pVst2Plugin->type())->isConfigure();
+	const int iVst2Version
+		= m_pVst2Plugin->vst2_dispatch(0, effGetVstVersion, 0, 0, nullptr, 0.0f);
 
 	BaseHeader base_header;
 	::memset(&base_header, 0, sizeof(base_header));
@@ -2524,8 +2536,8 @@ bool qtractorVstPreset::save ( const QString& sFilename )
 	base_header.byteSize = 0;	// FIXME: see below...
 	base_header.fxMagic = 0;	//
 	base_header.version = 1;
-	base_header.fxID = m_pVstPlugin->uniqueID();
-	base_header.fxVersion = iVstVersion;
+	base_header.fxID = m_pVst2Plugin->uniqueID();
+	base_header.fxVersion = iVst2Version;
 
 	// Estimate size of this section...
 	base_header.byteSize = sizeof(base_header)
@@ -2539,22 +2551,22 @@ bool qtractorVstPreset::save ( const QString& sFilename )
 			base_header.byteSize += sizeof(chunk.size) + chunk.size;
 			base_header.fxMagic = *(VstInt32 *) chunkBankMagic;
 		} else {
-			const int iNumParams  = pVstEffect->numParams;
-			base_header.byteSize += pVstEffect->numPrograms
+			const int iNumParams  = pVst2Effect->numParams;
+			base_header.byteSize += pVst2Effect->numPrograms
 				* (sizeof(ProgHeader) + iNumParams * sizeof(float));
 			base_header.fxMagic = *(VstInt32 *) bankMagic;
 		}
 	} else {
 		char szName[24]; ::memset(szName, 0, sizeof(szName));
 		::strncpy(szName, fi.baseName().toUtf8().constData(), sizeof(szName) - 1);
-		for (unsigned short i = 0; i < m_pVstPlugin->instances(); ++i)
-			m_pVstPlugin->vst_dispatch(i, effSetProgramName, 0, 0, (void *) szName, 0.0f);
+		for (unsigned short i = 0; i < m_pVst2Plugin->instances(); ++i)
+			m_pVst2Plugin->vst2_dispatch(i, effSetProgramName, 0, 0, (void *) szName, 0.0f);
 		if (bChunked) {
 			get_chunk(chunk, 1);
 			base_header.byteSize += sizeof(chunk.size) + chunk.size;
 			base_header.fxMagic = *(VstInt32 *) chunkPresetMagic;
 		} else {
-			const int iNumParams  = pVstEffect->numParams;
+			const int iNumParams  = pVst2Effect->numParams;
 			base_header.byteSize += sizeof(ProgHeader);
 			base_header.byteSize += iNumParams * sizeof(float);
 			base_header.fxMagic = *(VstInt32 *) fMagic;
@@ -2588,6 +2600,6 @@ bool qtractorVstPreset::save ( const QString& sFilename )
 }
 
 
-#endif	// CONFIG_VST
+#endif	// CONFIG_VST2
 
-// end of qtractorVstPlugin.cpp
+// end of qtractorVst2Plugin.cpp

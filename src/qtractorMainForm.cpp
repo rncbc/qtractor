@@ -87,8 +87,8 @@
 #include "qtractorDssiPlugin.h"
 #endif
 
-#ifdef CONFIG_VST
-#include "qtractorVstPlugin.h"
+#ifdef CONFIG_VST2
+#include "qtractorVst2Plugin.h"
 #endif
 
 #ifdef CONFIG_VST3
@@ -5910,8 +5910,8 @@ void qtractorMainForm::helpAbout (void)
 #ifndef CONFIG_DSSI
 	list << tr("DSSI Plug-in support disabled.");
 #endif
-#ifndef CONFIG_VST
-	list << tr("VST Plug-in support disabled.");
+#ifndef CONFIG_VST2
+	list << tr("VST2 Plug-in support disabled.");
 #endif
 #ifndef CONFIG_VST3
 	list << tr("VST3 Plug-in support disabled.");
@@ -7773,9 +7773,9 @@ void qtractorMainForm::fastTimerSlot (void)
 	// Crispy plugin CLAP UI idle-updates...
 	qtractorClapPlugin::idleEditorAll();
 #endif
-#ifdef CONFIG_VST
-	// Crispy plugin VST UI idle-updates...
-	qtractorVstPlugin::idleEditorAll();
+#ifdef CONFIG_VST2
+	// Crispy plugin VST2 UI idle-updates...
+	qtractorVst2Plugin::idleEditorAll();
 #endif
 
 	// Register the next fast-timer slot.

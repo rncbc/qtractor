@@ -184,8 +184,8 @@ qtractorPluginType::Hint qtractorPluginType::hintFromText (
 	if (sText == "DSSI")
 		return Dssi;
 	else
-	if (sText == "VST")
-		return Vst;
+	if (sText == "VST" || sText == "VST2")
+		return Vst2;
 	else
 	if (sText == "VST3")
 		return Vst3;
@@ -214,8 +214,8 @@ QString qtractorPluginType::textFromHint (
 	if (typeHint == Dssi)
 		return "DSSI";
 	else
-	if (typeHint == Vst)
-		return "VST";
+	if (typeHint == Vst2)
+		return "VST2";
 	else
 	if (typeHint == Vst3)
 		return "VST3";

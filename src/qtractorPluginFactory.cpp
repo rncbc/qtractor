@@ -28,8 +28,8 @@
 #ifdef CONFIG_DSSI
 #include "qtractorDssiPlugin.h"
 #endif
-#ifdef CONFIG_VST
-#include "qtractorVstPlugin.h"
+#ifdef CONFIG_VST2
+#include "qtractorVst2Plugin.h"
 #endif
 #ifdef CONFIG_VST3
 #include "qtractorVst3Plugin.h"
@@ -213,24 +213,26 @@ void qtractorPluginFactory::updatePluginPaths (void)
 	m_paths.insert(qtractorPluginType::Dssi, dssi_paths);
 #endif
 
-#ifdef CONFIG_VST
-	// VST default path...
-	QStringList vst_paths;
+#ifdef CONFIG_VST2
+	// VST2 default path...
+	QStringList vst2_paths;
 	if (pOptions)
-		vst_paths = pOptions->vstPaths;
-	if (vst_paths.isEmpty()) {
-		QString sVstPaths = ::getenv("LXVST_PATH");
-		if (sVstPaths.isEmpty())
-			sVstPaths = ::getenv("VST_PATH");
-		if (sVstPaths.isEmpty()) {
-			sVstPaths = default_paths("lxvst");
-			if (!sVstPaths.isEmpty())
-				sVstPaths += PATH_SEP;
-			sVstPaths += default_paths("vst");
+		vst2_paths = pOptions->vst2Paths;
+	if (vst2_paths.isEmpty()) {
+		QString sVst2Paths = ::getenv("LXVST_PATH");
+		if (sVst2Paths.isEmpty())
+			sVst2Paths = ::getenv("VST2_PATH");
+		if (sVst2Paths.isEmpty())
+			sVst2Paths = ::getenv("VST_PATH");
+		if (sVst2Paths.isEmpty()) {
+			sVst2Paths = default_paths("lxvst");
+			if (!sVst2Paths.isEmpty())
+				sVst2Paths += PATH_SEP;
+			sVst2Paths += default_paths("vst");
 		}
-		vst_paths = sVstPaths.split(PATH_SEP);
+		vst2_paths = sVst2Paths.split(PATH_SEP);
 	}
-	m_paths.insert(qtractorPluginType::Vst, vst_paths);
+	m_paths.insert(qtractorPluginType::Vst2, vst2_paths);
 #endif
 
 #ifdef CONFIG_VST3
@@ -401,8 +403,8 @@ bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 	case qtractorPluginType::Dssi:
 		iDummyPluginHash = pOptions->iDummyDssiHash;
 		break;
-	case qtractorPluginType::Vst:
-		iDummyPluginHash = pOptions->iDummyVstHash;
+	case qtractorPluginType::Vst2:
+		iDummyPluginHash = pOptions->iDummyVst2Hash;
 		break;
 	case qtractorPluginType::Vst3:
 		iDummyPluginHash = pOptions->iDummyVst3Hash;
@@ -430,8 +432,8 @@ bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 			case qtractorPluginType::Dssi:
 				pOptions->iDummyDssiHash = iNewDummyPluginHash;
 				break;
-			case qtractorPluginType::Vst:
-				pOptions->iDummyVstHash = iNewDummyPluginHash;
+			case qtractorPluginType::Vst2:
+				pOptions->iDummyVst2Hash = iNewDummyPluginHash;
 				break;
 			case qtractorPluginType::Vst3:
 				pOptions->iDummyVst3Hash = iNewDummyPluginHash;
@@ -496,12 +498,12 @@ void qtractorPluginFactory::scan (void)
 		}
 	}
 #endif
-#ifdef CONFIG_VST
+#ifdef CONFIG_VST2
 	// VST default path...
 	if (m_typeHint == qtractorPluginType::Any ||
-		m_typeHint == qtractorPluginType::Vst) {
+		m_typeHint == qtractorPluginType::Vst2) {
 		const qtractorPluginType::Hint typeHint
-			= qtractorPluginType::Vst;
+			= qtractorPluginType::Vst2;
 		const QStringList& paths = m_paths.value(typeHint);
 		if (!paths.isEmpty()) {
 			iFileCount += addFiles(typeHint, paths);
@@ -623,7 +625,7 @@ int qtractorPluginFactory::addFiles (
 
 	const QDir dir(sPath);
 	QDir::Filters filters = QDir::Files;
-	if (typeHint == qtractorPluginType::Vst  ||
+	if (typeHint == qtractorPluginType::Vst2 ||
 		typeHint == qtractorPluginType::Vst3 ||
 		typeHint == qtractorPluginType::Clap)
 		filters = filters | QDir::AllDirs | QDir::NoDotAndDotDot;
@@ -720,16 +722,16 @@ qtractorPlugin *qtractorPluginFactory::createPlugin (
 	}
 #endif
 
-#ifdef CONFIG_VST
-	// Try VST plugin types...
-	if (typeHint == qtractorPluginType::Vst) {
-		qtractorVstPluginType *pVstType
-			= qtractorVstPluginType::createType(pFile, iIndex);
-		if (pVstType) {
+#ifdef CONFIG_VST2
+	// Try VST2 plugin types...
+	if (typeHint == qtractorPluginType::Vst2) {
+		qtractorVst2PluginType *pVst2Type
+			= qtractorVst2PluginType::createType(pFile, iIndex);
+		if (pVst2Type) {
 			pFile->addRef();
-			if (pVstType->open())
-				return new qtractorVstPlugin(pList, pVstType);
-			delete pVstType;
+			if (pVst2Type->open())
+				return new qtractorVst2Plugin(pList, pVst2Type);
+			delete pVst2Type;
 		}
 	}
 #endif
@@ -851,10 +853,10 @@ bool qtractorPluginFactory::addTypes (
 		pType = qtractorDssiPluginType::createType(pFile, iIndex);
 		break;
 #endif
-#ifdef CONFIG_VST
-	case qtractorPluginType::Vst:
-		// Try VST plugin type...
-		pType = qtractorVstPluginType::createType(pFile, iIndex);
+#ifdef CONFIG_VST2
+	case qtractorPluginType::Vst2:
+		// Try VST2 plugin type...
+		pType = qtractorVst2PluginType::createType(pFile, iIndex);
 		break;
 #endif
 #ifdef CONFIG_VST3
