@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Shade-off regions not-in-view from the thumb-views. (EXPERIMENTAL)
+
 - Improved MIDI queue time drift correction resilience and stability
   against in-flight tempo changes. (EXPERIMENTAL)
 
