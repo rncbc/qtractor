@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -740,8 +740,10 @@ qtractorEditTrackCommand::qtractorEditTrackCommand (
 	// Check whether we'll need to re-open the track...
 	const qtractorTrack::Properties& old_props = pTrack->properties();
 	m_bReopen = (
-		old_props.inputBusName  != props.inputBusName ||
-		old_props.outputBusName != props.outputBusName);
+		old_props.inputBusName  != props.inputBusName  ||
+		old_props.outputBusName != props.outputBusName ||
+		( old_props.pluginListLatency && !props.pluginListLatency) ||
+		(!old_props.pluginListLatency &&  props.pluginListLatency));
 }
 
 

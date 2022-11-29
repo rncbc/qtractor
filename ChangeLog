@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Plugin latency/delay compensation now in effect immediately after
+  changing track option (cf. Track/Properties... /Plugins/Latency
+  compensation). (EXPERIMENTAL)
+
 - Shade-off regions not-in-view from the thumb-views. (EXPERIMENTAL)
 
 - Improved MIDI queue time drift correction resilience and stability
