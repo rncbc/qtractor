@@ -872,28 +872,26 @@ qtractorTrackStateCommand::qtractorTrackStateCommand ( qtractorTrack *pTrack,
 		break;
 	}
 
-	// Toggle/update all other?
-	if (m_toolType != qtractorTrack::Record) {
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm) {
-			qtractorTracks *pTracks = pMainForm->tracks();
-			if (pTracks) {
-				const Qt::KeyboardModifiers& modifiers
-					= QApplication::keyboardModifiers();
-				const bool bAllTracks
-					= (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
-				if (modifiers & Qt::ControlModifier)
-					bOn = !bOn;
-				const QList<qtractorTrack *>& tracks
-					= pTracks->trackList()->selectedTracks(track(), bAllTracks);
-				QListIterator<qtractorTrack *> iter(tracks);
-				while (iter.hasNext())
-					m_tracks.append(new TrackItem(iter.next(), bOn));
-			}
+	// Toggle/update all othera?
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks) {
+			const Qt::KeyboardModifiers& modifiers
+				= QApplication::keyboardModifiers();
+			const bool bAllTracks
+				= (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
+			if (modifiers & Qt::ControlModifier)
+				bOn = !bOn;
+			const QList<qtractorTrack *>& tracks
+				= pTracks->trackList()->selectedTracks(track(), bAllTracks);
+			QListIterator<qtractorTrack *> iter(tracks);
+			while (iter.hasNext())
+				m_tracks.append(new TrackItem(iter.next(), bOn));
 		}
 	}
 
-	setRefresh(m_toolType != qtractorTrack::Record);
+	setRefresh(true);
 }
 
 // Destructor.
@@ -929,7 +927,7 @@ bool qtractorTrackStateCommand::redo (void)
 	case qtractorTrack::Record:
 		scmd = qtractorMmcEvent::TRACK_RECORD;
 		ccmd = qtractorMidiControl::TRACK_RECORD;
-		// Special stuffing if currently recording at first place...
+		// Special stuffing if currently recording in first place...
 		bOn = pTrack->isRecord();
 		if (bOn && !m_bOn
 			&& m_pClipCommand == nullptr && m_iRecordCount == 0) {
@@ -998,14 +996,19 @@ bool qtractorTrackStateCommand::redo (void)
 			TrackItem *pTrackItem = iter.next();
 			pTrack = pTrackItem->track;
 			bOn = false;
-			if (m_toolType == qtractorTrack::Mute) {
+			switch (m_toolType) {
+			case qtractorTrack::Record:
+				bOn = pTrack->isRecord();
+				pTrack->setRecord(pTrackItem->on);
+				break;
+			case qtractorTrack::Mute:
 				bOn = pTrack->isMute();
 				pTrack->setMute(pTrackItem->on);
-			}
-			else
-			if (m_toolType == qtractorTrack::Solo) {
+				break;
+			case qtractorTrack::Solo:
 				bOn = pTrack->isSolo();
 				pTrack->setSolo(pTrackItem->on);
+				break;
 			}
 			// Send MMC MASKED_WRITE command...
 			iTrack = pTrackList->trackRow(pTrack);

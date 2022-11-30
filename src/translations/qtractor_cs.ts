@@ -455,22 +455,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Sólo pro stopu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1045"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1048"/>
         <source>track monitor</source>
         <translation>Sledování stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1153"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1156"/>
         <source>track gain</source>
         <translation>Zesílení stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1242"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1245"/>
         <source>track pan</source>
         <translation>Vyváženost stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1329"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1332"/>
         <source>track instrument</source>
         <translation>Nástroj stopy</translation>
     </message>

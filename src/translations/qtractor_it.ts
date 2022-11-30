@@ -728,22 +728,22 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>traccia in solo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1045"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1048"/>
         <source>track monitor</source>
         <translation>monitor traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1153"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1156"/>
         <source>track gain</source>
         <translation>guadagno traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1242"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1245"/>
         <source>track pan</source>
         <translation>bilanciamento traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1329"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1332"/>
         <source>track instrument</source>
         <translation>strumento della traccia</translation>
     </message>

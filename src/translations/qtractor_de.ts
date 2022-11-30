@@ -726,22 +726,22 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
         <translation>Spur auf Solo schalten</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1045"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1048"/>
         <source>track monitor</source>
         <translation>Spurüberwachung</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1153"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1156"/>
         <source>track gain</source>
         <translation>Spurverstärkung</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1242"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1245"/>
         <source>track pan</source>
         <translation>Spurpanorama</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1329"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1332"/>
         <source>track instrument</source>
         <translation>Spur-Instrument</translation>
     </message>

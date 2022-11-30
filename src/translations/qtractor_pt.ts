@@ -517,7 +517,7 @@ MIDI:	</translation>
         <translation>saídas de áudio dedicadas</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1242"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1245"/>
         <source>track pan</source>
         <translation>panorâmico da pista</translation>
     </message>
@@ -655,12 +655,12 @@ MIDI:	</translation>
         <translation>pista solo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1153"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1156"/>
         <source>track gain</source>
         <translation>ganho da pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1329"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1332"/>
         <source>track instrument</source>
         <translation>pista de instrumento</translation>
     </message>
@@ -675,7 +675,7 @@ MIDI:	</translation>
         <translation>gravar todas as automações</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1045"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1048"/>
         <source>track monitor</source>
         <translation>monitoração da pista</translation>
     </message>
