@@ -891,7 +891,7 @@ qtractorTrackStateCommand::qtractorTrackStateCommand ( qtractorTrack *pTrack,
 		}
 	}
 
-	setRefresh(true);
+	setRefresh(m_toolType != qtractorTrack::Record);
 }
 
 // Destructor.
