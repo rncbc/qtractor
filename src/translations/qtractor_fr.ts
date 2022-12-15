@@ -6188,7 +6188,7 @@ est hautement recommandé.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5914"/>
         <source>VST2 Plug-in support disabled.</source>
-        <translation type="unfinished">Support des greffons VST3 désactivé. {2 ?}</translation>
+        <translation>Support des greffons VST2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5917"/>
