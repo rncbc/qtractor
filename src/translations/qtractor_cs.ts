@@ -2912,7 +2912,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5914"/>
         <source>VST2 Plug-in support disabled.</source>
-        <translation type="unfinished">Podpora pro přídavné moduly VST3 byla zakázána. {2 ?}</translation>
+        <translation>Podpora pro přídavné moduly VST2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5920"/>
