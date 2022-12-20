@@ -4,30 +4,30 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.30  2022-12-30  An End-of-Year'22 Release.
 
 - Plugin latency/delay compensation now in effect immediately after
   changing track option (cf. Track/Properties... /Plugins/Latency
-  compensation). (EXPERIMENTAL)
+  compensation).
 
-- Shade-off regions not-in-view from the thumb-views. (EXPERIMENTAL)
+- Shade-off regions not-in-view from the thumb-views.
 
 - Improved MIDI queue time drift correction resilience and stability
-  against in-flight tempo changes. (EXPERIMENTAL)
+  against in-flight tempo changes.
 
 - The main real-time process cycle now runs on uniform block-sizes,
   in strides of 64 frames per period, meaning a higher resolution
-  automation, independent of buffer-size. (EXPERIMENTAL)
+  automation, independent of buffer-size.
 
 - The internal main MIDI engine gets its ALSA sequencer queue to a
   higher resolution (PPQN aka ticks-per-beat) and not subordinated
-  to the current session's anymore. (EXPERIMENTAL)
+  to the current session's anymore.
 
 - Although being deprecated to use, JACK Session support is hopefuly
-  fixed, once again. (GH issue #366) (EXPERIMENTAL)
+  fixed, once again.
 
 - Better discriminate CLAP Plug-in specific note events and strict
-  MIDI dialect event processing. (EXPERIMENTAL)
+  MIDI dialect event processing.
 
 
 0.9.29  2022-10-05  An Early-Autumn'22 Release.
