@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -566,7 +566,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/DssiPaths", dssiPaths);
 	m_settings.setValue("/Vst2Paths", vst2Paths);
 	m_settings.setValue("/Vst3Paths", vst3Paths);
-	m_settings.setValue("/ClapPaths", vst3Paths);
+	m_settings.setValue("/ClapPaths", clapPaths);
 	m_settings.setValue("/Lv2Paths", lv2Paths);
 	m_settings.setValue("/Lv2PresetDir", sLv2PresetDir);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);

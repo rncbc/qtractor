@@ -1,7 +1,7 @@
 // qtractorTimeScale.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -606,7 +606,7 @@ public:
 	static const unsigned short TICKS_PER_BEAT_DEF = 960;
 	static const unsigned short TICKS_PER_BEAT_MAX = 3840;
 
-	static const unsigned short TICKS_PER_BEAT_HRQ = (TICKS_PER_BEAT_MAX << 3);
+	static const unsigned short TICKS_PER_BEAT_HRQ = (TICKS_PER_BEAT_MAX << 2);
 
 protected:
 
