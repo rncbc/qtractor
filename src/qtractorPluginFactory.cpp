@@ -1,7 +1,7 @@
 // qtractorPluginFactory.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -129,7 +129,7 @@ qtractorPluginFactory::~qtractorPluginFactory (void)
 #define PATH_SEP ":"
 #endif
 
-static QString default_paths ( const QString& suffix )
+static QStringList default_paths ( const QString& suffix )
 {
 	const QString& sep  = QDir::separator();
 
@@ -163,19 +163,19 @@ static QString default_paths ( const QString& suffix )
 	paths << lib1 + sep + suffix;
 
 	// Get rid of duplicate symlinks (canonical paths)...
-	QStringList list;
+	QStringList ret;
 	QStringListIterator iter(paths);
 	while (iter.hasNext()) {
 		const QFileInfo info(iter.next());
 		if (info.exists() && info.isDir()) {
 			const QString& path
 				= info.canonicalFilePath();
-			if (!list.contains(path))
-				list.append(path);
+			if (!ret.contains(path))
+				ret.append(path);
 		}
 	}
 
-	return list.join(PATH_SEP);
+	return ret;
 }
 
 
@@ -186,93 +186,127 @@ void qtractorPluginFactory::updatePluginPaths (void)
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 
 #ifdef CONFIG_LADSPA
-	// LADSPA default path...
+	// LADSPA default paths...
 	QStringList ladspa_paths;
 	if (pOptions)
 		ladspa_paths = pOptions->ladspaPaths;
 	if (ladspa_paths.isEmpty()) {
-		QString sLadspaPaths = ::getenv("LADSPA_PATH");
+		QStringList sLadspaPaths;
+		const char *ladspa_path = ::getenv("LADSPA_PATH");
+		if (ladspa_path)
+			sLadspaPaths << QString::fromUtf8(ladspa_path).split(PATH_SEP);
 		if (sLadspaPaths.isEmpty())
-			sLadspaPaths = default_paths("ladspa");
-		ladspa_paths = sLadspaPaths.split(PATH_SEP);
+			ladspa_paths << default_paths("ladspa");
+		else
+			ladspa_paths << sLadspaPaths;
 	}
 	m_paths.insert(qtractorPluginType::Ladspa, ladspa_paths);
 #endif
 
 #ifdef CONFIG_DSSI
-	// DSSI default path...
+	// DSSI default paths...
 	QStringList dssi_paths;
 	if (pOptions)
 		dssi_paths = pOptions->dssiPaths;
 	if (dssi_paths.isEmpty()) {
-		QString sDssiPaths = ::getenv("DSSI_PATH");
+		QStringList sDssiPaths;
+		const char *dssi_path = ::getenv("DSSI_PATH");
+		if (dssi_path)
+			sDssiPaths << QString::fromUtf8(dssi_path).split(PATH_SEP);
 		if (sDssiPaths.isEmpty())
-			sDssiPaths = default_paths("dssi");
-		dssi_paths = sDssiPaths.split(PATH_SEP);
+			dssi_paths << default_paths("dssi");
+		else
+			dssi_paths << sDssiPaths;
 	}
 	m_paths.insert(qtractorPluginType::Dssi, dssi_paths);
 #endif
 
 #ifdef CONFIG_VST2
-	// VST2 default path...
+	// VST2 default paths...
 	QStringList vst2_paths;
 	if (pOptions)
 		vst2_paths = pOptions->vst2Paths;
 	if (vst2_paths.isEmpty()) {
-		QString sVst2Paths = ::getenv("LXVST_PATH");
+		QStringList sVst2Paths;
+		const char *vst2_path = ::getenv("VST2_PATH");
+		if (vst2_path)
+			sVst2Paths << QString::fromUtf8(vst2_path).split(PATH_SEP);
 		if (sVst2Paths.isEmpty())
-			sVst2Paths = ::getenv("VST2_PATH");
+			vst2_paths << default_paths("vst2");
+		else
+			vst2_paths << sVst2Paths;
+		// LXVST_PATH...
+		sVst2Paths.clear();
+		vst2_path = ::getenv("LXVST_PATH");
+		if (vst2_path)
+			sVst2Paths << QString::fromUtf8(vst2_path).split(PATH_SEP);
 		if (sVst2Paths.isEmpty())
-			sVst2Paths = ::getenv("VST_PATH");
-		if (sVst2Paths.isEmpty()) {
-			sVst2Paths = default_paths("lxvst");
-			if (!sVst2Paths.isEmpty())
-				sVst2Paths += PATH_SEP;
-			sVst2Paths += default_paths("vst");
-		}
-		vst2_paths = sVst2Paths.split(PATH_SEP);
+			vst2_paths << default_paths("lxvst");
+		else
+			vst2_paths << sVst2Paths;
+		// VST_PATH...
+		sVst2Paths.clear();
+		vst2_path = ::getenv("VST_PATH");
+		if (vst2_path)
+			sVst2Paths << QString::fromUtf8(vst2_path).split(PATH_SEP);
+		if (sVst2Paths.isEmpty())
+			vst2_paths << default_paths("vst");
+		else
+			vst2_paths << sVst2Paths;
 	}
 	m_paths.insert(qtractorPluginType::Vst2, vst2_paths);
 #endif
 
 #ifdef CONFIG_VST3
-	// VST3 default path...
+	// VST3 default paths...
 	QStringList vst3_paths;
 	if (pOptions)
 		vst3_paths = pOptions->vst3Paths;
 	if (vst3_paths.isEmpty()) {
-		QString sVst3Paths = ::getenv("VST3_PATH");
+		QStringList sVst3Paths;
+		const char *vst3_path = ::getenv("VST3_PATH");
+		if (vst3_path)
+			sVst3Paths << QString::fromUtf8(vst3_path).split(PATH_SEP);
 		if (sVst3Paths.isEmpty())
-			sVst3Paths = default_paths("vst3");
-		vst3_paths = sVst3Paths.split(PATH_SEP);
+			vst3_paths << default_paths("vst3");
+		else
+			vst3_paths << sVst3Paths;
 	}
 	m_paths.insert(qtractorPluginType::Vst3, vst3_paths);
 #endif
 
 #ifdef CONFIG_CLAP
-	// CLAP default path...
+	// CLAP default paths...
 	QStringList clap_paths;
 	if (pOptions)
 		clap_paths = pOptions->clapPaths;
 	if (clap_paths.isEmpty()) {
-		QString sClapPaths = ::getenv("CLAP_PATH");
+		QStringList sClapPaths;
+		const char *clap_path = ::getenv("CLAP_PATH");
+		if (clap_path)
+			sClapPaths << QString::fromUtf8(clap_path).split(PATH_SEP);
 		if (sClapPaths.isEmpty())
-			sClapPaths = default_paths("clap");
-		clap_paths = sClapPaths.split(PATH_SEP);
+			clap_paths << default_paths("clap");
+		else
+			clap_paths << sClapPaths;
 	}
 	m_paths.insert(qtractorPluginType::Clap, clap_paths);
 #endif
 
 #ifdef CONFIG_LV2
-	// LV2 default path...
+	// LV2 default paths...
 	QStringList lv2_paths;
 	if (pOptions)
 		lv2_paths = pOptions->lv2Paths;
 	if (lv2_paths.isEmpty()) {
-		QString sLv2Paths = ::getenv("LV2_PATH");
+		QStringList sLv2Paths;
+		const char *lv2_path = ::getenv("LV2_PATH");
+		if (lv2_path)
+			sLv2Paths << QString::fromUtf8(lv2_path).split(PATH_SEP);
 		if (sLv2Paths.isEmpty())
-			sLv2Paths = default_paths("lv2");
-		lv2_paths = sLv2Paths.split(PATH_SEP);
+			lv2_paths << default_paths("lv2");
+		else
+			lv2_paths << sLv2Paths;
 	}
 #ifdef CONFIG_LV2_PRESETS
 	QString sLv2PresetDir;
