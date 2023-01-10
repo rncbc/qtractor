@@ -102,7 +102,7 @@ public:
 	unsigned short verticalZoom() const { return m_iVerticalZoom; }
 
 	// Fastest rounding-from-float helper.
-	static unsigned long uroundf(float x) { return ::rintf(x); }
+	static unsigned long uroundf(float x) { return ::lroundf(x); }
 
 	// Beat divisor (snap index) accessors.
 	static unsigned short snapFromIndex(int iSnap);
