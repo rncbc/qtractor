@@ -67,6 +67,7 @@ public:
 	void update(qtractorMidiClip *pMidiClip)
 	{
 		qtractorTrack *pTrack = pMidiClip->track();
+		m_sFilename = pMidiClip->filename();
 		const uint64_t q = qtractorTimeScale::TICKS_PER_BEAT_HRQ;
 		m_iClipOffset = q * ((pMidiClip->clipOffsetTime() + (q >> 1)) / q);
 		m_iClipLength = q * ((pMidiClip->clipLengthTime() + (q >> 1)) / q);
