@@ -67,9 +67,9 @@ public:
 	void update(qtractorMidiClip *pMidiClip)
 	{
 		qtractorTrack *pTrack = pMidiClip->track();
-		m_sFilename = pMidiClip->filename();
-		m_iClipOffset = pMidiClip->clipOffsetTime();
-		m_iClipLength = pMidiClip->clipLengthTime();
+		const uint64_t q = qtractorTimeScale::TICKS_PER_BEAT_HRQ;
+		m_iClipOffset = q * ((pMidiClip->clipOffsetTime() + (q >> 1)) / q);
+		m_iClipLength = q * ((pMidiClip->clipLengthTime() + (q >> 1)) / q);
 		m_iTrackChannel = pMidiClip->trackChannel();
 		m_iMidiChannel = (pTrack ? pTrack->midiChannel() : 0);
 	}

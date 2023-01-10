@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a off-by-one rounding error on MIDI clip offset and lengths
+  that were leaving some clips unlinked on load. (EXPERIMENTAL)
+
 - LXVST_PATH environment variable now accrues to VST_PATH for Linux-
   native VST2 plug-ins search path and not taking over in precedence
   anymore. (EXPERIMENTAL)
