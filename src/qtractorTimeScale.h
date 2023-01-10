@@ -27,9 +27,11 @@
 #include <QStringList>
 #include <QColor>
 
-
 // Needed for the translation functions.
 #include <QCoreApplication>
+
+// Prolly needed for some rounding functions.
+#include <cmath>
 
 
 //----------------------------------------------------------------------
@@ -100,8 +102,7 @@ public:
 	unsigned short verticalZoom() const { return m_iVerticalZoom; }
 
 	// Fastest rounding-from-float helper.
-	static unsigned long uroundf(float x)
-		{ return (unsigned long) (x < 0.0f ? x - 0.5f : x + 0.5f); }
+	static unsigned long uroundf(float x) { return ::rintf(x); }
 
 	// Beat divisor (snap index) accessors.
 	static unsigned short snapFromIndex(int iSnap);
