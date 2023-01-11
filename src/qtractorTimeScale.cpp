@@ -782,7 +782,7 @@ unsigned long qtractorTimeScale::tickFromFrameRange (
 	if (!bOffset) pNode = m_cursor.seekFrame(iFrameEnd);
 	const unsigned long iTickEnd
 		= (pNode ? pNode->tickFromFrame(iFrameEnd) : 0);
-	return (iTickEnd > iTickStart ? iTickEnd - iTickStart : 0);
+	return tickq(iTickEnd > iTickStart ? iTickEnd - iTickStart : 0);
 }
 
 

@@ -621,6 +621,13 @@ protected:
 	unsigned long timeq ( unsigned long time ) const
 		{ return uint64_t(time) * m_iTicksPerBeat / TICKS_PER_BEAT_HRQ; }
 
+	// MIDI time rounding quantizer.
+	unsigned long tickq ( unsigned long tick, unsigned short p = 1 ) const
+	{
+		const uint64_t q = TICKS_PER_BEAT_HRQ;
+		return q * ((tick + (q >> p)) / q);
+	}
+
 private:
 
 	unsigned short m_iSnapPerBeat;      // Snap per beat (divisor).
