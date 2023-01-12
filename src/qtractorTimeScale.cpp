@@ -623,6 +623,7 @@ QString qtractorTimeScale::textFromFrameEx (
 				}
 				if (!bDelta)
 					bars += pNode->bar;
+				ticks = tickq(ticks);
 			}
 			if (!bDelta) {
 				++bars;

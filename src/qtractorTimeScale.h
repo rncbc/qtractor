@@ -622,10 +622,11 @@ protected:
 		{ return uint64_t(time) * m_iTicksPerBeat / TICKS_PER_BEAT_HRQ; }
 
 	// MIDI time rounding quantizer.
-	unsigned long tickq ( unsigned long tick, unsigned short p = 1 ) const
+	unsigned long tickq ( unsigned long tick ) const
 	{
-		const uint64_t q = TICKS_PER_BEAT_HRQ;
-		return q * ((tick + (q >> p)) / q);
+		const unsigned long q4 = (TICKS_PER_BEAT_MIN >> 2);
+		const unsigned long q2 = (q4 >> 1);
+		return (tick > q2 ? q4 * ((tick + q2) / q4) : 0);
 	}
 
 private:
