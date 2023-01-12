@@ -159,8 +159,8 @@ public:
 
 		// Frame/tick convertors.
 		unsigned long tickFromFrame(unsigned long iFrame) const
-			{ return tick + uroundf(
-				(tickRate * (iFrame - frame)) / ts->frameRate()); }
+			{ return tickq(tick + uroundf(
+				(tickRate * (iFrame - frame)) / ts->frameRate())); }
 		unsigned long frameFromTick(unsigned long iTick) const
 			{ return frame + uroundf(
 				(ts->frameRate() * (iTick - tick)) / tickRate); }
@@ -169,18 +169,18 @@ public:
 		unsigned int beatFromTick(unsigned long iTick) const
 			{ return beat + ((iTick - tick) / ticksPerBeat); }
 		unsigned long tickFromBeat(unsigned int iBeat) const
-			{ return tick + (ticksPerBeat * (iBeat - beat)); }
+			{ return tickq(tick + (ticksPerBeat * (iBeat - beat))); }
 
 		// Tick/bar convertors.
 		unsigned short barFromTick(unsigned long iTick) const
 			{ return bar + ((iTick - tick) / (ticksPerBeat * beatsPerBar)); }
 		unsigned long tickFromBar(unsigned short iBar) const
-			{ return tick + (ticksPerBeat * beatsPerBar * (iBar - bar)); }
+			{ return tickq(tick + (ticksPerBeat * beatsPerBar * (iBar - bar))); }
 
 		// Tick/pixel convertors.
 		unsigned long tickFromPixel(int x) const
-			{ return tick + uroundf(
-				(tickRate * (x - pixel)) / ts->pixelRate()); }
+			{ return tickq(tick + uroundf(
+				(tickRate * (x - pixel)) / ts->pixelRate())); }
 		int pixelFromTick(unsigned long iTick) const
 			{ return pixel + uroundf(
 				(ts->pixelRate() * (iTick - tick)) / tickRate); }
@@ -229,6 +229,9 @@ public:
 		// Alternate (secondary) time-sig helper methods
 		unsigned short beatsPerBar2() const;
 		unsigned int ticksPerBeat2() const;
+
+		// MIDI time/tick hi-res rounding dumb-quantizer.
+		unsigned long tickq(unsigned long tick) const { return (tick & ~1); }
 
 		// Node keys.
 		unsigned long  frame;
@@ -620,10 +623,6 @@ protected:
 		{ return uint64_t(time) * TICKS_PER_BEAT_HRQ / m_iTicksPerBeat; }
 	unsigned long timeq ( unsigned long time ) const
 		{ return uint64_t(time) * m_iTicksPerBeat / TICKS_PER_BEAT_HRQ; }
-
-	// MIDI time rounding quantizer.
-	unsigned long tickq ( unsigned long tick ) const
-		{ return (tick > 1 ? 4 * ((tick + 1) / 4) : 0);	}
 
 private:
 
