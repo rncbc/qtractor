@@ -623,11 +623,7 @@ protected:
 
 	// MIDI time rounding quantizer.
 	unsigned long tickq ( unsigned long tick ) const
-	{
-		const unsigned long q4 = (TICKS_PER_BEAT_MIN >> 2);
-		const unsigned long q2 = (q4 >> 1);
-		return (tick > q2 ? q4 * ((tick + q2) / q4) : 0);
-	}
+		{ return (tick > 1 ? 4 * ((tick + 1) / 4) : 0);	}
 
 private:
 
