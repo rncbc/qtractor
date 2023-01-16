@@ -1,7 +1,7 @@
 // qtractorMidiClip.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -25,6 +25,8 @@
 #include "qtractorClip.h"
 #include "qtractorMidiCursor.h"
 #include "qtractorMidiFile.h"
+
+#include "qtractorTimeScale.h"
 
 #include <QPoint>
 #include <QSize>
@@ -158,7 +160,8 @@ public:
 
 		// Constructor.
 		Data(unsigned short iFormat)
-			: m_iFormat(iFormat), m_pSeq(new qtractorMidiSequence()) {}
+			: m_iFormat(iFormat), m_pSeq(new qtractorMidiSequence(
+				QString(), 0, qtractorTimeScale::TICKS_PER_BEAT_HRQ)) {}
 
 		// Destructor.
 		~Data() { clear(); delete m_pSeq; }

@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -211,7 +211,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	loadPreset(g_sDefPreset);
 	timeshiftSpinBoxChanged(m_ui.TimeshiftSpinBox->value());
 	refreshPresets();
-	
+
 	// Draw timeshift curve always.
 
 	// Try to restore old window positioning.
@@ -676,7 +676,7 @@ void qtractorMidiToolsForm::refreshPresets (void)
 
 	const QString sOldPreset = m_ui.PresetNameComboBox->currentText();
 	m_ui.PresetNameComboBox->clear();
-	
+
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		QSettings& settings = pOptions->settings();
@@ -717,7 +717,7 @@ void qtractorMidiToolsForm::presetActivated ( int iPreset )
 
 	m_iDirtyCount = 0;
 	--m_iUpdate;
-	
+
 	stabilizeForm();
 }
 

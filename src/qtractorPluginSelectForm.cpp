@@ -60,9 +60,9 @@ qtractorPluginSelectForm::qtractorPluginSelectForm ( QWidget *pParent )
 	m_ui.PluginTypeComboBox->addItem(
 		qtractorPluginType::textFromHint(qtractorPluginType::Dssi));
 #endif
-#ifdef CONFIG_VST
+#ifdef CONFIG_VST2
 	m_ui.PluginTypeComboBox->addItem(
-		qtractorPluginType::textFromHint(qtractorPluginType::Vst));
+		qtractorPluginType::textFromHint(qtractorPluginType::Vst2));
 #endif
 #ifdef CONFIG_VST3
 	m_ui.PluginTypeComboBox->addItem(

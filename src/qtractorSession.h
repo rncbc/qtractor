@@ -165,8 +165,8 @@ public:
 	unsigned long locateFromFrame(unsigned long iFrame) const;
 
 	// Song position pointer (SPP=MIDI beats) to frame converters.
-	unsigned long  frameFromSongPos(unsigned short iSongPos);
-	unsigned short songPosFromFrame(unsigned long iFrame);
+	unsigned long frameFromSongPos(unsigned int iSongPos);
+	unsigned int songPosFromFrame(unsigned long iFrame);
 
 	// Update time scale divisor factors.
 	void updateTimeScale();

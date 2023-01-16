@@ -63,6 +63,13 @@
 #include <QProgressBar>
 #include <QDomDocument>
 
+
+// Sensible defaults.
+#define SAMPLE_RATE 44100
+#define BUFFER_SIZE 1024
+#define BLOCK_SIZE  64
+
+
 #if defined(__SSE__)
 
 #include <xmmintrin.h>
@@ -495,10 +502,11 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 {
 	m_pJackClient = nullptr;
 
-	m_iSampleRate = 44100;	// A sensible default, always.
+	m_iSampleRate = SAMPLE_RATE;	// A sensible default, always.
 	m_iBufferSize = 0;
-	m_iBufferSizeEx = 1024;	// Another sensible default, sometimes.
+	m_iBufferSizeEx = BUFFER_SIZE;	// Another sensible default, sometimes.
 	m_iBufferOffset = 0;
+	m_iBlockSize = BLOCK_SIZE;		// Yet another sensible default, always.
 
 	m_bMasterAutoConnect = true;
 
@@ -581,10 +589,13 @@ void qtractorAudioEngine::notifyPortEvent (void)
 
 void qtractorAudioEngine::notifyBuffEvent ( unsigned int iBufferSize )
 {
-	if (m_iBufferSizeEx < iBufferSize)
+	if (m_iBufferSizeEx < iBufferSize) {
 		m_proxy.notifyBuffEvent(iBufferSize);
-	else
+	} else {
 		m_iBufferSize = iBufferSize;
+		if (m_iBlockSize < m_iBufferSize)
+			m_iBlockSize = m_iBufferSize;
+	}
 }
 
 void qtractorAudioEngine::notifySessEvent ( void *pvSessionArg )
@@ -616,6 +627,7 @@ unsigned int qtractorAudioEngine::sampleRate (void) const
 	return m_iSampleRate;
 }
 
+
 // Buffer size accessors.
 unsigned int qtractorAudioEngine::bufferSize (void) const
 {
@@ -632,6 +644,13 @@ unsigned int qtractorAudioEngine::bufferSizeEx (void) const
 unsigned int qtractorAudioEngine::bufferOffset (void) const
 {
 	return m_iBufferOffset;
+}
+
+
+// Block-stride size (in frames) accessor.
+unsigned int qtractorAudioEngine::blockSize (void) const
+{
+	return m_iBlockSize;
 }
 
 
@@ -685,10 +704,17 @@ bool qtractorAudioEngine::init (void)
 	m_iSampleRate = jack_get_sample_rate(m_pJackClient);
 	m_iBufferSize = jack_get_buffer_size(m_pJackClient);
 
+	// Block-stride size changes...
+	m_iBlockSize = BLOCK_SIZE;
+	if (m_iBlockSize < m_iBufferSize)
+		m_iBlockSize = m_iBufferSize;
+
 	// Guard for buffer size changes...
 	const unsigned int iBufferSizeEx = (m_iBufferSize << 1);
 	if (m_iBufferSizeEx < iBufferSizeEx)
 		m_iBufferSizeEx = iBufferSizeEx;
+	if (m_iBufferSizeEx < m_iBlockSize)
+		m_iBufferSizeEx = m_iBlockSize;
 
 	// ATTN: Second is setting proper session client name.
 	pSession->setClientName(
@@ -1032,25 +1058,19 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	unsigned long iFrameStart = pAudioCursor->frame();
 	unsigned long iFrameEnd   = iFrameStart + nframes;
 
-	// Update time(base) info...
-	updateTimeInfo(iFrameStart);
-
-	// MIDI plugin manager processing...
-	qtractorMidiManager *pMidiManager
-		= pSession->midiManagers().first();
-	if (pMidiManager) {
-		const unsigned long iFrameTimeStart = pAudioCursor->frameTime();
-		const unsigned long iFrameTimeEnd   = iFrameTimeStart + nframes;
+	// Don't go any further, if not playing.
+	if (!isPlaying()) {
+		// Update time(base) info...
+		updateTimeInfo(iFrameStart);
+		// MIDI managers plugin processing...
+		qtractorMidiManager *pMidiManager
+			= pSession->midiManagers().first();
 		while (pMidiManager) {
-			pMidiManager->process(iFrameTimeStart, iFrameTimeEnd);
+			pMidiManager->process(iFrameStart, iFrameEnd);
 			if (!pMidiManager->isAudioOutputBus())
 				++iOutputBus;
 			pMidiManager = pMidiManager->next();
 		}
-	}
-
-	// Don't go any further, if not playing.
-	if (!isPlaying()) {
 		// Do the idle processing...
 		for (qtractorTrack *pTrack = pSession->tracks().first();
 				pTrack; pTrack = pTrack->next()) {
@@ -1125,31 +1145,62 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			m_pMetroBus->process_commit(nframes);
 	}
 
-	// Split processing, in case we're looping...
-	if (pSession->isLooping()) {
-		const unsigned long iLoopEnd = pSession->loopEnd();
-		if (iFrameStart < iLoopEnd) {
-			// Loop-length might be shorter than the buffer-period...
-			while (iFrameEnd >= iLoopEnd + nframes) {
-				// Process the remaining until end-of-loop...
-				pSession->process(pAudioCursor, iFrameStart, iLoopEnd);
-				m_iBufferOffset += (iLoopEnd - iFrameStart);
-				// Reset to start-of-loop...
-				iFrameStart = pSession->loopStart();
-				iFrameEnd   = iFrameStart + (iFrameEnd - iLoopEnd);
-				// Set to new transport location...
-				if (m_transportMode & qtractorBus::Output)
-					jack_transport_locate(m_pJackClient, iFrameStart);
-				pAudioCursor->seek(iFrameStart);
-				// Update time(base) info...
-				updateTimeInfo(iFrameStart);
+	// MIDI managers plugin frame time...
+	const unsigned long iFrameTimeStart = pAudioCursor->frameTime();
+	const unsigned long iFrameTimeEnd   = iFrameTimeStart + nframes;
+
+	unsigned int nframes2 = m_iBlockSize;
+	if (nframes2 > nframes)
+		nframes2 = nframes;
+
+	unsigned long iFrameTimeStart2 = iFrameTimeStart;
+
+	for (unsigned long iFrameStart2 = iFrameStart;
+			iFrameStart2 < iFrameEnd; iFrameStart2 += nframes2) {
+		// Update time(base) info...
+		updateTimeInfo(iFrameStart2);
+		// MIDI managers plugin processing...
+		unsigned long iFrameTimeEnd2 = iFrameTimeStart2 + nframes2;
+		if (iFrameTimeEnd2 > iFrameTimeEnd)
+			iFrameTimeEnd2 = iFrameTimeEnd;
+		qtractorMidiManager *pMidiManager
+			= pSession->midiManagers().first();
+		while (pMidiManager) {
+			pMidiManager->process(iFrameTimeStart2, iFrameTimeEnd2);
+			if (!pMidiManager->isAudioOutputBus())
+				++iOutputBus;
+			pMidiManager = pMidiManager->next();
+		}
+		iFrameTimeStart2 += nframes2;
+		// Main processing...
+		unsigned long iFrameEnd2 = iFrameStart2 + nframes2;
+		if (iFrameEnd2 > iFrameEnd)
+			iFrameEnd2 = iFrameEnd;
+		// Split processing, in case we're looping...
+		if (pSession->isLooping()) {
+			const unsigned long iLoopEnd = pSession->loopEnd();
+			if (iFrameStart2 < iLoopEnd) {
+				// Loop-length might be shorter than the buffer-period...
+				while (iFrameEnd2 >= iLoopEnd + nframes2) {
+					// Process the remaining until end-of-loop...
+					pSession->process(pAudioCursor, iFrameStart2, iLoopEnd);
+					m_iBufferOffset += (iLoopEnd - iFrameStart2);
+					// Reset to start-of-loop...
+					iFrameStart2 = pSession->loopStart();
+					iFrameEnd2   = iFrameStart2 + (iFrameEnd2 - iLoopEnd);
+					// Set to new transport location...
+					if (m_transportMode & qtractorBus::Output)
+						jack_transport_locate(m_pJackClient, iFrameStart2);
+					pAudioCursor->seek(iFrameStart2);
+					// Update time(base) info...
+					updateTimeInfo(iFrameStart2);
+				}
 			}
 		}
+		// Regular range playback...
+		pSession->process(pAudioCursor, iFrameStart2, iFrameEnd2);
+		m_iBufferOffset += (iFrameEnd2 - iFrameStart2);
 	}
-
-	// Regular range playback...
-	pSession->process(pAudioCursor, iFrameStart, iFrameEnd);
-	m_iBufferOffset += (iFrameEnd - iFrameStart);
 
 	// Commit current audio buses...
 	for (pBus = buses().first(); pBus; pBus = pBus->next()) {
@@ -1230,26 +1281,38 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 	const unsigned long iFrameStart = pAudioCursor->frame();
 	const unsigned long iFrameEnd   = iFrameStart + nframes;
 
+	unsigned int nframes2 = m_iBlockSize;
+	if (nframes2 > nframes)
+		nframes2 = nframes;
+
 	// Write output bus buffers to export audio file...
 	if (iFrameStart < m_iExportEnd) {
 		// Prepare mix-down buffer...
 		m_pExportBuffer->process_prepare(nframes);
-		// Update time(base) info...
-		updateTimeInfo(iFrameStart);
-		// Perform all tracks processing...
-		int iTrack = 0;
-		for (qtractorTrack *pTrack = pSession->tracks().first();
-				pTrack; pTrack = pTrack->next()) {
-			pTrack->process_export(pAudioCursor->clip(iTrack),
-				iFrameStart, iFrameEnd);
-			++iTrack;
-		}
-		// MIDI plugin manager processing...
-		qtractorMidiManager *pMidiManager
-			= pSession->midiManagers().first();
-		while (pMidiManager) {
-			pMidiManager->process(iFrameStart, iFrameEnd);
-			pMidiManager = pMidiManager->next();
+		for (unsigned long iFrameStart2 = iFrameStart;
+				iFrameStart2 < iFrameEnd; iFrameStart2 += nframes2) {
+			// Update time(base) info...
+			updateTimeInfo(iFrameStart2);
+			// Main processing...
+			unsigned long iFrameEnd2 = iFrameStart2 + nframes2;
+			if (iFrameEnd2 > iFrameEnd)
+				iFrameEnd2 = iFrameEnd;
+			// MIDI managers plugin processing...
+			qtractorMidiManager *pMidiManager
+				= pSession->midiManagers().first();
+			while (pMidiManager) {
+				pMidiManager->process(iFrameStart2, iFrameEnd2);
+				pMidiManager = pMidiManager->next();
+			}
+			// Perform all tracks processing...
+			int iTrack = 0;
+			for (qtractorTrack *pTrack = pSession->tracks().first();
+					pTrack; pTrack = pTrack->next()) {
+				pTrack->process_export(pAudioCursor->clip(iTrack),
+					iFrameStart2, iFrameEnd2);
+				++iTrack;
+			}
+			m_iBufferOffset += (iFrameEnd2 - iFrameStart2);
 		}
 		// Prepare advance for next cycle...
 		pAudioCursor->seek(iFrameEnd);

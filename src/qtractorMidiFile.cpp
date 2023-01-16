@@ -1,7 +1,7 @@
 // qtractorMidiFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1405,7 +1405,8 @@ bool qtractorMidiFile::saveCopyFile ( const QString& sNewFilename,
 		ppSeqs = new qtractorMidiSequence * [iSeqs];
 		for (iSeq = 0; iSeq < iSeqs; ++iSeq) {
 			ppSeqs[iSeq] = new qtractorMidiSequence(
-				sTrackName.arg(iSeq + 1), iSeq, ts.ticksPerBeat());
+				sTrackName.arg(iSeq + 1), iSeq,
+				qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 		}
 		if (file.readTracks(ppSeqs, iSeqs) && file.tempoMap())
 			file.tempoMap()->intoTimeScale(&ts, iTimeOffset);

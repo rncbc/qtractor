@@ -391,6 +391,20 @@ void qtractorThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 		painter.setPen(Qt::red);
 		painter.drawLine(x2, 0, x2, h);
 	}
+
+	// Shade-out what's not in view...
+	if (m_pRubberBand) {
+		const QColor rgba(0, 0, 0, 96);
+		const QRect& rect2 = m_pRubberBand->geometry();
+		if (rect2.left() > rect.left())
+			painter.fillRect(
+				rect.left(), rect.top(),
+				rect2.left() - rect.left(), rect.height(), rgba);
+		if (rect2.right() < rect.right() + 1)
+			painter.fillRect(
+				rect2.right() + 1, rect.top(),
+				rect.right() - rect2.right(), rect.height(), rgba);
+	}
 }
 
 

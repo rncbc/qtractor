@@ -119,7 +119,7 @@ set (HEADERS
   qtractorTrackTime.h
   qtractorTrackView.h
   qtractorTracks.h
-  qtractorVstPlugin.h
+  qtractorVst2Plugin.h
   qtractorVst3Plugin.h
   qtractorZipFile.h
   qtractorWsolaTimeStretcher.h
@@ -246,7 +246,7 @@ set (SOURCES
   qtractorTrackTime.cpp
   qtractorTrackView.cpp
   qtractorTracks.cpp
-  qtractorVstPlugin.cpp
+  qtractorVst2Plugin.cpp
   qtractorVst3Plugin.cpp
   qtractorWsolaTimeStretcher.cpp
   qtractorZipFile.cpp
@@ -481,7 +481,7 @@ if (CONFIG_LV2_UI_GTKMM2)
   target_link_libraries (${PROJECT_NAME} PRIVATE ${GTKMM2_LIBRARIES})
 endif ()
 
-if (CONFIG_VST AND CONFIG_VST2SDK AND NOT CONFIG_VESTIGE)
+if (CONFIG_VST2 AND CONFIG_VST2SDK AND NOT CONFIG_VESTIGE)
   target_include_directories (${PROJECT_NAME} PRIVATE ${CONFIG_VST2SDK})
   target_include_directories (${PROJECT_NAME}_plugin_scan PRIVATE ${CONFIG_VST2SDK})
 endif ()

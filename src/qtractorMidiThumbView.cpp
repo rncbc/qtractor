@@ -1,7 +1,7 @@
 // qtractorMidiThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -395,6 +395,20 @@ void qtractorMidiThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	if (x2 >= rect.left() && x2 <= rect.right()) {
 		painter.setPen(Qt::red);
 		painter.drawLine(x2, 0, x2, h);
+	}
+
+	// Shade-out what's not in view...
+	if (m_pRubberBand) {
+		const QColor rgba(0, 0, 0, 96);
+		const QRect& rect2 = m_pRubberBand->geometry();
+		if (rect2.left() > rect.left())
+			painter.fillRect(
+				rect.left(), rect.top(),
+				rect2.left() - rect.left(), rect.height(), rgba);
+		if (rect2.right() < rect.right() + 1)
+			painter.fillRect(
+				rect2.right() + 1, rect.top(),
+				rect.right() - rect2.right(), rect.height(), rgba);
 	}
 }
 

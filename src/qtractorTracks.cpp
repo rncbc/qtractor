@@ -522,7 +522,7 @@ bool qtractorTracks::newClip (void)
 			const unsigned long iClipStartTime
 				= pSession->tickFromFrame(iClipStart);
 			const unsigned long iClipLengthTime
-				= pSession->ticksPerBeat() * pSession->beatsPerBar();
+				= qtractorTimeScale::TICKS_PER_BEAT_HRQ * pSession->beatsPerBar();
 			pClip->setClipLength(pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipLengthTime));
 		}
@@ -1561,9 +1561,8 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	}
 
 	// Write SMF header...
-	const unsigned short iTicksPerBeat = pSession->ticksPerBeat();
 	const unsigned short iTracks = (iFormat == 0 ? 1 : 2);
-	if (!file.writeHeader(iFormat, iTracks, iTicksPerBeat)) {
+	if (!file.writeHeader(iFormat, iTracks, pSession->ticksPerBeat())) {
 		QApplication::restoreOverrideCursor();
 		return false;
 	}
@@ -1610,7 +1609,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		file.writeTrack(nullptr);
 
 	// Setup merge sequence...
-	qtractorMidiSequence seq(pTrack->trackName(), 0, iTicksPerBeat);
+	qtractorMidiSequence seq(pTrack->trackName(), 0, qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 	seq.setChannel(pTrack->midiChannel());
 	seq.setBankSelMethod(pTrack->midiBankSelMethod());
 	seq.setBank(pTrack->midiBank());

@@ -1064,6 +1064,7 @@ private:
 	// Processor parameters.
 	unsigned int m_srate;
 	unsigned int m_nframes;
+	unsigned int m_nframes_max;
 
 	// Audio processor buffers.
 	clap_audio_buffer m_audio_ins;
@@ -1339,7 +1340,7 @@ qtractorClapPlugin::Impl::Impl ( qtractorClapPlugin *pPlugin )
 		m_gui(nullptr), m_state(nullptr), m_note_names(nullptr),
 		m_params_flush(false), m_activated(false), m_sleeping(false),
 		m_processing(false), m_restarting(false),
-		m_srate(44100), m_nframes(0)
+		m_srate(44100), m_nframes(0), m_nframes_max(0)
 {
 	qtractorClapPluginHost::setup(&m_host, this);
 	m_host.get_extension = qtractorClapPlugin::Impl::get_extension;
@@ -1456,12 +1457,12 @@ void qtractorClapPlugin::Impl::activate (void)
 	if (m_activated)
 		return;
 
-	if (m_srate < 2 || m_nframes < 2)
+	if (m_srate < 2 || m_nframes < 2 || m_nframes_max < 2)
 		return;
 
 	plugin_params_request_flush();
 
-	if (!m_plugin->activate(m_plugin, double(m_srate), m_nframes, m_nframes))
+	if (!m_plugin->activate(m_plugin, double(m_srate), m_nframes, m_nframes_max))
 		return;
 
 	m_activated = true;
@@ -1507,7 +1508,8 @@ bool qtractorClapPlugin::Impl::process_reset (
 	deactivate();
 
 	m_srate = pAudioEngine->sampleRate();
-	m_nframes = pAudioEngine->bufferSize();
+	m_nframes = pAudioEngine->blockSize();
+	m_nframes_max = pAudioEngine->bufferSizeEx();
 
 	::memset(&m_audio_ins, 0, sizeof(m_audio_ins));
 	m_audio_ins.channel_count = pType->audioIns();
@@ -1529,7 +1531,7 @@ bool qtractorClapPlugin::Impl::process_reset (
 	}
 	m_process.in_events  = m_events_in.ins();
 	m_process.out_events = m_events_out.outs();
-	m_process.frames_count = m_nframes;
+	m_process.frames_count = pAudioEngine->bufferSize();
 	m_process.steady_time = 0;
 	m_process.transport = g_host.transport();
 

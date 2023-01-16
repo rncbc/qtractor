@@ -161,10 +161,10 @@ private:
 #endif	// CONFIG_DSSI
 
 
-#ifdef CONFIG_VST
+#ifdef CONFIG_VST2
 
 //----------------------------------------------------------------------
-// class qtractor_vst_scan -- VST plugin (bare bones) interface.
+// class qtractor_vst2_scan -- VST2 plugin (bare bones) interface.
 //
 
 #ifdef CONFIG_VESTIGE
@@ -173,15 +173,15 @@ typedef struct _AEffect AEffect;
 struct AEffect;
 #endif
 
-class qtractor_vst_scan
+class qtractor_vst2_scan
 {
 public:
 
 	// Constructor.
-	qtractor_vst_scan();
+	qtractor_vst2_scan();
 
 	// destructor.
-	~qtractor_vst_scan();
+	~qtractor_vst2_scan();
 
 	// File loader.
 	bool open(const QString& sFilename);
@@ -207,14 +207,14 @@ public:
 	bool hasEditor() const;
 	bool hasProgramChunks() const;
 
-	// VST host dispatcher.
-	int vst_dispatch(
+	// VST2 host dispatcher.
+	int vst2_dispatch(
 		long opcode, long index, long value, void *ptr, float opt) const;
 
 protected:
 
-	// VST flag inquirer.
-	bool canDo(const char *pszCanDo) const;
+	// VST2 flag inquirer.
+	bool vst2_canDo(const char *pszCanDo) const;
 
 private:
 
@@ -226,7 +226,7 @@ private:
 	QString       m_sName;
 };
 
-#endif	// CONFIG_VST
+#endif	// CONFIG_VST2
 
 
 #ifdef CONFIG_VST3

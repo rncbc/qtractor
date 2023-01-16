@@ -1,7 +1,7 @@
 #
 # spec file for package qtractor
 #
-# Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+# Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -16,8 +16,8 @@
 #
 
 %define name    qtractor
-%define version 0.9.29
-%define release 72.1
+%define version 0.9.30
+%define release 73.1
 
 %define _prefix	/usr
 
@@ -46,53 +46,50 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	coreutils
 BuildRequires:	pkgconfig
 BuildRequires:	glibc-devel
-
-%if %{defined fedora} || 0%{?suse_version} > 1500
-BuildRequires:	gcc-c++ >= 8
-%define CXX		/usr/bin/g++
+BuildRequires:	cmake >= 3.15
+%if 0%{?sle_version} >= 150200 && 0%{?is_opensuse}
+BuildRequires:	gcc10 >= 10
+BuildRequires:	gcc10-c++ >= 10
+%define _GCC	/usr/bin/gcc-10
+%define _GXX	/usr/bin/g++-10
 %else
-BuildRequires:	gcc8-c++ >= 8
-%define CXX		/usr/bin/g++-8
+BuildRequires:	gcc >= 10
+BuildRequires:	gcc-c++ >= 10
+%define _GCC	/usr/bin/gcc
+%define _GXX	/usr/bin/g++
 %endif
-
-BuildRequires:	cmake >= 3.19
-%if %{defined fedora}
 %if 0%{qt_major_version} == 6
-BuildRequires:	qt6-qtbase-devel >= 6.1
-BuildRequires:	qt6-qttools-devel
-BuildRequires:	qt6-qtsvg-devel
-BuildRequires:	qt6-linguist
+%if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
+BuildRequires:	qtbase6-static >= 6.1
+BuildRequires:	qttools6-static
+BuildRequires:	qttranslations6-static
+BuildRequires:	qtsvg6-static
+BuildRequires:	qtwayland6-static
 %else
-BuildRequires:	qt5-qtbase-devel >= 5.1
-BuildRequires:	qt5-qttools-devel
-BuildRequires:	qt5-qtsvg-devel
-BuildRequires:	qt5-qtx11extras-devel
-BuildRequires:	qt5-linguist
+BuildRequires:	cmake(Qt6LinguistTools)
+BuildRequires:	pkgconfig(Qt6Core)
+BuildRequires:	pkgconfig(Qt6Gui)
+BuildRequires:	pkgconfig(Qt6Widgets)
+BuildRequires:	pkgconfig(Qt6Xml)
+BuildRequires:	pkgconfig(Qt6Svg)
+BuildRequires:	pkgconfig(Qt6Network)
 %endif
+%else
+BuildRequires:	cmake(Qt5LinguistTools)
+BuildRequires:	pkgconfig(Qt5Core)
+BuildRequires:	pkgconfig(Qt5Gui)
+BuildRequires:	pkgconfig(Qt5Widgets)
+BuildRequires:	pkgconfig(Qt5Xml)
+BuildRequires:	pkgconfig(Qt5Svg)
+BuildRequires:	pkgconfig(Qt5Network)
+BuildRequires:	pkgconfig(Qt5X11Extras)
+%endif
+%if %{defined fedora}
 BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	rubberband-devel
 BuildRequires:	aubio-devel >= 0.4.1
 %else
-%if 0%{qt_major_version} == 6
-%if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
-BuildRequires:	qtbase6-static >= 6.3
-BuildRequires:	qttools6-static
-BuildRequires:	qttranslations6-static
-BuildRequires:	qtsvg6-static
-%else
-BuildRequires:	qt6-base-devel >= 6.1
-BuildRequires:	qt6-tools-devel
-BuildRequires:	qt6-svg-devel
-BuildRequires:	qt6-linguist-devel
-%endif
-%else
-BuildRequires:	libqt5-qtbase-devel >= 5.1
-BuildRequires:	libqt5-qttools-devel
-BuildRequires:	libqt5-qtsvg-devel
-BuildRequires:	libqt5-qtx11extras-devel
-BuildRequires:	libqt5-linguist-devel
-%endif
 BuildRequires:	libjack-devel
 BuildRequires:	alsa-devel
 BuildRequires:	librubberband-devel
@@ -141,7 +138,7 @@ the personal home-studio.
 %if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
 source /opt/qt6.4-static/bin/qt6.4-static-env.sh
 %endif
-CXX=%{CXX} \
+CXX=%{_GXX} CC=%{_GCC} \
 cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build
 cmake --build build %{?_smp_mflags}
 
@@ -195,6 +192,8 @@ cmake --install build
 %{_datadir}/man/fr/man1/%{name}.1.gz
 
 %changelog
+* Fri Dec 30 2022 Rui Nuno Capela <rncbc@rncbc.org> 0.9.30
+- An End-of-Year'22 Release.
 * Wed Oct  5 2022 Rui Nuno Capela <rncbc@rncbc.org> 0.9.29
 - An Early-Autumn'22 Release.
 * Sat Sep  3 2022 Rui Nuno Capela <rncbc@rncbc.org> 0.9.28

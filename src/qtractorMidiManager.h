@@ -25,8 +25,8 @@
 #include "qtractorAbout.h"
 #include "qtractorMidiBuffer.h"
 
-#ifdef CONFIG_VST
-#include "qtractorVstPlugin.h"
+#ifdef CONFIG_VST2
+#include "qtractorVst2Plugin.h"
 #ifndef CONFIG_MIDI_PARSER
 #define CONFIG_MIDI_PARSER 1
 #endif
@@ -253,16 +253,16 @@ public:
 		{ return m_iDssiEvents; }
 #endif
 
-#ifdef CONFIG_VST
-	// VST event buffer accessors...
-	VstEvents *vst_events_in() const
-		{ return (VstEvents *) m_ppVstBuffers[m_iEventBuffer & 1]; }
-	VstEvents *vst_events_out() const
-		{ return (VstEvents *) m_ppVstBuffers[(m_iEventBuffer + 1) & 1]; }
-	// Copy VST event buffer (output)...
-	void vst_events_copy(VstEvents *pVstBuffer);
-	// Swap VST event buffers...
-	void vst_events_swap();
+#ifdef CONFIG_VST2
+	// VST2 event buffer accessors...
+	VstEvents *vst2_events_in() const
+		{ return (VstEvents *) m_ppVst2Buffers[m_iEventBuffer & 1]; }
+	VstEvents *vst2_events_out() const
+		{ return (VstEvents *) m_ppVst2Buffers[(m_iEventBuffer + 1) & 1]; }
+	// Copy VST2 event buffer (output)...
+	void vst2_events_copy(VstEvents *pVst2Buffer);
+	// Swap VST2 event buffers...
+	void vst2_events_swap();
 #endif
 
 #ifdef CONFIG_LV2
@@ -407,9 +407,9 @@ private:
 	unsigned int        m_iDssiEvents;
 #endif
 
-#ifdef CONFIG_VST
-	VstMidiEvent       *m_ppVstMidiBuffers[2];
-	unsigned char      *m_ppVstBuffers[2];
+#ifdef CONFIG_VST2
+	VstMidiEvent       *m_ppVst2MidiBuffers[2];
+	unsigned char      *m_ppVst2Buffers[2];
 #endif
 
 #ifdef CONFIG_LV2

@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -254,7 +254,7 @@ void qtractorOptions::loadOptions (void)
 	m_settings.beginGroup("/Plugins");
 	ladspaPaths = m_settings.value("/LadspaPaths").toStringList();
 	dssiPaths   = m_settings.value("/DssiPaths").toStringList();
-	vstPaths    = m_settings.value("/VstPaths").toStringList();
+	vst2Paths   = m_settings.value("/Vst2Paths").toStringList();
 	vst3Paths   = m_settings.value("/Vst3Paths").toStringList();
 	clapPaths   = m_settings.value("/ClapPaths").toStringList();
 	lv2Paths    = m_settings.value("/Lv2Paths").toStringList();
@@ -266,7 +266,7 @@ void qtractorOptions::loadOptions (void)
 	bDummyPluginScan = true;//m_settings.value("/DummyPluginScan", true).toBool();
 	iDummyLadspaHash = m_settings.value("/DummyLadspaHash", 0).toInt();
 	iDummyDssiHash = m_settings.value("/DummyDssiHash", 0).toInt();
-	iDummyVstHash = m_settings.value("/DummyVstHash", 0).toInt();
+	iDummyVst2Hash = m_settings.value("/DummyVst2Hash", 0).toInt();
 	iDummyVst3Hash = m_settings.value("/DummyVst3Hash", 0).toInt();
 	iDummyClapHash = m_settings.value("/DummyClapHash", 0).toInt();
 	iDummyLv2Hash = m_settings.value("/DummyLv2Hash", 0).toInt();
@@ -564,9 +564,9 @@ void qtractorOptions::saveOptions (void)
 	m_settings.beginGroup("/Plugins");
 	m_settings.setValue("/LadspaPaths", ladspaPaths);
 	m_settings.setValue("/DssiPaths", dssiPaths);
-	m_settings.setValue("/VstPaths", vstPaths);
+	m_settings.setValue("/Vst2Paths", vst2Paths);
 	m_settings.setValue("/Vst3Paths", vst3Paths);
-	m_settings.setValue("/ClapPaths", vst3Paths);
+	m_settings.setValue("/ClapPaths", clapPaths);
 	m_settings.setValue("/Lv2Paths", lv2Paths);
 	m_settings.setValue("/Lv2PresetDir", sLv2PresetDir);
 	m_settings.setValue("/AudioOutputBus", bAudioOutputBus);
@@ -576,7 +576,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/DummyPluginScan", bDummyPluginScan);
 	m_settings.setValue("/DummyLadspaHash", iDummyLadspaHash);
 	m_settings.setValue("/DummyDssiHash", iDummyDssiHash);
-	m_settings.setValue("/DummyVstHash", iDummyVstHash);
+	m_settings.setValue("/DummyVst2Hash", iDummyVst2Hash);
 	m_settings.setValue("/DummyVst3Hash", iDummyVst3Hash);
 	m_settings.setValue("/DummyClapHash", iDummyClapHash);
 	m_settings.setValue("/DummyLv2Hash", iDummyLv2Hash);

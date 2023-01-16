@@ -2344,7 +2344,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	if (pSession) {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
-			m_iMinBlockLength     = pAudioEngine->bufferSize();
+			m_iMinBlockLength     = pAudioEngine->blockSize();
 			m_iMaxBlockLength     = pAudioEngine->bufferSizeEx();
 			m_iNominalBlockLength = m_iMinBlockLength;
 		}
@@ -4228,6 +4228,7 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 		if (pWindow) {
 			pWindow->resize(size);
 			delete pWindow;
+			return;
 		}
 	}
 #endif	// CONFIG_LV2_UI_X11

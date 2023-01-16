@@ -1,7 +1,7 @@
 // qtractorOptions.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -229,7 +229,7 @@ public:
 	// Plug-in paths.
 	QStringList ladspaPaths;
 	QStringList dssiPaths;
-	QStringList vstPaths;
+	QStringList vst2Paths;
 	QStringList vst3Paths;
 	QStringList clapPaths;
 	QStringList lv2Paths;
@@ -251,7 +251,7 @@ public:
 	bool bDummyPluginScan;
 	int  iDummyLadspaHash;
 	int  iDummyDssiHash;
-	int  iDummyVstHash;
+	int  iDummyVst2Hash;
 	int  iDummyVst3Hash;
 	int  iDummyClapHash;
 	int  iDummyLv2Hash;

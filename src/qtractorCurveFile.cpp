@@ -1,7 +1,7 @@
 // qtractorCurveFile.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -128,12 +128,12 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 	if (!file.open(m_sFilename, qtractorMidiFile::Write))
 		return;
 
-	const unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
 	unsigned short iSeq = 0;
 
 	qtractorMidiSequence **ppSeqs = new qtractorMidiSequence * [iSeqs];
 	for ( ; iSeq < iSeqs; ++iSeq)
-		ppSeqs[iSeq] = new qtractorMidiSequence(QString(), 0, iTicksPerBeat);
+		ppSeqs[iSeq] = new qtractorMidiSequence(
+			QString(), 0, qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 
 	iSeq = 0;
 
@@ -182,7 +182,7 @@ void qtractorCurveFile::save ( qtractorDocument *pDocument,
 
 	pElement->appendChild(eItems);
 	
-	file.writeHeader(1, iSeqs, iTicksPerBeat);
+	file.writeHeader(1, iSeqs, pTimeScale->ticksPerBeat());
 	file.writeTracks(ppSeqs, iSeqs);
 	file.close();
 
@@ -229,7 +229,6 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 	// avoid duplicates across load/save/record cycles...
 	pSession->acquireFilePath(sFilename);
 
-	const unsigned short iTicksPerBeat = pTimeScale->ticksPerBeat();
 	unsigned short iSeq = 0;
 
 	qtractorCurve *pCurrentCurve = nullptr;
@@ -244,7 +243,9 @@ void qtractorCurveFile::apply ( qtractorTimeScale *pTimeScale )
 					pItem->subject, pItem->mode);
 			if (m_iCurrentIndex == pItem->index)
 				pCurrentCurve = pCurve;
-			qtractorMidiSequence seq(QString(), pItem->channel, iTicksPerBeat);
+			qtractorMidiSequence seq(
+				QString(), pItem->channel,
+				qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 			if (file.readTrack(&seq, iSeq)) {
 				pCurve->readMidiSequence(&seq,
 					pItem->ctype,

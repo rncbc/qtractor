@@ -572,9 +572,6 @@ void qtractorMidiOutputThread::process (void)
 	if (pMidiCursor == nullptr)
 		return;
 
-	// Free overridden SysEx queued events.
-	m_pMidiEngine->clearSysexCache();
-
 	// Now for the next readahead bunch...
 	unsigned long iFrameStart = pMidiCursor->frame();
 	unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
@@ -886,13 +883,14 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 	m_pCursor = new qtractorTimeScale::Cursor(m_pTimeScale);
 	m_fTempo = m_pTimeScale->tempo();
 
-	snd_seq_queue_tempo_t *tempo;
-	snd_seq_queue_tempo_alloca(&tempo);
-	snd_seq_get_queue_tempo(pAlsaSeq, m_iPlayerQueue, tempo);
-	snd_seq_queue_tempo_set_ppq(tempo, (int) m_pTimeScale->ticksPerBeat());
-	snd_seq_queue_tempo_set_tempo(tempo,
+	snd_seq_queue_tempo_t *pQueueTempo;
+	snd_seq_queue_tempo_alloca(&pQueueTempo);
+	snd_seq_get_queue_tempo(pAlsaSeq, m_iPlayerQueue, pQueueTempo);
+	snd_seq_queue_tempo_set_ppq(pQueueTempo,
+		(int) m_pTimeScale->ticksPerBeat());
+	snd_seq_queue_tempo_set_tempo(pQueueTempo,
 		(unsigned int) (60000000.0f / m_fTempo));
-	snd_seq_set_queue_tempo(pAlsaSeq, m_iPlayerQueue, tempo);
+	snd_seq_set_queue_tempo(pAlsaSeq, m_iPlayerQueue, pQueueTempo);
 
 	snd_seq_start_queue(pAlsaSeq, m_iPlayerQueue, nullptr);
 	snd_seq_drain_output(pAlsaSeq);
@@ -1211,8 +1209,10 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iDriftCheck   = 0;
 	m_iDriftCount   = DRIFT_CHECK;
 
-	m_iTimeStart    = 0;
 	m_iTimeDrift    = 0;
+	m_iFrameDrift   = 0;
+
+	m_iTimeStart    = 0;
 	m_iFrameStart   = 0;
 
 	m_iTimeStartEx  = 0;
@@ -1362,17 +1362,30 @@ void qtractorMidiEngine::resetTempo (void)
 	qtractorTimeScale::Node *pNode
 		= m_pMetroCursor->seekFrame(pSession->playHead());
 
-	// Set queue tempo...
-	snd_seq_queue_tempo_t *tempo;
-	snd_seq_queue_tempo_alloca(&tempo);
+	snd_seq_queue_tempo_t *pQueueTempo;
+	snd_seq_queue_tempo_alloca(&pQueueTempo);
 	// Fill tempo struct with current tempo info.
-	snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
+	snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pQueueTempo);
 	// Set the new intended ones...
-	snd_seq_queue_tempo_set_ppq(tempo, (int) pSession->ticksPerBeat());
-	snd_seq_queue_tempo_set_tempo(tempo,
+	snd_seq_queue_tempo_set_ppq(pQueueTempo,
+		qtractorTimeScale::TICKS_PER_BEAT_HRQ);
+	snd_seq_queue_tempo_set_tempo(pQueueTempo,
 		(unsigned int) (60000000.0f / pNode->tempo));
 	// Give tempo struct to the queue.
-	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, tempo);
+	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pQueueTempo);
+
+	// Set queue tempo...
+	if (m_bDriftCorrect && pSession->isPlaying()) {
+		snd_seq_queue_status_t *pQueueStatus;
+		snd_seq_queue_status_alloca(&pQueueStatus);
+		if (snd_seq_get_queue_status(m_pAlsaSeq,
+				m_iAlsaQueue, pQueueStatus) >= 0) {
+			const long iMidiTime
+				= long(snd_seq_queue_status_get_tick_time(pQueueStatus));
+			m_iFrameDrift = long(pNode->frameFromTick(iMidiTime + m_iTimeStart));
+			m_iFrameDrift -= long(pSession->playHead());
+		}
+	}
 
 	// Recache tempo value...
 	m_fMetroTempo = pNode->tempo;
@@ -1595,7 +1608,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
-		const unsigned long q = pSession->ticksPerBeat() / m_iCaptureQuantize;
+		const unsigned long q
+			= qtractorTimeScale::TICKS_PER_BEAT_HRQ
+			/ m_iCaptureQuantize;
 		tick = q * ((tick + (q >> 1)) / q);
 	}
 
@@ -1757,10 +1772,13 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 			 iTime <  pSession->punchOutTime()));
 		// Same record time(stamp) note-off tracking...
 		if (type == qtractorMidiEvent::NOTEON) {
-			if (tick > 0 &&
+			const unsigned long delta
+				= qtractorTimeScale::TICKS_PER_BEAT_HRQ
+				/ pSession->ticksPerBeat();
+			if (tick > delta &&
 				m_iLastEventTime >= tick &&
 				m_iLastEventNote != param)
-				--tick;
+				tick -= delta;
 		}
 		else
 		if (type == qtractorMidiEvent::NOTEOFF) {
@@ -1988,7 +2006,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			if (pSession->isLooping()) {
 				const unsigned long iLoopEndTime
 					= pSession->tickFromFrame(pSession->loopEnd());
-				if (iLoopEndTime > iTime && iLoopEndTime < iTime + ev.data.note.duration)
+				if (iLoopEndTime > iTime && iLoopEndTime < iTime + pEvent->duration())
 					ev.data.note.duration = iLoopEndTime - iTime;
 			}
 			break;
@@ -2064,22 +2082,26 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			break;
 		case qtractorMidiEvent::SYSEX: {
 			ev.type = SND_SEQ_EVENT_SYSEX;
+			unsigned char *data = pEvent->sysex();
+			unsigned short data_len = pEvent->sysex_len();
 			if (pMidiBus->midiMonitor_out()) {
-				// HACK: Master volume hack...
-				unsigned char *data = pEvent->sysex();
+				// HACK: Master volume: make a copy
+				// and update it while queued...
 				if (data[1] == 0x7f &&
 					data[2] == 0x7f &&
 					data[3] == 0x04 &&
 					data[4] == 0x01) {
-					// Make a copy, update and cache it while queued...
-					pEvent = new qtractorMidiEvent(*pEvent);
-					data = pEvent->sysex();
+					static unsigned char s_data[8];
+					if (data_len > sizeof(s_data))
+						data_len = sizeof(s_data);
+					::memcpy(s_data, data, data_len);
+					const float fGain = pMidiBus->midiMonitor_out()->gain();
+					data = &s_data[0];
 					data[5] = 0;
-					data[6] = int(pMidiBus->midiMonitor_out()->gain() * float(data[6])) & 0x7f;
-					m_sysexCache.append(pEvent);
+					data[6] = int(fGain * float(data[6])) & 0x7f;
 				}
 			}
-			snd_seq_ev_set_sysex(&ev, pEvent->sysex_len(), pEvent->sysex());
+			snd_seq_ev_set_sysex(&ev, data_len, data);
 			break;
 		}
 		default:
@@ -2134,20 +2156,20 @@ void qtractorMidiEngine::resetDrift (void)
 	qDebug("qtractorMidiEngine::resetDrift()");
 #endif
 
+//--DRIFT-SKEW-BEGIN--
+	snd_seq_queue_tempo_t *pQueueTempo;
+	snd_seq_queue_tempo_alloca(&pQueueTempo);
+	snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pQueueTempo);
+	snd_seq_queue_tempo_set_skew(pQueueTempo,
+		snd_seq_queue_tempo_get_skew_base(pQueueTempo));
+	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pQueueTempo);
+//--DRIFT-SKEW-END--
+
 	m_iDriftCheck = 0;
 	m_iDriftCount = DRIFT_CHECK;
 
-//--DRIFT-SKEW-BEGIN--
-	snd_seq_queue_tempo_t *pAlsaTempo;
-	snd_seq_queue_tempo_alloca(&pAlsaTempo);
-	snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
-	const unsigned int iSkewBase
-		= snd_seq_queue_tempo_get_skew_base(pAlsaTempo);
-	snd_seq_queue_tempo_set_skew(pAlsaTempo, iSkewBase);
-	snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
-//--DRIFT-SKEW-END--
-
-	m_iTimeDrift = 0;
+	m_iTimeDrift  = 0;
+	m_iFrameDrift = 0;
 }
 
 
@@ -2177,59 +2199,59 @@ void qtractorMidiEngine::driftCheck (void)
 	snd_seq_queue_status_alloca(&pQueueStatus);
 	if (snd_seq_get_queue_status(
 			m_pAlsaSeq, m_iAlsaQueue, pQueueStatus) >= 0) {
-		const long iAudioFrame = m_iFrameStart
+		const long iAudioFrame = m_iFrameStart + m_iFrameDrift
 			+ pAudioEngine->jackFrameTime() - m_iAudioFrameStart;
 		qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
 		const long iAudioTime
 			= long(pNode->tickFromFrame(iAudioFrame)) - m_iTimeStart;
 		const long iMidiTime
 			= long(snd_seq_queue_status_get_tick_time(pQueueStatus));
-		long iDeltaTime = (iAudioTime - iMidiTime);
-	//	if (pSession->isLooping()) {
-			const long iDeadTime
-				= pSession->tickFromFrame(iAudioFrame + readAhead())
-				- iAudioTime - m_iTimeStart;
-			const long iDeadTime2 = long(iDeadTime >> 4);
-			if (iDeltaTime < -iDeadTime2 || iDeltaTime > +iDeadTime2)
-				iDeltaTime = 0;
-	//	}
-		if (iDeltaTime && iAudioTime > 0 && iMidiTime > 0)
-			m_iTimeDrift += (iDeltaTime << 1);
-		if (m_iTimeDrift && (iAudioTime > -m_iTimeDrift)) {
+		const long iMinDeltaTime
+			= long(qtractorTimeScale::TICKS_PER_BEAT_MIN >> 2);
+		const long iMaxDeltaTime
+			= long(qtractorTimeScale::TICKS_PER_BEAT_MAX >> 4);
+		const long iDeltaTime = (iAudioTime - iMidiTime);
+		if (qAbs(iDeltaTime) < iMaxDeltaTime) {
 		//--DRIFT-SKEW-BEGIN--
-			snd_seq_queue_tempo_t *pAlsaTempo;
-			snd_seq_queue_tempo_alloca(&pAlsaTempo);
-			snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
+			const long iTimeDrift = m_iTimeDrift + (iDeltaTime << 1);
+			snd_seq_queue_tempo_t *pQueueTempo;
+			snd_seq_queue_tempo_alloca(&pQueueTempo);
+			snd_seq_get_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pQueueTempo);
 			const unsigned int iSkewBase
-				= snd_seq_queue_tempo_get_skew_base(pAlsaTempo);
+				= snd_seq_queue_tempo_get_skew_base(pQueueTempo);
 			const unsigned int iSkewPrev
-				= snd_seq_queue_tempo_get_skew(pAlsaTempo);
+				= snd_seq_queue_tempo_get_skew(pQueueTempo);
 			const unsigned int iSkewNext = (unsigned int) (float(iSkewBase)
-				* float(iAudioTime + m_iTimeDrift) / float(iAudioTime));
+				* float(iAudioTime + iTimeDrift) / float(iAudioTime));
 			if (iSkewNext != iSkewPrev) {
-				snd_seq_queue_tempo_set_skew(pAlsaTempo, iSkewNext);
-				snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pAlsaTempo);
+				snd_seq_queue_tempo_set_skew(pQueueTempo, iSkewNext);
+				snd_seq_set_queue_tempo(m_pAlsaSeq, m_iAlsaQueue, pQueueTempo);
 			}
-		//--DRIFT-SKEW-END--
 		#ifdef CONFIG_DEBUG//_0
 			qDebug("qtractorMidiEngine::driftCheck(%u): "
 				"iAudioTime=%ld iMidiTime=%ld (%ld) iTimeDrift=%ld (%.2g%%)",
-				m_iDriftCount, iAudioTime, iMidiTime, iDeltaTime, m_iTimeDrift,
+				m_iDriftCount, iAudioTime, iMidiTime, iDeltaTime, iTimeDrift,
 				((100.0f * float(iSkewNext)) / float(iSkewBase)) - 100.0f);
 		#endif
 			// Adaptive drift check... plan A.
-			if ((iSkewNext > iSkewBase && iSkewNext > iSkewPrev) ||
-				(iSkewNext < iSkewBase && iSkewNext < iSkewPrev)) {
-				if (m_iDriftCheck > DRIFT_CHECK_MIN)
-					m_iDriftCount >>= 1;
+			const bool bDecreased = (qAbs(m_iTimeDrift) > qAbs(iTimeDrift));
+			const bool bOvershoot = ((m_iTimeDrift * iTimeDrift) < 0);
+			m_iTimeDrift = iTimeDrift;
+			if ((!bDecreased || bOvershoot)
+				&& (qAbs(iDeltaTime) > iMinDeltaTime)
+				&& (m_iDriftCheck > DRIFT_CHECK_MIN)) {
+				m_iDriftCount >>= 1;
+			//	m_iTimeDrift  <<= 1;
 			}
 			else
 			// Adaptive drift check... plan B.
-			if (m_iDriftCheck < DRIFT_CHECK_MAX && !iDeltaTime) {
+			if ((bDecreased || !bOvershoot)
+			//	&& (qAbs(iDeltaTime) < iMinDeltaTime)
+				&& (m_iDriftCheck < DRIFT_CHECK_MAX)) {
 				m_iDriftCount <<= 1;
-				// Adaptive drift check... plan 9.
 				m_iTimeDrift  >>= 1;
 			}
+		//--DRIFT-SKEW-END--
 		}
 	}
 
@@ -2271,7 +2293,7 @@ bool qtractorMidiEngine::init (void)
 
 	// Set sequencer queue timer.
 	if (qtractorMidiTimer().indexOf(m_iAlsaTimer) > 0) {
-		qtractorMidiTimer::Key key(m_iAlsaTimer);	
+		qtractorMidiTimer::Key key(m_iAlsaTimer);
 		snd_timer_id_t *pAlsaTimerId;
 		snd_timer_id_alloca(&pAlsaTimerId);
 		snd_timer_id_set_class(pAlsaTimerId, key.alsaTimerClass());
@@ -2514,12 +2536,11 @@ void qtractorMidiEngine::clean (void)
 		m_pAlsaSeq    = nullptr;
 	}
 
-	// Clean any other left-overs...
-	clearSysexCache();
-
 	// And all other timing tracers.
-	m_iTimeStart  = 0;
 	m_iTimeDrift  = 0;
+	m_iFrameDrift = 0;
+
+	m_iTimeStart  = 0;
 	m_iFrameStart = 0;
 
 	m_iTimeStartEx  = 0;
@@ -2538,7 +2559,8 @@ void qtractorMidiEngine::restartLoop (void)
 		m_iFrameStart += pSession->loopStart();
 		m_iTimeStart  -= pSession->loopEndTime();
 		m_iTimeStart  += pSession->loopStartTime();
-	//	m_iTimeDrift = 0; -- Drift correction?
+	//	m_iFrameDrift = 0; -- Drift correction?
+	//	m_iTimeDrift = 0;
 	//	resetDrift();
 	}
 }
@@ -3523,9 +3545,6 @@ bool qtractorMidiEngine::fileExport (
 	if (iExportStart >= iExportEnd)
 		return false;
 
-	const unsigned short iTicksPerBeat
-		= pSession->ticksPerBeat();
-
 	const unsigned long iTimeStart
 		= pSession->tickFromFrame(iExportStart);
 	const unsigned long iTimeEnd
@@ -3545,7 +3564,7 @@ bool qtractorMidiEngine::fileExport (
 		ppSeqs = new qtractorMidiSequence * [iSeqs];
 		for (iSeq = 0; iSeq < iSeqs; ++iSeq) {
 			ppSeqs[iSeq] = new qtractorMidiSequence(
-				QString(), iSeq, iTicksPerBeat);
+				QString(), iSeq, qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 		}
 	}
 
@@ -3591,7 +3610,8 @@ bool qtractorMidiEngine::fileExport (
 			// SMF Format 1
 			++iTracks;
 			pSeq = new qtractorMidiSequence(
-				pTrack->trackName(), iTracks, iTicksPerBeat);
+				pTrack->trackName(), iTracks,
+				qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 			pSeq->setChannel(pTrack->midiChannel());
 			seqs.append(pSeq);
 		}
@@ -3672,7 +3692,7 @@ bool qtractorMidiEngine::fileExport (
 	const bool bResult
 		= file.open(sExportPath, qtractorMidiFile::Write);
 	if (bResult) {
-		if (file.writeHeader(iFormat, iTracks, iTicksPerBeat)) {
+		if (file.writeHeader(iFormat, iTracks, pSession->ticksPerBeat())) {
 			// Export SysEx setups...
 			bus_iter.toFront();
 			while (bus_iter.hasNext()) {
@@ -3681,7 +3701,8 @@ bool qtractorMidiEngine::fileExport (
 				if (pSysexList && pSysexList->count() > 0) {
 					if (ppSeqs[0] == nullptr) {
 						ppSeqs[0] = new qtractorMidiSequence(
-							QFileInfo(sExportPath).baseName(), 0, iTicksPerBeat);
+							QFileInfo(sExportPath).baseName(), 0,
+							qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 					}
 					pExportBus->exportSysexList(ppSeqs[0]);
 				}
@@ -3818,14 +3839,6 @@ void qtractorMidiEngine::setResetAllControllers ( bool bResetAllControllers )
 bool qtractorMidiEngine::isResetAllControllers (void) const
 {
 	return m_bResetAllControllers;
-}
-
-
-// Free overridden SysEx queued events.
-void qtractorMidiEngine::clearSysexCache (void)
-{
-	qDeleteAll(m_sysexCache);
-	m_sysexCache.clear();
 }
 
 
@@ -5198,7 +5211,7 @@ bool qtractorMidiBus::exportSysexList ( qtractorMidiSequence *pSeq )
 		qtractorMidiEvent *pEvent
 			= new qtractorMidiEvent(0, qtractorMidiEvent::SYSEX);
 		pEvent->setSysex(pSysex->data(), pSysex->size());
-		pSeq->addEvent(pEvent);			
+		pSeq->addEvent(pEvent);
 	}
 
 	return true;

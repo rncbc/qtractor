@@ -1,7 +1,7 @@
 // qtractorTimeScale.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,9 +27,11 @@
 #include <QStringList>
 #include <QColor>
 
-
 // Needed for the translation functions.
 #include <QCoreApplication>
+
+// Prolly needed for some rounding functions.
+#include <cmath>
 
 
 //----------------------------------------------------------------------
@@ -100,8 +102,7 @@ public:
 	unsigned short verticalZoom() const { return m_iVerticalZoom; }
 
 	// Fastest rounding-from-float helper.
-	static unsigned long uroundf(float x)
-		{ return (unsigned long) (x < 0.0f ? x - 0.5f : x + 0.5f); }
+	static unsigned long uroundf(float x) { return ::lroundf(x); }
 
 	// Beat divisor (snap index) accessors.
 	static unsigned short snapFromIndex(int iSnap);
@@ -158,8 +159,8 @@ public:
 
 		// Frame/tick convertors.
 		unsigned long tickFromFrame(unsigned long iFrame) const
-			{ return tick + uroundf(
-				(tickRate * (iFrame - frame)) / ts->frameRate()); }
+			{ return tickq(tick + uroundf(
+				(tickRate * (iFrame - frame)) / ts->frameRate())); }
 		unsigned long frameFromTick(unsigned long iTick) const
 			{ return frame + uroundf(
 				(ts->frameRate() * (iTick - tick)) / tickRate); }
@@ -168,18 +169,18 @@ public:
 		unsigned int beatFromTick(unsigned long iTick) const
 			{ return beat + ((iTick - tick) / ticksPerBeat); }
 		unsigned long tickFromBeat(unsigned int iBeat) const
-			{ return tick + (ticksPerBeat * (iBeat - beat)); }
+			{ return tickq(tick + (ticksPerBeat * (iBeat - beat))); }
 
 		// Tick/bar convertors.
 		unsigned short barFromTick(unsigned long iTick) const
 			{ return bar + ((iTick - tick) / (ticksPerBeat * beatsPerBar)); }
 		unsigned long tickFromBar(unsigned short iBar) const
-			{ return tick + (ticksPerBeat * beatsPerBar * (iBar - bar)); }
+			{ return tickq(tick + (ticksPerBeat * beatsPerBar * (iBar - bar))); }
 
 		// Tick/pixel convertors.
 		unsigned long tickFromPixel(int x) const
-			{ return tick + uroundf(
-				(tickRate * (x - pixel)) / ts->pixelRate()); }
+			{ return tickq(tick + uroundf(
+				(tickRate * (x - pixel)) / ts->pixelRate())); }
 		int pixelFromTick(unsigned long iTick) const
 			{ return pixel + uroundf(
 				(ts->pixelRate() * (iTick - tick)) / tickRate); }
@@ -227,7 +228,10 @@ public:
 
 		// Alternate (secondary) time-sig helper methods
 		unsigned short beatsPerBar2() const;
-		unsigned short ticksPerBeat2() const;
+		unsigned int ticksPerBeat2() const;
+
+		// MIDI time/tick hi-res rounding dumb-quantizer.
+		unsigned long tickq(unsigned long tick) const { return (tick & ~1); }
 
 		// Node keys.
 		unsigned long  frame;
@@ -242,7 +246,7 @@ public:
 		unsigned short beatsPerBar;
 		unsigned short beatDivisor;
 
-		unsigned short ticksPerBeat;
+		unsigned int   ticksPerBeat;
 
 	protected:
 
@@ -601,11 +605,24 @@ public:
 	static QString keySignatureName(
 		int iAccidentals, int iMode, char chMinor = 'm');
 
+	// MIDI resolution constants.
+	static const unsigned short TICKS_PER_BEAT_MIN = 24;
+	static const unsigned short TICKS_PER_BEAT_DEF = 960;
+	static const unsigned short TICKS_PER_BEAT_MAX = 3840;
+
+	static const unsigned short TICKS_PER_BEAT_HRQ = (TICKS_PER_BEAT_MAX << 2);
+
 protected:
 
 	// Tempo-map independent coefficients.
 	float pixelRate() const { return m_fPixelRate; }
 	float frameRate() const { return m_fFrameRate; }
+
+	// MIDI time adjust to/from official high resolution queue (64bit).
+	unsigned long timep ( unsigned long time ) const
+		{ return uint64_t(time) * TICKS_PER_BEAT_HRQ / m_iTicksPerBeat; }
+	unsigned long timeq ( unsigned long time ) const
+		{ return uint64_t(time) * m_iTicksPerBeat / TICKS_PER_BEAT_HRQ; }
 
 private:
 

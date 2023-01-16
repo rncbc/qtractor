@@ -277,9 +277,6 @@ public:
 	void setResetAllControllers(bool bResetAllControllers);
 	bool isResetAllControllers() const;
 
-	// Free overridden SysEx queued events.
-	void clearSysexCache();
-
 	// Reset ouput queue drift stats (audio vs. MIDI)...
 	void resetDrift();
 
@@ -341,9 +338,11 @@ private:
 	unsigned int m_iDriftCheck;
 	unsigned int m_iDriftCount;
 
+	long m_iTimeDrift;
+	long m_iFrameDrift;
+
 	// The delta-time/frame when playback started.
 	long m_iTimeStart;
-	long m_iTimeDrift;
 	long m_iFrameStart;
 
 	// The absolute-time/frame when playback started.
@@ -408,9 +407,6 @@ private:
 	// Same record time(stamp) note-off tracking.
 	unsigned long  m_iLastEventTime;
 	unsigned short m_iLastEventNote;
-
-	// Overridden SysEx queued events.
-	QList<qtractorMidiEvent *> m_sysexCache;
 };
 
 
