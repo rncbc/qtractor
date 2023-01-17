@@ -42,6 +42,8 @@ set (CONFIG_BUILD_VERSION "${PACKAGE_VERSION}")
 
 if (CONFIG_DEBUG)
   set (CMAKE_BUILD_TYPE "Debug")
+else ()
+  set (CMAKE_BUILD_TYPE "Release")
 endif ()
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
   set (CONFIG_DEBUG 1)
