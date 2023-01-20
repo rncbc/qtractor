@@ -159,7 +159,8 @@ cmake --install build
 
 %files
 %defattr(-,root,root)
-%doc README LICENSE TRANSLATORS ChangeLog
+%license LICENSE
+%doc README TRANSLATORS ChangeLog
 %dir %{_libdir}/%{name}
 #dir %{_datadir}/mime
 #dir %{_datadir}/mime/packages
