@@ -4,14 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.31  2023-01-26  A Winter'23 Release.
 
 - Fixed a off-by-one rounding error on MIDI clip offset and lengths
-  that were leaving some clips unlinked on load. (EXPERIMENTAL)
+  that were leaving some clips unlinked on load.
 
 - LXVST_PATH environment variable now accrues to VST_PATH for Linux-
   native VST2 plug-ins search path and not taking over in precedence
-  anymore. (EXPERIMENTAL)
+  anymore.
 
 - Fixed an old mistake on custom aliased CLAP and VST3 plugin paths.
 
