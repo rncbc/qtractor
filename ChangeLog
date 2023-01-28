@@ -4,6 +4,16 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Introducing count-in options to audio metronome: View/Options...
+  /Audio/Metronome/Count-in; Transport/Count-in. (EXPERIMENTAL)
+
+- Corrected MIDI metronome bar/beat note durations. (EXEPRIMENTAL)
+
+- Give an early reponse upon opening any NSM session. (EXPERIMENTAL)
+
+
 0.9.31  2023-01-26  A Winter'23 Release.
 
 - Fixed a off-by-one rounding error on MIDI clip offset and lengths

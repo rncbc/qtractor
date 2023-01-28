@@ -1,7 +1,7 @@
 // qtractorMidiEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -108,12 +108,15 @@ public:
 	QSocketNotifier *alsaNotifier() const;
 	void alsaNotifyAck();
 
-	// Special slave sync method.
-	void sync();
-
 	// Read ahead frames configuration.
 	void setReadAhead(unsigned int iReadAhead);
 	unsigned int readAhead() const;
+
+	// MIDI output process cycle iteration.
+	void process();
+
+	// Special slave sync method.
+	void sync();
 
 	// Reset queue tempo.
 	void resetTempo();
@@ -146,14 +149,8 @@ public:
 	void enqueue(qtractorTrack *pTrack, qtractorMidiEvent *pEvent,
 		unsigned long iTime, float fGain = 1.0f);
 
-	// Do ouput queue drift stats (audio vs. MIDI)...
-	void driftCheck();
-
 	// Flush ouput queue (if necessary)...
 	void flush();
-
-	// Special rewind method, on queue loop.
-	void restartLoop();
 
 	// The delta-time/frame accessors.
 	long timeStart() const;
@@ -307,6 +304,12 @@ protected:
 	void closePlayerBus();
 	void deletePlayerBus();
 
+	// MIDI/Audio sync-check predicate.
+	qtractorSessionCursor *midiCursorSync(bool bStart = false);
+
+	// Do ouput queue drift stats (audio vs. MIDI)...
+	void driftCheck();
+
 private:
 
 	// Special event notifier proxy object.
@@ -322,6 +325,9 @@ private:
 	snd_seq_t       *m_pAlsaSubsSeq;
 	int              m_iAlsaSubsPort;
 	QSocketNotifier *m_pAlsaNotifier;
+
+	// The number of frames to read-ahead.
+	unsigned int m_iReadAhead;
 
 	// Name says it all.
 	qtractorMidiInputThread  *m_pInputThread;

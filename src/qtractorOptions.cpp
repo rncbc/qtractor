@@ -134,6 +134,7 @@ void qtractorOptions::loadOptions (void)
 
 	// Transport options group.
 	m_settings.beginGroup("/Transport");
+	bCountIn         = m_settings.value("/CountIn", false).toBool();
 	bMetronome       = m_settings.value("/Metronome", false).toBool();
 	bFollowPlayhead  = m_settings.value("/FollowPlayhead", true).toBool();
 	bAutoBackward    = m_settings.value("/AutoBackward", false).toBool();
@@ -159,6 +160,8 @@ void qtractorOptions::loadOptions (void)
 	bAudioPlayerBus      = m_settings.value("/PlayerBus", false).toBool();
 	bAudioMetroBus       = m_settings.value("/MetroBus", false).toBool();
 	bAudioMetronome      = m_settings.value("/Metronome", false).toBool();
+	iAudioCountInMode    = m_settings.value("/CountInMode", 0).toInt();
+	iAudioCountInBeats   = m_settings.value("/CountInBeats", 4).toInt();
 	bAudioMasterAutoConnect = m_settings.value("/MasterAutoConnect", true).toBool();
 	bAudioPlayerAutoConnect = m_settings.value("/PlayerAutoConnect", true).toBool();
 	bAudioMetroAutoConnect = m_settings.value("/MetroAutoConnect", true).toBool();
@@ -444,6 +447,7 @@ void qtractorOptions::saveOptions (void)
 
 	// Transport options group.
 	m_settings.beginGroup("/Transport");
+	m_settings.setValue("/CountIn", bCountIn);
 	m_settings.setValue("/Metronome", bMetronome);
 	m_settings.setValue("/FollowPlayhead", bFollowPlayhead);
 	m_settings.setValue("/AutoBackward", bAutoBackward);
@@ -469,6 +473,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/PlayerBus", bAudioPlayerBus);
 	m_settings.setValue("/MetroBus", bAudioMetroBus);
 	m_settings.setValue("/Metronome", bAudioMetronome);
+	m_settings.setValue("/CountInMode", iAudioCountInMode);
+	m_settings.setValue("/CountInBeats", iAudioCountInBeats);
 	m_settings.setValue("/MasterAutoConnect", bAudioMasterAutoConnect);
 	m_settings.setValue("/PlayerAutoConnect", bAudioPlayerAutoConnect);
 	m_settings.setValue("/MetroAutoConnect", bAudioMetroAutoConnect);
