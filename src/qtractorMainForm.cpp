@@ -1788,7 +1788,7 @@ bool qtractorMainForm::queryClose (void)
 				m_pOptions->bAudioMasterAutoConnect = pAudioEngine->isMasterAutoConnect();
 			// And the main windows state.
 			bool bSaveVisibility = true;
-		#if CONFIG_NSM
+		#ifdef CONFIG_NSM
 			if (m_pNsmClient && m_pNsmClient->is_active())
 				bSaveVisibility = false;
 		#endif
@@ -2831,6 +2831,7 @@ void qtractorMainForm::openNsmSession (void)
 		m_pSession->setClientName(client_id);
 		m_pSession->setSessionName(display_name);
 		m_pSession->setSessionDir(path_name);
+		m_pNsmClient->open_reply(qtractorNsmClient::ERR_OK);
 		QFileInfo fi(path_name, "session." + m_sNsmExt);
 		if (!fi.exists())
 			fi.setFile(path_name, display_name + '.' + m_sNsmExt);
@@ -2852,10 +2853,6 @@ void qtractorMainForm::openNsmSession (void)
 			bLoaded = true;
 		}
 	}
-
-	m_pNsmClient->open_reply(bLoaded
-		? qtractorNsmClient::ERR_OK
-		: qtractorNsmClient::ERR_GENERAL);
 
 	if (bLoaded)
 		m_pNsmClient->dirty(false);
