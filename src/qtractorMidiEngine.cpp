@@ -3319,11 +3319,11 @@ void qtractorMidiEngine::processMetro (
 			if (pNode->beatIsBar(iBeat)) {
 				ev.data.note.note     = m_iMetroBarNote;
 				ev.data.note.velocity = m_iMetroBarVelocity;
-				ev.data.note.duration = m_iMetroBarDuration;
+				ev.data.note.duration = metro_timeq(m_iMetroBarDuration);
 			} else {
 				ev.data.note.note     = m_iMetroBeatNote;
 				ev.data.note.velocity = m_iMetroBeatVelocity;
-				ev.data.note.duration = m_iMetroBeatDuration;
+				ev.data.note.duration = metro_timeq(m_iMetroBeatDuration);
 			}
 			// Pump it into the queue.
 			snd_seq_event_output(m_pAlsaSeq, &ev);
@@ -3344,6 +3344,14 @@ void qtractorMidiEngine::processMetro (
 qtractorTimeScale::Cursor *qtractorMidiEngine::metroCursor (void) const
 {
 	return m_pMetroCursor;
+}
+
+
+// Session time to metronome time conversion.
+unsigned long qtractorMidiEngine::metro_timeq ( unsigned long time ) const
+{
+	const unsigned long q = m_pMetroCursor->timeScale()->ticksPerBeat();
+	return uint64_t(time) * qtractorTimeScale::TICKS_PER_BEAT_HRQ / q;
 }
 
 

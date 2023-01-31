@@ -307,6 +307,9 @@ protected:
 	// MIDI/Audio sync-check predicate.
 	qtractorSessionCursor *midiCursorSync(bool bStart = false);
 
+	// Session time to metronome time conversion.
+	unsigned long metro_timeq(unsigned long time) const;
+
 	// Do ouput queue drift stats (audio vs. MIDI)...
 	void driftCheck();
 
