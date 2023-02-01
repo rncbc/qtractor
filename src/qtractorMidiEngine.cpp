@@ -1751,21 +1751,6 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		bRecording = (!pSession->isPunching() ||
 			(iTime >= pSession->punchInTime() &&
 			 iTime <  pSession->punchOutTime()));
-		// Same record time(stamp) note-off tracking...
-		if (type == qtractorMidiEvent::NOTEON) {
-			const unsigned long delta
-				= qtractorTimeScale::TICKS_PER_BEAT_HRQ
-				/ pSession->ticksPerBeat();
-			if (tick > delta &&
-				m_iLastEventTime >= tick &&
-				m_iLastEventNote != param)
-				tick -= delta;
-		}
-		else
-		if (type == qtractorMidiEvent::NOTEOFF) {
-			m_iLastEventNote = param;
-			m_iLastEventTime = tick;
-		}
 	}
 
 #if 0//-- Unlikely real-time input.
@@ -2403,10 +2388,6 @@ bool qtractorMidiEngine::start (void)
 	m_iFrameStartEx = m_iFrameStart;
 
 	m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
-
-	// Reset note-off tracking state...
-	m_iLastEventTime = 0;
-	m_iLastEventNote = 0;
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
