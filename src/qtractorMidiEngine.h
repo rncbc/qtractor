@@ -118,6 +118,9 @@ public:
 	// Special slave sync method.
 	void sync();
 
+	// Reset queue time.
+	void resetTime();
+
 	// Reset queue tempo.
 	void resetTempo();
 

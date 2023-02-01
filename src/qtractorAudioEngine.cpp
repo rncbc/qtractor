@@ -1179,6 +1179,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			}
 			// Count-in ended.
 			m_iCountIn = 0;
+			// Reset MIDI queue time...
+			pSession->midiEngine()->resetTime();
 		}
 	}
 
@@ -2037,6 +2039,13 @@ void qtractorAudioEngine::setCountInBeats ( unsigned short iCountInBeats )
 unsigned short qtractorAudioEngine::countInBeats (void) const
 {
 	return m_iCountInBeats;
+}
+
+
+// Metronome count-in status.
+unsigned short qtractorAudioEngine::countIn (void) const
+{
+	return m_iCountIn;
 }
 
 

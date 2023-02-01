@@ -218,6 +218,9 @@ public:
 	void setCountInBeats(unsigned short iCountInBeats);
 	unsigned short countInBeats() const;
 
+	// Metronome count-in status.
+	unsigned short countIn() const;
+
 	// Audition/pre-listening bus mode accessors.
 	void setPlayerBus(bool bPlayerBus);
 	bool isPlayerBus() const;

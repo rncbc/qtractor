@@ -1203,7 +1203,7 @@ void qtractorMidiEngine::alsaNotifyAck (void)
 void qtractorMidiEngine::sync (void)
 {
 	// Pure conditional thread slave synchronization...
-	if (midiCursorSync())
+	if (m_pOutputThread && midiCursorSync())
 		m_pOutputThread->sync();
 }
 
@@ -1257,7 +1257,7 @@ void qtractorMidiEngine::process (void)
 		return;
 
 	// Bail out if the audio-metronome is under count-in...
-	if (pSession->audioEngine()->isCountIn())
+	if (pSession->audioEngine()->countIn() > 0)
 		return;
 
 	// Get a handle on our slave MIDI engine...
@@ -1317,6 +1317,28 @@ void qtractorMidiEngine::process (void)
 	// Always do the queue drift stats
 	// at the bottom of the pack...
 	driftCheck();
+}
+
+
+// Reset queue time.
+void qtractorMidiEngine::resetTime (void)
+{
+	qtractorSession *pSession = session();
+	if (pSession == nullptr)
+		return;
+
+	// Reset MIDI time to current queue time...
+	snd_seq_queue_status_t *pQueueStatus;
+	snd_seq_queue_status_alloca(&pQueueStatus);
+	if (snd_seq_get_queue_status(m_pAlsaSeq,
+			m_iAlsaQueue, pQueueStatus) >= 0) {
+		const long iMidiTime
+			= snd_seq_queue_status_get_tick_time(pQueueStatus);
+		const long iAudioFrame
+			= pSession->audioEngine()->jackFrameTime() - m_iAudioFrameStart;
+		m_iTimeStart  -= iMidiTime;
+		m_iFrameStart -= iAudioFrame;
+	}
 }
 
 

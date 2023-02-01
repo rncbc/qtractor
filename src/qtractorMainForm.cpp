@@ -6545,7 +6545,8 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportPunchAction->setEnabled(bPunching || bSelectable);
 	m_ui.transportPunchSetAction->setEnabled(bSelectable);
 	m_ui.transportCountInAction->setEnabled(
-		m_pOptions->bAudioMetronome && bool(m_pSession->audioEngine()->countInMode()));
+		m_pOptions->bAudioMetronome
+		&& int(m_pSession->audioEngine()->countInMode()) > 0);
 	m_ui.transportMetroAction->setEnabled(
 		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);
 	m_ui.transportPanicAction->setEnabled(bTracks
@@ -7030,6 +7031,8 @@ void qtractorMainForm::updateAudioMetronome (void)
 	pAudioEngine->setCountInMode(
 		qtractorAudioEngine::CountInMode(m_pOptions->iAudioCountInMode));
 	pAudioEngine->setCountInBeats(m_pOptions->iAudioCountInBeats);
+	pAudioEngine->setCountIn(m_pOptions->iAudioCountInMode > 0 &&
+		bAudioMetronome && m_ui.transportCountInAction->isChecked());
 }
 
 
