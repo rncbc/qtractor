@@ -541,6 +541,7 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_bMetroEnabled     = false;
 
 	// Audio metronome count-in stuff.
+	m_bCountIn          = false;
 	m_countInMode       = CountInNone;
 	m_iCountInBeats     = 0;
 	m_iCountIn          = 0;
