@@ -204,6 +204,23 @@ public:
 	// Access to current tempo/time-signature cursor.
 	qtractorTimeScale::Cursor *metroCursor() const;
 
+	// Metronome count-in switching.
+	void setCountIn(bool bCountIn);
+	bool isCountIn() const;
+
+	// Metronome count-in mode.
+	enum CountInMode { CountInNone = 0, CountInPlayback, CountInRecording };
+
+	void setCountInMode(CountInMode countInMode);
+	CountInMode countInMode() const;
+
+	// Metronome count-in number of beats.
+	void setCountInBeats(unsigned short iCountInBeats);
+	unsigned short countInBeats() const;
+
+	// Metronome count-in status.
+	unsigned short countIn(unsigned int nframes);
+
 	// Control bus accessors.
 	void setControlBus(bool bControlBus);
 	bool isControlBus() const;
@@ -310,6 +327,9 @@ protected:
 	// MIDI/Audio sync-check predicate.
 	qtractorSessionCursor *midiCursorSync(bool bStart = false);
 
+	// Process metronome count-ins.
+	void processCountIn(unsigned long iFrameStart, unsigned long iFrameEnd);
+
 	// Session time to metronome time conversion.
 	unsigned long metro_timeq(unsigned long time) const;
 
@@ -387,6 +407,16 @@ private:
 
 	// Track down tempo changes.
 	float m_fMetroTempo;
+
+	// Count-in stuff.
+	bool             m_bCountIn;
+	CountInMode      m_countInMode;
+	unsigned short   m_iCountInBeats;
+	unsigned short   m_iCountIn;
+	unsigned long    m_iCountInFrame;
+	unsigned long    m_iCountInFrameStart;
+	unsigned long    m_iCountInFrameEnd;
+	long             m_iCountInTimeStart;
 
 	// SMF player enablement.
 	bool             m_bPlayerBus;

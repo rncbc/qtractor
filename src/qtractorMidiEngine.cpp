@@ -1125,6 +1125,16 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	// Track down tempo changes.
 	m_fMetroTempo = 0.0f;
 
+	// MIDI Metronome count-in stuff.
+	m_bCountIn           = false;
+	m_countInMode        = CountInNone;
+	m_iCountInBeats      = 0;
+	m_iCountIn           = 0;
+	m_iCountInFrame      = 0;
+	m_iCountInFrameStart = 0;
+	m_iCountInFrameEnd   = 0;
+	m_iCountInTimeStart  = 0;
+
 	// SMF player stuff.
 	m_bPlayerBus = false;
 	m_pPlayerBus = nullptr;
@@ -1265,6 +1275,24 @@ void qtractorMidiEngine::process (void)
 	// Isn't MIDI slightly behind audio?
 	if (pMidiCursor == nullptr)
 		return;
+
+	// Metronome/count-in stuff...
+	if (m_iCountIn > 0) {
+		if (m_iCountInFrameStart < m_iCountInFrameEnd) {
+			unsigned int iReadAhead = m_iReadAhead;
+			unsigned long iCountInFrameEnd = m_iCountInFrameStart + iReadAhead;
+			if (iCountInFrameEnd > m_iCountInFrameEnd) {
+				iReadAhead = iCountInFrameEnd - m_iCountInFrameEnd;
+				iCountInFrameEnd = m_iCountInFrameEnd;
+			}
+			processCountIn(m_iCountInFrameStart, iCountInFrameEnd);
+			m_iCountInFrameStart = iCountInFrameEnd;
+			pMidiCursor->process(iReadAhead);
+			snd_seq_drain_output(m_pAlsaSeq);
+		}
+		// Bail out...
+		return;
+	}
 
 	// Now for the next read-ahead bunch...
 	unsigned long iFrameStart = pMidiCursor->frame();
@@ -2411,6 +2439,32 @@ bool qtractorMidiEngine::start (void)
 
 	m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
 
+	// Start count-in stuff...
+	unsigned short iCountInBeats = 0;
+	if (m_bCountIn && (
+		(m_countInMode == CountInPlayback) ||
+		(m_countInMode == CountInRecording && pSession->isRecording())))
+		iCountInBeats = m_iCountInBeats;
+	if (iCountInBeats > 0) {
+		m_iCountIn = iCountInBeats;
+		m_iCountInFrame = m_iFrameStart;
+		qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iCountInFrame);
+		const unsigned short iCountInBeat
+			= pNode->beatFromFrame(m_iCountInFrame);
+		m_iCountInFrameStart = m_iCountInFrame;
+		m_iCountInFrameEnd = m_iCountInFrameStart
+			+ pNode->frameFromBeat(iCountInBeat + iCountInBeats)
+			- pNode->frameFromBeat(iCountInBeat);
+		m_iCountInTimeStart = m_iTimeStart;
+	} else {
+		m_iCountIn = 0;
+		m_iCountInFrame = 0;
+		m_iCountInFrameStart = 0;
+		m_iCountInFrameEnd = 0;
+		m_iCountInTimeStart = 0;
+	}
+
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
 	snd_seq_drain_output(m_pAlsaSeq);
@@ -3255,7 +3309,7 @@ void qtractorMidiEngine::processMetro (
 			m_pMetroCursor->timeScale(), pNode->frame, tick);
 	}
 
-	// Get on with the actual metronome/clock stuff...
+	// Get on with the actual metronome/count-in/clock stuff...
 	if (!m_bMetronome && (m_clockMode & qtractorBus::Output) == 0)
 		return;
 
@@ -3292,6 +3346,13 @@ void qtractorMidiEngine::processMetro (
 	ev_clock.tag = (unsigned char) 0xff;
 	ev_clock.type = SND_SEQ_EVENT_CLOCK;
 
+	const unsigned long iMetroOffset
+		= metro_timeq(m_iMetroOffset);
+	const unsigned long iMetroBarDuration
+		= metro_timeq(m_iMetroBarDuration);
+	const unsigned long iMetroBeatDuration
+		= metro_timeq(m_iMetroBeatDuration);
+
 	while (iTime < iTimeEnd) {
 		// Scheduled delivery: take into account
 		// the time playback/queue started...
@@ -3312,8 +3373,8 @@ void qtractorMidiEngine::processMetro (
 		}
 		if (m_bMetronome && iTime >= iTimeStart) {
 			// Have some latency compensation...
-			const unsigned long iTimeOffset = (m_iMetroOffset > 0
-				&& iTime > m_iMetroOffset ? iTime - m_iMetroOffset : iTime);
+			const unsigned long iTimeOffset = (iMetroOffset > 0
+				&& iTime > iMetroOffset ? iTime - iMetroOffset : iTime);
 			// Set proper event schedule time...
 			const unsigned long tick
 				= (long(iTimeOffset) > m_iTimeStart ? iTimeOffset - m_iTimeStart : 0);
@@ -3322,11 +3383,11 @@ void qtractorMidiEngine::processMetro (
 			if (pNode->beatIsBar(iBeat)) {
 				ev.data.note.note     = m_iMetroBarNote;
 				ev.data.note.velocity = m_iMetroBarVelocity;
-				ev.data.note.duration = metro_timeq(m_iMetroBarDuration);
+				ev.data.note.duration = iMetroBarDuration;
 			} else {
 				ev.data.note.note     = m_iMetroBeatNote;
 				ev.data.note.velocity = m_iMetroBeatVelocity;
-				ev.data.note.duration = metro_timeq(m_iMetroBeatDuration);
+				ev.data.note.duration = iMetroBeatDuration;
 			}
 			// Pump it into the queue.
 			snd_seq_event_output(m_pAlsaSeq, &ev);
@@ -3355,6 +3416,135 @@ unsigned long qtractorMidiEngine::metro_timeq ( unsigned long time ) const
 {
 	const unsigned long q = m_pMetroCursor->timeScale()->ticksPerBeat();
 	return uint64_t(time) * qtractorTimeScale::TICKS_PER_BEAT_HRQ / q;
+}
+
+
+// Metronome count-in switching.
+void qtractorMidiEngine::setCountIn ( bool bCountIn )
+{
+	m_bCountIn = bCountIn;
+}
+
+bool qtractorMidiEngine::isCountIn (void) const
+{
+	return m_bCountIn;
+}
+
+
+// Metronome count-in mode.
+void qtractorMidiEngine::setCountInMode ( CountInMode countInMode )
+{
+	m_countInMode = countInMode;
+}
+
+qtractorMidiEngine::CountInMode qtractorMidiEngine::countInMode (void) const
+{
+	return m_countInMode;
+}
+
+
+// Metronome count-in number of beats.
+void qtractorMidiEngine::setCountInBeats ( unsigned short iCountInBeats )
+{
+	m_iCountInBeats = iCountInBeats;
+}
+
+unsigned short qtractorMidiEngine::countInBeats (void) const
+{
+	return m_iCountInBeats;
+}
+
+
+// Metronome count-in status.
+unsigned short qtractorMidiEngine::countIn ( unsigned int nframes )
+{
+	if (m_iCountIn > 0) {
+		m_iCountInFrame += nframes;
+		if (m_iCountInFrame >= m_iCountInFrameEnd) {
+			m_iCountIn = 0;
+			resetTime();
+		} else {
+			sync();
+		}
+	}
+
+	return m_iCountIn;
+}
+
+
+// Process metronome count-ins.
+void qtractorMidiEngine::processCountIn (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	if (m_pMetroCursor == nullptr)
+		return;
+
+	// Get on with the actual metronome/count-in stuff...
+	if (!m_bMetronome || (m_iCountIn < 1))
+		return;
+
+	// Register the next metronome/clock beat slot.
+	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrameEnd);
+	const unsigned long iTimeEnd = pNode->tickFromFrame(iFrameEnd);
+	pNode = m_pMetroCursor->seekFrame(iFrameStart);
+	const unsigned long iTimeStart = pNode->tickFromFrame(iFrameStart);
+	unsigned int  iBeat = pNode->beatFromTick(iTimeStart);
+	unsigned long iTime = pNode->tickFromBeat(iBeat);
+
+	// Initialize outbound metronome event...
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+	// Addressing...
+	if (m_pMetroBus) {
+		snd_seq_ev_set_source(&ev, m_pMetroBus->alsaPort());
+		snd_seq_ev_set_subs(&ev);
+	}
+	// Set common event data...
+	ev.tag = (unsigned char) 0xff;
+	ev.type = SND_SEQ_EVENT_NOTE;
+	ev.data.note.channel = m_iMetroChannel;
+
+	const unsigned long iMetroOffset
+		= metro_timeq(m_iMetroOffset);
+	const unsigned long iMetroBarDuration
+		= metro_timeq(m_iMetroBarDuration);
+	const unsigned long iMetroBeatDuration
+		= metro_timeq(m_iMetroBeatDuration);
+
+	while (iTime < iTimeEnd) {
+		// Scheduled delivery: take into account
+		// the time playback/queue started...
+		if (iTime >= iTimeStart) {
+			// Have some latency compensation...
+			const unsigned long iTimeOffset = (iMetroOffset > 0
+				&& iTime > iMetroOffset ? iTime - iMetroOffset : iTime);
+			// Set proper event schedule time...
+			const unsigned long tick
+				= (long(iTimeOffset) > m_iCountInTimeStart
+				? iTimeOffset - m_iCountInTimeStart : 0);
+			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
+			// Set proper event data...
+			if (pNode->beatIsBar(iBeat)) {
+				ev.data.note.note     = m_iMetroBarNote;
+				ev.data.note.velocity = m_iMetroBarVelocity;
+				ev.data.note.duration = iMetroBarDuration;
+			} else {
+				ev.data.note.note     = m_iMetroBeatNote;
+				ev.data.note.velocity = m_iMetroBeatVelocity;
+				ev.data.note.duration = iMetroBeatDuration;
+			}
+			// Pump it into the queue.
+			snd_seq_event_output(m_pAlsaSeq, &ev);
+			// MIDI track monitoring...
+			if (m_pMetroBus && m_pMetroBus->midiMonitor_out()) {
+				m_pMetroBus->midiMonitor_out()->enqueue(
+					qtractorMidiEvent::NOTEON, ev.data.note.velocity, tick);
+			}
+		}
+		// Go for next beat...
+		iTime += pNode->ticksPerBeat;
+		pNode = m_pMetroCursor->seekBeat(++iBeat);
+	}
 }
 
 

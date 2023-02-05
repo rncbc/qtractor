@@ -5165,6 +5165,8 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldAudioCountInBeats  = m_pOptions->iAudioCountInBeats;
 	const bool    bOldMidiControlBus     = m_pOptions->bMidiControlBus;
 	const bool    bOldMidiMetronome      = m_pOptions->bMidiMetronome;
+	const int     iOldMidiCountInMode    = m_pOptions->iMidiCountInMode;
+	const int     iOldMidiCountInBeats   = m_pOptions->iMidiCountInBeats;
 	const int     iOldMetroChannel       = m_pOptions->iMetroChannel;
 	const int     iOldMetroBarNote       = m_pOptions->iMetroBarNote;
 	const int     iOldMetroBarVelocity   = m_pOptions->iMetroBarVelocity;
@@ -5351,6 +5353,8 @@ void qtractorMainForm::viewOptions (void)
 		// MIDI engine metronome options...
 		if (( bOldMidiMetronome    && !m_pOptions->bMidiMetronome)    ||
 			(!bOldMidiMetronome    &&  m_pOptions->bMidiMetronome)    ||
+			(iOldMidiCountInMode   != m_pOptions->iMidiCountInMode)   ||
+			(iOldMidiCountInBeats  != m_pOptions->iMidiCountInBeats)  ||
 			(iOldMetroChannel      != m_pOptions->iMetroChannel)      ||
 			(iOldMetroBarNote      != m_pOptions->iMetroBarNote)      ||
 			(iOldMetroBarVelocity  != m_pOptions->iMetroBarVelocity)  ||
@@ -5711,6 +5715,13 @@ void qtractorMainForm::transportCountIn (void)
 		qtractorAudioEngine *pAudioEngine = m_pSession->audioEngine();
 		if (pAudioEngine)
 			pAudioEngine->setCountIn(!pAudioEngine->isCountIn());
+	}
+
+	// Toggle MIDI count-in metronome...
+	if (m_pOptions->bMidiMetronome) {
+		qtractorMidiEngine *pMidiEngine = m_pSession->midiEngine();
+		if (pMidiEngine)
+			pMidiEngine->setCountIn(!pMidiEngine->isCountIn());
 	}
 
 	++m_iStabilizeTimer;
@@ -6545,8 +6556,10 @@ void qtractorMainForm::stabilizeForm (void)
 	m_ui.transportPunchAction->setEnabled(bPunching || bSelectable);
 	m_ui.transportPunchSetAction->setEnabled(bSelectable);
 	m_ui.transportCountInAction->setEnabled(
-		m_pOptions->bAudioMetronome
-		&& int(m_pSession->audioEngine()->countInMode()) > 0);
+		(m_pOptions->bAudioMetronome
+			&& int(m_pSession->audioEngine()->countInMode()) > 0) ||
+		(m_pOptions->bMidiMetronome
+			&& int(m_pSession->midiEngine()->countInMode()) > 0));
 	m_ui.transportMetroAction->setEnabled(
 		m_pOptions->bAudioMetronome || m_pOptions->bMidiMetronome);
 	m_ui.transportPanicAction->setEnabled(bTracks
@@ -7065,6 +7078,12 @@ void qtractorMainForm::updateMidiMetronome (void)
 		bMidiMetronome && m_pOptions->bMidiMetroBus);
 	pMidiEngine->setMetronome(
 		bMidiMetronome && m_ui.transportMetroAction->isChecked());
+
+	pMidiEngine->setCountInMode(
+		qtractorMidiEngine::CountInMode(m_pOptions->iMidiCountInMode));
+	pMidiEngine->setCountInBeats(m_pOptions->iMidiCountInBeats);
+	pMidiEngine->setCountIn(m_pOptions->iMidiCountInMode > 0 &&
+		bMidiMetronome && m_ui.transportCountInAction->isChecked());
 }
 
 

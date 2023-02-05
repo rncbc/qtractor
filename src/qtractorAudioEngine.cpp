@@ -1129,6 +1129,14 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		return 0;
 	}
 
+	// Bail out if the MIDI-metronome is under count-in...
+	if (pSession->midiEngine()->countIn(nframes) > 0) {
+		pAudioCursor->process(nframes);
+		g_bProcessing = false;
+		pSession->release();
+		return 0;
+	}
+
 	// Metronome/count-in stuff...
 	if ((m_bMetronome || m_iCountIn > 0) && m_pMetroBus) {
 		const unsigned long iMetroFrameStart

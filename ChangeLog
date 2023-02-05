@@ -6,8 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- Introducing count-in options to audio metronome: View/Options...
-  /Audio/Metronome/Count-in; Transport/Count-in. (EXPERIMENTAL)
+- Introducing count-in to audio and MIDI metronomes: View/Options...
+  /Audio|MIDI/Metronome/Count-in; Transport/Count-in. (EXPERIMENTAL)
 
 - Corrected MIDI metronome bar/beat note durations. (EXEPRIMENTAL)
 

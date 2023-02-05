@@ -333,6 +333,12 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.MidiMetronomeCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.MidiCountInModeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.MidiCountInBeatsSpinBox,
+		SIGNAL(valueChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.MetroChannelSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(updateMetroNoteNames()));
@@ -646,6 +652,8 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 
 	// MIDI metronome options.
 	m_ui.MidiMetronomeCheckBox->setChecked(m_pOptions->bMidiMetronome);
+	m_ui.MidiCountInModeComboBox->setCurrentIndex(m_pOptions->iMidiCountInMode);
+	m_ui.MidiCountInBeatsSpinBox->setValue(m_pOptions->iMidiCountInBeats);
 	m_ui.MetroChannelSpinBox->setValue(m_pOptions->iMetroChannel + 1);
 	updateMetroNoteNames();
 	m_ui.MetroBarNoteComboBox->setCurrentIndex(m_pOptions->iMetroBarNote);
@@ -876,6 +884,8 @@ void qtractorOptionsForm::accept (void)
 		m_pOptions->bMidiControlBus      = m_ui.MidiControlBusCheckBox->isChecked();
 		// MIDI metronome options.
 		m_pOptions->bMidiMetronome       = m_ui.MidiMetronomeCheckBox->isChecked();
+		m_pOptions->iMidiCountInMode     = m_ui.MidiCountInModeComboBox->currentIndex();
+		m_pOptions->iMidiCountInBeats    = m_ui.MidiCountInBeatsSpinBox->value();
 		m_pOptions->iMetroChannel        = m_ui.MetroChannelSpinBox->value() - 1;
 		m_pOptions->iMetroBarNote        = m_ui.MetroBarNoteComboBox->currentIndex();
 		m_pOptions->iMetroBarVelocity    = m_ui.MetroBarVelocitySpinBox->value();
@@ -2019,6 +2029,10 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MidiMmcDeviceComboBox->setEnabled(bMmcMode);
 
 	const bool bMidiMetronome = m_ui.MidiMetronomeCheckBox->isChecked();
+	m_ui.MidiCountInModeLabel->setEnabled(bMidiMetronome);
+	m_ui.MidiCountInModeComboBox->setEnabled(bMidiMetronome);
+	m_ui.MidiCountInBeatsSpinBox->setEnabled(
+		bMidiMetronome && m_ui.MidiCountInModeComboBox->currentIndex() > 0);
 	m_ui.MetroChannelTextLabel->setEnabled(bMidiMetronome);
 	m_ui.MetroChannelSpinBox->setEnabled(bMidiMetronome);
 	m_ui.MetroBarNoteTextLabel->setEnabled(bMidiMetronome);

@@ -179,6 +179,8 @@ void qtractorOptions::loadOptions (void)
 	bMidiControlBus    = m_settings.value("/ControlBus", false).toBool();
 	bMidiMetroBus      = m_settings.value("/MetroBus", false).toBool();
 	bMidiMetronome     = m_settings.value("/Metronome", true).toBool();
+	iMidiCountInMode   = m_settings.value("/CountInMode", 0).toInt();
+	iMidiCountInBeats  = m_settings.value("/CountInBeats", 4).toInt();
 	iMidiMetroOffset   = m_settings.value("/MetroOffset", 0).toInt();
 	iMidiMmcDevice     = m_settings.value("/MmcDevice", 0x7f).toInt();
 	iMidiMmcMode       = m_settings.value("/MmcMode", 3).toInt();
@@ -492,6 +494,8 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ControlBus", bMidiControlBus);
 	m_settings.setValue("/MetroBus", bMidiMetroBus);
 	m_settings.setValue("/Metronome", bMidiMetronome);
+	m_settings.setValue("/CountInMode", iMidiCountInMode);
+	m_settings.setValue("/CountInBeats", iMidiCountInBeats);
 	m_settings.setValue("/MetroOffset", iMidiMetroOffset);
 	m_settings.setValue("/MmcDevice", iMidiMmcDevice);
 	m_settings.setValue("/MmcMode", iMidiMmcMode);

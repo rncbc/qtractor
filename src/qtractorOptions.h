@@ -168,6 +168,10 @@ public:
 	int iMetroBeatVelocity;
 	int iMetroBeatDuration;
 
+	// MIDI metronome count-in options.
+	int iMidiCountInMode;
+	int iMidiCountInBeats;
+
 	// Default options...
 	QString sSessionDir;
 	QString sAudioDir;
