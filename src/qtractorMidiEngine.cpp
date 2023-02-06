@@ -3480,7 +3480,7 @@ void qtractorMidiEngine::processCountIn (
 		return;
 
 	// Get on with the actual metronome/count-in stuff...
-	if (!m_bMetronome || (m_iCountIn < 1))
+	if (m_iCountIn < 1)
 		return;
 
 	// Register the next metronome/clock beat slot.
