@@ -2457,6 +2457,7 @@ bool qtractorMidiEngine::start (void)
 			+ pNode->frameFromBeat(iCountInBeat + iCountInBeats)
 			- pNode->frameFromBeat(iCountInBeat);
 		m_iCountInTimeStart = m_iTimeStart;
+		++m_iCountIn; // Give some slack to the end...
 	} else {
 		m_iCountIn = 0;
 		m_iCountInFrame = 0;
@@ -3540,6 +3541,7 @@ void qtractorMidiEngine::processCountIn (
 				m_pMetroBus->midiMonitor_out()->enqueue(
 					qtractorMidiEvent::NOTEON, ev.data.note.velocity, tick);
 			}
+		//	--m_iCountIn; // Not really useful?
 		}
 		// Go for next beat...
 		iTime += pNode->ticksPerBeat;

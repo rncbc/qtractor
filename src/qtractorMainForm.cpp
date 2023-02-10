@@ -6031,6 +6031,9 @@ void qtractorMainForm::helpAbout (void)
 	list << tr("LV2 Plug-in UI GTK2 native support disabled.");
 #endif
 #endif
+#ifndef CONFIG_LV2_UI_GTKMM2
+	list << tr("LV2 Plug-in UI GTKMM2 native support disabled.");
+#endif
 #ifndef CONFIG_LV2_UI_X11
 #ifndef CONFIG_LIBSUIL_X11_IN_QT5
 	list << tr("LV2 Plug-in UI X11 native support disabled.");
@@ -6053,15 +6056,15 @@ void qtractorMainForm::helpAbout (void)
 #endif
 
 	// Stuff the about box text...
-	QString sText = "<p>\n";
-	sText += "<b>" QTRACTOR_TITLE " - " + tr(QTRACTOR_SUBTITLE) + "</b><br />\n";
+	QString sText = "<h1>" QTRACTOR_TITLE "</h1>\n";
+	sText += "<p>" + tr(QTRACTOR_SUBTITLE) + "<br />\n";
 	sText += "<br />\n";
 	sText += tr("Version") + ": <b>" CONFIG_BUILD_VERSION "</b><br />\n";
 //	sText += "<small>" + tr("Build") + ": " CONFIG_BUILD_DATE "</small><br />\n";
 	if (!list.isEmpty()) {
 		sText += "<small><font color=\"red\">";
 		sText += list.join("<br />\n");
-		sText += "</font></small><br />\n";
+		sText += "</font></small>\n";
 	}
 	sText += "<br />\n";
 	sText += tr("Using: Qt %1").arg(qVersion());

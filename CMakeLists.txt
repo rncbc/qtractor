@@ -770,6 +770,7 @@ show_option ("  LV2 plug-in UI Request-value support . . . . . . ." CONFIG_LV2_U
 show_option ("  LV2 plug-in UI Idle interface support  . . . . . ." CONFIG_LV2_UI_IDLE)
 show_option ("  LV2 plug-in UI Show interface support  . . . . . ." CONFIG_LV2_UI_SHOW)
 show_option ("  LV2 plug-in UI GTK2 native support . . . . . . . ." CONFIG_LV2_UI_GTK2)
+show_option ("  LV2 plug-in UI GTKMM2 native support . . . . . . ." CONFIG_LV2_UI_GTKMM2)
 show_option ("  LV2 plug-in UI X11 native support  . . . . . . . ." CONFIG_LV2_UI_X11)
 message     ("")
 show_option ("  JACK Session support . . . . . . . . . . . . . . ." CONFIG_JACK_SESSION)
