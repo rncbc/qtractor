@@ -149,13 +149,13 @@ The software requirements for build and runtime are listed as follows:
     http://lv2plug.in/
 
   - liblilv [14], Lightweight LV2 host implementation stack
-    https://drobilla.net/software/lilv/
-    https://drobilla.net/software/sratom/
-    https://drobilla.net/software/sord/
-    https://drobilla.net/software/serd/
+    https://drobilla.net/software/lilv.html
+    https://drobilla.net/software/sratom.html
+    https://drobilla.net/software/sord.html
+    https://drobilla.net/software/serd.html
 
   - libsuil [15], Lightweight C library for loading and wrapping LV2 plugin UIs
-    https://drobilla.net/software/suil/
+    https://drobilla.net/software/suil.html
 
   - libaubio [17], a library for real time audio labelling
     https://aubio.org
