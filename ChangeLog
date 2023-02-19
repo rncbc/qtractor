@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Quick hack to get latency compensation when recording. (GH #376)
+
 - Introducing count-in to audio and MIDI metronomes: View/Options...
   /Audio|MIDI/Metronome/Count-in; Transport/Count-in. (EXPERIMENTAL)
 
