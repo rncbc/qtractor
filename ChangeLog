@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fix drag'n'drop in drum mode MIDI clip editor. (GH #377)
+
 - Quick hack to get latency compensation when recording. (GH #376)
 
 - Introducing count-in to audio and MIDI metronomes: View/Options...
