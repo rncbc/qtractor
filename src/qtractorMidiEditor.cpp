@@ -3903,9 +3903,10 @@ void qtractorMidiEditor::updateDragMove (
 	const int cw = pScrollView->contentsWidth();
 
 	int dx = delta.x();
-	const int x1 = rect.x() + dx;
+	const int x1 = m_bDrumMode ? rect.x() + dx + h1 : rect.x() + dx;
+
 	if (x1 < 0)
-		dx = -rect.x();
+		dx = m_bDrumMode ? -rect.x() - h1 : -rect.x();	
 	if (x1 + rect.width() > cw)
 		dx = cw - rect.right();
 
