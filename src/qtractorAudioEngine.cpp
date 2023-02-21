@@ -874,7 +874,7 @@ bool qtractorAudioEngine::start (void)
 
 	// Reset all dependables...
 	resetAllMonitors();
-	resetMetro();
+	resetMetro(true);
 
 	// Reset transport latency anyway...
 	m_iTransportLatency = 0;
@@ -2168,7 +2168,7 @@ void qtractorAudioEngine::deleteMetroBus (void)
 
 
 // Reset Audio metronome.
-void qtractorAudioEngine::resetMetro (void)
+void qtractorAudioEngine::resetMetro ( bool bCountIn )
 {
 	if (!m_bMetroEnabled)
 		return;
@@ -2220,7 +2220,7 @@ void qtractorAudioEngine::resetMetro (void)
 
 	// Start count-in stuff...
 	unsigned short iCountInBeats = 0;
-	if (m_bCountIn && (
+	if (bCountIn && m_bCountIn && (
 		(m_countInMode == CountInPlayback) ||
 		(m_countInMode == CountInRecording && pSession->isRecording())))
 		iCountInBeats = m_iCountInBeats;

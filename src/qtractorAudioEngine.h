@@ -202,7 +202,7 @@ public:
 	void setMetroOffset(unsigned long iMetroOffset);
 	unsigned long metroOffset() const;
 
-	void resetMetro();
+	void resetMetro(bool bCountIn = false);
 
 	// Metronome count-in switching.
 	void setCountIn(bool bCountIn);
