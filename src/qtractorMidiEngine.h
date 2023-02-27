@@ -1,7 +1,7 @@
 // qtractorMidiEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -108,12 +108,18 @@ public:
 	QSocketNotifier *alsaNotifier() const;
 	void alsaNotifyAck();
 
-	// Special slave sync method.
-	void sync();
-
 	// Read ahead frames configuration.
 	void setReadAhead(unsigned int iReadAhead);
 	unsigned int readAhead() const;
+
+	// MIDI output process cycle iteration.
+	void process();
+
+	// Special slave sync method.
+	void sync();
+
+	// Reset queue time.
+	void resetTime();
 
 	// Reset queue tempo.
 	void resetTempo();
@@ -146,14 +152,8 @@ public:
 	void enqueue(qtractorTrack *pTrack, qtractorMidiEvent *pEvent,
 		unsigned long iTime, float fGain = 1.0f);
 
-	// Do ouput queue drift stats (audio vs. MIDI)...
-	void driftCheck();
-
 	// Flush ouput queue (if necessary)...
 	void flush();
-
-	// Special rewind method, on queue loop.
-	void restartLoop();
 
 	// The delta-time/frame accessors.
 	long timeStart() const;
@@ -203,6 +203,23 @@ public:
 
 	// Access to current tempo/time-signature cursor.
 	qtractorTimeScale::Cursor *metroCursor() const;
+
+	// Metronome count-in switching.
+	void setCountIn(bool bCountIn);
+	bool isCountIn() const;
+
+	// Metronome count-in mode.
+	enum CountInMode { CountInNone = 0, CountInPlayback, CountInRecording };
+
+	void setCountInMode(CountInMode countInMode);
+	CountInMode countInMode() const;
+
+	// Metronome count-in number of beats.
+	void setCountInBeats(unsigned short iCountInBeats);
+	unsigned short countInBeats() const;
+
+	// Metronome count-in status.
+	unsigned short countIn(unsigned int nframes);
 
 	// Control bus accessors.
 	void setControlBus(bool bControlBus);
@@ -307,6 +324,18 @@ protected:
 	void closePlayerBus();
 	void deletePlayerBus();
 
+	// MIDI/Audio sync-check predicate.
+	qtractorSessionCursor *midiCursorSync(bool bStart = false);
+
+	// Process metronome count-ins.
+	void processCountIn(unsigned long iFrameStart, unsigned long iFrameEnd);
+
+	// Session time to metronome time conversion.
+	unsigned long metro_timeq(unsigned long time) const;
+
+	// Do ouput queue drift stats (audio vs. MIDI)...
+	void driftCheck();
+
 private:
 
 	// Special event notifier proxy object.
@@ -322,6 +351,9 @@ private:
 	snd_seq_t       *m_pAlsaSubsSeq;
 	int              m_iAlsaSubsPort;
 	QSocketNotifier *m_pAlsaNotifier;
+
+	// The number of frames to read-ahead.
+	unsigned int m_iReadAhead;
 
 	// Name says it all.
 	qtractorMidiInputThread  *m_pInputThread;
@@ -376,6 +408,16 @@ private:
 	// Track down tempo changes.
 	float m_fMetroTempo;
 
+	// Count-in stuff.
+	bool             m_bCountIn;
+	CountInMode      m_countInMode;
+	unsigned short   m_iCountInBeats;
+	unsigned short   m_iCountIn;
+	unsigned long    m_iCountInFrame;
+	unsigned long    m_iCountInFrameStart;
+	unsigned long    m_iCountInFrameEnd;
+	long             m_iCountInTimeStart;
+
 	// SMF player enablement.
 	bool             m_bPlayerBus;
 	qtractorMidiBus *m_pPlayerBus;
@@ -403,10 +445,6 @@ private:
 	// MIDI Clock tempo tracking.
 	unsigned short m_iClockCount;
 	float          m_fClockTempo;
-
-	// Same record time(stamp) note-off tracking.
-	unsigned long  m_iLastEventTime;
-	unsigned short m_iLastEventNote;
 };
 
 

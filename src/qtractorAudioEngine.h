@@ -1,7 +1,7 @@
 // qtractorAudioEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -202,7 +202,24 @@ public:
 	void setMetroOffset(unsigned long iMetroOffset);
 	unsigned long metroOffset() const;
 
-	void resetMetro();
+	void resetMetro(bool bCountIn = false);
+
+	// Metronome count-in switching.
+	void setCountIn(bool bCountIn);
+	bool isCountIn() const;
+
+	// Metronome count-in mode.
+	enum CountInMode { CountInNone = 0, CountInPlayback, CountInRecording };
+
+	void setCountInMode(CountInMode countInMode);
+	CountInMode countInMode() const;
+
+	// Metronome count-in number of beats.
+	void setCountInBeats(unsigned short iCountInBeats);
+	unsigned short countInBeats() const;
+
+	// Metronome count-in status.
+	unsigned short countIn() const;
 
 	// Audition/pre-listening bus mode accessors.
 	void setPlayerBus(bool bPlayerBus);
@@ -357,6 +374,16 @@ private:
 	unsigned long        m_iMetroBeatStart;
 	unsigned int         m_iMetroBeat;
 	bool                 m_bMetroEnabled;
+
+	// Count-in stuff.
+	bool                 m_bCountIn;
+	CountInMode          m_countInMode;
+	unsigned short       m_iCountInBeats;
+	unsigned short       m_iCountIn;
+	unsigned int         m_iCountInBeat;
+	unsigned long        m_iCountInBeatStart;
+	unsigned long        m_iCountInFrame;
+	unsigned long        m_iCountInFrameEnd;
 
 	// Audition/pre-listening player stuff.
 	qtractorAtomic       m_playerLock;

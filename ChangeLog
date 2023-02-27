@@ -6,12 +6,26 @@ ChangeLog
 
 GIT HEAD
 
+- Fix drag'n'drop in drum mode MIDI clip editor. (GH #377)
+
+- Quick hack to get latency compensation when recording. (GH #376)
+
+- Introducing count-in to audio and MIDI metronomes: View/Options...
+  /Audio|MIDI/Metronome/Count-in; Transport/Count-in. (EXPERIMENTAL)
+
+- Corrected MIDI metronome bar/beat note durations. (EXEPRIMENTAL)
+
+- Give an early reponse upon opening any NSM session. (EXPERIMENTAL)
+
+
+0.9.31  2023-01-26  A Winter'23 Release.
+
 - Fixed a off-by-one rounding error on MIDI clip offset and lengths
-  that were leaving some clips unlinked on load. (EXPERIMENTAL)
+  that were leaving some clips unlinked on load.
 
 - LXVST_PATH environment variable now accrues to VST_PATH for Linux-
   native VST2 plug-ins search path and not taking over in precedence
-  anymore. (EXPERIMENTAL)
+  anymore.
 
 - Fixed an old mistake on custom aliased CLAP and VST3 plugin paths.
 

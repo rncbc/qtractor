@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -135,8 +135,7 @@ class qtractorMidiOutputThread : public QThread
 public:
 
 	// Constructor.
-	qtractorMidiOutputThread(
-		qtractorMidiEngine *pMidiEngine, unsigned int iReadAhead);
+	qtractorMidiOutputThread(qtractorMidiEngine *pMidiEngine);
 
 	// Destructor.
 	~qtractorMidiOutputThread();
@@ -144,13 +143,6 @@ public:
 	// Thread run state accessors.
 	void setRunState(bool bRunState);
 	bool runState() const;
-
-	// Read ahead frames configuration.
-	void setReadAhead(unsigned int iReadAhead);
-	unsigned int readAhead() const;
-
-	// MIDI/Audio sync-check predicate.
-	qtractorSessionCursor *midiCursorSync(bool bStart = false);
 
 	// MIDI track output process resync.
 	void trackSync(qtractorTrack *pTrack, unsigned long iFrameStart);
@@ -172,16 +164,10 @@ protected:
 	// The main thread executive.
 	void run();
 
-	// MIDI output process cycle iteration.
-	void process();
-
 private:
 
 	// The thread launcher engine.
 	qtractorMidiEngine *m_pMidiEngine;
-
-	// The number of frames to read-ahead.
-	unsigned int m_iReadAhead;
 
 	// Whether the thread is logically running.
 	bool m_bRunState;
@@ -451,11 +437,10 @@ void qtractorMidiInputThread::run (void)
 
 // Constructor.
 qtractorMidiOutputThread::qtractorMidiOutputThread (
-	qtractorMidiEngine *pMidiEngine, unsigned int iReadAhead ) : QThread()
+	qtractorMidiEngine *pMidiEngine ) : QThread()
 {
 	m_pMidiEngine = pMidiEngine;
 	m_bRunState   = false;
-	m_iReadAhead  = iReadAhead;
 }
 
 
@@ -486,48 +471,6 @@ bool qtractorMidiOutputThread::runState (void) const
 }
 
 
-// Read ahead frames configuration.
-void qtractorMidiOutputThread::setReadAhead ( unsigned int iReadAhead )
-{
-	QMutexLocker locker(&m_mutex);
-
-	m_iReadAhead = iReadAhead;
-}
-
-unsigned int qtractorMidiOutputThread::readAhead (void) const
-{
-	return m_iReadAhead;
-}
-
-
-// Audio/MIDI sync-check and cursor predicate.
-qtractorSessionCursor *qtractorMidiOutputThread::midiCursorSync ( bool bStart )
-{
-	// We'll need access to master audio engine...
-	qtractorSessionCursor *pAudioCursor
-		= (m_pMidiEngine->session())->audioEngine()->sessionCursor();
-	if (pAudioCursor == nullptr)
-		return nullptr;
-
-	// And to our slave MIDI engine too...
-	qtractorSessionCursor *pMidiCursor = m_pMidiEngine->sessionCursor();
-	if (pMidiCursor == nullptr)
-		return nullptr;
-
-	// Can MIDI be ever behind audio?
-	if (bStart) {
-		pMidiCursor->seek(pAudioCursor->frame());
-	//	pMidiCursor->setFrameTime(pAudioCursor->frameTime());
-	}
-	else // No, it cannot be behind more than the read-ahead period...
-	if (pMidiCursor->frameTime() > pAudioCursor->frameTime() + m_iReadAhead)
-		return nullptr;
-
-	// Nope. OK.
-	return pMidiCursor;
-}
-
-
 // The main thread executive.
 void qtractorMidiOutputThread::run (void)
 {
@@ -547,7 +490,7 @@ void qtractorMidiOutputThread::run (void)
 #endif
 		// Only if playing, the output process cycle.
 		if (m_pMidiEngine->isPlaying())
-			process();
+			m_pMidiEngine->process();
 	}
 
 	m_mutex.unlock();
@@ -558,70 +501,6 @@ void qtractorMidiOutputThread::run (void)
 }
 
 
-// MIDI output process cycle iteration.
-void qtractorMidiOutputThread::process (void)
-{
-	// Must have a valid session...
-	qtractorSession *pSession = m_pMidiEngine->session();
-	if (pSession == nullptr)
-		return;
-	
-	// Get a handle on our slave MIDI engine...
-	qtractorSessionCursor *pMidiCursor = midiCursorSync();
-	// Isn't MIDI slightly behind audio?
-	if (pMidiCursor == nullptr)
-		return;
-
-	// Now for the next readahead bunch...
-	unsigned long iFrameStart = pMidiCursor->frame();
-	unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
-
-#ifdef CONFIG_DEBUG_0
-	qDebug("qtractorMidiOutputThread[%p]::process(%lu, %lu)",
-		this, iFrameStart, iFrameEnd);
-#endif
-
-	// Split processing, in case we're looping...
-	const bool bLooping = pSession->isLooping();
-	const unsigned long le = pSession->loopEnd();
-	if (bLooping && iFrameStart < le) {
-		// Loop-length might be shorter than the read-ahead...
-		while (iFrameEnd >= le) {
-			// Process metronome clicks...
-			m_pMidiEngine->processMetro(iFrameStart, le);
-			// Process the remaining until end-of-loop...
-			pSession->process(pMidiCursor, iFrameStart, le);
-			// Reset to start-of-loop...
-			iFrameStart = pSession->loopStart();
-			iFrameEnd   = iFrameStart + (iFrameEnd - le);
-			pMidiCursor->seek(iFrameStart);
-			// This is really a must...
-			m_pMidiEngine->restartLoop();
-		}
-	}
-
-	// Process metronome clicks...
-	m_pMidiEngine->processMetro(iFrameStart, iFrameEnd);
-	// Regular range...
-	pSession->process(pMidiCursor, iFrameStart, iFrameEnd);
-
-	// Sync with loop boundaries (unlikely?)...
-	if (bLooping && iFrameStart < le && iFrameEnd >= le)
-		iFrameEnd = pSession->loopStart() + (iFrameEnd - le);
-
-	// Sync to the next bunch, also critical for Audio-MIDI sync...
-	pMidiCursor->seek(iFrameEnd);
-	pMidiCursor->process(m_iReadAhead);
-
-	// Flush the MIDI engine output queue...
-	snd_seq_drain_output(m_pMidiEngine->alsaSeq());
-
-	// Always do the queue drift stats
-	// at the bottom of the pack...
-	m_pMidiEngine->driftCheck();
-}
-
-
 // MIDI output process cycle iteration (locked).
 void qtractorMidiOutputThread::processSync (void)
 {
@@ -629,7 +508,7 @@ void qtractorMidiOutputThread::processSync (void)
 #ifdef CONFIG_DEBUG_0
 	qDebug("qtractorMidiOutputThread[%p]::processSync()", this);
 #endif
-	process();
+	m_pMidiEngine->process();
 }
 
 
@@ -1201,6 +1080,8 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iAlsaSubsPort = -1;
 	m_pAlsaNotifier = nullptr;
 
+	m_iReadAhead    = 0;
+
 	m_pInputThread  = nullptr;
 	m_pOutputThread = nullptr;
 
@@ -1224,6 +1105,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_pIControlBus  = nullptr;
 	m_pOControlBus  = nullptr;
 
+	// MIDI Metronome stuff.
 	m_bMetronome         = false;
 	m_bMetroBus          = false;
 	m_pMetroBus          = nullptr;
@@ -1242,6 +1124,16 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 	// Track down tempo changes.
 	m_fMetroTempo = 0.0f;
+
+	// MIDI Metronome count-in stuff.
+	m_bCountIn           = false;
+	m_countInMode        = CountInNone;
+	m_iCountInBeats      = 0;
+	m_iCountIn           = 0;
+	m_iCountInFrame      = 0;
+	m_iCountInFrameStart = 0;
+	m_iCountInFrameEnd   = 0;
+	m_iCountInTimeStart  = 0;
 
 	// SMF player stuff.
 	m_bPlayerBus = false;
@@ -1321,7 +1213,7 @@ void qtractorMidiEngine::alsaNotifyAck (void)
 void qtractorMidiEngine::sync (void)
 {
 	// Pure conditional thread slave synchronization...
-	if (m_pOutputThread && m_pOutputThread->midiCursorSync())
+	if (m_pOutputThread && midiCursorSync())
 		m_pOutputThread->sync();
 }
 
@@ -1329,13 +1221,152 @@ void qtractorMidiEngine::sync (void)
 // Read ahead frames configuration.
 void qtractorMidiEngine::setReadAhead ( unsigned int iReadAhead )
 {
-	if (m_pOutputThread)
-		m_pOutputThread->setReadAhead(iReadAhead);
+	m_iReadAhead = iReadAhead;
 }
 
 unsigned int qtractorMidiEngine::readAhead (void) const
 {
-	return (m_pOutputThread ? m_pOutputThread->readAhead() : 0);
+	return m_iReadAhead;
+}
+
+
+// Audio/MIDI sync-check and cursor predicate.
+qtractorSessionCursor *qtractorMidiEngine::midiCursorSync ( bool bStart )
+{
+	// We'll need access to master audio engine...
+	qtractorSessionCursor *pAudioCursor
+		= session()->audioEngine()->sessionCursor();
+	if (pAudioCursor == nullptr)
+		return nullptr;
+
+	// And to our slave MIDI engine too...
+	qtractorSessionCursor *pMidiCursor = sessionCursor();
+	if (pMidiCursor == nullptr)
+		return nullptr;
+
+	// Can MIDI be ever behind audio?
+	if (bStart) {
+		pMidiCursor->seek(pAudioCursor->frame());
+	//	pMidiCursor->setFrameTime(pAudioCursor->frameTime());
+	}
+	else // No, it cannot be behind more than the read-ahead period...
+	if (pMidiCursor->frameTime() > pAudioCursor->frameTime() + m_iReadAhead)
+		return nullptr;
+
+	// Nope. OK.
+	return pMidiCursor;
+}
+
+
+// MIDI output process cycle iteration.
+void qtractorMidiEngine::process (void)
+{
+	// Must have a valid session...
+	qtractorSession *pSession = session();
+	if (pSession == nullptr)
+		return;
+
+	// Bail out if the audio-metronome is under count-in...
+	if (pSession->audioEngine()->countIn() > 0)
+		return;
+
+	// Get a handle on our slave MIDI engine...
+	qtractorSessionCursor *pMidiCursor = midiCursorSync();
+	// Isn't MIDI slightly behind audio?
+	if (pMidiCursor == nullptr)
+		return;
+
+	// Metronome/count-in stuff...
+	if (m_iCountIn > 0) {
+		if (m_iCountInFrameStart < m_iCountInFrameEnd) {
+			unsigned int iReadAhead = m_iReadAhead;
+			unsigned long iCountInFrameEnd = m_iCountInFrameStart + iReadAhead;
+			if (iCountInFrameEnd > m_iCountInFrameEnd) {
+				iReadAhead = iCountInFrameEnd - m_iCountInFrameEnd;
+				iCountInFrameEnd = m_iCountInFrameEnd;
+			}
+			processCountIn(m_iCountInFrameStart, iCountInFrameEnd);
+			m_iCountInFrameStart = iCountInFrameEnd;
+			pMidiCursor->process(iReadAhead);
+			snd_seq_drain_output(m_pAlsaSeq);
+		}
+		// Bail out...
+		return;
+	}
+
+	// Now for the next read-ahead bunch...
+	unsigned long iFrameStart = pMidiCursor->frame();
+	unsigned long iFrameEnd   = iFrameStart + m_iReadAhead;
+
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiEngine[%p]::process(%lu, %lu)",
+		this, iFrameStart, iFrameEnd);
+#endif
+
+	// Split processing, in case we're looping...
+	const bool bLooping = pSession->isLooping();
+	const unsigned long le = pSession->loopEnd();
+	if (bLooping && iFrameStart < le) {
+		// Loop-length might be shorter than the read-ahead...
+		while (iFrameEnd >= le) {
+			// Process metronome clicks...
+			processMetro(iFrameStart, le);
+			// Process the remaining until end-of-loop...
+			pSession->process(pMidiCursor, iFrameStart, le);
+			// Reset to start-of-loop...
+			iFrameStart = pSession->loopStart();
+			iFrameEnd   = iFrameStart + (iFrameEnd - le);
+			pMidiCursor->seek(iFrameStart);
+			// This is really a must...
+			m_iFrameStart -= pSession->loopEnd();
+			m_iFrameStart += pSession->loopStart();
+			m_iTimeStart  -= pSession->loopEndTime();
+			m_iTimeStart  += pSession->loopStartTime();
+		//	resetDrift(); -- Drift correction?
+		}
+	}
+
+	// Process metronome clicks...
+	processMetro(iFrameStart, iFrameEnd);
+	// Regular range...
+	pSession->process(pMidiCursor, iFrameStart, iFrameEnd);
+
+	// Sync with loop boundaries (unlikely?)...
+	if (bLooping && iFrameStart < le && iFrameEnd >= le)
+		iFrameEnd = pSession->loopStart() + (iFrameEnd - le);
+
+	// Sync to the next bunch, also critical for Audio-MIDI sync...
+	pMidiCursor->seek(iFrameEnd);
+	pMidiCursor->process(m_iReadAhead);
+
+	// Flush the MIDI engine output queue...
+	snd_seq_drain_output(m_pAlsaSeq);
+
+	// Always do the queue drift stats
+	// at the bottom of the pack...
+	driftCheck();
+}
+
+
+// Reset queue time.
+void qtractorMidiEngine::resetTime (void)
+{
+	qtractorSession *pSession = session();
+	if (pSession == nullptr)
+		return;
+
+	// Reset MIDI time to current queue time...
+	snd_seq_queue_status_t *pQueueStatus;
+	snd_seq_queue_status_alloca(&pQueueStatus);
+	if (snd_seq_get_queue_status(m_pAlsaSeq,
+			m_iAlsaQueue, pQueueStatus) >= 0) {
+		const long iMidiTime
+			= snd_seq_queue_status_get_tick_time(pQueueStatus);
+		const long iAudioFrame
+			= pSession->audioEngine()->jackFrameTime() - m_iAudioFrameStart;
+		m_iTimeStart  -= iMidiTime;
+		m_iFrameStart -= iAudioFrame;
+	}
 }
 
 
@@ -1770,21 +1801,6 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		bRecording = (!pSession->isPunching() ||
 			(iTime >= pSession->punchInTime() &&
 			 iTime <  pSession->punchOutTime()));
-		// Same record time(stamp) note-off tracking...
-		if (type == qtractorMidiEvent::NOTEON) {
-			const unsigned long delta
-				= qtractorTimeScale::TICKS_PER_BEAT_HRQ
-				/ pSession->ticksPerBeat();
-			if (tick > delta &&
-				m_iLastEventTime >= tick &&
-				m_iLastEventNote != param)
-				tick -= delta;
-		}
-		else
-		if (type == qtractorMidiEvent::NOTEOFF) {
-			m_iLastEventNote = param;
-			m_iLastEventTime = tick;
-		}
 	}
 
 #if 0//-- Unlikely real-time input.
@@ -2353,13 +2369,15 @@ bool qtractorMidiEngine::activate (void)
 	openControlBus();
 	openMetroBus();
 
+	// Set the read-ahead in frames (0.5s)...
+	m_iReadAhead = (pSession->sampleRate() >> 1);
+
 	// Create and start our own MIDI input queue thread...
 	m_pInputThread = new qtractorMidiInputThread(this);
 	m_pInputThread->start(QThread::TimeCriticalPriority);
 
 	// Create and start our own MIDI output queue thread...
-	const unsigned int iReadAhead = (pSession->sampleRate() >> 1);
-	m_pOutputThread = new qtractorMidiOutputThread(this, iReadAhead);
+	m_pOutputThread = new qtractorMidiOutputThread(this);
 	m_pOutputThread->start(QThread::HighPriority);
 
 	// Reset/zero tickers...
@@ -2401,8 +2419,7 @@ bool qtractorMidiEngine::start (void)
 	closePlayer();
 
 	// Initial output thread bumping...
-	qtractorSessionCursor *pMidiCursor
-		= m_pOutputThread->midiCursorSync(true);
+	qtractorSessionCursor *pMidiCursor = midiCursorSync(true);
 	if (pMidiCursor == nullptr)
 		return false;
 
@@ -2422,9 +2439,32 @@ bool qtractorMidiEngine::start (void)
 
 	m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
 
-	// Reset note-off tracking state...
-	m_iLastEventTime = 0;
-	m_iLastEventNote = 0;
+	// Start count-in stuff...
+	unsigned short iCountInBeats = 0;
+	if (m_bCountIn && (
+		(m_countInMode == CountInPlayback) ||
+		(m_countInMode == CountInRecording && pSession->isRecording())))
+		iCountInBeats = m_iCountInBeats;
+	if (iCountInBeats > 0) {
+		m_iCountIn = iCountInBeats;
+		m_iCountInFrame = m_iFrameStart;
+		qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iCountInFrame);
+		const unsigned short iCountInBeat
+			= pNode->beatFromFrame(m_iCountInFrame);
+		m_iCountInFrameStart = m_iCountInFrame;
+		m_iCountInFrameEnd = m_iCountInFrameStart
+			+ pNode->frameFromBeat(iCountInBeat + iCountInBeats)
+			- pNode->frameFromBeat(iCountInBeat);
+		m_iCountInTimeStart = m_iTimeStart;
+		++m_iCountIn; // Give some slack to the end...
+	} else {
+		m_iCountIn = 0;
+		m_iCountInFrame = 0;
+		m_iCountInFrameStart = 0;
+		m_iCountInFrameEnd = 0;
+		m_iCountInTimeStart = 0;
+	}
 
 	// Effectively start sequencer queue timer...
 	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
@@ -2547,22 +2587,6 @@ void qtractorMidiEngine::clean (void)
 	m_iFrameStartEx = 0;
 
 	m_iAudioFrameStart = 0;
-}
-
-
-// Special rewind method, for queue loop.
-void qtractorMidiEngine::restartLoop (void)
-{
-	qtractorSession *pSession = session();
-	if (pSession && pSession->isLooping()) {
-		m_iFrameStart -= pSession->loopEnd();
-		m_iFrameStart += pSession->loopStart();
-		m_iTimeStart  -= pSession->loopEndTime();
-		m_iTimeStart  += pSession->loopStartTime();
-	//	m_iFrameDrift = 0; -- Drift correction?
-	//	m_iTimeDrift = 0;
-	//	resetDrift();
-	}
 }
 
 
@@ -3286,7 +3310,7 @@ void qtractorMidiEngine::processMetro (
 			m_pMetroCursor->timeScale(), pNode->frame, tick);
 	}
 
-	// Get on with the actual metronome/clock stuff...
+	// Get on with the actual metronome/count-in/clock stuff...
 	if (!m_bMetronome && (m_clockMode & qtractorBus::Output) == 0)
 		return;
 
@@ -3323,6 +3347,13 @@ void qtractorMidiEngine::processMetro (
 	ev_clock.tag = (unsigned char) 0xff;
 	ev_clock.type = SND_SEQ_EVENT_CLOCK;
 
+	const unsigned long iMetroOffset
+		= metro_timeq(m_iMetroOffset);
+	const unsigned long iMetroBarDuration
+		= metro_timeq(m_iMetroBarDuration);
+	const unsigned long iMetroBeatDuration
+		= metro_timeq(m_iMetroBeatDuration);
+
 	while (iTime < iTimeEnd) {
 		// Scheduled delivery: take into account
 		// the time playback/queue started...
@@ -3343,8 +3374,8 @@ void qtractorMidiEngine::processMetro (
 		}
 		if (m_bMetronome && iTime >= iTimeStart) {
 			// Have some latency compensation...
-			const unsigned long iTimeOffset = (m_iMetroOffset > 0
-				&& iTime > m_iMetroOffset ? iTime - m_iMetroOffset : iTime);
+			const unsigned long iTimeOffset = (iMetroOffset > 0
+				&& iTime > iMetroOffset ? iTime - iMetroOffset : iTime);
 			// Set proper event schedule time...
 			const unsigned long tick
 				= (long(iTimeOffset) > m_iTimeStart ? iTimeOffset - m_iTimeStart : 0);
@@ -3353,11 +3384,11 @@ void qtractorMidiEngine::processMetro (
 			if (pNode->beatIsBar(iBeat)) {
 				ev.data.note.note     = m_iMetroBarNote;
 				ev.data.note.velocity = m_iMetroBarVelocity;
-				ev.data.note.duration = m_iMetroBarDuration;
+				ev.data.note.duration = iMetroBarDuration;
 			} else {
 				ev.data.note.note     = m_iMetroBeatNote;
 				ev.data.note.velocity = m_iMetroBeatVelocity;
-				ev.data.note.duration = m_iMetroBeatDuration;
+				ev.data.note.duration = iMetroBeatDuration;
 			}
 			// Pump it into the queue.
 			snd_seq_event_output(m_pAlsaSeq, &ev);
@@ -3378,6 +3409,144 @@ void qtractorMidiEngine::processMetro (
 qtractorTimeScale::Cursor *qtractorMidiEngine::metroCursor (void) const
 {
 	return m_pMetroCursor;
+}
+
+
+// Session time to metronome time conversion.
+unsigned long qtractorMidiEngine::metro_timeq ( unsigned long time ) const
+{
+	const unsigned long q = m_pMetroCursor->timeScale()->ticksPerBeat();
+	return uint64_t(time) * qtractorTimeScale::TICKS_PER_BEAT_HRQ / q;
+}
+
+
+// Metronome count-in switching.
+void qtractorMidiEngine::setCountIn ( bool bCountIn )
+{
+	m_bCountIn = bCountIn;
+}
+
+bool qtractorMidiEngine::isCountIn (void) const
+{
+	return m_bCountIn;
+}
+
+
+// Metronome count-in mode.
+void qtractorMidiEngine::setCountInMode ( CountInMode countInMode )
+{
+	m_countInMode = countInMode;
+}
+
+qtractorMidiEngine::CountInMode qtractorMidiEngine::countInMode (void) const
+{
+	return m_countInMode;
+}
+
+
+// Metronome count-in number of beats.
+void qtractorMidiEngine::setCountInBeats ( unsigned short iCountInBeats )
+{
+	m_iCountInBeats = iCountInBeats;
+}
+
+unsigned short qtractorMidiEngine::countInBeats (void) const
+{
+	return m_iCountInBeats;
+}
+
+
+// Metronome count-in status.
+unsigned short qtractorMidiEngine::countIn ( unsigned int nframes )
+{
+	if (m_iCountIn > 0) {
+		m_iCountInFrame += nframes;
+		if (m_iCountInFrame >= m_iCountInFrameEnd) {
+			m_iCountIn = 0;
+			resetTime();
+		} else {
+			sync();
+		}
+	}
+
+	return m_iCountIn;
+}
+
+
+// Process metronome count-ins.
+void qtractorMidiEngine::processCountIn (
+	unsigned long iFrameStart, unsigned long iFrameEnd )
+{
+	if (m_pMetroCursor == nullptr)
+		return;
+
+	// Get on with the actual metronome/count-in stuff...
+	if (m_iCountIn < 1)
+		return;
+
+	// Register the next metronome/clock beat slot.
+	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iFrameEnd);
+	const unsigned long iTimeEnd = pNode->tickFromFrame(iFrameEnd);
+	pNode = m_pMetroCursor->seekFrame(iFrameStart);
+	const unsigned long iTimeStart = pNode->tickFromFrame(iFrameStart);
+	unsigned int  iBeat = pNode->beatFromTick(iTimeStart);
+	unsigned long iTime = pNode->tickFromBeat(iBeat);
+
+	// Initialize outbound metronome event...
+	snd_seq_event_t ev;
+	snd_seq_ev_clear(&ev);
+	// Addressing...
+	if (m_pMetroBus) {
+		snd_seq_ev_set_source(&ev, m_pMetroBus->alsaPort());
+		snd_seq_ev_set_subs(&ev);
+	}
+	// Set common event data...
+	ev.tag = (unsigned char) 0xff;
+	ev.type = SND_SEQ_EVENT_NOTE;
+	ev.data.note.channel = m_iMetroChannel;
+
+	const unsigned long iMetroOffset
+		= metro_timeq(m_iMetroOffset);
+	const unsigned long iMetroBarDuration
+		= metro_timeq(m_iMetroBarDuration);
+	const unsigned long iMetroBeatDuration
+		= metro_timeq(m_iMetroBeatDuration);
+
+	while (iTime < iTimeEnd) {
+		// Scheduled delivery: take into account
+		// the time playback/queue started...
+		if (iTime >= iTimeStart) {
+			// Have some latency compensation...
+			const unsigned long iTimeOffset = (iMetroOffset > 0
+				&& iTime > iMetroOffset ? iTime - iMetroOffset : iTime);
+			// Set proper event schedule time...
+			const unsigned long tick
+				= (long(iTimeOffset) > m_iCountInTimeStart
+				? iTimeOffset - m_iCountInTimeStart : 0);
+			snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
+			// Set proper event data...
+			if (pNode->beatIsBar(iBeat)) {
+				ev.data.note.note     = m_iMetroBarNote;
+				ev.data.note.velocity = m_iMetroBarVelocity;
+				ev.data.note.duration = iMetroBarDuration;
+			} else {
+				ev.data.note.note     = m_iMetroBeatNote;
+				ev.data.note.velocity = m_iMetroBeatVelocity;
+				ev.data.note.duration = iMetroBeatDuration;
+			}
+			// Pump it into the queue.
+			snd_seq_event_output(m_pAlsaSeq, &ev);
+			// MIDI track monitoring...
+			if (m_pMetroBus && m_pMetroBus->midiMonitor_out()) {
+				m_pMetroBus->midiMonitor_out()->enqueue(
+					qtractorMidiEvent::NOTEON, ev.data.note.velocity, tick);
+			}
+		//	--m_iCountIn; // Not really useful?
+		}
+		// Go for next beat...
+		iTime += pNode->ticksPerBeat;
+		pNode = m_pMetroCursor->seekBeat(++iBeat);
+	}
 }
 
 

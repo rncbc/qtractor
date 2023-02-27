@@ -16,8 +16,8 @@
 #
 
 %define name    qtractor
-%define version 0.9.30
-%define release 73.1
+%define version 0.9.31
+%define release 74.1
 
 %define _prefix	/usr
 
@@ -159,7 +159,8 @@ cmake --install build
 
 %files
 %defattr(-,root,root)
-%doc README LICENSE TRANSLATORS ChangeLog
+%license LICENSE
+%doc README TRANSLATORS ChangeLog
 %dir %{_libdir}/%{name}
 #dir %{_datadir}/mime
 #dir %{_datadir}/mime/packages
@@ -192,6 +193,8 @@ cmake --install build
 %{_datadir}/man/fr/man1/%{name}.1.gz
 
 %changelog
+* Thu Jan 26 2023 Rui Nuno Capela <rncbc@rncbc.org> 0.9.31
+- A Winter'23 Release.
 * Fri Dec 30 2022 Rui Nuno Capela <rncbc@rncbc.org> 0.9.30
 - An End-of-Year'22 Release.
 * Wed Oct  5 2022 Rui Nuno Capela <rncbc@rncbc.org> 0.9.29

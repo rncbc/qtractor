@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -3903,9 +3903,10 @@ void qtractorMidiEditor::updateDragMove (
 	const int cw = pScrollView->contentsWidth();
 
 	int dx = delta.x();
-	const int x1 = rect.x() + dx;
+	const int x1 = rect.x() + dx + (m_bDrumMode ? h1 : 0);
+
 	if (x1 < 0)
-		dx = -rect.x();
+		dx = -rect.x() - (m_bDrumMode ? h1 : 0);
 	if (x1 + rect.width() > cw)
 		dx = cw - rect.right();
 

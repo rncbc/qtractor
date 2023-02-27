@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1044,7 +1044,7 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout">
-          <item row="0" column="0" colspan="6">
+          <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="AudioMetronomeCheckBox">
             <property name="font">
              <font>
@@ -1057,6 +1057,84 @@
             </property>
             <property name="text">
              <string>&amp;Enable audio metronome</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="AudioCountInModeLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>&amp;Count-in:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>AudioCountInModeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" colspan="2">
+           <widget class="QComboBox" name="AudioCountInModeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Count-in mode</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>None</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Playback</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Recording</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QSpinBox" name="AudioCountInBeatsSpinBox">
+            <property name="minimumSize">
+             <size>
+              <width>66</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Count-in number</string>
+            </property>
+            <property name="suffix">
+             <string> beats</string>
+            </property>
+            <property name="minimum">
+             <number>2</number>
+            </property>
+            <property name="maximum">
+             <number>24</number>
+            </property>
+            <property name="value">
+             <number>4</number>
             </property>
            </widget>
           </item>
@@ -1866,7 +1944,7 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout">
-          <item row="0" column="0" colspan="8">
+          <item row="0" column="0" colspan="9">
            <widget class="QCheckBox" name="MidiMetronomeCheckBox">
             <property name="font">
              <font>
@@ -1879,6 +1957,84 @@
             </property>
             <property name="text">
              <string>&amp;Enable MIDI metronome</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5" colspan="2">
+           <widget class="QLabel" name="MidiCountInModeLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>&amp;Count-in:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>AudioCountInModeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <widget class="QComboBox" name="MidiCountInModeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Count-in mode</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>None</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Playback</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Recording</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="8">
+           <widget class="QSpinBox" name="MidiCountInBeatsSpinBox">
+            <property name="minimumSize">
+             <size>
+              <width>66</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Count-in number</string>
+            </property>
+            <property name="suffix">
+             <string> beats</string>
+            </property>
+            <property name="minimum">
+             <number>2</number>
+            </property>
+            <property name="maximum">
+             <number>24</number>
+            </property>
+            <property name="value">
+             <number>4</number>
             </property>
            </widget>
           </item>

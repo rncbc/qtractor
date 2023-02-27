@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -123,6 +123,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="transportCountInAction"/>
    <addaction name="transportMetroAction"/>
    <addaction name="separator"/>
    <addaction name="transportFollowAction"/>
@@ -537,6 +538,7 @@
     <addaction name="transportPunchAction"/>
     <addaction name="transportPunchSetAction"/>
     <addaction name="separator"/>
+    <addaction name="transportCountInAction"/>
     <addaction name="transportMetroAction"/>
     <addaction name="separator"/>
     <addaction name="transportFollowAction"/>
@@ -2850,6 +2852,26 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="transportCountInAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="qtractor.qrc">:/images/transportCountIn.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Count-in</string>
+   </property>
+   <property name="iconText">
+    <string>Count-in</string>
+   </property>
+   <property name="toolTip">
+    <string>Count-in</string>
+   </property>
+   <property name="statusTip">
+    <string>Count-in</string>
    </property>
   </action>
   <action name="transportMetroAction">

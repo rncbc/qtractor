@@ -1,7 +1,7 @@
 // qtractorMainForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -274,6 +274,7 @@ public slots:
 	void transportRecord();
 	void transportPunch();
 	void transportPunchSet();
+	void transportCountIn();
 	void transportMetro();
 	void transportFollow();
 	void transportAutoBackward();

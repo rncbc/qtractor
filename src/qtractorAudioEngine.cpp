@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -540,6 +540,16 @@ qtractorAudioEngine::qtractorAudioEngine ( qtractorSession *pSession )
 	m_iMetroBeat        = 0;
 	m_bMetroEnabled     = false;
 
+	// Audio metronome count-in stuff.
+	m_bCountIn          = false;
+	m_countInMode       = CountInNone;
+	m_iCountInBeats     = 0;
+	m_iCountIn          = 0;
+	m_iCountInBeatStart = 0;
+	m_iCountInBeat      = 0;
+	m_iCountInFrame     = 0;
+	m_iCountInFrameEnd  = 0;
+
 	// Audition/pre-listening player stuff.
 	ATOMIC_SET(&m_playerLock, 0);
 	m_bPlayerOpen  = false;
@@ -864,9 +874,7 @@ bool qtractorAudioEngine::start (void)
 
 	// Reset all dependables...
 	resetAllMonitors();
-
-	// Make sure we have an actual session cursor...
-	resetMetro();
+	resetMetro(true);
 
 	// Reset transport latency anyway...
 	m_iTransportLatency = 0;
@@ -1121,28 +1129,68 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		return 0;
 	}
 
-	// Metronome stuff...
-	if (m_bMetronome && m_pMetroBus && iFrameEnd > m_iMetroBeatStart) {
-		qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
-		qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrameStart);
-		qtractorAudioBuffer *pMetroBuff = nullptr;
-		if (pNode->beatIsBar(m_iMetroBeat))
-			pMetroBuff = m_pMetroBarBuff;
-		else
-			pMetroBuff = m_pMetroBeatBuff;
-		if (iFrameStart < m_iMetroBeatStart) {
-			pMetroBuff->readMix(m_pMetroBus->out(),
-				iFrameEnd - m_iMetroBeatStart, m_pMetroBus->channels(),
-				m_iMetroBeatStart - iFrameStart, 1.0f);
-		} else if (iFrameStart < m_iMetroBeatStart + pMetroBuff->length()) {
-			pMetroBuff->readMix(m_pMetroBus->out(),
-				nframes, m_pMetroBus->channels(), 0, 1.0f);
-		} else {
-			m_iMetroBeatStart = metro_offset(pNode->frameFromBeat(++m_iMetroBeat));
-			pMetroBuff->reset(false);
+	// Bail out if the MIDI-metronome is under count-in...
+	if (pSession->midiEngine()->countIn(nframes) > 0) {
+		pAudioCursor->process(nframes);
+		g_bProcessing = false;
+		pSession->release();
+		return 0;
+	}
+
+	// Metronome/count-in stuff...
+	if ((m_bMetronome || m_iCountIn > 0) && m_pMetroBus) {
+		const unsigned long iMetroFrameStart
+			= (m_iCountIn > 0 ? m_iCountInFrame : iFrameStart);
+		const unsigned long iMetroFrameEnd
+			= iMetroFrameStart + nframes;
+		unsigned long iMetroBeatStart
+			= (m_iCountIn > 0 ? m_iCountInBeatStart : m_iMetroBeatStart);
+		unsigned int iMetroBeat
+			= (m_iCountIn > 0 ? m_iCountInBeat : m_iMetroBeat);
+		if (iMetroFrameEnd > iMetroBeatStart) {
+			qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+			qtractorTimeScale::Node *pNode = cursor.seekFrame(iMetroFrameStart);
+			qtractorAudioBuffer *pMetroBuff = nullptr;
+			if (pNode->beatIsBar(iMetroBeat))
+				pMetroBuff = m_pMetroBarBuff;
+			else
+				pMetroBuff = m_pMetroBeatBuff;
+			if (iMetroFrameStart < iMetroBeatStart) {
+				pMetroBuff->readMix(m_pMetroBus->out(),
+					iMetroFrameEnd - iMetroBeatStart, m_pMetroBus->channels(),
+					iMetroBeatStart - iMetroFrameStart, 1.0f);
+			} else if (iMetroFrameStart < iMetroBeatStart + pMetroBuff->length()) {
+				pMetroBuff->readMix(m_pMetroBus->out(),
+					nframes, m_pMetroBus->channels(), 0, 1.0f);
+			} else {
+				iMetroBeatStart = metro_offset(pNode->frameFromBeat(++iMetroBeat));
+				pMetroBuff->reset(false);
+				if (m_iCountIn > 0) {
+					m_iCountInBeatStart = iMetroBeatStart;
+					m_iCountInBeat = iMetroBeat;
+				//	--m_iCountIn; // Not really useful?
+				} else {
+					m_iMetroBeatStart = iMetroBeatStart;
+					m_iMetroBeat = iMetroBeat;
+				}
+			}
+			if (m_bMetroBus || m_iCountIn > 0)
+				m_pMetroBus->process_commit(nframes);
 		}
-		if (m_bMetroBus && m_pMetroBus)
-			m_pMetroBus->process_commit(nframes);
+		// Check whether count-in ends....
+		if (m_iCountIn > 0) {
+			m_iCountInFrame += nframes;
+			if (m_iCountInFrame < m_iCountInFrameEnd) {
+				pAudioCursor->process(nframes);
+				g_bProcessing = false;
+				pSession->release();
+				return 0;
+			}
+			// Count-in ended.
+			m_iCountIn = 0;
+			// Reset MIDI queue time...
+			pSession->midiEngine()->resetTime();
+		}
 	}
 
 	// MIDI managers plugin frame time...
@@ -1967,6 +2015,49 @@ unsigned long qtractorAudioEngine::metro_offset ( unsigned long iFrame ) const
 }
 
 
+// Metronome count-in switching.
+void qtractorAudioEngine::setCountIn ( bool bCountIn )
+{
+	m_bCountIn = bCountIn;
+}
+
+bool qtractorAudioEngine::isCountIn (void) const
+{
+	return m_bCountIn;
+}
+
+
+// Metronome count-in mode.
+void qtractorAudioEngine::setCountInMode ( CountInMode countInMode )
+{
+	m_countInMode = countInMode;
+}
+
+qtractorAudioEngine::CountInMode qtractorAudioEngine::countInMode (void) const
+{
+	return m_countInMode;
+}
+
+
+// Metronome count-in number of beats.
+void qtractorAudioEngine::setCountInBeats ( unsigned short iCountInBeats )
+{
+	m_iCountInBeats = iCountInBeats;
+}
+
+unsigned short qtractorAudioEngine::countInBeats (void) const
+{
+	return m_iCountInBeats;
+}
+
+
+// Metronome count-in status.
+unsigned short qtractorAudioEngine::countIn (void) const
+{
+	return m_iCountIn;
+}
+
+
 // Create audio metronome stuff...
 void qtractorAudioEngine::createMetroBus (void)
 {
@@ -2055,6 +2146,12 @@ void qtractorAudioEngine::closeMetroBus (void)
 
 	m_iMetroBeatStart = 0;
 	m_iMetroBeat = 0;
+
+	m_iCountIn = 0;
+	m_iCountInBeatStart = 0;
+	m_iCountInBeat = 0;
+	m_iCountInFrame = 0;
+	m_iCountInFrameEnd = 0;
 }
 
 
@@ -2071,12 +2168,12 @@ void qtractorAudioEngine::deleteMetroBus (void)
 
 
 // Reset Audio metronome.
-void qtractorAudioEngine::resetMetro (void)
+void qtractorAudioEngine::resetMetro ( bool bCountIn )
 {
 	if (!m_bMetroEnabled)
 		return;
 
-	if (!m_bMetronome)
+	if (!m_bMetronome && m_iCountInBeats < 1)
 		return;
 
 	qtractorSessionCursor *pAudioCursor = sessionCursor();
@@ -2094,9 +2191,9 @@ void qtractorAudioEngine::resetMetro (void)
 
 	// FIXME: Each sample buffer must be bounded properly...
 	unsigned long iMaxLength = 0;
-	const unsigned short iNextBeat = pNode->beatFromFrame(iFrame);
-	if (iNextBeat > 0) {
-		m_iMetroBeat = iNextBeat;
+	const unsigned short iMetroBeat = pNode->beatFromFrame(iFrame);
+	if (iMetroBeat > 0) {
+		m_iMetroBeat = iMetroBeat;
 		m_iMetroBeatStart = metro_offset(pNode->frameFromBeat(m_iMetroBeat));
 		iMaxLength = (m_iMetroBeatStart / m_iMetroBeat);
 	} else {
@@ -2119,6 +2216,30 @@ void qtractorAudioEngine::resetMetro (void)
 		m_pMetroBeatBuff->setLength(
 			iMetroBeatLength > iMaxLength ? iMaxLength : iMetroBeatLength);
 		m_pMetroBeatBuff->reset(false);
+	}
+
+	// Start count-in stuff...
+	unsigned short iCountInBeats = 0;
+	if (bCountIn && m_bCountIn && (
+		(m_countInMode == CountInPlayback) ||
+		(m_countInMode == CountInRecording && pSession->isRecording())))
+		iCountInBeats = m_iCountInBeats;
+	if (iCountInBeats > 0) {
+		m_iCountIn = iCountInBeats;
+		m_iCountInBeat = m_iMetroBeat;
+		m_iCountInBeatStart = m_iMetroBeatStart;
+		m_iCountInFrame = iFrame;
+		m_iCountInFrameEnd = m_iCountInFrame
+			+ metro_offset(pNode->frameFromBeat(
+				m_iCountInBeat + iCountInBeats))
+			- m_iCountInBeatStart;
+		++m_iCountIn; // Give some slack to the end...
+	} else {
+		m_iCountIn = 0;
+		m_iCountInBeat = 0;
+		m_iCountInBeatStart = 0;
+		m_iCountInFrame = 0;
+		m_iCountInFrameEnd = 0;
 	}
 }
 
