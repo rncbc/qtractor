@@ -5425,14 +5425,14 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2865"/>
         <source>&amp;Count-in</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Conteo de entrada</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2868"/>
         <location filename="../qtractorMainForm.ui" line="2871"/>
         <location filename="../qtractorMainForm.ui" line="2874"/>
         <source>Count-in</source>
-        <translation type="unfinished"></translation>
+        <translation>Conteo de entrada</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2885"/>
@@ -6088,7 +6088,7 @@ la próxima vez que inicie este %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5949"/>
         <source>VST2 Plug-in support disabled.</source>
-        <translation type="unfinished">Compatibilidad con plug-ins VST3 deshabilitada. {2 ?}</translation>
+        <translation>Compatibilidad con plug-ins VST2 deshabilitada.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="5952"/>
@@ -6218,7 +6218,7 @@ la próxima vez que inicie este %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6035"/>
         <source>LV2 Plug-in UI GTKMM2 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soporte nativo de plugin-LV2 enUI GTKMM2 deshabilitado.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6039"/>
@@ -7877,67 +7877,67 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="351"/>
         <source>EG Decay</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="352"/>
         <source>EG Release</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="355"/>
         <source>Drum Filter Cutoff</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="356"/>
         <source>Drum Filter Resonance</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="357"/>
         <source>Drum EG Attack</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="358"/>
         <source>Drum EG Decay</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="359"/>
         <source>Drum Pitch Coarse</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="360"/>
         <source>Drum Pitch Fine</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="361"/>
         <source>Drum Level</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="362"/>
         <source>Drum Pan</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="363"/>
         <source>Drum Reverb Send</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="364"/>
         <source>Drum Chorus Send</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="365"/>
         <source>Drum Variation Send</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="421"/>
@@ -8278,257 +8278,257 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="574"/>
         <source>Marva Theta</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="576"/>
         <source>Mela Bhavapriya</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="577"/>
         <source>Mela Chakravakam</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="578"/>
         <source>Mela Chalanata</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="580"/>
         <source>Mela Chitrambari</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="581"/>
         <source>Mela Dharmavati</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="582"/>
         <source>Mela Dhatuvardhani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="583"/>
         <source>Mela Dhavalambari</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="586"/>
         <source>Mela Divyamani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="588"/>
         <source>Mela Ganamurti</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="589"/>
         <source>Mela Gangeyabhusani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="591"/>
         <source>Mela Gavambodhi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="592"/>
         <source>Mela Gayakapriya</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="595"/>
         <source>Mela Hatakambari</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="597"/>
         <source>Mela Jalarnavam</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="598"/>
         <source>Mela Jhalavarali</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="599"/>
         <source>Mela Jhankaradhvani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="600"/>
         <source>Mela Jyotisvarupini</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="601"/>
         <source>Mela Kamavarardhani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="603"/>
         <source>Mela Kantamani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="607"/>
         <source>Mela Kosalam</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="608"/>
         <source>Mela Latangi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="609"/>
         <source>Mela Manavati</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="610"/>
         <source>Mela Mararanjani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="613"/>
         <source>Mela Naganandini</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="614"/>
         <source>Mela Namanarayani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="618"/>
         <source>Mela Navanitam</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="619"/>
         <source>Mela Nitimati</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="620"/>
         <source>Mela Pavani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="621"/>
         <source>Mela Ragavardhani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="622"/>
         <source>Mela Raghupriya</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="623"/>
         <source>Mela Ramapriya</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="624"/>
         <source>Mela Rasikapriya</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="625"/>
         <source>Mela Ratnangi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="626"/>
         <source>Mela Risabhapriya</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="627"/>
         <source>Mela Rupavati</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="628"/>
         <source>Mela Sadvidhamargini</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="629"/>
         <source>Mela Salagam</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="630"/>
         <source>Mela Sanmukhapriya</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="631"/>
         <source>Mela Sarasangi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="632"/>
         <source>Mela Senavati</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="634"/>
         <source>Mela Subhapantuvarali</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="635"/>
         <source>Mela Sucharitra</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="636"/>
         <source>Mela Sulini</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="637"/>
         <source>Mela Suryakantam</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="639"/>
         <source>Mela Syamalangi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="640"/>
         <source>Mela Tanarupi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="642"/>
         <source>Mela Vagadhisvari</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="644"/>
         <source>Mela Vanaspati</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="645"/>
         <source>Mela Varunapriya</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="647"/>
         <source>Mela Yagapriya</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="650"/>
@@ -8538,17 +8538,17 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="651"/>
         <source>Purvi Theta</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="652"/>
         <source>Spanish Gypsy</source>
-        <translation type="unfinished"></translation>
+        <translation>Gitana Española</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="653"/>
         <source>Todi Theta</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="657"/>
@@ -8558,7 +8558,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="658"/>
         <source>Kumoi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="659"/>
@@ -8568,7 +8568,7 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="660"/>
         <source>Pelog</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="661"/>
@@ -8608,52 +8608,52 @@ Duración:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="671"/>
         <source>Bhairav</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="672"/>
         <source>Yaman</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="673"/>
         <source>Todi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="674"/>
         <source>Jog</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="675"/>
         <source>Multani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="676"/>
         <source>Darbari</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="677"/>
         <source>Malkauns</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="678"/>
         <source>Bhoopali</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="679"/>
         <source>Shivaranjani</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="680"/>
         <source>Marwa</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="682"/>
@@ -11952,31 +11952,31 @@ Are you sure?</source>
         <location filename="../qtractorOptionsForm.ui" line="1072"/>
         <location filename="../qtractorOptionsForm.ui" line="1972"/>
         <source>&amp;Count-in:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Conteo de entrada:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1091"/>
         <location filename="../qtractorOptionsForm.ui" line="1991"/>
         <source>Count-in mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de conteo de entrada</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1105"/>
         <location filename="../qtractorOptionsForm.ui" line="2005"/>
         <source>Recording</source>
-        <translation type="unfinished"></translation>
+        <translation>Grabación</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1125"/>
         <location filename="../qtractorOptionsForm.ui" line="2025"/>
         <source>Count-in number</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de conteo de entrada</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1128"/>
         <location filename="../qtractorOptionsForm.ui" line="2028"/>
         <source> beats</source>
-        <translation type="unfinished"></translation>
+        <translation> golpes</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1150"/>
