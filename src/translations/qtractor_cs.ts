@@ -3438,7 +3438,7 @@ až při příštím spuštění %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6035"/>
         <source>LV2 Plug-in UI GTKMM2 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nativní podpora pro uživatelské rozhraní přídavných modulů LV2 GTKMM2 byla zakázána.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6039"/>
@@ -6198,14 +6198,14 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2865"/>
         <source>&amp;Count-in</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Počítání</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2868"/>
         <location filename="../qtractorMainForm.ui" line="2871"/>
         <location filename="../qtractorMainForm.ui" line="2874"/>
         <source>Count-in</source>
-        <translation type="unfinished"></translation>
+        <translation>Počítání</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2971"/>
@@ -12626,31 +12626,31 @@ Chcete použít tyto změny?</translation>
         <location filename="../qtractorOptionsForm.ui" line="1072"/>
         <location filename="../qtractorOptionsForm.ui" line="1972"/>
         <source>&amp;Count-in:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Počítání:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1091"/>
         <location filename="../qtractorOptionsForm.ui" line="1991"/>
         <source>Count-in mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Režim počítání</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1105"/>
         <location filename="../qtractorOptionsForm.ui" line="2005"/>
         <source>Recording</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrávání</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1125"/>
         <location filename="../qtractorOptionsForm.ui" line="2025"/>
         <source>Count-in number</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet počítání</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1128"/>
         <location filename="../qtractorOptionsForm.ui" line="2028"/>
         <source> beats</source>
-        <translation type="unfinished"></translation>
+        <translation> dob</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1432"/>
