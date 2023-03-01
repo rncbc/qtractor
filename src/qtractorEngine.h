@@ -1,7 +1,7 @@
 // qtractorEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -217,6 +217,14 @@ public:
 			client(item.client), port(item.port),
 			clientName(item.clientName),
 			portName(item.portName) {}
+		// Item matcher...
+		bool match(const ConnectItem& item) const
+		{
+			return index      == item.index
+				&& clientName == item.clientName
+				&& portName   == item.portName
+				&& (client < 0 || (128 >= client && client == item.client));
+		}
 		// Item members.
 		unsigned short index;
 		int client, port;
@@ -254,11 +262,8 @@ public:
 			QListIterator<ConnectItem *> iter(*this);
 			while (iter.hasNext()) {
 				ConnectItem *pItem = iter.next();
-				if (pItem->index      == item.index &&
-					pItem->clientName == item.clientName &&
-					pItem->portName   == item.portName) {
+				if (pItem->match(item))
 					return pItem;
-				}
 			}
 			return nullptr;
 		}

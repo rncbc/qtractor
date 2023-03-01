@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Make sure all previously saved connections to identical ALSA MIDI
+  hardware devices are now discriminated and properly restored, even
+  though the target deviceds have the very same name. (EXPERIMENTAL)
+
 - Fix drag'n'drop in drum mode MIDI clip editor. (GH #377)
 
 - Quick hack to get latency compensation when recording. (GH #376)
