@@ -5425,14 +5425,14 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2865"/>
         <source>&amp;Count-in</source>
-        <translation type="unfinished"></translation>
+        <translation>Dé&amp;compte</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2868"/>
         <location filename="../qtractorMainForm.ui" line="2871"/>
         <location filename="../qtractorMainForm.ui" line="2874"/>
         <source>Count-in</source>
-        <translation type="unfinished"></translation>
+        <translation>Décompte</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2885"/>
@@ -6131,7 +6131,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6035"/>
         <source>LV2 Plug-in UI GTKMM2 native support disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Support natif de l'interface graphique GTKMM2 des greffons LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6052"/>
@@ -11972,31 +11972,31 @@ existantes :</translation>
         <location filename="../qtractorOptionsForm.ui" line="1072"/>
         <location filename="../qtractorOptionsForm.ui" line="1972"/>
         <source>&amp;Count-in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dé&amp;compte :</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1091"/>
         <location filename="../qtractorOptionsForm.ui" line="1991"/>
         <source>Count-in mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode décompte</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1105"/>
         <location filename="../qtractorOptionsForm.ui" line="2005"/>
         <source>Recording</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrement</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1125"/>
         <location filename="../qtractorOptionsForm.ui" line="2025"/>
         <source>Count-in number</source>
-        <translation type="unfinished"></translation>
+        <translation>Numéro de décompte</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1128"/>
         <location filename="../qtractorOptionsForm.ui" line="2028"/>
         <source> beats</source>
-        <translation type="unfinished"></translation>
+        <translation> battements</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="1150"/>
