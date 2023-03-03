@@ -2009,7 +2009,7 @@ public:
 			rect0.right  - rect0.left,
 			rect0.bottom - rect0.top);
 		if (size != size0)
-			m_plugView->onSize(rect);
+			m_plugView->onSize(&rect0);
 
 		return kResultOk;
 	}
@@ -2884,17 +2884,17 @@ void qtractorVst3Plugin::EditorWidget::resizeEvent ( QResizeEvent *pResizeEvent 
 		rect.top    = 0;
 		rect.right  = size.width();
 		rect.bottom = size.height();
-		if (plugView->checkSizeConstraint(&rect) == kResultOk) {
-			const QSize size2(
-				rect.right - rect.left,
-				rect.bottom - rect.top);
-			if (size2 != size) {
-				m_resizing = true;
-				QWidget::resize(size2);
-				m_resizing = false;
-			}
+		if (plugView->checkSizeConstraint(&rect) != kResultOk)
+			plugView->getSize(&rect);
+		const QSize size2(
+			rect.right - rect.left,
+			rect.bottom - rect.top);
+		if (size2 != size) {
+			m_resizing = true;
+			QWidget::resize(size2);
+			m_resizing = false;
+			plugView->onSize(&rect);
 		}
-		plugView->onSize(&rect);
 	}
 }
 
