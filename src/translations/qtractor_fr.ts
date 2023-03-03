@@ -6131,7 +6131,7 @@ que la prochaine fois que vous démarrerez %1.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6035"/>
         <source>LV2 Plug-in UI GTKMM2 native support disabled.</source>
-        <translation>Support natif de l'interface graphique GTKMM2 des greffons LV2 désactivé.</translation>
+        <translation>Support natif de l&apos;interface graphique GTKMM2 des greffons LV2 désactivé.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6052"/>
