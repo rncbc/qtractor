@@ -1962,6 +1962,16 @@ public:
 	{
 		m_runLoop = owned(NEW RunLoop());
 		m_plugView->setFrame(this);
+
+		ViewRect rect;
+		if (m_plugView->getSize(&rect) == kResultOk) {
+			m_resizing = true;
+			const QSize size(
+				rect.right  - rect.left,
+				rect.bottom - rect.top);
+			m_widget->resize(size);
+			m_resizing = false;
+		}
 	}
 
 	// Destructor.
@@ -1984,7 +1994,9 @@ public:
 		if (!rect || !plugView || plugView != m_plugView)
 			return kInvalidArgument;
 
-		if (!m_widget || m_resizing)
+		if (!m_widget)
+			return kInternalError;
+		if (m_resizing)
 			return kResultFalse;
 
 		m_resizing = true;
@@ -1995,10 +2007,10 @@ public:
 		qDebug("qtractorVst3Plugin::EditorFrame[%p]::resizeView(%p, %p) size=(%d, %d)",
 			this, plugView, rect, size.width(), size.height());
 	#endif
-		if (m_plugView->canResize() != kResultOk)
-			m_widget->setFixedSize(size);
-		else
+		if (m_plugView->canResize() == kResultOk)
 			m_widget->resize(size);
+		else
+			m_widget->setFixedSize(size);
 		m_resizing = false;
 
 		ViewRect rect0;
@@ -3316,10 +3328,6 @@ void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 	m_pEditorWidget->setPlugin(this);
 
 	m_pEditorFrame = new EditorFrame(plugView, m_pEditorWidget);
-
-	ViewRect rect;
-	if (plugView->getSize(&rect) == kResultOk)
-		m_pEditorFrame->resizeView(plugView, &rect);
 
 	void *wid = (void *) m_pEditorWidget->parentWinId();
 	if (plugView->attached(wid, kPlatformTypeX11EmbedWindowID) != kResultOk) {
