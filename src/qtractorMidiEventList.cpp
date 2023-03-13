@@ -1,7 +1,7 @@
 // qtractorMidiEventList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,6 +30,9 @@
 
 #include "qtractorSpinBox.h"
 
+#include <QAbstractItemModel>
+#include <QItemDelegate>
+
 #include <QHeaderView>
 #include <QComboBox>
 #include <QSpinBox>
@@ -38,10 +41,105 @@
 
 
 //----------------------------------------------------------------------------
-// qtractorMidiEventListModel -- List model.
+// qtractorMidiEventListView::ItemModel -- List model.
+
+class qtractorMidiEventListView::ItemModel : public QAbstractItemModel
+{
+public:
+
+	// Constructor.
+	ItemModel(qtractorMidiEditor *pEditor, QObject *pParent = nullptr);
+
+	// Concretizers (virtual).
+	int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	int columnCount(const QModelIndex& parent = QModelIndex()) const;
+
+	QVariant headerData(int section, Qt::Orientation orient, int role) const;
+	QVariant data(const QModelIndex& index, int role) const;
+
+	Qt::ItemFlags flags(const QModelIndex& index ) const;
+
+	QModelIndex index(int row, int column,
+		const QModelIndex& parent = QModelIndex()) const;
+
+	QModelIndex parent(const QModelIndex&) const;
+
+	void reset();
+
+	// Specifics.
+	qtractorMidiEvent *eventOfIndex(const QModelIndex& index) const;
+	QModelIndex indexOfEvent(qtractorMidiEvent *pEvent) const;
+
+	QModelIndex indexFromTick(unsigned long iTick) const;
+	unsigned long tickFromIndex(const QModelIndex& index) const;
+
+	QModelIndex indexFromFrame(unsigned long iFrame) const;
+	unsigned long frameFromIndex(const QModelIndex& index) const;
+
+	qtractorMidiEditor *editor() const;
+
+protected:
+
+	qtractorMidiEvent *eventAt(int i) const;
+
+	QString itemDisplay(const QModelIndex& index) const;
+	QString itemToolTip(const QModelIndex& index) const;
+
+	int columnAlignment(int column) const;
+
+private:
+
+	// Model variables.
+	QStringList m_headers;
+
+	qtractorMidiEditor   *m_pEditor;
+	qtractorMidiSequence *m_pSeq;
+
+	unsigned long m_iTimeOffset;
+
+	mutable qtractorMidiEvent *m_pEvent;
+	mutable int m_iEvent;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiEventListView::ItemDelegate -- Custom (tree) list item delegate.
+
+class qtractorMidiEventListView::ItemDelegate : public QItemDelegate
+{
+public:
+
+	// Constructor.
+	ItemDelegate(QObject *pParent = nullptr);
+
+	// QItemDelegate Interface...
+
+	void paint(QPainter *pPainter,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+
+	QSize sizeHint(
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+
+	QWidget *createEditor(QWidget *pParent,
+		const QStyleOptionViewItem& option,
+		const QModelIndex& index) const;
+
+	void setEditorData(QWidget *pEditor,
+		const QModelIndex& index) const;
+
+	void setModelData(QWidget *pEditor,
+		QAbstractItemModel *pModel,
+		const QModelIndex& index) const;
+};
+
+
+//----------------------------------------------------------------------------
+// qtractorMidiEventListView::ItemModel -- List model.
 
 // Constructor.
-qtractorMidiEventListModel::qtractorMidiEventListModel (
+qtractorMidiEventListView::ItemModel::ItemModel (
 	qtractorMidiEditor *pEditor, QObject *pParent )
 	: QAbstractItemModel(pParent), m_pEditor(pEditor),
 		m_pSeq(nullptr), m_iTimeOffset(0),
@@ -58,21 +156,21 @@ qtractorMidiEventListModel::qtractorMidiEventListModel (
 }
 
 
-int qtractorMidiEventListModel::rowCount (
+int qtractorMidiEventListView::ItemModel::rowCount (
 	const QModelIndex& /*parent*/ ) const
 {
 	return (m_pSeq ? m_pSeq->events().count() : 0);
 }
 
 
-int qtractorMidiEventListModel::columnCount (
+int qtractorMidiEventListView::ItemModel::columnCount (
 	const QModelIndex& /*parent*/ ) const
 {
 	return m_headers.count();
 }
 
 
-QVariant qtractorMidiEventListModel::headerData (
+QVariant qtractorMidiEventListView::ItemModel::headerData (
 	int section, Qt::Orientation orient, int role ) const
 {
 //	qDebug("headerData(%d, %d, %d)", section, int(orient), int(role));
@@ -102,7 +200,7 @@ QVariant qtractorMidiEventListModel::headerData (
 }
 
 
-QVariant qtractorMidiEventListModel::data (
+QVariant qtractorMidiEventListView::ItemModel::data (
 	const QModelIndex& index, int role ) const
 {
 //	qDebug("data(%d, %d, %d)", index.row(), index.column(), int(role));
@@ -119,7 +217,7 @@ QVariant qtractorMidiEventListModel::data (
 }
 
 
-Qt::ItemFlags qtractorMidiEventListModel::flags (
+Qt::ItemFlags qtractorMidiEventListView::ItemModel::flags (
 	const QModelIndex& index ) const
 {
 	const Qt::ItemFlags flags = QAbstractItemModel::flags(index);
@@ -127,7 +225,7 @@ Qt::ItemFlags qtractorMidiEventListModel::flags (
 }
 
 
-QModelIndex qtractorMidiEventListModel::index (
+QModelIndex qtractorMidiEventListView::ItemModel::index (
 	int row, int column, const QModelIndex& /*parent*/) const
 {
 //	qDebug("index(%d, %d)", row, column);
@@ -139,12 +237,12 @@ QModelIndex qtractorMidiEventListModel::index (
 }
 
 
-QModelIndex qtractorMidiEventListModel::parent ( const QModelIndex& ) const
+QModelIndex qtractorMidiEventListView::ItemModel::parent ( const QModelIndex& ) const
 {
 	return QModelIndex();
 }
 
-void qtractorMidiEventListModel::reset (void)
+void qtractorMidiEventListView::ItemModel::reset (void)
 {
 //	qDebug("reset()");
 
@@ -164,7 +262,7 @@ void qtractorMidiEventListModel::reset (void)
 }
 
 
-qtractorMidiEvent *qtractorMidiEventListModel::eventAt ( int i ) const
+qtractorMidiEvent *qtractorMidiEventListView::ItemModel::eventAt ( int i ) const
 {
 	if (m_pSeq == nullptr)
 		return nullptr;
@@ -200,14 +298,14 @@ qtractorMidiEvent *qtractorMidiEventListModel::eventAt ( int i ) const
 }
 
 
-qtractorMidiEvent *qtractorMidiEventListModel::eventOfIndex (
+qtractorMidiEvent *qtractorMidiEventListView::ItemModel::eventOfIndex (
 	const QModelIndex& index ) const
 {
 	return static_cast<qtractorMidiEvent *> (index.internalPointer());
 }
 
 
-QModelIndex qtractorMidiEventListModel::indexOfEvent (
+QModelIndex qtractorMidiEventListView::ItemModel::indexOfEvent (
 	qtractorMidiEvent *pEvent ) const
 {
 	if (pEvent == nullptr)
@@ -227,7 +325,7 @@ QModelIndex qtractorMidiEventListModel::indexOfEvent (
 }
 
 
-QModelIndex qtractorMidiEventListModel::indexFromTick (
+QModelIndex qtractorMidiEventListView::ItemModel::indexFromTick (
 	unsigned long iTick ) const
 {
 	if (m_pEvent == nullptr && m_pSeq) {
@@ -254,13 +352,11 @@ QModelIndex qtractorMidiEventListModel::indexFromTick (
 		++m_iEvent;
 	}
 
-	//qDebug("indexFromTick(%lu) index=%d time=%lu", iTime, m_iEvent, m_pEvent->time());
-
 	return createIndex(m_iEvent, 0, m_pEvent);
 }
 
 
-unsigned long qtractorMidiEventListModel::tickFromIndex (
+unsigned long qtractorMidiEventListView::ItemModel::tickFromIndex (
 	const QModelIndex& index ) const
 {
 	qtractorMidiEvent *pEvent = eventOfIndex(index);
@@ -268,27 +364,27 @@ unsigned long qtractorMidiEventListModel::tickFromIndex (
 }
 
 
-QModelIndex qtractorMidiEventListModel::indexFromFrame (
+QModelIndex qtractorMidiEventListView::ItemModel::indexFromFrame (
 	unsigned long iFrame ) const
 {
 	return indexFromTick((m_pEditor->timeScale())->tickFromFrame(iFrame));
 }
 
 
-unsigned long qtractorMidiEventListModel::frameFromIndex (
+unsigned long qtractorMidiEventListView::ItemModel::frameFromIndex (
 	const QModelIndex& index ) const
 {
 	return (m_pEditor->timeScale())->frameFromTick(tickFromIndex(index));
 }
 
 
-qtractorMidiEditor *qtractorMidiEventListModel::editor (void) const
+qtractorMidiEditor *qtractorMidiEventListView::ItemModel::editor (void) const
 {
 	return m_pEditor;
 }
 
 
-QString qtractorMidiEventListModel::itemDisplay (
+QString qtractorMidiEventListView::ItemModel::itemDisplay (
 	const QModelIndex& index ) const
 {
 //	qDebug("itemDisplay(%d, %d)", index.row(), index.column());
@@ -404,7 +500,7 @@ QString qtractorMidiEventListModel::itemDisplay (
 }
 
 
-QString qtractorMidiEventListModel::itemToolTip (
+QString qtractorMidiEventListView::ItemModel::itemToolTip (
 	const QModelIndex& index ) const
 {
 	qtractorMidiEvent *pEvent = eventOfIndex(index);
@@ -415,7 +511,7 @@ QString qtractorMidiEventListModel::itemToolTip (
 }
 
 
-int qtractorMidiEventListModel::columnAlignment( int column ) const
+int qtractorMidiEventListView::ItemModel::columnAlignment( int column ) const
 {
 	switch (column) {
 	case 0: // Time.
@@ -429,10 +525,10 @@ int qtractorMidiEventListModel::columnAlignment( int column ) const
 
 
 //----------------------------------------------------------------------------
-// qtractorMidiEventItemDelegate -- Custom (tree) list item delegate.
+// qtractorMidiEventListView::ItemDelegate -- Custom (tree) list item delegate.
 
 // Constructor.
-qtractorMidiEventItemDelegate::qtractorMidiEventItemDelegate (
+qtractorMidiEventListView::ItemDelegate::ItemDelegate (
 	QObject *pParent ) : QItemDelegate(pParent)
 {
 }
@@ -440,31 +536,31 @@ qtractorMidiEventItemDelegate::qtractorMidiEventItemDelegate (
 
 // QItemDelegate Interface...
 
-void qtractorMidiEventItemDelegate::paint ( QPainter *pPainter,
+void qtractorMidiEventListView::ItemDelegate::paint ( QPainter *pPainter,
 	const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
 	QItemDelegate::paint(pPainter, option, index);
 }
 
 
-QSize qtractorMidiEventItemDelegate::sizeHint (
+QSize qtractorMidiEventListView::ItemDelegate::sizeHint (
 	const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
 	return QItemDelegate::sizeHint(option, index) + QSize(4, 4);
 }
 
 
-QWidget *qtractorMidiEventItemDelegate::createEditor ( QWidget *pParent,
+QWidget *qtractorMidiEventListView::ItemDelegate::createEditor ( QWidget *pParent,
 	const QStyleOptionViewItem& /*option*/, const QModelIndex& index ) const
 {
-	const qtractorMidiEventListModel *pListModel
-		= static_cast<const qtractorMidiEventListModel *> (index.model());
+	const ItemModel *pItemModel
+		= static_cast<const ItemModel *> (index.model());
 
-	qtractorMidiEvent *pEvent = pListModel->eventOfIndex(index);
+	qtractorMidiEvent *pEvent = pItemModel->eventOfIndex(index);
 	if (pEvent == nullptr)
 		return nullptr;
 
-	qtractorMidiEditor *pMidiEditor = pListModel->editor();
+	qtractorMidiEditor *pMidiEditor = pItemModel->editor();
 	if (pMidiEditor == nullptr)
 		return nullptr;
 
@@ -531,7 +627,7 @@ QWidget *qtractorMidiEventItemDelegate::createEditor ( QWidget *pParent,
 	}
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMidiEventItemDelegate::createEditor(%p, %d, %d) = %p",
+	qDebug("qtractorMidiEventListView::ItemDelegate::createEditor(%p, %d, %d) = %p",
 		pParent, index.row(), index.column(), pEditor);
 #endif
 
@@ -539,23 +635,23 @@ QWidget *qtractorMidiEventItemDelegate::createEditor ( QWidget *pParent,
 }
 
 
-void qtractorMidiEventItemDelegate::setEditorData ( QWidget *pEditor,
+void qtractorMidiEventListView::ItemDelegate::setEditorData ( QWidget *pEditor,
 	const QModelIndex& index ) const
 {
-	const qtractorMidiEventListModel *pListModel
-		= static_cast<const qtractorMidiEventListModel *> (index.model());
+	const ItemModel *pItemModel
+		= static_cast<const ItemModel *> (index.model());
 
-	qtractorMidiEvent *pEvent = pListModel->eventOfIndex(index);
+	qtractorMidiEvent *pEvent = pItemModel->eventOfIndex(index);
 	if (pEvent == nullptr)
 		return;
 
-	qtractorMidiEditor *pMidiEditor = pListModel->editor();
+	qtractorMidiEditor *pMidiEditor = pItemModel->editor();
 	if (pMidiEditor == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMidiEventItemDelegate::setEditorData(%p, %p, %d, %d)",
-		pEditor, pListModel, index.row(), index.column());
+	qDebug("qtractorMidiEventListView::ItemDelegate::setEditorData(%p, %p, %d, %d)",
+		pEditor, pItemModel, index.row(), index.column());
 #endif
 
 	qtractorTimeScale *pTimeScale = pMidiEditor->timeScale();
@@ -612,30 +708,30 @@ void qtractorMidiEventItemDelegate::setEditorData ( QWidget *pEditor,
 }
 
 
-void qtractorMidiEventItemDelegate::setModelData ( QWidget *pEditor,
+void qtractorMidiEventListView::ItemDelegate::setModelData ( QWidget *pEditor,
 	QAbstractItemModel *pModel,	const QModelIndex& index ) const
 {
-	const qtractorMidiEventListModel *pListModel
-		= static_cast<const qtractorMidiEventListModel *> (pModel);
+	const ItemModel *pItemModel
+		= static_cast<const ItemModel *> (pModel);
 
-	qtractorMidiEvent *pEvent = pListModel->eventOfIndex(index);
+	qtractorMidiEvent *pEvent = pItemModel->eventOfIndex(index);
 	if (pEvent == nullptr)
 		return;
 
-	qtractorMidiEditor *pMidiEditor = pListModel->editor();
+	qtractorMidiEditor *pMidiEditor = pItemModel->editor();
 	if (pMidiEditor == nullptr)
 		return;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMidiEventItemDelegate::setModelData(%p, %p, %d, %d)",
-		pEditor, pListModel, index.row(), index.column());
+	qDebug("qtractorMidiEventListView::ItemDelegate::setModelData(%p, %p, %d, %d)",
+		pEditor, pItemModel, index.row(), index.column());
 #endif
 
 	qtractorTimeScale *pTimeScale = pMidiEditor->timeScale();
 
 	qtractorMidiEditCommand *pEditCommand
 		= new qtractorMidiEditCommand(pMidiEditor->midiClip(),
-			tr("edit %1").arg(pListModel->headerData(
+			tr("edit %1").arg(pItemModel->headerData(
 				index.column(), Qt::Horizontal, Qt::DisplayRole)
 					.toString().toLower()));
 
@@ -707,7 +803,7 @@ void qtractorMidiEventItemDelegate::setModelData ( QWidget *pEditor,
 
 // Constructor.
 qtractorMidiEventListView::qtractorMidiEventListView ( QWidget *pParent )
-	: QTreeView(pParent), m_pListModel(nullptr), m_pItemDelegate(nullptr)
+	: QTreeView(pParent), m_pItemModel(nullptr), m_pItemDelegate(nullptr)
 {
 }
 
@@ -718,8 +814,8 @@ qtractorMidiEventListView::~qtractorMidiEventListView (void)
 	if (m_pItemDelegate)
 		delete m_pItemDelegate;
 
-	if (m_pListModel)
-		delete m_pListModel;
+	if (m_pItemModel)
+		delete m_pItemModel;
 }
 
 
@@ -729,13 +825,13 @@ void qtractorMidiEventListView::setEditor ( qtractorMidiEditor *pEditor )
 	if (m_pItemDelegate)
 		delete m_pItemDelegate;
 
-	if (m_pListModel)
-		delete m_pListModel;
+	if (m_pItemModel)
+		delete m_pItemModel;
 
-	m_pListModel = new qtractorMidiEventListModel(pEditor);
-	m_pItemDelegate = new qtractorMidiEventItemDelegate();
+	m_pItemModel = new ItemModel(pEditor);
+	m_pItemDelegate = new ItemDelegate();
 
-	QTreeView::setModel(m_pListModel);
+	QTreeView::setModel(m_pItemModel);
 	QTreeView::setItemDelegate(m_pItemDelegate);
 
 	QTreeView::setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -761,21 +857,21 @@ void qtractorMidiEventListView::setEditor ( qtractorMidiEditor *pEditor )
 
 qtractorMidiEditor *qtractorMidiEventListView::editor (void) const
 {
-	return (m_pListModel ? m_pListModel->editor() : nullptr);
+	return (m_pItemModel ? m_pItemModel->editor() : nullptr);
 }
 
 
 // Refreshner.
 void qtractorMidiEventListView::refresh (void)
 {
-	if (m_pListModel == nullptr)
+	if (m_pItemModel == nullptr)
 		return;
 
 	QItemSelectionModel *pSelectionModel = QTreeView::selectionModel();
 
 	const QModelIndex& index = pSelectionModel->currentIndex();
 
-	m_pListModel->reset();
+	m_pItemModel->reset();
 
 	pSelectionModel->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
 }
@@ -785,52 +881,52 @@ void qtractorMidiEventListView::refresh (void)
 qtractorMidiEvent *qtractorMidiEventListView::eventOfIndex (
 	const QModelIndex& index) const
 {
-	return (m_pListModel ? m_pListModel->eventOfIndex(index) : nullptr);
+	return (m_pItemModel ? m_pItemModel->eventOfIndex(index) : nullptr);
 }
 
 
 QModelIndex qtractorMidiEventListView::indexOfEvent (
 	qtractorMidiEvent *pEvent ) const
 {
-	return (m_pListModel ? m_pListModel->indexOfEvent(pEvent) : QModelIndex());
+	return (m_pItemModel ? m_pItemModel->indexOfEvent(pEvent) : QModelIndex());
 }
 
 
 QModelIndex qtractorMidiEventListView::indexFromTick (
 	unsigned long iTick ) const
 {
-	return (m_pListModel ? m_pListModel->indexFromTick(iTick) : QModelIndex());
+	return (m_pItemModel ? m_pItemModel->indexFromTick(iTick) : QModelIndex());
 }
 
 
 unsigned long qtractorMidiEventListView::tickFromIndex (
 	const QModelIndex& index ) const
 {
-	return (m_pListModel ? m_pListModel->tickFromIndex(index) : 0);
+	return (m_pItemModel ? m_pItemModel->tickFromIndex(index) : 0);
 }
 
 
 QModelIndex qtractorMidiEventListView::indexFromFrame (
 	unsigned long iFrame ) const
 {
-	return (m_pListModel ? m_pListModel->indexFromFrame(iFrame) : QModelIndex());
+	return (m_pItemModel ? m_pItemModel->indexFromFrame(iFrame) : QModelIndex());
 }
 
 
 unsigned long qtractorMidiEventListView::frameFromIndex (
 	const QModelIndex& index ) const
 {
-	return (m_pListModel ? m_pListModel->frameFromIndex(index) : 0);
+	return (m_pItemModel ? m_pItemModel->frameFromIndex(index) : 0);
 }
 
 
 void qtractorMidiEventListView::selectEvent (
 	qtractorMidiEvent *pEvent, bool bSelect )
 {
-	if (m_pListModel == nullptr)
+	if (m_pItemModel == nullptr)
 		return;
 
-	const QModelIndex& index = m_pListModel->indexOfEvent(pEvent);
+	const QModelIndex& index = m_pItemModel->indexOfEvent(pEvent);
 	if (index.isValid()) {
 		QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::Rows;
 		if (bSelect)

@@ -10537,123 +10537,123 @@ Do you want to save the changes?</source>
     </message>
 </context>
 <context>
-    <name>qtractorMidiEventItemDelegate</name>
-    <message>
-        <location filename="../qtractorMidiEventList.cpp" line="638"/>
-        <source>edit %1</source>
-        <translation>editar %1</translation>
-    </message>
-</context>
-<context>
     <name>qtractorMidiEventList</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="887"/>
+        <location filename="../qtractorMidiEventList.cpp" line="983"/>
         <source>Events</source>
         <translation>Eventos</translation>
     </message>
 </context>
 <context>
-    <name>qtractorMidiEventListModel</name>
+    <name>qtractorMidiEventListView::ItemDelegate</name>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="51"/>
-        <location filename="../qtractorMidiEventList.cpp" line="88"/>
+        <location filename="../qtractorMidiEventList.cpp" line="734"/>
+        <source>edit %1</source>
+        <translation type="unfinished">editar %1</translation>
+    </message>
+</context>
+<context>
+    <name>qtractorMidiEventListView::ItemModel</name>
+    <message>
+        <location filename="../qtractorMidiEventList.cpp" line="149"/>
+        <location filename="../qtractorMidiEventList.cpp" line="186"/>
         <source>Time</source>
-        <translation>Tiempo</translation>
+        <translation type="unfinished">Tiempo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="52"/>
+        <location filename="../qtractorMidiEventList.cpp" line="150"/>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="unfinished">Tipo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="53"/>
+        <location filename="../qtractorMidiEventList.cpp" line="151"/>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="unfinished">Nombre</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="54"/>
+        <location filename="../qtractorMidiEventList.cpp" line="152"/>
         <source>Value</source>
-        <translation>Valor</translation>
+        <translation type="unfinished">Valor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="55"/>
+        <location filename="../qtractorMidiEventList.cpp" line="153"/>
         <source>Duration/Data</source>
-        <translation>Duración/Datos</translation>
+        <translation type="unfinished">Duración/Datos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="86"/>
+        <location filename="../qtractorMidiEventList.cpp" line="184"/>
         <source>Frame</source>
-        <translation>Cuadros</translation>
+        <translation type="unfinished">Cuadros</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="90"/>
+        <location filename="../qtractorMidiEventList.cpp" line="188"/>
         <source>BBT</source>
-        <translation>BBT</translation>
+        <translation type="unfinished">BBT</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="306"/>
+        <location filename="../qtractorMidiEventList.cpp" line="402"/>
         <source>Note On (%1)</source>
-        <translation>Encendido de nota (%1)</translation>
+        <translation type="unfinished">Encendido de nota (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="308"/>
+        <location filename="../qtractorMidiEventList.cpp" line="404"/>
         <source>Note Off (%1)</source>
-        <translation>Apagado de nota (%1)</translation>
+        <translation type="unfinished">Apagado de nota (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="310"/>
+        <location filename="../qtractorMidiEventList.cpp" line="406"/>
         <source>Key Press (%1)</source>
-        <translation>Pulsación de tecla (%1)</translation>
+        <translation type="unfinished">Pulsación de tecla (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="312"/>
+        <location filename="../qtractorMidiEventList.cpp" line="408"/>
         <source>Controller (%1)</source>
-        <translation>Controlador (%1)</translation>
+        <translation type="unfinished">Controlador (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="314"/>
+        <location filename="../qtractorMidiEventList.cpp" line="410"/>
         <source>Control 14 (%1)</source>
-        <translation>Control 14 (%1)</translation>
+        <translation type="unfinished">Control 14 (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="316"/>
+        <location filename="../qtractorMidiEventList.cpp" line="412"/>
         <source>RPN (%1)</source>
-        <translation>RPN (%1)</translation>
+        <translation type="unfinished">RPN (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="318"/>
+        <location filename="../qtractorMidiEventList.cpp" line="414"/>
         <source>NRPN (%1)</source>
-        <translation>NRPN (%1)</translation>
+        <translation type="unfinished">NRPN (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="320"/>
+        <location filename="../qtractorMidiEventList.cpp" line="416"/>
         <source>Pgm Change</source>
-        <translation>Cambio de programa</translation>
+        <translation type="unfinished">Cambio de programa</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="322"/>
+        <location filename="../qtractorMidiEventList.cpp" line="418"/>
         <source>Chan Press</source>
-        <translation>Chan Press</translation>
+        <translation type="unfinished">Chan Press</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="324"/>
+        <location filename="../qtractorMidiEventList.cpp" line="420"/>
         <source>Pitch Bend</source>
-        <translation>Portamento</translation>
+        <translation type="unfinished">Portamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="326"/>
+        <location filename="../qtractorMidiEventList.cpp" line="422"/>
         <source>SysEx</source>
-        <translation>SysEx</translation>
+        <translation type="unfinished">SysEx</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="328"/>
+        <location filename="../qtractorMidiEventList.cpp" line="424"/>
         <source>Meta (%1)</source>
-        <translation>Meta (%1)</translation>
+        <translation type="unfinished">Meta (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEventList.cpp" line="332"/>
+        <location filename="../qtractorMidiEventList.cpp" line="428"/>
         <source>Unknown (%1)</source>
-        <translation>Desconocido (%1)</translation>
+        <translation type="unfinished">Desconocido (%1)</translation>
     </message>
 </context>
 <context>
