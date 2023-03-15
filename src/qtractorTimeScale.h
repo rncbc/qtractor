@@ -612,17 +612,17 @@ public:
 
 	static const unsigned short TICKS_PER_BEAT_HRQ = (TICKS_PER_BEAT_MAX << 2);
 
-protected:
-
-	// Tempo-map independent coefficients.
-	float pixelRate() const { return m_fPixelRate; }
-	float frameRate() const { return m_fFrameRate; }
-
 	// MIDI time adjust to/from official high resolution queue (64bit).
 	unsigned long timep ( unsigned long time ) const
 		{ return uint64_t(time) * TICKS_PER_BEAT_HRQ / m_iTicksPerBeat; }
 	unsigned long timeq ( unsigned long time ) const
 		{ return uint64_t(time) * m_iTicksPerBeat / TICKS_PER_BEAT_HRQ; }
+
+protected:
+
+	// Tempo-map independent coefficients.
+	float pixelRate() const { return m_fPixelRate; }
+	float frameRate() const { return m_fFrameRate; }
 
 private:
 

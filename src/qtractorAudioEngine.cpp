@@ -1423,24 +1423,26 @@ void qtractorAudioEngine::process_export ( unsigned int nframes )
 void qtractorAudioEngine::updateTimeInfo ( unsigned long iFrame )
 {
 	qtractorSession *pSession = session();
-	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
+	qtractorTimeScale *pTimeScale = pSession->timeScale();
+	qtractorTimeScale::Cursor& cursor = pTimeScale->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iFrame);
+	const unsigned int iTicksPerBeat = pTimeScale->ticksPerBeat();
 
 	m_timeInfo.frame = iFrame;
 	m_timeInfo.playing = (isPlaying() || isFreewheel());
 	m_timeInfo.sampleRate = sampleRate();
 	m_timeInfo.tempo = pNode->tempo;
 	m_timeInfo.beatsPerBar  = pNode->beatsPerBar;
-	m_timeInfo.ticksPerBeat = pNode->ticksPerBeat;
+	m_timeInfo.ticksPerBeat = iTicksPerBeat;
 	m_timeInfo.beatType = (1 << pNode->beatDivisor);
 	m_timeInfo.beats = float(pNode->beat);
-	m_timeInfo.tick = pNode->tickFromFrame(iFrame) - pNode->tick;
-	const float beats = float(m_timeInfo.tick) / float(m_timeInfo.ticksPerBeat);
+	m_timeInfo.tick = pTimeScale->timeq(pNode->tickFromFrame(iFrame) - pNode->tick);
+	const float beats = float(m_timeInfo.tick) / float(iTicksPerBeat);
 	m_timeInfo.beats += beats;
 	m_timeInfo.bar = pNode->bar + (unsigned short) beats / m_timeInfo.beatsPerBar;
 	m_timeInfo.beat = (unsigned int) m_timeInfo.beats;
-	if (m_timeInfo.tick >= (unsigned long) m_timeInfo.ticksPerBeat)
-		m_timeInfo.tick -= (unsigned long) (m_timeInfo.beat * m_timeInfo.ticksPerBeat);
+	if (m_timeInfo.tick >= (unsigned long) iTicksPerBeat)
+		m_timeInfo.tick -= (unsigned long) (m_timeInfo.beat * iTicksPerBeat);
 	if (m_timeInfo.beat >= (unsigned int) m_timeInfo.beatsPerBar)
 		m_timeInfo.beat -= (unsigned int) (m_timeInfo.bar * m_timeInfo.beatsPerBar);
 	m_timeInfo.barBeats = ::truncf(m_timeInfo.beats) - float(m_timeInfo.beat);

@@ -35,23 +35,23 @@ Audio:	%1 channels, %2 Hz</source>
 	(зсування тону півтонів %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2941"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3233"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2943"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3235"/>
         <location filename="../qtractorMidiEngine.cpp" line="4214"/>
         <location filename="../qtractorMidiEngine.cpp" line="4779"/>
         <source>%1 In</source>
         <translation>Вхід %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2943"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2952"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2945"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2954"/>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Gain</source>
         <translation>Підсилення %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2945"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2954"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2947"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2956"/>
         <location filename="../qtractorMidiEngine.cpp" line="4218"/>
         <location filename="../qtractorMidiEngine.cpp" line="4227"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
@@ -59,8 +59,8 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Панорамування %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2950"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3233"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2952"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3235"/>
         <location filename="../qtractorMidiEngine.cpp" line="4223"/>
         <location filename="../qtractorMidiEngine.cpp" line="4779"/>
         <source>%1 Out</source>
@@ -10642,7 +10642,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="428"/>
         <source>Unknown (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Невідомо (%1)</translation>
     </message>
 </context>
 <context>

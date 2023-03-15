@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Downgraded JACK timebase BBT information to nominal PPQN resolution
+  (aka. ticks-per-beat). (EXPERIMENTAL)
+   
 - Make sure all previously saved connections to identical ALSA MIDI
   hardware devices are now discriminated and properly restored, even
   though the target deviceds have the very same name. (EXPERIMENTAL)
