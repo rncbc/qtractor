@@ -37,16 +37,16 @@ Zvuk:	%1 kanály, %2 Hz</translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2943"/>
         <location filename="../qtractorAudioEngine.cpp" line="3235"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4214"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4779"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4217"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4782"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2952"/>
         <location filename="../qtractorAudioEngine.cpp" line="3235"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4223"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4779"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4226"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4782"/>
         <source>%1 Out</source>
         <translation>%1 Výstup</translation>
     </message>
@@ -708,8 +708,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1 Sólo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="4216"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4225"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4219"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4228"/>
         <location filename="../qtractorTrack.cpp" line="693"/>
         <source>%1 Volume</source>
         <translation>%1 Hlasitost</translation>
@@ -724,8 +724,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2947"/>
         <location filename="../qtractorAudioEngine.cpp" line="2956"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4218"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4227"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4221"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4230"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
         <source>%1 Pan</source>
         <translation>%1 Vyvážení (Pan)</translation>

@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Hopefully fixed MIDI recording delay and recorded clip lengths when
+  metronome Count-in is in effect for recording. (GH issue #383).
+
+
 0.9.32  2023-03-25  An Early-Spring'23 Release.
 
 - Downgraded JACK timebase BBT information to nominal PPQN resolution

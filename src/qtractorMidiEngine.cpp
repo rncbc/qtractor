@@ -156,6 +156,9 @@ public:
 	// MIDI output flush/drain (locked).
 	void flushSync();
 
+	// MIDI queue reset (locked).
+	void resetSync();
+
 	// Wake from executive wait condition.
 	void sync();
 
@@ -520,6 +523,17 @@ void qtractorMidiOutputThread::flushSync (void)
 	qDebug("qtractorMidiOutputThread[%p]::flushSync()", this);
 #endif
 	snd_seq_drain_output(m_pMidiEngine->alsaSeq());
+}
+
+
+// MIDI queue reset time (locked).
+void qtractorMidiOutputThread::resetSync (void)
+{
+	QMutexLocker locker(&m_mutex);
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorMidiOutputThread[%p]::resetSync()", this);
+#endif
+	m_pMidiEngine->resetSync();
 }
 
 
@@ -1097,7 +1111,6 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 	m_iFrameStart   = 0;
 
 	m_iTimeStartEx  = 0;
-	m_iFrameStartEx = 0;
 
 	m_iAudioFrameStart = 0;
 
@@ -1279,16 +1292,11 @@ void qtractorMidiEngine::process (void)
 	// Metronome/count-in stuff...
 	if (m_iCountIn > 0) {
 		if (m_iCountInFrameStart < m_iCountInFrameEnd) {
-			unsigned int iReadAhead = m_iReadAhead;
-			unsigned long iCountInFrameEnd = m_iCountInFrameStart + iReadAhead;
-			if (iCountInFrameEnd > m_iCountInFrameEnd) {
-				iReadAhead = iCountInFrameEnd - m_iCountInFrameEnd;
+			unsigned long iCountInFrameEnd = m_iCountInFrameStart + m_iReadAhead;
+			if (iCountInFrameEnd > m_iCountInFrameEnd)
 				iCountInFrameEnd = m_iCountInFrameEnd;
-			}
 			processCountIn(m_iCountInFrameStart, iCountInFrameEnd);
 			m_iCountInFrameStart = iCountInFrameEnd;
-			pMidiCursor->process(iReadAhead);
-			snd_seq_drain_output(m_pAlsaSeq);
 		}
 		// Bail out...
 		return;
@@ -1351,21 +1359,17 @@ void qtractorMidiEngine::process (void)
 // Reset queue time.
 void qtractorMidiEngine::resetTime (void)
 {
-	qtractorSession *pSession = session();
-	if (pSession == nullptr)
-		return;
+	if (m_pOutputThread)
+		m_pOutputThread->resetSync();
+}
 
-	// Reset MIDI time to current queue time...
-	snd_seq_queue_status_t *pQueueStatus;
-	snd_seq_queue_status_alloca(&pQueueStatus);
-	if (snd_seq_get_queue_status(m_pAlsaSeq,
-			m_iAlsaQueue, pQueueStatus) >= 0) {
-		const long iMidiTime
-			= snd_seq_queue_status_get_tick_time(pQueueStatus);
-		const long iAudioFrame
-			= pSession->audioEngine()->jackFrameTime() - m_iAudioFrameStart;
-		m_iTimeStart  -= iMidiTime;
-		m_iFrameStart -= iAudioFrame;
+void qtractorMidiEngine::resetSync (void)
+{
+	qtractorSession *pSession = session();
+	if (pSession && m_pAlsaSeq) {
+		snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
+		m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
+		snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
 	}
 }
 
@@ -2384,8 +2388,7 @@ bool qtractorMidiEngine::activate (void)
 	m_iTimeStart  = 0;
 	m_iFrameStart = 0;
 
-	m_iTimeStartEx  = m_iTimeStart;
-	m_iFrameStartEx = m_iFrameStart;
+	m_iTimeStartEx = m_iTimeStart;
 
 	m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
 
@@ -2434,8 +2437,7 @@ bool qtractorMidiEngine::start (void)
 	m_iFrameStart = long(pMidiCursor->frame());
 	m_iTimeStart  = long(pSession->tickFromFrame(m_iFrameStart));
 
-	m_iTimeStartEx  = m_iTimeStart;
-	m_iFrameStartEx = m_iFrameStart;
+	m_iTimeStartEx = m_iTimeStart;
 
 	m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
 
@@ -2583,8 +2585,7 @@ void qtractorMidiEngine::clean (void)
 	m_iTimeStart  = 0;
 	m_iFrameStart = 0;
 
-	m_iTimeStartEx  = 0;
-	m_iFrameStartEx = 0;
+	m_iTimeStartEx = 0;
 
 	m_iAudioFrameStart = 0;
 }
@@ -3547,6 +3548,8 @@ void qtractorMidiEngine::processCountIn (
 		iTime += pNode->ticksPerBeat;
 		pNode = m_pMetroCursor->seekBeat(++iBeat);
 	}
+
+	snd_seq_drain_output(m_pAlsaSeq);
 }
 
 

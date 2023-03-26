@@ -120,6 +120,7 @@ public:
 
 	// Reset queue time.
 	void resetTime();
+	void resetSync();
 
 	// Reset queue tempo.
 	void resetTempo();
@@ -379,7 +380,6 @@ private:
 
 	// The absolute-time/frame when playback started.
 	unsigned long m_iTimeStartEx;
-	unsigned long m_iFrameStartEx;
 
 	unsigned long m_iAudioFrameStart;
 
