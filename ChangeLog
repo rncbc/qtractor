@@ -4,10 +4,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.33  2023-03-27  An Early-Spring'23 Hotfix Release.
 
-- Hopefully fixed MIDI recording delay and recorded clip lengths when
-  metronome Count-in is in effect for recording. (GH issue #383).
+- Fixed MIDI recording delay and recorded clip lengths when metronome
+  Count-in is in effect for recording.
 
 
 0.9.32  2023-03-25  An Early-Spring'23 Release.
