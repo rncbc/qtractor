@@ -254,7 +254,7 @@ protected:
 
 	// Enqueue process event.
 	void enqueue(unsigned short iMidiChannel,
-		qtractorMidiEvent *pEvent, unsigned long iTime, float fGain);
+		qtractorMidiEvent *pEvent, unsigned long iTime);
 
 private:
 
@@ -780,7 +780,7 @@ bool qtractorMidiPlayer::open ( const QString& sFilename, int iTrackChannel )
 	snd_seq_queue_tempo_alloca(&pQueueTempo);
 	snd_seq_get_queue_tempo(pAlsaSeq, m_iPlayerQueue, pQueueTempo);
 	snd_seq_queue_tempo_set_ppq(pQueueTempo,
-		(int) m_pTimeScale->ticksPerBeat());
+		qtractorTimeScale::TICKS_PER_BEAT_HRQ);
 	snd_seq_queue_tempo_set_tempo(pQueueTempo,
 		(unsigned int) (60000000.0f / m_fTempo));
 	snd_seq_set_queue_tempo(pAlsaSeq, m_iPlayerQueue, pQueueTempo);
@@ -907,9 +907,9 @@ bool qtractorMidiPlayer::process (
 	}
 
 	const unsigned long iTimeStart
-		= m_pTimeScale->tickFromFrame(iFrameStart);
+		= m_pTimeScale->timeq(m_pTimeScale->tickFromFrame(iFrameStart));
 	const unsigned long iTimeEnd
-		= m_pTimeScale->tickFromFrame(iFrameEnd);
+		= m_pTimeScale->timeq(m_pTimeScale->tickFromFrame(iFrameEnd));
 
 	unsigned int iProcess = 0;
 	for (unsigned short iSeq = 0; iSeq < m_iSeqs; ++iSeq) {
@@ -917,11 +917,11 @@ bool qtractorMidiPlayer::process (
 		qtractorMidiCursor *pSeqCursor = m_ppSeqCursors[iSeq];
 		qtractorMidiEvent *pEvent = pSeqCursor->seek(pSeq, iTimeStart);
 		while (pEvent) {
-			unsigned long iTime = pEvent->time(); // + iTimeOffset?
+			const unsigned long iTime = pEvent->time();
 			if (iTime >= iTimeEnd)
 				break;
 			if (iTime >= iTimeStart)
-				enqueue(pSeq->channel(), pEvent, iTime, 1.0f);
+				enqueue(pSeq->channel(), pEvent, m_pTimeScale->timep(iTime));
 			pEvent = pEvent->next();
 		}
 		if (iTimeEnd < pSeq->duration()) ++iProcess;
@@ -935,7 +935,7 @@ bool qtractorMidiPlayer::process (
 
 // Enqueue process event.
 void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
-	qtractorMidiEvent *pEvent, unsigned long iTime, float fGain )
+	qtractorMidiEvent *pEvent, unsigned long iTime )
 {
 	snd_seq_event_t ev;
 	snd_seq_ev_clear(&ev);
@@ -950,8 +950,8 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 		ev.type = SND_SEQ_EVENT_NOTE;
 		ev.data.note.channel  = iMidiChannel;
 		ev.data.note.note     = pEvent->note();
-		ev.data.note.velocity = int(fGain * float(pEvent->value())) & 0x7f;
-		ev.data.note.duration = pEvent->duration();
+		ev.data.note.velocity = pEvent->value();
+		ev.data.note.duration = m_pTimeScale->timep(pEvent->duration());
 		break;
 	case qtractorMidiEvent::KEYPRESS:
 		ev.type = SND_SEQ_EVENT_KEYPRESS;

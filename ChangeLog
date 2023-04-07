@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed the internal MIDI file player queue to the highest resolution
+  possible (PPQN aka ticks-per-beat). (EXPERIMENTAL)
+
 - Prepping into the next development cycle (with Qt >= 6.5).
 
 
