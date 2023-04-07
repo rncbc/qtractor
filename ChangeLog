@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Send all pending MIDI Note-Off events when playback stops/shuts-off.
+  (EXPERIMENTAL)
+
 - Fixed the internal MIDI file player queue to the highest resolution
   possible (PPQN aka ticks-per-beat). (EXPERIMENTAL)
 

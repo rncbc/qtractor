@@ -104,6 +104,9 @@ public:
 	int alsaClient() const;
 	int alsaQueue() const;
 
+	// ALSA queue time accessor.
+	unsigned long queueTime() const;
+
 	// ALSA subscription port notifier.
 	QSocketNotifier *alsaNotifier() const;
 	void alsaNotifyAck();
@@ -471,7 +474,7 @@ public:
 	void close();
 
 	// Shut-off everything out there.
-	void shutOff(bool bClose = false) const;
+	void shutOff(bool bClose = false);
 
 	// SysEx setup list accessors.
 	qtractorMidiSysexList *sysexList() const;
@@ -559,6 +562,10 @@ public:
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
+	// Pending note-off processing methods.
+	void enqueueNoteOff(snd_seq_event_t *pEv);
+	void dequeueNoteOffs(unsigned long iQueueTime);
+
 protected:
 
 	// Direct MIDI controller common helper.
@@ -608,6 +615,23 @@ private:
 
 	// Channel patch mapper.
 	QHash<unsigned short, Patch> m_patches;
+
+	// Pending note-off processing data structure.
+	//
+	struct NoteOff
+	{
+		NoteOff(unsigned long on, unsigned long off)
+			: time_on(on), time_off(off) {}
+		NoteOff(const NoteOff& other)
+			: time_on(other.time_on), time_off(other.time_off) {}
+
+		unsigned long time_on;
+		unsigned long time_off;
+	};
+
+	typedef QHash<unsigned short, NoteOff> NoteOffs;
+
+	NoteOffs m_noteOffs;
 };
 
 
