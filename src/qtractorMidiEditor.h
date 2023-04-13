@@ -187,6 +187,7 @@ public:
 	// Note autition while editing.
 	void setSendNotes(bool bSendNotes);
 	bool isSendNotes() const;
+	bool isSendNotesEx(bool bForce) const;
 
 	// Note names display.
 	void setNoteNames(bool bNoteNames);

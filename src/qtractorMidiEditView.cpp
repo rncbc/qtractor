@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -231,10 +231,6 @@ void qtractorMidiEditView::dragNoteOn ( int iNote, int iVelocity )
 
 	// Were we pending on some sounding note?
 	dragNoteOff();
-
-	// Are we allowed to preview this?
-	if (!m_pEditor->isSendNotes())
-		iVelocity = -1;
 
 	// Now for the sounding new one...
 	if (iNote >= 0) {

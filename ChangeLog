@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Do not send/Preview notes on the MIDI clip editor (aka. piano-roll)
+  when playback is currently rolling. (EXPERIMENTAL)
+
 - Send all pending MIDI Note-Off events when playback stops/shuts-off.
   (EXPERIMENTAL)
 

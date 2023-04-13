@@ -1,7 +1,7 @@
 // qtractorMidiEditList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -276,7 +276,7 @@ void qtractorMidiEditList::contentsYMovingSlot ( int /*cx*/, int cy )
 // Piano keyboard note-on position handler.
 void qtractorMidiEditList::dragNoteOn ( const QPoint& pos, int iVelocity )
 {
-	dragNoteOn(noteAt(pos), iVelocity);
+	dragNoteOn(noteAt(pos), iVelocity, true);
 }
 
 
@@ -306,7 +306,7 @@ int qtractorMidiEditList::noteAt ( const QPoint& pos ) const
 
 
 // Piano keyboard note-on handler.
-void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
+void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity, bool bForce )
 {
 	// If it ain't changed we won't change it ;)
 	if (iNote == m_iNoteOn && m_iNoteVel >= iVelocity)
@@ -316,7 +316,7 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity )
 	dragNoteOff();
 
 	// Are we allowed to preview this?
-	if (!m_pEditor->isSendNotes())
+	if (!m_pEditor->isSendNotesEx(bForce))
 		iVelocity = -1;
 
 	// Now for the sounding new one...

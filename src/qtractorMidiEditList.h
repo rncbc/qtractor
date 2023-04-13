@@ -1,7 +1,7 @@
 // qtractorMidiEditList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,7 +66,7 @@ public:
 	void updateContents();
 
 	// Piano keyboard note-on/off handlers.
-	void dragNoteOn(int iNote, int iVelocity = 1);
+	void dragNoteOn(int iNote, int iVelocity = 1, bool bForce = false);
 	void dragNoteOff();
 
 protected:

@@ -1432,6 +1432,26 @@ bool qtractorMidiEditor::isSendNotes (void) const
 }
 
 
+bool qtractorMidiEditor::isSendNotesEx ( bool bForce ) const
+{
+	if (m_pMidiClip == nullptr)
+		return false;
+
+	qtractorTrack *pTrack = m_pMidiClip->track();
+	if (pTrack == nullptr)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return false;
+
+	if (!bForce && pSession->isPlaying())
+		return false;
+
+	return isSendNotes();
+}
+
+
 // Note names display (inside rectangles).
 void qtractorMidiEditor::setNoteNames ( bool bNoteNames )
 {
