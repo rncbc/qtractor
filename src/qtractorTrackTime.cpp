@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -451,6 +451,11 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 			if (dragHeadStart(m_posDrag)) {
 				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			//	m_dragState = m_dragCursor;
+			} else if (!bModifier) {
+				// Edit-head positioning...
+				pTrackView->setEditHead(iFrame);
+				// Logical contents changed, just for visual feedback...
+				m_pTracks->selectionChangeNotify();
 			}
 			break;
 		case Qt::MiddleButton:

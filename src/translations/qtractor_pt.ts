@@ -7148,17 +7148,17 @@ Você deseja subtituir o mapeamento?</translation>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="906"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="907"/>
         <source>Edit-head</source>
         <translation>Editar começo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="909"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="910"/>
         <source>Edit-tail</source>
         <translation>Editar final</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="951"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="952"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -7167,27 +7167,27 @@ Final:	%2
 Tamanho:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="912"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="913"/>
         <source>Loop-start</source>
         <translation>Começo do Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="921"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="922"/>
         <source>Punch-out</source>
         <translation>Final da Gravação Localizada</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="915"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="916"/>
         <source>Loop-end</source>
         <translation>Final do Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="903"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="904"/>
         <source>Play-head</source>
         <translation>Começo da reprodução</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="918"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="919"/>
         <source>Punch-in</source>
         <translation>Começo da Gravação Localizada</translation>
     </message>
@@ -15005,17 +15005,17 @@ Você quer mesmo manter as alterações?</translation>
 <context>
     <name>qtractorTrackTime</name>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="887"/>
+        <location filename="../qtractorTrackTime.cpp" line="892"/>
         <source>Edit-head</source>
         <translation>Editar começo</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="890"/>
+        <location filename="../qtractorTrackTime.cpp" line="895"/>
         <source>Edit-tail</source>
         <translation>Editar final</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="937"/>
+        <location filename="../qtractorTrackTime.cpp" line="942"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -15024,27 +15024,27 @@ Final:	%2
 Tamanho:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="893"/>
+        <location filename="../qtractorTrackTime.cpp" line="898"/>
         <source>Loop-start</source>
         <translation>Começo do Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="902"/>
+        <location filename="../qtractorTrackTime.cpp" line="907"/>
         <source>Punch-out</source>
         <translation>Final da Gravação Localizada</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="896"/>
+        <location filename="../qtractorTrackTime.cpp" line="901"/>
         <source>Loop-end</source>
         <translation>Final do Loop</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="884"/>
+        <location filename="../qtractorTrackTime.cpp" line="889"/>
         <source>Play-head</source>
         <translation>Começo da reprodução</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="899"/>
+        <location filename="../qtractorTrackTime.cpp" line="904"/>
         <source>Punch-in</source>
         <translation>Começo da Gravação Localizada</translation>
     </message>
