@@ -973,14 +973,29 @@ void qtractorOptionsForm::accept (void)
 		qtractorPluginFactory *pPluginFactory
 			= qtractorPluginFactory::getInstance();
 		if (pPluginFactory) {
-			if (m_iDirtyLadspaPaths > 0 ||
-				m_iDirtyDssiPaths   > 0 ||
-				m_iDirtyVst2Paths   > 0 ||
-				m_iDirtyVst3Paths   > 0 ||
-				m_iDirtyClapPaths   > 0 ||
-				m_iDirtyLv2Paths    > 0) {
-				pPluginFactory->updatePluginPaths();
-				pPluginFactory->clearAll();
+			if (m_iDirtyLadspaPaths > 0) {
+				pPluginFactory->updatePluginPaths(qtractorPluginType::Ladspa);
+				pPluginFactory->clearAll(qtractorPluginType::Ladspa);
+			}
+			if (m_iDirtyDssiPaths > 0){
+				pPluginFactory->updatePluginPaths(qtractorPluginType::Dssi);
+				pPluginFactory->clearAll(qtractorPluginType::Dssi);
+			}
+			if (m_iDirtyVst2Paths > 0){
+				pPluginFactory->updatePluginPaths(qtractorPluginType::Vst2);
+				pPluginFactory->clearAll(qtractorPluginType::Vst2);
+			}
+			if (m_iDirtyVst3Paths > 0){
+				pPluginFactory->updatePluginPaths(qtractorPluginType::Vst3);
+				pPluginFactory->clearAll(qtractorPluginType::Vst3);
+			}
+			if (m_iDirtyClapPaths > 0){
+				pPluginFactory->updatePluginPaths(qtractorPluginType::Clap);
+				pPluginFactory->clearAll(qtractorPluginType::Clap);
+			}
+			if (m_iDirtyLv2Paths > 0){
+				pPluginFactory->updatePluginPaths(qtractorPluginType::Lv2);
+				pPluginFactory->clearAll(qtractorPluginType::Lv2);
 			}
 			if (m_iDirtyBlacklist > 0) {
 				QStringList blacklist;

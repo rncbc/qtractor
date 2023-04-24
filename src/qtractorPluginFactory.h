@@ -65,11 +65,11 @@ public:
 
 	// Type list reset methods.
 	void clear();
-	void clearAll();
+	void clearAll(qtractorPluginType::Hint typeHint);
 
 	// Global plugin-paths executive methods.
 	QStringList pluginPaths(qtractorPluginType::Hint typeHint);
-	void updatePluginPaths();
+	void updatePluginPaths(qtractorPluginType::Hint typeHint);
 
 	// Plugin factory method.
 	static qtractorPlugin *createPlugin(
@@ -139,8 +139,10 @@ private:
 
 	Scanners m_scanners;
 
+	typedef QHash<qtractorPluginType::Hint, QString> CacheFilePaths;
+
 	// List of active cache scan results.
-	QStringList m_cacheFilePaths;
+	CacheFilePaths m_cacheFilePaths;
 
 	// Pseudo-singleton instance.
 	static qtractorPluginFactory *g_pPluginFactory;
@@ -199,6 +201,9 @@ private:
 
 	// Cache hash list.
 	QHash<QString, QStringList> m_list;
+
+	// Cache reset flag.
+	bool m_bReset;
 };
 
 

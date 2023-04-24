@@ -179,156 +179,173 @@ static QStringList default_paths ( const QString& suffix )
 }
 
 
-void qtractorPluginFactory::updatePluginPaths (void)
+void qtractorPluginFactory::updatePluginPaths (
+	qtractorPluginType::Hint typeHint )
 {
-	m_paths.clear();
-
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 
 #ifdef CONFIG_LADSPA
-	// LADSPA default paths...
-	QStringList ladspa_paths;
-	if (pOptions)
-		ladspa_paths = pOptions->ladspaPaths;
-	if (ladspa_paths.isEmpty()) {
-		QStringList sLadspaPaths;
-		const char *ladspa_path = ::getenv("LADSPA_PATH");
-		if (ladspa_path)
-			sLadspaPaths << QString::fromUtf8(ladspa_path).split(PATH_SEP);
-		if (sLadspaPaths.isEmpty())
-			ladspa_paths << default_paths("ladspa");
-		else
-			ladspa_paths << sLadspaPaths;
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Ladspa) {
+		// LADSPA default paths...
+		QStringList ladspa_paths;
+		if (pOptions)
+			ladspa_paths = pOptions->ladspaPaths;
+		if (ladspa_paths.isEmpty()) {
+			QStringList sLadspaPaths;
+			const char *ladspa_path = ::getenv("LADSPA_PATH");
+			if (ladspa_path)
+				sLadspaPaths << QString::fromUtf8(ladspa_path).split(PATH_SEP);
+			if (sLadspaPaths.isEmpty())
+				ladspa_paths << default_paths("ladspa");
+			else
+				ladspa_paths << sLadspaPaths;
+		}
+		m_paths.insert(qtractorPluginType::Ladspa, ladspa_paths);
 	}
-	m_paths.insert(qtractorPluginType::Ladspa, ladspa_paths);
 #endif
 
 #ifdef CONFIG_DSSI
-	// DSSI default paths...
-	QStringList dssi_paths;
-	if (pOptions)
-		dssi_paths = pOptions->dssiPaths;
-	if (dssi_paths.isEmpty()) {
-		QStringList sDssiPaths;
-		const char *dssi_path = ::getenv("DSSI_PATH");
-		if (dssi_path)
-			sDssiPaths << QString::fromUtf8(dssi_path).split(PATH_SEP);
-		if (sDssiPaths.isEmpty())
-			dssi_paths << default_paths("dssi");
-		else
-			dssi_paths << sDssiPaths;
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Dssi) {
+		// DSSI default paths...
+		QStringList dssi_paths;
+		if (pOptions)
+			dssi_paths = pOptions->dssiPaths;
+		if (dssi_paths.isEmpty()) {
+			QStringList sDssiPaths;
+			const char *dssi_path = ::getenv("DSSI_PATH");
+			if (dssi_path)
+				sDssiPaths << QString::fromUtf8(dssi_path).split(PATH_SEP);
+			if (sDssiPaths.isEmpty())
+				dssi_paths << default_paths("dssi");
+			else
+				dssi_paths << sDssiPaths;
+		}
+		m_paths.insert(qtractorPluginType::Dssi, dssi_paths);
 	}
-	m_paths.insert(qtractorPluginType::Dssi, dssi_paths);
 #endif
 
 #ifdef CONFIG_VST2
-	// VST2 default paths...
-	QStringList vst2_paths;
-	if (pOptions)
-		vst2_paths = pOptions->vst2Paths;
-	if (vst2_paths.isEmpty()) {
-		QStringList sVst2Paths;
-		const char *vst2_path = ::getenv("VST2_PATH");
-		if (vst2_path)
-			sVst2Paths << QString::fromUtf8(vst2_path).split(PATH_SEP);
-		if (sVst2Paths.isEmpty())
-			vst2_paths << default_paths("vst2");
-		else
-			vst2_paths << sVst2Paths;
-		// LXVST_PATH...
-		sVst2Paths.clear();
-		vst2_path = ::getenv("LXVST_PATH");
-		if (vst2_path)
-			sVst2Paths << QString::fromUtf8(vst2_path).split(PATH_SEP);
-		if (sVst2Paths.isEmpty())
-			vst2_paths << default_paths("lxvst");
-		else
-			vst2_paths << sVst2Paths;
-		// VST_PATH...
-		sVst2Paths.clear();
-		vst2_path = ::getenv("VST_PATH");
-		if (vst2_path)
-			sVst2Paths << QString::fromUtf8(vst2_path).split(PATH_SEP);
-		if (sVst2Paths.isEmpty())
-			vst2_paths << default_paths("vst");
-		else
-			vst2_paths << sVst2Paths;
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Vst2) {
+		// VST2 default paths...
+		QStringList vst2_paths;
+		if (pOptions)
+			vst2_paths = pOptions->vst2Paths;
+		if (vst2_paths.isEmpty()) {
+			QStringList sVst2Paths;
+			const char *vst2_path = ::getenv("VST2_PATH");
+			if (vst2_path)
+				sVst2Paths << QString::fromUtf8(vst2_path).split(PATH_SEP);
+			if (sVst2Paths.isEmpty())
+				vst2_paths << default_paths("vst2");
+			else
+				vst2_paths << sVst2Paths;
+			// LXVST_PATH...
+			sVst2Paths.clear();
+			vst2_path = ::getenv("LXVST_PATH");
+			if (vst2_path)
+				sVst2Paths << QString::fromUtf8(vst2_path).split(PATH_SEP);
+			if (sVst2Paths.isEmpty())
+				vst2_paths << default_paths("lxvst");
+			else
+				vst2_paths << sVst2Paths;
+			// VST_PATH...
+			sVst2Paths.clear();
+			vst2_path = ::getenv("VST_PATH");
+			if (vst2_path)
+				sVst2Paths << QString::fromUtf8(vst2_path).split(PATH_SEP);
+			if (sVst2Paths.isEmpty())
+				vst2_paths << default_paths("vst");
+			else
+				vst2_paths << sVst2Paths;
+		}
+		m_paths.insert(qtractorPluginType::Vst2, vst2_paths);
 	}
-	m_paths.insert(qtractorPluginType::Vst2, vst2_paths);
 #endif
 
 #ifdef CONFIG_VST3
-	// VST3 default paths...
-	QStringList vst3_paths;
-	if (pOptions)
-		vst3_paths = pOptions->vst3Paths;
-	if (vst3_paths.isEmpty()) {
-		QStringList sVst3Paths;
-		const char *vst3_path = ::getenv("VST3_PATH");
-		if (vst3_path)
-			sVst3Paths << QString::fromUtf8(vst3_path).split(PATH_SEP);
-		if (sVst3Paths.isEmpty())
-			vst3_paths << default_paths("vst3");
-		else
-			vst3_paths << sVst3Paths;
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Vst3) {
+		// VST3 default paths...
+		QStringList vst3_paths;
+		if (pOptions)
+			vst3_paths = pOptions->vst3Paths;
+		if (vst3_paths.isEmpty()) {
+			QStringList sVst3Paths;
+			const char *vst3_path = ::getenv("VST3_PATH");
+			if (vst3_path)
+				sVst3Paths << QString::fromUtf8(vst3_path).split(PATH_SEP);
+			if (sVst3Paths.isEmpty())
+				vst3_paths << default_paths("vst3");
+			else
+				vst3_paths << sVst3Paths;
+		}
+		m_paths.insert(qtractorPluginType::Vst3, vst3_paths);
 	}
-	m_paths.insert(qtractorPluginType::Vst3, vst3_paths);
 #endif
 
 #ifdef CONFIG_CLAP
-	// CLAP default paths...
-	QStringList clap_paths;
-	if (pOptions)
-		clap_paths = pOptions->clapPaths;
-	if (clap_paths.isEmpty()) {
-		QStringList sClapPaths;
-		const char *clap_path = ::getenv("CLAP_PATH");
-		if (clap_path)
-			sClapPaths << QString::fromUtf8(clap_path).split(PATH_SEP);
-		if (sClapPaths.isEmpty())
-			clap_paths << default_paths("clap");
-		else
-			clap_paths << sClapPaths;
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Clap) {
+		// CLAP default paths...
+		QStringList clap_paths;
+		if (pOptions)
+			clap_paths = pOptions->clapPaths;
+		if (clap_paths.isEmpty()) {
+			QStringList sClapPaths;
+			const char *clap_path = ::getenv("CLAP_PATH");
+			if (clap_path)
+				sClapPaths << QString::fromUtf8(clap_path).split(PATH_SEP);
+			if (sClapPaths.isEmpty())
+				clap_paths << default_paths("clap");
+			else
+				clap_paths << sClapPaths;
+		}
+		m_paths.insert(qtractorPluginType::Clap, clap_paths);
 	}
-	m_paths.insert(qtractorPluginType::Clap, clap_paths);
 #endif
 
 #ifdef CONFIG_LV2
-	// LV2 default paths...
-	QStringList lv2_paths;
-	if (pOptions)
-		lv2_paths = pOptions->lv2Paths;
-	if (lv2_paths.isEmpty()) {
-		QStringList sLv2Paths;
-		const char *lv2_path = ::getenv("LV2_PATH");
-		if (lv2_path)
-			sLv2Paths << QString::fromUtf8(lv2_path).split(PATH_SEP);
-		if (sLv2Paths.isEmpty())
-			lv2_paths << default_paths("lv2");
-		else
-			lv2_paths << sLv2Paths;
+	if (typeHint == qtractorPluginType::Any ||
+		typeHint == qtractorPluginType::Lv2) {
+		// LV2 default paths...
+		QStringList lv2_paths;
+		if (pOptions)
+			lv2_paths = pOptions->lv2Paths;
+		if (lv2_paths.isEmpty()) {
+			QStringList sLv2Paths;
+			const char *lv2_path = ::getenv("LV2_PATH");
+			if (lv2_path)
+				sLv2Paths << QString::fromUtf8(lv2_path).split(PATH_SEP);
+			if (sLv2Paths.isEmpty())
+				lv2_paths << default_paths("lv2");
+			else
+				lv2_paths << sLv2Paths;
+		}
+	#ifdef CONFIG_LV2_PRESETS
+		QString sLv2PresetDir;
+		if (pOptions)
+			sLv2PresetDir = pOptions->sLv2PresetDir;
+		if (sLv2PresetDir.isEmpty())
+			sLv2PresetDir = QDir::homePath() + QDir::separator() + ".lv2";
+		if (!lv2_paths.contains(sLv2PresetDir))
+			lv2_paths.append(sLv2PresetDir);
+	#endif
+		m_paths.insert(qtractorPluginType::Lv2, lv2_paths);
+		// HACK: set special environment for LV2...
+		::setenv("LV2_PATH", lv2_paths.join(PATH_SEP).toUtf8().constData(), 1);
+	#endif
 	}
-#ifdef CONFIG_LV2_PRESETS
-	QString sLv2PresetDir;
-	if (pOptions)
-		sLv2PresetDir = pOptions->sLv2PresetDir;
-	if (sLv2PresetDir.isEmpty())
-		sLv2PresetDir = QDir::homePath() + QDir::separator() + ".lv2";
-	if (!lv2_paths.contains(sLv2PresetDir))
-		lv2_paths.append(sLv2PresetDir);
-#endif
-	m_paths.insert(qtractorPluginType::Lv2, lv2_paths);
-	// HACK: set special environment for LV2...
-	::setenv("LV2_PATH", lv2_paths.join(PATH_SEP).toUtf8().constData(), 1);
-#endif
 }
 
 
 QStringList qtractorPluginFactory::pluginPaths (
 	qtractorPluginType::Hint typeHint )
 {
-	if (m_paths.isEmpty()) // Just in case...
-		updatePluginPaths();
+	if (m_paths.isEmpty())
+		updatePluginPaths(qtractorPluginType::Any);
 
 	return m_paths.value(typeHint);
 }
@@ -483,8 +500,7 @@ bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 			}
 			// Remember to cleanup cache later, when applicable...
 			const QString& sCacheFilePath = pScanner->cacheFilePath();
-			if (!m_cacheFilePaths.contains(sCacheFilePath))
-				m_cacheFilePaths.append(sCacheFilePath);
+			m_cacheFilePaths.insert(typeHint, sCacheFilePath);
 			// Done.
 			return true;
 		}
@@ -500,8 +516,8 @@ void qtractorPluginFactory::scan (void)
 	// Start clean.
 	reset();
 
-	if (m_paths.isEmpty()) // Just in case...
-		updatePluginPaths();
+	if (pluginPaths(m_typeHint).isEmpty()) // Just in case...
+		updatePluginPaths(m_typeHint);
 
 	// Get paths based on hints...
 	int iFileCount = 0;
@@ -629,11 +645,21 @@ void qtractorPluginFactory::clear (void)
 }
 
 
-void qtractorPluginFactory::clearAll (void)
+void qtractorPluginFactory::clearAll ( qtractorPluginType::Hint typeHint )
 {
-	QStringListIterator iter(m_cacheFilePaths);
-	while (iter.hasNext())
-		QFile::remove(iter.next());
+	if (typeHint == qtractorPluginType::Any) {
+		CacheFilePaths::ConstIterator iter = m_cacheFilePaths.constBegin();
+		const CacheFilePaths::ConstIterator& iter_end = m_cacheFilePaths.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			const QString& sCacheFilePath = iter.value();
+			if (!sCacheFilePath.isEmpty())
+				QFile::remove(sCacheFilePath);
+		}
+	} else {
+		const QString& sCacheFilePath = m_cacheFilePaths.value(typeHint);
+		if (!sCacheFilePath.isEmpty())
+			QFile::remove(sCacheFilePath);
+	}
 
 	clear();
 }
@@ -931,7 +957,7 @@ bool qtractorPluginFactory::addTypes (
 // Constructor.
 qtractorPluginFactory::Scanner::Scanner (
 	qtractorPluginType::Hint typeHint, QObject *pParent )
-	: QProcess(pParent), m_typeHint(typeHint), m_iExitStatus(-1)
+		: QProcess(pParent), m_typeHint(typeHint), m_iExitStatus(-1), m_bReset(false)
 {
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
@@ -952,8 +978,10 @@ bool qtractorPluginFactory::Scanner::open ( bool bReset )
 	m_file.setFileName(cacheFilePath());
 	m_list.clear();
 
+	m_bReset = bReset;
+
 	// Open and read cache file, whether applicable...
-	if (!bReset && m_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+	if (m_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		// Read from cache...
 		QTextStream sin(&m_file);
 		while (!sin.atEnd()) {
@@ -966,8 +994,13 @@ bool qtractorPluginFactory::Scanner::open ( bool bReset )
 		}
 		// May close the file.
 		m_file.close();
-		return true;
+	} else {
+		// Force reset...
+		m_bReset = true;
 	}
+
+	if (!m_bReset)
+		return true;
 
 	// Make sure cache file location do exists...
 	const QFileInfo fi(m_file);
@@ -1080,10 +1113,15 @@ bool qtractorPluginFactory::Scanner::addTypes (
 	// See if it's already cached in...
 	if (!m_list.isEmpty()) {
 		const QStringList& list = m_list.value(sFilename);
-		if (list.isEmpty())
-			return false;
-		else
+		if (!list.isEmpty() && (
+		#ifdef CONFIG_LV2
+			m_typeHint == qtractorPluginType::Lv2 ||
+		#endif
+			QFileInfo(sFilename).exists())) {
 			return addTypes(list);
+		}
+		if (!m_bReset)
+			return false;
 	}
 
 	qtractorPluginFactory *pPluginFactory

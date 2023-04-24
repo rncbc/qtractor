@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Plugin inventory scan now slightly optimized to an allegedly lesser
+  agressive cache-invalidation algorythm. (EXPERIMENTAL)
+
 - Do not send/Preview notes on the MIDI clip editor (aka. piano-roll)
   when playback is currently rolling. (EXPERIMENTAL)
 

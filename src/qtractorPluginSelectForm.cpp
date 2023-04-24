@@ -1,7 +1,7 @@
 // qtractorPluginSelectForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -261,8 +261,14 @@ void qtractorPluginSelectForm::rescan (void)
 {
 	qtractorPluginFactory *pPluginFactory
 		= qtractorPluginFactory::getInstance();
-	if (pPluginFactory)
-		pPluginFactory->clearAll();
+	if (pPluginFactory) {
+		const int iTypeHint
+			= m_ui.PluginTypeComboBox->currentIndex();
+		qtractorPluginType::Hint typeHint
+			= qtractorPluginType::hintFromText(
+				m_ui.PluginTypeComboBox->itemText(iTypeHint));
+		pPluginFactory->clearAll(typeHint);
+	}
 
 	refresh();
 }
