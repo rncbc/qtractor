@@ -62,34 +62,37 @@ void qtractorMidiEditCommand::insertEvent ( qtractorMidiEvent *pEvent )
 }
 
 
-void qtractorMidiEditCommand::updateEvent ( qtractorMidiEvent *pEvent,
-	int iNote, unsigned long iTime, unsigned long iDuration, int iValue )
-{
-	m_items.append(new Item(UpdateEvent, pEvent, iNote, iTime, iDuration, iValue));
-}
-
-
-void qtractorMidiEditCommand::moveEvent ( qtractorMidiEvent *pEvent,
-	int iNote, unsigned long iTime )
+void qtractorMidiEditCommand::moveEvent (
+	qtractorMidiEvent *pEvent, int iNote, unsigned long iTime )
 {
 	m_items.append(new Item(MoveEvent, pEvent, iNote, iTime));
 }
 
 
-void qtractorMidiEditCommand::resizeEventTime ( qtractorMidiEvent *pEvent,
-	unsigned long iTime, unsigned long iDuration )
+void qtractorMidiEditCommand::resizeEventTime (
+	qtractorMidiEvent *pEvent, unsigned long iTime, unsigned long iDuration )
 {
 	m_items.append(new Item(ResizeEventTime, pEvent, 0, iTime, iDuration));
 }
 
 
-void qtractorMidiEditCommand::resizeEventValue ( qtractorMidiEvent *pEvent,
-	int iValue )
+void qtractorMidiEditCommand::resizeEventValue (
+	qtractorMidiEvent *pEvent, int iValue )
 {
 	if (pEvent->type() == qtractorMidiEvent::NOTEON && iValue < 1)
 		iValue = 1;	// Avoid zero velocity (aka. NOTEOFF)
 
 	m_items.append(new Item(ResizeEventValue, pEvent, 0, 0, 0, iValue));
+}
+
+
+void qtractorMidiEditCommand::updateEvent ( qtractorMidiEvent *pEvent,
+	int iNote, unsigned long iTime, unsigned long iDuration, int iValue )
+{
+	if (pEvent->type() == qtractorMidiEvent::NOTEON && iValue < 1)
+		iValue = 1;	// Avoid zero velocity (aka. NOTEOFF)
+
+	m_items.append(new Item(UpdateEvent, pEvent, iNote, iTime, iDuration, iValue));
 }
 
 
