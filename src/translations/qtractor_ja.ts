@@ -11357,43 +11357,36 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="779"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="860"/>
         <source>quantize</source>
         <translation>クォンタイズ</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="781"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="921"/>
         <source>transpose</source>
         <translation>トランスポーズ</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="783"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="945"/>
         <source>normalize</source>
         <translation>ノーマライズ</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="785"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="974"/>
         <source>randomize</source>
         <translation>ランダマイズ</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="787"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1030"/>
         <source>resize</source>
         <translation>リサイズ</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="789"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1051"/>
         <source>rescale</source>
         <translation>リスケール</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="791"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1085"/>
         <source>timeshift</source>
         <translation>タイムシフト</translation>
     </message>

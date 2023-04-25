@@ -851,13 +851,12 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		qtractorMidiEvent *pEvent = iter.key();
 		int iNote = int(pEvent->note());
 		long iTime = pEvent->time() + iTimeOffset;
-		long iDuration = pEvent->duration();
+		long iDuration = long(pEvent->duration());
 		const bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
 		int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
 		qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
 		// Quantize tool...
 		if (m_ui.QuantizeCheckBox->isChecked()) {
-			tools.append(tr("quantize"));
 			// Swing quantize...
 			if (m_ui.QuantizeSwingCheckBox->isChecked()) {
 				const unsigned short p = qtractorTimeScale::snapFromIndex(
@@ -918,7 +917,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		}
 		// Transpose tool...
 		if (m_ui.TransposeCheckBox->isChecked()) {
-			tools.append(tr("transpose"));
 			if (m_ui.TransposeNoteCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
 				iNote += m_ui.TransposeNoteSpinBox->value();
@@ -942,7 +940,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		}
 		// Normalize tool...
 		if (m_ui.NormalizeCheckBox->isChecked()) {
-			tools.append(tr("normalize"));
 			float p, q = float(iMaxValue);
 			if (m_ui.NormalizeValueCheckBox->isChecked())
 				p = float(m_ui.NormalizeValueSpinBox->value());
@@ -971,7 +968,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		}
 		// Randomize tool...
 		if (m_ui.RandomizeCheckBox->isChecked()) {
-			tools.append(tr("randomize"));
 			float p; int q;
 			if (m_ui.RandomizeNoteCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
@@ -1027,7 +1023,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		}
 		// Resize tool...
 		if (m_ui.ResizeCheckBox->isChecked()) {
-			tools.append(tr("resize"));
 			if (m_ui.ResizeDurationCheckBox->isChecked()) {
 				iDuration = pNode->tickFromFrame(pNode->frameFromTick(iTime)
 					+ m_ui.ResizeDurationSpinBox->value()) - iTime;
@@ -1048,7 +1043,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		}
 		// Rescale tool...
 		if (m_ui.RescaleCheckBox->isChecked()) {
-			tools.append(tr("rescale"));
 			float p;
 			if (m_ui.RescaleTimeCheckBox->isChecked()) {
 				p = 0.01f * float(m_ui.RescaleTimeSpinBox->value());
@@ -1082,7 +1076,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		}
 		// Timeshift tool...
 		if (m_ui.TimeshiftCheckBox->isChecked()) {
-			tools.append(tr("timeshift"));
 			qtractorSession *pSession = qtractorSession::getInstance();
 			const unsigned long iEditHeadTime
 				= pSession->tickFromFrame(pSession->editHead());
@@ -1093,15 +1086,15 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			if ((p < -1e-6f || p > 1e-6f) && (d > 0.0f)) {
 				const float t = float(iTime - iEditHeadTime);
 				float t1 = t / d;
-				float t2 = (t + float(iDuration)) / d;
 				if (t1 > 0.0f && t1 < 1.0f)
 					t1 = TimeshiftCurve::timeshift(t1, p);
-				if (m_ui.TimeshiftDurationCheckBox->isChecked()
-					&& (t2 > 0.0f && t2 < 1.0f))
-					t2 = TimeshiftCurve::timeshift(t2, p);
 				iTime = t1 * d + float(iEditHeadTime);
-				if (m_ui.TimeshiftDurationCheckBox->isChecked())
+				if (m_ui.TimeshiftDurationCheckBox->isChecked()) {
+					float t2 = (t + float(iDuration)) / d;
+					if (t2 > 0.0f && t2 < 1.0f)
+						t2 = TimeshiftCurve::timeshift(t2, p);
 					iDuration = t2 * d + float(iEditHeadTime) - iTime;
+				}
 			}
 		}
 		// Make it to the event...

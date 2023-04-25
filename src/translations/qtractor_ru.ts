@@ -10907,43 +10907,36 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="779"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="860"/>
         <source>quantize</source>
         <translation>квантование</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="781"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="921"/>
         <source>transpose</source>
         <translation>транспонирование</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="783"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="945"/>
         <source>normalize</source>
         <translation>нормализация</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="785"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="974"/>
         <source>randomize</source>
         <translation>случайные значения</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="787"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1030"/>
         <source>resize</source>
         <translation>смена размера</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="789"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1051"/>
         <source>rescale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="791"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1085"/>
         <source>timeshift</source>
         <translation type="unfinished"></translation>
     </message>
