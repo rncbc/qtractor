@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Multiple MIDI clip tools may now be applied simultaneously, in a
+  single shot, in the following priority order: quantize, transpose,
+  normalize, resize, rescale and timeshift. (EXPERIMENTAL)
+
 - Plugin inventory scan now slightly optimized to an allegedly lesser
   agressive cache-invalidation algorythm. (EXPERIMENTAL)
 

@@ -11351,43 +11351,43 @@ Are you sure?</source>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="779"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="859"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="860"/>
         <source>quantize</source>
         <translation>квантизувати</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="781"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="922"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="921"/>
         <source>transpose</source>
         <translation>transpose</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="783"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="948"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="945"/>
         <source>normalize</source>
         <translation>нормалізація</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="785"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="978"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="974"/>
         <source>randomize</source>
         <translation>рандомізувати</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="787"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1040"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1030"/>
         <source>resize</source>
         <translation>змінити розмір</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="789"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1064"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1051"/>
         <source>rescale</source>
         <translation>rescale</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="791"/>
-        <location filename="../qtractorMidiToolsForm.cpp" line="1103"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="1085"/>
         <source>timeshift</source>
         <translation>зсунути за часом</translation>
     </message>

@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -849,6 +849,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 
 	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = iter.key();
+		int iNote = int(pEvent->note());
 		long iTime = pEvent->time() + iTimeOffset;
 		long iDuration = pEvent->duration();
 		const bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
@@ -908,19 +909,16 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				if (iDuration < 0)
 					iDuration = 0;
 			}
-			pEditCommand->resizeEventTime(pEvent, iTime - iTimeOffset, iDuration);
 			// Scale quantize...
 			if (m_ui.QuantizeScaleCheckBox->isChecked()) {
-				const int iNote = qtractorMidiEditor::snapToScale(pEvent->note(),
+				iNote = qtractorMidiEditor::snapToScale(iNote,
 					m_ui.QuantizeScaleKeyComboBox->currentIndex(),
 					m_ui.QuantizeScaleComboBox->currentIndex());
-				pEditCommand->moveEvent(pEvent, iNote, iTime - iTimeOffset);
 			}
 		}
 		// Transpose tool...
 		if (m_ui.TransposeCheckBox->isChecked()) {
 			tools.append(tr("transpose"));
-			int iNote = int(pEvent->note());
 			if (m_ui.TransposeNoteCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
 				iNote += m_ui.TransposeNoteSpinBox->value();
@@ -941,7 +939,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				if (iTime < long(iTimeOffset))
 					iTime = long(iTimeOffset);
 			}
-			pEditCommand->moveEvent(pEvent, iNote, iTime - iTimeOffset);
 		}
 		// Normalize tool...
 		if (m_ui.NormalizeCheckBox->isChecked()) {
@@ -971,14 +968,13 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 						iValue = 0;
 				}
 			}
-			pEditCommand->resizeEventValue(pEvent, iValue);
 		}
 		// Randomize tool...
 		if (m_ui.RandomizeCheckBox->isChecked()) {
 			tools.append(tr("randomize"));
 			float p; int q;
-			if (m_ui.RandomizeNoteCheckBox->isChecked()) {
-				int iNote = int(pEvent->note());
+			if (m_ui.RandomizeNoteCheckBox->isChecked()
+				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
 				p = 0.01f * float(m_ui.RandomizeNoteSpinBox->value());
 				q = 127;
 				if (p > 0.0f) {
@@ -988,7 +984,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					else
 					if (iNote < 0)
 						iNote = 0;
-					pEditCommand->moveEvent(pEvent, iNote, iTime);
 				}
 			}
 			if (m_ui.RandomizeTimeCheckBox->isChecked()) {
@@ -998,8 +993,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					iTime += long(p * float(q - (::rand() % (q << 1))));
 					if (iTime < long(iTimeOffset))
 						iTime = long(iTimeOffset);
-					pEditCommand->resizeEventTime(pEvent,
-						iTime - iTimeOffset, iDuration);
 				}
 			}
 			if (m_ui.RandomizeDurationCheckBox->isChecked()) {
@@ -1009,8 +1002,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					iDuration += long(p * float(q - (::rand() % (q << 1))));
 					if (iDuration < 0)
 						iDuration = 0;
-					pEditCommand->resizeEventTime(pEvent,
-						iTime - iTimeOffset, iDuration);
 				}
 			}
 			if (m_ui.RandomizeValueCheckBox->isChecked()) {
@@ -1031,7 +1022,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 						if (iValue < 0)
 							iValue = 0;
 					}
-					pEditCommand->resizeEventValue(pEvent, iValue);
 				}
 			}
 		}
@@ -1041,8 +1031,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			if (m_ui.ResizeDurationCheckBox->isChecked()) {
 				iDuration = pNode->tickFromFrame(pNode->frameFromTick(iTime)
 					+ m_ui.ResizeDurationSpinBox->value()) - iTime;
-				pEditCommand->resizeEventTime(pEvent,
-					iTime - iTimeOffset, iDuration);
 			}
 			if (m_ui.ResizeValueCheckBox->isChecked()) {
 				const int p = (bPitchBend && iValue < 0 ? -1 : 1); // sign
@@ -1056,7 +1044,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					if (iDeltaTime > 0)
 						iValue += iDeltaValue * (iTime - iMinTime) / iDeltaTime;
 				}
-				pEditCommand->resizeEventValue(pEvent, iValue);
 			}
 		}
 		// Rescale tool...
@@ -1068,16 +1055,12 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				iTime = iMinTime + long(p * float(iTime - iMinTime));
 				if (iTime < long(iTimeOffset))
 					iTime = long(iTimeOffset);
-				pEditCommand->moveEvent(pEvent,
-					pEvent->note(), iTime - iTimeOffset);
 			}
 			if (m_ui.RescaleDurationCheckBox->isChecked()) {
 				p = 0.01f * float(m_ui.RescaleDurationSpinBox->value());
 				iDuration = long(p * float(iDuration));
 				if (iDuration < 0)
 					iDuration = 0;
-				pEditCommand->resizeEventTime(pEvent,
-					iTime - iTimeOffset, iDuration);
 			}
 			if (m_ui.RescaleValueCheckBox->isChecked()) {
 				p = 0.01f * float(m_ui.RescaleValueSpinBox->value());
@@ -1095,7 +1078,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					if (iValue < 0)
 						iValue = 0;
 				}
-				pEditCommand->resizeEventValue(pEvent, iValue);
 			}
 		}
 		// Timeshift tool...
@@ -1117,17 +1099,14 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				if (m_ui.TimeshiftDurationCheckBox->isChecked()
 					&& (t2 > 0.0f && t2 < 1.0f))
 					t2 = TimeshiftCurve::timeshift(t2, p);
-				t1 = t1 * d + float(iEditHeadTime);
-				if (m_ui.TimeshiftDurationCheckBox->isChecked()) {
-					t2 = t2 * d + float(iEditHeadTime);
-					pEditCommand->resizeEventTime(pEvent,
-						t1 - iTimeOffset, t2 - t1);
-				} else {
-					pEditCommand->moveEvent(pEvent,
-						pEvent->note(), t1 - iTimeOffset);
-				}
+				iTime = t1 * d + float(iEditHeadTime);
+				if (m_ui.TimeshiftDurationCheckBox->isChecked())
+					iDuration = t2 * d + float(iEditHeadTime) - iTime;
 			}
 		}
+		// Make it to the event...
+		pEditCommand->updateEvent(pEvent,
+			iNote, iTime - iTimeOffset, iDuration, iValue);
 	}
 
 	// Done.

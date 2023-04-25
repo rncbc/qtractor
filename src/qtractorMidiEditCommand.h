@@ -1,7 +1,7 @@
 // qtractorMidiEditCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -56,6 +56,7 @@ public:
 		MoveEvent,
 		ResizeEventTime,
 		ResizeEventValue,
+		UpdateEvent,
 		RemoveEvent
 	};
 	
@@ -66,6 +67,9 @@ public:
 	void resizeEventTime(qtractorMidiEvent *pEvent,
 		unsigned long iTime, unsigned long iDuration);
 	void resizeEventValue(qtractorMidiEvent *pEvent, int iValue);
+	void updateEvent(qtractorMidiEvent *pEvent,
+		int iNote, unsigned long iTime,
+		unsigned long iDuration, int iValue);
 	void removeEvent(qtractorMidiEvent *pEvent);
 
 	// Check whether the event is already in chain.
