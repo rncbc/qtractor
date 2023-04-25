@@ -682,7 +682,7 @@ int qtractorPluginFactory::addFiles (
 	qtractorPluginType::Hint typeHint, const QString& sPath )
 {
 	int iFileCount = 0;
-
+	QStringList& files = m_files[typeHint];
 	const QDir dir(sPath);
 	QDir::Filters filters = QDir::Files;
 	if (typeHint == qtractorPluginType::Vst2 ||
@@ -702,7 +702,7 @@ int qtractorPluginFactory::addFiles (
 			|| (typeHint == qtractorPluginType::Clap && info.suffix() == "clap")
 		#endif
 		) {
-			m_files[typeHint].append(sFilename);
+			files.append(sFilename);
 			++iFileCount;
 		}
 	}
@@ -1111,18 +1111,17 @@ bool qtractorPluginFactory::Scanner::addTypes (
 	qtractorPluginType::Hint typeHint, const QString& sFilename )
 {
 	// See if it's already cached in...
-	if (!m_list.isEmpty()) {
-		const QStringList& list = m_list.value(sFilename);
-		if (!list.isEmpty() && (
-		#ifdef CONFIG_LV2
-			m_typeHint == qtractorPluginType::Lv2 ||
-		#endif
-			QFileInfo(sFilename).exists())) {
-			return addTypes(list);
-		}
-		if (!m_bReset)
-			return false;
+	const QStringList& list = m_list.value(sFilename);
+	if (!list.isEmpty() && (
+	#ifdef CONFIG_LV2
+		m_typeHint == qtractorPluginType::Lv2 ||
+	#endif
+		QFileInfo(sFilename).exists())) {
+		return addTypes(list);
 	}
+
+	if (!m_bReset)
+		return false;
 
 	qtractorPluginFactory *pPluginFactory
 		= static_cast<qtractorPluginFactory *> (QObject::parent());
@@ -1217,7 +1216,7 @@ bool qtractorPluginFactory::Scanner::addTypes ( const QStringList& list )
 			// Brand new type, add to inventory...
 			pPluginFactory->addType(pType);
 			// Cache in...
-			if (m_file.isOpen())
+			if (m_bReset && m_file.isOpen())
 				QTextStream(&m_file) << sText << endl;
 			// Done.
 		} else {
