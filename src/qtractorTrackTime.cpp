@@ -573,7 +573,9 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 				m_rectDrag.setLeft(m_posDrag.x());
 				m_rectDrag.setRight(pos.x());
 				m_rectDrag.setBottom(h);
-				m_dragState = (dragHeadStart(m_posDrag) ? m_dragCursor : DragSelect);
+				if (!dragHeadStart(m_posDrag))
+					m_dragCursor = DragSelect;
+				m_dragState = m_dragCursor;
 				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			}
 			// Fall thru...

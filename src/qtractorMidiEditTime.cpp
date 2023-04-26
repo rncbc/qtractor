@@ -477,7 +477,7 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 	// Reset cursor if any persist around.
 	if (m_dragCursor != DragNone) {
 		qtractorScrollView::unsetCursor();
-		m_dragCursor  = DragNone;
+		m_dragCursor = DragNone;
 	}
 
 	// Nothing.
@@ -521,12 +521,12 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		if (dragHeadStart(m_posDrag)) {
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		//	m_dragState = m_dragCursor;
-		}/* else if (!bModifier) {
+		} else if (!bModifier) {
 			// Edit-head positioning...
 			m_pEditor->setEditHead(iFrame);
 			// Logical contents changed, just for visual feedback...
 			m_pEditor->selectionChangeNotify();
-		}*/
+		}
 		break;
 	case Qt::MiddleButton:
 		if (pOptions && pOptions->bMidButtonModifier)
@@ -625,7 +625,9 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			m_rectDrag.setLeft(m_posDrag.x());
 			m_rectDrag.setRight(pos.x());
 			m_rectDrag.setBottom(h);
-			m_dragState = (dragHeadStart(m_posDrag) ? m_dragCursor : DragSelect);
+			if (!dragHeadStart(m_posDrag))
+				m_dragCursor = DragSelect;
+			m_dragState = m_dragCursor;
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		}
 		// Fall thru...
