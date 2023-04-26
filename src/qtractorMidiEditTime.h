@@ -92,6 +92,9 @@ protected:
 	void showToolTip(unsigned long iFrame) const;
 	void showToolTip(const QRect& rect) const;
 
+	// Edit-head/tail positioning...
+	void selectEdit(unsigned long iFrame);
+
 protected slots:
 
 	// To have timeline in h-sync with main track view.

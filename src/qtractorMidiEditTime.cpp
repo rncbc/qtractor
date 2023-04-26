@@ -521,12 +521,12 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		if (dragHeadStart(m_posDrag)) {
 			qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 		//	m_dragState = m_dragCursor;
-		} else if (!bModifier) {
+		}/* else if (!bModifier) {
 			// Edit-head positioning...
 			m_pEditor->setEditHead(iFrame);
 			// Logical contents changed, just for visual feedback...
 			m_pEditor->selectionChangeNotify();
-		}
+		}*/
 		break;
 	case Qt::MiddleButton:
 		if (pOptions && pOptions->bMidButtonModifier)
@@ -582,8 +582,8 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
 		m_pEditor->selectRect(m_pEditor->editView(), m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, false);
-		// Edit-tail positioning...
-		m_pEditor->setEditTail(iFrame);
+		// Edit-head/tail positioning...
+		selectEdit(iFrame);
 		showToolTip(m_rectDrag.normalized());
 		break;
 	case DragPlayHead:
@@ -658,16 +658,17 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 	const unsigned long iFrame = m_pEditor->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
 	switch (m_dragState) {
-	case DragSelect:
+	case DragSelect: {
 		// Do the final range selection...
 		m_pEditor->selectRect(m_pEditor->editView(), m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, true);
-		// Edit-tail positioning...
-		m_pEditor->setEditTail(iFrame);
+		// Edit-head/tail positioning...
+		selectEdit(iFrame);
 		// Not quite a selection change,
 		// but for visual feedback...
 		m_pEditor->selectionChangeNotify();
 		break;
+	}
 	case DragPlayHead:
 		// Play-head positioning commit...
 		m_pEditor->setPlayHead(iFrame);
@@ -731,10 +732,13 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			m_pEditor->setPlayHead(iFrame);
 			// Immediately commited...
 			pSession->setPlayHead(iFrame);
-			// Not quite a selection, rather just
-			// for immediate visual feedback...
-			m_pEditor->selectionChangeNotify();
+		} else {
+			// Deferred left-button edit-head positioning...
+			m_pEditor->setEditHead(iFrame);
 		}
+		// Not quite a selection, rather just
+		// for immediate visual feedback...
+		m_pEditor->selectionChangeNotify();
 		// Fall thru...
 	case DragNone:
 	default:
@@ -956,6 +960,27 @@ void qtractorMidiEditTime::showToolTip ( const QRect& rect ) const
 			.arg(pTimeScale->textFromFrame(iFrameEnd))
 			.arg(pTimeScale->textFromFrame(iFrameStart, true, iFrameEnd - iFrameStart)),
 		qtractorScrollView::viewport());
+}
+
+
+// Edit-head/tail positioning...
+void qtractorMidiEditTime::selectEdit ( unsigned long iFrame )
+{
+	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	const unsigned long iFrame2
+		= m_pEditor->frameSnap(m_pEditor->offset()
+			+ pTimeScale->frameFromPixel(m_rectDrag.left()));
+
+	if (iFrame < iFrame2) {
+		m_pEditor->setEditHead(iFrame);
+		m_pEditor->setEditTail(iFrame2);
+	} else {
+		m_pEditor->setEditHead(iFrame2);
+		m_pEditor->setEditTail(iFrame);
+	}
 }
 
 

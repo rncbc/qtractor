@@ -451,12 +451,12 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 			if (dragHeadStart(m_posDrag)) {
 				qtractorScrollView::setCursor(QCursor(Qt::SizeHorCursor));
 			//	m_dragState = m_dragCursor;
-			} else if (!bModifier) {
+			}/* else if (!bModifier) {
 				// Edit-head positioning...
 				pTrackView->setEditHead(iFrame);
 				// Logical contents changed, just for visual feedback...
 				m_pTracks->selectionChangeNotify();
-			}
+			}*/
 			break;
 		case Qt::MiddleButton:
 			// Mid-button direct positioning...
