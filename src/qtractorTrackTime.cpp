@@ -568,8 +568,8 @@ void qtractorTrackTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			if ((m_posDrag - pos).manhattanLength()
 				> QApplication::startDragDistance()) {
 				// We'll start dragging alright...
-				const int h = qtractorScrollView::height();	// - 4;
-				m_rectDrag.setTop(0);			// h - (h >> 2)
+				const int h = qtractorScrollView::height();
+				m_rectDrag.setTop(0);
 				m_rectDrag.setLeft(m_posDrag.x());
 				m_rectDrag.setRight(pos.x());
 				m_rectDrag.setBottom(h);

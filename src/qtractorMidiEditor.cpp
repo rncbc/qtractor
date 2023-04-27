@@ -3548,9 +3548,9 @@ void qtractorMidiEditor::updateDragSelect (
 			t1 = t0 + pEvent->time();
 			t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
-			int x  = pNode->pixelFromTick(t1) - 1;
+			int x  = pNode->pixelFromTick(t1);
 			pNode = cursor.seekTick(t2);
-			int w1 = pNode->pixelFromTick(t2) - x;
+			int w1 = pNode->pixelFromTick(t2) - x - 1;
 			if (w1 < 5)
 				w1 = 5;
 			// View item...

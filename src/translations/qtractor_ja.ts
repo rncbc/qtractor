@@ -7139,42 +7139,42 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="910"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="913"/>
         <source>Play-head</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="913"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="916"/>
         <source>Edit-head</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="916"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="919"/>
         <source>Edit-tail</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="919"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="922"/>
         <source>Loop-start</source>
         <translation>ループの先頭</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="922"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="925"/>
         <source>Loop-end</source>
         <translation>ループの末尾</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="925"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="928"/>
         <source>Punch-in</source>
         <translation>パンチイン</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="928"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="931"/>
         <source>Punch-out</source>
         <translation>パンチアウト</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="958"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="961"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>

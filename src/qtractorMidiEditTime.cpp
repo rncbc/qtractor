@@ -578,7 +578,8 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 		break;
 	case DragSelect:
 		// Rubber-band selection...
-		m_rectDrag.setRight(pos.x());
+		m_rectDrag.setRight(
+			m_pEditor->pixelSnap(pos.x() > 0 ? pos.x() : 0));
 		m_pEditor->editView()->ensureVisible(pos.x(), y, 16, 0);
 		m_pEditor->selectRect(m_pEditor->editView(), m_rectDrag,
 			pMouseEvent->modifiers() & Qt::ControlModifier, false);
@@ -622,8 +623,10 @@ void qtractorMidiEditTime::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 			// We'll start dragging alright...
 			const int h = m_pEditor->editView()->contentsHeight();
 			m_rectDrag.setTop(0);
-			m_rectDrag.setLeft(m_posDrag.x());
-			m_rectDrag.setRight(pos.x());
+			m_rectDrag.setLeft(
+				m_pEditor->pixelSnap(m_posDrag.x() > 0 ? m_posDrag.x() : 0));
+			m_rectDrag.setRight(
+				m_pEditor->pixelSnap(pos.x() > 0 ? pos.x() : 0));
 			m_rectDrag.setBottom(h);
 			if (!dragHeadStart(m_posDrag))
 				m_dragCursor = DragSelect;
@@ -949,10 +952,10 @@ void qtractorMidiEditTime::showToolTip ( const QRect& rect ) const
 	if (pTimeScale == nullptr)
 		return;
 
-	const unsigned long iFrameStart = m_pEditor->frameSnap(
-		pTimeScale->frameFromPixel(rect.left()));
-	const unsigned long iFrameEnd = m_pEditor->frameSnap(
-		iFrameStart + pTimeScale->frameFromPixel(rect.width()));
+	const unsigned long iFrameStart
+		= m_pEditor->frameSnap(pTimeScale->frameFromPixel(rect.left()));
+	const unsigned long iFrameEnd
+		= m_pEditor->frameSnap(pTimeScale->frameFromPixel(rect.right()));
 
 	QToolTip::showText(QCursor::pos(),
 		tr("Start:\t%1\nEnd:\t%2\nLength:\t%3")
