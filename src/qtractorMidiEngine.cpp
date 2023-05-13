@@ -1593,6 +1593,7 @@ void qtractorMidiEngine::shutOffAllTracks (void)
 
 	QHash<qtractorMidiBus *, unsigned short> channels;
 
+	const unsigned long iQueueTime = queueTime();
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Midi) {
@@ -1603,6 +1604,7 @@ void qtractorMidiEngine::shutOffAllTracks (void)
 				const unsigned short iChannelMask = (1 << iChannel);
 				const unsigned short iChannelFlags = channels.value(pMidiBus, 0);
 				if ((iChannelFlags & iChannelMask) == 0) {
+					pMidiBus->dequeueNoteOffs(iQueueTime);
 					pMidiBus->setController(pTrack, ALL_SOUND_OFF);
 					pMidiBus->setController(pTrack, ALL_NOTES_OFF);
 					pMidiBus->setController(pTrack, ALL_CONTROLLERS_OFF);

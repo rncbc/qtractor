@@ -37,8 +37,8 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2943"/>
         <location filename="../qtractorAudioEngine.cpp" line="3235"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4233"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4800"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4235"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4802"/>
         <source>%1 In</source>
         <translation>Вхід %1</translation>
     </message>
@@ -52,8 +52,8 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2947"/>
         <location filename="../qtractorAudioEngine.cpp" line="2956"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4237"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4246"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4239"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4248"/>
         <location filename="../qtractorTrack.cpp" line="699"/>
         <source>%1 Pan</source>
         <translation>Панорамування %1</translation>
@@ -61,8 +61,8 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2952"/>
         <location filename="../qtractorAudioEngine.cpp" line="3235"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4242"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4800"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4244"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4802"/>
         <source>%1 Out</source>
         <translation>Вихід %1</translation>
     </message>
@@ -515,8 +515,8 @@ MIDI:	</translation>
         <translation>скинути контролер</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="4235"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4244"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4237"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4246"/>
         <location filename="../qtractorTrack.cpp" line="693"/>
         <source>%1 Volume</source>
         <translation>Гучність %1</translation>

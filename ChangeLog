@@ -16,8 +16,8 @@ GIT HEAD
 - Do not send/Preview notes on the MIDI clip editor (aka. piano-roll)
   when playback is currently rolling. (EXPERIMENTAL)
 
-- Send all pending MIDI Note-Off events when playback stops/shuts-off.
-  (EXPERIMENTAL)
+- Send all pending MIDI Note-Off events when playback stops/shuts-off
+  (and/or the Panic! button is hit) (EXPERIMENTAL)
 
 - Fixed the internal MIDI file player queue to the highest resolution
   possible (PPQN aka ticks-per-beat). (EXPERIMENTAL)
