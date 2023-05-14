@@ -603,7 +603,7 @@ void qtractorAudioEngine::notifyBuffEvent ( unsigned int iBufferSize )
 		m_proxy.notifyBuffEvent(iBufferSize);
 	} else {
 		m_iBufferSize = iBufferSize;
-		if (m_iBlockSize < m_iBufferSize)
+		if (m_iBlockSize > m_iBufferSize)
 			m_iBlockSize = m_iBufferSize;
 	}
 }
@@ -716,7 +716,7 @@ bool qtractorAudioEngine::init (void)
 
 	// Block-stride size changes...
 	m_iBlockSize = BLOCK_SIZE;
-	if (m_iBlockSize < m_iBufferSize)
+	if (m_iBlockSize > m_iBufferSize)
 		m_iBlockSize = m_iBufferSize;
 
 	// Guard for buffer size changes...

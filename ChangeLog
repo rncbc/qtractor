@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a zero-day blunder that was keeping the real-time process
+  cycle from having the uniform block-size of 64 frames per period;
+  (thus, probably inefective since v0.9.30). (EXPERIMENTAL)
+
 - Multiple MIDI clip tools may now be applied simultaneously, in a
   single shot, in the following priority order: quantize, transpose,
   normalize, resize, rescale and timeshift. (EXPERIMENTAL)
