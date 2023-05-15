@@ -2344,8 +2344,8 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	if (pSession) {
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine) {
-			m_iMinBlockLength     = pAudioEngine->blockSize();
-			m_iMaxBlockLength     = pAudioEngine->bufferSizeEx();
+			m_iMinBlockLength = pAudioEngine->bufferSize();
+			m_iMaxBlockLength = pAudioEngine->bufferSizeEx();
 			m_iNominalBlockLength = m_iMinBlockLength;
 		}
 	}
