@@ -2437,16 +2437,12 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	m_events_in.clear();
 	m_events_out.clear();
 
-	const bool         bFreewheel  = pAudioEngine->isFreewheel();
-	const unsigned int iSampleRate = pAudioEngine->sampleRate();
-	const unsigned int iBufferSize = pAudioEngine->bufferSize();
-	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
-
 	Vst::ProcessSetup setup;
-	setup.processMode        = (bFreewheel ? Vst::kOffline :  Vst::kRealtime);
+	const bool bFreewheel    = pAudioEngine->isFreewheel();
+	setup.processMode        = (bFreewheel ? Vst::kOffline :Vst::kRealtime);
 	setup.symbolicSampleSize = Vst::kSample32;
-	setup.maxSamplesPerBlock = iBufferSizeEx;
-	setup.sampleRate         = float(iSampleRate);
+	setup.maxSamplesPerBlock = pAudioEngine->bufferSizeEx();
+	setup.sampleRate         = float(pAudioEngine->sampleRate());
 
 	if (m_processor->setupProcessing(setup) != kResultOk)
 		return false;
@@ -2461,7 +2457,7 @@ bool qtractorVst3Plugin::Impl::process_reset (
 	m_buffers_out.channelBuffers32 = nullptr;
 
 	// Setup processor data struct...
-	m_process_data.numSamples             = iBufferSize;
+	m_process_data.numSamples             = pAudioEngine->blockSize();
 	m_process_data.symbolicSampleSize     = Vst::kSample32;
 
 	if (pType->audioIns() > 0) {

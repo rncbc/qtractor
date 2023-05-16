@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -65,12 +65,12 @@ static inline bool sse_enabled (void)
 // SSE enabled processor versions.
 static inline void sse_process_gain (
 	float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, float fGain )
+	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	__m128 v0 = _mm_load_ps1(&fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pFrames = ppFrames[i];
+		float *pFrames = ppFrames[i] + iOffset;
 		unsigned int nframes = iFrames;
 		for (; (long(pFrames) & 15) && (nframes > 0); --nframes)
 			*pFrames++ *= fGain;	
@@ -127,12 +127,12 @@ static inline void sse_process_dry_wet (
 
 static inline void sse_process_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, float fGain )
+	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	__m128 v0 = _mm_load_ps1(&fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[i];
+		float *pBuffer = ppBuffer[i] + iOffset;
 		float *pFrames = ppFrames[i];
 		unsigned int nframes = iFrames;
 		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
@@ -163,12 +163,12 @@ static inline void sse_process_add (
 // NEON enabled processor versions.
 static inline void neon_process_gain (
 	float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, float fGain )
+	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	float32x4_t vGain = vdupq_n_f32(fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pFrames = ppFrames[i];
+		float *pFrames = ppFrames[i] + iOffset;
 		unsigned int nframes = iFrames;
 		for (; (long(pFrames) & 15) && (nframes > 0); --nframes)
 			*pFrames++ *= fGain;
@@ -219,12 +219,12 @@ static inline void neon_process_dry_wet (
 
 static inline void neon_process_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, float fGain )
+	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	float32x4_t vGain = vdupq_n_f32(fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[i];
+		float *pBuffer = ppBuffer[i] + iOffset;
 		float *pFrames = ppFrames[i];
 		unsigned int nframes = iFrames;
 		for (; (long(pBuffer) & 15) && (nframes > 0); --nframes)
@@ -249,10 +249,10 @@ static inline void neon_process_add (
 // Standard processor versions.
 static inline void std_process_gain (
 	float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, float fGain )
+	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pFrames = ppFrames[i];
+		float *pFrames = ppFrames[i] + iOffset;
 		for (unsigned int n = 0; n < iFrames; ++n)
 			*pFrames++ *= fGain;
 	}
@@ -274,10 +274,10 @@ static inline void std_process_dry_wet (
 
 static inline void std_process_add (
 	float **ppBuffer, float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, float fGain )
+	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pBuffer = ppBuffer[i];
+		float *pBuffer = ppBuffer[i] + iOffset;
 		float *pFrames = ppFrames[i];
 		for (unsigned int n = 0; n < iFrames; ++n)
 			*pBuffer++ += fGain * *pFrames++;
@@ -614,18 +614,26 @@ void qtractorAudioInsertPlugin::process (
 
 //	m_pAudioBus->process_prepare(nframes);
 
+	qtractorAudioEngine *pAudioEngine
+	= static_cast<qtractorAudioEngine *> (m_pAudioBus->engine());
+	if (pAudioEngine == nullptr)
+		return;
+
+	const unsigned int iOffset = pAudioEngine->bufferOffset();
+	const unsigned int nbytes = nframes * sizeof(float);
+
 	float **ppOut = m_pAudioBus->out(); // Sends.
 	float **ppIn  = m_pAudioBus->in();  // Returns.
 
 	const unsigned short iChannels = channels();
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		::memcpy(ppOut[i], ppIBuffer[i], nframes * sizeof(float));
-		::memcpy(ppOBuffer[i], ppIn[i], nframes * sizeof(float));
+		::memcpy(ppOut[i] + iOffset, ppIBuffer[i], nbytes);
+		::memcpy(ppOBuffer[i], ppIn[i] + iOffset, nbytes);
 	}
 
 	const float fGain = m_pSendGainParam->value();
-	(*m_pfnProcessGain)(ppOut, nframes, iChannels, fGain);
+	(*m_pfnProcessGain)(ppOut, nframes, iOffset, iChannels, fGain);
 
 	const float fDry = m_pDryGainParam->value();
 	const float fWet = m_pWetGainParam->value();
@@ -1375,15 +1383,23 @@ void qtractorAudioAuxSendPlugin::process (
 
 //	m_pAudioBus->process_prepare(nframes);
 
+	qtractorAudioEngine *pAudioEngine
+	= static_cast<qtractorAudioEngine *> (m_pAudioBus->engine());
+	if (pAudioEngine == nullptr)
+		return;
+
+	const unsigned int iOffset = pAudioEngine->bufferOffset();
+	const unsigned int nbytes = nframes * sizeof(float);
+
 	float **ppOut = m_pAudioBus->out();
 
 	const unsigned short iChannels = channels();
 
 	for (unsigned short i = 0; i < iChannels; ++i)
-		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
+		::memcpy(ppOBuffer[i], ppIBuffer[i], nbytes);
 
 	const float fGain = m_pSendGainParam->value();
-	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iChannels, fGain);
+	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iOffset, iChannels, fGain);
 
 //	m_pAudioBus->process_commit(nframes);
 }

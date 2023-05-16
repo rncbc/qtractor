@@ -1,7 +1,7 @@
 // qtractorClapPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1508,7 +1508,7 @@ bool qtractorClapPlugin::Impl::process_reset (
 	deactivate();
 
 	m_srate = pAudioEngine->sampleRate();
-	m_nframes = pAudioEngine->blockSize();
+	m_nframes = pAudioEngine->bufferSize();
 	m_nframes_max = pAudioEngine->bufferSizeEx();
 
 	::memset(&m_audio_ins, 0, sizeof(m_audio_ins));
@@ -1531,7 +1531,7 @@ bool qtractorClapPlugin::Impl::process_reset (
 	}
 	m_process.in_events  = m_events_in.ins();
 	m_process.out_events = m_events_out.outs();
-	m_process.frames_count = pAudioEngine->bufferSize();
+	m_process.frames_count = pAudioEngine->blockSize();
 	m_process.steady_time = 0;
 	m_process.transport = g_host.transport();
 

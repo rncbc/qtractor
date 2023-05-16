@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -175,7 +175,7 @@ private:
 
 	// Custom optimized processors.
 	void (*m_pfnProcessGain)(float **, unsigned int,
-		unsigned short, float);
+		unsigned int, unsigned short, float);
 	void (*m_pfnProcessDryWet)(float **, float **, unsigned int,
 		unsigned short, float, float);
 };
@@ -378,7 +378,7 @@ private:
 
 	// Custom optimized processors.
 	void (*m_pfnProcessAdd)(float **, float **, unsigned int,
-		unsigned short, float);
+		unsigned int, unsigned short, float);
 };
 
 
