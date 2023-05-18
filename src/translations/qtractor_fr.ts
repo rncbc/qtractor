@@ -235,58 +235,60 @@ Fin :	%3	Longueur :	%4</translation>
         <translation>panoramique du bus</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="368"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="367"/>
         <source>Insert Send/Return pseudo-plugin (Audio)</source>
         <translation>Pseudo-greffon insert envoi/retour (audio)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="430"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="429"/>
         <source>Insert Send/Return pseudo-plugin (MIDI)</source>
         <translation>Pseudo-greffon insert envoi/retour (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="474"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="764"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1237"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1473"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="473"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="778"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1266"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1502"/>
         <source>Send Gain</source>
         <translation>Gain d&apos;envoi</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="482"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="772"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="481"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="786"/>
         <source>Dry Gain</source>
         <translation>Gain original (dry)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="490"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="780"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="489"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="794"/>
         <source>Wet Gain</source>
         <translation>Gain traité (wet)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1101"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1130"/>
         <source>Aux Send (Audio)</source>
         <translation>Envoi auxiliaire (audio)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1134"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1163"/>
         <source>Aux Send pseudo-plugin (Audio)</source>
         <translation>Pseudo-greffon envoi auxiliaire (audio)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1196"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1225"/>
         <source>Aux Send pseudo-plugin (MIDI)</source>
         <translation>Pseudo-greffon envoi auxiliaire (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1367"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="753"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1396"/>
         <location filename="../qtractorPluginListView.cpp" line="215"/>
         <source>%1 (Audio)</source>
         <translation>%1 (audio)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1620"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1075"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1649"/>
         <location filename="../qtractorPluginListView.cpp" line="235"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>

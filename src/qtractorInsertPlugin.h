@@ -159,6 +159,9 @@ public:
 	// Audio specific accessor.
 	qtractorAudioBus *audioBus() const;
 
+	// Update editor widget caption.
+	void setEditorTitle(const QString& sTitle);
+
 protected:
 
 	// Plugin configuration (connections).
@@ -216,6 +219,9 @@ public:
 	// MIDI specific accessor.
 	qtractorMidiBus *midiBus() const;
 
+	// Update editor widget caption.
+	void setEditorTitle(const QString& sTitle);
+
 protected:
 
 	// Plugin configuration (connections).
@@ -226,8 +232,8 @@ private:
 	// Instance variables.
 	qtractorMidiBus *m_pMidiBus;
 
-	qtractorMidiInputBuffer   *m_pMidiInputBuffer;
-	qtractorMidiOutputBuffer  *m_pMidiOutputBuffer;
+	qtractorMidiInputBuffer  *m_pMidiInputBuffer;
+	qtractorMidiOutputBuffer *m_pMidiOutputBuffer;
 
 	Param *m_pSendGainParam;
 	Param *m_pDryGainParam;

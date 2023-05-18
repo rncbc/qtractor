@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Send/return inserts now show their proper names on the properties
+  editor title.
+
 - Fixed a zero-day blunder that was keeping the real-time process
   cycle from having the uniform block-size of 64 frames per period;
   (thus, probably inefective since v0.9.30). (EXPERIMENTAL)

@@ -506,7 +506,7 @@ void qtractorPlugin::updateEditorTitle (void)
 	setEditorTitle(sEditorTitle);
 
 	if (m_pForm)
-		m_pForm->setWindowTitle(sEditorTitle);
+		m_pForm->setWindowTitle(editorTitle());
 }
 
 

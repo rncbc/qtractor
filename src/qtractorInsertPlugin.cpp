@@ -25,7 +25,6 @@
 #include "qtractorInsertPlugin.h"
 
 #include "qtractorSession.h"
-#include "qtractorSessionCursor.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiManager.h"
@@ -744,6 +743,21 @@ qtractorAudioBus *qtractorAudioInsertPlugin::audioBus (void) const
 }
 
 
+// Update editor widget caption.
+void qtractorAudioInsertPlugin::setEditorTitle ( const QString& sTitle )
+{
+	QString sEditorTitle = sTitle;
+
+	qtractorPluginType *pType = type();
+	if (pType && m_pAudioBus) {
+		QString sText = QObject::tr("%1 (Audio)").arg(m_pAudioBus->busName());
+		sEditorTitle.replace(pType->name(), sText.replace('_', ' '));
+	}
+
+	qtractorPlugin::setEditorTitle(sEditorTitle);
+}
+
+
 //----------------------------------------------------------------------------
 // qtractorMidiInsertPlugin -- MIDI-insert pseudo-plugin instance.
 //
@@ -1048,6 +1062,21 @@ void qtractorMidiInsertPlugin::freezeConfigs ( int iBusMode )
 qtractorMidiBus *qtractorMidiInsertPlugin::midiBus (void) const
 {
 	return m_pMidiBus;
+}
+
+
+// Update editor widget caption.
+void qtractorMidiInsertPlugin::setEditorTitle ( const QString& sTitle )
+{
+	QString sEditorTitle = sTitle;
+
+	qtractorPluginType *pType = type();
+	if (pType && m_pMidiBus) {
+		QString sText = QObject::tr("%1 (MIDI)").arg(m_pMidiBus->busName());
+		sEditorTitle.replace(pType->name(), sText.replace('_', ' '));
+	}
+
+	qtractorPlugin::setEditorTitle(sTitle);
 }
 
 

@@ -3152,8 +3152,8 @@ void qtractorClapPlugin::openEditor ( QWidget *pParent )
 
 	// Final stabilization...
 	updateEditorTitle();
-    if (m_pEditorWidget)
-	  moveWidgetPos(m_pEditorWidget, editorPos());
+	if (m_pEditorWidget)
+		moveWidgetPos(m_pEditorWidget, editorPos());
 	setEditorVisible(true);
 }
 
@@ -3296,7 +3296,7 @@ void qtractorClapPlugin::setEditorTitle ( const QString& sTitle )
 {
 	qtractorPlugin::setEditorTitle(sTitle);
 
-    if (!m_bEditorCreated)
+	if (!m_bEditorCreated)
 		return;
 
 	const clap_plugin *plugin = m_pImpl->plugin();
