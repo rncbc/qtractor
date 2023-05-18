@@ -958,22 +958,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 <context>
     <name>qtractorAudioMixerMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="625"/>
+        <location filename="../qtractorAudioMeter.cpp" line="627"/>
         <source>Gain (dB)</source>
         <translation>Підсилення (дБ)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="626"/>
+        <location filename="../qtractorAudioMeter.cpp" line="628"/>
         <source> dB</source>
         <translation> дБ</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="696"/>
+        <location filename="../qtractorAudioMeter.cpp" line="698"/>
         <source>Pan: %1</source>
         <translation>Пан.: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="705"/>
+        <location filename="../qtractorAudioMeter.cpp" line="707"/>
         <source>Gain: %1 dB</source>
         <translation>Підсил.: %1 дБ</translation>
     </message>
@@ -10698,22 +10698,22 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="598"/>
+        <location filename="../qtractorMidiMeter.cpp" line="599"/>
         <source>Volume (%)</source>
         <translation>Гучність (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="599"/>
+        <location filename="../qtractorMidiMeter.cpp" line="600"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="680"/>
+        <location filename="../qtractorMidiMeter.cpp" line="681"/>
         <source>Pan: %1</source>
         <translation>Пан.: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="690"/>
+        <location filename="../qtractorMidiMeter.cpp" line="691"/>
         <source>Volume: %1%</source>
         <translation>Гучність %1%</translation>
     </message>

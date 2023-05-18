@@ -956,22 +956,22 @@ Spur: &quot;%1&quot; Eingang: &quot;%2&quot; Ausgang: &quot;%3&quot;</translatio
 <context>
     <name>qtractorAudioMixerMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="625"/>
+        <location filename="../qtractorAudioMeter.cpp" line="627"/>
         <source>Gain (dB)</source>
         <translation>Verstärkung (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="626"/>
+        <location filename="../qtractorAudioMeter.cpp" line="628"/>
         <source> dB</source>
         <translation> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="696"/>
+        <location filename="../qtractorAudioMeter.cpp" line="698"/>
         <source>Pan: %1</source>
         <translation type="unfinished">Balance: (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="705"/>
+        <location filename="../qtractorAudioMeter.cpp" line="707"/>
         <source>Gain: %1 dB</source>
         <translation>Verstärkung: %1 dB</translation>
     </message>
@@ -10640,22 +10640,22 @@ Möchten Sie die Änderungen speichern?</translation>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="598"/>
+        <location filename="../qtractorMidiMeter.cpp" line="599"/>
         <source>Volume (%)</source>
         <translation>Lautstärke (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="599"/>
+        <location filename="../qtractorMidiMeter.cpp" line="600"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="680"/>
+        <location filename="../qtractorMidiMeter.cpp" line="681"/>
         <source>Pan: %1</source>
         <translation>Balance: (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="690"/>
+        <location filename="../qtractorMidiMeter.cpp" line="691"/>
         <source>Volume: %1%</source>
         <translation>Lautstärke: %1%</translation>
     </message>

@@ -1,7 +1,7 @@
 // qtractorAudioMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -380,6 +380,8 @@ qtractorAudioMeter::qtractorAudioMeter (
 	m_pPixmap = new QPixmap();
 #endif
 
+	m_fScale0dB = 0.85f;
+
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
 
 	for (int i = 0; i < LevelCount; ++i)
@@ -484,7 +486,7 @@ void qtractorAudioMeter::updatePixmap (void)
 // Resize event handler.
 void qtractorAudioMeter::resizeEvent ( QResizeEvent *pResizeEvent )
 {
-	qtractorMeter::setScale(0.85f * float(QWidget::height()));
+	qtractorMeter::setScale(m_fScale0dB * float(QWidget::height()));
 
 	m_levels[Color0dB]  = iec_scale(  0.0f);
 	m_levels[Color3dB]  = iec_scale( -3.0f);

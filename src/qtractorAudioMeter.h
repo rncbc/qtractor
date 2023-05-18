@@ -1,7 +1,7 @@
 // qtractorAudioMeter.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -138,6 +138,12 @@ public:
 	static const QColor& color(int iIndex);
 	static const QColor& defaultColor(int iIndex);
 
+	// 0dBfs factor (in percent).
+	void setScale0dB(float fScale0dB)
+		{ m_fScale0dB = fScale0dB; }
+	float scale0dB() const
+		{ return m_fScale0dB; }
+
 protected:
 
 	// Specific event handlers.
@@ -153,6 +159,7 @@ private:
 
 	int m_levels[LevelCount];
 
+	float m_fScale0dB;
 
 #ifdef CONFIG_GRADIENT
 	QPixmap *m_pPixmap;

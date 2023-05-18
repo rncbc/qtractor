@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed an allegedly old and incorrect 0dBfs notch position on MIDI
+  track/buses audio meter sidekicks. (GH issue #387)
+
 - Send/return inserts now show their proper names on the properties
   editor title.
 
