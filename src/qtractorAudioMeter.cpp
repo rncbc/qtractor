@@ -468,13 +468,13 @@ void qtractorAudioMeter::updatePixmap (void)
 {
 	const int w = QWidget::width();
 	const int h = QWidget::height();
-
+	const float f0dB = 1.0f - m_fScale0dB;
 	QLinearGradient grad(0, 0, 0, h);
-	grad.setColorAt(0.1f, color(ColorOver));
-	grad.setColorAt(0.2f, color(Color0dB));
-	grad.setColorAt(0.3f, color(Color3dB));
-	grad.setColorAt(0.4f, color(Color6dB));
-	grad.setColorAt(0.8f, color(Color10dB));
+	grad.setColorAt(f0dB * 0.5f, color(ColorOver));
+	grad.setColorAt(f0dB,        color(Color0dB));
+	grad.setColorAt(f0dB + 0.1f, color(Color3dB));
+	grad.setColorAt(f0dB + 0.2f, color(Color6dB));
+	grad.setColorAt(f0dB + 0.6f, color(Color10dB));
 
 	*m_pPixmap = QPixmap(w, h);
 
