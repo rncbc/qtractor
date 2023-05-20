@@ -9,8 +9,8 @@ GIT HEAD
 - Fixed an allegedly old and incorrect 0dBfs notch position on MIDI
   track/buses audio meter sidekicks. (GH issue #387)
 
-- Send/return inserts now show their proper names on the properties
-  editor title.
+- Send/return and Aux-send inserts now show the proper name and the
+  target ouput bus name on the properties editor title respectively. 
 
 - Fixed a zero-day blunder that was keeping the real-time process
   cycle from having the uniform block-size of 64 frames per period;

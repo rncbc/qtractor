@@ -7296,7 +7296,7 @@ bool qtractorMainForm::trackCurveSelectMenuReset ( QMenu *pMenu ) const
 		pMenu->addSeparator();
 		qtractorPlugin *pPlugin = pPluginList->first();
 		while (pPlugin) {
-			QMenu *pPluginMenu = pMenu->addMenu(pPlugin->type()->name());
+			QMenu *pPluginMenu = pMenu->addMenu(pPlugin->title());
 			trackCurveSelectMenuAction(pPluginMenu,
 				pPlugin->activateObserver(), pCurrentSubject);
 			const qtractorPlugin::Params& params = pPlugin->params();

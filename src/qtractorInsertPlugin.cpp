@@ -743,18 +743,19 @@ qtractorAudioBus *qtractorAudioInsertPlugin::audioBus (void) const
 }
 
 
-// Update editor widget caption.
-void qtractorAudioInsertPlugin::setEditorTitle ( const QString& sTitle )
+// Override title/name caption.
+QString qtractorAudioInsertPlugin::title (void) const
 {
-	QString sEditorTitle = sTitle;
+	QString sTitle;
 
-	qtractorPluginType *pType = type();
-	if (pType && m_pAudioBus) {
-		QString sText = QObject::tr("%1 (Audio)").arg(m_pAudioBus->busName());
-		sEditorTitle.replace(pType->name(), sText.replace('_', ' '));
+	if (m_pAudioBus) {
+		sTitle = QObject::tr("%1 (Audio)").arg(m_pAudioBus->busName());
+		sTitle.replace('_', ' ');
+	} else {
+		sTitle = qtractorPlugin::title();
 	}
 
-	qtractorPlugin::setEditorTitle(sEditorTitle);
+	return sTitle;
 }
 
 
@@ -1065,18 +1066,19 @@ qtractorMidiBus *qtractorMidiInsertPlugin::midiBus (void) const
 }
 
 
-// Update editor widget caption.
-void qtractorMidiInsertPlugin::setEditorTitle ( const QString& sTitle )
+// Override title/name caption.
+QString qtractorMidiInsertPlugin::title (void) const
 {
-	QString sEditorTitle = sTitle;
+	QString sTitle;
 
-	qtractorPluginType *pType = type();
-	if (pType && m_pMidiBus) {
-		QString sText = QObject::tr("%1 (MIDI)").arg(m_pMidiBus->busName());
-		sEditorTitle.replace(pType->name(), sText.replace('_', ' '));
+	if (m_pMidiBus) {
+		sTitle = QObject::tr("%1 (MIDI)").arg(m_pMidiBus->busName());
+		sTitle.replace('_', ' ');
+	} else {
+		sTitle = qtractorPlugin::title();
 	}
 
-	qtractorPlugin::setEditorTitle(sTitle);
+	return sTitle;
 }
 
 
@@ -1392,11 +1394,19 @@ const QString& qtractorAudioAuxSendPlugin::audioBusName (void) const
 // Audio bus to appear on plugin lists.
 void qtractorAudioAuxSendPlugin::updateAudioBusName (void) const
 {
-	const QString sText(m_pAudioBus
-		? QObject::tr("%1 (Audio)").arg(m_sAudioBusName) : type()->name());
+	const QString& sTitle = title();
 	QListIterator<qtractorPluginListItem *> iter(items());
 	while (iter.hasNext())
-		iter.next()->setText(sText);
+		iter.next()->setText(sTitle);
+}
+
+
+// Override title/name caption.
+QString qtractorAudioAuxSendPlugin::title (void) const
+{
+	const QString sAudioBusName
+		= (m_pAudioBus ? m_sAudioBusName : QObject::tr("(none)"));
+	return QObject::tr("%1 (Audio)").arg(sAudioBusName);
 }
 
 
@@ -1645,11 +1655,19 @@ const QString& qtractorMidiAuxSendPlugin::midiBusName (void) const
 // Audio bus to appear on plugin lists.
 void qtractorMidiAuxSendPlugin::updateMidiBusName (void) const
 {
-	const QString sText(m_pMidiBus
-		? QObject::tr("%1 (MIDI)").arg(m_sMidiBusName) : type()->name());
+	const QString& sTitle = title();
 	QListIterator<qtractorPluginListItem *> iter(items());
 	while (iter.hasNext())
-		iter.next()->setText(sText);
+		iter.next()->setText(sTitle);
+}
+
+
+// Override title/name caption.
+QString qtractorMidiAuxSendPlugin::title (void) const
+{
+	const QString sMidiBusName
+		= (m_pMidiBus ? m_sMidiBusName : QObject::tr("(none)"));
+	return QObject::tr("%1 (MIDI)").arg(sMidiBusName);
 }
 
 

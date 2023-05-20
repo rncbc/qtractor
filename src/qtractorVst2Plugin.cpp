@@ -1581,7 +1581,7 @@ static VstIntPtr qtractorVst2Plugin_openFileSelector (
 		if (pParentWidget)
 			pParentWidget = pParentWidget->window();
 		const QString& sTitle = QString("%1 - %2")
-			.arg(pvfs->title).arg((pVst2Plugin->type())->name());
+			.arg(pvfs->title).arg(pVst2Plugin->title());
 		const QString& sDirectory = pvfs->initialPath;
 		const QString& sFilter = filters.join(";;");
 		QFileDialog::Options options;
@@ -1610,7 +1610,7 @@ static VstIntPtr qtractorVst2Plugin_openFileSelector (
 		if (pParentWidget)
 			pParentWidget = pParentWidget->window();
 		const QString& sTitle = QString("%1 - %2")
-			.arg(pvfs->title).arg((pVst2Plugin->type())->name());
+			.arg(pvfs->title).arg(pVst2Plugin->title());
 		const QFileDialog::Options options
 			= QFileDialog::ShowDirsOnly | QFileDialog::DontUseNativeDialog;
 		const QString& sDirectory

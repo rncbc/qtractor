@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -498,7 +498,7 @@ void qtractorPlugin::reset (void)
 // Update editor title.
 void qtractorPlugin::updateEditorTitle (void)
 {
-	QString sEditorTitle = m_pType->name();
+	QString sEditorTitle = title();
 
 	if (m_pList && !m_pList->name().isEmpty())
 		sEditorTitle += " - " + m_pList->name();

@@ -1,7 +1,7 @@
 // qtractorMidiManager.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1589,7 +1589,7 @@ void qtractorMidiManager::updateInstruments (void)
 		int iIndex = 0;
 		int iBanks = 0;
 		qtractorPlugin::Program program;
-		const QString& sInstrumentName = (pPlugin->type())->name();
+		const QString& sInstrumentName = pPlugin->title();
 		qtractorInstrument& instr = m_instruments[sInstrumentName];
 		instr.setInstrumentName(sInstrumentName);
 		while (pPlugin->getProgram(iIndex++, program)) {

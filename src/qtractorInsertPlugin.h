@@ -159,8 +159,8 @@ public:
 	// Audio specific accessor.
 	qtractorAudioBus *audioBus() const;
 
-	// Update editor widget caption.
-	void setEditorTitle(const QString& sTitle);
+	// Override title/name captioon.
+	QString title() const;
 
 protected:
 
@@ -219,8 +219,8 @@ public:
 	// MIDI specific accessor.
 	qtractorMidiBus *midiBus() const;
 
-	// Update editor widget caption.
-	void setEditorTitle(const QString& sTitle);
+	// Override title/name captioon.
+	QString title() const;
 
 protected:
 
@@ -368,6 +368,9 @@ public:
 	// Audio bus to appear on plugin lists.
 	void updateAudioBusName() const;
 
+	// Override title/name captioon.
+	QString title() const;
+
 protected:
 
 	// Do the actual (de)activation.
@@ -422,6 +425,9 @@ public:
 
 	// Audio bus to appear on plugin lists.
 	void updateMidiBusName() const;
+
+	// Override title/name captioon.
+	QString title() const;
 
 protected:
 

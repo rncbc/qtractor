@@ -1,7 +1,7 @@
 // qtractorPluginForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -73,6 +73,7 @@ public:
 
 	void updateActivated();
 	void updateDirtyCount();
+
 	void updateAuxSendBusName();
 
 	void toggleEditor(bool bOn);
@@ -124,6 +125,9 @@ protected:
 
 	// Update the about text label (with some varying meta-data)...
 	void updateLatencyTextLabel();
+
+	// Update special aux-send window title...
+	void updateAuxSendTitle();
 
 private:
 

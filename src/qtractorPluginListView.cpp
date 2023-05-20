@@ -1,7 +1,7 @@
 // qtractorPluginListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -208,52 +208,7 @@ qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 {
 	m_pPlugin->addItem(this);
 
-	QString sText;
-
-	qtractorPluginType *pType = m_pPlugin->type();
-	if (pType->index() > 0) {
-		const QString& sAudioItem = QObject::tr("%1 (Audio)");
-		if (pType->typeHint() == qtractorPluginType::Insert) {
-			qtractorAudioInsertPlugin *pAudioInsertPlugin
-				= static_cast<qtractorAudioInsertPlugin *> (m_pPlugin);
-			if (pAudioInsertPlugin) {
-				qtractorAudioBus *pAudioBus = pAudioInsertPlugin->audioBus();
-				if (pAudioBus) {
-					sText = sAudioItem.arg(pAudioBus->busName());
-					sText.replace('_', ' '); // Humanize text!
-				}
-			}
-		}
-		else
-		if (pType->typeHint() == qtractorPluginType::AuxSend) {
-			qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
-				= static_cast<qtractorAudioAuxSendPlugin *> (m_pPlugin);
-			if (pAudioAuxSendPlugin)
-				sText = sAudioItem.arg(pAudioAuxSendPlugin->audioBusName());
-		}
-	} else {
-		const QString& sMidiItem = QObject::tr("%1 (MIDI)");
-		if (pType->typeHint() == qtractorPluginType::Insert) {
-			qtractorMidiInsertPlugin *pMidiInsertPlugin
-				= static_cast<qtractorMidiInsertPlugin *> (m_pPlugin);
-			if (pMidiInsertPlugin) {
-				qtractorMidiBus *pMidiBus = pMidiInsertPlugin->midiBus();
-				if (pMidiBus) {
-					sText = sMidiItem.arg(pMidiBus->busName());
-					sText.replace('_', ' '); // Humanize text!
-				}
-			}
-		}
-		else
-		if (pType->typeHint() == qtractorPluginType::AuxSend) {
-			qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
-				= static_cast<qtractorMidiAuxSendPlugin *> (m_pPlugin);
-			if (pMidiAuxSendPlugin)
-				sText = sMidiItem.arg(pMidiAuxSendPlugin->midiBusName());
-		}
-	}
-
-	QListWidgetItem::setText(sText.isEmpty() ? pType->name() : sText);
+	QListWidgetItem::setText(m_pPlugin->title());
 
 	updateActivated();
 }

@@ -1,7 +1,7 @@
 // qtractorPlugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -393,6 +393,10 @@ public:
 	virtual void setEditorVisible(bool /*bVisible*/) {}
 	virtual bool isEditorVisible() const
 		{ return false; }
+
+	// Nominal plugin name/title
+	virtual QString title() const
+		{ return (m_pType ? m_pType->name() : QString()); }
 
 	virtual void setEditorTitle(const QString& sTitle)
 		{ m_sEditorTitle = sTitle; }

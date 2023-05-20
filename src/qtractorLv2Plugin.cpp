@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -3331,7 +3331,7 @@ void qtractorLv2Plugin::openEditor ( QWidget *pParent )
 		&& (ui_map.count() > 1)
 		&& (0 >= iEditorType || ui_iter == ui_end)) {
 		const QString& sTitle
-			= type()->name();
+			= title();
 		const QString& sText
 			= QObject::tr("Select plug-in's editor (GUI):");
 		qtractorMessageBox mbox(qtractorMainForm::getInstance());
