@@ -46,6 +46,7 @@
 #include <QMessageBox>
 #include <QTabWidget>
 #include <QGridLayout>
+#include <QSpacerItem>
 #include <QValidator>
 #include <QTextEdit>
 #include <QLabel>
@@ -270,6 +271,9 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	while (iter.hasNext()) {
 		pGridLayout->addWidget(iter.next(), iRow, iColumn);
 		if (++iRow >= iRowsPerPage) {
+			pGridLayout->addItem(new QSpacerItem(0, 0,
+				QSizePolicy::Minimum,
+				QSizePolicy::Expanding), iRow, 0, 1, iColumnsPerPage);
 			iRow = 0;
 			if (++iColumn >= iColumnsPerPage) {
 				iColumn = 0;
