@@ -35,7 +35,7 @@
 //
 static inline float cbrtf2 ( float x )
 {
-#ifdef CONFIG_FLOAT32//_NOP
+#ifdef CONFIG_FLOAT32_NOP
 	// Avoid strict-aliasing optimization (gcc -O2).
 	union { float f; int i; } u;
 	u.f  = x;
