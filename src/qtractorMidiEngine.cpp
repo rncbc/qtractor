@@ -1391,20 +1391,12 @@ void qtractorMidiEngine::resetTime (void)
 
 void qtractorMidiEngine::resetSync (void)
 {
-	if (m_pAlsaSeq == nullptr)
-		return;
-
 	qtractorSession *pSession = session();
-	if (pSession == nullptr)
-		return;
-
-	snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
-
-	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
-	m_iAudioFrameStart = pAudioEngine->jackFrameTime();
-	pAudioEngine->resetTransport();
-
-	snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
+	if (pSession && m_pAlsaSeq) {
+		snd_seq_stop_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
+		m_iAudioFrameStart = pSession->audioEngine()->jackFrameTime();
+		snd_seq_start_queue(m_pAlsaSeq, m_iAlsaQueue, nullptr);
+	}
 }
 
 
@@ -3496,6 +3488,11 @@ unsigned short qtractorMidiEngine::countIn ( unsigned int nframes )
 		}
 	}
 
+	return m_iCountIn;
+}
+
+unsigned short qtractorMidiEngine::countIn (void) const
+{
 	return m_iCountIn;
 }
 

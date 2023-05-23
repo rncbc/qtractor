@@ -224,6 +224,7 @@ public:
 
 	// Metronome count-in status.
 	unsigned short countIn(unsigned int nframes);
+	unsigned short countIn() const;
 
 	// Control bus accessors.
 	void setControlBus(bool bControlBus);

@@ -449,6 +449,12 @@ static int qtractorAudioEngine_sync (
 	if (pAudioEngine->isFreewheel())
 		return 0;
 
+	if (pAudioEngine->countIn() > 0)
+		return 0;
+
+	if (pAudioEngine->session()->midiEngine()->countIn() > 0)
+		return 0;
+
 	const bool bPlaying	= pAudioEngine->isPlaying();
 	if ((state == JackTransportStopped  &&  bPlaying) ||
 		(state == JackTransportStarting && !bPlaying) ||
@@ -2487,14 +2493,6 @@ void qtractorAudioEngine::setTransportLatency ( unsigned int iTransportLatency )
 unsigned int qtractorAudioEngine::transportLatency (void) const
 {
 	return m_iTransportLatency;
-}
-
-
-// JACK Transport start.
-void qtractorAudioEngine::resetTransport (void)
-{
-	if (m_transportMode & qtractorBus::Output)
-		jack_transport_locate(m_pJackClient, sessionCursor()->frame());
 }
 
 

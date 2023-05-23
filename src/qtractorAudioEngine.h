@@ -247,9 +247,6 @@ public:
 	void setTransportLatency(unsigned int iTransportLatency);
 	unsigned int transportLatency() const;
 
-	// JACK Transport reset.
-	void resetTransport();
-
 	// JACK Timebase mode accessors.
 	void setTimebase(bool bTimebase);
 	bool isTimebase() const;
