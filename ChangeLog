@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Reset JACK transport rolling location when metronome Count-in ends.
+
 - Fixed an allegedly old and incorrect 0dBfs notch position on MIDI
   track/buses audio meter sidekicks. (GH issue #387)
 

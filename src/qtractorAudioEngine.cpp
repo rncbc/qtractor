@@ -2490,6 +2490,14 @@ unsigned int qtractorAudioEngine::transportLatency (void) const
 }
 
 
+// JACK Transport start.
+void qtractorAudioEngine::resetTransport (void)
+{
+	if (m_transportMode & qtractorBus::Output)
+		jack_transport_locate(m_pJackClient, sessionCursor()->frame());
+}
+
+
 // JACK Timebase mode accessors.
 void qtractorAudioEngine::setTimebase ( bool bTimebase )
 {
