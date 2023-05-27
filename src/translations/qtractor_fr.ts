@@ -283,7 +283,7 @@ Fin :	%3	Longueur :	%4</translation>
         <location filename="../qtractorInsertPlugin.cpp" line="1408"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1669"/>
         <source>(none)</source>
-        <translation type="unfinished">(rien)</translation>
+        <translation>(rien)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="752"/>
@@ -917,7 +917,7 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorPluginForm.cpp" line="1189"/>
         <source>Aux Send: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Envoi aux : %1</translation>
     </message>
 </context>
 <context>
@@ -10563,7 +10563,7 @@ Voulez-vous sauvegarder les changements ?</translation>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="734"/>
         <source>edit %1</source>
-        <translation type="unfinished">éditer %1</translation>
+        <translation>éditer %1</translation>
     </message>
 </context>
 <context>
@@ -10572,102 +10572,102 @@ Voulez-vous sauvegarder les changements ?</translation>
         <location filename="../qtractorMidiEventList.cpp" line="149"/>
         <location filename="../qtractorMidiEventList.cpp" line="186"/>
         <source>Time</source>
-        <translation type="unfinished">Temps</translation>
+        <translation>Temps</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="150"/>
         <source>Type</source>
-        <translation type="unfinished">Type</translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="151"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="152"/>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="153"/>
         <source>Duration/Data</source>
-        <translation type="unfinished">Durée/Donnée</translation>
+        <translation>Durée/donnée</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="184"/>
         <source>Frame</source>
-        <translation type="unfinished">Trame</translation>
+        <translation>Trame</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="188"/>
         <source>BBT</source>
-        <translation type="unfinished">BBT</translation>
+        <translation>BBT</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="402"/>
         <source>Note On (%1)</source>
-        <translation type="unfinished">Note On (%1)</translation>
+        <translation>Note On (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="404"/>
         <source>Note Off (%1)</source>
-        <translation type="unfinished">Note Off (%1)</translation>
+        <translation>Note Off (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="406"/>
         <source>Key Press (%1)</source>
-        <translation type="unfinished">Touche Appuyée (%1)</translation>
+        <translation>Touche appuyée (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="408"/>
         <source>Controller (%1)</source>
-        <translation type="unfinished">Contrôleur (%1)</translation>
+        <translation>Contrôleur (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="410"/>
         <source>Control 14 (%1)</source>
-        <translation type="unfinished">Contrôle 14 (%1)</translation>
+        <translation>Contrôle 14 (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="412"/>
         <source>RPN (%1)</source>
-        <translation type="unfinished">RPN (%1)</translation>
+        <translation>RPN (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="414"/>
         <source>NRPN (%1)</source>
-        <translation type="unfinished">NRPN (%1)</translation>
+        <translation>NRPN (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="416"/>
         <source>Pgm Change</source>
-        <translation type="unfinished">Pgm Change</translation>
+        <translation>Pgm Change</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="418"/>
         <source>Chan Press</source>
-        <translation type="unfinished">Chan Press</translation>
+        <translation>Chan Press</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="420"/>
         <source>Pitch Bend</source>
-        <translation type="unfinished">Pitch Bend</translation>
+        <translation>Pitch Bend</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="422"/>
         <source>SysEx</source>
-        <translation type="unfinished">SysEx</translation>
+        <translation>SysEx</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="424"/>
         <source>Meta (%1)</source>
-        <translation type="unfinished">Méta (%1)</translation>
+        <translation>Méta (%1)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEventList.cpp" line="428"/>
         <source>Unknown (%1)</source>
-        <translation type="unfinished">Inconnu (%1)</translation>
+        <translation>Inconnu (%1)</translation>
     </message>
 </context>
 <context>
