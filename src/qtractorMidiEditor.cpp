@@ -2822,8 +2822,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	// This would the new event onset time...
 	pNode = cursor.seekPixel(x1);
 	const unsigned short p = (bEditView && m_bDrumMode ? 1 : 8);
-	const unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1) - t0, p);
-	x1 = pNode->pixelFromTick(t0 + t1);
+	const unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1), p);
+	x1 = pNode->pixelFromTick(t1);
 
 	// Check for time/onset changes and whether it's already drawn...
 	if (m_bEventDragEdit && m_pEventDrag) {
@@ -2897,7 +2897,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	}
 
 	// Create a brand new event...
-	qtractorMidiEvent *pEvent = new qtractorMidiEvent(t1, eventType);
+	qtractorMidiEvent *pEvent = new qtractorMidiEvent(t1 - t0, eventType);
 
 	// Compute value from given vertical position...
 	y1 = pos.y(); if (y1 < 1) y1 = 1; else if (y1 > h0) y1 = h0;
@@ -2974,8 +2974,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	}
 
 	// Now try to get the visual rectangular coordinates...
-	int w1 = pNode->pixelFromTick(
-		t0 + pEvent->time() + pEvent->duration()) - x1;
+	int w1 = pNode->pixelFromTick(pEvent->time() + pEvent->duration()) - x1;
 	if (w1 < 5)
 		w1 = 5;
 

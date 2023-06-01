@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed the snap-to-beat of new notes entry on the MIDI clip editor
+  (aka. piano-roll) due on time signature changes. (GH issue #394)
+
 - Start JACK transport rolling only when metronome Count-in ends.
   (EXPERIMENTAL)
 
