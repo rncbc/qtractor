@@ -1,7 +1,7 @@
 // qtractor_plugin_scan.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-202, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1506,7 +1506,7 @@ public:
 			for (uint32_t i = 0; i < nins; ++i) {
 				::memset(&info, 0, sizeof(info));
 				if (audio_ports->get(m_plugin, i, true, &info)) {
-					if (info.flags & CLAP_AUDIO_PORT_IS_MAIN)
+				//	if (info.flags & CLAP_AUDIO_PORT_IS_MAIN)
 						m_iAudioIns += info.channel_count;
 				}
 			}
@@ -1514,7 +1514,7 @@ public:
 			for (uint32_t i = 0; i < nouts; ++i) {
 				::memset(&info, 0, sizeof(info));
 				if (audio_ports->get(m_plugin, i, false, &info)) {
-					if (info.flags & CLAP_AUDIO_PORT_IS_MAIN)
+				//	if (info.flags & CLAP_AUDIO_PORT_IS_MAIN)
 						m_iAudioOuts += info.channel_count;
 				}
 			}
