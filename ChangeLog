@@ -4,39 +4,38 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.34  2023-06-08  A Spring'23 Release.
 
 - Fixed the snap-to-beat of new notes entry on the MIDI clip editor
-  (aka. piano-roll) due on time signature changes. (GH issue #394)
+  (aka. piano-roll) due on time signature changes.
 
 - Start JACK transport rolling only when metronome Count-in ends.
-  (EXPERIMENTAL)
 
 - Fixed an allegedly old and incorrect 0dBfs notch position on MIDI
-  track/buses audio meter sidekicks. (GH issue #387)
+  track/buses audio meter sidekicks.
 
 - Send/return and Aux-send inserts now show the proper name and the
   target ouput bus name on the properties editor title respectively. 
 
 - Fixed a zero-day blunder that was keeping the real-time process
   cycle from having the uniform block-size of 64 frames per period;
-  (thus, probably inefective since v0.9.30). (EXPERIMENTAL)
+  (thus, probably inefective since v0.9.30).
 
 - Multiple MIDI clip tools may now be applied simultaneously, in a
   single shot, in the following priority order: quantize, transpose,
-  normalize, resize, rescale and timeshift. (EXPERIMENTAL)
+  normalize, resize, rescale and timeshift.
 
 - Plugin inventory scan now slightly optimized to an allegedly lesser
-  agressive cache-invalidation algorythm. (EXPERIMENTAL)
+  agressive cache-invalidation algorythm.
 
 - Do not send/Preview notes on the MIDI clip editor (aka. piano-roll)
-  when playback is currently rolling. (EXPERIMENTAL)
+  when playback is currently rolling.
 
 - Send all pending MIDI Note-Off events when playback stops/shuts-off
-  (and/or the Panic! button is hit) (EXPERIMENTAL)
+  (and/or the Panic! button is hit).
 
 - Fixed the internal MIDI file player queue to the highest resolution
-  possible (PPQN aka ticks-per-beat). (EXPERIMENTAL)
+  possible (PPQN aka ticks-per-beat).
 
 - Prepping into the next development cycle (with Qt >= 6.5).
 
