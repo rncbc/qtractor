@@ -2294,7 +2294,7 @@ bool qtractorSession::loadElement (
 						if (eItem.tagName() == "text")
 							sText = eItem.text();
 						else if (eItem.tagName() == "color")
-							rgbColor.setNamedColor(eItem.text());
+							rgbColor = QColor::fromString(eItem.text());
 						else if (eItem.tagName() == "accidentals")
 							iAccidentals = eItem.text().toInt();
 						else if (eItem.tagName() == "mode")

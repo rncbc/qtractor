@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Preppings to next development cycle (Qt >= 6.6)
+
+
 0.9.34  2023-06-08  A Spring'23 Release.
 
 - Fixed the snap-to-beat of new notes entry on the MIDI clip editor

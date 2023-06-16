@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1897,11 +1897,9 @@ bool qtractorTrack::loadElement (
 				if (eView.tagName() == "height") {
 					qtractorTrack::setHeight(eView.text().toInt());
 				} else if (eView.tagName() == "background-color") {
-					QColor bg; bg.setNamedColor(eView.text());
-					qtractorTrack::setBackground(bg);
+					qtractorTrack::setBackground(QColor::fromString(eView.text()));
 				} else if (eView.tagName() == "foreground-color") {
-					QColor fg; fg.setNamedColor(eView.text());
-					qtractorTrack::setForeground(fg);
+					qtractorTrack::setForeground(QColor::fromString(eView.text()));
 				}
 			}
 		}
