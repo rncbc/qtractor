@@ -89,6 +89,9 @@
 #endif	// CONFIG_X11
 #else
 #include <QSharedMemory>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+#include <QNativeIpcKey>
+#endif
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QHostInfo>
@@ -293,14 +296,24 @@ bool qtractorApplication::setup (void)
 	}
 	m_sUnique += '@';
 	m_sUnique += QHostInfo::localHostName();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+	const QNativeIpcKey nativeKey
+		= QSharedMemory::legacyNativeKey(m_sUnique);
+#endif
 #ifdef Q_OS_UNIX
-	m_pMemory = new QSharedMemory();
-	m_pMemory->setNativeKey(m_sUnique);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+	m_pMemory = new QSharedMemory(nativeKey);
+#else
+	m_pMemory = new QSharedMemory(m_sUnique);
+#endif
 	m_pMemory->attach();
 	delete m_pMemory;
 #endif
-	m_pMemory = new QSharedMemory();
-	m_pMemory->setNativeKey(m_sUnique);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+	m_pMemory = new QSharedMemory(nativeKey);
+#else
+	m_pMemory = new QSharedMemory(m_sUnique);
+#endif
 	bool bServer = false;
 	const qint64 pid = QCoreApplication::applicationPid();
 	struct Data { qint64 pid; };
