@@ -276,7 +276,7 @@ End:	%3	Length:	%4</source>
         <translation>редагування списку автоматизації</translation>
     </message>
     <message>
-        <location filename="../qtractorCurveFile.cpp" line="222"/>
+        <location filename="../qtractorCurveFile.cpp" line="227"/>
         <source>%1: Automation/curve file not found.</source>
         <translation>%1: не знайдено файла автоматизації/кривої.</translation>
     </message>
