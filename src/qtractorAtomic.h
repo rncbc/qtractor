@@ -36,7 +36,9 @@ extern "C" {
 
 #if defined(HAVE_QATOMIC_H)
 
+#ifndef QT_VERSION_CHECK
 #include <QtVersionChecks>
+#endif
 
 typedef QAtomicInt qtractorAtomic;
 

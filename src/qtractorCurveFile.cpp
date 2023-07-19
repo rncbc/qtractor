@@ -102,8 +102,13 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 						if (eProp.tagName() == "logarithmic")
 							pItem->logarithmic = qtractorDocument::boolFromText(eProp.text());
 						else
-						if (eProp.tagName() == "color")
+						if (eProp.tagName() == "color") {
+						#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
 							pItem->color = QColor::fromString(eProp.text());
+						#else
+							pItem->color = QColor(eProp.text());
+						#endif
+						}
 					}
 					pItem->subject = nullptr;
 					addItem(pItem);

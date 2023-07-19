@@ -2293,8 +2293,13 @@ bool qtractorSession::loadElement (
 							continue;
 						if (eItem.tagName() == "text")
 							sText = eItem.text();
-						else if (eItem.tagName() == "color")
+						else if (eItem.tagName() == "color") {
+						#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
 							rgbColor = QColor::fromString(eItem.text());
+						#else
+							rgbColor = QColor(eItem.text());
+						#endif
+						}
 						else if (eItem.tagName() == "accidentals")
 							iAccidentals = eItem.text().toInt();
 						else if (eItem.tagName() == "mode")

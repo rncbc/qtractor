@@ -891,7 +891,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Автор: </translation>
     </message>
     <message>
-        <location filename="../qtractorCurveFile.cpp" line="222"/>
+        <location filename="../qtractorCurveFile.cpp" line="227"/>
         <source>%1: Automation/curve file not found.</source>
         <translation type="unfinished"></translation>
     </message>

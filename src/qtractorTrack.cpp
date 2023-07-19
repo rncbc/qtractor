@@ -1897,9 +1897,17 @@ bool qtractorTrack::loadElement (
 				if (eView.tagName() == "height") {
 					qtractorTrack::setHeight(eView.text().toInt());
 				} else if (eView.tagName() == "background-color") {
+				#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
 					qtractorTrack::setBackground(QColor::fromString(eView.text()));
+				#else
+					qtractorTrack::setBackground(QColor(eView.text()));
+				#endif
 				} else if (eView.tagName() == "foreground-color") {
+				#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
 					qtractorTrack::setForeground(QColor::fromString(eView.text()));
+				#else
+					qtractorTrack::setForeground(QColor(eView.text()));
+				#endif
 				}
 			}
 		}
