@@ -248,9 +248,9 @@ QString qtractorPlugin::g_sDefPreset = QObject::tr("(default)");
 qtractorPlugin::qtractorPlugin (
 	qtractorPluginList *pList, qtractorPluginType *pType )
 	: m_pList(pList), m_pType(pType), m_iUniqueID(0), m_iInstances(0),
-		m_bActivated(false), m_bAutoDeactivated(false),
-		m_activateObserver(this),
-		m_iActivateSubjectIndex(0), m_pForm(nullptr), m_iEditorType(-1),
+		m_iActivated(0), m_bActivated(false), m_bAutoDeactivated(false),
+		m_activateObserver(this), m_iActivateSubjectIndex(0),
+		m_pForm(nullptr), m_iEditorType(-1),
 		m_iDirectAccessParamIndex(-1)
 {
 	// Acquire a local unique id in chain...
@@ -333,14 +333,14 @@ void qtractorPlugin::autoDeactivatePlugin ( bool bDeactivated )
 		if (bDeactivated) {
 			// was activated?
 			if (m_bActivated) {
-				deactivate();
+				deactivated();
 				if (m_pList)
 					m_pList->updateActivated(false);
 			}
 		}
 		// reactivate?
 		else if (m_bActivated) {
-			activate();
+			activated();
 			if (m_pList)
 				m_pList->updateActivated(true);
 		}
@@ -361,16 +361,15 @@ void qtractorPlugin::updateActivated ( bool bActivated )
 {
 	if (( bActivated && !m_bActivated) ||
 		(!bActivated &&  m_bActivated)) {
-		m_bActivated = bActivated;
 		const bool bIsConnectedToOtherTracks = canBeConnectedToOtherTracks();
 		// Auto-plugin-deactivation overrides standard-activation for plugins
 		// without connections to other tracks (Inserts/AuxSends)
 		// otherwise user could (de)activate plugin without getting feedback
 		if (!m_bAutoDeactivated || bIsConnectedToOtherTracks) {
 			if (bActivated)
-				activate();
+				activated();
 			else
-				deactivate();
+				deactivated();
 			if (m_pList)
 				m_pList->updateActivated(bActivated);
 		}
@@ -416,10 +415,34 @@ void qtractorPlugin::updateActivatedEx ( bool bActivated )
 void qtractorPlugin::setChannelsActivated (
 	unsigned short iChannels, bool bActivated )
 {
-	if (iChannels > 0)
+	if (iChannels > 0) {
+		if (!bActivated) ++m_iActivated;
 		setActivated(bActivated);
-	else
+		if (!bActivated) m_iActivated = 0;
+	} else {
+		m_iActivated = 0;
 		updateActivated(bActivated);
+	}
+}
+
+
+void qtractorPlugin::activated (void)
+{
+	if (m_iActivated == 0) {
+		activate();
+		++m_iActivated;
+	}
+
+	m_bActivated = true;
+}
+
+
+void qtractorPlugin::deactivated (void)
+{
+	m_bActivated = false;
+
+	if (m_iActivated == 0)
+		deactivate();
 }
 
 
@@ -1926,34 +1949,11 @@ void qtractorPluginList::resetBuffers (void)
 
 	const unsigned int iBufferSizeEx = pAudioEngine->bufferSizeEx();
 
-#if 0
-	// Save and reset activation count...
-	int iActivated = m_iActivated;
-	m_iActivated = 0;
-
-	// Temporarily deactivate all activated plugins...
-	for (qtractorPlugin *pPlugin = first();
-			pPlugin; pPlugin = pPlugin->next()) {
-		if (pPlugin->isActivated())
-			pPlugin->deactivate();
-	}
-#endif
 	// Reset interim buffer, if any...
 	if (m_pppBuffers[1]) {
 		for (unsigned short i = 0; i < m_iChannels; ++i)
 			::memset(m_pppBuffers[1][i], 0, iBufferSizeEx * sizeof(float));
 	}
-#if 0
-	// Restore activation of all previously deactivated plugins...
-	for (qtractorPlugin *pPlugin = first();
-			pPlugin; pPlugin = pPlugin->next()) {
-		if (pPlugin->isActivated())
-			pPlugin->activate();
-	}
-
-	// Restore activation count.
-	m_iActivated = iActivated;
-#endif
 }
 
 

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Attempt to actually (de)activate plugins once on (de)instantiation.
+  (GH issue #402) (EXPERIMENTAL)
+
 - Preppings to next development cycle (Qt >= 6.6)
 
 
