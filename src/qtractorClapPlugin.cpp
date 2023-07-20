@@ -32,6 +32,8 @@
 
 #include <clap/clap.h>
 
+#include <QCoreApplication>
+#include <QMetaObject>
 #include <QFileInfo>
 #include <QWidget>
 
@@ -1973,11 +1975,11 @@ void qtractorClapPlugin::Impl::plugin_request_process (void)
 	//
 }
 
-
 void qtractorClapPlugin::Impl::plugin_request_callback (void)
 {
-	// TODO: ?...
-	//
+	QMetaObject::invokeMethod(QCoreApplication::instance(), [this]{
+		m_plugin->on_main_thread(m_plugin);
+	}, Qt::QueuedConnection);
 }
 
 
