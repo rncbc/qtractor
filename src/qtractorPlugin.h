@@ -612,7 +612,7 @@ private:
 	int m_iActivated;
 
 	// Activation flag.
-	bool m_bActivated;
+	volatile bool m_bActivated;
 
 	// Auto-plugin-deactivation flag
 	bool m_bAutoDeactivated;

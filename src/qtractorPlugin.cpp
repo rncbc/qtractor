@@ -361,7 +361,6 @@ void qtractorPlugin::updateActivated ( bool bActivated )
 {
 	if (( bActivated && !m_bActivated) ||
 		(!bActivated &&  m_bActivated)) {
-		m_bActivated = bActivated;
 		const bool bIsConnectedToOtherTracks = canBeConnectedToOtherTracks();
 		// Auto-plugin-deactivation overrides standard-activation for plugins
 		// without connections to other tracks (Inserts/AuxSends)
@@ -433,11 +432,15 @@ void qtractorPlugin::activated (void)
 		activate();
 		++m_iActivated;
 	}
+
+	m_bActivated = true;
 }
 
 
 void qtractorPlugin::deactivated (void)
 {
+	m_bActivated = false;
+
 	if (m_iActivated == 0)
 		deactivate();
 }
