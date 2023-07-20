@@ -46,9 +46,9 @@
 
 #include <QRegularExpression>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 #include <QCoreApplication>
-#endif
+#include <QMetaObject>
+#include <QThread>
 
 #if 0//QTRACTOR_CLAP_EDITOR_TOOL
 #include "qtractorOptions.h"
@@ -1980,11 +1980,17 @@ void qtractorClapPlugin::Impl::plugin_request_process (void)
 
 void qtractorClapPlugin::Impl::plugin_request_callback (void)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
-	QMetaObject::invokeMethod(QCoreApplication::instance(),
-		[this]{	m_plugin->on_main_thread(m_plugin); },
-		Qt::QueuedConnection);
-#endif
+	QTimer* timer = new QTimer(nullptr);
+	timer->setSingleShot(true);
+	timer->setInterval(0);
+	timer->moveToThread(QCoreApplication::instance()->thread());
+	QObject::connect(timer, &QTimer::timeout,
+		[this, timer]{
+			m_plugin->on_main_thread(m_plugin);
+			timer->deleteLater();
+		}
+	);
+	QMetaObject::invokeMethod(timer, "start", Qt::QueuedConnection);
 }
 
 
