@@ -788,24 +788,24 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>プロダクト: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="557"/>
+        <location filename="../qtractorClapPlugin.cpp" line="561"/>
         <location filename="../qtractorVst2Plugin.cpp" line="664"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1330"/>
         <source>Vendor: </source>
         <translation>ベンダー: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="570"/>
+        <location filename="../qtractorClapPlugin.cpp" line="574"/>
         <source>Manual: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="576"/>
+        <location filename="../qtractorClapPlugin.cpp" line="580"/>
         <source>Support: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="541"/>
+        <location filename="../qtractorClapPlugin.cpp" line="545"/>
         <location filename="../qtractorVst2Plugin.cpp" line="672"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1303"/>
         <source>Version: </source>
@@ -899,7 +899,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>%1: オートメーション/カーブファイルが見つかりません。</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="535"/>
+        <location filename="../qtractorClapPlugin.cpp" line="539"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1297"/>
         <source>Name: </source>
         <translation>名前: </translation>

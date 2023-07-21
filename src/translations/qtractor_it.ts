@@ -789,24 +789,24 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>Prodotto:</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="557"/>
+        <location filename="../qtractorClapPlugin.cpp" line="561"/>
         <location filename="../qtractorVst2Plugin.cpp" line="664"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1330"/>
         <source>Vendor: </source>
         <translation>Produttore: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="570"/>
+        <location filename="../qtractorClapPlugin.cpp" line="574"/>
         <source>Manual: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="576"/>
+        <location filename="../qtractorClapPlugin.cpp" line="580"/>
         <source>Support: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="541"/>
+        <location filename="../qtractorClapPlugin.cpp" line="545"/>
         <location filename="../qtractorVst2Plugin.cpp" line="672"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1303"/>
         <source>Version: </source>
@@ -900,7 +900,7 @@ Traccia: &quot;%1&quot; Ingresso: &quot;%2&quot; Uscita: &quot;%3&quot;</transla
         <translation>%1: File di automazione/curva non trovato.</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="535"/>
+        <location filename="../qtractorClapPlugin.cpp" line="539"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1297"/>
         <source>Name: </source>
         <translation type="unfinished"></translation>

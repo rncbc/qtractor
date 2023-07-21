@@ -624,19 +624,19 @@ MIDI:	</translation>
         <translation>Nomear sessão (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="541"/>
+        <location filename="../qtractorClapPlugin.cpp" line="545"/>
         <location filename="../qtractorVst2Plugin.cpp" line="672"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1303"/>
         <source>Version: </source>
         <translation>Versão: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="570"/>
+        <location filename="../qtractorClapPlugin.cpp" line="574"/>
         <source>Manual: </source>
         <translation>Manual: </translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="576"/>
+        <location filename="../qtractorClapPlugin.cpp" line="580"/>
         <source>Support: </source>
         <translation>Ajuda: </translation>
     </message>
@@ -757,7 +757,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Arquivos de áudio (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="557"/>
+        <location filename="../qtractorClapPlugin.cpp" line="561"/>
         <location filename="../qtractorVst2Plugin.cpp" line="664"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1330"/>
         <source>Vendor: </source>
@@ -901,7 +901,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>%1(%2): %3 plugin não encontrado.</translation>
     </message>
     <message>
-        <location filename="../qtractorClapPlugin.cpp" line="535"/>
+        <location filename="../qtractorClapPlugin.cpp" line="539"/>
         <location filename="../qtractorVst3Plugin.cpp" line="1297"/>
         <source>Name: </source>
         <translation>Nome: </translation>
