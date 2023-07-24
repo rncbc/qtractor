@@ -253,6 +253,7 @@ public:
 	void setActivatedEx(bool bActivated);
 	bool isActivated() const;
 	bool isActivatedEx() const;
+	bool isAutoDeactivated() const;
 
 	// Activate subject accessors.
 	qtractorSubject *activateSubject()

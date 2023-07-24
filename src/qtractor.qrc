@@ -61,6 +61,7 @@
         <file>images/itemInstrument.png</file>
         <file>images/itemLedOff.png</file>
         <file>images/itemLedOn.png</file>
+        <file>images/itemLedDim.png</file>
         <file>images/itemMidiClientIn.png</file>
         <file>images/itemMidiClientOut.png</file>
         <file>images/itemMidiFile.png</file>

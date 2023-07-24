@@ -231,9 +231,16 @@ qtractorPlugin *qtractorPluginListItem::plugin (void) const
 // Activation methods.
 void qtractorPluginListItem::updateActivated (void)
 {
+	int index = 0;
+	if (m_pPlugin) {
+		if (m_pPlugin->isActivated())
+			index = 1;
+		else
+		if (m_pPlugin->isAutoDeactivated())
+			index = 2;
+	}
 	QListWidgetItem::setIcon(
-		*qtractorPluginListView::itemIcon(
-			m_pPlugin && m_pPlugin->isActivated() ? 1 : 0));
+		*qtractorPluginListView::itemIcon(index));
 }
 
 
@@ -241,7 +248,7 @@ void qtractorPluginListItem::updateActivated (void)
 // qtractorPluginListView -- Plugin chain list widget instance.
 //
 int    qtractorPluginListView::g_iItemRefCount = 0;
-QIcon *qtractorPluginListView::g_pItemIcons[2] = { nullptr, nullptr };
+QIcon *qtractorPluginListView::g_pItemIcons[3] = { nullptr, nullptr, nullptr };
 
 // Construcctor.
 qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
@@ -250,6 +257,7 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	if (++g_iItemRefCount == 1) {
 		g_pItemIcons[0] = new QIcon(":/images/itemLedOff.png");
 		g_pItemIcons[1] = new QIcon(":/images/itemLedOn.png");
+		g_pItemIcons[2] = new QIcon(":/images/itemLedDim.png");
 	}
 
 	// Drag-and-drop stuff.
@@ -309,7 +317,7 @@ qtractorPluginListView::~qtractorPluginListView (void)
 	}
 
 	if (--g_iItemRefCount == 0) {
-		for (int i = 0; i < 2; ++i) {
+		for (int i = 0; i < 3; ++i) {
 			delete g_pItemIcons[i];
 			g_pItemIcons[i] = nullptr;
 		}

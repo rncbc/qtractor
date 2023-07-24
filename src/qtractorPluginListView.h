@@ -257,7 +257,7 @@ private:
 	TinyScrollBarStyle *m_pTinyScrollBarStyle;
 
 	// Common pixmap stuff.
-	static QIcon *g_pItemIcons[2];
+	static QIcon *g_pItemIcons[3];
 	static int    g_iItemRefCount;
 };
 

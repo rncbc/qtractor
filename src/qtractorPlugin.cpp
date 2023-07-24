@@ -325,6 +325,12 @@ bool qtractorPlugin::isActivatedEx (void) const
 	return m_bActivated;
 }
 
+bool qtractorPlugin::isAutoDeactivated (void) const
+{
+	return m_bActivated && m_bAutoDeactivated;
+}
+
+
 
 void qtractorPlugin::autoDeactivatePlugin ( bool bDeactivated )
 {
