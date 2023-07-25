@@ -201,11 +201,20 @@ private:
 
 //----------------------------------------------------------------------------
 // qtractorPluginListItem -- Plugins list item.
+//
+int    qtractorPluginListItem::g_iIconsRefCount = 0;
+QIcon *qtractorPluginListItem::g_pIcons[3] = { nullptr, nullptr, nullptr };
 
 // Constructors.
 qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 	: QListWidgetItem(), m_pPlugin(pPlugin), m_iDirectAccessWidth(0)
 {
+	if (++g_iIconsRefCount == 1) {
+		g_pIcons[0] = new QIcon(":/images/itemLedOff.png");
+		g_pIcons[1] = new QIcon(":/images/itemLedOn.png");
+		g_pIcons[2] = new QIcon(":/images/itemLedDim.png");
+	}
+
 	m_pPlugin->addItem(this);
 
 	QListWidgetItem::setText(m_pPlugin->title());
@@ -218,6 +227,13 @@ qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 qtractorPluginListItem::~qtractorPluginListItem (void)
 {
 	m_pPlugin->removeItem(this);
+
+	if (--g_iIconsRefCount == 0) {
+		for (int i = 0; i < 3; ++i) {
+			delete g_pIcons[i];
+			g_pIcons[i] = nullptr;
+		}
+	}
 }
 
 
@@ -232,34 +248,27 @@ qtractorPlugin *qtractorPluginListItem::plugin (void) const
 void qtractorPluginListItem::updateActivated (void)
 {
 	int index = 0;
+
 	if (m_pPlugin) {
-		if (m_pPlugin->isActivated())
+		if (m_pPlugin->isAutoActivated())
 			index = 1;
 		else
 		if (m_pPlugin->isAutoDeactivated())
 			index = 2;
 	}
-	QListWidgetItem::setIcon(
-		*qtractorPluginListView::itemIcon(index));
+
+	QListWidgetItem::setIcon(*g_pIcons[index]);
 }
 
 
 //----------------------------------------------------------------------------
 // qtractorPluginListView -- Plugin chain list widget instance.
 //
-int    qtractorPluginListView::g_iItemRefCount = 0;
-QIcon *qtractorPluginListView::g_pItemIcons[3] = { nullptr, nullptr, nullptr };
 
 // Construcctor.
 qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	: QListWidget(pParent), m_pPluginList(nullptr), m_pClickedItem(nullptr)
 {
-	if (++g_iItemRefCount == 1) {
-		g_pItemIcons[0] = new QIcon(":/images/itemLedOff.png");
-		g_pItemIcons[1] = new QIcon(":/images/itemLedOn.png");
-		g_pItemIcons[2] = new QIcon(":/images/itemLedDim.png");
-	}
-
 	// Drag-and-drop stuff.
 	m_dragCursor  = DragNone;
 	m_dragState   = DragNone;
@@ -315,13 +324,6 @@ qtractorPluginListView::~qtractorPluginListView (void)
 		delete m_pTinyScrollBarStyle;
 		m_pTinyScrollBarStyle = nullptr;
 	}
-
-	if (--g_iItemRefCount == 0) {
-		for (int i = 0; i < 3; ++i) {
-			delete g_pItemIcons[i];
-			g_pItemIcons[i] = nullptr;
-		}
-	}
 }
 
 
@@ -373,6 +375,7 @@ void qtractorPluginListView::refresh (void)
 		for (qtractorPlugin *pPlugin = m_pPluginList->first();
 				pPlugin; pPlugin = pPlugin->next()) {
 			QListWidget::addItem(new qtractorPluginListItem(pPlugin));
+			pPlugin->updateFormActivated();
 		}
 		QListWidget::setUpdatesEnabled(true);
 	}
@@ -1981,13 +1984,7 @@ void qtractorPluginListView::contextMenuEvent (
 }
 
 
-// Common pixmap accessors.
-QIcon *qtractorPluginListView::itemIcon ( int iIndex )
-{
-	return g_pItemIcons[iIndex];
-}
-
-
+// Show insert pseudo-plugin audio bus connections.
 static const char *c_pszPluginListItemMimeType = "qtractor/plugin-item";
 
 // Encoder method (static).

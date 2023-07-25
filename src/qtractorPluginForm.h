@@ -143,6 +143,10 @@ private:
 
 	int m_iDirtyCount;
 	int m_iUpdate;
+
+	// Common (de)activated icon stuff.
+	static QIcon *g_pIcons[2];
+	static int    g_iIconsRefCount;
 };
 
 

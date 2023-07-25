@@ -73,6 +73,10 @@ private:
 
 	// Last known item logical width.
 	int m_iDirectAccessWidth;
+
+	// Common (de)activated icon/pixmap stuff.
+	static QIcon *g_pIcons[3];
+	static int    g_iIconsRefCount;
 };
 
 
@@ -110,9 +114,6 @@ public:
 
 	// Get an item index, given the plugin reference...
 	int pluginItem(qtractorPlugin *pPlugin);
-
-	// Common pixmap accessors.
-	static QIcon *itemIcon(int iIndex);
 
 	// Show insert pseudo-plugin audio bus connections.
 	static void insertPluginBus(qtractorPlugin *pPlugin, int iBusMode);
@@ -255,10 +256,6 @@ private:
 
 	// Common tiny scrollbar style stuff.
 	TinyScrollBarStyle *m_pTinyScrollBarStyle;
-
-	// Common pixmap stuff.
-	static QIcon *g_pItemIcons[3];
-	static int    g_iItemRefCount;
 };
 
 

@@ -307,22 +307,28 @@ void qtractorPlugin::setActivated ( bool bActivated )
 	setActivatedEx(bActivated);
 }
 
+bool qtractorPlugin::isActivated (void) const
+{
+	return m_bActivated;
+}
+
+
 // queued (GUI invocation)
 void qtractorPlugin::setActivatedEx ( bool bActivated )
 {
 	m_activateSubject.setValue(bActivated ? 1.0f : 0.0f);
 }
 
-bool qtractorPlugin::isActivated (void) const
+bool qtractorPlugin::isActivatedEx (void) const
 {
-	return m_bActivated && !m_bAutoDeactivated;
+	return (m_activateSubject.value() > 0.5f);
 }
 
 
-// Avoid save/copy auto-deactivated as deactivated...
-bool qtractorPlugin::isActivatedEx (void) const
+// auto-(de)activation
+bool qtractorPlugin::isAutoActivated (void) const
 {
-	return m_bActivated;
+	return m_bActivated && !m_bAutoDeactivated;
 }
 
 bool qtractorPlugin::isAutoDeactivated (void) const
@@ -414,8 +420,7 @@ void qtractorPlugin::updateActivatedEx ( bool bActivated )
 	while (iter.hasNext())
 		iter.next()->updateActivated();
 
-	if (m_pForm)
-		m_pForm->updateActivated();
+	updateFormActivated();
 }
 
 
@@ -475,7 +480,7 @@ void qtractorPlugin::ActivateObserver::update ( bool bUpdate )
 {
 	qtractorMidiControlObserver::update(bUpdate);
 
-	m_pPlugin->updateActivatedEx(qtractorMidiControlObserver::value() > 0.5f);
+	m_pPlugin->updateActivatedEx(m_pPlugin->isActivatedEx());
 }
 
 
@@ -691,6 +696,13 @@ void qtractorPlugin::updateFormAuxSendBusName (void)
 {
 	if (m_pForm && m_pForm->isVisible())
 		m_pForm->updateAuxSendBusName();
+}
+
+
+void qtractorPlugin::updateFormActivated (void)
+{
+	if (m_pForm && m_pForm->isVisible())
+		m_pForm->updateActivated();
 }
 
 
@@ -1570,7 +1582,7 @@ bool qtractorPlugin::savePlugin (
 //	pDocument->saveTextElement("values",
 //		valueList().join(","), pElement);
 	pDocument->saveTextElement("activated",
-		qtractorDocument::textFromBool(isActivatedEx()), pElement);
+		qtractorDocument::textFromBool(isActivated()), pElement);
 
 	// Plugin configuration stuff (CLOB)...
 	QDomElement eConfigs = pDocument->document()->createElement("configs");
@@ -2131,7 +2143,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 		pNewPlugin->realizeValues();
 		pNewPlugin->releaseConfigs();
 		pNewPlugin->releaseValues();
-		pNewPlugin->setActivated(pPlugin->isActivatedEx());
+		pNewPlugin->setActivated(pPlugin->isActivated());
 		pNewPlugin->setDirectAccessParamIndex(
 			pPlugin->directAccessParamIndex());
 	}
@@ -2495,7 +2507,7 @@ void qtractorPluginList::autoDeactivatePlugins ( bool bDeactivated, bool bForce 
 			qtractorPlugin *pPlugin = last();
 			for ( ;	pPlugin && !bStopDeactivation; pPlugin = pPlugin->prev()) {
 				if (pPlugin->canBeConnectedToOtherTracks())
-					bStopDeactivation = pPlugin->isActivated();
+					bStopDeactivation = pPlugin->isAutoActivated();
 				else
 					pPlugin->autoDeactivatePlugin(bDeactivated);
 				iAudioOuts += pPlugin->audioOuts();

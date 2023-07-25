@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- When on Track/Auto Deactivate mode, plugins now show a dull, dimmed
+  lit, green (fake-)LED when in auto-deactivated state. (EXPERIMENTAL)
+
 - Attempt to actually (de)activate plugins once on (de)instantiation.
   (GH issue #402) (EXPERIMENTAL)
 

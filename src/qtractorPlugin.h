@@ -250,9 +250,12 @@ public:
 
 	// Activation methods.
 	void setActivated(bool bActivated);
-	void setActivatedEx(bool bActivated);
 	bool isActivated() const;
+
+	void setActivatedEx(bool bActivated);
 	bool isActivatedEx() const;
+
+	bool isAutoActivated() const;
 	bool isAutoDeactivated() const;
 
 	// Activate subject accessors.
@@ -438,6 +441,7 @@ public:
 	void toggleFormEditor(bool bOn);
 	void updateFormDirtyCount();
 	void updateFormAuxSendBusName();
+	void updateFormActivated();
 	void refreshForm();
 
 	void freezeFormPos();

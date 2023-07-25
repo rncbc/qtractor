@@ -64,12 +64,30 @@
 
 //----------------------------------------------------------------------------
 // qtractorPluginForm -- UI wrapper form.
+//
+int    qtractorPluginForm::g_iIconsRefCount = 0;
+QIcon *qtractorPluginForm::g_pIcons[2] = { nullptr, nullptr };
 
 // Constructor.
 qtractorPluginForm::qtractorPluginForm (
 	QWidget *pParent, Qt::WindowFlags wflags )
 	: QWidget(pParent, wflags)
 {
+	// Setup (de)activated icon stuff...
+	if (++g_iIconsRefCount == 1) {
+		const QPixmap pmLedOff(":/images/itemLedOff.png");
+		QIcon *pIconActivated = new QIcon();
+		pIconActivated->addPixmap(pmLedOff, QIcon::Active, QIcon::Off);
+		pIconActivated->addPixmap(
+			QPixmap(":/images/itemLedOn.png"), QIcon::Active, QIcon::On);
+		QIcon *pIconDeactivated = new QIcon();
+		pIconDeactivated->addPixmap(pmLedOff, QIcon::Active, QIcon::Off);
+		pIconDeactivated->addPixmap(
+			QPixmap(":/images/itemLedDim.png"), QIcon::Active, QIcon::On);
+		g_pIcons[0] = pIconActivated;
+		g_pIcons[1] = pIconDeactivated;
+	}
+
 	// Setup UI struct...
 	m_ui.setupUi(this);
 
@@ -90,14 +108,6 @@ qtractorPluginForm::qtractorPluginForm (
 			QRegularExpression("[\\w-]+"), m_ui.PresetComboBox));
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
 	m_ui.PresetComboBox->setCompleter(nullptr);
-
-	// Have some effective feedback when toggling on/off...
-	QIcon iconActivate;
-	iconActivate.addPixmap(
-		QPixmap(":/images/itemLedOff.png"), QIcon::Active, QIcon::Off);
-	iconActivate.addPixmap(
-		QPixmap(":/images/itemLedOn.png"), QIcon::Active, QIcon::On);
-	m_ui.ActivateToolButton->setIcon(iconActivate);
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.PresetComboBox,
@@ -151,6 +161,13 @@ qtractorPluginForm::~qtractorPluginForm (void)
 	clear();
 
 	delete m_pDirectAccessParamMenu;
+
+	if (--g_iIconsRefCount == 0) {
+		for (int i = 0; i < 2; ++i) {
+			delete g_pIcons[i];
+			g_pIcons[i] = nullptr;
+		}
+	}
 }
 
 
@@ -409,6 +426,8 @@ void qtractorPluginForm::updateActivated (void)
 		return;
 
 	++m_iUpdate;
+	m_ui.ActivateToolButton->setIcon(
+		*g_pIcons[m_pPlugin->isAutoDeactivated() ? 1 : 0]);
 	m_ui.ActivateToolButton->setChecked(m_pPlugin->isActivated());
 	--m_iUpdate;
 }
