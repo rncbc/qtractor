@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a rounding error on current BBT information passed to plugins
+  and to JACK transport/timebase. (GH issue #406) (EXPERIMENTAL)
+   
+
 - When on Track/Auto Deactivate mode, plugins now show a dull, dimmed
   lit, green (fake-)LED when in auto-deactivated state. (EXPERIMENTAL)
 
