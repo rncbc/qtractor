@@ -64,12 +64,12 @@ static inline bool sse_enabled (void)
 // SSE enabled processor versions.
 static inline void sse_process_gain (
 	float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, float fGain )
+	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	__m128 v0 = _mm_load_ps1(&fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pFrames = ppFrames[i];
+		float *pFrames = ppFrames[i] + iOffset;
 		unsigned int nframes = iFrames;
 		for (; (long(pFrames) & 15) && (nframes > 0); --nframes)
 			*pFrames++ *= fGain;	
@@ -162,12 +162,12 @@ static inline void sse_process_add (
 // NEON enabled processor versions.
 static inline void neon_process_gain (
 	float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, float fGain )
+	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	float32x4_t vGain = vdupq_n_f32(fGain);
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pFrames = ppFrames[i];
+		float *pFrames = ppFrames[i] + iOffset;
 		unsigned int nframes = iFrames;
 		for (; (long(pFrames) & 15) && (nframes > 0); --nframes)
 			*pFrames++ *= fGain;
@@ -248,10 +248,10 @@ static inline void neon_process_add (
 // Standard processor versions.
 static inline void std_process_gain (
 	float **ppFrames, unsigned int iFrames,
-	unsigned short iChannels, float fGain )
+	unsigned int iOffset, unsigned short iChannels, float fGain )
 {
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		float *pFrames = ppFrames[i];
+		float *pFrames = ppFrames[i] + iOffset;
 		for (unsigned int n = 0; n < iFrames; ++n)
 			*pFrames++ *= fGain;
 	}
@@ -618,6 +618,7 @@ void qtractorAudioInsertPlugin::process (
 	if (pAudioEngine == nullptr)
 		return;
 
+	const unsigned int iOffset = pAudioEngine->bufferOffset();
 	const unsigned int nbytes = nframes * sizeof(float);
 
 	float **ppOut = m_pAudioBus->out(); // Sends.
@@ -626,12 +627,12 @@ void qtractorAudioInsertPlugin::process (
 	const unsigned short iChannels = channels();
 
 	for (unsigned short i = 0; i < iChannels; ++i) {
-		::memcpy(ppOut[i], ppIBuffer[i], nbytes);
-		::memcpy(ppOBuffer[i], ppIn[i], nbytes);
+		::memcpy(ppOut[i] + iOffset, ppIBuffer[i], nbytes);
+		::memcpy(ppOBuffer[i], ppIn[i] + iOffset, nbytes);
 	}
 
 	const float fGain = m_pSendGainParam->value();
-	(*m_pfnProcessGain)(ppOut, nframes, iChannels, fGain);
+	(*m_pfnProcessGain)(ppOut, nframes, iOffset, iChannels, fGain);
 
 	const float fDry = m_pDryGainParam->value();
 	const float fWet = m_pWetGainParam->value();
