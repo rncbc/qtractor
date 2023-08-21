@@ -117,7 +117,6 @@ BuildRequires:	gtkmm24-devel
 %else
 BuildRequires:	gtkmm2-devel
 %endif
-BuildRequires:	vst3sdk-devel >= 3.6.14
 
 Requires(post):		desktop-file-utils, shared-mime-info
 Requires(postun):	desktop-file-utils, shared-mime-info

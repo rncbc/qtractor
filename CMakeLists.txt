@@ -433,13 +433,7 @@ endif ()
 
 # Check for VST3 SDK.
 if (CONFIG_VST3 AND NOT CONFIG_VST3SDK)
-  pkg_check_modules (VST3SDK vst3sdk>=3.6.14)
-  if (VST3SDK_FOUND)
-     set (CONFIG_VST3SDK ${VST3SDK_INCLUDE_DIRS})
-  else ()
-    message (WARNING "*** VST3 SDK not found.")
-    set (CONFIG_VST3 0)
-  endif ()
+  set (CONFIG_VST3SDK ${CMAKE_CURRENT_SOURCE_DIR}/src/vst3)
 endif ()
 
 if (CONFIG_VST3 OR CONFIG_LV2_UI_X11)

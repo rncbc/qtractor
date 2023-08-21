@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- The official VST3 plug-in SDK is now included in the source tree as
+  Git submodules. (EXPERIMENTAL)
+
 - Fixed a rounding error on current BBT information passed to plugins
   and to JACK transport/timebase. (GH issue #406) (EXPERIMENTAL)   
 
