@@ -1,6 +1,6 @@
 Source: qtractor
-Section: contrib/sound
-Priority: extra
+Section: sound
+Priority: optional
 Maintainer: Rui Nuno Capela <rncbc@rncbc.org>
 Build-Depends: debhelper (>= 11), cmake, pkg-config,
   qt6-base-dev (>= 6.1) | qtbase5-dev (>= 5.1),
@@ -8,7 +8,8 @@ Build-Depends: debhelper (>= 11), cmake, pkg-config,
   qt6-tools-dev (>= 6.1) | qttools5-dev (>= 5.1),
   qt6-tools-dev-tools (>= 6.1) | qttools5-dev-tools (>= 5.1),
   qt6-l10n-tools (>= 6.1)  | base-files (<< 12),
-  qt6-svg-dev | libqt6svg6-dev | libqt5svg5-dev, libgl-dev,
+  qt6-svg-dev | libqt6svg6-dev | libqt5svg5-dev,
+  libxkbcommon-dev, libgl-dev,
   base-files (>= 12) | libqt5x11extras5-dev (>= 5.1),
   libjack-dev | libjack-jackd2-dev, libasound2-dev, libsndfile-dev,
   libvorbis-dev, libmad0-dev, libsamplerate-dev, librubberband-dev,
@@ -17,7 +18,8 @@ Build-Depends: debhelper (>= 11), cmake, pkg-config,
   libsuil-dev, libgtk2.0-dev, libgtkmm-2.4-dev,
   libx11-dev, x11proto-core-dev, libfontconfig-dev, libjpeg-dev,
   libaubio-dev (>= 0.4.1)
-Standards-Version: 3.9.7
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
 
 Package: qtractor
 Architecture: any
