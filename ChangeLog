@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Notes keyed in the MIDI clip editor's virtual piano keyboard may now
+  be recorded, especially while "overdubbing". (EXPERIMENTAL)
+
 - The official VST3 plug-in SDK is now included in the source tree as
   Git submodules. (EXPERIMENTAL)
 

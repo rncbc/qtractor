@@ -4650,6 +4650,15 @@ void qtractorMidiBus::sendNote (
 		if (pMidiMonitor)
 			pMidiMonitor->enqueue(qtractorMidiEvent::NOTEON, iVelocity);
 	}
+
+	// Attempt to capture the playing note as well...
+	if (pTrack->isRecord()) {
+		snd_seq_ev_set_dest(&ev,
+			pMidiEngine->alsaClient(), m_iAlsaPort);
+		snd_seq_ev_schedule_tick(&ev,
+			pMidiEngine->alsaQueue(), 0, pMidiEngine->queueTime());
+		pMidiEngine->capture(&ev);
+	}
 }
 
 

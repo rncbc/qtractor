@@ -43,7 +43,7 @@
         <location filename="../qtractorAudioEngine.cpp" line="2953"/>
         <location filename="../qtractorAudioEngine.cpp" line="3245"/>
         <location filename="../qtractorMidiEngine.cpp" line="4240"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4807"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4816"/>
         <source>%1 In</source>
         <translation>%1 Entrada</translation>
     </message>
@@ -183,7 +183,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <location filename="../qtractorAudioEngine.cpp" line="2962"/>
         <location filename="../qtractorAudioEngine.cpp" line="3245"/>
         <location filename="../qtractorMidiEngine.cpp" line="4249"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4807"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4816"/>
         <source>%1 Out</source>
         <translation>%1 Saída</translation>
     </message>
