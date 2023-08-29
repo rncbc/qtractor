@@ -1230,6 +1230,16 @@ bool qtractorClipRecordExCommand::redo (void)
 	m_pTrack->setClipRecord(m_bClipRecordEx ? m_pClipRecordEx : nullptr);
 	m_pTrack->setClipRecordEx(m_bClipRecordEx);
 
+	if (m_bClipRecordEx && m_pClipRecordEx
+		&& m_pTrack->trackType() == qtractorTrack::Midi) {
+		qtractorSession *pSession = m_pTrack->session();
+		qtractorMidiClip *pMidiClip = static_cast<qtractorMidiClip *> (m_pClipRecordEx);
+		if (pMidiClip && pSession) {
+			pMidiClip->setStepInputHead(pSession->playHead());
+			pMidiClip->updateStepInput();
+		}
+	}
+
 	// Reset for undo.
 	m_bClipRecordEx = bClipRecordEx;
 	m_pClipRecordEx = pClipRecordEx;

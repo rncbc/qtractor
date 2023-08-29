@@ -321,6 +321,7 @@ protected slots:
 	void midiCtlNotify(const qtractorCtlEvent& ctle);
 	void midiSppNotify(int iSppCmd, unsigned short iSongPos);
 	void midiClkNotify(float fTempo);
+	void midiInpNotify(unsigned short flags);
 
 	void updateRecentFilesMenu();
 	void updateTrackMenu();

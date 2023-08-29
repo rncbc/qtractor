@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -473,6 +473,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.editInsertRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editInsertRange()));
+	QObject::connect(m_ui.editInsertStepAction,
+		SIGNAL(triggered(bool)),
+		SLOT(editInsertStep()));
 	QObject::connect(m_ui.editRemoveRangeAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editRemoveRange()));
@@ -1079,8 +1082,8 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 			pMainForm, SLOT(changeNotifySlot(qtractorMidiEditor *)));
 		// This one's local but helps...
 		QObject::connect(m_pMidiEditor,
-			SIGNAL(sendNoteSignal(int,int)),
-			SLOT(sendNote(int,int)));
+			SIGNAL(sendNoteSignal(int, int, bool)),
+			SLOT(sendNote(int, int, bool)));
 		// Setup for last known top-level window position...
 		QPoint wpos = pMidiClip->editorPos();
 		if (wpos.isNull() || wpos.x() < 0 || wpos.y() < 0) {
@@ -1588,6 +1591,17 @@ void qtractorMidiEditorForm::editInsertRange (void)
 }
 
 
+// Insert step.
+void qtractorMidiEditorForm::editInsertStep (void)
+{
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip) {
+		pMidiClip->advanceStepInput();
+		pMidiClip->updateStepInput();
+	}
+}
+
+
 // Remove range.
 void qtractorMidiEditorForm::editRemoveRange (void)
 {
@@ -1982,7 +1996,7 @@ void qtractorMidiEditorForm::helpAboutQt (void)
 // qtractorMidiEditorForm -- Utility methods.
 
 // Send note on/off to respective output bus.
-void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
+void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity, bool bForce )
 {
 	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
 	if (pMidiClip == nullptr)
@@ -1997,7 +2011,7 @@ void qtractorMidiEditorForm::sendNote ( int iNote, int iVelocity )
 	if (pMidiBus == nullptr)
 		return;
 
-	pMidiBus->sendNote(pTrack, iNote, iVelocity);
+	pMidiBus->sendNote(pTrack, iNote, iVelocity, bForce);
 }
 
 
@@ -2015,9 +2029,10 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
 	m_ui.fileUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
 
-	m_ui.fileRecordExAction->setEnabled(pMidiClip != nullptr);
-	m_ui.fileRecordExAction->setChecked(pTrack && pTrack->isClipRecordEx()
+	const bool bClipRecordEx = (pTrack && pTrack->isClipRecordEx()
 		&& static_cast<qtractorMidiClip *> (pTrack->clipRecord()) == pMidiClip);
+	m_ui.fileRecordExAction->setEnabled(pMidiClip != nullptr);
+	m_ui.fileRecordExAction->setChecked(bClipRecordEx);
 
 	m_ui.fileTrackInputsAction->setEnabled(pTrack && pTrack->inputBus() != nullptr);
 	m_ui.fileTrackOutputsAction->setEnabled(pTrack && pTrack->outputBus() != nullptr);
@@ -2122,6 +2137,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		const bool bRolling   = (bPlaying && bRecording);
 		const bool bBumped    = (!bRolling && (iPlayHead > 0 || bPlaying));
 		const int iRolling = pMainForm->rolling();
+		m_ui.editInsertStepAction->setEnabled(!bPlaying && bClipRecordEx);
 		m_ui.transportBackwardAction->setEnabled(bBumped);
 		m_ui.transportRewindAction->setEnabled(bBumped);
 		m_ui.transportFastForwardAction->setEnabled(!bRolling);
@@ -2447,7 +2463,7 @@ void qtractorMidiEditorForm::transportTempoChanged (
 	}
 
 	// Now, express the change as an undoable command...
-	(m_pMidiEditor->commands())->exec(
+	m_pMidiEditor->execute(
 		new qtractorTimeScaleUpdateNodeCommand(
 			pTimeScale, pNode->frame, fTempo, 2, iBeatsPerBar, iBeatDivisor));
 }
@@ -2485,7 +2501,7 @@ void qtractorMidiEditorForm::timeSig2ResetClicked (void)
 void qtractorMidiEditorForm::resetTimeSig2 (
 	unsigned short iBeatsPerBar2, unsigned short iBeatDivisor2 )
 {
-	(m_pMidiEditor->commands())->exec(
+	m_pMidiEditor->execute(
 		new qtractorTimeScaleTimeSig2Command(
 			timeScale(), midiClip(), iBeatsPerBar2, iBeatDivisor2));
 }

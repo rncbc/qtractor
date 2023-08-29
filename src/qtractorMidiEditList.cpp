@@ -316,7 +316,7 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity, bool bForce )
 	dragNoteOff();
 
 	// Are we allowed to preview this?
-	if (!m_pEditor->isSendNotesEx(bForce))
+	if (!m_pEditor->isSendNotesEx() && !bForce)
 		iVelocity = -1;
 
 	// Now for the sounding new one...
@@ -326,7 +326,7 @@ void qtractorMidiEditList::dragNoteOn ( int iNote, int iVelocity, bool bForce )
 		m_iNoteVel = iVelocity;
 		m_pathNote = notePath(iNote);
 		if (m_iNoteVel > 0)
-			m_pEditor->sendNote(m_iNoteOn, m_iNoteVel);
+			m_pEditor->sendNote(m_iNoteOn, m_iNoteVel, bForce);
 		// Otherwise, reset any pending note...
 		const QRect& rect = m_pathNote.boundingRect().toRect();
 		qtractorScrollView::viewport()->update(rect);
@@ -344,7 +344,7 @@ void qtractorMidiEditList::dragNoteOff (void)
 
 	// Turn off old note...
 	if (m_iNoteVel > 0)
-		m_pEditor->sendNote(m_iNoteOn, 0);
+		m_pEditor->sendNote(m_iNoteOn, 0, true);
 
 	m_iNoteOn = m_iNoteVel = -1;
 

@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -135,6 +135,7 @@ protected slots:
 	void editSelectInvert();
 	void editSelectRange();
 	void editInsertRange();
+	void editInsertStep();
 	void editRemoveRange();
 
 	void toolsQuantize();
@@ -194,7 +195,7 @@ protected slots:
 
 	void updateTrackInstrumentMenu();
 
-	void sendNote(int iNote, int iVelocity);
+	void sendNote(int iNote, int iVelocity, bool bForce);
 
 	void selectionChanged(qtractorMidiEditor *);
 	void contentsChanged(qtractorMidiEditor *);

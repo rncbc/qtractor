@@ -40,6 +40,8 @@
 
 #include "qtractorPlugin.h"
 
+#include "qtractorMidiEditCommand.h"
+
 #include <QApplication>
 #include <QFileInfo>
 
@@ -1181,7 +1183,7 @@ qtractorMidiEngine::qtractorMidiEngine ( qtractorSession *pSession )
 
 
 // Special event notifier proxy object.
-const qtractorMidiEngineProxy *qtractorMidiEngine::proxy (void) const
+qtractorMidiEngineProxy *qtractorMidiEngine::proxy (void)
 {
 	return &m_proxy;
 }
@@ -1486,6 +1488,9 @@ void qtractorMidiEngine::resetAllMonitors (void)
 				pMidiMonitor->reset();
 		}
 	}
+
+	// HACK: Reset step-input...
+	m_proxy.notifyInpEvent(InpReset);
 }
 
 
@@ -1845,6 +1850,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 
 	qtractorMidiManager *pMidiManager;
 
+	// Whether to notify any step input...
+	unsigned short iInpEvents = 0;
+
 	// Now check which bus and track we're into...
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
@@ -1862,14 +1870,26 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 				= static_cast<qtractorMidiBus *> (pTrack->inputBus());
 			if (pMidiBus && pMidiBus->alsaPort() == iAlsaPort) {
 				// Is it actually recording?...
-				if (bRecord && bRecording) {
+				if (bRecord) {
 					qtractorMidiSequence *pSeq = nullptr;
 					qtractorMidiClip *pMidiClip
 						= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
 					if (pMidiClip)
 						pSeq = pMidiClip->sequence();
 					if (pMidiClip && pSeq && pTrack->isClipRecordEx()) {
-						// Take care of the overdub scenario...
+						// Account for step-input recording...
+						if (!isPlaying()) {
+							// Check step-input auto-advance...
+							pMidiClip->setStepInputLast(
+								pSession->audioEngine()->jackFrameTime());
+							// Set quantized step-input event time...
+							iTime = pMidiClip->stepInputHeadTime();
+							if (type == qtractorMidiEvent::NOTEON)
+								duration = pMidiClip->stepInputTailTime() - iTime;
+							else
+							if (type == qtractorMidiEvent::NOTEOFF)
+								pSeq = nullptr; // ignore all note-offs...
+						}
 						// Make sure it falls inside the recording clip...
 						const unsigned long iClipStartTime
 							= pMidiClip->clipStartTime();
@@ -1887,7 +1907,14 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 							tick, type, param, value, duration);
 						if (pSysex)
 							pEvent->setSysex(pSysex, iSysex);
-						pSeq->addEvent(pEvent);
+						if (isPlaying()) {
+							pSeq->addEvent(pEvent);
+						} else {
+							m_inpMutex.lock();
+							m_inpEvents.insert(pMidiClip, pEvent);
+							m_inpMutex.unlock();
+							++iInpEvents;
+						}
 					}
 				}
 				// Track input monitoring...
@@ -1974,6 +2001,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 		// Post the stuffed event...
 		m_proxy.notifyCtlEvent(
 			qtractorCtlEvent(type, channel, param, value));
+	}
+
+	// Notify step-input events...
+	if (iInpEvents > 0) {
+		// Post the stuffed event(s)...
+		m_proxy.notifyInpEvent(InpEvent);
 	}
 }
 
@@ -2536,6 +2569,9 @@ void qtractorMidiEngine::deactivate (void)
 // Device engine cleanup method.
 void qtractorMidiEngine::clean (void)
 {
+	// Clean any (pending?) step-input events...
+	m_inpEvents.clear();
+
 	// Clean control/metronome buses...
 	deleteControlBus();
 	deleteMetroBus();
@@ -4037,6 +4073,39 @@ bool qtractorMidiEngine::isResetAllControllers (void) const
 }
 
 
+// Process pending step-input events...
+void qtractorMidiEngine::processInpEvents (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	QMutexLocker locker(&m_inpMutex);
+
+	InpEvents::ConstIterator iter = m_inpEvents.constBegin();
+	const InpEvents::ConstIterator& iter_end = m_inpEvents.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		qtractorMidiClip *pMidiClip = iter.key();
+		qtractorMidiEditCommand *pMidiEditCommand
+			= new qtractorMidiEditCommand(pMidiClip, "step input");
+		const QList<qtractorMidiEvent *>& events
+			= m_inpEvents.values(pMidiClip);
+		QListIterator<qtractorMidiEvent *> iter2(events);
+		while (iter2.hasNext()) {
+			qtractorMidiEvent *pEvent = iter2.next();
+			if (pEvent)
+				pMidiEditCommand->insertEvent(pEvent);
+		}
+		// Apply to MIDI clip *iif* its editor is there...
+		// otherwise make it global to session.
+		if (!pMidiClip->execute(pMidiEditCommand))
+			pSession->execute(pMidiEditCommand);
+	}
+
+	m_inpEvents.clear();
+}
+
+
 //----------------------------------------------------------------------
 // class qtractorMidiBus -- Managed ALSA sequencer port set
 //
@@ -4592,7 +4661,7 @@ void qtractorMidiBus::sendEvent ( qtractorMidiEvent::EventType etype,
 
 // Direct MIDI note on/off helper.
 void qtractorMidiBus::sendNote (
-	qtractorTrack *pTrack, int iNote, int iVelocity ) const
+	qtractorTrack *pTrack, int iNote, int iVelocity, bool bForce ) const
 {
 	// We always need our MIDI engine reference...
 	qtractorMidiEngine *pMidiEngine
@@ -4652,7 +4721,7 @@ void qtractorMidiBus::sendNote (
 	}
 
 	// Attempt to capture the playing note as well...
-	if (pTrack->isRecord()) {
+	if (bForce && pTrack->isRecord()) {
 		snd_seq_ev_set_dest(&ev,
 			pMidiEngine->alsaClient(), m_iAlsaPort);
 		snd_seq_ev_schedule_tick(&ev,

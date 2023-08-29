@@ -29,11 +29,13 @@
 
 #include <alsa/asoundlib.h>
 
-#include <QHash>
+#include <QMultiHash>
+#include <QMutex>
 #include <QObject>
 
 // Forward declarations.
 class qtractorMidiBus;
+class qtractorMidiClip;
 class qtractorMidiEvent;
 class qtractorMidiSequence;
 class qtractorMidiInputThread;
@@ -71,6 +73,8 @@ public:
 		{ emit sppEvent(iSppCmd, iSongPos); }
 	void notifyClkEvent(float fTempo)
 		{ emit clkEvent(fTempo); }
+	void notifyInpEvent(unsigned short flags)
+		{ emit inpEvent(flags); }
 
 signals:
 	
@@ -79,7 +83,8 @@ signals:
 	void ctlEvent(const qtractorCtlEvent& ctle);
 	void sppEvent(int iSppCmd, unsigned short iSongPos);
 	void clkEvent(float fTempo);
-};	
+	void inpEvent(unsigned short flags);
+};
 
 
 //----------------------------------------------------------------------
@@ -97,7 +102,7 @@ public:
 	bool init();
 
 	// Special event notifier proxy object.
-	const qtractorMidiEngineProxy *proxy() const;
+	qtractorMidiEngineProxy *proxy();
 
 	// ALSA client descriptor accessor.
 	snd_seq_t *alsaSeq() const;
@@ -302,6 +307,12 @@ public:
 	// Reset ouput queue drift stats (audio vs. MIDI)...
 	void resetDrift();
 
+	// Step-input event flags...
+	enum InpFlag { InpNone = 0, InpReset = 1, InpEvent = 2 };
+
+	// Process pending step-input events...
+	void processInpEvents();
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -449,6 +460,12 @@ private:
 	// MIDI Clock tempo tracking.
 	unsigned short m_iClockCount;
 	float          m_fClockTempo;
+
+	// Step-input event data...
+	typedef QMultiHash<qtractorMidiClip *, qtractorMidiEvent *> InpEvents;
+
+	InpEvents m_inpEvents;
+	QMutex    m_inpMutex;
 };
 
 
@@ -522,7 +539,7 @@ public:
 
 	// Direct MIDI note helper.
 	void sendNote(qtractorTrack *pTrack,
-		int iNote, int iVelocity = 0) const;
+		int iNote, int iVelocity, bool bForce) const;
 
 	// Direct SysEx helpers.
 	void sendSysex(unsigned char *pSysex, unsigned int iSysex) const;

@@ -792,6 +792,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_iOffset = 0;
 	m_iLength = 0;
 
+	// Local step-input-head positioning.
+	m_iStepInputHeadX = 0;
+
 	// Local edit-head/tail positioning.
 	m_iEditHeadX = 0;
 	m_iEditTailX = 0;
@@ -1309,8 +1312,52 @@ bool qtractorMidiEditor::isClipRecord (void) const
 }
 
 
+// Check whether step-input is on.
+bool qtractorMidiEditor::isStepInputHead (void) const
+{
+	if (m_pMidiClip == nullptr)
+		return false;
+
+	qtractorTrack *pTrack = m_pMidiClip->track();
+	if (pTrack == nullptr)
+		return false;
+
+	if (!pTrack->isClipRecordEx())
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return false;
+
+	return !pSession->isPlaying();
+}
+
+
+// Step-input positioning.
+void qtractorMidiEditor::setStepInputHead (
+	unsigned long iStepInputHead, bool bSyncView )
+{
+	if (bSyncView)
+		bSyncView = m_bSyncView;
+
+	const int iStepInputHeadX
+		= m_pTimeScale->pixelFromFrame(iStepInputHead)
+		- m_pTimeScale->pixelFromFrame(m_iOffset);
+
+	setSyncViewHoldOn(false);
+
+	drawPositionX(m_iStepInputHeadX, iStepInputHeadX, bSyncView);
+}
+
+int qtractorMidiEditor::stepInputHeadX (void) const
+{
+	return m_iStepInputHeadX;
+}
+
+
 // Edit-head/tail positioning.
-void qtractorMidiEditor::setEditHead ( unsigned long iEditHead, bool bSyncView )
+void qtractorMidiEditor::setEditHead (
+	unsigned long iEditHead, bool bSyncView )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
@@ -1337,7 +1384,8 @@ int qtractorMidiEditor::editHeadX (void) const
 }
 
 
-void qtractorMidiEditor::setEditTail ( unsigned long iEditTail, bool bSyncView )
+void qtractorMidiEditor::setEditTail (
+	unsigned long iEditTail, bool bSyncView )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
@@ -1365,7 +1413,8 @@ int qtractorMidiEditor::editTailX (void) const
 
 
 // Play-head positioning.
-void qtractorMidiEditor::setPlayHead ( unsigned long iPlayHead, bool bSyncView )
+void qtractorMidiEditor::setPlayHead (
+	unsigned long iPlayHead, bool bSyncView )
 {
 	if (bSyncView)
 		bSyncView = m_bSyncView;
@@ -1432,7 +1481,7 @@ bool qtractorMidiEditor::isSendNotes (void) const
 }
 
 
-bool qtractorMidiEditor::isSendNotesEx ( bool bForce ) const
+bool qtractorMidiEditor::isSendNotesEx (void) const
 {
 	if (m_pMidiClip == nullptr)
 		return false;
@@ -1445,7 +1494,7 @@ bool qtractorMidiEditor::isSendNotesEx ( bool bForce ) const
 	if (pSession == nullptr)
 		return false;
 
-	if (!bForce && pSession->isPlaying())
+	if (pSession->isPlaying())
 		return false;
 
 	return isSendNotes();
@@ -4885,6 +4934,13 @@ qtractorCommandList *qtractorMidiEditor::commands (void) const
 }
 
 
+// Command executioner...
+bool qtractorMidiEditor::execute ( qtractorCommand *pCommand )
+{
+	return m_pCommands->exec(pCommand);
+}
+
+
 // Update instrument default note names (nb. drum key names).
 void qtractorMidiEditor::updateDefaultDrumNoteNames (void)
 {
@@ -5139,12 +5195,12 @@ void qtractorMidiEditor::selectionChangeNotify (void)
 
 
 // Emit note on/off.
-void qtractorMidiEditor::sendNote ( int iNote, int iVelocity )
+void qtractorMidiEditor::sendNote ( int iNote, int iVelocity, bool bForce )
 {
 	if (iVelocity == 1)
 		iVelocity = m_last.value;
 
-	emit sendNoteSignal(iNote, iVelocity);
+	emit sendNoteSignal(iNote, iVelocity, bForce);
 }
 
 

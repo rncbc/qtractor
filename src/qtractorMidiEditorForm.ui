@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - A MIDI/Audio multi-track sequencer.
 
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -209,6 +209,7 @@
       <string>I&amp;nsert</string>
      </property>
      <addaction name="editInsertRangeAction"/>
+     <addaction name="editInsertStepAction"/>
     </widget>
     <widget class="QMenu" name="editRemoveMenu">
      <property name="title">
@@ -861,6 +862,23 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Ins</string>
+   </property>
+  </action>
+  <action name="editInsertStepAction">
+   <property name="text">
+    <string>&amp;Step</string>
+   </property>
+   <property name="iconText">
+    <string>Insert step</string>
+   </property>
+   <property name="toolTip">
+    <string>Insert step (rest)</string>
+   </property>
+   <property name="statusTip">
+    <string>Insert step (rest)</string>
+   </property>
+   <property name="shortcut">
+    <string>Right</string>
    </property>
   </action>
   <action name="editRemoveRangeAction">

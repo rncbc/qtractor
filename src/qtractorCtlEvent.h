@@ -45,7 +45,6 @@ public:
 		: m_ctype(ctle.m_ctype), m_channel(ctle.m_channel),
 			m_param(ctle.m_param), m_value(ctle.m_value) {}
 
-
 	// Accessors.
 	qtractorMidiEvent::EventType type() const { return m_ctype; }
 	unsigned short channel() const { return m_channel; }

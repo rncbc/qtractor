@@ -32,8 +32,9 @@
 #include <QSize>
 
 
-// Forward declartiuons.
+// Forward declarations.
 class qtractorMidiEditorForm;
+class qtractorMidiEditCommand;
 
 
 //----------------------------------------------------------------------
@@ -298,6 +299,30 @@ public:
 	unsigned short beatDivisor2() const
 		{ return m_iBeatDivisor2; }
 
+	// Step-input methods...
+	void setStepInputHead(unsigned long iStepInputHead);
+	unsigned long stepInputHead() const
+		{ return m_iStepInputHead; }
+	unsigned long stepInputTail() const
+		{ return m_iStepInputTail; }
+	unsigned long stepInputHeadTime() const
+		{ return m_iStepInputHeadTime; }
+	unsigned long stepInputTailTime() const
+		{ return m_iStepInputTailTime; }
+
+	void setStepInputLast(unsigned long iStepInputLast);
+	unsigned long stepInputLast() const
+		{ return m_iStepInputLast; }
+
+	// Step-input advance...
+	void advanceStepInput();
+
+	// Step-input editor update...
+	void updateStepInput();
+
+	// Submit a command to the clip editor, if available.
+	bool execute(qtractorMidiEditCommand *pMidiEditCommand);
+
 protected:
 
 	// Virtual document element methods.
@@ -358,6 +383,13 @@ private:
 	// Secondary time signature (numerator/denuminator)
 	unsigned short m_iBeatsPerBar2;
 	unsigned short m_iBeatDivisor2;
+
+	// Current step-input/capture range (in ticks)
+	unsigned long m_iStepInputHead;
+	unsigned long m_iStepInputTail;
+	unsigned long m_iStepInputHeadTime;
+	unsigned long m_iStepInputTailTime;
+	unsigned long m_iStepInputLast;
 
 	// Default MIDI file format (for capture/record)
 	static unsigned short g_iDefaultFormat;

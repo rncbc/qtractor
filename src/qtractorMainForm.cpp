@@ -338,6 +338,9 @@ qtractorMainForm::qtractorMainForm (
 		QObject::connect(pMidiEngineProxy,
 			SIGNAL(clkEvent(float)),
 			SLOT(midiClkNotify(float)));
+		QObject::connect(pMidiEngineProxy,
+			SIGNAL(inpEvent(unsigned short)),
+			SLOT(midiInpNotify(unsigned short)));
 	}
 
 	// Add the midi controller map...
@@ -8617,6 +8620,40 @@ void qtractorMainForm::midiClkNotify ( float fTempo )
 	++m_iTransportUpdate;
 
 	updateContents(nullptr, true);
+	++m_iStabilizeTimer;
+}
+
+
+// Custom MIDI Step input event handler.
+void qtractorMainForm::midiInpNotify ( unsigned short flags )
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::midiInpNotify(%u)", flags);
+#endif
+
+	// Update current step-input location
+	// for all the in-recording clips out there...
+	if (flags & (qtractorMidiEngine::InpReset | qtractorMidiEngine::InpEvent)) {
+		const unsigned long iStepInputHead = m_pSession->playHead();
+		for (qtractorTrack *pTrack = m_pSession->tracks().first();
+				pTrack; pTrack = pTrack->next()) {
+			if (pTrack->trackType() == qtractorTrack::Midi
+				&& pTrack->isClipRecordEx()) {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (pTrack->clipRecord());
+				if (pMidiClip) {
+					if (flags & qtractorMidiEngine::InpReset)
+						pMidiClip->setStepInputHead(iStepInputHead);
+					pMidiClip->updateStepInput();
+				}
+			}
+		}
+	}
+
+	// Handle pending step-input events...
+	if (flags & qtractorMidiEngine::InpEvent)
+		m_pSession->midiEngine()->processInpEvents();
+
 	++m_iStabilizeTimer;
 }
 

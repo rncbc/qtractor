@@ -34,6 +34,8 @@
 #include "qtractorMidiEditor.h"
 #include "qtractorMidiEditorForm.h"
 
+#include "qtractorMidiEditCommand.h"
+
 #include "qtractorMainForm.h"
 
 #include "qtractorOptions.h"
@@ -185,6 +187,12 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 
 	m_iBeatsPerBar2 = 0;
 	m_iBeatDivisor2 = 0;
+
+	m_iStepInputHead = 0;
+	m_iStepInputTail = 0;
+	m_iStepInputHeadTime = 0;
+	m_iStepInputTailTime = 0;
+	m_iStepInputLast = 0;
 }
 
 
@@ -1290,6 +1298,20 @@ bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
 }
 
 
+// Submit a command to the clip editor, if available.
+bool qtractorMidiClip::execute ( qtractorMidiEditCommand *pMidiEditCommand )
+{
+	if (m_pMidiEditorForm == nullptr)
+		return false;
+
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+	if (pMidiEditor == nullptr)
+		return false;
+
+	return pMidiEditor->execute(pMidiEditCommand);
+}
+
+
 // Virtual document element methods.
 bool qtractorMidiClip::loadClipElement (
 	qtractorDocument * /* pDocument */, QDomElement *pElement )
@@ -1554,6 +1576,110 @@ void qtractorMidiClip::enqueue_export ( qtractorTrack *pTrack,
 		pMidiManager = (pMidiBus->pluginList_out())->midiManager();
 		if (pMidiManager)
 			pMidiManager->queued(&ev, t1, t2);
+	}
+}
+
+
+
+// Step-input methods...
+void qtractorMidiClip::setStepInputHead ( unsigned long iStepInputHead )
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = nullptr;
+	if (m_pMidiEditorForm && m_pMidiEditorForm->editor())
+		pTimeScale = m_pMidiEditorForm->editor()->timeScale();
+	if (pTimeScale == nullptr)
+		pTimeScale = pSession->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iStepInputHead);
+
+	m_iStepInputHead = iStepInputHead; // use frameSnap()?
+	m_iStepInputHeadTime = pNode->tickFromFrame(m_iStepInputHead);
+
+	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
+	unsigned long iStepInputDuration = pNode->ticksPerBeat;
+	if (iSnapPerBeat > 0)
+		iStepInputDuration /= iSnapPerBeat;
+
+	m_iStepInputTailTime = m_iStepInputHeadTime + iStepInputDuration;
+	m_iStepInputTail = pNode->frameFromTick(m_iStepInputTailTime);
+	m_iStepInputLast = 0;
+}
+
+
+// Step-input last effective frame methods.
+void qtractorMidiClip::setStepInputLast ( unsigned long iStepInputLast )
+{
+	if (m_iStepInputLast > 0) {
+		const unsigned long iStepInputFrame
+			= m_iStepInputHead
+			+ iStepInputLast
+			- m_iStepInputLast;
+		if (iStepInputFrame > m_iStepInputTail)
+			advanceStepInput();
+	}
+
+	m_iStepInputLast = iStepInputLast;
+}
+
+
+// Step-input-head/tail advance...
+void qtractorMidiClip::advanceStepInput (void)
+{
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = nullptr;
+	if (m_pMidiEditorForm && m_pMidiEditorForm->editor())
+		pTimeScale = m_pMidiEditorForm->editor()->timeScale();
+	if (pTimeScale == nullptr)
+		pTimeScale = pSession->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iStepInputTail);
+
+	if (pSession->isLooping() && m_iStepInputTail >= pSession->loopEnd()) {
+		m_iStepInputTail = pSession->loopStart();
+		m_iStepInputTailTime = pSession->loopStartTime();
+	}
+
+	m_iStepInputHead = m_iStepInputTail;
+	m_iStepInputHeadTime = m_iStepInputTailTime; // pNode->tickFromFrame(m_iStepInputHead);
+
+	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
+	unsigned long iStepInputDuration = pNode->ticksPerBeat;
+	if (iSnapPerBeat > 0)
+		iStepInputDuration /= iSnapPerBeat;
+
+	m_iStepInputTailTime = m_iStepInputHeadTime + iStepInputDuration;
+	m_iStepInputTail = pNode->frameFromTick(m_iStepInputTailTime);
+//	m_iStepInputLast = 0;
+}
+
+
+// Step-input editor update...
+void qtractorMidiClip::updateStepInput (void)
+{
+	if (m_pMidiEditorForm && m_pMidiEditorForm->editor()) {
+		m_pMidiEditorForm->editor()->setStepInputHead(
+			m_iStepInputLast > 0 ? m_iStepInputTail : m_iStepInputHead);
 	}
 }
 

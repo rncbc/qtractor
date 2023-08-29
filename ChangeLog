@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI Step-input is now, finally featured on the MIDI clip editor
+  (aka. piano-roll), provided Clip/Record is on and playback is not
+  rolling; current snap-to-beat applies; starts/resets to play-head;
+  Edit/Insert/Step to advance a single step/rest. (EXPERIMENTAL)
+  (GH issue #395)
+
 - Notes keyed in the MIDI clip editor's virtual piano keyboard may now
   be recorded, especially while "overdubbing". (EXPERIMENTAL)
 

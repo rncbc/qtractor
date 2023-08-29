@@ -794,7 +794,7 @@ void qtractorMidiEventListView::ItemDelegate::setModelData ( QWidget *pEditor,
 	}
 
 	// Do it.
-	pMidiEditor->commands()->exec(pEditCommand);
+	pMidiEditor->execute(pEditCommand);
 }
 
 

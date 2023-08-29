@@ -729,6 +729,14 @@ void qtractorMidiEditView::drawContents ( QPainter *pPainter, const QRect& rect 
 		pPainter->setPen(Qt::red);
 		pPainter->drawLine(x, rect.top(), x, rect.bottom());
 	}
+
+	if (m_pEditor->isStepInputHead()) {
+		x = m_pEditor->stepInputHeadX() - cx;
+		if (x >= rect.left() && x <= rect.right()) {
+			pPainter->setPen(QColor(255, 0, 0, 120));
+			pPainter->drawLine(x, rect.top(), x, rect.bottom());
+		}
+	}
 }
 
 
