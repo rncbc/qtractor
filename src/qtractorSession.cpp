@@ -2636,7 +2636,7 @@ void qtractorSession::renameSession (
 				qtractorMidiClip *pMidiClip
 					= static_cast<qtractorMidiClip *> (pClip);
 				if (pMidiClip)
-					pMidiClip->setFilenameEx(sNewFilePath, false);
+					pMidiClip->setFilenameEx(sNewFilePath, true);
 			} else {
 				pClip->close();
 				pClip->setFilename(sNewFilePath);

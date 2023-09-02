@@ -2648,6 +2648,8 @@ bool qtractorMainForm::saveSessionFileEx (
 	appendMessages(tr("Saving \"%1\"...").arg(sFilename));
 
 	// Trap dirty clips (only MIDI at this time...)
+	typedef QHash<qtractorMidiClip *, QString> MidiClipFilenames;
+	MidiClipFilenames midiClips;
 	for (qtractorTrack *pTrack = m_pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		// Only MIDI track/clips...
@@ -2659,8 +2661,11 @@ bool qtractorMainForm::saveSessionFileEx (
 			if (pClip->isDirty()) {
 				qtractorMidiClip *pMidiClip
 					= static_cast<qtractorMidiClip *> (pClip);
-				if (pMidiClip)
+				if (pMidiClip) {
+					if (!bUpdate)
+						midiClips.insert(pMidiClip, pMidiClip->filename());
 					pMidiClip->saveCopyFile(bUpdate);
+				}
 			}
 		}
 	}
@@ -2677,6 +2682,12 @@ bool qtractorMainForm::saveSessionFileEx (
 	if ((iFlags & qtractorDocument::Archive) == 0 && bUpdate)
 		qtractorDocument::clearExtractedArchives();
 #endif
+
+	// Restore old clip filenames, saved previously...
+	MidiClipFilenames::ConstIterator iter = midiClips.constBegin();
+	const MidiClipFilenames::ConstIterator& iter_end = midiClips.constEnd();
+	for ( ; iter != iter_end; ++iter)
+		iter.key()->setFilenameEx(iter.value(), bUpdate);
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();

@@ -1278,7 +1278,7 @@ bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
 		return false;
 
 	// Have a new filename revision...
-	const QString& sFilename = createFilePathRevision();
+	const QString& sFilename = createFilePathRevision(true);
 
 	// Save/replace the clip track...
 	if (!qtractorMidiFile::saveCopyFile(
