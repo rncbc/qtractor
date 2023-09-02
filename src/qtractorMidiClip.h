@@ -320,6 +320,10 @@ public:
 	// Step-input editor update...
 	void updateStepInput();
 
+	// Check if an event is already in the sequence...
+	qtractorMidiEvent *findStepInputEvent(
+		qtractorMidiEvent *pStepInputEvent) const;
+
 	// Submit a command to the clip editor, if available.
 	bool execute(qtractorMidiEditCommand *pMidiEditCommand);
 

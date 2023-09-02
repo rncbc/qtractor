@@ -1880,8 +1880,10 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						// Account for step-input recording...
 						if (!isPlaying()) {
 							// Check step-input auto-advance...
-							pMidiClip->setStepInputLast(
-								pSession->audioEngine()->jackFrameTime());
+							if (type != qtractorMidiEvent::NOTEOFF) {
+								pMidiClip->setStepInputLast(
+									pSession->audioEngine()->jackFrameTime());
+							}
 							// Set quantized step-input event time...
 							iTime = pMidiClip->stepInputHeadTime();
 							if (type == qtractorMidiEvent::NOTEON)
@@ -4088,18 +4090,31 @@ void qtractorMidiEngine::processInpEvents (void)
 		qtractorMidiClip *pMidiClip = iter.key();
 		qtractorMidiEditCommand *pMidiEditCommand
 			= new qtractorMidiEditCommand(pMidiClip, "step input");
+		unsigned short iInpEvents = 0;
 		const QList<qtractorMidiEvent *>& events
 			= m_inpEvents.values(pMidiClip);
 		QListIterator<qtractorMidiEvent *> iter2(events);
 		while (iter2.hasNext()) {
 			qtractorMidiEvent *pEvent = iter2.next();
-			if (pEvent)
+			if (pEvent->type() == qtractorMidiEvent::NOTEON
+				&& pMidiClip->findStepInputEvent(pEvent)) {
+				delete pEvent;
+				pEvent = nullptr;
+			}
+			if (pEvent) {
 				pMidiEditCommand->insertEvent(pEvent);
+				++iInpEvents;
+			}
 		}
-		// Apply to MIDI clip *iif* its editor is there...
-		// otherwise make it global to session.
-		if (!pMidiClip->execute(pMidiEditCommand))
-			pSession->execute(pMidiEditCommand);
+		if (iInpEvents > 0) {
+			// Apply to MIDI clip *iif* its editor is there...
+			// otherwise make it global to session.
+			if (!pMidiClip->execute(pMidiEditCommand))
+				pSession->execute(pMidiEditCommand);
+		} else {
+			// No events to apply...
+			delete pMidiEditCommand;
+		}
 	}
 
 	m_inpEvents.clear();

@@ -1298,20 +1298,6 @@ bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
 }
 
 
-// Submit a command to the clip editor, if available.
-bool qtractorMidiClip::execute ( qtractorMidiEditCommand *pMidiEditCommand )
-{
-	if (m_pMidiEditorForm == nullptr)
-		return false;
-
-	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
-	if (pMidiEditor == nullptr)
-		return false;
-
-	return pMidiEditor->execute(pMidiEditCommand);
-}
-
-
 // Virtual document element methods.
 bool qtractorMidiClip::loadClipElement (
 	qtractorDocument * /* pDocument */, QDomElement *pElement )
@@ -1681,6 +1667,66 @@ void qtractorMidiClip::updateStepInput (void)
 		m_pMidiEditorForm->editor()->setStepInputHead(
 			m_iStepInputLast > 0 ? m_iStepInputTail : m_iStepInputHead);
 	}
+}
+
+
+// Check if an event with same exact time, type, key and duration
+// is already in the sequence (avoid duplicates in step-input...)
+qtractorMidiEvent *qtractorMidiClip::findStepInputEvent (
+	qtractorMidiEvent *pStepInputEvent ) const
+{
+	qtractorMidiSequence *pSeq = sequence();
+	if (pSeq == nullptr)
+		return nullptr;
+
+	qtractorMidiEvent *pEvent = pSeq->events().first();
+	for ( ; pEvent; pEvent = pEvent->next()) {
+		if (pEvent->time() > pStepInputEvent->time())
+			break;
+		if (pEvent->time() == pStepInputEvent->time() &&
+			pEvent->type() == pStepInputEvent->type()) {
+			switch (pEvent->type()) {
+			case qtractorMidiEvent::NOTEON:
+				if (pEvent->duration() != pStepInputEvent->duration())
+					continue;
+				// Fall thru...
+			case qtractorMidiEvent::NOTEOFF:
+			case qtractorMidiEvent::KEYPRESS:
+				if (pEvent->note() != pStepInputEvent->note())
+					continue;
+				break;
+			case qtractorMidiEvent::CONTROLLER:
+			case qtractorMidiEvent::REGPARAM:
+			case qtractorMidiEvent::NONREGPARAM:
+			case qtractorMidiEvent::CONTROL14:
+				if (pEvent->controller() != pStepInputEvent->controller())
+					continue;
+				break;
+			case qtractorMidiEvent::CHANPRESS:
+			case qtractorMidiEvent::PITCHBEND:
+				break;
+			default:
+				break;
+			}
+			return pEvent;
+		}
+	}
+
+	return nullptr;
+}
+
+
+// Submit a command to the clip editor, if available.
+bool qtractorMidiClip::execute ( qtractorMidiEditCommand *pMidiEditCommand )
+{
+	if (m_pMidiEditorForm == nullptr)
+		return false;
+
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+	if (pMidiEditor == nullptr)
+		return false;
+
+	return pMidiEditor->execute(pMidiEditCommand);
 }
 
 
