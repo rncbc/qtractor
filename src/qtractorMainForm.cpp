@@ -2647,29 +2647,6 @@ bool qtractorMainForm::saveSessionFileEx (
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	appendMessages(tr("Saving \"%1\"...").arg(sFilename));
 
-	// Trap dirty clips (only MIDI at this time...)
-	typedef QHash<qtractorMidiClip *, QString> MidiClipFilenames;
-	MidiClipFilenames midiClips;
-	for (qtractorTrack *pTrack = m_pSession->tracks().first();
-			pTrack; pTrack = pTrack->next()) {
-		// Only MIDI track/clips...
-		if (pTrack->trackType() != qtractorTrack::Midi)
-			continue;
-		for (qtractorClip *pClip = pTrack->clips().first();
-				pClip; pClip = pClip->next()) {
-			// Are any dirty changes pending commit?
-			if (pClip->isDirty()) {
-				qtractorMidiClip *pMidiClip
-					= static_cast<qtractorMidiClip *> (pClip);
-				if (pMidiClip) {
-					if (!bUpdate)
-						midiClips.insert(pMidiClip, pMidiClip->filename());
-					pMidiClip->saveCopyFile(bUpdate);
-				}
-			}
-		}
-	}
-
 	// Soft-house-keeping...
 	m_pSession->files()->cleanup(false);
 
@@ -2682,12 +2659,6 @@ bool qtractorMainForm::saveSessionFileEx (
 	if ((iFlags & qtractorDocument::Archive) == 0 && bUpdate)
 		qtractorDocument::clearExtractedArchives();
 #endif
-
-	// Restore old clip filenames, saved previously...
-	MidiClipFilenames::ConstIterator iter = midiClips.constBegin();
-	const MidiClipFilenames::ConstIterator& iter_end = midiClips.constEnd();
-	for ( ; iter != iter_end; ++iter)
-		iter.key()->setFilenameEx(iter.value(), bUpdate);
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -3033,7 +3004,7 @@ void qtractorMainForm::autoSaveSession (void)
 		sAutoSavePathname.toUtf8().constData());
 #endif
 
-	const int iFlags = qtractorDocument::Default;
+	const int iFlags = qtractorDocument::Default | qtractorDocument::Temporary;
 	if (saveSessionFileEx(sAutoSavePathname, iFlags, false)) {
 		m_pOptions->sAutoSavePathname = sAutoSavePathname;
 		m_pOptions->sAutoSaveFilename = m_sFilename;

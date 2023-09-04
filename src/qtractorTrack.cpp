@@ -2016,7 +2016,8 @@ bool qtractorTrack::saveElement (
 	pDocument->saveTextElement("solo",
 		qtractorDocument::textFromBool(qtractorTrack::isSolo()), &eState);
 	pDocument->saveTextElement("record",
-		qtractorDocument::textFromBool(qtractorTrack::isRecord()), &eState);
+		qtractorDocument::textFromBool(qtractorTrack::isRecord()
+			&& !qtractorTrack::isClipRecordEx()), &eState);
 	pDocument->saveTextElement("monitor",
 		qtractorDocument::textFromBool(qtractorTrack::isMonitor()), &eState);
 	pDocument->saveTextElement("gain",

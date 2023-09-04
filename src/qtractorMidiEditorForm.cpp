@@ -1260,26 +1260,16 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	}
 
 	// Save it right away...
-	bool bResult = qtractorMidiFile::saveCopyFile(sFilename,
-		filename(), trackChannel(), format(), sequence(),
-		timeScale(), timeOffset());
+	const bool bResult
+		= qtractorMidiFile::saveCopyFile(sFilename,
+			filename(), trackChannel(), format(),
+			sequence(), timeScale(), timeOffset());
 
 	// Have we done it right?
 	if (bResult) {
 		// Aha, but we're not dirty no more.
 		m_iDirtyCount = 0;
-		// Now, we avoid the linked/ref-counted instances
-		// if we're doing a prompted save (ie. Save As...)
-		if (bPrompt) {
-			pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);
-			pMidiClip->setFilename(sFilename);
-			pMidiClip->setDirty(false);
-			pMidiClip->unlinkHashData();
-			pMidiClip->updateEditor(true);
-			pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
-		} else {
-			pMidiClip->setFilenameEx(sFilename, true);
-		}
+		pMidiClip->setFilenameEx(sFilename);
 		// HACK: This operation is so important that
 		// it surely deserves being in the front page...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

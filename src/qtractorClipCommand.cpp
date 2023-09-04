@@ -1188,7 +1188,7 @@ void qtractorClipToolCommand::swapMidiClipCtx ( qtractorMidiClip *pMidiClip )
 		const QString sPostFilename = mctx.post.filename;
 	//	pMidiClip->close();
 		pMidiClip->setClipLength(iPreLength);
-		pMidiClip->setFilenameEx(sPreFilename, true);
+		pMidiClip->setFilenameEx(sPreFilename);
 	//	pMidiClip->open();
 		mctx.post.filename = sPreFilename;
 		mctx.post.length = iPreLength;

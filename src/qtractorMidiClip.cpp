@@ -539,6 +539,14 @@ bool qtractorMidiClip::openMidiFile (
 // Private cleanup.
 void qtractorMidiClip::closeMidiFile (void)
 {
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return;
+
 	if (m_pData) {
 		m_pData->detach(this);
 		if (m_pData->count() < 1) {
@@ -547,9 +555,7 @@ void qtractorMidiClip::closeMidiFile (void)
 		}
 		m_pData = nullptr;
 		// Unregister file path...
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession)
-			pSession->files()->removeClipItem(qtractorFileList::Midi, this);
+		pSession->files()->removeClipItem(qtractorFileList::Midi, this);
 	}
 
 	if (m_pKey) {
@@ -569,6 +575,14 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 {
 	QString sFilename = filename();
 
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return sFilename;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return sFilename;
+
 	// Check file-hash reference...
 	if (m_iRevision > 0 && m_pKey) {
 		FileKey fkey(m_pKey);
@@ -578,10 +592,7 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 	}
 
 	if (m_iRevision == 0 || bForce) {
-		qtractorTrack *pTrack = track();
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pTrack && pSession)
-			sFilename = pSession->createFilePath(pTrack->trackName(), "mid");
+		sFilename = pSession->createFilePath(pTrack->trackName(), "mid");
 		sFilename = qtractorMidiFile::createFilePathRevision(sFilename);
 	#ifdef CONFIG_DEBUG
 		qDebug("qtractorMidiClip::createFilePathRevision(%d): \"%s\" (%d)",
@@ -597,8 +608,7 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 
 
 // Sync all ref-counted filenames.
-void qtractorMidiClip::setFilenameEx (
-	const QString& sFilename, bool bUpdate )
+void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == nullptr)
@@ -620,10 +630,8 @@ void qtractorMidiClip::setFilenameEx (
 		pMidiClip->setFilename(sFilename);
 		pMidiClip->updateHashKey();
 		pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
-		if (bUpdate) {
-			pMidiClip->setDirty(false);
-			pMidiClip->updateEditor(true);
-		}
+		pMidiClip->setDirty(false);
+		pMidiClip->updateEditor(true);
 	}
 
 	insertHashKey();
@@ -1269,7 +1277,11 @@ QString qtractorMidiClip::toolTip (void) const
 // Auto-save to (possible) new file revision.
 bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
 {
-	qtractorSession *pSession = qtractorSession::getInstance();
+	qtractorTrack *pTrack = track();
+	if (pTrack == nullptr)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
 	if (pSession == nullptr)
 		return false;
 
@@ -1287,7 +1299,8 @@ bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
 		return false;
 
 	// Pre-commit dirty changes...
-	setFilenameEx(sFilename, bUpdate);
+	if (bUpdate)
+		setFilenameEx(sFilename);
 
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -1363,9 +1376,27 @@ bool qtractorMidiClip::loadClipElement (
 bool qtractorMidiClip::saveClipElement (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
+	qtractorTrack *pTrack = qtractorMidiClip::track();
+	if (pTrack == nullptr)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return false;
+
+	QString sFilename = qtractorMidiClip::filename();
+
+	if (qtractorMidiClip::isDirty())
+		qtractorMidiClip::saveCopyFile(!pDocument->isTemporary());
+
+	if (pDocument->isArchive() || pDocument->isSymLink()) {
+		sFilename = pDocument->addFile(sFilename);
+	} else {
+		sFilename = pSession->relativeFilePath(sFilename);
+	}
+
 	QDomElement eMidiClip = pDocument->document()->createElement("midi-clip");
-	pDocument->saveTextElement("filename",
-		qtractorMidiClip::relativeFilename(pDocument), &eMidiClip);
+	pDocument->saveTextElement("filename", sFilename, &eMidiClip);
 	pDocument->saveTextElement("track-channel",
 		QString::number(qtractorMidiClip::trackChannel()), &eMidiClip);
 	pDocument->saveTextElement("revision",

@@ -1643,6 +1643,19 @@ QString qtractorSession::createFilePath (
 }
 
 
+// Session directory relative/absolute file path helpers.
+QString qtractorSession::relativeFilePath ( const QString& sFilename ) const
+{
+	return QDir(sessionDir()).relativeFilePath(sFilename);
+}
+
+
+QString qtractorSession::absoluteFilePath ( const QString& sFilename ) const
+{
+	return QDir::cleanPath(QDir(sessionDir()).absoluteFilePath(sFilename));
+}
+
+
 // Consolidated session record state.
 void qtractorSession::setRecording ( bool bRecording )
 {
@@ -2636,7 +2649,7 @@ void qtractorSession::renameSession (
 				qtractorMidiClip *pMidiClip
 					= static_cast<qtractorMidiClip *> (pClip);
 				if (pMidiClip)
-					pMidiClip->setFilenameEx(sNewFilePath, true);
+					pMidiClip->setFilenameEx(sNewFilePath);
 			} else {
 				pClip->close();
 				pClip->setFilename(sNewFilePath);

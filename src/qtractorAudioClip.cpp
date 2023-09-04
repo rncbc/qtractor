@@ -803,9 +803,24 @@ bool qtractorAudioClip::loadClipElement (
 bool qtractorAudioClip::saveClipElement (
 	qtractorDocument *pDocument, QDomElement *pElement )
 {
+	qtractorTrack *pTrack = qtractorAudioClip::track();
+	if (pTrack == nullptr)
+		return false;
+
+	qtractorSession *pSession = pTrack->session();
+	if (pSession == nullptr)
+		return false;
+
+	QString sFilename = qtractorAudioClip::filename();
+
+	if (pDocument->isArchive() || pDocument->isSymLink()) {
+		sFilename = pDocument->addFile(sFilename);
+	} else {
+		sFilename = pSession->relativeFilePath(sFilename);
+	}
+
 	QDomElement eAudioClip = pDocument->document()->createElement("audio-clip");
-	pDocument->saveTextElement("filename",
-		qtractorAudioClip::relativeFilename(pDocument), &eAudioClip);
+	pDocument->saveTextElement("filename", sFilename, &eAudioClip);
 	pDocument->saveTextElement("time-stretch",
 		QString::number(qtractorAudioClip::timeStretch()), &eAudioClip);
 	pDocument->saveTextElement("pitch-shift",

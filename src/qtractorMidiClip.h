@@ -216,7 +216,7 @@ public:
 	typedef QHash<Key, Data *> Hash;
 
 	// Sync all ref-counted filenames.
-	void setFilenameEx(const QString& sFilename, bool bUpdate);
+	void setFilenameEx(const QString& sFilename);
 
 	// Sync all ref-counted clip-lengths.
 	void setClipLengthEx(unsigned long iClipLength);

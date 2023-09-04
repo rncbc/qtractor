@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,7 +27,6 @@
 
 #include "qtractorOptions.h"
 #include "qtractorSession.h"
-#include "qtractorClip.h"
 
 #include <QDomDocument>
 
@@ -39,7 +38,6 @@
 #include <QToolTip>
 #include <QTimer>
 #include <QUrl>
-#include <QDir>
 
 #include <QMouseEvent>
 #include <QDragLeaveEvent>
@@ -1399,9 +1397,6 @@ bool qtractorFileListView::loadListElement (
 	if (pSession == nullptr)
 		return false;
 
-	// Make it all relative to session directory...
-	const QDir dir(pSession->sessionDir());
-
 	// Load children...
 	for (QDomNode nChild = pElement->firstChild();
 			!nChild.isNull(); nChild = nChild.nextSibling()) {
@@ -1425,7 +1420,7 @@ bool qtractorFileListView::loadListElement (
 		else
 		if (eChild.tagName() == "file") {
 			qtractorFileListItem *pFileItem = createFileItem(
-				QDir::cleanPath(dir.absoluteFilePath(eChild.text())));
+				pSession->absoluteFilePath(eChild.text()));
 			if (pFileItem) {
 				pFileItem->setText(0, eChild.attribute("name"));
 				if (pParentItem)
@@ -1486,12 +1481,10 @@ bool qtractorFileListView::saveListElement (
 			&& (pFileListItem->clipRefCount() > 0
 			|| !pFileListItem->isAutoRemove())) {
 			// Make it all relative to archive or session directory...
-			if (pDocument->isArchive() || pDocument->isSymLink()) {
+			if (pDocument->isArchive() || pDocument->isSymLink())
 				sPath = pDocument->addFile(sPath);
-			} else {
-				const QDir dir(pSession->sessionDir());
-				sPath = dir.relativeFilePath(sPath);
-			}
+			else
+				sPath = pSession->relativeFilePath(sPath);
 			// Save file item if valid...
 			QDomElement eFile = pDocument->document()->createElement("file");
 			eFile.setAttribute("name", pFileItem->text(0));
