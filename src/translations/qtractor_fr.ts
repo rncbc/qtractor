@@ -9476,23 +9476,23 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="869"/>
         <source>&amp;Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Éta&amp;pe</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="872"/>
         <source>Insert step</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une étape</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="875"/>
         <location filename="../qtractorMidiEditorForm.ui" line="878"/>
         <source>Insert step (rest)</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une étape (repos)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="881"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Droite</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="889"/>
