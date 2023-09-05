@@ -9492,7 +9492,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="881"/>
         <source>Right</source>
-        <translation>Droite</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="889"/>
