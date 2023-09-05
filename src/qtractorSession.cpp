@@ -254,6 +254,8 @@ void qtractorSession::clear (void)
 
 	m_pCurrentTrack = nullptr;
 
+	m_pCommands->clear();
+
 	m_tracks.clear();
 	m_cursors.clear();
 
@@ -264,8 +266,6 @@ void qtractorSession::clear (void)
 
 	m_pMidiEngine->clear();
 	m_pAudioEngine->clear();
-
-	m_pCommands->clear();
 
 	m_pFiles->clear();
 
@@ -2662,7 +2662,7 @@ void qtractorSession::renameSession (
 					= pFileListView->findFileItem(sOldFilePath);
 				if (pFileItem) {
 					pGroupItem = pFileItem->groupItem();
-					m_pFiles->removeFileItem(iFileType, pFileItem);
+					m_pFiles->removeFileItem(iFileType, pFileItem->path());
 					delete pFileItem;
 				}
 				pFileListView->addFileItem(sNewFilePath, pGroupItem);

@@ -1,7 +1,7 @@
 // qtractorFiles.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,11 +66,15 @@ public:
 	// Tell whether a file item is currently selected.
 	bool isFileSelected() const;
 
-	// File addition Convenience helper methods.
-	void addAudioFile (const QString& sFilename);
-	void addMidiFile  (const QString& sFilename);
+	// File addition convenience helper methods.
+	void addAudioFile (const QString& sFilename, bool bSelect);
+	void addMidiFile  (const QString& sFilename, bool bSelect);
 
-	// File selection Convenience helper methods.
+	// File removal convenience helper methods.
+	void removeAudioFile (const QString& sFilename, bool bSelect);
+	void removeMidiFile  (const QString& sFilename, bool bSelect);
+
+	// File selection convenience helper methods.
 	void selectAudioFile (const QString& sFilename);
 	void selectMidiFile  (const QString& sFilename, int iTrackChannel);
 

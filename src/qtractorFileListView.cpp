@@ -388,7 +388,7 @@ qtractorFileListItem *qtractorFileListView::addFileItem (
 		pFileItem = createFileItem(sPath);
 		if (pFileItem) {
 			// Add to file/path registry...
-			pSession->files()->addFileItem(m_iFileType, pFileItem);
+			pSession->files()->addFileItem(m_iFileType, pFileItem->path());
 			// Insert the new file item in place...
 			if (pParentItem) {
 				if (pParentItem->type() == GroupItem) {
@@ -442,6 +442,31 @@ qtractorFileGroupItem *qtractorFileListView::addGroupItem (
 	QTreeWidget::setCurrentItem(pGroupItem);
 #endif
 	return pGroupItem;
+}
+
+
+// Remove an existing group item, by name (should be unique).
+void qtractorFileListView::removeGroupItem ( const QString& sName )
+{
+	qtractorFileGroupItem *pGroupItem = findGroupItem(sName);
+	if (pGroupItem) {
+		delete pGroupItem;
+	//	emit contentsChanged();
+	}
+}
+
+
+// Remove an existing file item, by path (should be unique).
+void qtractorFileListView::removeFileItem ( const QString& sPath )
+{
+	qtractorFileListItem *pFileItem = findFileItem(sPath);
+	if (pFileItem) {
+		qtractorSession *pSession = qtractorSession::getInstance();
+		if (pSession)
+			pSession->files()->removeFileItem(m_iFileType, pFileItem->path());
+		delete pFileItem;
+	//	emit contentsChanged();
+	}
 }
 
 
@@ -671,7 +696,7 @@ void qtractorFileListView::removeItem (void)
 				qtractorFileListItem *pFileItem
 					= static_cast<qtractorFileListItem *> (pItem);
 				if (pFileItem)
-					pSession->files()->removeFileItem(m_iFileType, pFileItem);
+					pSession->files()->removeFileItem(m_iFileType, pFileItem->path());
 			}
 			// Scrap view item...
 			delete pItem;
@@ -699,7 +724,7 @@ void qtractorFileListView::removeItem (void)
 					qtractorFileListItem *pFileItem
 						= static_cast<qtractorFileListItem *> (pItem);
 					if (pFileItem)
-						pSession->files()->removeFileItem(m_iFileType, pFileItem);
+						pSession->files()->removeFileItem(m_iFileType, pFileItem->path());
 				}
 			}
 			// Scrap view item...
@@ -1428,7 +1453,7 @@ bool qtractorFileListView::loadListElement (
 				else
 					QTreeWidget::addTopLevelItem(pFileItem);
 				if (pSession)
-					pSession->files()->addFileItem(m_iFileType, pFileItem);
+					pSession->files()->addFileItem(m_iFileType, pFileItem->path());
 			}
 		}
 	}

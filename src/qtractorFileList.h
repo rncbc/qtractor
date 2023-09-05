@@ -1,7 +1,7 @@
 // qtractorFileList.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,7 +28,6 @@
 
 
 // Forward declarations.
-class qtractorFileListItem;
 class qtractorClip;
 
 
@@ -89,7 +88,7 @@ public:
 
 		// Constructor.
 		Item(const Key& key, bool bAutoRemove = false)
-			: m_key(key), m_bAutoRemove(bAutoRemove), m_pFileItem(nullptr),
+			: m_key(key), m_bAutoRemove(bAutoRemove),
 				m_iClipRefCount(0), m_iRefCount(0) {}
 
 		// Key accessors.
@@ -107,12 +106,6 @@ public:
 			{ m_bAutoRemove = bAutoRemove; }
 		bool isAutoRemove() const
 			{ return m_bAutoRemove; }
-
-		// Payload accessors.
-		void setFileItem(qtractorFileListItem *pFileItem)
-			{ m_pFileItem = pFileItem; }
-		qtractorFileListItem *fileItem() const
-			{ return m_pFileItem; }
 
 		// Clip ref-counting methods.
 		void addClipRef()
@@ -137,7 +130,6 @@ public:
 		// Most interesting variables.
 		Key m_key;
 		bool m_bAutoRemove;
-		qtractorFileListItem *m_pFileItem;
 		unsigned int m_iClipRefCount;
 		unsigned int m_iRefCount;
 	};
@@ -145,9 +137,8 @@ public:
 	typedef QHash<Key, Item *> Hash;
 
 	// File/path registry management.
-	qtractorFileListItem *findFileItem(Type iType, const QString& sPath) const;
-	void addFileItem(Type iType, qtractorFileListItem *pFileItem, bool bAutoRemove = false);
-	void removeFileItem(Type iType, qtractorFileListItem *pFileItem);
+	void addFileItem(Type iType, const QString& sPath, bool bAutoRemove = false);
+	void removeFileItem(Type iType, const QString& sPath);
 
 	// Clip/path registry management.
 	void addClipItem(Type iType, const QString& sPath, bool bAutoRemove = false);

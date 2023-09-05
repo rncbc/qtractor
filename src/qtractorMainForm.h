@@ -128,6 +128,9 @@ public:
 
 	int rolling() const;
 
+	void addAudioFile(const QString& sFilename);
+	void addMidiFile(const QString& sFilename);
+
 public slots:
 
 	void fileNew();
@@ -290,9 +293,6 @@ public slots:
 	void helpAboutQt();
 
 	void stabilizeForm();
-
-	void addAudioFile(const QString& sFilename);
-	void addMidiFile(const QString& sFilename);
 
 	void selectionNotifySlot(qtractorMidiEditor *pMidiEditor);
 	void changeNotifySlot(qtractorMidiEditor *pMidiEditor);

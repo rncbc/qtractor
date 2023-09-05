@@ -106,17 +106,27 @@ void qtractorClip::clear (void)
 // Clip filename properties accessors.
 void qtractorClip::setFilename ( const QString& sFilename )
 {
-	QDir dir;
-
 	if (m_pTrack && m_pTrack->session())
-		dir.setPath(m_pTrack->session()->sessionDir());
-
-	m_sFilename = QDir::cleanPath(dir.absoluteFilePath(sFilename));
+		m_sFilename = m_pTrack->session()->absoluteFilePath(sFilename);
+	else
+		m_sFilename = QDir::cleanPath(QDir().absoluteFilePath(sFilename));
 }
 
 const QString& qtractorClip::filename (void) const
 {
 	return m_sFilename;
+}
+
+
+QString qtractorClip::relativeFilename ( qtractorDocument *pDocument ) const
+{
+	if (pDocument && (pDocument->isArchive() || pDocument->isSymLink()))
+		return pDocument->addFile(m_sFilename);
+
+	if (m_pTrack && m_pTrack->session())
+		return m_pTrack->session()->relativeFilePath(m_sFilename);
+	else
+		return QDir().relativeFilePath(m_sFilename);
 }
 
 

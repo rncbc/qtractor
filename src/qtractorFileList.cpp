@@ -1,7 +1,7 @@
 // qtractorFileList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -21,8 +21,6 @@
 
 #include "qtractorAbout.h"
 #include "qtractorFileList.h"
-
-#include "qtractorFileListView.h"
 
 #include "qtractorClip.h"
 
@@ -44,36 +42,26 @@ uint qHash ( const qtractorFileList::Key& key )
 //
 
 // File path registry management.
-qtractorFileListItem *qtractorFileList::findFileItem (
-	qtractorFileList::Type iType, const QString& sPath ) const
-{
-	Item *pItem = findItem(iType, sPath);
-	return (pItem ? pItem->fileItem() : nullptr);
-}
-
-
 void qtractorFileList::addFileItem (
-	qtractorFileList::Type iType, qtractorFileListItem *pFileItem, bool bAutoRemove )
+	qtractorFileList::Type iType, const QString& sPath, bool bAutoRemove )
 {
-	Item *pItem = addItem(iType, pFileItem->path(), bAutoRemove);
+	Item *pItem = addItem(iType, sPath, bAutoRemove);
 	if (pItem) {
-		pItem->setFileItem(pFileItem);
-	#ifdef CONFIG_DEBUG_0
+#ifdef CONFIG_DEBUG_0
 		qDebug("qtractorFileList::addFileItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),
 			pItem->refCount(), pItem->clipRefCount(),
 			int(pItem->isAutoRemove()));
-	#endif
+#endif
 	}
 }
 
 
 void qtractorFileList::removeFileItem (
-	qtractorFileList::Type iType, qtractorFileListItem *pFileItem )
+	qtractorFileList::Type iType, const QString& sPath )
 {
-	Item *pItem = findItem(iType, pFileItem->path());
+	Item *pItem = findItem(iType, sPath);
 	if (pItem) {
-		pItem->setFileItem(nullptr);
 	#ifdef CONFIG_DEBUG_0
 		qDebug("qtractorFileList::removeFileItem(%d, \"%s\") refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(),

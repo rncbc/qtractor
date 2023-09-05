@@ -33,29 +33,24 @@
 
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
-#include "qtractorTrackTime.h"
 #include "qtractorTrackView.h"
 #include "qtractorThumbView.h"
 #include "qtractorSpinBox.h"
+
+#include "qtractorMonitor.h"
 
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioBuffer.h"
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiEngine.h"
 
-#include "qtractorSessionCursor.h"
-
 #include "qtractorSessionCommand.h"
 #include "qtractorTimeScaleCommand.h"
 #include "qtractorClipCommand.h"
 
-#include "qtractorAudioClip.h"
-#include "qtractorMidiClip.h"
-
 #include "qtractorAudioMeter.h"
 #include "qtractorMidiMeter.h"
 
-#include "qtractorMidiMonitor.h"
 #include "qtractorMidiManager.h"
 
 #include "qtractorActionControl.h"
@@ -73,8 +68,9 @@
 
 #include "qtractorTakeRangeForm.h"
 
-#include "qtractorMidiEditorForm.h"
+#include "qtractorMidiClip.h"
 #include "qtractorMidiEditor.h"
+#include "qtractorMidiEditorForm.h"
 
 #include "qtractorTrackCommand.h"
 #include "qtractorCurveCommand.h"
@@ -2647,6 +2643,46 @@ bool qtractorMainForm::saveSessionFileEx (
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	appendMessages(tr("Saving \"%1\"...").arg(sFilename));
 
+	// Trap dirty clips (only MIDI at this time...)
+	const bool bTemporary = (iFlags & qtractorDocument::Temporary);
+	typedef QHash<qtractorMidiClip *, QString> MidiClipFilenames;
+	MidiClipFilenames midiClips;
+	for (qtractorTrack *pTrack = m_pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		// Only MIDI track/clips...
+		if (pTrack->trackType() != qtractorTrack::Midi)
+			continue;
+		for (qtractorClip *pClip = pTrack->clips().first();
+			pClip; pClip = pClip->next()) {
+			// Are any dirty changes pending commit?
+			if (pClip->isDirty()) {
+				qtractorMidiClip *pMidiClip
+					= static_cast<qtractorMidiClip *> (pClip);
+				if (pMidiClip) {
+					if (bTemporary)
+						midiClips.insert(pMidiClip, pMidiClip->filename());
+					//pMidiClip->saveCopyFile(!bTemporary); -- formerly!
+					// Have a new filename revision...
+					const QString& sFilename
+						= pMidiClip->createFilePathRevision(bTemporary);
+					// Save/replace the clip track...
+					if (qtractorMidiFile::saveCopyFile(sFilename,
+							pMidiClip->filename(),
+							pMidiClip->trackChannel(),
+							pMidiClip->format(),
+							pMidiClip->sequence(),
+							m_pSession->timeScale(),
+							m_pSession->tickFromFrame(pMidiClip->clipStart()))) {
+						// Pre-commit dirty changes...
+						pMidiClip->setFilenameEx(sFilename, !bTemporary);
+						// Reference for immediate file addition...
+						m_pFiles->addMidiFile(sFilename, false);
+					}
+				}
+			}
+		}
+	}
+
 	// Soft-house-keeping...
 	m_pSession->files()->cleanup(false);
 
@@ -2659,6 +2695,16 @@ bool qtractorMainForm::saveSessionFileEx (
 	if ((iFlags & qtractorDocument::Archive) == 0 && bUpdate)
 		qtractorDocument::clearExtractedArchives();
 #endif
+
+	// Restore old clip filenames, saved previously...
+	MidiClipFilenames::ConstIterator iter = midiClips.constBegin();
+	const MidiClipFilenames::ConstIterator& iter_end = midiClips.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		qtractorMidiClip *pMidiClip = iter.key();
+		const QString& sFilename = iter.value();
+		pMidiClip->setFilenameEx(sFilename, false);
+		m_pFiles->removeMidiFile(sFilename, false);
+	}
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -8648,7 +8694,7 @@ void qtractorMainForm::addAudioFile ( const QString& sFilename )
 {
 	// Add the just dropped audio file...
 	if (m_pFiles)
-		m_pFiles->addAudioFile(sFilename);
+		m_pFiles->addAudioFile(sFilename, true);
 
 	++m_iStabilizeTimer;
 }
@@ -8708,7 +8754,7 @@ void qtractorMainForm::addMidiFile ( const QString& sFilename )
 {
 	// Add the just dropped MIDI file...
 	if (m_pFiles)
-		m_pFiles->addMidiFile(sFilename);
+		m_pFiles->addMidiFile(sFilename, true);
 
 	++m_iStabilizeTimer;
 }

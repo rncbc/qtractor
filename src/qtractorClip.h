@@ -62,6 +62,8 @@ public:
 	const QString& clipName() const
 		{ return m_sClipName; }
 
+	QString relativeFilename(qtractorDocument *pDocument) const;
+
 	QString shortClipName(const QString& sClipName) const;
 
 	QString clipTitle() const;

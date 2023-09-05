@@ -1,7 +1,7 @@
 // qtractorFiles.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -298,18 +298,42 @@ bool qtractorFiles::isFileSelected (void) const
 
 
 // Audio file addition convenience method.
-void qtractorFiles::addAudioFile ( const QString& sFilename )
+void qtractorFiles::addAudioFile ( const QString& sFilename, bool bSelect )
 {
-	m_pTabWidget->setCurrentIndex(qtractorFiles::Audio);
+	if (bSelect)
+		m_pTabWidget->setCurrentIndex(qtractorFiles::Audio);
+
 	m_pAudioListView->addFileItem(sFilename);
 }
 
 
 // MIDI file addition convenience method.
-void qtractorFiles::addMidiFile ( const QString& sFilename )
+void qtractorFiles::addMidiFile ( const QString& sFilename, bool bSelect )
 {
-	m_pTabWidget->setCurrentIndex(qtractorFiles::Midi);
+	if (bSelect)
+		m_pTabWidget->setCurrentIndex(qtractorFiles::Midi);
+
 	m_pMidiListView->addFileItem(sFilename);
+}
+
+
+// Audio file removal convenience method.
+void qtractorFiles::removeAudioFile ( const QString& sFilename, bool bSelect )
+{
+	if (bSelect)
+		m_pTabWidget->setCurrentIndex(qtractorFiles::Audio);
+
+	m_pAudioListView->removeFileItem(sFilename);
+}
+
+
+// MIDI file removal convenience method.
+void qtractorFiles::removeMidiFile ( const QString& sFilename, bool bSelect )
+{
+	if (bSelect)
+		m_pTabWidget->setCurrentIndex(qtractorFiles::Midi);
+
+	m_pMidiListView->removeFileItem(sFilename);
 }
 
 

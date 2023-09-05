@@ -69,6 +69,10 @@ public:
 	qtractorFileListItem *addFileItem(const QString& sPath,
 		qtractorFileGroupItem *pParentItem = nullptr);
 
+	// Remove existing group/file item.
+	void removeGroupItem(const QString& sName);
+	void removeFileItem(const QString& sPath);
+
 	// Current group/file item accessors...
 	qtractorFileGroupItem *currentGroupItem() const;
 	qtractorFileListItem  *currentFileItem() const;
