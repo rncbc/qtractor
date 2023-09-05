@@ -1269,7 +1269,7 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	if (bResult) {
 		// Aha, but we're not dirty no more.
 		m_iDirtyCount = 0;
-		pMidiClip->setFilenameEx(sFilename);
+		pMidiClip->setFilenameEx(sFilename, true);
 		// HACK: This operation is so important that
 		// it surely deserves being in the front page...
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

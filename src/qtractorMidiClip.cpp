@@ -608,7 +608,7 @@ QString qtractorMidiClip::createFilePathRevision ( bool bForce )
 
 
 // Sync all ref-counted filenames.
-void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
+void qtractorMidiClip::setFilenameEx ( const QString& sFilename, bool bUpdate )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == nullptr)
@@ -630,8 +630,10 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename )
 		pMidiClip->setFilename(sFilename);
 		pMidiClip->updateHashKey();
 		pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
-		pMidiClip->setDirty(false);
-		pMidiClip->updateEditor(true);
+		if (bUpdate) {
+			pMidiClip->setDirty(false);
+			pMidiClip->updateEditor(true);
+		}
 	}
 
 	insertHashKey();
@@ -1290,7 +1292,7 @@ bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
 		return false;
 
 	// Have a new filename revision...
-	const QString& sFilename = createFilePathRevision(true);
+	const QString& sFilename = createFilePathRevision();
 
 	// Save/replace the clip track...
 	if (!qtractorMidiFile::saveCopyFile(
@@ -1299,8 +1301,7 @@ bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
 		return false;
 
 	// Pre-commit dirty changes...
-	if (bUpdate)
-		setFilenameEx(sFilename);
+	setFilenameEx(sFilename, bUpdate);
 
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
@@ -1386,8 +1387,28 @@ bool qtractorMidiClip::saveClipElement (
 
 	QString sFilename = qtractorMidiClip::filename();
 
-	if (qtractorMidiClip::isDirty())
-		qtractorMidiClip::saveCopyFile(!pDocument->isTemporary());
+	// Trap and save dirty clips...
+	if (qtractorMidiClip::isDirty()) {
+		//qtractorMidiClip::saveCopyFile(!pDocument->isTemporary()); -- formerly!
+		// Have a new filename revision...
+		sFilename = createFilePathRevision(pDocument->isTemporary());
+		// Save/replace the clip track...
+		if (qtractorMidiFile::saveCopyFile(sFilename,
+				qtractorMidiClip::filename(),
+				qtractorMidiClip::trackChannel(),
+				qtractorMidiClip::format(),
+				qtractorMidiClip::sequence(),
+				pSession->timeScale(),
+				pSession->tickFromFrame(qtractorMidiClip::clipStart()))) {
+			// Pre-commit dirty changes...
+			if (!pDocument->isTemporary())
+				setFilenameEx(sFilename, true);
+			// Reference for immediate file addition...
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm)
+				pMainForm->addMidiFile(sFilename);
+		}
+	}
 
 	if (pDocument->isArchive() || pDocument->isSymLink()) {
 		sFilename = pDocument->addFile(sFilename);

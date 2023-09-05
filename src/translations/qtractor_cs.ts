@@ -153,31 +153,31 @@ Konec:	%3	Délka:	%4</translation>
         <translation>%1 - Banka %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1255"/>
+        <location filename="../qtractorMidiClip.cpp" line="1257"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(formát %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1257"/>
+        <location filename="../qtractorMidiClip.cpp" line="1259"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Kanál %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1259"/>
+        <location filename="../qtractorMidiClip.cpp" line="1261"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Stopa %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1262"/>
+        <location filename="../qtractorMidiClip.cpp" line="1264"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 stopy, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1269"/>
+        <location filename="../qtractorMidiClip.cpp" line="1271"/>
         <source> (%1% vol)</source>
         <translation> (%1% hlasitost)</translation>
     </message>
