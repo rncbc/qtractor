@@ -1603,7 +1603,7 @@ void qtractorMidiClip::setStepInputHead ( unsigned long iStepInputHead )
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iStepInputHead);
 
-	m_iStepInputHead = iStepInputHead; // use frameSnap()?
+	m_iStepInputHead = pNode->frameSnap(iStepInputHead);
 	m_iStepInputHeadTime = pNode->tickFromFrame(m_iStepInputHead);
 
 	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
