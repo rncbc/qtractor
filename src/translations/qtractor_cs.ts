@@ -9712,18 +9712,18 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="869"/>
         <source>&amp;Step</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Krok</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="872"/>
         <source>Insert step</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit krok</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="875"/>
         <location filename="../qtractorMidiEditorForm.ui" line="878"/>
         <source>Insert step (rest)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit krok (pomlka)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="881"/>
