@@ -336,8 +336,8 @@ void qtractorPluginFactory::updatePluginPaths (
 		m_paths.insert(qtractorPluginType::Lv2, lv2_paths);
 		// HACK: set special environment for LV2...
 		::setenv("LV2_PATH", lv2_paths.join(PATH_SEP).toUtf8().constData(), 1);
-	#endif
 	}
+#endif
 }
 
 
