@@ -86,12 +86,15 @@ BuildRequires:	pkgconfig(Qt5X11Extras)
 %endif
 %if %{defined fedora}
 BuildRequires:	jack-audio-connection-kit-devel
-BuildRequires:	alsa-lib-devel
+%else
+BuildRequires:	pkgconfig(jack)
+%endif
+BuildRequires:	pkgconfig(alsa)
+
+%if %{defined fedora}
 BuildRequires:	rubberband-devel
 BuildRequires:	aubio-devel >= 0.4.1
 %else
-BuildRequires:	libjack-devel
-BuildRequires:	alsa-devel
 BuildRequires:	librubberband-devel
 BuildRequires:  libaubio-devel >= 0.4.1
 %endif
