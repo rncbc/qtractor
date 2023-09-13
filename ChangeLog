@@ -4,28 +4,28 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.35  2023-09-14  An End-of-Summer'23 Release.
 
 - MIDI Step-input is now finally featured on the MIDI clip editor
   (aka. piano-roll), provided Clip/Record is on and playback is not
   rolling; current snap-to-beat applies; starts/resets to play-head;
-  Edit/Insert/Step to advance a single step/rest. (EXPERIMENTAL)
-  (GH issue #395)
+  Edit/Insert/Step to advance a single step/rest.
 
 - Notes keyed in the MIDI clip editor's virtual piano keyboard may now
-  be recorded, especially while "overdubbing". (EXPERIMENTAL)
+  be recorded, especially while "overdubbing".
 
 - The official VST3 plug-in SDK is now included in the source tree as
-  Git submodules. (EXPERIMENTAL)
+  Git submodules.
 
 - Fixed a rounding error on current BBT information passed to plugins
-  and to JACK transport/timebase. (GH issue #406) (EXPERIMENTAL)   
+  and to JACK transport/timebase.
 
 - When on Track/Auto Deactivate mode, plugins now show a dull, dimmed
-  lit, green (fake-)LED when in auto-deactivated state. (EXPERIMENTAL)
+  lit, green (fake-)LED when in auto-deactivated state.
 
 - Attempt to actually (de)activate plugins once on (de)instantiation.
-  (GH issue #402) (EXPERIMENTAL)
+
+- Preppings to next development cycle (Qt >= 6.6)
 
 
 0.9.34  2023-06-08  A Spring'23 Release.
