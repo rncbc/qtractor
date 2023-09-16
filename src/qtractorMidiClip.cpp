@@ -1604,7 +1604,11 @@ void qtractorMidiClip::setStepInputHead ( unsigned long iStepInputHead )
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iStepInputHead);
 
 	m_iStepInputHead = pNode->frameSnap(iStepInputHead);
-	m_iStepInputHeadTime = pNode->tickFromFrame(m_iStepInputHead);
+	const unsigned long iClipOffset = clipOffset();
+	unsigned long iStepInputHead2 = m_iStepInputHead;
+	if (iStepInputHead2 >= iClipOffset)
+		iStepInputHead2 -= iClipOffset;
+	m_iStepInputHeadTime = pNode->tickFromFrame(iStepInputHead2);
 
 	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
 	unsigned long iStepInputDuration = pNode->ticksPerBeat;
@@ -1612,7 +1616,7 @@ void qtractorMidiClip::setStepInputHead ( unsigned long iStepInputHead )
 		iStepInputDuration /= iSnapPerBeat;
 
 	m_iStepInputTailTime = m_iStepInputHeadTime + iStepInputDuration;
-	m_iStepInputTail = pNode->frameFromTick(m_iStepInputTailTime);
+	m_iStepInputTail = pNode->frameFromTick(m_iStepInputTailTime) + iClipOffset;
 	m_iStepInputLast = 0;
 }
 
@@ -1657,11 +1661,15 @@ void qtractorMidiClip::advanceStepInput (void)
 
 	if (pSession->isLooping() && m_iStepInputTail >= pSession->loopEnd()) {
 		m_iStepInputTail = pSession->loopStart();
-		m_iStepInputTailTime = pSession->loopStartTime();
+	//	m_iStepInputTailTime = pSession->loopStartTime();
 	}
 
 	m_iStepInputHead = m_iStepInputTail;
-	m_iStepInputHeadTime = m_iStepInputTailTime; // pNode->tickFromFrame(m_iStepInputHead);
+	const unsigned long iClipOffset = clipOffset();
+	unsigned long iStepInputHead2 = m_iStepInputHead;
+	if (iStepInputHead2 >= iClipOffset)
+		iStepInputHead2 -= iClipOffset;
+	m_iStepInputHeadTime = pNode->tickFromFrame(iStepInputHead2);
 
 	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
 	unsigned long iStepInputDuration = pNode->ticksPerBeat;
@@ -1669,7 +1677,7 @@ void qtractorMidiClip::advanceStepInput (void)
 		iStepInputDuration /= iSnapPerBeat;
 
 	m_iStepInputTailTime = m_iStepInputHeadTime + iStepInputDuration;
-	m_iStepInputTail = pNode->frameFromTick(m_iStepInputTailTime);
+	m_iStepInputTail = pNode->frameFromTick(m_iStepInputTailTime) + iClipOffset;
 //	m_iStepInputLast = 0;
 }
 

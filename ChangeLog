@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed MIDI Step-input for non-zero offset clips. (EXPERIMENTAL)
+
+
 0.9.35  2023-09-14  An End-of-Summer'23 Release.
 
 - MIDI Step-input is now finally featured on the MIDI clip editor
