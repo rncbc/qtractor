@@ -283,7 +283,7 @@ qtractorTrackForm::qtractorTrackForm ( QWidget *pParent )
 		SIGNAL(clicked()),
 		SLOT(changed()));
 	QObject::connect(m_ui.PluginListLatencyPushButton,
-		SIGNAL(contentsChanged()),
+		SIGNAL(clicked()),
 		SLOT(pluginListChanged()));
 
 	QObject::connect(m_ui.DialogButtonBox,
@@ -535,6 +535,8 @@ void qtractorTrackForm::reject (void)
 					m_iOldBankSelMethod, m_iOldBank, m_iOldProg, m_pTrack);
 			}
 		}
+		// Flush any pending stuff befor too late...
+		qtractorSubject::flushQueue(false);
 		// Reset plugin list, before too late...
 		m_ui.PluginListView->setPluginList(nullptr);
 		// Just go away.

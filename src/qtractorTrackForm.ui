@@ -631,31 +631,18 @@
           <string>Whether to enable plugin latency/delay compensation</string>
          </property>
          <property name="text">
-          <string>&amp;Latency compensation:</string>
+          <string>&amp;Latency compensation</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1" colspan="2">
-          <layout class="QHBoxLayout">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item>
-          <widget class="QPushButton" name="PluginListLatencyPushButton">
-           <property name="toolTip">
-            <string>Current plugins total latency</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
+        <layout class="QHBoxLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
          <item>
           <spacer>
            <property name="orientation">
@@ -671,6 +658,19 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="PluginListLatencyPushButton">
+           <property name="toolTip">
+            <string>Current total latency</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
