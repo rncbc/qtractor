@@ -91,6 +91,8 @@ protected slots:
 	void moveUpPlugin();
 	void moveDownPlugin();
 
+	void updatePluginListLatency();
+
 	void trackIconAction();
 	void trackIconClicked();
 	void trackIconChanged();
@@ -124,9 +126,6 @@ protected:
 
 	// Update/reset output bus name...
 	void updateOutputBusName(const QString& sBusName);
-
-	// Update current plugins latency...
-	void updatePluginListLatency();
 
 	// Save/load default bus names...
 	void loadDefaultBusNames(qtractorTrack::TrackType trackType);

@@ -284,7 +284,7 @@ qtractorTrackForm::qtractorTrackForm ( QWidget *pParent )
 		SLOT(changed()));
 	QObject::connect(m_ui.PluginListLatencyPushButton,
 		SIGNAL(clicked()),
-		SLOT(pluginListChanged()));
+		SLOT(updatePluginListLatency()));
 
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
