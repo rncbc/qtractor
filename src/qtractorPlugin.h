@@ -1067,7 +1067,10 @@ public:
 	unsigned long latency() const
 		{ return m_iLatency; }
 
-	void resetLatency();
+	void resetLatency()
+		{ m_iLatency = (m_bLatency ? currentLatency() : 0); }
+
+	unsigned long currentLatency() const;
 
 	// Plugin editors (GUI) visibility (auto-focus).
 	void setEditorVisibleAll(bool bVisible);

@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Show current/total plugins latency on the Track properties dialog,
+  (GH issue #410) (EXPERIMENTAL)
+
 - Fixed MIDI Step-input for non-zero offset clips. (EXPERIMENTAL)
 
 

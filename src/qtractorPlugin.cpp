@@ -2588,12 +2588,9 @@ bool qtractorPluginList::checkPluginFile (
 
 
 // Recalculate plugin chain total latency (in frames)...
-void qtractorPluginList::resetLatency (void)
+unsigned long qtractorPluginList::currentLatency (void) const
 {
-	m_iLatency = 0;
-
-	if (!m_bLatency)
-		return;
+	unsigned long iLatency = 0;
 
 	for (qtractorPlugin *pPlugin = first();
 			pPlugin; pPlugin = pPlugin->next()) {
@@ -2606,9 +2603,11 @@ void qtractorPluginList::resetLatency (void)
 				pPlugin->process(ppIDummy, ppODummy, 0);
 			}
 			// Accumulate latency...
-			m_iLatency += pPlugin->latency();
+			iLatency += pPlugin->latency();
 		}
 	}
+
+	return iLatency;
 }
 
 

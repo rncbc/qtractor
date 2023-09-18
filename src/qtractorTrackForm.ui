@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -625,15 +625,54 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="0" colspan="3">
+       <item row="1" column="0">
         <widget class="QCheckBox" name="PluginListLatencyCheckBox">
          <property name="toolTip">
           <string>Whether to enable plugin latency/delay compensation</string>
          </property>
          <property name="text">
-          <string>&amp;Latency compensation</string>
+          <string>&amp;Latency compensation:</string>
          </property>
         </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+          <layout class="QHBoxLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+          <widget class="QPushButton" name="PluginListLatencyPushButton">
+           <property name="toolTip">
+            <string>Current plugins total latency</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint">
+            <size>
+             <width>8</width>
+             <height>8</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

@@ -1,7 +1,7 @@
 // qtractorTrackForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -282,6 +282,9 @@ qtractorTrackForm::qtractorTrackForm ( QWidget *pParent )
 	QObject::connect(m_ui.PluginListLatencyCheckBox,
 		SIGNAL(clicked()),
 		SLOT(changed()));
+	QObject::connect(m_ui.PluginListLatencyPushButton,
+		SIGNAL(contentsChanged()),
+		SLOT(pluginListChanged()));
 
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
@@ -391,6 +394,9 @@ void qtractorTrackForm::setTrack ( qtractorTrack *pTrack )
 	updateColorItem(m_ui.BackgroundColorComboBox, m_props.background);
 
 	trackIconChanged();
+
+	// Finally get the plugin-list latency estimate...
+	updatePluginListLatency();
 
 	// Cannot change track type, if track is already chained in session..
 	m_ui.AudioRadioButton->setEnabled(m_props.trackType != qtractorTrack::Midi);
@@ -1174,6 +1180,7 @@ void qtractorTrackForm::backgroundColorChanged ( const QString& sText )
 void qtractorTrackForm::pluginListChanged (void)
 {
 	updateInstruments();
+	updatePluginListLatency();
 	changed();
 }
 
@@ -1630,6 +1637,36 @@ void qtractorTrackForm::updateOutputBusName ( const QString& sBusName )
 	m_pTrack->setOutputBusName(sBusName);
 	m_pTrack->open(); // re-open...
 	pSession->unlock();
+}
+
+
+// Update current plugins latency...
+void qtractorTrackForm::updatePluginListLatency (void)
+{
+	if (m_pTrack == nullptr)
+		return;
+
+	qtractorSession *pSession = m_pTrack->session();
+	if (pSession == nullptr)
+		return;
+
+	qtractorPluginList *pPluginList = m_ui.PluginListView->pluginList();
+	if (pPluginList == nullptr)
+		return;
+
+	qtractorSubject::flushQueue(true);
+
+	const unsigned long iLatency = pPluginList->currentLatency();
+	if (iLatency > 0) {
+		const float fLatencyMs
+			= 1000.0f * float(iLatency) / float(pSession->sampleRate());
+		m_ui.PluginListLatencyPushButton->setText(
+			tr("%1 ms (%2 frames)")
+				.arg(QString::number(fLatencyMs, 'f', 1))
+				.arg(iLatency));
+	} else {
+		m_ui.PluginListLatencyPushButton->setText(tr("(no latency)"));
+	}
 }
 
 
