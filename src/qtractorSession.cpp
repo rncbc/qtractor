@@ -2031,11 +2031,9 @@ void qtractorSession::process (
 	qtractorTrack *pTrack = m_tracks.first();
 	while (pTrack) {
 		// Track automation processing...
-		if (syncType == qtractorTrack::Audio) {
-			qtractorCurveList *pCurveList = pTrack->curveList();
-			if (pCurveList && pCurveList->isProcess())
-				pCurveList->process(iFrameStart);
-		}
+		if (syncType == qtractorTrack::Audio)
+			pTrack->process_curve(iFrameStart);
+		// Track clip processing...
 		if (syncType == pTrack->trackType()) {
 			pTrack->process(pSessionCursor->clip(iTrack),
 				iFrameStart, iFrameEnd);
