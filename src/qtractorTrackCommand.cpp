@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -741,7 +741,8 @@ qtractorEditTrackCommand::qtractorEditTrackCommand (
 	const qtractorTrack::Properties& old_props = pTrack->properties();
 	m_bReopen = (
 		old_props.inputBusName  != props.inputBusName  ||
-		old_props.outputBusName != props.outputBusName ||
+		old_props.outputBusName != props.outputBusName);
+	m_bLatency = (
 		( old_props.pluginListLatency && !props.pluginListLatency) ||
 		(!old_props.pluginListLatency &&  props.pluginListLatency));
 }
@@ -771,11 +772,18 @@ bool qtractorEditTrackCommand::redo (void)
 
 	// Make the track property change...
 	bool bResult = qtractorPropertyCommand<qtractorTrack::Properties>::redo();
-	// Reopen to assign a probable new bus...
-	if (bResult && m_bReopen) {
-		pSession->lock();
-		bResult = m_pTrack->open();
-		pSession->unlock();
+	// Reopen to assign a probable new bus, latency...
+	if (bResult) {
+		if (m_bReopen) {
+			pSession->lock();
+			bResult = m_pTrack->open();
+			pSession->unlock();
+		}
+		else
+		if (m_bLatency && m_pTrack->pluginList()) {
+			m_pTrack->pluginList()->setLatency(
+				m_pTrack->isPluginListLatency());
+		}
 	}
 
 	// Re-acquire track-name for uniqueness...
