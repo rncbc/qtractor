@@ -482,31 +482,31 @@ End:	%3	Length:	%4</source>
         <translation>Відкрити файл</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1257"/>
+        <location filename="../qtractorMidiClip.cpp" line="1258"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(формат %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1259"/>
+        <location filename="../qtractorMidiClip.cpp" line="1260"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Канал %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1261"/>
+        <location filename="../qtractorMidiClip.cpp" line="1262"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Доріжка %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1264"/>
+        <location filename="../qtractorMidiClip.cpp" line="1265"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 доріжок, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1271"/>
+        <location filename="../qtractorMidiClip.cpp" line="1272"/>
         <source> (%1% vol)</source>
         <translation> (гучн. %1%)</translation>
     </message>
@@ -822,7 +822,7 @@ MIDI:	</translation>
         <translation>властивості доріжки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="786"/>
+        <location filename="../qtractorTrackCommand.cpp" line="794"/>
         <source>Track assignment failed:
 
 Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
@@ -831,37 +831,37 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Доріжка: «%1» вхід: «%2» вихід: «%3»</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="865"/>
+        <location filename="../qtractorTrackCommand.cpp" line="873"/>
         <source>track record</source>
         <translation>доріжка, запис</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="868"/>
+        <location filename="../qtractorTrackCommand.cpp" line="876"/>
         <source>track mute</source>
         <translation>доріжка, вимкнути звук</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="871"/>
+        <location filename="../qtractorTrackCommand.cpp" line="879"/>
         <source>track solo</source>
         <translation>доріжка, соло</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1048"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1056"/>
         <source>track monitor</source>
         <translation>доріжка, монітор</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1156"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1164"/>
         <source>track gain</source>
         <translation>доріжка, підсилення</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1245"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1253"/>
         <source>track pan</source>
         <translation>доріжка, панорамування</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackCommand.cpp" line="1332"/>
+        <location filename="../qtractorTrackCommand.cpp" line="1340"/>
         <source>track instrument</source>
         <translation>доріжка, інструмент</translation>
     </message>
@@ -14840,6 +14840,11 @@ Do you want to discard the changes?</source>
         <translation>Компенсація &amp;латентності</translation>
     </message>
     <message>
+        <location filename="../qtractorTrackForm.ui" line="665"/>
+        <source>Current total latency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorTrackForm.cpp" line="147"/>
         <source>Normal</source>
         <translation>Звичайний</translation>
@@ -14926,18 +14931,18 @@ Do you want to discard the changes?</source>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="204"/>
-        <location filename="../qtractorTrackForm.cpp" line="844"/>
-        <location filename="../qtractorTrackForm.cpp" line="958"/>
+        <location filename="../qtractorTrackForm.cpp" line="852"/>
+        <location filename="../qtractorTrackForm.cpp" line="966"/>
         <source>(None)</source>
         <translation>(Немає)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="501"/>
+        <location filename="../qtractorTrackForm.cpp" line="507"/>
         <source>Warning</source>
         <translation>Попередження</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="502"/>
+        <location filename="../qtractorTrackForm.cpp" line="508"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -14946,34 +14951,44 @@ Do you want to apply the changes?</source>
 Хочете застосувати ці зміни?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="642"/>
+        <location filename="../qtractorTrackForm.cpp" line="650"/>
         <source>(No instrument)</source>
         <translation>(Немає інструмента)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1209"/>
+        <location filename="../qtractorTrackForm.cpp" line="1218"/>
         <source>Track Icon</source>
         <translation>Піктограма доріжки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1212"/>
+        <location filename="../qtractorTrackForm.cpp" line="1221"/>
         <source>Image files (%1)</source>
         <translation>файли зображень (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1213"/>
+        <location filename="../qtractorTrackForm.cpp" line="1222"/>
         <source>All files (*.*)</source>
         <translation>усі файли (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1525"/>
+        <location filename="../qtractorTrackForm.cpp" line="1534"/>
         <source>Foreground Color</source>
         <translation>Колір переднього плану</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1551"/>
+        <location filename="../qtractorTrackForm.cpp" line="1560"/>
         <source>Background Color</source>
         <translation>Колір тла</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1666"/>
+        <source>%1 ms (%2 frames)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrackForm.cpp" line="1670"/>
+        <source>(no latency)</source>
+        <translation type="unfinished">(немає латентності)</translation>
     </message>
 </context>
 <context>
