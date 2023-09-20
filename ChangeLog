@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed MIDI tracks latency compensation, now working as expected.
+  (GH issue #411) (EXPERIMENTAL)
+
 - Show current/total plugins latency on the Track properties dialog,
   (GH issue #410) (EXPERIMENTAL)
 

@@ -2201,7 +2201,7 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	// Do it for the MIDI track plugins too...
 	qtractorTimeScale::Cursor& cursor = pSession->timeScale()->cursor();
 	qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
-	const long f0 = m_iFrameStart;
+	const long f0 = m_iFrameStart + (pTrack->pluginList())->latency();
 	const unsigned long t0 = pNode->frameFromTick(iTime);
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;

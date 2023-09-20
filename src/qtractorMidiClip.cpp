@@ -964,7 +964,8 @@ void qtractorMidiClip::process (
 	const bool bMute = (pTrack->isMute()
 		|| (pSession->soloTracks() && !pTrack->isSolo()));
 
-	const unsigned long t0 = pSession->tickFromFrame(clipStart());
+	const unsigned long iClipStart = clipStart();
+	const unsigned long t0 = pSession->tickFromFrame(iClipStart);
 
 	const unsigned long iTimeStart = pSession->tickFromFrame(iFrameStart);
 	const unsigned long iTimeEnd   = pSession->tickFromFrame(iFrameEnd);
@@ -980,7 +981,7 @@ void qtractorMidiClip::process (
 		if (t1 >= iTimeStart
 			&& (!bMute || pEvent->type() != qtractorMidiEvent::NOTEON))
 			pMidiEngine->enqueue(pTrack, pEvent, t1, fGain
-				* fadeInOutGain(pSession->frameFromTick(t1) - clipStart()));
+				* fadeInOutGain(pSession->frameFromTick(t1) - iClipStart));
 		pEvent = pEvent->next();
 	}
 }
