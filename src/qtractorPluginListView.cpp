@@ -1785,8 +1785,8 @@ void qtractorPluginListView::contextMenuEvent (
 	pAction = pAudioInsertsMenu->addAction(
 		QIcon(":/images/formAdd.png"),
 		tr("Add &Aux Send"), this, SLOT(addAudioAuxSendPlugin()));
-	pAction->setEnabled(
-		m_pPluginList->flags() != qtractorPluginList::AudioOutBus);
+//	pAction->setEnabled(
+//		m_pPluginList->flags() != qtractorPluginList::AudioOutBus);
 	pAudioInsertsMenu->addSeparator();
 	const bool bAudioInsertPlugin = (pType
 		&& pType->typeHint() == qtractorPluginType::Insert

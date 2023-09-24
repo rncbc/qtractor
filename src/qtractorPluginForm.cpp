@@ -472,9 +472,13 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 			= static_cast<qtractorAudioAuxSendPlugin *> (m_pPlugin);
 		if (pAudioAuxSendPlugin == nullptr)
 			return;
+		qtractorPluginList *pPluginList = pAudioAuxSendPlugin->list();
+		if (pPluginList == nullptr)
+			return;
 		qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
 		if (pAudioEngine == nullptr)
 			return;
+		bool bAudioOutBus = (pPluginList->flags() == qtractorPluginList::AudioOutBus);
 		const QIcon iconAudio(":/images/trackAudio.png");
 		m_ui.AuxSendBusNameComboBox->addItem(iconAudio, tr("(none)"));
 		for (qtractorBus *pBus = pAudioEngine->buses().first();
@@ -483,6 +487,11 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 				qtractorAudioBus *pAudioBus
 					= static_cast<qtractorAudioBus *> (pBus);
 				if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels())
+					if (bAudioOutBus) { // Skip current and previous buses...
+						if (pAudioBus->pluginList_out() == pPluginList)
+							bAudioOutBus = false;
+						continue;
+					}
 					m_ui.AuxSendBusNameComboBox->addItem(iconAudio,
 						pAudioBus->busName());
 			}
