@@ -6,9 +6,10 @@ ChangeLog
 
 GIT HEAD
 
-- Enable Aux-Send inserts on audio output buses, but now only list
-  possible target buses that follow or succeed the source one.
-  (EXPERIMENTAL)
+- Enable Aux-Send inserts on output buses, but list possible target
+  buses only; audio output buses are now listed as possible targets
+  iif they follow or succeed the source one (in internal processing
+  order). (EXPERIMENTAL)
   
 - Fixed MIDI tracks latency compensation, now working as expected.
   (GH issue #411) (EXPERIMENTAL)
