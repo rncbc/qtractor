@@ -91,6 +91,10 @@ protected slots:
 	// Local server slots.
 	void newConnectionSlot();
 	void readyReadSlot();
+protected:
+	// Local server/shmem setup/cleanup.
+	bool setupServer();
+	void clearServer();
 #endif	// CONFIG_XUNIQUE
 #endif
 
@@ -103,21 +107,19 @@ private:
 	// Instance variables.
 	QWidget *m_pWidget;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_XUNIQUE
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
 	Display *m_pDisplay;
 	Atom     m_aUnique;
 	Window   m_wOwner;
 #endif	// CONFIG_X11
-#endif	// CONFIG_XUNIQUE
 #else
-#ifdef CONFIG_XUNIQUE
 	QString        m_sUnique;
 	QSharedMemory *m_pMemory;
 	QLocalServer  *m_pServer;
-#endif	// CONFIG_XUNIQUE
 #endif
+#endif	// CONFIG_XUNIQUE
 };
 
 

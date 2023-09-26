@@ -76,10 +76,10 @@
 
 #ifdef CONFIG_XUNIQUE
 
-#define QTRACTOR_XUNIQUE "qtractorApplication"
-
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifdef CONFIG_X11
+
+#define QTRACTOR_XUNIQUE "qtractorApplication"
 
 #include <unistd.h> /* for gethostname() */
 
@@ -104,6 +104,18 @@
 qtractorApplication::qtractorApplication ( int& argc, char **argv )
 	: QApplication(argc, argv),
 		m_pQtTranslator(nullptr), m_pMyTranslator(nullptr), m_pWidget(nullptr)	
+#ifdef CONFIG_XUNIQUE
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#ifdef CONFIG_X11
+	, m_pDisplay(nullptr)
+	, m_aUnique(0)
+	, m_wOwner(0)
+#endif	// CONFIG_X11
+#else
+	, m_pMemory(nullptr)
+	, m_pServer(nullptr)
+#endif
+#endif	// CONFIG_XUNIQUE
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 	QApplication::setApplicationName(QTRACTOR_TITLE);
@@ -167,18 +179,6 @@ qtractorApplication::qtractorApplication ( int& argc, char **argv )
 			}
 		}
 	}
-#ifdef CONFIG_XUNIQUE
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#ifdef CONFIG_X11
-	m_pDisplay = nullptr;
-	m_aUnique = 0;
-	m_wOwner = 0;
-#endif	// CONFIG_X11
-#else
-	m_pMemory = nullptr;
-	m_pServer = nullptr;
-#endif
-#endif	// CONFIG_XUNIQUE
 }
 
 
@@ -187,15 +187,7 @@ qtractorApplication::~qtractorApplication (void)
 {
 #ifdef CONFIG_XUNIQUE
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-	if (m_pServer) {
-		m_pServer->close();
-		delete m_pServer;
-		m_pServer = nullptr;
-	}
-	if (m_pMemory) {
-		delete m_pMemory;
-		m_pMemory = nullptr;
-}
+	clearServer();
 #endif
 #endif	// CONFIG_XUNIQUE
 	if (m_pMyTranslator) delete m_pMyTranslator;
@@ -286,68 +278,7 @@ bool qtractorApplication::setup (void)
 	}
 #endif	// CONFIG_X11
 #else
-	m_sUnique = QCoreApplication::applicationName();
-	QString sUserName = QString::fromUtf8(::getenv("USER"));
-	if (sUserName.isEmpty())
-		sUserName = QString::fromUtf8(::getenv("USERNAME"));
-	if (!sUserName.isEmpty()) {
-		m_sUnique += ':';
-		m_sUnique += sUserName;
-	}
-	m_sUnique += '@';
-	m_sUnique += QHostInfo::localHostName();
-#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
-	const QNativeIpcKey nativeKey
-		= QSharedMemory::legacyNativeKey(m_sUnique);
-	m_pMemory = new QSharedMemory(nativeKey);
-#else
-#if defined(Q_OS_UNIX)
-	m_pMemory = new QSharedMemory(m_sUnique);
-	m_pMemory->attach();
-	delete m_pMemory;
-#endif
-	m_pMemory = new QSharedMemory(m_sUnique);
-#endif
-	bool bServer = false;
-	const qint64 pid = QCoreApplication::applicationPid();
-	struct Data { qint64 pid; };
-	if (m_pMemory->create(sizeof(Data))) {
-		m_pMemory->lock();
-		Data *pData = static_cast<Data *> (m_pMemory->data());
-		if (pData) {
-			pData->pid = pid;
-			bServer = true;
-		}
-		m_pMemory->unlock();
-	}
-	else
-	if (m_pMemory->attach()) {
-		m_pMemory->lock(); // maybe not necessary?
-		Data *pData = static_cast<Data *> (m_pMemory->data());
-		if (pData)
-			bServer = (pData->pid == pid);
-		m_pMemory->unlock();
-	}
-	if (bServer) {
-		QLocalServer::removeServer(m_sUnique);
-		m_pServer = new QLocalServer();
-		m_pServer->setSocketOptions(QLocalServer::UserAccessOption);
-		m_pServer->listen(m_sUnique);
-		QObject::connect(m_pServer,
-			SIGNAL(newConnection()),
-			SLOT(newConnectionSlot()));
-	} else {
-		QLocalSocket socket;
-		socket.connectToServer(m_sUnique);
-		if (socket.state() == QLocalSocket::ConnectingState)
-			socket.waitForConnected(200);
-		if (socket.state() == QLocalSocket::ConnectedState) {
-			socket.write(QCoreApplication::arguments().join(' ').toUtf8());
-			socket.flush();
-			socket.waitForBytesWritten(200);
-		}
-	}
-	return !bServer;
+	return setupServer();
 #endif
 #else
 	return false;
@@ -416,6 +347,102 @@ bool qtractorApplication::x11EventFilter ( XEvent *pEv )
 
 #ifdef CONFIG_XUNIQUE
 
+// Local server/shmem setup.
+bool qtractorApplication::setupServer (void)
+{
+	clearServer();
+
+	m_sUnique = QCoreApplication::applicationName();
+	QString sUserName = QString::fromUtf8(::getenv("USER"));
+	if (sUserName.isEmpty())
+		sUserName = QString::fromUtf8(::getenv("USERNAME"));
+	if (!sUserName.isEmpty()) {
+		m_sUnique += ':';
+		m_sUnique += sUserName;
+	}
+	m_sUnique += '@';
+	m_sUnique += QHostInfo::localHostName();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+	const QNativeIpcKey nativeKey
+		= QSharedMemory::legacyNativeKey(m_sUnique);
+#if defined(Q_OS_UNIX)
+	m_pMemory = new QSharedMemory(nativeKey);
+	m_pMemory->attach();
+	delete m_pMemory;
+#endif
+	m_pMemory = new QSharedMemory(nativeKey);
+#else
+#if defined(Q_OS_UNIX)
+	m_pMemory = new QSharedMemory(m_sUnique);
+	m_pMemory->attach();
+	delete m_pMemory;
+#endif
+	m_pMemory = new QSharedMemory(m_sUnique);
+#endif
+
+	bool bServer = false;
+	const qint64 pid = QCoreApplication::applicationPid();
+	struct Data { qint64 pid; };
+	if (m_pMemory->create(sizeof(Data))) {
+		m_pMemory->lock();
+		Data *pData = static_cast<Data *> (m_pMemory->data());
+		if (pData) {
+			pData->pid = pid;
+			bServer = true;
+		}
+		m_pMemory->unlock();
+	}
+	else
+	if (m_pMemory->attach()) {
+		m_pMemory->lock(); // maybe not necessary?
+		Data *pData = static_cast<Data *> (m_pMemory->data());
+		if (pData)
+			bServer = (pData->pid == pid);
+		m_pMemory->unlock();
+	}
+
+	if (bServer) {
+		QLocalServer::removeServer(m_sUnique);
+		m_pServer = new QLocalServer();
+		m_pServer->setSocketOptions(QLocalServer::UserAccessOption);
+		m_pServer->listen(m_sUnique);
+		QObject::connect(m_pServer,
+			 SIGNAL(newConnection()),
+			 SLOT(newConnectionSlot()));
+	} else {
+		QLocalSocket socket;
+		socket.connectToServer(m_sUnique);
+		if (socket.state() == QLocalSocket::ConnectingState)
+			socket.waitForConnected(200);
+		if (socket.state() == QLocalSocket::ConnectedState) {
+			socket.write(QCoreApplication::arguments().join(' ').toUtf8());
+			socket.flush();
+			socket.waitForBytesWritten(200);
+		}
+	}
+
+	return !bServer;
+}
+
+
+// Local server/shmem cleanup.
+void qtractorApplication::clearServer (void)
+{
+	if (m_pServer) {
+		m_pServer->close();
+		delete m_pServer;
+		m_pServer = nullptr;
+	}
+
+	if (m_pMemory) {
+		delete m_pMemory;
+		m_pMemory = nullptr;
+	}
+
+	m_sUnique.clear();
+}
+
+
 // Local server conection slot.
 void qtractorApplication::newConnectionSlot (void)
 {
@@ -439,6 +466,8 @@ void qtractorApplication::readyReadSlot (void)
 				m_pWidget->raise();
 				m_pWidget->activateWindow();
 			}
+			// Reset the server...
+			setupServer();
 		}
 	}
 }
