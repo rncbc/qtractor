@@ -995,8 +995,8 @@ bool qtractorMidiFile::writeTracks (
 					iStatus = (etype | iChannel) & 0xff;
 				}
 
-				// - Running status?
-				if (iStatus != iLastStatus) {
+				// - Running status? nb. not for sysex, ok?
+				if (iStatus != iLastStatus || etype == qtractorMidiEvent::SYSEX) {
 					writeInt(iStatus, 1);
 					iLastStatus = iStatus;
 				}
