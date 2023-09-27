@@ -301,7 +301,7 @@ void qtractorMidiFileTempo::intoTimeScale (
 				pTimeScale->frameFromTick(iTime + iTimeOffset),
 				pMarker->text);
 		}
-		if (pMarker->accidentals || pMarker->mode) {
+		if (qtractorTimeScale::isKeySignature(pMarker->accidentals, pMarker->mode)) {
 			pTimeScale->addKeySignature(
 				pTimeScale->frameFromTick(iTime + iTimeOffset),
 				pMarker->accidentals, pMarker->mode);

@@ -129,7 +129,6 @@ public:
 			iBeatsPerBar, iBeatDivisor);
 	}
 
-
 	// Tempo convertors (default's quarter notes per minute)
 	void setTempo(float fTempo)
 	{
@@ -206,8 +205,8 @@ public:
 	Marker *addMarker(
 		unsigned long iTick,
 		const QString& sText,
-		int iAccidentals = 0,
-		int iMode = 0);
+		int iAccidentals = -9, // = qtractorTimeScale::MinAccidentals
+		int iMode = -1);
 	void removeMarker(Marker *pMarker);
 
 	// Time-scale sync methods.
