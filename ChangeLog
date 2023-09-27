@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Disable or better hide the Add Tracks option on the MIDI tracks
+  export dialog. (EXPERIMENTAL)
+
 - Fixed a yearlong bug in MIDI file import/export of tempo, time
   and key signatures and markers, to severely wrong locations.
   (SF ticket #287) (EXPERIMENTAL)

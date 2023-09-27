@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -191,7 +191,6 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
 		pOptions->loadComboBoxHistory(m_ui.ExportPathComboBox);
-		m_ui.AddTrackCheckBox->setChecked(pOptions->bExportAddTrack);
 		switch (m_exportType) {
 		case qtractorTrack::Audio: {
 			// Audio options...
@@ -212,6 +211,8 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 			m_ui.AudioExportFormatComboBox->setCurrentIndex(iAudioExportFormat);
 			m_ui.AudioExportQualitySpinBox->setValue(iAudioExportQuality);
 			m_sExportExt = m_ui.AudioExportTypeComboBox->currentExt();
+			m_ui.AddTrackCheckBox->setChecked(pOptions->bExportAddTrack);
+			m_ui.AddTrackCheckBox->show();
 			break;
 		}
 		case qtractorTrack::Midi: {
@@ -220,6 +221,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 			if (iMidiExportFormat < 0)
 				iMidiExportFormat = pOptions->iMidiCaptureFormat;
 			m_ui.MidiExportFormatComboBox->setCurrentIndex(iMidiExportFormat);
+			m_ui.AddTrackCheckBox->hide();
 			break;
 		}
 		case qtractorTrack::None:
@@ -616,7 +618,6 @@ void qtractorExportForm::saveExportOptions (void)
 		return;
 
 	pOptions->saveComboBoxHistory(m_ui.ExportPathComboBox);
-	pOptions->bExportAddTrack = m_ui.AddTrackCheckBox->isChecked();
 	switch (m_exportType) {
 	case qtractorTrack::Audio: {
 		// Audio options...
@@ -625,6 +626,7 @@ void qtractorExportForm::saveExportOptions (void)
 		pOptions->iAudioExportType = m_ui.AudioExportTypeComboBox->currentType(handle);
 		pOptions->iAudioExportFormat = m_ui.AudioExportFormatComboBox->currentIndex();
 		pOptions->iAudioExportQuality = m_ui.AudioExportQualitySpinBox->value();
+		pOptions->bExportAddTrack = m_ui.AddTrackCheckBox->isChecked();
 		break;
 	}
 	case qtractorTrack::Midi:
@@ -845,6 +847,7 @@ void qtractorExportTrackForm::accept (void)
 			// Done.
 			QApplication::restoreOverrideCursor();
 			if (bResult) {
+			#if 0
 				// Add new tracks if necessary...
 				qtractorTracks *pTracks = pMainForm->tracks();
 				if (pTracks && m_ui.AddTrackCheckBox->isChecked()) {
@@ -853,7 +856,9 @@ void qtractorExportTrackForm::accept (void)
 						m_ui.ExportStartSpinBox->value(),
 						pTracks->currentTrack());
 				}
-				else pMainForm->addMidiFile(sExportPath);
+				else
+			#endif
+				pMainForm->addMidiFile(sExportPath);
 				// Log the success...
 				pMainForm->appendMessages(
 					tr("MIDI file export: \"%1\" complete.")
