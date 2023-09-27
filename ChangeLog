@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a yearlong bug in MIDI file import/export of tempo, time
+  and key signatures and markers, to severely wrong locations.
+  (SF ticket #287) (EXPERIMENTAL)
+
 - Enable Aux-Send inserts on output buses, but list possible target
   buses only; audio output buses are now listed as possible targets
   iif they follow or succeed the source one (in internal processing
