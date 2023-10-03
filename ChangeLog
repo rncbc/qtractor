@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing brand new MIDI clip tool: Tempo ramp. (EXPERIMENTAL)
+
 - Disable or better hide the Add Tracks option on the MIDI tracks
   export dialog. (EXPERIMENTAL)
 

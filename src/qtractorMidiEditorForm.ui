@@ -180,6 +180,7 @@
     <addaction name="toolsResizeAction"/>
     <addaction name="toolsRescaleAction"/>
     <addaction name="toolsTimeshiftAction"/>
+    <addaction name="toolsTemporampAction"/>
    </widget>
    <widget class="QMenu" name="editMenu">
     <property name="title">
@@ -994,6 +995,20 @@
    </property>
    <property name="statusTip">
     <string>Timeshift selection</string>
+   </property>
+  </action>
+  <action name="toolsTemporampAction">
+   <property name="text">
+    <string>T&amp;empo ramp...</string>
+   </property>
+   <property name="iconText">
+    <string>Tempo ramp</string>
+   </property>
+   <property name="toolTip">
+    <string>Tempo ramp</string>
+   </property>
+   <property name="statusTip">
+    <string>Tempo ramp selection</string>
    </property>
   </action>
   <action name="viewMenubarAction">
