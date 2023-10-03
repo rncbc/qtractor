@@ -501,6 +501,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.toolsTimeshiftAction,
 		SIGNAL(triggered(bool)),
 		SLOT(toolsTimeshift()));
+	QObject::connect(m_ui.toolsTemporampAction,
+		SIGNAL(triggered(bool)),
+		SLOT(toolsTemporamp()));
 
 	QObject::connect(m_ui.viewMenubarAction,
 		SIGNAL(triggered(bool)),
@@ -1648,6 +1651,13 @@ void qtractorMidiEditorForm::toolsTimeshift (void)
 }
 
 
+// Temporamp tool.
+void qtractorMidiEditorForm::toolsTemporamp (void)
+{
+	m_pMidiEditor->executeTool(qtractorMidiEditor::Temporamp);
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- View Action slots.
 
@@ -2061,6 +2071,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.toolsResizeAction->setEnabled(bSelected);
 	m_ui.toolsRescaleAction->setEnabled(bSelected);
 	m_ui.toolsTimeshiftAction->setEnabled(bSelected);
+	m_ui.toolsTemporampAction->setEnabled(bSelected);
 #endif
 	// Just having a non-null sequence will indicate
 	// that we're editing a legal MIDI clip...

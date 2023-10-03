@@ -145,6 +145,7 @@ protected slots:
 	void toolsResize();
 	void toolsRescale();
 	void toolsTimeshift();
+	void toolsTemporamp();
 
 	void viewMenubar(bool bOn);
 	void viewStatusbar(bool bOn);

@@ -339,6 +339,7 @@
      <addaction name="clipToolsResizeAction"/>
      <addaction name="clipToolsRescaleAction"/>
      <addaction name="clipToolsTimeshiftAction"/>
+     <addaction name="clipToolsTemporampAction"/>
     </widget>
     <widget class="QMenu" name="clipTakeMenu">
      <property name="title">
@@ -1918,6 +1919,20 @@
    </property>
    <property name="statusTip">
     <string>Timeshift current MIDI clip events</string>
+   </property>
+  </action>
+  <action name="clipToolsTemporampAction">
+   <property name="text">
+    <string>T&amp;empo ramp...</string>
+   </property>
+   <property name="iconText">
+    <string>Tempo ramp Clip</string>
+   </property>
+   <property name="toolTip">
+    <string>Tempo ramp clip events</string>
+   </property>
+   <property name="statusTip">
+    <string>Tempo ramp current MIDI clip events</string>
    </property>
   </action>
   <action name="clipTempoAdjustAction">

@@ -982,6 +982,9 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.clipToolsTimeshiftAction,
 		SIGNAL(triggered(bool)),
 		SLOT(clipToolsTimeshift()));
+	QObject::connect(m_ui.clipToolsTemporampAction,
+		SIGNAL(triggered(bool)),
+		SLOT(clipToolsTemporamp()));
 	QObject::connect(m_ui.clipTakeSelectMenu,
 		SIGNAL(triggered(QAction *)),
 		SLOT(clipTakeSelect(QAction *)));
@@ -4680,6 +4683,19 @@ void qtractorMainForm::clipToolsTimeshift (void)
 	// Timeshift current clip events, if any...
 	if (m_pTracks)
 		m_pTracks->executeClipTool(qtractorMidiEditor::Timeshift);
+}
+
+
+// Temporamp current clip.
+void qtractorMainForm::clipToolsTemporamp (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::clipToolsTemporamp()");
+#endif
+
+	// Temporamp current clip events, if any...
+	if (m_pTracks)
+		m_pTracks->executeClipTool(qtractorMidiEditor::Temporamp);
 }
 
 

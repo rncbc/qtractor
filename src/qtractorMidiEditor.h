@@ -366,7 +366,8 @@ public:
 		Randomize = 3,
 		Resize    = 4,
 		Rescale   = 5,
-		Timeshift = 6
+		Timeshift = 6,
+		Temporamp = 7
 	};
 
 	// Edit tools form page selector.
