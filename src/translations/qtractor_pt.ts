@@ -15316,6 +15316,11 @@ Tamanho:	%3</translation>
         <translation>quebrar sequência</translation>
     </message>
     <message>
+        <location filename="../qtractorTracks.cpp" line="877"/>
+        <source>tempo ramp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorTracks.cpp" line="1875"/>
         <source>clip cross-fade</source>
         <translation>crossfade da sequência</translation>
@@ -15466,11 +15471,6 @@ Posso continuar?</translation>
         <location filename="../qtractorTracks.cpp" line="543"/>
         <source>new clip</source>
         <translation>nova sequência</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTracks.cpp" line="877"/>
-        <source>temporamp</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1213"/>

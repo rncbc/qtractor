@@ -15358,11 +15358,6 @@ Longueur:	%3</translation>
         <translation>décalage temporel</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="877"/>
-        <source>temporamp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorTracks.cpp" line="1012"/>
         <source>clip import</source>
         <translation>importer clip</translation>
@@ -15460,6 +15455,11 @@ Longueur:	%3</translation>
         <location filename="../qtractorTracks.cpp" line="2150"/>
         <source>insert range</source>
         <translation>Insérer plage</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTracks.cpp" line="877"/>
+        <source>tempo ramp</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1513"/>

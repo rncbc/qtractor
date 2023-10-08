@@ -15342,7 +15342,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="877"/>
-        <source>temporamp</source>
+        <source>tempo ramp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

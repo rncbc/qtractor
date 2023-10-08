@@ -15325,6 +15325,11 @@ Délka:	%3</translation>
         <translation>Normalizace záběru</translation>
     </message>
     <message>
+        <location filename="../qtractorTracks.cpp" line="877"/>
+        <source>tempo ramp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorTracks.cpp" line="1012"/>
         <source>clip import</source>
         <translation>Zavedení záběru</translation>
@@ -15381,11 +15386,6 @@ Jste si jistý?</translation>
         <location filename="../qtractorTracks.cpp" line="876"/>
         <source>timeshift</source>
         <translation>Časový posun</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTracks.cpp" line="877"/>
-        <source>temporamp</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1039"/>

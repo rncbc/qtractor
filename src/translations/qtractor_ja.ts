@@ -15350,11 +15350,6 @@ Length:	%3</source>
         <translation>タイムシフト</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="877"/>
-        <source>temporamp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorTracks.cpp" line="1012"/>
         <source>clip import</source>
         <translation>クリップのインポート</translation>
@@ -15417,6 +15412,11 @@ Length:	%3</source>
         <location filename="../qtractorTracks.cpp" line="1291"/>
         <source>Audio clip merge/export: &quot;%1&quot; started...</source>
         <translation>音声クリップのマージ/エクスポート: &quot;%1&quot; を開始...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTracks.cpp" line="877"/>
+        <source>tempo ramp</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1427"/>

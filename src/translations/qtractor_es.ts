@@ -15355,11 +15355,6 @@ Duración:	%3</translation>
         <translation>desplazamiento de tiempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="877"/>
-        <source>temporamp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorTracks.cpp" line="1012"/>
         <source>clip import</source>
         <translation>importar clip</translation>
@@ -15422,6 +15417,11 @@ Duración:	%3</translation>
         <location filename="../qtractorTracks.cpp" line="1291"/>
         <source>Audio clip merge/export: &quot;%1&quot; started...</source>
         <translation>Fundir/exportar clip de Audio : &quot;%1&quot; iniciado...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTracks.cpp" line="877"/>
+        <source>tempo ramp</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1427"/>

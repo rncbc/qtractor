@@ -15333,11 +15333,6 @@ Lunghezza:   %3</translation>
         <translation>timeshift</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="877"/>
-        <source>temporamp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorTracks.cpp" line="1012"/>
         <source>clip import</source>
         <translation>importa clip</translation>
@@ -15400,6 +15395,11 @@ Lunghezza:   %3</translation>
         <location filename="../qtractorTracks.cpp" line="1291"/>
         <source>Audio clip merge/export: &quot;%1&quot; started...</source>
         <translation>Fusione/esportazione clip audio: &quot;%1&quot; in corso...</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTracks.cpp" line="877"/>
+        <source>tempo ramp</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1427"/>

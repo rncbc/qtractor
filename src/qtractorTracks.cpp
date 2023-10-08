@@ -867,14 +867,14 @@ bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
 	// Make it as an undoable named command...
 	QString sTool;
 	switch (iTool) {
-	case qtractorMidiEditor::Quantize:  sTool = tr("quantize");  break;
-	case qtractorMidiEditor::Transpose: sTool = tr("transpose"); break;
-	case qtractorMidiEditor::Normalize: sTool = tr("normalize"); break;
-	case qtractorMidiEditor::Randomize: sTool = tr("randomize"); break;
-	case qtractorMidiEditor::Resize:    sTool = tr("resize");    break;
-	case qtractorMidiEditor::Rescale:   sTool = tr("rescale");   break;
-	case qtractorMidiEditor::Timeshift: sTool = tr("timeshift"); break;
-	case qtractorMidiEditor::Temporamp: sTool = tr("temporamp"); break;
+	case qtractorMidiEditor::Quantize:  sTool = tr("quantize");   break;
+	case qtractorMidiEditor::Transpose: sTool = tr("transpose");  break;
+	case qtractorMidiEditor::Normalize: sTool = tr("normalize");  break;
+	case qtractorMidiEditor::Randomize: sTool = tr("randomize");  break;
+	case qtractorMidiEditor::Resize:    sTool = tr("resize");     break;
+	case qtractorMidiEditor::Rescale:   sTool = tr("rescale");    break;
+	case qtractorMidiEditor::Timeshift: sTool = tr("timeshift");  break;
+	case qtractorMidiEditor::Temporamp: sTool = tr("tempo ramp"); break;
 	}
 
 	qtractorClipToolCommand *pClipToolCommand
