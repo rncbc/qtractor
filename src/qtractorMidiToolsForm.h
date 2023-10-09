@@ -55,6 +55,9 @@ public:
 		qtractorMidiEditSelect *pSelect, unsigned long iTimeOffset,
 		unsigned long iTimeStart = 0, unsigned long iTimeEnd = 0);
 
+	// Special tempo ramp tool helpers...
+	bool executeTimeScaleAddNodeCommand();
+
 protected slots:
 
 	// Preset management slots...

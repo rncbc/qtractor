@@ -892,10 +892,10 @@ bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
 			// Make sure it's legal selection...
 			qtractorClip *pClip = iter.key();
 			if (pClip->track() && pClip->isClipSelected())
-				executeClipToolCommand(pClipToolCommand, pClip, &toolsForm);
+				addClipToolCommand(pClipToolCommand, pClip, &toolsForm);
 		}
 	}	// Single, current clip instead?
-	else executeClipToolCommand(pClipToolCommand, pClip, &toolsForm);
+	else addClipToolCommand(pClipToolCommand, pClip, &toolsForm);
 
 	QApplication::restoreOverrideCursor();
 
@@ -906,11 +906,12 @@ bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
 	}
 
 	// That's it...
+	toolsForm.executeTimeScaleAddNodeCommand();
 	return pSession->execute(pClipToolCommand);
 }
 
 
-bool qtractorTracks::executeClipToolCommand (
+bool qtractorTracks::addClipToolCommand (
 	qtractorClipToolCommand *pClipToolCommand, qtractorClip *pClip,
 	qtractorMidiToolsForm *pMidiToolsForm )
 {

@@ -203,7 +203,7 @@ protected:
 	// Multi-clip command builders.
 	bool normalizeClipCommand(
 		qtractorClipCommand *pClipCommand, qtractorClip *pClip);
-	bool executeClipToolCommand(
+	bool addClipToolCommand(
 		qtractorClipToolCommand *pClipToolCommand, qtractorClip *pClip,
 		qtractorMidiToolsForm *pMidiToolsForm);
 

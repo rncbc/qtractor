@@ -4919,6 +4919,7 @@ void qtractorMidiEditor::executeTool ( int iToolIndex )
 		qtractorMidiEditCommand *pEditCommand
 			= toolsForm.editCommand(m_pMidiClip, &m_select,
 				m_pTimeScale->tickFromFrame(m_iOffset));
+		toolsForm.executeTimeScaleAddNodeCommand();
 		m_pCommands->exec(pEditCommand);
 	}
 
