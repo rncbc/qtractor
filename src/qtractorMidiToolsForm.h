@@ -53,9 +53,9 @@ public:
 	// Create edit command based on given selection.
 	qtractorMidiEditCommand *editCommand(qtractorMidiClip *pMidiClip,
 		qtractorMidiEditSelect *pSelect, unsigned long iTimeOffset,
-		unsigned long iTimeStart = 0, unsigned long iTimeEnd = 0);
+		unsigned long iTimeStart = 0, unsigned long iTimeEnd = 0) const;
 
-	// Special tempo ramp tool helpers...
+	// Special tempo ramp tool helper...
 	bool executeTimeScaleAddNodeCommand();
 
 protected slots:

@@ -812,7 +812,7 @@ void qtractorMidiToolsForm::presetDelete (void)
 // Create edit command based on given selection.
 qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 	qtractorMidiClip *pMidiClip, qtractorMidiEditSelect *pSelect,
-	unsigned long iTimeOffset, unsigned long iTimeStart, unsigned long iTimeEnd )
+	unsigned long iTimeOffset, unsigned long iTimeStart, unsigned long iTimeEnd ) const
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
@@ -1476,7 +1476,7 @@ void qtractorMidiToolsForm::timeshiftSliderChanged ( int i )
 }
 
 
-// Special tempo ramp tool helpers...
+// Special tempo ramp tool helper...
 bool qtractorMidiToolsForm::executeTimeScaleAddNodeCommand (void)
 {
 	// HACK: Add time-scale node for tempo ramp target,
