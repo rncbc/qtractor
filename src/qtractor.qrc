@@ -36,8 +36,6 @@
         <file>images/formMoveDown.png</file>
         <file>images/formMoveUp.png</file>
         <file>images/formOpen.png</file>
-        <file>images/formParamsOn.png</file>
-        <file>images/formParamsOff.png</file>
         <file>images/formRefresh.png</file>
         <file>images/formReject.png</file>
         <file>images/formRemove.png</file>
@@ -76,6 +74,8 @@
         <file>images/itemReset.png</file>
         <file>images/itemRpns.png</file>
         <file>images/itemSessionFile.png</file>
+        <file>images/pluginEdit.png</file>
+        <file>images/pluginProperties.png</file>
         <file>images/trackAdd.png</file>
         <file>images/trackAudio.png</file>
         <file>images/trackCurveCapture.png</file>

@@ -3321,6 +3321,7 @@ void qtractorVst3Plugin::openEditor ( QWidget *pParent )
 	m_pEditorWidget = new EditorWidget(pParent, wflags);
 	m_pEditorWidget->setAttribute(Qt::WA_QuitOnClose, false);
 	m_pEditorWidget->setWindowTitle(pType->name());
+	m_pEditorWidget->setWindowIcon(QIcon(":/images/pluginEdit.png"));
 	m_pEditorWidget->setPlugin(this);
 
 	m_pEditorFrame = new EditorFrame(plugView, m_pEditorWidget);

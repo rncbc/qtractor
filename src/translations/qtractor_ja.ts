@@ -56,7 +56,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="1579"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1581"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
@@ -812,7 +812,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>バージョン: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst2Plugin.cpp" line="1576"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1578"/>
         <source>%1 (*.%2)</source>
         <translation></translation>
     </message>
@@ -882,7 +882,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>プラグインのパラメータ</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4169"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4171"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>ファイルを開く</translation>
@@ -13702,87 +13702,87 @@ Are you sure?</source>
         <translation>プラグイン</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="71"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="74"/>
         <source>Reset filter</source>
         <translation>フィルターのリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="74"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="77"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="87"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="90"/>
         <source>Plugin search string (regular expression)</source>
         <translation>プラグイン検索キーワード（正規表現を使用可能）</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="103"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="106"/>
         <source>Plugin type</source>
         <translation>プラグインのタイプ</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="121"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="124"/>
         <source>Available plugins</source>
         <translation>利用可能なプラグイン</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="146"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="149"/>
         <source>Name</source>
         <translation>名前</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="151"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="154"/>
         <source>Audio</source>
         <translation>音声</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="156"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="159"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="161"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="164"/>
         <source>Control</source>
         <translation>コントロール</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="166"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="169"/>
         <source>Modes</source>
         <translation>モード</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="171"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="174"/>
         <source>Path</source>
         <translation>パス</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="176"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="179"/>
         <source>Index</source>
         <translation>インデックス</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="181"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="184"/>
         <source>Instances</source>
         <translation>インスタンス</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="186"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="189"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="237"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="240"/>
         <source>Plugin scanning in progress...</source>
         <translation>プラグインを検索中です...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="202"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
         <source>Rescan for available plugins (refresh)</source>
         <translation>利用可能なプラグインを再検索します(更新)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="208"/>
         <source>&amp;Rescan</source>
         <translation>再検索(&amp;R)</translation>
     </message>

@@ -32,6 +32,9 @@
   <property name="windowTitle" >
    <string>Plugins</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="qtractor.qrc">:/images/pluginEdit.png</iconset>
+  </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
   </property>

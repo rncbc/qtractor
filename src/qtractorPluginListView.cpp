@@ -1921,14 +1921,14 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/images/trackProperties.png"),
+		QIcon(":/images/pluginProperties.png"),
 		tr("&Properties..."), this, SLOT(propertiesPlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isFormVisible());
 	pAction->setEnabled(pItem != nullptr);
 
 	pAction = menu.addAction(
-		QIcon(":/images/formEdit.png"),
+		QIcon(":/images/pluginEdit.png"),
 		tr("&Edit"), this, SLOT(editPlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isEditorVisible());

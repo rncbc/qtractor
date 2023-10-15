@@ -73,7 +73,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="1579"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1581"/>
         <source>All files (*.*)</source>
         <translation>усі файли (*.*)</translation>
     </message>
@@ -476,7 +476,7 @@ End:	%3	Length:	%4</source>
         <translation>параметри додатка</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4169"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4171"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Відкрити файл</translation>
@@ -911,7 +911,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Продукт: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst2Plugin.cpp" line="1576"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1578"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -13693,87 +13693,87 @@ Are you sure?</source>
         <translation>Додатки</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="71"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="74"/>
         <source>Reset filter</source>
         <translation>Скинути фільтрування</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="74"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="77"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="87"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="90"/>
         <source>Plugin search string (regular expression)</source>
         <translation>Рядок пошуку додатка (формальний вираз)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="103"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="106"/>
         <source>Plugin type</source>
         <translation>Тип додатка</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="121"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="124"/>
         <source>Available plugins</source>
         <translation>Наявні додатки</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="146"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="149"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="151"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="154"/>
         <source>Audio</source>
         <translation>Звук</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="156"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="159"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="161"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="164"/>
         <source>Control</source>
         <translation>Керування</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="166"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="169"/>
         <source>Modes</source>
         <translation>Режими</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="171"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="174"/>
         <source>Path</source>
         <translation>Шлях</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="176"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="179"/>
         <source>Index</source>
         <translation>Покажчик</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="181"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="184"/>
         <source>Instances</source>
         <translation>Екземпляри</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="186"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="189"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="202"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
         <source>Rescan for available plugins (refresh)</source>
         <translation>Повторний пошук доступних додатків (освіження)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="208"/>
         <source>&amp;Rescan</source>
         <translation>П&amp;ересканувати</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="237"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="240"/>
         <source>Plugin scanning in progress...</source>
         <translation>Виконуємо пошук додатків…</translation>
     </message>

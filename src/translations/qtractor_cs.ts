@@ -57,7 +57,7 @@ Zvuk:	%1 kanály, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="1579"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1581"/>
         <source>All files (*.*)</source>
         <translation>Všechny soubory (*.*)</translation>
     </message>
@@ -534,7 +534,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Verze: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst2Plugin.cpp" line="1576"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1578"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -883,7 +883,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Parametry přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4169"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4171"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Otevřít soubor</translation>
@@ -13726,88 +13726,88 @@ Jste si jistý?</translation>
         <translation>Přídavné moduly</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="71"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="74"/>
         <source>Reset filter</source>
         <translation>Nastavit filtr znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="74"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="77"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="87"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="90"/>
         <source>Plugin search string (regular expression)</source>
         <translation>Vyhledávací řetězec pro přídavný modul (řádný výraz)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="103"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="106"/>
         <source>Plugin type</source>
         <translation>Druh přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="121"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="124"/>
         <source>Available plugins</source>
         <translation>Dostupné přídavné moduly</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="146"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="149"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="151"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="154"/>
         <source>Audio</source>
         <translation>Zvuk</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="156"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="159"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="161"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="164"/>
         <source>Control</source>
         <translation>Kontrola</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="166"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="169"/>
         <source>Modes</source>
         <oldsource>Mode</oldsource>
         <translation>Režimy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="171"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="174"/>
         <source>Path</source>
         <translation>Cesta</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="176"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="179"/>
         <source>Index</source>
         <translation>Rejstřík</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="181"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="184"/>
         <source>Instances</source>
         <translation>Příklady</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="186"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="189"/>
         <source>Type</source>
         <translation>Druh</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="237"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="240"/>
         <source>Plugin scanning in progress...</source>
         <translation>Běží hledání přídavných modulů...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="202"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
         <source>Rescan for available plugins (refresh)</source>
         <translation>Prohledat znovu na dostupné přídavné moduly (obnovit)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="208"/>
         <source>&amp;Rescan</source>
         <translation>&amp;Prohledat znovu...</translation>
     </message>

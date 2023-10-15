@@ -56,7 +56,7 @@ Audio :	%1 canaux, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="1579"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1581"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
@@ -812,7 +812,7 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
         <translation>Version : </translation>
     </message>
     <message>
-        <location filename="../qtractorVst2Plugin.cpp" line="1576"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1578"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -882,7 +882,7 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
         <translation>paramètres du greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4169"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4171"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Ouvrir un fichier</translation>
@@ -13710,87 +13710,87 @@ Are you sure?</source>
         <translation>Greffons</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="71"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="74"/>
         <source>Reset filter</source>
         <translation>Réinitialiser le filtre</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="74"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="77"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="87"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="90"/>
         <source>Plugin search string (regular expression)</source>
         <translation>Chaîne de recherche de greffon (expression régulière)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="103"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="106"/>
         <source>Plugin type</source>
         <translation>Type de greffon</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="121"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="124"/>
         <source>Available plugins</source>
         <translation>Greffons disponibles</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="146"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="149"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="151"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="154"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="156"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="159"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="161"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="164"/>
         <source>Control</source>
         <translation>Contrôle</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="166"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="169"/>
         <source>Modes</source>
         <translation>Modes</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="171"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="174"/>
         <source>Path</source>
         <translation>Chemin</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="176"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="179"/>
         <source>Index</source>
         <translation>Index</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="181"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="184"/>
         <source>Instances</source>
         <translation>Instances</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="186"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="189"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="237"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="240"/>
         <source>Plugin scanning in progress...</source>
         <translation>Scan des greffons en cours...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="202"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
         <source>Rescan for available plugins (refresh)</source>
         <translation>Re-scanner les greffons disponibles (rafraîchir)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="205"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="208"/>
         <source>&amp;Rescan</source>
         <translation>&amp;Re-scanner</translation>
     </message>

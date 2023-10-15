@@ -33,7 +33,7 @@
    <string>Plugin Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/trackProperties.png</iconset>
+   <iconset resource="qtractor.qrc">:/images/pluginProperties.png</iconset>
   </property>
   <layout class="QVBoxLayout">
    <property name="spacing">
@@ -136,7 +136,7 @@
         <string>Edit</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formEdit.png</iconset>
+        <iconset resource="qtractor.qrc">:/images/pluginEdit.png</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
