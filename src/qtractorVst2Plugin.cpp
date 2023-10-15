@@ -1292,7 +1292,7 @@ void qtractorVst2Plugin::setEditorTitle ( const QString& sTitle )
 
 	if (m_pEditorWidget) {
 		m_pEditorWidget->setWindowTitle(sTitle);
-		m_pEditorWidget->setWindowIcon(QIcon(":/images/pluginEdit.png"));
+		m_pEditorWidget->setWindowIcon(QIcon(":/images/qtractorPlugin.png"));
 	}
 }
 
