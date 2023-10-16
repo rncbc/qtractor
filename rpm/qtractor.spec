@@ -143,7 +143,7 @@ the personal home-studio.
 
 %build
 %if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
-source /opt/qt6.5-static/bin/qt6.5-static-env.sh
+source /opt/qt6.6-static/bin/qt6.6-static-env.sh
 %endif
 CXX=%{_GXX} CC=%{_GCC} \
 cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} -Wno-dev -B build
