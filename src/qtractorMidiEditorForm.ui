@@ -34,7 +34,7 @@
    <string>MIDI Editor</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/qtractor.svg</iconset>
+   <iconset resource="qtractor.qrc">:/images/qtractorMidiEditor.svg</iconset>
   </property>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

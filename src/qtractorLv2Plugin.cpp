@@ -3941,7 +3941,7 @@ void qtractorLv2Plugin::updateEditorTitleEx (void)
 
 	if (m_pQtWidget) {
 		m_pQtWidget->setWindowTitle(m_aEditorTitle);
-		m_pQtWidget->setWindowIcon(QIcon(":/images/qtractorPlugin.png"));
+		m_pQtWidget->setWindowIcon(QIcon(":/images/qtractorPlugin.svg"));
 	}
 #ifdef CONFIG_LV2_EXTERNAL_UI
 	else

@@ -888,7 +888,7 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_pVSplitter->setStretchFactor(m_pVSplitter->indexOf(pHBoxBottom), 0);
 	m_pVSplitter->setHandleWidth(2);
 
-	m_pVSplitter->setWindowIcon(QIcon(":/images/qtractorMidiEditor.png"));
+	m_pVSplitter->setWindowIcon(QIcon(":/images/qtractorMidiEditor.svg"));
 	m_pVSplitter->setWindowTitle(tr("MIDI Editor"));
 
 	// To have all views in positional sync.
