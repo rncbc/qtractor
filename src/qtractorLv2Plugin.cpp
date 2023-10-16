@@ -36,6 +36,9 @@
 
 #include "qtractorMainForm.h"
 
+#include <QWidget>
+#include <QIcon>
+
 #ifdef CONFIG_LV2_STATE
 // LV2 State/Presets: standard directory access.
 // For local file vs. URI manipulations.

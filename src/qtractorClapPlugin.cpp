@@ -34,6 +34,7 @@
 
 #include <QFileInfo>
 #include <QWidget>
+#include <QIcon>
 
 #include <QTimer>
 #include <QTimerEvent>

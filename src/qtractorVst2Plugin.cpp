@@ -42,6 +42,7 @@
 #include <QRegularExpression>
 
 #include <QVBoxLayout>
+#include <QIcon>
 
 #if QT_VERSION < QT_VERSION_CHECK(4, 5, 0)
 namespace Qt {

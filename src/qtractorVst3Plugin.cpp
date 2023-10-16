@@ -49,6 +49,7 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QIcon>
 
 #include <QTimer>
 #include <QTimerEvent>
