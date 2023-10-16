@@ -10174,17 +10174,17 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="890"/>
         <source>Remove Range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Удалить область</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="893"/>
         <source>Remove range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Удалить область</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="896"/>
         <source>Remove range as selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Удалить выбранную область</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="899"/>
@@ -15325,7 +15325,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="2356"/>
         <source>Remove Range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Удалить область</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="2376"/>
