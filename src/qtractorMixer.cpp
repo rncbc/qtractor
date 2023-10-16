@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1405,7 +1405,7 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 	// Finally set the default caption and tooltip.
 	const QString& sTitle = tr("Mixer");
 	QMainWindow::setWindowTitle(sTitle);
-	QMainWindow::setWindowIcon(QIcon(":/images/viewMixer.png"));
+	QMainWindow::setWindowIcon(QIcon(":/images/qtractorMixer.png"));
 	QMainWindow::setToolTip(sTitle);
 
 	QMainWindow::addDockWidget(Qt::LeftDockWidgetArea,  m_pInputRack);
