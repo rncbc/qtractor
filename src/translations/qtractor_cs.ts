@@ -2671,7 +2671,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="524"/>
         <source>Current tempo (BPM)</source>
-        <translation>Nynější tempo (ÚZM)</translation>
+        <translation>Nynější tempo (MM)</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="540"/>
@@ -3185,7 +3185,7 @@ spuštěn a běží, a potom sezení začněte znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8643"/>
         <source>%1 BPM</source>
-        <translation>%1 ÚZM</translation>
+        <translation>%1 MM</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8556"/>
@@ -5070,22 +5070,22 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1926"/>
         <source>T&amp;empo ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>T&amp;empový nájezd...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1929"/>
         <source>Tempo ramp Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Záběr s tempovým nájezdem</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1932"/>
         <source>Tempo ramp clip events</source>
-        <translation type="unfinished"></translation>
+        <translation>Události záběru s tempovým nájezdem</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1935"/>
         <source>Tempo ramp current MIDI clip events</source>
-        <translation type="unfinished"></translation>
+        <translation>Události záběru nynějšího MIDI s tempovým nájezdem</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1957"/>
@@ -8886,7 +8886,7 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="174"/>
         <source>Current tempo (BPM)</source>
-        <translation>Nynější tempo (ÚZM)</translation>
+        <translation>Nynější tempo (MM)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="182"/>
@@ -9822,18 +9822,18 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1002"/>
         <source>T&amp;empo ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>T&amp;empový nájezd...</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1005"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1008"/>
         <source>Tempo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Tempový nájezd</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1011"/>
         <source>Tempo ramp selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Výběr tempového nájezdu</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1019"/>
@@ -9844,7 +9844,7 @@ Chcete uložit změny?</translation>
         <location filename="../qtractorMidiEditorForm.ui" line="1022"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1025"/>
         <source>Menubar</source>
-        <translation>&amp;Hlavní nabídka</translation>
+        <translation>Hlavní nabídka</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1028"/>
@@ -11097,7 +11097,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="842"/>
         <source>temporamp</source>
-        <translation type="unfinished"></translation>
+        <translation>tempovýnájezd</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="34"/>
@@ -11393,52 +11393,52 @@ P &lt; 0 : zpomalení posunu.
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1394"/>
         <source>T&amp;empo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>T&amp;empový nájezd</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1406"/>
         <source>Tempo ramp selected events</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrané události tempového nájezdu</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1409"/>
         <source>Tempo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Tempový nájezd</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1432"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>Od</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1445"/>
         <source>Tempo ramp start</source>
-        <translation type="unfinished"></translation>
+        <translation>Začátek tempového nájezdu</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1470"/>
         <source>to</source>
-        <translation type="unfinished"></translation>
+        <translation>do</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1483"/>
         <source>Temporamp end</source>
-        <translation type="unfinished"></translation>
+        <translation>Konec tempového nájezdu</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1508"/>
         <source>BPM</source>
-        <translation type="unfinished"></translation>
+        <translation>MM</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1528"/>
         <source>Edit head/tail (blue) markers define the ramp range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Značky úpravy začátku/konce (modré) vymezují rozsah tempa.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1535"/>
         <source>Tempo ramp duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Doba trvání tempa</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="185"/>
@@ -13951,7 +13951,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorSessionForm.ui" line="261"/>
         <source>Tempo (BPM) / Signature</source>
-        <translation>Tempo (ÚZM)/Taktové označení</translation>
+        <translation>Tempo (MM)/Taktové označení</translation>
     </message>
     <message>
         <location filename="../qtractorSessionForm.ui" line="281"/>
@@ -14514,7 +14514,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="218"/>
         <source>Tempo (BPM) / Time signature</source>
-        <translation>Tempo (ÚZM)/Taktové označení</translation>
+        <translation>Tempo (MM)/Taktové označení</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="248"/>
@@ -14834,12 +14834,12 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1666"/>
         <source>%1 ms (%2 frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ms (%2 snímků)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1670"/>
         <source>(no latency)</source>
-        <translation type="unfinished">(bez prodlevy)</translation>
+        <translation>(bez prodlevy)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1218"/>
@@ -15099,7 +15099,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="665"/>
         <source>Current total latency</source>
-        <translation type="unfinished"></translation>
+        <translation>Nynější celková prodleva</translation>
     </message>
 </context>
 <context>
@@ -15327,7 +15327,7 @@ Délka:	%3</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="877"/>
         <source>tempo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>tempový nájezd</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1013"/>
