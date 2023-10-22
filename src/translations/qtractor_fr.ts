@@ -4466,22 +4466,22 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1926"/>
         <source>T&amp;empo ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampe de t&amp;empo...</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1929"/>
         <source>Tempo ramp Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Clip de la rampe de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1932"/>
         <source>Tempo ramp clip events</source>
-        <translation type="unfinished"></translation>
+        <translation>Événements du clip de la rampe de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1935"/>
         <source>Tempo ramp current MIDI clip events</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampe de tempo des événements actuels du clip MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1940"/>
@@ -9650,23 +9650,23 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1002"/>
         <source>T&amp;empo ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampe de t&amp;empo...</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1005"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1008"/>
         <source>Tempo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampe de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1011"/>
         <source>Tempo ramp selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection de rampe de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1019"/>
         <source>&amp;Menubar</source>
-        <translation>Barre de &amp;Menu</translation>
+        <translation>Barre de &amp;menu</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1022"/>
@@ -11408,37 +11408,37 @@ P &lt; 0 : décalage ralenti.
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1394"/>
         <source>T&amp;empo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampe de t&amp;empo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1406"/>
         <source>Tempo ramp selected events</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampe de tempo des événements sélectionnés</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1409"/>
         <source>Tempo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampe de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1432"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>Depuis</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1445"/>
         <source>Tempo ramp start</source>
-        <translation type="unfinished"></translation>
+        <translation>Départ de la rampe de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1470"/>
         <source>to</source>
-        <translation type="unfinished"></translation>
+        <translation>vers</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1483"/>
         <source>Temporamp end</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin de la rampe de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1508"/>
@@ -11448,12 +11448,12 @@ P &lt; 0 : décalage ralenti.
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1528"/>
         <source>Edit head/tail (blue) markers define the ramp range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les marqueurs de tête/queue d'édition (bleus) définissent la plage de rampe.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1535"/>
         <source>Tempo ramp duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée de la rampe de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="150"/>
@@ -11521,7 +11521,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="842"/>
         <source>temporamp</source>
-        <translation type="unfinished"></translation>
+        <translation>rampe de tempo</translation>
     </message>
 </context>
 <context>
@@ -14945,7 +14945,7 @@ Voulez-vous abandonner ces changements ?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="665"/>
         <source>Current total latency</source>
-        <translation type="unfinished"></translation>
+        <translation>Latence totale actuelle</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="147"/>
@@ -15060,12 +15060,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1666"/>
         <source>%1 ms (%2 frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ms (%2 trames)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1670"/>
         <source>(no latency)</source>
-        <translation type="unfinished">(pas de latence)</translation>
+        <translation>(pas de latence)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="204"/>
@@ -15459,7 +15459,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="877"/>
         <source>tempo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>rampe de tempo</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1518"/>
