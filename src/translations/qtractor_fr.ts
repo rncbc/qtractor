@@ -11448,7 +11448,7 @@ P &lt; 0 : décalage ralenti.
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1528"/>
         <source>Edit head/tail (blue) markers define the ramp range.</source>
-        <translation>Les marqueurs de tête/queue d'édition (bleus) définissent la plage de rampe.</translation>
+        <translation>Les marqueurs de tête/queue d&apos;édition (bleus) définissent la plage de rampe.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1535"/>
