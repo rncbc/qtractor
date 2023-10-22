@@ -40,6 +40,8 @@
 #include "qtractorRubberBand.h"
 #include "qtractorTimeScale.h"
 
+#include "qtractorTimeScaleCommand.h"
+
 #include "qtractorSession.h"
 #include "qtractorOptions.h"
 
@@ -4919,7 +4921,10 @@ void qtractorMidiEditor::executeTool ( int iToolIndex )
 		qtractorMidiEditCommand *pEditCommand
 			= toolsForm.editCommand(m_pMidiClip, &m_select,
 				m_pTimeScale->tickFromFrame(m_iOffset));
-		toolsForm.executeTimeScaleAddNodeCommand();
+		qtractorTimeScaleAddNodeCommand *pTimeScaleAddNodeCommand
+			= toolsForm.timeScaleAddNodeCommand();
+		if (pTimeScaleAddNodeCommand)
+			pEditCommand->addTimeScaleNodeCommand(pTimeScaleAddNodeCommand);
 		m_pCommands->exec(pEditCommand);
 	}
 

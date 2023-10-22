@@ -1221,6 +1221,24 @@ void qtractorMidiClip::updateEditorContents (void)
 }
 
 
+void qtractorMidiClip::updateEditorTimeScale (void)
+{
+	if (m_pMidiEditorForm == nullptr)
+		return;
+
+	qtractorTrack *pTrack = track();
+	if (pTrack) {
+		qtractorSession *pSession = pTrack->session();
+		if (pSession)
+			pSession->updateTimeScale();
+	}
+
+	qtractorMidiEditor *pMidiEditor = m_pMidiEditorForm->editor();
+	if (pMidiEditor)
+		pMidiEditor->updateTimeScale();
+}
+
+
 // Clip query-close method (return true if editing is done).
 bool qtractorMidiClip::queryEditor (void)
 {

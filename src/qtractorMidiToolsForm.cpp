@@ -1477,38 +1477,38 @@ void qtractorMidiToolsForm::timeshiftSliderChanged ( int i )
 
 
 // Special tempo ramp tool helper...
-bool qtractorMidiToolsForm::executeTimeScaleAddNodeCommand (void)
+qtractorTimeScaleAddNodeCommand *qtractorMidiToolsForm::timeScaleAddNodeCommand (void) const
 {
 	// HACK: Add time-scale node for tempo ramp target,
 	// iif not the same to current edit-head's tempo.
 	// FIXME: conditional check-box at the UI level?
 	if (!m_ui.TemporampCheckBox->isChecked())
-		return false;
+		return nullptr;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
-		return false;
+		return nullptr;
 
 	qtractorTimeScale *pTimeScale = pSession->timeScale();
 	if (pTimeScale == nullptr)
-		return false;
+		return nullptr;
 
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	const unsigned long iEditHead = pSession->editHead();
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iEditHead);
 	const float T1 = m_ui.TemporampToSpinBox->value();
 	if (qAbs(T1 - pNode->tempo) < 0.1f)
-		return false;
+		return nullptr;
 
 #ifdef CONFIG_DEBUG
-	qDebug("qtractorMidiToolsForm::executeTimeScaleAddNodeCommand()"
+	qDebug("qtractorMidiToolsForm::timeScaleAddNodeCommand()"
 		" frame=%lu tempo=%g -> frame=%lu tempo=%g",
 		pNode->frame, pNode->tempo, iEditHead, T1);
 #endif
 
-	return pSession->execute(
-		new qtractorTimeScaleAddNodeCommand(pTimeScale, iEditHead, T1,
-			pNode->beatType, pNode->beatsPerBar, pNode->beatDivisor));
+	return new qtractorTimeScaleAddNodeCommand(
+		pTimeScale, iEditHead, T1, pNode->beatType,
+		pNode->beatsPerBar, pNode->beatDivisor);
 }
 
 

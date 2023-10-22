@@ -32,6 +32,8 @@
 // Forward declarations.
 class qtractorMidiClip;
 
+class qtractorTimeScaleNodeCommand;
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiEditCommand - declaration.
@@ -82,10 +84,16 @@ public:
 	// Adjust edit-command result to prevent event overlapping.
 	bool adjust();
 
+	// Add a command to the execution list...
+	void addTimeScaleNodeCommand(qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand);
+
 protected:
 
 	// Common executive method.
 	bool execute(bool bRedo);
+
+	// Execute tempo-map/time-sig commands.
+	void executeTimeScaleNodeCommands(bool bRedo);
 
 private:
 
@@ -117,6 +125,8 @@ private:
 	bool m_bAdjusted;
 
 	unsigned long m_iDuration;
+
+	QList<qtractorTimeScaleNodeCommand *> m_timeScaleNodeCommands;
 };
 
 

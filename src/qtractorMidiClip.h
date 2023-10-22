@@ -129,6 +129,7 @@ public:
 	bool startEditor(QWidget *pParent = nullptr);
 	void updateEditor(bool bSelectClear);
 	void updateEditorContents();
+	void updateEditorTimeScale();
 	bool queryEditor();
 
 	// MIDI clip tool-tip.

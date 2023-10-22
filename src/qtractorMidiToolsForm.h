@@ -29,7 +29,9 @@
 class qtractorMidiClip;
 class qtractorMidiEditSelect;
 class qtractorMidiEditCommand;
+
 class qtractorTimeScale;
+class qtractorTimeScaleAddNodeCommand;
 
 
 //----------------------------------------------------------------------------
@@ -56,7 +58,7 @@ public:
 		unsigned long iTimeStart = 0, unsigned long iTimeEnd = 0) const;
 
 	// Special tempo ramp tool helper...
-	bool executeTimeScaleAddNodeCommand();
+	qtractorTimeScaleAddNodeCommand *timeScaleAddNodeCommand() const;
 
 protected slots:
 

@@ -24,6 +24,8 @@
 #include "qtractorMidiClip.h"
 #include "qtractorMidiEngine.h"
 
+#include "qtractorTimeScaleCommand.h"
+
 #include "qtractorSession.h"
 
 
@@ -52,6 +54,10 @@ qtractorMidiEditCommand::~qtractorMidiEditCommand (void)
 
 	qDeleteAll(m_items);
 	m_items.clear();
+
+	qDeleteAll(m_timeScaleNodeCommands);
+	m_timeScaleNodeCommands.clear();
+
 }
 
 
@@ -126,6 +132,9 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 	qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
 	if (pSeq == nullptr)
 		return false;
+
+	// Execute all additional commands....
+	executeTimeScaleNodeCommands(bRedo);
 
 	// Dropped enqueued events...
 	qtractorSession *pSession = nullptr;
@@ -433,6 +442,33 @@ bool qtractorMidiEditCommand::adjust (void)
 	}
 
 	return true;
+}
+
+
+// Add a time-scale command to the execution list...
+void qtractorMidiEditCommand::addTimeScaleNodeCommand (
+	qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand )
+{
+	m_timeScaleNodeCommands.append(pTimeScaleNodeCommand);
+}
+
+
+// Execute tempo-map/time-sig commands.
+void qtractorMidiEditCommand::executeTimeScaleNodeCommands ( bool bRedo )
+{
+	int iTimeScaleUpdate = 0;
+	QListIterator<qtractorTimeScaleNodeCommand *> iter(m_timeScaleNodeCommands);
+	while (iter.hasNext()) {
+		qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand = iter.next();
+		if (bRedo)
+			pTimeScaleNodeCommand->redo();
+		else
+			pTimeScaleNodeCommand->undo();
+		++iTimeScaleUpdate;
+	}
+
+	if (m_pMidiClip && iTimeScaleUpdate > 0)
+		m_pMidiClip->updateEditorTimeScale();
 }
 
 
