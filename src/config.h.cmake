@@ -184,17 +184,11 @@
 /* Define if LV2 UI Show interface support is available. */
 #cmakedefine CONFIG_LV2_UI_SHOW @CONFIG_LV2_UI_SHOW@
 
-/* Define if libsuil_gtk2_in_qt5 is available. */
-#cmakedefine CONFIG_LIBSUIL_GTK2_IN_QT5 @CONFIG_LIBSUIL_GTK2_IN_QT5@
-
 /* Define if LV2 UI GTK2 native support is available. */
 #cmakedefine CONFIG_LV2_UI_GTK2 @CONFIG_LV2_UI_GTK2@
 
 /* Define if LV2 UI GTKMM2 native support is available. */
 #cmakedefine CONFIG_LV2_UI_GTKMM2 @CONFIG_LV2_UI_GTKMM2@
-
-/* Define if libsuil_x11_in_qt5 is available. */
-#cmakedefine CONFIG_LIBSUIL_X11_IN_QT5 @CONFIG_LIBSUIL_X11_IN_QT5@
 
 /* Define if LV2 UI X11 native support is available. */
 #cmakedefine CONFIG_LV2_UI_X11 @CONFIG_LV2_UI_X11@

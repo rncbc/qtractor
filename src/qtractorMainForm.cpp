@@ -6074,17 +6074,13 @@ void qtractorMainForm::helpAbout (void)
 #endif
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 #ifndef CONFIG_LV2_UI_GTK2
-#ifndef CONFIG_LIBSUIL_GTK2_IN_QT5
 	list << tr("LV2 Plug-in UI GTK2 native support disabled.");
-#endif
 #endif
 #ifndef CONFIG_LV2_UI_GTKMM2
 	list << tr("LV2 Plug-in UI GTKMM2 native support disabled.");
 #endif
 #ifndef CONFIG_LV2_UI_X11
-#ifndef CONFIG_LIBSUIL_X11_IN_QT5
 	list << tr("LV2 Plug-in UI X11 native support disabled.");
-#endif
 #endif
 #endif
 #endif // CONFIG_LV2_UI
