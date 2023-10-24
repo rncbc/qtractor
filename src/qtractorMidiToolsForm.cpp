@@ -1164,7 +1164,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 				const float d2 = s2 * float(iDuration) / d;
 				iDuration += qtractorTimeScale::uroundf(d2 * d);
 			}
-			t2 += s2 * t2 * (t2 - 1.0f) * (t2 - 1.0f);
+			t2 += s2 * t2 * ::expf(- t2 * M_PI);
 			iTime = iEditHeadTime + qtractorTimeScale::uroundf(t2 * d);
 		}
 		// Make it to the event...
