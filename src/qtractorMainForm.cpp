@@ -7452,8 +7452,8 @@ void qtractorMainForm::updateClipMenu (void)
 	const bool bSelected = (m_pTracks && m_pTracks->isSelected());
 	const bool bClipSelected = (pClip != nullptr)
 		|| (m_pTracks && m_pTracks->isClipSelected());
-	const bool bClipSelectable = (pClip != nullptr)
-		|| (m_pSession->editHead() < m_pSession->editTail());
+	const bool bClipSelectable = bClipSelected
+		&& (m_pSession->editHead() < m_pSession->editTail());
 	const bool bSingleTrackSelected = bClipSelected
 		&& (pTrack && m_pTracks->singleTrackSelected() == pTrack);
 
@@ -7485,11 +7485,18 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipLoopSetAction->setEnabled(bClipSelected);
 //	m_ui.clipImportAction->setEnabled(bTracks);
 	m_ui.clipExportAction->setEnabled(bSingleTrackSelected);
-	m_ui.clipToolsMenu->setEnabled(bClipSelected
-		&& pTrack && pTrack->trackType() == qtractorTrack::Midi);
-	m_ui.clipTakeMenu->setEnabled(pClip != nullptr);
 
-	updateTakeMenu();
+	const bool bClipToolsEnabled = bClipSelected
+		&& pTrack && pTrack->trackType() == qtractorTrack::Midi;
+	m_ui.clipToolsMenu->setEnabled(bClipToolsEnabled);
+	if (bClipToolsEnabled) {
+		m_ui.clipToolsTimeshiftAction->setEnabled(bClipSelectable);
+		m_ui.clipToolsTemporampAction->setEnabled(bClipSelectable);
+	}
+
+	m_ui.clipTakeMenu->setEnabled(pClip != nullptr);
+	if (pClip)
+		updateTakeMenu();
 }
 
 

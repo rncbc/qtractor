@@ -226,8 +226,6 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	timeshiftSpinBoxChanged(m_ui.TimeshiftSpinBox->value());
 	refreshPresets();
 
-	// Draw timeshift curve always.
-
 	// Try to restore old window positioning.
 	// adjustSize();
 
@@ -1404,7 +1402,7 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	if (bEnabled)
 		++iEnabled;
 	m_ui.TemporampFromLabel->setEnabled(bEnabled);
-	m_ui.TemporampFromSpinBox->setEnabled(bEnabled);
+	m_ui.TemporampFromSpinBox->setEnabled(false);
 	m_ui.TemporampToLabel->setEnabled(bEnabled);
 	m_ui.TemporampToSpinBox->setEnabled(bEnabled);
 	m_ui.TemporampBpmLabel->setEnabled(bEnabled);

@@ -2070,8 +2070,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.toolsRandomizeAction->setEnabled(bSelected);
 	m_ui.toolsResizeAction->setEnabled(bSelected);
 	m_ui.toolsRescaleAction->setEnabled(bSelected);
-	m_ui.toolsTimeshiftAction->setEnabled(bSelected);
-	m_ui.toolsTemporampAction->setEnabled(bSelected);
+	m_ui.toolsTimeshiftAction->setEnabled(bSelected && bSelectable);
+	m_ui.toolsTemporampAction->setEnabled(bSelected && bSelectable);
 #endif
 	// Just having a non-null sequence will indicate
 	// that we're editing a legal MIDI clip...

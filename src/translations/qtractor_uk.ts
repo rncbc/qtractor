@@ -5528,7 +5528,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2983"/>
-        <location filename="../qtractorMainForm.cpp" line="7541"/>
+        <location filename="../qtractorMainForm.cpp" line="7548"/>
         <source>None</source>
         <translation>Немає</translation>
     </message>
@@ -5792,7 +5792,7 @@ Sorry.</source>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="1963"/>
-        <location filename="../qtractorMainForm.cpp" line="8336"/>
+        <location filename="../qtractorMainForm.cpp" line="8343"/>
         <source>Untitled%1</source>
         <translation>Без назви%1</translation>
     </message>
@@ -6384,42 +6384,42 @@ Saving into another session file is highly recommended.</source>
         <translation>С&amp;плайни</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7534"/>
+        <location filename="../qtractorMainForm.cpp" line="7541"/>
         <source>Take %1</source>
         <translation>Дубль %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="7631"/>
+        <location filename="../qtractorMainForm.cpp" line="7638"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8018"/>
+        <location filename="../qtractorMainForm.cpp" line="8025"/>
         <source>XRUN(%1 skipped)</source>
         <translation>XRUN(%1 пропущено)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8023"/>
+        <location filename="../qtractorMainForm.cpp" line="8030"/>
         <source>XRUN(%1): some frames might have been lost.</source>
         <translation>XRUN(%1): деякі кадри могло бути втрачено.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8040"/>
+        <location filename="../qtractorMainForm.cpp" line="8047"/>
         <source>Audio connections change.</source>
         <translation>Зміна звукових з&apos;єднань.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8055"/>
+        <location filename="../qtractorMainForm.cpp" line="8062"/>
         <source>MIDI connections change.</source>
         <translation>Зміна з&apos;єднань MIDI.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8076"/>
+        <location filename="../qtractorMainForm.cpp" line="8083"/>
         <source>Playing ended.</source>
         <translation>Відтворення завершено.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8157"/>
+        <location filename="../qtractorMainForm.cpp" line="8164"/>
         <source>The audio engine has been shutdown.
 
 Make sure the JACK audio server (jackd)
@@ -6430,7 +6430,7 @@ is up and running and then restart session.</source>
 запущено і визнано працездатним, а потім перезапустіть сеанс.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8232"/>
+        <location filename="../qtractorMainForm.cpp" line="8239"/>
         <source>The audio engine buffer size has changed,
 increased from %1 to %2 frames/period.
 
@@ -6443,125 +6443,125 @@ is highly recommended.</source>
 поточного сеансу.</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8418"/>
-        <location filename="../qtractorMainForm.cpp" line="8605"/>
+        <location filename="../qtractorMainForm.cpp" line="8425"/>
+        <location filename="../qtractorMainForm.cpp" line="8612"/>
         <source>STOP</source>
         <translation>СТОП</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8425"/>
+        <location filename="../qtractorMainForm.cpp" line="8432"/>
         <source>PLAY</source>
         <translation>ПУСК</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8429"/>
+        <location filename="../qtractorMainForm.cpp" line="8436"/>
         <source>FFWD</source>
         <translation>ШВП</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8433"/>
+        <location filename="../qtractorMainForm.cpp" line="8440"/>
         <source>REW</source>
         <translation>НАЗ</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8438"/>
+        <location filename="../qtractorMainForm.cpp" line="8445"/>
         <source>REC ON</source>
         <translation>ЗАП УВ</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8446"/>
+        <location filename="../qtractorMainForm.cpp" line="8453"/>
         <source>REC OFF</source>
         <translation>ЗАП ВИМ</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8450"/>
+        <location filename="../qtractorMainForm.cpp" line="8457"/>
         <source>RESET</source>
         <translation>СКИНУТИ</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8454"/>
+        <location filename="../qtractorMainForm.cpp" line="8461"/>
         <source>LOCATE %1</source>
         <translation>ЗНАЙТИ %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8458"/>
+        <location filename="../qtractorMainForm.cpp" line="8465"/>
         <source>SHUTTLE %1</source>
         <translation>SHUTTLE %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8462"/>
+        <location filename="../qtractorMainForm.cpp" line="8469"/>
         <source>STEP %1</source>
         <translation>КРОК %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8468"/>
+        <location filename="../qtractorMainForm.cpp" line="8475"/>
         <source>TRACK RECORD %1 %2</source>
         <translation>ЗАПИС ДОРІЖКИ %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8473"/>
+        <location filename="../qtractorMainForm.cpp" line="8480"/>
         <source>TRACK MUTE %1 %2</source>
         <translation>ВИМК. ЗВУК ДОРІЖКИ %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8478"/>
+        <location filename="../qtractorMainForm.cpp" line="8485"/>
         <source>TRACK SOLO %1 %2</source>
         <translation>ДОРІЖКА СОЛО %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8483"/>
+        <location filename="../qtractorMainForm.cpp" line="8490"/>
         <source>TRACK MONITOR %1 %2</source>
         <translation>МОНІТОР ДОРІЖКИ %1 %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8488"/>
+        <location filename="../qtractorMainForm.cpp" line="8495"/>
         <source>Unknown sub-command</source>
         <translation>Невідома підкоманда</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8494"/>
-        <location filename="../qtractorMainForm.cpp" line="8625"/>
+        <location filename="../qtractorMainForm.cpp" line="8501"/>
+        <location filename="../qtractorMainForm.cpp" line="8632"/>
         <source>Not implemented</source>
         <translation>Не реалізовано</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8507"/>
+        <location filename="../qtractorMainForm.cpp" line="8514"/>
         <source>MIDI CTL: %1, Channel %2, Param %3, Value %4</source>
         <translation>КОНТРОЛЬ MIDI: %1, канал %2, парам %3, знач. %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8556"/>
+        <location filename="../qtractorMainForm.cpp" line="8563"/>
         <source>(track %1, gain %2)</source>
         <translation>(доріжка %1, підсилення %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8577"/>
+        <location filename="../qtractorMainForm.cpp" line="8584"/>
         <source>(track %1, panning %2)</source>
         <translation>(доріжка %1, панорамування %2)</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8598"/>
+        <location filename="../qtractorMainForm.cpp" line="8605"/>
         <source>START</source>
         <translation>ПУСК</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8613"/>
+        <location filename="../qtractorMainForm.cpp" line="8620"/>
         <source>CONTINUE</source>
         <translation>ПРОДОВЖИТИ</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8619"/>
+        <location filename="../qtractorMainForm.cpp" line="8626"/>
         <source>SONGPOS %1</source>
         <translation>ПОЗКОМП %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8643"/>
+        <location filename="../qtractorMainForm.cpp" line="8650"/>
         <source>%1 BPM</source>
         <translation>%1 такт/хв</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="8760"/>
-        <location filename="../qtractorMainForm.cpp" line="8820"/>
+        <location filename="../qtractorMainForm.cpp" line="8767"/>
+        <location filename="../qtractorMainForm.cpp" line="8827"/>
         <source>Playing &quot;%1&quot;...</source>
         <translation>Відтворюємо «%1»...</translation>
     </message>
@@ -11463,12 +11463,12 @@ P &lt; 0 : уповільнений зсув.
         <translation>(типове)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="793"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="791"/>
         <source>Warning</source>
         <translation>Попередження</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="794"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="792"/>
         <source>About to delete preset:
 
 &quot;%1&quot;
@@ -11481,47 +11481,47 @@ Are you sure?</source>
 Ви справді цього хочете?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="823"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="821"/>
         <source>none</source>
         <translation>немає</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="828"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="826"/>
         <source>quantize</source>
         <translation>квантизувати</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="830"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="828"/>
         <source>transpose</source>
         <translation>transpose</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="832"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="830"/>
         <source>normalize</source>
         <translation>нормалізація</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="834"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="832"/>
         <source>randomize</source>
         <translation>рандомізувати</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="836"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="834"/>
         <source>resize</source>
         <translation>змінити розмір</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="838"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="836"/>
         <source>rescale</source>
         <translation>rescale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="840"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="838"/>
         <source>timeshift</source>
         <translation>зсунути за часом</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="842"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="840"/>
         <source>temporamp</source>
         <translation type="unfinished"></translation>
     </message>
