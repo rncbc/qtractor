@@ -2,6 +2,8 @@
     <qresource prefix="/">
         <file>images/qtractor.png</file>
         <file>images/qtractor.svg</file>
+        <file>images/qtractorConnections.png</file>
+        <file>images/qtractorConnections.svg</file>
         <file>images/qtractorMidiEditor.png</file>
         <file>images/qtractorMidiEditor.svg</file>
         <file>images/qtractorMixer.png</file>
