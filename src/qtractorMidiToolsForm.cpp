@@ -903,7 +903,12 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 		int iNote = int(pEvent->note());
 		long iTime = pEvent->time() + iTimeOffset;
 		long iDuration = long(pEvent->duration());
-		const bool bPitchBend = (pEvent->type() == qtractorMidiEvent::PITCHBEND);
+		const bool bPitchBend = (
+			pEvent->type() == qtractorMidiEvent::PITCHBEND);
+		const bool b14bit = (
+			pEvent->type() == qtractorMidiEvent::CONTROL14 ||
+			pEvent->type() == qtractorMidiEvent::REGPARAM  ||
+			pEvent->type() == qtractorMidiEvent::NONREGPARAM);
 		int iValue = (bPitchBend ? pEvent->pitchBend() : pEvent->value());
 		qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
 		// Quantize tool...
@@ -995,7 +1000,13 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			if (m_ui.NormalizeValueCheckBox->isChecked())
 				p = float(m_ui.NormalizeValueSpinBox->value());
 			else
-				p = (bPitchBend ? 8192.0f : 128.0f);
+			if (b14bit)
+				p = 16384.0f;
+			else
+			if (bPitchBend)
+				p = 8192.0f;
+			else
+				p = 128.0f;
 			if (m_ui.NormalizePercentCheckBox->isChecked()) {
 				p *= float(m_ui.NormalizePercentSpinBox->value());
 				q *= 100.0f;
@@ -1009,6 +1020,9 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					if (iValue < -8191)
 						iValue = -8191;
 				} else {
+					if (iValue > 16383 && b14bit)
+						iValue = 16383;
+					else
 					if (iValue > 127)
 						iValue = 127;
 					else
@@ -1063,6 +1077,9 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 						if (iValue < -8191)
 							iValue = -8191;
 					} else {
+						if (iValue > 16383 && b14bit)
+							iValue = 16383;
+						else
 						if (iValue > 127)
 							iValue = 127;
 						else
@@ -1117,6 +1134,9 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					if (iValue < -8191)
 						iValue = -8191;
 				} else {
+					if (iValue > 16383 && b14bit)
+						iValue = 16383;
+					else
 					if (iValue > 127)
 						iValue = 127;
 					else
@@ -1293,7 +1313,9 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 		++iEnabled;
 	m_ui.TransposeTimeSpinBox->setEnabled(bEnabled2);
 	m_ui.TransposeFormatComboBox->setEnabled(bEnabled2);
-	bEnabled2 = bEnabled && m_ui.TransposeReverseCheckBox->isChecked();
+
+	m_ui.TransposeReverseCheckBox->setEnabled(bEnabled2);
+	bEnabled2 = bEnabled2 && m_ui.TransposeReverseCheckBox->isChecked();
 	if (bEnabled2)
 		++iEnabled;
 
