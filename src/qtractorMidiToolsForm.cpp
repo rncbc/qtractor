@@ -827,7 +827,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 		return nullptr;
 
 	// Create command, it will be handed over...
-	qtractorMidiEditCommand *pEditCommand
+	qtractorMidiEditCommand *pMidiEditCommand
 		= new qtractorMidiEditCommand(pMidiClip, tr("none"));
 
 	// Set composite command title.
@@ -848,7 +848,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 		tools.append(tr("timeshift"));
 	if (m_ui.TemporampCheckBox->isChecked())
 		tools.append(tr("temporamp"));
-	pEditCommand->setName(tools.join(", "));
+	pMidiEditCommand->setName(tools.join(", "));
 
 	const qtractorMidiEditSelect::ItemList& items = pSelect->items();
 	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
@@ -1207,7 +1207,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 			iTime = iEditHeadTime + qtractorTimeScale::uroundf(t2 * d);
 		}
 		// Make it to the event...
-		pEditCommand->updateEvent(pEvent,
+		pMidiEditCommand->updateEvent(pEvent,
 			iNote, iTime - iTimeOffset, iDuration, iValue);
 	}
 
@@ -1229,7 +1229,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 	}
 
 	// Done.
-	return pEditCommand;
+	return pMidiEditCommand;
 }
 
 
