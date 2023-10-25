@@ -10952,12 +10952,12 @@ Sorry.</source>
         <translation>(по умолчанию)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="791"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="798"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="792"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="799"/>
         <source>About to delete preset:
 
 &quot;%1&quot;
@@ -10970,47 +10970,47 @@ Are you sure?</source>
 Вы уверены?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="821"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="828"/>
         <source>none</source>
         <translation>нет</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="826"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="833"/>
         <source>quantize</source>
         <translation>квантование</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="828"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="835"/>
         <source>transpose</source>
         <translation>транспонирование</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="830"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="837"/>
         <source>normalize</source>
         <translation>нормализация</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="832"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="839"/>
         <source>randomize</source>
         <translation>случайные значения</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="834"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="841"/>
         <source>resize</source>
         <translation>смена размера</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="836"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="843"/>
         <source>rescale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="838"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="845"/>
         <source>timeshift</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="840"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="847"/>
         <source>temporamp</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11255,42 +11255,47 @@ Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1234"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1220"/>
+        <source>&amp;Invert</source>
+        <translation type="unfinished">&amp;Инвертировать</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1241"/>
         <source>T&amp;imeshift</source>
         <translation>С&amp;мещение</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1246"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1253"/>
         <source>Timeshift selected events</source>
         <translation>Сместить выделенные события во времени</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1249"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1256"/>
         <source>Timeshift</source>
         <translation>Смещение во времени</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1272"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1279"/>
         <source>P:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1285"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1292"/>
         <source>Timeshift parameter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1313"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1320"/>
         <source>Timeshift parameter (log)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1350"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1357"/>
         <source>Timeshift curve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1363"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1370"/>
         <source>P = 0 : no change.
 P &gt; 0 : accelerating shift.
 P &lt; 0 : slowing down shift.
@@ -11298,57 +11303,57 @@ Edit head/tail (blue) markers define the shift range.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1373"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1380"/>
         <source>Timeshift duration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1394"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1401"/>
         <source>T&amp;empo ramp</source>
         <translation>П&amp;лавная смена темпа</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1406"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1413"/>
         <source>Tempo ramp selected events</source>
         <translation>Плавно поменять темп выбранных событий</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1409"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1416"/>
         <source>Tempo ramp</source>
         <translation>Плавная смена темпа</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1432"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1439"/>
         <source>From</source>
         <translation>Из</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1445"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1452"/>
         <source>Tempo ramp start</source>
         <translation>Начало</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1470"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1477"/>
         <source>to</source>
         <translation>в</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1483"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1490"/>
         <source>Temporamp end</source>
         <translation>Конец</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1508"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1515"/>
         <source>BPM</source>
         <translation>BPM</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1528"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1535"/>
         <source>Edit head/tail (blue) markers define the ramp range.</source>
         <translation>Оконечные синие маркеры определяют границы плавной смены темпа.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1535"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1542"/>
         <source>Tempo ramp duration</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11364,7 +11369,7 @@ Edit head/tail (blue) markers define the shift range.</source>
         <location filename="../qtractorMidiToolsForm.ui" line="1100"/>
         <location filename="../qtractorMidiToolsForm.ui" line="1154"/>
         <location filename="../qtractorMidiToolsForm.ui" line="1195"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1306"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1313"/>
         <source> %</source>
         <translation> %</translation>
     </message>

@@ -515,7 +515,7 @@
          </property>
         </spacer>
        </item>
-       <item row="3" column="1" colspan="3">
+       <item row="3" column="2" colspan="2">
         <widget class="QCheckBox" name="TransposeReverseCheckBox">
          <property name="text">
           <string>&amp;Reverse</string>
@@ -1208,13 +1208,20 @@
          </property>
          <property name="singleStep">
           <double>0.1</double>
-         </property>
+         </property>Reverse
          <property name="value">
           <double>100.0</double>
          </property>
         </widget>
        </item>
-       <item row="4" column="1" colspan="3">
+       <item row="4" column="2" colspan="2">
+        <widget class="QCheckBox" name="RescaleInvertCheckBox">
+         <property name="text">
+          <string>&amp;Invert</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" colspan="3">
         <spacer>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -1522,7 +1529,7 @@ Edit head/tail (blue) markers define the shift range.</string>
          </property>
         </spacer>
        </item>
-       <item row="2" column="1" colspan="6">
+       <item row="2" column="2" colspan="5">
         <widget class="QLabel" name="TemporampText">
          <property name="text">
           <string>Edit head/tail (blue) markers define the ramp range.</string>
@@ -1628,6 +1635,7 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>RescaleDurationSpinBox</tabstop>
   <tabstop>RescaleValueCheckBox</tabstop>
   <tabstop>RescaleValueSpinBox</tabstop>
+  <tabstop>RescaleInvertCheckBox</tabstop>
   <tabstop>TimeshiftCheckBox</tabstop>
   <tabstop>TimeshiftSpinBox</tabstop>
   <tabstop>TimeshiftSlider</tabstop>

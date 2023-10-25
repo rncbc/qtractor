@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- New MIDI clip tool option added: Rescale/Invert. (EXPERIMENTAL)
+
 - Introducing brand new MIDI clip tool: Tempo ramp. (EXPERIMENTAL)
 
 - Disable or better hide the Add Tracks option on the MIDI tracks
@@ -876,7 +878,7 @@ GIT HEAD
 
 - Add MMC Track input monitor support.
 
-- New user preference option: View/Options.../General/Options /Reverse
+- New user preference option: View/Options.../General/Options/Reverse
   keyboard modifiers role (Shift/Ctrl), applied to main transport
   re-positioning commands: Transport/Backward, Forward, etc.
 

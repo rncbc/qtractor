@@ -402,6 +402,9 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	QObject::connect(m_ui.RescaleValueSpinBox,
 		SIGNAL(valueChanged(double)),
 		SLOT(changed()));
+	QObject::connect(m_ui.RescaleInvertCheckBox,
+		 SIGNAL(toggled(bool)),
+		 SLOT(changed()));
 
 	QObject::connect(m_ui.TimeshiftCheckBox,
 		SIGNAL(toggled(bool)),
@@ -591,6 +594,9 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.RescaleValueCheckBox->setChecked(vlist[5].toBool());
 			m_ui.RescaleValueSpinBox->setValue(vlist[6].toDouble());
 		}
+		// Rescale/invert tool...
+		if (vlist.count() > 7)
+			m_ui.RescaleInvertCheckBox->setChecked(vlist[7].toBool());
 		// Timeshift tool...
 		vlist = settings.value("/Timeshift").toList();
 		if (vlist.count() > 2) {
@@ -690,6 +696,7 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.RescaleDurationSpinBox->value());
 		vlist.append(m_ui.RescaleValueCheckBox->isChecked());
 		vlist.append(m_ui.RescaleValueSpinBox->value());
+		vlist.append(m_ui.RescaleInvertCheckBox->isChecked());
 		settings.setValue("/Rescale", vlist);
 		// Timeshift tool...
 		vlist.clear();
@@ -1080,7 +1087,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 						if (iValue > 16383 && b14bit)
 							iValue = 16383;
 						else
-						if (iValue > 127)
+						if (iValue > 127 && !b14bit)
 							iValue = 127;
 						else
 						if (iValue < 0)
@@ -1126,6 +1133,15 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 			}
 			if (m_ui.RescaleValueCheckBox->isChecked()) {
 				p = 0.01f * float(m_ui.RescaleValueSpinBox->value());
+				if (m_ui.RescaleInvertCheckBox->isChecked()) {
+					if (bPitchBend)
+						iValue = -iValue;
+					else
+					if (b14bit)
+						iValue = 16384 - iValue;
+					else
+						iValue = (b14bit ? 16384 : 128) - iValue;
+				}
 				iValue = int(p * float(iValue));
 				if (bPitchBend) {
 					if (iValue > +8191)
@@ -1137,7 +1153,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::editCommand (
 					if (iValue > 16383 && b14bit)
 						iValue = 16383;
 					else
-					if (iValue > 127)
+					if (iValue > 127 && !b14bit)
 						iValue = 127;
 					else
 					if (iValue < 0)
@@ -1405,6 +1421,11 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	if (bEnabled2)
 		++iEnabled;
 	m_ui.RescaleValueSpinBox->setEnabled(bEnabled2);
+
+	m_ui.RescaleInvertCheckBox->setEnabled(bEnabled2);
+	bEnabled2 = bEnabled2 && m_ui.RescaleInvertCheckBox->isChecked();
+	if (bEnabled2)
+		++iEnabled;
 
 	// Timeshift tool...
 
