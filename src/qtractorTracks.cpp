@@ -906,10 +906,12 @@ bool qtractorTracks::executeClipTool ( int iTool, qtractorClip *pClip )
 	}
 
 	// That's it...
-	qtractorTimeScaleAddNodeCommand *pTimeScaleAddNodeCommand
-		= toolsForm.timeScaleAddNodeCommand();
-	if (pTimeScaleAddNodeCommand)
-		pClipToolCommand->addTimeScaleNodeCommand(pTimeScaleAddNodeCommand);
+	qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand
+		= toolsForm.timeScaleNodeCommand();
+	while (pTimeScaleNodeCommand) {
+		pClipToolCommand->addTimeScaleNodeCommand(pTimeScaleNodeCommand);
+		pTimeScaleNodeCommand = toolsForm.timeScaleNodeCommand();
+	}
 
 	return pSession->execute(pClipToolCommand);
 }
@@ -977,7 +979,7 @@ bool qtractorTracks::addClipToolCommand (
 
 	// Add new edit command from tool...
 	pClipToolCommand->addMidiEditCommand(
-		pMidiToolsForm->editCommand(pMidiClip, &select,
+		pMidiToolsForm->midiEditCommand(pMidiClip, &select,
 			pSession->tickFromFrame(pClip->clipStart()),
 			iTimeStart, iTimeEnd));
 			

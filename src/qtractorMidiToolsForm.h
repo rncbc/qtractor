@@ -24,6 +24,8 @@
 
 #include "ui_qtractorMidiToolsForm.h"
 
+#include <QList>
+
 
 // Forward declarations.
 class qtractorMidiClip;
@@ -31,7 +33,7 @@ class qtractorMidiEditSelect;
 class qtractorMidiEditCommand;
 
 class qtractorTimeScale;
-class qtractorTimeScaleAddNodeCommand;
+class qtractorTimeScaleNodeCommand;
 
 
 //----------------------------------------------------------------------------
@@ -53,12 +55,12 @@ public:
 	int toolIndex() const;
 
 	// Create edit command based on given selection.
-	qtractorMidiEditCommand *editCommand(qtractorMidiClip *pMidiClip,
+	qtractorMidiEditCommand *midiEditCommand(qtractorMidiClip *pMidiClip,
 		qtractorMidiEditSelect *pSelect, unsigned long iTimeOffset,
-		unsigned long iTimeStart = 0, unsigned long iTimeEnd = 0) const;
+		unsigned long iTimeStart = 0, unsigned long iTimeEnd = 0);
 
 	// Special tempo ramp tool helper...
-	qtractorTimeScaleAddNodeCommand *timeScaleAddNodeCommand() const;
+	qtractorTimeScaleNodeCommand *timeScaleNodeCommand();
 
 protected slots:
 
@@ -98,6 +100,8 @@ private:
 	int m_iUpdate;
 
 	class TimeshiftCurve *m_pTimeshiftCurve;
+
+	QList<qtractorTimeScaleNodeCommand *> m_timeScaleNodeCommands;
 };
 
 
