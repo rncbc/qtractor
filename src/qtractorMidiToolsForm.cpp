@@ -1543,7 +1543,7 @@ qtractorTimeScaleNodeCommand *qtractorMidiToolsForm::timeScaleNodeCommand (void)
 
 	qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand
 		= m_timeScaleNodeCommands.at(0);
-	m_timeScaleNodeCommands.remove(0);
+	m_timeScaleNodeCommands.removeAt(0);
 
 	return pTimeScaleNodeCommand;
 }
