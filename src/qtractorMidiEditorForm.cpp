@@ -921,6 +921,7 @@ void qtractorMidiEditorForm::closeEvent ( QCloseEvent *pCloseEvent )
 		pOptions->bMidiEditToolbar = m_ui.editToolbar->isVisible();
 		pOptions->bMidiViewToolbar = m_ui.viewToolbar->isVisible();
 		pOptions->bMidiTransportToolbar = m_ui.transportToolbar->isVisible();
+		pOptions->bMidiTimeToolbar = m_ui.timeToolbar->isVisible();
 		pOptions->bMidiScaleToolbar = m_ui.snapToScaleToolbar->isVisible();
 		pOptions->iMidiZoomMode = m_pMidiEditor->zoomMode();
 		pOptions->iMidiHorizontalZoom = m_pMidiEditor->horizontalZoom();
