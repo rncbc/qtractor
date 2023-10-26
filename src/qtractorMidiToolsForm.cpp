@@ -199,9 +199,22 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 			qtractorTimeScale::Cursor cursor(m_pTimeScale);
 			qtractorTimeScale::Node *pNode = cursor.seekFrame(pSession->editHead());
 			const float T1 = pNode->tempo;
-			const float T0 = pNode->prev() ? pNode->prev()->tempo : T1;
-			m_ui.TemporampFromSpinBox->setValue(T0);
-			m_ui.TemporampToSpinBox->setValue(T1);
+			const unsigned short iBeatsPerBar1
+				= pNode->beatsPerBar;
+			const unsigned short iBeatDivisor1
+				= pNode->beatDivisor;
+			qtractorTimeScale::Node *pPrev = pNode->prev();
+			const float T0 = pPrev ? pPrev->tempo : T1;
+			const unsigned short iBeatsPerBar0
+				= pPrev ? pPrev->beatsPerBar : iBeatsPerBar1;
+			const unsigned short iBeatDivisor0
+				= pPrev ? pPrev->beatDivisor : iBeatDivisor1;
+			m_ui.TemporampFromSpinBox->setTempo(T0);
+			m_ui.TemporampFromSpinBox->setBeatsPerBar(iBeatsPerBar0);
+			m_ui.TemporampFromSpinBox->setBeatDivisor(iBeatDivisor0);
+			m_ui.TemporampToSpinBox->setTempo(T1);
+			m_ui.TemporampToSpinBox->setBeatsPerBar(iBeatsPerBar1);
+			m_ui.TemporampToSpinBox->setBeatDivisor(iBeatDivisor1);
 		} else {
 			m_ui.Timeshift->setEnabled(false);
 			m_ui.Temporamp->setEnabled(false);
@@ -423,10 +436,10 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 		SIGNAL(toggled(bool)),
 		SLOT(stabilizeForm()));
 	QObject::connect(m_ui.TemporampFromSpinBox,
-		SIGNAL(valueChanged(double)),
+		SIGNAL(valueChanged(const QString&)),
 		SLOT(changed()));
 	QObject::connect(m_ui.TemporampToSpinBox,
-		SIGNAL(valueChanged(double)),
+		SIGNAL(valueChanged(const QString&)),
 		SLOT(changed()));
 	QObject::connect(m_ui.TemporampDurationCheckBox,
 		SIGNAL(toggled(bool)),
@@ -710,8 +723,8 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		// Temporamp tool...
 		vlist.clear();
 		vlist.append(m_ui.TemporampCheckBox->isChecked());
-		vlist.append(m_ui.TemporampFromSpinBox->value());
-		vlist.append(m_ui.TemporampToSpinBox->value());
+		vlist.append(m_ui.TemporampFromSpinBox->tempo());
+		vlist.append(m_ui.TemporampToSpinBox->tempo());
 		vlist.append(m_ui.TemporampDurationCheckBox->isChecked());
 		settings.setValue("/Temporamp", vlist);
 		// All saved.
@@ -1193,8 +1206,8 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 			const unsigned long iEditTailTime
 				= pSession->tickFromFrame(pSession->editTail());
 			const float d = float(iEditTailTime - iEditHeadTime);
-			const float T0 = m_ui.TemporampFromSpinBox->value();
-			const float T1 = m_ui.TemporampToSpinBox->value();
+			const float T0 = m_ui.TemporampFromSpinBox->tempo();
+			const float T1 = m_ui.TemporampToSpinBox->tempo();
 			float t2 = float(iTime - iEditHeadTime) / d;
 			const float s2
 				= (T1 - T0) / (T0 > T1 ? T0 : T1)
@@ -1219,12 +1232,16 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 		qtractorTimeScale::Cursor cursor(pTimeScale);
 		const unsigned long iEditHead = pSession->editHead();
 		qtractorTimeScale::Node *pNode = cursor.seekFrame(iEditHead);
-		const float T1 = m_ui.TemporampToSpinBox->value();
+		const float T1 = m_ui.TemporampToSpinBox->tempo();
 		if (qAbs(T1 - pNode->tempo) > 0.05f) {
+			const unsigned short iBeatsPerBar1
+				= m_ui.TemporampToSpinBox->beatsPerBar();
+			const unsigned short iBeatDivisor1
+				= m_ui.TemporampToSpinBox->beatDivisor();
 			m_timeScaleNodeCommands.append(
 				new qtractorTimeScaleAddNodeCommand(
 					pTimeScale, iEditHead, T1, pNode->beatType,
-					pNode->beatsPerBar, pNode->beatDivisor));
+					iBeatsPerBar1, iBeatDivisor1));
 		}
 	}
 
@@ -1468,13 +1485,12 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.TemporampFromSpinBox->setEnabled(false);
 	m_ui.TemporampToLabel->setEnabled(bEnabled);
 	m_ui.TemporampToSpinBox->setEnabled(bEnabled);
-	m_ui.TemporampBpmLabel->setEnabled(bEnabled);
 	m_ui.TemporampText->setEnabled(bEnabled);
 	m_ui.TemporampDurationCheckBox->setEnabled(bEnabled);
 	if (bEnabled
 		&& qAbs(
-			m_ui.TemporampFromSpinBox->value() -
-			m_ui.TemporampToSpinBox->value()) < 0.01f)
+			m_ui.TemporampFromSpinBox->tempo() -
+			m_ui.TemporampToSpinBox->tempo()) < 0.01f)
 		iEnabled = 0;
 
 	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(iEnabled > 0);

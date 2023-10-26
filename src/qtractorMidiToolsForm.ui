@@ -1441,33 +1441,15 @@ Edit head/tail (blue) markers define the shift range.</string>
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QDoubleSpinBox" name="TemporampFromSpinBox">
+        <widget class="qtractorTempoSpinBox" name="TemporampFromSpinBox">
          <property name="minimumSize">
           <size>
-           <width>60</width>
+           <width>80</width>
            <height>0</height>
           </size>
          </property>
          <property name="toolTip">
           <string>Tempo ramp start</string>
-         </property>
-         <property name="accelerated">
-          <bool>true</bool>
-         </property>
-         <property name="decimals">
-          <number>1</number>
-         </property>
-         <property name="minimum">
-          <double>1.0</double>
-         </property>
-         <property name="maximum">
-          <double>1000.0</double>
-         </property>
-         <property name="singleStep">
-          <double>0.1</double>
-         </property>
-         <property name="value">
-          <double>0.0</double>
          </property>
         </widget>
        </item>
@@ -1479,40 +1461,15 @@ Edit head/tail (blue) markers define the shift range.</string>
         </widget>
        </item>
        <item row="1" column="4">
-        <widget class="QDoubleSpinBox" name="TemporampToSpinBox">
+        <widget class="qtractorTempoSpinBox" name="TemporampToSpinBox">
          <property name="minimumSize">
           <size>
-           <width>60</width>
+           <width>80</width>
            <height>0</height>
           </size>
          </property>
          <property name="toolTip">
           <string>Temporamp end</string>
-         </property>
-         <property name="accelerated">
-          <bool>true</bool>
-         </property>
-         <property name="decimals">
-          <number>1</number>
-         </property>
-         <property name="minimum">
-          <double>1.0</double>
-         </property>
-         <property name="maximum">
-          <double>1000.0</double>
-         </property>
-         <property name="singleStep">
-          <double>0.1</double>
-         </property>
-         <property name="value">
-          <double>0.0</double>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="5">
-        <widget class="QLabel" name="TemporampBpmLabel">
-         <property name="text">
-          <string>BPM</string>
          </property>
         </widget>
        </item>
@@ -1579,6 +1536,11 @@ Edit head/tail (blue) markers define the shift range.</string>
    <extends>QSpinBox</extends>
    <header>qtractorSpinBox.h</header>
   </customwidget>
+  <customwidget>
+   <class>qtractorTempoSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qtractorSpinBox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>PresetNameComboBox</tabstop>
@@ -1640,6 +1602,9 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>TimeshiftSpinBox</tabstop>
   <tabstop>TimeshiftSlider</tabstop>
   <tabstop>TimeshiftDurationCheckBox</tabstop>
+  <tabstop>TemporampFromSpinBox</tabstop>
+  <tabstop>TemporampToSpinBox</tabstop>
+  <tabstop>TemporampDurationCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>

@@ -11436,27 +11436,22 @@ P &lt; 0 : décalage ralenti.
         <translation>Départ de la rampe de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1477"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1459"/>
         <source>to</source>
         <translation>vers</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1490"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1472"/>
         <source>Temporamp end</source>
         <translation>Fin de la rampe de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1515"/>
-        <source>BPM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1535"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1492"/>
         <source>Edit head/tail (blue) markers define the ramp range.</source>
         <translation>Les marqueurs de tête/queue d&apos;édition (bleus) définissent la plage de rampe.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1542"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1499"/>
         <source>Tempo ramp duration</source>
         <translation>Durée de la rampe de tempo</translation>
     </message>
@@ -11466,12 +11461,12 @@ P &lt; 0 : décalage ralenti.
         <translation>(défaut)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="801"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="814"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="802"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="815"/>
         <source>About to delete preset:
 
 &quot;%1&quot;
@@ -11484,47 +11479,47 @@ Are you sure?</source>
 Êtes-vous sûr ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="831"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="844"/>
         <source>none</source>
         <translation>rien</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="836"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="849"/>
         <source>quantize</source>
         <translation>quantifier</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="838"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="851"/>
         <source>transpose</source>
         <translation>transposer</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="840"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="853"/>
         <source>normalize</source>
         <translation>normaliser</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="842"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="855"/>
         <source>randomize</source>
         <translation>randomiser</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="844"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="857"/>
         <source>resize</source>
         <translation>redimensionner</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="846"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="859"/>
         <source>rescale</source>
         <translation>remise à l&apos;échelle</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="848"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="861"/>
         <source>timeshift</source>
         <translation>décaler temporellement</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="850"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="863"/>
         <source>temporamp</source>
         <translation>rampe de tempo</translation>
     </message>
