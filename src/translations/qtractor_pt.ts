@@ -357,7 +357,7 @@ MIDI:	</translation>
         <translation>resetar tentativas</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1243"/>
+        <location filename="../qtractorClipCommand.cpp" line="1248"/>
         <source>clip record</source>
         <translation>gravador de sequência</translation>
     </message>
@@ -469,32 +469,32 @@ MIDI:	</translation>
         <translation>importar plugins</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="677"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="679"/>
         <source>add marker</source>
         <translation>adicionar marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="733"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="735"/>
         <source>add key signature</source>
         <translation>adicionar fórmula de compasso</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="752"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="754"/>
         <source>update key signature</source>
         <translation>atualizar fórmula de compasso</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="770"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="772"/>
         <source>remove key signature</source>
         <translation>remover fórmula de compasso</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="787"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="789"/>
         <source>move marker</source>
         <translation>mover marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="921"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="923"/>
         <source>change time-sig.</source>
         <translation>alterar formula-compasso.</translation>
     </message>
@@ -718,7 +718,7 @@ MIDI:	</translation>
         <translation>%1 - Banco %2</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="484"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="486"/>
         <source>remove tempo node</source>
         <translation>remover nó de tempo</translation>
     </message>
@@ -729,12 +729,12 @@ MIDI:	</translation>
         <translation>Tudo (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="696"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="698"/>
         <source>update marker</source>
         <translation>atualizar marcador</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="501"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="503"/>
         <source>move tempo node</source>
         <translation>mover nó de tempo</translation>
     </message>
@@ -799,7 +799,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>Autor: </translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="466"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="468"/>
         <source>update tempo node</source>
         <translation>nó de atualização de tempo</translation>
     </message>
@@ -809,7 +809,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>, %1 pistas, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="446"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="448"/>
         <source>add tempo node</source>
         <translation>adicionar nó de tempo</translation>
     </message>
@@ -881,7 +881,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
 %3</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="714"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="716"/>
         <source>remove marker</source>
         <translation>remover marcador</translation>
     </message>

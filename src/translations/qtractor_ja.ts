@@ -128,7 +128,7 @@ End:	%3	Length:	%4</source>
         <translation>クリップツール %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1243"/>
+        <location filename="../qtractorClipCommand.cpp" line="1248"/>
         <source>clip record</source>
         <translation>クリップの録音</translation>
     </message>
@@ -576,62 +576,62 @@ MIDI:	</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="446"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="448"/>
         <source>add tempo node</source>
         <translation>テンポノードを追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="466"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="468"/>
         <source>update tempo node</source>
         <translation>テンポノードを更新</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="484"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="486"/>
         <source>remove tempo node</source>
         <translation>テンポノードを削除</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="501"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="503"/>
         <source>move tempo node</source>
         <translation>テンポノードを移動</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="677"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="679"/>
         <source>add marker</source>
         <translation>マーカーの追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="696"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="698"/>
         <source>update marker</source>
         <translation>マーカーの更新</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="714"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="716"/>
         <source>remove marker</source>
         <translation>マーカーの削除</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="733"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="735"/>
         <source>add key signature</source>
         <translation>調号の追加</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="752"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="754"/>
         <source>update key signature</source>
         <translation>調号の更新</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="770"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="772"/>
         <source>remove key signature</source>
         <translation>調号の削除</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="787"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="789"/>
         <source>move marker</source>
         <translation>マーカーの異動</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="921"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="923"/>
         <source>change time-sig.</source>
         <translation>拍子の変更。</translation>
     </message>

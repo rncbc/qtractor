@@ -458,8 +458,13 @@ void qtractorMidiEditCommand::executeTimeScaleNodeCommands ( bool bRedo )
 {
 	int iTimeScaleUpdate = 0;
 	QListIterator<qtractorTimeScaleNodeCommand *> iter(m_timeScaleNodeCommands);
-	while (iter.hasNext()) {
-		qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand = iter.next();
+	if (bRedo)
+		iter.toFront();
+	else
+		iter.toBack();
+	while (bRedo ? iter.hasNext() : iter.hasPrevious()) {
+		qtractorTimeScaleNodeCommand *pTimeScaleNodeCommand
+			= (bRedo ? iter.next() : iter.previous());
 		if (bRedo)
 			pTimeScaleNodeCommand->redo();
 		else
