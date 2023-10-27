@@ -33,6 +33,7 @@ class qtractorClip;
 class qtractorClipCommand;
 class qtractorClipRangeCommand;
 class qtractorClipToolCommand;
+class qtractorImportTrackCommand;
 class qtractorMidiToolsForm;
 class qtractorMidiManager;
 
@@ -67,14 +68,32 @@ public:
 	bool editTrack(qtractorTrack *pTrack = nullptr);
 	bool copyTrack(qtractorTrack *pTrack = nullptr);
 
-	// Import Audio/MIDI files into new tracks...
+	// Add new tracks from audio/MIDI file(s)...
+	bool addTracks(const QStringList& files,
+		unsigned long iClipStart, unsigned long iClipOffset = 0,
+		unsigned long iClipLength = 0, qtractorTrack *pAfterTrack = nullptr);
 	bool addAudioTracks(const QStringList& files,
 		unsigned long iClipStart, unsigned long iClipOffset = 0,
 		unsigned long iClipLength = 0, qtractorTrack *pAfterTrack = nullptr);
 	bool addMidiTracks(const QStringList& files,
-		unsigned long iClipStart, qtractorTrack *pAfterTrack = nullptr);
+		unsigned long iClipStart, unsigned long iClipOffset = 0,
+		unsigned long iClipLength = 0, qtractorTrack *pAfterTrack = nullptr);
 	bool addMidiTrackChannel(const QString& sPath, int iTrackChannel,
 		unsigned long iClipStart, qtractorTrack *pAfterTrack = nullptr);
+
+	// Import new tracks from audio/MIDI file(s)...
+	bool importTracks(const QStringList& files,
+		unsigned long iClipStart, unsigned long iClipOffset = 0,
+		unsigned long iClipLength = 0, qtractorTrack *pAfterTrack = nullptr,
+		qtractorImportTrackCommand *pImportTrackCommand = nullptr);
+	bool importAudioTracks(const QStringList& files,
+		unsigned long iClipStart, unsigned long iClipOffset = 0,
+		unsigned long iClipLength = 0, qtractorTrack *pAfterTrack = nullptr,
+		qtractorImportTrackCommand *pImportTrackCommand = nullptr);
+	bool importMidiTracks(const QStringList& files,
+		unsigned long iClipStart, unsigned long iClipOffset = 0,
+		unsigned long iClipLength = 0, qtractorTrack *pAfterTrack = nullptr,
+		qtractorImportTrackCommand *pImportTrackCommand = nullptr);
 
 	// Track-list active maintenance update.
 	void updateTrack(qtractorTrack *pTrack = nullptr);

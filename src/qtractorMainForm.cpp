@@ -2512,11 +2512,20 @@ bool qtractorMainForm::loadSessionFileEx (
 	// We'll take some time anyhow...
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-	// Read the file.
-	QDomDocument doc("qtractorSession");
-	const bool bLoadSessionFileEx
-		= qtractorSession::Document(&doc, m_pSession, m_pFiles)
+	// Read the file...
+	//
+	// Check first whether it's a media file...
+	bool bLoadSessionFileEx = false;
+	if (iFlags == qtractorDocument::Default) {
+		bLoadSessionFileEx = m_pTracks->importTracks(QStringList(sFilename), 0);
+		iFlags |= qtractorDocument::Template; // HACK!
+	}
+	// Have we succeeded (or not at all)?
+	if (!bLoadSessionFileEx) {
+		QDomDocument doc("qtractorSession");
+		bLoadSessionFileEx = qtractorSession::Document(&doc, m_pSession, m_pFiles)
 			.load(sFilename, qtractorDocument::Flags(iFlags));
+	}
 
 	// We're formerly done.
 	QApplication::restoreOverrideCursor();
@@ -4024,7 +4033,7 @@ void qtractorMainForm::trackImportMidi (void)
 		const unsigned long iClipStart = m_pSession->editHead();
 		qtractorTrack *pTrack = m_pTracks->currentTrack();
 		m_pTracks->addMidiTracks(
-			m_pFiles->midiListView()->openFileNames(), iClipStart, pTrack);
+			m_pFiles->midiListView()->openFileNames(), iClipStart, 0, 0, pTrack);
 		m_pTracks->trackView()->ensureVisibleFrame(iClipStart);
 	}
 }
