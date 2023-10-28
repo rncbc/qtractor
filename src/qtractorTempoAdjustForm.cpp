@@ -1,7 +1,7 @@
 // qtractorTempoAdjustForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -253,7 +253,7 @@ protected:
 				const unsigned long iRangeStart
 					= m_pForm->rangeStart();
 				painter.setPen(Qt::darkRed);
-				foreach (unsigned long iOffset, m_beats) {
+				for (unsigned long iOffset : m_beats) {
 					const int w1
 						= pTimeScale->pixelFromFrame(iRangeStart + iOffset)
 						- pTimeScale->pixelFromFrame(iRangeStart);

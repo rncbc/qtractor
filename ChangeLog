@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- An audio or MIDI file may now appear as argument in command line
+  and get immediately imported into session. (EXPERIMENTAL)
+
 - New MIDI clip tool option added: Rescale/Invert. (EXPERIMENTAL)
 
 - Introducing brand new MIDI clip tool: Tempo ramp. (EXPERIMENTAL)

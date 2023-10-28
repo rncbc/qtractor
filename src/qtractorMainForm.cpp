@@ -1625,14 +1625,14 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 	}
 
 	// Is any session pending to be loaded?
-	if (!m_pOptions->sSessionFile.isEmpty()) {
+	if (!m_pOptions->sessionFiles.isEmpty()) {
 		// We're supposedly clean...
 		m_iDirtyCount = 0;
 		// Just load the prabable startup session...
 		const int iFlags = qtractorDocument::Default;
-		const QFileInfo info(m_pOptions->sSessionFile);
-		if (loadSessionFileEx(info.absoluteFilePath(), iFlags, !bSessionId)) {
-			m_pOptions->sSessionFile.clear();
+		const QString& sFilename = m_pOptions->sessionFiles.first();
+		if (loadSessionFileEx(sFilename, iFlags, !bSessionId)) {
+			m_pOptions->sessionFiles.clear();
 			// Take appropriate action when session is loaded from
 			// some foreign session manager (eg. JACK session)...
 			const QString& sLadishAppName

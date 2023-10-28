@@ -1,7 +1,7 @@
 // qtractorComboBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -35,7 +35,7 @@ qtractorAudioFileTypeComboBox::qtractorAudioFileTypeComboBox (
 	int i = 0;
 	const qtractorAudioFileFactory::FileFormats& formats
 		= qtractorAudioFileFactory::formats();
-	foreach (qtractorAudioFileFactory::FileFormat *pFormat, formats) {
+	for (qtractorAudioFileFactory::FileFormat *pFormat : formats) {
 		if (pFormat->type != qtractorAudioFileFactory::MadFile)
 			QComboBox::addItem(pFormat->name, i);
 		++i;
@@ -88,7 +88,7 @@ int qtractorAudioFileTypeComboBox::indexOf (
 	int iIndex = QComboBox::currentIndex();
 	const qtractorAudioFileFactory::FileFormats& formats
 		= qtractorAudioFileFactory::formats();
-	foreach (qtractorAudioFileFactory::FileFormat *pFormat, formats) {
+	for (qtractorAudioFileFactory::FileFormat *pFormat : formats) {
 		if (sExt == pFormat->ext
 			&& (iType == 0 || iType == pFormat->data)) {
 			iIndex = QComboBox::findData(i);

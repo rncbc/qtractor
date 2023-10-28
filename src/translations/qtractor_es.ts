@@ -493,7 +493,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="750"/>
-        <location filename="../qtractorOptions.cpp" line="774"/>
+        <location filename="../qtractorOptions.cpp" line="772"/>
         <source>Set session identification (uuid)</source>
         <translation>Configurar identificación de sesión (uuid)</translation>
     </message>
@@ -508,18 +508,18 @@ MIDI:	</translation>
         <translation>Mostrar infromación de la versión</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="779"/>
+        <location filename="../qtractorOptions.cpp" line="777"/>
         <source>Session file (.qtr)</source>
         <translation>Archivo de sesión (.qtr)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="780"/>
+        <location filename="../qtractorOptions.cpp" line="778"/>
         <source>[session-file]</source>
         <translation>[archivo-de-sesión]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="787"/>
-        <location filename="../qtractorOptions.cpp" line="832"/>
+        <location filename="../qtractorOptions.cpp" line="785"/>
+        <location filename="../qtractorOptions.cpp" line="828"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation>Opción -s requiere un argumento (uuid).</translation>
     </message>

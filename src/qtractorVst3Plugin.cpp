@@ -717,7 +717,7 @@ tresult qtractorVst3PluginHost::unregisterTimer ( ITimerHandler *handler )
 //
 void qtractorVst3PluginHost::processTimers (void)
 {
-	foreach (TimerHandlerItem *timer_handler, m_timerHandlers) {
+	for (TimerHandlerItem *timer_handler : m_timerHandlers) {
 		timer_handler->counter += timerInterval();
 		if (timer_handler->counter >= timer_handler->interval) {
 			timer_handler->handler->onTimer();
@@ -751,7 +751,7 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 	QMultiHash<IEventHandler *, int>::ConstIterator iter
 		= m_eventHandlers.constBegin();
 	for ( ; iter != m_eventHandlers.constEnd(); ++iter) {
-		foreach (int fd, m_eventHandlers.values(iter.key())) {
+		for (int fd : m_eventHandlers.values(iter.key())) {
 			FD_SET(fd, &rfds);
 			FD_SET(fd, &wfds);
 			FD_SET(fd, &efds);
@@ -767,7 +767,7 @@ void qtractorVst3PluginHost::processEventHandlers (void)
 	if (result > 0)	{
 		iter = m_eventHandlers.constBegin();
 		for ( ; iter != m_eventHandlers.constEnd(); ++iter) {
-			foreach (int fd, m_eventHandlers.values(iter.key())) {
+			for (int fd : m_eventHandlers.values(iter.key())) {
 				if (FD_ISSET(fd, &rfds) ||
 					FD_ISSET(fd, &wfds) ||
 					FD_ISSET(fd, &efds)) {

@@ -209,7 +209,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorOptions.cpp" line="750"/>
-        <location filename="../qtractorOptions.cpp" line="774"/>
+        <location filename="../qtractorOptions.cpp" line="772"/>
         <source>Set session identification (uuid)</source>
         <translation>Nastavit označení sezení (uuid)</translation>
     </message>
@@ -224,18 +224,18 @@ MIDI:	</translation>
         <translation>Ukázat informace o verzi</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="779"/>
+        <location filename="../qtractorOptions.cpp" line="777"/>
         <source>Session file (.qtr)</source>
         <translation>Soubor se sezením (.qtr)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="780"/>
+        <location filename="../qtractorOptions.cpp" line="778"/>
         <source>[session-file]</source>
         <translation>[soubor se sezením]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="787"/>
-        <location filename="../qtractorOptions.cpp" line="832"/>
+        <location filename="../qtractorOptions.cpp" line="785"/>
+        <location filename="../qtractorOptions.cpp" line="828"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation>Volba -s vyžaduje argument (uuid).</translation>
     </message>

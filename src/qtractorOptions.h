@@ -64,7 +64,7 @@ public:
 	QString sSessionId;
 
 	// Startup supplied session file.
-	QString sSessionFile;
+	QStringList sessionFiles;
 
 	// Display options...
 	QString sMessagesFont;
