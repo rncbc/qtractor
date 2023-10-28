@@ -64,14 +64,13 @@ BuildRequires:	qtbase6.6-static >= 6.6
 BuildRequires:	qttools6.6-static
 BuildRequires:	qttranslations6.6-static
 BuildRequires:	qtsvg6.6-static
-#BuildRequires:	qtwayland6-static
 %else
 BuildRequires:	cmake(Qt6LinguistTools)
 BuildRequires:	pkgconfig(Qt6Core)
 BuildRequires:	pkgconfig(Qt6Gui)
 BuildRequires:	pkgconfig(Qt6Widgets)
-BuildRequires:	pkgconfig(Qt6Xml)
 BuildRequires:	pkgconfig(Qt6Svg)
+BuildRequires:	pkgconfig(Qt6Xml)
 BuildRequires:	pkgconfig(Qt6Network)
 %endif
 %else
@@ -79,8 +78,8 @@ BuildRequires:	cmake(Qt5LinguistTools)
 BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5Gui)
 BuildRequires:	pkgconfig(Qt5Widgets)
-BuildRequires:	pkgconfig(Qt5Xml)
 BuildRequires:	pkgconfig(Qt5Svg)
+BuildRequires:	pkgconfig(Qt5Xml)
 BuildRequires:	pkgconfig(Qt5Network)
 BuildRequires:	pkgconfig(Qt5X11Extras)
 %endif
