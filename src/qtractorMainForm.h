@@ -388,7 +388,7 @@ protected:
 
 	bool loadSessionFile(const QString& sFilename);
 
-	bool loadSessionFileEx(const QString& sFilename, int iFlags, bool bUpdate);
+	bool loadSessionFileEx(const QStringList& files, int iFlags, bool bUpdate);
 	bool saveSessionFileEx(const QString& sFilename, int iFlags, bool bUpdate);
 
 	QString sessionBackupPath(const QString& sFilename) const;

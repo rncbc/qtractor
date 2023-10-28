@@ -6,8 +6,10 @@ ChangeLog
 
 GIT HEAD
 
-- An audio or MIDI file may now appear as argument in command line
-  and get immediately imported into session. (EXPERIMENTAL)
+- Multiple audio and/or MIDI files may now appear as arguments on
+  the command line and get immediately imported into a new session;
+  also, any audio or MIDI file may now be promptly imported into a
+  new session from the main File/Open... dialog. (EXPERIMENTAL)
 
 - New MIDI clip tool option added: Rescale/Invert. (EXPERIMENTAL)
 

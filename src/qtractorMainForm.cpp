@@ -1630,8 +1630,7 @@ void qtractorMainForm::setup ( qtractorOptions *pOptions )
 		m_iDirtyCount = 0;
 		// Just load the prabable startup session...
 		const int iFlags = qtractorDocument::Default;
-		const QString& sFilename = m_pOptions->sessionFiles.first();
-		if (loadSessionFileEx(sFilename, iFlags, !bSessionId)) {
+		if (loadSessionFileEx(m_pOptions->sessionFiles, iFlags, !bSessionId)) {
 			m_pOptions->sessionFiles.clear();
 			// Take appropriate action when session is loaded from
 			// some foreign session manager (eg. JACK session)...
@@ -1993,10 +1992,9 @@ bool qtractorMainForm::newSession (void)
 	// Check whether we start the new session
 	// based on existing template...
 	if (m_pOptions && m_pOptions->bSessionTemplate) {
+		const QStringList files(m_pOptions->sSessionTemplatePath);
 		const int iFlags = qtractorDocument::Template;
-		const bool bNewSession
-			= loadSessionFileEx(m_pOptions->sSessionTemplatePath, iFlags, false);
-		return bNewSession;
+		return loadSessionFileEx(files, iFlags, false);
 	}
 #ifdef CONFIG_NSM
 	}
@@ -2412,7 +2410,8 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 #endif
 
 	const bool bLoadSessionFile
-		= loadSessionFileEx(sFilename, qtractorDocument::Default, bUpdate);
+		= loadSessionFileEx(
+			QStringList(sFilename), qtractorDocument::Default, bUpdate);
 
 #ifdef CONFIG_NSM
 	if (m_pNsmClient && m_pNsmClient->is_active()) {
@@ -2429,8 +2428,12 @@ bool qtractorMainForm::loadSessionFile ( const QString& sFilename )
 
 
 bool qtractorMainForm::loadSessionFileEx (
-	const QString& sFilename, int iFlags, bool bUpdate )
+	const QStringList& files, int iFlags, bool bUpdate )
 {
+	if (files.isEmpty())
+		return false;
+
+	const QString& sFilename = files.first();
 #ifdef CONFIG_DEBUG
 	qDebug("qtractorMainForm::loadSessionFileEx(\"%s\", %d, %d)",
 		sFilename.toUtf8().constData(), iFlags, int(bUpdate));
@@ -2516,12 +2519,13 @@ bool qtractorMainForm::loadSessionFileEx (
 	//
 	// Check first whether it's a media file...
 	bool bLoadSessionFileEx = false;
-	if (iFlags == qtractorDocument::Default) {
-		bLoadSessionFileEx = m_pTracks->importTracks(QStringList(sFilename), 0);
-		iFlags |= qtractorDocument::Template; // HACK!
-	}
+	if (iFlags == qtractorDocument::Default)
+		bLoadSessionFileEx = m_pTracks->importTracks(files, 0);
 	// Have we succeeded (or not at all)?
-	if (!bLoadSessionFileEx) {
+	if (bLoadSessionFileEx) {
+		iFlags |= qtractorDocument::Template; // HACK!
+	} else {
+		// Load regular session file...
 		QDomDocument doc("qtractorSession");
 		bLoadSessionFileEx = qtractorSession::Document(&doc, m_pSession, m_pFiles)
 			.load(sFilename, qtractorDocument::Flags(iFlags));
@@ -2881,7 +2885,7 @@ void qtractorMainForm::openNsmSession (void)
 		const QString& sFilename = fi.absoluteFilePath();
 		if (fi.exists()) {
 			const int iFlags = qtractorDocument::Default;
-			bLoaded = loadSessionFileEx(sFilename, iFlags, false);
+			bLoaded = loadSessionFileEx(QStringList(sFilename), iFlags, false);
 			if (bLoaded) m_sNsmFile = sFilename;
 		} else {
 			updateSessionPre();
@@ -3093,8 +3097,9 @@ bool qtractorMainForm::autoSaveOpen (void)
 			"Do you want to crash-recover from it?")
 			.arg(sAutoSavePathname),
 			QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+			const QStringList files(sAutoSavePathname);
 			const int iFlags = qtractorDocument::Default;
-			if (loadSessionFileEx(sAutoSavePathname, iFlags, false)) {
+			if (loadSessionFileEx(files, iFlags, false)) {
 				m_sFilename = m_pOptions->sAutoSaveFilename;
 				++m_iDirtyCount;
 				return true;
