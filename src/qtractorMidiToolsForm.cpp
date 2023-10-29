@@ -1115,8 +1115,15 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 		// Resize tool...
 		if (m_ui.ResizeCheckBox->isChecked()) {
 			if (m_ui.ResizeDurationCheckBox->isChecked()) {
-				iDuration = pNode->tickFromFrame(pNode->frameFromTick(iTime)
-					+ m_ui.ResizeDurationSpinBox->value()) - iTime;
+				const float T0 // @ iFrame == 0
+					= m_pTimeScale->nodes().first()->tempo;
+				const float T1
+					= pNode->tempo;
+				const unsigned long iFrames
+					= qtractorTimeScale::uroundf(
+						T0 * float(m_ui.ResizeDurationSpinBox->value()) / T1);
+				iDuration = pNode->tickFromFrame(
+					pNode->frameFromTick(iTime) + iFrames) - iTime;
 			}
 			if (m_ui.ResizeValueCheckBox->isChecked()) {
 				const int p = (bPitchBend && iValue < 0 ? -1 : 1); // sign
