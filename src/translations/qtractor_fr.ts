@@ -11357,7 +11357,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1220"/>
         <source>&amp;Invert</source>
-        <translation type="unfinished">&amp;Inverser</translation>
+        <translation>&amp;Inverser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1241"/>
