@@ -11342,7 +11342,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1220"/>
         <source>&amp;Invert</source>
-        <translation type="unfinished">&amp;Obrátit</translation>
+        <translation>&amp;Obrátit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1241"/>
