@@ -253,7 +253,7 @@ protected:
 				const unsigned long iRangeStart
 					= m_pForm->rangeStart();
 				painter.setPen(Qt::darkRed);
-				for (unsigned long iOffset : m_beats) {
+				foreach (unsigned long iOffset, m_beats) {
 					const int w1
 						= pTimeScale->pixelFromFrame(iRangeStart + iOffset)
 						- pTimeScale->pixelFromFrame(iRangeStart);

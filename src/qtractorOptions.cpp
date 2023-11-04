@@ -789,7 +789,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 	}
 #endif
 
-	for (const QString& sArg : parser.positionalArguments()) {
+	foreach (const QString& sArg, parser.positionalArguments()) {
 		sessionFiles.append(QFileInfo(sArg).absoluteFilePath());
 	}
 

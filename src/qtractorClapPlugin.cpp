@@ -1235,7 +1235,7 @@ void qtractorClapPluginHost::clear ( const clap_host *host )
 		}
 	}
 
-	for (const Key& key : keys)
+	foreach (const Key& key, keys)
 		m_timers.remove(key);
 	qDeleteAll(timers);
 
@@ -1253,7 +1253,7 @@ void qtractorClapPluginHost::clear ( const clap_host *host )
 		}
 	}
 
-	for (const Key& key : keys)
+	foreach (const Key& key, keys)
 		m_posix_fds.remove(key);
 	qDeleteAll(posix_fds);
 }
@@ -3573,7 +3573,7 @@ void qtractorClapPlugin::restart (void)
 	// Clear all automation curves, if any...
 	qtractorSubject::resetQueue();
 
-	for (qtractorPlugin::Param *pParam : m_paramIds)
+	foreach (qtractorPlugin::Param *pParam, m_paramIds)
 		clearParam(pParam);
 
 	deinitialize();
