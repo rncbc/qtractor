@@ -4,36 +4,33 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.36  2023-11-10  An Autumn'23 Release.
 
 - Multiple audio and/or MIDI files may now appear as arguments on
   the command line and get immediately imported into a new session;
   also, any audio or MIDI file may now be promptly imported into a
-  new session from the main File/Open... dialog. (EXPERIMENTAL)
+  new session from the main File/Open... dialog.
 
-- New MIDI clip tool option added: Rescale/Invert. (EXPERIMENTAL)
+- New MIDI clip tool option added: Rescale/Invert.
 
-- Introducing brand new MIDI clip tool: Tempo ramp. (EXPERIMENTAL)
+- Introducing brand new MIDI clip tool: Tempo ramp.
 
 - Disable or better hide the Add Tracks option on the MIDI tracks
-  export dialog. (EXPERIMENTAL)
+  export dialog.
 
 - Fixed a yearlong bug in MIDI file import/export of tempo, time
   and key signatures and markers, to severely wrong locations.
-  (SF ticket #287) (EXPERIMENTAL)
 
 - Enable Aux-Send inserts on output buses, but list possible target
   buses only; audio output buses are now listed as possible targets
   iif they follow or succeed the source one (in internal processing
-  order). (EXPERIMENTAL)
-  
+  order).
+
 - Fixed MIDI tracks latency compensation, now working as expected.
-  (GH issue #411) (EXPERIMENTAL)
 
 - Show current/total plugins latency on the Track properties dialog,
-  (GH issue #410) (EXPERIMENTAL)
 
-- Fixed MIDI Step-input for non-zero offset clips. (EXPERIMENTAL)
+- Fixed MIDI Step-input for non-zero offset clips.
 
 
 0.9.35  2023-09-14  An End-of-Summer'23 Release.

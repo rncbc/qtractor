@@ -1,3 +1,9 @@
+qtractor (0.9.36-79.1) unstable; urgency=low
+
+  * An Autumn'23 release.
+
+ -- Rui Nuno Capela <rncbc@rncbc.org>  Fri, 10 Nov 2023 18:00:00 +0000
+
 qtractor (0.9.35-78.1) unstable; urgency=low
 
   * An End-of-Summer'23 release.
