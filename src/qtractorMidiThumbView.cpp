@@ -1,7 +1,7 @@
 // qtractorMidiThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -59,9 +59,6 @@ qtractorMidiThumbView::qtractorMidiThumbView(
 		QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 
 	QFrame::setFocusPolicy(Qt::ClickFocus);
-
-	// Local contents length (in ticks).
-	m_iContentsLength = 0;
 
 	// Local play-head positioning.
 	m_iPlayHeadX  = 0;
@@ -125,10 +122,7 @@ void qtractorMidiThumbView::updateContents (void)
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(iClipStart);
 	const unsigned long t0 = pNode->tickFromFrame(iClipStart);
 	const int x0 = pNode->pixelFromTick(t0);
-	pNode = cursor.seekPixel(x0 + cw);
-	m_iContentsLength = pNode->tickFromPixel(x0 + cw) - t0;
 
-	const int f2 = 1 + (m_iContentsLength / w);
 	int x2;
 
 	// Check maximum note span...
@@ -155,7 +149,9 @@ void qtractorMidiThumbView::updateContents (void)
 	qtractorMidiEvent *pEvent = pSeq->events().first();
 	while (pEvent) {
 		if (pEvent->type() == qtractorMidiEvent::NOTEON) {
-			x2 = pEvent->time() / f2;
+			const unsigned long t1 = t0 + pEvent->time();
+			pNode = cursor.seekTick(t1);
+			x2 = (w * (pNode->pixelFromTick(t1) - x0)) / cw;
 			const int y2 = h - h2
 				- (h * (pEvent->note() - pSeq->noteMin())) / iNoteSpan;
 			if (bDrumMode) {
@@ -163,7 +159,8 @@ void qtractorMidiThumbView::updateContents (void)
 					= QPolygon(diamond).translated(x2, y2);
 				painter.drawPolygon(polyg); // diamond
 			} else {
-				const int w2 = 1 + (pEvent->duration() / f2);
+				const unsigned long t2 = t1 + pEvent->duration();
+				const int w2 = (w * (pNode->pixelFromTick(t2) - x0)) / cw - x2;
 			//	painter.fillRect(x2, y2, w2, h2, fg);
 				painter.drawRect(x2, y2, w2, h2);
 			}
@@ -175,7 +172,7 @@ void qtractorMidiThumbView::updateContents (void)
 	qtractorTimeScale::Marker *pMarker
 		= pTimeScale->markers().seekFrame(iClipStart);
 	while (pMarker) {
-		x2 = int(pTimeScale->tickFromFrame(pMarker->frame) - t0) / f2;
+		x2 = (w * (pTimeScale->pixelFromFrame(pMarker->frame) - x0)) / cw;
 		if (x2 < 0 || x2 > w)
 			break;
 		painter.setPen(pMarker->color);
@@ -186,18 +183,18 @@ void qtractorMidiThumbView::updateContents (void)
 	// Shade the beyond-end-of-clip zone...
 	const QBrush shade(QColor(0, 0, 0, 60));
 	pNode = cursor.seekFrame(iClipEnd);
-	x2 = int(pNode->tickFromFrame(iClipEnd) - t0) / f2;
+	x2 = (w * (pTimeScale->pixelFromFrame(iClipEnd) - x0)) / cw;
 	painter.fillRect(QRect(x2, 0, w - x2, h), shade);
 
 	// Draw the loop-bound lines, if any...
 	if (pSession->isLooping()) {
 		painter.setPen(Qt::darkCyan);
-		x2 = int(pTimeScale->tickFromFrame(pSession->loopStart()) - t0) / f2;
+		x2 = (w * (pTimeScale->pixelFromFrame(pSession->loopStart()) - x0)) / cw;
 		if (x2 > 0 && x2 < w) {
 			painter.fillRect(QRect(0, 0, x2, h), shade);
 			painter.drawLine(x2, 0, x2, h);
 		}
-		x2 = int(pTimeScale->tickFromFrame(pSession->loopEnd()) - t0) / f2;
+		x2 = (w * (pTimeScale->pixelFromFrame(pSession->loopEnd()) - x0)) / cw;
 		if (x2 > 0 && x2 < w) {
 			painter.fillRect(QRect(x2, 0, w - x2, h), shade);
 			painter.drawLine(x2, 0, x2, h);
@@ -207,12 +204,12 @@ void qtractorMidiThumbView::updateContents (void)
 	// Don't forget the punch-in/out ones too...
 	if (pSession->isPunching()) {
 		painter.setPen(Qt::darkMagenta);
-		x2 = int(pTimeScale->tickFromFrame(pSession->punchIn()) - t0) / f2;
+		x2 = (w * (pTimeScale->pixelFromFrame(pSession->punchIn()) - x0)) / cw;
 		if (x2 > 0 && x2 < w) {
 			painter.fillRect(QRect(0, 0, x2, h), shade);
 			painter.drawLine(x2, 0, x2, h);
 		}
-		x2 = int(pTimeScale->tickFromFrame(pSession->punchOut()) - t0) / f2;
+		x2 = (w * (pTimeScale->pixelFromFrame(pSession->punchOut()) - x0)) / cw;
 		if (x2 < w) {
 			painter.fillRect(QRect(x2, 0, w - x2, h), shade);
 			painter.drawLine(x2, 0, x2, h);
@@ -221,7 +218,7 @@ void qtractorMidiThumbView::updateContents (void)
 
 	// Update relative play-head position...
 	const unsigned long iPlayHead = pSession->playHead();
-	m_iPlayHeadX = int(pTimeScale->tickFromFrame(iPlayHead) - t0) / f2;
+	m_iPlayHeadX = (w * (pTimeScale->pixelFromFrame(iPlayHead) - x0)) / cw;
 
 	// May trigger an update now...
 	update();
@@ -276,12 +273,11 @@ void qtractorMidiThumbView::updatePlayHead ( unsigned long iPlayHead )
 	if (pMidiClip == nullptr)
 		return;
 
-	const int f2 = 1 + (m_iContentsLength / w);
-
 	// Extra: update current playhead position...
+	const int cw = m_pEditor->editView()->contentsWidth() + 1;
 	const unsigned long iClipStart = pMidiClip->clipStart();
-	const unsigned long t0 = pTimeScale->tickFromFrame(iClipStart);
-	const int x2 = int(pTimeScale->tickFromFrame(iPlayHead) - t0) / f2;
+	const int x0 = pTimeScale->pixelFromFrame(iClipStart);
+	const int x2 = (w * (pTimeScale->pixelFromFrame(iPlayHead) - x0)) / cw;
 
 	if (m_iPlayHeadX != x2) {
 		// Override old playhead line...
@@ -334,10 +330,9 @@ void qtractorMidiThumbView::setPlayHeadX ( int iPlayHeadX )
 	if (pMidiClip == nullptr)
 		return;
 
-	const int f2 = 1 + (m_iContentsLength / w);
-
-	const unsigned long t0 = pTimeScale->tickFromFrame(pMidiClip->clipStart());
-	pSession->setPlayHead(pTimeScale->frameFromTick(t0 + f2 * iPlayHeadX));
+	const int cw = m_pEditor->editView()->contentsWidth() + 1;
+	const int x0 = pTimeScale->pixelFromFrame(pMidiClip->clipStart());
+	pSession->setPlayHead(pTimeScale->frameFromPixel((cw * iPlayHeadX) / w) - x0);
 
 	m_pEditor->setSyncViewHoldOn(false);
 }
@@ -369,22 +364,22 @@ void qtractorMidiThumbView::paintEvent ( QPaintEvent *pPaintEvent )
 	if (pMidiClip == nullptr)
 		return;
 
-	const int f2 = 1 + (m_iContentsLength / w);
 	int x2;
 
+	const int cw = m_pEditor->editView()->contentsWidth() + 1;
 	const unsigned long iClipStart = pMidiClip->clipStart();
-	const unsigned long t0 = pTimeScale->tickFromFrame(iClipStart);
+	const unsigned long x0 = pTimeScale->pixelFromFrame(iClipStart);
 	
 	// Extra: update edit-bound positions...
-	painter.setPen(Qt::blue);	
-	x2 = int(pTimeScale->tickFromFrame(pSession->editHead()) - t0) / f2;
+	painter.setPen(Qt::blue);
+	x2 = (w * (pTimeScale->pixelFromFrame(pSession->editHead()) - x0)) / cw;
 	if (x2 >= rect.left() && x2 <= rect.right())
 		painter.drawLine(x2, 0, x2, h);
-	x2 = int(pTimeScale->tickFromFrame(pSession->editTail()) - t0) / f2;
+	x2 = (w * (pTimeScale->pixelFromFrame(pSession->editTail()) - x0)) / cw;
 	if (x2 >= rect.left() && x2 <= rect.right())
 		painter.drawLine(x2, 0, x2, h);
 
-	x2 = int(pTimeScale->tickFromFrame(pSession->playHeadAutoBackward()) - t0) / f2;
+	x2 = (w * (pTimeScale->pixelFromFrame(pSession->playHeadAutoBackward()) - x0)) / cw;
 	if (x2 >= rect.left() && x2 <= rect.right()) {
 		painter.setPen(QColor(240, 0, 0, 60));
 		painter.drawLine(x2, 0, x2, h);
