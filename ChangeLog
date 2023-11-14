@@ -4,6 +4,17 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- New MIDI Tool Resize Duration / Legato option added. (EXPERIMENTAL)
+
+- MIDI Clip Editor (aka. piano-roll) thumb-view now taking tempo-map
+  changes into account.
+
+- Audio metronome is enabled only when both the bar and beat sample
+  files are provided.
+
+
 0.9.36  2023-11-10  An Autumn'23 Release.
 
 - Multiple audio and/or MIDI files may now appear as arguments on

@@ -1027,6 +1027,13 @@
         </spacer>
        </item>
        <item row="3" column="1" colspan="5">
+        <widget class="QCheckBox" name="ResizeLegatoCheckBox">
+         <property name="text">
+          <string>&amp;Legato</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="5">
         <spacer>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -1590,6 +1597,7 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>ResizeValueSpinBox</tabstop>
   <tabstop>ResizeValue2ComboBox</tabstop>
   <tabstop>ResizeValue2SpinBox</tabstop>
+  <tabstop>ResizeLegatoCheckBox</tabstop>
   <tabstop>RescaleCheckBox</tabstop>
   <tabstop>RescaleTimeCheckBox</tabstop>
   <tabstop>RescaleTimeSpinBox</tabstop>

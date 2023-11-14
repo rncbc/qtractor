@@ -599,6 +599,9 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.ResizeValue2ComboBox->setCurrentIndex(vlist[5].toInt());
 			m_ui.ResizeValue2SpinBox->setValue(vlist[6].toInt());
 		}
+		// Resize legato mode tool...
+		if (vlist.count() > 7)
+			m_ui.ResizeLegatoCheckBox->setChecked(vlist[7].toBool());
 		// Rescale tool...
 		vlist = settings.value("/Rescale").toList();
 		if (vlist.count() > 6) {
@@ -702,6 +705,7 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append((unsigned int) m_ui.ResizeDurationSpinBox->value());
 		vlist.append(m_ui.ResizeValue2ComboBox->currentIndex());
 		vlist.append(m_ui.ResizeValue2SpinBox->value());
+		vlist.append(m_ui.ResizeLegatoCheckBox->isChecked());
 		settings.setValue("/Resize", vlist);
 		// Rescale tool...
 		vlist.clear();
@@ -863,9 +867,21 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 		tools.append(tr("temporamp"));
 	pMidiEditCommand->setName(tools.join(", "));
 
-	const qtractorMidiEditSelect::ItemList& items = pSelect->items();
-	qtractorMidiEditSelect::ItemList::ConstIterator iter = items.constBegin();
-	const qtractorMidiEditSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+	QList<qtractorMidiEvent *> items = pSelect->items().keys();
+
+	if (m_ui.ResizeCheckBox->isChecked()
+		&& m_ui.ResizeDurationCheckBox->isChecked()
+		&& m_ui.ResizeLegatoCheckBox->isChecked()) {
+		// Sort events in reverse event time...
+		struct ReverseEventTime {
+			bool operator() (qtractorMidiEvent *ev1, qtractorMidiEvent *ev2) const
+				{ return (ev1->time() > ev2->time()); }
+		};
+		std::sort(items.begin(), items.end(), ReverseEventTime());
+	}
+
+	QList<qtractorMidiEvent *>::ConstIterator iter = items.constBegin();
+	const QList<qtractorMidiEvent *>::ConstIterator& iter_end = items.constEnd();
 
 	// Seed time range with a value from the list of selected events.
 	long iMinTime = iTimeOffset;
@@ -894,7 +910,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 			m_ui.ResizeValue2ComboBox->currentIndex() > 0)) {
 		// Make it through one time...
 		for (int i = 0 ; iter != iter_end; ++i, ++iter) {
-			qtractorMidiEvent *pEvent = iter.key();
+			qtractorMidiEvent *pEvent = *iter;
 			const long iTime = pEvent->time() + iTimeOffset;
 			const long iTime2 = iTime + pEvent->duration();
 			if (iMinTime  > iTime)
@@ -921,8 +937,11 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 	// Go for the main pass...
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 
+	// Resize duration: legato/gap filler helper...
+	QHash<unsigned char, qtractorMidiEvent *> notes;
+
 	for ( ; iter != iter_end; ++iter) {
-		qtractorMidiEvent *pEvent = iter.key();
+		qtractorMidiEvent *pEvent = *iter;
 		int iNote = int(pEvent->note());
 		long iTime = pEvent->time() + iTimeOffset;
 		long iDuration = long(pEvent->duration());
@@ -1114,16 +1133,26 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 		}
 		// Resize tool...
 		if (m_ui.ResizeCheckBox->isChecked()) {
-			if (m_ui.ResizeDurationCheckBox->isChecked()) {
-				const float T0 // @ iFrame == 0
-					= m_pTimeScale->nodes().first()->tempo;
-				const float T1
-					= pNode->tempo;
-				const unsigned long iFrames
-					= qtractorTimeScale::uroundf(
-						T0 * float(m_ui.ResizeDurationSpinBox->value()) / T1);
-				iDuration = pNode->tickFromFrame(
-					pNode->frameFromTick(iTime) + iFrames) - iTime;
+			if (m_ui.ResizeDurationCheckBox->isChecked()
+				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
+				qtractorMidiEvent *pLastEvent = nullptr;
+				if (m_ui.ResizeLegatoCheckBox->isChecked()) {
+					pLastEvent = notes.value(pEvent->note(), nullptr);
+					notes.insert(pEvent->note(), pEvent);
+				}
+				if (pLastEvent) {
+					iDuration = pLastEvent->time() - pEvent->time();
+				} else {
+					const float T0 // @ iFrame == 0
+						= m_pTimeScale->nodes().first()->tempo;
+					const float T1
+						= pNode->tempo;
+					const unsigned long iFrames
+						= qtractorTimeScale::uroundf(
+							T0 * float(m_ui.ResizeDurationSpinBox->value()) / T1);
+					iDuration = pNode->tickFromFrame(
+						pNode->frameFromTick(iTime) + iFrames) - iTime;
+				}
 			}
 			if (m_ui.ResizeValueCheckBox->isChecked()) {
 				const int p = (bPitchBend && iValue < 0 ? -1 : 1); // sign
@@ -1433,6 +1462,7 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 		++iEnabled;
 	m_ui.ResizeDurationSpinBox->setEnabled(bEnabled2);
 	m_ui.ResizeFormatComboBox->setEnabled(bEnabled2);
+	m_ui.ResizeLegatoCheckBox->setEnabled(bEnabled2);
 
 	m_ui.ResizeValueCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.ResizeValueCheckBox->isChecked();

@@ -11024,7 +11024,7 @@ Promiňte.</translation>
 <context>
     <name>qtractorMidiThumbView</name>
     <message>
-        <location filename="../qtractorMidiThumbView.cpp" line="79"/>
+        <location filename="../qtractorMidiThumbView.cpp" line="76"/>
         <source>MIDI Thumb view</source>
         <translation>Zobrazit náhled na MIDI</translation>
     </message>
@@ -11037,12 +11037,12 @@ Promiňte.</translation>
         <translation>(výchozí)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="814"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="818"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="815"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="819"/>
         <source>About to delete preset:
 
 &quot;%1&quot;
@@ -11055,47 +11055,47 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="844"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="848"/>
         <source>none</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="849"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="853"/>
         <source>quantize</source>
         <translation>Kvantizovat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="851"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="855"/>
         <source>transpose</source>
         <translation>Převést</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="853"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="857"/>
         <source>normalize</source>
         <translation>Normalizovat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="855"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="859"/>
         <source>randomize</source>
         <translation>Náhodně vybrat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="857"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="861"/>
         <source>resize</source>
         <translation>Změnit velikost</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="859"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="863"/>
         <source>rescale</source>
         <translation>Změnit měřítko</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="861"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="865"/>
         <source>timeshift</source>
         <translation>Časový posun</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="863"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="867"/>
         <source>temporamp</source>
         <translation>tempovýnájezd</translation>
     </message>
@@ -11134,7 +11134,7 @@ Jste si jistý?</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="162"/>
         <location filename="../qtractorMidiToolsForm.ui" line="466"/>
         <location filename="../qtractorMidiToolsForm.ui" line="751"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1084"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1091"/>
         <source>&amp;Time:</source>
         <translation>Č&amp;as:</translation>
     </message>
@@ -11152,7 +11152,7 @@ Jste si jistý?</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="223"/>
         <location filename="../qtractorMidiToolsForm.ui" line="786"/>
         <location filename="../qtractorMidiToolsForm.ui" line="908"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1138"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1145"/>
         <source>&amp;Duration:</source>
         <translation>&amp;Doba trvání:</translation>
     </message>
@@ -11314,73 +11314,78 @@ Jste si jistý?</translation>
         <translation>Změnit konečnou velikost</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1046"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1061"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1032"/>
+        <source>&amp;Legato</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1053"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1068"/>
         <source>Re&amp;scale</source>
         <translation>Změnit &amp;měřítko</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1058"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1065"/>
         <source>Rescale selected events</source>
         <translation>Změnit měřítko vybraných událostí</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1097"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1104"/>
         <source>Rescale time</source>
         <translation>Změnit měřítko času</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1151"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1158"/>
         <source>Rescale duration</source>
         <translation>Změnit měřítko doby trvání</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1192"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1199"/>
         <source>Rescale value</source>
         <translation>Změnit měřítko hodnoty</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1220"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1227"/>
         <source>&amp;Invert</source>
         <translation>&amp;Obrátit</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1241"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1248"/>
         <source>T&amp;imeshift</source>
         <translation>Ča&amp;sový posun</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1253"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1260"/>
         <source>Timeshift selected events</source>
         <translation>Časově posunout vybrané události</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1256"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1263"/>
         <source>Timeshift</source>
         <translation>Časově posunout</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1279"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1286"/>
         <source>P:</source>
         <translation>P:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1292"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1299"/>
         <source>Timeshift parameter</source>
         <translation>Parametr pro časový posun</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1320"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1327"/>
         <source>Timeshift parameter (log)</source>
         <translation>Parametr pro časový posun (log)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1357"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1364"/>
         <source>Timeshift curve</source>
         <translation>Křivka časového posunu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1370"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1377"/>
         <source>P = 0 : no change.
 P &gt; 0 : accelerating shift.
 P &lt; 0 : slowing down shift.
@@ -11391,52 +11396,52 @@ P &lt; 0 : zpomalení posunu.
 (Modré) značky pro úpravy začátku/konce vymezují rozsah posunu.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1380"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1387"/>
         <source>Timeshift duration</source>
         <translation>Doba trvání posunu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1401"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1408"/>
         <source>T&amp;empo ramp</source>
         <translation>T&amp;empový nájezd</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1413"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1420"/>
         <source>Tempo ramp selected events</source>
         <translation>Vybrané události tempového nájezdu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1416"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1423"/>
         <source>Tempo ramp</source>
         <translation>Tempový nájezd</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1439"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1446"/>
         <source>From</source>
         <translation>Od</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1452"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1459"/>
         <source>Tempo ramp start</source>
         <translation>Začátek tempového nájezdu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1459"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1466"/>
         <source>to</source>
         <translation>do</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1472"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1479"/>
         <source>Temporamp end</source>
         <translation>Konec tempového nájezdu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1492"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1499"/>
         <source>Edit head/tail (blue) markers define the ramp range.</source>
         <translation>Značky úpravy začátku/konce (modré) vymezují rozsah tempa.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1499"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1506"/>
         <source>Tempo ramp duration</source>
         <translation>Doba trvání tempa</translation>
     </message>
@@ -11449,10 +11454,10 @@ P &lt; 0 : zpomalení posunu.
         <location filename="../qtractorMidiToolsForm.ui" line="767"/>
         <location filename="../qtractorMidiToolsForm.ui" line="802"/>
         <location filename="../qtractorMidiToolsForm.ui" line="837"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1100"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1154"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1195"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1313"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1107"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1161"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1202"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1320"/>
         <source> %</source>
         <translation> %</translation>
     </message>
@@ -11465,7 +11470,7 @@ P &lt; 0 : zpomalení posunu.
         <location filename="../qtractorMidiToolsForm.ui" line="628"/>
         <location filename="../qtractorMidiToolsForm.ui" line="821"/>
         <location filename="../qtractorMidiToolsForm.ui" line="963"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1179"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1186"/>
         <source>&amp;Value:</source>
         <translation>&amp;Délka trvání:</translation>
     </message>
