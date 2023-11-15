@@ -305,6 +305,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pLabel->setBackgroundRole(QPalette::Button);
 	m_pLabel->setForegroundRole(QPalette::ButtonText);
 	m_pLabel->setAutoFillBackground(true);
+//	m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	m_pLayout->addWidget(m_pLabel);
 
 	m_pPluginListView = new qtractorPluginListView(/*this*/);
@@ -597,17 +598,11 @@ void qtractorMixerStrip::updateName (void)
 		pal.setColor(QPalette::Button, m_pTrack->foreground().lighter());
 		pal.setColor(QPalette::ButtonText, m_pTrack->background().lighter());
 		m_pLabel->setPalette(pal);
-		m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		if (icon.load(m_pTrack->trackIcon()))
 			icon = icon.scaled(16, 16, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	} else if (m_pBus) {
 		meterType = m_pBus->busType();
-		if (m_busMode & qtractorBus::Input) {
-			sName = tr("%1 In").arg(m_pBus->busName());
-		} else {
-			sName = tr("%1 Out").arg(m_pBus->busName());
-		}
-		m_pLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+		sName = m_pBus->busName();
 	}
 
 	QString sType;
