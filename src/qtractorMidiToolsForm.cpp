@@ -393,6 +393,12 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	QObject::connect(m_ui.ResizeValue2SpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ResizeLegatoCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ResizeLegatoSpinBox,
+		SIGNAL(valueChanged(double)),
+		SLOT(changed()));
 
 	QObject::connect(m_ui.RescaleCheckBox,
 		SIGNAL(toggled(bool)),
@@ -600,8 +606,10 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.ResizeValue2SpinBox->setValue(vlist[6].toInt());
 		}
 		// Resize legato mode tool...
-		if (vlist.count() > 7)
+		if (vlist.count() > 8) {
 			m_ui.ResizeLegatoCheckBox->setChecked(vlist[7].toBool());
+			m_ui.ResizeLegatoSpinBox->setValue(vlist[8].toDouble());
+		}
 		// Rescale tool...
 		vlist = settings.value("/Rescale").toList();
 		if (vlist.count() > 6) {
@@ -627,9 +635,9 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 		vlist = settings.value("/Temporamp").toList();
 		if (vlist.count() > 3) {
 		//	m_ui.TemporampCheckBox->setChecked(vlist[0].toBool());
-		//	m_ui.TemporampStartSpinBox->setValue(vlist[1].toDouble());
-		//	m_ui.TemporampEndSpinBox->setValue(vlist[2].toDouble());
-			m_ui.TemporampDurationCheckBox->setChecked(vlist[3].toBool());
+		//	m_ui.TemporampFromSpinBox->setTempo(vlist[1].toDouble());
+			m_ui.TemporampToSpinBox->setTempo(float(vlist[2].toDouble()));
+			m_ui.TemporampDurationCheckBox->setChecked(float(vlist[3].toBool()));
 		}
 		// All loaded.
 		if (!sPreset.isEmpty() && sPreset != g_sDefPreset)
@@ -706,6 +714,7 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.ResizeValue2ComboBox->currentIndex());
 		vlist.append(m_ui.ResizeValue2SpinBox->value());
 		vlist.append(m_ui.ResizeLegatoCheckBox->isChecked());
+		vlist.append(m_ui.ResizeLegatoSpinBox->value());
 		settings.setValue("/Resize", vlist);
 		// Rescale tool...
 		vlist.clear();
@@ -870,7 +879,6 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 	QList<qtractorMidiEvent *> items = pSelect->items().keys();
 
 	if (m_ui.ResizeCheckBox->isChecked()
-		&& m_ui.ResizeDurationCheckBox->isChecked()
 		&& m_ui.ResizeLegatoCheckBox->isChecked()) {
 		// Sort events in reverse event time...
 		struct ReverseEventTime {
@@ -1135,24 +1143,15 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 		if (m_ui.ResizeCheckBox->isChecked()) {
 			if (m_ui.ResizeDurationCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
-				qtractorMidiEvent *pLastEvent = nullptr;
-				if (m_ui.ResizeLegatoCheckBox->isChecked()) {
-					pLastEvent = notes.value(pEvent->note(), nullptr);
-					notes.insert(pEvent->note(), pEvent);
-				}
-				if (pLastEvent) {
-					iDuration = pLastEvent->time() - pEvent->time();
-				} else {
-					const float T0 // @ iFrame == 0
-						= m_pTimeScale->nodes().first()->tempo;
-					const float T1
-						= pNode->tempo;
-					const unsigned long iFrames
-						= qtractorTimeScale::uroundf(
-							T0 * float(m_ui.ResizeDurationSpinBox->value()) / T1);
-					iDuration = pNode->tickFromFrame(
-						pNode->frameFromTick(iTime) + iFrames) - iTime;
-				}
+				const float T0 // @ iFrame == 0
+					= m_pTimeScale->nodes().first()->tempo;
+				const float T1
+					= pNode->tempo;
+				const unsigned long iFrames
+					= qtractorTimeScale::uroundf(
+						T0 * float(m_ui.ResizeDurationSpinBox->value()) / T1);
+				iDuration = pNode->tickFromFrame(
+					pNode->frameFromTick(iTime) + iFrames) - iTime;
 			}
 			if (m_ui.ResizeValueCheckBox->isChecked()) {
 				const int p = (bPitchBend && iValue < 0 ? -1 : 1); // sign
@@ -1166,6 +1165,19 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 					if (iDeltaTime > 0)
 						iValue += iDeltaValue * (iTime - iMinTime) / iDeltaTime;
 				}
+			}
+			if (m_ui.ResizeLegatoCheckBox->isChecked()
+				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
+				qtractorMidiEvent *pPrev = notes.value(pEvent->note(), nullptr);
+				if (pPrev) {
+					const float p
+						= 0.01f * float(m_ui.ResizeLegatoSpinBox->value());
+					const long d2
+						= long(p * float(pPrev->time() - pEvent->time()));
+					if (iDuration < d2)
+						iDuration = d2;
+				}
+				notes.insert(pEvent->note(), pEvent);
 			}
 		}
 		// Rescale tool...
@@ -1462,7 +1474,10 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 		++iEnabled;
 	m_ui.ResizeDurationSpinBox->setEnabled(bEnabled2);
 	m_ui.ResizeFormatComboBox->setEnabled(bEnabled2);
-	m_ui.ResizeLegatoCheckBox->setEnabled(bEnabled2);
+	bEnabled2 = bEnabled && m_ui.ResizeLegatoCheckBox->isChecked();
+	if (bEnabled2)
+		++iEnabled;
+	m_ui.ResizeLegatoSpinBox->setEnabled(bEnabled2);
 
 	m_ui.ResizeValueCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.ResizeValueCheckBox->isChecked();

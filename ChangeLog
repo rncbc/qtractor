@@ -6,7 +6,7 @@ ChangeLog
 
 GIT HEAD
 
-- New MIDI Tool Resize Duration / Legato option added. (EXPERIMENTAL)
+- New MIDI Tool Resize / Legato duration option added. (EXPERIMENTAL)
 
 - MIDI Clip Editor (aka. piano-roll) thumb-view now taking tempo-map
   changes into account.
