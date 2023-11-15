@@ -2035,7 +2035,14 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.AudioMetroBusCheckBox->setEnabled(bAudioMetronome);
 	m_ui.AudioMetroOffsetTextLabel->setEnabled(bAudioMetronome);
 	m_ui.AudioMetroOffsetSpinBox->setEnabled(bAudioMetronome);
-
+	if (bAudioMetronome && bValid) {
+		const QString& sPath = m_ui.MetroBarFilenameComboBox->currentText();
+		bValid = !sPath.isEmpty() && QFileInfo(sPath).exists();
+	}
+	if (bAudioMetronome && bValid) {
+		const QString& sPath = m_ui.MetroBeatFilenameComboBox->currentText();
+		bValid = !sPath.isEmpty() && QFileInfo(sPath).exists();
+	}
 	m_ui.AudioMetroAutoConnectCheckBox->setEnabled(
 		bAudioMetronome && m_ui.AudioMetroBusCheckBox->isChecked());
 
