@@ -107,7 +107,7 @@ bool qtractorTimeScaleNodeCommand::addNode (void)
 
 	const bool bRedoCurveEditCommands = m_curveEditCommands.isEmpty();
 	if (bRedoCurveEditCommands) {
-		addCurveEditCommands(pNode, fNewTempo, fOldTempo);
+		addCurveEditCommands(pNode->frame, fNewTempo, fOldTempo);
 	} else {
 		QListIterator<qtractorCurveEditCommand *> undos(m_curveEditCommands);
 		while (undos.hasNext())
@@ -190,7 +190,7 @@ bool qtractorTimeScaleNodeCommand::updateNode (void)
 
 	const bool bRedoCurveEditCommands = m_curveEditCommands.isEmpty();
 	if (bRedoCurveEditCommands) {
-		addCurveEditCommands(pNode, fNewTempo, fOldTempo);
+		addCurveEditCommands(pNode->frame, fNewTempo, fOldTempo);
 	} else {
 		QListIterator<qtractorCurveEditCommand *> undos(m_curveEditCommands);
 		while (undos.hasNext())
@@ -281,7 +281,7 @@ bool qtractorTimeScaleNodeCommand::removeNode (void)
 
 	const bool bRedoCurveEditCommands = m_curveEditCommands.isEmpty();
 	if (bRedoCurveEditCommands) {
-		addCurveEditCommands(pNode, fNewTempo, fOldTempo);
+		addCurveEditCommands(pNode->frame, fNewTempo, fOldTempo);
 	} else {
 		QListIterator<qtractorCurveEditCommand *> undos(m_curveEditCommands);
 		while (undos.hasNext())
@@ -384,18 +384,16 @@ qtractorClipCommand *qtractorTimeScaleNodeCommand::createClipCommand (
 
 // Automation curve time-stretching command (static).
 void qtractorTimeScaleNodeCommand::addCurveEditCommands (
-	qtractorTimeScale::Node *pNode, float fNewTempo, float fOldTempo )
+	unsigned long iFrame, float fNewTempo, float fOldTempo )
 {
-	if (pNode == nullptr)
-		return;
-	if (fNewTempo == fOldTempo)
+	if (qAbs(fNewTempo - fOldTempo) < 0.01f)
 		return;
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;
 
-	const unsigned long iFrameStart = pNode->frame;
+	const unsigned long iFrameStart = iFrame;
 	const float fFactor = (fOldTempo / fNewTempo);
 	const bool bReverse = (fOldTempo > fNewTempo);
 
