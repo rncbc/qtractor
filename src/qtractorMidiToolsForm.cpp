@@ -945,8 +945,8 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 	// Go for the main pass...
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 
-	// Resize duration: legato/gap filler helper...
-	QHash<unsigned char, qtractorMidiEvent *> notes;
+	// Resize/Legato: to track last event...
+	qtractorMidiEvent *pLastEvent = nullptr;
 
 	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = *iter;
@@ -1168,16 +1168,15 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 			}
 			if (m_ui.ResizeLegatoCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
-				qtractorMidiEvent *pPrev = notes.value(pEvent->note(), nullptr);
-				if (pPrev) {
+				if (pLastEvent) {
 					const float p
 						= 0.01f * float(m_ui.ResizeLegatoSpinBox->value());
 					const long d2
-						= long(p * float(pPrev->time() - pEvent->time()));
-					if (iDuration < d2)
+						= long(p * float(pLastEvent->time() - pEvent->time()));
+					if (iDuration < d2 && d2 > 0)
 						iDuration = d2;
 				}
-				notes.insert(pEvent->note(), pEvent);
+				pLastEvent = pEvent;
 			}
 		}
 		// Rescale tool...
