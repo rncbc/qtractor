@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed automation curve rescaling across multiple, more than just
+  one or two, tempo-map node changes. (EXPERIMENTAL)
+
 - New MIDI Tool Resize / Legato duration option added. (EXPERIMENTAL)
 
 - MIDI Clip Editor (aka. piano-roll) thumb-view now taking tempo-map

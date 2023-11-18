@@ -76,11 +76,13 @@ protected:
 
 	// Make it automatic clip time-stretching command (static).
 	qtractorClipCommand *createClipCommand(
-		qtractorTimeScale::Node *pNode, float fOldTempo, float fNewTempo);
+		unsigned long iFrameStart, unsigned long iFrameEnd,
+		float fOldTempo, float fNewTempo);
 
 	// Automation curve time-stretching command (static).
 	void addCurveEditCommands(
-		unsigned long iFrame, float fOldTempo, float fNewTempo);
+		unsigned long iFrameStart, unsigned long iFrameEnd,
+		float fOldTempo, float fNewTempo);
 
 private:
 

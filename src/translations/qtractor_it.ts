@@ -577,62 +577,62 @@ MIDI:	</translation>
         <translation>Battito</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="448"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="479"/>
         <source>add tempo node</source>
         <translation>aggiungi nodo tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="468"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="499"/>
         <source>update tempo node</source>
         <translation>aggiorna nodo tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="486"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="517"/>
         <source>remove tempo node</source>
         <translation>rimuovi nodo tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="503"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="534"/>
         <source>move tempo node</source>
         <translation>sposta nodo tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="679"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="710"/>
         <source>add marker</source>
         <translation>aggiungi marker</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="698"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="729"/>
         <source>update marker</source>
         <translation>aggiorna marker</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="716"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="747"/>
         <source>remove marker</source>
         <translation>elimina marker</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="735"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="766"/>
         <source>add key signature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="754"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="785"/>
         <source>update key signature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="772"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="803"/>
         <source>remove key signature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="789"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="820"/>
         <source>move marker</source>
         <translation>sposta marker</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleCommand.cpp" line="923"/>
+        <location filename="../qtractorTimeScaleCommand.cpp" line="954"/>
         <source>change time-sig.</source>
         <translation type="unfinished"></translation>
     </message>
