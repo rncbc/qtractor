@@ -399,6 +399,9 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	QObject::connect(m_ui.ResizeLegatoSpinBox,
 		SIGNAL(valueChanged(double)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ResizeLegatoComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
 
 	QObject::connect(m_ui.RescaleCheckBox,
 		SIGNAL(toggled(bool)),
@@ -606,9 +609,10 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.ResizeValue2SpinBox->setValue(vlist[6].toInt());
 		}
 		// Resize legato mode tool...
-		if (vlist.count() > 8) {
+		if (vlist.count() > 9) {
 			m_ui.ResizeLegatoCheckBox->setChecked(vlist[7].toBool());
 			m_ui.ResizeLegatoSpinBox->setValue(vlist[8].toDouble());
+			m_ui.ResizeLegatoComboBox->setCurrentIndex(vlist[9].toInt());
 		}
 		// Rescale tool...
 		vlist = settings.value("/Rescale").toList();
@@ -715,6 +719,7 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.ResizeValue2SpinBox->value());
 		vlist.append(m_ui.ResizeLegatoCheckBox->isChecked());
 		vlist.append(m_ui.ResizeLegatoSpinBox->value());
+		vlist.append(m_ui.ResizeLegatoComboBox->currentIndex());
 		settings.setValue("/Resize", vlist);
 		// Rescale tool...
 		vlist.clear();
@@ -1173,7 +1178,11 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 						= 0.01f * float(m_ui.ResizeLegatoSpinBox->value());
 					const long d2
 						= long(p * float(pLastEvent->time() - pEvent->time()));
-					if (iDuration < d2 && d2 > 0)
+					if (m_ui.ResizeLegatoComboBox->currentIndex() > 0) {
+						if (iDuration < d2 && d2 > 0)
+							iDuration = d2;
+					}
+					else if (d2 > 0)
 						iDuration = d2;
 				}
 				pLastEvent = pEvent;
@@ -1477,6 +1486,7 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	if (bEnabled2)
 		++iEnabled;
 	m_ui.ResizeLegatoSpinBox->setEnabled(bEnabled2);
+	m_ui.ResizeLegatoComboBox->setEnabled(bEnabled2);
 
 	m_ui.ResizeValueCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.ResizeValueCheckBox->isChecked();

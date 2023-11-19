@@ -1067,7 +1067,24 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="3" colspan="4">
+       <item row="3" column="3">
+        <widget class="QComboBox" name="ResizeLegatoComboBox">
+         <property name="toolTip">
+          <string>Legato mode</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Mono</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Poly</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="3" colspan="3">
         <spacer>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -1646,6 +1663,7 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>ResizeValue2SpinBox</tabstop>
   <tabstop>ResizeLegatoCheckBox</tabstop>
   <tabstop>ResizeLegatoSpinBox</tabstop>
+  <tabstop>ResizeLegatoComboBox</tabstop>
   <tabstop>RescaleCheckBox</tabstop>
   <tabstop>RescaleTimeCheckBox</tabstop>
   <tabstop>RescaleTimeSpinBox</tabstop>

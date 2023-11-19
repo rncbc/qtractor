@@ -11056,7 +11056,7 @@ Sorry.</source>
         <location filename="../qtractorMidiToolsForm.ui" line="162"/>
         <location filename="../qtractorMidiToolsForm.ui" line="466"/>
         <location filename="../qtractorMidiToolsForm.ui" line="751"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1138"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1155"/>
         <source>&amp;Time:</source>
         <translation>時間(&amp;T):</translation>
     </message>
@@ -11080,10 +11080,10 @@ Sorry.</source>
         <location filename="../qtractorMidiToolsForm.ui" line="802"/>
         <location filename="../qtractorMidiToolsForm.ui" line="837"/>
         <location filename="../qtractorMidiToolsForm.ui" line="1048"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1154"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1208"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1249"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1367"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1171"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1225"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1266"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1384"/>
         <source> %</source>
         <translation></translation>
     </message>
@@ -11091,7 +11091,7 @@ Sorry.</source>
         <location filename="../qtractorMidiToolsForm.ui" line="223"/>
         <location filename="../qtractorMidiToolsForm.ui" line="786"/>
         <location filename="../qtractorMidiToolsForm.ui" line="908"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1192"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1209"/>
         <source>&amp;Duration:</source>
         <translation>デュレーション(&amp;D):</translation>
     </message>
@@ -11235,7 +11235,7 @@ Sorry.</source>
         <location filename="../qtractorMidiToolsForm.ui" line="628"/>
         <location filename="../qtractorMidiToolsForm.ui" line="821"/>
         <location filename="../qtractorMidiToolsForm.ui" line="963"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1233"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1250"/>
         <source>&amp;Value:</source>
         <translation>値(&amp;V):</translation>
     </message>
@@ -11332,73 +11332,88 @@ Sorry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1100"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1115"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1073"/>
+        <source>Legato mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1077"/>
+        <source>Mono</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1082"/>
+        <source>Poly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="1117"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1132"/>
         <source>Re&amp;scale</source>
         <translation>リスケール(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1112"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1129"/>
         <source>Rescale selected events</source>
         <translation>選択されたイベントのリスケール</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1151"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1168"/>
         <source>Rescale time</source>
         <translation>リスケールの時間</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1205"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1222"/>
         <source>Rescale duration</source>
         <translation>リスケールのデュレーション</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1246"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1263"/>
         <source>Rescale value</source>
         <translation>リスケールの値</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1274"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1291"/>
         <source>&amp;Invert</source>
         <translation type="unfinished">反転(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1295"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1312"/>
         <source>T&amp;imeshift</source>
         <translation>タイムシフト(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1307"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1324"/>
         <source>Timeshift selected events</source>
         <translation>選択されたイベントのタイムシフト</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1310"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1327"/>
         <source>Timeshift</source>
         <translation>タイムシフト</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1333"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1350"/>
         <source>P:</source>
         <translation>P:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1346"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1363"/>
         <source>Timeshift parameter</source>
         <translation>タイムシフトのパラメーター</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1374"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1391"/>
         <source>Timeshift parameter (log)</source>
         <translation>タイムシフトパラメーター (対数)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1411"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1428"/>
         <source>Timeshift curve</source>
         <translation>タイムシフトカーブ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1424"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1441"/>
         <source>P = 0 : no change.
 P &gt; 0 : accelerating shift.
 P &lt; 0 : slowing down shift.
@@ -11409,52 +11424,52 @@ P &lt; 0: 減速シフト
 (青色の)編集マーカーの先頭から末尾までがシフト範囲です。</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1434"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1451"/>
         <source>Timeshift duration</source>
         <translation>タイムシフトデュレーション</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1455"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1472"/>
         <source>T&amp;empo ramp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1467"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1484"/>
         <source>Tempo ramp selected events</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1470"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1487"/>
         <source>Tempo ramp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1493"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1510"/>
         <source>From</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1506"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1523"/>
         <source>Tempo ramp start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1513"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1530"/>
         <source>to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1526"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1543"/>
         <source>Temporamp end</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1546"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1563"/>
         <source>Edit head/tail (blue) markers define the ramp range.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1553"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1570"/>
         <source>Tempo ramp duration</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11464,12 +11479,12 @@ P &lt; 0: 減速シフト
         <translation>(デフォルト)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="827"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="832"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="828"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="833"/>
         <source>About to delete preset:
 
 &quot;%1&quot;
@@ -11482,47 +11497,47 @@ Are you sure?</source>
 よろしいですか？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="857"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="862"/>
         <source>none</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="862"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="867"/>
         <source>quantize</source>
         <translation>クォンタイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="864"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="869"/>
         <source>transpose</source>
         <translation>トランスポーズ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="866"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="871"/>
         <source>normalize</source>
         <translation>ノーマライズ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="868"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="873"/>
         <source>randomize</source>
         <translation>ランダマイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="870"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="875"/>
         <source>resize</source>
         <translation>リサイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="872"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="877"/>
         <source>rescale</source>
         <translation>リスケール</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="874"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="879"/>
         <source>timeshift</source>
         <translation>タイムシフト</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="876"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="881"/>
         <source>temporamp</source>
         <translation type="unfinished"></translation>
     </message>
