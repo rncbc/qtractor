@@ -736,20 +736,17 @@ int qtractorTimeScale::indexFromSnap ( unsigned short iSnapPerBeat )
 
 
 // Beat divisor (snap index) text item list.
-QStringList qtractorTimeScale::snapItems ( int iSnap )
+QStringList qtractorTimeScale::snapItems (void)
 {
 	QStringList items;
 
-	if (iSnap == 0) {
-		items.append(QObject::tr("None"));
-		++iSnap;
-	}
+	int iSnap = 0;
+	items.append(QObject::tr("None"));
+	++iSnap;
 
 	QString sPrefix = QObject::tr("Beat");
-	if (iSnap == 1) {
-		items.append(sPrefix);
-		++iSnap;
-	}
+	items.append(sPrefix);
+	++iSnap;
 
 	sPrefix += "/%1";
 	while (iSnap < c_iSnapItemCount)

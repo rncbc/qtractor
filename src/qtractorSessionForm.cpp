@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -75,7 +75,7 @@ qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
 
 	// Fill-up snap-per-beat items...
 	const QIcon snapIcon(":/images/itemBeat.png");
-	const QStringList& snapItems = qtractorTimeScale::snapItems(0);
+	const QStringList& snapItems = qtractorTimeScale::snapItems();
 	QStringListIterator snapIter(snapItems);
 	m_ui.SnapPerBeatComboBox->clear();
 	m_ui.SnapPerBeatComboBox->setIconSize(QSize(8, 16));

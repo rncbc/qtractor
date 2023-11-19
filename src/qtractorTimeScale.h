@@ -109,7 +109,7 @@ public:
 	static int indexFromSnap(unsigned short iSnapPerBeat);
 
 	// Beat divisor (snap index) text item list.
-	static QStringList snapItems(int iSnap = 0);
+	static QStringList snapItems();
 
 	// Time scale node declaration.
 	class Node : public qtractorList<Node>::Link

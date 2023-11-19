@@ -158,7 +158,7 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 
 	// Populate the MIDI capture quantize combo-box.
 	const QIcon snapIcon(":/images/itemBeat.png");
-	const QStringList& snapItems = qtractorTimeScale::snapItems(0);
+	const QStringList& snapItems = qtractorTimeScale::snapItems();
 	QStringListIterator snapIter(snapItems);
 	m_ui.MidiCaptureQuantizeComboBox->clear();
 	m_ui.MidiCaptureQuantizeComboBox->setIconSize(QSize(8, 16));

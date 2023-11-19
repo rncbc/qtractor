@@ -923,7 +923,7 @@
         </widget>
        </item>
        <item row="1" column="4" colspan="2">
-        <widget class="QComboBox" name="ResizeFormatComboBox">
+        <widget class="QComboBox" name="ResizeDurationFormatComboBox">
          <property name="toolTip">
           <string>Resize duration format</string>
          </property>
@@ -1042,7 +1042,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Legato duration percent</string>
+          <string>Legato percent</string>
          </property>
          <property name="suffix">
           <string> %</string>
@@ -1054,10 +1054,10 @@
           <number>1</number>
          </property>
          <property name="minimum">
-          <double>0.0</double>
+          <double>80.0</double>
          </property>
          <property name="maximum">
-          <double>200.0</double>
+          <double>120.0</double>
          </property>
          <property name="singleStep">
           <double>0.1</double>
@@ -1068,7 +1068,14 @@
         </widget>
        </item>
        <item row="3" column="3">
-        <widget class="QComboBox" name="ResizeLegatoComboBox">
+        <widget class="QComboBox" name="ResizeLegatoQuantizeComboBox">
+         <property name="toolTip">
+          <string>Legato quantize</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="4">
+        <widget class="QComboBox" name="ResizeLegatoModeComboBox">
          <property name="toolTip">
           <string>Legato mode</string>
          </property>
@@ -1084,7 +1091,7 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="3" colspan="3">
+       <item row="3" column="3" colspan="2">
         <spacer>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -1656,14 +1663,15 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>ResizeCheckBox</tabstop>
   <tabstop>ResizeDurationCheckBox</tabstop>
   <tabstop>ResizeDurationSpinBox</tabstop>
-  <tabstop>ResizeFormatComboBox</tabstop>
+  <tabstop>ResizeDurationFormatComboBox</tabstop>
   <tabstop>ResizeValueCheckBox</tabstop>
   <tabstop>ResizeValueSpinBox</tabstop>
   <tabstop>ResizeValue2ComboBox</tabstop>
   <tabstop>ResizeValue2SpinBox</tabstop>
   <tabstop>ResizeLegatoCheckBox</tabstop>
   <tabstop>ResizeLegatoSpinBox</tabstop>
-  <tabstop>ResizeLegatoComboBox</tabstop>
+  <tabstop>ResizeLegatoQuantizeComboBox</tabstop>
+  <tabstop>ResizeLegatoModeComboBox</tabstop>
   <tabstop>RescaleCheckBox</tabstop>
   <tabstop>RescaleTimeCheckBox</tabstop>
   <tabstop>RescaleTimeSpinBox</tabstop>
