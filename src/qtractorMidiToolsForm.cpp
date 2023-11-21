@@ -188,14 +188,12 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 		while (snapIter.hasNext())
 			m_ui.QuantizeSwingComboBox->addItem(snapIcon, snapIter.next());
 	//	m_ui.QuantizeSwingComboBox->insertItems(0, snapItems);
-		m_ui.ResizeLegatoQuantizeComboBox->clear();
-		m_ui.ResizeLegatoQuantizeComboBox->setIconSize(snapIconSize);
+		m_ui.ResizeLegatoLengthComboBox->clear();
+		m_ui.ResizeLegatoLengthComboBox->setIconSize(snapIconSize);
 		snapIter.toFront();
-		if (snapIter.hasNext())
-			m_ui.ResizeLegatoQuantizeComboBox->addItem(
-				QIcon(":/images/itemNone.png"), snapIter.next());
+		snapIter.next();
 		while (snapIter.hasNext())
-			m_ui.ResizeLegatoQuantizeComboBox->addItem(snapIcon, snapIter.next());
+			m_ui.ResizeLegatoLengthComboBox->addItem(snapIcon, snapIter.next());
 	//	m_ui.ResizeLegatoQuantizeComboBox->insertItems(0, snapItems);
 		// Default quantization value...
 		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
@@ -206,7 +204,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 		m_ui.QuantizeDurationComboBox->setCurrentIndex(iSnapIndex);
 		m_ui.QuantizeSwingComboBox->setCurrentIndex(0);
 		m_ui.QuantizeSwingTypeComboBox->setCurrentIndex(0);
-		m_ui.ResizeLegatoQuantizeComboBox->setCurrentIndex(0);
+		m_ui.ResizeLegatoLengthComboBox->setCurrentIndex(iSnapIndex);
 		// Initial tempo-ramp range...
 		if (pSession->editHead() < pSession->editTail()) {
 			qtractorTimeScale::Cursor cursor(m_pTimeScale);
@@ -393,7 +391,6 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	QObject::connect(m_ui.ResizeDurationFormatComboBox,
 		SIGNAL(activated(int)),
 		SLOT(formatChanged(int)));
-
 	QObject::connect(m_ui.ResizeValueCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
@@ -409,10 +406,10 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	QObject::connect(m_ui.ResizeLegatoCheckBox,
 		SIGNAL(toggled(bool)),
 		SLOT(changed()));
-	QObject::connect(m_ui.ResizeLegatoSpinBox,
-		SIGNAL(valueChanged(double)),
+	QObject::connect(m_ui.ResizeLegatoTypeComboBox,
+		SIGNAL(activated(int)),
 		SLOT(changed()));
-	QObject::connect(m_ui.ResizeLegatoQuantizeComboBox,
+	QObject::connect(m_ui.ResizeLegatoLengthComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
 	QObject::connect(m_ui.ResizeLegatoModeComboBox,
@@ -627,8 +624,8 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 		// Resize legato mode tool...
 		if (vlist.count() > 10) {
 			m_ui.ResizeLegatoCheckBox->setChecked(vlist[7].toBool());
-			m_ui.ResizeLegatoSpinBox->setValue(vlist[8].toDouble());
-			m_ui.ResizeLegatoQuantizeComboBox->setCurrentIndex(vlist[9].toInt());
+			m_ui.ResizeLegatoTypeComboBox->setCurrentIndex(vlist[8].toInt());
+			m_ui.ResizeLegatoLengthComboBox->setCurrentIndex(vlist[9].toInt());
 			m_ui.ResizeLegatoModeComboBox->setCurrentIndex(vlist[10].toInt());
 		}
 		// Rescale tool...
@@ -735,8 +732,8 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.ResizeValue2ComboBox->currentIndex());
 		vlist.append(m_ui.ResizeValue2SpinBox->value());
 		vlist.append(m_ui.ResizeLegatoCheckBox->isChecked());
-		vlist.append(m_ui.ResizeLegatoSpinBox->value());
-		vlist.append(m_ui.ResizeLegatoQuantizeComboBox->currentIndex());
+		vlist.append(m_ui.ResizeLegatoTypeComboBox->currentIndex());
+		vlist.append(m_ui.ResizeLegatoLengthComboBox->currentIndex());
 		vlist.append(m_ui.ResizeLegatoModeComboBox->currentIndex());
 		settings.setValue("/Resize", vlist);
 		// Rescale tool...
@@ -1192,23 +1189,20 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 			if (m_ui.ResizeLegatoCheckBox->isChecked()
 				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
 				if (pLastEvent) {
-					const float p2
-						= 0.01f * float(m_ui.ResizeLegatoSpinBox->value());
-					const long d2
-						= long(p2 * float(pLastEvent->time() - pEvent->time()));
-					const unsigned short p = qtractorTimeScale::snapFromIndex(
-						m_ui.ResizeLegatoQuantizeComboBox->currentIndex());
-					long iDuration2 = d2;
-					if (p > 0) {
+					long d2 = long(float(pLastEvent->time() - pEvent->time()));
+					const int i	= m_ui.ResizeLegatoTypeComboBox->currentIndex();
+					if (i > 0) {
+						const unsigned short p = qtractorTimeScale::snapFromIndex(
+							m_ui.ResizeLegatoLengthComboBox->currentIndex());
 						const unsigned long q = pNode->ticksPerBeat / p;
-						iDuration2 = q * ((iDuration2 + q - 1) / q);
+						d2 += (i == 1 ? -long(q) : +long(q));
 					}
 					if (m_ui.ResizeLegatoModeComboBox->currentIndex() > 0) {
-						if (iDuration < iDuration2 && iDuration2 > 0)
-							iDuration = iDuration2;
+						if (iDuration < d2 && d2 > 0)
+							iDuration = d2;
 					}
-					else if (iDuration2 > 0)
-						iDuration = iDuration2;
+					else if (d2 > 0)
+						iDuration = d2;
 				}
 				pLastEvent = pEvent;
 			}
@@ -1522,9 +1516,9 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	bEnabled2 = bEnabled && m_ui.ResizeLegatoCheckBox->isChecked();
 	if (bEnabled2)
 		++iEnabled;
-	m_ui.ResizeLegatoSpinBox->setEnabled(bEnabled2);
-	m_ui.ResizeLegatoQuantizeComboBox->setEnabled(bEnabled2
-		&& qAbs(float(m_ui.ResizeLegatoSpinBox->value()) - 100.0f) > 0.05f);
+	m_ui.ResizeLegatoTypeComboBox->setEnabled(bEnabled2);
+	m_ui.ResizeLegatoLengthComboBox->setEnabled(bEnabled2
+		&& m_ui.ResizeLegatoTypeComboBox->currentIndex() > 0);
 	m_ui.ResizeLegatoModeComboBox->setEnabled(bEnabled2);
 
 	// Rescale tool...

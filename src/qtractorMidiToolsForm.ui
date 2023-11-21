@@ -944,7 +944,7 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="6">
+       <item row="1" column="6" colspan="2">
         <spacer>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -980,7 +980,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="3">
+       <item row="2" column="3" colspan="2">
         <widget class="QComboBox" name="ResizeValue2ComboBox">
          <property name="toolTip">
           <string>Resize value mode</string>
@@ -997,7 +997,7 @@
          </item>
         </widget>
        </item>
-       <item row="2" column="4">
+       <item row="2" column="5" colspan="2">
         <widget class="QSpinBox" name="ResizeValue2SpinBox">
          <property name="minimumSize">
           <size>
@@ -1013,7 +1013,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="5" colspan="2">
+       <item row="2" column="7">
         <spacer>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -1034,7 +1034,7 @@
         </widget>
        </item>
        <item row="3" column="2">
-        <widget class="QDoubleSpinBox" name="ResizeLegatoSpinBox">
+        <widget class="QComboBox" name="ResizeLegatoTypeComboBox">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -1042,39 +1042,33 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Legato percent</string>
+          <string>Legato trim/extend type</string>
          </property>
-         <property name="suffix">
-          <string> %</string>
-         </property>
-         <property name="accelerated">
-          <bool>true</bool>
-         </property>
-         <property name="decimals">
-          <number>1</number>
-         </property>
-         <property name="minimum">
-          <double>80.0</double>
-         </property>
-         <property name="maximum">
-          <double>120.0</double>
-         </property>
-         <property name="singleStep">
-          <double>0.1</double>
-         </property>
-         <property name="value">
-          <double>100.0</double>
-         </property>
+         <item>
+          <property name="text">
+           <string>Normal</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Trim</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Extend</string>
+          </property>
+         </item>
         </widget>
        </item>
-       <item row="3" column="3">
-        <widget class="QComboBox" name="ResizeLegatoQuantizeComboBox">
+       <item row="3" column="3" colspan="2">
+        <widget class="QComboBox" name="ResizeLegatoLengthComboBox">
          <property name="toolTip">
-          <string>Legato quantize</string>
+          <string>Legato trim/extend length</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="4">
+       <item row="3" column="5" colspan="2">
         <widget class="QComboBox" name="ResizeLegatoModeComboBox">
          <property name="toolTip">
           <string>Legato mode</string>
@@ -1091,7 +1085,7 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="3" colspan="2">
+       <item row="3" column="7">
         <spacer>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -1104,7 +1098,7 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="1" colspan="5">
+       <item row="4" column="1" colspan="6">
         <spacer>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
