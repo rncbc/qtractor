@@ -621,6 +621,8 @@ void qtractorAudioEngine::notifySessEvent ( void *pvSessionArg )
 
 void qtractorAudioEngine::notifySyncEvent ( unsigned long iPlayHead, bool bPlaying )
 {
+	m_iTimebase = 0; // HACK: Force reset timebase counter...
+
 	m_proxy.notifySyncEvent(iPlayHead, bPlaying);
 }
 
