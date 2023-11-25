@@ -2025,24 +2025,28 @@ void qtractorOptionsForm::stabilizeForm (void)
 	m_ui.MetroBarFilenameTextLabel->setEnabled(bAudioMetronome);
 	m_ui.MetroBarFilenameComboBox->setEnabled(bAudioMetronome);
 	m_ui.MetroBarFilenameToolButton->setEnabled(bAudioMetronome);
-	m_ui.MetroBarGainTextLabel->setEnabled(bAudioMetronome);
-	m_ui.MetroBarGainSpinBox->setEnabled(bAudioMetronome);
+	bool bAudioMetroBar = false;
+	if (bAudioMetronome) {
+		const QFileInfo fi(m_ui.MetroBarFilenameComboBox->currentText());
+		bAudioMetroBar = fi.isFile() && fi.isReadable();
+		bValid = bAudioMetroBar;
+	}
+	m_ui.MetroBarGainTextLabel->setEnabled(bAudioMetroBar);
+	m_ui.MetroBarGainSpinBox->setEnabled(bAudioMetroBar);
 	m_ui.MetroBeatFilenameTextLabel->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatFilenameComboBox->setEnabled(bAudioMetronome);
 	m_ui.MetroBeatFilenameToolButton->setEnabled(bAudioMetronome);
-	m_ui.MetroBeatGainTextLabel->setEnabled(bAudioMetronome);
-	m_ui.MetroBeatGainSpinBox->setEnabled(bAudioMetronome);
+	bool bAudioMetroBeat = false;
+	if (bAudioMetronome) {
+		const QFileInfo fi(m_ui.MetroBeatFilenameComboBox->currentText());
+		bAudioMetroBeat = fi.isFile() && fi.isReadable();
+		bValid = bAudioMetroBeat;
+	}
+	m_ui.MetroBeatGainTextLabel->setEnabled(bAudioMetroBeat);
+	m_ui.MetroBeatGainSpinBox->setEnabled(bAudioMetroBeat);
 	m_ui.AudioMetroBusCheckBox->setEnabled(bAudioMetronome);
 	m_ui.AudioMetroOffsetTextLabel->setEnabled(bAudioMetronome);
 	m_ui.AudioMetroOffsetSpinBox->setEnabled(bAudioMetronome);
-	if (bAudioMetronome && bValid) {
-		const QString& sPath = m_ui.MetroBarFilenameComboBox->currentText();
-		bValid = !sPath.isEmpty() && QFileInfo(sPath).exists();
-	}
-	if (bAudioMetronome && bValid) {
-		const QString& sPath = m_ui.MetroBeatFilenameComboBox->currentText();
-		bValid = !sPath.isEmpty() && QFileInfo(sPath).exists();
-	}
 	m_ui.AudioMetroAutoConnectCheckBox->setEnabled(
 		bAudioMetronome && m_ui.AudioMetroBusCheckBox->isChecked());
 

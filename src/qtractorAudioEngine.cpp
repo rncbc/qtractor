@@ -1058,12 +1058,14 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 		m_pPlayerBus->process_prepare(nframes);
 
 	// Process audition/pre-listening...
-	if (m_bPlayerOpen && ATOMIC_TAS(&m_playerLock)) {
+	if (m_bPlayerOpen
+		&& m_pPlayerBus && m_pPlayerBus->isEnabled()
+		&& ATOMIC_TAS(&m_playerLock)) {
 		m_pPlayerBuff->readMix(m_pPlayerBus->out(), nframes,
 			m_pPlayerBus->channels(), 0, 1.0f);
 		m_bPlayerOpen = (m_iPlayerFrame < m_pPlayerBuff->length());
 		m_iPlayerFrame += nframes;
-		if (m_bPlayerBus && m_pPlayerBus)
+		if (m_bPlayerBus)
 			m_pPlayerBus->process_commit(nframes);
 		else
 			++iOutputBus;
@@ -1146,7 +1148,8 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 	}
 
 	// Metronome/count-in stuff...
-	if ((m_bMetronome || m_iCountIn > 0) && m_pMetroBus) {
+	if ((m_bMetronome || m_iCountIn > 0)
+		&& m_pMetroBus && m_pMetroBus->isEnabled()) {
 		const unsigned long iMetroFrameStart
 			= (m_iCountIn > 0 ? m_iCountInFrame : iFrameStart);
 		const unsigned long iMetroFrameEnd
