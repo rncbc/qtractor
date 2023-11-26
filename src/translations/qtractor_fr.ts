@@ -11331,47 +11331,47 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1032"/>
         <source>&amp;Legato:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Legato :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1045"/>
         <source>Legato trim/extend type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de legato réduire/étendre</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1049"/>
         <source>Normal</source>
-        <translation type="unfinished">Normal</translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1054"/>
         <source>Trim</source>
-        <translation type="unfinished"></translation>
+        <translation>Réduire</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1059"/>
         <source>Extend</source>
-        <translation type="unfinished"></translation>
+        <translation>Étendre</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1067"/>
         <source>Legato trim/extend length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur de legato réduire/étendre</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1074"/>
         <source>Legato mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de legato</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1078"/>
         <source>Mono</source>
-        <translation type="unfinished"></translation>
+        <translation>Mono</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1083"/>
         <source>Poly</source>
-        <translation type="unfinished"></translation>
+        <translation>Poly</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1118"/>
