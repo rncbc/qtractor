@@ -615,13 +615,30 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_ui.AudioResampleTypeComboBox->setEnabled(false);
 #endif
 
+	// Have some audio metronome default sample files...
+	const QChar sep = QDir::separator();
+	QString sAudioPath = QApplication::applicationDirPath();
+	sAudioPath.remove(CONFIG_BINDIR);
+	sAudioPath.append(CONFIG_DATADIR);
+	sAudioPath.append(sep);
+	sAudioPath.append(PACKAGE_TARNAME);
+	sAudioPath.append(sep);
+	sAudioPath.append("audio");
+
+	QString sMetroBarFilename = m_pOptions->sMetroBarFilename;
+	if (sMetroBarFilename.isEmpty())
+		sMetroBarFilename = QFileInfo(sAudioPath, "metro_bar.wav").absoluteFilePath();
+	QString sMetroBeatFilename = m_pOptions->sMetroBeatFilename;
+	if (sMetroBeatFilename.isEmpty())
+		sMetroBeatFilename = QFileInfo(sAudioPath, "metro_beat.wav").absoluteFilePath();
+
 	// Audio metronome options.
 	m_ui.AudioMetronomeCheckBox->setChecked(m_pOptions->bAudioMetronome);
 	m_ui.AudioCountInModeComboBox->setCurrentIndex(m_pOptions->iAudioCountInMode);
 	m_ui.AudioCountInBeatsSpinBox->setValue(m_pOptions->iAudioCountInBeats);
-	m_ui.MetroBarFilenameComboBox->setEditText(m_pOptions->sMetroBarFilename);
+	m_ui.MetroBarFilenameComboBox->setEditText(sMetroBarFilename);
 	m_ui.MetroBarGainSpinBox->setValue(log10f2(m_pOptions->fMetroBarGain));
-	m_ui.MetroBeatFilenameComboBox->setEditText(m_pOptions->sMetroBeatFilename);
+	m_ui.MetroBeatFilenameComboBox->setEditText(sMetroBeatFilename);
 	m_ui.MetroBeatGainSpinBox->setValue(log10f2(m_pOptions->fMetroBeatGain));
 	m_ui.AudioMetroBusCheckBox->setChecked(m_pOptions->bAudioMetroBus);
 	m_ui.AudioMetroAutoConnectCheckBox->setChecked(m_pOptions->bAudioMetroAutoConnect);

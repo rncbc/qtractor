@@ -180,6 +180,7 @@ cmake --install build
 %dir %{_datadir}/icons/hicolor/scalable/mimetypes
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/translations
+%dir %{_datadir}/%{name}/audio
 %dir %{_datadir}/metainfo
 #dir %{_datadir}/man
 #dir %{_datadir}/man/man1
@@ -197,6 +198,7 @@ cmake --install build
 %{_datadir}/metainfo/org.rncbc.%{name}.metainfo.xml
 %{_datadir}/man/man1/%{name}.1.gz
 %{_datadir}/man/fr/man1/%{name}.1.gz
+%{_datadir}/%{name}/audio/metro_*.wav
 
 %changelog
 * Fri Nov 10 2023 Rui Nuno Capela <rncbc@rncbc.org> 0.9.36
