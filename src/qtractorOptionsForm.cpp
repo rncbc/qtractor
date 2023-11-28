@@ -616,6 +616,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 #endif
 
 	// Have some audio metronome default sample files...
+	//
 	const QChar sep = QDir::separator();
 	QString sAudioPath = QApplication::applicationDirPath();
 	sAudioPath.remove(CONFIG_BINDIR);
@@ -625,20 +626,33 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	sAudioPath.append(sep);
 	sAudioPath.append("audio");
 
-	QString sMetroBarFilename = m_pOptions->sMetroBarFilename;
-	if (sMetroBarFilename.isEmpty())
-		sMetroBarFilename = QFileInfo(sAudioPath, "metro_bar.wav").absoluteFilePath();
-	QString sMetroBeatFilename = m_pOptions->sMetroBeatFilename;
-	if (sMetroBeatFilename.isEmpty())
-		sMetroBeatFilename = QFileInfo(sAudioPath, "metro_beat.wav").absoluteFilePath();
+	const QFileInfo metro_bar(sAudioPath, "metro_bar.wav");
+	if (metro_bar.isFile() && metro_bar.isReadable()) {
+		const QString& sMetroBarFilename
+			= metro_bar.absoluteFilePath();
+		if (m_pOptions->sMetroBarFilename.isEmpty())
+			m_pOptions->sMetroBarFilename = sMetroBarFilename;
+		if (m_ui.MetroBarFilenameComboBox->findText(sMetroBarFilename) < 0)
+			m_ui.MetroBarFilenameComboBox->addItem(sMetroBarFilename);
+	}
+
+	const QFileInfo metro_beat(sAudioPath, "metro_beat.wav");
+	if (metro_beat.isFile() && metro_beat.isReadable()) {
+		const QString& sMetroBeatFilename
+			= metro_beat.absoluteFilePath();
+		if (m_pOptions->sMetroBeatFilename.isEmpty())
+			m_pOptions->sMetroBeatFilename = sMetroBeatFilename;
+		if (m_ui.MetroBeatFilenameComboBox->findText(sMetroBeatFilename) < 0)
+			m_ui.MetroBeatFilenameComboBox->addItem(sMetroBeatFilename);
+	}
 
 	// Audio metronome options.
 	m_ui.AudioMetronomeCheckBox->setChecked(m_pOptions->bAudioMetronome);
 	m_ui.AudioCountInModeComboBox->setCurrentIndex(m_pOptions->iAudioCountInMode);
 	m_ui.AudioCountInBeatsSpinBox->setValue(m_pOptions->iAudioCountInBeats);
-	m_ui.MetroBarFilenameComboBox->setEditText(sMetroBarFilename);
+	m_ui.MetroBarFilenameComboBox->setEditText(m_pOptions->sMetroBarFilename);
 	m_ui.MetroBarGainSpinBox->setValue(log10f2(m_pOptions->fMetroBarGain));
-	m_ui.MetroBeatFilenameComboBox->setEditText(sMetroBeatFilename);
+	m_ui.MetroBeatFilenameComboBox->setEditText(m_pOptions->sMetroBeatFilename);
 	m_ui.MetroBeatGainSpinBox->setValue(log10f2(m_pOptions->fMetroBeatGain));
 	m_ui.AudioMetroBusCheckBox->setChecked(m_pOptions->bAudioMetroBus);
 	m_ui.AudioMetroAutoConnectCheckBox->setChecked(m_pOptions->bAudioMetroAutoConnect);
