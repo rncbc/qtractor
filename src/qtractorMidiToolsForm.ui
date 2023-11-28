@@ -1663,8 +1663,8 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>ResizeValue2ComboBox</tabstop>
   <tabstop>ResizeValue2SpinBox</tabstop>
   <tabstop>ResizeLegatoCheckBox</tabstop>
-  <tabstop>ResizeLegatoSpinBox</tabstop>
-  <tabstop>ResizeLegatoQuantizeComboBox</tabstop>
+  <tabstop>ResizeLegatoTypeComboBox</tabstop>
+  <tabstop>ResizeLegatoLengthComboBox</tabstop>
   <tabstop>ResizeLegatoModeComboBox</tabstop>
   <tabstop>RescaleCheckBox</tabstop>
   <tabstop>RescaleTimeCheckBox</tabstop>
