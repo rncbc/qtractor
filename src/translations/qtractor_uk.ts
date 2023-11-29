@@ -45,7 +45,7 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2960"/>
         <location filename="../qtractorAudioEngine.cpp" line="2969"/>
-        <location filename="../qtractorTrack.cpp" line="696"/>
+        <location filename="../qtractorTrack.cpp" line="698"/>
         <source>%1 Gain</source>
         <translation>Підсилення %1</translation>
     </message>
@@ -54,7 +54,7 @@ Audio:	%1 channels, %2 Hz</source>
         <location filename="../qtractorAudioEngine.cpp" line="2971"/>
         <location filename="../qtractorMidiEngine.cpp" line="4328"/>
         <location filename="../qtractorMidiEngine.cpp" line="4337"/>
-        <location filename="../qtractorTrack.cpp" line="699"/>
+        <location filename="../qtractorTrack.cpp" line="701"/>
         <source>%1 Pan</source>
         <translation>Панорамування %1</translation>
     </message>
@@ -281,8 +281,8 @@ End:	%3	Length:	%4</source>
         <translation>%1: не знайдено файла автоматизації/кривої.</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="428"/>
-        <location filename="../qtractorTrack.cpp" line="685"/>
+        <location filename="../qtractorEngine.cpp" line="430"/>
+        <location filename="../qtractorTrack.cpp" line="687"/>
         <source>%1 Monitor</source>
         <translation>Монітор %1</translation>
     </message>
@@ -523,7 +523,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="4326"/>
         <location filename="../qtractorMidiEngine.cpp" line="4335"/>
-        <location filename="../qtractorTrack.cpp" line="693"/>
+        <location filename="../qtractorTrack.cpp" line="695"/>
         <source>%1 Volume</source>
         <translation>Гучність %1</translation>
     </message>
@@ -550,7 +550,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="244"/>
+        <location filename="../qtractorPlugin.cpp" line="246"/>
         <source>(default)</source>
         <translation>(default)</translation>
     </message>
@@ -612,17 +612,17 @@ MIDI:	</translation>
         <translation>Параметр -s потребує аргументу (uuid).</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="235"/>
+        <location filename="../qtractorPlugin.cpp" line="237"/>
         <source>(Any)</source>
         <translation>(Будь-який)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="261"/>
+        <location filename="../qtractorPlugin.cpp" line="263"/>
         <source>Activate</source>
         <translation>Задіяти</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2351"/>
+        <location filename="../qtractorPlugin.cpp" line="2358"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): не знайдено додаток %3.</translation>
     </message>
@@ -772,17 +772,17 @@ MIDI:	</translation>
         <translation>змінити часовий підпис.</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="686"/>
+        <location filename="../qtractorTrack.cpp" line="688"/>
         <source>%1 Record</source>
         <translation>Запис %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="687"/>
+        <location filename="../qtractorTrack.cpp" line="689"/>
         <source>%1 Mute</source>
         <translation>Вимкнути звук %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="688"/>
+        <location filename="../qtractorTrack.cpp" line="690"/>
         <source>%1 Solo</source>
         <translation>Соло %1</translation>
     </message>

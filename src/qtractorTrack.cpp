@@ -40,6 +40,8 @@
 #include "qtractorMeter.h"
 #include "qtractorCurveFile.h"
 
+#include "qtractorFileList.h"
+
 #include "qtractorTrackCommand.h"
 
 #include "qtractorMainForm.h"
@@ -2463,7 +2465,11 @@ void qtractorTrack::saveCurveFile ( qtractorDocument *pDocument,
 		return;
 
 	const QString sBaseName(trackName() + "_curve");
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", true));
+	const bool bTemporary = pDocument->isTemporary();
+	const QString& sFilename
+		= pSession->createFilePath(sBaseName, "mid", !bTemporary);
+	pSession->files()->addFileItem(qtractorFileList::Midi, sFilename, bTemporary);
+	pCurveFile->setFilename(sFilename);
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }

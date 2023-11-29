@@ -1406,7 +1406,6 @@ unsigned long qtractorSession::playHeadAutoBackward (void) const
 }
 
 
-
 // Session loop points accessors.
 void qtractorSession::setLoop (
 	unsigned long iLoopStart, unsigned long iLoopEnd )
@@ -1620,7 +1619,7 @@ QString qtractorSession::createFilePath (
 
 	// Check whether it's not aquired as our own already,
 	// otherwise increment version suffix until it is.
-	if (iFileNo == 0) ++iFileNo;
+	if (iFileNo == 0 || !bAcquire) ++iFileNo;
 	QFileInfo fi(m_props.sessionDir, sFilename.arg(iFileNo));
 	if (!m_filePaths.contains(fi.absoluteFilePath())) {
 		while (fi.exists() || m_filePaths.contains(fi.absoluteFilePath()))

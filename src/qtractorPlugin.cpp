@@ -35,6 +35,8 @@
 #include "qtractorSession.h"
 #include "qtractorCurveFile.h"
 
+#include "qtractorFileList.h"
+
 #include "qtractorMessageList.h"
 
 #include <QDomDocument>
@@ -1491,7 +1493,12 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	sBaseName += '_';
 	sBaseName += QString::number(uniqueID(), 16);
 	sBaseName += "_curve";
-	pCurveFile->setFilename(pSession->createFilePath(sBaseName, "mid", true));
+
+	const bool bTemporary = pDocument->isTemporary();
+	const QString& sFilename
+		= pSession->createFilePath(sBaseName, "mid", !bTemporary);
+	pSession->files()->addFileItem(qtractorFileList::Midi, sFilename, bTemporary);
+	pCurveFile->setFilename(sFilename);
 
 	pCurveFile->save(pDocument, pElement, pSession->timeScale());
 }
