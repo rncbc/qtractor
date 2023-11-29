@@ -6686,8 +6686,7 @@ bool qtractorMainForm::startSession (void)
 		}
 		// Game on...
 		appendMessages(tr("Session started."));
-	}
-	else {
+	} else {
 		// Uh-oh, we can't go on like this...
 		appendMessagesError(
 			tr("The audio/MIDI engine could not be started.\n\n"
