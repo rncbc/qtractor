@@ -4467,22 +4467,22 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1926"/>
         <source>T&amp;empo ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ухил ритму…</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1929"/>
         <source>Tempo ramp Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ухил ритму у кліпі</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1932"/>
         <source>Tempo ramp clip events</source>
-        <translation type="unfinished"></translation>
+        <translation>Ухил ритму у подіях кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1935"/>
         <source>Tempo ramp current MIDI clip events</source>
-        <translation type="unfinished"></translation>
+        <translation>Ухил ритму у подіях поточного кліпу MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1940"/>
@@ -7327,12 +7327,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="105"/>
         <source>Hand Clap</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="106"/>
         <source>Electric Snare</source>
-        <translation type="unfinished"></translation>
+        <translation>Малі електричні барабани</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="107"/>
@@ -7402,7 +7402,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="120"/>
         <source>Tambourine</source>
-        <translation type="unfinished"></translation>
+        <translation>Бубон</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="121"/>
@@ -7881,17 +7881,17 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="231"/>
         <source>Release Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Час відпускання</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="232"/>
         <source>Attack Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Час атаки</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="233"/>
         <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Свілість</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="234"/>
@@ -8152,7 +8152,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="525"/>
         <source>Hawaiian</source>
-        <translation type="unfinished">Гавайська</translation>
+        <translation>Гавайський</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="526"/>
@@ -9660,18 +9660,18 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1002"/>
         <source>T&amp;empo ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ухил ритму…</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1005"/>
         <location filename="../qtractorMidiEditorForm.ui" line="1008"/>
         <source>Tempo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Ухил ритму</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1011"/>
         <source>Tempo ramp selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Ухил ритму у позначеному</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1019"/>
@@ -11333,47 +11333,47 @@ Sorry.</source>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1032"/>
         <source>&amp;Legato:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Легато:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1045"/>
         <source>Legato trim/extend type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип обрізання/розширення легато</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1049"/>
         <source>Normal</source>
-        <translation type="unfinished">Звичайний</translation>
+        <translation>Звичайний</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1054"/>
         <source>Trim</source>
-        <translation type="unfinished"></translation>
+        <translation>Обрізання</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1059"/>
         <source>Extend</source>
-        <translation type="unfinished"></translation>
+        <translation>Розширення</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1067"/>
         <source>Legato trim/extend length</source>
-        <translation type="unfinished"></translation>
+        <translation>Триваліть обрізанння/розширення легато</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1074"/>
         <source>Legato mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим легато</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1078"/>
         <source>Mono</source>
-        <translation type="unfinished"></translation>
+        <translation>Моно</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1083"/>
         <source>Poly</source>
-        <translation type="unfinished"></translation>
+        <translation>Полі</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1118"/>
@@ -11404,7 +11404,7 @@ Sorry.</source>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1292"/>
         <source>&amp;Invert</source>
-        <translation type="unfinished">&amp;Інвертувати</translation>
+        <translation>&amp;Інвертувати</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1313"/>
@@ -11460,47 +11460,47 @@ P &lt; 0 : уповільнений зсув.
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1473"/>
         <source>T&amp;empo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ухил ритму</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1485"/>
         <source>Tempo ramp selected events</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1488"/>
         <source>Tempo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Ухил ритму</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1511"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>Від</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1524"/>
         <source>Tempo ramp start</source>
-        <translation type="unfinished"></translation>
+        <translation>Початок ухилу ритму</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1531"/>
         <source>to</source>
-        <translation type="unfinished"></translation>
+        <translation>до</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1544"/>
         <source>Temporamp end</source>
-        <translation type="unfinished"></translation>
+        <translation>Кінець ухилу ритму</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1564"/>
         <source>Edit head/tail (blue) markers define the ramp range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагування позначок початку/кінця (сині) визначає діапазон ухилу.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1571"/>
         <source>Tempo ramp duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Тривалість ухилу ритму</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="150"/>
@@ -11568,7 +11568,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMidiToolsForm.cpp" line="896"/>
         <source>temporamp</source>
-        <translation type="unfinished"></translation>
+        <translation>temporamp</translation>
     </message>
 </context>
 <context>
@@ -14985,7 +14985,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.ui" line="665"/>
         <source>Current total latency</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточна загальна латентність</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="147"/>
@@ -15126,12 +15126,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1666"/>
         <source>%1 ms (%2 frames)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 мс (%2 кадрів)</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.cpp" line="1670"/>
         <source>(no latency)</source>
-        <translation type="unfinished">(немає латентності)</translation>
+        <translation>(немає латентності)</translation>
     </message>
 </context>
 <context>
@@ -15394,7 +15394,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="877"/>
         <source>tempo ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>ухил ритму</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1019"/>
