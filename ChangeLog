@@ -4,14 +4,17 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.37  2023-12-05  An End-of-Autumn'23 Release.
 
-- Add default audio metronome sample files. (EXPERIMENTAL)
+- Fixed an ancient hack on session initialization to wait to JACK
+  service start up, which hang up while on pipewire-jack >= 1.0.0.
+
+- Add default audio metronome sample files.
 
 - Fixed automation curve rescaling across multiple, more than just
-  one or two, tempo-map node changes. (EXPERIMENTAL)
+  one or two, tempo-map node changes.
 
-- New MIDI Tool Resize / Legato duration option added. (EXPERIMENTAL)
+- New MIDI Tool Resize / Legato duration option added.
 
 - MIDI Clip Editor (aka. piano-roll) thumb-view now taking tempo-map
   changes into account.
