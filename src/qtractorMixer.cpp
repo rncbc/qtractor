@@ -627,7 +627,14 @@ void qtractorMixerStrip::updateName (void)
 	m_pLabel->setText(sName);
 	m_pLabel->update(); // Make sure icon and text gets visibly updated!
 
-	QFrame::setToolTip(sName + ' ' + sType);
+	if (m_pTrack)
+		QFrame::setToolTip(sName + ' ' + sType);
+	else
+	if (m_pBus) {
+		const QString sMode
+			= (m_busMode & qtractorBus::Input ? tr("In") : tr("Out"));
+		QFrame::setToolTip(sName + ' ' + sMode + ' ' + sType);
+	}
 }
 
 
