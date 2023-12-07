@@ -206,6 +206,7 @@ private:
 
 	QVBoxLayout            *m_pLayout;
 	IconLabel              *m_pLabel;
+	QFrame                 *m_pRibbon;
 	qtractorPluginListView *m_pPluginListView;
 	QHBoxLayout            *m_pButtonLayout;
 	qtractorMonitorButton  *m_pMonitorButton;
