@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -445,10 +445,19 @@ void qtractorTimeScaleForm::setCurrentMarker (
 	qtractorTimeScale::Marker *pMarker )
 {
 	QPalette pal;
-	if (pMarker)
+	if (pMarker) {
 		pal.setColor(QPalette::Text, pMarker->color);
-	else
-		pal.setColor(QPalette::Text, Qt::darkGray);
+	} else {
+		QColor color = Qt::darkGray;
+		qtractorOptions *pOptions = qtractorOptions::getInstance();
+		if (pOptions && !pOptions->sMarkerColor.isEmpty())
+		#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+			color = QColor::fromString(pOptions->sMarkerColor);
+		#else
+			color = QColor(pOptions->sMarkerColor);
+		#endif
+		pal.setColor(QPalette::Text, color);
+	}
 	m_ui.MarkerTextLineEdit->setPalette(pal);
 
 	if (pMarker)
@@ -1133,6 +1142,8 @@ void qtractorTimeScaleForm::markerColor (void)
 	if (color.isValid()) {
 		pal.setColor(QPalette::Text, color);
 		m_ui.MarkerTextLineEdit->setPalette(pal);
+		if (pOptions)
+			pOptions->sMarkerColor = color.name();
 		changed();
 	}
 }

@@ -229,6 +229,9 @@ public:
 	unsigned long iExportRangeEnd;
 	bool    bExportAddTrack;
 
+	// Marker color (LRU).
+	QString sMarkerColor;
+
 	// Session auto-save options.
 	bool    bAutoSaveEnabled;
 	int     iAutoSavePeriod;

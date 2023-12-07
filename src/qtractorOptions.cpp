@@ -245,6 +245,7 @@ void qtractorOptions::loadOptions (void)
 	iExportRangeStart = (unsigned long) m_settings.value("/ExportRangeStart", 0).toUInt();
 	iExportRangeEnd = (unsigned long) m_settings.value("/ExportRangeEnd", 0).toUInt();
 	bExportAddTrack = m_settings.value("/ExportAddTrack", false).toBool();
+	sMarkerColor = m_settings.value("/MarkerColor").toString();
 	m_settings.endGroup();
 
 	// Session auto-save group.
@@ -560,6 +561,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ExportRangeStart", uint(iExportRangeStart));
 	m_settings.setValue("/ExportRangeEnd", uint(iExportRangeEnd));
 	m_settings.setValue("/ExportAddTrack", bExportAddTrack);
+	m_settings.setValue("/MarkerColor", sMarkerColor);
 	m_settings.endGroup();
 
 	// Session auto-save group.

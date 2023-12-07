@@ -5,6 +5,8 @@ ChangeLog
 
 GIT HEAD
 
+- Remember last Marker color setting in Tempo Map/Markers dialog.
+
 - A colored ribbon is now featured on tracks-list Bus column and
   mixer-strip headers; ribbon colors are designated for Audio and
   MIDI tracks or buses, given by the respective '10dB' and 'Over'
