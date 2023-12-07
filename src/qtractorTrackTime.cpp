@@ -384,18 +384,6 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 		}
 	}
 
-	// Check location marker headers...
-	qtractorTimeScale::Marker *pMarker
-		= pTimeScale->markers().seekPixel(pos.x());
-	if (pMarker) {
-		rect.moveLeft(pTimeScale->pixelFromFrame(pMarker->frame) - d);
-		if (rect.contains(pos)) {
-			m_dragCursor = DragMarker;
-			m_pDragMarker = pMarker;
-			return true;
-		}
-	}
-
 	// Check edit-head header...
 	rect.moveLeft(pTrackView->editHeadX() - d);
 	if (rect.contains(pos)) {
@@ -408,6 +396,18 @@ bool qtractorTrackTime::dragHeadStart ( const QPoint& pos )
 	if (rect.contains(pos)) {
 		m_dragCursor = DragEditTail;
 		return true;
+	}
+
+	// Check location marker headers...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(pos.x());
+	if (pMarker) {
+		rect.moveLeft(pTimeScale->pixelFromFrame(pMarker->frame) - d);
+		if (rect.contains(pos)) {
+			m_dragCursor = DragMarker;
+			m_pDragMarker = pMarker;
+			return true;
+		}
 	}
 
 	// Reset cursor if any persist around.

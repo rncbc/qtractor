@@ -447,19 +447,6 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 		}
 	}
 
-	// Check location marker headers...
-	qtractorTimeScale::Marker *pMarker
-		= pTimeScale->markers().seekPixel(pos.x() + dx);
-	if (pMarker) {
-		unsigned long iFrame = pMarker->frame;
-		rect.moveLeft(pTimeScale->pixelFromFrame(iFrame) - dx);
-		if (rect.contains(pos)) {
-			m_dragCursor = DragMarker;
-			m_pDragMarker = pSession->timeScale()->markers().seekFrame(iFrame);
-			return true;
-		}
-	}
-
 	// Check edit-head header...
 	rect.moveLeft(m_pEditor->editHeadX() - d);
 	if (rect.contains(pos)) {
@@ -472,6 +459,19 @@ bool qtractorMidiEditTime::dragHeadStart ( const QPoint& pos )
 	if (rect.contains(pos)) {
 		m_dragCursor = DragEditTail;
 		return true;
+	}
+
+	// Check location marker headers...
+	qtractorTimeScale::Marker *pMarker
+		= pTimeScale->markers().seekPixel(pos.x() + dx);
+	if (pMarker) {
+		unsigned long iFrame = pMarker->frame;
+		rect.moveLeft(pTimeScale->pixelFromFrame(iFrame) - dx);
+		if (rect.contains(pos)) {
+			m_dragCursor = DragMarker;
+			m_pDragMarker = pSession->timeScale()->markers().seekFrame(iFrame);
+			return true;
+		}
 	}
 
 	// Reset cursor if any persist around.
