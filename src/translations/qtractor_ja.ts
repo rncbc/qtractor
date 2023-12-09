@@ -399,44 +399,44 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="744"/>
+        <location filename="../qtractorOptions.cpp" line="746"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>使用法: %1 [オプション] [セッションファイル]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="747"/>
+        <location filename="../qtractorOptions.cpp" line="749"/>
         <source>Options:</source>
         <translation>オプション:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="750"/>
-        <location filename="../qtractorOptions.cpp" line="772"/>
+        <location filename="../qtractorOptions.cpp" line="752"/>
+        <location filename="../qtractorOptions.cpp" line="774"/>
         <source>Set session identification (uuid)</source>
         <translation>セッションのID (uuid) をセット</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="753"/>
+        <location filename="../qtractorOptions.cpp" line="755"/>
         <source>Show help about command line options</source>
         <translation>コマンドラインオプションに関するヘルプを表示</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="755"/>
+        <location filename="../qtractorOptions.cpp" line="757"/>
         <source>Show version information</source>
         <translation>バージョン情報を表示します</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="777"/>
+        <location filename="../qtractorOptions.cpp" line="779"/>
         <source>Session file (.qtr)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="778"/>
+        <location filename="../qtractorOptions.cpp" line="780"/>
         <source>[session-file]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="785"/>
-        <location filename="../qtractorOptions.cpp" line="828"/>
+        <location filename="../qtractorOptions.cpp" line="787"/>
+        <location filename="../qtractorOptions.cpp" line="830"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -753,32 +753,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>トラックのインストルメント</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="112"/>
+        <location filename="../qtractorTrackList.cpp" line="109"/>
         <source>Automation (%1)</source>
         <translation>オートメーション (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="120"/>
+        <location filename="../qtractorTrackList.cpp" line="117"/>
         <source>none</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="254"/>
+        <location filename="../qtractorTrackList.cpp" line="251"/>
         <source>Automation</source>
         <translation>オートメーション</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="462"/>
-        <source>Audio</source>
-        <translation>音声</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrackList.cpp" line="475"/>
-        <source>MIDI</source>
-        <translation>MIDI</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrackList.cpp" line="541"/>
+        <location filename="../qtractorTrackList.cpp" line="540"/>
         <source>Unknown</source>
         <translation>不明</translation>
     </message>
@@ -8860,7 +8850,7 @@ Length:	%3</source>
     <name>qtractorMidiEditorForm</name>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2081"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2085"/>
         <source>MIDI Editor</source>
         <translation>MIDIエディタ</translation>
     </message>
@@ -9397,7 +9387,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="802"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2295"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2299"/>
         <source>&amp;None</source>
         <translation>なし(&amp;N)</translation>
     </message>
@@ -10516,7 +10506,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="351"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2115"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2119"/>
         <source>MOD</source>
         <translation>変更</translation>
     </message>
@@ -10527,7 +10517,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="359"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2120"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2124"/>
         <source>REC</source>
         <translation>記録</translation>
     </message>
@@ -10565,37 +10555,37 @@ Do you want to save the changes?</source>
 変更を保存しますか？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1221"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1225"/>
         <source>Save MIDI Clip</source>
         <translation>MIDIクリップの保存</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1223"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1227"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>MIDIファイル(*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1224"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1228"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1282"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1286"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation>MIDIファイルの保存: %1, トラックチャンネル: %2。</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2095"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2099"/>
         <source>Channel %1</source>
         <translation>チャンネル %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2098"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2102"/>
         <source>Track %1</source>
         <translation>トラック %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2105"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2109"/>
         <source>[modified]</source>
         <translation>[変更されました]</translation>
     </message>
@@ -11564,22 +11554,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1391"/>
+        <location filename="../qtractorMixer.cpp" line="1413"/>
         <source>Inputs</source>
         <translation>入力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1392"/>
+        <location filename="../qtractorMixer.cpp" line="1414"/>
         <source>Tracks</source>
         <translation>トラック</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1394"/>
+        <location filename="../qtractorMixer.cpp" line="1416"/>
         <source>Outputs</source>
         <translation>出力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1401"/>
+        <location filename="../qtractorMixer.cpp" line="1423"/>
         <source>Mixer</source>
         <translation>ミキサー</translation>
     </message>
@@ -11600,22 +11590,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1022"/>
+        <location filename="../qtractorMixer.cpp" line="1044"/>
         <source>&amp;Inputs</source>
         <translation>入力(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1026"/>
+        <location filename="../qtractorMixer.cpp" line="1048"/>
         <source>&amp;Outputs</source>
         <translation>出力(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1032"/>
+        <location filename="../qtractorMixer.cpp" line="1054"/>
         <source>&amp;Monitor</source>
         <translation>モニター(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1041"/>
+        <location filename="../qtractorMixer.cpp" line="1063"/>
         <source>&amp;Buses...</source>
         <translation>バス(&amp;B)...</translation>
     </message>
@@ -11623,34 +11613,44 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerStrip</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="365"/>
+        <location filename="../qtractorMixer.cpp" line="372"/>
         <source>inputs</source>
         <translation>入力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="365"/>
+        <location filename="../qtractorMixer.cpp" line="372"/>
         <source>outputs</source>
         <translation>出力</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="366"/>
+        <location filename="../qtractorMixer.cpp" line="373"/>
         <source>Connect %1</source>
         <translation>%1 の接続</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="613"/>
+        <location filename="../qtractorMixer.cpp" line="628"/>
         <source>(Audio)</source>
         <translation>(音声)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="618"/>
+        <location filename="../qtractorMixer.cpp" line="633"/>
         <source>(MIDI)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="622"/>
+        <location filename="../qtractorMixer.cpp" line="637"/>
         <source>(None)</source>
         <translation>(なし)</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="650"/>
+        <source>In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMixer.cpp" line="650"/>
+        <source>Out</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14608,7 +14608,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="453"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1163"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1174"/>
         <source>&amp;Add</source>
         <translation>追加(&amp;A)</translation>
     </message>
@@ -14619,7 +14619,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="466"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1168"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1179"/>
         <source>&amp;Update</source>
         <translation>アップデート(&amp;U)</translation>
     </message>
@@ -14630,7 +14630,7 @@ Do you want to apply the changes?</source>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="479"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1173"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1184"/>
         <source>&amp;Remove</source>
         <translation>削除(&amp;R)</translation>
     </message>
@@ -14645,14 +14645,14 @@ Do you want to apply the changes?</source>
         <translation>閉じる</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="552"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="823"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1030"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="561"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="832"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1039"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="553"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="562"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -14661,7 +14661,7 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="824"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="833"/>
         <source>About to remove tempo node:
 
 %1 (%2) %3  %4/%5
@@ -14674,7 +14674,7 @@ Are you sure?</source>
 よろしいですか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1031"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1040"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -14683,17 +14683,17 @@ Do you want to discard the changes?</source>
 この変更を破棄しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1054"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1063"/>
         <source>tempo factor</source>
         <translation>テンポファクター</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1131"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1140"/>
         <source>Marker Color</source>
         <translation>マーカーの色</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1180"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1191"/>
         <source>&amp;Refresh</source>
         <translation>更新(&amp;R)</translation>
     </message>
@@ -15130,32 +15130,32 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorTrackList</name>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="180"/>
+        <location filename="../qtractorTrackList.cpp" line="177"/>
         <source>Nr</source>
         <translation>番号</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="181"/>
+        <location filename="../qtractorTrackList.cpp" line="178"/>
         <source>Track Name</source>
         <translation>トラック名</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="182"/>
+        <location filename="../qtractorTrackList.cpp" line="179"/>
         <source>Bus</source>
         <translation>バス</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="183"/>
+        <location filename="../qtractorTrackList.cpp" line="180"/>
         <source>Ch</source>
         <translation>チャンネル</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="184"/>
+        <location filename="../qtractorTrackList.cpp" line="181"/>
         <source>Patch</source>
         <translation>パッチ</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="185"/>
+        <location filename="../qtractorTrackList.cpp" line="182"/>
         <source>Instrument</source>
         <translation>インストルメント</translation>
     </message>
