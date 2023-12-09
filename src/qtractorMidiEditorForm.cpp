@@ -1152,16 +1152,20 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	// (Re)try to position the editor in same of track view...
 	qtractorTracks *pTracks = pMainForm->tracks();
 	if (pTracks) {
+		qtractorTrackView *pTrackView = pTracks->trackView();
+		const QPoint& pos = pTrackView->mapFromGlobal(QCursor::pos());
 		unsigned long iFrame = pSession->frameFromPixel(
-			(pTracks->trackView())->contentsX());
+			pTrackView->contentsX() + (pos.x() > 0 ? pos.x() : 0));
 		if (iFrame  > m_pMidiEditor->offset()) {
 			iFrame -= m_pMidiEditor->offset();
 		} else {
 			iFrame = 0;
 		}
+		qtractorMidiEditView *pEditView = m_pMidiEditor->editView();
+		const int w2 = (pEditView->width() >> 1);
 		const int cx = pTimeScale->pixelFromFrame(iFrame);
-		const int cy = (m_pMidiEditor->editView())->contentsY();
-		(m_pMidiEditor->editView())->setContentsPos(cx, cy);
+		const int cy = pEditView->contentsY();
+		pEditView->setContentsPos((cx > w2 ? cx - w2 : cx), cy);
 	}
 
 	// (Re)sync local play/edit-head/tail (avoid follow playhead)...
