@@ -3,7 +3,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+
 GIT HEAD
+
+- Mitigate undifferentiated disablement of up/down arrow buttons,
+  on tempo and time-signature entry spin-boxes. (EXPERIMENTAL)
 
 - MIDI clip editors (aka. piano-roll) are now raised and centered
   to current mouse pointer position in main timeline (tracks-view).

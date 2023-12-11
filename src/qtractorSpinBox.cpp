@@ -1,7 +1,7 @@
 // qtractorSpinBox.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -522,6 +522,16 @@ qtractorTempoSpinBox::qtractorTempoSpinBox ( QWidget *pParent )
 		m_fDefaultTempo(120.0f), m_iDefaultBeatsPerBar(4),
 		m_iDefaultBeatDivisor(2), m_iValueChanged(0)
 {
+#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+	m_decp = QLocale().decimalPoint().at(0);
+#else
+	m_decp = QLocale().decimalPoint();
+#endif
+#else
+	m_decp = '.';
+#endif
+
 	QAbstractSpinBox::setAccelerated(true);
 
 	QObject::connect(this,
@@ -667,16 +677,7 @@ QValidator::State qtractorTempoSpinBox::validate ( QString& sText, int& iPos ) c
 		return QValidator::Acceptable;
 
 	const QChar& ch = sText.at(iPos - 1);
-#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-	const QChar& decp = QLocale().decimalPoint().at(0);
-#else
-	const QChar& decp = QLocale().decimalPoint();
-#endif
-#else
-	const QChar& decp = '.';
-#endif
-	if (ch == decp || ch == '/' || ch == ' ' || ch.isDigit())
+	if (ch == m_decp || ch == '/' || ch == ' ' || ch.isDigit())
 		return QValidator::Acceptable;
 	else
 		return QValidator::Invalid;
@@ -705,17 +706,8 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 	const QString& sText = pLineEdit->text();
 	const int iLength = sText.indexOf(' ');
 	if (iCursorPos < iLength + 1) {
-	#if 1//QTRACTOR_TEMPO_SPINBOX_LOCALE
-	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-		const QChar& decp = QLocale().decimalPoint().at(0);
-	#else
-		const QChar& decp = QLocale().decimalPoint();
-	#endif
-	#else
-		const QChar& decp = '.';
-	#endif
 		float fStep = 1.0f;
-		const int iDecimalPos = sText.indexOf(decp);
+		const int iDecimalPos = sText.indexOf(m_decp);
 		if (iDecimalPos >= 0 && iDecimalPos < iCursorPos) {
 			int i = iCursorPos - iDecimalPos;
 			while (--i > 0) fStep *= 0.1f;
@@ -735,6 +727,7 @@ void qtractorTempoSpinBox::stepBy ( int iSteps )
 QAbstractSpinBox::StepEnabled qtractorTempoSpinBox::stepEnabled (void) const
 {
 	StepEnabled flags = StepNone;
+#if 0
 	const float fTempo = tempo();
 	const unsigned short iBeatsPerBar = beatsPerBar();
 	const unsigned short iBeatDivisor = beatDivisor();
@@ -742,6 +735,33 @@ QAbstractSpinBox::StepEnabled qtractorTempoSpinBox::stepEnabled (void) const
 		flags |= StepDownEnabled;
 	if (fTempo < 1000.0f && iBeatsPerBar < 128 && iBeatDivisor < 8)
 		flags |= StepUpEnabled;
+#else
+	QLineEdit *pLineEdit = QAbstractSpinBox::lineEdit();
+	const int iCursorPos = pLineEdit->cursorPosition();
+	const QString& sText = pLineEdit->text();
+	const int iLength = sText.indexOf(' ');
+	if (iCursorPos < iLength + 1) {
+		const float fTempo = tempo();
+		if (fTempo > 1.0f)
+			flags |= StepDownEnabled;
+		if (fTempo < 1000.0f)
+			flags |= StepUpEnabled;
+	}
+	else
+	if (iCursorPos > sText.indexOf('/')) {
+		const unsigned short iBeatDivisor = beatDivisor();
+		if (iBeatDivisor > 1)
+			flags |= StepDownEnabled;
+		if (iBeatDivisor < 8)
+			flags |= StepUpEnabled;
+	} else {
+		const unsigned short iBeatsPerBar = beatsPerBar();
+		if (iBeatsPerBar > 2)
+			flags |= StepDownEnabled;
+		if (iBeatsPerBar < 128)
+			flags |= StepUpEnabled;
+	}
+#endif
 	return flags;
 }
 
