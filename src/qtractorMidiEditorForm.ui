@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>840</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -168,6 +168,7 @@
     <addaction name="separator"/>
     <addaction name="viewPreviewAction"/>
     <addaction name="viewFollowAction"/>
+    <addaction name="transportPanicAction"/>
    </widget>
    <widget class="QMenu" name="toolsMenu">
     <property name="title">
@@ -196,13 +197,13 @@
      <addaction name="editModeDrawAction"/>
     </widget>
     <widget class="QMenu" name="editSelectMenu">
-     <property name="title" >
+     <property name="title">
       <string>&amp;Select</string>
      </property>
      <addaction name="editSelectAllAction"/>
      <addaction name="editSelectNoneAction"/>
      <addaction name="editSelectInvertAction"/>
-     <addaction name="separator" />
+     <addaction name="separator"/>
      <addaction name="editSelectRangeAction"/>
     </widget>
     <widget class="QMenu" name="editInsertMenu">
@@ -215,7 +216,7 @@
     <widget class="QMenu" name="editRemoveMenu">
      <property name="title">
       <string>Remo&amp;ve</string>
-     </property> 
+     </property>
      <addaction name="editRemoveRangeAction"/>
     </widget>
     <addaction name="editUndoAction"/>
@@ -232,9 +233,8 @@
     <addaction name="editSelectMenu"/>
     <addaction name="separator"/>
     <addaction name="editInsertMenu"/>
-	<addaction name="editRemoveMenu"/>
+    <addaction name="editRemoveMenu"/>
     <addaction name="separator"/>
-    <addaction name="toolsMenu"/>
    </widget>
    <widget class="QMenu" name="transportMenu">
     <property name="title">
@@ -255,7 +255,6 @@
     <addaction name="transportPunchAction"/>
     <addaction name="transportPunchSetAction"/>
     <addaction name="separator"/>
-    <addaction name="transportPanicAction"/>
    </widget>
    <widget class="QMenu" name="helpMenu">
     <property name="title">
@@ -324,6 +323,8 @@
    <addaction name="separator"/>
    <addaction name="viewPreviewAction"/>
    <addaction name="viewFollowAction"/>
+   <addaction name="separator"/>
+   <addaction name="transportPanicAction"/>
   </widget>
   <widget class="QToolBar" name="transportToolbar">
    <property name="orientation">
@@ -333,7 +334,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <addaction name="transportBackwardAction"/>
    <addaction name="transportRewindAction"/>
@@ -347,8 +348,6 @@
    <addaction name="transportRecordAction"/>
    <addaction name="separator"/>
    <addaction name="transportPunchAction"/>
-   <addaction name="separator"/>
-   <addaction name="transportPanicAction"/>
   </widget>
   <widget class="QToolBar" name="timeToolbar">
    <property name="orientation">
@@ -520,7 +519,7 @@
   </action>
   <action name="filePropertiesAction">
    <property name="icon">
-    <iconset resource="qtractor.qrc">:/images/clipEdit.png</iconset>
+    <iconset resource="qtractor.qrc">:/images/clipProperties.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Properties...</string>
