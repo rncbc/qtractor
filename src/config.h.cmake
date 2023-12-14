@@ -139,6 +139,9 @@
 /* Define if LV2 State Make Path feature is available. */
 #cmakedefine CONFIG_LV2_STATE_MAKE_PATH @CONFIG_LV2_STATE_MAKE_PATH@
 
+/* Define if LV2 State Free Path feature is available. */
+#cmakedefine CONFIG_LV2_STATE_FREE_PATH @CONFIG_LV2_STATE_FREE_PATH@
+
 /* Define if LV2 Programs extension is available. */
 #cmakedefine CONFIG_LV2_PROGRAMS @CONFIG_LV2_PROGRAMS@
 
