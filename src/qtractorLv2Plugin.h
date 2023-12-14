@@ -629,6 +629,10 @@ private:
 	LV2_Feature                m_lv2_state_make_path_feature;
 	LV2_State_Make_Path        m_lv2_state_make_path;
 #endif
+#ifdef CONFIG_LV2_STATE_FREE_PATH
+	LV2_Feature                m_lv2_state_free_path_feature;
+	LV2_State_Free_Path        m_lv2_state_free_path;
+#endif
 	QString                    m_lv2_state_save_dir;
 #endif
 

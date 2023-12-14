@@ -694,6 +694,25 @@ static char *qtractor_lv2_state_make_path (
 
 #endif	// CONFIG_LV2_STATE_MAKE_PATH
 
+#ifdef CONFIG_LV2_STATE_FREE_PATH
+
+static void qtractor_lv2_state_free_path (
+	LV2_State_Make_Path_Handle handle, char *path )
+{
+	qtractorLv2Plugin *pLv2Plugin
+		= static_cast<qtractorLv2Plugin *> (handle);
+	if (pLv2Plugin == nullptr)
+		return;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_state_free_path(%p, \"%s\")", pLv2Plugin, path);
+#endif
+
+	::free((void *) path);
+}
+
+#endif	// CONFIG_LV2_STATE_FREE_PATH
+
 #endif	// CONFIG_LV2_STATE_FILES
 
 
@@ -2274,7 +2293,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_features = new LV2_Feature * [iFeatures + 7];
+	m_lv2_features = new LV2_Feature * [iFeatures + 8];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
 
@@ -2306,6 +2325,17 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	m_lv2_features[iFeatures++] = &m_lv2_state_make_path_feature;
 
 #endif	// CONFIG_LV2_STATE_MAKE_PATH
+
+#ifdef CONFIG_LV2_STATE_FREE_PATH
+
+	m_lv2_state_free_path.handle = this;
+	m_lv2_state_free_path.free_path = &qtractor_lv2_state_free_path;
+
+	m_lv2_state_free_path_feature.URI = LV2_STATE__freePath;
+	m_lv2_state_free_path_feature.data = &m_lv2_state_free_path;
+	m_lv2_features[iFeatures++] = &m_lv2_state_free_path_feature;
+
+#endif	// CONFIG_LV2_STATE_FREE_PATH
 
 #endif	// CONFIG_LV2_STATE_FILES
 
