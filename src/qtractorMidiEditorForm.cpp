@@ -1154,8 +1154,9 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	if (pTracks) {
 		qtractorTrackView *pTrackView = pTracks->trackView();
 		const QPoint& pos = pTrackView->mapFromGlobal(QCursor::pos());
+		const int w1 = (pTrackView->width() >> 1);
 		unsigned long iFrame = pSession->frameFromPixel(
-			pTrackView->contentsX() + (pos.x() > 0 ? pos.x() : 0));
+			pTrackView->contentsX() + (pos.x() > w1 ? pos.x() : 0));
 		if (iFrame  > m_pMidiEditor->offset()) {
 			iFrame -= m_pMidiEditor->offset();
 		} else {
