@@ -81,7 +81,6 @@
    <addaction name="separator"/>
    <addaction name="clipNewAction"/>
    <addaction name="clipEditAction"/>
-   <addaction name="clipPropertiesAction"/>
   </widget>
   <widget class="QToolBar" name="trackToolbar">
    <property name="orientation">
@@ -184,7 +183,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -285,7 +284,7 @@
       </property>
      </widget>
      <addaction name="trackCurveSelectMenu"/>
-     <addaction name="separator"/>
+     <addaction name="separator" />
      <addaction name="separator"/>
      <addaction name="trackCurveModeMenu"/>
      <addaction name="trackCurveLockedAction"/>
@@ -364,7 +363,6 @@
     </widget>
     <addaction name="clipNewAction"/>
     <addaction name="clipEditAction"/>
-    <addaction name="clipPropertiesAction"/>
     <addaction name="separator"/>
     <addaction name="clipTakeMenu"/>
     <addaction name="clipUnlinkAction"/>
@@ -3111,26 +3109,6 @@
    </property>
    <property name="statusTip">
     <string>Show information about the Qt toolkit</string>
-   </property>
-  </action>
-  <action name="clipPropertiesAction">
-   <property name="icon">
-    <iconset resource="qtractor.qrc">:/images/clipProperties.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Properties...</string>
-   </property>
-   <property name="iconText">
-    <string>Properties</string>
-   </property>
-   <property name="toolTip">
-    <string>Properties</string>
-   </property>
-   <property name="statusTip">
-    <string>Edit current MIDI clip properties</string>
-   </property>
-   <property name="shortcut">
-    <string>Shift+F4</string>
    </property>
   </action>
  </widget>
