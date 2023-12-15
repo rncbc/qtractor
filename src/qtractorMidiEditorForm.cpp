@@ -183,7 +183,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_ui.timeToolbar->addWidget(m_pTimeSig2ResetButton);
 
 	// Snap-per-beat combo-box.
-	m_pSnapPerBeatComboBox = new QComboBox(m_ui.viewToolbar);
+	m_pSnapPerBeatComboBox = new QComboBox(m_ui.timeToolbar);
 	m_pSnapPerBeatComboBox->setEditable(false);
 
 	// Event type selection widgets...
@@ -306,8 +306,8 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	}
 
 	// Add combo-boxes to toolbars...
-	m_ui.viewToolbar->addSeparator();
-	m_ui.viewToolbar->addWidget(m_pSnapPerBeatComboBox);
+	m_ui.timeToolbar->addSeparator();
+	m_ui.timeToolbar->addWidget(m_pSnapPerBeatComboBox);
 
 	m_ui.editViewToolbar->addWidget(m_pViewTypeComboBox);
 
