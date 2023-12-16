@@ -372,6 +372,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	pStatusBar->addPermanentWidget(m_pDurationLabel);
 
 	m_pRedPalette = new QPalette(pStatusBar->palette());
+	m_pRedPalette->setColor(QPalette::WindowText, Qt::darkRed);
 	m_pRedPalette->setColor(QPalette::Window, Qt::red);
 
 	// Some actions surely need those
