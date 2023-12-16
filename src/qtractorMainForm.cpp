@@ -577,18 +577,22 @@ qtractorMainForm::qtractorMainForm (
 	m_paletteItems[PaletteNone] = pPalette;
 
 	pPalette = new QPalette(spal);
+	pPalette->setColor(QPalette::WindowText, Qt::darkRed);
 	pPalette->setColor(QPalette::Window, Qt::red);
 	m_paletteItems[PaletteRed] = pPalette;
 
 	pPalette = new QPalette(spal);
+	pPalette->setColor(QPalette::WindowText, Qt::darkYellow);
 	pPalette->setColor(QPalette::Window, Qt::yellow);
 	m_paletteItems[PaletteYellow] = pPalette;
 
 	pPalette = new QPalette(spal);
+	pPalette->setColor(QPalette::WindowText, Qt::darkCyan);
 	pPalette->setColor(QPalette::Window, Qt::cyan);
 	m_paletteItems[PaletteCyan] = pPalette;
 
 	pPalette = new QPalette(spal);
+	pPalette->setColor(QPalette::WindowText, Qt::darkGreen);
 	pPalette->setColor(QPalette::Window, Qt::green);
 	m_paletteItems[PaletteGreen] = pPalette;
 
