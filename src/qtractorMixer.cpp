@@ -204,8 +204,8 @@ protected:
 		const int x = rect.x() + 1;
 		const int y = rect.y() + ((rect.height() - 16) >> 1) + 1;
 		painter.drawPixmap(x, y, m_icon.pixmap(16));
-		rect.setX(x + 16);
-		painter.drawText(rect, QLabel::alignment(), QLabel::text());
+		rect.adjust(+16, 0, -1, 0);
+		painter.drawText(rect, QLabel::alignment() | Qt::TextSingleLine, QLabel::text());
 	}
 
 private:
