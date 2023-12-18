@@ -1164,6 +1164,10 @@ void qtractorTrackForm::foregroundColorChanged ( const QString& sText )
 
 	updateColorText(m_ui.ForegroundColorComboBox, m_props.foreground);
 	trackIconChanged();
+	//AutoBackground
+	if(m_ui.AutoBackgroundColor->isChecked()){
+	updateColorText(m_ui.BackgroundColorComboBox, m_props.foreground.lighter(200));
+	}
 }
 
 
@@ -1549,6 +1553,10 @@ void qtractorTrackForm::selectForegroundColor (void)
 		m_props.foreground = color;
 		updateColorItem(m_ui.ForegroundColorComboBox, color);
 		trackIconChanged();
+	}
+	//AutoBackground
+	if(m_ui.AutoBackgroundColor->isChecked()){
+	updateColorItem(m_ui.BackgroundColorComboBox, color.lighter(200));
 	}
 }
 
