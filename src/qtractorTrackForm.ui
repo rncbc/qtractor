@@ -262,20 +262,11 @@
           <string>MIDI / Instrument</string>
          </property>
          <layout class="QGridLayout">
-          <property name="leftMargin">
-           <number>8</number>
-          </property>
-          <property name="topMargin">
-           <number>8</number>
-          </property>
-          <property name="rightMargin">
-           <number>8</number>
-          </property>
-          <property name="bottomMargin">
-           <number>8</number>
-          </property>
           <property name="spacing">
            <number>4</number>
+          </property>
+          <property name="margin">
+           <number>8</number>
           </property>
           <item row="3" column="0">
            <widget class="QLabel" name="ProgTextLabel">
@@ -559,6 +550,16 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QCheckBox" name="AutoBackgroundColorCheckBox">
+            <property name="text">
+             <string>Auto</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -789,6 +790,7 @@
   <tabstop>ForegroundColorToolButton</tabstop>
   <tabstop>BackgroundColorComboBox</tabstop>
   <tabstop>BackgroundColorToolButton</tabstop>
+  <tabstop>AutoBackgroundColorCheckBox</tabstop>
   <tabstop>PluginListView</tabstop>
   <tabstop>AddPluginToolButton</tabstop>
   <tabstop>RemovePluginToolButton</tabstop>

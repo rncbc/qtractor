@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Track Properties (dialog): auto-background color option added.
+
 - Mitigate undifferentiated disablement of up/down arrow buttons,
   on tempo and time-signature entry spin-boxes. (EXPERIMENTAL)
 

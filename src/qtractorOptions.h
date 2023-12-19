@@ -232,6 +232,9 @@ public:
 	// Marker color (LRU).
 	QString sMarkerColor;
 
+	// Track auto-background color option.
+	bool bAutoBackgroundColor;
+
 	// Session auto-save options.
 	bool    bAutoSaveEnabled;
 	int     iAutoSavePeriod;
