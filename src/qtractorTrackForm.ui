@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>618</width>
-    <height>570</height>
+    <width>380</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -110,16 +110,7 @@
          <property name="spacing">
           <number>4</number>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
@@ -131,16 +122,7 @@
             <property name="spacing">
              <number>4</number>
             </property>
-            <property name="leftMargin">
-             <number>8</number>
-            </property>
-            <property name="topMargin">
-             <number>8</number>
-            </property>
-            <property name="rightMargin">
-             <number>8</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>8</number>
             </property>
             <item>
@@ -175,16 +157,7 @@
             <property name="spacing">
              <number>4</number>
             </property>
-            <property name="leftMargin">
-             <number>8</number>
-            </property>
-            <property name="topMargin">
-             <number>8</number>
-            </property>
-            <property name="rightMargin">
-             <number>8</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>8</number>
             </property>
             <item>
@@ -261,20 +234,11 @@
           <string>MIDI / Instrument</string>
          </property>
          <layout class="QGridLayout">
-          <property name="leftMargin">
-           <number>8</number>
-          </property>
-          <property name="topMargin">
-           <number>8</number>
-          </property>
-          <property name="rightMargin">
-           <number>8</number>
-          </property>
-          <property name="bottomMargin">
-           <number>8</number>
-          </property>
           <property name="spacing">
            <number>4</number>
+          </property>
+          <property name="margin">
+           <number>8</number>
           </property>
           <item row="3" column="0">
            <widget class="QLabel" name="ProgTextLabel">
@@ -407,16 +371,7 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <property name="leftMargin">
-           <number>8</number>
-          </property>
-          <property name="topMargin">
-           <number>8</number>
-          </property>
-          <property name="rightMargin">
-           <number>8</number>
-          </property>
-          <property name="bottomMargin">
+          <property name="margin">
            <number>8</number>
           </property>
           <item>
@@ -481,7 +436,7 @@
             <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" stdset="0">
+            <property name="sizeHint">
              <size>
               <width>8</width>
               <height>8</height>
@@ -495,7 +450,7 @@
              <string>Bac&amp;kground:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>BackgroundColorComboBox</cstring>
@@ -627,7 +582,7 @@
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeHint" stdset="0">
+           <property name="sizeHint">
             <size>
              <width>8</width>
              <height>8</height>
@@ -696,16 +651,7 @@
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
@@ -716,7 +662,7 @@
            <property name="sizeType">
             <enum>QSizePolicy::Expanding</enum>
            </property>
-           <property name="sizeHint" stdset="0">
+           <property name="sizeHint">
             <size>
              <width>8</width>
              <height>8</height>
