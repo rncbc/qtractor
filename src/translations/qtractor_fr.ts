@@ -15098,12 +15098,12 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>(Pas d&apos;instrument)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1701"/>
+        <location filename="../qtractorTrackForm.cpp" line="1699"/>
         <source>%1 ms (%2 frames)</source>
         <translation>%1 ms (%2 trames)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1705"/>
+        <location filename="../qtractorTrackForm.cpp" line="1703"/>
         <source>(no latency)</source>
         <translation>(pas de latence)</translation>
     </message>
@@ -15115,27 +15115,27 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>(Rien)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1256"/>
+        <location filename="../qtractorTrackForm.cpp" line="1254"/>
         <source>Image files (%1)</source>
         <translation>Fichiers image (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1257"/>
+        <location filename="../qtractorTrackForm.cpp" line="1255"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1253"/>
+        <location filename="../qtractorTrackForm.cpp" line="1251"/>
         <source>Track Icon</source>
         <translation>Icône de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1569"/>
+        <location filename="../qtractorTrackForm.cpp" line="1567"/>
         <source>Foreground Color</source>
         <translation>Couleur d&apos;avant-plan</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1595"/>
+        <location filename="../qtractorTrackForm.cpp" line="1593"/>
         <source>Background Color</source>
         <translation>Couleur d&apos;arrière-plan</translation>
     </message>

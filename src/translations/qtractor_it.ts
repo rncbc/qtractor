@@ -15068,12 +15068,12 @@ Vuoi applicare le modifiche?</translation>
         <translation>(Nessuno strumento)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1701"/>
+        <location filename="../qtractorTrackForm.cpp" line="1699"/>
         <source>%1 ms (%2 frames)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1705"/>
+        <location filename="../qtractorTrackForm.cpp" line="1703"/>
         <source>(no latency)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15090,27 +15090,27 @@ Vuoi applicare le modifiche?</translation>
         <translation>&amp;Icona personalizzata...</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1256"/>
+        <location filename="../qtractorTrackForm.cpp" line="1254"/>
         <source>Image files (%1)</source>
         <translation>File di immagini (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1257"/>
+        <location filename="../qtractorTrackForm.cpp" line="1255"/>
         <source>All files (*.*)</source>
         <translation>Tutti i file (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1253"/>
+        <location filename="../qtractorTrackForm.cpp" line="1251"/>
         <source>Track Icon</source>
         <translation>Icona della traccia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1569"/>
+        <location filename="../qtractorTrackForm.cpp" line="1567"/>
         <source>Foreground Color</source>
         <translation>Colore primo piano</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1595"/>
+        <location filename="../qtractorTrackForm.cpp" line="1593"/>
         <source>Background Color</source>
         <translation>Colore di sfondo</translation>
     </message>

@@ -1184,8 +1184,6 @@ void qtractorTrackForm::foregroundColorChanged ( const QString& sText )
 	m_props.foreground = QColor(sText);
 
 	updateColorText(m_ui.ForegroundColorComboBox, m_props.foreground);
-	trackIconChanged();
-
 	autoBackgroundColorChanged();
 }
 

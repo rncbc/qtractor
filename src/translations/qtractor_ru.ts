@@ -14740,37 +14740,37 @@ Do you want to apply the changes?</source>
         <translation>(Нет инструмента)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1256"/>
+        <location filename="../qtractorTrackForm.cpp" line="1254"/>
         <source>Image files (%1)</source>
         <translation>Файлы изображений (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1257"/>
+        <location filename="../qtractorTrackForm.cpp" line="1255"/>
         <source>All files (*.*)</source>
         <translation>Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1701"/>
+        <location filename="../qtractorTrackForm.cpp" line="1699"/>
         <source>%1 ms (%2 frames)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1705"/>
+        <location filename="../qtractorTrackForm.cpp" line="1703"/>
         <source>(no latency)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1253"/>
+        <location filename="../qtractorTrackForm.cpp" line="1251"/>
         <source>Track Icon</source>
         <translation>Значок дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1569"/>
+        <location filename="../qtractorTrackForm.cpp" line="1567"/>
         <source>Foreground Color</source>
         <translation>Цвет переднего плана</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1595"/>
+        <location filename="../qtractorTrackForm.cpp" line="1593"/>
         <source>Background Color</source>
         <translation>Цвет фона</translation>
     </message>

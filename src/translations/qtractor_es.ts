@@ -15090,12 +15090,12 @@ Do you want to apply the changes?</source>
         <translation>(No hay instrumento)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1701"/>
+        <location filename="../qtractorTrackForm.cpp" line="1699"/>
         <source>%1 ms (%2 frames)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1705"/>
+        <location filename="../qtractorTrackForm.cpp" line="1703"/>
         <source>(no latency)</source>
         <translation type="unfinished">(sin latencia)</translation>
     </message>
@@ -15112,27 +15112,27 @@ Do you want to apply the changes?</source>
         <translation>&amp;Icono personalizado...</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1256"/>
+        <location filename="../qtractorTrackForm.cpp" line="1254"/>
         <source>Image files (%1)</source>
         <translation>Archivos de imagen (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1257"/>
+        <location filename="../qtractorTrackForm.cpp" line="1255"/>
         <source>All files (*.*)</source>
         <translation>Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1253"/>
+        <location filename="../qtractorTrackForm.cpp" line="1251"/>
         <source>Track Icon</source>
         <translation>Icono de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1569"/>
+        <location filename="../qtractorTrackForm.cpp" line="1567"/>
         <source>Foreground Color</source>
         <translation>Color destacado</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1595"/>
+        <location filename="../qtractorTrackForm.cpp" line="1593"/>
         <source>Background Color</source>
         <translation>Color de Fondo</translation>
     </message>

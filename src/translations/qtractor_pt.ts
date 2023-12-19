@@ -14952,27 +14952,27 @@ Do you want to apply the changes?</source>
 Você quer mesmo manter as alterações?</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1256"/>
+        <location filename="../qtractorTrackForm.cpp" line="1254"/>
         <source>Image files (%1)</source>
         <translation>Arquivos de Imagem (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1257"/>
+        <location filename="../qtractorTrackForm.cpp" line="1255"/>
         <source>All files (*.*)</source>
         <translation>Todos os arquivos (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1701"/>
+        <location filename="../qtractorTrackForm.cpp" line="1699"/>
         <source>%1 ms (%2 frames)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1705"/>
+        <location filename="../qtractorTrackForm.cpp" line="1703"/>
         <source>(no latency)</source>
         <translation type="unfinished">(sem latência)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1253"/>
+        <location filename="../qtractorTrackForm.cpp" line="1251"/>
         <source>Track Icon</source>
         <translation>Figura da Pista</translation>
     </message>
@@ -15132,12 +15132,12 @@ Você quer mesmo manter as alterações?</translation>
         <translation>Remover plugin</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1569"/>
+        <location filename="../qtractorTrackForm.cpp" line="1567"/>
         <source>Foreground Color</source>
         <translation>Cor do Primeiro Plano</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.cpp" line="1595"/>
+        <location filename="../qtractorTrackForm.cpp" line="1593"/>
         <source>Background Color</source>
         <translation>Cor do segundo plano</translation>
     </message>
