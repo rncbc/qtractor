@@ -7467,22 +7467,22 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="135"/>
         <source>Cabasa</source>
-        <translation type="unfinished"></translation>
+        <translation>Кабаса</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="136"/>
         <source>Maracas</source>
-        <translation type="unfinished"></translation>
+        <translation>Маракас</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="137"/>
         <source>Short Whistle</source>
-        <translation type="unfinished"></translation>
+        <translation>Короткий свисток</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="138"/>
         <source>Long Whistle</source>
-        <translation type="unfinished"></translation>
+        <translation>Довгий свисток</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="139"/>
@@ -7557,137 +7557,137 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="200"/>
         <source>Data Entry (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Запис даних (грубо)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="201"/>
         <source>Volume (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Гучність (грубо)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="202"/>
         <source>Balance (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Баланс (грубо)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="203"/>
         <source>Pan Position (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Позиція панорамування (грубо)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="204"/>
         <source>Expression (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Вираз (грубо)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="205"/>
         <source>Effect Control 1 (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Контроль ефекту 1 (грубо)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="206"/>
         <source>Effect Control 2 (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Контроль ефекту 2 (грубо)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="207"/>
         <source>General Purpose Slider 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Повзунок загального призначення 1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="208"/>
         <source>General Purpose Slider 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Повзунок загального призначення 2</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="209"/>
         <source>General Purpose Slider 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Повзунок загального призначення 3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="210"/>
         <source>General Purpose Slider 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Повзунок загального призначення 4</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="211"/>
         <source>Bank Select (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибір банку (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="212"/>
         <source>Modulation Wheel (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Колесо модуляції (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="213"/>
         <source>Breath Controller (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Контролер дихання (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="214"/>
         <source>Foot Pedal (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ножна педаль (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="215"/>
         <source>Portamento Time (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Час портаменто (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="216"/>
         <source>Data Entry (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Введення даних (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="217"/>
         <source>Volume (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Гучність (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="218"/>
         <source>Balance (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Баланс (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="219"/>
         <source>Pan Position (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Позиція панорамування (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="220"/>
         <source>Expression (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Вираз (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="221"/>
         <source>Effect Control 1 (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Контроль ефекту 1 (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="222"/>
         <source>Effect Control 2 (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Контроль ефекту 2 (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="223"/>
         <source>Hold Pedal (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Утримання педалі (увімкн./вимкн.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="224"/>
         <source>Portamento (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Портаменто (увімкн./вимкн.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="226"/>
         <source>Soft Pedal (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>М&apos;яка педаль (увімкн./вимкн.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="227"/>
         <source>Legato Pedal (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Педаль легато (увімкн./вимкн.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="228"/>
@@ -7697,117 +7697,117 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="229"/>
         <source>Sound Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Звукова варіація</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="238"/>
         <source>General Purpose Button 1 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Кнопка загального призначення 1 (увімкн./вимкн.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="239"/>
         <source>General Purpose Button 2 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Кнопка загального призначення 2 (увімкн./вимкн.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="240"/>
         <source>General Purpose Button 3 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Кнопка загального призначення 3 (увімкн./вимкн.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="241"/>
         <source>General Purpose Button 4 (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Кнопка загального призначення 4 (увімкн./вимкн.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="242"/>
         <source>Effects Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Рівень ефектів</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="244"/>
         <source>Chorus Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Рівень хору</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="245"/>
         <source>Celeste Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Рівень модераторної педалі</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="246"/>
         <source>Phaser Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Рівень фазера</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="247"/>
         <source>Data Button Increment</source>
-        <translation type="unfinished"></translation>
+        <translation>Приріс кнопки даних</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="248"/>
         <source>Data Button Decrement</source>
-        <translation type="unfinished"></translation>
+        <translation>Зменшення кнопки даних</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="249"/>
         <source>Non-Registered Parameter (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Незареєстрований параметр (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="250"/>
         <source>Non-Registered Parameter (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Незареєстрований параметр (грубо)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="251"/>
         <source>Registered Parameter (fine)</source>
-        <translation type="unfinished"></translation>
+        <translation>Зареєстрований параметр (тонко)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="252"/>
         <source>Registered Parameter (coarse)</source>
-        <translation type="unfinished"></translation>
+        <translation>Зареєстрований параметр (грубо)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="253"/>
         <source>All Sound Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкнути увесь звук</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="254"/>
         <source>All Controllers Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкнути усі контролери</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="255"/>
         <source>Local Keyboard (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Локальна клавіатура (увімкн./вимкн.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="256"/>
         <source>All Notes Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкнути усі ноти</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="257"/>
         <source>Omni Mode Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкнути омнірежим</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="258"/>
         <source>Omni Mode On</source>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнути омнірежим</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="259"/>
         <source>Mono Operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Монодія</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="260"/>
         <source>Poly Operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Полідія</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="305"/>
@@ -7941,12 +7941,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="363"/>
         <source>Drum Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Рівень ударних</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="364"/>
         <source>Drum Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель ударних</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="365"/>
@@ -7966,17 +7966,17 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="423"/>
         <source>Modulation Wheel (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Колесо модуляції (14-бітове)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="424"/>
         <source>Breath Controller (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Контролер дихання (14-бітовий)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="425"/>
         <source>Foot Pedal (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ножна педаль (14-бітова)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="426"/>
@@ -7986,12 +7986,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="427"/>
         <source>Volume (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Гучність (14-бітова)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="428"/>
         <source>Balance (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Баланс (14-бітовий)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="429"/>
@@ -8016,27 +8016,27 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="433"/>
         <source>General Purpose Slider 1 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повзунок загального призначення 1 (14-бітовий)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="434"/>
         <source>General Purpose Slider 2 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повзунок загального призначення 2 (14-бітовий)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="435"/>
         <source>General Purpose Slider 3 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повзунок загального призначення 3 (14-бітовий)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="436"/>
         <source>General Purpose Slider 4 (14bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повзунок загального призначення 4 (14-бітовий)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="504"/>
         <source>Chromatic</source>
-        <translation type="unfinished"></translation>
+        <translation>Хроматична</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="505"/>
@@ -8051,12 +8051,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="507"/>
         <source>Melodic Minor (Asc)</source>
-        <translation type="unfinished"></translation>
+        <translation>Мелодична мінор (зрост.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="508"/>
         <source>Melodic Minor (Desc)</source>
-        <translation type="unfinished"></translation>
+        <translation>Мелодична мінор (спад.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="509"/>
@@ -8066,22 +8066,22 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="510"/>
         <source>Pentatonic Major</source>
-        <translation type="unfinished"></translation>
+        <translation>Пентатонічний мажор</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="511"/>
         <source>Pentatonic Minor</source>
-        <translation type="unfinished"></translation>
+        <translation>Пентатонічний мінор</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="512"/>
         <source>Pentatonic Blues</source>
-        <translation type="unfinished"></translation>
+        <translation>Пентатонічний блюз</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="513"/>
         <source>Pentatonic Neutral</source>
-        <translation type="unfinished"></translation>
+        <translation>Пентатонічний нейтральний</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="514"/>
@@ -8137,7 +8137,7 @@ Length:	%3</source>
         <location filename="../qtractorMidiEditor.cpp" line="524"/>
         <location filename="../qtractorMidiEditor.cpp" line="547"/>
         <source>Eight Tone Spanish</source>
-        <translation type="unfinished"></translation>
+        <translation>Восьмитоновий іспанський</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="525"/>
@@ -8257,7 +8257,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="552"/>
         <source>Algerian</source>
-        <translation type="unfinished"></translation>
+        <translation>Алжирська</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="553"/>
@@ -8297,7 +8297,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="571"/>
         <source>Javaneese</source>
-        <translation type="unfinished"></translation>
+        <translation>Яванська</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="576"/>
@@ -11655,12 +11655,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMixer.cpp" line="650"/>
         <source>In</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхід</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="650"/>
         <source>Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Вихід</translation>
     </message>
 </context>
 <context>
@@ -14925,7 +14925,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorTrackForm.ui" line="507"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Авто</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="521"/>
