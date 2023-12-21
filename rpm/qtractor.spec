@@ -16,8 +16,8 @@
 #
 
 %define name    qtractor
-%define version 0.9.37
-%define release 80.1
+%define version 0.9.38
+%define release 81.1
 
 %define _prefix	/usr
 
@@ -201,6 +201,8 @@ cmake --install build
 %{_datadir}/%{name}/audio/metro_*.wav
 
 %changelog
+* Thu Dec 21 2023 Rui Nuno Capela <rncbc@rncbc.org> 0.9.38
+- An End-of-Year'23 Release.
 * Tue Dec  5 2023 Rui Nuno Capela <rncbc@rncbc.org> 0.9.37
 - An End-of-Autumn'23 Release.
 * Fri Nov 10 2023 Rui Nuno Capela <rncbc@rncbc.org> 0.9.36
