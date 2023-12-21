@@ -11653,12 +11653,12 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMixer.cpp" line="650"/>
         <source>In</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrée</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="650"/>
         <source>Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortie</translation>
     </message>
 </context>
 <context>
@@ -14920,7 +14920,7 @@ Voulez-vous abandonner ces changements ?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="507"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="521"/>
