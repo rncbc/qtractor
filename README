@@ -39,7 +39,7 @@ Weblog:
   https://www.rncbc.org
 
 Qtractor is free, open-source software, distributed under the terms of
-the GNU General Public License (GPL) [19] version 2 or later.
+the GNU General Public License (GPL) [18] version 2 or later.
 
 
 Features
@@ -63,9 +63,9 @@ Features
 - Unlimited undo/redo.
 - Built-in mixer and monitor controls.
 - Built-in connection patchbay control and persistence
-  (a-la QjackCtl [20]).
+  (a-la QjackCtl [19]).
 - LADSPA [5], DSSI [11], native VST(2), VST3 [12], LV2 [13]
-  and CLAP [18] plug-ins support.
+  and CLAP [21] plug-ins support.
 - Unlimited number of plug-ins per track or bus.
 - Plug-in presets, programs and chunk/configurations support, including
   native VST FXB/FXP file support.
@@ -89,7 +89,7 @@ Features
 - MIDI system exclusive (SysEx) setups.
 - JACK transport sync master/slave.
 - JACK session support.
-- NSM (Non/New Session Management) support [16].
+- NSM (Non/New Session Management) support [15].
 - MMC control surface enabled.
 - MIDI Clock, Song Position Pointer (SPP) support.
 - Configurable PC-keyboard and MIDI controller shortcuts.
@@ -136,7 +136,7 @@ The software requirements for build and runtime are listed as follows:
     https://breakfastquay.com/rubberband/
 
   - liblo [10], Lightweight OSC implementation
-    (needed for DSSI GUI [11] and/or NSM support [16])
+    (needed for DSSI GUI [11] and/or NSM support [15])
     http://liblo.sourceforge.net/
 
   - DSSI [11], An API for soft synth plugins with custom user interfaces
@@ -154,13 +154,10 @@ The software requirements for build and runtime are listed as follows:
     https://drobilla.net/software/sord
     https://drobilla.net/software/serd
 
-  - libsuil [15], Lightweight C library for loading and wrapping LV2 plugin UIs
-    https://drobilla.net/software/suil
-
-  - libaubio [17], a library for real time audio labelling
+  - libaubio [16], a library for real time audio labelling
     https://aubio.org
 
-  - CLAP [18], CLever Audio Plugin
+  - CLAP [21], CLever Audio Plugin
     https://github.com/free-audio/clap
 
 
@@ -198,7 +195,7 @@ Probably plenty still, Qtractor maybe considered on beta stage already.
 Support
 -------
 
-Qtractor is free, Linux Audio [18] open source free software. For bug
+Qtractor is free, Linux Audio [17] open source free software. For bug
 reports, feature requests, discussion forums, mailing lists, or any
 other matter related to the development of this piece of software,
 please use the Sourceforge project page (https://sourceforge.net/projects/qtractor).
@@ -283,31 +280,30 @@ References
      https://drobilla.net/software/sord/
      https://drobilla.net/software/serd/
 
-[15] libsuil, Lightweight C library for loading and wrapping LV2 plugin UIs
-     (needed for LV2 UI support)
-     https://drobilla.net/software/suil/
-
-[16] Non Session Management (NSM) (legacy)
+[15] Non Session Management (NSM) (legacy)
      http://non.tuxfamily.org/nsm/
      New Session Manager (NSM)
      https://new-session-manager.jackaudio.org/
 
-[17] libaubio, a library for real time audio labelling
+[16] libaubio, a library for real time audio labelling
      https://aubio.org
 
-[18] Linux Audio consortium of libre software for audio-related work
+[17] Linux Audio consortium of libre software for audio-related work
      https://linuxaudio.org
 
-[19] GNU General Public License
+[18] GNU General Public License
      https://www.gnu.org/copyleft/gpl.html
 
-[20] QjackCtl - JACK Qt GUI Interface
+[19] QjackCtl - JACK Qt GUI Interface
      https://qjackctl.sourceforge.io
      http://qjackctl.sourceforge.net
 
-[21] Cakewalk, powerful and easy-to-use tools
+[20] Cakewalk, powerful and easy-to-use tools
      for Windows-based music and sound production
      http://www.cakewalk.com/
+
+[21] CLAP, CLever Audio Plugin
+     https://github.com/free-audio/clap
 
 
 Enjoy && have (lots of) fun.
