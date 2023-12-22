@@ -11655,12 +11655,12 @@ P &lt; 0 : zpomalení posunu.
     <message>
         <location filename="../qtractorMixer.cpp" line="650"/>
         <source>In</source>
-        <translation type="unfinished"></translation>
+        <translation>Vstup</translation>
     </message>
     <message>
         <location filename="../qtractorMixer.cpp" line="650"/>
         <source>Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Výstup</translation>
     </message>
 </context>
 <context>
@@ -15074,7 +15074,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTrackForm.ui" line="507"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Automaticky</translation>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="521"/>
