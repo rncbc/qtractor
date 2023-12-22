@@ -4,23 +4,22 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.38  2023-12-21  An End-of-Year'23 Release.
 
 - Track Properties (dialog): auto-background color option added.
 
 - Mitigate undifferentiated disablement of up/down arrow buttons,
-  on tempo and time-signature entry spin-boxes. (EXPERIMENTAL)
+  on tempo and time-signature entry spin-boxes.
 
 - MIDI clip editors (aka. piano-roll) are now raised and centered
   to current mouse pointer position in main timeline (tracks-view).
-  (EXPERIMENTAL)
 
 - Remember last Marker color setting in Tempo Map/Markers dialog.
 
 - A colored ribbon is now featured on tracks-list Bus column and
   mixer-strip headers; ribbon colors are designated for Audio and
   MIDI tracks or buses, given by the respective '10dB' and 'Over'
-  meter colors. (EXPERIMENTAL)
+  meter colors.
 
 - Buses'In'/'Out' suffixes are back on mixer-strip header tooltips.
 

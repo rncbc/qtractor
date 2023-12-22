@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.15)
 
 project (qtractor
-  VERSION 0.9.37
+  VERSION 0.9.38
   DESCRIPTION "An Audio/MIDI multi-track sequencer"
   LANGUAGES C CXX)
 
@@ -227,6 +227,7 @@ include (CheckIncludeFileCXX)
 include (CheckStructHasMember)
 include (CheckFunctionExists)
 include (CheckLibraryExists)
+include (CheckTypeSize)
 
 # Checks for libraries.
 if (WIN32)
@@ -613,7 +614,6 @@ if (NOT CONFIG_LV2_STATE)
 endif ()
 
 if (CONFIG_LV2_STATE_FREE_PATH)
-  include(CheckTypeSize)
   set (CMAKE_EXTRA_INCLUDE_FILES "lv2/lv2plug.in/ns/ext/state/state.h")
   check_type_size (LV2_State_Free_Path LV2_STATE_FREE_PATH)
   if (NOT HAVE_LV2_STATE_FREE_PATH)
