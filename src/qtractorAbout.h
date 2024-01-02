@@ -24,7 +24,7 @@
 
 #include "config.h"
 
-#define QTRACTOR_TITLE      "Qtractor"
+#define QTRACTOR_TITLE      PROJECT_TITLE
 
 #define QTRACTOR_SUBTITLE   PROJECT_DESCRIPTION
 #define QTRACTOR_WEBSITE    PROJECT_HOMEPAGE_URL

@@ -1,7 +1,7 @@
 // qtractorClapPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,7 +81,7 @@ public:
 		host->host_data = host_data;
 		host->clap_version = CLAP_VERSION;
 		host->name = "qtractorClapPlugin";
-		host->version = PACKAGE_VERSION;
+		host->version = PROJECT_VERSION;
 		host->vendor = QTRACTOR_DOMAIN;
 		host->url = QTRACTOR_WEBSITE;
 		host->get_extension = get_extension;

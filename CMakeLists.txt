@@ -1,10 +1,13 @@
 cmake_minimum_required (VERSION 3.15)
 
-project (qtractor
+project (Qtractor
   VERSION 0.9.39
   DESCRIPTION "An Audio/MIDI multi-track sequencer"
   HOMEPAGE_URL "https://qtractor.org"
   LANGUAGES C CXX)
+
+set (PROJECT_TITLE "${PROJECT_NAME}")
+string (TOLOWER "${PROJECT_TITLE}" PROJECT_NAME)
 
 execute_process (
   COMMAND git describe --tags --dirty --abbrev=6
@@ -721,8 +724,7 @@ macro (SHOW_OPTION text value)
   endif ()
 endmacro ()
 
-
-message   ("\n  ${PACKAGE_NAME} ${PACKAGE_VERSION} (Qt ${QT_VERSION})")
+message   ("\n  ${PROJECT_TITLE} ${PROJECT_VERSION} (Qt ${QT_VERSION})")
 message   ("\n  Build target . . . . . . . . . . . . . . . . . . .: ${CONFIG_BUILD_TYPE}\n")
 show_option ("  JACK Audio Connection Kit support  . . . . . . . ." CONFIG_LIBJACK)
 show_option ("  ALSA MIDI Sequencer support  . . . . . . . . . . ." CONFIG_LIBASOUND)

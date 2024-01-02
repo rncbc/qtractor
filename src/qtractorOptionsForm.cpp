@@ -1,7 +1,7 @@
 // qtractorOptionsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -622,7 +622,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	sAudioPath.remove(CONFIG_BINDIR);
 	sAudioPath.append(CONFIG_DATADIR);
 	sAudioPath.append(sep);
-	sAudioPath.append(PACKAGE_TARNAME);
+	sAudioPath.append(PROJECT_NAME);
 	sAudioPath.append(sep);
 	sAudioPath.append("audio");
 

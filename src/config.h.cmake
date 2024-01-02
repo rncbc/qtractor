@@ -1,6 +1,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+/* Define to the title of this package. */
+#cmakedefine PROJECT_TITLE "@PROJECT_TITLE@"
+
 /* Define to the name of this package. */
 #cmakedefine PROJECT_NAME "@PROJECT_NAME@"
 
