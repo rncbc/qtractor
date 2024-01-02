@@ -1,11 +1,11 @@
 cmake_minimum_required (VERSION 3.15)
 
 project (qtractor
-  VERSION 0.9.38
+  VERSION 0.9.39
   DESCRIPTION "An Audio/MIDI multi-track sequencer"
+  HOMEPAGE_URL "https://qtractor.org"
   LANGUAGES C CXX)
 
-set (CONFIG_VERSION ${PROJECT_VERSION})
 execute_process (
   COMMAND git describe --tags --dirty --abbrev=6
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -13,32 +13,24 @@ execute_process (
   RESULT_VARIABLE GIT_DESCRIBE_RESULT
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 if (GIT_DESCRIBE_RESULT EQUAL 0)
-  set (VERSION "${GIT_DESCRIBE_OUTPUT}")
-  string (REGEX REPLACE "^[^0-9]+" "" VERSION "${VERSION}")
-  string (REGEX REPLACE "^1_"      "" VERSION "${VERSION}")
-  string (REGEX REPLACE "^[_vV]+"  "" VERSION "${VERSION}")
-  string (REGEX REPLACE "-g"   "git." VERSION "${VERSION}")
-  string (REGEX REPLACE "[_|-]"   "." VERSION "${VERSION}")
+  set (GIT_VERSION "${GIT_DESCRIBE_OUTPUT}")
+  string (REGEX REPLACE "^[^0-9]+" "" GIT_VERSION "${GIT_VERSION}")
+  string (REGEX REPLACE "^1_"      "" GIT_VERSION "${GIT_VERSION}")
+  string (REGEX REPLACE "^[_vV]+"  "" GIT_VERSION "${GIT_VERSION}")
+  string (REGEX REPLACE "-g"   "git." GIT_VERSION "${GIT_VERSION}")
+  string (REGEX REPLACE "[_|-]"   "." GIT_VERSION "${GIT_VERSION}")
   execute_process (
     COMMAND git rev-parse --abbrev-ref HEAD
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_REVPARSE_OUTPUT
     RESULT_VARIABLE GIT_REVPARSE_RESULT
     OUTPUT_STRIP_TRAILING_WHITESPACE)
-  if (GIT_REVPARSE_RESULT EQUAL 0 AND NOT GIT_REVPARSE_OUTPUT STREQUAL "master")
-    set (VERSION "${VERSION} [${GIT_REVPARSE_OUTPUT}]")
+  if (GIT_REVPARSE_RESULT EQUAL 0 AND NOT GIT_REVPARSE_OUTPUT STREQUAL "main")
+    set (GIT_VERSION "${GIT_VERSION} [${GIT_REVPARSE_OUTPUT}]")
   endif ()
-else ()
-  set (VERSION "${PROJECT_VERSION}")
+  set (PROJECT_VERSION "${GIT_VERSION}")
 endif ()
 
-set (PACKAGE_NAME "Qtractor")
-set (PACKAGE_VERSION "${VERSION}")
-set (PACKAGE_BUGREPORT "rncbc@rncbc.org")
-set (PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
-set (PACKAGE_TARNAME "qtractor")
-
-set (CONFIG_BUILD_VERSION "${PACKAGE_VERSION}")
 
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
   set (CONFIG_DEBUG 1)

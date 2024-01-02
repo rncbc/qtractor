@@ -4,6 +4,14 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed an old one-off plug-in parameter change command aliasing
+  (undo/redo). (EXPERIMENTAL)
+
+- Updated copyright headers into the New Year (2024).
+
+
 0.9.38  2023-12-21  An End-of-Year'23 Release.
 
 - Track Properties (dialog): auto-background color option added.
