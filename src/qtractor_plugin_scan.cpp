@@ -1,7 +1,7 @@
 // qtractor_plugin_scan.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1402,7 +1402,7 @@ public:
 		m_host.host_data = this;
 		m_host.clap_version = CLAP_VERSION;
 		m_host.name = "qtractor_plugin_scan";
-		m_host.version = CONFIG_BUILD_VERSION;
+		m_host.version = PROJECT_VERSION;
 		m_host.vendor = "rncbc.org";
 		m_host.url = "https://qtractor.org";
 		m_host.get_extension = qtractor_clap_scan::Impl::get_extension;
@@ -1829,7 +1829,7 @@ int main ( int argc, char **argv )
 {
 	QCoreApplication app(argc, argv);
 #ifdef CONFIG_DEBUG
-	qDebug("%s: hello. (version %s)", argv[0], CONFIG_BUILD_VERSION);
+	qDebug("%s: hello. (version %s)", argv[0], PROJECT_VERSION);
 #endif
 	QTextStream sin(stdin);
 	while (!sin.atEnd()) {

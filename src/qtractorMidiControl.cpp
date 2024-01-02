@@ -1,7 +1,7 @@
 // qtractorMidiControl.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2009, gizzmo aka Mathias Krause. 
 
    This program is free software; you can redistribute it and/or
@@ -740,7 +740,7 @@ bool qtractorMidiControl::saveElement (
 	Document *pDocument, QDomElement *pElement )
 {
 	// Save this program version (informational)...
-	pElement->setAttribute("version", PACKAGE_STRING);
+	pElement->setAttribute("version", PROJECT_TITLE " " PROJECT_VERSION);
 
 	ControlMap::ConstIterator it = m_controlMap.constBegin();
 	const ControlMap::ConstIterator& it_end = m_controlMap.constEnd();

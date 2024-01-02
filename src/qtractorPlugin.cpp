@@ -1,7 +1,7 @@
 // qtractorPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -860,7 +860,7 @@ bool qtractorPlugin::savePresetFile ( const QString& sFilename )
 	QDomElement ePreset = doc.createElement("preset");
 	ePreset.setAttribute("type", presetPrefix());
 	ePreset.setAttribute("name", fi.baseName());
-	ePreset.setAttribute("version", CONFIG_BUILD_VERSION);
+	ePreset.setAttribute("version", PROJECT_VERSION);
 
 	// Save plugin configs...
 	QDomElement eConfigs = doc.createElement("configs");
@@ -2752,7 +2752,7 @@ bool qtractorPluginList::Document::save ( const QString& sFilename )
 bool qtractorPluginList::Document::saveElement ( QDomElement *pElement )
 {
 	// Save this program version (informational)...
-	pElement->setAttribute("version", PACKAGE_STRING);
+	pElement->setAttribute("version", PROJECT_TITLE " " PROJECT_VERSION);
 
 	// Save plugins...
 	for (qtractorPlugin *pPlugin = m_pPluginList->first();

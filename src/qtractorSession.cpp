@@ -1,7 +1,7 @@
 // qtractorSession.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -108,7 +108,7 @@ qtractorSession::qtractorSession (void)
 	m_midiManagers.setAutoDelete(false);
 
 	// Initial comon client name.
-	m_sClientName = QTRACTOR_TITLE;
+	m_sClientName = PROJECT_TITLE;
 
 	// Singleton ownings.
 	m_pFiles       = new qtractorFileList();
@@ -2395,7 +2395,7 @@ bool qtractorSession::saveElement (
 	Document *pDocument, QDomElement *pElement )
 {
 	// Save this program version (informational)...
-	pElement->setAttribute("version", PACKAGE_STRING);
+	pElement->setAttribute("version", PROJECT_TITLE " " PROJECT_VERSION);
 
 	// Templates should have no session name...
 	if (!pDocument->isTemplate())

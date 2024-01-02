@@ -1,7 +1,7 @@
 // qtractorOptions.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -405,7 +405,7 @@ void qtractorOptions::saveOptions (void)
 {
 	// Make program version available in the future.
 	m_settings.beginGroup("/Program");
-	m_settings.setValue("/Version", CONFIG_BUILD_VERSION);
+	m_settings.setValue("/Version", PROJECT_VERSION);
 	m_settings.endGroup();
 
 	// And go into general options group.
@@ -850,7 +850,7 @@ bool qtractorOptions::parse_args ( const QStringList& args )
 			out << '\n';
 			out << QString("%1: %2\n")
 				.arg(QTRACTOR_TITLE)
-				.arg(CONFIG_BUILD_VERSION);
+				.arg(PROJECT_VERSION);
 			return false;
 		} else {
 			// If we don't have one by now,
