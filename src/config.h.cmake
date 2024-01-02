@@ -1,26 +1,17 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-/* Define to the full name of this package. */
-#cmakedefine PACKAGE_NAME "@PACKAGE_NAME@"
-
-/* Define to the full name and version of this package. */
-#cmakedefine PACKAGE_STRING "@PACKAGE_STRING@"
+/* Define to the name of this package. */
+#cmakedefine PROJECT_NAME "@PROJECT_NAME@"
 
 /* Define to the version of this package. */
-#cmakedefine PACKAGE_VERSION "@PACKAGE_VERSION@"
+#cmakedefine PROJECT_VERSION "@PROJECT_VERSION@"
 
-/* Define to the address where bug reports for this package should be sent. */
-#cmakedefine PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
+/* Define to the description of this package. */
+#cmakedefine PROJECT_DESCRIPTION "@PROJECT_DESCRIPTION@"
 
-/* Define to the one symbol short name of this package. */
-#cmakedefine PACKAGE_TARNAME "@PACKAGE_TARNAME@"
-
-/* Define to the version of this package. */
-#cmakedefine CONFIG_VERSION "@CONFIG_VERSION@"
-
-/* Define to the build version of this package. */
-#cmakedefine CONFIG_BUILD_VERSION "@CONFIG_BUILD_VERSION@"
+/* Define to the homepage of this package. */
+#cmakedefine PROJECT_HOMEPAGE_URL "@PROJECT_HOMEPAGE_URL@"
 
 /* Default installation prefix. */
 #cmakedefine CONFIG_PREFIX "@CONFIG_PREFIX@"

@@ -1,7 +1,7 @@
 #
 # spec file for package qtractor
 #
-# Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+# Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
