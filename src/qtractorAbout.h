@@ -29,8 +29,8 @@
 #define QTRACTOR_SUBTITLE   PROJECT_DESCRIPTION
 #define QTRACTOR_WEBSITE    PROJECT_HOMEPAGE_URL
 
-#define QTRACTOR_COPYRIGHT  "Copyright (C) 2005-2024 rncbc aka Rui Nuno Capela. All rights reserved."
-#define QTRACTOR_DOMAIN     "rncbc.org"
+#define QTRACTOR_COPYRIGHT  PROJECT_COPYRIGHT
+#define QTRACTOR_DOMAIN     PROJECT_DOMAIN
 
 #endif  // __qtractorAbout_h
 
