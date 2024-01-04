@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -67,8 +67,8 @@ class qtractorLv2Worker;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 class QWindow;
 #endif
-// LV2 UI Request-value support (FAKE).
 #ifdef  CONFIG_LV2_UI_REQ_VALUE_FAKE
+// LV2 UI Request-value support (FAKE).
 #undef  CONFIG_LV2_UI_REQ_VALUE
 #define CONFIG_LV2_UI_REQ_VALUE 1
 #ifndef LV2_UI__requestValue
@@ -88,6 +88,10 @@ typedef struct _LV2UI_Request_Value {
 } LV2UI_Request_Value;
 #endif	// !LV2_UI__requestValue
 #endif	// CONFIG_LV2_UI_REQ_VALUE_FAKE
+#ifdef CONFIG_LV2_PORT_CHANGE_REQUEST
+// LV2 Control Input Port change request support.
+#include "lv2_port_change_request.h"
+#endif	// CONFIG_LV2_PORT_CHANGE_REQUEST
 #endif	// CONFIG_LV2_UI
 
 #ifdef CONFIG_LV2_STATE
@@ -298,6 +302,12 @@ public:
 	LV2UI_Request_Value_Status lv2_ui_request_value(
 		LV2_URID key, LV2_URID type, const LV2_Feature *const *features);
 #endif
+
+#ifdef CONFIG_LV2_PORT_CHANGE_REQUEST
+	// LV2 Control Input Port change request.
+	LV2_ControlInputPort_Change_Status lv2_port_change_request(
+		unsigned long port_index, float port_value);
+#endif	// CONFIG_LV2_PORT_CHANGE_REQUEST
 
 	// LV2 UI resize control (host->ui).
 	void lv2_ui_resize(const QSize& size);
@@ -586,6 +596,9 @@ private:
 	QHash<unsigned long, float> m_ui_params_touch;
 #endif
 
+	// Changed control input port-events hash-queue.
+	QHash<unsigned long, float> m_port_events;
+
 #ifdef CONFIG_LV2_UI_REQ_VALUE
 	// LV2 UI Request-value interface (ui->host).
 	LV2UI_Request_Value m_lv2_ui_req_value;
@@ -653,6 +666,13 @@ private:
 	unsigned int               m_lv2_midnam_update;
 #endif
 
+#ifdef CONFIG_LV2_UI
+#ifdef CONFIG_LV2_PORT_CHANGE_REQUEST
+	LV2_Feature                         m_lv2_port_change_request_feature;
+	LV2_ControlInputPort_Change_Request m_lv2_port_change_request;
+#endif
+#endif
+
 #ifdef CONFIG_LV2_PRESETS
 	// LV2 Presets label-to-uri map.
 	QHash<QString, QString>    m_lv2_presets;
@@ -691,11 +711,6 @@ private:
 	float              m_fSampleRate;
 	double             m_dSampleRate;
 #endif
-#endif
-
-#ifdef CONFIG_LV2_PORT_EVENT
-	// Changed control input port-events hash-queue.
-	QHash<unsigned long, float> m_port_events;
 #endif
 
 	// Plugin current latency output control port;

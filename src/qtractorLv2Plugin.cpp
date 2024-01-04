@@ -1,7 +1,7 @@
 // qtractorLv2Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -889,6 +889,27 @@ static LV2UI_Request_Value_Status qtractor_lv2_ui_request_value (
 #endif	// CONFIG_LV2_UI_REQ_VALUE
 
 
+#ifdef CONFIG_LV2_PORT_CHANGE_REQUEST
+
+static LV2_ControlInputPort_Change_Status qtractor_lv2_port_change_request (
+	LV2_ControlInputPort_Change_Request_Handle handle,
+	uint32_t port_index, float port_value )
+{
+	qtractorLv2Plugin *pLv2Plugin
+		= static_cast<qtractorLv2Plugin *> (handle);
+	if (pLv2Plugin == nullptr)
+		return LV2_CONTROL_INPUT_PORT_CHANGE_ERR_UNKNOWN;
+
+#ifdef CONFIG_DEBUG
+	qDebug("qtractor_lv2_port_change_request(%p, %u, %g)", pLv2Plugin, port_index, port_value);
+#endif
+
+	return pLv2Plugin->lv2_port_change_request(port_index, port_value);
+}
+
+#endif	// CONFIG_LV2_PORT_CHANGE_REQUEST
+
+
 #include <QResizeEvent>
 
 class qtractorLv2Plugin::EventFilter : public QObject
@@ -1102,7 +1123,7 @@ static struct qtractorLv2Urids
 
 #ifdef CONFIG_LV2_PROGRAMS
 
-void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
+static void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (handle);
@@ -1124,7 +1145,7 @@ void qtractor_lv2_program_changed ( LV2_Programs_Handle handle, int32_t index )
 // LV2 MIDNAM XML support.
 #include <QDomDocument>
 
-void qtractor_lv2_midnam_update ( LV2_Midnam_Handle handle )
+static void qtractor_lv2_midnam_update ( LV2_Midnam_Handle handle )
 {
 	qtractorLv2Plugin *pLv2Plugin
 		= static_cast<qtractorLv2Plugin *> (handle);
@@ -1138,7 +1159,7 @@ void qtractor_lv2_midnam_update ( LV2_Midnam_Handle handle )
 	pLv2Plugin->lv2_midnam_update();
 }
 
-#endif
+#endif	// CONFIG_LV2_MIDNAME
 
 
 #ifdef CONFIG_LV2_STATE
@@ -2293,7 +2314,7 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	int iFeatures = 0;
 	while (g_lv2_features[iFeatures]) { ++iFeatures; }
 
-	m_lv2_features = new LV2_Feature * [iFeatures + 8];
+	m_lv2_features = new LV2_Feature * [iFeatures + 9];
 	for (int i = 0; i < iFeatures; ++i)
 		m_lv2_features[i] = (LV2_Feature *) g_lv2_features[i];
 
@@ -2359,7 +2380,20 @@ qtractorLv2Plugin::qtractorLv2Plugin ( qtractorPluginList *pList,
 	m_lv2_midnam_feature.data = &m_lv2_midnam;
 	m_lv2_features[iFeatures++] = &m_lv2_midnam_feature;
 
-#endif	// CONFIG_LV2_PROGRAMS
+#endif	// CONFIG_LV2_MIDNAM
+
+#ifdef CONFIG_LV2_UI
+#ifdef CONFIG_LV2_PORT_CHANGE_REQUEST
+
+	m_lv2_port_change_request.handle = this;
+	m_lv2_port_change_request.request_change = &qtractor_lv2_port_change_request;
+
+	m_lv2_port_change_request_feature.URI = LV2_CONTROL_INPUT_PORT_CHANGE_REQUEST_URI;
+	m_lv2_port_change_request_feature.data = &m_lv2_port_change_request;
+	m_lv2_features[iFeatures++] = &m_lv2_port_change_request_feature;
+
+#endif	// CONFIG_LV2_PORT_CHANGE_REQUEST
+#endif
 
 #if defined(CONFIG_LV2_EVENT) || defined(CONFIG_LV2_ATOM)
 	qtractorMidiManager *pMidiManager = list()->midiManager();
@@ -3676,9 +3710,7 @@ void qtractorLv2Plugin::closeEditor (void)
 	m_ui_params_touch.clear();
 #endif
 
-#ifdef CONFIG_LV2_PORT_EVENT
 	m_port_events.clear();
-#endif
 
 #ifdef CONFIG_LV2_UI_SHOW
 	m_lv2_ui_show_interface	= nullptr;
@@ -3797,7 +3829,6 @@ void qtractorLv2Plugin::idleEditor (void)
 		m_ui_params.clear();
 	}
 
-#ifdef CONFIG_LV2_PORT_EVENT
 	// Try to make all port events at once now...
 	if (m_port_events.count() > 0) {
 		QHash<unsigned long, float>::ConstIterator iter
@@ -3814,7 +3845,6 @@ void qtractorLv2Plugin::idleEditor (void)
 		// Done.
 		m_port_events.clear();
 	}
-#endif
 
 #ifdef CONFIG_LV2_MIDNAM
 	if (m_lv2_midnam_update > 0) {
@@ -4240,6 +4270,20 @@ LV2UI_Request_Value_Status qtractorLv2Plugin::lv2_ui_request_value (
 }
 
 #endif	// CONFIG_LV2_UI_REQ_VALUE
+
+
+#ifdef CONFIG_LV2_PORT_CHANGE_REQUEST
+
+// LV2 Control Input Port change request.
+LV2_ControlInputPort_Change_Status qtractorLv2Plugin::lv2_port_change_request (
+	unsigned long port_index, float port_value )
+{
+	m_port_events.insert(port_index, port_value);
+
+	return LV2_CONTROL_INPUT_PORT_CHANGE_SUCCESS;
+}
+
+#endif	// CONFIG_LV2_PORT_CHANGE_REQUEST
 
 
 // LV2 UI resize control (host->ui).
