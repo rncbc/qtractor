@@ -133,6 +133,8 @@ option (CONFIG_LV2_PATCH "Enable LV2 plug-in Patch support (default=yes)" 1)
 
 option (CONFIG_LV2_PORT_EVENT "Enable LV2 plug-in Port-event support (default=yes)" 1)
 
+option (CONFIG_LV2_PORT_CHANGE_REQUEST "Enable LV2 plug-in Port-change request support (default=yes)" 1)
+
 option (CONFIG_LV2_TIME "Enable LV2 plug-in Time support (default=yes)" 1)
 
 option (CONFIG_LV2_TIME_POSITION "Enable LV2 plug-in Time/position support (default=yes)" 1)
@@ -527,6 +529,7 @@ if (NOT CONFIG_LIBLILV)
   set (CONFIG_LV2_PRESETS 0)
   set (CONFIG_LV2_PATCH 0)
   set (CONFIG_LV2_PORT_EVENT 0)
+  set (CONFIG_LV2_PORT_CHANGE_REQUEST 0)
   set (CONFIG_LV2_TIME 0)
   set (CONFIG_LV2_TIME_POSITION 0)
   set (CONFIG_LV2_OPTIONS 0)
@@ -683,6 +686,13 @@ if (CONFIG_LV2_PARAMETERS)
   endif ()
 endif ()
 
+if (CONFIG_LV2_PORT_CHANGE_REQUEST)
+  check_include_file (lv2_port_change_request.h HAVE_LV2_PORT_CHANGE_REQUEST_H)
+  if (NOT HAVE_LV2_PORT_CHANGE_REQUEST_H)
+    set (CONFIG_LV2_PORT_CHANGE_REQUEST 0)
+  endif ()
+endif ()
+
 if (CONFIG_LV2_UI_TOUCH)
   check_struct_has_member ("LV2UI_Touch" touch lv2/lv2plug.in/ns/extensions/ui/ui.h HAVE_LV2_UI_TOUCH)
   if (NOT HAVE_LV2_UI_TOUCH)
@@ -763,6 +773,7 @@ show_option ("  LV2 plug-in MIDNAM support . . . . . . . . . . . ." CONFIG_LV2_M
 show_option ("  LV2 plug-in Presets support  . . . . . . . . . . ." CONFIG_LV2_PRESETS)
 show_option ("  LV2 plug-in Patch support  . . . . . . . . . . . ." CONFIG_LV2_PATCH)
 show_option ("  LV2 plug-in Port-event support . . . . . . . , . ." CONFIG_LV2_PORT_EVENT)
+show_option ("  LV2 plug-in Port-change request (EXPERIMENTAL) . ." CONFIG_LV2_PORT_CHANGE_REQUEST)
 show_option ("  LV2 plug-in Time support . . . . . . . . . . . . ." CONFIG_LV2_TIME)
 show_option ("  LV2 plug-in Time/position support  . . . . . . . ." CONFIG_LV2_TIME_POSITION)
 show_option ("  LV2 plug-in Options support  . . . . . . . . . . ." CONFIG_LV2_OPTIONS)

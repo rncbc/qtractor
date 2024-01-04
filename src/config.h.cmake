@@ -158,6 +158,9 @@
 /* Define if LV2 Port-event is supported. */
 #cmakedefine CONFIG_LV2_PORT_EVENT @CONFIG_LV2_PORT_EVENT@
 
+/* Define if LV2 Port-change request is supported. */
+#cmakedefine CONFIG_LV2_PORT_CHANGE_REQUEST @CONFIG_LV2_PORT_CHANGE_REQUEST@
+
 /* Define if LV2 Time is supported. */
 #cmakedefine CONFIG_LV2_TIME @CONFIG_LV2_TIME@
 

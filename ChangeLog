@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- LV2 Plug-in Control Input Port-change request extension feature
+  support added. (EXPERIMENTAL)
+
 - Fixed an old one-off plug-in parameter change command aliasing
   (undo/redo). (EXPERIMENTAL)
 
