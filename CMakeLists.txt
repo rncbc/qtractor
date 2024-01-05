@@ -9,6 +9,9 @@ project (Qtractor
 set (PROJECT_TITLE "${PROJECT_NAME}")
 string (TOLOWER "${PROJECT_TITLE}" PROJECT_NAME)
 
+set (PROJECT_COPYRIGHT "Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.")
+set (PROJECT_DOMAIN    "rncbc.org")
+
 execute_process (
   COMMAND git describe --tags --dirty --abbrev=6
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -33,9 +36,6 @@ if (GIT_DESCRIBE_RESULT EQUAL 0)
   endif ()
   set (PROJECT_VERSION "${GIT_VERSION}")
 endif ()
-
-set (PROJECT_COPYRIGHT "Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.")
-set (PROJECT_DOMAIN    "rncbc.org")
 
 
 if (CMAKE_BUILD_TYPE MATCHES "Debug")
