@@ -64,6 +64,7 @@ protected slots:
 	void updateMetroNoteNames();
 	void displayFormatChanged(int);
 	void editCustomColorThemes();
+	void chooseCustomStyleSheet();
 	void changeAudioMeterLevel(int);
 	void changeMidiMeterLevel(int);
 	void changeAudioMeterColor(const QString&);

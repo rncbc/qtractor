@@ -2841,6 +2841,93 @@
             </item>
            </widget>
           </item>
+          <item row="0" column="7">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="8">
+           <widget class="QLabel" name="CustomStyleSheetTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>St&amp;yle sheet:</string>
+            </property>
+            <property name="buddy">
+             <cstring>CustomStyleSheetComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="9">
+           <widget class="QComboBox" name="CustomStyleSheetComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Custom style sheet (*.qss)</string>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>(default)</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="10">
+           <widget class="QToolButton" name="CustomStyleSheetToolButton">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::TabFocus</enum>
+            </property>
+            <property name="toolTip">
+             <string>Browse for custom style sheet (*.qss)</string>
+            </property>
+            <property name="icon">
+             <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -4182,6 +4269,8 @@
   <tabstop>CustomColorThemeComboBox</tabstop>
   <tabstop>CustomColorThemeToolButton</tabstop>
   <tabstop>CustomStyleThemeComboBox</tabstop>
+  <tabstop>CustomStyleSheetComboBox</tabstop>
+  <tabstop>CustomStyleSheetToolButton</tabstop>
   <tabstop>AudioMeterLevelComboBox</tabstop>
   <tabstop>AudioMeterColorLineEdit</tabstop>
   <tabstop>AudioMeterColorToolButton</tabstop>

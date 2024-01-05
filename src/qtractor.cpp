@@ -574,6 +574,15 @@ int main ( int argc, char **argv )
 		return 2;
 	}
 
+	// Custom style sheet (QSS)...
+	if (!options.sCustomStyleSheet.isEmpty()) {
+		QFile file(options.sCustomStyleSheet);
+		if (file.open(QFile::ReadOnly)) {
+			app.setStyleSheet(QString::fromUtf8(file.readAll()));
+			file.close();
+		}
+	}
+
 	// Custom style theme...
 	QString sPluginsPath = QApplication::applicationDirPath();
 	sPluginsPath.remove(CONFIG_BINDIR);

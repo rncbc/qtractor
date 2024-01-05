@@ -5245,6 +5245,7 @@ void qtractorMainForm::viewOptions (void)
 	const int     iOldTrackColorSaturation = m_pOptions->iTrackColorSaturation;
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
+	const QString sOldCustomStyleSheet   = m_pOptions->sCustomStyleSheet;
 #ifdef CONFIG_LV2
 	const QString sep(':'); 
 	const bool    bOldLv2DynManifest     = m_pOptions->bLv2DynManifest;
@@ -5308,6 +5309,8 @@ void qtractorMainForm::viewOptions (void)
 		}
 		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
 			iNeedRestart |= RestartProgram;
+		if (sOldCustomStyleSheet != m_pOptions->sCustomStyleSheet)
+			updateCustomStyleSheet();
 		if (sOldCustomStyleTheme != m_pOptions->sCustomStyleTheme) {
 			if (m_pOptions->sCustomStyleTheme.isEmpty())
 				iNeedRestart |= RestartProgram;
@@ -7738,6 +7741,26 @@ void qtractorMainForm::updateCustomStyleTheme (void)
 
 	QApplication::setStyle(
 		QStyleFactory::create(m_pOptions->sCustomStyleTheme));
+}
+
+
+// Update/reset custom style sheet (QSS)..
+void qtractorMainForm::updateCustomStyleSheet (void)
+{
+	if (m_pOptions == nullptr)
+		return;
+
+	QString sStyleSheet;
+
+	if (!m_pOptions->sCustomStyleSheet.isEmpty()) {
+		QFile file(m_pOptions->sCustomStyleSheet);
+		if (file.open(QFile::ReadOnly)) {
+			sStyleSheet = QString::fromUtf8(file.readAll());
+			file.close();
+		}
+	}
+
+	qApp->setStyleSheet(sStyleSheet);
 }
 
 

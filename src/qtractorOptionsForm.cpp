@@ -441,6 +441,12 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.CustomStyleThemeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.CustomStyleSheetComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.CustomStyleSheetToolButton,
+		SIGNAL(clicked()),
+		SLOT(chooseCustomStyleSheet()));
 	QObject::connect(m_ui.AudioMeterLevelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAudioMeterLevel(int)));
@@ -579,6 +585,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Initialize conveniency options...
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBarFilenameComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
+	m_pOptions->loadComboBoxFileHistory(m_ui.CustomStyleSheetComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.PluginPathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.MessagesLogPathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.SessionTemplatePathComboBox);
@@ -712,6 +719,10 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	// Custom display options...
 	resetCustomColorThemes(m_pOptions->sCustomColorTheme);
 	resetCustomStyleThemes(m_pOptions->sCustomStyleTheme);
+
+	m_pOptions->setComboBoxCurrentFile(
+		m_ui.CustomStyleSheetComboBox,
+		m_pOptions->sCustomStyleSheet);
 
 	// Load Display options...
 	QFont font;
@@ -1000,6 +1011,7 @@ void qtractorOptionsForm::accept (void)
 			m_pOptions->sCustomStyleTheme = m_ui.CustomStyleThemeComboBox->currentText();
 		else
 			m_pOptions->sCustomStyleTheme.clear();
+		m_pOptions->sCustomStyleSheet = m_pOptions->comboBoxCurrentFile(m_ui.CustomStyleSheetComboBox);
 		// Reset dirty flags.
 		qtractorPluginFactory *pPluginFactory
 			= qtractorPluginFactory::getInstance();
@@ -1046,6 +1058,7 @@ void qtractorOptionsForm::accept (void)
 	// Save other conveniency options...
 	m_pOptions->saveComboBoxHistory(m_ui.MetroBarFilenameComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
+	m_pOptions->saveComboBoxFileHistory(m_ui.CustomStyleSheetComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.PluginPathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.MessagesLogPathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.SessionTemplatePathComboBox);
@@ -1262,6 +1275,52 @@ void qtractorOptionsForm::resetCustomStyleThemes (
 			iCustomStyleTheme = 0;
 	}
 	m_ui.CustomStyleThemeComboBox->setCurrentIndex(iCustomStyleTheme);
+}
+
+
+void qtractorOptionsForm::chooseCustomStyleSheet (void)
+{
+	if (m_pOptions == nullptr)
+		return;
+
+	QString sFilename = m_ui.CustomStyleSheetComboBox->currentText();
+
+	const QString  sExt("qss");
+	const QString& sTitle  = tr("Open Style Sheet");
+
+	QStringList filters;
+	filters.append(tr("Style Sheet files (*.%1)").arg(sExt));
+	filters.append(tr("All files (*.*)"));
+	const QString& sFilter = filters.join(";;");
+
+	QWidget *pParentWidget = nullptr;
+	QFileDialog::Options options;
+	if (m_pOptions->bDontUseNativeDialogs) {
+		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
+#if 1//QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
+	sFilename = QFileDialog::getOpenFileName(pParentWidget,
+		sTitle, sFilename, sFilter, nullptr, options);
+#else
+	QFileDialog fileDialog(pParentWidget,
+		sTitle, sFilename, sFilter);
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::ExistingFiles);
+	fileDialog.setDefaultSuffix(sExt);
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(m_pOptions->sSessionDir));
+	fileDialog.setSidebarUrls(urls);
+	fileDialog.setOptions(options);
+	if (fileDialog.exec())
+		sFilename = fileDialog.selectedFiles().first();
+#endif
+
+	if (!sFilename.isEmpty()
+		&& m_pOptions->setComboBoxCurrentFile(
+			m_ui.CustomStyleSheetComboBox, sFilename)) {
+		changed();
+	}
 }
 
 
