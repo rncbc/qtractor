@@ -1,7 +1,7 @@
 // qtractorThumbView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -89,7 +89,7 @@ void qtractorThumbView::updateContents (void)
 	const QPalette& pal = QFrame::palette();
 
 	m_pixmap = QPixmap(w, h);
-	m_pixmap.fill(pal.dark().color());
+	m_pixmap.fill(pal.base().color());
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
