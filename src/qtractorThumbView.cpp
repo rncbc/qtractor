@@ -89,7 +89,7 @@ void qtractorThumbView::updateContents (void)
 	const QPalette& pal = QFrame::palette();
 
 	m_pixmap = QPixmap(w, h);
-	m_pixmap.fill(pal.base().color());
+	m_pixmap.fill(pal.mid().color());
 
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
