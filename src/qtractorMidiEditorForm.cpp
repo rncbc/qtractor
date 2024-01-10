@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1154,10 +1154,9 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	qtractorTracks *pTracks = pMainForm->tracks();
 	if (pTracks) {
 		qtractorTrackView *pTrackView = pTracks->trackView();
-		const QPoint& pos = pTrackView->mapFromGlobal(QCursor::pos());
-		const int w1 = (pTrackView->width() >> 1);
+		const int x1 = pTrackView->mapFromGlobal(QCursor::pos()).x();
 		unsigned long iFrame = pSession->frameFromPixel(
-			pTrackView->contentsX() + (pos.x() > w1 ? pos.x() : 0));
+			pTrackView->contentsX() + x1);
 		if (iFrame  > m_pMidiEditor->offset()) {
 			iFrame -= m_pMidiEditor->offset();
 		} else {
@@ -1165,9 +1164,11 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		}
 		qtractorMidiEditView *pEditView = m_pMidiEditor->editView();
 		const int w2 = (pEditView->width() >> 1);
-		const int cx = pTimeScale->pixelFromFrame(iFrame);
+		const int x2 = pTimeScale->pixelFromFrame(iFrame);
+		const int cx = pEditView->contentsX();
 		const int cy = pEditView->contentsY();
-		pEditView->setContentsPos((cx > w2 ? cx - w2 : cx), cy);
+		if (x2 < cx || x2 > cx + w2)
+			pEditView->setContentsPos((x2 > w2 ? x2 - w2 : x2), cy);
 	}
 
 	// (Re)sync local play/edit-head/tail (avoid follow playhead)...
