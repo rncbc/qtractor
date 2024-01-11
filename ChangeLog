@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Improved MIDI clip editor centering to current mouse pointer
+  position in main timeline (tracks-view); on both horizontal and
+  vertical axes. (EXPERIMENTAL)
+
 - LV2 Plug-in Control Input Port-change request extension feature
   support added. (EXPERIMENTAL)
 
