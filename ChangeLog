@@ -6,6 +6,14 @@ ChangeLog
 
 GIT HEAD
 
+- When playback is not rolling, Transport/Rewind and Fast-Forward
+  now steps a bar, beat or fraction (snap-per-beat), backward and
+  forward, respectively. (EXPERIMENTAL)
+
+- Improved MIDI clip editor centering to current mouse pointer
+  position in main timeline (tracks-view); on both horizontal and
+  vertical axes. (EXPERIMENTAL)
+
 - LV2 Plug-in Control Input Port-change request extension feature
   support added. (EXPERIMENTAL)
 

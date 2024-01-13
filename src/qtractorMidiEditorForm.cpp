@@ -1,7 +1,7 @@
 // qtractorMidiEditorForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #include "qtractorAbout.h"
 #include "qtractorMidiEditorForm.h"
 #include "qtractorMidiEditView.h"
+#include "qtractorMidiEditList.h"
 #include "qtractorMidiEditEvent.h"
 
 #include "qtractorMidiControlTypeGroup.h"
@@ -1150,24 +1151,54 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	m_pMidiEditor->centerContents();
 	m_pMidiEventList->refresh();
 
-	// (Re)try to position the editor in same of track view...
+	// (Re)try to position the editor in same of track view (relative)...
 	qtractorTracks *pTracks = pMainForm->tracks();
 	if (pTracks) {
+		// Try to recenter horizontally...
 		qtractorTrackView *pTrackView = pTracks->trackView();
 		const QPoint& pos = pTrackView->mapFromGlobal(QCursor::pos());
-		const int w1 = (pTrackView->width() >> 1);
 		unsigned long iFrame = pSession->frameFromPixel(
-			pTrackView->contentsX() + (pos.x() > w1 ? pos.x() : 0));
+			pTrackView->contentsX() + pos.x());
 		if (iFrame  > m_pMidiEditor->offset()) {
 			iFrame -= m_pMidiEditor->offset();
 		} else {
 			iFrame = 0;
 		}
 		qtractorMidiEditView *pEditView = m_pMidiEditor->editView();
-		const int w2 = (pEditView->width() >> 1);
-		const int cx = pTimeScale->pixelFromFrame(iFrame);
+		const int w2 = (pEditView->width()  >> 1);
+		const int h2 = (pEditView->height() >> 1);
+		const int x2 = pTimeScale->pixelFromFrame(iFrame);
+		const int cx = pEditView->contentsX();
 		const int cy = pEditView->contentsY();
-		pEditView->setContentsPos((cx > w2 ? cx - w2 : cx), cy);
+		// Then try to recenter vertically...
+		int y2 = cy;
+		qtractorTrack *pTrack = nullptr;
+		if (pMidiClip)
+			pTrack = pMidiClip->track();
+		if (pTrack) {
+			const int h1 = pTrack->zoomHeight();
+			if (h1 > 0) {
+				int y1 = 0;
+				qtractorTrack *pTrackEx = pSession->tracks().first();
+				while (pTrackEx && pTrackEx != pTrack) {
+					y1 += pTrackEx->zoomHeight();
+					pTrackEx = pTrackEx->next();
+				}
+				const int nmax = pTrack->midiNoteMax();
+				const int nmin = pTrack->midiNoteMin();
+				const int n1 = (pos.y() - y1) * (nmax - nmin) / h1;
+				const int n2 = (128 - nmax) + n1;
+				if (n2 > 0 && n2 < 128)
+					y2 = n2 * (m_pMidiEditor->editList())->itemHeight();
+			}
+		}
+		// Need recentering?...
+		if (x2 < cx || x2 > cx + w2 ||
+			y2 < cy || y2 > cy + h2) {
+			pEditView->setContentsPos(
+				(x2 > w2 ? x2 - w2 : 0),
+				(y2 > h2 ? y2 - h2 : 0));
+		}
 	}
 
 	// (Re)sync local play/edit-head/tail (avoid follow playhead)...

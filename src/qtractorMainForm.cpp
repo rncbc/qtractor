@@ -5508,6 +5508,34 @@ void qtractorMainForm::transportRewind (void)
 	if (!checkRestartSession())
 		return;
 
+	// When not playing just make one step backward...
+	if (m_iTransportRolling == 0 && !m_pSession->isPlaying()) {
+		const unsigned long iPlayHead = m_pSession->playHead();
+		const unsigned short iSnapPerBeat = m_pSession->snapPerBeat();
+		qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+		const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
+		if (iSnapPerBeat > 0) {
+			// Rewind a beat/fraction...
+			const unsigned int beat1 = pNode->beatFromTick(t0);
+			const unsigned int beat2 = (beat1 > 0 ? beat1 - 1 : beat1);
+			const unsigned long	t1 = pNode->tickFromBeat(beat1);
+			const unsigned long	t2 = pNode->tickFromBeat(beat2);
+			m_pSession->setPlayHead(pNode->frameFromTick(
+				pNode->tickSnap(t0 - (t1 - t2) / iSnapPerBeat, iSnapPerBeat)));
+		} else {
+			 // Rewind a bar...
+			const unsigned short bar1 = pNode->barFromTick(t0);
+			const unsigned short bar2 = (bar1 > 0 ? bar1 - 1 : bar1);
+			const unsigned long	t1 = pNode->tickFromBar(bar1);
+			const unsigned long	t2 = pNode->tickFromBar(bar2);
+			m_pSession->setPlayHead(pNode->frameFromTick(t0 > t1 ? t1 : t2));
+		}
+		++m_iTransportUpdate;
+		++m_iStabilizeTimer;
+		return;
+	}
+
 	// Rolling direction and speed (negative)...
 	bool bShiftKeyModifier = QApplication::keyboardModifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier);
@@ -5540,6 +5568,32 @@ void qtractorMainForm::transportFastForward (void)
 	// Make sure session is activated...
 	if (!checkRestartSession())
 		return;
+
+	// When not playing just make one step forward...
+	if (m_iTransportRolling == 0 && !m_pSession->isPlaying()) {
+		const unsigned long iPlayHead = m_pSession->playHead();
+		const unsigned short iSnapPerBeat = m_pSession->snapPerBeat();
+		qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+		const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
+		if (iSnapPerBeat > 0) {
+			// Fast-forward a beat/fraction...
+			const unsigned int beat1 = pNode->beatFromTick(t0);
+			const unsigned long	t1 = pNode->tickFromBeat(beat1);
+			const unsigned long	t2 = pNode->tickFromBeat(beat1 + 1);
+			m_pSession->setPlayHead(pNode->frameFromTick(
+				pNode->tickSnap(t0 + (t2 - t1) / iSnapPerBeat, iSnapPerBeat)));
+		} else {
+			 // Fast-forward a bar...
+			const unsigned short bar1 = pNode->barFromTick(t0);
+			const unsigned long	t1 = pNode->tickFromBar(bar1);
+			const unsigned long	t2 = pNode->tickFromBar(bar1 + 1);
+			m_pSession->setPlayHead(pNode->frameFromTick(t0 < t1 ? t1 : t2));
+		}
+		++m_iTransportUpdate;
+		++m_iStabilizeTimer;
+		return;
+	}
 
 	// Rolling direction and speed (positive)...
 	bool bShiftKeyModifier = QApplication::keyboardModifiers()
