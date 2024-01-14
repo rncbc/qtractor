@@ -5514,18 +5514,22 @@ void qtractorMainForm::transportRewind (void)
 		const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
 		if (iSnapPerBeat > 0) {
 			// Rewind a beat/fraction...
-			const unsigned int beat1 = pNode->beatFromTick(t0);
-			const unsigned int beat2 = (beat1 > 0 ? beat1 - 1 : beat1);
-			const unsigned long	t1 = pNode->tickFromBeat(beat1);
-			const unsigned long	t2 = pNode->tickFromBeat(beat2);
+			const unsigned int beat
+				= pNode->beatFromTick(t0);
+			const unsigned long	t1
+				= pNode->tickFromBeat(beat > 0 ? beat : beat + 1);
+			const unsigned long	t2
+				= pNode->tickFromBeat(beat > 0 ? beat - 1 : beat);
 			m_pSession->setPlayHead(pNode->frameFromTick(
 				pNode->tickSnap(t0 - (t1 - t2) / iSnapPerBeat, iSnapPerBeat)));
 		} else {
 			 // Rewind a bar...
-			const unsigned short bar1 = pNode->barFromTick(t0);
-			const unsigned short bar2 = (bar1 > 0 ? bar1 - 1 : bar1);
-			const unsigned long	t1 = pNode->tickFromBar(bar1);
-			const unsigned long	t2 = pNode->tickFromBar(bar2);
+			const unsigned short bar
+				= pNode->barFromTick(t0);
+			const unsigned long	t1
+				= pNode->tickFromBar(bar);
+			const unsigned long	t2
+				= pNode->tickFromBar(bar > 0 ? bar - 1 : bar);
 			m_pSession->setPlayHead(pNode->frameFromTick(t0 > t1 ? t1 : t2));
 		}
 		++m_iTransportUpdate;
@@ -5575,17 +5579,20 @@ void qtractorMainForm::transportFastForward (void)
 		const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
 		if (iSnapPerBeat > 0) {
 			// Fast-forward a beat/fraction...
-			const unsigned int beat1 = pNode->beatFromTick(t0);
-			const unsigned long	t1 = pNode->tickFromBeat(beat1);
-			const unsigned long	t2 = pNode->tickFromBeat(beat1 + 1);
+			const unsigned int beat
+				= pNode->beatFromTick(t0);
+			const unsigned long	t1
+				= pNode->tickFromBeat(beat);
+			const unsigned long	t2
+				= pNode->tickFromBeat(beat + 1);
 			m_pSession->setPlayHead(pNode->frameFromTick(
 				pNode->tickSnap(t0 + (t2 - t1) / iSnapPerBeat, iSnapPerBeat)));
 		} else {
 			 // Fast-forward a bar...
-			const unsigned short bar1 = pNode->barFromTick(t0);
-			const unsigned long	t1 = pNode->tickFromBar(bar1);
-			const unsigned long	t2 = pNode->tickFromBar(bar1 + 1);
-			m_pSession->setPlayHead(pNode->frameFromTick(t0 < t1 ? t1 : t2));
+			const unsigned short bar
+				= pNode->barFromTick(t0);
+			m_pSession->setPlayHead(pNode->frameFromTick(
+				pNode->tickFromBar(bar + 1)));
 		}
 		++m_iTransportUpdate;
 		++m_iStabilizeTimer;
