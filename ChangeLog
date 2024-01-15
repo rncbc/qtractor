@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing View/Options.../Display/Custom/Style sheet (*.qss)
+  application theming option. (EXPERIMENTAL)
+
 - When playback is not rolling, Transport/Rewind and Fast-Forward
   now steps a bar, beat or fraction (snap-per-beat), backward and
   forward, respectively. (EXPERIMENTAL)
