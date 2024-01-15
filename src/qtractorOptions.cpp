@@ -394,6 +394,7 @@ void qtractorOptions::loadOptions (void)
 	m_settings.beginGroup("/Custom");
 	sCustomColorTheme = m_settings.value("/ColorTheme").toString();
 	sCustomStyleTheme = m_settings.value("/StyleTheme").toString();
+	sCustomStyleSheet = m_settings.value("/StyleSheet").toString();
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Preferences
@@ -701,6 +702,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.beginGroup("/Custom");
 	m_settings.setValue("/ColorTheme", sCustomColorTheme);
 	m_settings.setValue("/StyleTheme", sCustomStyleTheme);
+	m_settings.setValue("/StyleSheet", sCustomStyleSheet);
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Preferences
@@ -1010,6 +1012,80 @@ void qtractorOptions::saveComboBoxHistory ( QComboBox *pComboBox, int iLimit )
 	m_settings.endGroup();
 
 	pComboBox->blockSignals(bBlockSignals);
+}
+
+
+void qtractorOptions::loadComboBoxFileHistory ( QComboBox *pComboBox )
+{
+	// Load combobox list from configuration settings file...
+	const bool bBlockSignals = pComboBox->blockSignals(true);
+	m_settings.beginGroup("/History");
+	const QStringList& files
+		= m_settings.value('/' + pComboBox->objectName()).toStringList();
+	QStringListIterator iter(files);
+	while (iter.hasNext()) {
+		const QFileInfo info(iter.next());
+		if (info.exists() && info.isReadable()) {
+			const QString& sPath = info.canonicalFilePath();
+			pComboBox->insertItem(0, info.fileName(), sPath);
+		}
+	}
+	m_settings.endGroup();
+	pComboBox->blockSignals(bBlockSignals);
+}
+
+
+void qtractorOptions::saveComboBoxFileHistory ( QComboBox *pComboBox )
+{
+	// Save combobox list to configuration settings file...
+	m_settings.beginGroup("/History");
+	QStringList files;
+	const int iCount = pComboBox->count();
+	for (int i = 0; i < iCount; ++i) {
+		const QString& sPath = pComboBox->itemData(i).toString();
+		if (!sPath.isEmpty())
+			files.prepend(sPath);
+	}
+	m_settings.setValue('/' + pComboBox->objectName(), files);
+	m_settings.endGroup();
+}
+
+
+// Combo box settter/gettter helper prototypes.
+bool qtractorOptions::setComboBoxCurrentFile (
+	QComboBox *pComboBox, const QString& sFilename )
+{
+	const bool bBlockSignals = pComboBox->blockSignals(true);
+	const QFileInfo info(sFilename);
+	const bool bResult = info.exists() && info.isReadable();
+	if (bResult) {
+		const QString& sPath = info.canonicalFilePath();
+		int iIndex = pComboBox->findData(sPath);
+		if (iIndex < 0) {
+			pComboBox->insertItem(0, info.fileName(), sPath);
+			iIndex = 0;
+		}
+		pComboBox->setCurrentIndex(iIndex);
+		pComboBox->setToolTip(sPath);
+	} else {
+		pComboBox->setCurrentIndex(pComboBox->count() - 1);
+		pComboBox->setToolTip(pComboBox->currentText());
+	}
+	pComboBox->blockSignals(bBlockSignals);
+
+	return bResult;
+}
+
+
+QString qtractorOptions::comboBoxCurrentFile ( QComboBox *pComboBox )
+{
+	QString sPath;
+
+	const int iIndex = pComboBox->currentIndex();
+	if (iIndex >= 0)
+		sPath = pComboBox->itemData(iIndex).toString();
+
+	return sPath;
 }
 
 

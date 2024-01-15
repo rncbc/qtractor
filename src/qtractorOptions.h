@@ -344,6 +344,7 @@ public:
 	// Custom display options.
 	QString sCustomColorTheme;
 	QString sCustomStyleTheme;
+	QString sCustomStyleSheet;
 
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget, bool bVisible = false);
@@ -352,6 +353,12 @@ public:
 	// Combo box history persistence helper prototypes.
 	void loadComboBoxHistory(QComboBox *pComboBox, int iLimit = 8);
 	void saveComboBoxHistory(QComboBox *pComboBox, int iLimit = 8);
+
+	void loadComboBoxFileHistory(QComboBox *pComboBox);
+	void saveComboBoxFileHistory(QComboBox *pComboBox);
+
+	bool setComboBoxCurrentFile(QComboBox *pComboBox, const QString& sFilename);
+	QString comboBoxCurrentFile(QComboBox *pComboBox);
 
 	// Splitter widget sizes persistence helper methods.
 	void loadSplitterSizes(QSplitter *pSplitter, QList<int>& sizes);
