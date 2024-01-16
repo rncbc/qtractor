@@ -181,6 +181,9 @@ protected slots:
 	void viewPreview(bool bOn);
 	void viewFollow(bool bOn);
 
+	void transportStepBackward();
+	void transportStepForward();
+
 	void helpShortcuts();
 	void helpAbout();
 	void helpAboutQt();
