@@ -26,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>618</width>
-    <height>570</height>
+    <width>380</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -37,8 +37,7 @@
    <string>Track</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">
-    <normaloff>:/images/trackProperties.png</normaloff>:/images/trackProperties.png</iconset>
+   <iconset resource="qtractor.qrc">:/images/trackProperties.png</iconset>
   </property>
   <layout class="QVBoxLayout">
    <item>
@@ -111,16 +110,7 @@
          <property name="spacing">
           <number>4</number>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
@@ -132,16 +122,7 @@
             <property name="spacing">
              <number>4</number>
             </property>
-            <property name="leftMargin">
-             <number>8</number>
-            </property>
-            <property name="topMargin">
-             <number>8</number>
-            </property>
-            <property name="rightMargin">
-             <number>8</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>8</number>
             </property>
             <item>
@@ -176,16 +157,7 @@
             <property name="spacing">
              <number>4</number>
             </property>
-            <property name="leftMargin">
-             <number>8</number>
-            </property>
-            <property name="topMargin">
-             <number>8</number>
-            </property>
-            <property name="rightMargin">
-             <number>8</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>8</number>
             </property>
             <item>
@@ -399,16 +371,7 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <property name="leftMargin">
-           <number>8</number>
-          </property>
-          <property name="topMargin">
-           <number>8</number>
-          </property>
-          <property name="rightMargin">
-           <number>8</number>
-          </property>
-          <property name="bottomMargin">
+          <property name="margin">
            <number>8</number>
           </property>
           <item>
@@ -461,8 +424,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="qtractor.qrc">
-              <normaloff>:/images/formColor.png</normaloff>:/images/formColor.png</iconset>
+             <iconset resource="qtractor.qrc">:/images/formColor.png</iconset>
             </property>
            </widget>
           </item>
@@ -474,7 +436,7 @@
             <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" stdset="0">
+            <property name="sizeHint">
              <size>
               <width>8</width>
               <height>8</height>
@@ -488,7 +450,7 @@
              <string>Bac&amp;kground:</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
              <cstring>BackgroundColorComboBox</cstring>
@@ -535,18 +497,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="qtractor.qrc">
-              <normaloff>:/images/formColor.png</normaloff>:/images/formColor.png</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="AutoBackgroundColor">
-            <property name="text">
-             <string>Auto</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
+             <iconset resource="qtractor.qrc">:/images/formColor.png</iconset>
             </property>
            </widget>
           </item>
@@ -597,8 +548,7 @@
             <string>&amp;Add...</string>
            </property>
            <property name="icon">
-            <iconset resource="qtractor.qrc">
-             <normaloff>:/images/formCreate.png</normaloff>:/images/formCreate.png</iconset>
+            <iconset resource="qtractor.qrc">:/images/formCreate.png</iconset>
            </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -620,8 +570,7 @@
             <string>&amp;Remove</string>
            </property>
            <property name="icon">
-            <iconset resource="qtractor.qrc">
-             <normaloff>:/images/formRemove.png</normaloff>:/images/formRemove.png</iconset>
+            <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
            </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -633,7 +582,7 @@
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeHint" stdset="0">
+           <property name="sizeHint">
             <size>
              <width>8</width>
              <height>8</height>
@@ -656,8 +605,7 @@
             <string>&amp;Up</string>
            </property>
            <property name="icon">
-            <iconset resource="qtractor.qrc">
-             <normaloff>:/images/formMoveUp.png</normaloff>:/images/formMoveUp.png</iconset>
+            <iconset resource="qtractor.qrc">:/images/formMoveUp.png</iconset>
            </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -679,8 +627,7 @@
             <string>&amp;Down</string>
            </property>
            <property name="icon">
-            <iconset resource="qtractor.qrc">
-             <normaloff>:/images/formMoveDown.png</normaloff>:/images/formMoveDown.png</iconset>
+            <iconset resource="qtractor.qrc">:/images/formMoveDown.png</iconset>
            </property>
            <property name="toolButtonStyle">
             <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -704,16 +651,7 @@
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
@@ -724,7 +662,7 @@
            <property name="sizeType">
             <enum>QSizePolicy::Expanding</enum>
            </property>
-           <property name="sizeHint" stdset="0">
+           <property name="sizeHint">
             <size>
              <width>8</width>
              <height>8</height>
