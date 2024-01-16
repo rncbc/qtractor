@@ -379,7 +379,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	// Some actions surely need those
 	// shortcuts firmly attached...
 	addAction(m_ui.viewMenubarAction);
-
+#if 0
 	// Special integration ones.
 	addAction(m_ui.transportBackwardAction);
 	addAction(m_ui.transportLoopAction);
@@ -388,7 +388,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	addAction(m_ui.transportPlayAction);
 	addAction(m_ui.transportPunchAction);
 	addAction(m_ui.transportPunchSetAction);
-
+#endif
 	// Make those primordially docked...
 	addDockWidget(Qt::RightDockWidgetArea, m_pMidiEventList, Qt::Vertical);
 
@@ -772,6 +772,12 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		QObject::connect(m_ui.transportForwardAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportForward()));
+		QObject::connect(m_ui.transportStepBackwardAction,
+			SIGNAL(triggered(bool)),
+			SLOT(transportStepBackward()));
+		QObject::connect(m_ui.transportStepForwardAction,
+			SIGNAL(triggered(bool)),
+			SLOT(transportStepForward()));
 		QObject::connect(m_ui.transportLoopAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportLoop()));
@@ -1998,6 +2004,90 @@ void qtractorMidiEditorForm::viewFollow ( bool bOn )
 }
 
 
+
+//-------------------------------------------------------------------------
+// qtractorMidiEditorForm -- Transport Action slots.
+
+// Transport step-backward (local)
+void qtractorMidiEditorForm::transportStepBackward (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	unsigned long iPlayHead = pSession->playHead();
+	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+	const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
+	if (iSnapPerBeat > 0) {
+		// Rewind a beat/fraction...
+		const unsigned int beat
+			= pNode->beatFromTick(t0);
+		const unsigned long	t1
+			= pNode->tickFromBeat(beat > 0 ? beat : beat + 1);
+		const unsigned long	t2
+			= pNode->tickFromBeat(beat > 0 ? beat - 1 : beat);
+		iPlayHead = pNode->frameFromTick(
+			pNode->tickSnap(t0 - (t1 - t2) / iSnapPerBeat, iSnapPerBeat));
+	} else {
+		// Rewind a bar...
+		const unsigned short bar
+			= pNode->barFromTick(t0);
+		const unsigned long	t1
+			= pNode->tickFromBar(bar);
+		const unsigned long	t2
+			= pNode->tickFromBar(bar > 0 ? bar - 1 : bar);
+		iPlayHead = pNode->frameFromTick(t0 > t1 ? t1 : t2);
+	}
+
+	m_pMidiEditor->setPlayHead(iPlayHead);
+	pSession->setPlayHead(iPlayHead);
+}
+
+
+// Transport step-forward (local)
+void qtractorMidiEditorForm::transportStepForward (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	unsigned long iPlayHead = pSession->playHead();
+	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
+	qtractorTimeScale::Cursor cursor(pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+	const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
+	if (iSnapPerBeat > 0) {
+		// Step-forward a beat/fraction...
+		const unsigned int beat
+			= pNode->beatFromTick(t0);
+		const unsigned long	t1
+			= pNode->tickFromBeat(beat);
+		const unsigned long	t2
+			= pNode->tickFromBeat(beat + 1);
+		iPlayHead = pNode->frameFromTick(
+			pNode->tickSnap(t0 + (t2 - t1) / iSnapPerBeat, iSnapPerBeat));
+	} else {
+		// Step-forward a bar...
+		const unsigned short bar
+			= pNode->barFromTick(t0);
+		iPlayHead = pNode->frameFromTick(pNode->tickFromBar(bar + 1));
+	}
+
+	m_pMidiEditor->setPlayHead(iPlayHead);
+	pSession->setPlayHead(iPlayHead);
+}
+
+
 //-------------------------------------------------------------------------
 // qtractorMidiEditorForm -- Help Action slots.
 
@@ -2184,6 +2274,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 			!bRolling && (iPlayHead < pSession->sessionEnd()
 				|| iPlayHead < pSession->editHead()
 				|| iPlayHead < pSession->editTail()));
+		m_ui.transportStepBackwardAction->setEnabled(bBumped);
+		m_ui.transportStepForwardAction->setEnabled(!bRolling);
 		m_ui.transportLoopAction->setEnabled(
 			!bRolling && (bLooping || bSelectable));
 		m_ui.transportLoopSetAction->setEnabled(

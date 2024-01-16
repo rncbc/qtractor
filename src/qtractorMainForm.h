@@ -271,6 +271,8 @@ public slots:
 	void transportRewind();
 	void transportFastForward();
 	void transportForward();
+	void transportStepBackward();
+	void transportStepForward();
 	void transportLoop();
 	void transportLoopSet();
 	void transportStop();

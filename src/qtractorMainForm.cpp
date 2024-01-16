@@ -1114,6 +1114,12 @@ qtractorMainForm::qtractorMainForm (
 	QObject::connect(m_ui.transportForwardAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportForward()));
+	QObject::connect(m_ui.transportStepBackwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportStepBackward()));
+	QObject::connect(m_ui.transportStepForwardAction,
+		SIGNAL(triggered(bool)),
+		SLOT(transportStepForward()));
 	QObject::connect(m_ui.transportLoopAction,
 		SIGNAL(triggered(bool)),
 		SLOT(transportLoop()));
@@ -5508,38 +5514,6 @@ void qtractorMainForm::transportRewind (void)
 	if (!checkRestartSession())
 		return;
 
-	// When not playing just make one step backward...
-	if (m_iTransportRolling == 0 && !m_pSession->isPlaying()) {
-		const unsigned long iPlayHead = m_pSession->playHead();
-		const unsigned short iSnapPerBeat = m_pSession->snapPerBeat();
-		qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
-		qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
-		const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
-		if (iSnapPerBeat > 0) {
-			// Rewind a beat/fraction...
-			const unsigned int beat
-				= pNode->beatFromTick(t0);
-			const unsigned long	t1
-				= pNode->tickFromBeat(beat > 0 ? beat : beat + 1);
-			const unsigned long	t2
-				= pNode->tickFromBeat(beat > 0 ? beat - 1 : beat);
-			m_pSession->setPlayHead(pNode->frameFromTick(
-				pNode->tickSnap(t0 - (t1 - t2) / iSnapPerBeat, iSnapPerBeat)));
-		} else {
-			 // Rewind a bar...
-			const unsigned short bar
-				= pNode->barFromTick(t0);
-			const unsigned long	t1
-				= pNode->tickFromBar(bar);
-			const unsigned long	t2
-				= pNode->tickFromBar(bar > 0 ? bar - 1 : bar);
-			m_pSession->setPlayHead(pNode->frameFromTick(t0 > t1 ? t1 : t2));
-		}
-		++m_iTransportUpdate;
-		++m_iStabilizeTimer;
-		return;
-	}
-
 	// Rolling direction and speed (negative)...
 	bool bShiftKeyModifier = QApplication::keyboardModifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier);
@@ -5572,35 +5546,6 @@ void qtractorMainForm::transportFastForward (void)
 	// Make sure session is activated...
 	if (!checkRestartSession())
 		return;
-
-	// When not playing just make one step forward...
-	if (m_iTransportRolling == 0 && !m_pSession->isPlaying()) {
-		const unsigned long iPlayHead = m_pSession->playHead();
-		const unsigned short iSnapPerBeat = m_pSession->snapPerBeat();
-		qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
-		qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
-		const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
-		if (iSnapPerBeat > 0) {
-			// Fast-forward a beat/fraction...
-			const unsigned int beat
-				= pNode->beatFromTick(t0);
-			const unsigned long	t1
-				= pNode->tickFromBeat(beat);
-			const unsigned long	t2
-				= pNode->tickFromBeat(beat + 1);
-			m_pSession->setPlayHead(pNode->frameFromTick(
-				pNode->tickSnap(t0 + (t2 - t1) / iSnapPerBeat, iSnapPerBeat)));
-		} else {
-			 // Fast-forward a bar...
-			const unsigned short bar
-				= pNode->barFromTick(t0);
-			m_pSession->setPlayHead(pNode->frameFromTick(
-				pNode->tickFromBar(bar + 1)));
-		}
-		++m_iTransportUpdate;
-		++m_iStabilizeTimer;
-		return;
-	}
 
 	// Rolling direction and speed (positive)...
 	bool bShiftKeyModifier = QApplication::keyboardModifiers()
@@ -5643,6 +5588,87 @@ void qtractorMainForm::transportForward (void)
 		m_pSession->setPlayHead(m_pSession->sessionEnd());
 	} else {
 		m_pSession->setPlayHead(playHeadForward());
+	}
+
+	++m_iTransportUpdate;
+	++m_iStabilizeTimer;
+}
+
+
+// Transport step-backward
+void qtractorMainForm::transportStepBackward (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportStepBackward()");
+#endif
+
+	// Make sure session is activated...
+	checkRestartSession();
+
+	// Just make one step backward...
+	const unsigned long iPlayHead = m_pSession->playHead();
+	const unsigned short iSnapPerBeat = m_pSession->snapPerBeat();
+	qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+	const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
+	if (iSnapPerBeat > 0) {
+		// Rewind a beat/fraction...
+		const unsigned int beat
+			= pNode->beatFromTick(t0);
+		const unsigned long	t1
+			= pNode->tickFromBeat(beat > 0 ? beat : beat + 1);
+		const unsigned long	t2
+			= pNode->tickFromBeat(beat > 0 ? beat - 1 : beat);
+		m_pSession->setPlayHead(pNode->frameFromTick(
+			pNode->tickSnap(t0 - (t1 - t2) / iSnapPerBeat, iSnapPerBeat)));
+	} else {
+		 // Rewind a bar...
+		const unsigned short bar
+			= pNode->barFromTick(t0);
+		const unsigned long	t1
+			= pNode->tickFromBar(bar);
+		const unsigned long	t2
+			= pNode->tickFromBar(bar > 0 ? bar - 1 : bar);
+		m_pSession->setPlayHead(pNode->frameFromTick(t0 > t1 ? t1 : t2));
+	}
+
+	++m_iTransportUpdate;
+	++m_iStabilizeTimer;
+}
+
+
+// Transport step-forward
+void qtractorMainForm::transportStepForward (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorMainForm::transportStepForward()");
+#endif
+
+	// Make sure session is activated...
+	checkRestartSession();
+
+	// Just make one step forward...
+	const unsigned long iPlayHead = m_pSession->playHead();
+	const unsigned short iSnapPerBeat = m_pSession->snapPerBeat();
+	qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+	const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
+	if (iSnapPerBeat > 0) {
+		// Step-forward a beat/fraction...
+		const unsigned int beat
+			= pNode->beatFromTick(t0);
+		const unsigned long	t1
+			= pNode->tickFromBeat(beat);
+		const unsigned long	t2
+			= pNode->tickFromBeat(beat + 1);
+		m_pSession->setPlayHead(pNode->frameFromTick(
+			pNode->tickSnap(t0 + (t2 - t1) / iSnapPerBeat, iSnapPerBeat)));
+	} else {
+		 // Step-forward a bar...
+		const unsigned short bar
+			= pNode->barFromTick(t0);
+		m_pSession->setPlayHead(pNode->frameFromTick(
+			pNode->tickFromBar(bar + 1)));
 	}
 
 	++m_iTransportUpdate;
@@ -6676,6 +6702,8 @@ void qtractorMainForm::stabilizeForm (void)
 		!bRolling && (iPlayHead < iSessionEnd
 			|| iPlayHead < m_pSession->editHead()
 			|| iPlayHead < m_pSession->editTail()));
+	m_ui.transportStepBackwardAction->setEnabled(bBumped);
+	m_ui.transportStepForwardAction->setEnabled(!bRolling);
 	m_ui.transportLoopAction->setEnabled(
 		!bRolling && (bLooping || bSelectable));
 	m_ui.transportLoopSetAction->setEnabled(

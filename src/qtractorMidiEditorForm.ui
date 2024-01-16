@@ -240,10 +240,19 @@
     <property name="title">
      <string>T&amp;ransport</string>
     </property>
+    <widget class="QMenu" name="transportStepMenu">
+     <property name="title">
+      <string>St&amp;ep</string>
+     </property>
+     <addaction name="transportStepBackwardAction"/>
+     <addaction name="transportStepForwardAction"/>
+    </widget>
     <addaction name="transportBackwardAction"/>
     <addaction name="transportRewindAction"/>
     <addaction name="transportFastForwardAction"/>
     <addaction name="transportForwardAction"/>
+    <addaction name="separator"/>
+    <addaction name="transportStepMenu"/>
     <addaction name="separator"/>
     <addaction name="transportLoopAction"/>
     <addaction name="transportLoopSetAction"/>
@@ -1599,6 +1608,34 @@
    </property>
    <property name="shortcut">
     <string/>
+   </property>
+  </action>
+  <action name="transportStepBackwardAction">
+   <property name="text">
+    <string>&amp;Backward</string>
+   </property>
+   <property name="iconText">
+    <string>Step Backward</string>
+   </property>
+   <property name="toolTip">
+    <string>Step backward</string>
+   </property>
+   <property name="statusTip">
+    <string>Transport step backward</string>
+   </property>
+  </action>
+  <action name="transportStepForwardAction">
+   <property name="text">
+    <string>&amp;Forward</string>
+   </property>
+   <property name="iconText">
+    <string>Step Forward</string>
+   </property>
+   <property name="toolTip">
+    <string>Step forward</string>
+   </property>
+   <property name="statusTip">
+    <string>Transport step forward</string>
    </property>
   </action>
   <action name="transportLoopAction">
