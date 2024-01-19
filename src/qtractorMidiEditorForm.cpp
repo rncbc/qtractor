@@ -2023,16 +2023,18 @@ void qtractorMidiEditorForm::transportStepBackward (void)
 	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
 	if (iSnapPerBeat > 0) {
 		// Step-backward a beat/fraction...
+		const unsigned long t0
+			= pTimeScale->tickFromFrame(iPlayHead);
 		const unsigned int iBeat
-			= pTimeScale->beatFromFrame(iPlayHead);
-		const unsigned long iFrameStart
-			= pTimeScale->frameFromBeat(iBeat > 0 ? iBeat : iBeat + 1);
-		const unsigned long iFrameEnd
-			= pTimeScale->frameFromBeat(iBeat > 0 ? iBeat - 1 : iBeat);
-		const unsigned long iFrames
-			= (iFrameStart - iFrameEnd) / iSnapPerBeat;
-		iPlayHead = pTimeScale->frameSnap(
-			iPlayHead > iFrames ? iPlayHead - iFrames : 0);
+			= pTimeScale->beatFromTick(t0);
+		const unsigned long t1
+			= pTimeScale->tickFromBeat(iBeat > 0 ? iBeat : iBeat + 1);
+		const unsigned long t2
+			= pTimeScale->tickFromBeat(iBeat > 0 ? iBeat - 1 : iBeat);
+		const unsigned long dt
+			= (t1 - t2) / iSnapPerBeat;
+		iPlayHead = pTimeScale->frameFromTick(
+			pTimeScale->tickSnap(t0 > dt ? t0 - dt : 0));
 	} else {
 		// Step-backward a bar...
 		const unsigned short iBar
@@ -2040,6 +2042,7 @@ void qtractorMidiEditorForm::transportStepBackward (void)
 		iPlayHead = pTimeScale->frameFromBar(iBar > 0 ? iBar - 1 : iBar);
 	}
 
+	m_pMidiEditor->setSyncViewHoldOn(false);
 	m_pMidiEditor->setPlayHead(iPlayHead);
 	pSession->setPlayHead(iPlayHead);
 }
@@ -2060,15 +2063,18 @@ void qtractorMidiEditorForm::transportStepForward (void)
 	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
 	if (iSnapPerBeat > 0) {
 		// Step-forward a beat/fraction...
+		const unsigned long t0
+			= pTimeScale->tickFromFrame(iPlayHead);
 		const unsigned int iBeat
-			= pTimeScale->beatFromFrame(iPlayHead);
-		const unsigned long	iFrameStart
-			= pTimeScale->frameFromBeat(iBeat);
-		const unsigned long	iFrameEnd
-			= pTimeScale->frameFromBeat(iBeat + 1);
-		const unsigned long iFrames
-			= (iFrameEnd - iFrameStart) / iSnapPerBeat;
-		iPlayHead = pTimeScale->frameSnap(iPlayHead + iFrames);
+			= pTimeScale->beatFromTick(t0);
+		const unsigned long t1
+			= pTimeScale->tickFromBeat(iBeat);
+		const unsigned long t2
+			= pTimeScale->tickFromBeat(iBeat + 1);
+		const unsigned long dt
+			= (t2 - t1) / iSnapPerBeat;
+		iPlayHead = pTimeScale->frameFromTick(
+			pTimeScale->tickSnap(t0 + dt));
 	} else {
 		// Step-forward a bar...
 		const unsigned short iBar
@@ -2076,6 +2082,7 @@ void qtractorMidiEditorForm::transportStepForward (void)
 		iPlayHead = pTimeScale->frameFromBar(iBar + 1);
 	}
 
+	m_pMidiEditor->setSyncViewHoldOn(false);
 	m_pMidiEditor->setPlayHead(iPlayHead);
 	pSession->setPlayHead(iPlayHead);
 }
