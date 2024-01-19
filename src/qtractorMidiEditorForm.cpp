@@ -2021,23 +2021,23 @@ void qtractorMidiEditorForm::transportStepBackward (void)
 
 	unsigned long iPlayHead = pSession->playHead();
 	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
-	qtractorTimeScale::Cursor cursor(pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
-	const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
 	if (iSnapPerBeat > 0) {
-		// Rewind a beat/fraction...
-		const unsigned int beat= pNode->beatFromTick(t0);
-		const unsigned long t1 = pNode->tickFromBeat(beat > 0 ? beat : beat + 1);
-		const unsigned long t2 = pNode->tickFromBeat(beat > 0 ? beat - 1 : beat);
-		const unsigned long td = (t1 - t2) / iSnapPerBeat;
-		iPlayHead = pNode->frameFromTick(
-			pNode->tickSnap((t0 > td ? t0 - td : 0), iSnapPerBeat));
+		// Step-backward a beat/fraction...
+		const unsigned int iBeat
+			= pTimeScale->beatFromFrame(iPlayHead);
+		const unsigned long iFrameStart
+			= pTimeScale->frameFromBeat(iBeat > 0 ? iBeat : iBeat + 1);
+		const unsigned long iFrameEnd
+			= pTimeScale->frameFromBeat(iBeat > 0 ? iBeat - 1 : iBeat);
+		const unsigned long iFrames
+			= (iFrameStart - iFrameEnd) / iSnapPerBeat;
+		iPlayHead = pTimeScale->frameSnap(
+			iPlayHead > iFrames ? iPlayHead - iFrames : 0);
 	} else {
-		// Rewind a bar...
-		const unsigned short bar = pNode->barFromTick(t0);
-		const unsigned long	t1 = pNode->tickFromBar(bar);
-		const unsigned long	t2 = pNode->tickFromBar(bar > 0 ? bar - 1 : bar);
-		iPlayHead = pNode->frameFromTick(t0 > t1 ? t1 : t2);
+		// Step-backward a bar...
+		const unsigned short iBar
+			= pTimeScale->barFromFrame(iPlayHead);
+		iPlayHead = pTimeScale->frameFromBar(iBar > 0 ? iBar - 1 : iBar);
 	}
 
 	m_pMidiEditor->setPlayHead(iPlayHead);
@@ -2058,24 +2058,22 @@ void qtractorMidiEditorForm::transportStepForward (void)
 
 	unsigned long iPlayHead = pSession->playHead();
 	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
-	qtractorTimeScale::Cursor cursor(pTimeScale);
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
-	const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
 	if (iSnapPerBeat > 0) {
 		// Step-forward a beat/fraction...
-		const unsigned int beat
-			= pNode->beatFromTick(t0);
-		const unsigned long	t1
-			= pNode->tickFromBeat(beat);
-		const unsigned long	t2
-			= pNode->tickFromBeat(beat + 1);
-		iPlayHead = pNode->frameFromTick(
-			pNode->tickSnap(t0 + (t2 - t1) / iSnapPerBeat, iSnapPerBeat));
+		const unsigned int iBeat
+			= pTimeScale->beatFromFrame(iPlayHead);
+		const unsigned long	iFrameStart
+			= pTimeScale->frameFromBeat(iBeat);
+		const unsigned long	iFrameEnd
+			= pTimeScale->frameFromBeat(iBeat + 1);
+		const unsigned long iFrames
+			= (iFrameEnd - iFrameStart) / iSnapPerBeat;
+		iPlayHead = pTimeScale->frameSnap(iPlayHead + iFrames);
 	} else {
 		// Step-forward a bar...
-		const unsigned short bar
-			= pNode->barFromTick(t0);
-		iPlayHead = pNode->frameFromTick(pNode->tickFromBar(bar + 1));
+		const unsigned short iBar
+			= pTimeScale->barFromFrame(iPlayHead);
+		iPlayHead = pTimeScale->frameFromBar(iBar + 1);
 	}
 
 	m_pMidiEditor->setPlayHead(iPlayHead);
