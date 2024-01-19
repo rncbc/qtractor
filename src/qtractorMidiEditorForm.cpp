@@ -2026,22 +2026,17 @@ void qtractorMidiEditorForm::transportStepBackward (void)
 	const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
 	if (iSnapPerBeat > 0) {
 		// Rewind a beat/fraction...
-		const unsigned int beat
-			= pNode->beatFromTick(t0);
-		const unsigned long	t1
-			= pNode->tickFromBeat(beat > 0 ? beat : beat + 1);
-		const unsigned long	t2
-			= pNode->tickFromBeat(beat > 0 ? beat - 1 : beat);
+		const unsigned int beat= pNode->beatFromTick(t0);
+		const unsigned long t1 = pNode->tickFromBeat(beat > 0 ? beat : beat + 1);
+		const unsigned long t2 = pNode->tickFromBeat(beat > 0 ? beat - 1 : beat);
+		const unsigned long td = (t1 - t2) / iSnapPerBeat;
 		iPlayHead = pNode->frameFromTick(
-			pNode->tickSnap(t0 - (t1 - t2) / iSnapPerBeat, iSnapPerBeat));
+			pNode->tickSnap((t0 > td ? t0 - td : 0), iSnapPerBeat));
 	} else {
 		// Rewind a bar...
-		const unsigned short bar
-			= pNode->barFromTick(t0);
-		const unsigned long	t1
-			= pNode->tickFromBar(bar);
-		const unsigned long	t2
-			= pNode->tickFromBar(bar > 0 ? bar - 1 : bar);
+		const unsigned short bar = pNode->barFromTick(t0);
+		const unsigned long	t1 = pNode->tickFromBar(bar);
+		const unsigned long	t2 = pNode->tickFromBar(bar > 0 ? bar - 1 : bar);
 		iPlayHead = pNode->frameFromTick(t0 > t1 ? t1 : t2);
 	}
 
