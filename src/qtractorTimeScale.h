@@ -1,7 +1,7 @@
 // qtractorTimeScale.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -326,6 +326,19 @@ public:
 		return (pNode ? pNode->frameFromBar(iBar) : 0);
 	}
 
+	// Tick/bar general converters.
+	unsigned short barFromTick(unsigned long iTick)
+	{
+		Node *pNode = m_cursor.seekTick(iTick);
+		return (pNode ? pNode->barFromTick(iTick) : 0);
+	}
+
+	unsigned long tickFromBar(unsigned short iBar)
+	{
+		Node *pNode = m_cursor.seekBar(iBar);
+		return (pNode ? pNode->tickFromBar(iBar) : 0);
+	}
+
 	// Frame/beat general converters.
 	unsigned int beatFromFrame(unsigned long iFrame)
 	{
@@ -337,6 +350,19 @@ public:
 	{
 		Node *pNode = m_cursor.seekBeat(iBeat);
 		return (pNode ? pNode->frameFromBeat(iBeat) : 0);
+	}
+
+	// Tick/beat general converters.
+	unsigned int beatFromTick(unsigned long iTick)
+	{
+		Node *pNode = m_cursor.seekTick(iTick);
+		return (pNode ? pNode->beatFromTick(iTick) : 0);
+	}
+
+	unsigned long tickFromBeat(unsigned int iBeat)
+	{
+		Node *pNode = m_cursor.seekBeat(iBeat);
+		return (pNode ? pNode->tickFromBeat(iBeat) : 0);
 	}
 
 	// Frame/tick general converters.
