@@ -2792,12 +2792,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="520"/>
         <source>Mo&amp;de</source>
-        <translation type="unfinished"></translation>
+        <translation>Mo&amp;de</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="529"/>
         <source>St&amp;ep</source>
-        <translation type="unfinished"></translation>
+        <translation>Pa&amp;s</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="564"/>
@@ -5335,32 +5335,32 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="2769"/>
         <source>Step Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Reculer d&apos;un pas</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2772"/>
         <source>Step backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Reculer d&apos;un pas</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2775"/>
         <source>Transport step backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Transport en arrière</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2783"/>
         <source>Step Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Avancer d&apos;un pas</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2786"/>
         <source>Step forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Avancer d&apos;un pas</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2789"/>
         <source>Transport step forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Transport en avant</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2794"/>
@@ -9000,7 +9000,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="245"/>
         <source>St&amp;ep</source>
-        <translation type="unfinished"></translation>
+        <translation>Pa&amp;s</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="271"/>
@@ -10274,32 +10274,32 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1618"/>
         <source>Step Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Reculer d&apos;un pas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1621"/>
         <source>Step backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Reculer d&apos;un pas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1624"/>
         <source>Transport step backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Transport en arrière</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1632"/>
         <source>Step Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Avancer d&apos;un pas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1635"/>
         <source>Step forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Avancer d&apos;un pas</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1638"/>
         <source>Transport step forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Transport en avant</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1649"/>
@@ -12644,17 +12644,17 @@ existantes :</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2866"/>
         <source>St&amp;yle sheet:</source>
-        <translation type="unfinished"></translation>
+        <translation>Feuille de st&amp;yle : </translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2882"/>
         <source>Custom style sheet (*.qss)</source>
-        <translation type="unfinished"></translation>
+        <translation>Feuille de style personnalisée (*.qss)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2924"/>
         <source>Browse for custom style sheet (*.qss)</source>
-        <translation type="unfinished"></translation>
+        <translation>Recherche d&apos;une feuille de style personnalisée (*.qss)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3726"/>
@@ -13104,12 +13104,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1289"/>
         <source>Open Style Sheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir la feuille de style</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1292"/>
         <source>Style Sheet files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de feuilles de style (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1373"/>
