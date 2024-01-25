@@ -40,7 +40,11 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/atom/atom.h"
+#else
+#include "lv2/atom/atom.h"
+#endif
 
 
 // An abstract/opaque LV2 atom:Sequence buffer.

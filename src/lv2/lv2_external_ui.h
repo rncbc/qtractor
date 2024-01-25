@@ -18,7 +18,11 @@
 #ifndef LV2_EXTERNAL_UI_H
 #define LV2_EXTERNAL_UI_H
 
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
+#else
+#include "lv2//ui/ui.h"
+#endif
 
 #define LV2_EXTERNAL_UI_URI     "http://kxstudio.sf.net/ns/lv2ext/external-ui"
 #define LV2_EXTERNAL_UI_PREFIX  LV2_EXTERNAL_UI_URI "#"
