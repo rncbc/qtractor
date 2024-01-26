@@ -4,7 +4,10 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.39  2024-01-27  A Winter'24 Release.
+
+- Added build checks on whether to use old or newer style of LV2
+  include headers.
 
 - Introducing new Transport/Step/Backward and Forward menu actions,
   to move the play-head backward and forward, in bar/beat/fraction
