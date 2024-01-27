@@ -57,7 +57,11 @@
 
 
 // URI map/unmap features.
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/urid/urid.h"
+#else
+#include "lv2//urid/urid.h"
+#endif
 
 static QHash<QString, LV2_URID>    g_uri_map;
 static QHash<LV2_URID, QByteArray> g_ids_map;
@@ -96,7 +100,11 @@ static const LV2_Feature g_lv2_urid_unmap_feature =
 #ifdef CONFIG_LV2_EVENT
 
 // URI map (uri_to_id) feature (DEPRECATED)
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/uri-map/uri-map.h"
+#else
+#include "lv2/uri-map/uri-map.h"
+#endif
 
 static LV2_URID qtractor_lv2_uri_to_id (
 	LV2_URI_Map_Callback_Data /*data*/, const char *map, const char *uri )
@@ -719,7 +727,11 @@ static void qtractor_lv2_state_free_path (
 #ifdef CONFIG_LV2_BUF_SIZE
 
 // LV2 Buffer size option.
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/buf-size/buf-size.h"
+#else
+#include "lv2/buf-size/buf-size.h"
+#endif
 
 #ifndef LV2_BUF_SIZE__nominalBlockLength
 #define LV2_BUF_SIZE__nominalBlockLength LV2_BUF_SIZE_PREFIX "nominalBlockLength"
@@ -1014,15 +1026,24 @@ static LilvNode *g_lv2_toggled_prop     = nullptr;
 static LilvNode *g_lv2_integer_prop     = nullptr;
 static LilvNode *g_lv2_sample_rate_prop = nullptr;
 
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/port-props/port-props.h"
+#else
+#include "lv2/port-props/port-props.h"
+#endif
 
 static LilvNode *g_lv2_logarithmic_prop = nullptr;
 
 
 #ifdef CONFIG_LV2_ATOM
 
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/atom/forge.h"
 #include "lv2/lv2plug.in/ns/ext/atom/util.h"
+#else
+#include "lv2/atom/forge.h"
+#include "lv2/atom/util.h"
+#endif
 
 static LV2_Atom_Forge *g_lv2_atom_forge = nullptr;
 
@@ -1048,7 +1069,11 @@ static LilvNode *g_lv2_minimum_prop = nullptr;
 static LilvNode *g_lv2_maximum_prop = nullptr;
 static LilvNode *g_lv2_default_prop = nullptr;
 
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/resize-port/resize-port.h"
+#else
+#include "lv2/resize-port/resize-port.h"
+#endif
 
 static LilvNode *g_lv2_minimum_size_prop = nullptr;
 
@@ -1060,7 +1085,11 @@ static LilvNode *g_lv2_patch_message_class = nullptr;
 
 #ifdef CONFIG_LV2_PARAMETERS
 // LV2 Parameters option.
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/parameters/parameters.h"
+#else
+#include "lv2/parameters/parameters.h"
+#endif
 #endif
 
 

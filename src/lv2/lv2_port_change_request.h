@@ -23,7 +23,11 @@
 #ifndef LV2_CONTROL_INPUT_PORT_CHANGE_REQUEST_H
 #define LV2_CONTROL_INPUT_PORT_CHANGE_REQUEST_H
 
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2.h"
+#else
+#include "lv2/core/lv2.h"
+#endif
 
 #define LV2_CONTROL_INPUT_PORT_CHANGE_REQUEST_URI    "http://kx.studio/ns/lv2ext/control-input-port-change-request"
 #define LV2_CONTROL_INPUT_PORT_CHANGE_REQUEST_PREFIX LV2_CONTROL_INPUT_PORT_CHANGE_REQUEST_URI "#"

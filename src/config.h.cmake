@@ -107,6 +107,9 @@
 /* Define if LV2 headers are available. */
 #cmakedefine CONFIG_LV2 @CONFIG_LV2@
 
+/* Define if LV2 old headers are enabled. */
+#cmakedefine CONFIG_LV2_OLD_HEADERS @CONFIG_LV2_OLD_HEADERS@
+
 /* Define if LV2 UI support is available. */
 #cmakedefine CONFIG_LV2_UI @CONFIG_LV2_UI@
 

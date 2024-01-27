@@ -28,8 +28,13 @@
 
 #ifdef CONFIG_LV2_EVENT
 // LV2 Event/MIDI support.
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/event/event.h"
 #include "lv2/lv2plug.in/ns/ext/event/event-helpers.h"
+#else
+#include "lv2/event/event.h"
+#include "lv2/event/event-helpers.h"
+#endif
 #endif
 
 #ifdef CONFIG_LV2_ATOM
@@ -43,7 +48,11 @@
 
 #ifdef CONFIG_LV2_WORKER
 // LV2 Worker/Schedule support.
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/worker/worker.h"
+#else
+#include "lv2/worker/worker.h"
+#endif
 // Forward declarations.
 class qtractorLv2Worker;
 #endif
@@ -53,10 +62,15 @@ class qtractorLv2Worker;
 #ifdef CONFIG_LIBSUIL
 #include <suil/suil.h>
 #endif
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/extensions/ui/ui.h"
-// LV2 UI data/instance access support.
 #include "lv2/lv2plug.in/ns/ext/data-access/data-access.h"
 #include "lv2/lv2plug.in/ns/ext/instance-access/instance-access.h"
+#else
+#include "lv2/ui/ui.h"
+#include "lv2/data-access/data-access.h"
+#include "lv2/instance-access/instance-access.h"
+#endif
 #ifdef CONFIG_LV2_ATOM
 #include <jack/ringbuffer.h>
 #endif
@@ -96,7 +110,11 @@ typedef struct _LV2UI_Request_Value {
 
 #ifdef CONFIG_LV2_STATE
 // LV2 State support.
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/state/state.h"
+#else
+#include "lv2/state/state.h"
+#endif
 #endif
 
 #ifdef CONFIG_LV2_PROGRAMS
@@ -112,24 +130,40 @@ typedef struct _LV2UI_Request_Value {
 
 #ifdef CONFIG_LV2_PRESETS
 // LV2 Presets support.
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/presets/presets.h"
+#else
+#include "lv2/presets/presets.h"
+#endif
 #endif
 
 #ifdef CONFIG_LV2_TIME
 // LV2 Time support.
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/time/time.h"
+#else
+#include "lv2/time/time.h"
+#endif
 // Forward decl.
 class qtractorAudioEngine;
 #endif
 
 #ifdef CONFIG_LV2_OPTIONS
 // LV2 Options support.
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/options/options.h"
+#else
+#include "lv2/options/options.h"
+#endif
 #endif
 
 #ifdef CONFIG_LV2_PATCH
 // LV2 Patch/properties support.
+#ifdef CONFIG_LV2_OLD_HEADERS
 #include "lv2/lv2plug.in/ns/ext/patch/patch.h"
+#else
+#include "lv2/patch/patch.h"
+#endif
 #include <QVariant>
 #endif
 
