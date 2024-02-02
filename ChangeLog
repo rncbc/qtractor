@@ -4,24 +4,27 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.39  2024-01-27  A Winter'24 Release.
+
+- Added build checks on whether to use old or newer style of LV2
+  include headers.
 
 - Introducing new Transport/Step/Backward and Forward menu actions,
   to move the play-head backward and forward, in bar/beat/fraction
-  (snap-per-beat) steps, respectively. (EXPERIMENTAL)
+  (snap-per-beat) steps, respectively.
 
 - Introducing View/Options.../Display/Custom/Style sheet (*.qss)
-  application theming option. (EXPERIMENTAL)
+  application theming option.
 
 - Improved MIDI clip editor centering to current mouse pointer
   position in main timeline (tracks-view); on both horizontal and
-  vertical axes. (EXPERIMENTAL)
+  vertical axes.
 
 - LV2 Plug-in Control Input Port-change request extension feature
-  support added. (EXPERIMENTAL)
+  support added.
 
 - Fixed an old one-off plug-in parameter change command aliasing
-  (undo/redo). (EXPERIMENTAL)
+  (undo/redo).
 
 - Updated copyright headers into the New Year (2024).
 

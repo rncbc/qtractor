@@ -23,7 +23,11 @@
 #ifndef LV2_MIDNAM_H
 #define LV2_MIDNAM_H
 
-#include "lv2/lv2plug.in/ns/lv2core/lv2.h"
+#ifdef CONFIG_LV2_OLD_HEADERS
+#include "lv2.h"
+#else
+#include "lv2/core/lv2.h"
+#endif
 
 #define LV2_MIDNAM_URI "http://ardour.org/lv2/midnam"
 #define LV2_MIDNAM_PREFIX LV2_MIDNAM_URI "#"

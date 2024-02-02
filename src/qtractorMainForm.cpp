@@ -5605,32 +5605,35 @@ void qtractorMainForm::transportStepBackward (void)
 	// Make sure session is activated...
 	checkRestartSession();
 
+	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
 	// Just make one step backward...
-	const unsigned long iPlayHead = m_pSession->playHead();
-	const unsigned short iSnapPerBeat = m_pSession->snapPerBeat();
-	qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
-	const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
+	unsigned long iPlayHead = m_pSession->playHead();
+	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
 	if (iSnapPerBeat > 0) {
-		// Rewind a beat/fraction...
-		const unsigned int beat
-			= pNode->beatFromTick(t0);
-		const unsigned long	t1
-			= pNode->tickFromBeat(beat > 0 ? beat : beat + 1);
-		const unsigned long	t2
-			= pNode->tickFromBeat(beat > 0 ? beat - 1 : beat);
-		m_pSession->setPlayHead(pNode->frameFromTick(
-			pNode->tickSnap(t0 - (t1 - t2) / iSnapPerBeat, iSnapPerBeat)));
+		// Step-backward a beat/fraction...
+		const unsigned long t0
+			= pTimeScale->tickFromFrame(iPlayHead);
+		const unsigned int iBeat
+			= pTimeScale->beatFromTick(t0);
+		const unsigned long t1
+			= pTimeScale->tickFromBeat(iBeat > 0 ? iBeat : iBeat + 1);
+		const unsigned long t2
+			= pTimeScale->tickFromBeat(iBeat > 0 ? iBeat - 1 : iBeat);
+		const unsigned long dt
+			= (t1 - t2) / iSnapPerBeat;
+		iPlayHead = pTimeScale->frameFromTick(
+			pTimeScale->tickSnap(t0 > dt ? t0 - dt : 0));
 	} else {
-		 // Rewind a bar...
-		const unsigned short bar
-			= pNode->barFromTick(t0);
-		const unsigned long	t1
-			= pNode->tickFromBar(bar);
-		const unsigned long	t2
-			= pNode->tickFromBar(bar > 0 ? bar - 1 : bar);
-		m_pSession->setPlayHead(pNode->frameFromTick(t0 > t1 ? t1 : t2));
+		// Step-backward a bar...
+		const unsigned short iBar
+			= pTimeScale->barFromFrame(iPlayHead);
+		iPlayHead = pTimeScale->frameFromBar(iBar > 0 ? iBar - 1 : iBar);
 	}
+
+	m_pSession->setPlayHead(iPlayHead);
 
 	++m_iTransportUpdate;
 	++m_iStabilizeTimer;
@@ -5647,29 +5650,35 @@ void qtractorMainForm::transportStepForward (void)
 	// Make sure session is activated...
 	checkRestartSession();
 
+	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
 	// Just make one step forward...
-	const unsigned long iPlayHead = m_pSession->playHead();
-	const unsigned short iSnapPerBeat = m_pSession->snapPerBeat();
-	qtractorTimeScale::Cursor cursor(m_pSession->timeScale());
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
-	const unsigned long t0 = pNode->tickFromFrame(iPlayHead);
+	unsigned long iPlayHead = m_pSession->playHead();
+	const unsigned short iSnapPerBeat = pTimeScale->snapPerBeat();
 	if (iSnapPerBeat > 0) {
 		// Step-forward a beat/fraction...
-		const unsigned int beat
-			= pNode->beatFromTick(t0);
-		const unsigned long	t1
-			= pNode->tickFromBeat(beat);
-		const unsigned long	t2
-			= pNode->tickFromBeat(beat + 1);
-		m_pSession->setPlayHead(pNode->frameFromTick(
-			pNode->tickSnap(t0 + (t2 - t1) / iSnapPerBeat, iSnapPerBeat)));
+		const unsigned long t0
+			= pTimeScale->tickFromFrame(iPlayHead);
+		const unsigned int iBeat
+			= pTimeScale->beatFromTick(t0);
+		const unsigned long t1
+			= pTimeScale->tickFromBeat(iBeat);
+		const unsigned long t2
+			= pTimeScale->tickFromBeat(iBeat + 1);
+		const unsigned long dt
+			= (t2 - t1) / iSnapPerBeat;
+		iPlayHead = pTimeScale->frameFromTick(
+			pTimeScale->tickSnap(t0 + dt));
 	} else {
-		 // Step-forward a bar...
-		const unsigned short bar
-			= pNode->barFromTick(t0);
-		m_pSession->setPlayHead(pNode->frameFromTick(
-			pNode->tickFromBar(bar + 1)));
+		// Step-forward a bar...
+		const unsigned short iBar
+			= pTimeScale->barFromFrame(iPlayHead);
+		iPlayHead = pTimeScale->frameFromBar(iBar + 1);
 	}
+
+	m_pSession->setPlayHead(iPlayHead);
 
 	++m_iTransportUpdate;
 	++m_iStabilizeTimer;
