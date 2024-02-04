@@ -3,6 +3,9 @@ Qtractor - An Audio/MIDI multi-track sequencer
 
 ChangeLog
 
+- Use Shift keyboard modifier with the mouse-wheel to scroll the
+  mixer panes horizontally. (EXPERIMENTAL)
+
 
 0.9.39  2024-01-27  A Winter'24 Release.
 
@@ -399,6 +402,10 @@ ChangeLog
 
 - Fix IPlugView leaks for VST3 plugins.
 
+
+GIT HEAD
+
+- 
 
 0.9.20  2021-02-12  A Winter'21 Release.
 
