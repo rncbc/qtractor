@@ -406,7 +406,7 @@ End:	%3	Length:	%4</source>
     </message>
     <message>
         <location filename="../qtractorLadspaPlugin.cpp" line="143"/>
-        <location filename="../qtractorLv2Plugin.cpp" line="2205"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2176"/>
         <source>Author: </source>
         <translation>Автор: </translation>
     </message>
@@ -416,67 +416,67 @@ End:	%3	Length:	%4</source>
         <translation>Авторські права: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="2197"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="2168"/>
         <source>Project: </source>
         <translation>Проєкт: </translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3432"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3403"/>
         <source>Select plug-in&apos;s editor (GUI):</source>
         <translation>Виберіть редактор додатка (інтерфейс):</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3444"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3415"/>
         <source>External</source>
         <translation>Зовнішній</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3447"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3418"/>
         <source>X11</source>
         <translation>X11</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3450"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3421"/>
         <source>X11 (native)</source>
         <translation>X11 (природний)</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3453"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3424"/>
         <source>Gtk2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3456"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3427"/>
         <source>Gtk2 (native)</source>
         <translation>Gtk2 (природний)</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3460"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3431"/>
         <source>Qt4</source>
         <translation>Qt4</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3465"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3436"/>
         <source>Qt5</source>
         <translation>Qt5</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3471"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3442"/>
         <source>Other</source>
         <translation>Інше</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3479"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3450"/>
         <source>Don&apos;t ask this again</source>
         <translation>Більше не питати</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="3840"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="3811"/>
         <source>plugin parameters</source>
         <translation>параметри додатка</translation>
     </message>
     <message>
-        <location filename="../qtractorLv2Plugin.cpp" line="4263"/>
+        <location filename="../qtractorLv2Plugin.cpp" line="4234"/>
         <source>Open File</source>
         <comment>lv2_ui_request_parameter</comment>
         <translation>Відкрити файл</translation>
@@ -11638,22 +11638,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1429"/>
+        <location filename="../qtractorMixer.cpp" line="1413"/>
         <source>Inputs</source>
         <translation>Пристрої введення</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1430"/>
+        <location filename="../qtractorMixer.cpp" line="1414"/>
         <source>Tracks</source>
         <translation>Доріжки</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1432"/>
+        <location filename="../qtractorMixer.cpp" line="1416"/>
         <source>Outputs</source>
         <translation>Виходи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1439"/>
+        <location filename="../qtractorMixer.cpp" line="1423"/>
         <source>Mixer</source>
         <translation>Мікшер</translation>
     </message>
@@ -11674,22 +11674,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1046"/>
+        <location filename="../qtractorMixer.cpp" line="1044"/>
         <source>&amp;Inputs</source>
         <translation>В&amp;ходи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1050"/>
+        <location filename="../qtractorMixer.cpp" line="1048"/>
         <source>&amp;Outputs</source>
         <translation>В&amp;иходи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1056"/>
+        <location filename="../qtractorMixer.cpp" line="1054"/>
         <source>&amp;Monitor</source>
         <translation>Сп&amp;остерігати</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1065"/>
+        <location filename="../qtractorMixer.cpp" line="1063"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Шини...</translation>
     </message>
@@ -11697,42 +11697,42 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerStrip</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="374"/>
+        <location filename="../qtractorMixer.cpp" line="372"/>
         <source>inputs</source>
         <translation>входи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="374"/>
+        <location filename="../qtractorMixer.cpp" line="372"/>
         <source>outputs</source>
         <translation>виходи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="375"/>
+        <location filename="../qtractorMixer.cpp" line="373"/>
         <source>Connect %1</source>
         <translation>З&apos;єднати %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="630"/>
+        <location filename="../qtractorMixer.cpp" line="628"/>
         <source>(Audio)</source>
         <translation>(Звук)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="635"/>
+        <location filename="../qtractorMixer.cpp" line="633"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="639"/>
+        <location filename="../qtractorMixer.cpp" line="637"/>
         <source>(None)</source>
         <translation>(Немає)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="652"/>
+        <location filename="../qtractorMixer.cpp" line="650"/>
         <source>In</source>
         <translation>Вхід</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="652"/>
+        <location filename="../qtractorMixer.cpp" line="650"/>
         <source>Out</source>
         <translation>Вихід</translation>
     </message>
@@ -11740,17 +11740,17 @@ Are you sure?</source>
 <context>
     <name>qtractorMonitorButton</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="97"/>
+        <location filename="../qtractorMixer.cpp" line="95"/>
         <source>monitor</source>
         <translation>монітор</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="110"/>
+        <location filename="../qtractorMixer.cpp" line="108"/>
         <source>Monitor (rec)</source>
         <translation>Монітор (запис)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="122"/>
+        <location filename="../qtractorMixer.cpp" line="120"/>
         <source>Monitor (thru)</source>
         <translation>Монітор (пропускання)</translation>
     </message>

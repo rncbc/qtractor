@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -52,12 +52,10 @@
 
 #include <QGridLayout>
 #include <QVBoxLayout>
-#include <QScrollBar>
 
 #include <QContextMenuEvent>
 #include <QResizeEvent>
 #include <QMouseEvent>
-#include <QWheelEvent>
 
 #include <QPainter>
 
@@ -1075,20 +1073,6 @@ void qtractorMixerRackWidget::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_pRack->setSelectedStrip(nullptr);
 
 	QScrollArea::mousePressEvent(pMouseEvent);
-}
-
-
-// Handle mouse wheel.
-void qtractorMixerRackWidget::wheelEvent ( QWheelEvent *pWheelEvent )
-{
-	if (pWheelEvent->modifiers() & Qt::ShiftModifier) {
-		QScrollBar *pScrollBar = QScrollArea::horizontalScrollBar();
-		if (pScrollBar && pScrollBar->isVisible()) {
-			const int delta = pWheelEvent->angleDelta().y();
-			pScrollBar->setValue(pScrollBar->value() + delta);
-		}
-	}
-	else QScrollArea::wheelEvent(pWheelEvent);
 }
 
 
