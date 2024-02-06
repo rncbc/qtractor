@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing colored strips on the time ruler headers for loop
+  and punch recording ranges. (EXPERIMENTAL)
+
 - Fixed an off-by-one(-pixel) mispositioning of selected events,
   while on the MIDI clip editor (aka piano-roll). (EXPERIMENTAL)
 
