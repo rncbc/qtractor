@@ -267,8 +267,8 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x, h,
 				x, h - d);
 			painter.drawPolygon(polyg);
-			rect.setLeft(x);
 		}
+		rect.setLeft(x);
 		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
@@ -276,9 +276,9 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x, h,
 				x - d, h - d);
 			painter.drawPolygon(polyg);
-			rect.setRight(x);
 		}
-		color.setAlpha(60);
+		rect.setRight(x);
+		color.setAlpha(120);
 		painter.fillRect(rect, color);
 	}
 
@@ -298,8 +298,8 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x, h,
 				x, h - d);
 			painter.drawPolygon(polyg);
-			rect.setLeft(x);
 		}
+		rect.setLeft(x);
 		x = pTimeScale->pixelFromFrame(pSession->punchOut()) - dx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
@@ -307,9 +307,9 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x, h,
 				x - d, h - d);
 			painter.drawPolygon(polyg);
-			rect.setRight(x);
 		}
-		color.setAlpha(60);
+		rect.setRight(x);
+		color.setAlpha(120);
 		painter.fillRect(rect, color);
 	}
 }
