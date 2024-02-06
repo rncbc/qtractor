@@ -1,7 +1,7 @@
 // qtractorMidiEditor.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1991,7 +1991,7 @@ void qtractorMidiEditor::pasteClipboard (
 			unsigned long t1 = t0 + pEvent->time();
 			unsigned long t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
-			int x  = pNode->pixelFromTick(t1) - 1;
+			int x  = pNode->pixelFromTick(t1);
 			pNode = cursor.seekTick(t2);
 			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
@@ -2292,7 +2292,7 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 		const unsigned long t1 = t0 + pEvent->time();
 		const unsigned long t2 = t1 + pEvent->duration();
 		pNode = cursor.seekTick(t1);
-		int x  = pNode->pixelFromTick(t1) - 1;
+		int x  = pNode->pixelFromTick(t1);
 		pNode = cursor.seekTick(t2);
 		int w1 = pNode->pixelFromTick(t2) - x;
 		if (w1 < 5)
@@ -2766,7 +2766,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			const unsigned long t1 = t0 + pEvent->time();
 			const unsigned long t2 = t1 + pEvent->duration();
 			pNode = cursor.seekTick(t1);
-			const int x = pNode->pixelFromTick(t1) - 1;
+			const int x = pNode->pixelFromTick(t1);
 			pNode = cursor.seekTick(t2);
 			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
@@ -3550,11 +3550,11 @@ void qtractorMidiEditor::updateDragSelect (
 	} else {
 		x1 = x2 = rectSelect.x();
 	}
-
+#if 0
 	if (--x0 < 0) x0 = 0;
 	if (--x1 < 0) x1 = 0;
 	++x2;
-
+#endif
 	pNode = cursor.seekPixel(x0 + x1);
 	unsigned long t1 = pNode->tickFromPixel(x0 + x1);
 	const unsigned long iTickStart = (t1 > t0 ? t1 - t0 : 0);
@@ -3600,7 +3600,7 @@ void qtractorMidiEditor::updateDragSelect (
 			pNode = cursor.seekTick(t1);
 			int x  = pNode->pixelFromTick(t1);
 			pNode = cursor.seekTick(t2);
-			int w1 = pNode->pixelFromTick(t2) - x - 1;
+			int w1 = pNode->pixelFromTick(t2) - x;
 			if (w1 < 5)
 				w1 = 5;
 			// View item...
@@ -3907,7 +3907,7 @@ void qtractorMidiEditor::updateEventRects (
 	const unsigned long t1 = t0 + pEvent->time();
 	const unsigned long t2 = t1 + pEvent->duration();
 	pNode = cursor.seekTick(t1);
-	int x  = pNode->pixelFromTick(t1) - 1;
+	int x  = pNode->pixelFromTick(t1);
 	pNode = cursor.seekTick(t2);
 	int w1 = pNode->pixelFromTick(t2) - x;
 	if (w1 < 5)
