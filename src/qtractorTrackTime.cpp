@@ -210,9 +210,11 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				x - d, h - d);
 			painter.drawPolygon(polyg);
 		}
-		rect.setRight(x);
-		color.setAlpha(120);
-		painter.fillRect(rect, color);
+		if (rect.x() < w && x >= 0) {
+			rect.setRight(x);
+			color.setAlpha(120);
+			painter.fillRect(rect, color);
+		}
 	}
 
 	// Draw punch in/out boundaries, if applicable...
@@ -241,9 +243,11 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				x - d, h - d);
 			painter.drawPolygon(polyg);
 		}
-		rect.setRight(x);
-		color.setAlpha(120);
-		painter.fillRect(rect, color);
+		if (rect.x() < w && x >= 0) {
+			rect.setRight(x);
+			color.setAlpha(120);
+			painter.fillRect(rect, color);
+		}
 	}
 }
 
