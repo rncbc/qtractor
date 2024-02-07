@@ -4,6 +4,18 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed the build checks on whether to use old or newer style of
+  LV2 include headers. (EXPERIMENTAL)
+
+- Introducing colored strips on the time ruler headers for loop
+  and punch recording ranges. (EXPERIMENTAL)
+
+- Fixed an off-by-one(-pixel) mispositioning of selected events,
+  while on the MIDI clip editor (aka piano-roll). (EXPERIMENTAL)
+
+
 0.9.39  2024-01-27  A Winter'24 Release.
 
 - Added build checks on whether to use old or newer style of LV2
