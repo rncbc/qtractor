@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed the build checks on whether to use old or newer style of
+  LV2 include headers. (EXPERIMENTAL)
+
 - Introducing colored strips on the time ruler headers for loop
   and punch recording ranges. (EXPERIMENTAL)
 

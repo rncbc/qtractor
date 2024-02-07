@@ -301,13 +301,6 @@ if (CONFIG_VST2 AND NOT CONFIG_VST2SDK)
   endif ()
 endif ()
 
-# Check for LV2 headers.
-if (CONFIG_LV2)
-  set (LV2_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/lv2)
-  set (CMAKE_REQUIRED_INCLUDES "${LV2_INCLUDES};${CMAKE_REQUIRED_INCLUDES}")
-  include_directories (${LV2_INCLUDES})
-endif ()
-
 
 # Find package modules
 include (FindPkgConfig)
@@ -476,7 +469,15 @@ if (CONFIG_LV2)
   endif ()
 endif ()
 
-if (NOT CONFIG_LV2)
+# Check for LV2 headers.
+if (CONFIG_LV2)
+  set (LV2_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/lv2)
+  set (CMAKE_REQUIRED_INCLUDES "${LV2_INCLUDES};${CMAKE_REQUIRED_INCLUDES}")
+  include_directories (${LV2_INCLUDES})
+  if (CONFIG_LV2_OLD_HEADERS)
+    set (CMAKE_REQUIRED_DEFINITIONS "-DCONFIG_LV2_OLD_HEADERS;${CMAKE_REQUIRED_DEFINITIONS}")
+  endif ()
+else ()
   set (CONFIG_LIBLILV 0)
   set (CONFIG_LV2_UI 0)
 endif ()
