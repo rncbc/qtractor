@@ -323,8 +323,8 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 	m_pGainSlider->setTickPosition(QSlider::NoTicks);
 	m_pGainSlider->setMinimum(0);
 	m_pGainSlider->setMaximum(10000);
-	m_pGainSlider->setPageStep(100);
-	m_pGainSlider->setSingleStep(10);
+	m_pGainSlider->setPageStep(250);
+	m_pGainSlider->setSingleStep(50);
 
 	m_pGainSpinBox->setDecimals(1);
 //	m_pGainSpinBox->setSingleStep(0.1f);
