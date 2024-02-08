@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Refined mouse-wheel control step size on mixer strip sliders.
+  (EXPERIMENTAL)
+
 - Fixed the build checks on whether to use old or newer style of
   LV2 include headers. (EXPERIMENTAL)
 
