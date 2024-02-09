@@ -1,7 +1,7 @@
 // qtractorTrackTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -189,8 +189,10 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		QPolygon polyg(3);
 	//	h -= 4;
 		const int d = (h >> 2);
-		painter.setPen(Qt::darkCyan);
-		painter.setBrush(Qt::cyan);
+		QRect rect(0, h - d , w, h - d);
+		QColor color = Qt::cyan;
+		painter.setPen(color.darker());
+		painter.setBrush(color);
 		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - cx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
@@ -199,6 +201,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				x, h - d);
 			painter.drawPolygon(polyg);
 		}
+		rect.setLeft(x);
 		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - cx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
@@ -207,6 +210,11 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				x - d, h - d);
 			painter.drawPolygon(polyg);
 		}
+		if (rect.x() < w && x >= 0) {
+			rect.setRight(x);
+			color.setAlpha(120);
+			painter.fillRect(rect, color);
+		}
 	}
 
 	// Draw punch in/out boundaries, if applicable...
@@ -214,8 +222,10 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 		QPolygon polyg(3);
 	//	h -= 4;
 		const int d = (h >> 2);
-		painter.setPen(Qt::darkMagenta);
-		painter.setBrush(Qt::magenta);
+		QRect rect(0, h - d, w, h - d);
+		QColor color = Qt::magenta;
+		painter.setPen(color.darker());
+		painter.setBrush(color);
 		x = pTimeScale->pixelFromFrame(pSession->punchIn()) - cx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
@@ -224,6 +234,7 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				x, h - d);
 			painter.drawPolygon(polyg);
 		}
+		rect.setLeft(x);
 		x = pTimeScale->pixelFromFrame(pSession->punchOut()) - cx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
@@ -231,6 +242,11 @@ void qtractorTrackTime::updatePixmap ( int cx, int /* cy */)
 				x, h,
 				x - d, h - d);
 			painter.drawPolygon(polyg);
+		}
+		if (rect.x() < w && x >= 0) {
+			rect.setRight(x);
+			color.setAlpha(120);
+			painter.fillRect(rect, color);
 		}
 	}
 }

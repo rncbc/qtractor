@@ -1,7 +1,7 @@
 // qtractorMidiEditTime.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -255,9 +255,11 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 	if (pSession->isLooping()) {
 		QPolygon polyg(3);
 	//	h -= 4;
-		const int d = (h >> 2) + 1;
-		painter.setPen(Qt::darkCyan);
-		painter.setBrush(Qt::cyan);
+		const int d = (h >> 2);
+		QRect rect(0, h - d, w, h - d);
+		QColor color = Qt::cyan;
+		painter.setPen(color.darker());
+		painter.setBrush(color);
 		x = pTimeScale->pixelFromFrame(pSession->loopStart()) - dx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
@@ -266,6 +268,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x, h - d);
 			painter.drawPolygon(polyg);
 		}
+		rect.setLeft(x);
 		x = pTimeScale->pixelFromFrame(pSession->loopEnd()) - dx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
@@ -274,15 +277,22 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x - d, h - d);
 			painter.drawPolygon(polyg);
 		}
+		if (rect.x() < w && x >= 0) {
+			rect.setRight(x);
+			color.setAlpha(120);
+			painter.fillRect(rect, color);
+		}
 	}
 
 	// Draw punch in/out boundaries, if applicable...
 	if (pSession->isPunching()) {
 		QPolygon polyg(3);
 	//	h -= 4;
-		const int d = (h >> 2) + 1;
-		painter.setPen(Qt::darkMagenta);
-		painter.setBrush(Qt::magenta);
+		const int d = (h >> 2);
+		QRect rect(0, h - d, w, h - d);
+		QColor color = Qt::magenta;
+		painter.setPen(color.darker());
+		painter.setBrush(color);
 		x = pTimeScale->pixelFromFrame(pSession->punchIn()) - dx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
@@ -291,6 +301,7 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x, h - d);
 			painter.drawPolygon(polyg);
 		}
+		rect.setLeft(x);
 		x = pTimeScale->pixelFromFrame(pSession->punchOut()) - dx;
 		if (x >= 0 && x < w) {
 			polyg.putPoints(0, 3,
@@ -298,6 +309,11 @@ void qtractorMidiEditTime::updatePixmap ( int cx, int /*cy*/)
 				x, h,
 				x - d, h - d);
 			painter.drawPolygon(polyg);
+		}
+		if (rect.x() < w && x >= 0) {
+			rect.setRight(x);
+			color.setAlpha(120);
+			painter.fillRect(rect, color);
 		}
 	}
 }
