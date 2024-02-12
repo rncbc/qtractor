@@ -222,6 +222,9 @@ public:
 					bSync = (d2 < 0.001f);
 				#endif
 				}
+				else
+				if (qAbs(fValue - fOldValue) < 0.001f)
+					bSync = false;
 				if (bSync) {
 					m_fValue = fValue;
 					m_bSync  = true;
