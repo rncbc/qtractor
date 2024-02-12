@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Avoid issuing equivalent MIDI track channel volume and panning
+  via GM standard controllers (CC#7 and CC#10 resp.) to prevent
+  recursive or positive feedback loops. (EXPERIMENTAL) 
+
 - Refined mouse-wheel control step size on mixer strip sliders.
   (EXPERIMENTAL)
 
