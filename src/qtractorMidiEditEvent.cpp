@@ -1,7 +1,7 @@
 // qtractorMidiEditEvent.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -491,7 +491,7 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 				const unsigned long t2 = pNode->tickFromFrame(iClipEnd);
 				drawEvents(painter, dx, y0, pMidiClip->sequence(),
 					t1, iTickStart, iTickEnd, t2, bDrumMode,
-					pTrack->foreground(), pTrack->background(), 55);
+					pTrack->foreground(), pTrack->background(), 60);
 			}
 			pClip = pClip->next();
 		}
@@ -583,6 +583,7 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 		|| eventType == qtractorMidiEvent::REGPARAM
 		|| eventType == qtractorMidiEvent::NONREGPARAM
 		|| eventType == qtractorMidiEvent::CONTROL14);
+	const int wm = m_pEditor->minEventWidth();
 
 	qtractorMidiEvent *pEvent
 		= m_pEditor->seekEvent(pSeq, iTickStart > t0 ? iTickStart - t0 : 0);
@@ -614,8 +615,8 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 			int w1 = (t1 >= t2 && m_pEditor->isClipRecord()
 				? m_pEditor->playHeadX()
 				: pNode->pixelFromTick(t2) - dx) - x;
-			if (w1 < 5 || !m_pEditor->isNoteDuration() || bDrumMode)
-				w1 = 5;
+			if (w1 < wm || !m_pEditor->isNoteDuration() || bDrumMode)
+				w1 = wm;
 			if (eventType == qtractorMidiEvent::NOTEON ||
 				eventType == qtractorMidiEvent::KEYPRESS) {
 				if (m_pEditor->isNoteColor()) {

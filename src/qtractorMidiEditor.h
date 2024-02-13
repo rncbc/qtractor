@@ -156,6 +156,9 @@ public:
 	void setGhostTrack(qtractorTrack *pGhostTrack);
 	qtractorTrack *ghostTrack() const;
 
+	// Minimum event width accessor.
+	int minEventWidth() const;
+
 	// Child widgets accessors.
 	QFrame *editListHeader() const;
 	qtractorMidiEditList *editList() const;
@@ -746,6 +749,9 @@ private:
 
 	// Ghost track setting.
 	qtractorTrack *m_pGhostTrack;
+
+	// Minimum event width.
+	int m_iMinEventWidth;
 };
 
 
