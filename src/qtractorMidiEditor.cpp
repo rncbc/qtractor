@@ -59,8 +59,10 @@
 
 #include <QComboBox>
 #include <QToolTip>
-#include <QScreen>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+#include <QScreen>
+#endif
 
 // Follow-playhead: maximum iterations on hold.
 #define QTRACTOR_SYNC_VIEW_HOLD  46
@@ -1114,6 +1116,7 @@ void qtractorMidiEditor::setHorizontalZoom ( unsigned short iHorizontalZoom )
 	if (m_pMidiClip)
 		m_pMidiClip->setEditorHorizontalZoom(iHorizontalZoom);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
 	// HACK: Adjust minimum event width,according
 	// to current screen size and horizontal zoom...
 	m_iMinEventWidth = QTRACTOR_MIN_EVENT_WIDTH;
@@ -1122,6 +1125,7 @@ void qtractorMidiEditor::setHorizontalZoom ( unsigned short iHorizontalZoom )
 		const int ws = pScreen->size().width();
 		m_iMinEventWidth += (((ws * iHorizontalZoom) / 360000) & 0x7e);
 	}
+#endif
 }
 
 unsigned short qtractorMidiEditor::horizontalZoom (void) const

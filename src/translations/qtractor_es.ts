@@ -7269,1554 +7269,1554 @@ Duración:	%3</translation>
 <context>
     <name>qtractorMidiEditor</name>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="91"/>
+        <location filename="../qtractorMidiEditor.cpp" line="93"/>
         <source>C</source>
         <translation>Do</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="92"/>
+        <location filename="../qtractorMidiEditor.cpp" line="94"/>
         <source>C#/Db</source>
         <translation>Do#/Reb</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="93"/>
+        <location filename="../qtractorMidiEditor.cpp" line="95"/>
         <source>D</source>
         <translation>Re</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="94"/>
+        <location filename="../qtractorMidiEditor.cpp" line="96"/>
         <source>D#/Eb</source>
         <translation>Re#/Mib</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="95"/>
+        <location filename="../qtractorMidiEditor.cpp" line="97"/>
         <source>E</source>
         <translation>Mi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="96"/>
+        <location filename="../qtractorMidiEditor.cpp" line="98"/>
         <source>F</source>
         <translation>Fa</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="97"/>
+        <location filename="../qtractorMidiEditor.cpp" line="99"/>
         <source>F#/Gb</source>
         <translation>Fa#/Solb</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="98"/>
+        <location filename="../qtractorMidiEditor.cpp" line="100"/>
         <source>G</source>
         <translation>Sol</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="99"/>
+        <location filename="../qtractorMidiEditor.cpp" line="101"/>
         <source>G#/Ab</source>
         <translation>Sol#/Lab</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="100"/>
+        <location filename="../qtractorMidiEditor.cpp" line="102"/>
         <source>A</source>
         <translation>La</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="101"/>
+        <location filename="../qtractorMidiEditor.cpp" line="103"/>
         <source>A#/Bb</source>
         <translation>La#/Sib</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="102"/>
+        <location filename="../qtractorMidiEditor.cpp" line="104"/>
         <source>B</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="105"/>
+        <location filename="../qtractorMidiEditor.cpp" line="107"/>
         <source>Acoustic Bass Drum</source>
         <translation>Bombo Acústico</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="106"/>
+        <location filename="../qtractorMidiEditor.cpp" line="108"/>
         <source>Bass Drum 1</source>
         <translation>Bombo 1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="107"/>
+        <location filename="../qtractorMidiEditor.cpp" line="109"/>
         <source>Side Stick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="108"/>
+        <location filename="../qtractorMidiEditor.cpp" line="110"/>
         <source>Acoustic Snare</source>
         <translation>Caja Acústica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="109"/>
+        <location filename="../qtractorMidiEditor.cpp" line="111"/>
         <source>Hand Clap</source>
         <translation>Aplauso</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="110"/>
+        <location filename="../qtractorMidiEditor.cpp" line="112"/>
         <source>Electric Snare</source>
         <translation>Caja Eléctrica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="111"/>
+        <location filename="../qtractorMidiEditor.cpp" line="113"/>
         <source>Low Floor Tom</source>
         <translation>Tom de Piso Bajo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="112"/>
+        <location filename="../qtractorMidiEditor.cpp" line="114"/>
         <source>Closed Hi-Hat</source>
         <translation>Charles Cerrado</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="113"/>
+        <location filename="../qtractorMidiEditor.cpp" line="115"/>
         <source>High Floor Tom</source>
         <translation>Tom de Piso Alto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="114"/>
+        <location filename="../qtractorMidiEditor.cpp" line="116"/>
         <source>Pedal Hi-Hat</source>
         <translation>Pedal de Charles</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="115"/>
+        <location filename="../qtractorMidiEditor.cpp" line="117"/>
         <source>Low Tom</source>
         <translation>Tom grave</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="116"/>
+        <location filename="../qtractorMidiEditor.cpp" line="118"/>
         <source>Open Hi-Hat</source>
         <translation>Charles Abierto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="117"/>
+        <location filename="../qtractorMidiEditor.cpp" line="119"/>
         <source>Low-Mid Tom</source>
         <translation>Tom medio-grave</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="118"/>
+        <location filename="../qtractorMidiEditor.cpp" line="120"/>
         <source>Hi-Mid Tom</source>
         <translation>Tom Medio-Alto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="119"/>
+        <location filename="../qtractorMidiEditor.cpp" line="121"/>
         <source>Crash Cymbal 1</source>
         <translation>Platillo Crash 1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="120"/>
+        <location filename="../qtractorMidiEditor.cpp" line="122"/>
         <source>High Tom</source>
         <translation>Tom Alto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="121"/>
+        <location filename="../qtractorMidiEditor.cpp" line="123"/>
         <source>Ride Cymbal 1</source>
         <translation>PLatillo Ride 1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="122"/>
+        <location filename="../qtractorMidiEditor.cpp" line="124"/>
         <source>Chinese Cymbal</source>
         <translation>Platillo Chinese</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="123"/>
+        <location filename="../qtractorMidiEditor.cpp" line="125"/>
         <source>Ride Bell</source>
         <translation>Campana de Ride</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="124"/>
+        <location filename="../qtractorMidiEditor.cpp" line="126"/>
         <source>Tambourine</source>
         <translation>Pandero</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="125"/>
+        <location filename="../qtractorMidiEditor.cpp" line="127"/>
         <source>Splash Cymbal</source>
         <translation>Platillo Splash</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="126"/>
+        <location filename="../qtractorMidiEditor.cpp" line="128"/>
         <source>Cowbell</source>
         <translation>Cencerro</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="127"/>
+        <location filename="../qtractorMidiEditor.cpp" line="129"/>
         <source>Crash Cymbal 2</source>
         <translation>Platillo Crash 2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="128"/>
+        <location filename="../qtractorMidiEditor.cpp" line="130"/>
         <source>Vibraslap</source>
         <translation>Quijada</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="129"/>
+        <location filename="../qtractorMidiEditor.cpp" line="131"/>
         <source>Ride Cymbal 2</source>
         <translation>Platillo Ride 2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="130"/>
+        <location filename="../qtractorMidiEditor.cpp" line="132"/>
         <source>Hi Bongo</source>
         <translation>Bongo Alto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="131"/>
+        <location filename="../qtractorMidiEditor.cpp" line="133"/>
         <source>Low Bongo</source>
         <translation>Bongo Bajo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="132"/>
+        <location filename="../qtractorMidiEditor.cpp" line="134"/>
         <source>Mute Hi Conga</source>
         <translation>Conga Alta Silenciada</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="133"/>
+        <location filename="../qtractorMidiEditor.cpp" line="135"/>
         <source>Open Hi Conga</source>
         <translation>Conga Alta Abierta</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="134"/>
+        <location filename="../qtractorMidiEditor.cpp" line="136"/>
         <source>Low Conga</source>
         <translation>Conga Baja</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="135"/>
+        <location filename="../qtractorMidiEditor.cpp" line="137"/>
         <source>High Timbale</source>
         <translation>Timbal Alto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="136"/>
+        <location filename="../qtractorMidiEditor.cpp" line="138"/>
         <source>Low Timbale</source>
         <translation>Timbal Bajo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="137"/>
+        <location filename="../qtractorMidiEditor.cpp" line="139"/>
         <source>High Agogo</source>
         <translation>Agogo Alto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="138"/>
+        <location filename="../qtractorMidiEditor.cpp" line="140"/>
         <source>Low Agogo</source>
         <translation>Agogo Bajo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="139"/>
+        <location filename="../qtractorMidiEditor.cpp" line="141"/>
         <source>Cabasa</source>
         <translation>Cabaza</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="140"/>
+        <location filename="../qtractorMidiEditor.cpp" line="142"/>
         <source>Maracas</source>
         <translation>Maracas</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="141"/>
+        <location filename="../qtractorMidiEditor.cpp" line="143"/>
         <source>Short Whistle</source>
         <translation>Silbido Corto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="142"/>
+        <location filename="../qtractorMidiEditor.cpp" line="144"/>
         <source>Long Whistle</source>
         <translation>Silbido Largo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="143"/>
+        <location filename="../qtractorMidiEditor.cpp" line="145"/>
         <source>Short Guiro</source>
         <translation>Güiro Corto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="144"/>
+        <location filename="../qtractorMidiEditor.cpp" line="146"/>
         <source>Long Guiro</source>
         <translation>Güiro Largo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="145"/>
+        <location filename="../qtractorMidiEditor.cpp" line="147"/>
         <source>Claves</source>
         <translation>Claves</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="146"/>
+        <location filename="../qtractorMidiEditor.cpp" line="148"/>
         <source>Hi Wood Block</source>
         <translation>Bloque Alto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="147"/>
+        <location filename="../qtractorMidiEditor.cpp" line="149"/>
         <source>Low Wood Block</source>
         <translation>Bloque Bajo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="148"/>
+        <location filename="../qtractorMidiEditor.cpp" line="150"/>
         <source>Mute Cuica</source>
         <translation>Cuica Silenciada</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="149"/>
+        <location filename="../qtractorMidiEditor.cpp" line="151"/>
         <source>Open Cuica</source>
         <translation>Cuica Abierta</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="150"/>
+        <location filename="../qtractorMidiEditor.cpp" line="152"/>
         <source>Mute Triangle</source>
         <translation>Triángulo Silenciado</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="151"/>
+        <location filename="../qtractorMidiEditor.cpp" line="153"/>
         <source>Open Triangle</source>
         <translation>Triángulo Abierto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="199"/>
+        <location filename="../qtractorMidiEditor.cpp" line="201"/>
         <source>Bank Select (coarse)</source>
         <translation>Seleccion de Banco (amplio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="200"/>
+        <location filename="../qtractorMidiEditor.cpp" line="202"/>
         <source>Modulation Wheel (coarse)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="201"/>
+        <location filename="../qtractorMidiEditor.cpp" line="203"/>
         <source>Breath Controller (coarse)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="202"/>
+        <location filename="../qtractorMidiEditor.cpp" line="204"/>
         <source>Foot Pedal (coarse)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="203"/>
+        <location filename="../qtractorMidiEditor.cpp" line="205"/>
         <source>Portamento Time (coarse)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="204"/>
+        <location filename="../qtractorMidiEditor.cpp" line="206"/>
         <source>Data Entry (coarse)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="205"/>
+        <location filename="../qtractorMidiEditor.cpp" line="207"/>
         <source>Volume (coarse)</source>
         <translation>Volumen (control amplio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="206"/>
+        <location filename="../qtractorMidiEditor.cpp" line="208"/>
         <source>Balance (coarse)</source>
         <translation>Balance (control amplio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="207"/>
+        <location filename="../qtractorMidiEditor.cpp" line="209"/>
         <source>Pan Position (coarse)</source>
         <translation>Posición del Paneo (control amplio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="208"/>
+        <location filename="../qtractorMidiEditor.cpp" line="210"/>
         <source>Expression (coarse)</source>
         <translation>Expresión (control amplio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="209"/>
+        <location filename="../qtractorMidiEditor.cpp" line="211"/>
         <source>Effect Control 1 (coarse)</source>
         <translation>Control de Efecto 1 (control amplio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="210"/>
+        <location filename="../qtractorMidiEditor.cpp" line="212"/>
         <source>Effect Control 2 (coarse)</source>
         <translation>Control de Efecto 2 (control amplio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="211"/>
+        <location filename="../qtractorMidiEditor.cpp" line="213"/>
         <source>General Purpose Slider 1</source>
         <translation>Deslizador de Propósito General 1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="212"/>
+        <location filename="../qtractorMidiEditor.cpp" line="214"/>
         <source>General Purpose Slider 2</source>
         <translation>Deslizador de Propósito General 2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="213"/>
+        <location filename="../qtractorMidiEditor.cpp" line="215"/>
         <source>General Purpose Slider 3</source>
         <translation>Deslizador de Propósito General 3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="214"/>
+        <location filename="../qtractorMidiEditor.cpp" line="216"/>
         <source>General Purpose Slider 4</source>
         <translation>Deslizador de Propósito General 4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="215"/>
+        <location filename="../qtractorMidiEditor.cpp" line="217"/>
         <source>Bank Select (fine)</source>
         <translation>Seleccion de Banco (detallado)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="216"/>
+        <location filename="../qtractorMidiEditor.cpp" line="218"/>
         <source>Modulation Wheel (fine)</source>
         <translation>Rueda de Modulacióin (detallado)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="217"/>
+        <location filename="../qtractorMidiEditor.cpp" line="219"/>
         <source>Breath Controller (fine)</source>
         <translation>Control de Aliento (detallado)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="218"/>
+        <location filename="../qtractorMidiEditor.cpp" line="220"/>
         <source>Foot Pedal (fine)</source>
         <translation>Pedal (detallado)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="219"/>
+        <location filename="../qtractorMidiEditor.cpp" line="221"/>
         <source>Portamento Time (fine)</source>
         <translation>Tiempo de Portamento (detallado)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="220"/>
+        <location filename="../qtractorMidiEditor.cpp" line="222"/>
         <source>Data Entry (fine)</source>
         <translation>Entradad de Datos (detallado)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="221"/>
+        <location filename="../qtractorMidiEditor.cpp" line="223"/>
         <source>Volume (fine)</source>
         <translation>Volumen (control fino)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="222"/>
+        <location filename="../qtractorMidiEditor.cpp" line="224"/>
         <source>Balance (fine)</source>
         <translation>Balance (control fino)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="223"/>
+        <location filename="../qtractorMidiEditor.cpp" line="225"/>
         <source>Pan Position (fine)</source>
         <translation>Posición del Paneo (control fino)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="224"/>
+        <location filename="../qtractorMidiEditor.cpp" line="226"/>
         <source>Expression (fine)</source>
         <translation>Expresión (control fino)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="225"/>
+        <location filename="../qtractorMidiEditor.cpp" line="227"/>
         <source>Effect Control 1 (fine)</source>
         <translation>Control de Efecto 1 (fino)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="226"/>
+        <location filename="../qtractorMidiEditor.cpp" line="228"/>
         <source>Effect Control 2 (fine)</source>
         <translation>Control de Efecto 2 (fino)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="227"/>
+        <location filename="../qtractorMidiEditor.cpp" line="229"/>
         <source>Hold Pedal (on/off)</source>
         <translation>Pedal de Sostener (enc/apag)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="228"/>
+        <location filename="../qtractorMidiEditor.cpp" line="230"/>
         <source>Portamento (on/off)</source>
         <translation>Portamento (enc/apag)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="230"/>
+        <location filename="../qtractorMidiEditor.cpp" line="232"/>
         <source>Soft Pedal (on/off)</source>
         <translation>Pedal suave (enc/apag)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="231"/>
+        <location filename="../qtractorMidiEditor.cpp" line="233"/>
         <source>Legato Pedal (on/off)</source>
         <translation>Pedal legato (enc/apag)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="232"/>
+        <location filename="../qtractorMidiEditor.cpp" line="234"/>
         <source>Hold 2 Pedal (on/off)</source>
         <translation>Pedal de Sostener2 (enc/apag)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="233"/>
+        <location filename="../qtractorMidiEditor.cpp" line="235"/>
         <source>Sound Variation</source>
         <translation>Variación del Sonido</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="242"/>
+        <location filename="../qtractorMidiEditor.cpp" line="244"/>
         <source>General Purpose Button 1 (on/off)</source>
         <translation>Botón de Propósito General 1 (enc/apag)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="243"/>
+        <location filename="../qtractorMidiEditor.cpp" line="245"/>
         <source>General Purpose Button 2 (on/off)</source>
         <translation>Botón de Propósito General 2 (enc/apag)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="244"/>
+        <location filename="../qtractorMidiEditor.cpp" line="246"/>
         <source>General Purpose Button 3 (on/off)</source>
         <translation>Botón de Propósito General 3 (enc/apag)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="245"/>
+        <location filename="../qtractorMidiEditor.cpp" line="247"/>
         <source>General Purpose Button 4 (on/off)</source>
         <translation>Botón de Propósito General 4 (enc/apag)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="246"/>
+        <location filename="../qtractorMidiEditor.cpp" line="248"/>
         <source>Effects Level</source>
         <translation>Nivel de Efectos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="248"/>
+        <location filename="../qtractorMidiEditor.cpp" line="250"/>
         <source>Chorus Level</source>
         <translation>Nivel de Coro</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="249"/>
+        <location filename="../qtractorMidiEditor.cpp" line="251"/>
         <source>Celeste Level</source>
         <translation>Nivel de Celeste</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="250"/>
+        <location filename="../qtractorMidiEditor.cpp" line="252"/>
         <source>Phaser Level</source>
         <translation>Nivel de Phaser</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="251"/>
+        <location filename="../qtractorMidiEditor.cpp" line="253"/>
         <source>Data Button Increment</source>
         <translation>Incremento del botón de datos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="252"/>
+        <location filename="../qtractorMidiEditor.cpp" line="254"/>
         <source>Data Button Decrement</source>
         <translation>Decremento del botón de datos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="253"/>
+        <location filename="../qtractorMidiEditor.cpp" line="255"/>
         <source>Non-Registered Parameter (fine)</source>
         <translation>Parámetro No Registrado (control fino)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="254"/>
+        <location filename="../qtractorMidiEditor.cpp" line="256"/>
         <source>Non-Registered Parameter (coarse)</source>
         <translation>Parámetro No Registrado (control amplio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="255"/>
+        <location filename="../qtractorMidiEditor.cpp" line="257"/>
         <source>Registered Parameter (fine)</source>
         <translation>Parámetro Registrado (control fino)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="256"/>
+        <location filename="../qtractorMidiEditor.cpp" line="258"/>
         <source>Registered Parameter (coarse)</source>
         <translation>Parámetro Registrado (control amplio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="257"/>
+        <location filename="../qtractorMidiEditor.cpp" line="259"/>
         <source>All Sound Off</source>
         <translation>Apagar Todos los Sonidos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="258"/>
+        <location filename="../qtractorMidiEditor.cpp" line="260"/>
         <source>All Controllers Off</source>
         <translation>Apagar todos los COntroladores</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="259"/>
+        <location filename="../qtractorMidiEditor.cpp" line="261"/>
         <source>Local Keyboard (on/off)</source>
         <translation>Teclado Local (enc/apag)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="260"/>
+        <location filename="../qtractorMidiEditor.cpp" line="262"/>
         <source>All Notes Off</source>
         <translation>Apagar Todas las Notas</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="261"/>
+        <location filename="../qtractorMidiEditor.cpp" line="263"/>
         <source>Omni Mode Off</source>
         <translation>Modo Omni Apagado</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="262"/>
+        <location filename="../qtractorMidiEditor.cpp" line="264"/>
         <source>Omni Mode On</source>
         <translation>Modo Omni Encendido</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="263"/>
+        <location filename="../qtractorMidiEditor.cpp" line="265"/>
         <source>Mono Operation</source>
         <translation>Operación Mono</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="264"/>
+        <location filename="../qtractorMidiEditor.cpp" line="266"/>
         <source>Poly Operation</source>
         <translation>Operación Poli</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="309"/>
+        <location filename="../qtractorMidiEditor.cpp" line="311"/>
         <source>Pitch Bend Sensitivity</source>
         <translation>Sensibilidad de Inflexión de Tono</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="310"/>
+        <location filename="../qtractorMidiEditor.cpp" line="312"/>
         <source>Fine Tune</source>
         <translation>Ajuste Fino</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="311"/>
+        <location filename="../qtractorMidiEditor.cpp" line="313"/>
         <source>Coarse Tune</source>
         <translation>Ajuste Amplio</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="312"/>
+        <location filename="../qtractorMidiEditor.cpp" line="314"/>
         <source>Tuning Program</source>
         <translation>Programa de Afinación</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="313"/>
+        <location filename="../qtractorMidiEditor.cpp" line="315"/>
         <source>Tuning Bank</source>
         <translation>Banco de Afinación</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="239"/>
-        <location filename="../qtractorMidiEditor.cpp" line="351"/>
+        <location filename="../qtractorMidiEditor.cpp" line="241"/>
+        <location filename="../qtractorMidiEditor.cpp" line="353"/>
         <source>Vibrato Rate</source>
         <translation>Velocidad del Vibrato</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="240"/>
-        <location filename="../qtractorMidiEditor.cpp" line="352"/>
+        <location filename="../qtractorMidiEditor.cpp" line="242"/>
+        <location filename="../qtractorMidiEditor.cpp" line="354"/>
         <source>Vibrato Depth</source>
         <translation>Profundidad del Vibrato</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="241"/>
-        <location filename="../qtractorMidiEditor.cpp" line="353"/>
+        <location filename="../qtractorMidiEditor.cpp" line="243"/>
+        <location filename="../qtractorMidiEditor.cpp" line="355"/>
         <source>Vibrato Delay</source>
         <translation>Retraso del Vibrato</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="354"/>
+        <location filename="../qtractorMidiEditor.cpp" line="356"/>
         <source>Filter Cutoff</source>
         <translation>Corte del Filtro</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="234"/>
-        <location filename="../qtractorMidiEditor.cpp" line="355"/>
+        <location filename="../qtractorMidiEditor.cpp" line="236"/>
+        <location filename="../qtractorMidiEditor.cpp" line="357"/>
         <source>Filter Resonance</source>
         <translation>Resonacia del Filtro</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="229"/>
+        <location filename="../qtractorMidiEditor.cpp" line="231"/>
         <source>Sostenuto Pedal (on/off)</source>
         <translation>Pedal de Sostenuto</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="235"/>
+        <location filename="../qtractorMidiEditor.cpp" line="237"/>
         <source>Release Time</source>
         <translation>Tiempo de Caída</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="236"/>
+        <location filename="../qtractorMidiEditor.cpp" line="238"/>
         <source>Attack Time</source>
         <translation>Tiempo de Ataque</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="237"/>
+        <location filename="../qtractorMidiEditor.cpp" line="239"/>
         <source>Brightness</source>
         <translation>Brillo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="238"/>
+        <location filename="../qtractorMidiEditor.cpp" line="240"/>
         <source>Decay Time</source>
         <translation>Tiempo de Caída</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="247"/>
+        <location filename="../qtractorMidiEditor.cpp" line="249"/>
         <source>Tremolo Level</source>
         <translation>Nivel de Trémolo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="356"/>
+        <location filename="../qtractorMidiEditor.cpp" line="358"/>
         <source>EG Attack</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="357"/>
+        <location filename="../qtractorMidiEditor.cpp" line="359"/>
         <source>EG Decay</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="358"/>
+        <location filename="../qtractorMidiEditor.cpp" line="360"/>
         <source>EG Release</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="361"/>
+        <location filename="../qtractorMidiEditor.cpp" line="363"/>
         <source>Drum Filter Cutoff</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="362"/>
+        <location filename="../qtractorMidiEditor.cpp" line="364"/>
         <source>Drum Filter Resonance</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="363"/>
+        <location filename="../qtractorMidiEditor.cpp" line="365"/>
         <source>Drum EG Attack</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="364"/>
+        <location filename="../qtractorMidiEditor.cpp" line="366"/>
         <source>Drum EG Decay</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="365"/>
+        <location filename="../qtractorMidiEditor.cpp" line="367"/>
         <source>Drum Pitch Coarse</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="366"/>
+        <location filename="../qtractorMidiEditor.cpp" line="368"/>
         <source>Drum Pitch Fine</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="367"/>
+        <location filename="../qtractorMidiEditor.cpp" line="369"/>
         <source>Drum Level</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="368"/>
+        <location filename="../qtractorMidiEditor.cpp" line="370"/>
         <source>Drum Pan</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="369"/>
+        <location filename="../qtractorMidiEditor.cpp" line="371"/>
         <source>Drum Reverb Send</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="370"/>
+        <location filename="../qtractorMidiEditor.cpp" line="372"/>
         <source>Drum Chorus Send</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="371"/>
+        <location filename="../qtractorMidiEditor.cpp" line="373"/>
         <source>Drum Variation Send</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="427"/>
+        <location filename="../qtractorMidiEditor.cpp" line="429"/>
         <source>Modulation Wheel (14bit)</source>
         <translation>Rueda de Modulacióin (14bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="428"/>
+        <location filename="../qtractorMidiEditor.cpp" line="430"/>
         <source>Breath Controller (14bit)</source>
         <translation>Control de Aliento (14bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="429"/>
+        <location filename="../qtractorMidiEditor.cpp" line="431"/>
         <source>Foot Pedal (14bit)</source>
         <translation>Pedal (14bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="430"/>
+        <location filename="../qtractorMidiEditor.cpp" line="432"/>
         <source>Portamento Time (14bit)</source>
         <translation>Tiempo de Portamento (14bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="431"/>
+        <location filename="../qtractorMidiEditor.cpp" line="433"/>
         <source>Volume (14bit)</source>
         <translation>Volumen (14 bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="432"/>
+        <location filename="../qtractorMidiEditor.cpp" line="434"/>
         <source>Balance (14bit)</source>
         <translation>Balance (14 bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="433"/>
+        <location filename="../qtractorMidiEditor.cpp" line="435"/>
         <source>Pan Position (14bit)</source>
         <translation>Posición del Paneo (14 bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="434"/>
+        <location filename="../qtractorMidiEditor.cpp" line="436"/>
         <source>Expression (14bit)</source>
         <translation>Expresión (14bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="435"/>
+        <location filename="../qtractorMidiEditor.cpp" line="437"/>
         <source>Effect Control 1 (14bit)</source>
         <translation>Control de Efecto 1 (14bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="436"/>
+        <location filename="../qtractorMidiEditor.cpp" line="438"/>
         <source>Effect Control 2 (14bit)</source>
         <translation>Control de Efecto 2 (14bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="437"/>
+        <location filename="../qtractorMidiEditor.cpp" line="439"/>
         <source>General Purpose Slider 1 (14bit)</source>
         <translation>Deslizador de Propósito General 1 (14 bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="438"/>
+        <location filename="../qtractorMidiEditor.cpp" line="440"/>
         <source>General Purpose Slider 2 (14bit)</source>
         <translation>Deslizador de Propósito General 2 14bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="439"/>
+        <location filename="../qtractorMidiEditor.cpp" line="441"/>
         <source>General Purpose Slider 3 (14bit)</source>
         <translation>Deslizador de Propósito General 3 (14bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="440"/>
+        <location filename="../qtractorMidiEditor.cpp" line="442"/>
         <source>General Purpose Slider 4 (14bit)</source>
         <translation>Deslizador de Propósito General (14bit)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="508"/>
+        <location filename="../qtractorMidiEditor.cpp" line="510"/>
         <source>Chromatic</source>
         <translation>Cromático</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="509"/>
+        <location filename="../qtractorMidiEditor.cpp" line="511"/>
         <source>Major</source>
         <translation>Mayor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="510"/>
+        <location filename="../qtractorMidiEditor.cpp" line="512"/>
         <source>Minor</source>
         <translation>Menor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="511"/>
+        <location filename="../qtractorMidiEditor.cpp" line="513"/>
         <source>Melodic Minor (Asc)</source>
         <translation>Menor Melódica (Asc)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="512"/>
+        <location filename="../qtractorMidiEditor.cpp" line="514"/>
         <source>Melodic Minor (Desc)</source>
         <translation>Menor Melódica (Desc)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="513"/>
+        <location filename="../qtractorMidiEditor.cpp" line="515"/>
         <source>Whole Tone</source>
         <translation>Tonos Completos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="514"/>
+        <location filename="../qtractorMidiEditor.cpp" line="516"/>
         <source>Pentatonic Major</source>
         <translation>Pentatónica Mayor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="515"/>
+        <location filename="../qtractorMidiEditor.cpp" line="517"/>
         <source>Pentatonic Minor</source>
         <translation>Pentatónica Menor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="516"/>
+        <location filename="../qtractorMidiEditor.cpp" line="518"/>
         <source>Pentatonic Blues</source>
         <translation>Pentatónica Blues</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="517"/>
+        <location filename="../qtractorMidiEditor.cpp" line="519"/>
         <source>Pentatonic Neutral</source>
         <translation>Pentatónica Neutral</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="518"/>
+        <location filename="../qtractorMidiEditor.cpp" line="520"/>
         <source>Octatonic (H-W)</source>
         <translation>Octatónica (S-T)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="519"/>
+        <location filename="../qtractorMidiEditor.cpp" line="521"/>
         <source>Octatonic (W-H)</source>
         <translation>Octatónica (T-S)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="520"/>
+        <location filename="../qtractorMidiEditor.cpp" line="522"/>
         <source>Ionian</source>
         <translation>Jónica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="521"/>
+        <location filename="../qtractorMidiEditor.cpp" line="523"/>
         <source>Dorian</source>
         <translation>Dórica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="522"/>
+        <location filename="../qtractorMidiEditor.cpp" line="524"/>
         <source>Phrygian</source>
         <translation>Frigio</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="523"/>
+        <location filename="../qtractorMidiEditor.cpp" line="525"/>
         <source>Lydian</source>
         <translation>Lidio</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="524"/>
+        <location filename="../qtractorMidiEditor.cpp" line="526"/>
         <source>Mixolydian</source>
         <translation>Mixolidio</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="525"/>
+        <location filename="../qtractorMidiEditor.cpp" line="527"/>
         <source>Aeolian</source>
         <translation>Eólico</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="526"/>
+        <location filename="../qtractorMidiEditor.cpp" line="528"/>
         <source>Locrian</source>
         <translation>Locrio</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="527"/>
+        <location filename="../qtractorMidiEditor.cpp" line="529"/>
         <source>Egyptian</source>
         <translation>Egipcia</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="528"/>
-        <location filename="../qtractorMidiEditor.cpp" line="551"/>
+        <location filename="../qtractorMidiEditor.cpp" line="530"/>
+        <location filename="../qtractorMidiEditor.cpp" line="553"/>
         <source>Eight Tone Spanish</source>
         <translation>Española de 8 tonos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="529"/>
+        <location filename="../qtractorMidiEditor.cpp" line="531"/>
         <source>Hawaiian</source>
         <translation>Hawaiana</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="530"/>
+        <location filename="../qtractorMidiEditor.cpp" line="532"/>
         <source>Hindu</source>
         <translation>Hindú</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="531"/>
+        <location filename="../qtractorMidiEditor.cpp" line="533"/>
         <source>Hirajoshi</source>
         <translation>Hirajōshi</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="532"/>
+        <location filename="../qtractorMidiEditor.cpp" line="534"/>
         <source>Hungarian Major</source>
         <translation>Húngara Mayor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="533"/>
+        <location filename="../qtractorMidiEditor.cpp" line="535"/>
         <source>Hungarian Minor</source>
         <translation>Húngara Menor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="534"/>
+        <location filename="../qtractorMidiEditor.cpp" line="536"/>
         <source>Hungarian Gypsy</source>
         <translation>Gitana Húngara</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="535"/>
+        <location filename="../qtractorMidiEditor.cpp" line="537"/>
         <source>Japanese (A)</source>
         <translation>Japonesa (A)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="536"/>
+        <location filename="../qtractorMidiEditor.cpp" line="538"/>
         <source>Japanese (B)</source>
         <translation>Japonesa (B)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="537"/>
+        <location filename="../qtractorMidiEditor.cpp" line="539"/>
         <source>Jewish (Adonai Malakh)</source>
         <translation>Judía (Adonai Malach)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="538"/>
+        <location filename="../qtractorMidiEditor.cpp" line="540"/>
         <source>Jewish (Ahaba Rabba)</source>
         <translation>Judía (Ahaba Rabba)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="539"/>
+        <location filename="../qtractorMidiEditor.cpp" line="541"/>
         <source>Jewish (Magen Abot)</source>
         <translation>Judía (Magen Abot)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="540"/>
+        <location filename="../qtractorMidiEditor.cpp" line="542"/>
         <source>Oriental (A)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="541"/>
+        <location filename="../qtractorMidiEditor.cpp" line="543"/>
         <source>Oriental (B)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="542"/>
+        <location filename="../qtractorMidiEditor.cpp" line="544"/>
         <source>Oriental (C)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="543"/>
+        <location filename="../qtractorMidiEditor.cpp" line="545"/>
         <source>Roumanian Minor</source>
         <translation>Rumana Menor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="544"/>
+        <location filename="../qtractorMidiEditor.cpp" line="546"/>
         <source>Neapolitan</source>
         <translation>Napolitana</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="545"/>
+        <location filename="../qtractorMidiEditor.cpp" line="547"/>
         <source>Neapolitan Major</source>
         <translation>Napolitana Mayor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="546"/>
+        <location filename="../qtractorMidiEditor.cpp" line="548"/>
         <source>Neapolitan Minor</source>
         <translation>Napolitana Menor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="548"/>
+        <location filename="../qtractorMidiEditor.cpp" line="550"/>
         <source>Overtone</source>
         <translation>Lidia b7 (Overtone)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="552"/>
+        <location filename="../qtractorMidiEditor.cpp" line="554"/>
         <source>Leading Whole Tone</source>
         <translation>Tonos Completos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="553"/>
+        <location filename="../qtractorMidiEditor.cpp" line="555"/>
         <source>Nine Tone Scale</source>
         <translation>Escala de Nueve Tonos</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="554"/>
+        <location filename="../qtractorMidiEditor.cpp" line="556"/>
         <source>Dominant Seventh</source>
         <translation>Séptima Dominante</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="555"/>
+        <location filename="../qtractorMidiEditor.cpp" line="557"/>
         <source>Augmented</source>
         <translation>Aumentada</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="556"/>
+        <location filename="../qtractorMidiEditor.cpp" line="558"/>
         <source>Algerian</source>
         <translation>Argelina</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="557"/>
+        <location filename="../qtractorMidiEditor.cpp" line="559"/>
         <source>Arabian (A)</source>
         <translation>Árabe (A)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="558"/>
+        <location filename="../qtractorMidiEditor.cpp" line="560"/>
         <source>Arabian (B)</source>
         <translation>Árabe (B)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="560"/>
+        <location filename="../qtractorMidiEditor.cpp" line="562"/>
         <source>Balinese</source>
         <translation>Balinesa</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="565"/>
+        <location filename="../qtractorMidiEditor.cpp" line="567"/>
         <source>Chinese</source>
         <translation>China</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="567"/>
+        <location filename="../qtractorMidiEditor.cpp" line="569"/>
         <source>Diminished</source>
         <translation>Disminuida</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="573"/>
+        <location filename="../qtractorMidiEditor.cpp" line="575"/>
         <source>Japanese (Ichikosucho)</source>
         <translation>Japonesa (Ichikosucho)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="574"/>
+        <location filename="../qtractorMidiEditor.cpp" line="576"/>
         <source>Japanese (Taishikicho)</source>
         <translation>Japonesa (Taishikicho)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="575"/>
+        <location filename="../qtractorMidiEditor.cpp" line="577"/>
         <source>Javaneese</source>
         <translation>Javanesa</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="580"/>
+        <location filename="../qtractorMidiEditor.cpp" line="582"/>
         <source>Marva Theta</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="582"/>
+        <location filename="../qtractorMidiEditor.cpp" line="584"/>
         <source>Mela Bhavapriya</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="583"/>
+        <location filename="../qtractorMidiEditor.cpp" line="585"/>
         <source>Mela Chakravakam</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="584"/>
+        <location filename="../qtractorMidiEditor.cpp" line="586"/>
         <source>Mela Chalanata</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="586"/>
+        <location filename="../qtractorMidiEditor.cpp" line="588"/>
         <source>Mela Chitrambari</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="587"/>
+        <location filename="../qtractorMidiEditor.cpp" line="589"/>
         <source>Mela Dharmavati</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="588"/>
+        <location filename="../qtractorMidiEditor.cpp" line="590"/>
         <source>Mela Dhatuvardhani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="589"/>
+        <location filename="../qtractorMidiEditor.cpp" line="591"/>
         <source>Mela Dhavalambari</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="592"/>
+        <location filename="../qtractorMidiEditor.cpp" line="594"/>
         <source>Mela Divyamani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="594"/>
+        <location filename="../qtractorMidiEditor.cpp" line="596"/>
         <source>Mela Ganamurti</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="595"/>
+        <location filename="../qtractorMidiEditor.cpp" line="597"/>
         <source>Mela Gangeyabhusani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="597"/>
+        <location filename="../qtractorMidiEditor.cpp" line="599"/>
         <source>Mela Gavambodhi</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="598"/>
+        <location filename="../qtractorMidiEditor.cpp" line="600"/>
         <source>Mela Gayakapriya</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="601"/>
+        <location filename="../qtractorMidiEditor.cpp" line="603"/>
         <source>Mela Hatakambari</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="603"/>
+        <location filename="../qtractorMidiEditor.cpp" line="605"/>
         <source>Mela Jalarnavam</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="604"/>
+        <location filename="../qtractorMidiEditor.cpp" line="606"/>
         <source>Mela Jhalavarali</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="605"/>
+        <location filename="../qtractorMidiEditor.cpp" line="607"/>
         <source>Mela Jhankaradhvani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="606"/>
+        <location filename="../qtractorMidiEditor.cpp" line="608"/>
         <source>Mela Jyotisvarupini</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="607"/>
+        <location filename="../qtractorMidiEditor.cpp" line="609"/>
         <source>Mela Kamavarardhani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="609"/>
+        <location filename="../qtractorMidiEditor.cpp" line="611"/>
         <source>Mela Kantamani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="613"/>
+        <location filename="../qtractorMidiEditor.cpp" line="615"/>
         <source>Mela Kosalam</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="614"/>
+        <location filename="../qtractorMidiEditor.cpp" line="616"/>
         <source>Mela Latangi</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="615"/>
+        <location filename="../qtractorMidiEditor.cpp" line="617"/>
         <source>Mela Manavati</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="616"/>
+        <location filename="../qtractorMidiEditor.cpp" line="618"/>
         <source>Mela Mararanjani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="619"/>
+        <location filename="../qtractorMidiEditor.cpp" line="621"/>
         <source>Mela Naganandini</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="620"/>
+        <location filename="../qtractorMidiEditor.cpp" line="622"/>
         <source>Mela Namanarayani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="624"/>
+        <location filename="../qtractorMidiEditor.cpp" line="626"/>
         <source>Mela Navanitam</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="625"/>
+        <location filename="../qtractorMidiEditor.cpp" line="627"/>
         <source>Mela Nitimati</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="626"/>
+        <location filename="../qtractorMidiEditor.cpp" line="628"/>
         <source>Mela Pavani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="627"/>
+        <location filename="../qtractorMidiEditor.cpp" line="629"/>
         <source>Mela Ragavardhani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="628"/>
+        <location filename="../qtractorMidiEditor.cpp" line="630"/>
         <source>Mela Raghupriya</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="629"/>
+        <location filename="../qtractorMidiEditor.cpp" line="631"/>
         <source>Mela Ramapriya</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="630"/>
+        <location filename="../qtractorMidiEditor.cpp" line="632"/>
         <source>Mela Rasikapriya</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="631"/>
+        <location filename="../qtractorMidiEditor.cpp" line="633"/>
         <source>Mela Ratnangi</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="632"/>
+        <location filename="../qtractorMidiEditor.cpp" line="634"/>
         <source>Mela Risabhapriya</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="633"/>
+        <location filename="../qtractorMidiEditor.cpp" line="635"/>
         <source>Mela Rupavati</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="634"/>
+        <location filename="../qtractorMidiEditor.cpp" line="636"/>
         <source>Mela Sadvidhamargini</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="635"/>
+        <location filename="../qtractorMidiEditor.cpp" line="637"/>
         <source>Mela Salagam</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="636"/>
+        <location filename="../qtractorMidiEditor.cpp" line="638"/>
         <source>Mela Sanmukhapriya</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="637"/>
+        <location filename="../qtractorMidiEditor.cpp" line="639"/>
         <source>Mela Sarasangi</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="638"/>
+        <location filename="../qtractorMidiEditor.cpp" line="640"/>
         <source>Mela Senavati</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="640"/>
+        <location filename="../qtractorMidiEditor.cpp" line="642"/>
         <source>Mela Subhapantuvarali</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="641"/>
+        <location filename="../qtractorMidiEditor.cpp" line="643"/>
         <source>Mela Sucharitra</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="642"/>
+        <location filename="../qtractorMidiEditor.cpp" line="644"/>
         <source>Mela Sulini</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="643"/>
+        <location filename="../qtractorMidiEditor.cpp" line="645"/>
         <source>Mela Suryakantam</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="645"/>
+        <location filename="../qtractorMidiEditor.cpp" line="647"/>
         <source>Mela Syamalangi</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="646"/>
+        <location filename="../qtractorMidiEditor.cpp" line="648"/>
         <source>Mela Tanarupi</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="648"/>
+        <location filename="../qtractorMidiEditor.cpp" line="650"/>
         <source>Mela Vagadhisvari</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="650"/>
+        <location filename="../qtractorMidiEditor.cpp" line="652"/>
         <source>Mela Vanaspati</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="651"/>
+        <location filename="../qtractorMidiEditor.cpp" line="653"/>
         <source>Mela Varunapriya</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="653"/>
+        <location filename="../qtractorMidiEditor.cpp" line="655"/>
         <source>Mela Yagapriya</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="656"/>
+        <location filename="../qtractorMidiEditor.cpp" line="658"/>
         <source>Persian</source>
         <translation>Persa</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="657"/>
+        <location filename="../qtractorMidiEditor.cpp" line="659"/>
         <source>Purvi Theta</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="658"/>
+        <location filename="../qtractorMidiEditor.cpp" line="660"/>
         <source>Spanish Gypsy</source>
         <translation>Gitana Española</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="659"/>
+        <location filename="../qtractorMidiEditor.cpp" line="661"/>
         <source>Todi Theta</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="663"/>
+        <location filename="../qtractorMidiEditor.cpp" line="665"/>
         <source>Enigmatic</source>
         <translation>Enigmática</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="664"/>
+        <location filename="../qtractorMidiEditor.cpp" line="666"/>
         <source>Kumoi</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="665"/>
+        <location filename="../qtractorMidiEditor.cpp" line="667"/>
         <source>Lydian Augmented</source>
         <translation>Lidia Aumentada</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="666"/>
+        <location filename="../qtractorMidiEditor.cpp" line="668"/>
         <source>Pelog</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="667"/>
+        <location filename="../qtractorMidiEditor.cpp" line="669"/>
         <source>Prometheus</source>
         <translation>Prometeo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="668"/>
+        <location filename="../qtractorMidiEditor.cpp" line="670"/>
         <source>Prometheus Neapolitan</source>
         <translation>Prometeo Napolitana</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="669"/>
+        <location filename="../qtractorMidiEditor.cpp" line="671"/>
         <source>Six Tone Symmetrical</source>
         <translation>Seis Tonos Simétrica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="670"/>
+        <location filename="../qtractorMidiEditor.cpp" line="672"/>
         <source>Super Locrian</source>
         <translation>Super Locria</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="671"/>
+        <location filename="../qtractorMidiEditor.cpp" line="673"/>
         <source>Lydian Minor</source>
         <translation>Lidia Menor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="672"/>
+        <location filename="../qtractorMidiEditor.cpp" line="674"/>
         <source>Lydian Diminished</source>
         <translation>Lidia Disminuida</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="676"/>
+        <location filename="../qtractorMidiEditor.cpp" line="678"/>
         <source>Half Diminished</source>
         <translation>Media Disminuida</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="677"/>
+        <location filename="../qtractorMidiEditor.cpp" line="679"/>
         <source>Bhairav</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="678"/>
+        <location filename="../qtractorMidiEditor.cpp" line="680"/>
         <source>Yaman</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="679"/>
+        <location filename="../qtractorMidiEditor.cpp" line="681"/>
         <source>Todi</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="680"/>
+        <location filename="../qtractorMidiEditor.cpp" line="682"/>
         <source>Jog</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="681"/>
+        <location filename="../qtractorMidiEditor.cpp" line="683"/>
         <source>Multani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="682"/>
+        <location filename="../qtractorMidiEditor.cpp" line="684"/>
         <source>Darbari</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="683"/>
+        <location filename="../qtractorMidiEditor.cpp" line="685"/>
         <source>Malkauns</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="684"/>
+        <location filename="../qtractorMidiEditor.cpp" line="686"/>
         <source>Bhoopali</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="685"/>
+        <location filename="../qtractorMidiEditor.cpp" line="687"/>
         <source>Shivaranjani</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="686"/>
+        <location filename="../qtractorMidiEditor.cpp" line="688"/>
         <source>Marwa</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="688"/>
+        <location filename="../qtractorMidiEditor.cpp" line="690"/>
         <source>Minor 5</source>
         <translation>Menor 5</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="689"/>
+        <location filename="../qtractorMidiEditor.cpp" line="691"/>
         <source>Major 5</source>
         <translation>Mayor 5</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="690"/>
+        <location filename="../qtractorMidiEditor.cpp" line="692"/>
         <source>5</source>
         <translation>5</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="691"/>
+        <location filename="../qtractorMidiEditor.cpp" line="693"/>
         <source>45</source>
         <translation>45</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="692"/>
+        <location filename="../qtractorMidiEditor.cpp" line="694"/>
         <source>457</source>
         <translation>457</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="693"/>
+        <location filename="../qtractorMidiEditor.cpp" line="695"/>
         <source>M 6</source>
         <translation>M 6</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="901"/>
+        <location filename="../qtractorMidiEditor.cpp" line="903"/>
         <source>MIDI Editor</source>
         <translation>Editor MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="1904"/>
+        <location filename="../qtractorMidiEditor.cpp" line="1908"/>
         <source>cut</source>
         <translation>cortar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="2126"/>
+        <location filename="../qtractorMidiEditor.cpp" line="2130"/>
         <source>delete</source>
         <translation>borrar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="2435"/>
+        <location filename="../qtractorMidiEditor.cpp" line="2439"/>
         <source>insert range</source>
         <translation>insertar rango</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="2511"/>
+        <location filename="../qtractorMidiEditor.cpp" line="2515"/>
         <source>remove range</source>
         <translation>borrar rango</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4325"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4329"/>
         <source>move</source>
         <translation>mover</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4361"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4365"/>
         <source>edit</source>
         <translation>editar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4361"/>
-        <location filename="../qtractorMidiEditor.cpp" line="4590"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4365"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4594"/>
         <source>resize</source>
         <translation>redimensionar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4440"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4444"/>
         <source>rescale</source>
         <translation>re-escalar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4529"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4533"/>
         <source>paste</source>
         <translation>pegar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5290"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5294"/>
         <source>Time:	%1
 Type:	</source>
         <translation>Tiempo:	%1
 Tipo:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5299"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5303"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration: %4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5306"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5310"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation>Pulsación de tecla (%1) %2
 Valor:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5312"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5316"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -8825,7 +8825,7 @@ Nombre:	%2
 Valor:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5318"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5322"/>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -8834,7 +8834,7 @@ Nombre:	%2
 Valor:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5324"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5328"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -8843,7 +8843,7 @@ Nombre:	%2
 Valor:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5330"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5334"/>
         <source>Control 14 (%1)
 Name:	%2
 Value:	%3</source>
@@ -8852,34 +8852,34 @@ Nombre:	%2
 Valor:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5336"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5340"/>
         <source>Pgm Change (%1)</source>
         <translation>Cambio de programa (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5340"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5344"/>
         <source>Chan Press (%1)</source>
         <translation>Chan Press (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5344"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5348"/>
         <source>Pitch Bend (%1)</source>
         <translation>Portamento (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5351"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5355"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 bytes)
 Datos: </translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5367"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5371"/>
         <source>Unknown (%1)</source>
         <translation>Desconocido (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5627"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5631"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
