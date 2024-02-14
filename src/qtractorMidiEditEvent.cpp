@@ -638,7 +638,7 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 			const int ym = (y > y0 - 5 ? -5 : 0); // negative pitch-bend adjust.
 			painter.setPen(rgbFore);
 			painter.setBrush(rgbFore);
-			painter.drawEllipse(rect.adjusted(-2, ym - 2, +1, ym + 1));
+			painter.drawEllipse(rect.adjusted(-1, ym - 1, +1, ym + 1));
 			// Lollipop stick...
 			if (y < y0) {
 				painter.fillRect(x, y, w1, y0 - y, rgbFore);
@@ -655,7 +655,8 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 			painter.setBrush(rgbValue);
 			painter.drawEllipse(rect.adjusted(0, ym, -2, ym - 2));
 			// Note name...
-			if (m_pEditor->isNoteNames() && hs < y0 - y && (
+			if (m_pEditor->isNoteNames() &&
+				m_pEditor->isNoteDuration() && hs < y0 - y && (
 				eventType == qtractorMidiEvent::NOTEON ||
 				eventType == qtractorMidiEvent::KEYPRESS)) {
 				const QString& sNoteName
