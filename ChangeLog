@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor now featuring lollipops for all kind of candy
+  event values ;). (EXPERIMENTAL)
+
 - Make the minimum width of events on the MIDI clip editor larger,
   depending on screen resolution and horizontal zoom setting.
   (EXPERIMENTAL)

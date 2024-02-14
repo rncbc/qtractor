@@ -467,6 +467,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	painter.setPen(rgbLine);
 	painter.drawLine(0, y0, w, y0);
 
+	painter.setRenderHint(QPainter::Antialiasing, true);
+
 	// Draw ghost-track events in dimmed transparecncy (alpha=55)...
 	qtractorTrack *pTrack = m_pEditor->ghostTrack();
 	if (pTrack) {
@@ -503,6 +505,8 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	drawEvents(painter, dx, y0, pSeq,
 		t0, iTickStart, iTickEnd, iTickEnd2, m_pEditor->isDrumMode(),
 		m_pEditor->foreground(), m_pEditor->background());
+
+	painter.setRenderHint(QPainter::Antialiasing, false);
 
 	// Draw loop boundaries, if applicable...
 	if (pSession->isLooping()) {
@@ -629,6 +633,13 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 					rgbValue.setHsv(hue, sat, val, alpha);
 				}
 			}
+			// Lollipop candy shadow...
+			const QRect rect(x, y, wm, wm);
+			const int ym = (y > y0 - 5 ? -5 : 0); // negative pitch-bend adjust.
+			painter.setPen(rgbFore);
+			painter.setBrush(rgbFore);
+			painter.drawEllipse(rect.adjusted(-2, ym - 2, +1, ym + 1));
+			// Lollipop stick...
 			if (y < y0) {
 				painter.fillRect(x, y, w1, y0 - y, rgbFore);
 				painter.fillRect(x + 1, y + 1, w1 - 4, y0 - y - 2, rgbValue);
@@ -639,6 +650,11 @@ void qtractorMidiEditEvent::drawEvents ( QPainter& painter,
 				painter.fillRect(x, y0 - 2, w1, 4, rgbFore);
 				painter.fillRect(x + 1, y0 - 1, w1 - 4, 2, rgbValue);
 			}
+			// Lollipop candy hilite...
+			painter.setPen(rgbValue);
+			painter.setBrush(rgbValue);
+			painter.drawEllipse(rect.adjusted(0, ym, -2, ym - 2));
+			// Note name...
 			if (m_pEditor->isNoteNames() && hs < y0 - y && (
 				eventType == qtractorMidiEvent::NOTEON ||
 				eventType == qtractorMidiEvent::KEYPRESS)) {
