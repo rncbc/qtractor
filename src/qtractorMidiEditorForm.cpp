@@ -1056,6 +1056,10 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	if (pMainForm == nullptr)
 		return;
 
+	qtractorTracks *pTracks = pMainForm->tracks();
+	if (pTracks == nullptr)
+		return;
+
 	// Get those time-scales in sync,
 	// while keeping zoom ratios persistant...
 	const unsigned short iHorizontalZoom = m_pMidiEditor->horizontalZoom();
@@ -1084,7 +1088,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 
 	// Note that there's two modes for this method:
 	// whether pMidiClip is given non-null wich means
-	// form initialization and first setup or else... 
+	// form initialization first setup or else...
 	if (pMidiClip) {
 		// Set initial MIDI clip properties has seen fit...
 		m_pMidiEditor->setMidiClip(pMidiClip);
@@ -1157,53 +1161,54 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	m_pMidiEditor->centerContents();
 	m_pMidiEventList->refresh();
 
-	// (Re)try to position the editor in same of track view (relative)...
-	qtractorTracks *pTracks = pMainForm->tracks();
-	if (pTracks) {
-		// Try to recenter horizontally...
-		qtractorTrackView *pTrackView = pTracks->trackView();
-		const QPoint& pos = pTrackView->mapFromGlobal(QCursor::pos());
-		unsigned long iFrame = pSession->frameFromPixel(
-			pTrackView->contentsX() + pos.x());
-		if (iFrame  > m_pMidiEditor->offset()) {
-			iFrame -= m_pMidiEditor->offset();
-		} else {
-			iFrame = 0;
-		}
-		qtractorMidiEditView *pEditView = m_pMidiEditor->editView();
-		const int w2 = (pEditView->width()  >> 1);
-		const int h2 = (pEditView->height() >> 1);
-		const int x2 = pTimeScale->pixelFromFrame(iFrame);
-		const int cx = pEditView->contentsX();
-		const int cy = pEditView->contentsY();
-		// Then try to recenter vertically...
-		int y2 = cy;
-		qtractorTrack *pTrack = nullptr;
-		if (pMidiClip)
+	// (Re)try to reposition the editor in the same relative
+	// position in track-view, but only ii clip is not empty...
+	qtractorTrack *pTrack = nullptr;
+	if (pMidiClip) {
+		qtractorMidiSequence *pSeq = pMidiClip->sequence();
+		if (pSeq && pSeq->events().count() > 0)
 			pTrack = pMidiClip->track();
-		if (pTrack) {
-			const int h1 = pTrack->zoomHeight();
-			if (h1 > 0) {
-				int y1 = 0;
-				qtractorTrack *pTrackEx = pSession->tracks().first();
-				while (pTrackEx && pTrackEx != pTrack) {
-					y1 += pTrackEx->zoomHeight();
-					pTrackEx = pTrackEx->next();
-				}
-				const int nmax = pTrack->midiNoteMax();
-				const int nmin = pTrack->midiNoteMin();
-				const int n1 = (pos.y() - y1) * (nmax - nmin) / h1;
-				const int n2 = (128 - nmax) + n1;
-				if (n2 > 0 && n2 < 128)
-					y2 = n2 * (m_pMidiEditor->editList())->itemHeight();
+	}
+	if (pTrack) {
+		const int h1 = pTrack->zoomHeight();
+		if (h1 > 0) {
+			// Try to recenter horizontally...
+			qtractorTrackView *pTrackView = pTracks->trackView();
+			const QPoint& pos = pTrackView->mapFromGlobal(QCursor::pos());
+			unsigned long iFrame = pSession->frameFromPixel(
+				pTrackView->contentsX() + pos.x());
+			if (iFrame  > m_pMidiEditor->offset()) {
+				iFrame -= m_pMidiEditor->offset();
+			} else {
+				iFrame = 0;
 			}
-		}
-		// Need recentering?...
-		if (x2 < cx || x2 > cx + w2 ||
-			y2 < cy || y2 > cy + h2) {
-			pEditView->setContentsPos(
-				(x2 > w2 ? x2 - w2 : 0),
-				(y2 > h2 ? y2 - h2 : 0));
+			qtractorMidiEditView *pEditView = m_pMidiEditor->editView();
+			const int w2 = (pEditView->width()  >> 1);
+			const int h2 = (pEditView->height() >> 1);
+			const int x2 = pTimeScale->pixelFromFrame(iFrame);
+			const int cx = pEditView->contentsX();
+			const int cy = pEditView->contentsY();
+			// Then try to recenter vertically...
+			int y2 = cy;
+			int y1 = 0;
+			qtractorTrack *pTrackEx = pSession->tracks().first();
+			while (pTrackEx && pTrackEx != pTrack) {
+				y1 += pTrackEx->zoomHeight();
+				pTrackEx = pTrackEx->next();
+			}
+			const int nmax = pTrack->midiNoteMax();
+			const int nmin = pTrack->midiNoteMin();
+			const int n1 = (pos.y() - y1) * (nmax - nmin) / h1;
+			const int n2 = (128 - nmax) + n1;
+			if (n2 > 0 && n2 < 128)
+				y2 = n2 * (m_pMidiEditor->editList())->itemHeight();
+			// Need recentering?...
+			if (x2 < cx || x2 > cx + w2 ||
+				y2 < cy || y2 > cy + h2) {
+				pEditView->setContentsPos(
+					(x2 > w2 ? x2 - w2 : 0),
+					(y2 > h2 ? y2 - h2 : 0));
+			}
 		}
 	}
 
