@@ -1,7 +1,7 @@
 // qtractorMidiEditView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -523,7 +523,7 @@ void qtractorMidiEditView::updatePixmap ( int cx, int cy )
 				const unsigned long t2 = pNode->tickFromFrame(iClipEnd);
 				drawEvents(painter, dx, cy, pMidiClip->sequence(),
 					t1, iTickStart, iTickEnd, t2, bDrumMode,
-					pTrack->foreground(), pTrack->background(), 55);
+					pTrack->foreground(), pTrack->background(), 60);
 			}
 			pClip = pClip->next();
 		}
@@ -621,6 +621,7 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 	qtractorTimeScale::Node *pNode;
 
 	const qtractorMidiEvent::EventType eventType = m_eventType;
+	const int wm = m_pEditor->minEventWidth();
 
 	qtractorMidiEvent *pEvent
 		= m_pEditor->seekEvent(pSeq, iTickStart > t0 ? iTickStart - t0 : 0);
@@ -641,7 +642,8 @@ void qtractorMidiEditView::drawEvents ( QPainter& painter,
 				int w1 = (t1 >= t2 && m_pEditor->isClipRecord()
 					? m_pEditor->playHeadX()
 					: pNode->pixelFromTick(t2) - dx) - x;
-				if (w1 < 5) w1 = 5;
+				if (w1 < wm)
+					w1 = wm;
 				if (m_pEditor->isNoteColor()) {
 					hue = (128 - int(pEvent->note())) << 4;
 					if (m_pEditor->isValueColor())

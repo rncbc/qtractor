@@ -1,7 +1,7 @@
 // qtractorObserverWidget.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -130,7 +130,15 @@ void qtractorObserverSlider::wheelEvent ( QWheelEvent *pWheelEvent )
 {
 	int iValue = value();
 
-	if (pWheelEvent->angleDelta().y() > 0)
+	const int delta = pWheelEvent->angleDelta().y();
+	if (pWheelEvent->modifiers() & Qt::ControlModifier) {
+		if (delta > 0)
+			iValue += singleStep();
+		else
+			iValue -= singleStep();
+	}
+	else
+	if (delta > 0)
 		iValue += pageStep();
 	else
 		iValue -= pageStep();

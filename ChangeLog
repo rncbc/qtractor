@@ -6,6 +6,20 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor now featuring lollipops for all kind of candy
+  event values ;). (EXPERIMENTAL)
+
+- Make the minimum width of events on the MIDI clip editor larger,
+  depending on screen resolution and horizontal zoom setting.
+  (EXPERIMENTAL)
+
+- Avoid issuing equivalent MIDI track channel volume and panning
+  via GM standard controllers (CC#7 and CC#10 resp.) to mitigate
+  recursive or positive feedback loops. (EXPERIMENTAL) 
+
+- Refined mouse-wheel control step size on mixer strip sliders.
+  (EXPERIMENTAL)
+
 - Fixed the build checks on whether to use old or newer style of
   LV2 include headers. (EXPERIMENTAL)
 

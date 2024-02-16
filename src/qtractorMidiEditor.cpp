@@ -60,9 +60,15 @@
 #include <QComboBox>
 #include <QToolTip>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+#include <QScreen>
+#endif
 
 // Follow-playhead: maximum iterations on hold.
-#define QTRACTOR_SYNC_VIEW_HOLD 46
+#define QTRACTOR_SYNC_VIEW_HOLD  46
+
+// Minimum event width (default).
+#define QTRACTOR_MIN_EVENT_WIDTH 5
 
 
 // An double-dash string reference (formerly empty blank).
@@ -832,6 +838,9 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	// Current ghost-track option.
 	m_pGhostTrack = nullptr;
 
+	// Default minimum event width.
+	m_iMinEventWidth = QTRACTOR_MIN_EVENT_WIDTH;
+
 	// The main widget splitters.
 	m_pHSplitter = new QSplitter(Qt::Horizontal, this);
 	m_pHSplitter->setObjectName("qtractorMidiEditor::HSplitter");
@@ -1098,7 +1107,6 @@ int qtractorMidiEditor::zoomMode (void) const
 }
 
 
-
 // Zoom ratio accessors.
 void qtractorMidiEditor::setHorizontalZoom ( unsigned short iHorizontalZoom )
 {
@@ -1107,6 +1115,17 @@ void qtractorMidiEditor::setHorizontalZoom ( unsigned short iHorizontalZoom )
 
 	if (m_pMidiClip)
 		m_pMidiClip->setEditorHorizontalZoom(iHorizontalZoom);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+	// HACK: Adjust minimum event width,according
+	// to current screen size and horizontal zoom...
+	m_iMinEventWidth = QTRACTOR_MIN_EVENT_WIDTH;
+	QScreen	*pScreen = QSplitter::screen();
+	if (pScreen) {
+		const int ws = pScreen->size().width();
+		m_iMinEventWidth += (((ws * iHorizontalZoom) / 360000) & 0x7e);
+	}
+#endif
 }
 
 unsigned short qtractorMidiEditor::horizontalZoom (void) const
@@ -1303,6 +1322,13 @@ void qtractorMidiEditor::setGhostTrack ( qtractorTrack *pGhostTrack )
 qtractorTrack *qtractorMidiEditor::ghostTrack (void) const
 {
 	return m_pGhostTrack;
+}
+
+
+// Minimum event width accessors.
+int qtractorMidiEditor::minEventWidth (void) const
+{
+	return m_iMinEventWidth;
 }
 
 
@@ -1994,8 +2020,8 @@ void qtractorMidiEditor::pasteClipboard (
 			int x  = pNode->pixelFromTick(t1);
 			pNode = cursor.seekTick(t2);
 			int w1 = pNode->pixelFromTick(t2) - x;
-			if (w1 < 5)
-				w1 = 5;
+			if (w1 < m_iMinEventWidth)
+				w1 = m_iMinEventWidth;
 			// View item...
 			QRect rectView;
 			if (pEvent->type() == m_pEditView->eventType()) {
@@ -2022,7 +2048,7 @@ void qtractorMidiEditor::pasteClipboard (
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
 				if (!m_bNoteDuration || m_bDrumMode)
-					w1 = 5;
+					w1 = m_iMinEventWidth;
 				if (y < y0)
 					rectEvent.setRect(x - x0, y, w1, y0 - y);
 				else if (y > y0)
@@ -2295,8 +2321,8 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 		int x  = pNode->pixelFromTick(t1);
 		pNode = cursor.seekTick(t2);
 		int w1 = pNode->pixelFromTick(t2) - x;
-		if (w1 < 5)
-			w1 = 5;
+		if (w1 < m_iMinEventWidth)
+			w1 = m_iMinEventWidth;
 		// View item...
 		const qtractorMidiEvent::EventType etype = pEvent->type();
 		if (etype == m_pEditView->eventType()) {
@@ -2322,7 +2348,7 @@ void qtractorMidiEditor::updateSelect ( bool bSelectReset )
 			else
 				y = y0 - (y0 * pEvent->value()) / 128;
 			if (!m_bNoteDuration || m_bDrumMode)
-				w1 = 5;
+				w1 = m_iMinEventWidth;
 			if (y < y0)
 				pItem->rectEvent.setRect(x - x0, y, w1, y0 - y);
 			else if (y > y0)
@@ -2769,8 +2795,8 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 			const int x = pNode->pixelFromTick(t1);
 			pNode = cursor.seekTick(t2);
 			int w1 = pNode->pixelFromTick(t2) - x;
-			if (w1 < 5)
-				w1 = 5;
+			if (w1 < m_iMinEventWidth)
+				w1 = m_iMinEventWidth;
 			QRect rect; int y;
 			if (bEditView) {
 				// View item...
@@ -2795,7 +2821,7 @@ qtractorMidiEvent *qtractorMidiEditor::eventAt (
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
 				if (!m_bNoteDuration || m_bDrumMode)
-					w1 = 5;
+					w1 = m_iMinEventWidth;
 				if (y < y0)
 					rect.setRect(x - x0, y, w1, y0 - y);
 				else if (y > y0)
@@ -3025,9 +3051,11 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	}
 
 	// Now try to get the visual rectangular coordinates...
-	int w1 = pNode->pixelFromTick(pEvent->time() + pEvent->duration()) - x1;
-	if (w1 < 5)
-		w1 = 5;
+	const unsigned long t2 = pEvent->time() + pEvent->duration();
+	pNode = cursor.seekTick(t2);
+	int w1 = pNode->pixelFromTick(t2) - x1;
+	if (w1 < m_iMinEventWidth)
+		w1 = m_iMinEventWidth;
 
 	// View item...
 	QRect rectView;
@@ -3075,7 +3103,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			m_resizeMode = ResizeValue;
 		}
 		if (!m_bNoteDuration || m_bDrumMode)
-			w1 = 5;
+			w1 = m_iMinEventWidth;
 		if (h1 < 3)
 			h1 = 3;
 		rectEvent.setRect(x1 - x0, y1, w1, h1);
@@ -3601,8 +3629,8 @@ void qtractorMidiEditor::updateDragSelect (
 			int x  = pNode->pixelFromTick(t1);
 			pNode = cursor.seekTick(t2);
 			int w1 = pNode->pixelFromTick(t2) - x;
-			if (w1 < 5)
-				w1 = 5;
+			if (w1 < m_iMinEventWidth)
+				w1 = m_iMinEventWidth;
 			// View item...
 			QRect rectView;
 			if (pEvent->type() == m_pEditView->eventType()) {
@@ -3631,7 +3659,7 @@ void qtractorMidiEditor::updateDragSelect (
 				else
 					y = y0 - (y0 * pEvent->value()) / 128;
 				if (!m_bNoteDuration || m_bDrumMode)
-					w1 = 5;
+					w1 = m_iMinEventWidth;
 				if (y < y0)
 					rectEvent.setRect(x - x0, y, w1, y0 - y);
 				else if (y > y0)
@@ -3910,8 +3938,8 @@ void qtractorMidiEditor::updateEventRects (
 	int x  = pNode->pixelFromTick(t1);
 	pNode = cursor.seekTick(t2);
 	int w1 = pNode->pixelFromTick(t2) - x;
-	if (w1 < 5)
-		w1 = 5;
+	if (w1 < m_iMinEventWidth)
+		w1 = m_iMinEventWidth;
 
 	// View item...
 	int y;
@@ -3942,7 +3970,7 @@ void qtractorMidiEditor::updateEventRects (
 		else
 			y = y0 - (y0 * pEvent->value()) / 128;
 		if (!m_bNoteDuration || m_bDrumMode)
-			w1 = 5;
+			w1 = m_iMinEventWidth;
 		if (y < y0)
 			rectEvent.setRect(x - x0, y, w1, y0 - y);
 		else if (y > y0)
