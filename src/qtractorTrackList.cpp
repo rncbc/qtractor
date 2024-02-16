@@ -1,7 +1,7 @@
 // qtractorTrackList.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1280,10 +1280,10 @@ void qtractorTrackList::drawCell (
 	}
 
 	// Do some simple embossing...
-	pPainter->setPen(bg.lighter(150));
+	pPainter->setPen(bg.lighter(120));
 	pPainter->drawLine(rect.left(), rect.top(), rect.left(), rect.bottom());
 	pPainter->drawLine(rect.left(), rect.top(), rect.right(), rect.top());
-	pPainter->setPen(bg.darker(150));
+	pPainter->setPen(bg.darker(120));
 	pPainter->drawLine(rect.right(), rect.top(), rect.right(), rect.bottom());
 	pPainter->drawLine(rect.left(), rect.bottom(), rect.right(), rect.bottom());
 }
