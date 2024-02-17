@@ -68,10 +68,17 @@ void qtractorMidiEditCommand::insertEvent ( qtractorMidiEvent *pEvent )
 }
 
 
-void qtractorMidiEditCommand::moveEvent (
+void qtractorMidiEditCommand::moveEventNote (
 	qtractorMidiEvent *pEvent, int iNote, unsigned long iTime )
 {
-	m_items.append(new Item(MoveEvent, pEvent, iNote, iTime));
+	m_items.append(new Item(MoveEventNote, pEvent, iNote, iTime));
+}
+
+
+void qtractorMidiEditCommand::moveEventValue (
+	qtractorMidiEvent *pEvent, int iValue, unsigned long iTime )
+{
+	m_items.append(new Item(MoveEventValue, pEvent, 0, iTime, 0, iValue));
 }
 
 
@@ -167,14 +174,37 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			++iSelectClear;
 			break;
 		}
-		case MoveEvent: {
+		case MoveEventNote: {
+			const unsigned long iOldTime = pEvent->time();
 			const int iOldNote = int(pEvent->note());
+			pSeq->unlinkEvent(pEvent);
+			pEvent->setTime(pItem->time);
+			pEvent->setNote(pItem->note);
+			pSeq->insertEvent(pEvent);
+			pItem->time = iOldTime;
+			pItem->note = iOldNote;
+			break;
+		}
+		case MoveEventValue: {
 			const unsigned long iOldTime = pEvent->time();
 			pSeq->unlinkEvent(pEvent);
-			pEvent->setNote(pItem->note);
 			pEvent->setTime(pItem->time);
+			if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
+				const int iOldValue = pEvent->pitchBend();
+				pEvent->setPitchBend(pItem->value);
+				pItem->value = iOldValue;
+			}
+			else
+			if (pEvent->type() == qtractorMidiEvent::PGMCHANGE) {
+				const int iOldValue = pEvent->param();
+				pEvent->setParam(pItem->value);
+				pItem->value = iOldValue;
+			} else {
+				const int iOldValue = pEvent->value();
+				pEvent->setValue(pItem->value);
+				pItem->value = iOldValue;
+			}
 			pSeq->insertEvent(pEvent);
-			pItem->note = iOldNote;
 			pItem->time = iOldTime;
 			break;
 		}
