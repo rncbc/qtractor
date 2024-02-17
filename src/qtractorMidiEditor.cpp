@@ -824,8 +824,8 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_bNoteColor  = false;
 	m_bValueColor = false;
 
-	// Which widget holds focus on drag-paste?
-	m_pDragView = nullptr;
+	// Which widget holds focus on drag-step/paste?
+	m_pDragStep = nullptr;
 
 	// Snap-to-scale (aka.in-place scale-quantize) stuff.
 	m_iSnapToScaleKey  = 0;
@@ -2100,8 +2100,8 @@ void qtractorMidiEditor::pasteClipboard (
 	m_posDrag   = m_rectDrag.topLeft();
 	m_posStep   = QPoint(0, 0);
 
-	// This is the one which is holding focus on drag-paste...
-	m_pDragView = pScrollView;
+	// This is the one which is holding focus on drag-step/paste...
+	m_pDragStep = pScrollView;
 
 	// It doesn't matter which one, both pasteable views are due...
 	const QCursor cursr(QPixmap(":/images/editPaste.png"), 20, 20);
@@ -3243,7 +3243,7 @@ void qtractorMidiEditor::dragMoveStart (
 		m_dragState = DragMove;
 		m_posDrag   = m_rectDrag.center();
 		m_posStep   = QPoint(0, 0);
-		m_pDragView = nullptr;
+		m_pDragStep = nullptr;
 		updateDragMove(pScrollView, pos + m_posStep);
 		// Fall thru...
 	case DragPaste:
@@ -4037,8 +4037,10 @@ void qtractorMidiEditor::updateDragMove (
 		if (m_iSnapToScaleType > 0 && !m_bDrumMode)
 			note = snapToScale(note, m_iSnapToScaleKey, m_iSnapToScaleType);
 		m_posDelta.setY(h1 * (127 - note) - y0);
-	} else {
-		const int dy = (delta.y() - m_posDragEventDelta.y());
+	}
+	else
+	if (m_dragState == DragStep) {
+		const int dy = (delta.y() - m_posStepDelta.y());
 		const int h0 = ((pScrollView->viewport())->height() & ~1); // even.
 		const int y0 = (h0 >> 1);
 		const qtractorMidiEditSelect::ItemList& items = m_select.items();
@@ -4052,10 +4054,10 @@ void qtractorMidiEditor::updateDragMove (
 				continue;
 			int y1 = pItem->rectEvent.y();
 			if (pEvent->type() == qtractorMidiEvent::PITCHBEND) {
-				if (y0 > pItem->rectEvent.bottom())
+				if (y0 < pItem->rectEvent.bottom())
 					y1 = pItem->rectEvent.bottom();
 				y1 += dy;
-				if (y1 > y0) {
+				if (y1 >= y0) {
 					if (y1 > ch) y1 = ch;
 					pItem->rectEvent.setBottom(y1);
 					y1 = y0;
@@ -4085,7 +4087,7 @@ void qtractorMidiEditor::updateDragMove (
 					iValueDelta = -(delta.y() * 128) / h0;
 			}
 		}
-		m_posDragEventDelta.setY(delta.y());
+		m_posStepDelta.setY(delta.y());
 	}
 
 	const QSize pad(2, 2);
@@ -4400,9 +4402,11 @@ void qtractorMidiEditor::executeDragMove (
 	//	if (pEvent == m_pEventDrag)
 	//		iTime = timeSnap(iTime);
 		if (bEditView) {
-			const int  iNote = safeNote(pEvent->note() + iNoteDelta);
+			const int iNote = safeNote(pEvent->note() + iNoteDelta);
 			pEditCommand->moveEventNote(pEvent, iNote, iTime);
-		} else {
+		}
+		else
+		if (m_dragState == DragStep && m_posStepDelta.y() != 0) {
 			int iValue = 0;
 			int y = pItem->rectEvent.y();
 			const qtractorMidiEvent::EventType etype = pEvent->type();
@@ -4419,6 +4423,8 @@ void qtractorMidiEditor::executeDragMove (
 					iValue = safeValue((128 * (y0 - y)) / y0);
 			}
 			pEditCommand->moveEventValue(pEvent, iValue, iTime);
+		} else {
+			pEditCommand->moveEventTime(pEvent, iTime);
 		}
 	}
 
@@ -4691,7 +4697,7 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 		if (etype == qtractorMidiEvent::PITCHBEND) {
 			if (y >= y0)
 				y  = pItem->rectEvent.bottom();
-			iValue = safePitchBend((8192 * (y0 - y)) / y0);
+			iValue = safePitchBend((8192 * (y0 - y + 1)) / y0);
 			pEditCommand->resizeEventValue(pEvent, iValue);
 			if (pEvent == m_pEventDrag)
 				m_last.pitchBend = iValue;
@@ -4979,12 +4985,12 @@ void qtractorMidiEditor::resetDragState ( qtractorScrollView *pScrollView )
 	m_bEventDragEdit = false;
 
 	m_posDelta = QPoint(0, 0);
-	m_posStep  = QPoint(0, 0);
+
+	m_posStep = QPoint(0, 0);
+	m_posStepDelta = QPoint(0, 0);
+	m_pDragStep = nullptr;
 
 	m_posDragEventResize = QPoint(0, 0);
-	m_posDragEventDelta  = QPoint(0, 0);
-
-	m_pDragView = nullptr;
 
 	if (m_pRubberBand) {
 		m_pRubberBand->hide();
@@ -5591,7 +5597,7 @@ bool qtractorMidiEditor::keyStep ( qtractorScrollView *pScrollView,
 		m_rectDrag  = (bEditView ? m_select.rectView() : m_select.rectEvent());
 		m_posDrag   = m_rectDrag.topLeft();
 		m_posStep   = QPoint(0, 0);
-		m_pDragView = pScrollView;
+		m_pDragStep = pScrollView;
 		if (bEditView && m_bDrumMode) {
 			const int h1 = m_pEditList->itemHeight();
 			const int h2 = (h1 >> 1);
@@ -5692,7 +5698,7 @@ bool qtractorMidiEditor::keyStep ( qtractorScrollView *pScrollView,
 // Focus lost event.
 void qtractorMidiEditor::focusOut ( qtractorScrollView *pScrollView )
 {
-	if (m_dragState == DragStep && m_pDragView == pScrollView)
+	if (m_dragState == DragStep && m_pDragStep == pScrollView)
 		resetDragState(pScrollView);
 }
 

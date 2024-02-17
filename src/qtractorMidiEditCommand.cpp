@@ -68,6 +68,13 @@ void qtractorMidiEditCommand::insertEvent ( qtractorMidiEvent *pEvent )
 }
 
 
+void qtractorMidiEditCommand::moveEventTime (
+	qtractorMidiEvent *pEvent, unsigned long iTime )
+{
+	m_items.append(new Item(MoveEventTime, pEvent, 0, iTime));
+}
+
+
 void qtractorMidiEditCommand::moveEventNote (
 	qtractorMidiEvent *pEvent, int iNote, unsigned long iTime )
 {
@@ -174,6 +181,14 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			++iSelectClear;
 			break;
 		}
+		case MoveEventTime: {
+			const unsigned long iOldTime = pEvent->time();
+			pSeq->unlinkEvent(pEvent);
+			pEvent->setTime(pItem->time);
+			pSeq->insertEvent(pEvent);
+			pItem->time = iOldTime;
+			break;
+		}
 		case MoveEventNote: {
 			const unsigned long iOldTime = pEvent->time();
 			const int iOldNote = int(pEvent->note());
@@ -181,8 +196,8 @@ bool qtractorMidiEditCommand::execute ( bool bRedo )
 			pEvent->setTime(pItem->time);
 			pEvent->setNote(pItem->note);
 			pSeq->insertEvent(pEvent);
-			pItem->time = iOldTime;
 			pItem->note = iOldNote;
+			pItem->time = iOldTime;
 			break;
 		}
 		case MoveEventValue: {

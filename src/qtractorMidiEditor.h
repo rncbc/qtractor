@@ -654,13 +654,13 @@ private:
 
 	// Step (keyboard) drag-move position
 	QPoint m_posStep;
+	QPoint m_posStepDelta;
+
+	// Which widget holds focus while drag-step/paste?
+	qtractorScrollView *m_pDragStep;
 
 	// Drag(draw) event-value position.
 	QPoint m_posDragEventResize;
-	QPoint m_posDragEventDelta;
-
-	// Which widget holds focus while dragging?
-	qtractorScrollView *m_pDragView;
 
 	// Viewport rubber-banding stuff.
 	qtractorRubberBand *m_pRubberBand;

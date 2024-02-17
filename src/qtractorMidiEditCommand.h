@@ -55,6 +55,7 @@ public:
 	// Primitive command types.
 	enum CommandType {
 		InsertEvent,
+		MoveEventTime,
 		MoveEventNote,
 		MoveEventValue,
 		ResizeEventTime,
@@ -65,6 +66,8 @@ public:
 	
 	// Primitive command methods.
 	void insertEvent(qtractorMidiEvent *pEvent);
+	void moveEventTime(qtractorMidiEvent *pEvent,
+		unsigned long iTime);
 	void moveEventNote(qtractorMidiEvent *pEvent,
 		int iNote, unsigned long iTime);
 	void moveEventValue(qtractorMidiEvent *pEvent,
