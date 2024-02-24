@@ -312,7 +312,7 @@ set (TRANSLATIONS
   translations/qtractor_fr.ts
   translations/qtractor_it.ts
   translations/qtractor_ja.ts
-  translations/qtractor_pt.ts
+  translations/qtractor_pt_BR.ts
   translations/qtractor_ru.ts
   translations/qtractor_uk.ts
 )

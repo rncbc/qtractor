@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Old generic "Portuguese" translation (pt) has been corrected to  
+  the more proper "Portuguese (Brazil)" locale (pt_BR).
+
 - Up and Down arrow-keys may now be used to change event values on
   the MIDI clip editor current selection (eg. note velocities).
   (EXPERIMENTAL)
