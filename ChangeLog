@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Add default GM, GS and XG standard instruments definition file.
+
 - Old generic "Portuguese" translation (pt) has been corrected to  
   the more proper "Portuguese (Brazil)" locale (pt_BR).
 

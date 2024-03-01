@@ -482,44 +482,44 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="750"/>
+        <location filename="../qtractorOptions.cpp" line="766"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Modo de uso: %1 [opciones] [archivo-de-sesión]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="753"/>
+        <location filename="../qtractorOptions.cpp" line="769"/>
         <source>Options:</source>
         <translation>Opciones:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="756"/>
-        <location filename="../qtractorOptions.cpp" line="778"/>
+        <location filename="../qtractorOptions.cpp" line="772"/>
+        <location filename="../qtractorOptions.cpp" line="794"/>
         <source>Set session identification (uuid)</source>
         <translation>Configurar identificación de sesión (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="759"/>
+        <location filename="../qtractorOptions.cpp" line="775"/>
         <source>Show help about command line options</source>
         <translation>Mostrar ayuda sobre las opciones  de la línea de comandos</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="761"/>
+        <location filename="../qtractorOptions.cpp" line="777"/>
         <source>Show version information</source>
         <translation>Mostrar infromación de la versión</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="783"/>
+        <location filename="../qtractorOptions.cpp" line="799"/>
         <source>Session file (.qtr)</source>
         <translation>Archivo de sesión (.qtr)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="784"/>
+        <location filename="../qtractorOptions.cpp" line="800"/>
         <source>[session-file]</source>
         <translation>[archivo-de-sesión]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="791"/>
-        <location filename="../qtractorOptions.cpp" line="834"/>
+        <location filename="../qtractorOptions.cpp" line="807"/>
+        <location filename="../qtractorOptions.cpp" line="850"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation>Opción -s requiere un argumento (uuid).</translation>
     </message>
