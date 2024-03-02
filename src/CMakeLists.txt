@@ -542,6 +542,8 @@ if (UNIX AND NOT APPLE)
     DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/audio)
   install (FILES instruments/Standard1.ins
     DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/instruments)
+  install (FILES palette/KXStudio.conf palette/Wonton\ Soup.conf
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/palette)
 endif ()
 
 if (WIN32)

@@ -181,6 +181,7 @@ cmake --install build
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/translations
 %dir %{_datadir}/%{name}/instruments
+%dir %{_datadir}/%{name}/palette
 %dir %{_datadir}/%{name}/audio
 %dir %{_datadir}/metainfo
 #dir %{_datadir}/man
@@ -200,6 +201,7 @@ cmake --install build
 %{_datadir}/man/man1/%{name}.1.gz
 %{_datadir}/man/fr/man1/%{name}.1.gz
 %{_datadir}/%{name}/audio/metro_*.wav
+%{_datadir}/%{name}/palette/*.conf
 %{_datadir}/%{name}/instruments/Standard*.ins
 
 %changelog
