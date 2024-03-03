@@ -196,44 +196,44 @@ MIDI:	</translation>
 %3</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="750"/>
+        <location filename="../qtractorOptions.cpp" line="766"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Использование: %1 [параметры] [файл сессии]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="753"/>
+        <location filename="../qtractorOptions.cpp" line="769"/>
         <source>Options:</source>
         <translation>Параметры:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="756"/>
-        <location filename="../qtractorOptions.cpp" line="778"/>
+        <location filename="../qtractorOptions.cpp" line="772"/>
+        <location filename="../qtractorOptions.cpp" line="794"/>
         <source>Set session identification (uuid)</source>
         <translation>Установить идентификатор сессии (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="759"/>
+        <location filename="../qtractorOptions.cpp" line="775"/>
         <source>Show help about command line options</source>
         <translation>Показать справку о параметрах командной строки</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="761"/>
+        <location filename="../qtractorOptions.cpp" line="777"/>
         <source>Show version information</source>
         <translation>Показать версию программы</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="783"/>
+        <location filename="../qtractorOptions.cpp" line="799"/>
         <source>Session file (.qtr)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="784"/>
+        <location filename="../qtractorOptions.cpp" line="800"/>
         <source>[session-file]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="791"/>
-        <location filename="../qtractorOptions.cpp" line="834"/>
+        <location filename="../qtractorOptions.cpp" line="807"/>
+        <location filename="../qtractorOptions.cpp" line="850"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13181,31 +13181,38 @@ Do you want to apply the changes?</source>
         <translation>Подробности</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="325"/>
+        <location filename="../qtractorPaletteForm.cpp" line="345"/>
         <source>Import File - %1</source>
         <translation>Импортировать файл - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="328"/>
-        <location filename="../qtractorPaletteForm.cpp" line="402"/>
+        <location filename="../qtractorPaletteForm.cpp" line="261"/>
+        <location filename="../qtractorPaletteForm.cpp" line="348"/>
+        <location filename="../qtractorPaletteForm.cpp" line="393"/>
         <source>Palette files (*.%1)</source>
         <translation>Файлы палитр (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="329"/>
-        <location filename="../qtractorPaletteForm.cpp" line="403"/>
+        <location filename="../qtractorPaletteForm.cpp" line="259"/>
+        <source>Save Palette - %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPaletteForm.cpp" line="262"/>
+        <location filename="../qtractorPaletteForm.cpp" line="349"/>
+        <location filename="../qtractorPaletteForm.cpp" line="394"/>
         <source>All files (*.*)</source>
         <translation>Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="389"/>
-        <location filename="../qtractorPaletteForm.cpp" line="822"/>
-        <location filename="../qtractorPaletteForm.cpp" line="830"/>
+        <location filename="../qtractorPaletteForm.cpp" line="380"/>
+        <location filename="../qtractorPaletteForm.cpp" line="756"/>
+        <location filename="../qtractorPaletteForm.cpp" line="764"/>
         <source>Warning - %1</source>
         <translation>Предупреждение - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="390"/>
+        <location filename="../qtractorPaletteForm.cpp" line="381"/>
         <source>Could not import from file:
 
 %1
@@ -13214,12 +13221,12 @@ Sorry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="399"/>
+        <location filename="../qtractorPaletteForm.cpp" line="390"/>
         <source>Export File - %1</source>
         <translation>Экспортировать файл - %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="823"/>
+        <location filename="../qtractorPaletteForm.cpp" line="757"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -13228,7 +13235,7 @@ Do you want to discard the changes?</source>
 Вы хотите применить изменения?</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="831"/>
+        <location filename="../qtractorPaletteForm.cpp" line="765"/>
         <source>Some settings have been changed:
 
 &quot;%1&quot;.
@@ -13240,22 +13247,22 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorPaletteForm::PaletteModel</name>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1074"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1008"/>
         <source>Color Role</source>
         <translation>Роль цвета</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1077"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1011"/>
         <source>Active</source>
         <translation>Активно</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1080"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1014"/>
         <source>Inactive</source>
         <translation>Неактивно</translation>
     </message>
     <message>
-        <location filename="../qtractorPaletteForm.cpp" line="1083"/>
+        <location filename="../qtractorPaletteForm.cpp" line="1017"/>
         <source>Disabled</source>
         <translation>Отключено</translation>
     </message>

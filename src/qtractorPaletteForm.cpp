@@ -1,7 +1,7 @@
 // qtractorPaletteForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -176,7 +176,7 @@ void qtractorPaletteForm::setPalette ( const QPalette& pal )
 #endif
 	for (int i = 0; g_colorRoles[i].key; ++i) {
 		if ((mask & (1 << i)) == 0) {
-			const QPalette::ColorRole cr = QPalette::ColorRole(i);
+			const QPalette::ColorRole cr = g_colorRoles[i].value;
 			m_palette.setBrush(QPalette::Active, cr,
 				m_parentPalette.brush(QPalette::Active, cr));
 			m_palette.setBrush(QPalette::Inactive, cr,
@@ -249,8 +249,28 @@ void qtractorPaletteForm::nameComboChanged ( const QString& name )
 void qtractorPaletteForm::saveButtonClicked (void)
 {
 	const QString& name = m_ui.nameCombo->currentText();
-	if (!name.isEmpty()) {
-		saveNamedPalette(name, m_palette);
+	if (name.isEmpty())
+		return;
+
+	QString filename = namedPaletteConf(name);
+
+	if (filename.isEmpty() || !QFileInfo(filename).isWritable()) {
+		const QString& title
+			= tr("Save Palette - %1").arg(QDialog::windowTitle());
+		QStringList filters;
+		filters.append(tr("Palette files (*.%1)").arg(DefaultSuffix));
+		filters.append(tr("All files (*.*)"));
+		QString dirname = defaultDir();
+		if (!dirname.isEmpty())
+			dirname.append(QDir::separator());
+		dirname.append(paletteName() + '.' + DefaultSuffix);
+		filename = QFileDialog::getSaveFileName(this,
+			title, dirname, filters.join(";;"));
+	}
+
+	if (!filename.isEmpty()
+		&& saveNamedPaletteConf(name, filename, m_palette)) {
+		addNamedPaletteConf(name, filename);
 		setPalette(m_palette, m_palette);
 		updateNamedPaletteList();
 		resetButtonClicked();
@@ -262,7 +282,7 @@ void qtractorPaletteForm::deleteButtonClicked (void)
 {
 	const QString& name = m_ui.nameCombo->currentText();
 	if (m_ui.nameCombo->findText(name) >= 0) {
-		deleteNamedPalette(name);
+		deleteNamedPaletteConf(name);
 		updateNamedPaletteList();
 		updateDialogButtons();
 	}
@@ -335,50 +355,21 @@ void qtractorPaletteForm::importButtonClicked (void)
 	if (filename.isEmpty())
 		return;
 
+	QSettings conf(filename, QSettings::IniFormat);
+	conf.beginGroup(ColorThemesGroup);
+	const QStringList names = conf.childGroups();
+	conf.endGroup();
+
 	int imported = 0;
-	QSettings settings(filename, QSettings::IniFormat);
-	settings.beginGroup(ColorThemesGroup);
-	QStringListIterator name_iter(settings.childGroups());
+	QStringListIterator name_iter(names);
 	while (name_iter.hasNext()) {
 		const QString& name = name_iter.next();
 		if (!name.isEmpty()) {
-			QPalette pal;
-			int result = 0;
-		#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-			uint mask = pal.resolveMask();
-		#else
-			uint mask = pal.resolve();
-		#endif
-			settings.beginGroup(name + '/');
-			QStringListIterator iter(settings.childKeys());
-			while (iter.hasNext()) {
-				const QString& key = iter.next();
-				const QPalette::ColorRole cr
-					= qtractorPaletteForm::colorRole(key);
-				const QStringList& clist
-					= settings.value(key).toStringList();
-				if (clist.count() == 3) {
-					pal.setColor(QPalette::Active,   cr, QColor(clist.at(0)));
-					pal.setColor(QPalette::Inactive, cr, QColor(clist.at(1)));
-					pal.setColor(QPalette::Disabled, cr, QColor(clist.at(2)));
-					mask &= ~(1 << int(cr));
-					++result;
-				}
-			}
-		#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-			pal.setResolveMask(mask);
-		#else
-			pal.resolve(mask);
-		#endif
-			settings.endGroup();
-			if (result > 0) {
-				saveNamedPalette(name, pal);
-				setPaletteName(name);
-				++imported;
-			}
+			addNamedPaletteConf(name, filename);
+			setPaletteName(name);
+			++imported;
 		}
 	}
-	settings.endGroup();
 
 	if (imported > 0) {
 		updateNamedPaletteList();
@@ -414,26 +405,12 @@ void qtractorPaletteForm::exportButtonClicked (void)
 	if (filename.isEmpty())
 		return;
 
-	const QPalette& pal = m_palette;
-
-	QSettings settings(filename, QSettings::IniFormat);
-	settings.beginGroup(ColorThemesGroup);
-	settings.beginGroup(QFileInfo(filename).baseName() + '/');
-	for (int i = 0; g_colorRoles[i].key; ++i) {
-		const QString& key
-			= QString::fromLatin1(g_colorRoles[i].key);
-		const QPalette::ColorRole cr
-			= g_colorRoles[i].value;
-		QStringList clist;
-		clist.append(pal.color(QPalette::Active,   cr).name());
-		clist.append(pal.color(QPalette::Inactive, cr).name());
-		clist.append(pal.color(QPalette::Disabled, cr).name());
-		settings.setValue(key, clist);
+	const QFileInfo fi(filename);
+	const QString& name = fi.baseName();
+	if (saveNamedPaletteConf(name, filename, m_palette)) {
+		addNamedPaletteConf(name, filename);
+		setDefaultDir(fi.absolutePath());
 	}
-	settings.endGroup();
-	settings.endGroup();
-
-	setDefaultDir(QFileInfo(filename).absolutePath());
 }
 
 
@@ -502,21 +479,17 @@ void qtractorPaletteForm::updateGenerateButton (void)
 void qtractorPaletteForm::updateDialogButtons (void)
 {
 	const QString& name = m_ui.nameCombo->currentText();
+	const QString& filename = namedPaletteConf(name);
 	const int i = m_ui.nameCombo->findText(name);
 	m_ui.saveButton->setEnabled(!name.isEmpty() && (m_dirtyCount > 0 || i < 0));
 	m_ui.deleteButton->setEnabled(i >= 0);
 	m_ui.resetButton->setEnabled(m_dirtyCount > 0);
 	m_ui.exportButton->setEnabled(!name.isEmpty() || i >= 0);
 	m_ui.dialogButtons->button(QDialogButtonBox::Ok)->setEnabled(i >= 0);
-	if (name == "Wonton Soup" || name == "KXStudio") {
-		m_ui.saveButton->setEnabled(false);
-		m_ui.deleteButton->setEnabled(false);
-		m_ui.exportButton->setEnabled(false);
-	}
 }
 
 
-bool qtractorPaletteForm::namedPalette ( const QString& name, QPalette& pal )
+bool qtractorPaletteForm::namedPalette ( const QString& name, QPalette& pal ) const
 {
 	return namedPalette(m_settings, name, pal);
 }
@@ -526,161 +499,18 @@ bool qtractorPaletteForm::namedPalette (
 	QSettings *settings, const QString& name, QPalette& pal, bool fixup )
 {
 	int result = 0;
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-	uint mask = pal.resolve();
-#endif
 
-	// Custom color themes...
-	if (name == "Wonton Soup") {
-		pal.setColor(QPalette::Active,   QPalette::Window, QColor(73, 78, 88));
-		pal.setColor(QPalette::Inactive, QPalette::Window, QColor(73, 78, 88));
-		pal.setColor(QPalette::Disabled, QPalette::Window, QColor(64, 68, 77));
-		pal.setColor(QPalette::Active,   QPalette::WindowText, QColor(182, 193, 208));
-		pal.setColor(QPalette::Inactive, QPalette::WindowText, QColor(182, 193, 208));
-		pal.setColor(QPalette::Disabled, QPalette::WindowText, QColor(97, 104, 114));
-		pal.setColor(QPalette::Active,   QPalette::Base, QColor(60, 64, 72));
-		pal.setColor(QPalette::Inactive, QPalette::Base, QColor(60, 64, 72));
-		pal.setColor(QPalette::Disabled, QPalette::Base, QColor(52, 56, 63));
-		pal.setColor(QPalette::Active,   QPalette::AlternateBase, QColor(67, 71, 80));
-		pal.setColor(QPalette::Inactive, QPalette::AlternateBase, QColor(67, 71, 80));
-		pal.setColor(QPalette::Disabled, QPalette::AlternateBase, QColor(59, 62, 70));
-		pal.setColor(QPalette::Active,   QPalette::ToolTipBase, QColor(182, 193, 208));
-		pal.setColor(QPalette::Inactive, QPalette::ToolTipBase, QColor(182, 193, 208));
-		pal.setColor(QPalette::Disabled, QPalette::ToolTipBase, QColor(182, 193, 208));
-		pal.setColor(QPalette::Active,   QPalette::ToolTipText, QColor(42, 44, 48));
-		pal.setColor(QPalette::Inactive, QPalette::ToolTipText, QColor(42, 44, 48));
-		pal.setColor(QPalette::Disabled, QPalette::ToolTipText, QColor(42, 44, 48));
-		pal.setColor(QPalette::Active,   QPalette::Text, QColor(210, 222, 240));
-		pal.setColor(QPalette::Inactive, QPalette::Text, QColor(210, 222, 240));
-		pal.setColor(QPalette::Disabled, QPalette::Text, QColor(99, 105, 115));
-		pal.setColor(QPalette::Active,   QPalette::Button, QColor(82, 88, 99));
-		pal.setColor(QPalette::Inactive, QPalette::Button, QColor(82, 88, 99));
-		pal.setColor(QPalette::Disabled, QPalette::Button, QColor(72, 77, 87));
-		pal.setColor(QPalette::Active,   QPalette::ButtonText, QColor(210, 222, 240));
-		pal.setColor(QPalette::Inactive, QPalette::ButtonText, QColor(210, 222, 240));
-		pal.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(111, 118, 130));
-		pal.setColor(QPalette::Active,   QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Inactive, QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Disabled, QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Active,   QPalette::Light, QColor(95, 101, 114));
-		pal.setColor(QPalette::Inactive, QPalette::Light, QColor(95, 101, 114));
-		pal.setColor(QPalette::Disabled, QPalette::Light, QColor(86, 92, 104));
-		pal.setColor(QPalette::Active,   QPalette::Midlight, QColor(84, 90, 101));
-		pal.setColor(QPalette::Inactive, QPalette::Midlight, QColor(84, 90, 101));
-		pal.setColor(QPalette::Disabled, QPalette::Midlight, QColor(75, 81, 91));
-		pal.setColor(QPalette::Active,   QPalette::Dark, QColor(40, 43, 49));
-		pal.setColor(QPalette::Inactive, QPalette::Dark, QColor(40, 43, 49));
-		pal.setColor(QPalette::Disabled, QPalette::Dark, QColor(35, 38, 43));
-		pal.setColor(QPalette::Active,   QPalette::Mid, QColor(63, 68, 76));
-		pal.setColor(QPalette::Inactive, QPalette::Mid, QColor(63, 68, 76));
-		pal.setColor(QPalette::Disabled, QPalette::Mid, QColor(56, 59, 67));
-		pal.setColor(QPalette::Active,   QPalette::Shadow, QColor(29, 31, 35));
-		pal.setColor(QPalette::Inactive, QPalette::Shadow, QColor(29, 31, 35));
-		pal.setColor(QPalette::Disabled, QPalette::Shadow, QColor(25, 27, 30));
-		pal.setColor(QPalette::Active,   QPalette::Highlight, QColor(120, 136, 156));
-		pal.setColor(QPalette::Inactive, QPalette::Highlight, QColor(81, 90, 103));
-		pal.setColor(QPalette::Disabled, QPalette::Highlight, QColor(64, 68, 77));
-		pal.setColor(QPalette::Active,   QPalette::HighlightedText, QColor(209, 225, 244));
-		pal.setColor(QPalette::Inactive, QPalette::HighlightedText, QColor(182, 193, 208));
-		pal.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(97, 104, 114));
-		pal.setColor(QPalette::Active,   QPalette::Link, QColor(156, 212, 255));
-		pal.setColor(QPalette::Inactive, QPalette::Link, QColor(156, 212, 255));
-		pal.setColor(QPalette::Disabled, QPalette::Link, QColor(82, 102, 119));
-		pal.setColor(QPalette::Active,   QPalette::LinkVisited, QColor(64, 128, 255));
-		pal.setColor(QPalette::Inactive, QPalette::LinkVisited, QColor(64, 128, 255));
-		pal.setColor(QPalette::Disabled, QPalette::LinkVisited, QColor(54, 76, 119));
-	#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-		mask = 0;
-	#endif
+	if (!name.isEmpty()
+		&& loadNamedPalette(settings, name, pal)) {
 		++result;
-	}
-	else
-	if (name == "KXStudio") {
-		pal.setColor(QPalette::Active,   QPalette::Window, QColor(17, 17, 17));
-		pal.setColor(QPalette::Inactive, QPalette::Window, QColor(17, 17, 17));
-		pal.setColor(QPalette::Disabled, QPalette::Window, QColor(14, 14, 14));
-		pal.setColor(QPalette::Active,   QPalette::WindowText, QColor(240, 240, 240));
-		pal.setColor(QPalette::Inactive, QPalette::WindowText, QColor(240, 240, 240));
-		pal.setColor(QPalette::Disabled, QPalette::WindowText, QColor(83, 83, 83));
-		pal.setColor(QPalette::Active,   QPalette::Base, QColor(7, 7, 7));
-		pal.setColor(QPalette::Inactive, QPalette::Base, QColor(7, 7, 7));
-		pal.setColor(QPalette::Disabled, QPalette::Base, QColor(6, 6, 6));
-		pal.setColor(QPalette::Active,   QPalette::AlternateBase, QColor(14, 14, 14));
-		pal.setColor(QPalette::Inactive, QPalette::AlternateBase, QColor(14, 14, 14));
-		pal.setColor(QPalette::Disabled, QPalette::AlternateBase, QColor(12, 12, 12));
-		pal.setColor(QPalette::Active,   QPalette::ToolTipBase, QColor(4, 4, 4));
-		pal.setColor(QPalette::Inactive, QPalette::ToolTipBase, QColor(4, 4, 4));
-		pal.setColor(QPalette::Disabled, QPalette::ToolTipBase, QColor(4, 4, 4));
-		pal.setColor(QPalette::Active,   QPalette::ToolTipText, QColor(230, 230, 230));
-		pal.setColor(QPalette::Inactive, QPalette::ToolTipText, QColor(230, 230, 230));
-		pal.setColor(QPalette::Disabled, QPalette::ToolTipText, QColor(230, 230, 230));
-		pal.setColor(QPalette::Active,   QPalette::Text, QColor(230, 230, 230));
-		pal.setColor(QPalette::Inactive, QPalette::Text, QColor(230, 230, 230));
-		pal.setColor(QPalette::Disabled, QPalette::Text, QColor(74, 74, 74));
-		pal.setColor(QPalette::Active,   QPalette::Button, QColor(28, 28, 28));
-		pal.setColor(QPalette::Inactive, QPalette::Button, QColor(28, 28, 28));
-		pal.setColor(QPalette::Disabled, QPalette::Button, QColor(24, 24, 24));
-		pal.setColor(QPalette::Active,   QPalette::ButtonText, QColor(240, 240, 240));
-		pal.setColor(QPalette::Inactive, QPalette::ButtonText, QColor(240, 240, 240));
-		pal.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(90, 90, 90));
-		pal.setColor(QPalette::Active,   QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Inactive, QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Disabled, QPalette::BrightText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Active,   QPalette::Light, QColor(191, 191, 191));
-		pal.setColor(QPalette::Inactive, QPalette::Light, QColor(191, 191, 191));
-		pal.setColor(QPalette::Disabled, QPalette::Light, QColor(191, 191, 191));
-		pal.setColor(QPalette::Active,   QPalette::Midlight, QColor(155, 155, 155));
-		pal.setColor(QPalette::Inactive, QPalette::Midlight, QColor(155, 155, 155));
-		pal.setColor(QPalette::Disabled, QPalette::Midlight, QColor(155, 155, 155));
-		pal.setColor(QPalette::Active,   QPalette::Dark, QColor(129, 129, 129));
-		pal.setColor(QPalette::Inactive, QPalette::Dark, QColor(129, 129, 129));
-		pal.setColor(QPalette::Disabled, QPalette::Dark, QColor(129, 129, 129));
-		pal.setColor(QPalette::Active,   QPalette::Mid, QColor(94, 94, 94));
-		pal.setColor(QPalette::Inactive, QPalette::Mid, QColor(94, 94, 94));
-		pal.setColor(QPalette::Disabled, QPalette::Mid, QColor(94, 94, 94));
-		pal.setColor(QPalette::Active,   QPalette::Shadow, QColor(155, 155, 155));
-		pal.setColor(QPalette::Inactive, QPalette::Shadow, QColor(155, 155, 155));
-		pal.setColor(QPalette::Disabled, QPalette::Shadow, QColor(155, 155, 155));
-		pal.setColor(QPalette::Active,   QPalette::Highlight, QColor(60, 60, 60));
-		pal.setColor(QPalette::Inactive, QPalette::Highlight, QColor(34, 34, 34));
-		pal.setColor(QPalette::Disabled, QPalette::Highlight, QColor(14, 14, 14));
-		pal.setColor(QPalette::Active,   QPalette::HighlightedText, QColor(255, 255, 255));
-		pal.setColor(QPalette::Inactive, QPalette::HighlightedText, QColor(240, 240, 240));
-		pal.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(83, 83, 83));
-		pal.setColor(QPalette::Active,   QPalette::Link, QColor(100, 100, 230));
-		pal.setColor(QPalette::Inactive, QPalette::Link, QColor(100, 100, 230));
-		pal.setColor(QPalette::Disabled, QPalette::Link, QColor(34, 34, 74));
-		pal.setColor(QPalette::Active,   QPalette::LinkVisited, QColor(230, 100, 230));
-		pal.setColor(QPalette::Inactive, QPalette::LinkVisited, QColor(230, 100, 230));
-		pal.setColor(QPalette::Disabled, QPalette::LinkVisited, QColor(74, 34, 74));
-	#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-		mask = 0;
-	#endif
-		++result;
-	}
-	else
-	if (settings) {
-		settings->beginGroup(ColorThemesGroup);
-		settings->beginGroup(name + '/');
-		QStringListIterator iter(settings->childKeys());
-		while (iter.hasNext()) {
-			const QString& key = iter.next();
-			const QPalette::ColorRole cr
-				= qtractorPaletteForm::colorRole(key);
-			const QStringList& clist
-				= settings->value(key).toStringList();
-			if (clist.count() == 3) {
-				pal.setColor(QPalette::Active,   cr, QColor(clist.at(0)));
-				pal.setColor(QPalette::Inactive, cr, QColor(clist.at(1)));
-				pal.setColor(QPalette::Disabled, cr, QColor(clist.at(2)));
-			#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-				mask &= ~(1 << int(cr));
-			#endif
-				++result;
-			}
+	} else {
+		const QString& filename
+			= namedPaletteConf(settings, name);
+		if (!filename.isEmpty()
+			&& QFileInfo(filename).isReadable()
+			&& loadNamedPaletteConf(name, filename, pal)) {
+			++result;
 		}
-		settings->endGroup();
-		settings->endGroup();
 	}
 
 	// Dark themes grayed/disabled color group fix...
@@ -714,38 +544,74 @@ bool qtractorPaletteForm::namedPalette (
 		++result;
 	}
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-	pal.resolve(mask);
-#endif
 	return (result > 0);
 }
 
 
-void qtractorPaletteForm::saveNamedPalette (
-	const QString& name, const QPalette& pal )
+QStringList qtractorPaletteForm::namedPaletteList (void) const
 {
-	if (m_settings && name != "KXStudio" && name != "Wonton Soup") {
-		m_settings->beginGroup(ColorThemesGroup);
-		m_settings->beginGroup(name + '/');
-		for (int i = 0; g_colorRoles[i].key; ++i) {
-			const QString& key
-				= QString::fromLatin1(g_colorRoles[i].key);
-			const QPalette::ColorRole cr
-				= g_colorRoles[i].value;
-			QStringList clist;
-			clist.append(pal.color(QPalette::Active,   cr).name());
-			clist.append(pal.color(QPalette::Inactive, cr).name());
-			clist.append(pal.color(QPalette::Disabled, cr).name());
-			m_settings->setValue(key, clist);
-		}
-		m_settings->endGroup();
-		m_settings->endGroup();
-		++m_dirtyTotal;
+	return namedPaletteList(m_settings);
+}
+
+
+QStringList qtractorPaletteForm::namedPaletteList ( QSettings *settings )
+{
+	QStringList list;
+
+	if (settings) {
+		settings->beginGroup(ColorThemesGroup);
+		list.append(settings->childKeys());
+		list.append(settings->childGroups()); // legacy...
+		settings->endGroup();
+	}
+
+	return list;
+}
+
+
+QString qtractorPaletteForm::namedPaletteConf ( const QString& name ) const
+{
+	return namedPaletteConf(m_settings, name);
+}
+
+
+QString qtractorPaletteForm::namedPaletteConf (
+	QSettings *settings, const QString& name )
+{
+	QString ret;
+
+	if (settings && !name.isEmpty()) {
+		settings->beginGroup(ColorThemesGroup);
+		ret = settings->value(name).toString();
+		settings->endGroup();
+	}
+
+	return ret;
+}
+
+
+void qtractorPaletteForm::addNamedPaletteConf (
+	const QString& name, const QString& filename )
+{
+	addNamedPaletteConf(m_settings, name, filename);
+
+	++m_dirtyTotal;
+}
+
+
+void qtractorPaletteForm::addNamedPaletteConf (
+	QSettings *settings, const QString& name, const QString& filename )
+{
+	if (settings) {
+		settings->beginGroup(ColorThemesGroup);
+		settings->remove(name); // remove legacy keys!
+		settings->setValue(name, filename);
+		settings->endGroup();
 	}
 }
 
 
-void qtractorPaletteForm::deleteNamedPalette ( const QString& name )
+void qtractorPaletteForm::deleteNamedPaletteConf ( const QString& name )
 {
 	if (m_settings) {
 		m_settings->beginGroup(ColorThemesGroup);
@@ -756,25 +622,93 @@ void qtractorPaletteForm::deleteNamedPalette ( const QString& name )
 }
 
 
-QStringList qtractorPaletteForm::namedPaletteList (void)
+bool qtractorPaletteForm::loadNamedPaletteConf (
+	const QString& name, const QString& filename, QPalette& pal )
 {
-	return namedPaletteList(m_settings);
+	QSettings conf(filename, QSettings::IniFormat);
+
+	return loadNamedPalette(&conf, name, pal);
 }
 
 
-QStringList qtractorPaletteForm::namedPaletteList ( QSettings *settings )
+bool qtractorPaletteForm::saveNamedPaletteConf (
+	const QString& name, const QString& filename, const QPalette& pal )
 {
-	QStringList list;
-	list.append("Wonton Soup");
-	list.append("KXStudio");
+	QSettings conf(filename, QSettings::IniFormat);
 
-	if (settings) {
-		settings->beginGroup(ColorThemesGroup);
-		list.append(settings->childGroups());
-		settings->endGroup();
+	return saveNamedPalette(&conf, name, pal);
+}
+
+
+bool qtractorPaletteForm::loadNamedPalette (
+	QSettings *settings, const QString& name, QPalette& pal )
+{
+	if (settings == nullptr)
+		return false;
+
+	int result = 0;
+
+	settings->beginGroup(ColorThemesGroup);
+	QStringListIterator name_iter(settings->childGroups());
+	while (name_iter.hasNext() && !result) {
+		const QString& name2 = name_iter.next();
+		if (name2 == name) {
+		#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+			uint mask = pal.resolve();
+		#endif
+			settings->beginGroup(name + '/');
+			QStringListIterator iter(settings->childKeys());
+			while (iter.hasNext()) {
+				const QString& key = iter.next();
+				const QPalette::ColorRole cr
+					= qtractorPaletteForm::colorRole(key);
+				const QStringList& clist
+					= settings->value(key).toStringList();
+				if (clist.count() == 3) {
+					pal.setColor(QPalette::Active,   cr, QColor(clist.at(0)));
+					pal.setColor(QPalette::Inactive, cr, QColor(clist.at(1)));
+					pal.setColor(QPalette::Disabled, cr, QColor(clist.at(2)));
+				#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+					mask &= ~(1 << int(cr));
+				#endif
+					++result;
+				}
+			}
+		#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+			pal.resolve(mask);
+		#endif
+			settings->endGroup();
+		}
 	}
+	settings->endGroup();
 
-	return list;
+	return (result > 0);
+}
+
+
+bool qtractorPaletteForm::saveNamedPalette (
+	QSettings *settings, const QString& name, const QPalette& pal )
+{
+	if (settings == nullptr)
+		return false;
+
+	settings->beginGroup(ColorThemesGroup);
+	settings->beginGroup(name + '/');
+	for (int i = 0; g_colorRoles[i].key; ++i) {
+		const QString& key
+			= QString::fromLatin1(g_colorRoles[i].key);
+		const QPalette::ColorRole cr
+			= g_colorRoles[i].value;
+		QStringList clist;
+		clist.append(pal.color(QPalette::Active,   cr).name());
+		clist.append(pal.color(QPalette::Inactive, cr).name());
+		clist.append(pal.color(QPalette::Disabled, cr).name());
+		settings->setValue(key, clist);
+	}
+	settings->endGroup();
+	settings->endGroup();
+
+	return true;
 }
 
 

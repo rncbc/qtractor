@@ -27,6 +27,7 @@
 #include <QSplitter>
 #include <QAction>
 #include <QList>
+#include <QDir>
 #include <QFileInfo>
 #include <QTextStream>
 
@@ -290,10 +291,25 @@ void qtractorOptions::loadOptions (void)
 		QString sFilename = m_settings.value(
 			sFilePrefix.arg(++iFile)).toString();
 		if (sFilename.isEmpty())
-		    break;
+			break;
 		instrumentFiles.append(sFilename);
 	}
 	m_settings.endGroup();
+
+	// Have some default instrument file(s)...
+	if (sInstrumentDir.isEmpty()) {
+		const QChar sep = QDir::separator();
+		sInstrumentDir = QApplication::applicationDirPath();
+		sInstrumentDir.remove(CONFIG_BINDIR);
+		sInstrumentDir.append(CONFIG_DATADIR);
+		sInstrumentDir.append(sep);
+		sInstrumentDir.append(PROJECT_NAME);
+		sInstrumentDir.append(sep);
+		sInstrumentDir.append("instruments");
+		const QFileInfo ins(sInstrumentDir, "Standard1.ins");
+		if (ins.isFile() && ins.isReadable())
+			instrumentFiles.append(ins.absoluteFilePath());
+	}
 
 	// MIDI controller file list.
 	iFile = 0;
