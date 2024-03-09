@@ -1391,7 +1391,7 @@ void qtractorMidiEditorForm::fileProperties (void)
 	if (pMidiClip == nullptr)
 		return;
 
-	qtractorClipForm clipForm(parentWidget());
+	qtractorClipForm clipForm(this);
 	clipForm.setClip(pMidiClip);
 	clipForm.exec();
 }

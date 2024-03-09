@@ -571,6 +571,7 @@ void qtractorTempoAdjustForm::tempoChanged (void)
 				= m_ui.RangeLengthSpinBox->value();
 			setRangeBeats(iRangeLength / iBeatLength);
 		}
+		m_ui.TempoResetPushButton->setEnabled(true);
 	}
 
 	changed();
@@ -637,7 +638,6 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 		const float fTempo
 			= aubio_tempo_get_bpm(data.aubio);
 		m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
-		m_ui.TempoResetPushButton->setEnabled(true);
 	}
 
 	if (m_pClipWidget)
@@ -684,7 +684,6 @@ void qtractorTempoAdjustForm::tempoAdjust (void)
 	const float fTempo
 		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
 	m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
-	m_ui.TempoResetPushButton->setEnabled(true);
 
 	changed();
 }
@@ -722,7 +721,6 @@ void qtractorTempoAdjustForm::tempoTap (void)
 	}
 	if (++m_iTempoTap > 2) {
 		m_ui.TempoSpinBox->setTempo(::rintf(m_fTempoTap), false);
-		m_ui.TempoResetPushButton->setEnabled(true);
 		m_iTempoTap	= 1; // Median-like averaging...
 		m_fTempoTap = fTempoTap;
 	}

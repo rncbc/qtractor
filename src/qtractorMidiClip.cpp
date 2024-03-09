@@ -1162,6 +1162,9 @@ bool qtractorMidiClip::startEditor ( QWidget *pParent )
 			// Make sure it has a parent...
 			if (pParent == nullptr)
 				pParent = qtractorMainForm::getInstance();
+		#else
+			// Make sure it's a top-level window...
+			pParent = nullptr;
 		#endif
 		}
 		// Do it...
