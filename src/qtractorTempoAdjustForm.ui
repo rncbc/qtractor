@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
+    <width>480</width>
     <height>240</height>
    </rect>
   </property>
@@ -100,9 +100,9 @@
          </spacer>
         </item>
         <item row="0" column="3">
-         <widget class="QPushButton" name="TempoDetectPushButton">
+         <widget class="QPushButton" name="TempoTapPushButton">
           <property name="text">
-           <string>&amp;Detect</string>
+           <string>T&amp;ap</string>
           </property>
          </widget>
         </item>
@@ -122,30 +122,21 @@
           </property>
          </spacer>
         </item>
-        <item row="0" column="5">
-         <widget class="QPushButton" name="TempoTapPushButton">
+        <item row="1" column="1">
+         <widget class="QPushButton" name="TempoDetectPushButton">
           <property name="text">
-           <string>T&amp;ap</string>
+           <string>&amp;Detect</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="6">
-         <spacer>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+        <item row="2" column="1">
+         <widget class="QPushButton" name="TempoResetPushButton">
+          <property name="text">
+           <string>R&amp;eset</string>
           </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Minimum</enum>
-          </property>
-          <property name="sizeHint">
-           <size>
-            <width>8</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
-        <item row="1" column="0" colspan="7">
+        <item row="3" column="0" colspan="5">
          <spacer>
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -153,7 +144,7 @@
           <property name="sizeHint">
           <size>
            <width>20</width>
-           <height>20</height>
+           <height>0</height>
           </size>
           </property>
          </spacer>
@@ -350,8 +341,9 @@
  </customwidgets>
  <tabstops>
   <tabstop>TempoSpinBox</tabstop>
-  <tabstop>TempoDetectPushButton</tabstop>
   <tabstop>TempoTapPushButton</tabstop>
+  <tabstop>TempoDetectPushButton</tabstop>
+  <tabstop>TempoResetPushButton</tabstop>
   <tabstop>RangeStartSpinBox</tabstop>
   <tabstop>RangeLengthSpinBox</tabstop>
   <tabstop>RangeBeatsSpinBox</tabstop>

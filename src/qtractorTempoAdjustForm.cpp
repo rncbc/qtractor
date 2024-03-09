@@ -1,7 +1,7 @@
 // qtractorTempoAdjustForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -159,12 +159,12 @@ public:
 
 	// Accessors.
 	void setBeats( const QList<unsigned long>& beats )
-		{ m_beats = beats; }
+		{ m_beats = beats; QFrame::update(); }
 	const QList<unsigned long>& beats() const
 		{ return m_beats; }
 
 	void clearBeats()
-		{ m_beats.clear(); }
+		{ m_beats.clear(); QFrame::update(); }
 
 	// Refresh method.
 	void refresh()
@@ -315,6 +315,7 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm ( QWidget *pParent )
 	m_ui.TempoSpinBox->setTempo(m_pTimeScale->tempo(), false);
 	m_ui.TempoSpinBox->setBeatsPerBar(m_pTimeScale->beatsPerBar(), false);
 	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), true);
+	m_ui.TempoResetPushButton->setEnabled(false);
 
 	// Set proper time scales display format...
 	m_ui.FormatComboBox->setCurrentIndex(int(m_pTimeScale->displayFormat()));
@@ -330,12 +331,15 @@ qtractorTempoAdjustForm::qtractorTempoAdjustForm ( QWidget *pParent )
 	QObject::connect(m_ui.TempoSpinBox,
 		SIGNAL(valueChanged(float, unsigned short, unsigned short)),
 		SLOT(tempoChanged()));
-	QObject::connect(m_ui.TempoDetectPushButton,
-		SIGNAL(clicked()),
-		SLOT(tempoDetect()));
 	QObject::connect(m_ui.TempoTapPushButton,
 		SIGNAL(clicked()),
 		SLOT(tempoTap()));
+	QObject::connect(m_ui.TempoDetectPushButton,
+		SIGNAL(clicked()),
+		SLOT(tempoDetect()));
+	QObject::connect(m_ui.TempoResetPushButton,
+		SIGNAL(clicked()),
+		SLOT(tempoReset()));
 
 	QObject::connect(m_ui.RangeStartSpinBox,
 		SIGNAL(valueChanged(unsigned long)),
@@ -633,12 +637,11 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 		const float fTempo
 			= aubio_tempo_get_bpm(data.aubio);
 		m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
+		m_ui.TempoResetPushButton->setEnabled(true);
 	}
 
-	if (m_pClipWidget) {
+	if (m_pClipWidget)
 		m_pClipWidget->setBeats(data.beats);
-		m_pClipWidget->update();
-	}
 
 	if (pProgressBar)
 		pProgressBar->hide();
@@ -647,6 +650,20 @@ void qtractorTempoAdjustForm::tempoDetect (void)
 	QApplication::restoreOverrideCursor();
 
 #endif	// CONFIG_LIBAUBIO
+}
+
+
+// Reset to nominal tempo/time-signature.
+void qtractorTempoAdjustForm::tempoReset (void)
+{
+#ifdef CONFIG_DEBUG
+	qDebug("qtractorTempoAdjustForm::tempoReset()");
+#endif
+
+	m_ui.TempoSpinBox->setTempo(m_pTimeScale->tempo(), false);
+	m_ui.TempoSpinBox->setBeatsPerBar(m_pTimeScale->beatsPerBar(), false);
+	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), true);
+	m_ui.TempoResetPushButton->setEnabled(false);
 }
 
 
@@ -667,6 +684,7 @@ void qtractorTempoAdjustForm::tempoAdjust (void)
 	const float fTempo
 		= 60.0f * float(m_pTimeScale->sampleRate()) / float(iBeatLength);
 	m_ui.TempoSpinBox->setTempo(::rintf(fTempo), true);
+	m_ui.TempoResetPushButton->setEnabled(true);
 
 	changed();
 }
@@ -704,8 +722,9 @@ void qtractorTempoAdjustForm::tempoTap (void)
 	}
 	if (++m_iTempoTap > 2) {
 		m_ui.TempoSpinBox->setTempo(::rintf(m_fTempoTap), false);
-		m_iTempoTap	 = 1; // Median-like averaging...
-		m_fTempoTap  = fTempoTap;
+		m_ui.TempoResetPushButton->setEnabled(true);
+		m_iTempoTap	= 1; // Median-like averaging...
+		m_fTempoTap = fTempoTap;
 	}
 #endif
 }
