@@ -1199,6 +1199,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 				y1 += pTrackEx->zoomHeight();
 				pTrackEx = pTrackEx->next();
 			}
+			y1 -= pTrackView->contentsY();
 			const int nmax = pTrack->midiNoteMax();
 			const int nmin = pTrack->midiNoteMin();
 			const int n1 = (pos.y() - y1) * (nmax - nmin) / h1;
