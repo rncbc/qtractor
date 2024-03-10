@@ -1137,9 +1137,12 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	#endif
 	}
 
-	// Setup for secondary time-signature, if any...
-	if (pMidiClip == nullptr)
+	// Whether we're a initial setup or a second comig...
+	const bool bMidiClip = (pMidiClip == nullptr);
+	if (bMidiClip)
 		pMidiClip = midiClip();
+
+	// Setup for secondary time-signature, if any...
 	if (pMidiClip) {
 		pTimeScale->setBeatsPerBar2(pMidiClip->beatsPerBar2());
 		pTimeScale->setBeatDivisor2(pMidiClip->beatDivisor2());
@@ -1162,11 +1165,11 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	m_pMidiEventList->refresh();
 
 	// (Re)try to reposition the editor in the same relative
-	// position in track-view, but only ii clip is not empty...
+	// position in track-view, only if clip is not empty/new...
 	qtractorTrack *pTrack = nullptr;
 	if (pMidiClip) {
 		qtractorMidiSequence *pSeq = pMidiClip->sequence();
-		if (pSeq && pSeq->events().count() > 0)
+		if (bMidiClip || (pSeq && pSeq->events().count() > 0))
 			pTrack = pMidiClip->track();
 	}
 	if (pTrack) {
