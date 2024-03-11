@@ -386,7 +386,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	// Now, there's whether we are Audio or MIDI related...
 	m_pMixerMeter = nullptr;
 	m_pMidiLabel = nullptr;
-	int iFixedWidth = 54;
+	int iFixedWidth = 64;
 	QPalette pal(m_pRibbon->palette());
 	switch (meterType) {
 	case qtractorTrack::Audio: {

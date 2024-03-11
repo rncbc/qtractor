@@ -535,30 +535,27 @@ bool qtractorTracks::newClip (void)
 			const QString& sFilename
 				= pSession->createFilePath(pTrack->trackName(), "mid");
 			// Create the SMF for good...
-			if (pMidiClip->createMidiFile(sFilename)) {
-				// Add that to regular files...
-				pMainForm->addMidiFile(pClip->filename());
-				// Insert the clip right away...
-				qtractorClipCommand *pClipCommand
-					= new qtractorClipCommand(tr("new clip"));
-				pClipCommand->addClip(pClip, pTrack);
-				pSession->execute(pClipCommand);
-				// Just start the MIDI editor on it...
-				return pClip->startEditor();
+			if (!pMidiClip->createMidiFile(sFilename)) {
+				delete pClip;
+				return false;
 			}
+			// Add that to regular files...
+			pMainForm->addMidiFile(pClip->filename());
+			// Insert the clip right away...
+			qtractorClipCommand *pClipCommand
+				= new qtractorClipCommand(tr("new clip"));
+			pClipCommand->addClip(pClip, pTrack);
+			pSession->execute(pClipCommand);
 		}
 	}
 
-	// Then ask user to refine clip properties...
-	qtractorClipForm clipForm(pMainForm);
-	clipForm.setClip(pClip, true);
-	if (!clipForm.exec()) {
-		delete pClip;
-		return false;
-	}
+	// Just start the clip editor on it...
+	if (pClip->startEditor(pMainForm))
+		return true;
 
-	// Done.
-	return true;
+	// Otherwise get rid of it...
+	delete pClip;
+	return false;
 }
 
 
@@ -570,8 +567,8 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 	if (pClip == nullptr)
 		return false;
 
-	// All else hasn't fail.
-	return pClip->startEditor();
+	// Assume all else hasn't failed...
+	return pClip->startEditor(qtractorMainForm::getInstance());
 }
 
 

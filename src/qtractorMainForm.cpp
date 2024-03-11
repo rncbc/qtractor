@@ -7594,7 +7594,7 @@ void qtractorMainForm::updateClipMenu (void)
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
 	m_ui.clipMergeAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipNormalizeAction->setEnabled(bClipSelected);
-	m_ui.clipTempoAdjustAction->setEnabled(bClipSelectable);
+	m_ui.clipTempoAdjustAction->setEnabled(bClipSelected);
 	m_ui.clipCrossFadeAction->setEnabled(bClipSelected);
 	m_ui.clipRangeSetAction->setEnabled(bClipSelected);
 	m_ui.clipLoopSetAction->setEnabled(bClipSelected);
