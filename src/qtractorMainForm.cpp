@@ -7594,7 +7594,7 @@ void qtractorMainForm::updateClipMenu (void)
 		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
 	m_ui.clipMergeAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipNormalizeAction->setEnabled(bClipSelected);
-	m_ui.clipTempoAdjustAction->setEnabled(bClipSelectable);
+	m_ui.clipTempoAdjustAction->setEnabled(bClipSelected);
 	m_ui.clipCrossFadeAction->setEnabled(bClipSelected);
 	m_ui.clipRangeSetAction->setEnabled(bClipSelected);
 	m_ui.clipLoopSetAction->setEnabled(bClipSelected);
@@ -8671,7 +8671,7 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 			float fGain  = float(ctle.value()) / 127.0f;
 			// Find the track by number...
 			qtractorTrack *pTrack = m_pSession->tracks().at(iTrack);
-			if (pTrack) {
+			if (pTrack && qAbs(fGain - pTrack->gain()) > 0.001f) {
 				m_pSession->execute(
 					new qtractorTrackGainCommand(pTrack, fGain, true));
 			#ifdef CONFIG_DEBUG
@@ -8690,7 +8690,8 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 			for (qtractorTrack *pTrack = m_pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (pTrack->trackType() == qtractorTrack::Midi &&
-					pTrack->midiChannel() == ctle.channel()) {
+					pTrack->midiChannel() == ctle.channel() &&
+					qAbs(fGain - pTrack->gain()) > 0.001f) {
 					m_pSession->execute(
 						new qtractorTrackGainCommand(pTrack, fGain, true));
 				#ifdef CONFIG_DEBUG
@@ -8711,7 +8712,8 @@ void qtractorMainForm::midiCtlNotify ( const qtractorCtlEvent& ctle )
 			for (qtractorTrack *pTrack = m_pSession->tracks().first();
 					pTrack; pTrack = pTrack->next()) {
 				if (pTrack->trackType() == qtractorTrack::Midi &&
-					pTrack->midiChannel() == ctle.channel()) {
+					pTrack->midiChannel() == ctle.channel() &&
+					qAbs(fPanning - pTrack->panning()) > 0.001f) {
 					m_pSession->execute(
 						new qtractorTrackPanningCommand(pTrack, fPanning, true));
 				#ifdef CONFIG_DEBUG

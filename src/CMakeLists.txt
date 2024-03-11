@@ -312,7 +312,7 @@ set (TRANSLATIONS
   translations/qtractor_fr.ts
   translations/qtractor_it.ts
   translations/qtractor_ja.ts
-  translations/qtractor_pt.ts
+  translations/qtractor_pt_BR.ts
   translations/qtractor_ru.ts
   translations/qtractor_uk.ts
 )
@@ -540,6 +540,10 @@ if (UNIX AND NOT APPLE)
     DESTINATION ${CMAKE_INSTALL_MANDIR}/fr/man1 RENAME ${PROJECT_NAME}.1)
   install (FILES audio/metro_bar.wav audio/metro_beat.wav
     DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/audio)
+  install (FILES instruments/Standard1.ins
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/instruments)
+  install (FILES palette/KXStudio.conf palette/Wonton\ Soup.conf
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/palette)
 endif ()
 
 if (WIN32)

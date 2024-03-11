@@ -1,7 +1,7 @@
 // qtractorClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -333,21 +333,22 @@ void qtractorClip::drawClip (
 	// Draw the framed rectangle and background...
 	pPainter->drawRect(clipRect);
 
+	// Draw clip contents (virtual)
+	draw(pPainter, clipRect, iClipOffset);
+
+	// Adjust the clip rectangle left origin...
 	qtractorSession *pSession = m_pTrack->session();
 	if (pSession == nullptr)
 		return;
 
-	// Adjust the clip rectangle left origin...
 	QRect rect(clipRect);
 	if (iClipOffset > 0)
 		rect.setLeft(rect.left() - pSession->pixelFromFrame(iClipOffset) + 1);
 
 	// Draw clip name label...
+	//pPainter->setPen(Qt::white);
 	pPainter->drawText(rect,
 		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, clipTitle());
-
-	// Draw clip contents (virtual)
-	draw(pPainter, clipRect, iClipOffset);
 
 	// Avoid drawing fade in/out handles
 	// on still empty clips (eg. while recording)

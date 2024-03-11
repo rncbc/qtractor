@@ -156,6 +156,9 @@ public:
 	void setGhostTrack(qtractorTrack *pGhostTrack);
 	qtractorTrack *ghostTrack() const;
 
+	// Minimum event width accessor.
+	int minEventWidth() const;
+
 	// Child widgets accessors.
 	QFrame *editListHeader() const;
 	qtractorMidiEditList *editList() const;
@@ -326,7 +329,8 @@ public:
 		int iKey, const Qt::KeyboardModifiers& modifiers);
 
 	// Keyboard step handler.
-	bool keyStep(int iKey, const Qt::KeyboardModifiers& modifiers);
+	bool keyStep( qtractorScrollView *pScrollView,
+		int iKey, const Qt::KeyboardModifiers& modifiers);
 
 	// Lost focus handler.
 	void focusOut(qtractorScrollView *pScrollView);
@@ -475,10 +479,6 @@ protected:
 	// Update all selection rectangular areas.
 	void updateSelect(bool bSelectReset);
 
-	// Update the event selection list.
-	void updateDragSelect(qtractorScrollView *pScrollView,
-		const QRect& rectSelect, int flags);
-
 	// Compute current drag time snap (in ticks).
 	long timeSnap(long iTime) const;
 
@@ -508,6 +508,10 @@ protected:
 	// Update event visual rectangles.
 	void updateEventRects(qtractorMidiEvent *pEvent,
 		QRect& rectEvent, QRect& rectView) const;
+
+	// Update the event selection list.
+	void updateDragSelect(qtractorScrollView *pScrollView,
+		const QRect& rectSelect, int flags);
 
 	// Drag-move current selection.
 	void updateDragMove(qtractorScrollView *pScrollView, const QPoint& pos);
@@ -650,12 +654,13 @@ private:
 
 	// Step (keyboard) drag-move position
 	QPoint m_posStep;
+	QPoint m_posStepDelta;
+
+	// Which widget holds focus while drag-step/paste?
+	qtractorScrollView *m_pDragStep;
 
 	// Drag(draw) event-value position.
 	QPoint m_posDragEventResize;
-
-	// Which widget holds focus on drag-paste?
-	qtractorScrollView *m_pEditPaste;
 
 	// Viewport rubber-banding stuff.
 	qtractorRubberBand *m_pRubberBand;
@@ -746,6 +751,9 @@ private:
 
 	// Ghost track setting.
 	qtractorTrack *m_pGhostTrack;
+
+	// Minimum event width.
+	int m_iMinEventWidth;
 };
 
 

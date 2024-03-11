@@ -1,7 +1,7 @@
 // qtractorMeter.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2021, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -323,8 +323,8 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 	m_pGainSlider->setTickPosition(QSlider::NoTicks);
 	m_pGainSlider->setMinimum(0);
 	m_pGainSlider->setMaximum(10000);
-	m_pGainSlider->setPageStep(1000);
-	m_pGainSlider->setSingleStep(100);
+	m_pGainSlider->setPageStep(250);
+	m_pGainSlider->setSingleStep(50);
 
 	m_pGainSpinBox->setDecimals(1);
 //	m_pGainSpinBox->setSingleStep(0.1f);

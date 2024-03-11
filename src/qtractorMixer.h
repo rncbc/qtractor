@@ -263,7 +263,7 @@ protected:
 
 	// Initial minimum widget extents.
 	QSize sizeHint() const
-		{ return QSize(160, 420); }
+		{ return QSize(80, 280); }
 
 private:
 

@@ -1,7 +1,7 @@
 // qtractorMidiEditCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -55,7 +55,9 @@ public:
 	// Primitive command types.
 	enum CommandType {
 		InsertEvent,
-		MoveEvent,
+		MoveEventTime,
+		MoveEventNote,
+		MoveEventValue,
 		ResizeEventTime,
 		ResizeEventValue,
 		UpdateEvent,
@@ -64,8 +66,12 @@ public:
 	
 	// Primitive command methods.
 	void insertEvent(qtractorMidiEvent *pEvent);
-	void moveEvent(qtractorMidiEvent *pEvent,
+	void moveEventTime(qtractorMidiEvent *pEvent,
+		unsigned long iTime);
+	void moveEventNote(qtractorMidiEvent *pEvent,
 		int iNote, unsigned long iTime);
+	void moveEventValue(qtractorMidiEvent *pEvent,
+		int iValue, unsigned long iTime);
 	void resizeEventTime(qtractorMidiEvent *pEvent,
 		unsigned long iTime, unsigned long iDuration);
 	void resizeEventValue(qtractorMidiEvent *pEvent, int iValue);
