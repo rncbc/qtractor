@@ -662,8 +662,11 @@ void qtractorTempoAdjustForm::tempoReset (void)
 
 	m_ui.TempoSpinBox->setTempo(m_pTimeScale->tempo(), false);
 	m_ui.TempoSpinBox->setBeatsPerBar(m_pTimeScale->beatsPerBar(), false);
-	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), true);
+	m_ui.TempoSpinBox->setBeatDivisor(m_pTimeScale->beatDivisor(), false);
 	m_ui.TempoResetPushButton->setEnabled(false);
+
+	m_iDirtyCount = 0;
+	stabilizeForm();
 }
 
 
@@ -910,12 +913,10 @@ void qtractorTempoAdjustForm::stabilizeForm (void)
 {
 	const unsigned long iRangeLength = m_ui.RangeLengthSpinBox->value();
 	const unsigned short iRangeBeats = m_ui.RangeBeatsSpinBox->value();
-
-	bool bValid = (m_iDirtyCount > 0);
-	bValid = bValid && (iRangeLength > 0);
-	bValid = bValid && (iRangeBeats > 0);
+	const bool bValid = (iRangeLength > 0 && iRangeBeats > 0);
 	m_ui.AdjustPushButton->setEnabled(bValid);
-	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(bValid);
+	m_ui.DialogButtonBox->button(QDialogButtonBox::Ok)->setEnabled(
+		bValid && m_iDirtyCount > 0);
 }
 
 
