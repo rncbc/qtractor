@@ -235,14 +235,20 @@ qtractorTrackListButtons::qtractorTrackListButtons (
 	m_pRecordButton = new qtractorTrackButton(pTrack, qtractorTrack::Record, this);
 	m_pRecordButton->setFixedSize(buttonSize);
 	m_pRecordButton->setFont(font2);
+	// QSS access qtractorTrackButton[Type="Record"]
+	m_pRecordButton->setProperty("Type", "Record");
 
 	m_pMuteButton = new qtractorTrackButton(pTrack, qtractorTrack::Mute, this);
 	m_pMuteButton->setFixedSize(buttonSize);
 	m_pMuteButton->setFont(font2);
+	// QSS access qtractorTrackButton[Type="Mute"]
+	m_pMuteButton->setProperty("Type", "Mute");
 
 	m_pSoloButton = new qtractorTrackButton(pTrack, qtractorTrack::Solo, this);
 	m_pSoloButton->setFixedSize(buttonSize);
 	m_pSoloButton->setFont(font2);
+	// QSS access qtractorTrackButton[Type="Solo"]
+	m_pSoloButton->setProperty("Type", "Solo");
 
 	m_pCurveButton = new qtractorCurveButton(pTrack, this);
 	m_pCurveButton->setFixedSize(QSize(32, iFixedHeight));

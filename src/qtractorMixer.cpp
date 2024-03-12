@@ -340,16 +340,22 @@ void qtractorMixerStrip::initMixerStrip (void)
 		m_pRecordButton->setFixedHeight(iFixedHeight);
 		m_pRecordButton->setSizePolicy(buttonPolicy);
 		m_pRecordButton->setFont(font3);
+		// QSS access qtractorTrackButton[Type="Record"]
+		m_pRecordButton->setProperty("Type", "Record");
 		m_pMuteButton
 			= new qtractorTrackButton(m_pTrack, qtractorTrack::Mute);
 		m_pMuteButton->setFixedHeight(iFixedHeight);
 		m_pMuteButton->setSizePolicy(buttonPolicy);
 		m_pMuteButton->setFont(font3);
+		// QSS access qtractorTrackButton[Type="Mute"]
+		m_pMuteButton->setProperty("Type", "Mute");
 		m_pSoloButton
 			= new qtractorTrackButton(m_pTrack, qtractorTrack::Solo);
 		m_pSoloButton->setFixedHeight(iFixedHeight);
 		m_pSoloButton->setSizePolicy(buttonPolicy);
 		m_pSoloButton->setFont(font3);
+		// QSS access qtractorTrackButton[Type="Solo"]
+		m_pSoloButton->setProperty("Type", "Solo");
 		m_pButtonLayout->addWidget(m_pRecordButton);
 		m_pButtonLayout->addWidget(m_pMuteButton);
 		m_pButtonLayout->addWidget(m_pSoloButton);
