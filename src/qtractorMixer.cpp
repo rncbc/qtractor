@@ -1417,10 +1417,15 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 	QMainWindow::setObjectName("qtractorMixer");
 
 	m_pInputRack  = new qtractorMixerRack(this, tr("Inputs"));
+	// QSS access qtractorMixerRack[Type="Inputs"]
+	m_pInputRack->setProperty("Type", "Inputs");
 	m_pTrackRack  = new qtractorMixerRack(this, tr("Tracks"));
+	// QSS access qtractorMixerRack[Type="Tracks"]
+	m_pTrackRack->setProperty("Type", "Tracks");
 	m_pTrackRack->setSelectEnabled(true);
 	m_pOutputRack = new qtractorMixerRack(this, tr("Outputs"));
-
+	// QSS access qtractorMixerRack[Type="Outputs"]
+	m_pOutputRack->setProperty("Type", "Outputs");
 	// Some specialties to this kind of dock window...
 	QMainWindow::setMinimumWidth(480);
 	QMainWindow::setMinimumHeight(320);
