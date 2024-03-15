@@ -84,26 +84,23 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	case qtractorTrack::Record:
 		QPushButton::setText("R");
 		QPushButton::setToolTip(tr("Record"));
-		QPushButton::setProperty("Type", "Record");
+		// QSS access qtractorTrackButton[TrackButtonType="Record"]
+		QPushButton::setProperty("TrackButtonType", "Record");
 		m_rgbOn = Qt::red;
-		// QSS access qtractorTrackButton[Type="Record"]
-		QPushButton::setProperty("Type", "Record");
 		break;
 	case qtractorTrack::Mute:
 		QPushButton::setText("M");
 		QPushButton::setToolTip(tr("Mute"));
-		QPushButton::setProperty("Type", "Mute");
+		// QSS access qtractorTrackButton[TrackButtonType="Mute"]
+		QPushButton::setProperty("TrackButtonType", "Mute");
 		m_rgbOn = Qt::yellow;
-		// QSS access qtractorTrackButton[Type="Mute"]
-		QPushButton::setProperty("Type", "Mute");
 		break;
 	case qtractorTrack::Solo:
 		QPushButton::setText("S");
 		QPushButton::setToolTip(tr("Solo"));
-		QPushButton::setProperty("Type", "Solo");
+		// QSS access qtractorTrackButton[TrackButtonType="Solo"]
+		QPushButton::setProperty("TrackButtonType", "Solo");
 		m_rgbOn = Qt::cyan;
-		// QSS access qtractorTrackButton[Type="Solo"]
-		QPushButton::setProperty("Type", "Solo");
 		break;
 	}
 
