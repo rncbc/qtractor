@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1415,8 +1415,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pSlider->setMinimumWidth(120);
 			m_pSlider->setMinimum(0);
 			m_pSlider->setMaximum(10000);
-			m_pSlider->setPageStep(1000);
-			m_pSlider->setSingleStep(100);
+			m_pSlider->setPageStep(250);
+			m_pSlider->setSingleStep(50);
 			m_pSlider->setSubject(m_pParam->subject());
 		//	m_pSlider->setValue(m_pSlider->scaleFromValue(m_pParam->value()));
 			if (m_pParam->isDisplay()) {
