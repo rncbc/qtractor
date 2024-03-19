@@ -14924,8 +14924,8 @@ Do you want to discard the changes?</source>
     </message>
     <message>
         <location filename="../qtractorTrackForm.ui" line="222"/>
-        <location filename="../qtractorTrackForm.ui" line="424"/>
-        <location filename="../qtractorTrackForm.ui" line="497"/>
+        <location filename="../qtractorTrackForm.ui" line="430"/>
+        <location filename="../qtractorTrackForm.ui" line="503"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -14935,173 +14935,173 @@ Do you want to discard the changes?</source>
         <translation>MIDI / Інструмент</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="246"/>
+        <location filename="../qtractorTrackForm.ui" line="351"/>
         <source>&amp;Program:</source>
         <translation>&amp;Програма:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="256"/>
+        <location filename="../qtractorTrackForm.ui" line="331"/>
         <source>&amp;Bank:</source>
         <translation>&amp;Банк:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="266"/>
+        <location filename="../qtractorTrackForm.ui" line="295"/>
         <source>Bank &amp;Select Method:</source>
         <translation>Спосіб ви&amp;бору банку:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="276"/>
+        <location filename="../qtractorTrackForm.ui" line="246"/>
         <source>MIDI Omni: Capture All Channels</source>
         <translation>MIDI Omni: захопити усі канали</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="279"/>
+        <location filename="../qtractorTrackForm.ui" line="249"/>
         <source>&amp;Omni</source>
         <translation>&amp;Усі</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="286"/>
+        <location filename="../qtractorTrackForm.ui" line="256"/>
         <source>&amp;Channel:</source>
         <translation>&amp;Канал:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="302"/>
+        <location filename="../qtractorTrackForm.ui" line="275"/>
         <source>MIDI Channel (1-16)</source>
         <translation>Канал MIDI (1-16)</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="315"/>
+        <location filename="../qtractorTrackForm.ui" line="288"/>
         <source>MIDI Patch: Instrument</source>
         <translation>MIDI-патч: інструмент</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="328"/>
+        <location filename="../qtractorTrackForm.ui" line="314"/>
         <source>MIDI Patch: Bank Select Method</source>
         <translation>MIDI-патч: спосіб вибору банку</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="335"/>
+        <location filename="../qtractorTrackForm.ui" line="321"/>
         <source>MIDI Patch: Drum Mode</source>
         <translation>MIDI-патч: режим ударних</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="338"/>
+        <location filename="../qtractorTrackForm.ui" line="324"/>
         <location filename="../qtractorTrackForm.cpp" line="190"/>
         <source>&amp;Drums</source>
         <translation>&amp;Ударні</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="345"/>
+        <location filename="../qtractorTrackForm.ui" line="341"/>
         <source>MIDI Patch: Bank</source>
         <translation>MIDI-патч: банк</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="355"/>
+        <location filename="../qtractorTrackForm.ui" line="361"/>
         <source>MIDI Patch: Program</source>
         <translation>MIDI-патч: програма</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="368"/>
+        <location filename="../qtractorTrackForm.ui" line="374"/>
         <source>View / Colors</source>
         <translation>Перегляд/Кольори</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="380"/>
+        <location filename="../qtractorTrackForm.ui" line="386"/>
         <source>&amp;Foreground:</source>
         <translation>П&amp;ередній план:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="396"/>
+        <location filename="../qtractorTrackForm.ui" line="402"/>
         <source>Foreground color</source>
         <translation>Колір переднього плану</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="421"/>
+        <location filename="../qtractorTrackForm.ui" line="427"/>
         <source>Select custom track foreground color</source>
         <translation>Вибрати нетиповий колір переднього плану доріжки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="450"/>
+        <location filename="../qtractorTrackForm.ui" line="456"/>
         <source>Bac&amp;kground:</source>
         <translation>&amp;Тло:</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="469"/>
+        <location filename="../qtractorTrackForm.ui" line="475"/>
         <source>Background color</source>
         <translation>Колір тла</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="494"/>
+        <location filename="../qtractorTrackForm.ui" line="500"/>
         <source>Select custom track background color</source>
         <translation>Вибрати нетиповий колір тла доріжки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="507"/>
+        <location filename="../qtractorTrackForm.ui" line="513"/>
         <source>Auto</source>
         <translation>Авто</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="521"/>
+        <location filename="../qtractorTrackForm.ui" line="527"/>
         <source>Plugins</source>
         <translation>Додатки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="530"/>
+        <location filename="../qtractorTrackForm.ui" line="536"/>
         <source>Track plugins</source>
         <translation>Додатки доріжок</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="545"/>
+        <location filename="../qtractorTrackForm.ui" line="551"/>
         <source>Add plugin</source>
         <translation>Додати додаток</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="548"/>
+        <location filename="../qtractorTrackForm.ui" line="554"/>
         <source>&amp;Add...</source>
         <translation>&amp;Додати…</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="567"/>
+        <location filename="../qtractorTrackForm.ui" line="573"/>
         <source>Remove plugin</source>
         <translation>Вилучити додаток</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="570"/>
+        <location filename="../qtractorTrackForm.ui" line="576"/>
         <source>&amp;Remove</source>
         <translation>Ви&amp;лучити</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="602"/>
+        <location filename="../qtractorTrackForm.ui" line="608"/>
         <source>Move plugin up</source>
         <translation>Пересунути додаток вище</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="605"/>
+        <location filename="../qtractorTrackForm.ui" line="611"/>
         <source>&amp;Up</source>
         <translation>&amp;Вище</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="624"/>
+        <location filename="../qtractorTrackForm.ui" line="630"/>
         <source>Move plugin down</source>
         <translation>Пересунути додаток нижче</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="627"/>
+        <location filename="../qtractorTrackForm.ui" line="633"/>
         <source>&amp;Down</source>
         <translation>&amp;Вниз</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="642"/>
+        <location filename="../qtractorTrackForm.ui" line="648"/>
         <source>Whether to enable plugin latency/delay compensation</source>
         <translation>Визначає, чи слід вмикати компенсацію латентності/затримки додатка</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="645"/>
+        <location filename="../qtractorTrackForm.ui" line="651"/>
         <source>&amp;Latency compensation</source>
         <translation>Компенсація &amp;латентності</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackForm.ui" line="676"/>
+        <location filename="../qtractorTrackForm.ui" line="682"/>
         <source>Current total latency</source>
         <translation>Поточна загальна латентність</translation>
     </message>
