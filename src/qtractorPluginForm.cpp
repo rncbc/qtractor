@@ -1358,7 +1358,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pTextEdit->setMinimumWidth(120);
 			m_pTextEdit->setMaximumHeight(60);
 			m_pTextEdit->installEventFilter(this);
-		//	m_pTextEdit->setPlainText(pProp->variant().toString());
+		//	m_pTextEdit->setPlainText(pProp->variant().toString().remove('\0'));
 			pGridLayout->addWidget(m_pTextEdit, 1, 0, 2, 3);
 		}
 		else
@@ -1369,7 +1369,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pComboBox = new QComboBox(/*this*/);
 			m_pComboBox->setEditable(false);
 			m_pComboBox->setMinimumWidth(120);
-		//	m_pComboBox->addItem(pProp->variant().toString());
+		//	m_pComboBox->addItem(pProp->variant().toString().remove('\0'));
 			pGridLayout->addWidget(m_pComboBox, 1, 0, 1, 2);
 			pGridLayout->setColumnStretch(0, 2);
 			m_pToolButton = new QToolButton(/*this*/);
@@ -1511,13 +1511,13 @@ void qtractorPluginParamWidget::refresh (void)
 		}
 		if (m_pTextEdit) {
 			const bool bTextEdit = m_pTextEdit->blockSignals(true);
-			m_pTextEdit->setPlainText(pProp->variant().toString());
+			m_pTextEdit->setPlainText(pProp->variant().toString().remove('\0'));
 			m_pTextEdit->document()->setModified(false);
 			m_pTextEdit->blockSignals(bTextEdit);
 		}
 		if (m_pComboBox) {
 			const bool bComboBox = m_pComboBox->blockSignals(true);
-			const QFileInfo fi(pProp->variant().toString());
+			const QFileInfo fi(pProp->variant().toString().remove('\0'));
 			const QString& sPath = fi.canonicalFilePath();
 			int iIndex = m_pComboBox->findData(sPath);
 			if (iIndex < 0) {
@@ -1649,7 +1649,7 @@ void qtractorPluginParamWidget::toolButtonClicked (void)
 	if (iIndex < 0)
 		return;
 
-	QString sFilename = m_pComboBox->itemData(iIndex).toString();
+	QString sFilename = m_pComboBox->itemData(iIndex).toString().remove('\0');
 
 	const QString& sTitle
 		= tr("Open File");
@@ -1675,6 +1675,7 @@ void qtractorPluginParamWidget::toolButtonClicked (void)
 		sFilename = fileDialog.selectedFiles().first();
 #endif
 	if (!sFilename.isEmpty()) {
+		const bool bComboBox = m_pComboBox->blockSignals(true);
 		const QFileInfo fi(sFilename);
 		const QString& sPath = fi.canonicalFilePath();
 		int iIndex = m_pComboBox->findData(sPath);
@@ -1684,6 +1685,7 @@ void qtractorPluginParamWidget::toolButtonClicked (void)
 		}
 		m_pComboBox->setCurrentIndex(iIndex);
 		m_pComboBox->setToolTip(sPath);
+		m_pComboBox->blockSignals(bComboBox);
 		propertyChanged();
 	}
 }
@@ -1713,7 +1715,7 @@ void qtractorPluginParamWidget::propertyChanged (void)
 	if (m_pComboBox) {
 		const int iIndex = m_pComboBox->currentIndex();
 		if (iIndex >= 0)
-			value = m_pComboBox->itemData(iIndex).toString();
+			value = m_pComboBox->itemData(iIndex).toString().remove('\0');
 	}
 
 	if (!value.isValid())
