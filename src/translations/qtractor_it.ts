@@ -2471,68 +2471,58 @@ Sei sicuro?</translation>
     </message>
     <message>
         <location filename="../qtractorInstrumentForm.ui" line="204"/>
-        <source>Reload all instrument files</source>
-        <translation>Ricarica tutti i file di strumenti</translation>
-    </message>
-    <message>
-        <location filename="../qtractorInstrumentForm.ui" line="207"/>
-        <source>Relo&amp;ad</source>
-        <translation>Ric&amp;arica</translation>
-    </message>
-    <message>
-        <location filename="../qtractorInstrumentForm.ui" line="217"/>
         <source>Export to instrument file</source>
         <translation>Esporta su file strumenti</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.ui" line="220"/>
+        <location filename="../qtractorInstrumentForm.ui" line="207"/>
         <source>E&amp;xport...</source>
         <translation>&amp;Esporta...</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.ui" line="230"/>
+        <location filename="../qtractorInstrumentForm.ui" line="217"/>
         <source>Close this dialog</source>
         <translation>Chiudi questa finestra</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.ui" line="233"/>
+        <location filename="../qtractorInstrumentForm.ui" line="220"/>
         <source>Close</source>
         <translation>Chiudi</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="221"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="218"/>
         <source>Import Instrument Files</source>
         <translation>Importa file strumenti</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="224"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="221"/>
         <source>Instrument files (*.%1 *.sf2 *.sf3 *.midnam)</source>
         <translation>File strumenti (*.%1 *.sf2 *.sf3 *.midnam)</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="225"/>
-        <location filename="../qtractorInstrumentForm.cpp" line="391"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="222"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="388"/>
         <source>All files (*.*)</source>
         <translation type="unfinished">Tutti i file (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="387"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="384"/>
         <source>Export Instrument File</source>
         <translation>Esporta file strumenti</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="390"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="387"/>
         <source>Instrument files (*.%1)</source>
         <translation>File strumenti (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="432"/>
-        <location filename="../qtractorInstrumentForm.cpp" line="474"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="429"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="471"/>
         <source>Warning</source>
         <translation>Attenzione</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="433"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="430"/>
         <source>The instrument file already exists:
 
 &quot;%1&quot;
@@ -2545,7 +2535,7 @@ Do you want to replace it?</source>
 Vuoi sostituirlo?</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="475"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="472"/>
         <source>Instrument settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -2554,92 +2544,92 @@ Do you want to apply the changes?</source>
 Vuoi applicare le modifiche?</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="559"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="555"/>
         <source>Patch Names for Banks</source>
         <translation>Nome della patch per i banchi</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="601"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="597"/>
         <source>Controller Names = %1</source>
         <translation>Nomi dei controller = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="609"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="605"/>
         <source>RPN Names = %1</source>
         <translation>Nomi degli RPN = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="617"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="613"/>
         <source>NRPN Names = %1</source>
         <translation>Nomi degli NRPN = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="624"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="620"/>
         <source>Bank Select Method = %1</source>
         <translation>Metodo di selezione del banco = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="637"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="633"/>
         <source>Patch Names</source>
         <translation>Nomi Patch</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="643"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="639"/>
         <source>Note Names</source>
         <translation>Nomi Note</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="649"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="645"/>
         <source>Controller Names</source>
         <translation>Nomi Controller</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="655"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="651"/>
         <source>RPN Names</source>
         <translation>Nomi RPN</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="661"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="657"/>
         <source>NRPN Names</source>
         <translation>Nomi NRPN</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="667"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="663"/>
         <source>Bank Select Methods</source>
         <translation>Metodi di selezione del banco</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="674"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="670"/>
         <source>%1 = %2</source>
         <translation>%1 = %2</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="711"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="707"/>
         <source>Based On = %1</source>
         <translation>Basato su = %1</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="747"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="743"/>
         <source>Normal</source>
         <translation>Normale</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="748"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="744"/>
         <source>Bank MSB</source>
         <translation>MSB Banco</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="749"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="745"/>
         <source>Bank LSB</source>
         <translation>LSB Banco</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="750"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="746"/>
         <source>Patch</source>
         <translation>Patch</translation>
     </message>
     <message>
-        <location filename="../qtractorInstrumentForm.cpp" line="751"/>
+        <location filename="../qtractorInstrumentForm.cpp" line="747"/>
         <source>Unknown</source>
         <translation>Sconosciuto</translation>
     </message>
