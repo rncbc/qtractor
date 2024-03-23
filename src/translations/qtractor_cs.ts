@@ -611,7 +611,6 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="430"/>
-        <location filename="../qtractorTrack.cpp" line="687"/>
         <source>%1 Monitor</source>
         <translation>%1 Sledovat</translation>
     </message>
@@ -689,31 +688,14 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Nastavit ovladač znovu</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="688"/>
-        <source>%1 Record</source>
-        <translation>%1 Nahrát</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrack.cpp" line="689"/>
-        <source>%1 Mute</source>
-        <translation>%1 Ztlumit</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrack.cpp" line="690"/>
-        <source>%1 Solo</source>
-        <translation>%1 Sólo</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiEngine.cpp" line="4326"/>
         <location filename="../qtractorMidiEngine.cpp" line="4335"/>
-        <location filename="../qtractorTrack.cpp" line="695"/>
         <source>%1 Volume</source>
         <translation>%1 Hlasitost</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2960"/>
         <location filename="../qtractorAudioEngine.cpp" line="2969"/>
-        <location filename="../qtractorTrack.cpp" line="698"/>
         <source>%1 Gain</source>
         <translation>%1 Zesílení</translation>
     </message>
@@ -722,7 +704,6 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorAudioEngine.cpp" line="2971"/>
         <location filename="../qtractorMidiEngine.cpp" line="4328"/>
         <location filename="../qtractorMidiEngine.cpp" line="4337"/>
-        <location filename="../qtractorTrack.cpp" line="701"/>
         <source>%1 Pan</source>
         <translation>%1 Vyvážení (Pan)</translation>
     </message>
@@ -906,9 +887,44 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Kategorie: </translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1226"/>
+        <location filename="../qtractorPluginForm.cpp" line="1228"/>
         <source>Aux Send: %1</source>
         <translation>Aux Send: %1</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrack.cpp" line="685"/>
+        <source>Monitor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrack.cpp" line="686"/>
+        <source>Record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrack.cpp" line="687"/>
+        <source>Mute</source>
+        <translation type="unfinished">Ztlumit</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrack.cpp" line="688"/>
+        <source>Solo</source>
+        <translation type="unfinished">Sólo</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrack.cpp" line="692"/>
+        <source>Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrack.cpp" line="694"/>
+        <source>Gain</source>
+        <translation type="unfinished">Zesílení</translation>
+    </message>
+    <message>
+        <location filename="../qtractorTrack.cpp" line="696"/>
+        <source>Panning</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -968,8 +984,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="698"/>
-        <source>Pan: %1</source>
-        <translation>Vyvážení (Pan): %1</translation>
+        <source>Panning: %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="707"/>
@@ -10835,19 +10851,14 @@ Chcete uložit změny?</translation>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="599"/>
-        <source>Volume (%)</source>
-        <translation>Hlasitost (%)</translation>
-    </message>
-    <message>
         <location filename="../qtractorMidiMeter.cpp" line="600"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="681"/>
-        <source>Pan: %1</source>
-        <translation>Vyvážení (Pan): %1</translation>
+        <source>Panning: %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="691"/>
@@ -11652,13 +11663,8 @@ P &lt; 0 : zpomalení posunu.
     <name>qtractorMixerMeter</name>
     <message>
         <location filename="../qtractorMeter.cpp" line="321"/>
-        <source>Pan</source>
-        <translation>Vyvážení</translation>
-    </message>
-    <message>
-        <location filename="../qtractorMeter.cpp" line="333"/>
-        <source>Gain</source>
-        <translation>Zesílení</translation>
+        <source>Panning</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13423,66 +13429,66 @@ Chcete použít tyto změny?</translation>
 <context>
     <name>qtractorPluginForm</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="240"/>
+        <location filename="../qtractorPluginForm.cpp" line="242"/>
         <source>Page %1</source>
         <translation>Strana %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="356"/>
+        <location filename="../qtractorPluginForm.cpp" line="358"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation>%1 [%2], %3 instance, %4 kanál(y).</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="484"/>
-        <location filename="../qtractorPluginForm.cpp" line="515"/>
+        <location filename="../qtractorPluginForm.cpp" line="486"/>
+        <location filename="../qtractorPluginForm.cpp" line="517"/>
         <source>(none)</source>
         <translation>(Žádné)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="621"/>
+        <location filename="../qtractorPluginForm.cpp" line="623"/>
         <source>Open Preset</source>
         <translation>Otevřít přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="624"/>
-        <location filename="../qtractorPluginForm.cpp" line="723"/>
+        <location filename="../qtractorPluginForm.cpp" line="626"/>
+        <location filename="../qtractorPluginForm.cpp" line="725"/>
         <source>Preset files (*.%1)</source>
         <translation>Soubory s přednastaveními (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="625"/>
-        <location filename="../qtractorPluginForm.cpp" line="724"/>
+        <location filename="../qtractorPluginForm.cpp" line="627"/>
+        <location filename="../qtractorPluginForm.cpp" line="726"/>
         <source>All files (*.*)</source>
         <translation>Všechny soubory (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="666"/>
-        <location filename="../qtractorPluginForm.cpp" line="768"/>
+        <location filename="../qtractorPluginForm.cpp" line="668"/>
+        <location filename="../qtractorPluginForm.cpp" line="770"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1210"/>
+        <location filename="../qtractorPluginForm.cpp" line="1212"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>Prodleva: %1 ms (%2 snímků)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1214"/>
+        <location filename="../qtractorPluginForm.cpp" line="1216"/>
         <source>(no latency)</source>
         <translation>(bez prodlevy)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="991"/>
+        <location filename="../qtractorPluginForm.cpp" line="993"/>
         <source>&amp;None</source>
         <translation>&amp;Žádné</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="721"/>
+        <location filename="../qtractorPluginForm.cpp" line="723"/>
         <source>Save Preset</source>
         <translation>Uložit přednastavení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="667"/>
+        <location filename="../qtractorPluginForm.cpp" line="669"/>
         <source>Preset could not be loaded from file:
 
 &quot;%1&quot;.
@@ -13495,7 +13501,7 @@ Sorry.</source>
 Promiňte.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="769"/>
+        <location filename="../qtractorPluginForm.cpp" line="771"/>
         <source>Preset could not be saved to file:
 
 &quot;%1&quot;.
@@ -13508,12 +13514,12 @@ Sorry.</source>
 Promiňte.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="801"/>
+        <location filename="../qtractorPluginForm.cpp" line="803"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="802"/>
+        <location filename="../qtractorPluginForm.cpp" line="804"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -13556,59 +13562,54 @@ Jste si jistý?</translation>
         <translation>upravit</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="177"/>
+        <location filename="../qtractorPluginForm.ui" line="174"/>
         <source>About</source>
         <translation>O</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="255"/>
+        <location filename="../qtractorPluginForm.ui" line="252"/>
         <source>Outputs (Sends)</source>
         <translation>Výstupy (Poslání)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="258"/>
+        <location filename="../qtractorPluginForm.ui" line="255"/>
         <source>Sends</source>
         <translation>Poslání</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="271"/>
+        <location filename="../qtractorPluginForm.ui" line="268"/>
         <source>Inputs (Returns)</source>
         <translation>Vstupy (Navrácení)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="274"/>
+        <location filename="../qtractorPluginForm.ui" line="271"/>
         <source>Returns</source>
         <translation>Navrácení</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="284"/>
+        <location filename="../qtractorPluginForm.ui" line="281"/>
         <source>Aux Send Bus:</source>
         <translation>Sběrnice aux-send:</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="309"/>
+        <location filename="../qtractorPluginForm.ui" line="306"/>
         <source>Manage buses</source>
         <translation>Spravovat sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="312"/>
+        <location filename="../qtractorPluginForm.ui" line="309"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="350"/>
+        <location filename="../qtractorPluginForm.ui" line="347"/>
         <source>Direct Access Parameter</source>
         <translation>Parametr pro přímý přístup</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="353"/>
+        <location filename="../qtractorPluginForm.ui" line="350"/>
         <source>Direct Access</source>
         <translation>Přímý přístup</translation>
-    </message>
-    <message>
-        <location filename="../qtractorPluginForm.ui" line="155"/>
-        <source>Activate plugin</source>
-        <translation>Zapnout přídavný modul</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="33"/>
@@ -13616,7 +13617,7 @@ Jste si jistý?</translation>
         <translation>Vlastnosti přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="158"/>
+        <location filename="../qtractorPluginForm.ui" line="155"/>
         <source>Active</source>
         <translation>Aktivní</translation>
     </message>
@@ -13831,7 +13832,7 @@ Jste si jistý?</translation>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1655"/>
+        <location filename="../qtractorPluginForm.cpp" line="1657"/>
         <source>Open File</source>
         <translation>Otevřít soubor</translation>
     </message>
@@ -14827,24 +14828,6 @@ Chcete zahodit tyto změny?</translation>
         <location filename="../qtractorSpinBox.cpp" line="437"/>
         <source>&amp;BBT</source>
         <translation>&amp;TDT</translation>
-    </message>
-</context>
-<context>
-    <name>qtractorTrackButton</name>
-    <message>
-        <location filename="../qtractorTrackButton.cpp" line="86"/>
-        <source>Record</source>
-        <translation>Nahrát</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrackButton.cpp" line="91"/>
-        <source>Mute</source>
-        <translation>Ztlumit</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrackButton.cpp" line="96"/>
-        <source>Solo</source>
-        <translation>Sólo</translation>
     </message>
 </context>
 <context>

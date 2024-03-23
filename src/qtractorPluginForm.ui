@@ -151,9 +151,6 @@
        <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
        </property>
-       <property name="toolTip">
-        <string>Activate plugin</string>
-       </property>
        <property name="text">
         <string>Active</string>
        </property>

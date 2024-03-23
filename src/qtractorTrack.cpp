@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -682,26 +682,21 @@ void qtractorTrack::setTrackName ( const QString& sTrackName )
 
 void qtractorTrack::updateTrackName (void)
 {
-	const QString& sTrackName = m_props.trackName;
-
-	m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(sTrackName));
-	m_pRecordSubject->setName(QObject::tr("%1 Record").arg(sTrackName));
-	m_pMuteSubject->setName(QObject::tr("%1 Mute").arg(sTrackName));
-	m_pSoloSubject->setName(QObject::tr("%1 Solo").arg(sTrackName));
+	m_pMonitorSubject->setName(QObject::tr("Monitor"));
+	m_pRecordSubject->setName(QObject::tr("Record"));
+	m_pMuteSubject->setName(QObject::tr("Mute"));
+	m_pSoloSubject->setName(QObject::tr("Solo"));
 
 	if (m_pMonitor) {
 		if (m_props.trackType == qtractorTrack::Midi) {
-			m_pMonitor->gainSubject()->setName(
-				QObject::tr("%1 Volume").arg(sTrackName));
+			m_pMonitor->gainSubject()->setName(QObject::tr("Volume"));
 		} else {
-			m_pMonitor->gainSubject()->setName(
-				QObject::tr("%1 Gain").arg(sTrackName));
+			m_pMonitor->gainSubject()->setName(QObject::tr("Gain"));
 		}
-		m_pMonitor->panningSubject()->setName(
-			QObject::tr("%1 Pan").arg(sTrackName));
+		m_pMonitor->panningSubject()->setName(QObject::tr("Panning"));
 	}
 
-	m_pPluginList->setName(sTrackName);
+	m_pPluginList->setName(m_props.trackName);
 }
 
 

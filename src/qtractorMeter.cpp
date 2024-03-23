@@ -318,7 +318,7 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 	m_pPanSpinBox->setSingleStep(0.1f);
 	m_pPanSpinBox->setAlignment(Qt::AlignHCenter);
 	m_pPanSpinBox->setAccelerated(true);
-	m_pPanSpinBox->setToolTip(tr("Pan"));
+	m_pPanSpinBox->setToolTip(tr("Panning"));
 
 	m_pGainSlider->setTickPosition(QSlider::NoTicks);
 	m_pGainSlider->setMinimum(0);
@@ -330,7 +330,7 @@ qtractorMixerMeter::qtractorMixerMeter ( QWidget *pParent )
 //	m_pGainSpinBox->setSingleStep(0.1f);
 	m_pGainSpinBox->setAlignment(Qt::AlignHCenter);
 	m_pGainSpinBox->setAccelerated(true);
-	m_pGainSpinBox->setToolTip(tr("Gain"));
+//	m_pGainSpinBox->setToolTip(tr("Gain"));
 
 	QWidget::setMinimumHeight(160);
 //	QWidget::setMaximumHeight(480);
