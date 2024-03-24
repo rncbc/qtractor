@@ -611,6 +611,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="430"/>
+        <location filename="../qtractorTrack.cpp" line="687"/>
         <source>%1 Monitor</source>
         <translation>%1 Sledovat</translation>
     </message>
@@ -690,12 +691,14 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="4326"/>
         <location filename="../qtractorMidiEngine.cpp" line="4335"/>
+        <location filename="../qtractorTrack.cpp" line="695"/>
         <source>%1 Volume</source>
         <translation>%1 Hlasitost</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2960"/>
         <location filename="../qtractorAudioEngine.cpp" line="2969"/>
+        <location filename="../qtractorTrack.cpp" line="698"/>
         <source>%1 Gain</source>
         <translation>%1 Zesílení</translation>
     </message>
@@ -704,6 +707,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorAudioEngine.cpp" line="2971"/>
         <location filename="../qtractorMidiEngine.cpp" line="4328"/>
         <location filename="../qtractorMidiEngine.cpp" line="4337"/>
+        <location filename="../qtractorTrack.cpp" line="701"/>
         <source>%1 Pan</source>
         <translation>%1 Vyvážení (Pan)</translation>
     </message>
@@ -892,38 +896,18 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Aux Send: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="685"/>
-        <source>Monitor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrack.cpp" line="686"/>
-        <source>Record</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrack.cpp" line="687"/>
-        <source>Mute</source>
-        <translation type="unfinished">Ztlumit</translation>
-    </message>
-    <message>
         <location filename="../qtractorTrack.cpp" line="688"/>
-        <source>Solo</source>
-        <translation type="unfinished">Sólo</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrack.cpp" line="692"/>
-        <source>Volume</source>
+        <source>%1 Record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="694"/>
-        <source>Gain</source>
-        <translation type="unfinished">Zesílení</translation>
+        <location filename="../qtractorTrack.cpp" line="689"/>
+        <source>%1 Mute</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="696"/>
-        <source>Panning</source>
+        <location filename="../qtractorTrack.cpp" line="690"/>
+        <source>%1 Solo</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -984,7 +968,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="698"/>
-        <source>Panning: %1</source>
+        <source>Pan: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10851,13 +10835,18 @@ Chcete uložit změny?</translation>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
+        <location filename="../qtractorMidiMeter.cpp" line="599"/>
+        <source>Volume (%)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMidiMeter.cpp" line="600"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="681"/>
-        <source>Panning: %1</source>
+        <source>Pan: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11663,7 +11652,7 @@ P &lt; 0 : zpomalení posunu.
     <name>qtractorMixerMeter</name>
     <message>
         <location filename="../qtractorMeter.cpp" line="321"/>
-        <source>Panning</source>
+        <source>Pan</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

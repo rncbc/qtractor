@@ -596,7 +596,7 @@ qtractorMidiMixerMeter::qtractorMidiMixerMeter (
 
 	gainSpinBox()->setMinimum(0.0f);
 	gainSpinBox()->setMaximum(100.0f);
-//	gainSpinBox()->setToolTip(tr("Volume (%)"));
+	gainSpinBox()->setToolTip(tr("Volume (%)"));
 	gainSpinBox()->setSuffix(tr(" %"));
 
 	reset();
@@ -678,7 +678,7 @@ void qtractorMidiMixerMeter::updatePanning (void)
 //	setPanning(m_pMidiMonitor->panning());
 
 	panSlider()->setToolTip(
-		tr("Panning: %1").arg(panning(), 0, 'g', 1));
+		tr("Pan: %1").arg(panning(), 0, 'g', 1));
 }
 
 

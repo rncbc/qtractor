@@ -682,21 +682,26 @@ void qtractorTrack::setTrackName ( const QString& sTrackName )
 
 void qtractorTrack::updateTrackName (void)
 {
-	m_pMonitorSubject->setName(QObject::tr("Monitor"));
-	m_pRecordSubject->setName(QObject::tr("Record"));
-	m_pMuteSubject->setName(QObject::tr("Mute"));
-	m_pSoloSubject->setName(QObject::tr("Solo"));
+	const QString& sTrackName = m_props.trackName;
+
+	m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(sTrackName));
+	m_pRecordSubject->setName(QObject::tr("%1 Record").arg(sTrackName));
+	m_pMuteSubject->setName(QObject::tr("%1 Mute").arg(sTrackName));
+	m_pSoloSubject->setName(QObject::tr("%1 Solo").arg(sTrackName));
 
 	if (m_pMonitor) {
 		if (m_props.trackType == qtractorTrack::Midi) {
-			m_pMonitor->gainSubject()->setName(QObject::tr("Volume"));
+			m_pMonitor->gainSubject()->setName(
+				QObject::tr("%1 Volume").arg(sTrackName));
 		} else {
-			m_pMonitor->gainSubject()->setName(QObject::tr("Gain"));
+			m_pMonitor->gainSubject()->setName(
+				QObject::tr("%1 Gain").arg(sTrackName));
 		}
-		m_pMonitor->panningSubject()->setName(QObject::tr("Panning"));
+		m_pMonitor->panningSubject()->setName(
+			QObject::tr("%1 Pan").arg(sTrackName));
 	}
 
-	m_pPluginList->setName(m_props.trackName);
+	m_pPluginList->setName(sTrackName);
 }
 
 

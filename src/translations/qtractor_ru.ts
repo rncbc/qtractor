@@ -586,6 +586,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     </message>
     <message>
         <location filename="../qtractorEngine.cpp" line="430"/>
+        <location filename="../qtractorTrack.cpp" line="687"/>
         <source>%1 Monitor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -686,12 +687,14 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorMidiEngine.cpp" line="4326"/>
         <location filename="../qtractorMidiEngine.cpp" line="4335"/>
+        <location filename="../qtractorTrack.cpp" line="695"/>
         <source>%1 Volume</source>
         <translation>Громкость %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2960"/>
         <location filename="../qtractorAudioEngine.cpp" line="2969"/>
+        <location filename="../qtractorTrack.cpp" line="698"/>
         <source>%1 Gain</source>
         <translation type="unfinished"></translation>
     </message>
@@ -700,6 +703,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <location filename="../qtractorAudioEngine.cpp" line="2971"/>
         <location filename="../qtractorMidiEngine.cpp" line="4328"/>
         <location filename="../qtractorMidiEngine.cpp" line="4337"/>
+        <location filename="../qtractorTrack.cpp" line="701"/>
         <source>%1 Pan</source>
         <translation type="unfinished"></translation>
     </message>
@@ -888,38 +892,18 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="685"/>
-        <source>Monitor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrack.cpp" line="686"/>
-        <source>Record</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrack.cpp" line="687"/>
-        <source>Mute</source>
-        <translation type="unfinished">Приглушить</translation>
-    </message>
-    <message>
         <location filename="../qtractorTrack.cpp" line="688"/>
-        <source>Solo</source>
-        <translation type="unfinished">Сделать солирующей</translation>
-    </message>
-    <message>
-        <location filename="../qtractorTrack.cpp" line="692"/>
-        <source>Volume</source>
+        <source>%1 Record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="694"/>
-        <source>Gain</source>
-        <translation type="unfinished">Усил.</translation>
+        <location filename="../qtractorTrack.cpp" line="689"/>
+        <source>%1 Mute</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrack.cpp" line="696"/>
-        <source>Panning</source>
+        <location filename="../qtractorTrack.cpp" line="690"/>
+        <source>%1 Solo</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -980,7 +964,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="698"/>
-        <source>Panning: %1</source>
+        <source>Pan: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10784,13 +10768,18 @@ Do you want to save the changes?</source>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
+        <location filename="../qtractorMidiMeter.cpp" line="599"/>
+        <source>Volume (%)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../qtractorMidiMeter.cpp" line="600"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="681"/>
-        <source>Panning: %1</source>
+        <source>Pan: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11575,7 +11564,7 @@ Edit head/tail (blue) markers define the shift range.</source>
     <name>qtractorMixerMeter</name>
     <message>
         <location filename="../qtractorMeter.cpp" line="321"/>
-        <source>Panning</source>
+        <source>Pan</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
