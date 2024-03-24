@@ -1,7 +1,7 @@
 // qtractorMidiControlCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2010-2024, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2019, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,6 +27,10 @@
 #include "qtractorMidiControl.h"
 
 
+// Forward declarations...
+class qtractorMidiControlObserver;
+
+
 //----------------------------------------------------------------------
 // class qtractorMidiControlObserverCommand - declaration.
 //
@@ -37,8 +41,7 @@ public:
 
 	// Constructor.
 	qtractorMidiControlObserverCommand(const QString& sName,
-		qtractorMidiControlObserver *pMidiObserver,
-		QWidget *pMidiObserverWidget = nullptr);
+		qtractorMidiControlObserver *pMidiObserver = nullptr);
 
 protected:
 
@@ -50,8 +53,6 @@ private:
 
 	// Instance variables.
 	qtractorMidiControlObserver *m_pMidiObserver;
-
-	QWidget *m_pMidiObserverWidget;
 };
 
 
@@ -64,12 +65,9 @@ class qtractorMidiControlObserverMapCommand : public qtractorMidiControlObserver
 public:
 
 	// Constructor.
-	qtractorMidiControlObserverMapCommand(
-		qtractorMidiControlObserver *pMidiObserver,
-		QWidget *pMidiObserverWidget = nullptr)
+	qtractorMidiControlObserverMapCommand(qtractorMidiControlObserver *pMidiObserver)
 		: qtractorMidiControlObserverCommand(
-			QObject::tr("set controller"),
-			pMidiObserver, pMidiObserverWidget) {}
+			QObject::tr("set controller"), pMidiObserver) {}
 
 	// MIDI control observer command methods.
 	bool redo() { return mapMidiObserver(); }
@@ -86,12 +84,9 @@ class qtractorMidiControlObserverUnmapCommand : public qtractorMidiControlObserv
 public:
 
 	// Constructor.
-	qtractorMidiControlObserverUnmapCommand(
-		qtractorMidiControlObserver *pMidiObserver,
-		QWidget *pMidiObserverWidget = nullptr)
+	qtractorMidiControlObserverUnmapCommand(qtractorMidiControlObserver *pMidiObserver)
 		: qtractorMidiControlObserverCommand(
-			QObject::tr("reset controller"),
-			pMidiObserver, pMidiObserverWidget) {}
+			QObject::tr("reset controller"), pMidiObserver) {}
 
 	// MIDI control observer command methods.
 	bool redo() { return unmapMidiObserver(); }

@@ -6,9 +6,6 @@ ChangeLog
 
 GIT HEAD
 
-- MIDI Controller mappings are now shown on floating tool-tips.
-  (EXPERIMENTAL)
-
 - Custom color themes are now file based (*.conf); legacy still
   preserved ntl. (EXPERIMENTAL)
 

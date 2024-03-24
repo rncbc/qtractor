@@ -70,11 +70,8 @@ qtractorMidiControlObserver::qtractorMidiControlObserver (
 qtractorMidiControlObserver::~qtractorMidiControlObserver (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
-	if (pMidiControl) {
-		pMidiControl->unmapMidiObserverWidget(this, false);
-		if (pMidiControl->isMidiObserverMapped(this))
-			pMidiControl->unmapMidiObserver(this);
-	}
+	if (pMidiControl && pMidiControl->isMidiObserverMapped(this))
+		pMidiControl->unmapMidiObserver(this);
 }
 
 
@@ -82,6 +79,7 @@ qtractorMidiControlObserver::~qtractorMidiControlObserver (void)
 unsigned short qtractorMidiControlObserver::midiScale (void) const
 {
 	if (m_ctype == qtractorMidiEvent::PITCHBEND ||
+
 		m_ctype == qtractorMidiEvent::CONTROL14 ||
 		m_ctype == qtractorMidiEvent::REGPARAM  ||
 		m_ctype == qtractorMidiEvent::NONREGPARAM)

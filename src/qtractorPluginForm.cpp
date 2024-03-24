@@ -190,6 +190,8 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	qtractorSubject::flushQueue(true);
 
 	// Set activate button MIDI controller observer...
+	m_ui.ActivateToolButton->setToolTip(
+		m_pPlugin->activateSubject()->name());
 	addMidiControlAction(
 		m_ui.ActivateToolButton,
 		m_pPlugin->activateObserver());
@@ -1478,6 +1480,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	}
 
 	updateCurveButton();
+
+	QWidget::setToolTip(m_pParam->subject()->name());
 }
 
 
