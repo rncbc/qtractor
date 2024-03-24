@@ -168,7 +168,6 @@ void qtractorTrackButton::updateTrack (void)
 	}
 
 	if (pMidiObserver) {
-		QPushButton::setToolTip(pMidiObserver->subject()->name());
 		pMidiObserver->setCurveList(m_pTrack->curveList());
 		addMidiControlAction(pMidiObserver);
 	}

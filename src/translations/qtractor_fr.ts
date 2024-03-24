@@ -352,12 +352,12 @@ MIDI:	</translation>
         <translation> (%1% vol)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlCommand.h" line="70"/>
+        <location filename="../qtractorMidiControlCommand.h" line="71"/>
         <source>set controller</source>
         <translation>active le contrôleur</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlCommand.h" line="89"/>
+        <location filename="../qtractorMidiControlCommand.h" line="93"/>
         <source>reset controller</source>
         <translation>réinitialise le contrôleur</translation>
     </message>
@@ -890,7 +890,7 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
         <translation>Catégories : </translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1228"/>
+        <location filename="../qtractorPluginForm.cpp" line="1226"/>
         <source>Aux Send: %1</source>
         <translation>Envoi aux : %1</translation>
     </message>
@@ -907,6 +907,11 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorTrack.cpp" line="690"/>
         <source>%1 Solo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiControl.cpp" line="592"/>
+        <source>MIDI Controller: %1, %2, %3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6602,82 +6607,82 @@ est près et en fonctionnement puis redémarrez la session.</translation>
 <context>
     <name>qtractorMidiControl</name>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="916"/>
+        <location filename="../qtractorMidiControl.cpp" line="953"/>
         <source>Note On</source>
         <translation>Note On</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="917"/>
+        <location filename="../qtractorMidiControl.cpp" line="954"/>
         <source>Note Off</source>
         <translation>Note Off</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="918"/>
+        <location filename="../qtractorMidiControl.cpp" line="955"/>
         <source>Key Press</source>
         <translation>Key Press</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="919"/>
+        <location filename="../qtractorMidiControl.cpp" line="956"/>
         <source>Controller</source>
         <translation>Contrôleur</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="920"/>
+        <location filename="../qtractorMidiControl.cpp" line="957"/>
         <source>Pgm Change</source>
         <translation>Pgm Change</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="921"/>
+        <location filename="../qtractorMidiControl.cpp" line="958"/>
         <source>Chan Press</source>
         <translation>Chan Press</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="922"/>
+        <location filename="../qtractorMidiControl.cpp" line="959"/>
         <source>Pitch Bend</source>
         <translation>Pitch Bend</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="923"/>
+        <location filename="../qtractorMidiControl.cpp" line="960"/>
         <source>RPN</source>
         <translation>RPN</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="924"/>
+        <location filename="../qtractorMidiControl.cpp" line="961"/>
         <source>NRPN</source>
         <translation>NRPN</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="925"/>
+        <location filename="../qtractorMidiControl.cpp" line="962"/>
         <source>Control 14</source>
         <translation>Control 14</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1002"/>
+        <location filename="../qtractorMidiControl.cpp" line="1039"/>
         <source>Track Gain</source>
         <translation>Gain de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1003"/>
+        <location filename="../qtractorMidiControl.cpp" line="1040"/>
         <source>Track Panning</source>
         <translation>Panoramique de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1004"/>
+        <location filename="../qtractorMidiControl.cpp" line="1041"/>
         <source>Track Monitor</source>
         <translation>Moniteur de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1005"/>
+        <location filename="../qtractorMidiControl.cpp" line="1042"/>
         <source>Track Record</source>
         <translation>Enregistrement de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1006"/>
+        <location filename="../qtractorMidiControl.cpp" line="1043"/>
         <source>Track Mute</source>
         <translation>Silencage de piste</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1007"/>
+        <location filename="../qtractorMidiControl.cpp" line="1044"/>
         <source>Track Solo</source>
         <translation>Mise en solo de piste</translation>
     </message>
@@ -7113,12 +7118,12 @@ Voulez-vous mettre à jour les fichiers contrôleur ?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlObserverForm.ui" line="34"/>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="190"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="192"/>
         <source>MIDI Controller</source>
         <translation>Contrôleur MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="367"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="383"/>
         <source>MIDI controller is already assigned.
 
 Do you want to replace the mapping?</source>
@@ -7127,7 +7132,7 @@ Do you want to replace the mapping?</source>
 Voulez-vous remplacer l&apos;association ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="412"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="430"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -7136,32 +7141,32 @@ Do you want to apply the changes?</source>
 Voulez-vous appliquer les changements ?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="550"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="573"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Contrôleur &amp;MIDI...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="655"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="681"/>
         <source>&amp;Automation</source>
         <translation>&amp;Automation</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="669"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="695"/>
         <source>&amp;Lock</source>
         <translation>Verroui&amp;ller</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="687"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="713"/>
         <source>&amp;Play</source>
         <translation>&amp;Jouer</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="703"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="729"/>
         <source>&amp;Record</source>
         <translation>En&amp;registrer</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="713"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="739"/>
         <source>&amp;Clear</source>
         <translation>&amp;Nettoyer</translation>
     </message>
@@ -13507,46 +13512,46 @@ Voulez-vous appliquer les changements ?</translation>
         <translation>Accès direct</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="242"/>
+        <location filename="../qtractorPluginForm.cpp" line="240"/>
         <source>Page %1</source>
         <translation>Page %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="358"/>
+        <location filename="../qtractorPluginForm.cpp" line="356"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation>%1 [%2], %3 instance(s), %4 canaux.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="486"/>
-        <location filename="../qtractorPluginForm.cpp" line="517"/>
+        <location filename="../qtractorPluginForm.cpp" line="484"/>
+        <location filename="../qtractorPluginForm.cpp" line="515"/>
         <source>(none)</source>
         <translation>(rien)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="623"/>
+        <location filename="../qtractorPluginForm.cpp" line="621"/>
         <source>Open Preset</source>
         <translation>Ouvrir le préréglage</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="626"/>
-        <location filename="../qtractorPluginForm.cpp" line="725"/>
+        <location filename="../qtractorPluginForm.cpp" line="624"/>
+        <location filename="../qtractorPluginForm.cpp" line="723"/>
         <source>Preset files (*.%1)</source>
         <translation>Fichiers de préréglages (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="627"/>
-        <location filename="../qtractorPluginForm.cpp" line="726"/>
+        <location filename="../qtractorPluginForm.cpp" line="625"/>
+        <location filename="../qtractorPluginForm.cpp" line="724"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="668"/>
-        <location filename="../qtractorPluginForm.cpp" line="770"/>
+        <location filename="../qtractorPluginForm.cpp" line="666"/>
+        <location filename="../qtractorPluginForm.cpp" line="768"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="669"/>
+        <location filename="../qtractorPluginForm.cpp" line="667"/>
         <source>Preset could not be loaded from file:
 
 &quot;%1&quot;.
@@ -13559,12 +13564,12 @@ Sorry.</source>
 Désolé.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="723"/>
+        <location filename="../qtractorPluginForm.cpp" line="721"/>
         <source>Save Preset</source>
         <translation>Sauvegarder le préréglage</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="771"/>
+        <location filename="../qtractorPluginForm.cpp" line="769"/>
         <source>Preset could not be saved to file:
 
 &quot;%1&quot;.
@@ -13577,12 +13582,12 @@ Sorry.</source>
 Désolé.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="803"/>
+        <location filename="../qtractorPluginForm.cpp" line="801"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="804"/>
+        <location filename="../qtractorPluginForm.cpp" line="802"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -13595,17 +13600,17 @@ Are you sure?</source>
 Êtes-vous sûr ?</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1212"/>
+        <location filename="../qtractorPluginForm.cpp" line="1210"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>Latence : %1 ms (%2 trames)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1216"/>
+        <location filename="../qtractorPluginForm.cpp" line="1214"/>
         <source>(no latency)</source>
         <translation>(pas de latence)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="993"/>
+        <location filename="../qtractorPluginForm.cpp" line="991"/>
         <source>&amp;None</source>
         <translation>&amp;Rien</translation>
     </message>
@@ -13820,7 +13825,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1657"/>
+        <location filename="../qtractorPluginForm.cpp" line="1653"/>
         <source>Open File</source>
         <translation>Ouvrir un fichier</translation>
     </message>
