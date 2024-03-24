@@ -911,7 +911,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="592"/>
+        <location filename="../qtractorMidiControl.cpp" line="597"/>
         <source>MIDI Controller: %1, %2, %3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6609,82 +6609,82 @@ sezením znovu.</translation>
 <context>
     <name>qtractorMidiControl</name>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="953"/>
+        <location filename="../qtractorMidiControl.cpp" line="958"/>
         <source>Note On</source>
         <translation>Nota zapnuta</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="954"/>
+        <location filename="../qtractorMidiControl.cpp" line="959"/>
         <source>Note Off</source>
         <translation>Nota vypnuta</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="955"/>
+        <location filename="../qtractorMidiControl.cpp" line="960"/>
         <source>Key Press</source>
         <translation>Stisknutí klávesy</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="956"/>
+        <location filename="../qtractorMidiControl.cpp" line="961"/>
         <source>Controller</source>
         <translation>Ovladač</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="957"/>
+        <location filename="../qtractorMidiControl.cpp" line="962"/>
         <source>Pgm Change</source>
         <translation>Změna Pgm</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="958"/>
+        <location filename="../qtractorMidiControl.cpp" line="963"/>
         <source>Chan Press</source>
         <translation>Stisknutí kanálu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="959"/>
+        <location filename="../qtractorMidiControl.cpp" line="964"/>
         <source>Pitch Bend</source>
         <translation>Změna výšky tónu</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="960"/>
+        <location filename="../qtractorMidiControl.cpp" line="965"/>
         <source>RPN</source>
         <translation>RPN</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="961"/>
+        <location filename="../qtractorMidiControl.cpp" line="966"/>
         <source>NRPN</source>
         <translation>NRPN</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="962"/>
+        <location filename="../qtractorMidiControl.cpp" line="967"/>
         <source>Control 14</source>
         <translation>Kontrol 14</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1039"/>
+        <location filename="../qtractorMidiControl.cpp" line="1044"/>
         <source>Track Gain</source>
         <translation>Zesílení stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1040"/>
+        <location filename="../qtractorMidiControl.cpp" line="1045"/>
         <source>Track Panning</source>
         <translation>Přejíždění stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1041"/>
+        <location filename="../qtractorMidiControl.cpp" line="1046"/>
         <source>Track Monitor</source>
         <translation>Sledování stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1042"/>
+        <location filename="../qtractorMidiControl.cpp" line="1047"/>
         <source>Track Record</source>
         <translation>Nahrávání stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1043"/>
+        <location filename="../qtractorMidiControl.cpp" line="1048"/>
         <source>Track Mute</source>
         <translation>Ztlumení stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1044"/>
+        <location filename="../qtractorMidiControl.cpp" line="1049"/>
         <source>Track Solo</source>
         <translation>Sólo pro stopu</translation>
     </message>
@@ -7134,7 +7134,7 @@ Do you want to replace the mapping?</source>
 Chcete nahradit přiřazení?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="430"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="429"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -7143,32 +7143,32 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="573"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="572"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Ovladač &amp;MIDI...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="681"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="680"/>
         <source>&amp;Automation</source>
         <translation>&amp;Automatizace</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="695"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="694"/>
         <source>&amp;Lock</source>
         <translation>&amp;Zamknout</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="713"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="712"/>
         <source>&amp;Play</source>
         <translation>&amp;Přehrát</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="729"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="728"/>
         <source>&amp;Record</source>
         <translation>&amp;Nahrávat</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="739"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="738"/>
         <source>&amp;Clear</source>
         <translation>&amp;Smazat</translation>
     </message>

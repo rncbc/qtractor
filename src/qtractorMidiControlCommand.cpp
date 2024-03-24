@@ -49,9 +49,7 @@ bool qtractorMidiControlObserverCommand::mapMidiObserver (void) const
 	if (pMidiControl->isMidiObserverMapped(m_pMidiObserver))
 		return false;
 
-	pMidiControl->mapMidiObserver(m_pMidiObserver);
-	pMidiControl->mapMidiObserverWidget(
-		m_pMidiObserver, m_pMidiObserverWidget);
+	pMidiControl->mapMidiObserver(m_pMidiObserver, m_pMidiObserverWidget);
 	return true;
 }
 
@@ -66,8 +64,7 @@ bool qtractorMidiControlObserverCommand::unmapMidiObserver (void) const
 	if (!pMidiControl->isMidiObserverMapped(m_pMidiObserver))
 		return false;
 
-	pMidiControl->unmapMidiObserverWidget(m_pMidiObserver, true);
-	pMidiControl->unmapMidiObserver(m_pMidiObserver);
+	pMidiControl->unmapMidiObserver(m_pMidiObserver, true);
 	return true;
 }
 
