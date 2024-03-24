@@ -911,7 +911,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Salida: &quot;%3&quot;</translatio
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="597"/>
+        <location filename="../qtractorMidiControl.cpp" line="592"/>
         <source>MIDI Controller: %1, %2, %3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6607,82 +6607,82 @@ el archivo de sesión actual.</translation>
 <context>
     <name>qtractorMidiControl</name>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="958"/>
+        <location filename="../qtractorMidiControl.cpp" line="953"/>
         <source>Note On</source>
         <translation>Encendido de nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="959"/>
+        <location filename="../qtractorMidiControl.cpp" line="954"/>
         <source>Note Off</source>
         <translation>Apagado de nota</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="960"/>
+        <location filename="../qtractorMidiControl.cpp" line="955"/>
         <source>Key Press</source>
         <translation>Pulsación de tecla</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="961"/>
+        <location filename="../qtractorMidiControl.cpp" line="956"/>
         <source>Controller</source>
         <translation>Controlador</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="962"/>
+        <location filename="../qtractorMidiControl.cpp" line="957"/>
         <source>Pgm Change</source>
         <translation>Cambio de programa</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="963"/>
+        <location filename="../qtractorMidiControl.cpp" line="958"/>
         <source>Chan Press</source>
         <translation>Chan Press</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="964"/>
+        <location filename="../qtractorMidiControl.cpp" line="959"/>
         <source>Pitch Bend</source>
         <translation>Portamento</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="965"/>
+        <location filename="../qtractorMidiControl.cpp" line="960"/>
         <source>RPN</source>
         <translation>RPN</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="966"/>
+        <location filename="../qtractorMidiControl.cpp" line="961"/>
         <source>NRPN</source>
         <translation>NRPN</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="967"/>
+        <location filename="../qtractorMidiControl.cpp" line="962"/>
         <source>Control 14</source>
         <translation>Control 14</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1044"/>
+        <location filename="../qtractorMidiControl.cpp" line="1039"/>
         <source>Track Gain</source>
         <translation>Ganancia de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1045"/>
+        <location filename="../qtractorMidiControl.cpp" line="1040"/>
         <source>Track Panning</source>
         <translation>Paneo de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1046"/>
+        <location filename="../qtractorMidiControl.cpp" line="1041"/>
         <source>Track Monitor</source>
         <translation>Monitor de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1047"/>
+        <location filename="../qtractorMidiControl.cpp" line="1042"/>
         <source>Track Record</source>
         <translation>Grabación de pista</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1048"/>
+        <location filename="../qtractorMidiControl.cpp" line="1043"/>
         <source>Track Mute</source>
         <translation>Silenciar pista</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1049"/>
+        <location filename="../qtractorMidiControl.cpp" line="1044"/>
         <source>Track Solo</source>
         <translation>Solo de pista</translation>
     </message>
@@ -7131,7 +7131,7 @@ Do you want to replace the mapping?</source>
 ¿Desea reemplazar el mapeo?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="429"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="430"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -7140,32 +7140,32 @@ Do you want to apply the changes?</source>
 ¿Desea aplicar los cambios?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="572"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="573"/>
         <source>&amp;MIDI Controller...</source>
         <translation>Controlador &amp;MIDI...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="680"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="681"/>
         <source>&amp;Automation</source>
         <translation>&amp;Automatización</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="694"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="695"/>
         <source>&amp;Lock</source>
         <translation>&amp;Bloquear</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="712"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="713"/>
         <source>&amp;Play</source>
         <translation>&amp;Reproducir</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="728"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="729"/>
         <source>&amp;Record</source>
         <translation>&amp;Grabar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="738"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="739"/>
         <source>&amp;Clear</source>
         <translation>&amp;Limpiar</translation>
     </message>

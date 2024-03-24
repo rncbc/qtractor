@@ -910,7 +910,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="597"/>
+        <location filename="../qtractorMidiControl.cpp" line="592"/>
         <source>MIDI Controller: %1, %2, %3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6599,82 +6599,82 @@ JACK音声サーバー(jackd)が起動し実行されているなら
 <context>
     <name>qtractorMidiControl</name>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="958"/>
+        <location filename="../qtractorMidiControl.cpp" line="953"/>
         <source>Note On</source>
         <translation>ノートオン</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="959"/>
+        <location filename="../qtractorMidiControl.cpp" line="954"/>
         <source>Note Off</source>
         <translation>ノートオフ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="960"/>
+        <location filename="../qtractorMidiControl.cpp" line="955"/>
         <source>Key Press</source>
         <translation>キープレス</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="961"/>
+        <location filename="../qtractorMidiControl.cpp" line="956"/>
         <source>Controller</source>
         <translation>コントローラー</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="962"/>
+        <location filename="../qtractorMidiControl.cpp" line="957"/>
         <source>Pgm Change</source>
         <translation>Pgmチェンジ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="963"/>
+        <location filename="../qtractorMidiControl.cpp" line="958"/>
         <source>Chan Press</source>
         <translation>チャンネルプレス</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="964"/>
+        <location filename="../qtractorMidiControl.cpp" line="959"/>
         <source>Pitch Bend</source>
         <translation>ピッチベンド</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="965"/>
+        <location filename="../qtractorMidiControl.cpp" line="960"/>
         <source>RPN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="966"/>
+        <location filename="../qtractorMidiControl.cpp" line="961"/>
         <source>NRPN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="967"/>
+        <location filename="../qtractorMidiControl.cpp" line="962"/>
         <source>Control 14</source>
         <translation>コントロール14</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1044"/>
+        <location filename="../qtractorMidiControl.cpp" line="1039"/>
         <source>Track Gain</source>
         <translation>トラックゲイン</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1045"/>
+        <location filename="../qtractorMidiControl.cpp" line="1040"/>
         <source>Track Panning</source>
         <translation>トラックパニング</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1046"/>
+        <location filename="../qtractorMidiControl.cpp" line="1041"/>
         <source>Track Monitor</source>
         <translation>トラックモニター</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1047"/>
+        <location filename="../qtractorMidiControl.cpp" line="1042"/>
         <source>Track Record</source>
         <translation>トラックの録音</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1048"/>
+        <location filename="../qtractorMidiControl.cpp" line="1043"/>
         <source>Track Mute</source>
         <translation>トラックのミュート</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControl.cpp" line="1049"/>
+        <location filename="../qtractorMidiControl.cpp" line="1044"/>
         <source>Track Solo</source>
         <translation>トラックのソロ</translation>
     </message>
@@ -7124,7 +7124,7 @@ Do you want to replace the mapping?</source>
 マッピングを置きかえますか？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="429"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="430"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -7133,32 +7133,32 @@ Do you want to apply the changes?</source>
 この変更を適用しますか?</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="572"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="573"/>
         <source>&amp;MIDI Controller...</source>
         <translation>MIDIコントローラー(&amp;M)...</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="680"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="681"/>
         <source>&amp;Automation</source>
         <translation>オートメーション(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="694"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="695"/>
         <source>&amp;Lock</source>
         <translation>ロック(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="712"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="713"/>
         <source>&amp;Play</source>
         <translation>再生(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="728"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="729"/>
         <source>&amp;Record</source>
         <translation>録音(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiControlObserverForm.cpp" line="738"/>
+        <location filename="../qtractorMidiControlObserverForm.cpp" line="739"/>
         <source>&amp;Clear</source>
         <translation>クリアー(&amp;C)</translation>
     </message>

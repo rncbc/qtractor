@@ -315,9 +315,9 @@ public:
 
 	// Insert/remove observer mappings.
 	void mapMidiObserver(
-		qtractorMidiControlObserver *pMidiObserver, QWidget *pWidget = nullptr);
+		qtractorMidiControlObserver *pMidiObserver);
 	void unmapMidiObserver(
-		qtractorMidiControlObserver *pMidiObserver, bool bResetWidgets = false);
+		qtractorMidiControlObserver *pMidiObserver);
 
 	// Observer map predicate.
 	bool isMidiObserverMapped(qtractorMidiControlObserver *pMidiObserver) const;
@@ -332,7 +332,7 @@ public:
 	void mapMidiObserverWidget(
 		qtractorMidiControlObserver *pMidiObserver, QWidget *pWidget = nullptr);
 	void unmapMidiObserverWidget(
-		qtractorMidiControlObserver *pMidiObserver, bool bResetWidgets = false);
+		qtractorMidiControlObserver *pMidiObserver, bool bResetToolTips = false);
 
 	// Forward declaration.
 	class Document;

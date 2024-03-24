@@ -71,7 +71,7 @@ qtractorMidiControlObserver::~qtractorMidiControlObserver (void)
 {
 	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
 	if (pMidiControl) {
-		pMidiControl->unmapMidiObserverWidget(this);
+		pMidiControl->unmapMidiObserverWidget(this, false);
 		if (pMidiControl->isMidiObserverMapped(this))
 			pMidiControl->unmapMidiObserver(this);
 	}

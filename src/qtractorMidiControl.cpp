@@ -537,7 +537,7 @@ void qtractorMidiControl::sendController (
 
 // Insert/remove observer mappings.
 void qtractorMidiControl::mapMidiObserver (
-	qtractorMidiControlObserver *pMidiObserver, QWidget *pWidget )
+	qtractorMidiControlObserver *pMidiObserver )
 {
 	const MapKey key(
 		pMidiObserver->type(),
@@ -545,12 +545,10 @@ void qtractorMidiControl::mapMidiObserver (
 		pMidiObserver->param());
 
 	m_observerMap.insert(key, pMidiObserver);
-
-	mapMidiObserverWidget(pMidiObserver, pWidget);
 }
 
 void qtractorMidiControl::unmapMidiObserver (
-	qtractorMidiControlObserver *pMidiObserver, bool bResetWidgets )
+	qtractorMidiControlObserver *pMidiObserver )
 {
 	const MapKey key(
 		pMidiObserver->type(),
@@ -558,9 +556,6 @@ void qtractorMidiControl::unmapMidiObserver (
 		pMidiObserver->param());
 
 	m_observerMap.remove(key);
-
-	if (bResetWidgets)
-		unmapMidiObserverWidget(pMidiObserver, true);
 }
 
 // Observer map predicate.
@@ -607,9 +602,9 @@ void qtractorMidiControl::mapMidiObserverWidget (
 
 
 void qtractorMidiControl::unmapMidiObserverWidget (
-	qtractorMidiControlObserver *pMidiObserver, bool bResetWidgets )
+	qtractorMidiControlObserver *pMidiObserver, bool bResetToolTips )
 {
-	if (bResetWidgets) {
+	if (bResetToolTips) {
 		QListIterator<QWidget *> iter(m_widgetMap.values(pMidiObserver));
 		while (iter.hasNext())
 			iter.next()->setToolTip(pMidiObserver->subject()->name());

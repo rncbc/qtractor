@@ -388,7 +388,8 @@ void qtractorMidiControlObserverForm::accept (void)
 	}
 
 	// Map the damn control....
-	pMidiControl->unmapMidiObserver(m_pMidiObserver, true);
+	pMidiControl->unmapMidiObserver(m_pMidiObserver);
+	pMidiControl->unmapMidiObserverWidget(m_pMidiObserver, true);
 
 	m_pMidiObserver->setType(ctype);
 	m_pMidiObserver->setChannel(iChannel);
@@ -473,7 +474,7 @@ void qtractorMidiControlObserverForm::reset (void)
 		qtractorActionControl *pActionControl
 			= qtractorActionControl::getInstance();
 		if (pMidiControl && pActionControl) {
-			pMidiControl->unmapMidiObserver(m_pMidiObserver, true);
+			pMidiControl->unmapMidiObserver(m_pMidiObserver);
 			pActionControl->removeMidiObserver(m_pMidiObserverAction);
 		}
 	} else {
