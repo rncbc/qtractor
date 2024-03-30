@@ -1,7 +1,7 @@
 // qtractorMixer.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -66,6 +66,9 @@ public:
 	// Constructors.
 	qtractorMonitorButton(qtractorTrack *pTrack, QWidget *pParent = nullptr);
 	qtractorMonitorButton(qtractorBus *pBus, QWidget *pParent = nullptr);
+
+	// Destructor.
+	~qtractorMonitorButton();
 
 	// Specific track accessors.
 	void setTrack(qtractorTrack *pTrack);

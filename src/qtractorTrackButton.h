@@ -72,6 +72,9 @@ public:
 	qtractorTrackButton(qtractorTrack *pTrack,
 		qtractorTrack::ToolType toolType, QWidget *pParent = 0);
 
+	// Destructor.
+	~qtractorTrackButton();
+
 	// Specific accessors.
 	void setTrack(qtractorTrack *pTrack);
 	qtractorTrack *track() const;

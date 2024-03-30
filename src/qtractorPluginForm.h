@@ -160,9 +160,12 @@ class qtractorPluginParamWidget : public QWidget
 
 public:
 
-	// Constructors.
+	// Constructor.
 	qtractorPluginParamWidget(qtractorPlugin::Param *pParam,
 		QWidget *pParent = nullptr);
+
+	// Destructor.
+	~qtractorPluginParamWidget();
 
 	// Refreshner-loader method.
 	void refresh();

@@ -39,6 +39,7 @@ class qtractorDocument;
 class qtractorMidiControlObserver;
 
 class QDomElement;
+class QWidget;
 
 
 //----------------------------------------------------------------------
@@ -313,8 +314,10 @@ public:
 	const ControlMap& controlMap() const { return m_controlMap; }
 
 	// Insert/remove observer mappings.
-	void mapMidiObserver(qtractorMidiControlObserver *pMidiObserver);
-	void unmapMidiObserver(qtractorMidiControlObserver *pMidiObserver);
+	void mapMidiObserver(
+		qtractorMidiControlObserver *pMidiObserver, QWidget *pWidget = nullptr);
+	void unmapMidiObserver(
+		qtractorMidiControlObserver *pMidiObserver, bool bResetWidgets = false);
 
 	// Observer map predicate.
 	bool isMidiObserverMapped(qtractorMidiControlObserver *pMidiObserver) const;
@@ -324,6 +327,14 @@ public:
 		ControlType ctype,
 		unsigned short iChannel,
 		unsigned short iParam) const;
+
+	// Observer (widget) mappings.
+	void mapMidiObserverWidget(
+		qtractorMidiControlObserver *pMidiObserver, QWidget *pWidget);
+	void unmapMidiObserverWidget(
+		qtractorMidiControlObserver *pMidiObserver, QWidget *pWidget);
+	void unmapMidiObserverWidgets(
+		qtractorMidiControlObserver *pMidiObserver, bool bResetWidgets = false);
 
 	// Forward declaration.
 	class Document;
@@ -481,6 +492,10 @@ private:
 	typedef QHash<MapKey, qtractorMidiControlObserver *> ObserverMap;
 
 	ObserverMap m_observerMap;
+
+	typedef QMultiHash<qtractorMidiControlObserver *, QWidget *> WidgetMap;
+
+	WidgetMap m_widgetMap;
 
 	// MIDI control non catch-up/hook global option.
 	static bool g_bSync;

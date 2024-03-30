@@ -1,7 +1,7 @@
 // qtractorMidiControlObserverForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -38,8 +38,6 @@
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
 
-#include "qtractorCurveCommand.h"
-
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -54,8 +52,7 @@ qtractorMidiControlObserverForm::g_pMidiObserverForm = nullptr;
 
 // Constructor.
 qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
-	QWidget *pParent, Qt::WindowFlags wflags )
-	: QDialog(pParent, wflags)
+	QWidget *pParent, Qt::WindowFlags wflags ) : QDialog(pParent, wflags)
 {
 	// Setup UI struct...
 	m_ui.setupUi(this);
@@ -68,6 +65,9 @@ qtractorMidiControlObserverForm::qtractorMidiControlObserverForm (
 
 	// Target object.
 	m_pMidiObserver = nullptr;
+
+	// Target widget.
+	m_pMidiObserverWidget = nullptr;
 
 	// Proxy object.
 	m_pMidiObserverAction = nullptr;
@@ -146,6 +146,7 @@ qtractorMidiControlObserverForm::getInstance (void)
 // Pseudo-constructors.
 void qtractorMidiControlObserverForm::showInstance (
 	qtractorMidiControlObserver *pMidiObserver,
+	QWidget *pMidiObserverWidget,
 	QWidget *pParent, Qt::WindowFlags wflags )
 {
 	qtractorMidiControlObserverForm *pMidiObserverForm
@@ -160,6 +161,7 @@ void qtractorMidiControlObserverForm::showInstance (
 
 	pMidiObserverForm = new qtractorMidiControlObserverForm(pParent, wflags);
 	pMidiObserverForm->setMidiObserver(pMidiObserver);
+	pMidiObserverForm->setMidiObserverWidget(pMidiObserverWidget);
 	pMidiObserverForm->show();
 }
 
@@ -226,9 +228,22 @@ void qtractorMidiControlObserverForm::setMidiObserver (
 	stabilizeForm();
 }
 
+
 qtractorMidiControlObserver *qtractorMidiControlObserverForm::midiObserver (void) const
 {
 	return m_pMidiObserver;
+}
+
+
+void qtractorMidiControlObserverForm::setMidiObserverWidget (
+	QWidget *pMidiObserverWidget )
+{
+	m_pMidiObserverWidget = pMidiObserverWidget;
+}
+
+QWidget *qtractorMidiControlObserverForm::midiObserverWidget (void) const
+{
+	return m_pMidiObserverWidget;
 }
 
 
@@ -260,6 +275,7 @@ void qtractorMidiControlObserverForm::cleanup (void)
 {
 	// Cleanup.
 	m_pMidiObserverAction = nullptr;
+	m_pMidiObserverWidget = nullptr;
 	m_pMidiObserver = nullptr;
 
 	// Aint't dirty no more...
@@ -372,7 +388,7 @@ void qtractorMidiControlObserverForm::accept (void)
 	}
 
 	// Map the damn control....
-	pMidiControl->unmapMidiObserver(m_pMidiObserver);
+	pMidiControl->unmapMidiObserver(m_pMidiObserver, true);
 
 	m_pMidiObserver->setType(ctype);
 	m_pMidiObserver->setChannel(iChannel);
@@ -388,7 +404,8 @@ void qtractorMidiControlObserverForm::accept (void)
 	} else {
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession) pSession->execute(
-			new qtractorMidiControlObserverMapCommand(m_pMidiObserver));
+			new qtractorMidiControlObserverMapCommand(
+				m_pMidiObserver, m_pMidiObserverWidget));
 	}
 
 	cleanup();
@@ -456,13 +473,14 @@ void qtractorMidiControlObserverForm::reset (void)
 		qtractorActionControl *pActionControl
 			= qtractorActionControl::getInstance();
 		if (pMidiControl && pActionControl) {
-			pMidiControl->unmapMidiObserver(m_pMidiObserver);
+			pMidiControl->unmapMidiObserver(m_pMidiObserver, true);
 			pActionControl->removeMidiObserver(m_pMidiObserverAction);
 		}
 	} else {
 		qtractorSession *pSession = qtractorSession::getInstance();
 		if (pSession) pSession->execute(
-			new qtractorMidiControlObserverUnmapCommand(m_pMidiObserver));
+			new qtractorMidiControlObserverUnmapCommand(
+				m_pMidiObserver, m_pMidiObserverWidget));
 	}
 
 	cleanup();
@@ -545,6 +563,10 @@ Q_DECLARE_METATYPE(qtractorMidiControlObserver *);
 QAction *qtractorMidiControlObserverForm::addMidiControlAction (
 	QWidget *pParent, QWidget *pWidget, qtractorMidiControlObserver *pMidiObserver )
 {
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl)
+		pMidiControl->mapMidiObserverWidget(pMidiObserver, pWidget);
+
 	QAction *pAction = new QAction(
 		QIcon(":/images/itemControllers.png"),
 		tr("&MIDI Controller..."), pWidget);
@@ -574,8 +596,11 @@ void qtractorMidiControlObserverForm::midiControlAction (
 
 	qtractorMidiControlObserver *pMidiObserver
 		= pAction->data().value<qtractorMidiControlObserver *> ();
-	if (pMidiObserver)
-		qtractorMidiControlObserverForm::showInstance(pMidiObserver, pParent);
+	if (pMidiObserver) {
+		QWidget *pWidget = qobject_cast<QWidget *> (pAction->parent());
+		qtractorMidiControlObserverForm::showInstance(
+			pMidiObserver, pWidget, pParent);
+	}
 }
 
 

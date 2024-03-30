@@ -101,6 +101,32 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 }
 
 
+// Destructor.
+qtractorTrackButton::~qtractorTrackButton (void)
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == nullptr)
+		return;
+
+	qtractorMidiControlObserver *pMidiObserver = nullptr;
+
+	switch (m_toolType) {
+	case qtractorTrack::Record:
+		pMidiObserver = m_pTrack->recordObserver();
+		break;
+	case qtractorTrack::Mute:
+		pMidiObserver = m_pTrack->muteObserver();
+		break;
+	case qtractorTrack::Solo:
+		pMidiObserver = m_pTrack->soloObserver();
+		break;
+	}
+
+	if (pMidiObserver)
+		pMidiControl->unmapMidiObserverWidget(pMidiObserver, this);
+}
+
+
 // Visitors overload.
 void qtractorTrackButton::updateValue ( float fValue )
 {
@@ -168,7 +194,6 @@ void qtractorTrackButton::updateTrack (void)
 	}
 
 	if (pMidiObserver) {
-		QPushButton::setToolTip(pMidiObserver->subject()->name());
 		pMidiObserver->setCurveList(m_pTrack->curveList());
 		addMidiControlAction(pMidiObserver);
 	}
