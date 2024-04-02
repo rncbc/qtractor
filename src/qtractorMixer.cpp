@@ -1,7 +1,7 @@
 // qtractorMixer.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -88,6 +88,27 @@ qtractorMonitorButton::qtractorMonitorButton (
 }
 
 
+// Destructor.
+qtractorMonitorButton::~qtractorMonitorButton (void)
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == nullptr)
+		return;
+
+	qtractorMidiControlObserver *pMidiObserver = nullptr;
+
+	if (m_pTrack)
+		pMidiObserver = m_pTrack->monitorObserver();
+	else
+	if (m_pBus) {
+		pMidiObserver = m_pBus->monitorObserver();
+	}
+
+	if (pMidiObserver)
+		pMidiControl->unmapMidiObserverWidget(pMidiObserver, this);
+}
+
+
 // Common initializer.
 void qtractorMonitorButton::initMonitorButton (void)
 {
@@ -105,7 +126,7 @@ void qtractorMonitorButton::setTrack ( qtractorTrack *pTrack )
 	m_pTrack = pTrack;
 	m_pBus = nullptr;
 
-	QPushButton::setToolTip(tr("Monitor (rec)"));
+//	QPushButton::setToolTip(tr("Monitor (rec)"));
 
 	updateMonitor(); // Visitor setup.
 }
@@ -117,7 +138,7 @@ void qtractorMonitorButton::setBus ( qtractorBus *pBus )
 	m_pBus = pBus;
 	m_pTrack = nullptr;
 	
-	QPushButton::setToolTip(tr("Monitor (thru)"));
+//	QPushButton::setToolTip(tr("Monitor (thru)"));
 
 	updateMonitor(); // Visitor setup.
 }
@@ -170,7 +191,7 @@ void qtractorMonitorButton::updateMonitor (void)
 			addMidiControlAction(m_pBus->monitorObserver());
 			QPushButton::setEnabled(true);
 		} else {
-			QPushButton::setEnabled(false);				
+			QPushButton::setEnabled(false);
 		}
 	}
 
@@ -252,6 +273,17 @@ qtractorMixerStrip::~qtractorMixerStrip (void)
 			= static_cast<qtractorMidiMixerMeter *> (m_pMixerMeter);
 		if (pMidiMixerMeter)
 			pMidiMixerMeter->setAudioOutputMonitor(nullptr);
+	}
+
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl&& m_pMixerMeter) {
+		qtractorMidiControlObserver *pMidiObserver;
+		pMidiObserver = m_pMixerMeter->monitor()->panningObserver();
+		pMidiControl->unmapMidiObserverWidget(
+			pMidiObserver, m_pMixerMeter->panSlider());
+		pMidiObserver = m_pMixerMeter->monitor()->gainObserver();
+		pMidiControl->unmapMidiObserverWidget(
+			pMidiObserver, m_pMixerMeter->gainSlider());
 	}
 
 	// No need to delete child widgets, Qt does it all for us

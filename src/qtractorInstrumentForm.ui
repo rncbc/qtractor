@@ -2,7 +2,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -199,19 +199,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="ReloadPushButton" >
-       <property name="toolTip" >
-        <string>Reload all instrument files</string>
-       </property>
-       <property name="text" >
-        <string>Relo&amp;ad</string>
-       </property>
-       <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="ExportPushButton" >
        <property name="toolTip" >
         <string>Export to instrument file</string>
@@ -247,7 +234,6 @@
   <tabstop>RemovePushButton</tabstop>
   <tabstop>MoveUpPushButton</tabstop>
   <tabstop>MoveDownPushButton</tabstop>
-  <tabstop>ReloadPushButton</tabstop>
   <tabstop>ExportPushButton</tabstop>
   <tabstop>ClosePushButton</tabstop>
  </tabstops>

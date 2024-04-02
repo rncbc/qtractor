@@ -1,7 +1,7 @@
 // qtractorMidiControlCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2010-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2010-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -30,8 +30,10 @@
 
 // Constructor.
 qtractorMidiControlObserverCommand::qtractorMidiControlObserverCommand (
-	const QString& sName, qtractorMidiControlObserver *pMidiObserver )
-	: qtractorCommand(sName), m_pMidiObserver(pMidiObserver)
+	const QString& sName, qtractorMidiControlObserver *pMidiObserver,
+	QWidget *pMidiObserverWidget ) : qtractorCommand(sName),
+		m_pMidiObserver(pMidiObserver),
+		m_pMidiObserverWidget(pMidiObserverWidget)
 {
 	setRefresh(false);
 }
@@ -47,7 +49,7 @@ bool qtractorMidiControlObserverCommand::mapMidiObserver (void) const
 	if (pMidiControl->isMidiObserverMapped(m_pMidiObserver))
 		return false;
 
-	pMidiControl->mapMidiObserver(m_pMidiObserver);
+	pMidiControl->mapMidiObserver(m_pMidiObserver, m_pMidiObserverWidget);
 	return true;
 }
 
@@ -62,7 +64,7 @@ bool qtractorMidiControlObserverCommand::unmapMidiObserver (void) const
 	if (!pMidiControl->isMidiObserverMapped(m_pMidiObserver))
 		return false;
 
-	pMidiControl->unmapMidiObserver(m_pMidiObserver);
+	pMidiControl->unmapMidiObserver(m_pMidiObserver, true);
 	return true;
 }
 

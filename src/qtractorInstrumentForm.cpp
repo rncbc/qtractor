@@ -1,7 +1,7 @@
 // qtractorInstrumentForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -144,9 +144,6 @@ qtractorInstrumentForm::qtractorInstrumentForm ( QWidget *pParent )
 	QObject::connect(m_ui.MoveDownPushButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownSlot()));
-	QObject::connect(m_ui.ReloadPushButton,
-		SIGNAL(clicked()),
-		SLOT(reloadSlot()));
 	QObject::connect(m_ui.ExportPushButton,
 		SIGNAL(clicked()),
 		SLOT(exportSlot()));
@@ -310,7 +307,7 @@ void qtractorInstrumentForm::removeSlot (void)
 		++m_iDirtyCount;
 	}
 
-	stabilizeForm();
+	reloadSlot();
 }
 
 
@@ -328,7 +325,7 @@ void qtractorInstrumentForm::moveUpSlot (void)
 		}
 	}
 
-	stabilizeForm();
+	reloadSlot();
 }
 
 
@@ -346,7 +343,7 @@ void qtractorInstrumentForm::moveDownSlot (void)
 		}
 	}
 
-	stabilizeForm();
+	reloadSlot();
 }
 
 
@@ -509,7 +506,6 @@ void qtractorInstrumentForm::stabilizeForm (void)
 		m_ui.MoveDownPushButton->setEnabled(false);
 	}
 
-	m_ui.ReloadPushButton->setEnabled(m_iDirtyCount > 0);
 	m_ui.ExportPushButton->setEnabled(
 		m_pInstruments && m_pInstruments->count() > 0);
 }

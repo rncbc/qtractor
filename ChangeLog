@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI Controller mappings are now shown on floating tool-tips.
+  (EXPERIMENTAL)
+
 - Custom color themes are now file based (*.conf); legacy still
   preserved ntl. (EXPERIMENTAL)
 
@@ -29,8 +32,8 @@ GIT HEAD
   via GM standard controllers (CC#7 and CC#10 resp.) to mitigate
   recursive or positive feedback loops. (EXPERIMENTAL) 
 
-- Refined mouse-wheel control step size on mixer strip sliders.
-  (EXPERIMENTAL)
+- Refined mouse-wheel control step size on the sliders of mixer
+  strips and generic/stock plugin editor dialogs. (EXPERIMENTAL)
 
 - Fixed the build checks on whether to use old or newer style of
   LV2 include headers. (EXPERIMENTAL)

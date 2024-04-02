@@ -1,7 +1,7 @@
 // qtractorTrackButton.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -83,17 +83,14 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	switch (m_toolType) {
 	case qtractorTrack::Record:
 		QPushButton::setText("R");
-		QPushButton::setToolTip(tr("Record"));
 		m_rgbOn = Qt::red;
 		break;
 	case qtractorTrack::Mute:
 		QPushButton::setText("M");
-		QPushButton::setToolTip(tr("Mute"));
 		m_rgbOn = Qt::yellow;
 		break;
 	case qtractorTrack::Solo:
 		QPushButton::setText("S");
-		QPushButton::setToolTip(tr("Solo"));
 		m_rgbOn = Qt::cyan;
 		break;
 	}
@@ -101,6 +98,32 @@ qtractorTrackButton::qtractorTrackButton ( qtractorTrack *pTrack,
 	updateTrack(); // Visitor setup.
 
 	QObject::connect(this, SIGNAL(toggled(bool)), SLOT(toggledSlot(bool)));
+}
+
+
+// Destructor.
+qtractorTrackButton::~qtractorTrackButton (void)
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl == nullptr)
+		return;
+
+	qtractorMidiControlObserver *pMidiObserver = nullptr;
+
+	switch (m_toolType) {
+	case qtractorTrack::Record:
+		pMidiObserver = m_pTrack->recordObserver();
+		break;
+	case qtractorTrack::Mute:
+		pMidiObserver = m_pTrack->muteObserver();
+		break;
+	case qtractorTrack::Solo:
+		pMidiObserver = m_pTrack->soloObserver();
+		break;
+	}
+
+	if (pMidiObserver)
+		pMidiControl->unmapMidiObserverWidget(pMidiObserver, this);
 }
 
 
@@ -153,33 +176,26 @@ qtractorTrack::ToolType qtractorTrackButton::toolType (void) const
 // Track state (record, mute, solo) button setup.
 void qtractorTrackButton::updateTrack (void)
 {
-	qtractorMidiControlObserver *pMidiObserver;
+	qtractorMidiControlObserver *pMidiObserver = nullptr;
 
 	switch (m_toolType) {
 	case qtractorTrack::Record:
 		setSubject(m_pTrack->recordSubject());
 		pMidiObserver = m_pTrack->recordObserver();
-		if (pMidiObserver) {
-			pMidiObserver->setCurveList(m_pTrack->curveList());
-			addMidiControlAction(pMidiObserver);
-		}
 		break;
 	case qtractorTrack::Mute:
 		setSubject(m_pTrack->muteSubject());
 		pMidiObserver = m_pTrack->muteObserver();
-		if (pMidiObserver) {
-			pMidiObserver->setCurveList(m_pTrack->curveList());
-			addMidiControlAction(pMidiObserver);
-		}
 		break;
 	case qtractorTrack::Solo:
 		setSubject(m_pTrack->soloSubject());
 		pMidiObserver = m_pTrack->soloObserver();
-		if (pMidiObserver) {
-			pMidiObserver->setCurveList(m_pTrack->curveList());
-			addMidiControlAction(pMidiObserver);
-		}
 		break;
+	}
+
+	if (pMidiObserver) {
+		pMidiObserver->setCurveList(m_pTrack->curveList());
+		addMidiControlAction(pMidiObserver);
 	}
 
 	observer()->update(true);

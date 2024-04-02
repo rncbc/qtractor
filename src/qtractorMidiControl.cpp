@@ -537,7 +537,7 @@ void qtractorMidiControl::sendController (
 
 // Insert/remove observer mappings.
 void qtractorMidiControl::mapMidiObserver (
-	qtractorMidiControlObserver *pMidiObserver )
+	qtractorMidiControlObserver *pMidiObserver, QWidget *pWidget )
 {
 	const MapKey key(
 		pMidiObserver->type(),
@@ -545,10 +545,12 @@ void qtractorMidiControl::mapMidiObserver (
 		pMidiObserver->param());
 
 	m_observerMap.insert(key, pMidiObserver);
+
+	mapMidiObserverWidget(pMidiObserver, pWidget);
 }
 
 void qtractorMidiControl::unmapMidiObserver (
-	qtractorMidiControlObserver *pMidiObserver )
+	qtractorMidiControlObserver *pMidiObserver, bool bResetWidgets )
 {
 	const MapKey key(
 		pMidiObserver->type(),
@@ -556,6 +558,9 @@ void qtractorMidiControl::unmapMidiObserver (
 		pMidiObserver->param());
 
 	m_observerMap.remove(key);
+
+	if (bResetWidgets)
+		unmapMidiObserverWidgets(pMidiObserver, true);
 }
 
 // Observer map predicate.
@@ -571,9 +576,57 @@ bool qtractorMidiControl::isMidiObserverMapped (
 
 // Observer finder.
 qtractorMidiControlObserver *qtractorMidiControl::findMidiObserver (
-	ControlType ctype, unsigned short iChannel, unsigned short iParam) const
+	ControlType ctype, unsigned short iChannel, unsigned short iParam ) const
 {
 	return m_observerMap.value(MapKey(ctype, iChannel, iParam), nullptr);
+}
+
+
+// Observer (widget) mappings.
+void qtractorMidiControl::mapMidiObserverWidget (
+	qtractorMidiControlObserver *pMidiObserver, QWidget *pWidget )
+{
+	if (pWidget)
+		m_widgetMap.insert(pMidiObserver, pWidget);
+
+	QString sToolTip = pMidiObserver->subject()->name();
+
+	if (isMidiObserverMapped(pMidiObserver)) {
+		sToolTip += '\n';
+		sToolTip += '\n';
+		sToolTip += QObject::tr("MIDI Controller: %1, %2, %3")
+			.arg(qtractorMidiControl::nameFromType(pMidiObserver->type()))
+			.arg(QString::number(pMidiObserver->channel() + 1))
+			.arg(QString::number(pMidiObserver->param()));
+	}
+
+	QListIterator<QWidget *> iter(m_widgetMap.values(pMidiObserver));
+	while (iter.hasNext())
+		iter.next()->setToolTip(sToolTip);
+}
+
+
+void qtractorMidiControl::unmapMidiObserverWidget (
+	qtractorMidiControlObserver *pMidiObserver, QWidget *pWidget )
+{
+	if (pWidget) {
+		m_widgetMap.remove(pMidiObserver, pWidget);
+	} else {
+		m_widgetMap.remove(pMidiObserver);
+	}
+}
+
+
+void qtractorMidiControl::unmapMidiObserverWidgets (
+	qtractorMidiControlObserver *pMidiObserver, bool bResetWidgets )
+{
+	if (bResetWidgets) {
+		QListIterator<QWidget *> iter(m_widgetMap.values(pMidiObserver));
+		while (iter.hasNext())
+			iter.next()->setToolTip(pMidiObserver->subject()->name());
+	} else {
+		m_widgetMap.remove(pMidiObserver);
+	}
 }
 
 

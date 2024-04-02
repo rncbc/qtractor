@@ -1,7 +1,7 @@
 // qtractorTrack.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -682,7 +682,12 @@ void qtractorTrack::setTrackName ( const QString& sTrackName )
 
 void qtractorTrack::updateTrackName (void)
 {
-	const QString& sTrackName = m_props.trackName;
+	const int iMaxLength = 12;
+	const QString sEllipsis(3, '.');
+
+	QString sTrackName = m_props.trackName.simplified();
+	if (sTrackName.length() >= iMaxLength + sEllipsis.length())
+		sTrackName = sTrackName.left(iMaxLength).trimmed() + sEllipsis;
 
 	m_pMonitorSubject->setName(QObject::tr("%1 Monitor").arg(sTrackName));
 	m_pRecordSubject->setName(QObject::tr("%1 Record").arg(sTrackName));

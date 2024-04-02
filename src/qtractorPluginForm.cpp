@@ -1,7 +1,7 @@
 // qtractorPluginForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -158,6 +158,12 @@ qtractorPluginForm::qtractorPluginForm (
 // Destructor.
 qtractorPluginForm::~qtractorPluginForm (void)
 {
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl && m_pPlugin) {
+		pMidiControl->unmapMidiObserverWidget(
+			m_pPlugin->activateObserver(), m_ui.ActivateToolButton);
+	}
+
 	clear();
 
 	delete m_pDirectAccessParamMenu;
@@ -1415,8 +1421,8 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			m_pSlider->setMinimumWidth(120);
 			m_pSlider->setMinimum(0);
 			m_pSlider->setMaximum(10000);
-			m_pSlider->setPageStep(1000);
-			m_pSlider->setSingleStep(100);
+			m_pSlider->setPageStep(250);
+			m_pSlider->setSingleStep(50);
 			m_pSlider->setSubject(m_pParam->subject());
 		//	m_pSlider->setValue(m_pSlider->scaleFromValue(m_pParam->value()));
 			if (m_pParam->isDisplay()) {
@@ -1478,8 +1484,15 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 	}
 
 	updateCurveButton();
+}
 
-	QWidget::setToolTip(m_pParam->name());
+
+// Destructor.
+qtractorPluginParamWidget::~qtractorPluginParamWidget (void)
+{
+	qtractorMidiControl *pMidiControl = qtractorMidiControl::getInstance();
+	if (pMidiControl && m_pParam)
+		pMidiControl->unmapMidiObserverWidget(m_pParam->observer(), this);
 }
 
 
@@ -1517,7 +1530,7 @@ void qtractorPluginParamWidget::refresh (void)
 		}
 		if (m_pComboBox) {
 			const bool bComboBox = m_pComboBox->blockSignals(true);
-			const QFileInfo fi(pProp->variant().toString());
+			const QFileInfo fi(pProp->variant().toString().remove('\0'));
 			const QString& sPath = fi.canonicalFilePath();
 			int iIndex = m_pComboBox->findData(sPath);
 			if (iIndex < 0) {
@@ -1675,6 +1688,7 @@ void qtractorPluginParamWidget::toolButtonClicked (void)
 		sFilename = fileDialog.selectedFiles().first();
 #endif
 	if (!sFilename.isEmpty()) {
+		const bool bComboBox = m_pComboBox->blockSignals(true);
 		const QFileInfo fi(sFilename);
 		const QString& sPath = fi.canonicalFilePath();
 		int iIndex = m_pComboBox->findData(sPath);
@@ -1684,6 +1698,7 @@ void qtractorPluginParamWidget::toolButtonClicked (void)
 		}
 		m_pComboBox->setCurrentIndex(iIndex);
 		m_pComboBox->setToolTip(sPath);
+		m_pComboBox->blockSignals(bComboBox);
 		propertyChanged();
 	}
 }
@@ -1713,7 +1728,7 @@ void qtractorPluginParamWidget::propertyChanged (void)
 	if (m_pComboBox) {
 		const int iIndex = m_pComboBox->currentIndex();
 		if (iIndex >= 0)
-			value = m_pComboBox->itemData(iIndex).toString();
+			value = m_pComboBox->itemData(iIndex);
 	}
 
 	if (!value.isValid())
