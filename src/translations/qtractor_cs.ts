@@ -962,22 +962,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
 <context>
     <name>qtractorAudioMixerMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="627"/>
+        <location filename="../qtractorAudioMeter.cpp" line="601"/>
         <source>Gain (dB)</source>
         <translation>Zesílení (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="628"/>
+        <location filename="../qtractorAudioMeter.cpp" line="602"/>
         <source> dB</source>
         <translation> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="698"/>
+        <location filename="../qtractorAudioMeter.cpp" line="672"/>
         <source>Pan: %1</source>
         <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="707"/>
+        <location filename="../qtractorAudioMeter.cpp" line="681"/>
         <source>Gain: %1 dB</source>
         <translation>Zesílení: %1 dB</translation>
     </message>
@@ -10840,22 +10840,22 @@ Chcete uložit změny?</translation>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="599"/>
+        <location filename="../qtractorMidiMeter.cpp" line="590"/>
         <source>Volume (%)</source>
         <translation>Hlasitost (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="600"/>
+        <location filename="../qtractorMidiMeter.cpp" line="591"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="681"/>
+        <location filename="../qtractorMidiMeter.cpp" line="672"/>
         <source>Pan: %1</source>
         <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="691"/>
+        <location filename="../qtractorMidiMeter.cpp" line="682"/>
         <source>Volume: %1%</source>
         <translation>Hlasitost: %1%</translation>
     </message>

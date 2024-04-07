@@ -24,6 +24,8 @@
 
 #include "qtractorMeter.h"
 
+#include <QPixmap>
+
 
 // Forward declarations.
 class qtractorAudioMeter;
@@ -95,7 +97,7 @@ public:
 
 	// Constructor.
 	qtractorAudioMeter(
-		qtractorAudioMonitor *pAudioMonitor, QWidget *pParent = 0);
+		qtractorAudioMonitor *pAudioMonitor, QWidget *pParent = nullptr);
 
 	// Default destructor.
 	~qtractorAudioMeter();
@@ -115,10 +117,10 @@ public:
 	int iec_scale(float dB) const;
 	int iec_level(int iIndex) const;
 
-#ifdef CONFIG_GRADIENT
+	// Pixmap accessors.
 	const QPixmap& pixmap() const;
+
 	void updatePixmap();
-#endif
 
 	// Color/level indexes.
 	enum {
@@ -161,9 +163,7 @@ private:
 
 	float m_fScale0dB;
 
-#ifdef CONFIG_GRADIENT
-	QPixmap *m_pPixmap;
-#endif
+	QPixmap m_pixmap;
 
 	static QColor g_defaultColors[ColorCount];
 	static QColor g_currentColors[ColorCount];

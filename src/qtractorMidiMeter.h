@@ -24,6 +24,8 @@
 
 #include "qtractorMeter.h"
 
+#include <QPixmap>
+
 
 // Forward declarations.
 class qtractorMidiMeter;
@@ -143,10 +145,9 @@ public:
 	// Monitor reset.
 	void reset();
 
-#ifdef CONFIG_GRADIENT
+	// Pixmap accessors.
 	const QPixmap& pixmap() const;
 	void updatePixmap();
-#endif
 
 	// Color/level indexes.
 	enum {
@@ -173,9 +174,7 @@ private:
 	qtractorMidiMonitor    *m_pMidiMonitor;
 	qtractorMidiMeterValue *m_pMidiValue;
 
-#ifdef CONFIG_GRADIENT
-	QPixmap *m_pPixmap;
-#endif
+	QPixmap m_pixmap;
 
 	static QColor g_defaultColors[ColorCount];
 	static QColor g_currentColors[ColorCount];

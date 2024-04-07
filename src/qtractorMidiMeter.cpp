@@ -288,10 +288,6 @@ qtractorMidiMeter::qtractorMidiMeter (
 {
 	m_pMidiMonitor = pMidiMonitor;
 
-#ifdef CONFIG_GRADIENT
-	m_pPixmap = new QPixmap();
-#endif
-
 	m_pMidiValue = new qtractorMidiMeterValue(this);
 
 	boxLayout()->addWidget(m_pMidiValue);
@@ -305,10 +301,6 @@ qtractorMidiMeter::qtractorMidiMeter (
 // Default destructor.
 qtractorMidiMeter::~qtractorMidiMeter (void)
 {
-#ifdef CONFIG_GRADIENT
-	delete m_pPixmap;
-#endif
-
 	// No need to delete child widgets, Qt does it all for us
 	delete m_pMidiValue;
 }
@@ -321,11 +313,10 @@ void qtractorMidiMeter::reset (void)
 }
 
 
-#ifdef CONFIG_GRADIENT
-// Gradient pixmap accessor.
+// Pixmap accessors.
 const QPixmap& qtractorMidiMeter::pixmap (void) const
 {
-	return *m_pPixmap;
+	return m_pixmap;
 }
 
 void qtractorMidiMeter::updatePixmap (void)
@@ -333,15 +324,17 @@ void qtractorMidiMeter::updatePixmap (void)
 	const int w = QWidget::width();
 	const int h = QWidget::height();
 
+	m_pixmap = QPixmap(w, h);
+
+#ifdef CONFIG_GRADIENT
 	QLinearGradient grad(0, 0, 0, h);
 	grad.setColorAt(0.0f, color(ColorPeak));
 	grad.setColorAt(0.4f, color(ColorOver));
-
-	*m_pPixmap = QPixmap(w, h);
-
-	QPainter(m_pPixmap).fillRect(0, 0, w, h, grad);
-}
+	QPainter(&m_pixmap).fillRect(0, 0, w, h, grad);
+#else
+	QPainter(&m_pixmap).fillRect(0, 0, w, h, color(ColorOver));
 #endif
+}
 
 
 // Resize event handler.
@@ -349,9 +342,7 @@ void qtractorMidiMeter::resizeEvent ( QResizeEvent *pResizeEvent )
 {
 	qtractorMeter::setScale(float(QWidget::height()));
 
-#ifdef CONFIG_GRADIENT
 	updatePixmap();
-#endif
 
 	qtractorMeter::resizeEvent(pResizeEvent);
 }
