@@ -16,8 +16,8 @@
 #
 
 %define name    qtractor
-%define version 0.9.39
-%define release 82.1
+%define version 0.9.90
+%define release 1.1
 
 %define _prefix	/usr
 
@@ -205,6 +205,8 @@ cmake --install build
 %{_datadir}/%{name}/instruments/Standard*.ins
 
 %changelog
+* Fri Apr 12 2024 Rui Nuno Capela <rncbc@rncbc.org> 0.9.90
+- A Spring'24 Release Candidate.
 * Sat Jan 27 2024 Rui Nuno Capela <rncbc@rncbc.org> 0.9.39
 - A Winter'24 Release.
 * Thu Dec 21 2023 Rui Nuno Capela <rncbc@rncbc.org> 0.9.38
