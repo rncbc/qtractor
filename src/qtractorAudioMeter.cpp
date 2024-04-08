@@ -437,7 +437,7 @@ void qtractorAudioMeter::updatePixmap (void)
 
 	m_pixmap = QPixmap(w, h);
 
-#ifdef CONFIG_GRADIENT
+#if 1//def CONFIG_GRADIENT
 	const float f0dB = 1.0f - m_fScale0dB;
 	QLinearGradient grad(0, 0, 0, h);
 	grad.setColorAt(f0dB * 0.5f, color(ColorOver));

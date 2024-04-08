@@ -193,13 +193,8 @@ void qtractorMidiMeterValue::paintEvent ( QPaintEvent * )
 		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
-#ifdef CONFIG_GRADIENT
 	painter.drawPixmap(0, h - m_iValue,
 		pMidiMeter->pixmap(), 0, h - m_iValue, w, m_iValue);
-#else
-	painter.fillRect(0, h - m_iValue, w, m_iValue,
-		pMidiMeter->color(qtractorMidiMeter::ColorOver));
-#endif
 
 	painter.setPen(pMidiMeter->color(qtractorMidiMeter::ColorPeak));
 	painter.drawLine(0, h - m_iPeak, w, h - m_iPeak);
@@ -326,7 +321,7 @@ void qtractorMidiMeter::updatePixmap (void)
 
 	m_pixmap = QPixmap(w, h);
 
-#ifdef CONFIG_GRADIENT
+#if 1//def CONFIG_GRADIENT
 	QLinearGradient grad(0, 0, 0, h);
 	grad.setColorAt(0.0f, color(ColorPeak));
 	grad.setColorAt(0.4f, color(ColorOver));
