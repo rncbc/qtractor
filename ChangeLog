@@ -4,45 +4,42 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+0.9.90  2024-04-12  A Spring'24 Release Candidate.
 
 - MIDI Controller mappings are now shown on floating tool-tips.
-  (EXPERIMENTAL)
 
 - Custom color themes are now file based (*.conf); legacy still
-  preserved ntl. (EXPERIMENTAL)
+  preserved ntl.
 
 - Add default GM, GS and XG standard instruments definition file.
 
-- Old generic "Portuguese" translation (pt) has been corrected to  
+- Old generic "Portuguese" translation (pt) has been corrected to
   the more proper "Portuguese (Brazil)" locale (pt_BR).
 
 - Up and Down arrow-keys may now be used to change event values on
   the MIDI clip editor current selection (eg. note velocities).
-  (EXPERIMENTAL)
 
 - MIDI clip editor now featuring lollipops for all kind of candy
-  event values ;). (EXPERIMENTAL)
+  event values ;).
 
 - Make the minimum width of events on the MIDI clip editor larger,
   depending on screen resolution and horizontal zoom setting.
-  (EXPERIMENTAL)
 
 - Avoid issuing equivalent MIDI track channel volume and panning
   via GM standard controllers (CC#7 and CC#10 resp.) to mitigate
-  recursive or positive feedback loops. (EXPERIMENTAL) 
+  recursive or positive feedback loops.
 
 - Refined mouse-wheel control step size on the sliders of mixer
-  strips and generic/stock plugin editor dialogs. (EXPERIMENTAL)
+  strips and generic/stock plugin editor dialogs.
 
 - Fixed the build checks on whether to use old or newer style of
-  LV2 include headers. (EXPERIMENTAL)
+  LV2 include headers.
 
 - Introducing colored strips on the time ruler headers for loop
-  and punch recording ranges. (EXPERIMENTAL)
+  and punch recording ranges.
 
 - Fixed an off-by-one(-pixel) mispositioning of selected events,
-  while on the MIDI clip editor (aka piano-roll). (EXPERIMENTAL)
+  while on the MIDI clip editor (aka piano-roll).
 
 
 0.9.39  2024-01-27  A Winter'24 Release.

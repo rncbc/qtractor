@@ -319,33 +319,8 @@ void qtractorAudioMeterValue::paintEvent ( QPaintEvent * )
 		painter.fillRect(0, 0, w, h, Qt::gray);
 	}
 
-#ifdef CONFIG_GRADIENT
 	y = h - m_iValue;
 	painter.drawPixmap(0, y, pAudioMeter->pixmap(), 0, y, w, m_iValue);
-#else
-	y = m_iValue;
-	
-	int y_over = 0;
-	int y_curr = 0;
-
-	for (int i = qtractorAudioMeter::Color10dB;
-			i > qtractorAudioMeter::ColorOver && y >= y_over; --i) {
-		y_curr = pAudioMeter->iec_level(i);
-		if (y < y_curr) {
-			painter.fillRect(0, h - y, w, y - y_over,
-				pAudioMeter->color(i));
-		} else {
-			painter.fillRect(0, h - y_curr, w, y_curr - y_over,
-				pAudioMeter->color(i));
-		}
-		y_over = y_curr;
-	}
-
-	if (y > y_over) {
-		painter.fillRect(0, h - y, w, y - y_over,
-			pAudioMeter->color(qtractorAudioMeter::ColorOver));
-	}
-#endif
 
 	y = h - m_iPeak;
 	painter.setPen(pAudioMeter->color(m_iPeakColor));
@@ -376,10 +351,6 @@ qtractorAudioMeter::qtractorAudioMeter (
 	m_ppAudioValues = nullptr;
 	m_iRegenerate   = 0;
 
-#ifdef CONFIG_GRADIENT
-	m_pPixmap = new QPixmap();
-#endif
-
 	m_fScale0dB = 0.85f;
 
 	setPeakFalloff(QTRACTOR_AUDIO_METER_PEAK_FALLOFF);
@@ -394,10 +365,6 @@ qtractorAudioMeter::qtractorAudioMeter (
 // Default destructor.
 qtractorAudioMeter::~qtractorAudioMeter (void)
 {
-#ifdef CONFIG_GRADIENT
-	delete m_pPixmap;
-#endif
-
 	// No need to delete child widgets, Qt does it all for us
 	//for (unsigned short i = 0; i < m_iChannels; ++i)
 	//	delete m_ppAudioValues[i];
@@ -457,17 +424,20 @@ void qtractorAudioMeter::reset (void)
 }
 
 
-#ifdef CONFIG_GRADIENT
-// Gradient pixmap accessor.
+// Pixmap accessors.
 const QPixmap& qtractorAudioMeter::pixmap (void) const
 {
-	return *m_pPixmap;
+	return m_pixmap;
 }
 
 void qtractorAudioMeter::updatePixmap (void)
 {
 	const int w = QWidget::width();
 	const int h = QWidget::height();
+
+	m_pixmap = QPixmap(w, h);
+
+#if 1//def CONFIG_GRADIENT
 	const float f0dB = 1.0f - m_fScale0dB;
 	QLinearGradient grad(0, 0, 0, h);
 	grad.setColorAt(f0dB * 0.5f, color(ColorOver));
@@ -475,12 +445,18 @@ void qtractorAudioMeter::updatePixmap (void)
 	grad.setColorAt(f0dB + 0.1f, color(Color3dB));
 	grad.setColorAt(f0dB + 0.2f, color(Color6dB));
 	grad.setColorAt(f0dB + 0.6f, color(Color10dB));
-
-	*m_pPixmap = QPixmap(w, h);
-
-	QPainter(m_pPixmap).fillRect(0, 0, w, h, grad);
-}
+	QPainter(&m_pixmap).fillRect(0, 0, w, h, grad);
+#else
+	QPainter painter(&m_pixmap);
+	int y0 = 0;
+	for (int i = Color10dB; i > ColorOver; --i) {
+		const int y1 = iec_level(i);
+		painter.fillRect(0, h - y1, w, y1 - y0, color(i));
+		y0 = y1;
+	}
+	painter.fillRect(0, 0, w, h - y0, color(ColorOver));
 #endif
+}
 
 
 // Resize event handler.
@@ -493,9 +469,7 @@ void qtractorAudioMeter::resizeEvent ( QResizeEvent *pResizeEvent )
 	m_levels[Color6dB]  = iec_scale( -6.0f);
 	m_levels[Color10dB] = iec_scale(-10.0f);
 
-#ifdef CONFIG_GRADIENT
 	updatePixmap();
-#endif
 
 	if (m_iChannels > 0) {
 		const int w = QWidget::width();

@@ -898,22 +898,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorTrack.cpp" line="693"/>
         <source>%1 Record</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Nahrát</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="694"/>
         <source>%1 Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Ztlumit</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="695"/>
         <source>%1 Solo</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Sólo</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="597"/>
         <source>MIDI Controller: %1, %2, %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovladač MIDI: %1, %2, %3</translation>
     </message>
 </context>
 <context>
@@ -962,22 +962,22 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
 <context>
     <name>qtractorAudioMixerMeter</name>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="627"/>
+        <location filename="../qtractorAudioMeter.cpp" line="601"/>
         <source>Gain (dB)</source>
         <translation>Zesílení (dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="628"/>
+        <location filename="../qtractorAudioMeter.cpp" line="602"/>
         <source> dB</source>
         <translation> dB</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="698"/>
+        <location filename="../qtractorAudioMeter.cpp" line="672"/>
         <source>Pan: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioMeter.cpp" line="707"/>
+        <location filename="../qtractorAudioMeter.cpp" line="681"/>
         <source>Gain: %1 dB</source>
         <translation>Zesílení: %1 dB</translation>
     </message>
@@ -10840,22 +10840,22 @@ Chcete uložit změny?</translation>
 <context>
     <name>qtractorMidiMixerMeter</name>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="599"/>
+        <location filename="../qtractorMidiMeter.cpp" line="585"/>
         <source>Volume (%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hlasitost (%)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="600"/>
+        <location filename="../qtractorMidiMeter.cpp" line="586"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="681"/>
+        <location filename="../qtractorMidiMeter.cpp" line="667"/>
         <source>Pan: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyvážení (Pan): %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiMeter.cpp" line="691"/>
+        <location filename="../qtractorMidiMeter.cpp" line="677"/>
         <source>Volume: %1%</source>
         <translation>Hlasitost: %1%</translation>
     </message>
@@ -11658,7 +11658,7 @@ P &lt; 0 : zpomalení posunu.
     <message>
         <location filename="../qtractorMeter.cpp" line="321"/>
         <source>Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Pan</translation>
     </message>
 </context>
 <context>
@@ -13263,7 +13263,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="260"/>
         <source>Save Palette - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit paletu - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="263"/>
@@ -14389,7 +14389,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="135"/>
         <source>R&amp;eset</source>
-        <translation type="unfinished"></translation>
+        <translation>Obnovit &amp;výchozí</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="215"/>
