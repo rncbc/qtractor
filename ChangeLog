@@ -6,6 +6,8 @@ ChangeLog
 
 0.9.90  2024-04-12  A Spring'24 Release Candidate.
 
+- Prepping the unthinkable (aka. v1.0.0-rc1)
+
 - MIDI Controller mappings are now shown on floating tool-tips.
 
 - Custom color themes are now file based (*.conf); legacy still
