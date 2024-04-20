@@ -897,22 +897,22 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorTrack.cpp" line="693"/>
         <source>%1 Record</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrement %1</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="694"/>
         <source>%1 Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Muet %1</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="695"/>
         <source>%1 Solo</source>
-        <translation type="unfinished"></translation>
+        <translation>Solo %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="597"/>
         <source>MIDI Controller: %1, %2, %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrôleur MIDI : %1, %2, %3</translation>
     </message>
 </context>
 <context>
@@ -973,7 +973,7 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="672"/>
         <source>Pan: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pan : %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="681"/>
@@ -10840,7 +10840,7 @@ Voulez-vous sauvegarder les changements ?</translation>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="585"/>
         <source>Volume (%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume (%)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="586"/>
@@ -10850,7 +10850,7 @@ Voulez-vous sauvegarder les changements ?</translation>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="667"/>
         <source>Pan: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pan : %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="677"/>
@@ -11656,7 +11656,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMeter.cpp" line="321"/>
         <source>Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Pan</translation>
     </message>
 </context>
 <context>
@@ -13262,7 +13262,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="260"/>
         <source>Save Palette - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder la palette - %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="263"/>
@@ -14387,7 +14387,7 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="135"/>
         <source>R&amp;eset</source>
-        <translation type="unfinished"></translation>
+        <translation>R&amp;einitialisation</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="215"/>
