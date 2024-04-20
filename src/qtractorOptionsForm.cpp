@@ -492,10 +492,10 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.PluginPathDownToolButton,
 		SIGNAL(clicked()),
 		SLOT(moveDownPluginPath()));
-#ifndef CONFIG_LV2_PRESETS
+#ifdef CONFIG_LV2_PRESETS
 	QObject::connect(m_ui.Lv2PresetDirComboBox,
 		SIGNAL(editTextChanged(const QString&)),
-		SLOT(pluginPathsChanged()));
+		SLOT(changed()));
 	QObject::connect(m_ui.Lv2PresetDirToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseLv2PresetDir()));
