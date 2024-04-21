@@ -4,6 +4,11 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Prepping next release candidate (aka. v1.0.0-rc2) (Qt >= 6.7)
+
+
 0.9.90  2024-04-12  A Spring'24 Release Candidate.
 
 - Prepping the unthinkable (aka. v1.0.0-rc1)
