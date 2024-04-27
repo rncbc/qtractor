@@ -11,37 +11,25 @@
 # case the license is the MIT License). An "Open Source License" is a
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
-#
+
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-%define name    qtractor
-%define version 0.9.90
-%define release 1.1
-
-%define _prefix	/usr
-
-%if %{defined fedora}
-%define debug_package %{nil}
-%endif
+Summary:	An Audio/MIDI multi-track sequencer
+Name:		qtractor
+Version:	0.9.90
+Release:	1.1
+License:	GPL-2.0-or-later
+Group:		Productivity/Multimedia/Sound/Midi
+Source:		%{name}-%{version}.tar.gz
+URL:		https://qtractor.org/
+#Packager:	rncbc.org
 
 %if 0%{?fedora_version} >= 34 || 0%{?suse_version} > 1500 || ( 0%{?sle_version} == 150200 && 0%{?is_opensuse} )
 %define qt_major_version  6
 %else
 %define qt_major_version  5
 %endif
-
-Summary:	An Audio/MIDI multi-track sequencer
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-License:	GPL-2.0+
-Group:		Productivity/Multimedia/Sound/Midi
-Source0:	%{name}-%{version}.tar.gz
-URL:		https://qtractor.org/
-Packager:	rncbc.org
-
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires:	coreutils
 BuildRequires:	pkgconfig
@@ -137,6 +125,7 @@ are the main infrastructures to evolve as a fairly-featured
 Linux Desktop Audio Workstation GUI, specially dedicated to
 the personal home-studio.
 
+
 %prep
 %setup -q
 
@@ -160,11 +149,8 @@ cmake --install build
 %mime_database_postun
 %desktop_database_postun
 
-%clean
-[ -d "%{buildroot}" -a "%{buildroot}" != "/" ] && %__rm -rf "%{buildroot}"
 
 %files
-%defattr(-,root,root)
 %license LICENSE
 %doc README TRANSLATORS ChangeLog
 %dir %{_libdir}/%{name}
@@ -203,6 +189,7 @@ cmake --install build
 %{_datadir}/%{name}/audio/metro_*.wav
 %{_datadir}/%{name}/palette/*.conf
 %{_datadir}/%{name}/instruments/Standard*.ins
+
 
 %changelog
 * Fri Apr 12 2024 Rui Nuno Capela <rncbc@rncbc.org> 0.9.90
