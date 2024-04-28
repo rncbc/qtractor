@@ -1,4 +1,4 @@
-Native VST plug-in support
+Native VST2 plug-in support
 --------------------------
 
 Building for native VST support is not that easy. To say the least,

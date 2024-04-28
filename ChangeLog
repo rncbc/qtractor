@@ -6,7 +6,9 @@ ChangeLog
 
 GIT HEAD
 
-- Prepping next release candidate (aka. v1.0.0-rc2) (Qt >= 6.7)
+- Prepping the unthinkable (aka. v1.0.0-rc2)
+
+- Updated to latest framework level (Qt >= 6.7)
 
 
 0.9.90  2024-04-12  A Spring'24 Release Candidate.
