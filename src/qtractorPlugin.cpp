@@ -259,6 +259,10 @@ qtractorPlugin::qtractorPlugin (
 	if (m_pList && m_pType)
 		m_iUniqueID = m_pList->createUniqueID(m_pType);
 
+	// Set instance label...
+	if (m_pType)
+		m_sLabel = m_pType->label();
+
 	// Activate subject properties.
 	m_activateSubject.setName(QObject::tr("Activate"));
 	m_activateSubject.setToggled(true);
@@ -1581,7 +1585,7 @@ bool qtractorPlugin::savePlugin (
 	pDocument->saveTextElement("index",
 		QString::number(pType->index()), pElement);
 	pDocument->saveTextElement("label",
-		pType->label(), pElement);
+		label(), pElement);
 	pDocument->saveTextElement("preset",
 		preset(), pElement);
 	pDocument->saveTextElement("direct-access-param",
@@ -2322,19 +2326,21 @@ qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
 
 #if 0
 	if (!sFilename.isEmpty() && !sLabel.isEmpty() &&
-		((pPlugin == nullptr) || ((pPlugin->type())->label() != sLabel))) {
+		((pPlugin == nullptr) || ((pPlugin->label() != sLabel))) {
 		iIndex = 0;
 		do {
 			if (pPlugin) delete pPlugin;
 			pPlugin = qtractorPluginFile::createPlugin(this,
 				sFilename, iIndex++, typeHint);
-		} while (pPlugin && (pPlugin->type())->label() != sLabel);
+		} while (pPlugin && (pPlugin->label() != sLabel));
 	}
 #endif
 
 	if (pPlugin) {
 		if (iUniqueID > 0)
 			pPlugin->setUniqueID(iUniqueID);
+		if (!sLabel.isEmpty())
+			pPlugin->setLabel(sLabel);
 		if (iActivateSubjectIndex > 0)
 			pPlugin->setActivateSubjectIndex(iActivateSubjectIndex);
 		pPlugin->setPreset(sPreset);
