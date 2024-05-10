@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a display and port-name filtering issue that was present
+  ever since on the Connections widget. (GH Issue #445)
+
+
+0.9.91  2024-05-03  A Spring'24 Release Candidate 2.
+
 - Prepping the unthinkable (aka. v1.0.0-rc2)
 
 - Updated to latest framework level (Qt >= 6.7)
