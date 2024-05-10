@@ -1,7 +1,7 @@
 // qtractorInsertPlugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
    Copyright (C) 2011, Holger Dehnhardt.
 
    This program is free software; you can redistribute it and/or
@@ -557,10 +557,14 @@ void qtractorAudioInsertPlugin::setChannels ( unsigned short iChannels )
 	// Audio bus name -- it must be unique...
 	int iBusName = 1;
 	const QString sBusNamePrefix("Insert_%1");
-	QString sBusName = sBusNamePrefix.arg(iBusName);
+	QString sBusName = label(); // HACK: take previously saved label.
+	if (sBusName.isEmpty() || sBusName == pType->label())
+		sBusName = sBusNamePrefix.arg(iBusName);
 	while (pAudioEngine->findBus(sBusName)
 		|| pAudioEngine->findBusEx(sBusName))
 		sBusName = sBusNamePrefix.arg(++iBusName);
+
+	setLabel(sBusName); // HACK: remember this label.
 
 	// Create the private audio bus...
 	m_pAudioBus = new qtractorAudioBus(pAudioEngine, sBusName,
@@ -875,11 +879,15 @@ void qtractorMidiInsertPlugin::setChannels ( unsigned short iChannels )
 
 	// MIDI bus name -- it must be unique...
 	int iBusName = 1;
-	const QString& sBusNamePrefix = "Insert_%1";
-	QString sBusName = sBusNamePrefix.arg(iBusName);
+	const QString sBusNamePrefix("Insert_%1");
+	QString sBusName = label(); // HACK: take previously saved label.
+	if (sBusName.isEmpty() || sBusName == pType->label())
+		sBusName = sBusNamePrefix.arg(iBusName);
 	while (pMidiEngine->findBus(sBusName)
 		|| pMidiEngine->findBusEx(sBusName))
 		sBusName = sBusNamePrefix.arg(++iBusName);
+
+	setLabel(sBusName); // HACK: remember this label.
 
 	// Create the private audio bus...
 	m_pMidiBus = new qtractorMidiBus(pMidiEngine, sBusName,

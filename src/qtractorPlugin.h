@@ -248,6 +248,12 @@ public:
 	unsigned long uniqueID() const
 		{ return m_iUniqueID; }
 
+	// Instance label accessors.
+	void setLabel(const QString& sLabel)
+		{ m_sLabel = sLabel; }
+	const QString& label() const
+		{ return m_sLabel; }
+
 	// Activation methods.
 	void setActivated(bool bActivated);
 	bool isActivated() const;
@@ -609,6 +615,9 @@ private:
 
 	// Unique identifier in chain.
 	unsigned long m_iUniqueID;
+
+	// Instance label (saved).
+	QString m_sLabel;
 
 	// Number of instances in chain node.
 	unsigned short m_iInstances;
