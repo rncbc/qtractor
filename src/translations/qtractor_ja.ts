@@ -91,7 +91,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="541"/>
+        <location filename="../qtractorClip.cpp" line="545"/>
         <source>Name:	%1</source>
         <translation>名前:	%1</translation>
     </message>
@@ -101,14 +101,14 @@ Audio:	%1 channels, %2 Hz</source>
         <translation> (テイク %1/%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="549"/>
+        <location filename="../qtractorClip.cpp" line="553"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation>開始:	%1	オフセット:	%2
 終了:	%3	長さ:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="557"/>
+        <location filename="../qtractorClip.cpp" line="561"/>
         <source>File:	%1</source>
         <translation>ファイル:	%1</translation>
     </message>

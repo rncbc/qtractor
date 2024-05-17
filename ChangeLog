@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Improved legibility to all clip title labels (color contrast). 
+
 - Save/load the correct order and labeling of audio/MIDI send/
   /return pseudo-plugin inserts. (EXPERIMENTAL) (GH Issue #445)
 
