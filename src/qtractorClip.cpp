@@ -346,7 +346,11 @@ void qtractorClip::drawClip (
 		rect.setLeft(rect.left() - pSession->pixelFromFrame(iClipOffset) + 1);
 
 	// Draw clip name label...
-	//pPainter->setPen(Qt::white);
+	const QColor& rgbFore
+		= m_pTrack->foreground();
+	pPainter->setPen(rgbFore.value() < 0x7f
+		? rgbFore.lighter(200)
+		: rgbFore.darker(200));
 	pPainter->drawText(rect,
 		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, clipTitle());
 
