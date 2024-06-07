@@ -881,7 +881,7 @@ static void qtractor_vst2_scan_file ( const QString& sFilename )
 	QTextStream sout(stdout);
 	unsigned long i = 0;
 	while (plugin.open_descriptor(i)) {
-		sout << "VST|";
+		sout << "VST2|";
 		sout << plugin.name() << '|';
 		sout << plugin.numInputs()     << ':' << plugin.numOutputs()     << '|';
 		sout << plugin.numMidiInputs() << ':' << plugin.numMidiOutputs() << '|';
