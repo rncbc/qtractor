@@ -603,11 +603,13 @@ void qtractorPluginFactory::reset (void)
 	Scanners::ConstIterator iter = m_scanners.constBegin();
 	const Scanners::ConstIterator& iter_end = m_scanners.constEnd();
 	for ( ; iter != iter_end; ++iter) {
+		const qtractorPluginType::Hint typeHint = iter.key();
 		Scanner *pScanner = iter.value();
 		if (pScanner) {
+			pScanner->close();
 			const int iDummyPluginHash
 				= pScanner->dummyPluginHash();
-			switch (iter.key()) {
+			switch (typeHint) {
 			case qtractorPluginType::Ladspa:
 				pOptions->iDummyLadspaHash = iDummyPluginHash;
 				break;
@@ -629,7 +631,6 @@ void qtractorPluginFactory::reset (void)
 			default:
 				break;
 			}
-			pScanner->close();
 		}
 	}
 
@@ -1046,9 +1047,6 @@ void qtractorPluginFactory::Scanner::close (void)
 
 	// Cleanup cache...
 	m_list.clear();
-
-	// Scan is defnitively closed.
-	m_iDummyPluginHash = 0;
 }
 
 
