@@ -163,7 +163,7 @@ public:
 	Scanner(qtractorPluginType::Hint typeHint, QObject *pParent = nullptr);
 
 	// Open/close method.
-	bool open(bool bReset = false);
+	bool open(int iDummyPluginHash = 0);
 	void close();
 
 	// Service methods.
@@ -171,6 +171,9 @@ public:
 
 	// Absolute cache file path.
 	QString cacheFilePath() const;
+
+	// Cache hash result.
+	int dummyPluginHash() const;
 
 protected slots:
 
@@ -186,7 +189,7 @@ protected:
 	bool start();
 
 	// Service methods (internal)
-	bool addTypes(const QStringList& list);
+	bool addTypes(const QStringList& list, bool bDummyPluginType = false);
 
 private:
 
@@ -202,8 +205,8 @@ private:
 	// Cache hash list.
 	QHash<QString, QStringList> m_list;
 
-	// Cache reset flag.
-	bool m_bReset;
+	// Cache hash result.
+	int m_iDummyPluginHash;
 };
 
 

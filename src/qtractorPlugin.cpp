@@ -1386,10 +1386,6 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 	if (pSession == nullptr)
 		return;
 
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions == nullptr)
-		return;
-
 	pCurveFile->clear();
 	pCurveFile->setBaseDir(pSession->sessionDir());
 
@@ -1404,8 +1400,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 			pCurveItem->name = pParam->name();
 			pCurveItem->index = pParam->index();
-			if (pParam->isToggled()	|| pParam->isInteger()
-				|| !pOptions->bSaveCurve14bit) {
+			if (pParam->isToggled()	|| pParam->isInteger()) {
 				const unsigned short controller = (iItem % 0x7f);
 				if (controller == 0x00 || controller == 0x20)
 					++iItem; // Avoid bank-select controllers, please.
@@ -1441,8 +1436,7 @@ void qtractorPlugin::saveCurveFile ( qtractorDocument *pDocument,
 			qtractorCurveFile::Item *pCurveItem = new qtractorCurveFile::Item;
 			pCurveItem->name = pProp->key();
 			pCurveItem->index = pProp->key_index();
-			if (pProp->isToggled()	|| pProp->isInteger()
-				|| !pOptions->bSaveCurve14bit) {
+			if (pProp->isToggled()	|| pProp->isInteger()) {
 				const unsigned short controller = (iItem % 0x7f);
 				if (controller == 0x00 || controller == 0x20)
 					++iItem; // Avoid bank-select controllers, please.

@@ -263,19 +263,12 @@ public:
 	bool bQueryEditorType;
 
 	// Out-of-process plugin scanning and cache option.
-	bool bDummyPluginScan;
 	int  iDummyLadspaHash;
 	int  iDummyDssiHash;
 	int  iDummyVst2Hash;
 	int  iDummyVst3Hash;
 	int  iDummyClapHash;
 	int  iDummyLv2Hash;
-
-	// LV2 plugin specific options.
-	bool bLv2DynManifest;
-
-	// Automation preferred resolution (14bit).
-	bool bSaveCurve14bit;
 
 	// The instrument file list.
 	QStringList instrumentFiles;
