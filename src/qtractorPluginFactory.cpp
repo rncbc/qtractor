@@ -846,53 +846,8 @@ bool qtractorPluginFactory::addTypes (
 	Scanner *pScanner = m_scanners.value(typeHint, nullptr);
 	if (pScanner)
 		return pScanner->addTypes(typeHint, sFilename);
-
-#ifdef CONFIG_LV2
-	// Try first URI-based plugin types (LV2...)
-	if (typeHint == qtractorPluginType::Lv2) {
-		qtractorPluginType *pType
-			= qtractorLv2PluginType::createType(sFilename);
-		if (pType == nullptr)
-			return false;
-		if (pType->open()) {
-			addType(pType);
-			pType->close();
-			return true;
-		} else {
-			delete pType;
-			return false;
-		}
-	}
-#endif
-
-	// Try all other file-based types (LADSPA, DSSI, VST...)
-	qtractorPluginFile *pFile = qtractorPluginFile::addFile(sFilename);
-	if (pFile == nullptr)
+	else
 		return false;
-
-	// Add to temporary blacklist...
-	QFile temp_file(blacklistTempFilePath());
-	if (temp_file.exists())
-		readBlacklist(temp_file);
-	writeBlacklist(temp_file, QStringList() << sFilename);
-
-	unsigned long iIndex = 0;
-	while (addTypes(typeHint, pFile, iIndex))
-		++iIndex;
-
-	// If it reaches here safely, then there's
-	// no use to temporary blacklist anymore...
-	temp_file.remove();
-
-	if (iIndex > 0) {
-		pFile->close();
-		return true;
-	}
-
-	// We probably have nothing here.
-	qtractorPluginFile::removeFile(pFile);
-
-	return false;
 }
 
 
