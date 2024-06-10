@@ -101,6 +101,9 @@ protected:
 	bool addTypes(qtractorPluginType::Hint typeHint,
 		qtractorPluginFile *pFile, unsigned long iIndex);
 
+	// Absolute cache file path registration.
+	void addCacheFilePath(qtractorPluginType::Hint typeHint);
+
 	// Blacklist file paths.
 	QString blacklistTempFilePath() const;
 	QString blacklistDataFilePath() const;
@@ -163,14 +166,11 @@ public:
 	Scanner(qtractorPluginType::Hint typeHint, QObject *pParent = nullptr);
 
 	// Open/close method.
-	bool open(int iDummyPluginHash = 0);
+	bool open(const QString& sCacheFilePath, int iDummyPluginHash = 0);
 	void close();
 
 	// Service methods.
 	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
-
-	// Absolute cache file path.
-	QString cacheFilePath() const;
 
 	// Cache hash result.
 	int dummyPluginHash() const;
