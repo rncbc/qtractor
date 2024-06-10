@@ -13907,7 +13907,7 @@ Are you sure?</source>
         <translation>П&amp;ересканувати</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="240"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="246"/>
         <source>Plugin scanning in progress...</source>
         <translation>Виконуємо пошук додатків…</translation>
     </message>

@@ -13914,7 +13914,7 @@ Posso continuar?</translation>
         <translation>Instâncias</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="240"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="246"/>
         <source>Plugin scanning in progress...</source>
         <translation>Procura por plugins em processo...</translation>
     </message>
