@@ -2320,7 +2320,7 @@ qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
 
 #if 0
 	if (!sFilename.isEmpty() && !sLabel.isEmpty() &&
-		((pPlugin == nullptr) || ((pPlugin->label() != sLabel))) {
+		((pPlugin == nullptr) || (pPlugin->label() != sLabel))) {
 		iIndex = 0;
 		do {
 			if (pPlugin) delete pPlugin;

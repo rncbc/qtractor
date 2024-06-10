@@ -13806,7 +13806,7 @@ Are you sure?</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="240"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="246"/>
         <source>Plugin scanning in progress...</source>
         <translation>Выполняется сканирование эффектов</translation>
     </message>

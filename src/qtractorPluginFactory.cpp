@@ -85,6 +85,27 @@ qtractorPluginFactory *qtractorPluginFactory::getInstance (void)
 qtractorPluginFactory::qtractorPluginFactory ( QObject *pParent )
 	: QObject(pParent), m_typeHint(qtractorPluginType::Any)
 {
+	// Register cache file paths...
+	//m_clearFilePaths.clear();
+#ifdef CONFIG_LADSPA
+	addCacheFilePath(qtractorPluginType::Ladspa);
+#endif
+#ifdef CONFIG_DSSI
+	addCacheFilePath(qtractorPluginType::Dssi);
+#endif
+#ifdef CONFIG_VST2
+	addCacheFilePath(qtractorPluginType::Vst2);
+#endif
+#ifdef CONFIG_VST3
+	addCacheFilePath(qtractorPluginType::Vst3);
+#endif
+#ifdef CONFIG_CLAP
+	addCacheFilePath(qtractorPluginType::Clap);
+#endif
+#ifdef CONFIG_LV2
+	addCacheFilePath(qtractorPluginType::Lv2);
+#endif
+
 	// Load persistent blacklist...
 	//m_blacklist.clear();
 	QFile data_file(blacklistDataFilePath());
@@ -118,6 +139,8 @@ qtractorPluginFactory::~qtractorPluginFactory (void)
 	if (data_file.exists())
 		data_file.remove();
 	m_blacklist.clear();
+
+	m_cacheFilePaths.clear();
 }
 
 
@@ -363,6 +386,27 @@ const QStringList& qtractorPluginFactory::blacklist (void) const
 }
 
 
+// Absolute cache file path registration.
+void qtractorPluginFactory::addCacheFilePath (
+	qtractorPluginType::Hint typeHint )
+{
+	const QString& sCacheName = "qtractor_"
+		+ qtractorPluginType::textFromHint(typeHint).toLower()
+		+ "_scan.cache";
+	const QString& sCacheDir
+	#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
+		= QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+	#else
+		= QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+	#endif
+	const QFileInfo fi(sCacheDir, sCacheName);
+	const QDir& dir = fi.absoluteDir();
+	if (!dir.exists())
+		dir.mkpath(dir.path());
+	m_cacheFilePaths.insert(typeHint, fi.absoluteFilePath());
+}
+
+
 // Absolute temporary blacklist file path.
 QString qtractorPluginFactory::blacklistTempFilePath (void) const
 {
@@ -469,17 +513,16 @@ bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 		break;
 	}
 
-	Scanner *pScanner = new Scanner(typeHint, this);
-	if (pScanner->open(iDummyPluginHash)) {
-		m_scanners.insert(typeHint, pScanner);
-		// Remember to cleanup cache later, when applicable...
-		const QString& sCacheFilePath = pScanner->cacheFilePath();
-		m_cacheFilePaths.insert(typeHint, sCacheFilePath);
-		// Done.
-		return true;
-	}
+	const QString& sCacheFilePath = m_cacheFilePaths.value(typeHint);
+	if (sCacheFilePath.isEmpty())
+		return false;
 
-	return false;
+	Scanner *pScanner = new Scanner(typeHint, this);
+	if (!pScanner->open(sCacheFilePath, iDummyPluginHash))
+		return false;
+
+	m_scanners.insert(typeHint, pScanner);
+	return true;
 }
 
 
@@ -650,19 +693,9 @@ void qtractorPluginFactory::clear (void)
 
 void qtractorPluginFactory::clearAll ( qtractorPluginType::Hint typeHint )
 {
-	if (typeHint == qtractorPluginType::Any) {
-		CacheFilePaths::ConstIterator iter = m_cacheFilePaths.constBegin();
-		const CacheFilePaths::ConstIterator& iter_end = m_cacheFilePaths.constEnd();
-		for ( ; iter != iter_end; ++iter) {
-			const QString& sCacheFilePath = iter.value();
-			if (!sCacheFilePath.isEmpty())
-				QFile::remove(sCacheFilePath);
-		}
-	} else {
-		const QString& sCacheFilePath = m_cacheFilePaths.value(typeHint);
-		if (!sCacheFilePath.isEmpty())
-			QFile::remove(sCacheFilePath);
-	}
+	const QString& sCacheFilePath = m_cacheFilePaths.value(typeHint);
+	if (!sCacheFilePath.isEmpty())
+		QFile::remove(sCacheFilePath);
 
 	clear();
 }
@@ -931,10 +964,11 @@ qtractorPluginFactory::Scanner::Scanner (
 
 
 // Open/start method.
-bool qtractorPluginFactory::Scanner::open ( int iDummyPluginHash )
+bool qtractorPluginFactory::Scanner::open (
+	const QString& sCacheFilePath, int iDummyPluginHash )
 {
 	// Cache file setup...
-	m_file.setFileName(cacheFilePath());
+	m_file.setFileName(sCacheFilePath);
 	m_list.clear();
 
 	// Open and read cache file, whether applicable...
@@ -1192,26 +1226,6 @@ bool qtractorPluginFactory::Scanner::addTypes (
 	}
 
 	return true;
-}
-
-
-// Absolute cache file path.
-QString qtractorPluginFactory::Scanner::cacheFilePath (void) const
-{
-	const QString& sCacheName = "qtractor_"
-		+ qtractorPluginType::textFromHint(m_typeHint).toLower()
-		+ "_scan.cache";
-	const QString& sCacheDir
-	#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
-		= QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-	#else
-		= QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
-	#endif
-	const QFileInfo fi(sCacheDir, sCacheName);
-	const QDir& dir = fi.absoluteDir();
-	if (!dir.exists())
-		dir.mkpath(dir.path());
-	return fi.absoluteFilePath();
 }
 
 

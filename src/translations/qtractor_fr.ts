@@ -13898,7 +13898,7 @@ Are you sure?</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="240"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="246"/>
         <source>Plugin scanning in progress...</source>
         <translation>Scan des greffons en cours...</translation>
     </message>

@@ -218,7 +218,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
+        <enum>QSizePolicy::Minimum</enum>
        </property>
        <property name="sizeHint" >
         <size>
@@ -230,6 +230,12 @@
      </item>
      <item>
       <widget class="QProgressBar" name="PluginScanProgressBar" >
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize" >
         <size>
          <width>240</width>
@@ -247,7 +253,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
+        <enum>QSizePolicy::Minimum</enum>
        </property>
        <property name="sizeHint" >
         <size>

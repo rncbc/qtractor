@@ -13782,7 +13782,7 @@ Are you sure?</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.ui" line="240"/>
+        <location filename="../qtractorPluginSelectForm.ui" line="246"/>
         <source>Plugin scanning in progress...</source>
         <translation type="unfinished"></translation>
     </message>
