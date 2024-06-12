@@ -693,9 +693,19 @@ void qtractorPluginFactory::clear (void)
 
 void qtractorPluginFactory::clearAll ( qtractorPluginType::Hint typeHint )
 {
-	const QString& sCacheFilePath = m_cacheFilePaths.value(typeHint);
-	if (!sCacheFilePath.isEmpty())
-		QFile::remove(sCacheFilePath);
+	if (typeHint == qtractorPluginType::Any) {
+		CacheFilePaths::ConstIterator iter = m_cacheFilePaths.constBegin();
+		const CacheFilePaths::ConstIterator& iter_end = m_cacheFilePaths.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			const QString& sCacheFilePath = iter.value();
+			if (!sCacheFilePath.isEmpty())
+				QFile::remove(sCacheFilePath);
+		}
+	} else {
+		const QString& sCacheFilePath = m_cacheFilePaths.value(typeHint);
+		if (!sCacheFilePath.isEmpty())
+			QFile::remove(sCacheFilePath);
+	}
 
 	clear();
 }

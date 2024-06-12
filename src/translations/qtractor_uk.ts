@@ -13912,17 +13912,17 @@ Are you sure?</source>
         <translation>Виконуємо пошук додатків…</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="342"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="347"/>
         <source>GUI</source>
         <translation>Інтерфейс</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="344"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="349"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="346"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="351"/>
         <source>RT</source>
         <translation>РЧ</translation>
     </message>

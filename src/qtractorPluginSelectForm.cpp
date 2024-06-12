@@ -25,6 +25,7 @@
 
 #include "qtractorOptions.h"
 
+#include <QApplication>
 #include <QHeaderView>
 #include <QPushButton>
 #include <QLineEdit>
@@ -267,7 +268,11 @@ void qtractorPluginSelectForm::rescan (void)
 		qtractorPluginType::Hint typeHint
 			= qtractorPluginType::hintFromText(
 				m_ui.PluginTypeComboBox->itemText(iTypeHint));
-		pPluginFactory->clear();
+		if (QApplication::keyboardModifiers()
+			& (Qt::ShiftModifier | Qt::ControlModifier))
+			pPluginFactory->clearAll(typeHint);
+		else
+			pPluginFactory->clear();
 	}
 
 	refresh();

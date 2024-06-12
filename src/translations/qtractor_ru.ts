@@ -13716,17 +13716,17 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginSelectForm</name>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="342"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="347"/>
         <source>GUI</source>
         <translation>GUI</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="344"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="349"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="346"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="351"/>
         <source>RT</source>
         <translation>RT</translation>
     </message>
