@@ -13905,17 +13905,17 @@ Are you sure?</source>
         <translation>再検索(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="342"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="347"/>
         <source>GUI</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="344"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="349"/>
         <source>EXT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="346"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="351"/>
         <source>RT</source>
         <translation></translation>
     </message>
