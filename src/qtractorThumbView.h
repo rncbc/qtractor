@@ -44,7 +44,7 @@ class qtractorThumbView : public QFrame
 public:
 
 	// Constructor.
-	qtractorThumbView(QWidget *pParent = 0);
+	qtractorThumbView(QWidget *pParent = nullptr);
 
 	// Update playhead-position.
 	void updatePlayHead(unsigned long iPlayHead);

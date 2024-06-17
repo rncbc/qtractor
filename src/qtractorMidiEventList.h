@@ -42,7 +42,7 @@ class qtractorMidiEventListView : public QTreeView
 public:
 
 	// Constructor.
-	qtractorMidiEventListView(QWidget *pParent = 0);
+	qtractorMidiEventListView(QWidget *pParent = nullptr);
 
 	// Destructor.
 	~qtractorMidiEventListView();
@@ -95,7 +95,7 @@ class qtractorMidiEventList : public QDockWidget
 public:
 
 	// Constructor.
-	qtractorMidiEventList(QWidget *pParent = 0);
+	qtractorMidiEventList(QWidget *pParent = nullptr);
 
 	// Destructor.
 	~qtractorMidiEventList();

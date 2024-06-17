@@ -60,7 +60,7 @@ public:
 
 	// Constructor.
 	qtractorTrackListButtons(
-		qtractorTrack *pTrack, QWidget *pParent = 0);
+		qtractorTrack *pTrack, QWidget *pParent = nullptr);
 
 	// Local child widgets accessors.
 	qtractorTrackButton *recordButton() const
@@ -95,7 +95,7 @@ class qtractorTrackList : public qtractorScrollView
 public:
 
 	// Constructor.
-	qtractorTrackList(qtractorTracks *pTracks, QWidget *pParent = 0);
+	qtractorTrackList(qtractorTracks *pTracks, QWidget *pParent = nullptr);
 	// Destructor.
 	~qtractorTrackList();
 

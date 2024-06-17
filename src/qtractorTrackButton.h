@@ -39,7 +39,7 @@ class qtractorMidiControlButton : public qtractorObserverWidget<QPushButton>
 public:
 
 	// Constructor.
-	qtractorMidiControlButton(QWidget *pParent = 0);
+	qtractorMidiControlButton(QWidget *pParent = nullptr);
 
 protected slots:
 
@@ -70,7 +70,7 @@ public:
 
 	// Constructor.
 	qtractorTrackButton(qtractorTrack *pTrack,
-		qtractorTrack::ToolType toolType, QWidget *pParent = 0);
+		qtractorTrack::ToolType toolType, QWidget *pParent = nullptr);
 
 	// Destructor.
 	~qtractorTrackButton();

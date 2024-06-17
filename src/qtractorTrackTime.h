@@ -47,7 +47,7 @@ class qtractorTrackTime : public qtractorScrollView
 public:
 
 	// Constructor.
-	qtractorTrackTime(qtractorTracks *pTracks, QWidget *pParent = 0);
+	qtractorTrackTime(qtractorTracks *pTracks, QWidget *pParent = nullptr);
 
 	// Rectangular contents update.
 	void updateContents(const QRect& rect);

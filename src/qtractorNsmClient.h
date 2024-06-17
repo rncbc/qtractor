@@ -1,7 +1,7 @@
 // qtractorNsmClient.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -39,7 +39,7 @@ class qtractorNsmClient : public QObject
 public:
 
 	// Constructor.
-	qtractorNsmClient(const QString& nsm_url, QObject *pParent = 0);
+	qtractorNsmClient(const QString& nsm_url, QObject *pParent = nullptr);
 
 	// Destructor.
 	~qtractorNsmClient();
