@@ -128,7 +128,7 @@ class qtractorObserverCheckBox : public qtractorObserverWidget<QCheckBox>
 public:
 
 	// Constructor.
-	qtractorObserverCheckBox(QWidget *pParent = 0);
+	qtractorObserverCheckBox(QWidget *pParent = nullptr);
 	
 protected:
 
@@ -156,7 +156,7 @@ class qtractorObserverSpinBox : public qtractorObserverWidget<qtractorSpinBox>
 public:
 
 	// Constructor.
-	qtractorObserverSpinBox(QWidget *pParent = 0);
+	qtractorObserverSpinBox(QWidget *pParent = nullptr);
 	
 protected:
 
@@ -184,7 +184,7 @@ class qtractorObserverSlider : public qtractorObserverWidget<QSlider>
 public:
 
 	// Constructor.
-	qtractorObserverSlider(QWidget *pParent = 0);
+	qtractorObserverSlider(QWidget *pParent = nullptr);
 
 protected:
 

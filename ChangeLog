@@ -4,14 +4,16 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.0.0  2024-06-21  An Unthinkable Release.
 
-- General plugin scan/cache optimization. (EXPERIMENTAL)
+- Making up the unthinkable (aka. v1.0.0)
 
-- Improved legibility to all clip title labels (color contrast). 
+- General plugin scan/cache optimization.
+
+- Improved legibility to all clip title labels (color contrast).
 
 - Save/load the correct order and labeling of audio/MIDI send/
-  /return pseudo-plugin inserts. (EXPERIMENTAL) (GH Issue #445)
+  /return pseudo-plugin inserts.
 
 - Fixed a display and port-name filtering issue that was present
   ever since on the Connections widget.
