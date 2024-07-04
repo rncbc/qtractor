@@ -137,7 +137,7 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 	if (pSession == nullptr)
 		return;
 
-	const QString sSuffix = "/.*";
+	const QString sSuffix = ".*";
 
 	switch (pBus->busType()) {
 	case qtractorTrack::Audio:
@@ -153,14 +153,14 @@ void qtractorConnections::showBus ( qtractorBus *pBus,
 					m_pConnectForm->audioIClientsComboBox()->findText(
 						pSession->audioEngine()->clientName()));
 				m_pConnectForm->audioIListView()->setPortName(
-					pAudioBus->busName() + sSuffix);
+					pAudioBus->busName() + '/' + sSuffix);
 			} else {
 				m_pConnectForm->audioIClientsComboBox()->setCurrentIndex(0);
 				m_pConnectForm->audioOClientsComboBox()->setCurrentIndex(
 					m_pConnectForm->audioOClientsComboBox()->findText(
 						pSession->audioEngine()->clientName()));
 				m_pConnectForm->audioOListView()->setPortName(
-					pAudioBus->busName() + sSuffix);
+					pAudioBus->busName() + '/' + sSuffix);
 			}
 			m_pConnectForm->audioRefresh();
 		}

@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed a misssing display and port-name filtering issue, that
+  was introduced recently to the MIDI Connections widget only.
+
+
 1.0.0  2024-06-21  An Unthinkable Release.
 
 - Making up the unthinkable (aka. v1.0.0)
