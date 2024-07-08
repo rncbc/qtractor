@@ -1181,18 +1181,21 @@ public:
 			return -1;
 
 		int nchannels = 0;
+		int nactive = 0;
 
 		const int32 nbuses = m_component->getBusCount(type, direction);
 		for (int32 i = 0; i < nbuses; ++i) {
 			Vst::BusInfo busInfo;
 			if (m_component->getBusInfo(type, direction, i, busInfo) == kResultOk) {
-				if ((busInfo.busType == Vst::kMain) ||
-					(busInfo.flags & Vst::BusInfo::kDefaultActive))
+				if (busInfo.busType == Vst::kMain) {
 					nchannels += busInfo.channelCount;
+					if (busInfo.flags & Vst::BusInfo::kDefaultActive)
+						nactive += busInfo.channelCount;
+				}
 			}
 		}
 
-		return nchannels;
+		return (nactive > 0 ? nactive : nchannels);
 	}
 
 private:

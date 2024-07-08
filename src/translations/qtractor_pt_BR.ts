@@ -601,7 +601,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="546"/>
         <location filename="../qtractorVst2Plugin.cpp" line="673"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1304"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1307"/>
         <source>Version: </source>
         <translation>Versão: </translation>
     </message>
@@ -734,7 +734,7 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="562"/>
         <location filename="../qtractorVst2Plugin.cpp" line="665"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1331"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1334"/>
         <source>Vendor: </source>
         <translation>Fornecedor: </translation>
     </message>
@@ -877,17 +877,17 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="540"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1298"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1301"/>
         <source>Name: </source>
         <translation>Nome: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1318"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1321"/>
         <source>Category: </source>
         <translation>Categoria: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1325"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1328"/>
         <source>Categories: </source>
         <translation>Categorias: </translation>
     </message>

@@ -1,7 +1,7 @@
 // qtractorVst3Plugin.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1190,18 +1190,21 @@ int qtractorVst3PluginType::Impl::numChannels (
 		return -1;
 
 	int nchannels = 0;
+	int nactive = 0;
 
 	const int32 nbuses = m_component->getBusCount(type, direction);
 	for (int32 i = 0; i < nbuses; ++i) {
 		Vst::BusInfo busInfo;
 		if (m_component->getBusInfo(type, direction, i, busInfo) == kResultOk) {
-			if ((busInfo.busType == Vst::kMain) ||
-				(busInfo.flags & Vst::BusInfo::kDefaultActive))
+			if (busInfo.busType == Vst::kMain) {
 				nchannels += busInfo.channelCount;
+				if (busInfo.flags & Vst::BusInfo::kDefaultActive)
+					nactive += busInfo.channelCount;
+			}
 		}
 	}
 
-	return nchannels;
+	return (nactive > 0 ? nactive : nchannels);
 }
 
 
