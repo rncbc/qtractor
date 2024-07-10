@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed general plugin scan/cache optimization in face of new
+  plugins added and/or removed.
+
 - Fixed VST3 Plug-in main/active buses channel count inventory.
 
 - Fixed a misssing display and port-name filtering issue, that

@@ -172,9 +172,6 @@ public:
 	// Service methods.
 	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
 
-	// Cache hash result.
-	int dummyPluginHash() const;
-
 protected slots:
 
 	// Service slots.
@@ -204,9 +201,6 @@ private:
 
 	// Cache hash list.
 	QHash<QString, QStringList> m_list;
-
-	// Cache hash result.
-	int m_iDummyPluginHash;
 };
 
 
