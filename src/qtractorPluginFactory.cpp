@@ -488,34 +488,12 @@ bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 	if (pOptions == nullptr)
 		return false;
 
-	int iDummyPluginHash = 0;
-
-	switch (typeHint) {
-	case qtractorPluginType::Ladspa:
-		iDummyPluginHash = pOptions->iDummyLadspaHash;
-		break;
-	case qtractorPluginType::Dssi:
-		iDummyPluginHash = pOptions->iDummyDssiHash;
-		break;
-	case qtractorPluginType::Vst2:
-		iDummyPluginHash = pOptions->iDummyVst2Hash;
-		break;
-	case qtractorPluginType::Vst3:
-		iDummyPluginHash = pOptions->iDummyVst3Hash;
-		break;
-	case qtractorPluginType::Clap:
-		iDummyPluginHash = pOptions->iDummyClapHash;
-		break;
-	case qtractorPluginType::Lv2:
-		iDummyPluginHash = pOptions->iDummyLv2Hash;
-		break;
-	default:
-		break;
-	}
-
 	const QString& sCacheFilePath = m_cacheFilePaths.value(typeHint);
 	if (sCacheFilePath.isEmpty())
 		return false;
+
+	const int iDummyPluginHash
+		= m_files.value(typeHint).count();
 
 	Scanner *pScanner = new Scanner(typeHint, this);
 	if (!pScanner->open(sCacheFilePath, iDummyPluginHash))
@@ -646,35 +624,9 @@ void qtractorPluginFactory::reset (void)
 	Scanners::ConstIterator iter = m_scanners.constBegin();
 	const Scanners::ConstIterator& iter_end = m_scanners.constEnd();
 	for ( ; iter != iter_end; ++iter) {
-		const qtractorPluginType::Hint typeHint = iter.key();
 		Scanner *pScanner = iter.value();
-		if (pScanner) {
+		if (pScanner)
 			pScanner->close();
-			const int iDummyPluginHash
-				= pScanner->dummyPluginHash();
-			switch (typeHint) {
-			case qtractorPluginType::Ladspa:
-				pOptions->iDummyLadspaHash = iDummyPluginHash;
-				break;
-			case qtractorPluginType::Dssi:
-				pOptions->iDummyDssiHash = iDummyPluginHash;
-				break;
-			case qtractorPluginType::Vst2:
-				pOptions->iDummyVst2Hash = iDummyPluginHash;
-				break;
-			case qtractorPluginType::Vst3:
-				pOptions->iDummyVst3Hash = iDummyPluginHash;
-				break;
-			case qtractorPluginType::Clap:
-				pOptions->iDummyClapHash = iDummyPluginHash;
-				break;
-			case qtractorPluginType::Lv2:
-				pOptions->iDummyLv2Hash = iDummyPluginHash;
-				break;
-			default:
-				break;
-			}
-		}
 	}
 
 	qDeleteAll(m_scanners);
@@ -958,8 +910,7 @@ bool qtractorPluginFactory::addTypes (
 // Constructor.
 qtractorPluginFactory::Scanner::Scanner (
 	qtractorPluginType::Hint typeHint, QObject *pParent )
-		: QProcess(pParent), m_typeHint(typeHint),
-			m_iExitStatus(-1), m_iDummyPluginHash(0)
+		: QProcess(pParent), m_typeHint(typeHint), m_iExitStatus(-1)
 {
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
@@ -982,7 +933,7 @@ bool qtractorPluginFactory::Scanner::open (
 	m_list.clear();
 
 	// Open and read cache file, whether applicable...
-	m_iDummyPluginHash = 0;
+	int iDummyPluginHash2 = 0;
 
 	if (m_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		// Read from cache...
@@ -994,14 +945,14 @@ bool qtractorPluginFactory::Scanner::open (
 			const QStringList& props = sText.split('|');
 			if (props.count() >= 6) { // get filename...
 				m_list[props.at(6)].append(sText);
-				++m_iDummyPluginHash;
+				++iDummyPluginHash2;
 			}
 		}
 		// May close the file.
 		m_file.close();
 	}
 
-	if (iDummyPluginHash > 0 && iDummyPluginHash == m_iDummyPluginHash)
+	if (iDummyPluginHash > 0 && iDummyPluginHash == iDummyPluginHash2)
 		return true;
 
 	// Re-open cache file for update...
@@ -1162,7 +1113,6 @@ bool qtractorPluginFactory::Scanner::addTypes (
 				sout << flags.join(",") << '|';
 				sout << sFilename << '|' << 0 << '|';
 				sout << "0x" << QString::number(pType->uniqueID(), 16) << endl;
-				++m_iDummyPluginHash;
 			}
 			// Success.
 			return true;
@@ -1224,10 +1174,8 @@ bool qtractorPluginFactory::Scanner::addTypes (
 			// Brand new type, add to inventory...
 			pPluginFactory->addType(pType);
 			// Cache in...
-			if (bDummyPluginType && m_file.isOpen()) {
+			if (bDummyPluginType && m_file.isOpen())
 				QTextStream(&m_file) << sText << endl;
-				++m_iDummyPluginHash;
-			}
 			// Done.
 		} else {
 			// Possibly some mistake occurred...
@@ -1236,13 +1184,6 @@ bool qtractorPluginFactory::Scanner::addTypes (
 	}
 
 	return true;
-}
-
-
-// Cache hash result.
-int qtractorPluginFactory::Scanner::dummyPluginHash (void) const
-{
-	return m_iDummyPluginHash;
 }
 
 
