@@ -273,6 +273,7 @@ void qtractorPluginSelectForm::rescan (void)
 			pPluginFactory->clearAll(typeHint);
 		else
 			pPluginFactory->clear();
+		pPluginFactory->setRescan(true);
 	}
 
 	refresh();

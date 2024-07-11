@@ -570,44 +570,44 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="748"/>
+        <location filename="../qtractorOptions.cpp" line="760"/>
         <source>Usage: %1 [options] [session-file]</source>
         <translation>Користування: %1 [параметри] [файл сеансу]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="751"/>
+        <location filename="../qtractorOptions.cpp" line="763"/>
         <source>Options:</source>
         <translation>Параметри:</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="754"/>
-        <location filename="../qtractorOptions.cpp" line="776"/>
+        <location filename="../qtractorOptions.cpp" line="766"/>
+        <location filename="../qtractorOptions.cpp" line="788"/>
         <source>Set session identification (uuid)</source>
         <translation>Встановити ідентифікацію сеансу (uuid)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="757"/>
+        <location filename="../qtractorOptions.cpp" line="769"/>
         <source>Show help about command line options</source>
         <translation>Показати довідку щодо параметрів командного рядка</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="759"/>
+        <location filename="../qtractorOptions.cpp" line="771"/>
         <source>Show version information</source>
         <translation>Показати інформацію про версію</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="781"/>
+        <location filename="../qtractorOptions.cpp" line="793"/>
         <source>Session file (.qtr)</source>
         <translation>Файл сеансу (.qtr)</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="782"/>
+        <location filename="../qtractorOptions.cpp" line="794"/>
         <source>[session-file]</source>
         <translation>[файл-сеансу]</translation>
     </message>
     <message>
-        <location filename="../qtractorOptions.cpp" line="789"/>
-        <location filename="../qtractorOptions.cpp" line="832"/>
+        <location filename="../qtractorOptions.cpp" line="801"/>
+        <location filename="../qtractorOptions.cpp" line="844"/>
         <source>Option -s requires an argument (uuid).</source>
         <translation>Параметр -s потребує аргументу (uuid).</translation>
     </message>
@@ -13912,17 +13912,17 @@ Are you sure?</source>
         <translation>Виконуємо пошук додатків…</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="347"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="348"/>
         <source>GUI</source>
         <translation>Інтерфейс</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="349"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="350"/>
         <source>EXT</source>
         <translation>EXT</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginSelectForm.cpp" line="351"/>
+        <location filename="../qtractorPluginSelectForm.cpp" line="352"/>
         <source>RT</source>
         <translation>РЧ</translation>
     </message>
