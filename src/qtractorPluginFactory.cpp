@@ -83,7 +83,7 @@ qtractorPluginFactory *qtractorPluginFactory::getInstance (void)
 
 // Contructor.
 qtractorPluginFactory::qtractorPluginFactory ( QObject *pParent )
-	: QObject(pParent), m_typeHint(qtractorPluginType::Any)
+	: QObject(pParent), m_typeHint(qtractorPluginType::Any), m_bRescan(false)
 {
 	// Register cache file paths...
 	//m_clearFilePaths.clear();
@@ -530,7 +530,11 @@ int qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 		files.clear();
 #endif
 	int iFileCount = files.count();
-	iFileCount += addFiles(typeHint, pluginPaths(typeHint));
+	if (m_bRescan || iFileCount == 0) {
+		m_bRescan = false;
+		iFileCount += addFiles(typeHint, pluginPaths(typeHint));
+	}
+
 	return iFileCount;
 }
 

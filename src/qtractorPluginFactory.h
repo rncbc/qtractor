@@ -53,6 +53,12 @@ public:
 	qtractorPluginType::Hint typeHint() const
 		{ return m_typeHint; }
 
+	// Plugin rescan force flag accessors.
+	void setRescan(bool bRescan)
+		{ m_bRescan = bRescan; }
+	bool isRescan() const
+		{ return m_bRescan; }
+
 	// Executive methods.
 	void scan();
 
@@ -122,6 +128,9 @@ private:
 
 	// Instance variables.
 	qtractorPluginType::Hint m_typeHint;
+
+	// Thether the next scan is deeper.
+	bool m_bRescan;
 
 	// Internal plugin-paths.
 	Paths m_paths;
