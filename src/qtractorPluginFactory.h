@@ -113,7 +113,7 @@ protected:
 	bool writeBlacklist(QFile& file, const QStringList& blacklist) const;
 
 	// Generic plugin-scan factory method.
-	bool startScan(qtractorPluginType::Hint typeHint);
+	int startScan(qtractorPluginType::Hint typeHint);
 
 	// Plugin scan reset method.
 	void reset();
@@ -172,6 +172,12 @@ public:
 	// Service methods.
 	bool addTypes(qtractorPluginType::Hint typeHint, const QString& sFilename);
 
+	// Cached files list accessor.
+	QStringList files() const;
+
+	// Cache hash result.
+	int dummyPluginHash() const;
+
 protected slots:
 
 	// Service slots.
@@ -201,6 +207,9 @@ private:
 
 	// Cache hash list.
 	QHash<QString, QStringList> m_list;
+
+	// Cache hash result.
+	int m_iDummyPluginHash;
 };
 
 

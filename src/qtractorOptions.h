@@ -262,6 +262,14 @@ public:
 	// when more than one is available.
 	bool bQueryEditorType;
 
+	// Out-of-process plugin scanning and cache option.
+	int  iDummyLadspaHash;
+	int  iDummyDssiHash;
+	int  iDummyVst2Hash;
+	int  iDummyVst3Hash;
+	int  iDummyClapHash;
+	int  iDummyLv2Hash;
+
 	// The instrument file list.
 	QStringList instrumentFiles;
 
