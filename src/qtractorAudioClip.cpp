@@ -1,7 +1,7 @@
 // qtractorAudioClip.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -174,6 +174,9 @@ qtractorAudioClip::qtractorAudioClip ( const qtractorAudioClip& clip )
 	setClipName(clip.clipName());
 	setClipGain(clip.clipGain());
 	setClipPanning(clip.clipPanning());
+
+	setFadeInType(clip.fadeInType());
+	setFadeOutType(clip.fadeOutType());
 
 	// Clone the audio peak, if any...
 	if (clip.m_pPeak)

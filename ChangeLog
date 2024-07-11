@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed fade-in/out curve types of clips when copy-pasted over
+  the main tracks timeline. (GH Issue #452)
+
 - Fixed general plugin scan/cache optimization in face of new
   plugins added and/or removed.
 
