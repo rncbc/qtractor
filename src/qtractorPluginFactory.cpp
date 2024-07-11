@@ -482,25 +482,56 @@ bool qtractorPluginFactory::writeBlacklist (
 
 
 // Generic plugin-scan factory method.
-bool qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
+int qtractorPluginFactory::startScan ( qtractorPluginType::Hint typeHint )
 {
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions == nullptr)
-		return false;
+		return 0;
+
+	int iDummyPluginHash = 0;
+
+	switch (typeHint) {
+	case qtractorPluginType::Ladspa:
+		iDummyPluginHash = pOptions->iDummyLadspaHash;
+		break;
+	case qtractorPluginType::Dssi:
+		iDummyPluginHash = pOptions->iDummyDssiHash;
+		break;
+	case qtractorPluginType::Vst2:
+		iDummyPluginHash = pOptions->iDummyVst2Hash;
+		break;
+	case qtractorPluginType::Vst3:
+		iDummyPluginHash = pOptions->iDummyVst3Hash;
+		break;
+	case qtractorPluginType::Clap:
+		iDummyPluginHash = pOptions->iDummyClapHash;
+		break;
+	case qtractorPluginType::Lv2:
+		iDummyPluginHash = pOptions->iDummyLv2Hash;
+		break;
+	default:
+		break;
+	}
 
 	const QString& sCacheFilePath = m_cacheFilePaths.value(typeHint);
 	if (sCacheFilePath.isEmpty())
-		return false;
-
-	const int iDummyPluginHash
-		= m_files.value(typeHint).count();
+		return 0;
 
 	Scanner *pScanner = new Scanner(typeHint, this);
 	if (!pScanner->open(sCacheFilePath, iDummyPluginHash))
-		return false;
+		return 0;
 
 	m_scanners.insert(typeHint, pScanner);
-	return true;
+
+	QStringList& files = m_files[typeHint];
+	files.append(pScanner->files());
+#ifdef CONFIG_LV2
+	if (typeHint == qtractorPluginType::Lv2)
+		files.clear();
+#endif
+	int iFileCount = files.count();
+	iFileCount += addFiles(typeHint, pluginPaths(typeHint));
+	return iFileCount;
 }
 
 
@@ -510,9 +541,6 @@ void qtractorPluginFactory::scan (void)
 	// Start clean.
 	reset();
 
-	if (pluginPaths(m_typeHint).isEmpty()) // Just in case...
-		updatePluginPaths(m_typeHint);
-
 	// Get paths based on hints...
 	int iFileCount = 0;
 
@@ -520,77 +548,42 @@ void qtractorPluginFactory::scan (void)
 	// LADSPA default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Ladspa) {
-		const qtractorPluginType::Hint typeHint
-			= qtractorPluginType::Ladspa;
-		const QStringList& paths = m_paths.value(typeHint);
-		if (!paths.isEmpty()) {
-			iFileCount += addFiles(typeHint, paths);
-			startScan(typeHint);
-		}
+		iFileCount += startScan(qtractorPluginType::Ladspa);
 	}
 #endif
 #ifdef CONFIG_DSSI
 	// DSSI default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Dssi) {
-		const qtractorPluginType::Hint typeHint
-			= qtractorPluginType::Dssi;
-		const QStringList& paths = m_paths.value(typeHint);
-		if (!paths.isEmpty()) {
-			iFileCount += addFiles(typeHint, paths);
-			startScan(typeHint);
-		}
+		iFileCount += startScan(qtractorPluginType::Dssi);
 	}
 #endif
 #ifdef CONFIG_VST2
 	// VST default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Vst2) {
-		const qtractorPluginType::Hint typeHint
-			= qtractorPluginType::Vst2;
-		const QStringList& paths = m_paths.value(typeHint);
-		if (!paths.isEmpty()) {
-			iFileCount += addFiles(typeHint, paths);
-			startScan(typeHint);
-		}
+		iFileCount += startScan(qtractorPluginType::Vst2);
 	}
 #endif
 #ifdef CONFIG_VST3
 	// VST3 default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Vst3) {
-		const qtractorPluginType::Hint typeHint
-			= qtractorPluginType::Vst3;
-		const QStringList& paths = m_paths.value(typeHint);
-		if (!paths.isEmpty()) {
-			iFileCount += addFiles(typeHint, paths);
-			startScan(typeHint);
-		}
+		iFileCount += startScan(qtractorPluginType::Vst3);
 	}
 #endif
 #ifdef CONFIG_CLAP
 	// CLAP default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Clap) {
-		const qtractorPluginType::Hint typeHint
-			= qtractorPluginType::Clap;
-		const QStringList& paths = m_paths.value(typeHint);
-		if (!paths.isEmpty()) {
-			iFileCount += addFiles(typeHint, paths);
-			startScan(typeHint);
-		}
+		iFileCount += startScan(qtractorPluginType::Clap);
 	}
 #endif
 #ifdef CONFIG_LV2
 	// LV2 default path...
 	if (m_typeHint == qtractorPluginType::Any ||
 		m_typeHint == qtractorPluginType::Lv2) {
-		const qtractorPluginType::Hint typeHint
-			= qtractorPluginType::Lv2;
-		QStringList& files = m_files[typeHint];
-		files.append(qtractorLv2PluginType::lv2_plugins());
-		iFileCount += files.count();
-		startScan(typeHint);
+		iFileCount += startScan(qtractorPluginType::Lv2);
 	}
 #endif
 
@@ -624,9 +617,35 @@ void qtractorPluginFactory::reset (void)
 	Scanners::ConstIterator iter = m_scanners.constBegin();
 	const Scanners::ConstIterator& iter_end = m_scanners.constEnd();
 	for ( ; iter != iter_end; ++iter) {
+		const qtractorPluginType::Hint typeHint = iter.key();
 		Scanner *pScanner = iter.value();
-		if (pScanner)
+		if (pScanner) {
 			pScanner->close();
+			const int iDummyPluginHash
+				= pScanner->dummyPluginHash();
+			switch (typeHint) {
+			case qtractorPluginType::Ladspa:
+				pOptions->iDummyLadspaHash = iDummyPluginHash;
+				break;
+			case qtractorPluginType::Dssi:
+				pOptions->iDummyDssiHash = iDummyPluginHash;
+				break;
+			case qtractorPluginType::Vst2:
+				pOptions->iDummyVst2Hash = iDummyPluginHash;
+				break;
+			case qtractorPluginType::Vst3:
+				pOptions->iDummyVst3Hash = iDummyPluginHash;
+				break;
+			case qtractorPluginType::Clap:
+				pOptions->iDummyClapHash = iDummyPluginHash;
+				break;
+			case qtractorPluginType::Lv2:
+				pOptions->iDummyLv2Hash = iDummyPluginHash;
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	qDeleteAll(m_scanners);
@@ -667,6 +686,14 @@ void qtractorPluginFactory::clearAll ( qtractorPluginType::Hint typeHint )
 int qtractorPluginFactory::addFiles (
 	qtractorPluginType::Hint typeHint, const QStringList& paths )
 {
+#ifdef CONFIG_LV2
+	if (typeHint == qtractorPluginType::Lv2) {
+		QStringList& files = m_files[typeHint];
+		files.append(qtractorLv2PluginType::lv2_plugins());
+		return files.count();
+	}
+#endif
+
 	int iFileCount = 0;
 
 	QStringListIterator path_iter(paths);
@@ -675,6 +702,7 @@ int qtractorPluginFactory::addFiles (
 
 	return iFileCount;
 }
+
 
 int qtractorPluginFactory::addFiles (
 	qtractorPluginType::Hint typeHint, const QString& sPath )
@@ -695,11 +723,11 @@ int qtractorPluginFactory::addFiles (
 		if (info.isDir() && info.isReadable())
 			iFileCount += addFiles(typeHint, sFilename);
 		else
-		if (QLibrary::isLibrary(sFilename)
+		if (!files.contains(sFilename) && (QLibrary::isLibrary(sFilename)
 		#ifdef CONFIG_CLAP
 			|| (typeHint == qtractorPluginType::Clap && info.suffix() == "clap")
 		#endif
-		) {
+		)) {
 			files.append(sFilename);
 			++iFileCount;
 		}
@@ -910,7 +938,8 @@ bool qtractorPluginFactory::addTypes (
 // Constructor.
 qtractorPluginFactory::Scanner::Scanner (
 	qtractorPluginType::Hint typeHint, QObject *pParent )
-		: QProcess(pParent), m_typeHint(typeHint), m_iExitStatus(-1)
+		: QProcess(pParent), m_typeHint(typeHint),
+			m_iExitStatus(-1), m_iDummyPluginHash(0)
 {
 	QObject::connect(this,
 		SIGNAL(readyReadStandardOutput()),
@@ -933,7 +962,7 @@ bool qtractorPluginFactory::Scanner::open (
 	m_list.clear();
 
 	// Open and read cache file, whether applicable...
-	int iDummyPluginHash2 = 0;
+	m_iDummyPluginHash = 0;
 
 	if (m_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		// Read from cache...
@@ -945,14 +974,14 @@ bool qtractorPluginFactory::Scanner::open (
 			const QStringList& props = sText.split('|');
 			if (props.count() >= 6) { // get filename...
 				m_list[props.at(6)].append(sText);
-				++iDummyPluginHash2;
+				++m_iDummyPluginHash;
 			}
 		}
 		// May close the file.
 		m_file.close();
 	}
 
-	if (iDummyPluginHash > 0 && iDummyPluginHash == iDummyPluginHash2)
+	if (iDummyPluginHash > 0 && iDummyPluginHash == m_iDummyPluginHash)
 		return true;
 
 	// Re-open cache file for update...
@@ -1113,6 +1142,7 @@ bool qtractorPluginFactory::Scanner::addTypes (
 				sout << flags.join(",") << '|';
 				sout << sFilename << '|' << 0 << '|';
 				sout << "0x" << QString::number(pType->uniqueID(), 16) << endl;
+				++m_iDummyPluginHash;
 			}
 			// Success.
 			return true;
@@ -1174,8 +1204,10 @@ bool qtractorPluginFactory::Scanner::addTypes (
 			// Brand new type, add to inventory...
 			pPluginFactory->addType(pType);
 			// Cache in...
-			if (bDummyPluginType && m_file.isOpen())
+			if (bDummyPluginType && m_file.isOpen()) {
 				QTextStream(&m_file) << sText << endl;
+				++m_iDummyPluginHash;
+			}
 			// Done.
 		} else {
 			// Possibly some mistake occurred...
@@ -1184,6 +1216,20 @@ bool qtractorPluginFactory::Scanner::addTypes (
 	}
 
 	return true;
+}
+
+
+// Cached files accessor.
+QStringList qtractorPluginFactory::Scanner::files (void) const
+{
+	return m_list.keys();
+}
+
+
+// Cache hash result.
+int qtractorPluginFactory::Scanner::dummyPluginHash (void) const
+{
+	return m_iDummyPluginHash;
 }
 
 
