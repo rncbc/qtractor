@@ -26,7 +26,6 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioClip.h"
-#include "qtractorAudioBuffer.h"
 
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
