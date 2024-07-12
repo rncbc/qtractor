@@ -6062,7 +6062,9 @@ void qtractorMainForm::helpShortcuts (void)
 	if (m_pOptions == nullptr)
 		return;
 
-	qtractorShortcutForm shortcutForm(findChildren<QAction *> (), this);
+	const QList<QAction *>& actions
+		= findChildren<QAction *> (QString(), Qt::FindDirectChildrenOnly);
+	qtractorShortcutForm shortcutForm(actions, this);
 	shortcutForm.setActionControl(m_pActionControl);
 	if (shortcutForm.exec()) {
 		if (shortcutForm.isDirtyActionShortcuts())

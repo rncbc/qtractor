@@ -2107,7 +2107,9 @@ void qtractorMidiEditorForm::helpShortcuts (void)
 	if (pOptions == nullptr)
 		return;
 
-	qtractorShortcutForm shortcutForm(findChildren<QAction *> (), this);
+	const QList<QAction *>& actions
+		= findChildren<QAction *> (QString(), Qt::FindDirectChildrenOnly);
+	qtractorShortcutForm shortcutForm(actions, this);
 	shortcutForm.setActionControl(nullptr); // Disable MIDI Controllers here!
 	if (shortcutForm.exec() && shortcutForm.isDirtyActionShortcuts())
 		pOptions->saveActionShortcuts(this);
