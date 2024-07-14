@@ -178,7 +178,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>%1 Saída</translation>
     </message>
     <message>
-        <location filename="../qtractorVst2Plugin.cpp" line="1579"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1588"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -325,7 +325,7 @@ MIDI:	</source>
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorVst2Plugin.cpp" line="657"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="655"/>
         <source>Product: </source>
         <translation>Produto: </translation>
     </message>
@@ -600,8 +600,8 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="546"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="673"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1307"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="671"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1308"/>
         <source>Version: </source>
         <translation>Versão: </translation>
     </message>
@@ -699,7 +699,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="1582"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1591"/>
         <source>All files (*.*)</source>
         <translation>Tudo (*.*)</translation>
     </message>
@@ -733,8 +733,8 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="562"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="665"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1334"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="663"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1335"/>
         <source>Vendor: </source>
         <translation>Fornecedor: </translation>
     </message>
@@ -877,17 +877,17 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="540"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1301"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1302"/>
         <source>Name: </source>
         <translation>Nome: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1321"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1322"/>
         <source>Category: </source>
         <translation>Categoria: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1328"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1329"/>
         <source>Categories: </source>
         <translation>Categorias: </translation>
     </message>

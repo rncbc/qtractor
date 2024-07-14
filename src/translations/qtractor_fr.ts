@@ -56,7 +56,7 @@ Audio :	%1 canaux, %2 Hz</translation>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="1582"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1591"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
@@ -758,14 +758,14 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
         <translation>Inconnu</translation>
     </message>
     <message>
-        <location filename="../qtractorVst2Plugin.cpp" line="657"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="655"/>
         <source>Product: </source>
         <translation>Produit :</translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="562"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="665"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1334"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="663"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1335"/>
         <source>Vendor: </source>
         <translation>Vendeur :</translation>
     </message>
@@ -781,13 +781,13 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="546"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="673"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1307"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="671"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1308"/>
         <source>Version: </source>
         <translation>Version : </translation>
     </message>
     <message>
-        <location filename="../qtractorVst2Plugin.cpp" line="1579"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1588"/>
         <source>%1 (*.%2)</source>
         <translation>%1 (*.%2)</translation>
     </message>
@@ -875,17 +875,17 @@ Piste : &quot;%1&quot; Entrée: &quot;%2&quot; Sortie: &quot;%3&quot;</translati
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="540"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1301"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1302"/>
         <source>Name: </source>
         <translation>Nom : </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1321"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1322"/>
         <source>Category: </source>
         <translation>Catégorie : </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1328"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1329"/>
         <source>Categories: </source>
         <translation>Catégories : </translation>
     </message>

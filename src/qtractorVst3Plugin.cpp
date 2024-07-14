@@ -72,9 +72,10 @@
 #endif
 
 #if 0//QTRACTOR_VST3_EDITOR_TOOL
-#include "qtractorMainForm.h"
 #include "qtractorOptions.h"
 #endif
+
+#include "qtractorMainForm.h"
 
 
 using namespace Steinberg;
@@ -1834,7 +1835,7 @@ public:
 	tresult PLUGIN_API beginEdit (Vst::ParamID /*id*/) override
 	{
 	#ifdef CONFIG_DEBUG_0
-		qDebug("vst3_text_plugin::Handler[%p]::beginEdit(%d)", this, int(id));
+		qDebug("qtractorVst3Plugin::Handler[%p]::beginEdit(%d)", this, int(id));
 	#endif
 		return kResultOk;
 	}
@@ -1842,7 +1843,7 @@ public:
 	tresult PLUGIN_API performEdit (Vst::ParamID id, Vst::ParamValue value) override
 	{
 	#ifdef CONFIG_DEBUG
-		qDebug("vst3_text_plugin::Handler[%p]::performEdit(%d, %g)", this, int(id), float(value));
+		qDebug("qtractorVst3Plugin::Handler[%p]::performEdit(%d, %g)", this, int(id), float(value));
 	#endif
 		m_pPlugin->impl()->setParameter(id, value, 0);
 		qtractorPlugin::Param *pParam = m_pPlugin->findParamId(int(id));
@@ -1854,7 +1855,7 @@ public:
 	tresult PLUGIN_API endEdit (Vst::ParamID /*id*/) override
 	{
 	#ifdef CONFIG_DEBUG_0
-		qDebug("vst3_text_plugin::Handler[%p]::endEdit(%d)", this, int(id));
+		qDebug("qtractorVst3Plugin::Handler[%p]::endEdit(%d)", this, int(id));
 	#endif
 		return kResultOk;
 	}
@@ -1862,7 +1863,7 @@ public:
 	tresult PLUGIN_API restartComponent (int32 flags) override
 	{
 	#ifdef CONFIG_DEBUG
-		qDebug("vst3_text_plugin::Handler[%p]::restartComponent(0x%08x)", this, flags);
+		qDebug("qtractorVst3Plugin::Handler[%p]::restartComponent(0x%08x)", this, flags);
 	#endif
 		if (flags & Vst::kParamValuesChanged)
 			m_pPlugin->updateParamValues(false);
@@ -3639,6 +3640,17 @@ bool qtractorVst3Plugin::savePresetFile ( const QString& sFilename )
 }
 
 
+// Make up some others dirty...
+void qtractorVst3Plugin::updateDirtyCount (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->dirtyNotifySlot();
+
+	updateFormDirtyCount();
+}
+
+
 // Common host-time keeper (static)
 void qtractorVst3Plugin::updateTime ( qtractorAudioEngine *pAudioEngine )
 {
@@ -3675,8 +3687,8 @@ qtractorVst3Plugin::Param::Param (
 					m_pImpl = new Impl(paramInfo);
 					setName(fromTChar(paramInfo.title));
 					setMinValue(0.0f);
-					setMaxValue(1.0f);
-					setDefaultValue(controller->getParamNormalized(paramInfo.id));
+					setMaxValue(paramInfo.stepCount > 1 ? float(paramInfo.stepCount) : 1.0f);
+					setDefaultValue(float(paramInfo.defaultNormalizedValue));
 				}
 			}
 		}

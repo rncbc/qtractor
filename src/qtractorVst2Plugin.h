@@ -199,6 +199,9 @@ public:
 	// All parameters update method.
 	void updateParamValues(bool bUpdate);
 
+	// Make up some others dirty...
+	void updateDirtyCount();
+
 private:
 
 	// Instance variables.
