@@ -1866,7 +1866,7 @@ public:
 		qDebug("qtractorVst3Plugin::Handler[%p]::restartComponent(0x%08x)", this, flags);
 	#endif
 		if (flags & Vst::kParamValuesChanged)
-			m_pPlugin->updateParamValues(false);
+			m_pPlugin->updateParamValues(true);
 		else
 		if (flags & Vst::kReloadComponent) {
 			m_pPlugin->impl()->deactivate();
@@ -3033,6 +3033,8 @@ void qtractorVst3Plugin::initialize (void)
 		snd_midi_event_new(c_iMaxMidiData, &m_pMidiParser) == 0)
 		snd_midi_event_no_status(m_pMidiParser, 1);
 
+	freezeConfigs();
+
 	// Instantiate each instance properly...
 	setChannels(channels());
 }
@@ -3169,6 +3171,10 @@ void qtractorVst3Plugin::updateParam (
 // All parameters update method.
 void qtractorVst3Plugin::updateParamValues ( bool bUpdate )
 {
+#ifdef CONFIG_DEBUG_0
+	qDebug("qtractorVst3Plugin[%p]::updateParamValues(%d)", this, int(bUpdate));
+#endif
+
 	int nupdate = 0;
 
 	// Make sure all cached parameter values are in sync
@@ -3570,7 +3576,7 @@ void qtractorVst3Plugin::selectProgram ( int iBank, int iProg )
 	m_pImpl->selectProgram(iBank, iProg);
 
 	// HACK: Make sure all displayed parameter values are in sync.
-	updateParamValues(false);
+	updateParamValues(true);
 }
 
 
@@ -3602,7 +3608,7 @@ bool qtractorVst3Plugin::loadPresetFile ( const QString& sFilename )
 
 	file.close();
 	// HACK: Make sure all displayed parameter values are in sync.
-	updateParamValues(false);
+	updateParamValues(true);
 	return bResult;
 }
 
@@ -3688,7 +3694,7 @@ qtractorVst3Plugin::Param::Param (
 					setName(fromTChar(paramInfo.title));
 					setMinValue(0.0f);
 					setMaxValue(paramInfo.stepCount > 1 ? float(paramInfo.stepCount) : 1.0f);
-					setDefaultValue(float(paramInfo.defaultNormalizedValue));
+					setDefaultValue(float(controller->getParamNormalized(paramInfo.id)));
 				}
 			}
 		}
