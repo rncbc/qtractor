@@ -2687,23 +2687,11 @@ bool qtractorMainForm::saveSessionFileEx (
 				if (pMidiClip) {
 					if (bTemporary)
 						midiClips.insert(pMidiClip, pMidiClip->filename());
-					//pMidiClip->saveCopyFile(!bTemporary); -- formerly!
 					// Have a new filename revision...
 					const QString& sFilename
 						= pMidiClip->createFilePathRevision(bTemporary);
 					// Save/replace the clip track...
-					if (qtractorMidiFile::saveCopyFile(sFilename,
-							pMidiClip->filename(),
-							pMidiClip->trackChannel(),
-							pMidiClip->format(),
-							pMidiClip->sequence(),
-							m_pSession->timeScale(),
-							m_pSession->tickFromFrame(pMidiClip->clipStart()))) {
-						// Pre-commit dirty changes...
-						pMidiClip->setFilenameEx(sFilename, !bTemporary);
-						// Reference for immediate file addition...
-						m_pFiles->addMidiFile(sFilename, false);
-					}
+					pMidiClip->saveCopyFile(sFilename, !bTemporary);
 				}
 			}
 		}
