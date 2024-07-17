@@ -597,13 +597,7 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 		= pMidiClip->createFilePathRevision(true);
 
 	// Save/replace the clip track...
-	qtractorMidiFile::saveCopyFile(sFilename,
-		pMidiClip->filename(),
-		pMidiClip->trackChannel(),
-		pMidiClip->format(),
-		pMidiClip->sequence(),
-		pSession->timeScale(),
-		pSession->tickFromFrame(pMidiClip->clipStart()));
+	pMidiClip->saveCopyFile(sFilename, false);
 
 	// Now, we avoid the linked/ref-counted instances...
 	pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);
@@ -615,12 +609,6 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 
 	// Better update track-view clip high-lighthing...
 	m_pTrackView->update();
-
-	// HACK: This operation is so important that
-	// it surely deserves being in the front page...
-	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
-		pMainForm->addMidiFile(sFilename);
 
 	return true;
 }

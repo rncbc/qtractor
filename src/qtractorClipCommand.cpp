@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -384,22 +384,11 @@ bool qtractorClipCommand::addClipRecord (
 				const QString& sFilename
 					= pMidiClip->createFilePathRevision(true);
 				// Save/replace the overdubbed clip...
-				qtractorMidiFile::saveCopyFile(
-					sFilename,
-					pMidiClip->filename(),
-					pMidiClip->trackChannel(),
-					pMidiClip->format(),
-					pMidiClip->sequence(),
-					pSession->timeScale(),
-					pSession->tickFromFrame(iClipStart));
+				pMidiClip->saveCopyFile(sFilename, false);
 				// Just change filename/track-channel...
 				fileClip(pMidiClip, sFilename, pMidiClip->trackChannel());
 				// Post-commit dirty changes...
 				pSession->files()->addClipItem(qtractorFileList::Midi, sFilename, true);
-				// Add the new file version to the roster...
-				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-				if (pMainForm)
-					pMainForm->addMidiFile(sFilename);
 			}
 		}
 		// Can get rid of the recorded clip.
@@ -1144,8 +1133,12 @@ bool qtractorClipToolCommand::redo (void)
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
 			if (pMidiClip) {
 				// Save if dirty...
-				if (m_iRedoCount == 1 && pMidiClip->isDirty())
-					pMidiClip->saveCopyFile(false);
+				if (m_iRedoCount == 1 && pMidiClip->isDirty()) {
+					const QString& sFilename
+						= pMidiClip->createFilePathRevision();
+					if (pMidiClip->saveCopyFile(sFilename, false))
+						pMidiClip->setFilenameEx(sFilename, false);
+				}
 				// Redo as you told...
 				if (pMidiEditCommand->redo())
 					swapMidiClipCtx(pMidiClip);
@@ -1190,7 +1183,9 @@ void qtractorClipToolCommand::swapMidiClipCtx ( qtractorMidiClip *pMidiClip )
 		mctx.pre.filename = pMidiClip->filename();
 		mctx.pre.length = pMidiClip->clipLength();
 		pMidiClip->setRevision(0);
-		if (pMidiClip->saveCopyFile(true)) {
+		const QString& sFilename
+			= pMidiClip->createFilePathRevision();
+		if (pMidiClip->saveCopyFile(sFilename, true)) {
 			mctx.post.filename = pMidiClip->filename();
 			mctx.post.length = pMidiClip->clipLength();
 		//	m_midiClipCtxs.insert(pMidiClip, mctx);

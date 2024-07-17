@@ -412,20 +412,8 @@ bool qtractorMidiClip::openMidiFile (
 	pSeq->clear();
 	pSeq->setTicksPerBeat(pSession->ticksPerBeat());
 
-	const unsigned long iClipStart  = clipStart();
-	const unsigned long iClipOffset = clipOffset();
-	qtractorTimeScale::Cursor cursor(pSession->timeScale());
-	qtractorTimeScale::Node *pNode = cursor.seekFrame(iClipStart);
-	const unsigned long t0 = pNode->tickFromFrame(iClipStart);
-
-	const unsigned long iClipOffset2 = iClipStart + iClipOffset;
-//	pNode = cursor.seekFrame(iClipOffset2);
-	pSeq->setTimeOffset(pNode->tickFromFrame(iClipOffset2) - t0);
-
-	const unsigned long iClipLength = clipLength();
-	const unsigned long iClipEnd = iClipStart + iClipLength;
-	pNode = cursor.seekFrame(iClipEnd);
-	pSeq->setTimeLength(pNode->tickFromFrame(iClipEnd) - t0);
+	pSeq->setTimeOffset(clipOffsetTime());
+	pSeq->setTimeLength(clipLengthTime());
 
 	// Initial statistics...
 	pSeq->setNoteMin(pTrack->midiNoteMin());
@@ -489,7 +477,7 @@ bool qtractorMidiClip::openMidiFile (
 			// Import tempo map as well...
 			qtractorMidiFileTempo *pTempoMap = m_pFile->tempoMap();
 			if (pTempoMap) {
-				pTempoMap->intoTimeScale(pSession->timeScale(), t0);
+				pTempoMap->intoTimeScale(pSession->timeScale(), clipStartTime());
 				pSession->updateTimeScaleEx();
 			}
 			// Reset session flag now.
@@ -513,9 +501,9 @@ bool qtractorMidiClip::openMidiFile (
 	// setRevision(1);
 
 	// Default clip length will be whole sequence duration.
-	if (iClipLength == 0) {
-		const unsigned long t1 = t0 + pSeq->timeLength();
-		setClipLength(pSession->frameFromTick(t1) - iClipStart);
+	if (clipLength() == 0) {
+		const unsigned long t1 = clipStartTime() + pSeq->timeLength();
+		setClipLength(pSession->frameFromTick(t1) - clipStart());
 	}
 
 	// Clip name should be clear about it all.
@@ -1258,7 +1246,7 @@ bool qtractorMidiClip::queryEditor (void)
 		switch (qtractorMidiEditorForm::querySave(filename())) {
 		case QMessageBox::Save:	{
 			// Save/replace the clip track...
-			bQueryEditor = saveCopyFile(true);
+			bQueryEditor = saveCopyFile(createFilePathRevision(), true);
 			break;
 		}
 		case QMessageBox::Discard:
@@ -1303,7 +1291,7 @@ QString qtractorMidiClip::toolTip (void) const
 
 
 // Auto-save to (possible) new file revision.
-bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
+bool qtractorMidiClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == nullptr)
@@ -1317,22 +1305,23 @@ bool qtractorMidiClip::saveCopyFile ( bool bUpdate )
 	if (pSession->sessionName().isEmpty())
 		return false;
 
-	// Have a new filename revision...
-	const QString& sFilename = createFilePathRevision();
-
 	// Save/replace the clip track...
-	if (!qtractorMidiFile::saveCopyFile(
-			sFilename, filename(), trackChannel(), format(), sequence(),
-			pSession->timeScale(), pSession->tickFromFrame(clipStart())))
+	if (!qtractorMidiFile::saveCopyFile(sFilename,
+			filename(), trackChannel(), format(), sequence(),
+			pSession->timeScale(), clipStartTime()))
 		return false;
 
 	// Pre-commit dirty changes...
-	setFilenameEx(sFilename, bUpdate);
+	if (bUpdate) setFilenameEx(sFilename, true);
 
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-	if (pMainForm)
+	if (pMainForm) {
+		pMainForm->appendMessages(
+			QObject::tr("MIDI file save: \"%1\", track-channel: %2.")
+				.arg(sFilename).arg(trackChannel()));
 		pMainForm->addMidiFile(sFilename);
+	}
 
 	return true;
 }

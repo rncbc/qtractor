@@ -2587,8 +2587,11 @@ void qtractorTrack::updateMidiClips (void)
 				bDirty = true;
 			}
 			// Are any dirty changes pending commit?
-			if (bDirty)
-				pMidiClip->saveCopyFile(true);
+			if (bDirty) {
+				const QString& sFilename
+					= pMidiClip->createFilePathRevision();
+				pMidiClip->saveCopyFile(sFilename, true);
+			}
 			// Re-open the MIDI clip anyway...
 			pMidiClip->open();
 		}
