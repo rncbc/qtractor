@@ -36,6 +36,8 @@
 class qtractorMidiEditorForm;
 class qtractorMidiEditCommand;
 
+class qtractorClipSaveFileCommand;
+
 
 //----------------------------------------------------------------------
 // class qtractorMidiClip -- MIDI file/sequence clip.
@@ -136,7 +138,8 @@ public:
 	QString toolTip() const;
 
 	// Auto-save to (possible) new file revision.
-	bool saveCopyFile(const QString& sFilename, bool bUpdate);
+	bool saveCopyFile(const QString& sFilename,
+		qtractorClipSaveFileCommand *pClipSaveFileCommand = nullptr);
 
 	// MIDI clip export method.
 	typedef void (*ClipExport)(qtractorMidiSequence *, void *);

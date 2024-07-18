@@ -43,6 +43,7 @@
 #include "qtractorFileList.h"
 
 #include "qtractorTrackCommand.h"
+#include "qtractorClipCommand.h"
 
 #include "qtractorMainForm.h"
 #include "qtractorTracks.h"
@@ -2569,6 +2570,8 @@ void qtractorTrack::updateMidiClips (void)
 	const int iMidiBank = qtractorTrack::midiBank();
 	const int iMidiProg = qtractorTrack::midiProg();
 
+	qtractorClipSaveFileCommand *pClipSaveFileCommand = nullptr;
+
 	for (qtractorClip *pClip = qtractorTrack::clips().first();
 			pClip; pClip = pClip->next()) {
 		qtractorMidiClip *pMidiClip
@@ -2588,14 +2591,24 @@ void qtractorTrack::updateMidiClips (void)
 			}
 			// Are any dirty changes pending commit?
 			if (bDirty) {
+				if (pClipSaveFileCommand == nullptr)
+					pClipSaveFileCommand = new qtractorClipSaveFileCommand();
 				const QString& sFilename
 					= pMidiClip->createFilePathRevision();
-				pMidiClip->saveCopyFile(sFilename, true);
+				pMidiClip->saveCopyFile(sFilename, pClipSaveFileCommand);
 			}
 			// Re-open the MIDI clip anyway...
 			pMidiClip->open();
 		}
 	}
+
+	if (pClipSaveFileCommand && !pClipSaveFileCommand->isEmpty() && m_pSession) {
+		m_pSession->commands()->push(pClipSaveFileCommand);
+		pClipSaveFileCommand = nullptr;
+	}
+
+	if (pClipSaveFileCommand)
+		delete pClipSaveFileCommand;
 }
 
 

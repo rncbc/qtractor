@@ -36,6 +36,8 @@
 
 #include "qtractorMidiEditCommand.h"
 
+#include "qtractorClipCommand.h"
+
 #include "qtractorMainForm.h"
 
 #include "qtractorOptions.h"
@@ -613,6 +615,9 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename, bool bUpdate )
 	if (m_pData == nullptr)
 		return;
 
+	const unsigned long iClipOffset = clipOffset();
+	const unsigned long iClipLength = clipLength();
+
 	removeHashKey();
 
 	QListIterator<qtractorMidiClip *> iter(m_pData->clips());
@@ -620,6 +625,8 @@ void qtractorMidiClip::setFilenameEx ( const QString& sFilename, bool bUpdate )
 		qtractorMidiClip *pMidiClip = iter.next();
 		pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);
 		pMidiClip->setFilename(sFilename);
+		pMidiClip->setClipOffset(iClipOffset);
+		pMidiClip->setClipLength(iClipLength);
 		pMidiClip->updateHashKey();
 		pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
 		if (bUpdate) {
@@ -1246,7 +1253,25 @@ bool qtractorMidiClip::queryEditor (void)
 		switch (qtractorMidiEditorForm::querySave(filename())) {
 		case QMessageBox::Save:	{
 			// Save/replace the clip track...
-			bQueryEditor = saveCopyFile(createFilePathRevision(), true);
+			qtractorClipSaveFileCommand *pClipSaveFileCommand
+				= new qtractorClipSaveFileCommand();
+			const QString& sFilename
+				= createFilePathRevision();
+			bQueryEditor = saveCopyFile(sFilename, pClipSaveFileCommand);
+			if (bQueryEditor && !pClipSaveFileCommand->isEmpty()) {
+				qtractorTrack *pTrack = track();
+				if (pTrack) {
+					qtractorSession *pSession = pTrack->session();
+					if (pSession) {
+						pSession->commands()->push(pClipSaveFileCommand);
+						pClipSaveFileCommand = nullptr;
+					}
+				}
+			}
+			if (pClipSaveFileCommand) {
+				delete pClipSaveFileCommand;
+				bQueryEditor = false;
+			}
 			break;
 		}
 		case QMessageBox::Discard:
@@ -1291,7 +1316,8 @@ QString qtractorMidiClip::toolTip (void) const
 
 
 // Auto-save to (possible) new file revision.
-bool qtractorMidiClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
+bool qtractorMidiClip::saveCopyFile ( const QString& sFilename,
+	qtractorClipSaveFileCommand *pClipSaveFileCommand )
 {
 	qtractorTrack *pTrack = track();
 	if (pTrack == nullptr)
@@ -1312,7 +1338,11 @@ bool qtractorMidiClip::saveCopyFile ( const QString& sFilename, bool bUpdate )
 		return false;
 
 	// Pre-commit dirty changes...
-	if (bUpdate) setFilenameEx(sFilename, true);
+	if (pClipSaveFileCommand) {
+		pClipSaveFileCommand->addMidiClipSaveFile(this);
+	//	setClipOffset(0);
+		setFilenameEx(sFilename, true);
+	}
 
 	// Reference for immediate file addition...
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

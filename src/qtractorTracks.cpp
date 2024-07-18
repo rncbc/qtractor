@@ -597,7 +597,7 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 		= pMidiClip->createFilePathRevision(true);
 
 	// Save/replace the clip track...
-	pMidiClip->saveCopyFile(sFilename, false);
+	pMidiClip->saveCopyFile(sFilename);
 
 	// Now, we avoid the linked/ref-counted instances...
 	pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);

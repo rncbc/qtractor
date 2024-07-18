@@ -2671,8 +2671,9 @@ bool qtractorMainForm::saveSessionFileEx (
 
 	// Trap dirty clips (only MIDI at this time...)
 	const bool bTemporary = (iFlags & qtractorDocument::Temporary);
-	typedef QHash<qtractorMidiClip *, QString> MidiClipFilenames;
-	MidiClipFilenames midiClips;
+	qtractorClipSaveFileCommand *pClipSaveFileCommand
+		= new qtractorClipSaveFileCommand();
+	QStringList midiClipFilenames;
 	for (qtractorTrack *pTrack = m_pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		// Only MIDI track/clips...
@@ -2686,18 +2687,28 @@ bool qtractorMainForm::saveSessionFileEx (
 					= static_cast<qtractorMidiClip *> (pClip);
 				if (pMidiClip) {
 					if (bTemporary)
-						midiClips.insert(pMidiClip, pMidiClip->filename());
+						midiClipFilenames.append(pMidiClip->filename());
 					// Have a new filename revision...
 					const QString& sFilename
 						= pMidiClip->createFilePathRevision(bTemporary);
 					// Save/replace the clip track...
-					pMidiClip->saveCopyFile(sFilename, !bTemporary);
+					pMidiClip->saveCopyFile(sFilename, pClipSaveFileCommand);
 				}
 			}
 		}
 	}
 
 	// Soft-house-keeping...
+	if (!bTemporary && !pClipSaveFileCommand->isEmpty()) {
+		m_pSession->commands()->push(pClipSaveFileCommand);
+		pClipSaveFileCommand = nullptr;
+	} else {
+		pClipSaveFileCommand->undo();
+	}
+
+	if (pClipSaveFileCommand)
+		delete pClipSaveFileCommand;
+
 	m_pSession->files()->cleanup(false);
 
 	// Write the file...
@@ -2710,13 +2721,10 @@ bool qtractorMainForm::saveSessionFileEx (
 		qtractorDocument::clearExtractedArchives();
 #endif
 
-	// Restore old clip filenames, saved previously...
-	MidiClipFilenames::ConstIterator iter = midiClips.constBegin();
-	const MidiClipFilenames::ConstIterator& iter_end = midiClips.constEnd();
-	for ( ; iter != iter_end; ++iter) {
-		qtractorMidiClip *pMidiClip = iter.key();
-		const QString& sFilename = iter.value();
-		pMidiClip->setFilenameEx(sFilename, false);
+	// Retire old filenames, saved previously...
+	QStringListIterator iter(midiClipFilenames);
+	while (iter.hasNext()) {
+		const QString& sFilename = iter.next();
 		m_pFiles->removeMidiFile(sFilename, false);
 	}
 

@@ -1316,11 +1316,15 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 	}
 
 	// Save it right away...
+	qtractorClipSaveFileCommand *pClipSaveFileCommand
+		= new qtractorClipSaveFileCommand();
+
 	const bool bResult
-		= pMidiClip->saveCopyFile(sFilename, true);
+		= pMidiClip->saveCopyFile(sFilename, pClipSaveFileCommand);
 
 	// Have we done it right?
 	if (bResult) {
+		pSession->commands()->push(pClipSaveFileCommand);
 		// Aha, but we're not dirty no more.
 		m_iDirtyCount = 0;
 	}
