@@ -2221,20 +2221,20 @@ failed.</source>
         <translation>Новая группа</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="682"/>
-        <location filename="../qtractorFileListView.cpp" line="711"/>
+        <location filename="../qtractorFileListView.cpp" line="688"/>
+        <location filename="../qtractorFileListView.cpp" line="717"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="683"/>
+        <location filename="../qtractorFileListView.cpp" line="689"/>
         <source>About to remove %1 file item(s).
 
 Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="712"/>
+        <location filename="../qtractorFileListView.cpp" line="718"/>
         <source>About to remove %1 item:
 
 &quot;%2&quot;
@@ -2247,12 +2247,12 @@ Are you sure?</source>
 Вы уверены?</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="715"/>
+        <location filename="../qtractorFileListView.cpp" line="721"/>
         <source>group</source>
         <translation>группа</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="715"/>
+        <location filename="../qtractorFileListView.cpp" line="721"/>
         <source>file</source>
         <translation>файл</translation>
     </message>

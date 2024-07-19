@@ -2223,17 +2223,17 @@ falhou.</translation>
 <context>
     <name>qtractorFileListView</name>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="715"/>
+        <location filename="../qtractorFileListView.cpp" line="721"/>
         <source>file</source>
         <translation>arquivo</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="715"/>
+        <location filename="../qtractorFileListView.cpp" line="721"/>
         <source>group</source>
         <translation>grupo</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="683"/>
+        <location filename="../qtractorFileListView.cpp" line="689"/>
         <source>About to remove %1 file item(s).
 
 Are you sure?</source>
@@ -2242,7 +2242,7 @@ Are you sure?</source>
 Posso continuar?</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="712"/>
+        <location filename="../qtractorFileListView.cpp" line="718"/>
         <source>About to remove %1 item:
 
 &quot;%2&quot;
@@ -2260,8 +2260,8 @@ Posso continuar?</translation>
         <translation>Novo Grupo</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="682"/>
-        <location filename="../qtractorFileListView.cpp" line="711"/>
+        <location filename="../qtractorFileListView.cpp" line="688"/>
+        <location filename="../qtractorFileListView.cpp" line="717"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
