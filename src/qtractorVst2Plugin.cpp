@@ -31,9 +31,7 @@
 
 #include "qtractorOptions.h"
 
-#if 0//QTRACTOR_VST2_EDITOR_TOOL
 #include "qtractorMainForm.h"
-#endif
 
 #include <QApplication>
 #include <QFileDialog>
@@ -1153,6 +1151,17 @@ bool qtractorVst2Plugin::savePresetFile ( const QString& sFilename )
 		return qtractorVst2Preset(this).save(sFilename);
 	else
 		return qtractorPlugin::savePresetFile(sFilename);
+}
+
+
+// Make up some others dirty...
+void qtractorVst2Plugin::updateDirtyCount (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm)
+		pMainForm->dirtyNotifySlot();
+
+	updateFormDirtyCount();
 }
 
 

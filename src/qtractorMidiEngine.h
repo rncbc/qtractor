@@ -1,7 +1,7 @@
 // qtractorMidiEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -313,6 +313,8 @@ public:
 	// Process pending step-input events...
 	void processInpEvents();
 
+
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -345,9 +347,6 @@ protected:
 
 	// Process metronome count-ins.
 	void processCountIn(unsigned long iFrameStart, unsigned long iFrameEnd);
-
-	// Session time to metronome time conversion.
-	unsigned long metro_timeq(unsigned long time) const;
 
 	// Do ouput queue drift stats (audio vs. MIDI)...
 	void driftCheck();
@@ -581,7 +580,8 @@ public:
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Pending note-off processing methods.
-	void enqueueNoteOff(snd_seq_event_t *pEv);
+	void enqueueNoteOff(snd_seq_event_t *pEv,
+		unsigned long iTimeOn, unsigned long iTimeOff);
 	void dequeueNoteOffs(unsigned long iQueueTime);
 
 protected:

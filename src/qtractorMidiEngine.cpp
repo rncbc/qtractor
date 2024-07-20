@@ -1,7 +1,7 @@
 // qtractorMidiEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -896,7 +896,7 @@ bool qtractorMidiPlayer::process (
 			? pNode->tickFromFrame(iFrameStart) : pNode->tick);
 		snd_seq_event_t ev;
 		snd_seq_ev_clear(&ev);
-		snd_seq_ev_schedule_tick(&ev, m_iPlayerQueue, 0, iTime);
+		snd_seq_ev_schedule_tick(&ev, m_iPlayerQueue, 0, m_pTimeScale->timep(iTime));
 		ev.type = SND_SEQ_EVENT_TEMPO;
 		ev.data.queue.queue = m_iPlayerQueue;
 		ev.data.queue.param.value
@@ -910,9 +910,9 @@ bool qtractorMidiPlayer::process (
 	}
 
 	const unsigned long iTimeStart
-		= m_pTimeScale->timeq(m_pTimeScale->tickFromFrame(iFrameStart));
+		= m_pTimeScale->tickFromFrame(iFrameStart);
 	const unsigned long iTimeEnd
-		= m_pTimeScale->timeq(m_pTimeScale->tickFromFrame(iFrameEnd));
+		= m_pTimeScale->tickFromFrame(iFrameEnd);
 
 	unsigned int iProcess = 0;
 	for (unsigned short iSeq = 0; iSeq < m_iSeqs; ++iSeq) {
@@ -924,7 +924,7 @@ bool qtractorMidiPlayer::process (
 			if (iTime >= iTimeEnd)
 				break;
 			if (iTime >= iTimeStart)
-				enqueue(pSeq->channel(), pEvent, m_pTimeScale->timep(iTime));
+				enqueue(pSeq->channel(), pEvent, iTime);
 			pEvent = pEvent->next();
 		}
 		if (iTimeEnd < pSeq->duration()) ++iProcess;
@@ -946,7 +946,9 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 	snd_seq_ev_set_source(&ev, m_pMidiBus->alsaPort());
 	snd_seq_ev_set_subs(&ev);
 
-	snd_seq_ev_schedule_tick(&ev, m_iPlayerQueue, 0, iTime);
+	snd_seq_ev_schedule_tick(&ev, m_iPlayerQueue, 0, m_pTimeScale->timep(iTime));
+
+	unsigned long iDuration = 0;
 
 	switch (pEvent->type()) {
 	case qtractorMidiEvent::NOTEON:
@@ -954,7 +956,8 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 		ev.data.note.channel  = iMidiChannel;
 		ev.data.note.note     = pEvent->note();
 		ev.data.note.velocity = pEvent->value();
-		ev.data.note.duration = m_pTimeScale->timep(pEvent->duration());
+		iDuration = pEvent->duration();
+		ev.data.note.duration = m_pTimeScale->timep(iDuration);
 		break;
 	case qtractorMidiEvent::KEYPRESS:
 		ev.type = SND_SEQ_EVENT_KEYPRESS;
@@ -1012,8 +1015,8 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 
 	snd_seq_event_output(m_pMidiEngine->alsaSeq(), &ev);
 
-	if (ev.type == SND_SEQ_EVENT_NOTE && ev.data.note.duration > 0)
-		m_pMidiBus->enqueueNoteOff(&ev);
+	if (ev.type == SND_SEQ_EVENT_NOTE && iDuration > 0)
+		m_pMidiBus->enqueueNoteOff(&ev, iTime, iTime + (iDuration - 1));
 
 	if (m_pMidiBus->midiMonitor_out())
 		m_pMidiBus->midiMonitor_out()->enqueue(
@@ -1027,9 +1030,8 @@ void qtractorMidiPlayer::enqueue ( unsigned short iMidiChannel,
 			qtractorTimeScale::Node *pNode = cursor.seekTick(iTime);
 			const unsigned long t1 = pNode->frameFromTick(iTime);
 			unsigned long t2 = t1;
-			if (ev.type == SND_SEQ_EVENT_NOTE
-				&& ev.data.note.duration > 0) {
-				iTime += (ev.data.note.duration - 1);
+			if (ev.type == SND_SEQ_EVENT_NOTE && iDuration > 0) {
+				iTime += (iDuration - 1);
 				pNode = cursor.seekTick(iTime);
 				t2 += (pNode->frameFromTick(iTime) - t1);
 			}
@@ -1072,7 +1074,7 @@ unsigned long qtractorMidiPlayer::queueTime (void) const
 		iQueueTime = snd_seq_queue_status_get_tick_time(pQueueStatus);
 	}
 
-	return iQueueTime;
+	return m_pTimeScale->timeq(iQueueTime);
 }
 
 
@@ -1209,6 +1211,10 @@ int qtractorMidiEngine::alsaQueue (void) const
 // Current ALSA queue time accessor.
 unsigned long qtractorMidiEngine::queueTime (void) const
 {
+	qtractorSession *pSession = session();
+	if (pSession == nullptr)
+		return 0;
+
 	if (m_pAlsaSeq == nullptr)
 		return 0;
 
@@ -1224,7 +1230,7 @@ unsigned long qtractorMidiEngine::queueTime (void) const
 		iQueueTime = snd_seq_queue_status_get_tick_time(pQueueStatus);
 	}
 
-	return iQueueTime;
+	return pSession->timeq(iQueueTime);
 }
 
 
@@ -1666,12 +1672,12 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	unsigned char *pSysex   = nullptr;
 	unsigned short iSysex   = 0;
 
-	unsigned long tick = pEv->time.tick;
+	unsigned long tick = pSession->timeScale()->timeq(pEv->time.tick);
 
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
 		const unsigned long q
-			= qtractorTimeScale::TICKS_PER_BEAT_HRQ
+			= pSession->ticksPerBeat()
 			/ m_iCaptureQuantize;
 		tick = q * ((tick + (q >> 1)) / q);
 	}
@@ -2070,7 +2076,9 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	snd_seq_ev_set_subs(&ev);
 
 	// Scheduled delivery...
-	snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, tick);
+	snd_seq_ev_schedule_tick(&ev, m_iAlsaQueue, 0, pSession->timep(tick));
+
+	unsigned long iDuration = 0;
 
 	// Set proper event data...
 	switch (pEvent->type()) {
@@ -2079,13 +2087,14 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 			ev.data.note.channel  = pTrack->midiChannel();
 			ev.data.note.note     = pEvent->note();
 			ev.data.note.velocity = int(fGain * float(pEvent->value())) & 0x7f;
-			ev.data.note.duration = pEvent->duration();
+			iDuration = pEvent->duration();
 			if (pSession->isLooping()) {
 				const unsigned long iLoopEndTime
 					= pSession->tickFromFrame(pSession->loopEnd());
 				if (iLoopEndTime > iTime && iLoopEndTime < iTime + pEvent->duration())
-					ev.data.note.duration = iLoopEndTime - iTime;
+					iDuration = iLoopEndTime - iTime;
 			}
+			ev.data.note.duration = pSession->timep(iDuration);
 			break;
 		case qtractorMidiEvent::KEYPRESS:
 			ev.type = SND_SEQ_EVENT_KEYPRESS;
@@ -2206,9 +2215,9 @@ void qtractorMidiEngine::enqueue ( qtractorTrack *pTrack,
 	const unsigned long t1 = (long(t0) < f0 ? t0 : t0 - f0);
 	unsigned long t2 = t1;
 
-	if (ev.type == SND_SEQ_EVENT_NOTE && ev.data.note.duration > 0) {
-		pMidiBus->enqueueNoteOff(&ev);
-		const unsigned long iTimeOff = iTime + (ev.data.note.duration - 1);
+	if (ev.type == SND_SEQ_EVENT_NOTE && iDuration > 0) {
+		const unsigned long iTimeOff = iTime + (iDuration - 1);
+		pMidiBus->enqueueNoteOff(&ev, iTime, iTimeOff);
 		pNode = cursor.seekTick(iTimeOff);
 		t2 += (pNode->frameFromTick(iTimeOff) - t0);
 	}
@@ -2273,6 +2282,8 @@ void qtractorMidiEngine::driftCheck (void)
 		return;
 
 	// Time to have some corrective approach...?
+	const unsigned short iTicksPerBeat
+		= pSession->ticksPerBeat();
 	const long iAudioFrame = m_iFrameStart + m_iFrameDrift
 		+ pAudioEngine->jackFrameTime() - m_iAudioFrameStart;
 	qtractorTimeScale::Node *pNode = m_pMetroCursor->seekFrame(iAudioFrame);
@@ -2281,9 +2292,9 @@ void qtractorMidiEngine::driftCheck (void)
 	const long iMidiTime
 		= long(queueTime());
 	const long iMinDeltaTime
-		= long(qtractorTimeScale::TICKS_PER_BEAT_MIN >> 2);
+		= long(iTicksPerBeat >> 8) + 1;
 	const long iMaxDeltaTime
-		= long(qtractorTimeScale::TICKS_PER_BEAT_MAX >> 4);
+		= long(iTicksPerBeat >> 4) + 1;
 	const long iDeltaTime = (iAudioTime - iMidiTime);
 	if (qAbs(iDeltaTime) < iMaxDeltaTime) {
 	//--DRIFT-SKEW-BEGIN--
@@ -3404,13 +3415,6 @@ void qtractorMidiEngine::processMetro (
 	ev_clock.tag = (unsigned char) 0xff;
 	ev_clock.type = SND_SEQ_EVENT_CLOCK;
 
-	const unsigned long iMetroOffset
-		= metro_timeq(m_iMetroOffset);
-	const unsigned long iMetroBarDuration
-		= metro_timeq(m_iMetroBarDuration);
-	const unsigned long iMetroBeatDuration
-		= metro_timeq(m_iMetroBeatDuration);
-
 	while (iTime < iTimeEnd) {
 		// Scheduled delivery: take into account
 		// the time playback/queue started...
@@ -3431,8 +3435,8 @@ void qtractorMidiEngine::processMetro (
 		}
 		if (m_bMetronome && iTime >= iTimeStart) {
 			// Have some latency compensation...
-			const unsigned long iTimeOffset = (iMetroOffset > 0
-				&& iTime > iMetroOffset ? iTime - iMetroOffset : iTime);
+			const unsigned long iTimeOffset = (m_iMetroOffset > 0
+				&& iTime > m_iMetroOffset ? iTime - m_iMetroOffset : iTime);
 			// Set proper event schedule time...
 			const unsigned long tick
 				= (long(iTimeOffset) > m_iTimeStart ? iTimeOffset - m_iTimeStart : 0);
@@ -3441,11 +3445,11 @@ void qtractorMidiEngine::processMetro (
 			if (pNode->beatIsBar(iBeat)) {
 				ev.data.note.note     = m_iMetroBarNote;
 				ev.data.note.velocity = m_iMetroBarVelocity;
-				ev.data.note.duration = iMetroBarDuration;
+				ev.data.note.duration = m_iMetroBarDuration;
 			} else {
 				ev.data.note.note     = m_iMetroBeatNote;
 				ev.data.note.velocity = m_iMetroBeatVelocity;
-				ev.data.note.duration = iMetroBeatDuration;
+				ev.data.note.duration = m_iMetroBeatDuration;
 			}
 			// Pump it into the queue.
 			snd_seq_event_output(m_pAlsaSeq, &ev);
@@ -3466,14 +3470,6 @@ void qtractorMidiEngine::processMetro (
 qtractorTimeScale::Cursor *qtractorMidiEngine::metroCursor (void) const
 {
 	return m_pMetroCursor;
-}
-
-
-// Session time to metronome time conversion.
-unsigned long qtractorMidiEngine::metro_timeq ( unsigned long time ) const
-{
-	const unsigned long q = m_pMetroCursor->timeScale()->ticksPerBeat();
-	return uint64_t(time) * qtractorTimeScale::TICKS_PER_BEAT_HRQ / q;
 }
 
 
@@ -3567,20 +3563,13 @@ void qtractorMidiEngine::processCountIn (
 	ev.type = SND_SEQ_EVENT_NOTE;
 	ev.data.note.channel = m_iMetroChannel;
 
-	const unsigned long iMetroOffset
-		= metro_timeq(m_iMetroOffset);
-	const unsigned long iMetroBarDuration
-		= metro_timeq(m_iMetroBarDuration);
-	const unsigned long iMetroBeatDuration
-		= metro_timeq(m_iMetroBeatDuration);
-
 	while (iTime < iTimeEnd) {
 		// Scheduled delivery: take into account
 		// the time playback/queue started...
 		if (iTime >= iTimeStart) {
 			// Have some latency compensation...
-			const unsigned long iTimeOffset = (iMetroOffset > 0
-				&& iTime > iMetroOffset ? iTime - iMetroOffset : iTime);
+			const unsigned long iTimeOffset = (m_iMetroOffset > 0
+				&& iTime > m_iMetroOffset ? iTime - m_iMetroOffset : iTime);
 			// Set proper event schedule time...
 			const unsigned long tick
 				= (long(iTimeOffset) > m_iCountInTimeStart
@@ -3590,11 +3579,11 @@ void qtractorMidiEngine::processCountIn (
 			if (pNode->beatIsBar(iBeat)) {
 				ev.data.note.note     = m_iMetroBarNote;
 				ev.data.note.velocity = m_iMetroBarVelocity;
-				ev.data.note.duration = iMetroBarDuration;
+				ev.data.note.duration = m_iMetroBarDuration;
 			} else {
 				ev.data.note.note     = m_iMetroBeatNote;
 				ev.data.note.velocity = m_iMetroBeatVelocity;
-				ev.data.note.duration = iMetroBeatDuration;
+				ev.data.note.duration = m_iMetroBeatDuration;
 			}
 			// Pump it into the queue.
 			snd_seq_event_output(m_pAlsaSeq, &ev);
@@ -3778,6 +3767,9 @@ bool qtractorMidiEngine::fileExport (
 	if (iExportStart >= iExportEnd)
 		return false;
 
+	const unsigned short iTicksPerBeat
+		= pSession->ticksPerBeat();
+
 	const unsigned long iTimeStart
 		= pSession->tickFromFrame(iExportStart);
 	const unsigned long iTimeEnd
@@ -3797,7 +3789,7 @@ bool qtractorMidiEngine::fileExport (
 		ppSeqs = new qtractorMidiSequence * [iSeqs];
 		for (iSeq = 0; iSeq < iSeqs; ++iSeq) {
 			ppSeqs[iSeq] = new qtractorMidiSequence(
-				QString(), iSeq, qtractorTimeScale::TICKS_PER_BEAT_HRQ);
+				QString(), iSeq, iTicksPerBeat);
 		}
 	}
 
@@ -3843,8 +3835,7 @@ bool qtractorMidiEngine::fileExport (
 			// SMF Format 1
 			++iTracks;
 			pSeq = new qtractorMidiSequence(
-				pTrack->trackName(), iTracks,
-				qtractorTimeScale::TICKS_PER_BEAT_HRQ);
+				pTrack->trackName(), iTracks, iTicksPerBeat);
 			pSeq->setChannel(pTrack->midiChannel());
 			seqs.append(pSeq);
 		}
@@ -3925,7 +3916,7 @@ bool qtractorMidiEngine::fileExport (
 	const bool bResult
 		= file.open(sExportPath, qtractorMidiFile::Write);
 	if (bResult) {
-		if (file.writeHeader(iFormat, iTracks, pSession->ticksPerBeat())) {
+		if (file.writeHeader(iFormat, iTracks, iTicksPerBeat)) {
 			// Export SysEx setups...
 			bus_iter.toFront();
 			while (bus_iter.hasNext()) {
@@ -3934,8 +3925,7 @@ bool qtractorMidiEngine::fileExport (
 				if (pSysexList && pSysexList->count() > 0) {
 					if (ppSeqs[0] == nullptr) {
 						ppSeqs[0] = new qtractorMidiSequence(
-							QFileInfo(sExportPath).baseName(), 0,
-							qtractorTimeScale::TICKS_PER_BEAT_HRQ);
+							QFileInfo(sExportPath).baseName(), 0, iTicksPerBeat);
 					}
 					pExportBus->exportSysexList(ppSeqs[0]);
 				}
@@ -5510,12 +5500,9 @@ bool qtractorMidiBus::exportSysexList ( qtractorMidiSequence *pSeq )
 
 // Pending note-offs processing methods.
 //
-void qtractorMidiBus::enqueueNoteOff ( snd_seq_event_t *pEv )
+void qtractorMidiBus::enqueueNoteOff (
+	snd_seq_event_t *pEv, unsigned long iTimeOn, unsigned long iTimeOff )
 {
-	const unsigned long	iTimeOn
-		= pEv->time.tick;
-	const unsigned long	iTimeOff
-		= iTimeOn + (pEv->data.note.duration - 1);
 	const unsigned short key
 		= (pEv->data.note.channel << 7) | (pEv->data.note.note & 0x7f);
 	m_noteOffs.insert(key, NoteOff(iTimeOn, iTimeOff));

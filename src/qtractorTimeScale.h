@@ -27,11 +27,9 @@
 #include <QStringList>
 #include <QColor>
 
+
 // Needed for the translation functions.
 #include <QCoreApplication>
-
-// Prolly needed for some rounding functions.
-#include <cmath>
 
 
 //----------------------------------------------------------------------
@@ -159,8 +157,8 @@ public:
 
 		// Frame/tick convertors.
 		unsigned long tickFromFrame(unsigned long iFrame) const
-			{ return tickq(tick + uroundf(
-				(tickRate * (iFrame - frame)) / ts->frameRate())); }
+			{ return tick + uroundf(
+				(tickRate * (iFrame - frame)) / ts->frameRate()); }
 		unsigned long frameFromTick(unsigned long iTick) const
 			{ return frame + uroundf(
 				(ts->frameRate() * (iTick - tick)) / tickRate); }
@@ -169,18 +167,18 @@ public:
 		unsigned int beatFromTick(unsigned long iTick) const
 			{ return beat + ((iTick - tick) / ticksPerBeat); }
 		unsigned long tickFromBeat(unsigned int iBeat) const
-			{ return tickq(tick + (ticksPerBeat * (iBeat - beat))); }
+			{ return tick + (ticksPerBeat * (iBeat - beat)); }
 
 		// Tick/bar convertors.
 		unsigned short barFromTick(unsigned long iTick) const
 			{ return bar + ((iTick - tick) / (ticksPerBeat * beatsPerBar)); }
 		unsigned long tickFromBar(unsigned short iBar) const
-			{ return tickq(tick + (ticksPerBeat * beatsPerBar * (iBar - bar))); }
+			{ return tick + (ticksPerBeat * beatsPerBar * (iBar - bar)); }
 
 		// Tick/pixel convertors.
 		unsigned long tickFromPixel(int x) const
-			{ return tickq(tick + uroundf(
-				(tickRate * (x - pixel)) / ts->pixelRate())); }
+			{ return tick + uroundf(
+				(tickRate * (x - pixel)) / ts->pixelRate()); }
 		int pixelFromTick(unsigned long iTick) const
 			{ return pixel + uroundf(
 				(ts->pixelRate() * (iTick - tick)) / tickRate); }
@@ -228,10 +226,7 @@ public:
 
 		// Alternate (secondary) time-sig helper methods
 		unsigned short beatsPerBar2() const;
-		unsigned int ticksPerBeat2() const;
-
-		// MIDI time/tick hi-res rounding dumb-quantizer.
-		unsigned long tickq(unsigned long tick) const { return (tick & ~1); }
+		unsigned short ticksPerBeat2() const;
 
 		// Node keys.
 		unsigned long  frame;
@@ -246,7 +241,7 @@ public:
 		unsigned short beatsPerBar;
 		unsigned short beatDivisor;
 
-		unsigned int   ticksPerBeat;
+		unsigned short ticksPerBeat;
 
 	protected:
 
@@ -636,7 +631,7 @@ public:
 	static const unsigned short TICKS_PER_BEAT_DEF = 960;
 	static const unsigned short TICKS_PER_BEAT_MAX = 3840;
 
-	static const unsigned short TICKS_PER_BEAT_HRQ = (TICKS_PER_BEAT_MAX << 2);
+	static const unsigned short TICKS_PER_BEAT_HRQ = (TICKS_PER_BEAT_MAX << 3);
 
 	// MIDI time adjust to/from official high resolution queue (64bit).
 	unsigned long timep ( unsigned long time ) const

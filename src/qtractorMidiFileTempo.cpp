@@ -1,7 +1,7 @@
 // qtractorMidiFileTempo.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -225,7 +225,7 @@ void qtractorMidiFileTempo::fromTimeScale (
 		return;
 
 	const unsigned short p = m_pMidiFile->ticksPerBeat();
-	const unsigned short q = qtractorTimeScale::TICKS_PER_BEAT_HRQ;
+	const unsigned short q = pTimeScale->ticksPerBeat();
 
 	if (q < 1) return;
 
@@ -263,7 +263,7 @@ void qtractorMidiFileTempo::intoTimeScale (
 	if (pTimeScale == nullptr)
 		return;
 
-	const unsigned short p = qtractorTimeScale::TICKS_PER_BEAT_HRQ;
+	const unsigned short p = pTimeScale->ticksPerBeat();
 	const unsigned short q = m_pMidiFile->ticksPerBeat();
 
 	if (q < 1) return;

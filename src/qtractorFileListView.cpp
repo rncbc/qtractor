@@ -1,7 +1,7 @@
 // qtractorFileListView.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -675,9 +675,15 @@ void qtractorFileListView::removeItem (void)
 
 	int iUpdate = 0;
 	QList<QTreeWidgetItem *> items = selectedItems();
-	if (items.count() > 0) {
+	if (!items.isEmpty()) {
+		QMutableListIterator<QTreeWidgetItem *> iter(items);
+		while (iter.hasNext()) {
+			QTreeWidgetItem *pItem = iter.next();
+			if (pItem->type() == ChannelItem)
+				iter.remove();
+		}
 		// Prompt user if he/she's sure about this...
-		if (pOptions->bConfirmRemove) {
+		if (items.count() > 0 && pOptions->bConfirmRemove) {
 			if (QMessageBox::warning(this,
 				tr("Warning"),
 				tr("About to remove %1 file item(s).\n\n"
@@ -688,7 +694,7 @@ void qtractorFileListView::removeItem (void)
 				return;
 		}
 		// Definite multi-delete...
-		QListIterator<QTreeWidgetItem *> iter(items);
+		iter.toFront();
 		while (iter.hasNext()) {
 			QTreeWidgetItem *pItem = iter.next();
 			// Remove from file registry, when applicable...
@@ -704,7 +710,7 @@ void qtractorFileListView::removeItem (void)
 		}
 	} else {
 		QTreeWidgetItem *pItem = QTreeWidget::currentItem();
-		if (pItem) {
+		if (pItem && pItem->type() != ChannelItem) {
 			// Prompt user if he/she's sure about this...
 			if (pOptions->bConfirmRemove) {
 				if (QMessageBox::warning(this,

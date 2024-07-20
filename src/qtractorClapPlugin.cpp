@@ -2927,7 +2927,7 @@ void qtractorClapPlugin::updateParamValues ( bool bUpdate )
 	}
 
 	if (nupdate > 0)
-		updateDirtyCount();
+		updateFormDirtyCount();
 }
 
 

@@ -26,8 +26,6 @@
 #include "qtractorMidiCursor.h"
 #include "qtractorMidiFile.h"
 
-#include "qtractorTimeScale.h"
-
 #include <QPoint>
 #include <QSize>
 
@@ -162,8 +160,7 @@ public:
 
 		// Constructor.
 		Data(unsigned short iFormat)
-			: m_iFormat(iFormat), m_pSeq(new qtractorMidiSequence(
-				QString(), 0, qtractorTimeScale::TICKS_PER_BEAT_HRQ)) {}
+			: m_iFormat(iFormat), m_pSeq(new qtractorMidiSequence()) {}
 
 		// Destructor.
 		~Data() { clear(); delete m_pSeq; }

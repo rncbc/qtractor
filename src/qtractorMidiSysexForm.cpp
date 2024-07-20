@@ -1,7 +1,7 @@
 // qtractorMidiSysexForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -919,17 +919,15 @@ void qtractorMidiSysexForm::refreshSysex (void)
 bool qtractorMidiSysexForm::loadSysexItems (
 	QList<QTreeWidgetItem *>& items, const QString& sFilename )
 {
-	const QFileInfo info(sFilename);
-
 	int iSysex = 0;
+	QFileInfo info(sFilename);
 
 	// Try on SMF files first...
 	qtractorMidiFile midifile;
 	if (midifile.open(sFilename)) {
 		unsigned short iTracks = midifile.tracks();
 		for (unsigned int iTrack = 0; iTrack < iTracks; ++iTrack) {
-			qtractorMidiSequence seq(
-				QString(), 0, qtractorTimeScale::TICKS_PER_BEAT_HRQ);
+			qtractorMidiSequence seq;
 			if (midifile.readTrack(&seq, iTrack)) {
 				qtractorMidiEvent *pEvent = seq.events().first();
 				while (pEvent) {

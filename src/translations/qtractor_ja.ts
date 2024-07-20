@@ -36,16 +36,16 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2958"/>
         <location filename="../qtractorAudioEngine.cpp" line="3250"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4324"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4900"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4314"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4890"/>
         <source>%1 In</source>
         <translation>%1 入力</translation>
     </message>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2967"/>
         <location filename="../qtractorAudioEngine.cpp" line="3250"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4333"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4900"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4323"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4890"/>
         <source>%1 Out</source>
         <translation>%1 出力</translation>
     </message>
@@ -56,7 +56,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorAudioFile.cpp" line="137"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="1582"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1591"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
@@ -86,7 +86,7 @@ Audio:	%1 channels, %2 Hz</source>
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="85"/>
-        <location filename="../qtractorTimeScale.cpp" line="744"/>
+        <location filename="../qtractorTimeScale.cpp" line="746"/>
         <source>None</source>
         <translation>なし</translation>
     </message>
@@ -571,7 +571,7 @@ MIDI:	</translation>
         <translation>セッションのプロパティー</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="747"/>
+        <location filename="../qtractorTimeScale.cpp" line="749"/>
         <source>Beat</source>
         <translation></translation>
     </message>
@@ -636,8 +636,8 @@ MIDI:	</translation>
         <translation>拍子の変更。</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="4326"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4335"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4316"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4325"/>
         <location filename="../qtractorTrack.cpp" line="700"/>
         <source>%1 Volume</source>
         <translation>%1 ボリューム</translation>
@@ -652,8 +652,8 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorAudioEngine.cpp" line="2962"/>
         <location filename="../qtractorAudioEngine.cpp" line="2971"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4328"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4337"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4318"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4327"/>
         <location filename="../qtractorTrack.cpp" line="706"/>
         <source>%1 Pan</source>
         <translation>%1 パニング</translation>
@@ -758,14 +758,14 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>不明</translation>
     </message>
     <message>
-        <location filename="../qtractorVst2Plugin.cpp" line="657"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="655"/>
         <source>Product: </source>
         <translation>プロダクト: </translation>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="562"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="665"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1334"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="663"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1335"/>
         <source>Vendor: </source>
         <translation>ベンダー: </translation>
     </message>
@@ -781,13 +781,13 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="546"/>
-        <location filename="../qtractorVst2Plugin.cpp" line="673"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1307"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="671"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1308"/>
         <source>Version: </source>
         <translation>バージョン: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst2Plugin.cpp" line="1579"/>
+        <location filename="../qtractorVst2Plugin.cpp" line="1588"/>
         <source>%1 (*.%2)</source>
         <translation></translation>
     </message>
@@ -875,17 +875,17 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     </message>
     <message>
         <location filename="../qtractorClapPlugin.cpp" line="540"/>
-        <location filename="../qtractorVst3Plugin.cpp" line="1301"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1302"/>
         <source>Name: </source>
         <translation>名前: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1321"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1322"/>
         <source>Category: </source>
         <translation>カテゴリー: </translation>
     </message>
     <message>
-        <location filename="../qtractorVst3Plugin.cpp" line="1328"/>
+        <location filename="../qtractorVst3Plugin.cpp" line="1329"/>
         <source>Categories: </source>
         <translation>カテゴリー: </translation>
     </message>
@@ -2226,13 +2226,13 @@ failed.</source>
         <translation>新しいグループ</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="682"/>
-        <location filename="../qtractorFileListView.cpp" line="711"/>
+        <location filename="../qtractorFileListView.cpp" line="688"/>
+        <location filename="../qtractorFileListView.cpp" line="717"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="683"/>
+        <location filename="../qtractorFileListView.cpp" line="689"/>
         <source>About to remove %1 file item(s).
 
 Are you sure?</source>
@@ -2241,7 +2241,7 @@ Are you sure?</source>
 よろしいですか？</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="712"/>
+        <location filename="../qtractorFileListView.cpp" line="718"/>
         <source>About to remove %1 item:
 
 &quot;%2&quot;
@@ -2254,12 +2254,12 @@ Are you sure?</source>
 よろしいですか？</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="715"/>
+        <location filename="../qtractorFileListView.cpp" line="721"/>
         <source>group</source>
         <translation>グループ</translation>
     </message>
     <message>
-        <location filename="../qtractorFileListView.cpp" line="715"/>
+        <location filename="../qtractorFileListView.cpp" line="721"/>
         <source>file</source>
         <translation>ファイル</translation>
     </message>
@@ -11052,12 +11052,12 @@ Do you want to apply the changes?</source>
 変更を適用しますか？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="1080"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="1078"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiSysexForm.cpp" line="1081"/>
+        <location filename="../qtractorMidiSysexForm.cpp" line="1079"/>
         <source>SysEx could not be loaded:
 
 &quot;%1&quot;.
@@ -14437,107 +14437,107 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorTimeScale</name>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="992"/>
+        <location filename="../qtractorTimeScale.cpp" line="994"/>
         <source>C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="992"/>
+        <location filename="../qtractorTimeScale.cpp" line="994"/>
         <source>B#</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="993"/>
+        <location filename="../qtractorTimeScale.cpp" line="995"/>
         <source>C#</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="993"/>
+        <location filename="../qtractorTimeScale.cpp" line="995"/>
         <source>Db</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="994"/>
+        <location filename="../qtractorTimeScale.cpp" line="996"/>
         <source>D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="995"/>
+        <location filename="../qtractorTimeScale.cpp" line="997"/>
         <source>D#</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="995"/>
+        <location filename="../qtractorTimeScale.cpp" line="997"/>
         <source>Eb</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="996"/>
+        <location filename="../qtractorTimeScale.cpp" line="998"/>
         <source>E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="996"/>
+        <location filename="../qtractorTimeScale.cpp" line="998"/>
         <source>Fb</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="997"/>
+        <location filename="../qtractorTimeScale.cpp" line="999"/>
         <source>F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="997"/>
+        <location filename="../qtractorTimeScale.cpp" line="999"/>
         <source>E#</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="998"/>
+        <location filename="../qtractorTimeScale.cpp" line="1000"/>
         <source>F#</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="998"/>
+        <location filename="../qtractorTimeScale.cpp" line="1000"/>
         <source>Gb</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="999"/>
+        <location filename="../qtractorTimeScale.cpp" line="1001"/>
         <source>G</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1000"/>
+        <location filename="../qtractorTimeScale.cpp" line="1002"/>
         <source>G#</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1000"/>
+        <location filename="../qtractorTimeScale.cpp" line="1002"/>
         <source>Ab</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1001"/>
+        <location filename="../qtractorTimeScale.cpp" line="1003"/>
         <source>A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1002"/>
+        <location filename="../qtractorTimeScale.cpp" line="1004"/>
         <source>A#</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1002"/>
+        <location filename="../qtractorTimeScale.cpp" line="1004"/>
         <source>Bb</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1003"/>
+        <location filename="../qtractorTimeScale.cpp" line="1005"/>
         <source>B</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScale.cpp" line="1003"/>
+        <location filename="../qtractorTimeScale.cpp" line="1005"/>
         <source>Cb</source>
         <translation></translation>
     </message>
@@ -15466,7 +15466,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1043"/>
-        <location filename="../qtractorTracks.cpp" line="3065"/>
+        <location filename="../qtractorTracks.cpp" line="3066"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>音声ファイル &quot;%1&quot; を %2 %3 へインポート。
@@ -15474,13 +15474,13 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1048"/>
-        <location filename="../qtractorTracks.cpp" line="3070"/>
+        <location filename="../qtractorTracks.cpp" line="3071"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>音声ファイルのインポート: &quot;%1&quot;。</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1078"/>
-        <location filename="../qtractorTracks.cpp" line="2919"/>
+        <location filename="../qtractorTracks.cpp" line="2920"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>MIDIファイル &quot;%1&quot; をトラックチャンネル %2 の%3 %4 へインポート。
@@ -15488,7 +15488,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1084"/>
-        <location filename="../qtractorTracks.cpp" line="2925"/>
+        <location filename="../qtractorTracks.cpp" line="2926"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>MIDIファイルのインポート: &quot;%1&quot;, トラックチャンネル: %2。</translation>
     </message>
@@ -15539,57 +15539,57 @@ Length:	%3</source>
         <translation>MIDIクリップをマージ/エクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1580"/>
+        <location filename="../qtractorTracks.cpp" line="1581"/>
         <source>MIDI clip merge/export: &quot;%1&quot; started...</source>
         <translation>MIDIクリップのマージ/エクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1702"/>
+        <location filename="../qtractorTracks.cpp" line="1703"/>
         <source>MIDI clip merge/export: &quot;%1&quot; complete.</source>
         <translation>MIDIクリップのマージ/エクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1879"/>
+        <location filename="../qtractorTracks.cpp" line="1880"/>
         <source>clip cross-fade</source>
         <translation>クリップのクロスフェード</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2134"/>
+        <location filename="../qtractorTracks.cpp" line="2135"/>
         <source>Insert Range</source>
         <translation>レンジの挿入</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2154"/>
+        <location filename="../qtractorTracks.cpp" line="2155"/>
         <source>insert range</source>
         <translation>レンジの挿入</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2155"/>
+        <location filename="../qtractorTracks.cpp" line="2156"/>
         <source>insert track range</source>
         <translation>トラックレンジの挿入</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2359"/>
+        <location filename="../qtractorTracks.cpp" line="2360"/>
         <source>Remove Range</source>
         <translation>レンジの削除</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2379"/>
+        <location filename="../qtractorTracks.cpp" line="2380"/>
         <source>remove range</source>
         <translation>レンジを削除します</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2380"/>
+        <location filename="../qtractorTracks.cpp" line="2381"/>
         <source>remove track range</source>
         <translation>トラックレンジを削除します</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2677"/>
+        <location filename="../qtractorTracks.cpp" line="2678"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2678"/>
+        <location filename="../qtractorTracks.cpp" line="2679"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -15602,14 +15602,14 @@ Are you sure?</source>
 よろしいですか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3176"/>
+        <location filename="../qtractorTracks.cpp" line="3177"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>MIDIファイル &quot;%1&quot; を %2 %3 へインポート。
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3181"/>
+        <location filename="../qtractorTracks.cpp" line="3182"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>MIDIファイルをインポート: &quot;%1&quot;。</translation>
     </message>

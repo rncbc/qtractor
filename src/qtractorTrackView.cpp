@@ -1389,7 +1389,7 @@ qtractorTrack *qtractorTrackView::dragClipDrop (
 			unsigned long t1, t0 = pNode->tickFromPixel(x0);
 			qtractorMidiFile file;
 			if (file.open(pDropItem->path)) {
-				const unsigned short p = qtractorTimeScale::TICKS_PER_BEAT_HRQ;
+				const unsigned short p = pSession->ticksPerBeat();
 				const unsigned short q = file.ticksPerBeat();
 				if (pDropItem->channel < 0) {
 					t1 = t0;

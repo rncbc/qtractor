@@ -6,6 +6,14 @@ ChangeLog
 
 GIT HEAD
 
+- All sessions now honor their designated resolution property
+  (PPQN aka. ticks-per-beat) not subordinated to former ALSA
+  sequencer queue anymore, which runs on a higher resolution 
+  still. (REGRESSION)
+
+- Avoid removing MIDI Track/Channel tree items from the Files
+  view (eg. via direct [Del] keyboard shortcut when in focus).
+
 - Fixed a probable old issue of spilled and duplicated shortcut
   entries (Help/Shortcuts...) between main tracks/timeline and
   MIDI clip editor (aka. piano-roll) windows.

@@ -26,7 +26,6 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorAudioPeak.h"
 #include "qtractorAudioClip.h"
-#include "qtractorAudioBuffer.h"
 
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiClip.h"
@@ -711,14 +710,14 @@ unsigned long qtractorSession::locateFromFrame ( unsigned long iFrame ) const
 
 
 // Song position pointer (SPP=MIDI beats) to frame converters.
-unsigned long qtractorSession::frameFromSongPos ( unsigned int iSongPos )
+unsigned long qtractorSession::frameFromSongPos ( unsigned short iSongPos )
 {
-	return frameFromTick((iSongPos * qtractorTimeScale::TICKS_PER_BEAT_HRQ) >> 2);
+	return frameFromTick((iSongPos * ticksPerBeat()) >> 2);
 }
 
-unsigned int qtractorSession::songPosFromFrame ( unsigned long iFrame )
+unsigned short qtractorSession::songPosFromFrame ( unsigned long iFrame )
 {
-	return ((tickFromFrame(iFrame) << 2) / qtractorTimeScale::TICKS_PER_BEAT_HRQ);
+	return ((tickFromFrame(iFrame) << 2) / ticksPerBeat());
 }
 
 

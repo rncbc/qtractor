@@ -181,6 +181,9 @@ protected:
 	// Internal accessors.
 	EditorFrame *editorFrame() const;
 
+	// Make up some others dirty...
+	void updateDirtyCount();
+
 private:
 
 	// Instance variables.
