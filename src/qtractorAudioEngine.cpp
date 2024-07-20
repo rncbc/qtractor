@@ -1,7 +1,7 @@
 // qtractorAudioEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1450,7 +1450,7 @@ void qtractorAudioEngine::updateTimeInfo ( unsigned long iFrame )
 	m_timeInfo.beatsPerBar = pNode->beatsPerBar;
 	m_timeInfo.ticksPerBeat = iTicksPerBeat;
 	m_timeInfo.beatType = (1 << pNode->beatDivisor);
-	m_timeInfo.tick = pTimeScale->timeq(pNode->tickFromFrame(iFrame) - pNode->tick);
+	m_timeInfo.tick = pNode->tickFromFrame(iFrame) - pNode->tick;
 	const float beats = float(m_timeInfo.tick) / float(iTicksPerBeat);
 	const unsigned short bars = (unsigned short) beats / m_timeInfo.beatsPerBar;
 	m_timeInfo.bar = pNode->bar + bars;

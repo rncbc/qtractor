@@ -165,8 +165,8 @@ public:
 	unsigned long locateFromFrame(unsigned long iFrame) const;
 
 	// Song position pointer (SPP=MIDI beats) to frame converters.
-	unsigned long frameFromSongPos(unsigned int iSongPos);
-	unsigned int songPosFromFrame(unsigned long iFrame);
+	unsigned long  frameFromSongPos(unsigned short iSongPos);
+	unsigned short songPosFromFrame(unsigned long iFrame);
 
 	// Update time scale divisor factors.
 	void updateTimeScale();
@@ -422,6 +422,12 @@ public:
 
 	// Rename session files...
 	void renameSession(const QString& sOldName, const QString& sNewName);
+
+	// MIDI time adjust to/from official high resolution queue (64bit).
+	unsigned long timep ( unsigned long time ) const
+		{ return m_props.timeScale.timep(time); }
+	unsigned long timeq ( unsigned long time ) const
+		{ return m_props.timeScale.timeq(time); }
 
 	// Pseudo-singleton instance accessor.
 	static qtractorSession *getInstance();

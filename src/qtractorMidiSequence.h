@@ -1,7 +1,7 @@
 // qtractorMidiSequence.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -40,8 +40,8 @@ class qtractorMidiSequence
 public:
 
 	// Constructor.
-	qtractorMidiSequence(const QString& sName,
-		unsigned short iChannel, unsigned short iTicksPerBeat);
+	qtractorMidiSequence(const QString& sName = QString(),
+		unsigned short iChannel = 0, unsigned short iTicksPerBeat = 960);
 
 	// Destructor.
 	~qtractorMidiSequence();

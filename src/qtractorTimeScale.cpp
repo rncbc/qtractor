@@ -136,10 +136,10 @@ qtractorTimeScale& qtractorTimeScale::copy ( const qtractorTimeScale& ts )
 // Update scale coefficient divisor factors.
 void qtractorTimeScale::Node::update (void)
 {
-	ticksPerBeat = TICKS_PER_BEAT_HRQ;
+	ticksPerBeat = ts->ticksPerBeat();
 	tickRate = tempo * ticksPerBeat;
 	beatRate = tempo;
-	// nb. standard MIDI tempo (BPM) is beatType=2 (quarter notes) per minute.
+#if 1// nb. standard MIDI tempo (BPM) is beatType=2 (quarter notes) per minute.
 	if (beatDivisor > beatType) {
 		const unsigned short n = (beatDivisor - beatType);
 		ticksPerBeat >>= n;
@@ -149,6 +149,7 @@ void qtractorTimeScale::Node::update (void)
 		ticksPerBeat <<= n;
 		beatRate /= float(1 << n);
 	}
+#endif
 }
 
 
@@ -201,12 +202,13 @@ unsigned long qtractorTimeScale::Node::tickSnap (
 	}
 	return tick + iTickSnap;
 #else
-	const unsigned long iTicksPerBar
+	const unsigned short iTicksPerBar
 		= ticksPerBeat * beatsPerBar;
 	const unsigned long iTickFromBar
 		= tick + iTicksPerBar * ((iTick - tick) / iTicksPerBar);
-	const unsigned long iTicksPerBeat2
-		= iTicksPerBar / beatsPerBar2();
+
+	const unsigned short iBeatsPerBar2 = beatsPerBar2();
+	unsigned short iTicksPerBeat2 = iTicksPerBar / iBeatsPerBar2;
 
 	unsigned long iTickSnap = iTick - iTickFromBar;
 	if (ts->snapPerBeat() > 0) {
@@ -238,7 +240,7 @@ unsigned short qtractorTimeScale::Node::beatsPerBar2 (void) const
 	return iBeatsPerBar2;
 }
 
-unsigned int qtractorTimeScale::Node::ticksPerBeat2 (void) const
+unsigned short qtractorTimeScale::Node::ticksPerBeat2 (void) const
 {
 	return (ticksPerBeat * beatsPerBar) / beatsPerBar2();
 }
@@ -527,7 +529,7 @@ unsigned long qtractorTimeScale::frameFromTextEx (
 			// Time frame code in bars.beats.ticks ...
 			unsigned short bars  = sText.section('.', 0, 0).toUShort();
 			unsigned int   beats = sText.section('.', 1, 1).toUInt();
-			unsigned long  ticks = timep(sText.section('.', 2).toULong());
+			unsigned long  ticks = sText.section('.', 2).toULong();
 			Node *pNode;
 			if (bDelta) {
 				pNode = m_cursor.seekFrame(iFrame);
@@ -614,7 +616,7 @@ QString qtractorTimeScale::textFromFrameEx (
 					beats -= (unsigned int) (bars * pNode->beatsPerBar);
 				}
 				if (beatsPerBar2() > 0 || beatDivisor2() > 0) {
-					const unsigned int iTicksPerBeat2 = pNode->ticksPerBeat2();
+					const unsigned short iTicksPerBeat2 = pNode->ticksPerBeat2();
 					ticks += (unsigned long) (beats * pNode->ticksPerBeat);
 					if (ticks >= (unsigned long) iTicksPerBeat2) {
 						beats  = (unsigned int) (ticks / iTicksPerBeat2);
@@ -629,9 +631,9 @@ QString qtractorTimeScale::textFromFrameEx (
 				++beats;
 			}
 		#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
-			sText.sprintf("%u.%u.%03lu", bars, beats, timeq(ticks));
+			sText.sprintf("%u.%u.%03lu", bars, beats, ticks);
 		#else
-			sText = QString::asprintf("%u.%u.%03lu", bars, beats, timeq(ticks));
+			sText = QString::asprintf("%u.%u.%03lu", bars, beats, ticks);
 		#endif
 			break;
 		}

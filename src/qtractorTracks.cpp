@@ -1,7 +1,7 @@
 // qtractorTracks.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -523,7 +523,7 @@ bool qtractorTracks::newClip (void)
 			const unsigned long iClipStartTime
 				= pSession->tickFromFrame(iClipStart);
 			const unsigned long iClipLengthTime
-				= qtractorTimeScale::TICKS_PER_BEAT_HRQ * pSession->beatsPerBar();
+				= pSession->ticksPerBeat() * pSession->beatsPerBar();
 			pClip->setClipLength(pSession->frameFromTickRange(
 				iClipStartTime, iClipStartTime + iClipLengthTime));
 		}
@@ -1567,8 +1567,9 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 	}
 
 	// Write SMF header...
+	const unsigned short iTicksPerBeat = pSession->ticksPerBeat();
 	const unsigned short iTracks = (iFormat == 0 ? 1 : 2);
-	if (!file.writeHeader(iFormat, iTracks, pSession->ticksPerBeat())) {
+	if (!file.writeHeader(iFormat, iTracks, iTicksPerBeat)) {
 		QApplication::restoreOverrideCursor();
 		return false;
 	}
@@ -1615,7 +1616,7 @@ bool qtractorTracks::mergeExportMidiClips ( qtractorClipCommand *pClipCommand )
 		file.writeTrack(nullptr);
 
 	// Setup merge sequence...
-	qtractorMidiSequence seq(pTrack->trackName(), 0, qtractorTimeScale::TICKS_PER_BEAT_HRQ);
+	qtractorMidiSequence seq(pTrack->trackName(), 0, iTicksPerBeat);
 	seq.setChannel(pTrack->midiChannel());
 	seq.setBankSelMethod(pTrack->midiBankSelMethod());
 	seq.setBank(pTrack->midiBank());
