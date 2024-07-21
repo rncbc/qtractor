@@ -32,6 +32,9 @@
 #include <QCoreApplication>
 
 
+#include <cmath>
+
+
 //----------------------------------------------------------------------
 // class qtractorTimeScale -- Time scale conversion helper class.
 //
