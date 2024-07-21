@@ -240,6 +240,48 @@ private:
 
 
 //----------------------------------------------------------------------
+// class qtractorClipSaveFileCommand - declaration.
+//
+
+class qtractorClipSaveFileCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorClipSaveFileCommand();
+	// Destructor.
+	virtual ~qtractorClipSaveFileCommand();
+
+	// Composite command methods.
+	void addMidiClipSaveFile(qtractorMidiClip *pMidiClip);
+
+	// Composite predicate.
+	bool isEmpty() const;
+
+	// Virtual command methods.
+	bool redo();
+	bool undo();
+
+protected:
+
+	// Filename and length swap transaction...
+	void swapMidiClipCtx(qtractorMidiClip *pMidiClip);
+
+private:
+
+	struct MidiClipCtx {
+		QString filename;
+		unsigned long offset;
+		unsigned long length;
+	};
+
+	typedef QHash<qtractorMidiClip *, MidiClipCtx> MidiClipCtxs;
+
+	MidiClipCtxs m_midiClipCtxs;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorClipToolCommand - declaration.
 //
 
@@ -270,9 +312,6 @@ public:
 
 protected:
 
-	// Filename and length swap transaction...
-	void swapMidiClipCtx( qtractorMidiClip *pMidiClip);
-
 	// Execute tempo-map/time-sig commands.
 	void executeTimeScaleNodeCommands(bool bRedo);
 
@@ -287,17 +326,7 @@ private:
 	// When tempo-map node commands.
 	QList<qtractorTimeScaleNodeCommand *> m_timeScaleNodeCommands;
 
-	struct MidiClipCtxState {
-		QString filename;
-		unsigned long length;
-	};
-
-	struct MidiClipCtx {
-		MidiClipCtxState pre;
-		MidiClipCtxState post;
-	};
-
-	QHash<qtractorMidiClip *, MidiClipCtx> m_midiClipCtxs;
+	qtractorClipSaveFileCommand *m_pClipSaveFileCommand;
 };
 
 
