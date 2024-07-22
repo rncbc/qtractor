@@ -2893,7 +2893,7 @@ bool qtractorTracks::addMidiTrackChannel ( const QString& sPath,
 	pMidiClip->setTrackChannel(iTrackChannel);
 	pMidiClip->setClipStart(iClipStart);
 	// Time to add the new track/clip into session...
-	pTrack->addClip(pMidiClip);
+	pTrack->addClipEx(pMidiClip);
 	pTrack->setTrackName(
 		pSession->uniqueTrackName(pMidiClip->clipName()));
 	pTrack->setMidiChannel(pMidiClip->channel());
@@ -3037,7 +3037,7 @@ bool qtractorTracks::importAudioTracks ( const QStringList& files,
 			pAudioClip->setClipLength(iClipLength);
 		// Time to add the new track/clip into session;
 		// actuallly, this is when the given audio file gets open...
-		pTrack->addClip(pAudioClip);
+		pTrack->addClipEx(pAudioClip);
 		if (iTrackClip == 0) {
 			pTrack->setTrackName(
 				pSession->uniqueTrackName(pAudioClip->clipName()));
@@ -3130,7 +3130,7 @@ bool qtractorTracks::importMidiTracks ( const QStringList& files,
 			// Time to add the new track/clip into session;
 			// actuallly, this is when the given MIDI file and
 			// track-channel gets open and read into the clip!
-			pTrack->addClip(pMidiClip);
+			pTrack->addClipEx(pMidiClip);
 			// As far the standards goes,from which we'll strictly follow,
 			// only the first track/channel has some tempo/time signature...
 			if (iTrackChannel == 0) {
@@ -3155,7 +3155,7 @@ bool qtractorTracks::importMidiTracks ( const QStringList& files,
 					pMainForm->addMidiFile(sPath);
 			} else {
 				// Get rid of these, now...
-				pTrack->unlinkClip(pMidiClip);
+				pTrack->removeClip(pMidiClip);
 				delete pMidiClip;
 				delete pTrack;
 			}

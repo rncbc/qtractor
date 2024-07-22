@@ -77,6 +77,9 @@ qtractorClipCommand::~qtractorClipCommand (void)
 void qtractorClipCommand::addClip ( qtractorClip *pClip,
 	qtractorTrack *pTrack )
 {
+	pClip->setTrack(pTrack);
+	pClip->open();
+
 	m_items.append(new Item(AddClip, pClip, pTrack));
 
 //	setClearSelectReset(true);
@@ -100,7 +103,7 @@ void qtractorClipCommand::fileClip ( qtractorClip *pClip,
 	pItem->trackChannel = iTrackChannel;
 	m_items.append(pItem);
 
-	reopenClip(pClip, (pClip->track())->trackType() == qtractorTrack::Audio);
+	reopenClip(pClip, true);
 }
 
 
@@ -343,12 +346,13 @@ void qtractorClipCommand::wsolaClip ( qtractorClip *pClip,
 
 void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 {
-	QHash<qtractorClip *, bool>::ConstIterator iter
-		= m_clips.constFind(pClip);
-	if (iter == m_clips.constEnd())
-		m_clips.insert(pClip, bClose);
-
-//	setClearSelect(true);
+	if ((pClip->track())->trackType() == qtractorTrack::Audio) {
+		QHash<qtractorClip *, bool>::ConstIterator iter
+			= m_clips.constFind(pClip);
+		if (iter == m_clips.constEnd())
+			m_clips.insert(pClip, bClose);
+	//	setClearSelect(true);
+	}
 }
 
 
@@ -714,7 +718,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				}
 			}
 			if (iOldStart != pItem->clipStart)
-				pTrack->unlinkClip(pClip);
+				pTrack->removeClip(pClip);
 			pClip->setClipStart(pItem->clipStart);
 			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);

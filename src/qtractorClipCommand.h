@@ -78,8 +78,6 @@ public:
 	void wsolaClip(qtractorClip *pClip,
 		bool bWsolaTimeStretch, bool bWsolaQuickSeek);
 
-	void reopenClip(qtractorClip *pClip, bool bClose = false);
-
 	// Special clip record methods.
 	bool addClipRecord(qtractorTrack *pTrack, unsigned long iFrameTime);
 	bool addClipRecordTake(qtractorTrack *pTrack, qtractorClip *pClip,
@@ -101,6 +99,9 @@ public:
 	bool undo();
 
 protected:
+
+	// When clips need to reopem.
+	void reopenClip(qtractorClip *pClip, bool bClose = false);
 
 	// Common executive method.
 	virtual bool execute(bool bRedo);
@@ -261,11 +262,6 @@ public:
 	// Virtual command methods.
 	bool redo();
 	bool undo();
-
-protected:
-
-	// Filename and length swap transaction...
-	void swapMidiClipCtx(qtractorMidiClip *pMidiClip);
 
 private:
 
