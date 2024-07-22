@@ -1,7 +1,7 @@
 // qtractorClipCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -78,8 +78,6 @@ public:
 	void wsolaClip(qtractorClip *pClip,
 		bool bWsolaTimeStretch, bool bWsolaQuickSeek);
 
-	void reopenClip(qtractorClip *pClip, bool bClose = false);
-
 	// Special clip record methods.
 	bool addClipRecord(qtractorTrack *pTrack, unsigned long iFrameTime);
 	bool addClipRecordTake(qtractorTrack *pTrack, qtractorClip *pClip,
@@ -101,6 +99,9 @@ public:
 	bool undo();
 
 protected:
+
+	// When clips need to reopem.
+	void reopenClip(qtractorClip *pClip, bool bClose = false);
 
 	// Common executive method.
 	virtual bool execute(bool bRedo);
@@ -240,6 +241,43 @@ private:
 
 
 //----------------------------------------------------------------------
+// class qtractorClipSaveFileCommand - declaration.
+//
+
+class qtractorClipSaveFileCommand : public qtractorCommand
+{
+public:
+
+	// Constructor.
+	qtractorClipSaveFileCommand();
+	// Destructor.
+	virtual ~qtractorClipSaveFileCommand();
+
+	// Composite command methods.
+	void addMidiClipSaveFile(qtractorMidiClip *pMidiClip);
+
+	// Composite predicate.
+	bool isEmpty() const;
+
+	// Virtual command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	struct MidiClipCtx {
+		QString filename;
+		unsigned long offset;
+		unsigned long length;
+	};
+
+	typedef QHash<qtractorMidiClip *, MidiClipCtx> MidiClipCtxs;
+
+	MidiClipCtxs m_midiClipCtxs;
+};
+
+
+//----------------------------------------------------------------------
 // class qtractorClipToolCommand - declaration.
 //
 
@@ -270,9 +308,6 @@ public:
 
 protected:
 
-	// Filename and length swap transaction...
-	void swapMidiClipCtx( qtractorMidiClip *pMidiClip);
-
 	// Execute tempo-map/time-sig commands.
 	void executeTimeScaleNodeCommands(bool bRedo);
 
@@ -287,17 +322,7 @@ private:
 	// When tempo-map node commands.
 	QList<qtractorTimeScaleNodeCommand *> m_timeScaleNodeCommands;
 
-	struct MidiClipCtxState {
-		QString filename;
-		unsigned long length;
-	};
-
-	struct MidiClipCtx {
-		MidiClipCtxState pre;
-		MidiClipCtxState post;
-	};
-
-	QHash<qtractorMidiClip *, MidiClipCtx> m_midiClipCtxs;
+	qtractorClipSaveFileCommand *m_pClipSaveFileCommand;
 };
 
 

@@ -134,7 +134,7 @@ public:
 	QString toolTip() const;
 
 	// Auto-save to (possible) new file revision.
-	bool saveCopyFile(bool bUpdate);
+	bool saveCopyFile(const QString& sFilename, bool bUpdate);
 
 	// MIDI clip export method.
 	typedef void (*ClipExport)(qtractorMidiSequence *, void *);

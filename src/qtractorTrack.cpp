@@ -1226,10 +1226,6 @@ const qtractorList<qtractorClip>& qtractorTrack::clips (void) const
 // Insert a new clip in guaranteed sorted fashion.
 void qtractorTrack::addClip ( qtractorClip *pClip )
 {
-	// Preliminary settings...
-	pClip->setTrack(this);
-	pClip->open();
-
 	// Special case for initial MIDI tracks...
 	if (m_props.trackType == qtractorTrack::Midi) {
 		qtractorMidiClip *pMidiClip
@@ -1248,6 +1244,17 @@ void qtractorTrack::addClip ( qtractorClip *pClip )
 	insertClip(pClip);
 }
 
+
+void qtractorTrack::addClipEx ( qtractorClip *pClip )
+{
+	// Preliminary settings...
+	pClip->setTrack(this);
+	pClip->open();
+
+	addClip(pClip);
+}
+
+
 void qtractorTrack::insertClip ( qtractorClip *pClip )
 {
 	qtractorClip *pNextClip = m_clips.first();
@@ -1260,17 +1267,9 @@ void qtractorTrack::insertClip ( qtractorClip *pClip )
 }
 
 
-void qtractorTrack::unlinkClip ( qtractorClip *pClip )
-{
-	m_clips.unlink(pClip);
-}
-
 void qtractorTrack::removeClip ( qtractorClip *pClip )
 {
-//	pClip->setTrack(nullptr);
-	pClip->close();
-
-	unlinkClip(pClip);
+	m_clips.unlink(pClip);
 }
 
 
@@ -1953,7 +1952,7 @@ bool qtractorTrack::loadElement (
 						return false;
 					if (!pClip->loadElement(pDocument, &eClip))
 						return false;
-					qtractorTrack::addClip(pClip);
+					qtractorTrack::addClipEx(pClip);
 				}
 			}
 		}
@@ -2587,10 +2586,13 @@ void qtractorTrack::updateMidiClips (void)
 				bDirty = true;
 			}
 			// Are any dirty changes pending commit?
-			if (bDirty)
-				pMidiClip->saveCopyFile(true);
+			if (bDirty) {
+				const QString& sFilename
+					= pMidiClip->createFilePathRevision();
+				pMidiClip->saveCopyFile(sFilename, true);
+			}
 			// Re-open the MIDI clip anyway...
-			pMidiClip->open();
+			//pMidiClip->open();
 		}
 	}
 }

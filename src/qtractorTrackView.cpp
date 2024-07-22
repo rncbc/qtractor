@@ -5652,19 +5652,10 @@ qtractorClip *qtractorTrackView::cloneClip ( qtractorClip *pClip, bool bUnlink )
 					const QString& sFilename
 						= pNewMidiClip->createFilePathRevision(true);
 					// Save/replace the clip track...
-					qtractorMidiFile::saveCopyFile(sFilename,
-						pMidiClip->filename(),
-						pMidiClip->trackChannel(),
-						pMidiClip->format(),
-						pMidiClip->sequence(),
-						pSession->timeScale(),
-						pSession->tickFromFrame(pMidiClip->clipStart()));
+					pMidiClip->saveCopyFile(sFilename, false);
 					// Set new copy filename...
 					pNewMidiClip->setFilename(sFilename);
 					pSession->files()->addClipItem(qtractorFileList::Midi, pNewMidiClip, true);
-					qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-					if (pMainForm)
-						pMainForm->addMidiFile(sFilename);
 				}
 			}
 			break;

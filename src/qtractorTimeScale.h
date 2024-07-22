@@ -657,7 +657,7 @@ private:
 	DisplayFormat  m_displayFormat;     // Textual display format.
 
 	unsigned int   m_iSampleRate;       // Sample rate (frames per second)
-	unsigned short m_iTicksPerBeat;     // Tticks per quarter note (PPQN)
+	unsigned short m_iTicksPerBeat;     // Ticks per quarter note (PPQN)
 	unsigned short m_iPixelsPerBeat;    // Pixels per beat (width).
 
 	// Tempo-map node list.

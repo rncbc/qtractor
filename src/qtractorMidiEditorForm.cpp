@@ -1317,24 +1317,12 @@ bool qtractorMidiEditorForm::saveClipFile ( bool bPrompt )
 
 	// Save it right away...
 	const bool bResult
-		= qtractorMidiFile::saveCopyFile(sFilename,
-			filename(), trackChannel(), format(),
-			sequence(), timeScale(), timeOffset());
+		= pMidiClip->saveCopyFile(sFilename, true);
 
 	// Have we done it right?
 	if (bResult) {
 		// Aha, but we're not dirty no more.
 		m_iDirtyCount = 0;
-		pMidiClip->setFilenameEx(sFilename, true);
-		// HACK: This operation is so important that
-		// it surely deserves being in the front page...
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm) {
-			pMainForm->appendMessages(
-				tr("MIDI file save: \"%1\", track-channel: %2.")
-				.arg(sFilename).arg(trackChannel()));
-			pMainForm->addMidiFile(sFilename);
-		}
 	}
 
 	// Done.

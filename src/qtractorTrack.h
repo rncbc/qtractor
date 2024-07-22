@@ -199,8 +199,8 @@ public:
 	const qtractorList<qtractorClip>& clips() const;
 
 	void addClip(qtractorClip *pClip);
+	void addClipEx(qtractorClip *pClip);
 	void insertClip(qtractorClip *pClip);
-	void unlinkClip(qtractorClip *pClip);
 	void removeClip(qtractorClip *pClip);
 
 	// Current clip on record (capture).

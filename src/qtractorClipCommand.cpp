@@ -1,7 +1,7 @@
 // qtractorClipCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -77,6 +77,9 @@ qtractorClipCommand::~qtractorClipCommand (void)
 void qtractorClipCommand::addClip ( qtractorClip *pClip,
 	qtractorTrack *pTrack )
 {
+	pClip->setTrack(pTrack);
+	pClip->open();
+
 	m_items.append(new Item(AddClip, pClip, pTrack));
 
 //	setClearSelectReset(true);
@@ -100,7 +103,7 @@ void qtractorClipCommand::fileClip ( qtractorClip *pClip,
 	pItem->trackChannel = iTrackChannel;
 	m_items.append(pItem);
 
-	reopenClip(pClip, (pClip->track())->trackType() == qtractorTrack::Audio);
+	reopenClip(pClip, true);
 }
 
 
@@ -343,12 +346,13 @@ void qtractorClipCommand::wsolaClip ( qtractorClip *pClip,
 
 void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 {
-	QHash<qtractorClip *, bool>::ConstIterator iter
-		= m_clips.constFind(pClip);
-	if (iter == m_clips.constEnd())
-		m_clips.insert(pClip, bClose);
-
-//	setClearSelect(true);
+	if ((pClip->track())->trackType() == qtractorTrack::Audio) {
+		QHash<qtractorClip *, bool>::ConstIterator iter
+			= m_clips.constFind(pClip);
+		if (iter == m_clips.constEnd())
+			m_clips.insert(pClip, bClose);
+	//	setClearSelect(true);
+	}
 }
 
 
@@ -384,22 +388,11 @@ bool qtractorClipCommand::addClipRecord (
 				const QString& sFilename
 					= pMidiClip->createFilePathRevision(true);
 				// Save/replace the overdubbed clip...
-				qtractorMidiFile::saveCopyFile(
-					sFilename,
-					pMidiClip->filename(),
-					pMidiClip->trackChannel(),
-					pMidiClip->format(),
-					pMidiClip->sequence(),
-					pSession->timeScale(),
-					pSession->tickFromFrame(iClipStart));
+				pMidiClip->saveCopyFile(sFilename, false);
 				// Just change filename/track-channel...
 				fileClip(pMidiClip, sFilename, pMidiClip->trackChannel());
 				// Post-commit dirty changes...
 				pSession->files()->addClipItem(qtractorFileList::Midi, sFilename, true);
-				// Add the new file version to the roster...
-				qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-				if (pMainForm)
-					pMainForm->addMidiFile(sFilename);
 			}
 		}
 		// Can get rid of the recorded clip.
@@ -725,7 +718,7 @@ bool qtractorClipCommand::execute ( bool bRedo )
 				}
 			}
 			if (iOldStart != pItem->clipStart)
-				pTrack->unlinkClip(pClip);
+				pTrack->removeClip(pClip);
 			pClip->setClipStart(pItem->clipStart);
 			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
@@ -1073,12 +1066,77 @@ bool qtractorClipRangeCommand::execute ( bool bRedo )
 
 
 //----------------------------------------------------------------------
+// class qtractorClipSaveFileCommand - declaration.
+//
+
+// Constructor.
+qtractorClipSaveFileCommand::qtractorClipSaveFileCommand (void )
+	: qtractorCommand(QObject::tr("clip save"))
+{
+}
+
+
+// Destructor.
+qtractorClipSaveFileCommand::~qtractorClipSaveFileCommand (void)
+{
+}
+
+
+// Composite command methods.
+void qtractorClipSaveFileCommand::addMidiClipSaveFile (
+	qtractorMidiClip *pMidiClip )
+{
+	MidiClipCtx& mctx = m_midiClipCtxs[pMidiClip];
+	mctx.filename = pMidiClip->filename();
+	mctx.offset = pMidiClip->clipOffset();
+	mctx.length = pMidiClip->clipLength();
+}
+
+
+// Composite predicate.
+bool qtractorClipSaveFileCommand::isEmpty (void) const
+{
+	return m_midiClipCtxs.isEmpty();
+}
+
+
+// Virtual command methods.
+bool qtractorClipSaveFileCommand::redo (void)
+{
+	MidiClipCtxs::Iterator iter = m_midiClipCtxs.begin();
+	const MidiClipCtxs::Iterator& iter_end = m_midiClipCtxs.end();
+	for ( ; iter != iter_end; ++iter) {
+		qtractorMidiClip *pMidiClip = iter.key();
+		MidiClipCtx& mctx = iter.value();
+		const QString filename = pMidiClip->filename();
+		const unsigned long offset = pMidiClip->clipOffset();
+		const unsigned long length = pMidiClip->clipLength();
+		pMidiClip->setClipLength(mctx.length);
+		pMidiClip->setClipOffset(mctx.offset);
+		pMidiClip->setFilenameEx(mctx.filename, true);
+		mctx.filename = filename;
+		mctx.offset = offset;
+		mctx.length = length;
+	}
+
+	return true;
+}
+
+
+bool qtractorClipSaveFileCommand::undo (void)
+{
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
 // class qtractorClipToolCommand - declaration.
 //
 
 // Constructor.
 qtractorClipToolCommand::qtractorClipToolCommand ( const QString& sName )
-	: qtractorCommand(QObject::tr("clip tool %1").arg(sName)), m_iRedoCount(0)
+	: qtractorCommand(QObject::tr("clip tool %1").arg(sName)),
+		m_iRedoCount(0), m_pClipSaveFileCommand(nullptr)
 {
 }
 
@@ -1091,6 +1149,9 @@ qtractorClipToolCommand::~qtractorClipToolCommand (void)
 
 	qDeleteAll(m_timeScaleNodeCommands);
 	m_timeScaleNodeCommands.clear();
+
+	if (m_pClipSaveFileCommand)
+		delete m_pClipSaveFileCommand;
 }
 
 
@@ -1144,14 +1205,24 @@ bool qtractorClipToolCommand::redo (void)
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
 			if (pMidiClip) {
 				// Save if dirty...
-				if (m_iRedoCount == 1 && pMidiClip->isDirty())
-					pMidiClip->saveCopyFile(false);
+				if (m_iRedoCount == 1/* && pMidiClip->isDirty()*/) {
+					if (m_pClipSaveFileCommand == nullptr)
+						m_pClipSaveFileCommand = new qtractorClipSaveFileCommand();
+					const QString& sFilename
+						= pMidiClip->createFilePathRevision();
+					if (pMidiClip->saveCopyFile(sFilename, false)) {
+						m_pClipSaveFileCommand->addMidiClipSaveFile(pMidiClip);
+						pMidiClip->setFilenameEx(sFilename, false);
+					}
+				}
 				// Redo as you told...
-				if (pMidiEditCommand->redo())
-					swapMidiClipCtx(pMidiClip);
+				pMidiEditCommand->redo();
 			}
 		}
 	}
+
+	if (m_pClipSaveFileCommand && m_iRedoCount > 1)
+		m_pClipSaveFileCommand->redo();
 
 	return true;
 }
@@ -1159,6 +1230,9 @@ bool qtractorClipToolCommand::redo (void)
 
 bool qtractorClipToolCommand::undo (void)
 {
+	if (m_pClipSaveFileCommand)
+		m_pClipSaveFileCommand->undo();
+
 	QListIterator<qtractorMidiEditCommand *> iter(m_midiEditCommands);
 	iter.toBack();
 	while (iter.hasPrevious()) {
@@ -1167,8 +1241,7 @@ bool qtractorClipToolCommand::undo (void)
 			qtractorMidiClip *pMidiClip = pMidiEditCommand->midiClip();
 			if (pMidiClip) {
 				// Undo as you told...
-				if (pMidiEditCommand->undo())
-					swapMidiClipCtx(pMidiClip);
+				pMidiEditCommand->undo();
 			}
 		}
 	}
@@ -1176,40 +1249,6 @@ bool qtractorClipToolCommand::undo (void)
 	executeTimeScaleNodeCommands(false);
 
 	return (m_iRedoCount > 0);
-}
-
-
-// Filename and length swap transaction...
-void qtractorClipToolCommand::swapMidiClipCtx ( qtractorMidiClip *pMidiClip )
-{
-	// Filename and length swap transaction...
-	MidiClipCtx& mctx = m_midiClipCtxs[pMidiClip];
-
-	if (mctx.pre.filename.isEmpty() || mctx.post.filename.isEmpty()) {
-		// First create transaction...
-		mctx.pre.filename = pMidiClip->filename();
-		mctx.pre.length = pMidiClip->clipLength();
-		pMidiClip->setRevision(0);
-		if (pMidiClip->saveCopyFile(true)) {
-			mctx.post.filename = pMidiClip->filename();
-			mctx.post.length = pMidiClip->clipLength();
-		//	m_midiClipCtxs.insert(pMidiClip, mctx);
-		}
-	} else {
-		// Second+ swap transaction...
-		const unsigned long iPreLength = mctx.pre.length;
-		const QString sPreFilename = mctx.pre.filename;
-		const unsigned long iPostLength = mctx.post.length;
-		const QString sPostFilename = mctx.post.filename;
-	//	pMidiClip->close();
-		pMidiClip->setClipLength(iPreLength);
-		pMidiClip->setFilenameEx(sPreFilename, true);
-	//	pMidiClip->open();
-		mctx.post.filename = sPreFilename;
-		mctx.post.length = iPreLength;
-		mctx.pre.filename = sPostFilename;
-		mctx.pre.length = iPostLength;
-	}
 }
 
 

@@ -1,7 +1,7 @@
 // qtractorTrackCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -297,7 +297,7 @@ bool qtractorCopyTrackCommand::redo (void)
 				pNewAudioClip->setFadeOutLength(pAudioClip->fadeOutLength());
 				pNewAudioClip->setPitchShift(pAudioClip->pitchShift());
 				pNewAudioClip->setTimeStretch(pAudioClip->timeStretch());
-				pNewTrack->addClip(pNewAudioClip);
+				pNewTrack->addClipEx(pNewAudioClip);
 			}
 			break;
 		}
@@ -312,7 +312,7 @@ bool qtractorCopyTrackCommand::redo (void)
 				pNewMidiClip->setClipLength(pMidiClip->clipLength());
 				pNewMidiClip->setFadeInLength(pMidiClip->fadeInLength());
 				pNewMidiClip->setFadeOutLength(pMidiClip->fadeOutLength());
-				pNewTrack->addClip(pNewMidiClip);
+				pNewTrack->addClipEx(pNewMidiClip);
 			}
 			break;
 		}
