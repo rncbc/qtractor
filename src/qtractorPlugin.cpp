@@ -1049,9 +1049,11 @@ void qtractorPlugin::freezeValues (void)
 	const Params::ConstIterator& param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
 		Param *pParam = param.value();
-		const unsigned long iIndex = pParam->index();
-		m_values.names[iIndex] = pParam->name();
-		m_values.index[iIndex] = pParam->value();
+		if (pParam->isValueEnabled()) {
+			const unsigned long iIndex = pParam->index();
+			m_values.names[iIndex] = pParam->name();
+			m_values.index[iIndex] = pParam->value();
+		}
 	}
 }
 
