@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Clip/Unlink is now a undo/redo-able command. (EXPERIMENTAL)
+
 - All sessions now honor their designated resolution property
   (PPQN aka. ticks-per-beat) not subordinated to former ALSA
   sequencer queue anymore, which runs on a higher resolution 

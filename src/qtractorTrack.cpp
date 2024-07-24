@@ -1264,11 +1264,15 @@ void qtractorTrack::insertClip ( qtractorClip *pClip )
 		m_clips.insertBefore(pClip, pNextClip);
 	else
 		m_clips.append(pClip);
+
+	pClip->setActive(true);
 }
 
 
 void qtractorTrack::removeClip ( qtractorClip *pClip )
 {
+	pClip->setActive(false);
+
 	m_clips.unlink(pClip);
 }
 

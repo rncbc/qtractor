@@ -241,20 +241,20 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorClipSaveFileCommand - declaration.
+// class qtractorClipContextCommand - declaration. (virtual class)
 //
 
-class qtractorClipSaveFileCommand : public qtractorCommand
+class qtractorClipContextCommand : public qtractorCommand
 {
 public:
 
 	// Constructor.
-	qtractorClipSaveFileCommand();
+	qtractorClipContextCommand(const QString& sName);
 	// Destructor.
-	virtual ~qtractorClipSaveFileCommand();
+	virtual ~qtractorClipContextCommand();
 
 	// Composite command methods.
-	void addMidiClipSaveFile(qtractorMidiClip *pMidiClip);
+	void addMidiClipContext(qtractorMidiClip *pMidiClip);
 
 	// Composite predicate.
 	bool isEmpty() const;
@@ -263,17 +263,66 @@ public:
 	bool redo();
 	bool undo();
 
-private:
+protected:
 
+	// Main executive method.
+	bool execute(bool bRedo);
+
+	// Virtual executive method.
 	struct MidiClipCtx {
 		QString filename;
 		unsigned long offset;
 		unsigned long length;
 	};
 
+	virtual bool executeMidiClipContext(
+		qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool bRedo) = 0;
+
+private:
+
+	int m_iRedoCount;
+
 	typedef QHash<qtractorMidiClip *, MidiClipCtx> MidiClipCtxs;
 
 	MidiClipCtxs m_midiClipCtxs;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorClipSaveFileCommand - declaration.
+//
+
+class qtractorClipSaveFileCommand : public qtractorClipContextCommand
+{
+public:
+
+	// Constructor.
+	qtractorClipSaveFileCommand();
+
+protected:
+
+	// Context (visitor) executive method.
+	bool executeMidiClipContext(
+		qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool bRedo);
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorClipUnlinkCommand - declaration.
+//
+
+class qtractorClipUnlinkCommand : public qtractorClipContextCommand
+{
+public:
+
+	// Constructor.
+	qtractorClipUnlinkCommand();
+
+protected:
+
+	// Context (visitor) executive method.
+	bool executeMidiClipContext(
+		qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool bRedo);
 };
 
 

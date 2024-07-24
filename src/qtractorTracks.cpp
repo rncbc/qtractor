@@ -592,25 +592,11 @@ bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 	if (pSession == nullptr)
 		return false;
 
-	// Have a new filename revision...
-	const QString& sFilename
-		= pMidiClip->createFilePathRevision(true);
+	qtractorClipUnlinkCommand *pClipUnlinkCommand
+		= new qtractorClipUnlinkCommand();
+	pClipUnlinkCommand->addMidiClipContext(pMidiClip);
 
-	// Save/replace the clip track...
-	pMidiClip->saveCopyFile(sFilename, false);
-
-	// Now, we avoid the linked/ref-counted instances...
-	pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);
-	pMidiClip->setFilename(sFilename);
-	pMidiClip->setDirty(false);
-	pMidiClip->unlinkHashData();
-	pMidiClip->updateEditor(true);
-	pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
-
-	// Better update track-view clip high-lighthing...
-	m_pTrackView->update();
-
-	return true;
+	return pSession->execute(pClipUnlinkCommand);
 }
 
 

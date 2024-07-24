@@ -498,7 +498,8 @@ void qtractorTrackView::drawContents ( QPainter *pPainter, const QRect& rect )
 				QListIterator<qtractorMidiClip *> iter(list);
 				while (iter.hasNext()) {
 					qtractorMidiClip *pLinkedMidiClip = iter.next();
-					if (pCurrentMidiClip == pLinkedMidiClip)
+					if (!pLinkedMidiClip->isActive() ||
+						pCurrentMidiClip == pLinkedMidiClip)
 						continue;
 					if (pCurrentTrack != pLinkedMidiClip->track()) {
 						pCurrentTrack  = pLinkedMidiClip->track();

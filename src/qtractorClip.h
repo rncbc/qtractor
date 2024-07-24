@@ -196,6 +196,12 @@ public:
 	// Clip tool-tip.
 	virtual QString toolTip() const;
 
+	// Local active flag.
+	void setActive(bool bActive)
+		{ m_bActive = bActive; }
+	bool isActive() const
+		{ return m_bActive; }
+
 	// Local dirty flag.
 	void setDirty(bool bDirty)
 		{ m_bDirty = bDirty; }
@@ -397,7 +403,8 @@ private:
 	FadeFunctor *m_pFadeInFunctor;
 	FadeFunctor *m_pFadeOutFunctor;
 
-	// Local dirty flag.
+	// Local active/dirty flags.
+	bool m_bActive;
 	bool m_bDirty;
 };
 
