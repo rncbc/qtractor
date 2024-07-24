@@ -241,29 +241,25 @@ private:
 
 
 //----------------------------------------------------------------------
-// class qtractorClipSaveFileCommand - declaration.
+// class qtractorClipContextCommand - declaration. (virtual class)
 //
 
-class qtractorClipSaveFileCommand : public qtractorCommand
+class qtractorClipContextCommand : public qtractorCommand
 {
 public:
 
 	// Constructor.
-	qtractorClipSaveFileCommand();
+	qtractorClipContextCommand(const QString& sName);
 	// Destructor.
-	virtual ~qtractorClipSaveFileCommand();
+	virtual ~qtractorClipContextCommand();
 
 	// Composite command methods.
-	void addMidiClipSaveFile(qtractorMidiClip *pMidiClip);
+	void addMidiClipContext(qtractorMidiClip *pMidiClip);
 
 	// Composite predicate.
 	bool isEmpty() const;
 
-	// Virtual command methods.
-	bool redo();
-	bool undo();
-
-private:
+protected:
 
 	struct MidiClipCtx {
 		QString filename;
@@ -274,6 +270,49 @@ private:
 	typedef QHash<qtractorMidiClip *, MidiClipCtx> MidiClipCtxs;
 
 	MidiClipCtxs m_midiClipCtxs;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorClipSaveFileCommand - declaration.
+//
+
+class qtractorClipSaveFileCommand : public qtractorClipContextCommand
+{
+public:
+
+	// Constructor.
+	qtractorClipSaveFileCommand();
+
+	// Virtual command methods.
+	bool redo();
+	bool undo();
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorClipUnlinkCommand - declaration.
+//
+
+class qtractorClipUnlinkCommand : public qtractorClipContextCommand
+{
+public:
+
+	// Constructor.
+	qtractorClipUnlinkCommand();
+
+	// Virtual command methods.
+	bool redo();
+	bool undo();
+
+protected:
+
+	// Main executive method.
+	bool execute(bool bRedo);
+
+private:
+
+	int m_iRedoCount;
 };
 
 
