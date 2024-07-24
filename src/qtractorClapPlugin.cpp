@@ -2301,8 +2301,8 @@ void qtractorClapPlugin::Impl::host_latency_changed (
 //
 void qtractorClapPlugin::Impl::plugin_latency_changed (void)
 {
-	if (m_pPlugin)
-		m_pPlugin->request_restart();
+	//if (m_pPlugin)
+	//	m_pPlugin->request_restart();
 }
 
 
