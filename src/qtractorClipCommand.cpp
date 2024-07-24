@@ -1071,7 +1071,7 @@ bool qtractorClipRangeCommand::execute ( bool bRedo )
 
 // Constructor.
 qtractorClipContextCommand::qtractorClipContextCommand (
-	const QString& sName ) : qtractorCommand(sName)
+	const QString& sName ) : qtractorCommand(sName), m_iRedoCount(0)
 {
 }
 
@@ -1100,59 +1100,8 @@ bool qtractorClipContextCommand::isEmpty (void) const
 }
 
 
-//----------------------------------------------------------------------
-// class qtractorClipSaveFileCommand - declaration.
-//
-
-// Constructor.
-qtractorClipSaveFileCommand::qtractorClipSaveFileCommand (void)
-	: qtractorClipContextCommand(QObject::tr("clip save"))
-{
-}
-
-
-// Virtual command methods.
-bool qtractorClipSaveFileCommand::redo (void)
-{
-	MidiClipCtxs::Iterator iter = m_midiClipCtxs.begin();
-	const MidiClipCtxs::Iterator& iter_end = m_midiClipCtxs.end();
-	for ( ; iter != iter_end; ++iter) {
-		qtractorMidiClip *pMidiClip = iter.key();
-		MidiClipCtx& mctx = iter.value();
-		const QString filename = pMidiClip->filename();
-		const unsigned long offset = pMidiClip->clipOffset();
-		const unsigned long length = pMidiClip->clipLength();
-		pMidiClip->setClipLength(mctx.length);
-		pMidiClip->setClipOffset(mctx.offset);
-		pMidiClip->setFilenameEx(mctx.filename, true);
-		mctx.filename = filename;
-		mctx.offset = offset;
-		mctx.length = length;
-	}
-
-	return true;
-}
-
-
-bool qtractorClipSaveFileCommand::undo (void)
-{
-	return redo();
-}
-
-
-//----------------------------------------------------------------------
-// class qtractorClipUnlinkCommand - declaration.
-//
-
-// Constructor.
-qtractorClipUnlinkCommand::qtractorClipUnlinkCommand (void)
-	: qtractorClipContextCommand(QObject::tr("clip unlink")), m_iRedoCount(0)
-{
-}
-
-
 // Main executive method.
-bool qtractorClipUnlinkCommand::execute ( bool bRedo )
+bool qtractorClipContextCommand::execute ( bool bRedo )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
@@ -1177,17 +1126,12 @@ bool qtractorClipUnlinkCommand::execute ( bool bRedo )
 			mctx.filename = sFilename;
 		}
 		pSession->files()->removeClipItem(qtractorFileList::Midi, pMidiClip);
-		pMidiClip->setClipLength(mctx.length);
-		pMidiClip->setClipOffset(mctx.offset);
-		pMidiClip->setFilename(mctx.filename);
-		if (bRedo)
-			pMidiClip->unlinkHashData();
-		else
-			pMidiClip->relinkHashData();
+		if (executeMidiClipContext(pMidiClip, mctx, bRedo)) {
+			mctx.filename = filename;
+			mctx.offset = offset;
+			mctx.length = length;
+		}
 		pSession->files()->addClipItem(qtractorFileList::Midi, pMidiClip, true);
-		mctx.filename = filename;
-		mctx.offset = offset;
-		mctx.length = length;
 	}
 
 	return true;
@@ -1195,15 +1139,66 @@ bool qtractorClipUnlinkCommand::execute ( bool bRedo )
 
 
 // Virtual command methods.
-bool qtractorClipUnlinkCommand::redo (void)
+bool qtractorClipContextCommand::redo (void)
 {
 	return execute(true);
 }
 
 
-bool qtractorClipUnlinkCommand::undo (void)
+bool qtractorClipContextCommand::undo (void)
 {
 	return execute(false);
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorClipSaveFileCommand - declaration.
+//
+
+// Constructor.
+qtractorClipSaveFileCommand::qtractorClipSaveFileCommand (void)
+	: qtractorClipContextCommand(QObject::tr("clip save"))
+{
+}
+
+
+// Context (visitor) executive method.
+bool qtractorClipSaveFileCommand::executeMidiClipContext (
+	qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool /*bRedo*/ )
+{
+	pMidiClip->setClipLength(mctx.length);
+	pMidiClip->setClipOffset(mctx.offset);
+	pMidiClip->setFilenameEx(mctx.filename, true);
+
+	return true;
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorClipUnlinkCommand - declaration.
+//
+
+// Constructor.
+qtractorClipUnlinkCommand::qtractorClipUnlinkCommand (void)
+	: qtractorClipContextCommand(QObject::tr("clip unlink"))
+{
+}
+
+
+// Context (visitor) executive method.
+bool qtractorClipUnlinkCommand::executeMidiClipContext (
+	qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool bRedo )
+{
+	pMidiClip->setClipLength(mctx.length);
+	pMidiClip->setClipOffset(mctx.offset);
+	pMidiClip->setFilename(mctx.filename);
+
+	if (bRedo)
+		pMidiClip->unlinkHashData();
+	else
+		pMidiClip->relinkHashData();
+
+	return true;
 }
 
 
@@ -1286,12 +1281,7 @@ bool qtractorClipToolCommand::redo (void)
 				if (m_iRedoCount == 1/* && pMidiClip->isDirty()*/) {
 					if (m_pClipSaveFileCommand == nullptr)
 						m_pClipSaveFileCommand = new qtractorClipSaveFileCommand();
-					const QString& sFilename
-						= pMidiClip->createFilePathRevision();
-					if (pMidiClip->saveCopyFile(sFilename, false)) {
-						m_pClipSaveFileCommand->addMidiClipContext(pMidiClip);
-						pMidiClip->setFilenameEx(sFilename, false);
-					}
+					m_pClipSaveFileCommand->addMidiClipContext(pMidiClip);
 				}
 				// Redo as you told...
 				pMidiEditCommand->redo();
@@ -1299,7 +1289,7 @@ bool qtractorClipToolCommand::redo (void)
 		}
 	}
 
-	if (m_pClipSaveFileCommand && m_iRedoCount > 1)
+	if (m_pClipSaveFileCommand)
 		m_pClipSaveFileCommand->redo();
 
 	return true;

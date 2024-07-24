@@ -259,13 +259,28 @@ public:
 	// Composite predicate.
 	bool isEmpty() const;
 
+	// Virtual command methods.
+	bool redo();
+	bool undo();
+
 protected:
 
+	// Main executive method.
+	bool execute(bool bRedo);
+
+	// Virtual executive method.
 	struct MidiClipCtx {
 		QString filename;
 		unsigned long offset;
 		unsigned long length;
 	};
+
+	virtual bool executeMidiClipContext(
+		qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool bRedo) = 0;
+
+private:
+
+	int m_iRedoCount;
 
 	typedef QHash<qtractorMidiClip *, MidiClipCtx> MidiClipCtxs;
 
@@ -284,9 +299,11 @@ public:
 	// Constructor.
 	qtractorClipSaveFileCommand();
 
-	// Virtual command methods.
-	bool redo();
-	bool undo();
+protected:
+
+	// Context (visitor) executive method.
+	bool executeMidiClipContext(
+		qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool bRedo);
 };
 
 
@@ -301,18 +318,11 @@ public:
 	// Constructor.
 	qtractorClipUnlinkCommand();
 
-	// Virtual command methods.
-	bool redo();
-	bool undo();
-
 protected:
 
-	// Main executive method.
-	bool execute(bool bRedo);
-
-private:
-
-	int m_iRedoCount;
+	// Context (visitor) executive method.
+	bool executeMidiClipContext(
+		qtractorMidiClip *pMidiClip, const MidiClipCtx& mctx, bool bRedo);
 };
 
 

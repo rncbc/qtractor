@@ -57,6 +57,8 @@ qtractorClip::qtractorClip ( qtractorTrack *pTrack )
 	m_pFadeInFunctor  = nullptr;
 	m_pFadeOutFunctor = nullptr;
 
+	m_bActive = false;
+
 	clear();
 }
 
