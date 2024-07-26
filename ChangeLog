@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed whole clip selection, implied after dragging the lasso
+  over the left and before the beginning of timeline.
+
 - Clip/Unlink is now a undo/redo-able command.
 
 - All sessions now honor their designated resolution property
