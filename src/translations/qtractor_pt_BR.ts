@@ -15311,7 +15311,7 @@ Tamanho:	%3</translation>
         <translation>recortar</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5548"/>
+        <location filename="../qtractorTrackView.cpp" line="5550"/>
         <source>paste automation</source>
         <translation>colar automação</translation>
     </message>
@@ -15382,7 +15382,7 @@ Tamanho:	%3</translation>
         <translation>sequência %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5462"/>
+        <location filename="../qtractorTrackView.cpp" line="5464"/>
         <source>move automation</source>
         <translation>mover automação</translation>
     </message>
@@ -15392,7 +15392,7 @@ Tamanho:	%3</translation>
         <translation>adicionar sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5319"/>
+        <location filename="../qtractorTrackView.cpp" line="5321"/>
         <source>paste clip</source>
         <translation>colar sequência</translation>
     </message>

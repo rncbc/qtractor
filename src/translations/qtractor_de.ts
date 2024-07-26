@@ -15255,12 +15255,12 @@ Länge:	%3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5462"/>
+        <location filename="../qtractorTrackView.cpp" line="5464"/>
         <source>move automation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5548"/>
+        <location filename="../qtractorTrackView.cpp" line="5550"/>
         <source>paste automation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15287,7 +15287,7 @@ Länge:	%3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5319"/>
+        <location filename="../qtractorTrackView.cpp" line="5321"/>
         <source>paste clip</source>
         <translation type="unfinished"></translation>
     </message>

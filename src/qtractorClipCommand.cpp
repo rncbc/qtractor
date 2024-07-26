@@ -678,13 +678,13 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			const unsigned long iOldLength = pClip->clipLength();
 			const unsigned long iOldFadeIn = pClip->fadeInLength();
 			const unsigned long iOldFadeOut = pClip->fadeOutLength();
-			pOldTrack->removeClip(pClip);
+			pOldTrack->removeClipEx(pClip);
 			pClip->setClipStart(pItem->clipStart);
 			pClip->setClipOffset(pItem->clipOffset);
 			pClip->setClipLength(pItem->clipLength);
 			pClip->setFadeInLength(pItem->fadeInLength);
 			pClip->setFadeOutLength(pItem->fadeOutLength);
-			pTrack->addClip(pClip);
+			pTrack->addClipEx(pClip);
 			pItem->track = pOldTrack;
 			pItem->clipStart = iOldStart;
 			pItem->clipOffset = iOldOffset;

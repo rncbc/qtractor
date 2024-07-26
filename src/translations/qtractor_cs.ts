@@ -15385,12 +15385,12 @@ Délka:	%3</translation>
         <translation>%1 záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5462"/>
+        <location filename="../qtractorTrackView.cpp" line="5464"/>
         <source>move automation</source>
         <translation>Přesunout automatizaci</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5548"/>
+        <location filename="../qtractorTrackView.cpp" line="5550"/>
         <source>paste automation</source>
         <translation>Vložit automatizaci</translation>
     </message>
@@ -15417,7 +15417,7 @@ Délka:	%3</translation>
         <translation>Přesunout záběr</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5319"/>
+        <location filename="../qtractorTrackView.cpp" line="5321"/>
         <source>paste clip</source>
         <translation>Vložit záběr</translation>
     </message>

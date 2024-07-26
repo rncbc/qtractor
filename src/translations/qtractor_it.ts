@@ -15358,12 +15358,12 @@ Lunghezza:   %3</translation>
         <translation>%1 clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5462"/>
+        <location filename="../qtractorTrackView.cpp" line="5464"/>
         <source>move automation</source>
         <translation>sposta automazione</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5548"/>
+        <location filename="../qtractorTrackView.cpp" line="5550"/>
         <source>paste automation</source>
         <translation>incolla automazione</translation>
     </message>
@@ -15390,7 +15390,7 @@ Lunghezza:   %3</translation>
         <translation>sposta clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5319"/>
+        <location filename="../qtractorTrackView.cpp" line="5321"/>
         <source>paste clip</source>
         <translation>incolla clip</translation>
     </message>
