@@ -2410,6 +2410,8 @@ void qtractorTrackView::selectClipRect ( const QRect& rectDrag,
 		return;
 
 	QRect rect(rectDrag.normalized());
+	if (rect.left() < 0)
+		rect.setLeft(0);
 
 	// The precise (snapped) selection frame points...
 	const unsigned long iSelectStart
@@ -3579,7 +3581,9 @@ void qtractorTrackView::dragClipSelectMove ( const QPoint& pos )
 		const unsigned long iClipSelectEnd = pClip->clipSelectEnd();
 		const int x2 = pSession->pixelFromFrame(iClipSelectEnd);
 		if (x < x2) {
-			pClip->setClipSelect(pSession->frameFromPixel(x), iClipSelectEnd);
+			const unsigned long iClipSelectStart
+				= (x > 0 ? pSession->frameFromPixel(x) : 0);
+			pClip->setClipSelect(iClipSelectStart, iClipSelectEnd);
 			++iUpdate;
 		}
 	}
@@ -3588,7 +3592,9 @@ void qtractorTrackView::dragClipSelectMove ( const QPoint& pos )
 		const unsigned long iClipSelectStart = pClip->clipSelectStart();
 		const int x1 = pSession->pixelFromFrame(iClipSelectStart);
 		if (x > x1) {
-			pClip->setClipSelect(iClipSelectStart, pSession->frameFromPixel(x));
+			const unsigned long iClipSelectEnd
+				= pSession->frameFromPixel(x);
+			pClip->setClipSelect(iClipSelectStart, iClipSelectEnd);
 			++iUpdate;
 		}
 	}

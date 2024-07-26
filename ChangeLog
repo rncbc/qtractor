@@ -6,7 +6,10 @@ ChangeLog
 
 GIT HEAD
 
-- Clip/Unlink is now a undo/redo-able command. (EXPERIMENTAL)
+- Fixed whole clip selection, implied after dragging the lasso
+  over the left and before the beginning of timeline.
+
+- Clip/Unlink is now a undo/redo-able command.
 
 - All sessions now honor their designated resolution property
   (PPQN aka. ticks-per-beat) not subordinated to former ALSA
@@ -21,12 +24,14 @@ GIT HEAD
   MIDI clip editor (aka. piano-roll) windows.
 
 - Fixed fade-in/out curve types of clips when copy-pasted over
-  the main tracks timeline. (GH Issue #452)
+  the main tracks timeline.
 
 - Fixed general plugin scan/cache optimization in face of new
   plugins added and/or removed.
 
-- Fixed VST3 Plug-in main/active buses channel count inventory.
+- Fixed VST3 Plug-in main/active buses channel count inventory;
+  also, on updating host parameters, only save and load custom
+  modified parameter values from current state.
 
 - Fixed a misssing display and port-name filtering issue, that
   was introduced recently to the MIDI Connections widget only.
