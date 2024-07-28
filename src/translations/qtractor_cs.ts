@@ -184,7 +184,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1321"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
-        <translation type="unfinished">Uložit soubor MIDI: &quot;%1&quot;, stopa-kanál: %2.</translation>
+        <translation>Uložení souboru MIDI: &quot;%1&quot;, stopa-kanál: %2.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiListView.cpp" line="82"/>
@@ -790,12 +790,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1160"/>
         <source>clip save</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložení záběru</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1183"/>
         <source>clip unlink</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpojení záběru</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1211"/>
