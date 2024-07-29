@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed MIDI clip step-input when play-head is located beyond
+  or after the end of the active looping/cycle range.
+
 - Fixed whole clip selection, implied after dragging the lasso
   over the left and before the beginning of timeline.
 
