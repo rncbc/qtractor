@@ -4,31 +4,31 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="750"/>
+        <location filename="../qtractorAudioClip.cpp" line="746"/>
         <source>
 Audio:	%1 channels, %2 Hz</source>
         <translation>
 Audio :	%1 canaux, %2 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="755"/>
+        <location filename="../qtractorAudioClip.cpp" line="751"/>
         <source> (%1 dB)</source>
         <translation> (%1 dB)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="759"/>
+        <location filename="../qtractorAudioClip.cpp" line="755"/>
         <source> (%1 pan)</source>
         <translation> (%1 pan)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="762"/>
+        <location filename="../qtractorAudioClip.cpp" line="758"/>
         <source>
 	(%1% time stretch)</source>
         <translation>
 	(%1% étirement temporel)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioClip.cpp" line="765"/>
+        <location filename="../qtractorAudioClip.cpp" line="761"/>
         <source>
 	(%1 semitones pitch shift)</source>
         <translation>	(%1 demi-tons de décalage de la tonalité)</translation>
@@ -125,12 +125,12 @@ Fin :	%3	Longueur :	%4</translation>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1160"/>
         <source>clip save</source>
-        <translation type="unfinished"></translation>
+        <translation>sauvegarde du clip</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1183"/>
         <source>clip unlink</source>
-        <translation type="unfinished"></translation>
+        <translation>délier le clip</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1211"/>
@@ -333,38 +333,38 @@ Fin :	%3	Longueur :	%4</translation>
         <translation>%1 - banque %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1271"/>
+        <location filename="../qtractorMidiClip.cpp" line="1261"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(format %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1273"/>
+        <location filename="../qtractorMidiClip.cpp" line="1263"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>Canal %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1275"/>
+        <location filename="../qtractorMidiClip.cpp" line="1265"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>Piste %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1278"/>
+        <location filename="../qtractorMidiClip.cpp" line="1268"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 pistes, %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1285"/>
+        <location filename="../qtractorMidiClip.cpp" line="1275"/>
         <source> (%1% vol)</source>
         <translation> (%1% vol)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1321"/>
+        <location filename="../qtractorMidiClip.cpp" line="1311"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
-        <translation type="unfinished">Sauvegarde fichier MIDI : &quot;%1&quot;, piste-canal : %2.</translation>
+        <translation>Sauvegarde fichier MIDI : &quot;%1&quot;, piste-canal : %2.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlCommand.h" line="71"/>

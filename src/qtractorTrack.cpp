@@ -1226,8 +1226,15 @@ const qtractorList<qtractorClip>& qtractorTrack::clips (void) const
 // Insert a new clip in guaranteed sorted fashion.
 void qtractorTrack::addClip ( qtractorClip *pClip )
 {
-	// Special case for initial MIDI tracks...
+	if (m_pSession == nullptr)
+		return;
+
+	if (m_props.trackType == qtractorTrack::Audio)
+		m_pSession->files()->addClipItem(qtractorFileList::Audio, pClip);
+	else
 	if (m_props.trackType == qtractorTrack::Midi) {
+		m_pSession->files()->addClipItem(qtractorFileList::Midi, pClip);
+		// Special case for initial MIDI tracks...
 		qtractorMidiClip *pMidiClip
 			= static_cast<qtractorMidiClip *> (pClip);
 		if (pMidiClip) {
@@ -1281,6 +1288,15 @@ void qtractorTrack::removeClipEx ( qtractorClip *pClip )
 
 void qtractorTrack::removeClip ( qtractorClip *pClip )
 {
+	if (m_pSession == nullptr)
+		return;
+
+	if (m_props.trackType == qtractorTrack::Audio)
+		m_pSession->files()->removeClipItem(qtractorFileList::Audio, pClip);
+	else
+	if (m_props.trackType == qtractorTrack::Midi)
+		m_pSession->files()->removeClipItem(qtractorFileList::Midi, pClip);
+
 	pClip->setActive(false);
 
 	m_clips.unlink(pClip);

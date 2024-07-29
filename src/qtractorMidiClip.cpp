@@ -283,7 +283,7 @@ bool qtractorMidiClip::createMidiFile (
 	setDirty(false);
 
 	// Register file path...
-	pSession->files()->addClipItem(qtractorFileList::Midi, this, true);
+	pSession->files()->addClipItemEx(qtractorFileList::Midi, this, true);
 
 	// Create and open up the MIDI file...
 	m_pFile = new qtractorMidiFile();
@@ -371,7 +371,7 @@ bool qtractorMidiClip::openMidiFile (
 	setDirty(false);
 
 	// Register file path...
-	pSession->files()->addClipItem(qtractorFileList::Midi, this, bWrite);
+	pSession->files()->addClipItemEx(qtractorFileList::Midi, this, bWrite);
 
 	// New key-data sequence...
 	if (!bWrite) {
@@ -531,14 +531,6 @@ bool qtractorMidiClip::openMidiFile (
 // Private cleanup.
 void qtractorMidiClip::closeMidiFile (void)
 {
-	qtractorTrack *pTrack = track();
-	if (pTrack == nullptr)
-		return;
-
-	qtractorSession *pSession = pTrack->session();
-	if (pSession == nullptr)
-		return;
-
 	if (m_pData) {
 		m_pData->detach(this);
 		if (m_pData->count() < 1) {
@@ -546,8 +538,6 @@ void qtractorMidiClip::closeMidiFile (void)
 			delete m_pData;
 		}
 		m_pData = nullptr;
-		// Unregister file path...
-		pSession->files()->removeClipItem(qtractorFileList::Midi, this);
 	}
 
 	if (m_pKey) {
