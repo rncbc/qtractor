@@ -125,12 +125,12 @@ Fin :	%3	Longueur :	%4</translation>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1160"/>
         <source>clip save</source>
-        <translation type="unfinished"></translation>
+        <translation>sauvegarde du clip</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1183"/>
         <source>clip unlink</source>
-        <translation type="unfinished"></translation>
+        <translation>délier le clip</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1211"/>
@@ -364,7 +364,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1321"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
-        <translation type="unfinished">Sauvegarde fichier MIDI : &quot;%1&quot;, piste-canal : %2.</translation>
+        <translation>Sauvegarde fichier MIDI : &quot;%1&quot;, piste-canal : %2.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlCommand.h" line="71"/>
