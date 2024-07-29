@@ -1672,7 +1672,7 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 	unsigned char *pSysex   = nullptr;
 	unsigned short iSysex   = 0;
 
-	unsigned long tick = pSession->timeScale()->timeq(pEv->time.tick);
+	unsigned long tick = pSession->timeq(pEv->time.tick);
 
 	// - capture quantization...
 	if (m_iCaptureQuantize > 0) {
@@ -1909,6 +1909,9 @@ void qtractorMidiEngine::capture ( snd_seq_event_t *pEv )
 						if (type != qtractorMidiEvent::NOTEOFF)
 							pSeq = nullptr;
 					}
+					else
+					if (!isPlaying())
+						pSeq = nullptr;
 					// Yep, maybe we have a new MIDI event on record...
 					if (pSeq) {
 						qtractorMidiEvent *pEvent = new qtractorMidiEvent(

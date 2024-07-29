@@ -1663,7 +1663,9 @@ void qtractorMidiClip::advanceStepInput (void)
 	qtractorTimeScale::Cursor cursor(pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iStepInputTail);
 
-	if (pSession->isLooping() && m_iStepInputTail >= pSession->loopEnd()) {
+	if (pSession->isLooping()
+		&& m_iStepInputHead <  pSession->loopEnd()
+		&& m_iStepInputTail >= pSession->loopEnd()) {
 		m_iStepInputTail = pSession->loopStart();
 	//	m_iStepInputTailTime = pSession->loopStartTime();
 	}
