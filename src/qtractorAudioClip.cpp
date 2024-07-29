@@ -259,7 +259,7 @@ bool qtractorAudioClip::openAudioFile ( const QString& sFilename, int iMode )
 	setDirty(false);
 
 	// Register file path...
-	pSession->files()->addClipItem(qtractorFileList::Audio, this, bWrite);
+	pSession->files()->addClipItemEx(qtractorFileList::Audio, this, bWrite);
 
 	// New key-data sequence...
 	if (!bWrite) {
@@ -370,10 +370,6 @@ void qtractorAudioClip::closeAudioFile (void)
 		#endif
 		}
 		m_pData = nullptr;
-		// Unregister file path...
-		qtractorSession *pSession = qtractorSession::getInstance();
-		if (pSession)
-			pSession->files()->removeClipItem(qtractorFileList::Audio, this);
 	}
 
 	if (m_pKey) {

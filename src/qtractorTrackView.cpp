@@ -5664,7 +5664,7 @@ qtractorClip *qtractorTrackView::cloneClip ( qtractorClip *pClip, bool bUnlink )
 					pMidiClip->saveCopyFile(sFilename, false);
 					// Set new copy filename...
 					pNewMidiClip->setFilename(sFilename);
-					pSession->files()->addClipItem(qtractorFileList::Midi, pNewMidiClip, true);
+					pSession->files()->addClipItemEx(qtractorFileList::Midi, pNewMidiClip, true);
 				}
 			}
 			break;
