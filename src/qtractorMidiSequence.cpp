@@ -71,6 +71,31 @@ void qtractorMidiSequence::clear (void)
 }
 
 
+// NOTEON/OFF: Find previous note event and compute duration...
+void qtractorMidiSequence::addNoteEvent ( qtractorMidiEvent *pEvent )
+{
+	NoteOns::Iterator iter = m_notes.find(pEvent->note());
+	if (iter == m_notes.end())
+		return;
+
+	qtractorMidiEvent *pNoteEvent = iter.value();
+	if (pNoteEvent == nullptr) // Double-check, not really necessary...
+		return;
+
+	const unsigned long t1 = pNoteEvent->time(); // Last NOTEON...
+	const unsigned long t2 = pEvent->time();     // This NOTEON/OFF.
+	if (t2 > t1) {
+		pNoteEvent->setDuration(t2 - t1);
+		if (m_duration < t2)
+			m_duration = t2;
+	} else {
+		pNoteEvent->setDuration(m_duration - t1);
+	}
+
+	m_notes.erase(iter);
+}
+
+
 // Add event to a channel sequence, in time sort order.
 void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 {
@@ -79,40 +104,22 @@ void qtractorMidiSequence::addEvent ( qtractorMidiEvent *pEvent )
 
 	// NOTE: Find previous note event and compute duration...
 	if (pEvent->type() == qtractorMidiEvent::NOTEOFF) {
-		const unsigned char note = pEvent->note();
-		NoteMap::Iterator iter = m_notes.find(note);
-		const NoteMap::Iterator& iter_end = m_notes.end();
-		NoteMap::Iterator iter_last;
-		qtractorMidiEvent *pNoteEvent = nullptr;
-		for ( ; iter != iter_end && iter.key() == note; ++iter) {
-			pNoteEvent = iter.value();
-			iter_last = iter;
-		}
-		if (pNoteEvent) {
-			const unsigned long t1 = pNoteEvent->time();	// NOTEON
-			const unsigned long t2 = pEvent->time();		// NOTEOFF
-			if (t2 > t1) {
-				pNoteEvent->setDuration(t2 - t1);
-				if (m_duration < t2)
-					m_duration = t2;
-			} else {
-				pNoteEvent->setDuration(m_duration - t1);
-			}
-			m_notes.erase(iter_last);
-		}
 		// NOTEOFF: Won't own this any longer...
+		addNoteEvent(pEvent);
 		delete pEvent;
 		return;
 	}
 	else
 	if (pEvent->type() == qtractorMidiEvent::NOTEON) {
 		// NOTEON: Just add to lingering notes...
+		addNoteEvent(pEvent);
 		m_notes.insert(pEvent->note(), pEvent);
 	}
 	else
 	if (pEvent->type() == qtractorMidiEvent::SYSEX) {
 		// SYSEX: add enough slack...
-		const unsigned long t1 = pEvent->time() + (m_iTicksPerBeat >> 3);
+		const unsigned long t1
+			= pEvent->time() + (m_iTicksPerBeat >> 3);
 		if (m_duration < t1)
 			m_duration = t1;
 	}
@@ -175,10 +182,10 @@ void qtractorMidiSequence::close (void)
 		m_iTimeLength = m_duration;
 
 	// Finish all pending notes...
-	NoteMap::ConstIterator iter = m_notes.constBegin();
-	const NoteMap::ConstIterator& iter_end = m_notes.constEnd();
+	NoteOns::ConstIterator iter = m_notes.constBegin();
+	const NoteOns::ConstIterator& iter_end = m_notes.constEnd();
 	for ( ; iter != iter_end; ++iter) {
-		qtractorMidiEvent *pEvent = *iter;
+		qtractorMidiEvent *pEvent = iter.value();
 		pEvent->setDuration(m_duration - pEvent->time());
 	}
 

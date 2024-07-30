@@ -124,7 +124,12 @@ public:
 	void close();
 
 	// Typed hash table to track note-ons.
-	typedef QMultiHash<unsigned char, qtractorMidiEvent *> NoteMap;
+	typedef QHash<unsigned char, qtractorMidiEvent *> NoteOns;
+
+protected:
+
+	// NOTEON/OFF: Find previous note event and compute duration...
+	void addNoteEvent(qtractorMidiEvent *pEvent);
 
 private:
 
@@ -151,7 +156,7 @@ private:
 	qtractorList<qtractorMidiEvent> m_events;
 
 	// Local hash table to track note-ons.
-	NoteMap m_notes;
+	NoteOns m_notes;
 };
 
 
