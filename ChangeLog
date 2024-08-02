@@ -4,7 +4,7 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.1.0  2024-08-02  A Summer'24 Release.
 
 - Fixed MIDI clip step-input when play-head is located beyond
   or after the end of the active looping/cycle range.
@@ -17,7 +17,7 @@ GIT HEAD
 - All sessions now honor their designated resolution property
   (PPQN aka. ticks-per-beat) not subordinated to former ALSA
   sequencer queue anymore, which runs on a higher resolution 
-  still. (REGRESSION)
+  still.
 
 - Avoid removing MIDI Track/Channel tree items from the Files
   view (eg. via direct [Del] keyboard shortcut when in focus).
