@@ -4,6 +4,13 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed a relatively old crash-bug that manifests on undoing
+  several free-hand drawn events (Edit/Select Mode/Edit Draw)
+  in the MIDI clip editor (aka. piano-roll). (EXPERIMENTAL)
+
+
 1.1.0  2024-08-02  A Summer'24 Release.
 
 - Fixed MIDI clip step-input when play-head is located beyond
