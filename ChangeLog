@@ -4,18 +4,18 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.1.1  2024-08-05  A Summer'24 Hotfix Release.
 
 - Fixed an incredibly severe bug, introduced very recently, that
   deletes all MIDI files belonging to active clips, when closing
-  and discarding a modified session without saving. (GH #458)
+  and discarding a modified session without saving.
 
 - Fixed MIDI clip recording when note-off events are missing or
-  not transmitted. (EXPERIMENTAL)
+  not transmitted.
 
 - Fixed a relatively old crash-bug that manifests on undoing
   several free-hand drawn events (Edit/Select Mode/Edit Draw)
-  in the MIDI clip editor (aka. piano-roll). (EXPERIMENTAL)
+  in the MIDI clip editor (aka. piano-roll).
 
 
 1.1.0  2024-08-02  A Summer'24 Release.
