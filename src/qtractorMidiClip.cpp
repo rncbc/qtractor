@@ -323,8 +323,8 @@ bool qtractorMidiClip::createMidiFile (
 		if (iFormat == 1)
 			m_pFile->writeTrack(nullptr);
 		m_pFile->writeTrack(pSeq);
-		m_pFile->close();
 	}
+	m_pFile->close();
 
 	// It's there now.
 	delete m_pFile;
@@ -392,6 +392,16 @@ bool qtractorMidiClip::openMidiFile (
 			m_playCursor.reset(pSeq);
 			m_drawCursor.reset(pSeq);
 			return true;
+		}
+		// HACK: Create as new MIDI file if not exists?...
+		if (!QFile::exists(sFilename)) {
+			if (!createMidiFile(sFilename, iTrackChannel))
+				return false;
+			setClipOffset(0);
+			setDirty(true);
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm)
+				pMainForm->addMidiFile(sFilename);
 		}
 	}
 
@@ -865,33 +875,30 @@ void qtractorMidiClip::close (void)
 		return;
 
 	// Take pretended clip-length...
-	unsigned long iClipLength = clipLength();
+	unsigned long iTimeLength = 0;
 	qtractorMidiSequence *pSeq = sequence();
 	if (pSeq) {
-		if (iClipLength > 0)
-			pSeq->setTimeLength(pSession->tickFromFrame(iClipLength));
+		if (pSeq->duration() > 0)
+			pSeq->setTimeLength(clipLengthTime());
 		// Final read/write statistics...
 		pTrack->setMidiNoteMin(pSeq->noteMin());
 		pTrack->setMidiNoteMax(pSeq->noteMax());
 		// Actual sequence closure...
 		pSeq->close();
-		// Commit the final clip length...
-		if (iClipLength < 1) {
-			iClipLength = pSession->frameFromTick(pSeq->duration());
-			setClipLength(iClipLength);
-		}
+		// Commit the final length...
+		iTimeLength = pSeq->timeLength();
 	}
 
 	// Now's time to write the whole thing...
 	const bool bNewFile
 		= (m_pFile && m_pFile->mode() == qtractorMidiFile::Write);
-	if (bNewFile && iClipLength > 0 && pSeq) {
+	if (bNewFile && pSeq && pSeq->duration() > 0) {
 		// Write channel tracks...
 		if (m_pFile->format() == 1)
 			m_pFile->writeTrack(nullptr);	// Setup track (SMF format 1).
-		m_pFile->writeTrack(pSeq);		// Channel track.
-		m_pFile->close();
+		m_pFile->writeTrack(pSeq);			// Channel track.
 	}
+	m_pFile->close();
 
 	// Sure close MIDI clip editor if any...
 	if (m_pMidiEditorForm) {
@@ -904,8 +911,10 @@ void qtractorMidiClip::close (void)
 	closeMidiFile();
 
 	// If proven empty, remove the file.
-	if (bNewFile && iClipLength < 1)
+	if (bNewFile && iTimeLength < 1) {
 		QFile::remove(filename());
+		setClipLength(0);	// Nothing's recorded!
+	}
 }
 
 

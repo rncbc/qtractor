@@ -400,16 +400,18 @@ bool qtractorClipCommand::addClipRecord (
 		return true;
 	}
 
+	// Recorded clip length fixup...
+	pClip->setClipLength(iClipEnd - iClipStart);
+
 	// Time to close the clip...
 	pClip->close();
 
 	// Actual clip length might have changed on close.
-	if (pClip->clipLength() < 1)
+	const unsigned long iClipLength = pClip->clipLength();
+	if (iClipLength < 1)
 		return false;
 
-	// Recorded clip length and offset...
-	const unsigned long iClipLength = iClipEnd - iClipStart;
-
+	// Recorded clip offset...
 	unsigned long iClipOffset = pClip->clipOffset();
 	// Audio clips may need some record latency compensation...
 	if (trackType == qtractorTrack::Audio) {

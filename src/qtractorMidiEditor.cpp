@@ -2899,8 +2899,11 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	// This would the new event onset time...
 	pNode = cursor.seekPixel(x1);
 	const unsigned short p = (bEditView && m_bDrumMode ? 1 : 8);
-	const unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1), p);
-	x1 = pNode->pixelFromTick(t1);
+	unsigned long t1 = pNode->tickSnap(pNode->tickFromPixel(x1), p);
+	x1 = pNode->pixelFromTick(t1) - x0;
+
+	if (t1 >= t0)
+		t1 -= t0;
 
 	// Check for time/onset changes and whether it's already drawn...
 	if (m_bEventDragEdit && m_pEventDrag) {
@@ -2940,8 +2943,8 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 					if (pEvent->note() == note) {
 						// Move in time....
 						pEvent->setTime(t1);
-						pItem->rectView.moveLeft(x1 - x0 - h1);
-						pItem->rectEvent.moveLeft(x1 - x0);
+						pItem->rectView.moveLeft(x1 - h1);
+						pItem->rectEvent.moveLeft(x1);
 						m_select.updateItem(pItem);
 						m_rectDrag = pItem->rectView;
 						m_posDrag = m_rectDrag.center();
@@ -2974,7 +2977,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	}
 
 	// Create a brand new event...
-	qtractorMidiEvent *pEvent = new qtractorMidiEvent(t1 - t0, eventType);
+	qtractorMidiEvent *pEvent = new qtractorMidiEvent(t1, eventType);
 
 	// Compute value from given vertical position...
 	y1 = pos.y(); if (y1 < 1) y1 = 1; else if (y1 > h0) y1 = h0;
@@ -3053,7 +3056,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	// Now try to get the visual rectangular coordinates...
 	const unsigned long t2 = pEvent->time() + pEvent->duration();
 	pNode = cursor.seekTick(t2);
-	int w1 = pNode->pixelFromTick(t2) - x1;
+	int w1 = pNode->pixelFromTick(t2) - x0;
 	if (w1 < m_iMinEventWidth)
 		w1 = m_iMinEventWidth;
 
@@ -3066,9 +3069,9 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 		if (m_bDrumMode) {
 			const int h2 = (h1 >> 1);
 			const int h4 = (h1 << 1);
-			rectView.setRect(x1 - x0 - h1, y1 - h2, h4, h4);
+			rectView.setRect(x1 - h1, y1 - h2, h4, h4);
 		} else {
-			rectView.setRect(x1 - x0, y1, w1, h1);
+			rectView.setRect(x1, y1, w1, h1);
 		}
 	}
 
@@ -3106,7 +3109,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 			w1 = m_iMinEventWidth;
 		if (h1 < 3)
 			h1 = 3;
-		rectEvent.setRect(x1 - x0, y1, w1, h1);
+		rectEvent.setRect(x1, y1, w1, h1);
 	}
 
 	// Set the correct target rectangle...

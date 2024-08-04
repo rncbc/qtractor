@@ -48,11 +48,11 @@ void qtractorFileList::addFileItem (
 	Item *pItem = addItem(iType, sPath, bAutoRemove);
 	if (pItem) {
 		pItem->addRef();
-#ifdef CONFIG_DEBUG_0
+	#ifdef CONFIG_DEBUG_0
 		qDebug("qtractorFileList::addFileItem(%d, \"%s\", %d) refCount=%d clips=%d (%d)",
 			int(pItem->type()), pItem->path().toUtf8().constData(), int(bAutoRemove),
 			pItem->refCount(), pItem->clipRefCount(), int(pItem->isAutoRemove()));
-#endif
+	#endif
 	}
 }
 
@@ -179,7 +179,7 @@ void qtractorFileList::cleanup ( bool bForce )
 			}
 			else
 			// Time for the kill...?
-			if (bForce/* && pItem->clipRefCount() < 1*/) {
+			if (bForce && pItem->clipRefCount() < 1) {
 				QFile::remove(pItem->path());
 			}
 		}
