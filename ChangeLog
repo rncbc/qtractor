@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed MIDI clip recording when note-off events are missing or
+  not transmitted. (EXPERIMENTAL)
+
 - Fixed a relatively old crash-bug that manifests on undoing
   several free-hand drawn events (Edit/Select Mode/Edit Draw)
   in the MIDI clip editor (aka. piano-roll). (EXPERIMENTAL)
@@ -43,7 +46,7 @@ GIT HEAD
   also, on updating host parameters, only save and load custom
   modified parameter values from current state.
 
-- Fixed a misssing display and port-name filtering issue, that
+- Fixed a missing display and port-name filtering issue, that
   was introduced recently to the MIDI Connections widget only.
 
 

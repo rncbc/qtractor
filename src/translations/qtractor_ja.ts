@@ -113,32 +113,32 @@ End:	%3	Length:	%4</source>
         <translation>ファイル:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="886"/>
+        <location filename="../qtractorClipCommand.cpp" line="888"/>
         <source>take %1</source>
         <translation>テイク %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="888"/>
+        <location filename="../qtractorClipCommand.cpp" line="890"/>
         <source>reset takes</source>
         <translation>テイクをリセット</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1160"/>
+        <location filename="../qtractorClipCommand.cpp" line="1162"/>
         <source>clip save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1183"/>
+        <location filename="../qtractorClipCommand.cpp" line="1185"/>
         <source>clip unlink</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1211"/>
+        <location filename="../qtractorClipCommand.cpp" line="1213"/>
         <source>clip tool %1</source>
         <translation>クリップツール %1</translation>
     </message>
     <message>
-        <location filename="../qtractorClipCommand.cpp" line="1355"/>
+        <location filename="../qtractorClipCommand.cpp" line="1357"/>
         <source>clip record</source>
         <translation>クリップの録音</translation>
     </message>
@@ -333,36 +333,36 @@ End:	%3	Length:	%4</source>
         <translation>%1 - バンク %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1261"/>
+        <location filename="../qtractorMidiClip.cpp" line="1260"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(フォーマット %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1263"/>
+        <location filename="../qtractorMidiClip.cpp" line="1262"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>チャンネル %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1265"/>
+        <location filename="../qtractorMidiClip.cpp" line="1264"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>トラック %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1268"/>
+        <location filename="../qtractorMidiClip.cpp" line="1267"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 トラック、 %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1275"/>
+        <location filename="../qtractorMidiClip.cpp" line="1274"/>
         <source> (%1% vol)</source>
         <translation> (%1% ボリューム)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1311"/>
+        <location filename="../qtractorMidiClip.cpp" line="1310"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation type="unfinished">MIDIファイルの保存: %1, トラックチャンネル: %2。</translation>
     </message>
