@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed an incredibly severe bug, introduced very recently, that
+  deletes all MIDI files belonging to active clips, when closing
+  and discarding a modified session without saving. (GH #458)
+
 - Fixed MIDI clip recording when note-off events are missing or
   not transmitted. (EXPERIMENTAL)
 
