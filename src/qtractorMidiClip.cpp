@@ -323,8 +323,8 @@ bool qtractorMidiClip::createMidiFile (
 		if (iFormat == 1)
 			m_pFile->writeTrack(nullptr);
 		m_pFile->writeTrack(pSeq);
-		m_pFile->close();
 	}
+	m_pFile->close();
 
 	// It's there now.
 	delete m_pFile;
@@ -392,6 +392,16 @@ bool qtractorMidiClip::openMidiFile (
 			m_playCursor.reset(pSeq);
 			m_drawCursor.reset(pSeq);
 			return true;
+		}
+		// HACK: Create as new MIDI file if not exists?...
+		if (!QFile::exists(sFilename)) {
+			if (!createMidiFile(sFilename, iTrackChannel))
+				return false;
+			setClipOffset(0);
+			setDirty(true);
+			qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+			if (pMainForm)
+				pMainForm->addMidiFile(sFilename);
 		}
 	}
 
