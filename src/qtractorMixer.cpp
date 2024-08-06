@@ -830,7 +830,8 @@ void qtractorMixerStrip::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
 	QFrame::mousePressEvent(pMouseEvent);
 
-	m_pRack->setSelectedStrip(this);
+	if (m_pTrack)
+		m_pRack->setSelectedStrip(this);
 }
 
 
@@ -1184,7 +1185,7 @@ public:
 qtractorMixerRack::qtractorMixerRack (
 	qtractorMixer *pMixer, const QString& sTitle )
 	: QDockWidget(sTitle, pMixer), m_pMixer(pMixer),
-		m_bSelectEnabled(false), m_pSelectedStrip(nullptr),
+		m_pSelectedStrip(nullptr),
 		m_pRackWidget(new qtractorMixerRackWidget(this))
 {
 	QDockWidget::setObjectName(sTitle);	// TODO: make this an unique-id.
@@ -1208,13 +1209,6 @@ qtractorMixerRack::~qtractorMixerRack (void)
 {
 	// No need to delete child widgets, Qt does it all for us
 	clear();
-}
-
-
-// The mixer strip workspace methods.
-void qtractorMixerRack::ensureVisible ( int x, int y, int xm, int ym )
-{
-	m_pRackWidget->ensureVisible(x, y, xm, ym);
 }
 
 
@@ -1287,28 +1281,24 @@ void qtractorMixerRack::clear (void)
 
 
 // Selection stuff.
-void qtractorMixerRack::setSelectEnabled ( bool bSelectEnabled )
-{
-	m_bSelectEnabled = bSelectEnabled;
-
-	if (m_pSelectedStrip) {
-		if (!m_bSelectEnabled)
-			m_pSelectedStrip->setSelected(false);
-		m_pSelectedStrip = nullptr;
-	}
-}
-
-
 void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 {
-	if (m_pSelectedStrip != pStrip) {
-		if (m_bSelectEnabled && m_pSelectedStrip)
-			m_pSelectedStrip->setSelected(false);
-		m_pSelectedStrip = pStrip;
-		if (m_bSelectEnabled && m_pSelectedStrip)
-			m_pSelectedStrip->setSelected(true);
-		emit selectionChanged();
+	if (m_pSelectedStrip == pStrip)
+		return;
+
+	if (m_pSelectedStrip)
+		m_pSelectedStrip->setSelected(false);
+
+	m_pSelectedStrip = pStrip;
+
+	if (m_pSelectedStrip) {
+		m_pSelectedStrip->setSelected(true);
+		const int wm = (m_pSelectedStrip->width() >> 1);
+		m_pRackWidget->ensureVisible(
+			m_pSelectedStrip->pos().x() + wm, 0, wm, 0);
 	}
+
+	emit selectionChanged();
 }
 
 
@@ -1322,6 +1312,7 @@ void qtractorMixerRack::markStrips ( int iMark )
 	for ( ; strip != strip_end; ++strip)
 		strip.value()->setMark(iMark);
 }
+
 
 void qtractorMixerRack::cleanStrips ( int iMark )
 {
@@ -1444,7 +1435,6 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 
 	m_pInputRack  = new qtractorMixerRack(this, tr("Inputs"));
 	m_pTrackRack  = new qtractorMixerRack(this, tr("Tracks"));
-	m_pTrackRack->setSelectEnabled(true);
 	m_pOutputRack = new qtractorMixerRack(this, tr("Outputs"));
 
 	// Some specialties to this kind of dock window...
@@ -1566,6 +1556,39 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 			pCurveList->proxy(), SIGNAL(update()),
 			pMainForm->tracks(), SLOT(updateTrackView()));
 	}
+}
+
+
+// Current selected track accessors.
+void qtractorMixer::setCurrentTrack ( qtractorTrack *pTrack )
+{
+	qtractorMixerStrip *pInputStrip  = nullptr;
+	qtractorMixerStrip *pTrackStrip  = nullptr;
+	qtractorMixerStrip *pOutputStrip = nullptr;
+
+	if (pTrack) {
+		qtractorBus *pInputBus = pTrack->inputBus();
+		if (pInputBus)
+			pInputStrip = m_pInputRack->findStrip(pInputBus->monitor_in());
+		pTrackStrip = m_pTrackRack->findStrip(pTrack->monitor());
+		qtractorBus *pOutputBus = pTrack->outputBus();
+		if (pOutputBus)
+			pOutputStrip = m_pOutputRack->findStrip(pOutputBus->monitor_out());
+	}
+
+	m_pInputRack->setSelectedStrip(pInputStrip);
+	m_pTrackRack->setSelectedStrip(pTrackStrip);
+	m_pOutputRack->setSelectedStrip(pOutputStrip);
+}
+
+
+qtractorTrack *qtractorMixer::currentTrack (void) const
+{
+	qtractorMixerStrip *pTrackStrip = m_pTrackRack->selectedStrip();
+	if (pTrackStrip)
+		return pTrackStrip->track();
+	else
+		return nullptr;
 }
 
 

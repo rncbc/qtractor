@@ -11643,22 +11643,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1445"/>
+        <location filename="../qtractorMixer.cpp" line="1436"/>
         <source>Inputs</source>
         <translation>Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1446"/>
+        <location filename="../qtractorMixer.cpp" line="1437"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1448"/>
+        <location filename="../qtractorMixer.cpp" line="1438"/>
         <source>Outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1455"/>
+        <location filename="../qtractorMixer.cpp" line="1445"/>
         <source>Mixer</source>
         <translation>Mixážní pult</translation>
     </message>
@@ -11674,22 +11674,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1076"/>
+        <location filename="../qtractorMixer.cpp" line="1077"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1080"/>
+        <location filename="../qtractorMixer.cpp" line="1081"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1086"/>
+        <location filename="../qtractorMixer.cpp" line="1087"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Sledování</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1095"/>
+        <location filename="../qtractorMixer.cpp" line="1096"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Sběrnice...</translation>
     </message>

@@ -301,9 +301,6 @@ public:
 	QWidget *workspace() const
 		{ return m_pRackWidget->workspace(); }
 
-	// The mixer strip workspace methods.
-	void ensureVisible(int x, int y, int xm, int ym);
-
 	// Strip list primitive methods.
 	void addStrip(qtractorMixerStrip *pStrip);
 	void removeStrip(qtractorMixerStrip *pStrip);
@@ -314,17 +311,8 @@ public:
 	// Update a mixer strip on rack list.
 	void updateStrip(qtractorMixerStrip *pStrip, qtractorMonitor *pMonitor);
 
-	// Current Strip count.
-	int stripCount() const
-		{ return m_strips.count(); }
-
 	// Complete rack recycle.
 	void clear();
-
-	// Selection stuff.
-	void setSelectEnabled(bool bSelectEnabled);
-	bool isSelectEnabled() const
-		{ return m_bSelectEnabled; }
 
 	void setSelectedStrip(qtractorMixerStrip *pStrip);
 	qtractorMixerStrip *selectedStrip() const
@@ -369,7 +357,6 @@ private:
 	Strips m_strips;
 
 	// Selection stuff.
-	bool m_bSelectEnabled;
 	qtractorMixerStrip *m_pSelectedStrip;
 
 	// The inner rack scroll-area/workspace widget.
@@ -399,6 +386,10 @@ public:
 		{ return m_pTrackRack; }
 	qtractorMixerRack *outputRack() const
 		{ return m_pOutputRack; }
+
+	// Current selected track accessors.
+	void setCurrentTrack(qtractorTrack *pTrack);
+	qtractorTrack *currentTrack() const;
 
 	// Update buses and tracks'racks.
 	void updateBuses(bool bReset = false);

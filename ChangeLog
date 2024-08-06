@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Mixer: also highlight both input and output bus strips, directly
+  related to the current highlighted track.
+
+
 1.1.1  2024-08-05  A Summer'24 Hotfix Release.
 
 - Fixed an incredibly severe bug, introduced very recently, that

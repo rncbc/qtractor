@@ -8996,18 +8996,10 @@ void qtractorMainForm::trackSelectionChanged (void)
 #endif
 
 	// Select sync to mixer...
-	if (m_pTracks && m_pMixer && m_pMixer->trackRack()) {
-		qtractorMixerStrip *pStrip = nullptr;
+	if (m_pTracks && m_pMixer) {
+		// Doesn't matter whether current track is none...
 		qtractorTrack *pTrack = m_pTracks->trackList()->currentTrack();
-		if (pTrack)
-			pStrip = (m_pMixer->trackRack())->findStrip(pTrack->monitor());
-		if (pStrip) {
-			const int wm = (pStrip->width() >> 1);
-			(m_pMixer->trackRack())->ensureVisible(
-				pStrip->pos().x() + wm, 0, wm, 0);
-		}
-		// Doesn't matter whether strip is null...
-		(m_pMixer->trackRack())->setSelectedStrip(pStrip);
+		m_pMixer->setCurrentTrack(pTrack);
 		// HACK: Set current session track for monitoring purposes...
 		if (m_ui.trackAutoMonitorAction->isChecked())
 			m_pSession->setCurrentTrack(pTrack);

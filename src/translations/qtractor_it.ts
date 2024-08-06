@@ -11631,22 +11631,22 @@ Sei sicuro?</translation>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1445"/>
+        <location filename="../qtractorMixer.cpp" line="1436"/>
         <source>Inputs</source>
         <translation>Ingressi</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1446"/>
+        <location filename="../qtractorMixer.cpp" line="1437"/>
         <source>Tracks</source>
         <translation>Tracce</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1448"/>
+        <location filename="../qtractorMixer.cpp" line="1438"/>
         <source>Outputs</source>
         <translation>Uscite</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1455"/>
+        <location filename="../qtractorMixer.cpp" line="1445"/>
         <source>Mixer</source>
         <translation>Mixer</translation>
     </message>
@@ -11662,22 +11662,22 @@ Sei sicuro?</translation>
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1076"/>
+        <location filename="../qtractorMixer.cpp" line="1077"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Ingressi</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1080"/>
+        <location filename="../qtractorMixer.cpp" line="1081"/>
         <source>&amp;Outputs</source>
         <translation>Uscite</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1086"/>
+        <location filename="../qtractorMixer.cpp" line="1087"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Monitor</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1095"/>
+        <location filename="../qtractorMixer.cpp" line="1096"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Bus...</translation>
     </message>
