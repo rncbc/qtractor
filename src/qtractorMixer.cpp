@@ -1599,6 +1599,8 @@ void qtractorMixer::updateBuses ( bool bReset )
 	if (pSession == nullptr)
 		return;
 
+	qtractorTrack *pCurrentTrack = currentTrack();
+
 	if (bReset) {
 		m_pInputRack->clear();
 		m_pOutputRack->clear();		
@@ -1627,6 +1629,8 @@ void qtractorMixer::updateBuses ( bool bReset )
 
 	m_pOutputRack->cleanStrips(1);
 	m_pInputRack->cleanStrips(1);
+
+	setCurrentTrack(pCurrentTrack);
 }
 
 
@@ -1637,6 +1641,9 @@ void qtractorMixer::updateTracks ( bool bReset )
 	if (pSession == nullptr)
 		return;
 
+	qtractorTrack *pCurrentTrack = currentTrack();
+	bool bCurrentTrack = false;
+
 	if (bReset)
 		m_pTrackRack->clear();
 
@@ -1645,9 +1652,13 @@ void qtractorMixer::updateTracks ( bool bReset )
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		updateTrackStrip(pTrack);
+		if (pCurrentTrack == pTrack)
+			bCurrentTrack = true;
 	}
 
 	m_pTrackRack->cleanStrips(1);
+
+	setCurrentTrack(bCurrentTrack ? pCurrentTrack : nullptr);
 }
 
 
