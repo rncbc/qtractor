@@ -11555,22 +11555,22 @@ Edit head/tail (blue) markers define the shift range.</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1464"/>
+        <location filename="../qtractorMixer.cpp" line="1467"/>
         <source>Inputs</source>
         <translation>Входы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1465"/>
+        <location filename="../qtractorMixer.cpp" line="1468"/>
         <source>Tracks</source>
         <translation>Дорожки</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1466"/>
+        <location filename="../qtractorMixer.cpp" line="1469"/>
         <source>Outputs</source>
         <translation>Выходы</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1473"/>
+        <location filename="../qtractorMixer.cpp" line="1476"/>
         <source>Mixer</source>
         <translation>Микшер</translation>
     </message>

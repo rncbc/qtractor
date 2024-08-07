@@ -11641,22 +11641,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1464"/>
+        <location filename="../qtractorMixer.cpp" line="1467"/>
         <source>Inputs</source>
         <translation>Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1465"/>
+        <location filename="../qtractorMixer.cpp" line="1468"/>
         <source>Tracks</source>
         <translation>Pistes</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1466"/>
+        <location filename="../qtractorMixer.cpp" line="1469"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1473"/>
+        <location filename="../qtractorMixer.cpp" line="1476"/>
         <source>Mixer</source>
         <translation>Mixeur</translation>
     </message>

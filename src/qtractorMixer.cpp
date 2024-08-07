@@ -1355,6 +1355,9 @@ void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 
 void qtractorMixerRack::setSelectedStrip2 ( qtractorMixerStrip *pStrip )
 {
+	if (m_pSelectedStrip2 == m_pSelectedStrip)
+		return;
+
 	if (m_pSelectedStrip2)
 		m_pSelectedStrip2->setSelected(false);
 
