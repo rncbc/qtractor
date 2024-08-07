@@ -845,7 +845,7 @@ void qtractorMixerStrip::mouseDoubleClickEvent ( QMouseEvent */*pMouseEvent*/ )
 	if (m_pTrack) {
 		pMainForm->trackProperties();
 	} else {
-		m_pRack->busPropertiesSlot();
+		busPropertiesSlot();
 	}
 }
 
@@ -894,6 +894,39 @@ void qtractorMixerStrip::trackMonitor ( bool bMonitor )
 	// Here we go...
 	pSession->execute(
 		new qtractorTrackMonitorCommand(m_pTrack, bMonitor));
+}
+
+
+// Show/edit bus input connections.
+void qtractorMixerStrip::busInputsSlot (void)
+{
+	busConnections(qtractorBus::Input);
+}
+
+
+// Show/edit bus output connections.
+void qtractorMixerStrip::busOutputsSlot (void)
+{
+	busConnections(qtractorBus::Output);
+}
+
+
+// Toggle bus passthru flag.
+void qtractorMixerStrip::busMonitorSlot (void)
+{
+	if (m_pBus)
+		busMonitor(!m_pBus->isMonitor());
+}
+
+
+// Show/edit bus properties form.
+void qtractorMixerStrip::busPropertiesSlot (void)
+{
+	if (m_pBus) {
+		qtractorBusForm busForm(m_pRack);
+		busForm.setBus(m_pBus);
+		busForm.exec();
+	}
 }
 
 
@@ -1056,10 +1089,10 @@ void qtractorMixerRackWidget::contextMenuEvent (
 {
 	// Maybe it's a track strip
 	qtractorBus *pBus = nullptr;
-	qtractorMixerStrip *pSelectedStrip = m_pRack->selectedStrip();
-	if (pSelectedStrip)
-		pBus = pSelectedStrip->bus();
-	if (pBus == nullptr) {
+	qtractorMixerStrip *pStrip = m_pRack->stripAt(pContextMenuEvent->pos());
+	if (pStrip)
+		pBus = pStrip->bus();
+	if (pBus == nullptr || pStrip == nullptr) {
 		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
 		if (pMainForm) {
 			pMainForm->stabilizeForm();
@@ -1074,17 +1107,17 @@ void qtractorMixerRackWidget::contextMenuEvent (
 	QAction *pAction;
 
 	pAction = menu.addAction(
-		tr("&Inputs"), m_pRack, SLOT(busInputsSlot()));
+		tr("&Inputs"), pStrip, SLOT(busInputsSlot()));
 	pAction->setEnabled(pBus->busMode() & qtractorBus::Input);
 
 	pAction = menu.addAction(
-		tr("&Outputs"), m_pRack, SLOT(busOutputsSlot()));
+		tr("&Outputs"), pStrip, SLOT(busOutputsSlot()));
 	pAction->setEnabled(pBus->busMode() & qtractorBus::Output);
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		tr("&Monitor"), m_pRack, SLOT(busMonitorSlot()));
+		tr("&Monitor"), pStrip, SLOT(busMonitorSlot()));
 	pAction->setEnabled(
 		(pBus->busMode() & qtractorBus::Duplex) == qtractorBus::Duplex);
 	pAction->setCheckable(true);
@@ -1093,7 +1126,7 @@ void qtractorMixerRackWidget::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		tr("&Buses..."), m_pRack, SLOT(busPropertiesSlot()));
+		tr("&Buses..."), pStrip, SLOT(busPropertiesSlot()));
 
 	menu.exec(pContextMenuEvent->globalPos());
 }
@@ -1185,7 +1218,7 @@ public:
 qtractorMixerRack::qtractorMixerRack (
 	qtractorMixer *pMixer, const QString& sTitle )
 	: QDockWidget(sTitle, pMixer), m_pMixer(pMixer),
-		m_pSelectedStrip(nullptr),
+		m_pSelectedStrip(nullptr), m_pSelectedStrip2(nullptr),
 		m_pRackWidget(new qtractorMixerRackWidget(this))
 {
 	QDockWidget::setObjectName(sTitle);	// TODO: make this an unique-id.
@@ -1230,8 +1263,10 @@ void qtractorMixerRack::addStrip ( qtractorMixerStrip *pStrip )
 void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 {
 	// Don't let current selection hanging...
-	if (m_pSelectedStrip == pStrip)
+	if (m_pSelectedStrip == pStrip || m_pSelectedStrip2 == pStrip) {
 		m_pSelectedStrip = nullptr;
+		m_pSelectedStrip2 = nullptr;
+	}
 
 	// Remove this from the workspace layout...
 	m_pRackWidget->removeStrip(pStrip);
@@ -1245,6 +1280,21 @@ void qtractorMixerRack::removeStrip ( qtractorMixerStrip *pStrip )
 	}
 
 	m_pRackWidget->workspace()->adjustSize();
+}
+
+
+// Find a mixer strip, given its rack workspace position.
+qtractorMixerStrip *qtractorMixerRack::stripAt ( const QPoint& pos ) const
+{
+	Strips::ConstIterator iter = m_strips.constBegin();
+	const Strips::ConstIterator& iter_end = m_strips.constEnd();
+	for ( ; iter != iter_end; ++iter) {
+		qtractorMixerStrip *pStrip = iter.value();
+		if (pStrip && pStrip->frameGeometry().contains(pos))
+			return pStrip;
+	}
+
+	return nullptr;
 }
 
 
@@ -1274,6 +1324,7 @@ void qtractorMixerRack::updateStrip (
 void qtractorMixerRack::clear (void)
 {
 	m_pSelectedStrip = nullptr;
+	m_pSelectedStrip2 = nullptr;
 
 	qDeleteAll(m_strips);
 	m_strips.clear();
@@ -1299,6 +1350,22 @@ void qtractorMixerRack::setSelectedStrip ( qtractorMixerStrip *pStrip )
 	}
 
 	emit selectionChanged();
+}
+
+
+void qtractorMixerRack::setSelectedStrip2 ( qtractorMixerStrip *pStrip )
+{
+	if (m_pSelectedStrip2)
+		m_pSelectedStrip2->setSelected(false);
+
+	m_pSelectedStrip2 = pStrip;
+
+	if (m_pSelectedStrip2) {
+		m_pSelectedStrip2->setSelected(true);
+		const int wm = (m_pSelectedStrip2->width() >> 1);
+		m_pRackWidget->ensureVisible(
+			m_pSelectedStrip2->pos().x() + wm, 0, wm, 0);
+	}
 }
 
 
@@ -1338,45 +1405,6 @@ void qtractorMixerRack::cleanStrips ( int iMark )
 
 	m_pRackWidget->updateWorkspace();
 	m_pRackWidget->workspace()->setUpdatesEnabled(true);
-}
-
-
-// Show/edit bus input connections.
-void qtractorMixerRack::busInputsSlot (void)
-{
-	qtractorMixerStrip *pStrip = m_pSelectedStrip;
-	if (pStrip)
-		pStrip->busConnections(qtractorBus::Input);
-}
-
-
-// Show/edit bus output connections.
-void qtractorMixerRack::busOutputsSlot (void)
-{
-	qtractorMixerStrip *pStrip = m_pSelectedStrip;
-	if (pStrip)
-		pStrip->busConnections(qtractorBus::Output);
-}
-
-
-// Toggle bus passthru flag.
-void qtractorMixerRack::busMonitorSlot (void)
-{
-	qtractorMixerStrip *pStrip = m_pSelectedStrip;
-	if (pStrip && pStrip->bus())
-		pStrip->busMonitor(!(pStrip->bus())->isMonitor());
-}
-
-
-// Show/edit bus properties form.
-void qtractorMixerRack::busPropertiesSlot (void)
-{
-	qtractorMixerStrip *pStrip = m_pSelectedStrip;
-	if (pStrip && pStrip->bus()) {
-		qtractorBusForm busForm(this);
-		busForm.setBus(pStrip->bus());
-		busForm.exec();
-	}
 }
 
 
@@ -1562,9 +1590,10 @@ void qtractorMixer::updateTrackStrip ( qtractorTrack *pTrack, bool bReset )
 // Current selected track accessors.
 void qtractorMixer::setCurrentTrack ( qtractorTrack *pTrack )
 {
-	qtractorMixerStrip *pInputStrip  = nullptr;
-	qtractorMixerStrip *pTrackStrip  = nullptr;
+	qtractorMixerStrip *pInputStrip = nullptr;
+	qtractorMixerStrip *pTrackStrip = nullptr;
 	qtractorMixerStrip *pOutputStrip = nullptr;
+	qtractorMixerStrip *pOutputStrip2 = nullptr;
 
 	if (pTrack) {
 		qtractorBus *pInputBus = pTrack->inputBus();
@@ -1574,11 +1603,26 @@ void qtractorMixer::setCurrentTrack ( qtractorTrack *pTrack )
 		qtractorBus *pOutputBus = pTrack->outputBus();
 		if (pOutputBus)
 			pOutputStrip = m_pOutputRack->findStrip(pOutputBus->monitor_out());
+		if (pTrack->trackType() == qtractorTrack::Midi && pTrack->pluginList()) {
+			qtractorMidiManager *pMidiManager
+				= (pTrack->pluginList())->midiManager();
+			if (pMidiManager
+				&& pMidiManager->isAudioOutputMonitor()
+				&& !pMidiManager->isAudioOutputBus()) {
+				qtractorAudioBus *pAudioOutputBus
+					= pMidiManager->audioOutputBus();
+				if (pAudioOutputBus) {
+					pOutputStrip2 = m_pOutputRack->findStrip(
+						pAudioOutputBus->monitor_out());
+				}
+			}
+		}
 	}
 
 	m_pInputRack->setSelectedStrip(pInputStrip);
 	m_pTrackRack->setSelectedStrip(pTrackStrip);
 	m_pOutputRack->setSelectedStrip(pOutputStrip);
+	m_pOutputRack->setSelectedStrip2(pOutputStrip2);
 }
 
 
@@ -1665,6 +1709,8 @@ void qtractorMixer::updateTracks ( bool bReset )
 // Update a MIDI mixer strip, given its MIDI manager handle.
 void qtractorMixer::updateMidiManagerStrip ( qtractorMidiManager *pMidiManager )
 {
+	qtractorTrack *pCurrentTrack = currentTrack();
+
 	qtractorMixerStrip *
 		pStrip = m_pTrackRack->findMidiManagerStrip(pMidiManager);
 	if (pStrip == nullptr)
@@ -1673,6 +1719,8 @@ void qtractorMixer::updateMidiManagerStrip ( qtractorMidiManager *pMidiManager )
 		pStrip = m_pInputRack->findMidiManagerStrip(pMidiManager);
 	if (pStrip)
 		pStrip->updateMidiManager(pMidiManager);
+
+	setCurrentTrack(pCurrentTrack);
 }
 
 

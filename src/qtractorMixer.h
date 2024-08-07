@@ -171,6 +171,14 @@ public:
 	// Retrieve the MIDI manager from a mixer strip, if any....
 	qtractorMidiManager *midiManager() const;
 
+public slots:
+
+	// Bus context menu slots.
+	void busInputsSlot();
+	void busOutputsSlot();
+	void busMonitorSlot();
+	void busPropertiesSlot();
+
 protected slots:
 
 	// Bus connections button notification.
@@ -305,6 +313,9 @@ public:
 	void addStrip(qtractorMixerStrip *pStrip);
 	void removeStrip(qtractorMixerStrip *pStrip);
 
+	// Find a mixer strip, given its rack workspace position.
+	qtractorMixerStrip *stripAt(const QPoint& pos) const;
+
 	// Find a mixer strip, given its monitor handle.
 	qtractorMixerStrip *findStrip(qtractorMonitor *pMonitor) const;
 
@@ -317,6 +328,10 @@ public:
 	void setSelectedStrip(qtractorMixerStrip *pStrip);
 	qtractorMixerStrip *selectedStrip() const
 		{ return m_pSelectedStrip; }
+
+	void setSelectedStrip2(qtractorMixerStrip *pStrip);
+	qtractorMixerStrip *selectedStrip2() const
+		{ return m_pSelectedStrip2; }
 
 	// Hacko-list-management marking...
 	void markStrips(int iMark);
@@ -334,14 +349,6 @@ public:
 	QList<qtractorMixerStrip *> findAudioOutputBusStrips(
 		qtractorAudioBus *pAudioOutputBus) const;
 
-public slots:
-
-	// Bus context menu slots.
-	void busInputsSlot();
-	void busOutputsSlot();
-	void busMonitorSlot();
-	void busPropertiesSlot();
-
 signals:
 
 	// Selection changed signal.
@@ -358,6 +365,7 @@ private:
 
 	// Selection stuff.
 	qtractorMixerStrip *m_pSelectedStrip;
+	qtractorMixerStrip *m_pSelectedStrip2;
 
 	// The inner rack scroll-area/workspace widget.
 	qtractorMixerRackWidget *m_pRackWidget;
