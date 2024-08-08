@@ -495,7 +495,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Automatizace</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="540"/>
+        <location filename="../qtractorTrackList.cpp" line="550"/>
         <source>Unknown</source>
         <translation>Neznámý</translation>
     </message>

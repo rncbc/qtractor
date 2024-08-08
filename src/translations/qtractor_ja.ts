@@ -768,7 +768,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>オートメーション</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="540"/>
+        <location filename="../qtractorTrackList.cpp" line="550"/>
         <source>Unknown</source>
         <translation>不明</translation>
     </message>

@@ -486,7 +486,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>Автоматизация</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="540"/>
+        <location filename="../qtractorTrackList.cpp" line="550"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>

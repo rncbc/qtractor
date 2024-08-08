@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+
+- MIDI tracks now show the respective audio output bus name, or
+  dedicated port name whether applicable, under the 'Bus' column
+  of main tracks left pane, above plugins list-box.
+
 - Mixer: also highlight both input and output bus strips, directly
   related to the current highlighted track.
 

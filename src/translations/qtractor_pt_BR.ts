@@ -754,7 +754,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Fornecedor: </translation>
     </message>
     <message>
-        <location filename="../qtractorTrackList.cpp" line="540"/>
+        <location filename="../qtractorTrackList.cpp" line="550"/>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
     </message>

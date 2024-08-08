@@ -382,7 +382,7 @@ QHeaderView *qtractorTrackList::header (void) const
 
 // Track-list model item constructor
 qtractorTrackList::Item::Item ( qtractorTrack *pTrack )
-	: track(pTrack), flags(0), updated(0),
+	: track(pTrack), flags(0),
 		buttons(nullptr), plugins(nullptr), meters(nullptr)
 {
 	const QString s;
@@ -470,6 +470,16 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 
 		case qtractorTrack::Midi: {
 			// MIDI Bus name...
+			if (track->pluginList()) {
+				qtractorMidiManager *pMidiManager
+					= (track->pluginList())->midiManager();
+				if (pMidiManager
+					&& pMidiManager->isAudioOutputMonitor()
+					&& pMidiManager->audioOutputBus()) {
+					sBusText += '\n';
+					sBusText += (pMidiManager->audioOutputBus())->busName();
+				}
+			}
 			text << sBusText; // + '\n' + QObject::tr("MIDI");
 			qtractorMidiBus *pMidiBus
 				= static_cast<qtractorMidiBus *> (track->outputBus());
@@ -544,8 +554,6 @@ void qtractorTrackList::Item::updateItem ( qtractorTrackList *pTrackList )
 
 	if (buttons)
 		buttons->curveButton()->updateTrack();
-
-	++updated;
 }
 
 
@@ -883,6 +891,8 @@ void qtractorTrackList::updateMidiTrackItem ( qtractorMidiManager *pMidiManager 
 						pMidiComboMeter->setAudioOutputMonitor(nullptr);
 					}
 				}
+				pItem->updateItem(this);
+				updateContents();
 				break;
 			}
 		}
@@ -1233,47 +1243,61 @@ void qtractorTrackList::drawCell (
 				Qt::AlignHCenter | Qt::AlignTop,
 				pItem->text.at(iCol - 1));
 		}
-	} else {
-		if (iCol == Bus) {
-			pPainter->fillRect( // ribbon filler...
-				rect.x() + 2, rect.y() + 2, 4, rect.height() - 4,
-				pItem->ribbon);
-			rectText.setX(rectText.x() + 6); // ribbon spacing...
-			const QPixmap *pPixmap = nullptr;
-			switch ((pItem->track)->trackType()) {
-			case qtractorTrack::Audio:
-				pPixmap = m_pPixmap[IconAudio];
-				break;
-			case qtractorTrack::Midi:
-				pPixmap = m_pPixmap[IconMidi];
-				break;
-			case qtractorTrack::None:
-			default:
-				break;
-			}
-			if (pPixmap) {
-				pPainter->drawPixmap(rectText.x(), rectText.y(), *pPixmap);
-				rectText.setLeft(rectText.left() + pPixmap->width() + 4);
-			}
-			if (pItem->plugins) {
-				QPalette pal2(pal);
-				if (m_iCurrentTrack == iRow) {
-					const QColor& rgbBase
-						= pal2.midlight().color();
-					pal2.setColor(QPalette::WindowText,
-						pal2.highlightedText().color());
-					pal2.setColor(QPalette::Window,
-						rgbBase.darker(150));
-				} else {
-					const QColor& rgbBase = pal2.window().color();
-					pal2.setColor(QPalette::WindowText,
-						pal2.windowText().color());
-					pal2.setColor(QPalette::Window,
-						rgbBase);
-				}
-				pItem->plugins->setPalette(pal2);
-			}
+	} else if (iCol == Bus) {
+		pPainter->fillRect( // ribbon filler...
+			rect.x() + 2, rect.y() + 2, 4, rect.height() - 4,
+			pItem->ribbon);
+		rectText.setX(rectText.x() + 6); // ribbon spacing...
+		const QPixmap *pPixmap = nullptr;
+		switch ((pItem->track)->trackType()) {
+		case qtractorTrack::Audio:
+			pPixmap = m_pPixmap[IconAudio];
+			break;
+		case qtractorTrack::Midi:
+			pPixmap = m_pPixmap[IconMidi];
+			break;
+		case qtractorTrack::None:
+		default:
+			break;
 		}
+		if (pPixmap) {
+			pPainter->drawPixmap(rectText.x(), rectText.y(), *pPixmap);
+			if ((pItem->track)->trackType() == qtractorTrack::Midi &&
+				(pItem->track)->pluginList()) {
+				qtractorMidiManager *pMidiManager
+					= ((pItem->track)->pluginList())->midiManager();
+				if (pMidiManager && pMidiManager->isAudioOutputMonitor()) {
+					const int h = QFontMetrics(pPainter->font()).height();
+					pPainter->drawPixmap(
+						rectText.x(),
+						rectText.y() + h,
+						*m_pPixmap[IconAudio]);
+				}
+			}
+			rectText.setLeft(rectText.left() + pPixmap->width() + 4);
+		}
+		if (pItem->plugins) {
+			QPalette pal2(pal);
+			if (m_iCurrentTrack == iRow) {
+				const QColor& rgbBase
+					= pal2.midlight().color();
+				pal2.setColor(QPalette::WindowText,
+					pal2.highlightedText().color());
+				pal2.setColor(QPalette::Window,
+					rgbBase.darker(150));
+			} else {
+				const QColor& rgbBase = pal2.window().color();
+				pal2.setColor(QPalette::WindowText,
+					pal2.windowText().color());
+				pal2.setColor(QPalette::Window,
+					rgbBase);
+			}
+			pItem->plugins->setPalette(pal2);
+		}
+		pPainter->drawText(rectText,
+			Qt::AlignLeft | Qt::AlignTop,
+			pItem->text.at(iCol - 1));
+	} else {
 		pPainter->drawText(rectText,
 			Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap,
 			pItem->text.at(iCol - 1));
@@ -1329,15 +1353,14 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 		y2 += h1;
 		if (y2 > cy && y1 < cy + h) {
 			// Dispatch to paint this track...
-			QRect rect(0, y1 - cy + hh, w, h1);
 			x = 0;
+			QRect rect(x, y1 - cy + hh, w, h1);
 			for (int iCol = 0; iCol < iColCount; ++iCol) {
 				const int dx = m_pHeader->sectionSize(iCol);
 				if (x + dx > cx && x < cx + w) {
 					rect.setX(x - cx);
 					rect.setWidth(dx);
-					drawCell(&painter, iTrack, iCol, rect);
-					if (iCol == Name && pItem->updated) {
+					if (iCol == Name) {
 						const int h2 = qtractorTrack::HeightMin - 4;
 						pItem->updateButtons(this, rect.height() > h2);
 						if (pItem->buttons) {
@@ -1351,8 +1374,7 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 						}
 					}
 					else
-					if (iCol == Bus && pItem->updated) {
-						rect.setX(rect.x() + 6); // ribbon spacing...
+					if (iCol == Bus) {
 						const int h2
 							= (qtractorTrack::HeightMin << 2)
 							-  qtractorTrack::HeightMin  - 2;
@@ -1361,12 +1383,12 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 							const int dy1
 								= (qtractorTrack::HeightMin << 1);
 							(pItem->plugins)->setGeometry(
-								rect.adjusted(+4, dy1, -4, -2));
+								rect.adjusted(+10, dy1, -4, -2));
 							(pItem->plugins)->show();
 						}
 					}
 					else
-					if (iCol == Channel && pItem->updated) {
+					if (iCol == Channel) {
 						const int h2 = qtractorTrack::HeightMin + 4;
 						pItem->updateMeters(this, rect.height() > h2);
 						if (pItem->meters) {
@@ -1378,6 +1400,8 @@ void qtractorTrackList::updatePixmap ( int cx, int cy )
 							(pItem->meters)->show();
 						}
 					}
+					// Paint item cell...
+					drawCell(&painter, iTrack, iCol, rect);
 				}
 				else if (iCol == Name)
 					pItem->updateButtons(this, false);
