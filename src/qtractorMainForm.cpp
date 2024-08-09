@@ -3659,8 +3659,8 @@ void qtractorMainForm::trackInputs (void)
 	qDebug("qtractorMainForm::trackInputs()");
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	if (m_pConnections)
 		m_pConnections->showBus(pTrack->inputBus(), qtractorBus::Input);
@@ -3682,8 +3682,8 @@ void qtractorMainForm::trackOutputs (void)
 	qDebug("qtractorMainForm::trackOutputs()");
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	if (m_pConnections)
 		m_pConnections->showBus(pTrack->outputBus(), qtractorBus::Output);
@@ -5467,8 +5467,8 @@ void qtractorMainForm::transportBackward (void)
 	qDebug("qtractorMainForm::transportBackward()");
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	// Move playhead to edit-tail, head or full session-start.
 	bool bShiftKeyModifier = QApplication::keyboardModifiers()
@@ -5493,9 +5493,8 @@ void qtractorMainForm::transportRewind (void)
 	qDebug("qtractorMainForm::transportRewind()");
 #endif
 
-	// Make sure session is activated...
-	if (!checkRestartSession())
-		return;
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	// Rolling direction and speed (negative)...
 	bool bShiftKeyModifier = QApplication::keyboardModifiers()
@@ -5526,9 +5525,8 @@ void qtractorMainForm::transportFastForward (void)
 	qDebug("qtractorMainForm::transportFastForward()");
 #endif
 
-	// Make sure session is activated...
-	if (!checkRestartSession())
-		return;
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	// Rolling direction and speed (positive)...
 	bool bShiftKeyModifier = QApplication::keyboardModifiers()
@@ -5559,8 +5557,8 @@ void qtractorMainForm::transportForward (void)
 	qDebug("qtractorMainForm::transportForward()");
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	// Move playhead to edit-head, tail or full session-end.
 	bool bShiftKeyModifier = QApplication::keyboardModifiers()
@@ -5585,8 +5583,8 @@ void qtractorMainForm::transportStepBackward (void)
 	qDebug("qtractorMainForm::transportStepBackward()");
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 	if (pTimeScale == nullptr)
@@ -5630,8 +5628,8 @@ void qtractorMainForm::transportStepForward (void)
 	qDebug("qtractorMainForm::transportStepForward()");
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	qtractorTimeScale *pTimeScale = m_pSession->timeScale();
 	if (pTimeScale == nullptr)
@@ -5675,8 +5673,8 @@ void qtractorMainForm::transportLoop (void)
 	qDebug("qtractorMainForm::transportLoop()");
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	// Do the loop toggle switch...
 	unsigned long iLoopStart = 0;
@@ -5700,8 +5698,8 @@ void qtractorMainForm::transportLoopSet (void)
 	qDebug("qtractorMainForm::transportLoopSet()");
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	// Now, express the change as an undoable command...
 	m_pSession->execute(
@@ -5815,8 +5813,8 @@ void qtractorMainForm::transportPunch (void)
 	qDebug("qtractorMainForm::transportPunch()");
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	// Do the punch in/out toggle switch...
 	unsigned long iPunchIn  = 0;
@@ -5840,8 +5838,8 @@ void qtractorMainForm::transportPunchSet (void)
 	qDebug("qtractorMainForm::transportPunchSet()");
 #endif
 
-	// Make sure session is activated...
-	checkRestartSession();
+	// Make sure session is activated?...
+	//checkRestartSession();
 
 	// Now, express the change as an undoable command...
 	m_pSession->execute(
