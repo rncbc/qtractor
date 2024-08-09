@@ -3056,7 +3056,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	// Now try to get the visual rectangular coordinates...
 	const unsigned long t2 = pEvent->time() + pEvent->duration();
 	pNode = cursor.seekTick(t2);
-	int w1 = pNode->pixelFromTick(t2) - x0;
+	int w1 = pNode->pixelFromTick(t2) - x1;
 	if (w1 < m_iMinEventWidth)
 		w1 = m_iMinEventWidth;
 
