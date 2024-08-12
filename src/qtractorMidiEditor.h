@@ -479,8 +479,9 @@ protected:
 	// Update all selection rectangular areas.
 	void updateSelect(bool bSelectReset);
 
-	// Compute current drag time snap (in ticks).
+	// Compute current drag time/duration snap (in ticks).
 	long timeSnap(long iTime) const;
+	long durationSnap(long iTime, long iDuration) const;
 
 	// Compute current drag time delta (in ticks).
 	long timeDelta(qtractorScrollView *pScrollView) const;

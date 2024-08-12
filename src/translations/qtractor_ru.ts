@@ -7247,46 +7247,46 @@ Length:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4394"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4424"/>
         <source>move</source>
         <translation>перемещение</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4453"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4483"/>
         <source>edit</source>
         <translation>правка</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4453"/>
-        <location filename="../qtractorMidiEditor.cpp" line="4682"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4483"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4712"/>
         <source>resize</source>
         <translation>смена размера</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4532"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4562"/>
         <source>rescale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4621"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4651"/>
         <source>paste</source>
         <translation>вставка</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5383"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5413"/>
         <source>Time:	%1
 Type:	</source>
         <translation>Время:	%1
 Тип:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5399"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5429"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5405"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5435"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -7295,43 +7295,43 @@ Value:	%3</source>
 Значение:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5411"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5441"/>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5417"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5447"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5423"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5453"/>
         <source>Control 14 (%1)
 Name:	%2
 Value:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5429"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5459"/>
         <source>Pgm Change (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5433"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5463"/>
         <source>Chan Press (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5437"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5467"/>
         <source>Pitch Bend (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5729"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5759"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -7340,7 +7340,7 @@ Length:	%3</source>
 Длительность:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5444"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5474"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 байтов)
@@ -8822,7 +8822,7 @@ Data: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5392"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5422"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration: %4</source>
@@ -8831,7 +8831,7 @@ Duration: %4</source>
 Длительность: %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5460"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5490"/>
         <source>Unknown (%1)</source>
         <translation>Неизвестно (%1)</translation>
     </message>
