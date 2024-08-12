@@ -2106,7 +2106,8 @@ bool qtractorSession::loadElement (
 	qtractorSession::lock();
 
 	// Templates have no session name...
-	if (!pDocument->isTemplate())
+	const bool bTemplate = pDocument->isTemplate();
+	if (!bTemplate)
 		qtractorSession::setSessionName(pElement->attribute("name"));
 
 	// Session state should be postponed...
@@ -2139,7 +2140,7 @@ bool qtractorSession::loadElement (
 					qtractorSession::setSessionDir(eProp.text());
 				else if (eProp.tagName() == "description")
 					qtractorSession::setDescription(eProp.text());
-				else if (eProp.tagName() == "sample-rate")
+				else if (eProp.tagName() == "sample-rate" && !bTemplate)
 					qtractorSession::setSampleRate(eProp.text().toUInt());
 				else if (eProp.tagName() == "tempo")
 					qtractorSession::setTempo(eProp.text().toFloat());
@@ -2154,7 +2155,7 @@ bool qtractorSession::loadElement (
 			qtractorSession::updateTimeScale();
 		}
 		else
-		if (eChild.tagName() == "state") {
+		if (eChild.tagName() == "state" && !bTemplate) {
 			for (QDomNode nState = eChild.firstChild();
 					!nState.isNull();
 						nState = nState.nextSibling()) {
@@ -2174,7 +2175,7 @@ bool qtractorSession::loadElement (
 		}
 		else
 		// Load file lists...
-		if (eChild.tagName() == "files" && !pDocument->isTemplate()) {
+		if (eChild.tagName() == "files" && !bTemplate) {
 			for (QDomNode nList = eChild.firstChild();
 					!nList.isNull();
 						nList = nList.nextSibling()) {
@@ -2353,9 +2354,9 @@ bool qtractorSession::loadElement (
 							qtractorSession::setVerticalZoom(eView.text().toUShort());
 						else if (eView.tagName() == "snap-per-beat")
 							qtractorSession::setSnapPerBeat(eView.text().toUShort());
-						else if (eView.tagName() == "edit-head")
+						else if (eView.tagName() == "edit-head" && !bTemplate)
 							qtractorSession::setEditHead(eView.text().toULong());
-						else if (eView.tagName() == "edit-tail")
+						else if (eView.tagName() == "edit-tail" && !bTemplate)
 							qtractorSession::setEditTail(eView.text().toULong());
 					}
 					// Again, make view/time scaling factors permanent.
@@ -2397,7 +2398,8 @@ bool qtractorSession::saveElement (
 	pElement->setAttribute("version", PROJECT_TITLE " " PROJECT_VERSION);
 
 	// Templates should have no session name...
-	if (!pDocument->isTemplate())
+	const bool bTemplate = pDocument->isTemplate();
+	if (!bTemplate)
 		pElement->setAttribute("name", qtractorSession::sessionName());
 
 	// Save session properties...
@@ -2408,8 +2410,10 @@ bool qtractorSession::saveElement (
 	}
 	pDocument->saveTextElement("description",
 		qtractorSession::description(), &eProps);
-	pDocument->saveTextElement("sample-rate",
-		QString::number(qtractorSession::sampleRate()), &eProps);
+	if (!bTemplate) {
+		pDocument->saveTextElement("sample-rate",
+			QString::number(qtractorSession::sampleRate()), &eProps);
+	}
 	pDocument->saveTextElement("tempo",
 		QString::number(qtractorSession::tempo()), &eProps);
 	pDocument->saveTextElement("ticks-per-beat",
@@ -2420,20 +2424,19 @@ bool qtractorSession::saveElement (
 		QString::number(qtractorSession::beatDivisor()), &eProps);
 	pElement->appendChild(eProps);
 
-	// Save session state...
-	QDomElement eState = pDocument->document()->createElement("state");
-	pDocument->saveTextElement("loop-start",
-		QString::number(qtractorSession::loopStart()), &eState);
-	pDocument->saveTextElement("loop-end",
-		QString::number(qtractorSession::loopEnd()), &eState);
-	pDocument->saveTextElement("punch-in",
-		QString::number(qtractorSession::punchIn()), &eState);
-	pDocument->saveTextElement("punch-out",
-		QString::number(qtractorSession::punchOut()), &eState);
-	pElement->appendChild(eState);
-
-	// Files are not saved when in template mode...
-	if (!pDocument->isTemplate()) {
+	// State and files are not saved when in template mode...
+	if (!bTemplate) {
+		// Save session state...
+		QDomElement eState = pDocument->document()->createElement("state");
+		pDocument->saveTextElement("loop-start",
+			QString::number(qtractorSession::loopStart()), &eState);
+		pDocument->saveTextElement("loop-end",
+			QString::number(qtractorSession::loopEnd()), &eState);
+		pDocument->saveTextElement("punch-in",
+			QString::number(qtractorSession::punchIn()), &eState);
+		pDocument->saveTextElement("punch-out",
+			QString::number(qtractorSession::punchOut()), &eState);
+		pElement->appendChild(eState);
 		// Save file lists...
 		QDomElement eFiles = pDocument->document()->createElement("files");
 		// Audio files...
@@ -2537,10 +2540,12 @@ bool qtractorSession::saveElement (
 		QString::number(qtractorSession::verticalZoom()), &eView);
 	pDocument->saveTextElement("snap-per-beat",
 		QString::number(qtractorSession::snapPerBeat()), &eView);
-	pDocument->saveTextElement("edit-head",
-		QString::number(qtractorSession::editHead()), &eView);
-	pDocument->saveTextElement("edit-tail",
-		QString::number(qtractorSession::editTail()), &eView);
+	if (!bTemplate) {
+		pDocument->saveTextElement("edit-head",
+			QString::number(qtractorSession::editHead()), &eView);
+		pDocument->saveTextElement("edit-tail",
+			QString::number(qtractorSession::editTail()), &eView);
+	}
 	eTracks.appendChild(eView);
 	// Save session tracks...
 	for (qtractorTrack *pTrack = qtractorSession::tracks().first();
