@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- New MIDI clip tool: Resize / Join notes. (EXPERIMENTAL)
+
 - Session templates do not impose an audio sample-rate anymore,
   now being hopefully sample-rate agnostic; also, the edit-head/
   tail cursors, loop-start/end and punch-in/out ranges and state

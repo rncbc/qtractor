@@ -1,7 +1,7 @@
 // qtractorMidiToolsForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -194,7 +194,6 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 		snapIter.next();
 		while (snapIter.hasNext())
 			m_ui.ResizeLegatoLengthComboBox->addItem(snapIcon, snapIter.next());
-	//	m_ui.ResizeLegatoQuantizeComboBox->insertItems(0, snapItems);
 		// Default quantization value...
 		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
 		if (iSnapPerBeat > 0)
@@ -415,6 +414,9 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	QObject::connect(m_ui.ResizeLegatoModeComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ResizeJoinCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
 
 	QObject::connect(m_ui.RescaleCheckBox,
 		SIGNAL(toggled(bool)),
@@ -628,6 +630,9 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.ResizeLegatoLengthComboBox->setCurrentIndex(vlist[9].toInt());
 			m_ui.ResizeLegatoModeComboBox->setCurrentIndex(vlist[10].toInt());
 		}
+		// Resize merge/join tool...
+		if (vlist.count() > 11)
+			m_ui.ResizeJoinCheckBox->setChecked(vlist[11].toBool());
 		// Rescale tool...
 		vlist = settings.value("/Rescale").toList();
 		if (vlist.count() > 6) {
@@ -735,6 +740,7 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.ResizeLegatoTypeComboBox->currentIndex());
 		vlist.append(m_ui.ResizeLegatoLengthComboBox->currentIndex());
 		vlist.append(m_ui.ResizeLegatoModeComboBox->currentIndex());
+		vlist.append(m_ui.ResizeJoinCheckBox->isChecked());
 		settings.setValue("/Resize", vlist);
 		// Rescale tool...
 		vlist.clear();
@@ -967,6 +973,10 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 
 	// Resize/Legato: to track last event...
 	qtractorMidiEvent *pLastEvent = nullptr;
+
+	// Resize/Legato/Join: to track note first and last events...
+	QHash<int, qtractorMidiEvent *> notes1;
+	QHash<int, qtractorMidiEvent *> notes2;
 
 	for ( ; iter != iter_end; ++iter) {
 		qtractorMidiEvent *pEvent = *iter;
@@ -1206,6 +1216,29 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 				}
 				pLastEvent = pEvent;
 			}
+			if (m_ui.ResizeJoinCheckBox->isChecked()
+				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
+				qtractorMidiEvent *pEvent1 = notes1.value(iNote, nullptr);
+				qtractorMidiEvent *pEvent2 = notes2.value(iNote, nullptr);
+				if (pEvent1 && pEvent2) {
+					if (pEvent->time() < pEvent1->time()) {
+						if (pEvent1 != pEvent2)
+							pMidiEditCommand->removeEvent(pEvent1);
+						notes1.insert(iNote, pEvent);
+					}
+					else
+					if (pEvent->time() > pEvent2->time()) {
+						if (pEvent2 != pEvent1)
+							pMidiEditCommand->removeEvent(pEvent2);
+						notes2.insert(iNote, pEvent);
+					} else {
+						pMidiEditCommand->removeEvent(pEvent);
+					}
+				} else {
+					notes1.insert(iNote, pEvent);
+					notes2.insert(iNote, pEvent);
+				}
+			}
 		}
 		// Rescale tool...
 		if (m_ui.RescaleCheckBox->isChecked()) {
@@ -1231,7 +1264,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 					if (b14bit)
 						iValue = 16384 - iValue;
 					else
-						iValue = (b14bit ? 16384 : 128) - iValue;
+						iValue = 128 - iValue;
 				}
 				iValue = int(p * float(iValue));
 				if (bPitchBend) {
@@ -1297,6 +1330,25 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 		// Make it to the event...
 		pMidiEditCommand->updateEvent(pEvent,
 			iNote, iTime - iTimeOffset, iDuration, iValue);
+	}
+
+	// Resize/Join: to track note first and last events...
+	if (m_ui.ResizeCheckBox->isChecked()
+		&& m_ui.ResizeJoinCheckBox->isChecked()) {
+		QHash<int, qtractorMidiEvent *>::ConstIterator iter1 = notes1.constBegin();
+		const QHash<int, qtractorMidiEvent *>::ConstIterator& iter1_end = notes1.constEnd();
+		for ( ; iter1 != iter1_end; ++iter1) {
+			const int iNote = iter1.key();
+			qtractorMidiEvent *pEvent1 = iter1.value();
+			qtractorMidiEvent *pEvent2 = notes2.value(iNote, nullptr);
+			if (pEvent2 && pEvent2 != pEvent1) {
+				const unsigned long iTime = pEvent1->time();
+				const unsigned long iDuration
+					= pEvent2->time() + pEvent2->duration()	- iTime;
+				pMidiEditCommand->resizeEventTime(pEvent1, iTime, iDuration);
+				pMidiEditCommand->removeEvent(pEvent2);
+			}
+		}
 	}
 
 	// HACK: Add time-scale node for tempo ramp target,
@@ -1520,6 +1572,11 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	m_ui.ResizeLegatoLengthComboBox->setEnabled(bEnabled2
 		&& m_ui.ResizeLegatoTypeComboBox->currentIndex() > 0);
 	m_ui.ResizeLegatoModeComboBox->setEnabled(bEnabled2);
+
+	m_ui.ResizeJoinCheckBox->setEnabled(bEnabled);
+	bEnabled2 = bEnabled && m_ui.ResizeJoinCheckBox->isChecked();
+	if (bEnabled2)
+		++iEnabled;
 
 	// Rescale tool...
 
