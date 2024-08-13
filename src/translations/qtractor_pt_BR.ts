@@ -9080,7 +9080,7 @@ Valor:	%3</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="811"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2423"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2428"/>
         <source>&amp;None</source>
         <translation>&amp;Nada</translation>
     </message>
