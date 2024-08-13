@@ -2401,6 +2401,10 @@ void qtractorMidiEditorForm::updateGhostTrackMenu (void)
 	if (pSession == nullptr)
 		return;
 
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip == nullptr)
+		return;
+
 	qtractorTrack *pGhostTrack = m_pMidiEditor->ghostTrack();
 
 	QAction *pAction;
@@ -2415,6 +2419,7 @@ void qtractorMidiEditorForm::updateGhostTrackMenu (void)
 			pAction->setChecked(pGhostTrack == pTrack);
 			data.setValue(static_cast<void *> (pTrack));
 			pAction->setData(data);
+			pAction->setEnabled(pTrack != pMidiClip->track());
 		}
 	}
 

@@ -4,6 +4,26 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed crash when removing a MIDI track that is currently set as
+  ghost to open MIDI clip editor(s). (GH issue #461)
+
+- New MIDI clip tool: Resize / Join notes. (EXPERIMENTAL)
+
+- Session templates do not impose an audio sample-rate anymore,
+  now being hopefully sample-rate agnostic; also, the edit-head/
+  tail cursors, loop-start/end and punch-in/out ranges and state
+  are now simply ignored on loading and saving session templates. 
+
+- MIDI tracks now show the respective audio output bus name, or
+  dedicated port name whether applicable, under the 'Bus' column
+  of main tracks left pane, above plugins list-box.
+
+- Mixer: also highlight both input and output bus strips, directly
+  related to the current highlighted track.
+
+
 1.1.1  2024-08-05  A Summer'24 Hotfix Release.
 
 - Fixed an incredibly severe bug, introduced very recently, that

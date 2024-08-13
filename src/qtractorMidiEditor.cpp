@@ -3056,7 +3056,7 @@ qtractorMidiEvent *qtractorMidiEditor::dragEditEvent (
 	// Now try to get the visual rectangular coordinates...
 	const unsigned long t2 = pEvent->time() + pEvent->duration();
 	pNode = cursor.seekTick(t2);
-	int w1 = pNode->pixelFromTick(t2) - x0;
+	int w1 = pNode->pixelFromTick(t2) - x1;
 	if (w1 < m_iMinEventWidth)
 		w1 = m_iMinEventWidth;
 
@@ -3527,16 +3527,50 @@ bool qtractorMidiEditor::dragMoveFilter (
 }
 
 
-// Compute current drag time snap (in ticks).
+// Compute current drag time/duration snap (in ticks).
 long qtractorMidiEditor::timeSnap ( long iTime ) const
 {
+	if (iTime < 1)
+		iTime = 0;
+
 	qtractorTimeScale::Cursor cursor(m_pTimeScale);
 	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
 	const unsigned long t0 = pNode->tickFromFrame(m_iOffset);
 	const unsigned long t1 = t0 + iTime;
 	pNode = cursor.seekTick(t1);
-	iTime = long(pNode->tickSnap(t1)) - long(t0);
-	return (iTime > 0 ? iTime : 0);
+
+	const long iTimeSnap
+		= long(pNode->tickSnap(t1)) - long(t0);
+
+	return (iTimeSnap > 0 ? iTimeSnap : 0);
+}
+
+
+long qtractorMidiEditor::durationSnap ( long iTime, long iDuration ) const
+{
+	if (iTime < 1)
+		iTime = 0;
+	if (iDuration < 1)
+		iDuration = 0;
+
+	qtractorTimeScale::Cursor cursor(m_pTimeScale);
+	qtractorTimeScale::Node *pNode = cursor.seekFrame(m_iOffset);
+	const unsigned long t0 = pNode->tickFromFrame(m_iOffset);
+	const unsigned long t1 = t0 + iTime;
+	const unsigned long t2 = t1 + iDuration;
+	pNode = cursor.seekTick(t2);
+
+	long iDurationSnap = long(pNode->tickSnap(t2)) - long(t1);
+	if (iDurationSnap < 1) {
+		const unsigned short iSnapPerBeat
+			= m_pTimeScale->snapPerBeat();
+		if (iSnapPerBeat > 0)
+			iDurationSnap = pNode->ticksPerBeat / iSnapPerBeat;
+		else
+			iDurationSnap = 1;
+	}
+
+	return iDurationSnap;
 }
 
 
@@ -3623,10 +3657,9 @@ void qtractorMidiEditor::resizeEvent (
 	switch (m_resizeMode) {
 	case ResizeNoteLeft:
 		iTime = timeSnap(long(pEvent->time()) + iTimeDelta);
-		iDuration = long(pEvent->duration())
-			+ (long(pEvent->time()) - iTime);
+		iDuration = long(pEvent->duration()) + (long(pEvent->time()) - iTime);
 		if (iDuration < 1)
-			iDuration = 1;
+			iDuration = durationSnap(iTime, iDuration);
 		if (m_bEventDragEdit) {
 			pEvent->setTime(iTime);
 			pEvent->setDuration(iDuration);
@@ -3643,10 +3676,7 @@ void qtractorMidiEditor::resizeEvent (
 		break;
 	case ResizeNoteRight:
 		iTime = pEvent->time();
-		iDuration = timeSnap(
-			long(pEvent->time() + pEvent->duration()) + iTimeDelta) - iTime;
-		if (iDuration < 1)
-			iDuration = 1;
+		iDuration = durationSnap(iTime, long(pEvent->duration()) + iTimeDelta);
 		if (m_bEventDragEdit) {
 			pEvent->setDuration(iDuration);
 			if (pEditCommand)

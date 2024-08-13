@@ -279,7 +279,6 @@ private:
 		QStringList    text;
 		unsigned int   flags;
 		// Track-list item widgets.
-		unsigned int   updated;
 		qtractorTrackListButtons *buttons;
 		qtractorPluginListView *plugins;
 		QWidget *meters;

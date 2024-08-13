@@ -470,30 +470,33 @@ void qtractorMidiEditEvent::updatePixmap ( int cx, int /*cy*/ )
 	painter.setRenderHint(QPainter::Antialiasing, true);
 
 	// Draw ghost-track events in dimmed transparecncy (alpha=55)...
-	qtractorTrack *pTrack = m_pEditor->ghostTrack();
-	if (pTrack) {
+	qtractorTrack *pGhostTrack = m_pEditor->ghostTrack();
+	if (pGhostTrack) {
 		// Don't draw beyhond the right-most position (x = dx + w)...
 		const unsigned long f2 = pTimeScale->frameFromPixel(x);
-		const bool bDrumMode = pTrack->isMidiDrums();
-		qtractorClip *pClip = pTrack->clips().first();
+		const bool bDrumMode = pGhostTrack->isMidiDrums();
+		qtractorClip *pClip = pGhostTrack->clips().first();
 		while (pClip && pClip->clipStart() + pClip->clipLength() < f0)
 			pClip = pClip->next();
 		while (pClip && pClip->clipStart() < f2) {
-			qtractorMidiClip *pMidiClip
+			qtractorMidiSequence *pGhostSeq = nullptr;
+			qtractorMidiClip *pGhostClip
 				= static_cast<qtractorMidiClip *> (pClip);
-			if (pMidiClip && pMidiClip != m_pEditor->midiClip()) {
+			if (pGhostClip && pGhostClip != m_pEditor->midiClip())
+				pGhostSeq = pGhostClip->sequence();
+			if (pGhostSeq) {
 				m_pEditor->reset(false); // FIXME: reset cached cursors...
 				const unsigned long iClipStart
-					= pMidiClip->clipStart();
+					= pGhostClip->clipStart();
 				const unsigned long iClipEnd
-					= iClipStart + pMidiClip->clipLength();
+					= iClipStart + pGhostClip->clipLength();
 				pNode = cursor.seekFrame(iClipStart);
 				const unsigned long t1 = pNode->tickFromFrame(iClipStart);
 				pNode = cursor.seekFrame(iClipEnd);
 				const unsigned long t2 = pNode->tickFromFrame(iClipEnd);
-				drawEvents(painter, dx, y0, pMidiClip->sequence(),
+				drawEvents(painter, dx, y0, pGhostSeq,
 					t1, iTickStart, iTickEnd, t2, bDrumMode,
-					pTrack->foreground(), pTrack->background(), 60);
+					pGhostTrack->foreground(), pGhostTrack->background(), 60);
 			}
 			pClip = pClip->next();
 		}

@@ -1,7 +1,7 @@
 // qtractorMidiManager.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1563,18 +1563,19 @@ void qtractorMidiManager::setAudioOutputMonitorEx ( bool bAudioOutputMonitor )
 		(!m_bAudioOutputMonitor &&  bAudioOutputMonitor)) {
 		// Only do this if really necessary...
 		setAudioOutputMonitor(bAudioOutputMonitor);
-		// Update all tracks anyway...
-		qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
-		if (pMainForm) {
-			// Meters on tracks list...
-			qtractorTracks *pTracks = pMainForm->tracks();
-			if (pTracks)
-				pTracks->updateMidiTrackItem(this);
-			// Meters on mixer strips...
-			qtractorMixer *pMixer = pMainForm->mixer();
-			if (pMixer)
-				pMixer->updateMidiManagerStrip(this);
-		}
+	}
+
+	// Update all tracks anyway...
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		// Meters on tracks list...
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks)
+			pTracks->updateMidiTrackItem(this);
+		// Meters on mixer strips...
+		qtractorMixer *pMixer = pMainForm->mixer();
+		if (pMixer)
+			pMixer->updateMidiManagerStrip(this);
 	}
 }
 

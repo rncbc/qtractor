@@ -171,6 +171,14 @@ public:
 	// Retrieve the MIDI manager from a mixer strip, if any....
 	qtractorMidiManager *midiManager() const;
 
+public slots:
+
+	// Bus context menu slots.
+	void busInputsSlot();
+	void busOutputsSlot();
+	void busMonitorSlot();
+	void busPropertiesSlot();
+
 protected slots:
 
 	// Bus connections button notification.
@@ -301,12 +309,12 @@ public:
 	QWidget *workspace() const
 		{ return m_pRackWidget->workspace(); }
 
-	// The mixer strip workspace methods.
-	void ensureVisible(int x, int y, int xm, int ym);
-
 	// Strip list primitive methods.
 	void addStrip(qtractorMixerStrip *pStrip);
 	void removeStrip(qtractorMixerStrip *pStrip);
+
+	// Find a mixer strip, given its rack workspace position.
+	qtractorMixerStrip *stripAt(const QPoint& pos) const;
 
 	// Find a mixer strip, given its monitor handle.
 	qtractorMixerStrip *findStrip(qtractorMonitor *pMonitor) const;
@@ -314,21 +322,16 @@ public:
 	// Update a mixer strip on rack list.
 	void updateStrip(qtractorMixerStrip *pStrip, qtractorMonitor *pMonitor);
 
-	// Current Strip count.
-	int stripCount() const
-		{ return m_strips.count(); }
-
 	// Complete rack recycle.
 	void clear();
-
-	// Selection stuff.
-	void setSelectEnabled(bool bSelectEnabled);
-	bool isSelectEnabled() const
-		{ return m_bSelectEnabled; }
 
 	void setSelectedStrip(qtractorMixerStrip *pStrip);
 	qtractorMixerStrip *selectedStrip() const
 		{ return m_pSelectedStrip; }
+
+	void setSelectedStrip2(qtractorMixerStrip *pStrip);
+	qtractorMixerStrip *selectedStrip2() const
+		{ return m_pSelectedStrip2; }
 
 	// Hacko-list-management marking...
 	void markStrips(int iMark);
@@ -346,14 +349,6 @@ public:
 	QList<qtractorMixerStrip *> findAudioOutputBusStrips(
 		qtractorAudioBus *pAudioOutputBus) const;
 
-public slots:
-
-	// Bus context menu slots.
-	void busInputsSlot();
-	void busOutputsSlot();
-	void busMonitorSlot();
-	void busPropertiesSlot();
-
 signals:
 
 	// Selection changed signal.
@@ -369,8 +364,8 @@ private:
 	Strips m_strips;
 
 	// Selection stuff.
-	bool m_bSelectEnabled;
 	qtractorMixerStrip *m_pSelectedStrip;
+	qtractorMixerStrip *m_pSelectedStrip2;
 
 	// The inner rack scroll-area/workspace widget.
 	qtractorMixerRackWidget *m_pRackWidget;
@@ -399,6 +394,10 @@ public:
 		{ return m_pTrackRack; }
 	qtractorMixerRack *outputRack() const
 		{ return m_pOutputRack; }
+
+	// Current selected track accessors.
+	void setCurrentTrack(qtractorTrack *pTrack);
+	qtractorTrack *currentTrack() const;
 
 	// Update buses and tracks'racks.
 	void updateBuses(bool bReset = false);
