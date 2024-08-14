@@ -7,7 +7,8 @@ ChangeLog
 GIT HEAD
 
 - Fixed crash when removing a MIDI track that is currently set as
-  ghost to open MIDI clip editor(s). (GH issue #461)
+  ghost to open MIDI clip editor(s), or it's been duplicated just
+  recently. (GH issue #461)
 
 - New MIDI clip tool: Resize / Join notes. (EXPERIMENTAL)
 
