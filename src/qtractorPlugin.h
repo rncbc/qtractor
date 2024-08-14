@@ -728,11 +728,6 @@ public:
 	const QString& name() const
 		{ return m_subject.name(); }
 
-	// Parameter enablement methods.
-	virtual void setValueEnabled(bool /*bEnabled*/) {}
-	virtual bool isValueEnabled() const
-		{ return true; }
-
 	// Parameter range hints predicate methods.
 	virtual bool isBoundedBelow() const = 0;
 	virtual bool isBoundedAbove() const = 0;
@@ -775,7 +770,7 @@ public:
 	void updateValue(float fValue, bool bUpdate);
 
 	// Reset-to-default method.
-	void reset() { setValue(defaultValue(), isValueEnabled()); }
+	void reset() { setValue(defaultValue(), true); }
 
 	// Direct parameter subject value.
 	qtractorSubject *subject() { return &m_subject; }
