@@ -194,6 +194,14 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 		snapIter.next();
 		while (snapIter.hasNext())
 			m_ui.ResizeLegatoLengthComboBox->addItem(snapIcon, snapIter.next());
+	//	m_ui.ResizeLegatoLengthComboBox->insertItems(0, snapItems);
+		m_ui.ResizeSplitLengthComboBox->clear();
+		m_ui.ResizeSplitLengthComboBox->setIconSize(snapIconSize);
+		snapIter.toFront();
+		snapIter.next();
+		while (snapIter.hasNext())
+			m_ui.ResizeSplitLengthComboBox->addItem(snapIcon, snapIter.next());
+	//	m_ui.ResizeSplitLengthComboBox->insertItems(0, snapItems);
 		// Default quantization value...
 		unsigned short iSnapPerBeat = m_pTimeScale->snapPerBeat();
 		if (iSnapPerBeat > 0)
@@ -204,6 +212,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 		m_ui.QuantizeSwingComboBox->setCurrentIndex(0);
 		m_ui.QuantizeSwingTypeComboBox->setCurrentIndex(0);
 		m_ui.ResizeLegatoLengthComboBox->setCurrentIndex(iSnapIndex);
+		m_ui.ResizeSplitLengthComboBox->setCurrentIndex(iSnapIndex);
 		// Initial tempo-ramp range...
 		if (pSession->editHead() < pSession->editTail()) {
 			qtractorTimeScale::Cursor cursor(m_pTimeScale);
@@ -416,6 +425,15 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 		SLOT(changed()));
 	QObject::connect(m_ui.ResizeJoinCheckBox,
 		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ResizeSplitCheckBox,
+		SIGNAL(toggled(bool)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ResizeSplitLengthComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.ResizeSplitOffsetComboBox,
+		SIGNAL(activated(int)),
 		SLOT(changed()));
 
 	QObject::connect(m_ui.RescaleCheckBox,
@@ -630,9 +648,13 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.ResizeLegatoLengthComboBox->setCurrentIndex(vlist[9].toInt());
 			m_ui.ResizeLegatoModeComboBox->setCurrentIndex(vlist[10].toInt());
 		}
-		// Resize merge/join tool...
-		if (vlist.count() > 11)
+		// Resize join/split tool...
+		if (vlist.count() > 14) {
 			m_ui.ResizeJoinCheckBox->setChecked(vlist[11].toBool());
+			m_ui.ResizeSplitCheckBox->setChecked(vlist[12].toBool());
+			m_ui.ResizeSplitLengthComboBox->setCurrentIndex(vlist[13].toInt());
+			m_ui.ResizeSplitOffsetComboBox->setCurrentIndex(vlist[14].toInt());
+		}
 		// Rescale tool...
 		vlist = settings.value("/Rescale").toList();
 		if (vlist.count() > 6) {
@@ -741,6 +763,9 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.ResizeLegatoLengthComboBox->currentIndex());
 		vlist.append(m_ui.ResizeLegatoModeComboBox->currentIndex());
 		vlist.append(m_ui.ResizeJoinCheckBox->isChecked());
+		vlist.append(m_ui.ResizeSplitCheckBox->isChecked());
+		vlist.append(m_ui.ResizeSplitLengthComboBox->currentIndex());
+		vlist.append(m_ui.ResizeSplitOffsetComboBox->currentIndex());
 		settings.setValue("/Resize", vlist);
 		// Rescale tool...
 		vlist.clear();
@@ -1203,7 +1228,7 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 					const int i	= m_ui.ResizeLegatoTypeComboBox->currentIndex();
 					if (i > 0) {
 						const unsigned short p = qtractorTimeScale::snapFromIndex(
-							m_ui.ResizeLegatoLengthComboBox->currentIndex());
+							m_ui.ResizeLegatoLengthComboBox->currentIndex() + 1);
 						const unsigned long q = pNode->ticksPerBeat / p;
 						d2 += (i == 1 ? -long(q) : +long(q));
 					}
@@ -1237,6 +1262,29 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 				} else {
 					notes1.insert(iNote, pEvent);
 					notes2.insert(iNote, pEvent);
+				}
+			}
+			if (m_ui.ResizeSplitCheckBox->isChecked()
+				&& pEvent->type() == qtractorMidiEvent::NOTEON) {
+				const unsigned short p = qtractorTimeScale::snapFromIndex(
+					m_ui.ResizeSplitLengthComboBox->currentIndex() + 1);
+				const unsigned long q = pNode->ticksPerBeat / p;
+				if (q < iDuration) {
+					unsigned long t0 = iTime;
+					if (m_ui.ResizeSplitOffsetComboBox->currentIndex() > 0)
+						t0 = q * ((t0 + (q >> 1)) / q);
+					if (t0 < iTime)
+						t0 += q;
+					const unsigned long d0 = (t0 > iTime ? t0 - iTime : q);
+					for (unsigned long d = d0; d < iDuration; d += q) {
+						qtractorMidiEvent *pSplitEvent
+							= new qtractorMidiEvent(
+								iTime - iTimeOffset + d,
+								pEvent->type(), iNote, iValue,
+								iDuration < (d + q) ? iDuration - d : q);
+						pMidiEditCommand->insertEvent(pSplitEvent);
+					}
+					iDuration = d0;
 				}
 			}
 		}
@@ -1577,6 +1625,13 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	bEnabled2 = bEnabled && m_ui.ResizeJoinCheckBox->isChecked();
 	if (bEnabled2)
 		++iEnabled;
+
+	m_ui.ResizeSplitCheckBox->setEnabled(bEnabled);
+	bEnabled2 = bEnabled && m_ui.ResizeSplitCheckBox->isChecked();
+	if (bEnabled2)
+		++iEnabled;
+	m_ui.ResizeSplitLengthComboBox->setEnabled(bEnabled2);
+	m_ui.ResizeSplitOffsetComboBox->setEnabled(bEnabled2);
 
 	// Rescale tool...
 

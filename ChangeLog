@@ -10,7 +10,7 @@ GIT HEAD
   ghost to open MIDI clip editor(s), or it's been duplicated just
   recently. (GH issue #461)
 
-- New MIDI clip tool: Resize / Join notes. (EXPERIMENTAL)
+- New MIDI clip tools: Resize / Join, Split notes. (EXPERIMENTAL)
 
 - Session templates do not impose an audio sample-rate anymore,
   now being hopefully sample-rate agnostic; also, the edit-head/
