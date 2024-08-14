@@ -1099,11 +1099,65 @@
         </spacer>
        </item>
        <item row="4" column="1" colspan="6">
-        <widget class="QCheckBox" name="ResizeJoinCheckBox">
-         <property name="text">
-          <string>&amp;Join notes</string>
+        <layout class="QHBoxLayout">
+         <property name="spacing">
+          <number>4</number>
          </property>
-        </widget>
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QCheckBox" name="ResizeJoinCheckBox">
+           <property name="text">
+            <string>&amp;Join notes</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ResizeSplitCheckBox">
+           <property name="text">
+            <string>&amp;Split notes:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="ResizeSplitLengthComboBox">
+           <property name="toolTip">
+            <string>Split notes length</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="ResizeSplitOffsetComboBox">
+           <property name="toolTip">
+            <string>Split notes offset</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Relative</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Absolute</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
        <item row="5" column="1" colspan="6">
         <spacer>
@@ -1674,6 +1728,9 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>ResizeLegatoLengthComboBox</tabstop>
   <tabstop>ResizeLegatoModeComboBox</tabstop>
   <tabstop>ResizeJoinCheckBox</tabstop>
+  <tabstop>ResizeSplitCheckBox</tabstop>
+  <tabstop>ResizeSplitLengthComboBox</tabstop>
+  <tabstop>ResizeSplitOffsetComboBox</tabstop>
   <tabstop>RescaleCheckBox</tabstop>
   <tabstop>RescaleTimeCheckBox</tabstop>
   <tabstop>RescaleTimeSpinBox</tabstop>

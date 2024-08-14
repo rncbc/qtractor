@@ -898,7 +898,9 @@ void qtractorMidiClip::close (void)
 			m_pFile->writeTrack(nullptr);	// Setup track (SMF format 1).
 		m_pFile->writeTrack(pSeq);			// Channel track.
 	}
-	m_pFile->close();
+
+	if (m_pFile)
+		m_pFile->close();
 
 	// Sure close MIDI clip editor if any...
 	if (m_pMidiEditorForm) {
