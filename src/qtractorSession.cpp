@@ -162,7 +162,10 @@ bool qtractorSession::init (void)
 
 	// HACK: Make sure we'll wait some time (~200 msec)
 	// for the JACK server start up and stabilizing...
-	if (bResult) stabilize();
+	if (bResult) {
+		setSampleRate(m_pAudioEngine->sampleRate());
+		stabilize();
+	}
 
 	return bResult;
 }

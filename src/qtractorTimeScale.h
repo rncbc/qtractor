@@ -49,7 +49,7 @@ public:
 	enum DisplayFormat { Frames = 0, Time, BBT };
 
 	// Default constructor.
-	qtractorTimeScale() : m_displayFormat(Frames),
+	qtractorTimeScale() : m_displayFormat(Frames), m_iSampleRate(44100),
 		m_cursor(this), m_markerCursor(this) { clear(); }
 
 	// Copy constructor.

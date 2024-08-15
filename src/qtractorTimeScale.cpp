@@ -64,7 +64,7 @@ void qtractorTimeScale::clear (void)
 
 //	m_displayFormat   = Frames;
 
-	m_iSampleRate     = 44100;
+//	m_iSampleRate     = 44100;
 	m_iTicksPerBeat   = TICKS_PER_BEAT_DEF;
 	m_iPixelsPerBeat  = 32;
 
