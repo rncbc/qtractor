@@ -175,8 +175,9 @@ protected:
 	class EventList;
 	class Stream;
 
-	// Plugin instance initializer.
+	// Plugin instance (de)initializer.
 	void initialize();
+	void deinitialize();
 
 	// Internal accessors.
 	EditorFrame *editorFrame() const;

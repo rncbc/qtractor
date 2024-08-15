@@ -593,9 +593,6 @@ protected:
 	// Internal activation methods.
 	void setChannelsActivated(unsigned short iChannels, bool bActivated);
 
-	void activated();
-	void deactivated();
-
 	// Activation stabilizers.
 	void updateActivated(bool bActivated);
 	void updateActivatedEx(bool bActivated);
