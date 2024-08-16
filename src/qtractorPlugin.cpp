@@ -347,7 +347,7 @@ bool qtractorPlugin::isAutoDeactivated (void) const
 void qtractorPlugin::autoDeactivatePlugin ( bool bDeactivated )
 {
 	if (bDeactivated != m_bAutoDeactivated) {
-		// deactivate
+		// deactivate?
 		if (bDeactivated) {
 			// was activated?
 			if (m_bActivated) {
@@ -357,8 +357,9 @@ void qtractorPlugin::autoDeactivatePlugin ( bool bDeactivated )
 					m_pList->updateActivated(false);
 			}
 		}
+		else
 		// reactivate?
-		else if (m_bActivated) {
+		if (m_bActivated) {
 			m_iActivated = 0;
 			activate();
 			if (m_pList)
@@ -381,10 +382,16 @@ void qtractorPlugin::updateActivated ( bool bActivated )
 {
 	if (( bActivated && !m_bActivated) ||
 		(!bActivated &&  m_bActivated)) {
-		if (bActivated)
-			activated();
-		else
-			deactivated();
+		// First time activate?
+		if (bActivated && m_iActivated == 0) {
+			activate();
+			++m_iActivated;
+		}
+		// Let the change be...
+		m_bActivated = bActivated;
+		// Last time deactivate?
+		if (!bActivated && m_iActivated == 0)
+			deactivate();
 		// Auto-plugin-deactivation overrides standard-activation for plugins
 		// without connections to other tracks (Inserts/AuxSends)
 		// otherwise user could (de)activate plugin without getting feedback
@@ -435,6 +442,7 @@ void qtractorPlugin::setChannelsActivated (
 	unsigned short iChannels, bool bActivated )
 {
 	if (iChannels > 0) {
+		// First time activation?...
 		if (!bActivated) ++m_iActivated;
 		setActivated(bActivated);
 		if (!bActivated) m_iActivated = 0;
@@ -442,26 +450,6 @@ void qtractorPlugin::setChannelsActivated (
 		m_iActivated = 0;
 		updateActivated(bActivated);
 	}
-}
-
-
-void qtractorPlugin::activated (void)
-{
-	if (m_iActivated == 0) {
-		activate();
-		++m_iActivated;
-	}
-
-	m_bActivated = true;
-}
-
-
-void qtractorPlugin::deactivated (void)
-{
-	m_bActivated = false;
-
-	if (m_iActivated == 0)
-		deactivate();
 }
 
 
@@ -1049,9 +1037,11 @@ void qtractorPlugin::freezeValues (void)
 	const Params::ConstIterator& param_end = m_params.constEnd();
 	for ( ; param != param_end; ++param) {
 		Param *pParam = param.value();
-		const unsigned long iIndex = pParam->index();
-		m_values.names[iIndex] = pParam->name();
-		m_values.index[iIndex] = pParam->value();
+		if (pParam->isValueEnabled()) {
+			const unsigned long iIndex = pParam->index();
+			m_values.names[iIndex] = pParam->name();
+			m_values.index[iIndex] = pParam->value();
+		}
 	}
 }
 

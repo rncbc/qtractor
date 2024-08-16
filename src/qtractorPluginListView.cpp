@@ -1416,6 +1416,9 @@ void qtractorPluginListView::wheelEvent ( QWheelEvent *pWheelEvent )
 
 	// Not handled here.
 	QListWidget::wheelEvent(pWheelEvent);
+
+	// Do not propagate to parent(s)...
+	pWheelEvent->accept();
 }
 
 
