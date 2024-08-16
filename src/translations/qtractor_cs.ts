@@ -290,7 +290,7 @@ MIDI:	</translation>
         <translation>Zapnout</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2346"/>
+        <location filename="../qtractorPlugin.cpp" line="2348"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 přídavný modul nenalezen.</translation>
     </message>

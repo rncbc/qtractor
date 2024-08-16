@@ -109,6 +109,9 @@ public:
 	// Parameters update method.
 	void updateParamValues(bool bUpdate);
 
+	// Parameters enablement method.
+	void resetParamValues(bool bEnabled);
+
 	// Parameter finder (by id).
 	qtractorPlugin::Param *findParamId(int id) const;
 
@@ -240,10 +243,18 @@ public:
 
 	Impl *impl() const { return m_pImpl; }
 
+	// Parameter enablement methods.
+	void setValueEnabled(bool bEnabled)
+		{ m_bValueEnabled = bEnabled; }
+	bool isValueEnabled() const
+		{ return m_bValueEnabled; }
+
 private:
 
 	// Instance variables.
 	Impl *m_pImpl;
+
+	bool  m_bValueEnabled;
 };
 
 
