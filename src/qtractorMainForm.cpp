@@ -1996,9 +1996,6 @@ bool qtractorMainForm::newSession (void)
 	// We're supposedly clean...
 	m_iDirtyCount = 0;
 
-#ifdef CONFIG_NSM
-	if (m_pNsmClient == nullptr || !m_pNsmClient->is_active()) {
-#endif
 	// Check whether we start the new session
 	// based on existing template...
 	if (m_pOptions && m_pOptions->bSessionTemplate) {
@@ -2006,9 +2003,6 @@ bool qtractorMainForm::newSession (void)
 		const int iFlags = qtractorDocument::Template;
 		return loadSessionFileEx(files, iFlags, false);
 	}
-#ifdef CONFIG_NSM
-	}
-#endif
 
 	// Prepare the session engines...
 	updateSessionPre();
@@ -3038,6 +3032,11 @@ void qtractorMainForm::autoSaveReset (void)
 // Execute auto-save routine...
 void qtractorMainForm::autoSaveSession (void)
 {
+#ifdef CONFIG_NSM
+	if (m_pNsmClient && m_pNsmClient->is_active())
+		return;
+#endif
+
 	QString sAutoSaveDir = m_pSession->sessionDir();
 	if (sAutoSaveDir.isEmpty())
 		sAutoSaveDir = m_pOptions->sSessionDir;
@@ -3076,6 +3075,11 @@ void qtractorMainForm::autoSaveSession (void)
 // Auto-save/crash-recovery setup...
 bool qtractorMainForm::autoSaveOpen (void)
 {
+#ifdef CONFIG_NSM
+	if (m_pNsmClient && m_pNsmClient->is_active())
+		return true;
+#endif
+
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
 
 #ifdef CONFIG_DEBUG_0
@@ -3112,6 +3116,11 @@ bool qtractorMainForm::autoSaveOpen (void)
 // Auto-save/crash-recovery cleanup.
 void qtractorMainForm::autoSaveClose (void)
 {
+#ifdef CONFIG_NSM
+	if (m_pNsmClient && m_pNsmClient->is_active())
+		return;
+#endif
+
 	const QString& sAutoSavePathname = m_pOptions->sAutoSavePathname;
 
 #ifdef CONFIG_DEBUG_0
@@ -3130,17 +3139,6 @@ void qtractorMainForm::autoSaveClose (void)
 }
 
 
-// Make it sane a session directory...
-QString qtractorMainForm::sessionDir ( const QString& sFilename ) const
-{
-	QFileInfo fi(sFilename);
-	const QDir& dir = fi.dir();
-	if (fi.completeBaseName() == dir.dirName())
-		fi.setFile(dir.absolutePath());
-	return fi.absolutePath();
-}
-
-
 // Execute auto-save as soon as possible (quasi-immediately please).
 void qtractorMainForm::autoSaveAsap (void)
 {
@@ -3150,6 +3148,17 @@ void qtractorMainForm::autoSaveAsap (void)
 
 	if (m_pOptions->bAutoSaveEnabled)
 		m_iAutoSaveTimer = m_iAutoSavePeriod;
+}
+
+
+// Make it sane a session directory...
+QString qtractorMainForm::sessionDir ( const QString& sFilename ) const
+{
+	QFileInfo fi(sFilename);
+	const QDir& dir = fi.dir();
+	if (fi.completeBaseName() == dir.dirName())
+		fi.setFile(dir.absolutePath());
+	return fi.absolutePath();
 }
 
 
