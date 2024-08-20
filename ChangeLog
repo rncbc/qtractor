@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor (View/) Drum Mode option is now persistent on a
+  clip basis and across sessions. (GH issue #466)
+ 
 - Fixed NSM session initialization disabling auto-save and the new
   session template features altogether. (GH issue #464)
 

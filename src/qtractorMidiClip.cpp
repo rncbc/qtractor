@@ -185,6 +185,8 @@ qtractorMidiClip::qtractorMidiClip ( qtractorTrack *pTrack )
 	m_iEditorHorizontalZoom = 100;
 	m_iEditorVerticalZoom = 100;
 
+	m_bEditorDrumMode = (pTrack && pTrack->isMidiDrums());
+
 	m_iBeatsPerBar2 = 0;
 	m_iBeatDivisor2 = 0;
 
@@ -224,6 +226,8 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 
 	m_editorHorizontalSizes = clip.editorHorizontalSizes();
 	m_editorVerticalSizes = clip.editorVerticalSizes();
+
+	m_bEditorDrumMode = clip.isEditorDrumMode();
 
 	m_iBeatsPerBar2 = clip.beatsPerBar2();
 	m_iBeatDivisor2 = clip.beatDivisor2();
@@ -1375,6 +1379,9 @@ bool qtractorMidiClip::loadClipElement (
 			m_editorVerticalSizes.append(vsizes.at(0).toInt());
 			m_editorVerticalSizes.append(vsizes.at(1).toInt());
 		}
+		else if (eChild.tagName() == "editor-drum-mode") {
+			m_bEditorDrumMode = qtractorDocument::boolFromText(eChild.text());
+		}
 		else if (eChild.tagName() == "ghost-track-name") {
 			m_sGhostTrackName = eChild.text();
 		}
@@ -1428,6 +1435,8 @@ bool qtractorMidiClip::saveClipElement (
 			QString::number(m_editorVerticalSizes.at(0)) + ',' +
 			QString::number(m_editorVerticalSizes.at(1)), &eMidiClip);
 	}
+	pDocument->saveTextElement("editor-drum-mode",
+		qtractorDocument::textFromBool(m_bEditorDrumMode), &eMidiClip);
 	if (!m_sGhostTrackName.isEmpty()) {
 		pDocument->saveTextElement("ghost-track-name",
 			m_sGhostTrackName, &eMidiClip);
