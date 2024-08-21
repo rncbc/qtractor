@@ -1,7 +1,7 @@
 // qtractorSessionForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -147,13 +147,14 @@ qtractorSessionForm::~qtractorSessionForm (void)
 
 
 // Populate (setup) dialog controls from settings descriptors.
-void qtractorSessionForm::setSession ( qtractorSession *pSession )
+void qtractorSessionForm::setSession (
+	qtractorSession *pSession, bool bSessionDir )
 {
 	// Session properties cloning...
 	m_props = pSession->properties();
 
 	// HACK: Fix for an initial session directory proposal...
-	m_bNewSession = m_props.sessionName.isEmpty();
+	m_bNewSession = m_props.sessionName.isEmpty() && bSessionDir;
 	if (m_bNewSession) {
 		QDir dir(m_props.sessionDir);
 		QStringList filters;
@@ -165,6 +166,7 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	}
 
 	// HACK: Remember current session-dir....
+	m_bSessionDir = bSessionDir;
 	m_sSessionDir = m_props.sessionDir;
 
 	// Initialize dialog widgets...
@@ -188,6 +190,9 @@ void qtractorSessionForm::setSession ( qtractorSession *pSession )
 	m_ui.VerticalZoomSpinBox->setValue(int(m_props.timeScale.verticalZoom()));
 
 	// Start editing session name, if empty...
+	m_ui.SessionNameLineEdit->setEnabled(m_bSessionDir);
+	m_ui.SessionDirComboBox->setEnabled(m_bSessionDir);
+	m_ui.SessionDirToolButton->setEnabled(m_bSessionDir);
 	m_ui.AutoSessionDirCheckBox->setEnabled(m_bNewSession);
 	m_ui.AutoSessionDirCheckBox->setVisible(m_bNewSession);
 	if (m_bNewSession)
@@ -230,8 +235,10 @@ void qtractorSessionForm::accept (void)
 	// Save options...
 	if (m_iDirtyCount > 0) {
 		// Make changes permanent...
-		m_props.sessionName = m_ui.SessionNameLineEdit->text().trimmed();
-		m_props.sessionDir  = m_ui.SessionDirComboBox->currentText();
+		if (m_bSessionDir) {
+			m_props.sessionName = m_ui.SessionNameLineEdit->text().trimmed();
+			m_props.sessionDir = m_ui.SessionDirComboBox->currentText();
+		}
 		m_props.description = m_ui.DescriptionTextEdit->toPlainText().trimmed();
 		// Time properties...
 		m_props.timeScale.setSampleRate(
@@ -253,7 +260,7 @@ void qtractorSessionForm::accept (void)
 
 	// Save other conveniency options...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
-	if (pOptions) {
+	if (pOptions && m_bSessionDir) {
 		pOptions->bAutoSessionDir = m_ui.AutoSessionDirCheckBox->isChecked();
 		pOptions->saveComboBoxHistory(m_ui.SessionDirComboBox);
 	}

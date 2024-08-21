@@ -1,7 +1,7 @@
 // qtractorSessionForm.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -41,8 +41,9 @@ public:
 	// Destructor.
 	~qtractorSessionForm();
 
-	void setSession(qtractorSession *pSession);
+	void setSession(qtractorSession *pSession, bool bSessionDir);
 	const qtractorSession::Properties& properties();
+	bool isSessionDirEnabled() const;
 
 protected slots:
 
@@ -68,6 +69,7 @@ private:
 	qtractorSession::Properties m_props;
 
 	bool    m_bNewSession;
+	bool    m_bSessionDir;
 	QString m_sSessionDir;
 
 	int m_iDirtyCount;
