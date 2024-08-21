@@ -983,9 +983,14 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 		// Set its most outstanding properties...
 		qtractorTrack *pTrack = m_pMidiClip->track();
 		if (pTrack) {
-			setDrumMode(pTrack->isMidiDrums());
 			setForeground(pTrack->foreground());
 			setBackground(pTrack->background());
+			const int iEditorDrumMode
+				= m_pMidiClip->editorDrumMode();
+			if (iEditorDrumMode < 0)
+				setDrumMode(pTrack->isMidiDrums());
+			else
+				setDrumMode(iEditorDrumMode > 0);
 		}
 		// And the last but not least...
 		qtractorMidiSequence *pSeq = m_pMidiClip->sequence();

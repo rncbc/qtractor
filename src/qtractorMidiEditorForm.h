@@ -87,6 +87,9 @@ public:
 	// Instrument/controller names update.
 	void updateInstrumentNames();
 
+	// View/drum-mode update.
+	void updateDrumMode();
+
 	// Pre-close event handler.
 	bool queryClose();
 

@@ -1148,17 +1148,12 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 		pTimeScale->setBeatDivisor2(pMidiClip->beatDivisor2());
 	}
 
-	// Drum mode visuals....
-	const bool bDrumMode = m_pMidiEditor->isDrumMode();
-	m_ui.viewDrumModeAction->setChecked(bDrumMode);
-	m_pSnapToScaleKeyComboBox->setEnabled(!bDrumMode);
-	m_pSnapToScaleTypeComboBox->setEnabled(!bDrumMode);
-
 	// Reset local dirty flag.
 	resetDirtyCount();
-
 	// Get all those names right...
 	updateInstrumentNames();
+	// Drum mode visuals....
+	updateDrumMode();
 
 	// Refresh and try to center (vertically) the edit-view...
 	m_pMidiEditor->centerContents();
@@ -1825,6 +1820,10 @@ void qtractorMidiEditorForm::viewDrumMode ( bool bOn )
 	m_pSnapToScaleKeyComboBox->setEnabled(!bOn);
 	m_pSnapToScaleTypeComboBox->setEnabled(!bOn);
 
+	qtractorMidiClip *pMidiClip = m_pMidiEditor->midiClip();
+	if (pMidiClip)
+		pMidiClip->setEditorDrumMode(bOn ? 1 : 0);
+
 	m_pMidiEditor->setDrumMode(bOn);
 	m_pMidiEditor->updateContents();
 }
@@ -2328,6 +2327,19 @@ void qtractorMidiEditorForm::updateInstrumentNames (void)
 		eventType == qtractorMidiEvent::REGPARAM    ||
 		eventType == qtractorMidiEvent::NONREGPARAM ||
 		eventType == qtractorMidiEvent::CONTROL14);
+}
+
+
+// View/drum-mode update.
+void qtractorMidiEditorForm::updateDrumMode (void)
+{
+	const bool bBlockSignals
+		= m_ui.viewDrumModeAction->blockSignals(true);
+	const bool bDrumMode = m_pMidiEditor->isDrumMode();
+	m_ui.viewDrumModeAction->setChecked(bDrumMode);
+	m_pSnapToScaleKeyComboBox->setEnabled(!bDrumMode);
+	m_pSnapToScaleTypeComboBox->setEnabled(!bDrumMode);
+	m_ui.viewDrumModeAction->blockSignals(bBlockSignals);
 }
 
 

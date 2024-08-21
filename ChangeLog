@@ -6,6 +6,12 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor (View/) Drum Mode option is now persistent on a
+  clip basis and across sessions. (GH issue #466)
+ 
+- Fixed NSM session initialization disabling auto-save and the new
+  session template features altogether. (GH issue #464)
+
 - Fixed crash when removing a MIDI track that is currently set as
   ghost to open MIDI clip editor(s), or it's been duplicated just
   recently. (GH issue #461)
