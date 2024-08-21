@@ -333,36 +333,36 @@ End:	%3	Length:	%4</source>
         <translation>%1 - バンク %2</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1276"/>
+        <location filename="../qtractorMidiClip.cpp" line="1282"/>
         <source>(format %1)
 MIDI:	</source>
         <translation>(フォーマット %1)
 MIDI:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1278"/>
+        <location filename="../qtractorMidiClip.cpp" line="1284"/>
         <location filename="../qtractorMidiListView.cpp" line="73"/>
         <source>Channel %1</source>
         <translation>チャンネル %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1280"/>
+        <location filename="../qtractorMidiClip.cpp" line="1286"/>
         <location filename="../qtractorMidiListView.cpp" line="67"/>
         <source>Track %1</source>
         <translation>トラック %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1283"/>
+        <location filename="../qtractorMidiClip.cpp" line="1289"/>
         <source>, %1 tracks, %2 tpqn</source>
         <translation>, %1 トラック、 %2 tpqn</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1290"/>
+        <location filename="../qtractorMidiClip.cpp" line="1296"/>
         <source> (%1% vol)</source>
         <translation> (%1% ボリューム)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiClip.cpp" line="1326"/>
+        <location filename="../qtractorMidiClip.cpp" line="1332"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
         <translation type="unfinished">MIDIファイルの保存: %1, トラックチャンネル: %2。</translation>
     </message>
@@ -8752,60 +8752,60 @@ Length:	%3</source>
         <translation>MIDIエディタ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="1912"/>
+        <location filename="../qtractorMidiEditor.cpp" line="1913"/>
         <source>cut</source>
         <translation>切り取り</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="2134"/>
+        <location filename="../qtractorMidiEditor.cpp" line="2135"/>
         <source>delete</source>
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="2443"/>
+        <location filename="../qtractorMidiEditor.cpp" line="2444"/>
         <source>insert range</source>
         <translation>レンジの挿入</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="2519"/>
+        <location filename="../qtractorMidiEditor.cpp" line="2520"/>
         <source>remove range</source>
         <translation>レンジの削除</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4428"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4429"/>
         <source>move</source>
         <translation>移動</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4487"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4488"/>
         <source>edit</source>
         <translation>編集</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4487"/>
-        <location filename="../qtractorMidiEditor.cpp" line="4716"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4488"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4717"/>
         <source>resize</source>
         <translation>リサイズ</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4566"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4567"/>
         <source>rescale</source>
         <translation>リスケール</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4655"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4656"/>
         <source>paste</source>
         <translation>貼り付け</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5417"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5418"/>
         <source>Time:	%1
 Type:	</source>
         <translation>時間:	%1
 種類:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5426"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5427"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration: %4</source>
@@ -8814,14 +8814,14 @@ Duration: %4</source>
 デュレーション: %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5433"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5434"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation>キープレス (%1) %2
 値:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5439"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5440"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -8830,7 +8830,7 @@ Value:	%3</source>
 値:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5445"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5446"/>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -8839,7 +8839,7 @@ Value:	%3</source>
 値:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5451"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5452"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -8848,7 +8848,7 @@ Value:	%3</source>
 値:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5457"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5458"/>
         <source>Control 14 (%1)
 Name:	%2
 Value:	%3</source>
@@ -8857,34 +8857,34 @@ Value:	%3</source>
 値:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5463"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5464"/>
         <source>Pgm Change (%1)</source>
         <translation>Pgmチェンジ (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5467"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5468"/>
         <source>Chan Press (%1)</source>
         <translation>チャンネルプレス (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5471"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5472"/>
         <source>Pitch Bend (%1)</source>
         <translation>ピッチベンド (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5478"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5479"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1バイト)
 データ: </translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5494"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5495"/>
         <source>Unknown (%1)</source>
         <translation>不明 (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5763"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5764"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -8897,7 +8897,7 @@ Length:	%3</source>
     <name>qtractorMidiEditorForm</name>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="34"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2207"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2206"/>
         <source>MIDI Editor</source>
         <translation>MIDIエディタ</translation>
     </message>
@@ -9439,7 +9439,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="811"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2428"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2440"/>
         <source>&amp;None</source>
         <translation>なし(&amp;N)</translation>
     </message>
@@ -10590,7 +10590,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="352"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2241"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2240"/>
         <source>MOD</source>
         <translation>変更</translation>
     </message>
@@ -10601,7 +10601,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="360"/>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2246"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2245"/>
         <source>REC</source>
         <translation>記録</translation>
     </message>
@@ -10639,32 +10639,32 @@ Do you want to save the changes?</source>
 変更を保存しますか？</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1273"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1268"/>
         <source>Save MIDI Clip</source>
         <translation>MIDIクリップの保存</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1275"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1270"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>MIDIファイル(*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="1276"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="1271"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2221"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2220"/>
         <source>Channel %1</source>
         <translation>チャンネル %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2224"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2223"/>
         <source>Track %1</source>
         <translation>トラック %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditorForm.cpp" line="2231"/>
+        <location filename="../qtractorMidiEditorForm.cpp" line="2230"/>
         <source>[modified]</source>
         <translation>[変更されました]</translation>
     </message>

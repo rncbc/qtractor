@@ -985,6 +985,12 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 		if (pTrack) {
 			setForeground(pTrack->foreground());
 			setBackground(pTrack->background());
+			const int iEditorDrumMode
+				= m_pMidiClip->editorDrumMode();
+			if (iEditorDrumMode < 0)
+				setDrumMode(pTrack->isMidiDrums());
+			else
+				setDrumMode(iEditorDrumMode > 0);
 		}
 		// And the last but not least...
 		qtractorMidiSequence *pSeq = m_pMidiClip->sequence();
@@ -1029,8 +1035,6 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 			= pMidiClip->editorVerticalSizes();
 		if (!vsizes.isEmpty())
 			setVerticalSizes(vsizes);
-		// Also some special persistent modes...
-		setDrumMode(m_pMidiClip->isEditorDrumMode());
 		// Got clip!
 	} else {
 		// Reset those little things too..
@@ -1192,9 +1196,6 @@ QList<int> qtractorMidiEditor::verticalSizes (void) const
 void qtractorMidiEditor::setDrumMode ( bool bDrumMode )
 {
 	m_bDrumMode = bDrumMode;
-
-	if (m_pMidiClip)
-		m_pMidiClip->setEditorDrumMode(m_bDrumMode);
 
 	updateInstrumentNames();
 //	updateContents();

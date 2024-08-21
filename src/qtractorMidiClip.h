@@ -279,11 +279,11 @@ public:
 	QList<int> editorVerticalSizes() const
 		{ return m_editorVerticalSizes; }
 
-	// MIDI clip editor view drum-mode accessors.
-	void setEditorDrumMode(bool bDrumMode)
-		{ m_bEditorDrumMode = bDrumMode; }
-	bool isEditorDrumMode() const
-		{ return m_bEditorDrumMode; }
+	// MIDI clip editor view drum-mode accessors (tree-state).
+	void setEditorDrumMode(int iEditorDrumMode)
+		{ m_iEditorDrumMode = iEditorDrumMode; }
+	int editorDrumMode() const
+		{ return m_iEditorDrumMode; }
 
 	// Ghost track setting.
 	void setGhostTrackName(const QString& sGhostTrackName)
@@ -385,8 +385,8 @@ private:
 	QList<int> m_editorHorizontalSizes;
 	QList<int> m_editorVerticalSizes;
 
-	// MIDI clip editor view drum-mode.
-	bool m_bEditorDrumMode;
+	// MIDI clip editor view drum-mode (tree-state).
+	int m_iEditorDrumMode;
 
 	// Ghost track setting.
 	QString m_sGhostTrackName;
