@@ -790,9 +790,6 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_last.pitchBend = 0;
 	m_last.duration  = 0;
 
-	// The local mighty command pattern instance.
-	m_pCommands = new qtractorCommandList();
-
 	// Local time-scale.
 	m_pTimeScale = new qtractorTimeScale();
 
@@ -920,10 +917,6 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 		SIGNAL(contentsMoving(int,int)),
 		m_pThumbView, SLOT(updateThumb()));
 
-	QObject::connect(m_pCommands,
-		SIGNAL(updateNotifySignal(unsigned int)),
-		SLOT(updateNotifySlot(unsigned int)));
-
 	// Initial splitter sizes.
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions) {
@@ -963,7 +956,6 @@ qtractorMidiEditor::~qtractorMidiEditor (void)
 
 	// Release local instances.
 	delete m_pTimeScale;
-	delete m_pCommands;
 }
 
 
@@ -1035,6 +1027,13 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 			= pMidiClip->editorVerticalSizes();
 		if (!vsizes.isEmpty())
 			setVerticalSizes(vsizes);
+		// Connect to clip's command (undo/redo) sinal-slot stack...
+		qtractorCommandList *pCommands = pMidiClip->commands();
+		if (pCommands) {
+			QObject::connect(pCommands,
+				 SIGNAL(updateNotifySignal(unsigned int)),
+				 SLOT(updateNotifySlot(unsigned int)));
+		}
 		// Got clip!
 	} else {
 		// Reset those little things too..
@@ -1042,9 +1041,6 @@ void qtractorMidiEditor::setMidiClip ( qtractorMidiClip *pMidiClip )
 		setOffset(0);
 		setLength(0);
 	}
-
-	// All commands reset.
-	m_pCommands->clear();
 }
 
 qtractorMidiClip *qtractorMidiEditor::midiClip (void) const
@@ -1859,27 +1855,33 @@ void qtractorMidiEditor::verticalSplitterSlot (void)
 // Tell whether we can undo last command...
 bool qtractorMidiEditor::canUndo (void) const
 {
-	return (m_pCommands->lastCommand() != nullptr);
+	qtractorCommandList *pCommands = commands();
+	return (pCommands ? pCommands->lastCommand() != nullptr : false);
 }
 
 // Tell whether we can redo last command...
 bool qtractorMidiEditor::canRedo (void) const
 {
-	return (m_pCommands->nextCommand() != nullptr);
+	qtractorCommandList *pCommands = commands();
+	return (pCommands ? pCommands->nextCommand() != nullptr : false);
 }
 
 
 // Undo last edit command.
 void qtractorMidiEditor::undoCommand (void)
 {
-	m_pCommands->undo();
+	qtractorCommandList *pCommands = commands();
+	if (pCommands)
+		pCommands->undo();
 }
 
 
 // Redo last edit command.
 void qtractorMidiEditor::redoCommand (void)
 {
-	m_pCommands->redo();
+	qtractorCommandList *pCommands = commands();
+	if (pCommands)
+		pCommands->redo();
 }
 
 
@@ -1922,7 +1924,7 @@ void qtractorMidiEditor::cutClipboard (void)
 	}
 
 	// Make it as an undoable command...
-	m_pCommands->exec(pEditCommand);
+	execute(pEditCommand);
 }
 
 
@@ -2140,7 +2142,7 @@ void qtractorMidiEditor::deleteSelect (void)
 	for ( ; iter != iter_end; ++iter)
 		pEditCommand->removeEvent(iter.key());
 
-	m_pCommands->exec(pEditCommand);
+	execute(pEditCommand);
 }
 
 
@@ -2475,7 +2477,7 @@ void qtractorMidiEditor::insertEditRange (void)
 	}
 
 	if (iUpdate > 0)
-		m_pCommands->exec(pEditCommand);
+		execute(pEditCommand);
 	else
 		delete pEditCommand;
 }
@@ -2557,7 +2559,7 @@ void qtractorMidiEditor::removeEditRange (void)
 	}
 
 	if (iUpdate > 0)
-		m_pCommands->exec(pEditCommand);
+		execute(pEditCommand);
 	else
 		delete pEditCommand;
 }
@@ -2720,20 +2722,6 @@ void qtractorMidiEditor::reset ( bool bSelectClear )
 	// Reset some internal state...
 	m_cursor.clear();
 	m_cursorAt.clear();
-}
-
-
-// Clear all contents.
-void qtractorMidiEditor::clear (void)
-{
-	m_iSyncViewHold = 0;
-
-	m_pCommands->clear();
-
-	if (m_pMidiClip)
-		m_pMidiClip->sequence()->clear();
-
-	reset(true);
 }
 
 
@@ -4467,7 +4455,7 @@ void qtractorMidiEditor::executeDragMove (
 	}
 
 	// Make it as an undoable command...
-	m_pCommands->exec(pEditCommand);
+	execute(pEditCommand);
 }
 
 
@@ -4509,7 +4497,7 @@ void qtractorMidiEditor::executeDragResize (
 	}
 
 	// Make it as an undoable command...
-	m_pCommands->exec(pEditCommand);
+	execute(pEditCommand);
 }
 
 
@@ -4519,6 +4507,7 @@ void qtractorMidiEditor::executeDragRescale (
 {
 	if (m_pMidiClip == nullptr)
 		return;
+
 	if (m_pEventDrag == nullptr)
 		return;
 
@@ -4633,7 +4622,7 @@ void qtractorMidiEditor::executeDragRescale (
 	if (pDts) delete pDts;
 
 	// Make it as an undoable command...
-	m_pCommands->exec(pEditCommand);
+	execute(pEditCommand);
 }
 
 
@@ -4679,7 +4668,7 @@ void qtractorMidiEditor::executeDragPaste (
 	}
 
 	// Make it as an undoable command...
-	m_pCommands->exec(pEditCommand);
+	execute(pEditCommand);
 
 	// Remake current selection alright...
 	if (!events.isEmpty()) {
@@ -4754,7 +4743,7 @@ void qtractorMidiEditor::executeDragEventResize ( const QPoint& pos )
 	}
 
 	// Make it as an undoable command...
-	m_pCommands->exec(pEditCommand);
+	execute(pEditCommand);
 }
 
 
@@ -5077,7 +5066,7 @@ void qtractorMidiEditor::executeTool ( int iToolIndex )
 			pMidiEditCommand->addTimeScaleNodeCommand(pTimeScaleNodeCommand);
 			pTimeScaleNodeCommand = toolsForm.timeScaleNodeCommand();
 		}
-		m_pCommands->exec(pMidiEditCommand);
+		execute(pMidiEditCommand);
 	}
 
 	QWidget::activateWindow();
@@ -5088,14 +5077,15 @@ void qtractorMidiEditor::executeTool ( int iToolIndex )
 // Command list accessor.
 qtractorCommandList *qtractorMidiEditor::commands (void) const
 {
-	return m_pCommands;
+	return (m_pMidiClip ? m_pMidiClip->commands() : nullptr);
 }
 
 
 // Command executioner...
 bool qtractorMidiEditor::execute ( qtractorCommand *pCommand )
 {
-	return m_pCommands->exec(pCommand);
+	qtractorCommandList *pCommands = commands();
+	return (pCommands ? pCommands->exec(pCommand) : false);
 }
 
 

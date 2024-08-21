@@ -26,6 +26,8 @@
 #include "qtractorMidiCursor.h"
 #include "qtractorMidiFile.h"
 
+#include "qtractorCommand.h"
+
 #include <QPoint>
 #include <QSize>
 
@@ -85,7 +87,7 @@ public:
 	// Revisionist method.
 	QString createFilePathRevision(bool bForce = false);
 
-	// Sequence properties accessors.
+	// Sequence properties accessor.
 	qtractorMidiSequence *sequence() const
 		{ return (m_pData ? m_pData->sequence() : nullptr); }
 
@@ -97,6 +99,10 @@ public:
 		{ return (m_pData ? m_pData->bank() : -1); }
 	int prog() const
 		{ return (m_pData ? m_pData->prog() : -1); }
+
+	// Local command-list (undo/redo) accessor.
+	qtractorCommandList *commands() const
+		{ return (m_pData ? m_pData->commands() : nullptr); }
 
 	// Intra-clip frame positioning.
 	void seek(unsigned long iFrame);
@@ -159,11 +165,12 @@ public:
 	public:
 
 		// Constructor.
-		Data(unsigned short iFormat)
-			: m_iFormat(iFormat), m_pSeq(new qtractorMidiSequence()) {}
+		Data(unsigned short iFormat) : m_iFormat(iFormat),
+			m_pSeq(new qtractorMidiSequence()),
+			m_pCommands(new qtractorCommandList()) {}
 
 		// Destructor.
-		~Data() { clear(); delete m_pSeq; }
+		~Data() { clear(); delete m_pCommands; delete m_pSeq; }
 
 		// Originial format accessor.
 		unsigned short format() const
@@ -172,6 +179,10 @@ public:
 		// Sequence accessor.
 		qtractorMidiSequence *sequence() const
 			{ return m_pSeq; }
+
+		// Commands (undo/redo) accessor.
+		qtractorCommandList *commands() const
+			{ return m_pCommands; }
 
 		// Sequence properties accessors.
 		unsigned short channel() const
@@ -206,6 +217,8 @@ public:
 		unsigned short m_iFormat;
 
 		qtractorMidiSequence *m_pSeq;
+
+		qtractorCommandList *m_pCommands;
 
 		// Ref-counting related stuff.
 		QList<qtractorMidiClip *> m_clips;

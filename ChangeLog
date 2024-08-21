@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- MIDI clip editor (aka. piano-roll) undo/redo command stack is
+  now held at the MIDI clip instance level and thus shared and the
+  same to all respective linked clips; as bonus, it also survives
+  the main session undo/redo command stack as well. (EXPERIMENTAL)
+
 - MIDI clip editor (View/) Drum Mode option is now persistent on a
   clip basis and across sessions. (GH issue #466)
  
