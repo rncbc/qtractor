@@ -1109,14 +1109,14 @@
          <item>
           <widget class="QCheckBox" name="ResizeJoinCheckBox">
            <property name="text">
-            <string>&amp;Join notes</string>
+            <string>&amp;Join</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="ResizeSplitCheckBox">
            <property name="text">
-            <string>&amp;Split notes:</string>
+            <string>&amp;Split:</string>
            </property>
           </widget>
          </item>

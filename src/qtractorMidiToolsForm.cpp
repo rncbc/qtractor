@@ -1623,13 +1623,26 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 
 	m_ui.ResizeJoinCheckBox->setEnabled(bEnabled);
 	bEnabled2 = bEnabled && m_ui.ResizeJoinCheckBox->isChecked();
-	if (bEnabled2)
+	if (bEnabled2) {
+		const bool bBlockSplit
+			= m_ui.ResizeSplitCheckBox->blockSignals(true);
+		m_ui.ResizeSplitCheckBox->setEnabled(false);
+		m_ui.ResizeSplitCheckBox->setChecked(false);
+		m_ui.ResizeSplitCheckBox->blockSignals(bBlockSplit);
+		bEnabled2 = false;
 		++iEnabled;
-
-	m_ui.ResizeSplitCheckBox->setEnabled(bEnabled);
-	bEnabled2 = bEnabled && m_ui.ResizeSplitCheckBox->isChecked();
-	if (bEnabled2)
-		++iEnabled;
+	} else {
+		m_ui.ResizeSplitCheckBox->setEnabled(bEnabled);
+		bEnabled2 = bEnabled && m_ui.ResizeSplitCheckBox->isChecked();
+		if (bEnabled2) {
+			const bool bBlockJoin
+				= m_ui.ResizeJoinCheckBox->blockSignals(true);
+			m_ui.ResizeJoinCheckBox->setEnabled(false);
+			m_ui.ResizeJoinCheckBox->setChecked(false);
+			m_ui.ResizeJoinCheckBox->blockSignals(bBlockJoin);
+			++iEnabled;
+		}
+	}
 	m_ui.ResizeSplitLengthComboBox->setEnabled(bEnabled2);
 	m_ui.ResizeSplitOffsetComboBox->setEnabled(bEnabled2);
 

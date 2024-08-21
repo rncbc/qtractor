@@ -2169,8 +2169,10 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 
 	// Update edit menu state...
 	qtractorCommandList *pCommands = m_pMidiEditor->commands();
-	pCommands->updateAction(m_ui.editUndoAction, pCommands->lastCommand());
-	pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
+	if (pCommands) {
+		pCommands->updateAction(m_ui.editUndoAction, pCommands->lastCommand());
+		pCommands->updateAction(m_ui.editRedoAction, pCommands->nextCommand());
+	}
 
 	const bool bSelected = m_pMidiEditor->isSelected();
 	const bool bSelectable = m_pMidiEditor->isSelectable();
