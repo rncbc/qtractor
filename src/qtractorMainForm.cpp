@@ -5515,7 +5515,40 @@ void qtractorMainForm::transportBackward (void)
 	if (bShiftKeyModifier) {
 		m_pSession->setPlayHead(0);
 	} else {
-		m_pSession->setPlayHead(playHeadBackward());
+		const unsigned long iPlayHead = m_pSession->playHead();
+		const bool bPlaying = m_pSession->isPlaying();
+		QList<unsigned long> list;
+		list.append(0);
+		if (iPlayHead > m_pSession->playHeadAutoBackward())
+			list.append(m_pSession->playHeadAutoBackward());
+		if (iPlayHead > m_pSession->editHead())
+			list.append(m_pSession->editHead());
+		if (iPlayHead > m_pSession->editTail() && !bPlaying)
+			list.append(m_pSession->editTail());
+		if (m_pSession->isLooping()) {
+			if (iPlayHead > m_pSession->loopStart())
+				list.append(m_pSession->loopStart());
+			if (iPlayHead > m_pSession->loopEnd() && !bPlaying)
+				list.append(m_pSession->loopEnd());
+		}
+		if (m_pSession->isPunching()) {
+			if (iPlayHead > m_pSession->punchIn())
+				list.append(m_pSession->punchIn());
+			if (iPlayHead > m_pSession->punchOut() && !bPlaying)
+				list.append(m_pSession->punchOut());
+		}
+		if (iPlayHead > m_pSession->sessionStart())
+			list.append(m_pSession->sessionStart());
+	//	if (iPlayHead > m_pSession->sessionEnd() && !bPlaying)
+	//		list.append(m_pSession->sessionEnd());
+		qtractorTimeScale::Marker *pMarker
+			= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
+		while (pMarker && pMarker->frame >= iPlayHead)
+			pMarker = pMarker->prev();
+		if (pMarker && iPlayHead > pMarker->frame)
+			list.append(pMarker->frame);
+		std::sort(list.begin(), list.end());
+		m_pSession->setPlayHead(list.last());
 	}
 
 	++m_iTransportUpdate;
@@ -5605,7 +5638,40 @@ void qtractorMainForm::transportForward (void)
 	if (bShiftKeyModifier) {
 		m_pSession->setPlayHead(m_pSession->sessionEnd());
 	} else {
-		m_pSession->setPlayHead(playHeadForward());
+		const unsigned long iPlayHead = m_pSession->playHead();
+		QList<unsigned long> list;
+		if (iPlayHead < m_pSession->playHeadAutoBackward())
+			list.append(m_pSession->playHeadAutoBackward());
+		if (iPlayHead < m_pSession->editHead())
+			list.append(m_pSession->editHead());
+		if (iPlayHead < m_pSession->editTail())
+			list.append(m_pSession->editTail());
+		if (m_pSession->isLooping()) {
+			if (iPlayHead < m_pSession->loopStart())
+				list.append(m_pSession->loopStart());
+			if (iPlayHead < m_pSession->loopEnd())
+				list.append(m_pSession->loopEnd());
+		}
+		if (m_pSession->isPunching()) {
+			if (iPlayHead < m_pSession->punchIn())
+				list.append(m_pSession->punchIn());
+			if (iPlayHead < m_pSession->punchOut())
+				list.append(m_pSession->punchOut());
+		}
+		if (iPlayHead < m_pSession->sessionStart())
+			list.append(m_pSession->sessionStart());
+		if (iPlayHead < m_pSession->sessionEnd())
+			list.append(m_pSession->sessionEnd());
+		qtractorTimeScale::Marker *pMarker
+			= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
+		while (pMarker && iPlayHead >= pMarker->frame)
+			pMarker = pMarker->next();
+		if (pMarker && iPlayHead < pMarker->frame)
+			list.append(pMarker->frame);
+		if (!list.isEmpty()) {
+			std::sort(list.begin(), list.end());
+			m_pSession->setPlayHead(list.first());
+		}
 	}
 
 	++m_iTransportUpdate;
@@ -5766,7 +5832,7 @@ void qtractorMainForm::transportStop (void)
 		}
 		// Auto-backward reset feature...
 		if (m_ui.transportAutoBackwardAction->isChecked())
-			m_pSession->setPlayHead(playHeadBackward());
+			m_pSession->setPlayHead(m_pSession->playHeadAutoBackward());
 	}
 
 	++m_iStabilizeTimer;
@@ -5809,7 +5875,7 @@ void qtractorMainForm::transportPlay (void)
 		else
 		// Auto-backward reset feature...
 		if (m_ui.transportAutoBackwardAction->isChecked())
-			m_pSession->setPlayHead(playHeadBackward());
+			m_pSession->setPlayHead(m_pSession->playHeadAutoBackward());
 	}
 
 	++m_iStabilizeTimer;
@@ -6463,83 +6529,6 @@ void qtractorMainForm::setSongPos ( unsigned short iSongPos )
 {
 	m_pSession->setPlayHead(m_pSession->frameFromSongPos(iSongPos));
 	++m_iTransportUpdate;
-}
-
-
-
-unsigned long qtractorMainForm::playHeadBackward (void) const
-{
-	const unsigned long iPlayHead = m_pSession->playHead();
-	const bool bPlaying = m_pSession->isPlaying();
-	QList<unsigned long> list;
-	list.append(0);
-	if (iPlayHead > m_pSession->playHeadAutoBackward())
-		list.append(m_pSession->playHeadAutoBackward());
-	if (iPlayHead > m_pSession->editHead())
-		list.append(m_pSession->editHead());
-	if (iPlayHead > m_pSession->editTail() && !bPlaying)
-		list.append(m_pSession->editTail());
-	if (m_pSession->isLooping()) {
-		if (iPlayHead > m_pSession->loopStart())
-			list.append(m_pSession->loopStart());
-		if (iPlayHead > m_pSession->loopEnd() && !bPlaying)
-			list.append(m_pSession->loopEnd());
-	}
-	if (m_pSession->isPunching()) {
-		if (iPlayHead > m_pSession->punchIn())
-			list.append(m_pSession->punchIn());
-		if (iPlayHead > m_pSession->punchOut() && !bPlaying)
-			list.append(m_pSession->punchOut());
-	}
-	if (iPlayHead > m_pSession->sessionStart())
-		list.append(m_pSession->sessionStart());
-//	if (iPlayHead > m_pSession->sessionEnd() && !bPlaying)
-//		list.append(m_pSession->sessionEnd());
-	qtractorTimeScale::Marker *pMarker
-		= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
-	while (pMarker && pMarker->frame >= iPlayHead)
-		pMarker = pMarker->prev();
-	if (pMarker && iPlayHead > pMarker->frame)
-		list.append(pMarker->frame);
-	std::sort(list.begin(), list.end());
-	return list.last();
-}
-
-
-unsigned long qtractorMainForm::playHeadForward (void) const
-{
-	const unsigned long iPlayHead = m_pSession->playHead();
-	QList<unsigned long> list;
-	if (iPlayHead < m_pSession->playHeadAutoBackward())
-		list.append(m_pSession->playHeadAutoBackward());
-	if (iPlayHead < m_pSession->editHead())
-		list.append(m_pSession->editHead());
-	if (iPlayHead < m_pSession->editTail())
-		list.append(m_pSession->editTail());
-	if (m_pSession->isLooping()) {
-		if (iPlayHead < m_pSession->loopStart())
-			list.append(m_pSession->loopStart());
-		if (iPlayHead < m_pSession->loopEnd())
-			list.append(m_pSession->loopEnd());
-	}
-	if (m_pSession->isPunching()) {
-		if (iPlayHead < m_pSession->punchIn())
-			list.append(m_pSession->punchIn());
-		if (iPlayHead < m_pSession->punchOut())
-			list.append(m_pSession->punchOut());
-	}
-	if (iPlayHead < m_pSession->sessionStart())
-		list.append(m_pSession->sessionStart());
-	if (iPlayHead < m_pSession->sessionEnd())
-		list.append(m_pSession->sessionEnd());
-	qtractorTimeScale::Marker *pMarker
-		= m_pSession->timeScale()->markers().seekFrame(iPlayHead);
-	while (pMarker && iPlayHead >= pMarker->frame)
-		pMarker = pMarker->next();
-	if (pMarker && iPlayHead < pMarker->frame)
-		list.append(pMarker->frame);
-	std::sort(list.begin(), list.end());
-	return list.first();
 }
 
 
@@ -8582,7 +8571,7 @@ void qtractorMainForm::midiMmcNotify ( const qtractorMmcEvent& mmce )
 		sMmcText += tr("STOP");
 		if (setPlaying(false) // Auto-backward reset feature...
 			&& m_ui.transportAutoBackwardAction->isChecked())
-			m_pSession->setPlayHead(playHeadBackward());
+			m_pSession->setPlayHead(m_pSession->playHeadAutoBackward());
 		break;
 	case qtractorMmcEvent::PLAY:
 	case qtractorMmcEvent::DEFERRED_PLAY:
@@ -8772,7 +8761,7 @@ void qtractorMainForm::midiSppNotify ( int iSppCmd, unsigned short iSongPos )
 	#endif
 		if (setPlaying(false) // Auto-backward reset feature...
 			&& m_ui.transportAutoBackwardAction->isChecked())
-			m_pSession->setPlayHead(playHeadBackward());
+			m_pSession->setPlayHead(m_pSession->playHeadAutoBackward());
 		break;
 	case SND_SEQ_EVENT_CONTINUE:
 	#ifdef CONFIG_DEBUG

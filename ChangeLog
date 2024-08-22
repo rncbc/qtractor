@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Auto-backward is now strictly to the play-head position playback
+  was last started. (GH issue #467)
+
 - MIDI clip editor (aka. piano-roll) undo/redo command stack is
   now held at the MIDI clip instance level and thus shared and the
   same to all respective linked clips; as bonus, it also survives
