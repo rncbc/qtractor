@@ -11445,32 +11445,32 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1112"/>
         <source>&amp;Join</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Joindre</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1119"/>
         <source>&amp;Split:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Séparer :</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1126"/>
         <source>Split notes length</source>
-        <translation type="unfinished"></translation>
+        <translation>Séparer la longueur de notes</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1133"/>
         <source>Split notes offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Séparer le décalage de notes</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1137"/>
         <source>Relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Relatif</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1142"/>
         <source>Absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>Absolue</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1179"/>
