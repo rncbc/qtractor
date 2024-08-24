@@ -11430,32 +11430,32 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1112"/>
         <source>&amp;Join</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Spojit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1119"/>
         <source>&amp;Split:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rozdělit:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1126"/>
         <source>Split notes length</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdělit délku not</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1133"/>
         <source>Split notes offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdělit posun not</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1137"/>
         <source>Relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Relativní</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1142"/>
         <source>Absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>Absolutní</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1179"/>
