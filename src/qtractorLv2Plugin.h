@@ -346,6 +346,9 @@ public:
 	// LV2 UI resize control (host->ui).
 	void lv2_ui_resize(const QSize& size);
 
+	// Whether LV2 UI no-user-resize feature is being requested.
+	bool lv2_ui_no_user_resize() const;
+
 	// GUI editor closed state.
 	void setEditorClosed(bool bClosed)
 		{ m_bEditorClosed = bClosed; }

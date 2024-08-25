@@ -809,6 +809,10 @@ static const LV2_Feature *g_lv2_features[] =
 #define LV2_UI__updateRate	LV2_UI_PREFIX "updateRate"
 #endif
 
+#ifndef LV2_UI__noUserResize
+#define LV2_UI__noUserResize	LV2_UI_PREFIX "noUserResize"
+#endif
+
 static void qtractor_lv2_ui_port_write (
 	LV2UI_Controller ui_controller,
 	uint32_t port_index,
@@ -4345,6 +4349,36 @@ void qtractorLv2Plugin::lv2_ui_resize ( const QSize& size )
 }
 
 
+// Whether LV2 UI no-user-resize feature is being requested.
+bool qtractorLv2Plugin::lv2_ui_no_user_resize (void) const
+{
+	if (m_lv2_ui == nullptr)
+		return false;
+
+	const LilvNode *ui_uri = lilv_ui_get_uri(m_lv2_ui);
+	lilv_world_load_resource(g_lv2_world, ui_uri);
+	LilvNode *extension_data_uri
+		= lilv_new_uri(g_lv2_world, LV2_CORE__extensionData);
+	LilvNode *optional_feature_uri
+		= lilv_new_uri(g_lv2_world, LV2_CORE__optionalFeature);
+	LilvNode *ui_no_user_resize_uri
+		= lilv_new_uri(g_lv2_world, LV2_UI__noUserResize);
+	const bool ui_no_user_resize
+		= lilv_world_ask(g_lv2_world, ui_uri,
+			extension_data_uri, ui_no_user_resize_uri)
+		||lilv_world_ask(g_lv2_world, ui_uri,
+			optional_feature_uri, ui_no_user_resize_uri);
+	lilv_node_free(ui_no_user_resize_uri);
+	lilv_node_free(optional_feature_uri);
+	lilv_node_free(extension_data_uri);
+#ifdef CONFIG_LILV_WORLD_UNLOAD_RESOURCE
+	lilv_world_unload_resource(g_lv2_world, ui_uri);
+#endif
+
+	return ui_no_user_resize;
+}
+
+
 #ifndef CONFIG_LIBSUIL
 #if defined(Q_CC_GNU) || defined(Q_CC_MINGW)
 #pragma GCC diagnostic push
@@ -4530,11 +4564,13 @@ bool qtractorLv2Plugin::lv2_ui_instantiate (
 		QWidget *pQtWidget = new QWidget(pParent, wflags);
 		pQtWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		// Add/prepare some needed features...
-		m_lv2_ui_resize.handle = pQtWidget;
-		m_lv2_ui_resize.ui_resize = qtractor_lv2_ui_resize;
-		m_lv2_ui_resize_feature.URI = LV2_UI__resize;
-		m_lv2_ui_resize_feature.data = &m_lv2_ui_resize;
-		m_lv2_ui_features[iFeatures++] = &m_lv2_ui_resize_feature;
+		if (!lv2_ui_no_user_resize()) {
+			m_lv2_ui_resize.handle = pQtWidget;
+			m_lv2_ui_resize.ui_resize = qtractor_lv2_ui_resize;
+			m_lv2_ui_resize_feature.URI = LV2_UI__resize;
+			m_lv2_ui_resize_feature.data = &m_lv2_ui_resize;
+			m_lv2_ui_features[iFeatures++] = &m_lv2_ui_resize_feature;
+		}
 		m_lv2_ui_parent_feature.URI = LV2_UI__parent;
 		m_lv2_ui_parent_feature.data = (void *) pQtWidget->winId();
 		m_lv2_ui_features[iFeatures++] = &m_lv2_ui_parent_feature;
