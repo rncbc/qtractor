@@ -2163,14 +2163,11 @@ bool qtractorLv2PluginType::lv2_ui_show_interface ( LilvUI *ui ) const
 
 	const LilvNode *ui_uri = lilv_ui_get_uri(ui);
 	lilv_world_load_resource(g_lv2_world, ui_uri);
-	LilvNode *extension_data_uri
-		= lilv_new_uri(g_lv2_world, LV2_CORE__extensionData);
 	LilvNode *show_interface_uri
 		= lilv_new_uri(g_lv2_world, LV2_UI__showInterface);
 	const bool ui_show_interface
 		= lilv_world_ask(g_lv2_world, ui_uri,
-			extension_data_uri, show_interface_uri);
-	lilv_node_free(extension_data_uri);
+			g_lv2_extension_data_hint, show_interface_uri);
 	lilv_node_free(show_interface_uri);
 #ifdef CONFIG_LILV_WORLD_UNLOAD_RESOURCE
 	lilv_world_unload_resource(g_lv2_world, ui_uri);
@@ -4357,20 +4354,17 @@ bool qtractorLv2Plugin::lv2_ui_no_user_resize (void) const
 
 	const LilvNode *ui_uri = lilv_ui_get_uri(m_lv2_ui);
 	lilv_world_load_resource(g_lv2_world, ui_uri);
-	LilvNode *extension_data_uri
-		= lilv_new_uri(g_lv2_world, LV2_CORE__extensionData);
 	LilvNode *optional_feature_uri
 		= lilv_new_uri(g_lv2_world, LV2_CORE__optionalFeature);
 	LilvNode *ui_no_user_resize_uri
 		= lilv_new_uri(g_lv2_world, LV2_UI__noUserResize);
 	const bool ui_no_user_resize
 		= lilv_world_ask(g_lv2_world, ui_uri,
-			extension_data_uri, ui_no_user_resize_uri)
+			g_lv2_extension_data_hint, ui_no_user_resize_uri)
 		||lilv_world_ask(g_lv2_world, ui_uri,
 			optional_feature_uri, ui_no_user_resize_uri);
 	lilv_node_free(ui_no_user_resize_uri);
 	lilv_node_free(optional_feature_uri);
-	lilv_node_free(extension_data_uri);
 #ifdef CONFIG_LILV_WORLD_UNLOAD_RESOURCE
 	lilv_world_unload_resource(g_lv2_world, ui_uri);
 #endif

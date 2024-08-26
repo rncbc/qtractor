@@ -7,7 +7,7 @@ ChangeLog
 GIT HEAD
 
 - Check whether a LV2 plug-in UI no-user-resize feature is being
-  requested. (probably fixes GH issue #469)
+  explicitly requested. (fixes GH issue #469)
 
 - Auto-backward is now strictly to the play-head position playback
   was last started. (GH issue #467)
