@@ -4,29 +4,35 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.2.0  2024-08-29  A Mid-Summer'24 Release.
+
+- Check whether a LV2 plug-in UI no-user-resize feature is being
+  explicitly requested.
+
+- Auto-backward is now strictly to the play-head position playback
+  was last started.
 
 - MIDI clip editor (aka. piano-roll) undo/redo command stack is
   now held at the MIDI clip instance level and thus shared and the
   same to all respective linked clips; as bonus, it also survives
-  the main session undo/redo command stack as well. (EXPERIMENTAL)
+  the main session undo/redo command stack as well.
 
 - MIDI clip editor (View/) Drum Mode option is now persistent on a
-  clip basis and across sessions. (GH issue #466)
+  clip basis and across sessions.
  
 - Fixed NSM session initialization disabling auto-save and the new
-  session template features altogether. (GH issue #464)
+  session template features altogether.
 
 - Fixed crash when removing a MIDI track that is currently set as
   ghost to open MIDI clip editor(s), or it's been duplicated just
-  recently. (GH issue #461)
+  recently.
 
-- New MIDI clip tools: Resize / Join, Split notes. (EXPERIMENTAL)
+- New MIDI clip tools: Resize / Join, Split notes.
 
 - Session templates do not impose an audio sample-rate anymore,
   now being hopefully sample-rate agnostic; also, the edit-head/
   tail cursors, loop-start/end and punch-in/out ranges and state
-  are now simply ignored on loading and saving session templates. 
+  are now simply ignored on loading and saving session templates.
 
 - MIDI tracks now show the respective audio output bus name, or
   dedicated port name whether applicable, under the 'Bus' column
