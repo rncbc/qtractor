@@ -1662,22 +1662,22 @@ Você quer mesmo manter as modificações?</translation>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1877"/>
+        <location filename="../qtractorConnect.cpp" line="1880"/>
         <source>Refresh</source>
         <translation>Atualizar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1865"/>
+        <location filename="../qtractorConnect.cpp" line="1868"/>
         <source>Disconnect</source>
         <translation>Desconectar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1860"/>
+        <location filename="../qtractorConnect.cpp" line="1863"/>
         <source>Connect</source>
         <translation>Conectar</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1870"/>
+        <location filename="../qtractorConnect.cpp" line="1873"/>
         <source>Disconnect All</source>
         <translation>Desconectar Tudo</translation>
     </message>

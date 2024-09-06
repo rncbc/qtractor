@@ -1661,22 +1661,22 @@ Vuoi applicare le modifiche?</translation>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1860"/>
+        <location filename="../qtractorConnect.cpp" line="1863"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1865"/>
+        <location filename="../qtractorConnect.cpp" line="1868"/>
         <source>Disconnect</source>
         <translation>Disconnetti</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1870"/>
+        <location filename="../qtractorConnect.cpp" line="1873"/>
         <source>Disconnect All</source>
         <translation>Disconnetti Tutti</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1877"/>
+        <location filename="../qtractorConnect.cpp" line="1880"/>
         <source>Refresh</source>
         <translation>Aggiorna</translation>
     </message>

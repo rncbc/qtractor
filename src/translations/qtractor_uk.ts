@@ -1661,22 +1661,22 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorConnect</name>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1860"/>
+        <location filename="../qtractorConnect.cpp" line="1863"/>
         <source>Connect</source>
         <translation>З&apos;єднати</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1865"/>
+        <location filename="../qtractorConnect.cpp" line="1868"/>
         <source>Disconnect</source>
         <translation>Від’єднати</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1870"/>
+        <location filename="../qtractorConnect.cpp" line="1873"/>
         <source>Disconnect All</source>
         <translation>Роз&apos;єднати усі</translation>
     </message>
     <message>
-        <location filename="../qtractorConnect.cpp" line="1877"/>
+        <location filename="../qtractorConnect.cpp" line="1880"/>
         <source>Refresh</source>
         <translation>Оновити</translation>
     </message>

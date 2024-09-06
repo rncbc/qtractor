@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Connections: connector line colors are now uniquely mapped
+  on a (readable/output) client name basis. (EXPERIMENTAL)
+
+
 1.2.0  2024-08-29  A Mid-Summer'24 Release.
 
 - Check whether a LV2 plug-in UI no-user-resize feature is being
