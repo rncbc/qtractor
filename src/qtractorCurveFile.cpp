@@ -70,6 +70,7 @@ void qtractorCurveFile::load ( QDomElement *pElement )
 					Item *pItem = new Item;
 					pItem->name  = eItem.attribute("name");
 					pItem->index = eItem.attribute("index").toULong();
+					pItem->ctype = qtractorMidiEvent::CONTROLLER; // Default.
 					pItem->mode  = modeFromText(eItem.attribute("mode"));
 					pItem->process = false; // Defaults.
 					pItem->capture = false;
