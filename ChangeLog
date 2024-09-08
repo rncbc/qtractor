@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed a partial port-name filtering issue on the MIDI Connections
+  widget. (fixes GH issue #471)
+
 - Last selected automation curve color is now persistent and the
   default for all later automation curves.
 
