@@ -125,6 +125,26 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="AliasTextLabel">
+       <property name="text">
+        <string>Alias:</string>
+       </property>
+       <property name="buddy">
+        <cstring>AliasLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="AliasLineEdit">
+       <property name="toolTip">
+        <string>Plugin alias</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="EditToolButton">
        <property name="focusPolicy">
         <enum>Qt::TabFocus</enum>
@@ -357,6 +377,7 @@
  </widget>
  <tabstops>
   <tabstop>PresetComboBox</tabstop>
+  <tabstop>AliasLineEdit</tabstop>
   <tabstop>OpenPresetToolButton</tabstop>
   <tabstop>SavePresetToolButton</tabstop>
   <tabstop>DeletePresetToolButton</tabstop>

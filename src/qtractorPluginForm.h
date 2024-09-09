@@ -88,6 +88,9 @@ protected slots:
 	void openPresetSlot();
 	void savePresetSlot();
 	void deletePresetSlot();
+
+	void aliasSlot();
+
 	void editSlot(bool bOn);
 	void activateSlot(bool bOn);
 

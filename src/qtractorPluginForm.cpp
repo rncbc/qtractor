@@ -109,6 +109,9 @@ qtractorPluginForm::qtractorPluginForm (
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
 	m_ui.PresetComboBox->setCompleter(nullptr);
 
+//	m_ui.AliasLineEdit->setPlaceholderText(tr("Alias"));
+	m_ui.AliasLineEdit->setClearButtonEnabled(true);
+
 	// UI signal/slot connections...
 	QObject::connect(m_ui.PresetComboBox,
 		SIGNAL(editTextChanged(const QString&)),
@@ -125,6 +128,9 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.DeletePresetToolButton,
 		SIGNAL(clicked()),
 		SLOT(deletePresetSlot()));
+	QObject::connect(m_ui.AliasLineEdit,
+		SIGNAL(editingFinished()),
+		SLOT(aliasSlot()));
 	QObject::connect(m_ui.EditToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(editSlot(bool)));
@@ -834,6 +840,27 @@ void qtractorPluginForm::deletePresetSlot (void)
 }
 
 
+// Alias finish-editing slot.
+void qtractorPluginForm::aliasSlot (void)
+{
+	if (m_pPlugin == nullptr)
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+	++m_iUpdate;
+
+	// Make it as an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pSession->execute(
+			new qtractorPluginAliasCommand(m_pPlugin, m_ui.AliasLineEdit->text()));
+
+	--m_iUpdate;
+}
+
+
 // Editor slot.
 void qtractorPluginForm::editSlot ( bool bOn )
 {
@@ -1057,6 +1084,9 @@ void qtractorPluginForm::refresh (void)
 		m_ui.PresetComboBox->setCurrentIndex(iIndex);
 	else
 		m_ui.PresetComboBox->setEditText(sOldPreset);
+
+	// Update the nominal user/title if any...
+	m_ui.AliasLineEdit->setText(m_pPlugin->alias());
 
 //	m_pPlugin->idleEditor();
 

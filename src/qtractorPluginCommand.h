@@ -1,7 +1,7 @@
 // qtractorPluginCommand.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -306,6 +306,28 @@ private:
 	// Instance variables.
 	int m_iBank;
 	int m_iProg;
+};
+
+
+//----------------------------------------------------------------------
+// class qtractorAliasPluginCommand - declaration.
+//
+
+class qtractorPluginAliasCommand : public qtractorPluginCommand
+{
+public:
+
+	// Constructor.
+	qtractorPluginAliasCommand(qtractorPlugin *pPlugin, const QString& sAlias);
+
+	// Plugin-alias command methods.
+	bool redo();
+	bool undo();
+
+private:
+
+	// Instance variables.
+	QString m_sAlias;
 };
 
 
