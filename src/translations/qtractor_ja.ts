@@ -501,7 +501,7 @@ MIDI:	</translation>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2348"/>
+        <location filename="../qtractorPlugin.cpp" line="2376"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 プラグインが見つかりません。</translation>
     </message>
@@ -556,17 +556,22 @@ MIDI:	</translation>
         <translation>プラグインのプログラム</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="790"/>
+        <location filename="../qtractorPluginCommand.cpp" line="590"/>
+        <source>plugin alias</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginCommand.cpp" line="832"/>
         <source>dedicated audio outputs</source>
         <translation>音声出力専用</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="835"/>
+        <location filename="../qtractorPluginCommand.cpp" line="877"/>
         <source>direct access param</source>
         <translation>ダイレクトアクセスパラメーター</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="867"/>
+        <location filename="../qtractorPluginCommand.cpp" line="909"/>
         <source>import plugins</source>
         <translation>プラグインのインポート</translation>
     </message>
@@ -905,7 +910,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
         <translation>カテゴリー: </translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1232"/>
+        <location filename="../qtractorPluginForm.cpp" line="1262"/>
         <source>Aux Send: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13469,111 +13474,121 @@ Do you want to apply the changes?</source>
         <translation>プリセットの削除</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="133"/>
+        <location filename="../qtractorPluginForm.ui" line="130"/>
+        <source>Alias:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.ui" line="140"/>
+        <source>Plugin alias</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorPluginForm.ui" line="153"/>
         <source>Edit plugin</source>
         <translation>プラグインの編集</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="136"/>
+        <location filename="../qtractorPluginForm.ui" line="156"/>
         <source>Edit</source>
         <translation>編集</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="155"/>
+        <location filename="../qtractorPluginForm.ui" line="175"/>
         <source>Active</source>
         <translation>アクティベート</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="174"/>
+        <location filename="../qtractorPluginForm.ui" line="194"/>
         <source>About</source>
         <translation>詳細</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="252"/>
+        <location filename="../qtractorPluginForm.ui" line="272"/>
         <source>Outputs (Sends)</source>
         <translation>出力 (センド)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="255"/>
+        <location filename="../qtractorPluginForm.ui" line="275"/>
         <source>Sends</source>
         <translation>センド</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="268"/>
+        <location filename="../qtractorPluginForm.ui" line="288"/>
         <source>Inputs (Returns)</source>
         <translation>インプット (リターン)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="271"/>
+        <location filename="../qtractorPluginForm.ui" line="291"/>
         <source>Returns</source>
         <translation>リターン</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="281"/>
+        <location filename="../qtractorPluginForm.ui" line="301"/>
         <source>Aux Send Bus:</source>
         <translation>Auxセンドバス:</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="306"/>
+        <location filename="../qtractorPluginForm.ui" line="326"/>
         <source>Manage buses</source>
         <translation>バスの管理</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="309"/>
+        <location filename="../qtractorPluginForm.ui" line="329"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="347"/>
+        <location filename="../qtractorPluginForm.ui" line="367"/>
         <source>Direct Access Parameter</source>
         <translation>ダイレクトアクセスのパラメーター</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="350"/>
+        <location filename="../qtractorPluginForm.ui" line="370"/>
         <source>Direct Access</source>
         <translation>ダイレクトアクセス</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="246"/>
+        <location filename="../qtractorPluginForm.cpp" line="252"/>
         <source>Page %1</source>
         <translation>ページ %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="362"/>
+        <location filename="../qtractorPluginForm.cpp" line="368"/>
         <source>%1 [%2], %3 instance(s), %4 channel(s).</source>
         <translation>%1 [%2], %3 インスタンス, %4 チャンネル.</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="490"/>
-        <location filename="../qtractorPluginForm.cpp" line="521"/>
+        <location filename="../qtractorPluginForm.cpp" line="496"/>
+        <location filename="../qtractorPluginForm.cpp" line="527"/>
         <source>(none)</source>
         <translation>(なし)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="627"/>
+        <location filename="../qtractorPluginForm.cpp" line="633"/>
         <source>Open Preset</source>
         <translation>プリセットを開く</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="630"/>
-        <location filename="../qtractorPluginForm.cpp" line="729"/>
+        <location filename="../qtractorPluginForm.cpp" line="636"/>
+        <location filename="../qtractorPluginForm.cpp" line="735"/>
         <source>Preset files (*.%1)</source>
         <translation>プリセットファイル (*.%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="631"/>
-        <location filename="../qtractorPluginForm.cpp" line="730"/>
+        <location filename="../qtractorPluginForm.cpp" line="637"/>
+        <location filename="../qtractorPluginForm.cpp" line="736"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="672"/>
-        <location filename="../qtractorPluginForm.cpp" line="774"/>
+        <location filename="../qtractorPluginForm.cpp" line="678"/>
+        <location filename="../qtractorPluginForm.cpp" line="780"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="673"/>
+        <location filename="../qtractorPluginForm.cpp" line="679"/>
         <source>Preset could not be loaded from file:
 
 &quot;%1&quot;.
@@ -13586,12 +13601,12 @@ Sorry.</source>
 ごめんなさい。</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="727"/>
+        <location filename="../qtractorPluginForm.cpp" line="733"/>
         <source>Save Preset</source>
         <translation>プリセットの保存</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="775"/>
+        <location filename="../qtractorPluginForm.cpp" line="781"/>
         <source>Preset could not be saved to file:
 
 &quot;%1&quot;.
@@ -13604,12 +13619,12 @@ Sorry.</source>
 ごめんなさい。</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="807"/>
+        <location filename="../qtractorPluginForm.cpp" line="813"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="808"/>
+        <location filename="../qtractorPluginForm.cpp" line="814"/>
         <source>About to delete preset:
 
 &quot;%1&quot; (%2)
@@ -13622,17 +13637,17 @@ Are you sure?</source>
 よろしいですか？</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1216"/>
+        <location filename="../qtractorPluginForm.cpp" line="1246"/>
         <source>Latency: %1 ms (%2 frames)</source>
         <translation>遅延: %1 ms (%2 フレーム)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1220"/>
+        <location filename="../qtractorPluginForm.cpp" line="1250"/>
         <source>(no latency)</source>
         <translation>(遅延なし)</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="997"/>
+        <location filename="../qtractorPluginForm.cpp" line="1024"/>
         <source>&amp;None</source>
         <translation>なし(&amp;N)</translation>
     </message>
@@ -13847,7 +13862,7 @@ Are you sure?</source>
 <context>
     <name>qtractorPluginParamWidget</name>
     <message>
-        <location filename="../qtractorPluginForm.cpp" line="1668"/>
+        <location filename="../qtractorPluginForm.cpp" line="1698"/>
         <source>Open File</source>
         <translation>ファイルを開く</translation>
     </message>
