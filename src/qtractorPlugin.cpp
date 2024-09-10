@@ -541,15 +541,26 @@ QString qtractorPlugin::title (void) const
 // Update editor title.
 void qtractorPlugin::updateEditorTitle (void)
 {
-	QString sEditorTitle = title();
+	QString sEditorTitle;
+
+	if (m_pType && !alias().isEmpty())
+		sEditorTitle.append(QString("%1: ").arg(m_pType->name()));
+
+	sEditorTitle.append(title());
 
 	if (m_pList && !m_pList->name().isEmpty())
-		sEditorTitle += " - " + m_pList->name();
+		sEditorTitle.append(QString(" - %1").arg(m_pList->name()));
 
 	setEditorTitle(sEditorTitle);
 
-	if (m_pForm)
-		m_pForm->setWindowTitle(editorTitle());
+	if (m_pForm) {
+		sEditorTitle = editorTitle();
+		if (m_pType
+			&& m_pType->typeHint() == qtractorPluginType::AuxSend
+			&& alias().isEmpty())
+			sEditorTitle = QObject::tr("Aux Send: %1").arg(sEditorTitle);
+		m_pForm->setWindowTitle(sEditorTitle);
+	}
 }
 
 
