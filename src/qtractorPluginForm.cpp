@@ -353,10 +353,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// Set plugin name/caption as title,
 	// maybe redundant but necessary...
-	if (bAuxSendPlugin)
-		updateAuxSendTitle();
-	else
-		m_pPlugin->updateEditorTitle();
+	m_pPlugin->updateEditorTitle();
 
 	// About page...
 	m_ui.NameTextLabel->setText(pType->name());
@@ -546,7 +543,7 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 		iIndex = 0;
 	m_ui.AuxSendBusNameComboBox->setCurrentIndex(iIndex);
 
-	updateAuxSendTitle();
+	m_pPlugin->updateEditorTitle();
 }
 
 
@@ -1249,17 +1246,6 @@ void qtractorPluginForm::updateLatencyTextLabel (void)
 	} else {
 		m_ui.LatencyTextLabel->setText(tr("(no latency)"));
 	}
-}
-
-
-// Update special aux-send window title...
-void qtractorPluginForm::updateAuxSendTitle (void)
-{
-	if (m_pPlugin == nullptr)
-		return;
-
-	QWidget::setWindowTitle(
-		QObject::tr("Aux Send: %1").arg(m_pPlugin->title()));
 }
 
 

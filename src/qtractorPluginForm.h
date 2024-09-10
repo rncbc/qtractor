@@ -129,9 +129,6 @@ protected:
 	// Update the about text label (with some varying meta-data)...
 	void updateLatencyTextLabel();
 
-	// Update special aux-send window title...
-	void updateAuxSendTitle();
-
 private:
 
 	// The Qt-designer UI struct...

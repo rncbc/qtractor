@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Plug-in name/title alias makes its debut. (EXPERIMENTAL)
+
 - Fixed a partial port-name filtering issue on the MIDI Connections
   widget. (fixes GH issue #471)
 

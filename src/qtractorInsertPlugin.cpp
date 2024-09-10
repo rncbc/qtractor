@@ -752,7 +752,7 @@ QString qtractorAudioInsertPlugin::title (void) const
 {
 	QString sTitle;
 
-	if (m_pAudioBus) {
+	if (m_pAudioBus && qtractorPlugin::alias().isEmpty()) {
 		sTitle = QObject::tr("%1 (Audio)").arg(m_pAudioBus->busName());
 		sTitle.replace('_', ' ');
 	} else {
@@ -1079,7 +1079,7 @@ QString qtractorMidiInsertPlugin::title (void) const
 {
 	QString sTitle;
 
-	if (m_pMidiBus) {
+	if (m_pMidiBus && qtractorPlugin::alias().isEmpty()) {
 		sTitle = QObject::tr("%1 (MIDI)").arg(m_pMidiBus->busName());
 		sTitle.replace('_', ' ');
 	} else {
@@ -1412,9 +1412,17 @@ void qtractorAudioAuxSendPlugin::updateAudioBusName (void) const
 // Override title/name caption.
 QString qtractorAudioAuxSendPlugin::title (void) const
 {
-	const QString sAudioBusName
-		= (m_pAudioBus ? m_sAudioBusName : QObject::tr("(none)"));
-	return QObject::tr("%1 (Audio)").arg(sAudioBusName);
+	QString sTitle;
+
+	if (qtractorPlugin::alias().isEmpty()) {
+		const QString sAudioBusName
+			= (m_pAudioBus ? m_sAudioBusName : QObject::tr("(none)"));
+		sTitle = QObject::tr("%1 (Audio)").arg(sAudioBusName);
+	} else {
+		sTitle = qtractorPlugin::title();
+	}
+
+	return sTitle;
 }
 
 
@@ -1673,9 +1681,17 @@ void qtractorMidiAuxSendPlugin::updateMidiBusName (void) const
 // Override title/name caption.
 QString qtractorMidiAuxSendPlugin::title (void) const
 {
-	const QString sMidiBusName
-		= (m_pMidiBus ? m_sMidiBusName : QObject::tr("(none)"));
-	return QObject::tr("%1 (MIDI)").arg(sMidiBusName);
+	QString sTitle;
+
+	if (qtractorPlugin::alias().isEmpty()) {
+		const QString sMidiBusName
+			= (m_pMidiBus ? m_sMidiBusName : QObject::tr("(none)"));
+		sTitle = QObject::tr("%1 (Audio)").arg(sMidiBusName);
+	} else {
+		sTitle = qtractorPlugin::title();
+	}
+
+	return sTitle;
 }
 
 

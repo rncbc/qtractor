@@ -114,7 +114,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
+        <enum>QSizePolicy::MinimumExpanding</enum>
        </property>
        <property name="sizeHint">
         <size>
@@ -136,6 +136,12 @@
      </item>
      <item>
       <widget class="QLineEdit" name="AliasLineEdit">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string>Plugin alias</string>
        </property>
