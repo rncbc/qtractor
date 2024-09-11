@@ -2163,6 +2163,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 	qtractorPlugin *pNewPlugin = qtractorPluginFactory::createPlugin(this,
 		sFilename, pType->index(), pType->typeHint());
 	if (pNewPlugin) {
+		pNewPlugin->setAlias(pPlugin->alias());
 		pNewPlugin->setPreset(pPlugin->preset());
 		pNewPlugin->setConfigs(pPlugin->configs());
 		pNewPlugin->setConfigTypes(pPlugin->configTypes());
