@@ -191,6 +191,7 @@ bool qtractorSession::open (void)
 			= new qtractorAudioBus(m_pAudioEngine, sMaster, qtractorBus::Duplex);
 		pAudioMasterBus->setAutoConnect(m_pAudioEngine->isMasterAutoConnect());
 		m_pAudioEngine->addBus(pAudioMasterBus);
+		m_pAudioEngine->addAudioBusAux(pAudioMasterBus);
 	}
 
 	//  Actually open session device engines...
@@ -262,6 +263,7 @@ void qtractorSession::clear (void)
 //	m_midiManagers.clear();
 
 	m_pMidiEngine->clear();
+	m_pAudioEngine->clearAudioBusAuxes();
 	m_pAudioEngine->clear();
 
 	m_pFiles->clear();

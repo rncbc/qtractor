@@ -348,7 +348,7 @@ public:
 
 	// The main plugin processing procedure.
 	virtual void process(
-		float **ppIBuffer, float **ppOBuffer, unsigned int nframes) = 0;
+		float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
 	// Parameter update method.
 	virtual void updateParam(

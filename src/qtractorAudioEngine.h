@@ -287,6 +287,28 @@ public:
 	// Update time(base)/BBT info.
 	void updateTimeInfo(unsigned long iFrame);
 
+	// Auxiliary audio output buses (sorted) methods.
+	//
+	void addAudioBusAux(qtractorAudioBus *pAudioBus);
+	void removeAudioBusAux(qtractorAudioBus *pAudioBus);
+
+	void resetAudioBusAux(
+		qtractorAudioBus *pAudioBus,
+		qtractorPluginList *pPluginList);
+
+	void setAudioBusAuxes(const QStringList& list);
+	QStringList audioBusAuxes() const;
+
+	QStringList loadAudioBusAuxes(
+		qtractorDocument *pDocument, QDomElement *pElement);
+	bool saveAudioBusAuxes(
+		qtractorDocument *pDocument, QDomElement *pElement,
+		const QStringList& auxes) const;
+
+	void clearAudioBusAuxes();
+
+	QStringList cyclicAudioBusAuxes(qtractorAudioBus *pAudioBus) const;
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -313,6 +335,27 @@ protected:
 
 	// Metronome latency offset compensation.
 	unsigned long metro_offset(unsigned long iFrame) const;
+
+	// Auxiliary audio output buses (sorted) decl.
+	//
+	class Aux : public qtractorList<Aux>::Link
+	{
+	public:
+
+		Aux(qtractorAudioBus *pAudioBus)
+			: m_pAudioBus(pAudioBus) {}
+
+		qtractorAudioBus *bus() const
+			{ return m_pAudioBus; }
+
+	private:
+
+		qtractorAudioBus *m_pAudioBus;
+	};
+
+	Aux *findAudioBusAux(qtractorAudioBus *pAudioBus) const;
+	Aux *findAudioBusAux(const QString& sBusName) const;
+	Aux *findAudioBusAux(qtractorPluginList *pPluginList) const;
 
 private:
 
@@ -406,6 +449,10 @@ private:
 
 	// Time(base)/BBT time info.
 	TimeInfo             m_timeInfo;
+
+	// Auxiliary audio output buses (sorted).
+	bool                 m_bAuxes;
+	qtractorList<Aux>    m_auxes;
 };
 
 

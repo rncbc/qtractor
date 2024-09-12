@@ -487,8 +487,9 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 		qtractorPluginList *pPluginList = pAudioAuxSendPlugin->list();
 		if (pPluginList == nullptr)
 			return;
-		bool bAudioOutBus
+		const bool bAudioOutBus
 			= (pPluginList->flags() == qtractorPluginList::AudioOutBus);
+		QStringList cyclicAudioBusAuxes; // Cyclic bus names to avoid.
 		const QIcon iconAudio(":/images/trackAudio.png");
 		m_ui.AuxSendBusNameComboBox->addItem(iconAudio, tr("(none)"));
 		for (qtractorBus *pBus = pAudioEngine->buses().first();
@@ -496,16 +497,30 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 			if (pBus->busMode() & qtractorBus::Output) {
 				qtractorAudioBus *pAudioBus
 					= static_cast<qtractorAudioBus *> (pBus);
-				if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels())
-					if (bAudioOutBus) { // Skip current and previous buses...
-						if (pAudioBus->pluginList_out() == pPluginList)
-							bAudioOutBus = false;
+				if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels()) {
+					if (bAudioOutBus && // Skip current or cyclic buses...
+						pAudioBus->pluginList_out() == pPluginList) {
+						cyclicAudioBusAuxes.append(
+							pAudioEngine->cyclicAudioBusAuxes(pAudioBus));
 						continue;
 					}
 					m_ui.AuxSendBusNameComboBox->addItem(iconAudio,
 						pAudioBus->busName());
+				}
 			}
 		}
+		// Avoid cyclic bus names...
+		QStringListIterator iter(cyclicAudioBusAuxes);
+		while (iter.hasNext()) {
+			const QString& sBusName = iter.next();
+			if (!sBusName.isEmpty()) {
+				const int iIndex
+					= m_ui.AuxSendBusNameComboBox->findText(sBusName);
+				if (iIndex >= 0)
+					m_ui.AuxSendBusNameComboBox->removeItem(iIndex);
+			}
+		}
+		// Proceed...
 		sAuxSendBusName = pAudioAuxSendPlugin->audioBusName();
 	} else {
 		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
@@ -1151,7 +1166,7 @@ void qtractorPluginForm::clear (void)
 	qDeleteAll(m_paramWidgets);
 	m_paramWidgets.clear();
 
-	m_pDirectAccessParamMenu->clear();	
+	m_pDirectAccessParamMenu->clear();
 }
 
 

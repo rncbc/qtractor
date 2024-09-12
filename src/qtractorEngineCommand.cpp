@@ -105,6 +105,7 @@ bool qtractorBusCommand::createBus (void)
 				m_sBusName, m_busMode, m_bMonitor, m_iChannels);
 			pAudioBus->setAutoConnect(m_bAutoConnect);
 			pAudioEngine->addBus(pAudioBus);
+			pAudioEngine->addAudioBusAux(pAudioBus);
 			pAudioEngine->resetPlayerBus();
 			pAudioEngine->resetMetroBus();
 			m_pBus = pAudioBus;
