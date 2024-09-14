@@ -511,6 +511,9 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (pSession == nullptr)
 		return;
 
+	// We'll need options somehow...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+
 	// Which mouse state?
 	bool bModifier = (pMouseEvent->modifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier));
@@ -524,9 +527,6 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	unsigned long iFrame = m_pEditor->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-
-	// We'll need options somehow...
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
 
 	switch (pMouseEvent->button()) {
 	case Qt::LeftButton:
@@ -560,10 +560,14 @@ void qtractorMidiEditTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 		m_pEditor->selectionChangeNotify();
 		break;
 	case Qt::RightButton:
-		// Edit-tail positioning...
-		m_pEditor->setEditTail(iFrame);
-		// Logical contents changed, just for visual feedback...
-		m_pEditor->selectionChangeNotify();
+		if (pOptions && pOptions->bShiftKeyModifier)
+			bModifier = !bModifier;
+		if (!bModifier) {
+			// Edit-tail positioning...
+			m_pEditor->setEditTail(iFrame);
+			// Logical contents changed, just for visual feedback...
+			m_pEditor->selectionChangeNotify();
+		}
 		// Fall thru...
 	default:
 		break;
@@ -668,14 +672,18 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		return;
 
 	// Which mouse state?
-	const bool bModifier = (pMouseEvent->modifiers()
+	bool bModifier = (pMouseEvent->modifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier));
+
+	// We'll need options somehow...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
 
 	// Direct snap positioning...
 	const QPoint& pos = viewportToContents(pMouseEvent->pos());
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	const unsigned long iFrame = m_pEditor->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+
 	switch (m_dragState) {
 	case DragSelect: {
 		// Do the final range selection...
@@ -746,6 +754,8 @@ void qtractorMidiEditTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		break;
 	case DragStart:
 		// Left-button indirect positioning...
+		if (pOptions && pOptions->bShiftKeyModifier)
+			bModifier = !bModifier;
 		if (bModifier) {
 			// Play-head positioning...
 			m_pEditor->setPlayHead(iFrame);

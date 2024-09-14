@@ -3408,6 +3408,8 @@ void qtractorMidiEditor::dragMoveCommit (
 {
 	int flags = qtractorMidiEditor::SelectCommit;
 
+	bool bModifier = (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
+
 	switch (m_dragState) {
 	case DragStart:
 		// Were we about to edit-resize something?
@@ -3417,20 +3419,24 @@ void qtractorMidiEditor::dragMoveCommit (
 			break;
 		}
 		// Take care of selection modifier...
-		if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+		if (!bModifier)
 			flags |= SelectClear;
-		else
 		// Shall we move the playhead?...
 		if (m_pEventDrag == nullptr) {
-			// Direct snap positioning...
-			const unsigned long iFrame = frameSnap(m_iOffset
-				+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-			// Playhead positioning...
-			setPlayHead(iFrame);
-			// Immediately commited...
-			qtractorSession *pSession = qtractorSession::getInstance();
-			if (pSession)
-				pSession->setPlayHead(iFrame);
+			qtractorOptions *pOptions = qtractorOptions::getInstance();
+			if (pOptions && pOptions->bShiftKeyModifier)
+				bModifier = !bModifier;
+			if (bModifier) {
+				// Direct snap positioning...
+				const unsigned long iFrame = frameSnap(m_iOffset
+					+ m_pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
+				// Playhead positioning...
+				setPlayHead(iFrame);
+				// Immediately commited...
+				qtractorSession *pSession = qtractorSession::getInstance();
+				if (pSession)
+					pSession->setPlayHead(iFrame);
+			}
 		}
 		// Fall thru...
 	case DragSelect:

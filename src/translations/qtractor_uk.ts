@@ -7196,17 +7196,17 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorMidiEditEvent</name>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="161"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="162"/>
         <source>Zoom in (horizontal)</source>
         <translation>Збільшити (горизонтально)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="162"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="163"/>
         <source>Zoom out (horizontal)</source>
         <translation>Зменшити (горизонтально)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="163"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="164"/>
         <source>Zoom reset (horizontal)</source>
         <translation>Скинути масштабування (горизонтально)</translation>
     </message>
@@ -7222,42 +7222,42 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="929"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="939"/>
         <source>Play-head</source>
         <translation>Позиція відтворення</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="932"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="942"/>
         <source>Edit-head</source>
         <translation>Редагувати позицію</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="935"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="945"/>
         <source>Edit-tail</source>
         <translation>Редагувати хвіст</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="938"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="948"/>
         <source>Loop-start</source>
         <translation>Початок циклу</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="941"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="951"/>
         <source>Loop-end</source>
         <translation>Кінець циклу</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="944"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="954"/>
         <source>Punch-in</source>
         <translation>Вхід врізки</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="947"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="957"/>
         <source>Punch-out</source>
         <translation>Вихід врізки</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="977"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="987"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -8787,40 +8787,40 @@ Length:	%3</source>
         <translation>вилучити діапазон</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4417"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4423"/>
         <source>move</source>
         <translation>пересунути</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4476"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4482"/>
         <source>edit</source>
         <translation>змінити</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4476"/>
-        <location filename="../qtractorMidiEditor.cpp" line="4706"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4482"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4712"/>
         <source>resize</source>
         <translation>змінити розмір</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4556"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4562"/>
         <source>rescale</source>
         <translation>rescale</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4645"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4651"/>
         <source>paste</source>
         <translation>вставлення</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5408"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5414"/>
         <source>Time:	%1
 Type:	</source>
         <translation>Час:	%1
 Тип:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5417"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5423"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration: %4</source>
@@ -8829,14 +8829,14 @@ Duration: %4</source>
 Тривалість: %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5424"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5430"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation>Натискання клавіші (%1) %2
 Значення:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5430"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5436"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -8845,7 +8845,7 @@ Value:	%3</source>
 Значення:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5436"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5442"/>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -8854,7 +8854,7 @@ Value:	%3</source>
 Значення:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5442"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5448"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -8863,7 +8863,7 @@ Value:	%3</source>
 Значення:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5448"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5454"/>
         <source>Control 14 (%1)
 Name:	%2
 Value:	%3</source>
@@ -8872,34 +8872,34 @@ Value:	%3</source>
 Значення:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5454"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5460"/>
         <source>Pgm Change (%1)</source>
         <translation>Зміна Pgm (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5458"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5464"/>
         <source>Chan Press (%1)</source>
         <translation>Натискання каналу (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5462"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5468"/>
         <source>Pitch Bend (%1)</source>
         <translation>Зміна тональності (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5469"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5475"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 байтів)
 Дані: </translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5485"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5491"/>
         <source>Unknown (%1)</source>
         <translation>Невідомо (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5754"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5760"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -15305,42 +15305,42 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorTrackTime</name>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="907"/>
+        <location filename="../qtractorTrackTime.cpp" line="914"/>
         <source>Play-head</source>
         <translation>Позиція відтворення</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="910"/>
+        <location filename="../qtractorTrackTime.cpp" line="917"/>
         <source>Edit-head</source>
         <translation>Позиція редагування</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="913"/>
+        <location filename="../qtractorTrackTime.cpp" line="920"/>
         <source>Edit-tail</source>
         <translation>Хвіст редагування</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="916"/>
+        <location filename="../qtractorTrackTime.cpp" line="923"/>
         <source>Loop-start</source>
         <translation>Початок циклу</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="919"/>
+        <location filename="../qtractorTrackTime.cpp" line="926"/>
         <source>Loop-end</source>
         <translation>Кінець циклу</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="922"/>
+        <location filename="../qtractorTrackTime.cpp" line="929"/>
         <source>Punch-in</source>
         <translation>Вхід врізки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="925"/>
+        <location filename="../qtractorTrackTime.cpp" line="932"/>
         <source>Punch-out</source>
         <translation>Вихід врізки</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="960"/>
+        <location filename="../qtractorTrackTime.cpp" line="967"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -15382,7 +15382,7 @@ Length:	%3</source>
         <translation>додати кліп</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3245"/>
+        <location filename="../qtractorTrackView.cpp" line="3249"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -15391,80 +15391,80 @@ Length:	%3</source>
 Тривалість:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3534"/>
+        <location filename="../qtractorTrackView.cpp" line="3538"/>
         <source>clip %1</source>
         <translation>кліп %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3535"/>
+        <location filename="../qtractorTrackView.cpp" line="3539"/>
         <source>fade-in</source>
         <translation>наростання</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3535"/>
+        <location filename="../qtractorTrackView.cpp" line="3539"/>
         <source>fade-out</source>
         <translation>згасання</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3665"/>
+        <location filename="../qtractorTrackView.cpp" line="3669"/>
         <source>clip stretch</source>
         <translation>розтягнення кліпу</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3665"/>
+        <location filename="../qtractorTrackView.cpp" line="3669"/>
         <source>clip resize</source>
         <translation>зміна розмірів кліпу</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3750"/>
-        <location filename="../qtractorTrackView.cpp" line="3858"/>
+        <location filename="../qtractorTrackView.cpp" line="3754"/>
+        <location filename="../qtractorTrackView.cpp" line="3862"/>
         <source>clip repeat</source>
         <translation>повторення кліпу</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4740"/>
+        <location filename="../qtractorTrackView.cpp" line="4744"/>
         <source>%1 automation</source>
         <translation>автоматизація %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4744"/>
-        <location filename="../qtractorTrackView.cpp" line="4817"/>
+        <location filename="../qtractorTrackView.cpp" line="4748"/>
+        <location filename="../qtractorTrackView.cpp" line="4821"/>
         <source>cut</source>
         <translation>вирізати</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4747"/>
-        <location filename="../qtractorTrackView.cpp" line="4820"/>
+        <location filename="../qtractorTrackView.cpp" line="4751"/>
+        <location filename="../qtractorTrackView.cpp" line="4824"/>
         <source>delete</source>
         <translation>вилучити</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4813"/>
+        <location filename="../qtractorTrackView.cpp" line="4817"/>
         <source>%1 clip</source>
         <translation>%1 кліп</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4823"/>
+        <location filename="../qtractorTrackView.cpp" line="4827"/>
         <source>split</source>
         <translation>розділити</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5186"/>
+        <location filename="../qtractorTrackView.cpp" line="5190"/>
         <source>move clip</source>
         <translation>пересунути кліп</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5321"/>
+        <location filename="../qtractorTrackView.cpp" line="5325"/>
         <source>paste clip</source>
         <translation>вставити кліп</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5464"/>
+        <location filename="../qtractorTrackView.cpp" line="5468"/>
         <source>move automation</source>
         <translation>пересунути автоматизацію</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5550"/>
+        <location filename="../qtractorTrackView.cpp" line="5554"/>
         <source>paste automation</source>
         <translation>вставити автоматизацію</translation>
     </message>

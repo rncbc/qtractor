@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- User preference option View/Options.../General/Options/Reverse
+  keyboard modifiers role (Shift/Ctrl), now also applying to the
+  play-head and/or edit-head/tail re-positioning in the timeline.
+
 - Plug-in name/title alias makes its debut. (EXPERIMENTAL)
 
 - Fixed a partial port-name filtering issue on the MIDI Connections

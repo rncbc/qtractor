@@ -29,6 +29,7 @@
 #include "qtractorMidiClip.h"
 
 #include "qtractorSession.h"
+#include "qtractorOptions.h"
 
 #include <QResizeEvent>
 #include <QMouseEvent>
@@ -758,8 +759,11 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (pSession == nullptr)
 		return;
 
+	// We'll need options somehow...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+
 	// Which mouse state?
-	const bool bModifier = (pMouseEvent->modifiers()
+	bool bModifier = (pMouseEvent->modifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier));
 
 	// Maybe start the drag-move-selection dance?
@@ -777,6 +781,8 @@ void qtractorMidiEditEvent::mousePressEvent ( QMouseEvent *pMouseEvent )
 		// Mid-button direct positioning...
 		m_pEditor->selectAll(this, false);
 		// Which mouse state?
+		if (pOptions && pOptions->bMidButtonModifier)
+			bModifier = !bModifier;	// Reverse mid-button role...
 		if (bModifier) {
 			// Play-head positioning commit...
 			m_pEditor->setPlayHead(iFrame);

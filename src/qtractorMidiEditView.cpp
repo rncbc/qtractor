@@ -788,6 +788,9 @@ void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	if (pSession == nullptr)
 		return;
 
+	// We'll need options somehow...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+
 	// Which mouse state?
 	bool bModifier = (pMouseEvent->modifiers()
 		& (Qt::ShiftModifier | Qt::ControlModifier));
@@ -798,9 +801,6 @@ void qtractorMidiEditView::mousePressEvent ( QMouseEvent *pMouseEvent )
 	qtractorTimeScale *pTimeScale = m_pEditor->timeScale();
 	const unsigned long iFrame = m_pEditor->frameSnap(m_pEditor->offset()
 		+ pTimeScale->frameFromPixel(pos.x() > 0 ? pos.x() : 0));
-
-	// We'll need options somehow...
-	qtractorOptions *pOptions = qtractorOptions::getInstance();
 
 	switch (pMouseEvent->button()) {
 	case Qt::LeftButton:
