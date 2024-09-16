@@ -40,6 +40,8 @@
 
 #include "qtractorPlugin.h"
 
+#include "qtractorInsertPlugin.h"
+
 #include "qtractorMidiEditCommand.h"
 
 #include <QApplication>
@@ -5559,6 +5561,71 @@ void qtractorMidiBus::dequeueNoteOffs ( unsigned long iQueueTime )
 	}
 
 	m_noteOffs.clear();
+}
+
+
+// Update all aux-sends to this very bus...
+//
+void qtractorMidiBus::updateMidiAuxSends (void)
+{
+	if ((busMode() & qtractorBus::Output) == 0)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
+	if (pMidiEngine == nullptr)
+		return;
+
+	// Make it to all MIDI output buses...
+	for (qtractorBus *pBus = pMidiEngine->buses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorMidiBus *pMidiBus = static_cast<qtractorMidiBus *> (pBus);
+		if (pMidiBus == this)
+			continue;
+		if ((pMidiBus->busMode() & qtractorBus::Output) == 0)
+			continue;
+		qtractorPluginList *pPluginList = pMidiBus->pluginList_out();
+		if (pPluginList == nullptr)
+			continue;
+		for (qtractorPlugin *pPlugin = pPluginList->first();
+				pPlugin; pPlugin = pPlugin->next()) {
+			qtractorPluginType *pType = pPlugin->type();
+			if (pType && pType->typeHint() == qtractorPluginType::AuxSend
+				&& pType->index() == 0) { // index == 0 => MIDI aux-send.
+				qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
+					= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
+				if (pMidiAuxSendPlugin
+					&& pMidiAuxSendPlugin->midiBus() == this)
+					pMidiAuxSendPlugin->setMidiBusName(busName());
+			}
+		}
+	}
+
+	// Make it to MIDI tracks only...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		if (pTrack->trackType() != qtractorTrack::Midi)
+			continue;
+		qtractorPluginList *pPluginList = pTrack->pluginList();
+		if (pPluginList == nullptr)
+			continue;
+		for (qtractorPlugin *pPlugin = pPluginList->first();
+				pPlugin; pPlugin = pPlugin->next()) {
+			qtractorPluginType *pType = pPlugin->type();
+			if (pType && pType->typeHint() != qtractorPluginType::AuxSend)
+				continue;
+			if (pType->index() == 0) { // index == 0 => MIDI aux-send.
+				qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
+					= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
+				if (pMidiAuxSendPlugin
+					&& pMidiAuxSendPlugin->midiBus() == this)
+					pMidiAuxSendPlugin->setMidiBusName(busName());
+			}
+		}
+	}
 }
 
 

@@ -364,6 +364,7 @@ public:
 	// Audio bus specific accessors.
 	void setAudioBusName(const QString& sAudioBusName);
 	const QString& audioBusName() const;
+	qtractorAudioBus *audioBus() const;
 
 	// Audio bus to appear on plugin lists.
 	void updateAudioBusName() const;
@@ -422,6 +423,7 @@ public:
 	// Audio bus specific accessors.
 	void setMidiBusName(const QString& sMidiBusName);
 	const QString& midiBusName() const;
+	qtractorMidiBus *midiBus() const;
 
 	// Audio bus to appear on plugin lists.
 	void updateMidiBusName() const;

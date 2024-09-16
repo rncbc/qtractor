@@ -1,7 +1,7 @@
 // qtractorEngineCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -176,6 +176,7 @@ bool qtractorBusCommand::updateBus (void)
 	qtractorBus::BusMode busMode = m_pBus->busMode();
 	QString sBusName = m_pBus->busName();
 	const bool bMonitor = m_pBus->isMonitor();
+	const bool bRenameBus = (m_sBusName != sBusName);
 
 	// Save current connections...
 	qtractorBus::ConnectList inputs;
@@ -298,9 +299,13 @@ bool qtractorBusCommand::updateBus (void)
 	if (pAudioBus) {
 		pAudioBus->setChannels(m_iChannels);
 		pAudioBus->setAutoConnect(m_bAutoConnect);
+		if (bRenameBus)
+			pAudioBus->updateAudioAuxSends();
 	}
 	if (pMidiBus) {
 		pMidiBus->setInstrumentName(m_sInstrumentName);
+		if (bRenameBus)
+			pMidiBus->updateMidiAuxSends();
 	}
 
 	// May reopen up the bus...

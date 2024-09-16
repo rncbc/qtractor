@@ -584,6 +584,9 @@ public:
 		unsigned long iTimeOn, unsigned long iTimeOff);
 	void dequeueNoteOffs(unsigned long iQueueTime);
 
+	// Update all aux-sends to this very bus...
+	void updateMidiAuxSends();
+
 protected:
 
 	// Direct MIDI controller common helper.

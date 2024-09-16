@@ -1399,6 +1399,12 @@ const QString& qtractorAudioAuxSendPlugin::audioBusName (void) const
 }
 
 
+qtractorAudioBus *qtractorAudioAuxSendPlugin::audioBus (void) const
+{
+	return m_pAudioBus;
+}
+
+
 // Audio bus to appear on plugin lists.
 void qtractorAudioAuxSendPlugin::updateAudioBusName (void) const
 {
@@ -1665,6 +1671,12 @@ void qtractorMidiAuxSendPlugin::setMidiBusName ( const QString& sMidiBusName )
 const QString& qtractorMidiAuxSendPlugin::midiBusName (void) const
 {
 	return m_sMidiBusName;
+}
+
+
+qtractorMidiBus *qtractorMidiAuxSendPlugin::midiBus (void) const
+{
+	return m_pMidiBus;
 }
 
 
