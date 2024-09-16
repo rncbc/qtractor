@@ -35,18 +35,18 @@ Audio:	%1 canali, %2 Hz</translation>
 	(%1 semitoni trasposti)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2958"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3250"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4317"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4893"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2960"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3252"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4319"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4895"/>
         <source>%1 In</source>
         <translation>%1 Ingressi</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2967"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3250"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4326"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4893"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2969"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3252"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4328"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4895"/>
         <source>%1 Out</source>
         <translation>%1 Uscite</translation>
     </message>
@@ -211,37 +211,37 @@ Fine:	%3	Lunghezza:	%4</translation>
         <translation>%1 Monitor</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="559"/>
+        <location filename="../qtractorEngineCommand.cpp" line="569"/>
         <source>create bus</source>
         <translation>crea bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="581"/>
+        <location filename="../qtractorEngineCommand.cpp" line="591"/>
         <source>update bus</source>
         <translation>aggiorna bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="598"/>
+        <location filename="../qtractorEngineCommand.cpp" line="608"/>
         <source>delete bus</source>
         <translation>rimuovi bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="621"/>
+        <location filename="../qtractorEngineCommand.cpp" line="631"/>
         <source>move bus</source>
         <translation>sposta bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="674"/>
+        <location filename="../qtractorEngineCommand.cpp" line="684"/>
         <source>bus pass-through</source>
         <translation>pass-through bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="720"/>
+        <location filename="../qtractorEngineCommand.cpp" line="730"/>
         <source>bus gain</source>
         <translation>guadagno bus</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="797"/>
+        <location filename="../qtractorEngineCommand.cpp" line="807"/>
         <source>bus pan</source>
         <translation>bilanciamento bus</translation>
     </message>
@@ -259,7 +259,7 @@ Fine:	%3	Lunghezza:	%4</translation>
         <location filename="../qtractorInsertPlugin.cpp" line="473"/>
         <location filename="../qtractorInsertPlugin.cpp" line="783"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1276"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1528"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1535"/>
         <source>Send Gain</source>
         <translation>Mandata Guadagno</translation>
     </message>
@@ -291,15 +291,15 @@ Fine:	%3	Lunghezza:	%4</translation>
         <translation>Aux Send pseudo-plugin (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1419"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1688"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1426"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1702"/>
         <source>(none)</source>
         <translation type="unfinished">(nessuno)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="756"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1420"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1689"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1427"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1703"/>
         <source>%1 (Audio)</source>
         <translation>%1 (Audio)</translation>
     </message>
@@ -662,24 +662,24 @@ MIDI:	</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEngine.cpp" line="4319"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4328"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4321"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4330"/>
         <location filename="../qtractorTrack.cpp" line="700"/>
         <source>%1 Volume</source>
         <translation>%1 Volume</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2960"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2969"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2962"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2971"/>
         <location filename="../qtractorTrack.cpp" line="703"/>
         <source>%1 Gain</source>
         <translation>%1 Guadagno</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2962"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2971"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4321"/>
-        <location filename="../qtractorMidiEngine.cpp" line="4330"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2964"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2973"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4323"/>
+        <location filename="../qtractorMidiEngine.cpp" line="4332"/>
         <location filename="../qtractorTrack.cpp" line="706"/>
         <source>%1 Pan</source>
         <translation>%1 Bilanciamento</translation>
@@ -7184,17 +7184,17 @@ Vuoi applicare le modifiche?</translation>
 <context>
     <name>qtractorMidiEditEvent</name>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="161"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="162"/>
         <source>Zoom in (horizontal)</source>
         <translation>Ingrandimento (orizzontale)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="162"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="163"/>
         <source>Zoom out (horizontal)</source>
         <translation>Rimpicciolimento (orizzontale)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditEvent.cpp" line="163"/>
+        <location filename="../qtractorMidiEditEvent.cpp" line="164"/>
         <source>Zoom reset (horizontal)</source>
         <translation>Ripristina ingrandimento (orizzontale)</translation>
     </message>
@@ -7210,42 +7210,42 @@ Vuoi applicare le modifiche?</translation>
 <context>
     <name>qtractorMidiEditTime</name>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="929"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="939"/>
         <source>Play-head</source>
         <translation>Barra di riproduzione</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="932"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="942"/>
         <source>Edit-head</source>
         <translation>Barra di inizio modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="935"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="945"/>
         <source>Edit-tail</source>
         <translation>Barra di fine modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="938"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="948"/>
         <source>Loop-start</source>
         <translation>Inizio loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="941"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="951"/>
         <source>Loop-end</source>
         <translation>Fine loop</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="944"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="954"/>
         <source>Punch-in</source>
         <translation>Punch ingresso</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="947"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="957"/>
         <source>Punch-out</source>
         <translation>Punch uscita</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditTime.cpp" line="977"/>
+        <location filename="../qtractorMidiEditTime.cpp" line="987"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -8775,40 +8775,40 @@ Durata:	%3</translation>
         <translation>elimina intervallo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4417"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4423"/>
         <source>move</source>
         <translation>sposta</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4476"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4482"/>
         <source>edit</source>
         <translation>modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4476"/>
-        <location filename="../qtractorMidiEditor.cpp" line="4706"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4482"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4712"/>
         <source>resize</source>
         <translation>ridimensiona</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4556"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4562"/>
         <source>rescale</source>
         <translation>scala</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="4645"/>
+        <location filename="../qtractorMidiEditor.cpp" line="4651"/>
         <source>paste</source>
         <translation>incolla</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5408"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5414"/>
         <source>Time:	%1
 Type:	</source>
         <translation>Tempo:	%1
 Tipo:	</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5417"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5423"/>
         <source>Note On (%1) %2
 Velocity:	%3
 Duration: %4</source>
@@ -8817,14 +8817,14 @@ Velocity:	%3
 Durata: %4</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5424"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5430"/>
         <source>Key Press (%1) %2
 Value:	%3</source>
         <translation>Tasto Premuto (%1) %2
 Valore:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5430"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5436"/>
         <source>Controller (%1)
 Name:	%2
 Value:	%3</source>
@@ -8833,7 +8833,7 @@ Nome:	%2
 Valore:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5436"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5442"/>
         <source>RPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -8842,7 +8842,7 @@ Nome:	%2
 Valore:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5442"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5448"/>
         <source>NRPN (%1)
 Name:	%2
 Value:	%3</source>
@@ -8851,7 +8851,7 @@ Nome:	%2
 Valore:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5448"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5454"/>
         <source>Control 14 (%1)
 Name:	%2
 Value:	%3</source>
@@ -8860,34 +8860,34 @@ Nome:	%2
 Valore:	%3</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5454"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5460"/>
         <source>Pgm Change (%1)</source>
         <translation>Pgm Change (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5458"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5464"/>
         <source>Chan Press (%1)</source>
         <translation>Chan Press (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5462"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5468"/>
         <source>Pitch Bend (%1)</source>
         <translation>Pitch Bend (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5469"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5475"/>
         <source>SysEx (%1 bytes)
 Data: </source>
         <translation>SysEx (%1 bytes)
 Dati: </translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5485"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5491"/>
         <source>Unknown (%1)</source>
         <translation>Sconosciuto (%1)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiEditor.cpp" line="5754"/>
+        <location filename="../qtractorMidiEditor.cpp" line="5760"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -15281,42 +15281,42 @@ Vuoi applicare le modifiche?</translation>
 <context>
     <name>qtractorTrackTime</name>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="907"/>
+        <location filename="../qtractorTrackTime.cpp" line="914"/>
         <source>Play-head</source>
         <translation>Barra di riproduzione</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="910"/>
+        <location filename="../qtractorTrackTime.cpp" line="917"/>
         <source>Edit-head</source>
         <translation>Barra di modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="913"/>
+        <location filename="../qtractorTrackTime.cpp" line="920"/>
         <source>Edit-tail</source>
         <translation>Barra di fine modifica</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="916"/>
+        <location filename="../qtractorTrackTime.cpp" line="923"/>
         <source>Loop-start</source>
         <translation>Inizio loop</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="919"/>
+        <location filename="../qtractorTrackTime.cpp" line="926"/>
         <source>Loop-end</source>
         <translation>Fine loop</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="922"/>
+        <location filename="../qtractorTrackTime.cpp" line="929"/>
         <source>Punch-in</source>
         <translation>Punch ingresso</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="925"/>
+        <location filename="../qtractorTrackTime.cpp" line="932"/>
         <source>Punch-out</source>
         <translation>Punch uscita</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackTime.cpp" line="960"/>
+        <location filename="../qtractorTrackTime.cpp" line="967"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -15358,7 +15358,7 @@ Durata:	%3</translation>
         <translation>aggiungi clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3245"/>
+        <location filename="../qtractorTrackView.cpp" line="3249"/>
         <source>Start:	%1
 End:	%2
 Length:	%3</source>
@@ -15367,80 +15367,80 @@ Fine: %2
 Lunghezza:   %3</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3534"/>
+        <location filename="../qtractorTrackView.cpp" line="3538"/>
         <source>clip %1</source>
         <translation>clip %1</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3535"/>
+        <location filename="../qtractorTrackView.cpp" line="3539"/>
         <source>fade-in</source>
         <translation>fade-in</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3535"/>
+        <location filename="../qtractorTrackView.cpp" line="3539"/>
         <source>fade-out</source>
         <translation>fade-out</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3665"/>
+        <location filename="../qtractorTrackView.cpp" line="3669"/>
         <source>clip stretch</source>
         <translation>allarga clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3665"/>
+        <location filename="../qtractorTrackView.cpp" line="3669"/>
         <source>clip resize</source>
         <translation>ridimensiona clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="3750"/>
-        <location filename="../qtractorTrackView.cpp" line="3858"/>
+        <location filename="../qtractorTrackView.cpp" line="3754"/>
+        <location filename="../qtractorTrackView.cpp" line="3862"/>
         <source>clip repeat</source>
         <translation>ripeti clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4740"/>
+        <location filename="../qtractorTrackView.cpp" line="4744"/>
         <source>%1 automation</source>
         <translation>%1 automazione</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4813"/>
+        <location filename="../qtractorTrackView.cpp" line="4817"/>
         <source>%1 clip</source>
         <translation>%1 clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5464"/>
+        <location filename="../qtractorTrackView.cpp" line="5468"/>
         <source>move automation</source>
         <translation>sposta automazione</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5550"/>
+        <location filename="../qtractorTrackView.cpp" line="5554"/>
         <source>paste automation</source>
         <translation>incolla automazione</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4744"/>
-        <location filename="../qtractorTrackView.cpp" line="4817"/>
+        <location filename="../qtractorTrackView.cpp" line="4748"/>
+        <location filename="../qtractorTrackView.cpp" line="4821"/>
         <source>cut</source>
         <translation>taglia</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4747"/>
-        <location filename="../qtractorTrackView.cpp" line="4820"/>
+        <location filename="../qtractorTrackView.cpp" line="4751"/>
+        <location filename="../qtractorTrackView.cpp" line="4824"/>
         <source>delete</source>
         <translation>elimina</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="4823"/>
+        <location filename="../qtractorTrackView.cpp" line="4827"/>
         <source>split</source>
         <translation>dividi</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5186"/>
+        <location filename="../qtractorTrackView.cpp" line="5190"/>
         <source>move clip</source>
         <translation>sposta clip</translation>
     </message>
     <message>
-        <location filename="../qtractorTrackView.cpp" line="5321"/>
+        <location filename="../qtractorTrackView.cpp" line="5325"/>
         <source>paste clip</source>
         <translation>incolla clip</translation>
     </message>

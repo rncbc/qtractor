@@ -2074,6 +2074,9 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 //	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
+	// We'll need options somehow...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		// Direct snap positioning...
@@ -2087,8 +2090,7 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 		// Which mouse state?
 		const Qt::KeyboardModifiers& modifiers
 			= pMouseEvent->modifiers();
-		const bool bModifier
-			= (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
+		bool bModifier = (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
 		switch (m_dragState) {
 		case DragSelect:
 			if (m_bCurveEdit) {
@@ -2167,6 +2169,8 @@ void qtractorTrackView::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 			if (m_bCurveEdit)
 				dragCurveNode(pos, modifiers);
 			// As long we're not editing anything...
+			if (pOptions && pOptions->bShiftKeyModifier)
+				bModifier = !bModifier;
 			if (m_dragCursor == DragNone && bModifier) {
 				// Direct play-head positioning:
 				// first, set actual engine position...

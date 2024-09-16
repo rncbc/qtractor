@@ -2830,8 +2830,9 @@ QStringList qtractorAudioEngine::cyclicAudioBusAuxes (
 		for (qtractorPlugin *pPlugin = pPluginListAux->first();
 				pPlugin; pPlugin = pPlugin->next()) {
 			qtractorPluginType *pType = pPlugin->type();
-			if (pType && pType->typeHint() == qtractorPluginType::AuxSend
-				&& pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+			if (pType && pType->typeHint() != qtractorPluginType::AuxSend)
+				continue;
+			if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
 				qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
 					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
 				if (pAudioAuxSendPlugin
@@ -3775,6 +3776,69 @@ bool qtractorAudioBus::saveElement (
 	}
 
 	return true;
+}
+
+
+// Update all aux-sends to this very bus...
+//
+void qtractorAudioBus::updateAudioAuxSends ( const QString& sAudioBusName )
+{
+	if ((busMode() & qtractorBus::Output) == 0)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == nullptr)
+		return;
+
+	// Make it to all audio output buses...
+	for (qtractorBus *pBus = pAudioEngine->buses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorAudioBus *pAudioBus = static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus == this)
+			continue;
+		if ((pAudioBus->busMode() & qtractorBus::Output) == 0)
+			continue;
+		qtractorPluginList *pPluginList = pAudioBus->pluginList_out();
+		if (pPluginList == nullptr)
+			continue;
+		for (qtractorPlugin *pPlugin = pPluginList->first();
+				pPlugin; pPlugin = pPlugin->next()) {
+			qtractorPluginType *pType = pPlugin->type();
+			if (pType && pType->typeHint() == qtractorPluginType::AuxSend
+				&& pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+				qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+				if (pAudioAuxSendPlugin
+					&& pAudioAuxSendPlugin->audioBus() == this)
+					pAudioAuxSendPlugin->setAudioBusName(sAudioBusName);
+			}
+		}
+	}
+
+	// Make it to ALL audio tracks...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		qtractorPluginList *pPluginList = pTrack->pluginList();
+		if (pPluginList == nullptr)
+			continue;
+		for (qtractorPlugin *pPlugin = pPluginList->first();
+				pPlugin; pPlugin = pPlugin->next()) {
+			qtractorPluginType *pType = pPlugin->type();
+			if (pType && pType->typeHint() != qtractorPluginType::AuxSend)
+				continue;
+			if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+				qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+				if (pAudioAuxSendPlugin
+					&& pAudioAuxSendPlugin->audioBus() == this)
+					pAudioAuxSendPlugin->setAudioBusName(sAudioBusName);
+			}
+		}
+	}
 }
 
 
