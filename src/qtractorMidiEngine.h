@@ -313,8 +313,6 @@ public:
 	// Process pending step-input events...
 	void processInpEvents();
 
-
-
 protected:
 
 	// Concrete device (de)activation methods.
@@ -585,7 +583,7 @@ public:
 	void dequeueNoteOffs(unsigned long iQueueTime);
 
 	// Update all aux-sends to this very bus...
-	void updateMidiAuxSends();
+	void updateMidiAuxSends(const QString& sMidiBusName);
 
 protected:
 

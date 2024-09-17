@@ -5566,7 +5566,7 @@ void qtractorMidiBus::dequeueNoteOffs ( unsigned long iQueueTime )
 
 // Update all aux-sends to this very bus...
 //
-void qtractorMidiBus::updateMidiAuxSends (void)
+void qtractorMidiBus::updateMidiAuxSends ( const QString& sMidiBusName )
 {
 	if ((busMode() & qtractorBus::Output) == 0)
 		return;
@@ -5599,7 +5599,7 @@ void qtractorMidiBus::updateMidiAuxSends (void)
 					= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
 				if (pMidiAuxSendPlugin
 					&& pMidiAuxSendPlugin->midiBus() == this)
-					pMidiAuxSendPlugin->setMidiBusName(busName());
+					pMidiAuxSendPlugin->setMidiBusName(sMidiBusName);
 			}
 		}
 	}
@@ -5622,7 +5622,7 @@ void qtractorMidiBus::updateMidiAuxSends (void)
 					= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
 				if (pMidiAuxSendPlugin
 					&& pMidiAuxSendPlugin->midiBus() == this)
-					pMidiAuxSendPlugin->setMidiBusName(busName());
+					pMidiAuxSendPlugin->setMidiBusName(sMidiBusName);
 			}
 		}
 	}

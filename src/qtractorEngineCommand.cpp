@@ -300,12 +300,12 @@ bool qtractorBusCommand::updateBus (void)
 		pAudioBus->setChannels(m_iChannels);
 		pAudioBus->setAutoConnect(m_bAutoConnect);
 		if (bRenameBus)
-			pAudioBus->updateAudioAuxSends();
+			pAudioBus->updateAudioAuxSends(m_sBusName);
 	}
 	if (pMidiBus) {
 		pMidiBus->setInstrumentName(m_sInstrumentName);
 		if (bRenameBus)
-			pMidiBus->updateMidiAuxSends();
+			pMidiBus->updateMidiAuxSends(m_sBusName);
 	}
 
 	// May reopen up the bus...
@@ -399,12 +399,17 @@ bool qtractorBusCommand::deleteBus (void)
 
 	// Get the device view root item...
 	qtractorEngine *pEngine = nullptr;
+	// Special case typed buses...
+	qtractorAudioBus *pAudioBus = nullptr;
+	qtractorMidiBus *pMidiBus = nullptr;
 	switch (m_pBus->busType()) {
 	case qtractorTrack::Audio:
 		pEngine = pSession->audioEngine();
+		pAudioBus = static_cast<qtractorAudioBus *> (m_pBus);
 		break;
 	case qtractorTrack::Midi:
 		pEngine = pSession->midiEngine();
+		pMidiBus = static_cast<qtractorMidiBus *> (m_pBus);
 		break;
 	default:
 		break;
@@ -427,22 +432,17 @@ bool qtractorBusCommand::deleteBus (void)
 	qtractorMidiManager *pMidiManager;
 
 	qtractorMixer *pMixer = pMainForm->mixer();
-	if (pMixer) {
-		if ((m_pBus->busMode() & qtractorBus::Output) &&
-			(m_pBus->busType() == qtractorTrack::Audio)) {
-			// Find the MIDI strips that have this (audio) bus monitored...
-			qtractorAudioBus *pAudioOutputBus
-				= static_cast<qtractorAudioBus *> (m_pBus);
-			const QList<qtractorMixerStrip *>& strips2
-				= pMixer->findAudioOutputBusStrips(pAudioOutputBus);
-			QListIterator<qtractorMixerStrip *> iter2(strips2);
-			while (iter2.hasNext()) {
-				pStrip = iter2.next();
-				pMidiManager = pStrip->midiManager();
-				if (pMidiManager && pMidiManager->isAudioOutputMonitor()) {
-					pMidiManager->setAudioOutputMonitor(false);
-					managers.append(pMidiManager);
-				}
+	if (pMixer && pAudioBus && (m_pBus->busMode() & qtractorBus::Output)) {
+		// Find the MIDI strips that have this (audio) bus monitored...
+		const QList<qtractorMixerStrip *>& strips2
+			= pMixer->findAudioOutputBusStrips(pAudioBus);
+		QListIterator<qtractorMixerStrip *> iter2(strips2);
+		while (iter2.hasNext()) {
+			pStrip = iter2.next();
+			pMidiManager = pStrip->midiManager();
+			if (pMidiManager && pMidiManager->isAudioOutputMonitor()) {
+				pMidiManager->setAudioOutputMonitor(false);
+				managers.append(pMidiManager);
 			}
 		}
 	}
@@ -464,6 +464,11 @@ bool qtractorBusCommand::deleteBus (void)
 			}
 		}
 	}
+
+	if (pAudioBus)
+		pAudioBus->updateAudioAuxSends(QString());
+	if (pMidiBus)
+		pMidiBus->updateMidiAuxSends(QString());
 
 	// May close now the bus...
 	m_pBus->close();

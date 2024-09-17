@@ -35,16 +35,16 @@ Zvuk:	%1 kanály, %2 Hz</translation>
 	(posunutí výšky tónu v půltónech %1)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2961"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3253"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2960"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3252"/>
         <location filename="../qtractorMidiEngine.cpp" line="4319"/>
         <location filename="../qtractorMidiEngine.cpp" line="4895"/>
         <source>%1 In</source>
         <translation>%1 Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2970"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3253"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2969"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3252"/>
         <location filename="../qtractorMidiEngine.cpp" line="4328"/>
         <location filename="../qtractorMidiEngine.cpp" line="4895"/>
         <source>%1 Out</source>
@@ -93,37 +93,37 @@ Konec:	%3	Délka:	%4</translation>
         <translation>Soubor:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="564"/>
+        <location filename="../qtractorEngineCommand.cpp" line="569"/>
         <source>create bus</source>
         <translation>Vytvořit sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="586"/>
+        <location filename="../qtractorEngineCommand.cpp" line="591"/>
         <source>update bus</source>
         <translation>Zaktualizovat sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="603"/>
+        <location filename="../qtractorEngineCommand.cpp" line="608"/>
         <source>delete bus</source>
         <translation>Smazat sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="626"/>
+        <location filename="../qtractorEngineCommand.cpp" line="631"/>
         <source>move bus</source>
         <translation>Posunout sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="679"/>
+        <location filename="../qtractorEngineCommand.cpp" line="684"/>
         <source>bus pass-through</source>
         <translation>Průchodnost sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="725"/>
+        <location filename="../qtractorEngineCommand.cpp" line="730"/>
         <source>bus gain</source>
         <translation>Zesílení sběrnice</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="802"/>
+        <location filename="../qtractorEngineCommand.cpp" line="807"/>
         <source>bus pan</source>
         <translation>Vyvážení sběrnice</translation>
     </message>
@@ -644,7 +644,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorInsertPlugin.cpp" line="473"/>
         <location filename="../qtractorInsertPlugin.cpp" line="783"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1276"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1534"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1535"/>
         <source>Send Gain</source>
         <translation>Poslat zesílení</translation>
     </message>
@@ -676,15 +676,15 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Pomocný nepravý přídavný modul pro odeslání (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1425"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1700"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1426"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1702"/>
         <source>(none)</source>
         <translation>(žádný)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="756"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1426"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1701"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1427"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1703"/>
         <source>%1 (Audio)</source>
         <translation>%1 (Audio)</translation>
     </message>
@@ -711,15 +711,15 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>%1 Hlasitost</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2963"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2972"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2962"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2971"/>
         <location filename="../qtractorTrack.cpp" line="703"/>
         <source>%1 Gain</source>
         <translation>%1 Zesílení</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2965"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2974"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2964"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2973"/>
         <location filename="../qtractorMidiEngine.cpp" line="4323"/>
         <location filename="../qtractorMidiEngine.cpp" line="4332"/>
         <location filename="../qtractorTrack.cpp" line="706"/>

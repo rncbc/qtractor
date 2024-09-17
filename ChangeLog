@@ -7,7 +7,7 @@ ChangeLog
 GIT HEAD
 
 - Update all Aux-Send inserts whenever their respective output bus
-  gets renamed.
+  gets renamed or deleted.
 
 - User preference option View/Options.../General/Options/Reverse
   keyboard modifiers role (Shift/Ctrl), now also applying to the

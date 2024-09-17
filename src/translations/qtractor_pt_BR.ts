@@ -35,8 +35,8 @@
         <translation>%1 Hz</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2961"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3253"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2960"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3252"/>
         <location filename="../qtractorMidiEngine.cpp" line="4319"/>
         <location filename="../qtractorMidiEngine.cpp" line="4895"/>
         <source>%1 In</source>
@@ -166,8 +166,8 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>Opção -s requer argumento (uuid).</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2965"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2974"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2964"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2973"/>
         <location filename="../qtractorMidiEngine.cpp" line="4323"/>
         <location filename="../qtractorMidiEngine.cpp" line="4332"/>
         <location filename="../qtractorTrack.cpp" line="706"/>
@@ -175,8 +175,8 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>%1 Panorâmico</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2970"/>
-        <location filename="../qtractorAudioEngine.cpp" line="3253"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2969"/>
+        <location filename="../qtractorAudioEngine.cpp" line="3252"/>
         <location filename="../qtractorMidiEngine.cpp" line="4328"/>
         <location filename="../qtractorMidiEngine.cpp" line="4895"/>
         <source>%1 Out</source>
@@ -221,7 +221,7 @@ Fim:	%3	Tamanho:	%4</translation>
         <location filename="../qtractorInsertPlugin.cpp" line="473"/>
         <location filename="../qtractorInsertPlugin.cpp" line="783"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1276"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1534"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1535"/>
         <source>Send Gain</source>
         <translation>Volume da Mandada</translation>
     </message>
@@ -253,15 +253,15 @@ Fim:	%3	Tamanho:	%4</translation>
         <translation>Mandada Aux pseudo-plugin (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1425"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1700"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1426"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1702"/>
         <source>(none)</source>
         <translation type="unfinished">(nenhum)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="756"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1426"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1701"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1427"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1703"/>
         <source>%1 (Audio)</source>
         <translation>%1 (Áudio)</translation>
     </message>
@@ -568,8 +568,8 @@ MIDI:	</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../qtractorAudioEngine.cpp" line="2963"/>
-        <location filename="../qtractorAudioEngine.cpp" line="2972"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2962"/>
+        <location filename="../qtractorAudioEngine.cpp" line="2971"/>
         <location filename="../qtractorTrack.cpp" line="703"/>
         <source>%1 Gain</source>
         <translation>%1 Ganho</translation>
@@ -598,17 +598,17 @@ MIDI:	</translation>
         <translation>%1 Banco %2</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="586"/>
+        <location filename="../qtractorEngineCommand.cpp" line="591"/>
         <source>update bus</source>
         <translation>atualizar canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="626"/>
+        <location filename="../qtractorEngineCommand.cpp" line="631"/>
         <source>move bus</source>
         <translation>mover canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="564"/>
+        <location filename="../qtractorEngineCommand.cpp" line="569"/>
         <source>create bus</source>
         <translation>criar canal primário</translation>
     </message>
@@ -646,7 +646,7 @@ MIDI:	</translation>
         <translation>renderizar sessão</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="802"/>
+        <location filename="../qtractorEngineCommand.cpp" line="807"/>
         <source>bus pan</source>
         <translation>panorâmico do canal primário</translation>
     </message>
@@ -769,7 +769,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Desconhecido</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="725"/>
+        <location filename="../qtractorEngineCommand.cpp" line="730"/>
         <source>bus gain</source>
         <translation>volume do canal primário</translation>
     </message>
@@ -788,7 +788,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="603"/>
+        <location filename="../qtractorEngineCommand.cpp" line="608"/>
         <source>delete bus</source>
         <translation>apagar canal primário</translation>
     </message>
@@ -814,7 +814,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>adicionar nó de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="679"/>
+        <location filename="../qtractorEngineCommand.cpp" line="684"/>
         <source>bus pass-through</source>
         <translation>repassar canal primário</translation>
     </message>

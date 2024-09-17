@@ -485,7 +485,7 @@ public:
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
 
 	// Update all aux-sends to this very bus...
-	void updateAudioAuxSends();;
+	void updateAudioAuxSends(const QString& sAudioBusName);
 
 protected:
 

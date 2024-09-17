@@ -33,7 +33,6 @@
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiManager.h"
 #include "qtractorPlugin.h"
-#include "qtractorClip.h"
 
 #include "qtractorMainForm.h"
 
@@ -3526,7 +3525,7 @@ bool qtractorAudioBus::saveElement (
 
 // Update all aux-sends to this very bus...
 //
-void qtractorAudioBus::updateAudioAuxSends (void)
+void qtractorAudioBus::updateAudioAuxSends ( const QString& sAudioBusName )
 {
 	if ((busMode() & qtractorBus::Output) == 0)
 		return;
@@ -3559,7 +3558,7 @@ void qtractorAudioBus::updateAudioAuxSends (void)
 					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
 				if (pAudioAuxSendPlugin
 					&& pAudioAuxSendPlugin->audioBus() == this)
-					pAudioAuxSendPlugin->setAudioBusName(busName());
+					pAudioAuxSendPlugin->setAudioBusName(sAudioBusName);
 			}
 		}
 	}
@@ -3580,7 +3579,7 @@ void qtractorAudioBus::updateAudioAuxSends (void)
 					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
 				if (pAudioAuxSendPlugin
 					&& pAudioAuxSendPlugin->audioBus() == this)
-					pAudioAuxSendPlugin->setAudioBusName(busName());
+					pAudioAuxSendPlugin->setAudioBusName(sAudioBusName);
 			}
 		}
 	}

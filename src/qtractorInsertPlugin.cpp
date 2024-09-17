@@ -1367,9 +1367,6 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 // Audio bus specific accessors.
 void qtractorAudioAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName )
 {
-	if (sAudioBusName.isEmpty())
-		return;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;
@@ -1378,8 +1375,12 @@ void qtractorAudioAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName 
 	if (pAudioEngine == nullptr)
 		return;
 
-	qtractorAudioBus *pAudioBus = static_cast<qtractorAudioBus *> (
-		pAudioEngine->findOutputBus(sAudioBusName));
+	qtractorAudioBus *pAudioBus = nullptr;
+	if (!sAudioBusName.isEmpty()) {
+		pAudioBus = static_cast<qtractorAudioBus *> (
+			pAudioEngine->findOutputBus(sAudioBusName));
+	}
+
 	if (pAudioBus && pAudioBus->channels() == channels()) {
 		m_pAudioBus = pAudioBus;
 		m_sAudioBusName = sAudioBusName;
@@ -1631,9 +1632,6 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 // MIDI bus specific accessors.
 void qtractorMidiAuxSendPlugin::setMidiBusName ( const QString& sMidiBusName )
 {
-	if (sMidiBusName.isEmpty())
-		return;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;
@@ -1642,8 +1640,12 @@ void qtractorMidiAuxSendPlugin::setMidiBusName ( const QString& sMidiBusName )
 	if (pMidiEngine == nullptr)
 		return;
 
-	qtractorMidiBus *pMidiBus = static_cast<qtractorMidiBus *> (
-		pMidiEngine->findOutputBus(sMidiBusName));
+	qtractorMidiBus *pMidiBus = nullptr;
+	if (!sMidiBusName.isEmpty()) {
+		pMidiBus = static_cast<qtractorMidiBus *> (
+			pMidiEngine->findOutputBus(sMidiBusName));
+	}
+
 	if (pMidiBus) {
 		m_pMidiBus = pMidiBus;
 		m_sMidiBusName = sMidiBusName;
