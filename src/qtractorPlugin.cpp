@@ -525,6 +525,15 @@ void qtractorPlugin::reset (void)
 }
 
 
+// Default copy/pass-through plugin processing procedure. (virtual)
+void qtractorPlugin::process (
+	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
+{
+	const unsigned short iChannels = channels();
+	for (unsigned short i = 0; i < iChannels; ++i)
+		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
+}
+
 
 // Nominal plugin user-title (virtual).
 QString qtractorPlugin::title (void) const

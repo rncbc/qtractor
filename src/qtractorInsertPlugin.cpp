@@ -967,9 +967,7 @@ void qtractorMidiInsertPlugin::process (
 			pMidiManager->processInputBuffer(m_pMidiInputBuffer, t0);
 	}
 
-	const unsigned short iChannels = channels();
-	for (unsigned short i = 0; i < iChannels; ++i)
-		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
+	qtractorInsertPlugin::process(ppIBuffer, ppOBuffer, nframes);
 }
 
 
@@ -1340,7 +1338,7 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
-
+#if 0
 	// Try to find a nice default...
 	if (m_sAudioBusName.isEmpty()) {
 		for (qtractorBus *pBus = pAudioEngine->buses().first();
@@ -1355,7 +1353,7 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 			}
 		}
 	}
-
+#endif
 	// Setup aux-send bus...
 	setAudioBusName(m_sAudioBusName);
 
@@ -1437,29 +1435,24 @@ QString qtractorAudioAuxSendPlugin::title (void) const
 void qtractorAudioAuxSendPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
+	qtractorPlugin::process(ppIBuffer, ppOBuffer, nframes);
+
 	if (m_pAudioBus == nullptr)
 		return;
 
 	if (!m_pAudioBus->isEnabled())
 		return;
 
-//	m_pAudioBus->process_prepare(nframes);
-
 	qtractorAudioEngine *pAudioEngine
 	= static_cast<qtractorAudioEngine *> (m_pAudioBus->engine());
 	if (pAudioEngine == nullptr)
 		return;
 
-	const unsigned int iOffset = pAudioEngine->bufferOffset();
-	const unsigned int nbytes = nframes * sizeof(float);
+//	m_pAudioBus->process_prepare(nframes);
 
 	float **ppOut = m_pAudioBus->out();
-
+	const unsigned int iOffset = pAudioEngine->bufferOffset();
 	const unsigned short iChannels = channels();
-
-	for (unsigned short i = 0; i < iChannels; ++i)
-		::memcpy(ppOBuffer[i], ppIBuffer[i], nbytes);
-
 	const float fGain = m_pSendGainParam->value();
 	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iOffset, iChannels, fGain);
 
@@ -1605,7 +1598,7 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
-
+#if 0
 	// Try to find a nice default...
 	if (m_sMidiBusName.isEmpty()) {
 		for (qtractorBus *pBus = pMidiEngine->buses().first();
@@ -1620,7 +1613,7 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 			}
 		}
 	}
-
+#endif
 	// Setup aux-send bus...
 	setMidiBusName(m_sMidiBusName);
 
@@ -1713,9 +1706,19 @@ QString qtractorMidiAuxSendPlugin::title (void) const
 void qtractorMidiAuxSendPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
+	qtractorPlugin::process(ppIBuffer, ppOBuffer, nframes);
+
 	qtractorSession *pSession = qtractorSession::getInstance();
-	qtractorMidiManager *pMidiManager = list()->midiManager();
-	if (m_pMidiBus && m_pMidiOutputBuffer && pMidiManager && pSession) {
+	if (pSession == nullptr)
+		return;
+
+	qtractorMidiManager *pMidiManager = nullptr;
+	if (list())
+		pMidiManager = list()->midiManager();
+	if (pMidiManager == nullptr)
+		return;
+
+	if (m_pMidiBus && m_pMidiOutputBuffer) {
 		// Enqueue events into sends/output bus...
 		const unsigned long t0
 			= (pSession->isPlaying() ? pSession->playHead() : 0);
@@ -1730,10 +1733,6 @@ void qtractorMidiAuxSendPlugin::process (
 		if (iEventCount > 0)
 			qtractorMidiSyncItem::syncItem(m_pMidiOutputBuffer);
 	}
-
-	const unsigned short iChannels = channels();
-	for (unsigned short i = 0; i < iChannels; ++i)
-		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
 }
 
 

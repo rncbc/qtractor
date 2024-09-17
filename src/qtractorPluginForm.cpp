@@ -1151,7 +1151,7 @@ void qtractorPluginForm::clear (void)
 	qDeleteAll(m_paramWidgets);
 	m_paramWidgets.clear();
 
-	m_pDirectAccessParamMenu->clear();	
+	m_pDirectAccessParamMenu->clear();
 }
 
 
