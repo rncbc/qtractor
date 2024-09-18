@@ -1100,6 +1100,8 @@ void qtractorPluginForm::refresh (void)
 	// Update the nominal user/title if any...
 	m_ui.AliasLineEdit->setText(m_pPlugin->alias());
 
+	m_ui.ActivateToolButton->setChecked(m_pPlugin->isActivated());
+
 //	m_pPlugin->idleEditor();
 
 	QListIterator<qtractorPluginParamWidget *> param_iter(m_paramWidgets);
