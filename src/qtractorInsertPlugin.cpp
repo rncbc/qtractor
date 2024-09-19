@@ -1338,22 +1338,7 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
-#if 0
-	// Try to find a nice default...
-	if (m_sAudioBusName.isEmpty()) {
-		for (qtractorBus *pBus = pAudioEngine->buses().first();
-				pBus; pBus = pBus->next()) {
-			if (pBus->busMode() & qtractorBus::Output) {
-				qtractorAudioBus *pAudioBus
-					= static_cast<qtractorAudioBus *> (pBus);
-				if (pAudioBus && pAudioBus->channels() == iChannels) {
-					m_sAudioBusName = pAudioBus->busName();
-					break;
-				}
-			}
-		}
-	}
-#endif
+
 	// Setup aux-send bus...
 	setAudioBusName(m_sAudioBusName);
 
@@ -1363,7 +1348,8 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 
 
 // Audio bus specific accessors.
-void qtractorAudioAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName )
+void qtractorAudioAuxSendPlugin::setAudioBusName (
+	const QString& sAudioBusName, bool bReset )
 {
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
@@ -1380,6 +1366,8 @@ void qtractorAudioAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName 
 	}
 
 	if (pAudioBus && pAudioBus->channels() == channels()) {
+		if (bReset && sAudioBusName != m_sAudioBusName)
+			pAudioEngine->resetAudioOutBus(pAudioBus, list());
 		m_pAudioBus = pAudioBus;
 		m_sAudioBusName = sAudioBusName;
 	//	setConfig("audioBusName", m_sAudioBusName);
@@ -1598,22 +1586,7 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 	// But won't need it anymore.
 	releaseConfigs();
 	releaseValues();
-#if 0
-	// Try to find a nice default...
-	if (m_sMidiBusName.isEmpty()) {
-		for (qtractorBus *pBus = pMidiEngine->buses().first();
-				pBus; pBus = pBus->next()) {
-			if (pBus->busMode() & qtractorBus::Output) {
-				qtractorMidiBus *pMidiBus
-					= static_cast<qtractorMidiBus *> (pBus);
-				if (pMidiBus) {
-					m_sMidiBusName = pMidiBus->busName();
-					break;
-				}
-			}
-		}
-	}
-#endif
+
 	// Setup aux-send bus...
 	setMidiBusName(m_sMidiBusName);
 

@@ -465,29 +465,6 @@ bool qtractorMidiClip::openMidiFile (
 		pTrack->setMidiNoteMax(pSeq->noteMax());
 		// FIXME: On demand, set session time properties from MIDI file...
 		if (m_bSessionFlag) {
-		#if 0
-			// Import eventual SysEx setup...
-			// - take care that given track might not be currently open,
-			//   so that we'll resolve MIDI output bus somehow...
-			qtractorMidiBus *pMidiBus = nullptr;
-			qtractorMidiEngine *pMidiEngine = pSession->midiEngine();
-			if (pMidiEngine) {
-				pMidiBus = static_cast<qtractorMidiBus *> (
-					pMidiEngine->findOutputBus(pTrack->outputBusName()));
-				if (pMidiBus == nullptr) {
-					for (qtractorBus *pBus = pMidiEngine->buses().first();
-							pBus; pBus = pBus->next()) {
-						if (pBus->busMode() & qtractorBus::Output) {
-							pMidiBus = static_cast<qtractorMidiBus *> (pBus);
-							break;
-						}
-					}
-				}
-			}
-			// Import eventual SysEx setup...
-			if (pMidiBus)
-				pMidiBus->importSysexList(pSeq);
-		#endif
 			// Import tempo map as well...
 			qtractorMidiFileTempo *pTempoMap = m_pFile->tempoMap();
 			if (pTempoMap) {

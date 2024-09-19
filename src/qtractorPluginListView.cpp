@@ -1968,8 +1968,9 @@ void qtractorPluginListView::contextMenuEvent (
 			tr("&Outputs"), this, SLOT(audioOutputs()));
 		pAction->setEnabled(pAudioOutputBus != nullptr);
 		pAudioMenu->addSeparator();
-		for (qtractorBus *pBus = pAudioEngine->buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(pAudioEngine->buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				const QString& sBusName = pBus->busName();
 				pAction = pAudioMenu->addAction(iconAudio,

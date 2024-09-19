@@ -1657,8 +1657,11 @@ void qtractorMixer::updateBuses ( bool bReset )
 	m_pOutputRack->markStrips(1);
 
 	// Audio buses first...
-	for (qtractorBus *pBus = pSession->audioEngine()->buses().first();
-			pBus; pBus = pBus->next()) {
+	QListIterator audio_iter(pSession->audioEngine()->buses2());
+	while (audio_iter.hasNext()) {
+		qtractorBus *pBus = audio_iter.next();
+		if (pBus == nullptr)
+			continue;
 		if (pBus->busMode() & qtractorBus::Input)
 			updateBusStrip(m_pInputRack, pBus, qtractorBus::Input);
 		if (pBus->busMode() & qtractorBus::Output)
@@ -1666,8 +1669,11 @@ void qtractorMixer::updateBuses ( bool bReset )
 	}
 
 	// MIDI buses are next...
-	for (qtractorBus *pBus = pSession->midiEngine()->buses().first();
-			pBus; pBus = pBus->next()) {
+	QListIterator midi_iter(pSession->midiEngine()->buses2());
+	while (midi_iter.hasNext()) {
+		qtractorBus *pBus = midi_iter.next();
+		if (pBus == nullptr)
+			continue;
 		if (pBus->busMode() & qtractorBus::Input)
 			updateBusStrip(m_pInputRack, pBus, qtractorBus::Input);
 		if (pBus->busMode() & qtractorBus::Output)

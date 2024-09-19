@@ -459,8 +459,9 @@ bool qtractorTrack::open (void)
 	m_pInputBus = pEngine->findInputBus(inputBusName());
 	// Fallback to first usable one...
 	if (m_pInputBus == nullptr) {
-		for (qtractorBus *pBus = pEngine->buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(pEngine->buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Input) {
 				m_pInputBus = pBus;
 				break;
@@ -475,8 +476,9 @@ bool qtractorTrack::open (void)
 	m_pOutputBus = pEngine->findOutputBus(outputBusName());
 	// Fallback to first usable one...
 	if (m_pOutputBus == nullptr) {
-		for (qtractorBus *pBus = pEngine->buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(pEngine->buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				m_pOutputBus = pBus;
 				break;
@@ -534,8 +536,9 @@ bool qtractorTrack::open (void)
 			pAudioBus = pMidiManager->audioOutputBus();
 		if (pAudioBus == nullptr) {
 			// Output bus gets to be the first available output bus...
-			for (qtractorBus *pBus = pAudioEngine->buses().first();
-					pBus; pBus = pBus->next()) {
+			QListIterator<qtractorBus *> iter(pAudioEngine->buses2());
+			while (iter.hasNext()) {
+				qtractorBus *pBus = iter.next();
 				if (pBus->busMode() & qtractorBus::Output) {
 					pAudioBus = static_cast<qtractorAudioBus *> (pBus);
 					break;

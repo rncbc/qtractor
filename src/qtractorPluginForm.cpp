@@ -487,25 +487,41 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 		qtractorPluginList *pPluginList = pAudioAuxSendPlugin->list();
 		if (pPluginList == nullptr)
 			return;
-		bool bAudioOutBus
+		const bool bAudioOutBus
 			= (pPluginList->flags() == qtractorPluginList::AudioOutBus);
+		QStringList cyclicAudioOutBuses; // Cyclic bus names to avoid.
 		const QIcon iconAudio(":/images/trackAudio.png");
 		m_ui.AuxSendBusNameComboBox->addItem(iconAudio, tr("(none)"));
-		for (qtractorBus *pBus = pAudioEngine->buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(pAudioEngine->buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				qtractorAudioBus *pAudioBus
 					= static_cast<qtractorAudioBus *> (pBus);
-				if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels())
-					if (bAudioOutBus) { // Skip current and previous buses...
-						if (pAudioBus->pluginList_out() == pPluginList)
-							bAudioOutBus = false;
+				if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels()) {
+					if (bAudioOutBus && // Skip current or cyclic buses...
+						pAudioBus->pluginList_out() == pPluginList) {
+						cyclicAudioOutBuses.append(
+							pAudioEngine->cyclicAudioOutBuses(pAudioBus));
 						continue;
 					}
 					m_ui.AuxSendBusNameComboBox->addItem(iconAudio,
 						pAudioBus->busName());
+				}
 			}
 		}
+		// Avoid cyclic bus names...
+		QStringListIterator cyclic_iter(cyclicAudioOutBuses);
+		while (cyclic_iter.hasNext()) {
+			const QString& sBusName = cyclic_iter.next();
+			if (!sBusName.isEmpty()) {
+				const int iIndex
+					= m_ui.AuxSendBusNameComboBox->findText(sBusName);
+				if (iIndex >= 0)
+					m_ui.AuxSendBusNameComboBox->removeItem(iIndex);
+ 			}
+ 		}
+		// Proceed...
 		sAuxSendBusName = pAudioAuxSendPlugin->audioBusName();
 	} else {
 		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
@@ -522,8 +538,9 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 			= (pPluginList->flags() == qtractorPluginList::MidiOutBus);
 		const QIcon iconMidi(":/images/trackMidi.png");
 		m_ui.AuxSendBusNameComboBox->addItem(iconMidi, tr("(none)"));
-		for (qtractorBus *pBus = pMidiEngine->buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(pMidiEngine->buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				qtractorMidiBus *pMidiBus
 					= static_cast<qtractorMidiBus *> (pBus);
