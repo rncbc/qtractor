@@ -2669,8 +2669,14 @@ QStringList qtractorAudioEngine::cyclicAudioOutBuses (
 			continue;
 		qtractorAudioBus *pAudioOutBus
 			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioOutBus == nullptr)
+			continue;
+		if (pAudioOutBus == pAudioBus)
+			continue;
 		qtractorPluginList *pPluginList = pAudioOutBus->pluginList_out();
 		if (pPluginList == nullptr)
+			continue;
+		if (pPluginList == pAudioBus->pluginList_out())
 			continue;
 		for (qtractorPlugin *pPlugin = pPluginList->first();
 				pPlugin; pPlugin = pPlugin->next()) {
@@ -2680,9 +2686,11 @@ QStringList qtractorAudioEngine::cyclicAudioOutBuses (
 			if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
 				qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
 					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
-				if (pAudioAuxSendPlugin
-					&& pAudioAuxSendPlugin->audioBus() == pAudioBus)
+				if (pAudioAuxSendPlugin &&
+					pAudioAuxSendPlugin->audioBus() == pAudioBus) {
 					audioOutBuses.append(pAudioOutBus->busName());
+					audioOutBuses.append(cyclicAudioOutBuses(pAudioOutBus));
+				}
 			}
 		}
 	}
