@@ -2821,13 +2821,16 @@ QStringList qtractorAudioEngine::cyclicAudioBusAuxes (
 {
 	QStringList auxes;
 
-	const QString& sAudioBusName = pAudioBus->busName();
 	for (Aux *pAux = m_auxes.first(); pAux; pAux = pAux->next()) {
 		qtractorAudioBus *pAudioBusAux = pAux->bus();
-		qtractorPluginList *pPluginListAux = pAudioBusAux->pluginList_out();
-		if (pPluginListAux == nullptr)
+		if (pAudioBusAux == pAudioBus)
 			continue;
-		for (qtractorPlugin *pPlugin = pPluginListAux->first();
+		qtractorPluginList *pPluginList = pAudioBusAux->pluginList_out();
+		if (pPluginList == nullptr)
+			continue;
+		if (pPluginList == pAudioBus->pluginList_out())
+			continue;
+		for (qtractorPlugin *pPlugin = pPluginList->first();
 				pPlugin; pPlugin = pPlugin->next()) {
 			qtractorPluginType *pType = pPlugin->type();
 			if (pType && pType->typeHint() != qtractorPluginType::AuxSend)
@@ -2836,8 +2839,10 @@ QStringList qtractorAudioEngine::cyclicAudioBusAuxes (
 				qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
 					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
 				if (pAudioAuxSendPlugin
-					&& pAudioAuxSendPlugin->audioBusName() == sAudioBusName)
+					&& pAudioAuxSendPlugin->audioBus() == pAudioBus) {
 					auxes.append(pAudioBusAux->busName());
+					auxes.append(cyclicAudioBusAuxes(pAudioBusAux));
+				}
 			}
 		}
 	}
