@@ -161,7 +161,7 @@ public:
 
 
 //----------------------------------------------------------------------
-// class qtractorMoveUpBusCommand - declaration.
+// class qtractorMoveBusCommand - declaration.
 //
 
 class qtractorMoveBusCommand : public qtractorBusCommand
