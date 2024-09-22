@@ -177,6 +177,7 @@ bool qtractorBusCommand::updateBus (void)
 	QString sBusName = m_pBus->busName();
 	const bool bMonitor = m_pBus->isMonitor();
 	const bool bRenameBus = (m_sBusName != sBusName);
+	const bool bResetBus = (m_busMode != busMode);
 
 	// Save current connections...
 	qtractorBus::ConnectList inputs;
@@ -350,7 +351,7 @@ bool qtractorBusCommand::updateBus (void)
 			if (pStrip->bus())
 				pStrip->setBus(pStrip->bus());
 		}
-		pMixer->updateBuses();
+		pMixer->updateBuses(bResetBus);
 		// Update all applicable MIDI managers too...
 		QListIterator<qtractorMidiManager *> iter2(managers);
 		while (iter2.hasNext()) {
