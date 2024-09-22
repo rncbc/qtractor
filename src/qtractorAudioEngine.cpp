@@ -1619,10 +1619,10 @@ bool qtractorAudioEngine::saveElement (
 	pElement->appendChild(eControl);
 
 	// Save audio buses...
-	for (qtractorBus *pBus = qtractorEngine::buses().first();
-			pBus; pBus = pBus->next()) {
+	QListIterator<qtractorBus *> iter(qtractorEngine::buses2());
+	while (iter.hasNext()) {
 		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pBus);
+			= static_cast<qtractorAudioBus *> (iter.next());
 		if (pAudioBus) {
 			// Create the new audio bus element...
 			QDomElement eAudioBus

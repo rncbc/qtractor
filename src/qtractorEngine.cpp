@@ -237,12 +237,7 @@ qtractorBus *qtractorEngine::findBusEx ( const QString& sBusName ) const
 
 
 // Front-end/UI buses accessors.
-bool qtractorEngine::isBuses2 (void) const
-{
-	return m_bBuses2;
-}
-
-
+//
 const QList<qtractorBus *>& qtractorEngine::buses2 (void) const
 {
 	return m_buses2;
@@ -263,19 +258,21 @@ void qtractorEngine::moveBus2 (	qtractorBus *pBus, int iDelta )
 
 void qtractorEngine::setBuses2List ( const QStringList& list )
 {
-	m_buses2.clear();
-
 	m_bBuses2 = !list.isEmpty();
 
 	if (m_bBuses2) {
+		qtractorBus *pAfterBus = nullptr;
 		QStringListIterator iter(list);
 		while (iter.hasNext()) {
 			const QString& sBusName = iter.next();
 			qtractorBus *pBus = findBus(sBusName);
-			if (pBus)
-				m_buses2.append(pBus);
+			if (pBus) {
+				moveBus(pBus, pAfterBus);
+				pAfterBus = pBus;
+			}
 		}
 	} else {
+		m_buses2.clear();
 		qtractorBus *pBus = m_buses.first();
 		while (pBus) {
 			m_buses2.append(pBus);
@@ -330,9 +327,8 @@ bool qtractorEngine::saveBuses2List (
 	const QString& sTagName,
 	const QStringList& list ) const
 {
-	QStringListIterator iter(list);
-	while (iter.hasNext()) {
-		const QString& sBusName = iter.next();
+	for (qtractorBus *pBus = m_buses.first(); pBus; pBus = pBus->next()) {
+		const QString& sBusName = pBus->busName();
 		if (!sBusName.isEmpty())
 			pDocument->saveTextElement(sTagName, sBusName, pElement);
 	}

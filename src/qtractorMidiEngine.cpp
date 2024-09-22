@@ -3715,10 +3715,10 @@ bool qtractorMidiEngine::saveElement (
 	pElement->appendChild(eControl);
 
 	// Save MIDI buses...
-	for (qtractorBus *pBus = qtractorEngine::buses().first();
-			pBus; pBus = pBus->next()) {
+	QListIterator<qtractorBus *> iter(qtractorEngine::buses2());
+	while (iter.hasNext()) {
 		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *> (pBus);
+			= static_cast<qtractorMidiBus *> (iter.next());
 		if (pMidiBus) {
 			// Create the new MIDI bus element...
 			QDomElement eMidiBus

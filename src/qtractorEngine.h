@@ -107,8 +107,7 @@ public:
 	void clearConnects();
 
 	// Front-end/UI buses accessors.
-	bool isBuses2() const;
-
+	//
 	const QList<qtractorBus *>& buses2() const;
 
 	void moveBus2(qtractorBus *pBus, int iDelta);
