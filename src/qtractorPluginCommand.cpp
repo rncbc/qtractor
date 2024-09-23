@@ -209,7 +209,7 @@ bool qtractorAuxSendPluginCommand::redo (void)
 		if (pAudioAuxSendPlugin == nullptr)
 			return false;
 		const QString sAudioBusName = pAudioAuxSendPlugin->audioBusName();
-		pAudioAuxSendPlugin->setAudioBusName(m_sAuxSendBusName);
+		pAudioAuxSendPlugin->setAudioBusName(m_sAuxSendBusName, true);
 		m_sAuxSendBusName = sAudioBusName;
 		pAudioAuxSendPlugin->updateFormAuxSendBusName();
 	} else {

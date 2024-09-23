@@ -169,7 +169,7 @@ class qtractorMoveBusCommand : public qtractorBusCommand
 public:
 
 	// Constructor.
-	qtractorMoveBusCommand(qtractorBus *pBus, qtractorBus *pNextBus);
+	qtractorMoveBusCommand(qtractorBus *pBus, int iDelta);
 
 	// Plugin-move command methods.
 	bool redo();
@@ -178,7 +178,7 @@ public:
 private:
 
 	// Instance variables.
-	qtractorBus *m_pNextBus;
+	int m_iDelta;
 };
 
 

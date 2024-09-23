@@ -32,7 +32,6 @@
 
 #include "qtractorTracks.h"
 #include "qtractorTrackList.h"
-#include "qtractorMonitor.h"
 #include "qtractorMixer.h"
 #include "qtractorMeter.h"
 
@@ -177,7 +176,6 @@ bool qtractorBusCommand::updateBus (void)
 	QString sBusName = m_pBus->busName();
 	const bool bMonitor = m_pBus->isMonitor();
 	const bool bRenameBus = (m_sBusName != sBusName);
-	const bool bResetBus = (m_busMode != busMode);
 
 	// Save current connections...
 	qtractorBus::ConnectList inputs;
@@ -351,7 +349,7 @@ bool qtractorBusCommand::updateBus (void)
 			if (pStrip->bus())
 				pStrip->setBus(pStrip->bus());
 		}
-		pMixer->updateBuses(bResetBus);
+		pMixer->updateBuses();
 		// Update all applicable MIDI managers too...
 		QListIterator<qtractorMidiManager *> iter2(managers);
 		while (iter2.hasNext()) {
@@ -628,10 +626,10 @@ bool qtractorDeleteBusCommand::undo (void)
 
 // Constructor.
 qtractorMoveBusCommand::qtractorMoveBusCommand (
-	qtractorBus *pBus, qtractorBus *pNextBus )
+	qtractorBus *pBus, int iDelta )
 	: qtractorBusCommand(QObject::tr("move bus"), pBus)
 {
-	m_pNextBus = pNextBus;
+	m_iDelta = iDelta;
 }
 
 
@@ -646,22 +644,18 @@ bool qtractorMoveBusCommand::redo (void)
 	if (pEngine == nullptr)
 		return false;
 
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return false;
+//	pSession->lock();
 
-	pSession->lock();
-
-	// Save the previous bus alright...
-	qtractorBus *pNextBus = pBus->next();
+	// Save the next bus alright...
+	const int iDelta = -m_iDelta;
 
 	// Move it...
-	pEngine->moveBus(pBus, m_pNextBus);
+	pEngine->moveBus2(pBus, m_iDelta);
 
 	// Swap it nice, finally.
-	m_pNextBus = pNextBus;
+	m_iDelta = iDelta;
 
-	pSession->unlock();
+//	pSession->unlock();
 
 	// Update mixer (look for new strip order...)
 	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();

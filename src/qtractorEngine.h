@@ -1,7 +1,7 @@
 // qtractorEngine.h
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,7 +81,7 @@ public:
 	void addBus(qtractorBus *pBus);
 	void removeBus(qtractorBus *pBus);
 
-	void moveBus(qtractorBus *pBus, qtractorBus *pNextBus);
+	void moveBus(qtractorBus *pBus, qtractorBus *pAfterBus);
 
 	qtractorBus *findBus(const QString& sBusName) const;
 	qtractorBus *findInputBus(const QString& sInputBusName) const;
@@ -105,6 +105,23 @@ public:
 
 	// Clear/reset all pending connections.
 	void clearConnects();
+
+	// Front-end/UI buses accessors.
+	//
+	const QList<qtractorBus *>& buses2() const;
+
+	void moveBus2(qtractorBus *pBus, int iDelta);
+
+	void setBuses2List(const QStringList& list);
+	QStringList buses2List() const;
+
+	QStringList loadBuses2List(
+		qtractorDocument *pDocument, QDomElement *pElement,
+		const QString& sTagName);
+	bool saveBuses2List(
+		qtractorDocument *pDocument, QDomElement *pElement,
+		const QString& sTagName,
+		const QStringList& list) const;
 
 protected:
 
@@ -132,6 +149,10 @@ private:
 
 	qtractorList<qtractorBus> m_buses;
 	qtractorList<qtractorBus> m_busesEx;
+
+	// Front-end/UI buses stuff.
+	bool                 m_bBuses2;
+	QList<qtractorBus *> m_buses2;
 };
 
 

@@ -362,7 +362,7 @@ public:
 	void releaseConfigs();
 
 	// Audio bus specific accessors.
-	void setAudioBusName(const QString& sAudioBusName);
+	void setAudioBusName(const QString& sAudioBusName, bool bReset = false);
 	const QString& audioBusName() const;
 	qtractorAudioBus *audioBus() const;
 

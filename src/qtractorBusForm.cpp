@@ -1,7 +1,7 @@
 // qtractorBusForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -399,9 +399,9 @@ void qtractorBusForm::refreshBuses (void)
 		m_pAudioRoot = new QTreeWidgetItem();
 		m_pAudioRoot->setText(0, ' ' + tr("Audio"));
 		m_pAudioRoot->setFlags(Qt::ItemIsEnabled); // but not selectable...
-		for (qtractorBus *pBus = pAudioEngine->buses().first();
-				pBus; pBus = pBus->next())
-			m_pAudioRoot->addChild(new qtractorBusListItem(pBus));
+		QListIterator<qtractorBus *> iter(pAudioEngine->buses2());
+		while (iter.hasNext())
+			m_pAudioRoot->addChild(new qtractorBusListItem(iter.next()));
 		m_ui.BusListView->addTopLevelItem(m_pAudioRoot);
 		m_pAudioRoot->setExpanded(true);
 	}
@@ -412,9 +412,9 @@ void qtractorBusForm::refreshBuses (void)
 		m_pMidiRoot = new QTreeWidgetItem();
 		m_pMidiRoot->setText(0, ' ' + tr("MIDI"));
 		m_pMidiRoot->setFlags(Qt::ItemIsEnabled); // but not selectable...
-		for (qtractorBus *pBus = pMidiEngine->buses().first();
-				pBus; pBus = pBus->next())
-			m_pMidiRoot->addChild(new qtractorBusListItem(pBus));
+		QListIterator<qtractorBus *> iter(pMidiEngine->buses2());
+		while (iter.hasNext())
+			m_pMidiRoot->addChild(new qtractorBusListItem(iter.next()));
 		m_ui.BusListView->addTopLevelItem(m_pMidiRoot);
 		m_pMidiRoot->setExpanded(true);
 	}
@@ -487,35 +487,31 @@ unsigned int qtractorBusForm::flags (void) const
 	if (m_pBus == nullptr)
 		return iFlags;
 
-	if (m_pBus->prev()) {
+	qtractorEngine *pEngine = m_pBus->engine();
+	if (pEngine == nullptr)
+		return iFlags;
+
+	const int iBus2
+		= pEngine->buses2().indexOf(m_pBus);
+	if (iBus2 < 0)
+		return iFlags;
+
+	const int iNumBuses2
+		= pEngine->buses2().count();
+	if (iBus2 > 0) {
 		iFlags |= Delete;
-		if ((m_pBus->prev())->prev())
+		if (iBus2 > 1)
 			iFlags |= MoveUp;
-		if (m_pBus->next())
+		if (iBus2 < iNumBuses2 - 1)
 			iFlags |= MoveDown;
 	}
 	
 	if (m_iDirtyCount == 0)
 		return iFlags;
 
-	const QString sBusName = m_ui.BusNameLineEdit->text().simplified();
+	const QString sBusName
+		= m_ui.BusNameLineEdit->text().simplified();
 	if (sBusName.isEmpty())
-		return iFlags;
-
-	// Get the device view root item...
-	qtractorEngine *pEngine = nullptr;
-	switch (m_pBus->busType()) {
-	case qtractorTrack::Audio:
-		pEngine = pSession->audioEngine();
-		break;
-	case qtractorTrack::Midi:
-		pEngine = pSession->midiEngine();
-		break;
-	default:
-		break;
-	}
-	// Is it still valid?
-	if (pEngine == nullptr)
 		return iFlags;
 
 	// Is there one already?
@@ -524,7 +520,7 @@ unsigned int qtractorBusForm::flags (void) const
 	if (pBus == nullptr && pBusEx == nullptr)
 		iFlags |= Create;
 	if ((pBus == nullptr  || pBus == m_pBus) && (pBusEx == nullptr)
-		&& (m_pBus->prev() || m_ui.BusModeComboBox->currentIndex() == 2))
+		&& (iBus2 > 0 || m_ui.BusModeComboBox->currentIndex() == 2))
 		iFlags |= Update;
 
 	return iFlags;
@@ -594,16 +590,10 @@ void qtractorBusForm::moveUpBus (void)
 	if (m_pBus == nullptr)
 		return;
 
-	qtractorBus *pNextBus = m_pBus->prev();
-	if (pNextBus == nullptr)
-		return;
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return;
-
 	// Make it an undoable command...
-	if (pSession->execute(new qtractorMoveBusCommand(m_pBus, pNextBus))) {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession &&
+		pSession->execute(new qtractorMoveBusCommand(m_pBus, -1))) {
 		++m_iDirtyTotal;
 		refreshBuses();
 	}
@@ -619,18 +609,10 @@ void qtractorBusForm::moveDownBus (void)
 	if (m_pBus == nullptr)
 		return;
 
-	qtractorBus *pNextBus = m_pBus->next();
-	if (pNextBus == nullptr)
-		return;
-
-	pNextBus = pNextBus->next();
-
-	qtractorSession *pSession = qtractorSession::getInstance();
-	if (pSession == nullptr)
-		return;
-
 	// Make it an undoable command...
-	if (pSession->execute(new qtractorMoveBusCommand(m_pBus, pNextBus))) {
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession &&
+		pSession->execute(new qtractorMoveBusCommand(m_pBus, +1))) {
 		++m_iDirtyTotal;
 		refreshBuses();
 	}

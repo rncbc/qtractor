@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Audio Aux-sends inserted on audio output buses are not restricted
+  to later buses anymore; the only restriction now is that no cyclic
+  or loop-back routes are allowed; audio output buses are now sorted
+  internally in-place for correct processing order. (EXPERIMENTAL)
+
 - Update all Aux-Send inserts whenever their respective output bus
   gets renamed or deleted.
 

@@ -2936,8 +2936,9 @@ void qtractorMidiEngine::createPlayerBus (void)
 			qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex));
 	} else {
 		// Find first available output buses...
-		for (qtractorBus *pBus = qtractorEngine::buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				m_pPlayerBus = static_cast<qtractorMidiBus *> (pBus);
 				break;
@@ -3216,8 +3217,9 @@ void qtractorMidiEngine::createMetroBus (void)
 			qtractorBus::BusMode(qtractorBus::Output | qtractorBus::Ex));
 	} else {
 		// Find first available output buses...
-		for (qtractorBus *pBus = qtractorEngine::buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				m_pMetroBus = static_cast<qtractorMidiBus *> (pBus);
 				break;
@@ -3617,6 +3619,8 @@ bool qtractorMidiEngine::loadElement (
 	createControlBus();
 	createMetroBus();
 
+	QStringList midi_buses2;
+
 	// Load session children...
 	for (QDomNode nChild = pElement->firstChild();
 			!nChild.isNull();
@@ -3679,7 +3683,13 @@ bool qtractorMidiEngine::loadElement (
 					m_pMetroBus->outputs(), pDocument, &eChild);
 			}
 		}
+		else if (eChild.tagName() == "midi-buses2") {
+			midi_buses2 = qtractorEngine::loadBuses2List(
+				pDocument, &eChild, "midi-bus2");
+		}
 	}
+
+	qtractorEngine::setBuses2List(midi_buses2);
 
 	return true;
 }
@@ -3705,10 +3715,10 @@ bool qtractorMidiEngine::saveElement (
 	pElement->appendChild(eControl);
 
 	// Save MIDI buses...
-	for (qtractorBus *pBus = qtractorEngine::buses().first();
-			pBus; pBus = pBus->next()) {
+	QListIterator<qtractorBus *> iter(qtractorEngine::buses2());
+	while (iter.hasNext()) {
 		qtractorMidiBus *pMidiBus
-			= static_cast<qtractorMidiBus *> (pBus);
+			= static_cast<qtractorMidiBus *> (iter.next());
 		if (pMidiBus) {
 			// Create the new MIDI bus element...
 			QDomElement eMidiBus
@@ -3746,6 +3756,14 @@ bool qtractorMidiEngine::saveElement (
 		m_pMetroBus->updateConnects(qtractorBus::Output, outputs);
 		m_pMetroBus->saveConnects(outputs, pDocument, &eOutputs);
 		pElement->appendChild(eOutputs);
+	}
+
+	const QStringList& midi_buses2 = qtractorEngine::buses2List();
+	if (!midi_buses2.isEmpty()) {
+		QDomElement eBuses2
+			= pDocument->document()->createElement("midi-buses2");
+		saveBuses2List(pDocument, &eBuses2, "midi-bus2", midi_buses2);
+		pElement->appendChild(eBuses2);
 	}
 
 	return true;
@@ -4918,8 +4936,9 @@ void qtractorMidiBus::updatePluginList (
 		pAudioBus = (pPluginList->midiManager())->audioOutputBus();
 	if (pAudioBus == nullptr) {
 		// Output bus gets to be the first available output bus...
-		for (qtractorBus *pBus = pAudioEngine->buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(pAudioEngine->buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				pAudioBus = static_cast<qtractorAudioBus *> (pBus);
 				break;

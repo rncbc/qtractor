@@ -1487,8 +1487,9 @@ void qtractorMidiManager::createAudioOutputBus (void)
 				pAudioEngine->findOutputBus(m_sAudioOutputBusName));
 		// Otherwise bus gets to be the first available output bus...
 		if (m_pAudioOutputBus == nullptr) {
-			for (qtractorBus *pBus = pAudioEngine->buses().first();
-					pBus; pBus = pBus->next()) {
+			QListIterator<qtractorBus *> iter(pAudioEngine->buses2());
+			while (iter.hasNext()) {
+				qtractorBus *pBus = iter.next();
 				if (pBus->busMode() & qtractorBus::Output) {
 					m_pAudioOutputBus = static_cast<qtractorAudioBus *> (pBus);
 					break;
