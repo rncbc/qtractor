@@ -100,7 +100,10 @@ public:
 
 protected:
 
-	// When clips need to reopem.
+	// Conveniency helper: whether a clip is certain type.
+	bool isAudioClip(qtractorClip *pClip) const;
+
+	// When clips need to get reopenned.
 	void reopenClip(qtractorClip *pClip, bool bClose = false);
 
 	// Common executive method.

@@ -287,6 +287,13 @@ public:
 	// Update time(base)/BBT info.
 	void updateTimeInfo(unsigned long iFrame);
 
+	// Auxiliary audio output bus sorting method...
+	void resetAudioOutBus(
+		qtractorAudioBus *pAudioBus,
+		qtractorPluginList *pPluginList);
+
+	QStringList cyclicAudioOutBuses(qtractorAudioBus *pAudioBus) const;
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -483,6 +490,9 @@ public:
 	// Document element methods.
 	bool loadElement(qtractorDocument *pDocument, QDomElement *pElement);
 	bool saveElement(qtractorDocument *pDocument, QDomElement *pElement) const;
+
+	// Update all aux-sends to this very bus...
+	void updateAudioAuxSends(const QString& sAudioBusName);
 
 protected:
 

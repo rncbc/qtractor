@@ -259,7 +259,7 @@ qtractorPlugin::qtractorPlugin (
 	if (m_pList && m_pType)
 		m_iUniqueID = m_pList->createUniqueID(m_pType);
 
-	// Set instance label...
+	// Set default instance label...
 	if (m_pType)
 		m_sLabel = m_pType->label();
 
@@ -525,18 +525,51 @@ void qtractorPlugin::reset (void)
 }
 
 
+// Default copy/pass-through plugin processing procedure. (virtual)
+void qtractorPlugin::process (
+	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
+{
+	const unsigned short iChannels = channels();
+	for (unsigned short i = 0; i < iChannels; ++i)
+		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
+}
+
+
+// Nominal plugin user-title (virtual).
+QString qtractorPlugin::title (void) const
+{
+	QString sTitle = m_sAlias;
+
+	if (sTitle.isEmpty() && m_pType)
+		sTitle = m_pType->name();
+
+	return sTitle;
+}
+
+
 // Update editor title.
 void qtractorPlugin::updateEditorTitle (void)
 {
-	QString sEditorTitle = title();
+	QString sEditorTitle;
+
+	if (m_pType && !alias().isEmpty())
+		sEditorTitle.append(QString("%1: ").arg(m_pType->name()));
+
+	sEditorTitle.append(title());
 
 	if (m_pList && !m_pList->name().isEmpty())
-		sEditorTitle += " - " + m_pList->name();
+		sEditorTitle.append(QString(" - %1").arg(m_pList->name()));
 
 	setEditorTitle(sEditorTitle);
 
-	if (m_pForm)
-		m_pForm->setWindowTitle(editorTitle());
+	if (m_pForm) {
+		sEditorTitle = editorTitle();
+		if (m_pType
+			&& m_pType->typeHint() == qtractorPluginType::AuxSend
+			&& alias().isEmpty())
+			sEditorTitle = QObject::tr("Aux Send: %1").arg(sEditorTitle);
+		m_pForm->setWindowTitle(sEditorTitle);
+	}
 }
 
 
@@ -970,7 +1003,7 @@ void qtractorPlugin::setDirectAccessParamIndex ( long iDirectAccessParamIndex )
 {
 	m_iDirectAccessParamIndex = iDirectAccessParamIndex;
 
-	updateDirectAccessParam();
+	updateListViews();
 }
 
 
@@ -986,20 +1019,18 @@ bool qtractorPlugin::isDirectAccessParam (void) const
 }
 
 
-// Write the value to the display item.
-void qtractorPlugin::updateDirectAccessParam (void)
+// Get all or some visual changes be announced....
+void qtractorPlugin::updateListViews ( bool bRefresh )
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	if (m_pList) {
 		QListIterator<qtractorPluginListView *> iter(m_pList->views());
-		while (iter.hasNext())
-			iter.next()->viewport()->update();
+		while (iter.hasNext()) {
+			if (bRefresh)
+				iter.next()->refresh();
+			else
+				iter.next()->viewport()->update();
+		}
 	}
-#else
-	QListIterator<qtractorPluginListItem *> iter(m_items);
-	while (iter.hasNext())
-		iter.next()->updateActivated();
-#endif
 }
 
 
@@ -1568,14 +1599,25 @@ bool qtractorPlugin::savePlugin (
 
 	pDocument->saveTextElement("index",
 		QString::number(pType->index()), pElement);
-	pDocument->saveTextElement("label",
-		label(), pElement);
-	pDocument->saveTextElement("preset",
-		preset(), pElement);
-	pDocument->saveTextElement("direct-access-param",
-		QString::number(directAccessParamIndex()), pElement);
-//	pDocument->saveTextElement("values",
-//		valueList().join(","), pElement);
+
+	const QString& sLabel = label();
+	if (!sLabel.isEmpty())
+		pDocument->saveTextElement("label", sLabel, pElement);
+
+	const QString& sAlias = alias();
+	if (!sAlias.isEmpty())
+		pDocument->saveTextElement("alias", sAlias, pElement);
+
+	const QString& sPreset = preset();
+	if (!sPreset.isEmpty())
+		pDocument->saveTextElement("preset", sPreset, pElement);
+
+	const long iDirectAccessParamIndex = directAccessParamIndex();
+	if (iDirectAccessParamIndex >= 0) {
+		pDocument->saveTextElement("direct-access-param",
+			QString::number(iDirectAccessParamIndex), pElement);
+	}
+
 	pDocument->saveTextElement("activated",
 		qtractorDocument::textFromBool(isActivated()), pElement);
 
@@ -1694,7 +1736,7 @@ void qtractorPlugin::Param::setValue ( float fValue, bool bUpdate )
 	if (bUpdate) m_pPlugin->updateParam(this, fValue, true);
 
 	if (m_pPlugin->directAccessParamIndex() == long(m_iIndex))
-		m_pPlugin->updateDirectAccessParam();
+		m_pPlugin->updateListViews();
 }
 
 
@@ -1719,7 +1761,7 @@ void qtractorPlugin::Param::update ( float fValue, bool bUpdate )
 {
 	qtractorPlugin *pPlugin = plugin();
 	if (bUpdate && pPlugin->directAccessParamIndex() == long(index()))
-		pPlugin->updateDirectAccessParam();
+		pPlugin->updateListViews();
 	pPlugin->updateParam(this, fValue, bUpdate);
 }
 
@@ -1843,6 +1885,7 @@ void qtractorPluginList::setChannels (
 		m_bAudioOutputAutoConnect = m_pMidiManager->isAudioOutputAutoConnect();
 		m_sAudioOutputBusName = m_pMidiManager->audioOutputBusName();
 		m_bAudioOutputMonitor = m_pMidiManager->isAudioOutputMonitor();
+		m_pMidiManager->setAudioOutputMonitorEx(false);
 		qtractorMidiManager::deleteMidiManager(m_pMidiManager);
 		m_pMidiManager = nullptr;
 	}
@@ -2130,6 +2173,7 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 	qtractorPlugin *pNewPlugin = qtractorPluginFactory::createPlugin(this,
 		sFilename, pType->index(), pType->typeHint());
 	if (pNewPlugin) {
+		pNewPlugin->setAlias(pPlugin->alias());
 		pNewPlugin->setPreset(pPlugin->preset());
 		pNewPlugin->setConfigs(pPlugin->configs());
 		pNewPlugin->setConfigTypes(pPlugin->configTypes());
@@ -2213,6 +2257,7 @@ qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
 
 	QString sFilename;
 	QString sLabel;
+	QString sAlias;
 	QString sPreset;
 	QStringList vlist;
 	unsigned long iUniqueID = 0;
@@ -2250,6 +2295,9 @@ qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
 		else
 		if (eParam.tagName() == "label")
 			sLabel = eParam.text();
+		else
+		if (eParam.tagName() == "alias")
+			sAlias = eParam.text();
 		else
 		if (eParam.tagName() == "preset")
 			sPreset = eParam.text();
@@ -2325,6 +2373,8 @@ qtractorPlugin *qtractorPluginList::loadPlugin ( QDomElement *pElement )
 			pPlugin->setUniqueID(iUniqueID);
 		if (!sLabel.isEmpty())
 			pPlugin->setLabel(sLabel);
+		if (!sAlias.isEmpty())
+			pPlugin->setAlias(sAlias);
 		if (iActivateSubjectIndex > 0)
 			pPlugin->setActivateSubjectIndex(iActivateSubjectIndex);
 		pPlugin->setPreset(sPreset);

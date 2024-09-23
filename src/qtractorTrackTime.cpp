@@ -443,14 +443,13 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 	// Force null state.
 	m_dragState = DragNone;
 
-	qtractorTrackView *pTrackView = m_pTracks->trackView();
-
 	// We'll need options somehow...
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 
 	// We need a session and a location...
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
+		qtractorTrackView *pTrackView = m_pTracks->trackView();
 		// Direct snap positioning...
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		unsigned long iFrame = pTrackView->frameSnap(
@@ -493,10 +492,14 @@ void qtractorTrackTime::mousePressEvent ( QMouseEvent *pMouseEvent )
 			m_pTracks->selectionChangeNotify();
 			break;
 		case Qt::RightButton:
-			// Right-button direct positioning...
-			pTrackView->setEditTail(iFrame);
-			// Logical contents changed, just for visual feedback...
-			m_pTracks->selectionChangeNotify();
+			if (pOptions && pOptions->bShiftKeyModifier)
+				bModifier = !bModifier;	// Reverse mid-button role...
+			if (!bModifier) {
+				// Right-button direct positioning...
+				pTrackView->setEditTail(iFrame);
+				// Logical contents changed, just for visual feedback...
+				m_pTracks->selectionChangeNotify();
+			}
 			// Fall thru...
 		default:
 			break;
@@ -609,14 +612,18 @@ void qtractorTrackTime::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
 //	qtractorScrollView::mouseReleaseEvent(pMouseEvent);
 
+	// We'll need options somehow...
+	qtractorOptions *pOptions = qtractorOptions::getInstance();
+
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession) {
 		qtractorTrackView *pTrackView = m_pTracks->trackView();
 		// Which mouse state?
 		const Qt::KeyboardModifiers& modifiers
 			= pMouseEvent->modifiers();
-		const bool bModifier
-			= (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
+		bool bModifier = (modifiers & (Qt::ShiftModifier | Qt::ControlModifier));
+		if (pOptions && pOptions->bShiftKeyModifier)
+			bModifier = !bModifier;
 		// Direct snap positioning...
 		const QPoint& pos = viewportToContents(pMouseEvent->pos());
 		const unsigned long iFrame = pTrackView->frameSnap(

@@ -765,8 +765,9 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 	m_ui.InputBusNameComboBox->clear();
 	m_ui.OutputBusNameComboBox->clear();
 	if (pEngine) {
-		for (qtractorBus *pBus = pEngine->buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(pEngine->buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Input)
 				m_ui.InputBusNameComboBox->addItem(icon, pBus->busName());
 			if (pBus->busMode() & qtractorBus::Output)
@@ -1329,8 +1330,9 @@ void qtractorTrackForm::trackTypeChanged (void)
 			qtractorAudioEngine *pAudioEngine
 				= (m_pTrack->session())->audioEngine();
 			if (pAudioEngine) {
-				for (qtractorBus *pBus = pAudioEngine->buses().first();
-						pBus; pBus = pBus->next()) {
+				QListIterator<qtractorBus *> iter(pAudioEngine->buses2());
+				while (iter.hasNext()) {
+					qtractorBus *pBus = iter.next();
 					if (pBus->busMode() & qtractorBus::Output) {
 						qtractorAudioBus *pAudioBus
 							= static_cast<qtractorAudioBus *> (pBus);

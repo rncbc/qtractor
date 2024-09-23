@@ -88,6 +88,9 @@ protected slots:
 	void openPresetSlot();
 	void savePresetSlot();
 	void deletePresetSlot();
+
+	void aliasSlot();
+
 	void editSlot(bool bOn);
 	void activateSlot(bool bOn);
 
@@ -125,9 +128,6 @@ protected:
 
 	// Update the about text label (with some varying meta-data)...
 	void updateLatencyTextLabel();
-
-	// Update special aux-send window title...
-	void updateAuxSendTitle();
 
 private:
 

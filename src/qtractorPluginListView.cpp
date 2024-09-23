@@ -1350,7 +1350,16 @@ bool qtractorPluginListView::eventFilter ( QObject *pObject, QEvent *pEvent )
 				if (pItem)
 					pPlugin = pItem->plugin();
 				if (pPlugin) {
-					QString sToolTip = pItem->text(); // (pPlugin->type())->name();
+					QString sToolTip;
+					qtractorPluginType *pType = pPlugin->type();
+					if (pType) {
+						if (!pPlugin->alias().isEmpty())
+							sToolTip.append(QString("%1: ").arg(pType->name()));
+						else
+						if (pType->typeHint() == qtractorPluginType::AuxSend)
+							sToolTip.append(tr("Aux Send: "));
+					}
+					sToolTip.append(pItem->text());
 					if (pPlugin->isDirectAccessParam()) {
 						qtractorPlugin::Param *pDirectAccessParam
 							= pPlugin->directAccessParam();
@@ -1959,8 +1968,9 @@ void qtractorPluginListView::contextMenuEvent (
 			tr("&Outputs"), this, SLOT(audioOutputs()));
 		pAction->setEnabled(pAudioOutputBus != nullptr);
 		pAudioMenu->addSeparator();
-		for (qtractorBus *pBus = pAudioEngine->buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(pAudioEngine->buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				const QString& sBusName = pBus->busName();
 				pAction = pAudioMenu->addAction(iconAudio,

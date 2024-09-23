@@ -114,7 +114,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
+        <enum>QSizePolicy::MinimumExpanding</enum>
        </property>
        <property name="sizeHint">
         <size>
@@ -123,6 +123,32 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="AliasTextLabel">
+       <property name="text">
+        <string>Alias:</string>
+       </property>
+       <property name="buddy">
+        <cstring>AliasLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="AliasLineEdit">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Plugin alias</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="EditToolButton">
@@ -357,6 +383,7 @@
  </widget>
  <tabstops>
   <tabstop>PresetComboBox</tabstop>
+  <tabstop>AliasLineEdit</tabstop>
   <tabstop>OpenPresetToolButton</tabstop>
   <tabstop>SavePresetToolButton</tabstop>
   <tabstop>DeletePresetToolButton</tabstop>

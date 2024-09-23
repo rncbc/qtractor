@@ -4,6 +4,35 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Fixed MIDI clip offset resizing, most especially when drag-moving
+  the left-edge.
+
+- Audio Aux-sends inserted on audio output buses are not restricted
+  to later buses anymore; the only restriction now is that no cyclic
+  or loop-back routes are allowed; audio output buses are now sorted
+  internally in-place for correct processing order. (EXPERIMENTAL)
+
+- Update all Aux-Send inserts whenever their respective output bus
+  gets renamed or deleted.
+
+- User preference option View/Options.../General/Options/Reverse
+  keyboard modifiers role (Shift/Ctrl), now also applying to the
+  play-head and/or edit-head/tail re-positioning in the timeline.
+
+- Plug-in name/title alias makes its debut. (EXPERIMENTAL)
+
+- Fixed a partial port-name filtering issue on the MIDI Connections
+  widget. (fixes GH issue #471)
+
+- Last selected automation curve color is now persistent and the
+  default for all later automation curves.
+
+- Connections: connector line colors are now uniquely mapped on a
+  (readable/output) client name basis.
+
+
 1.2.0  2024-08-29  A Mid-Summer'24 Release.
 
 - Check whether a LV2 plug-in UI no-user-resize feature is being

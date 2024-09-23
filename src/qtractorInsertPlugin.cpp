@@ -752,7 +752,7 @@ QString qtractorAudioInsertPlugin::title (void) const
 {
 	QString sTitle;
 
-	if (m_pAudioBus) {
+	if (m_pAudioBus && qtractorPlugin::alias().isEmpty()) {
 		sTitle = QObject::tr("%1 (Audio)").arg(m_pAudioBus->busName());
 		sTitle.replace('_', ' ');
 	} else {
@@ -967,9 +967,7 @@ void qtractorMidiInsertPlugin::process (
 			pMidiManager->processInputBuffer(m_pMidiInputBuffer, t0);
 	}
 
-	const unsigned short iChannels = channels();
-	for (unsigned short i = 0; i < iChannels; ++i)
-		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
+	qtractorInsertPlugin::process(ppIBuffer, ppOBuffer, nframes);
 }
 
 
@@ -1079,7 +1077,7 @@ QString qtractorMidiInsertPlugin::title (void) const
 {
 	QString sTitle;
 
-	if (m_pMidiBus) {
+	if (m_pMidiBus && qtractorPlugin::alias().isEmpty()) {
 		sTitle = QObject::tr("%1 (MIDI)").arg(m_pMidiBus->busName());
 		sTitle.replace('_', ' ');
 	} else {
@@ -1341,21 +1339,6 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 	releaseConfigs();
 	releaseValues();
 
-	// Try to find a nice default...
-	if (m_sAudioBusName.isEmpty()) {
-		for (qtractorBus *pBus = pAudioEngine->buses().first();
-				pBus; pBus = pBus->next()) {
-			if (pBus->busMode() & qtractorBus::Output) {
-				qtractorAudioBus *pAudioBus
-					= static_cast<qtractorAudioBus *> (pBus);
-				if (pAudioBus && pAudioBus->channels() == iChannels) {
-					m_sAudioBusName = pAudioBus->busName();
-					break;
-				}
-			}
-		}
-	}
-
 	// Setup aux-send bus...
 	setAudioBusName(m_sAudioBusName);
 
@@ -1365,11 +1348,9 @@ void qtractorAudioAuxSendPlugin::setChannels ( unsigned short iChannels )
 
 
 // Audio bus specific accessors.
-void qtractorAudioAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName )
+void qtractorAudioAuxSendPlugin::setAudioBusName (
+	const QString& sAudioBusName, bool bReset )
 {
-	if (sAudioBusName.isEmpty())
-		return;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;
@@ -1378,9 +1359,15 @@ void qtractorAudioAuxSendPlugin::setAudioBusName ( const QString& sAudioBusName 
 	if (pAudioEngine == nullptr)
 		return;
 
-	qtractorAudioBus *pAudioBus = static_cast<qtractorAudioBus *> (
-		pAudioEngine->findOutputBus(sAudioBusName));
+	qtractorAudioBus *pAudioBus = nullptr;
+	if (!sAudioBusName.isEmpty()) {
+		pAudioBus = static_cast<qtractorAudioBus *> (
+			pAudioEngine->findOutputBus(sAudioBusName));
+	}
+
 	if (pAudioBus && pAudioBus->channels() == channels()) {
+		if (bReset && sAudioBusName != m_sAudioBusName)
+			pAudioEngine->resetAudioOutBus(pAudioBus, list());
 		m_pAudioBus = pAudioBus;
 		m_sAudioBusName = sAudioBusName;
 	//	setConfig("audioBusName", m_sAudioBusName);
@@ -1399,6 +1386,12 @@ const QString& qtractorAudioAuxSendPlugin::audioBusName (void) const
 }
 
 
+qtractorAudioBus *qtractorAudioAuxSendPlugin::audioBus (void) const
+{
+	return m_pAudioBus;
+}
+
+
 // Audio bus to appear on plugin lists.
 void qtractorAudioAuxSendPlugin::updateAudioBusName (void) const
 {
@@ -1412,9 +1405,17 @@ void qtractorAudioAuxSendPlugin::updateAudioBusName (void) const
 // Override title/name caption.
 QString qtractorAudioAuxSendPlugin::title (void) const
 {
-	const QString sAudioBusName
-		= (m_pAudioBus ? m_sAudioBusName : QObject::tr("(none)"));
-	return QObject::tr("%1 (Audio)").arg(sAudioBusName);
+	QString sTitle;
+
+	if (qtractorPlugin::alias().isEmpty()) {
+		const QString sAudioBusName
+			= (m_pAudioBus ? m_sAudioBusName : QObject::tr("(none)"));
+		sTitle = QObject::tr("%1 (Audio)").arg(sAudioBusName);
+	} else {
+		sTitle = qtractorPlugin::title();
+	}
+
+	return sTitle;
 }
 
 
@@ -1422,29 +1423,24 @@ QString qtractorAudioAuxSendPlugin::title (void) const
 void qtractorAudioAuxSendPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
+	qtractorPlugin::process(ppIBuffer, ppOBuffer, nframes);
+
 	if (m_pAudioBus == nullptr)
 		return;
 
 	if (!m_pAudioBus->isEnabled())
 		return;
 
-//	m_pAudioBus->process_prepare(nframes);
-
 	qtractorAudioEngine *pAudioEngine
 	= static_cast<qtractorAudioEngine *> (m_pAudioBus->engine());
 	if (pAudioEngine == nullptr)
 		return;
 
-	const unsigned int iOffset = pAudioEngine->bufferOffset();
-	const unsigned int nbytes = nframes * sizeof(float);
+//	m_pAudioBus->process_prepare(nframes);
 
 	float **ppOut = m_pAudioBus->out();
-
+	const unsigned int iOffset = pAudioEngine->bufferOffset();
 	const unsigned short iChannels = channels();
-
-	for (unsigned short i = 0; i < iChannels; ++i)
-		::memcpy(ppOBuffer[i], ppIBuffer[i], nbytes);
-
 	const float fGain = m_pSendGainParam->value();
 	(*m_pfnProcessAdd)(ppOut, ppOBuffer, nframes, iOffset, iChannels, fGain);
 
@@ -1591,21 +1587,6 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 	releaseConfigs();
 	releaseValues();
 
-	// Try to find a nice default...
-	if (m_sMidiBusName.isEmpty()) {
-		for (qtractorBus *pBus = pMidiEngine->buses().first();
-				pBus; pBus = pBus->next()) {
-			if (pBus->busMode() & qtractorBus::Output) {
-				qtractorMidiBus *pMidiBus
-					= static_cast<qtractorMidiBus *> (pBus);
-				if (pMidiBus) {
-					m_sMidiBusName = pMidiBus->busName();
-					break;
-				}
-			}
-		}
-	}
-
 	// Setup aux-send bus...
 	setMidiBusName(m_sMidiBusName);
 
@@ -1617,9 +1598,6 @@ void qtractorMidiAuxSendPlugin::setChannels ( unsigned short iChannels )
 // MIDI bus specific accessors.
 void qtractorMidiAuxSendPlugin::setMidiBusName ( const QString& sMidiBusName )
 {
-	if (sMidiBusName.isEmpty())
-		return;
-
 	qtractorSession *pSession = qtractorSession::getInstance();
 	if (pSession == nullptr)
 		return;
@@ -1628,8 +1606,12 @@ void qtractorMidiAuxSendPlugin::setMidiBusName ( const QString& sMidiBusName )
 	if (pMidiEngine == nullptr)
 		return;
 
-	qtractorMidiBus *pMidiBus = static_cast<qtractorMidiBus *> (
-		pMidiEngine->findOutputBus(sMidiBusName));
+	qtractorMidiBus *pMidiBus = nullptr;
+	if (!sMidiBusName.isEmpty()) {
+		pMidiBus = static_cast<qtractorMidiBus *> (
+			pMidiEngine->findOutputBus(sMidiBusName));
+	}
+
 	if (pMidiBus) {
 		m_pMidiBus = pMidiBus;
 		m_sMidiBusName = sMidiBusName;
@@ -1660,6 +1642,12 @@ const QString& qtractorMidiAuxSendPlugin::midiBusName (void) const
 }
 
 
+qtractorMidiBus *qtractorMidiAuxSendPlugin::midiBus (void) const
+{
+	return m_pMidiBus;
+}
+
+
 // Audio bus to appear on plugin lists.
 void qtractorMidiAuxSendPlugin::updateMidiBusName (void) const
 {
@@ -1673,9 +1661,17 @@ void qtractorMidiAuxSendPlugin::updateMidiBusName (void) const
 // Override title/name caption.
 QString qtractorMidiAuxSendPlugin::title (void) const
 {
-	const QString sMidiBusName
-		= (m_pMidiBus ? m_sMidiBusName : QObject::tr("(none)"));
-	return QObject::tr("%1 (MIDI)").arg(sMidiBusName);
+	QString sTitle;
+
+	if (qtractorPlugin::alias().isEmpty()) {
+		const QString sMidiBusName
+			= (m_pMidiBus ? m_sMidiBusName : QObject::tr("(none)"));
+		sTitle = QObject::tr("%1 (Audio)").arg(sMidiBusName);
+	} else {
+		sTitle = qtractorPlugin::title();
+	}
+
+	return sTitle;
 }
 
 
@@ -1683,9 +1679,19 @@ QString qtractorMidiAuxSendPlugin::title (void) const
 void qtractorMidiAuxSendPlugin::process (
 	float **ppIBuffer, float **ppOBuffer, unsigned int nframes )
 {
+	qtractorPlugin::process(ppIBuffer, ppOBuffer, nframes);
+
 	qtractorSession *pSession = qtractorSession::getInstance();
-	qtractorMidiManager *pMidiManager = list()->midiManager();
-	if (m_pMidiBus && m_pMidiOutputBuffer && pMidiManager && pSession) {
+	if (pSession == nullptr)
+		return;
+
+	qtractorMidiManager *pMidiManager = nullptr;
+	if (list())
+		pMidiManager = list()->midiManager();
+	if (pMidiManager == nullptr)
+		return;
+
+	if (m_pMidiBus && m_pMidiOutputBuffer) {
 		// Enqueue events into sends/output bus...
 		const unsigned long t0
 			= (pSession->isPlaying() ? pSession->playHead() : 0);
@@ -1700,10 +1706,6 @@ void qtractorMidiAuxSendPlugin::process (
 		if (iEventCount > 0)
 			qtractorMidiSyncItem::syncItem(m_pMidiOutputBuffer);
 	}
-
-	const unsigned short iChannels = channels();
-	for (unsigned short i = 0; i < iChannels; ++i)
-		::memcpy(ppOBuffer[i], ppIBuffer[i], nframes * sizeof(float));
 }
 
 

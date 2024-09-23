@@ -1,7 +1,7 @@
 // qtractorConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1119,17 +1119,15 @@ void qtractorConnectorView::paintEvent ( QPaintEvent * )
 	QPainter painter(this);
 	int x1, y1, h1;
 	int x2, y2, h2;
-	int i, rgb[3] = { 0x33, 0x66, 0x99 };
+	int rgb[3] = { 0x33, 0x66, 0x99 };
 
 	// Draw all lines anti-aliased...
 	painter.setRenderHint(QPainter::Antialiasing);
 
 	// Inline adaptive to darker background themes...
 	if (QWidget::palette().window().color().value() < 0x7f)
-		for (i = 0; i < 3; ++i) rgb[i] += 0x33;
+		for (int i = 0; i < 3; ++i) rgb[i] += 0x33;
 
-	// Initialize color changer.
-	i = 0;
 	// Almost constants.
 	x1 = 0;
 	x2 = QWidget::width();
@@ -1146,8 +1144,13 @@ void qtractorConnectorView::paintEvent ( QPaintEvent * )
 		if (pOClient == nullptr)
 			continue;
 		// Set new connector color.
-		++i;
-		QPen pen(QColor(rgb[i % 3], rgb[(i / 3) % 3], rgb[(i / 9) % 3]));
+		const QString& sOClientName = pOClient->clientName();
+		int k = m_colorMap.value(sOClientName, -1);
+		if (k < 0) {
+			k = m_colorMap.size() + 1;
+			m_colorMap.insert(sOClientName, k);
+		}
+		QPen pen(QColor(rgb[k % 3], rgb[(k / 3) % 3], rgb[(k / 9) % 3]));
 		// For each port item
 		const int iChildCount = pOClient->childCount();
 		for (int iChild = 0; iChild < iChildCount; ++iChild) {

@@ -254,6 +254,12 @@ public:
 	const QString& label() const
 		{ return m_sLabel; }
 
+	// Instance alternate-alias accessors.
+	void setAlias(const QString& sAlias)
+		{ m_sAlias = sAlias; }
+	const QString& alias() const
+		{ return m_sAlias; }
+
 	// Activation methods.
 	void setActivated(bool bActivated);
 	bool isActivated() const;
@@ -342,7 +348,7 @@ public:
 
 	// The main plugin processing procedure.
 	virtual void process(
-		float **ppIBuffer, float **ppOBuffer, unsigned int nframes) = 0;
+		float **ppIBuffer, float **ppOBuffer, unsigned int nframes);
 
 	// Parameter update method.
 	virtual void updateParam(
@@ -404,12 +410,11 @@ public:
 	virtual bool isEditorVisible() const
 		{ return false; }
 
-	// Nominal plugin name/title
-	virtual QString title() const
-		{ return (m_pType ? m_pType->name() : QString()); }
+	// Nominal plugin user-title.
+	virtual QString title() const;
 
-	virtual void setEditorTitle(const QString& sTitle)
-		{ m_sEditorTitle = sTitle; }
+	virtual void setEditorTitle(const QString& sEditorTitle)
+		{ m_sEditorTitle = sEditorTitle; }
 	const QString& editorTitle() const
 		{ return m_sEditorTitle; }
 
@@ -576,7 +581,9 @@ public:
 	void setDirectAccessParamIndex(long iDirectAccessParamIndex);
 	long directAccessParamIndex() const;
 	bool isDirectAccessParam() const;
-	void updateDirectAccessParam();
+
+	// Get all or some visual changes be announced....
+	void updateListViews(bool bRefresh = false);
 
 	// Parameter update executive.
 	void updateParamValue(unsigned long iIndex, float fValue, bool bUpdate);
@@ -615,6 +622,9 @@ private:
 
 	// Instance label (saved).
 	QString m_sLabel;
+
+	// Instance alternate-alias (saved).
+	QString m_sAlias;
 
 	// Number of instances in chain node.
 	unsigned short m_iInstances;

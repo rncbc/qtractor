@@ -33,7 +33,6 @@
 #include "qtractorMidiEngine.h"
 #include "qtractorMidiManager.h"
 #include "qtractorPlugin.h"
-#include "qtractorClip.h"
 
 #include "qtractorMainForm.h"
 
@@ -50,6 +49,9 @@
 #include "qtractorLv2Plugin.h"
 #endif
 #endif
+
+#include "qtractorInsertPlugin.h"
+
 
 #ifdef CONFIG_JACK_SESSION
 #include <jack/session.h>
@@ -933,9 +935,12 @@ void qtractorAudioEngine::deactivate (void)
 void qtractorAudioEngine::clean (void)
 {
 	// Audio master bus auto-connection option...
-	qtractorAudioBus *pMasterBus
-		= static_cast<qtractorAudioBus *> (buses().first());
-	if (pMasterBus) m_bMasterAutoConnect = pMasterBus->isAutoConnect();
+	if (!buses2().isEmpty()) {
+		qtractorAudioBus *pMasterBus
+			= static_cast<qtractorAudioBus *> (buses2().first());
+		if (pMasterBus)
+			m_bMasterAutoConnect = pMasterBus->isAutoConnect();
+	}
 
 	// Clean player/metronome buses...
 	deletePlayerBus();
@@ -1536,6 +1541,8 @@ bool qtractorAudioEngine::loadElement (
 	createPlayerBus();
 	createMetroBus();
 
+	QStringList audio_buses2;
+
 	// Load session children...
 	for (QDomNode nChild = pElement->firstChild();
 			!nChild.isNull();
@@ -1585,7 +1592,13 @@ bool qtractorAudioEngine::loadElement (
 					m_pPlayerBus->outputs(), pDocument, &eChild);
 			}
 		}
+		else if (eChild.tagName() == "audio-buses2") {
+			audio_buses2 = qtractorEngine::loadBuses2List(
+				pDocument, &eChild, "audio-bus2");
+		}
 	}
+
+	qtractorEngine::setBuses2List(audio_buses2);
 
 	return true;
 }
@@ -1606,10 +1619,10 @@ bool qtractorAudioEngine::saveElement (
 	pElement->appendChild(eControl);
 
 	// Save audio buses...
-	for (qtractorBus *pBus = qtractorEngine::buses().first();
-			pBus; pBus = pBus->next()) {
+	QListIterator<qtractorBus *> iter(qtractorEngine::buses2());
+	while (iter.hasNext()) {
 		qtractorAudioBus *pAudioBus
-			= static_cast<qtractorAudioBus *> (pBus);
+			= static_cast<qtractorAudioBus *> (iter.next());
 		if (pAudioBus) {
 			// Create the new audio bus element...
 			QDomElement eAudioBus
@@ -1637,6 +1650,14 @@ bool qtractorAudioEngine::saveElement (
 		m_pPlayerBus->updateConnects(qtractorBus::Output, outputs);
 		m_pPlayerBus->saveConnects(outputs, pDocument, &eOutputs);
 		pElement->appendChild(eOutputs);
+	}
+
+	const QStringList& audio_buses2 = qtractorEngine::buses2List();
+	if (!audio_buses2.isEmpty()) {
+		QDomElement eBuses2
+			= pDocument->document()->createElement("audio-buses2");
+		saveBuses2List(pDocument, &eBuses2, "audio-bus2", audio_buses2);
+		pElement->appendChild(eBuses2);
 	}
 
 	return true;
@@ -1731,8 +1752,15 @@ bool qtractorAudioEngine::fileExport (
 		return false;
 
 	// We'll grab the first bus around, as reference...
-	qtractorAudioBus *pExportBus
-		= static_cast<qtractorAudioBus *> (buses().first());
+	qtractorAudioBus *pExportBus = nullptr;
+	QListIterator<qtractorBus *> iter(buses2());
+	while (iter.hasNext()) {
+		qtractorBus *pBus = iter.next();
+		if (pBus->busMode() & qtractorBus::Output) {
+			pExportBus = static_cast<qtractorAudioBus *> (pBus);
+			break;
+		}
+	}
 	if (pExportBus == nullptr)
 		return false;
 
@@ -2090,8 +2118,9 @@ void qtractorAudioEngine::createMetroBus (void)
 		m_pMetroBus->setAutoConnect(m_bMetroAutoConnect);
 	} else {
 		// Metronome bus gets to be the first available output bus...
-		for (qtractorBus *pBus = qtractorEngine::buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				m_pMetroBus = static_cast<qtractorAudioBus *> (pBus);
 				break;
@@ -2328,8 +2357,9 @@ void qtractorAudioEngine::createPlayerBus (void)
 	} else {
 		// Audition/pre-listening bus gets to be
 		// the first available output bus...
-		for (qtractorBus *pBus = qtractorEngine::buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				m_pPlayerBus = static_cast<qtractorAudioBus *> (pBus);
 				break;
@@ -2585,6 +2615,87 @@ void qtractorAudioEngine::resetAllMonitors (void)
 				pPluginList->resetLatency();
 		}
 	}
+}
+
+
+// Auxiliary audio output bus sorting method...
+//
+void qtractorAudioEngine::resetAudioOutBus (
+	qtractorAudioBus *pAudioBus, qtractorPluginList *pPluginList )
+{
+	if (pAudioBus == nullptr)
+		return;
+	if ((pAudioBus->busMode() & qtractorBus::Output) == 0)
+		return;
+
+	if (pPluginList == nullptr)
+		return;
+	if ((pPluginList->flags() & qtractorPluginList::AudioOutBus) == 0)
+		return;
+
+	qtractorAudioBus *pAfterBus = nullptr;
+
+	for (qtractorBus *pBus = buses().first(); pBus; pBus = pBus->next()) {
+		if ((pBus->busMode() & qtractorBus::Output) == 0)
+			continue;
+		if (pBus->pluginList_out() == pPluginList) {
+			pAfterBus = static_cast<qtractorAudioBus *> (pBus);
+			break;
+		}
+	}
+
+	for (qtractorBus *pBus = buses().first(); pBus; pBus = pBus->next()) {
+		if ((pBus->busMode() & qtractorBus::Output) == 0)
+			continue;
+		qtractorAudioBus *pAudioOutBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioOutBus == pAfterBus)
+			break;
+		if (pAudioOutBus == pAudioBus) {
+			qtractorEngine::moveBus(pAudioBus, pAfterBus);
+			break;
+		}
+	}
+}
+
+
+QStringList qtractorAudioEngine::cyclicAudioOutBuses (
+	qtractorAudioBus *pAudioBus ) const
+{
+	QStringList audioOutBuses;
+
+	for (qtractorBus *pBus = buses().first(); pBus; pBus = pBus->next()) {
+		if ((pBus->busMode() & qtractorBus::Output) == 0)
+			continue;
+		qtractorAudioBus *pAudioOutBus
+			= static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioOutBus == nullptr)
+			continue;
+		if (pAudioOutBus == pAudioBus)
+			continue;
+		qtractorPluginList *pPluginList = pAudioOutBus->pluginList_out();
+		if (pPluginList == nullptr)
+			continue;
+		if (pPluginList == pAudioBus->pluginList_out())
+			continue;
+		for (qtractorPlugin *pPlugin = pPluginList->first();
+				pPlugin; pPlugin = pPlugin->next()) {
+			qtractorPluginType *pType = pPlugin->type();
+			if (pType && pType->typeHint() != qtractorPluginType::AuxSend)
+				continue;
+			if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+				qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+				if (pAudioAuxSendPlugin &&
+					pAudioAuxSendPlugin->audioBus() == pAudioBus) {
+					audioOutBuses.append(pAudioOutBus->busName());
+					audioOutBuses.append(cyclicAudioOutBuses(pAudioOutBus));
+				}
+			}
+		}
+	}
+
+	return audioOutBuses;
 }
 
 
@@ -3518,6 +3629,69 @@ bool qtractorAudioBus::saveElement (
 	}
 
 	return true;
+}
+
+
+// Update all aux-sends to this very bus...
+//
+void qtractorAudioBus::updateAudioAuxSends ( const QString& sAudioBusName )
+{
+	if ((busMode() & qtractorBus::Output) == 0)
+		return;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorAudioEngine *pAudioEngine = pSession->audioEngine();
+	if (pAudioEngine == nullptr)
+		return;
+
+	// Make it to all audio output buses...
+	for (qtractorBus *pBus = pAudioEngine->buses().first();
+			pBus; pBus = pBus->next()) {
+		qtractorAudioBus *pAudioBus = static_cast<qtractorAudioBus *> (pBus);
+		if (pAudioBus == this)
+			continue;
+		if ((pAudioBus->busMode() & qtractorBus::Output) == 0)
+			continue;
+		qtractorPluginList *pPluginList = pAudioBus->pluginList_out();
+		if (pPluginList == nullptr)
+			continue;
+		for (qtractorPlugin *pPlugin = pPluginList->first();
+				pPlugin; pPlugin = pPlugin->next()) {
+			qtractorPluginType *pType = pPlugin->type();
+			if (pType && pType->typeHint() == qtractorPluginType::AuxSend
+				&& pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+				qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+				if (pAudioAuxSendPlugin
+					&& pAudioAuxSendPlugin->audioBus() == this)
+					pAudioAuxSendPlugin->setAudioBusName(sAudioBusName);
+			}
+		}
+	}
+
+	// Make it to ALL audio tracks...
+	for (qtractorTrack *pTrack = pSession->tracks().first();
+			pTrack; pTrack = pTrack->next()) {
+		qtractorPluginList *pPluginList = pTrack->pluginList();
+		if (pPluginList == nullptr)
+			continue;
+		for (qtractorPlugin *pPlugin = pPluginList->first();
+				pPlugin; pPlugin = pPlugin->next()) {
+			qtractorPluginType *pType = pPlugin->type();
+			if (pType && pType->typeHint() != qtractorPluginType::AuxSend)
+				continue;
+			if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+				qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+					= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+				if (pAudioAuxSendPlugin
+					&& pAudioAuxSendPlugin->audioBus() == this)
+					pAudioAuxSendPlugin->setAudioBusName(sAudioBusName);
+			}
+		}
+	}
 }
 
 

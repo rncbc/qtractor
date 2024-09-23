@@ -1,7 +1,7 @@
 // qtractorEngine.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -55,6 +55,8 @@ qtractorEngine::qtractorEngine ( qtractorSession *pSession,
 
 	m_buses.setAutoDelete(true);
 	m_busesEx.setAutoDelete(false);
+
+	m_bBuses2 = false;
 }
 
 // Destructor.
@@ -72,6 +74,9 @@ void qtractorEngine::clear (void)
 {
 	m_buses.clear();
 	m_busesEx.clear();
+
+	m_bBuses2 = false;
+	m_buses2.clear();
 }
 
 
@@ -121,26 +126,30 @@ const qtractorList<qtractorBus>& qtractorEngine::buses (void) const
 void qtractorEngine::addBus ( qtractorBus *pBus )
 {
 	m_buses.append(pBus);
+	m_buses2.append(pBus);
 }
 
 
 // Remove a bus from a device.
 void qtractorEngine::removeBus ( qtractorBus *pBus )
 {
+	m_buses2.removeAll(pBus);
 	m_buses.remove(pBus);
 }
 
 
 // Move bus on a device engine.
 void qtractorEngine::moveBus (
-	qtractorBus *pBus, qtractorBus *pNextBus )
+	qtractorBus *pBus, qtractorBus *pAfterBus )
 {
 	m_buses.unlink(pBus);
 
-	if (pNextBus)
-		m_buses.insertBefore(pBus, pNextBus);
+	if (pAfterBus)
+		m_buses.insertAfter(pBus, pAfterBus);
 	else
 		m_buses.append(pBus);
+
+	m_bBuses2 = true;
 }
 
 
@@ -224,6 +233,107 @@ qtractorBus *qtractorEngine::findBusEx ( const QString& sBusName ) const
 	}
 
 	return nullptr;
+}
+
+
+// Front-end/UI buses accessors.
+//
+const QList<qtractorBus *>& qtractorEngine::buses2 (void) const
+{
+	return m_buses2;
+}
+
+
+void qtractorEngine::moveBus2 (	qtractorBus *pBus, int iDelta )
+{
+	const int iBus2
+		= m_buses2.indexOf(pBus) + iDelta;
+	if (iBus2 >= 0 && iBus2 < m_buses2.count()) {
+		m_buses2.removeAll(pBus);
+		m_buses2.insert(iBus2, pBus);
+		m_bBuses2 = true;
+	}
+}
+
+
+void qtractorEngine::setBuses2List ( const QStringList& list )
+{
+	m_bBuses2 = !list.isEmpty();
+
+	if (m_bBuses2) {
+		qtractorBus *pAfterBus = nullptr;
+		QStringListIterator iter(list);
+		while (iter.hasNext()) {
+			const QString& sBusName = iter.next();
+			qtractorBus *pBus = findBus(sBusName);
+			if (pBus) {
+				moveBus(pBus, pAfterBus);
+				pAfterBus = pBus;
+			}
+		}
+	} else {
+		m_buses2.clear();
+		qtractorBus *pBus = m_buses.first();
+		while (pBus) {
+			m_buses2.append(pBus);
+			pBus = pBus->next();
+		}
+	}
+}
+
+QStringList qtractorEngine::buses2List (void) const
+{
+	QStringList list;
+
+	if (m_bBuses2) {
+		QListIterator<qtractorBus *> iter(m_buses2);
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
+			if (pBus)
+				list.append(pBus->busName());
+		}
+	}
+
+	return list;
+}
+
+
+QStringList qtractorEngine::loadBuses2List (
+	qtractorDocument *pDocument, QDomElement *pElement,
+	const QString& sTagName )
+{
+	QStringList list;
+
+	for (QDomNode nChild = pElement->firstChild();
+			!nChild.isNull();
+				nChild = nChild.nextSibling()) {
+		// Convert audio-bus item to element...
+		QDomElement eChild = nChild.toElement();
+		if (eChild.isNull())
+			continue;
+		if (eChild.tagName() == sTagName) {
+			const QString& sBusName = eChild.text();
+			if (!sBusName.isEmpty())
+				list.append(eChild.text());
+		}
+	}
+
+	return list;
+}
+
+
+bool qtractorEngine::saveBuses2List (
+	qtractorDocument *pDocument, QDomElement *pElement,
+	const QString& sTagName,
+	const QStringList& list ) const
+{
+	for (qtractorBus *pBus = m_buses.first(); pBus; pBus = pBus->next()) {
+		const QString& sBusName = pBus->busName();
+		if (!sBusName.isEmpty())
+			pDocument->saveTextElement(sTagName, sBusName, pElement);
+	}
+
+	return true;
 }
 
 
@@ -951,7 +1061,7 @@ void qtractorBus::Connects::clear (void)
 
 
 // Engine connections snapshot executive mthods.
-bool qtractorBus::Connections::load(qtractorEngine *pEngine)
+bool qtractorBus::Connections::load ( qtractorEngine *pEngine )
 {
 	int iUpdate = 0;
 
@@ -973,7 +1083,7 @@ bool qtractorBus::Connections::load(qtractorEngine *pEngine)
 }
 
 
-bool qtractorBus::Connections::save(qtractorEngine *pEngine)
+bool qtractorBus::Connections::save ( qtractorEngine *pEngine )
 {
 	int iUpdate = 0;
 
@@ -984,7 +1094,7 @@ bool qtractorBus::Connections::save(qtractorEngine *pEngine)
 }
 
 
-int qtractorBus::Connections::save(qtractorBus *pBus)
+int qtractorBus::Connections::save ( qtractorBus *pBus )
 {
 	int iUpdate = 0;
 

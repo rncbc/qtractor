@@ -801,6 +801,11 @@ endif ()
 add_subdirectory (src)
 
 
+# Finally check whether Qt is statically linked.
+if (QT_FEATURE_static)
+  set(QT_VERSION "${QT_VERSION}-static")
+endif ()
+
 # Configuration status
 macro (SHOW_OPTION text value)
   if (${value})

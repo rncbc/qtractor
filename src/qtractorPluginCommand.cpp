@@ -1,7 +1,7 @@
 // qtractorPluginCommand.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -209,7 +209,7 @@ bool qtractorAuxSendPluginCommand::redo (void)
 		if (pAudioAuxSendPlugin == nullptr)
 			return false;
 		const QString sAudioBusName = pAudioAuxSendPlugin->audioBusName();
-		pAudioAuxSendPlugin->setAudioBusName(m_sAuxSendBusName);
+		pAudioAuxSendPlugin->setAudioBusName(m_sAuxSendBusName, true);
 		m_sAuxSendBusName = sAudioBusName;
 		pAudioAuxSendPlugin->updateFormAuxSendBusName();
 	} else {
@@ -576,6 +576,48 @@ bool qtractorPluginProgramCommand::redo (void)
 bool qtractorPluginProgramCommand::undo (void)
 {
 	// As we swap the prev/state this is non-idempotent.
+	return redo();
+}
+
+
+//----------------------------------------------------------------------
+// class qtractorPluginAliasCommand - implementation
+//
+
+// Constructor.
+qtractorPluginAliasCommand::qtractorPluginAliasCommand (
+	qtractorPlugin *pPlugin, const QString& sAlias )
+	: qtractorPluginCommand(QObject::tr("plugin alias"), pPlugin)
+{
+	m_sAlias = sAlias;
+}
+
+
+// Plugin-alias command methods.
+bool qtractorPluginAliasCommand::redo (void)
+{
+	qtractorPlugin *pPlugin = plugins().first();
+	if (pPlugin == nullptr)
+		return false;
+
+	// Save the previous alias alright...
+	const QString sAlias = pPlugin->alias();
+
+	pPlugin->setAlias(m_sAlias);
+
+	pPlugin->updateEditorTitle();
+	pPlugin->updateListViews(true);
+	pPlugin->refreshForm();
+
+	// Swap it nice, finally.
+	m_sAlias = sAlias;
+
+	return true;
+}
+
+bool qtractorPluginAliasCommand::undo (void)
+{
+	// As we toggle the prev/state this is non-idempotent.
 	return redo();
 }
 

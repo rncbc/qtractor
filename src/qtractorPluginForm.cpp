@@ -109,6 +109,9 @@ qtractorPluginForm::qtractorPluginForm (
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
 	m_ui.PresetComboBox->setCompleter(nullptr);
 
+//	m_ui.AliasLineEdit->setPlaceholderText(tr("Alias"));
+	m_ui.AliasLineEdit->setClearButtonEnabled(true);
+
 	// UI signal/slot connections...
 	QObject::connect(m_ui.PresetComboBox,
 		SIGNAL(editTextChanged(const QString&)),
@@ -125,6 +128,9 @@ qtractorPluginForm::qtractorPluginForm (
 	QObject::connect(m_ui.DeletePresetToolButton,
 		SIGNAL(clicked()),
 		SLOT(deletePresetSlot()));
+	QObject::connect(m_ui.AliasLineEdit,
+		SIGNAL(editingFinished()),
+		SLOT(aliasSlot()));
 	QObject::connect(m_ui.EditToolButton,
 		SIGNAL(toggled(bool)),
 		SLOT(editSlot(bool)));
@@ -347,10 +353,7 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 
 	// Set plugin name/caption as title,
 	// maybe redundant but necessary...
-	if (bAuxSendPlugin)
-		updateAuxSendTitle();
-	else
-		m_pPlugin->updateEditorTitle();
+	m_pPlugin->updateEditorTitle();
 
 	// About page...
 	m_ui.NameTextLabel->setText(pType->name());
@@ -484,25 +487,41 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 		qtractorPluginList *pPluginList = pAudioAuxSendPlugin->list();
 		if (pPluginList == nullptr)
 			return;
-		bool bAudioOutBus
+		const bool bAudioOutBus
 			= (pPluginList->flags() == qtractorPluginList::AudioOutBus);
+		QStringList cyclicAudioOutBuses; // Cyclic bus names to avoid.
 		const QIcon iconAudio(":/images/trackAudio.png");
 		m_ui.AuxSendBusNameComboBox->addItem(iconAudio, tr("(none)"));
-		for (qtractorBus *pBus = pAudioEngine->buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(pAudioEngine->buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				qtractorAudioBus *pAudioBus
 					= static_cast<qtractorAudioBus *> (pBus);
-				if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels())
-					if (bAudioOutBus) { // Skip current and previous buses...
-						if (pAudioBus->pluginList_out() == pPluginList)
-							bAudioOutBus = false;
+				if (pAudioBus && pAudioBus->channels() == m_pPlugin->channels()) {
+					if (bAudioOutBus && // Skip current or cyclic buses...
+						pAudioBus->pluginList_out() == pPluginList) {
+						cyclicAudioOutBuses.append(
+							pAudioEngine->cyclicAudioOutBuses(pAudioBus));
 						continue;
 					}
 					m_ui.AuxSendBusNameComboBox->addItem(iconAudio,
 						pAudioBus->busName());
+				}
 			}
 		}
+		// Avoid cyclic bus names...
+		QStringListIterator cyclic_iter(cyclicAudioOutBuses);
+		while (cyclic_iter.hasNext()) {
+			const QString& sBusName = cyclic_iter.next();
+			if (!sBusName.isEmpty()) {
+				const int iIndex
+					= m_ui.AuxSendBusNameComboBox->findText(sBusName);
+				if (iIndex >= 0)
+					m_ui.AuxSendBusNameComboBox->removeItem(iIndex);
+ 			}
+ 		}
+		// Proceed...
 		sAuxSendBusName = pAudioAuxSendPlugin->audioBusName();
 	} else {
 		qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
@@ -519,8 +538,9 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 			= (pPluginList->flags() == qtractorPluginList::MidiOutBus);
 		const QIcon iconMidi(":/images/trackMidi.png");
 		m_ui.AuxSendBusNameComboBox->addItem(iconMidi, tr("(none)"));
-		for (qtractorBus *pBus = pMidiEngine->buses().first();
-				pBus; pBus = pBus->next()) {
+		QListIterator<qtractorBus *> iter(pMidiEngine->buses2());
+		while (iter.hasNext()) {
+			qtractorBus *pBus = iter.next();
 			if (pBus->busMode() & qtractorBus::Output) {
 				qtractorMidiBus *pMidiBus
 					= static_cast<qtractorMidiBus *> (pBus);
@@ -540,7 +560,7 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 		iIndex = 0;
 	m_ui.AuxSendBusNameComboBox->setCurrentIndex(iIndex);
 
-	updateAuxSendTitle();
+	m_pPlugin->updateEditorTitle();
 }
 
 
@@ -834,6 +854,27 @@ void qtractorPluginForm::deletePresetSlot (void)
 }
 
 
+// Alias finish-editing slot.
+void qtractorPluginForm::aliasSlot (void)
+{
+	if (m_pPlugin == nullptr)
+		return;
+
+	if (m_iUpdate > 0)
+		return;
+
+	++m_iUpdate;
+
+	// Make it as an undoable command...
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession)
+		pSession->execute(
+			new qtractorPluginAliasCommand(m_pPlugin, m_ui.AliasLineEdit->text()));
+
+	--m_iUpdate;
+}
+
+
 // Editor slot.
 void qtractorPluginForm::editSlot ( bool bOn )
 {
@@ -1058,6 +1099,11 @@ void qtractorPluginForm::refresh (void)
 	else
 		m_ui.PresetComboBox->setEditText(sOldPreset);
 
+	// Update the nominal user/title if any...
+	m_ui.AliasLineEdit->setText(m_pPlugin->alias());
+
+	m_ui.ActivateToolButton->setChecked(m_pPlugin->isActivated());
+
 //	m_pPlugin->idleEditor();
 
 	QListIterator<qtractorPluginParamWidget *> param_iter(m_paramWidgets);
@@ -1124,7 +1170,7 @@ void qtractorPluginForm::clear (void)
 	qDeleteAll(m_paramWidgets);
 	m_paramWidgets.clear();
 
-	m_pDirectAccessParamMenu->clear();	
+	m_pDirectAccessParamMenu->clear();
 }
 
 
@@ -1219,17 +1265,6 @@ void qtractorPluginForm::updateLatencyTextLabel (void)
 	} else {
 		m_ui.LatencyTextLabel->setText(tr("(no latency)"));
 	}
-}
-
-
-// Update special aux-send window title...
-void qtractorPluginForm::updateAuxSendTitle (void)
-{
-	if (m_pPlugin == nullptr)
-		return;
-
-	QWidget::setWindowTitle(
-		QObject::tr("Aux Send: %1").arg(m_pPlugin->title()));
 }
 
 
