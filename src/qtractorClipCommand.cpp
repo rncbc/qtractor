@@ -103,7 +103,8 @@ void qtractorClipCommand::fileClip ( qtractorClip *pClip,
 	pItem->trackChannel = iTrackChannel;
 	m_items.append(pItem);
 
-	reopenClip(pClip, true);
+	if (isAudioClip(pClip))
+		reopenClip(pClip, true);
 }
 
 
@@ -240,7 +241,7 @@ void qtractorClipCommand::resizeClip ( qtractorClip *pClip,
 		pItem->pitchShift = fPitchShift;
 	m_items.append(pItem);
 
-	if (pItem->editCommand == nullptr)
+	if (isAudioClip(pClip) || pItem->editCommand == nullptr)
 		reopenClip(pClip, fTimeStretch > 0.0f);
 //	else
 //		setClearSelect(true);
@@ -253,7 +254,8 @@ void qtractorClipCommand::gainClip ( qtractorClip *pClip, float fGain )
 	pItem->clipGain = fGain;
 	m_items.append(pItem);
 
-	reopenClip(pClip);
+	if (isAudioClip(pClip))
+		reopenClip(pClip);
 }
 
 
@@ -263,7 +265,8 @@ void qtractorClipCommand::panningClip ( qtractorClip *pClip, float fPanning )
 	pItem->clipPanning = fPanning;
 	m_items.append(pItem);
 
-	reopenClip(pClip);
+	if (isAudioClip(pClip))
+		reopenClip(pClip);
 }
 
 
@@ -294,7 +297,8 @@ void qtractorClipCommand::timeStretchClip (
 	pItem->timeStretch = fTimeStretch;
 	m_items.append(pItem);
 
-	reopenClip(pClip, true);
+	if (isAudioClip(pClip))
+		reopenClip(pClip, true);
 }
 
 
@@ -305,7 +309,8 @@ void qtractorClipCommand::pitchShiftClip (
 	pItem->pitchShift = fPitchShift;
 	m_items.append(pItem);
 
-	reopenClip(pClip);
+	if (isAudioClip(pClip))
+		reopenClip(pClip);
 }
 
 
@@ -340,19 +345,29 @@ void qtractorClipCommand::wsolaClip ( qtractorClip *pClip,
 	pItem->wsolaQuickSeek = bWsolaQuickSeek;
 	m_items.append(pItem);
 
-	reopenClip(pClip, true);
+	if (isAudioClip(pClip))
+		reopenClip(pClip, true);
 }
 
 
+// Conveniency helper: whether a clip is certain type.
+bool qtractorClipCommand::isAudioClip ( qtractorClip *pClip ) const
+{
+	if (pClip->track())
+		return ((pClip->track())->trackType() == qtractorTrack::Audio);
+	else
+		return false;
+}
+
+
+// When clips need to get reopenned.
 void qtractorClipCommand::reopenClip ( qtractorClip *pClip, bool bClose )
 {
-	if ((pClip->track())->trackType() == qtractorTrack::Audio) {
-		QHash<qtractorClip *, bool>::ConstIterator iter
-			= m_clips.constFind(pClip);
-		if (iter == m_clips.constEnd())
-			m_clips.insert(pClip, bClose);
-	//	setClearSelect(true);
-	}
+	QHash<qtractorClip *, bool>::ConstIterator iter
+		= m_clips.constFind(pClip);
+	if (iter == m_clips.constEnd())
+		m_clips.insert(pClip, bClose);
+//	setClearSelect(true);
 }
 
 

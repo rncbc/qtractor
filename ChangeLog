@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed MIDI clip offset resizing, most especially when drag-moving
+  the left-edge.
+
 - Audio Aux-sends inserted on audio output buses are not restricted
   to later buses anymore; the only restriction now is that no cyclic
   or loop-back routes are allowed; audio output buses are now sorted
