@@ -292,7 +292,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="570"/>
         <source>Aux Send: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aux Send: %1</translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="2398"/>
@@ -352,7 +352,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="590"/>
         <source>plugin alias</source>
-        <translation type="unfinished"></translation>
+        <translation>Přezdívka přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="832"/>
@@ -13583,12 +13583,12 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="130"/>
         <source>Alias:</source>
-        <translation type="unfinished"></translation>
+        <translation>Přezdívka:</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="146"/>
         <source>Plugin alias</source>
-        <translation type="unfinished"></translation>
+        <translation>Přezdívka přídavného modulu</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="159"/>
@@ -13726,7 +13726,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1360"/>
         <source>Aux Send: </source>
-        <translation type="unfinished"></translation>
+        <translation>Aux Send: </translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1679"/>
