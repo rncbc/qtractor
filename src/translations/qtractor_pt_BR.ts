@@ -598,17 +598,17 @@ MIDI:	</translation>
         <translation>%1 Banco %2</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="590"/>
+        <location filename="../qtractorEngineCommand.cpp" line="592"/>
         <source>update bus</source>
         <translation>atualizar canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="630"/>
+        <location filename="../qtractorEngineCommand.cpp" line="632"/>
         <source>move bus</source>
         <translation>mover canal primário</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="568"/>
+        <location filename="../qtractorEngineCommand.cpp" line="570"/>
         <source>create bus</source>
         <translation>criar canal primário</translation>
     </message>
@@ -646,7 +646,7 @@ MIDI:	</translation>
         <translation>renderizar sessão</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="802"/>
+        <location filename="../qtractorEngineCommand.cpp" line="804"/>
         <source>bus pan</source>
         <translation>panorâmico do canal primário</translation>
     </message>
@@ -769,7 +769,7 @@ Audio:	%1 channels, %2 Hz</source>
         <translation>Desconhecido</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="725"/>
+        <location filename="../qtractorEngineCommand.cpp" line="727"/>
         <source>bus gain</source>
         <translation>volume do canal primário</translation>
     </message>
@@ -788,7 +788,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
 Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="607"/>
+        <location filename="../qtractorEngineCommand.cpp" line="609"/>
         <source>delete bus</source>
         <translation>apagar canal primário</translation>
     </message>
@@ -814,7 +814,7 @@ Pista: &quot;%1&quot; Entrada: &quot;%2&quot; Saída: &quot;%3&quot;</translatio
         <translation>adicionar nó de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="679"/>
+        <location filename="../qtractorEngineCommand.cpp" line="681"/>
         <source>bus pass-through</source>
         <translation>repassar canal primário</translation>
     </message>

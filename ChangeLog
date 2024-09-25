@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Mixer: fixed dangling track removal after one of its buses has
+  been previously deleted."
+
 - Fixed MIDI clip offset resizing, most especially when drag-moving
   the left-edge.
 
