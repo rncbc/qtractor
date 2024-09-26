@@ -1,7 +1,7 @@
 // qtractorAudioConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -207,7 +207,7 @@ int qtractorAudioClientListView::updateClientPorts (void)
 				= QString::fromUtf8(ppszClientPorts[iClientPort]);
 			qtractorAudioClientItem *pClientItem = nullptr;
 			qtractorAudioPortItem   *pPortItem   = nullptr;
-			int iColon = sClientPort.indexOf(':');
+			const int iColon = sClientPort.indexOf(':');
 			if (iColon >= 0) {
 				const QString sClientName = sClientPort.left(iColon);
 				if (isClientName(sClientName)) {
@@ -426,7 +426,7 @@ void qtractorAudioConnect::updateConnections (void)
 		return;
 
 	// For each client item...
-	int iItemCount = OListView()->topLevelItemCount();
+	const int iItemCount = OListView()->topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = OListView()->topLevelItem(iItem);
 		if (pItem->type() != qtractorConnect::ClientItem)
@@ -436,7 +436,7 @@ void qtractorAudioConnect::updateConnections (void)
 		if (pOClient == nullptr)
 			continue;
 		// For each port item
-		int iChildCount = pOClient->childCount();
+		const int iChildCount = pOClient->childCount();
 		for (int iChild = 0; iChild < iChildCount; ++iChild) {
 			QTreeWidgetItem *pChild = pOClient->child(iChild);
 			if (pChild->type() != qtractorConnect::PortItem)
@@ -479,4 +479,3 @@ void qtractorAudioConnect::updateConnections (void)
 
 
 // end of qtractorAudioConnect.cpp
-

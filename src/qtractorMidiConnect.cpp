@@ -1,7 +1,7 @@
 // qtractorMidiConnect.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -100,7 +100,7 @@ int qtractorMidiClientItem::alsaClient (void) const
 // Derived port finder.
 qtractorMidiPortItem *qtractorMidiClientItem::findPortItem ( int iAlsaPort )
 {
-	int iChildCount = QTreeWidgetItem::childCount();
+	const int iChildCount = QTreeWidgetItem::childCount();
 	for (int iChild = 0; iChild < iChildCount; ++iChild) {
 		QTreeWidgetItem *pItem = QTreeWidgetItem::child(iChild);
 		if (pItem->type() != qtractorConnect::PortItem)
@@ -144,7 +144,7 @@ snd_seq_t *qtractorMidiClientListView::alsaSeq (void) const
 qtractorMidiClientItem *qtractorMidiClientListView::findClientItem (
 	int iAlsaClient )
 {
-	int iItemCount = QTreeWidget::topLevelItemCount();
+	const int iItemCount = QTreeWidget::topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = QTreeWidget::topLevelItem(iItem);
 		if (pItem->type() != qtractorConnect::ClientItem)
@@ -196,13 +196,13 @@ int qtractorMidiClientListView::updateClientPorts (void)
 	snd_seq_client_info_set_client(pClientInfo, -1);
 
 	while (snd_seq_query_next_client(pAlsaSeq, pClientInfo) >= 0) {
-		int iAlsaClient = snd_seq_client_info_get_client(pClientInfo);
+		const int iAlsaClient = snd_seq_client_info_get_client(pClientInfo);
 		if (iAlsaClient > 0) {
 			qtractorMidiClientItem *pClientItem = findClientItem(iAlsaClient);
 			snd_seq_port_info_set_client(pPortInfo, iAlsaClient);
 			snd_seq_port_info_set_port(pPortInfo, -1);
 			while (snd_seq_query_next_port(pAlsaSeq, pPortInfo) >= 0) {
-				unsigned int uiPortCapability
+				const unsigned int uiPortCapability
 					= snd_seq_port_info_get_capability(pPortInfo);
 				if (((uiPortCapability & uiAlsaFlags) == uiAlsaFlags) &&
 					((uiPortCapability & SND_SEQ_PORT_CAP_NO_EXPORT) == 0)) {
@@ -211,7 +211,7 @@ int qtractorMidiClientListView::updateClientPorts (void)
 					sClientName += QString::fromUtf8(
 						snd_seq_client_info_get_name(pClientInfo));
 					if (isClientName(sClientName)) {
-						int iAlsaPort = snd_seq_port_info_get_port(pPortInfo);
+						const int iAlsaPort = snd_seq_port_info_get_port(pPortInfo);
 						QString sPortName = QString::number(iAlsaPort);
 						sPortName += ':';
 						sPortName += QString::fromUtf8(
@@ -458,7 +458,7 @@ void qtractorMidiConnect::updateConnections (void)
 		= static_cast<qtractorMidiClientListView *> (IListView());
 
 	// For each client item...
-	int iItemCount = pOListView->topLevelItemCount();
+	const int iItemCount = pOListView->topLevelItemCount();
 	for (int iItem = 0; iItem < iItemCount; ++iItem) {
 		QTreeWidgetItem *pItem = pOListView->topLevelItem(iItem);
 		if (pItem->type() != qtractorConnect::ClientItem)
@@ -468,7 +468,7 @@ void qtractorMidiConnect::updateConnections (void)
 		if (pOClient == nullptr)
 			continue;
 		// For each port item
-		int iChildCount = pOClient->childCount();
+		const int iChildCount = pOClient->childCount();
 		for (int iChild = 0; iChild < iChildCount; ++iChild) {
 			QTreeWidgetItem *pChild = pOClient->child(iChild);
 			if (pChild->type() != qtractorConnect::PortItem)
