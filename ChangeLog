@@ -6,8 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- Reset target bus when copying or moving audio aux-sends inserts
-  into audio output buses.  
+- Always reset the target bus when copying or moving an Aux-Send
+  insert into an audio output bus.
 
 - Mixer: fixed dangling track removal after one of its buses has
   been previously deleted."
