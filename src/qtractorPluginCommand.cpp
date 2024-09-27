@@ -349,6 +349,18 @@ qtractorMovePluginCommand::qtractorMovePluginCommand (
 		pPlugin, pNextPlugin)
 {
 	m_pPluginList = pPluginList;
+
+	// Special case for audio Aux-sends moved into output buses...
+	qtractorPluginType *pType = pPlugin->type();
+	if (pType && (pType->typeHint() == qtractorPluginType::AuxSend) &&
+		(pPluginList->flags() & qtractorPluginList::AudioOutBus) &&
+		(pType->index() > 0)) { // index == channels > 0 => Audio aux-send.
+		m_pAudioAuxSendPlugin = static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+		if (m_pAudioAuxSendPlugin)
+			m_sAudioAuxSendBusName = m_pAudioAuxSendPlugin->audioBusName();
+	} else {
+		m_pAudioAuxSendPlugin = nullptr;
+	}
 }
 
 
@@ -374,6 +386,16 @@ bool qtractorMovePluginCommand::redo (void)
 
 	// Move it...
 	m_pPluginList->movePlugin(pPlugin, nextPlugin());
+
+	// Special case for audio Aux-sends moved into output buses...
+	if (m_pAudioAuxSendPlugin) {
+		const QString& sAudioAuxSendBusName
+			= m_pAudioAuxSendPlugin->audioBusName();
+		if (sAudioAuxSendBusName.isEmpty())
+			m_pAudioAuxSendPlugin->setAudioBusName(m_sAudioAuxSendBusName);
+		else
+			m_pAudioAuxSendPlugin->setAudioBusName(QString());
+	}
 
 	// Swap it nice, finally.
 	m_pPluginList = pPluginList;
