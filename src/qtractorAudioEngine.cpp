@@ -1455,17 +1455,21 @@ void qtractorAudioEngine::updateTimeInfo ( unsigned long iFrame )
 	m_timeInfo.beatsPerBar = pNode->beatsPerBar;
 	m_timeInfo.ticksPerBeat = iTicksPerBeat;
 	m_timeInfo.beatType = (1 << pNode->beatDivisor);
-	m_timeInfo.tick = pNode->tickFromFrame(iFrame) - pNode->tick;
-	const float beats = float(m_timeInfo.tick) / float(iTicksPerBeat);
+	const unsigned long ticks = pNode->tickFromFrame(iFrame) - pNode->tick;
+	const float beats = float(ticks) / float(iTicksPerBeat);
 	const unsigned short bars = (unsigned short) beats / m_timeInfo.beatsPerBar;
 	m_timeInfo.bar = pNode->bar + bars;
 	m_timeInfo.beat = (unsigned int) beats;
+	m_timeInfo.tick = (unsigned int) ticks;
 	if (m_timeInfo.tick >= (unsigned int) m_timeInfo.ticksPerBeat)
 		m_timeInfo.tick -= (unsigned int) m_timeInfo.beat * m_timeInfo.ticksPerBeat;
 	if (m_timeInfo.beat >= (unsigned int) m_timeInfo.beatsPerBar)
 		m_timeInfo.beat -= (unsigned int) (bars * m_timeInfo.beatsPerBar);
 	m_timeInfo.beats = float(pNode->beat) + beats;
 	m_timeInfo.barBeats = ::truncf(m_timeInfo.beats) - float(m_timeInfo.beat);
+	m_timeInfo.barTicks = ticks;
+	if (m_timeInfo.barTicks >= (unsigned long) m_timeInfo.ticksPerBeat)
+		m_timeInfo.barTicks -= (unsigned long) (m_timeInfo.beat * m_timeInfo.ticksPerBeat);
 
 	++m_timeInfo.bar;
 	++m_timeInfo.beat;
@@ -1526,6 +1530,7 @@ void qtractorAudioEngine::timebase ( jack_position_t *pPos, int iNewPos )
 	pPos->ticks_per_beat   = m_timeInfo.ticksPerBeat;
 	pPos->beats_per_minute = m_timeInfo.tempo;
 	pPos->beat_type        = m_timeInfo.beatType;
+	pPos->bar_start_tick   = m_timeInfo.barTicks;
 #endif
 	// Tell that we've been here...
 	if (iNewPos) ++m_iTimebase;
@@ -2057,6 +2062,20 @@ unsigned long qtractorAudioEngine::metro_offset ( unsigned long iFrame ) const
 	const unsigned long iOffset = m_iMetroOffset;
 	//	+ (m_pMetroBus ? m_pMetroBus->latency_out() : 0);
 	return (iFrame > iOffset ? iFrame - iOffset : iFrame);
+}
+
+
+// Transport locate/reposition (timebase aware)...
+void qtractorAudioEngine::transport_locate ( unsigned long iFrame )
+{
+	if (m_bTimebase) {
+		jack_position_t pos;
+		pos.frame = iFrame;
+		timebase(&pos, 1);
+		jack_transport_reposition(m_pJackClient, &pos);
+	} else {
+		jack_transport_locate(m_pJackClient, iFrame);
+	}
 }
 
 

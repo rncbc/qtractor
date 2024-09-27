@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Use timebase-aware JACK API for relocation. (GH issue #474)
+
+- Provide `bar_start_tick` in JACK BBT information. (GH issue #475)
+
 - Always reset the target bus when copying or moving an Aux-Send
   insert into an audio output bus.
 

@@ -279,6 +279,7 @@ public:
 		unsigned int   beat;
 		unsigned int   tick;
 		float          barBeats;
+		unsigned long  barTicks;
 	};
 
 	const TimeInfo& timeInfo() const
@@ -320,6 +321,9 @@ protected:
 
 	// Metronome latency offset compensation.
 	unsigned long metro_offset(unsigned long iFrame) const;
+
+	// Transport locate/reposition (timebase aware)...
+	void transport_locate(unsigned long iFrame);
 
 private:
 
