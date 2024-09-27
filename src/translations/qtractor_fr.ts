@@ -503,7 +503,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="572"/>
         <source>Aux Send: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Envoi aux : %1</translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="2413"/>
@@ -563,7 +563,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="612"/>
         <source>plugin alias</source>
-        <translation type="unfinished"></translation>
+        <translation>alis de greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="854"/>
@@ -13484,12 +13484,12 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorPluginForm.ui" line="130"/>
         <source>Alias:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alias :</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="146"/>
         <source>Plugin alias</source>
-        <translation type="unfinished"></translation>
+        <translation>Alias de greffon</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="159"/>
@@ -13725,7 +13725,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1360"/>
         <source>Aux Send: </source>
-        <translation type="unfinished"></translation>
+        <translation>Envoi aux :</translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1679"/>
