@@ -1467,9 +1467,8 @@ void qtractorAudioEngine::updateTimeInfo ( unsigned long iFrame )
 		m_timeInfo.beat -= (unsigned int) (bars * m_timeInfo.beatsPerBar);
 	m_timeInfo.beats = float(pNode->beat) + beats;
 	m_timeInfo.barBeats = ::truncf(m_timeInfo.beats) - float(m_timeInfo.beat);
-	m_timeInfo.barTicks = ticks;
-	if (m_timeInfo.barTicks >= (unsigned long) m_timeInfo.ticksPerBeat)
-		m_timeInfo.barTicks -= (unsigned long) (m_timeInfo.beat * m_timeInfo.ticksPerBeat);
+	m_timeInfo.barTicks = pNode->tick + (unsigned long) (
+		bars * m_timeInfo.beatsPerBar * m_timeInfo.ticksPerBeat);
 
 	++m_timeInfo.bar;
 	++m_timeInfo.beat;
