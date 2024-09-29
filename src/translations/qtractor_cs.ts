@@ -684,12 +684,12 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="756"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1413"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1669"/>
         <source>%1 (Audio)</source>
         <translation>%1 (Audio)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1081"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1669"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>
     </message>

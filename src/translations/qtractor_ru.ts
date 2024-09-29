@@ -659,12 +659,12 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="756"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1413"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1669"/>
         <source>%1 (Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1081"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1669"/>
         <source>%1 (MIDI)</source>
         <translation type="unfinished"></translation>
     </message>

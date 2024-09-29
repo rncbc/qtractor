@@ -298,12 +298,12 @@ Fin :	%3	Longueur :	%4</translation>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="756"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1413"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1669"/>
         <source>%1 (Audio)</source>
         <translation>%1 (audio)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1081"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1669"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>
     </message>
