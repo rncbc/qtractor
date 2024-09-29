@@ -906,7 +906,7 @@ void qtractorAudioEngine::stop (void)
 
 	if (m_transportMode & qtractorBus::Output) {
 		jack_transport_stop(m_pJackClient);
-		jack_transport_locate(m_pJackClient, sessionCursor()->frame());
+		transport_locate(sessionCursor()->frame());
 	}
 
 	// MIDI plugin managers reset...
@@ -1254,7 +1254,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 					iFrameEnd2   = iFrameStart2 + (iFrameEnd2 - iLoopEnd);
 					// Set to new transport location...
 					if (m_transportMode & qtractorBus::Output)
-						jack_transport_locate(m_pJackClient, iFrameStart2);
+						transport_locate(iFrameStart2);
 					pAudioCursor->seek(iFrameStart2);
 					// Update time(base) info...
 					updateTimeInfo(iFrameStart2);
@@ -1288,7 +1288,7 @@ int qtractorAudioEngine::process ( unsigned int nframes )
 			+ (iFrameEnd - pSession->loopEnd());
 		// Set to new transport location...
 		if (m_transportMode & qtractorBus::Output)
-			jack_transport_locate(m_pJackClient, iFrameEnd);
+			transport_locate(iFrameEnd);
 		// Take special care on metronome too...
 		if (m_bMetronome) {
 			m_iMetroBeat = pSession->beatFromFrame(iFrameEnd);
@@ -2064,20 +2064,6 @@ unsigned long qtractorAudioEngine::metro_offset ( unsigned long iFrame ) const
 }
 
 
-// Transport locate/reposition (timebase aware)...
-void qtractorAudioEngine::transport_locate ( unsigned long iFrame )
-{
-	if (m_bTimebase) {
-		jack_position_t pos;
-		pos.frame = iFrame;
-		timebase(&pos, 1);
-		jack_transport_reposition(m_pJackClient, &pos);
-	} else {
-		jack_transport_locate(m_pJackClient, iFrame);
-	}
-}
-
-
 // Metronome count-in switching.
 void qtractorAudioEngine::setCountIn ( bool bCountIn )
 {
@@ -2714,6 +2700,20 @@ QStringList qtractorAudioEngine::cyclicAudioOutBuses (
 	}
 
 	return audioOutBuses;
+}
+
+
+// Transport locate/reposition (timebase aware)...
+void qtractorAudioEngine::transport_locate ( unsigned long iFrame )
+{
+	if (m_bTimebase) {
+		jack_position_t pos;
+		pos.frame = iFrame;
+		timebase(&pos, 1);
+		jack_transport_reposition(m_pJackClient, &pos);
+	} else {
+		jack_transport_locate(m_pJackClient, iFrame);
+	}
 }
 
 

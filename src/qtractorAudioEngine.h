@@ -295,6 +295,9 @@ public:
 
 	QStringList cyclicAudioOutBuses(qtractorAudioBus *pAudioBus) const;
 
+	// Transport locate/reposition (timebase aware)...
+	void transport_locate(unsigned long iFrame);
+
 protected:
 
 	// Concrete device (de)activation methods.
@@ -321,9 +324,6 @@ protected:
 
 	// Metronome latency offset compensation.
 	unsigned long metro_offset(unsigned long iFrame) const;
-
-	// Transport locate/reposition (timebase aware)...
-	void transport_locate(unsigned long iFrame);
 
 private:
 

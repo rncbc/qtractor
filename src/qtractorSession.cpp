@@ -1323,11 +1323,8 @@ void qtractorSession::setPlayHead ( unsigned long iPlayHead )
 	lock();
 	setPlaying(false);
 
-	if (m_pAudioEngine->transportMode() & qtractorBus::Output) {
-		jack_client_t *pJackClient = m_pAudioEngine->jackClient();
-		if (pJackClient)
-			jack_transport_locate(pJackClient, iPlayHead);
-	}
+	if (m_pAudioEngine->transportMode() & qtractorBus::Output)
+		m_pAudioEngine->transport_locate(iPlayHead);
 
 	seek(iPlayHead, true);
 
