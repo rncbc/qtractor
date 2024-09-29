@@ -6,6 +6,16 @@ ChangeLog
 
 GIT HEAD
 
+- Use timebase-aware JACK API for relocation. (GH issue #474)
+
+- Provide `bar_start_tick` in JACK BBT information. (GH issue #475)
+
+- Always reset the target bus when copying or moving an Aux-Send
+  insert into an audio output bus.
+
+- Mixer: fixed dangling track removal after one of its buses has
+  been previously deleted."
+
 - Fixed MIDI clip offset resizing, most especially when drag-moving
   the left-edge.
 

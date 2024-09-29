@@ -29,6 +29,8 @@
 #include "qtractorAudioEngine.h"
 #include "qtractorMidiManager.h"
 
+#include "qtractorInsertPlugin.h"
+
 #include "qtractorMainForm.h"
 #include "qtractorOptions.h"
 
@@ -2175,8 +2177,21 @@ qtractorPlugin *qtractorPluginList::copyPlugin ( qtractorPlugin *pPlugin )
 	if (pNewPlugin) {
 		pNewPlugin->setAlias(pPlugin->alias());
 		pNewPlugin->setPreset(pPlugin->preset());
-		pNewPlugin->setConfigs(pPlugin->configs());
-		pNewPlugin->setConfigTypes(pPlugin->configTypes());
+		// Special case for audio Aux-sends copied into output buses...
+		if ((flags() & qtractorPluginList::AudioOutBus) &&
+			(pType->typeHint() == qtractorPluginType::AuxSend) &&
+			(pType->index() > 0)) { // index == channels > 0 => Audio aux-send.
+			qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+				= static_cast<qtractorAudioAuxSendPlugin *> (pNewPlugin);
+			if (pAudioAuxSendPlugin) {
+				pAudioAuxSendPlugin->setAudioBusName(QString());
+				pAudioAuxSendPlugin->freezeConfigs();
+			}
+		} else {
+			// All other cases, proceed as usual...
+			pNewPlugin->setConfigs(pPlugin->configs());
+			pNewPlugin->setConfigTypes(pPlugin->configTypes());
+		}
 		pNewPlugin->setValues(pPlugin->values());
 		pNewPlugin->realizeConfigs();
 		pNewPlugin->realizeValues();

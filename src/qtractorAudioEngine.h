@@ -279,6 +279,7 @@ public:
 		unsigned int   beat;
 		unsigned int   tick;
 		float          barBeats;
+		unsigned long  barTicks;
 	};
 
 	const TimeInfo& timeInfo() const
@@ -293,6 +294,9 @@ public:
 		qtractorPluginList *pPluginList);
 
 	QStringList cyclicAudioOutBuses(qtractorAudioBus *pAudioBus) const;
+
+	// Transport locate/reposition (timebase aware)...
+	void transport_locate(unsigned long iFrame);
 
 protected:
 

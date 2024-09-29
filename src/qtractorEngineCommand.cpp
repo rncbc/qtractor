@@ -502,13 +502,15 @@ bool qtractorBusCommand::deleteBus (void)
 	qtractorTracks *pTracks = pMainForm->tracks();
 	QListIterator<qtractorMixerStrip *> iter(strips);
 	while (iter.hasNext()) {
-		qtractorTrack *pTrack = iter.next()->track();
+		qtractorMixerStrip *pStrip = iter.next();
+		qtractorTrack *pTrack = pStrip->track();
 		if (pTrack) {
 			pTrack->open();
 			// Update track list item...
 			if (pTracks)
 				(pTracks->trackList())->updateTrack(pTrack);
 		}
+		pStrip->setTrack(pTrack);
 	}
 
 	// Update mixer (clean old strips...)

@@ -1666,7 +1666,7 @@ QString qtractorMidiAuxSendPlugin::title (void) const
 	if (qtractorPlugin::alias().isEmpty()) {
 		const QString sMidiBusName
 			= (m_pMidiBus ? m_sMidiBusName : QObject::tr("(none)"));
-		sTitle = QObject::tr("%1 (Audio)").arg(sMidiBusName);
+		sTitle = QObject::tr("%1 (MIDI)").arg(sMidiBusName);
 	} else {
 		sTitle = qtractorPlugin::title();
 	}
