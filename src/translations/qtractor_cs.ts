@@ -330,42 +330,42 @@ MIDI:	</translation>
         <translation>Přesunout přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="433"/>
+        <location filename="../qtractorPluginCommand.cpp" line="465"/>
         <source>activate plugin</source>
         <translation>Zapnout přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="469"/>
+        <location filename="../qtractorPluginCommand.cpp" line="501"/>
         <source>preset plugin</source>
         <translation>Přednastavit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="516"/>
+        <location filename="../qtractorPluginCommand.cpp" line="548"/>
         <source>reset plugin</source>
         <translation>Znovu spustit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="566"/>
+        <location filename="../qtractorPluginCommand.cpp" line="598"/>
         <source>plugin program</source>
         <translation>Program přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="612"/>
+        <location filename="../qtractorPluginCommand.cpp" line="644"/>
         <source>plugin alias</source>
         <translation>Přezdívka přídavného modulu</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="854"/>
+        <location filename="../qtractorPluginCommand.cpp" line="886"/>
         <source>dedicated audio outputs</source>
         <translation>Jednoúčelové zvukové výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="899"/>
+        <location filename="../qtractorPluginCommand.cpp" line="931"/>
         <source>direct access param</source>
         <translation>Parametr pro přímý přístup</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginCommand.cpp" line="931"/>
+        <location filename="../qtractorPluginCommand.cpp" line="963"/>
         <source>import plugins</source>
         <translation>Přídavné moduly k zavedení</translation>
     </message>
@@ -644,7 +644,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorInsertPlugin.cpp" line="473"/>
         <location filename="../qtractorInsertPlugin.cpp" line="783"/>
         <location filename="../qtractorInsertPlugin.cpp" line="1274"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1516"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1532"/>
         <source>Send Gain</source>
         <translation>Poslat zesílení</translation>
     </message>
@@ -676,20 +676,20 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Pomocný nepravý přídavný modul pro odeslání (MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorInsertPlugin.cpp" line="1412"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1668"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1428"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1700"/>
         <source>(none)</source>
         <translation>(žádný)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="756"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1413"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1429"/>
         <source>%1 (Audio)</source>
         <translation>%1 (Audio)</translation>
     </message>
     <message>
         <location filename="../qtractorInsertPlugin.cpp" line="1081"/>
-        <location filename="../qtractorInsertPlugin.cpp" line="1669"/>
+        <location filename="../qtractorInsertPlugin.cpp" line="1701"/>
         <source>%1 (MIDI)</source>
         <translation>%1 (MIDI)</translation>
     </message>

@@ -31,7 +31,6 @@
 
 // Forward declarations...
 class qtractorAuxSendPlugin;
-class qtractorAudioAuxSendPlugin;
 class qtractorPluginPortWidget;
 class qtractorMidiManager;
 
@@ -215,9 +214,9 @@ private:
 	// Instance variables.
 	qtractorPluginList *m_pPluginList;
 
-	// Special case for audio Aux-sends moved into output buses...
-	qtractorAudioAuxSendPlugin *m_pAudioAuxSendPlugin;
-	QString                     m_sAudioAuxSendBusName;
+	// Special case for aux-sends moved into output buses...
+	qtractorAuxSendPlugin *m_pAuxSendPlugin;
+	QString                m_sAuxSendBusName;
 };
 
 

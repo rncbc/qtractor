@@ -350,16 +350,29 @@ qtractorMovePluginCommand::qtractorMovePluginCommand (
 {
 	m_pPluginList = pPluginList;
 
-	// Special case for audio Aux-sends moved into output buses...
+	// Special case for aux-sends moved into output buses...
+	m_pAuxSendPlugin = nullptr;
+
 	qtractorPluginType *pType = pPlugin->type();
-	if (pType && (pType->typeHint() == qtractorPluginType::AuxSend) &&
-		(pPluginList->flags() & qtractorPluginList::AudioOutBus) &&
-		(pType->index() > 0)) { // index == channels > 0 => Audio aux-send.
-		m_pAudioAuxSendPlugin = static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
-		if (m_pAudioAuxSendPlugin)
-			m_sAudioAuxSendBusName = m_pAudioAuxSendPlugin->audioBusName();
-	} else {
-		m_pAudioAuxSendPlugin = nullptr;
+	if (pType && (pType->typeHint() == qtractorPluginType::AuxSend)) {
+		if ((pPluginList->flags() & qtractorPluginList::AudioOutBus) &&
+			(pType->index() > 0)) { // index == channels > 0 => Audio aux-send.
+			qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+				= static_cast<qtractorAudioAuxSendPlugin *> (pPlugin);
+			if (pAudioAuxSendPlugin) {
+				m_pAuxSendPlugin  = pAudioAuxSendPlugin;
+				m_sAuxSendBusName = pAudioAuxSendPlugin->audioBusName();
+			}
+		}
+		else // index == 0 => MIDI aux-send.
+		if (pPluginList->flags() & qtractorPluginList::MidiOutBus) {
+			qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
+				= static_cast<qtractorMidiAuxSendPlugin *> (pPlugin);
+			if (pMidiAuxSendPlugin) {
+				m_pAuxSendPlugin  = pMidiAuxSendPlugin;
+				m_sAuxSendBusName = pMidiAuxSendPlugin->midiBusName();
+			}
+		}
 	}
 }
 
@@ -369,6 +382,10 @@ bool qtractorMovePluginCommand::redo (void)
 {
 	qtractorPlugin *pPlugin = plugins().first();
 	if (pPlugin == nullptr)
+		return false;
+
+	qtractorPluginType *pType = pPlugin->type();
+	if (pType == nullptr)
 		return false;
 
 	if (m_pPluginList == nullptr)
@@ -388,13 +405,28 @@ bool qtractorMovePluginCommand::redo (void)
 	m_pPluginList->movePlugin(pPlugin, nextPlugin());
 
 	// Special case for audio Aux-sends moved into output buses...
-	if (m_pAudioAuxSendPlugin) {
-		const QString& sAudioAuxSendBusName
-			= m_pAudioAuxSendPlugin->audioBusName();
-		if (sAudioAuxSendBusName.isEmpty())
-			m_pAudioAuxSendPlugin->setAudioBusName(m_sAudioAuxSendBusName);
-		else
-			m_pAudioAuxSendPlugin->setAudioBusName(QString());
+	if (m_pAuxSendPlugin) {
+		if (pType->index() > 0) { // index == channels > 0 => Audio aux-send.
+			qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin
+				= static_cast<qtractorAudioAuxSendPlugin *> (m_pAuxSendPlugin);
+			if (pAudioAuxSendPlugin) {
+				const QString sAuxSendBusName
+					= pAudioAuxSendPlugin->audioBusName();
+				if (sAuxSendBusName.isEmpty())
+					pAudioAuxSendPlugin->setAudioBusName(m_sAuxSendBusName);
+				else
+					pAudioAuxSendPlugin->setAudioBusName(QString());
+			}
+		} else { // index == 0 => MIDI aux-send.
+			qtractorMidiAuxSendPlugin *pMidiAuxSendPlugin
+				= static_cast<qtractorMidiAuxSendPlugin *> (m_pAuxSendPlugin);
+			if (pMidiAuxSendPlugin) {
+				const QString sAuxSendBusName
+					= pMidiAuxSendPlugin->midiBusName();
+				pMidiAuxSendPlugin->setMidiBusName(m_sAuxSendBusName);
+				m_sAuxSendBusName = sAuxSendBusName;
+			}
+		}
 	}
 
 	// Swap it nice, finally.
