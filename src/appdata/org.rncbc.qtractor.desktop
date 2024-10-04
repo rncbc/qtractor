@@ -17,3 +17,4 @@ Type=Application
 StartupWMClass=qtractor
 X-Window-Icon=qtractor
 X-SuSE-translate=true
+X-NSM-Capable=true
