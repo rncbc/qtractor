@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- New MIDI clip tool option: Normalize / Compress. (EXPERIMENTAL)
+
 - Prepping up next development cycle (Qt >= 6.8)
 
 

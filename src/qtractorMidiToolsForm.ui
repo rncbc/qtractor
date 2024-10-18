@@ -645,7 +645,14 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1" colspan="3">
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="NormalizeCompressCheckBox">
+         <property name="text">
+          <string>&amp;Compress</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="3">
         <spacer>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -1706,6 +1713,7 @@ Edit head/tail (blue) markers define the shift range.</string>
   <tabstop>NormalizePercentSpinBox</tabstop>
   <tabstop>NormalizeValueCheckBox</tabstop>
   <tabstop>NormalizeValueSpinBox</tabstop>
+  <tabstop>NormalizeCompressCheckBox</tabstop>
   <tabstop>RandomizeCheckBox</tabstop>
   <tabstop>RandomizeNoteCheckBox</tabstop>
   <tabstop>RandomizeNoteSpinBox</tabstop>

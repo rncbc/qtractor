@@ -358,6 +358,9 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 	QObject::connect(m_ui.NormalizeValueSpinBox,
 		SIGNAL(valueChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.NormalizeCompressCheckBox,
+		 SIGNAL(toggled(bool)),
+		 SLOT(changed()));
 
 	QObject::connect(m_ui.RandomizeCheckBox,
 		SIGNAL(toggled(bool)),
@@ -614,6 +617,9 @@ void qtractorMidiToolsForm::loadPreset ( const QString& sPreset )
 			m_ui.NormalizeValueCheckBox->setChecked(vlist[3].toBool());
 			m_ui.NormalizeValueSpinBox->setValue(vlist[4].toInt());
 		}
+		// Normalize/compress tool...
+		if (vlist.count() > 5)
+			m_ui.NormalizeCompressCheckBox->setChecked(vlist[5].toBool());
 		// Randomize tool...
 		vlist = settings.value("/Randomize").toList();
 		if (vlist.count() > 8) {
@@ -736,6 +742,7 @@ void qtractorMidiToolsForm::savePreset ( const QString& sPreset )
 		vlist.append(m_ui.NormalizePercentSpinBox->value());
 		vlist.append(m_ui.NormalizeValueCheckBox->isChecked());
 		vlist.append(m_ui.NormalizeValueSpinBox->value());
+		vlist.append(m_ui.NormalizeCompressCheckBox->isChecked());
 		settings.setValue("/Normalize", vlist);
 		// Randomize tool...
 		vlist.clear();
@@ -1112,28 +1119,41 @@ qtractorMidiEditCommand *qtractorMidiToolsForm::midiEditCommand (
 				p = 8192.0f;
 			else
 				p = 128.0f;
+			if (m_ui.NormalizeCompressCheckBox->isChecked()) {
+				float percent = 100.0f;
+				if (m_ui.NormalizePercentCheckBox->isChecked())
+					percent = float(m_ui.NormalizePercentSpinBox->value());
+				float ratio = 0.0f;
+				if (p > q && p > 0.0f)
+					ratio = (q / p);
+				else
+				if (percent > 0.0f)
+					ratio = (100.0f / percent);
+				if (ratio > 0.0f)
+					iValue = int(p + (float(iValue) - q) / ratio);
+			}
+			else
 			if (m_ui.NormalizePercentCheckBox->isChecked()) {
 				p *= float(m_ui.NormalizePercentSpinBox->value());
 				q *= 100.0f;
+				if (q > 0.0f)
+					iValue = int((p * float(iValue)) / q);
 			}
-			if (q > 0.0f) {
-				iValue = int((p * float(iValue)) / q);
-				if (bPitchBend) {
-					if (iValue > +8191)
-						iValue = +8191;
-					else
-					if (iValue < -8191)
-						iValue = -8191;
-				} else {
-					if (iValue > 16383 && b14bit)
-						iValue = 16383;
-					else
-					if (iValue > 127)
-						iValue = 127;
-					else
-					if (iValue < 0)
-						iValue = 0;
-				}
+			if (bPitchBend) {
+				if (iValue > +8191)
+					iValue = +8191;
+				else
+				if (iValue < -8191)
+					iValue = -8191;
+			} else {
+				if (iValue > 16383 && b14bit)
+					iValue = 16383;
+				else
+				if (iValue > 127)
+					iValue = 127;
+				else
+				if (iValue < 0)
+					iValue = 0;
 			}
 		}
 		// Randomize tool...
@@ -1562,6 +1582,8 @@ void qtractorMidiToolsForm::stabilizeForm (void)
 	if (bEnabled2)
 		++iEnabled;
 	m_ui.NormalizeValueSpinBox->setEnabled(bEnabled2);
+
+	m_ui.NormalizeCompressCheckBox->setEnabled(bEnabled);
 
 	// Randomize tool...
 
