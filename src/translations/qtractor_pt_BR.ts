@@ -11109,51 +11109,51 @@ Você quer mesmo manter essas alterações?</translation>
         <location filename="../qtractorMidiToolsForm.ui" line="246"/>
         <location filename="../qtractorMidiToolsForm.ui" line="294"/>
         <location filename="../qtractorMidiToolsForm.ui" line="596"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="719"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="767"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="802"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="837"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1233"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1287"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1328"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1446"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="726"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="774"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="809"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="844"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1240"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1294"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1335"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1453"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1412"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1419"/>
         <source>P:</source>
         <translation>P:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="500"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="942"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="949"/>
         <source>BBT</source>
         <translation>CPS (Compasso Pulso Subpulso)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="990"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="997"/>
         <source>Flat</source>
         <translation>Neutro</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="995"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1002"/>
         <source>Ramp</source>
         <translation>Rampa</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="495"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="937"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="944"/>
         <source>Time</source>
         <translation>Tempo (m:s:ms)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="908"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="915"/>
         <source>none</source>
         <translation>nenhum</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="927"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="934"/>
         <source>temporamp</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11163,17 +11163,17 @@ Você quer mesmo manter essas alterações?</translation>
         <translation>Cúbico</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="716"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="723"/>
         <source>Randomize note/pitch</source>
         <translation>Aleatorize nota/altura</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1386"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1393"/>
         <source>Timeshift selected events</source>
         <translation>Eventos de mudança de velocidade</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="879"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="886"/>
         <source>About to delete preset:
 
 &quot;%1&quot;
@@ -11222,20 +11222,20 @@ Posso continuar?</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="427"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="703"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="710"/>
         <source>&amp;Note:</source>
         <translation>&amp;Nota:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="162"/>
         <location filename="../qtractorMidiToolsForm.ui" line="466"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="751"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1217"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="758"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1224"/>
         <source>&amp;Time:</source>
         <translation>&amp;Tempo:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="976"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="983"/>
         <source>Resize value</source>
         <translation>Redimensionar valor</translation>
     </message>
@@ -11245,27 +11245,27 @@ Posso continuar?</translation>
         <translation>Quantizar eventos selecionados</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="925"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="932"/>
         <source>timeshift</source>
         <translation>mudança de tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1389"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1396"/>
         <source>Timeshift</source>
         <translation>Mudança de Velocidade</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="834"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="841"/>
         <source>Randomize value</source>
         <translation>Aleatorize Valor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1374"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1381"/>
         <source>T&amp;imeshift</source>
         <translation>&amp;Mudança de Velocidade</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1503"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1510"/>
         <source>P = 0 : no change.
 P &gt; 0 : accelerating shift.
 P &lt; 0 : slowing down shift.
@@ -11276,24 +11276,24 @@ P &lt; 0 : desascelera (mais devagar).
 Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocidade.</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="919"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="926"/>
         <source>randomize</source>
         <translation>aleatorizar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="665"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="680"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="672"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="687"/>
         <source>&amp;Randomize</source>
         <translation>Aleato&amp;rizar</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="490"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="932"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="939"/>
         <source>Frames</source>
         <translation>Amostras</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1284"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1291"/>
         <source>Rescale duration</source>
         <translation>Reescalonar duração</translation>
     </message>
@@ -11303,12 +11303,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Linear</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="882"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="889"/>
         <source>Resize selected events</source>
         <translation>Redimensionar eventos selecionados</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1490"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1497"/>
         <source>Timeshift curve</source>
         <translation>Curva de Mudança de Velocidade</translation>
     </message>
@@ -11318,7 +11318,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>S&amp;uingue:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="921"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="928"/>
         <source>Resize duration</source>
         <translation>Redimensionar duração</translation>
     </message>
@@ -11333,7 +11333,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Salvar pré configuração</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="921"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="928"/>
         <source>resize</source>
         <translation>redimensionar</translation>
     </message>
@@ -11343,13 +11343,13 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Quadrática</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1513"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1520"/>
         <source>Timeshift duration</source>
         <translation>Duração da mudança de velocidade</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1179"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1194"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1186"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1201"/>
         <source>Re&amp;scale</source>
         <translation>Ree&amp;scalonar</translation>
     </message>
@@ -11364,12 +11364,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Duração da quantização</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1230"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1237"/>
         <source>Rescale time</source>
         <translation>Reescalonar tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="764"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="771"/>
         <source>Randomize time</source>
         <translation>Aleatorizar tempo</translation>
     </message>
@@ -11380,31 +11380,31 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Transposição</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="915"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="922"/>
         <source>transpose</source>
         <translation>transpor</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="223"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="786"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="908"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1271"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="793"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="915"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1278"/>
         <source>&amp;Duration:</source>
         <translation>&amp;Duração:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1453"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1460"/>
         <source>Timeshift parameter (log)</source>
         <translation>Parâmetro de mudança de velocidade (log)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="923"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="930"/>
         <source>rescale</source>
         <translation>reescalonar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="870"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="885"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="877"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="892"/>
         <source>Resi&amp;ze</source>
         <translation>Redimen&amp;sionar</translation>
     </message>
@@ -11420,7 +11420,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Normalizar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="917"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="924"/>
         <source>normalize</source>
         <translation>normalizar</translation>
     </message>
@@ -11445,97 +11445,102 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Reverso</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="799"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="651"/>
+        <source>&amp;Compress</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qtractorMidiToolsForm.ui" line="806"/>
         <source>Randomize duration</source>
         <translation>Aleatorizar duração</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="986"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="993"/>
         <source>Resize value mode</source>
         <translation>Redimensionar o modo do valor</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1074"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1081"/>
         <source>Legato mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1078"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1085"/>
         <source>Mono</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1083"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1090"/>
         <source>Poly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1126"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1133"/>
         <source>Split notes length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1133"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1140"/>
         <source>Split notes offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1137"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1144"/>
         <source>Relative</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1142"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1149"/>
         <source>Absolute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1353"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1360"/>
         <source>&amp;Invert</source>
         <translation type="unfinished">&amp;Inverter</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1534"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1541"/>
         <source>T&amp;empo ramp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1546"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1553"/>
         <source>Tempo ramp selected events</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1549"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1556"/>
         <source>Tempo ramp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1572"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1579"/>
         <source>From</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1585"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1592"/>
         <source>Tempo ramp start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1592"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1599"/>
         <source>to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1605"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1612"/>
         <source>Temporamp end</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1625"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1632"/>
         <source>Edit head/tail (blue) markers define the ramp range.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1632"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1639"/>
         <source>Tempo ramp duration</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11551,7 +11556,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Quantizar</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="913"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="920"/>
         <source>quantize</source>
         <translation>quantizar</translation>
     </message>
@@ -11562,9 +11567,9 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="628"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="821"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="963"/>
-        <location filename="../qtractorMidiToolsForm.ui" line="1312"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="828"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="970"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1319"/>
         <source>&amp;Value:</source>
         <translation>&amp;Valor:</translation>
     </message>
@@ -11574,7 +11579,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>(padrão)</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1191"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1198"/>
         <source>Rescale selected events</source>
         <translation>Reescalonar eventos selecionados</translation>
     </message>
@@ -11589,57 +11594,57 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>&amp;Percentual:</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1009"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1016"/>
         <source>Resize final value</source>
         <translation>Redimensionar valor final</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1032"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1039"/>
         <source>&amp;Legato:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1045"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1052"/>
         <source>Legato trim/extend type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1049"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1056"/>
         <source>Normal</source>
         <translation type="unfinished">Normal</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1054"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1061"/>
         <source>Trim</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1059"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1066"/>
         <source>Extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1067"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1074"/>
         <source>Legato trim/extend length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1112"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1119"/>
         <source>&amp;Join</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1119"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1126"/>
         <source>&amp;Split:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1425"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1432"/>
         <source>Timeshift parameter</source>
         <translation>Parâmetro de mudança de velocidade</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.cpp" line="878"/>
+        <location filename="../qtractorMidiToolsForm.cpp" line="885"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>
@@ -11649,7 +11654,7 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Apagar pré configuração</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="677"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="684"/>
         <source>Randomize selected events</source>
         <translation>Aleatorize os eventos selecionados</translation>
     </message>
@@ -11664,12 +11669,12 @@ Edição do começo/tamanho dos marcadores (azul) definem a mudança de velocida
         <translation>Percentual de normalização</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="928"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="935"/>
         <source>Resize duration format</source>
         <translation>Redimensionar o formato de duração</translation>
     </message>
     <message>
-        <location filename="../qtractorMidiToolsForm.ui" line="1325"/>
+        <location filename="../qtractorMidiToolsForm.ui" line="1332"/>
         <source>Rescale value</source>
         <translation>Reescalonar valor</translation>
     </message>
