@@ -572,6 +572,26 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 }
 
 
+// Mute given(current) clip.
+bool qtractorTracks::muteClip ( qtractorClip *pClip )
+{
+	if (pClip == nullptr)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == nullptr)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return false;
+
+	qtractorClipCommand *pClipMuteCommand
+		= new qtractorClipCommand(tr("mute clip"));
+	pClipMuteCommand->muteClip(pClip, !pClip->isClipMute());
+
+	return pSession->execute(pClipMuteCommand);
+}
+
+
 // Unlink given(current) clip.
 bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 {

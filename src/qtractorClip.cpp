@@ -92,6 +92,8 @@ void qtractorClip::clear (void)
 	m_iSelectStart    = 0;
 	m_iSelectEnd      = 0;
 
+	m_bMute = false;
+
 	m_iFadeInLength   = 0;
 	m_iFadeOutLength  = 0;
 
@@ -160,6 +162,9 @@ QString qtractorClip::clipTitle (void) const
 				.arg(iCurrentTake + 1).arg(iTakeCount);
 		}
 	}
+
+	if (m_bMute)
+		sClipTitle += QObject::tr(" [Mute]");
 
 	return sClipTitle;
 }
@@ -603,6 +608,8 @@ bool qtractorClip::loadElement (
 					qtractorClip::setClipGain(eProp.text().toFloat());
 				else if (eProp.tagName() == "panning")
 					qtractorClip::setClipPanning(eProp.text().toFloat());
+				else if (eProp.tagName() == "mute")
+					qtractorClip::setClipMute(qtractorDocument::boolFromText(eProp.text()));
 				else if (eProp.tagName() == "fade-in") {
 					qtractorClip::setFadeInType(
 						qtractorClip::fadeInTypeFromText(eProp.attribute("type")));
@@ -708,17 +715,19 @@ bool qtractorClip::saveElement (
 		QString::number(qtractorClip::clipGain()), &eProps);
 	pDocument->saveTextElement("panning",
 		QString::number(qtractorClip::clipPanning()), &eProps);
-    QDomElement eFadeIn = pDocument->document()->createElement("fade-in");
+	pDocument->saveTextElement("mute",
+		qtractorDocument::textFromBool(qtractorClip::isClipMute()), &eProps);
+	QDomElement eFadeIn = pDocument->document()->createElement("fade-in");
 	eFadeIn.setAttribute("type",
 		qtractorClip::textFromFadeType(qtractorClip::fadeInType()));
-    eFadeIn.appendChild(pDocument->document()->createTextNode(
+	eFadeIn.appendChild(pDocument->document()->createTextNode(
 		QString::number(qtractorClip::fadeInLength())));
 	eProps.appendChild(eFadeIn);
 
-    QDomElement eFadeOut = pDocument->document()->createElement("fade-out");
+	QDomElement eFadeOut = pDocument->document()->createElement("fade-out");
 	eFadeOut.setAttribute("type",
 		qtractorClip::textFromFadeType(qtractorClip::fadeOutType()));
-    eFadeOut.appendChild(pDocument->document()->createTextNode(
+	eFadeOut.appendChild(pDocument->document()->createTextNode(
 		QString::number(qtractorClip::fadeOutLength())));
 	eProps.appendChild(eFadeOut);
 

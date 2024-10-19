@@ -607,18 +607,29 @@
     </widget>
    </item>
    <item row="8" column="0" colspan="10">
-    <widget class="QDialogButtonBox" name="DialogButtonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QCheckBox" name="ClipMuteCheckBox">
+       <property name="text">
+        <string>&amp;Mute</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="DialogButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="4" margin="8"/>
+ <layoutdefault spacing="8" margin="8"/>
  <customwidgets>
   <customwidget>
    <class>qtractorTimeSpinBox</class>
@@ -645,6 +656,7 @@
   <tabstop>PitchShiftSpinBox</tabstop>
   <tabstop>WsolaTimeStretchCheckBox</tabstop>
   <tabstop>WsolaQuickSeekCheckBox</tabstop>
+  <tabstop>ClipMuteCheckBox</tabstop>
   <tabstop>DialogButtonBox</tabstop>
  </tabstops>
  <resources>
