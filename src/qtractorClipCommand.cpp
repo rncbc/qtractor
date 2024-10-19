@@ -270,6 +270,14 @@ void qtractorClipCommand::panningClip ( qtractorClip *pClip, float fPanning )
 }
 
 
+void qtractorClipCommand::muteClip ( qtractorClip *pClip, bool bMute )
+{
+	Item *pItem = new Item(MuteClip, pClip, pClip->track());
+	pItem->clipMute = bMute;
+	m_items.append(pItem);
+}
+
+
 void qtractorClipCommand::fadeInClip ( qtractorClip *pClip,
 	unsigned long iFadeInLength, qtractorClip::FadeType fadeInType )
 {
@@ -777,6 +785,12 @@ bool qtractorClipCommand::execute ( bool bRedo )
 			const float fOldPanning = pClip->clipPanning();
 			pClip->setClipPanning(pItem->clipPanning);
 			pItem->clipPanning = fOldPanning;
+			break;
+		}
+		case MuteClip: {
+			const bool bOldMute = pClip->isClipMute();
+			pClip->setClipMute(pItem->clipMute);
+			pItem->clipMute = bOldMute;
 			break;
 		}
 		case FadeInClip: {

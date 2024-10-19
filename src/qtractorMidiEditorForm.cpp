@@ -348,7 +348,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pTrackChannelLabel->setAutoFillBackground(true);
 	pStatusBar->addWidget(m_pTrackChannelLabel);
 
-	// Status modification status.
+	// Clip modification status.
 	m_pStatusModLabel = new QLabel(tr("MOD"));
 	m_pStatusModLabel->setAlignment(Qt::AlignHCenter);
 	m_pStatusModLabel->setMinimumSize(m_pStatusModLabel->sizeHint() + pad);
@@ -356,13 +356,21 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pStatusModLabel->setAutoFillBackground(true);
 	pStatusBar->addPermanentWidget(m_pStatusModLabel);
 
-	// Session recording status.
+	// Clip recording status.
 	m_pStatusRecLabel = new QLabel(tr("REC"));
 	m_pStatusRecLabel->setAlignment(Qt::AlignHCenter);
 	m_pStatusRecLabel->setMinimumSize(m_pStatusRecLabel->sizeHint() + pad);
 	m_pStatusRecLabel->setToolTip(tr("MIDI clip record state"));
 	m_pStatusRecLabel->setAutoFillBackground(true);
 	pStatusBar->addPermanentWidget(m_pStatusRecLabel);
+
+	// Clip mute(ness) status.
+	m_pStatusMuteLabel = new QLabel(tr("MUTE"));
+	m_pStatusMuteLabel->setAlignment(Qt::AlignHCenter);
+	m_pStatusMuteLabel->setMinimumSize(m_pStatusMuteLabel->sizeHint() + pad);
+	m_pStatusMuteLabel->setToolTip(tr("MIDI clip mute state"));
+	m_pStatusMuteLabel->setAutoFillBackground(true);
+	pStatusBar->addPermanentWidget(m_pStatusMuteLabel);
 
 	// Sequence duration status.
 	m_pDurationLabel = new QLabel(tr("00:00:00.000"));
@@ -375,6 +383,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pRedPalette = new QPalette(pStatusBar->palette());
 	m_pRedPalette->setColor(QPalette::WindowText, Qt::darkRed);
 	m_pRedPalette->setColor(QPalette::Window, Qt::red);
+
+	m_pYellowPalette = new QPalette(pStatusBar->palette());
+	m_pYellowPalette->setColor(QPalette::WindowText, Qt::darkYellow);
+	m_pYellowPalette->setColor(QPalette::Window, Qt::yellow);
 
 	// Some actions surely need those
 	// shortcuts firmly attached...
@@ -402,6 +414,9 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	QObject::connect(m_ui.fileSaveAsAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileSaveAs()));
+	QObject::connect(m_ui.fileMuteAction,
+		SIGNAL(triggered(bool)),
+		SLOT(fileMute()));
 	QObject::connect(m_ui.fileUnlinkAction,
 		SIGNAL(triggered(bool)),
 		SLOT(fileUnlink()));
@@ -1345,6 +1360,18 @@ void qtractorMidiEditorForm::fileSaveAs (void)
 }
 
 
+// Mute current clip.
+void qtractorMidiEditorForm::fileMute (void)
+{
+	qtractorMainForm *pMainForm = qtractorMainForm::getInstance();
+	if (pMainForm) {
+		qtractorTracks *pTracks = pMainForm->tracks();
+		if (pTracks)
+			pTracks->muteClip(m_pMidiEditor->midiClip());
+	}
+}
+
+
 // Unlink current clip.
 void qtractorMidiEditorForm::fileUnlink (void)
 {
@@ -2153,6 +2180,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		pTrack = pMidiClip->track();
 	
 	m_ui.fileSaveAction->setEnabled(m_iDirtyCount > 0);
+	m_ui.fileMuteAction->setEnabled(pMidiClip != nullptr);
+	m_ui.fileMuteAction->setChecked(pMidiClip && pMidiClip->isClipMute());
 	m_ui.fileUnlinkAction->setEnabled(pMidiClip && pMidiClip->isHashLinked());
 
 	const bool bClipRecordEx = (pTrack && pTrack->isClipRecordEx()
@@ -2211,6 +2240,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 		m_pTrackNameLabel->clear();
 		m_pStatusModLabel->clear();
 		m_pStatusRecLabel->clear();
+		m_pStatusMuteLabel->clear();
 		m_pDurationLabel->clear();
 		return;
 	}
@@ -2249,6 +2279,14 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	} else {
 		m_pStatusRecLabel->clear();
 		m_pStatusRecLabel->setPalette(statusBar()->palette());
+	}
+
+	if (pMidiClip && pMidiClip->isClipMute()) {
+		m_pStatusMuteLabel->setText(tr("MUTE"));
+		m_pStatusMuteLabel->setPalette(*m_pYellowPalette);
+	} else {
+		m_pStatusMuteLabel->clear();
+		m_pStatusMuteLabel->setPalette(statusBar()->palette());
 	}
 
 	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
@@ -2544,6 +2582,8 @@ void qtractorMidiEditorForm::transportTimeFormatChanged ( int iDisplayFormat )
 	m_pTimeSpinBox->setDisplayFormat(displayFormat);
 
 	m_pMidiEventList->refresh();
+
+	stabilizeForm();
 }
 
 

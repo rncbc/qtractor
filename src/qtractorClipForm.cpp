@@ -195,6 +195,9 @@ qtractorClipForm::qtractorClipForm ( QWidget *pParent )
 	QObject::connect(m_ui.WsolaQuickSeekCheckBox,
 		SIGNAL(stateChanged(int)),
 		SLOT(changed()));
+	QObject::connect(m_ui.ClipMuteCheckBox,
+		SIGNAL(stateChanged(int)),
+		SLOT(changed()));
 	QObject::connect(m_ui.DialogButtonBox,
 		SIGNAL(accepted()),
 		SLOT(accept()));
@@ -322,6 +325,8 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		break;
 	}
 
+	m_ui.ClipMuteCheckBox->setChecked(m_pClip->isClipMute());
+
 	qtractorOptions *pOptions = qtractorOptions::getInstance();
 	if (pOptions)
 		pOptions->loadComboBoxHistory(m_ui.FilenameComboBox);
@@ -401,6 +406,7 @@ void qtractorClipForm::accept (void)
 		const unsigned long iFadeOutLength = m_ui.FadeOutLengthSpinBox->value();
 		qtractorClip::FadeType fadeOutType
 			= fadeTypeFromIndex(m_ui.FadeOutTypeComboBox->currentIndex());
+		const bool bClipMute = m_ui.ClipMuteCheckBox->isChecked();
 		int iFileChange = 0;
 		int iWsolaChange = 0;
 		// It depends whether we're adding a new clip or not...
@@ -450,6 +456,8 @@ void qtractorClipForm::accept (void)
 			// Fade out...
 			m_pClip->setFadeOutLength(iFadeOutLength);
 			m_pClip->setFadeOutType(fadeOutType);
+			// Mute...
+			m_pClip->setClipMute(bClipMute);
 			// Ready it...
 			pClipCommand->addClip(m_pClip, m_pClip->track());
 			// Ready new.
@@ -522,6 +530,10 @@ void qtractorClipForm::accept (void)
 			// WSOLA audio clip options...
 			if (iWsolaChange > 0)
 				pClipCommand->wsolaClip(m_pClip, bWsolaTimeStretch, bWsolaQuickSeek);
+			// Mute...
+			if (( bClipMute && !m_pClip->isClipMute()) ||
+				(!bClipMute &&  m_pClip->isClipMute()))
+				pClipCommand->muteClip(m_pClip, bClipMute);
 			// Ready edit.
 		}
 		// Do it (by making it undoable)...

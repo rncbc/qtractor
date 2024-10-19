@@ -365,6 +365,8 @@
     <addaction name="clipEditAction"/>
     <addaction name="separator"/>
     <addaction name="clipTakeMenu"/>
+    <addaction name="separator"/>
+    <addaction name="clipMuteAction"/>
     <addaction name="clipUnlinkAction"/>
     <addaction name="clipRecordExAction"/>
     <addaction name="separator"/>
@@ -1754,6 +1756,26 @@
    </property>
    <property name="shortcut">
     <string>F4</string>
+   </property>
+  </action>
+  <action name="clipMuteAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Mute</string>
+   </property>
+   <property name="iconText">
+    <string>Mute Clip</string>
+   </property>
+   <property name="toolTip">
+    <string>Mute clip</string>
+   </property>
+   <property name="statusTip">
+    <string>Mute current clip</string>
+   </property>
+   <property name="shortcut">
+    <string/>
    </property>
   </action>
   <action name="clipUnlinkAction">
