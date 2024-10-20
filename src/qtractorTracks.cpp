@@ -586,7 +586,21 @@ bool qtractorTracks::muteClip ( qtractorClip *pClip )
 
 	qtractorClipCommand *pClipMuteCommand
 		= new qtractorClipCommand(tr("mute clip"));
-	pClipMuteCommand->muteClip(pClip, !pClip->isClipMute());
+
+	// Multiple clip selection...
+	if (isClipSelected()) {
+		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+		const qtractorClipSelect::ItemList& items = pClipSelect->items();
+		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			// Make sure it's legal selection...
+			pClip = iter.key();
+			if (pClip->track() && pClip->isClipSelected())
+				pClipMuteCommand->muteClip(pClip, !pClip->isClipMute());
+		}
+	}	// Single, current clip instead?
+	else pClipMuteCommand->muteClip(pClip, !pClip->isClipMute());
 
 	return pSession->execute(pClipMuteCommand);
 }

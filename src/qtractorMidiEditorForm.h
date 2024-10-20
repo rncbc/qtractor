@@ -113,6 +113,7 @@ protected slots:
 
 	void fileSave();
 	void fileSaveAs();
+	void fileMute();
 	void fileUnlink();
 	void fileRecordEx(bool bOn);
 	void fileTrackInputs();
@@ -300,9 +301,11 @@ private:
 	QLabel *m_pTrackChannelLabel;
 	QLabel *m_pStatusModLabel;
 	QLabel *m_pStatusRecLabel;
+	QLabel *m_pStatusMuteLabel;
 	QLabel *m_pDurationLabel;
 
 	QPalette *m_pRedPalette;
+	QPalette *m_pYellowPalette;
 };
 
 

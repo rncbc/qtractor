@@ -67,6 +67,8 @@
     </widget>
     <addaction name="fileSaveAction"/>
     <addaction name="fileSaveAsAction"/>
+    <addaction name="separator"/>
+    <addaction name="fileMuteAction"/>
     <addaction name="fileUnlinkAction"/>
     <addaction name="fileRecordExAction"/>
     <addaction name="separator"/>
@@ -443,6 +445,23 @@
    </property>
    <property name="statusTip">
     <string>Save current MIDI clip with another file name</string>
+   </property>
+  </action>
+  <action name="fileMuteAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Mute</string>
+   </property>
+   <property name="iconText">
+    <string>Mute</string>
+   </property>
+   <property name="toolTip">
+    <string>Mute</string>
+   </property>
+   <property name="statusTip">
+    <string>Mute current MIDI clip</string>
    </property>
   </action>
   <action name="fileUnlinkAction">

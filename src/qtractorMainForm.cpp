@@ -7617,7 +7617,7 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipNewAction->setEnabled(bEnabled);
 	m_ui.clipEditAction->setEnabled(pClip != nullptr);
 
-	m_ui.clipMuteAction->setEnabled(pClip != nullptr);
+	m_ui.clipMuteAction->setEnabled(bClipSelected);
 	m_ui.clipMuteAction->setChecked(pClip && pClip->isClipMute());
 
 	// Special unlink (MIDI) clip...
