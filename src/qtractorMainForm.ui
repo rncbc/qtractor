@@ -364,9 +364,9 @@
     <addaction name="clipNewAction"/>
     <addaction name="clipEditAction"/>
     <addaction name="separator"/>
-    <addaction name="clipMuteAction"/>
-    <addaction name="separator"/>
     <addaction name="clipTakeMenu"/>
+    <addaction name="separator"/>
+    <addaction name="clipMuteAction"/>
     <addaction name="clipUnlinkAction"/>
     <addaction name="clipRecordExAction"/>
     <addaction name="separator"/>
