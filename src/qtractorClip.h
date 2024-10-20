@@ -110,6 +110,11 @@ public:
 	float clipPanning() const
 		{ return m_fPanning; }
 
+	void setClipMute(bool bMute)
+		{ m_bMute = bMute; }
+	bool isClipMute() const
+		{ return m_bMute; }
+
 	// Fade modes.
 	enum FadeMode {
 		FadeIn = 0,
@@ -385,6 +390,8 @@ private:
 
 	float m_fGain;                      // Clip gain/volume;
 	float m_fPanning;                   // Clip panning;
+
+	bool m_bMute;                       // Clip mute(ness);
 
 	// Take(record) descriptor.
 	TakeInfo *m_pTakeInfo;

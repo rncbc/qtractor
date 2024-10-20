@@ -572,6 +572,40 @@ bool qtractorTracks::editClip ( qtractorClip *pClip )
 }
 
 
+// Mute given(current) clip.
+bool qtractorTracks::muteClip ( qtractorClip *pClip )
+{
+	if (pClip == nullptr)
+		pClip = m_pTrackView->currentClip();
+	if (pClip == nullptr)
+		return false;
+
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return false;
+
+	qtractorClipCommand *pClipMuteCommand
+		= new qtractorClipCommand(tr("mute clip"));
+
+	// Multiple clip selection...
+	if (isClipSelected()) {
+		qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+		const qtractorClipSelect::ItemList& items = pClipSelect->items();
+		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			// Make sure it's legal selection...
+			pClip = iter.key();
+			if (pClip->track() && pClip->isClipSelected())
+				pClipMuteCommand->muteClip(pClip, !pClip->isClipMute());
+		}
+	}	// Single, current clip instead?
+	else pClipMuteCommand->muteClip(pClip, !pClip->isClipMute());
+
+	return pSession->execute(pClipMuteCommand);
+}
+
+
 // Unlink given(current) clip.
 bool qtractorTracks::unlinkClip ( qtractorClip *pClip )
 {

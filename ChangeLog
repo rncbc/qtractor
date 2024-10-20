@@ -4,6 +4,15 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- New Clip Mute state property introduced. (EXPERIMENTAL)
+
+- New MIDI clip tool option: Normalize / Compress. (EXPERIMENTAL)
+
+- Prepping up next development cycle (Qt >= 6.8)
+
+
 1.3.0  2024-10-04  An Early-Fall'24 Release.
 
 - Use timebase-aware JACK API for relocation; provide `bar_start_tick`
