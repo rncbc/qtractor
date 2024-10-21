@@ -6393,14 +6393,10 @@ la próxima vez que inicie este %1.</translation>
         <location filename="../qtractorMainForm.cpp" line="6836"/>
         <source>The audio/MIDI engine could not be started.
 
-Make sure the JACK audio server (jackd) and
+Make sure the JACK/Pipewire audio service and
 the ALSA Sequencer kernel module (snd-seq-midi)
 are up and running and then restart the session.</source>
-        <translation>No se pudo iniciar el motor de audio/MIDI.
-
-Asegúrese de que el servidor de audio JACK (jackd) y
-el módulo de kernel del secuenciador ALSA (snd-seq-midi)
-están en funcionamiento y luego reinicie la sesión.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6922"/>

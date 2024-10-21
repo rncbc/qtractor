@@ -3066,15 +3066,6 @@ Do you want to crash-recover from it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6836"/>
-        <source>The audio/MIDI engine could not be started.
-
-Make sure the JACK audio server (jackd) and
-the ALSA Sequencer kernel module (snd-seq-midi)
-are up and running and then restart the session.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="7559"/>
         <source>&amp;Hold</source>
         <translation type="unfinished"></translation>
@@ -3471,6 +3462,15 @@ next time you start this %1.</source>
         <location filename="../qtractorMainForm.cpp" line="6832"/>
         <source>Session started.</source>
         <translation>Сессия начата.</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="6836"/>
+        <source>The audio/MIDI engine could not be started.
+
+Make sure the JACK/Pipewire audio service and
+the ALSA Sequencer kernel module (snd-seq-midi)
+are up and running and then restart the session.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6922"/>

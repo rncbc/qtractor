@@ -3124,19 +3124,6 @@ Você deseja continuar assim mesmo?</translation>
         <translation>Usando: Qt %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6836"/>
-        <source>The audio/MIDI engine could not be started.
-
-Make sure the JACK audio server (jackd) and
-the ALSA Sequencer kernel module (snd-seq-midi)
-are up and running and then restart the session.</source>
-        <translation>O aparato de Áudio/MIDI não pôde ser inicializado.
-
-Certifique-se que o servidor de áudio JACK (jackd) e
-o módulo Sequenciador ALSA do kernel (snd-seq-midi)
-foram chamados e estão rodando e então reinicie a sessão.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="8415"/>
         <source>The audio engine buffer size has changed,
 increased from %1 to %2 frames/period.
@@ -5105,6 +5092,15 @@ está rodando e reinicie a sessão.</translation>
         <location filename="../qtractorMainForm.cpp" line="6719"/>
         <source>XRUN</source>
         <translation>XRUN</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="6836"/>
+        <source>The audio/MIDI engine could not be started.
+
+Make sure the JACK/Pipewire audio service and
+the ALSA Sequencer kernel module (snd-seq-midi)
+are up and running and then restart the session.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="8762"/>

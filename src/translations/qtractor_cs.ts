@@ -3066,19 +3066,6 @@ Jste si jistý?</translation>
         <translation>XRUN</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6836"/>
-        <source>The audio/MIDI engine could not be started.
-
-Make sure the JACK audio server (jackd) and
-the ALSA Sequencer kernel module (snd-seq-midi)
-are up and running and then restart the session.</source>
-        <translation>Stroj zvuk/MIDI se nepodařilo spustit.
-
-Ujistěte se, že zvukový server JACK (jackd) a
-modul jádra sekvencer ALSA (snd-seq-midi)
-jsou spuštěny a běží, a potom sezení spusťte znovu.</translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="7559"/>
         <source>&amp;Hold</source>
         <translation>&amp;Držet</translation>
@@ -3517,6 +3504,15 @@ až při příštím spuštění %1.</translation>
         <location filename="../qtractorMainForm.cpp" line="6832"/>
         <source>Session started.</source>
         <translation>Sezení začalo.</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="6836"/>
+        <source>The audio/MIDI engine could not be started.
+
+Make sure the JACK/Pipewire audio service and
+the ALSA Sequencer kernel module (snd-seq-midi)
+are up and running and then restart the session.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6922"/>

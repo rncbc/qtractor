@@ -6242,15 +6242,6 @@ al prossimo avvio di questo %1.</translation>
         <translation>XRUN</translation>
     </message>
     <message>
-        <location filename="../qtractorMainForm.cpp" line="6836"/>
-        <source>The audio/MIDI engine could not be started.
-
-Make sure the JACK audio server (jackd) and
-the ALSA Sequencer kernel module (snd-seq-midi)
-are up and running and then restart the session.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../qtractorMainForm.cpp" line="6951"/>
         <source>The following issues were detected:
 
@@ -6400,6 +6391,15 @@ il file della sessione corrente.</translation>
         <location filename="../qtractorMainForm.cpp" line="6832"/>
         <source>Session started.</source>
         <translation>Sessione avviata.</translation>
+    </message>
+    <message>
+        <location filename="../qtractorMainForm.cpp" line="6836"/>
+        <source>The audio/MIDI engine could not be started.
+
+Make sure the JACK/Pipewire audio service and
+the ALSA Sequencer kernel module (snd-seq-midi)
+are up and running and then restart the session.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6922"/>
