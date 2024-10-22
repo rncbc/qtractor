@@ -15585,7 +15585,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1051"/>
-        <location filename="../qtractorTracks.cpp" line="3074"/>
+        <location filename="../qtractorTracks.cpp" line="3077"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>音声ファイル &quot;%1&quot; を %2 %3 へインポート。
@@ -15593,13 +15593,13 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1056"/>
-        <location filename="../qtractorTracks.cpp" line="3079"/>
+        <location filename="../qtractorTracks.cpp" line="3082"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>音声ファイルのインポート: &quot;%1&quot;。</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1086"/>
-        <location filename="../qtractorTracks.cpp" line="2928"/>
+        <location filename="../qtractorTracks.cpp" line="2931"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>MIDIファイル &quot;%1&quot; をトラックチャンネル %2 の%3 %4 へインポート。
@@ -15607,7 +15607,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1092"/>
-        <location filename="../qtractorTracks.cpp" line="2934"/>
+        <location filename="../qtractorTracks.cpp" line="2937"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>MIDIファイルのインポート: &quot;%1&quot;, トラックチャンネル: %2。</translation>
     </message>
@@ -15618,7 +15618,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1225"/>
-        <location filename="../qtractorTracks.cpp" line="1510"/>
+        <location filename="../qtractorTracks.cpp" line="1513"/>
         <source>Merge/Export</source>
         <translation>マージ/エクスポート</translation>
     </message>
@@ -15628,12 +15628,12 @@ Length:	%3</source>
         <translation>音声クリップのマージ/エクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1525"/>
+        <location filename="../qtractorTracks.cpp" line="1528"/>
         <source>MIDI files (*.mid *.smf *.midi)</source>
         <translation>MIDIファイル (*.mid *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1526"/>
+        <location filename="../qtractorTracks.cpp" line="1529"/>
         <source>All files (*.*)</source>
         <translation>全ファイル (*.*)</translation>
     </message>
@@ -15648,67 +15648,67 @@ Length:	%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1439"/>
+        <location filename="../qtractorTracks.cpp" line="1442"/>
         <source>Audio clip merge/export: &quot;%1&quot; complete.</source>
         <translation>音声クリップのマージ/エクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1523"/>
+        <location filename="../qtractorTracks.cpp" line="1526"/>
         <source>Merge/Export MIDI Clip</source>
         <translation>MIDIクリップをマージ/エクスポート</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1589"/>
+        <location filename="../qtractorTracks.cpp" line="1592"/>
         <source>MIDI clip merge/export: &quot;%1&quot; started...</source>
         <translation>MIDIクリップのマージ/エクスポート: &quot;%1&quot; 開始...</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1711"/>
+        <location filename="../qtractorTracks.cpp" line="1714"/>
         <source>MIDI clip merge/export: &quot;%1&quot; complete.</source>
         <translation>MIDIクリップのマージ/エクスポート: &quot;%1&quot; 完了。</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1888"/>
+        <location filename="../qtractorTracks.cpp" line="1891"/>
         <source>clip cross-fade</source>
         <translation>クリップのクロスフェード</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2143"/>
+        <location filename="../qtractorTracks.cpp" line="2146"/>
         <source>Insert Range</source>
         <translation>レンジの挿入</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2163"/>
+        <location filename="../qtractorTracks.cpp" line="2166"/>
         <source>insert range</source>
         <translation>レンジの挿入</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2164"/>
+        <location filename="../qtractorTracks.cpp" line="2167"/>
         <source>insert track range</source>
         <translation>トラックレンジの挿入</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2368"/>
+        <location filename="../qtractorTracks.cpp" line="2371"/>
         <source>Remove Range</source>
         <translation>レンジの削除</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2388"/>
+        <location filename="../qtractorTracks.cpp" line="2391"/>
         <source>remove range</source>
         <translation>レンジを削除します</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2389"/>
+        <location filename="../qtractorTracks.cpp" line="2392"/>
         <source>remove track range</source>
         <translation>トラックレンジを削除します</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2686"/>
+        <location filename="../qtractorTracks.cpp" line="2689"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2687"/>
+        <location filename="../qtractorTracks.cpp" line="2690"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -15721,14 +15721,14 @@ Are you sure?</source>
 よろしいですか?</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3185"/>
+        <location filename="../qtractorTracks.cpp" line="3188"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>MIDIファイル &quot;%1&quot; を %2 %3 へインポート。
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3190"/>
+        <location filename="../qtractorTracks.cpp" line="3193"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>MIDIファイルをインポート: &quot;%1&quot;。</translation>
     </message>

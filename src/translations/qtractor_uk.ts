@@ -15596,7 +15596,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1051"/>
-        <location filename="../qtractorTracks.cpp" line="3074"/>
+        <location filename="../qtractorTracks.cpp" line="3077"/>
         <source>Audio file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Імпортування звукового файла «%1» на %2 %3.
@@ -15604,13 +15604,13 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1056"/>
-        <location filename="../qtractorTracks.cpp" line="3079"/>
+        <location filename="../qtractorTracks.cpp" line="3082"/>
         <source>Audio file import: &quot;%1&quot;.</source>
         <translation>Імпортування звукового файла: «%1».</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1086"/>
-        <location filename="../qtractorTracks.cpp" line="2928"/>
+        <location filename="../qtractorTracks.cpp" line="2931"/>
         <source>MIDI file import &quot;%1&quot; track-channel %2 on %3 %4.
 </source>
         <translation>Імпортування файла MIDI «%1», доріжка-канал %2 на %3 %4.
@@ -15618,7 +15618,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1092"/>
-        <location filename="../qtractorTracks.cpp" line="2934"/>
+        <location filename="../qtractorTracks.cpp" line="2937"/>
         <source>MIDI file import: &quot;%1&quot;, track-channel: %2.</source>
         <translation>Імпортування файла MIDI: «%1», доріжка-канал: %2.</translation>
     </message>
@@ -15629,7 +15629,7 @@ Length:	%3</source>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="1225"/>
-        <location filename="../qtractorTracks.cpp" line="1510"/>
+        <location filename="../qtractorTracks.cpp" line="1513"/>
         <source>Merge/Export</source>
         <translation>Об&apos;єднання/Експортування</translation>
     </message>
@@ -15644,77 +15644,77 @@ Length:	%3</source>
         <translation>Об&apos;єднання/Експортування звукових кліпів: розпочато «%1»...</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1439"/>
+        <location filename="../qtractorTracks.cpp" line="1442"/>
         <source>Audio clip merge/export: &quot;%1&quot; complete.</source>
         <translation>Об&apos;єднання/Експортування звукових кліпів: завершено «%1».</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1523"/>
+        <location filename="../qtractorTracks.cpp" line="1526"/>
         <source>Merge/Export MIDI Clip</source>
         <translation>Об&apos;єднання/Експортування кліпу MIDI</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1525"/>
+        <location filename="../qtractorTracks.cpp" line="1528"/>
         <source>MIDI files (*.mid *.smf *.midi)</source>
         <translation>файли MIDI (*.mid *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1526"/>
+        <location filename="../qtractorTracks.cpp" line="1529"/>
         <source>All files (*.*)</source>
         <translation>усі файли (*.*)</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1589"/>
+        <location filename="../qtractorTracks.cpp" line="1592"/>
         <source>MIDI clip merge/export: &quot;%1&quot; started...</source>
         <translation>Об&apos;єднання/Експортування кліпів MIDI: розпочато «%1»...</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1711"/>
+        <location filename="../qtractorTracks.cpp" line="1714"/>
         <source>MIDI clip merge/export: &quot;%1&quot; complete.</source>
         <translation>Об&apos;єднання/Експортування кліпів MIDI: завершено «%1».</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="1888"/>
+        <location filename="../qtractorTracks.cpp" line="1891"/>
         <source>clip cross-fade</source>
         <translation>перехресне згасання кліпів</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2143"/>
+        <location filename="../qtractorTracks.cpp" line="2146"/>
         <source>Insert Range</source>
         <translation>Вставити діапазон</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2163"/>
+        <location filename="../qtractorTracks.cpp" line="2166"/>
         <source>insert range</source>
         <translation>вставити діапазон</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2164"/>
+        <location filename="../qtractorTracks.cpp" line="2167"/>
         <source>insert track range</source>
         <translation>вставити діапазон доріжки</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2368"/>
+        <location filename="../qtractorTracks.cpp" line="2371"/>
         <source>Remove Range</source>
         <translation>Вилучити діапазон</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2388"/>
+        <location filename="../qtractorTracks.cpp" line="2391"/>
         <source>remove range</source>
         <translation>вилучити діапазон</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2389"/>
+        <location filename="../qtractorTracks.cpp" line="2392"/>
         <source>remove track range</source>
         <translation>вилучити діапазон доріжки</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2686"/>
+        <location filename="../qtractorTracks.cpp" line="2689"/>
         <source>Warning</source>
         <translation>Попередження</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="2687"/>
+        <location filename="../qtractorTracks.cpp" line="2690"/>
         <source>About to remove track:
 
 &quot;%1&quot;
@@ -15727,14 +15727,14 @@ Are you sure?</source>
 Ви справді цього хочете?</translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3185"/>
+        <location filename="../qtractorTracks.cpp" line="3188"/>
         <source>MIDI file import &quot;%1&quot; on %2 %3.
 </source>
         <translation>Імпортування файла MIDI «%1» на %2 %3.
 </translation>
     </message>
     <message>
-        <location filename="../qtractorTracks.cpp" line="3190"/>
+        <location filename="../qtractorTracks.cpp" line="3193"/>
         <source>MIDI file import: &quot;%1&quot;.</source>
         <translation>Імпортування файла MIDI: «%1».</translation>
     </message>
