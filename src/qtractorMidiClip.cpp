@@ -211,6 +211,8 @@ qtractorMidiClip::qtractorMidiClip ( const qtractorMidiClip& clip )
 	setClipGain(clip.clipGain());
 	setClipPanning(clip.clipPanning());
 
+	setClipMute(clip.isClipMute());
+
 	setFadeInType(clip.fadeInType());
 	setFadeOutType(clip.fadeOutType());
 

@@ -1673,6 +1673,9 @@ void qtractorTrack::drawTrack ( QPainter *pPainter, const QRect& trackRect,
 			pClip->drawClip(pPainter, clipRect, iClipOffset);
 			if (pClip == pClipRecordEx)
 				pPainter->fillRect(clipRect, QColor(255, 0, 0, 60));
+			else
+			if (pClip->isClipMute())
+				pPainter->fillRect(clipRect, QColor(0, 0, 0, 60));
 		}
 		pClip = pClip->next();
 	}
