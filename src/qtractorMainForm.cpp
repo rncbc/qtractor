@@ -6834,7 +6834,7 @@ bool qtractorMainForm::startSession (void)
 		// Uh-oh, we can't go on like this...
 		appendMessagesError(
 			tr("The audio/MIDI engine could not be started.\n\n"
-			"Make sure the JACK audio server (jackd) and\n"
+			"Make sure the JACK/Pipewire audio service and\n"
 			"the ALSA Sequencer kernel module (snd-seq-midi)\n"
 			"are up and running and then restart the session."));
 	}
@@ -7630,9 +7630,10 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipRecordExAction->setChecked(pTrack && pTrack->isClipRecordEx()
 		&& static_cast<qtractorMidiClip *> (pTrack->clipRecord()) == pMidiClip);
 
-	m_ui.clipSplitAction->setEnabled(pClip != nullptr
-		&& iPlayHead > pClip->clipStart()
-		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
+	m_ui.clipSplitAction->setEnabled(bClipSelected
+		|| pTrack != nullptr || (pClip != nullptr
+			&& iPlayHead > pClip->clipStart()
+			&& iPlayHead < pClip->clipStart() + pClip->clipLength()));
 	m_ui.clipMergeAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipNormalizeAction->setEnabled(bClipSelected);
 	m_ui.clipTempoAdjustAction->setEnabled(bClipSelected);

@@ -641,47 +641,81 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 	if (pSession == nullptr)
 		return false;
 
+	QList<qtractorClip *> clips;
+
 	const unsigned long iPlayHead  = pSession->playHead();
 
-	if (pClip == nullptr)
-		pClip = m_pTrackView->currentClip();
+	// Apply to current clip or clips on current track...
 	if (pClip == nullptr) {
 		qtractorTrack *pTrack = m_pTrackList->currentTrack();
 		if (pTrack) {
 			pClip = pTrack->clips().first();
-			while (pClip && iPlayHead > pClip->clipStart() + pClip->clipLength())
+			while (pClip
+				&& iPlayHead > pClip->clipStart() + pClip->clipLength()) {
 				pClip = pClip->next();
+			}
+			if (pClip
+				&& iPlayHead > pClip->clipStart()
+				&& iPlayHead < pClip->clipStart() + pClip->clipLength()) {
+				clips.append(pClip);
+			}
+		}
+	}
+	else
+	if (iPlayHead > pClip->clipStart() &&
+		iPlayHead < pClip->clipStart() + pClip->clipLength()) {
+		clips.append(pClip);
+	}
+
+	// Apply to multiple clip selection, as well...
+	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+	const qtractorClipSelect::ItemList& items = pClipSelect->items();
+	if (items.count() > 0) {
+		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			pClip = iter.key();
+			if (!clips.contains(pClip)
+				&& iPlayHead > pClip->clipStart()
+				&& iPlayHead < pClip->clipStart() + pClip->clipLength()) {
+				clips.append(pClip);
+			}
 		}
 	}
 
-	if (pClip == nullptr)
+	if (clips.isEmpty())
 		return false;
 
-	if (!pClip->queryEditor())
-		return false;
-
-	const unsigned long iClipStart = pClip->clipStart();
-	const unsigned long iClipEnd   = iClipStart + pClip->clipLength();
-	if (iClipStart >= iPlayHead || iPlayHead >= iClipEnd)
-		return false;
+	QListIterator<qtractorClip *> clip_iter(clips);
+	while (clip_iter.hasNext()) {
+		pClip = clip_iter.next();
+		if (!pClip->queryEditor())
+			return false;
+	}
+	clip_iter.toFront();
 
 	m_pTrackView->ensureVisibleFrame(iPlayHead);
 
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("split clip"));
 
-	// Shorten old right...
-	const unsigned long iClipOffset = pClip->clipOffset();
-	pClipCommand->resizeClip(pClip,
-		iClipStart, iClipOffset, iPlayHead - iClipStart);
-	// Add left clone...
-	qtractorClip *pNewClip = m_pTrackView->cloneClip(pClip);
-	if (pNewClip) {
-		pNewClip->setClipStart(iPlayHead);
-		pNewClip->setClipOffset(iClipOffset + iPlayHead - iClipStart);
-		pNewClip->setClipLength(iClipEnd - iPlayHead);
-		pNewClip->setFadeOutLength(pClip->fadeOutLength());
-		pClipCommand->addClip(pNewClip, pNewClip->track());
+	while (clip_iter.hasNext()) {
+		pClip = clip_iter.next();
+		// Shorten old right...
+		const unsigned long iClipStart  = pClip->clipStart();
+		const unsigned long iClipEnd    = iClipStart + pClip->clipLength();
+		const unsigned long iClipOffset = pClip->clipOffset();
+		pClipCommand->resizeClip(pClip,
+								 iClipStart, iClipOffset, iPlayHead - iClipStart);
+		// Add left clone...
+		qtractorClip *pNewClip = m_pTrackView->cloneClip(pClip);
+		if (pNewClip) {
+			pNewClip->setClipStart(iPlayHead);
+			pNewClip->setClipOffset(iClipOffset + iPlayHead - iClipStart);
+			pNewClip->setClipLength(iClipEnd - iPlayHead);
+			pNewClip->setFadeOutLength(pClip->fadeOutLength());
+			pClipCommand->addClip(pNewClip, pNewClip->track());
+		}
 	}
 
 	// That's it...
@@ -1277,13 +1311,13 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	if (QFileInfo(sFilename).suffix().isEmpty())
 		sFilename += '.' + sExt;
 
-	const unsigned int iBufferSizeEx
+	const unsigned int iBufferSize
 		= pSession->audioEngine()->bufferSizeEx();
 
 	qtractorAudioFile *pAudioFile
 		= qtractorAudioFileFactory::createAudioFile(sFilename,
 			pAudioBus->channels(), pSession->sampleRate(),
-			iBufferSizeEx, iFormat);
+			iBufferSize, iFormat);
 	if (pAudioFile == nullptr)
 		return false;
 
@@ -1341,10 +1375,13 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 	}
 
 	// Allocate merge audio scratch buffer...
+	const unsigned int iBlockSize
+		= pSession->audioEngine()->blockSize();
+
 	unsigned short i;
 	float **ppFrames = new float * [iChannels];
 	for (i = 0; i < iChannels; ++i)
-		ppFrames[i] = new float[iBufferSizeEx];
+		ppFrames[i] = new float[iBlockSize];
 
 	// Setup clip buffers...
 	QListIterator<audioClipBufferItem *> it(list);
@@ -1365,14 +1402,14 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 
 	// Loop-merge audio clips...
 	unsigned long iFrameStart = iSelectStart;
-	unsigned long iFrameEnd = iFrameStart + iBufferSizeEx;
+	unsigned long iFrameEnd = iFrameStart + iBlockSize;
 	int count = 0;
 
 	// Loop until EOF...
 	while (iFrameStart < iSelectEnd && iFrameEnd > iSelectStart) {
 		// Zero-silence on scratch buffers...
 		for (i = 0; i < iChannels; ++i)
-			::memset(ppFrames[i], 0, iBufferSizeEx * sizeof(float));
+			::memset(ppFrames[i], 0, iBlockSize * sizeof(float));
 		// Merge clips in window...
 		it.toFront();
 		while (it.hasNext()) {
@@ -1398,21 +1435,21 @@ bool qtractorTracks::mergeExportAudioClips ( qtractorClipCommand *pClipCommand )
 				const unsigned long iFrame = iFrameStart - iClipStart;
 				while (!pBuff->inSync(iFrame, iFrame))
 					pBuff->syncExport();
-				pBuff->readMix(ppFrames, iBufferSizeEx, iChannels, 0,
+				pBuff->readMix(ppFrames, iBlockSize, iChannels, 0,
 					fGain * pClip->fadeInOutGain(iFrameEnd - iClipStart));
 			}
 		}
 		// Actually write to merge audio file;
 		// - check for last incomplete block...
 		if (iFrameEnd > iSelectEnd)
-			pAudioFile->write(ppFrames, iBufferSizeEx - (iFrameEnd - iSelectEnd));
+			pAudioFile->write(ppFrames, iBlockSize - (iFrameEnd - iSelectEnd));
 		else
-			pAudioFile->write(ppFrames, iBufferSizeEx);
+			pAudioFile->write(ppFrames, iBlockSize);
 		// Advance to next buffer...
 		iFrameStart = iFrameEnd;
-		iFrameEnd = iFrameStart + iBufferSizeEx;
+		iFrameEnd = iFrameStart + iBlockSize;
 		if (++count > 100 && pProgressBar) {
-			pProgressBar->setValue(pProgressBar->value() + iBufferSizeEx);
+			pProgressBar->setValue(pProgressBar->value() + iBlockSize);
 			qtractorSession::stabilize();
 			count = 0;
 		}
