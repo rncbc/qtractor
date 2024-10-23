@@ -641,47 +641,81 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 	if (pSession == nullptr)
 		return false;
 
+	QList<qtractorClip *> clips;
+
 	const unsigned long iPlayHead  = pSession->playHead();
 
-	if (pClip == nullptr)
-		pClip = m_pTrackView->currentClip();
+	// Apply to current clip or clips on current track...
 	if (pClip == nullptr) {
 		qtractorTrack *pTrack = m_pTrackList->currentTrack();
 		if (pTrack) {
 			pClip = pTrack->clips().first();
-			while (pClip && iPlayHead > pClip->clipStart() + pClip->clipLength())
+			while (pClip
+				&& iPlayHead > pClip->clipStart() + pClip->clipLength()) {
 				pClip = pClip->next();
+			}
+			if (pClip
+				&& iPlayHead > pClip->clipStart()
+				&& iPlayHead < pClip->clipStart() + pClip->clipLength()) {
+				clips.append(pClip);
+			}
+		}
+	}
+	else
+	if (iPlayHead > pClip->clipStart() &&
+		iPlayHead < pClip->clipStart() + pClip->clipLength()) {
+		clips.append(pClip);
+	}
+
+	// Apply to multiple clip selection, as well...
+	qtractorClipSelect *pClipSelect = m_pTrackView->clipSelect();
+	const qtractorClipSelect::ItemList& items = pClipSelect->items();
+	if (items.count() > 0) {
+		qtractorClipSelect::ItemList::ConstIterator iter = items.constBegin();
+		const qtractorClipSelect::ItemList::ConstIterator& iter_end = items.constEnd();
+		for ( ; iter != iter_end; ++iter) {
+			pClip = iter.key();
+			if (!clips.contains(pClip)
+				&& iPlayHead > pClip->clipStart()
+				&& iPlayHead < pClip->clipStart() + pClip->clipLength()) {
+				clips.append(pClip);
+			}
 		}
 	}
 
-	if (pClip == nullptr)
+	if (clips.isEmpty())
 		return false;
 
-	if (!pClip->queryEditor())
-		return false;
-
-	const unsigned long iClipStart = pClip->clipStart();
-	const unsigned long iClipEnd   = iClipStart + pClip->clipLength();
-	if (iClipStart >= iPlayHead || iPlayHead >= iClipEnd)
-		return false;
+	QListIterator<qtractorClip *> clip_iter(clips);
+	while (clip_iter.hasNext()) {
+		pClip = clip_iter.next();
+		if (!pClip->queryEditor())
+			return false;
+	}
+	clip_iter.toFront();
 
 	m_pTrackView->ensureVisibleFrame(iPlayHead);
 
 	qtractorClipCommand *pClipCommand
 		= new qtractorClipCommand(tr("split clip"));
 
-	// Shorten old right...
-	const unsigned long iClipOffset = pClip->clipOffset();
-	pClipCommand->resizeClip(pClip,
-		iClipStart, iClipOffset, iPlayHead - iClipStart);
-	// Add left clone...
-	qtractorClip *pNewClip = m_pTrackView->cloneClip(pClip);
-	if (pNewClip) {
-		pNewClip->setClipStart(iPlayHead);
-		pNewClip->setClipOffset(iClipOffset + iPlayHead - iClipStart);
-		pNewClip->setClipLength(iClipEnd - iPlayHead);
-		pNewClip->setFadeOutLength(pClip->fadeOutLength());
-		pClipCommand->addClip(pNewClip, pNewClip->track());
+	while (clip_iter.hasNext()) {
+		pClip = clip_iter.next();
+		// Shorten old right...
+		const unsigned long iClipStart  = pClip->clipStart();
+		const unsigned long iClipEnd    = iClipStart + pClip->clipLength();
+		const unsigned long iClipOffset = pClip->clipOffset();
+		pClipCommand->resizeClip(pClip,
+								 iClipStart, iClipOffset, iPlayHead - iClipStart);
+		// Add left clone...
+		qtractorClip *pNewClip = m_pTrackView->cloneClip(pClip);
+		if (pNewClip) {
+			pNewClip->setClipStart(iPlayHead);
+			pNewClip->setClipOffset(iClipOffset + iPlayHead - iClipStart);
+			pNewClip->setClipLength(iClipEnd - iPlayHead);
+			pNewClip->setFadeOutLength(pClip->fadeOutLength());
+			pClipCommand->addClip(pNewClip, pNewClip->track());
+		}
 	}
 
 	// That's it...

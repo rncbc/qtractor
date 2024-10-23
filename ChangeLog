@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Clip/Split now also applies to multiple selected clips, on any other
+  track than current, if the split point (play-head) is found within.
+
 - Clip Merge/Export... audio clips now taking the internal audio 
   resolution (ie. 64 frames/period), independent to former JACK
   /Pipewire buffer-size/period. (EXPERMENTAL) (GH Issue #481)

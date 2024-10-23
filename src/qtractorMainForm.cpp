@@ -7630,9 +7630,10 @@ void qtractorMainForm::updateClipMenu (void)
 	m_ui.clipRecordExAction->setChecked(pTrack && pTrack->isClipRecordEx()
 		&& static_cast<qtractorMidiClip *> (pTrack->clipRecord()) == pMidiClip);
 
-	m_ui.clipSplitAction->setEnabled(pClip != nullptr
-		&& iPlayHead > pClip->clipStart()
-		&& iPlayHead < pClip->clipStart() + pClip->clipLength());
+	m_ui.clipSplitAction->setEnabled(bClipSelected
+		|| pTrack != nullptr || (pClip != nullptr
+			&& iPlayHead > pClip->clipStart()
+			&& iPlayHead < pClip->clipStart() + pClip->clipLength()));
 	m_ui.clipMergeAction->setEnabled(bSingleTrackSelected);
 	m_ui.clipNormalizeAction->setEnabled(bClipSelected);
 	m_ui.clipTempoAdjustAction->setEnabled(bClipSelected);
