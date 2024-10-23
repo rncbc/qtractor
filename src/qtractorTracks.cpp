@@ -706,7 +706,7 @@ bool qtractorTracks::splitClip ( qtractorClip *pClip )
 		const unsigned long iClipEnd    = iClipStart + pClip->clipLength();
 		const unsigned long iClipOffset = pClip->clipOffset();
 		pClipCommand->resizeClip(pClip,
-								 iClipStart, iClipOffset, iPlayHead - iClipStart);
+			iClipStart, iClipOffset, iPlayHead - iClipStart);
 		// Add left clone...
 		qtractorClip *pNewClip = m_pTrackView->cloneClip(pClip);
 		if (pNewClip) {
