@@ -6400,7 +6400,7 @@ est hautement recommandé.</translation>
 Make sure the JACK/Pipewire audio service and
 the ALSA Sequencer kernel module (snd-seq-midi)
 are up and running and then restart the session.</source>
-        <translation>Le moteur audio/MIDI n'a pas pu être démarré.
+        <translation>Le moteur audio/MIDI n&apos;a pas pu être démarré.
 
 Assurez-vous que le service audio JACK/Pipewire
 et le module noyau ALSA Sequencer (snd-seq-midi)
