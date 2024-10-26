@@ -83,7 +83,7 @@ Zvuk:	%1 kanály, %2 Hz</translation>
     <message>
         <location filename="../qtractorClip.cpp" line="167"/>
         <source> [Mute]</source>
-        <translation type="unfinished"></translation>
+        <translation> [Ztlumit]</translation>
     </message>
     <message>
         <location filename="../qtractorClip.cpp" line="560"/>
@@ -1671,7 +1671,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="614"/>
         <source>&amp;Mute</source>
-        <translation type="unfinished">&amp;Ztlumit</translation>
+        <translation>&amp;Ztlumit</translation>
     </message>
 </context>
 <context>
@@ -3512,7 +3512,11 @@ až při příštím spuštění %1.</translation>
 Make sure the JACK/Pipewire audio service and
 the ALSA Sequencer kernel module (snd-seq-midi)
 are up and running and then restart the session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvukový/MIDI stroj se nepodařilo spustit.
+
+Ujistěte se, že zvuková služba JACK/Pipewire a
+modul jádra ALSA sekvenceru (snd-seq-midi)
+jsou spuštěny a restartujte sezení.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6922"/>
@@ -5072,17 +5076,17 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1769"/>
         <source>Mute Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1772"/>
         <source>Mute clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1775"/>
         <source>Mute current clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit nynější záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1845"/>
@@ -9028,12 +9032,12 @@ Délka:	%3</translation>
         <location filename="../qtractorMidiEditorForm.cpp" line="368"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="2285"/>
         <source>MUTE</source>
-        <translation type="unfinished">ZTLUMIT</translation>
+        <translation>ZTLUMIT</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="371"/>
         <source>MIDI clip mute state</source>
-        <translation type="unfinished"></translation>
+        <translation>Stav ztlumení záběru MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="376"/>
@@ -9710,18 +9714,18 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="455"/>
         <source>&amp;Mute</source>
-        <translation type="unfinished">&amp;Ztlumit</translation>
+        <translation>&amp;Ztlumit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="458"/>
         <location filename="../qtractorMidiEditorForm.ui" line="461"/>
         <source>Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="464"/>
         <source>Mute current MIDI clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit nynější záběr MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="469"/>
@@ -11413,7 +11417,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="651"/>
         <source>&amp;Compress</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Komprimovat</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="877"/>
@@ -15584,7 +15588,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="588"/>
         <source>mute clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit záběr</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="910"/>
