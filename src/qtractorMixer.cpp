@@ -645,7 +645,7 @@ void qtractorMixerStrip::updateName (void)
 		const QColor& bg = m_pTrack->foreground().lighter();
 		QColor fg = m_pTrack->background().lighter();
 		if (qAbs(bg.value() - fg.value()) < 0x33)
-			fg.setHsv(fg.hue(), fg.saturation(), (255 - fg.value()) & 0x7f);
+			fg.setHsv(fg.hue(), fg.saturation(), (255 - fg.value()), 200);
 		pal.setColor(QPalette::Button, bg);
 		pal.setColor(QPalette::ButtonText, fg);
 		m_pLabel->setPalette(pal);

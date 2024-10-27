@@ -1200,7 +1200,7 @@ void qtractorTrackList::drawCell (
 		bg = (pItem->track)->foreground().lighter();
 		fg = (pItem->track)->background().lighter();
 		if (qAbs(bg.value() - fg.value()) < 0x33)
-			fg.setHsv(fg.hue(), fg.saturation(), (255 - fg.value()) & 0x7f);
+			fg.setHsv(fg.hue(), fg.saturation(), (255 - fg.value()), 200);
 	} else if (pItem->flags & 1) {
 		bg = pal.highlight().color();
 		fg = pal.highlightedText().color();
