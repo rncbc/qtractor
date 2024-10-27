@@ -376,8 +376,8 @@ void qtractorClip::drawClip (
 		return;
 
 	// Fade in/out handle color...
-	QColor rgbFade(rgbFore);
-	rgbFade.setAlpha(120);
+	QColor rgbFade(rgbText);
+	rgbFade.setAlpha(80);
 	pPainter->setPen(rgbFade);
 	pPainter->setBrush(rgbFade);
 
