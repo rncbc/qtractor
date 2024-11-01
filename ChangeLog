@@ -4,22 +4,25 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
-GIT HEAD
+1.4.0  2024-11-01  A Halloween'24 Release.
+
+- Improved color contrast on track and clip title labels, when given
+  track foreground and background colors are too similar in lightness.
 
 - Clip/Split now also applies to multiple selected clips, on any other
   track than current, if the split point (play-head) is found within.
 
 - Clip Merge/Export... audio clips now taking the internal audio 
   resolution (ie. 64 frames/period), independent to former JACK
-  /Pipewire buffer-size/period. (EXPERMENTAL) (GH Issue #481)
+  /Pipewire buffer-size/period.
 
 - Clip Merge/Export... audio clips now take the internal audio period
   resolution (64), independent of the former JACK/Pipewire buffer-size
-  /period. (EXPERINTAL) (GH Issue #481)
+  /period.
 
-- New Clip Mute state property introduced. (EXPERIMENTAL)
+- New Clip Mute state property introduced.
 
-- New MIDI clip tool option: Normalize / Compress. (EXPERIMENTAL)
+- New MIDI clip tool option: Normalize / Compress.
 
 - Prepping up next development cycle (Qt >= 6.8)
 
