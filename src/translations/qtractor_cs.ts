@@ -71,7 +71,7 @@ Zvuk:	%1 kanály, %2 Hz</translation>
 %6</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="552"/>
+        <location filename="../qtractorClip.cpp" line="561"/>
         <source>Name:	%1</source>
         <translation>Název:	%1</translation>
     </message>
@@ -83,17 +83,17 @@ Zvuk:	%1 kanály, %2 Hz</translation>
     <message>
         <location filename="../qtractorClip.cpp" line="167"/>
         <source> [Mute]</source>
-        <translation type="unfinished"></translation>
+        <translation> [Ztlumit]</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="560"/>
+        <location filename="../qtractorClip.cpp" line="569"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation>Začátek:	%1	Posun	%2
 Konec:	%3	Délka:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="568"/>
+        <location filename="../qtractorClip.cpp" line="577"/>
         <source>File:	%1</source>
         <translation>Soubor:	%1</translation>
     </message>
@@ -1671,7 +1671,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="614"/>
         <source>&amp;Mute</source>
-        <translation type="unfinished">&amp;Ztlumit</translation>
+        <translation>&amp;Ztlumit</translation>
     </message>
 </context>
 <context>
@@ -3512,7 +3512,11 @@ až při příštím spuštění %1.</translation>
 Make sure the JACK/Pipewire audio service and
 the ALSA Sequencer kernel module (snd-seq-midi)
 are up and running and then restart the session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvukový/MIDI stroj se nepodařilo spustit.
+
+Ujistěte se, že zvuková služba JACK/Pipewire a
+modul jádra ALSA sekvenceru (snd-seq-midi)
+jsou spuštěny a restartujte sezení.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6922"/>
@@ -5072,17 +5076,17 @@ sezením znovu.</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1769"/>
         <source>Mute Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1772"/>
         <source>Mute clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1775"/>
         <source>Mute current clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit nynější záběr</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1845"/>
@@ -9028,12 +9032,12 @@ Délka:	%3</translation>
         <location filename="../qtractorMidiEditorForm.cpp" line="368"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="2285"/>
         <source>MUTE</source>
-        <translation type="unfinished">ZTLUMIT</translation>
+        <translation>ZTLUMIT</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="371"/>
         <source>MIDI clip mute state</source>
-        <translation type="unfinished"></translation>
+        <translation>Stav ztlumení záběru MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="376"/>
@@ -9710,18 +9714,18 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="455"/>
         <source>&amp;Mute</source>
-        <translation type="unfinished">&amp;Ztlumit</translation>
+        <translation>&amp;Ztlumit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="458"/>
         <location filename="../qtractorMidiEditorForm.ui" line="461"/>
         <source>Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="464"/>
         <source>Mute current MIDI clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit nynější záběr MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="469"/>
@@ -11413,7 +11417,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="651"/>
         <source>&amp;Compress</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Komprimovat</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="877"/>
@@ -11732,22 +11736,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1467"/>
+        <location filename="../qtractorMixer.cpp" line="1471"/>
         <source>Inputs</source>
         <translation>Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1468"/>
+        <location filename="../qtractorMixer.cpp" line="1472"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1469"/>
+        <location filename="../qtractorMixer.cpp" line="1473"/>
         <source>Outputs</source>
         <translation>Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1476"/>
+        <location filename="../qtractorMixer.cpp" line="1480"/>
         <source>Mixer</source>
         <translation>Mixážní pult</translation>
     </message>
@@ -11763,22 +11767,22 @@ P &lt; 0 : zpomalení posunu.
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1110"/>
+        <location filename="../qtractorMixer.cpp" line="1114"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Vstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1114"/>
+        <location filename="../qtractorMixer.cpp" line="1118"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Výstupy</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1120"/>
+        <location filename="../qtractorMixer.cpp" line="1124"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Sledování</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1129"/>
+        <location filename="../qtractorMixer.cpp" line="1133"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Sběrnice...</translation>
     </message>
@@ -11801,27 +11805,27 @@ P &lt; 0 : zpomalení posunu.
         <translation>Připojit %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="660"/>
+        <location filename="../qtractorMixer.cpp" line="664"/>
         <source>(Audio)</source>
         <translation>(Zvuk)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="665"/>
+        <location filename="../qtractorMixer.cpp" line="669"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="669"/>
+        <location filename="../qtractorMixer.cpp" line="673"/>
         <source>(None)</source>
         <translation>(Žádný)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="682"/>
+        <location filename="../qtractorMixer.cpp" line="686"/>
         <source>In</source>
         <translation>Vstup</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="682"/>
+        <location filename="../qtractorMixer.cpp" line="686"/>
         <source>Out</source>
         <translation>Výstup</translation>
     </message>
@@ -15584,7 +15588,7 @@ Jste si jistý?</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="588"/>
         <source>mute clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztlumit záběr</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="910"/>

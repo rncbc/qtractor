@@ -355,9 +355,18 @@ void qtractorClip::drawClip (
 	// Draw clip name label...
 	const QColor& rgbFore
 		= m_pTrack->foreground();
-	pPainter->setPen(m_pTrack->background().value() < 0xcc
+	const QColor& rgbBack
+		= m_pTrack->background();
+	QColor rgbText = (rgbBack.value() < 0xcc
 		? rgbFore.lighter(200)
 		: rgbFore.darker(160));
+	if (qAbs(rgbFore.value() - rgbBack.value()) < 0x33) {
+		rgbText.setHsv(
+			rgbText.hue(),
+			rgbText.saturation(),
+			(255 - rgbText.value()), 200);
+	}
+	pPainter->setPen(rgbText);
 	pPainter->drawText(rect,
 		Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, clipTitle());
 
@@ -367,8 +376,8 @@ void qtractorClip::drawClip (
 		return;
 
 	// Fade in/out handle color...
-	QColor rgbFade(rgbFore);
-	rgbFade.setAlpha(120);
+	QColor rgbFade(rgbText);
+	rgbFade.setAlpha(80);
 	pPainter->setPen(rgbFade);
 	pPainter->setBrush(rgbFade);
 

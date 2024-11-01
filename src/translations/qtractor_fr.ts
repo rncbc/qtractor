@@ -98,22 +98,22 @@ Audio :	%1 canaux, %2 Hz</translation>
     <message>
         <location filename="../qtractorClip.cpp" line="167"/>
         <source> [Mute]</source>
-        <translation type="unfinished"></translation>
+        <translation> [Silence]</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="552"/>
+        <location filename="../qtractorClip.cpp" line="561"/>
         <source>Name:	%1</source>
         <translation>Nom :	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="560"/>
+        <location filename="../qtractorClip.cpp" line="569"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation>Début :	%1	Décalage :	%2
 Fin :	%3	Longueur :	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="568"/>
+        <location filename="../qtractorClip.cpp" line="577"/>
         <source>File:	%1</source>
         <translation>Fichier :	%1</translation>
     </message>
@@ -1574,7 +1574,7 @@ Voulez-vous abandonner les changements ?</translation>
     <message>
         <location filename="../qtractorClipForm.ui" line="614"/>
         <source>&amp;Mute</source>
-        <translation type="unfinished">&amp;Muet</translation>
+        <translation>&amp;Muet</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="195"/>
@@ -4251,17 +4251,17 @@ Voulez-vous appliquer les changements ?</translation>
     <message>
         <location filename="../qtractorMainForm.ui" line="1769"/>
         <source>Mute Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Silencer le clip</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1772"/>
         <source>Mute clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Silencer le clip</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1775"/>
         <source>Mute current clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Silencer le clip actuel</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1783"/>
@@ -6400,7 +6400,11 @@ est hautement recommandé.</translation>
 Make sure the JACK/Pipewire audio service and
 the ALSA Sequencer kernel module (snd-seq-midi)
 are up and running and then restart the session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le moteur audio/MIDI n&apos;a pas pu être démarré.
+
+Assurez-vous que le service audio JACK/Pipewire
+et le module noyau ALSA Sequencer (snd-seq-midi)
+sont opérationnels, puis redémarrez la session.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6922"/>
@@ -9083,18 +9087,18 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="455"/>
         <source>&amp;Mute</source>
-        <translation type="unfinished">&amp;Muet</translation>
+        <translation>&amp;Muet</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="458"/>
         <location filename="../qtractorMidiEditorForm.ui" line="461"/>
         <source>Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Silence</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="464"/>
         <source>Mute current MIDI clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Silencer le clip MIDI actuel</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="469"/>
@@ -10665,12 +10669,12 @@ Longueur:	%3</translation>
         <location filename="../qtractorMidiEditorForm.cpp" line="368"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="2285"/>
         <source>MUTE</source>
-        <translation type="unfinished">MUET</translation>
+        <translation>MUET</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="371"/>
         <source>MIDI clip mute state</source>
-        <translation type="unfinished"></translation>
+        <translation>État muet du clip MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="376"/>
@@ -11377,7 +11381,7 @@ Désolé.</translation>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="651"/>
         <source>&amp;Compress</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Compresser</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="672"/>
@@ -11730,22 +11734,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1467"/>
+        <location filename="../qtractorMixer.cpp" line="1471"/>
         <source>Inputs</source>
         <translation>Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1468"/>
+        <location filename="../qtractorMixer.cpp" line="1472"/>
         <source>Tracks</source>
         <translation>Pistes</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1469"/>
+        <location filename="../qtractorMixer.cpp" line="1473"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1476"/>
+        <location filename="../qtractorMixer.cpp" line="1480"/>
         <source>Mixer</source>
         <translation>Mixeur</translation>
     </message>
@@ -11761,22 +11765,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1110"/>
+        <location filename="../qtractorMixer.cpp" line="1114"/>
         <source>&amp;Inputs</source>
         <translation>&amp;Entrées</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1114"/>
+        <location filename="../qtractorMixer.cpp" line="1118"/>
         <source>&amp;Outputs</source>
         <translation>&amp;Sorties</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1120"/>
+        <location filename="../qtractorMixer.cpp" line="1124"/>
         <source>&amp;Monitor</source>
         <translation>&amp;Moniteur</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1129"/>
+        <location filename="../qtractorMixer.cpp" line="1133"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Bus...</translation>
     </message>
@@ -11799,27 +11803,27 @@ Are you sure?</source>
         <translation>Connecter %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="660"/>
+        <location filename="../qtractorMixer.cpp" line="664"/>
         <source>(Audio)</source>
         <translation>(Audio)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="665"/>
+        <location filename="../qtractorMixer.cpp" line="669"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="669"/>
+        <location filename="../qtractorMixer.cpp" line="673"/>
         <source>(None)</source>
         <translation>(Rien)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="682"/>
+        <location filename="../qtractorMixer.cpp" line="686"/>
         <source>In</source>
         <translation>Entrée</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="682"/>
+        <location filename="../qtractorMixer.cpp" line="686"/>
         <source>Out</source>
         <translation>Sortie</translation>
     </message>
@@ -15539,7 +15543,7 @@ Longueur:	%3</translation>
     <message>
         <location filename="../qtractorTracks.cpp" line="588"/>
         <source>mute clip</source>
-        <translation type="unfinished"></translation>
+        <translation>silencer le clip</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="700"/>

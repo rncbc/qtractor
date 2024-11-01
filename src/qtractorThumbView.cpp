@@ -114,6 +114,7 @@ void qtractorThumbView::updateContents (void)
 	QPainter painter(&m_pixmap);
 //	painter.initFrom(this);
 //	painter.setFont(QFrame::font());
+	const QBrush shade(QColor(0, 0, 0, 60));
 
 	// Local contents length (in frames).
 	m_iContentsLength = pSession->sessionEnd();
@@ -146,6 +147,8 @@ void qtractorThumbView::updateContents (void)
 				x2 = int(pClip->clipStart()  / f2);
 				w2 = int(pClip->clipLength() / f2);
 				painter.fillRect(x2, y2, w2, h2, bg);
+				if (pClip->isClipMute())
+					painter.fillRect(x2, y2, w2, h2, shade);
 				pClip = pClip->next();
 			}
 			y2 += h2;
@@ -183,7 +186,6 @@ void qtractorThumbView::updateContents (void)
 
 	// Don't forget the punch-in/out ones too...
 	if (pSession->isPunching()) {
-		const QBrush shade(QColor(0, 0, 0, 60));
 		painter.setPen(Qt::darkMagenta);
 		x2 = int(pSession->punchIn() / f2);
 		if (x2 < w) {

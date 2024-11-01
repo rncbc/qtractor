@@ -145,22 +145,22 @@ Audio:	%1 channels, %2 Hz</source>
     <message>
         <location filename="../qtractorClip.cpp" line="167"/>
         <source> [Mute]</source>
-        <translation type="unfinished"></translation>
+        <translation> [звук вимкнено]</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="552"/>
+        <location filename="../qtractorClip.cpp" line="561"/>
         <source>Name:	%1</source>
         <translation>Назва:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="560"/>
+        <location filename="../qtractorClip.cpp" line="569"/>
         <source>Start:	%1	Offset:	%2
 End:	%3	Length:	%4</source>
         <translation>Початок:	%1	Зміщення:	%2
 Кінець:	%3	Тривалість:	%4</translation>
     </message>
     <message>
-        <location filename="../qtractorClip.cpp" line="568"/>
+        <location filename="../qtractorClip.cpp" line="577"/>
         <source>File:	%1</source>
         <translation>Файл:	%1</translation>
     </message>
@@ -177,12 +177,12 @@ End:	%3	Length:	%4</source>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1191"/>
         <source>clip save</source>
-        <translation type="unfinished"></translation>
+        <translation>збереження кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1214"/>
         <source>clip unlink</source>
-        <translation type="unfinished"></translation>
+        <translation>від&apos;єднання кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorClipCommand.cpp" line="1242"/>
@@ -528,7 +528,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorMidiClip.cpp" line="1334"/>
         <source>MIDI file save: &quot;%1&quot;, track-channel: %2.</source>
-        <translation type="unfinished">Збереження файла MIDI: «%1», доріжка-канал: %2.</translation>
+        <translation>Збереження файла MIDI: «%1», доріжка-канал: %2.</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControlCommand.h" line="71"/>
@@ -644,7 +644,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPlugin.cpp" line="572"/>
         <source>Aux Send: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Надсилання допоміжного: %1</translation>
     </message>
     <message>
         <location filename="../qtractorPlugin.cpp" line="2413"/>
@@ -704,7 +704,7 @@ MIDI:	</translation>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="644"/>
         <source>plugin alias</source>
-        <translation type="unfinished"></translation>
+        <translation>альтернативна назва додатка</translation>
     </message>
     <message>
         <location filename="../qtractorPluginCommand.cpp" line="886"/>
@@ -923,22 +923,22 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorTrack.cpp" line="696"/>
         <source>%1 Record</source>
-        <translation type="unfinished"></translation>
+        <translation>Запис %1</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="697"/>
         <source>%1 Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимикання звуку %1</translation>
     </message>
     <message>
         <location filename="../qtractorTrack.cpp" line="698"/>
         <source>%1 Solo</source>
-        <translation type="unfinished"></translation>
+        <translation>Соло %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiControl.cpp" line="597"/>
         <source>MIDI Controller: %1, %2, %3</source>
-        <translation type="unfinished"></translation>
+        <translation>MIDI-контролер: %1, %2, %3</translation>
     </message>
 </context>
 <context>
@@ -999,7 +999,7 @@ Track: &quot;%1&quot; Input: &quot;%2&quot; Output: &quot;%3&quot;</source>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="672"/>
         <source>Pan: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Панорамування: %1</translation>
     </message>
     <message>
         <location filename="../qtractorAudioMeter.cpp" line="681"/>
@@ -1581,7 +1581,7 @@ Do you want to discard the changes?</source>
     <message>
         <location filename="../qtractorClipForm.ui" line="614"/>
         <source>&amp;Mute</source>
-        <translation type="unfinished">&amp;Вимкнути звук</translation>
+        <translation>&amp;Вимкнути звук</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.cpp" line="69"/>
@@ -2824,12 +2824,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="522"/>
         <source>Mo&amp;de</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Режим</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="531"/>
         <source>St&amp;ep</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Крок</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="566"/>
@@ -4252,17 +4252,17 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="1769"/>
         <source>Mute Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкнути звук кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1772"/>
         <source>Mute clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкнути звук кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1775"/>
         <source>Mute current clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкнути звук поточного кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="1783"/>
@@ -5377,32 +5377,32 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorMainForm.ui" line="2791"/>
         <source>Step Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок назад</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2794"/>
         <source>Step backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок назад</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2797"/>
         <source>Transport step backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на крок назад</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2805"/>
         <source>Step Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок вперед</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2808"/>
         <source>Step forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок вперед</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2811"/>
         <source>Transport step forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на крок вперед</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.ui" line="2816"/>
@@ -6403,7 +6403,11 @@ next time you start this %1.</source>
 Make sure the JACK/Pipewire audio service and
 the ALSA Sequencer kernel module (snd-seq-midi)
 are up and running and then restart the session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося запустити звуковий рушій або рушій MID.
+
+Переконайтеся, що запущено звукову службу JACK/Pipewire
+та модуль ядра планувальника ALSA (snd-seq-midi), і
+вони працюють, потім перезапустіть сеанс.</translation>
     </message>
     <message>
         <location filename="../qtractorMainForm.cpp" line="6922"/>
@@ -7765,7 +7769,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="234"/>
         <source>Hold 2 Pedal (on/off)</source>
-        <translation type="unfinished"></translation>
+        <translation>Утримання педалі 2 (увімкн./вимкн.)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="235"/>
@@ -8159,12 +8163,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="520"/>
         <source>Octatonic (H-W)</source>
-        <translation type="unfinished"></translation>
+        <translation>Октатонічний (H-W)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="521"/>
         <source>Octatonic (W-H)</source>
-        <translation type="unfinished"></translation>
+        <translation>Октатонічний (W-H)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="522"/>
@@ -8245,12 +8249,12 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="537"/>
         <source>Japanese (A)</source>
-        <translation type="unfinished"></translation>
+        <translation>Японський (A)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="538"/>
         <source>Japanese (B)</source>
-        <translation type="unfinished"></translation>
+        <translation>Японський (B)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditor.cpp" line="539"/>
@@ -9038,7 +9042,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="247"/>
         <source>St&amp;ep</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Крок</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="273"/>
@@ -9084,18 +9088,18 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="455"/>
         <source>&amp;Mute</source>
-        <translation type="unfinished">&amp;Вимкнути звук</translation>
+        <translation>&amp;Вимкнути звук</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="458"/>
         <location filename="../qtractorMidiEditorForm.ui" line="461"/>
         <source>Mute</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкнути звук</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="464"/>
         <source>Mute current MIDI clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкнути звук поточного кліпу MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="469"/>
@@ -10336,32 +10340,32 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1637"/>
         <source>Step Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок назад</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1640"/>
         <source>Step backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок назад</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1643"/>
         <source>Transport step backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на крок назад</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1651"/>
         <source>Step Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок вперед</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1654"/>
         <source>Step forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок вперед</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1657"/>
         <source>Transport step forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на крок вперед</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1668"/>
@@ -10666,12 +10670,12 @@ Length:	%3</source>
         <location filename="../qtractorMidiEditorForm.cpp" line="368"/>
         <location filename="../qtractorMidiEditorForm.cpp" line="2285"/>
         <source>MUTE</source>
-        <translation type="unfinished">ВИМ</translation>
+        <translation>ВИМ</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="371"/>
         <source>MIDI clip mute state</source>
-        <translation type="unfinished"></translation>
+        <translation>Стан вимикання звуку кліпу MIDI</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.cpp" line="376"/>
@@ -10905,7 +10909,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="585"/>
         <source>Volume (%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Гучність (%)</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="586"/>
@@ -10915,7 +10919,7 @@ Do you want to save the changes?</source>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="667"/>
         <source>Pan: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Панорамування: %1</translation>
     </message>
     <message>
         <location filename="../qtractorMidiMeter.cpp" line="677"/>
@@ -11378,7 +11382,7 @@ Sorry.</source>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="651"/>
         <source>&amp;Compress</source>
-        <translation type="unfinished"></translation>
+        <translation>С&amp;тиснути</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="672"/>
@@ -11505,32 +11509,32 @@ Sorry.</source>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1119"/>
         <source>&amp;Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;&amp;єднати</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1126"/>
         <source>&amp;Split:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Поділ:</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1133"/>
         <source>Split notes length</source>
-        <translation type="unfinished"></translation>
+        <translation>Поділ за довжиною нот</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1140"/>
         <source>Split notes offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Поділ за зсувом нот</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1144"/>
         <source>Relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Відносний</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1149"/>
         <source>Absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>Абсолютний</translation>
     </message>
     <message>
         <location filename="../qtractorMidiToolsForm.ui" line="1186"/>
@@ -11731,22 +11735,22 @@ Are you sure?</source>
 <context>
     <name>qtractorMixer</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1467"/>
+        <location filename="../qtractorMixer.cpp" line="1471"/>
         <source>Inputs</source>
         <translation>Пристрої введення</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1468"/>
+        <location filename="../qtractorMixer.cpp" line="1472"/>
         <source>Tracks</source>
         <translation>Доріжки</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1469"/>
+        <location filename="../qtractorMixer.cpp" line="1473"/>
         <source>Outputs</source>
         <translation>Виходи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1476"/>
+        <location filename="../qtractorMixer.cpp" line="1480"/>
         <source>Mixer</source>
         <translation>Мікшер</translation>
     </message>
@@ -11756,28 +11760,28 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorMeter.cpp" line="321"/>
         <source>Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Панорамування</translation>
     </message>
 </context>
 <context>
     <name>qtractorMixerRackWidget</name>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1110"/>
+        <location filename="../qtractorMixer.cpp" line="1114"/>
         <source>&amp;Inputs</source>
         <translation>В&amp;ходи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1114"/>
+        <location filename="../qtractorMixer.cpp" line="1118"/>
         <source>&amp;Outputs</source>
         <translation>В&amp;иходи</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1120"/>
+        <location filename="../qtractorMixer.cpp" line="1124"/>
         <source>&amp;Monitor</source>
         <translation>Сп&amp;остерігати</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="1129"/>
+        <location filename="../qtractorMixer.cpp" line="1133"/>
         <source>&amp;Buses...</source>
         <translation>&amp;Шини...</translation>
     </message>
@@ -11800,27 +11804,27 @@ Are you sure?</source>
         <translation>З&apos;єднати %1</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="660"/>
+        <location filename="../qtractorMixer.cpp" line="664"/>
         <source>(Audio)</source>
         <translation>(Звук)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="665"/>
+        <location filename="../qtractorMixer.cpp" line="669"/>
         <source>(MIDI)</source>
         <translation>(MIDI)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="669"/>
+        <location filename="../qtractorMixer.cpp" line="673"/>
         <source>(None)</source>
         <translation>(Немає)</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="682"/>
+        <location filename="../qtractorMixer.cpp" line="686"/>
         <source>In</source>
         <translation>Вхід</translation>
     </message>
     <message>
-        <location filename="../qtractorMixer.cpp" line="682"/>
+        <location filename="../qtractorMixer.cpp" line="686"/>
         <source>Out</source>
         <translation>Вихід</translation>
     </message>
@@ -12788,17 +12792,17 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2886"/>
         <source>St&amp;yle sheet:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Таблиця стилів:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2902"/>
         <source>Custom style sheet (*.qss)</source>
-        <translation type="unfinished"></translation>
+        <translation>Нетипова таблиця стилів (*.qss)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2944"/>
         <source>Browse for custom style sheet (*.qss)</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати нетипову таблицю стилів (*.qss)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2976"/>
@@ -13181,12 +13185,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1289"/>
         <source>Open Style Sheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкриття таблиці стилів</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1292"/>
         <source>Style Sheet files (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>файли таблиць стилів (*.%1)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1373"/>
@@ -13359,7 +13363,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="260"/>
         <source>Save Palette - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Збереження палітри – %1</translation>
     </message>
     <message>
         <location filename="../qtractorPaletteForm.cpp" line="263"/>
@@ -13536,12 +13540,12 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorPluginForm.ui" line="130"/>
         <source>Alias:</source>
-        <translation type="unfinished"></translation>
+        <translation>Альтернативна назва:</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="146"/>
         <source>Plugin alias</source>
-        <translation type="unfinished"></translation>
+        <translation>Альтернативна назва додатка</translation>
     </message>
     <message>
         <location filename="../qtractorPluginForm.ui" line="159"/>
@@ -13777,7 +13781,7 @@ Are you sure?</source>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1360"/>
         <source>Aux Send: </source>
-        <translation type="unfinished"></translation>
+        <translation>Надсиалання допоміжного: </translation>
     </message>
     <message>
         <location filename="../qtractorPluginListView.cpp" line="1679"/>
@@ -14464,7 +14468,7 @@ Do you want to apply the changes?</source>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="135"/>
         <source>R&amp;eset</source>
-        <translation type="unfinished"></translation>
+        <translation>С&amp;кинути</translation>
     </message>
     <message>
         <location filename="../qtractorTempoAdjustForm.ui" line="158"/>
@@ -15537,7 +15541,7 @@ Length:	%3</source>
     <message>
         <location filename="../qtractorTracks.cpp" line="588"/>
         <source>mute clip</source>
-        <translation type="unfinished"></translation>
+        <translation>вимкнути звук кліпу</translation>
     </message>
     <message>
         <location filename="../qtractorTracks.cpp" line="700"/>
