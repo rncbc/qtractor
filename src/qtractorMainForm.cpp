@@ -7852,20 +7852,14 @@ void qtractorMainForm::updateCustomColorTheme (void)
 
 		QApplication::setPalette(pal);
 
-		if (m_pThumbView)
-			m_pThumbView->updateContents();
-		if (m_pTracks) {
+		if (m_pTracks)
 			m_pTracks->trackList()->updateTrackButtons();
-			m_pTracks->updateContents(true);
-		}
 		if (m_pMixer) {
 			m_pMixer->updateTracks(true);
 			m_pMixer->updateBuses(true);
 		}
 
-		QListIterator<qtractorMidiEditorForm *> iter(m_editors);
-		while (iter.hasNext())
-			(iter.next()->editor())->updateContents();
+		QTimer::singleShot(QTRACTOR_TIMER_MSECS, this, SLOT(viewRefresh()));
 	}
 }
 

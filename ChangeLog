@@ -4,6 +4,12 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Schedule an actual and complete refresh on main View/Refresh...,
+  especially when changing a custom color theme palette on-the-fly.
+
+
 1.4.0  2024-11-01  A Halloween'24 Release.
 
 - Improved color contrast on track and clip title labels, when given
