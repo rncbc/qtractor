@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Fixed yet another old bug regarding the flush of all pending MIDI
+  Note-Off events when playback stops, shuts-off or panics, especially
+  relevant when playback is resumed anywhere but the absolute beginning
+  of the timeline.
+
 - Schedule an actual and complete refresh on main View/Refresh...,
   especially when changing a custom color theme palette on-the-fly.
 

@@ -1606,7 +1606,7 @@ void qtractorMidiEngine::shutOffAllTracks (void)
 
 	QHash<qtractorMidiBus *, unsigned short> channels;
 
-	const unsigned long iQueueTime = queueTime();
+	const unsigned long iQueueTime = timeStartEx() + queueTime();
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Midi) {
@@ -4373,7 +4373,7 @@ void qtractorMidiBus::shutOff ( bool bClose )
 	qDebug("qtractorMidiBus[%p]::shutOff(%d)", this, int(bClose));
 #endif
 
-	dequeueNoteOffs(pMidiEngine->queueTime());
+	dequeueNoteOffs(pMidiEngine->timeStartEx() + pMidiEngine->queueTime());
 
 	QHash<unsigned short, Patch>::ConstIterator iter
 		= m_patches.constBegin();
