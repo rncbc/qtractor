@@ -1223,7 +1223,7 @@ unsigned long qtractorMidiEngine::queueTime (void) const
 	if (m_iAlsaQueue < 0)
 		return 0;
 
-	unsigned long iQueueTime = 0;
+	long iQueueTime = 0;
 
 	snd_seq_queue_status_t *pQueueStatus;
 	snd_seq_queue_status_alloca(&pQueueStatus);
@@ -1232,7 +1232,13 @@ unsigned long qtractorMidiEngine::queueTime (void) const
 		iQueueTime = snd_seq_queue_status_get_tick_time(pQueueStatus);
 	}
 
-	return pSession->timeq(iQueueTime);
+	iQueueTime = pSession->timeq(iQueueTime);
+
+	const long iTimeStart = timeStart();
+	if (iQueueTime > -iTimeStart)
+		iQueueTime += iTimeStart;
+
+	return iQueueTime;
 }
 
 
@@ -1447,8 +1453,7 @@ void qtractorMidiEngine::resetTempo (void)
 
 	// Set queue tempo...
 	if (m_bDriftCorrect && pSession->isPlaying()) {
-		const long iMidiTime = long(queueTime());
-		m_iFrameDrift = long(pNode->frameFromTick(iMidiTime + m_iTimeStart));
+		m_iFrameDrift = long(pNode->frameFromTick(queueTime()));
 		m_iFrameDrift -= long(pSession->playHead());
 	}
 
@@ -1606,7 +1611,7 @@ void qtractorMidiEngine::shutOffAllTracks (void)
 
 	QHash<qtractorMidiBus *, unsigned short> channels;
 
-	const unsigned long iQueueTime = timeStartEx() + queueTime();
+	const unsigned long iQueueTime = queueTime();
 	for (qtractorTrack *pTrack = pSession->tracks().first();
 			pTrack; pTrack = pTrack->next()) {
 		if (pTrack->trackType() == qtractorTrack::Midi) {
@@ -4373,7 +4378,7 @@ void qtractorMidiBus::shutOff ( bool bClose )
 	qDebug("qtractorMidiBus[%p]::shutOff(%d)", this, int(bClose));
 #endif
 
-	dequeueNoteOffs(pMidiEngine->timeStartEx() + pMidiEngine->queueTime());
+	dequeueNoteOffs(pMidiEngine->queueTime());
 
 	QHash<unsigned short, Patch>::ConstIterator iter
 		= m_patches.constBegin();
