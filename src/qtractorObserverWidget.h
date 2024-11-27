@@ -190,6 +190,7 @@ protected:
 
 	// Alternate mouse behavior event handlers.
 	void mousePressEvent(QMouseEvent *pMouseEvent);
+	void mouseDoubleClickEvent(QMouseEvent *pMouseEvent);
 	void wheelEvent(QWheelEvent *pWheelEvent);
 
 	// Visitors overload.
