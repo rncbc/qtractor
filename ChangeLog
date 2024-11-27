@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Fxed bug: Aux Send loses state when reordered in a strip. (GH #488)
+
 - Create/Add new bus below that which is used as source in View/Buses
   dialog. (GH #489)
 
