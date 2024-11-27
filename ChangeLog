@@ -6,6 +6,11 @@ ChangeLog
 
 GIT HEAD
 
+- Create/Add new bus below that which is used as source in View/Buses
+  dialog. (GH #489)
+
+- Mitigate truncated bus names in Aux Send Bus dialog. (GH #486)
+
 - Fixed yet another old bug regarding the flush of all pending MIDI
   Note-Off events when playback stops, shuts-off or panics, especially
   relevant when playback is resumed anywhere but the absolute beginning

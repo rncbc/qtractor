@@ -92,6 +92,12 @@ bool qtractorBusCommand::createBus (void)
 	if (pSession == nullptr)
 		return false;
 
+	// We need to hold things for a while...
+	const bool bPlaying = pSession->isPlaying();
+
+	pSession->lock();
+	pSession->setPlaying(false);
+
 	// Create the bus of proper type...
 	m_pBus = nullptr;
 
@@ -129,8 +135,11 @@ bool qtractorBusCommand::createBus (void)
 	}
 
 	// Check if we really have a new bus...
-	if (m_pBus == nullptr)
+	if (m_pBus == nullptr) {
+		pSession->setPlaying(bPlaying);
+		pSession->unlock();
 		return false;
+	}
 
 	// Open up the new bus...
 	m_pBus->open();
@@ -146,6 +155,10 @@ bool qtractorBusCommand::createBus (void)
 		if (pMixer)
 			pMixer->updateBuses(true);
 	}
+
+	// Carry on...
+	pSession->setPlaying(bPlaying);
+	pSession->unlock();
 
 	// Done.
 	return true;
