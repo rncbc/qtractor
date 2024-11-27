@@ -123,10 +123,16 @@ const qtractorList<qtractorBus>& qtractorEngine::buses (void) const
 
 
 // Add a bus to a device engine.
-void qtractorEngine::addBus ( qtractorBus *pBus )
+void qtractorEngine::addBus ( qtractorBus *pBus, qtractorBus *pAfterBus )
 {
-	m_buses.append(pBus);
-	m_buses2.append(pBus);
+	m_buses.insertAfter(pBus, pAfterBus);
+
+	const int iAfterBus
+		= (pAfterBus ? m_buses2.indexOf(pAfterBus) : -1);
+	if (iAfterBus >= 0)
+		m_buses2.insert(iAfterBus + 1, pBus);
+	else
+		m_buses2.append(pBus);
 }
 
 

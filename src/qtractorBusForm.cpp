@@ -641,7 +641,7 @@ void qtractorBusForm::createBus (void)
 
 	// Make it as an unduable command...
 	qtractorCreateBusCommand *pCreateBusCommand
-		= new qtractorCreateBusCommand();
+		= new qtractorCreateBusCommand(m_pBus);
 
 	// Set all creational properties...
 	qtractorTrack::TrackType busType = m_pBus->busType();
@@ -678,11 +678,8 @@ void qtractorBusForm::createBus (void)
 	}
 
 	// Get new one into view,
-	// usually created as last one...
-	qtractorBus *pBus = m_pBus;
-	while (pBus->next())
-		pBus = pBus->next();
-	showBus(pBus);
+	// usually created after the cuurent one...
+	showBus(m_pBus->next());
 
 	// Select the new bus...
 	setBus(m_pBus);

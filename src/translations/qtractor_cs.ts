@@ -98,22 +98,22 @@ Konec:	%3	Délka:	%4</translation>
         <translation>Soubor:	%1</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="570"/>
+        <location filename="../qtractorEngineCommand.cpp" line="571"/>
         <source>create bus</source>
         <translation>Vytvořit sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="592"/>
+        <location filename="../qtractorEngineCommand.cpp" line="593"/>
         <source>update bus</source>
         <translation>Zaktualizovat sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="609"/>
+        <location filename="../qtractorEngineCommand.cpp" line="610"/>
         <source>delete bus</source>
         <translation>Smazat sběrnici</translation>
     </message>
     <message>
-        <location filename="../qtractorEngineCommand.cpp" line="632"/>
+        <location filename="../qtractorEngineCommand.cpp" line="633"/>
         <source>move bus</source>
         <translation>Posunout sběrnici</translation>
     </message>
@@ -630,7 +630,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <translation>Změnit taktové označení</translation>
     </message>
     <message>
-        <location filename="../qtractorEngine.cpp" line="540"/>
+        <location filename="../qtractorEngine.cpp" line="546"/>
         <location filename="../qtractorTrack.cpp" line="695"/>
         <source>%1 Monitor</source>
         <translation>%1 Sledovat</translation>
@@ -1013,7 +1013,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorBusForm.ui" line="217"/>
         <location filename="../qtractorBusForm.cpp" line="319"/>
         <location filename="../qtractorBusForm.cpp" line="400"/>
-        <location filename="../qtractorBusForm.cpp" line="723"/>
+        <location filename="../qtractorBusForm.cpp" line="720"/>
         <source>Audio</source>
         <translation>Zvuk</translation>
     </message>
@@ -1021,7 +1021,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
         <location filename="../qtractorBusForm.ui" line="278"/>
         <location filename="../qtractorBusForm.cpp" line="340"/>
         <location filename="../qtractorBusForm.cpp" line="413"/>
-        <location filename="../qtractorBusForm.cpp" line="726"/>
+        <location filename="../qtractorBusForm.cpp" line="723"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
@@ -1034,8 +1034,8 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorBusForm.cpp" line="452"/>
-        <location filename="../qtractorBusForm.cpp" line="733"/>
-        <location filename="../qtractorBusForm.cpp" line="791"/>
+        <location filename="../qtractorBusForm.cpp" line="730"/>
+        <location filename="../qtractorBusForm.cpp" line="788"/>
         <source>Warning</source>
         <translation>Upozornění</translation>
     </message>
@@ -1049,37 +1049,37 @@ Do you want to apply the changes?</source>
 Chcete použít tyto změny?</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="928"/>
+        <location filename="../qtractorBusForm.cpp" line="925"/>
         <source>Move &amp;Up</source>
         <translation>Posunout &amp;nahoru</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="933"/>
+        <location filename="../qtractorBusForm.cpp" line="930"/>
         <source>Move &amp;Down</source>
         <translation>Posunout &amp;dolů</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="971"/>
+        <location filename="../qtractorBusForm.cpp" line="968"/>
         <source>(No instrument)</source>
         <translation>(Žádný nástroj)</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="1047"/>
+        <location filename="../qtractorBusForm.cpp" line="1044"/>
         <source>(none)</source>
         <translation>(Žádný)</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="1050"/>
+        <location filename="../qtractorBusForm.cpp" line="1047"/>
         <source>(1 item)</source>
         <translation>(1 položka)</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="1053"/>
+        <location filename="../qtractorBusForm.cpp" line="1050"/>
         <source>(%1 items)</source>
         <translation>(%1 položky)</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="734"/>
+        <location filename="../qtractorBusForm.cpp" line="731"/>
         <source>About to remove bus:
 
 &quot;%1&quot; (%2)
@@ -1092,7 +1092,7 @@ Are you sure?</source>
 Jste si jistý?</translation>
     </message>
     <message>
-        <location filename="../qtractorBusForm.cpp" line="792"/>
+        <location filename="../qtractorBusForm.cpp" line="789"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -1102,13 +1102,13 @@ Chcete zahodit tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="629"/>
-        <location filename="../qtractorBusForm.cpp" line="911"/>
+        <location filename="../qtractorBusForm.cpp" line="908"/>
         <source>&amp;Create</source>
         <translation>&amp;Vytvořit</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="642"/>
-        <location filename="../qtractorBusForm.cpp" line="916"/>
+        <location filename="../qtractorBusForm.cpp" line="913"/>
         <source>&amp;Update</source>
         <translation>&amp;Zaktualizovat</translation>
     </message>
@@ -1340,7 +1340,7 @@ Chcete zahodit tyto změny?</translation>
     </message>
     <message>
         <location filename="../qtractorBusForm.ui" line="655"/>
-        <location filename="../qtractorBusForm.cpp" line="921"/>
+        <location filename="../qtractorBusForm.cpp" line="918"/>
         <source>&amp;Delete</source>
         <translation>&amp;Smazat</translation>
     </message>

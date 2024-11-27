@@ -38,12 +38,11 @@ class qtractorBusCommand : public qtractorCommand
 public:
 
 	// Constructor.
-	qtractorBusCommand(const QString& sName, qtractorBus *pBus = nullptr,
+	qtractorBusCommand(const QString& sName,
+		qtractorBus *pBus, qtractorBus *pAfterBus = nullptr,
 		qtractorBus::BusMode busMode = qtractorBus::None);
 
 	// Bus accessors.
-	void setBus(qtractorBus *pBus)
-		{ m_pBus = pBus; }
 	qtractorBus *bus() const
 		{ return m_pBus; }
 
@@ -99,6 +98,7 @@ private:
 
 	// Instance variables.
 	qtractorBus             *m_pBus;
+	qtractorBus             *m_pAfterBus;
 	qtractorBus::BusMode     m_busMode;
 	qtractorTrack::TrackType m_busType;
 	QString                  m_sBusName;
@@ -118,7 +118,7 @@ class qtractorCreateBusCommand : public qtractorBusCommand
 public:
 
 	// Constructor.
-	qtractorCreateBusCommand();
+	qtractorCreateBusCommand(qtractorBus *pAfterBus);
 
 	// Bus creation command methods.
 	bool redo();
