@@ -13583,22 +13583,22 @@ Do you want to apply the changes?</source>
         <translation>Auxセンドバス:</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="332"/>
+        <location filename="../qtractorPluginForm.ui" line="339"/>
         <source>Manage buses</source>
         <translation>バスの管理</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="335"/>
+        <location filename="../qtractorPluginForm.ui" line="342"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="373"/>
+        <location filename="../qtractorPluginForm.ui" line="380"/>
         <source>Direct Access Parameter</source>
         <translation>ダイレクトアクセスのパラメーター</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="376"/>
+        <location filename="../qtractorPluginForm.ui" line="383"/>
         <source>Direct Access</source>
         <translation>ダイレクトアクセス</translation>
     </message>

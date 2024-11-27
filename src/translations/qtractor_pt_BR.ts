@@ -13511,7 +13511,7 @@ Você quer mesmo manter as alterações?</translation>
 <context>
     <name>qtractorPluginForm</name>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="335"/>
+        <location filename="../qtractorPluginForm.ui" line="342"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -13552,7 +13552,7 @@ Você quer mesmo manter as alterações?</translation>
         <translation>%1 [%2], %3 instância(s), %4 canal(s).</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="332"/>
+        <location filename="../qtractorPluginForm.ui" line="339"/>
         <source>Manage buses</source>
         <translation>Gerenciar Canais Primários</translation>
     </message>
@@ -13705,12 +13705,12 @@ Posso continuar?</translation>
         <translation>Apagar pré configuração</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="373"/>
+        <location filename="../qtractorPluginForm.ui" line="380"/>
         <source>Direct Access Parameter</source>
         <translation>Acesso Direto a Parâmetros</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="376"/>
+        <location filename="../qtractorPluginForm.ui" line="383"/>
         <source>Direct Access</source>
         <translation>Acesso Direto</translation>
     </message>

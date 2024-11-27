@@ -13593,22 +13593,22 @@ Do you want to apply the changes?</source>
         <translation>Доп. шина надсилання:</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="332"/>
+        <location filename="../qtractorPluginForm.ui" line="339"/>
         <source>Manage buses</source>
         <translation>Керування шинами</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="335"/>
+        <location filename="../qtractorPluginForm.ui" line="342"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="373"/>
+        <location filename="../qtractorPluginForm.ui" line="380"/>
         <source>Direct Access Parameter</source>
         <translation>Параметр безпосереднього доступу</translation>
     </message>
     <message>
-        <location filename="../qtractorPluginForm.ui" line="376"/>
+        <location filename="../qtractorPluginForm.ui" line="383"/>
         <source>Direct Access</source>
         <translation>Безпосередній доступ</translation>
     </message>
