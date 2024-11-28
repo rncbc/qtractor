@@ -225,8 +225,8 @@ protected:
 		const int x = rect.x() + 1;
 		const int y = rect.y() + ((rect.height() - 16) >> 1) + 1;
 		painter.drawPixmap(x, y, m_icon.pixmap(16));
-		rect.adjust(+16, 0, -1, 0);
-		painter.drawText(rect, QLabel::alignment() | Qt::TextSingleLine, QLabel::text());
+		rect.adjust(+16, +2, -1, 0);
+		painter.drawText(rect, QLabel::alignment(), QLabel::text());
 	}
 
 private:
@@ -337,7 +337,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pLabel->setBackgroundRole(QPalette::Button);
 	m_pLabel->setForegroundRole(QPalette::ButtonText);
 	m_pLabel->setAutoFillBackground(true);
-//	m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+	m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	m_pLayout->addWidget(m_pLabel);
 
 	m_pRibbon = new QFrame(/*this*/);
