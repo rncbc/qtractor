@@ -3,7 +3,7 @@
  <author>rncbc aka Rui Nuno Capela</author>
  <comment>qtractor - An Audio/MIDI multi-track sequencer.
 
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@
    <string>Tempo Map / Markers</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/qtractorTracks.png</iconset>
+   <iconset theme="qtractorTracks" />
   </property>
   <layout class="QVBoxLayout">
    <item>
@@ -338,7 +338,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="qtractor.qrc">:/images/formColor.png</iconset>
+          <iconset theme="formColor" />
          </property>
         </widget>
        </item>
@@ -424,7 +424,7 @@
         <string>Re&amp;fresh</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formRefresh.png</iconset>
+        <iconset theme="formRefresh" />
        </property>
       </widget>
      </item>
@@ -453,7 +453,7 @@
         <string>&amp;Add</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formAdd.png</iconset>
+        <iconset theme="formAdd" />
        </property>
       </widget>
      </item>
@@ -466,7 +466,7 @@
         <string>&amp;Update</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formAccept.png</iconset>
+        <iconset theme="formAccept" />
        </property>
       </widget>
      </item>
@@ -479,7 +479,7 @@
         <string>&amp;Remove</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
+        <iconset theme="formRemove" />
        </property>
       </widget>
      </item>

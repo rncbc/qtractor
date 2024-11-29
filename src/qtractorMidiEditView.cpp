@@ -72,9 +72,9 @@ qtractorMidiEditView::qtractorMidiEditView (
 	m_pVzoomOut   = new QToolButton(this);
 	m_pVzoomReset = new QToolButton(this);
 
-	m_pVzoomIn->setIcon(QIcon(":/images/viewZoomIn.png"));
-	m_pVzoomOut->setIcon(QIcon(":/images/viewZoomOut.png"));
-	m_pVzoomReset->setIcon(QIcon(":/images/viewZoomReset.png"));
+	m_pVzoomIn->setIcon(QIcon::fromTheme("viewZoomIn"));
+	m_pVzoomOut->setIcon(QIcon::fromTheme("viewZoomOut"));
+	m_pVzoomReset->setIcon(QIcon::fromTheme("viewZoomReset"));
 
 	m_pVzoomIn->setAutoRepeat(true);
 	m_pVzoomOut->setAutoRepeat(true);

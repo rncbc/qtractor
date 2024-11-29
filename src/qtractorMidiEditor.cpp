@@ -896,7 +896,7 @@ qtractorMidiEditor::qtractorMidiEditor ( QWidget *pParent )
 	m_pVSplitter->setStretchFactor(m_pVSplitter->indexOf(pHBoxBottom), 0);
 	m_pVSplitter->setHandleWidth(2);
 
-	m_pVSplitter->setWindowIcon(QIcon(":/images/qtractorMidiEditor.svg"));
+	m_pVSplitter->setWindowIcon(QIcon::fromTheme("qtractorMidiEditor"));
 	m_pVSplitter->setWindowTitle(tr("MIDI Editor"));
 
 	// To have all views in positional sync.
@@ -2111,7 +2111,7 @@ void qtractorMidiEditor::pasteClipboard (
 	m_pDragStep = pScrollView;
 
 	// It doesn't matter which one, both pasteable views are due...
-	const QCursor cursr(QPixmap(":/images/editPaste.png"), 20, 20);
+	const QCursor cursr(QIcon::fromTheme("editPaste").pixmap(22, 22), 12, 12);
 	m_pEditView->setCursor(cursr);
 	m_pEditEvent->setCursor(cursr);
 
@@ -3262,7 +3262,7 @@ void qtractorMidiEditor::dragMoveStart (
 		m_dragCursor = m_dragState;
 		m_pEventDrag = dragEditEvent(pScrollView, m_posDrag, modifiers);
 		m_bEventDragEdit = (m_pEventDrag != nullptr);
-		pScrollView->setCursor(QCursor(QPixmap(":/images/editModeOn.png"), 5, 18));
+		pScrollView->setCursor(QCursor(QIcon::fromTheme("editModeOn").pixmap(20, 20), 5, 18));
 	} else if (m_resizeMode == ResizeNone) {
 		m_dragCursor = m_dragState;
 		if (m_pEventDrag) {

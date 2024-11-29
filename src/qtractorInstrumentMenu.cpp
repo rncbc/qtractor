@@ -1,7 +1,7 @@
 // qtractorInstrumentMenu.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2022, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -82,7 +82,7 @@ bool qtractorInstrumentMenu::trackMenuReset ( QMenu *pMenu ) const
 	}
 
 	// Instrument sub-menu...
-	const QIcon icon(":/images/itemInstrument.png");
+	const QIcon& icon = QIcon::fromTheme("itemInstrument");
 
 	trackMenuAdd(pMenu, icon,
 		(m_pTrack->pluginList())->midiManager(), sCurrentName);
@@ -162,7 +162,7 @@ bool qtractorInstrumentMenu::bankMenuReset ( QMenu *pBankMenu ) const
 	const int iCurrentBank = m_pTrack->midiBank();
 
 	// Instrument plug-in banks sub-menu...
-	const QIcon icon(":/images/itemPatches.png");
+	const QIcon& icon = QIcon::fromTheme("itemPatches");
 
 	if (bankMenuAdd(pBankMenu, icon,
 		(m_pTrack->pluginList())->midiManager(),
@@ -311,7 +311,7 @@ bool qtractorInstrumentMenu::progMenuReset ( QMenu *pProgMenu ) const
 	const int iCurrentProg = m_pTrack->midiProg();
 
 	// Instrument plugin programs sub-menu...
-	const QIcon icon(":/images/itemChannel.png");
+	const QIcon& icon = QIcon::fromTheme("itemChannel");
 
 	if (progMenuAdd(pProgMenu, icon,
 		(m_pTrack->pluginList())->midiManager(),

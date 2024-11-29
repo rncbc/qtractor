@@ -447,7 +447,7 @@ qtractorMainForm::qtractorMainForm (
 
 	// View/Snap-to-beat actions initialization...
 	int iSnap = 0;
-	const QIcon snapIcon(":/images/itemBeat.png");
+	const QIcon& snapIcon = QIcon::fromTheme("itemBeat");
 	const QString sSnapObjectName("viewSnapPerBeat%1");
 	const QString sSnapStatusTip(tr("Set current snap to %1"));
 	const QStringList& snapItems = qtractorTimeScale::snapItems();
@@ -473,6 +473,24 @@ qtractorMainForm::qtractorMainForm (
 	// Automation/curve mode menu setup...
 	m_ui.trackCurveModeMenu->addAction(m_ui.trackCurveLogarithmicAction);
 	m_ui.trackCurveModeMenu->addAction(m_ui.trackCurveColorAction);
+
+	QIcon iconProcess;
+	iconProcess.addPixmap(
+		QIcon::fromTheme("trackCurveProcess").pixmap(16, 16), QIcon::Normal, QIcon::On);
+	iconProcess.addPixmap(
+		QIcon::fromTheme("trackCurveEnabled").pixmap(16, 16), QIcon::Normal, QIcon::Off);
+	iconProcess.addPixmap(
+		QIcon::fromTheme("trackCurveNone").pixmap(16, 16), QIcon::Disabled, QIcon::Off);
+	m_ui.trackCurveProcessAction->setIcon(iconProcess);
+
+	QIcon iconCapture;
+	iconCapture.addPixmap(
+		QIcon::fromTheme("trackCurveCapture").pixmap(16, 16), QIcon::Normal, QIcon::On);
+	iconCapture.addPixmap(
+		QIcon::fromTheme("trackCurveEnabled").pixmap(16, 16), QIcon::Normal, QIcon::Off);
+	iconCapture.addPixmap(
+		QIcon::fromTheme("trackCurveNone").pixmap(16, 16), QIcon::Disabled, QIcon::Off);
+	m_ui.trackCurveCaptureAction->setIcon(iconCapture);
 
 	// Editable toolbar widgets special palette.
 	QPalette pal;
@@ -534,7 +552,7 @@ qtractorMainForm::qtractorMainForm (
 	snapIter.toFront();
 	if (snapIter.hasNext())
 		m_pSnapPerBeatComboBox->addItem(
-			QIcon(":/images/itemNone.png"), snapIter.next());
+			QIcon::fromTheme("itemNone"), snapIter.next());
 	while (snapIter.hasNext())
 		m_pSnapPerBeatComboBox->addItem(snapIcon, snapIter.next());
 	m_pSnapPerBeatComboBox->setToolTip(tr("Snap/beat"));
@@ -5304,6 +5322,7 @@ void qtractorMainForm::viewOptions (void)
 	const QString sOldCustomColorTheme   = m_pOptions->sCustomColorTheme;
 	const QString sOldCustomStyleTheme   = m_pOptions->sCustomStyleTheme;
 	const QString sOldCustomStyleSheet   = m_pOptions->sCustomStyleSheet;
+	const QString sOldCustomIconsTheme   = m_pOptions->sCustomIconsTheme;
 #ifdef CONFIG_LV2
 	const QString sep(':'); 
 	const QString sOldLv2Paths           = m_pOptions->lv2Paths.join(sep);
@@ -5361,6 +5380,8 @@ void qtractorMainForm::viewOptions (void)
 			iNeedRestart |= RestartProgram;
 		}
 		if (iOldBaseFontSize != m_pOptions->iBaseFontSize)
+			iNeedRestart |= RestartProgram;
+		if (sOldCustomIconsTheme != m_pOptions->sCustomIconsTheme)
 			iNeedRestart |= RestartProgram;
 		if (sOldCustomStyleSheet != m_pOptions->sCustomStyleSheet)
 			updateCustomStyleSheet();
@@ -7423,7 +7444,7 @@ void qtractorMainForm::updateCurveModeMenu (void)
 void qtractorMainForm::trackCurveSelectMenuAction ( QMenu *pMenu,
 	qtractorMidiControlObserver *pObserver, qtractorSubject *pCurrentSubject ) const
 {
-	QIcon   icon(":images/trackCurveNone.png");
+	QIcon   icon(QIcon::fromTheme("trackCurveNone"));
 	QString text(tr("&None"));
 
 	qtractorSubject *pSubject = (pObserver ? pObserver->subject() : nullptr);
@@ -7432,13 +7453,13 @@ void qtractorMainForm::trackCurveSelectMenuAction ( QMenu *pMenu,
 		qtractorCurve *pCurve = pSubject->curve();
 		if (pCurve) {
 			if (pCurve->isCapture())
-				icon = QIcon(":images/trackCurveCapture.png");
+				icon = QIcon::fromTheme("trackCurveCapture");
 			else
 			if (pCurve->isProcess())
-				icon = QIcon(":images/trackCurveProcess.png");
+				icon = QIcon::fromTheme("trackCurveProcess");
 			else
 		//	if (pCurve->isEnabled())
-				icon = QIcon(":images/trackCurveEnabled.png");
+				icon = QIcon::fromTheme("trackCurveEnabled");
 			text += '*';
 		}
 	}

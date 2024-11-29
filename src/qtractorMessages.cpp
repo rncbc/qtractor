@@ -114,7 +114,7 @@ qtractorMessages::qtractorMessages ( QWidget *pParent )
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Messages");
 	QDockWidget::setWindowTitle(sCaption);
-	QDockWidget::setWindowIcon(QIcon(":/images/viewMessages.png"));
+	QDockWidget::setWindowIcon(QIcon::fromTheme("viewMessages"));
 	QDockWidget::setToolTip(sCaption);
 }
 

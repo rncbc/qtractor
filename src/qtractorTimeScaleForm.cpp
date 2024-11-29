@@ -1,7 +1,7 @@
 // qtractorTimeScaleForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -1170,24 +1170,24 @@ void qtractorTimeScaleForm::contextMenu ( const QPoint& /*pos*/ )
 	const unsigned int iFlags = flags();
 	
 	pAction = menu.addAction(
-		QIcon(":/images/formAdd.png"),
+		QIcon::fromTheme("formAdd"),
 		tr("&Add"), this, SLOT(addItem()));
 	pAction->setEnabled(iFlags & (AddNode | AddMarker | AddKeySignature));
 
 	pAction = menu.addAction(
-		QIcon(":/images/formAccept.png"),
+		QIcon::fromTheme("formAccept"),
 		tr("&Update"), this, SLOT(updateItem()));
 	pAction->setEnabled(iFlags & (UpdateNode | UpdateMarker | UpdateKeySignature));
 
 	pAction = menu.addAction(
-		QIcon(":/images/formRemove.png"),
+		QIcon::fromTheme("formRemove"),
 		tr("&Remove"), this, SLOT(removeItem()));
 	pAction->setEnabled(iFlags & (RemoveNode | RemoveMarker));
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/images/formRefresh.png"),
+		QIcon::fromTheme("formRefresh"),
 		tr("&Refresh"), this, SLOT(refresh()));
 //	pAction->setEnabled(m_iDirtyCount > 0);
 

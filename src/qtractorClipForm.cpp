@@ -78,8 +78,10 @@ void qtractorClipForm::initFadeTypes (void)
 	};
 
 	if (g_fadeTypes.isEmpty()) {
-		const QPixmap pmFadeIn(":/images/fadeIn.png");
-		const QPixmap pmFadeOut(":/images/fadeOut.png");
+		const QPixmap& pmFadeIn
+			= QIcon::fromTheme("fadeIn").pixmap(7 * 16, 16);
+		const QPixmap& pmFadeOut
+			= QIcon::fromTheme("fadeOut").pixmap(7 * 16, 16);
 		for (int i = 0; s_aFadeTypeNames[i]; ++i) {
 			FadeTypeInfo& info = g_fadeTypes[i];
 			info.name = tr(s_aFadeTypeNames[i]);
@@ -233,7 +235,7 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 
 	// Why not change the dialog icon accordingly?
 	if (m_bClipNew)
-		QDialog::setWindowIcon(QIcon(":/images/editClipNew.png"));
+		QDialog::setWindowIcon(QIcon::fromTheme("clipNew"));
 
 	// Copy from global time-scale instance...
 	if (m_pTimeScale)

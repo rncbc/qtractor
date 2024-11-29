@@ -57,12 +57,12 @@ public:
 
 		switch (m_pBus->busType()) {
 		case qtractorTrack::Audio:
-			QTreeWidgetItem::setIcon(0, QIcon(":/images/trackAudio.png"));
+			QTreeWidgetItem::setIcon(0, QIcon::fromTheme("trackAudio"));
 			QTreeWidgetItem::setText(1, QString::number(
 				static_cast<qtractorAudioBus *> (m_pBus)->channels()));
 			break;
 		case qtractorTrack::Midi:
-			QTreeWidgetItem::setIcon(0, QIcon(":/images/trackMidi.png"));
+			QTreeWidgetItem::setIcon(0, QIcon::fromTheme("trackMidi"));
 			QTreeWidgetItem::setText(1, QString::number(16));
 			break;
 		case qtractorTrack::None:
@@ -904,29 +904,29 @@ void qtractorBusForm::contextMenu ( const QPoint& /*pos*/ )
 	const unsigned int iFlags = flags();
 
 	pAction = menu.addAction(
-		QIcon(":/images/formCreate.png"),
+		QIcon::fromTheme("formCreate"),
 		tr("&Create"), this, SLOT(createBus()));
 	pAction->setEnabled(iFlags & Create);
 
 	pAction = menu.addAction(
-		QIcon(":/images/formAccept.png"),
+		QIcon::fromTheme("formAccept"),
 		tr("&Update"), this, SLOT(updateBus()));
 	pAction->setEnabled(iFlags & Update);
 
 	pAction = menu.addAction(
-		QIcon(":/images/formRemove.png"),
+		QIcon::fromTheme("formRemove"),
 		tr("&Delete"), this, SLOT(deleteBus()));
 	pAction->setEnabled(iFlags & Delete);
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/images/formMoveUp.png"),
+		QIcon::fromTheme("formMoveUp"),
 		tr("Move &Up"), this, SLOT(moveUpBus()));
 	pAction->setEnabled(iFlags & MoveUp);
 
 	pAction = menu.addAction(
-		QIcon(":/images/formMoveDown.png"),
+		QIcon::fromTheme("formMoveDown"),
 		tr("Move &Down"), this, SLOT(moveDownBus()));
 	pAction->setEnabled(iFlags & MoveDown);
 
@@ -991,7 +991,7 @@ void qtractorBusForm::updateMidiInstruments (void)
 	// Avoid superfluous change notifications...
 	++m_iDirtySetup;
 
-	const QIcon& icon = QIcon(":/images/itemInstrument.png");
+	const QIcon& icon = QIcon::fromTheme("itemInstrument");
 	if (pMidiBus->pluginList_out()) {
 		qtractorMidiManager *pMidiManager
 			= (pMidiBus->pluginList_out())->midiManager();

@@ -37,7 +37,7 @@
    <string>Tempo Adjust</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/transportMetro.png</iconset>
+   <iconset theme="transportMetro" />
   </property>
   <layout class="QVBoxLayout" name="MainBoxLayout">
    <property name="spacing">

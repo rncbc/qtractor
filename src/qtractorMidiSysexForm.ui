@@ -33,7 +33,7 @@
    <string>MIDI SysEx</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="qtractor.qrc" >:/images/qtractorTracks.png</iconset>
+   <iconset theme="qtractorTracks" />
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
@@ -78,7 +78,7 @@
         <string>&amp;Import...</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formOpen.png</iconset>
+        <iconset theme="formOpen" />
        </property>
       </widget>
      </item>
@@ -91,7 +91,7 @@
         <string>E&amp;xport...</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formSave.png</iconset>
+        <iconset theme="formSave" />
        </property>
       </widget>
      </item>
@@ -117,7 +117,7 @@
         <string>&amp;Up</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formMoveUp.png</iconset>
+        <iconset theme="formMoveUp" />
        </property>
       </widget>
      </item>
@@ -130,7 +130,7 @@
         <string>&amp;Down</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formMoveDown.png</iconset>
+        <iconset theme="formMoveDown" />
        </property>
       </widget>
      </item>
@@ -143,7 +143,7 @@
         <string>Open SysEx</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formOpen.png</iconset>
+        <iconset theme="formOpen" />
        </property>
       </widget>
      </item>
@@ -172,7 +172,7 @@
         <string>Save SysEx</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formSave.png</iconset>
+        <iconset theme="formSave" />
        </property>
       </widget>
      </item>
@@ -185,7 +185,7 @@
         <string>Delete SysEx</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formRemove.png</iconset>
+        <iconset theme="formRemove" />
        </property>
       </widget>
      </item>
@@ -198,7 +198,7 @@
         <string>&amp;Add</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formAdd.png</iconset>
+        <iconset theme="formAdd" />
        </property>
       </widget>
      </item>
@@ -220,7 +220,7 @@
         <string>Upda&amp;te</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formEdit.png</iconset>
+        <iconset theme="formEdit" />
        </property>
       </widget>
      </item>
@@ -233,7 +233,7 @@
         <string>&amp;Remove</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formRemove.png</iconset>
+        <iconset theme="formRemove" />
        </property>
       </widget>
      </item>

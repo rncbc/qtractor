@@ -36,7 +36,7 @@
    <string>Session</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="qtractor.qrc" >:/images/qtractor.svg</iconset>
+   <iconset resource="qtractor.qrc">:/images/qtractor.svg</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <item>
@@ -148,7 +148,7 @@
             </size>
            </property>
            <property name="icon" >
-            <iconset resource="qtractor.qrc" >:/images/fileOpen.png</iconset>
+            <iconset theme="fileOpen" />
            </property>
            <property name="focusPolicy" >
             <enum>Qt::TabFocus</enum>

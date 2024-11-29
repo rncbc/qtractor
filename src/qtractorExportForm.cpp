@@ -1,7 +1,7 @@
 // qtractorExportForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2023, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -165,14 +165,14 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 		switch (m_exportType) {
 		case qtractorTrack::Audio:
 			pEngine = pSession->audioEngine();
-			icon = QIcon(":/images/trackAudio.png");
+			icon = QIcon::fromTheme("trackAudio");
 			m_sExportType = tr("Audio");
 			m_sExportExt  = qtractorAudioFileFactory::defaultExt();
 			m_ui.ExportTypeWidget->removeWidget(m_ui.MidiExportTypePage);
 			break;
 		case qtractorTrack::Midi:
 			pEngine = pSession->midiEngine();
-			icon = QIcon(":/images/trackMidi.png");
+			icon = QIcon::fromTheme("trackMidi");
 			m_sExportType = tr("MIDI");
 			m_sExportExt  = "mid";
 			m_ui.ExportTypeWidget->removeWidget(m_ui.AudioExportTypePage);
@@ -238,6 +238,7 @@ void qtractorExportForm::setExportType ( qtractorTrack::TrackType exportType )
 
 	// Fill in the output bus names list...
 	m_ui.ExportBusNameListBox->clear();
+	m_ui.ExportBusNameListBox->setIconSize(QSize(16, 16));
 	if (pEngine) {
 		QDialog::setWindowIcon(icon);
 		QDialog::setWindowTitle(

@@ -34,7 +34,7 @@
    <string>MIDI Tools</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/qtractorMidiEditor.svg</iconset>
+   <iconset theme="qtractorMidiEditor" />
   </property>
   <layout class="QVBoxLayout">
    <property name="spacing">
@@ -79,7 +79,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formSave.png</iconset>
+        <iconset theme="formSave" />
        </property>
       </widget>
      </item>
@@ -95,7 +95,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
+        <iconset theme="formRemove" />
        </property>
       </widget>
      </item>

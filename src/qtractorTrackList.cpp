@@ -295,8 +295,8 @@ qtractorTrackList::qtractorTrackList ( qtractorTracks *pTracks, QWidget *pParent
 
 	m_iUpdateContents = 0;
 
-	m_pPixmap[IconAudio] = new QPixmap(":/images/trackAudio.png");
-	m_pPixmap[IconMidi]  = new QPixmap(":/images/trackMidi.png");
+	m_pPixmap[IconAudio] = new QPixmap(QIcon::fromTheme("trackAudio").pixmap(16, 16));
+	m_pPixmap[IconMidi]  = new QPixmap(QIcon::fromTheme("trackMidi").pixmap(16, 16));
 
 	// Allocate local header.
 	m_pHeader = new QHeaderView(Qt::Horizontal, qtractorScrollView::viewport());
@@ -657,15 +657,20 @@ void qtractorTrackList::Item::updateMeters (
 // Track-list model item icon updater.
 void qtractorTrackList::Item::updateIcon ( qtractorTrackList *pTrackList )
 {
-	const QPixmap pm(track->trackIcon());
-	if (!pm.isNull()) {
+	const QString& sTrackIcon
+		= track->trackIcon();
+	QIcon trackIcon = QIcon::fromTheme(sTrackIcon);
+	if (trackIcon.isNull())
+		trackIcon = QIcon(sTrackIcon);
+	if (!trackIcon.isNull()) {
 		const int h0 = track->zoomHeight() - 4; // Account for track nr.
 		const int h1 = (h0 < qtractorTrack::HeightMin ? h0 : h0 - 12);
 		const int w0 = pTrackList->header()->sectionSize(Number) - 4;
 		const int w1 = (w0 < h1 ? w0 : h1);
-		icon = pm.scaled(w1, w1, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+		icon = trackIcon.pixmap(w1);
+	} else {
+		icon = QPixmap(); // null pixmap.
 	}
-	else icon = pm; // Null pixmap!
 }
 
 

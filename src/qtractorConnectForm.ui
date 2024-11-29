@@ -42,7 +42,7 @@
    <string>Connections</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="qtractor.qrc" >:/images/qtractorConnections.svg</iconset>
+   <iconset theme="qtractorConnections" />
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
@@ -140,7 +140,7 @@
             <string>&amp;Connect</string>
            </property>
            <property name="icon" >
-            <iconset resource="qtractor.qrc" >:/images/formConnect.png</iconset>
+            <iconset theme="formConnect" />
            </property>
           </widget>
          </item>
@@ -153,7 +153,7 @@
             <string>&amp;Disconnect</string>
            </property>
            <property name="icon" >
-            <iconset resource="qtractor.qrc" >:/images/formDisconnect.png</iconset>
+            <iconset theme="formDisconnect" />
            </property>
           </widget>
          </item>
@@ -166,7 +166,7 @@
             <string>Disconnect &amp;All</string>
            </property>
            <property name="icon" >
-            <iconset resource="qtractor.qrc" >:/images/formDisconnectAll.png</iconset>
+            <iconset theme="formDisconnectAll" />
            </property>
           </widget>
          </item>
@@ -195,7 +195,7 @@
             <string>&amp;Refresh</string>
            </property>
            <property name="icon" >
-            <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
+            <iconset theme="formRefresh" />
            </property>
           </widget>
          </item>
@@ -290,7 +290,7 @@
             <string>&amp;Connect</string>
            </property>
            <property name="icon" >
-            <iconset resource="qtractor.qrc" >:/images/formConnect.png</iconset>
+            <iconset theme="formConnect" />
            </property>
           </widget>
          </item>
@@ -303,7 +303,7 @@
             <string>&amp;Disconnect</string>
            </property>
            <property name="icon" >
-            <iconset resource="qtractor.qrc" >:/images/formDisconnect.png</iconset>
+            <iconset theme="formDisconnect" />
            </property>
           </widget>
          </item>
@@ -316,7 +316,7 @@
             <string>Disconnect &amp;All</string>
            </property>
            <property name="icon" >
-            <iconset resource="qtractor.qrc" >:/images/formDisconnectAll.png</iconset>
+            <iconset theme="formDisconnectAll" />
            </property>
           </widget>
          </item>
@@ -345,7 +345,7 @@
             <string>&amp;Refresh</string>
            </property>
            <property name="icon" >
-            <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
+            <iconset theme="formRefresh" />
            </property>
           </widget>
          </item>

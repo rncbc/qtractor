@@ -157,7 +157,7 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	}
 
 	// Populate the MIDI capture quantize combo-box.
-	const QIcon snapIcon(":/images/itemBeat.png");
+	const QIcon& snapIcon = QIcon::fromTheme("itemBeat");
 	const QStringList& snapItems = qtractorTimeScale::snapItems();
 	QStringListIterator snapIter(snapItems);
 	m_ui.MidiCaptureQuantizeComboBox->clear();
@@ -165,7 +165,7 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 //	snapIter.toFront();
 	if (snapIter.hasNext())
 		m_ui.MidiCaptureQuantizeComboBox->addItem(
-			QIcon(":/images/itemNone.png"), snapIter.next());
+			QIcon::fromTheme("itemNone"), snapIter.next());
 	while (snapIter.hasNext())
 		m_ui.MidiCaptureQuantizeComboBox->addItem(snapIcon, snapIter.next());
 //	m_ui.MidiCaptureQuantizeComboBox->insertItems(0, items);
@@ -447,6 +447,12 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 	QObject::connect(m_ui.CustomStyleSheetToolButton,
 		SIGNAL(clicked()),
 		SLOT(chooseCustomStyleSheet()));
+	QObject::connect(m_ui.CustomIconsThemeComboBox,
+		SIGNAL(activated(int)),
+		SLOT(changed()));
+	QObject::connect(m_ui.CustomIconsThemeToolButton,
+		SIGNAL(clicked()),
+		SLOT(chooseCustomIconsTheme()));
 	QObject::connect(m_ui.AudioMeterLevelComboBox,
 		SIGNAL(activated(int)),
 		SLOT(changeAudioMeterLevel(int)));
@@ -586,6 +592,7 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBarFilenameComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
 	m_pOptions->loadComboBoxFileHistory(m_ui.CustomStyleSheetComboBox);
+	m_pOptions->loadComboBoxFileHistory(m_ui.CustomIconsThemeComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.PluginPathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.MessagesLogPathComboBox);
 	m_pOptions->loadComboBoxHistory(m_ui.SessionTemplatePathComboBox);
@@ -723,6 +730,9 @@ void qtractorOptionsForm::setOptions ( qtractorOptions *pOptions )
 	m_pOptions->setComboBoxCurrentFile(
 		m_ui.CustomStyleSheetComboBox,
 		m_pOptions->sCustomStyleSheet);
+	m_pOptions->setComboBoxCurrentFile(
+		m_ui.CustomIconsThemeComboBox,
+		m_pOptions->sCustomIconsTheme);
 
 	// Load Display options...
 	QFont font;
@@ -1012,6 +1022,7 @@ void qtractorOptionsForm::accept (void)
 		else
 			m_pOptions->sCustomStyleTheme.clear();
 		m_pOptions->sCustomStyleSheet = m_pOptions->comboBoxCurrentFile(m_ui.CustomStyleSheetComboBox);
+		m_pOptions->sCustomIconsTheme = m_pOptions->comboBoxCurrentFile(m_ui.CustomIconsThemeComboBox);
 		// Reset dirty flags.
 		qtractorPluginFactory *pPluginFactory
 			= qtractorPluginFactory::getInstance();
@@ -1059,6 +1070,7 @@ void qtractorOptionsForm::accept (void)
 	m_pOptions->saveComboBoxHistory(m_ui.MetroBarFilenameComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.MetroBeatFilenameComboBox);
 	m_pOptions->saveComboBoxFileHistory(m_ui.CustomStyleSheetComboBox);
+	m_pOptions->saveComboBoxFileHistory(m_ui.CustomIconsThemeComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.PluginPathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.MessagesLogPathComboBox);
 	m_pOptions->saveComboBoxHistory(m_ui.SessionTemplatePathComboBox);
@@ -1316,9 +1328,60 @@ void qtractorOptionsForm::chooseCustomStyleSheet (void)
 		sFilename = fileDialog.selectedFiles().first();
 #endif
 
-	if (!sFilename.isEmpty()
-		&& m_pOptions->setComboBoxCurrentFile(
+	if (sFilename.isEmpty())
+		return;
+
+	if (m_pOptions->setComboBoxCurrentFile(
 			m_ui.CustomStyleSheetComboBox, sFilename)) {
+		changed();
+	}
+}
+
+
+// Custom icons theme (directory) chooser.
+void qtractorOptionsForm::chooseCustomIconsTheme (void)
+{
+	if (m_pOptions == nullptr)
+		return;
+
+	QString sIconsDir = m_ui.CustomIconsThemeComboBox->currentText();
+
+	const QString& sTitle
+		= tr("Icons Theme Directory");
+
+	QWidget *pParentWidget = nullptr;
+	QFileDialog::Options options = QFileDialog::ShowDirsOnly;
+	if (m_pOptions->bDontUseNativeDialogs) {
+		options |= QFileDialog::DontUseNativeDialog;
+		pParentWidget = QWidget::window();
+	}
+#if 1// QT_VERSION < QT_VERSION_CHECK(4, 4, 0)
+	// Ask for the directory...
+	sIconsDir = QFileDialog::getExistingDirectory(pParentWidget,
+		sTitle, sIconsDir, options);
+#else
+	// Construct open-directory dialog...
+	QFileDialog fileDialog(pParentWidget, sTitle, sIconsDir);
+	// Set proper open-file modes...
+	fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+	fileDialog.setFileMode(QFileDialog::DirectoryOnly);
+	// Stuff sidebar...
+	QList<QUrl> urls(fileDialog.sidebarUrls());
+	urls.append(QUrl::fromLocalFile(m_pOptions->sIconsDir));
+	fileDialog.setSidebarUrls(urls);
+	fileDialog.setOptions(options);
+	// Show dialog...
+	if (fileDialog.exec())
+		sLv2PresetDir = fileDialog.selectedFiles().first();
+#endif
+
+	if (sIconsDir.isEmpty())
+		return;
+
+	// TODO: Make sure the chosen directory has some image files...
+	//
+	if (m_pOptions->setComboBoxCurrentFile(
+			m_ui.CustomIconsThemeComboBox, sIconsDir)) {
 		changed();
 	}
 }

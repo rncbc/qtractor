@@ -74,7 +74,7 @@ qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
 		new QIntValidator(m_ui.SampleRateComboBox));
 
 	// Fill-up snap-per-beat items...
-	const QIcon snapIcon(":/images/itemBeat.png");
+	const QIcon& snapIcon = QIcon::fromTheme("itemBeat");
 	const QStringList& snapItems = qtractorTimeScale::snapItems();
 	QStringListIterator snapIter(snapItems);
 	m_ui.SnapPerBeatComboBox->clear();
@@ -82,7 +82,7 @@ qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
 //	snapIter.toFront();
 	if (snapIter.hasNext())
 		m_ui.SnapPerBeatComboBox->addItem(
-			QIcon(":/images/itemNone.png"), snapIter.next());
+			QIcon::fromTheme("itemNone"), snapIter.next());
 	while (snapIter.hasNext())
 		m_ui.SnapPerBeatComboBox->addItem(snapIcon, snapIter.next());
 //	m_ui.SnapPerBeatComboBox->insertItems(0, snapItems);

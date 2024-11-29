@@ -77,30 +77,30 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 
 	// Setup member widgets...
 	m_pHomeAction = new QAction(
-		QIcon(":images/itemHome.png"), tr("&Home"), this);
+		QIcon::fromTheme("itemHome"), tr("&Home"), this);
 	m_pCdUpAction = new QAction(
-		QIcon(":images/itemCdUp.png"), tr("&Up"), this);
+		QIcon::fromTheme("itemCdUp"), tr("&Up"), this);
 
 	m_pAllFilesAction = new QAction(tr("Al&l Files"), this);
 	m_pAllFilesAction->setCheckable(true);
 
 	m_pSessionFilesAction = new QAction(
-		QIcon(":images/itemSessionFile.png"), tr("&Session"), this);
+		QIcon::fromTheme("itemSessionFile"), tr("&Session"), this);
 	m_pSessionFilesAction->setCheckable(true);
 
 	m_pAudioFilesAction = new QAction(
-		QIcon(":images/itemAudioFile.png"), tr("&Audio"), this);
+		QIcon::fromTheme("itemAudioFile"), tr("&Audio"), this);
 	m_pAudioFilesAction->setCheckable(true);
 
 	m_pMidiFilesAction = new QAction(
-		QIcon(":images/itemMidiFile.png"), tr("&MIDI"), this);
+		QIcon::fromTheme("itemMidiFile"), tr("&MIDI"), this);
 	m_pMidiFilesAction->setCheckable(true);
 
 	m_pHiddenFilesAction = new QAction(tr("H&idden"), this);
 	m_pHiddenFilesAction->setCheckable(true);
 
 	m_pPlayAction = new QAction(
-		QIcon(":/images/transportPlay.png"), tr("&Play"), this);
+		QIcon::fromTheme("transportPlay"), tr("&Play"), this);
 	m_pPlayAction->setCheckable(true);
 
 	// Setup member widgets...
@@ -170,7 +170,7 @@ qtractorFileSystem::qtractorFileSystem ( QWidget *pParent )
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("File System");
 	QDockWidget::setWindowTitle(sCaption);
-	QDockWidget::setWindowIcon(QIcon(":/images/viewFileSystem.png"));
+	QDockWidget::setWindowIcon(QIcon::fromTheme("viewFileSystem"));
 	QDockWidget::setToolTip(sCaption);
 
 	// Setup signal/slot connections...

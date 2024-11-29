@@ -49,7 +49,7 @@ qtractorAudioFileItem::qtractorAudioFileItem (
 		qtractorAudioListView::Rate, Qt::AlignRight);
 
 	QTreeWidgetItem::setIcon(qtractorAudioListView::Name,
-		QIcon(":/images/itemAudioFile.png"));
+		QIcon::fromTheme("itemAudioFile"));
 
 	QTreeWidgetItem::setText(qtractorAudioListView::Channels,
 		QString::number(pFile->channels()));

@@ -721,7 +721,7 @@ const QString& qtractorTrack::trackIcon (void) const
 
 void qtractorTrack::setTrackIcon ( const QString& sTrackIcon )
 {
-	if (sTrackIcon.at(0) == ':' || QFileInfo(sTrackIcon).exists())
+	if (!QIcon::fromTheme(sTrackIcon).isNull() || QFileInfo(sTrackIcon).exists())
 		m_props.trackIcon = sTrackIcon;
 	else
 		m_props.trackIcon.clear();

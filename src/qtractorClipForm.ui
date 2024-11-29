@@ -37,7 +37,7 @@
    <string>Clip</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/editClip.png</iconset>
+   <iconset theme="clipEdit" />
   </property>
   <layout class="QGridLayout">
    <item row="0" column="0" colspan="10">
@@ -98,7 +98,7 @@
       <string>Browse for clip file</string>
      </property>
      <property name="icon">
-      <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+      <iconset theme="fileOpen" />
      </property>
     </widget>
    </item>

@@ -143,9 +143,9 @@ qtractorMidiEditEvent::qtractorMidiEditEvent (
 	m_pHzoomIn    = new QToolButton(this);
 	m_pHzoomReset = new QToolButton(this);
 
-	m_pHzoomOut->setIcon(QIcon(":/images/viewZoomOut.png"));
-	m_pHzoomIn->setIcon(QIcon(":/images/viewZoomIn.png"));
-	m_pHzoomReset->setIcon(QIcon(":/images/viewZoomReset.png"));
+	m_pHzoomOut->setIcon(QIcon::fromTheme("viewZoomOut"));
+	m_pHzoomIn->setIcon(QIcon::fromTheme("viewZoomIn"));
+	m_pHzoomReset->setIcon(QIcon::fromTheme("viewZoomReset"));
 
 	const int iScrollBarExtent
 		= qtractorScrollView::style()->pixelMetric(QStyle::PM_ScrollBarExtent);

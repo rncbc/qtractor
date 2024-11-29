@@ -1,7 +1,7 @@
 // qtractorShortcutForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -95,9 +95,9 @@ qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 	m_pToolButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
 //	m_pToolButton->setIconSize(QSize(18, 18));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
-	m_pToolButton->setIcon(QPixmap(":/images/itemReset.png"));
+	m_pToolButton->setIcon(QIcon::fromTheme("itemReset"));
 #else
-	m_pToolButton->setIcon(QPixmap(":/images/itemClear.png"));
+	m_pToolButton->setIcon(QIcon::fromTheme("itemClear"));
 #endif
 
 	QHBoxLayout *pLayout = new QHBoxLayout();
@@ -591,7 +591,7 @@ void qtractorShortcutForm::actionControlMenuRequested ( const QPoint& pos )
 	QMenu menu(this);
 
 	menu.addAction(
-		QIcon(":/images/itemControllers.png"),
+		QIcon::fromTheme("itemControllers"),
 		tr("&MIDI Controller..."), this,
 		SLOT(actionControlActivated()));
 

@@ -625,6 +625,13 @@ int main ( int argc, char **argv )
 	if (options.iBaseFontSize > 0)
 		app.setFont(QFont(app.font().family(), options.iBaseFontSize));
 
+	// Set custom icon theme...
+	QStringList icon_paths;
+	if (!options.sCustomIconsTheme.isEmpty())
+		icon_paths << options.sCustomIconsTheme;
+	icon_paths << ":images";
+	QIcon::setFallbackSearchPaths(icon_paths);
+
 	// Construct, setup and show the main form (a pseudo-singleton).
 	qtractorMainForm w;
 	w.setup(&options);

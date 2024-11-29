@@ -33,7 +33,7 @@
    <string>Plugins</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/pluginEdit.png</iconset>
+   <iconset theme="pluginEdit" />
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -208,7 +208,7 @@
         <string>&amp;Rescan</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formRefresh.png</iconset>
+        <iconset theme="formRefresh" />
        </property>
       </widget>
      </item>

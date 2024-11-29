@@ -80,8 +80,8 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pTabWidget->addTab(m_pAudioListView, tr("Audio"));
 	m_pTabWidget->addTab(m_pMidiListView, tr("MIDI"));
 	// Icons...
-	m_pTabWidget->setTabIcon(qtractorFiles::Audio, QIcon(":/images/trackAudio.png"));
-	m_pTabWidget->setTabIcon(qtractorFiles::Midi,  QIcon(":/images/trackMidi.png"));
+	m_pTabWidget->setTabIcon(qtractorFiles::Audio, QIcon::fromTheme("trackAudio"));
+	m_pTabWidget->setTabIcon(qtractorFiles::Midi,  QIcon::fromTheme("trackMidi"));
 	m_pTabWidget->setUsesScrollButtons(false);
 
 	// Player button (initially disabled)...
@@ -92,7 +92,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	m_pPlayWidget->setLayout(m_pPlayLayout);
 
 	m_pPlayButton = new QToolButton(m_pPlayWidget);
-	m_pPlayButton->setIcon(QIcon(":/images/transportPlay.png"));
+	m_pPlayButton->setIcon(QIcon::fromTheme("transportPlay"));
 	m_pPlayButton->setToolTip(tr("Play file"));
 	m_pPlayButton->setCheckable(true);
 	m_pPlayButton->setEnabled(false);
@@ -101,21 +101,21 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 
 	// Common file list-view actions...
 	m_pNewGroupAction = new QAction(
-		QIcon(":/images/itemGroup.png"), tr("New &Group..."), this);
+		QIcon::fromTheme("itemGroup"), tr("New &Group..."), this);
 	m_pOpenFileAction = new QAction(
-		QIcon(":/images/itemFile.png"), tr("Add &Files..."), this);
+		QIcon::fromTheme("itemFile"), tr("Add &Files..."), this);
 	m_pCutItemAction = new QAction(
-		QIcon(":/images/editCut.png"), tr("Cu&t"), nullptr);
+		QIcon::fromTheme("editCut"), tr("Cu&t"), nullptr);
 	m_pCopyItemAction = new QAction(
-		QIcon(":/images/editCopy.png"), tr("&Copy"), nullptr);
+		QIcon::fromTheme("editCopy"), tr("&Copy"), nullptr);
 	m_pPasteItemAction = new QAction(
-		QIcon(":/images/editPaste.png"), tr("&Paste"), nullptr);
+		QIcon::fromTheme("editPaste"), tr("&Paste"), nullptr);
 	m_pRenameItemAction = new QAction(
-		QIcon(":/images/formEdit.png"), tr("Re&name"), this);
+		QIcon::fromTheme("formEdit"), tr("Re&name"), this);
 	m_pRemoveItemAction = new QAction(
-		QIcon(":/images/formRemove.png"), tr("&Remove"), nullptr);
+		QIcon::fromTheme("formRemove"), tr("&Remove"), nullptr);
 	m_pPlayItemAction = new QAction(
-		QIcon(":/images/transportPlay.png"), tr("Pla&y"), this);
+		QIcon::fromTheme("transportPlay"), tr("Pla&y"), this);
 	m_pPlayItemAction->setCheckable(true);
 	m_pCleanupAction = new QAction(tr("Cl&eanup"), this);
 
@@ -162,7 +162,7 @@ qtractorFiles::qtractorFiles ( QWidget *pParent )
 	// Finally set the default caption and tooltip.
 	const QString& sCaption = tr("Files");
 	QDockWidget::setWindowTitle(sCaption);
-	QDockWidget::setWindowIcon(QIcon(":/images/viewFiles.png"));
+	QDockWidget::setWindowIcon(QIcon::fromTheme("viewFiles"));
 	QDockWidget::setToolTip(sCaption);
 
 	// Make it initially stable...
@@ -544,11 +544,11 @@ void qtractorFiles::contextMenuEvent (
 	// Switch page options...
 	switch (m_pTabWidget->currentIndex()) {
 	case qtractorFiles::Audio:
-		menu.addAction(QIcon(":/images/trackMidi.png"),
+		menu.addAction(QIcon::fromTheme("trackMidi"),
 			tr("MIDI Files"), this, SLOT(pageMidiSlot()));
 		break;
 	case qtractorFiles::Midi:
-		menu.addAction(QIcon(":/images/trackAudio.png"),
+		menu.addAction(QIcon::fromTheme("trackAudio"),
 			tr("Audio Files"), this, SLOT(pageAudioSlot()));
 		break;
 	default:

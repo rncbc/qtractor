@@ -60,7 +60,7 @@ qtractorFileGroupItem::qtractorFileGroupItem (
 	const QString& sName, int iType )
 	: QTreeWidgetItem(iType)
 {
-	QTreeWidgetItem::setIcon(0, QIcon(":/images/itemGroup.png"));
+	QTreeWidgetItem::setIcon(0, QIcon::fromTheme("itemGroup"));
 	QTreeWidgetItem::setText(0, sName);
 
 	Qt::ItemFlags flags = QTreeWidgetItem::flags();
@@ -111,8 +111,8 @@ void qtractorFileGroupItem::setOpen ( bool bOpen )
 {
 	// Set the proper pixmap of this...
 	if (type() == qtractorFileListView::GroupItem) {
-		QTreeWidgetItem::setIcon(0, QIcon(
-			bOpen ? ":/images/itemGroupOpen.png" : ":/images/itemGroup.png"));
+		QTreeWidgetItem::setIcon(0, QIcon::fromTheme(
+			bOpen ? "itemGroupOpen" : "itemGroup"));
 	}
 
 	// Open it up...
@@ -930,13 +930,13 @@ void qtractorFileListView::itemActivatedSlot ( QTreeWidgetItem *pItem )
 void qtractorFileListView::itemExpandedSlot ( QTreeWidgetItem *pItem )
 {
 	if (pItem->type() == GroupItem)
-		pItem->setIcon(0, QIcon(":/images/itemGroupOpen.png"));
+		pItem->setIcon(0, QIcon::fromTheme("itemGroupOpen"));
 }
 
 void qtractorFileListView::itemCollapsedSlot ( QTreeWidgetItem *pItem )
 {
 	if (pItem->type() == GroupItem)
-		pItem->setIcon(0, QIcon(":/images/itemGroup.png"));
+		pItem->setIcon(0, QIcon::fromTheme("itemGroup"));
 }
 
 

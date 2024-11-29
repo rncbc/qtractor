@@ -142,7 +142,7 @@ qtractorTrackForm::qtractorTrackForm ( QWidget *pParent )
 	m_ui.ProgComboBox->setValidator(new QIntValidator(m_ui.ProgComboBox));
 
 	// Bank select methods.
-	const QIcon& icon = QIcon(":/images/itemProperty.png");
+	const QIcon& icon = QIcon::fromTheme("itemProperty");
 	m_ui.BankSelMethodComboBox->clear();
 	m_ui.BankSelMethodComboBox->addItem(icon, tr("Normal"));
 	m_ui.BankSelMethodComboBox->addItem(icon, tr("Bank MSB"));
@@ -184,22 +184,22 @@ qtractorTrackForm::qtractorTrackForm ( QWidget *pParent )
 
 	// Add generic/standard track icons drop-down menu...
 	m_pIconMenu = new QMenu(this);
-	m_pIconMenu->addAction(QIcon(":/images/fileOpen.png"),
+	m_pIconMenu->addAction(QIcon::fromTheme("fileOpen"),
 		tr("Custom &Icon..."), this, SLOT(trackIconClicked()));
 	m_pIconMenu->addSeparator();
-	addIconMenuAction(tr("&Drums"), ":/images/trackIconDrums1.png");
-	addIconMenuAction(tr("Drum &Kit"), ":/images/trackIconDrums2.png");
-	addIconMenuAction(tr("&Bass"), ":/images/trackIconBass1.png");
-	addIconMenuAction(tr("A&coustic Bass"), ":/images/trackIconBass2.png");
-	addIconMenuAction(tr("&Guitar"), ":/images/trackIconGuitar1.png");
-	addIconMenuAction(tr("&Electric Guitar"), ":/images/trackIconGuitar2.png");
-	addIconMenuAction(tr("&Piano"), ":/images/trackIconPiano1.png");
-	addIconMenuAction(tr("&Acoustic Piano"), ":/images/trackIconPiano2.png");
-	addIconMenuAction(tr("&Microphone"), ":/images/trackIconMicrophone1.png");
-	addIconMenuAction(tr("Vi&ntage Microphone"), ":/images/trackIconMicrophone2.png");
-	addIconMenuAction(tr("&Speaker"), ":/images/trackIconSpeaker1.png");
-	addIconMenuAction(tr("&Trumpet"), ":/images/trackIconTrumpet1.png");
-	addIconMenuAction(tr("&Violin"), ":/images/trackIconViolin1.png");
+	addIconMenuAction(tr("&Drums"), "trackIconDrums1");
+	addIconMenuAction(tr("Drum &Kit"), "trackIconDrums2");
+	addIconMenuAction(tr("&Bass"), "trackIconBass1");
+	addIconMenuAction(tr("A&coustic Bass"), "trackIconBass2");
+	addIconMenuAction(tr("&Guitar"), "trackIconGuitar1");
+	addIconMenuAction(tr("&Electric Guitar"), "trackIconGuitar2");
+	addIconMenuAction(tr("&Piano"), "trackIconPiano1");
+	addIconMenuAction(tr("&Acoustic Piano"), "trackIconPiano2");
+	addIconMenuAction(tr("&Microphone"), "trackIconMicrophone1");
+	addIconMenuAction(tr("Vi&ntage Microphone"), "trackIconMicrophone2");
+	addIconMenuAction(tr("&Speaker"), "trackIconSpeaker1");
+	addIconMenuAction(tr("&Trumpet"), "trackIconTrumpet1");
+	addIconMenuAction(tr("&Violin"), "trackIconViolin1");
 	m_pIconMenu->addSeparator();
 	m_pIconMenu->addAction(tr("(None)"), this, SLOT(trackIconAction()));
 	m_ui.TrackIconToolButton->setMenu(m_pIconMenu);
@@ -664,7 +664,7 @@ void qtractorTrackForm::updateInstruments (void)
 
 	m_ui.InstrumentComboBox->clear();
 	m_ui.InstrumentComboBox->addItem(tr("(No instrument)"));
-	const QIcon& icon = QIcon(":/images/itemInstrument.png");
+	const QIcon& icon = QIcon::fromTheme("itemInstrument");
 
 	// Take care of MIDI plugin instrument names...
 	updateInstrumentsAdd(icon,
@@ -733,7 +733,7 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 	switch (trackType) {
 	case qtractorTrack::Audio:
 		pEngine = pSession->audioEngine();
-		icon = QIcon(":/images/trackAudio.png");
+		icon = QIcon::fromTheme("trackAudio");
 		m_ui.MidiGroupBox->hide();
 		m_ui.MidiGroupBox->setEnabled(false);
 		m_ui.InputBusNameComboBox->setEnabled(true);
@@ -741,7 +741,7 @@ void qtractorTrackForm::updateTrackType ( qtractorTrack::TrackType trackType )
 		break;
 	case qtractorTrack::Midi:
 		pEngine = pSession->midiEngine();
-		icon = QIcon(":/images/trackMidi.png");
+		icon = QIcon::fromTheme("trackMidi");
 		m_ui.MidiGroupBox->show();
 		m_ui.MidiGroupBox->setEnabled(true);
 		m_ui.InputBusNameComboBox->setEnabled(true);
@@ -868,7 +868,7 @@ void qtractorTrackForm::updateBanks ( const QString& sInstrumentName,
 
 	// Default (none) patch bank list...
 	int iBankIndex = 0;
-	const QIcon& icon = QIcon(":/images/itemPatches.png");
+	const QIcon& icon = QIcon::fromTheme("itemPatches");
 	m_banks.clear();
 	m_ui.BankComboBox->clear();
 	m_ui.BankComboBox->addItem(icon, tr("(None)"));
@@ -982,7 +982,7 @@ void qtractorTrackForm::updatePrograms (  const QString& sInstrumentName,
 	// Default (none) patch program list...
 	// Refresh patch program mapping...
 	int iProgIndex = 0;
-	const QIcon& icon = QIcon(":/images/itemChannel.png");
+	const QIcon& icon = QIcon::fromTheme("itemChannel");
 	m_progs.clear();
 	m_ui.ProgComboBox->clear();
 	m_ui.ProgComboBox->addItem(icon, tr("(None)"));
@@ -1245,7 +1245,7 @@ void qtractorTrackForm::trackIconClicked (void)
 {
 	QString sFilename = m_props.trackIcon;
 
-	if (!sFilename.isEmpty() && sFilename.at(0) == ':')
+	if (!sFilename.isEmpty() && !QIcon::fromTheme(sFilename).isNull())
 		sFilename.clear();
 
 	const QString& sTitle
@@ -1780,7 +1780,8 @@ void qtractorTrackForm::addIconMenuAction (
 	const QString& sIconText, const QString& sTrackIcon )
 {
 	QAction *pAction = m_pIconMenu->addAction(
-		QIcon(sTrackIcon), sIconText, this, SLOT(trackIconAction()));
+		QIcon::fromTheme(sTrackIcon), sIconText,
+		this, SLOT(trackIconAction()));
 	pAction->setData(sTrackIcon);
 }
 
@@ -1793,14 +1794,15 @@ void qtractorTrackForm::trackIconChanged (void)
 	pal.setColor(QPalette::Button, m_props.foreground.lighter());
 	m_ui.TrackIconToolButton->setPalette(pal);
 
-	const QPixmap pm(m_props.trackIcon);
-	if (!pm.isNull()) {
-		const QSize& size = m_ui.TrackIconToolButton->size() - QSize(8, 8);
+	QIcon icon = QIcon::fromTheme(m_props.trackIcon);
+	if (icon.isNull())
+		icon = QIcon(m_props.trackIcon);
+	if (!icon.isNull()) {
+		const QSize& size
+			= m_ui.TrackIconToolButton->size() - QSize(8, 8);
 		m_ui.TrackIconToolButton->setIconSize(size);
-		m_ui.TrackIconToolButton->setIcon(
-			pm.scaled(size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 	}
-	else m_ui.TrackIconToolButton->setIcon(pm);
+	m_ui.TrackIconToolButton->setIcon(icon);
 
 	changed();
 }

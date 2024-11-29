@@ -3125,7 +3125,7 @@ void qtractorClapPlugin::openEditor ( QWidget *pParent )
 		m_pEditorWidget = new EditorWidget(pParent, wflags);
 		m_pEditorWidget->setAttribute(Qt::WA_QuitOnClose, false);
 		m_pEditorWidget->setWindowTitle(sTitle);
-		m_pEditorWidget->setWindowIcon(QIcon(":/images/qtractorPlugin.svg"));
+		m_pEditorWidget->setWindowIcon(QIcon::fromTheme("qtractorPlugin"));
 		w.x11 = m_pEditorWidget->parentWinId();
 		if (!gui->set_parent(plugin, &w)) {
 			qWarning("qtractorClapPlugin[%p]::openEditor: could not embbed the plugin GUI.", this);
