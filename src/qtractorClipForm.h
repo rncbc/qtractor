@@ -41,7 +41,7 @@ public:
 	// Destructor.
 	~qtractorClipForm();
 
-	void setClip(qtractorClip *pClip, bool bClipNew = false);
+	void setClip(qtractorClip *pClip);
 	qtractorClip *clip() const;
 
 protected slots:
@@ -52,7 +52,7 @@ protected slots:
 
 	void formatChanged(int);
 	void stabilizeForm();
-    void browseFilename();
+	void browseFilename();
 
 	void filenameChanged(const QString& sFilename);
 	void trackChannelChanged(int iTrackChannel);

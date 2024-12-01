@@ -1152,7 +1152,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	#endif
 	}
 
-	// Whether we're a initial setup or a second comig...
+	// Whether we're a initial setup or a second coming...
 	const bool bMidiClip = (pMidiClip == nullptr);
 	if (bMidiClip)
 		pMidiClip = midiClip();
