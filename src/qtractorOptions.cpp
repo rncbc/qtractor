@@ -1083,7 +1083,7 @@ bool qtractorOptions::setComboBoxCurrentFile (
 		pComboBox->setToolTip(sPath);
 	} else {
 		pComboBox->setCurrentIndex(pComboBox->count() - 1);
-		pComboBox->setToolTip(pComboBox->currentText());
+	//	pComboBox->setToolTip(pComboBox->currentText());
 	}
 	pComboBox->blockSignals(bBlockSignals);
 

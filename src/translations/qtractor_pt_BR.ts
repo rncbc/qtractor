@@ -1372,12 +1372,12 @@ Você deseja descartar essas alterações?</translation>
     <name>qtractorClipForm</name>
     <message>
         <location filename="../qtractorClipForm.ui" line="508"/>
-        <location filename="../qtractorClipForm.cpp" line="306"/>
+        <location filename="../qtractorClipForm.cpp" line="310"/>
         <source> %</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="274"/>
+        <location filename="../qtractorClipForm.cpp" line="278"/>
         <source> dB</source>
         <translation></translation>
     </message>
@@ -1387,7 +1387,7 @@ Você deseja descartar essas alterações?</translation>
         <translation>CPS (Compasso Pulso Subpulso)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="693"/>
+        <location filename="../qtractorClipForm.cpp" line="697"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
@@ -1403,12 +1403,12 @@ Você deseja descartar essas alterações?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="461"/>
-        <location filename="../qtractorClipForm.cpp" line="688"/>
+        <location filename="../qtractorClipForm.cpp" line="692"/>
         <source>Audio</source>
         <translation>Áudio</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="466"/>
+        <location filename="../qtractorClipForm.cpp" line="470"/>
         <source>edit clip</source>
         <translation>editar sequência</translation>
     </message>
@@ -1423,7 +1423,7 @@ Você deseja descartar essas alterações?</translation>
         <translation>Começo da sequência</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="709"/>
+        <location filename="../qtractorClipForm.cpp" line="713"/>
         <source>%1 Clip File</source>
         <translation>%1 Arquivo de Sequência</translation>
     </message>
@@ -1434,7 +1434,7 @@ Você deseja descartar essas alterações?</translation>
     </message>
     <message>
         <location filename="../qtractorClipForm.ui" line="195"/>
-        <location filename="../qtractorClipForm.cpp" line="273"/>
+        <location filename="../qtractorClipForm.cpp" line="277"/>
         <source>&amp;Gain:</source>
         <translation>&amp;Ganho:</translation>
     </message>
@@ -1480,7 +1480,7 @@ Você deseja descartar essas alterações?</translation>
         <translation>Amostras</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="583"/>
+        <location filename="../qtractorClipForm.cpp" line="587"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -1599,7 +1599,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>&amp;Início:</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="415"/>
+        <location filename="../qtractorClipForm.cpp" line="419"/>
         <source>new clip</source>
         <translation>nova sequência</translation>
     </message>
@@ -1649,17 +1649,17 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Cúbica 3</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="305"/>
+        <location filename="../qtractorClipForm.cpp" line="309"/>
         <source>&amp;Volume:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="695"/>
+        <location filename="../qtractorClipForm.cpp" line="699"/>
         <source>MIDI files (*.%1 *.smf *.midi)</source>
         <translation>Arquivos MIDI (*.%1 *.smf *.midi)</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="696"/>
+        <location filename="../qtractorClipForm.cpp" line="700"/>
         <source>All files (*.*)</source>
         <translation>Todos os arquivos (*.*)</translation>
     </message>
@@ -1669,7 +1669,7 @@ Você quer mesmo manter as modificações?</translation>
         <translation>Formato de exibição do tempo</translation>
     </message>
     <message>
-        <location filename="../qtractorClipForm.cpp" line="582"/>
+        <location filename="../qtractorClipForm.cpp" line="586"/>
         <source>Warning</source>
         <translation>Atenção</translation>
     </message>

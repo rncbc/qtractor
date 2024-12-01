@@ -219,7 +219,7 @@ qtractorClipForm::~qtractorClipForm (void)
 
 
 // Populate (setup) dialog controls from settings descriptors.
-void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
+void qtractorClipForm::setClip ( qtractorClip *pClip )
 {
 	// Initialize conveniency options...
 	qtractorSession *pSession = qtractorSession::getInstance();
@@ -229,9 +229,13 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 	// Mark that we're changing thing's here...
 	++m_iDirtySetup;
 
+	QString sFilename;
+	if (pClip)
+		sFilename = pClip->filename();
+
 	// Clip properties cloning...
 	m_pClip = pClip;
-	m_bClipNew = bClipNew;
+	m_bClipNew = sFilename.isEmpty();
 
 	// Why not change the dialog icon accordingly?
 	if (m_bClipNew)
@@ -334,13 +338,13 @@ void qtractorClipForm::setClip ( qtractorClip *pClip, bool bClipNew )
 		pOptions->loadComboBoxHistory(m_ui.FilenameComboBox);
 
 	// Finally set clip filename...
-	m_ui.FilenameComboBox->setEditText(m_pClip->filename());
+	m_ui.FilenameComboBox->setEditText(sFilename);
 
 	// Shake it a little bit first, but
 	// make it as tight as possible...
 	// resize(width() - 1, height() - 1);
 	adjustSize();
-	
+
 	// Backup clean.
 	--m_iDirtySetup;
 	m_iDirtyCount = 0;
@@ -778,7 +782,7 @@ void qtractorClipForm::fileChanged (
 	}
 
 	// Give as clip name hint if blank or new...
-	if (m_ui.ClipNameLineEdit->text().isEmpty() || m_bClipNew)
+	if (m_ui.ClipNameLineEdit->text().isEmpty())
 		m_ui.ClipNameLineEdit->setText(fi.baseName());
 
 	// Depending on the clip/track type,

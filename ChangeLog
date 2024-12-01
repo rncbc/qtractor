@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- After a shameful long time, adding a brand new audio clip via the
+  Clip/New... dialog, is now finally fixed and functional.
+
 - Mixer: reduced track names up to first line break. (GH #491)
 
 - Double-click on slider for default value, replicating the behavior
