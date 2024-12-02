@@ -6,6 +6,9 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing new application custom theming option: View/Options...
+  /Display/Options/Custom/Icons theme (directory or folder).
+
 - After a shameful long time, adding a brand new audio clip via the
   Clip/New... dialog, is now finally fixed and functional.
 
