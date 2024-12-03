@@ -163,7 +163,7 @@ qtractorMidiToolsForm::qtractorMidiToolsForm ( QWidget *pParent )
 		m_ui.TransposeTimeSpinBox->setTimeScale(m_pTimeScale);
 		m_ui.ResizeDurationSpinBox->setTimeScale(m_pTimeScale);
 		// Fill-up snap-per-beat items...
-		const QIcon snapIcon(":/images/itemBeat.png");
+		const QIcon& snapIcon = QIcon::fromTheme("itemBeat");
 		const QSize snapIconSize(8, 16);
 		const QStringList& snapItems = qtractorTimeScale::snapItems();
 		QStringListIterator snapIter(snapItems);

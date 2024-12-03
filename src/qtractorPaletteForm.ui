@@ -79,7 +79,7 @@
          <string>Save</string>
         </property>
         <property name="icon">
-         <iconset resource="qtractor.qrc">:/images/formSave.png</iconset>
+         <iconset theme="formSave" />
         </property>
        </widget>
       </item>
@@ -92,7 +92,7 @@
          <string>Delete</string>
         </property>
         <property name="icon">
-         <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
+         <iconset theme="formRemove" />
         </property>
        </widget>
       </item>
@@ -153,7 +153,7 @@
          <string> Reset</string>
         </property>
         <property name="icon">
-         <iconset resource="qtractor.qrc">:/images/itemReset.png</iconset>
+         <iconset theme="itemReset" />
         </property>
        </widget>
       </item>
@@ -179,7 +179,7 @@
          <string>Import...</string>
         </property>
         <property name="icon">
-         <iconset resource="qtractor.qrc">:/images/formOpen.png</iconset>
+         <iconset theme="formOpen" />
         </property>
        </widget>
       </item>
@@ -192,7 +192,7 @@
          <string>Export...</string>
         </property>
         <property name="icon">
-         <iconset resource="qtractor.qrc">:/images/formSave.png</iconset>
+         <iconset theme="formSave" />
         </property>
        </widget>
       </item>

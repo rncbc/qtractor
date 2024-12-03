@@ -179,7 +179,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pTimeSig2ResetButton = new QToolButton(m_ui.timeToolbar);
 	const int h1 = m_pTempoSpinBox->sizeHint().height();
 	m_pTimeSig2ResetButton->setMaximumSize(h1, h1);
-	m_pTimeSig2ResetButton->setIcon(QPixmap(":/images/itemReset.png"));
+	m_pTimeSig2ResetButton->setIcon(QIcon::fromTheme("itemReset"));
 	m_pTimeSig2ResetButton->setToolTip(tr("Reset time-sig."));
 	m_ui.timeToolbar->addWidget(m_pTimeSig2ResetButton);
 
@@ -209,7 +209,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 
 	// View/Snap-to-beat actions initialization...
 	int iSnap = 0;
-	const QIcon snapIcon(":/images/itemBeat.png");
+	const QIcon& snapIcon = QIcon::fromTheme("itemBeat");
 	const QString sSnapObjectName("viewSnapPerBeat%1");
 	const QString sSnapStatusTip(tr("Set current snap to %1"));
 	const QStringList& snapItems = qtractorTimeScale::snapItems();
@@ -237,12 +237,12 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	snapIter.toFront();
 	if (snapIter.hasNext())
 		m_pSnapPerBeatComboBox->addItem(
-			QIcon(":/images/itemNone.png"), snapIter.next());
+			QIcon::fromTheme("itemNone"), snapIter.next());
 	while (snapIter.hasNext())
 		m_pSnapPerBeatComboBox->addItem(snapIcon, snapIter.next());
 //	m_pSnapPerBeatComboBox->insertItems(0, snapItems);
 
-	const QIcon icon(":/images/itemProperty.png");
+	const QIcon& icon = QIcon::fromTheme("itemProperty");
 
 	m_pViewTypeComboBox->addItem(icon,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEON),
@@ -1152,7 +1152,7 @@ void qtractorMidiEditorForm::setup ( qtractorMidiClip *pMidiClip )
 	#endif
 	}
 
-	// Whether we're a initial setup or a second comig...
+	// Whether we're a initial setup or a second coming...
 	const bool bMidiClip = (pMidiClip == nullptr);
 	if (bMidiClip)
 		pMidiClip = midiClip();

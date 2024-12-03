@@ -151,10 +151,10 @@ protected:
 			// Draw the icon...
 			QRect rect = option.rect;
 			pPainter->drawPixmap(rect.left() + 2,
-				rect.top() + ((rect.height() - iconSize.height()) >> 1) + 1,
+				rect.top() + ((rect.height() - iconSize.height()) >> 1),
 				pItem->icon().pixmap(iconSize));
 			// Draw the text...
-			rect.setLeft(iconSize.width() + 2);
+			rect.setLeft(iconSize.width() + 4);
 			pPainter->setPen(rgbFore);
 			pPainter->drawText(rect,
 				Qt::AlignLeft | Qt::AlignVCenter, pItem->text());
@@ -210,9 +210,9 @@ qtractorPluginListItem::qtractorPluginListItem ( qtractorPlugin *pPlugin )
 	: QListWidgetItem(), m_pPlugin(pPlugin), m_iDirectAccessWidth(0)
 {
 	if (++g_iIconsRefCount == 1) {
-		g_pIcons[0] = new QIcon(":/images/itemLedOff.png");
-		g_pIcons[1] = new QIcon(":/images/itemLedOn.png");
-		g_pIcons[2] = new QIcon(":/images/itemLedDim.png");
+		g_pIcons[0] = new QIcon(QIcon::fromTheme("itemLedOff"));
+		g_pIcons[1] = new QIcon(QIcon::fromTheme("itemLedOn"));
+		g_pIcons[2] = new QIcon(QIcon::fromTheme("itemLedDim"));
 	}
 
 	m_pPlugin->addItem(this);
@@ -284,7 +284,7 @@ qtractorPluginListView::qtractorPluginListView ( QWidget *pParent )
 	QListWidget::setDropIndicatorShown(true);
 	QListWidget::setAutoScroll(true);
 
-	QListWidget::setIconSize(QSize(10, 10));
+	QListWidget::setIconSize(QSize(8, 8));
 	QListWidget::setItemDelegate(new qtractorPluginListItemDelegate(this));
 	QListWidget::setSelectionMode(QAbstractItemView::SingleSelection);
 	QListWidget::setMouseTracking(true);
@@ -1679,7 +1679,7 @@ void qtractorPluginListView::dropEvent ( QDropEvent *pDropEvent )
 		menu.addAction(tr("&Move Here"), this, SLOT(dropMove()));
 		menu.addAction(tr("&Copy Here"), this, SLOT(dropCopy()));
 		menu.addSeparator();
-		menu.addAction(QIcon(":/images/formReject.png"),
+		menu.addAction(QIcon::fromTheme("formReject"),
 			tr("C&ancel"), this, SLOT(dropCancel()));
 	#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 		menu.exec(QListWidget::mapToGlobal(pDropEvent->position().toPoint()));
@@ -1782,20 +1782,20 @@ void qtractorPluginListView::contextMenuEvent (
 	}
 
 	pAction = menu.addAction(
-		QIcon(":/images/formCreate.png"),
+		QIcon::fromTheme("formCreate"),
 		tr("&Add Plugin..."), this, SLOT(addPlugin()));
 //	pAction->setEnabled(true);
 
 	QMenu *pInsertsMenu = menu.addMenu(tr("I&nserts"));
 
 	QMenu *pAudioInsertsMenu = pInsertsMenu->addMenu(
-		QIcon(":/images/trackAudio.png"), tr("&Audio"));
+		QIcon::fromTheme("trackAudio"), tr("&Audio"));
 	pAudioInsertsMenu->setEnabled(m_pPluginList->channels() > 0);
 	pAction = pAudioInsertsMenu->addAction(
-		QIcon(":/images/formAdd.png"),
+		QIcon::fromTheme("formAdd"),
 		tr("Add &Insert"), this, SLOT(addAudioInsertPlugin()));
 	pAction = pAudioInsertsMenu->addAction(
-		QIcon(":/images/formAdd.png"),
+		QIcon::fromTheme("formAdd"),
 		tr("Add &Aux Send"), this, SLOT(addAudioAuxSendPlugin()));
 //	pAction->setEnabled(
 //		m_pPluginList->flags() != qtractorPluginList::AudioOutBus);
@@ -1804,22 +1804,22 @@ void qtractorPluginListView::contextMenuEvent (
 		&& pType->typeHint() == qtractorPluginType::Insert
 		&& pType->index() > 0);
 	pAction = pAudioInsertsMenu->addAction(
-		QIcon(":/images/itemAudioPortOut.png"),
+		QIcon::fromTheme("itemAudioPortOut"),
 		tr("&Sends"), this, SLOT(insertPluginOutputs()));
 	pAction->setEnabled(bAudioInsertPlugin);
 	pAction = pAudioInsertsMenu->addAction(
-		QIcon(":/images/itemAudioPortIn.png"),
+		QIcon::fromTheme("itemAudioPortIn"),
 		tr("&Returns"), this, SLOT(insertPluginInputs()));
 	pAction->setEnabled(bAudioInsertPlugin);
 
 	QMenu *pMidiInsertsMenu = pInsertsMenu->addMenu(
-		QIcon(":/images/trackMidi.png"), tr("&MIDI"));
+		QIcon::fromTheme("trackMidi"), tr("&MIDI"));
 	pMidiInsertsMenu->setEnabled(m_pPluginList->isMidi());
 	pAction = pMidiInsertsMenu->addAction(
-		QIcon(":/images/formAdd.png"),
+		QIcon::fromTheme("formAdd"),
 		tr("Add &Insert"), this, SLOT(addMidiInsertPlugin()));
 	pAction = pMidiInsertsMenu->addAction(
-		QIcon(":/images/formAdd.png"),
+		QIcon::fromTheme("formAdd"),
 		tr("Add &Aux Send"), this, SLOT(addMidiAuxSendPlugin()));
 //	pAction->setEnabled(
 //		m_pPluginList->flags() != qtractorPluginList::MidiOutBus);
@@ -1828,11 +1828,11 @@ void qtractorPluginListView::contextMenuEvent (
 		&& pType->typeHint() == qtractorPluginType::Insert
 		&& pType->index() == 0);
 	pAction = pMidiInsertsMenu->addAction(
-		QIcon(":/images/itemMidiPortOut.png"),
+		QIcon::fromTheme("itemMidiPortOut"),
 		tr("&Sends"), this, SLOT(insertPluginOutputs()));
 	pAction->setEnabled(bMidiInsertPlugin);
 	pAction = pMidiInsertsMenu->addAction(
-		QIcon(":/images/itemMidiPortIn.png"),
+		QIcon::fromTheme("itemMidiPortIn"),
 		tr("&Returns"), this, SLOT(insertPluginInputs()));
 	pAction->setEnabled(bMidiInsertPlugin);
 	menu.addSeparator();
@@ -1861,7 +1861,7 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/images/formRemove.png"),
+		QIcon::fromTheme("formRemove"),
 		tr("&Remove"), this, SLOT(removePlugin()));
 	pAction->setEnabled(pPlugin != nullptr);
 
@@ -1872,12 +1872,12 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/images/formMoveUp.png"),
+		QIcon::fromTheme("formMoveUp"),
 		tr("Move &Up"), this, SLOT(moveUpPlugin()));
 	pAction->setEnabled(pItem && iItem > 0);
 
 	pAction = menu.addAction(
-		QIcon(":/images/formMoveDown.png"),
+		QIcon::fromTheme("formMoveDown"),
 		tr("Move &Down"), this, SLOT(moveDownPlugin()));
 	pAction->setEnabled(pItem && iItem < iItemCount - 1);
 
@@ -1933,14 +1933,14 @@ void qtractorPluginListView::contextMenuEvent (
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/images/pluginProperties.png"),
+		QIcon::fromTheme("pluginProperties"),
 		tr("&Properties..."), this, SLOT(propertiesPlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isFormVisible());
 	pAction->setEnabled(pItem != nullptr);
 
 	pAction = menu.addAction(
-		QIcon(":/images/pluginEdit.png"),
+		QIcon::fromTheme("pluginEdit"),
 		tr("&Edit"), this, SLOT(editPlugin()));
 	pAction->setCheckable(true);
 	pAction->setChecked(pPlugin && pPlugin->isEditorVisible());
@@ -1960,7 +1960,7 @@ void qtractorPluginListView::contextMenuEvent (
 	qtractorMidiManager *pMidiManager = m_pPluginList->midiManager();
 	if (pAudioEngine && pMidiManager) {
 		menu.addSeparator();
-		const QIcon& iconAudio = QIcon(":/images/trackAudio.png");
+		const QIcon& iconAudio = QIcon::fromTheme("trackAudio");
 		const bool bAudioOutputBus = pMidiManager->isAudioOutputBus();
 		qtractorAudioBus *pAudioOutputBus = pMidiManager->audioOutputBus();
 		QMenu *pAudioMenu = menu.addMenu(iconAudio, "Audi&o");

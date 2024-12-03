@@ -184,7 +184,7 @@
              <string>Browse for new session template</string>
             </property>
             <property name="icon">
-             <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+             <iconset theme="fileOpen" />
             </property>
            </widget>
           </item>
@@ -569,7 +569,7 @@
             </property>
             <item>
              <property name="icon">
-              <iconset resource="qtractor.qrc">:/images/transportModeNone.png</iconset>
+              <iconset theme="transportModeNone" />
              </property>
              <property name="text">
               <string>None</string>
@@ -577,7 +577,7 @@
             </item>
             <item>
              <property name="icon">
-              <iconset resource="qtractor.qrc">:/images/transportModeSlave.png</iconset>
+              <iconset theme="transportModeSlave" />
              </property>
              <property name="text">
               <string>Slave</string>
@@ -585,7 +585,7 @@
             </item>
             <item>
              <property name="icon">
-              <iconset resource="qtractor.qrc">:/images/transportModeMaster.png</iconset>
+              <iconset theme="transportModeMaster" />
              </property>
              <property name="text">
               <string>Master</string>
@@ -593,7 +593,7 @@
             </item>
             <item>
              <property name="icon">
-              <iconset resource="qtractor.qrc">:/images/transportModeFull.png</iconset>
+              <iconset theme="transportModeFull" />
              </property>
              <property name="text">
               <string>Full</string>
@@ -1209,7 +1209,7 @@
              <string>Browse for sample audio file (bar)</string>
             </property>
             <property name="icon">
-             <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+             <iconset theme="fileOpen" />
             </property>
            </widget>
           </item>
@@ -1334,7 +1334,7 @@
              <string>Browse for sample audio file (beat)</string>
             </property>
             <property name="icon">
-             <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+             <iconset theme="fileOpen" />
             </property>
            </widget>
           </item>
@@ -2749,7 +2749,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="1" colspan="2">
            <widget class="QComboBox" name="CustomColorThemeComboBox">
             <property name="font">
              <font>
@@ -2811,19 +2811,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="4">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="0" column="5">
            <widget class="QLabel" name="CustomStyleThemeTextLabel">
             <property name="font">
@@ -2831,6 +2818,9 @@
               <weight>50</weight>
               <bold>false</bold>
              </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="text">
              <string>&amp;Style theme:</string>
@@ -2840,7 +2830,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="6">
+          <item row="0" column="6" colspan="2">
            <widget class="QComboBox" name="CustomStyleThemeComboBox">
             <property name="font">
              <font>
@@ -2861,26 +2851,93 @@
             </item>
            </widget>
           </item>
-          <item row="0" column="7">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="1" column="0">
+           <widget class="QLabel" name="CustomIconsThemeTextLabel">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
             </property>
-            <property name="sizeHint">
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
+            </property>
+            <property name="text">
+             <string>&amp;Icons theme:</string>
+            </property>
+            <property name="buddy">
+             <cstring>CustomIconsThemeComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QComboBox" name="CustomIconsThemeComboBox">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Custom icons theme directory</string>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>(default)</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QToolButton" name="CustomIconsThemeToolButton">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="minimumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>22</width>
+              <height>22</height>
              </size>
             </property>
-           </spacer>
+            <property name="maximumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::TabFocus</enum>
+            </property>
+            <property name="toolTip">
+             <string>Browse for custom icons theme directory</string>
+            </property>
+            <property name="icon">
+             <iconset theme="fileOpen" />
+            </property>
+           </widget>
           </item>
-          <item row="0" column="8">
+          <item row="1" column="5">
            <widget class="QLabel" name="CustomStyleSheetTextLabel">
             <property name="font">
              <font>
               <weight>50</weight>
               <bold>false</bold>
              </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignVCenter</set>
             </property>
             <property name="text">
              <string>St&amp;yle sheet:</string>
@@ -2890,7 +2947,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="9">
+          <item row="1" column="6" colspan="2">
            <widget class="QComboBox" name="CustomStyleSheetComboBox">
             <property name="font">
              <font>
@@ -2911,7 +2968,7 @@
             </item>
            </widget>
           </item>
-          <item row="0" column="10">
+          <item row="1" column="8">
            <widget class="QToolButton" name="CustomStyleSheetToolButton">
             <property name="font">
              <font>
@@ -2944,7 +3001,7 @@
              <string>Browse for custom style sheet (*.qss)</string>
             </property>
             <property name="icon">
-             <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+             <iconset theme="fileOpen" />
             </property>
            </widget>
           </item>
@@ -3090,7 +3147,7 @@
              <string>Select custom audio meter color</string>
             </property>
             <property name="icon">
-             <iconset resource="qtractor.qrc" >:/images/formColor.png</iconset>
+             <iconset theme="formColor" />
             </property>
             <property name="text">
              <string>...</string>
@@ -3209,7 +3266,7 @@
              <string>Select custom MIDI meter color</string>
             </property>
             <property name="icon">
-             <iconset resource="qtractor.qrc" >:/images/formColor.png</iconset>
+             <iconset theme="formColor" />
             </property>
             <property name="text">
              <string>...</string>
@@ -3477,7 +3534,7 @@
              <string>Browse for the messages log file location</string>
             </property>
             <property name="icon">
-             <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+             <iconset theme="fileOpen" />
             </property>
            </widget>
           </item>
@@ -3598,7 +3655,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+               <iconset theme="fileOpen" />
               </property>
              </widget>
             </item>
@@ -3826,7 +3883,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+               <iconset theme="fileOpen" />
               </property>
              </widget>
             </item>
@@ -4039,7 +4096,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="qtractor.qrc">:/images/fileOpen.png</iconset>
+               <iconset theme="fileOpen" />
               </property>
              </widget>
             </item>
@@ -4289,6 +4346,8 @@
   <tabstop>CustomColorThemeComboBox</tabstop>
   <tabstop>CustomColorThemeToolButton</tabstop>
   <tabstop>CustomStyleThemeComboBox</tabstop>
+  <tabstop>CustomIconsThemeComboBox</tabstop>
+  <tabstop>CustomIconsThemeToolButton</tabstop>
   <tabstop>CustomStyleSheetComboBox</tabstop>
   <tabstop>CustomStyleSheetToolButton</tabstop>
   <tabstop>AudioMeterLevelComboBox</tabstop>

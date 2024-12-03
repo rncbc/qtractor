@@ -33,7 +33,7 @@
    <string>Instruments</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="qtractor.qrc" >:/images/itemInstrument.png</iconset>
+   <iconset theme="itemInstrument" />
   </property>
   <layout class="QHBoxLayout" >
    <item>
@@ -139,7 +139,7 @@
         <string>&amp;Import...</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formOpen.png</iconset>
+        <iconset theme="formOpen" />
        </property>
       </widget>
      </item>
@@ -152,7 +152,7 @@
         <string>&amp;Remove</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formRemove.png</iconset>
+        <iconset theme="formRemove" />
        </property>
       </widget>
      </item>
@@ -165,7 +165,7 @@
         <string>&amp;Up</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formMoveUp.png</iconset>
+        <iconset theme="formMoveUp" />
        </property>
       </widget>
      </item>
@@ -178,7 +178,7 @@
         <string>&amp;Down</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formMoveDown.png</iconset>
+        <iconset theme="formMoveDown" />
        </property>
       </widget>
      </item>
@@ -207,7 +207,7 @@
         <string>E&amp;xport...</string>
        </property>
        <property name="icon" >
-        <iconset resource="qtractor.qrc" >:/images/formSave.png</iconset>
+        <iconset theme="formSave" />
        </property>
       </widget>
      </item>

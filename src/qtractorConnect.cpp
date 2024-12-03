@@ -1859,24 +1859,24 @@ void qtractorConnect::contextMenu ( const QPoint& gpos )
 	QAction *pAction;
 
 	pAction = menu.addAction(
-		QIcon(":/images/formConnect.png"),
+		QIcon::fromTheme("formConnect"),
 		tr("Connect"), this, SLOT(connectSelected()));
 	pAction->setEnabled(canConnectSelected());
 
 	pAction = menu.addAction(
-		QIcon(":/images/formDisconnect.png"),
+		QIcon::fromTheme("formDisconnect"),
 		tr("Disconnect"), this, SLOT(disconnectSelected()));
 	pAction->setEnabled(canDisconnectSelected());
 
 	pAction = menu.addAction(
-		QIcon(":/images/formDisconnectAll.png"),
+		QIcon::fromTheme("formDisconnectAll"),
 		tr("Disconnect All"), this, SLOT(disconnectAll()));
 	pAction->setEnabled(canDisconnectAll());
 
 	menu.addSeparator();
 
 	pAction = menu.addAction(
-		QIcon(":/images/formRefresh.png"),
+		QIcon::fromTheme("formRefresh"),
 		tr("Refresh"), this, SLOT(refresh()));
 
 	menu.exec(gpos);

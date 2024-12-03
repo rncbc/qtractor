@@ -1,7 +1,7 @@
 // qtractorMidiControltypeGroup.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2019, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@ qtractorMidiControlTypeGroup::qtractorMidiControlTypeGroup (
 		m_pControlParamTextLabel(pControlParamTextLabel),
 		m_iControlParamUpdate(0)
 {
-	const QIcon iconControlType(":/images/itemProperty.png");
+	const QIcon& iconControlType = QIcon::fromTheme("itemProperty");
 	m_pControlTypeComboBox->clear();
 	m_pControlTypeComboBox->addItem(iconControlType,
 		qtractorMidiControl::nameFromType(qtractorMidiEvent::NOTEON),
@@ -180,7 +180,7 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 	case qtractorMidiEvent::NOTEON:
 	case qtractorMidiEvent::NOTEOFF:
 	case qtractorMidiEvent::KEYPRESS: {
-		const QIcon iconNotes(":/images/itemNotes.png");
+		const QIcon& iconNotes = QIcon::fromTheme("itemNotes");
 		if (m_pControlParamTextLabel)
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
@@ -195,7 +195,7 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		break;
 	}
 	case qtractorMidiEvent::CONTROLLER: {
-		const QIcon iconControllers(":/images/itemControllers.png");
+		const QIcon& iconControllers = QIcon::fromTheme("itemControllers");
 		if (m_pControlParamTextLabel)
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
@@ -210,7 +210,7 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		break;
 	}
 	case qtractorMidiEvent::PGMCHANGE: {
-		const QIcon iconPatches(":/images/itemPatches.png");
+		const QIcon& iconPatches = QIcon::fromTheme("itemPatches");
 		if (m_pControlParamTextLabel)
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
@@ -222,7 +222,7 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		break;
 	}
 	case qtractorMidiEvent::REGPARAM: {
-		const QIcon iconRpns(":/images/itemRpns.png");
+		const QIcon& iconRpns = QIcon::fromTheme("itemRpns");
 		if (m_pControlParamTextLabel)
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
@@ -243,7 +243,7 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		break;
 	}
 	case qtractorMidiEvent::NONREGPARAM: {
-		const QIcon iconNrpns(":/images/itemNrpns.png");
+		const QIcon& iconNrpns = QIcon::fromTheme("itemNrpns");
 		if (m_pControlParamTextLabel)
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);
@@ -264,7 +264,7 @@ void qtractorMidiControlTypeGroup::updateControlType ( int iControlType )
 		break;
 	}
 	case qtractorMidiEvent::CONTROL14: {
-		const QIcon iconControllers(":/images/itemControllers.png");
+		const QIcon& iconControllers = QIcon::fromTheme("itemControllers");
 		if (m_pControlParamTextLabel)
 			m_pControlParamTextLabel->setEnabled(true);
 		m_pControlParamComboBox->setEnabled(true);

@@ -1,7 +1,7 @@
 // qtractorMidiControlForm.cpp
 //
 /****************************************************************************
-   Copyright (C) 2005-2020, rncbc aka Rui Nuno Capela. All rights reserved.
+   Copyright (C) 2005-2024, rncbc aka Rui Nuno Capela. All rights reserved.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -115,7 +115,7 @@ qtractorMidiControlForm::qtractorMidiControlForm (
 	for (unsigned short iChannel = 0; iChannel < 16; ++iChannel)
 		m_ui.ChannelComboBox->addItem(textFromChannel(iChannel));
 
-	const QIcon iconCommand(":/images/itemChannel.png");
+	const QIcon& iconCommand = QIcon::fromTheme("itemChannel");
 //	m_ui.CommandComboBox->clear();
 	m_ui.CommandComboBox->addItem(iconCommand,
 		qtractorMidiControl::nameFromCommand(qtractorMidiControl::TRACK_GAIN));
@@ -294,7 +294,7 @@ void qtractorMidiControlForm::importSlot (void)
 		pItem = new QTreeWidgetItem(m_ui.FilesListView, pItem);
 		if (pItem) {
 			QFileInfo info(sPath);
-			pItem->setIcon(0, QIcon(":/images/itemFile.png"));
+			pItem->setIcon(0, QIcon::fromTheme("itemFile"));
 			pItem->setText(0, info.completeBaseName());
 			pItem->setText(1, sPath);
 			m_ui.FilesListView->setCurrentItem(pItem);
@@ -809,7 +809,7 @@ void qtractorMidiControlForm::refreshFiles (void)
 	while (iter.hasNext()) {
 		const QString& sPath = iter.next();
 		QTreeWidgetItem *pFileItem = new QTreeWidgetItem();
-		pFileItem->setIcon(0, QIcon(":/images/itemFile.png"));
+		pFileItem->setIcon(0, QIcon::fromTheme("itemFile"));
 		pFileItem->setText(0, QFileInfo(sPath).completeBaseName());
 		pFileItem->setText(1, sPath);
 		files.append(pFileItem);
@@ -839,9 +839,9 @@ void qtractorMidiControlForm::refreshControlMap (void)
 	const qtractorMidiControl::ControlMap& controlMap = pMidiControl->controlMap();
 	qtractorMidiControl::ControlMap::ConstIterator it = controlMap.constBegin();
 	const qtractorMidiControl::ControlMap::ConstIterator& it_end = controlMap.constEnd();
-	const QIcon	iconControlType(":/images/itemProperty.png");
-	const QIcon	iconParam(":/images/itemControllers.png");
-	const QIcon	iconCommand(":/images/itemChannel.png");
+	const QIcon& iconControlType = QIcon::fromTheme("itemProperty");
+	const QIcon& iconParam = QIcon::fromTheme("itemControllers");
+	const QIcon& iconCommand = QIcon::fromTheme("itemChannel");
 	qtractorMidiControlMapListItem *pItem;
 	for ( ; it != it_end; ++it) {
 		const qtractorMidiControl::MapKey& key = it.key();

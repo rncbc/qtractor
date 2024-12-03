@@ -276,7 +276,7 @@ endif ()
 
 # Check for DSSI headers.
 if (CONFIG_DSSI)
-  check_include_file (dssi.h HAVE_DSSI_H)
+  check_include_files ("stddef.h;dssi.h" HAVE_DSSI_H)
   if (NOT HAVE_DSSI_H)
     set (CONFIG_DSSI 0)
   endif ()

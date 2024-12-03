@@ -49,7 +49,7 @@ qtractorMidiFileItem::qtractorMidiFileItem (
 		qtractorMidiListView::Resolution, Qt::AlignRight);
 
 	QTreeWidgetItem::setIcon(qtractorMidiListView::Name,
-		QIcon(":/images/itemMidiFile.png"));
+		QIcon::fromTheme("itemMidiFile"));
 
 	QTreeWidgetItem::setText(qtractorMidiListView::Format,
 		QString::number(pFile->format()));
@@ -99,7 +99,7 @@ qtractorMidiChannelItem::qtractorMidiChannelItem (
 	: qtractorFileChannelItem(pFileItem, sName, iChannel)
 {
 	QTreeWidgetItem::setIcon(qtractorMidiListView::Name,
-		QIcon(":/images/itemChannel.png"));
+		QIcon::fromTheme("itemChannel"));
 }
 
 

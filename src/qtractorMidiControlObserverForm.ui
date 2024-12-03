@@ -34,7 +34,7 @@
    <string>MIDI Controller</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/itemControllers.png</iconset>
+   <iconset theme="itemControllers" />
   </property>
   <layout class="QGridLayout">
    <item row="0" column="0">
@@ -153,7 +153,7 @@
         <string>&amp;Inputs</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/itemMidiPortIn.png</iconset>
+        <iconset theme="itemMidiPortIn" />
        </property>
       </widget>
      </item>
@@ -166,7 +166,7 @@
         <string>&amp;Outputs</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/itemMidiPortOut.png</iconset>
+        <iconset theme="itemMidiPortOut" />
        </property>
       </widget>
      </item>

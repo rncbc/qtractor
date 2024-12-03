@@ -33,7 +33,7 @@
    <string>Plugin Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/pluginProperties.png</iconset>
+   <iconset theme="pluginProperties" />
   </property>
   <layout class="QVBoxLayout">
    <property name="spacing">
@@ -56,7 +56,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formOpen.png</iconset>
+        <iconset theme="formOpen" />
        </property>
       </widget>
      </item>
@@ -88,7 +88,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formSave.png</iconset>
+        <iconset theme="formSave" />
        </property>
       </widget>
      </item>
@@ -104,7 +104,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
+        <iconset theme="formRemove" />
        </property>
       </widget>
      </item>
@@ -162,7 +162,7 @@
         <string>Edit</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/pluginEdit.png</iconset>
+        <iconset theme="pluginEdit" />
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -181,7 +181,7 @@
         <string>Active</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/itemLedOff.png</iconset>
+        <iconset theme="itemLedOff" />
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -309,7 +309,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="AuxSendBusNameComboBox"/>
+      <widget class="QComboBox" name="AuxSendBusNameComboBox">
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>22</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="AuxSendBusNameToolButton">

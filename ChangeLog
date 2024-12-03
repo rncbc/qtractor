@@ -4,6 +4,35 @@ Qtractor - An Audio/MIDI multi-track sequencer
 ChangeLog
 
 
+GIT HEAD
+
+- Introducing new application custom theming option: View/Options...
+  /Display/Options/Custom/Icons theme (directory or folder).
+
+- After a shameful long time, adding a brand new audio clip via the
+  Clip/New... dialog, is now finally fixed and functional.
+
+- Mixer: reduced track names up to first line break. (GH #491)
+
+- Double-click on slider for default value, replicating the behavior
+  of middle-click. (GH #487)
+
+- Fxed bug: Aux Send loses state when reordered in a strip. (GH #488)
+
+- Create/Add new bus below that which is used as source in View/Buses
+  dialog. (GH #489)
+
+- Mitigate truncated bus names in Aux Send Bus dialog. (GH #486)
+
+- Fixed yet another old bug regarding the flush of all pending MIDI
+  Note-Off events when playback stops, shuts-off or panics, especially
+  relevant when playback is resumed anywhere but the absolute beginning
+  of the timeline (and also after a first loop turn around).
+
+- Schedule an actual and complete refresh on main View/Refresh...,
+  especially when changing a custom color theme palette on-the-fly.
+
+
 1.4.0  2024-11-01  A Halloween'24 Release.
 
 - Improved color contrast on track and clip title labels, when given

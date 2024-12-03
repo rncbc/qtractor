@@ -132,15 +132,15 @@ qtractorTrackView::qtractorTrackView ( qtractorTracks *pTracks,
 	m_pVzoomOut   = new QToolButton(this);
 	m_pXzoomReset = new QToolButton(this);
 
-	const QIcon& iconZoomIn = QIcon(":/images/viewZoomIn.png");
+	const QIcon& iconZoomIn = QIcon::fromTheme("viewZoomIn");
 	m_pHzoomIn->setIcon(iconZoomIn);
 	m_pVzoomIn->setIcon(iconZoomIn);
 
-	const QIcon& iconZoomOut = QIcon(":/images/viewZoomOut.png");
+	const QIcon& iconZoomOut = QIcon::fromTheme("viewZoomOut");
 	m_pHzoomOut->setIcon(iconZoomOut);
 	m_pVzoomOut->setIcon(iconZoomOut);
 
-	m_pXzoomReset->setIcon(QIcon(":/images/viewZoomReset.png"));
+	m_pXzoomReset->setIcon(QIcon::fromTheme("viewZoomReset"));
 
 	m_pHzoomIn->setAutoRepeat(true);
 	m_pHzoomOut->setAutoRepeat(true);
@@ -5060,8 +5060,8 @@ void qtractorTrackView::pasteClipboard (
 				m_dragState = m_dragCursor = DragClipPasteDrop;
 				// It doesn't matter which one, both pasteable views are due...
 				qtractorScrollView::setFocus();
-				qtractorScrollView::setCursor(
-					QCursor(QPixmap(":/images/editPaste.png"), 12, 12));
+				qtractorScrollView::setCursor(QCursor(
+					QIcon::fromTheme("editPaste").pixmap(22, 22), 12, 12));
 				// Update the pasted stuff
 				showClipDropRects();
 			}
@@ -5161,8 +5161,8 @@ void qtractorTrackView::pasteClipboard (
 
 	// It doesn't matter which one, both pasteable views are due...
 	qtractorScrollView::setFocus();
-	qtractorScrollView::setCursor(
-		QCursor(QPixmap(":/images/editPaste.png"), 12, 12));
+	qtractorScrollView::setCursor(QCursor(
+		QIcon::fromTheme("editPaste").pixmap(22, 22), 12, 12));
 
 	// Let's-a go...
 	qtractorScrollView::viewport()->update();

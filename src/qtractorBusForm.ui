@@ -37,7 +37,7 @@
    <string>Buses</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="qtractor.qrc">:/images/qtractorTracks.png</iconset>
+   <iconset theme="qtractorTracks" />
   </property>
   <layout class="QVBoxLayout">
    <item>
@@ -355,7 +355,7 @@
                 <string>&amp;Add...</string>
                </property>
                <property name="icon">
-                <iconset resource="qtractor.qrc">:/images/formCreate.png</iconset>
+                <iconset theme="formCreate" />
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -377,7 +377,7 @@
                 <string>&amp;Remove</string>
                </property>
                <property name="icon">
-                <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
+                <iconset theme="formRemove" />
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -412,7 +412,7 @@
                 <string>&amp;Up</string>
                </property>
                <property name="icon">
-                <iconset resource="qtractor.qrc">:/images/formMoveUp.png</iconset>
+                <iconset theme="formMoveUp" />
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -434,7 +434,7 @@
                 <string>&amp;Down</string>
                </property>
                <property name="icon">
-                <iconset resource="qtractor.qrc">:/images/formMoveDown.png</iconset>
+                <iconset theme="formMoveDown" />
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -477,7 +477,7 @@
                 <string>&amp;Add...</string>
                </property>
                <property name="icon">
-                <iconset resource="qtractor.qrc">:/images/formCreate.png</iconset>
+                <iconset theme="formCreate" />
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -499,7 +499,7 @@
                 <string>&amp;Remove</string>
                </property>
                <property name="icon">
-                <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
+                <iconset theme="formRemove" />
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -534,7 +534,7 @@
                 <string>&amp;Up</string>
                </property>
                <property name="icon">
-                <iconset resource="qtractor.qrc">:/images/formMoveUp.png</iconset>
+                <iconset theme="formMoveUp" />
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -556,7 +556,7 @@
                 <string>&amp;Down</string>
                </property>
                <property name="icon">
-                <iconset resource="qtractor.qrc">:/images/formMoveDown.png</iconset>
+                <iconset theme="formMoveDown" />
                </property>
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -590,7 +590,7 @@
         <string>U&amp;p</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formMoveUp.png</iconset>
+        <iconset theme="formMoveUp" />
        </property>
       </widget>
      </item>
@@ -603,7 +603,7 @@
         <string>Do&amp;wn</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formMoveDown.png</iconset>
+        <iconset theme="formMoveDown" />
        </property>
       </widget>
      </item>
@@ -629,7 +629,7 @@
         <string>&amp;Create</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formCreate.png</iconset>
+        <iconset theme="formCreate" />
        </property>
       </widget>
      </item>
@@ -642,7 +642,7 @@
         <string>&amp;Update</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formAccept.png</iconset>
+        <iconset theme="formAccept" />
        </property>
       </widget>
      </item>
@@ -655,7 +655,7 @@
         <string>&amp;Delete</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">:/images/formRemove.png</iconset>
+        <iconset theme="formRemove" />
        </property>
       </widget>
      </item>
@@ -707,7 +707,6 @@
   <tabstop>ClosePushButton</tabstop>
  </tabstops>
  <resources>
-  <include location="qtractor.qrc"/>
   <include location="qtractor.qrc"/>
  </resources>
  <connections/>

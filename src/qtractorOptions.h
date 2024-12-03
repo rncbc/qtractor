@@ -341,6 +341,7 @@ public:
 	QString sCustomColorTheme;
 	QString sCustomStyleTheme;
 	QString sCustomStyleSheet;
+	QString sCustomIconsTheme;
 
 	// Widget geometry persistence helper prototypes.
 	void saveWidgetGeometry(QWidget *pWidget, bool bVisible = false);

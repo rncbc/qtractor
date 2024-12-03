@@ -409,6 +409,7 @@ void qtractorOptions::loadOptions (void)
 	sCustomColorTheme = m_settings.value("/ColorTheme").toString();
 	sCustomStyleTheme = m_settings.value("/StyleTheme").toString();
 	sCustomStyleSheet = m_settings.value("/StyleSheet").toString();
+	sCustomIconsTheme = m_settings.value("/IconsTheme").toString();
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Preferences
@@ -715,6 +716,7 @@ void qtractorOptions::saveOptions (void)
 	m_settings.setValue("/ColorTheme", sCustomColorTheme);
 	m_settings.setValue("/StyleTheme", sCustomStyleTheme);
 	m_settings.setValue("/StyleSheet", sCustomStyleSheet);
+	m_settings.setValue("/IconsTheme", sCustomIconsTheme);
 	m_settings.endGroup();
 
 	m_settings.endGroup(); // Preferences
@@ -1081,7 +1083,7 @@ bool qtractorOptions::setComboBoxCurrentFile (
 		pComboBox->setToolTip(sPath);
 	} else {
 		pComboBox->setCurrentIndex(pComboBox->count() - 1);
-		pComboBox->setToolTip(pComboBox->currentText());
+	//	pComboBox->setToolTip(pComboBox->currentText());
 	}
 	pComboBox->blockSignals(bBlockSignals);
 

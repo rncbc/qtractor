@@ -112,7 +112,8 @@ qtractorMonitorButton::~qtractorMonitorButton (void)
 // Common initializer.
 void qtractorMonitorButton::initMonitorButton (void)
 {
-	QPushButton::setIcon(QPixmap(":/images/itemLedOff.png"));
+	QPushButton::setIconSize(QSize(8, 8));
+	QPushButton::setIcon(QIcon::fromTheme("itemLedOff"));
 	QPushButton::setText(' ' + tr("monitor"));
 	QPushButton::setCheckable(true);
 
@@ -150,10 +151,10 @@ void qtractorMonitorButton::updateValue ( float fValue )
 	// Avoid self-triggering...
 	const bool bBlockSignals = QPushButton::blockSignals(true);
 	if (fValue > 0.0f) {
-		QPushButton::setIcon(QPixmap(":/images/itemLedOn.png"));
+		QPushButton::setIcon(QIcon::fromTheme("itemLedOn"));
 		QPushButton::setChecked(true);
 	} else {
-		QPushButton::setIcon(QPixmap(":/images/itemLedOff.png"));
+		QPushButton::setIcon(QIcon::fromTheme("itemLedOff"));
 		QPushButton::setChecked(false);
 	}
 	QPushButton::blockSignals(bBlockSignals);
@@ -225,8 +226,8 @@ protected:
 		const int x = rect.x() + 1;
 		const int y = rect.y() + ((rect.height() - 16) >> 1) + 1;
 		painter.drawPixmap(x, y, m_icon.pixmap(16));
-		rect.adjust(+16, 0, -1, 0);
-		painter.drawText(rect, QLabel::alignment() | Qt::TextSingleLine, QLabel::text());
+		rect.adjust(+16, +2, -1, 0);
+		painter.drawText(rect, QLabel::alignment(), QLabel::text());
 	}
 
 private:
@@ -337,7 +338,7 @@ void qtractorMixerStrip::initMixerStrip (void)
 	m_pLabel->setBackgroundRole(QPalette::Button);
 	m_pLabel->setForegroundRole(QPalette::ButtonText);
 	m_pLabel->setAutoFillBackground(true);
-//	m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+	m_pLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	m_pLayout->addWidget(m_pLabel);
 
 	m_pRibbon = new QFrame(/*this*/);
@@ -635,7 +636,7 @@ qtractorMonitor *qtractorMixerStrip::monitor (void) const
 // Common mixer-strip caption title updater.
 void qtractorMixerStrip::updateName (void)
 {
-	QPixmap icon;
+	QIcon icon;
 	QString sName;
 	qtractorTrack::TrackType meterType = qtractorTrack::None;
 	if (m_pTrack) {
@@ -649,8 +650,11 @@ void qtractorMixerStrip::updateName (void)
 		pal.setColor(QPalette::Button, bg);
 		pal.setColor(QPalette::ButtonText, fg);
 		m_pLabel->setPalette(pal);
-		if (icon.load(m_pTrack->trackIcon()))
-			icon = icon.scaled(16, 16, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		const QString& sTrackIcon
+			= m_pTrack->trackIcon();
+		icon = QIcon::fromTheme(sTrackIcon);
+		if (icon.isNull())
+			icon = QIcon(sTrackIcon);
 	} else if (m_pBus) {
 		meterType = m_pBus->busType();
 		sName = m_pBus->busName();
@@ -660,12 +664,12 @@ void qtractorMixerStrip::updateName (void)
 	switch (meterType) {
 	case qtractorTrack::Audio:
 		if (icon.isNull())
-			icon.load(":/images/trackAudio.png");
+			icon = QIcon::fromTheme("trackAudio");
 		sType = tr("(Audio)");
 		break;
 	case qtractorTrack::Midi:
 		if (icon.isNull())
-			icon.load(":/images/trackMidi.png");
+			icon = QIcon::fromTheme("trackMidi");
 		sType = tr("(MIDI)");
 		break;
 	case qtractorTrack::None:
@@ -1479,7 +1483,7 @@ qtractorMixer::qtractorMixer ( QWidget *pParent, Qt::WindowFlags wflags )
 	// Finally set the default caption and tooltip.
 	const QString& sTitle = tr("Mixer");
 	QMainWindow::setWindowTitle(sTitle);
-	QMainWindow::setWindowIcon(QIcon(":/images/qtractorMixer.svg"));
+	QMainWindow::setWindowIcon(QIcon::fromTheme("qtractorMixer"));
 	QMainWindow::setToolTip(sTitle);
 
 	QMainWindow::addDockWidget(Qt::LeftDockWidgetArea,  m_pInputRack);

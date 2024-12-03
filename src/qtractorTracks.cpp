@@ -110,7 +110,7 @@ qtractorTracks::qtractorTracks ( QWidget *pParent )
 	QSplitter::setHandleWidth(2);
 
 	QSplitter::setWindowTitle(tr("Tracks"));
-	QSplitter::setWindowIcon(QIcon(":/images/qtractorTracks.png"));
+	QSplitter::setWindowIcon(QIcon::fromTheme("qtractorTracks"));
 
 	// Get previously saved splitter sizes,
 	// (with some fair default...)

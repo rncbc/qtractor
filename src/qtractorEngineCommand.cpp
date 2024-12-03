@@ -42,10 +42,10 @@
 
 // Constructor.
 qtractorBusCommand::qtractorBusCommand ( const QString& sName,
-	qtractorBus *pBus, qtractorBus::BusMode busMode )
-	: qtractorCommand(sName), m_pBus(pBus), m_busMode(busMode),
-		m_busType(qtractorTrack::None), m_bMonitor(false),
-		m_iChannels(0), m_bAutoConnect(false)
+	qtractorBus *pBus, qtractorBus *pAfterBus, qtractorBus::BusMode busMode )
+	: qtractorCommand(sName), m_pBus(pBus), m_pAfterBus(pAfterBus),
+		m_busMode(busMode), m_busType(qtractorTrack::None),
+		m_bMonitor(false), m_iChannels(0), m_bAutoConnect(false)
 {
 	setRefresh(false);
 
@@ -92,8 +92,15 @@ bool qtractorBusCommand::createBus (void)
 	if (pSession == nullptr)
 		return false;
 
+	// We need to hold things for a while...
+	const bool bPlaying = pSession->isPlaying();
+
+	pSession->lock();
+	pSession->setPlaying(false);
+
 	// Create the bus of proper type...
 	m_pBus = nullptr;
+
 	qtractorAudioBus *pAudioBus = nullptr;
 	qtractorMidiBus *pMidiBus = nullptr;
 	switch (m_busType) {
@@ -103,7 +110,7 @@ bool qtractorBusCommand::createBus (void)
 			pAudioBus = new qtractorAudioBus(pAudioEngine,
 				m_sBusName, m_busMode, m_bMonitor, m_iChannels);
 			pAudioBus->setAutoConnect(m_bAutoConnect);
-			pAudioEngine->addBus(pAudioBus);
+			pAudioEngine->addBus(pAudioBus, m_pAfterBus);
 			pAudioEngine->resetPlayerBus();
 			pAudioEngine->resetMetroBus();
 			m_pBus = pAudioBus;
@@ -116,7 +123,7 @@ bool qtractorBusCommand::createBus (void)
 			pMidiBus = new qtractorMidiBus(pMidiEngine,
 				m_sBusName, m_busMode, m_bMonitor);
 			pMidiBus->setInstrumentName(m_sInstrumentName);
-			pMidiEngine->addBus(pMidiBus);
+			pMidiEngine->addBus(pMidiBus, m_pAfterBus);
 			pMidiEngine->resetControlBus();
 			pMidiEngine->resetMetroBus();
 			m_pBus = pMidiBus;
@@ -128,8 +135,11 @@ bool qtractorBusCommand::createBus (void)
 	}
 
 	// Check if we really have a new bus...
-	if (m_pBus == nullptr)
+	if (m_pBus == nullptr) {
+		pSession->setPlaying(bPlaying);
+		pSession->unlock();
 		return false;
+	}
 
 	// Open up the new bus...
 	m_pBus->open();
@@ -145,6 +155,10 @@ bool qtractorBusCommand::createBus (void)
 		if (pMixer)
 			pMixer->updateBuses(true);
 	}
+
+	// Carry on...
+	pSession->setPlaying(bPlaying);
+	pSession->unlock();
 
 	// Done.
 	return true;
@@ -566,8 +580,8 @@ qtractorMixerMeter *qtractorBusCommand::meter (void) const
 //
 
 // Constructor.
-qtractorCreateBusCommand::qtractorCreateBusCommand (void)
-	: qtractorBusCommand(QObject::tr("create bus"))
+qtractorCreateBusCommand::qtractorCreateBusCommand ( qtractorBus *pAfterBus )
+	: qtractorBusCommand(QObject::tr("create bus"), nullptr, pAfterBus)
 {
 }
 
@@ -606,7 +620,7 @@ bool qtractorUpdateBusCommand::redo (void)
 
 // Constructor.
 qtractorDeleteBusCommand::qtractorDeleteBusCommand ( qtractorBus *pBus )
-	: qtractorBusCommand(QObject::tr("delete bus"), pBus)
+	: qtractorBusCommand(QObject::tr("delete bus"), pBus, pBus->prev())
 {
 }
 
@@ -629,9 +643,8 @@ bool qtractorDeleteBusCommand::undo (void)
 // Constructor.
 qtractorMoveBusCommand::qtractorMoveBusCommand (
 	qtractorBus *pBus, int iDelta )
-	: qtractorBusCommand(QObject::tr("move bus"), pBus)
+	: qtractorBusCommand(QObject::tr("move bus"), pBus), m_iDelta(iDelta)
 {
-	m_iDelta = iDelta;
 }
 
 
@@ -678,7 +691,7 @@ bool qtractorMoveBusCommand::redo (void)
 // Constructor.
 qtractorBusMonitorCommand::qtractorBusMonitorCommand (
 	qtractorBus *pBus, bool bMonitor )
-	: qtractorBusCommand(QObject::tr("bus pass-through"), pBus, pBus->busMode())
+	: qtractorBusCommand(QObject::tr("bus pass-through"), pBus)
 {
 	setMonitor(bMonitor);
 }
@@ -724,7 +737,7 @@ bool qtractorBusMonitorCommand::redo (void)
 // Constructor.
 qtractorBusGainCommand::qtractorBusGainCommand ( qtractorBus *pBus,
 	qtractorBus::BusMode busMode, float fGain )
-	: qtractorBusCommand(QObject::tr("bus gain"), pBus, busMode)
+	: qtractorBusCommand(QObject::tr("bus gain"), pBus, nullptr, busMode)
 {
 	m_fGain = fGain;
 	m_fPrevGain = 1.0f;
@@ -801,7 +814,7 @@ bool qtractorBusGainCommand::redo (void)
 // Constructor.
 qtractorBusPanningCommand::qtractorBusPanningCommand ( qtractorBus *pBus,
 	qtractorBus::BusMode busMode, float fPanning )
-	: qtractorBusCommand(QObject::tr("bus pan"), pBus, busMode)
+	: qtractorBusCommand(QObject::tr("bus pan"), pBus, nullptr, busMode)
 {
 	m_fPanning = fPanning;
 	m_fPrevPanning = 0.0f;

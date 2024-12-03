@@ -65,6 +65,7 @@ protected slots:
 	void displayFormatChanged(int);
 	void editCustomColorThemes();
 	void chooseCustomStyleSheet();
+	void chooseCustomIconsTheme();
 	void changeAudioMeterLevel(int);
 	void changeMidiMeterLevel(int);
 	void changeAudioMeterColor(const QString&);

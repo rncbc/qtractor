@@ -78,7 +78,7 @@ public:
 	// Buses list management methods.
 	const qtractorList<qtractorBus>& buses() const;
 
-	void addBus(qtractorBus *pBus);
+	void addBus(qtractorBus *pBus, qtractorBus *pAfterBus = nullptr);
 	void removeBus(qtractorBus *pBus);
 
 	void moveBus(qtractorBus *pBus, qtractorBus *pAfterBus);

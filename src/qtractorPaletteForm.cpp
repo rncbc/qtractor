@@ -1294,7 +1294,7 @@ qtractorPaletteForm::RoleEditor::RoleEditor ( QWidget *parent )
 
 	m_button = new QToolButton(this);
 	m_button->setToolButtonStyle(Qt::ToolButtonIconOnly);
-	m_button->setIcon(QPixmap(":/images/itemReset.png"));
+	m_button->setIcon(QIcon::fromTheme("itemReset"));
 	m_button->setIconSize(QSize(8, 8));
 	m_button->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding));
 	layout->addWidget(m_button);

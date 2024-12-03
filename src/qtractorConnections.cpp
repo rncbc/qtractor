@@ -54,8 +54,8 @@ qtractorConnections::qtractorConnections (
 
 	// Set proper tab widget icons...
 	QTabWidget *pTabWidget = m_pConnectForm->connectTabWidget();
-	pTabWidget->setTabIcon(0, QIcon(":/images/trackAudio.png"));
-	pTabWidget->setTabIcon(1, QIcon(":/images/trackMidi.png"));
+	pTabWidget->setTabIcon(0, QIcon::fromTheme("trackAudio"));
+	pTabWidget->setTabIcon(1, QIcon::fromTheme("trackMidi"));
 
 	// Prepare the layout stuff.
 	QHBoxLayout *pLayout = new QHBoxLayout();
@@ -71,7 +71,7 @@ qtractorConnections::qtractorConnections (
 	// Finally set the default caption and tooltip.
 	const QString& sTitle = tr("Connections");
 	QWidget::setWindowTitle(sTitle);
-	QWidget::setWindowIcon(QIcon(":/images/qtractorConnections.svg"));
+	QWidget::setWindowIcon(QIcon::fromTheme("qtractorConnections"));
 	QWidget::setToolTip(sTitle);
 
 	// Get previously saved splitter sizes,

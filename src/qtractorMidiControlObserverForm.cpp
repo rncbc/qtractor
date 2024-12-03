@@ -568,7 +568,7 @@ QAction *qtractorMidiControlObserverForm::addMidiControlAction (
 		pMidiControl->mapMidiObserverWidget(pMidiObserver, pWidget);
 
 	QAction *pAction = new QAction(
-		QIcon(":/images/itemControllers.png"),
+		QIcon::fromTheme("itemControllers"),
 		tr("&MIDI Controller..."), pWidget);
 
 	pAction->setData(QVariant::fromValue(pMidiObserver));
@@ -703,11 +703,11 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 
 	QIcon iconProcess;
 	iconProcess.addPixmap(
-		QPixmap(":/images/trackCurveProcess.png"), QIcon::Normal, QIcon::On);
+		QIcon::fromTheme("trackCurveProcess").pixmap(16, 16), QIcon::Normal, QIcon::On);
 	iconProcess.addPixmap(
-		QPixmap(":/images/trackCurveEnabled.png"), QIcon::Normal, QIcon::Off);
+		QIcon::fromTheme("trackCurveEnabled").pixmap(16, 16), QIcon::Normal, QIcon::Off);
 	iconProcess.addPixmap(
-		QPixmap(":/images/trackCurveNone.png"), QIcon::Disabled, QIcon::Off);
+		QIcon::fromTheme("trackCurveNone").pixmap(16, 16), QIcon::Disabled, QIcon::Off);
 
 	pAction = pMenu->addAction(iconProcess, tr("&Play"));
 	pAction->setCheckable(true);
@@ -719,11 +719,11 @@ void qtractorMidiControlObserverForm::addMidiControlMenu (
 
 	QIcon iconCapture;
 	iconCapture.addPixmap(
-		QPixmap(":/images/trackCurveCapture.png"), QIcon::Normal, QIcon::On);
+		QIcon::fromTheme("trackCurveCapture").pixmap(16, 16), QIcon::Normal, QIcon::On);
 	iconCapture.addPixmap(
-		QPixmap(":/images/trackCurveEnabled.png"), QIcon::Normal, QIcon::Off);
+		QIcon::fromTheme("trackCurveEnabled").pixmap(16, 16), QIcon::Normal, QIcon::Off);
 	iconProcess.addPixmap(
-		QPixmap(":/images/trackCurveNone.png"), QIcon::Disabled, QIcon::Off);
+		QIcon::fromTheme("trackCurveNone").pixmap(16, 16), QIcon::Disabled, QIcon::Off);
 
 	pAction = pMenu->addAction(iconCapture, tr("&Record"));
 	pAction->setCheckable(true);

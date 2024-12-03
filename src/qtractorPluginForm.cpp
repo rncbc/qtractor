@@ -75,15 +75,18 @@ qtractorPluginForm::qtractorPluginForm (
 {
 	// Setup (de)activated icon stuff...
 	if (++g_iIconsRefCount == 1) {
-		const QPixmap pmLedOff(":/images/itemLedOff.png");
+		const QPixmap& pmLedOff
+			= QIcon::fromTheme("itemLedOff").pixmap(8, 8);
+		const QPixmap& pmLedOn
+			= QIcon::fromTheme("itemLedOn").pixmap(8, 8);
+		const QPixmap& pmLedDim
+			= QIcon::fromTheme("itemLedDim").pixmap(8, 8);
 		QIcon *pIconActivated = new QIcon();
 		pIconActivated->addPixmap(pmLedOff, QIcon::Active, QIcon::Off);
-		pIconActivated->addPixmap(
-			QPixmap(":/images/itemLedOn.png"), QIcon::Active, QIcon::On);
+		pIconActivated->addPixmap(pmLedOn, QIcon::Active, QIcon::On);
 		QIcon *pIconDeactivated = new QIcon();
 		pIconDeactivated->addPixmap(pmLedOff, QIcon::Active, QIcon::Off);
-		pIconDeactivated->addPixmap(
-			QPixmap(":/images/itemLedDim.png"), QIcon::Active, QIcon::On);
+		pIconDeactivated->addPixmap(pmLedDim, QIcon::Active, QIcon::On);
 		g_pIcons[0] = pIconActivated;
 		g_pIcons[1] = pIconDeactivated;
 	}
@@ -332,11 +335,11 @@ void qtractorPluginForm::setPlugin ( qtractorPlugin *pPlugin )
 	const bool bInsertPlugin = (typeHint == qtractorPluginType::Insert);
 	if (bInsertPlugin) {
 		if (pType->index() > 0) { // index == channels > 0 => Audio insert.
-			m_ui.SendsToolButton->setIcon(QIcon(":/images/itemAudioPortOut.png"));
-			m_ui.ReturnsToolButton->setIcon(QIcon(":/images/itemAudioPortIn.png"));
+			m_ui.SendsToolButton->setIcon(QIcon::fromTheme("itemAudioPortOut"));
+			m_ui.ReturnsToolButton->setIcon(QIcon::fromTheme("itemAudioPortIn"));
 		} else {
-			m_ui.SendsToolButton->setIcon(QIcon(":/images/itemMidiPortOut.png"));
-			m_ui.ReturnsToolButton->setIcon(QIcon(":/images/itemMidiPortIn.png"));
+			m_ui.SendsToolButton->setIcon(QIcon::fromTheme("itemMidiPortOut"));
+			m_ui.ReturnsToolButton->setIcon(QIcon::fromTheme("itemMidiPortIn"));
 		}
 	}
 	m_ui.SendsToolButton->setVisible(bInsertPlugin);
@@ -490,7 +493,7 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 		const bool bAudioOutBus
 			= (pPluginList->flags() == qtractorPluginList::AudioOutBus);
 		QStringList cyclicAudioOutBuses; // Cyclic bus names to avoid.
-		const QIcon iconAudio(":/images/trackAudio.png");
+		const QIcon& iconAudio = QIcon::fromTheme("trackAudio");
 		m_ui.AuxSendBusNameComboBox->addItem(iconAudio, tr("(none)"));
 		QListIterator<qtractorBus *> iter(pAudioEngine->buses2());
 		while (iter.hasNext()) {
@@ -536,7 +539,7 @@ void qtractorPluginForm::updateAuxSendBusName (void)
 			return;
 		const bool bMidiOutBus
 			= (pPluginList->flags() == qtractorPluginList::MidiOutBus);
-		const QIcon iconMidi(":/images/trackMidi.png");
+		const QIcon& iconMidi = QIcon::fromTheme("trackMidi");
 		m_ui.AuxSendBusNameComboBox->addItem(iconMidi, tr("(none)"));
 		QListIterator<qtractorBus *> iter(pMidiEngine->buses2());
 		while (iter.hasNext()) {
@@ -1414,7 +1417,7 @@ qtractorPluginParamWidget::qtractorPluginParamWidget (
 			pGridLayout->addWidget(m_pComboBox, 1, 0, 1, 2);
 			pGridLayout->setColumnStretch(0, 2);
 			m_pToolButton = new QToolButton(/*this*/);
-			m_pToolButton->setIcon(QIcon(":/images/fileOpen.png"));
+			m_pToolButton->setIcon(QIcon::fromTheme("fileOpen"));
 			pGridLayout->addWidget(m_pToolButton, 1, 2);
 		}
 		else
@@ -1631,7 +1634,7 @@ void qtractorPluginParamWidget::updateCurveButton (void)
 	}
 
 	if (m_pCurveButton == nullptr) {
-		QSize iconSize(12, 12);
+		QSize iconSize(16, 16);
 		m_pCurveButton = new QPushButton(/*this*/);
 		m_pCurveButton->setFlat(true);
 		m_pCurveButton->setIconSize(iconSize);
@@ -1649,15 +1652,15 @@ void qtractorPluginParamWidget::updateCurveButton (void)
 	if (pSubject)
 		pCurve = pSubject->curve();
 	if (pCurve && pCurve->isCapture())
-		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveCapture.png"));
+		m_pCurveButton->setIcon(QIcon::fromTheme("trackCurveCapture"));
 	else
 	if (pCurve && pCurve->isProcess())
-		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveProcess.png"));
+		m_pCurveButton->setIcon(QIcon::fromTheme("trackCurveProcess"));
 	else
 	if (pCurve)
-		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveEnabled.png"));
+		m_pCurveButton->setIcon(QIcon::fromTheme("trackCurveEnabled"));
 	else
-		m_pCurveButton->setIcon(QPixmap(":/images/trackCurveNone.png"));
+		m_pCurveButton->setIcon(QIcon::fromTheme("trackCurveNone"));
 }
 
 

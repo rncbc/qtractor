@@ -95,8 +95,7 @@
         <string>Browse export file name</string>
        </property>
        <property name="icon">
-        <iconset resource="qtractor.qrc">
-         <normaloff>:/images/fileOpen.png</normaloff>:/images/fileOpen.png</iconset>
+        <iconset theme="fileOpen" />
        </property>
       </widget>
      </item>

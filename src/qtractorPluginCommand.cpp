@@ -350,11 +350,13 @@ qtractorMovePluginCommand::qtractorMovePluginCommand (
 {
 	m_pPluginList = pPluginList;
 
-	// Special case for aux-sends moved into output buses...
+	// Special case for aux-sends moved into output buses
+	// and not of same plugin chain-list...
 	m_pAuxSendPlugin = nullptr;
 
 	qtractorPluginType *pType = pPlugin->type();
-	if (pType && (pType->typeHint() == qtractorPluginType::AuxSend)) {
+	if (pType && (pType->typeHint() == qtractorPluginType::AuxSend)
+		&& (pPluginList != pPlugin->list())) {
 		if ((pPluginList->flags() & qtractorPluginList::AudioOutBus) &&
 			(pType->index() > 0)) { // index == channels > 0 => Audio aux-send.
 			qtractorAudioAuxSendPlugin *pAudioAuxSendPlugin

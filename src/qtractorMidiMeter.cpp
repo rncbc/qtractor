@@ -218,8 +218,8 @@ qtractorMidiMeterLed::qtractorMidiMeterLed (
 	qtractorMidiMeter *pMidiMeter )	: qtractorMeterValue(pMidiMeter)
 {
 	if (++g_iLedRefCount == 1) {
-		g_pLedPixmap[LedOff] = new QPixmap(":/images/trackMidiOff.png");
-		g_pLedPixmap[LedOn]  = new QPixmap(":/images/trackMidiOn.png");
+		g_pLedPixmap[LedOff] = new QPixmap(QIcon::fromTheme("trackMidiOff").pixmap(16, 16));
+		g_pLedPixmap[LedOn]  = new QPixmap(QIcon::fromTheme("trackMidiOn").pixmap(16, 16));
 	}
 
 	m_iMidiCount = 0;

@@ -119,12 +119,19 @@ qtractorObserverSlider::qtractorObserverSlider ( QWidget *pParent )
 // Alternate mouse behavior event handlers.
 void qtractorObserverSlider::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	// Reset to default value...
 	if (pMouseEvent->button() == Qt::MiddleButton)
-		setValue(scaleFromValue(observer()->defaultValue()));
+		mouseDoubleClickEvent(pMouseEvent);
 	else
 		qtractorObserverWidget<QSlider>::mousePressEvent(pMouseEvent);
 }
+
+
+void qtractorObserverSlider::mouseDoubleClickEvent ( QMouseEvent */*pMouseEvent*/ )
+{
+	// Reset to default value...
+	setValue(scaleFromValue(observer()->defaultValue()));
+}
+
 
 void qtractorObserverSlider::wheelEvent ( QWheelEvent *pWheelEvent )
 {
