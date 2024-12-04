@@ -339,6 +339,8 @@ void qtractorTimeScaleForm::setFrame ( unsigned long iFrame )
 	if (pNode)
 		setCurrentItem(pNode, iFrame);
 
+	ensureVisibleFrame(iFrame);
+
 	stabilizeForm();
 
 	// HACK: Force focus to Bar location entry field...

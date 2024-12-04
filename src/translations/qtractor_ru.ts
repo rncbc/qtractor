@@ -14581,14 +14581,14 @@ Do you want to apply the changes?</source>
 <context>
     <name>qtractorTimeScaleForm</name>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="561"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="832"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1039"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="563"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="834"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1041"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="562"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="564"/>
         <source>Some settings have been changed.
 
 Do you want to apply the changes?</source>
@@ -14597,7 +14597,7 @@ Do you want to apply the changes?</source>
 Вы хотите применить изменения?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="833"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="835"/>
         <source>About to remove tempo node:
 
 %1 (%2) %3  %4/%5
@@ -14606,7 +14606,7 @@ Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1040"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1042"/>
         <source>Some settings have been changed.
 
 Do you want to discard the changes?</source>
@@ -14615,35 +14615,35 @@ Do you want to discard the changes?</source>
 Вы хотите применить изменения?</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1063"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1065"/>
         <source>tempo factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1140"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1142"/>
         <source>Marker Color</source>
         <translation>Цвет маркера</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="453"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1174"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1176"/>
         <source>&amp;Add</source>
         <translation>&amp;Добавить</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="466"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1179"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1181"/>
         <source>&amp;Update</source>
         <translation>Об&amp;новить пункт</translation>
     </message>
     <message>
         <location filename="../qtractorTimeScaleForm.ui" line="479"/>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1184"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1186"/>
         <source>&amp;Remove</source>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../qtractorTimeScaleForm.cpp" line="1191"/>
+        <location filename="../qtractorTimeScaleForm.cpp" line="1193"/>
         <source>&amp;Refresh</source>
         <translation>О&amp;бновить</translation>
     </message>
