@@ -6,6 +6,8 @@ ChangeLog
 
 GIT HEAD
 
+- Plug-in presets menu: now sorted alphabetically.
+
 - When summoned from the menu, the View/Tempo Map-Markers... dialog
   positions itself to the current play-head location, instead of the
   absolute beginning of the timeline. (GH #492)

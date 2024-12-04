@@ -285,22 +285,22 @@ MIDI:	</translation>
         <translation>SMF Format 1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="239"/>
+        <location filename="../qtractorPlugin.cpp" line="241"/>
         <source>(Any)</source>
         <translation>(Jakýkoli)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="269"/>
+        <location filename="../qtractorPlugin.cpp" line="271"/>
         <source>Activate</source>
         <translation>Zapnout</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="572"/>
+        <location filename="../qtractorPlugin.cpp" line="574"/>
         <source>Aux Send: %1</source>
         <translation>Aux Send: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2413"/>
+        <location filename="../qtractorPlugin.cpp" line="2417"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): %3 přídavný modul nenalezen.</translation>
     </message>
@@ -550,7 +550,7 @@ Stopa: &quot;%1&quot; Vstup: &quot;%2&quot; Výstup: &quot;%3&quot;</translation
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="248"/>
+        <location filename="../qtractorPlugin.cpp" line="250"/>
         <source>(default)</source>
         <translation>(výchozí)</translation>
     </message>

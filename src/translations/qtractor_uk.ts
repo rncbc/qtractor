@@ -570,7 +570,7 @@ MIDI:	</translation>
     </message>
     <message>
         <location filename="../qtractorMidiTimer.cpp" line="66"/>
-        <location filename="../qtractorPlugin.cpp" line="248"/>
+        <location filename="../qtractorPlugin.cpp" line="250"/>
         <source>(default)</source>
         <translation>(default)</translation>
     </message>
@@ -632,22 +632,22 @@ MIDI:	</translation>
         <translation>Параметр -s потребує аргументу (uuid).</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="239"/>
+        <location filename="../qtractorPlugin.cpp" line="241"/>
         <source>(Any)</source>
         <translation>(Будь-який)</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="269"/>
+        <location filename="../qtractorPlugin.cpp" line="271"/>
         <source>Activate</source>
         <translation>Задіяти</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="572"/>
+        <location filename="../qtractorPlugin.cpp" line="574"/>
         <source>Aux Send: %1</source>
         <translation>Надсилання допоміжного: %1</translation>
     </message>
     <message>
-        <location filename="../qtractorPlugin.cpp" line="2413"/>
+        <location filename="../qtractorPlugin.cpp" line="2417"/>
         <source>%1(%2): %3 plugin not found.</source>
         <translation>%1(%2): не знайдено додаток %3.</translation>
     </message>
