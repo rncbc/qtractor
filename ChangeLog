@@ -6,9 +6,8 @@ ChangeLog
 
 GIT HEAD
 
-- MIDI clip editor (aka. piano-roll) menu Edit/Select Mode/Edit On and
-  Edit Off actions are now self-toggled when triggered, while Edit Draw
-  is an option to Edit On when set, disabled otherwise. (EXPERIMENTAL)
+- MIDI clip editor (aka. piano-roll) menu Edit/Select Mode/Edit On, Off
+  and Draw actions are now self-toggled when triggered. (EXPERIMENTAL)
 
 - Plug-in presets menu: now sorted alphabetically.
 

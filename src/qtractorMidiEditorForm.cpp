@@ -107,7 +107,7 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 	m_pEditModeActionGroup->setExclusive(true);
 	m_pEditModeActionGroup->addAction(m_ui.editModeOnAction);
 	m_pEditModeActionGroup->addAction(m_ui.editModeOffAction);
-//	m_pEditModeActionGroup->addAction(m_ui.editModeDrawAction);
+	m_pEditModeActionGroup->addAction(m_ui.editModeDrawAction);
 
 	// And the corresponding tool-button drop-down menu...
 	m_pEditModeToolButton = new QToolButton(this);
@@ -714,11 +714,13 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewSnapZebraAction->setChecked(pOptions->bMidiSnapZebra);
 		m_ui.viewSnapGridAction->setChecked(pOptions->bMidiSnapGrid);
 		m_ui.viewToolTipsAction->setChecked(pOptions->bMidiToolTips);
-		if (pOptions->bMidiEditMode)
+		if (!pOptions->bMidiEditMode)
+			m_ui.editModeOffAction->setChecked(true);
+		else
+		if (!pOptions->bMidiEditModeDraw)
 			m_ui.editModeOnAction->setChecked(true);
 		else
-			m_ui.editModeOffAction->setChecked(true);
-		m_ui.editModeDrawAction->setChecked(pOptions->bMidiEditModeDraw);
+			m_ui.editModeDrawAction->setChecked(true);
 		// Set initial edit mode...
 		m_pEditModeToolButton->setDefaultAction(
 			m_pEditModeActionGroup->checkedAction());
@@ -1567,12 +1569,14 @@ void qtractorMidiEditorForm::editDelete (void)
 void qtractorMidiEditorForm::editModeOn ( bool bOn )
 {
 //	m_pMidiEditor->setEditModeDraw(false);
-	if (bOn && m_pMidiEditor->isEditMode()) {
+	if (bOn && m_pMidiEditor->isEditMode()
+		&& !m_pMidiEditor->isEditModeDraw()) {
 		m_ui.editModeOffAction->setChecked(true);
 		m_pEditModeToolButton->setDefaultAction(
 			m_pEditModeActionGroup->checkedAction());
 		m_pMidiEditor->setEditMode(false);
 	} else {
+		m_pMidiEditor->setEditModeDraw(!bOn);
 		m_pMidiEditor->setEditMode(bOn);
 	}
 	m_pMidiEditor->updateContents();
@@ -1585,7 +1589,10 @@ void qtractorMidiEditorForm::editModeOff ( bool bOn )
 {
 //	m_pMidiEditor->setEditModeDraw(false);
 	if (bOn && !m_pMidiEditor->isEditMode()) {
-		m_ui.editModeOnAction->setChecked(true);
+		if (m_pMidiEditor->isEditModeDraw())
+			m_ui.editModeDrawAction->setChecked(true);
+		else
+			m_ui.editModeOnAction->setChecked(true);
 		m_pEditModeToolButton->setDefaultAction(
 			m_pEditModeActionGroup->checkedAction());
 		m_pMidiEditor->setEditMode(true);
@@ -1601,8 +1608,17 @@ void qtractorMidiEditorForm::editModeOff ( bool bOn )
 // Toggle draw-mode (notes)
 void qtractorMidiEditorForm::editModeDraw ( bool bOn )
 {
-	m_pMidiEditor->setEditModeDraw(bOn);
-//	m_pMidiEditor->setEditMode(bOn);
+//	m_pMidiEditor->setEditModeDraw(bOn);
+	if (bOn && m_pMidiEditor->isEditMode()
+		&& m_pMidiEditor->isEditModeDraw()) {
+		m_ui.editModeOnAction->setChecked(true);
+		m_pEditModeToolButton->setDefaultAction(
+			m_pEditModeActionGroup->checkedAction());
+		m_pMidiEditor->setEditModeDraw(false);
+	} else {
+		m_pMidiEditor->setEditModeDraw(bOn);
+		m_pMidiEditor->setEditMode(bOn);
+	}
 	m_pMidiEditor->updateContents();
 
 	stabilizeForm();
@@ -2224,7 +2240,7 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 	m_ui.editPasteAction->setEnabled(bClipboard);
 	m_ui.editPasteRepeatAction->setEnabled(bClipboard);
 	m_ui.editDeleteAction->setEnabled(bSelected);
-	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
+//	m_ui.editModeDrawAction->setEnabled(m_pMidiEditor->isEditMode());
 	m_ui.editSelectNoneAction->setEnabled(bSelected);
 
 	const bool bInsertable = m_pMidiEditor->isInsertable();
