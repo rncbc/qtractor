@@ -794,6 +794,12 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		QObject::connect(m_ui.transportStepForwardAction,
 			SIGNAL(triggered(bool)),
 			SLOT(transportStepForward()));
+		QObject::connect(m_ui.transportStepNoteBackwardAction,
+			SIGNAL(triggered(bool)),
+			SLOT(transportStepNoteBackward()));
+		QObject::connect(m_ui.transportStepNoteForwardAction,
+			SIGNAL(triggered(bool)),
+			SLOT(transportStepNoteForward()));
 		QObject::connect(m_ui.transportLoopAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportLoop()));
@@ -2093,7 +2099,6 @@ void qtractorMidiEditorForm::transportStepBackward (void)
 			= pTimeScale->barFromFrame(iPlayHead);
 		iPlayHead = pTimeScale->frameFromBar(iBar > 0 ? iBar - 1 : iBar);
 	}
-
 	m_pMidiEditor->setSyncViewHoldOn(false);
 	m_pMidiEditor->setPlayHead(iPlayHead);
 	pSession->setPlayHead(iPlayHead);
@@ -2133,7 +2138,91 @@ void qtractorMidiEditorForm::transportStepForward (void)
 			= pTimeScale->barFromFrame(iPlayHead);
 		iPlayHead = pTimeScale->frameFromBar(iBar + 1);
 	}
+	m_pMidiEditor->setSyncViewHoldOn(false);
+	m_pMidiEditor->setPlayHead(iPlayHead);
+	pSession->setPlayHead(iPlayHead);
+}
 
+
+// Transport note-backward (local)
+void qtractorMidiEditorForm::transportStepNoteBackward (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	unsigned long iPlayHead = pSession->playHead();
+	qtractorMidiSequence *pSeq = m_pMidiEditor->sequence();
+	if (pSeq) {
+		// Step-backward a note event...
+		qtractorTimeScale::Cursor cursor(pTimeScale);
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+		const unsigned long t0 = pNode->tickFromFrame(m_pMidiEditor->offset());
+		const unsigned long	t1 = pNode->tickFromFrame(iPlayHead);
+		const unsigned long iTime = (t1 > t0 ? t1 - t0 : 0);
+		const qtractorMidiEvent::EventType eventType
+			= m_pMidiEditor->editView()->eventType();
+		qtractorMidiEvent *pEvent
+			= m_pMidiEditor->seekEvent(pSeq, iTime);
+		while (pEvent && pEvent->time() < iTime)
+			pEvent = pEvent->next();
+		if (pEvent == nullptr)
+			pEvent = pSeq->events().last();
+		while (pEvent && pEvent->time() >= iTime)
+			pEvent = pEvent->prev();
+		while (pEvent && pEvent->type() != eventType)
+			pEvent = pEvent->prev();
+		if (pEvent && pEvent->type() == eventType) {
+			const unsigned long t2 = t0 + pEvent->time();
+			pNode = cursor.seekTick(t2);
+			iPlayHead = pNode->frameFromTick(t2);
+		}
+	}
+	m_pMidiEditor->setSyncViewHoldOn(false);
+	m_pMidiEditor->setPlayHead(iPlayHead);
+	pSession->setPlayHead(iPlayHead);
+}
+
+
+// Transport note-forward (local)
+void qtractorMidiEditorForm::transportStepNoteForward (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	unsigned long iPlayHead = pSession->playHead();
+	qtractorMidiSequence *pSeq = m_pMidiEditor->sequence();
+	if (pSeq) {
+		// Step-forward a note event...
+		qtractorTimeScale::Cursor cursor(pTimeScale);
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+		const unsigned long t0 = pNode->tickFromFrame(m_pMidiEditor->offset());
+		const unsigned long	t1 = pNode->tickFromFrame(iPlayHead);
+		const unsigned long iTime = (t1 > t0 ? t1 - t0 : 0);
+		const qtractorMidiEvent::EventType eventType
+			= m_pMidiEditor->editView()->eventType();
+		qtractorMidiEvent *pEvent
+			= m_pMidiEditor->seekEvent(pSeq, iTime);
+		if (pEvent && t1 >= t0 + pEvent->time())
+		while (pEvent && iTime >= pEvent->time())
+			pEvent = pEvent->next();
+		while (pEvent && pEvent->type() != eventType)
+			pEvent = pEvent->next();
+		if (pEvent && pEvent->type() == eventType) {
+			const unsigned long t2 = t0 + pEvent->time();
+			pNode = cursor.seekTick(t2);
+			iPlayHead = pNode->frameFromTick(t2);
+		}
+	}
 	m_pMidiEditor->setSyncViewHoldOn(false);
 	m_pMidiEditor->setPlayHead(iPlayHead);
 	pSession->setPlayHead(iPlayHead);
@@ -2343,6 +2432,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 				|| iPlayHead < pSession->editTail()));
 		m_ui.transportStepBackwardAction->setEnabled(bBumped);
 		m_ui.transportStepForwardAction->setEnabled(!bRolling);
+		m_ui.transportStepNoteBackwardAction->setEnabled(bBumped);
+		m_ui.transportStepNoteForwardAction->setEnabled(!bRolling);
 		m_ui.transportLoopAction->setEnabled(
 			!bRolling && (bLooping || bSelectable));
 		m_ui.transportLoopSetAction->setEnabled(

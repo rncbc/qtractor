@@ -6,6 +6,10 @@ ChangeLog
 
 GIT HEAD
 
+- Introducing MIDI clip editor (aka. piano-roll) new Transport/Step
+  /Note/Backward and Forward menu actions, to move the play-head to
+  previous and next note events, respectively. (EXPERIMENTAL)
+
 - MIDI clip editor (aka. piano-roll) menu Edit/Select Mode/Edit On, Off
   and Draw actions are now self-toggled when triggered. (EXPERIMENTAL)
 

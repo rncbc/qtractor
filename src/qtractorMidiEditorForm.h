@@ -188,6 +188,9 @@ protected slots:
 	void transportStepBackward();
 	void transportStepForward();
 
+	void transportStepNoteBackward();
+	void transportStepNoteForward();
+
 	void helpShortcuts();
 	void helpAbout();
 	void helpAboutQt();
