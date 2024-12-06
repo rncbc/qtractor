@@ -89,6 +89,7 @@ qtractorShortcutTableItemEditor::qtractorShortcutTableItemEditor (
 {
 	m_pItemEdit = new qtractorShortcutTableItemEdit(/*this*/);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	// Some conveniency cleaner helper...
 	m_pItemEdit->setClearButtonEnabled(true);
 #endif
 	m_pToolButton = new QToolButton(/*this*/);

@@ -112,8 +112,10 @@ qtractorPluginForm::qtractorPluginForm (
 	m_ui.PresetComboBox->setInsertPolicy(QComboBox::NoInsert);
 	m_ui.PresetComboBox->setCompleter(nullptr);
 
-//	m_ui.AliasLineEdit->setPlaceholderText(tr("Alias"));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	// Some conveniency cleaner helper...
 	m_ui.AliasLineEdit->setClearButtonEnabled(true);
+#endif
 
 	// UI signal/slot connections...
 	QObject::connect(m_ui.PresetComboBox,

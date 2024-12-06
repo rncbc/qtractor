@@ -54,6 +54,7 @@ protected slots:
 	void stabilizeForm();
 	void browseFilename();
 
+	void clipNameChanged(const QString& sClipName);
 	void filenameChanged(const QString& sFilename);
 	void trackChannelChanged(int iTrackChannel);
 	void clipStartChanged(unsigned long iClipStart);

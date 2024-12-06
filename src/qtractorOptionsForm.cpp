@@ -138,6 +138,17 @@ qtractorOptionsForm::qtractorOptionsForm ( QWidget *pParent )
 		m_ui.AudioMetroOffsetSpinBox->setDeltaValue(true);
 	}
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	// Some conveniency cleaner helpers...
+	m_ui.SessionTemplatePathComboBox->lineEdit()->setClearButtonEnabled(true);
+	m_ui.MetroBarFilenameComboBox->lineEdit()->setClearButtonEnabled(true);
+	m_ui.MetroBeatFilenameComboBox->lineEdit()->setClearButtonEnabled(true);
+	m_ui.MessagesLogPathComboBox->lineEdit()->setClearButtonEnabled(true);
+	m_ui.PluginPathComboBox->lineEdit()->setClearButtonEnabled(true);
+	m_ui.PluginBlacklistComboBox->lineEdit()->setClearButtonEnabled(true);
+	m_ui.Lv2PresetDirComboBox->lineEdit()->setClearButtonEnabled(true);
+#endif
+
 	// Populate the session format combo-box.
 	initSessionFormats();
 

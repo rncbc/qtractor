@@ -197,6 +197,7 @@ qtractorTimeScaleForm::qtractorTimeScaleForm ( QWidget *pParent )
 	m_ui.TimeScaleListView->setContextMenuPolicy(Qt::CustomContextMenu);
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	// Some conveniency cleaner helper...
 	m_ui.MarkerTextLineEdit->setClearButtonEnabled(true);
 #endif
 

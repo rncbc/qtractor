@@ -136,6 +136,7 @@ qtractorPluginSelectForm::qtractorPluginSelectForm ( QWidget *pParent )
 		SLOT(reset()));
 #else
 	m_ui.PluginResetToolButton->hide();
+	// Some conveniency cleaner helper...
 	m_ui.PluginSearchComboBox->lineEdit()->setClearButtonEnabled(true);
 #endif
 	QObject::connect(m_ui.PluginSearchComboBox,
