@@ -234,7 +234,7 @@
     <addaction name="editSelectMenu"/>
     <addaction name="separator"/>
     <addaction name="editInsertMenu"/>
-	<addaction name="editRemoveMenu"/>
+    <addaction name="editRemoveMenu"/>
     <addaction name="separator"/>
     <addaction name="toolsMenu"/>
    </widget>
@@ -242,12 +242,21 @@
     <property name="title">
      <string>T&amp;ransport</string>
     </property>
+    <widget class="QMenu" name="transportStepNoteMenu">
+     <property name="title">
+      <string>&amp;Note</string>
+     </property>
+     <addaction name="transportStepNoteBackwardAction"/>
+     <addaction name="transportStepNoteForwardAction"/>
+    </widget>
     <widget class="QMenu" name="transportStepMenu">
      <property name="title">
       <string>St&amp;ep</string>
      </property>
      <addaction name="transportStepBackwardAction"/>
      <addaction name="transportStepForwardAction"/>
+     <addaction name="separator"/>
+     <addaction name="transportStepNoteMenu"/>
     </widget>
     <addaction name="transportBackwardAction"/>
     <addaction name="transportRewindAction"/>
@@ -1655,6 +1664,34 @@
    </property>
    <property name="statusTip">
     <string>Transport step forward</string>
+   </property>
+  </action>
+  <action name="transportStepNoteBackwardAction">
+   <property name="text">
+    <string>&amp;Backward</string>
+   </property>
+   <property name="iconText">
+    <string>Note Backward</string>
+   </property>
+   <property name="toolTip">
+    <string>Step note backward</string>
+   </property>
+   <property name="statusTip">
+    <string>Transport step note backward</string>
+   </property>
+  </action>
+  <action name="transportStepNoteForwardAction">
+   <property name="text">
+    <string>&amp;Forward</string>
+   </property>
+   <property name="iconText">
+    <string>Note Forward</string>
+   </property>
+   <property name="toolTip">
+    <string>Step note forward</string>
+   </property>
+   <property name="statusTip">
+    <string>Transport step note forward</string>
    </property>
   </action>
   <action name="transportLoopAction">

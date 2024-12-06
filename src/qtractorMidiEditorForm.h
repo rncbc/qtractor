@@ -131,8 +131,8 @@ protected slots:
 	void editPaste();
 	void editPasteRepeat();
 	void editDelete();
-	void editModeOn();
-	void editModeOff();
+	void editModeOn(bool bOn);
+	void editModeOff(bool bOn);
 	void editModeDraw(bool bOn);
 	void editSelectAll();
 	void editSelectNone();
@@ -187,6 +187,9 @@ protected slots:
 
 	void transportStepBackward();
 	void transportStepForward();
+
+	void transportStepNoteBackward();
+	void transportStepNoteForward();
 
 	void helpShortcuts();
 	void helpAbout();

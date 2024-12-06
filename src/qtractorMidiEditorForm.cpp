@@ -468,10 +468,10 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		SLOT(editDelete()));
 	QObject::connect(m_ui.editModeOnAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editModeOn()));
+		SLOT(editModeOn(bool)));
 	QObject::connect(m_ui.editModeOffAction,
 		SIGNAL(triggered(bool)),
-		SLOT(editModeOff()));
+		SLOT(editModeOff(bool)));
 	QObject::connect(m_ui.editModeDrawAction,
 		SIGNAL(triggered(bool)),
 		SLOT(editModeDraw(bool)));
@@ -714,12 +714,13 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		m_ui.viewSnapZebraAction->setChecked(pOptions->bMidiSnapZebra);
 		m_ui.viewSnapGridAction->setChecked(pOptions->bMidiSnapGrid);
 		m_ui.viewToolTipsAction->setChecked(pOptions->bMidiToolTips);
-		if (pOptions->bMidiEditMode)
+		if (!pOptions->bMidiEditMode)
+			m_ui.editModeOffAction->setChecked(true);
+		else
+		if (!pOptions->bMidiEditModeDraw)
 			m_ui.editModeOnAction->setChecked(true);
 		else
-			m_ui.editModeOffAction->setChecked(true);
-		m_ui.editModeDrawAction->setChecked(
-			pOptions->bMidiEditMode && pOptions->bMidiEditModeDraw);
+			m_ui.editModeDrawAction->setChecked(true);
 		// Set initial edit mode...
 		m_pEditModeToolButton->setDefaultAction(
 			m_pEditModeActionGroup->checkedAction());
@@ -793,6 +794,12 @@ qtractorMidiEditorForm::qtractorMidiEditorForm (
 		QObject::connect(m_ui.transportStepForwardAction,
 			SIGNAL(triggered(bool)),
 			SLOT(transportStepForward()));
+		QObject::connect(m_ui.transportStepNoteBackwardAction,
+			SIGNAL(triggered(bool)),
+			SLOT(transportStepNoteBackward()));
+		QObject::connect(m_ui.transportStepNoteForwardAction,
+			SIGNAL(triggered(bool)),
+			SLOT(transportStepNoteForward()));
 		QObject::connect(m_ui.transportLoopAction,
 			SIGNAL(triggered(bool)),
 			pMainForm, SLOT(transportLoop()));
@@ -1564,21 +1571,40 @@ void qtractorMidiEditorForm::editDelete (void)
 }
 
 
-// Set edit-mode on.
-void qtractorMidiEditorForm::editModeOn (void)
+// Toggle edit-mode on.
+void qtractorMidiEditorForm::editModeOn ( bool bOn )
 {
-	m_pMidiEditor->setEditModeDraw(false);
-	m_pMidiEditor->setEditMode(true);
+//	m_pMidiEditor->setEditModeDraw(false);
+	if (bOn && m_pMidiEditor->isEditMode()
+		&& !m_pMidiEditor->isEditModeDraw()) {
+		m_ui.editModeOffAction->setChecked(true);
+		m_pEditModeToolButton->setDefaultAction(
+			m_pEditModeActionGroup->checkedAction());
+		m_pMidiEditor->setEditMode(false);
+	} else {
+		m_pMidiEditor->setEditModeDraw(!bOn);
+		m_pMidiEditor->setEditMode(bOn);
+	}
 	m_pMidiEditor->updateContents();
 
 	stabilizeForm();
 }
 
-// Set edit-mode off.
-void qtractorMidiEditorForm::editModeOff (void)
+// Toggle edit-mode off.
+void qtractorMidiEditorForm::editModeOff ( bool bOn )
 {
-	m_pMidiEditor->setEditModeDraw(false);
-	m_pMidiEditor->setEditMode(false);
+//	m_pMidiEditor->setEditModeDraw(false);
+	if (bOn && !m_pMidiEditor->isEditMode()) {
+		if (m_pMidiEditor->isEditModeDraw())
+			m_ui.editModeDrawAction->setChecked(true);
+		else
+			m_ui.editModeOnAction->setChecked(true);
+		m_pEditModeToolButton->setDefaultAction(
+			m_pEditModeActionGroup->checkedAction());
+		m_pMidiEditor->setEditMode(true);
+	} else {
+		m_pMidiEditor->setEditMode(!bOn);
+	}
 	m_pMidiEditor->updateContents();
 
 	stabilizeForm();
@@ -1588,8 +1614,17 @@ void qtractorMidiEditorForm::editModeOff (void)
 // Toggle draw-mode (notes)
 void qtractorMidiEditorForm::editModeDraw ( bool bOn )
 {
-	m_pMidiEditor->setEditModeDraw(bOn);
-	m_pMidiEditor->setEditMode(bOn);
+//	m_pMidiEditor->setEditModeDraw(bOn);
+	if (bOn && m_pMidiEditor->isEditMode()
+		&& m_pMidiEditor->isEditModeDraw()) {
+		m_ui.editModeOnAction->setChecked(true);
+		m_pEditModeToolButton->setDefaultAction(
+			m_pEditModeActionGroup->checkedAction());
+		m_pMidiEditor->setEditModeDraw(false);
+	} else {
+		m_pMidiEditor->setEditModeDraw(bOn);
+		m_pMidiEditor->setEditMode(bOn);
+	}
 	m_pMidiEditor->updateContents();
 
 	stabilizeForm();
@@ -2064,7 +2099,6 @@ void qtractorMidiEditorForm::transportStepBackward (void)
 			= pTimeScale->barFromFrame(iPlayHead);
 		iPlayHead = pTimeScale->frameFromBar(iBar > 0 ? iBar - 1 : iBar);
 	}
-
 	m_pMidiEditor->setSyncViewHoldOn(false);
 	m_pMidiEditor->setPlayHead(iPlayHead);
 	pSession->setPlayHead(iPlayHead);
@@ -2104,7 +2138,91 @@ void qtractorMidiEditorForm::transportStepForward (void)
 			= pTimeScale->barFromFrame(iPlayHead);
 		iPlayHead = pTimeScale->frameFromBar(iBar + 1);
 	}
+	m_pMidiEditor->setSyncViewHoldOn(false);
+	m_pMidiEditor->setPlayHead(iPlayHead);
+	pSession->setPlayHead(iPlayHead);
+}
 
+
+// Transport note-backward (local)
+void qtractorMidiEditorForm::transportStepNoteBackward (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	unsigned long iPlayHead = pSession->playHead();
+	qtractorMidiSequence *pSeq = m_pMidiEditor->sequence();
+	if (pSeq) {
+		// Step-backward a note event...
+		qtractorTimeScale::Cursor cursor(pTimeScale);
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+		const unsigned long t0 = pNode->tickFromFrame(m_pMidiEditor->offset());
+		const unsigned long	t1 = pNode->tickFromFrame(iPlayHead);
+		const unsigned long iTime = (t1 > t0 ? t1 - t0 : 0);
+		const qtractorMidiEvent::EventType eventType
+			= m_pMidiEditor->editView()->eventType();
+		qtractorMidiEvent *pEvent
+			= m_pMidiEditor->seekEvent(pSeq, iTime);
+		while (pEvent && pEvent->time() < iTime)
+			pEvent = pEvent->next();
+		if (pEvent == nullptr)
+			pEvent = pSeq->events().last();
+		while (pEvent && pEvent->time() >= iTime)
+			pEvent = pEvent->prev();
+		while (pEvent && pEvent->type() != eventType)
+			pEvent = pEvent->prev();
+		if (pEvent && pEvent->type() == eventType) {
+			const unsigned long t2 = t0 + pEvent->time();
+			pNode = cursor.seekTick(t2);
+			iPlayHead = pNode->frameFromTick(t2);
+		}
+	}
+	m_pMidiEditor->setSyncViewHoldOn(false);
+	m_pMidiEditor->setPlayHead(iPlayHead);
+	pSession->setPlayHead(iPlayHead);
+}
+
+
+// Transport note-forward (local)
+void qtractorMidiEditorForm::transportStepNoteForward (void)
+{
+	qtractorSession *pSession = qtractorSession::getInstance();
+	if (pSession == nullptr)
+		return;
+
+	qtractorTimeScale *pTimeScale = m_pMidiEditor->timeScale();
+	if (pTimeScale == nullptr)
+		return;
+
+	unsigned long iPlayHead = pSession->playHead();
+	qtractorMidiSequence *pSeq = m_pMidiEditor->sequence();
+	if (pSeq) {
+		// Step-forward a note event...
+		qtractorTimeScale::Cursor cursor(pTimeScale);
+		qtractorTimeScale::Node *pNode = cursor.seekFrame(iPlayHead);
+		const unsigned long t0 = pNode->tickFromFrame(m_pMidiEditor->offset());
+		const unsigned long	t1 = pNode->tickFromFrame(iPlayHead);
+		const unsigned long iTime = (t1 > t0 ? t1 - t0 : 0);
+		const qtractorMidiEvent::EventType eventType
+			= m_pMidiEditor->editView()->eventType();
+		qtractorMidiEvent *pEvent
+			= m_pMidiEditor->seekEvent(pSeq, iTime);
+		if (pEvent && t1 >= t0 + pEvent->time())
+		while (pEvent && iTime >= pEvent->time())
+			pEvent = pEvent->next();
+		while (pEvent && pEvent->type() != eventType)
+			pEvent = pEvent->next();
+		if (pEvent && pEvent->type() == eventType) {
+			const unsigned long t2 = t0 + pEvent->time();
+			pNode = cursor.seekTick(t2);
+			iPlayHead = pNode->frameFromTick(t2);
+		}
+	}
 	m_pMidiEditor->setSyncViewHoldOn(false);
 	m_pMidiEditor->setPlayHead(iPlayHead);
 	pSession->setPlayHead(iPlayHead);
@@ -2314,6 +2432,8 @@ void qtractorMidiEditorForm::stabilizeForm (void)
 				|| iPlayHead < pSession->editTail()));
 		m_ui.transportStepBackwardAction->setEnabled(bBumped);
 		m_ui.transportStepForwardAction->setEnabled(!bRolling);
+		m_ui.transportStepNoteBackwardAction->setEnabled(bBumped);
+		m_ui.transportStepNoteForwardAction->setEnabled(!bRolling);
 		m_ui.transportLoopAction->setEnabled(
 			!bRolling && (bLooping || bSelectable));
 		m_ui.transportLoopSetAction->setEnabled(

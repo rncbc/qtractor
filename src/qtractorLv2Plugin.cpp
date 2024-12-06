@@ -1232,6 +1232,9 @@ static void qtractor_lv2_set_port_value ( const char *port_symbol,
 
 #ifdef CONFIG_LV2_PRESETS
 
+// LV2 Presets: have sort avaliable.
+#include <algorithm>
+
 // LV2 Presets: port value getter.
 static const void *qtractor_lv2_get_port_value ( const char *port_symbol,
 	void *user_data, uint32_t *size, uint32_t *type )
@@ -5602,6 +5605,8 @@ QStringList qtractorLv2Plugin::presetList (void) const
 		= m_lv2_presets.constEnd();
 	for ( ; iter != iter_end; ++iter)
 		list.append(iter.key());
+
+	std::sort(list.begin(), list.end());
 
 	return list;
 }

@@ -50,6 +50,8 @@
 #include <QFile>
 #include <QDir>
 
+#include <algorithm>
+
 #include <cmath>
 
 #include <dlfcn.h>
@@ -782,6 +784,8 @@ QStringList qtractorPlugin::presetList (void) const
 		list.append(pOptions->settings().childKeys());
 		pOptions->settings().endGroup();
 	}
+
+	std::sort(list.begin(), list.end());
 
 	return list;
 }

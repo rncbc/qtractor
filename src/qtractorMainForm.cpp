@@ -5251,7 +5251,9 @@ void qtractorMainForm::viewBuses (void)
 void qtractorMainForm::viewTempoMap (void)
 {
 	// Just set and show the tempo-map dialog...
-	qtractorTimeScaleForm(this).exec();
+	qtractorTimeScaleForm form(this);
+	form.setFrame(m_iPlayHead);
+	form.exec();
 }
 
 

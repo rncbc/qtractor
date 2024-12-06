@@ -121,6 +121,12 @@ qtractorClipForm::qtractorClipForm ( QWidget *pParent )
 		m_ui.FadeOutTypeComboBox->addItem(info.iconFadeOut, info.name);
 	}
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	// Some conveniency cleaner helpers...
+	m_ui.ClipNameLineEdit->setClearButtonEnabled(true);
+	m_ui.FilenameComboBox->lineEdit()->setClearButtonEnabled(true);
+#endif
+
 	// Try to set minimal window positioning.
 	m_ui.TrackChannelTextLabel->hide();
 	m_ui.TrackChannelSpinBox->hide();
@@ -130,7 +136,7 @@ qtractorClipForm::qtractorClipForm ( QWidget *pParent )
 	// UI signal/slot connections...
 	QObject::connect(m_ui.ClipNameLineEdit,
 		SIGNAL(textChanged(const QString&)),
-		SLOT(changed()));
+		SLOT(clipNameChanged(const QString&)));
 	QObject::connect(m_ui.FilenameComboBox,
 		SIGNAL(editTextChanged(const QString&)),
 		SLOT(filenameChanged(const QString&)));
@@ -832,6 +838,20 @@ void qtractorClipForm::fileChanged (
 	// Done.
 	m_ui.ClipOffsetSpinBox->setValue(0);
 	m_ui.ClipLengthSpinBox->setValue(iClipLength);
+
+	changed();
+}
+
+
+void qtractorClipForm::clipNameChanged ( const QString& sClipName )
+{
+	// Give as clip name hint if blank or new...
+	if (sClipName.isEmpty()) {
+		const QString& sFilename
+			= m_ui.FilenameComboBox->currentText();
+		if (!sFilename.isEmpty())
+			m_ui.ClipNameLineEdit->setText(QFileInfo(sFilename).baseName());
+	}
 
 	changed();
 }

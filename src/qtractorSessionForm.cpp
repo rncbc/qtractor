@@ -66,6 +66,7 @@ qtractorSessionForm::qtractorSessionForm ( QWidget *pParent )
 		QFontMetrics(font2).height());
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+	// Some conveniency cleaner helper...
 	m_ui.SessionDirComboBox->lineEdit()->setClearButtonEnabled(true);
 #endif
 

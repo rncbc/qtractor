@@ -2111,7 +2111,7 @@ void qtractorMidiEditor::pasteClipboard (
 	m_pDragStep = pScrollView;
 
 	// It doesn't matter which one, both pasteable views are due...
-	const QCursor cursr(QIcon::fromTheme("editPaste").pixmap(22, 22), 12, 12);
+	const QCursor cursr(QIcon::fromTheme("editPaste").pixmap(22), 12, 12);
 	m_pEditView->setCursor(cursr);
 	m_pEditEvent->setCursor(cursr);
 
@@ -3262,7 +3262,8 @@ void qtractorMidiEditor::dragMoveStart (
 		m_dragCursor = m_dragState;
 		m_pEventDrag = dragEditEvent(pScrollView, m_posDrag, modifiers);
 		m_bEventDragEdit = (m_pEventDrag != nullptr);
-		pScrollView->setCursor(QCursor(QIcon::fromTheme("editModeOn").pixmap(20, 20), 5, 18));
+		pScrollView->setCursor(QCursor(QIcon::fromTheme(
+			m_bEditModeDraw ? "editModeDraw" : "editModeOn").pixmap(22), 5, 18));
 	} else if (m_resizeMode == ResizeNone) {
 		m_dragCursor = m_dragState;
 		if (m_pEventDrag) {
