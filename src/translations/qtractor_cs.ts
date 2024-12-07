@@ -9709,7 +9709,7 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="247"/>
         <source>&amp;Note</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nota</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="254"/>
@@ -10541,32 +10541,32 @@ Chcete uložit změny?</translation>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1674"/>
         <source>Note Backward</source>
-        <translation type="unfinished"></translation>
+        <translation>O notu zpět</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1677"/>
         <source>Step note backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok o notu zpět</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1680"/>
         <source>Transport step note backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Přehrávat krok o notu zpět</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1688"/>
         <source>Note Forward</source>
-        <translation type="unfinished"></translation>
+        <translation>O notu vpřed</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1691"/>
         <source>Step note forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok o notu vpřed</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1694"/>
         <source>Transport step note forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Přehrávat krok o notu vpřed</translation>
     </message>
     <message>
         <location filename="../qtractorMidiEditorForm.ui" line="1705"/>
@@ -11934,7 +11934,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1361"/>
         <source>Icons Theme Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář s motivy ikon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.cpp" line="1447"/>
@@ -13081,17 +13081,17 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2866"/>
         <source>&amp;Icons theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Motiv &amp;ikon:</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2882"/>
         <source>Custom icons theme directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář s vlastními motivy ikon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2924"/>
         <source>Browse for custom icons theme directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Procházet kvůli adresáři s vlastními motivy ikon</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="2943"/>
@@ -13106,7 +13106,7 @@ Chcete použít tyto změny?</translation>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3001"/>
         <source>Browse for custom style sheet (*.qss)</source>
-        <translation>Procházení vlastního souboru stylů (*.qss)</translation>
+        <translation>Procházet kvůli vlastnímu souboru stylů (*.qss)</translation>
     </message>
     <message>
         <location filename="../qtractorOptionsForm.ui" line="3099"/>
