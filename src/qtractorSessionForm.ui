@@ -30,6 +30,12 @@
     <height>240</height>
    </rect>
   </property>
+  <property name="maximumSize" >
+   <size>
+    <width>640</width>
+     <height>320</height>
+   </size>
+  </property>
   <property name="focusPolicy" >
    <enum>Qt::StrongFocus</enum>
   </property>
